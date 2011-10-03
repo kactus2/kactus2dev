@@ -1,0 +1,92 @@
+//-----------------------------------------------------------------------------
+// File: generaleditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Joni-Matti M‰‰tt‰
+// Date: 7.2.2011
+//
+// Description:
+// General editor for editing the component's general data.
+//-----------------------------------------------------------------------------
+
+#ifndef GENERALEDITOR_H
+#define GENERALEDITOR_H
+
+#include "../itemeditor.h"
+#include "desceditor.h"
+
+#include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
+
+#include <QSharedPointer>
+
+class Component;
+class LibraryInterface;
+class LibraryComponent;
+class KactusAttributeEditor;
+class ComponentPreviewBox;
+
+//-----------------------------------------------------------------------------
+//! GeneralEditor class.
+//-----------------------------------------------------------------------------
+class GeneralEditor : public ItemEditor
+{
+    Q_OBJECT
+       
+public:
+    /*!
+     *  Constructor.
+     *
+     *      @param [in] parentWnd  The parent window (having a title bar).
+     *      @param [in] libHandler The library handler.
+     *      @param [in] component  The component model to edit.
+     *      @param [in] parent     The parent widget.
+     */
+    GeneralEditor(QWidget* parentWnd, LibraryInterface* libHandler,
+		          QSharedPointer<Component> component, QWidget *parent);
+
+    /*!
+     *  Destructor.
+     */
+    virtual ~GeneralEditor();
+
+    /*! \brief Check for the validity of the edited item.
+     *
+     * Base class implementation always returns true.
+     * 
+     * \return True is item is valid.
+     */
+    virtual bool isValid() const;
+
+	/*! \brief save the description from the editor to the model
+	 *
+	 */
+	virtual void makeChanges();
+
+private:
+    // Disable copying.
+    GeneralEditor(const GeneralEditor& other);
+    GeneralEditor& operator=(const GeneralEditor& other);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The VLNV displayer.
+    VLNVDisplayer* vlnvDisplayer_;
+
+    //! Kactus attribute editor.
+    KactusAttributeEditor* attributeEditor_;
+
+    //! The description editor.
+    DescEditor* descEditor_;
+
+    //! The preview box.
+    ComponentPreviewBox* previewBox_;
+
+    //! The component.
+    QSharedPointer<Component> component_;
+};
+
+//-----------------------------------------------------------------------------
+
+#endif // GENERALEDITOR_H

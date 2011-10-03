@@ -1,0 +1,21 @@
+/**
+\ingroup propertyeditorcomp
+\interface IDefaultPropertyManager IDefaultPropertyManager
+\brief Through this interface you can associate/fetch a IDefaultProperty for a QObject
+
+The property editor component maintains a table of QObject's and their corresponding 
+IDefaultProperty. The default property values of different QObject's are fetched
+from this table. The first time property editor is asked to deal with the properties
+of a particular QObject, the property editor component provides an inbuilt IDefaultProperty
+object to handle its default properties. If you want to make use of your own implementation
+of IDefaultProperty; then you will need to make use of IDefaultPropertyManager::setDefaultProperty()
+to make the association between your object and your IDefaultProperty.
+*/
+
+/**
+\fn virtual void IDefaultPropertyManager::setDefaultProperty(QObject* obj, IDefaultProperty* prop) = 0
+*/
+
+/**
+\fn virtual IDefaultProperty* IDefaultPropertyManager::defaultProperty(QObject* object) = 0
+*/

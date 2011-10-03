@@ -1,0 +1,89 @@
+/**
+\ingroup utilscomponent 
+\interface IMathUtils IMathUtils
+\brief This interface provides access to the core functionality of the Utils component.
+
+Provides access to easy to use mathematical utility functions.
+
+Components in your application can make use of the Utils component via this interface as 
+follows
+
+\code
+QString objName;
+GCF::AbstractComponent* utilsComp = 0;
+QObject* obj = findObject("IMathUtils", objName, &utilsComp);
+if(obj)
+{
+    IMathUtils* mathUtils = qobject_cast<IMathUtils*>(obj);
+    // now make use of the mathUtils pointer to issue calls
+    // into the Utils component
+}
+\endcode
+
+*/
+
+/**
+\fn virtual double IMathUtils::toRadians(double angle) = 0;
+
+Through this interface method you can convert given angle in degrees to radians.
+*/
+
+/**
+\fn virtual double IMathUtils::toDegrees(double radians) = 0;
+
+Through this interface method you can convert given angle in radians to degrees.
+*/
+
+/**
+\fn virtual double IMathUtils::sinAngle(double angle) = 0;
+
+Returns sine of given angle.
+
+\note angle should be in degrees.
+*/
+
+/**
+\fn virtual double IMathUtils::cosAngle(double angle) = 0;
+
+Returns cosine of given angle.
+
+\note angle should be in degrees.
+*/
+
+/**
+\fn virtual double IMathUtils::tanAngle(double angle) = 0;
+
+Returns tangent of given angle.
+
+\note angle should be in degrees.
+*/
+
+
+/**
+\fn virtual double IMathUtils::aSinAngle(double val) = 0;
+
+Returns inverse sine of given value.
+*/
+
+
+/**
+\fn virtual double IMathUtils::aCosAngle(double val) = 0;
+
+Returns inverse cosine of given value
+*/
+
+
+/**
+\fn virtual double IMathUtils::aTanAngle(double val) = 0;
+
+Returns inverse tangent of given value.
+*/
+
+
+/**
+\fn virtual double IMathUtils::randomNumber(double min, double max) = 0;
+
+Generates random number betwenn max and min values.
+*/
+
+

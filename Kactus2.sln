@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Kactus2", "Kactus2.vcproj", "{09486B51-70A7-3073-B15B-6D4BAF3EC8C6}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GCF", "GCF\source\GCF.vcproj", "{E3CA8A7D-1F8D-30A0-96D3-4A5575CB81BA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{09486B51-70A7-3073-B15B-6D4BAF3EC8C6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{09486B51-70A7-3073-B15B-6D4BAF3EC8C6}.Debug|Win32.Build.0 = Debug|Win32
+		{09486B51-70A7-3073-B15B-6D4BAF3EC8C6}.Release|Win32.ActiveCfg = Release|Win32
+		{09486B51-70A7-3073-B15B-6D4BAF3EC8C6}.Release|Win32.Build.0 = Release|Win32
+		{E3CA8A7D-1F8D-30A0-96D3-4A5575CB81BA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E3CA8A7D-1F8D-30A0-96D3-4A5575CB81BA}.Debug|Win32.Build.0 = Debug|Win32
+		{E3CA8A7D-1F8D-30A0-96D3-4A5575CB81BA}.Release|Win32.ActiveCfg = Release|Win32
+		{E3CA8A7D-1F8D-30A0-96D3-4A5575CB81BA}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		BuildVersion_UpdateAssemblyVersion = True
+		BuildVersion_UpdateFileVersion = True
+	EndGlobalSection
+EndGlobal

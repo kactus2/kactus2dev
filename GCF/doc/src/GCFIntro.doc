@@ -1,0 +1,108 @@
+/**
+\page gcfintro Introduction to Component Frameworks
+
+Most GUI applications have a main window in which all its UI and non-UI (actions to access 
+non-UI functionality) components are shown. Depending on the type of application we are developing 
+and depending on our UI taste, we usually divide the main window into many regions (workspace, 
+dockwidgets, menu ares, toolbar areas etc). We then place widgets into one or more of these 
+regions and present them to the user. 
+
+Conceptually speaking we can organize widgets along with its user interface (menu items, toolbuttons etc)
+into different groups depending on the kind of functionality they offer. In the software world such groups are
+called "Components". Components are objects in UI applications that provide functionality, user interface
+(optional) and one or more widgets (optional).
+
+The main idea behind components is re usability. Often, an application wants to use a functionality that
+another application provides. Of course, the way to do that is simply to create a shared library that both
+applications use. But without a standard framework for this, it means both applications are very much coupled
+to the library's API and will need to be changed if the applications decide to use another library instead.
+Furthermore, integrating the shared functionality has to be done manually by every application.
+
+A framework for components enables an application to use a component it never heard of - and wasn't
+specifically adapted for - because both the application and the component comply to the framework and know
+what to expect from each other. An existing component can be replaced with a new implementation of the
+same functionality, without changing a single line of code in the application, because the interface remains the
+same.
+
+Several frameworks for graphical components exist for a different environment, such as IBM and Apple's
+OpenDoc, Microsoft's OLE/COM, Gnome's Bonobo, and KDE's KParts. This documentationation explains a custom
+framework called "Generic Component Framework" for use with Qt® based UI applications. The framework
+explained in this documentationation is simple, small, cross-platform and completely decoupled from any other
+component framework out there.
+
+\section gcfintro_1 The difference between Components and Widgets
+
+A component encapsulates three things: a widget, the functionality that comes with it, and the user interface
+for this functionality.
+
+The usual example is a text editor component. Its widget is a text editor widget; its functionality might
+include Search And Replace, Copy, Cut, Paste, Undo, Redo, Spell Checking. To make it possible for the user to
+access this functionality, the component also provides the user interface for it: menu items and toolbar buttons.
+
+An application using this component will get the widget embedded into a parent widget it provides, as well
+as the component's user interface merged into its own menubar and toolbars. This is like embedding a MS
+Excel documentationation into MS Word, an example everybody knows.
+
+Another example of very useful component is an image viewer. When using KDE's file manager
+(Konqueror), clicking an image file opens the image viewer component from KDE's image viewer (KView) and
+shows it inside Konqueror's window. The component provides actions for zoom in, zoom out, rotate, reset to
+original size, and orientation.
+
+So, when do you use a component and when do you use a widget? Use a widget when all the functionality is in the
+widget itself and doesn't need additional user interface (menu items or toolbar buttons). A button is a widget, a
+multiline edit is a widget, but a text editor with all the functionality previously mentioned is a component.
+
+\section gcfintro_2 Writing Components - Paradigm Shift
+
+Theoretically speaking we can assemble an application by bringing together one or more components and
+"wiring" communication paths between them. This also means that once an application has been deployed, we
+can add more functionality to the application by deploying the additional functionality as components, instead
+of creating another version of the application with the new functionality.
+
+In order to reap all the benefits that a component framework can provide us, we will need to write our
+applications in a different way. Our way of looking at developing applications should undergo a major
+paradigm shift. We should begin thinking of applications as a collection of loosely coupled components. Each
+component should be complete within itself, any communication paths should be exposed and documentationationed.
+
+\htmlonly
+<pre>
+We recently bought a UPS for our office which would ensure uninterrupted power supply to all the
+computers in our office. While installing the UPS we realized that the power sockets that were already
+installed in the office were not "tweak-able" to accommodate the UPS. So the electrician had to come along
+and drill holes into the walls of our office and lay additional power cables.
+
+This is a classical example of a system that has not been designed to accommodate future addons. When a
+system is designed poorly, we will have to break it (aka drill holes in the wall) to fit in new functionality. To
+design truly amazing software we have to keep in mind future plugins and design the software now.
+
+Generic Component Framework attends to one design aspect of GUI software applications, the UI itself. GCF
+helps in providing easy means to plug additional UI components into your applications. Having said that,
+GCF is surely not an answer to everything. Components developers will still have more to think about than
+just plugging in UI.
+</pre>
+\endhtmlonly
+
+Think of an application as a real world electronic appliance. For example, let's say we wanted to build a
+"Stereo Cassette Player". To build a it, we would require two speakers, a cassette reader, a equalizer, a volume
+knob (amplifier), few control knobs (play, rewind, forward, stop, pause) and a power supply. Each component
+listed above perform one single task. To perform that task they may depend on other components and they
+may pass output, if any, along certain output paths. For example the "cassette reader" requires a "power
+supply" to run the cassette and would send out audio signals on one or more copper wires. These wires can
+then be connected to a "equilizer" the output of which can be connected to a "amplifier" which then is
+connected to the speakers. As you can imagine from the above scenario, each component that gets "assembled"
+into a cassette player can be developed independently by different people within a single organization or even
+different organizations.
+
+GUI applications should also be thought of in the same light. Each component should be complete within
+itself and must only leave input, output and control paths as open ends to connect other components.
+Need for a Component Framework.
+
+All real world systems have frameworks. For example every country has a framework called as "law and
+order". As long as components (people) work within that framework, things will be predictable and enjoyable.
+Similarly for software components to function well in an application we would require a component
+framework that defines the rules and regulations for components to adhere to. "Well behaved components" in
+the framework will be treated properly by the framework and also other "well behaved components"can make
+use of their services. Towards this we need to describe a framework and clearly state what "good behavior" of
+a component is.
+*/
+

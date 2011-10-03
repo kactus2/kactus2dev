@@ -1,0 +1,8 @@
+<component title="Clipboard component" name="ClipboardComponent" >
+    
+    <object name="controller" />
+    <object name="clipboardModel" />
+    <widget name="clipboardWidget" title="Clipboard" parentWidget="MainWindowComponent.leftDockArea" />
+    
+</component>
+

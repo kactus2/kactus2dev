@@ -1,0 +1,91 @@
+/**
+\ingroup propertyeditorcomp
+\interface IPropertyEditor IPropertyEditor
+\brief Provides access to the property editor widget
+
+This is the main interface to the property editor component. It shows the properties of
+a QObject by making use of 
+
+\li Qt's Q_PROPERTY() mechanism and
+\li IEditableProperties interface (if-any)
+
+The best way to use a property editor within your components would be as follows
+
+\code
+void MyComponent::creationAnnounced()
+{
+    // ...
+
+    // Fetch and store a reference to the property editor in this 
+    // function
+    QString name;
+    GCF::AbstractComponent* comp = 0;   
+    QObject* obj = findObject("IPropertyEditor", name, &comp);
+    if(obj)
+    {
+        this->m_propertyEditor = qobject_cast<IPropertyEditor*>(obj);
+        GCF::AbstractComponent::addDependency(this, comp);
+    }
+    
+    // ...
+}
+
+void MyComponent::someFunction()
+{
+    // ...
+    
+    // Use the property editor to show properties
+    if(this->m_propertyEditor)
+        this->m_propertyEditor->setObject( objectPtr );
+        
+    // ...
+}
+\endcode
+
+*/
+
+/**
+\fn virtual void IPropertyEditor::setObject(QObject* object, bool recursive=false) = 0
+
+Shows the properties of the object at \c object. If the \c recursive flag is set to true; 
+then the properties of the child objects are also shown in the property editor.
+*/
+
+/**
+\fn virtual QObject* IPropertyEditor::object() = 0
+
+Returns the object whose properties are being shown by the property editor
+*/
+
+/**
+\fn virtual int IPropertyEditor::propertyCount() = 0
+
+Returns the number of properties that are currently being shown by the property editor.
+*/
+
+/**
+\fn virtual IProperty* IPropertyEditor::property(int index) = 0
+
+Returns the property at \c index.
+*/
+
+/**
+\fn virtual void IPropertyEditor::setEditorFactory(IValueEditorFactory* factory) = 0
+
+Sets the value editor factory to use while editing properties.
+*/
+
+/**
+\fn virtual IValueEditorFactory* IPropertyEditor::editorFactory() = 0
+
+Gets the value editor factory that is used while editing properties.
+*/
+
+/**
+\fn virtual void IPropertyEditor::propertyValueChanged(QObject* obj, QString propName, QVariant oldVal, QVariant newVal) = 0
+
+This function is implemented as a signal. It is emitted to announce the change in property value of
+\c propName property in \c object. The changed value and previous value are also announced with this signal.
+*/
+
+

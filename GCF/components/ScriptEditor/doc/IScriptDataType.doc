@@ -1,0 +1,137 @@
+/**
+\ingroup scripteditorcomponent 
+\interface IScriptDataType IScriptDataType
+\brief Components can implement this interface to register custom types with the script enigne.
+
+The QScriptEngine class in Qt drives the evaluation of scripts. This class is aware of 
+\li all C types like int, char, double and long and
+\li Qt types like QString, QChar, QObject*, QMetaObject*, QWidget* and so on.
+
+If the script engine comes across data values that are neither C types nor Qt types; then it
+will flag an error and stop evaluating the script any further. 
+
+If your application makes use of custom data types and you want the script engine to support it
+then you will have to do the following
+\li Declare your type as a Qt meta type using the Q_DECLARE_METATYPE macro
+\li Register methods with QScriptEngine to move type values from script environment to native 
+Qt environment and vice versa.
+\li Register methods to create instances of your type within the scripting environment.
+
+The IScriptDataType interfaces helps you to do just that. The script editor component queries
+within every new and existing component for objects that implement this interface. As and when
+it finds one; it calls the \ref registerTypes() method in them to register custom types with
+the script engine.
+
+For example, lets say you have a custom structure that you want to use in the scripting 
+environment. The following code snippet shows how you can register the type.
+
+\code
+
+// Custom data structure (or type)
+struct SMyStruct
+{
+    int i;
+    char c;
+    double d;
+};
+
+// Declare the type to Qt's meta type system
+#include <QMetaType>
+Q_DECLARE_METATYPE(SMyStruct)
+
+// Have methods to convert data to and fro 
+// Support for additional script value types.
+QScriptValue toScriptValue_SMyStruct(QScriptEngine* engine, const SMyStruct& val)
+{
+    QScriptValue obj = engine->newObject();
+    obj.setProperty("i", QScriptValue(engine, val.i));
+    obj.setProperty("c", QScriptValue(engine, val.c));
+    obj.setProperty("d", QScriptValue(engine, val.d));
+    return obj;
+}
+
+void fromScriptValue_SMyStruct(const QScriptValue& value, SMyStruct& val)
+{
+    val.i = value.property("i").toNumber();
+    val.c = value.property("c").toNumber();
+    val.d = value.property("d").toNumber();
+}
+
+QScriptValue create_SMyStruct(QScriptContext*, QScriptEngine* engine)
+{
+    SMyStruct val;
+    return engine->toScriptValue(val);
+}
+
+// Implement the IScriptDataType interface in one of your component's classes
+class MyComponent : public IComponent, virtual public IScriptDataType
+{
+    Q_OBJECT
+    Q_INTERFACES(IScriptDataType)
+    GCF_DECLARE_COMPONENT
+    
+public:
+    // ..
+    
+    // IScriptDataType implementation
+    void registerTypes(QScriptEngine* engine);
+    // ..
+};
+
+// Implement the registerTypes() method
+void MyComponent::registerTypes(QScriptEngine* engine)
+{
+    // Register the SMyStruct type
+    qScriptRegisterMetaType(engine, toScriptValue_SMyStruct, fromScriptValue_SMyStruct);
+    engine->globalObject().setProperty("SMyStruct", engine->newFunction(create_SMyStruct));
+    engine->evaluate(
+        "function NewSMyStruct(i, c, d)\n"
+        "{\n"
+        "    var ret = new SMyStruct;\n"
+        "    ret.i = i; ret.c = c; ret.d = d;\n"
+        "    return ret;\n"
+        "}\n"
+        );
+        
+    // This way you can now use statements like this in the script to create
+    // instances of SMyStruct
+    // 
+    // var v = NewSMyStruct(10, '4', 10.2);
+}
+\endcode
+*/
+
+/**
+\fn virtual void IScriptDataType::registerTypes(QScriptEngine* engine) = 0
+
+Reimplement this method to register your custom types with the script engine. The method should 
+register the following for each new type
+\li A method to convert script value to C++
+\li A method to convert C++ value to script
+\li Register a method to create instances of the structure with the global object of the script
+\li Optionally register a script function to create instances of your type.
+
+Example
+\code
+void MyComponent::registerTypes(QScriptEngine* engine)
+{
+    // Register the SMyStruct type
+    qScriptRegisterMetaType(engine, toScriptValue_SMyStruct, fromScriptValue_SMyStruct);
+    engine->globalObject().setProperty("SMyStruct", engine->newFunction(create_SMyStruct));
+    engine->evaluate(
+        "function NewSMyStruct(i, c, d)\n"
+        "{\n"
+        "    var ret = new SMyStruct;\n"
+        "    ret.i = i; ret.c = c; ret.d = d;\n"
+        "    return ret;\n"
+        "}\n"
+        );
+        
+    // This way you can now use statements like this in the script to create
+    // instances of SMyStruct
+    // 
+    // var v = NewSMyStruct(10, '4', 10.2);
+}
+\endcode
+*/
+

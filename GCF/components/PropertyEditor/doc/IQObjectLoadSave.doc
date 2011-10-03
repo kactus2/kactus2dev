@@ -1,0 +1,30 @@
+/**
+\ingroup propertyeditorcomp
+\interface IQObjectLoadSave IQObjectLoadSave
+\brief Save/Load object's properties into a XML element
+
+Through this interface you can load and save properties in a XML Element. For more information 
+read \ref loadsaveqobjects
+*/
+
+/**
+\fn virtual bool IQObjectLoadSave::saveProperties(QObject* object, QDomDocument doc, QDomElement parentE) = 0
+
+Saves an object's properties into an XML element
+
+\param object The object whose properties have to be saved
+\param doc The XML document in which the element is being saved
+\param parentE The XML element (within \c doc) under which the object's property information
+will be saved
+*/
+
+/**
+\fn virtual bool IQObjectLoadSave::loadProperties(QObject* object, QDomDocument doc, QDomElement parentE) = 0
+
+Loads an object's properties from an XML element
+
+\param object The object whose properties have to be load
+\param doc The XML document in which the element is being loaded
+\param parentE The XML element (within \c doc) from which the object's property information
+will be loaded
+*/

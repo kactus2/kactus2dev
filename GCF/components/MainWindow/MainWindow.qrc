@@ -1,0 +1,25 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="/MainWindow">
+
+    <file alias="splash.png">icons/splash.png</file>
+    <file alias="aboutBackground.png">icons/aboutBackground.png</file>
+    <file alias="appLogo.png">icons/appLogo.png</file>
+    <file alias="appIcon.png">icons/appIcon.png</file>
+    <file alias="configure.png">icons/configure.png</file>
+    <file alias="exit.png">icons/exit.png</file>
+    
+    <file alias="cut.png">icons/cut.png</file>
+    <file alias="copy.png">icons/copy.png</file>
+    <file alias="paste.png">icons/paste.png</file>
+    <file alias="edit.png">icons/edit.png</file>
+    <file alias="tools.png">icons/tools.png</file>
+    <file alias="undo.png">icons/undo.png</file>
+    <file alias="redo.png">icons/redo.png</file>
+    <file alias="view.png">icons/view.png</file>
+    <file alias="help.png">icons/help.png</file>
+    
+</qresource>
+</RCC>
+
+
+

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="9,00"
+	Name="MessageLog"
+	ProjectGUID="{D9F69E15-EF49-37BC-9D55-F020423EFFA8}"
+	Keyword="Qt4VSv1.0">
+	<Platforms>
+		<Platform
+			Name="Win32" />
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="."
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			ConfigurationType="2"
+			IntermediateDirectory="..\..\..\tmp\MessageLog\"
+			UseOfMfc="0">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtCore&quot;,&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtNetwork&quot;,&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtGui&quot;,&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtXml&quot;,&quot;..\..\..\..\Libraries\Qt\4.7.2\include&quot;,&quot;..\..\include&quot;,&quot;.&quot;,&quot;interfaces&quot;,&quot;source&quot;,&quot;..\..\..\..\Libraries\Qt\4.7.2\include\ActiveQt&quot;,&quot;..\..\..\tmp\MessageLog&quot;,..\..\..\..\Libraries\Qt\4.7.2\mkspecs\default"
+				AdditionalOptions="-Zm200 -w34100 -w34189"
+				AssemblerListingLocation="..\..\..\tmp\MessageLog\"
+				BufferSecurityCheck="false"
+				DebugInformationFormat="0"
+				ExceptionHandling="1"
+				GeneratePreprocessedFile="0"
+				ObjectFile="..\..\..\tmp\MessageLog\"
+				Optimization ="2"
+				PreprocessorDefinitions="QT_NO_DEBUG,NDEBUG,_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,-D_CRT_SECURE_NO_DEPRECATE,QT_DLL,QT_NO_DEBUG,QT_XML_LIB,QT_GUI_LIB,QT_NETWORK_LIB,QT_CORE_LIB,QT_HAVE_MMX,QT_HAVE_3DNOW,QT_HAVE_SSE,QT_HAVE_MMXEXT,QT_HAVE_SSE2,QT_THREAD_SUPPORT,NDEBUG"
+				ProgramDataBaseFileName=".\"
+				RuntimeLibrary="2"
+				RuntimeTypeInfo="true"
+				SuppressStartupBanner="true"
+				TreatWChar_tAsBuiltInType="false"
+				WarningLevel="3" />
+			<Tool
+				Name="VCCustomBuildTool" />
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="D:/user/maattaj/VTKDesigner/lib/GCF.lib d:\user\maattaj\Libraries\Qt\4.7.2\lib\QtXml4.lib d:\user\maattaj\Libraries\Qt\4.7.2\lib\QtGui4.lib d:\user\maattaj\Libraries\Qt\4.7.2\lib\QtNetwork4.lib d:\user\maattaj\Libraries\Qt\4.7.2\lib\QtCore4.lib"
+				AdditionalLibraryDirectories="d:\user\maattaj\Libraries\Qt\4.7.2\lib"
+				GenerateDebugInformation="false"
+				IgnoreImportLibrary="true"
+				LinkIncremental="1"
+				LinkTimeCodeGeneration="0"
+				OutputFile="..\..\..\lib\MessageLog.dll"
+				ProgramDatabaseFile=""
+				SubSystem="0"
+				SuppressStartupBanner="true" />
+			<Tool
+				Name="VCMIDLTool"
+				DefaultCharType="0"
+				EnableErrorChecks="1"
+				WarningLevel="0" />
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine="copy  &quot;$(TargetPath)&quot; &quot;..\..\..\bin&quot;"
+				Description="Copy MessageLog.dll to ..\..\..\bin" />
+			<Tool
+				Name="VCPreBuildEventTool" />
+			<Tool
+				Name="VCPreLinkEventTool" />
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="QT_NO_DEBUG,NDEBUG,_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,-D_CRT_SECURE_NO_DEPRECATE,QT_DLL,QT_NO_DEBUG,QT_XML_LIB,QT_GUI_LIB,QT_NETWORK_LIB,QT_CORE_LIB,QT_HAVE_MMX,QT_HAVE_3DNOW,QT_HAVE_SSE,QT_HAVE_MMXEXT,QT_HAVE_SSE2,QT_THREAD_SUPPORT" />
+		</Configuration>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="."
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			ConfigurationType="2"
+			IntermediateDirectory="..\..\..\tmp\MessageLog\"
+			UseOfMfc="0">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtCore&quot;,&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtNetwork&quot;,&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtGui&quot;,&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtXml&quot;,&quot;..\..\..\..\Libraries\Qt\4.7.2\include&quot;,&quot;..\..\include&quot;,&quot;.&quot;,&quot;interfaces&quot;,&quot;source&quot;,&quot;..\..\..\..\Libraries\Qt\4.7.2\include\ActiveQt&quot;,&quot;..\..\..\tmp\MessageLog&quot;,..\..\..\..\Libraries\Qt\4.7.2\mkspecs\default"
+				AdditionalOptions="-Zm200 -w34100 -w34189"
+				AssemblerListingLocation="..\..\..\tmp\MessageLog\"
+				BufferSecurityCheck="false"
+				DebugInformationFormat="3"
+				ExceptionHandling="1"
+				GeneratePreprocessedFile="0"
+				ObjectFile="..\..\..\tmp\MessageLog\"
+				Optimization ="4"
+				PreprocessorDefinitions="_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,-D_CRT_SECURE_NO_DEPRECATE,QT_DLL,QT_XML_LIB,QT_GUI_LIB,QT_NETWORK_LIB,QT_CORE_LIB,QT_HAVE_MMX,QT_HAVE_3DNOW,QT_HAVE_SSE,QT_HAVE_MMXEXT,QT_HAVE_SSE2,QT_THREAD_SUPPORT"
+				ProgramDataBaseFileName=".\"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="true"
+				SuppressStartupBanner="true"
+				TreatWChar_tAsBuiltInType="false"
+				WarningLevel="3" />
+			<Tool
+				Name="VCCustomBuildTool" />
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="D:/user/maattaj/VTKDesigner/lib/GCF.lib d:\user\maattaj\Libraries\Qt\4.7.2\lib\QtXmld4.lib d:\user\maattaj\Libraries\Qt\4.7.2\lib\QtGuid4.lib d:\user\maattaj\Libraries\Qt\4.7.2\lib\QtNetworkd4.lib d:\user\maattaj\Libraries\Qt\4.7.2\lib\QtCored4.lib"
+				AdditionalLibraryDirectories="d:\user\maattaj\Libraries\Qt\4.7.2\lib"
+				GenerateDebugInformation="true"
+				IgnoreImportLibrary="true"
+				LinkTimeCodeGeneration="0"
+				OutputFile="..\..\..\lib\MessageLog.dll"
+				ProgramDatabaseFile=""
+				SubSystem="0"
+				SuppressStartupBanner="true" />
+			<Tool
+				Name="VCMIDLTool"
+				DefaultCharType="0"
+				EnableErrorChecks="1"
+				WarningLevel="0" />
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine="copy  &quot;$(TargetPath)&quot; &quot;..\..\..\bin&quot;"
+				Description="Copy MessageLog.dll to ..\..\..\bin" />
+			<Tool
+				Name="VCPreBuildEventTool" />
+			<Tool
+				Name="VCPreLinkEventTool" />
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,-D_CRT_SECURE_NO_DEPRECATE,QT_DLL,QT_XML_LIB,QT_GUI_LIB,QT_NETWORK_LIB,QT_CORE_LIB,QT_HAVE_MMX,QT_HAVE_3DNOW,QT_HAVE_SSE,QT_HAVE_MMXEXT,QT_HAVE_SSE2,QT_THREAD_SUPPORT,_DEBUG" />
+		</Configuration>
+	</Configurations>
+	<Files>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
+			<File
+				RelativePath="source\MessageLogComponent.cpp" />
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl;inc;xsd"
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
+			<File
+				RelativePath="source\MessageLogComponent.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						AdditionalDependencies="D:\user\maattaj\Libraries\Qt\4.7.2\bin\moc.exe;source\MessageLogComponent.h"
+						CommandLine="D:\user\maattaj\Libraries\Qt\4.7.2\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -D-D_CRT_SECURE_NO_DEPRECATE -DQT_DLL -DQT_NO_DEBUG -DQT_XML_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtCore&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtNetwork&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtGui&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtXml&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include&quot; -I&quot;..\..\include&quot; -I&quot;.&quot; -I&quot;interfaces&quot; -I&quot;source&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\ActiveQt&quot; -I&quot;..\..\..\tmp\MessageLog&quot; -I..\..\..\..\Libraries\Qt\4.7.2\mkspecs\default -D_MSC_VER=1500 -DWIN32 source\MessageLogComponent.h -o d:\user\maattaj\VTKDesigner\tmp\MessageLog\moc_MessageLogComponent.cpp"
+						Description="MOC source\MessageLogComponent.h"
+						Outputs="d:\user\maattaj\VTKDesigner\tmp\MessageLog\moc_MessageLogComponent.cpp"
+						Path="d:\user\maattaj\Libraries\Qt\4.7.2\bin" />
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						AdditionalDependencies="D:\user\maattaj\Libraries\Qt\4.7.2\bin\moc.exe;source\MessageLogComponent.h"
+						CommandLine="D:\user\maattaj\Libraries\Qt\4.7.2\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -D-D_CRT_SECURE_NO_DEPRECATE -DQT_DLL -DQT_XML_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtCore&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtNetwork&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtGui&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtXml&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include&quot; -I&quot;..\..\include&quot; -I&quot;.&quot; -I&quot;interfaces&quot; -I&quot;source&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\ActiveQt&quot; -I&quot;..\..\..\tmp\MessageLog&quot; -I..\..\..\..\Libraries\Qt\4.7.2\mkspecs\default -D_MSC_VER=1500 -DWIN32 source\MessageLogComponent.h -o d:\user\maattaj\VTKDesigner\tmp\MessageLog\moc_MessageLogComponent.cpp"
+						Description="MOC source\MessageLogComponent.h"
+						Outputs="d:\user\maattaj\VTKDesigner\tmp\MessageLog\moc_MessageLogComponent.cpp"
+						Path="d:\user\maattaj\Libraries\Qt\4.7.2\bin" />
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Generated Files"
+			Filter="cpp;c;cxx;moc;h;def;odl;idl;res;"
+			UniqueIdentifier="{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}">
+			<File
+				RelativePath="..\..\..\tmp\MessageLog\moc_MessageLogComponent.cpp" />
+			<File
+				RelativePath="..\..\..\tmp\MessageLog\qrc_MessageLog.cpp" />
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="qrc;*"
+			UniqueIdentifier="{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}"
+			ParseFiles="false">
+			<File
+				RelativePath="MessageLog.qrc">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						AdditionalDependencies="D:\user\maattaj\Libraries\Qt\4.7.2\bin\rcc.exe;MessageLog.qrc;icons\clear.png"
+						CommandLine="D:\user\maattaj\Libraries\Qt\4.7.2\bin\rcc.exe -name MessageLog MessageLog.qrc -o d:\user\maattaj\VTKDesigner\tmp\MessageLog\qrc_MessageLog.cpp"
+						Description="RCC MessageLog.qrc"
+						Outputs="d:\user\maattaj\VTKDesigner\tmp\MessageLog\qrc_MessageLog.cpp"
+						Path="d:\user\maattaj\Libraries\Qt\4.7.2\bin" />
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						AdditionalDependencies="D:\user\maattaj\Libraries\Qt\4.7.2\bin\rcc.exe;MessageLog.qrc;icons\clear.png"
+						CommandLine="D:\user\maattaj\Libraries\Qt\4.7.2\bin\rcc.exe -name MessageLog MessageLog.qrc -o d:\user\maattaj\VTKDesigner\tmp\MessageLog\qrc_MessageLog.cpp"
+						Description="RCC MessageLog.qrc"
+						Outputs="d:\user\maattaj\VTKDesigner\tmp\MessageLog\qrc_MessageLog.cpp"
+						Path="d:\user\maattaj\Libraries\Qt\4.7.2\bin" />
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="icons\clear.png" />
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

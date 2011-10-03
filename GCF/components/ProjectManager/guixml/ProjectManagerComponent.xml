@@ -1,0 +1,15 @@
+<component title="Project Manager" version="1.0" name="ProjectManagerComponent" >
+ <object title="" name="controller" />
+ <object scriptName="VisProject" title="Project" name="visProject" />
+ <action title="New" shortcut="Ctrl+N" triggerSlot="ProjectManagerComponent.visProject::slotNewProject()" icon=":/ProjectManager/new.png" name="newProject" />
+ <action title="Save" shortcut="Ctrl+S" triggerSlot="ProjectManagerComponent.visProject::slotSaveProject()" icon=":/ProjectManager/save.png" name="saveProject" />
+ <action title="Open" shortcut="Ctrl+O" triggerSlot="ProjectManagerComponent.visProject::slotLoadProject()" icon=":/ProjectManager/open.png" name="loadProject" />
+ <action title="Save As" shortcut="Ctrl+Shift+S" triggerSlot="ProjectManagerComponent.visProject::slotSaveProjectAs()" icon=":/ProjectManager/saveas.png" name="saveProjectAs" />
+ <action title="Close" shortcut="Ctrl+W" triggerSlot="ProjectManagerComponent.visProject::slotCloseProject()" icon=":/ProjectManager/close.png" name="closeProject" />
+ <group title="Project" icon=":/MainWindow/appIcon.png" name="projectMenu" before="MainWindowComponent.editGroup" >
+  <groupitem actionName="ProjectManagerComponent.newProject" />
+  <groupitem actionName="ProjectManagerComponent.saveProjectAs" />
+  <groupitem actionName="ProjectManagerComponent.loadProject" colSpan="2" rowSpan="2" />
+  <groupitem actionName="ProjectManagerComponent.saveProject" colSpan="2" rowSpan="2" />
+ </group>
+</component>

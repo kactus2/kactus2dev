@@ -1,0 +1,45 @@
+<component title="Scripting Environment" name="ScriptEditorComponent" >
+
+ <object title="" scriptName="Runtime" name="controller" />
+ <object title="" name="canvasEL" />
+ <object title="" name="scriptEngineManager" />
+
+ <widget title="Script Editor" name="scriptEditor" parentWidget="MainWindowComponent.workspace" />
+ <widget title="Scriptable Objects" hideWhenInactive="false" name="scriptableObjectExplorer" parentWidget="MainWindowComponent.leftDockArea" />
+ <widget title="Script Editor Configuration" name="configPageSheet" visible="false" />
+
+ <action title="Execute" triggerSlot="ScriptEditorComponent.controller::executeMainScript()" hideWhenInactive="false" shortcut="F5" icon=":/ScriptEditor/execute.png" name="executeMainScript" />
+ <action title="Copy" triggerSlot="ScriptEditorComponent.scriptEditor::copy()" name="editCopy" mergeWith="MainWindowComponent.copy" />
+ <action title="Cut" triggerSlot="ScriptEditorComponent.scriptEditor::cut()" name="editCut" mergeWith="MainWindowComponent.cut" />
+ <action title="Paste" triggerSlot="ScriptEditorComponent.scriptEditor::paste()" name="editPaste" mergeWith="MainWindowComponent.paste" />
+ <action title="Goto Line" triggerSlot="ScriptEditorComponent.scriptEditor::showGotoLineDialog()" shortcut="Ctrl+G" icon=":/ScriptEditor/gotoline.png" name="editGotoLine" />
+ <action title="Undo" triggerSlot="ScriptEditorComponent.scriptEditor::undo()" name="editUndo" mergeWith="MainWindowComponent.undo" />
+ <action title="Redo" triggerSlot="ScriptEditorComponent.scriptEditor::redo()" name="editRedo" mergeWith="MainWindowComponent.redo" />
+ <action title="Find" triggerSlot="ScriptEditorComponent.scriptEditor::showFindDialog()" shortcut="Ctrl+F" default="true" icon=":/ScriptEditor/find.png" name="editFind" />
+ <action title="Find Next" triggerSlot="ScriptEditorComponent.scriptEditor::findNext()" shortcut="F3" name="editFindNext" />
+ <action title="Find Previous" triggerSlot="ScriptEditorComponent.scriptEditor::findPrevious()" shortcut="Shift+F3" name="editFindPrevious" />
+ <action title="Find And Replace" triggerSlot="ScriptEditorComponent.scriptEditor::showFindAndReplaceDialog()" shortcut="Ctrl+H" icon=":/ScriptEditor/findreplace.png" name="editFindAndReplace" />
+ <action title="Load UI" triggerSlot="ScriptEditorComponent.controller::loadForm()" shortcut="Ctrl+M" hideWhenInactive="false" icon=":/ScriptEditor/loadform.png" name="fileLoadForm" />
+ <action title="Unload UI" triggerSlot="ScriptEditorComponent.controller::unloadForm()" shortcut="Ctrl+U" hideWhenInactive="false" icon=":/ScriptEditor/unloadform.png" name="fileUnloadForm" />
+
+ <menu title="Find" icon=":/ScriptEditor/find.png" name="findMenu" >
+  <menuitem actionName="ScriptEditorComponent.editFind" />
+  <menuitem actionName="ScriptEditorComponent.editFindAndReplace" />
+  <menuitem actionName="ScriptEditorComponent.editFindNext" />
+  <menuitem actionName="ScriptEditorComponent.editFindPrevious" />
+  <menuitem actionName="ScriptEditorComponent.editGotoLine" />
+ </menu>
+
+ <group title="Script" hideWhenInactive="false" icon=":/ScriptEditor/scriptingenv.png" name="scriptMenu" before="MainWindowComponent.viewMenu" >
+  <groupitem actionName="ScriptEditorComponent.executeMainScript" hideWhenInactive="false" colSpan="2" rowSpan="2" />
+  <groupitem colSpan="2" menuName="ScriptEditorComponent.findMenu" rowSpan="2" />
+  <groupitem actionName="ScriptEditorComponent.fileLoadForm" hideWhenInactive="false" colSpan="2" rowSpan="1" />
+  <groupitem actionName="ScriptEditorComponent.fileUnloadForm" hideWhenInactive="false" colSpan="2" rowSpan="1" />
+  <draweritem widgetName="ScriptEditorComponent.configPageSheet" />
+ </group>
+
+ <property key="ScriptEditorComponent.scriptEditor::TabSpace" value="4" />
+ <property key="ScriptEditorComponent.scriptEditor::FontSize" value="15" />
+ <property key="ScriptEditorComponent.scriptEditor::FontName" value="Courier" />
+
+</component>

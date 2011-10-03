@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="9,00"
+	Name="PropertyEditor"
+	ProjectGUID="{205BA3A5-6190-3458-9899-9875F49ED722}"
+	Keyword="Qt4VSv1.0">
+	<Platforms>
+		<Platform
+			Name="Win32" />
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="."
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			ConfigurationType="2"
+			IntermediateDirectory="..\..\..\tmp\PropertyEditor\"
+			UseOfMfc="0">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtCore&quot;,&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtNetwork&quot;,&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtGui&quot;,&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtXml&quot;,&quot;..\..\..\..\Libraries\Qt\4.7.2\include&quot;,&quot;..\..\include&quot;,&quot;.&quot;,&quot;interfaces&quot;,&quot;source&quot;,&quot;..\ScriptEditor\interfaces&quot;,&quot;..\..\..\..\Libraries\Qt\4.7.2\include\ActiveQt&quot;,&quot;..\..\..\tmp\PropertyEditor&quot;,&quot;..\..\..\tmp\PropertyEditor&quot;,..\..\..\..\Libraries\Qt\4.7.2\mkspecs\default"
+				AdditionalOptions="-Zm200 -w34100 -w34189"
+				AssemblerListingLocation="..\..\..\tmp\PropertyEditor\"
+				BufferSecurityCheck="false"
+				DebugInformationFormat="0"
+				ExceptionHandling="1"
+				GeneratePreprocessedFile="0"
+				ObjectFile="..\..\..\tmp\PropertyEditor\"
+				Optimization ="2"
+				PreprocessorDefinitions="QT_NO_DEBUG,NDEBUG,_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,-D_CRT_SECURE_NO_DEPRECATE,QT_DLL,QT_NO_DEBUG,QT_XML_LIB,QT_GUI_LIB,QT_NETWORK_LIB,QT_CORE_LIB,QT_HAVE_MMX,QT_HAVE_3DNOW,QT_HAVE_SSE,QT_HAVE_MMXEXT,QT_HAVE_SSE2,QT_THREAD_SUPPORT,NDEBUG"
+				ProgramDataBaseFileName=".\"
+				RuntimeLibrary="2"
+				RuntimeTypeInfo="true"
+				SuppressStartupBanner="true"
+				TreatWChar_tAsBuiltInType="false"
+				WarningLevel="3" />
+			<Tool
+				Name="VCCustomBuildTool" />
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="D:/user/maattaj/VTKDesigner/lib/GCF.lib d:\user\maattaj\Libraries\Qt\4.7.2\lib\QtXml4.lib d:\user\maattaj\Libraries\Qt\4.7.2\lib\QtGui4.lib d:\user\maattaj\Libraries\Qt\4.7.2\lib\QtNetwork4.lib d:\user\maattaj\Libraries\Qt\4.7.2\lib\QtCore4.lib"
+				AdditionalLibraryDirectories="d:\user\maattaj\Libraries\Qt\4.7.2\lib"
+				GenerateDebugInformation="false"
+				IgnoreImportLibrary="true"
+				LinkIncremental="1"
+				LinkTimeCodeGeneration="0"
+				OutputFile="..\..\..\lib\PropertyEditor.dll"
+				ProgramDatabaseFile=""
+				SubSystem="0"
+				SuppressStartupBanner="true" />
+			<Tool
+				Name="VCMIDLTool"
+				DefaultCharType="0"
+				EnableErrorChecks="1"
+				WarningLevel="0" />
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine="copy  &quot;$(TargetPath)&quot; &quot;..\..\..\bin&quot;"
+				Description="Copy PropertyEditor.dll to ..\..\..\bin" />
+			<Tool
+				Name="VCPreBuildEventTool" />
+			<Tool
+				Name="VCPreLinkEventTool" />
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="QT_NO_DEBUG,NDEBUG,_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,-D_CRT_SECURE_NO_DEPRECATE,QT_DLL,QT_NO_DEBUG,QT_XML_LIB,QT_GUI_LIB,QT_NETWORK_LIB,QT_CORE_LIB,QT_HAVE_MMX,QT_HAVE_3DNOW,QT_HAVE_SSE,QT_HAVE_MMXEXT,QT_HAVE_SSE2,QT_THREAD_SUPPORT" />
+		</Configuration>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="."
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			ConfigurationType="2"
+			IntermediateDirectory="..\..\..\tmp\PropertyEditor\"
+			UseOfMfc="0">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtCore&quot;,&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtNetwork&quot;,&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtGui&quot;,&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtXml&quot;,&quot;..\..\..\..\Libraries\Qt\4.7.2\include&quot;,&quot;..\..\include&quot;,&quot;.&quot;,&quot;interfaces&quot;,&quot;source&quot;,&quot;..\ScriptEditor\interfaces&quot;,&quot;..\..\..\..\Libraries\Qt\4.7.2\include\ActiveQt&quot;,&quot;..\..\..\tmp\PropertyEditor&quot;,&quot;..\..\..\tmp\PropertyEditor&quot;,..\..\..\..\Libraries\Qt\4.7.2\mkspecs\default"
+				AdditionalOptions="-Zm200 -w34100 -w34189"
+				AssemblerListingLocation="..\..\..\tmp\PropertyEditor\"
+				BufferSecurityCheck="false"
+				DebugInformationFormat="3"
+				ExceptionHandling="1"
+				GeneratePreprocessedFile="0"
+				ObjectFile="..\..\..\tmp\PropertyEditor\"
+				Optimization ="4"
+				PreprocessorDefinitions="_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,-D_CRT_SECURE_NO_DEPRECATE,QT_DLL,QT_XML_LIB,QT_GUI_LIB,QT_NETWORK_LIB,QT_CORE_LIB,QT_HAVE_MMX,QT_HAVE_3DNOW,QT_HAVE_SSE,QT_HAVE_MMXEXT,QT_HAVE_SSE2,QT_THREAD_SUPPORT"
+				ProgramDataBaseFileName=".\"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="true"
+				SuppressStartupBanner="true"
+				TreatWChar_tAsBuiltInType="false"
+				WarningLevel="3" />
+			<Tool
+				Name="VCCustomBuildTool" />
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="D:/user/maattaj/VTKDesigner/lib/GCF.lib d:\user\maattaj\Libraries\Qt\4.7.2\lib\QtXmld4.lib d:\user\maattaj\Libraries\Qt\4.7.2\lib\QtGuid4.lib d:\user\maattaj\Libraries\Qt\4.7.2\lib\QtNetworkd4.lib d:\user\maattaj\Libraries\Qt\4.7.2\lib\QtCored4.lib"
+				AdditionalLibraryDirectories="d:\user\maattaj\Libraries\Qt\4.7.2\lib"
+				GenerateDebugInformation="true"
+				IgnoreImportLibrary="true"
+				LinkTimeCodeGeneration="0"
+				OutputFile="..\..\..\lib\PropertyEditor.dll"
+				ProgramDatabaseFile=""
+				SubSystem="0"
+				SuppressStartupBanner="true" />
+			<Tool
+				Name="VCMIDLTool"
+				DefaultCharType="0"
+				EnableErrorChecks="1"
+				WarningLevel="0" />
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine="copy  &quot;$(TargetPath)&quot; &quot;..\..\..\bin&quot;"
+				Description="Copy PropertyEditor.dll to ..\..\..\bin" />
+			<Tool
+				Name="VCPreBuildEventTool" />
+			<Tool
+				Name="VCPreLinkEventTool" />
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,-D_CRT_SECURE_NO_DEPRECATE,QT_DLL,QT_XML_LIB,QT_GUI_LIB,QT_NETWORK_LIB,QT_CORE_LIB,QT_HAVE_MMX,QT_HAVE_3DNOW,QT_HAVE_SSE,QT_HAVE_MMXEXT,QT_HAVE_SSE2,QT_THREAD_SUPPORT,_DEBUG" />
+		</Configuration>
+	</Configurations>
+	<Files>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
+			<File
+				RelativePath="source\ColorPickerWidget.cpp" />
+			<File
+				RelativePath="source\Property.cpp" />
+			<File
+				RelativePath="source\PropertyEditor.cpp" />
+			<File
+				RelativePath="source\PropertyEditorComponent.cpp" />
+			<File
+				RelativePath="source\ValueEditorCreators.cpp" />
+			<File
+				RelativePath="source\ValueEditorFactory.cpp" />
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl;inc;xsd"
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
+			<File
+				RelativePath="source\ColorPickerWidget.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						AdditionalDependencies="D:\user\maattaj\Libraries\Qt\4.7.2\bin\moc.exe;source\ColorPickerWidget.h"
+						CommandLine="D:\user\maattaj\Libraries\Qt\4.7.2\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -D-D_CRT_SECURE_NO_DEPRECATE -DQT_DLL -DQT_NO_DEBUG -DQT_XML_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtCore&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtNetwork&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtGui&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtXml&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include&quot; -I&quot;..\..\include&quot; -I&quot;.&quot; -I&quot;interfaces&quot; -I&quot;source&quot; -I&quot;..\ScriptEditor\interfaces&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\ActiveQt&quot; -I&quot;..\..\..\tmp\PropertyEditor&quot; -I&quot;..\..\..\tmp\PropertyEditor&quot; -I..\..\..\..\Libraries\Qt\4.7.2\mkspecs\default -D_MSC_VER=1500 -DWIN32 source\ColorPickerWidget.h -o d:\user\maattaj\VTKDesigner\tmp\PropertyEditor\moc_ColorPickerWidget.cpp"
+						Description="MOC source\ColorPickerWidget.h"
+						Outputs="d:\user\maattaj\VTKDesigner\tmp\PropertyEditor\moc_ColorPickerWidget.cpp"
+						Path="d:\user\maattaj\Libraries\Qt\4.7.2\bin" />
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						AdditionalDependencies="D:\user\maattaj\Libraries\Qt\4.7.2\bin\moc.exe;source\ColorPickerWidget.h"
+						CommandLine="D:\user\maattaj\Libraries\Qt\4.7.2\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -D-D_CRT_SECURE_NO_DEPRECATE -DQT_DLL -DQT_XML_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtCore&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtNetwork&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtGui&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtXml&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include&quot; -I&quot;..\..\include&quot; -I&quot;.&quot; -I&quot;interfaces&quot; -I&quot;source&quot; -I&quot;..\ScriptEditor\interfaces&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\ActiveQt&quot; -I&quot;..\..\..\tmp\PropertyEditor&quot; -I&quot;..\..\..\tmp\PropertyEditor&quot; -I..\..\..\..\Libraries\Qt\4.7.2\mkspecs\default -D_MSC_VER=1500 -DWIN32 source\ColorPickerWidget.h -o d:\user\maattaj\VTKDesigner\tmp\PropertyEditor\moc_ColorPickerWidget.cpp"
+						Description="MOC source\ColorPickerWidget.h"
+						Outputs="d:\user\maattaj\VTKDesigner\tmp\PropertyEditor\moc_ColorPickerWidget.cpp"
+						Path="d:\user\maattaj\Libraries\Qt\4.7.2\bin" />
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="interfaces\IDefaultProperty.h" />
+			<File
+				RelativePath="interfaces\IDefaultPropertyManager.h" />
+			<File
+				RelativePath="interfaces\IEditableProperties.h" />
+			<File
+				RelativePath="interfaces\IProperty.h" />
+			<File
+				RelativePath="interfaces\IPropertyEditor.h" />
+			<File
+				RelativePath="interfaces\IQObjectLoadSave.h" />
+			<File
+				RelativePath="source\Property.h" />
+			<File
+				RelativePath="source\PropertyEditor.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						AdditionalDependencies="D:\user\maattaj\Libraries\Qt\4.7.2\bin\moc.exe;source\PropertyEditor.h"
+						CommandLine="D:\user\maattaj\Libraries\Qt\4.7.2\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -D-D_CRT_SECURE_NO_DEPRECATE -DQT_DLL -DQT_NO_DEBUG -DQT_XML_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtCore&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtNetwork&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtGui&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtXml&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include&quot; -I&quot;..\..\include&quot; -I&quot;.&quot; -I&quot;interfaces&quot; -I&quot;source&quot; -I&quot;..\ScriptEditor\interfaces&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\ActiveQt&quot; -I&quot;..\..\..\tmp\PropertyEditor&quot; -I&quot;..\..\..\tmp\PropertyEditor&quot; -I..\..\..\..\Libraries\Qt\4.7.2\mkspecs\default -D_MSC_VER=1500 -DWIN32 source\PropertyEditor.h -o d:\user\maattaj\VTKDesigner\tmp\PropertyEditor\moc_PropertyEditor.cpp"
+						Description="MOC source\PropertyEditor.h"
+						Outputs="d:\user\maattaj\VTKDesigner\tmp\PropertyEditor\moc_PropertyEditor.cpp"
+						Path="d:\user\maattaj\Libraries\Qt\4.7.2\bin" />
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						AdditionalDependencies="D:\user\maattaj\Libraries\Qt\4.7.2\bin\moc.exe;source\PropertyEditor.h"
+						CommandLine="D:\user\maattaj\Libraries\Qt\4.7.2\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -D-D_CRT_SECURE_NO_DEPRECATE -DQT_DLL -DQT_XML_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtCore&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtNetwork&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtGui&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtXml&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include&quot; -I&quot;..\..\include&quot; -I&quot;.&quot; -I&quot;interfaces&quot; -I&quot;source&quot; -I&quot;..\ScriptEditor\interfaces&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\ActiveQt&quot; -I&quot;..\..\..\tmp\PropertyEditor&quot; -I&quot;..\..\..\tmp\PropertyEditor&quot; -I..\..\..\..\Libraries\Qt\4.7.2\mkspecs\default -D_MSC_VER=1500 -DWIN32 source\PropertyEditor.h -o d:\user\maattaj\VTKDesigner\tmp\PropertyEditor\moc_PropertyEditor.cpp"
+						Description="MOC source\PropertyEditor.h"
+						Outputs="d:\user\maattaj\VTKDesigner\tmp\PropertyEditor\moc_PropertyEditor.cpp"
+						Path="d:\user\maattaj\Libraries\Qt\4.7.2\bin" />
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="source\PropertyEditorComponent.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						AdditionalDependencies="D:\user\maattaj\Libraries\Qt\4.7.2\bin\moc.exe;source\PropertyEditorComponent.h"
+						CommandLine="D:\user\maattaj\Libraries\Qt\4.7.2\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -D-D_CRT_SECURE_NO_DEPRECATE -DQT_DLL -DQT_NO_DEBUG -DQT_XML_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtCore&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtNetwork&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtGui&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtXml&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include&quot; -I&quot;..\..\include&quot; -I&quot;.&quot; -I&quot;interfaces&quot; -I&quot;source&quot; -I&quot;..\ScriptEditor\interfaces&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\ActiveQt&quot; -I&quot;..\..\..\tmp\PropertyEditor&quot; -I&quot;..\..\..\tmp\PropertyEditor&quot; -I..\..\..\..\Libraries\Qt\4.7.2\mkspecs\default -D_MSC_VER=1500 -DWIN32 source\PropertyEditorComponent.h -o d:\user\maattaj\VTKDesigner\tmp\PropertyEditor\moc_PropertyEditorComponent.cpp"
+						Description="MOC source\PropertyEditorComponent.h"
+						Outputs="d:\user\maattaj\VTKDesigner\tmp\PropertyEditor\moc_PropertyEditorComponent.cpp"
+						Path="d:\user\maattaj\Libraries\Qt\4.7.2\bin" />
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						AdditionalDependencies="D:\user\maattaj\Libraries\Qt\4.7.2\bin\moc.exe;source\PropertyEditorComponent.h"
+						CommandLine="D:\user\maattaj\Libraries\Qt\4.7.2\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -D-D_CRT_SECURE_NO_DEPRECATE -DQT_DLL -DQT_XML_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtCore&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtNetwork&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtGui&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtXml&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include&quot; -I&quot;..\..\include&quot; -I&quot;.&quot; -I&quot;interfaces&quot; -I&quot;source&quot; -I&quot;..\ScriptEditor\interfaces&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\ActiveQt&quot; -I&quot;..\..\..\tmp\PropertyEditor&quot; -I&quot;..\..\..\tmp\PropertyEditor&quot; -I..\..\..\..\Libraries\Qt\4.7.2\mkspecs\default -D_MSC_VER=1500 -DWIN32 source\PropertyEditorComponent.h -o d:\user\maattaj\VTKDesigner\tmp\PropertyEditor\moc_PropertyEditorComponent.cpp"
+						Description="MOC source\PropertyEditorComponent.h"
+						Outputs="d:\user\maattaj\VTKDesigner\tmp\PropertyEditor\moc_PropertyEditorComponent.cpp"
+						Path="d:\user\maattaj\Libraries\Qt\4.7.2\bin" />
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="source\ValueEditorCreators.h">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						AdditionalDependencies="D:\user\maattaj\Libraries\Qt\4.7.2\bin\moc.exe;source\ValueEditorCreators.h"
+						CommandLine="D:\user\maattaj\Libraries\Qt\4.7.2\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -D-D_CRT_SECURE_NO_DEPRECATE -DQT_DLL -DQT_NO_DEBUG -DQT_XML_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtCore&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtNetwork&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtGui&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtXml&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include&quot; -I&quot;..\..\include&quot; -I&quot;.&quot; -I&quot;interfaces&quot; -I&quot;source&quot; -I&quot;..\ScriptEditor\interfaces&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\ActiveQt&quot; -I&quot;..\..\..\tmp\PropertyEditor&quot; -I&quot;..\..\..\tmp\PropertyEditor&quot; -I..\..\..\..\Libraries\Qt\4.7.2\mkspecs\default -D_MSC_VER=1500 -DWIN32 source\ValueEditorCreators.h -o d:\user\maattaj\VTKDesigner\tmp\PropertyEditor\moc_ValueEditorCreators.cpp"
+						Description="MOC source\ValueEditorCreators.h"
+						Outputs="d:\user\maattaj\VTKDesigner\tmp\PropertyEditor\moc_ValueEditorCreators.cpp"
+						Path="d:\user\maattaj\Libraries\Qt\4.7.2\bin" />
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						AdditionalDependencies="D:\user\maattaj\Libraries\Qt\4.7.2\bin\moc.exe;source\ValueEditorCreators.h"
+						CommandLine="D:\user\maattaj\Libraries\Qt\4.7.2\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -D-D_CRT_SECURE_NO_DEPRECATE -DQT_DLL -DQT_XML_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtCore&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtNetwork&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtGui&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\QtXml&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include&quot; -I&quot;..\..\include&quot; -I&quot;.&quot; -I&quot;interfaces&quot; -I&quot;source&quot; -I&quot;..\ScriptEditor\interfaces&quot; -I&quot;..\..\..\..\Libraries\Qt\4.7.2\include\ActiveQt&quot; -I&quot;..\..\..\tmp\PropertyEditor&quot; -I&quot;..\..\..\tmp\PropertyEditor&quot; -I..\..\..\..\Libraries\Qt\4.7.2\mkspecs\default -D_MSC_VER=1500 -DWIN32 source\ValueEditorCreators.h -o d:\user\maattaj\VTKDesigner\tmp\PropertyEditor\moc_ValueEditorCreators.cpp"
+						Description="MOC source\ValueEditorCreators.h"
+						Outputs="d:\user\maattaj\VTKDesigner\tmp\PropertyEditor\moc_ValueEditorCreators.cpp"
+						Path="d:\user\maattaj\Libraries\Qt\4.7.2\bin" />
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="source\ValueEditorFactory.h" />
+		</Filter>
+		<Filter
+			Name="Generated Files"
+			Filter="cpp;c;cxx;moc;h;def;odl;idl;res;"
+			UniqueIdentifier="{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}">
+			<File
+				RelativePath="..\..\..\tmp\PropertyEditor\moc_ColorPickerWidget.cpp" />
+			<File
+				RelativePath="..\..\..\tmp\PropertyEditor\moc_PropertyEditor.cpp" />
+			<File
+				RelativePath="..\..\..\tmp\PropertyEditor\moc_PropertyEditorComponent.cpp" />
+			<File
+				RelativePath="..\..\..\tmp\PropertyEditor\moc_ValueEditorCreators.cpp" />
+			<File
+				RelativePath="..\..\..\tmp\PropertyEditor\ui_ColorPickerWidget.h" />
+		</Filter>
+		<Filter
+			Name="Form Files"
+			Filter="ui"
+			UniqueIdentifier="{99349809-55BA-4b9d-BF79-8FDBB0286EB3}"
+			ParseFiles="false">
+			<File
+				RelativePath="source\ColorPickerWidget.ui">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						AdditionalDependencies="D:\user\maattaj\Libraries\Qt\4.7.2\bin\uic.exe;source\ColorPickerWidget.ui"
+						CommandLine="D:\user\maattaj\Libraries\Qt\4.7.2\bin\uic.exe source\ColorPickerWidget.ui -o d:\user\maattaj\VTKDesigner\tmp\PropertyEditor\ui_ColorPickerWidget.h"
+						Description="UIC source\ColorPickerWidget.ui"
+						Outputs="d:\user\maattaj\VTKDesigner\tmp\PropertyEditor\ui_ColorPickerWidget.h"
+						Path="d:\user\maattaj\Libraries\Qt\4.7.2\bin" />
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						AdditionalDependencies="D:\user\maattaj\Libraries\Qt\4.7.2\bin\uic.exe;source\ColorPickerWidget.ui"
+						CommandLine="D:\user\maattaj\Libraries\Qt\4.7.2\bin\uic.exe source\ColorPickerWidget.ui -o d:\user\maattaj\VTKDesigner\tmp\PropertyEditor\ui_ColorPickerWidget.h"
+						Description="UIC source\ColorPickerWidget.ui"
+						Outputs="d:\user\maattaj\VTKDesigner\tmp\PropertyEditor\ui_ColorPickerWidget.h"
+						Path="d:\user\maattaj\Libraries\Qt\4.7.2\bin" />
+				</FileConfiguration>
+			</File>
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

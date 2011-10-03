@@ -1,0 +1,11 @@
+<component title="Application Access Point Component" version="1.0" name="AppAccessPointComponent" >
+
+  <object title="" name="controller" scriptName="DSystem" />
+  <object title="" name="appAccessPoint" />
+  <!--<widget title="IPC Message Log" name="messageLog" parentWidget="MainWindowComponent.workspace" />-->
+  
+  <!-- Pickup a custom server port for the access point -->
+  <!-- property key="AppAccessPointComponent.appAccessPoint::ServerPort" value="55000" /-->
+  <!--<property key="AppAccessPointComponent.appAccessPoint::AppAccessEnabled" value="true" />-->
+  
+</component>

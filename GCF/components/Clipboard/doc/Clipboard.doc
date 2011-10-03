@@ -1,0 +1,49 @@
+/**
+\ingroup gcfcomponents
+\defgroup clipboardcomponent Clipboard Component
+\brief Provides a multi-context, list based clipboard component
+
+QClipboard provides access to the system clipboard. The one and only
+clipboard in the application can be accessed by making use of the
+\ref QApplication::clipboard() method. This clipboard is sufficient if
+you have only one context of copy/paste and only one item to store in
+the clipboard. 
+
+What if you wanted to store multiple data elements in the clipboard? 
+And what if you wanted to store multiple-contexts of multiple data-elemnets
+in the clipboard? QClipboard would not be suitable in such cases.
+
+\todo Explain the clipboard component better with an example
+
+To make use of the features provided by clipboard component, you have to query for
+the IClipboard Interface from your component.
+
+For Example:
+
+\code
+QString objName;
+IComponent* clipboardComp = 0;
+QObject* obj = findObject("IClipboard", objName, &clipboardComp);
+if(obj)
+{
+    IClipboard* clipboard = qobject_cast<IClipboard*>(obj);
+    // now make use of the clipboard pointer to issue calls
+    // into the clipboard component
+}
+\endcode
+
+The Clipboard component has the following default GUI-XML file.
+
+\code
+
+<component title="Clipboard component" name="ClipboardComponent" >
+    
+    <object name="controller" />
+    <object name="clipboardModel" />
+    <widget name="clipboardWidget" title="Clipboard" parentWidget="MainWindowComponent.leftDockArea" />
+    
+</component>
+
+\endcode
+
+*/

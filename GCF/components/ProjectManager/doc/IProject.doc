@@ -1,0 +1,79 @@
+/**
+\ingroup projectmanagercomp
+\interface IProject IProject
+\brief Through this interface you can access the project.
+
+The IProject interface helps you in doing two main things
+\li Open/Load/Save projects
+\li Register/Unregister project parts. 
+*/
+
+/**
+\fn virtual bool IProject::newProject() = 0
+
+Through this method you can request closure of current project and creation of 
+a new one. 
+*/
+
+/**
+\fn virtual bool IProject::loadProject(QString projectFile) = 0
+
+Through this method you can request that the current project be closed and
+a saved project is loaded from \c projectFile
+*/
+
+/**
+\fn virtual bool IProject::saveProject(QString projectFile) = 0
+
+Through this method you can request that the current project be saved into
+\c projectFile.
+*/
+
+/**
+\fn virtual bool IProject::closeProject() = 0
+
+Through this method you can request closure of current project and creation of 
+a new one. 
+*/
+
+/**
+\fn virtual bool IProject::isModified() = 0
+
+Through this method you can find out if the project has been modified after it
+was last saved.
+*/
+
+/**
+\fn virtual void IProject::addProjectPart(IProjectPart* part) = 0
+
+Registers a project part. 
+*/
+
+/**
+\fn virtual void IProject::removeProjectPart(IProjectPart* part) = 0
+
+Unregisters a project part. 
+*/
+
+/**
+\fn virtual int IProject::projectPartCount() = 0
+
+Returns the number of project parts in project.
+*/
+
+/**
+\fn virtual IProjectPart* IProject::projectPart(int index) = 0
+
+Returns the project part at \c index.
+*/
+
+/**
+\fn virtual void IProject::projectModified(bool val) = 0
+
+This signal is emitted when ever the project has been modified and/or saved.
+If \c val is false, then the project was saved. If \c val is true, then the
+project has been modified.
+*/
+
+
+

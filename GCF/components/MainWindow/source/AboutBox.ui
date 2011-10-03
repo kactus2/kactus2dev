@@ -1,0 +1,246 @@
+<ui version="4.0" >
+ <class>AboutBox</class>
+ <widget class="QDialog" name="AboutBox" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>418</width>
+    <height>484</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>About</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" >
+   <item>
+    <widget class="QLabel" name="lblLogo" >
+     <property name="minimumSize" >
+      <size>
+       <width>400</width>
+       <height>80</height>
+      </size>
+     </property>
+     <property name="frameShape" >
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="text" >
+      <string>LOGO Image</string>
+     </property>
+     <property name="scaledContents" >
+      <bool>true</bool>
+     </property>
+     <property name="alignment" >
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="lblVersion" >
+     <property name="font" >
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text" >
+      <string>Version:</string>
+     </property>
+     <property name="alignment" >
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_2" >
+     <property name="text" >
+      <string>Component Info</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" >
+     <item>
+      <widget class="QListWidget" name="lstComponents" >
+       <property name="minimumSize" >
+        <size>
+         <width>0</width>
+         <height>100</height>
+        </size>
+       </property>
+       <property name="maximumSize" >
+        <size>
+         <width>16777215</width>
+         <height>100</height>
+        </size>
+       </property>
+       <property name="frameShape" >
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="sortingEnabled" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="lblLicensee" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize" >
+        <size>
+         <width>160</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="text" >
+        <string/>
+       </property>
+       <property name="alignment" >
+        <set>Qt::AlignJustify|Qt::AlignTop</set>
+       </property>
+       <property name="wordWrap" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QTabWidget" name="componentInfoTabWidget" >
+     <property name="tabPosition" >
+      <enum>QTabWidget::North</enum>
+     </property>
+     <property name="tabShape" >
+      <enum>QTabWidget::Triangular</enum>
+     </property>
+     <property name="currentIndex" >
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tabGeneral" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>396</width>
+        <height>176</height>
+       </rect>
+      </property>
+      <attribute name="title" >
+       <string>General</string>
+      </attribute>
+      <layout class="QVBoxLayout" >
+       <item>
+        <widget class="QTextEdit" name="txtGeneral" >
+         <property name="frameShape" >
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="readOnly" >
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabAuthorsAndCredits" >
+      <property name="geometry" >
+       <rect>
+        <x>8</x>
+        <y>46</y>
+        <width>394</width>
+        <height>174</height>
+       </rect>
+      </property>
+      <attribute name="title" >
+       <string>Credits</string>
+      </attribute>
+      <layout class="QVBoxLayout" >
+       <item>
+        <widget class="QTextEdit" name="txtCredits" >
+         <property name="frameShape" >
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="readOnly" >
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabCopyright" >
+      <property name="geometry" >
+       <rect>
+        <x>8</x>
+        <y>46</y>
+        <width>394</width>
+        <height>174</height>
+       </rect>
+      </property>
+      <attribute name="title" >
+       <string>Copyright</string>
+      </attribute>
+      <layout class="QVBoxLayout" >
+       <item>
+        <widget class="QTextEdit" name="txtCopyright" >
+         <property name="frameShape" >
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="readOnly" >
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>AboutBox</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>AboutBox</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

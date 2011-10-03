@@ -1,0 +1,11 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="/HelpSystem">
+    <file alias="back.png">icons/back.png</file>
+    <file alias="forward.png">icons/forward.png</file>
+    <file alias="gohome.png">icons/gohome.png</file>
+    <file alias="zoomin.png">icons/zoomin.png</file>
+    <file alias="zoomout.png">icons/zoomout.png</file>
+    <file alias="zoomone.png">icons/zoomone.png</file>
+    <file alias="help.png">icons/help.png</file>
+</qresource>
+</RCC>

@@ -1,0 +1,150 @@
+/**
+\ingroup clipboardcomponent
+\interface IClipboard IClipboard
+\brief Interface to the clipboard object in this component
+
+This interface provides access to methods that help in 
+\li Creating/Removing contexts
+\li Adding/Removing data into contexts
+\li 
+*/
+
+/**
+\fn void IClipboard::addContext(const QString& contextName) = 0;
+*/
+
+
+/**
+\fn void IClipboard::removeContext(const QString& contextName) = 0;
+*/
+
+
+/**
+\fn QString IClipboard::context(int index) const = 0;
+*/
+
+
+/**
+\fn int IClipboard::contextCount() const = 0;
+*/
+
+
+/**
+\fn void IClipboard::activateContext(const QString& name) = 0;
+*/
+
+
+/**
+\fn void IClipboard::activateContext(int contextIndex) = 0;
+*/
+
+
+/**
+\fn void IClipboard::activateDefaultContext() = 0;
+*/
+
+
+/**
+\fn QString IClipboard::activeContextName() const = 0;
+*/
+
+
+/**
+\fn int IClipboard::activeContextIndex() const = 0;
+*/
+
+
+/**
+\fn bool IClipboard::isDefaultContextActive() const = 0;
+*/
+
+
+/**
+\fn void IClipboard::addData(const SClipboardData& data) = 0;
+*/
+
+
+/**
+\fn bool IClipboard::removeDataAt(int index) = 0;
+*/
+
+
+/**
+\fn bool IClipboard::removeAll() = 0;
+*/
+
+
+/**
+\fn int IClipboard::dataCount() const = 0;
+*/
+
+
+/**
+\fn SClipboardData IClipboard::data(int index) const = 0;
+*/
+
+
+/**
+\fn QAbstractListModel* IClipboard::activeClipboardModel() const = 0;
+*/
+
+
+/**
+\fn void IClipboard::activeContextChanged(const QString& ctxName) = 0;
+*/
+
+
+/**
+\fn void IClipboard::contextAdded(const QString& name) = 0;
+*/
+
+
+/**
+\fn void IClipboard::contextRemoved(const QString& name) = 0;
+*/
+
+
+/**
+\fn void IClipboard::dataAdded(const SClipboardData& data) = 0;
+*/
+
+
+/**
+\fn void IClipboard::dataRemoved(int index) = 0;
+*/
+
+
+/**
+\fn void IClipboard::dataCleared() = 0;
+*/
+
+
+/**
+\ingroup clipboardcomponent
+\struct SClipboardData IClipboard.h
+\brief Represents one data element in the clipboard
+*/
+
+/**
+\fn SClipboardData::SClipboardData(const QIcon& i, const QVariant& d, const QString& desc)
+*/
+
+/**
+\fn SClipboardData::SClipboardData(const SClipboardData& other)
+*/
+
+/**
+\fn SClipboardData::SClipboardData()
+*/
+
+/**
+\var QIcon SClipboardData::Icon;
+*/
+
+/**
+\var QVariant SClipboardData::Data;
+*/
+
+/**
+\var QString SClipboardData::Description;
+*/

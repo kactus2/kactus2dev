@@ -1,0 +1,66 @@
+/**
+\ingroup projectmanagercomp 
+\interface IProjectPart IProjectPart
+\brief Through interface you can load and save your project part
+
+A project part, as the name says it, is a part of a project. A single project
+may consist of several parts. Each part is accessed, opened and saved through 
+this interface. Information about all the parts are saved into a single XML
+document.
+
+You can implement this interface in any of the exposed objects in your component
+to load and save information about your project part.
+*/
+
+/**
+\fn virtual QString IProjectPart::projectPartID() = 0
+
+Must be implemented to returns a unique identifier for your project part. 
+This ID will be written into the XML file to help differentiate between 
+project parts.
+*/
+
+/**
+\fn virtual bool IProjectPart::newProjectPart() = 0
+
+Must be implemented to reset your project part's data structures and create
+a new part.
+*/
+
+/**
+\fn virtual bool IProjectPart::loadProjectPart(QDomDocument doc, QDomElement partE) = 0
+
+Must be implemented to load information for this project part as contained 
+under the XML element \c partE in XML document \c doc.
+*/
+
+/**
+\fn virtual bool IProjectPart::initializeProjectPart() = 0
+
+Must be implemented to initialize the project part. This method is called after this 
+project part and all the other parts in the project have been loaded. You can use this
+method to do some post-load initialization.
+*/
+
+/**
+\fn virtual bool IProjectPart::saveProjectPart(QDomDocument doc, QDomElement partParentE) = 0
+
+Must be implemented to save information about this project part into the XML document
+\c doc and under the XML element \c partParentE
+*/
+
+/**
+\fn virtual bool IProjectPart::closeProjectPart() = 0
+
+Must be implemented to reset your project part's data structures and create
+a new part.
+*/
+
+/**
+\fn virtual void IProjectPart::projectPartModified() = 0
+
+This method must be implemented as a signal. It must be emitted whenever your project
+part has changed.
+*/
+
+

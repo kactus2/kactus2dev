@@ -1,0 +1,80 @@
+/**
+\ingroup projectmanagercomp
+\interface IProjectExt IProjectExt
+\brief Through this interface you can access the extended functionality of the project manager.
+
+The IProject interface is provides access to the most common funcitons in the project manager.
+This interface provides additional methods that may of use in some special cases. It provides
+information about the current file, its path, its extension etc.
+
+*/
+
+/**
+\fn virtual QString IProjectExt::currentProjectFileName() const = 0
+
+Through this interface method you can fetch the name of the current project file. The 
+returned file name will contain the absolute path of the file and its name.
+*/
+
+/**
+\fn virtual QString IProjectExt::currentProjectFilePath() const = 0
+
+Through this interface method you can fetch the complete path of the project file. The
+returned path will contain the absolute path of the folder that contains the file.
+*/
+
+/**
+\fn virtual QStringList IProjectExt::recentFilesList() const = 0
+
+Through this interface method you can fetch a list of files that was recently opened
+by the user.
+*/
+
+/**
+\fn virtual QString IProjectExt::defaultProjectPath() const = 0
+
+Through this interface method you can fetch the default path where all project files
+are stored.
+*/
+
+/**
+\fn virtual QString IProjectExt::projectRootTagName() const = 0
+
+Through this interface method you can fetch the tag name of the root XML element 
+in the project file.
+*/
+
+/**
+\fn virtual QString IProjectExt::projectFileSuffix() const = 0
+
+Through this interface method you can fetch the file name extension of project files.
+*/
+
+/**
+\fn virtual void IProjectExt::currentProjectFileNameChanged(const QString& newName) = 0
+
+This interface method is implemented as a signal. The signal is emitted whenever the current
+file name of the project changes.
+*/
+
+/**
+\fn virtual void IProjectExt::projectLoadBegin() = 0;
+
+This interface method is implemented as a signal. The signal is emitted before a new project
+load operation begins.
+*/
+
+/**
+\fn virtual void IProjectExt::projectLoadEnd() = 0;
+
+This interface method is implemented as a signal. The signal is emitted before a new project
+load operation ends.
+*/
+
+/**
+\fn virtual void IProjectExt::projectCleared() = 0;
+
+This interface method is implemented as a signal. This signal is emitted when the project
+has been unloaded/cleared.
+*/
+

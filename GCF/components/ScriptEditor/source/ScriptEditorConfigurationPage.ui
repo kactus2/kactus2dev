@@ -1,0 +1,77 @@
+<ui version="4.0" >
+ <class>ScriptEditorConfigurationPage</class>
+ <widget class="QWidget" name="ScriptEditorConfigurationPage" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>264</width>
+    <height>90</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Form</string>
+  </property>
+  <layout class="QFormLayout" name="formLayout" >
+   <item row="0" column="0" >
+    <widget class="QLabel" name="lblTabSize" >
+     <property name="maximumSize" >
+      <size>
+       <width>100</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="text" >
+      <string>Tab Size</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" >
+    <widget class="QSpinBox" name="tabSize" />
+   </item>
+   <item row="1" column="0" >
+    <widget class="QLabel" name="lblName" >
+     <property name="maximumSize" >
+      <size>
+       <width>100</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="text" >
+      <string>Font Name</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1" >
+    <widget class="QFontComboBox" name="fontComboBox" />
+   </item>
+   <item row="2" column="0" >
+    <widget class="QLabel" name="lblSize" >
+     <property name="maximumSize" >
+      <size>
+       <width>100</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="text" >
+      <string>Font Size</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" >
+    <widget class="QSpinBox" name="fontSize" />
+   </item>
+  </layout>
+  <zorder>groupBox_21</zorder>
+  <zorder>groupBox_31</zorder>
+  <zorder>lblTabSize</zorder>
+  <zorder>tabSize</zorder>
+  <zorder>fontSize</zorder>
+  <zorder>lblName</zorder>
+  <zorder>fontComboBox</zorder>
+  <zorder>lblSize</zorder>
+  <zorder>tabSize</zorder>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

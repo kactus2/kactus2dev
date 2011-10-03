@@ -1,0 +1,3 @@
+<component title="Component Loader Configuration" version="1.0" name="ComponentLoaderConfigComponent" >
+  <widget title="Component Loader" name="configPage" parentWidget="ConfigurationDialogComponent.configDialog" />
+</component>

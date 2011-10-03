@@ -1,0 +1,162 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<XMI xmi.version = "1.1" xmlns:UML="href://org.omg/UML/1.3" timestamp = "Fri Dec 10 13:24:56 2010">
+<XMI.header>
+  <XMI.documentation>
+    <XMI.owner></XMI.owner>
+    <XMI.contact></XMI.contact>
+    <XMI.exporter>StarUML.XMI-Addin</XMI.exporter>
+    <XMI.exporterVersion>1.0</XMI.exporterVersion>
+    <XMI.notice></XMI.notice>
+  </XMI.documentation>
+  <XMI.metamodel xmi.name = "UML" xmi.version = "1.3"/>
+ </XMI.header>
+<XMI.content>
+<UML:Model xmi.id="UMLProject.1">
+  <UML:Namespace.ownedElement>
+    <UML:Model xmi.id="UMLModel.2" name="Use Case Model" visibility="public" isSpecification="false" namespace="UMLProject.1" isRoot="false" isLeaf="false" isAbstract="false">
+      <UML:Namespace.ownedElement>
+        <UML:Stereotype xmi.id="X.58" name="useCaseModel" extendedElement="UMLModel.2"/>
+      </UML:Namespace.ownedElement>
+    </UML:Model>
+    <UML:Model xmi.id="UMLModel.4" name="Analysis Model" visibility="public" isSpecification="false" namespace="UMLProject.1" isRoot="false" isLeaf="false" isAbstract="false">
+      <UML:Namespace.ownedElement>
+        <UML:Stereotype xmi.id="X.59" name="analysisModel" extendedElement="UMLModel.4"/>
+      </UML:Namespace.ownedElement>
+    </UML:Model>
+    <UML:Model xmi.id="UMLModel.6" name="Design Model" visibility="public" isSpecification="false" namespace="UMLProject.1" isRoot="false" isLeaf="false" isAbstract="false">
+      <UML:Namespace.ownedElement>
+        <UML:Class xmi.id="UMLClass.13" name="Component" visibility="public" isSpecification="false" namespace="UMLModel.6" isRoot="false" isLeaf="false" isAbstract="false" isActive="false"/>
+        <UML:Class xmi.id="UMLClass.14" name="LibraryHandler" visibility="public" isSpecification="false" namespace="UMLModel.6" isRoot="false" isLeaf="false" isAbstract="false" isActive="false"/>
+        <UML:Class xmi.id="UMLClass.15" name="Design" visibility="public" isSpecification="false" namespace="UMLModel.6" isRoot="false" isLeaf="false" isAbstract="false" isActive="false"/>
+        <UML:Class xmi.id="UMLClass.16" name="QuartusGenerator" visibility="public" isSpecification="false" namespace="UMLModel.6" isRoot="false" isLeaf="false" isAbstract="false" isActive="false">
+          <UML:Classifier.feature>
+            <UML:Attribute xmi.id="UMLAttribute.17" name="files_" visibility="private" isSpecification="false" ownerScope="instance" changeability="changeable" targetScope="instance" type="X.84" owner="UMLClass.16"/>
+            <UML:Attribute xmi.id="UMLAttribute.18" name="assignments_" visibility="private" isSpecification="false" ownerScope="instance" changeability="changeable" targetScope="instance" type="X.84" owner="UMLClass.16"/>
+            <UML:Attribute xmi.id="UMLAttribute.19" name="component_" visibility="private" isSpecification="false" ownerScope="instance" changeability="changeable" targetScope="instance" type="UMLClass.13" owner="UMLClass.16"/>
+            <UML:Attribute xmi.id="UMLAttribute.20" name="design_" visibility="private" isSpecification="false" ownerScope="instance" changeability="changeable" targetScope="instance" type="UMLClass.15" owner="UMLClass.16"/>
+            <UML:Attribute xmi.id="UMLAttribute.21" name="handler_" visibility="private" isSpecification="false" ownerScope="instance" changeability="changeable" targetScope="instance" type="UMLClass.14" owner="UMLClass.16"/>
+            <UML:Operation xmi.id="UMLOperation.22" name="QuartusGenerator" visibility="private" isSpecification="false" ownerScope="instance" isQuery="false" concurrency="sequential" isRoot="false" isLeaf="false" isAbstract="false" specification="" owner="UMLClass.16">
+              <UML:BehavioralFeature.parameter>
+                <UML:Parameter xmi.id="UMLParameter.23" name="topComponent" visibility="public" isSpecification="false" kind="in" behavioralFeature="UMLOperation.22" type="UMLClass.13"/>
+                <UML:Parameter xmi.id="UMLParameter.24" name="design" visibility="public" isSpecification="false" kind="in" behavioralFeature="UMLOperation.22" type="UMLClass.15"/>
+                <UML:Parameter xmi.id="UMLParameter.25" name="boardName" visibility="public" isSpecification="false" kind="in" behavioralFeature="UMLOperation.22" type="X.65"/>
+                <UML:Parameter xmi.id="UMLParameter.26" name="handler" visibility="public" isSpecification="false" kind="in" behavioralFeature="UMLOperation.22" type="UMLClass.14"/>
+                <UML:Parameter xmi.id="UMLParameter.27" name="parent" visibility="public" isSpecification="false" kind="in" behavioralFeature="UMLOperation.22" type="X.68"/>
+              </UML:BehavioralFeature.parameter>
+            </UML:Operation>
+            <UML:Operation xmi.id="UMLOperation.28" name="setBoardName" visibility="public" isSpecification="false" ownerScope="instance" isQuery="false" concurrency="sequential" isRoot="false" isLeaf="false" isAbstract="false" specification="" owner="UMLClass.16">
+              <UML:BehavioralFeature.parameter>
+                <UML:Parameter xmi.id="UMLParameter.29" name="boardName" visibility="public" isSpecification="false" kind="in" behavioralFeature="UMLOperation.28" type="X.65"/>
+                <UML:Parameter xmi.id="UMLParameter.30" name="return" visibility="public" isSpecification="false" kind="return" behavioralFeature="UMLOperation.28" type="X.70"/>
+              </UML:BehavioralFeature.parameter>
+            </UML:Operation>
+            <UML:Operation xmi.id="UMLOperation.31" name="QuartusGenerator" visibility="private" isSpecification="false" ownerScope="instance" isQuery="false" concurrency="sequential" isRoot="false" isLeaf="false" isAbstract="false" specification="" owner="UMLClass.16"/>
+            <UML:Operation xmi.id="UMLOperation.32" name="generateProject" visibility="public" isSpecification="false" ownerScope="instance" isQuery="false" concurrency="sequential" isRoot="false" isLeaf="false" isAbstract="false" specification="" owner="UMLClass.16">
+              <UML:BehavioralFeature.parameter>
+                <UML:Parameter xmi.id="UMLParameter.33" name="outputPath" visibility="public" isSpecification="false" kind="in" behavioralFeature="UMLOperation.32" type="X.65"/>
+                <UML:Parameter xmi.id="UMLParameter.34" name="return" visibility="public" isSpecification="false" kind="return" behavioralFeature="UMLOperation.32" type="X.70"/>
+              </UML:BehavioralFeature.parameter>
+            </UML:Operation>
+            <UML:Operation xmi.id="UMLOperation.35" name="QuartusGenerator" visibility="private" isSpecification="false" ownerScope="instance" isQuery="false" concurrency="sequential" isRoot="false" isLeaf="false" isAbstract="false" specification="" owner="UMLClass.16">
+              <UML:BehavioralFeature.parameter>
+                <UML:Parameter xmi.id="UMLParameter.36" name="other" visibility="public" isSpecification="false" kind="in" behavioralFeature="UMLOperation.35" type="UMLClass.16"/>
+              </UML:BehavioralFeature.parameter>
+            </UML:Operation>
+            <UML:Operation xmi.id="UMLOperation.37" name="=" visibility="private" isSpecification="false" ownerScope="instance" isQuery="false" concurrency="sequential" isRoot="false" isLeaf="false" isAbstract="false" specification="" owner="UMLClass.16">
+              <UML:BehavioralFeature.parameter>
+                <UML:Parameter xmi.id="UMLParameter.38" name="other" visibility="public" isSpecification="false" kind="in" behavioralFeature="UMLOperation.37" type="UMLClass.16"/>
+                <UML:Parameter xmi.id="UMLParameter.39" name="return" visibility="public" isSpecification="false" kind="return" behavioralFeature="UMLOperation.37" type="UMLClass.16"/>
+              </UML:BehavioralFeature.parameter>
+            </UML:Operation>
+            <UML:Operation xmi.id="UMLOperation.40" name="readAssignments" visibility="private" isSpecification="false" ownerScope="instance" isQuery="false" concurrency="sequential" isRoot="false" isLeaf="false" isAbstract="false" specification="" owner="UMLClass.16">
+              <UML:BehavioralFeature.parameter>
+                <UML:Parameter xmi.id="UMLParameter.41" name="stream" visibility="public" isSpecification="false" kind="in" behavioralFeature="UMLOperation.40" type="X.79"/>
+                <UML:Parameter xmi.id="UMLParameter.42" name="return" visibility="public" isSpecification="false" kind="return" behavioralFeature="UMLOperation.40" type="X.70"/>
+              </UML:BehavioralFeature.parameter>
+            </UML:Operation>
+            <UML:Operation xmi.id="UMLOperation.43" name="getVhdlFiles" visibility="private" isSpecification="false" ownerScope="instance" isQuery="false" concurrency="sequential" isRoot="false" isLeaf="false" isAbstract="false" specification="" owner="UMLClass.16">
+              <UML:BehavioralFeature.parameter>
+                <UML:Parameter xmi.id="UMLParameter.44" name="return" visibility="public" isSpecification="false" kind="return" behavioralFeature="UMLOperation.43" type="X.70"/>
+              </UML:BehavioralFeature.parameter>
+            </UML:Operation>
+            <UML:Operation xmi.id="UMLOperation.45" name="writeQPF" visibility="private" isSpecification="false" ownerScope="instance" isQuery="false" concurrency="sequential" isRoot="false" isLeaf="false" isAbstract="false" specification="" owner="UMLClass.16">
+              <UML:BehavioralFeature.parameter>
+                <UML:Parameter xmi.id="UMLParameter.46" name="outPutDir" visibility="public" isSpecification="false" kind="in" behavioralFeature="UMLOperation.45" type="X.65"/>
+                <UML:Parameter xmi.id="UMLParameter.47" name="return" visibility="public" isSpecification="false" kind="return" behavioralFeature="UMLOperation.45" type="X.70"/>
+              </UML:BehavioralFeature.parameter>
+            </UML:Operation>
+            <UML:Operation xmi.id="UMLOperation.48" name="writeQSF" visibility="private" isSpecification="false" ownerScope="instance" isQuery="false" concurrency="sequential" isRoot="false" isLeaf="false" isAbstract="false" specification="" owner="UMLClass.16">
+              <UML:BehavioralFeature.parameter>
+                <UML:Parameter xmi.id="UMLParameter.49" name="outputDir" visibility="public" isSpecification="false" kind="in" behavioralFeature="UMLOperation.48" type="X.65"/>
+                <UML:Parameter xmi.id="UMLParameter.50" name="return" visibility="public" isSpecification="false" kind="return" behavioralFeature="UMLOperation.48" type="X.70"/>
+              </UML:BehavioralFeature.parameter>
+            </UML:Operation>
+            <UML:Operation xmi.id="UMLOperation.51" name="writeHeader" visibility="private" isSpecification="false" ownerScope="instance" isQuery="false" concurrency="sequential" isRoot="false" isLeaf="false" isAbstract="false" specification="" owner="UMLClass.16">
+              <UML:BehavioralFeature.parameter>
+                <UML:Parameter xmi.id="UMLParameter.52" name="stream" visibility="public" isSpecification="false" kind="in" behavioralFeature="UMLOperation.51" type="X.79"/>
+                <UML:Parameter xmi.id="UMLParameter.53" name="return" visibility="public" isSpecification="false" kind="return" behavioralFeature="UMLOperation.51" type="X.70"/>
+              </UML:BehavioralFeature.parameter>
+            </UML:Operation>
+          </UML:Classifier.feature>
+        </UML:Class>
+        <UML:Stereotype xmi.id="X.60" name="designModel" extendedElement="UMLModel.6"/>
+        <UML:Stereotype xmi.id="X.61" name="create" extendedElement="UMLOperation.22 UMLOperation.35"/>
+        <UML:Stereotype xmi.id="X.71" name="destroy" extendedElement="UMLOperation.31"/>
+        <UML:Stereotype xmi.id="X.74" name="CppOperator" extendedElement="UMLOperation.37"/>
+      </UML:Namespace.ownedElement>
+    </UML:Model>
+    <UML:Model xmi.id="UMLModel.54" name="Implementation Model" visibility="public" isSpecification="false" namespace="UMLProject.1" isRoot="false" isLeaf="false" isAbstract="false">
+      <UML:Namespace.ownedElement>
+        <UML:Stereotype xmi.id="X.92" name="implementationModel" extendedElement="UMLModel.54"/>
+      </UML:Namespace.ownedElement>
+    </UML:Model>
+    <UML:Model xmi.id="UMLModel.56" name="Deployment Model" visibility="public" isSpecification="false" namespace="UMLProject.1" isRoot="false" isLeaf="false" isAbstract="false">
+      <UML:Namespace.ownedElement>
+        <UML:Stereotype xmi.id="X.93" name="deploymentModel" extendedElement="UMLModel.56"/>
+      </UML:Namespace.ownedElement>
+    </UML:Model>
+    <UML:DataType xmi.id="X.65" name="QString" visibility="public" isSpecification="false" isRoot="false" isLeaf="false" isAbstract="false"/>
+    <UML:DataType xmi.id="X.68" name="QObject" visibility="public" isSpecification="false" isRoot="false" isLeaf="false" isAbstract="false"/>
+    <UML:DataType xmi.id="X.70" name="void" visibility="public" isSpecification="false" isRoot="false" isLeaf="false" isAbstract="false"/>
+    <UML:DataType xmi.id="X.79" name="QTextStream" visibility="public" isSpecification="false" isRoot="false" isLeaf="false" isAbstract="false"/>
+    <UML:DataType xmi.id="X.84" name="QStringList" visibility="public" isSpecification="false" isRoot="false" isLeaf="false" isAbstract="false"/>
+  </UML:Namespace.ownedElement>
+</UML:Model>
+<UML:Diagram xmi.id="UMLUseCaseDiagram.3" name="Main" diagramType="UseCaseDiagram" toolName="Rational Rose 98" owner="UMLModel.2"/>
+<UML:Diagram xmi.id="UMLClassDiagram.5" name="Main" diagramType="ClassDiagram" toolName="Rational Rose 98" owner="UMLModel.4"/>
+<UML:Diagram xmi.id="UMLClassDiagram.7" name="Main" diagramType="ClassDiagram" toolName="Rational Rose 98" owner="UMLModel.6"/>
+<UML:Diagram xmi.id="UMLClassDiagram.8" name="Overview of Design Model" diagramType="ClassDiagram" toolName="Rational Rose 98" owner="UMLModel.6">
+  <UML:Diagram.element>
+    <UML:DiagramElement xmi.id="UMLClassView.9" geometry="1212, 1408, 240, 129," style="LineColor.Red=128,LineColor.Green=0,LineColor.Blue=0,FillColor.Red=255,FillColor.Green=255,FillColor.Blue=185,Font.Red=0,Font.Green=0,Font.Blue=0,Font.FaceName=Tahoma,Font.Size=8,Font.Bold=0,Font.Italic=0,Font.Underline=0,Font.Strikethrough=0,AutomaticResize=0,ShowAllAttributes=1,SuppressAttributes=0,ShowAllOperations=1,SuppressOperations=0,ShowOperationSignature=1," subject="UMLClass.13"/>
+    <UML:DiagramElement xmi.id="UMLClassView.10" geometry="525, 1516, 282, 129," style="LineColor.Red=128,LineColor.Green=0,LineColor.Blue=0,FillColor.Red=255,FillColor.Green=255,FillColor.Blue=185,Font.Red=0,Font.Green=0,Font.Blue=0,Font.FaceName=Tahoma,Font.Size=8,Font.Bold=0,Font.Italic=0,Font.Underline=0,Font.Strikethrough=0,AutomaticResize=0,ShowAllAttributes=1,SuppressAttributes=0,ShowAllOperations=1,SuppressOperations=0,ShowOperationSignature=1," subject="UMLClass.14"/>
+    <UML:DiagramElement xmi.id="UMLClassView.11" geometry="228, 784, 240, 129," style="LineColor.Red=128,LineColor.Green=0,LineColor.Blue=0,FillColor.Red=255,FillColor.Green=255,FillColor.Blue=185,Font.Red=0,Font.Green=0,Font.Blue=0,Font.FaceName=Tahoma,Font.Size=8,Font.Bold=0,Font.Italic=0,Font.Underline=0,Font.Strikethrough=0,AutomaticResize=0,ShowAllAttributes=1,SuppressAttributes=0,ShowAllOperations=1,SuppressOperations=0,ShowOperationSignature=1," subject="UMLClass.15"/>
+    <UML:DiagramElement xmi.id="UMLClassView.12" geometry="1665, 576, 2082, 792," style="LineColor.Red=128,LineColor.Green=0,LineColor.Blue=0,FillColor.Red=255,FillColor.Green=255,FillColor.Blue=185,Font.Red=0,Font.Green=0,Font.Blue=0,Font.FaceName=Tahoma,Font.Size=8,Font.Bold=0,Font.Italic=0,Font.Underline=0,Font.Strikethrough=0,AutomaticResize=0,ShowAllAttributes=1,SuppressAttributes=0,ShowAllOperations=1,SuppressOperations=0,ShowOperationSignature=1," subject="UMLClass.16"/>
+  </UML:Diagram.element>
+</UML:Diagram>
+<UML:Diagram xmi.id="UMLComponentDiagram.55" name="Main" diagramType="ModuleDiagram" toolName="Rational Rose 98" owner="UMLModel.54"/>
+<UML:Diagram xmi.id="UMLDeploymentDiagram.57" name="Main" diagramType="DeploymentDiagram" toolName="Rational Rose 98" owner="UMLModel.56"/>
+<UML:TaggedValue xmi.id="X.62" tag="CppPointer" value="*" modelElement="UMLParameter.23"/>
+<UML:TaggedValue xmi.id="X.63" tag="CppPointer" value="*" modelElement="UMLParameter.24"/>
+<UML:TaggedValue xmi.id="X.64" tag="CppConst" value="true" modelElement="UMLParameter.25"/>
+<UML:TaggedValue xmi.id="X.66" tag="CppPointer" value="*" modelElement="UMLParameter.26"/>
+<UML:TaggedValue xmi.id="X.67" tag="CppPointer" value="*" modelElement="UMLParameter.27"/>
+<UML:TaggedValue xmi.id="X.69" tag="CppConst" value="true" modelElement="UMLParameter.29"/>
+<UML:TaggedValue xmi.id="X.72" tag="CppConst" value="true" modelElement="UMLParameter.36"/>
+<UML:TaggedValue xmi.id="X.73" tag="CppPointer" value="&amp;" modelElement="UMLParameter.36"/>
+<UML:TaggedValue xmi.id="X.75" tag="CppConst" value="true" modelElement="UMLParameter.38"/>
+<UML:TaggedValue xmi.id="X.76" tag="CppPointer" value="&amp;" modelElement="UMLParameter.38"/>
+<UML:TaggedValue xmi.id="X.77" tag="CppPointer" value="&amp;" modelElement="UMLParameter.39"/>
+<UML:TaggedValue xmi.id="X.78" tag="CppPointer" value="&amp;" modelElement="UMLParameter.41"/>
+<UML:TaggedValue xmi.id="X.80" tag="CppConst" value="true" modelElement="UMLParameter.46"/>
+<UML:TaggedValue xmi.id="X.81" tag="CppConst" value="true" modelElement="UMLParameter.49"/>
+<UML:TaggedValue xmi.id="X.82" tag="CppPointer" value="&amp;" modelElement="UMLParameter.52"/>
+<UML:TaggedValue xmi.id="X.83" tag="ordering" value="unordered" modelElement="UMLAttribute.17"/>
+<UML:TaggedValue xmi.id="X.85" tag="ordering" value="unordered" modelElement="UMLAttribute.18"/>
+<UML:TaggedValue xmi.id="X.86" tag="CppPointer" value="*" modelElement="UMLAttribute.19"/>
+<UML:TaggedValue xmi.id="X.87" tag="ordering" value="unordered" modelElement="UMLAttribute.19"/>
+<UML:TaggedValue xmi.id="X.88" tag="CppPointer" value="*" modelElement="UMLAttribute.20"/>
+<UML:TaggedValue xmi.id="X.89" tag="ordering" value="unordered" modelElement="UMLAttribute.20"/>
+<UML:TaggedValue xmi.id="X.90" tag="CppPointer" value="*" modelElement="UMLAttribute.21"/>
+<UML:TaggedValue xmi.id="X.91" tag="ordering" value="unordered" modelElement="UMLAttribute.21"/>
+</XMI.content>
+</XMI>

@@ -1,0 +1,76 @@
+/**
+\ingroup gcfcomponents
+\defgroup projectmanagercomp Project Manager Component
+\brief Manages a project in your application
+
+Most applications will require load/save functionality to save the state
+of the application or to save the document (or project as we call it) that 
+is currently being edited.
+
+With XML it is possible to store any type of data structure as long as their
+values in the structure can be converted to strings and converted from 
+strings. The \ref projectmanagercomp provides interfaces to help load and
+save projects.
+
+The \ref projectmanagercomp assumes that your document (or project) can be 
+thought of as a collection of small entities called "Project Parts". All
+of these parts can be aggregated into a "Project". The following block diagram
+gives you a quick overview of this relation.
+
+\image html projectarch.png
+
+Project-part is an entity that can
+
+\li Provide a unique string identifier to differentiate itself from
+other project parts in the system
+\li Reset itself, bringing its state back to that of a new part.
+\li Save information about itself into an XML element
+\li Load information about itself from an XML element
+\li Can signal changes made to itself.
+
+A project is an entity that 
+
+\li Brings together one or more project parts
+\li Orchestrates creation of new projects
+\li Orchestrates saving of projects and
+\li Orchestrates loading of projects
+
+The \ref projectmanagercomp provides functionality of a Project, where as components 
+can register one or more project parts. 
+
+The IProject interface can be queried and used to access a project. Components can 
+have one or more QObjects that implement the IProjectPart interface. Such objects
+will automatically be picked up and registered with the \re projectmanagercomp. 
+The project parts will be involved in loading and saving activity.
+
+The \ref projectmanagercomp has the following default GUI-XML file.
+
+\code
+<component title="Project Manager" version="1.0" name="ProjectManagerComponent" >
+
+ <object title="" name="controller" />
+ <object scriptName="Project" title="Project" name="visProject" />
+ 
+ <action title="New" shortcut="Ctrl+N" triggerSlot="ProjectManagerComponent.visProject::slotNewProject()" icon=":/ProjectManager/new.png" name="newProject" />
+ <action title="Save" shortcut="Ctrl+S" triggerSlot="ProjectManagerComponent.visProject::slotSaveProject()" icon=":/ProjectManager/save.png" name="saveProject" />
+ <action title="Open" shortcut="Ctrl+O" triggerSlot="ProjectManagerComponent.visProject::slotLoadProject()" icon=":/ProjectManager/open.png" name="loadProject" />
+ <action title="Save As" shortcut="Ctrl+Shift+S" triggerSlot="ProjectManagerComponent.visProject::slotSaveProjectAs()" icon=":/ProjectManager/saveas.png" name="saveProjectAs" />
+ <action title="Close" shortcut="Ctrl+W" triggerSlot="ProjectManagerComponent.visProject::slotCloseProject()" icon=":/ProjectManager/close.png" name="closeProject" />
+ 
+ <group title="Project" icon=":/StdMainWindow/appIcon.png" name="projectMenu" before="MainWindowComponent.editGroup" >
+  <groupitem actionName="ProjectManagerComponent.newProject" />
+  <groupitem actionName="ProjectManagerComponent.saveProjectAs" />
+  <groupitem actionName="ProjectManagerComponent.loadProject" colSpan="2" rowSpan="2" />
+  <groupitem actionName="ProjectManagerComponent.saveProject" colSpan="2" rowSpan="2" />
+ </group>
+ 
+</component>
+
+\endcode
+
+As you can see, the \ref projectmanagercomp provides built-in functions for handling load/save/save as/new
+UI semantics. 
+
+\image html projectgroup.png
+
+*/

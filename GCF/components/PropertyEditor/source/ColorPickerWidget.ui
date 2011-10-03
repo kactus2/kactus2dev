@@ -1,0 +1,156 @@
+<ui version="4.0" >
+ <class>ColorPickerWidget</class>
+ <widget class="QWidget" name="ColorPickerWidget" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>312</width>
+    <height>272</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>ColorPicker</string>
+  </property>
+  <layout class="QGridLayout" >
+   <item row="0" column="0" colspan="2" >
+    <widget class="QFrame" name="colorPickerFrame" >
+     <property name="minimumSize" >
+      <size>
+       <width>150</width>
+       <height>150</height>
+      </size>
+     </property>
+     <property name="frameShape" >
+      <enum>QFrame::Box</enum>
+     </property>
+     <property name="frameShadow" >
+      <enum>QFrame::Plain</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2" >
+    <widget class="QFrame" name="valueSliderFrame" >
+     <property name="maximumSize" >
+      <size>
+       <width>16</width>
+       <height>16777215</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item rowspan="2" row="1" column="0" >
+    <widget class="QFrame" name="selectedColorFrame" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Preferred" hsizetype="Maximum" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize" >
+      <size>
+       <width>50</width>
+       <height>16</height>
+      </size>
+     </property>
+     <property name="maximumSize" >
+      <size>
+       <width>50</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="frameShape" >
+      <enum>QFrame::WinPanel</enum>
+     </property>
+     <property name="frameShadow" >
+      <enum>QFrame::Sunken</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1" colspan="2" >
+    <layout class="QGridLayout" >
+     <property name="sizeConstraint" >
+      <enum>QLayout::SetFixedSize</enum>
+     </property>
+     <item row="0" column="0" >
+      <widget class="QLabel" name="label" >
+       <property name="text" >
+        <string>Red</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1" >
+      <widget class="QLineEdit" name="redILE" />
+     </item>
+     <item row="0" column="2" >
+      <widget class="QLabel" name="label_4" >
+       <property name="text" >
+        <string>Red F</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3" >
+      <widget class="QLineEdit" name="redFLE" />
+     </item>
+     <item row="1" column="0" >
+      <widget class="QLabel" name="label_2" >
+       <property name="text" >
+        <string>Green</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1" >
+      <widget class="QLineEdit" name="greenILE" />
+     </item>
+     <item row="1" column="2" >
+      <widget class="QLabel" name="label_5" >
+       <property name="text" >
+        <string>Green F</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="3" >
+      <widget class="QLineEdit" name="greenFLE" />
+     </item>
+     <item row="2" column="0" >
+      <widget class="QLabel" name="label_3" >
+       <property name="text" >
+        <string>Blue</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1" >
+      <widget class="QLineEdit" name="blueILE" />
+     </item>
+     <item row="2" column="2" >
+      <widget class="QLabel" name="label_6" >
+       <property name="text" >
+        <string>Blue F</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="3" >
+      <widget class="QLineEdit" name="blueFLE" />
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="1" colspan="2" >
+    <widget class="QCheckBox" name="chkTransparent" >
+     <property name="text" >
+      <string>Transparent</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>redILE</tabstop>
+  <tabstop>greenILE</tabstop>
+  <tabstop>blueILE</tabstop>
+  <tabstop>redFLE</tabstop>
+  <tabstop>greenFLE</tabstop>
+  <tabstop>blueFLE</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

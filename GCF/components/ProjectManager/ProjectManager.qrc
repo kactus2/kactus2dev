@@ -1,0 +1,9 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="/ProjectManager">
+    <file alias="close.png">icons/close.png</file>
+    <file alias="new.png">icons/new.png</file>
+    <file alias="open.png">icons/open.png</file>
+    <file alias="saveas.png">icons/saveas.png</file>
+    <file alias="save.png">icons/save.png</file>
+</qresource>
+</RCC> 

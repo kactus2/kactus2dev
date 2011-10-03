@@ -1,0 +1,227 @@
+/**
+\page gcf_doxyTagToQHP DoxytagToQHP Tool
+\brief Provides information on adding help browser functionality to GCF applications.
+
+Qt 4.4 introduced a new module called "QtHelp". Using this module it is possible for 
+developers to implement a help browser system like Qt Assistant. GCF now provides a 
+component called 'HelpSystem' that wraps the QtHelp module into a component. 
+Now you can quickly add help browser functionality to your GCF applications. 
+
+Take a look at the screenshot of the AppTemplate example 
+
+\image html doxytagToQHP1.png
+
+In order to use the QtHelp module, you will need to provide  help documentation in 
+a specific format. The documentation will have to be provided in two files
+
+\li Qt Help Contents (or QHC) file. This file contains information about different help "books".
+
+\li Qt Compressed Help (or QCH) file that contains the actual help documentation data. 
+This usually comprises of HTML files, images and other data referenced by them.
+
+Note : Since Qt Assistant and HelpSystem component in GCF are written using QtHelp module, 
+you will be able to use the QHC and QCH files with them as well.
+
+The above mentioned files are binary files. They are created by making use of tools like 
+qcollectiongenerator and qhelpgenerator , both of which are provided in Qt 4.4. 
+These tools accept as input XML files that describe what information should be contained 
+in the compressed help files (ie the qhc and qch files). The XML files to be provided as input are
+
+
+\li Qt Help Project (or QHP) file. This file describes the structure of your help in terms of the 
+keywords, table of contents, sections, files etc. 
+
+\li Qt Help Collection Project (or QHCP) file. This file brings one or more help projects 
+into a single collection file.
+
+The formats of QHP and QHCP files are fairly straight forward. 
+However, it can be a tedious task to create them. Especially when 
+you are dealing with large documentation.
+
+\section doxytagToQHPTool_intro Enter DoxytagToQHP tool
+
+Suppose that you wanted to show VTK's documentation using QtHelp module.
+Lets start by taking a look at the HTML documentation provided by the VTK project.
+
+\image html doxytagToQHP2.png
+
+Looking into any one of those HTML files, you can quickly realize that the documentation was generated using Doxygen.
+
+\image html doxytagToQHP3.png
+
+The Doxygen toolset comes with a program called "doxytag". 
+This program parses all the HTML files in a given directory and generates a tag file. 
+The tag file is nothing but an XML file that describes what file contains what information. 
+
+Lets now make use of doxytag to generate a tag file for VTK's HTML documentation set.
+
+\code
+cd D:\VTK\VTKDocumentation
+doxytag -t vtktag.xml 
+\endcode
+
+The tag file thus generated will contain compound and member XML elements. 
+Each compound element describes a class while each member element describes a method 
+or a variable in the class. 
+
+\code
+<tagfile>
+  <compound kind="class">
+    <name>vtk3DSImporter</name>
+    <base>vtkImporter</base>
+    <filename>a01136.html</filename>
+    <member kind="function">
+      <name>Superclass</name>
+      <anchor>w0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <name>vtk3DSImporter</name>
+      <anchor>b0</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <name>~vtk3DSImporter</name>
+      <anchor>b1</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <name>New</name>
+...................................
+...................................
+\endcode
+
+Now we can make use of the DoxytagToQHP tool in GCF to parse this XML file and generate 
+QHP and QHCP files. These files can then be fed to qcollectiongenerator to generate 
+QCH and QHC files, that can be used with QtHelp module/Qt Assistant/HelpSystem component.
+
+
+The usage syntax of DoxytagToQHP is as follows
+
+\code
+Usage:
+ DoxytagToQHP <tagfile> <qhpfile> <qhcpfile> <namespace> <virtualfolder> <version> 
+              <productname>
+
+Example:
+ DoxytagToQHP GCFTag.xml GCFHelp.qhp GCFHelp.qhcp vcreatelogic.com gcf 1.0.0 
+              Generic_Component_Framework
+
+ will generate GCFHelp.qhp and GCFHelp.qhcp from reading GCFTag.xml and all the files
+ in the current working directory. All _ characters in productname will be replaced by 
+ space
+ \endcode
+ 
+ So, let's run the tool to generate QHP and QHCP files.
+ 
+ \code
+ D:\> cd D:\VTK\VTKDocumentation
+ 
+ D:\VTK\VTKDocumentation> DoxytagToQHP vtktag.xml VTKHelp.qhp VTKHelp.qhcp 
+                    com.kitware.vtk.5.0.2 vtk5 5.0.2 Visualization_Toolkit
+ 
+ Found 38758 keywords
+ Found 14947 files
+ Wrote VTKHelp.qhp.
+ Wrote VTKHelp.qhcp. Done
+\endcode
+
+The QHP and QHCP files are now generated. Lets take a quick look at parts of this file
+
+\code
+VTKHelp.qhcp
+
+<?xml version="1.0" encoding="utf-8" ?>
+<QHelpCollectionProject version="1.0">
+ <assistant>
+   <title>Visualization Toolkit</title>
+   <cacheDirectory>Trolltech/vtk5</cacheDirectory>
+   <startPage>qthelp://com.kitware.vtk.5.0.2/vtk5/index.html</startPage>
+   <aboutMenuText>
+     <text>About Visualization Toolkit</text>
+   </aboutMenuText>
+   <enableDocumentationManager>true</enableDocumentationManager>
+   <enableAddressBar>true</enableAddressBar>
+   <enableFilterFunctionality>true</enableFilterFunctionality>
+ </assistant>
+ <docFiles>
+     <generate>
+         <file>
+             <input>VTKHelp.qhp</input>
+             <output>VTKHelp.qch</output>
+         </file>
+     </generate>
+     <register>
+         <file>VTKHelp.qch</file>
+     </register>
+ </docFiles>
+</QHelpCollectionProject>
+\endcode
+
+and
+
+\code
+<?xml version="1.0" encoding="utf-8" ?>
+<QtHelpProject version="1.0" >
+ <virtualFolder>vtk5</virtualFolder>
+ <namespace>com.kitware.vtk.5.0.2</namespace>
+ <filterSection>
+  <filterAttribute>vtk5</filterAttribute>
+  <toc>
+   <section title="vtk5 Manual" ref="index.html" >
+    <section title="vtk3DSImporter" ref="a01136.html" />
+    <section title="vtk3DWidget" ref="a01137.html" />
+    <section title="vtk__Int64Array" ref="a01138.html" />
+   ...............
+   </section>
+  </toc>
+  <keywords>
+   <keyword id="vtk3DSImporter" name="vtk3DSImporter" ref="a01136.html" />
+   <keyword id="Superclass" name="Superclass" ref="a01136.html#w0" />
+   <keyword id="vtk3DSImporter" name="vtk3DSImporter" ref="a01136.html#b0" />
+   <keyword id="~vtk3DSImporter" name="~vtk3DSImporter" ref="a01136.html#b1" />
+   ...............
+  </keywords>
+  <files>
+   <file>a00001.html</file>
+   <file>a00002.html</file>
+   <file>a00003.html</file>
+   ...............
+   <file>vtk-logo.gif</file>
+  </files>
+ </filterSection>
+ </QtHelpProject>
+\endcode
+
+
+One look at the generated files and you will be able to figure out how DoxytagToQHP mapped data 
+from the tag file to QHCP and QHP files.
+
+Now, let's run Qt's qcollectiongenerator program to generate the compressed help files.
+
+\code
+D:\VTK\VTKDocumentation>qcollectiongenerator VTKHelp.qhcp -o VTKHelp.qhc
+Reading collection config file...
+Generating help for VTKHelp.qhp...
+Building up file structure...
+Insert custom filters...
+Insert help data for filter section (1 of 1)...
+Insert files...
+Insert contents...
+Insert indices...
+Documentation successfully generated.
+Creating collection file...
+\endcode
+
+The binary compressed help files have now been generated. You can start Qt Assistant and 
+register the documentation (as described in the "GCF Help : Qt Assistant Integration" section), 
+to view VTK documentation inside Qt Assistant.
+
+\image html doxytagToQHP4.png
+
+Shown below is a screenshot of the AppTemplate example program showing VTK documentation.
+
+\image html doxytagToQHP5.png
+
+*/
+

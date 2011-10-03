@@ -1,0 +1,573 @@
+/**
+\page gcfbrief Generic Component Framework Brief
+
+Like all frameworks, GCF has its share of key concepts; which are expressed in terms of classes that one can
+inherit from. Lets get started and look at some of these classes. 
+
+\section gcfbrief0 The GCF::AbstractComponent Class
+
+Components in a GCF application should be inherited from the GCF::AbstractComponent class. The GCF::AbstractComponent class
+provides a basic set of methods that ensure that all components "look" the same in your application. The
+GCF::AbstractComponent class has the following functionality.
+
+- It has to provide some basic meta data about the system like
+    -# Component Name. (Preferably a name starting with a alphabet and containing no special
+characters and spaces)
+    -# Location of the component XML file. (This file is basically a description of how this component
+wants to fit into an application.)
+- Return (by creating if necessary) instances of actions, objects, widgets, menus and toolbars
+referenced in the GUI XML file.
+- Welcome and bid-goodbye to widgets and objects from other components.
+
+If the component provides the above functionality, the "component framework" in return provides the
+following services to the component
+- It merges the GUI (actions, menus, toolbars, widgets and objects) of the component into the main
+window of the application.
+- It provides an opportunity to deal with how widgets from other components can be
+placed/removed/hidden/shown on to widgets of this component.
+- It informs the component when any other component gets created or destroyed in the system.
+- It informs the component when any other component references a object within this component.
+- Provides means by which the component can explore objects provided by other components in the
+system.
+
+The above functionality is provided in terms of methods in the GCF::AbstractComponent class. These methods can be
+categorized into
+- Interface methods
+- Service methods
+
+Interface methods are mostly virtual and must be implemented by subclasses of GCF::AbstractComponent to provide
+some functionality. These methods are used by GCF to perform its work.
+
+Service methods are mostly non-virtual and can be used by subclasses of GCF::AbstractComponent to request some
+services of GCF and to explore the system within which it is "plugged in".
+
+GCF::AbstractComponent is inherited from QObject and hence it can make use of all the cute features QObject provides,
+like signals and slots, dynamic properties, scriptablity etc.
+
+\subsection gcfbrief1 Interface Methods
+
+- \ref void GCF::AbstractComponent::initializeComponent () = 0;
+- \ref void GCF::AbstractComponent::finalizeComponent () = 0;
+- \ref QAction* GCF::AbstractComponent::fetchAction (const QString completeName) const
+- \ref QObject* GCF::AbstractComponent::fetchObject (const QString completeName) const
+- \ref QWidget* GCF::AbstractComponent::fetchWidget (const QString completeName) const
+- \ref QMenu* GCF::AbstractComponent::fetchMenu (const QString completeName) const
+- \ref QToolBar* GCF::AbstractComponent::fetchToolBar (const QString completeName) const
+- \ref void GCF::AbstractComponent::addChildObject (QObject* parent, QObject* child, const QString hint)
+- \ref void GCF::AbstractComponent::removeChildObject (QObject* parent, QObject* child, const QString hint)
+- \ref void GCF::AbstractComponent::addChildWidget (QWidget* parent, QWidget* child, const QString hint)
+- \ref void GCF::AbstractComponent::removeChildWidget (QWidget* parent, QWidget* child, const QString hint)
+- \ref void GCF::AbstractComponent::showChildWidget (QWidget* parent, QWidget* child, const QString hint)
+- \ref void GCF::AbstractComponent::hideChildWidget (QWidget* parent, QWidget* child, const QString hint)
+- \ref void GCF::AbstractComponent::componentCreated (GCF::AbstractComponent* comp)
+- \ref void GCF::AbstractComponent::componentDestroyed (GCF::AbstractComponent* comp)
+- \ref void GCF::AbstractComponent::creationAnnounced ()
+- \ref void GCF::AbstractComponent::destructionAnnounced ()
+- \ref void GCF::AbstractComponent::registerDependentComponent (GCF::AbstractComponent* comp)
+- \ref void GCF::AbstractComponent::unregisterDependentComponent (GCF::AbstractComponent* comp)
+- \ref void GCF::AbstractComponent::registerDependingComponent (GCF::AbstractComponent* comp)
+- \ref void GCF::AbstractComponent::unregisterDependingComponent (GCF::AbstractComponent* comp)
+- \ref void GCF::AbstractComponent::aboutToActivate ()
+- \ref void GCF::AbstractComponent::justActivated ()
+- \ref void GCF::AbstractComponent::aboutToDeactivate ()
+- \ref void GCF::AbstractComponent::justDeactivated ()
+
+
+\subsection gcfbrief2 Service Methods
+- \ref QStringList GCF::AbstractComponent::componentNames () const
+- \ref GCF::AbstractComponent* GCF::AbstractComponent::findComponent (const QString componentName) const
+- \ref QAction* GCF::AbstractComponent::findAction (const QString completeName, GCF::AbstractComponent** component const
+- \ref QObject* GCF::AbstractComponent::findObject (const QString completeName, GCF::AbstractComponent** component const
+- \ref QWidget* GCF::AbstractComponent::findWidget (const QString completeName, GCF::AbstractComponent** component const
+- \ref QMenu* GCF::AbstractComponent::findMenu (const QString completeName, GCF::AbstractComponent** component const
+- \ref QToolBar* GCF::AbstractComponent::findToolBar (const QString completeName, GCF::AbstractComponent** component const
+- \ref QObject* GCF::AbstractComponent::findObject (const QString ifaceName, QString& completeName, GCF::AbstractComponent** component const
+- \ref QList<QObject*> GCF::AbstractComponent::findObjects (const QString ifaceName, QStringList& completeNames, QList<GCF::AbstractComponent*>* components const
+
+\subsection gcfbrief3 GCF::AbstractComponent Subclassing Rules.
+
+- Class declarations should contain a GCF_DECLARE_COMPONENT(ComponentClassName) line right
+after Q_OBJECT. (Yes, please use Q_OBJECT for all components).
+- Class implementations must contain a GCF_DEFINE_COMPONENT(ComponentClassName) line.
+- The GCF::ComponentFactory.h file must be included in all component class implementation files.
+- If you want to export your component as a plugin then you must include the <GCF/AbstractComponentPlugin>
+file also. Also you must create the component plugin. This can be done by using the
+GCF_EXPORT_COMPONENT_PLUGIN() macro.
+- Component classes must be singleton classes.
+
+Example
+\code
+// MyComponent.h
+#include <GCF/AbstractComponent>
+
+class MyComponent : public GCF::AbstractComponent
+{
+ Q_OBJECT
+ GCF_DECLARE_COMPONENT(MyComponent)
+public:
+ static MyComponent & instance();
+ ~MyComponent();
+protected:
+ MyComponent();
+ void initializeComponent();
+ void finalizeComponent();
+private:
+};
+
+
+// MyComponent.cpp
+#include "MyComponent.h"
+#include <GCF/ComponentFactory>
+#include <GCF/IComponentPlugin>
+
+GCF_DEFINE_COMPONENT(MyComponent)
+
+MyComponent & MyComponent::instance()
+{
+ static MyComponent* theInstance = CREATE_INSTANCE(MyComponent);
+ return *theInstance;
+}
+
+MyComponent::MyComponent()
+{
+ // Constructor
+}
+
+MyComponent::~MyComponent()
+{
+ // Destructor
+}
+
+void MyComponent::initializeComponent()
+{
+ // Initialization code here
+}
+
+void MyComponent::finalizeComponent()
+{
+ // Finalization code here
+}
+
+GCF_EXPORT_COMPONENT_PLUGIN(MyComponent)
+\endcode
+
+\section gcfbrief4 The GCF::ComponentFactory class
+The GCF::ComponentFactory class is a singleton class that manages all components in the application. The one
+and only instance of the component factory can be fetched using GCF::ComponentFactory::instance().
+
+The component factory must be initialized within the main() function. Initialization means,
+\code
+GCF::ComponentFactory::instance().initialize();
+\endcode
+
+Once initialized, repeated calls to initialize() will be a NO-OP.
+
+The finalize() method within the component factory must be called at an appropriate time to ensure that all
+components are deleted. While deleting components, the dependency information is made use of to delete
+components in the correct order.
+
+Some useful methods in GCF::ComponentFactory are
+
+- \ref QList<GCF::AbstractComponent*> GCF::ComponentFactory::activeComponents () const
+- \ref QList<GCF::AbstractComponent*> GCF::ComponentFactory::inactiveComponents () const
+
+In most cases, you will never use the GCF::ComponentFactory directly. Macros like REGISTER_COMPONENT,
+CREATE_COMPONENT, etc can be used.
+
+\section gcfbrief5 The GCF::ComponentLoaderComponent class
+The GCF::ComponentLoaderComponent class is a component that is capable of loading components from
+plugins. This class queries each and every DLL/SO file it finds in a predefined set of directories for
+IComponentPlugin implementations. If such a DLL file is found, then it registers the component available in
+that DLL file with the GCF::ComponentFactory. After that we can create an instance of the registered components
+using GCF::ComponentFactory.
+
+\code
+ class GCF::ComponentLoaderComponent : public GCF::AbstractComponent
+ {
+ // ....
+ public slots:
+ void loadComponent(const QString compName);
+ void addComponentDirectory(const QString dir);
+ // .....
+ };
+\endcode
+
+Using the \ref GCF::ComponentLoaderComponent::addComponentDirectory() we can add one or more component plugin 
+directories. Using the \ref GCF::ComponentLoaderComponent::loadComponent() method we can request 
+GCF::ComponentLoaderComponent to load a component using GCF::ComponentFactory.
+
+These methods are usually accessed from within the GUI XML file associated with
+GCF::ComponentLoaderComponent.
+
+\htmlonly
+ <component title="Library Loader Component" name="ComponentLoaderComponent" >
+ <object name="controller" />
+
+ <method param1="/home/user/VW/Build/bin" methodName="ComponentLoaderComponent.controller::addComponentDirectory" />
+
+ <method methodName="ComponentLoaderComponent.controller::registerComponents" />
+ <method param1="MessageLogComponent" methodName="ComponentLoaderComponent.controller::loadComponent"/>
+ <method param1="CThumbnailViewComponent" methodName="ComponentLoaderComponent.controller::loadComponent" />
+ <method param1="CShapeCanvasComponent"methodName="ComponentLoaderComponent.controller::loadComponent" />
+ <method param1="CToolBoxComponent" methodName="ComponentLoaderComponent.controller::loadComponent"
+
+</component> 
+\endhtmlonly
+
+*/
+
+/**
+\page gcfguixmlformat GUI XML Format
+
+The GUI XML file describes the UI of a component. All components describe their UI in the same format so
+that the CF can understand UI required by different components and can merge them when needed. The GUI
+XML File has the following XML elements
+
+- component
+    - object
+    - widget
+    - action
+    - menu
+        - menuitem
+    - toolbar
+        - toolbaritem
+    - connection
+    - property
+    - method
+    - activex
+    - kparts
+
+The following subsections, each of the above XML elements and their standard attributes are described. In
+addition to the standard attributes, you can add as many custom attributes as you want. Such custom
+attributes are read and stored in the component framework and can be used by your custom components. GCF
+will not try to make sense of those attributes, but will store them anyway.
+
+\section gcfguixmlformat1 component XML element
+
+The component XML element is the root element of the XML GUI document. The attributes of component
+describes some key information fields about the component. The attributes that can be associated with
+component are
+
+- className
+- title
+
+The meanings of the above attributes are obvious from their names. All other XML elements are child
+elements of component. Example
+
+\code
+    <component className="MessageLog" title="Message Log Area">
+    </component>
+\endcode
+
+\section gcfguixmlformat_2 object XML element
+The object XML element describes a single object in the component. The XML element only declares the
+existence of the object. The object is actually created by the component itself. For every object XML element in
+the GUI XML file, the createObject() method of GCF::AbstractComponent is called to actually create an instance of that
+object.
+
+Valid attributes for object XML element are
+
+- name
+- title [optional]
+- parentObject [completeName3 | optional]
+- parentObjectHint [string| optional]
+
+parentObject is the complete name of the parent object of the object being described in the object XML
+element. The parentObjectHint is passed to the hint parameter of the addChildObject() method of the
+GCF::AbstractComponent that owns the parentObject.
+
+\section gcfguixmlformat_4 widget XML element
+
+The widget XML element describes a single widget in the component. The XML element only declares the
+existence of the widget. The widget is actually created by the component itself. For every widget XML element
+in the GUI XML file, the createWidget() method of GCF::AbstractComponent is called to actually create an instance of that
+widget.
+
+Valid attributes for widget XML element are
+- name
+- title [optional]
+- parentWidget [completeName4 | optional]
+- parentWidgetHint [string | optional]
+- hideWhenInactive [boolean | optional (default=true)]
+
+parentWidget is the complete name of the parent Widget of the Widget being described in the Widget XML
+element. The parentWidgetHint is passed to the hint parameter of the addChildWidget() method of the
+GCF::AbstractComponent that owns the parentWidget.
+
+The hideWhenInactive attribute specifies whether the widget should be hidden when this component is
+made inactive. How the widget gets "hidden" is decided by the component that owns the parent widget. In
+any case the widget is hidden by GCF using QWidget::hide() method if there is no parent widget.
+
+\section gcfguixmlformat_5 action XML element
+
+The action XML element declares a single action in the component. Actions must be declared before they
+can be inserted into menus or toolbars. For every action XML element in the GUI XML file, the createAction()
+method of GCF::AbstractComponent is called to actually create an instance of that action.
+
+Valid attributes of action XML element are
+
+- name
+- title
+- icon [resourceName | optional]
+- shortcut [optional]
+- checkState [optional]
+- triggerSlot [completeSlotName | optional]
+- toggleSlot [completeSlotName | optional]
+- mergeWith [completeName | optional]
+- hideWhenInactive [boolean | optional (default=true)]
+
+If checkState is specified then the action is assumed to be a checkable action and the check state for that
+action is read from the vaue of checkState. For checkable actions the toggleSlot attrribute value is considered
+for making connections, for others triggerSlot attribute is considered for making connections. The meaning of
+completeSlotName is explained later on in this document.
+
+If mergeWith is specified then this action shared the same QAction object as that of the action whose
+complete name is specified in mergeWith. triggerSlot and toggleSlot are added to the set of connections the
+action already has. The slots are only called when your component is active.
+menu XML element
+
+The hideWhenInactive attribute specifies whether the action should be disabled when this component is
+made inactive. If multiple components share an action, then action's triggered and toggled signals are multiplex to only
+receivers from active components.
+
+\section gcfguixmlformat_6 menu XML Element
+
+A menu object declares a pull down menu. Menus can be added to the menu bar of the main window
+owned by the CF or to other menus that already exist in the main window. The menu XML element supports
+the following attributes.
+
+- name
+- title
+- parentMenu [completeName | optional]
+- mergeWith [completeName | optional]
+- icon [resourceName | optional]
+- hideWhenInactive [boolean | optional (default=true)]
+
+If a valid parentMenu is specified, then this menu is inserted as a child menu in the parent menu other wise
+the menu is added to the menu bar of the main window owned by CF.
+
+If a valid mergeWith menu is specified then tis menu is merged with the menu referred to by the
+mergeWith menu.
+
+The hideWhenInactive attribute specifies whether the menu should be hidden when this component is
+made inactive. If multiple components share the menu, then the menu is not hidden unless all components
+that share it are made inactive.
+
+Child XML elements for menu may be one or more of the following types
+- menuitem
+
+A menu item XML element specifies the name of the action item that should be added to this menu. Valid
+attributes for menuitem XML element are
+
+- actionName [completeName of the action]
+- separator [boolean value]
+- before [completeName].
+
+If before is specified then this menu item is insert before the action whose complete name is specified as
+value to this attribute.
+
+\section gcfguixmlformat_7 toolbar XML element
+
+The toolbar XML element is similar to the menu XML element. It supports similar set of attributes as that of
+menu and they behave in the same way as they do in the menu XML element. Valid attributes for toolbar are
+
+- name
+- title
+- mergeWith [completeName | optional]
+- hideWhenInactive [boolean | optional (default=true)]
+
+The hideWhenInactive attribute specifies whether the toolbar should be hidden when this component is
+made inactive. If multiple components share the toolbar, then the toolbar is not hidden unless all components
+hat share it are made inactive.
+
+The toolbar XML element supports the following child XML elements
+
+- toolbaritem
+
+A toolbar item XML element specifies the name of the action item that should be added to this menu. Valid
+attributes for menuitem XML element are
+
+- actionName [completeName of the action]
+- separator [boolean value]
+- before [completeName].
+
+before is specified then this menu item is insert before the action whose complete name is specified as
+value to this attribute.
+
+\section gcfguixmlformat_8 connection XML element
+
+The connection XML element establishes a signal/slot connection between any two objects in the system.
+The sender of the signal may belong to this component or to some other component. The receiver of the signal
+can belong to this component or some other component. But it is important to note that either the sender or the
+receiver must belong to this component.
+
+attributes for the connection element are
+
+- sender [completeSignalName]
+- receiver [completeSlotName]
+
+\note When a component refers to a object, widget, action, menu or toolbar that belongs to another component in its
+GUI XML file an appropriate dependency is established between the components.
+property XML Element
+
+\section gcfguixmlformat_81 property XML Element
+
+The property XML element configures the property of any exposed object. It has the following attributes
+
+- key [completePropertyName (similar to completeSlotName)]
+- value
+
+\note: The object whose property is being set must belong to this component.
+   Example
+\code
+    <property key="CMainWindow.windowTitle" value="GCF Example" />
+    <!--
+         // As good as calling
+         CMainWindowObject->setProperty("windowTitle", "GCF Example");
+    -->
+\endcode
+
+If a property value cannot be expressed a string, then this XML element is not very useful.
+method XML Element
+
+\section gcfguixmlformat_82 method XML Element
+
+The method XML element calls an invokable method in any exposed object (of this component). Valid
+attributes are
+
+- methodName [completeMethodName (similar to completeSlotName, but without brackets)]
+- param1, param2..... [string parameter values]
+
+Example
+
+\code
+    <method methodName="CMainWindow.statusBar::message" param1="Status" param2="10000" />
+    <!--
+         // As good as calling
+         QStatusBar* statusBar = CmainWindowObject->statusBar();
+         statusBar->message("Status", 10000);
+    -->
+\endcode
+
+If a method parameter cannot be expressed a string, then this XML element is not very useful.
+
+\section gcfguixmlformat_83 activex XML Element
+
+GCF 1.6.4 introduced support for ActiveX1 in GCF. It is now possible to introduce an ActiveX 
+component in your GCF applications without having to write a single line of code. To embed 
+an ActiveX control in your GCF application, you can simply use the <activex> XML element.
+It accepts the following attributes
+
+- name - Name of the ActiveX object in the application
+- control - UUID of the ActiveX control
+- title - Title to give the QAxWidget on which the ActiveX widget is shown
+- parentWidget - The widget into which the ActiveX control is to be embedded
+
+Example
+
+\code
+
+  <activex control="{22D6F312-B0F6-11D0-94AB-0080C74C7E95}"
+           name="windowsMediaPlayer"
+           title="Windows Media Player" 
+           parentWidget="MainWindowComponent.workspace" />
+
+\endcode
+
+\section gcfguixmlformat_84 kparts XML Element
+
+KParts is a component technology from KDE. Part in KDE is a subclass of KParts::Part that provides
+
+ - A widget which shows the document viewed/edited by the part
+ - An action collection which provides QActions for accessing functionality in the part from the user interface.
+ - A XMLGUI document that describes how the part's UI can be merged into the part container, usually a KParts::MainWindow. 
+ 
+ 
+Several applications in KDE provide their core-functionality as a part. For example
+ - KHTMLPart – Provides the HTML rendering part used by the Konqueror browser
+ - KateDocument – Provides the document part used by Kate
+
+Since KParts and GCF are written in Qt, it would be of great value if we can use KDE's components 
+with Qt/GCF programs. With GCF 1.6.4 and later this is possible1.
+
+To use KParts components in your GCF applications, just make use of the <kpart> XML element in a GUIXML 
+file. You can load parts based on
+ - mime-type OR 
+ - service-type 
+
+The kpart XML element accepts the following parameters
+
+ - name - Name of the KPart object in your GCF application
+ - mimeType or serviceType - Use any of of these parameters to specify the type of Part you want to load.
+ - url - URL of the file that the part should show when created and embedded into your application
+ - parentWidget - The widget into which the part's widget has to be embedded
+ - title - Title of the part's widget
+ - readOnly - A boolean true/false attribute that helps decide whether the part is loaded as read-only or
+   read-write.
+ - before or mergeWith - Complete name of a Menu/Group. Helps GCF decide how the part's menu actions
+   are merged with the application.
+ 
+Example
+
+\code
+
+  <kpart mimeType="text/plain"
+         parentWidget="MainWindowComponent.workspace"
+         url="file:///home/prashanth/SampleApplication/Main/Main.cpp"
+         name="katePart" title="Kate" readOnly="true" 
+         before="MainWindowComponent.helpMenu" />
+
+  <kpart mimeType="text/html"
+         parentWidget="MainWindowComponent.rightDockArea"
+         url="http://www.vcreatelogic.com"
+         name="htmlPart" title="Browser" readOnly="true" 
+         before="MainWindowComponent.helpMenu" />  
+
+\endcode
+
+If a method parameter cannot be expressed a string, then this XML element is not very useful.
+
+\section gcfguixmlformat_9 Complete Name
+
+A complete name is a series of names separated by '.' (dots) that accurately specifies the path of any item in
+the XML file. The complete name concept is best explained with the help of an example. Consider the
+following GUI XML file.
+
+\code
+    <component name="LogWindow" title="Log Window">
+        <object name="controller" title="Controller Object for ClogWindow" />
+        <widget name="logWindowTabWidget" title="Log Window" />
+        <widget name="messageLog" title="Message Log"
+               parentWidget="LogWindow.logWindowTabWidget" />
+        <widget name="debugLog" title="Debug Log"
+               parentWidget="LogWindow.logWindowTabWidget" />
+        <widget name="errorLog" title="Error Log"
+               parentWidget="LogWindow.logWindowTabWidget" />
+        <action name="clearLogs" title="Clear All Logs"
+               triggerSlot="LogWindow.controller::clearAllLogs()" />
+        <action name="hideLogs" title="Hide Logs"
+               triggerSlot="LogWindow.logWindowTabWidget::hide()" />
+        <menu name="log" title="Clear Log">
+               <menuitem name="LogWindow.clearLogs" />
+               <menuitem name="LogWindow.hideLogs" />
+        </menu>
+        <property propertyName="LogWindow.messageLog::maximumHeight" value="200" />
+    </component>
+\endcode
+
+The complete name of any item declared in the XML element would be a dot separated list of names
+starting from the component name all the way down to the item name itself. For example the complete name
+of the clearLogs action would be "LogWindow.clearLogs"
+
+The GUI XML file shown above also describes the how items are referenced in other items using the
+complete names. Complete names remove all ambiguity when it comes to referencing items.
+
+\section gcfguixmlformat_10 Complete Slot Name
+
+A complete slot name is completeName followed by '::' and the slot name. For example the hideLogs action
+item in the GUI XML example shown above connects to the hide() slot of the logWindowTabWidget. For this
+to work, the slot should be declared and implemented in the corresponding object.
+
+*/
+
+

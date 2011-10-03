@@ -1,0 +1,76 @@
+/**
+\ingroup utilscomponent 
+\interface IXmlUtils IXmlUtils
+\brief This interface provides access to the core functionality of the Utils component.
+
+Provides access to easy to use xml utility functions.
+
+Components in your application can make use of the Utils component via this interface as 
+follows
+
+\code
+QString objName;
+GCF::AbstractComponent* utilsComp = 0;
+QObject* obj = findObject("IXmlUtils", objName, &utilsComp);
+if(obj)
+{
+    IXmlUtils* xmlUtils = qobject_cast<IXmlUtils*>(obj);
+    // now make use of the xmlUtils pointer to issue calls
+    // into the Utils component
+}
+\endcode
+
+*/
+
+/**
+\fn virtual QList<QDomElement> IXmlUtils::findElements(QDomElement parentE, QString tagName) = 0;
+
+Finds the list of dom elements under a parent element which has tagnames.
+
+\param parentE Dom element under which elements with the given tagname are to be listed.
+
+\param tagName tagname to be searched under a parent dom element parentE.
+
+\note This function is non-recursive.
+*/
+
+/**
+\fn virtual QDomElement IXmlUtils::findElement(QDomElement parentE, QString tagName) = 0;
+
+Finds first child dom element with the tagname "tagName" under a given parent element "parentE".
+
+\note This function is non-recursive.
+*/
+
+/**
+\fn virtual bool IXmlUtils::savePixmap(QDomDocument doc, QDomElement element, QPixmap pixmap) = 0;
+
+Saves the pixmap into the dom document.
+*/
+
+/**
+\fn virtual bool IXmlUtils::loadPixmap(QDomElement element, QPixmap& pixmap) = 0;
+
+Loads the pixmap from dom document into the pixmap.
+*/
+
+/**
+\fn virtual bool IXmlUtils::parseDom(QDomDocument doc, QStringList tagNames, QMap<QString, QList<QDomElement> > & elementMap) = 0;
+
+Functionality not yet implemented.
+*/
+
+/**
+\fn virtual bool IXmlUtils::saveData(QDomDocument doc, QDomElement element, QByteArray array) = 0;
+
+Encodes a byte array into an XML Element.
+*/
+
+/**
+\fn virtual bool IXmlUtils::loadData(QDomElement element, QByteArray& array) = 0;
+
+Extracts a byte array from an XML Element.
+*/
+
+
+

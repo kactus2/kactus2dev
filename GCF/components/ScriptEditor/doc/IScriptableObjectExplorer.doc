@@ -1,0 +1,88 @@
+/**
+\ingroup scripteditorcomponent 
+\interface IScriptableObjectExplorer IScriptableObjectExplorer
+\brief This interface provides access to the scriptable objects explorer.
+
+Scriptable object explorer is a widget that shows all scriptable objects along with their
+properties, scriptable methods, slots and events. Through this interface you can 
+access the scriptable object explorer.
+
+The following code snippet shows how you can get hold of the scriptable objects 
+explorer.
+
+\code
+QString objName;
+GCF::AbstractComponent* seComp = 0;
+QObject* obj = findObject("IScriptableObjectExplorer", objName, &seComp);
+if(obj)
+{
+    IScriptableObjectExplorer* scriptEditorExplorer = qobject_cast<IScriptableObjectExplorer*>(obj);
+    // now make use of the scriptEditorExplorer pointer to issue calls
+    // into the Script Editor explorer.
+}
+\endcode
+
+*/
+
+/**
+\fn virtual IScriptEngineManager* IScriptableObjectExplorer::scriptEngine() = 0;
+
+Through this interface method you can get pointer to the script engine interface used
+by the scriptable object explorer.
+*/
+
+/**
+\fn virtual void IScriptableObjectExplorer::updateExplorer() = 0;
+
+You can trigger an update on the scriptable object explorer. Update reconsturcts the entire
+object tree shown in it. 
+*/
+
+/**
+\fn virtual void IScriptableObjectExplorer::highlightScriptableObject(QObject* object) = 0;
+
+Through this interface method you can highlight the scriptable object in the list of objects
+shown by the explorer.
+*/
+
+/**
+\fn virtual void IScriptableObjectExplorer::objectDoubleClicked(QObject* object, QString objectName) = 0;
+
+This signal is emitted when object is double clicked in the script object explorer.
+
+\param object Pointer to the object whose item was double clicked.
+\param objectName Name of the object within the scripting environment.
+*/
+
+/**
+\fn virtual void IScriptableObjectExplorer::signalDoubleClicked(QObject* object, QString objectName, QString event, QString signal) = 0;
+
+This signal is emitted when signal is double clicked in the script object explorer.
+
+\param object Pointer to the object whose item was double clicked.
+\param objectName Name of the object within the scripting environment.
+\param event Name of the event as shown in the scriptable object explorer
+\param signal Name of the object's signal that is actually referred by the event.
+*/
+
+/**
+\fn virtual void IScriptableObjectExplorer::propertyDoubleClicked(QObject* object, QString objectName, QString propertyName, QString propDataType) = 0;
+
+This signal is emitted when property is double clicked in the script object explorer.
+
+\param object Pointer to the object whose item was double clicked.
+\param objectName Name of the object within the scripting environment.
+\param propertyName Name of the property
+\param propDataType Data type of the property.
+*/
+
+/**
+\fn virtual void IScriptableObjectExplorer::methodDoubleClicked(QObject* object, QString objectName, QString method, QString methodSignature) = 0;
+
+This signal is emitted when method is double clicked in the script object explorer.
+
+\param object Pointer to the object whose item was double clicked.
+\param objectName Name of the object within the scripting environment.
+\param method Name of the method on which the mouse was double clicked.
+\param methodSignature Signature of the method.
+*/

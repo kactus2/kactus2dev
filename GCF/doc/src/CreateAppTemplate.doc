@@ -1,0 +1,622 @@
+/**
+\page gcf_create_appTemplate  CreateAppemplate Tool
+\brief Provides information on how to write a new application using GCF.
+
+Getting starting on a large scale application development can be scary. A lot of 
+things have to be thought of in the beginning. From things as simple as getting a
+directory structure, to build system and everything. To simplify this, GCF provides
+the CreateAppTemplate tool.
+
+One of the trickest parts of creating GCF based applications, is to get the 
+directory strucutre right. Having developed GCF and a lot of GCF based applications; 
+I would like to propose a directory structure for you to make use of. 
+
+Now I must warn you that the directory structure that I am about to propose is by no 
+means perfect and ideal; but it has worked for me.
+
+\li ApplicationDirectory
+    - bin :DLLs, EXEs, guixml files go into this directory
+    - Common: application wide custom classes
+    - Components: contains one directory each for every component in your application.
+        - Component1: Contains code, docs, interfaces, guixml for a component called Component1
+            - guixml: GUI XML file for the component 
+            - icons: Component specific icons
+            - interfaces: Component specific interfaces
+            - source: Component specific header, source and UI files.
+        - Component2
+            - guixml 
+            - icons
+            - interfaces
+            - source
+    - Docs: Application specific documentation
+    - GCF: The whole GCF library, as is.
+    - Interfaces: Application wide interfaces
+    - lib: All library files go here
+    - Main: The main program of your application goes here
+    - tmp: While compiling your application temporary files like moc_*.cpp, ui_*.h, *.obj etc go here.   
+    
+Unlike other Qt based libraries, we encourage users of GCF to include a copy 
+of GCF within their application directories. This way you can ensure that 
+GCF is compiled along with your applications and that will put to rest common 
+problems like DLL versions and so on.
+
+Since your application will be a collection of your custom components, you will only have to create 
+directory a component directory for each new component in the "Components" directory. 
+Also the remaining parts of the application will contain standard code.
+
+The CreateAppTemplate tool will help you to create this directory structure and more in some simple 
+steps. Lets understand this by looking at an actual case study.
+
+\section cat1 Case Study: Photo Browser Application
+
+Lets design and implement a really simple photo browser application and understand how GCF works. 
+A photo browser, simply put, is an application that helps in browsing photos. A really simple photo 
+browser is an application that helps (the developer of the application ;-)) in viewing one photo at a time.
+
+When we look at the "really simple photo browser" application, we essentially have two components to develop 
+
+- A "directory browser" component that provides us a simple directory browser and help us look for a photo file to view.
+- A "photo viewer" component that helps view a specified photo.
+
+Lets get started then.
+
+\section cat2 Step 1: Create application's directory structure and basic code with CreateAppTemplate
+
+Launch the "CreateAppTemplate" program and enter the details of the "PhotoBrowser" application as shown in the screenshot below
+
+\image html cat1.png
+
+Notice the following in the above screenshot
+
+- The application title and name are specified
+- Application name does not have special characters or spaces
+- A proper target directory is specified. Ideally the target directory path should not have spaces or special characters.
+- All the standard components are marked for compile and use in PhotoBrowser
+- Two new components "DirectoryBrowser" and "PhotoViewer" have been added.
+
+Now, click on the "Create Application Template" button and wait as the application template is created.
+
+\image html cat2.png
+
+You will be able to find in the C:\Projects\SampleApp directory a working application template for PhotoBrowser.
+
+\image html cat3.png
+
+\section cat3 Step 2: Compile the application
+
+Depending on whether you are on Windows or GNU/Linux, you can make use of GenProject.bat or GenProject.sh scripts to 
+generate the Visual Studio solution or Makefile for the application. Lets use Visual Studio for now.
+
+\image html cat4.png
+
+The GenProject scripts basically invoke qmake to generate the Visual Studio solution or Makefile. Lets now open 
+PhotoBrowser solution in Visual Studio and compile it.
+
+Once compiled, you will be able to execute the PhotoBrowser application and get a window as shown below.
+
+\image html cat5.png
+
+You will notice that the PhotoBrowser application is working quite well. For example go to the script editor tab 
+and type some script and execute it.
+
+\section cat4 Step 3: Explore ComponentLoaderComponent.xml
+
+The ComponentLoaderComponent.xml file is (more or less) the first GUIXML file that is parsed. This file specifies 
+where to look for components and also what components to load in the application. Lets take a look at this file
+
+\code
+
+<component title="Component Loader Component" version="1.0" 
+           name="ComponentLoaderComponent" >
+
+ <object name="controller" />
+ <method param1="${APPDIR}" 
+         methodName="ComponentLoaderComponent.controller::addComponentDirectory" />
+ <method methodName="ComponentLoaderComponent.controller::registerComponents" />
+ <method param1="MessageLogComponent" 
+         methodName="ComponentLoaderComponent.controller::loadComponent" />
+ <method param1="ProjectManagerComponent"          
+         methodName="ComponentLoaderComponent.controller::loadComponent" />
+ <method param1="PropertyEditorComponent" 
+         methodName="ComponentLoaderComponent.controller::loadComponent" />
+ <method param1="ProjectManagerComponent" 
+         methodName="ComponentLoaderComponent.controller::loadComponent" />
+ <method param1="HelpSystemComponent" 
+         methodName="ComponentLoaderComponent.controller::loadComponent" />
+ <method param1="ClipboardComponent" 
+         methodName="ComponentLoaderComponent.controller::loadComponent" />
+ <method param1="DirectoryBrowserComponent" 
+         methodName="ComponentLoaderComponent.controller::loadComponent" />
+ <method param1="PhotoViewerComponent"
+         methodName="ComponentLoaderComponent.controller::loadComponent" />
+ <method param1="ScriptEditorComponent" 
+         methodName="ComponentLoaderComponent.controller::loadComponent" />
+
+</component>
+
+\endcode
+
+From the above file GCF will figure that it should look for GCF component libraries from the application 
+executable's directory and load the 9 components in the same order as it is specified.
+
+Lets remove some lines that are not useful for the PhotoBrowser application.
+
+\code
+
+<component title="Component Loader Component" version="1.0" 
+           name="ComponentLoaderComponent" >
+
+ <object name="controller" />
+ <method param1="${APPDIR}" 
+         methodName="ComponentLoaderComponent.controller::addComponentDirectory" />
+ <method methodName="ComponentLoaderComponent.controller::registerComponents" />
+
+ <method param1="PropertyEditorComponent" 
+         methodName="ComponentLoaderComponent.controller::loadComponent" />
+ <method param1="DirectoryBrowserComponent" 
+         methodName="ComponentLoaderComponent.controller::loadComponent" />
+ <method param1="PhotoViewerComponent"
+         methodName="ComponentLoaderComponent.controller::loadComponent" />
+ <method param1="ScriptEditorComponent" 
+         methodName="ComponentLoaderComponent.controller::loadComponent" />
+
+</component>
+
+\encdoe
+
+This means that only PropertyEditor, DirectoryBrowser, PhotoViewer and ScriptEditor component are loaded. 
+Lets restart the application now.
+
+\image html cat6.png
+
+Notice that some panels or areas in the main-window are still showing up even though they are not used. 
+For example the "Message Area" and "Tool Box" are not used. Lets remove these areas by changing the 
+MainWindowComponent.xml file.
+
+\code
+
+<component title="Standard Main Window Component" version="1.0" 
+           name="MainWindowComponent" >
+
+  <widget title="Standard Main Window" scriptName="MainWindow" name="window" 
+          autoDelete="false" />
+  <widget scriptName="StatusBar" name="statusBar" autoDelete="false" />
+  <!--widget title="Message Area" name="bottomDockArea" autoDelete="false" /-->
+  <widget name="workspace" autoDelete="false" />
+  <!--widget title="Tool Box" name="leftDockArea" /-->
+  <widget title="Configuration Panel" name="rightDockArea" />
+  <widget name="centralWidget" />
+  ..........................
+
+</component>
+
+\endcode
+
+Notice that the "Message Area" and "Tool Box" widgets are now commented. Lets restart the application and observe the changes.
+
+\image html cat7.png
+
+\section cat5 Step 4: Implement the directory browser component 
+
+Lets implement our custom components, starting with the directory browser component. The directory browser component 
+is essentially a QTreeView showing a QDirModel. Towards this let's change the DirectoryBrowserComponent class as follows
+
+\code
+struct DirectoryBrowserComponentData
+{
+    QTreeView* dirView;
+    QDirModel* dirModel;
+};
+
+DirectoryBrowserComponent::DirectoryBrowserComponent()
+{
+    d = new DirectoryBrowserComponentData;
+
+    d->dirView = new QTreeView;
+    d->dirModel = new QDirModel;
+
+    d->dirView->setModel(d->dirModel);
+
+    for(int i=1; i<d->dirModel->columnCount(); i++)
+        d->dirView->setColumnHidden(i, true);
+}
+
+\endcode
+
+Basically we create a QTreeView and QDirModel in the constructor and configure them. The next step is to serve 
+the dirView (instance of QTreeView) widget from the component. For this, we update the fetchWidget() method.
+
+\code
+QWidget* DirectoryBrowserComponent::fetchWidget(const QString& completeName) const
+{
+    QStringList comps = completeName.split('.');
+
+    if(comps.last() == "dirView")
+        return d->dirView;
+
+    return 0;
+}
+
+\endcode
+
+With this we have now ensured that the dirView widget is exposed to other components and to GCF for performing 
+GUI-Merging. Next let's update the DirectoryBrowserComponent.xml to mark this widget for GUI-Merging.
+
+\code
+<component title="Custom Component" name="DirectoryBrowserComponent" >
+    
+ <object name="controller" />
+
+ <widget name="dirView" parentWidget="MainWindowComponent.rightDockArea"
+         title="Directory Browser" />
+    
+</component>
+
+\endcode
+
+After saving the changes, we recompile the solution and restart the program.
+
+\image html cat8.png
+
+We will now be able to see the "Directory Browser" widget merged into the main window of the application. 
+Cool isnt it?
+
+Lets continue and make a few more changes to the directory browser component. Lets introduce a signal called 
+fileDoubleClicked(QString) that gets emitted when ever the user double clicks on a file in the directory browser 
+component. We will be using this signal later on while connecting PhotoViewer to this component. Towards this 
+we make the following changes 
+
+\code
+// in DirectoryBrowserComponent.h
+struct DirectoryBrowserComponentData;
+class DirectoryBrowserComponent : public GCF::AbstractComponent, 
+                                  virtual public IAboutData
+{
+    Q_OBJECT
+    Q_INTERFACES(IAboutData)
+    GCF_DECLARE_COMPONENT(DirectoryBrowserComponent)
+
+public:
+    static DirectoryBrowserComponent & instance();
+    ~DirectoryBrowserComponent();
+
+signals:
+    void fileDoubleClicked(const QString& fileName);
+
+protected slots:
+    void dirView_doubleClicked(const QModelIndex& index);
+    ..........
+\endcode
+
+\code
+// and in DirectoryBrowserComponent.cpp
+DirectoryBrowserComponent::DirectoryBrowserComponent()
+{
+    d = new DirectoryBrowserComponentData;
+
+    d->dirView = new QTreeView;
+    d->dirModel = new QDirModel;
+
+    d->dirView->setModel(d->dirModel);
+
+    for(int i=1; i<d->dirModel->columnCount(); i++)
+        d->dirView->setColumnHidden(i, true);
+
+    connect(d->dirView, SIGNAL(doubleClicked(QModelIndex)),
+            this, SLOT(dirView_doubleClicked(QModelIndex)));
+}
+
+void DirectoryBrowserComponent::dirView_doubleClicked(const QModelIndex& index)
+{
+    if(!index.isValid())
+        return;
+
+    QFileInfo fi = d->dirModel->fileInfo(index);
+    if(fi.isDir())
+        return;
+
+    QString fileName = fi.absoluteFilePath();
+    emit fileDoubleClicked(fileName);
+};
+
+\endcode
+
+To test whether the signal is infact getting generated or not, let's expose the directory browser component as a 
+scriptable object. That way we can script signals in the component class and test it. To expose a component's 
+object as a scriptable object; all you need to do is include a scriptName attribute in the component's guixml file.
+
+\code
+<component title="Custom Component" name="DirectoryBrowserComponent" >
+    
+ <object name="controller" scriptName="DirectoryBrowser" />
+
+ <widget name="dirView" parentWidget="MainWindowComponent.rightDockArea"
+         title="Directory Browser" />
+    
+</component>
+\endcode
+
+Save the changes and restart the application. In the "Scriptable Objects" tab you can now notice "DirectoryBrowser". 
+Double click on the "FileDoubleClicked" event and script the event as shown in the screenshot below.
+
+\image html cat9.png
+
+Now execute the script by clicking on "Script ? Execute" menu item. From then on when ever you double click on a 
+file in the "Directory Browser"; you will see the complete path of the file name showing up in the title bar of 
+the main window.
+
+\image html cat10.png
+
+With this, we now have a confirmation that the signal actually works :)
+
+\section cat6 Step 5: Implement the photo viewer component
+
+The photo viewer component is basically a scroll area with a label shown in it. The label would show an image and the 
+scroll area will help the user to look at any part of the image. The code for this is shown below.
+
+\code
+// Changes in PhotoViewerComponent.h
+struct PhotoViewerComponentData;
+class PhotoViewerComponent : public GCF::AbstractComponent, virtual public IAboutData
+{
+    Q_OBJECT
+    Q_INTERFACES(IAboutData)
+    GCF_DECLARE_COMPONENT(PhotoViewerComponent)
+
+public:
+    static PhotoViewerComponent & instance();
+    ~PhotoViewerComponent();
+
+public slots:
+    void showImage(const QString& fileName);
+\endcode
+    
+\code
+// Changes in PhotoViewerComponent.cpp
+struct PhotoViewerComponentData
+{
+    QScrollArea* scrollArea;
+    QLabel* imageLabel;
+};
+
+PhotoViewerComponent::PhotoViewerComponent()
+{
+    d = new PhotoViewerComponentData;
+
+    d->scrollArea = new QScrollArea;
+    d->imageLabel = new QLabel;
+    d->scrollArea->setWidget(d->imageLabel);
+    d->scrollArea->setWidgetResizable(true);
+}
+
+void PhotoViewerComponent::showImage(const QString& fileName)
+{
+    d->imageLabel->setPixmap(QPixmap());
+
+    QPixmap pm(fileName);
+    if(pm.isNull())
+    {
+        d->imageLabel->setText( QString("%1 not an image file").arg(fileName) );
+        d->imageLabel->setFixedSize(400, 100);
+    }
+    else
+    {
+        d->imageLabel->setPixmap(pm);
+        d->imageLabel->setFixedSize(pm.size());
+    }
+}
+
+QWidget* PhotoViewerComponent::fetchWidget(const QString& completeName) const
+{
+    QStringList comps = completeName.split('.');
+
+    if(comps.last() == "photoViewer")
+        return d->scrollArea;
+
+    return 0;
+}
+\endcode
+
+Basically we create the photo viewer (scrollarea + label) and provide a slot to show the image contained in a file. 
+We then serve the widget from the component. Lets modify the component's GUIXML file now.
+
+\code
+<component title="Custom Component" name="PhotoViewerComponent" >
+    
+ <object name="controller" />
+
+ <widget name="photoViewer" title="Photo Viewer"
+         parentWidget="MainWindowContainer.workspace" />
+    
+</component>
+\endcode
+
+Now compile and restart the program.
+
+\image html cat11.png
+
+We will need to make a connection from the fileDoubleClicked(QString) signal of directory browser to the 
+showImage(QString) slot of the photo viewer. Lets establish the connection in the guixml file.
+\code
+<component title="Custom Component" name="PhotoViewerComponent" >
+    
+ <object name="controller" />
+
+ <widget name="photoViewer" title="Photo Viewer"
+         parentWidget="MainWindowComponent.workspace" />
+
+ <connection sender="DirectoryBrowserComponent.controller::fileDoubleClicked(QString)"
+             receiver="PhotoViewerComponent.controller::showImage(QString)" />
+    
+</component>
+\endcode
+
+The connection XML element in the guixml file helps make signal and slot connections outside of 
+the C++ code. Notice the format in which the signals and slots are specified.
+\code
+    <component-name>.<object-name>::<signal/slot-signature>
+\endcode
+
+Lets save the changes and restart the application. This time we can double click on any image file name in the 
+directory browser and the photo-viewer will show the image.
+
+\image html cat12.png
+
+\section cat7 Using actions, menus, toolbars
+If you want to insert custom menu/toolbar action items, you can simply edit the GUIXML file and 
+associate the triggered/toggled signal of the action to a slot. Take a look at the modified GUIXML file 
+for PhotoViewerComponent below
+
+\code
+<component title="Custom Component" name="PhotoViewerComponent" >
+
+  <widget name="imageLabel" />
+  <action name="clearImage" title="Clear Image" 
+          triggerSlot="PhotoViewerComponent.imageLabel::clear()"/>
+  <menu name="pvMenu" title="Photo">
+    <menuitem actionName="PhotoViewerComponent.clearImage" />
+  </menu>
+  <toolbar name="pvTools" title="Photo Tools">
+    <toolbaritem actionName="PhotoViewerComponent.clearImage" />
+  </toolbar>
+    
+</component>
+\endcode
+
+Notice how the triggered signal of the clearImage action is connected to the clear() slot of the image label. 
+To ensure that imageLabel is resolved properly, we update the fetchWidget() method as follows.
+
+\code
+QWidget* PhotoViewerComponent::fetchWidget(const QString& completeName) const
+{
+    QStringList comps = completeName.split('.');
+
+    if(comps.last() == "photoViewer")
+        return d->scrollArea;
+
+    if(comps.last() == "imageLabel")
+        return d->imageLabel;
+
+    return 0;
+}
+\endcode
+
+Lets save and restart the application to notice the newly introduced menu and toolbar.
+
+\image html cat13.png
+
+You will also notice that the "Clear Image" menu item works. When you click on it, the image in the label 
+actually gets cleared. You can specify shortcuts using the "shortcut" attribute on the action XML element. 
+What if you wanted to insert the "Photo" menu before the "System" menu in the main window?. It is very simple, 
+just make use of the "before" attribute in menu XML element. 
+
+\code
+  <menu name="pvMenu" title="Photo" before="MainWindowComponent.systemMenu">
+    <menuitem actionName="PhotoViewerComponent.clearImage" />
+  </menu>
+\endcode
+
+\image html cat14.png
+
+Now, what if you wanted to merge the "Photo" menu with the "Edit" menu?. You can make use of the mergeWith 
+attribute in menu XML element.
+
+\code
+  <menu name="pvMenu" title="Photo" mergeWith="MainWindowComponent.editGroup">
+    <menuitem actionName="PhotoViewerComponent.clearImage" />
+  </menu>
+\endcode
+
+\image html cat15.png
+
+In-fact the mergeWith attribute can be used with action elements to share an existing action with your component. 
+GCF will make use of GCF::SignalMultiplexer to ensure that the action's triggered or toggled signal is only sent 
+to objects belonging to active components.
+
+With this our photo browser application is complete :)
+
+Notice how we worked on different aspects of the software and brought them together by making use of GUIXML and 
+the component infrastructure from GCF.
+
+\section cat8 Using functionality exposed by other components
+Very often functionality exposed by other components might have to be used by our components. As mentioned before, 
+functionality from a component is usually exposed via interfaces. For example the property editor's functionality is 
+exposed via the IPropertyEditor interface. 
+
+\code
+class IPropertyEditor : virtual public IContainer
+{
+public:
+    // Establish which object to show the properties of.
+    virtual void setObject(QObject* object, bool recursive=false) = 0;
+    virtual Qobject* object() = 0;
+
+    // Methods to query property information
+    virtual int propertyCount() = 0;
+    virtual IProperty* property(int index) = 0;
+
+    // Establish the editor factory.
+    virtual void setEditorFactory(IValueEditorFactory* factory) = 0;
+    virtual IValueEditorFactory* editorFactory() = 0;
+
+    // Must be implemented as a signal.
+    virtual void  propertyValueChanged(QObject* obj, QString propName, QVariant oldVal, 
+                                  QVariant newVal) = 0;
+};
+\endcode
+
+If we get hold of a valid pointer to IPropertyEditor, then we will be able to invoke one or more of the above methods 
+and make use of the property editor's functionality. 
+
+Service and Interface methods in AbstractComponent
+There are essentially two types of methods in GCF::AbstractComponent.
+- Interface methods
+- Service Methods
+
+Interface methods are those that GCF calls in your component to figure out what your component has to offer. 
+These methods are usually declared as virtual in AbstractComponent. For example the fetchObject(), fetchWidget() methods.
+
+Service methods are methods that your components can make use of to get some information from GCF. These methods 
+are usually non-virtual and sometimes static. For example the findObject() method can be used to search for an 
+object given its name or an interface that it implements.
+
+\section cat9 Searching for functionality in GCF
+In GCF, functionality means interface. To search for an interface you can make use of the findObject() method. 
+Take a look at the code below.
+
+\code
+#include <IPropertyEditor>
+
+void DirectoryBrowserComponent::creationAnnounced()
+{
+    IPropertyEditor* propEditor = 0;
+    QObject* propEditorObj = 0;
+    QString name;
+    GCF::AbstractComponent* propEditorComp = 0;
+
+    propEditorObj = findObject("IPropertyEditor", name, &propEditorComp);
+    if(propEditorObj)
+        propEditor = qobject_cast<IPropertyEditor*>(propEditorObj);
+
+    if(propEditor)
+        propEditor->setObject(d->dirView);
+}
+\endcode
+
+Notice how we are asking GCF to search for an object that implements the IPropertyEditor interface. 
+If the interface was found we begin using it, without really caring about who is providing the interface 
+implementation.
+
+On compiling and executing the code, you will notice that upon startup; the PhotoBrowser application is 
+showin the properties of the directory view widget (which is a QTreeView).
+
+\image html cat16.png
+
+\section cat10 Summary
+
+The CreateAppTemplate program creates a complete application template for you. The directory structure, 
+qmake project files and the build system is automatically generated too. This helps in drastically 
+reducing the "getting started" time.
+
+*/
+

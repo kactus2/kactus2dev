@@ -1,0 +1,24 @@
+/**
+\ingroup gcfcomponents
+\defgroup utilscomponent Utils Component
+\brief Utils Component provides utility functions for applications.
+
+It provides XML and Math utility functions as described in IXmlUtils and IMathUtils interfaces.
+
+To make use of the features provided by Utility Component, you have to query for
+the IXmlUtils or IMathUtils Interface from your component.
+
+For Example:
+
+\code
+QString objName;
+GCF::AbstractComponent* utilsComp = 0;
+QObject* obj = findObject("IMathUtils", objName, &utilsComp);
+if(obj)
+{
+    IMathUtils* mathUtils = qobject_cast<IMathUtils*>(obj);
+    // now make use of the mathUtils pointer to issue calls
+    // into the Utils component
+}
+\endcode
+*/

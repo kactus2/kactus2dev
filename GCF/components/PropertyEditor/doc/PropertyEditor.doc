@@ -1,0 +1,204 @@
+/**
+\ingroup gcfcomponents
+\defgroup propertyeditorcomp Property Editor Component
+\brief Provides a extensible property editor
+
+Many applications require a property editor using which properties of one or 
+more objects can be edited. If you have used Qt Designer, you will be familiar 
+with the term "Property Editor".
+
+\htmlonly
+<b>See Also:</b> <a href="http://doc.trolltech.com/qq/qq22-visualeditors.html">Designing Visual Editors in Qt</a>
+\endhtmlonly
+
+GCF provides an easy to use and extensible property editor. Shown below is 
+a screenshot of the property editor in action in VTK Designer 2.
+
+\image html propertyeditor.png
+
+The property editor component offers widgets and functionality to deal with
+properties provided by a QObject via
+
+\li Qt's Q_PROPERTY() mechanism and
+\li IEditableProperties interface (if-any)
+
+The property editor component offers the following things among others
+
+\li A property editor widget, like the one shown in the screenshot above. 
+\li A editor factory that helps in the creation of editors based on the datatype
+of each property
+\li A default set of editor creators (for standard data types like int, char, 
+double, QString and so on)
+\li Ability to reset the property value to its default
+
+\section usingpropertyeditor Using Property Editor
+
+The best way to use a property editor within your components would be as follows
+
+\code
+void MyComponent::creationAnnounced()
+{
+    // ...
+
+    // Fetch and store a reference to the property editor in this 
+    // function
+    QString name;
+    GCF::AbstractComponent* comp = 0;   
+    QObject* obj = findObject("IPropertyEditor", name, &comp);
+    if(obj)
+    {
+        this->m_propertyEditor = qobject_cast<IPropertyEditor*>(obj);
+        GCF::AbstractComponent::addDependency(this, comp);
+    }
+    
+    // ...
+}
+
+void MyComponent::someFunction()
+{
+    // ...
+    
+    // Use the property editor to show properties
+    if(this->m_propertyEditor)
+        this->m_propertyEditor->setObject( objectPtr );
+        
+    // ...
+}
+\endcode
+
+\section editableproperties Editable Properties
+
+Qt provides an excellent dynamic property model in its QObject and subclasses. The
+only problem with this model is that the number of properties that a QObject can have
+is fixed at compile time. An object cannot add __and__ remove properties at runtime
+depending on the context. In many applications it would be useful to have an different
+instances of the same class offer different properties.
+
+For such cases, the property editor provides an interface called IEditableProperties
+which a class can implement. 
+
+\section loadsaveqobjects Load and save QObject properties into an XML element
+
+Many a times it may be required to store and load properties of a QObject into an XML element.
+For example
+
+\li While saving and loading information about objects in a project
+\li While performing cut/copy/paste of objects in a project
+
+For example, when you copy a element in VTK Designer's and paste the copied contents on to
+a text editor like Notepad; you will see some XML content.
+
+\image html vtkd2copy.png
+
+\code
+<!DOCTYPE VisCanvasSnapshot>
+<VisCanvasSnapshot>
+  <Node X="-34" Y="-128" Name="vtkFlythroughCamera0" ClassName="vtkFlythroughCamera" ID="0" >
+    <Property Type="Point3D" Name="InitialPosition" Value="0.00, 0.00, 0.00" />
+    <Property Type="Point3D" Name="InitialFocalPoint" Value="0.00, 0.00, 1.00" />
+    <Property Type="Vector3D" Name="InitialViewUp" Value="0.00, 1.00, 0.00" />
+    <Property Type="Point3D" Name="Position" Value="0.00, 0.00, 1.00" />
+    <Property Type="Point3D" Name="FocalPoint" Value="0.00, 0.00, 0.00" />
+    <Property Type="Vector3D" Name="ViewUp" Value="0.00, 1.00, 0.00" />
+    <Property Type="double" Name="Distance" Value="1" />
+    <Property Type="double" Name="Roll" Value="0" />
+    <Property Type="bool" Name="ParallelProjection" Value="false" />
+    <Property Type="bool" Name="UseHorizontalViewAngle" Value="false" />
+    <Property Type="double" Name="ViewAngle" Value="30" />
+    <Property Type="double" Name="ParallelScale" Value="1" />
+    <Property Type="double" Name="Thickness" Value="1000" />
+    <Property Type="double" Name="EyeAngle" Value="2" />
+    <Property Type="double" Name="FocalDisk" Value="1" />
+    <Property Type="Point3D" Name="ViewPlaneNormal" Value="0.00, 0.00, 1.00" />
+    <Property Type="QString" Name="NodeName" Value="vtkFlythroughCamera0" />
+    <Property Type="QString" Name="objectName" Value="vtkFlythroughCamera0" />
+  </Node>
+</VisCanvasSnapshot>
+\endcode
+
+The above XML basically describes the object in terms of its properties. This kind of functionality
+is commonly used in several editors. The \ref propertyeditorcomp provides methods through the 
+IQObjectLoadSave interface that will help you to quickly save properties into an XML Element given
+a QObject, and load properties from an XML element given a QObject.
+
+Example:
+\code
+void MyComponent::creationAnnounced()
+{
+    // ...
+
+    // Fetch and store a reference to the interface
+    QString name;
+    GCF::AbstractComponent* comp = 0;   
+    QObject* obj = findObject("IQObjectLoadSave", name, &comp);
+    if(obj)
+    {
+        this->m_qobjectLoadSave = qobject_cast<IQObjectLoadSave*>(obj);
+        GCF::AbstractComponent::addDependency(this, comp);
+    }
+    
+    // ...
+}
+
+void MyComponent::copy()
+{
+    // ...
+    
+    QObject* object = get_selected_object);
+    if(!object)
+        return;
+    
+    QDomDocument doc;
+    QDomElement rootE = doc.createElement("Object");
+    doc.appendChild(rootE);
+    rootE.setAttribute("class", object->metaObject()->className());
+    if(this->m_qobjectLoadSave)
+        this->m_qobjectLoadSave->saveProperties(doc, rootE, object);
+        
+    QString xmlStr = doc.toString();
+    QApplication::clipboard()->setText( xmlStr );
+        
+    // ...
+}
+
+void MyComponent::paste()
+{
+    // ...
+    
+    QString xmlStr = QApplication::clipboard()->text();
+    QDomDocument doc;
+    
+    doc.setContent(xmlStr);
+    
+    QDomElement rootE = doc.documentElement();
+    if( rootE.tagName() != "Object" )
+        return;
+        
+    QString className = rootE.attribute("class");
+    QObject* object = create_instance(className);
+    
+    if(this->m_qobjectLoadSave)
+        this->m_qobjectLoadSave->loadProperties(doc, rootE, object);
+        
+    // ...
+}
+\endcode
+
+Shown below is the default GUIXML file of the property editor
+
+\code
+<component title="Property Editor Component" version="1.0" name="PropertyEditorComponent" >
+
+  <widget title="Property Editor" name="propertyEditor" 
+          parentWidget="MainWindowComponent.rightDockArea" 
+          scriptName="PropertyEditor" />
+  
+  <object title="" name="controller" />
+  
+</component>
+\endcode
+
+*/
+
+
+

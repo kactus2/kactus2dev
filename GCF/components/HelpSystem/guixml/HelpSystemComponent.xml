@@ -1,0 +1,41 @@
+<component title="Custom Component" name="HelpSystemComponent" >
+    
+    <!-- First create the controller object -->
+    <object name="controller" />
+    
+    <!-- Set the help collection file. Dont move this XML element to any other location int this XML file -->
+    <property key="HelpSystemComponent.controller::HelpCollectionFile" value="${APPDIR}/../doc/help/GCFHelp.qhc" /> 
+    
+    <!-- Create the help engine first -->
+    <object name="helpEngine" />
+    
+    <!-- These elements can be in any order --> 
+    <object name="contentModel" />
+    <object name="indexModel" />
+    <object name="helpSearchEngine" />
+    <widget title="Help" name="helpPanel" parentWidget="MainWindowComponent.leftDockArea" />
+    <widget title="Contents" name="contentPanel" parentWidget="HelpSystemComponent.helpPanel" />
+    <widget title="Index" name="indexPanel" parentWidget="HelpSystemComponent.helpPanel" />
+    <widget title="Search" name="searchPanel" parentWidget="HelpSystemComponent.helpPanel" />
+    <widget title="Help" name="helpView" parentWidget="MainWindowComponent.workspace" />
+
+    <action name="back" title="Back" icon=":/HelpSystem/back.png" 
+            triggerSlot="HelpSystemComponent.helpView::backward()" />
+    <action name="forward" title="Forward" icon=":/HelpSystem/forward.png" 
+            triggerSlot="HelpSystemComponent.helpView::forward()" />
+    <action name="gohome" title="Home" icon=":/HelpSystem/gohome.png"  
+            triggerSlot="HelpSystemComponent.helpView::home()" />
+    <action name="zoomin" title="Zoom In" icon=":/HelpSystem/zoomin.png"  
+            triggerSlot="HelpSystemComponent.helpView::zoomIn()" />
+    <action name="zoomout" title="Zoom Out" icon=":/HelpSystem/zoomout.png"  
+            triggerSlot="HelpSystemComponent.helpView::zoomOut()" />
+    <group name="helpBrowser" title="Help Browser" icon=":/HelpSystem/help.png" mergeWith="MainWindowComponent.helpMenu" >
+        <groupitem actionName="HelpSystemComponent.gohome" rowSpan="2" colSpan="2" />
+        <groupitem actionName="HelpSystemComponent.zoomin" />
+        <groupitem actionName="HelpSystemComponent.back" />
+        <groupitem actionName="HelpSystemComponent.zoomout" />
+        <groupitem actionName="HelpSystemComponent.forward" />
+    </group>
+    
+</component>
+

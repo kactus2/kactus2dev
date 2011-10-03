@@ -1,0 +1,53 @@
+<component title="Standard Main Window Component" version="1.0" name="MainWindowComponent" >
+
+  <widget title="Standard Main Window" scriptName="MainWindow" name="window" autoDelete="false" />
+  <widget scriptName="StatusBar" name="statusBar" autoDelete="false" />
+  <widget title="Message Area" name="bottomDockArea" autoDelete="false" />
+  <widget name="workspace" autoDelete="false" />
+  <widget title="Tool Box" name="leftDockArea" />
+  <widget title="Configuration Panel" name="rightDockArea" />
+  <widget name="centralWidget" />
+  <object name="application" autoDelete="false" />
+  <object name="controller" autoDelete="false" />
+    
+  <action title="Configure" triggerSlot="MainWindowComponent.window::showConfigurationDialog()" icon=":/MainWindow/configure.png" name="toolsConfig" />
+  <action title="Exit" triggerSlot="MainWindowComponent.window::close()" icon=":/MainWindow/exit.png" name="fileQuit" />
+  <action title="About" triggerSlot="MainWindowComponent.window::about()" icon=":/MainWindow/appIcon.png" name="helpAbout" />
+  <action title="Panels Menu" triggerSlot="MainWindowComponent.window::togglePanelAction()" name="togglePanelAction" />
+    
+  <action title="Cut" shortcut="Ctrl+X" icon=":/MainWindow/cut.png" name="cut" />
+  <action title="Copy" shortcut="Ctrl+C" icon=":/MainWindow/copy.png" name="copy" />
+  <action title="Paste" shortcut="Ctrl+V" icon=":/MainWindow/paste.png" name="paste" />
+  <action title="Undo" shortcut="Ctrl+Z" icon=":/MainWindow/undo.png" name="undo" />
+  <action title="Redo" shortcut="Ctrl+Y" icon=":/MainWindow/redo.png" name="redo" />
+  
+  <group title="Edit" icon=":/MainWindow/edit.png" name="editGroup" >
+    <groupitem actionName="MainWindowComponent.copy" />
+    <groupitem actionName="MainWindowComponent.cut" />
+    <groupitem actionName="MainWindowComponent.paste" colSpan="2" rowSpan="2" />
+    <groupitem actionName="MainWindowComponent.undo" colSpan="2" rowSpan="2" />
+    <groupitem actionName="MainWindowComponent.redo" colSpan="2" rowSpan="2" />
+  </group>
+    
+  <group title="View" icon=":/MainWindow/view.png" name="viewMenu" >
+    <groupitem actionName="MainWindowComponent.togglePanelAction" colSpan="2" rowSpan="2" />
+  </group>
+
+  <group title="System" icon=":/MainWindow/appIcon.png" name="systemMenu" >
+    <groupitem actionName="MainWindowComponent.toolsConfig" colSpan="2" rowSpan="2" />
+    <groupitem actionName="MainWindowComponent.fileQuit" colSpan="2" rowSpan="2" />
+  </group>
+
+  <group title="Help" icon=":/MainWindow/help.png" name="helpMenu" >
+    <groupitem actionName="MainWindowComponent.helpAbout" colSpan="2" rowSpan="2" />
+  </group>
+  
+  <property key="MainWindowComponent.leftDockArea::minimumWidth" value="250" />
+  <property key="MainWindowComponent.rightDockArea::minimumHeight" value="200" />
+  <property key="MainWindowComponent.rightDockArea::minimumWidth" value="250" />
+  <property key="MainWindowComponent.bottomDockArea::minimumWidth" value="100" />
+  <property key="MainWindowComponent.controller::SplashImage" value=":/MainWindow/splash.png" />
+
+  <method methodName="MainWindowComponent.window::showMaximized" />
+
+</component>

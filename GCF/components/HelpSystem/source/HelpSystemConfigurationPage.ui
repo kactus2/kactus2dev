@@ -1,0 +1,155 @@
+<ui version="4.0" >
+ <class>HelpSystemConfigurationPage</class>
+ <widget class="QWidget" name="HelpSystemConfigurationPage" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>519</width>
+    <height>400</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2" >
+   <item row="0" column="0" >
+    <widget class="QTabWidget" name="tabWidget" >
+     <property name="currentIndex" >
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tab" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>497</width>
+        <height>358</height>
+       </rect>
+      </property>
+      <attribute name="title" >
+       <string>Font</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_3" >
+       <item row="0" column="0" >
+        <widget class="QLabel" name="lblName" >
+         <property name="minimumSize" >
+          <size>
+           <width>100</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize" >
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text" >
+          <string>Name:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1" >
+        <widget class="QFontComboBox" name="fontComboBox" />
+       </item>
+       <item row="1" column="0" >
+        <widget class="QLabel" name="lblSize" >
+         <property name="minimumSize" >
+          <size>
+           <width>100</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize" >
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text" >
+          <string>Size:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" >
+        <widget class="QSpinBox" name="fontSize" />
+       </item>
+       <item row="2" column="1" >
+        <spacer name="verticalSpacer_3" >
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0" >
+          <size>
+           <width>20</width>
+           <height>282</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_2" >
+      <property name="geometry" >
+       <rect>
+        <x>8</x>
+        <y>46</y>
+        <width>495</width>
+        <height>355</height>
+       </rect>
+      </property>
+      <attribute name="title" >
+       <string>Documentation</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout" >
+       <item row="0" column="0" >
+        <widget class="QLabel" name="label" >
+         <property name="text" >
+          <string>Registered Documentation:</string>
+         </property>
+        </widget>
+       </item>
+       <item rowspan="2" row="1" column="0" >
+        <widget class="QListWidget" name="listWidget" />
+       </item>
+       <item row="1" column="1" >
+        <layout class="QVBoxLayout" name="verticalLayout" >
+         <item>
+          <widget class="QPushButton" name="cmdAdd" >
+           <property name="text" >
+            <string>Add...</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="cmdRemove" >
+           <property name="text" >
+            <string>Remove</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="2" column="1" >
+        <spacer name="verticalSpacer" >
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0" >
+          <size>
+           <width>74</width>
+           <height>254</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

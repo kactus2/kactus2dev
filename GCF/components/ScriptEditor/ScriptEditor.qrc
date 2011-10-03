@@ -1,0 +1,20 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="/ScriptEditor">
+    <file alias="cut.png">icons/cut.png</file>
+    <file alias="copy.png">icons/copy.png</file>
+    <file alias="execute.png">icons/execute.png</file>
+    <file alias="find.png">icons/find.png</file>
+    <file alias="findreplace.png">icons/findreplace.png</file>
+    <file alias="loadform.png">icons/loadform.png</file>
+    <file alias="paste.png">icons/paste.png</file>
+    <file alias="redo.png">icons/redo.png</file>
+    <file alias="scriptingenv.png">icons/scriptingenv.png</file>
+    <file alias="undo.png">icons/undo.png</file>
+    <file alias="unloadform.png">icons/unloadform.png</file>
+    <file alias="gotoline.png">icons/gotoline.png</file>
+    <file alias="property.png">icons/property.png</file>
+    <file alias="method.png">icons/method.png</file>
+    <file alias="event.png">icons/event.png</file>
+    <file alias="object.png">icons/object.png</file>
+</qresource>
+</RCC>

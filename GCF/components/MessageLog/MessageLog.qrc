@@ -1,0 +1,5 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="/MessageLog">
+    <file alias="clear.png">icons/clear.png</file>
+</qresource>
+</RCC> 

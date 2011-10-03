@@ -1,0 +1,5 @@
+<component title="Configuration Dialog" version="1.0" name="ConfigurationDialogComponent" >
+  <widget title="Configuration Dialog" name="configDialog" />
+  <widget title="" name="okButton" />
+  <widget title="" name="cancelButton" />
+</component>

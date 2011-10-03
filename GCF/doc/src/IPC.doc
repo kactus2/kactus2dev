@@ -1,0 +1,307 @@
+/**
+\defgroup gcfipc Interprocess Communication
+\page gcfipc Interprocess Communication
+\brief Provides classes to facilicate commnucation between objects in different GCF applications
+
+\section gcfipc_intro Introduction
+
+GCF version 1.5 and later support communication between objects and components hosted 
+within two GCF based applications of the same name. To avail the IPC features in GCF, 
+the following conditions have to be met
+
+\li Applications participating in the communication have to be written using GCF
+\li Applications participating in the communication must have the same name
+\li Applications must have access to a working TCP/IP stack.
+
+\section gcfipc_keyconcepts Key Concepts
+
+There are three key concepts in GCF based IPC
+
+\li Each application has an "Application Access Point" (or AAP) through which exposed objects 
+and methods can be accessed by other applications.
+\li Each application can create one "Remote Application Access Point" (or RAP) for each remote 
+application it needs to communicate with.
+\li From a valid "Remote Application Access Point", an application can fetch instances of 
+"Remote Objects" based on their object names. Using these "Remote Objects" applications 
+can place remote method calls, connect to remote signals/slots and remotely configure object 
+properties.
+\li Applications can make use of "Remote Application Discovery" service to discover applications, 
+running on the same machine or in the local area network, with which it can communicate.
+
+\image html gcfkeyconcepts1.png
+
+\section gcfipc_keyclasses Key Classes
+
+
+The classes in GCF implement the concepts mentioned in the previous section
+
+\li GCF::AppAccessPoint: This singleton class can be initialized and accessed via the 
+GCF::AppAccessPoint::instance() method to listen on an port for incoming remote application 
+access requests. Developers can use this class to specify a server port to listen to and 
+also enable/disable access to your application from remote apps.
+\li GCF::RemoteAppAccessPoint: This class can be connect to a remote application. Instances 
+of this class cannot be created using the new C++ operator, one has to make use of the 
+class's static method getRemoteAppAccessPoint(). This method accepts the host address 
+and port of the application where its application access point is listening.
+\li GCF::RemoteObject: By making use of a valid GCF::RemoteAppAccessPoint object, instances of 
+GCF::RemoteObject can be fetched for named objects in the remote application. By name, we 
+mean the complete name of the exposed object in the remote application. GCF::RemoteObject 
+provides methods to place remote method calls, connect to remote slots/signals and 
+configure properties of the remote object.
+\li GCF::RemoteAppDiscovery: This class provides an easy to use API to asynchronously detect 
+availability of remote applications to which one can connect to.
+
+In the following paragraphs, let's look at a few use cases of the above classes.
+
+\subsection gcfipc_usingGCF::AppAccessPoint Using GCF::AppAccessPoint
+
+\code
+// Enable remote application access
+GCF::AppAccessPoint::instance().setAppAccessEnabled(true);
+\endcode
+
+\subsection gcfipc_usingGCF::RemoteAppAccessPoint Connecting to a remote application using GCF::RemoteAppAccessPoint
+
+\code
+// Description of the remote application
+QHostAddress addr = QhostAddress("192.168.1.30");
+quint16 port = 38900;
+
+// Get hold for a RAP 
+GCF::RemoteApplicationAccessPoint* rap = 0;
+rap = GCF::RemoteApplicationAccessPoint::getRemoteAppAccessPoint(addr, port);
+
+// Connect to notification signals
+QObject::connect( rap, SIGNAL(connectedToApp()),
+               receiver, SLOT(rapConnectedToApp()));
+QObject::connect( rap, SIGNAL(disconnectedFromApp()),
+               receiver, SLOT(rapDisconnectedFromApp()));
+QObject::connect( rap, SIGNAL(couldNotConnectToApp()),
+               receiver, SLOT(rapCouldNotConnectToApp()));
+\endcode
+
+\subsection gcfipc_usingGCF::RemoteObject Communicating with remote objects using GCF::RemoteObject
+
+\code
+// Get a remote object. Note the object in the remote application should be a QObject
+GCF::RemoteObject* rObj = rap->getRemoteObject("MainWindowComponent.window");
+
+// Connect to notification signals
+QObject::connect( rObj, SIGNAL(activated()), receiver, SLOT(rObjActivated()) );
+QObject::connect( rObj, SIGNAL(deactivated()), receiver, SLOT(rObjDeactivated()) );
+QObject::connect( rObj, SIGNAL(couldNotActivate()), receiver, SLOT(rObjCouldNotActivate()) );
+
+// Calls made to the remote object before it is activated, will be queued. Queued
+// calls will be sent immediately after the remote object becomes active
+
+// Remote Method Invocations. The remote method has to be signal, slot or 
+// Q_INVOKABLE method
+rObj->call("setWindowTitle", "Title string from remote application");
+
+// Connecting a local signal to a remote slot
+QPushButton* pushButton = get_push_button_from_somwehre();
+rObj->makeConnection( pushButton, SIGNAL(clicked(bool)), SLOT(pushButtonClicked()) );
+
+// Connecting a remote signal to a local slot
+rObj->makeConnection( SIGNAL(clicked(bool)), pushButton, SLOT(click()) );
+
+// Set property remotely
+rObj->setObjectProperty( "text", "My Button" );
+
+// Get property remotely
+QVariant value = rObj->getObjectProperty( "text" );
+
+// Cache all properties of the remote object
+rObj->cacheProperties();
+
+// Get property value from the cache
+rObj->getCachedObjectProperty( "text" );
+\endcode
+
+\subsection gcfipc_usingGCF::RemoteAppDiscovery Using GCF::RemoteAppDiscovery to discover remote applications
+
+\code
+// Connect to notification signals
+QObject::connect( & GCF::RemoteAppDiscovery::instance(),
+               SIGNAL(discoveredRemoteApp(GCF::RemoteAppAccessPoint*)),
+               receiver,
+               SLOT(newRAP(GCF::RemoteAppAccessPoint*)));
+
+// From now on the newRAP() method of the receiver will be called when ever
+// GCF::RemoteAppDiscovery discovers a new remote application. Note that the 
+// initial greeting message has already been sent and the GCF::RemoteAppAccessPoint
+// will be ready to use by the time newRAP is called.
+
+// Begin discovery
+GCF::RemoteAppDiscovery::instance().startDiscovery();
+\endcode
+
+\subsection gcfipc_currentRemoreApp Knowing the current remote application
+
+Sometimes it might be important for an application to know whether an object's method is being 
+accessed locally or remotely. For example you might want to alter the behavior of the function 
+based on this information. In such cases you can make use of the static method 
+GCF::RemoteApp::currentRemoteApp(). This method returns pointer to an instance of GCF::RemoteApp, 
+that handles all communication between this application and a remote application. 
+GCF::RemoteApp's methods, peerInfo(), socket() can be used to get enough information about the 
+remote application.
+
+Please note that the currentRemoteApp() method returns a valid pointer only when called from 
+within a RMI context. It returns a NULL pointer at all other times.
+
+Example
+
+\code
+void MyObjectClass::someMethod()
+{
+    GCF::RemoteApp* rApp = GCF::RemoteApp::currentRemoteApp();
+
+    if( !rApp )
+    {
+        // Local context
+    }
+    else
+    {
+        // Remote context
+        QAbstractSocket* rSocket = rApp->socket();
+        if( rSocket->peerAddress().toString().startsWith("192") )
+            return; 
+    }
+}
+\endcode
+
+\subsection gcfipc_securityInterfaces Security Interfaces
+
+Allowing remote access to applications brings to the table unique security challenges. 
+For example, we might not be interested in allowing remote access originating from a 
+certain category of systems, we may not be interested in allowing a subset of an 
+object's methods/properties/signals/slots to be accessed remotely.
+
+Towards this, you can implement any one or both of the following interfaces
+
+\li IComponentRemoteAccessControl 
+\li IObjectRemoteAccessControl
+
+
+These interfaces are defined as follows in IRemoteAccessControl.h.
+
+\code
+/ This interface can be implemented by IComponent subclasses to control
+// access to objects contained in it.
+class IComponentRemoteAccessControl
+{
+public:
+    // Control global component access. The master on/off switch
+    virtual bool isAllowComponentAccess(GCF::RemoteApp* remoteApp) = 0;
+
+    // Control per-object access
+    virtual bool isAllowObjectAccess(QObject* object, GCF::RemoteApp* remoteApp) = 0;
+};
+Q_DECLARE_INTERFACE(IComponentRemoteAccessControl, "com.vcreatelogic.IComponentRemoteAccessControl/1.0");
+
+// This interface can be implemented by any exposed QObject to help figure out what
+// aspects of the object can be remotely accessed
+class IObjectRemoteAccessControl
+{
+public:
+    // Control per-object access
+    virtual bool isAllowObjectAccess(GCF::RemoteApp* remoteApp) = 0;
+
+    // Control per-object method access
+    virtual bool isAllowObjectMethodInvoke(int methodIdx, GCF::RemoteApp* remoteApp) = 0;
+
+    // Control per-object property access
+    virtual bool isAllowObjectSetProperty(int propIdx, GCF::RemoteApp* remoteApp) = 0;
+    virtual bool isAllowObjectGetProperty(int propIdx, GCF::RemoteApp* remoteApp) = 0;
+
+    // Control per-object signal access
+    virtual bool isAllowObjectSignalConnect(int signalIdx, GCF::RemoteApp* remoteApp) = 0;
+    virtual bool isAllowObjectSignalDelivery(int signalIdx, GCF::RemoteApp* remoteApp) = 0;
+};
+Q_DECLARE_INTERFACE(IObjectRemoteAccessControl, "com.vcreatelogic.IObjectRemoteAccessControl/1.0");
+
+\endcode
+
+IComponentRemoteAccessControl interface can be implemented by subclasses of IComponent to 
+decide whether component as a whole or any of its objects can be accessed remotely. 
+
+IObjectRemoteAccessControl can be implemented in exposed objects to decide what methods, 
+properties, signals and slots can be accessed remotely.
+
+Example:
+
+\code
+class MyComponent : public IComponent, virtual public IComponentRemoteAccessControl
+{
+    Q_OBJECT
+    Q_INTERFACES(IComponentRemoteAccessControl)
+
+    // ..........
+
+    bool isAllowComponentAccess(GCF::RemoteApp* remoteApp) {
+
+        // Only allow applications from my LAN to access this component
+        if( remoteApp->socket()->peerAddress().toString().startsWith("192") )
+            return true;
+
+        return false;
+    }
+
+    bool isAllowObjectAccess(QObject* object, GCF::RemoteApp* remoteApp) {
+
+        // Since we have implemented isAllowComponentAccess(), remoteApp can be
+        // assumed to be from the LAN
+        if( !checkForSomeCondition() )
+                    return false;
+        
+        return true;
+    }
+ };
+    
+    
+class MyObject : public QObject, virtual public IObjectRemoteAccessControl
+{
+    Q_OBJECT
+    Q_INTERFACES(IObjectRemoteAccessControl)
+
+    // ..........
+
+    Q_INVOKABLE void localInvocableMethodOnly();
+
+    bool isAllowObjectAccess(GCF::RemoteApp* remoteApp)
+        { return true; }
+    bool isAllowObjectMethodInvoke(int methodIdx, GCF::RemoteApp* remoteApp)
+    {
+        QMetaMethod method = metaObject()->method(methodIdx);
+        if( QString(method.signature()).startsWith("localInvocableMethodOnly") )
+            return false;
+
+        return true;
+    }
+
+    bool isAllowObjectSetProperty(int propIdx, GCF::RemoteApp* remoteApp)
+        { return true; }
+    bool isAllowObjectGetProperty(int propIdx, GCF::RemoteApp* remoteApp)
+        { return true; }
+    bool isAllowObjectSignalConnect(int signalIdx, GCF::RemoteApp* remoteApp)
+        { return true; }
+    bool isAllowObjectSignalDelivery(int signalIdx, GCF::RemoteApp* remoteApp)
+        { return true; }
+
+    // ..........
+};
+\endcode
+
+\subsection gcfipc_lookingintofuture Looking into the future
+
+
+The IPC mechanisms in GCF are not complete and bug-free at this time.
+They are already useful if you need what they can do but especially their
+security for use over the network should not be relied on.
+
+Keep your copy of GCF updated from the SVN to be in tune with the developments happening in it.
+
+If you are interested to participate in the development, drop an email to info @ vcreatelogic . com. 
+
+*/
+
