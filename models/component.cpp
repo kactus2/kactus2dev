@@ -1611,6 +1611,7 @@ bool Component::hasFile( const QString& fileName ) const {
 			return true;
 		}
 	}
+	return false;
 }
 
 
