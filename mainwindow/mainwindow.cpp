@@ -120,7 +120,7 @@ actProtect_(0), actSettings_(0), actAbout_(0), actExit_(0) {
     // set the identification tags for the application
     QCoreApplication::setOrganizationDomain(tr("tut.fi"));
 	QCoreApplication::setOrganizationName(tr("TUT"));
-	QCoreApplication::setApplicationName(tr("Kactus 2"));
+	QCoreApplication::setApplicationName(tr("Kactus2"));
 	QCoreApplication::setApplicationVersion("1.0");
 
 	// set the top title for the application

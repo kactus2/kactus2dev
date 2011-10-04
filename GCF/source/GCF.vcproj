@@ -194,7 +194,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy  &quot;$(TargetPath)&quot; &quot;..\..\executable\&quot;"
+				CommandLine=""
 			/>
 		</Configuration>
 	</Configurations>

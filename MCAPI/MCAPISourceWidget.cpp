@@ -83,7 +83,7 @@ void MCAPISourceWidget::applySettings(QSettings const& settings)
     textEdit_->setIndentStyle(style, width);
 
     // Read font settings.
-    QFont font = settings.value("editor/font", QFont("Courier New")).value<QFont>();
+    QFont font = settings.value("editor/font", QFont("Courier New", 10)).value<QFont>();
     textEdit_->setFont(font);
 
     // Read highlight style settings.

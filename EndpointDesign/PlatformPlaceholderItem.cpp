@@ -24,7 +24,8 @@ PlatformPlaceholderItem::PlatformPlaceholderItem(QGraphicsItem* parent /*= 0*/) 
     setPen(QPen(Qt::black, 0, Qt::DashLine));
 
     QGraphicsTextItem* platformText = new QGraphicsTextItem(this);
-    platformText->setHtml("<center>Drag a <b>SW platform</b> from the library OR double-click to create new</center>");
+    //platformText->setHtml("<center>Drag a <b>SW platform</b> from the library OR double-click to create new</center>");
+    platformText->setHtml("<center>Drag a <b>SW platform</b> from the library</center>");
     platformText->setTextWidth(WIDTH);
     platformText->setPos(-0.5 * platformText->boundingRect().width(), GridSize);
 }
