@@ -290,6 +290,9 @@ private slots:
 	//! \brief Handler for signals that inform that design has changed.
 	void onDesignChanged();
 
+	//! \brief Create a pop up menu to select which dock widgets to display.
+	void selectVisibleDocks();
+
 private:
 
 	//! \brief No copying
@@ -451,6 +454,9 @@ private:
 
     //! Action to adjust zoom to fit the document fully in view.
     QAction* actFitInView_;
+
+	//! \brief Action to select which dock widgets are visible.
+	QAction* actVisibleDocks_;
 
     //! Action to set protection on/off.
     QAction* actProtect_;

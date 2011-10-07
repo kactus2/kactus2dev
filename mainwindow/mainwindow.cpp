@@ -71,6 +71,7 @@
 #include <QFileInfo>
 #include <QUrl>
 #include <QDesktopServices>
+#include <QCursor>
 
 class LibraryItem;
 
@@ -95,15 +96,17 @@ actGenModelSim_(0),
 actGenQuartus_(0), 
 actGenDocumentation_(0),
 diagramToolsGroup_(0), actToolSelect_(0), actToolConnect_(0),
-actToolInterface_(0), actToolDraft_(0), actZoomIn_(0),
-actZoomOut_(0), actZoomOriginal_(0), actFitInView_(0),
-actProtect_(0), actSettings_(0), actAbout_(0), actExit_(0) {
-
-// 	componentSummaryDock_->setObjectName(tr("Component Summary"));
-// 	componentSummaryDock_->setAllowedAreas(Qt::LeftDockWidgetArea | 
-// 		Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
-// 	componentSummaryDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
-// 	addDockWidget(Qt::BottomDockWidgetArea, componentSummaryDock_);
+actToolInterface_(0),
+actToolDraft_(0),
+actZoomIn_(0),
+actZoomOut_(0), 
+actZoomOriginal_(0), 
+actFitInView_(0),
+actVisibleDocks_(0),
+actProtect_(0), 
+actSettings_(0),
+actAbout_(0), 
+actExit_(0) {
 
 	portSummaryDock_->setObjectName(tr("Port Summary"));
 	portSummaryDock_->setAllowedAreas(Qt::LeftDockWidgetArea | 
@@ -133,7 +136,7 @@ actProtect_(0), actSettings_(0), actAbout_(0), actExit_(0) {
     resize(1024, 768);
     setWindowState(Qt::WindowMaximized);
 
-    setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
+	setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
 
 	// set up the widgets
 	setupMessageConsole();
@@ -499,6 +502,13 @@ void MainWindow::setupActions() {
     actFitInView_->setEnabled(false);
     connect(actFitInView_, SIGNAL(triggered()), this, SLOT(fitInView()));
 
+	// the action for user to select the visible docks
+	actVisibleDocks_ = new QAction(QIcon(":icons/graphics/dockSelect.png"),
+		tr("Select visible editors."), this);
+	actVisibleDocks_->setEnabled(true);
+	connect(actVisibleDocks_, SIGNAL(triggered()),
+		this, SLOT(selectVisibleDocks()), Qt::UniqueConnection);
+
     actProtect_ = new QAction(QIcon(":/icons/graphics/protection-unlocked.png"), tr("Unlocked"), this);
     actProtect_->setProperty("rowSpan", 2);
     actProtect_->setProperty("colSpan", 2);
@@ -614,6 +624,7 @@ void MainWindow::setupMenus() {
     viewGroup->addAction(actZoomOut_);
     viewGroup->addAction(actZoomOriginal_);
     viewGroup->addAction(actFitInView_);
+	viewGroup->addAction(actVisibleDocks_);
 
     //! The Protection group.
     GCF::MenuStripGroup* protectGroup = menuStrip_->addGroup(tr("Protection"));
@@ -2127,4 +2138,11 @@ void MainWindow::showAbout()
             break;
         }
     }
+}
+
+void MainWindow::selectVisibleDocks() {
+	QSharedPointer<QMenu> dockMenu(createPopupMenu());
+
+	dockMenu->exec(QCursor::pos());
+	
 }

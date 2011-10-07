@@ -65,6 +65,7 @@
         <file>graphics/documentation.png</file>
         <file>graphics/API.png</file>
         <file>graphics/endpoints.png</file>
+        <file>graphics/dockSelect.png</file>
     </qresource>
     <qresource prefix="/">
         <file>graphics/splash.png</file>
