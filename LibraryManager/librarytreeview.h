@@ -199,6 +199,12 @@ private:
 
 	//! \brief Open a SW platform stack (hierarchical platform)
 	QAction* openPFStackAction_;
+
+	//! \brief Open a software application
+	QAction* openApplicationAction_;
+
+	//! \brief Open end point to be edited
+	QAction* openEndpointAction_;
 };
 
 #endif // LIBRARYTREEVIEW_H

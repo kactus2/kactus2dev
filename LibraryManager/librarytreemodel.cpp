@@ -220,7 +220,16 @@ QVariant LibraryTreeModel::data(const QModelIndex& index, int role) const {
 					return QIcon(":/icons/graphics/new-system.png");
 											   }
 				case KactusAttribute::KTS_SW: {
-					return QIcon(":/icons/graphics/new-sw_component.png");
+					KactusAttribute::SWType swType = component->getComponentSWType();
+
+					if (swType == KactusAttribute::KTS_SW_APPLICATION)
+						return QIcon(":/icons/graphics/new-sw_component.png");
+					else if (swType == KactusAttribute::KTS_SW_PLATFORM) 
+						return QIcon(":icons/graphics/API.png");
+					else if (swType == KactusAttribute::KTS_SW_ENDPOINTS)
+						return QIcon(":/icons/graphics/endpoints.png");
+					else if (swType == KactusAttribute::KTS_SW_MAPPING) 
+						return QIcon(":/icons/graphics/new-sw_component.png");
 											  }
 				default: {
 					if (component->isHierarchical()) {

@@ -40,7 +40,10 @@ openBusAction_(NULL),
 createBusAction_(NULL),
 addSignalsAction_(NULL),
 openSystemAction_(NULL),
-openPlatformAction_(NULL) {
+openPlatformAction_(NULL),
+openPFStackAction_(NULL),
+openApplicationAction_(NULL),
+openEndpointAction_(NULL){
 
 	Q_ASSERT_X(filter, "LibraryTreeView constructor",
 		"Null filter pointer given");
@@ -115,10 +118,20 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
 					break;
 											   }
 				case KactusAttribute::KTS_SW: {
-					if (component->getComponentSWType() == KactusAttribute::KTS_SW_PLATFORM)
+					KactusAttribute::SWType swType = component->getComponentSWType();
+					if (swType == KactusAttribute::KTS_SW_PLATFORM) {
 						menu.addAction(openPlatformAction_);
-					if (component->isHierarchical())
-						menu.addAction(openPFStackAction_);
+
+						if (component->isHierarchical())
+							menu.addAction(openPFStackAction_);
+					}
+
+					else if (swType == KactusAttribute::KTS_SW_APPLICATION)
+						menu.addAction(openApplicationAction_);
+
+					else if (swType == KactusAttribute::KTS_SW_ENDPOINTS)
+						menu.addAction(openEndpointAction_);
+
 					break;
 											  }
 				default: {
@@ -138,9 +151,14 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
 		}
 		else if (libComp->getVlnv()->getType() == VLNV::BUSDEFINITION) {
 
-			menu.addAction(openBusAction_);
-			menu.addAction(addSignalsAction_);
-			menu.addAction(createBusAction_);
+			QSharedPointer<BusDefinition> busDef = libComp.staticCast<BusDefinition>();
+
+			// make sure the bus is for hardware
+			if (busDef->getType() == KactusAttribute::KTS_BUSDEF_HW) {
+				menu.addAction(openBusAction_);
+				menu.addAction(addSignalsAction_);
+				menu.addAction(createBusAction_);
+			}
 		}
 		else if (libComp->getVlnv()->getType() == VLNV::ABSTRACTIONDEFINITION) {
 			menu.addAction(openBusAction_);
@@ -227,6 +245,18 @@ void LibraryTreeView::setupActions() {
 	openPFStackAction_->setToolTip(tr("Open software platform stack for editing"));
 	connect(openPFStackAction_, SIGNAL(triggered()),
 		this, SLOT(onOpenDesign()), Qt::UniqueConnection);
+
+	openApplicationAction_ = new QAction(tr("Open Application"), this);
+	openApplicationAction_->setStatusTip(tr("Open software application for editing"));
+	openApplicationAction_->setToolTip(tr("Open software application for editing"));
+	connect(openApplicationAction_, SIGNAL(triggered()),
+		this, SLOT(onOpenComponent()), Qt::UniqueConnection);
+
+	openEndpointAction_ = new QAction(tr("Open Endpoints"), this);
+	openEndpointAction_->setStatusTip(tr("Open endpoints for editing"));
+	openEndpointAction_->setToolTip(tr("Opend endpoints for editing"));
+	connect(openEndpointAction_, SIGNAL(triggered()),
+		this, SLOT(onOpenComponent()), Qt::UniqueConnection);
 }
 
 void LibraryTreeView::onDeleteAction() {	

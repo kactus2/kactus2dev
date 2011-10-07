@@ -562,3 +562,9 @@ KactusAttribute::Implementation HierarchyItem::getImplementation() const {
 	Q_ASSERT(component_);
 	return component_->getComponentImplementation();
 }
+
+KactusAttribute::SWType HierarchyItem::getSoftwareType() const {
+	// make sure item is software item
+	Q_ASSERT(getImplementation() == KactusAttribute::KTS_SW);
+	return component_->getComponentSWType();
+}
