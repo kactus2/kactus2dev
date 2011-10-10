@@ -79,6 +79,26 @@ public:
      */
     QSharedPointer<DesignConfiguration> getDesignConfiguration() const;
 
+    
+    /*!
+     *  Removes the instance name from the list so the name can be used again in the design.
+	 *
+	 *      @param name The name of the removed instance.
+	 *
+     *      @remarks This function should be called when user removes component instance.
+	*/
+	void removeInstanceName(const QString& name);
+
+	/*!
+     *  Updates the list of instance names.
+	 *
+	 *      @param oldName The old name of the component instance.
+	 *      @param newName The new name of the component instance.
+	 *
+	*/
+	void updateInstanceName(const QString& oldName, const QString& newName);
+
+
     /*!
      *  Adds a new SW mapping component to the diagram.
      *
@@ -104,6 +124,13 @@ public:
      */
     void setMode(DrawMode mode);
 
+    /*!
+     *  Removes the given column from the diagram.
+     *
+     *      @param [in] column The column to remove.
+     */
+    void removeColumn(SystemColumn* column);
+
     void onVerticalScroll(qreal y);
 
 signals:
@@ -111,7 +138,7 @@ signals:
     void openComponent(const VLNV& vlnv);
 
     //! \brief Emitted when a program entity source should be opened in editor.
-    void openSource(ProgramEntityItem* progEntityItem);
+    void openSource(ProgramEntityItem* progEntity);
 
     //! Signaled when the draw mode has changed.
     void modeChanged(DrawMode mode);
@@ -187,6 +214,28 @@ private:
      */
     MappingComponentItem* getMappingComponent(QString const& instanceName);
 
+    /*!
+     *  Creates an application for the given program entity.
+     *
+     *      @param [in] progEntity The program entity.
+     */
+    void createApplication(ProgramEntityItem* progEntity);
+
+    /*!
+     *  Creates an unpackaged platform component and assigns it to the given mapping component.
+     *
+     *      @param [in] mappingCompItem The mapping component.
+     */
+    void createPlatformComponent(MappingComponentItem* mappingCompItem);
+
+    /*!
+     *  Packetizes the given SW component.
+     *
+     *      @param [in] item          The SW component item to packetize.
+     *      @param [in] itemTypeName  The item type name (e.g. "Application").
+     */
+    void packetizeSWComponent(SWComponentItem* item, QString const& itemTypeName);
+    
     //! MappingComponentList type.
     typedef QList<MappingComponentItem*> MappingComponentList;
 

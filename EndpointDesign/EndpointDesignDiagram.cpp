@@ -264,6 +264,23 @@ QSharedPointer<DesignConfiguration> EndpointDesignDiagram::getDesignConfiguratio
 }
 
 //-----------------------------------------------------------------------------
+// Function: removeInstanceName()
+//-----------------------------------------------------------------------------
+void EndpointDesignDiagram::removeInstanceName(QString const& name)
+{
+    instanceNames_.removeAll(name);
+}
+
+//-----------------------------------------------------------------------------
+// Function: updateInstanceName()
+//-----------------------------------------------------------------------------
+void EndpointDesignDiagram::updateInstanceName(QString const& oldName, QString const& newName)
+{
+    instanceNames_.removeAll(oldName);
+    instanceNames_.append(newName);
+}
+
+//-----------------------------------------------------------------------------
 // Function: addMappingComponent()
 //-----------------------------------------------------------------------------
 void EndpointDesignDiagram::addMappingComponent(SystemColumn* column, QPointF const& pos)
@@ -1001,62 +1018,14 @@ void EndpointDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mous
 
     if (item->type() == AppPlaceholderItem::Type)
     {
-        ProgramEntityItem* progEntityItem = static_cast<ProgramEntityItem*>(item->parentItem());
+        ProgramEntityItem* progEntity = static_cast<ProgramEntityItem*>(item->parentItem());
+        createApplication(progEntity);
 
-        // Create an application component without a valid vlnv.
-        QSharedPointer<Component> comp = QSharedPointer<Component>(new Component());
-        comp->setVlnv(VLNV());
-        comp->setComponentImplementation(KactusAttribute::KTS_SW);
-        comp->setComponentSWType(KactusAttribute::KTS_SW_APPLICATION);
-
-        // Add the fixed bus interface to the component.
-        QSharedPointer<BusInterface> busIf(new BusInterface());
-        busIf->setName("app_link");
-        busIf->setInterfaceMode(General::MASTER);
-        busIf->setBusType(VLNV(VLNV::BUSDEFINITION, "Kactus", "internal", "app_link", "1.0"));
-
-        comp->addBusInterface(busIf);
-
-        // Ask the user if he/she wants to generate template code based on the endpoints.
-        QMessageBox msgBox(QMessageBox::Question, QCoreApplication::applicationName(),
-                           tr("Do you want to auto-generate template code based on the endpoints?"),
-                           QMessageBox::Yes | QMessageBox::No, (QWidget*)parent());
-
-        bool sourceCreated = false;
-        
-        if (msgBox.exec() == QMessageBox::Yes)
-        {
-            // Ask the user where to save the source file.
-            QString filename = QFileDialog::getSaveFileName((QWidget*)parent(), tr("Save Source File"),
-                                                            QString(), tr("C Source Files (*.c)"));
-
-            if (!filename.isEmpty())
-            {
-                progEntityItem->createSource(filename);
-
-                FileSet* fileSet = new FileSet();
-                fileSet->setName("cSources");
-                File* file = new File(filename, fileSet);
-                file->addFileType("cSource");
-                fileSet->addFile(file);
-
-                comp->addFileSet(fileSet);
-                sourceCreated = true;
-            }
-        }
-
-        ApplicationItem* app = new ApplicationItem(comp, createInstanceName("unnamed_app"),
-                                                   QString(), QString(), QMap<QString, QString>(),
-                                                   progEntityItem);
-        connect(app, SIGNAL(openSource(ProgramEntityItem*)),
-                this, SIGNAL(openSource(ProgramEntityItem*)), Qt::UniqueConnection);
-
-        progEntityItem->setApplication(app);
-
-        if (sourceCreated)
-        {
-            emit openSource(progEntityItem);
-        }
+    }
+    else if (item->type() == PlatformPlaceholderItem::Type)
+    {
+        MappingComponentItem* mappingCompItem = static_cast<MappingComponentItem*>(item->parentItem());
+        createPlatformComponent(mappingCompItem);
     }
     else if (item->type() == ApplicationItem::Type)
     {
@@ -1064,49 +1033,146 @@ void EndpointDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mous
 
         if (!appItem->componentModel()->getVlnv()->isValid())
         {
-            // Request the user to set the vlnv.
-            NewObjectDialog dialog(lh_, VLNV::COMPONENT, true, (QWidget*)parent());
-            dialog.setWindowTitle(tr("Add Application to Library"));
-
-            if (dialog.exec() == QDialog::Rejected)
-            {
-                return;
-            }
-
-            VLNV vlnv = dialog.getVLNV();
-            appItem->componentModel()->setVlnv(vlnv);
-
-            // Write the model to file.
-            lh_->writeModelToFile(dialog.getPath(), appItem->componentModel());
-
-            // Update the diagram component.
-            appItem->updateComponent();
-
-            // Ask the user if he wants to complete the component.
-            QMessageBox msgBox(QMessageBox::Question, QCoreApplication::applicationName(),
-                "Do you want to continue packaging the application completely?",
-                QMessageBox::NoButton, (QWidget*)parent());
-            msgBox.setInformativeText("Pressing Continue opens up the component editor.");
-            QPushButton* btnContinue = msgBox.addButton(tr("Continue"), QMessageBox::ActionRole);
-            msgBox.addButton(tr("Skip"), QMessageBox::RejectRole);
-
-            msgBox.exec();
-
-            if (msgBox.clickedButton() == btnContinue)
-            {
-                // Open up the component editor.
-                emit openComponent(*appItem->componentModel()->getVlnv());
-            }
+            packetizeSWComponent(appItem, tr("Application"));
         }
     }
-    else if (item->type() == PlatformPlaceholderItem::Type)
+    else if (item->type() == PlatformComponentItem::Type)
     {
-//         MappingComponentItem* mappingCompItem = static_cast<MappingComponentItem*>(item->parentItem());
-// 
-//         // Create a platform component without a valid vlnv.
-//         QSharedPointer<Component> comp = QSharedPointer<Component>(new Component());
-//         comp->setVlnv(VLNV());
-//         comp->setComponentImplementation(KactusAttribute::KTS_SW);
-//         comp->setComponentSWType(KactusAttribute::KTS_SW_PLATFORM);
+        PlatformComponentItem* platformCompItem = static_cast<PlatformComponentItem*>(item);
+
+        if (!platformCompItem->componentModel()->getVlnv()->isValid())
+        {
+            packetizeSWComponent(platformCompItem, tr("SW Platform"));
+        }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: createApplication()
+//-----------------------------------------------------------------------------
+void EndpointDesignDiagram::createApplication(ProgramEntityItem* progEntity)
+{
+    // Create an application component without a valid vlnv.
+    QSharedPointer<Component> comp = QSharedPointer<Component>(new Component());
+    comp->setVlnv(VLNV());
+    comp->setComponentImplementation(KactusAttribute::KTS_SW);
+    comp->setComponentSWType(KactusAttribute::KTS_SW_APPLICATION);
+
+    // Add the fixed bus interface to the component.
+    QSharedPointer<BusInterface> busIf(new BusInterface());
+    busIf->setName("app_link");
+    busIf->setInterfaceMode(General::MASTER);
+    busIf->setBusType(VLNV(VLNV::BUSDEFINITION, "Kactus", "internal", "app_link", "1.0"));
+
+    comp->addBusInterface(busIf);
+
+    // Ask the user if he/she wants to generate template code based on the endpoints.
+    QMessageBox msgBox(QMessageBox::Question, QCoreApplication::applicationName(),
+                       tr("Do you want to auto-generate template code based on the endpoints?"),
+                       QMessageBox::Yes | QMessageBox::No, (QWidget*)parent());
+
+    bool sourceCreated = false;
+
+    if (msgBox.exec() == QMessageBox::Yes)
+    {
+        // Ask the user where to save the source file.
+        QString filename = QFileDialog::getSaveFileName((QWidget*)parent(), tr("Save Source File"),
+            QString(), tr("C Source Files (*.c)"));
+
+        if (!filename.isEmpty())
+        {
+            progEntity->createSource(filename);
+
+            FileSet* fileSet = new FileSet();
+            fileSet->setName("cSources");
+            File* file = new File(filename, fileSet);
+            file->addFileType("cSource");
+            fileSet->addFile(file);
+
+            comp->addFileSet(fileSet);
+            sourceCreated = true;
+        }
+    }
+
+    ApplicationItem* app = new ApplicationItem(comp, createInstanceName("unnamed_app"),
+        QString(), QString(), QMap<QString, QString>(),
+        progEntity);
+    connect(app, SIGNAL(openSource(ProgramEntityItem*)),
+        this, SIGNAL(openSource(ProgramEntityItem*)), Qt::UniqueConnection);
+
+    progEntity->setApplication(app);
+
+    if (sourceCreated)
+    {
+        emit openSource(progEntity);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: packetizeApplication()
+//-----------------------------------------------------------------------------
+void EndpointDesignDiagram::packetizeSWComponent(SWComponentItem* item, QString const& itemTypeName)
+{
+    // Request the user to set the vlnv.
+    NewObjectDialog dialog(lh_, VLNV::COMPONENT, false, (QWidget*)parent());
+    dialog.setWindowTitle(tr("Add ") + itemTypeName + tr(" to Library"));
+
+    if (dialog.exec() == QDialog::Rejected)
+    {
+        return;
+    }
+
+    VLNV vlnv = dialog.getVLNV();
+    item->componentModel()->setVlnv(vlnv);
+
+    // Write the model to file.
+    lh_->writeModelToFile(dialog.getPath(), item->componentModel());
+
+    // Update the diagram component.
+    item->updateComponent();
+
+    // Ask the user if he wants to complete the component.
+    QMessageBox msgBox(QMessageBox::Question, QCoreApplication::applicationName(),
+        "Do you want to continue packaging the " + itemTypeName.toLower() + " completely?",
+        QMessageBox::NoButton, (QWidget*)parent());
+    msgBox.setInformativeText("Pressing Continue opens up the component editor.");
+    QPushButton* btnContinue = msgBox.addButton(tr("Continue"), QMessageBox::ActionRole);
+    msgBox.addButton(tr("Skip"), QMessageBox::RejectRole);
+
+    msgBox.exec();
+
+    if (msgBox.clickedButton() == btnContinue)
+    {
+        // Open up the component editor.
+        emit openComponent(*item->componentModel()->getVlnv());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: createPlatformComponent()
+//-----------------------------------------------------------------------------
+void EndpointDesignDiagram::createPlatformComponent(MappingComponentItem* mappingCompItem)
+{
+    // Create a platform component without a valid vlnv.
+    QSharedPointer<Component> comp = QSharedPointer<Component>(new Component());
+    comp->setVlnv(VLNV());
+    comp->setComponentImplementation(KactusAttribute::KTS_SW);
+    comp->setComponentSWType(KactusAttribute::KTS_SW_PLATFORM);
+
+    PlatformComponentItem* platformComp = new PlatformComponentItem(comp,
+        createInstanceName("unnamed_platform"),
+        QString(), QString(),
+        QMap<QString, QString>(),
+        mappingCompItem);
+    connect(platformComp, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+
+    mappingCompItem->setPlatformComponent(platformComp);
+}
+
+//-----------------------------------------------------------------------------
+// Function: removeColumn()
+//-----------------------------------------------------------------------------
+void EndpointDesignDiagram::removeColumn(SystemColumn* column)
+{
+    layout_->removeColumn(column);
 }

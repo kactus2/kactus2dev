@@ -28,6 +28,7 @@
 #include <QScrollBar>
 #include <QKeyEvent>
 #include <QVBoxLayout>
+#include <QMessageBox>
 
 //-----------------------------------------------------------------------------
 // Function: EndpointDesignWidget()
@@ -231,7 +232,7 @@ void EndpointDesignWidget::keyPressEvent(QKeyEvent* event)
             return;
         }
 
-        QGraphicsItem *selected = diagram_->selectedItems().first();
+        QGraphicsItem* selected = diagram_->selectedItems().first();
 
         if (selected->type() == ProgramEntityItem::Type)
         {
@@ -240,6 +241,7 @@ void EndpointDesignWidget::keyPressEvent(QKeyEvent* event)
             Q_ASSERT(parent != 0);
             parent->removeProgramEntity(item);
 
+            diagram_->removeInstanceName(item->name());
             delete selected;
         }
         else if (selected->type() == ApplicationItem::Type)
@@ -249,6 +251,7 @@ void EndpointDesignWidget::keyPressEvent(QKeyEvent* event)
             Q_ASSERT(parent != 0);
             parent->setApplication(0);
 
+            diagram_->removeInstanceName(item->name());
             delete selected;
         }
         else if (selected->type() == PlatformComponentItem::Type)
@@ -258,6 +261,7 @@ void EndpointDesignWidget::keyPressEvent(QKeyEvent* event)
             Q_ASSERT(parent != 0);
             parent->setPlatformComponent(0);
 
+            diagram_->removeInstanceName(item->name());
             delete selected;
         }
         else if (selected->type() == EndpointItem::Type)
@@ -267,6 +271,32 @@ void EndpointDesignWidget::keyPressEvent(QKeyEvent* event)
         else if (selected->type() == EndpointConnection::Type)
         {
             delete selected;
+        }
+        else if (selected->type() == SystemColumn::Type)
+        {
+            // Ask a confirmation if the user really wants to delete the entire column if it is not empty.
+            SystemColumn* column = static_cast<SystemColumn*>(selected);
+
+            bool del = true;
+
+            if (!column->isEmpty())
+            {
+                QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+                                    tr("The column is not empty. Do you want to "
+                                    "delete the column and all of its contents?"),
+                                    QMessageBox::Yes | QMessageBox::No, this);
+
+                if (msgBox.exec() == QMessageBox::No)
+                {
+                    del = false;
+                }
+            }
+
+            // Delete the column if requested.
+            if (del)
+            {
+                diagram_->removeColumn(column);
+            }
         }
     }
 }

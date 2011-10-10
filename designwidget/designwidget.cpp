@@ -400,8 +400,8 @@ void DesignWidget::keyPressEvent(QKeyEvent *event)
             if (!column->isEmpty())
             {
                 QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                                   "The column is not empty. Do you want to "
-                                   "delete the column and all of its contents?",
+                                   tr("The column is not empty. Do you want to "
+                                   "delete the column and all of its contents?"),
                                    QMessageBox::Yes | QMessageBox::No, this);
 
                 if (msgBox.exec() == QMessageBox::No)

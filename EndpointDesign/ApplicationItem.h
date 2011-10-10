@@ -62,7 +62,7 @@ public slots:
 
 signals:
     //! Emitted when the application source file should be opened in editor.
-    void openSource(ProgramEntityItem* progEntityItem);
+    void openSource(ProgramEntityItem* progEntity);
 
 protected:
     void contextMenuEvent(QGraphicsSceneContextMenuEvent* event);

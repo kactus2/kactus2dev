@@ -46,7 +46,7 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
                                                               portIDFactory_(), diagram_(diagram),
                                                               component_(component), name_(instanceName),
                                                               id_(id), nameLabel_(0), oldColumn_(0),
-                                                              progEntityItems_(), platformPlaceholder_(0),
+                                                              progEntitys_(), platformPlaceholder_(0),
                                                               platformCompItem_(0)
 {
     Q_ASSERT(diagram_ != 0);
@@ -96,18 +96,18 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
             {
             case KactusAttribute::KTS_SW_ENDPOINTS:
                 {
-                    ProgramEntityItem* progEntityItem = new ProgramEntityItem(comp, instance.instanceName,
+                    ProgramEntityItem* progEntity = new ProgramEntityItem(comp, instance.instanceName,
                                                                               instance.displayName,
                                                                               instance.description,
                                                                               instance.configurableElementValues,
                                                                               this);
-                    connect(progEntityItem, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
-                    progEntityItem->setPos(instance.position);
+                    connect(progEntity, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+                    progEntity->setPos(instance.position);
 
                     // TODO: Set custom endpoint positions.
 
-                    addProgramEntity(progEntityItem);
-                    progEntityMap.insert(instance.instanceName, progEntityItem);
+                    addProgramEntity(progEntity);
+                    progEntityMap.insert(instance.instanceName, progEntity);
                     break;
                 }
 
@@ -118,20 +118,20 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
                     Q_ASSERT(conn.interface2.componentRef == instance.instanceName);
                     ++connIndex;
 
-                    ProgramEntityItem* progEntityItem = progEntityMap.value(conn.interface1.componentRef);
-                    Q_ASSERT(progEntityItem != 0);
+                    ProgramEntityItem* progEntity = progEntityMap.value(conn.interface1.componentRef);
+                    Q_ASSERT(progEntity != 0);
                     
                     ApplicationItem* appItem = new ApplicationItem(comp, instance.instanceName,
                                                                    instance.displayName,
                                                                    instance.description,
                                                                    instance.configurableElementValues,
-                                                                   progEntityItem);
+                                                                   progEntity);
                     connect(appItem, SIGNAL(openSource(ProgramEntityItem*)),
                             static_cast<EndpointDesignDiagram*>(scene()),
                             SIGNAL(openSource(ProgramEntityItem*)), Qt::UniqueConnection);
 
                     connect(appItem, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
-                    progEntityItem->setApplication(appItem);
+                    progEntity->setApplication(appItem);
                     break;
                 }
 
@@ -338,9 +338,9 @@ ProgramEntityItem* MappingComponentItem::addProgramEntity(QString const& name, Q
 //-----------------------------------------------------------------------------
 void MappingComponentItem::addProgramEntity(ProgramEntityItem* item)
 {
-    progEntityItems_.append(item);
-    VStackedLayout::updateItemMove(progEntityItems_, item, TOP_MARGIN, SPACING);
-    VStackedLayout::setItemPos(progEntityItems_, item, 0.0, TOP_MARGIN, SPACING);
+    progEntitys_.append(item);
+    VStackedLayout::updateItemMove(progEntitys_, item, TOP_MARGIN, SPACING);
+    VStackedLayout::setItemPos(progEntitys_, item, 0.0, TOP_MARGIN, SPACING);
     updateSize();
 
     emit contentChanged();
@@ -352,15 +352,15 @@ void MappingComponentItem::addProgramEntity(ProgramEntityItem* item)
 void MappingComponentItem::updateSize()
 {
     // Update the application item positions.
-    VStackedLayout::updateItemPositions(progEntityItems_, 0.0, TOP_MARGIN, SPACING);
+    VStackedLayout::updateItemPositions(progEntitys_, 0.0, TOP_MARGIN, SPACING);
 
     // Update the component's size based on the item that is positioned at
     // the lowest level of them all.
     qreal bottom = TOP_MARGIN;
 
-    if (!progEntityItems_.empty())
+    if (!progEntitys_.empty())
     {
-        bottom = progEntityItems_.back()->y() + progEntityItems_.back()->boundingRect().bottom();
+        bottom = progEntitys_.back()->y() + progEntitys_.back()->boundingRect().bottom();
     }
 
     setRect(-WIDTH / 2, 0, WIDTH, bottom + BOTTOM_MARGIN);
@@ -389,11 +389,11 @@ void MappingComponentItem::onMoveItem(ProgramEntityItem* item)
     setZValue(1001.0);
 
     // Calculate the height of the application item stack.
-    qreal stackHeight = progEntityItems_.first()->boundingRect().height();
+    qreal stackHeight = progEntitys_.first()->boundingRect().height();
 
-    for (int i = 1; i < progEntityItems_.size(); ++i)
+    for (int i = 1; i < progEntitys_.size(); ++i)
     {
-        stackHeight += progEntityItems_[i]->boundingRect().height() + SPACING;
+        stackHeight += progEntitys_[i]->boundingRect().height() + SPACING;
     }
 
     // Restrict to horizontal center and clamp the vertical range.
@@ -401,7 +401,7 @@ void MappingComponentItem::onMoveItem(ProgramEntityItem* item)
                               TOP_MARGIN + stackHeight - item->boundingRect().height());
     item->setPos(snapPointToGrid(0, y));
 
-    VStackedLayout::updateItemMove(progEntityItems_, item, TOP_MARGIN, SPACING);
+    VStackedLayout::updateItemMove(progEntitys_, item, TOP_MARGIN, SPACING);
 }
 
 //-----------------------------------------------------------------------------
@@ -410,7 +410,7 @@ void MappingComponentItem::onMoveItem(ProgramEntityItem* item)
 void MappingComponentItem::onReleaseItem(ProgramEntityItem* item)
 {
     setZValue(0.0);
-    VStackedLayout::setItemPos(progEntityItems_, item, 0, TOP_MARGIN, SPACING);
+    VStackedLayout::setItemPos(progEntitys_, item, 0, TOP_MARGIN, SPACING);
 }
 
 //-----------------------------------------------------------------------------
@@ -418,7 +418,7 @@ void MappingComponentItem::onReleaseItem(ProgramEntityItem* item)
 //-----------------------------------------------------------------------------
 void MappingComponentItem::removeProgramEntity(ProgramEntityItem* item)
 {
-    progEntityItems_.removeAll(item);
+    progEntitys_.removeAll(item);
     updateSize();
 
     emit contentChanged();
@@ -472,7 +472,7 @@ bool MappingComponentItem::save(LibraryInterface* libInterface)
     }
 
     // Add the program entity items to the instance list.
-    foreach (ProgramEntityItem* item, progEntityItems_)
+    foreach (ProgramEntityItem* item, progEntitys_)
     {
         Design::ComponentInstance instance(item->name(), item->displayName(), item->description(),
                                            *item->componentModel()->getVlnv(), item->pos());
@@ -528,7 +528,7 @@ EndpointItem* MappingComponentItem::getEndpoint(QString const& fullName)
         return 0;
     }
 
-    foreach (ProgramEntityItem* item, progEntityItems_)
+    foreach (ProgramEntityItem* item, progEntitys_)
     {
         if (item->name() == names.at(0))
         {

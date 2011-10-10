@@ -117,7 +117,7 @@ signals:
     void openComponent(const VLNV& vlnv);
 
     //! \brief Emitted when a program entity source should be opened in editor.
-    void openSource(ProgramEntityItem* progEntityItem);
+    void openSource(ProgramEntityItem* progEntity);
 
     //! Signaled when the draw mode of the diagram has changed.
     void modeChanged(DrawMode mode);

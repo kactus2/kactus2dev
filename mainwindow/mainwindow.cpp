@@ -504,7 +504,7 @@ void MainWindow::setupActions() {
 
 	// the action for user to select the visible docks
 	actVisibleDocks_ = new QAction(QIcon(":icons/graphics/dockSelect.png"),
-		tr("Select visible editors."), this);
+		tr("Visible Windows"), this);
 	actVisibleDocks_->setEnabled(true);
 	connect(actVisibleDocks_, SIGNAL(triggered()),
 		this, SLOT(selectVisibleDocks()), Qt::UniqueConnection);
@@ -1323,11 +1323,11 @@ void MainWindow::closeEvent(QCloseEvent* event)
 //-----------------------------------------------------------------------------
 // Function: openSource()
 //-----------------------------------------------------------------------------
-void MainWindow::openSource(ProgramEntityItem* progEntityItem)
+void MainWindow::openSource(ProgramEntityItem* progEntity)
 {
-    Q_ASSERT(progEntityItem != 0);
+    Q_ASSERT(progEntity != 0);
 
-    ApplicationItem* appItem = progEntityItem->getApplication();
+    ApplicationItem* appItem = progEntity->getApplication();
     Q_ASSERT(appItem != 0);
 
     if (appItem->componentModel()->getFileSet("cSources") == 0 ||
@@ -1362,7 +1362,7 @@ void MainWindow::openSource(ProgramEntityItem* progEntityItem)
     
     // And open the source to a view.
     MCAPISourceWidget* sourceWidget = new MCAPISourceWidget(filename,
-                                                            progEntityItem->getContentMatcher(), this, this);
+                                                            progEntity->getContentMatcher(), this, this);
 
     connect(sourceWidget, SIGNAL(contentChanged()), this, SLOT(updateMenuStrip()));
     connect(sourceWidget->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));

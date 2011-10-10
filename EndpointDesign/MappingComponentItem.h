@@ -242,7 +242,7 @@ private:
     SystemColumn* oldColumn_;
 
     //! The program entity items.
-    QList<ProgramEntityItem*> progEntityItems_;
+    QList<ProgramEntityItem*> progEntitys_;
 
     //! The platform component placeholder.
     PlatformPlaceholderItem* platformPlaceholder_;
