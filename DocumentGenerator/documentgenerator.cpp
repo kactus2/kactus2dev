@@ -136,7 +136,7 @@ void DocumentGenerator::parseChildItems( QList<VLNV>& objects ) {
 			continue;
 
 		QList<Design::ComponentInstance> instances = design->getComponentInstances();
-		foreach (Design::ComponentInstance instance, instances) {
+		foreach (Design::ComponentInstance const& instance, instances) {
 
 			// if the component has already been processed
 			if (objects.contains(instance.componentRef)) {
@@ -837,7 +837,7 @@ void DocumentGenerator::writeView( QSharedPointer<View> view,
 	instanceHeaders.append("Description");
 	writeTableElement(instanceHeaders, "Component instantiations within this design", stream);
 
-	foreach (Design::ComponentInstance instance, instances) {
+	foreach (Design::ComponentInstance const& instance, instances) {
 		stream << "\t\t\t\t<tr>" << endl;
 
 		stream << "\t\t\t\t\t<td>" << instance.instanceName << "</td>" << endl;

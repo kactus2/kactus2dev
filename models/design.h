@@ -113,6 +113,12 @@ public:
          */
         int mcapiNodeID;
 
+        /*! \brief VENDOREXT kactus2:endpointsExpanded
+         *
+         *  Specifies whether the endpoints in an endpoint component are expanded.
+         */
+        bool endpointsExpanded;
+
         /*! \brief The constructor
 		*
 		* \param componentInstanceNode A reference to a QDomNode

@@ -78,7 +78,7 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
         QMap<QString, ProgramEntityItem*> progEntityMap;
         unsigned int connIndex = 0;
 
-        foreach (Design::ComponentInstance instance, design->getComponentInstances())
+        foreach (Design::ComponentInstance const& instance, design->getComponentInstances())
         {
             // Retrieve the component model.
             QSharedPointer<LibraryComponent> libComp = libInterface->getModel(instance.componentRef);
@@ -101,10 +101,13 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
                                                                               instance.description,
                                                                               instance.configurableElementValues,
                                                                               this);
-                    connect(progEntity, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
                     progEntity->setPos(instance.position);
+                    progEntity->setEndpointsExpanded(instance.endpointsExpanded);
 
-                    // TODO: Set custom endpoint positions.
+                    // Set custom endpoint positions.
+                    progEntity->setEndpointOrder(instance.portPositions);
+
+                    connect(progEntity, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
                     addProgramEntity(progEntity);
                     progEntityMap.insert(instance.instanceName, progEntity);
@@ -477,11 +480,12 @@ bool MappingComponentItem::save(LibraryInterface* libInterface)
         Design::ComponentInstance instance(item->name(), item->displayName(), item->description(),
                                            *item->componentModel()->getVlnv(), item->pos());
         instance.configurableElementValues = item->getConfigurableElements();
+        instance.endpointsExpanded = item->isEndpointsExpanded();
 
-        // Save endpoint positions.
-        foreach (EndpointItem* endpoint, item->getEndpoints())
+        // Save endpoint positions (actually just the order of the endpoints).
+        for (int i = 0; i < item->getEndpoints().size(); ++i)
         {
-            instance.portPositions[endpoint->getName()] = endpoint->pos();
+            instance.portPositions[item->getEndpoints().at(i)->getName()] = QPointF(0, i);
         }
 
         instances.append(instance);

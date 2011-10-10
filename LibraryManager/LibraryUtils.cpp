@@ -72,7 +72,7 @@ void parseProgrammableElements(LibraryInterface* lh, Component& component,
     }
 
     // Go through all component instances and search for programmable elements.
-    foreach (Design::ComponentInstance instance, compDesign->getComponentInstances())
+    foreach (Design::ComponentInstance const& instance, compDesign->getComponentInstances())
     {
         QSharedPointer<LibraryComponent> libComp = lh->getModel(instance.componentRef);
         QSharedPointer<Component> childComp = libComp.staticCast<Component>();

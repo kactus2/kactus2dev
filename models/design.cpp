@@ -142,7 +142,7 @@ Design::ColumnDesc& Design::ColumnDesc::operator=( const ColumnDesc& other ) {
 Design::ComponentInstance::ComponentInstance(
     QDomNode& componentInstanceNode)
     : instanceName(), displayName(), description(), componentRef(),
-      configurableElementValues(), portPositions(), mcapiNodeID(-1)
+      configurableElementValues(), portPositions(), mcapiNodeID(-1), endpointsExpanded(false)
 {
     QDomNodeList nodes = componentInstanceNode.childNodes();
     for (int i = 0; i < nodes.size(); i++) {
@@ -186,6 +186,10 @@ Design::ComponentInstance::ComponentInstance(
                 {
                     mcapiNodeID = childNode.attributes().namedItem("value").nodeValue().toInt();
                 }
+                else if (childNode.nodeName() == "kactus2:endpointsExpanded")
+                {
+                    endpointsExpanded = true;
+                }
             }
         }
     }
@@ -196,7 +200,7 @@ Design::ComponentInstance::ComponentInstance(
     VLNV const& componentRef, QPointF const& position)
     : instanceName(instanceName), displayName(displayName),
       description(description), componentRef(componentRef),
-      configurableElementValues(), position(position), mcapiNodeID(-1)
+      configurableElementValues(), position(position), mcapiNodeID(-1), endpointsExpanded(false)
 {
 }
 
@@ -208,7 +212,7 @@ componentRef(other.componentRef),
 configurableElementValues(other.configurableElementValues),
 position(other.position),
 portPositions(other.portPositions),
-mcapiNodeID(other.mcapiNodeID) {
+mcapiNodeID(other.mcapiNodeID), endpointsExpanded(other.endpointsExpanded) {
 }
 
 Design::ComponentInstance& Design::ComponentInstance::operator=( const ComponentInstance& other ) {
@@ -221,6 +225,7 @@ Design::ComponentInstance& Design::ComponentInstance::operator=( const Component
 		position = other.position;
 		portPositions = other.portPositions;
         mcapiNodeID = other.mcapiNodeID;
+        endpointsExpanded = other.endpointsExpanded;
 	}
 	return *this;
 }
@@ -646,6 +651,8 @@ void Design::write(QFile& file)
                 xmlWriter.writeEndElement();
             }
 
+            xmlWriter.writeEndElement(); // kactus2:portPositions
+
             // Write the MCAPI node ID if specified.
             if (inst.mcapiNodeID != -1)
             {
@@ -653,12 +660,13 @@ void Design::write(QFile& file)
                 xmlWriter.writeAttribute("value", QString::number(inst.mcapiNodeID));
             }
 
-            xmlWriter.writeEndElement();
+            if (inst.endpointsExpanded)
+            {
+                xmlWriter.writeEmptyElement("kactus2:endpointsExpanded");
+            }
 
-            xmlWriter.writeEndElement();
-
-
-            xmlWriter.writeEndElement();
+            xmlWriter.writeEndElement(); // spirit:vendorExtensions
+            xmlWriter.writeEndElement(); // spirit:componentInstance
         }
 
         xmlWriter.writeEndElement();
@@ -921,7 +929,7 @@ QList<VLNV> Design::getComponents() const {
 
 	QList<VLNV> list;
 
-	foreach (Design::ComponentInstance instance, componentInstances_) {
+	foreach (Design::ComponentInstance const& instance, componentInstances_) {
 		if (instance.componentRef.isValid())
 			list.append(instance.componentRef);
 	}

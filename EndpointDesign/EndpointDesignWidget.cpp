@@ -16,6 +16,7 @@
 #include "EndpointConnection.h"
 #include "ApplicationItem.h"
 #include "PlatformComponentItem.h"
+#include "EndpointStack.h"
 
 #include <LibraryManager/libraryinterface.h>
 
@@ -266,7 +267,13 @@ void EndpointDesignWidget::keyPressEvent(QKeyEvent* event)
         }
         else if (selected->type() == EndpointItem::Type)
         {
-            delete selected;
+            // Allow deletion only if the parent endpoint stack is editable.
+            EndpointStack* stack = static_cast<EndpointStack*>(selected->parentItem());
+
+            if (stack->isEditable())
+            {
+                delete selected;
+            }
         }
         else if (selected->type() == EndpointConnection::Type)
         {

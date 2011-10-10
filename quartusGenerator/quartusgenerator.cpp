@@ -444,7 +444,7 @@ void QuartusGenerator::readDesign(const QSharedPointer<Design> design,
 
 	// read each component
 	QList<Design::ComponentInstance> instances = design->getComponentInstances();
-	foreach (Design::ComponentInstance instance, instances) {
+	foreach (Design::ComponentInstance const& instance, instances) {
 
 		VLNV vlnv = instance.componentRef;
 

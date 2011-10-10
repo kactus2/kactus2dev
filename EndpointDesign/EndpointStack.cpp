@@ -51,16 +51,16 @@ EndpointStack::EndpointStack(ProgramEntityItem* parentNode) : QGraphicsRectItem(
     headerLabel_->setFont(font);
 
     // Create the show/hide button.
-//     if (expanded_)
-//     {
-//         btnShowHide_ = new QGraphicsPixmapItem(QPixmap(":icons/graphics/collapse.png"), this);
-//     }
-//     else
-//     {
-//         btnShowHide_ = new QGraphicsPixmapItem(QPixmap(":icons/graphics/expand.png"), this);
-//     }
-// 
-//     btnShowHide_->setPos(-EndpointItem::WIDTH / 2 + 1, 0);
+    if (expanded_)
+    {
+        btnShowHide_ = new QGraphicsPixmapItem(QPixmap(":icons/graphics/collapse.png"), this);
+    }
+    else
+    {
+        btnShowHide_ = new QGraphicsPixmapItem(QPixmap(":icons/graphics/expand.png"), this);
+    }
+
+    btnShowHide_->setPos(-EndpointItem::WIDTH / 2 + 1, 0);
 
     // Create the none rectangle and label.
     noneRect_ = new QGraphicsRectItem(-EndpointItem::WIDTH / 2, 0, EndpointItem::WIDTH, HEIGHT, this);
@@ -247,45 +247,11 @@ void EndpointStack::addEndpoint()
 //-----------------------------------------------------------------------------
 void EndpointStack::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    // TODO: Enable when the saving supports the expand/collapse states.
-//     if (event->button() == Qt::LeftButton)
-//     {
-//         // Toggle expanded_/collapsed mode.
-//         expanded_ = !expanded_;
-// 
-//         // Show/hide endpoints based on the current mode.
-//         for (int i = 0; i < endpoints_.size(); ++i)
-//         {
-//             endpoints_.at(i)->setVisible(expanded_);
-// 
-//             if (!expanded_)
-//             {
-//                 endpoints_.at(i)->setPos(0.0, HEIGHT / 2);
-//             }
-//         }
-// 
-//         if (expanded_)
-//         {
-//             VStackedLayout::updateItemPositions(endpoints_, 0, MIN_Y_PLACEMENT, SPACING);
-//         }
-// 
-//         noneRect_->setVisible(expanded_ && endpoints_.empty());
-//         btnAdd_->setVisible(expanded_ && editable_);
-// 
-//         // Update the button image.
-//         if (expanded_)
-//         {
-//             btnShowHide_->setPixmap(QPixmap(":icons/graphics/collapse.png"));
-//         }
-//         else
-//         {
-//             btnShowHide_->setPixmap(QPixmap(":icons/graphics/expand.png"));
-//         }
-// 
-//         event->accept();
-//     }
-// 
-//     emit visibleHeightChanged(getVisibleHeight());
+    if (event->button() == Qt::LeftButton)
+    {
+        setExpanded(!isExpanded());
+        event->accept();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -335,4 +301,101 @@ void EndpointStack::setEditable(bool editable)
 {
     editable_ = editable;
     btnAdd_->setVisible(expanded_ && editable_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: setEndpointOrder()
+//-----------------------------------------------------------------------------
+void EndpointStack::setEndpointOrder(QMap<QString, QPointF> const& positions)
+{
+    QMapIterator<QString, QPointF> itrPos(positions);
+
+    // Correct the ordering of the endpoints in the container.
+    while (itrPos.hasNext())
+    {
+        itrPos.next();
+        QString const& name = itrPos.key();
+
+        for (int i = 0; i < endpoints_.size(); ++i)
+        {
+            if (endpoints_.at(i)->getName() == name)
+            {
+                int index = int(itrPos.value().y());
+
+                if (index < endpoints_.size())
+                {
+                    endpoints_.swap(i, index);
+                }
+                break;
+            }
+        }
+    }
+
+    // Update the actual positions.
+    updateEndpointPositions();
+}
+
+//-----------------------------------------------------------------------------
+// Function: updateEndpointPositions()
+//-----------------------------------------------------------------------------
+void EndpointStack::updateEndpointPositions()
+{
+    if (expanded_)
+    {
+        VStackedLayout::updateItemPositions(endpoints_, 0, MIN_Y_PLACEMENT, SPACING);
+    }
+    else
+    {
+        for (int i = 0; i < endpoints_.size(); ++i)
+        {
+            endpoints_.at(i)->setPos(0.0, HEIGHT / 2);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: isExpanded()
+//-----------------------------------------------------------------------------
+bool EndpointStack::isExpanded() const
+{
+    return expanded_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: setExpanded()
+//-----------------------------------------------------------------------------
+void EndpointStack::setExpanded(bool expanded)
+{
+    expanded_ = expanded;
+
+    // Show/hide endpoints based on the current mode.
+    for (int i = 0; i < endpoints_.size(); ++i)
+    {
+        endpoints_.at(i)->setVisible(expanded_);
+    }
+
+    updateEndpointPositions();
+
+    noneRect_->setVisible(expanded_ && endpoints_.empty());
+    btnAdd_->setVisible(expanded_ && editable_);
+
+    // Update the button image.
+    if (expanded_)
+    {
+        btnShowHide_->setPixmap(QPixmap(":icons/graphics/collapse.png"));
+    }
+    else
+    {
+        btnShowHide_->setPixmap(QPixmap(":icons/graphics/expand.png"));
+    }
+
+    emit visibleHeightChanged(getVisibleHeight());
+}
+
+//-----------------------------------------------------------------------------
+// Function: isEditable()
+//-----------------------------------------------------------------------------
+bool EndpointStack::isEditable() const
+{
+    return editable_;
 }

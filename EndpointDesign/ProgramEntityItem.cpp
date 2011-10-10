@@ -486,3 +486,27 @@ EndpointItem* ProgramEntityItem::getEndpoint(QString const& name)
 
     return 0;
 }
+
+//-----------------------------------------------------------------------------
+// Function: setEndpointOrder()
+//-----------------------------------------------------------------------------
+void ProgramEntityItem::setEndpointOrder(QMap<QString, QPointF> const& positions)
+{
+    endpointStack_->setEndpointOrder(positions);
+}
+
+//-----------------------------------------------------------------------------
+// Function: isEndpointsExpanded()
+//-----------------------------------------------------------------------------
+bool ProgramEntityItem::isEndpointsExpanded() const
+{
+    return endpointStack_->isExpanded();
+}
+
+//-----------------------------------------------------------------------------
+// Function: setEndpointsExpanded()
+//-----------------------------------------------------------------------------
+void ProgramEntityItem::setEndpointsExpanded(bool expanded)
+{
+    endpointStack_->setExpanded(expanded);
+}

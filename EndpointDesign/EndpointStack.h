@@ -49,6 +49,20 @@ public:
     void setEditable(bool editable);
 
     /*!
+     *  Sets the ordering of the endpoints based on the given map.
+     *
+     *      @param [in] positions The endpoint positions.
+     */
+    void setEndpointOrder(QMap<QString, QPointF> const& positions);
+
+    /*!
+     *  Expands/collapses the endpoint stack.
+     *
+     *      @param [in] expanded True for expand; false for collapse.
+     */
+    void setExpanded(bool expanded);
+
+    /*!
      *  Adds an endpoint to the stack.
      *
      *      @param [in] endpoint The endpoint to add.
@@ -85,6 +99,16 @@ public:
      */
     QList<EndpointItem*> const& getEndpoints() const;
 
+    /*!
+     *  Returns true if the endpoints in the stack can be edited.
+     */
+    bool isEditable() const;
+
+    /*!
+     *  Returns true if the endpoint stack is expanded.
+     */
+    bool isExpanded() const;
+
     int type() const { return Type; }
 
 public slots:
@@ -111,6 +135,11 @@ private:
     // Disable copying.
     EndpointStack(EndpointStack const& rhs);
     EndpointStack& operator=(EndpointStack const& rhs);
+
+    /*!
+     *  Updates the endpoint positions based on the expand/collapse state.
+     */
+    void updateEndpointPositions();
 
     //! EndpointList type.
     typedef QList<EndpointItem*> EndpointList;

@@ -41,9 +41,10 @@ void SplashScreen::drawContents(QPainter *painter)
         QString::number(VERSION_MINOR) + tr(" (Build ") + QString::number(VERSION_BUILDNO) + ")");
 
     // Draw the other information.
-    painter->drawText(QRectF(270, 300, 310, 150), Qt::AlignLeft,
+    painter->drawText(QRectF(270, 280, 310, 150), Qt::AlignLeft,
                       "This software is licensed under the GPL2 General Public License.\n"
-                      "See License.txt for further details.\n\n"
+                      "See license.txt for further details.\n\n"
                       "Contributors: Juho J‰rvinen, Antti Kamppi, Joni-Matti M‰‰tt‰,\n"
-                      "Lauri Matilainen, Timo D. H‰m‰l‰inen");
+                      "Lauri Matilainen, Timo D. H‰m‰l‰inen\n\n"
+                      "Kactus2 Website: http://funbase.cs.tut.fi/");
 }

@@ -72,6 +72,20 @@ public:
     virtual void updateComponent();
 
     /*!
+     *  Sets the ordering of the endpoints based on the given map.
+     *
+     *      @param [in] positions The endpoint positions.
+     */
+    void setEndpointOrder(QMap<QString, QPointF> const& positions);
+
+    /*!
+     *  Expands/collapses the endpoints.
+     *
+     *      @param [in] expanded If true, the endpoints will be expanded. Otherwise they will be collapsed.
+     */
+    void setEndpointsExpanded(bool expanded);
+
+    /*!
      *  Sets the application item.
      *
      *      @param [in] item The application item to set.
@@ -126,6 +140,11 @@ public:
      *  Returns the parent SW mapping component.
      */
     MappingComponentItem* getMappingComponent();
+
+    /*!
+     *  Returns true if the endpoints are expanded.
+     */
+    bool isEndpointsExpanded() const;
 
     /*!
      *  Returns the graphics item type.

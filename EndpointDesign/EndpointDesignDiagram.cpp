@@ -148,7 +148,7 @@ bool EndpointDesignDiagram::setDesign(QSharedPointer<Component> system)
     unsigned int colIndex = 0;
 
     // Add component instances.
-    foreach (Design::ComponentInstance instance, design->getComponentInstances())
+    foreach (Design::ComponentInstance const& instance, design->getComponentInstances())
     {
         QSharedPointer<LibraryComponent> libComponent = lh_->getModel(instance.componentRef);
 
