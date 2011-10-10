@@ -24,6 +24,7 @@ ComponentInstance::ComponentInstance(const QString& instanceName,
 		const QString& typeName, 
 		QSharedPointer<Component> component, 
 		ComponentType* compDeclaration,
+		const QString& description,
 		QObject* parent):
 QObject(parent),
 instanceName_(instanceName), 
@@ -31,7 +32,8 @@ componentType_(typeName),
 compDeclaration_(compDeclaration),
 genericMap_(),
 portMap_(), 
-component_(component) {
+component_(component),
+description_(description) {
 
 	Q_ASSERT_X(!instanceName.isEmpty(), "ComponentInstance constructor",
 		"Empty instance name given as parameter");
@@ -51,6 +53,10 @@ QSharedPointer<Component> ComponentInstance::getComponent() const {
 
 void ComponentInstance::generateInstanceVhdl(QTextStream& stream) {
 
+	// if instance has a description specified
+	if (!description_.isEmpty()) {
+		stream << "\t-- " << description_ << endl;
+	}
 	// write the instance name and library
 	stream << "\t" << instanceName_ << " : " << componentType_ << endl;
 

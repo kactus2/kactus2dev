@@ -179,6 +179,13 @@ private:
 	 */
 	QMap<Connection::EndPoint, QSharedPointer<Signal> > signals_;
 
+	/*! \brief Contains the end point and top port name for hierarchical connection
+	 *
+	 * Key = Endpoint that defines the instance, port and port bounds
+	 * Value = The name of the top port to connect to.
+	 */
+	QMap<Connection::EndPoint, QString> hierMaps_;
+
 	/*! \brief Contains the component declarations.
 	 *
 	 * Key = Name of the component type
@@ -239,6 +246,16 @@ private:
 	void connectInterfaces(const QString connectionName,
 			ComponentInstance* instance1, BusInterface* interface1,
 			BusInterface* interface2, ComponentInstance* instance2 = 0);
+
+	/*! \brief Connect ports of component instance and top component.
+	 *
+	 * \param instance Pointer to the component instance within design.
+	 * \param interface Pointer to the instance's interface to connect.
+	 * \param hierInterface Pointer to the top-component's interface to connect.
+	 *
+	*/
+	void connectHierInterface(ComponentInstance* instance, BusInterface* interface,
+		BusInterface* hierInterface);
 
 	//! \brief Writes the top-level generics into stream.
 	void writeGenerics(QTextStream& vhdlStream);
@@ -338,15 +355,18 @@ private:
 	 * \param instanceName The name for the component instance.
 	 * \param compDeclaration A pointer to the component type of the instance.
 	 * \param instance A reference to a component instance from the design.
+	 * \param component Pointer to the component model.
+	 * \param instanceDescription Contains the description for the instance.
 	 *
 	 * Exception guarantee: basic
 	 * \exception Vhdl_error Occurs if there are two component instances with
 	 * same name.
 	 */
-	void createInstance(const QString& instanceName,
-			ComponentType* compDeclaration,
-			const Design::ComponentInstance& instance,
-			QSharedPointer<Component> component);
+	void createInstance(const QString& instanceName, 
+		ComponentType* compDeclaration, 
+		const Design::ComponentInstance& instance,
+		QSharedPointer<Component> component, 
+		const QString& instanceDescription);
 
 	/*! \brief Search the interConnections of a design and make connection
 	 *

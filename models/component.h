@@ -502,7 +502,7 @@ public:
 	 * \return Pointer to the specified view. Null pointer if the view was not
 	 * found.
 	 */
-	View* findView(const QString name);
+	View* findView(const QString name) const;
 
 	/*! \brief Get the hierarchical views of a component
 	 *
@@ -770,6 +770,17 @@ public:
 	 * \return bool True if file is found in one of the file sets.
 	*/
 	bool hasFile(const QString& fileName) const;
+
+	/*! \brief Get the description of specified view.
+	 * 
+	 * If view is not found a null string is returned.
+	 *
+	 * \param viewName Identifies the view that's description is wanted.
+	 *
+	 * \return QString Contains the description for the view.
+	*/
+	QString getViewDescription(const QString& viewName) const;
+
 private:
 
 	/*! \brief Specifies all the interfaces for this component.

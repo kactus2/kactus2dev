@@ -126,8 +126,22 @@ public:
 	 * This constructor is used when defining a port declarations where the
 	 * direction of the connection is needed.
 	 */
-	Connection(const QString name, General::Direction direction,
-			int left, int right, QObject* parent = 0);
+	/*! \brief A constructor
+	 *
+	 * \param name The name for the port.
+	 * \param direction The direction for the port.
+	 * \param left Left bound for the port.
+	 * \param right Right bound for the port.
+	 * \param description Description for the port.
+	 * \param parent Pointer to the owner of the port.
+	 *
+	*/
+	Connection(const QString name, 
+		General::Direction direction,
+			int left, 
+			int right, 
+			const QString& description = QString(),
+			QObject* parent = 0);
 
 	/*! \brief A constructor
 	 *
@@ -296,6 +310,13 @@ public:
 	 */
 	QString getDefaultValue() const;
 
+	/*! \brief Get the description set for the connection.
+	 *
+	 *
+	 * \return QString contains the description.
+	*/
+	QString getDescription() const;
+
 	/*! \brief Convert a QString to int-format.
 	 *
 	 * This function can be used to convert a QString containing a number to
@@ -353,5 +374,8 @@ private:
 
 	//! \brief The default value of a port or signal.
 	QString defaultValue_;
+
+	//! \brief The description for the connection
+	QString description_;
 };
 #endif /* SIGNAL_H_ */

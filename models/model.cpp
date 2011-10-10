@@ -315,7 +315,7 @@ const QList<VLNV> Model::getHierarchyRefs() const {
 	return refs;
 }
 
-View* Model::findView(const QString name) {
+View* Model::findView(const QString name) const {
 	// search all views
 	for (int i = 0; i < views_.size(); ++i) {
 

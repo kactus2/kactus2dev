@@ -16,15 +16,28 @@
 
 #include <QDebug>
 
-Connection::Connection(const QString name, QObject* parent): QObject(parent),
-name_(name), direction_(General::DIRECTION_INVALID),
-type_(Connection::STD_LOGIC), left_(0), right_(0), defaultValue_() {
+Connection::Connection(const QString name, QObject* parent): 
+QObject(parent),
+name_(name), 
+direction_(General::DIRECTION_INVALID),
+type_(Connection::STD_LOGIC),
+left_(0), 
+right_(0), 
+defaultValue_(),
+description_() {
 }
 
 Connection::Connection(const QString name, General::Direction direction,
-					   int left, int right, QObject* parent):
-QObject(parent), name_(name), direction_(direction),
-type_(Connection::STD_LOGIC), left_(left), right_(right), defaultValue_() {
+					   int left, int right, const QString& description, 
+					   QObject* parent):
+QObject(parent),
+name_(name),
+direction_(direction),
+type_(Connection::STD_LOGIC), 
+left_(left),
+right_(right),
+defaultValue_(),
+description_(description) {
 
 	if (left != right)
 		type_ = Connection::STD_LOGIC_VECTOR;
@@ -32,8 +45,14 @@ type_(Connection::STD_LOGIC), left_(left), right_(right), defaultValue_() {
 
 
 Connection::Connection(const QString& name, Vector* vector, QObject* parent):
-		QObject(parent), name_(name), direction_(General::DIRECTION_INVALID),
-		type_(Connection::STD_LOGIC), left_(0), right_(0), defaultValue_() {
+QObject(parent), 
+name_(name), 
+direction_(General::DIRECTION_INVALID),
+type_(Connection::STD_LOGIC), 
+left_(0), 
+right_(0), 
+defaultValue_(),
+description_() {
 
 	// if the vector is not null then the connection is std_logic_vector
 	if (vector) {
@@ -267,6 +286,10 @@ QString Connection::getDefaultValue() const {
 
 void Connection::setDirection(const General::Direction direction) {
 	direction_ = direction;
+}
+
+QString Connection::getDescription() const {
+	return description_;
 }
 
 Connection::EndPoint::EndPoint(): 

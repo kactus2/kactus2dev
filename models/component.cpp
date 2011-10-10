@@ -1124,7 +1124,7 @@ void Component::addFileSet(FileSet* fileSet) {
 	fileSets_.append(QSharedPointer<FileSet>(fileSet));
 }
 
-View* Component::findView(const QString name) {
+View* Component::findView(const QString name) const {
 	return model_->findView(name);
 }
 
@@ -1612,6 +1612,14 @@ bool Component::hasFile( const QString& fileName ) const {
 		}
 	}
 	return false;
+}
+
+QString Component::getViewDescription( const QString& viewName ) const {
+	View* view = findView(viewName);
+	if (!view)
+		return QString();
+
+	return view->getDescription();
 }
 
 

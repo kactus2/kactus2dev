@@ -42,18 +42,34 @@ public:
 	/*! \brief The constructor
 	 *
 	 * \param instanceName The instance name defined in design
-	 * \param typeName the name of the component type containing the library.
-	 * <library>.<component name>
-	 */
+	 * \param typeName The name of the component type containing the library.
+	 *  <library>.<component name>
+	 * \param component Pointer to the component model of this instance.
+	 * \param compDeclaration Pointer to the component declaration.
+	 * \param description Contains the description for this instance.
+	 * \param parent Pointer to the owner of this instance.
+	 *
+	*/
 	ComponentInstance(const QString& instanceName, 
 		const QString& typeName,
 			QSharedPointer<Component> component,
 			ComponentType* compDeclaration,
+			const QString& description,
 			QObject* parent = 0);
 
 	//! \brief The destructor.
 	virtual ~ComponentInstance();
 
+	/*! \brief Create a port map for this component instance.
+	 *
+	 * \param signalName Name of the signal to connect to.
+	 * \param signalLeft The left bound of the signal.
+	 * \param signalRight The right bound of the signal.
+	 * \param portName The name of the port in this instance.
+	 * \param portLeft The left bound of the port.
+	 * \param portRight The right bound of the port.
+	 *
+	*/
 	void createPortMap(const QString& signalName, int signalLeft, int signalRight,
 		const QString& portName, int portLeft, int portRight);
 
@@ -158,6 +174,9 @@ private:
 	 * ComponentInstance does not own the component.
 	 */
 	QSharedPointer<Component> component_;
+
+	//! \brief The description of the component instance.
+	QString description_;
 };
 
 #endif /* COMPONENTINSTANCE_H_ */

@@ -198,7 +198,7 @@ public:
 	 * \return Pointer to the specified view. Null pointer if the view can't be
 	 * found.
 	 */
-	View* findView(const QString name);
+	View* findView(const QString name) const;
 
 	/*! \brief Add a new view to the model.
 	 *

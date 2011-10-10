@@ -38,13 +38,19 @@ public:
 		//! \brief The optional default value of the generic.
 		QString defaultValue_;
 
+		//! \brief The description for the generic.
+		QString description_;
+
 		/*! \brief The struct constructor
 		 *
 		 * \param name The name of the generic
 		 * \param type The type of the generic
+		 * \param defaultValue The default value for the generic
+		 * \param description The description for the generic
 		 */
 		VhdlGeneric(const QString name, const QString type,
-				const QString defaultValue = QString());
+				const QString& defaultValue = QString(),
+				const QString& description = QString());
 	};
 
 	/*! \brief The constructor
@@ -117,10 +123,11 @@ public:
 	 * \param direction Defines the direction of the port.
 	 * \param left Left bound of the port.
 	 * \param right Right bound of the port.
+	 * \param description Contains the description for the port.
 	 *
 	*/
 	void createPort(const QString& portName, General::Direction direction, 
-		int left, int right);
+		int left, int right, const QString& description = QString());
 
 private:
 
@@ -158,6 +165,9 @@ private:
      * \return Quoted string generic
      */
     QString quoteGenericValue(const QString& type, const QString& value) const;
+
+	//! \brief The description for the component declaration.
+	QString description_;
 
 };
 

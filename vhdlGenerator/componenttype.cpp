@@ -23,16 +23,25 @@
 #include <QDebug>
 
 ComponentType::VhdlGeneric::VhdlGeneric(const QString name, const QString type,
-		const QString defaultValue): name_(name),
-		type_(type), defaultValue_(defaultValue) {
+										const QString& defaultValue, 
+										const QString& description):
+name_(name),
+type_(type),
+defaultValue_(defaultValue),
+description_(description) {
 }
 
 ComponentType::ComponentType(QSharedPointer<Component> component, QObject* parent):
-				QObject(parent), typeName_(), generics_(),
-				ports_() {
+QObject(parent),
+typeName_(),
+generics_(),
+ports_(),
+description_() {
 
 	Q_ASSERT_X(component, "ComponentType constructor",
 		"Null component pointer given as parameter");
+
+	description_ = component->getDescription();
 
 	// the name of the component
 	typeName_ = component->getVlnv()->getName().remove(QString(".comp"));
@@ -86,6 +95,11 @@ void ComponentType::parseInterface(QSharedPointer<Component> component,
 }
 
 void ComponentType::generateComponentVhdl(QTextStream& vhdlStream) {
+	
+	if (!description_.isEmpty()) {
+		vhdlStream << "\t-- " << description_ << endl;
+	}
+	
 	// write the component name
 	vhdlStream << "\tcomponent " << typeName_ << endl;
 
@@ -128,6 +142,10 @@ void ComponentType::generateComponentVhdl(QTextStream& vhdlStream) {
 		for (QMap<QString, QSharedPointer<Connection> >::iterator i = ports_.begin();
 				i != ports_.end(); ++i) {
 
+			QString portDescription = i.value()->getDescription();
+			if (!portDescription.isEmpty()) {
+				vhdlStream << "\t\t\t-- " << portDescription << endl;
+			}
 			// write port
 			i.value()->writePortDeclaration(vhdlStream);
 
@@ -185,7 +203,8 @@ QStringList ComponentType::getPortNames() const {
 
 void ComponentType::createPort( const QString& portName, 
 							   General::Direction direction, 
-							   int left, int right ) {
+							   int left, int right,
+							   const QString& description) {
 
 	// if port already exists
 	if (ports_.contains(portName)) {
@@ -203,7 +222,7 @@ void ComponentType::createPort( const QString& portName,
 		return;
 	}
 
-	Connection* port = new Connection(portName, direction, left, right, this);
+	Connection* port = new Connection(portName, direction, left, right, description, this);
 	ports_.insert(portName, QSharedPointer<Connection>(port));
 }
 
