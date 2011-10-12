@@ -65,7 +65,7 @@ BusInterface::BusInterface(QDomNode &busInterface):
 						nameGroup_(busInterface),
 						attributes_(),
 						busType_(), abstractionType_(),
-						interfaceMode_(General::MONITOR),
+						interfaceMode_(General::MODE_UNDEFINED),
 						connectionRequired_(false), portMaps_(),
 						bitsInLau_(DEFAULT_BITS_IN_LAU),
 						bitSteering_(General::BITSTEERING_UNSPECIFIED),
@@ -301,7 +301,7 @@ BusInterface::BusInterface(QDomNode &busInterface):
 BusInterface::BusInterface(): nameGroup_(),
 		attributes_(),
 		busType_(), abstractionType_(),
-        interfaceMode_(General::MASTER),
+        interfaceMode_(General::MODE_UNDEFINED),
 		connectionRequired_(false), portMaps_(),
 		bitsInLau_(DEFAULT_BITS_IN_LAU),
 		bitSteering_(General::BITSTEERING_UNSPECIFIED),
@@ -470,7 +470,7 @@ void BusInterface::write(QXmlStreamWriter& writer) {
 		throw Write_error(QObject::tr("Mandatory element busType missing in "
 				"spirit:busInterface"));
 	}
-	// if bustype is found its written
+	// if bus type is found its written
 	else {
 		writer.writeEmptyElement("spirit:busType");
 		General::writeVLNVAttributes(writer, &busType_);

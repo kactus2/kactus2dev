@@ -49,6 +49,7 @@ mappings_(this) {
 	modes.append("mirroredSlave");
 	modes.append("mirroredSystem");
 	modes.append("monitor");
+	modes.append("undefined");
 	modeEdit_.addItems(modes);
 
 	// There are always 2 columns.
@@ -68,8 +69,7 @@ mappings_(this) {
 	layout->addWidget(&nameEdit_);
 	layout->addWidget(&modeLabel_);
 	layout->addWidget(&modeEdit_);
-	layout->addWidget(&mappings_);
-	layout->addStretch();
+	layout->addWidget(&mappings_, 1);
 
 	clear();
 }
@@ -249,11 +249,11 @@ void InterfaceEditor::setPortMaps() {
 	foreach (QSharedPointer<General::PortMap> portMap, portMaps) {
 
 		QTableWidgetItem* logicalItem = new QTableWidgetItem(portMap->logicalPort_);
-		logicalItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable);
+		logicalItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		mappings_.setItem(row, 0, logicalItem);
 
 		QTableWidgetItem* physItem = new QTableWidgetItem(portMap->physicalPort_);
-		physItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable);
+		physItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		mappings_.setItem(row, 1, physItem);
 
 		row++;

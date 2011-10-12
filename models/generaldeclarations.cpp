@@ -703,6 +703,9 @@ General::InterfaceMode General::str2Interfacemode(const QString& str,
 	else if (str == QString("monitor")) {
 		return General::MONITOR;
 	}
+	else if (str == QString("undefined")) {
+		return General::MODE_UNDEFINED;
+	}
 	else {
 		return defaultValue;
 	}
@@ -731,8 +734,8 @@ QString General::interfaceMode2Str(const General::InterfaceMode mode) {
 	case General::MONITOR: {
 		return QString("monitor");
 	}
-	default: { // this should never happen
-		return QString();
+	default: { 
+		return QString("undefined");
 	}
 	}
 }

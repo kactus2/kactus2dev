@@ -53,8 +53,6 @@ void ComponentTreeView::keyPressEvent( QKeyEvent* event ) {
 void ComponentTreeView::mousePressEvent( QMouseEvent* event ) {
 	pressedPoint_ = event->pos();
 	QTreeView::mousePressEvent(event);
-// 	QModelIndex index = indexAt(pressedPoint_);
-// 	setCurrentIndex(index);
 }
 
 void ComponentTreeView::mouseReleaseEvent( QMouseEvent* event ) {
@@ -62,15 +60,18 @@ void ComponentTreeView::mouseReleaseEvent( QMouseEvent* event ) {
 	// calculate the distance of the drag
 	int distance = (event->pos() - pressedPoint_).manhattanLength();
 
-	// make sure the drag distance is large enough to start the drag and widget is not locked
-	if (distance >= QApplication::startDragDistance() && !locked_) {
+	// make sure widget is not locked
+	if (!locked_) {
 
 		QModelIndex pressedIndex = indexAt(pressedPoint_);
 
 		QModelIndex releaseIndex = indexAt(event->pos());
-		if (!releaseIndex.isValid() || !pressedIndex.isValid()) {
+
+		// if either index is invalid or indexes are the same
+		if (!releaseIndex.isValid() || !pressedIndex.isValid() || 
+			(releaseIndex == pressedIndex)) {
 			
-			// do the norman release event functionality
+			// do the normal release event functionality
 			QTreeView::mouseReleaseEvent(event);
 
 			// restore the normal cursor

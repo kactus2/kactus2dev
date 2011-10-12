@@ -168,7 +168,7 @@
 				AdditionalDependencies="QtXmld4.lib QtGuid4.lib QtNetworkd4.lib QtCored4.lib QAxContainerd.lib"
 				OutputFile="$(ProjectDir)\..\lib\GCFd.dll"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="d:\user\maattaj\Libraries\Qt\4.7.2\lib"
+				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=""
 				SubSystem="0"

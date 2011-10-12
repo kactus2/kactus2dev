@@ -1675,7 +1675,8 @@ GenericEditProvider& BlockDiagram::getEditProvider()
 //-----------------------------------------------------------------------------
 void BlockDiagram::addInterface(DiagramColumn* column, QPointF const& pos)
 {
-    DiagramInterface *newItem = new DiagramInterface(lh_, component_, QSharedPointer<BusInterface>(), 0);
+	QSharedPointer<BusInterface> busif(new BusInterface());
+    DiagramInterface *newItem = new DiagramInterface(lh_, component_, busif, 0);
     newItem->setPos(snapPointToGrid(pos));
 
     connect(newItem, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));

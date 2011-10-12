@@ -105,7 +105,8 @@ enum InterfaceMode {
 	MIRROREDSLAVE,
 	SYSTEM,
 	MIRROREDSYSTEM,
-	MONITOR
+	MONITOR,
+	MODE_UNDEFINED
 };
 
 /*! \brief Convert QString into boolean value

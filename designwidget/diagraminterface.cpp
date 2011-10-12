@@ -112,12 +112,14 @@ QSharedPointer<BusInterface> DiagramInterface::getBusInterface() const
 
 void DiagramInterface::updateInterface()
 {
-    if (busInterface_ == 0)
-    {
-        setBrush(QBrush(Qt::black));
-        nameLabel_->setHtml("");
-        return;
-    }
+	Q_ASSERT(busInterface_);
+// 
+//     if (busInterface_ == 0)
+//     {
+//         setBrush(QBrush(Qt::black));
+//         nameLabel_->setHtml("");
+//         return;
+//     }
 
     switch (busInterface_->getInterfaceMode()) {
     case General::MASTER:
@@ -141,6 +143,10 @@ void DiagramInterface::updateInterface()
     case General::MONITOR:
         setBrush(QBrush(QColor(0xfd,0xfd,0xfd)));
         break;
+	// if undefined
+	default:
+		setBrush(QBrush(Qt::black));
+		break;
     }
 
     nameLabel_->setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">"
