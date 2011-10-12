@@ -26,8 +26,8 @@ DiagramConnectionEndPoint::DiagramConnectionEndPoint(QGraphicsItem* parent,
 //-----------------------------------------------------------------------------
 // Function: ~DiagramConnectionEndPoint()
 //-----------------------------------------------------------------------------
-DiagramConnectionEndPoint::~DiagramConnectionEndPoint()
-{
+DiagramConnectionEndPoint::~DiagramConnectionEndPoint() {
+	emit destroyed(this);
 }
 
 //-----------------------------------------------------------------------------

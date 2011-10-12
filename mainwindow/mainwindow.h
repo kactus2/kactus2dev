@@ -30,6 +30,7 @@ class MessageConsole;
 class DiagramInterface;
 class ComponentInstanceEditor;
 class ConfigurationEditor;
+class InterfaceEditor;
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -342,6 +343,9 @@ private:
 	//! \brief Set up the configuration editor.
 	void setupConfigurationEditor();
 
+	//! \brief Set up the interface editor.
+	void setupInterfaceEditor();
+
 	//! \brief The instance that manages the IP-Xact library
     LibraryHandler *libraryHandler_;
     
@@ -368,6 +372,9 @@ private:
 
 	//! \brief The widget to edit the configuration of designs.
 	ConfigurationEditor* configurationEditor_;
+
+	//! \brief The widget to edit the interfaces
+	InterfaceEditor* interfaceEditor_;
 
 	/*******************************************************************/
 	// the actions in the menus

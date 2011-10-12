@@ -57,6 +57,7 @@
 
 #include <ComponentInstanceEditor/componentinstanceeditor.h>
 #include <ConfigurationEditor/configurationeditor.h>
+#include <InterfaceEditor/interfaceeditor.h>
 
 #include <QCoreApplication>
 #include <QSettings>
@@ -86,16 +87,27 @@ portSummaryDock_(new QDockWidget(tr("Port Summary"), this)),
 interfaceSummaryDock_(new QDockWidget(tr("Interface Summary"), this)),
 instanceEditor_(0),
 configurationEditor_(0),
-actNew_(0), actSave_(0), actSaveAs_(0),
-actPrint_(0), editGroup_(0), actUndo_(0), actRedo_(0),
-actLibrarySearch_(0), actImportLibFile_(0),
-actExportLibFile_(0), actCheckIntegrity_(0), hwDesignGroup_(0),
+interfaceEditor_(0),
+actNew_(0),
+actSave_(0),
+actSaveAs_(0),
+actPrint_(0), 
+editGroup_(0),
+actUndo_(0), 
+actRedo_(0),
+actLibrarySearch_(0),
+actImportLibFile_(0),
+actExportLibFile_(0), 
+actCheckIntegrity_(0),
+hwDesignGroup_(0),
 actAddColumn_(0), 
 actGenVHDL_(0), 
 actGenModelSim_(0),
 actGenQuartus_(0), 
 actGenDocumentation_(0),
-diagramToolsGroup_(0), actToolSelect_(0), actToolConnect_(0),
+diagramToolsGroup_(0), 
+actToolSelect_(0), 
+actToolConnect_(0),
 actToolInterface_(0),
 actToolDraft_(0),
 actZoomIn_(0),
@@ -136,16 +148,17 @@ actExit_(0) {
     resize(1024, 768);
     setWindowState(Qt::WindowMaximized);
 
-	setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
-
 	// set up the widgets
 	setupMessageConsole();
 	setupDrawBoard();
     setupLibraryDock();
 	setupInstanceEditor();
 	setupConfigurationEditor();
+	setupInterfaceEditor();
 
 	restoreSettings();
+
+	setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
 
 	setupActions();
 }
@@ -763,6 +776,21 @@ void MainWindow::setupConfigurationEditor() {
 		this, SLOT(onDesignChanged()), Qt::UniqueConnection);
 }
 
+void MainWindow::setupInterfaceEditor() {
+
+	QDockWidget* interfaceDock = new QDockWidget(tr("Interface editor"), this);
+	interfaceDock->setObjectName(tr("Interface editor"));
+	interfaceDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+	interfaceDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
+
+	interfaceEditor_ = new InterfaceEditor(interfaceDock);
+	interfaceDock->setWidget(interfaceEditor_);
+	addDockWidget(Qt::RightDockWidgetArea, interfaceDock);
+
+// 	connect(interfaceEditor_, SIGNAL(contentChanged()),
+// 		this, SLOT(onDesignChanged()), Qt::UniqueConnection);
+}
+
 void MainWindow::onDesignChanged() {
 
 	// find the currently open editor
@@ -793,6 +821,8 @@ void MainWindow::onClearItemSelection() {
 	interfaceSummaryDock_->setWidget(0);
 
 	instanceEditor_->clear();
+
+	interfaceEditor_->clear();
 }
 
 void MainWindow::onComponentSelected( DiagramComponent* component ) {
@@ -819,6 +849,8 @@ void MainWindow::onComponentSelected( DiagramComponent* component ) {
 
 void MainWindow::onPortSelected( DiagramPort* port ) {
 
+	Q_ASSERT(port);
+
 	// port and interface can not be selected simultaneously so clear the port
 	QWidget* oldInterfaceSummary = interfaceSummaryDock_->widget();
 	if (oldInterfaceSummary)
@@ -840,9 +872,13 @@ void MainWindow::onPortSelected( DiagramPort* port ) {
 		delete oldPortSummary;
 	PortmapInterfaceTab* portSummary = new PortmapInterfaceTab(port, portSummaryDock_);
 	portSummaryDock_->setWidget(portSummary);
+
+	interfaceEditor_->setInterface(port);
 }
 
 void MainWindow::onInterfaceSelected( DiagramInterface* interface ) {
+
+	Q_ASSERT(interface);
 
 	// port and interface can not be selected simultaneously so clear the port
 	QWidget* oldPortSummary = portSummaryDock_->widget();
@@ -862,6 +898,8 @@ void MainWindow::onInterfaceSelected( DiagramInterface* interface ) {
 		GeneralInterfaceTab* interfaceSummary = new GeneralInterfaceTab(interface, interfaceSummaryDock_);
 		interfaceSummaryDock_->setWidget(interfaceSummary);
 	}
+
+	interfaceEditor_->setInterface(interface);
 }
 
 void MainWindow::onImportLibFile() {

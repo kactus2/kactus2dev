@@ -93,6 +93,13 @@ public:
      */
     virtual QString name() const;
 
+	/*! \brief Set the name for the interface.
+	 *
+	 * \param name The name to set for the interface.
+	 *
+	*/
+	virtual void setName(const QString& name);
+
     /*!
      *  Called when a connection between this and another end point is done.
      *
@@ -133,6 +140,13 @@ public:
     virtual bool isHierarchical() const;
 
     void setDirection(QVector2D const& dir);
+
+	/*! \brief Set the interface mode for the end point.
+	 *
+	 * \param mode The interface mode to set.
+	 *
+	*/
+	virtual void setInterfaceMode(General::InterfaceMode mode);
 
 signals:
     //! \brief Send an error message to the user.

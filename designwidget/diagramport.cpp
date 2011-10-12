@@ -89,6 +89,10 @@ QString DiagramPort::name() const
     return busInterface_->getName();
 }
 
+void DiagramPort::setName( const QString& name ) {
+	busInterface_->setName(name);
+	updateInterface();
+}
 
 QSharedPointer<BusInterface> DiagramPort::getBusInterface() const
 {
@@ -579,4 +583,9 @@ bool DiagramPort::askCompatibleMode(QSharedPointer<BusInterface> otherBusIf,
     }
 
     return true;
+}
+
+void DiagramPort::setInterfaceMode( General::InterfaceMode mode ) {
+	busInterface_->setInterfaceMode(mode);
+	updateInterface();
 }

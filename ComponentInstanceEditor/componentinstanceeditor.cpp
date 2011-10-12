@@ -42,9 +42,6 @@ editProvider_() {
 		this, SLOT(onDisplayNameChanged(const QString)), Qt::UniqueConnection);
 	connect(&nameGroup_, SIGNAL(descriptionChanged(const QString)),
 		this, SLOT(onDescriptionChanged(const QString&)), Qt::UniqueConnection);
-
-// 	connect(&configurableElements_, SIGNAL(contentChanged()),
-// 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
 ComponentInstanceEditor::~ComponentInstanceEditor() {

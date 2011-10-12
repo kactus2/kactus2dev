@@ -71,6 +71,13 @@ public:
      */
     virtual QString name() const;
 
+	/*! \brief Set the name for the port.
+	 *
+	 * \param name The name to set for the port.
+	 *
+	*/
+	virtual void setName(const QString& name);
+
     /*!
      *  Called when a connection between this and another end point is done.
      *
@@ -111,6 +118,13 @@ public:
      *
      */
     virtual bool isHierarchical() const;
+
+	/*! \brief Set the interface mode for the end point.
+	 *
+	 * \param mode The interface mode to set.
+	 *
+	*/
+	virtual void setInterfaceMode(General::InterfaceMode mode);
 
 protected:
     virtual QVariant itemChange(GraphicsItemChange change,

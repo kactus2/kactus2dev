@@ -100,6 +100,10 @@ QString DiagramInterface::name() const
     return busInterface_->getName();
 }
 
+void DiagramInterface::setName( const QString& name ) {
+	busInterface_->setName(name);
+	updateInterface();
+}
 
 QSharedPointer<BusInterface> DiagramInterface::getBusInterface() const
 {
@@ -633,4 +637,9 @@ QList<Port*> DiagramInterface::getPorts() const
     }
 
     return ports;
+}
+
+void DiagramInterface::setInterfaceMode( General::InterfaceMode mode ) {
+	busInterface_->setInterfaceMode(mode);
+	updateInterface();
 }

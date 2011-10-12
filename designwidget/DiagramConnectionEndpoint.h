@@ -121,6 +121,13 @@ public:
      */
     virtual QString name() const = 0;
 
+	/*! \brief Set the name of the end point.
+	 *
+	 * \param name The name to set for the end point.
+	 *
+	*/
+	virtual void setName(const QString& name) = 0;
+
     /*!
      *  Called when a connection between this and another end point is done.
      *
@@ -165,9 +172,19 @@ public:
      */
     virtual bool isHierarchical() const = 0;
 
+	/*! \brief Set the interface mode for the end point.
+	 *
+	 * \param mode The interface mode to set.
+	 *
+	*/
+	virtual void setInterfaceMode(General::InterfaceMode mode) = 0;
+
 signals:
     //! Signals that the contents of the interface have been changed.
     void contentChanged();
+
+	//! \brief Emitted when a DiagramConnectionEndPoint is destroyed.
+	void destroyed(DiagramConnectionEndPoint* endPoint);
 
 private:
     // Disable copying.
