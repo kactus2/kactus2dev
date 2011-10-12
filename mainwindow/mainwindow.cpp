@@ -52,8 +52,6 @@
 #include <IPXactWrapper/ComponentEditor/ipxactcomponenteditor.h>
 
 #include <PropertyWidget/messageconsole.h>
-#include <PropertyWidget/portmapinterfacetab.h>
-#include <PropertyWidget/generalinterfacetab.h>
 
 #include <ComponentInstanceEditor/componentinstanceeditor.h>
 #include <ConfigurationEditor/configurationeditor.h>
@@ -83,8 +81,6 @@ designTabs_(0),
 dialer_(0),
 previewBox_(0),
 console_(0),
-portSummaryDock_(new QDockWidget(tr("Port Summary"), this)),
-interfaceSummaryDock_(new QDockWidget(tr("Interface Summary"), this)),
 instanceEditor_(0),
 configurationEditor_(0),
 interfaceEditor_(0),
@@ -119,18 +115,6 @@ actProtect_(0),
 actSettings_(0),
 actAbout_(0), 
 actExit_(0) {
-
-	portSummaryDock_->setObjectName(tr("Port Summary"));
-	portSummaryDock_->setAllowedAreas(Qt::LeftDockWidgetArea | 
-		Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
-	portSummaryDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
-	addDockWidget(Qt::BottomDockWidgetArea, portSummaryDock_);
-
-	interfaceSummaryDock_->setObjectName(tr("Interface Summary"));
-	interfaceSummaryDock_->setAllowedAreas(Qt::LeftDockWidgetArea |
-		Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
-	interfaceSummaryDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
-	tabifyDockWidget(portSummaryDock_, interfaceSummaryDock_);
 
     // set the identification tags for the application
     QCoreApplication::setOrganizationDomain(tr("tut.fi"));
@@ -348,10 +332,6 @@ void MainWindow::onTabCloseRequested( int index )
             }
         }
     }
-
-	// because a tab is closed there is no point to display any selected items
-	// in the property widget
-	//propertyWidget_->onClearItemSelection();
 
 	// remove the widget from the tabs
 	designTabs_->removeTab(index);
@@ -737,8 +717,7 @@ void MainWindow::setupMessageConsole() {
 
 	console_ = new MessageConsole(messageDock);
 	messageDock->setWidget(console_);
-	tabifyDockWidget(portSummaryDock_, messageDock);
-	//addDockWidget(Qt::BottomDockWidgetArea, messageDock);
+	addDockWidget(Qt::BottomDockWidgetArea, messageDock);
 
 	connect(this, SIGNAL(errorMessage(const QString&)),
 		console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
@@ -810,16 +789,6 @@ void MainWindow::onDesignChanged() {
 
 void MainWindow::onClearItemSelection() {
 
-	QWidget* oldPortSummary = portSummaryDock_->widget();
-	if (oldPortSummary)
-		delete oldPortSummary;
-	portSummaryDock_->setWidget(0);
-
-	QWidget* interfaceSummary = interfaceSummaryDock_->widget();
-	if (interfaceSummary)
-		delete interfaceSummary;
-	interfaceSummaryDock_->setWidget(0);
-
 	instanceEditor_->clear();
 
 	interfaceEditor_->clear();
@@ -827,11 +796,7 @@ void MainWindow::onClearItemSelection() {
 
 void MainWindow::onComponentSelected( DiagramComponent* component ) {
 
-	// remove the possible previous port
-	QWidget* oldPortSummary = portSummaryDock_->widget();
-	if (oldPortSummary)
-		delete oldPortSummary;
-	portSummaryDock_->setWidget(0);
+	Q_ASSERT(component);
 
 	// update the instance editor
 	instanceEditor_->setComponent(component);
@@ -845,17 +810,13 @@ void MainWindow::onComponentSelected( DiagramComponent* component ) {
     {
         libraryHandler_->onClearSelection();
     }
+
+	interfaceEditor_->clear();
 }
 
 void MainWindow::onPortSelected( DiagramPort* port ) {
 
 	Q_ASSERT(port);
-
-	// port and interface can not be selected simultaneously so clear the port
-	QWidget* oldInterfaceSummary = interfaceSummaryDock_->widget();
-	if (oldInterfaceSummary)
-		delete oldInterfaceSummary;
-	interfaceSummaryDock_->setWidget(0);
 
 	// if the port has an encompassing component then it is selected
 	DiagramComponent* component = port->encompassingComp();
@@ -866,13 +827,6 @@ void MainWindow::onPortSelected( DiagramPort* port ) {
 	else
 		libraryHandler_->onClearSelection();
 
-	// remove the possible previous port
-	QWidget* oldPortSummary = portSummaryDock_->widget();
-	if (oldPortSummary)
-		delete oldPortSummary;
-	PortmapInterfaceTab* portSummary = new PortmapInterfaceTab(port, portSummaryDock_);
-	portSummaryDock_->setWidget(portSummary);
-
 	interfaceEditor_->setInterface(port);
 }
 
@@ -880,24 +834,7 @@ void MainWindow::onInterfaceSelected( DiagramInterface* interface ) {
 
 	Q_ASSERT(interface);
 
-	// port and interface can not be selected simultaneously so clear the port
-	QWidget* oldPortSummary = portSummaryDock_->widget();
-	if (oldPortSummary)
-		delete oldPortSummary;
-	portSummaryDock_->setWidget(0);
-
 	instanceEditor_->clear();
-
-	// remove the possible previous interface
-	QWidget* oldInterfaceSummary = interfaceSummaryDock_->widget();
-	if (oldInterfaceSummary)
-		delete oldInterfaceSummary;
-	interfaceSummaryDock_->setWidget(0);
-
-	if (interface->getBusInterface()) {
-		GeneralInterfaceTab* interfaceSummary = new GeneralInterfaceTab(interface, interfaceSummaryDock_);
-		interfaceSummaryDock_->setWidget(interfaceSummary);
-	}
 
 	interfaceEditor_->setInterface(interface);
 }
@@ -1299,8 +1236,6 @@ void MainWindow::onTabChanged(int index)
     {
         onDrawModeChanged(MODE_SELECT);
     }
-
-    //propertyWidget_->onClearItemSelection();
     
     // Update the menu strip.
     updateMenuStrip();
@@ -1351,7 +1286,6 @@ void MainWindow::closeEvent(QCloseEvent* event)
             }
         }
 
-        //propertyWidget_->onClearItemSelection();
         designTabs_->removeTab(designTabs_->currentIndex());
         delete doc;
         doc = 0;

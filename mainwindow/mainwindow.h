@@ -361,12 +361,6 @@ private:
 	//! \brief The widget to print errors and notifications to user.
 	MessageConsole* console_;
 
-	//! \brief Pointer to the dock widget used to display the details of a port.
-	QDockWidget* portSummaryDock_;
-
-	//! \brief Pointer to the dock widget used to display the details of an interface.
-	QDockWidget* interfaceSummaryDock_;
-
 	//! \brief The widget to edit the settings of a component instance.
 	ComponentInstanceEditor* instanceEditor_;
 
