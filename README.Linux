@@ -15,3 +15,6 @@ success reports
 ---------------
 Tested on Debian GNU/Linux 6.0/KDE 4.4.5/Qt 4.6.3 on 8th June 2011 by
 pekka.jaaskelainen@tut.fi.
+
+Tested on Debian GNU/Linux 6.0/Gnome 2.30.2/Qt 4.6.3 on 14th Oct 2011 by
+lauri.matilainen@tut.fi
