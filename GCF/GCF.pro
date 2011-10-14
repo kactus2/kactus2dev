@@ -16,7 +16,7 @@ isEmpty(PROJECT_BASE) {
     exists( $$GCF_BASE/tools/tools.pro ) {
         SUBDIRS += tools
     }
-    SUBDIRS += examples
+    
 } else {
     message("Library and DLLs will be created in " $$PROJECT_BASE)
 }

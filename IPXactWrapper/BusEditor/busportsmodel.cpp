@@ -563,7 +563,7 @@ void BusPortsModel::addSignal() {
 	emit contentChanged();
 }
 
-void BusPortsModel::addSignalOptions( QModelIndexList& indexes ) {
+void BusPortsModel::addSignalOptions(const QModelIndexList& indexes ) {
 	QList<BusPortsModel::Port> ports;
 
 	// find all ports that match given indexes
@@ -807,7 +807,7 @@ General::Direction BusPortsModel::portDirection2Direction( PortDirection directi
 	}
 }
 
-void BusPortsModel::removeIndexes( QModelIndexList& indexes ) {
+void BusPortsModel::removeIndexes(const QModelIndexList& indexes ) {
 
 	QList<BusPortsModel::Port> ports;
 

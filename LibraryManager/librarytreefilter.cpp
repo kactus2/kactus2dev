@@ -255,14 +255,21 @@ bool LibraryTreeFilter::checkVLNVs( const QList<VLNV*>& list ) const {
 
 		int pos = 0;
 
-		// if the vlnv matches the search rules
-		if ((vendorValidator_.validate(vlnv->getVendor(), pos) ==
+                // QT library Forced to use temp variables
+                QString vendor = vlnv->getVendor();
+                QString library =  vlnv->getLibrary();
+                QString name =  vlnv->getName();
+                QString version =  vlnv->getVersion();
+
+
+                // if the vlnv matches the search rules
+                if ((vendorValidator_.validate(vendor, pos) ==
 			QValidator::Acceptable) &&
-			(libraryValidator_.validate(vlnv->getLibrary(), pos) ==
+                        (libraryValidator_.validate(library, pos) ==
 			QValidator::Acceptable) &&
-			(nameValidator_.validate(vlnv->getName(), pos) ==
+                        (nameValidator_.validate(name, pos) ==
 			QValidator::Acceptable) &&
-			(versionValidator_.validate(vlnv->getVersion(), pos) ==
+                        (versionValidator_.validate(version, pos) ==
 			QValidator::Acceptable)) {
 
 				return true;

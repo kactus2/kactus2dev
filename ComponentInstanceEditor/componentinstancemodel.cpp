@@ -7,7 +7,7 @@
 
 #include "componentinstancemodel.h"
 
-#include <designWidget/diagramcomponent.h>
+#include <designwidget/diagramcomponent.h>
 #include <designwidget/blockdiagram.h>
 #include <designwidget/designwidget.h>
 #include <designwidget/DiagramChangeCommands.h>

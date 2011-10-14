@@ -408,8 +408,10 @@ QList<LibraryItem*> LibraryItem::getVendors( const QRegExpValidator& validator )
 		case LibraryItem::TYPE: {
 			foreach (LibraryItem* item, childItems_) {
 
-				// if the child's name passes the validation
-				if (QValidator::Acceptable == validator.validate(item->getName(), pos))
+                                QString name = item->getName();
+
+                                // if the child's name passes the validation
+                                if (QValidator::Acceptable == validator.validate(name, pos))
 					list.append(item);
 			}
 			break;
@@ -459,8 +461,10 @@ QList<LibraryItem*> LibraryItem::getLibraries( const QRegExpValidator& validator
 		case LibraryItem::VENDOR: {
 			foreach (LibraryItem* item, childItems_) {
 
-				// if the child's name passes the validation
-				if (QValidator::Acceptable == validator.validate(item->getName(), pos))
+                            QString name = item->getName();
+
+                            // if the child's name passes the validation
+                                if (QValidator::Acceptable == validator.validate(name, pos))
 					list.append(item);
 			}
 			break;

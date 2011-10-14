@@ -541,7 +541,7 @@ void LibraryData::openLibraryFile( const QString filePath /*= QString()*/ ) {
 
 VLNV* LibraryData::getOriginalPointer( const VLNV& vlnv ) const {
 	if (libraryItems_.contains(vlnv)) {
-		QMap<VLNV, QString>::iterator i = libraryItems_.find(vlnv);
+                QMap<VLNV, QString>::const_iterator i = libraryItems_.find(vlnv);
 		VLNV* vlnvP = const_cast<VLNV*>(&i.key());
 		return vlnvP;
 	}

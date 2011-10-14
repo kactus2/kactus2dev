@@ -119,7 +119,9 @@ void DialerWidget::onVendorChanged( const QString& vendorText ) {
 	// get the library items from the vendors that matched 
 	int pos = 0;
 	foreach (LibraryItem* item, vendors_) {
-		if (validator.validate(item->getName(), pos) == QValidator::Acceptable) {
+
+                QString name = item->getName();
+                if (validator.validate(name, pos) == QValidator::Acceptable) {
 			libraries_ += item->getLibraries();
 		}
 	}
@@ -158,7 +160,9 @@ void DialerWidget::onLibraryChanged( const QString& libraryText ) {
 
 	int pos = 0;
 	foreach (LibraryItem* item, libraries_) {
-		if (validator.validate(item->getName(), pos) == QValidator::Acceptable) {
+
+                QString name = item->getName();
+                if (validator.validate(name, pos) == QValidator::Acceptable) {
 			names_ += item->getNames();
 		}
 	}
@@ -197,7 +201,9 @@ void DialerWidget::onNameChanged( const QString& nameText ) {
 
 	int pos = 0;
 	foreach (LibraryItem* item, names_) {
-		if (validator.validate(item->getName(), pos) == QValidator::Acceptable) {
+
+                QString name = item->getName();
+                if (validator.validate(name, pos) == QValidator::Acceptable) {
 			versions_ += item->getVersions();
 		}
 	}

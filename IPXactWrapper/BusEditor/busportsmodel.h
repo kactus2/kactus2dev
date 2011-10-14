@@ -291,14 +291,14 @@ public slots:
 	void addSignal();
 
 	//! \brief Adds all signal modes for selected ports.
-	void addSignalOptions(QModelIndexList& indexes);
+        void addSignalOptions(const QModelIndexList& indexes);
 
 	/*! \brief Remove the items with given indexes from the model
 	 *
 	 * \param indexes List of QModelIndexes that identify items to remove.
 	 *
 	*/
-	void removeIndexes(QModelIndexList& indexes);
+        void removeIndexes(const QModelIndexList& indexes);
 
 	/*! \brief Copy the items with given indexes in the model.
 	 *
