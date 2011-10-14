@@ -462,6 +462,15 @@ public:
 	*/
 	virtual ~Design();
 
+	/*! \brief Clone this design and return pointer to the copy.
+	 * 
+	 * This is virtual function so it can be used to make a copy of classes that
+	 * inherit LibraryComponent.
+	 *
+	 * \return QSharedPointer<LibraryComponent> Pointer to the cloned design.
+	*/
+	virtual QSharedPointer<LibraryComponent> clone();
+
 	/*! \brief Set the vlnv
 	 *
 	 * \param vlnv Reference to the vlnv to set

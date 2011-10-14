@@ -124,6 +124,12 @@ public:
 	*/
 	DesignConfiguration(const VLNV& vlnv);
 
+	/*! \brief The default constructor.
+	 *
+	 * 
+	*/
+	DesignConfiguration();
+
 	//! \brief Copy constructor
 	DesignConfiguration(const DesignConfiguration& other);
 
@@ -134,6 +140,15 @@ public:
 	 *
 	 */
 	virtual ~DesignConfiguration();
+
+	/*! \brief Clone this design configuration and return pointer to the copy.
+	 * 
+	 * This is virtual function so it can be used to make a copy of classes that
+	 * inherit LibraryComponent.
+	 *
+	 * \return QSharedPointer<LibraryComponent> Pointer to the cloned design configuration.
+	*/
+	virtual QSharedPointer<LibraryComponent> clone();
 
 	/*! \brief Set the vlnv
 	 *

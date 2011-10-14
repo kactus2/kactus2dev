@@ -50,7 +50,7 @@ public:
 	 * \return True if add was succesfull. False if file was not added i.e.
 	 * if the VLNV was already in the library
 	 */
-	virtual bool registerVLNV(const VLNV& vlnv, const QString& path) = 0;
+	//virtual bool registerVLNV(const VLNV& vlnv, const QString& path) = 0;
 
 	/*! \brief Import an existing library file to the library.
 	 *
@@ -174,7 +174,7 @@ public:
 	 * \param path The path to the object file.
 	 *
 	*/
-	virtual void updatePath(const VLNV& vlnv, const QString& path) = 0;
+	//virtual void updatePath(const VLNV& vlnv, const QString& path) = 0;
 
 	/*! \brief Update the file references from old component to new component.
 	 * 
@@ -274,8 +274,8 @@ public Q_SLOTS:
 	 * \param path Path to the object's IP-Xact file in the file system.
 	 *
 	*/
-	virtual void onUpdateObject(const QSharedPointer<LibraryComponent> object, 
-		const QString& path) = 0;
+// 	virtual void onUpdateObject(const QSharedPointer<LibraryComponent> object, 
+// 		const QString& path) = 0;
 
 	/*! \brief Edit an item in the library
 	 *

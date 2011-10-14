@@ -101,6 +101,10 @@ Design& Design::operator=( const Design& other ) {
 Design::~Design() {
 }
 
+QSharedPointer<LibraryComponent> Design::clone() {
+	return QSharedPointer<LibraryComponent>(new Design(*this));
+}
+
 //-----------------------------------------------------------------------------
 // Function: ColumnDesc()
 //-----------------------------------------------------------------------------
@@ -940,3 +944,5 @@ void Design::setVlnv( const VLNV& vlnv ) {
 	LibraryComponent::setVlnv(vlnv);
 	LibraryComponent::vlnv_->setType(VLNV::DESIGN);
 }
+
+

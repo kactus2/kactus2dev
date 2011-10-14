@@ -646,6 +646,18 @@ QList<Port*> DiagramInterface::getPorts() const
 }
 
 void DiagramInterface::setInterfaceMode( General::InterfaceMode mode ) {
+	Q_ASSERT(busInterface_);
 	busInterface_->setInterfaceMode(mode);
 	updateInterface();
+}
+
+QString DiagramInterface::description() const {
+	Q_ASSERT(busInterface_);
+	return busInterface_->getDescription();
+}
+
+void DiagramInterface::setDescription( const QString& description ) {
+	Q_ASSERT(busInterface_);
+	busInterface_->setDescription(description);
+	emit contentChanged();
 }

@@ -207,38 +207,44 @@ void ComponentPacketizeCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: EndPointChangeCommand()
 //-----------------------------------------------------------------------------
-EndPointChangeCommand::EndPointChangeCommand(DiagramConnectionEndPoint* endPoint, QString const& newName,
-                                             General::InterfaceMode newMode, QUndoCommand* parent)
-    : QUndoCommand(parent), endPoint_(endPoint),
-      oldName_(endPoint->name()), oldMode_(endPoint->getBusInterface()->getInterfaceMode()),
-      newName_(newName), newMode_(newMode)
-{
+EndPointChangeCommand::EndPointChangeCommand(DiagramConnectionEndPoint* endPoint, 
+											 QString const& newName,
+                                             General::InterfaceMode newMode,
+											 QString const& newDescription,
+											 QUndoCommand* parent):
+QUndoCommand(parent), 
+endPoint_(endPoint),
+oldName_(endPoint->name()), 
+oldMode_(endPoint->getBusInterface()->getInterfaceMode()),
+oldDescription_(endPoint->description()),
+newName_(newName),
+newMode_(newMode),
+newDescription_(newDescription) {
 }
 
 //-----------------------------------------------------------------------------
 // Function: ~EndPointChangeCommand()
 //-----------------------------------------------------------------------------
-EndPointChangeCommand::~EndPointChangeCommand()
-{
+EndPointChangeCommand::~EndPointChangeCommand() {
 }
 
 //-----------------------------------------------------------------------------
 // Function: undo()
 //-----------------------------------------------------------------------------
-void EndPointChangeCommand::undo()
-{
+void EndPointChangeCommand::undo() {
     endPoint_->getBusInterface()->setName(oldName_);
     endPoint_->getBusInterface()->setInterfaceMode(oldMode_);
+	endPoint_->setDescription(oldDescription_);
     endPoint_->updateInterface();
 }
 
 //-----------------------------------------------------------------------------
 // Function: redo()
 //-----------------------------------------------------------------------------
-void EndPointChangeCommand::redo()
-{
+void EndPointChangeCommand::redo() {
     endPoint_->getBusInterface()->setName(newName_);
     endPoint_->getBusInterface()->setInterfaceMode(newMode_);
+	endPoint_->setDescription(newDescription_);
     endPoint_->updateInterface();
 }
 

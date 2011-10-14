@@ -15,6 +15,7 @@
 #include <QComboBox>
 #include <QLabel>
 #include <QTableWidget>
+#include <QPlainTextEdit>
 
 class DiagramConnectionEndPoint;
 
@@ -68,6 +69,11 @@ private slots:
 	*/
 	void onPortMapChanged();
 
+	/*! \brief Handler for changes in the description editor.
+	 *
+	*/
+	void onDescriptionChanged();
+
 signals:
 
 	//! \brief Emitted when contents of the editor changes.
@@ -106,8 +112,17 @@ private:
 	//! \brief Pointer to the interface being edited.
 	DiagramConnectionEndPoint* interface_;
 
+	//! \brief Label for the mappings of logical and physical ports
+	QLabel mappingsLabel_;
+
 	//! \brief Contains the mapping of ports and logical signals
 	QTableWidget mappings_;
+
+	//! \brief Label for the description editor
+	QLabel descriptionLabel_;
+
+	//! \brief Editor for the description of the interface.
+	QPlainTextEdit descriptionEdit_;
 
 };
 

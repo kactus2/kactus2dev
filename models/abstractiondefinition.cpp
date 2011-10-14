@@ -133,6 +133,10 @@ AbstractionDefinition::~AbstractionDefinition() {
 	ports_.clear();
 }
 
+QSharedPointer<LibraryComponent> AbstractionDefinition::clone() {
+	return QSharedPointer<LibraryComponent>(new AbstractionDefinition(*this));
+}
+
 void AbstractionDefinition::write(QFile& file) {
 	// create a writer instance and set it to operate on the given file
 	QXmlStreamWriter writer(&file);

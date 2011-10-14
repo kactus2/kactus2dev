@@ -100,6 +100,20 @@ public:
 	*/
 	virtual void setName(const QString& name);
 
+	/*! \brief Get the description of the interface.
+	 *
+	 *
+	 * \return QString contains the description.
+	*/
+	virtual QString description() const;
+
+	/*! \brief Set the description for the interface.
+	 *
+	 * \param description Contains the description to set.
+	 *
+	*/
+	virtual void setDescription(const QString& description);
+
     /*!
      *  Called when a connection between this and another end point is done.
      *

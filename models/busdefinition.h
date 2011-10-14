@@ -12,7 +12,7 @@
 #include <common/KactusAttribute.h>
 
 #include <LibraryManager/vlnv.h>
-
+ 
 #include <QDomDocument>
 #include <QSharedPointer>
 #include <QStringList>
@@ -53,6 +53,15 @@ public:
 
 	//! \brief The destructor
 	virtual ~BusDefinition();
+
+	/*! \brief Clone this bus definition and return pointer to the copy.
+	 * 
+	 * This is virtual function so it can be used to make a copy of classes that
+	 * inherit LibraryComponent.
+	 *
+	 * \return QSharedPointer<LibraryComponent> Pointer to the cloned bus definition.
+	*/
+	virtual QSharedPointer<LibraryComponent> clone();
 
 	/*! \brief Set the vlnv
 	*

@@ -10,14 +10,14 @@
 #include <LibraryManager/vlnv.h>
 #include "generaldeclarations.h"
 #include "parameter.h"
-
+ 
 #include <QDomNode>
 #include <QString>
 #include <QList>
 #include <QSharedPointer>
 #include <QMap>
 #include <QXmlStreamWriter>
-#include <QStringList>
+#include <QStringList>  
 
 class MasterInterface;
 class SlaveInterface;

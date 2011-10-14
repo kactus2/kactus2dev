@@ -128,6 +128,20 @@ public:
 	*/
 	virtual void setName(const QString& name) = 0;
 
+	/*! \brief Get the description of the end point.
+	 *
+	 *
+	 * \return QString contains the description.
+	*/
+	virtual QString description() const = 0;
+
+	/*! \brief Set the description for the end point.
+	 *
+	 * \param description Contains the description to set.
+	 *
+	*/
+	virtual void setDescription(const QString& description) = 0;
+
     /*!
      *  Called when a connection between this and another end point is done.
      *

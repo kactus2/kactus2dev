@@ -237,6 +237,10 @@ GeneratorChain::~GeneratorChain() {
 	return;
 }
 
+QSharedPointer<LibraryComponent> GeneratorChain::clone() {
+	return QSharedPointer<LibraryComponent>(new GeneratorChain(*this));
+}
+
 void GeneratorChain::write(QFile& file) {
 	// create a writer instance and set it to operate on the given file
 	QXmlStreamWriter writer(&file);

@@ -7,7 +7,7 @@
 #include "buildcommand.h"
 #include "generaldeclarations.h"
 #include "buildmodel.h"
-
+ 
 #include <QString>
 #include <QMap>
 #include <QDomNode>

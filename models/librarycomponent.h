@@ -62,6 +62,15 @@ public:
 	 */
 	virtual ~LibraryComponent();
 
+	/*! \brief Clone this library component and return pointer to the copy.
+	 * 
+	 * This is virtual function so it can be used to make a copy of classes that
+	 * inherit LibraryComponent.
+	 *
+	 * \return QSharedPointer<LibraryComponent> Pointer to the cloned library component.
+	*/
+	virtual QSharedPointer<LibraryComponent> clone() = 0;
+
 	/*! \brief Get the description of the document
 	 *
 	 * \return QString containing the description of the document.

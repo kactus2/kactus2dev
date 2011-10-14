@@ -567,6 +567,10 @@ Component::~Component() {
 	return;
 }
 
+QSharedPointer<LibraryComponent> Component::clone() {
+	return QSharedPointer<LibraryComponent>(new Component(*this));
+}
+
 void Component::write(QFile& file) {
 	// create a writer instance and set it to operate on the given file
 	QXmlStreamWriter writer(&file);
@@ -1621,6 +1625,8 @@ QString Component::getViewDescription( const QString& viewName ) const {
 
 	return view->getDescription();
 }
+
+
 
 
 

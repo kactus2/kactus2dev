@@ -940,6 +940,7 @@ void MainWindow::saveCurrentAs() {
 	if (doc != 0)
     {
         doc->saveAs();
+		onTabChanged(designTabs_->currentIndex());
 	}
 }
 
@@ -953,6 +954,7 @@ void MainWindow::saveCurrent()
     if (doc != 0)
     {
         doc->save();
+		onTabChanged(designTabs_->currentIndex());
     }
 }
 
@@ -1220,8 +1222,10 @@ void MainWindow::onTabChanged(int index)
 	if (designwidget && designwidget->getHierComponent()->getComponentImplementation() == KactusAttribute::KTS_HW) {
 		configurationEditor_->setConfiguration(designwidget, designwidget->isProtected());
 	}
-	else if (designwidget) 
+	
+	else if (designwidget) {
 		configurationEditor_->setConfiguration(designwidget, true);
+	}
 	// active tab is not design widget so clear the configuration editor
 	else {
 		configurationEditor_->clear();

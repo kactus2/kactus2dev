@@ -10,7 +10,7 @@
 
 // exception include
 #include "../exceptions/parse_error.h"
-
+  
 #include <QDomDocument>
 #include <QString>
 #include <QDomNamedNodeMap>
@@ -148,6 +148,10 @@ BusDefinition & BusDefinition::operator=( BusDefinition const& other ) {
 
 BusDefinition::~BusDefinition() {
 	systemGroupNames_.clear();
+}
+
+QSharedPointer<LibraryComponent> BusDefinition::clone() {
+	return QSharedPointer<LibraryComponent>(new BusDefinition(*this));
 }
 
 void BusDefinition::write(QFile& file) {

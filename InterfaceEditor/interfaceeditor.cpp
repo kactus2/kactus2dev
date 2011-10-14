@@ -22,6 +22,9 @@
 #include <QStringList>
 #include <QHeaderView>
 
+//! \brief The maximum height for the description editor.
+static const int MAX_DESC_HEIGHT = 50;
+
 InterfaceEditor::InterfaceEditor(QWidget *parent):
 QWidget(parent),
 busType_(this),
@@ -31,7 +34,10 @@ nameLabel_(tr("Interface name"), this),
 modeEdit_(this),
 modeLabel_(tr("Interface mode"), this),
 interface_(NULL),
-mappings_(this) {
+mappingsLabel_(tr("Port map"), this),
+mappings_(this),
+descriptionLabel_(tr("Description"), this),
+descriptionEdit_(this) {
 
 	Q_ASSERT(parent);
 
@@ -62,6 +68,9 @@ mappings_(this) {
 	mappings_.setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::SelectedClicked |
 		QAbstractItemView::EditKeyPressed);
 
+	// set the maximum height for the description editor
+	descriptionEdit_.setMaximumHeight(MAX_DESC_HEIGHT);
+
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&busType_);
 	layout->addWidget(&absType_);
@@ -69,6 +78,9 @@ mappings_(this) {
 	layout->addWidget(&nameEdit_);
 	layout->addWidget(&modeLabel_);
 	layout->addWidget(&modeEdit_);
+	layout->addWidget(&descriptionLabel_);
+	layout->addWidget(&descriptionEdit_);
+	layout->addWidget(&mappingsLabel_);
 	layout->addWidget(&mappings_, 1);
 
 	clear();
@@ -112,6 +124,13 @@ void InterfaceEditor::setInterface( DiagramConnectionEndPoint* interface ) {
 	connect(&modeEdit_, SIGNAL(currentIndexChanged(const QString&)),
 		this, SLOT(onInterfaceModeChanged(const QString&)), Qt::UniqueConnection);
 
+	// display the current description of the interface.
+	disconnect(&descriptionEdit_, SIGNAL(textChanged()),
+		this, SLOT(onDescriptionChanged()));
+	descriptionEdit_.setPlainText(interface->description());
+	connect(&descriptionEdit_, SIGNAL(textChanged()),
+		this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
+
 	// set port maps to be displayed in the table widget.
 	setPortMaps();
 
@@ -124,11 +143,13 @@ void InterfaceEditor::setInterface( DiagramConnectionEndPoint* interface ) {
 		nameEdit_.setEnabled(true);
 		modeEdit_.setEnabled(true);
 		mappings_.setEnabled(true);
+		descriptionEdit_.setEnabled(true);
 	}
 	else {
 		nameEdit_.setDisabled(true);
 		modeEdit_.setDisabled(true);
 		mappings_.setDisabled(true);
+		descriptionEdit_.setDisabled(true);
 	}
 
 	// show the editors
@@ -138,6 +159,9 @@ void InterfaceEditor::setInterface( DiagramConnectionEndPoint* interface ) {
 	nameLabel_.show();
 	modeEdit_.show();
 	modeLabel_.show();
+	descriptionLabel_.show();
+	descriptionEdit_.show();
+	mappingsLabel_.show();
 	mappings_.show();
 }
 
@@ -150,6 +174,15 @@ void InterfaceEditor::clear() {
 			this, SLOT(refresh()));
 		interface_ = 0;
 	}
+
+	disconnect(&nameEdit_, SIGNAL(textEdited(const QString&)),
+		this, SLOT(onInterfaceNameChanged(const QString&)));
+	disconnect(&modeEdit_, SIGNAL(currentIndexChanged(const QString&)),
+		this, SLOT(onInterfaceModeChanged(const QString&)));
+	disconnect(&descriptionEdit_, SIGNAL(textChanged()),
+		this, SLOT(onDescriptionChanged()));
+	disconnect(&mappings_, SIGNAL(itemChanged(QTableWidgetItem*)),
+		this, SLOT(onPortMapChanged()));
 
 	busType_.setVLNV(VLNV());
 	busType_.hide();
@@ -164,8 +197,13 @@ void InterfaceEditor::clear() {
 	modeEdit_.hide();
 	modeLabel_.hide();
 
+	descriptionLabel_.hide();
+	descriptionEdit_.clear();
+	descriptionEdit_.hide();
+
 	mappings_.clearContents();
 	mappings_.hide();
+	mappingsLabel_.hide();
 }
 
 void InterfaceEditor::onInterfaceModeChanged( const QString& newMode ) {
@@ -177,7 +215,8 @@ void InterfaceEditor::onInterfaceModeChanged( const QString& newMode ) {
 	//interface_->setInterfaceMode(General::str2Interfacemode(newMode, General::MONITOR));
 
 	QSharedPointer<QUndoCommand> cmd(new EndPointChangeCommand(
-		interface_, nameEdit_.text(), General::str2Interfacemode(newMode, General::MONITOR)));
+		interface_, nameEdit_.text(), General::str2Interfacemode(newMode, General::MONITOR),
+		descriptionEdit_.toPlainText()));
 	static_cast<BlockDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
 
 	connect(interface_, SIGNAL(contentChanged()), 
@@ -193,9 +232,26 @@ void InterfaceEditor::onInterfaceNameChanged( const QString& newName ) {
 
 	QSharedPointer<QUndoCommand> cmd(new EndPointChangeCommand(
 		interface_, newName, 
-		General::str2Interfacemode(modeEdit_.currentText(), General::MONITOR)));
+		General::str2Interfacemode(modeEdit_.currentText(), General::MONITOR),
+		descriptionEdit_.toPlainText()));
 	static_cast<BlockDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
 	
+	connect(interface_, SIGNAL(contentChanged()), 
+		this, SLOT(refresh()), Qt::UniqueConnection);
+}
+
+void InterfaceEditor::onDescriptionChanged() {
+	Q_ASSERT(interface_);
+
+	disconnect(interface_, SIGNAL(contentChanged()),
+		this, SLOT(refresh()));
+
+	QSharedPointer<QUndoCommand> cmd(new EndPointChangeCommand(
+		interface_, nameEdit_.text(), 
+		General::str2Interfacemode(modeEdit_.currentText(), General::MONITOR),
+		descriptionEdit_.toPlainText()));
+	static_cast<BlockDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
+
 	connect(interface_, SIGNAL(contentChanged()), 
 		this, SLOT(refresh()), Qt::UniqueConnection);
 }

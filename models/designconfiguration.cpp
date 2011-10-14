@@ -281,6 +281,16 @@ attributes_(other.attributes_) {
 	}
 }
 
+DesignConfiguration::DesignConfiguration():
+LibraryComponent(),
+designRef_(),
+generatorChainConfs_(),
+interconnectionConfs_(),
+viewConfigurations_(),
+description_(),
+attributes_() {
+}
+
 DesignConfiguration& DesignConfiguration::operator=( const DesignConfiguration& other ) {
 	if (this != &other) {
 		LibraryComponent::operator=(other);
@@ -317,6 +327,10 @@ DesignConfiguration::~DesignConfiguration() {
     generatorChainConfs_.clear();
     interconnectionConfs_.clear();
     viewConfigurations_.clear();
+}
+
+QSharedPointer<LibraryComponent> DesignConfiguration::clone() {
+	return QSharedPointer<LibraryComponent>(new DesignConfiguration(*this));	
 }
 
 void DesignConfiguration::write(QFile& file) {

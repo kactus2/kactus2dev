@@ -586,6 +586,18 @@ bool DiagramPort::askCompatibleMode(QSharedPointer<BusInterface> otherBusIf,
 }
 
 void DiagramPort::setInterfaceMode( General::InterfaceMode mode ) {
+	Q_ASSERT(busInterface_);
 	busInterface_->setInterfaceMode(mode);
 	updateInterface();
+}
+
+QString DiagramPort::description() const {
+	Q_ASSERT(busInterface_);
+	return busInterface_->getDescription();
+}
+
+void DiagramPort::setDescription( const QString& description ) {
+	Q_ASSERT(busInterface_);
+	busInterface_->setDescription(description);
+	emit contentChanged();
 }

@@ -482,7 +482,8 @@ QSharedPointer<LibraryComponent> LibraryHandler::getModel( const VLNV& vlnv ) {
 
 	// if object has already been previously parsed
 	if (objects_.contains(vlnv)) {
-		return objects_.value(vlnv);
+		QSharedPointer<LibraryComponent> copy = objects_.value(vlnv)->clone();
+		return copy;
 	}
 	else {
 		if (!data_->contains(vlnv)) {
@@ -564,15 +565,16 @@ QSharedPointer<LibraryComponent> LibraryHandler::getModel( const VLNV& vlnv ) {
 		
 		// save the parsed item to the map and return pointer to it
 		objects_.insert(vlnv, libComp);
-		return libComp;
+		QSharedPointer<LibraryComponent> copy = libComp->clone();
+		return copy;
 	}
 }
 
-bool LibraryHandler::registerVLNV( const VLNV& vlnv, const QString& path ) {
-
-	return data_->addVLNV(vlnv, path);
-
-}
+// bool LibraryHandler::registerVLNV( const VLNV& vlnv, const QString& path ) {
+// 
+// 	return data_->addVLNV(vlnv, path);
+// 
+// }
 
 bool LibraryHandler::contains( const VLNV& vlnv ) {
 	return data_->contains(vlnv);
@@ -594,6 +596,7 @@ void LibraryHandler::writeModelToFile( const QString path,
 
 	VLNV vlnv = *model->getVlnv();
 	Q_ASSERT(!data_->contains(vlnv));
+	Q_ASSERT(!objects_.contains(vlnv));
 
     // Create the path if it does not exist.
     if (!QDir(path).exists())
@@ -816,18 +819,18 @@ void LibraryHandler::onClearSelection() {
 	treeWidget_->selectItem(VLNV());
 }
 
-void LibraryHandler::onUpdateObject( const QSharedPointer<LibraryComponent> object,
-									const QString& path) {
-	
-	// get the current vlnv of the object
-	VLNV vlnv = *object->getVlnv();
-
-	data_->updateVLNV(path, vlnv);
-	
-	// after updating the vlnv nothing is selected in the library view so
-	// select again the same object that was updated
-	onSelectionChanged(vlnv);
-}
+// void LibraryHandler::onUpdateObject( const QSharedPointer<LibraryComponent> object,
+// 									const QString& path) {
+// 	
+// 	// get the current vlnv of the object
+// 	VLNV vlnv = *object->getVlnv();
+// 
+// 	data_->updateVLNV(path, vlnv);
+// 	
+// 	// after updating the vlnv nothing is selected in the library view so
+// 	// select again the same object that was updated
+// 	onSelectionChanged(vlnv);
+// }
 
 VLNV::IPXactType LibraryHandler::getDocumentType(const VLNV& vlnv) {
 
@@ -1046,9 +1049,9 @@ void LibraryHandler::onCreateDesign( const VLNV& vlnv ) {
 	emit openDesign(vlnv, QString());
 }
 
-void LibraryHandler::updatePath( const VLNV& vlnv, const QString& path ) {
-	data_->updatePath(vlnv, path);
-}
+// void LibraryHandler::updatePath( const VLNV& vlnv, const QString& path ) {
+// 	data_->updatePath(vlnv, path);
+// }
 
 void LibraryHandler::updateComponentFiles( const VLNV& oldComponent, 
 										  const VLNV& newComponent ) {

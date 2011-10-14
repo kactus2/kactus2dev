@@ -399,10 +399,14 @@ public:
      *      @param [in] endPoint          The diagram connection end point.
      *      @param [in] newName           The end point's new name.
      *      @param [in] newInterfaceMode  The end point's new interface mode.
+     *      @param [in] newDescription	  The end point's new description.
      *      @param [in] parent            The parent command.
      */
-    EndPointChangeCommand(DiagramConnectionEndPoint* endPoint, QString const& newName,
-                          General::InterfaceMode newMode, QUndoCommand* parent = 0);
+	EndPointChangeCommand(DiagramConnectionEndPoint* endPoint,
+		QString const& newName,
+		General::InterfaceMode newMode,
+		QString const& newDescription,
+		QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -437,11 +441,17 @@ private:
     //! The end point's old interface mode.
     General::InterfaceMode oldMode_;
 
+	//! \brief The end point's old description.
+	QString oldDescription_;
+
     //! The end point's new name.
     QString newName_;
 
     //! The end point's new interface mode.
     General::InterfaceMode newMode_;
+
+	//! \brief The end point's new description.
+	QString newDescription_;
 };
 
 //-----------------------------------------------------------------------------
