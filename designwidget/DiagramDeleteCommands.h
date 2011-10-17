@@ -126,7 +126,7 @@ private:
     //! The graphics conn.
     DiagramComponent* component_;
 
-    //! The conn's parent column.
+    //! The component's parent column.
     DiagramColumn* parent_;
 
     //! The graphics scene.

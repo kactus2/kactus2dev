@@ -207,7 +207,8 @@ bool DiagramPort::canConnect(DiagramConnectionEndPoint const* other) const
     // is the same or either of the end point is undefined.
     if (other->isHierarchical())
     {
-        return (other->getBusInterface() == 0 || !busInterface_->getBusType().isValid() ||
+        return (other->getBusInterface()->getInterfaceMode() == General::MODE_UNDEFINED ||
+                !busInterface_->getBusType().isValid() ||
                 other->getBusInterface()->getInterfaceMode() == busInterface_->getInterfaceMode());
     }
     // If only one port has a bus definition defined at most, then the end points can be connected.

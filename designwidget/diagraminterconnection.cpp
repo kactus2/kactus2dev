@@ -198,14 +198,8 @@ void DiagramInterconnection::setRoute(QList<QPointF> path)
     if (path.size() < 2)
         return;
 
-    if (endPoint1_) {
-//         if (endPoint1_->parentItem() != 0)
-//             endPoint1_->setPos(endPoint1_->parentItem()->mapFromScene(path.first()));
-//         else
-//             endPoint1_->setPos(path.first());
-// 
-//         path.replace(0, endPoint1_->scenePos());
-
+    if (endPoint1_)
+    {
         QVector2D dir = QVector2D(path[1] - path[0]).normalized();
 
         // Switch the direction of the end point if it is not correct.
@@ -215,14 +209,8 @@ void DiagramInterconnection::setRoute(QList<QPointF> path)
         }
     }
 
-    if (endPoint2_) {
-//         if (endPoint2_->parentItem() != 0)
-//             endPoint2_->setPos(endPoint2_->parentItem()->mapFromScene(path.last()));
-//         else
-//             endPoint2_->setPos(path.last());
-// 
-//         path.replace(path.size()-1, endPoint2_->scenePos());
-
+    if (endPoint2_)
+    {
         QVector2D dir = QVector2D(path[path.size() - 2] - path[path.size() - 1]).normalized();
 
         // Switch the direction of the end point if it is not correct.

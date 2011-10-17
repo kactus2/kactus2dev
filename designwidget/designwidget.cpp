@@ -59,7 +59,7 @@
 
 DesignWidget::DesignWidget(LibraryInterface *lh, QWidget* parent): 
 TabDocument(parent, DOC_ZOOM_SUPPORT | DOC_DRAW_MODE_SUPPORT | DOC_PRINT_SUPPORT |
-                    DOC_PROTECTION_SUPPORT |DOC_EDIT_SUPPORT, 30, 300), 
+                    DOC_PROTECTION_SUPPORT | DOC_EDIT_SUPPORT, 30, 300), 
 designConf_(NULL), hierComponent_(NULL), viewName_(), view_(NULL), diagram_(NULL), lh_(NULL),
 selectionDock_(NULL), editProvider_() {
 
@@ -418,8 +418,6 @@ void DesignWidget::keyPressEvent(QKeyEvent *event)
             // Delete the column if requested.
             QSharedPointer<QUndoCommand> cmd(new ColumnDeleteCommand(diagram_->getColumnLayout(), column));
             editProvider_->addCommand(cmd);
-
-            //diagram_->removeColumn(column);
         }
 
         // if something was removed then save button must be enabled again

@@ -113,13 +113,6 @@ QSharedPointer<BusInterface> DiagramInterface::getBusInterface() const
 void DiagramInterface::updateInterface()
 {
 	Q_ASSERT(busInterface_);
-// 
-//     if (busInterface_ == 0)
-//     {
-//         setBrush(QBrush(Qt::black));
-//         nameLabel_->setHtml("");
-//         return;
-//     }
 
     switch (busInterface_->getInterfaceMode()) {
     case General::MASTER:
@@ -179,7 +172,7 @@ bool DiagramInterface::isHierarchical() const
 bool DiagramInterface::onConnect(DiagramConnectionEndPoint const* other)
 {
     // Update the name if the bus interface is defined but its name is empty.
-    if (busInterface_ != 0 && busInterface_->getName() == "")
+    if (busInterface_->getInterfaceMode() != General::MODE_UNDEFINED && busInterface_->getName() == "")
     {
         busInterface_->setName(other->getBusInterface()->getName());
         updateInterface();
@@ -187,7 +180,8 @@ bool DiagramInterface::onConnect(DiagramConnectionEndPoint const* other)
 
     // If the bus interface is already defined or the other endpoint
     // does not have a valid bus interface (unpackaged), we don't have to do anything.
-    if (busInterface_ != 0 || !other->getBusInterface()->getBusType().isValid())
+    if (busInterface_->getInterfaceMode() != General::MODE_UNDEFINED ||
+        !other->getBusInterface()->getBusType().isValid())
     {
         return true;
     }
@@ -303,7 +297,8 @@ void DiagramInterface::onDisconnect(DiagramConnectionEndPoint const*)
 {
     // Check if there is still some connections left, the bus interface is not defined
     // or the interface is not temporary.
-    if (!getInterconnections().empty() || busInterface_ == 0 || !temp_)
+    if (!getInterconnections().empty() ||
+        busInterface_->getInterfaceMode() == General::MODE_UNDEFINED || !temp_)
     {
         // Don't do anything.
         return;
@@ -337,7 +332,8 @@ bool DiagramInterface::canConnect(DiagramConnectionEndPoint const* other) const
     // Connection is allowed if this interface's bus interface is not defined,
     // the other end point is unpackaged, or the abstraction definitions of the bus interfaces
     // in each end point are equal.
-    return (busInterface_ == 0 || !otherBusIf->getBusType().isValid() ||
+    return (busInterface_->getInterfaceMode() == General::MODE_UNDEFINED ||
+            !otherBusIf->getBusType().isValid() ||
             (otherBusIf->getAbstractionType() == busInterface_->getAbstractionType() &&
              otherBusIf->getBusType() == busInterface_->getBusType()));
 }
@@ -523,7 +519,7 @@ void DiagramInterface::setTemporary(bool temp)
 void DiagramInterface::setTypes(VLNV const& busType, VLNV const& absType, General::InterfaceMode mode)
 {
     // Destroy the old bus interface if it exists.
-    if (busInterface_ != 0)
+    if (busInterface_->getInterfaceMode() != General::MODE_UNDEFINED)
     {
         // Disconnect the connections.
         foreach(DiagramInterconnection* conn, getInterconnections())
@@ -538,20 +534,14 @@ void DiagramInterface::setTypes(VLNV const& busType, VLNV const& absType, Genera
             }
         }
 
-        component_->removeBusInterface(busInterface_.data());
-        busInterface_.clear();
+        busInterface_->setInterfaceMode(General::MODE_UNDEFINED);
     }
 
     if (busType.isValid())
     {
-        // Create a new bus interface.
-        busInterface_ = QSharedPointer<BusInterface>(new BusInterface());
         busInterface_->setBusType(busType);
         busInterface_->setAbstractionType(absType);
         busInterface_->setInterfaceMode(mode);
-
-        // Add the bus interface to the top-level component.
-        component_->addBusInterface(busInterface_);
 
         setTemporary(false);
 
@@ -625,20 +615,18 @@ void DiagramInterface::undefine()
 //-----------------------------------------------------------------------------
 QList<Port*> DiagramInterface::getPorts() const
 {
+    Q_ASSERT(busInterface_ != 0);
     QList<Port*> ports;
 
-    if (busInterface_ != 0)
+    QList< QSharedPointer<General::PortMap> > const& portMaps = busInterface_->getPortMaps();
+
+    foreach (QSharedPointer<General::PortMap> portMap, portMaps)
     {
-        QList< QSharedPointer<General::PortMap> > const& portMaps = busInterface_->getPortMaps();
+        Port* port = component_->getPort(portMap->physicalPort_);
 
-        foreach (QSharedPointer<General::PortMap> portMap, portMaps)
+        if (port != 0)
         {
-            Port* port = component_->getPort(portMap->physicalPort_);
-
-            if (port != 0)
-            {
-                ports.append(port);
-            }
+            ports.append(port);
         }
     }
 
