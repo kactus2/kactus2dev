@@ -14,6 +14,8 @@
 #include <designwidget/designwidget.h>
 #include <designwidget/DiagramChangeCommands.h>
 
+#include <common/validators/vhdlNameValidator/vhdlnamevalidator.h>
+
 #include <QVBoxLayout>
 
 ComponentInstanceEditor::ComponentInstanceEditor(QWidget *parent):
@@ -29,6 +31,10 @@ editProvider_() {
 	configurableElements_.hide();
 
 	vlnvDisplayer_.setTitle(tr("Instance model VLNV"));
+
+	// set validator for the instance name
+	VhdlNameValidator* vhdlNameValidator = new VhdlNameValidator(NULL);
+	nameGroup_.setNameValidator(vhdlNameValidator);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&vlnvDisplayer_);

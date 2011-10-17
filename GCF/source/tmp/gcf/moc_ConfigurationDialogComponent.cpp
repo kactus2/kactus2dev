@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'ConfigurationDialogComponent.h'
 **
-** Created: Mon 3. Oct 22:07:41 2011
+** Created: Wed 12. Oct 15:35:37 2011
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.7.2)
 **
 ** WARNING! All changes made in this file will be lost!

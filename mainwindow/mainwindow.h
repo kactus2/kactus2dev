@@ -31,6 +31,8 @@ class DiagramInterface;
 class ComponentInstanceEditor;
 class ConfigurationEditor;
 class InterfaceEditor;
+class ConnectionEditor;
+class DiagramInterconnection;
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -123,6 +125,13 @@ public slots:
 	 *
 	*/
 	void onInterfaceSelected(DiagramInterface* interface);
+
+	/*! \brief Called when user selects a connection on the draw board.
+	 *
+	 * \param connection Pointer to the connection that was selected.
+	 *
+	*/
+	void onConnectionSelected(DiagramInterconnection* connection);
 
     //! \brief Import a library file to this library.
 	void onImportLibFile();
@@ -346,6 +355,9 @@ private:
 	//! \brief Set up the interface editor.
 	void setupInterfaceEditor();
 
+	//! \brief Set up the connection editor.
+	void setupConnectionEditor();
+
 	//! \brief The instance that manages the IP-Xact library
     LibraryHandler *libraryHandler_;
     
@@ -369,6 +381,9 @@ private:
 
 	//! \brief The widget to edit the interfaces
 	InterfaceEditor* interfaceEditor_;
+
+	//! \brief The widget to edit the connection
+	ConnectionEditor* connectionEditor_;
 
 	/*******************************************************************/
 	// the actions in the menus

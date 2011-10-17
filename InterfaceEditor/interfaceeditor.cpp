@@ -9,6 +9,7 @@
 
 #include <models/businterface.h>
 #include <models/generaldeclarations.h>
+#include <models/abstractiondefinition.h>
 
 #include <common/GenericEditProvider.h>
 
@@ -18,14 +19,17 @@
 #include <designwidget/DiagramChangeCommands.h>
 #include <designwidget/blockdiagram.h>
 
+#include <common/validators/vhdlNameValidator/vhdlnamevalidator.h>
+
 #include <QVBoxLayout>
 #include <QStringList>
+#include <QBrush>
 #include <QHeaderView>
 
 //! \brief The maximum height for the description editor.
 static const int MAX_DESC_HEIGHT = 50;
 
-InterfaceEditor::InterfaceEditor(QWidget *parent):
+InterfaceEditor::InterfaceEditor(QWidget *parent, LibraryInterface* handler):
 QWidget(parent),
 busType_(this),
 absType_(this),
@@ -37,14 +41,19 @@ interface_(NULL),
 mappingsLabel_(tr("Port map"), this),
 mappings_(this),
 descriptionLabel_(tr("Description"), this),
-descriptionEdit_(this) {
+descriptionEdit_(this),
+handler_(handler) {
 
 	Q_ASSERT(parent);
+	Q_ASSERT(handler);
 
 	busType_.setTitle(tr("Bus type"));
 	busType_.setFlat(false);
 	absType_.setTitle(tr("Abstraction type"));
 	absType_.setFlat(false);
+
+	// set validator for interface name editor
+	nameEdit_.setValidator(new VhdlNameValidator(&nameEdit_));
 
 	// set the possible modes to the mode editor
 	QStringList modes;
@@ -102,6 +111,7 @@ void InterfaceEditor::setInterface( DiagramConnectionEndPoint* interface ) {
 
 	interface_ = interface;
 
+	Q_ASSERT(interface->getBusInterface());
 	busType_.setVLNV(interface->getBusInterface()->getBusType());
 	absType_.setVLNV(interface->getBusInterface()->getAbstractionType());
 
@@ -211,8 +221,6 @@ void InterfaceEditor::onInterfaceModeChanged( const QString& newMode ) {
 
 	disconnect(interface_, SIGNAL(contentChanged()),
 		this, SLOT(refresh()));
-	
-	//interface_->setInterfaceMode(General::str2Interfacemode(newMode, General::MONITOR));
 
 	QSharedPointer<QUndoCommand> cmd(new EndPointChangeCommand(
 		interface_, nameEdit_.text(), General::str2Interfacemode(newMode, General::MONITOR),
@@ -227,8 +235,7 @@ void InterfaceEditor::onInterfaceNameChanged( const QString& newName ) {
 	Q_ASSERT(interface_);
 	
 	disconnect(interface_, SIGNAL(contentChanged()),
-		this, SLOT(refresh()));
-	//interface_->setName(newName);	
+		this, SLOT(refresh()));	
 
 	QSharedPointer<QUndoCommand> cmd(new EndPointChangeCommand(
 		interface_, newName, 
@@ -294,7 +301,23 @@ void InterfaceEditor::setPortMaps() {
 		this, SLOT(onPortMapChanged()));
 
 	QSharedPointer<BusInterface> busIf = interface_->getBusInterface();
+	Q_ASSERT(busIf);
 	QList<QSharedPointer<General::PortMap> > portMaps = busIf->getPortMaps();
+
+	// get the abstraction def for the interface
+	VLNV absDefVLNV = busIf->getAbstractionType();
+	QSharedPointer<AbstractionDefinition> absDef;
+	if (handler_->getDocumentType(absDefVLNV) == VLNV::ABSTRACTIONDEFINITION) {
+		QSharedPointer<LibraryComponent> libComp = handler_->getModel(absDefVLNV);
+		absDef = libComp.staticCast<AbstractionDefinition>();
+	}
+
+	// get the component that contains the selected interface
+	QSharedPointer<Component> component = interface_->ownerComponent();
+	Q_ASSERT(component);
+
+	// get the interface mode of the bus interface
+	General::InterfaceMode interfaceMode = busIf->getInterfaceMode();
 
 	// as many rows as there are interface maps and always 2 columns
 	mappings_.setRowCount(portMaps.size());
@@ -304,12 +327,52 @@ void InterfaceEditor::setPortMaps() {
 	int row = 0;
 	foreach (QSharedPointer<General::PortMap> portMap, portMaps) {
 
-		QTableWidgetItem* logicalItem = new QTableWidgetItem(portMap->logicalPort_);
+		QString logicalPort = General::toLogicalString(*portMap);
+		QTableWidgetItem* logicalItem = new QTableWidgetItem(logicalPort);
 		logicalItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-		mappings_.setItem(row, 0, logicalItem);
+		// if no abs type is specified
+		if (!absDef) {
+			logicalItem->setForeground(QBrush(Qt::red));
+		}
+		// if the logical port does not belong to the abs def
+		else if (!absDef->hasPort(portMap->logicalPort_, interfaceMode)) {
+			logicalItem->setForeground(QBrush(Qt::red));
+		}
+		else {
+			logicalItem->setForeground(QBrush(Qt::black));
+		}
 
-		QTableWidgetItem* physItem = new QTableWidgetItem(portMap->physicalPort_);
+		// get size of the logical port
+		int logicalSize = 1;
+		if (portMap->logicalVector_) {
+			logicalSize = portMap->logicalVector_->getSize();
+		}
+		
+
+		QString physicalPort = General::toPhysString(*portMap);
+		QTableWidgetItem* physItem = new QTableWidgetItem(physicalPort);
 		physItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		// if the port is not contained in the component
+		if (!component->hasPort(portMap->physicalPort_)) {
+			physItem->setForeground(QBrush(Qt::red));
+		}
+		else {
+			physItem->setForeground(QBrush(Qt::black));
+		}
+
+		// get size of the physical port
+		int physicalSize = 1;
+		if (portMap->physicalVector_) {
+			physicalSize = portMap->physicalVector_->getSize();
+		}
+
+		// if the sizes of the ports don't match
+		if (logicalSize != physicalSize) {
+			logicalItem->setForeground(QBrush(Qt::red));
+			physItem->setForeground(QBrush(Qt::red));
+		}
+		
+		mappings_.setItem(row, 0, logicalItem);
 		mappings_.setItem(row, 1, physItem);
 
 		row++;

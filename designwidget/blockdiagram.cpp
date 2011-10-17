@@ -297,6 +297,7 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
 				new DiagramInterconnection(port1, port2, true, interconnection.displayName,
                                            interconnection.description);
             diagramInterconnection->setRoute(interconnection.route);
+			diagramInterconnection->setName(interconnection.name);
             connect(diagramInterconnection, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
 			addItem(diagramInterconnection);
@@ -477,7 +478,8 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv)
 				Design::Interface iface2(conn->endPoint2()->encompassingComp()->name(),
 					conn->endPoint2()->name());
 				interconnections.append(Design::Interconnection(conn->name(), iface1, iface2,
-                                                                conn->route()));
+                                                                conn->route(), QString(),
+																conn->description()));
 			}
             else
             {
@@ -1624,6 +1626,11 @@ void BlockDiagram::onSelected(QGraphicsItem* newSelection)
             DiagramInterface* interface = qgraphicsitem_cast<DiagramInterface*>(newSelection);
             emit interfaceSelected(interface);
         }
+		// check if the selected item was a connection
+		else if (newSelection->type() == DiagramInterconnection::Type) {
+			DiagramInterconnection* connection = qgraphicsitem_cast<DiagramInterconnection*>(newSelection);
+			emit connectionSelected(connection);
+		}
         // Otherwise the selection was an interconnection
         else
         {

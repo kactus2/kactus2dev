@@ -216,6 +216,13 @@ signals:
 	*/
 	void interfaceSelected(DiagramInterface* interface);
 
+	/*! \brief Emitted when user selects a connection in the draw board.
+	 *
+	 * \param connection Pointer to the connection that is selected.
+	 *
+	*/
+	void connectionSelected(DiagramInterconnection* connection);
+
 	/*! \brief Emitted when user de-selects all items.
 	 *
 	*/

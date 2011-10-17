@@ -114,6 +114,23 @@ public:
 	*/
 	void setRight(int right);
 
+	/*! \brief Convert the vector into string.
+	 * 
+	 * The returned string is [<left bound>..<right bound>]
+	 *
+	 * \return QString contains the vector into string.
+	*/
+	QString toString() const;
+
+	/*! \brief Get the size of the vector.
+	 * 
+	 * The size is calculated: left - right + 1
+	 * If both bounds are negative then 1 is returned.
+	 *
+	 * \return int The size of the vector.
+	*/
+	int getSize() const;
+
 private:
 
 	/*!

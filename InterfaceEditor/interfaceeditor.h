@@ -10,6 +10,8 @@
 
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
 
+#include <LibraryManager/libraryinterface.h>
+
 #include <QWidget>
 #include <QLineEdit>
 #include <QComboBox>
@@ -19,12 +21,20 @@
 
 class DiagramConnectionEndPoint;
 
+/*! \brief Editor to display/edit the details of a bus interface.
+ *
+ */
 class InterfaceEditor : public QWidget {
 	Q_OBJECT
 
 public:
 
-	InterfaceEditor(QWidget *parent);
+	/*! \brief The constructor
+	 *
+	 * \param parent Pointer to the owner of this widget.
+	 *
+	*/
+	InterfaceEditor(QWidget *parent, LibraryInterface* handler);
 	
 	//! \brief The destructor
 	virtual ~InterfaceEditor();
@@ -74,11 +84,6 @@ private slots:
 	*/
 	void onDescriptionChanged();
 
-signals:
-
-	//! \brief Emitted when contents of the editor changes.
-	//void contentChanged();
-
 private:
 	//! \brief No copying
 	InterfaceEditor(const InterfaceEditor& other);
@@ -124,6 +129,8 @@ private:
 	//! \brief Editor for the description of the interface.
 	QPlainTextEdit descriptionEdit_;
 
+	//! \brief Pointer to the instance that manages the library.
+	LibraryInterface* handler_;
 };
 
 #endif // INTERFACEEDITOR_H

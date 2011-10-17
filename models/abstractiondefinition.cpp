@@ -333,6 +333,10 @@ bool AbstractionDefinition::isIllegal( const QString& portName, General::Interfa
 	return false;
 }
 
+bool AbstractionDefinition::hasPort( const QString& portName, General::InterfaceMode mode ) const {
+	return isRequired(portName, mode) || isOptional(portName, mode);
+}
+
 int AbstractionDefinition::getPortSize( const QString& port, General::InterfaceMode mode ) const {
 	// search all ports
 	foreach (QSharedPointer<PortAbstraction> portAbs, ports_) {
@@ -347,3 +351,4 @@ void AbstractionDefinition::setVlnv( const VLNV& vlnv ) {
 	LibraryComponent::setVlnv(vlnv);
 	LibraryComponent::vlnv_->setType(VLNV::ABSTRACTIONDEFINITION);
 }
+

@@ -179,6 +179,24 @@ General::PortMap& General::PortMap::operator=( const PortMap& other ) {
 	return *this;
 }
 
+QString General::toPhysString( const PortMap& portMap ) {
+	QString str = portMap.physicalPort_;
+	// if the physical port is vectored.
+	if (portMap.physicalVector_) {
+		str += portMap.physicalVector_->toString();
+	}
+	return str;
+}
+
+QString General::toLogicalString( const PortMap& portMap ) {
+	QString str = portMap.logicalPort_;
+	// if the logical port is vectored
+	if (portMap.logicalVector_) {
+		str += portMap.logicalVector_->toString();
+	}
+	return str;
+}
+
 QString General::bool2Str(bool value) {
 	if (value) {
 		return QString("true");

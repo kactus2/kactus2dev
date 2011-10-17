@@ -85,6 +85,8 @@ selectionDock_(NULL), editProvider_() {
         this, SIGNAL(interfaceSelected(DiagramInterface*)), Qt::UniqueConnection);
 	connect(diagram_, SIGNAL(componentSelected(DiagramComponent*)),
 		this, SIGNAL(componentSelected(DiagramComponent*)), Qt::UniqueConnection);
+	connect(diagram_, SIGNAL(connectionSelected(DiagramInterconnection*)),
+		this, SIGNAL(connectionSelected(DiagramInterconnection*)), Qt::UniqueConnection);
 	connect(diagram_, SIGNAL(clearItemSelection()),
 		this, SIGNAL(clearItemSelection()), Qt::UniqueConnection);
 	connect(diagram_, SIGNAL(componentInstantiated(DiagramComponent*)),

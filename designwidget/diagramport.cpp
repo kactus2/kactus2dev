@@ -249,6 +249,14 @@ DiagramComponent *DiagramPort::encompassingComp() const
     return qgraphicsitem_cast<DiagramComponent *>(parentItem());
 }
 
+QSharedPointer<Component> DiagramPort::ownerComponent() const {
+	DiagramComponent* comp = encompassingComp();
+	Q_ASSERT(comp);
+	QSharedPointer<Component> compModel = comp->componentModel();
+	Q_ASSERT(compModel);
+	return compModel;
+}
+
 QVariant DiagramPort::itemChange(GraphicsItemChange change,
                                  const QVariant &value)
 {

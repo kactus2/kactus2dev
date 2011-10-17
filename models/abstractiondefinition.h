@@ -211,6 +211,15 @@ public:
 	*/
 	bool isIllegal(const QString& portName, General::InterfaceMode mode) const;
 
+	/*! \brief Check if the given port is contained in this abs def with given interface mode.
+	 *
+	 * \param portName The name of the port to search.
+	 * \param mode The interface mode to search for the port in.
+	 *
+	 * \return bool True if port is required or optional.
+	*/
+	bool hasPort(const QString& portName, General::InterfaceMode mode) const;
+
 	/*! \brief Get the direction of port in specified interface mode.
 	 *
 	 * \param portName Identifies the logical name of the port.

@@ -82,23 +82,47 @@ public:
     /*! \brief Return the name of this interconnection
      *
      */
-    QString name();
+    QString name() const;
+
+	/*! \brief Set the name for the connection.
+	 *
+	 * \param name The name to set for the connection.
+	 *
+	*/
+	void setName(const QString& name);
+
+	/*! \brief Get the description of the connection.
+	 *
+	 *
+	 * \return QString contains the description.
+	*/
+	QString description() const;
+
+	/*! \brief Set the description for the connection.
+	 *
+	 * \param description contains the description to set.
+	 *
+	*/
+	void setDescription(const QString& description);
 
     /*! \brief Return the first end point connected
      *
      */
-    DiagramConnectionEndPoint *endPoint1();
+    DiagramConnectionEndPoint *endPoint1() const;
 
     /*! \brief Return the second end point connected
      *
      */
-    DiagramConnectionEndPoint *endPoint2();    
+    DiagramConnectionEndPoint *endPoint2() const;    
 
     int type() const { return Type; }
 
 signals:
     //! Signals that the interconnection has changed.
     void contentChanged();
+
+	//! \brief This signal is emitted when this connection is destroyed.
+	void destroyed(DiagramInterconnection* connection);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
@@ -124,6 +148,7 @@ private:
     void updateName();
 
     QString name_;
+	QString description_;
     DiagramConnectionEndPoint *endPoint1_;
     DiagramConnectionEndPoint *endPoint2_;
     QList<QPointF> pathPoints_;

@@ -38,7 +38,7 @@ descriptionEdit_(0) {
 	nameEdit_->setToolTip(tr("Set the name for the element"));
 	nameEdit_->setProperty("mandatoryField", true);
 
-	NameValidator* validator = new NameValidator(this);
+	NameValidator* validator = new NameValidator(nameEdit_);
 	nameEdit_->setValidator(validator);
 	layout->addWidget(nameEdit_, 0, 1, 1, 1);
 
@@ -108,4 +108,9 @@ void NameGroupBox::setDescription( const QString& description ) {
 void NameGroupBox::onDescriptionChanged() {
 	emit contentChanged();
 	emit descriptionChanged(descriptionEdit_->toPlainText());
+}
+
+void NameGroupBox::setNameValidator( QValidator* validator ) {
+	validator->setParent(nameEdit_);
+	nameEdit_->setValidator(validator);
 }

@@ -580,6 +580,63 @@ private:
     QList< QSharedPointer<General::PortMap> > newPortMaps_;
 };
 
+/*! \brief Undo command for changes made to a DiagramInterConnection.
+ *
+ */
+class ConnectionChangeCommand : public QUndoCommand {
+
+public:
+
+	/*! \brief The constructor
+	 *
+	 * \param connection Pointer to the connection that was changed.
+	 * \param newName The new name of the connection.
+	 * \param newDescription The new description of the connection.
+	 * \param parent Pointer to the parent of this undo command.
+	 *
+	*/
+	ConnectionChangeCommand(DiagramInterconnection* connection,
+		const QString& newName,
+		const QString& newDescription,
+		QUndoCommand* parent = 0);
+
+	//! \brief The destructor
+	virtual ~ConnectionChangeCommand();
+
+	/*! \brief Undoes the command.
+	 *
+	*/
+	virtual void undo();
+
+	/*! \brief Redoes the command.
+	 *
+	 * Redo is automatically executed when this command is added to the undo stack.
+	*/
+	virtual void redo();
+
+private:
+	//! \brief No copying
+	ConnectionChangeCommand(const ConnectionChangeCommand& other);
+
+	//! \brief No assignment
+	ConnectionChangeCommand& operator=(const ConnectionChangeCommand& other);
+
+	//! \brief Pointer to the connection to change.
+	DiagramInterconnection* connection_;
+
+	//! \brief The new name for the connection.
+	QString newName_;
+
+	//! \brief The new description for the connection.
+	QString newDescription_;
+
+	//! \brief The old name of the connection.
+	QString oldName_;
+
+	//! \brief The old description of the connection.
+	QString oldDescription_;
+};
+
 //-----------------------------------------------------------------------------
 
 #endif // DIAGRAMCHANGECOMMANDS_H

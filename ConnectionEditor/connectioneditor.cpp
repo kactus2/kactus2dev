@@ -1,0 +1,356 @@
+/* 
+ *  	Created on: 14.10.2011
+ *      Author: Antti Kamppi
+ * 		filename: connectioneditor.cpp
+ *		Project: Kactus 2
+ */
+
+#include "connectioneditor.h"
+
+#include <designwidget/diagraminterconnection.h>
+#include <designwidget/DiagramConnectionEndpoint.h>
+#include <designwidget/blockdiagram.h>
+#include <designwidget/DiagramChangeCommands.h>
+
+#include <LibraryManager/libraryinterface.h>
+#include <LibraryManager/vlnv.h>
+
+#include <models/businterface.h>
+#include <models/component.h>
+#include <models/abstractiondefinition.h>
+#include <models/generaldeclarations.h>
+
+#include <common/GenericEditProvider.h>
+#include <common/validators/vhdlNameValidator/vhdlnamevalidator.h>
+
+#include <QVBoxLayout>
+#include <QSharedPointer>
+#include <QHeaderView>
+#include <QList>
+#include <QStringList>
+
+#include <QDebug>
+
+//! \brief The maximum height for the description editor.
+static const int MAX_DESC_HEIGHT = 50;
+
+ConnectionEditor::ConnectionEditor(QWidget *parent, LibraryInterface* handler):
+QWidget(parent),
+busType_(this),
+absType_(this),
+instanceLabel_(tr("Connected interfaces"), this),
+connectedInstances_(this),
+separator_(this),
+nameLabel_(tr("Connection name"), this),
+nameEdit_(this),
+descriptionLabel_(tr("Description"), this),
+descriptionEdit_(this),
+portsLabel_(tr("Connected physical ports"), this),
+portWidget_(this),
+connection_(NULL),
+handler_(handler) {
+
+	Q_ASSERT(parent);
+	Q_ASSERT(handler);
+
+	busType_.setTitle(tr("Bus type"));
+	busType_.setFlat(false);
+	absType_.setTitle(tr("Abstraction type"));
+	absType_.setFlat(false);
+
+	separator_.setFlat(true);
+
+	// set validator for name edit
+	nameEdit_.setValidator(new VhdlNameValidator(&nameEdit_));
+
+	// There are always 2 columns.
+	portWidget_.setColumnCount(2);
+	portWidget_.setHorizontalHeaderItem(0, new QTableWidgetItem(tr("instance1")));
+	portWidget_.setHorizontalHeaderItem(1, new QTableWidgetItem(tr("instance2")));
+	portWidget_.horizontalHeader()->setStretchLastSection(true);
+	portWidget_.horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+	portWidget_.verticalHeader()->hide();
+	portWidget_.setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+	// set the maximum height for the description editor
+	descriptionEdit_.setMaximumHeight(MAX_DESC_HEIGHT);
+
+	QVBoxLayout* layout = new QVBoxLayout(this);
+	layout->addWidget(&busType_);
+	layout->addWidget(&absType_);
+	layout->addWidget(&instanceLabel_);
+	layout->addWidget(&connectedInstances_);
+	layout->addWidget(&separator_);
+	layout->addWidget(&nameLabel_);
+	layout->addWidget(&nameEdit_);
+	layout->addWidget(&descriptionLabel_);
+	layout->addWidget(&descriptionEdit_);
+	layout->addWidget(&portsLabel_);
+	layout->addWidget(&portWidget_, 1);
+
+	clear();
+}
+
+ConnectionEditor::~ConnectionEditor() {
+}
+
+void ConnectionEditor::clear() {
+	if (connection_) {
+		disconnect(connection_, SIGNAL(destroyed(DiagramInterconnection*)),
+			this, SLOT(clear()));
+		disconnect(connection_, SIGNAL(contentChanged()),
+			this, SLOT(refresh()));
+		connection_ = 0;
+	}
+
+	disconnect(&nameEdit_, SIGNAL(textEdited(const QString&)),
+		this, SLOT(onNameChanged(const QString&)));
+	disconnect(&descriptionEdit_, SIGNAL(textChanged()),
+		this, SLOT(onDescriptionChanged()));
+
+	// clear the contents of the editors
+	busType_.setVLNV(VLNV());
+	absType_.setVLNV(VLNV());
+	connectedInstances_.clear();
+	nameEdit_.clear();
+	descriptionEdit_.clear();
+	portWidget_.clearContents();
+
+	// set objects as hidden
+	busType_.hide();
+	absType_.hide();
+	instanceLabel_.hide();
+	connectedInstances_.hide();
+	separator_.hide();
+	nameLabel_.hide();
+	nameEdit_.hide();
+	descriptionLabel_.hide();
+	descriptionEdit_.hide();
+	portsLabel_.hide();
+	portWidget_.hide();
+}
+
+void ConnectionEditor::refresh() {
+	Q_ASSERT(connection_);
+	setConnection(connection_);
+}
+
+void ConnectionEditor::setConnection( DiagramInterconnection* connection ) {
+	Q_ASSERT(connection);
+
+	// disconnect the previous connection
+	if (connection_) {
+		disconnect(connection_, SIGNAL(destroyed(DiagramInterconnection*)),
+			this, SLOT(clear()));
+		disconnect(connection_, SIGNAL(contentChanged()),
+			this, SLOT(refresh()));
+	}
+
+	connection_ = connection;
+
+	DiagramConnectionEndPoint* endPoint1 = connection->endPoint1();
+	Q_ASSERT(endPoint1);
+
+	busType_.setVLNV(endPoint1->getBusInterface()->getBusType());
+	absType_.setVLNV(endPoint1->getBusInterface()->getAbstractionType());
+
+	QString endPoint1Name = endPoint1->name();
+	QString endPoint2Name = connection->endPoint2()->name();
+
+	// set the names of the connected instances
+	connectedInstances_.setText(QString("%1 - %2").arg(endPoint1Name).arg(endPoint2Name));
+
+	// set text for the name editor, signal must be disconnected when name is set 
+	// to avoid loops 
+	disconnect(&nameEdit_, SIGNAL(textEdited(const QString&)),
+		this, SLOT(onNameChanged(const QString&)));
+	nameEdit_.setText(connection->name());
+	connect(&nameEdit_, SIGNAL(textEdited(const QString&)),
+		this, SLOT(onNameChanged(const QString&)), Qt::UniqueConnection);
+
+	// display the current description of the interface.
+	disconnect(&descriptionEdit_, SIGNAL(textChanged()),
+		this, SLOT(onDescriptionChanged()));
+	descriptionEdit_.setPlainText(connection->description());
+	connect(&descriptionEdit_, SIGNAL(textChanged()),
+		this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
+
+	connect(connection, SIGNAL(destroyed(DiagramInterconnection*)),
+		this, SLOT(clear()), Qt::UniqueConnection);
+	connect(connection, SIGNAL(contentChanged()), 
+		this, SLOT(refresh()), Qt::UniqueConnection);
+
+	setPortMaps();
+	
+	// if either end point is hierarchical then there is no description to set
+	if (endPoint1->isHierarchical() || connection->endPoint2()->isHierarchical()) {
+		
+		// description exists only for normal interconnections
+		descriptionEdit_.setDisabled(true);
+		descriptionLabel_.hide();
+		descriptionEdit_.hide();
+
+		// name exists for only normal interconnections
+		nameLabel_.hide();
+		nameEdit_.hide();
+		nameEdit_.setDisabled(true);
+	}
+	else {
+		descriptionEdit_.setEnabled(true);
+		descriptionLabel_.show();
+		descriptionEdit_.show();
+
+		nameLabel_.show();
+		nameEdit_.show();
+		nameEdit_.setEnabled(true);
+	}
+
+	// set the objects visible
+	busType_.show();
+	absType_.show();
+	instanceLabel_.show();
+	connectedInstances_.show();
+	separator_.show();
+	portsLabel_.show();
+	portWidget_.show();
+}
+
+void ConnectionEditor::onNameChanged( const QString& name ) {
+	Q_ASSERT(connection_);
+
+	disconnect(connection_, SIGNAL(contentChanged()),
+		this, SLOT(refresh()));	
+
+	QSharedPointer<QUndoCommand> cmd(new ConnectionChangeCommand(
+		connection_, name, descriptionEdit_.toPlainText()));
+	static_cast<BlockDiagram*>(connection_->scene())->getEditProvider().addCommand(cmd);
+
+	connect(connection_, SIGNAL(contentChanged()), 
+		this, SLOT(refresh()), Qt::UniqueConnection);
+}
+
+void ConnectionEditor::onDescriptionChanged() {
+
+	Q_ASSERT(connection_);
+
+	disconnect(connection_, SIGNAL(contentChanged()),
+		this, SLOT(refresh()));
+
+	QSharedPointer<QUndoCommand> cmd(new ConnectionChangeCommand(
+		connection_, nameEdit_.text(), descriptionEdit_.toPlainText()));
+	static_cast<BlockDiagram*>(connection_->scene())->getEditProvider().addCommand(cmd);
+
+	connect(connection_, SIGNAL(contentChanged()), 
+		this, SLOT(refresh()), Qt::UniqueConnection);
+}
+
+void ConnectionEditor::setPortMaps() {
+	Q_ASSERT(connection_);
+
+	portWidget_.horizontalHeaderItem(0)->setText(connection_->endPoint1()->name());
+	portWidget_.horizontalHeaderItem(1)->setText(connection_->endPoint2()->name());
+	portWidget_.clearContents();
+
+	// get the interface and component for end point 1
+	QSharedPointer<BusInterface> busIf1 = connection_->endPoint1()->getBusInterface();
+	Q_ASSERT(busIf1);
+	QList<QSharedPointer<General::PortMap> > portMaps1 = busIf1->getPortMaps();
+	QSharedPointer<Component> comp1 = connection_->endPoint1()->ownerComponent();
+	Q_ASSERT(comp1);
+
+	// get the interface and component for end point 2
+	QSharedPointer<BusInterface> busIf2 = connection_->endPoint2()->getBusInterface();
+	Q_ASSERT(busIf2);
+	QList<QSharedPointer<General::PortMap> > portMaps2 = busIf2->getPortMaps();
+	QSharedPointer<Component> comp2 = connection_->endPoint2()->ownerComponent();
+	Q_ASSERT(comp2);
+
+	// get the abstraction def for the interfaces
+	VLNV absDefVLNV = busIf1->getAbstractionType();
+	QSharedPointer<AbstractionDefinition> absDef;
+	if (handler_->getDocumentType(absDefVLNV) == VLNV::ABSTRACTIONDEFINITION) {
+		QSharedPointer<LibraryComponent> libComp = handler_->getModel(absDefVLNV);
+		absDef = libComp.staticCast<AbstractionDefinition>();
+	}
+
+	General::InterfaceMode interfaceMode1 = busIf1->getInterfaceMode();
+	General::InterfaceMode interfaceMode2 = busIf2->getInterfaceMode();
+
+	// turn off sorting when adding items
+	portWidget_.setSortingEnabled(false);
+
+	// set the size to be the max value 
+	portWidget_.setRowCount(0);
+
+	// get list of all used logical ports
+	QStringList logicalNames;
+	foreach (QSharedPointer<General::PortMap> map, portMaps1) {
+		if (!logicalNames.contains(map->logicalPort_)) {
+			logicalNames.append(map->logicalPort_);
+		}
+	}
+	foreach (QSharedPointer<General::PortMap> map, portMaps2) {
+		if (!logicalNames.contains(map->logicalPort_)) {
+			logicalNames.append(map->logicalPort_);
+		}
+	}
+
+	int row = 0;
+	// find the physical ports mapped to given logical port
+	foreach (QString logicalPort, logicalNames) {
+
+		bool invalid = false;
+
+		// check that the logical signal is contained in both interface modes used
+		if (absDef) {
+			if (!absDef->hasPort(logicalPort, interfaceMode1) ||
+				!absDef->hasPort(logicalPort, interfaceMode2)) {
+					invalid = true;
+			}
+		}
+
+		foreach (QSharedPointer<General::PortMap> map1, portMaps1) {
+			if (map1->logicalPort_ == logicalPort) {
+
+				foreach (QSharedPointer<General::PortMap> map2, portMaps2) {
+					if (map2->logicalPort_ == logicalPort) {
+						addMap(row, invalid, map1, comp1, map2, comp2);
+					}
+				}
+			}
+		}
+	}
+
+	// finally set sorting back on
+	portWidget_.setSortingEnabled(true);
+}
+
+void ConnectionEditor::addMap( int& row, bool invalid,
+							  QSharedPointer<General::PortMap> portMap1,
+							  QSharedPointer<Component> component1,
+							  QSharedPointer<General::PortMap> portMap2,
+							  QSharedPointer<Component> component2) {
+		
+	// if both have vectored logical signals
+	if (portMap1->logicalVector_ && portMap2->logicalVector_) {
+		
+		// if the vectored ports don't have any common bounds
+		if (portMap1->logicalVector_->getRight() > portMap2->logicalVector_->getLeft() ||
+			portMap1->logicalVector_->getLeft() < portMap2->logicalVector_->getRight()) {
+				return;
+		}
+	}
+	// if port map1 has vectored logical signal
+	else if (portMap1->logicalVector_ && !portMap2->logicalVector_) {
+
+	}
+	// if port map2 has vectored logical signal
+	else if (!portMap1->logicalVector_ && portMap2->logicalVector_) {
+
+	}
+	// if neither has vectored logical signal
+	else {
+		
+	}
+	++row;
+}

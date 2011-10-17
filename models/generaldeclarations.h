@@ -590,6 +590,22 @@ struct PortMap {
 	PortMap& operator=(const PortMap& other);
 };
 
+/*! \brief Convert the physical port into string.
+ * 
+ * \param portMap reference to the port map that's physical port is converted to string.
+ *
+ * \return QString Contains the physical port in string.
+*/
+QString toPhysString(const PortMap& portMap);
+
+/*! \brief Convert the logical port into string.
+ *
+ * \param portMap reference to the port map that's logical port is converted to string.
+ *
+ * \return QString Contains the logical port in string.
+*/
+QString toLogicalString(const PortMap& portMap);
+
 /*! \brief The  NameGroup matches the spirit:nameGroup element in IP-Xact.
  * 
  */

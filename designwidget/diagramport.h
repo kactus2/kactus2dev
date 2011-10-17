@@ -123,6 +123,14 @@ public:
      */
     virtual DiagramComponent *encompassingComp() const;
 
+	/*! \brief Returns pointer to the top component that owns this interface.
+	 *
+	 *
+	 * \return QSharedPointer<Component> Pointer to the component to which this 
+	 * interface belongs to.
+	*/
+	virtual QSharedPointer<Component> ownerComponent() const;
+
     /*! 
      *  Returns the IP-XACT bus interface model of the port.
      */

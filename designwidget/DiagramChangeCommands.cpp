@@ -396,3 +396,29 @@ void ComponentConfElementChangeCommand::undo() {
 void ComponentConfElementChangeCommand::redo() {
 	component_->setConfigurableElements(newConfElements_);
 }
+
+// ConnectionChangeCommand methods
+ConnectionChangeCommand::ConnectionChangeCommand(DiagramInterconnection* connection, 
+												 const QString& newName, 
+												 const QString& newDescription,
+												 QUndoCommand* parent /*= 0*/ ):
+QUndoCommand(parent),
+connection_(connection),
+newName_(newName),
+newDescription_(newDescription),
+oldName_(connection->name()),
+oldDescription_(connection->description()) {
+}
+
+ConnectionChangeCommand::~ConnectionChangeCommand() {
+}
+
+void ConnectionChangeCommand::undo() {
+	connection_->setName(oldName_);
+	connection_->setDescription(oldDescription_);
+}
+
+void ConnectionChangeCommand::redo() {
+	connection_->setName(newName_);
+	connection_->setDescription(newDescription_);
+}

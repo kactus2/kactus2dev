@@ -343,6 +343,11 @@ DiagramComponent *DiagramInterface::encompassingComp() const
     return qgraphicsitem_cast<DiagramComponent *>(parentItem());
 }
 
+QSharedPointer<Component> DiagramInterface::ownerComponent() const {
+	Q_ASSERT(component_);
+	return component_;
+}
+
 QVariant DiagramInterface::itemChange(GraphicsItemChange change,
                                  const QVariant &value)
 {

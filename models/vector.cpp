@@ -157,4 +157,23 @@ void Vector::setRight( int right ) {
 	right_ = right;
 }
 
+QString Vector::toString() const {
+	if (left_ < 0 && right_ < 0)
+		return QString();
+
+	QString str("[");
+	str += QString::number(left_);
+	str += "..";
+	str += QString::number(right_);
+	str += "]";
+	return str;
+}
+
+int Vector::getSize() const {
+	if (left_ < 0 && right_ < 0)
+		return 1;
+
+	return left_ - right_ + 1;
+}
+
 

@@ -56,6 +56,7 @@
 #include <ComponentInstanceEditor/componentinstanceeditor.h>
 #include <ConfigurationEditor/configurationeditor.h>
 #include <InterfaceEditor/interfaceeditor.h>
+#include <ConnectionEditor/connectioneditor.h>
 
 #include <QCoreApplication>
 #include <QSettings>
@@ -84,6 +85,7 @@ console_(0),
 instanceEditor_(0),
 configurationEditor_(0),
 interfaceEditor_(0),
+connectionEditor_(0),
 actNew_(0),
 actSave_(0),
 actSaveAs_(0),
@@ -139,6 +141,7 @@ actExit_(0) {
 	setupInstanceEditor();
 	setupConfigurationEditor();
 	setupInterfaceEditor();
+	setupConnectionEditor();
 
 	restoreSettings();
 
@@ -262,6 +265,8 @@ void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forc
          this, SLOT(onInterfaceSelected(DiagramInterface*)), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(portSelected(DiagramPort*)),
 		this, SLOT(onPortSelected(DiagramPort*)), Qt::UniqueConnection);
+	connect(designWidget, SIGNAL(connectionSelected(DiagramInterconnection*)),
+		this, SLOT(onConnectionSelected(DiagramInterconnection*)), Qt::UniqueConnection);
 
 	connect(designWidget, SIGNAL(clearItemSelection()),
 		this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
@@ -762,12 +767,21 @@ void MainWindow::setupInterfaceEditor() {
 	interfaceDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 	interfaceDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
 
-	interfaceEditor_ = new InterfaceEditor(interfaceDock);
+	interfaceEditor_ = new InterfaceEditor(interfaceDock, libraryHandler_);
 	interfaceDock->setWidget(interfaceEditor_);
 	addDockWidget(Qt::RightDockWidgetArea, interfaceDock);
 
-// 	connect(interfaceEditor_, SIGNAL(contentChanged()),
-// 		this, SLOT(onDesignChanged()), Qt::UniqueConnection);
+}
+
+void MainWindow::setupConnectionEditor() {
+	QDockWidget* connectionDock = new QDockWidget(tr("Connection editor"), this);
+	connectionDock->setObjectName(tr("Connection editor"));
+	connectionDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+	connectionDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
+
+	connectionEditor_ = new ConnectionEditor(connectionDock, libraryHandler_);
+	connectionDock->setWidget(connectionEditor_);
+	addDockWidget(Qt::RightDockWidgetArea, connectionDock);
 }
 
 void MainWindow::onDesignChanged() {
@@ -790,8 +804,8 @@ void MainWindow::onDesignChanged() {
 void MainWindow::onClearItemSelection() {
 
 	instanceEditor_->clear();
-
 	interfaceEditor_->clear();
+	connectionEditor_->clear();
 }
 
 void MainWindow::onComponentSelected( DiagramComponent* component ) {
@@ -811,6 +825,7 @@ void MainWindow::onComponentSelected( DiagramComponent* component ) {
         libraryHandler_->onClearSelection();
     }
 
+	connectionEditor_->clear();
 	interfaceEditor_->clear();
 }
 
@@ -827,6 +842,7 @@ void MainWindow::onPortSelected( DiagramPort* port ) {
 	else
 		libraryHandler_->onClearSelection();
 
+	connectionEditor_->clear();
 	interfaceEditor_->setInterface(port);
 }
 
@@ -834,9 +850,17 @@ void MainWindow::onInterfaceSelected( DiagramInterface* interface ) {
 
 	Q_ASSERT(interface);
 
+	connectionEditor_->clear();
 	instanceEditor_->clear();
-
 	interfaceEditor_->setInterface(interface);
+}
+
+void MainWindow::onConnectionSelected( DiagramInterconnection* connection ) {
+	Q_ASSERT(connection);
+
+	instanceEditor_->clear();
+	interfaceEditor_->clear();
+	connectionEditor_->setConnection(connection);
 }
 
 void MainWindow::onImportLibFile() {

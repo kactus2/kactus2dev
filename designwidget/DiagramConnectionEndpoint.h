@@ -13,10 +13,12 @@
 #define DIAGRAMCONNECTIONENDPOINT_H
 
 #include <models/generaldeclarations.h>
+#include <models/component.h>
 
 #include <QList>
 #include <QPointF>
 #include <QVector2D>
+#include <QSharedPointer>
 #include <QGraphicsPolygonItem>
 
 class DiagramInterconnection;
@@ -171,10 +173,18 @@ public:
     virtual void updateInterface() = 0;
 
     /*! 
-     *  Returns the encompassing port, if this DiagramComponent represents
+     *  Returns the encompassing component, if this DiagramComponent represents
      *  a bus interface on a component.
      */
     virtual DiagramComponent *encompassingComp() const = 0;
+
+	/*! \brief Returns pointer to the top component that owns this interface.
+	 *
+	 *
+	 * \return QSharedPointer<Component> Pointer to the component to which this 
+	 * interface belongs to.
+	*/
+	virtual QSharedPointer<Component> ownerComponent() const = 0;
 
     /*! 
      *  brief Returns the IP-XACT bus interface model of the end point.

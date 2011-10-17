@@ -36,9 +36,15 @@ DiagramInterconnection::DiagramInterconnection(
         bool autoConnect,
         const QString &displayName,
         const QString &description,
-        QGraphicsItem *parent)
-            : QGraphicsPathItem(parent), name_(), endPoint1_(0),
-              endPoint2_(0), pathPoints_(), selected_(-1), selectionType_(NONE)
+		QGraphicsItem *parent):
+QGraphicsPathItem(parent), 
+name_(), 
+description_(description),
+endPoint1_(0),
+endPoint2_(0), 
+pathPoints_(), 
+selected_(-1), 
+selectionType_(NONE)
 {
     setItemSettings();
     createRoute(endPoint1, endPoint2);
@@ -60,19 +66,25 @@ DiagramInterconnection::DiagramInterconnection(
 DiagramInterconnection::DiagramInterconnection(QPointF p1, QVector2D const& dir1,
                                                QPointF p2, QVector2D const& dir2,
                                                const QString &displayName,
-                                               const QString &description,
-                                               QGraphicsItem *parent) : QGraphicsPathItem(parent),
-                                                                        name_(), endPoint1_(0), endPoint2_(0),
-                                                                        pathPoints_(), selected_(-1),
-                                                                        selectionType_(NONE)
+											   const QString &description,
+											   QGraphicsItem *parent) : 
+QGraphicsPathItem(parent),
+name_(),
+description_(),
+endPoint1_(0), 
+endPoint2_(0),
+pathPoints_(),
+selected_(-1),
+selectionType_(NONE)
 {
-    setItemSettings();
+	setItemSettings();
     createRoute(p1, p2, dir1, dir2);
 }
 
 
 DiagramInterconnection::~DiagramInterconnection() {
 	disconnectEnds();
+	emit destroyed(this);
 }
 
 bool DiagramInterconnection::connectEnds()
@@ -235,17 +247,31 @@ void DiagramInterconnection::setRoute(QList<QPointF> path)
     emit contentChanged();
 }
 
-QString DiagramInterconnection::name()
+QString DiagramInterconnection::name() const
 {
     return name_;
 }
 
-DiagramConnectionEndPoint *DiagramInterconnection::endPoint1()
+void DiagramInterconnection::setName( const QString& name ) {
+	name_ = name;
+	emit contentChanged();
+}
+
+QString DiagramInterconnection::description() const {
+	return description_;
+}
+
+void DiagramInterconnection::setDescription( const QString& description ) {
+	description_ = description;
+	emit contentChanged();
+}
+
+DiagramConnectionEndPoint *DiagramInterconnection::endPoint1() const
 {
     return endPoint1_;
 }
 
-DiagramConnectionEndPoint *DiagramInterconnection::endPoint2()
+DiagramConnectionEndPoint *DiagramInterconnection::endPoint2() const
 {
     return endPoint2_;
 }
