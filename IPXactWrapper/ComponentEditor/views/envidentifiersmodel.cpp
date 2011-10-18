@@ -168,7 +168,7 @@ void EnvIdentifiersModel::onRemoveRow( int row ) {
 void EnvIdentifiersModel::onAddRow() {
 	beginInsertRows(QModelIndex(), table_.size(), table_.size());
 
-	table_.append(QString());
+	table_.append(QString("::"));
 
 	endInsertRows();
 
