@@ -1044,6 +1044,8 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
             VLNV vlnv = dialog.getVLNV();
             comp->componentModel()->setVlnv(vlnv);
+            comp->componentModel()->setComponentHierarchy(dialog.getProductHierarchy());
+            comp->componentModel()->setComponentFirmness(dialog.getFirmness());
 
             // Write the model to file.
             lh_->writeModelToFile(dialog.getPath(), comp->componentModel());
