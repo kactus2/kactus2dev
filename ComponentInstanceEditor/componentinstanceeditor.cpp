@@ -31,6 +31,7 @@ editProvider_() {
 	configurableElements_.hide();
 
 	vlnvDisplayer_.setTitle(tr("Instance model VLNV"));
+	vlnvDisplayer_.setFlat(false);
 
 	// set validator for the instance name
 	VhdlNameValidator* vhdlNameValidator = new VhdlNameValidator(NULL);
@@ -54,6 +55,7 @@ ComponentInstanceEditor::~ComponentInstanceEditor() {
 }
 
 void ComponentInstanceEditor::setComponent( DiagramComponent* component ) {
+	Q_ASSERT(component);
 
 	// if previous component has been specified, then disconnect signals to this editor.
 	if (component_) {

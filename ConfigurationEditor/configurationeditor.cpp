@@ -94,21 +94,33 @@ void ConfigurationEditor::onAdd() {
 	QString dirPath = compInfo.absolutePath();
 
 	// create the configuration
-	QSharedPointer<DesignConfiguration> desConf = QSharedPointer<DesignConfiguration>(
-		new DesignConfiguration(configVLNV));
-	// if user wanted to use the existing design
-	if (dialog.useExistingDesign()) {
-		// set the configuration to reference the same design.
-		desConf->setDesignRef(designWidget_->getConfiguration()->getDesignRef());
-	}
+	QSharedPointer<DesignConfiguration> desConf(new DesignConfiguration(configVLNV));
 
-	// if user wanted to create a new design
-	else {
-		VLNV designVLNV = dialog.getDesignVLNV();
-		desConf->setDesignRef(designVLNV);
+	switch (dialog.designSelection()) {
+		// if user wanted to use the existing design
+		case CreateConfigurationDialog::USE_EXISTING: {
+			// set the configuration to reference the same design.
+			desConf->setDesignRef(designWidget_->getConfiguration()->getDesignRef());
+			break;
+													  }
+		// if user wanted to create a new design
+		case CreateConfigurationDialog::CREATE_EMPTY: {
+			VLNV designVLNV = dialog.getDesignVLNV();
+			desConf->setDesignRef(designVLNV);
 
-		QSharedPointer<Design> design = QSharedPointer<Design>(new Design(designVLNV));
-		handler_->writeModelToFile(dirPath, design);
+			QSharedPointer<Design> design = QSharedPointer<Design>(new Design(designVLNV));
+			handler_->writeModelToFile(dirPath, design);
+			break;
+													  }
+		// CreateConfigurationDialog::CREATE_COPY
+		default: {
+			VLNV designVLNV = dialog.getDesignVLNV();
+			desConf->setDesignRef(designVLNV);
+
+			QSharedPointer<Design> design = designWidget_->createDesign(designVLNV);
+			handler_->writeModelToFile(dirPath, design);
+			break;
+				 }
 	}
 
 	handler_->writeModelToFile(dirPath, desConf);

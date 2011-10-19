@@ -27,6 +27,7 @@ handler_(handler),
 component_(component),
 useExistingRadio_(tr("Use current design"), this),
 createNewRadio_(tr("Create new design"), this),
+createCopyRadio_(tr("Copy old design to new configuration"), this),
 configNameEdit_(this),
 vlnvEdit_(VLNV::DESIGNCONFIGURATION, handler, this, this, true),
 implementationCombo_(this),
@@ -64,6 +65,7 @@ void CreateConfigurationDialog::setupLayout() {
 	QHBoxLayout* radioLayout = new QHBoxLayout();
 	radioLayout->addWidget(&useExistingRadio_);
 	radioLayout->addWidget(&createNewRadio_);
+	radioLayout->addWidget(&createCopyRadio_);
 	radioLayout->addStretch();
 
 	QFormLayout* nameLayout = new QFormLayout();
@@ -119,10 +121,6 @@ VLNV CreateConfigurationDialog::getConfigurationVLNV() const {
 	return configVLNV;
 }
 
-bool CreateConfigurationDialog::useExistingDesign() const {
-	return useExistingRadio_.isChecked();
-}
-
 QString CreateConfigurationDialog::getConfigurationName() const {
 	return configNameEdit_.text();
 }
@@ -158,7 +156,7 @@ QStringList CreateConfigurationDialog::validate() const {
 		}
 
 		// is user wants to create a new design.
-		if (!useExistingDesign()) {
+		if (!useExistingRadio_.isChecked()) {
 			
 			VLNV designVLNV = getDesignVLNV();
 			if (handler_->contains(designVLNV)) {
@@ -185,4 +183,13 @@ VLNV CreateConfigurationDialog::getDesignVLNV() const {
 
 void CreateConfigurationDialog::onConfNameChanged( const QString& newName ) {
 	vlnvEdit_.setName(component_->getVlnv()->getName() + "." + newName + ".designcfg");
+}
+
+CreateConfigurationDialog::DesignSelection CreateConfigurationDialog::designSelection() const {
+	if (useExistingRadio_.isChecked())
+		return CreateConfigurationDialog::USE_EXISTING;
+	else if (createNewRadio_.isChecked())
+		return CreateConfigurationDialog::CREATE_EMPTY;
+	else
+		return CreateConfigurationDialog::CREATE_COPY;
 }

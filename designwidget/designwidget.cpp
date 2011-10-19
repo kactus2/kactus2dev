@@ -888,3 +888,7 @@ QRectF DesignWidget::itemsBoundingRect() const {
 BlockDiagram* DesignWidget::scene() const {
 	return diagram_;
 }
+
+QSharedPointer<Design> DesignWidget::createDesign( const VLNV& vlnv ) {
+	return diagram_->createDesign(vlnv);
+}

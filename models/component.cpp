@@ -1066,31 +1066,6 @@ bool Component::isHierarchical() const {
 	return model_->hasHierView();
 }
 
-VLNV Component::getHierRef(const QString viewName) const {
-
-	// if no model is specified
-	if (!model_)
-		return VLNV();
-
-	// ask the model for a hierarchyRef with a given name
-	return model_->getHierRef(viewName);
-}
-
-
-QList<VLNV> Component::getHierRefs() const {
-	if (!model_)
-		return QList<VLNV>();
-
-	return model_->getHierarchyRefs();
-}
-
-
-void Component::setHierRef(const VLNV& vlnv, const QString& viewName /*= QString()*/ ) {
-	if (!model_)
-		return;
-	model_->setHierRef(vlnv, viewName);
-}
-
 Port* Component::getPort(const QString& name) const {
 	if (model_)
 		// ask model for the port
@@ -1126,14 +1101,6 @@ FileSet* Component::getFileSet(const QString& name) const {
 
 void Component::addFileSet(FileSet* fileSet) {
 	fileSets_.append(QSharedPointer<FileSet>(fileSet));
-}
-
-View* Component::findView(const QString name) const {
-	return model_->findView(name);
-}
-
-void Component::addView(View* newView) {
-	model_->addView(newView);
 }
 
 QStringList Component::getFiles(const QString fileSetName) {
@@ -1178,17 +1145,6 @@ FileSet* Component::createFileSet() {
 	fileSets_.append(QSharedPointer<FileSet>(new FileSet()));
 	// and return pointer to it
 	return fileSets_.last().data();
-}
-
-const QList<QSharedPointer<View> > Component::getViews() const {
-	
-	// if model exists then ask it for views
-	if (model_)
-		return model_->getViews();
-
-	// if not then return empty list
-	else
-		return QList<QSharedPointer<View> >();
 }
 
 bool Component::addPort( QSharedPointer<Port> port ) {
@@ -1324,15 +1280,6 @@ QStringList Component::getPortNames() const {
 		return QStringList();
 }
 
-View* Component::createView() {
-
-	// if model does not exist then create one
-	if (!model_)
-		model_ = QSharedPointer<Model>(new Model());
-
-	return model_->createView();
-}
-
 QStringList Component::getFileSetNames() const {
 
 	QStringList list;
@@ -1341,22 +1288,6 @@ QStringList Component::getFileSetNames() const {
 		list.append(fileSet->getName());
 	}
 	return list;
-}
-
-QStringList Component::getViewNames() const {
-	if (model_)
-		return model_->getViewNames();
-	else
-		return QStringList();
-}
-
-int Component::viewCount() const {
-	if (model_)
-		return model_->viewCount();
-	
-	// if no model is defined then no views are either
-	else
-		return 0;
 }
 
 bool Component::hasFileSet( const QString& fileSetName ) const {
@@ -1396,19 +1327,6 @@ General::Direction Component::getPortDirection( const QString& portName ) const 
 		return General::DIRECTION_INVALID;
 
 	return model_->getPortDirection(portName);
-}
-
-QStringList Component::getHierViews() const {
-
-	if (model_)
-		return model_->getHierViews();
-	else
-		return QStringList();
-}
-
-void Component::removeView( const QString& viewName ) {
-	if (model_)
-		model_->removeView(viewName);
 }
 
 void Component::removeChannel( const QString& channelName ) {
@@ -1595,13 +1513,6 @@ bool Component::hasFileSets() const {
 	return !fileSets_.isEmpty();
 }
 
-bool Component::hasViews() const {
-	if (!model_)
-		return false;
-	else
-		return model_->hasViews();
-}
-
 const QMap<QString, QSharedPointer<Port> > Component::getPorts() const {
 	if (model_)
 		return model_->getPorts();
@@ -1616,14 +1527,6 @@ bool Component::hasFile( const QString& fileName ) const {
 		}
 	}
 	return false;
-}
-
-QString Component::getViewDescription( const QString& viewName ) const {
-	View* view = findView(viewName);
-	if (!view)
-		return QString();
-
-	return view->getDescription();
 }
 
 int Component::getPortLeftBound( const QString& port ) const {
@@ -1650,3 +1553,100 @@ int Component::getPortRightBound( const QString& port ) const {
 
 
 
+
+VLNV Component::getHierRef(const QString viewName) const {
+
+	// if no model is specified
+	if (!model_)
+		return VLNV();
+
+	// ask the model for a hierarchyRef with a given name
+	return model_->getHierRef(viewName);
+}
+
+
+QList<VLNV> Component::getHierRefs() const {
+	if (!model_)
+		return QList<VLNV>();
+
+	return model_->getHierarchyRefs();
+}
+
+
+void Component::setHierRef(const VLNV& vlnv, const QString& viewName /*= QString()*/ ) {
+	if (!model_)
+		return;
+	model_->setHierRef(vlnv, viewName);
+}
+
+View* Component::findView(const QString name) const {
+	return model_->findView(name);
+}
+
+void Component::addView(View* newView) {
+	model_->addView(newView);
+}
+
+const QList<QSharedPointer<View> > Component::getViews() const {
+
+	// if model exists then ask it for views
+	if (model_)
+		return model_->getViews();
+
+	// if not then return empty list
+	else
+		return QList<QSharedPointer<View> >();
+}
+
+View* Component::createView() {
+
+	// if model does not exist then create one
+	if (!model_)
+		model_ = QSharedPointer<Model>(new Model());
+
+	return model_->createView();
+}
+
+QStringList Component::getViewNames() const {
+	if (model_)
+		return model_->getViewNames();
+	else
+		return QStringList();
+}
+
+int Component::viewCount() const {
+	if (model_)
+		return model_->viewCount();
+
+	// if no model is defined then no views are either
+	else
+		return 0;
+}
+
+QStringList Component::getHierViews() const {
+
+	if (model_)
+		return model_->getHierViews();
+	else
+		return QStringList();
+}
+
+void Component::removeView( const QString& viewName ) {
+	if (model_)
+		model_->removeView(viewName);
+}
+
+bool Component::hasViews() const {
+	if (!model_)
+		return false;
+	else
+		return model_->hasViews();
+}
+
+QString Component::getViewDescription( const QString& viewName ) const {
+	View* view = findView(viewName);
+	if (!view)
+		return QString();
+
+	return view->getDescription();
+}

@@ -20,6 +20,9 @@
 #include <QPainter>
 #include <QRectF>
 
+//! \brief The minimum size for the preview box
+static const int MIN_BOX_HEIGHT = 120;
+
 //-----------------------------------------------------------------------------
 
 namespace
@@ -72,6 +75,8 @@ ComponentPreviewBox::ComponentPreviewBox(LibraryInterface* lh) : lh_(lh), compon
     scene_ = new GridScene(this);
     setScene(scene_);
     centerOn(0, 0);
+
+	setMinimumHeight(MIN_BOX_HEIGHT);
 
     // Disable interactivity.
     setInteractive(false);

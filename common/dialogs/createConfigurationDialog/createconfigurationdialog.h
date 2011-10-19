@@ -30,6 +30,13 @@ class CreateConfigurationDialog : public QDialog {
 
 public:
 
+	//! \brief Enum to get info on what kind of operation user wanted for new configuration.
+	enum DesignSelection {
+		USE_EXISTING = 0,	// use the same design as the previous configuration
+		CREATE_EMPTY = 1,	// create new empty design for the new configuration
+		CREATE_COPY = 2		// create new design by copying the previous design
+	};
+
 	/*! \brief The constructor
 	 *
 	 * \param handler Pointer to the instance that manages the library.
@@ -60,14 +67,6 @@ public:
 	*/
 	VLNV getDesignVLNV() const;
 
-	/*! \brief True if user wanted to use an existing design.
-	 * 
-	 * False if user wanted to create a new design.
-	 *
-	 * \return bool True if user wanted to use an existing design.
-	*/
-	bool useExistingDesign() const;
-
 	/*! \brief Get the name for the view to be saved to the component.
 	 *
 	 *
@@ -81,6 +80,14 @@ public:
 	 * \return QString contains the name for the implementation view.
 	*/
 	QString getImplementationViewName() const;
+
+	/*! \brief Find out if user wanted to use existing design or create a new one.
+	 *
+	 *
+	 * \return CreateConfigurationDialog::DesignSelection 
+	 * specifies what kind of operation was selected.
+	*/
+	DesignSelection designSelection() const;
 
 private slots:
 
@@ -120,6 +127,9 @@ private:
 
 	//! \brief Radio button that selects that a new design is to be created 
 	QRadioButton createNewRadio_;
+
+	//! \brief Radio button that selects a new design to be copied from the old one
+	QRadioButton createCopyRadio_;
 
 	//! \brief Line editor to set the name for the new view
 	QLineEdit configNameEdit_;

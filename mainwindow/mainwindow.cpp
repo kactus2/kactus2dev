@@ -812,6 +812,9 @@ void MainWindow::onComponentSelected( DiagramComponent* component ) {
 
 	Q_ASSERT(component);
 
+	connectionEditor_->clear();
+	interfaceEditor_->clear();
+
 	// update the instance editor
 	instanceEditor_->setComponent(component);
 	displayDockedEditor(instanceEditor_);
@@ -825,9 +828,6 @@ void MainWindow::onComponentSelected( DiagramComponent* component ) {
     {
         libraryHandler_->onClearSelection();
     }
-
-	connectionEditor_->clear();
-	interfaceEditor_->clear();
 }
 
 void MainWindow::onPortSelected( DiagramPort* port ) {
@@ -836,14 +836,20 @@ void MainWindow::onPortSelected( DiagramPort* port ) {
 
 	// if the port has an encompassing component then it is selected
 	DiagramComponent* component = port->encompassingComp();
-	if (component)
-		onComponentSelected(component);
+// 	if (component)
+// 		onComponentSelected(component);
 
+	if (component->componentModel()->getVlnv()->isValid()) {
+
+		libraryHandler_->onSelectionChanged(*component->componentModel()->getVlnv());
+		previewBox_->setComponent(*component->componentModel()->getVlnv());
+	}
 	// if no component can be identified
 	else
 		libraryHandler_->onClearSelection();
 
 	connectionEditor_->clear();
+	instanceEditor_->clear();
 	interfaceEditor_->setInterface(port);
 	displayDockedEditor(interfaceEditor_);
 }
@@ -1485,7 +1491,7 @@ void MainWindow::createDesign(KactusAttribute::ProductHierarchy prodHier,
     component->setComponentFirmness(firmness);
     component->setComponentImplementation(KactusAttribute::KTS_HW);
 
-    View* hierView = new View(tr("kactusHierarchical"));
+    View* hierView = new View(tr("structural"));
     hierView->setHierarchyRef(desConfVLNV);
     hierView->addEnvIdentifier("");
 
@@ -1504,7 +1510,7 @@ void MainWindow::createDesign(KactusAttribute::ProductHierarchy prodHier,
     libraryHandler_->writeModelToFile(directory, component);
 
     // Open the design.
-    openDesign(vlnv, tr("kactusHierarchical"), true);
+    openDesign(vlnv, tr("structural"), true);
 }
 
 //-----------------------------------------------------------------------------
@@ -1559,7 +1565,7 @@ void MainWindow::createSystem(VLNV const& compVLNV, VLNV const& sysVLNV, QString
 
     // Create the view to the HW design.
     View* hwView = new View("kts_hw_ref");
-    hwView->setHierarchyRef(component->getHierRef("kactusHierarchical"));
+    hwView->setHierarchyRef(component->getHierRef("structural"));
     hwView->addEnvIdentifier("");
 
     Model* model = new Model;
@@ -2175,11 +2181,11 @@ void MainWindow::displayDockedEditor( QWidget* dockedEditor ) {
 		// add dock widget to correct area
 		addDockWidget(area, dock);
 		dock->show();
-		return;
 	}
 	// there were dock widgets tabified.
 	else {
 		// move the dock on top of other widgets.
 		tabifyDockWidget(tabifiedDocks.first(), dock);
 	}
+
 }

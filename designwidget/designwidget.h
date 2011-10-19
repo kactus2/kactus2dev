@@ -170,6 +170,14 @@ public:
 	*/
 	BlockDiagram* scene() const;
 
+	/*! \brief Create a design that represents the current drawed design.
+	 *
+	 * \param vlnv The vlnv to set for the design.
+	 *
+	 * \return QSharedPointer<Design> Pointer to the created design.
+	*/
+	QSharedPointer<Design> createDesign(const VLNV& vlnv);
+
 signals:
     /*! \brief Signal openDesign is emitted when user double clicks a hierarchical
      * component
