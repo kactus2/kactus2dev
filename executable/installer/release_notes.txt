@@ -1,0 +1,18 @@
+
+===============================================================================
+                            RELEASE NOTES : Kactus2
+              Copyright (c) 2011 Tampere University of Technology
+                            http://funbase.cs.tut.fi
+===============================================================================
+              + Improvement or feature added
+              - Bug fix or something removed
+              * Changed or Information
+===============================================================================
+
+04/10/2011 1.0 (Build 1)
+----------------------------------------------------
+
+* Public release
+* System designs and MCAPI editing are not fully featured in this release.
+  Upcoming system design features include undo/redo support, enhanced code
+  generation & validation and Makefile generation.
