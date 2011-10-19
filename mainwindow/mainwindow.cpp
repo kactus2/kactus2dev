@@ -814,6 +814,7 @@ void MainWindow::onComponentSelected( DiagramComponent* component ) {
 
 	// update the instance editor
 	instanceEditor_->setComponent(component);
+	displayDockedEditor(instanceEditor_);
 
     if (component->componentModel()->getVlnv()->isValid())
     {
@@ -844,6 +845,7 @@ void MainWindow::onPortSelected( DiagramPort* port ) {
 
 	connectionEditor_->clear();
 	interfaceEditor_->setInterface(port);
+	displayDockedEditor(interfaceEditor_);
 }
 
 void MainWindow::onInterfaceSelected( DiagramInterface* interface ) {
@@ -853,6 +855,7 @@ void MainWindow::onInterfaceSelected( DiagramInterface* interface ) {
 	connectionEditor_->clear();
 	instanceEditor_->clear();
 	interfaceEditor_->setInterface(interface);
+	displayDockedEditor(interfaceEditor_);
 }
 
 void MainWindow::onConnectionSelected( DiagramInterconnection* connection ) {
@@ -861,6 +864,7 @@ void MainWindow::onConnectionSelected( DiagramInterconnection* connection ) {
 	instanceEditor_->clear();
 	interfaceEditor_->clear();
 	connectionEditor_->setConnection(connection);
+	displayDockedEditor(connectionEditor_);
 }
 
 void MainWindow::onImportLibFile() {
@@ -1250,9 +1254,12 @@ void MainWindow::onTabChanged(int index)
 	else if (designwidget) {
 		configurationEditor_->setConfiguration(designwidget, true);
 	}
-	// active tab is not design widget so clear the configuration editor
+	// active tab is not design widget so clear the editors associated with design widget
 	else {
 		configurationEditor_->clear();
+		instanceEditor_->clear();
+		interfaceEditor_->clear();
+		connectionEditor_->clear();
 	}
 
     // Reset the draw mode to select.
@@ -1857,7 +1864,7 @@ void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
 	QFileInfo info(filePath);
 
 	IPXactComponentEditor* editor = new IPXactComponentEditor(libraryHandler_, info, component, this);
-	QString styleSheet("*[mandatoryField=\"true\"] { background-color: yellow; }");
+	QString styleSheet("*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
 	editor->setStyleSheet(styleSheet);
 
     if (forceUnlocked)
@@ -2146,4 +2153,33 @@ void MainWindow::selectVisibleDocks() {
 
 	dockMenu->exec(QCursor::pos());
 	
+}
+
+void MainWindow::displayDockedEditor( QWidget* dockedEditor ) {
+	QWidget* parentDock = dockedEditor->parentWidget();
+	QDockWidget* dock = qobject_cast<QDockWidget*>(parentDock);
+	
+	// if the editor's parent was not dock widget (editor is not dockable)
+	if (!dock) {
+		return;
+	}
+	
+	// find out if there are other docks tabified with the dock
+	QList<QDockWidget*> tabifiedDocks = tabifiedDockWidgets(dock);
+
+	// if there were no other docks tabified
+	if (tabifiedDocks.isEmpty()) {
+
+		// get the are the editor belongs to
+		Qt::DockWidgetArea area = dockWidgetArea(dock);
+		// add dock widget to correct area
+		addDockWidget(area, dock);
+		dock->show();
+		return;
+	}
+	// there were dock widgets tabified.
+	else {
+		// move the dock on top of other widgets.
+		tabifyDockWidget(tabifiedDocks.first(), dock);
+	}
 }

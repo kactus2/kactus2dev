@@ -358,6 +358,15 @@ private:
 	//! \brief Set up the connection editor.
 	void setupConnectionEditor();
 
+	/*! \brief Display a docked editor if it is hidden or not visible on some tab.
+	 * 
+	 * The editor must be child of a QDockWidget.
+	 * 
+	 * \param dockedEditor Pointer to the editor to display.
+	 *
+	*/
+	void displayDockedEditor(QWidget* dockedEditor);
+
 	//! \brief The instance that manages the IP-Xact library
     LibraryHandler *libraryHandler_;
     

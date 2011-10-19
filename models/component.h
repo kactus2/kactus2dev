@@ -437,6 +437,26 @@ public:
 	*/
 	int getPortWidth(const QString& port) const;
 
+	/*! \brief Get the left bound of the specified port.
+	 *
+	 * If port is not found then -1 is returned.
+	 *
+	 * \param port The name of the port.
+	 *
+	 * \return int the left bound of the port.
+	*/
+	int getPortLeftBound(const QString& port) const;
+
+	/*! \brief Get the right bound of the specified port.
+	 * 
+	 * If port is not found the -1 is returned.
+	 * 
+	 * \param port The name of the port.
+	 *
+	 * \return int the right bound of the port.
+	*/
+	int getPortRightBound(const QString& port) const;
+
 	/*! \brief Check if the component has the specified port or not.
 	 *
 	 * \param name The name of the port to be searched

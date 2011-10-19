@@ -197,6 +197,12 @@ QString General::toLogicalString( const PortMap& portMap ) {
 	return str;
 }
 
+QString General::port2String(const QString& portName, int leftBound, int rightBound) {
+	QString str(portName);
+	str += QString("[%1..%2]").arg(leftBound).arg(rightBound);
+	return str;
+}
+
 QString General::bool2Str(bool value) {
 	if (value) {
 		return QString("true");

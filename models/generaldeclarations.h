@@ -606,6 +606,16 @@ QString toPhysString(const PortMap& portMap);
 */
 QString toLogicalString(const PortMap& portMap);
 
+/*! \brief Convert the info into string.
+ *
+ * \param portName The name of the port.
+ * \param leftBound The left bound of the port.
+ * \param rightBound The right bound of the port.
+ *
+ * \return QString String that matches the info ( <portName>[<left>..<right>] )
+*/
+QString port2String(const QString& portName, int leftBound, int rightBound);
+
 /*! \brief The  NameGroup matches the spirit:nameGroup element in IP-Xact.
  * 
  */

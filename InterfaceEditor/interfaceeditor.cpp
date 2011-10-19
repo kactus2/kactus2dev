@@ -348,8 +348,18 @@ void InterfaceEditor::setPortMaps() {
 			logicalSize = portMap->logicalVector_->getSize();
 		}
 		
-
-		QString physicalPort = General::toPhysString(*portMap);
+		// display at least the name of physical port
+		QString physicalPort = portMap->physicalPort_;
+		// if port map contains vectored physical port.
+		if (portMap->physicalVector_) {
+			physicalPort = General::toPhysString(*portMap);
+		}
+		// if port map does not contain physical vector but port is found on the component
+		else if (component->hasPort(physicalPort)) {
+			physicalPort = General::port2String(physicalPort, 
+				component->getPortLeftBound(physicalPort),
+				component->getPortRightBound(physicalPort));
+		}
 		QTableWidgetItem* physItem = new QTableWidgetItem(physicalPort);
 		physItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		// if the port is not contained in the component

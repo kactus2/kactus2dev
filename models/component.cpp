@@ -1626,6 +1626,24 @@ QString Component::getViewDescription( const QString& viewName ) const {
 	return view->getDescription();
 }
 
+int Component::getPortLeftBound( const QString& port ) const {
+	if (!hasPort(port)) {
+		return -1;
+	}
+	else {
+		return getPort(port)->getLeftBound();
+	}
+}
+
+int Component::getPortRightBound( const QString& port ) const {
+	if (!hasPort(port)) {
+		return -1;
+	}
+	else {
+		return getPort(port)->getRightBound();
+	}
+}
+
 
 
 
