@@ -11,26 +11,31 @@
 
 #include "EndpointStack.h"
 
+#include "SystemAddCommands.h"
+#include "EndpointDesignDiagram.h"
 #include "EndpointItem.h"
 #include "EndpointEditDialog.h"
 #include "ProgramEntityItem.h"
 #include "MappingComponentItem.h"
 
+#include <common/GenericEditProvider.h>
 #include <common/diagramgrid.h>
 #include <common/layouts/VStackedLayout.h>
 #include <common/graphicsItems/GraphicsRectButton.h>
 
 #include <models/businterface.h>
 #include <models/component.h>
+#include <models/model.h>
 
 #include <QFont>
 #include <QGraphicsSceneMouseEvent>
+#include "models/modelparameter.h"
 
 //-----------------------------------------------------------------------------
 // Function: EndpointStack()
 //-----------------------------------------------------------------------------
 EndpointStack::EndpointStack(ProgramEntityItem* parentNode) : QGraphicsRectItem(parentNode),
-                                                              parentNode_(parentNode),
+                                                              parentProgEntity_(parentNode),
                                                               headerLabel_(0), btnShowHide_(0),
                                                               noneRect_(0), noneLabel_(0),
                                                               btnAdd_(0), endpoints_(),
@@ -78,7 +83,7 @@ EndpointStack::EndpointStack(ProgramEntityItem* parentNode) : QGraphicsRectItem(
     btnAdd_->setBrush(QBrush(QColor(215, 249, 217)));
     btnAdd_->setRect(EndpointItem::WIDTH / 2 - HEIGHT, 0, HEIGHT, HEIGHT);
     btnAdd_->setPos(0, MIN_Y_PLACEMENT + HEIGHT);
-    btnAdd_->setVisible(false);
+    btnAdd_->setVisible(expanded_ && editable_);
     connect(btnAdd_, SIGNAL(clicked()), this, SLOT(addEndpoint()));
 
     QPixmap pixmap(":icons/graphics/add.png");
@@ -94,7 +99,7 @@ EndpointStack::~EndpointStack()
     // Free all endpoint ids.
     foreach (EndpointItem* endpoint, endpoints_)
     {
-        parentNode_->getMappingComponent()->getPortIDFactory().freeID(endpoint->getPortID());
+        parentProgEntity_->getMappingComponent()->getPortIDFactory().freeID(endpoint->getPortID());
     }
 }
 
@@ -103,8 +108,13 @@ EndpointStack::~EndpointStack()
 //-----------------------------------------------------------------------------
 void EndpointStack::addEndpoint(QString const& name, MCAPIEndpointDirection dir, MCAPIDataType type, int portID)
 {
-    EndpointItem* item = new EndpointItem(parentNode_,  name, dir, type, portID);
-    addEndpoint(item);
+    EndpointItem* endpoint = new EndpointItem(parentProgEntity_, name, dir, type, portID);
+    connect(endpoint, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
+    endpoint->setPos(0, -endpoint->boundingRect().top() + MIN_Y_PLACEMENT +
+                     endpoints_.size() * EndpointItem::HEIGHT);
+
+    addEndpoint(endpoint);
 }
 
 //-----------------------------------------------------------------------------
@@ -112,59 +122,29 @@ void EndpointStack::addEndpoint(QString const& name, MCAPIEndpointDirection dir,
 //-----------------------------------------------------------------------------
 void EndpointStack::addEndpoint(EndpointItem* endpoint)
 {
-    endpoint->setPos(0, -endpoint->boundingRect().top() + MIN_Y_PLACEMENT +
-                        endpoints_.size() * EndpointItem::HEIGHT);
     endpoint->setParentItem(this);
     endpoint->setVisible(expanded_);
-    endpoints_.push_back(endpoint);
+
+    VStackedLayout::updateItemMove(endpoints_, endpoint, MIN_Y_PLACEMENT, SPACING);
+    VStackedLayout::updateItemPositions(endpoints_, 0, MIN_Y_PLACEMENT, SPACING);
 
     btnAdd_->setPos(0, MIN_Y_PLACEMENT + endpoints_.size() * EndpointItem::HEIGHT);
     noneRect_->setVisible(false);
 
-    // Add a bus interface to the mapping component.
-    QSharedPointer<BusInterface> busIf(new BusInterface());
-    busIf->setName(endpoint->getFullName());
+    // Add the endpoint to the parent program entity's model parameters if the program entity is unpackaged.
+    if (!parentProgEntity_->componentModel()->getVlnv()->isValid())
+    {
+        QSharedPointer<ModelParameter> modelParam(new ModelParameter());
+        modelParam->setName(endpoint->getName());
+        modelParam->setDataType(valueToString(endpoint->getConnectionType()));
+        modelParam->setValue(valueToString(endpoint->getMCAPIDirection()));
 
-    if (endpoint->getMCAPIDirection() == MCAPI_ENDPOINT_OUT)
-    {
-        busIf->setInterfaceMode(General::MASTER);
-    }
-    else
-    {
-        busIf->setInterfaceMode(General::SLAVE);
+        parentProgEntity_->componentModel()->getModel()->addModelParameter(modelParam);
     }
 
-    switch (endpoint->getConnectionType())
-    {
-    case MCAPI_TYPE_MESSAGE:
-        {
-            busIf->setBusType(VLNV(VLNV::BUSDEFINITION, "Kactus", "internal", "mcapi_message", "1.0"));
-            break;
-        }
-
-    case MCAPI_TYPE_PACKET:
-        {
-            busIf->setBusType(VLNV(VLNV::BUSDEFINITION, "Kactus", "internal", "mcapi_packet", "1.0"));
-            break;
-        }
-
-    case MCAPI_TYPE_SCALAR:
-        {
-            busIf->setBusType(VLNV(VLNV::BUSDEFINITION, "Kactus", "internal", "mcapi_scalar", "1.0"));
-            break;
-        }
-    }
-    
-    QList< QSharedPointer<Parameter> > params;
-    QSharedPointer<Parameter> param(new Parameter());
-    param->setName("kts_port_id");
-    param->setValue(QString::number(endpoint->getPortID()));
-    params.append(param);
-    busIf->setParameters(params);
-
-    parentNode_->getMappingComponent()->getComponent()->addBusInterface(busIf);
-
+    endpoint->createBusInterface(parentProgEntity_->getMappingComponent());
     emit visibleHeightChanged(getVisibleHeight());
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -176,7 +156,7 @@ void EndpointStack::removeEndpoint(EndpointItem* endpoint)
     if (endpoints_.contains(endpoint))
     {
         // Free up the port ID.
-        parentNode_->getMappingComponent()->getPortIDFactory().freeID(endpoint->getPortID());
+        parentProgEntity_->getMappingComponent()->getPortIDFactory().freeID(endpoint->getPortID());
 
         endpoints_.removeAll(endpoint);
         VStackedLayout::updateItemPositions(endpoints_, 0, MIN_Y_PLACEMENT, SPACING);
@@ -192,11 +172,18 @@ void EndpointStack::removeEndpoint(EndpointItem* endpoint)
             btnAdd_->setPos(0, MIN_Y_PLACEMENT + endpoints_.size() * EndpointItem::HEIGHT);
         }
 
+        // Remove the endpoint from the parent program entity's model parameters.
+        if (!parentProgEntity_->componentModel()->getVlnv()->isValid())
+        {
+            parentProgEntity_->componentModel()->getModel()->removeModelParameter(endpoint->getName());
+        }
+
         // Remove the bus interface from the mapping component.
-        parentNode_->getMappingComponent()->getComponent()->removeBusInterface(endpoint->getFullName());
+        endpoint->removeBusInterface(parentProgEntity_->getMappingComponent());
 
         // Inform others about the height change.
         emit visibleHeightChanged(getVisibleHeight());
+        emit contentChanged();
     }
 }
 
@@ -235,10 +222,17 @@ void EndpointStack::addEndpoint()
 
     if (dialog.exec() == QDialog::Accepted)
     {
-        EndpointItem* endpoint = new EndpointItem(parentNode_, dialog.getName(), dialog.getType(),
+        EndpointItem* endpoint = new EndpointItem(parentProgEntity_, dialog.getName(), dialog.getType(),
                                                   dialog.getConnectionType(),
-                                                  parentNode_->getMappingComponent()->getPortIDFactory().getID());
-        addEndpoint(endpoint);
+                                                  parentProgEntity_->getMappingComponent()->getPortIDFactory().getID());
+        connect(endpoint, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
+        endpoint->setPos(0, -endpoint->boundingRect().top() + MIN_Y_PLACEMENT +
+                         endpoints_.size() * EndpointItem::HEIGHT);
+
+        // Create an undo command and execute it.
+        QSharedPointer<QUndoCommand> cmd(new EndpointAddCommand(this, endpoint));
+        static_cast<EndpointDesignDiagram*>(scene())->getEditProvider().addCommand(cmd);
     }
 }
 

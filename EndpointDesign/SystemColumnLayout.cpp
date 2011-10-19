@@ -48,6 +48,16 @@ void SystemColumnLayout::addColumn(QString const& name)
     // Create the node column and position it accordingly.
     SystemColumn* column = new SystemColumn(name, this, scene_);
     column->setPos(layoutWidth_, 0.0);
+
+    addColumn(column);
+}
+
+//-----------------------------------------------------------------------------
+//  Function: addColumn()
+//-----------------------------------------------------------------------------
+void SystemColumnLayout::addColumn(SystemColumn* column)
+{
+    scene_->addItem(column);
     column->setOffsetY(offsetY_);
 
     connect(column, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
@@ -55,6 +65,10 @@ void SystemColumnLayout::addColumn(QString const& name)
     // Add the column to the list of columns and update the layout width.
     columns_.append(column);
     layoutWidth_ += column->boundingRect().width();
+
+    // Update the position in the layout.
+    HStackedLayout::updateItemMove(columns_, column);
+    HStackedLayout::setItemPos(columns_, column, 0.0);
 
     emit contentChanged();
 }
@@ -68,7 +82,7 @@ void SystemColumnLayout::removeColumn(SystemColumn* column)
     {
         layoutWidth_ -= column->boundingRect().width();
         HStackedLayout::updateItemPositions(columns_, 0.0, 0.0, 0.0);
-        delete column;
+        scene_->removeItem(column);
 
         emit contentChanged();
     }

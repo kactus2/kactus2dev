@@ -13,10 +13,13 @@
 #define SYSTEMCOLUMN_H
 
 #include <common/ColumnTypes.h>
+
 #include <QGraphicsRectItem>
+#include <QSet>
 
 class SystemColumnLayout;
 class MappingComponentItem;
+class EndpointConnection;
 
 //-----------------------------------------------------------------------------
 //! SystemColumn class.
@@ -114,6 +117,9 @@ signals:
     void contentChanged();
 
 protected:
+    //! Called when the user presses the mouse over the column.
+    void mousePressEvent(QGraphicsSceneMouseEvent* event);
+
     //! Called when the user moves the column with the mouse.
     void mouseMoveEvent(QGraphicsSceneMouseEvent* event);
 
@@ -149,6 +155,12 @@ private:
 
     //! The node items ordered from top to bottom.
     QList<MappingComponentItem*> items_;
+
+    //! The old position of the column before mouse move.
+    QPointF oldPos_;
+
+    //! The connections that need to be also stored for undo.
+    QSet<EndpointConnection*> conns_;
 };
 
 //-----------------------------------------------------------------------------

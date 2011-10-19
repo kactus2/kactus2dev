@@ -217,6 +217,23 @@ public:
 	 */
 	void removeView(const QString& name);
 
+    /*! \brief Add a new model parameter to the model.
+	 *
+	 * \param param Pointer to the model parameter to add
+	 *
+	 * \return True if model parameter was successfully added. False if a model parameter with the same 
+	 * name already existed in the model. If the model parameter exists in the model then 
+	 * nothing is added.
+	*/
+	bool addModelParameter(QSharedPointer<ModelParameter> param);
+
+	/*! \brief Remove a model parameter from the model.
+	 *
+	 * \param paramName The name of the model parameter to remove.
+	 *
+	*/
+	void removeModelParameter(const QString& paramName);
+
 	/*! \brief Get pointer to the QMap containing the model parameters.
 	 *
 	 * \return Pointer to the QMap containing the model parameters.

@@ -41,6 +41,11 @@ enum MCAPIEndpointDirection
  */
 bool stringToValue(QString const& str, MCAPIEndpointDirection& dir);
 
+/*!
+ *  Converts an endpoint direction to a string.
+ */
+QString valueToString(MCAPIEndpointDirection dir);
+
 //-----------------------------------------------------------------------------
 //! MCAPIDataType enumeration.
 //-----------------------------------------------------------------------------
@@ -55,6 +60,11 @@ enum MCAPIDataType
  *  Converts a string to an MCAPI data type.
  */
 bool stringToValue(QString const& str, MCAPIDataType& type);
+
+/*!
+ *  Converts an MCAPI data type to a string.
+ */
+QString valueToString(MCAPIDataType type);
 
 //-----------------------------------------------------------------------------
 

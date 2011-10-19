@@ -11,6 +11,8 @@
 
 #include "EndpointDesignWidget.h"
 
+#include "SystemDeleteCommands.h"
+
 #include "EndpointDesignDiagram.h"
 #include "EndpointItem.h"
 #include "EndpointConnection.h"
@@ -35,10 +37,12 @@
 // Function: EndpointDesignWidget()
 //-----------------------------------------------------------------------------
 EndpointDesignWidget::EndpointDesignWidget(LibraryInterface* lh, MainWindow* mainWnd, QWidget* parent) :
-    TabDocument(parent, DOC_ZOOM_SUPPORT | DOC_DRAW_MODE_SUPPORT | DOC_PROTECTION_SUPPORT, 30, 300),
-    lh_(lh), view_(0), diagram_(0)
+    TabDocument(parent, DOC_ZOOM_SUPPORT | DOC_DRAW_MODE_SUPPORT | DOC_PROTECTION_SUPPORT |
+                        DOC_EDIT_SUPPORT, 30, 300),
+    lh_(lh), view_(0), diagram_(0), editProvider_()
 {
-    diagram_ = new EndpointDesignDiagram(lh_, mainWnd, this);
+    editProvider_ = QSharedPointer<GenericEditProvider>(new GenericEditProvider(EDIT_HISTORY_SIZE));
+    diagram_ = new EndpointDesignDiagram(lh_, mainWnd, *editProvider_, this);
 
     connect(diagram_, SIGNAL(openComponent(const VLNV&)),
         this, SIGNAL(openComponent(const VLNV&)), Qt::UniqueConnection);
@@ -235,35 +239,57 @@ void EndpointDesignWidget::keyPressEvent(QKeyEvent* event)
 
         QGraphicsItem* selected = diagram_->selectedItems().first();
 
-        if (selected->type() == ProgramEntityItem::Type)
+        if (selected->type() == MappingComponentItem::Type)
+        {
+            MappingComponentItem* item = static_cast<MappingComponentItem*>(selected);
+
+            if (!item->isMapped())
+            {
+                QSharedPointer<MappingCompDeleteCommand> cmd(new MappingCompDeleteCommand(item));
+
+                connect(cmd.data(), SIGNAL(componentInstantiated(SWComponentItem*)),
+                    diagram_, SIGNAL(componentInstantiated(SWComponentItem*)), Qt::UniqueConnection);
+                connect(cmd.data(), SIGNAL(componentInstanceRemoved(SWComponentItem*)),
+                    diagram_, SIGNAL(componentInstanceRemoved(SWComponentItem*)), Qt::UniqueConnection);
+
+                editProvider_->addCommand(cmd);
+            }
+        }
+        else if (selected->type() == ProgramEntityItem::Type)
         {
             ProgramEntityItem* item = static_cast<ProgramEntityItem*>(selected);
-            MappingComponentItem* parent = static_cast<MappingComponentItem*>(item->parentItem());
-            Q_ASSERT(parent != 0);
-            parent->removeProgramEntity(item);
+            QSharedPointer<ProgramEntityDeleteCommand> cmd(new ProgramEntityDeleteCommand(item));
 
-            diagram_->removeInstanceName(item->name());
-            delete selected;
+            connect(cmd.data(), SIGNAL(componentInstantiated(SWComponentItem*)),
+                diagram_, SIGNAL(componentInstantiated(SWComponentItem*)), Qt::UniqueConnection);
+            connect(cmd.data(), SIGNAL(componentInstanceRemoved(SWComponentItem*)),
+                diagram_, SIGNAL(componentInstanceRemoved(SWComponentItem*)), Qt::UniqueConnection);
+
+            editProvider_->addCommand(cmd);
         }
         else if (selected->type() == ApplicationItem::Type)
         {
             ApplicationItem* item = static_cast<ApplicationItem*>(selected);
-            ProgramEntityItem* parent = static_cast<ProgramEntityItem*>(item->parentItem());
-            Q_ASSERT(parent != 0);
-            parent->setApplication(0);
+            QSharedPointer<ApplicationDeleteCommand> cmd(new ApplicationDeleteCommand(item));
 
-            diagram_->removeInstanceName(item->name());
-            delete selected;
+            connect(cmd.data(), SIGNAL(componentInstantiated(SWComponentItem*)),
+                diagram_, SIGNAL(componentInstantiated(SWComponentItem*)), Qt::UniqueConnection);
+            connect(cmd.data(), SIGNAL(componentInstanceRemoved(SWComponentItem*)),
+                diagram_, SIGNAL(componentInstanceRemoved(SWComponentItem*)), Qt::UniqueConnection);
+
+            editProvider_->addCommand(cmd);
         }
         else if (selected->type() == PlatformComponentItem::Type)
         {
             PlatformComponentItem* item = static_cast<PlatformComponentItem*>(selected);
-            MappingComponentItem* parent = static_cast<MappingComponentItem*>(item->parentItem());
-            Q_ASSERT(parent != 0);
-            parent->setPlatformComponent(0);
+            QSharedPointer<PlatformCompDeleteCommand> cmd(new PlatformCompDeleteCommand(item));
 
-            diagram_->removeInstanceName(item->name());
-            delete selected;
+            connect(cmd.data(), SIGNAL(componentInstantiated(SWComponentItem*)),
+                    diagram_, SIGNAL(componentInstantiated(SWComponentItem*)), Qt::UniqueConnection);
+            connect(cmd.data(), SIGNAL(componentInstanceRemoved(SWComponentItem*)),
+                    diagram_, SIGNAL(componentInstanceRemoved(SWComponentItem*)), Qt::UniqueConnection);
+
+            editProvider_->addCommand(cmd);
         }
         else if (selected->type() == EndpointItem::Type)
         {
@@ -272,12 +298,16 @@ void EndpointDesignWidget::keyPressEvent(QKeyEvent* event)
 
             if (stack->isEditable())
             {
-                delete selected;
+                QSharedPointer<QUndoCommand> cmd(new EndpointDeleteCommand(static_cast<EndpointItem*>(selected)));
+                editProvider_->addCommand(cmd);
             }
         }
         else if (selected->type() == EndpointConnection::Type)
         {
-            delete selected;
+            // Delete the connection.
+            QSharedPointer<QUndoCommand> cmd(new EndpointConnectionDeleteCommand(
+                static_cast<EndpointConnection*>(selected)));
+            editProvider_->addCommand(cmd);
         }
         else if (selected->type() == SystemColumn::Type)
         {
@@ -302,7 +332,9 @@ void EndpointDesignWidget::keyPressEvent(QKeyEvent* event)
             // Delete the column if requested.
             if (del)
             {
-                diagram_->removeColumn(column);
+                QSharedPointer<QUndoCommand> cmd(new SystemColumnDeleteCommand(diagram_->getColumnLayout(),
+                                                                               column));
+                editProvider_->addCommand(cmd);
             }
         }
     }
@@ -363,4 +395,12 @@ VLNV EndpointDesignWidget::getComponentVLNV() const
 void EndpointDesignWidget::addColumn()
 {
     diagram_->addColumn("SW Components");
+}
+
+//-----------------------------------------------------------------------------
+// Function: getEditProvider()
+//-----------------------------------------------------------------------------
+IEditProvider* EndpointDesignWidget::getEditProvider()
+{
+    return editProvider_.data();
 }

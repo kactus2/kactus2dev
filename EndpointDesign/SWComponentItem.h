@@ -105,6 +105,11 @@ public:
      */
 	QMap<QString, QString>& getConfigurableElements();
 
+    /*!
+     *  Returns the configurable elements of the component instance.
+     */
+	QMap<QString, QString> const& getConfigurableElements() const;
+
 	/*!
      *  Returns the IP-XACT component model.
      */
@@ -140,6 +145,13 @@ signals:
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
+    /*!
+     *  Updates the name label with the given text.
+     *
+     *      @param [in] text The text to display in the label.
+     */
+    virtual void updateNameLabel(QString const& text);
+
 private:
     // Disable copying.
     SWComponentItem(SWComponentItem const& rhs);
@@ -151,6 +163,9 @@ private:
 
     //! The component model.
     QSharedPointer<Component> component_;
+
+    //! The instance name.
+    QString name_;
 
     //! The name label.
     QGraphicsTextItem* nameLabel_;

@@ -12,8 +12,11 @@
 #include "EndpointConnection.h"
 
 #include "EndpointItem.h"
+#include "EndpointDesignDiagram.h"
+#include "SystemMoveCommands.h"
 
 #include <common/DiagramUtil.h>
+#include <common/GenericEditProvider.h>
 
 #include <QGraphicsScene>
 #include <QVector2D>
@@ -80,30 +83,38 @@ void EndpointConnection::setRoute(QList<QPointF> path)
 
     if (endpoint1_)
     {
-        if (endpoint1_->parentItem() != 0)
-        {
-            endpoint1_->setPos(endpoint1_->parentItem()->mapFromScene(path.first()));
-        }
-        else
-        {
-            endpoint1_->setPos(path.first());
-        }
+        QVector2D dir = QVector2D(path[1] - path[0]).normalized();
 
-        path.replace(0, endpoint1_->scenePos());
+        // Switch the direction of the end point if it is not correct.
+        if (QVector2D::dotProduct(dir, endpoint1_->getDirectionVector()) < 0)
+        {
+            if (dir.x() > 0)
+            {
+                endpoint1_->setDirection(EndpointItem::DIR_RIGHT);
+            }
+            else
+            {
+                endpoint1_->setDirection(EndpointItem::DIR_LEFT);
+            }
+        }
     }
 
     if (endpoint2_)
     {
-        if (endpoint2_->parentItem() != 0)
-        {
-            endpoint2_->setPos(endpoint2_->parentItem()->mapFromScene(path.last()));
-        }
-        else
-        {
-            endpoint2_->setPos(path.last());
-        }
+        QVector2D dir = QVector2D(path[path.size() - 2] - path[path.size() - 1]).normalized();
 
-        path.replace(path.size() - 1, endpoint2_->scenePos());
+        // Switch the direction of the end point if it is not correct.
+        if (QVector2D::dotProduct(dir, endpoint2_->getDirectionVector()) < 0)
+        {
+            if (dir.x() > 0)
+            {
+                endpoint2_->setDirection(EndpointItem::DIR_RIGHT);
+            }
+            else
+            {
+                endpoint2_->setDirection(EndpointItem::DIR_LEFT);
+            }
+        }
     }
 
     QListIterator<QPointF> i(path);
@@ -118,6 +129,7 @@ void EndpointConnection::setRoute(QList<QPointF> path)
     setPath(stroker.createStroke(painterPath));
 
     pathPoints_ = path;
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -125,37 +137,47 @@ void EndpointConnection::setRoute(QList<QPointF> path)
 //-----------------------------------------------------------------------------
 void EndpointConnection::updatePosition()
 {
-    if (pathPoints_.size() < 2)
-    {
-        createRoute(endpoint1_, endpoint2_);
-        return;
-    }
-
     QVector2D delta1 = QVector2D(endpoint1_->scenePos()) - QVector2D(pathPoints_.first());
     QVector2D delta2 = QVector2D(endpoint2_->scenePos()) - QVector2D(pathPoints_.last());
     QVector2D const& dir1 = endpoint1_->getDirectionVector();
     QVector2D const& dir2 = endpoint2_->getDirectionVector();
 
+    // Recreate the route from scratch if there are not enough points in the path or
+    // the route is too complicated when the position and direction of the endpoints is considered.
+    if (pathPoints_.size() < 2 ||
+        (pathPoints_.size() > 4 && qFuzzyCompare(QVector2D::dotProduct(dir1, dir2), -1.0) &&
+        QVector2D::dotProduct(dir1, QVector2D(endpoint2_->scenePos() - endpoint1_->scenePos())) > 0.0))
+    {
+        createRoute(endpoint1_, endpoint2_);
+        return;
+    }
+
     // If the delta movement of both endpoints was the same, we can just
     // move all route points by the delta1.
     if (qFuzzyCompare(delta1, delta2))
     {
-        for (int i = 0; i < pathPoints_.size(); ++i)
+        if (!delta1.isNull())
         {
-            pathPoints_[i] += delta1.toPointF();
-        }
+            for (int i = 0; i < pathPoints_.size(); ++i)
+            {
+                pathPoints_[i] += delta1.toPointF();
+            }
 
-        setRoute(pathPoints_);
+            setRoute(pathPoints_);
+        }
     }
     // Otherwise check if either the first or the last point was moved.
     else if (!delta1.isNull() || !delta2.isNull())
     {
+        bool pathOk = false;
         QVector2D delta = delta1;
         QVector2D dir = dir1;
         EndpointItem* endpoint = endpoint1_;
         int index0 = 0;
         int index1 = 1;
-        
+        int index2 = 2;
+        int index3 = 3;
+
         if (!delta2.isNull())
         {
             delta = delta2;
@@ -163,34 +185,67 @@ void EndpointConnection::updatePosition()
             dir = dir2;
             index0 = pathPoints_.size() - 1;
             index1 = pathPoints_.size() - 2;
+            index2 = pathPoints_.size() - 3;
+            index3 = pathPoints_.size() - 4;
         }
 
         QVector2D seg1 = QVector2D(pathPoints_[index1] - pathPoints_[index0]).normalized();
 
-        bool pathOk = false;
-
-        // Fix the first segment with perpendicular projection.
-        if (pathPoints_.size() >= 4)
+        // Check if the endpoints should be directed in another way.
+        if (dir1.x() * (endpoint2_->scenePos().x() - endpoint1_->scenePos().x()) < 0.0 ||
+            dir2.x() * (endpoint1_->scenePos().x() - endpoint2_->scenePos().x()) < 0.0)
+        {
+            pathOk = false;
+        }
+        // Try to fix the first segment with perpendicular projection.
+        else if (pathPoints_.size() >= 4 && pathPoints_.size() < 7 && qFuzzyCompare(dir, seg1))
         {
             QVector2D perp = delta - QVector2D::dotProduct(delta, seg1) * seg1;
             pathPoints_[index1] += perp.toPointF();
-            pathOk = true;
+
+            // The path is ok if the moved point is still in view (not behind the left edge).
+            pathOk = pathPoints_[index1].x() >= 10.0;
         }
 
         // Handle the parallel part of the delta.
         pathPoints_[index0] = endpoint->scenePos();
         QVector2D newSeg1 = QVector2D(pathPoints_[index1] - pathPoints_[index0]);
-        
-        if (!pathOk || newSeg1.length() < MIN_START_LENGTH ||
-            newSeg1.length() > 320 || pathPoints_.size() > 4)
+
+        if (newSeg1.length() < MIN_START_LENGTH || !qFuzzyCompare(seg1, newSeg1.normalized()))
+        {
+            pathOk = false;
+        }
+
+        // Check for a special case when there would be intersecting parallel lines.
+        if (pathOk && pathPoints_.size() >= 4)
+        {
+            QVector2D seg2 = QVector2D(pathPoints_[index2] - pathPoints_[index1]).normalized();
+            QVector2D seg3 = QVector2D(pathPoints_[index3] - pathPoints_[index2]).normalized();
+
+            if (QVector2D::dotProduct(seg1, seg2) < 0.0f ||
+                (seg2.isNull() && QVector2D::dotProduct(seg1, seg3) < 0.0f))
+            {
+                pathOk = false;
+            }
+        }
+
+        // Snap the middle path points to grid.
+        for (int i = 1; i < pathPoints_.size() - 1; ++i)
+        {
+            pathPoints_[i] = snapPointToGrid(pathPoints_[i]);
+        }
+
+        // If the simple fix didn't result in a solution, just recreate the route.
+        if (!pathOk)
         {
             createRoute(endpoint1_, endpoint2_);
         }
         else
         {
+            //simplifyPath();
             setRoute(pathPoints_);
         }
-    }     
+    }
 
     emit contentChanged();
 }
@@ -554,6 +609,7 @@ void EndpointConnection::disconnectEnds()
 
     endpoint1_ = 0;
     endpoint2_ = 0;
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -561,27 +617,27 @@ void EndpointConnection::disconnectEnds()
 //-----------------------------------------------------------------------------
 void EndpointConnection::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
+    oldRoute_ = getRoute();
     QPointF pos = snapPointToGrid(mouseEvent->pos());
 
-    if (pathPoints_.first() == pos) {
-        selectionType_ = END;
-        selected_ = 0;
-    } else if (pathPoints_.last() == pos) {
-        selectionType_ = END;
-        selected_ = pathPoints_.size()-1;
-    } else if (pathPoints_.size() > 1) {
-        for (int i = 0; i < pathPoints_.size()-1; i++) {
+    if (pathPoints_.size() > 1)
+    {
+        for (int i = 0; i < pathPoints_.size()-1; i++)
+        {
             if ((i == 0 && endpoint1_) || (i == pathPoints_.size()-2 && endpoint2_))
+            {
                 continue;
-            if ((qFuzzyCompare(pathPoints_[i].x(), pos.x())
-                && qFuzzyCompare(pathPoints_[i+1].x(), pos.x()))
-                || (qFuzzyCompare(pathPoints_[i].y(), pos.y())
-                && qFuzzyCompare(pathPoints_[i+1].y(), pos.y()))) {
+            }
+
+            if ((qFuzzyCompare(pathPoints_[i].x(), pos.x()) && qFuzzyCompare(pathPoints_[i+1].x(), pos.x())) ||
+                (qFuzzyCompare(pathPoints_[i].y(), pos.y()) && qFuzzyCompare(pathPoints_[i+1].y(), pos.y())))
+            {
                     selected_ = i;
                     selectionType_ = SEGMENT;
             }
         }
-    } else {
+    } else
+    {
         selected_ = -1;
         selectionType_ = NONE;
     }
@@ -596,55 +652,63 @@ void EndpointConnection::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     QPointF newPos = snapPointToGrid(mouseEvent->pos());
 
-    if (selectionType_ == END)
+    if (selectionType_ == SEGMENT)
     {
-        // Disconnect the ends.
-        disconnectEnds();
+        if (qFuzzyCompare(pathPoints_[selected_].x(), pathPoints_[selected_+1].x()))
+        {
+            qreal prev = pathPoints_[selected_ - 1].x();
+            qreal next = pathPoints_[selected_ + 2].x();
 
-        if (pathPoints_.size() > 2) {
-            if (selected_ == pathPoints_.size()-1) {
-                if (qFuzzyCompare(pathPoints_[selected_-1].x(), pathPoints_[selected_-2].x())) {
-                    pathPoints_[selected_-1].setY(newPos.y());
-                } else {
-                    pathPoints_[selected_-1].setX(newPos.x());
-                }
-            } else if (selected_ == 0) {
-                if (qFuzzyCompare(pathPoints_[selected_+1].x(), pathPoints_[selected_+2].x())) {
-                    pathPoints_[selected_+1].setY(newPos.y());
-                } else {
-                    pathPoints_[selected_+1].setX(newPos.x());
-                }
+            // If the connection is on the same side of both the endpoints, try to change
+            // the path in a way that even the side can be changed from left-to-right or right-to-left.
+            if (endpoint1_->getDirection() == endpoint2_->getDirection() &&
+                abs(newPos.x() - prev) >= MIN_START_LENGTH && abs(newPos.x() - next) >= MIN_START_LENGTH)
+            {
+                pathPoints_[selected_].setX(std::max(newPos.x(), 10.0));
+                pathPoints_[selected_ + 1].setX(std::max(newPos.x(), 10.0));
             }
-            pathPoints_[selected_] = newPos;
-            setRoute(pathPoints_);
-        } else {
-            QPointF oldPos = pathPoints_[selected_];
-
-            if (qFuzzyCompare(pathPoints_.first().x(), pathPoints_.last().x())) {
-                pathPoints_[selected_].setY(newPos.y());
-            } else {
-                pathPoints_[selected_].setX(newPos.x());
-            }
-            if (pathPoints_.first() == pathPoints_.last())
-                pathPoints_[selected_] = oldPos;
+            // Otherwise clamp the movement delta.
             else
-                setRoute(pathPoints_);
-        }
+            {
+                qreal delta = newPos.x() - pathPoints_[selected_].x();
+                qreal cur = pathPoints_[selected_].x();                
 
-        emit contentChanged();
-    }
-    else if (selectionType_ == SEGMENT)
-    {
-        if (qFuzzyCompare(pathPoints_[selected_].x(), pathPoints_[selected_+1].x())) {
-            pathPoints_[selected_].setX(newPos.x());
-            pathPoints_[selected_+1].setX(newPos.x());
-        } else if (qFuzzyCompare(pathPoints_[selected_].y(), pathPoints_[selected_+1].y())) {
-            pathPoints_[selected_].setY(newPos.y());
-            pathPoints_[selected_+1].setY(newPos.y());
+                if (cur > next)
+                {
+                    delta = std::max(delta, MIN_START_LENGTH + next - cur);
+                }
+                else
+                {
+                    delta = std::min(delta, -MIN_START_LENGTH + next - cur);
+                }
+
+                if (cur > prev)
+                {
+                    delta = std::max(delta, MIN_START_LENGTH + prev - cur);
+                }
+                else
+                {
+                    delta = std::min(delta, -MIN_START_LENGTH + prev - cur);
+                }
+
+                pathPoints_[selected_].setX(pathPoints_[selected_].x() + delta);
+                pathPoints_[selected_+1].setX(pathPoints_[selected_+1].x() + delta);
+            }
+        }
+        else if (qFuzzyCompare(pathPoints_[selected_].y(), pathPoints_[selected_+1].y()))
+        {
+            qreal prev = pathPoints_[selected_ - 1].y();
+            qreal next = pathPoints_[selected_ + 2].y();
+
+            // Change the route only if the next and previous segments would not be too short.
+            if (abs(newPos.y() - prev) >= MIN_LENGTH && abs(newPos.y() - next) >= MIN_LENGTH)
+            {
+                pathPoints_[selected_].setY(newPos.y());
+                pathPoints_[selected_+1].setY(newPos.y());
+            }
         }
 
         setRoute(pathPoints_);
-        emit contentChanged();
     }
 
     QGraphicsPathItem::mouseMoveEvent(mouseEvent);
@@ -655,21 +719,18 @@ void EndpointConnection::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 //-----------------------------------------------------------------------------
 void EndpointConnection::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
-    if (selectionType_ == END)
-    {
-        EndpointItem* endpoint1 = DiagramUtil::snapToItem<EndpointItem>(pathPoints_.first(), scene(), GridSize);
-        EndpointItem* endpoint2 = DiagramUtil::snapToItem<EndpointItem>(pathPoints_.last(), scene(), GridSize);
-
-        if (endpoint1 != 0 && endpoint2 != 0 &&
-            endpoint1->canConnect(endpoint2) && endpoint2->canConnect(endpoint1))
-        {
-            connectEnds();
-        }
-    }
-    else if (selectionType_ == SEGMENT)
+    if (selectionType_ == SEGMENT)
     {
         simplifyPath();
         setRoute(pathPoints_);
+
+        if (getRoute() != oldRoute_)
+        {
+            QSharedPointer<QUndoCommand> cmd(new EndpointConnectionMoveCommand(this, oldRoute_));
+            static_cast<EndpointDesignDiagram*>(scene())->getEditProvider().addCommand(cmd);
+            
+            emit contentChanged();
+        }
     }
 
     QGraphicsPathItem::mouseReleaseEvent(mouseEvent);
@@ -717,4 +778,27 @@ void EndpointConnection::updateName()
     Q_ASSERT(endpoint1_ != 0);
     Q_ASSERT(endpoint2_ != 0);
     name_ = endpoint1_->getFullName() + "_to_" + endpoint2_->getFullName();
+}
+
+//-----------------------------------------------------------------------------
+// Function: beginUpdatePosition()
+//-----------------------------------------------------------------------------
+void EndpointConnection::beginUpdatePosition()
+{
+    oldRoute_ = getRoute();
+}
+
+//-----------------------------------------------------------------------------
+// Function: endUpdatePosition()
+//-----------------------------------------------------------------------------
+QUndoCommand* EndpointConnection::endUpdatePosition(QUndoCommand* parent)
+{
+    if (getRoute() != oldRoute_)
+    {
+        return new EndpointConnectionMoveCommand(this, oldRoute_, parent);
+    }
+    else
+    {
+        return 0;
+    }
 }

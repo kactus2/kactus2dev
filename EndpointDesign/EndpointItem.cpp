@@ -16,7 +16,13 @@
 #include "EndpointEditDialog.h"
 #include "EndpointStack.h"
 #include "EndpointConnection.h"
+#include "EndpointDesignDiagram.h"
+#include "SystemMoveCommands.h"
 
+#include <models/component.h>
+#include <models/businterface.h>
+
+#include "common/GenericEditProvider.h"
 #include <common/diagramgrid.h>
 
 #include <QPainter>
@@ -35,7 +41,7 @@ EndpointItem::EndpointItem(ProgramEntityItem* parentNode, QString const& name,
                                                                          parentProgEntity_(parentNode),
                                                                          name_(name), type_(type),
                                                                          connType_(connType), portID_(portID),
-                                                                         textLabel_(0), dir_(DIR_LEFT)
+                                                                         textLabel_(0), dir_(DIR_LEFT), oldPos_()
 {
     Q_ASSERT(parentNode != 0);
 
@@ -362,6 +368,30 @@ void EndpointItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     if (stack != 0)
     {
         stack->onReleaseEndpoint(this);
+
+        QSharedPointer<QUndoCommand> cmd;
+
+        // Check if the port position was really changed.
+        if (oldPos_ != pos())
+        {
+            cmd = QSharedPointer<QUndoCommand>(new EndpointMoveCommand(this, oldPos_));
+        }
+        else
+        {
+            cmd = QSharedPointer<QUndoCommand>(new QUndoCommand());
+        }
+
+        // End the position update of the connections.
+        foreach (EndpointConnection* conn, getConnections())
+        {
+            conn->endUpdatePosition(cmd.data());
+        }
+
+        // Add the undo command to the edit stack only if it has changes.
+        if (cmd->childCount() > 0 || oldPos_ != pos())
+        {
+            static_cast<EndpointDesignDiagram*>(scene())->getEditProvider().addCommand(cmd, false);
+        }
     }
 
     setZValue(0);
@@ -423,6 +453,12 @@ QVariant EndpointItem::itemChange(GraphicsItemChange change, const QVariant &val
 {
     switch (change)
     {
+    case ItemPositionHasChanged:
+        {
+            emit contentChanged();
+            break;
+        }
+
     case ItemScenePositionHasChanged:
         {
             foreach (EndpointConnection* connection, getConnections())
@@ -493,5 +529,83 @@ QString EndpointItem::getFullName() const
 //-----------------------------------------------------------------------------
 MappingComponentItem* EndpointItem::getParentMappingComp() const
 {
-    return static_cast<MappingComponentItem*>(parentProgEntity_->getMappingComponent());
+    return parentProgEntity_->getMappingComponent();
+}
+
+//-----------------------------------------------------------------------------
+// Function: createBusInterface()
+//-----------------------------------------------------------------------------
+void EndpointItem::createBusInterface(MappingComponentItem* mappingComp)
+{
+    if (mappingComp->componentModel()->getBusInterface(getFullName()) != 0)
+    {
+        return;
+    }
+
+    // Add a bus interface to the mapping component.
+    QSharedPointer<BusInterface> busIf(new BusInterface());
+    busIf->setName(getFullName());
+
+    if (type_ == MCAPI_ENDPOINT_OUT)
+    {
+        busIf->setInterfaceMode(General::MASTER);
+    }
+    else
+    {
+        busIf->setInterfaceMode(General::SLAVE);
+    }
+
+    switch (connType_)
+    {
+    case MCAPI_TYPE_MESSAGE:
+        {
+            busIf->setBusType(VLNV(VLNV::BUSDEFINITION, "Kactus", "internal", "mcapi_message", "1.0"));
+            break;
+        }
+
+    case MCAPI_TYPE_PACKET:
+        {
+            busIf->setBusType(VLNV(VLNV::BUSDEFINITION, "Kactus", "internal", "mcapi_packet", "1.0"));
+            break;
+        }
+
+    case MCAPI_TYPE_SCALAR:
+        {
+            busIf->setBusType(VLNV(VLNV::BUSDEFINITION, "Kactus", "internal", "mcapi_scalar", "1.0"));
+            break;
+        }
+    }
+
+    QList< QSharedPointer<Parameter> > params;
+    QSharedPointer<Parameter> param(new Parameter());
+    param->setName("kts_port_id");
+    param->setValue(QString::number(portID_));
+    params.append(param);
+    busIf->setParameters(params);
+
+    mappingComp->componentModel()->addBusInterface(busIf);
+}
+
+//-----------------------------------------------------------------------------
+// Function: removeBusInterface()
+//-----------------------------------------------------------------------------
+void EndpointItem::removeBusInterface(MappingComponentItem* mappingComp)
+{
+    mappingComp->componentModel()->removeBusInterface(getFullName());
+}
+
+//-----------------------------------------------------------------------------
+// Function: mousePressEvent()
+//-----------------------------------------------------------------------------
+void EndpointItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    QGraphicsItem::mousePressEvent(event);
+
+    oldPos_ = pos();
+
+    // Begin position update for the connections.
+    foreach (EndpointConnection* conn, getConnections())
+    {
+        conn->beginUpdatePosition();
+    }
 }

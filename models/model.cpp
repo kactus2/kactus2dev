@@ -462,3 +462,24 @@ bool Model::hasPorts() const {
 bool Model::hasViews() const {
 	return !views_.isEmpty();
 }
+
+//-----------------------------------------------------------------------------
+// Function: addModelParameter()
+//-----------------------------------------------------------------------------
+bool Model::addModelParameter(QSharedPointer<ModelParameter> param)
+{
+    // Duplicates are not allowed.
+    if (modelParameters_.contains(param->getName()))
+        return false;
+
+    modelParameters_.insert(param->getName(), param);
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: removeModelParameter()
+//-----------------------------------------------------------------------------
+void Model::removeModelParameter(const QString& paramName)
+{
+    modelParameters_.remove(paramName);
+}

@@ -11,8 +11,12 @@
 
 #include "ProgramEntityItem.h"
 
+#include "EndpointConnection.h"
+#include "SystemMoveCommands.h"
+
 #include <common/DiagramUtil.h>
 #include <common/layouts/VStackedLayout.h>
+#include <common/GenericEditProvider.h>
 
 #include <models/component.h>
 #include <models/model.h>
@@ -66,6 +70,8 @@ parentComp_(parent), endpointStack_(0), appPlaceholder_(0), appItem_(0)
 
     // Create the endpoint stack.
     endpointStack_ = new EndpointStack(this);
+    connect(endpointStack_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
     endpointStack_->setPos(0, TOP_MARGIN);
 
     if (componentModel()->getVlnv()->isValid())
@@ -161,6 +167,21 @@ void ProgramEntityItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     QGraphicsRectItem::mousePressEvent(event);
     setZValue(1001.0);
+
+    oldPos_ = pos();
+
+    // Begin the position update for the connections.
+    foreach (EndpointItem* endpoint, getEndpoints())
+    {
+        foreach (EndpointConnection* conn, endpoint->getConnections())
+        {
+            if (!conns_.contains(conn))
+            {
+                conn->beginUpdatePosition();
+                conns_.insert(conn);
+            }
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -188,6 +209,31 @@ void ProgramEntityItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
     if (parentComp_ != 0)
     {
         parentComp_->onReleaseItem(this);
+
+        QSharedPointer<QUndoCommand> cmd;
+
+        if (scenePos() != oldPos_)
+        {
+            cmd = QSharedPointer<QUndoCommand>(new ProgramEntityMoveCommand(this, oldPos_));
+        }
+        else
+        {
+            cmd = QSharedPointer<QUndoCommand>(new QUndoCommand());
+        }
+
+        // End the position update for the interconnections.
+        foreach (EndpointConnection* conn, conns_)
+        {
+            conn->endUpdatePosition(cmd.data());
+        }
+
+        conns_.clear();
+
+        // Add the undo command to the edit stack only if it has at least some real changes.
+        if (cmd->childCount() > 0 || pos() != oldPos_)
+        {
+            static_cast<EndpointDesignDiagram*>(scene())->getEditProvider().addCommand(cmd, false);
+        }
     }
 }
 

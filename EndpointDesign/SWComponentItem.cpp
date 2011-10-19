@@ -30,7 +30,7 @@ SWComponentItem::SWComponentItem(QRectF const& size,
                                  QString const& description,
                                  QMap<QString, QString> const& configurableElementValues,
                                  QGraphicsItem *parent) :
-QGraphicsRectItem(parent), component_(component), nameLabel_(0), displayName_(displayName),
+QGraphicsRectItem(parent), component_(component), name_(instanceName), nameLabel_(0), displayName_(displayName),
 description_(description), configurableValues_(configurableElementValues)
 {
     setFlag(ItemSendsGeometryChanges);
@@ -72,9 +72,9 @@ void SWComponentItem::updateComponent()
     if (vlnv->isValid())
     {
         setToolTip("Vendor : " + vlnv->getVendor() + "\n" +
-            "Library : " + vlnv->getLibrary() + "\n" +
-            "Name : " + vlnv->getName() + "\n" +
-            "Version : " + vlnv->getVersion());
+                   "Library : " + vlnv->getLibrary() + "\n" +
+                   "Name : " + vlnv->getName() + "\n" +
+                   "Version : " + vlnv->getVersion());
     }
     else
     {
@@ -87,10 +87,12 @@ void SWComponentItem::updateComponent()
 //-----------------------------------------------------------------------------
 void SWComponentItem::setName(QString const& name)
 {
-    QString oldName = nameLabel_->toPlainText();
-    //EndpointDesignDiagram* diagram = static_cast<EndpointDesignDiagram*>(scene());
-    //diagram->updateInstanceName(oldName, name); TODO: Enable this when possible.
-    nameLabel_->setHtml("<center>"+name+"</center>");
+    QString oldName = name_;
+    EndpointDesignDiagram* diagram = static_cast<EndpointDesignDiagram*>(scene());
+    diagram->updateInstanceName(oldName, name);
+
+    name_ = name;
+    updateNameLabel(name);
 
     emit contentChanged();
     emit nameChanged(name, oldName);
@@ -131,7 +133,7 @@ void SWComponentItem::setConfigurableElements(const QMap<QString, QString>& conf
 //-----------------------------------------------------------------------------
 QString SWComponentItem::name() const
 {
-    return nameLabel_->toPlainText();
+    return name_;
 }
 
 //-----------------------------------------------------------------------------
@@ -154,6 +156,14 @@ QString const& SWComponentItem::description() const
 // Function: getConfigurableElements()
 //-----------------------------------------------------------------------------
 QMap<QString, QString>& SWComponentItem::getConfigurableElements()
+{
+    return configurableValues_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: getConfigurableElements()
+//-----------------------------------------------------------------------------
+QMap<QString, QString> const& SWComponentItem::getConfigurableElements() const
 {
     return configurableValues_;
 }
@@ -189,4 +199,12 @@ QVariant SWComponentItem::itemChange(GraphicsItemChange change, const QVariant &
     }
 
     return QGraphicsItem::itemChange(change, value);
+}
+
+//-----------------------------------------------------------------------------
+// Function: updateNameLabel()
+//-----------------------------------------------------------------------------
+void SWComponentItem::updateNameLabel(QString const& text)
+{
+    nameLabel_->setHtml("<center>" + text + "</center>");
 }

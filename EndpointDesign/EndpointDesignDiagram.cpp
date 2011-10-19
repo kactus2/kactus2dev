@@ -11,6 +11,9 @@
 
 #include "EndpointDesignDiagram.h"
 
+#include "SystemChangeCommands.h"
+#include "SystemAddCommands.h"
+
 #include "EndpointConnection.h"
 #include "EndpointItem.h"
 #include "EndpointDesignWidget.h"
@@ -28,6 +31,7 @@
 
 #include <common/diagramgrid.h>
 #include <common/DiagramUtil.h>
+#include <common/GenericEditProvider.h>
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
 #include <models/component.h>
@@ -45,8 +49,10 @@
 // Function: EndpointDesignDiagram()
 //-----------------------------------------------------------------------------
 EndpointDesignDiagram::EndpointDesignDiagram(LibraryInterface* lh, MainWindow* mainWnd,
+                                             GenericEditProvider& editProvider,
                                              QObject* parent /* = 0*/) : QGraphicsScene(parent), lh_(lh),
                                                                          mainWnd_(mainWnd),
+                                                                         editProvider_(editProvider),
                                                                          system_(), designConf_(),
                                                                          nodeIDFactory_(),
                                                                          layout_(), mode_(MODE_SELECT),
@@ -58,6 +64,11 @@ EndpointDesignDiagram::EndpointDesignDiagram(LibraryInterface* lh, MainWindow* m
                                                                          
 {
     setSceneRect(0, 0, 100000, 100000);
+
+    connect(this, SIGNAL(componentInstantiated(SWComponentItem*)),
+            this, SLOT(onComponentInstanceAdded(SWComponentItem*)), Qt::UniqueConnection);
+    connect(this, SIGNAL(componentInstanceRemoved(SWComponentItem*)),
+            this, SLOT(onComponentInstanceRemoved(SWComponentItem*)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -173,7 +184,9 @@ bool EndpointDesignDiagram::setDesign(QSharedPointer<Component> system)
             nodeIDFactory_.usedID(id);
         }
 
-        MappingComponentItem* item = new MappingComponentItem(this, lh_, component, instance.instanceName, id);
+        MappingComponentItem* item = new MappingComponentItem(this, lh_, component, instance.instanceName,
+                                                              instance.displayName, instance.description,
+                                                              instance.configurableElementValues, id);
         connect(item, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
         // Check if the position is not found.
@@ -293,12 +306,19 @@ void EndpointDesignDiagram::addMappingComponent(SystemColumn* column, QPointF co
     
     // Create the mapping component graphics item.
     MappingComponentItem* item = new MappingComponentItem(this, lh_, comp, createInstanceName("unnamed"),
+                                                          "", "", QMap<QString, QString>(),
                                                           nodeIDFactory_.getID());
     item->setPos(pos);
     connect(item, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
-    // TODO: Use edit provider for enabling undo/redo.
-    column->addItem(item);
+    // Create an undo command and execute it.
+    QSharedPointer<MappingCompAddCommand> cmd(new MappingCompAddCommand(column, item));
+    connect(cmd.data(), SIGNAL(componentInstantiated(SWComponentItem*)),
+        this, SIGNAL(componentInstantiated(SWComponentItem*)), Qt::UniqueConnection);
+    connect(cmd.data(), SIGNAL(componentInstanceRemoved(SWComponentItem*)),
+        this, SIGNAL(componentInstanceRemoved(SWComponentItem*)), Qt::UniqueConnection);
+
+    editProvider_.addCommand(cmd);
 }
 
 //-----------------------------------------------------------------------------
@@ -476,7 +496,14 @@ void EndpointDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
                 item->setPos(snapPointToGrid(event->scenePos()));
                 connect(item, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
-                mappingCompItem->addProgramEntity(item);
+                // Create the undo command and execute it.
+                QSharedPointer<ProgramEntityAddCommand> cmd(new ProgramEntityAddCommand(mappingCompItem, item));
+                connect(cmd.data(), SIGNAL(componentInstantiated(SWComponentItem*)),
+                    this, SIGNAL(componentInstantiated(SWComponentItem*)), Qt::UniqueConnection);
+                connect(cmd.data(), SIGNAL(componentInstanceRemoved(SWComponentItem*)),
+                    this, SIGNAL(componentInstanceRemoved(SWComponentItem*)), Qt::UniqueConnection);
+
+                editProvider_.addCommand(cmd);
             }
             else
             {
@@ -487,32 +514,47 @@ void EndpointDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
                                                                         mappingCompItem);
                 connect(item, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
-                mappingCompItem->setPlatformComponent(item);
+                // Create the undo command and execute it.
+                QSharedPointer<PlatformCompAddCommand> cmd(new PlatformCompAddCommand(mappingCompItem, item));
+                connect(cmd.data(), SIGNAL(componentInstantiated(SWComponentItem*)),
+                    this, SIGNAL(componentInstantiated(SWComponentItem*)), Qt::UniqueConnection);
+                connect(cmd.data(), SIGNAL(componentInstanceRemoved(SWComponentItem*)),
+                    this, SIGNAL(componentInstanceRemoved(SWComponentItem*)), Qt::UniqueConnection);
+
+                editProvider_.addCommand(cmd);
             }
         }
         else if (dragSWType_ == KactusAttribute::KTS_SW_APPLICATION)
         {
             // Find the program entity item.
-            ProgramEntityItem* progItem = 0;
+            ProgramEntityItem* progEntity = 0;
 
             for (int i = 0; i < itemList.size(); ++i)
             {
                 if (itemList[i]->type() == ProgramEntityItem::Type)
                 {
-                    progItem = static_cast<ProgramEntityItem*>(itemList[i]);
+                    progEntity = static_cast<ProgramEntityItem*>(itemList[i]);
                     break;
                 }
             }
 
-            Q_ASSERT(progItem != 0);
+            Q_ASSERT(progEntity != 0);
 
             // Create the application item.
             ApplicationItem* item = new ApplicationItem(comp, instanceName, QString(),
                                                         QString(), QMap<QString, QString>(),
-                                                        progItem);
+                                                        progEntity);
             connect(item, SIGNAL(openSource(ProgramEntityItem*)),
                     this, SIGNAL(openSource(ProgramEntityItem*)), Qt::UniqueConnection);
-            progItem->setApplication(item);
+
+            // Create the undo command and execute it.
+            QSharedPointer<ApplicationAddCommand> cmd(new ApplicationAddCommand(progEntity, item));
+            connect(cmd.data(), SIGNAL(componentInstantiated(SWComponentItem*)),
+                this, SIGNAL(componentInstantiated(SWComponentItem*)), Qt::UniqueConnection);
+            connect(cmd.data(), SIGNAL(componentInstanceRemoved(SWComponentItem*)),
+                this, SIGNAL(componentInstanceRemoved(SWComponentItem*)), Qt::UniqueConnection);
+
+            editProvider_.addCommand(cmd);
         }
     }
 }
@@ -607,9 +649,31 @@ void EndpointDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *event)
         // If there was an SW mapping component, then an application item is added.
         else if (item->type() == MappingComponentItem::Type)
         {
-            MappingComponentItem* mappingComponent = static_cast<MappingComponentItem*>(item);
-            mappingComponent->addProgramEntity(createInstanceName("unnamed_endpoints"), event->scenePos());
-            emit contentChanged();
+            MappingComponentItem* mappingComp = static_cast<MappingComponentItem*>(item);
+            
+            // Create a new MCAPI endpoint component.
+            QSharedPointer<Component> component(new Component(VLNV()));
+            component->setComponentImplementation(KactusAttribute::KTS_SW);
+            component->setComponentSWType(KactusAttribute::KTS_SW_ENDPOINTS);
+
+            // Add the fixed bus interface to the component.
+            QSharedPointer<BusInterface> busIf(new BusInterface());
+            busIf->setName("app_link");
+            busIf->setInterfaceMode(General::SLAVE);
+            busIf->setBusType(VLNV(VLNV::BUSDEFINITION, "Kactus", "internal", "app_link", "1.0"));
+
+            ProgramEntityItem* progEntity =
+                new ProgramEntityItem(component, createInstanceName("unnamed_endpoints"), QString(),
+                                      QString(), QMap<QString, QString>(), mappingComp);
+            progEntity->setPos(mappingComp->mapFromScene(event->scenePos()));
+
+            QSharedPointer<ProgramEntityAddCommand> cmd(new ProgramEntityAddCommand(mappingComp, progEntity));
+            connect(cmd.data(), SIGNAL(componentInstantiated(SWComponentItem*)),
+                this, SIGNAL(componentInstantiated(SWComponentItem*)), Qt::UniqueConnection);
+            connect(cmd.data(), SIGNAL(componentInstanceRemoved(SWComponentItem*)),
+                this, SIGNAL(componentInstanceRemoved(SWComponentItem*)), Qt::UniqueConnection);
+
+            editProvider_.addCommand(cmd);
         }
     }
     else if (mode_ == MODE_SELECT)
@@ -777,6 +841,9 @@ void EndpointDesignDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
             {
                 connect(tempConnection_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
+                QSharedPointer<QUndoCommand> cmd(new EndpointConnectionAddCommand(this, tempConnection_));
+                editProvider_.addCommand(cmd, false);
+
                 tempConnection_ = 0;
                 tempConnEndpoint_ = 0;
                 emit contentChanged();
@@ -898,9 +965,11 @@ QSharedPointer<Design> EndpointDesignDiagram::createDesign(VLNV const& vlnv)
         {
             MappingComponentItem* mappingCompItem = qgraphicsitem_cast<MappingComponentItem*>(item);
 
-            Design::ComponentInstance instance(mappingCompItem->getName(), "", "", // TODO: displayName and desc?
-                                               *mappingCompItem->getComponent()->getVlnv(),
+            Design::ComponentInstance instance(mappingCompItem->name(), mappingCompItem->displayName(),
+                                               mappingCompItem->description(),
+                                               *mappingCompItem->componentModel()->getVlnv(),
                                                mappingCompItem->scenePos());
+            instance.configurableElementValues = mappingCompItem->getConfigurableElements();
 
             instances.append(instance);
         }
@@ -908,9 +977,9 @@ QSharedPointer<Design> EndpointDesignDiagram::createDesign(VLNV const& vlnv)
         {
             EndpointConnection* conn = static_cast<EndpointConnection*>(item);
 
-            Design::Interface iface1(conn->getEndpoint1()->getParentMappingComp()->getName(),
+            Design::Interface iface1(conn->getEndpoint1()->getParentMappingComp()->name(),
                                      conn->getEndpoint1()->getFullName());
-            Design::Interface iface2(conn->getEndpoint2()->getParentMappingComp()->getName(),
+            Design::Interface iface2(conn->getEndpoint2()->getParentMappingComp()->name(),
                                      conn->getEndpoint2()->getFullName());
             interconnections.append(Design::Interconnection(conn->getName(), iface1, iface2, conn->getRoute()));
         }
@@ -962,7 +1031,8 @@ QString EndpointDesignDiagram::createInstanceName(QSharedPointer<Component> comp
 //-----------------------------------------------------------------------------
 void EndpointDesignDiagram::addColumn(QString const& name)
 {
-    layout_->addColumn(name);
+    QSharedPointer<QUndoCommand> cmd(new SystemColumnAddCommand(layout_.data(), name));
+    editProvider_.addCommand(cmd);
 }
 
 //-----------------------------------------------------------------------------
@@ -977,7 +1047,7 @@ MappingComponentItem* EndpointDesignDiagram::getMappingComponent(QString const& 
         {
             MappingComponentItem* mappingCompItem = static_cast<MappingComponentItem*>(item);
 
-            if (mappingCompItem->getName() == instanceName)
+            if (mappingCompItem->name() == instanceName)
             {
                 return mappingCompItem;
             }
@@ -1045,6 +1115,15 @@ void EndpointDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mous
             packetizeSWComponent(platformCompItem, tr("SW Platform"));
         }
     }
+    else if (item->type() == ProgramEntityItem::Type)
+    {
+        ProgramEntityItem* progEntity = static_cast<ProgramEntityItem*>(item);
+
+        if (!progEntity->componentModel()->getVlnv()->isValid())
+        {
+            packetizeSWComponent(progEntity, tr("Endpoints"));
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1095,12 +1174,18 @@ void EndpointDesignDiagram::createApplication(ProgramEntityItem* progEntity)
     }
 
     ApplicationItem* app = new ApplicationItem(comp, createInstanceName("unnamed_app"),
-        QString(), QString(), QMap<QString, QString>(),
-        progEntity);
+                                               QString(), QString(), QMap<QString, QString>(), progEntity);
     connect(app, SIGNAL(openSource(ProgramEntityItem*)),
         this, SIGNAL(openSource(ProgramEntityItem*)), Qt::UniqueConnection);
 
-    progEntity->setApplication(app);
+    // Create the undo command and execute it.
+    QSharedPointer<ApplicationAddCommand> cmd(new ApplicationAddCommand(progEntity, app));
+    connect(cmd.data(), SIGNAL(componentInstantiated(SWComponentItem*)),
+        this, SIGNAL(componentInstantiated(SWComponentItem*)), Qt::UniqueConnection);
+    connect(cmd.data(), SIGNAL(componentInstanceRemoved(SWComponentItem*)),
+        this, SIGNAL(componentInstanceRemoved(SWComponentItem*)), Qt::UniqueConnection);
+
+    editProvider_.addCommand(cmd);
 
     if (sourceCreated)
     {
@@ -1131,6 +1216,10 @@ void EndpointDesignDiagram::packetizeSWComponent(SWComponentItem* item, QString 
     // Update the diagram component.
     item->updateComponent();
 
+    // Create an undo command.
+    QSharedPointer<QUndoCommand> cmd(new SWComponentPacketizeCommand(item, vlnv));
+    editProvider_.addCommand(cmd, false);
+
     // Ask the user if he wants to complete the component.
     QMessageBox msgBox(QMessageBox::Question, QCoreApplication::applicationName(),
         "Do you want to continue packaging the " + itemTypeName.toLower() + " completely?",
@@ -1160,19 +1249,50 @@ void EndpointDesignDiagram::createPlatformComponent(MappingComponentItem* mappin
     comp->setComponentSWType(KactusAttribute::KTS_SW_PLATFORM);
 
     PlatformComponentItem* platformComp = new PlatformComponentItem(comp,
-        createInstanceName("unnamed_platform"),
-        QString(), QString(),
-        QMap<QString, QString>(),
-        mappingCompItem);
+                                                                    createInstanceName("unnamed_platform"),
+                                                                    QString(), QString(),
+                                                                    QMap<QString, QString>(),
+                                                                    mappingCompItem);
     connect(platformComp, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
-    mappingCompItem->setPlatformComponent(platformComp);
+    // Create the undo command and execute it.
+    QSharedPointer<PlatformCompAddCommand> cmd(new PlatformCompAddCommand(mappingCompItem, platformComp));
+    connect(cmd.data(), SIGNAL(componentInstantiated(SWComponentItem*)),
+        this, SIGNAL(componentInstantiated(SWComponentItem*)), Qt::UniqueConnection);
+    connect(cmd.data(), SIGNAL(componentInstanceRemoved(SWComponentItem*)),
+        this, SIGNAL(componentInstanceRemoved(SWComponentItem*)), Qt::UniqueConnection);
+
+    editProvider_.addCommand(cmd);
 }
 
 //-----------------------------------------------------------------------------
-// Function: removeColumn()
+// Function: getColumnLayout()
 //-----------------------------------------------------------------------------
-void EndpointDesignDiagram::removeColumn(SystemColumn* column)
+SystemColumnLayout* EndpointDesignDiagram::getColumnLayout()
 {
-    layout_->removeColumn(column);
+    return layout_.data();
+}
+
+//-----------------------------------------------------------------------------
+// Function: onComponentInstanceAdded()
+//-----------------------------------------------------------------------------
+void EndpointDesignDiagram::onComponentInstanceAdded(SWComponentItem* item)
+{
+    instanceNames_.append(item->name());
+}
+
+//-----------------------------------------------------------------------------
+// Function: onComponentInstanceRemoved()
+//-----------------------------------------------------------------------------
+void EndpointDesignDiagram::onComponentInstanceRemoved(SWComponentItem* item)
+{
+    instanceNames_.removeAll(item->name());
+}
+
+//-----------------------------------------------------------------------------
+// Function: getEditProvider()
+//-----------------------------------------------------------------------------
+GenericEditProvider& EndpointDesignDiagram::getEditProvider()
+{
+    return editProvider_;
 }

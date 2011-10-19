@@ -60,15 +60,15 @@ public:
      */
     const QList<QPointF> &route();
 
-    /*!
-     *  Begins the position update of the connection.
-     */
-    void beginUpdatePosition();
-
     /*! \brief Update the end positions when connected end points are moved
      *
      */
     void updatePosition();
+
+    /*!
+     *  Begins the position update of the connection.
+     */
+    void beginUpdatePosition();
 
     /*!
      *  Ends the position update of the connection and creates an undo command.

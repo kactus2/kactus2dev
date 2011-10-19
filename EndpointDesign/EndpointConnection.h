@@ -18,6 +18,7 @@
 #include <QPointF>
 
 class EndpointItem;
+class QUndoCommand;
 
 //-----------------------------------------------------------------------------
 //! EndpointConnection class.
@@ -59,6 +60,20 @@ public:
      */
     void updatePosition();
 
+    /*!
+     *  Begins the position update of the connection.
+     */
+    void beginUpdatePosition();
+
+    /*!
+     *  Ends the position update of the connection and creates an undo command.
+     *
+     *      @param [in] parent The parent command.
+     *
+     *      @return The created (child) command.
+     */
+    QUndoCommand* endUpdatePosition(QUndoCommand* parent);
+
     /*! 
      *  Connects the ends of the interconnection.
      *
@@ -66,6 +81,11 @@ public:
      *               of the interconnection.
      */
     bool connectEnds();
+
+    /*!
+     *  Disconnects the endpoint of the connection.
+     */
+    void disconnectEnds();
 
     /*!
      *  Returns the name of the connection.
@@ -133,11 +153,6 @@ private:
     void simplifyPath();
 
     /*!
-     *  Disconnects the endpoint of the connection.
-     */
-    void disconnectEnds();
-
-    /*!
      *  Updates the name of the connection.
      */
     void updateName();
@@ -147,7 +162,6 @@ private:
     //-----------------------------------------------------------------------------
     enum SelectionType
     {
-        END,
         SEGMENT,
         NONE
     };
@@ -171,6 +185,9 @@ private:
 
     int selected_;
     SelectionType selectionType_;
+
+    //! The old route when the route is being moved by mouse.
+    QList<QPointF> oldRoute_;
 };
 
 //-----------------------------------------------------------------------------

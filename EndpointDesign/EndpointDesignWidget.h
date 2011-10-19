@@ -13,6 +13,7 @@
 #define ENDPOINTDESIGNWIDGET_H
 
 #include <common/widgets/tabDocument/TabDocument.h>
+#include <common/GenericEditProvider.h>
 
 #include <QGraphicsView>
 
@@ -22,6 +23,7 @@ class LibraryInterface;
 class Component;
 class DesignConfiguration;
 class ProgramEntityItem;
+class SWComponentItem;
 
 //-----------------------------------------------------------------------------
 //! EndpointDesignWidget class.
@@ -95,6 +97,15 @@ public:
 	*/
 	virtual VLNV getComponentVLNV() const;
 
+    /*!
+     *  Returns the edit provider.
+     *
+     *      @return Base class implementation returns null.
+     *
+     *      @remarks Edit support should be queried with getFlags().
+     */
+    IEditProvider* getEditProvider();
+
 public slots:
     /*! 
      *  Saves the design to disk.
@@ -133,6 +144,11 @@ private:
     EndpointDesignWidget(EndpointDesignWidget const& rhs);
     EndpointDesignWidget& operator=(EndpointDesignWidget const& rhs);
 
+    enum
+    {
+        EDIT_HISTORY_SIZE = 50
+    };
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -151,6 +167,9 @@ private:
 
     //! The attached design configuration.
     QSharedPointer<DesignConfiguration> designConf_;
+
+    //! The edit provider
+    QSharedPointer<GenericEditProvider> editProvider_;
 };
 
 //-----------------------------------------------------------------------------

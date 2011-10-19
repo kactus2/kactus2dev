@@ -52,7 +52,14 @@ public:
      */
     void addColumn(QString const& name, ColumnContentType contentType,
                    unsigned int allowedItems = CIT_NONE);
+
+    /*!
+     *  Adds a column to the layout.
+     *
+     *      @param [in] column The column to add.
+     */
     void addColumn(DiagramColumn* column);
+
     /*!
      *  Adds an item to the first column where it is allowed to be placed.
      *

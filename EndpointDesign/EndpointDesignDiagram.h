@@ -29,6 +29,7 @@ class Design;
 class DesignConfiguration;
 class LibraryInterface;
 class VLNV;
+class GenericEditProvider;
 
 //-----------------------------------------------------------------------------
 //! EndpointDesignDiagram class.
@@ -40,8 +41,14 @@ class EndpointDesignDiagram : public QGraphicsScene
 public:
     /*!
      *  Constructor.
+     *
+     *      @param [in] lh            The library interface.
+     *      @param [in] mainWnd       The main window.
+     *      @param [in] editProvider  The edit provider.
+     *      @param [in] parent        The parent object.
      */
-    EndpointDesignDiagram(LibraryInterface* lh, MainWindow* mainWnd, QObject* parent = 0);
+    EndpointDesignDiagram(LibraryInterface* lh, MainWindow* mainWnd,
+                          GenericEditProvider& editProvider, QObject* parent = 0);
 
     /*!
      *  Destructor.
@@ -125,13 +132,23 @@ public:
     void setMode(DrawMode mode);
 
     /*!
-     *  Removes the given column from the diagram.
-     *
-     *      @param [in] column The column to remove.
+     *  Returns the column layout.
      */
-    void removeColumn(SystemColumn* column);
+    SystemColumnLayout* getColumnLayout();
+
+    /*!
+     *  Returns the edit provider.
+     */
+    GenericEditProvider& getEditProvider();
 
     void onVerticalScroll(qreal y);
+
+public slots:
+    //! Called when a component instance is added to the diagram.
+    void onComponentInstanceAdded(SWComponentItem* item);
+
+    //! Called when a component instance is remove from the diagram.
+    void onComponentInstanceRemoved(SWComponentItem* item);
 
 signals:
     //! \brief Emitted when component with given vlnv should be opened in editor.
@@ -154,6 +171,12 @@ signals:
 
     //! Sends a notification to the user.
     void noticeMessage(const QString& noticeMessage);
+
+    //! Signaled when a new component is instantiated to the design.
+    void componentInstantiated(SWComponentItem* item);
+
+    //! Signaled when a component instance is removed from the design.
+    void componentInstanceRemoved(SWComponentItem* item);
      
 protected:
     //! Called when the user presses a mouse button.
@@ -284,6 +307,9 @@ private:
 
     //! The type of the SW component being dragged.
     KactusAttribute::SWType dragSWType_;
+
+    //! The edit provider for undo/redo.
+    GenericEditProvider& editProvider_;
 };
 
 //-----------------------------------------------------------------------------

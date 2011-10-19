@@ -1799,6 +1799,7 @@ void MainWindow::openSystem(VLNV const& vlnv, bool forceUnlocked)
 
     designWidget->setTabWidget(designTabs_);
 
+    connect(designWidget->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));
     connect(designWidget, SIGNAL(contentChanged()), this, SLOT(updateMenuStrip()), Qt::UniqueConnection);
     connect(designWidget, SIGNAL(openComponent(const VLNV&)),
         this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);

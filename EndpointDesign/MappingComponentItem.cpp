@@ -15,8 +15,11 @@
 #include "PlatformPlaceholderItem.h"
 #include "ApplicationItem.h"
 #include "EndpointDesignDiagram.h"
+#include "EndpointConnection.h"
+#include "SystemMoveCommands.h"
 
 #include <common/DiagramUtil.h>
+#include <common/GenericEditProvider.h>
 #include <common/layouts/VStackedLayout.h>
 
 #include <models/component.h>
@@ -42,30 +45,24 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
                                            LibraryInterface* libInterface,
                                            QSharedPointer<Component> component,
                                            QString const& instanceName,
-                                           unsigned int id) : QGraphicsRectItem(0, diagram),
+                                           QString const& displayName,
+                                           QString const& description,
+                                           QMap<QString, QString> const& configurableElementValues,
+                                           unsigned int id) : SWComponentItem(QRectF(-WIDTH / 2, 0, WIDTH, 0),
+                                                                              component, instanceName,
+                                                                              displayName, description,
+                                                                              configurableElementValues, 0),
                                                               portIDFactory_(), diagram_(diagram),
-                                                              component_(component), name_(instanceName),
-                                                              id_(id), nameLabel_(0), oldColumn_(0),
-                                                              progEntitys_(), platformPlaceholder_(0),
-                                                              platformCompItem_(0)
+                                                              id_(id), oldColumn_(0), progEntitys_(),
+                                                              platformPlaceholder_(0), platformCompItem_(0),
+                                                              oldPos_(), conns_()
 {
     Q_ASSERT(diagram_ != 0);
-    Q_ASSERT(component_ != 0);
+    diagram_->addItem(this);
 
     // Set basic graphics properties.
     setFlag(ItemIsMovable);
-    setFlag(ItemSendsGeometryChanges);
-    setFlag(ItemIsSelectable);
     setBrush(QBrush(QColor(0xa5,0xc3,0xef)));
-
-    // Create the name label.
-    nameLabel_ = new QGraphicsTextItem(this);
-    nameLabel_->setTextWidth(WIDTH);
-    nameLabel_->setPos(-nameLabel_->textWidth() / 2.0, 10);
-
-    QFont font = nameLabel_->font();
-    font.setWeight(QFont::Bold);
-    nameLabel_->setFont(font);
 
     // Create the platform component placeholder.
     platformPlaceholder_ = new PlatformPlaceholderItem(this);
@@ -87,7 +84,7 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
             if (comp == 0)
             {
 //                 emit errorMessage(tr("The component %1 was not found in the library").arg(
-//                                   instance.componentRef.getName()).arg(design->getVlnv()->getName()));
+//                                   instance.componentRef.name()).arg(design->getVlnv()->name()));
                 continue;
             }
 
@@ -97,10 +94,12 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
             case KactusAttribute::KTS_SW_ENDPOINTS:
                 {
                     ProgramEntityItem* progEntity = new ProgramEntityItem(comp, instance.instanceName,
-                                                                              instance.displayName,
-                                                                              instance.description,
-                                                                              instance.configurableElementValues,
-                                                                              this);
+                                                                          instance.displayName,
+                                                                          instance.description,
+                                                                          instance.configurableElementValues,
+                                                                          this);
+                    diagram_->onComponentInstanceAdded(progEntity);
+
                     progEntity->setPos(instance.position);
                     progEntity->setEndpointsExpanded(instance.endpointsExpanded);
 
@@ -129,9 +128,10 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
                                                                    instance.description,
                                                                    instance.configurableElementValues,
                                                                    progEntity);
+                    diagram_->onComponentInstanceAdded(appItem);
+
                     connect(appItem, SIGNAL(openSource(ProgramEntityItem*)),
-                            static_cast<EndpointDesignDiagram*>(scene()),
-                            SIGNAL(openSource(ProgramEntityItem*)), Qt::UniqueConnection);
+                            diagram_, SIGNAL(openSource(ProgramEntityItem*)), Qt::UniqueConnection);
 
                     connect(appItem, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
                     progEntity->setApplication(appItem);
@@ -144,6 +144,8 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
                         new PlatformComponentItem(comp, instance.instanceName, instance.displayName,
                                                   instance.description, instance.configurableElementValues,
                                                   this);
+                    diagram_->onComponentInstanceAdded(platformCompItem);
+
                     connect(platformCompItem, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
                     setPlatformComponent(platformCompItem);
                     break;
@@ -154,7 +156,8 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
     
     // Determine the correct height for the node.
     updateSize();
-    updateNameLabel();
+    updateComponent();
+    updateNameLabel(name());
 }
 
 //-----------------------------------------------------------------------------
@@ -172,29 +175,12 @@ MappingComponentItem::~MappingComponentItem()
 }
 
 //-----------------------------------------------------------------------------
-// Function: setName()
-//-----------------------------------------------------------------------------
-void MappingComponentItem::setName(QString const& name)
-{
-    name_ = name;
-    updateNameLabel();
-}
-
-//-----------------------------------------------------------------------------
 // Function: setID()
 //-----------------------------------------------------------------------------
 void MappingComponentItem::setID(unsigned int id)
 {
     id_ = id;
-    updateNameLabel();
-}
-
-//-----------------------------------------------------------------------------
-// Function: getName()
-//-----------------------------------------------------------------------------
-QString const& MappingComponentItem::getName() const
-{
-    return name_;
+    updateNameLabel(name());
 }
 
 //-----------------------------------------------------------------------------
@@ -214,28 +200,6 @@ EndpointDesignDiagram* MappingComponentItem::getDiagram() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: itemChange()
-//-----------------------------------------------------------------------------
-QVariant MappingComponentItem::itemChange(GraphicsItemChange change, QVariant const& value)
-{
-    switch (change)
-    {
-    case ItemPositionChange:
-        {
-            // Snap to grid.
-            return snapPointToGrid(value.toPointF());
-        }
-        
-    case ItemPositionHasChanged:
-        {
-            emit contentChanged();
-        }
-    }
-
-    return QGraphicsItem::itemChange(change, value);
-}
-
-//-----------------------------------------------------------------------------
 // Function: mousePressEvent()
 //-----------------------------------------------------------------------------
 void MappingComponentItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -243,7 +207,24 @@ void MappingComponentItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsRectItem::mousePressEvent(event);
     setZValue(1001.0);
 
+    oldPos_ = scenePos();
     oldColumn_ = dynamic_cast<SystemColumn*>(parentItem());
+
+    // Begin the position update for the connections.
+    foreach (ProgramEntityItem* progEntity, progEntitys_)
+    {
+        foreach (EndpointItem* endpoint, progEntity->getEndpoints())
+        {
+            foreach (EndpointConnection* conn, endpoint->getConnections())
+            {
+                if (!conns_.contains(conn))
+                {
+                    conn->beginUpdatePosition();
+                    conns_.insert(conn);
+                }
+            }
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -278,15 +259,32 @@ void MappingComponentItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         column->onReleaseItem(this);
 
         oldColumn_ = 0;
-    }
-}
 
-//-----------------------------------------------------------------------------
-// Function: updateNameLabel()
-//-----------------------------------------------------------------------------
-void MappingComponentItem::updateNameLabel()
-{
-    nameLabel_->setHtml("<center>" + name_ + " (ID = " + QString::number(id_) + ")</center>");
+        QSharedPointer<QUndoCommand> cmd;
+
+        if (scenePos() != oldPos_)
+        {
+            cmd = QSharedPointer<QUndoCommand>(new MappingCompMoveCommand(this, oldPos_));
+        }
+        else
+        {
+            cmd = QSharedPointer<QUndoCommand>(new QUndoCommand());
+        }
+
+        // End the position update for the interconnections.
+        foreach (EndpointConnection* conn, conns_)
+        {
+            conn->endUpdatePosition(cmd.data());
+        }
+
+        conns_.clear();
+
+        // Add the undo command to the edit stack only if it has at least some real changes.
+        if (cmd->childCount() > 0 || scenePos() != oldPos_)
+        {
+            static_cast<EndpointDesignDiagram*>(scene())->getEditProvider().addCommand(cmd, false);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -305,46 +303,22 @@ void MappingComponentItem::onEndpointStackChange(int height)
 }
 
 //-----------------------------------------------------------------------------
-// Function: getComponent()
-//-----------------------------------------------------------------------------
-QSharedPointer<Component> MappingComponentItem::getComponent() const
-{
-    return component_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: addProgramEntity()
-//-----------------------------------------------------------------------------
-ProgramEntityItem* MappingComponentItem::addProgramEntity(QString const& name, QPointF const& pos)
-{
-    // Create a new MCAPI endpoint component.
-    QSharedPointer<Component> component(new Component(VLNV()));
-    component->setComponentImplementation(KactusAttribute::KTS_SW);
-    component->setComponentSWType(KactusAttribute::KTS_SW_ENDPOINTS);
-
-    // Add the fixed bus interface to the component.
-    QSharedPointer<BusInterface> busIf(new BusInterface());
-    busIf->setName("app_link");
-    busIf->setInterfaceMode(General::SLAVE);
-    busIf->setBusType(VLNV(VLNV::BUSDEFINITION, "Kactus", "internal", "app_link", "1.0"));
-
-    ProgramEntityItem* item = new ProgramEntityItem(component, name, QString(), QString(),
-                                                    QMap<QString, QString>(), this);
-    item->setPos(mapFromScene(pos));
-
-    addProgramEntity(item);
-    return item;
-}
-
-//-----------------------------------------------------------------------------
 // Function: addProgramEntity()
 //-----------------------------------------------------------------------------
 void MappingComponentItem::addProgramEntity(ProgramEntityItem* item)
 {
+    item->setParentItem(this);
+
     progEntitys_.append(item);
     VStackedLayout::updateItemMove(progEntitys_, item, TOP_MARGIN, SPACING);
     VStackedLayout::setItemPos(progEntitys_, item, 0.0, TOP_MARGIN, SPACING);
     updateSize();
+
+    // Create the bus interfaces for the endpoints.
+    foreach (EndpointItem* endpoint, item->getEndpoints())
+    {
+        endpoint->createBusInterface(this);
+    }
 
     emit contentChanged();
 }
@@ -421,6 +395,12 @@ void MappingComponentItem::onReleaseItem(ProgramEntityItem* item)
 //-----------------------------------------------------------------------------
 void MappingComponentItem::removeProgramEntity(ProgramEntityItem* item)
 {
+    // Remove the bus interfaces from the mapping component.
+    foreach (EndpointItem* endpoint, item->getEndpoints())
+    {
+        endpoint->removeBusInterface(this);
+    }
+
     progEntitys_.removeAll(item);
     updateSize();
 
@@ -457,7 +437,7 @@ IDFactory& MappingComponentItem::getPortIDFactory()
 bool MappingComponentItem::save(LibraryInterface* libInterface)
 {
     // Create the design.
-    QSharedPointer<Design> design(new Design(component_->getHierRef("kts_sys_ref")));
+    QSharedPointer<Design> design(new Design(componentModel()->getHierRef("kts_sys_ref")));
 
     QList<Design::ComponentInstance> instances;
     QList<Design::Interconnection> interconnections;
@@ -515,7 +495,7 @@ bool MappingComponentItem::save(LibraryInterface* libInterface)
 
     // Save the design and the component.
     libInterface->writeModelToFile(design);
-    libInterface->writeModelToFile(component_);
+    libInterface->writeModelToFile(componentModel());
     return true;
 }
 
@@ -541,4 +521,20 @@ EndpointItem* MappingComponentItem::getEndpoint(QString const& fullName)
     }
 
     return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: updateNameLabel()
+//-----------------------------------------------------------------------------
+void MappingComponentItem::updateNameLabel(QString const& text)
+{
+    SWComponentItem::updateNameLabel(text + " (ID = " + QString::number(id_) + ")");
+}
+
+//-----------------------------------------------------------------------------
+// Function: isMapped()
+//-----------------------------------------------------------------------------
+bool MappingComponentItem::isMapped() const
+{
+    return getConfigurableElements().contains("kts_hw_ref");
 }

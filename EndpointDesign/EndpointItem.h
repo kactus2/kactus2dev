@@ -134,6 +134,18 @@ public:
     void removeConnection(EndpointConnection* connection);
 
     /*!
+     *  Creates a corresponding bus interfaces to the mapping component.
+     *
+     *      @param [in] mappingComp The mapping component to which to create the bus interface.
+     */
+    void createBusInterface(MappingComponentItem* mappingComp);
+
+    /*!
+     *  Removes the corresponding bus interface from the mapping component.
+     */
+    void removeBusInterface(MappingComponentItem* mappingComp);
+
+    /*!
      *  Returns the list of connections that are connected to this endpoint.
      */
     QList<EndpointConnection*> const& getConnections() const;
@@ -246,7 +258,12 @@ public slots:
     //! Invokes the edit endpoint dialog.
     void editEndpoint();
 
+signals:
+    //! Signaled when the endpoint item has changed.
+    void contentChanged();
+
 protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent* event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event);
@@ -300,6 +317,9 @@ private:
 
     //! The endpoint's draw direction.
     DrawDirection dir_;
+
+    //! The endpoint's position before mouse move.
+    QPointF oldPos_;
 };
 
 //-----------------------------------------------------------------------------

@@ -1579,11 +1579,27 @@
 					>
 				</File>
 				<File
+					RelativePath=".\EndpointDesign\SystemAddCommands.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\EndpointDesign\SystemChangeCommands.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\EndpointDesign\SystemColumn.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\EndpointDesign\SystemColumnLayout.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\EndpointDesign\SystemDeleteCommands.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\EndpointDesign\SystemMoveCommands.cpp"
 					>
 				</File>
 			</Filter>
@@ -8419,6 +8435,36 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath=".\EndpointDesign\SystemAddCommands.h"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputFileName)..."
+							CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;  &quot;$(InputPath)&quot; -o &quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT &quot;-I$(QTDIR)\include\QtCore&quot; &quot;-I$(QTDIR)\include\QtGui&quot; &quot;-I$(QTDIR)\include\QtXml&quot; &quot;-I$(QTDIR)\include\QtXmlPatterns&quot; &quot;-I$(QTDIR)\include&quot; &quot;-I.&quot; &quot;-I$(QTDIR)\include\ActiveQt&quot; &quot;-I.\debug&quot; &quot;-Id:\user\kamppia\QtVS\4.7.1\mkspecs\default&quot; &quot;-I.\common\widgets\listManager&quot; &quot;-I.\IPXactWrapper\ComponentEditor&quot; &quot;-I.\IPXactWrapper\ComponentEditor\fileSet&quot; &quot;-I.\LibraryManager&quot; &quot;-I.\mainwindow&quot; &quot;-I.\common\widgets\vlnvDisplayer&quot; &quot;-I.\PropertyWidget&quot; &quot;-I.\IPXactWrapper&quot; &quot;-I.\IPXactWrapper\ComponentEditor\modelParameters&quot; &quot;-I.\IPXactWrapper\ComponentEditor\ports&quot; &quot;-I.\common\widgets\hexSpinBox&quot; &quot;-I.\common\widgets\booleanComboBox&quot; &quot;-I.\IPXactWrapper\ComponentEditor\parameters&quot; &quot;-I.\IPXactWrapper\ComponentEditor\otherClockDrivers&quot; &quot;-I.\IPXactWrapper\ComponentEditor\channels&quot; &quot;-I.\IPXactWrapper\ComponentEditor\busInterfaces&quot; &quot;-I.\common\widgets\vectorEditor&quot; &quot;-I.\IPXactWrapper\ComponentEditor\views&quot; &quot;-I.\IPXactWrapper\ComponentEditor\fileBuilders&quot; &quot;-I.\GCF\include&quot; &quot;-I.\IPXactWrapper\ComponentEditor\busInterfaces\portmaps&quot; &quot;-I.\IPXactWrapper\BusEditor&quot; &quot;-I.\common\widgets\scrollComboBox&quot; &quot;-I.\LibraryManager\HierarchyView&quot; &quot;-I.\LibraryManager\VLNVDialer&quot; &quot;-I.\common\dialogs\ObjectRemoveDialog&quot; &quot;-I.\ComponentInstanceEditor&quot; &quot;-I.\ConfigurationEditor&quot; &quot;-I.\common\dialogs\createConfigurationDialog&quot; &quot;-I.\DocumentGenerator&quot; &quot;-I.\InterfaceEditor&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
+							Outputs="&quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputFileName)..."
+							CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;  &quot;$(InputPath)&quot; -o &quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT &quot;-I$(QTDIR)\include\QtCore&quot; &quot;-I$(QTDIR)\include\QtGui&quot; &quot;-I$(QTDIR)\include\QtXml&quot; &quot;-I$(QTDIR)\include\QtXmlPatterns&quot; &quot;-I$(QTDIR)\include&quot; &quot;-I.&quot; &quot;-I$(QTDIR)\include\ActiveQt&quot; &quot;-I.\release&quot; &quot;-I.&quot; &quot;-Id:\user\kamppia\QtVS\4.7.1\mkspecs\default&quot; &quot;-I.\common\widgets\listManager&quot; &quot;-I.\IPXactWrapper\ComponentEditor&quot; &quot;-I.\IPXactWrapper\ComponentEditor\fileSet&quot; &quot;-I.\LibraryManager&quot; &quot;-I.\mainwindow&quot; &quot;-I.\common\widgets\vlnvDisplayer&quot; &quot;-I.\PropertyWidget&quot; &quot;-I.\IPXactWrapper&quot; &quot;-I.\IPXactWrapper\ComponentEditor\modelParameters&quot; &quot;-I.\IPXactWrapper\ComponentEditor\ports&quot; &quot;-I.\common\widgets\hexSpinBox&quot; &quot;-I.\common\widgets\booleanComboBox&quot; &quot;-I.\IPXactWrapper\ComponentEditor\parameters&quot; &quot;-I.\IPXactWrapper\ComponentEditor\otherClockDrivers&quot; &quot;-I.\IPXactWrapper\ComponentEditor\channels&quot; &quot;-I.\IPXactWrapper\ComponentEditor\busInterfaces&quot; &quot;-I.\common\widgets\vectorEditor&quot; &quot;-I.\IPXactWrapper\ComponentEditor\views&quot; &quot;-I.\IPXactWrapper\ComponentEditor\fileBuilders&quot; &quot;-I.\GCF\include&quot; &quot;-I.\IPXactWrapper\ComponentEditor\busInterfaces\portmaps&quot; &quot;-I.\IPXactWrapper\BusEditor&quot; &quot;-I.\common\widgets\scrollComboBox&quot; &quot;-I.\LibraryManager\HierarchyView&quot; &quot;-I.\LibraryManager\VLNVDialer&quot; &quot;-I.\common\dialogs\ObjectRemoveDialog&quot; &quot;-I.\ComponentInstanceEditor&quot; &quot;-I.\ConfigurationEditor&quot; &quot;-I.\common\dialogs\createConfigurationDialog&quot; &quot;-I.\DocumentGenerator&quot; &quot;-I.\InterfaceEditor&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
+							Outputs="&quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\EndpointDesign\SystemChangeCommands.h"
+					>
+				</File>
+				<File
 					RelativePath=".\EndpointDesign\SystemColumn.h"
 					>
 					<FileConfiguration
@@ -8469,6 +8515,36 @@
 							Outputs="&quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\EndpointDesign\SystemDeleteCommands.h"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputFileName)..."
+							CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;  &quot;$(InputPath)&quot; -o &quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT &quot;-I$(QTDIR)\include\QtCore&quot; &quot;-I$(QTDIR)\include\QtGui&quot; &quot;-I$(QTDIR)\include\QtXml&quot; &quot;-I$(QTDIR)\include\QtXmlPatterns&quot; &quot;-I$(QTDIR)\include&quot; &quot;-I.&quot; &quot;-I$(QTDIR)\include\ActiveQt&quot; &quot;-I.\debug&quot; &quot;-Id:\user\kamppia\QtVS\4.7.1\mkspecs\default&quot; &quot;-I.\common\widgets\listManager&quot; &quot;-I.\IPXactWrapper\ComponentEditor&quot; &quot;-I.\IPXactWrapper\ComponentEditor\fileSet&quot; &quot;-I.\LibraryManager&quot; &quot;-I.\mainwindow&quot; &quot;-I.\common\widgets\vlnvDisplayer&quot; &quot;-I.\PropertyWidget&quot; &quot;-I.\IPXactWrapper&quot; &quot;-I.\IPXactWrapper\ComponentEditor\modelParameters&quot; &quot;-I.\IPXactWrapper\ComponentEditor\ports&quot; &quot;-I.\common\widgets\hexSpinBox&quot; &quot;-I.\common\widgets\booleanComboBox&quot; &quot;-I.\IPXactWrapper\ComponentEditor\parameters&quot; &quot;-I.\IPXactWrapper\ComponentEditor\otherClockDrivers&quot; &quot;-I.\IPXactWrapper\ComponentEditor\channels&quot; &quot;-I.\IPXactWrapper\ComponentEditor\busInterfaces&quot; &quot;-I.\common\widgets\vectorEditor&quot; &quot;-I.\IPXactWrapper\ComponentEditor\views&quot; &quot;-I.\IPXactWrapper\ComponentEditor\fileBuilders&quot; &quot;-I.\GCF\include&quot; &quot;-I.\IPXactWrapper\ComponentEditor\busInterfaces\portmaps&quot; &quot;-I.\IPXactWrapper\BusEditor&quot; &quot;-I.\common\widgets\scrollComboBox&quot; &quot;-I.\LibraryManager\HierarchyView&quot; &quot;-I.\LibraryManager\VLNVDialer&quot; &quot;-I.\common\dialogs\ObjectRemoveDialog&quot; &quot;-I.\ComponentInstanceEditor&quot; &quot;-I.\ConfigurationEditor&quot; &quot;-I.\common\dialogs\createConfigurationDialog&quot; &quot;-I.\DocumentGenerator&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
+							Outputs="&quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputFileName)..."
+							CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;  &quot;$(InputPath)&quot; -o &quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT &quot;-I$(QTDIR)\include\QtCore&quot; &quot;-I$(QTDIR)\include\QtGui&quot; &quot;-I$(QTDIR)\include\QtXml&quot; &quot;-I$(QTDIR)\include\QtXmlPatterns&quot; &quot;-I$(QTDIR)\include&quot; &quot;-I.&quot; &quot;-I$(QTDIR)\include\ActiveQt&quot; &quot;-I.\release&quot; &quot;-I.&quot; &quot;-Id:\user\kamppia\QtVS\4.7.1\mkspecs\default&quot; &quot;-I.\common\widgets\listManager&quot; &quot;-I.\IPXactWrapper\ComponentEditor&quot; &quot;-I.\IPXactWrapper\ComponentEditor\fileSet&quot; &quot;-I.\LibraryManager&quot; &quot;-I.\mainwindow&quot; &quot;-I.\common\widgets\vlnvDisplayer&quot; &quot;-I.\PropertyWidget&quot; &quot;-I.\IPXactWrapper&quot; &quot;-I.\IPXactWrapper\ComponentEditor\modelParameters&quot; &quot;-I.\IPXactWrapper\ComponentEditor\ports&quot; &quot;-I.\common\widgets\hexSpinBox&quot; &quot;-I.\common\widgets\booleanComboBox&quot; &quot;-I.\IPXactWrapper\ComponentEditor\parameters&quot; &quot;-I.\IPXactWrapper\ComponentEditor\otherClockDrivers&quot; &quot;-I.\IPXactWrapper\ComponentEditor\channels&quot; &quot;-I.\IPXactWrapper\ComponentEditor\busInterfaces&quot; &quot;-I.\common\widgets\vectorEditor&quot; &quot;-I.\IPXactWrapper\ComponentEditor\views&quot; &quot;-I.\IPXactWrapper\ComponentEditor\fileBuilders&quot; &quot;-I.\GCF\include&quot; &quot;-I.\IPXactWrapper\ComponentEditor\busInterfaces\portmaps&quot; &quot;-I.\IPXactWrapper\BusEditor&quot; &quot;-I.\common\widgets\scrollComboBox&quot; &quot;-I.\LibraryManager\HierarchyView&quot; &quot;-I.\LibraryManager\VLNVDialer&quot; &quot;-I.\common\dialogs\ObjectRemoveDialog&quot; &quot;-I.\ComponentInstanceEditor&quot; &quot;-I.\ConfigurationEditor&quot; &quot;-I.\common\dialogs\createConfigurationDialog&quot; &quot;-I.\DocumentGenerator&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
+							Outputs="&quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\EndpointDesign\SystemMoveCommands.h"
+					>
 				</File>
 			</Filter>
 			<Filter
@@ -11113,6 +11189,18 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath=".\Debug\moc_SystemAddCommands.cpp"
+					>
+					<FileConfiguration
+						Name="Release|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
 					RelativePath=".\Debug\moc_SystemColumn.cpp"
 					>
 					<FileConfiguration
@@ -11126,6 +11214,18 @@
 				</File>
 				<File
 					RelativePath=".\Debug\moc_SystemColumnLayout.cpp"
+					>
+					<FileConfiguration
+						Name="Release|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\debug\moc_SystemDeleteCommands.cpp"
 					>
 					<FileConfiguration
 						Name="Release|Win32"
@@ -13507,6 +13607,18 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath=".\Release\moc_SystemAddCommands.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
 					RelativePath=".\Release\moc_SystemColumn.cpp"
 					>
 					<FileConfiguration
@@ -13520,6 +13632,18 @@
 				</File>
 				<File
 					RelativePath=".\Release\moc_SystemColumnLayout.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\Release\moc_SystemDeleteCommands.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -13718,6 +13842,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\graphics\API.png"
+				>
+			</File>
+			<File
 				RelativePath=".\graphics\appicon.png"
 				>
 			</File>
@@ -13746,11 +13874,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\graphics\dockSelect.png"
+				>
+			</File>
+			<File
 				RelativePath=".\graphics\edit-redo.png"
 				>
 			</File>
 			<File
 				RelativePath=".\graphics\edit-undo.png"
+				>
+			</File>
+			<File
+				RelativePath=".\graphics\endpoints.png"
 				>
 			</File>
 			<File

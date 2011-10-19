@@ -46,6 +46,13 @@ public:
     void addColumn(QString const& name);
 
     /*!
+     *  Adds a column to the layout.
+     *
+     *      @param [in] column The column to add.
+     */
+    void addColumn(SystemColumn* column);
+
+    /*!
      *  Removes a column from the layout.
      *
      *      @param [in] column The column to remove.

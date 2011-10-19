@@ -123,7 +123,7 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The graphics conn.
+    //! The diagram component.
     DiagramComponent* component_;
 
     //! The component's parent column.

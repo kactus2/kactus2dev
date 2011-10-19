@@ -127,6 +127,9 @@ public slots:
 signals:
     void visibleHeightChanged(int height);
 
+    //! Signaled when the endpoint stack has changed.
+    void contentChanged();
+
 protected:
     //! Called when the users presses the mouse over the stack header.
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
@@ -155,8 +158,8 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! Parent node.
-    ProgramEntityItem* parentNode_;
+    //! Parent program entity.
+    ProgramEntityItem* parentProgEntity_;
 
     //! Header label.
     QGraphicsTextItem* headerLabel_;

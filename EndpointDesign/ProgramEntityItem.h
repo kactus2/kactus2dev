@@ -23,10 +23,12 @@
 #include <QGraphicsScene>
 #include <QVector>
 #include <QTextStream>
+#include <QSet>
 
 class EndpointDesignDiagram;
 class EndpointItem;
 class EndpointStack;
+class EndpointConnection;
 class AppPlaceholderItem;
 class MCAPIContentMatcher;
 class SystemColumn;
@@ -91,14 +93,6 @@ public:
      *      @param [in] item The application item to set.
      */
     void setApplication(ApplicationItem* item);
-
-    /*!
-     *  Adds an endpoint to the node.
-     *
-     *      @param [in] name  The name of the endpoint.
-     *      @param [in] type  The endpoint type.
-     */
-    void addEndpoint(QString const& name, MCAPIEndpointDirection type);
 
     /*!
      *  Generates a source file thub based on the node's information.
@@ -211,6 +205,12 @@ private:
 
     //! The assigned application item.
     ApplicationItem* appItem_;
+
+    //! The program entity's old position before mouse move.
+    QPointF oldPos_;
+
+    //! The connections that can change during mouse move.
+    QSet<EndpointConnection*> conns_;
 };
 
 //-----------------------------------------------------------------------------

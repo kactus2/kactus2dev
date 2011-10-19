@@ -12,6 +12,8 @@
 #ifndef MAPPINGCOMPONENTITEM_H
 #define MAPPINGCOMPONENTITEM_H
 
+#include "SWComponentItem.h"
+
 #include <MCAPI/MCAPIDesignerTypes.h>
 #include <common/IDFactory.h>
 
@@ -22,10 +24,12 @@
 #include <QGraphicsScene>
 #include <QVector>
 #include <QTextStream>
+#include <QSet>
 
 class EndpointDesignDiagram;
 class EndpointItem;
 class EndpointStack;
+class EndpointConnection;
 class AppPlaceholderItem;
 class MCAPIContentMatcher;
 class SystemColumn;
@@ -38,7 +42,7 @@ class LibraryInterface;
 //-----------------------------------------------------------------------------
 //! MappingComponentItem class.
 //-----------------------------------------------------------------------------
-class MappingComponentItem : public QObject, public QGraphicsRectItem
+class MappingComponentItem : public SWComponentItem
 {
     Q_OBJECT
 
@@ -55,7 +59,10 @@ public:
      *      @param [in] id            The node ID.
      */
     MappingComponentItem(EndpointDesignDiagram* diagram, LibraryInterface* libInterface,
-                         QSharedPointer<Component> component, QString const& instanceName, unsigned int id);
+                         QSharedPointer<Component> component, QString const& instanceName,
+                         QString const& displayName, QString const& description,
+                         QMap<QString, QString> const& configurableElementValues,
+                         unsigned int id);
 
     /*!
      *  Destructor.
@@ -72,31 +79,11 @@ public:
     bool save(LibraryInterface* libInterface);
 
     /*!
-     *  Sets the instance name.
-     *
-     *      @param [in] name The instance name.
-     *
-     *      @remarks The instance name acts also at the MCAPI node name, so it must be
-     *               a valid C variable name.
-     */
-    void setName(QString const& instanceName);
-
-    /*!
      *  Sets the node id.
      *
      *      @param [in] id The node id.
      */
     void setID(unsigned int id);
-
-    /*!
-     *  Adds a new, empty application item to the SW mapping component.
-     *
-     *      @param [in] name  The instance name.
-     *      @param [in] pos   The position hint for the application.
-     *
-     *      @return The newly created application item.
-     */
-    ProgramEntityItem* addProgramEntity(QString const& name, QPointF const& pos);
 
     /*!
      *  Adds an application item to the SW mapping component.
@@ -134,19 +121,9 @@ public:
     EndpointItem* getEndpoint(QString const& fullName);
 
     /*!
-     *  Returns the instance name.
-     */
-    QString const& getName() const;
-
-    /*!
      *  Returns the node id.
      */
     unsigned int getID() const;
-
-    /*!
-     *  Returns the underlying HW component.
-     */
-    QSharedPointer<Component> getComponent() const;
 
     /*!
      *  Returns the parent diagram.
@@ -157,6 +134,11 @@ public:
      *  Returns the port ID factory.
      */
     IDFactory& getPortIDFactory();
+
+    /*!
+     *  Returns true if the component is mapped tightly to a HW component.
+     */
+    bool isMapped() const;
 
     /*!
      *  Returns the graphics item type.
@@ -177,14 +159,7 @@ public:
      */
     void onReleaseItem(ProgramEntityItem* item);
 
-signals:
-    //! Signaled when the node has changed.
-    void contentChanged();
-
 protected:
-    //! Called when the item has changed (position etc.).
-    QVariant itemChange(GraphicsItemChange change, QVariant const& value);
-
     // Called when the user presses the mouse button.
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
@@ -203,10 +178,12 @@ private:
     MappingComponentItem& operator=(MappingComponentItem const& rhs);
 
     /*!
-     *  Updates the name label.
+     *  Updates the name label with the given text.
+     *
+     *      @param [in] text The text to display in the label.
      */
-    void updateNameLabel();
-    
+    virtual void updateNameLabel(QString const& text);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -226,17 +203,8 @@ private:
     //! The parent diagram.
     EndpointDesignDiagram* diagram_;
 
-    //! The underlying SW mapping component.
-    QSharedPointer<Component> component_;
-
-    //! The instance name.
-    QString name_;
-
     //! The node id.
     unsigned int id_;
-
-    //! The node's name UI item.
-    QGraphicsTextItem* nameLabel_;
 
     //! The old column from where the mouse drag event began.
     SystemColumn* oldColumn_;
@@ -249,6 +217,12 @@ private:
 
     //! The platform component item.
     PlatformComponentItem* platformCompItem_;
+
+    //! The mapping component's old position before mouse move.
+    QPointF oldPos_;
+
+    //! The connections that can change during mouse move.
+    QSet<EndpointConnection*> conns_;
 };
 
 //-----------------------------------------------------------------------------

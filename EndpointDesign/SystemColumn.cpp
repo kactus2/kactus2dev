@@ -11,6 +11,9 @@
 
 #include "SystemColumn.h"
 
+#include "EndpointDesignDiagram.h"
+#include "SystemMoveCommands.h"
+
 #include <QLinearGradient>
 #include <QPen>
 #include <QFont>
@@ -19,11 +22,13 @@
 
 #include "SystemColumnLayout.h"
 #include "MappingComponentItem.h"
+#include "EndpointConnection.h"
 
 #include <common/layouts/VStackedLayout.h>
-
 #include <common/diagramgrid.h>
 #include <common/DiagramUtil.h>
+#include <common/GenericEditProvider.h>
+
 #include <models/component.h>
 
 //-----------------------------------------------------------------------------
@@ -147,6 +152,32 @@ void SystemColumn::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 
     setZValue(0.0);
     layout_->onReleaseColumn(this);
+
+    // Create an undo command only if the position really changed.
+    QSharedPointer<QUndoCommand> cmd;
+
+    if (pos() != oldPos_)
+    {
+        cmd = QSharedPointer<QUndoCommand>(new SystemColumnMoveCommand(layout_, this, oldPos_));
+    }
+    else
+    {
+        cmd = QSharedPointer<QUndoCommand>(new QUndoCommand());
+    }
+
+    // End position update for the interconnections.
+    foreach (EndpointConnection* conn, conns_)
+    {
+        conn->endUpdatePosition(cmd.data());
+    }
+
+    conns_.clear();
+
+    if (cmd->childCount() > 0 || pos() != oldPos_)
+    {
+        static_cast<EndpointDesignDiagram*>(scene())->getEditProvider().addCommand(cmd);
+        emit contentChanged();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -231,4 +262,38 @@ QVariant SystemColumn::itemChange(GraphicsItemChange change, const QVariant &val
     }
 
     return QGraphicsRectItem::itemChange(change, value);
+}
+
+//-----------------------------------------------------------------------------
+// Function: mousePressEvent()
+//-----------------------------------------------------------------------------
+void SystemColumn::mousePressEvent(QGraphicsSceneMouseEvent* event)
+{
+    QGraphicsRectItem::mousePressEvent(event);
+
+    oldPos_ = pos();
+
+    // Begin position update for the connections.
+    foreach (MappingComponentItem* item, items_)
+    {
+        foreach (QGraphicsItem* childItem, item->childItems())
+        {
+            if (childItem->type() == ProgramEntityItem::Type)
+            {
+                ProgramEntityItem* progEntity = static_cast<ProgramEntityItem*>(childItem);
+
+                foreach (EndpointItem* endpoint, progEntity->getEndpoints())
+                {
+                    foreach (EndpointConnection* conn, endpoint->getConnections())
+                    {
+                        if (!conns_.contains(conn))
+                        {
+                            conn->beginUpdatePosition();
+                            conns_.insert(conn);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
