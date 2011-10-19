@@ -60,8 +60,13 @@
 DesignWidget::DesignWidget(LibraryInterface *lh, QWidget* parent): 
 TabDocument(parent, DOC_ZOOM_SUPPORT | DOC_DRAW_MODE_SUPPORT | DOC_PRINT_SUPPORT |
                     DOC_PROTECTION_SUPPORT | DOC_EDIT_SUPPORT, 30, 300), 
-designConf_(NULL), hierComponent_(NULL), viewName_(), view_(NULL), diagram_(NULL), lh_(NULL),
-selectionDock_(NULL), editProvider_() {
+hierComponent_(NULL), 
+viewName_(), 
+view_(NULL), 
+diagram_(NULL), 
+lh_(NULL),
+selectionDock_(NULL), 
+editProvider_() {
 
     lh_ = lh;
     editProvider_ = QSharedPointer<GenericEditProvider>(new GenericEditProvider(EDIT_HISTORY_SIZE));
@@ -116,9 +121,6 @@ void DesignWidget::setDesign( const VLNV* vlnv, const QString& viewName) {
 	Q_ASSERT_X(vlnv, "DesignWidget::setDesign",
 		"Null vlnv pointer given as parameter");
 
-	//! \brief clear the previous design configuration
-	designConf_.clear();
-
 	disconnect(diagram_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()));
 
@@ -146,8 +148,6 @@ void DesignWidget::setDesign( const VLNV* vlnv, const QString& viewName) {
 			viewName_ = viewName;
 
 			diagram_->setDesign(comp, viewName);
-			designConf_ = QSharedPointer<DesignConfiguration>(
-				diagram_->getDesignConfiguration());
 			hierComponent_ = comp;
 		}
 	}
@@ -175,7 +175,6 @@ void DesignWidget::setDesign( const VLNV* vlnv, const QString& viewName) {
 			return;
 		}
 		diagram_->setDesign(hierComponent_, viewName);
-		designConf_ = QSharedPointer<DesignConfiguration>(diagram_->getDesignConfiguration());
 		viewName_ = viewName;
 	}
 
@@ -206,11 +205,13 @@ bool DesignWidget::save()
 {
 	QSharedPointer<Design> design;
 
+	QSharedPointer<DesignConfiguration> designConf = diagram_->getDesignConfiguration();
+
 	// create the design
-	
+
 	// if design configuration is used
-	if (designConf_) {
-		design = diagram_->createDesign(designConf_->getDesignRef());
+	if (designConf) {
+		design = diagram_->createDesign(designConf->getDesignRef());
 	}
 	// if component 
 	else {
@@ -226,8 +227,8 @@ bool DesignWidget::save()
 	diagram_->updateHierComponent(hierComponent_);
 
 	// if design configuration is used then write it.
-	if (designConf_) {
-        lh_->writeModelToFile(designConf_);
+	if (designConf) {
+        lh_->writeModelToFile(designConf);
 	}
 
 	lh_->writeModelToFile(design);
@@ -269,17 +270,19 @@ bool DesignWidget::saveAs() {
 	// set the new vlnv for the component
 	hierComponent_->setVlnv(vlnv);
 
+	QSharedPointer<DesignConfiguration> designConf = diagram_->getDesignConfiguration();
+
 	// if design configuration is used
-	if (designConf_) {
+	if (designConf) {
 
 		// make a copy of the design configuration
-		designConf_ = QSharedPointer<DesignConfiguration>(new DesignConfiguration(*designConf_));
+		designConf = QSharedPointer<DesignConfiguration>(new DesignConfiguration(*designConf));
 
 		// set design configuration's vlnv to match new vlnv
-		designConf_->setVlnv(desConfVLNV);
+		designConf->setVlnv(desConfVLNV);
 
 		// set design configuration to reference to new design vlnv
-		designConf_->setDesignRef(designVLNV);
+		designConf->setDesignRef(designVLNV);
 
 		// set component to reference new design configuration
 		hierComponent_->setHierRef(desConfVLNV);
@@ -287,7 +290,7 @@ bool DesignWidget::saveAs() {
 		// create design with new design vlnv
 		design = diagram_->createDesign(designVLNV);
 	}
-	// if component 
+	// if component does not use design configuration then it references directly to design
 	else {
 		// set component to reference new design
 		hierComponent_->setHierRef(designVLNV);
@@ -306,8 +309,8 @@ bool DesignWidget::saveAs() {
 	// create the files for the documents
 
 	// if design configuration is used then write it.
-	if (designConf_) {
-        lh_->writeModelToFile(directory, designConf_);
+	if (designConf) {
+        lh_->writeModelToFile(directory, designConf);
 	}
 
     lh_->writeModelToFile(directory, design);
@@ -532,27 +535,13 @@ void DesignWidget::createDesignForComponent( QSharedPointer<Component> component
 	model->addView(hierView);
 
 	// create the design configuration
-	designConf_ = QSharedPointer<DesignConfiguration>(
-		new DesignConfiguration(desConfVLNV));
-	designConf_->setDesignRef(designVLNV);
+	QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV));
+	designConf->setDesignRef(designVLNV);
 
 	QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(designVLNV));
 
 	lh_->writeModelToFile(dirPath, newDesign);
-	lh_->writeModelToFile(dirPath, designConf_);
-
-	// create the files for the documents
-// 	QFile desConfFile(path + "/" + desConfVLNV.getName() + 
-// 		"." + desConfVLNV.getVersion() + ".xml");
-// 	desConfFile.open(QFile::WriteOnly | QFile::Truncate);
-// 	designConf_->write(desConfFile);
-// 	desConfFile.close();
-// 
-// 	QFile designFile(path + "/" + designVLNV.getName() + 
-// 		"." + designVLNV.getVersion() + ".xml");
-// 	designFile.open(QFile::WriteOnly | QFile::Truncate);
-// 	newDesign->write(designFile);
-// 	designFile.close();
+	lh_->writeModelToFile(dirPath, designConf);
 }
 
 void DesignWidget::onVhdlGenerate() {
@@ -881,7 +870,7 @@ QList<DiagramComponent*> DesignWidget::getInstances() const {
 }
 
 QSharedPointer<DesignConfiguration> DesignWidget::getConfiguration() const {
-	return designConf_;
+	return diagram_->getDesignConfiguration();
 }
 
 QSharedPointer<GenericEditProvider> DesignWidget::getGenericEditProvider() const {

@@ -288,7 +288,7 @@ private:
 		const QString& dirPath);
     
 	//! \brief Pointer to the design configuration of the design.
-	QSharedPointer<DesignConfiguration> designConf_;
+	//QSharedPointer<DesignConfiguration> designConf;
 
 	//! \brief Pointer to the hierarchical component that is being edited.
 	QSharedPointer<Component> hierComponent_;

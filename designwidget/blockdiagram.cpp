@@ -1009,7 +1009,11 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
 			else if (view && !view->isHierarchical())
 				emit openComponent(*comp->componentModel()->getVlnv());
 
-		    // view was not found
+			// if component does not contain any views
+			else if (!comp->componentModel()->hasViews()) {
+				emit openComponent(*comp->componentModel()->getVlnv());
+			}
+		    // view was not found but component contains views
 		    else {
 			    emit errorMessage(tr("No view selected for component instance %1").arg(comp->name()));
 		    }
