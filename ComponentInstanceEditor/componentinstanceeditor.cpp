@@ -17,6 +17,7 @@
 #include <common/validators/vhdlNameValidator/vhdlnamevalidator.h>
 
 #include <QVBoxLayout>
+#include <QDockWidget>
 
 ComponentInstanceEditor::ComponentInstanceEditor(QWidget *parent):
 QWidget(parent),
@@ -56,6 +57,8 @@ ComponentInstanceEditor::~ComponentInstanceEditor() {
 
 void ComponentInstanceEditor::setComponent( DiagramComponent* component ) {
 	Q_ASSERT(component);
+
+	qobject_cast<QDockWidget*>(parentWidget())->show();
 
 	// if previous component has been specified, then disconnect signals to this editor.
 	if (component_) {
@@ -108,6 +111,8 @@ void ComponentInstanceEditor::clear() {
 	configurableElements_.hide();
 	configurableElements_.clear();
 	editProvider_.clear();
+
+	qobject_cast<QDockWidget*>(parentWidget())->hide();
 }
 
 void ComponentInstanceEditor::onNameChanged( const QString& newName ) {

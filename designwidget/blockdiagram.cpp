@@ -1529,6 +1529,7 @@ QString BlockDiagram::createInstanceName( QSharedPointer<Component> component ) 
 //-----------------------------------------------------------------------------
 void BlockDiagram::onVerticalScroll(qreal y)
 {
+	Q_ASSERT(layout_);
     layout_->setOffsetY(y);
 }
 

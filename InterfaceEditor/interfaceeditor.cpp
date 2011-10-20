@@ -25,6 +25,7 @@
 #include <QStringList>
 #include <QBrush>
 #include <QHeaderView>
+#include <QDockWidget>
 
 //! \brief The maximum height for the description editor.
 static const int MAX_DESC_HEIGHT = 50;
@@ -100,6 +101,8 @@ InterfaceEditor::~InterfaceEditor() {
 
 void InterfaceEditor::setInterface( DiagramConnectionEndPoint* interface ) {
 	Q_ASSERT(interface);
+
+	qobject_cast<QDockWidget*>(parentWidget())->show();
 
 	// disconnect the previous interface
 	if (interface_) {
@@ -214,6 +217,8 @@ void InterfaceEditor::clear() {
 	mappings_.clearContents();
 	mappings_.hide();
 	mappingsLabel_.hide();
+
+	qobject_cast<QDockWidget*>(parentWidget())->hide();
 }
 
 void InterfaceEditor::onInterfaceModeChanged( const QString& newMode ) {

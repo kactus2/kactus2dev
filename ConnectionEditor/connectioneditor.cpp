@@ -30,6 +30,7 @@
 #include <QList>
 #include <QStringList>
 #include <QBrush>
+#include <QDockWidget>
 
 #include <QDebug>
 
@@ -130,6 +131,8 @@ void ConnectionEditor::clear() {
 	descriptionEdit_.hide();
 	portsLabel_.hide();
 	portWidget_.hide();
+
+	qobject_cast<QDockWidget*>(parentWidget())->hide();
 }
 
 void ConnectionEditor::refresh() {
@@ -139,6 +142,8 @@ void ConnectionEditor::refresh() {
 
 void ConnectionEditor::setConnection( DiagramInterconnection* connection ) {
 	Q_ASSERT(connection);
+
+	qobject_cast<QDockWidget*>(parentWidget())->show();
 
 	// disconnect the previous connection
 	if (connection_) {

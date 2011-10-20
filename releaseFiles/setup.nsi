@@ -42,7 +42,7 @@ SetCompressor bzip2
 ; MUI end ------
 
 Name "${PRODUCT_NAME}"
-OutFile "Kactus2Setup.exe"
+OutFile "Kactus2SetupWin.exe"
 InstallDir "$PROGRAMFILES\Kactus2"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
@@ -51,13 +51,13 @@ ShowUnInstDetails show
 Section "MainSection" SEC01
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
-  File "..\QtXml4.dll"
-  File "..\QtNetwork4.dll"
-  File "..\QtGui4.dll"
-  File "..\QtCore4.dll"
-  File "..\QtXmlPatterns4.dll"
-  File "..\GCF.dll"
-  File "..\Kactus2.exe"
+  File "..\executable\QtXml4.dll"
+  File "..\executable\QtNetwork4.dll"
+  File "..\executable\QtGui4.dll"
+  File "..\executable\QtCore4.dll"
+  File "..\executable\QtXmlPatterns4.dll"
+  File "..\executable\GCF.dll"
+  File "..\executable\Kactus2.exe"
   File "license.txt"
   File "release_notes.txt"
   File "readme.txt"
