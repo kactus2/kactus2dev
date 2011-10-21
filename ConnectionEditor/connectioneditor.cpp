@@ -11,7 +11,7 @@
 #include <designwidget/DiagramConnectionEndpoint.h>
 #include <designwidget/blockdiagram.h>
 #include <designwidget/DiagramChangeCommands.h>
-#include <designWidget/diagramcomponent.h>
+#include <designwidget/diagramcomponent.h>
 
 #include <LibraryManager/libraryinterface.h>
 #include <LibraryManager/vlnv.h>

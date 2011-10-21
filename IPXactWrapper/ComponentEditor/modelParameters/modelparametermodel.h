@@ -49,7 +49,7 @@ public:
 	 * \param parent Model index of the parent of the item. Must be invalid
 	 * because this is not hierarchical model.
 	 *
-	 * \return Always returns 4
+	 * \return Always returns 5
 	*/
 	virtual int columnCount(const QModelIndex& parent = QModelIndex() ) const;
 

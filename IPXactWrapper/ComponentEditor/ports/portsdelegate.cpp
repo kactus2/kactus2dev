@@ -19,8 +19,10 @@ static const int directionColumn = 1;
 static const int widthColumn = 2;
 static const int leftColumn = 3;
 static const int rightColumn = 4;
-static const int defaultColumn = 5;
-static const int allLogicalColumn = 6;
+static const int typeNameColumn = 5;
+static const int typeDefColumn = 6;
+static const int defaultColumn = 7;
+static const int descriptionColumn = 8;
 
 PortsDelegate::PortsDelegate(QObject *parent): QStyledItemDelegate(parent) {
 }
@@ -64,16 +66,7 @@ QWidget* PortsDelegate::createEditor( QWidget* parent,
 		return defaultEdit;
 	}
 
-	// if item is for all logical directions setting
-	else if (index.column() == allLogicalColumn) {
-		
-		BooleanComboBox* boolBox = new BooleanComboBox(parent);
-		connect(boolBox, SIGNAL(currentIndexChanged(int)),
-			this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-		return boolBox;
-	}
-
-	// if column was for the name column
+	// if column was for the name, type or description column
 	else {
 
 		// use line edit to edit all other columns
@@ -113,14 +106,7 @@ void PortsDelegate::setEditorData( QWidget* editor,
 		defaultEdit->setText(value);
 	}
 
-	// if item is for all logical directions setting
-	else if (index.column() == allLogicalColumn) {
-		BooleanComboBox* boolBox = qobject_cast<BooleanComboBox*>(editor);
-		bool value = index.model()->data(index, Qt::DisplayRole).toBool();
-		boolBox->setCurrentValue(value);
-	}
-
-	// if column was for name column
+	// if column was for name, type or description column
 	else {
 		// use the line edit for other columns
 		QString text = index.model()->data(index, Qt::DisplayRole).toString();
@@ -157,15 +143,7 @@ void PortsDelegate::setModelData( QWidget* editor,
 		model->setData(index, value, Qt::EditRole);
 	}
 
-	// if item is for all logical directions setting
-	else if (index.column() == allLogicalColumn) {
-
-		BooleanComboBox* boolBox = qobject_cast<BooleanComboBox*>(editor);
-		bool value = boolBox->getCurrentValue();
-		model->setData(index, value, Qt::EditRole);
-	}
-
-	// if column was for name
+	// if column was for name, type or description
 	else {
 		// get the text from line edit for other columns
 		QLineEdit* lineEdit = qobject_cast<QLineEdit*>(editor);

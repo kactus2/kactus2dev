@@ -169,6 +169,30 @@ portAccessType_() {
 		rightBound, defaultValue, allLogicalDirections));
 }
 
+Port::Port( const QString& name,
+		   General::Direction direction, 
+		   int leftBound,
+		   int rightBound,
+		   const QString& typeName, 
+		   const QString& typeDefinition,
+		   const QString& defaultValue,
+		   const QString& description ):
+nameGroup_(),
+portType_(General::WIRE),
+wire_(),
+transactional_(),
+portAccessHandle_(),
+portAccessType_() {
+
+	nameGroup_.name_ = name;
+	nameGroup_.description_ = description;
+
+	wire_ = QSharedPointer<Wire>(new Wire(direction, leftBound, rightBound, defaultValue,
+		false));
+	wire_->setTypeName(typeName);
+	wire_->setTypeDefinition(typeName, typeDefinition);
+}
+
 Port::~Port() {
 }
 

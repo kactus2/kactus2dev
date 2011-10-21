@@ -60,9 +60,33 @@ public:
 	 * allowed
 	 * 
 	*/
-	Port(const QString& name, General::Direction direction,
-		int leftBound, int rightBound, const QString& defaultValue,
+	Port(const QString& name, 
+		General::Direction direction,
+		int leftBound, 
+		int rightBound, 
+		const QString& defaultValue,
 		bool allLogicalDirections);
+
+	/*! \brief The constructor
+	 *
+	 * \param name Name of the port.
+	 * \param direction Direction of the port.
+	 * \param leftBound Left bound of the port.
+	 * \param rightBound Right bound of the port.
+	 * \param typeName Type of the port.
+	 * \param typeDefinition Type definition of the port type.
+	 * \param defaultValue Default value of the port.
+	 * \param description Description of the port.
+	 *
+	*/
+	Port(const QString& name, 
+		General::Direction direction,
+		int leftBound, 
+		int rightBound, 
+		const QString& typeName,
+		const QString& typeDefinition,
+		const QString& defaultValue,
+		const QString& description);
 
 	/*! \brief The default constructor
 	 *

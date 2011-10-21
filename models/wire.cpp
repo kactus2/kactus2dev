@@ -419,6 +419,9 @@ QString Wire::getTypeName( const QString& viewName /*= QString("")*/ ) const {
 			return wtypeDef->typeName_;
 		}
 	}
+
+	// if no type declaration was found
+	return QString("");
 }
 
 void Wire::setTypeName( const QString& typeName, const QString& viewName /*= QString("")*/ ) {

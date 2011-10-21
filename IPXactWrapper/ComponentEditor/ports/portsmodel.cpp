@@ -43,7 +43,7 @@ int PortsModel::columnCount(const QModelIndex& parent /*= QModelIndex() */) cons
 	if (parent.isValid())
 		return 0;
 
-	return 7;
+	return 9;
 }
 
 QVariant PortsModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole */ ) const {
@@ -74,10 +74,17 @@ QVariant PortsModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole
 				return table_.at(index.row())->getRightBound();
 					}
 			case 5: {
-				return table_.at(index.row())->getDefaultValue();
+				return table_.at(index.row())->getTypeName();
 					}
 			case 6: {
-				return table_.at(index.row())->allLogicalDirectionsAllowed();
+				QString typeName = table_.at(index.row())->getTypeName();
+				return table_.at(index.row())->getTypeDefinition(typeName);
+					}
+			case 7: {
+				return table_.at(index.row())->getDefaultValue();
+					}
+			case 8: {
+				return table_.at(index.row())->getDescription();
 					}
 			default: {
 				return QVariant();
@@ -116,10 +123,16 @@ QVariant PortsModel::headerData( int section, Qt::Orientation orientation,
 				return tr("Right\nbound");
 					}
 			case 5: {
-				return tr("Default\nvalue");
+				return tr("Type");
 					}
 			case 6: {
-				return tr("All logical\ndirections allowed");
+				return tr("Type\ndefinition");
+					}
+			case 7: {
+				return tr("Default\nvalue");
+					}
+			case 8: {
+				return tr("Description");
 					}
 			default: {
 				return QVariant();
@@ -148,13 +161,6 @@ bool PortsModel::setData( const QModelIndex& index,
 		
 		switch (index.column()) {
 			case 0: {
-				// if name changes then the map has to change the indexing also
-				QString oldKey = table_.at(index.row())->getName();
-
-				// remove the item with old key and insert the value with new key
-				//QSharedPointer<Port> port = ports_->take(oldKey);
-				//ports_->insert(value.toString(), port);
-
 				table_.at(index.row())->setName(value.toString());
 				break;
 					}
@@ -167,22 +173,52 @@ bool PortsModel::setData( const QModelIndex& index,
 				break;
 					}
 			case 2: {
-				table_.at(index.row())->setPortSize(value.toInt());
+				int size = value.toInt();
+				table_.at(index.row())->setPortSize(size);
+				
+				// if port is vectored and previous type was std_logic
+				if (size > 1 && table_.at(index.row())->getTypeName() == QString("std_logic")) {
+					
+					// change the type to vectored
+					table_.at(index.row())->setTypeName("std_logic_vector");
+				}
+
+				// if port is not vectored but previous type was std_logic_vector
+				else if (size < 2 && table_.at(index.row())->getTypeName() == QString("std_logic_vector")) {
+
+					table_.at(index.row())->setTypeName("std_logic");
+				}
+
 				emit dataChanged(index, 
-					QAbstractTableModel::index(index.row(), index.column()+2, QModelIndex()));
+					QAbstractTableModel::index(index.row(), index.column()+3, QModelIndex()));
 				return true;
 					}
 			case 3: {
 
-				// make sure left bound doesnt drop below right bound
+				// make sure left bound doesn't drop below right bound
 				if (value.toInt() < table_.at(index.row())->getRightBound())
 					return false;
 
 				// ok so make the change
 				table_.at(index.row())->setLeftBound(value.toInt());
+
+				int size = table_.at(index.row())->getPortSize();
+				// if port is vectored and previous type was std_logic
+				if (size > 1 && table_.at(index.row())->getTypeName() == QString("std_logic")) {
+
+					// change the type to vectored
+					table_.at(index.row())->setTypeName("std_logic_vector");
+				}
+
+				// if port is not vectored but previous type was std_logic_vector
+				else if (size < 2 && table_.at(index.row())->getTypeName() == QString("std_logic_vector")) {
+
+					table_.at(index.row())->setTypeName("std_logic");
+				}
+
 				emit dataChanged(
 					QAbstractTableModel::index(index.row(), index.column()-1, QModelIndex()),
-					QAbstractTableModel::index(index.row(), index.column()+1, QModelIndex()));
+					QAbstractTableModel::index(index.row(), index.column()+2, QModelIndex()));
 
 				return true;
 					}
@@ -194,16 +230,41 @@ bool PortsModel::setData( const QModelIndex& index,
 
 				// ok so apply the change
 				table_.at(index.row())->setRightBound(value.toInt());
-				emit dataChanged(index, 
+
+				int size = table_.at(index.row())->getPortSize();
+				// if port is vectored and previous type was std_logic
+				if (size > 1 && table_.at(index.row())->getTypeName() == QString("std_logic")) {
+
+					// change the type to vectored
+					table_.at(index.row())->setTypeName("std_logic_vector");
+				}
+
+				// if port is not vectored but previous type was std_logic_vector
+				else if (size < 2 && table_.at(index.row())->getTypeName() == QString("std_logic_vector")) {
+
+					table_.at(index.row())->setTypeName("std_logic");
+				}
+
+				emit dataChanged(
+					QAbstractTableModel::index(index.row(), index.column()+1, QModelIndex()), 
 					QAbstractTableModel::index(index.row(), index.column()-2, QModelIndex()));
 				return true;
 					}
 			case 5: {
-				table_.at(index.row())->setDefaultValue(value.toString());
+				table_.at(index.row())->setTypeName(value.toString());
 				break;
 					}
 			case 6: {
-				table_.at(index.row())->setAllLogicalDirectionsAllowed(value.toBool());
+				QString typeName = table_.at(index.row())->getTypeName();
+				table_.at(index.row())->setTypeDefinition(typeName, value.toString());
+				break;
+					}
+			case 7: {
+				table_.at(index.row())->setDefaultValue(value.toString());
+				break;
+					}
+			case 8: {
+				table_.at(index.row())->setDescription(value.toString());
 				break;
 					}
 			default: {
@@ -286,7 +347,10 @@ void PortsModel::onRemoveRow( int row ) {
 void PortsModel::onAddRow() {
 	beginInsertRows(QModelIndex(), table_.size(), table_.size());
 
-	table_.append(QSharedPointer<Port>(new Port()));
+	QSharedPointer<Port> port(new Port());
+	port->setTypeName("std_logic");
+	port->setTypeDefinition("std_logic", "IEEE.std_logic_1164.all");
+	table_.append(port);
 
 	endInsertRows();
 
@@ -306,8 +370,10 @@ void PortsModel::exportPorts( QFile& file ) {
 	stream << tr("Width") << ";";
 	stream << tr("Left bound") << ";";
 	stream << tr("Right bound") << ";";
+	stream << tr("Type") << ";";
+	stream << tr("Type definition") << ";";
 	stream << tr("Default value") << ";";
-	stream << tr("All logical directions allowed");
+	stream << tr("Description");
 	stream << endl;
 
 	// write each port
@@ -318,8 +384,10 @@ void PortsModel::exportPorts( QFile& file ) {
 		stream << port->getPortSize() << ";";
 		stream << port->getLeftBound() << ";";
 		stream << port->getRightBound() << ";";
+		stream << port->getTypeName() << ";";
+		stream << port->getTypeDefinition(port->getTypeName()) << ";";
 		stream << port->getDefaultValue() << ";";
-		stream << General::bool2Str(port->allLogicalDirectionsAllowed());
+		stream << port->getDescription();
 		stream << endl;
 	}
 }
@@ -353,15 +421,17 @@ void PortsModel::importPorts( QFile& file ) {
 		int width = elements.value(2).toInt();
 		int left = elements.value(3).toInt();
 		int right = elements.value(4).toInt();
-		QString defaultValue = elements.value(5);
-		bool allLogical = General::str2Bool(elements.value(6), false);
+		QString typeName = elements.value(5);
+		QString typeDefinition = elements.value(6);
+		QString defaultValue = elements.value(7);
+		QString description = elements.value(8);
 
 		if (width != (left - right + 1))
 			emit errorMessage(tr("Port %1 width does not match port bounds").arg(
 			name));
 
 		table_.append(QSharedPointer<Port>(new Port(name, direction, left, right,
-			defaultValue, allLogical)));
+			typeName, typeDefinition, defaultValue, description)));
 	}
 	
 	endResetModel();

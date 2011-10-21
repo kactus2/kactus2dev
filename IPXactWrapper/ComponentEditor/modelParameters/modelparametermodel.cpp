@@ -43,7 +43,7 @@ int ModelParameterModel::columnCount( const QModelIndex & parent /*= QModelIndex
 	if (parent.isValid())
 		return 0;
 
-	return 4;
+	return 5;
 }
 
 QVariant ModelParameterModel::data( const QModelIndex & index, 
@@ -60,13 +60,15 @@ QVariant ModelParameterModel::data( const QModelIndex & index,
 		
 		switch (index.column()) {
 			case 0: 
-				return table_.value(index.row())->getName();
+				return table_.at(index.row())->getName();
 			case 1:
-				return table_.value(index.row())->getDataType();
+				return table_.at(index.row())->getDataType();
 			case 2:
-				return table_.value(index.row())->getUsageType();
+				return table_.at(index.row())->getUsageType();
 			case 3:
-				return table_.value(index.row())->getValue();
+				return table_.at(index.row())->getValue();
+			case 4:
+				return table_.at(index.row())->getDescription();
 			default:
 				return QVariant();
 		}
@@ -97,6 +99,8 @@ QVariant ModelParameterModel::headerData( int section,
 				return tr("Usage type");
 			case 3:
 				return tr("Value");
+			case 4:
+				return tr("Description");
 			default:
 				return QVariant();
 		}
@@ -115,6 +119,10 @@ bool ModelParameterModel::setData( const QModelIndex& index,
 	if (!index.isValid())
 		return false;
 
+	// if row is invalid
+	else if (index.row() < 0 || index.row() >= table_.size())
+		return false;
+
 	if (role == Qt::EditRole) {
 		
 		switch (index.column()) {
@@ -127,19 +135,23 @@ bool ModelParameterModel::setData( const QModelIndex& index,
 				//QSharedPointer<ModelParameter> modParam = modelParameters_->take(oldKey);
 				//modelParameters_->insert(value.toString(), modParam);
 
-				table_.value(index.row())->setName(value.toString());
+				table_[index.row()]->setName(value.toString());
 				break;				
 					}
 			case 1: {
-				table_.value(index.row())->setDataType(value.toString());
+				table_[index.row()]->setDataType(value.toString());
 				break;
 					}
 			case 2: {
-				table_.value(index.row())->setUsageType(value.toString());
+				table_[index.row()]->setUsageType(value.toString());
 				break;
 					}
 			case 3: {
-				table_.value(index.row())->setValue(value.toString());
+				table_[index.row()]->setValue(value.toString());
+				break;
+					}
+			case 4: {
+				table_[index.row()]->setDescription(value.toString());
 				break;
 					}
 			default:
