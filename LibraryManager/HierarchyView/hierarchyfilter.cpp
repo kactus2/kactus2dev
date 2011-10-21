@@ -155,7 +155,33 @@ bool HierarchyFilter::filterAcceptsRow( int source_row,
 		case HierarchyItem::ABSDEFINITION: {
 			if (!type_.buses_)
 				return false;
-			break;
+
+			switch (item->getBusDefType()) 
+			{
+			case KactusAttribute::KTS_BUSDEF_HW: 
+				{
+					// if hw should not be displayed then this is not shown
+					if (!implementation_.hw_)
+						return false;
+					
+					// otherwise continue to check the vlnv
+					break;
+				}
+			case KactusAttribute::KTS_BUSDEF_API:
+			case KactusAttribute::KTS_BUSDEF_MCAPI: 
+				{
+					// if sw should not be displayed then this is not shown
+					if (!implementation_.sw_)
+						return false;
+
+					// otherwise continue to check the vlnv
+					break;
+				}
+			default:
+				{
+					return false;
+				}
+			}
 										   }
 	}
 

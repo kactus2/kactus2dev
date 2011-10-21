@@ -94,14 +94,6 @@ one2ManyButton_(tr("1 to many"), this) {
 	connect(&logicalView_, SIGNAL(makeConnection(const QStringList&, const QStringList&)),
 		this, SLOT(onMakeConnections(const QStringList&, const QStringList&)), Qt::UniqueConnection);
 	
-// 	connect(&logicalView_, SIGNAL(portDropped(const QString&, const QModelIndex&)),
-// 		&logicalModel_, SLOT(onPortDropped(const QString&, const QModelIndex&)), Qt::UniqueConnection);
-// 	connect(&logicalView_, SIGNAL(portsDropped(const QStringList&, const QModelIndex&)),
-// 		&logicalModel_, SLOT(onPortsDropped(const QStringList&, const QModelIndex&)), Qt::UniqueConnection);
-// 	connect(&logicalView_, SIGNAL(portsDropped(const QStringList&, const QModelIndexList&)),
-// 		&logicalModel_, SLOT(onPortsDropped(const QStringList&, const QModelIndexList&)), Qt::UniqueConnection);
-// 	connect(&logicalModel_, SIGNAL(createMap(const QString&, const QString&)),
-// 		&model_, SLOT(createMap(const QString&, const QString&)), Qt::UniqueConnection);
 	connect(&logicalView_, SIGNAL(moveItems(const QStringList&, const QModelIndex&)),
 		&logicalModel_, SLOT(onMoveItems(const QStringList&, const QModelIndex&)), Qt::UniqueConnection);
 
@@ -112,14 +104,6 @@ one2ManyButton_(tr("1 to many"), this) {
 	connect(&physicalView_, SIGNAL(makeConnection(const QStringList&, const QStringList&)),
 		this, SLOT(onMakeConnections(const QStringList&, const QStringList&)), Qt::UniqueConnection);
 
-// 	connect(&physicalView_, SIGNAL(portDropped(const QString&, const QModelIndex&)),
-// 		&physModel_, SLOT(onPortDropped(const QString&, const QModelIndex&)), Qt::UniqueConnection);
-// 	connect(&physicalView_, SIGNAL(portsDropped(const QStringList&, const QModelIndex&)),
-// 		&physModel_, SLOT(onPortsDropped(const QStringList&, const QModelIndex&)), Qt::UniqueConnection);
-// 	connect(&physicalView_, SIGNAL(portsDropped(const QStringList&, const QModelIndexList&)),
-// 		&physModel_, SLOT(onPortsDropped(const QStringList&, const QModelIndexList&)), Qt::UniqueConnection);
-// 	connect(&physModel_, SIGNAL(createMap(const QString&, const QString&)),
-// 		&model_, SLOT(createMap(const QString&, const QString&)), Qt::UniqueConnection);
 	connect(&physicalView_, SIGNAL(moveItems(const QStringList&, const QModelIndex&)),
 		&physModel_, SLOT(onMoveItems(const QStringList&, const QModelIndex&)), Qt::UniqueConnection);
 

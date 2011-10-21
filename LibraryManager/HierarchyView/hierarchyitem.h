@@ -274,6 +274,13 @@ public:
 	*/
 	KactusAttribute::SWType getSoftwareType() const;
 
+	/*! \brief Get the type of the bus definition.
+	 *
+	 *
+	 * \return KactusAttribute::BusDefType Specified the type of bus definition.
+	*/
+	KactusAttribute::BusDefType getBusDefType();
+
 	/*! \brief Get the type of this hierarchy item.
 	 *
 	 * \return ObjectType defines the type of the item.

@@ -10,6 +10,7 @@
 #include "libraryinterface.h"
 #include <LibraryManager/VLNVDialer/vlnvdialer.h>
 #include <models/librarycomponent.h>
+#include <models/busdefinition.h>
 
 #include <QRegExp>
 
@@ -95,6 +96,8 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow,
 			continue;
 		}
 
+		QSharedPointer<LibraryComponent> libComb = handler_->getModel(*vlnv);
+
 		// check the type
 		switch (handler_->getDocumentType(*vlnv)) {
 			case VLNV::COMPONENT: {
@@ -103,10 +106,34 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow,
 					continue;
 				break;
 								  }
-			case VLNV::ABSTRACTIONDEFINITION:
+			case VLNV::ABSTRACTIONDEFINITION: {
+				// if buses are not to be displayed
+				if (!type_.buses_) {
+					continue;
+				}
+
+				// abstraction definitions are always for hw
+
+				// if hw is not shown then continue to check next 
+				if (!implementation_.hw_)
+					continue;
+
+				else {
+					return true;
+				}
+											  }
 			case VLNV::BUSDEFINITION: {
-				// if buses are displayed then no further checking is needed
-				return type_.buses_;
+
+				// if buses are not to be displayed
+				if (!type_.buses_) {
+					continue;
+				}
+				QSharedPointer<BusDefinition> busDef = libComb.staticCast<BusDefinition>();
+				// if this was not supposed to show then check next one
+				if  (!checkBusType(busDef->getType()))
+					continue;
+				else
+					return true;
 									  }
 			// if other types should be displayed
 			default:
@@ -114,7 +141,6 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow,
 		}
 
 		// the vlnv is for component for sure
-		QSharedPointer<LibraryComponent> libComb = handler_->getModel(*vlnv);
 		QSharedPointer<Component> component = libComb.staticCast<Component>();
 
 		// if component does not match the filters
@@ -280,4 +306,19 @@ bool LibraryTreeFilter::checkVLNVs( const QList<VLNV*>& list ) const {
 
 	// if none of the vlnvs matched
 	return false;
+}
+
+bool LibraryTreeFilter::checkBusType( KactusAttribute::BusDefType busType ) const {
+
+	switch (busType) {
+		case KactusAttribute::KTS_BUSDEF_HW: {
+			return implementation_.hw_;
+											 }
+		case KactusAttribute::KTS_BUSDEF_API:
+		case  KactusAttribute::KTS_BUSDEF_MCAPI: {
+			return implementation_.sw_;
+												 }
+		default: 
+			return false;
+	}
 }

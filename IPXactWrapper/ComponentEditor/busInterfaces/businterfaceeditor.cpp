@@ -104,7 +104,7 @@ void BusInterfaceEditor::removeModel() {
 void BusInterfaceEditor::onTabChange( int index ) {
 
 	// if port maps tab is selected
-	if (index == 1) {
+	if (index == 2) {
 		// update the abstraction type
 		portmaps_.setAbsType(general_.getAbsType(), interfaceMode_.getInterfaceMode());
 	}

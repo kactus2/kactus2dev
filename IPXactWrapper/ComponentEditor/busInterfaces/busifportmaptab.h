@@ -92,9 +92,6 @@ public slots:
 
 	//! \brief Handler for remove button clicks.
 	void onRemove();
-
-	//! \brief Handler for port map selection.
-	//void onActivated(const QModelIndex& index);
 	
 protected:
 
