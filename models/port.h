@@ -91,6 +91,34 @@ public:
 	 */
 	QString getName() const;
 
+	/*! \brief Get the display name of the port.
+	 *
+	 *
+	 * \return QString contains the display name.
+	*/
+	QString getDisplayName() const;
+
+	/*! \brief Set the display name for the port.
+	 *
+	 * \param displayName The display name to set.
+	 *
+	*/
+	void setDisplayName(const QString& displayName);
+
+	/*! \brief Get the description of the port.
+	 *
+	 *
+	 * \return QString contains the description of the port.
+	*/
+	QString getDescription() const;
+
+	/*! \brief Set the description for the port.
+	 *
+	 * \param description The description to set.
+	 *
+	*/
+	void setDescription(const QString& description);
+
 	/*! \brief Get the type of the port
 	 *
 	 * \return PortType: WIRE or TRANSACTIONAL
@@ -263,13 +291,44 @@ public:
 	*/
 	void setAllLogicalDirectionsAllowed(bool allowed);
 
+	/*! \brief Get the type name of the port for given view.
+	 *
+	 * \param viewName The name of the view used.
+	 *
+	 * \return QString contains the type name. (i.e. std_logic_vector)
+	*/
+	QString getTypeName(const QString& viewName = QString("")) const;
+
+	/*! \brief Set the type name for the port in given view.
+	 *
+	 * \param typeName The name of the type.
+	 * \param viewName The name of the view used for this type. Leave empty to use
+	 * in all views.
+	 *
+	*/
+	void setTypeName(const QString& typeName, const QString& viewName = QString(""));
+
+	/*! \brief Get the type definition of the given type name.
+	 *
+	 * \param typeName The name of the type that's type definition is wanted.
+	 *
+	 * \return QString contains the type definition.
+	*/
+	QString getTypeDefinition(const QString& typeName);
+
+	/*! \brief Set the type definition of the given type name.
+	 *
+	 * \param typeName Identifies the type name that's definition is set.
+	 * \param typeDefinition The type definition to set for the type.
+	 * (i.e. for type std_logic could be set IEEE.std_logic_1164.all)
+	 *
+	*/
+	void setTypeDefinition(const QString& typeName, const QString& typeDefinition);
+
 private:
 
-	/*!
-	 * MANDATORY spirit:name or spirit:logicalName
-	 * Identifies the containing element
-	 */
-	QString name_;
+	//! \brief Contains the name, display name and description for the port.
+	General::NameGroup nameGroup_;
 
 	/*!
 	 * Defines the port type

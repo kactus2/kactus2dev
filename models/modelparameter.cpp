@@ -17,8 +17,11 @@
 #include <QDomNamedNodeMap>
 #include <QXmlStreamWriter>
 
-ModelParameter::ModelParameter(QDomNode &modelParameterNode): name_(QString()),
-value_(QString()), attributes_(), valueAttributes_() {
+ModelParameter::ModelParameter(QDomNode &modelParameterNode): 
+nameGroup_(modelParameterNode),
+value_(QString()), 
+attributes_(),
+valueAttributes_() {
 
 	// get the modelParameter attributes
 	General::parseAttributes(modelParameterNode, attributes_);
@@ -26,10 +29,7 @@ value_(QString()), attributes_(), valueAttributes_() {
 	for (int i = 0; i < modelParameterNode.childNodes().count(); ++i) {
 		QDomNode tempNode = modelParameterNode.childNodes().at(i);
 
-		if (tempNode.nodeName() == QString("spirit:name")) {
-			name_ = tempNode.childNodes().at(0).nodeValue();
-		}
-		else if (tempNode.nodeName() == QString("spirit:value")) {
+		if (tempNode.nodeName() == QString("spirit:value")) {
 			value_ = tempNode.childNodes().at(0).nodeValue();
 
 			// get the value attributes that define the value
@@ -38,20 +38,23 @@ value_(QString()), attributes_(), valueAttributes_() {
 	}
 
 	// if mandatory elements are missing
-	if (name_.isNull()) {
+	if (nameGroup_.name_.isNull()) {
 		throw Parse_error(QObject::tr("Mandatory element name missing in "
 				"spirit:modelParameter"));
 	}
 	return;
 }
 
-ModelParameter::ModelParameter(): name_(),
-value_(), attributes_(), valueAttributes_() {
+ModelParameter::ModelParameter():
+nameGroup_(),
+value_(),
+attributes_(),
+valueAttributes_() {
 }
 
 // the copy constructor
 ModelParameter::ModelParameter(const ModelParameter &other ):
-name_(other.name_), 
+nameGroup_(other.nameGroup_), 
 value_(other.value_), 
 attributes_(other.attributes_),
 valueAttributes_(other.valueAttributes_) {
@@ -59,7 +62,7 @@ valueAttributes_(other.valueAttributes_) {
 
 ModelParameter & ModelParameter::operator=( const ModelParameter &other ) {
 	if (this != &other) {
-		name_ = other.name_;
+		nameGroup_ = other.nameGroup_;
 		value_ = other.value_;
 		attributes_ = other.attributes_;
 		valueAttributes_ = other.valueAttributes_;
@@ -78,12 +81,20 @@ void ModelParameter::write(QXmlStreamWriter& writer) {
 	General::writeAttributes(writer, attributes_);
 
 	// if name is not defined
-	if (name_.isEmpty()) {
+	if (nameGroup_.name_.isEmpty()) {
 		throw Write_error(QObject::tr("Mandatory name missing in "
 				"spirit:modelParameter"));
 	}
 	else {
-		writer.writeTextElement("spirit:name", name_);
+		writer.writeTextElement("spirit:name", nameGroup_.name_);
+	}
+
+	if (!nameGroup_.displayName_.isEmpty()) {
+		writer.writeTextElement("spirit:displayName", nameGroup_.displayName_);
+	}
+
+	if (!nameGroup_.description_.isEmpty()) {
+		writer.writeTextElement("spirit:description", nameGroup_.description_);
 	}
 
 	if (value_.isEmpty()) {
@@ -109,10 +120,6 @@ const QMap<QString, QString>& ModelParameter::getAttributes() {
 	return attributes_;
 }
 
-const QMap<QString, QString>& ModelParameter::getValueAttributes() {
-	return valueAttributes_;
-}
-
 void ModelParameter::setAttributes(const QMap<QString, QString> &attributes) {
 	// delete the old attributes
 	attributes_.clear();
@@ -125,8 +132,8 @@ void ModelParameter::setValue(const QString &value) {
 	value_ = value;
 }
 
-void ModelParameter::setName(const QString &name) {
-	name_ = name;
+const QMap<QString, QString>& ModelParameter::getValueAttributes() {
+	return valueAttributes_;
 }
 
 void ModelParameter::setValueAttributes(const
@@ -139,7 +146,27 @@ void ModelParameter::setValueAttributes(const
 }
 
 QString ModelParameter::getName() const {
-	return name_;
+	return nameGroup_.name_;
+}
+
+void ModelParameter::setName(const QString &name) {
+	nameGroup_.name_ = name;
+}
+
+QString ModelParameter::getDisplayName() const {
+	return nameGroup_.displayName_;
+}
+
+void ModelParameter::setDisplayName( const QString& displayName ) {
+	nameGroup_.displayName_ = displayName;
+}
+
+QString ModelParameter::getDescription() const {
+	return nameGroup_.description_;
+}
+
+void ModelParameter::setDescription( const QString& description ) {
+	nameGroup_.description_ = description;
 }
 
 QString ModelParameter::getValue() const {
@@ -174,7 +201,7 @@ bool ModelParameter::isValid() const {
 	}
 
 	// name and value must be defined
-	if (name_.isEmpty() || value_.isEmpty())
+	if (nameGroup_.name_.isEmpty() || value_.isEmpty())
 		return false;
 
 	return true;

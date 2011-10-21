@@ -73,6 +73,22 @@ public:
 		 * this class or one of it's member classes.
 		 */
 		WireTypeDef(QDomNode &wireTypeNode);
+
+		/*! \brief The constructor
+		 *
+		 * \param typeName The type name for the wire type def.
+		 * \param viewNameRef The reference to a view.
+		 *
+		*/
+		WireTypeDef(const QString& typeName = QString(), const QString& viewNameRef = QString(""));
+
+		/*! \brief Check if the wire type def if for given view.
+		 *
+		 * \param viewName The name of the view to search.
+		 *
+		 * \return bool True if view is found within view name refs.
+		*/
+		bool hasView(const QString& viewName);
 	};
 
 	/*! \brief The constructor
@@ -215,6 +231,40 @@ public:
 	 *
 	*/
 	void setRightBound(int rightBound);
+
+	/*! \brief Get the type name of the port for given view.
+	 *
+	 * \param viewName The name of the view used.
+	 *
+	 * \return QString contains the type name. (i.e. std_logic_vector)
+	*/
+	QString getTypeName(const QString& viewName = QString("")) const;
+
+	/*! \brief Set the type name for the port in given view.
+	 *
+	 * \param typeName The name of the type.
+	 * \param viewName The name of the view used for this type. Leave empty to use
+	 * in all views.
+	 *
+	*/
+	void setTypeName(const QString& typeName, const QString& viewName = QString(""));
+
+	/*! \brief Get the type definition of the given type name.
+	 *
+	 * \param typeName The name of the type that's type definition is wanted.
+	 *
+	 * \return QString contains the type definition.
+	*/
+	QString getTypeDefinition(const QString& typeName);
+
+	/*! \brief Set the type definition of the given type name.
+	 *
+	 * \param typeName Identifies the type name that's definition is set.
+	 * \param typeDefinition The type definition to set for the type.
+	 * (i.e. for type std_logic could be set IEEE.std_logic_1164.all)
+	 *
+	*/
+	void setTypeDefinition(const QString& typeName, const QString& typeDefinition);
 
 private:
 

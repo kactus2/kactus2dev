@@ -59,17 +59,65 @@ public:
 	 */
 	const QMap<QString, QString>& getAttributes();
 
+	/*! \brief Set the attributes for the model parameter
+	*
+	* Calling this function will delete the old attributes
+	*
+	* \param attributes A QMap containing pointers to the attributes
+	*/
+	void setAttributes(const QMap<QString, QString> &attributes);
+
 	/*! \brief Get the name of the model parameter
 	 *
 	 * \return QString containing the name
 	 */
 	QString getName() const;
 
+	/*! \brief Set the name for the model parameter
+	*
+	* \param name QString containing the name.
+	*/
+	void setName(const QString &name);
+
+	/*! \brief Get the display name of the model parameter.
+	 *
+	 *
+	 * \return QString contains the display name.
+	*/
+	QString getDisplayName() const;
+
+	/*! \brief Set the display name for the model parameter.
+	 *
+	 * \param displayName The display name to set.
+	 *
+	*/
+	void setDisplayName(const QString& displayName);
+
+	/*! \brief Get the description of the model parameter.
+	 *
+	 *
+	 * \return QString contains the description of the model parameter.
+	*/
+	QString getDescription() const;
+
+	/*! \brief Set the description for the model parameter.
+	 *
+	 * \param description contains the description to set.
+	 *
+	*/
+	void setDescription(const QString& description);
+
 	/*! \brief Get the value of the model parameter
 	 *
 	 * \return QString containing the value
 	 */
 	QString getValue() const;
+
+	/*! \brief Set the value of the model parameter
+	*
+	* \param value QString containing the value
+	*/
+	void setValue(const QString &value);
 
 	/*! \brief Get the data type of the model parameter
 	 *
@@ -104,26 +152,6 @@ public:
 	 */
 	const QMap<QString, QString>& getValueAttributes();
 
-	/*! \brief Set the attributes for the model parameter
-	 *
-	 * Calling this function will delete the old attributes
-	 *
-	 * \param attributes A QMap containing pointers to the attributes
-	 */
-	void setAttributes(const QMap<QString, QString> &attributes);
-
-	/*! \brief Set the name for the model parameter
-	 *
-	 * \param name QString containing the name.
-	 */
-	void setName(const QString &name);
-
-	/*! \brief Set the value of the model parameter
-	 *
-	 * \param value QString containing the value
-	 */
-	void setValue(const QString &value);
-
 	/*! \brief Set the attributes linked to the value element
 	 *
 	 * Calling this function will delete the old attributes linked to the
@@ -155,11 +183,8 @@ public:
 
 private:
 
-	/*!
-	 * MANDATORY
-	 * Identifies the model parameter
-	 */
-	QString name_;
+	//! \brief Contains the name, display name and description of model parameter.
+	General::NameGroup nameGroup_;
 
 	/*!
 	 * MANDATORY

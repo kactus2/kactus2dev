@@ -44,10 +44,10 @@ portModel_(this) {
 	connect(&portModel_, SIGNAL(errorMessage(const QString&)),
 		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 
-	connect(&portView_, SIGNAL(removeItems(QModelIndexList&)),
-		&portModel_, SLOT(removeIndexes(QModelIndexList&)), Qt::UniqueConnection);
-	connect(&portView_, SIGNAL(copyItems(QModelIndexList&)),
-		&portModel_, SLOT(copyIndexes(QModelIndexList&)), Qt::UniqueConnection);		
+	connect(&portView_, SIGNAL(removeItems(const QModelIndexList&)),
+		&portModel_, SLOT(removeIndexes(const QModelIndexList&)), Qt::UniqueConnection);
+	connect(&portView_, SIGNAL(copyItems(const QModelIndexList&)),
+		&portModel_, SLOT(copyIndexes(const QModelIndexList&)), Qt::UniqueConnection);		
 
 	setupLayout();
 }

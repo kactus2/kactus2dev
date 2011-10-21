@@ -35,8 +35,8 @@ parameters_(dataPointer, &tabs_) {
 	layout->addWidget(&tabs_);
 
 	tabs_.addTab(&general_, tr("General"));
-	tabs_.addTab(&portmaps_, tr("Port maps"));
 	tabs_.addTab(&interfaceMode_, tr("Interface mode"));
+	tabs_.addTab(&portmaps_, tr("Port maps"));
 	tabs_.addTab(&parameters_, tr("Parameters"));
 
 	general_.restoreChanges();

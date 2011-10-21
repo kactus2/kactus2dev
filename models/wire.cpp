@@ -62,6 +62,25 @@ constrained_(false), typeDefinitions_(), viewNameRefs_() {
 	}
 }
 
+Wire::WireTypeDef::WireTypeDef( const QString& typeName /*= QString()*/, 
+							   const QString& viewNameRef /*= QString("")*/ ):
+typeName_(typeName),
+constrained_(false),
+typeDefinitions_(),
+viewNameRefs_() {
+
+	viewNameRefs_.append(viewNameRef);
+}
+
+bool Wire::WireTypeDef::hasView( const QString& viewName ) {
+	foreach (QString viewRef, viewNameRefs_) {
+		if (viewRef == viewName)
+			return true;
+
+	}
+	return false;
+}
+
 Wire::Wire(QDomNode &wireNode): direction_(General::DIRECTION_INVALID),
 		allLogicalDirectionsAllowed_(false), vector_(), wireTypeDefs_(),
 		defaultDriverValue_(), defaultValueAttributes_() {
@@ -390,5 +409,67 @@ void Wire::setRightBound( int rightBound ) {
 	// if vector is not specified then create a new vector
 	else {
 		vector_ = QSharedPointer<Vector>(new Vector(0, rightBound));
+	}
+}
+
+QString Wire::getTypeName( const QString& viewName /*= QString("")*/ ) const {
+	
+	foreach (QSharedPointer<Wire::WireTypeDef> wtypeDef, wireTypeDefs_) {
+		if (wtypeDef->hasView(viewName)) {
+			return wtypeDef->typeName_;
+		}
+	}
+}
+
+void Wire::setTypeName( const QString& typeName, const QString& viewName /*= QString("")*/ ) {
+	
+	bool added = false;
+	for (QList<QSharedPointer<WireTypeDef> >::iterator i = wireTypeDefs_.begin();
+		i != wireTypeDefs_.end(); ++i) {
+			if ((*i)->hasView(viewName)) {
+				(*i)->typeName_ = typeName;
+				added = true;
+			}
+	}
+
+	// if there were no matches then create new one
+	if (!added) {
+		QSharedPointer<Wire::WireTypeDef> wtypedef(new Wire::WireTypeDef(typeName, viewName));
+		wireTypeDefs_.append(wtypedef);
+	}
+}
+
+QString Wire::getTypeDefinition( const QString& typeName ) {
+	foreach (QSharedPointer<Wire::WireTypeDef> wtypeDef, wireTypeDefs_) {
+		// if the type def is for the type name that is wanted
+		if (wtypeDef->typeName_ == typeName) {
+
+			// return the first type definition, if there are none then return 
+			// empty string
+			return wtypeDef->typeDefinitions_.value(0, QString(""));
+		}
+	}
+
+	// if none was found
+	return QString("");
+}
+
+void Wire::setTypeDefinition( const QString& typeName, const QString& typeDefinition ) {
+	bool added = false;
+	for (QList<QSharedPointer<WireTypeDef> >::iterator i = wireTypeDefs_.begin();
+		i != wireTypeDefs_.end(); ++i) {
+		
+			if ((*i)->typeName_ == typeName) {
+				(*i)->typeDefinitions_.clear();
+				(*i)->typeDefinitions_.insert(0, typeDefinition);
+				added = true;
+			}
+	}
+
+	// if there were no matches then create new one
+	if (!added) {
+		QSharedPointer<Wire::WireTypeDef> wtypedef(new Wire::WireTypeDef(typeName));
+		wtypedef->typeDefinitions_.append(typeDefinition);
+		wireTypeDefs_.append(wtypedef);
 	}
 }

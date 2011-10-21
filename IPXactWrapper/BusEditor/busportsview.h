@@ -40,10 +40,10 @@ public:
 signals:
 
 	//! \brief The given items should be removed from the model
-        void removeItems(const QModelIndexList& indexes);
+    void removeItems(const QModelIndexList& indexes);
 
 	//! \brief The given items should be copied in the model
-        void copyItems(const QModelIndexList& indexes);
+    void copyItems(const QModelIndexList& indexes);
 
 protected:
 
