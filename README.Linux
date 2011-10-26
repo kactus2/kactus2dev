@@ -1,9 +1,5 @@
 Steps to build Kactus2 on Linux.
 
-cd GCF
-qmake -recursive GCF_BASE=$PWD
-make
-cd ..
 qmake Kactus2.pro
 make
 

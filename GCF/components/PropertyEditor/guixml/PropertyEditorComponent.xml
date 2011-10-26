@@ -1,7 +1,0 @@
-<component title="Property Editor Component" version="1.0" name="PropertyEditorComponent" >
-
-  <widget title="Property Editor" name="propertyEditor" parentWidget="MainWindowComponent.rightDockArea" scriptName="PropertyEditor" />
-  
-  <object title="" name="controller" />
-  
-</component>
