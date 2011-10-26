@@ -243,9 +243,16 @@ bool DiagramInterface::onConnect(DiagramConnectionEndPoint const* other)
                     return false;
                 }
 
-                // The names of the duplicate ports are prefixed with the name of the interface.
-                // The logical name of the original port is used as a part of the name instead of the physical one.
-                QString newPortName = newBusIfName + "_" + portMaps.at(i)->logicalPort_;
+                // The new port inherits the same name as the physical port in the other component.
+                QString newPortName = portMaps.at(i)->physicalPort_;
+                unsigned int runningNumber = 0;
+
+                // Make sure that the port name is unique.
+                while (component_->getPort(newPortName) != 0)
+                {
+                    ++runningNumber;
+                    newPortName = portMaps.at(i)->physicalPort_ + "_" + QString::number(runningNumber);
+                }
 
                 // Make a duplicate of the port with the new name.
                 QSharedPointer<Port> newPort(new Port(newPortName, *port));
@@ -254,6 +261,26 @@ bool DiagramInterface::onConnect(DiagramConnectionEndPoint const* other)
                 QSharedPointer<General::PortMap> portMap(new General::PortMap);
                 portMap->logicalPort_ = portMaps.at(i)->logicalPort_;
                 portMap->physicalPort_ = newPortName;
+
+                // Use the same logical vector but set the physical vector accordingly.
+                portMap->logicalVector_ = portMaps.at(i)->logicalVector_;
+
+                if (portMaps.at(i)->logicalVector_ != 0)
+                {
+                    portMap->physicalVector_ =
+                        QSharedPointer<Vector>(new Vector(portMaps.at(i)->logicalVector_->getSize() - 1, 0));
+
+                    newPort->setLeftBound(portMaps.at(i)->logicalVector_->getSize() - 1);
+                    newPort->setRightBound(0);
+                }
+                else if (portMaps.at(i)->physicalVector_ != 0)
+                {
+                    portMap->physicalVector_ =
+                        QSharedPointer<Vector>(new Vector(portMaps.at(i)->physicalVector_->getSize() - 1, 0));
+
+                    newPort->setLeftBound(portMaps.at(i)->physicalVector_->getSize() - 1);
+                    newPort->setRightBound(0);
+                }
 
                 newPorts.append(newPort);
                 newPortMaps.append(portMap);
