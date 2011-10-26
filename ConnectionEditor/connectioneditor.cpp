@@ -409,11 +409,6 @@ void ConnectionEditor::addMap( int& row, bool invalid,
 	// check the sizes of the physical ports
 	int size1 = phys1Left - phys1Right + 1;
 	int size2 = phys2Left - phys2Right + 1;
-	// if sizes don't match then both must be marked as invalid
-	if (size1 != size2) {
-		phys1Invalid = true;
-		phys2Invalid = true;
-	}
 
 	QTableWidgetItem* port1Item;
 	QTableWidgetItem* port2Item;
@@ -427,16 +422,55 @@ void ConnectionEditor::addMap( int& row, bool invalid,
 				return;
 		}
 
+		int logicalLeft = qMin(portMap1->logicalVector_->getLeft(), 
+			portMap2->logicalVector_->getLeft());
+		int logicalRight = qMax(portMap1->logicalVector_->getRight(),
+			portMap2->logicalVector_->getRight());
+
+		QString port1;
+		QString port2;
+		
+		{
+			// count how much the left bound of port 1 has to be adjusted down
+			int downSize = abs(portMap1->logicalVector_->getLeft() - logicalLeft);
+			// count how must the right bound of  port 1 has to be adjusted up
+			int upSize = abs(logicalRight - portMap1->logicalVector_->getRight());
+
+			// the actual size of the connected parts of the ports
+			size1 = (phys1Left - downSize) - (phys1Right + upSize) + 1; 
+
+			port1 = General::port2String(portMap1->physicalPort_,
+				phys1Left - downSize, phys1Right + upSize);
+		}
+		{
+			// count how much the left bound of port 2 has to be adjusted down
+			int downSize = abs(portMap2->logicalVector_->getLeft() - logicalLeft);
+			// count how must the right bound of  port 2 has to be adjusted up
+			int upSize = abs(logicalRight - portMap2->logicalVector_->getRight());
+
+			// the actual size of the connected parts of the ports
+			size2 = (phys2Left - downSize) - (phys2Right + upSize) + 1;
+
+			port2 = General::port2String(portMap2->physicalPort_,
+				phys2Left - downSize, phys2Right + upSize);
+		}
+
+		// if the connected sizes of the ports don't match
+		if (size1 != size2) {
+			phys1Invalid = true;
+			phys2Invalid = true;
+		}
+
 		// find the largest and smallest common for port 1
-		QString port1 = General::port2String(portMap1->physicalPort_,
-			qMin(phys1Left, portMap2->logicalVector_->getLeft()),
-			qMax(phys1Right, portMap2->logicalVector_->getRight()));
+// 		QString port1 = General::port2String(portMap1->physicalPort_,
+// 			qMin(phys1Left, portMap2->logicalVector_->getLeft()),
+// 			qMax(phys1Right, portMap2->logicalVector_->getRight()));
 		port1Item = new QTableWidgetItem(port1);
 
 		// find the largest and smallest common for port 2
-		QString port2 = General::port2String(portMap2->physicalPort_,
-			qMin(phys2Left, portMap1->logicalVector_->getLeft()),
-			qMax(phys2Right, portMap1->logicalVector_->getRight()));
+// 		QString port2 = General::port2String(portMap2->physicalPort_,
+// 			qMin(phys2Left, portMap1->logicalVector_->getLeft()),
+// 			qMax(phys2Right, portMap1->logicalVector_->getRight()));
 		port2Item = new QTableWidgetItem(port2);
 	}
 	// if port map1 has vectored logical signal
@@ -453,6 +487,7 @@ void ConnectionEditor::addMap( int& row, bool invalid,
 		
 		// if the logical port and port 2 sizes don't match
 		if (portMap1->logicalVector_->getSize() != size2) {
+			phys1Invalid = true;
 			phys2Invalid = true;
 		}
 		port2Item = new QTableWidgetItem(port2);
@@ -468,6 +503,7 @@ void ConnectionEditor::addMap( int& row, bool invalid,
 		// if the logical port and port 2 sizes don't match
 		if (portMap2->logicalVector_->getSize() != size1) {
 			phys1Invalid = true;
+			phys2Invalid = true;
 		}
 		port1Item = new QTableWidgetItem(port1);
 
@@ -482,6 +518,12 @@ void ConnectionEditor::addMap( int& row, bool invalid,
 			
 		QString port2 = General::port2String(portMap2->physicalPort_, phys2Left, phys2Right);
 		port2Item = new QTableWidgetItem(port2);
+
+		// if sizes don't match then both must be marked as invalid
+		if (size1 != size2) {
+			phys1Invalid = true;
+			phys2Invalid = true;
+		}
 	}
 
 	// set the flags for the items

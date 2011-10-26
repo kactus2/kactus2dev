@@ -998,6 +998,21 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
 			QString viewName;
 			if (designConf_)
 				viewName = designConf_->getActiveView(comp->name());
+			
+			// if configuration is not used then open some view
+			else {
+				QStringList hierViews = comp->componentModel()->getHierViews();
+				// open the first hierarchical view
+				if (!hierViews.isEmpty()) {
+					viewName = hierViews.first();
+				}
+	
+				// if component is a flat component then use the first flat view
+				QStringList flatViews = comp->componentModel()->getViewNames();
+				if (!flatViews.isEmpty()) {
+					viewName = flatViews.first();
+				}
+			}
 
 		    View* view = comp->componentModel()->findView(viewName);
 
