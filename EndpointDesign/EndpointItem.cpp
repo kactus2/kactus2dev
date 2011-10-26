@@ -37,11 +37,10 @@
 //-----------------------------------------------------------------------------
 EndpointItem::EndpointItem(ProgramEntityItem* parentNode, QString const& name,
                            MCAPIEndpointDirection type, MCAPIDataType connType,
-                           unsigned int portID, QGraphicsItem* parent) : QAbstractGraphicsShapeItem(parent),
-                                                                         parentProgEntity_(parentNode),
-                                                                         name_(name), type_(type),
-                                                                         connType_(connType), portID_(portID),
-                                                                         textLabel_(0), dir_(DIR_LEFT), oldPos_()
+                           QGraphicsItem* parent) : QAbstractGraphicsShapeItem(parent),
+                                                    parentProgEntity_(parentNode), name_(name),
+                                                    type_(type), connType_(connType), portID_(-1),
+                                                    textLabel_(0), dir_(DIR_LEFT), oldPos_()
 {
     Q_ASSERT(parentNode != 0);
 
@@ -111,7 +110,20 @@ void EndpointItem::setConnectionType(MCAPIDataType connType)
 //-----------------------------------------------------------------------------
 void EndpointItem::setPortID(unsigned int portID)
 {
+    // Release the old id if valid.
+    if (portID_ >= 0)
+    {
+        parentProgEntity_->getMappingComponent()->getPortIDFactory().freeID(portID_);
+    }
+
     portID_ = portID;
+
+    if (portID_ >= 0)
+    {
+        parentProgEntity_->getMappingComponent()->getPortIDFactory().usedID(portID_);
+    }
+
+    updateText();
 }
 
 //-----------------------------------------------------------------------------
@@ -248,7 +260,7 @@ MCAPIEndpointDirection EndpointItem::getMCAPIDirection() const
 //-----------------------------------------------------------------------------
 // Function: getPortID()
 //-----------------------------------------------------------------------------
-unsigned int EndpointItem::getPortID() const
+int EndpointItem::getPortID() const
 {
     return portID_;
 }
@@ -415,11 +427,14 @@ void EndpointItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 //-----------------------------------------------------------------------------
 void EndpointItem::updateText()
 {
-    textLabel_->setHtml("<b>Name: </b>" + name_ +
-                        "<br><b>Endpoint:</b> &lt;HW, " +
-                        QString::number(parentProgEntity_->getMappingComponent()->getID()) +
-                         ", " + QString::number(portID_) + "&gt;");
-    update();
+    if (parentProgEntity_->getMappingComponent() != 0)
+    {
+        textLabel_->setHtml("<b>Name: </b>" + name_ +
+                            "<br><b>Endpoint:</b> &lt;HW, " +
+                            QString::number(parentProgEntity_->getMappingComponent()->getID()) +
+                             ", " + QString::number(portID_) + "&gt;");
+        update();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -537,14 +552,27 @@ MappingComponentItem* EndpointItem::getParentMappingComp() const
 //-----------------------------------------------------------------------------
 void EndpointItem::createBusInterface(MappingComponentItem* mappingComp)
 {
-    if (mappingComp->componentModel()->getBusInterface(getFullName()) != 0)
+    if (mappingComp == 0)
     {
         return;
     }
+    
+    // If the bus interface exists, just retrieve the port ID from it.
+    BusInterface* oldBusIf = mappingComp->componentModel()->getBusInterface(getFullName());
+
+    if (oldBusIf != 0)
+    {
+        setPortID(oldBusIf->getMCAPIPortID());
+        return;
+    }
+
+    // Otherwise generate a new port ID.
+    setPortID(mappingComp->getPortIDFactory().getID());
 
     // Add a bus interface to the mapping component.
     QSharedPointer<BusInterface> busIf(new BusInterface());
     busIf->setName(getFullName());
+    busIf->setMCAPIPortID(portID_);
 
     if (type_ == MCAPI_ENDPOINT_OUT)
     {
@@ -576,13 +604,6 @@ void EndpointItem::createBusInterface(MappingComponentItem* mappingComp)
         }
     }
 
-    QList< QSharedPointer<Parameter> > params;
-    QSharedPointer<Parameter> param(new Parameter());
-    param->setName("kts_port_id");
-    param->setValue(QString::number(portID_));
-    params.append(param);
-    busIf->setParameters(params);
-
     mappingComp->componentModel()->addBusInterface(busIf);
 }
 
@@ -591,7 +612,13 @@ void EndpointItem::createBusInterface(MappingComponentItem* mappingComp)
 //-----------------------------------------------------------------------------
 void EndpointItem::removeBusInterface(MappingComponentItem* mappingComp)
 {
-    mappingComp->componentModel()->removeBusInterface(getFullName());
+    if (mappingComp != 0)
+    {
+        mappingComp->componentModel()->removeBusInterface(getFullName());
+
+        // Reset the port id.
+        setPortID(-1);
+    }
 }
 
 //-----------------------------------------------------------------------------

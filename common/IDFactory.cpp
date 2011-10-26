@@ -89,8 +89,10 @@ void IDFactory::usedID(int id)
     {
         // Find the corresponding item and remove it from the list.
         IDList::iterator found = std::find(m_freeIDs.begin(), m_freeIDs.end(), id);
-        assert(found != m_freeIDs.end());
 
-        m_freeIDs.erase(found);
+        if (found != m_freeIDs.end())
+        {
+            m_freeIDs.erase(found);
+        }
     }
 }

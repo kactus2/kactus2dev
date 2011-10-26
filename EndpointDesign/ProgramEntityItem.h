@@ -9,8 +9,8 @@
 // Graphics item for the collection of endpoints and a linked application.
 //-----------------------------------------------------------------------------
 
-#ifndef NODEITEM_H
-#define NODEITEM_H
+#ifndef PROGRAMENTITYITEM_H
+#define PROGRAMENTITYITEM_H
 
 #include "SWComponentItem.h"
 
@@ -54,14 +54,12 @@ public:
      *      @param [in] displayName               The component instance's display name.
      *      @param [in] description               The component instance's description.
      *      @param [in] configurableElementValue  The component instance's configurable element values.
-     *      @param [in] parent                    The parent SW mapping component.
      */
     ProgramEntityItem(QSharedPointer<Component> component,
                       QString const& instanceName,
                       QString const& displayName,
                       QString const& description,
-                      QMap<QString, QString> const& configurableElementValues,
-                      MappingComponentItem* parent);
+                      QMap<QString, QString> const& configurableElementValues);
 
     /*!
      *  Destructor.
@@ -194,9 +192,6 @@ private:
         SPACING = 0
     };
 
-    //! The parent SW mapping component.
-    MappingComponentItem* parentComp_;
-
     //! The endpoint stack.
     EndpointStack* endpointStack_;
 
@@ -215,4 +210,4 @@ private:
 
 //-----------------------------------------------------------------------------
 
-#endif // NODEITEM_H
+#endif // PROGRAMENTITYITEM_H

@@ -122,7 +122,7 @@ public slots:
      *      @param [in] dir   The endpoint direction.
      *      @param [in] type  The endpoint data type.
      */
-    void addEndpoint(QString const& name, MCAPIEndpointDirection dir, MCAPIDataType type, int portID);
+    void addEndpoint(QString const& name, MCAPIEndpointDirection dir, MCAPIDataType type);
 
 signals:
     void visibleHeightChanged(int height);

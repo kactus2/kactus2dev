@@ -8,13 +8,14 @@
 #ifndef BUSIFPORTMAPTAB_H
 #define BUSIFPORTMAPTAB_H
 
-#include "portmapsmodel.h"
-#include "logicallistmodel.h"
-#include "portmapsview.h"
+#include "portmaps/physlistview.h"
+#include "portmaps/logicallistview.h"
+#include "portmaps/physlistmodel.h"
+#include "portmaps/portmapsmodel.h"
+#include "portmaps/logicallistmodel.h"
+#include "portmaps/portmapsview.h"
+
 #include <models/generaldeclarations.h>
-#include "physlistview.h"
-#include "logicallistview.h"
-#include "physlistmodel.h"
 
 #include <QWidget>
 #include <QPushButton>

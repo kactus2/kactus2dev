@@ -968,3 +968,41 @@ QStringList BusInterface::getPhysicalPortNames() const {
 	}
 	return list;
 }
+
+//-----------------------------------------------------------------------------
+// Function: setMCAPIPortID()
+//-----------------------------------------------------------------------------
+void BusInterface::setMCAPIPortID(int portID)
+{
+    // Try to replace the old one if it already exists.
+    foreach (QSharedPointer<Parameter> param, parameters_)
+    {
+        if (param->getName() == "kts_port_id")
+        {
+            param->setValue(QString::number(portID));
+            return;
+        }
+    }
+
+    // Otherwise create a new parameter.
+    QSharedPointer<Parameter> param(new Parameter());
+    param->setName("kts_port_id");
+    param->setValue(QString::number(portID));
+    parameters_.append(param);
+}
+
+//-----------------------------------------------------------------------------
+// Function: getMCAPIPortID()
+//-----------------------------------------------------------------------------
+int BusInterface::getMCAPIPortID() const
+{
+    foreach (QSharedPointer<Parameter> param, parameters_)
+    {
+        if (param->getName() == "kts_port_id")
+        {
+            return param->getValue().toInt();
+        }
+    }
+
+    return -1;
+}

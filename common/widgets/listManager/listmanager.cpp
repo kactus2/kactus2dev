@@ -18,7 +18,6 @@
 ListManager::ListManager(const QString title, QWidget *parent,
 						 const QStringList& items): 
 QGroupBox(title, parent), model_(this, items), view_(this) {
-	
 	view_.setMovement(QListView::Free);
 
 	// create the layout for the right side buttons

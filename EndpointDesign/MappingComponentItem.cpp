@@ -96,8 +96,7 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
                     ProgramEntityItem* progEntity = new ProgramEntityItem(comp, instance.instanceName,
                                                                           instance.displayName,
                                                                           instance.description,
-                                                                          instance.configurableElementValues,
-                                                                          this);
+                                                                          instance.configurableElementValues);
                     diagram_->onComponentInstanceAdded(progEntity);
 
                     progEntity->setPos(instance.position);
@@ -165,6 +164,12 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
 //-----------------------------------------------------------------------------
 MappingComponentItem::~MappingComponentItem()
 {
+    // Remove the program entities.
+    foreach (ProgramEntityItem* item, progEntitys_)
+    {
+        delete item;
+    }
+
     // Remove this item from the column where it resides.
     SystemColumn* column = dynamic_cast<SystemColumn*>(parentItem());
 
@@ -402,6 +407,7 @@ void MappingComponentItem::removeProgramEntity(ProgramEntityItem* item)
     }
 
     progEntitys_.removeAll(item);
+    item->setParentItem(0);
     updateSize();
 
     emit contentChanged();

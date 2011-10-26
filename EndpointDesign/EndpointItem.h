@@ -70,7 +70,7 @@ public:
      *      @param [in] parent      The graphics item parent. Can be null.
      */
     EndpointItem(ProgramEntityItem* parentNode, QString const& name, MCAPIEndpointDirection type,
-                 MCAPIDataType connType, unsigned int portID, QGraphicsItem* parent = 0);
+                 MCAPIDataType connType, QGraphicsItem* parent = 0);
 
     /*!
      *  Destructor.
@@ -216,9 +216,9 @@ public:
     MCAPIDataType getConnectionType() const;
 
     /*!
-     *  Returns the node id.
+     *  Returns the port ID.
      */
-    unsigned int getPortID() const;
+    int getPortID() const;
 
     /*!
      *  Returns the parent program entity (endpoints component).
@@ -307,7 +307,7 @@ private:
     MCAPIDataType connType_;
 
     //! The endpoint's ID.
-    unsigned int portID_;
+    int portID_;
 
     //! The endpoint's UI text label.
     QGraphicsTextItem* textLabel_;

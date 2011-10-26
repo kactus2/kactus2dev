@@ -99,16 +99,19 @@ EndpointStack::~EndpointStack()
     // Free all endpoint ids.
     foreach (EndpointItem* endpoint, endpoints_)
     {
-        parentProgEntity_->getMappingComponent()->getPortIDFactory().freeID(endpoint->getPortID());
+        if (endpoint->getPortID() >= 0)
+        {
+            parentProgEntity_->getMappingComponent()->getPortIDFactory().freeID(endpoint->getPortID());
+        }
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: addEndpoint()
 //-----------------------------------------------------------------------------
-void EndpointStack::addEndpoint(QString const& name, MCAPIEndpointDirection dir, MCAPIDataType type, int portID)
+void EndpointStack::addEndpoint(QString const& name, MCAPIEndpointDirection dir, MCAPIDataType type)
 {
-    EndpointItem* endpoint = new EndpointItem(parentProgEntity_, name, dir, type, portID);
+    EndpointItem* endpoint = new EndpointItem(parentProgEntity_, name, dir, type);
     connect(endpoint, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     endpoint->setPos(0, -endpoint->boundingRect().top() + MIN_Y_PLACEMENT +
@@ -223,8 +226,7 @@ void EndpointStack::addEndpoint()
     if (dialog.exec() == QDialog::Accepted)
     {
         EndpointItem* endpoint = new EndpointItem(parentProgEntity_, dialog.getName(), dialog.getType(),
-                                                  dialog.getConnectionType(),
-                                                  parentProgEntity_->getMappingComponent()->getPortIDFactory().getID());
+                                                  dialog.getConnectionType());
         connect(endpoint, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
         endpoint->setPos(0, -endpoint->boundingRect().top() + MIN_Y_PLACEMENT +

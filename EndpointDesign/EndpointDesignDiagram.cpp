@@ -491,8 +491,7 @@ void EndpointDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
                 // Create the application item.
                 ProgramEntityItem* item = new ProgramEntityItem(comp, instanceName,
                                                                 QString(), QString(),
-                                                                QMap<QString, QString>(),
-                                                                mappingCompItem);
+                                                                QMap<QString, QString>());
                 item->setPos(snapPointToGrid(event->scenePos()));
                 connect(item, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
@@ -664,7 +663,7 @@ void EndpointDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
             ProgramEntityItem* progEntity =
                 new ProgramEntityItem(component, createInstanceName("unnamed_endpoints"), QString(),
-                                      QString(), QMap<QString, QString>(), mappingComp);
+                                      QString(), QMap<QString, QString>());
             progEntity->setPos(mappingComp->mapFromScene(event->scenePos()));
 
             QSharedPointer<ProgramEntityAddCommand> cmd(new ProgramEntityAddCommand(mappingComp, progEntity));

@@ -15,7 +15,7 @@
 
 #include <LibraryManager/vlnv.h>
 #include <LibraryManager/VLNVDialer/vlnvdialer.h>
-#include <GCF/MenuStrip>
+#include <GCF/MenuStrip.h>
 
 #include <QMainWindow>
 #include <QActionGroup>

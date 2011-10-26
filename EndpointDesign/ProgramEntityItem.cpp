@@ -53,11 +53,10 @@ ProgramEntityItem::ProgramEntityItem(QSharedPointer<Component> component,
                                      QString const& instanceName,
                                      QString const& displayName,
                                      QString const& description,
-                                     QMap<QString, QString> const& configurableElementValues,
-                                     MappingComponentItem* parent) :
+                                     QMap<QString, QString> const& configurableElementValues) :
 SWComponentItem(QRectF(-WIDTH / 2, 0, WIDTH, TOP_MARGIN + BOTTOM_MARGIN),
-                component, instanceName, displayName, description, configurableElementValues, parent),
-parentComp_(parent), endpointStack_(0), appPlaceholder_(0), appItem_(0)
+                component, instanceName, displayName, description, configurableElementValues),
+endpointStack_(0), appPlaceholder_(0), appItem_(0)
 {
     // Set basic graphics properties.
     setFlag(ItemIsMovable);
@@ -95,8 +94,7 @@ parentComp_(parent), endpointStack_(0), appPlaceholder_(0), appItem_(0)
         MCAPIEndpointDirection dir = MCAPI_ENDPOINT_IN;
         stringToValue(endpointDef->getValue(), dir);
 
-        endpointStack_->addEndpoint(endpointDef->getName(), dir, type,
-                                    getMappingComponent()->getPortIDFactory().getID());
+        endpointStack_->addEndpoint(endpointDef->getName(), dir, type);
     }
 
     // Determine the correct height for the node.
@@ -192,9 +190,9 @@ void ProgramEntityItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
     QGraphicsItem::mouseMoveEvent(event);
     setZValue(1001.0);
 
-    if (parentComp_ != 0)
+    if (getMappingComponent() != 0)
     {
-        parentComp_->onMoveItem(this);
+        getMappingComponent()->onMoveItem(this);
     }
 }
 
@@ -206,9 +204,9 @@ void ProgramEntityItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
     QGraphicsItem::mouseReleaseEvent(event);
     setZValue(0.0);
 
-    if (parentComp_ != 0)
+    if (getMappingComponent() != 0)
     {
-        parentComp_->onReleaseItem(this);
+        getMappingComponent()->onReleaseItem(this);
 
         QSharedPointer<QUndoCommand> cmd;
 
@@ -251,7 +249,11 @@ QString const& ProgramEntityItem::getSourceFile() const
 void ProgramEntityItem::onEndpointStackChange(int height)
 {
     setRect(-WIDTH / 2, 0, WIDTH, TOP_MARGIN + height + BOTTOM_MARGIN);
-    parentComp_->updateSize();
+
+    if (getMappingComponent() != 0)
+    {
+        getMappingComponent()->updateSize();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -340,7 +342,7 @@ void ProgramEntityItem::generateCode(QTextStream& stream, QString const& indent)
 
     // Write the node local node ids.
     stream << "// Local node ID." << endl
-           << "const mcapi_node_t " << name().toUpper() << " = " << parentComp_->getID() << ";" << endl << endl;
+           << "const mcapi_node_t " << name().toUpper() << " = " << getMappingComponent()->getID() << ";" << endl << endl;
 
     // Write the remote node IDs.
     stream << "// Remote node IDs." << endl;
@@ -348,7 +350,7 @@ void ProgramEntityItem::generateCode(QTextStream& stream, QString const& indent)
     foreach (ProgramEntityItem* node, remoteNodes)
     {
         stream << "const mcapi_node_t " << node->name().toUpper()
-               << " = " << node->parentComp_->getID() << ";" << endl;
+               << " = " << node->getMappingComponent()->getID() << ";" << endl;
     }
 
     // Write the local port IDs.
@@ -480,7 +482,7 @@ void ProgramEntityItem::setApplication(ApplicationItem* item)
 //-----------------------------------------------------------------------------
 MappingComponentItem* ProgramEntityItem::getMappingComponent()
 {
-    return parentComp_;
+    return dynamic_cast<MappingComponentItem*>(parentItem());
 }
 
 //-----------------------------------------------------------------------------

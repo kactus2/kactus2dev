@@ -400,6 +400,16 @@ public:
 	*/
 	QStringList getPhysicalPortNames() const;
 
+    /*!
+     *  Sets the MCAPI port ID to the bus interface's parameters.
+     */
+    void setMCAPIPortID(int portID);
+
+    /*!
+     *  Returns the MCAPI port ID, or -1 if not set.
+     */
+    int getMCAPIPortID() const;
+
 private:
 
 	//! \brief Contains the name, display name and description of bus interface.
