@@ -98,11 +98,10 @@ void QuartusGenerator::readAssignments(QTextStream& stream) {
 		QStringList lineParameters = line.split(QString(" "),
 				QString::SkipEmptyParts);
 
-		// if the line contains a pin assignment
-		if (lineParameters.size() == 4 &&
-				lineParameters.at(0) == QString("set_location_assignment")) {
+		// get all assignments from the quartus settings file
+		//if (lineParameters.at(0) == QString("set_location_assignment")) {
 			assignments_.append(line);
-		}
+		//}
 	}
 }
 
@@ -221,6 +220,13 @@ void QuartusGenerator::writeQSF(const QString& outputDir, const QString& top_ent
 			stream << "set_global_assignment -name VERILOG_FILE " << files_.at(i)
 				<< endl;
 		}
+		
+		// if file is quartus ip file (.qip)
+		else if (fileInfo.suffix() == QString("qip")) {
+			stream << "set_global_assignment -name QIP_FILE " << files_.at(i)
+				<< endl;
+		}
+
 	}
 
 	// write the pin assignments
