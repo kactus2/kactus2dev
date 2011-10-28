@@ -38,7 +38,7 @@ typedef Connection Signal;
 /*! \brief Vhdl Generator generates top-level vhdl for hierarchical component.
  *
  * This class and it's interface provide services to generate vhdl code from
- * an rtl-view of the hierarchical component. If the component doesn't contain
+ * a hierarchical view of a component. If the component doesn't contain
  * an rtl view, it is created and added to the component. If rtl view is found
  * it is modified to match the newly generated vhdl.
  */

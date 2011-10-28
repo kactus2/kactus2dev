@@ -9,20 +9,22 @@
 
 #include <common/widgets/booleanComboBox/booleancombobox.h>
 
+#include <vhdlGenerator/vhdlgeneral.h>
+
 #include <QComboBox>
 #include <QLineEdit>
 #include <QSpinBox>
 
 // the constants defining which column represents what kind of information
-static const int nameColumn = 0;
-static const int directionColumn = 1;
-static const int widthColumn = 2;
-static const int leftColumn = 3;
-static const int rightColumn = 4;
-static const int typeNameColumn = 5;
-static const int typeDefColumn = 6;
-static const int defaultColumn = 7;
-static const int descriptionColumn = 8;
+static const int NAMECOLUMN = 0;
+static const int DIRECTIONCOLUMN = 1;
+static const int WIDTHCOLUMN = 2;
+static const int LEFTCOLUMN = 3;
+static const int RIGHTCOLUMN = 4;
+static const int TYPENAMECOLUMN = 5;
+static const int TYPEDEFCOLUMN = 6;
+static const int DEFAULTCOLUMN = 7;
+static const int DESCRIPTIONCOLUMN = 8;
 
 PortsDelegate::PortsDelegate(QObject *parent): QStyledItemDelegate(parent) {
 }
@@ -34,7 +36,7 @@ QWidget* PortsDelegate::createEditor( QWidget* parent,
 									 const QStyleOptionViewItem&, 
 									 const QModelIndex& index ) const {
 	// if the column is the one specified for direction items 
-	if (index.column() == directionColumn) {
+	if (index.column() == DIRECTIONCOLUMN) {
 
 		QComboBox* combo = new QComboBox(parent);
 		combo->addItem(QString("in"));
@@ -47,8 +49,8 @@ QWidget* PortsDelegate::createEditor( QWidget* parent,
 	}
 
 	// if item is for left or right bounds or width
-	else if (index.column() == leftColumn || index.column() == rightColumn ||
-		index.column() == widthColumn) {
+	else if (index.column() == LEFTCOLUMN || index.column() == RIGHTCOLUMN ||
+		index.column() == WIDTHCOLUMN) {
 		QSpinBox* spinBox = new QSpinBox(parent);
 		spinBox->setRange(0, 2048);
 		spinBox->setSingleStep(1);
@@ -58,12 +60,42 @@ QWidget* PortsDelegate::createEditor( QWidget* parent,
 	}
 
 	// if item is for default value
-	else if (index.column() == defaultColumn) {
+	else if (index.column() == DEFAULTCOLUMN) {
 		
 		QLineEdit* defaultEdit = new QLineEdit(parent);
 		connect(defaultEdit, SIGNAL(editingFinished()),
 			this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
 		return defaultEdit;
+	}
+
+	// if the item is for type name of port
+	else if (index.column() == TYPENAMECOLUMN) {
+		QComboBox* combo = new QComboBox(parent);
+
+		for (int i = 0; i < VhdlGeneral::VHDL_TYPE_COUNT; ++i) {
+			combo->addItem(VhdlGeneral::VHDL_TYPES[i]);
+		}
+		combo->setEditable(true);
+		combo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+
+		connect(combo, SIGNAL(currentIndexChanged(int)),
+			this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+		return combo;
+	}
+
+	// if the item is for type definition of type name
+	else if (index.column() == TYPEDEFCOLUMN) {
+		QComboBox* combo = new QComboBox(parent);
+
+		for (int i = 0;i < VhdlGeneral::VHDL_TYPEDEF_COUNT; ++i) {
+			combo->addItem(VhdlGeneral::VHDL_TYPE_DEFINITIONS[i]);
+		}
+		combo->setEditable(true);
+		combo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+
+		connect(combo, SIGNAL(currentIndexChanged(int)),
+			this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+		return combo;
 	}
 
 	// if column was for the name, type or description column
@@ -80,7 +112,7 @@ QWidget* PortsDelegate::createEditor( QWidget* parent,
 void PortsDelegate::setEditorData( QWidget* editor, 
 								  const QModelIndex& index ) const {
 	// if the column is the one specified for direction
-	if (index.column() == directionColumn) {
+	if (index.column() == DIRECTIONCOLUMN) {
 
 		QString text = index.model()->data(index, Qt::DisplayRole).toString();
 		QComboBox* combo = qobject_cast<QComboBox*>(editor);
@@ -90,8 +122,8 @@ void PortsDelegate::setEditorData( QWidget* editor,
 	}
 
 	// if item is for left or right bounds or width
-	else if (index.column() == leftColumn || index.column() == rightColumn ||
-		index.column() == widthColumn) {
+	else if (index.column() == LEFTCOLUMN || index.column() == RIGHTCOLUMN ||
+		index.column() == WIDTHCOLUMN) {
 
 		QSpinBox* spinBox = qobject_cast<QSpinBox*>(editor);
 		int value = index.model()->data(index, Qt::DisplayRole).toInt();
@@ -99,11 +131,45 @@ void PortsDelegate::setEditorData( QWidget* editor,
 	}
 
 	// if item is for default value
-	else if (index.column() == defaultColumn) {
+	else if (index.column() == DEFAULTCOLUMN) {
 
 		QLineEdit* defaultEdit = qobject_cast<QLineEdit*>(editor);
 		QString value = index.model()->data(index, Qt::DisplayRole).toString();
 		defaultEdit->setText(value);
+	}
+
+	// if the item is for type name of port
+	else if (index.column() == TYPENAMECOLUMN) {
+		
+		QString text = index.model()->data(index, Qt::DisplayRole).toString();
+		QComboBox* combo = qobject_cast<QComboBox*>(editor);
+
+		int comboIndex = combo->findText(text);
+		// if the text is not found
+		if (comboIndex < 0) {
+			combo->setEditText(text);
+		}
+		// if the text was found
+		else {
+			combo->setCurrentIndex(comboIndex);
+		}
+
+	}
+
+	// if the item is for type definition of type name
+	else if (index.column() == TYPEDEFCOLUMN) {
+		QString text = index.model()->data(index, Qt::DisplayRole).toString();
+		QComboBox* combo = qobject_cast<QComboBox*>(editor);
+
+		int comboIndex = combo->findText(text);
+		// if the text is not found
+		if (comboIndex < 0) {
+			combo->setEditText(text);
+		}
+		// if the text was found
+		else {
+			combo->setCurrentIndex(comboIndex);
+		}
 	}
 
 	// if column was for name, type or description column
@@ -119,7 +185,7 @@ void PortsDelegate::setModelData( QWidget* editor,
 								 QAbstractItemModel* model, 
 								 const QModelIndex& index ) const {
 	// if the column is the one specified for direction
-	if (index.column() == directionColumn) {
+	if (index.column() == DIRECTIONCOLUMN) {
 
 		QComboBox* combo = qobject_cast<QComboBox*>(editor);
 		QString text = combo->currentText();
@@ -127,8 +193,8 @@ void PortsDelegate::setModelData( QWidget* editor,
 	}
 
 	// if item is for left or right bounds or width
-	else if (index.column() == leftColumn || index.column() == rightColumn ||
-		index.column() == widthColumn) {
+	else if (index.column() == LEFTCOLUMN || index.column() == RIGHTCOLUMN ||
+		index.column() == WIDTHCOLUMN) {
 		
 		QSpinBox* spinBox = qobject_cast<QSpinBox*>(editor);
 		int value = spinBox->value();
@@ -136,11 +202,25 @@ void PortsDelegate::setModelData( QWidget* editor,
 	}
 
 	// if item is for default value
-	else if (index.column() == defaultColumn) {
+	else if (index.column() == DEFAULTCOLUMN) {
 
 		QLineEdit* defaultEdit = qobject_cast<QLineEdit*>(editor);
 		QString value = defaultEdit->text();
 		model->setData(index, value, Qt::EditRole);
+	}
+
+	// if the item is for type name of port
+	else if (index.column() == TYPENAMECOLUMN) {
+		QComboBox* combo = qobject_cast<QComboBox*>(editor);
+		QString text = combo->currentText();
+		model->setData(index, text, Qt::EditRole);
+	}
+
+	// if the item is for type definition of type name
+	else if (index.column() == TYPEDEFCOLUMN) {
+		QComboBox* combo = qobject_cast<QComboBox*>(editor);
+		QString text = combo->currentText();
+		model->setData(index, text, Qt::EditRole);
 	}
 
 	// if column was for name, type or description

@@ -323,6 +323,17 @@ public:
 	*/
 	QString getTypeName(const QString& viewName = QString("")) const;
 
+	/*! \brief Check if the port has a type name in given view.
+	 * 
+	 * If view is not defined then all possibilities are checked and if no type
+	 * is specified for any view false is returned.
+	 *
+	 * \param viewName The name of the view that's type name is searched for.
+	 *
+	 * \return bool False if type is not defined.
+	*/
+	bool hasType(const QString& viewName = QString()) const;
+
 	/*! \brief Set the type name for the port in given view.
 	 *
 	 * \param typeName The name of the type.
@@ -331,6 +342,17 @@ public:
 	 *
 	*/
 	void setTypeName(const QString& typeName, const QString& viewName = QString(""));
+
+	/*! \brief Use Default vhdl types and type definitions for the port.
+	 * 
+	 * Default types are:
+	 * std_logic for ports sized 1
+	 * std_logic_vector for ports larger than one bit.
+	 * 
+	 * The default type definition is IEEE.std_logic_1164.all
+	 *
+	*/
+	void useDefaultVhdlTypes();
 
 	/*! \brief Get the type definition of the given type name.
 	 *

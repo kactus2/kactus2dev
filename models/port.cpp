@@ -438,10 +438,6 @@ void Port::setDirection( General::Direction direction ) {
 	// if wire has been specified
 	if (wire_)
 		wire_->setDirection(direction);
-	
-	// if transactional is specified
-	else if (transactional_)
-		wire_->setDirection(direction);
 
 	// if neither is specified then create a new wire element
 	else {
@@ -456,10 +452,6 @@ void Port::setLeftBound( int leftBound ) {
 	if (wire_)
 		wire_->setLeftBound(leftBound);
 
-	// if port is transactional it doesn't have left bound
-	else if (transactional_)
-		return;
-
 	// if neither exists then create wire 
 	else {
 		wire_ = QSharedPointer<Wire>(new Wire());
@@ -471,10 +463,6 @@ void Port::setLeftBound( int leftBound ) {
 void Port::setRightBound( int rightBound ) {
 	if (wire_)
 		wire_->setRightBound(rightBound);
-
-	// if port is transactional it doesn't have left bound
-	else if (transactional_)
-		return;
 
 	// if neither exists then create wire 
 	else {
@@ -542,4 +530,38 @@ void Port::setTypeDefinition( const QString& typeName, const QString& typeDefini
 		portType_ = General::WIRE;
 		wire_->setTypeDefinition(typeName, typeDefinition);
 	}
+}
+
+bool Port::hasType( const QString& viewName /*= QString("")*/ ) const {
+	if (wire_) {
+		return wire_->hasType(viewName);
+	}
+	// if no wire then theres no type
+	return false;
+}
+
+void Port::useDefaultVhdlTypes() {
+	// if theres no wire definition
+	if (!wire_) {
+		wire_ = QSharedPointer<Wire>(new Wire());
+		portType_ = General::WIRE;
+	}
+
+	int size = getPortSize();
+	QString typeName;
+
+	// use std_logic for scalar ports
+	if (size <= 1) {
+		typeName = QString("std_logic");
+	}
+	// use std_logic_vector for vectored ports
+	else {
+		typeName = QString("std_logic_vector");
+	}
+
+	wire_->setTypeName(typeName);
+
+	// set the default type definition
+	wire_->setTypeDefinition(typeName, QString("IEEE.std_logic_1164.all"));
+
 }

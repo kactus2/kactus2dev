@@ -32,15 +32,24 @@ VLNV::~VLNV() {
 }
 
 // the copy constructor
-VLNV::VLNV(const VLNV &other): vendor_(other.vendor_.simplified()), 
+VLNV::VLNV(const VLNV &other): 
+vendor_(other.vendor_.simplified()), 
 library_(other.library_.simplified()),
-		name_(other.name_.simplified()), 
-		version_(other.version_.simplified()), type_(other.type_),
-		isHidden_(other.isHidden_), documentIsValid_(other.documentIsValid_) {
+name_(other.name_.simplified()), 
+version_(other.version_.simplified()),
+type_(other.type_),
+isHidden_(other.isHidden_), 
+documentIsValid_(other.documentIsValid_) {
 }
 
-VLNV::VLNV(): vendor_(), library_(), name_(), version_(), type_(VLNV::INVALID),
-isHidden_(false), documentIsValid_(true) {
+VLNV::VLNV(): 
+vendor_(), 
+library_(), 
+name_(), 
+version_(), 
+type_(VLNV::INVALID),
+isHidden_(false),
+documentIsValid_(true) {
 }
 
 QString VLNV::getTypestr() const {

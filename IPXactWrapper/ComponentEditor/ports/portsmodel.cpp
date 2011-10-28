@@ -9,6 +9,8 @@
 
 #include <models/generaldeclarations.h>
 
+#include <vhdlGenerator/vhdlgeneral.h>
+
 #include <QTextStream>
 #include <QString>
 #include <QStringList>
@@ -117,10 +119,10 @@ QVariant PortsModel::headerData( int section, Qt::Orientation orientation,
 				return tr("Width");
 					}
 			case 3: {
-				return tr("Left\nbound");
+				return tr("Left\n(higher)\nbound");
 					}
 			case 4: {
-				return tr("Right\nbound");
+				return tr("Right\n(lower)\nbound");
 					}
 			case 5: {
 				return tr("Type");
@@ -251,8 +253,16 @@ bool PortsModel::setData( const QModelIndex& index,
 				return true;
 					}
 			case 5: {
-				table_.at(index.row())->setTypeName(value.toString());
-				break;
+				QString typeName = value.toString();
+				table_.at(index.row())->setTypeName(typeName);
+
+				// update the type definition for the new type name
+				table_.at(index.row())->setTypeDefinition(typeName,
+					VhdlGeneral::getDefaultVhdlTypeDef(typeName));
+
+				emit dataChanged(index,
+					QAbstractTableModel::index(index.row(), index.column()+1, QModelIndex()));
+				return true;
 					}
 			case 6: {
 				QString typeName = table_.at(index.row())->getTypeName();
@@ -322,7 +332,13 @@ void PortsModel::restore() {
 	beginResetModel();
 
 	foreach (QSharedPointer<Port> port, *ports_) {
-		table_.append(QSharedPointer<Port>(new Port(*port.data())));
+
+		QSharedPointer<Port> tablePort(new Port(*port.data()));
+		// if theres no specified type for the port
+		if (!tablePort->hasType()) {
+			tablePort->useDefaultVhdlTypes();
+		}
+		table_.append(tablePort);
 	}
 
 	endResetModel();
@@ -402,7 +418,7 @@ void PortsModel::importPorts( QFile& file ) {
 	QStringList headerList = headers.split(";");
 
 	// if the file is not supported type (not same amount of lines)
-	if (headerList.count() != 7)
+	if (headerList.count() != 9)
 		return;
 
 	beginResetModel();

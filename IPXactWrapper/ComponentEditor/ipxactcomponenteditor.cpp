@@ -273,7 +273,7 @@ void IPXactComponentEditor::createNewEditor( ComponentTreeItem* item ) {
 												 }
 		case ComponentTreeItem::PORTS: {
             editor = new PortsEditor(editableComponent_, 
- 			                         item->getDataPointer(), this);
+ 			                         item->getDataPointer(), handler_, this);
 			break;
 									   }
 		case ComponentTreeItem::PARAMETERS: {

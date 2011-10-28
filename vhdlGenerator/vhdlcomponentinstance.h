@@ -1,0 +1,154 @@
+/* 
+ *  	Created on: 26.10.2011
+ *      Author: Antti Kamppi
+ * 		filename: vhdlcomponentinstance.h
+ *		Project: Kactus 2
+ */
+
+#ifndef VHDLCOMPONENTINSTANCE_H
+#define VHDLCOMPONENTINSTANCE_H
+
+#include "vhdlportmap.h"
+#include "vhdlconnectionendpoint.h"
+
+#include <QObject>
+#include <QString>
+#include <QMap>
+#include <QTextStream>
+
+class VhdlGenerator2;
+class VhdlComponentDeclaration;
+
+/*! \brief Represents one vhdl component instantiation.
+ *
+ */
+class VhdlComponentInstance : public QObject {
+	Q_OBJECT
+
+public:
+
+	/*! \brief The constructor
+	 *
+	 * \param parent Pointer to the owner of this component instance.
+	 * \param compDeclaration Pointer to the component declaration of this instance.
+	 * \param instanceName The name of the instance.
+	 * \param description The description for the instance
+	 *
+	*/
+	VhdlComponentInstance(VhdlGenerator2* parent,
+		VhdlComponentDeclaration* compDeclaration,
+		const QString& instanceName,
+		const QString& description = QString());
+	
+	//! \brief The destructor
+	virtual ~VhdlComponentInstance();
+
+	/*! \brief Write the instance to the text stream.
+	 *
+	 * \param stream The text stream to write the instance into.
+	 *
+	*/
+	void write(QTextStream& stream);
+
+	/*! \brief Get the name of the component instance.
+	 *
+	 * \return QString contains the name of the instance.
+	*/
+	QString name() const;
+
+	/*! \brief Add a new port map for the instance.
+	 *
+	 * \param endPoint The end point that specifies the port and signal bounds.
+	 * \param signalName The name of the signal/top port to map the port to.
+	 *
+	*/
+	void addPortMap(const VhdlConnectionEndPoint& endPoint, const QString& signalName);
+
+	/*! \brief Add a new port map for the instance.
+	 *
+	 * \param portName The name of the port on this instance.
+	 * \param portLeft The left bound of this instance's port.
+	 * \param portRight The right bound of this instance's port.
+	 * \param signalName The name of the signal/top port to connect the instance to.
+	 * \param signalLeft The left bound of the signal/top port.
+	 * \param signalRight The right bound of the signal/top port.
+	 *
+	*/
+	void addPortMap(const QString& portName, int portLeft, int portRight,
+		const QString& signalName, int signalLeft, int signalRight);
+
+	/*! \brief Add a new generic map to the instance.
+	 *
+	 * \param genericName The name of the generic on this instance.
+	 * \param genericValue The value to map the generic to.
+	 *
+	*/
+	void addGenericMap(const QString& genericName, const QString& genericValue);
+
+	/*! \brief Check if the specified port is connected within this instance.
+	 *
+	 * \param portName The name of the port to check to connection for.
+	 *
+	 * \return bool True if connection is found.
+	*/
+	bool hasConnection(const QString& portName);
+
+	/*! \brief Use default values for ports that don't have any connection.
+	 * 
+	 * If at least one bit of the port is connected then the default value is
+	 * not used.
+	 *
+	*/
+	void useDefaultsForOtherPorts();
+
+signals:
+
+	//! \brief Send a notification to user.
+	void noticeMessage(const QString& noticeMessage);
+
+	//! \brief Send an error message to user.
+	void errorMessage(const QString& errorMessage);
+
+private:
+	//! \brief No copying
+	VhdlComponentInstance(const VhdlComponentInstance& other);
+
+	//! \brief No assignment
+	VhdlComponentInstance& operator=(const VhdlComponentInstance& other);
+
+	void addMapping(const VhdlPortMap& instancePort, const VhdlPortMap& signalMapping );
+
+	VhdlComponentDeclaration* compDeclaration_;
+
+	//! \brief The name of the component instance.
+	QString instanceName_;
+
+	//! \brief The name of the type that is is an instantiation of.
+	QString typeName_;
+
+	//! \brief The description of the instance.
+	QString description_;
+
+	/*! \brief Contains the default values for the ports of this instance.
+	 * 
+	 * Key: The name of the port.
+	 * Value: The default value for the port.
+	 */
+	QMap<QString, QString> defaultPortConnections_;
+
+	/*! \brief Contains the generic mappings for this instance.
+	 * 
+	 * Key: The name of the generic.
+	 * Value: The value mapped for the generic.
+	 */
+	QMap<QString, QString> genericMap_;
+
+	/*! \brief Contains the port mappings for this instance.
+	 * 
+	 * Key: The port name and bounds of this instance.
+	 * Value: The name of the signal/top port and it's bounds the port is connected to.
+	 */
+	QMap<VhdlPortMap, VhdlPortMap> portMap_;
+};
+
+#endif // VHDLCOMPONENTINSTANCE_H

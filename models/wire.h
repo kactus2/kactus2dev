@@ -240,6 +240,17 @@ public:
 	*/
 	QString getTypeName(const QString& viewName = QString("")) const;
 
+	/*! \brief Check if the wire has a type name in given view.
+	 * 
+	 * If view is not defined then all possibilities are checked and if no type
+	 * is specified for any view false is returned.
+	 *
+	 * \param viewName The name of the view that's type name is searched for.
+	 *
+	 * \return bool False if type is not defined.
+	*/
+	bool hasType(const QString& viewName = QString()) const;
+
 	/*! \brief Set the type name for the port in given view.
 	 *
 	 * \param typeName The name of the type.

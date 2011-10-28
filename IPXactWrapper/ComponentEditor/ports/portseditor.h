@@ -17,6 +17,8 @@
 #include <QSortFilterProxyModel>
 #include <QSharedPointer>
 
+class LibraryInterface;
+
 /*! \brief Editor to edit the ports of a component.
  *
  */
@@ -29,11 +31,13 @@ public:
 	 *
 	 * \param component Pointer to the component being edited.
 	 * \param dataPointer Pointer to the QMap containing pointers to the ports.
+	 * \param handler Pointer to the instance that manages the library
 	 * \param parent Pointer to the owner of this widget.
 	 *
 	*/
 	PortsEditor(QSharedPointer<Component> component, 
 		void* dataPointer,
+		LibraryInterface* handler,
 		QWidget *parent);
 
 	//! \brief The destructor
@@ -89,6 +93,9 @@ private:
 
 	//! \brief Pointer to the proxy that is used to sort the view
 	QSortFilterProxyModel* proxy_;
+
+	//! \brief Pointer to the instance that manages the library.
+	LibraryInterface* handler_;
 };
 
 #endif // PORTSEDITOR_H

@@ -476,3 +476,21 @@ void Wire::setTypeDefinition( const QString& typeName, const QString& typeDefini
 		wireTypeDefs_.append(wtypedef);
 	}
 }
+
+bool Wire::hasType( const QString& viewName /*= QString("")*/ ) const {
+	
+	foreach (QSharedPointer<Wire::WireTypeDef> wtypeDef, wireTypeDefs_) {
+		
+		// if view is not specified and the type name is found
+		if (viewName.isEmpty() && !wtypeDef->typeName_.isEmpty()) {
+			return true;
+		}
+		
+		// if view is the searched one and type name is found
+		else if (wtypeDef->hasView(viewName) && !wtypeDef->typeName_.isEmpty()) {
+			return true;
+		}
+	}
+	return false;
+}
+

@@ -9,23 +9,29 @@
 
 #include "portsdelegate.h"
 
+#include <LibraryManager/libraryinterface.h>
+
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QHeaderView>
 #include <QFileDialog>
 #include <QDir>
 #include <QFile>
+#include <QFileInfo>
 #include <QMessageBox>
 
 PortsEditor::PortsEditor(QSharedPointer<Component> component,
 						 void* dataPointer, 
+						 LibraryInterface* handler,
 						 QWidget *parent):
 ItemEditor(component, parent),
 addRowButton_(QIcon(":/icons/graphics/add.png"), QString(), this),
 removeRowButton_(QIcon(":/icons/graphics/remove.png"), QString(), this),
 importButton_(QIcon(":/icons/graphics/import.png"), tr("Import CSV-file"), this),
 exportButton_(QIcon(":/icons/graphics/export.png"), tr("Export CSV-file"), this),
-view_(this), model_(dataPointer, this){
+view_(this), 
+model_(dataPointer, this),
+handler_(handler) {
 
 	connect(&addRowButton_, SIGNAL(clicked(bool)),
 		&model_, SLOT(onAddRow()), Qt::UniqueConnection);
@@ -48,7 +54,7 @@ view_(this), model_(dataPointer, this){
 	// set view to be sortable
 	view_.setSortingEnabled(true);
 	view_.horizontalHeader()->setStretchLastSection(true);
-	view_.horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+	view_.horizontalHeader()->setResizeMode(QHeaderView::Interactive);
 	view_.setSelectionMode(QAbstractItemView::SingleSelection);
 	view_.setAlternatingRowColors(true);
 	//view_.setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -99,8 +105,16 @@ void PortsEditor::onRemove() {
 }
 
 void PortsEditor::onImport() {
+	
+	QString componentPath = handler_->getPath(*component()->getVlnv());
+	QFileInfo fileInfo(componentPath);
+	componentPath = fileInfo.absolutePath();
+	if (componentPath.isEmpty()) {
+		componentPath = QDir::homePath();
+	}
+
 	QString location = QFileDialog::getOpenFileName(this, tr("Open file"),
-		QDir::homePath(), tr("csv-files (*.csv)"));
+		componentPath, tr("csv-files (*.csv)"));
 
 	// if user clicked cancel
 	if (location.isEmpty())
@@ -122,9 +136,17 @@ void PortsEditor::onImport() {
 }
 
 void PortsEditor::onExport() {
+
+	QString componentPath = handler_->getPath(*component()->getVlnv());
+	QFileInfo fileInfo(componentPath);
+	componentPath = fileInfo.absolutePath();
+	if (componentPath.isEmpty()) {
+		componentPath = QDir::homePath();
+	}
+
 	QString target = QFileDialog::getSaveFileName(this, 
 		tr("Set name and location for csv-file"),
-		QDir::homePath(), tr("csv-files (*.csv)"));
+		componentPath, tr("csv-files (*.csv)"));
 
 	// if user clicked cancel
 	if (target.isEmpty())
