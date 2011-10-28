@@ -58,7 +58,7 @@ void ComponentTreeView::mousePressEvent( QMouseEvent* event ) {
 void ComponentTreeView::mouseReleaseEvent( QMouseEvent* event ) {
 
 	// calculate the distance of the drag
-	int distance = (event->pos() - pressedPoint_).manhattanLength();
+	//int distance = (event->pos() - pressedPoint_).manhattanLength();
 
 	// make sure widget is not locked
 	if (!locked_) {

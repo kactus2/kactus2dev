@@ -31,7 +31,7 @@ MCAPIFunctionSet::~MCAPIFunctionSet()
 //-----------------------------------------------------------------------------
 MCAPIFunctionDesc const& MCAPIFunctionSet::getAt(unsigned int index) const
 {
-    Q_ASSERT(index < m_functions.size());
+    Q_ASSERT(index < static_cast<unsigned int>(m_functions.size()));
     return m_functions.at(index);
 }
 

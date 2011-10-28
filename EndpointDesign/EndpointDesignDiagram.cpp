@@ -448,7 +448,7 @@ void EndpointDesignDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 //-----------------------------------------------------------------------------
 // Function: dragLeaveEvent()
 //-----------------------------------------------------------------------------
-void EndpointDesignDiagram::dragLeaveEvent(QGraphicsSceneDragDropEvent * event)
+void EndpointDesignDiagram::dragLeaveEvent(QGraphicsSceneDragDropEvent*)
 {
     dragSW_ = false;
 }

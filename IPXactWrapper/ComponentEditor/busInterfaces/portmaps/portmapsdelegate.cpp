@@ -25,7 +25,7 @@ PortMapsDelegate::~PortMapsDelegate() {
 }
 
 QWidget* PortMapsDelegate::createEditor( QWidget* parent, 
-										const QStyleOptionViewItem& option,
+										const QStyleOptionViewItem&,
 										const QModelIndex& index ) const {
 	// if editing the port name
 	if (index.column() == LOGICAL_COLUMN || index.column() == PHYSICAL_COLUMN) {

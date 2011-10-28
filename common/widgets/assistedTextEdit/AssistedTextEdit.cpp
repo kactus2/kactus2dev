@@ -77,7 +77,7 @@ unsigned int AssistedTextEdit::getIndentWidth() const
 //-----------------------------------------------------------------------------
 // Function: eventFilter()
 //-----------------------------------------------------------------------------
-bool AssistedTextEdit::eventFilter(QObject* obj, QEvent* e)
+bool AssistedTextEdit::eventFilter(QObject*, QEvent* e)
 {
     // Cancel the assist if the main window is moved or resized.
     if (contentAssist_->isContentShown() && (e->type() == QEvent::Move || e->type() == QEvent::Resize))

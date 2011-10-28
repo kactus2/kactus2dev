@@ -149,7 +149,7 @@ signals:
 	void openComponent(const VLNV& vlnv);
 
     //! Signaled when the bus with the given vlnv should be opened for editing.
-    void openBus(VLNV const& vlnv);
+    void openBus(VLNV const& vlnv, VLNV const& absDefVLNV, bool disableBusDef);
 
 	//! \brief Emitted when user changes settings in blockDiagram
 	void contentChanged();

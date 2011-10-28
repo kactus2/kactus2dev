@@ -249,7 +249,7 @@ void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forc
             this, SLOT(openDesign(const VLNV&, const QString&)));
 	connect(designWidget, SIGNAL(openComponent(const VLNV&)),
 		this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
-    connect(designWidget, SIGNAL(openBus(VLNV const&)),
+    connect(designWidget, SIGNAL(openBus(VLNV const&, VLNV const&, bool)),
             this, SLOT(openBus(VLNV const&, VLNV const&, bool)), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(errorMsg(const QString&)),
 		console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
@@ -903,7 +903,6 @@ void MainWindow::onExportLibFile() {
 void MainWindow::updateMenuStrip()
 {
     TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
-    bool isSWDesign = dynamic_cast<EndpointDesignWidget*>(doc) != 0;    
     bool unlocked = doc != 0 && (!(doc->getFlags() & TabDocument::DOC_PROTECTION_SUPPORT) ||
                                   !doc->isProtected());
 

@@ -70,6 +70,12 @@ QString valueToString(MCAPIEndpointDirection dir)
         {
             return "out";
         }
+
+    default:
+        {
+            Q_ASSERT(false);
+            return "";
+        }
     }
 }
 
@@ -93,6 +99,12 @@ QString valueToString(MCAPIDataType type)
     case MCAPI_TYPE_SCALAR:
         {
             return "scalar";
+        }
+
+    default:
+        {
+            Q_ASSERT(false);
+            return "";
         }
     }
 }

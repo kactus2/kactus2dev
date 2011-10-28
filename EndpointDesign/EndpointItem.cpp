@@ -286,7 +286,7 @@ QPainterPath EndpointItem::shape() const
 //-----------------------------------------------------------------------------
 // Function: paint()
 //-----------------------------------------------------------------------------
-void EndpointItem::paint(QPainter* painter, QStyleOptionGraphicsItem const* option, QWidget* widget)
+void EndpointItem::paint(QPainter* painter, QStyleOptionGraphicsItem const* option, QWidget*)
 {
     // Determine the arrow offset.
     int arrowOffsetX = -WIDTH / 2;
@@ -440,7 +440,7 @@ void EndpointItem::updateText()
 //-----------------------------------------------------------------------------
 // Function: onConnect()
 //-----------------------------------------------------------------------------
-bool EndpointItem::onConnect(EndpointItem const* other)
+bool EndpointItem::onConnect(EndpointItem const*)
 {
     return true;
 }
@@ -448,7 +448,7 @@ bool EndpointItem::onConnect(EndpointItem const* other)
 //-----------------------------------------------------------------------------
 // Function: onDisconnect()
 //-----------------------------------------------------------------------------
-void EndpointItem::onDisconnect(EndpointItem const* other)
+void EndpointItem::onDisconnect(EndpointItem const*)
 {
 }
 

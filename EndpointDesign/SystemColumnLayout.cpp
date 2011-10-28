@@ -57,7 +57,11 @@ void SystemColumnLayout::addColumn(QString const& name)
 //-----------------------------------------------------------------------------
 void SystemColumnLayout::addColumn(SystemColumn* column)
 {
-    scene_->addItem(column);
+    if (column->scene() == 0)
+    {
+        scene_->addItem(column);
+    }
+
     column->setOffsetY(offsetY_);
 
     connect(column, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));

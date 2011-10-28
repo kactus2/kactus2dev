@@ -42,7 +42,7 @@ SelectItemTypeDialog::SelectItemTypeDialog(QWidget* parent,
     allowedItemsGroup_ = new QGroupBox(tr("Item Type"), this);
     QGridLayout* itemLayout = new QGridLayout(allowedItemsGroup_);
 
-    bool found = false;
+    //bool found = false;
     
     // Create the item radio buttons.
     if (allowedItems & CIT_INTERFACE)

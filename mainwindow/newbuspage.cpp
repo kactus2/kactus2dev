@@ -17,10 +17,10 @@
 #include <QMessageBox>
 #include <QCoreApplication>
 
-NewBusPage::NewBusPage(LibraryInterface* libHandler, QWidget *parent):
+NewBusPage::NewBusPage(LibraryInterface* libHandler, QWidget *parentDlg):
 PropertyPageView(),
 libInterface_(libHandler), 
-vlnvEditor_(VLNV::BUSDEFINITION, libHandler, this, this, true),
+vlnvEditor_(VLNV::BUSDEFINITION, libHandler, parentDlg, this, true),
 directoryEdit_(this) {
 
 	Q_ASSERT_X(libHandler, "NewBusPage constructor",

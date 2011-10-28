@@ -117,9 +117,6 @@ public slots:
      */
     void addColumn();
 
-    //! Adds a new node to the design.
-    void addNode(QString const& name);
-
     //! Called when the vertical scrollbar is scrolled.
     void onVerticalScroll(int y);
 

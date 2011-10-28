@@ -218,14 +218,6 @@ bool EndpointDesignWidget::save()
 }
 
 //-----------------------------------------------------------------------------
-// Function: addNode()
-//-----------------------------------------------------------------------------
-void EndpointDesignWidget::addNode(QString const& name)
-{
-    //diagram_->addMappingComponent(name);
-}
-
-//-----------------------------------------------------------------------------
 // Function: keyPressEvent()
 //-----------------------------------------------------------------------------
 void EndpointDesignWidget::keyPressEvent(QKeyEvent* event)

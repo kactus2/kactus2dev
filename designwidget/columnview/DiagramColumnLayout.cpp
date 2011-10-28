@@ -55,7 +55,11 @@ void DiagramColumnLayout::addColumn(QString const& name, ColumnContentType conte
 //-----------------------------------------------------------------------------
 void DiagramColumnLayout::addColumn(DiagramColumn* column)
 {
-    scene_->addItem(column);
+    if (column->scene() == 0)
+    {
+        scene_->addItem(column);
+    }
+
     column->setOffsetY(offsetY_);
 
     connect(column, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));

@@ -38,7 +38,7 @@ TabDocument::~TabDocument()
 //-----------------------------------------------------------------------------
 // Function: applySettings()
 //-----------------------------------------------------------------------------
-void TabDocument::applySettings(QSettings const& settings)
+void TabDocument::applySettings(QSettings const&)
 {
 }
 
@@ -107,7 +107,7 @@ void TabDocument::setZoomLevel(int level)
 //-----------------------------------------------------------------------------
 // Function: setMode()
 //-----------------------------------------------------------------------------
-void TabDocument::setMode(DrawMode mode)
+void TabDocument::setMode(DrawMode)
 {
 }
 

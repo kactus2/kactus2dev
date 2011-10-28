@@ -155,7 +155,7 @@ bool IPXactModel::setData(const QModelIndex &index, const QVariant &value,
 }
 
 // Return the amount of columns the item has
-int IPXactModel::columnCount(const QModelIndex &parent) const {
+int IPXactModel::columnCount(const QModelIndex&) const {
 	return 3;
 }
 

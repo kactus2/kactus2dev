@@ -77,8 +77,8 @@ editProvider_() {
 		this, SIGNAL(openDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
 	connect(diagram_, SIGNAL(openComponent(const VLNV&)),
 		this, SIGNAL(openComponent(const VLNV&)), Qt::UniqueConnection);
-    connect(diagram_, SIGNAL(openBus(VLNV const&)),
-        this, SIGNAL(openBus(VLNV const&)), Qt::UniqueConnection);
+    connect(diagram_, SIGNAL(openBus(VLNV const&, VLNV const&, bool)),
+        this, SIGNAL(openBus(VLNV const&, VLNV const&, bool)), Qt::UniqueConnection);
 	connect(diagram_, SIGNAL(errorMessage(const QString&)),
 		this, SIGNAL(errorMsg(const QString&)), Qt::UniqueConnection);
 	connect(diagram_, SIGNAL(noticeMessage(const QString&)),
@@ -118,8 +118,7 @@ DesignWidget::~DesignWidget() {
 
 void DesignWidget::setDesign( const VLNV* vlnv, const QString& viewName) {
 	
-	Q_ASSERT_X(vlnv, "DesignWidget::setDesign",
-		"Null vlnv pointer given as parameter");
+	Q_ASSERT_X(vlnv, "DesignWidget::setDesign", "Null vlnv pointer given as parameter");
 
 	disconnect(diagram_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()));

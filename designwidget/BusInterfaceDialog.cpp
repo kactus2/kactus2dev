@@ -82,7 +82,11 @@ BusInterfaceDialog::BusInterfaceDialog(bool enableNameEdit,
     // Connect the button signals to accept() and reject().
     connect(btnOK_, SIGNAL(clicked()), this, SLOT(accept()));
     connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
-    connect(nameEdit_, SIGNAL(textChanged(QString const&)), this, SLOT(onNameChanged()));
+
+    if (nameEdit_ != 0)
+    {
+        connect(nameEdit_, SIGNAL(textChanged(QString const&)), this, SLOT(onNameChanged()));
+    }
 }
 
 //-----------------------------------------------------------------------------

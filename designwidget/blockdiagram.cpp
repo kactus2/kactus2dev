@@ -1196,10 +1196,10 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
             if (endPoint->getBusInterface() != 0)
             {
-                oldBusType = highlightedEndPoint_->getBusInterface()->getBusType();
-                oldAbsType = highlightedEndPoint_->getBusInterface()->getAbstractionType();
-                oldMode = highlightedEndPoint_->getBusInterface()->getInterfaceMode();
-                oldName = highlightedEndPoint_->getBusInterface()->getName();
+                oldBusType = endPoint->getBusInterface()->getBusType();
+                oldAbsType = endPoint->getBusInterface()->getAbstractionType();
+                oldMode = endPoint->getBusInterface()->getInterfaceMode();
+                oldName = endPoint->getBusInterface()->getName();
             }
 
             // Set the types for the end point.
@@ -1238,7 +1238,7 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
             // Open the user clicked continue, open up the bus editor.
             if (msgBox.clickedButton() == btnContinue)
             {
-                emit openBus(busVLNV);
+                emit openBus(busVLNV, absVLNV, false);
             }
         }
     }
@@ -1388,7 +1388,7 @@ void BlockDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 //-----------------------------------------------------------------------------
 // Function: dragLeaveEvent()
 //-----------------------------------------------------------------------------
-void BlockDiagram::dragLeaveEvent(QGraphicsSceneDragDropEvent * event)
+void BlockDiagram::dragLeaveEvent(QGraphicsSceneDragDropEvent*)
 {
     dragCompType_ = CIT_NONE;
     dragBus_ = false;

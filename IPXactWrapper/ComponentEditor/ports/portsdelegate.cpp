@@ -31,7 +31,7 @@ PortsDelegate::~PortsDelegate() {
 }
 
 QWidget* PortsDelegate::createEditor( QWidget* parent, 
-									 const QStyleOptionViewItem& option, 
+									 const QStyleOptionViewItem&, 
 									 const QModelIndex& index ) const {
 	// if the column is the one specified for direction items 
 	if (index.column() == directionColumn) {

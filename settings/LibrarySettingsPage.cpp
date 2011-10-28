@@ -187,7 +187,7 @@ void LibrarySettingsPage::loadSettings()
 //-----------------------------------------------------------------------------
 // Function: onSelectLocation()
 //-----------------------------------------------------------------------------
-void LibrarySettingsPage::onSelectLocation(QListWidgetItem* cur, QListWidgetItem* prev)
+void LibrarySettingsPage::onSelectLocation(QListWidgetItem* cur, QListWidgetItem*)
 {
     removeLocationButton_->setEnabled(cur != 0);
 }
