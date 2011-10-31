@@ -261,7 +261,18 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./vhdlGenerator/componentinstance.h \
     ./vhdlGenerator/componenttype.h \
     ./vhdlGenerator/connection.h \
+    ./vhdlGenerator/vhdlcomponentdeclaration.h \
+    ./vhdlGenerator/vhdlcomponentinstance.h \
+    ./vhdlGenerator/vhdlconnectionendpoint.h \
+    ./vhdlGenerator/vhdlgeneral.h \
     ./vhdlGenerator/vhdlgenerator.h \
+    ./vhdlGenerator/vhdlgenerator2.h \
+    ./vhdlGenerator/vhdlgeneric.h \
+    ./vhdlGenerator/vhdlobject.h \
+    ./vhdlGenerator/vhdlport.h \
+    ./vhdlGenerator/vhdlportmap.h \
+    ./vhdlGenerator/vhdlportsorter.h \
+    ./vhdlGenerator/vhdlsignal.h \
     ./PropertyWidget/messageconsole.h \
     ./MCAPI/MCAPIContentMatcher.h \
     ./MCAPI/MCAPIDesignerTypes.h \
@@ -304,8 +315,8 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./DocumentGenerator/documentgenerator.h \
     ./InterfaceEditor/interfaceeditor.h \
     ./ConnectionEditor/connectioneditor.h \
-    ./GCF/MenuStrip.h \
-    ./GCF/Common.h
+    ./GCF/Common.h \
+    ./GCF/MenuStrip.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/KactusAttribute.cpp \
     ./common/TextEditProvider.cpp \
@@ -548,7 +559,18 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./vhdlGenerator/componentinstance.cpp \
     ./vhdlGenerator/componenttype.cpp \
     ./vhdlGenerator/connection.cpp \
+    ./vhdlGenerator/vhdlcomponentdeclaration.cpp \
+    ./vhdlGenerator/vhdlcomponentinstance.cpp \
+    ./vhdlGenerator/vhdlconnectionendpoint.cpp \
+    ./vhdlGenerator/vhdlgeneral.cpp \
     ./vhdlGenerator/vhdlgenerator.cpp \
+    ./vhdlGenerator/vhdlgenerator2.cpp \
+    ./vhdlGenerator/vhdlgeneric.cpp \
+    ./vhdlGenerator/vhdlobject.cpp \
+    ./vhdlGenerator/vhdlport.cpp \
+    ./vhdlGenerator/vhdlportmap.cpp \
+    ./vhdlGenerator/vhdlportsorter.cpp \
+    ./vhdlGenerator/vhdlsignal.cpp \
     ./MCAPI/MCAPIContentMatcher.cpp \
     ./MCAPI/MCAPIDesignerTypes.cpp \
     ./MCAPI/MCAPIFunctionDesc.cpp \
@@ -590,6 +612,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./DocumentGenerator/documentgenerator.cpp \
     ./InterfaceEditor/interfaceeditor.cpp \
     ./ConnectionEditor/connectioneditor.cpp \
-    ./common/IDFactory.cpp \
-    ./GCF/MenuStrip.cpp
+    ./GCF/MenuStrip.cpp \
+    ./common/IDFactory.cpp
 RESOURCES += kactus.qrc

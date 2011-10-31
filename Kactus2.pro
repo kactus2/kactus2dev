@@ -10,7 +10,8 @@ CONFIG += debug
 DEFINES += _WINDOWS QT_LARGEFILE_SUPPORT QT_DLL QT_XMLPATTERNS_LIB QT_XML_LIB QT_HAVE_MMX QT_HAVE_3DNOW QT_HAVE_SSE QT_HAVE_MMXEXT QT_HAVE_SSE2
 INCLUDEPATH += . \
     ./debug \
-    ./GeneratedFiles
+    ./GeneratedFiles \
+    ./vhdlGenerator
 LIBS += -L"."
 DEPENDPATH += .
 MOC_DIR += debug
