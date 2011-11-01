@@ -263,6 +263,16 @@ void VLNVEditor::initConnections()
     connect(m_versionEdit, SIGNAL(textChanged(const QString&)),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
+    // Connect the signals informing the editing of items.
+    connect(m_vendorEdit, SIGNAL(textEdited(const QString&)),
+        this, SIGNAL(vlnvEdited()), Qt::UniqueConnection);
+    connect(m_libraryEdit, SIGNAL(textEdited(const QString&)),
+        this, SIGNAL(vlnvEdited()), Qt::UniqueConnection);
+    connect(m_nameEdit, SIGNAL(textEdited(const QString&)),
+        this, SIGNAL(vlnvEdited()), Qt::UniqueConnection);
+    connect(m_versionEdit, SIGNAL(textEdited(const QString&)),
+        this, SIGNAL(vlnvEdited()), Qt::UniqueConnection);
+
     // Connect the matcher update slots to the textChanged signals.
     connect(m_vendorEdit, SIGNAL(textChanged(const QString&)),
         this, SLOT(updateLibraryMatcherItem()), Qt::UniqueConnection);

@@ -84,6 +84,9 @@ signals:
     //! Emitted when the contents of the editor have changed.
     void contentChanged();
 
+    //! Emitted when the user edits the VLNV in the editor.
+    void vlnvEdited();
+
 public slots:
     //! Called when the vendor field has changed.
     void updateLibraryMatcherItem();
