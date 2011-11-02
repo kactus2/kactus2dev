@@ -11,6 +11,8 @@
 #include "vhdlportmap.h"
 #include "vhdlconnectionendpoint.h"
 
+#include <LibraryManager/vlnv.h>
+
 #include <QObject>
 #include <QString>
 #include <QMap>
@@ -18,6 +20,7 @@
 
 class VhdlGenerator2;
 class VhdlComponentDeclaration;
+class BusInterface;
 
 /*! \brief Represents one vhdl component instantiation.
  *
@@ -32,12 +35,14 @@ public:
 	 * \param parent Pointer to the owner of this component instance.
 	 * \param compDeclaration Pointer to the component declaration of this instance.
 	 * \param instanceName The name of the instance.
-	 * \param description The description for the instance
+	 * \param viewName The active view used for this instance.
+	 * \param description The description for the instance.
 	 *
 	*/
 	VhdlComponentInstance(VhdlGenerator2* parent,
 		VhdlComponentDeclaration* compDeclaration,
 		const QString& instanceName,
+		const QString& viewName = QString(),
 		const QString& description = QString());
 	
 	//! \brief The destructor
@@ -48,7 +53,7 @@ public:
 	 * \param stream The text stream to write the instance into.
 	 *
 	*/
-	void write(QTextStream& stream);
+	void write(QTextStream& stream) const;
 
 	/*! \brief Get the name of the component instance.
 	 *
@@ -101,6 +106,21 @@ public:
 	*/
 	void useDefaultsForOtherPorts();
 
+	/*! \brief Get the bus interface with given name.
+	 *
+	 * \param interfaceName The name of the bus interface on the IP-Xact component model.
+	 *
+	 * \return BusInterface* Pointer to the bus interface.
+	*/
+	BusInterface* interface(const QString& interfaceName) const;
+
+	/*! \brief Get the vlnv of the instance's IP-Xact model.
+	 *
+	 *
+	 * \return VLNV Identifies the IP-Xact model of the instance's type.
+	*/
+	VLNV vlnv() const;
+
 signals:
 
 	//! \brief Send a notification to user.
@@ -125,6 +145,9 @@ private:
 
 	//! \brief The name of the type that is is an instantiation of.
 	QString typeName_;
+
+	//! \brief The name of the architecture used in this instance.
+	QString architecture_;
 
 	//! \brief The description of the instance.
 	QString description_;

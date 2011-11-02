@@ -69,7 +69,7 @@ public:
 	 * \param stream The text stream to write the object into.
 	 *
 	*/
-	virtual void write(QTextStream& stream) = 0;
+	virtual void write(QTextStream& stream) const = 0;
 
 	/*! \brief Get the name of the vhdl object
 	 *

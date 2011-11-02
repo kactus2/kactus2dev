@@ -400,6 +400,20 @@ public:
 	*/
 	QStringList getPhysicalPortNames() const;
 
+	/*! \brief Get list of the logical port names contained in this interface.
+	 *
+	 * \return QStringList Contains the logical port names.
+	*/
+	QStringList getLogicalPortNames() const;
+
+	/*! \brief Check if the bus interface contains the specified logical port.
+	 *
+	 * \param logicalPortName Contains the name of the logical port to search for.
+	 *
+	 * \return bool True if the logical port is found.
+	*/
+	bool hasLogicalPort(const QString& logicalPortName) const;
+
     /*!
      *  Sets the MCAPI port ID to the bus interface's parameters.
      */

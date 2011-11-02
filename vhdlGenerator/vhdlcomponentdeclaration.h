@@ -47,7 +47,7 @@ public:
 	 * \param stream The text stream to write into.
 	 *
 	*/
-	void write(QTextStream& stream);
+	void write(QTextStream& stream) const;
 
 	/*! \brief Get the type name of the vhdl component declaration.
 	 *

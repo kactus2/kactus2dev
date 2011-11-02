@@ -430,6 +430,14 @@ public:
 	*/
 	bool hasViews() const;
 
+	/*! \brief Check if the component has a view with given name.
+	 *
+	 * \param viewName The name of the view to search for.
+	 *
+	 * \return bool True if the view is found.
+	*/
+	bool hasView(const QString& viewName) const;
+
 	/*! \brief Get the description of specified view.
 	* 
 	* If view is not found a null string is returned.

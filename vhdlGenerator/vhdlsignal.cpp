@@ -46,7 +46,7 @@ right_(rightBound) {
 VhdlSignal::~VhdlSignal() {
 }
 
-void VhdlSignal::write( QTextStream& stream ) {
+void VhdlSignal::write( QTextStream& stream ) const {
 	Q_ASSERT(!name_.isEmpty());
 	Q_ASSERT(!type_.isEmpty());
 

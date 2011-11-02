@@ -102,7 +102,7 @@ bool VhdlPortMap::operator>( const VhdlPortMap& other ) const {
 VhdlPortMap::~VhdlPortMap() {
 }
 
-void VhdlPortMap::write( QTextStream& stream ) {
+void VhdlPortMap::write( QTextStream& stream ) const {
 	stream << toString();
 }
 
@@ -118,4 +118,8 @@ QString VhdlPortMap::toString() const {
 	}
 
 	return result;
+}
+
+QString VhdlPortMap::name() const {
+	return name_;
 }

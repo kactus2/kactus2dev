@@ -61,7 +61,7 @@ public:
 	 * \param stream The text stream to write the signal declaration into.
 	 *
 	*/
-	virtual void write(QTextStream& stream);
+	virtual void write(QTextStream& stream) const;
 
 	/*! \brief Get the left bound of the signal
 	 *

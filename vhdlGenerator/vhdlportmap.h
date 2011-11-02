@@ -75,7 +75,7 @@ public:
 	 * \param stream The stream to write into.
 	 *
 	*/
-	void write(QTextStream& stream);
+	void write(QTextStream& stream) const;
 
 	/*! \brief Convert the port map into string.
 	 * 
@@ -84,6 +84,12 @@ public:
 	 * \return QString
 	*/
 	QString toString() const;
+
+	/*! \brief Get the name of the port for the map.
+	 *
+	 * \return QString contains the 
+	*/
+	QString name() const;
 
 private:
 	

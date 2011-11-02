@@ -1643,6 +1643,13 @@ bool Component::hasViews() const {
 		return model_->hasViews();
 }
 
+bool Component::hasView( const QString& viewName ) const {
+	if (!model_) {
+		return false;
+	}
+	return model_->findView(viewName);
+}
+
 QString Component::getViewDescription( const QString& viewName ) const {
 	View* view = findView(viewName);
 	if (!view)

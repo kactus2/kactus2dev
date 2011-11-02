@@ -41,7 +41,7 @@ commentOut_(true) {
 VhdlPort::~VhdlPort() {
 }
 
-void VhdlPort::write( QTextStream& stream ) {
+void VhdlPort::write( QTextStream& stream ) const {
 	if (commentOut_) {
 		stream << "-- ";
 	}

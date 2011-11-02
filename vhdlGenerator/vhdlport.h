@@ -50,7 +50,7 @@ public:
 	 * \param stream The text stream to write the port into.
 	 *
 	*/
-	virtual void write(QTextStream& stream);
+	virtual void write(QTextStream& stream) const;
 
 	/*! \brief Get the size of the port.
 	 * 
