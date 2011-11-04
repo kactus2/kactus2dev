@@ -219,6 +219,13 @@ public:
 	*/
 	QString toString(const QString& separator = QString(":")) const;
 
+    /*!
+     *  Checks if the VLNV is empty.
+     *
+     *      @returns True if all VLNV fields are empty; otherwise false.
+     */
+    bool isEmpty() const;
+
 	/*! \brief Checks if the vlnv is valid or not
 	 *
 	 * \return True if the VLNV tag is valid, otherwise false.
@@ -282,7 +289,7 @@ public:
 	 *
 	*/
 	void clear();
-    
+
 private:
 
 	//! \brief The name of the vendor

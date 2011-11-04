@@ -64,7 +64,8 @@ public:
 		CPUS,				// for "Cpus" item
 		CPU,				// for a single cpu item
 		OTHERCLOCKDRIVERS,	// for "Other clock drivers" item
-		COMPONENTGENERATORS	// for "Component generators" item
+		COMPONENTGENERATORS,// for "Component generators" item
+        SOFTWARE,           // for "Software Mappings" item
 	};
 
 	

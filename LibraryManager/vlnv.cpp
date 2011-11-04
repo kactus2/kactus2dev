@@ -329,6 +329,13 @@ void VLNV::setName( const QString name ) {
 	name_ = name.simplified();
 }
 
+bool VLNV::isEmpty() const {
+
+    // if all of the identification fields are empty then this is empty.
+    return vendor_.isEmpty() && library_.isEmpty() && name_.isEmpty() &&
+           version_.isEmpty();
+}
+
 bool VLNV::isValid() const {
 
 	// if type is invalid then automatically return false

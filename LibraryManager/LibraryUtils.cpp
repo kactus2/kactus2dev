@@ -42,7 +42,7 @@ void parseProgrammableElements(LibraryInterface* lh, Component& component,
     // Check if the component contains a direct reference to a design.
     if (designVLNV.getType() == VLNV::DESIGN)
     {
-        QSharedPointer<LibraryComponent> libComp = lh->getModel(designVLNV);	
+        QSharedPointer<LibraryComponent> libComp = lh->getModel(designVLNV);
         compDesign = libComp.staticCast<Design>();
     }
     // Otherwise check if the component had reference to a design configuration.
@@ -80,13 +80,10 @@ void parseProgrammableElements(LibraryInterface* lh, Component& component,
 		if (childComp)
 		{
 			// Add the component to the system design only if it is a leaf component and has a CPU
-			// (TODO: or endpoints).
-			if (!childComp->isHierarchical())
+			// or an attached SW design.
+			if ((!childComp->isHierarchical() && childComp->isCpu()) || childComp->findView("kts_sw_ref") != 0)
 			{
-				if (childComp->isCpu())
-				{
-					elements.append(instance);
-				}
+				elements.append(instance);
 			}
 			else
 			{
@@ -133,11 +130,29 @@ void generateSystemDesign(LibraryInterface* lh, QString const& directory,
         QMap<QString, QSharedPointer<ModelParameter> > modelParameters;
         modelParameters.insert("kts_hw_ref", modelParam);
 
-        // Create a design for the SW mapping component.
+        // Create a design for the SW mapping component. Use the software mappings as a template
+        // if found.
         VLNV designVLNV(VLNV::DESIGN, swVLNV.getVendor(), swVLNV.getLibrary(),
                         swVLNV.getName().remove(".comp") + ".design", swVLNV.getVersion());
-        QSharedPointer<Design> swDesign(new Design(designVLNV));
+        QSharedPointer<Design> swDesign;
+        
+        // Parse software mappings if found.
+        QSharedPointer<Component> comp = lh->getModel(element.componentRef).staticCast<Component>();
+        View* swView = comp->findView("kts_sw_ref");
 
+        if (swView != 0)
+        {
+            QSharedPointer<LibraryComponent> libComp = lh->getModel(swView->getHierarchyRef());
+            QSharedPointer<Design> design = libComp.staticCast<Design>();
+            swDesign = QSharedPointer<Design>(new Design(*design));
+            swDesign->setVlnv(designVLNV);
+        }
+        else
+        {
+            swDesign = QSharedPointer<Design>(new Design(designVLNV));
+        }
+
+        // Create the view for the design.
         View* hierView = new View("kts_sys_ref");
         hierView->setHierarchyRef(designVLNV);
         hierView->addEnvIdentifier("");

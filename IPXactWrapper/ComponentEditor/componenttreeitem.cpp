@@ -130,6 +130,10 @@ handler_(handler) {
         {
 		    childItems_.append(new ComponentTreeItem(
 			    ComponentTreeItem::OTHERCLOCKDRIVERS, 0, component, handler, this));
+
+            // HACK! We're using the vlnv as the data pointer to ensure uniqueness. Any better ideas?
+            childItems_.append(new ComponentTreeItem(
+                ComponentTreeItem::SOFTWARE, component->getVlnv(), component, handler, this));
         }
 
 // 		childItems_.append(new ComponentTreeItem(
@@ -570,8 +574,9 @@ handler_(handler) {
 				component, handler, this));
 		}
 		break;
-										   }
-	case ComponentTreeItem::BUSINTERFACE: {
+                                           }
+
+    case ComponentTreeItem::BUSINTERFACE: {
 		BusInterface* busInterface = static_cast<BusInterface*>(dataPointer_);
 		Q_ASSERT_X(busInterface, "ComponentTreeItem constructor in case BUSINTERFACE",
 			"static_cast failed to give valid BusInterface-pointer");
@@ -630,6 +635,13 @@ handler_(handler) {
 		text_ = tr("Component generators");
 		break;
 												 }
+
+    case ComponentTreeItem::SOFTWARE: {
+        text_ = tr("Software mappings");
+        //dataPointer_ = 0;
+        break;
+                                      }
+
 	default: {
 
 		// TODO remove this
@@ -707,7 +719,8 @@ case ComponentTreeItem::BUSINTERFACES:
 case ComponentTreeItem::CHANNELS: 
 case ComponentTreeItem::CPUS: 
 case ComponentTreeItem::OTHERCLOCKDRIVERS: 
-case ComponentTreeItem::COMPONENTGENERATORS: {
+case ComponentTreeItem::COMPONENTGENERATORS:
+case ComponentTreeItem::SOFTWARE: {
 	font.setPointSize(font.pointSize() + 2);
 	font.setBold(true);
 	return font;
@@ -843,7 +856,8 @@ bool ComponentTreeItem::canHaveChildren() const {
 		case ComponentTreeItem::OTHERCLOCKDRIVERS:
 		case ComponentTreeItem::BUSINTERFACE:
 		case ComponentTreeItem::VIEW:
-		case ComponentTreeItem::DEFAULTFILEBUILDERS: {
+		case ComponentTreeItem::DEFAULTFILEBUILDERS:
+        case ComponentTreeItem::SOFTWARE: {
 			return false;
 													 }
 		default: {
@@ -873,7 +887,8 @@ bool ComponentTreeItem::canBeRemoved() const {
 		case ComponentTreeItem::DEFAULTFILEBUILDERS:
 		case ComponentTreeItem::FILES:
 		case ComponentTreeItem::FUNCTIONS:
-		case ComponentTreeItem::COMPONENTGENERATORS: {
+		case ComponentTreeItem::COMPONENTGENERATORS:
+        case ComponentTreeItem::SOFTWARE: {
 			return false;
 													 }
 		default: {

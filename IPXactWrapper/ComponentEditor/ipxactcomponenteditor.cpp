@@ -27,6 +27,7 @@
 #include "busInterfaces/businterfaceeditor.h"
 #include "busInterfaces/apieditor.h"
 #include "views/vieweditor.h"
+#include "software/SoftwareMappingsEditor.h"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -310,6 +311,12 @@ void IPXactComponentEditor::createNewEditor( ComponentTreeItem* item ) {
 			editor = new FileBuilderEditor(editableComponent_, item->getDataPointer(), this);
 			break;
 													 }
+
+        case ComponentTreeItem::SOFTWARE: {
+            editor = new SoftwareMappingsEditor(handler_, editableComponent_, item->getDataPointer(),
+                                                &widgetStack_, this);
+            break;
+                                          }
 
 		// item type that does not have a direct editor
 		default: {

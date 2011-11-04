@@ -20,7 +20,7 @@
 //-----------------------------------------------------------------------------
 SplashScreen::SplashScreen(QWidget* parent) : QSplashScreen(parent, QPixmap(":/graphics/splash.png"))
 {
-    setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
+    setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
 }
 
 //-----------------------------------------------------------------------------
@@ -37,7 +37,7 @@ void SplashScreen::drawContents(QPainter *painter)
 {
     // Draw the version text.
     painter->setPen(QPen(Qt::white, 1));
-    painter->drawText(385, 125, tr("Version ") + QString::number(VERSION_MAJOR) + "." +
+    painter->drawText(300, 125, tr("Version ") + QString::number(VERSION_MAJOR) + "." +
         QString::number(VERSION_MINOR) + tr(" (Build ") + QString::number(VERSION_BUILDNO) + ")");
 
     // Draw the other information.
