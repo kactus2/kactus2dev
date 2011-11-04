@@ -73,3 +73,8 @@ void VhdlSignal::setRight( int right ) {
 	right_ = right;
 }
 
+void VhdlSignal::setBounds( int left, int right ) {
+	left_ = left;
+	right_ = right;
+}
+

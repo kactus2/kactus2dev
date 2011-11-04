@@ -461,16 +461,8 @@ void ConnectionEditor::addMap( int& row, bool invalid,
 			phys2Invalid = true;
 		}
 
-		// find the largest and smallest common for port 1
-// 		QString port1 = General::port2String(portMap1->physicalPort_,
-// 			qMin(phys1Left, portMap2->logicalVector_->getLeft()),
-// 			qMax(phys1Right, portMap2->logicalVector_->getRight()));
 		port1Item = new QTableWidgetItem(port1);
 
-		// find the largest and smallest common for port 2
-// 		QString port2 = General::port2String(portMap2->physicalPort_,
-// 			qMin(phys2Left, portMap1->logicalVector_->getLeft()),
-// 			qMax(phys2Right, portMap1->logicalVector_->getRight()));
 		port2Item = new QTableWidgetItem(port2);
 	}
 	// if port map1 has vectored logical signal

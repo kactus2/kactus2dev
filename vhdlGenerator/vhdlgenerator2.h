@@ -125,6 +125,39 @@ private:
 	//! \brief No assignment
 	VhdlGenerator2& operator=(const VhdlGenerator2& other);
 
+	//! \brief Contains info on what port to connect.
+	struct PortConnection {
+
+		//! \brief Pointer to the instance the port belongs to.
+		QSharedPointer<VhdlComponentInstance> instance_;
+
+		//! \brief The name of the port on the instance to connect.
+		QString portName_;
+
+		//! \brief The left bound of the port to connect.
+		int leftBound_;
+
+		//! \brief The right bound of the port to connect.
+		int rightBound_;
+
+		/*! \brief The constructor
+		 *
+		 * \param instance Pointer to the instance to connect.
+		 * \param portName The name of the port on the instance.
+		 * \param left The left bound of the port.
+		 * \param right The right bound of the port.
+		 *
+		*/
+		PortConnection(QSharedPointer<VhdlComponentInstance> instance, 
+			const QString& portName, int left = -1, int right = -1);
+
+		//! \brief Copy constructor
+		PortConnection(const PortConnection& other);
+
+		//! \brief Assignment operator
+		PortConnection& operator=(const PortConnection& other);
+	};
+
 	/*! \brief Parse the design and configuration used.
 	 * 
 	 * \return True if the design and configuration were parsed successfully.
@@ -161,12 +194,32 @@ private:
 	 * \param interface2 Pointer to the bus interface of instance 2.
 	 *
 	*/
-	void connectInterfaces(const QString& connectionName,
+	void connectInterfaces(const QString& connectionName, 
 		const QString& description,
 		QSharedPointer<VhdlComponentInstance> instance1, 
 		BusInterface* interface1, 
-		QSharedPointer<VhdlComponentInstance> instance2,
+		QSharedPointer<VhdlComponentInstance> instance2, 
 		BusInterface* interface2);
+
+	/*! \brief Connect the specified ports together.
+	 *
+	 * \param connectionName The name of the connection.
+	 * \param description Description for the connection.
+	 * \param ports Contains the ports to connect.
+	 *
+	*/
+	void connectPorts(const QString& connectionName, 
+		const QString& description,
+		const QList<VhdlGenerator2::PortConnection>& ports);
+
+	/*! \brief Connect the given endPoint with the signal.
+	 *
+	 * \param endPoint The end point that specified the port to connect.
+	 * \param signal The signal the port is connected to.
+	 *
+	*/
+	void connectEndPoint(const VhdlConnectionEndPoint& endPoint,
+		const QSharedPointer<VhdlSignal> signal);
 	
 	//! \brief Pointer to the instance that manages the library.
 	LibraryInterface* handler_;

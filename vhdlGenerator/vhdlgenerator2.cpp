@@ -14,6 +14,7 @@
 #include <models/modelparameter.h>
 #include <models/port.h>
 #include <models/businterface.h>
+#include <models/generaldeclarations.h>
 
 #include <mainwindow/mainwindow.h>
 
@@ -73,6 +74,7 @@ bool VhdlGenerator2::parse( QSharedPointer<Component> topLevelComponent,
 	// if design is used then these can be parsed also
 	if (design_) {
 		parseInstances();
+		parseInterconnections();
 	}
 
 	return true;
@@ -316,22 +318,187 @@ void VhdlGenerator2::parseInterconnections() {
 void VhdlGenerator2::connectInterfaces( const QString& connectionName, 
 									   const QString& description, 
 									   QSharedPointer<VhdlComponentInstance> instance1,
-									   BusInterface* interface1, 
-									   QSharedPointer<VhdlComponentInstance> instance2, 
+									   BusInterface* interface1,
+									   QSharedPointer<VhdlComponentInstance> instance2,
 									   BusInterface* interface2 ) {
 	Q_ASSERT(instance1);
 	Q_ASSERT(interface1);
 	Q_ASSERT(instance2);
 	Q_ASSERT(interface2);
 
-	QStringList logicalPorts = interface1->getLogicalPortNames();
-	foreach (QString logicalPort, logicalPorts) {
+	// get the port maps of both interfaces
+	QList<QSharedPointer<General::PortMap> > portMaps1 = interface1->getPortMaps();
+	QList<QSharedPointer<General::PortMap> > portMaps2 = interface2->getPortMaps();
 
-		// if the logical port is not contained in both interfaces
-		if (!interface2->hasLogicalPort(logicalPort)) {
-			continue;
+	// get the IP-Xact models of both instances
+	QSharedPointer<Component> component1 = instance1->componentModel();
+	QSharedPointer<Component> component2 = instance2->componentModel();
+
+	foreach (QSharedPointer<General::PortMap> portMap1, portMaps1) {
+		foreach(QSharedPointer<General::PortMap> portMap2, portMaps2) {
+
+			const QString port1Name = portMap1->physicalPort_;
+			const QString port2Name = portMap1->physicalPort_;
+
+			// if the port maps are not for same logical signal
+			if (portMap1->logicalPort_ != portMap2->logicalPort_) {
+				continue;
+			}
+			// if port does not exist in instance 1
+			else if (!component1->hasPort(port1Name)) {
+				emit errorMessage(tr("Port %1 was not defined in component %2.").arg(
+					port1Name).arg(
+					component1->getVlnv()->toString()));
+				continue;
+			}
+			// if port does not exist in instance 2
+			else if (!component2->hasPort(port2Name)) {
+				emit errorMessage(tr("Port %1 was not defined in component %2.").arg(
+					port2Name).arg(
+					component2->getVlnv()->toString()));
+				continue;
+			}
+			// if the port on instance 1 is not valid physical port
+			else if (!component1->isPhysicalPort(port1Name)) {
+				continue;
+			}
+			// if the port on instance 2 is not valid physical port
+			else if (!component2->isPhysicalPort(port2Name)) {
+				continue;
+			}
+
+			// get the alignments of the ports
+			General::PortAlignment alignment = 
+				General::calculatePortAlignment(portMap1.data(), 
+				component1->getPortLeftBound(port1Name),
+				component1->getPortRightBound(port1Name),
+				portMap2.data(),
+				component2->getPortLeftBound(port2Name),
+				component2->getPortRightBound(port2Name));
+
+			// if the alignment is not valid (port sizes do not match or 
+			// they do not have any common bits)
+			if (alignment.invalidAlignment_) {
+				continue;
+			}
+
+			// create the name for the signal to be created
+			const QString signalName = connectionName + portMap1->logicalPort_;
+
+			VhdlGenerator2::PortConnection port1(instance1, port1Name, 
+				alignment.port1Left_, alignment.port1Right_);
+			VhdlGenerator2::PortConnection port2(instance2, port2Name,
+				alignment.port2Left_, alignment.port2Right_);
+			QList<VhdlGenerator2::PortConnection> ports;
+			ports.append(port1);
+			ports.append(port2);
+
+			// connect the port from both port maps
+			connectPorts(signalName, description, ports);
+		}
+	}
+}
+
+void VhdlGenerator2::connectPorts(const QString& connectionName, 
+								  const QString& description, 
+								  const QList<VhdlGenerator2::PortConnection>& ports) {
+
+	// at least 2 ports must be found
+	Q_ASSERT(ports.size() < 1);
+
+	// calculate the bounds for the signal
+	int left = ports.first().leftBound_;
+	int right = ports.first().rightBound_;
+	int signalSize = left - right + 1;
+	QString type = ports.first().instance_->portType(ports.first().portName_);
+
+	// create the endPoints
+	QList<VhdlConnectionEndPoint> endPoints;
+	foreach (VhdlGenerator2::PortConnection connection, ports) {
+
+		// make sure all ports are for same type
+		if (type != connection.instance_->portType(connection.portName_)) {
+			emit errorMessage(tr("Type mismatch for instance %1 port %2.").arg(
+				connection.instance_->name()).arg(connection.portName_));
 		}
 
-
+		VhdlConnectionEndPoint endPoint(connection.instance_->name(), connection.portName_,
+			connection.leftBound_, connection.rightBound_, left, right);
+		endPoints.append(endPoint);
 	}
+
+	// the signal that connects the end points
+	QSharedPointer<VhdlSignal> signal;
+
+	// find a signal to use for connecting the end points
+	foreach (VhdlConnectionEndPoint endPoint, endPoints) {
+		if (signals_.contains(endPoint)) {
+			signal = signals_.value(endPoint);
+			signal->setBounds(qMax(left, int(signal->left())),
+				qMin(right, int(signal->right())));
+			break;
+		}
+	}
+	// if signal was not found then create a new one 
+	if (!signal) {
+		signal = QSharedPointer<VhdlSignal>(new VhdlSignal(this, connectionName,
+			type, left, right, description));
+		signal->setBounds(left, right);
+	}
+
+	// connect each end point to given signal
+	foreach (VhdlConnectionEndPoint endPoint, endPoints) {
+		connectEndPoint(endPoint, signal);
+	}
+}
+
+void VhdlGenerator2::connectEndPoint( const VhdlConnectionEndPoint& endPoint,
+									 const QSharedPointer<VhdlSignal> signal ) {
+
+	Q_ASSERT(signal);
+
+	// if the end point already has a signal associated with it
+	if (signals_.contains(endPoint)) {
+
+		QSharedPointer<VhdlSignal> oldSignal = signals_.value(endPoint);
+		// get all end points associated with signal for endpoint 2
+		QList<VhdlConnectionEndPoint> endPoints = signals_.keys(oldSignal);
+		// replace each end point with association to signal for endpoint
+		foreach (VhdlConnectionEndPoint temp, endPoints) {
+			signals_.insert(temp, signal);
+		}
+	}
+	// if end point was not yet specified
+	else {
+		signals_.insert(endPoint, signal);
+	}
+}
+
+VhdlGenerator2::PortConnection::PortConnection( 
+	QSharedPointer<VhdlComponentInstance> instance,
+	const QString& portName,
+	int left /*= -1*/, 
+	int right /*= -1*/ ):
+instance_(instance),
+portName_(portName),
+leftBound_(left),
+rightBound_(right) {
+}
+
+VhdlGenerator2::PortConnection::PortConnection( const VhdlGenerator2::PortConnection& other ):
+instance_(other.instance_),
+portName_(other.portName_),
+leftBound_(other.leftBound_),
+rightBound_(other.rightBound_) {
+}
+
+VhdlGenerator2::PortConnection& VhdlGenerator2::PortConnection::operator=(
+	const VhdlGenerator2::PortConnection& other ) {
+		if (this != &other) {
+			instance_ = other.instance_;
+			portName_ = other.portName_;
+			leftBound_ = other.leftBound_;
+			rightBound_ = other.rightBound_;
+		}
+		return *this;
 }

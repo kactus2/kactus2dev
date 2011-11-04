@@ -92,6 +92,14 @@ public:
 	*/
 	void checkPortConnections();
 
+	/*! \brief Get the type of specified port.
+	 *
+	 * \param portName The name of the port.
+	 *
+	 * \return QString The type of the specified port.
+	*/
+	QString portType(const QString& portName) const;
+
 signals:
 
 	//! \brief Send a notification to user.

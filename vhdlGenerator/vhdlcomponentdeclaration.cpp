@@ -147,3 +147,17 @@ void VhdlComponentDeclaration::checkPortConnections() {
 		}
 	}
 }
+
+QString VhdlComponentDeclaration::portType( const QString& portName ) const {
+
+	// used to search for the correct port, the direction does not matter
+	VhdlPortSorter sorter(portName, General::IN);
+	
+	// if the named port is found
+	if (ports_.contains(sorter)) {
+		return ports_.value(sorter)->type();
+	}
+	else {
+		return QString();
+	}
+}

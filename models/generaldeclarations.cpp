@@ -179,6 +179,137 @@ General::PortMap& General::PortMap::operator=( const PortMap& other ) {
 	return *this;
 }
 
+General::PortAlignment::PortAlignment():
+port1Left_(-1),
+port1Right_(-1),
+port2Left_(-1),
+port2Right_(-1),
+invalidAlignment_(true) {
+}
+
+General::PortAlignment::PortAlignment( const PortAlignment& other ):
+port1Left_(other.port1Left_),
+port1Right_(other.port1Right_),
+port2Left_(other.port2Left_),
+port2Right_(other.port2Right_),
+invalidAlignment_(other.invalidAlignment_) {
+}
+
+General::PortAlignment& General::PortAlignment::operator=( const PortAlignment& other ) {
+	if (this != &other) {
+		port1Left_ = other.port1Left_;
+		port1Right_ = other.port1Right_;
+		port2Left_ = other.port2Left_;
+		port2Right_ = other.port2Right_;
+		invalidAlignment_ = other.invalidAlignment_;
+	}
+	return *this;
+}
+
+General::PortAlignment General::calculatePortAlignment( 
+	const PortMap* portMap1, 
+	int phys1LeftBound, 
+	int phys1RightBound, 
+	const PortMap* portMap2,
+	int phys2LeftBound, 
+	int phys2RightBound ) {
+
+	General::PortAlignment alignment;
+	
+	// if the port maps are for different logical ports
+	if (portMap1->logicalPort_ != portMap2->logicalPort_) {
+		return alignment;
+	}
+
+	// if port 1 is vectored on the port map
+	if (portMap1->physicalVector_) {
+		phys1LeftBound = portMap1->physicalVector_->getLeft();
+		phys1RightBound = portMap1->physicalVector_->getRight();
+	}
+
+	// if port 2 is vectored on the port map
+	if (portMap2->physicalVector_) {
+		phys2LeftBound = portMap2->physicalVector_->getLeft();
+		phys2RightBound = portMap2->physicalVector_->getRight();
+	}
+
+	// if both have vectored logical signals
+	if (portMap1->logicalVector_ && portMap2->logicalVector_) {
+
+		// if the vectored ports don't have any common bounds
+		if (portMap1->logicalVector_->getRight() > portMap2->logicalVector_->getLeft() ||
+			portMap1->logicalVector_->getLeft() < portMap2->logicalVector_->getRight()) {
+				return alignment;
+		}
+
+		int logicalLeft = qMin(portMap1->logicalVector_->getLeft(), 
+			portMap2->logicalVector_->getLeft());
+		int logicalRight = qMax(portMap1->logicalVector_->getRight(),
+			portMap2->logicalVector_->getRight());
+
+		{
+			// count how much the left bound of port 1 has to be adjusted down
+			int downSize = abs(portMap1->logicalVector_->getLeft() - logicalLeft);
+			// count how must the right bound of  port 1 has to be adjusted up
+			int upSize = abs(logicalRight - portMap1->logicalVector_->getRight());
+
+			alignment.port1Left_ = phys1LeftBound - downSize;
+			alignment.port1Right_ = phys1RightBound + upSize;
+		}
+		{
+			// count how much the left bound of port 2 has to be adjusted down
+			int downSize = abs(portMap2->logicalVector_->getLeft() - logicalLeft);
+			// count how must the right bound of  port 2 has to be adjusted up
+			int upSize = abs(logicalRight - portMap2->logicalVector_->getRight());
+
+			alignment.port2Left_ = phys2LeftBound - downSize;
+			alignment.port2Right_ = phys2RightBound + upSize;
+		}
+	}
+	// if port map1 has vectored logical signal
+	else if (portMap1->logicalVector_ && !portMap2->logicalVector_) {
+
+		// port 1 uses the original physical bounds
+		alignment.port1Left_ = phys1LeftBound;
+		alignment.port1Right_ = phys1RightBound;
+
+		// port 2 uses the bounds of the logical port of port 1
+		alignment.port2Left_ = portMap1->logicalVector_->getLeft();
+		alignment.port2Right_ = portMap1->logicalVector_->getRight();
+	}
+	// if port map2 has vectored logical signal
+	else if (!portMap1->logicalVector_ && portMap2->logicalVector_) {
+
+		// port 1 uses the bounds of the logical port of port 2
+		alignment.port1Left_ = portMap2->logicalVector_->getLeft();
+		alignment.port1Right_ = portMap2->logicalVector_->getRight();
+
+		// port 2 uses the original physical bounds
+		alignment.port2Left_ = phys2LeftBound;
+		alignment.port2Right_ = phys2RightBound;
+	}
+	// if neither has vectored logical signal
+	else {
+
+		// both ports use the original physical bounds
+		alignment.port1Left_ = phys1LeftBound;
+		alignment.port1Right_ = phys1RightBound;
+		alignment.port2Left_ = phys2LeftBound;
+		alignment.port2Right_ = phys2RightBound;
+	}
+
+	// check if the sizes of the ports match
+	int port1Size = phys1LeftBound - phys1RightBound + 1;
+	int port2Size = phys2LeftBound - phys2RightBound + 1;
+	if (port1Size != port2Size) {
+		alignment.invalidAlignment_ = true;
+	}
+	else {
+		alignment.invalidAlignment_ = false;
+	}
+	return alignment;
+}
+
 QString General::toPhysString( const PortMap& portMap ) {
 	QString str = portMap.physicalPort_;
 	// if the physical port is vectored.
@@ -977,9 +1108,10 @@ QString General::getAbsolutePath(const QString originalPath,
 	return file.canonicalFilePath();
 }
 
-General::NameGroup::NameGroup(): name_(), displayName_(), description_()
-{
-
+General::NameGroup::NameGroup(): 
+name_(),
+displayName_(),
+description_() {
 }
 
 General::NameGroup::NameGroup(QDomNode& node): name_(), displayName_(),

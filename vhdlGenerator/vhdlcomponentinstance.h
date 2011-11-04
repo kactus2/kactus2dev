@@ -11,6 +11,8 @@
 #include "vhdlportmap.h"
 #include "vhdlconnectionendpoint.h"
 
+#include <models/component.h>
+
 #include <LibraryManager/vlnv.h>
 
 #include <QObject>
@@ -120,6 +122,20 @@ public:
 	 * \return VLNV Identifies the IP-Xact model of the instance's type.
 	*/
 	VLNV vlnv() const;
+
+	/*! \brief Get pointer to the IP-Xact model of the component type.
+	 *
+	 * \return QSharedPointer<Component> Pointer to the IP-Xact model.
+	*/
+	QSharedPointer<Component> componentModel() const;
+
+	/*! \brief Get the type of the specified port.
+	 *
+	 * \param portName The name of the port on the component.
+	 *
+	 * \return QString The type of the port.
+	*/
+	QString portType(const QString& portName) const;
 
 signals:
 

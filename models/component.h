@@ -818,6 +818,19 @@ public:
 	*/
 	bool hasPorts() const;
 
+	/*! \brief Check if the specified port exists on the implementation of the component.
+	 *
+	 * This function checks the direction of a wired port and returns true for
+	 * directions: in, out and inout.
+	 * 
+	 * If port is not found then false is returned.
+	 * 
+	 * \param portName The name of the port to check.
+	 *
+	 * \return bool True if port's direction is in, out or inout.
+	*/
+	bool isPhysicalPort(const QString& portName) const;
+
 private:
 
 	/*! \brief Specifies all the interfaces for this component.

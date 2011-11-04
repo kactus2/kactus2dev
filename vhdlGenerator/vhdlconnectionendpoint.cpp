@@ -17,13 +17,17 @@ portRight_(-1) {
 }
 
 VhdlConnectionEndPoint::VhdlConnectionEndPoint(const QString& instanceName, 
-											   const QString& portName ):
+											   const QString& portName,
+											   int portLeft /*= -1*/, 
+											   int portRight /*= -1*/, 
+											   int signalLeft /*= -1*/,
+											   int signalRight /*= -1*/ ):
 instanceName_(instanceName),
 portName_(portName),
-signalLeft_(-1),
-signalRight_(-1),
-portLeft_(-1),
-portRight_(-1) {
+signalLeft_(signalLeft),
+signalRight_(signalRight),
+portLeft_(portLeft),
+portRight_(portRight) {
 }
 
 VhdlConnectionEndPoint::VhdlConnectionEndPoint( const VhdlConnectionEndPoint& other ):

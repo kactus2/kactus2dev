@@ -1505,6 +1505,15 @@ bool Component::hasPorts() const {
 		return model_->hasPorts();
 }
 
+bool Component::isPhysicalPort( const QString& portName ) const {
+	if (!model_) {
+		return false;
+	}
+	else {
+		return model_->isPhysicalPort(portName);
+	}
+}
+
 bool Component::hasInterfaces() const {
 	return !busInterfaces_.isEmpty();
 }

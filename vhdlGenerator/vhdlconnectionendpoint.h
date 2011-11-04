@@ -28,9 +28,18 @@ public:
 	 *
 	 * \param instanceName The name of the instance for the end point.
 	 * \param portName The name of the port for the end point.
+	 * \param portLeft The left bound of the port.
+	 * \param portRight The right bound of the port.
+	 * \param signalLeft The left bound of the signal.
+	 * \param signalRight The right bound of the signal.
 	 *
 	*/
-	VhdlConnectionEndPoint(const QString& instanceName,	const QString& portName);
+	VhdlConnectionEndPoint(const QString& instanceName,	
+		const QString& portName, 
+		int portLeft = -1,
+		int portRight = -1,
+		int signalLeft = -1,
+		int signalRight = -1);
 
 	//! \brief Copy constructor
 	VhdlConnectionEndPoint(const VhdlConnectionEndPoint& other);

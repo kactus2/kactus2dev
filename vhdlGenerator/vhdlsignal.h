@@ -91,6 +91,14 @@ public:
 	*/
 	void setRight(int right);
 
+	/*! \brief Set bounds for the signal.
+	 *
+	 * \param left The left bound for signal.
+	 * \param right The right bound for signal.
+	 *
+	*/
+	void setBounds(int left, int right);
+
 private:
 	//! \brief No copying
 	VhdlSignal(const VhdlSignal& other);

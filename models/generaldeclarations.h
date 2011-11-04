@@ -616,6 +616,54 @@ QString toLogicalString(const PortMap& portMap);
 */
 QString port2String(const QString& portName, int leftBound, int rightBound);
 
+struct PortAlignment {
+	
+	//! \brief The calculated left bound for port 1.
+	int port1Left_;
+
+	//! \brief The calculated right bound for port 1.
+	int port1Right_;
+
+	//! \brief The calculated left bound for port 2.
+	int port2Left_;
+
+	//! \brief The calculated right bound for port 2.
+	int port2Right_;
+
+	//! \brief Tells if the calculated alignment is valid or not.
+	bool invalidAlignment_;
+
+	/*! \brief The default constructor
+	 *
+	 * Constructs the struct with all bounds valued at -1 and invalid as true.
+	*/
+	PortAlignment();
+
+	//! \brief Copy constructor
+	PortAlignment(const PortAlignment& other);
+
+	//! \brief Assignment operator
+	PortAlignment& operator=(const PortAlignment& other);
+};
+
+/*! \brief Calculate the alignment for the ports from the port maps.
+ *
+ * \param portMap1 Pointer to the port map of port 1.
+ * \param phys1LeftBound The left bound for the physical port 1.
+ * \param phys1RightBound The right bound for the physical port1.
+ * \param portMap2 Pointer to the port map of port 2.
+ * \param phys2LeftBound The left bound for the physical port 2.
+ * \param phys2RightBound The right bound for the physical port 2.
+ *
+ * \return General::PortAlignment Contains the alignments for the ports.
+*/
+PortAlignment calculatePortAlignment(const PortMap* portMap1, 
+									 int phys1LeftBound,
+									 int phys1RightBound,
+									 const PortMap* portMap2,
+									 int phys2LeftBound,
+									 int phys2RightBound);
+
 /*! \brief The  NameGroup matches the spirit:nameGroup element in IP-Xact.
  * 
  */

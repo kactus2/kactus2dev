@@ -420,6 +420,22 @@ General::Direction Model::getPortDirection( const QString& portName ) const {
 	return ports_.value(portName)->getDirection();
 }
 
+bool Model::isPhysicalPort( const QString& portName ) const {
+	// if port is not found
+	if (!ports_.contains(portName)) {
+		return false;
+	}
+	// if port direction is unspecified or phantom
+	else if (ports_.value(portName)->getDirection() == General::DIRECTION_INVALID ||
+		ports_.value(portName)->getDirection() == General::DIRECTION_PHANTOM) {
+			return false;
+	}
+	// if port direction is valid
+	else {
+		return true;
+	}
+}
+
 QStringList Model::getHierViews() const {
 
 	QStringList viewList;
