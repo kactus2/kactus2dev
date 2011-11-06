@@ -66,6 +66,11 @@ public:
      */
     void setMode(DrawMode mode);
 
+    /*!
+     *  Sets the block diagram locked/unlocked.
+     */
+    void setProtection(bool locked);
+
     /*! \brief Create a Design that represents this BlockDiagram
      *
      * \param vlnv The vlnv to be set for the design
@@ -138,6 +143,11 @@ public:
 	 * \return Pointer to the design widget that owns this scene.
 	*/
 	virtual DesignWidget* parent() const;
+
+    /*!
+     *  Returns true if the diagram is in locked state.
+     */
+    bool isProtected() const;
 
 signals:
     /*! \brief Signal openDesign is emitted when user double clicks on a hierarchical component
@@ -324,6 +334,9 @@ private:
 
     //! The edit provider for undo/redo.
     GenericEditProvider& editProvider_;
+
+    //! If true, the diagram is locked and cannot be modified.
+    bool locked_;
 };
 
 #endif // BLOCKDIAGRAM_H

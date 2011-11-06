@@ -230,6 +230,12 @@ QVariant DiagramComponent::itemChange(GraphicsItemChange change,
 //-----------------------------------------------------------------------------
 void DiagramComponent::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
+    // Discard movement if the diagram is protected.
+    if (static_cast<BlockDiagram*>(scene())->isProtected())
+    {
+        return;
+    }
+
     // Disable connection updates so that Qt does not update the connections
     // before the possible column change has been done.
     connUpdateDisabled_ = true;

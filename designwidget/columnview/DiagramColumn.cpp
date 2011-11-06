@@ -24,6 +24,7 @@
 #include "../diagramcomponent.h"
 #include "../diagraminterconnection.h"
 #include "../diagramport.h"
+#include "../blockdiagram.h"
 
 #include <common/GenericEditProvider.h>
 #include <common/layouts/VStackedLayout.h>
@@ -172,6 +173,12 @@ void DiagramColumn::setOffsetY(qreal y)
 //-----------------------------------------------------------------------------
 void DiagramColumn::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
+    // Discard mouse move if the diagram is protected.
+    if (static_cast<BlockDiagram*>(scene())->isProtected())
+    {
+        return;
+    }
+
     QGraphicsRectItem::mouseMoveEvent(event);
 
     setZValue(1001.0);

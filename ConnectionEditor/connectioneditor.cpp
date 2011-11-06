@@ -188,6 +188,8 @@ void ConnectionEditor::setConnection( DiagramInterconnection* connection ) {
 		this, SLOT(refresh()), Qt::UniqueConnection);
 
 	setPortMaps();
+
+    bool locked = static_cast<BlockDiagram*>(connection->scene())->isProtected();
 	
 	// if either end point is hierarchical then there is no description to set
 	if (endPoint1->isHierarchical() || connection->endPoint2()->isHierarchical()) {
@@ -203,13 +205,13 @@ void ConnectionEditor::setConnection( DiagramInterconnection* connection ) {
 		nameEdit_.setDisabled(true);
 	}
 	else {
-		descriptionEdit_.setEnabled(true);
+		descriptionEdit_.setEnabled(!locked);
 		descriptionLabel_.show();
 		descriptionEdit_.show();
 
 		nameLabel_.show();
 		nameEdit_.show();
-		nameEdit_.setEnabled(true);
+		nameEdit_.setEnabled(!locked);
 	}
 
 	// set the objects visible

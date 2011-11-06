@@ -137,6 +137,18 @@ void DiagramPort::updateInterface()
     nameLabel_->setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">"
                         +busInterface_->getName().left(15)+"</div>");
 
+    qreal nameWidth = nameLabel_->boundingRect().width();
+    qreal nameHeight = nameLabel_->boundingRect().height();
+
+    if (pos().x() < 0)
+    {
+        nameLabel_->setPos(nameHeight/2, GridSize/2);
+    }
+    else
+    {
+        nameLabel_->setPos(-nameHeight/2, GridSize/2 + nameWidth);
+    }
+
     emit contentChanged();
 }
 
@@ -344,6 +356,12 @@ bool DiagramPort::isDirectionFixed() const
 //-----------------------------------------------------------------------------
 void DiagramPort::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
+    // Discard mouse move if the diagram is protected.
+    if (static_cast<BlockDiagram*>(scene())->isProtected())
+    {
+        return;
+    }
+
     DiagramConnectionEndPoint::mouseMoveEvent(event);
     encompassingComp()->onMovePort(this);
 }

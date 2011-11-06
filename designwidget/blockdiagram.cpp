@@ -67,7 +67,7 @@ component_(),
 designConf_(),
 dragCompType_(CIT_NONE),
 dragBus_(false),
-editProvider_(editProvider)
+editProvider_(editProvider), locked_(false)
 {
 
     setSceneRect(0, 0, 100000, 100000);
@@ -1269,7 +1269,8 @@ void BlockDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
     dragCompType_ = CIT_NONE;
     dragBus_ = false;
 
-    if (event->mimeData()->hasFormat("data/vlnvptr"))
+    // Allow drag only if the diagram is not locked and the dragged object is a vlnv.
+    if (!locked_ && event->mimeData()->hasFormat("data/vlnvptr"))
     {
         event->acceptProposedAction();
 
@@ -1768,4 +1769,22 @@ QList<DiagramComponent*> BlockDiagram::getInstances() const {
 
 DesignWidget* BlockDiagram::parent() const {
 	return parent_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: setProtection()
+//-----------------------------------------------------------------------------
+void BlockDiagram::setProtection(bool locked)
+{
+    locked_ = locked;
+    clearSelection();
+    emit clearItemSelection();
+}
+
+//-----------------------------------------------------------------------------
+// Function: isProtected()
+//-----------------------------------------------------------------------------
+bool BlockDiagram::isProtected() const
+{
+    return locked_;
 }

@@ -243,8 +243,11 @@ void DiagramInterconnection::setRoute(QList<QPointF> path)
     QPainterPathStroker stroker;
     setPath(stroker.createStroke(painterPath));
 
-    pathPoints_ = path;
-    emit contentChanged();
+    if (path != pathPoints_)
+    {
+        pathPoints_ = path;
+        emit contentChanged();
+    }
 }
 
 QString DiagramInterconnection::name() const
@@ -452,6 +455,12 @@ void DiagramInterconnection::mousePressEvent(QGraphicsSceneMouseEvent *mouseEven
 
 void DiagramInterconnection::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
+    // Discard mouse move if the diagram is protected.
+    if (static_cast<BlockDiagram*>(scene())->isProtected())
+    {
+        return;
+    }
+
     QPointF newPos = snapPointToGrid(mouseEvent->pos());
 
     if (selectionType_ == END)

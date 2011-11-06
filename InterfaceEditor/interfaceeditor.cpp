@@ -18,6 +18,7 @@
 #include <designwidget/diagraminterface.h>
 #include <designwidget/DiagramChangeCommands.h>
 #include <designwidget/blockdiagram.h>
+#include <designwidget/diagramcomponent.h>
 
 #include <common/validators/vhdlNameValidator/vhdlnamevalidator.h>
 
@@ -114,9 +115,9 @@ void InterfaceEditor::setInterface( DiagramConnectionEndPoint* interface ) {
 
 	interface_ = interface;
 
-	Q_ASSERT(interface->getBusInterface());
+    Q_ASSERT(interface->getBusInterface());
 	busType_.setVLNV(interface->getBusInterface()->getBusType());
-	absType_.setVLNV(interface->getBusInterface()->getAbstractionType());
+    absType_.setVLNV(interface->getBusInterface()->getAbstractionType());
 
 	// set text for the name editor, signal must be disconnected when name is set 
 	// to avoid loops 
@@ -152,7 +153,11 @@ void InterfaceEditor::setInterface( DiagramConnectionEndPoint* interface ) {
 	connect(interface_, SIGNAL(contentChanged()), 
 		this, SLOT(refresh()), Qt::UniqueConnection);
 
-	if (interface->isHierarchical()) {
+    bool locked = static_cast<BlockDiagram*>(interface->scene())->isProtected();
+
+	if (!locked && (interface->isHierarchical() ||
+                    (interface->encompassingComp() != 0 &&
+                     !interface->encompassingComp()->componentModel()->getVlnv()->isValid()))) {
 		nameEdit_.setEnabled(true);
 		modeEdit_.setEnabled(true);
 		mappings_.setEnabled(true);

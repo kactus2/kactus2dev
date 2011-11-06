@@ -99,6 +99,7 @@ editProvider_() {
 	connect(diagram_, SIGNAL(componentInstanceRemoved(DiagramComponent*)),
 		this, SIGNAL(componentInstanceRemoved(DiagramComponent*)), Qt::UniqueConnection);
 
+    diagram_->setProtection(false);
 	diagram_->setMode(MODE_SELECT);
 
     view_ = new QGraphicsView(this);
@@ -333,6 +334,12 @@ const VLNV *DesignWidget::getOpenDocument() const
 
 void DesignWidget::keyPressEvent(QKeyEvent *event)
 {
+    // If the document is protected, skip all delete events.
+    if (isProtected())
+    {
+        return;
+    }
+
     if (event->key() == Qt::Key_Delete) {
         if (diagram_->selectedItems().empty()) {
             return;
@@ -751,7 +758,7 @@ void DesignWidget::setMode(DrawMode mode)
 //-----------------------------------------------------------------------------
 unsigned int DesignWidget::getSupportedDrawModes() const
 {
-    if (view_->isInteractive())
+    if (!isProtected())
     {
         return (MODE_SELECT | MODE_CONNECT | MODE_INTERFACE | MODE_DRAFT);
     }
@@ -793,7 +800,8 @@ VLNV DesignWidget::getComponentVLNV() const {
 void DesignWidget::setProtection(bool locked)
 {
     TabDocument::setProtection(locked);
-    view_->setInteractive(!locked);
+    //view_->setInteractive(!locked).
+    diagram_->setProtection(locked);
     diagram_->setMode(MODE_SELECT);
 }
 

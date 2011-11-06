@@ -733,7 +733,7 @@ void MainWindow::setupMessageConsole() {
 void MainWindow::setupInstanceEditor() {
 
 	QDockWidget* instanceDock = new QDockWidget(tr("Component Instance Details"), this);
-	instanceDock->setObjectName(tr("Instance editor"));
+	instanceDock->setObjectName(tr("Instance Editor"));
 	instanceDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 	instanceDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
 
@@ -747,8 +747,8 @@ void MainWindow::setupInstanceEditor() {
 
 void MainWindow::setupConfigurationEditor() {
 
-	QDockWidget* configurationDock = new QDockWidget(tr("Configuration details"), this);
-	configurationDock->setObjectName(tr("Configuration editor"));
+	QDockWidget* configurationDock = new QDockWidget(tr("Configuration Details"), this);
+	configurationDock->setObjectName(tr("Configuration Editor"));
 	configurationDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 	configurationDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
 
@@ -762,8 +762,8 @@ void MainWindow::setupConfigurationEditor() {
 
 void MainWindow::setupInterfaceEditor() {
 
-	QDockWidget* interfaceDock = new QDockWidget(tr("Interface editor"), this);
-	interfaceDock->setObjectName(tr("Interface editor"));
+	QDockWidget* interfaceDock = new QDockWidget(tr("Interface Editor"), this);
+	interfaceDock->setObjectName(tr("Interface Editor"));
 	interfaceDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 	interfaceDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
 
@@ -774,8 +774,8 @@ void MainWindow::setupInterfaceEditor() {
 }
 
 void MainWindow::setupConnectionEditor() {
-	QDockWidget* connectionDock = new QDockWidget(tr("Connection editor"), this);
-	connectionDock->setObjectName(tr("Connection editor"));
+	QDockWidget* connectionDock = new QDockWidget(tr("Connection Editor"), this);
+	connectionDock->setObjectName(tr("Connection Editor"));
 	connectionDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 	connectionDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
 

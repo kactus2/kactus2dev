@@ -414,6 +414,12 @@ QVariant DiagramInterface::itemChange(GraphicsItemChange change,
 //-----------------------------------------------------------------------------
 void DiagramInterface::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
+    // Discard mouse move if the diagram is protected.
+    if (static_cast<BlockDiagram*>(scene())->isProtected())
+    {
+        return;
+    }
+
     DiagramConnectionEndPoint::mouseMoveEvent(event);
 
     setPos(parentItem()->mapFromScene(oldColumn_->mapToScene(pos())));

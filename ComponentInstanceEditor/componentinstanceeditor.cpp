@@ -80,10 +80,12 @@ void ComponentInstanceEditor::setComponent( DiagramComponent* component ) {
 	nameGroup_.setName(component->name());
 	nameGroup_.setDisplayName(component->displayName());
 	nameGroup_.setDescription(component->description());
+    nameGroup_.setEnabled(!designWidget->isProtected());
 	nameGroup_.show();
 
 	// set the component's configurable elements
 	configurableElements_.setComponent(component);
+    configurableElements_.setEnabled(!designWidget->isProtected());
 	configurableElements_.show();
 
 	connect(component_, SIGNAL(nameChanged(const QString&, const QString&)),
