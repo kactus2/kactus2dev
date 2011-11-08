@@ -54,7 +54,7 @@ ProgramEntityItem::ProgramEntityItem(QSharedPointer<Component> component,
                                      QString const& displayName,
                                      QString const& description,
                                      QMap<QString, QString> const& configurableElementValues) :
-SWComponentItem(QRectF(-WIDTH / 2, 0, WIDTH, TOP_MARGIN + BOTTOM_MARGIN),
+ComponentItem(QRectF(-WIDTH / 2, 0, WIDTH, TOP_MARGIN + BOTTOM_MARGIN),
                 component, instanceName, displayName, description, configurableElementValues),
 endpointStack_(0), appPlaceholder_(0), appItem_(0)
 {
@@ -187,6 +187,12 @@ void ProgramEntityItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 //-----------------------------------------------------------------------------
 void ProgramEntityItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
+    // Discard mouse move if the diagram is protected.
+    if (static_cast<EndpointDesignDiagram*>(scene())->isProtected())
+    {
+        return;
+    }
+
     QGraphicsItem::mouseMoveEvent(event);
     setZValue(1001.0);
 
@@ -490,7 +496,7 @@ MappingComponentItem* ProgramEntityItem::getMappingComponent()
 //-----------------------------------------------------------------------------
 void ProgramEntityItem::updateComponent()
 {
-    SWComponentItem::updateComponent();
+    ComponentItem::updateComponent();
 
     VLNV* vlnv = componentModel()->getVlnv();
 

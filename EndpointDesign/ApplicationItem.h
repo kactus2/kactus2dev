@@ -12,14 +12,14 @@
 #ifndef APPLICATIONITEM_H
 #define APPLICATIONITEM_H
 
-#include "SWComponentItem.h"
+#include <common/graphicsItems/ComponentItem.h>
 
 class ProgramEntityItem;
 
 //-----------------------------------------------------------------------------
 //! ApplicationItem class.
 //-----------------------------------------------------------------------------
-class ApplicationItem : public SWComponentItem
+class ApplicationItem : public ComponentItem
 {
     Q_OBJECT 
 

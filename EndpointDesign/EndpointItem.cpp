@@ -356,6 +356,12 @@ void EndpointItem::editEndpoint()
 //-----------------------------------------------------------------------------
 void EndpointItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
+    // Discard mouse move if the diagram is protected.
+    if (static_cast<EndpointDesignDiagram*>(scene())->isProtected())
+    {
+        return;
+    }
+
     QGraphicsItem::mouseMoveEvent(event);
 
     setZValue(100);

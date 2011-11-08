@@ -11,14 +11,14 @@
 
 #include "SystemChangeCommands.h"
 
-#include "SWComponentItem.h"
+#include <common/graphicsItems/ComponentItem.h>
 
 #include <models/component.h>
 
 //-----------------------------------------------------------------------------
 // Function: SWComponentPacketizeCommand()
 //-----------------------------------------------------------------------------
-SWComponentPacketizeCommand::SWComponentPacketizeCommand(SWComponentItem* component,
+SWComponentPacketizeCommand::SWComponentPacketizeCommand(ComponentItem* component,
                                                          VLNV const& vlnv,
                                                          QUndoCommand* parent) : QUndoCommand(parent),
                                                                                  component_(component),

@@ -132,6 +132,11 @@ public:
     void setMode(DrawMode mode);
 
     /*!
+     *  Sets the block diagram locked/unlocked.
+     */
+    void setProtection(bool locked);
+
+    /*!
      *  Returns the column layout.
      */
     SystemColumnLayout* getColumnLayout();
@@ -141,14 +146,19 @@ public:
      */
     GenericEditProvider& getEditProvider();
 
+    /*!
+     *  Returns true if the diagram is in locked state.
+     */
+    bool isProtected() const;
+
     void onVerticalScroll(qreal y);
 
 public slots:
     //! Called when a component instance is added to the diagram.
-    void onComponentInstanceAdded(SWComponentItem* item);
+    void onComponentInstanceAdded(ComponentItem* item);
 
     //! Called when a component instance is remove from the diagram.
-    void onComponentInstanceRemoved(SWComponentItem* item);
+    void onComponentInstanceRemoved(ComponentItem* item);
 
 signals:
     //! \brief Emitted when component with given vlnv should be opened in editor.
@@ -173,10 +183,10 @@ signals:
     void noticeMessage(const QString& noticeMessage);
 
     //! Signaled when a new component is instantiated to the design.
-    void componentInstantiated(SWComponentItem* item);
+    void componentInstantiated(ComponentItem* item);
 
     //! Signaled when a component instance is removed from the design.
-    void componentInstanceRemoved(SWComponentItem* item);
+    void componentInstanceRemoved(ComponentItem* item);
      
 protected:
     //! Called when the user presses a mouse button.
@@ -257,7 +267,7 @@ private:
      *      @param [in] item          The SW component item to packetize.
      *      @param [in] itemTypeName  The item type name (e.g. "Application").
      */
-    void packetizeSWComponent(SWComponentItem* item, QString const& itemTypeName);
+    void packetizeSWComponent(ComponentItem* item, QString const& itemTypeName);
     
     //! MappingComponentList type.
     typedef QList<MappingComponentItem*> MappingComponentList;
@@ -310,6 +320,9 @@ private:
 
     //! The edit provider for undo/redo.
     GenericEditProvider& editProvider_;
+
+    //! If true, the diagram is locked and cannot be modified.
+    bool locked_;
 };
 
 //-----------------------------------------------------------------------------

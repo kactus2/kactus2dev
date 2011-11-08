@@ -128,8 +128,11 @@ void EndpointConnection::setRoute(QList<QPointF> path)
     QPainterPathStroker stroker;
     setPath(stroker.createStroke(painterPath));
 
-    pathPoints_ = path;
-    emit contentChanged();
+    if (path != pathPoints_)
+    {
+        pathPoints_ = path;
+        emit contentChanged();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -650,6 +653,12 @@ void EndpointConnection::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 //-----------------------------------------------------------------------------
 void EndpointConnection::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
+    // Discard mouse move if the diagram is protected.
+    if (static_cast<EndpointDesignDiagram*>(scene())->isProtected())
+    {
+        return;
+    }
+
     QPointF newPos = snapPointToGrid(mouseEvent->pos());
 
     if (selectionType_ == SEGMENT)

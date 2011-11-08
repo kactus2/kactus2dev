@@ -222,6 +222,12 @@ bool EndpointDesignWidget::save()
 //-----------------------------------------------------------------------------
 void EndpointDesignWidget::keyPressEvent(QKeyEvent* event)
 {
+    // If the document is protected, skip all delete events.
+    if (isProtected())
+    {
+        return;
+    }
+
     if (event->key() == Qt::Key_Delete)
     {
         if (diagram_->selectedItems().empty())
@@ -239,10 +245,10 @@ void EndpointDesignWidget::keyPressEvent(QKeyEvent* event)
             {
                 QSharedPointer<MappingCompDeleteCommand> cmd(new MappingCompDeleteCommand(item));
 
-                connect(cmd.data(), SIGNAL(componentInstantiated(SWComponentItem*)),
-                    diagram_, SIGNAL(componentInstantiated(SWComponentItem*)), Qt::UniqueConnection);
-                connect(cmd.data(), SIGNAL(componentInstanceRemoved(SWComponentItem*)),
-                    diagram_, SIGNAL(componentInstanceRemoved(SWComponentItem*)), Qt::UniqueConnection);
+                connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+                    diagram_, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+                connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+                    diagram_, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
                 editProvider_->addCommand(cmd);
             }
@@ -252,10 +258,10 @@ void EndpointDesignWidget::keyPressEvent(QKeyEvent* event)
             ProgramEntityItem* item = static_cast<ProgramEntityItem*>(selected);
             QSharedPointer<ProgramEntityDeleteCommand> cmd(new ProgramEntityDeleteCommand(item));
 
-            connect(cmd.data(), SIGNAL(componentInstantiated(SWComponentItem*)),
-                diagram_, SIGNAL(componentInstantiated(SWComponentItem*)), Qt::UniqueConnection);
-            connect(cmd.data(), SIGNAL(componentInstanceRemoved(SWComponentItem*)),
-                diagram_, SIGNAL(componentInstanceRemoved(SWComponentItem*)), Qt::UniqueConnection);
+            connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+                diagram_, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+            connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+                diagram_, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
             editProvider_->addCommand(cmd);
         }
@@ -264,10 +270,10 @@ void EndpointDesignWidget::keyPressEvent(QKeyEvent* event)
             ApplicationItem* item = static_cast<ApplicationItem*>(selected);
             QSharedPointer<ApplicationDeleteCommand> cmd(new ApplicationDeleteCommand(item));
 
-            connect(cmd.data(), SIGNAL(componentInstantiated(SWComponentItem*)),
-                diagram_, SIGNAL(componentInstantiated(SWComponentItem*)), Qt::UniqueConnection);
-            connect(cmd.data(), SIGNAL(componentInstanceRemoved(SWComponentItem*)),
-                diagram_, SIGNAL(componentInstanceRemoved(SWComponentItem*)), Qt::UniqueConnection);
+            connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+                diagram_, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+            connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+                diagram_, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
             editProvider_->addCommand(cmd);
         }
@@ -276,10 +282,10 @@ void EndpointDesignWidget::keyPressEvent(QKeyEvent* event)
             PlatformComponentItem* item = static_cast<PlatformComponentItem*>(selected);
             QSharedPointer<PlatformCompDeleteCommand> cmd(new PlatformCompDeleteCommand(item));
 
-            connect(cmd.data(), SIGNAL(componentInstantiated(SWComponentItem*)),
-                    diagram_, SIGNAL(componentInstantiated(SWComponentItem*)), Qt::UniqueConnection);
-            connect(cmd.data(), SIGNAL(componentInstanceRemoved(SWComponentItem*)),
-                    diagram_, SIGNAL(componentInstanceRemoved(SWComponentItem*)), Qt::UniqueConnection);
+            connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+                    diagram_, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+            connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+                    diagram_, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
             editProvider_->addCommand(cmd);
         }
@@ -369,7 +375,7 @@ VLNV const* EndpointDesignWidget::getOpenDocument() const
 void EndpointDesignWidget::setProtection(bool locked)
 {
     TabDocument::setProtection(locked);
-    view_->setInteractive(!locked);
+    diagram_->setProtection(locked);
     diagram_->setMode(MODE_SELECT);
 }
 

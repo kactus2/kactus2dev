@@ -44,7 +44,7 @@ directoryEdit_(this) {
 	QLabel *directoryLabel = new QLabel(tr("Directory:"), this);
 
 	QSettings settings;
-	QString defaultDir = settings.value("general/defaultProjDir", QCoreApplication::applicationDirPath()).toString();
+	QString defaultDir = settings.value("general/defaultDir", QCoreApplication::applicationDirPath()).toString();
 	directoryEdit_.setText(defaultDir);
 	connect(&directoryEdit_, SIGNAL(textChanged(QString const&)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -116,7 +116,7 @@ void NewBusPage::selectDirectory() {
 void NewBusPage::updateDirectory()
 {
     QSettings settings;
-    QString dir = settings.value("general/defaultProjDir", QCoreApplication::applicationDirPath()).toString();
+    QString dir = settings.value("general/defaultDir", QCoreApplication::applicationDirPath()).toString();
 
     VLNV vlnv = vlnvEditor_.getVLNV();
 

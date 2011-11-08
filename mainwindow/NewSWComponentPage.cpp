@@ -74,7 +74,7 @@ NewSWComponentPage::NewSWComponentPage(LibraryInterface* libInterface,
     QLabel *directoryLabel = new QLabel(tr("Directory:"), this);
 
     QSettings settings;
-    QString defaultDir = settings.value("general/defaultProjDir", QCoreApplication::applicationDirPath()).toString();
+    QString defaultDir = settings.value("general/defaultDir", QCoreApplication::applicationDirPath()).toString();
     directoryEdit_ = new QLineEdit(defaultDir, this);
     connect(directoryEdit_, SIGNAL(textChanged(QString const&)), this, SIGNAL(contentChanged()));
 
@@ -183,7 +183,7 @@ bool NewSWComponentPage::onPageChange()
 void NewSWComponentPage::updateDirectory()
 {
     QSettings settings;
-    QString dir = settings.value("general/defaultProjDir", QCoreApplication::applicationDirPath()).toString();
+    QString dir = settings.value("general/defaultDir", QCoreApplication::applicationDirPath()).toString();
 
     VLNV vlnv = vlnvEditor_->getVLNV();
 

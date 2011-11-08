@@ -60,15 +60,15 @@ EndpointDesignDiagram::EndpointDesignDiagram(LibraryInterface* lh, MainWindow* m
                                                                          tempConnection_(0),
                                                                          tempPotentialEndingEndPoints_(0),
                                                                          highlightedEndPoint_(0),
-                                                                         instanceNames_()
+                                                                         instanceNames_(), locked_(false)
                                                                          
 {
     setSceneRect(0, 0, 100000, 100000);
 
-    connect(this, SIGNAL(componentInstantiated(SWComponentItem*)),
-            this, SLOT(onComponentInstanceAdded(SWComponentItem*)), Qt::UniqueConnection);
-    connect(this, SIGNAL(componentInstanceRemoved(SWComponentItem*)),
-            this, SLOT(onComponentInstanceRemoved(SWComponentItem*)), Qt::UniqueConnection);
+    connect(this, SIGNAL(componentInstantiated(ComponentItem*)),
+            this, SLOT(onComponentInstanceAdded(ComponentItem*)), Qt::UniqueConnection);
+    connect(this, SIGNAL(componentInstanceRemoved(ComponentItem*)),
+            this, SLOT(onComponentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -313,10 +313,10 @@ void EndpointDesignDiagram::addMappingComponent(SystemColumn* column, QPointF co
 
     // Create an undo command and execute it.
     QSharedPointer<MappingCompAddCommand> cmd(new MappingCompAddCommand(column, item));
-    connect(cmd.data(), SIGNAL(componentInstantiated(SWComponentItem*)),
-        this, SIGNAL(componentInstantiated(SWComponentItem*)), Qt::UniqueConnection);
-    connect(cmd.data(), SIGNAL(componentInstanceRemoved(SWComponentItem*)),
-        this, SIGNAL(componentInstanceRemoved(SWComponentItem*)), Qt::UniqueConnection);
+    connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+        this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+    connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+        this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
     editProvider_.addCommand(cmd);
 }
@@ -368,7 +368,7 @@ void EndpointDesignDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
 {
     dragSW_ = false;
 
-    if (event->mimeData()->hasFormat("data/vlnvptr"))
+    if (!locked_ && event->mimeData()->hasFormat("data/vlnvptr"))
     {
         event->acceptProposedAction();
 
@@ -443,6 +443,10 @@ void EndpointDesignDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 
         event->accept();
     }
+    else
+    {
+        event->setDropAction(Qt::IgnoreAction);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -497,10 +501,10 @@ void EndpointDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 
                 // Create the undo command and execute it.
                 QSharedPointer<ProgramEntityAddCommand> cmd(new ProgramEntityAddCommand(mappingCompItem, item));
-                connect(cmd.data(), SIGNAL(componentInstantiated(SWComponentItem*)),
-                    this, SIGNAL(componentInstantiated(SWComponentItem*)), Qt::UniqueConnection);
-                connect(cmd.data(), SIGNAL(componentInstanceRemoved(SWComponentItem*)),
-                    this, SIGNAL(componentInstanceRemoved(SWComponentItem*)), Qt::UniqueConnection);
+                connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+                    this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+                connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+                    this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
                 editProvider_.addCommand(cmd);
             }
@@ -515,10 +519,10 @@ void EndpointDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 
                 // Create the undo command and execute it.
                 QSharedPointer<PlatformCompAddCommand> cmd(new PlatformCompAddCommand(mappingCompItem, item));
-                connect(cmd.data(), SIGNAL(componentInstantiated(SWComponentItem*)),
-                    this, SIGNAL(componentInstantiated(SWComponentItem*)), Qt::UniqueConnection);
-                connect(cmd.data(), SIGNAL(componentInstanceRemoved(SWComponentItem*)),
-                    this, SIGNAL(componentInstanceRemoved(SWComponentItem*)), Qt::UniqueConnection);
+                connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+                    this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+                connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+                    this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
                 editProvider_.addCommand(cmd);
             }
@@ -548,10 +552,10 @@ void EndpointDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 
             // Create the undo command and execute it.
             QSharedPointer<ApplicationAddCommand> cmd(new ApplicationAddCommand(progEntity, item));
-            connect(cmd.data(), SIGNAL(componentInstantiated(SWComponentItem*)),
-                this, SIGNAL(componentInstantiated(SWComponentItem*)), Qt::UniqueConnection);
-            connect(cmd.data(), SIGNAL(componentInstanceRemoved(SWComponentItem*)),
-                this, SIGNAL(componentInstanceRemoved(SWComponentItem*)), Qt::UniqueConnection);
+            connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+                this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+            connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+                this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
             editProvider_.addCommand(cmd);
         }
@@ -667,10 +671,10 @@ void EndpointDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *event)
             progEntity->setPos(mappingComp->mapFromScene(event->scenePos()));
 
             QSharedPointer<ProgramEntityAddCommand> cmd(new ProgramEntityAddCommand(mappingComp, progEntity));
-            connect(cmd.data(), SIGNAL(componentInstantiated(SWComponentItem*)),
-                this, SIGNAL(componentInstantiated(SWComponentItem*)), Qt::UniqueConnection);
-            connect(cmd.data(), SIGNAL(componentInstanceRemoved(SWComponentItem*)),
-                this, SIGNAL(componentInstanceRemoved(SWComponentItem*)), Qt::UniqueConnection);
+            connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+                this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+            connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+                this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
             editProvider_.addCommand(cmd);
         }
@@ -901,7 +905,7 @@ bool EndpointDesignDiagram::saveHierarchy() const
 
     foreach (QGraphicsItem* item, items())
     {
-        SWComponentItem* swCompItem = dynamic_cast<SWComponentItem*>(item);
+        ComponentItem* swCompItem = dynamic_cast<ComponentItem*>(item);
 
         if (swCompItem != 0 && !swCompItem->componentModel()->getVlnv()->isValid()) 
         {
@@ -1179,10 +1183,10 @@ void EndpointDesignDiagram::createApplication(ProgramEntityItem* progEntity)
 
     // Create the undo command and execute it.
     QSharedPointer<ApplicationAddCommand> cmd(new ApplicationAddCommand(progEntity, app));
-    connect(cmd.data(), SIGNAL(componentInstantiated(SWComponentItem*)),
-        this, SIGNAL(componentInstantiated(SWComponentItem*)), Qt::UniqueConnection);
-    connect(cmd.data(), SIGNAL(componentInstanceRemoved(SWComponentItem*)),
-        this, SIGNAL(componentInstanceRemoved(SWComponentItem*)), Qt::UniqueConnection);
+    connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+        this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+    connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+        this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
     editProvider_.addCommand(cmd);
 
@@ -1195,7 +1199,7 @@ void EndpointDesignDiagram::createApplication(ProgramEntityItem* progEntity)
 //-----------------------------------------------------------------------------
 // Function: packetizeApplication()
 //-----------------------------------------------------------------------------
-void EndpointDesignDiagram::packetizeSWComponent(SWComponentItem* item, QString const& itemTypeName)
+void EndpointDesignDiagram::packetizeSWComponent(ComponentItem* item, QString const& itemTypeName)
 {
     // Request the user to set the vlnv.
     NewObjectDialog dialog(lh_, VLNV::COMPONENT, false, (QWidget*)parent());
@@ -1256,10 +1260,10 @@ void EndpointDesignDiagram::createPlatformComponent(MappingComponentItem* mappin
 
     // Create the undo command and execute it.
     QSharedPointer<PlatformCompAddCommand> cmd(new PlatformCompAddCommand(mappingCompItem, platformComp));
-    connect(cmd.data(), SIGNAL(componentInstantiated(SWComponentItem*)),
-        this, SIGNAL(componentInstantiated(SWComponentItem*)), Qt::UniqueConnection);
-    connect(cmd.data(), SIGNAL(componentInstanceRemoved(SWComponentItem*)),
-        this, SIGNAL(componentInstanceRemoved(SWComponentItem*)), Qt::UniqueConnection);
+    connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+        this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+    connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+        this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
     editProvider_.addCommand(cmd);
 }
@@ -1275,7 +1279,7 @@ SystemColumnLayout* EndpointDesignDiagram::getColumnLayout()
 //-----------------------------------------------------------------------------
 // Function: onComponentInstanceAdded()
 //-----------------------------------------------------------------------------
-void EndpointDesignDiagram::onComponentInstanceAdded(SWComponentItem* item)
+void EndpointDesignDiagram::onComponentInstanceAdded(ComponentItem* item)
 {
     instanceNames_.append(item->name());
 }
@@ -1283,7 +1287,7 @@ void EndpointDesignDiagram::onComponentInstanceAdded(SWComponentItem* item)
 //-----------------------------------------------------------------------------
 // Function: onComponentInstanceRemoved()
 //-----------------------------------------------------------------------------
-void EndpointDesignDiagram::onComponentInstanceRemoved(SWComponentItem* item)
+void EndpointDesignDiagram::onComponentInstanceRemoved(ComponentItem* item)
 {
     instanceNames_.removeAll(item->name());
 }
@@ -1294,4 +1298,22 @@ void EndpointDesignDiagram::onComponentInstanceRemoved(SWComponentItem* item)
 GenericEditProvider& EndpointDesignDiagram::getEditProvider()
 {
     return editProvider_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: setProtection()
+//-----------------------------------------------------------------------------
+void EndpointDesignDiagram::setProtection(bool locked)
+{
+    locked_ = locked;
+    clearSelection();
+    emit clearItemSelection();
+}
+
+//-----------------------------------------------------------------------------
+// Function: isProtected()
+//-----------------------------------------------------------------------------
+bool EndpointDesignDiagram::isProtected() const
+{
+    return locked_;
 }

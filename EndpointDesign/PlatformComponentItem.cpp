@@ -27,7 +27,7 @@ PlatformComponentItem::PlatformComponentItem(QSharedPointer<Component> component
                                              QString const& description,
                                              QMap<QString, QString> const& configurableElementValues,
                                              QGraphicsItem *parent) :
-SWComponentItem(QRectF(-100, 0, 200, 40), component, instanceName, displayName,
+ComponentItem(QRectF(-100, 0, 200, 40), component, instanceName, displayName,
                 description, configurableElementValues, parent), hierIcon_(0)
 {
     Q_ASSERT_X(component, "PlatformComponentItem constructor",
@@ -48,7 +48,7 @@ PlatformComponentItem::~PlatformComponentItem()
 //-----------------------------------------------------------------------------
 void PlatformComponentItem::updateComponent()
 {
-    SWComponentItem::updateComponent();
+    ComponentItem::updateComponent();
 
     VLNV* vlnv = componentModel()->getVlnv();
 

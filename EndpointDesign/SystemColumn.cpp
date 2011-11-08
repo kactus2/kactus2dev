@@ -137,6 +137,12 @@ void SystemColumn::setOffsetY(qreal y)
 //-----------------------------------------------------------------------------
 void SystemColumn::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
+    // Discard mouse move if the diagram is protected.
+    if (static_cast<EndpointDesignDiagram*>(scene())->isProtected())
+    {
+        return;
+    }
+
     QGraphicsRectItem::mouseMoveEvent(event);
 
     setZValue(1001.0);

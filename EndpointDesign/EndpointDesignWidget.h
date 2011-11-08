@@ -23,7 +23,7 @@ class LibraryInterface;
 class Component;
 class DesignConfiguration;
 class ProgramEntityItem;
-class SWComponentItem;
+class ComponentItem;
 
 //-----------------------------------------------------------------------------
 //! EndpointDesignWidget class.

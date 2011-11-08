@@ -48,7 +48,7 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
                                            QString const& displayName,
                                            QString const& description,
                                            QMap<QString, QString> const& configurableElementValues,
-                                           unsigned int id) : SWComponentItem(QRectF(-WIDTH / 2, 0, WIDTH, 0),
+                                           unsigned int id) : ComponentItem(QRectF(-WIDTH / 2, 0, WIDTH, 0),
                                                                               component, instanceName,
                                                                               displayName, description,
                                                                               configurableElementValues, 0),
@@ -237,6 +237,12 @@ void MappingComponentItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 //-----------------------------------------------------------------------------
 void MappingComponentItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
+    // Discard mouse move if the diagram is protected.
+    if (static_cast<EndpointDesignDiagram*>(scene())->isProtected())
+    {
+        return;
+    }
+
     QGraphicsItem::mouseMoveEvent(event);
 
     if (oldColumn_ != 0)
@@ -534,7 +540,7 @@ EndpointItem* MappingComponentItem::getEndpoint(QString const& fullName)
 //-----------------------------------------------------------------------------
 void MappingComponentItem::updateNameLabel(QString const& text)
 {
-    SWComponentItem::updateNameLabel(text + " (ID = " + QString::number(id_) + ")");
+    ComponentItem::updateNameLabel(text + " (ID = " + QString::number(id_) + ")");
 }
 
 //-----------------------------------------------------------------------------

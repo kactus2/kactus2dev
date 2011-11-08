@@ -16,7 +16,7 @@
 
 #include <QUndoCommand>
 
-class SWComponentItem;
+class ComponentItem;
 
 //-----------------------------------------------------------------------------
 //! SWComponentPacketizeCommand class.
@@ -31,7 +31,7 @@ public:
      *      @param [in] vlnv       The VLNV of the packetized component.
      *      @param [in] parent     The parent command.
      */
-    SWComponentPacketizeCommand(SWComponentItem* component, VLNV const& vlnv, QUndoCommand* parent = 0);
+    SWComponentPacketizeCommand(ComponentItem* component, VLNV const& vlnv, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -58,7 +58,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The software component.
-    SWComponentItem* component_;
+    ComponentItem* component_;
 
     //! The component VLNV.
     VLNV vlnv_;

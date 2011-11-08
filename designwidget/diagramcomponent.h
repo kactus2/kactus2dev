@@ -6,12 +6,9 @@
 #ifndef DIAGRAMCOMPONENT_H
 #define DIAGRAMCOMPONENT_H
 
-#include <QGraphicsRectItem>
 #include <QSharedPointer>
+#include <common/graphicsItems/ComponentItem.h>
 
-#include "common/diagramgrid.h"
-
-class Component;
 class DiagramPort;
 class DiagramColumn;
 class LibraryInterface;
@@ -19,7 +16,7 @@ class LibraryInterface;
 /*! \brief DiagramComponent represents graphically an IP-XACT component instance
  *
  */
-class DiagramComponent : public QObject, public QGraphicsRectItem
+class DiagramComponent : public ComponentItem
 {
     Q_OBJECT 
 
@@ -66,53 +63,6 @@ public:
      */
     DiagramPort *getBusPort(const QString &name);
 
-    /*! \brief Return the instance name
-     *
-     */
-    QString name();
-
-    /*! \brief Set the instance name
-     *
-     */
-    void setName(QString name);
-
-	/*! \brief Get the display name of the component instance.
-	 *
-	 * \return QString containing the display name.
-	*/
-	QString displayName() const;
-
-	/*! \brief Set the display name for the component instance.
-	 *
-	 * \param displayName The display name for the component instance.
-	 *
-	*/
-	void setDisplayName(const QString& displayName);
-
-	/*! \brief Get the description of the component instance.
-	 *
-	 * \return QString containing the description for the component instance.
-	*/
-	QString description() const;
-
-	/*! \brief Set the description for the component instance.
-	 *
-	 * \param description The description for the component instance.
-	 *
-	*/
-	void setDescription(const QString& description);
-
-    /*! \brief Return the IP-XACT component model
-     *
-     */
-    QSharedPointer<Component> componentModel();
-
-	/*! \brief Get list of views the component has.
-	 *
-	 * \return QStringList containing the names of the views for the component.
-	*/
-	QStringList getViews() const;
-
     int type() const { return Type; }
 
     /*! Called when a port is being moved.
@@ -124,7 +74,7 @@ public:
     /*!
      *  Updates the diagram component to reflect the current state of the component model.
      */
-    void updateComponent();
+    virtual void updateComponent();
 
     /*!
      *  Returns true if the connections should not be updated automatically in
@@ -132,41 +82,11 @@ public:
      */
     bool isConnectionUpdateDisabled() const;
 
-	/*! \brief Get the configurable elements of this component instance.
-	 *
-	 * \return QMap containing the name-value pairs of configurable elements.
-	*/
-	QMap<QString, QString>& getConfigurableElements();
-
-	/*! \brief Set the configurable elements for this component instance.
-	 *
-	 * \param confElements Reference to QMap that contains the configurable elements to set.
-	 *
-	*/
-	void setConfigurableElements(const QMap<QString, QString>& confElements);
-
 signals:
-    //! Signals that the contents of the component have been changed.
-    void contentChanged();
-
-	//! \brief Emitted when the name of the diagramComponent changes.
-	void nameChanged(const QString& newName, const QString& oldName);
-
-	//! \brief Emitted when the display name changes.
-	void displayNameChanged(const QString& newName);
-
-	//! \brief Emitted when the description changes.
-	void descriptionChanged(const QString& newDescription);
-
-	//! \brief Emitted when the configurable elements change.
-	void confElementsChanged(const QMap<QString, QString>& confElements);
-
-	//! \brief Emitted right before this diagram component is destroyed.
+    //! \brief Emitted right before this diagram component is destroyed.
 	void destroyed(DiagramComponent* diaComp);
 
 protected:
-    virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
-
     // Called when the user presses the mouse button.
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
@@ -209,8 +129,6 @@ private:
     };
 
     LibraryInterface* lh_;
-    QSharedPointer<Component> component_;
-    QGraphicsTextItem *nameLabel_;
     QGraphicsPixmapItem* hierIcon_;
 
     //! The old column from where the mouse drag event began.
@@ -221,15 +139,6 @@ private:
     QList<DiagramPort*> rightPorts_;
     bool connUpdateDisabled_;
     QPointF oldPos_;
-
-	//! \brief The display name for the component instance.
-	QString displayName_;
-
-	//! \brief The description for the component instance.
-	QString description_;
-
-	//! \brief Map containing the configurableElementValues for the instance.
-	QMap<QString, QString> configurableValues_;
 };
 
 #endif // DIAGRAMCOMPONENT_H

@@ -27,9 +27,9 @@ GeneralSettingsPage::GeneralSettingsPage(QSettings& settings) : settings_(settin
                                                                 usernameEdit_(0)
 {
     // Create the directory line edit and label.
-    QLabel *directoryLabel = new QLabel(tr("Default project directory:"), this);
+    QLabel *directoryLabel = new QLabel(tr("Default directory:"), this);
 
-    QString defaultDir = settings_.value("general/defaultProjDir", QCoreApplication::applicationDirPath()).toString();
+    QString defaultDir = settings_.value("general/defaultDir", QCoreApplication::applicationDirPath()).toString();
     directoryEdit_ = new QLineEdit(defaultDir, this);
     connect(directoryEdit_, SIGNAL(textChanged(QString const&)), this, SIGNAL(contentChanged()));
 
@@ -96,7 +96,7 @@ bool GeneralSettingsPage::validate()
     if (directoryEdit_->text().isEmpty() || !QDir(directoryEdit_->text()).exists())
     {
         QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                           tr("The specified path for the default project directory is invalid. "
+                           tr("The specified path for the default directory is invalid. "
                               "Please enter a valid path."), QMessageBox::Ok, this);
         msgBox.exec();
         return false;
@@ -111,7 +111,7 @@ bool GeneralSettingsPage::validate()
 void GeneralSettingsPage::apply()
 {
     // Save the settings.
-    settings_.setValue("general/defaultProjDir", directoryEdit_->text());
+    settings_.setValue("general/defaultDir", directoryEdit_->text());
     settings_.setValue("general/username", usernameEdit_->text());
 }
 

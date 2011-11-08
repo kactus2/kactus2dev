@@ -24,7 +24,7 @@ class EndpointItem;
 class EndpointStack;
 class PlatformComponentItem;
 class MappingComponentItem;
-class SWComponentItem;
+class ComponentItem;
 class ApplicationItem;
 class ProgramEntityItem;
 
@@ -209,10 +209,10 @@ public:
 
 signals:
     //! Signaled when the component is instantiated to the design.
-    void componentInstantiated(SWComponentItem* item);
+    void componentInstantiated(ComponentItem* item);
 
     //! Signaled when the component instance is removed from the design.
-    void componentInstanceRemoved(SWComponentItem* item);
+    void componentInstanceRemoved(ComponentItem* item);
 
 private:
     // Disable copying.
@@ -269,10 +269,10 @@ public:
 
 signals:
     //! Signaled when the component is instantiated to the design.
-    void componentInstantiated(SWComponentItem* item);
+    void componentInstantiated(ComponentItem* item);
 
     //! Signaled when the component instance is removed from the design.
-    void componentInstanceRemoved(SWComponentItem* item);
+    void componentInstanceRemoved(ComponentItem* item);
 
 private:
     // Disable copying.
@@ -329,10 +329,10 @@ public:
 
 signals:
     //! Signaled when the component is instantiated to the design.
-    void componentInstantiated(SWComponentItem* item);
+    void componentInstantiated(ComponentItem* item);
 
     //! Signaled when the component instance is removed from the design.
-    void componentInstanceRemoved(SWComponentItem* item);
+    void componentInstanceRemoved(ComponentItem* item);
 
 private:
     // Disable copying.
@@ -389,10 +389,10 @@ public:
 signals:
 
 	//! \brief Emitted when a new component is instantiated to the design.
-	void componentInstantiated(SWComponentItem* comp);
+	void componentInstantiated(ComponentItem* comp);
 
 	//! \brief Emitted when a component instance is removed from the design.
-	void componentInstanceRemoved(SWComponentItem* comp);
+	void componentInstanceRemoved(ComponentItem* comp);
 
 private:
     // Disable copying.

@@ -29,35 +29,22 @@
 
 DiagramComponent::DiagramComponent(LibraryInterface* lh_, 
 								   QSharedPointer<Component> component,
-                                   const QString &instanceName, 
+                                   const QString &instanceName,
 								   const QString &displayName,
                                    const QString &description,
                                    const QMap<QString, QString> &configurableElementValues,
                                    QGraphicsItem *parent):
-QGraphicsRectItem(parent), 
-lh_(lh_), component_(component),
-nameLabel_(0), hierIcon_(0),
-oldColumn_(0),
-leftPorts_(), rightPorts_(), 
-connUpdateDisabled_(false),
-displayName_(displayName),
-description_(description),
-configurableValues_(configurableElementValues)
+ComponentItem(QRectF(-GridSize * 8, 0, GridSize * 8 * 2, 40), component, instanceName, displayName,
+              description, configurableElementValues, parent),
+lh_(lh_), hierIcon_(0), oldColumn_(0), leftPorts_(), rightPorts_(), connUpdateDisabled_(false)
 {
     setFlag(ItemIsMovable);
-    setFlag(ItemSendsGeometryChanges);
-    setFlag(ItemIsSelectable);
-
-	setObjectName(instanceName);
-
-	Q_ASSERT_X(component, "DiagramComponent constructor",
-		"Null component-pointer given as parameter");
-
-    QList<QSharedPointer<BusInterface> > busInterfaces
+    
+	QList<QSharedPointer<BusInterface> > busInterfaces
             = component->getBusInterfaces().values();
 
     int portSpacing = 3*GridSize;
-    int portCountLeft = busInterfaces.size()/2.0 + .5;
+    int portCountLeft = busInterfaces.size() / 2.0 + .5;
     setRect(-GridSize*8, 0, GridSize * 8 * 2, 
             6 * GridSize + portSpacing * std::max(portCountLeft - 1, 0));
 
@@ -70,8 +57,8 @@ configurableValues_(configurableElementValues)
 
         // If this is a platform component, place master bus interfaces to the right
         // and slave bus interfaces to the left.
-        if (component_->getComponentImplementation() == KactusAttribute::KTS_SW &&
-            component_->getComponentSWType() == KactusAttribute::KTS_SW_PLATFORM)
+        if (componentModel()->getComponentImplementation() == KactusAttribute::KTS_SW &&
+            componentModel()->getComponentSWType() == KactusAttribute::KTS_SW_PLATFORM)
         {
             if (busif->getInterfaceMode() == General::MASTER)
             {
@@ -98,20 +85,7 @@ configurableValues_(configurableElementValues)
     }
 
     updateSize();
-
-    // Create the name label.
-	nameLabel_ = new QGraphicsTextItem(instanceName, this);
-    nameLabel_->setHtml("<center>"+instanceName+"</center>");
-    QFont font = nameLabel_->font();
-    font.setWeight(QFont::Bold);
-    nameLabel_->setFont(font);
-
-    nameLabel_->setTextWidth(rect().width());
-    nameLabel_->setPos(-nameLabel_->boundingRect().width()/2, GridSize);
-
     updateComponent();
-
-    connect(nameLabel_->document(), SIGNAL(contentsChanged()), this, SIGNAL(contentChanged()));
 }
 
 //-----------------------------------------------------------------------------
@@ -158,74 +132,6 @@ DiagramPort *DiagramComponent::getBusPort(const QString &name)
 }
 
 //-----------------------------------------------------------------------------
-// Function: name()
-//-----------------------------------------------------------------------------
-QString DiagramComponent::name()
-{
-    return nameLabel_->toPlainText();
-}
-
-//-----------------------------------------------------------------------------
-// Function: setName()
-//-----------------------------------------------------------------------------
-void DiagramComponent::setName(QString name)
-{
-	QString oldName = nameLabel_->toPlainText();
-	BlockDiagram* diagram = static_cast<BlockDiagram*>(scene());
-	diagram->updateInstanceName(oldName, name);
-    nameLabel_->setHtml("<center>"+name+"</center>");
-
-    emit contentChanged();
-	emit nameChanged(name, oldName);
-}
-
-QString DiagramComponent::displayName() const {
-	return displayName_;
-}
-
-void DiagramComponent::setDisplayName( const QString& displayName ) {
-	displayName_ = displayName;
-	emit contentChanged();
-	emit displayNameChanged(displayName_);
-}
-
-QString DiagramComponent::description() const {
-	return description_;
-}
-
-void DiagramComponent::setDescription( const QString& description ) {
-	description_ = description;
-	emit contentChanged();
-	emit descriptionChanged(description_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: componentModel()
-//-----------------------------------------------------------------------------
-QSharedPointer<Component> DiagramComponent::componentModel()
-{
-    return component_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: itemChange()
-//-----------------------------------------------------------------------------
-QVariant DiagramComponent::itemChange(GraphicsItemChange change,
-                                      const QVariant &value)
-{
-    if (change == ItemPositionChange) {
-        QPointF newPos = value.toPointF();
-        return snapPointToGrid(newPos);
-    }
-    else if (change == ItemPositionHasChanged)
-    {
-        emit contentChanged();
-    }
-
-    return QGraphicsItem::itemChange(change, value);
-}
-
-//-----------------------------------------------------------------------------
 // Function: mouseMoveEvent()
 //-----------------------------------------------------------------------------
 void DiagramComponent::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
@@ -240,7 +146,7 @@ void DiagramComponent::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
     // before the possible column change has been done.
     connUpdateDisabled_ = true;
 
-    QGraphicsRectItem::mouseMoveEvent(event);
+    ComponentItem::mouseMoveEvent(event);
     
     if (oldColumn_ != 0)
     {
@@ -272,7 +178,7 @@ void DiagramComponent::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 //-----------------------------------------------------------------------------
 void DiagramComponent::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
-    QGraphicsRectItem::mouseReleaseEvent(event);
+    ComponentItem::mouseReleaseEvent(event);
     setZValue(0.0);
 
     if (oldColumn_ != 0)
@@ -320,7 +226,7 @@ void DiagramComponent::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 //-----------------------------------------------------------------------------
 void DiagramComponent::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    QGraphicsRectItem::mousePressEvent(event);
+    ComponentItem::mousePressEvent(event);
     setZValue(1001.0);
 
     oldPos_ = scenePos();
@@ -393,7 +299,7 @@ DiagramPort* DiagramComponent::addPort(QPointF const& pos)
     QString name = "bus";
     unsigned int count = 0;
 
-    while (component_->getBusInterface(name) != 0)
+    while (componentModel()->getBusInterface(name) != 0)
     {
         ++count;
         name = "bus_" + QString::number(count);
@@ -403,7 +309,7 @@ DiagramPort* DiagramComponent::addPort(QPointF const& pos)
     QSharedPointer<BusInterface> busIf(new BusInterface());
     busIf->setName(name);
     busIf->setInterfaceMode(General::MODE_UNDEFINED);
-    component_->addBusInterface(busIf);
+    componentModel()->addBusInterface(busIf);
 
     // Create the visualization for the bus interface.
     DiagramPort* port = new DiagramPort(busIf, lh_, this);
@@ -423,7 +329,7 @@ void DiagramComponent::addPort(DiagramPort* port)
     port->setParentItem(this);
 
     // Add the bus interface to the component.
-    component_->addBusInterface(port->getBusInterface());
+    componentModel()->addBusInterface(port->getBusInterface());
 
     // Make preparations.
     onAddPort(port, port->x() >= 0);
@@ -461,22 +367,19 @@ void DiagramComponent::updateSize()
     }
 }
 
-QStringList DiagramComponent::getViews() const {
-
-	return component_->getViewNames();
-}
-
 //-----------------------------------------------------------------------------
 // Function: updateComponent()
 //-----------------------------------------------------------------------------
 void DiagramComponent::updateComponent()
 {
-    VLNV* vlnv = component_->getVlnv();
+    ComponentItem::updateComponent();
+
+    VLNV* vlnv = componentModel()->getVlnv();
 
     // Check whether the component is packaged (valid vlnv) or not.
     if (vlnv->isValid())
     {
-        if (component_->isBus())
+        if (componentModel()->isBus())
             setBrush(QBrush(QColor(0xce,0xdf,0xff))); 
         else
             setBrush(QBrush(QColor(0xa5,0xc3,0xef)));
@@ -487,7 +390,7 @@ void DiagramComponent::updateComponent()
     }
 
     // Create a hierarchy icon if the component is a hierarchical one.
-    if (component_->getModel()->hasHierView() && hierIcon_ == 0)
+    if (componentModel()->getModel()->hasHierView() && hierIcon_ == 0)
     {
         hierIcon_ = new QGraphicsPixmapItem(QPixmap(":icons/graphics/hierarchy.png"), this);
         hierIcon_->setPos(58, 6);
@@ -495,19 +398,6 @@ void DiagramComponent::updateComponent()
     else if (hierIcon_ != 0)
     {
         delete hierIcon_;
-    }
-
-    // Set the tooltip.
-    if (vlnv->isValid())
-    {
-        setToolTip("Vendor : " + vlnv->getVendor() + "\n"
-            + "Library : " + vlnv->getLibrary() + "\n"
-            + "Name : " + vlnv->getName() + "\n"
-            + "Version : " + vlnv->getVersion());
-    }
-    else
-    {
-        setToolTip("Unpackaged component. No VLNV assigned!");
     }
 }
 
@@ -520,7 +410,7 @@ void DiagramComponent::removePort(DiagramPort* port)
     rightPorts_.removeAll(port);
     updateSize();
     
-    component_->removeBusInterface(port->getBusInterface().data());
+    componentModel()->removeBusInterface(port->getBusInterface().data());
 }
 
 //-----------------------------------------------------------------------------
@@ -529,14 +419,4 @@ void DiagramComponent::removePort(DiagramPort* port)
 bool DiagramComponent::isConnectionUpdateDisabled() const
 {
     return connUpdateDisabled_;
-}
-
-QMap<QString, QString>& DiagramComponent::getConfigurableElements() {
-	return configurableValues_;
-}
-
-void DiagramComponent::setConfigurableElements( const QMap<QString, QString>& confElements ) {
-	configurableValues_ = confElements;
-	emit contentChanged();
-	emit confElementsChanged(configurableValues_);
 }
