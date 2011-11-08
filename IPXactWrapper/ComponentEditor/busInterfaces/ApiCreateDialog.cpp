@@ -102,7 +102,7 @@ QString ApiCreateDialog::getDirectory() const
 QString ApiCreateDialog::createPath(VLNV const& vlnv)
 {
     QSettings settings;
-    QString dir = settings.value("general/defaultProjDir", QCoreApplication::applicationDirPath()).toString();
+    QString dir = settings.value("general/defaultDir", QCoreApplication::applicationDirPath()).toString();
 
     if (!vlnv.getVendor().isEmpty())
     {

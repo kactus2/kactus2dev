@@ -590,6 +590,7 @@ void MainWindow::setupMenus() {
     editGroup_ = menuStrip_->addGroup(tr("Edit"));
     editGroup_->addAction(actUndo_);
     editGroup_->addAction(actRedo_);
+    editGroup_->setVisible(false);
     editGroup_->setEnabled(false);
     
     //! The "Library" group.
@@ -605,6 +606,7 @@ void MainWindow::setupMenus() {
     hwDesignGroup_->addAction(actGenDocumentation_);
     hwDesignGroup_->addAction(actGenModelSim_);
     hwDesignGroup_->addAction(actGenQuartus_);
+    hwDesignGroup_->setVisible(false);
     hwDesignGroup_->setEnabled(false);
 
     //! The "Diagram Tools" group.
@@ -614,7 +616,7 @@ void MainWindow::setupMenus() {
     diagramToolsGroup_->addAction(actToolConnect_);
     diagramToolsGroup_->addAction(actToolInterface_);
     diagramToolsGroup_->addAction(actToolDraft_);
-    diagramToolsGroup_->setEnabled(false);
+    diagramToolsGroup_->setVisible(false);
 
     //! The "View" group.
     GCF::MenuStripGroup* viewGroup = menuStrip_->addGroup(tr("View"));
@@ -625,8 +627,9 @@ void MainWindow::setupMenus() {
 	viewGroup->addAction(actVisibleDocks_);
 
     //! The Protection group.
-    GCF::MenuStripGroup* protectGroup = menuStrip_->addGroup(tr("Protection"));
-    protectGroup->addAction(actProtect_);
+    protectGroup_ = menuStrip_->addGroup(tr("Protection"));
+    protectGroup_->addAction(actProtect_);
+    protectGroup_->setVisible(false);
 
     //! The "System" group.
     GCF::MenuStripGroup* sysGroup = menuStrip_->addGroup(tr("System"));
@@ -924,7 +927,8 @@ void MainWindow::updateMenuStrip()
 
 	// if is hardware design then set all actions enabled
 	if (isHWDesign) {
-		hwDesignGroup_->setEnabled(unlocked);
+		hwDesignGroup_->setVisible(true);
+        hwDesignGroup_->setEnabled(unlocked);
 		actGenVHDL_->setEnabled(unlocked);
 		actGenDocumentation_->setEnabled(unlocked);
 		actGenModelSim_->setEnabled(unlocked);
@@ -932,6 +936,7 @@ void MainWindow::updateMenuStrip()
 	}
 	// if is hardware component then set only documentation enabled
 	else if (isHWComp) {
+        hwDesignGroup_->setVisible(true);
 		hwDesignGroup_->setEnabled(unlocked);
 		actGenVHDL_->setDisabled(true);
 		actGenDocumentation_->setEnabled(unlocked);
@@ -939,13 +944,15 @@ void MainWindow::updateMenuStrip()
 		actGenQuartus_->setDisabled(true);
 	}
 	else {
-		hwDesignGroup_->setDisabled(true);
+		hwDesignGroup_->setVisible(false);
 	}
 
+    editGroup_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_EDIT_SUPPORT));
     editGroup_->setEnabled(doc != 0 && (doc->getFlags() & TabDocument::DOC_EDIT_SUPPORT) && unlocked);
     actUndo_->setEnabled(doc != 0 && doc->getEditProvider() != 0 && doc->getEditProvider()->canUndo());
     actRedo_->setEnabled(doc != 0 && doc->getEditProvider() != 0 && doc->getEditProvider()->canRedo());
 
+    diagramToolsGroup_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_DRAW_MODE_SUPPORT));
     diagramToolsGroup_->setEnabled(doc != 0 && (doc->getFlags() & TabDocument::DOC_DRAW_MODE_SUPPORT) &&
                                 !doc->isProtected());
     actToolSelect_->setEnabled(doc != 0 && (doc->getSupportedDrawModes() & MODE_SELECT));
@@ -955,9 +962,11 @@ void MainWindow::updateMenuStrip()
 
 	bool oldProtectionState = actProtect_->isChecked();
 
+    protectGroup_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_PROTECTION_SUPPORT));
 	actProtect_->setEnabled(doc != 0 && (doc->getFlags() & TabDocument::DOC_PROTECTION_SUPPORT));
     actProtect_->setChecked(doc != 0 && (doc->getFlags() & TabDocument::DOC_PROTECTION_SUPPORT) &&
                             doc->isProtected());
+
     if (oldProtectionState != actProtect_->isChecked())
 		onProtectionChanged(actProtect_->isChecked());
 

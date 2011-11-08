@@ -191,7 +191,7 @@ void LibraryHandler::onExportItem( const VLNV& vlnv ) {
 	QDir savedWorkingDirectory = QDir::current();
 
 	QSettings settings;
-	QString defaultPath = settings.value("general/defaultProjDir", QDir::homePath()).toString();
+	QString defaultPath = settings.value("general/defaultDir", QDir::homePath()).toString();
 
 	// ask the target directory where the package is to be exported
 	QString targetPath = QFileDialog::getExistingDirectory(this, 
@@ -227,7 +227,7 @@ void LibraryHandler::onExportItems(const QList<VLNV*>& vlnvs) {
 	QDir savedWorkingDirectory = QDir::current();
 
 	QSettings settings;
-	QString defaultPath = settings.value("general/defaultProjDir", QDir::homePath()).toString();
+	QString defaultPath = settings.value("general/defaultDir", QDir::homePath()).toString();
 
 	// ask the target directory where the package is to be exported
 	QString targetPath = QFileDialog::getExistingDirectory(this, 
@@ -705,7 +705,7 @@ void LibraryHandler::writeModelToFile( QSharedPointer<LibraryComponent> model ) 
 void LibraryHandler::searchForIPXactFiles() {
 
 	QSettings settings;
-	QString defaultPath = settings.value("general/defaultProjDir", QDir::homePath()).toString();
+	QString defaultPath = settings.value("general/defaultDir", QDir::homePath()).toString();
 
 	QString path = QFileDialog::getExistingDirectory(this, 
 		tr("Select a directory to start searching for IP-Xact files"),

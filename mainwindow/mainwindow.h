@@ -483,6 +483,9 @@ private:
 	//! \brief Action to select which dock widgets are visible.
 	QAction* actVisibleDocks_;
 
+    //! The protection group.
+    GCF::MenuStripGroup* protectGroup_; 
+
     //! Action to set protection on/off.
     QAction* actProtect_;
 
