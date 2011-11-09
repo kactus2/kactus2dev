@@ -8,6 +8,8 @@
 #include "vhdlgeneral.h"
 
 #include <QString>
+#include <QStringList>
+#include <QChar>
 
 QString VhdlGeneral::useDefaultType( const int leftBound, const int rightBound ) {
 	
@@ -86,5 +88,24 @@ QString VhdlGeneral::vhdlType2String( const QString& type,
 	// if user defined type then return it as such
 	else {
 		return type;
+	}
+}
+
+void VhdlGeneral::writeDescription( const QString& description,
+								   QTextStream& stream, 
+								   const QString& lineSeparator /*= QString("")*/ ) {
+
+	if (description.isEmpty())
+		return;
+
+	// split the description into lines whenever there is a line separator
+	QStringList lines = description.split(QChar(QChar::LineSeparator));
+	
+	// atleast one line has to be because description was not empty
+	Q_ASSERT(!lines.isEmpty());
+
+	stream << lines.first() << endl;
+	for (int i = 1; i < lines.size(); ++i) {
+		stream << lineSeparator << "-- " << lines.at(i) << endl;
 	}
 }

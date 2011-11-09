@@ -7,6 +7,8 @@
 
 #include "vhdlgenerator2.h"
 
+#include "vhdlgeneral.h"
+
 #include <LibraryManager/libraryinterface.h>
 
 #include <models/view.h>
@@ -17,6 +19,12 @@
 #include <models/generaldeclarations.h>
 
 #include <mainwindow/mainwindow.h>
+
+#include <QFile>
+#include <QFileInfo>
+#include <QTime>
+#include <QDate>
+#include <QSettings>
 
 VhdlGenerator2::VhdlGenerator2(LibraryInterface* handler, MainWindow* parent):
 QObject(parent),
@@ -75,6 +83,9 @@ bool VhdlGenerator2::parse( QSharedPointer<Component> topLevelComponent,
 	if (design_) {
 		parseInstances();
 		parseInterconnections();
+		parseAdHocConnections();
+		parseHierConnections();
+		mapPorts2Signals();
 	}
 
 	return true;
@@ -82,7 +93,89 @@ bool VhdlGenerator2::parse( QSharedPointer<Component> topLevelComponent,
 
 void VhdlGenerator2::generateVhdl( const QString& outputFileName, 
 								  const QString& architectureName ) {
+			
+	architectureName_ = architectureName;
+	if (outputFileName.isEmpty()) {
+		return;
+	}
 
+	QFile file(outputFileName);
+
+	// if previous file exists then remove it.
+	if (file.exists()) {
+		file.remove();
+	}
+
+	// open the file and erase all old contents if any exists
+	// if file could not be opened
+	if (!file.open(QFile::Truncate | QFile::WriteOnly)) {
+
+		// throw an exception that file couldn't be opened
+		QString message(tr("File: "));
+		message += outputFileName;
+		message += tr(" couldn't be opened for writing");
+		emit errorMessage(message);
+		return;
+	}
+	// now file has been opened for writing
+
+	// open file stream to write to
+	QTextStream vhdlStream(&file);
+
+	QFileInfo fileInfo(outputFileName);
+
+	// write header comments of the file
+	writeVhdlHeader(vhdlStream, fileInfo.fileName());
+
+	// always add IEEE library
+	vhdlStream << "library IEEE;" << endl;
+	vhdlStream << "use IEEE.std_logic_1164.all;" << endl;
+	vhdlStream << "use ieee.numeric_std.all;" << endl << endl;
+
+	// declare the libraries used.
+// 	foreach (QString library, libraries_) {
+// 		vhdlStream << "library " << library <<";" << endl;
+// 		vhdlStream << "use " << library << ".all;" << endl;
+// 	}
+// 	vhdlStream << endl;
+
+	// write the top-level entity
+	vhdlStream << "entity " << topLevelEntity_ << " is" << endl;
+	vhdlStream << endl;
+
+	// write the top-level generics
+	writeGenerics(vhdlStream);
+
+	// write the top-level ports
+	writePorts(vhdlStream);
+
+	// end top-level entity definition
+	vhdlStream << "end " << topLevelEntity_ << ";" << endl << endl;
+
+	// if view has description
+	QString viewDescription = component_->getViewDescription(viewName_);
+	VhdlGeneral::writeDescription(viewDescription, vhdlStream);
+
+	// write the architecture of the entity
+	vhdlStream << "architecture " << viewName_ << " of " << topLevelEntity_ << " is"
+		<< endl << endl;
+
+	// write declarations for signals connecting the ports
+	writeSignalDeclarations(vhdlStream);
+
+	// write all component declarations
+	writeComponentDeclarations(vhdlStream);
+
+	// start writing architecture component instances
+	vhdlStream << endl << "begin" << endl << endl;
+
+	// write the component instances
+	writeComponentInstances(vhdlStream);
+
+	vhdlStream << "end " << viewName_ << ";" << endl << endl;
+
+	file.close();
+	return;
 }
 
 bool VhdlGenerator2::addRTLView( const QString& vhdlFileName ) {
@@ -338,7 +431,7 @@ void VhdlGenerator2::connectInterfaces( const QString& connectionName,
 		foreach(QSharedPointer<General::PortMap> portMap2, portMaps2) {
 
 			const QString port1Name = portMap1->physicalPort_;
-			const QString port2Name = portMap1->physicalPort_;
+			const QString port2Name = portMap2->physicalPort_;
 
 			// if the port maps are not for same logical signal
 			if (portMap1->logicalPort_ != portMap2->logicalPort_) {
@@ -409,7 +502,6 @@ void VhdlGenerator2::connectPorts(const QString& connectionName,
 	// calculate the bounds for the signal
 	int left = ports.first().leftBound_;
 	int right = ports.first().rightBound_;
-	int signalSize = left - right + 1;
 	QString type = ports.first().instance_->portType(ports.first().portName_);
 
 	// create the endPoints
@@ -472,6 +564,301 @@ void VhdlGenerator2::connectEndPoint( const VhdlConnectionEndPoint& endPoint,
 	else {
 		signals_.insert(endPoint, signal);
 	}
+}
+
+void VhdlGenerator2::parseAdHocConnections() {
+	// all adHoc connections are processed
+	QList<Design::AdHocConnection> adHocs = design_->getAdHocConnections();
+	foreach (Design::AdHocConnection adHoc, adHocs) {
+
+		// the data structure to store the ports to connect
+		QList<VhdlGenerator2::PortConnection> ports;
+
+		foreach (Design::PortRef portRef, adHoc.internalPortReferences) {
+
+			// if the instance is not found
+			if (!instances_.contains(portRef.componentRef)) {
+				emit errorMessage(tr("Instance %1 was not found in design.").arg(
+					portRef.componentRef));
+				continue;
+			}
+			QSharedPointer<VhdlComponentInstance> instance =
+				instances_.value(portRef.componentRef);
+
+			// if the specified port is not found
+			if (!instance->hasPort(portRef.portRef)) {
+				emit errorMessage(tr("Port %1 was not found in instance %2 of"
+					" type %3").arg(portRef.portRef).arg(
+					portRef.componentRef).arg(
+					instance->vlnv().toString()));
+				continue;
+			}
+
+			// create the port specification
+			VhdlGenerator2::PortConnection port(instance, portRef.componentRef,
+				portRef.left, portRef.right);
+
+			// add port to the list
+			ports.append(port);
+		}
+
+		// if the connection contains at least one port of the top component
+		if (!adHoc.externalPortReferences.isEmpty()) {
+
+			// connect each external port to instance port
+			foreach (Design::PortRef portRef, adHoc.externalPortReferences) {
+
+				// check that the port is found 
+				VhdlPortSorter sorter(portRef.portRef, General::IN);
+				if (!topPorts_.contains(sorter)) {
+					emit errorMessage(tr("The port %1 is not found in top component %2").arg(
+						portRef.portRef).arg(component_->getVlnv()->toString()));
+					continue;
+				}
+
+				// connect each instance port to the top port
+				connectHierPort(portRef.portRef, portRef.left, portRef.right, ports);
+			}
+		}
+		// otherwise the connection is just between the ports of the instances
+		else {
+
+			// connect the ports 
+			connectPorts(adHoc.name, adHoc.description, ports);
+		}
+	}
+}
+
+void VhdlGenerator2::connectHierPort( const QString& topPort,
+									 int leftBound, 
+									 int rightBound, 
+									 const QList<VhdlGenerator2::PortConnection>& ports ) {
+
+	foreach (VhdlGenerator2::PortConnection port, ports) {
+		
+		// tell each instance to create a port map between the ports
+		port.instance_->addPortMap(port.portName_, port.leftBound_, port.rightBound_,
+			topPort, leftBound, rightBound);
+	}
+}
+
+void VhdlGenerator2::parseHierConnections() {
+	// search all hierConnections within design
+	QList<Design::HierConnection> hierConnections =
+		design_->getHierarchicalConnections();
+
+	foreach (Design::HierConnection hierConnection, hierConnections) {
+	
+		// find the top-level bus interface
+		BusInterface* topInterface =
+			component_->getBusInterface(hierConnection.interfaceRef);
+
+		// if the top level interface couldn't be found
+		if (!topInterface) {
+			emit errorMessage(tr("Interface %1 was not found in top component %2.").arg(
+				hierConnection.interfaceRef).arg(
+				component_->getVlnv()->toString()));
+			continue;
+		}
+
+		// find the component instance for this hierConnection
+		QSharedPointer<VhdlComponentInstance> instance = instances_.value(hierConnection.interface_.componentRef);
+
+		// if the component instance couldn't be found
+		if (!instance) {
+			emit errorMessage(tr("Instance %1 was not found in design.").arg(
+				hierConnection.interface_.componentRef));
+			continue;
+		}
+
+		// find the bus interface
+		BusInterface* instanceInterface = instance->interface(hierConnection.interface_.busRef);
+		// if bus interface couldn't be found
+		if (!instanceInterface) {
+			emit errorMessage(tr("Interface %1 was not found in instance %2 of type %3").arg(
+				hierConnection.interface_.busRef).arg(
+				instance->name()).arg(
+				instance->typeName()));
+			continue;
+		}
+
+		connectHierInterface(instance, instanceInterface, topInterface);
+	}
+}
+
+void VhdlGenerator2::connectHierInterface( QSharedPointer<VhdlComponentInstance> instance, 
+										  BusInterface* instanceInterface,
+										  BusInterface* topInterface ) {
+	Q_ASSERT(instance);
+	Q_ASSERT(instanceInterface);
+	Q_ASSERT(topInterface);
+
+	// get the port maps of both interfaces
+	QList<QSharedPointer<General::PortMap> > portMaps = instanceInterface->getPortMaps();
+	QList<QSharedPointer<General::PortMap> > hierPortMaps = topInterface->getPortMaps();
+
+	// get the IP-Xact model of the instance
+	QSharedPointer<Component> component1 = instance->componentModel();
+
+	foreach (QSharedPointer<General::PortMap> portMap, portMaps) {
+		foreach(QSharedPointer<General::PortMap> hierPortMap, hierPortMaps) {
+
+			const QString portName = portMap->physicalPort_;
+			const QString hierPortName = hierPortMap->physicalPort_;
+
+			// if the port maps are not for same logical signal
+			if (portMap->logicalPort_ != hierPortMap->logicalPort_) {
+				continue;
+			}
+			// if port does not exist in instance 1
+			else if (!component1->hasPort(portName)) {
+				emit errorMessage(tr("Port %1 was not defined in component %2.").arg(
+					portName).arg(
+					component1->getVlnv()->toString()));
+				continue;
+			}
+			// if port does not exist in instance 2
+			else if (!component_->hasPort(hierPortName)) {
+				emit errorMessage(tr("Port %1 was not defined in component %2.").arg(
+					hierPortName).arg(
+					component_->getVlnv()->toString()));
+				continue;
+			}
+			// if the port on instance 1 is not valid physical port
+			else if (!component1->isPhysicalPort(portName)) {
+				continue;
+			}
+			// if the port on instance 2 is not valid physical port
+			else if (!component_->isPhysicalPort(hierPortName)) {
+				continue;
+			}
+
+			// get the alignments of the ports
+			General::PortAlignment alignment = 
+				General::calculatePortAlignment(portMap.data(), 
+				component1->getPortLeftBound(portName),
+				component1->getPortRightBound(portName),
+				hierPortMap.data(),
+				component_->getPortLeftBound(hierPortName),
+				component_->getPortRightBound(hierPortName));
+
+			// if the alignment is not valid (port sizes do not match or 
+			// they do not have any common bits)
+			if (alignment.invalidAlignment_) {
+				continue;
+			}
+
+			VhdlGenerator2::PortConnection port1(instance, portName, 
+				alignment.port1Left_, alignment.port1Right_);
+			QList<VhdlGenerator2::PortConnection> ports;
+			ports.append(port1);
+
+			// connect the port from instance to the top port
+			connectHierPort(hierPortName, alignment.port2Left_, alignment.port2Right_, ports);
+		}
+	}
+}
+
+void VhdlGenerator2::mapPorts2Signals() {
+	// search each endpoint
+	for (QMap<VhdlConnectionEndPoint, QSharedPointer<VhdlSignal> >::iterator i = signals_.begin(); 
+		i != signals_.end(); ++i) {
+
+		// if the component instance can't be found
+		if (!instances_.contains(i.key().instanceName())) {
+			emit errorMessage(tr("Instance %1 was not found in design.").arg(
+				i.key().instanceName()));
+			continue;
+		}
+
+		// add a port map for the instance to connect port to signal
+		QSharedPointer<VhdlComponentInstance> instance = instances_.value(i.key().instanceName());
+		instance->addPortMap(i.key().portName(), i.key().portLeft(), i.key().portRight(),
+			i.value()->name(), i.key().signalLeft(), i.key().signalRight());	
+	}
+}
+
+void VhdlGenerator2::writeVhdlHeader( QTextStream& vhdlStream, const QString& fileName ) {
+	
+	vhdlStream << "-- ***************************************************" << endl;
+	vhdlStream << "-- File: " << fileName << endl;
+	vhdlStream << "-- Creation date: " << QDate::currentDate().toString(QString("dd.MM.yyyy")) << endl;
+	vhdlStream << "-- Creation time: " << QTime::currentTime().toString(QString("hh:mm:ss")) << endl;
+	vhdlStream << "-- Description: ";
+	VhdlGeneral::writeDescription(component_->getDescription(), vhdlStream);
+	vhdlStream << endl;
+
+	QSettings settings;
+	QString userName = settings.value("general/username", getenv("USERNAME")).toString();
+	vhdlStream << "-- Created by: " << userName << endl; 
+	vhdlStream << "-- This file was generated with Kactus2 vhdl generator." << endl;
+	vhdlStream << "-- ***************************************************" << endl;
+}
+
+void VhdlGenerator2::writeGenerics( QTextStream& vhdlStream ) {
+	// if generics exist
+	if (!topGenerics_.isEmpty()) {
+
+		// the start tag
+		vhdlStream << "\tgeneric (" << endl;
+
+		for (QMap<QString, QSharedPointer<VhdlGeneric> >::iterator i = topGenerics_.begin();
+			i != topGenerics_.end(); ++i) {
+
+			vhdlStream << "\t\t";
+			i.value()->write(vhdlStream);
+
+			// if this is not the last generic
+			if (i != topGenerics_.end() - 1) {
+				vhdlStream << ";" << endl;
+			}
+			// if it was last generic
+			else {
+				vhdlStream << ");" << endl;
+			}
+		}
+		vhdlStream << endl;
+	}
+}
+
+void VhdlGenerator2::writePorts( QTextStream& vhdlStream ) {
+	// if ports exist
+	if (!topPorts_.isEmpty()) {
+
+		vhdlStream << "\tport (" << endl;
+
+		// print each port
+		for (QMap<VhdlPortSorter, QSharedPointer<VhdlPort> >::iterator i = topPorts_.begin();
+			i != topPorts_.end(); ++i) {
+
+				// write the port name and direction
+				vhdlStream << "\t\t";
+				i.value()->write(vhdlStream);
+
+				// if the last port is written
+				if ( i == --topPorts_.end()) {
+					vhdlStream << ");" << endl;
+				}
+				// if theres more ports left
+				else {
+					vhdlStream << ";" << endl;
+				}
+		}
+		// write extra empty line to make code readable
+		vhdlStream << endl;
+	}
+}
+
+void VhdlGenerator2::writeSignalDeclarations( QTextStream& vhdlStream ) {
+	vhdlStream << "signals here" << endl;
+}
+
+void VhdlGenerator2::writeComponentDeclarations( QTextStream& vhdlStream ) {
+	vhdlStream << "component declarations here" << endl;
+}
+
+void VhdlGenerator2::writeComponentInstances( QTextStream& vhdlStream ) {
+	vhdlStream << "component instances" << endl;
 }
 
 VhdlGenerator2::PortConnection::PortConnection( 

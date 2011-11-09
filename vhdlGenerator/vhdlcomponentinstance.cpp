@@ -240,6 +240,8 @@ BusInterface* VhdlComponentInstance::interface( const QString& interfaceName ) c
 }
 
 VLNV VhdlComponentInstance::vlnv() const {
+	Q_ASSERT(compDeclaration_);
+	Q_ASSERT(compDeclaration_->componentModel());
 	return *compDeclaration_->componentModel()->getVlnv();
 }
 
@@ -249,5 +251,16 @@ QSharedPointer<Component> VhdlComponentInstance::componentModel() const {
 }
 
 QString VhdlComponentInstance::portType( const QString& portName ) const {
+	Q_ASSERT(compDeclaration_);
 	return compDeclaration_->portType(portName);
+}
+
+bool VhdlComponentInstance::hasPort( const QString& portName ) const {
+	Q_ASSERT(compDeclaration_);
+	Q_ASSERT(compDeclaration_->componentModel());
+	return compDeclaration_->componentModel()->hasPort(portName);
+}
+
+QString VhdlComponentInstance::typeName() const {
+	return typeName_;
 }

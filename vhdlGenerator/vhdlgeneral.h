@@ -9,6 +9,7 @@
 #define VHDLGENERAL_H
 
 #include <QString>
+#include <QTextStream>
 
 namespace VhdlGeneral {
 
@@ -80,6 +81,19 @@ namespace VhdlGeneral {
 	QString vhdlType2String(const QString& type, 
 		const int leftBound = -1,
 		const int rightBound = -1);
+
+	/*! \brief Write a description of some element to the stream.
+	 * 
+	 * \param description The description to write.
+	 * \param stream The text stream to write into.
+	 * \param lineSeparator The separator that is added to the beginning of
+	 * each new line. For example setting separator to \t will add one indentation
+	 * at beginning of each line.
+	 *
+	*/
+	void writeDescription(const QString& description,
+		QTextStream& stream, 
+		const QString& lineSeparator = QString(""));
 }
 
 #endif // VHDLGENERAL_H

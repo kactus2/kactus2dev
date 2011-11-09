@@ -697,9 +697,7 @@ void VhdlGenerator::parseAdHocConnections() {
 		foreach (Design::PortRef portRef, adHoc.internalPortReferences) {
 			left = qMax(left, portRef.left);
 		}
-		foreach (Design::PortRef portRef, adHoc.externalPortReferences) {
-			left = qMax(left, portRef.left);
-		}
+		
 		// if no bound was specified
 		if (left < 0)
 			left = 0;

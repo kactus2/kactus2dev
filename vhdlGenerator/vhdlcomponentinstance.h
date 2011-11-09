@@ -63,6 +63,12 @@ public:
 	*/
 	QString name() const;
 
+	/*! \brief Get the type name of the instance.
+	 *
+	 * \return QString contains the type name.
+	*/
+	QString typeName() const;
+
 	/*! \brief Add a new port map for the instance.
 	 *
 	 * \param endPoint The end point that specifies the port and signal bounds.
@@ -136,6 +142,14 @@ public:
 	 * \return QString The type of the port.
 	*/
 	QString portType(const QString& portName) const;
+
+	/*! \brief Check if the instance has a specified port.
+	 *
+	 * \param portName The name of the port to check.
+	 *
+	 * \return bool True if the port is found.
+	*/
+	bool hasPort(const QString& portName) const;
 
 signals:
 

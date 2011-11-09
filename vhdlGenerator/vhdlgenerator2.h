@@ -184,6 +184,16 @@ private:
 	*/
 	void parseInterconnections();
 
+	/*! \brief Parse the ad hoc connections of a design.
+	 *
+	*/
+	void parseAdHocConnections();
+
+	/*! \brief Parse the hierarchical connections of a design.
+	 *
+	*/
+	void parseHierConnections();
+
 	/*! \brief Connect the two interfaces together with signals.
 	 *
 	 * \param connectionName The name of the connection between the interfaces.
@@ -212,6 +222,19 @@ private:
 		const QString& description,
 		const QList<VhdlGenerator2::PortConnection>& ports);
 
+	/*! \brief Connect the specified top port to specified instance ports.
+	 *
+	 * \param topPort The name of the port on top component.
+	 * \param leftBound The left bound of the port on top component.
+	 * \param rightBound The right bound of the port on top component.
+	 * \param ports List of ports to connect to the top port
+	 *
+	*/
+	void connectHierPort(const QString& topPort,
+		int leftBound, 
+		int rightBound,
+		const QList<VhdlGenerator2::PortConnection>& ports);
+
 	/*! \brief Connect the given endPoint with the signal.
 	 *
 	 * \param endPoint The end point that specified the port to connect.
@@ -220,6 +243,68 @@ private:
 	*/
 	void connectEndPoint(const VhdlConnectionEndPoint& endPoint,
 		const QSharedPointer<VhdlSignal> signal);
+
+	/*! \brief Connect the hierarchical interface to the instance interface.
+	 *
+	 * \param instance Pointer to the instance that's interface is connected.
+	 * \param instanceInterface Pointer to the interface of the instance.
+	 * \param topInterface Pointer to the interface of the top component.
+	 *
+	*/
+	void connectHierInterface( QSharedPointer<VhdlComponentInstance> instance, 
+		BusInterface* instanceInterface,
+		BusInterface* topInterface );
+
+	/*! \brief Map ports of component instances to signals.
+	 *
+	 * NOTE: This function must be called only after all end points of signals
+	 * have been parsed.
+	 *
+	*/
+	void mapPorts2Signals();
+	
+	/*! \brief Write the header of a vhdl file to be created.
+	 *
+	 * \param vhdlStream The text stream to write into.
+	 * \param fileName The name of the file that is being written.
+	 *
+	*/
+	void writeVhdlHeader( QTextStream& vhdlStream, const QString& fileName );
+	
+	/*! \brief Write the generics of the top entity.
+	 *
+	 * \param vhdlStream The text stream to write into.
+	 *
+	*/
+	void writeGenerics( QTextStream& vhdlStream );
+	
+	/*! \brief Write the ports of the top entity.
+	 *
+	 * \param vhdlStream The text stream to write into.
+	 *
+	*/
+	void writePorts( QTextStream& vhdlStream );
+	
+	/*! \brief Write the declarations of the signals.
+	 * 
+	 * \param vhdlStream The text stream to write into.
+	 *
+	*/
+	void writeSignalDeclarations( QTextStream& vhdlStream );
+	
+	/*! \brief Write the declarations of components.
+	 *
+	 * \param vhdlStream The text stream to write into.
+	 *
+	*/
+	void writeComponentDeclarations( QTextStream& vhdlStream );
+	
+	/*! \brief Write the instances of components.
+	 *
+	 * \param vhdlStream The text stream to write into.
+	 *
+	*/
+	void writeComponentInstances( QTextStream& vhdlStream );
 	
 	//! \brief Pointer to the instance that manages the library.
 	LibraryInterface* handler_;
