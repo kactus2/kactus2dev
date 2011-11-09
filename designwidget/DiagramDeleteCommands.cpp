@@ -247,11 +247,12 @@ void ConnectionDeleteCommand::undo()
 //-----------------------------------------------------------------------------
 void ConnectionDeleteCommand::redo()
 {
+    // Disconnect the ends.
+    conn_->disconnectEnds();
+
     // Remove the item from the scene.
     scene_->removeItem(conn_);
 
-    // Disconnect the ends.
-    conn_->disconnectEnds();
     del_ = true;
 }
 
