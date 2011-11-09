@@ -22,11 +22,11 @@
 //-----------------------------------------------------------------------------
 // Function: parseProgrammableElements()
 //-----------------------------------------------------------------------------
-void parseProgrammableElements(LibraryInterface* lh, Component& component,
+void parseProgrammableElements(LibraryInterface* lh, Component& component, QString const& viewName,
                                QList<Design::ComponentInstance>& elements)
 {
     // Find the design that is attached to the component.
-    VLNV designVLNV = component.getHierRef();
+    VLNV designVLNV = component.getHierRef(viewName);
 
     // The received type is always VLNV::DESIGN so it must be asked from the
     // library handler to make sure the type is correct.
@@ -38,6 +38,7 @@ void parseProgrammableElements(LibraryInterface* lh, Component& component,
     }
 
     QSharedPointer<Design> compDesign;
+    QSharedPointer<DesignConfiguration> designConf;
 
     // Check if the component contains a direct reference to a design.
     if (designVLNV.getType() == VLNV::DESIGN)
@@ -49,7 +50,7 @@ void parseProgrammableElements(LibraryInterface* lh, Component& component,
     else if (designVLNV.getType() == VLNV::DESIGNCONFIGURATION)
     {
         QSharedPointer<LibraryComponent> libComp = lh->getModel(designVLNV);
-        QSharedPointer<DesignConfiguration> designConf = libComp.staticCast<DesignConfiguration>();
+        designConf = libComp.staticCast<DesignConfiguration>();
 
         designVLNV = designConf->getDesignRef();
 
@@ -87,8 +88,15 @@ void parseProgrammableElements(LibraryInterface* lh, Component& component,
 			}
 			else
 			{
+                QString view = "";
+
+                if (designConf != 0)
+                {
+                    view = designConf->getActiveView(instance.instanceName);
+                }
+
 				// Otherwise parse the hierarchical components recursively.
-				parseProgrammableElements(lh, *childComp, elements);
+				parseProgrammableElements(lh, *childComp, view, elements);
 			}
 		}
 	}
@@ -102,7 +110,7 @@ void generateSystemDesign(LibraryInterface* lh, QString const& directory,
 {
     // Parse all programmable elements from the HW component.
     QList<Design::ComponentInstance> elements;
-    parseProgrammableElements(lh, component, elements);
+    parseProgrammableElements(lh, component, "", elements);
 
     // Create SW mapping components for each programmable element.
     QList<Design::ComponentInstance> swInstances;
