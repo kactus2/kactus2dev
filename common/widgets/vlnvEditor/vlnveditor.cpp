@@ -15,6 +15,7 @@
 #include <common/validators/nameValidator/namevalidator.h>
 #include <LibraryManager/libraryinterface.h>
 #include <LibraryManager/libraryitem.h>
+#include <LibraryManager/libraryhandler.h>
 
 #include "VLNVContentMatcher.h"
 
@@ -28,29 +29,15 @@
 //-----------------------------------------------------------------------------
 VLNVEditor::VLNVEditor(VLNV::IPXactType type, LibraryInterface* libHandler, QWidget* parentWnd,
 					   QWidget* parent, bool compact) : 
-QGroupBox(parent), m_type(type),
-m_rootItem(0), m_vendorEdit(0),
-m_vendorMatcher(), m_libraryEdit(0),
-m_libraryMatcher(), m_nameEdit(0),
-m_nameMatcher(), m_versionEdit(0),
-m_versionMatcher(),
-handler_(libHandler)
+QGroupBox(parent), m_type(type), handler_(libHandler),
+m_vendorEdit(0), m_vendorMatcher(),
+m_libraryEdit(0), m_libraryMatcher(),
+m_nameEdit(0), m_nameMatcher(),
+m_versionEdit(0), m_versionMatcher()
 {
     Q_ASSERT(libHandler != 0);
     Q_ASSERT(m_type != VLNV::INVALID);
 
-    // Retrieve the correct sub-tree from the library handler based on the IP-XACT type.
-    LibraryItem const* root = libHandler->getTreeRoot();
-
-    for (int i = 0; i < root->getNumberOfChildren(); ++i)
-    {
-        if (root->child(i)->getName() == VLNV::type2Print(m_type))
-        {
-            m_rootItem = root->child(i);
-            break;
-        }
-    }
-    
     // Set group box settings.
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     setTitle(tr("VLNV"));
@@ -108,17 +95,27 @@ bool VLNVEditor::isValid() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: updateMatcherItems()
+//-----------------------------------------------------------------------------
+void VLNVEditor::updateMatcherItems()
+{
+    m_vendorMatcher->setLibraryItem(getTypeRoot());
+    updateLibraryMatcherItem();
+}
+
+//-----------------------------------------------------------------------------
 // Function: updateLibraryMatcherItem()
 //-----------------------------------------------------------------------------
 void VLNVEditor::updateLibraryMatcherItem()
 {
     LibraryItem const* foundItem = 0;
+    LibraryItem const* typeRoot = m_vendorMatcher->getLibraryItem();
   
-    if (m_rootItem != 0)
+    if (typeRoot != 0)
     {
-        for (int i = 0; i < m_rootItem->getNumberOfChildren(); ++i)
+        for (int i = 0; i < typeRoot->getNumberOfChildren(); ++i)
         {
-            LibraryItem const* child = m_rootItem->child(i);
+            LibraryItem const* child = typeRoot->child(i);
 
             if (child->getName() == m_vendorEdit->text())
             {
@@ -199,7 +196,7 @@ void VLNVEditor::initWidgets(QWidget* parentWnd, bool compact)
     QLabel* versionLabel = new QLabel(tr("Version:"), this);
 
     // Create the matchers.
-    m_vendorMatcher = QSharedPointer<VLNVContentMatcher>(new VLNVContentMatcher(m_rootItem));
+    m_vendorMatcher = QSharedPointer<VLNVContentMatcher>(new VLNVContentMatcher(0));
     m_libraryMatcher = QSharedPointer<VLNVContentMatcher>(new VLNVContentMatcher(0));
     m_nameMatcher = QSharedPointer<VLNVContentMatcher>(new VLNVContentMatcher(0));
     m_versionMatcher = QSharedPointer<VLNVContentMatcher>(new VLNVContentMatcher(0));
@@ -275,11 +272,16 @@ void VLNVEditor::initConnections()
 
     // Connect the matcher update slots to the textChanged signals.
     connect(m_vendorEdit, SIGNAL(textChanged(const QString&)),
+        this, SLOT(updateMatcherItems()), Qt::UniqueConnection);
+    connect(m_vendorEdit, SIGNAL(textChanged(const QString&)),
         this, SLOT(updateLibraryMatcherItem()), Qt::UniqueConnection);
     connect(m_libraryEdit, SIGNAL(textChanged(const QString&)),
         this, SLOT(updateNameMatcherItem()), Qt::UniqueConnection);
     connect(m_nameEdit, SIGNAL(textChanged(const QString&)),
         this, SLOT(updateVersionMatcherItem()), Qt::UniqueConnection);
+
+    connect(static_cast<LibraryHandler*>(handler_), SIGNAL(refreshDialer()),
+            this, SLOT(updateMatcherItems()), Qt::UniqueConnection);
 }
 
 bool VLNVEditor::isEmpty() const {
@@ -322,4 +324,22 @@ void VLNVEditor::dragEnterEvent( QDragEnterEvent* event ) {
 		if (handler_->getDocumentType(*vlnv) == m_type)
 			event->acceptProposedAction();
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: getTypeRoot()
+//-----------------------------------------------------------------------------
+LibraryItem const* VLNVEditor::getTypeRoot() const
+{
+    LibraryItem const* root = handler_->getTreeRoot();
+
+    for (int i = 0; i < root->getNumberOfChildren(); ++i)
+    {
+        if (root->child(i)->getName() == VLNV::type2Print(m_type))
+        {
+            return root->child(i);
+        }
+    }
+
+    return 0;
 }

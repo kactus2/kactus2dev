@@ -47,7 +47,7 @@ public:
 	 * \param path QString containing the filepath to the document to be added.
 	 * The path has to be absolute path.
 	 *
-	 * \return True if add was succesfull. False if file was not added i.e.
+	 * \return True if add was succesful. False if file was not added i.e.
 	 * if the VLNV was already in the library
 	 */
 	//virtual bool registerVLNV(const VLNV& vlnv, const QString& path) = 0;

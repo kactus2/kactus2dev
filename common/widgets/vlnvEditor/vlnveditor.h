@@ -88,10 +88,13 @@ signals:
     void vlnvEdited();
 
 public slots:
+    //! Updates all matcher items based on the contents of the VLNV editor fields.
+    void updateMatcherItems();
+
     //! Called when the vendor field has changed.
     void updateLibraryMatcherItem();
 
-    //! Called when the library field has changeed.
+    //! Called when the library field has changed.
     void updateNameMatcherItem();
 
     //! Called when the name field has changed.
@@ -143,15 +146,14 @@ private:
      */
     void initWidgets(QWidget* parentWnd, bool compact);
 
+    LibraryItem const* getTypeRoot() const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! The VLNV type which to edit.
     VLNV::IPXactType m_type;
-
-    //! The IP-XACT sub-tree root of the library handler.
-    LibraryItem const* m_rootItem;
 
     //! Line edit for the vendor element.
     AssistedLineEdit* m_vendorEdit;

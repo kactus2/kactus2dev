@@ -134,6 +134,12 @@ SoftwareMappingsEditor::SoftwareMappingsEditor(LibraryInterface* libHandler,
                     break;
                 }
             }
+
+            // Select the first endpoint definition if found.
+            if (endpointList_.count() > 0)
+            {
+                endpointList_.setCurrentItem(endpointList_.item(0));
+            }
         }
     }
 }
