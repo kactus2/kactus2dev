@@ -973,6 +973,7 @@ QSharedPointer<Design> EndpointDesignDiagram::createDesign(VLNV const& vlnv)
                                                *mappingCompItem->componentModel()->getVlnv(),
                                                mappingCompItem->scenePos());
             instance.configurableElementValues = mappingCompItem->getConfigurableElements();
+            instance.mcapiNodeID = mappingCompItem->getID();
 
             instances.append(instance);
         }
