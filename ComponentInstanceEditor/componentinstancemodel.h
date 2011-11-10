@@ -16,7 +16,7 @@
 #include <QString>
 #include <QSharedPointer>
 
-class DiagramComponent;
+class ComponentItem;
 
 /*! \brief Model class to manage the configurable element values being edited.
  *
@@ -41,7 +41,7 @@ public:
 	 * \param component Pointer to the component being edited.
 	 *
 	*/
-	void setComponent(DiagramComponent* component);
+	void setComponent(ComponentItem* component);
 
 	/*! \brief Get the number of rows to be displayed.
 	 *
@@ -172,7 +172,7 @@ private:
 	void readValues();
 
 	//! \brief Pointer to the component instance being edited.
-	DiagramComponent* component_;
+	ComponentItem* component_;
 
 	//! \brief Reference to the map containing the actual configurable elements.
 	QMap<QString, QString> values_;

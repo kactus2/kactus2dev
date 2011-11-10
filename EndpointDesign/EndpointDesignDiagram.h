@@ -30,6 +30,7 @@ class DesignConfiguration;
 class LibraryInterface;
 class VLNV;
 class GenericEditProvider;
+class EndpointDesignWidget;
 
 //-----------------------------------------------------------------------------
 //! EndpointDesignDiagram class.
@@ -45,10 +46,10 @@ public:
      *      @param [in] lh            The library interface.
      *      @param [in] mainWnd       The main window.
      *      @param [in] editProvider  The edit provider.
-     *      @param [in] parent        The parent object.
+     *      @param [in] parent        The parent widget.
      */
     EndpointDesignDiagram(LibraryInterface* lh, MainWindow* mainWnd,
-                          GenericEditProvider& editProvider, QObject* parent = 0);
+                          GenericEditProvider& editProvider, EndpointDesignWidget* parent = 0);
 
     /*!
      *  Destructor.
@@ -115,6 +116,20 @@ public:
     void addMappingComponent(SystemColumn* column, QPointF const& pos);
 
     /*!
+     *  Adds an already created SW mapping component to the diagram.
+     *
+     *      @param [in] mappingComp The mapping component to add.
+     */
+    void addMappingComponent(MappingComponentItem* mappingComp);
+
+    /*!
+     *  Removes an SW mapping component from the diagram.
+     *
+     *      @param [in] mappingComp The mapping component to remove.
+     */
+    void removeMappingComponent(MappingComponentItem* mappingComp);
+
+    /*!
      *  Draws the diagram background.
      */
      void drawBackground(QPainter* painter, QRectF const& rect);
@@ -123,6 +138,11 @@ public:
       * Returns the main window.
       */
      MainWindow* getMainWindow() const;
+
+     /*!
+      * Returns the parent widget.
+      */
+     EndpointDesignWidget* parent() const;
 
      /*!
      *  Sets the draw mode of the diagram.
@@ -170,9 +190,6 @@ signals:
     //! Signaled when the draw mode has changed.
     void modeChanged(DrawMode mode);
 
-    //! Signaled when all items are deselected.
-    void clearItemSelection();
-
     //! Signaled when the contents of the diagram have changed.
     void contentChanged();
 
@@ -187,6 +204,12 @@ signals:
 
     //! Signaled when a component instance is removed from the design.
     void componentInstanceRemoved(ComponentItem* item);
+
+    //! Signaled when user selects a component on the draw board.
+	void componentSelected(ComponentItem* component);
+
+    //! Signaled when all items are deselected.
+    void clearItemSelection();
      
 protected:
     //! Called when the user presses a mouse button.
@@ -268,7 +291,8 @@ private:
      *      @param [in] itemTypeName  The item type name (e.g. "Application").
      */
     void packetizeSWComponent(ComponentItem* item, QString const& itemTypeName);
-    
+    void onSelected(QGraphicsItem* newSelection);
+
     //! MappingComponentList type.
     typedef QList<MappingComponentItem*> MappingComponentList;
 
@@ -281,6 +305,9 @@ private:
 
     //! A pointer to the main window.
     MainWindow* mainWnd_;
+
+    //! The parent widget.
+    EndpointDesignWidget* parent_;
 
     //! The system that is being edited.
     QSharedPointer<Component> system_;

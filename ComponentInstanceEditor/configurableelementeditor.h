@@ -15,7 +15,7 @@
 #include <QSortFilterProxyModel>
 #include <QPushButton>
 
-class DiagramComponent;
+class ComponentItem;
 
 /*! \brief Editor for configurable elements of a component instance.
  *
@@ -42,7 +42,7 @@ public:
 	 * \param component Pointer to the component instance to edit.
 	 *
 	*/
-	void setComponent(DiagramComponent* component);
+	void setComponent(ComponentItem* component);
 
 	/*! \brief Clear the editor from all data.
 	 *
@@ -67,7 +67,7 @@ private:
 	ConfigurableElementEditor& operator=(const ConfigurableElementEditor& other);
 
 	//! \brief Pointer to the component instance being edited.
-	DiagramComponent* component_;
+	ComponentItem* component_;
 
 	//! \brief The widget to display the contents of the model.
 	QTableView view_;

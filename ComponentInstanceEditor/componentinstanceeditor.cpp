@@ -12,6 +12,8 @@
 #include <LibraryManager/vlnv.h>
 #include <designwidget/blockdiagram.h>
 #include <designwidget/designwidget.h>
+#include <EndpointDesign/EndpointDesignDiagram.h>
+#include <EndpointDesign/EndpointDesignWidget.h>
 #include <designwidget/DiagramChangeCommands.h>
 
 #include <common/validators/vhdlNameValidator/vhdlnamevalidator.h>
@@ -55,7 +57,7 @@ editProvider_() {
 ComponentInstanceEditor::~ComponentInstanceEditor() {
 }
 
-void ComponentInstanceEditor::setComponent( DiagramComponent* component ) {
+void ComponentInstanceEditor::setComponent( ComponentItem* component ) {
 	Q_ASSERT(component);
 
 	qobject_cast<QDockWidget*>(parentWidget())->show();
@@ -68,10 +70,23 @@ void ComponentInstanceEditor::setComponent( DiagramComponent* component ) {
 
 	component_ = component;
 
+    bool locked = false;
+
 	// get the edit provider that manages the undo/redo stack
-	BlockDiagram* diagram = static_cast<BlockDiagram*>(component->scene());
-	DesignWidget* designWidget = diagram->parent();
-	editProvider_ = designWidget->getGenericEditProvider();
+    // TODO: Base class for the diagrams!
+    if (dynamic_cast<BlockDiagram*>(component->scene()) != 0)
+    {
+	    BlockDiagram* diagram = static_cast<BlockDiagram*>(component->scene());
+        DesignWidget* designWidget = diagram->parent();
+	    editProvider_ = designWidget->getGenericEditProvider();
+        locked = diagram->isProtected();
+    }
+    else
+    {
+        EndpointDesignDiagram* diagram = static_cast<EndpointDesignDiagram*>(component->scene());
+        editProvider_ = diagram->parent()->getGenericEditProvider();
+        locked = diagram->isProtected();
+    }
 
 	// set the vlnv of the component to be displayed
 	vlnvDisplayer_.setVLNV(*component->componentModel()->getVlnv());
@@ -80,12 +95,12 @@ void ComponentInstanceEditor::setComponent( DiagramComponent* component ) {
 	nameGroup_.setName(component->name());
 	nameGroup_.setDisplayName(component->displayName());
 	nameGroup_.setDescription(component->description());
-    nameGroup_.setEnabled(!designWidget->isProtected());
+    nameGroup_.setEnabled(!locked);
 	nameGroup_.show();
 
 	// set the component's configurable elements
 	configurableElements_.setComponent(component);
-    configurableElements_.setEnabled(!designWidget->isProtected());
+    configurableElements_.setEnabled(!locked);
 	configurableElements_.show();
 
 	connect(component_, SIGNAL(nameChanged(const QString&, const QString&)),
@@ -96,8 +111,8 @@ void ComponentInstanceEditor::setComponent( DiagramComponent* component ) {
 		&nameGroup_, SLOT(setDescription(const QString&)), Qt::UniqueConnection);
 
 	// if the connected component is destroyed then clear this editor
-	connect(component_, SIGNAL(destroyed(DiagramComponent*)),
-		this, SLOT(clear()), Qt::UniqueConnection);
+	connect(component_, SIGNAL(destroyed(ComponentItem*)),
+		    this, SLOT(clear()), Qt::UniqueConnection);
 }
 
 void ComponentInstanceEditor::clear() {

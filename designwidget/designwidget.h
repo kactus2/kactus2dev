@@ -208,7 +208,7 @@ signals:
 	 * \param component Pointer to the DiagramComponent instance that is selected.
 	 *
 	*/
-	void componentSelected(DiagramComponent* component);
+	void componentSelected(ComponentItem* component);
 
 	/*! \brief Emitted when user selects a port in the draw board.
 	 *

@@ -259,8 +259,8 @@ void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forc
 	connect(designWidget, SIGNAL(clearItemSelection()),
 		libraryHandler_, SLOT(onClearSelection()), Qt::UniqueConnection);
 	
-	connect(designWidget, SIGNAL(componentSelected(DiagramComponent*)),
-		this, SLOT(onComponentSelected(DiagramComponent*)), Qt::UniqueConnection);
+	connect(designWidget, SIGNAL(componentSelected(ComponentItem*)),
+		this, SLOT(onComponentSelected(ComponentItem*)), Qt::UniqueConnection);
      connect(designWidget, SIGNAL(interfaceSelected(DiagramInterface*)),
          this, SLOT(onInterfaceSelected(DiagramInterface*)), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(portSelected(DiagramPort*)),
@@ -811,7 +811,7 @@ void MainWindow::onClearItemSelection() {
 	connectionEditor_->clear();
 }
 
-void MainWindow::onComponentSelected( DiagramComponent* component ) {
+void MainWindow::onComponentSelected( ComponentItem* component ) {
 
 	Q_ASSERT(component);
 
@@ -1826,6 +1826,16 @@ void MainWindow::openSystem(VLNV const& vlnv, bool forceUnlocked)
         this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
     connect(designWidget, SIGNAL(openSource(ProgramEntityItem*)),
         this, SLOT(openSource(ProgramEntityItem*)), Qt::UniqueConnection);
+
+    connect(designWidget, SIGNAL(componentSelected(ComponentItem*)),
+        this, SLOT(onComponentSelected(ComponentItem*)), Qt::UniqueConnection);
+    connect(designWidget, SIGNAL(destroyed(QObject*)),
+        this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
+    connect(designWidget, SIGNAL(clearItemSelection()),
+        libraryHandler_, SLOT(onClearSelection()), Qt::UniqueConnection);
+    connect(designWidget, SIGNAL(clearItemSelection()),
+        this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
+
     //connect(designWidget->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));
     connect(designWidget, SIGNAL(zoomChanged()), this, SLOT(updateZoomTools()), Qt::UniqueConnection);
     connect(designWidget, SIGNAL(modeChanged(DrawMode)),

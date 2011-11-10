@@ -48,6 +48,10 @@ EndpointDesignWidget::EndpointDesignWidget(LibraryInterface* lh, MainWindow* mai
         this, SIGNAL(openComponent(const VLNV&)), Qt::UniqueConnection);
     connect(diagram_, SIGNAL(openSource(ProgramEntityItem*)),
         this, SIGNAL(openSource(ProgramEntityItem*)), Qt::UniqueConnection);
+    connect(diagram_, SIGNAL(componentSelected(ComponentItem*)),
+        this, SIGNAL(componentSelected(ComponentItem*)), Qt::UniqueConnection);
+    connect(diagram_, SIGNAL(clearItemSelection()),
+        this, SIGNAL(clearItemSelection()), Qt::UniqueConnection);
     
     view_ = new QGraphicsView(this);
     view_->setScene(diagram_);
@@ -251,6 +255,7 @@ void EndpointDesignWidget::keyPressEvent(QKeyEvent* event)
                     diagram_, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
                 editProvider_->addCommand(cmd);
+                emit clearItemSelection();
             }
         }
         else if (selected->type() == ProgramEntityItem::Type)
@@ -264,6 +269,7 @@ void EndpointDesignWidget::keyPressEvent(QKeyEvent* event)
                 diagram_, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
             editProvider_->addCommand(cmd);
+            emit clearItemSelection();
         }
         else if (selected->type() == ApplicationItem::Type)
         {
@@ -276,6 +282,7 @@ void EndpointDesignWidget::keyPressEvent(QKeyEvent* event)
                 diagram_, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
             editProvider_->addCommand(cmd);
+            emit clearItemSelection();
         }
         else if (selected->type() == PlatformComponentItem::Type)
         {
@@ -288,6 +295,7 @@ void EndpointDesignWidget::keyPressEvent(QKeyEvent* event)
                     diagram_, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
             editProvider_->addCommand(cmd);
+            emit clearItemSelection();
         }
         else if (selected->type() == EndpointItem::Type)
         {
@@ -298,6 +306,7 @@ void EndpointDesignWidget::keyPressEvent(QKeyEvent* event)
             {
                 QSharedPointer<QUndoCommand> cmd(new EndpointDeleteCommand(static_cast<EndpointItem*>(selected)));
                 editProvider_->addCommand(cmd);
+                emit clearItemSelection();
             }
         }
         else if (selected->type() == EndpointConnection::Type)
@@ -306,6 +315,7 @@ void EndpointDesignWidget::keyPressEvent(QKeyEvent* event)
             QSharedPointer<QUndoCommand> cmd(new EndpointConnectionDeleteCommand(
                 static_cast<EndpointConnection*>(selected)));
             editProvider_->addCommand(cmd);
+            emit clearItemSelection();
         }
         else if (selected->type() == SystemColumn::Type)
         {
@@ -333,6 +343,7 @@ void EndpointDesignWidget::keyPressEvent(QKeyEvent* event)
                 QSharedPointer<QUndoCommand> cmd(new SystemColumnDeleteCommand(diagram_->getColumnLayout(),
                                                                                column));
                 editProvider_->addCommand(cmd);
+                emit clearItemSelection();
             }
         }
     }
@@ -401,4 +412,12 @@ void EndpointDesignWidget::addColumn()
 IEditProvider* EndpointDesignWidget::getEditProvider()
 {
     return editProvider_.data();
+}
+
+//-----------------------------------------------------------------------------
+// Function: getGenericEditProvider()
+//-----------------------------------------------------------------------------
+QSharedPointer<GenericEditProvider> EndpointDesignWidget::getGenericEditProvider() const
+{
+    return editProvider_;
 }

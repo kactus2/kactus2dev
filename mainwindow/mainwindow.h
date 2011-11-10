@@ -22,7 +22,7 @@
 
 class DesignWidget;
 class LibraryHandler;
-class DiagramComponent;
+class ComponentItem;
 class DiagramPort;
 class ProgramEntityItem;
 class ComponentPreviewBox;
@@ -110,7 +110,7 @@ public slots:
 	 * \param component Pointer to the DiagramComponent instance that is selected.
 	 *
 	*/
-	void onComponentSelected(DiagramComponent* component);
+	void onComponentSelected(ComponentItem* component);
 
 	/*! \brief Called when user selects a port on the draw board.
 	 *

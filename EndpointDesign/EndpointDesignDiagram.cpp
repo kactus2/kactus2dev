@@ -50,17 +50,18 @@
 //-----------------------------------------------------------------------------
 EndpointDesignDiagram::EndpointDesignDiagram(LibraryInterface* lh, MainWindow* mainWnd,
                                              GenericEditProvider& editProvider,
-                                             QObject* parent /* = 0*/) : QGraphicsScene(parent), lh_(lh),
-                                                                         mainWnd_(mainWnd),
-                                                                         editProvider_(editProvider),
-                                                                         system_(), designConf_(),
-                                                                         nodeIDFactory_(),
-                                                                         layout_(), mode_(MODE_SELECT),
-                                                                         tempConnEndpoint_(0),
-                                                                         tempConnection_(0),
-                                                                         tempPotentialEndingEndPoints_(0),
-                                                                         highlightedEndPoint_(0),
-                                                                         instanceNames_(), locked_(false)
+                                             EndpointDesignWidget* parent) : QGraphicsScene(parent), lh_(lh),
+                                                                             mainWnd_(mainWnd),
+                                                                             parent_(parent),
+                                                                             editProvider_(editProvider),
+                                                                             system_(), designConf_(),
+                                                                             nodeIDFactory_(),
+                                                                             layout_(), mode_(MODE_SELECT),
+                                                                             tempConnEndpoint_(0),
+                                                                             tempConnection_(0),
+                                                                             tempPotentialEndingEndPoints_(0),
+                                                                             highlightedEndPoint_(0),
+                                                                             instanceNames_(), locked_(false)
                                                                          
 {
     setSceneRect(0, 0, 100000, 100000);
@@ -306,7 +307,7 @@ void EndpointDesignDiagram::addMappingComponent(SystemColumn* column, QPointF co
     
     // Create the mapping component graphics item.
     MappingComponentItem* item = new MappingComponentItem(this, lh_, comp, createInstanceName("unnamed"),
-                                                          "", "", QMap<QString, QString>(),
+                                                          QString(), QString(), QMap<QString, QString>(),
                                                           nodeIDFactory_.getID());
     item->setPos(pos);
     connect(item, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
@@ -702,11 +703,37 @@ void EndpointDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *event)
         }
 
         // TODO:
-        //onSelected(newSelection);
+        onSelected(newSelection);
 
         if (oldSelection && oldSelection->type() == EndpointConnection::Type)
             if (!selectedItems().size() || selectedItems().first() != oldSelection)
                 oldSelection->setZValue(-1000);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: onSelected()
+//-----------------------------------------------------------------------------
+void EndpointDesignDiagram::onSelected(QGraphicsItem* newSelection)
+{
+    // Activate the correct views when something has been selected.
+    if (newSelection)
+    { 
+        // Check if the selected item was a component.
+        if (dynamic_cast<ComponentItem*>(newSelection) != 0)
+        {
+            emit componentSelected(dynamic_cast<ComponentItem*>(newSelection));
+        }
+        else
+        {
+            // Otherwise inform others that nothing is currently selected.
+            emit clearItemSelection();
+        }
+    }
+    else
+    {
+        // Clear the selection.
+        emit clearItemSelection();
     }
 }
 
@@ -1283,6 +1310,11 @@ SystemColumnLayout* EndpointDesignDiagram::getColumnLayout()
 void EndpointDesignDiagram::onComponentInstanceAdded(ComponentItem* item)
 {
     instanceNames_.append(item->name());
+
+    if (item->type() == MappingComponentItem::Type)
+    {
+        nodeIDFactory_.usedID(static_cast<MappingComponentItem*>(item)->getID());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1291,6 +1323,11 @@ void EndpointDesignDiagram::onComponentInstanceAdded(ComponentItem* item)
 void EndpointDesignDiagram::onComponentInstanceRemoved(ComponentItem* item)
 {
     instanceNames_.removeAll(item->name());
+
+    if (item->type() == MappingComponentItem::Type)
+    {
+        nodeIDFactory_.freeID(static_cast<MappingComponentItem*>(item)->getID());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1317,4 +1354,12 @@ void EndpointDesignDiagram::setProtection(bool locked)
 bool EndpointDesignDiagram::isProtected() const
 {
     return locked_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: parent()
+//-----------------------------------------------------------------------------
+EndpointDesignWidget* EndpointDesignDiagram::parent() const
+{
+    return parent_;
 }

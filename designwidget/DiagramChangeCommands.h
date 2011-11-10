@@ -24,7 +24,7 @@
 
 class DiagramInterconnection;
 class DiagramPort;
-class DiagramComponent;
+class ComponentItem;
 class DiagramInterface;
 class DiagramColumn;
 class DiagramColumnLayout;
@@ -113,7 +113,7 @@ public:
      *      @param [in] newName        The component's new name.
      *      @param [in] parent         The parent command.
      */
-    ComponentChangeNameCommand(DiagramComponent* component, QString const& newName,
+    ComponentChangeNameCommand(ComponentItem* component, QString const& newName,
 		QUndoCommand* parent = 0);
 
     /*!
@@ -141,7 +141,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The diagram component.
-    DiagramComponent* component_;
+    ComponentItem* component_;
 
     //! The component's old name.
     QString oldName_;
@@ -160,7 +160,7 @@ public:
      *      @param [in] newDisplayName The component's new display name.
      *      @param [in] parent         The parent command.
      */
-    ComponentChangeDisplayNameCommand(DiagramComponent* component, QString const& newDisplayName,
+    ComponentChangeDisplayNameCommand(ComponentItem* component, QString const& newDisplayName,
 		QUndoCommand* parent = 0);
 
     /*!
@@ -188,7 +188,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The diagram component.
-    DiagramComponent* component_;
+    ComponentItem* component_;
 
     //! The component's old display name.
     QString oldDisplayName_;
@@ -207,7 +207,7 @@ public:
      *      @param [in] newDescription The component's new description.
      *      @param [in] parent         The parent command.
      */
-    ComponentChangeDescriptionNameCommand(DiagramComponent* component, QString const& newDescription,
+    ComponentChangeDescriptionNameCommand(ComponentItem* component, QString const& newDescription,
 		QUndoCommand* parent = 0);
 
     /*!
@@ -235,7 +235,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The diagram component.
-    DiagramComponent* component_;
+    ComponentItem* component_;
 
     //! The component's old display name.
     QString oldDescription_;
@@ -255,7 +255,7 @@ public:
 	 * \param parent Pointer to the owner of this command.
 	 *
 	*/
-	ComponentConfElementChangeCommand(DiagramComponent* component,
+	ComponentConfElementChangeCommand(ComponentItem* component,
 		const QMap<QString, QString>& newConfElements, 
 		QUndoCommand* parent = 0);
 
@@ -276,7 +276,7 @@ private:
 	ComponentConfElementChangeCommand& operator=(const ComponentConfElementChangeCommand& other);
 
 	//! \brief Pointer to the component instance that's configurable elements are changed.
-	DiagramComponent* component_;
+	ComponentItem* component_;
 
 	//! \brief The old configurable element values.
 	QMap<QString, QString> oldConfElements_;
@@ -354,7 +354,7 @@ public:
      *      @param [in] vlnv       The VLNV of the packetized component.
      *      @param [in] parent     The parent command.
      */
-    ComponentPacketizeCommand(DiagramComponent* component, VLNV const& vlnv, QUndoCommand* parent = 0);
+    ComponentPacketizeCommand(ComponentItem* component, VLNV const& vlnv, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -381,7 +381,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The diagram component.
-    DiagramComponent* component_;
+    ComponentItem* component_;
 
     //! The component VLNV.
     VLNV vlnv_;

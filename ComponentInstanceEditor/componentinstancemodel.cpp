@@ -11,6 +11,8 @@
 #include <designwidget/blockdiagram.h>
 #include <designwidget/designwidget.h>
 #include <designwidget/DiagramChangeCommands.h>
+#include <EndpointDesign/EndpointDesignDiagram.h>
+#include <EndpointDesign/EndpointDesignWidget.h>
 
 ComponentInstanceModel::ComponentInstanceModel(QObject *parent):
 QAbstractTableModel(parent),
@@ -23,7 +25,7 @@ editProvider_(0) {
 ComponentInstanceModel::~ComponentInstanceModel() {
 }
 
-void ComponentInstanceModel::setComponent( DiagramComponent* component ) {
+void ComponentInstanceModel::setComponent( ComponentItem* component ) {
 
 	Q_ASSERT(component);
 
@@ -34,10 +36,19 @@ void ComponentInstanceModel::setComponent( DiagramComponent* component ) {
 
 	component_ = component;
 
-	// get the edit provider that manages the undo/redo stack
-	BlockDiagram* diagram = static_cast<BlockDiagram*>(component->scene());
-	DesignWidget* designWidget = diagram->parent();
-	editProvider_ = designWidget->getGenericEditProvider();
+    // get the edit provider that manages the undo/redo stack
+    // TODO: Base class for the diagrams!
+    if (dynamic_cast<BlockDiagram*>(component->scene()) != 0)
+    {
+        BlockDiagram* diagram = static_cast<BlockDiagram*>(component->scene());
+        DesignWidget* designWidget = diagram->parent();
+        editProvider_ = designWidget->getGenericEditProvider();
+    }
+    else
+    {
+        EndpointDesignDiagram* diagram = static_cast<EndpointDesignDiagram*>(component->scene());
+        editProvider_ = diagram->parent()->getGenericEditProvider();
+    }
 	
 	values_ = component->getConfigurableElements();
 	readValues();
@@ -46,8 +57,8 @@ void ComponentInstanceModel::setComponent( DiagramComponent* component ) {
 		this, SLOT(changeElements(const QMap<QString, QString>&)), Qt::UniqueConnection);
 
 	// if the connected component is destroyed then clear this editor
-	connect(component_, SIGNAL(destroyed(DiagramComponent*)),
-		this, SLOT(clear()), Qt::UniqueConnection);
+	connect(component_, SIGNAL(destroyed(ComponentItem*)),
+		    this, SLOT(clear()), Qt::UniqueConnection);
 }
 
 void ComponentInstanceModel::clear() {

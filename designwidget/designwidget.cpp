@@ -88,8 +88,8 @@ editProvider_() {
 		this, SIGNAL(portSelected(DiagramPort*)), Qt::UniqueConnection);
     connect(diagram_, SIGNAL(interfaceSelected(DiagramInterface*)),
         this, SIGNAL(interfaceSelected(DiagramInterface*)), Qt::UniqueConnection);
-	connect(diagram_, SIGNAL(componentSelected(DiagramComponent*)),
-		this, SIGNAL(componentSelected(DiagramComponent*)), Qt::UniqueConnection);
+	connect(diagram_, SIGNAL(componentSelected(ComponentItem*)),
+		this, SIGNAL(componentSelected(ComponentItem*)), Qt::UniqueConnection);
 	connect(diagram_, SIGNAL(connectionSelected(DiagramInterconnection*)),
 		this, SIGNAL(connectionSelected(DiagramInterconnection*)), Qt::UniqueConnection);
 	connect(diagram_, SIGNAL(clearItemSelection()),

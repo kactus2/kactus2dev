@@ -21,6 +21,7 @@ class Component;
 class Design;
 class DesignConfiguration;
 class DiagramComponent;
+class ComponentItem;
 class DiagramPort;
 class DiagramInterface;
 class DiagramInterconnection;
@@ -182,7 +183,7 @@ signals:
 	 * \param component Pointer to the DiagramComponent instance that is selected.
 	 *
 	*/
-	void componentSelected(DiagramComponent* component);
+	void componentSelected(ComponentItem* component);
 
 	/*! \brief Emitted when user selects a port on the draw board.
 	 *

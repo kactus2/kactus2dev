@@ -16,7 +16,7 @@
 #include <QWidget>
 #include <QSharedPointer>
 
-class DiagramComponent;
+class ComponentItem;
 
 /*! \brief Editor to edit the details of a component instance within a design.
  *
@@ -41,7 +41,7 @@ public:
 	 * \param component Pointer to the component instance being edited.
 	 *
 	*/
-	void setComponent(DiagramComponent* component);
+	void setComponent(ComponentItem* component);
 
 public slots:
 
@@ -74,7 +74,7 @@ private:
 	ComponentInstanceEditor& operator=(const ComponentInstanceEditor& other);
 
 	//! \brief Pointer to the component instance being edited.
-	DiagramComponent* component_;
+	ComponentItem* component_;
 
 	//! \brief The widget to display the vlnv of the component instance
 	VLNVDisplayer vlnvDisplayer_;

@@ -12,12 +12,12 @@
 #include "DiagramChangeCommands.h"
 
 #include <models/component.h>
+#include <common/graphicsItems/ComponentItem.h>
 
 #include <ConfigurationEditor/activeviewmodel.h>
 
 #include "diagraminterconnection.h"
 #include "diagramport.h"
-#include "diagramcomponent.h"
 #include "diagraminterface.h"
 #include "columnview/DiagramColumn.h"
 #include "columnview/DiagramColumnLayout.h"
@@ -70,7 +70,7 @@ void ColumnChangeCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: ComponentChangeNameCommand()
 //-----------------------------------------------------------------------------
-ComponentChangeNameCommand::ComponentChangeNameCommand(DiagramComponent* component,
+ComponentChangeNameCommand::ComponentChangeNameCommand(ComponentItem* component,
                                                QString const& newName,
                                                QUndoCommand* parent) : QUndoCommand(parent),
                                                                        component_(component),
@@ -102,7 +102,7 @@ void ComponentChangeNameCommand::redo()
     component_->setName(newName_);
 }
 
-ComponentChangeDisplayNameCommand::ComponentChangeDisplayNameCommand(DiagramComponent* component,
+ComponentChangeDisplayNameCommand::ComponentChangeDisplayNameCommand(ComponentItem* component,
 													   QString const& newDisplayName,
 													   QUndoCommand* parent):
 QUndoCommand(parent),
@@ -122,7 +122,7 @@ void ComponentChangeDisplayNameCommand::redo() {
 	component_->setDisplayName(newDisplayName_);
 }
 
-ComponentChangeDescriptionNameCommand::ComponentChangeDescriptionNameCommand(DiagramComponent* component,
+ComponentChangeDescriptionNameCommand::ComponentChangeDescriptionNameCommand(ComponentItem* component,
 																			 QString const& newDescription, 
 																			 QUndoCommand* parent /*= 0*/ ):
 QUndoCommand(parent),
@@ -170,7 +170,7 @@ void ComponentActiveViewChangeCommand::redo() {
 //-----------------------------------------------------------------------------
 // Function: ComponentPacketizeCommand()
 //-----------------------------------------------------------------------------
-ComponentPacketizeCommand::ComponentPacketizeCommand(DiagramComponent* component,
+ComponentPacketizeCommand::ComponentPacketizeCommand(ComponentItem* component,
                                                      VLNV const& vlnv,
                                                      QUndoCommand* parent) : QUndoCommand(parent),
                                                      component_(component),
@@ -377,7 +377,7 @@ void EndPointPortMapCommand::redo()
 }
 
 ComponentConfElementChangeCommand::ComponentConfElementChangeCommand( 
-	DiagramComponent* component, 
+	ComponentItem* component, 
 	const QMap<QString, QString>& newConfElements, 
 	QUndoCommand* parent /*= 0*/ ):
 QUndoCommand(parent),

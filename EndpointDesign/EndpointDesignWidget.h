@@ -106,6 +106,11 @@ public:
      */
     IEditProvider* getEditProvider();
 
+    /*!
+     *  Returns the generic edit provider that manages the undo stack.
+     */
+    QSharedPointer<GenericEditProvider> getGenericEditProvider() const;
+
 public slots:
     /*! 
      *  Saves the design to disk.
@@ -132,6 +137,12 @@ signals:
 
     //! Signaled when the zoom level has changed.
     void zoomChanged();
+
+    //! Signaled when user selects a component on the draw board.
+    void componentSelected(ComponentItem* component);
+
+    //! Signaled when all items are deselected.
+    void clearItemSelection();
 
 protected:
     void keyPressEvent(QKeyEvent* event);

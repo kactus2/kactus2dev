@@ -64,7 +64,7 @@ removeButton_(QIcon(":/icons/graphics/remove.png"), QString(), this) {
 ConfigurableElementEditor::~ConfigurableElementEditor() {
 }
 
-void ConfigurableElementEditor::setComponent( DiagramComponent* component ) {
+void ConfigurableElementEditor::setComponent( ComponentItem* component ) {
 
 	// set the component for the item delegate.
 	QAbstractItemDelegate* absDelegate = view_.itemDelegate();
