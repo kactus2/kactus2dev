@@ -858,11 +858,14 @@ void LibraryHandler::onEditItem( const VLNV& vlnv ) {
 									   }
 		case KactusAttribute::KTS_SW: {
 
-			// TODO remove this when mapping can be opened
 			if (component->getComponentSWType() == KactusAttribute::KTS_SW_MAPPING)
-				return;
-
-			emit openComponent(vlnv);
+            {
+                emit openSWDesign(vlnv);
+            }
+            else
+            {
+			    emit openComponent(vlnv);
+            }
 			break;
 									  }
 		default: {

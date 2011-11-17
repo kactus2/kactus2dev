@@ -67,6 +67,14 @@ public slots:
                     bool forceUnlocked = false);
 
     /*!
+     *  Opens a SW design.
+     *
+     *      @param [in] vlnv           The VLNV of the top-level SW component.
+     *      @param [in] forceUnlocked  Forces the design to be opened in unlocked mode.
+     */
+	void openSWDesign(const VLNV& vlnv = VLNV(), bool forceUnlocked = false);
+
+    /*!
      *  Opens a system design.
      *
      *      @param [in] vlnv           The VLNV of the system component whose system design to open.
@@ -241,6 +249,16 @@ public slots:
     void createDesign(KactusAttribute::ProductHierarchy prodHier,
                       KactusAttribute::Firmness firmness,
                       VLNV const& vlnv, QString const& directory);
+
+    /*!
+     *  Creates a SW design to the library.
+     *
+     *      @param [in] vlnv        The design's VLNV.
+     *      @param [in] directory   The directory where to save the design.
+     *
+     *      @remarks The SW design editor is opened automatically after successful creation.
+     */
+    void createSWDesign(VLNV const& vlnv, QString const& directory);
 
     /*!
      *  Creates a new system design.

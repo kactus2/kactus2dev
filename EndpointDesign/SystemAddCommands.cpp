@@ -317,8 +317,8 @@ void MappingCompAddCommand::redo()
 // Function: EndpointAddCommand()
 //-----------------------------------------------------------------------------
 EndpointAddCommand::EndpointAddCommand(EndpointStack* stack, EndpointItem* item,
-                                                 QUndoCommand* parent) : QUndoCommand(parent), item_(item),
-                                                                         stack_(stack), del_(false)
+                                       QUndoCommand* parent) : QUndoCommand(parent), item_(item),
+                                                               stack_(stack), del_(false)
 {
 }
 

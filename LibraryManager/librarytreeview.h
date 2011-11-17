@@ -205,6 +205,9 @@ private:
 
 	//! \brief Open end point to be edited
 	QAction* openEndpointAction_;
+
+    //! \brief Open software design to be edited
+    QAction* openSWDesignAction_;
 };
 
 #endif // LIBRARYTREEVIEW_H

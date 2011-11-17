@@ -197,8 +197,11 @@ private:
 	//! \brief Open a software application
 	QAction* openApplicationAction_;
 
-	//! \brief Open end point to be edited
-	QAction* openEndpointAction_;
+    //! \brief Open end point to be edited
+    QAction* openEndpointAction_;
+
+    //! \brief Open software design to be edited
+    QAction* openSWDesignAction_;
 };
 
 #endif // HIERARCHYVIEW_H

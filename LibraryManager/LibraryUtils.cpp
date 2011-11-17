@@ -151,6 +151,13 @@ void generateSystemDesign(LibraryInterface* lh, QString const& directory,
         if (swView != 0)
         {
             QSharedPointer<LibraryComponent> libComp = lh->getModel(swView->getHierarchyRef());
+            QSharedPointer<Design> swMapping = libComp.staticCast<Design>();
+
+            libComp = QSharedPointer<LibraryComponent>(lh->getModel(swMapping->getComponentInstances().at(0).componentRef));
+            QSharedPointer<Component> swMappingComp = libComp.staticCast<Component>();
+            View* swDesignView = swMappingComp->findView("kts_sw_ref");
+
+            libComp = QSharedPointer<LibraryComponent>(lh->getModel(swDesignView->getHierarchyRef()));
             QSharedPointer<Design> design = libComp.staticCast<Design>();
             swDesign = QSharedPointer<Design>(new Design(*design));
             swDesign->setVlnv(designVLNV);

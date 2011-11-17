@@ -229,7 +229,7 @@ QVariant LibraryTreeModel::data(const QModelIndex& index, int role) const {
 					else if (swType == KactusAttribute::KTS_SW_ENDPOINTS)
 						return QIcon(":/icons/graphics/endpoints.png");
 					else if (swType == KactusAttribute::KTS_SW_MAPPING) 
-						return QIcon(":/icons/graphics/new-sw_component.png");
+						return QIcon(":/icons/graphics/new-sw_design.png");
 											  }
 				default: {
 					if (component->isHierarchical()) {

@@ -10,6 +10,7 @@
 
 #include "NewComponentPage.h"
 #include "NewDesignPage.h"
+#include "NewSWDesignPage.h"
 #include "NewSystemPage.h"
 #include "newbuspage.h"
 
@@ -50,6 +51,7 @@
 
 #include <IPXactWrapper/BusEditor/buseditor.h>
 #include <IPXactWrapper/ComponentEditor/ipxactcomponenteditor.h>
+#include <IPXactWrapper/SWDesignEditor/SWDesignEditor.h>
 
 #include <PropertyWidget/messageconsole.h>
 
@@ -288,14 +290,82 @@ void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forc
         designWidget->setProtection(false);
     }
 	else 
+    {
 		// Open in unlocked mode by default only if the version is draft.
 		designWidget->setProtection(vlnv.getVersion() != "draft");
+    }
 
     designWidget->setTabWidget(designTabs_);
 
     // A small hack to center the view correctly.
 //     designWidget->fitInView();
 //     designWidget->setZoomLevel(100);
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: openSWDesign()
+//-----------------------------------------------------------------------------
+void MainWindow::openSWDesign(const VLNV& vlnv, bool forceUnlocked)
+{
+    // Check if the SW design editor is already open and activate it.
+    if (vlnv.isValid())
+    {
+        for (int i = 0; i < designTabs_->count(); i++)
+        {
+            IPXactComponentEditor* editor = dynamic_cast<IPXactComponentEditor*>(designTabs_->widget(i));
+
+            if (editor && editor->getComponentVLNV() == vlnv)
+            {
+                designTabs_->setCurrentIndex(i);
+                return;
+            }
+        }
+    }
+
+    // Editor was not yet open so create it.
+    QSharedPointer<Component> component;
+
+    if (libraryHandler_->contains(vlnv))
+    {
+        QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(vlnv);
+        component = libComp.dynamicCast<Component>();
+    }
+    else
+    {
+        emit errorMessage(tr("VLNV %1:%2:%3:%4 was not found in the library").arg(
+            vlnv.getVendor()).arg(
+            vlnv.getLibrary()).arg(
+            vlnv.getName()).arg(
+            vlnv.getVersion()));
+        return;
+    }
+
+    if (!component) {
+        emit errorMessage(tr("Document type did not match Component"));
+        return;
+    }
+
+    QString filePath = libraryHandler_->getPath(vlnv);
+    QFileInfo info(filePath);
+
+    SWDesignEditor* editor = new SWDesignEditor(this, this, libraryHandler_, component);
+    
+    if (forceUnlocked)
+    {
+        editor->setProtection(false);
+    }
+
+    editor->setTabWidget(designTabs_);
+
+    connect(editor, SIGNAL(errorMessage(const QString&)),
+        console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
+    connect(editor, SIGNAL(noticeMessage(const QString&)),
+        console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
+    connect(editor, SIGNAL(contentChanged()),
+        this, SLOT(updateMenuStrip()), Qt::UniqueConnection);
+    connect(editor, SIGNAL(modifiedChanged(bool)),
+        actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
 }
 
 void MainWindow::onTabCloseRequested( int index )
@@ -699,6 +769,8 @@ void MainWindow::setupLibraryDock() {
 		this, SLOT(createAbsDef(const VLNV&, const QString&, bool)), Qt::UniqueConnection);
 	connect(libraryHandler_, SIGNAL(openComponent(const VLNV&)),
 		this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
+    connect(libraryHandler_, SIGNAL(openSWDesign(const VLNV&)),
+        this, SLOT(openSWDesign(const VLNV&)), Qt::UniqueConnection);
 	connect(libraryHandler_, SIGNAL(openBus(const VLNV&, const VLNV&, bool)),
 		this, SLOT(openBus(const VLNV&, const VLNV&, bool)), Qt::UniqueConnection);
 	connect(libraryHandler_, SIGNAL(refreshDialer()),
@@ -1359,6 +1431,10 @@ void MainWindow::openSource(ProgramEntityItem* progEntity)
     
     QString filename = appItem->componentModel()->getFileSet("cSources")->getFiles().first()->getName();
 
+    // TODO: Test!
+    filename = General::getAbsolutePath(libraryHandler_->getPath(*appItem->componentModel()->getVlnv()),
+                                        filename);
+
     // Check if the source is already open and activate it.
     for (int i = 0; i < designTabs_->count(); i++)
     {
@@ -1412,7 +1488,7 @@ void MainWindow::createNew()
     // Create a property page dialog to work as a "New" dialog.
     PropertyPageDialog dialog(QSize(48, 48), 110, QSize(80, 70), PropertyPageDialog::APPLY_CURRENT, this);
     dialog.setFixedWidth(620);
-    dialog.resize(620, 520);
+    dialog.resize(620, 580);
     dialog.setWindowTitle(tr("New"));
 
     // Add pages to the dialog.
@@ -1438,6 +1514,11 @@ void MainWindow::createNew()
     connect(swCompPage, SIGNAL(createSWComponent(SWCreateType, VLNV const&, QString const&)),
             this, SLOT(createSWComponent(SWCreateType, VLNV const&, QString const&)));
     dialog.addPage(QIcon(":icons/graphics/new-sw_component.png"), tr("SW Component"), swCompPage);
+
+    NewSWDesignPage* swDesignPage = new NewSWDesignPage(libraryHandler_, &dialog);
+    connect(swDesignPage, SIGNAL(createSWDesign(VLNV const&, QString const&)),
+            this, SLOT(createSWDesign(VLNV const&, QString const&)), Qt::UniqueConnection);
+    dialog.addPage(QIcon(":icons/graphics/new-sw_design.png"), tr("SW Design"), swDesignPage);
 
     NewSystemPage* sysPage = new NewSystemPage(libraryHandler_, &dialog);
     connect(sysPage, SIGNAL(createSystem(VLNV const&, VLNV const&, QString const&)),
@@ -1519,6 +1600,40 @@ void MainWindow::createDesign(KactusAttribute::ProductHierarchy prodHier,
 
     // Open the design.
     openDesign(vlnv, tr("structural"), true);
+}
+
+//-----------------------------------------------------------------------------
+// Function: createSWDesign()
+//-----------------------------------------------------------------------------
+void MainWindow::createSWDesign(VLNV const& vlnv, QString const& directory)
+{
+    Q_ASSERT(vlnv.isValid());
+
+    VLNV designVLNV(VLNV::DESIGN, vlnv.getVendor(), vlnv.getLibrary(),
+                    vlnv.getName().remove(".comp") + ".design", vlnv.getVersion());
+    
+    // Create a component and a hierarchical view.
+    QSharedPointer<Component> component(new Component(vlnv));
+    component->setComponentImplementation(KactusAttribute::KTS_SW);
+    component->setComponentSWType(KactusAttribute::KTS_SW_MAPPING);
+
+    View* hierView = new View(tr("kts_sw_ref"));
+    hierView->setHierarchyRef(designVLNV);
+    hierView->addEnvIdentifier("");
+
+    Model* model = new Model;
+    model->addView(hierView);
+    component->setModel(model);
+
+    // Create the design.
+    QSharedPointer<Design> design(new Design(designVLNV));
+
+    // Create the files.
+    libraryHandler_->writeModelToFile(directory, design);
+    libraryHandler_->writeModelToFile(directory, component);
+
+    // Open the design.
+    openSWDesign(vlnv, true);
 }
 
 //-----------------------------------------------------------------------------

@@ -41,7 +41,8 @@ openSystemAction_(NULL),
 openPlatformAction_(NULL),
 openPFStackAction_(NULL),
 openApplicationAction_(NULL),
-openEndpointAction_(NULL) {
+openEndpointAction_(NULL),
+openSWDesignAction_(NULL) {
 
 	// the view can be sorted
 	setSortingEnabled(true);
@@ -140,9 +141,15 @@ void HierarchyView::setupActions() {
 
 	openEndpointAction_ = new QAction(tr("Open Endpoints"), this);
 	openEndpointAction_->setStatusTip(tr("Open endpoints for editing"));
-	openEndpointAction_->setToolTip(tr("Opend endpoints for editing"));
+	openEndpointAction_->setToolTip(tr("Open endpoints for editing"));
 	connect(openEndpointAction_, SIGNAL(triggered()),
 		this, SLOT(onOpenComponent()), Qt::UniqueConnection);
+
+    openSWDesignAction_ = new QAction(tr("Open SW Design"), this);
+    openSWDesignAction_->setStatusTip(tr("Open software design for editing"));
+    openSWDesignAction_->setToolTip(tr("Open software design for editing"));
+    connect(openSWDesignAction_, SIGNAL(triggered()),
+        this, SLOT(onOpenComponent()), Qt::UniqueConnection);
 }
 
 void HierarchyView::onOpenComponent() {
@@ -248,6 +255,9 @@ void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
 
 					else if (swType == KactusAttribute::KTS_SW_ENDPOINTS)
 						menu.addAction(openEndpointAction_);
+
+                    else if (swType == KactusAttribute::KTS_SW_MAPPING)
+                        menu.addAction(openSWDesignAction_);
 
 					break;
 											  }

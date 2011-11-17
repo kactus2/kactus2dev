@@ -311,6 +311,8 @@ void VLNVEditor::dropEvent( QDropEvent* event ) {
 	memcpy(&vlnv, event->mimeData()->data("data/vlnvptr").data(), sizeof(vlnv));
 	setVLNV(vlnv);
 	event->acceptProposedAction();
+
+    emit vlnvEdited();
 }
 
 void VLNVEditor::dragEnterEvent( QDragEnterEvent* event ) {

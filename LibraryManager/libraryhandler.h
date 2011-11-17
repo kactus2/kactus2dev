@@ -394,6 +394,9 @@ signals:
 	//! \brief Signal that user wants to open the specified component for editing.
 	void openDesign(const VLNV& vlnv, const QString& viewName);
 
+    //! \brief Signal that user wants to open the specified software design for editing.
+    void openSWDesign(const VLNV& vlnv);
+
 	//! \brief Signal that user wants to open specified bus for editing
 	void openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool disableBusDef);
 
