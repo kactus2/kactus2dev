@@ -4,7 +4,6 @@
         <file>graphics/file-save.png</file>
         <file>graphics/file-save_all.png</file>
         <file>graphics/file-print.png</file>
-        <file>graphics/logo.png</file>
         <file>graphics/tool-interconnection.png</file>
         <file>graphics/tool-select.png</file>
         <file>graphics/tool-interface.png</file>
@@ -13,12 +12,8 @@
         <file>graphics/add.png</file>
         <file>graphics/cancel.png</file>
         <file>graphics/ok.png</file>
-        <file>graphics/list-edit.png</file>
-        <file>graphics/arrow_down.png</file>
-        <file>graphics/arrow_up.png</file>
         <file>graphics/quartus_generator.png</file>
         <file>graphics/vhdl_gen.png</file>
-        <file>graphics/generator.png</file>
         <file>graphics/modelsim_generator.png</file>
         <file>graphics/refresh.png</file>
         <file>graphics/import.png</file>

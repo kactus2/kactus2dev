@@ -45,3 +45,38 @@ Contributors
 
 Antti Kamppi, Joni-Matti M‰‰tt‰, Lauri Matilainen, Timo D. H‰m‰l‰inen,
 Juho J‰rvinen
+
+
+Kactus2 uses parts of the Generic Component Framework (GCF), copyright
+VCreate Logic (P) Ltd, Bangalore, India. (GPL2)
+
+Kactus2 is linked with Qt 4.7, copyright Nokia Corporation. (LGPL)
+
+
+Icons used in Kactus2
+----------------------------------------------------
+
+Oxygen Icons by Oxygen Team
+http://www.oxygen-icons.org/ (LGPL)
+
+Farm Fresh Icons by Fatcow Web Hosting
+http://www.fatcow.com/free-icons (CC Attribution 3.0)
+
+realistiK Reloaded by Pavel InFeRnODeMoN
+http://kde-look.org/content/show.php/realistiK+Reloaded?content=52362 (GPL)
+
+Dark Glass by Alessandro Rei
+http://kde-look.org/content/show.php/Dark-Glass+reviewed?content=67902 (GPL)
+
+Human o2 by Oliver Scholtz
+http://schollidesign.deviantart.com/art/Human-O2-Iconset-105344123
+(Free for non-commercial use)
+
+Office Icons by Custom Icon Design
+http://www.customicondesign.com/ (Free for non-commercial use)
+
+Snowish by Alexander Moore
+http://gnome-look.org/content/show.php?content=32599 (GPL)
+
+VistaICO Toolbar Icons by VistaICO.com
+http://www.vistaico.com/ (CC Attribution 3.0 Unported)
