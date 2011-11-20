@@ -117,15 +117,40 @@ bool NewDesignPage::validate()
 {
     Q_ASSERT(prevalidate());
 
-    // Check if the VLNV already exists.
-    if (libInterface_->contains(vlnvEditor_->getVLNV()))
+    VLNV vlnv = vlnvEditor_->getVLNV();
+
+    VLNV designVLNV(VLNV::DESIGN, vlnv.getVendor(), vlnv.getLibrary(),
+        vlnv.getName().remove(".comp") + ".design", vlnv.getVersion());
+    VLNV desConfVLNV(VLNV::DESIGNCONFIGURATION, vlnv.getVendor(), vlnv.getLibrary(),
+        vlnv.getName().remove(".comp") + ".designcfg", vlnv.getVersion());
+
+    // Check if any of the VLNVs already exists.
+    if (libInterface_->contains(vlnv))
     {
         QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
-            tr("The component cannot be created because the VLNV already exists in the library."),
+            tr("The component cannot be created because the VLNV %1 already exists in the library.").arg(vlnv.toString()),
             QMessageBox::Ok, this);
         msgBox.exec();
         return false;
     }
+
+    if (libInterface_->contains(designVLNV))
+    {
+        QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
+            tr("The component cannot be created because the VLNV %1 already exists in the library.").arg(designVLNV.toString()),
+            QMessageBox::Ok, this);
+        msgBox.exec();
+        return false;
+    }
+
+    if (libInterface_->contains(desConfVLNV))
+    {
+        QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
+            tr("The component cannot be created because the VLNV %1 already exists in the library.").arg(desConfVLNV.toString()),
+            QMessageBox::Ok, this);
+        msgBox.exec();
+        return false;
+    }    
 
     return true;
 }

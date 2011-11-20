@@ -77,15 +77,29 @@ bool NewBusPage::prevalidate() const {
 bool NewBusPage::validate() {
 	Q_ASSERT(prevalidate());
 
-	// Check if the VLNV already exists.
-	if (libInterface_->contains(vlnvEditor_.getVLNV()))
-	{
-		QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
-			tr("The bus cannot be created because the VLNV already exists in the library."),
-			QMessageBox::Ok, this);
-		msgBox.exec();
-		return false;
-	}
+    VLNV vlnv = vlnvEditor_.getVLNV();
+
+    /*VLNV absVLNV(VLNV::DESIGN, vlnv.getVendor(), vlnv.getLibrary(),
+                 vlnv.getName().remove(".busDef", Qt::CaseInsensitive) + ".absDef", vlnv.getVersion());*/
+
+    // Check if any of the VLNVs already exists.
+    if (libInterface_->contains(vlnv))
+    {
+        QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
+            tr("The bus cannot be created because the VLNV %1 already exists in the library.").arg(vlnv.toString()),
+            QMessageBox::Ok, this);
+        msgBox.exec();
+        return false;
+    }
+
+    /*if (libInterface_->contains(absVLNV))
+    {
+        QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
+            tr("The bus cannot be created because the VLNV %1 already exists in the library.").arg(absVLNV.toString()),
+            QMessageBox::Ok, this);
+        msgBox.exec();
+        return false;
+    }*/
 
 	return true;
 }
