@@ -150,6 +150,12 @@ actExit_(0) {
 	setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
 
 	setupActions();
+
+    // Load the internal library if not yet loaded.
+    if (!libraryHandler_->contains(VLNV(VLNV::BUSDEFINITION, "Kactus", "internal", "app_link", "1.0")))
+    {
+        libraryHandler_->searchForIPXactFiles(QCoreApplication::applicationDirPath() + "/Kactus/");
+    }
 }
 
 MainWindow::~MainWindow() {

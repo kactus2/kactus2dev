@@ -153,7 +153,8 @@ public:
 	 * within subdirectories.
 	*/
 	virtual void searchForIPXactFiles();
-
+    virtual void searchForIPXactFiles(QString const& path);
+    
 	/*! \brief Get list of vlnvs that are needed by given document.
 	 *
 	 * This function takes an IP-Xact document and searches it and returns list

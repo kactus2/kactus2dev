@@ -701,6 +701,14 @@ void LibraryHandler::writeModelToFile( QSharedPointer<LibraryComponent> model ) 
 	onItemSaved(*model->getVlnv());
 }
 
+void LibraryHandler::searchForIPXactFiles(QString const& path)
+{
+    if (!path.isEmpty())
+    {
+        data_->searchForFiles(path);
+    }
+}
+
 
 void LibraryHandler::searchForIPXactFiles() {
 

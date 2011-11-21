@@ -56,11 +56,24 @@ Section "MainSection" SEC01
   File "..\executable\QtGui4.dll"
   File "..\executable\QtCore4.dll"
   File "..\executable\QtXmlPatterns4.dll"
-  File "..\executable\GCF.dll"
   File "..\executable\Kactus2.exe"
   File "license.txt"
   File "release_notes.txt"
   File "readme.txt"
+  
+  SetOutPath "$INSTDIR\Kactus\internal\app_link\1.0"
+  SetOverwrite try
+  File "Kactus\internal\app_link\1.0\app_link.1.0.xml"
+  SetOutPath "$INSTDIR\Kactus\internal\mcapi_message\1.0"
+  SetOverwrite try
+  File "Kactus\internal\mcapi_message\1.0\mcapi_message.1.0.xml"
+  SetOutPath "$INSTDIR\Kactus\internal\mcapi_packet\1.0"
+  SetOverwrite try
+  File "Kactus\internal\mcapi_packet\1.0\mcapi_packet.1.0.xml"
+  SetOutPath "$INSTDIR\Kactus\internal\mcapi_scalar\1.0"
+  SetOverwrite try
+  File "Kactus\internal\mcapi_scalar\1.0\mcapi_scalar.1.0.xml"
+  
   CreateDirectory "$SMPROGRAMS\Kactus2"
   CreateShortCut "$SMPROGRAMS\Kactus2\Kactus2.lnk" "$INSTDIR\Kactus2.exe"
   CreateShortCut "$SMPROGRAMS\Kactus2\License.lnk" "$INSTDIR\license.txt"
@@ -105,11 +118,14 @@ FunctionEnd
 
 Section Uninstall
   Delete "$INSTDIR\uninst.exe"
+  Delete "$INSTDIR\Kactus\internal\app_link\1.0\app_link.1.0.xml"
+  Delete "$INSTDIR\Kactus\internal\mcapi_message\1.0\mcapi_message.1.0.xml"
+  Delete "$INSTDIR\Kactus\internal\mcapi_packet\1.0\mcapi_packet.1.0.xml"
+  Delete "$INSTDIR\Kactus\internal\mcapi_scalar\1.0\mcapi_scalar.1.0.xml"
   Delete "$INSTDIR\readme.txt"
   Delete "$INSTDIR\release_notes.txt"
   Delete "$INSTDIR\license.txt"
   Delete "$INSTDIR\Kactus2.exe"
-  Delete "$INSTDIR\GCF.dll"
   Delete "$INSTDIR\QtXmlPatterns4.dll"
   Delete "$INSTDIR\QtCore4.dll"
   Delete "$INSTDIR\QtGui4.dll"
@@ -124,6 +140,16 @@ Section Uninstall
   Delete "$SMPROGRAMS\Kactus2\Kactus2.lnk"
 
   RMDir "$SMPROGRAMS\Kactus2"
+  RMDir "$INSTDIR\Kactus\internal\mcapi_message\1.0"
+  RMDir "$INSTDIR\Kactus\internal\mcapi_message"
+  RMDir "$INSTDIR\Kactus\internal\mcapi_packet\1.0"
+  RMDir "$INSTDIR\Kactus\internal\mcapi_packet"
+  RMDir "$INSTDIR\Kactus\internal\mcapi_scalar\1.0"
+  RMDir "$INSTDIR\Kactus\internal\mcapi_scalar"
+  RMDir "$INSTDIR\Kactus\internal\app_link\1.0"
+  RMDir "$INSTDIR\Kactus\internal\app_link"
+  RMDir "$INSTDIR\Kactus\internal"
+  RMDir "$INSTDIR\Kactus"
   RMDir "$INSTDIR"
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
