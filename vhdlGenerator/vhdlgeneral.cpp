@@ -91,21 +91,45 @@ QString VhdlGeneral::vhdlType2String( const QString& type,
 	}
 }
 
-void VhdlGeneral::writeDescription( const QString& description,
+void VhdlGeneral::writeDescription( const QString& description, 
 								   QTextStream& stream, 
-								   const QString& lineSeparator /*= QString("")*/ ) {
+								   const QString& lineSeparator /*= QString("")*/,
+								   bool addStartComment /*= true*/ ) {
 
-	if (description.isEmpty())
+	if (description.isEmpty()) {
+		stream << endl;
 		return;
+	}
 
 	// split the description into lines whenever there is a line separator
-	QStringList lines = description.split(QChar(QChar::LineSeparator));
+	QStringList lines = description.split(QString("\n"));
 	
-	// atleast one line has to be because description was not empty
+	// at least one line has to be because description was not empty
 	Q_ASSERT(!lines.isEmpty());
 
+	if (addStartComment) {
+		stream << "-- ";
+	}
 	stream << lines.first() << endl;
 	for (int i = 1; i < lines.size(); ++i) {
 		stream << lineSeparator << "-- " << lines.at(i) << endl;
+	}
+}
+
+bool VhdlGeneral::isScalarType( const QString& typeName ) {
+	if (typeName.compare(QString("bit"), Qt::CaseInsensitive) == 0 ||
+		typeName.compare(QString("boolean"), Qt::CaseInsensitive) == 0 ||
+		typeName.compare(QString("character"), Qt::CaseInsensitive) == 0 ||
+		typeName.compare(QString("severity_level"), Qt::CaseInsensitive) == 0 ||
+		typeName.compare(QString("std_logic"), Qt::CaseInsensitive) == 0 ||
+		typeName.compare(QString("std_ulogic"), Qt::CaseInsensitive) == 0 ||
+		typeName.compare(QString("natural"), Qt::CaseInsensitive) == 0 ||
+		typeName.compare(QString("positive"), Qt::CaseInsensitive) == 0 ||
+		typeName.compare(QString("integer"), Qt::CaseInsensitive) == 0 ||
+		typeName.compare(QString("real"), Qt::CaseInsensitive) == 0) {
+			return true;
+	}
+	else {
+		return false;
 	}
 }

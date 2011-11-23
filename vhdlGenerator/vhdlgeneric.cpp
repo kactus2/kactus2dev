@@ -6,6 +6,7 @@
  */
 
 #include "vhdlgeneric.h"
+#include "vhdlgeneral.h"
 
 #include <models/modelparameter.h>
 

@@ -7,6 +7,8 @@
 
 #include "vhdlportsorter.h"
 
+#include <QDebug>
+
 VhdlPortSorter::VhdlPortSorter( const QString& name, General::Direction direction ):
 name_(name),
 direction_(direction) {
@@ -39,19 +41,38 @@ bool VhdlPortSorter::operator!=( const VhdlPortSorter& other ) const {
 }
 
 bool VhdlPortSorter::operator<( const VhdlPortSorter& other ) const {
-	if (direction_ == other.direction_) {
-		return name_.compare(other.name_, Qt::CaseInsensitive) < 0;
-	}
-	else {
-		return direction_ < other.direction_;
-	}
+
+	// if the direction of one is invalid then just compare the name
+// 	if (other.direction_ == General::DIRECTION_INVALID ||
+// 		direction_ == General::DIRECTION_INVALID) {
+// 		return name_.compare(other.name_, Qt::CaseInsensitive) < 0;
+// 	}
+// 
+// 	// normally first compare the direction and then the name
+// 	else if (direction_ == other.direction_) {
+// 		return name_.compare(other.name_, Qt::CaseInsensitive) < 0;
+// 	}
+// 	else {
+// 		return direction_ < other.direction_;
+// 	}
+
+	return name_.compare(other.name_, Qt::CaseInsensitive) < 0;
 }
 
 bool VhdlPortSorter::operator>( const VhdlPortSorter& other ) const {
-	if (direction_ == other.direction_) {
-		return name_.compare(other.name_, Qt::CaseInsensitive) > 0;
-	}
-	else {
-		return direction_ > other.direction_;
-	}
+	// if the direction of other is invalid then just compare the name
+// 	if (other.direction_ == General::DIRECTION_INVALID ||
+// 		direction_ == General::DIRECTION_INVALID) {
+// 		return name_.compare(other.name_, Qt::CaseInsensitive) > 0;
+// 	}
+// 
+// 	// normally first compare the direction and then the name
+// 	else if (direction_ == other.direction_) {
+// 		return name_.compare(other.name_, Qt::CaseInsensitive) > 0;
+// 	}
+// 	else {
+// 		return direction_ > other.direction_;
+// 	}
+// 	
+	return name_.compare(other.name_, Qt::CaseInsensitive) > 0;
 }

@@ -100,6 +100,21 @@ public:
 	*/
 	QString portType(const QString& portName) const;
 
+	/*! \brief Check if the type of the port is scalar.
+	 *
+	 * \param portName Specifies the port to check.
+	 *
+	 * \return bool True if port is scalar.
+	*/
+	bool isScalarPort(const QString& portName) const;
+
+	/*! \brief Set the name of the entity for the component.
+	 *
+	 * \param entityName The name for the entity of this component.
+	 *
+	*/
+	void setEntityName(const QString& entityName);
+
 signals:
 
 	//! \brief Send a notification to user.

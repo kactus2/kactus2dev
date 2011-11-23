@@ -1098,6 +1098,11 @@ QString General::getAbsolutePath(const QString originalPath,
 		return QString();
 	}
 
+	QFileInfo relativeInfo(relativePath);
+	if (relativeInfo.isAbsolute()) {
+		return relativePath;
+	}
+
 	// get the directory path of the original path
 	QFileInfo original(originalPath);
 	QDir originalDir(original.absolutePath());

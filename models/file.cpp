@@ -629,3 +629,17 @@ bool File::operator==( const File& other ) const {
 bool File::operator!=( const File& other ) const {
 	return name_ != other.name_;
 }
+
+bool File::isVhdlFile() const {
+
+	foreach (QString fileType, fileTypes_) {
+
+		// if file type is for vhdl files
+		if (fileType.compare(QString("vhdlSource"), Qt::CaseInsensitive) == 0 ||
+			fileType.compare(QString("vhdlSource-87"), Qt::CaseInsensitive) == 0 ||
+			fileType.compare(QString("vhdlSource-93"), Qt::CaseInsensitive) == 0) {
+				return true;
+		}
+	}
+	return false;
+}

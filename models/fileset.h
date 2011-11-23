@@ -205,6 +205,13 @@ public:
 	 */
 	QList<General::LibraryFilePair> getVhdlLibraries() const;
 
+	/*! \brief Get the names of the vhdl libraries on this file set.
+	 *
+	 *
+	 * \return QStringList contains the library names.
+	*/
+	QStringList getVhdlLibraryNames() const;
+
 	/*! \brief Get the verilog files and libraries used in this fileSet.
 	 *
 	 * \return QStringList containing the verilog files.

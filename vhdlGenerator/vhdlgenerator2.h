@@ -31,7 +31,7 @@
 
 class LibraryInterface;
 class VhdlConnectionEndPoint;
-class MainWindow;
+class DesignWidget;
 
 /*! \brief Vhdl Generator generates top-level vhdl for hierarchical component.
  *
@@ -49,7 +49,7 @@ public:
 	 * \param parent Pointer to the owner of this generator.
 	 *
 	*/
-	VhdlGenerator2(LibraryInterface* handler, MainWindow* parent);
+	VhdlGenerator2(LibraryInterface* handler, DesignWidget* parent);
 	
 	//! \brief The destructor
 	virtual ~VhdlGenerator2();
@@ -76,11 +76,9 @@ public:
 	 *
 	 * \param outputFileName The absolute file path of the vhdl file to be created.
 	 * If file exists it is overwritten.
-	 * \param architectureName The name of the architecture to create for the top
-	 * component.
 	 *
 	*/
-	void generateVhdl(const QString& outputFileName, const QString& architectureName);
+	void generateVhdl(const QString& outputFileName);
 
 	/*! \brief Add a new view to the top component's IP-Xact metadata.
 	 * 
@@ -95,13 +93,6 @@ public:
 	 * \return bool True if the view was added successfully.
 	*/
 	bool addRTLView(const QString& vhdlFileName);
-
-	/*! \brief Set the architecture name for the vhdl to be generated.
-	 *
-	 * \param architectureName contains the architecture name.
-	 *
-	*/
-	void setArchitectureName(const QString& architectureName);
 
 	/*! \brief Check if the generator is able to generate and architecture for top entity.
 	 *
@@ -321,14 +312,14 @@ private:
 	//! \brief The name of the view used on the top component.
 	QString viewName_;
 
-	//! \brief The name of the architecture to create.
-	QString architectureName_;
-
 	//! \brief The name of the top level entity to create.
 	QString topLevelEntity_;
 
 	//! \brief List of libraries to use
 	QStringList libraries_;
+
+	//! \brief The type definitions of the port types used.
+	QStringList typeDefinitions_;
 
 	/*! \brief Contains the generics for the top level entity.
 	 * 

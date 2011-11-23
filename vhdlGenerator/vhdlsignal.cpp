@@ -50,7 +50,11 @@ void VhdlSignal::write( QTextStream& stream ) const {
 	Q_ASSERT(!name_.isEmpty());
 	Q_ASSERT(!type_.isEmpty());
 
-	stream << "signal " << name_ << " : ";
+	if (!description_.isEmpty()) {
+		stream << "\t";
+		VhdlGeneral::writeDescription(description_, stream, QString("\t"));
+	}
+	stream << "\tsignal " << name_ << " : ";
 
 	QString typeDefinition = VhdlGeneral::vhdlType2String(type_, left_, right_);
 

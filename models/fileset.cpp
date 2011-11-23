@@ -273,39 +273,29 @@ QList<General::LibraryFilePair> FileSet::getVhdlLibraries() const {
 	QList<General::LibraryFilePair> libraries;
 
 	// go through all files
-	for (int i = 0; i < files_.size(); ++i) {
+	foreach (QSharedPointer<File> file, files_) {
 
-		// if the file type is vhdl source
-		// IP-Xact says that atleast one file type MUST be specified.
-		if (files_.at(i)->getFileTypes().size() == 0 &&
-				files_.at(i)->getUserFileTypes().size() == 0) {
-
-			throw Invalid_file(QObject::tr(
-					"FileType is not defined in spirit:file"));
-		}
-
-		// if fileType was defined and it is vhdlSource of some kind
-		if ((files_.at(i)->getFileTypes().size() != 0) &&
-				(files_.at(i)->getFileTypes().at(0) == QString("vhdlSource") ||
-				files_.at(i)->getFileTypes().at(0) == QString("vhdlSource-87")
-				|| files_.at(i)->getFileTypes().at(0) == QString(
-						"vhdlSource-93"))) {
-
-			QString filePath = files_.at(i)->getName();
-
-			// add the library name to the list of libraries
-			QString libName = files_.at(i)->getLogicalName();
-
-			// if library name was not defined
+		if (file->isVhdlFile()) {
+			QString filePath = file->getName();
+			QString libName = file->getLogicalName();
 			if (libName.isEmpty()) {
-				// set the library name to be "work"
 				libName = QString("work");
 			}
 			libraries.append(General::LibraryFilePair(filePath, libName));
 		}
 	}
+	return libraries;
+}
 
-	// return the list
+QStringList FileSet::getVhdlLibraryNames() const {
+
+	QStringList libraries;
+	foreach (QSharedPointer<File> file, files_) {
+		// if file is vhdl and the library name is not yet on the list.
+		if (file->isVhdlFile() && !libraries.contains(file->getLogicalName())) {
+			libraries.append(file->getLogicalName());
+		}
+	}
 	return libraries;
 }
 

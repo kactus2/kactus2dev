@@ -25,7 +25,7 @@ public:
 	 * \param direction The direction of the port.
 	 *
 	*/
-	VhdlPortSorter(const QString& name, General::Direction direction);
+	VhdlPortSorter(const QString& name, General::Direction direction = General::DIRECTION_INVALID);
 	
 	//! \brief Copy constructor
 	VhdlPortSorter(const VhdlPortSorter& other);

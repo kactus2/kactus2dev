@@ -444,6 +444,13 @@ public:
 	*/
 	bool isQuartusPinmap() const;
 
+	/*! \brief Check if this file is a vhdl file.
+	 *
+	 *
+	 * \return bool True if the file is vhdl-file.
+	*/
+	bool isVhdlFile() const;
+
 private:
 
 	/*! \brief Contains a path to a filename of a directory

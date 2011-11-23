@@ -521,6 +521,15 @@ QString Port::getTypeDefinition( const QString& typeName ) {
 	}
 }
 
+QStringList Port::getTypeDefinitions() const {
+	if (wire_) {
+		return wire_->getTypeDefinitions();
+	}
+	else {
+		return QStringList();
+	}
+}
+
 void Port::setTypeDefinition( const QString& typeName, const QString& typeDefinition ) {
 	if (wire_) {
 		wire_->setTypeDefinition(typeName, typeDefinition);

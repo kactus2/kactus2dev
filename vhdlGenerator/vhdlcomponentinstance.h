@@ -151,6 +151,14 @@ public:
 	*/
 	bool hasPort(const QString& portName) const;
 
+	/*! \brief Check if the type of the port is scalar.
+	 *
+	 * \param portName Specifies the port to check.
+	 *
+	 * \return bool True if port is scalar.
+	*/
+	bool isScalarPort(const QString& portName) const;
+
 signals:
 
 	//! \brief Send a notification to user.

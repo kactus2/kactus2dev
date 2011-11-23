@@ -308,6 +308,14 @@ public:
 	 */
 	QList<General::LibraryFilePair> getVhdlLibraries() const;
 
+	/*! \brief Get the library names of vhdl files contained in given view.
+	 *
+	 * \param viewName The name of the view that's file sets are searched.
+	 *
+	 * \return QStringList contains the names of the libraries.
+	*/
+	QStringList getVhdlLibraries(const QString& viewName) const;
+
 	/*! \brief Get the vhdl libraries needed by given view.
 	 *
 	 * \param viewName The name of the view that specifies used file sets.
@@ -494,6 +502,22 @@ public:
 	*/
 	QStringList getHierViews() const;
 
+	/*! \brief Get the entity name of the component.
+	 *
+	 * \param viewName The name of the view that's entity name is requested.
+	 *
+	 * \return QString contains the name of the entity.
+	*/
+	QString getEntityName(const QString& viewName) const;
+
+	/*! \brief Get the name of the architecture for the component.
+	 *
+	 * \param viewName The name of the view that's architecture is wanted.
+	 *
+	 * \return QString contains the architecture name.
+	*/
+	QString getArchitectureName(const QString& viewName) const;
+
 	/*! \brief Add a new view to the component's model.
 	*
 	* \param newView A pointer to the component's new view.
@@ -638,6 +662,13 @@ public:
 	*/
 	bool hasFile(const QString& fileName) const;
 
+	/*! \brief Get the type definitions for the ports of the component.
+	 *
+	 *
+	 * \return QStringList contains the type definitions for the ports.
+	*/
+	QStringList getPortTypeDefinitions() const;
+
 	/*! \brief Get this component's bus interfaces
 	*
 	* \return QMap containing component's bus interfaces
@@ -770,6 +801,14 @@ public:
 	* \return int the right bound of the port.
 	*/
 	int getPortRightBound(const QString& port) const;
+
+	/*! \brief Get the default values of in and inout ports.
+	 *
+	 * \return QMap<QString, QString> contains the port names and default values.
+	 * Key: Name of the port.
+	 * Value: The default value for the specified port.
+	*/
+	QMap<QString, QString> getPortDefaultValues() const;
 
 	/*! \brief Check if the component has the specified port or not.
 	*

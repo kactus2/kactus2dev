@@ -14,6 +14,7 @@
 #include <QList>
 #include <QSharedPointer>
 #include <QXmlStreamWriter>
+#include <QStringList>
 
 class Wire;
 class Transactional;
@@ -361,6 +362,13 @@ public:
 	 * \return QString contains the type definition.
 	*/
 	QString getTypeDefinition(const QString& typeName);
+
+	/*! \brief Get the type definitions of the wired port.
+	 *
+	 *
+	 * \return QStringList contains the type definitions set for this port.
+	*/
+	QStringList getTypeDefinitions() const;
 
 	/*! \brief Set the type definition of the given type name.
 	 *

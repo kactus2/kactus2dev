@@ -15,11 +15,7 @@
 
 #include <QSharedPointer>
 
-// typedef to be used for container containing the generic map
-typedef QMap<QString, QString> generics;
-
-// typedef to be used for container containing the port map
-typedef QMap<VhdlPortMap, VhdlPortMap> portMaps;
+#include <QDebug>
 
 VhdlComponentInstance::VhdlComponentInstance( VhdlGenerator2* parent,
 											 VhdlComponentDeclaration* compDeclaration,
@@ -48,30 +44,40 @@ portMap_() {
 
 	QSharedPointer<Component> component = compDeclaration_->componentModel();
 	Q_ASSERT(component);
+// 
+// 	View* view = component->findView(viewName);
+// 	
+// 	// the component did not contain the given view
+// 	if (!view) {
+// 		return;
+// 	}
+// 
+// 	// search for a flat view that implements this component
+// 	while (view->isHierarchical()) {
+// 		// find a reference to a flat view
+// 		QString viewRef = view->getTopLevelView();
+// 		
+// 		// if theres no top level flat view referenced of it does not exist
+// 		if (viewRef.isEmpty() || !component->hasView(viewRef)) {
+// 			return;
+// 		}
+// 
+// 		view = component->findView(viewRef);
+// 	}
+// 	Q_ASSERT(view);
+// 
+// 	// get the architecture specified for the view
+// 	architecture_ = view->getModelName();
+ 	
+	// set the entity name that is used
+	typeName_ = component->getEntityName(viewName);
+	compDeclaration_->setEntityName(typeName_);
 
-	View* view = component->findView(viewName);
-	
-	// the component did not contain the given view
-	if (!view) {
-		return;
-	}
+	// get the architecture name for this instance
+	architecture_ = component->getArchitectureName(viewName);
 
-	// search for a flat view that implements this component
-	while (view->isHierarchical()) {
-		// find a reference to a flat view
-		QString viewRef = view->getTopLevelView();
-		
-		// if theres no top level flat view referenced of it does not exist
-		if (viewRef.isEmpty() || !component->hasView(viewRef)) {
-			return;
-		}
-
-		view = component->findView(viewRef);
-	}
-	Q_ASSERT(view);
-
-	// get the architecture specified for the view
-	architecture_ = view->getModelName();
+	// get the default values of the in and inout ports
+	defaultPortConnections_ = component->getPortDefaultValues();
 }
 
 VhdlComponentInstance::~VhdlComponentInstance() {
@@ -80,7 +86,8 @@ VhdlComponentInstance::~VhdlComponentInstance() {
 void VhdlComponentInstance::write( QTextStream& stream ) const {
 	// if instance has description
 	if (!description_.isEmpty()) {
-		stream << "\t-- " << description_ << endl;
+		stream << "\t";
+		VhdlGeneral::writeDescription(description_, stream, QString("\t"));
 	}
 
 	// write the instance name and type
@@ -88,38 +95,42 @@ void VhdlComponentInstance::write( QTextStream& stream ) const {
 
 	// if architecture has been defined
 	if (!architecture_.isEmpty()) {
-		stream << architecture_;
+		stream << "(" << architecture_ << ")";
 	}
 	stream << endl;
 
 	// print the generic map
 
-	stream << "\t\tgeneric map (" << endl;
-	for (generics::iterator i = genericMap_.begin(); i != genericMap_.end(); ++i) {
-		stream << "\t\t\t" << i.key() << " => " << i.value();
+	if (!genericMap_.isEmpty()) {
+		stream << "\t\tgeneric map (" << endl;
+		for (QMap<QString, QString>::iterator i = genericMap_.begin(); i != genericMap_.end(); ++i) {
+			stream << "\t\t\t" << i.key() << " => " << i.value();
 
-		// if this is not the last generic to print
-		if (i + 1 != genericMap_.end()) {
-			stream << "," << endl;
+			// if this is not the last generic to print
+			if (i + 1 != genericMap_.end()) {
+				stream << "," << endl;
+			}
 		}
+		stream << endl << "\t\t)" << endl;
 	}
-	stream << ")" << endl;
 
 	// print the port map
 
-	stream << "\t\tport map (" << endl;
-	for (portMaps::iterator i = portMap_.begin(); i != portMap_.end(); ++i) {
-		stream << "\t\t\t";
-		i.key().write(stream);
-		stream << " => ";
-		i.value().write(stream);
+	if (!portMap_.isEmpty()) {
+		stream << "\t\tport map (" << endl;
+		for (QMap<VhdlPortMap, VhdlPortMap>::iterator i = portMap_.begin(); i != portMap_.end(); ++i) {
+			stream << "\t\t\t";
+			i.key().write(stream);
+			stream << " => ";
+			i.value().write(stream);
 
-		// if this is not the last port map to print
-		if (i + 1 != portMap_.end()) {
-			stream << "," << endl;
+			// if this is not the last port map to print
+			if (i + 1 != portMap_.end()) {
+				stream << "," << endl;
+			}
 		}
+		stream << endl << "\t\t);" << endl;
 	}
-	stream << ");" << endl;
 }
 
 QString VhdlComponentInstance::name() const {
@@ -202,7 +213,7 @@ void VhdlComponentInstance::addGenericMap( const QString& genericName,
 }
 
 bool VhdlComponentInstance::hasConnection( const QString& portName ) {
-	for (portMaps::iterator i = portMap_.begin();
+	for (QMap<VhdlPortMap, VhdlPortMap>::iterator i = portMap_.begin();
 		i != portMap_.end(); ++i) {
 			
 			// if the mapping is for port with same name
@@ -217,7 +228,7 @@ bool VhdlComponentInstance::hasConnection( const QString& portName ) {
 
 void VhdlComponentInstance::useDefaultsForOtherPorts() {
 	// check all ports that have a connection
-	for (portMaps::iterator i = portMap_.begin();
+	for (QMap<VhdlPortMap, VhdlPortMap>::iterator i = portMap_.begin();
 		i != portMap_.end(); ++i) {
 
 			defaultPortConnections_.remove(i.key().name());
@@ -263,4 +274,9 @@ bool VhdlComponentInstance::hasPort( const QString& portName ) const {
 
 QString VhdlComponentInstance::typeName() const {
 	return typeName_;
+}
+
+bool VhdlComponentInstance::isScalarPort( const QString& portName ) const {
+	Q_ASSERT(compDeclaration_);
+	return compDeclaration_->isScalarPort(portName);
 }

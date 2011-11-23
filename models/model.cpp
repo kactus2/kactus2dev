@@ -499,3 +499,103 @@ void Model::removeModelParameter(const QString& paramName)
 {
     modelParameters_.remove(paramName);
 }
+
+QMap<QString, QString> Model::getPortDefaultValues() const {
+
+	QMap<QString, QString> defaultValues;
+
+	foreach (QSharedPointer<Port> port, ports_) {
+		
+		// only the in and inout ports can have default values
+		if (port->getDirection() == General::IN ||
+			port->getDirection() == General::INOUT) {
+
+				// if port has a default value specified
+				if (!port->getDefaultValue().isEmpty()) {
+					defaultValues.insert(port->getName(), port->getDefaultValue());
+				}
+		}
+	}
+
+	return defaultValues;
+}
+
+QStringList Model::getPortTypeDefinitions() const {
+
+	QStringList typeDefs;
+	foreach (QSharedPointer<Port> port, ports_) {
+
+		// get all the type defs that the port uses
+		QStringList portTypeDefs = port->getTypeDefinitions();
+		foreach (QString portType, portTypeDefs) {
+
+			// if the type def is not yet in the list and it is not empty
+			if (!typeDefs.contains(portType) && !portType.isEmpty()) {
+				typeDefs.append(portType);
+			}
+		}
+	}
+	return typeDefs;
+}
+
+QString Model::getEntityName( const QString& viewName ) const {
+	// search all views
+	foreach (QSharedPointer<View> view, views_) {
+		// if the specified view was found
+		if (view->getName() == viewName) {
+
+			// if view is not hierarchical
+			if (!view->isHierarchical()) {
+				QString modelName = view->getModelName();
+				int index = modelName.indexOf(QString("("), 0);
+				// if '(' was found
+				if (index > 0) {
+					modelName.resize(index);
+				}
+				return modelName;
+			}
+			// if view is hierarchical
+			else {
+				// if view references another implementation view
+				if (!view->getTopLevelView().isEmpty()) {
+					return getEntityName(view->getTopLevelView());
+				}
+			}
+		}
+	}
+
+	return QString();
+}
+
+QString Model::getArchitectureName( const QString& viewName ) const {
+	// search all views
+	foreach (QSharedPointer<View> view, views_) {
+		// if the specified view was found
+		if (view->getName() == viewName) {
+
+			// if view is not hierarchical
+			if (!view->isHierarchical()) {
+				QString architectureName;
+
+				QString modelName = view->getModelName();
+				int index = modelName.indexOf(QString("("), 0);
+				// if '(' was found
+				if (index > 0) {
+					// remove the '*(' so only the stuff inside brackets is used
+					architectureName = modelName.remove(0, index + 1);
+					// remove the last ')' from the end of the string
+					architectureName.chop(1);
+				}
+				return architectureName;
+			}
+			// if view is hierarchical
+			else {
+				// if view references another implementation view
+				if (!view->getTopLevelView().isEmpty()) {
+					return getArchitectureName(view->getTopLevelView());
+				}
+			}
+		}
+	}
+	return QString();
+}

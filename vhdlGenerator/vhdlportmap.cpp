@@ -72,30 +72,30 @@ bool VhdlPortMap::operator!=( const VhdlPortMap& other ) const {
 }
 
 bool VhdlPortMap::operator<( const VhdlPortMap& other ) const {
-	if (name_.localeAwareCompare(other.name_) == 0) {
+	if (name_.compare(other.name_, Qt::CaseInsensitive) == 0) {
 		if (left_ == other.left_) {
 			return right_ < other.right_;
 		}
 		else {
-			return other.left_ < other.left_;
+			return left_ < other.left_;
 		}
 	}
 	else {
-		return name_.localeAwareCompare(other.name_) < 0;
+		return name_.compare(other.name_, Qt::CaseInsensitive) < 0;
 	}
 }
 
 bool VhdlPortMap::operator>( const VhdlPortMap& other ) const {
-	if (name_.localeAwareCompare(other.name_) == 0) {
+	if (name_.compare(other.name_, Qt::CaseInsensitive) == 0) {
 		if (left_ == other.left_) {
 			return right_ > other.right_;
 		}
 		else {
-			return other.left_ > other.left_;
+			return left_ > other.left_;
 		}
 	}
 	else {
-		return name_.localeAwareCompare(other.name_) > 0;
+		return name_.compare(other.name_, Qt::CaseInsensitive) > 0;
 	}
 }
 

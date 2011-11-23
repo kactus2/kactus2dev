@@ -8,15 +8,10 @@
 #include "vhdlcomponentdeclaration.h"
 
 #include "vhdlgenerator2.h"
+#include "vhdlgeneral.h"
 #include <models/modelparameter.h>
 #include <models/port.h>
 #include <models/generaldeclarations.h>
-
-// typedef for the container of generics
-typedef QMap<QString, QSharedPointer<VhdlGeneric> > generics;
-
-// typedef for the container of ports
-typedef QMap<VhdlPortSorter, QSharedPointer<VhdlPort> > ports;
 
 VhdlComponentDeclaration::VhdlComponentDeclaration( QSharedPointer<Component> component,
 												   VhdlGenerator2* parent ):
@@ -71,37 +66,58 @@ VhdlComponentDeclaration::~VhdlComponentDeclaration() {
 void VhdlComponentDeclaration::write( QTextStream& stream ) const {
 	// if component contains a description
 	if (!description().isEmpty()) {
-		stream << "\t-- " << description() << endl;
+		stream << "\t";
+		VhdlGeneral::writeDescription(description(), stream, QString("\t"));
 	}
 
 	stream << "\tcomponent " << typeName_ << endl;
 
 	// write the generic declarations
-	stream << "\t\tgeneric (" << endl;
-	for (generics::Iterator i = generics_.begin(); i != generics_.end(); ++i) {
-		stream << "\t\t\t";
-		i.value()->write(stream);
+	if (!generics_.isEmpty()) {
+		stream << "\t\tgeneric (" << endl;
+		for (QMap<QString, QSharedPointer<VhdlGeneric> >::Iterator i = generics_.begin(); i != generics_.end(); ++i) {
+			stream << "\t\t\t";
+			i.value()->write(stream);
 
-		// if this is not the last generic to write
-		if (i + 1 != generics_.end()) {
-			stream << ";" << endl;
+			// if this is not the last generic to write
+			if (i + 1 != generics_.end()) {
+				stream << ";";
+			}
+
+			if (!i.value()->description().isEmpty()) {
+				stream << " ";
+				VhdlGeneral::writeDescription(i.value()->description(), stream);
+			}
+			else {
+				stream << endl;
+			}
 		}
+		stream << endl << "\t\t);" << endl;
 	}
-	stream << ");" << endl;
 
 	// write the port declarations
-	stream << "\t\tport (" << endl;
-	for (ports::iterator i = ports_.begin(); i != ports_.end(); ++i) {
-		stream << "\t\t\t";
-		i.value()->write(stream);
+	if (!ports_.isEmpty()) {
+		stream << "\t\tport (" << endl;
+		for (QMap<VhdlPortSorter, QSharedPointer<VhdlPort> >::iterator i = ports_.begin(); i != ports_.end(); ++i) {
+			stream << "\t\t\t";
+			i.value()->write(stream);
 
-		// if this is not the last port to write
-		if (i + 1 != ports_.end()) {
-			stream << ";" << endl;
+			// if this is not the last port to write
+			if (i + 1 != ports_.end()) {
+				stream << ";";
+			}
+
+			if (!i.value()->description().isEmpty()) {
+				stream << " ";
+				VhdlGeneral::writeDescription(i.value()->description(), stream);
+			}
+			else {
+				stream << endl;
+			}
 		}
+		stream << endl << "\t\t);" << endl;
 	}
-	stream << ");" << endl;
-	
+
 	stream << "\tend component;" << endl;
 }
 
@@ -151,13 +167,33 @@ void VhdlComponentDeclaration::checkPortConnections() {
 QString VhdlComponentDeclaration::portType( const QString& portName ) const {
 
 	// used to search for the correct port, the direction does not matter
-	VhdlPortSorter sorter(portName, General::IN);
+	VhdlPortSorter sorter(portName);
 	
 	// if the named port is found
 	if (ports_.contains(sorter)) {
 		return ports_.value(sorter)->type();
 	}
 	else {
-		return QString();
+		return QString("undefined port");
 	}
+}
+
+bool VhdlComponentDeclaration::isScalarPort( const QString& portName ) const {
+
+	VhdlPortSorter sorter(portName);
+
+	QString type;
+
+	if (ports_.contains(sorter)) {
+		type = ports_.value(sorter)->type();
+		return VhdlGeneral::isScalarType(type);
+	}
+	// if port is not found then it is not scalar
+	else {
+		return false;
+	}
+}
+
+void VhdlComponentDeclaration::setEntityName( const QString& entityName ) {
+	typeName_ = entityName;
 }

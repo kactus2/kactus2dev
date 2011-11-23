@@ -32,7 +32,7 @@
 #include <exceptions/vhdl_error.h>
 #include <exceptions/write_error.h>
 
-#include <vhdlGenerator/vhdlgenerator.h>
+#include <vhdlGenerator/vhdlgenerator2.h>
 #include <quartusGenerator/quartusgenerator.h>
 #include <modelsimGenerator/modelsimgenerator.h>
 
@@ -558,14 +558,12 @@ void DesignWidget::onVhdlGenerate() {
 		save();
 	}
 
-	QSharedPointer<LibraryComponent> libComp = lh_->getModel(*hierComponent_->getVlnv());
-	QSharedPointer<Component> component = libComp.staticCast<Component>();
-
 	QString fileName = lh_->getPath(*hierComponent_->getVlnv());
 	QFileInfo targetInfo(fileName);
 	fileName = targetInfo.absolutePath();
 	fileName += QString("/");
 	fileName += hierComponent_->getVlnv()->getName();
+	fileName += QString(".%1").arg(viewName_);
 	fileName += QString(".vhd");
 
 	QString path = QFileDialog::getSaveFileName(this,
@@ -576,14 +574,8 @@ void DesignWidget::onVhdlGenerate() {
 	if (path.isEmpty())
 		return;
 
-	// create the vhdl generator
-	VhdlGenerator vhdlGen(component, viewName_, lh_, this);
-	connect(&vhdlGen, SIGNAL(errorMessage(const QString&)),
-		this, SIGNAL(errorMsg(const QString&)), Qt::UniqueConnection);
-	connect(&vhdlGen, SIGNAL(noticeMessage(const QString&)),
-		this, SIGNAL(noticeMsg(const QString&)), Qt::UniqueConnection);
-
-	vhdlGen.parse();
+	VhdlGenerator2 vhdlGen(lh_, this);
+	vhdlGen.parse(hierComponent_, viewName_);
 	vhdlGen.generateVhdl(path);
 
 	// ask user if he wants to save the generated vhdl into object metadata
@@ -595,11 +587,13 @@ void DesignWidget::onVhdlGenerate() {
 	// if the generated file is saved
 	if (button == QMessageBox::Yes) {
 
-		// add a rtl view to the component
-		vhdlGen.addRtlView(path);
+		// add a rtl view to the hierComponent_
+		vhdlGen.addRTLView(path);
 
-		// write the component into file system
-		lh_->writeModelToFile(component);
+		// write the hierComponent_ into file system
+		lh_->writeModelToFile(hierComponent_);
+
+		emit refresh(this);
 	}
 }
 

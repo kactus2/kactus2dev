@@ -46,6 +46,14 @@ namespace VhdlGeneral {
 		"IEEE.numeric_std.all",
 	};
 
+	/*! \brief Check if the port type is scalar.
+	 *
+	 * \param typeName The name of the port type to check.
+	 *
+	 * \return bool True if port type is for scalar port.
+	*/
+	bool isScalarType(const QString& typeName);
+
 	/*! \brief Get the default type definition for a given type name.
 	 *
 	 * \param typeName Specified the name of the type.
@@ -89,11 +97,13 @@ namespace VhdlGeneral {
 	 * \param lineSeparator The separator that is added to the beginning of
 	 * each new line. For example setting separator to \t will add one indentation
 	 * at beginning of each line.
+	 * \param addStartComment If true then "-- " is added before the description is written.
 	 *
 	*/
 	void writeDescription(const QString& description,
 		QTextStream& stream, 
-		const QString& lineSeparator = QString(""));
+		const QString& lineSeparator = QString(""),
+		bool addStartComment = true);
 }
 
 #endif // VHDLGENERAL_H

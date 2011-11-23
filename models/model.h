@@ -352,6 +352,37 @@ public:
 	*/
 	bool hasViews() const;
 
+	/*! \brief Get the default values of in and inout ports.
+	 *
+	 * \return QMap<QString, QString> contains the port names and default values.
+	 * Key: Name of the port.
+	 * Value: The default value for the specified port.
+	*/
+	QMap<QString, QString> getPortDefaultValues() const;
+
+	/*! \brief Get the type definitions of the wired ports.
+	 *
+	 *
+	 * \return QStringList contains the type definitions set for ports of component.
+	*/
+	QStringList getPortTypeDefinitions() const;
+
+	/*! \brief Get the entity name of the component.
+	 *
+	 * \param viewName The name of the view that's entity name is requested.
+	 *
+	 * \return QString contains the name of the entity.
+	*/
+	QString getEntityName(const QString& viewName) const;
+
+	/*! \brief Get the name of the architecture for the component.
+	 *
+	 * \param viewName The name of the view that's architecture is wanted.
+	 *
+	 * \return QString contains the architecture name.
+	*/
+	QString getArchitectureName(const QString& viewName) const;
+
 private:
 
 	/*!

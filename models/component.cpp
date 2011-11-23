@@ -976,6 +976,44 @@ QList<General::LibraryFilePair> Component::getVhdlLibraries() const {
 	return libraries;
 }
 
+QStringList Component::getVhdlLibraries( const QString& viewName ) const {
+
+	QStringList fileSetNames;
+
+	// if view was specified
+	if (!viewName.isEmpty()) {
+
+		// if theres no views
+		if (!model_) {
+			return QStringList();
+		}
+
+		// get the names of the file sets that are used.
+		fileSetNames = model_->getFileSetRefs(viewName);
+	}
+	// view was not specified so take all file sets
+	else {
+		foreach (QSharedPointer<FileSet> fileSet, fileSets_) {
+			fileSetNames.append(fileSet->getName());
+		}
+	}
+
+	QStringList libraries;
+	// each file set referenced by the view
+	foreach (QString fileSetName, fileSetNames) {
+
+		foreach (QSharedPointer<FileSet> fileSet, fileSets_) {
+			
+			// if file set is the searched one
+			if (fileSet->getName() == fileSetName) {
+				libraries += fileSet->getVhdlLibraryNames();
+			}
+		}
+	}
+	libraries.removeDuplicates();
+	return libraries;
+}
+
 QList<General::LibraryFilePair> Component::getLibraries( const QString& viewName ) const {
 
 	QList<General::LibraryFilePair> libraries;
@@ -1640,6 +1678,29 @@ QStringList Component::getHierViews() const {
 		return QStringList();
 }
 
+QString Component::getEntityName( const QString& viewName ) const {
+	if (model_) {
+		QString entityName = model_->getEntityName(viewName);
+
+		// if view contained an entity name
+		if (!entityName.isEmpty()) {
+			return entityName;
+		}
+	
+	}
+	// if there are no views then the VLNV name is used
+	return vlnv_->getName();
+}
+
+QString Component::getArchitectureName( const QString& viewName ) const {
+
+	if (model_) {
+		return model_->getArchitectureName(viewName);
+	}
+	// if there is no views
+	return QString();
+}
+
 void Component::removeView( const QString& viewName ) {
 	if (model_)
 		model_->removeView(viewName);
@@ -1665,4 +1726,22 @@ QString Component::getViewDescription( const QString& viewName ) const {
 		return QString();
 
 	return view->getDescription();
+}
+
+QMap<QString, QString> Component::getPortDefaultValues() const {
+	if (model_) {
+		return model_->getPortDefaultValues();
+	}
+	else {
+		return QMap<QString, QString>();
+	}
+}
+
+QStringList Component::getPortTypeDefinitions() const {
+	if (model_) {
+		return model_->getPortTypeDefinitions();
+	}
+	else {
+		return QStringList();
+	}
 }

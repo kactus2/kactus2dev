@@ -19,8 +19,6 @@
 #include <QSharedPointer>
 #include <QXmlStreamWriter>
 
-#include <QDebug>
-
 Wire::WireTypeDef::WireTypeDef(QDomNode &wireTypeNode): typeName_(QString()),
 constrained_(false), typeDefinitions_(), viewNameRefs_() {
 
@@ -263,9 +261,6 @@ void Wire::write(QXmlStreamWriter& writer) {
 				// write the value of the element and close the tag
 				writer.writeCharacters(wireTypeDefs_.at(i)->typeName_);
 				writer.writeEndElement(); // spirit:typeName
-
-				qDebug() << "wrote wireTypeDef" <<
-						wireTypeDefs_.at(i)->typeName_;
 			}
 
 			// write all type definitions
@@ -457,6 +452,15 @@ QString Wire::getTypeDefinition( const QString& typeName ) {
 	return QString("");
 }
 
+QStringList Wire::getTypeDefinitions() const {
+	QStringList typeDefs;
+	foreach (QSharedPointer<Wire::WireTypeDef> wtypeDef, wireTypeDefs_) {
+		typeDefs.append(wtypeDef->typeDefinitions_);
+	}
+	return typeDefs;
+}
+
+
 void Wire::setTypeDefinition( const QString& typeName, const QString& typeDefinition ) {
 	bool added = false;
 	for (QList<QSharedPointer<WireTypeDef> >::iterator i = wireTypeDefs_.begin();
@@ -493,4 +497,3 @@ bool Wire::hasType( const QString& viewName /*= QString("")*/ ) const {
 	}
 	return false;
 }
-
