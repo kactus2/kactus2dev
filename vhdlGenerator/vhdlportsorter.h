@@ -21,11 +21,14 @@ public:
 
 	/*! \brief The constructor
 	 *
+	 * \param interface The name of the interface the port belongs to.
 	 * \param name The name of the port.
 	 * \param direction The direction of the port.
 	 *
 	*/
-	VhdlPortSorter(const QString& name, General::Direction direction = General::DIRECTION_INVALID);
+	VhdlPortSorter(const QString& interface,
+		const QString& name, 
+		General::Direction direction);
 	
 	//! \brief Copy constructor
 	VhdlPortSorter(const VhdlPortSorter& other);
@@ -76,8 +79,17 @@ public:
 	*/
 	bool operator>(const VhdlPortSorter& other) const;
 
+	/*! \brief Get the name of the interface the port belongs to.
+	 *
+	 * \return QString The name fo the interface.
+	*/
+	QString interface() const;
+
 private:
 	
+	//! \brief The name of the interface the port belongs to.
+	QString interface_;
+
 	//! \brief The name of the port.
 	QString name_;
 

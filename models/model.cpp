@@ -514,6 +514,9 @@ QMap<QString, QString> Model::getPortDefaultValues() const {
 				if (!port->getDefaultValue().isEmpty()) {
 					defaultValues.insert(port->getName(), port->getDefaultValue());
 				}
+				else {
+					defaultValues.insert(port->getName(), QString());
+				}
 		}
 	}
 

@@ -352,3 +352,27 @@ void AbstractionDefinition::setVlnv( const VLNV& vlnv ) {
 	LibraryComponent::vlnv_->setType(VLNV::ABSTRACTIONDEFINITION);
 }
 
+int AbstractionDefinition::getDefaultValue( const QString& portName ) const {
+	// search all ports
+	foreach (QSharedPointer<PortAbstraction> port, ports_) {
+		// if the port is the searched one
+		if (port->getLogicalName() == portName) {
+			return port->getDefaultValue();
+		}
+	}
+	// if port was not found
+	return -1;
+}
+
+bool AbstractionDefinition::hasDefaultValue( const QString& portName ) const {
+	// search all ports
+	foreach (QSharedPointer<PortAbstraction> port, ports_) {
+		// if the port is the searched one
+		if (port->getLogicalName() == portName) {
+			return port->hasDefaultValue();
+		}
+	}
+	// if port was not found
+	return false;
+}
+

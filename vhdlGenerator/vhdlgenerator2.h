@@ -296,6 +296,27 @@ private:
 	 *
 	*/
 	void writeComponentInstances( QTextStream& vhdlStream );
+
+	/*! \brief Read an old vhdl file and read the user modifiable parts from it.
+	 *
+	 * \param previousFile The file to read.
+	 *
+	*/
+	void readUserModifiablePart(QFile& previousFile);
+
+	/*! \brief Write the user modified declarations read from the previous file.
+	 *
+	 * \param stream The text stream to write into.
+	 *
+	*/
+	void writeUserModifiedDeclarations(QTextStream& stream);
+
+	/*! \brief Write the user modified assignments read from the previous file.
+	 *
+	 * \param stream The text stream to write into.
+	 *
+	*/
+	void writeUserModifiedAssignments(QTextStream& stream);
 	
 	//! \brief Pointer to the instance that manages the library.
 	LibraryInterface* handler_;
@@ -320,6 +341,12 @@ private:
 
 	//! \brief The type definitions of the port types used.
 	QStringList typeDefinitions_;
+
+	//! \brief Contains the declarations that user has written by hand and that should be saved
+	QString userModifiedDeclarations_;
+
+	//! \brief Contains the vhdl code that user has written by hand and that should be saved
+	QString userModifiedAssignments_;
 
 	/*! \brief Contains the generics for the top level entity.
 	 * 

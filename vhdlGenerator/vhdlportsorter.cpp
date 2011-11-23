@@ -9,13 +9,17 @@
 
 #include <QDebug>
 
-VhdlPortSorter::VhdlPortSorter( const QString& name, General::Direction direction ):
+VhdlPortSorter::VhdlPortSorter(const QString& interface,
+							   const QString& name, 
+							   General::Direction direction ):
+interface_(interface),
 name_(name),
 direction_(direction) {
 
 }
 
 VhdlPortSorter::VhdlPortSorter( const VhdlPortSorter& other ):
+interface_(other.interface_),
 name_(other.name_),
 direction_(other.direction_) {
 }
@@ -26,6 +30,7 @@ VhdlPortSorter::~VhdlPortSorter() {
 VhdlPortSorter& VhdlPortSorter::operator=( const VhdlPortSorter& other ) {
 
 	if (this != &other) {
+		interface_ = other.interface_;
 		name_ = other.name_;
 		direction_ = other.direction_;
 	}
@@ -42,37 +47,41 @@ bool VhdlPortSorter::operator!=( const VhdlPortSorter& other ) const {
 
 bool VhdlPortSorter::operator<( const VhdlPortSorter& other ) const {
 
-	// if the direction of one is invalid then just compare the name
-// 	if (other.direction_ == General::DIRECTION_INVALID ||
-// 		direction_ == General::DIRECTION_INVALID) {
-// 		return name_.compare(other.name_, Qt::CaseInsensitive) < 0;
-// 	}
-// 
-// 	// normally first compare the direction and then the name
-// 	else if (direction_ == other.direction_) {
-// 		return name_.compare(other.name_, Qt::CaseInsensitive) < 0;
-// 	}
-// 	else {
-// 		return direction_ < other.direction_;
-// 	}
+	// first check the interface name
+	if (interface_.compare(other.interface_, Qt::CaseInsensitive) == 0) {
+		
+		// compare the direction and then the name
+		if (direction_ == other.direction_) {
+			return name_.compare(other.name_, Qt::CaseInsensitive) < 0;
+		}
+		else {
+			return direction_ < other.direction_;
+		}
+	}
+	else {
+		return interface_.compare(other.interface_, Qt::CaseInsensitive) < 0;
+	}
 
-	return name_.compare(other.name_, Qt::CaseInsensitive) < 0;
 }
 
 bool VhdlPortSorter::operator>( const VhdlPortSorter& other ) const {
-	// if the direction of other is invalid then just compare the name
-// 	if (other.direction_ == General::DIRECTION_INVALID ||
-// 		direction_ == General::DIRECTION_INVALID) {
-// 		return name_.compare(other.name_, Qt::CaseInsensitive) > 0;
-// 	}
-// 
-// 	// normally first compare the direction and then the name
-// 	else if (direction_ == other.direction_) {
-// 		return name_.compare(other.name_, Qt::CaseInsensitive) > 0;
-// 	}
-// 	else {
-// 		return direction_ > other.direction_;
-// 	}
-// 	
-	return name_.compare(other.name_, Qt::CaseInsensitive) > 0;
+
+	// first check the interface name
+	if (interface_.compare(other.interface_, Qt::CaseInsensitive) == 0) {
+
+		// compare the direction and then the name
+		if (direction_ == other.direction_) {
+			return name_.compare(other.name_, Qt::CaseInsensitive) > 0;
+		}
+		else {
+			return direction_ > other.direction_;
+		}
+	}
+	else {
+		return interface_.compare(other.interface_, Qt::CaseInsensitive) > 0;
+	}
+}
+
+QString VhdlPortSorter::interface() const {
+	return interface_;
 }

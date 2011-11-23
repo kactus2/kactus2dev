@@ -229,6 +229,22 @@ public:
 	*/
 	General::Direction getPortDirection(const QString& portName, General::InterfaceMode mode) const;
 
+	/*! \brief Get the default value of the port
+	 *
+	 * \param portName The name of the port.
+	 *
+	 * \return QString Contains the default value.
+	*/
+	int getDefaultValue(const QString& portName) const;
+
+	/*! \brief Check if the abs def has a default value assigned for the port.
+	 *
+	 * \param portName The name of the port that's default value is checked.
+	 *
+	 * \return bool True if port has a default value assigned.
+	*/
+	bool hasDefaultValue(const QString& portName) const;
+
 private:
 
 	/*! \brief Specifies the bus definition for this abstraction definition

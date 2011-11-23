@@ -386,6 +386,14 @@ public:
 	*/
 	int getWidth(General::InterfaceMode mode) const;
 
+	/*! \brief Check if the abs def has a default value assigned for the port.
+	 *
+	 * \param portName The name of the port that's default value is checked.
+	 *
+	 * \return bool True if port has a default value assigned.
+	*/
+	bool hasDefaultValue() const;
+
 private:
 
 	/*!

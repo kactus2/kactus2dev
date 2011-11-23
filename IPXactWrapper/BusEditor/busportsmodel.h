@@ -305,7 +305,7 @@ public slots:
 	 * \param indexes List of QModelIndexes that identify items to copy.
 	 *
 	*/
-	void copyIndexes(QModelIndexList& indexes);
+	void copyIndexes(const QModelIndexList& indexes);
 
 	/*! \brief Export the ports from the model to a csv-file.
 	 *

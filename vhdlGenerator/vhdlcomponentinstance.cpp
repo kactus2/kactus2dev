@@ -12,8 +12,13 @@
 #include "vhdlgeneral.h"
 #include <models/component.h>
 #include <models/view.h>
+#include <models/librarycomponent.h>
+#include <models/abstractiondefinition.h>
+
+#include <LibraryManager/libraryinterface.h>
 
 #include <QSharedPointer>
+#include <QMultiMap>
 
 #include <QDebug>
 
@@ -37,6 +42,9 @@ portMap_() {
 	connect(this, SIGNAL(errorMessage(const QString&)),
 		parent, SIGNAL(errorMessage(const QString)), Qt::UniqueConnection);
 
+	LibraryInterface* handler = parent->handler();
+	Q_ASSERT(handler);
+
 	// if view name is not specified
 	if (viewName.isEmpty()) {
 		return;
@@ -44,30 +52,6 @@ portMap_() {
 
 	QSharedPointer<Component> component = compDeclaration_->componentModel();
 	Q_ASSERT(component);
-// 
-// 	View* view = component->findView(viewName);
-// 	
-// 	// the component did not contain the given view
-// 	if (!view) {
-// 		return;
-// 	}
-// 
-// 	// search for a flat view that implements this component
-// 	while (view->isHierarchical()) {
-// 		// find a reference to a flat view
-// 		QString viewRef = view->getTopLevelView();
-// 		
-// 		// if theres no top level flat view referenced of it does not exist
-// 		if (viewRef.isEmpty() || !component->hasView(viewRef)) {
-// 			return;
-// 		}
-// 
-// 		view = component->findView(viewRef);
-// 	}
-// 	Q_ASSERT(view);
-// 
-// 	// get the architecture specified for the view
-// 	architecture_ = view->getModelName();
  	
 	// set the entity name that is used
 	typeName_ = component->getEntityName(viewName);
@@ -78,6 +62,37 @@ portMap_() {
 
 	// get the default values of the in and inout ports
 	defaultPortConnections_ = component->getPortDefaultValues();
+	QMap<QString, QString> tempDefaults;
+	for (QMap<QString, QString>::iterator i = defaultPortConnections_.begin();
+		i != defaultPortConnections_.end(); ++i) {
+
+		// get the VLNVs of the abstraction definitions for the port
+		QMultiMap<QString, VLNV> absDefs = component->getInterfaceAbsDefForPort(i.key());
+		for (QMultiMap<QString, VLNV>::Iterator j = absDefs.begin();
+			j != absDefs.end(); ++j) {
+
+			// if the abs def does not exist in the library
+			if (handler->getDocumentType(j.value()) != VLNV::ABSTRACTIONDEFINITION) {
+				if (!tempDefaults.contains(i.key()))
+					tempDefaults.insert(i.key(), i.value());
+				continue;
+			}
+
+			QSharedPointer<LibraryComponent> libComp = handler->getModel(j.value());
+			QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
+
+			if (absDef->hasDefaultValue(j.key())) {
+				tempDefaults.insert(i.key(), QString::number(absDef->getDefaultValue(j.key())));
+				break;
+			}
+			else {
+				if (!tempDefaults.contains(i.key()))
+					tempDefaults.insert(i.key(), i.value());
+				continue;
+			}
+		}
+	}
+	defaultPortConnections_ = tempDefaults;
 }
 
 VhdlComponentInstance::~VhdlComponentInstance() {
@@ -279,4 +294,8 @@ QString VhdlComponentInstance::typeName() const {
 bool VhdlComponentInstance::isScalarPort( const QString& portName ) const {
 	Q_ASSERT(compDeclaration_);
 	return compDeclaration_->isScalarPort(portName);
+}
+
+General::Direction VhdlComponentInstance::portDirection( const QString& portName ) const {
+	return compDeclaration_->portDirection(portName);
 }

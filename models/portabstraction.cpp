@@ -494,3 +494,12 @@ int PortAbstraction::getWidth( General::InterfaceMode mode ) const {
 		return wire_->getWidth(mode);
 	return -1;
 }
+
+bool PortAbstraction::hasDefaultValue() const {
+	if (wire_ && wire_->getDefaultValue() >= 0) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}

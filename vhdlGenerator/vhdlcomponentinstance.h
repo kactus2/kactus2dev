@@ -11,6 +11,7 @@
 #include "vhdlportmap.h"
 #include "vhdlconnectionendpoint.h"
 
+#include <models/generaldeclarations.h>
 #include <models/component.h>
 
 #include <LibraryManager/vlnv.h>
@@ -158,6 +159,14 @@ public:
 	 * \return bool True if port is scalar.
 	*/
 	bool isScalarPort(const QString& portName) const;
+
+	/*! \brief Get the direction of the specified port on this instance.
+	 *
+	 * \param portName The name of the port that's direction is requested.
+	 *
+	 * \return General::Direction Specifies the direction of the port.
+	*/
+	General::Direction portDirection(const QString& portName) const;
 
 signals:
 

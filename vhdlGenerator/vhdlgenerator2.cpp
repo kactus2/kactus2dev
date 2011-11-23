@@ -28,6 +28,11 @@
 #include <QDate>
 #include <QSettings>
 
+static const QString BLACK_BOX_DECL_START = "-- ##KACTUS2_BLACK_BOX_DECLARATIONS_BEGIN##";
+static const QString BLACK_BOX_DECL_END = "-- ##KACTUS2_BLACK_BOX_DECLARATIONS_END##";
+static const QString BLACK_BOX_ASSIGN_START = "-- ##KACTUS2_BLACK_BOX_ASSIGNMENTS_BEGIN##";
+static const QString BLACK_BOX_ASSIGN_END = "-- ##KACTUS2_BLACK_BOX_ASSIGNMENTS_END##";
+
 VhdlGenerator2::VhdlGenerator2(LibraryInterface* handler, DesignWidget* parent):
 QObject(parent),
 handler_(handler),
@@ -38,6 +43,8 @@ viewName_(),
 topLevelEntity_(),
 libraries_(),
 typeDefinitions_(),
+userModifiedDeclarations_(),
+userModifiedAssignments_(),
 topGenerics_(),
 topPorts_(),
 signals_(),
@@ -116,6 +123,10 @@ void VhdlGenerator2::generateVhdl( const QString& outputFileName) {
 
 	// if previous file exists then remove it.
 	if (file.exists()) {
+
+		// read the user-modifiable code from the file
+		readUserModifiablePart(file);
+
 		file.remove();
 	}
 
@@ -123,7 +134,6 @@ void VhdlGenerator2::generateVhdl( const QString& outputFileName) {
 	// if file could not be opened
 	if (!file.open(QFile::Truncate | QFile::WriteOnly)) {
 
-		// throw an exception that file couldn't be opened
 		QString message(tr("File: "));
 		message += outputFileName;
 		message += tr(" couldn't be opened for writing");
@@ -189,8 +199,14 @@ void VhdlGenerator2::generateVhdl( const QString& outputFileName) {
 	// write all component declarations
 	writeComponentDeclarations(vhdlStream);
 
+	// write the user modifiable code 
+	writeUserModifiedDeclarations(vhdlStream);
+
 	// start writing architecture component instances
 	vhdlStream << endl << "begin" << endl << endl;
+
+	// write the user modifiable code
+	writeUserModifiedAssignments(vhdlStream);
 
 	// write the component instances
 	writeComponentInstances(vhdlStream);
@@ -358,7 +374,8 @@ void VhdlGenerator2::parseTopPorts() {
 		QSharedPointer<VhdlPort> vhdlPort(new VhdlPort(this, port.data()));
 
 		// create the sorter instance
-		VhdlPortSorter sorter(vhdlPort->name(), port->getDirection());
+		VhdlPortSorter sorter(component_->getInterfaceNameForPort(vhdlPort->name()),
+			vhdlPort->name(), port->getDirection());
 
 		// this port can not be created yet
 		Q_ASSERT(!topPorts_.contains(sorter));
@@ -725,7 +742,9 @@ void VhdlGenerator2::parseAdHocConnections() {
 			foreach (Design::PortRef portRef, adHoc.externalPortReferences) {
 
 				// check that the port is found 
-				VhdlPortSorter sorter(portRef.portRef);
+				VhdlPortSorter sorter(component_->getInterfaceNameForPort(portRef.portRef),
+					portRef.portRef, 
+					component_->getPortDirection(portRef.portRef));
 				if (!topPorts_.contains(sorter)) {
 					emit errorMessage(tr("The port %1 is not found in top component %2").arg(
 						portRef.portRef).arg(component_->getVlnv()->toString()));
@@ -760,7 +779,8 @@ void VhdlGenerator2::connectHierPort( const QString& topPort,
 			portRight = -1;
 		}
 
-		VhdlPortSorter sorter(topPort);
+		VhdlPortSorter sorter(component_->getInterfaceNameForPort(topPort), 
+			topPort, component_->getPortDirection(topPort));
 		// if the port was found in top component then set it as uncommented 
 		// because it is needed
 		if (topPorts_.contains(sorter)) {
@@ -995,9 +1015,34 @@ void VhdlGenerator2::writePorts( QTextStream& vhdlStream ) {
 
 		vhdlStream << "\tport (" << endl;
 
+		QString previousInterface;
 		// print each port
 		for (QMap<VhdlPortSorter, QSharedPointer<VhdlPort> >::iterator i = topPorts_.begin();
 			i != topPorts_.end(); ++i) {
+
+				// if the port is first in the interface then introduce it
+				if (i.key().interface() != previousInterface) {
+					const QString interfaceName = i.key().interface();
+
+					vhdlStream << endl << "\t\t-- ";
+
+					if (interfaceName == QString("none")) {
+						vhdlStream << "These ports are not in any interface" << endl;
+					}
+					else if (interfaceName == QString("several")) {
+						vhdlStream << "There ports are contained in many interfaces" << endl;
+					}
+					else {	
+						vhdlStream << "Interface: " << interfaceName << endl;
+						const QString description = component_->getInterfaceDescription(
+							interfaceName);
+						if (!description.isEmpty()) {
+							vhdlStream << "\t\t";
+							VhdlGeneral::writeDescription(description, vhdlStream, QString("\t\t"));
+						}
+					}
+					previousInterface = interfaceName;
+				}
 
 				// write the port name and direction
 				vhdlStream << "\t\t";
@@ -1054,6 +1099,84 @@ void VhdlGenerator2::writeComponentInstances( QTextStream& vhdlStream ) {
 		instance->write(vhdlStream);
 		vhdlStream << endl;
 	}
+}
+
+void VhdlGenerator2::readUserModifiablePart( QFile& previousFile ) {
+	Q_ASSERT(previousFile.exists());
+
+	// clear the previous stuff
+	userModifiedAssignments_.clear();
+	userModifiedDeclarations_.clear();
+
+	// open the file
+	// if file could not be opened
+	if (!previousFile.open(QFile::ReadOnly)) {
+
+		QString message(tr("File: "));
+		message += previousFile.fileName();
+		message += tr(" couldn't be opened for reading");
+		emit errorMessage(message);
+		return;
+	}
+
+	QTextStream stream(&previousFile);
+
+	bool readingDeclarations = false;
+	bool readingAssignments = false;
+
+	// read as long as theres stuff in the stream to read.
+	while (!stream.atEnd()) {
+		QString line = stream.readLine();
+
+		QString lineCompare = line.trimmed();
+
+		// if next line starts the declarations
+		if (lineCompare == BLACK_BOX_DECL_START) {
+			readingDeclarations = true;
+		}
+		// if previous line was the last one of the declarations
+		else if (lineCompare == BLACK_BOX_DECL_END) {
+			readingDeclarations = false;
+		}
+		// if the next line starts the assignments
+		else if (lineCompare == BLACK_BOX_ASSIGN_START) {
+			readingAssignments = true;
+		}
+		// if previous line was the last of the assignments
+		else if (lineCompare == BLACK_BOX_ASSIGN_END) {
+			readingAssignments = false;
+		}
+		// if the line is part of the declarations
+		else if (readingDeclarations) {
+			// add the line to the declarations
+			userModifiedDeclarations_ += line;
+			userModifiedDeclarations_ += QString("\n");
+		}
+		// if the line is part of the assignments
+		else if (readingAssignments) {
+			// add the line to the assignments
+			userModifiedAssignments_ += line;
+			userModifiedAssignments_ += QString("\n");
+		}
+	}
+
+	previousFile.close();
+}
+
+void VhdlGenerator2::writeUserModifiedDeclarations( QTextStream& stream ) {
+	stream << "\t-- You can write vhdl code after this tag and it is saved through the generator." << endl;
+	stream << "\t" << BLACK_BOX_DECL_START << endl;
+	stream << userModifiedDeclarations_;
+	stream << "\t" << BLACK_BOX_DECL_END << endl;
+	stream << "\t-- Stop writing your code after this tag." << endl << endl;
+}
+
+void VhdlGenerator2::writeUserModifiedAssignments( QTextStream& stream ) {
+	stream << "\t-- You can write vhdl code after this tag and it is saved through the generator." << endl;
+	stream << "\t" << BLACK_BOX_ASSIGN_START << endl;
+	stream << userModifiedAssignments_;
+	stream << "\t" << BLACK_BOX_ASSIGN_END << endl;
+	stream << "\t-- Stop writing your code after this tag." << endl << endl;
 }
 
 VhdlGenerator2::PortConnection::PortConnection( 

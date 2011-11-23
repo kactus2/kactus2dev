@@ -23,6 +23,7 @@
 #include <QStringList>
 #include <QFile>
 #include <QXmlStreamWriter>
+#include <QMultiMap>
 
 // implemented classes that only need to be declared
 class BusInterface;
@@ -745,6 +746,35 @@ public:
 	* \return bool True if bus interfaces exist.
 	*/
 	bool hasInterfaces() const;
+
+	/*! \brief Find the interface that contains the physical port and return it's abs def vlnv and logical name.
+	 *
+	 * \param physicalPortName The name of the physical port that's interface is searched.
+	 *
+	 * \return QMultiMap<QString, VLNV> Identifies the abstraction definition(s) used in the interface(s).
+	 *  Key: the logical name of the port.
+	 *  Value: The VLNV of the interface.
+	*/
+	QMultiMap<QString, VLNV> getInterfaceAbsDefForPort(const QString& physicalPortName) const;
+
+	/*! \brief Check which interface contains the named port.
+	 * 
+	 * If port is contained in more than one interface then "several" is returned.
+	 * If port is not contained in any interface then "none" is returned.
+	 *
+	 * \param portName The name of the port that is searched in interfaces.
+	 *
+	 * \return QString The name of the interface that contains the port.
+	*/
+	QString getInterfaceNameForPort(const QString& portName) const;
+
+	/*! \brief Get the description of the specified interface.
+	 *
+	 * \param interfaceName The name of the interface that's description is wanted.
+	 *
+	 * \return QString The description of the given interface.
+	*/
+	QString getInterfaceDescription(const QString& interfaceName) const;
 
 	/*! \brief Get the named port of a component
 	*

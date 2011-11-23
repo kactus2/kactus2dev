@@ -414,6 +414,22 @@ public:
 	*/
 	bool hasLogicalPort(const QString& logicalPortName) const;
 
+	/*! \brief Get the name of the logical port mapped to specified physical port.
+	 *
+	 * \param physicalPortName The name of the physical port that's mapping is searched.
+	 *
+	 * \return QString contains the name of the logical port mapped with the physical.
+	*/
+	QString getLogicalPortName(const QString& physicalPortName) const;
+
+	/*! \brief Check if the bus interface contains the specified physical port.
+	 *
+	 * \param physicalPortName Contains the name of the physical port to search for.
+	 *
+	 * \return bool True if the physical port is found in the port maps.
+	*/
+	bool hasPhysicalPort(const QString& physicalPortName) const;
+
     /*!
      *  Sets the MCAPI port ID to the bus interface's parameters.
      */

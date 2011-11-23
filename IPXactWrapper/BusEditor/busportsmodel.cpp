@@ -839,7 +839,7 @@ void BusPortsModel::removeIndexes(const QModelIndexList& indexes ) {
 	emit contentChanged();
 }
 
-void BusPortsModel::copyIndexes( QModelIndexList& indexes ) {
+void BusPortsModel::copyIndexes( const QModelIndexList& indexes ) {
 	QList<BusPortsModel::Port> ports;
 
 	// find all ports that match given indexes

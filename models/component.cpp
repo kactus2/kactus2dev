@@ -1745,3 +1745,52 @@ QStringList Component::getPortTypeDefinitions() const {
 		return QStringList();
 	}
 }
+
+QMultiMap<QString, VLNV> Component::getInterfaceAbsDefForPort( const QString& physicalPortName ) const {
+	QMultiMap<QString, VLNV> absDefList;
+	foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {
+		// if the interface contains the physical port
+		if (busif->hasPhysicalPort(physicalPortName)) {
+			
+			QString logicalPort = busif->getLogicalPortName(physicalPortName);
+
+			if (!logicalPort.isEmpty()) {
+				absDefList.insert(logicalPort, busif->getAbstractionType());
+			}
+		}
+	}
+	return absDefList;
+}
+
+QString Component::getInterfaceNameForPort( const QString& portName ) const {
+	bool found = false;
+	QString interfaceName = "none";
+
+	// search all ports
+	foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {
+		
+		// if the interface contains the port
+		if (busif->hasPhysicalPort(portName)) {
+
+			// if the port was found before then there are many interfaces for this port
+			if (found) {
+				interfaceName = "several";
+			}
+			// mark port as found and set the interface name
+			else {
+				found = true;
+				interfaceName = busif->getName();
+			}
+		}
+	}
+	return interfaceName;
+}
+
+QString Component::getInterfaceDescription( const QString& interfaceName ) const {
+	if (busInterfaces_.contains(interfaceName)) {
+		return busInterfaces_.value(interfaceName)->getDescription();
+	}
+	else {
+		return QString();
+	}
+}

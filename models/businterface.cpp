@@ -986,7 +986,7 @@ bool BusInterface::hasLogicalPort( const QString& logicalPortName ) const {
 	foreach (QSharedPointer<General::PortMap> portMap, portMaps_) {
 		
 		// if the port map contains the searched logical port.
-		if (portMap->logicalPort_ == logicalPortName) {
+		if (portMap->logicalPort_.compare(logicalPortName) == 0) {
 			return true;
 		}
 	}
@@ -995,6 +995,32 @@ bool BusInterface::hasLogicalPort( const QString& logicalPortName ) const {
 	return false;
 }
 
+
+bool BusInterface::hasPhysicalPort( const QString& physicalPortName ) const {
+	foreach (QSharedPointer<General::PortMap> portMap, portMaps_) {
+
+		// if the port map contains the searched logical port.
+		if (portMap->physicalPort_.compare(physicalPortName) == 0) {
+			return true;
+		}
+	}
+
+	// if no logical port with given name was found.
+	return false;
+}
+
+QString BusInterface::getLogicalPortName( const QString& physicalPortName ) const {
+	foreach (QSharedPointer<General::PortMap> portMap, portMaps_) {
+
+		// if the port map contains the searched physical port.
+		if (portMap->physicalPort_.compare(physicalPortName) == 0) {
+			return portMap->logicalPort_;
+		}
+	}
+
+	// if no physical port with given name was found.
+	return QString();
+}
 
 //-----------------------------------------------------------------------------
 // Function: setMCAPIPortID()

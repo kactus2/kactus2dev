@@ -115,6 +115,14 @@ public:
 	*/
 	void setEntityName(const QString& entityName);
 
+	/*! \brief Get the direction of the specified port on this component.
+	 *
+	 * \param portName The name of the port that's direction is requested.
+	 *
+	 * \return General::Direction Specifies the direction of the port.
+	*/
+	General::Direction portDirection(const QString& portName) const;
+
 signals:
 
 	//! \brief Send a notification to user.

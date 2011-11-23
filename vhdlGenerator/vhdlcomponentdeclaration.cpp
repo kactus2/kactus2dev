@@ -51,7 +51,8 @@ instantations_() {
 		QSharedPointer<VhdlPort> vhdlPort(new VhdlPort(this, port.data()));
 
 		// create the sorter instance
-		VhdlPortSorter sorter(vhdlPort->name(), port->getDirection());
+		VhdlPortSorter sorter(component_->getInterfaceNameForPort(vhdlPort->name()),
+			vhdlPort->name(), port->getDirection());
 
 		// this port can not be created yet
 		Q_ASSERT(!ports_.contains(sorter));
@@ -98,7 +99,33 @@ void VhdlComponentDeclaration::write( QTextStream& stream ) const {
 	// write the port declarations
 	if (!ports_.isEmpty()) {
 		stream << "\t\tport (" << endl;
+		QString previousInterface;
 		for (QMap<VhdlPortSorter, QSharedPointer<VhdlPort> >::iterator i = ports_.begin(); i != ports_.end(); ++i) {
+			
+			// if the port is first in the interface then introduce it
+			if (i.key().interface() != previousInterface) {
+				const QString interfaceName = i.key().interface();
+
+				stream << endl << "\t\t\t-- ";
+
+				if (interfaceName == QString("none")) {
+					stream << "These ports are not in any interface" << endl;
+				}
+				else if (interfaceName == QString("several")) {
+					stream << "There ports are contained in many interfaces" << endl;
+				}
+				else {	
+					stream << "Interface: " << interfaceName << endl;
+					const QString description = component_->getInterfaceDescription(
+						interfaceName);
+					if (!description.isEmpty()) {
+						stream << "\t\t\t";
+						VhdlGeneral::writeDescription(description, stream, QString("\t\t\t"));
+					}
+				}
+				previousInterface = interfaceName;
+			}
+			
 			stream << "\t\t\t";
 			i.value()->write(stream);
 
@@ -166,8 +193,9 @@ void VhdlComponentDeclaration::checkPortConnections() {
 
 QString VhdlComponentDeclaration::portType( const QString& portName ) const {
 
-	// used to search for the correct port, the direction does not matter
-	VhdlPortSorter sorter(portName);
+	// used to search for the correct port
+	VhdlPortSorter sorter(component_->getInterfaceNameForPort(portName),
+		portName, component_->getPortDirection(portName));
 	
 	// if the named port is found
 	if (ports_.contains(sorter)) {
@@ -180,7 +208,8 @@ QString VhdlComponentDeclaration::portType( const QString& portName ) const {
 
 bool VhdlComponentDeclaration::isScalarPort( const QString& portName ) const {
 
-	VhdlPortSorter sorter(portName);
+	VhdlPortSorter sorter(component_->getInterfaceNameForPort(portName),
+		portName, component_->getPortDirection(portName));
 
 	QString type;
 
@@ -196,4 +225,8 @@ bool VhdlComponentDeclaration::isScalarPort( const QString& portName ) const {
 
 void VhdlComponentDeclaration::setEntityName( const QString& entityName ) {
 	typeName_ = entityName;
+}
+
+General::Direction VhdlComponentDeclaration::portDirection( const QString& portName ) const {
+	return component_->getPortDirection(portName);
 }
