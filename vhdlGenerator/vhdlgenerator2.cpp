@@ -21,6 +21,7 @@
 #include <models/file.h>
 
 #include <designwidget/designwidget.h>
+#include <IPXactWrapper/ComponentEditor/ipxactcomponenteditor.h>
 
 #include <QFile>
 #include <QFileInfo>
@@ -58,6 +59,31 @@ instances_() {
 		parent, SIGNAL(noticeMsg(const QString&)), Qt::UniqueConnection);
 }
 
+VhdlGenerator2::VhdlGenerator2( LibraryInterface* handler, IPXactComponentEditor* parent):
+QObject(parent),
+handler_(handler),
+component_(),
+design_(),
+desConf_(),
+viewName_(),
+topLevelEntity_(),
+libraries_(),
+typeDefinitions_(),
+userModifiedDeclarations_(),
+userModifiedAssignments_(),
+topGenerics_(),
+topPorts_(),
+signals_(),
+components_(),
+instances_() {
+
+	Q_ASSERT(handler);
+	connect(this, SIGNAL(errorMessage(const QString&)),
+		parent, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
+	connect(this, SIGNAL(noticeMessage(const QString&)),
+		parent, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+}
+
 VhdlGenerator2::~VhdlGenerator2() {
 }
 
@@ -74,13 +100,10 @@ bool VhdlGenerator2::parse( QSharedPointer<Component> topLevelComponent,
 	emit noticeMessage(tr("Parsing the IP-Xact models..."));
 
 	// the name of the top-level entity is the name of the top-level component
-	topLevelEntity_ = component_->getVlnv()->getName().remove(QString(".comp"));
+	topLevelEntity_ = component_->getEntityName(viewName);
 	viewName_ = viewName;
 	
-	// if design can not be parsed
-	if (!parseDesignAndConfiguration()) {
-		return false;
-	}
+	parseDesignAndConfiguration();
 
 	// get the types that are used for the ports.
 	typeDefinitions_ = component_->getPortTypeDefinitions();
@@ -107,6 +130,15 @@ bool VhdlGenerator2::parse( QSharedPointer<Component> topLevelComponent,
 		// uncomment those that are needed
 		foreach (QSharedPointer<VhdlComponentDeclaration> comp, components_) {
 			comp->checkPortConnections();
+		}
+	}
+	// if design is not used then set all ports uncommented.
+	else {
+
+		for (QMap<VhdlPortSorter, QSharedPointer<VhdlPort> >::iterator i = topPorts_.begin();
+			i != topPorts_.end(); ++i) {
+
+			i.value()->setCommented(false);
 		}
 	}
 
@@ -189,8 +221,16 @@ void VhdlGenerator2::generateVhdl( const QString& outputFileName) {
 	QString viewDescription = component_->getViewDescription(viewName_);
 	VhdlGeneral::writeDescription(viewDescription, vhdlStream);
 
+	QString archName;
+	// if view name is not specified then "rtl" is used
+	if (viewName_.isEmpty()) {
+		archName = "rtl";
+	}
+	else {
+		archName = viewName_;
+	}
 	// write the architecture of the entity
-	vhdlStream << "architecture " << viewName_ << " of " << topLevelEntity_ << " is"
+	vhdlStream << "architecture " << archName << " of " << topLevelEntity_ << " is"
 		<< endl << endl;
 
 	// write declarations for signals connecting the ports
@@ -211,7 +251,7 @@ void VhdlGenerator2::generateVhdl( const QString& outputFileName) {
 	// write the component instances
 	writeComponentInstances(vhdlStream);
 
-	vhdlStream << "end " << viewName_ << ";" << endl << endl;
+	vhdlStream << "end " << archName << ";" << endl << endl;
 
 	file.close();
 
@@ -235,7 +275,13 @@ bool VhdlGenerator2::addRTLView( const QString& vhdlFileName ) {
 		return false;
 	}
 
-	QString fileSetName(QString("%1_vhdlSource").arg(viewName_));
+	QString fileSetName;
+	if (!viewName_.isEmpty()) {
+		fileSetName = QString("%1_vhdlSource").arg(viewName_);
+	}
+	else {
+		fileSetName = QString("vhdlSource");
+	}
 	FileSet* topFileSet = component_->getFileSet(fileSetName);
 
 	// if the top vhdl file set was not found. Create one
@@ -255,8 +301,13 @@ bool VhdlGenerator2::addRTLView( const QString& vhdlFileName ) {
 	// add the new file to the file set
 	topFileSet->addFile(topVhdlFile);
 
-	// find a rtl view from the component
-	QString viewName(QString("%1_rtl").arg(viewName_));
+	QString viewName;
+	if (!viewName_.isEmpty()) {
+		viewName = QString("%1_rtl").arg(viewName_);
+	}
+	else {
+		viewName = "rtl";
+	}
 	View* rtlView = new View(viewName);
 
 	// add the spirit:envIdentifier. Only language is defined, not tool
@@ -268,7 +319,14 @@ bool VhdlGenerator2::addRTLView( const QString& vhdlFileName ) {
 
 	// set the model name to be the top_level architecture of the top-level
 	// entity
-	QString topEntity(QString("%1(%2)").arg(topLevelEntity_).arg(viewName_));
+	QString archName;
+	if (viewName_.isEmpty()) {
+		archName = "rtl";
+	}
+	else {
+		archName = viewName_;
+	}
+	QString topEntity(QString("%1(%2)").arg(topLevelEntity_).arg(archName));
 	rtlView->setModelName(topEntity);
 
 	// set a reference to a file set
@@ -279,10 +337,10 @@ bool VhdlGenerator2::addRTLView( const QString& vhdlFileName ) {
 
 	// find the active view used to generate the vhdl
 	View* activeView = component_->findView(viewName_);
-	if (!activeView) {
-		emit errorMessage(tr("The active view %1 was not found in top component").arg(
-			viewName_));
-		return false;
+	
+	// if the view does not exist or it is not hierarchical
+	if (!activeView || !activeView->isHierarchical()) {
+		return true;
 	}
 
 	activeView->setTopLevelView(rtlView->getName());
@@ -301,11 +359,12 @@ bool VhdlGenerator2::parseDesignAndConfiguration() {
 
 	// if view is specified but it does not exist
 	View* view = component_->findView(viewName_);
+	
 	// if view is not found
 	if (!view) {
-		emit errorMessage(tr("Component %1 did not contain view %2.").arg(
-			component_->getVlnv()->toString()).arg(
-			viewName_));
+		return false;
+	}
+	else if (!view->isHierarchical()) {
 		return false;
 	}
 

@@ -8,7 +8,6 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ./designwidget/BusInterfaceDialog.h \
-    ./mainwindow/NewSWComponentPage.h \
     ./mainwindow/SplashScreen.h \
     ./resource.h \
     ./common/ColumnTypes.h \
@@ -63,6 +62,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./common/layouts/HStackedLayout.h \
     ./common/layouts/VCollisionLayout.h \
     ./common/layouts/VStackedLayout.h \
+    ./common/graphicsItems/ComponentItem.h \
     ./common/graphicsItems/GraphicsRectButton.h \
     ./designwidget/blockdiagram.h \
     ./designwidget/designwidget.h \
@@ -157,6 +157,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/endpoints/EndpointDelegate.h \
     ./IPXactWrapper/ComponentEditor/endpoints/EndpointEditor.h \
     ./IPXactWrapper/ComponentEditor/endpoints/EndpointModel.h \
+    ./IPXactWrapper/ComponentEditor/software/SoftwareMappingsEditor.h \
     ./IPXactWrapper/BusEditor/absdefgroup.h \
     ./IPXactWrapper/BusEditor/busdefgroup.h \
     ./IPXactWrapper/BusEditor/buseditor.h \
@@ -166,6 +167,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/BusEditor/impexpgroup.h \
     ./IPXactWrapper/BusEditor/renamegroup.h \
     ./IPXactWrapper/BusEditor/signalsgroup.h \
+    ./IPXactWrapper/SWDesignEditor/SWDesignEditor.h \
     ./LibraryManager/ipxactitem.h \
     ./LibraryManager/ipxactmodel.h \
     ./LibraryManager/ipxactwidget.h \
@@ -255,17 +257,15 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./mainwindow/newbuspage.h \
     ./mainwindow/NewComponentPage.h \
     ./mainwindow/NewDesignPage.h \
+    ./mainwindow/NewSWComponentPage.h \
+    ./mainwindow/NewSWDesignPage.h \
     ./mainwindow/NewSystemPage.h \
     ./modelsimGenerator/modelsimgenerator.h \
     ./quartusGenerator/quartusgenerator.h \
-    ./vhdlGenerator/componentinstance.h \
-    ./vhdlGenerator/componenttype.h \
-    ./vhdlGenerator/connection.h \
     ./vhdlGenerator/vhdlcomponentdeclaration.h \
     ./vhdlGenerator/vhdlcomponentinstance.h \
     ./vhdlGenerator/vhdlconnectionendpoint.h \
     ./vhdlGenerator/vhdlgeneral.h \
-    ./vhdlGenerator/vhdlgenerator.h \
     ./vhdlGenerator/vhdlgenerator2.h \
     ./vhdlGenerator/vhdlgeneric.h \
     ./vhdlGenerator/vhdlobject.h \
@@ -293,7 +293,6 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./EndpointDesign/PlatformComponentItem.h \
     ./EndpointDesign/PlatformPlaceholderItem.h \
     ./EndpointDesign/ProgramEntityItem.h \
-    ./EndpointDesign/SWComponentItem.h \
     ./EndpointDesign/SystemAddCommands.h \
     ./EndpointDesign/SystemChangeCommands.h \
     ./EndpointDesign/SystemColumn.h \
@@ -357,6 +356,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/widgets/kactusAttributeEditor/KactusAttributeEditor.cpp \
     ./common/widgets/componentPreviewBox/ComponentPreviewBox.cpp \
     ./common/widgets/tabDocument/TabDocument.cpp \
+    ./common/graphicsItems/ComponentItem.cpp \
     ./common/graphicsItems/GraphicsRectButton.cpp \
     ./designwidget/blockdiagram.cpp \
     ./designwidget/BusInterfaceDialog.cpp \
@@ -450,6 +450,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./IPXactWrapper/ComponentEditor/endpoints/EndpointDelegate.cpp \
     ./IPXactWrapper/ComponentEditor/endpoints/EndpointEditor.cpp \
     ./IPXactWrapper/ComponentEditor/endpoints/EndpointModel.cpp \
+    ./IPXactWrapper/ComponentEditor/software/SoftwareMappingsEditor.cpp \
     ./IPXactWrapper/BusEditor/absdefgroup.cpp \
     ./IPXactWrapper/BusEditor/busdefgroup.cpp \
     ./IPXactWrapper/BusEditor/buseditor.cpp \
@@ -459,6 +460,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./IPXactWrapper/BusEditor/impexpgroup.cpp \
     ./IPXactWrapper/BusEditor/renamegroup.cpp \
     ./IPXactWrapper/BusEditor/signalsgroup.cpp \
+    ./IPXactWrapper/SWDesignEditor/SWDesignEditor.cpp \
     ./LibraryManager/ipxactitem.cpp \
     ./LibraryManager/ipxactmodel.cpp \
     ./LibraryManager/ipxactwidget.cpp \
@@ -496,6 +498,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./mainwindow/NewComponentPage.cpp \
     ./mainwindow/NewDesignPage.cpp \
     ./mainwindow/NewSWComponentPage.cpp \
+    ./mainwindow/NewSWDesignPage.cpp \
     ./mainwindow/NewSystemPage.cpp \
     ./mainwindow/SplashScreen.cpp \
     ./models/abstractiondefinition.cpp \
@@ -556,14 +559,10 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./modelsimGenerator/modelsimgenerator.cpp \
     ./PropertyWidget/messageconsole.cpp \
     ./quartusGenerator/quartusgenerator.cpp \
-    ./vhdlGenerator/componentinstance.cpp \
-    ./vhdlGenerator/componenttype.cpp \
-    ./vhdlGenerator/connection.cpp \
     ./vhdlGenerator/vhdlcomponentdeclaration.cpp \
     ./vhdlGenerator/vhdlcomponentinstance.cpp \
     ./vhdlGenerator/vhdlconnectionendpoint.cpp \
     ./vhdlGenerator/vhdlgeneral.cpp \
-    ./vhdlGenerator/vhdlgenerator.cpp \
     ./vhdlGenerator/vhdlgenerator2.cpp \
     ./vhdlGenerator/vhdlgeneric.cpp \
     ./vhdlGenerator/vhdlobject.cpp \
@@ -590,7 +589,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./EndpointDesign/PlatformComponentItem.cpp \
     ./EndpointDesign/PlatformPlaceholderItem.cpp \
     ./EndpointDesign/ProgramEntityItem.cpp \
-    ./EndpointDesign/SWComponentItem.cpp \
     ./EndpointDesign/SystemAddCommands.cpp \
     ./EndpointDesign/SystemChangeCommands.cpp \
     ./EndpointDesign/SystemColumn.cpp \

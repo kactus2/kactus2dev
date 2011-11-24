@@ -1012,11 +1012,11 @@ void MainWindow::updateMenuStrip()
 		actGenModelSim_->setEnabled(unlocked);
 		actGenQuartus_->setEnabled(unlocked);
 	}
-	// if is hardware component then set only documentation enabled
+	// if is hardware component then set only documentation and vhdl enabled
 	else if (isHWComp) {
         hwDesignGroup_->setVisible(true);
 		hwDesignGroup_->setEnabled(unlocked);
-		actGenVHDL_->setDisabled(true);
+		actGenVHDL_->setEnabled(unlocked);
 		actGenDocumentation_->setEnabled(unlocked);
 		actGenModelSim_->setDisabled(true);
 		actGenQuartus_->setDisabled(true);
@@ -1141,11 +1141,26 @@ void MainWindow::addColumn()
 void MainWindow::generateVHDL()
 {
     DesignWidget* designWidget = dynamic_cast<DesignWidget*>(designTabs_->currentWidget());
+	IPXactComponentEditor* compEditor = dynamic_cast<IPXactComponentEditor*>(designTabs_->currentWidget());
 
     if (designWidget != 0)
     {
         designWidget->onVhdlGenerate();
     }
+	else if (compEditor) {
+		
+		// if user changed the metadata then the editor must be reopened
+		if (compEditor->onVhdlGenerate()) {
+
+			int index = designTabs_->currentIndex();
+			VLNV compVLNV = compEditor->getComponentVLNV();
+
+			designTabs_->removeTab(index);
+			delete compEditor;
+
+			openComponent(compVLNV, true);
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -1154,11 +1169,12 @@ void MainWindow::generateVHDL()
 void MainWindow::generateModelSim()
 {
     DesignWidget* designWidget = dynamic_cast<DesignWidget*>(designTabs_->currentWidget());
-
-    if (designWidget != 0)
+    
+	if (designWidget != 0)
     {
         designWidget->onModelsimGenerate();
     }
+	
 }
 
 //-----------------------------------------------------------------------------

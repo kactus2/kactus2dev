@@ -12,6 +12,8 @@
 
 #include <models/component.h>
 
+#include <vhdlGenerator/vhdlgenerator2.h>
+
 #include <exceptions/write_error.h>
 
 #include "fileSet/fileseteditor.h"
@@ -36,6 +38,8 @@
 #include <QSplitter>
 #include <QIcon>
 #include <QFile>
+#include <QMessageBox>
+#include <QFileDialog>
 
 #include <QDebug>
 
@@ -654,4 +658,58 @@ void IPXactComponentEditor::setProtection(bool locked)
 
 bool IPXactComponentEditor::isHWImplementation() const {
 	return component_->getComponentImplementation() == KactusAttribute::KTS_HW;
+}
+
+bool IPXactComponentEditor::onVhdlGenerate() {
+	
+	// if the component is hierarchical then it must be opened in design widget
+	if (editableComponent_->isHierarchical()) {
+		QMessageBox::information(this, tr("Kactus2 component editor"),
+			tr("This component contains hierarchical views so you must open it"
+			" in a design editor and run the vhdl generator there."));
+		return false;
+	}
+	
+	if (isModified() && askSaveFile()) {
+		save();
+	}
+
+	QString fileName = handler_->getPath(*editableComponent_->getVlnv());
+	QFileInfo targetInfo(fileName);
+	fileName = targetInfo.absolutePath();
+	fileName += QString("/");
+	fileName += editableComponent_->getVlnv()->getName();
+	fileName += QString(".rtl.vhd");
+
+	QString path = QFileDialog::getSaveFileName(this,
+		tr("Set the directory where the vhdl file is created to"),
+		fileName, tr("Vhdl files (*.vhd)"));
+
+	// if user clicks cancel then nothing is created
+	if (path.isEmpty())
+		return false;
+
+	VhdlGenerator2 vhdlGen(handler_, this);
+	vhdlGen.parse(editableComponent_, QString());
+	vhdlGen.generateVhdl(path);
+
+	// ask user if he wants to save the generated vhdl into object metadata
+	QMessageBox::StandardButton button = QMessageBox::question(this, 
+		tr("Save generated file to metadata?"),
+		tr("Would you like to save the generated vhdl-file to IP-Xact"
+		" metadata?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+
+	// if the generated file is saved
+	if (button == QMessageBox::Yes) {
+
+		// add a rtl view to the editableComponent_
+		vhdlGen.addRTLView(path);
+
+		*component_ = *editableComponent_;
+		handler_->writeModelToFile(component_);
+		
+		return true;
+	}
+
+	return false;
 }

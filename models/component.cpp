@@ -1682,8 +1682,9 @@ QStringList Component::getHierViews() const {
 }
 
 QString Component::getEntityName( const QString& viewName ) const {
+	QString entityName;
 	if (model_) {
-		QString entityName = model_->getEntityName(viewName);
+		entityName = model_->getEntityName(viewName);
 
 		// if view contained an entity name
 		if (!entityName.isEmpty()) {
@@ -1692,7 +1693,9 @@ QString Component::getEntityName( const QString& viewName ) const {
 	
 	}
 	// if there are no views then the VLNV name is used
-	return vlnv_->getName();
+	entityName = vlnv_->getName();
+	entityName = entityName.remove(QString(".comp"), Qt::CaseInsensitive);
+	return entityName;
 }
 
 QString Component::getArchitectureName( const QString& viewName ) const {

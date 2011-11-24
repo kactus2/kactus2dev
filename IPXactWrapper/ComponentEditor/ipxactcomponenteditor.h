@@ -79,6 +79,13 @@ public slots:
 	//! \brief Saves the document as new object and resets modifies state
 	virtual bool saveAs();
 
+	/*! \brief Run vhdl generator for the component.
+	 *
+	 *
+	 * \return bool True if the metadata was changed and the editor should be re-opened.
+	*/
+	bool onVhdlGenerate();
+
 private slots:
 
 	/*! \brief Should be called when another item is selected for editing.
