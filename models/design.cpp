@@ -15,7 +15,8 @@ LibraryComponent(doc),
 componentInstances_(),
 interconnections_(), 
 hierConnections_(),
-adHocConnections_() {
+adHocConnections_(),
+attributes_() {
 
 	LibraryComponent::vlnv_->setType(VLNV::DESIGN);
 
@@ -71,7 +72,8 @@ LibraryComponent(vlnv),
 componentInstances_(),
 interconnections_(), 
 hierConnections_(),
-adHocConnections_() {
+adHocConnections_(),
+attributes_() {
 	LibraryComponent::vlnv_->setType(VLNV::DESIGN);
 }
 
@@ -81,7 +83,8 @@ columns_(other.columns_),
 componentInstances_(other.componentInstances_),
 interconnections_(other.interconnections_),
 hierConnections_(other.hierConnections_),
-adHocConnections_(other.adHocConnections_) {
+adHocConnections_(other.adHocConnections_),
+attributes_(other.attributes_) {
 
 }
 
@@ -94,6 +97,7 @@ Design& Design::operator=( const Design& other ) {
 		interconnections_ = other.interconnections_;
 		hierConnections_ = other.hierConnections_;
 		adHocConnections_ = other.adHocConnections_;
+		attributes_ = other.attributes_;
 	}
 	return *this;
 }
@@ -604,6 +608,13 @@ void Design::write(QFile& file)
     xmlWriter.setAutoFormattingIndent(-1);
 
     LibraryComponent::write(xmlWriter);
+
+	// set the attributes
+	setXMLNameSpaceAttributes(attributes_);
+
+	// write the attributes for the spirit:designConfiguration element
+	General::writeAttributes(xmlWriter, attributes_);
+
     LibraryComponent::writeVLNV(xmlWriter);
 
     if (!componentInstances_.isEmpty()) {

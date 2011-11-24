@@ -581,6 +581,8 @@ private:
     QList<Interconnection> interconnections_;
     QList<HierConnection> hierConnections_;
     QList<AdHocConnection> adHocConnections_;
+
+	QMap<QString, QString> attributes_;
 };
 
 #endif

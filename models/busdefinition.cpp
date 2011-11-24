@@ -44,7 +44,8 @@ attributes_()  {
 
 	QDomNode busDefNode = doc.childNodes().item(i);
 
-	General::parseAttributes(busDefNode, attributes_);
+	// set the attributes
+	setXMLNameSpaceAttributes(attributes_);
 
 	// get directConnection
 	QDomNodeList temp = doc.elementsByTagName("spirit:directConnection");
@@ -166,6 +167,9 @@ void BusDefinition::write(QFile& file) {
 	// call the base class implementation to write the top comment and
 	// vlvn info. It also starts the <spirit:busDefinition> element
 	LibraryComponent::write(writer);
+
+	// set the attributes
+	setXMLNameSpaceAttributes(attributes_);
 
 	// write the attributes for the spirit:busDefinition element
 	General::writeAttributes(writer, attributes_);

@@ -43,7 +43,8 @@ attributes_() {
 
 	QDomNode absNode = doc.childNodes().item(i);
 
-	General::parseAttributes(absNode, attributes_);
+	// set the attributes
+	setXMLNameSpaceAttributes(attributes_);
 
 	for (int i = 0; i < absNode.childNodes().count(); ++i) {
 		QDomNode tempNode = absNode.childNodes().at(i);
@@ -149,6 +150,9 @@ void AbstractionDefinition::write(QFile& file) {
 	// call the base class implementation to write the top comment and
 	// vlvn info. It also starts the <spirit:busDefinition> element
 	LibraryComponent::write(writer);
+
+	// set the attributes
+	setXMLNameSpaceAttributes(attributes_);
 
 	// write the attributes for the spirit:designConfiguration element
 	General::writeAttributes(writer, attributes_);

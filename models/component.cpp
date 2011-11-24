@@ -64,8 +64,8 @@ attributes_() {
 
 	QDomNodeList children = doc.childNodes().item(i).childNodes();
 
-	// parse the attributes
-	General::parseAttributes(doc.childNodes().item(i), attributes_);
+	// set the attributes
+	setXMLNameSpaceAttributes(attributes_);
 
 	for (int i = 0; i < children.size(); ++i) {
 
@@ -583,6 +583,9 @@ void Component::write(QFile& file) {
 	// call the base class implementation to write the top comment and
 	// vlvn info. It also starts the type element (i.e <spirit:busDefinition>)
 	LibraryComponent::write(writer);
+
+	// set the attributes
+	setXMLNameSpaceAttributes(attributes_);
 
 	// write the attributes for the spirit:component element
 	General::writeAttributes(writer, attributes_);

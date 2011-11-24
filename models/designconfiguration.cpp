@@ -346,6 +346,9 @@ void DesignConfiguration::write(QFile& file) {
     // vlvn info. It also starts the type element (i.e <spirit:busDefinition>)
     LibraryComponent::write(writer);
 
+	// set the attributes
+	setXMLNameSpaceAttributes(attributes_);
+
     // write the attributes for the spirit:designConfiguration element
     General::writeAttributes(writer, attributes_);
 

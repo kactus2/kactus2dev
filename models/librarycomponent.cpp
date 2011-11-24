@@ -175,12 +175,9 @@ void LibraryComponent::write(QXmlStreamWriter& writer) {
 	// create a string to set as a comment to the top of the document
 	QString topComment(QObject::tr("Created by Kactus 2 document generator "));
 
-	// TODO change the current date time formats to be international, not
-	// language specific
-
 	// comment contains the creation date and time
-	topComment += QTime::currentTime().toString() += QString(" ");
-	topComment += QDate::currentDate().toString();
+	topComment += QTime::currentTime().toString(QString("hh:mm:ss")) += QString(" ");
+	topComment += QDate::currentDate().toString(QString("dd.MM.yyyy"));
 	writer.writeComment(topComment);
 
 	// the comment has been generated to the top of the document and we can
@@ -297,4 +294,14 @@ void LibraryComponent::parseKactus2Attributes( QDomNode& attributeNode ) {
 	}
 
 	return;
+}
+
+void LibraryComponent::setXMLNameSpaceAttributes( QMap<QString, QString>& attributes ) {
+
+	attributes.clear();
+	attributes.insert("xmlns:spirit", "http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5");
+	attributes.insert("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+	attributes.insert("xsi:schemaLocation", "http://www.spiritconsortium.org/XMLSchema/"
+		"SPIRIT/1.5 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5/index.xsd");
+	attributes.insert("xmlns:kactus2", "http://funbase.cs.tut.fi/");
 }

@@ -163,6 +163,13 @@ protected:
 	*/
 	virtual void parseKactus2Attributes(QDomNode& attributeNode);
 
+	/*! \brief Set the attributes that define the used xml namespaces.
+	 *
+	 * \param attributes QMap containing the name-value attribute pairs.
+	 *
+	*/
+	void setXMLNameSpaceAttributes(QMap<QString, QString>& attributes);
+
 	/*!
 	 * spirit:versionedIdentifier
 	 * MANDATORY
