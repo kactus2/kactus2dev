@@ -1710,7 +1710,7 @@ void MainWindow::createSystem(VLNV const& compVLNV, VLNV const& sysVLNV, QString
 
     // Create the view to the HW design.
     View* hwView = new View("kts_hw_ref");
-    hwView->setHierarchyRef(component->getHierRef("structural"));
+    hwView->setHierarchyRef(component->getHierRef("structural")); // TODO: View name should be asked from the user.
     hwView->addEnvIdentifier("");
 
     Model* model = new Model;
@@ -1721,7 +1721,7 @@ void MainWindow::createSystem(VLNV const& compVLNV, VLNV const& sysVLNV, QString
 
     // Flat-out the hierarchy to form the system design.
     QSharedPointer<Design> sysDesign(new Design(designVLNV));
-    generateSystemDesign(libraryHandler_, directory, *component, *sysDesign);
+    generateSystemDesign(libraryHandler_, directory, component->getHierRef("structural"), *sysDesign);
 
     // Create the design configuration.
     QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV));

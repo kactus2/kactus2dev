@@ -1601,6 +1601,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\EndpointDesign\SWComponentItem.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\EndpointDesign\SystemAddCommands.cpp"
 					>
 				</File>
@@ -8737,6 +8741,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath=".\EndpointDesign\SWComponentItem.h"
+					>
+				</File>
+				<File
 					RelativePath=".\EndpointDesign\SystemAddCommands.h"
 					>
 					<FileConfiguration
@@ -14378,14 +14386,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\graphics\arrow_down.png"
-				>
-			</File>
-			<File
-				RelativePath=".\graphics\arrow_up.png"
-				>
-			</File>
-			<File
 				RelativePath=".\graphics\cancel.png"
 				>
 			</File>
@@ -14395,10 +14395,6 @@
 			</File>
 			<File
 				RelativePath=".\graphics\collapse.png"
-				>
-			</File>
-			<File
-				RelativePath=".\GCF\source\icons\configure.png"
 				>
 			</File>
 			<File
@@ -14532,30 +14528,6 @@
 						CommandLine="&quot;$(QTDIR)\bin\rcc.exe&quot; -name &quot;$(InputName)&quot; -no-compress &quot;$(InputPath)&quot; -o .\GeneratedFiles\qrc_$(InputName).cpp&#x0D;&#x0A;"
 						AdditionalDependencies="$(InputPath);.\graphics\action-auto_layout.png;.\graphics\action-new_design.png;.\graphics\action-save.png;.\graphics\logo.png;.\graphics\tool-interconnection.png;.\graphics\tool-select.png;.\graphics\action-save_all.png"
 						Outputs=".\GeneratedFiles\qrc_$(InputName).cpp"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\graphics\list-edit.png"
-				>
-			</File>
-			<File
-				RelativePath=".\graphics\logo.png"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 			</File>

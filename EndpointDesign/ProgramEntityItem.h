@@ -12,7 +12,7 @@
 #ifndef PROGRAMENTITYITEM_H
 #define PROGRAMENTITYITEM_H
 
-#include <common/graphicsItems/ComponentItem.h>
+#include "SWComponentItem.h"
 
 #include <MCAPI/MCAPIDesignerTypes.h>
 
@@ -39,7 +39,7 @@ class ApplicationItem;
 //-----------------------------------------------------------------------------
 //! ProgramEntityItem class.
 //-----------------------------------------------------------------------------
-class ProgramEntityItem : public ComponentItem
+class ProgramEntityItem : public SWComponentItem
 {
     Q_OBJECT
 

@@ -53,10 +53,10 @@ ProgramEntityItem::ProgramEntityItem(QSharedPointer<Component> component,
                                      QString const& instanceName,
                                      QString const& displayName,
                                      QString const& description,
-                                     QMap<QString, QString> const& configurableElementValues) :
-ComponentItem(QRectF(-WIDTH / 2, 0, WIDTH, TOP_MARGIN + BOTTOM_MARGIN),
-                component, instanceName, displayName, description, configurableElementValues),
-endpointStack_(0), appPlaceholder_(0), appItem_(0)
+                                     QMap<QString, QString> const& configurableElementValues)
+    : SWComponentItem(QRectF(-WIDTH / 2, 0, WIDTH, TOP_MARGIN + BOTTOM_MARGIN),
+                      component, instanceName, displayName, description, configurableElementValues),
+      endpointStack_(0), appPlaceholder_(0), appItem_(0)
 {
     // Set basic graphics properties.
     setFlag(ItemIsMovable);

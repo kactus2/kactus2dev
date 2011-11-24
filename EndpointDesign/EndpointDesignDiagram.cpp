@@ -44,6 +44,7 @@
 #include <mainwindow/mainwindow.h>
 
 #include <LibraryManager/libraryinterface.h>
+#include <LibraryManager/LibraryUtils.h>
 
 //-----------------------------------------------------------------------------
 // Function: EndpointDesignDiagram()
@@ -140,6 +141,9 @@ bool EndpointDesignDiagram::setDesign(QSharedPointer<Component> system)
         }
     }
 
+    // Update the design.
+    updateSystemDesign(lh_, QFileInfo(lh_->getPath(designVLNV)).path(), system->getHierRef("kts_hw_ref"), *design);
+
     // Create the column layout.
     layout_ = QSharedPointer<SystemColumnLayout>(new SystemColumnLayout(this));
     connect(layout_.data(), SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
@@ -188,6 +192,7 @@ bool EndpointDesignDiagram::setDesign(QSharedPointer<Component> system)
         MappingComponentItem* item = new MappingComponentItem(this, lh_, component, instance.instanceName,
                                                               instance.displayName, instance.description,
                                                               instance.configurableElementValues, id);
+        item->setImported(instance.imported);
         connect(item, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
         // Check if the position is not found.
@@ -999,6 +1004,7 @@ QSharedPointer<Design> EndpointDesignDiagram::createDesign(VLNV const& vlnv)
                                                mappingCompItem->description(),
                                                *mappingCompItem->componentModel()->getVlnv(),
                                                mappingCompItem->scenePos());
+            instance.imported = mappingCompItem->isImported();
             instance.configurableElementValues = mappingCompItem->getConfigurableElements();
             instance.mcapiNodeID = mappingCompItem->getID();
 

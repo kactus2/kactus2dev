@@ -150,7 +150,7 @@ Design::ColumnDesc& Design::ColumnDesc::operator=( const ColumnDesc& other ) {
 Design::ComponentInstance::ComponentInstance(
     QDomNode& componentInstanceNode)
     : instanceName(), displayName(), description(), componentRef(),
-      configurableElementValues(), portPositions(), mcapiNodeID(-1), endpointsExpanded(false)
+      configurableElementValues(), portPositions(), mcapiNodeID(-1), endpointsExpanded(false), imported(false)
 {
     QDomNodeList nodes = componentInstanceNode.childNodes();
     for (int i = 0; i < nodes.size(); i++) {
@@ -198,6 +198,10 @@ Design::ComponentInstance::ComponentInstance(
                 {
                     endpointsExpanded = true;
                 }
+                else if (childNode.nodeName() == "kactus2:imported")
+                {
+                    imported = true;
+                }
             }
         }
     }
@@ -208,7 +212,8 @@ Design::ComponentInstance::ComponentInstance(
     VLNV const& componentRef, QPointF const& position)
     : instanceName(instanceName), displayName(displayName),
       description(description), componentRef(componentRef),
-      configurableElementValues(), position(position), mcapiNodeID(-1), endpointsExpanded(false)
+      configurableElementValues(), position(position), mcapiNodeID(-1),
+      endpointsExpanded(false), imported(false)
 {
 }
 
@@ -220,7 +225,7 @@ componentRef(other.componentRef),
 configurableElementValues(other.configurableElementValues),
 position(other.position),
 portPositions(other.portPositions),
-mcapiNodeID(other.mcapiNodeID), endpointsExpanded(other.endpointsExpanded) {
+mcapiNodeID(other.mcapiNodeID), endpointsExpanded(other.endpointsExpanded), imported(other.imported) {
 }
 
 Design::ComponentInstance& Design::ComponentInstance::operator=( const ComponentInstance& other ) {
@@ -234,6 +239,7 @@ Design::ComponentInstance& Design::ComponentInstance::operator=( const Component
 		portPositions = other.portPositions;
         mcapiNodeID = other.mcapiNodeID;
         endpointsExpanded = other.endpointsExpanded;
+        imported = other.imported;
 	}
 	return *this;
 }
@@ -550,26 +556,22 @@ const QList<Design::AdHocConnection> &Design::getAdHocConnections()
     return adHocConnections_;
 }
 
-void Design::setComponentInstances(
-    QList<Design::ComponentInstance> &componentInstances)
+void Design::setComponentInstances(QList<Design::ComponentInstance> const& componentInstances)
 {
     componentInstances_ = componentInstances;
 }
 
-void Design::setInterconnections(
-    QList<Design::Interconnection> &interconnections)
+void Design::setInterconnections(QList<Design::Interconnection> const& interconnections)
 {
     interconnections_ = interconnections;
 }
 
-void Design::setHierarchicalConnections(
-    QList<Design::HierConnection> &hierConnections)
+void Design::setHierarchicalConnections(QList<Design::HierConnection> const& hierConnections)
 {
     hierConnections_ = hierConnections;
 }
 
-void Design::setAdHocConnections(
-    QList<Design::AdHocConnection> &adHocConnections)
+void Design::setAdHocConnections(QList<Design::AdHocConnection> const& adHocConnections)
 {
     adHocConnections_ = adHocConnections;
 }
@@ -678,6 +680,11 @@ void Design::write(QFile& file)
             if (inst.endpointsExpanded)
             {
                 xmlWriter.writeEmptyElement("kactus2:endpointsExpanded");
+            }
+
+            if (inst.imported)
+            {
+                xmlWriter.writeEmptyElement("kactus2:imported");
             }
 
             xmlWriter.writeEndElement(); // spirit:vendorExtensions

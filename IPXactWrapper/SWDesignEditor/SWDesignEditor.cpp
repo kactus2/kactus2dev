@@ -77,7 +77,6 @@ SWDesignEditor::SWDesignEditor(QWidget *parent, QWidget* parentWnd, LibraryInter
         QSharedPointer<LibraryComponent> libComp = libHandler_->getModel(designVLNV);
         QSharedPointer<Design> design = libComp.staticCast<Design>();
         QMap<QString, EndpointsMappingData*> endpointMap;
-        unsigned int connIndex = 0;
 
         foreach (Design::ComponentInstance const& instance, design->getComponentInstances())
         {
@@ -114,11 +113,27 @@ SWDesignEditor::SWDesignEditor(QWidget *parent, QWidget* parentWnd, LibraryInter
 
             case KactusAttribute::KTS_SW_APPLICATION:
                 {
-                    // Find the correct program entity item based on the interconnection.
+                    // Find the corresponding interconnection to find the linked program entity.
+                    int connIndex = 0;
+
+                    for (; connIndex < design->getInterconnections().size(); ++connIndex)
+                    {
+                        if (design->getInterconnections().at(connIndex).interface2.componentRef ==
+                            instance.instanceName)
+                        {
+                            break;
+                        }
+                    }
+
+                    if (connIndex == design->getInterconnections().size())
+                    {
+                        // TODO: Error message to the output window.
+                        continue;
+                    }
+
                     Design::Interconnection const& conn = design->getInterconnections().at(connIndex);
                     Q_ASSERT(conn.interface2.componentRef == instance.instanceName);
                     endpointMap.value(conn.interface1.componentRef)->linkedAppVLNV = instance.componentRef;
-                    ++connIndex;
                     break;
                 }
 
@@ -128,12 +143,12 @@ SWDesignEditor::SWDesignEditor(QWidget *parent, QWidget* parentWnd, LibraryInter
                     break;
                 }
             }
+        }
 
-            // Select the first endpoint definition if found.
-            if (endpointList_.count() > 0)
-            {
-                endpointList_.setCurrentItem(endpointList_.item(0));
-            }
+        // Select the first endpoint definition if found.
+        if (endpointList_.count() > 0)
+        {
+            endpointList_.setCurrentItem(endpointList_.item(0));
         }
     }
 

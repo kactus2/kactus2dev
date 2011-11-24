@@ -48,7 +48,7 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
                                            QString const& displayName,
                                            QString const& description,
                                            QMap<QString, QString> const& configurableElementValues,
-                                           unsigned int id) : ComponentItem(QRectF(-WIDTH / 2, 0, WIDTH, 0),
+                                           unsigned int id) : SWComponentItem(QRectF(-WIDTH / 2, 0, WIDTH, 0),
                                                                               component, instanceName,
                                                                               displayName, description,
                                                                               configurableElementValues, 0),
@@ -73,8 +73,7 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
         QSharedPointer<LibraryComponent> libDesComp = libInterface->getModel(component->getHierRef("kts_sys_ref"));
         QSharedPointer<Design> design = libDesComp.staticCast<Design>();
         QMap<QString, ProgramEntityItem*> progEntityMap;
-        unsigned int connIndex = 0;
-
+        
         foreach (Design::ComponentInstance const& instance, design->getComponentInstances())
         {
             // Retrieve the component model.
@@ -97,6 +96,7 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
                                                                           instance.displayName,
                                                                           instance.description,
                                                                           instance.configurableElementValues);
+                    progEntity->setImported(instance.imported);
                     diagram_->onComponentInstanceAdded(progEntity);
 
                     progEntity->setPos(instance.position);
@@ -114,10 +114,26 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
 
             case KactusAttribute::KTS_SW_APPLICATION:
                 {
-                    // Find the correct program entity item based on the interconnection.
+                    // Find the corresponding interconnection to find the linked program entity.
+                    int connIndex = 0;
+
+                    for (; connIndex < design->getInterconnections().size(); ++connIndex)
+                    {
+                        if (design->getInterconnections().at(connIndex).interface2.componentRef ==
+                            instance.instanceName)
+                        {
+                            break;
+                        }
+                    }
+
+                    if (connIndex == design->getInterconnections().size())
+                    {
+                        // TODO: Error message to the output window.
+                        continue;
+                    }
+
                     Design::Interconnection const& conn = design->getInterconnections().at(connIndex);
                     Q_ASSERT(conn.interface2.componentRef == instance.instanceName);
-                    ++connIndex;
 
                     ProgramEntityItem* progEntity = progEntityMap.value(conn.interface1.componentRef);
                     Q_ASSERT(progEntity != 0);
@@ -127,6 +143,7 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
                                                                    instance.description,
                                                                    instance.configurableElementValues,
                                                                    progEntity);
+                    appItem->setImported(instance.imported);
                     diagram_->onComponentInstanceAdded(appItem);
 
                     connect(appItem, SIGNAL(openSource(ProgramEntityItem*)),
@@ -143,6 +160,7 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
                         new PlatformComponentItem(comp, instance.instanceName, instance.displayName,
                                                   instance.description, instance.configurableElementValues,
                                                   this);
+                    platformCompItem->setImported(instance.imported);
                     diagram_->onComponentInstanceAdded(platformCompItem);
 
                     connect(platformCompItem, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
@@ -461,6 +479,7 @@ bool MappingComponentItem::save(LibraryInterface* libInterface)
                                            platformCompItem_->description(),
                                            *platformCompItem_->componentModel()->getVlnv(),
                                            platformCompItem_->pos());
+        instance.imported = platformCompItem_->isImported();
         instance.configurableElementValues = platformCompItem_->getConfigurableElements();
 
         instances.append(instance);
@@ -471,6 +490,7 @@ bool MappingComponentItem::save(LibraryInterface* libInterface)
     {
         Design::ComponentInstance instance(item->name(), item->displayName(), item->description(),
                                            *item->componentModel()->getVlnv(), item->pos());
+        instance.imported = item->isImported();
         instance.configurableElementValues = item->getConfigurableElements();
         instance.endpointsExpanded = item->isEndpointsExpanded();
 
@@ -490,6 +510,7 @@ bool MappingComponentItem::save(LibraryInterface* libInterface)
             Design::ComponentInstance appInstance(appItem->name(), appItem->displayName(),
                                                   appItem->description(), *appItem->componentModel()->getVlnv(),
                                                   appItem->pos());
+            appInstance.imported = appItem->isImported();
             appInstance.configurableElementValues = appItem->getConfigurableElements();
 
             instances.append(appInstance);

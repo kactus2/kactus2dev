@@ -12,7 +12,7 @@
 #ifndef MAPPINGCOMPONENTITEM_H
 #define MAPPINGCOMPONENTITEM_H
 
-#include <common/graphicsItems/ComponentItem.h>
+#include "SWComponentItem.h"
 
 #include <MCAPI/MCAPIDesignerTypes.h>
 #include <common/IDFactory.h>
@@ -42,7 +42,7 @@ class LibraryInterface;
 //-----------------------------------------------------------------------------
 //! MappingComponentItem class.
 //-----------------------------------------------------------------------------
-class MappingComponentItem : public ComponentItem
+class MappingComponentItem : public SWComponentItem
 {
     Q_OBJECT
 

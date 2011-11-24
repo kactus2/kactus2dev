@@ -119,6 +119,12 @@ public:
          */
         bool endpointsExpanded;
 
+        /*! \brief VENDOREXT kactus2:imported
+         *
+         *  Specifies whether the component is imported from a software mapping design.
+         */
+        bool imported;
+
         /*! \brief The constructor
 		*
 		* \param componentInstanceNode A reference to a QDomNode
@@ -512,26 +518,26 @@ public:
 	* \param componentInstances QList containing the component
 	* instances.
 	*/
-	void setComponentInstances(QList<ComponentInstance> &componentInstances);
+	void setComponentInstances(QList<ComponentInstance> const& componentInstances);
 
 	/*! \brief Set the interconnections of this design
 	*
 	* \param interconnections QList containing the interconnections.
 	*/
-	void setInterconnections(QList<Interconnection> &interconnections);
+	void setInterconnections(QList<Interconnection> const& interconnections);
 
 	/*! \brief Set the hierarchical connections of this design
 	*
 	* \param hierConnections QList containing the hierarchical
 	* connections.
 	*/
-	void setHierarchicalConnections(QList<HierConnection> &hierConnections);
+	void setHierarchicalConnections(QList<HierConnection> const& hierConnections);
 
 	/*! \brief Set the ad-hoc connections of this design
 	*
 	* \param adHocConnections QList containing the ad-hoc connections.
 	*/
-	void setAdHocConnections(QList<AdHocConnection> &adHocConnections);
+	void setAdHocConnections(QList<AdHocConnection> const& adHocConnections);
 
     /*!
      *  Sets the columns of this design.

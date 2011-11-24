@@ -12,12 +12,12 @@
 #ifndef PLATFORMCOMPONENTITEM_H
 #define PLATFORMCOMPONENTITEM_H
 
-#include <common/graphicsItems/ComponentItem.h>
+#include "SWComponentItem.h"
 
 //-----------------------------------------------------------------------------
 //! PlatformComponentItem class.
 //-----------------------------------------------------------------------------
-class PlatformComponentItem : public ComponentItem
+class PlatformComponentItem : public SWComponentItem
 {
     Q_OBJECT 
 
