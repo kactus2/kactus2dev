@@ -56,13 +56,13 @@ public:
 		 * Contains language specific reference to where given type is actually
 		 * defined.
 		 */
-		QList<QString> typeDefinitions_;
+		QStringList typeDefinitions_;
 
 		/*!
 		 * MANDATORY
 		 * Indicates the view or views in which this type definition applies.
 		 */
-		QList<QString> viewNameRefs_;
+		QStringList viewNameRefs_;
 
 		/*! \brief The constructor
 		 *
@@ -134,6 +134,21 @@ public:
 	 */
 	~Wire();
 
+	/*! \brief Write the contents of the class using the writer.
+	*
+	* Uses the specified writer to write the class contents into file as valid
+	* IP-Xact.
+	*
+	* \param writer A reference to a QXmlStreamWriter instance that is used to
+	* write the document into file.
+	\param viewNames List of view names of the component. (Needed for port types)
+	*
+	* Exception guarantee: basic
+	* \exception Write_error Occurs if class or one of it's member classes is
+	* not valid IP-Xact in the moment of writing.
+	*/
+	void write(QXmlStreamWriter& writer, const QStringList& viewNames);
+
 	/*! \brief Get the value of allLogicalDirectionsAllowed element
 	 *
 	 * \return Boolean value of the element.
@@ -198,20 +213,6 @@ public:
 	 * \param defaultDriverValue QString containing the value
 	 */
 	void setDefaultDriverValue(const QString& defaultDriverValue);
-
-	/*! \brief Write the contents of the class using the writer.
-	 *
-	 * Uses the specified writer to write the class contents into file as valid
-	 * IP-Xact.
-	 *
-	 * \param writer A reference to a QXmlStreamWriter instance that is used to
-	 * write the document into file.
-	 *
-	 * Exception guarantee: basic
-	 * \exception Write_error Occurs if class or one of it's member classes is
-	 * not valid IP-Xact in the moment of writing.
-	 */
-	void write(QXmlStreamWriter& writer);
 
 	/*! \brief Check if the wire element is in valid state or not.
 	 *

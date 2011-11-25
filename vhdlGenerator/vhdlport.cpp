@@ -24,6 +24,20 @@ commentOut_(true) {
 
 	Q_ASSERT(parent);
 	Q_ASSERT(port);
+
+	// if type is not set then use the defaults
+	if (type_.isEmpty()) {
+
+		int size = left_ - right_ + 1;
+
+		// if port is scalar
+		if (size == 1) {
+			type_ = QString("std_logic");
+		}
+		else {
+			type_ = QString("std_logic_vector");
+		}
+	}
 }
 
 VhdlPort::VhdlPort( VhdlComponentDeclaration* parent, Port* port ):
@@ -36,6 +50,22 @@ left_(port->getLeftBound()),
 right_(port->getRightBound()),
 commentOut_(true) {
 
+	Q_ASSERT(parent);
+	Q_ASSERT(port);
+
+	// if type is not set then use the defaults
+	if (type_.isEmpty()) {
+
+		int size = left_ - right_ + 1;
+
+		// if port is scalar
+		if (size == 1) {
+			type_ = QString("std_logic");
+		}
+		else {
+			type_ = QString("std_logic_vector");
+		}
+	}
 }
 
 VhdlPort::~VhdlPort() {

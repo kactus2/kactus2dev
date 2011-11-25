@@ -49,9 +49,6 @@ QModelIndex ComponentTreeModel::index(int row, int column,
 	}
 
 	Q_ASSERT(parentItem);
-// 	if (!parentItem) {
-// 		return QModelIndex();
-// 	}
 
 	// get pointer to specified child of the parent
 	ComponentTreeItem* child = parentItem->child(row);
@@ -64,6 +61,11 @@ QModelIndex ComponentTreeModel::index(int row, int column,
 	else {
 		return QModelIndex();
 	}
+}
+
+QModelIndex ComponentTreeModel::generalEditorIndex() const {
+	// the general editor is the first child of the root item
+	return index(0, 0, QModelIndex());
 }
 
 QModelIndex ComponentTreeModel::parent(const QModelIndex& index) const {

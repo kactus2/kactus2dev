@@ -218,7 +218,7 @@ Wire::~Wire() {
 	wireTypeDefs_.clear();
 }
 
-void Wire::write(QXmlStreamWriter& writer) {
+void Wire::write( QXmlStreamWriter& writer, const QStringList& viewNames ) {
 
 	writer.writeStartElement("spirit:wire");
 	writer.writeAttribute("spirit:allLogicalDirectionsAllowed",
@@ -271,16 +271,22 @@ void Wire::write(QXmlStreamWriter& writer) {
 			}
 
 			// if no viewNameRefs are defined
-			if (wireTypeDefs_.at(i)->viewNameRefs_.size() == 0) {
+			if (wireTypeDefs_.at(i)->viewNameRefs_.size() == 0 &&
+				viewNames.isEmpty()) {
 				throw Write_error(QObject::tr("Mandatory element viewNameRef "
 						"missing in spirit:wireTypeDef"));
 			}
 
-			// write all viewNameRefs
-			for (int j = 0; j < wireTypeDefs_.at(i)->viewNameRefs_.size();
-					++j) {
-				writer.writeTextElement("spirit:viewNameRef",
-						wireTypeDefs_.at(i)->viewNameRefs_.at(j));
+			// write all viewNameRefs that were already specified
+			foreach (QString viewRef, wireTypeDefs_.at(i)->viewNameRefs_) {
+
+				if (!viewNames.contains(viewRef) && !viewRef.isEmpty()) {
+					writer.writeTextElement("spirit:viewNameRef", viewRef);
+				}
+			}
+			// write the rest of the views
+			foreach (QString viewRef, viewNames) {
+				writer.writeTextElement("spirit:viewNameRef", viewRef);
 			}
 
 			writer.writeEndElement(); // spirit:wireTypeDef

@@ -196,7 +196,7 @@ portAccessType_() {
 Port::~Port() {
 }
 
-void Port::write(QXmlStreamWriter& writer) {
+void Port::write(QXmlStreamWriter& writer, const QStringList& viewNames) {
 	writer.writeStartElement("spirit:port");
 
 	// if mandatory name is missing
@@ -220,7 +220,7 @@ void Port::write(QXmlStreamWriter& writer) {
 	switch (portType_) {
 	case General::WIRE: {
 		if (wire_) {
-			wire_->write(writer);
+			wire_->write(writer, viewNames);
 		}
 		else {
 			throw Write_error(QObject::tr("Port type defined as wire but not"

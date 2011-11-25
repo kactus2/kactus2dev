@@ -80,6 +80,11 @@ public:
 	*/
 	void setLocked(bool locked);
 
+	/*! \brief Get the model index of the general editor
+	 *
+	*/
+	QModelIndex generalEditorIndex() const;
+
 public slots:
 
 	//! \brief Called when user clicks "Add" button.

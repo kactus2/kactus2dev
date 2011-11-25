@@ -27,7 +27,7 @@ removeButton_(QIcon(":/icons/graphics/remove.png"), QString(), this) {
 
 	// connect the model to the view
 	view_.setModel(&model_);
-	view_.expandToDepth(1);
+	view_.expandToDepth(0);
 
 	// the layout to manage the two buttons
 	QVBoxLayout* buttonLayout = new QVBoxLayout();
@@ -161,4 +161,8 @@ void ComponentTreeNavigator::selectItem( const QModelIndex& index ) {
 	view_.selectItem(index);
 	connect(&view_, SIGNAL(activated(const QModelIndex&)),
 		this, SLOT(onItemSelected(const QModelIndex&)), Qt::UniqueConnection);
+}
+
+QModelIndex ComponentTreeNavigator::generalEditorIndex() const {
+	return model_.generalEditorIndex();
 }

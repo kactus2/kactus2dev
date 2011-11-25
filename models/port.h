@@ -103,7 +103,22 @@ public:
 	 */
 	~Port();
 
-    /*!
+	/*! \brief Write the contents of the class using the writer.
+	*
+	* Uses the specified writer to write the class contents into file as valid
+	* IP-Xact.
+	*
+	* \param writer A reference to a QXmlStreamWriter instance that is used to
+	* write the document into file.
+	* \param viewNames The list of views the component has. (Needed for port types)
+	*
+	* Exception guarantee: basic
+	* \exception Write_error Occurs if class or one of it's member classes is
+	* not valid IP-Xact in the moment of writing.
+	*/
+	void write(QXmlStreamWriter& writer, const QStringList& viewNames);
+
+	/*!
      *  Creates a copy of the port, having only a different name than the original one.
      *
      *      @param [in] name The name for the duplicate port.
@@ -203,20 +218,6 @@ public:
 	 * \param QString containing the port access type
 	 */
     void setPortAccessType(const QString &portAccessType);
-
-    /*! \brief Write the contents of the class using the writer.
-     *
-     * Uses the specified writer to write the class contents into file as valid
-     * IP-Xact.
-     *
-     * \param writer A reference to a QXmlStreamWriter instance that is used to
-     * write the document into file.
-     *
-     * Exception guarantee: basic
-     * \exception Write_error Occurs if class or one of it's member classes is
-     * not valid IP-Xact in the moment of writing.
-     */
-    void write(QXmlStreamWriter& writer);
 
     /*! \brief Get the left bound of a vectored port.
      *

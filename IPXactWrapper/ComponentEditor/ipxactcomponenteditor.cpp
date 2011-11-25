@@ -148,6 +148,8 @@ currentIndex_() {
 
     // Open in unlocked mode by default only if the version is draft.
     setProtection(vlnv->getVersion() != "draft");
+
+	selectedItemChanged(navigator_.generalEditorIndex());
 }
 
 IPXactComponentEditor::~IPXactComponentEditor() {
@@ -186,12 +188,6 @@ void IPXactComponentEditor::selectedItemChanged( const QModelIndex& newIndex ) {
 	void* dataPointer = item->getDataPointer();
 
 	updateOldIndexItem();
-
-	// update the current ComponentTreeItem before changing to new one
-//     if (!updateOldIndexItem()) {
-//         //navigator_.selectItem(currentIndex_);
-//         return;
-//     }
 
 	// if there exists an editor for this element.
 	if (indexes_.contains(dataPointer)) {
@@ -326,6 +322,7 @@ void IPXactComponentEditor::createNewEditor( ComponentTreeItem* item ) {
 
 		// item type that does not have a direct editor
 		default: {
+			//emit noticeMessage(tr("The selected item type does not have editor"));
 			return;
 				 }
 	}

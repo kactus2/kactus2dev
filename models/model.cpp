@@ -161,11 +161,13 @@ void Model::write(QXmlStreamWriter& writer) {
 	if (ports_.size() != 0) {
 		writer.writeStartElement("spirit:ports");
 
+		const QStringList viewNames = getViewNames();
+
 		// go through each port
 		for (QMap<QString, QSharedPointer<Port> >::iterator i = ports_.begin();
 				i != ports_.end(); ++i) {
 
-			i.value()->write(writer);
+			i.value()->write(writer, viewNames);
 		}
 
 		writer.writeEndElement(); // spirit:ports

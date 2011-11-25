@@ -52,6 +52,12 @@ public:
     QModelIndex index(int row, int column,
     		const QModelIndex& parent = QModelIndex()) const;
 
+	/*! \brief Get the model index of the general-editor.
+	 *
+	 * \return QModelIndex The index of the general editor.
+	*/
+	QModelIndex generalEditorIndex() const;
+
     /*! \brief Get the model index of the parent of specified item.
      *
      * \param index The model index of the item that's parent is requested.
