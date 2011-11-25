@@ -401,6 +401,7 @@ void DocumentGenerator::writeModelParameters(QTextStream& stream, int& subHeader
 		paramHeaders.append("Name");
 		paramHeaders.append("Data type");
 		paramHeaders.append("Default value");
+		paramHeaders.append("Description");
 		writeTableElement(paramHeaders, 
 			"List of model parameters defined for the component",
 			stream);
@@ -410,6 +411,7 @@ void DocumentGenerator::writeModelParameters(QTextStream& stream, int& subHeader
 			stream << "\t\t\t\t\t<td>" << param->getName() << "</td>" << endl;
 			stream << "\t\t\t\t\t<td>" << param->getDataType() << "</td>" << endl;
 			stream << "\t\t\t\t\t<td>" << param->getValue() << "</td>" << endl;
+			stream << "\t\t\t\t\t<td>" << param->getDescription() << "</td>" << endl;
 			stream << "\t\t\t\t</tr>" << endl;
 		}
 
@@ -472,7 +474,10 @@ void DocumentGenerator::writePorts(QTextStream& stream, int& subHeaderNumber) {
 		portHeaders.append("Width");
 		portHeaders.append("Left bound");
 		portHeaders.append("Right bound");
+		portHeaders.append("Port type");
+		portHeaders.append("Type definition");
 		portHeaders.append("Default value");
+		portHeaders.append("Description");
 		writeTableElement(portHeaders, 
 			"List of all ports the component has.", stream);
 		const QMap<QString, QSharedPointer<Port> > ports = component_->getPorts();
@@ -485,7 +490,11 @@ void DocumentGenerator::writePorts(QTextStream& stream, int& subHeaderNumber) {
 			stream << "\t\t\t\t\t<td>" << port->getPortSize() << "</td>" << endl;
 			stream << "\t\t\t\t\t<td>" << port->getLeftBound() << "</td>" << endl;
 			stream << "\t\t\t\t\t<td>" << port->getRightBound() << "</td>" << endl;
+			const QString typeName = port->getTypeName();
+			stream << "\t\t\t\t\t<td>" << typeName << "</td>" << endl;
+			stream << "\t\t\t\t\t<td>" << port->getTypeDefinition(typeName) << "</td>" << endl;
 			stream << "\t\t\t\t\t<td>" << port->getDefaultValue() << "</td>" << endl;
+			stream << "\t\t\t\t\t<td>" << port->getDescription() << "</td>" << endl;
 			stream << "\t\t\t\t</tr>" << endl;
 		}
 
@@ -521,14 +530,47 @@ void DocumentGenerator::writeInterfaces(QTextStream& stream, int& subHeaderNumbe
 
 			stream << "\t\t\t</p>" << endl;
 
-			stream << "\t\t\t<ul>" << endl;
-			QStringList physPortList = interface->getPhysicalPortNames();
-			foreach (QString physPort, physPortList) {
-				stream << "\t\t\t\t<li><a href=\"#" << component_->getVlnv()->toString() 
-					<< ".port." << physPort << "\">" << physPort << "</a></li>" << endl;
+// 			stream << "\t\t\t<ul>" << endl;
+// 			QStringList physPortList = interface->getPhysicalPortNames();
+// 			foreach (QString physPort, physPortList) {
+// 				stream << "\t\t\t\t<li><a href=\"#" << component_->getVlnv()->toString() 
+// 					<< ".port." << physPort << "\">" << physPort << "</a></li>" << endl;
+// 			}
+// 
+// 			stream << "\t\t\t</ul>" << endl;
+// 			
+			QStringList portHeaders;
+			portHeaders.append("Name");
+			portHeaders.append("Direction");
+			portHeaders.append("Width");
+			portHeaders.append("Left bound");
+			portHeaders.append("Right bound");
+			portHeaders.append("Port type");
+			portHeaders.append("Type definition");
+			portHeaders.append("Default value");
+			portHeaders.append("Description");
+			writeTableElement(portHeaders, 
+				QString("List of ports contained in interface %1.").arg(interface->getName()), stream);
+			const QMap<QString, QSharedPointer<Port> > ports = component_->getPorts(interface->getName());
+			foreach (QSharedPointer<Port> port, ports) {
+				stream << "\t\t\t\t<tr>" << endl;
+				stream << "\t\t\t\t\t<td><a id=\"" << 
+					component_->getVlnv()->toString() << ".port." << port->getName() << 
+					"\">" <<  port->getName() << "</a></td>" << endl;
+				stream << "\t\t\t\t\t<td>" << General::direction2Str(port->getDirection()) << "</td>" << endl;
+				stream << "\t\t\t\t\t<td>" << port->getPortSize() << "</td>" << endl;
+				stream << "\t\t\t\t\t<td>" << port->getLeftBound() << "</td>" << endl;
+				stream << "\t\t\t\t\t<td>" << port->getRightBound() << "</td>" << endl;
+				const QString typeName = port->getTypeName();
+				stream << "\t\t\t\t\t<td>" << typeName << "</td>" << endl;
+				stream << "\t\t\t\t\t<td>" << port->getTypeDefinition(typeName) << "</td>" << endl;
+				stream << "\t\t\t\t\t<td>" << port->getDefaultValue() << "</td>" << endl;
+				stream << "\t\t\t\t\t<td>" << port->getDescription() << "</td>" << endl;
+				stream << "\t\t\t\t</tr>" << endl;
 			}
 
-			stream << "\t\t\t</ul>" << endl;
+			stream << "\t\t\t</table>" << endl;
+
 		}
 		++subHeaderNumber;
 	}

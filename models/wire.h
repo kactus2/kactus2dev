@@ -83,6 +83,12 @@ public:
 		*/
 		WireTypeDef(const QString& typeName = QString(), const QString& viewNameRef = QString(""));
 
+		//! \brief Copy constructor
+		WireTypeDef(const WireTypeDef& other);
+
+		//! \brief Assignment operator
+		WireTypeDef& operator=(const WireTypeDef& other);
+
 		/*! \brief Check if the wire type def if for given view.
 		 *
 		 * \param viewName The name of the view to search.
@@ -90,6 +96,7 @@ public:
 		 * \return bool True if view is found within view name refs.
 		*/
 		bool hasView(const QString& viewName);
+
 	};
 
 	/*! \brief The constructor

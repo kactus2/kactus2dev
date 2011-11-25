@@ -1570,6 +1570,37 @@ const QMap<QString, QSharedPointer<Port> > Component::getPorts() const {
 		return QMap<QString, QSharedPointer<Port> >();
 }
 
+const QMap<QString, QSharedPointer<Port> > Component::getPorts( const QString& interfaceName ) const {
+
+	QMap<QString, QSharedPointer<Port> > ports;
+	
+	// if interface is not found
+	if (!busInterfaces_.contains(interfaceName)) {
+		return ports;
+	}
+
+	// get list of ports in the interface
+	QStringList portNames = busInterfaces_.value(interfaceName)->getPhysicalPortNames();
+
+	// get all the ports on the component
+	ports = getPorts();
+
+	QMap<QString, QSharedPointer<Port> > portsToReturn;
+
+	// check each port
+	for (QMap<QString, QSharedPointer<Port> >::iterator i = ports.begin();
+		i != ports.end(); ++i) {
+
+			// if the port is on this interface
+			if (portNames.contains(i.key())) {
+				
+				// copy the port to the list to be returned
+				portsToReturn.insert(i.key(), i.value());
+			}
+	}
+	return portsToReturn;
+}
+
 bool Component::hasFile( const QString& fileName ) const {
 	foreach (QSharedPointer<FileSet> fileSet, fileSets_) {
 		if (fileSet->contains(fileName)) {

@@ -24,6 +24,7 @@
 #include <QFile>
 #include <QXmlStreamWriter>
 #include <QMultiMap>
+#include <QMap>
 
 // implemented classes that only need to be declared
 class BusInterface;
@@ -808,6 +809,16 @@ public:
 	* \return QMap containing pointers to the ports.
 	*/
 	const QMap<QString, QSharedPointer<Port> > getPorts() const;
+
+	/*! \brief Get the ports that are found in specified interface.
+	 *
+	 * \param interfaceName The name of interface that's ports are requested.
+	 *
+	 * \return QMap containing the pointers to the ports.
+	 *  Key = The name of the port.
+	 *  Value = Pointer to the port.
+	*/
+	const QMap<QString, QSharedPointer<Port> > getPorts(const QString& interfaceName) const;
 
 	/*! \brief Get the direction of the given port.
 	* 

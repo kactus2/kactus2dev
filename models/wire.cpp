@@ -70,7 +70,29 @@ viewNameRefs_() {
 	viewNameRefs_.append(viewNameRef);
 }
 
+Wire::WireTypeDef::WireTypeDef( const WireTypeDef& other ):
+typeName_(other.typeName_),
+constrained_(other.constrained_),
+typeDefinitions_(other.typeDefinitions_),
+viewNameRefs_(other.viewNameRefs_) {
+}
+
+Wire::WireTypeDef& Wire::WireTypeDef::operator=( const WireTypeDef& other ) {
+
+	if (this != &other) {
+		typeName_ = other.typeName_;
+		constrained_ = other.constrained_;
+		typeDefinitions_ = other.typeDefinitions_;
+		viewNameRefs_ = other.viewNameRefs_;
+	}
+	return *this;
+}
+
 bool Wire::WireTypeDef::hasView( const QString& viewName ) {
+	// if view is not specified then it is always found
+	if (viewName.isEmpty()) {
+		return true;
+	}
 	foreach (QString viewRef, viewNameRefs_) {
 		if (viewRef == viewName)
 			return true;
