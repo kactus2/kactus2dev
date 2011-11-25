@@ -2289,22 +2289,10 @@ void MainWindow::createSWComponent(SWCreateType createType, VLNV const& vlnv,
 void MainWindow::showAbout()
 {
     SplashScreen* splash = new SplashScreen(this);
+	splash->setAttribute(Qt::WA_DeleteOnClose);
 	splash->move(this->mapToGlobal(this->rect().center() - splash->rect().center()));
     splash->show();
-    splash->showMessage("");
-
-    // Wait until the user closes the window.
-//     while (splash->isVisible())
-//     {
-//         QCoreApplication::processEvents();
-// 
-//         if (!splash->isActiveWindow())
-//         {
-//             splash->close();
-//             break;
-//         }
-//     }
-//     
+    splash->showMessage(""); 
 }
 
 void MainWindow::selectVisibleDocks() {

@@ -14,6 +14,7 @@
 
 #include <QSplashScreen>
 #include <QMouseEvent>
+#include <QKeyEvent>
 
 //-----------------------------------------------------------------------------
 //! SplashScreen class.
@@ -37,6 +38,9 @@ protected:
 
 	//! \brief Event handler for mouse clicks
 	virtual void mousePressEvent(QMouseEvent* event);
+
+	//! \brief Handler for key press events
+	virtual void keyPressEvent(QKeyEvent* event);
 
 private:
     // Disable copying.

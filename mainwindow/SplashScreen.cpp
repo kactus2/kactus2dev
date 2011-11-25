@@ -15,6 +15,8 @@
 #include <QPainter>
 #include <QLabel>
 
+#include <QDebug>
+
 //-----------------------------------------------------------------------------
 // Function: SplashScreen()
 //-----------------------------------------------------------------------------
@@ -50,6 +52,11 @@ void SplashScreen::drawContents(QPainter *painter)
 }
 
 void SplashScreen::mousePressEvent( QMouseEvent* event ) {
+	event->accept();
+	close();
+}
+
+void SplashScreen::keyPressEvent(QKeyEvent* event) {
 	event->accept();
 	close();
 }
