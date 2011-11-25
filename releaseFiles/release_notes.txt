@@ -9,6 +9,60 @@
               * Changed or Information
 ===============================================================================
 
+25/11/2011 1.1 (Build 1)
+----------------------------------------------------
+
++ Added undo/redo support for system designs.
++ Added SW design editor for editing SW that will be mapped directly to HW
+  components.
++ Added a connection editor for HW designs.
++ Added VHDL template generation for drafted HW components.
++ Added comment generation to the vHDL generator.
++ Added user modifiable code areas to generated VHDL.
++ Added an option to create a new HW design based on an old one.
++ Added component port default value support to the vHDL generator.
++ Added component port type column to the component editor.
++ Default programs set in the operating system are now used to open
+  the files in the component editor.
++ Added entity name setting support for the VHDL generator.
++ Added automatic creation of views for HW components (RTL view for IP and SoC
+  level components, "hierarchical" view for Chip, Board and Product level
+  designs and a fla t view for same lvel components).
++ Added IP-XACT object path to be visible in the component editor's general
+  view.
++ Added more information about ports and model parameters to the generated
+  documentation.
++ Added the possibility to select which windows are shown and which are hidden.
++ Added a component interface editor for HW designs. 
+
+- Added missing internal bus definitions for MCAPI and SW to the program's
+  own internal library.
+- Fixed the VLNV editor crash after a library refresh.
+- IP-XACT namespace fields are now correctly writted to the generated XML files.
+- All created VLNVs are now checked for existence when creating a new object
+  through the New dialog to prevent overwrite errors.
+- Fixed content assist visibility problem on Linux.
+- Fixed the filtering of API/bus definitions according to SW/HW.
+- Fixed the crash when scrolling a locked empty design.
+- Fixed the error of changes being applied without saving when editing
+  hierarchical interfaces of a design.
+- Inout ports are now directly mapped to component instance ports as opposed
+  to using signals which did not work as expected.
+
+* General page is now shown by default in the component editor.
+* Designs can now be browsed and component details previewed even if
+  the document is locked.
+* Appropriate editor windows on the right side are now automatically
+  shown/hidden when an element is selected or deselected on a design.
+* Configuration editor is now hidden for other editors than the HW design
+  editor.
+* Unnecessary ribbon groups are now hidden automatically based on the open
+  editor.
+* Changed the report generator to categorize ports under bus interfaces
+  instead of one long list.
+
+
+
 04/10/2011 1.0 (Build 1)
 ----------------------------------------------------
 
