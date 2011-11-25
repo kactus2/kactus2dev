@@ -48,3 +48,8 @@ void SplashScreen::drawContents(QPainter *painter)
                       "Lauri Matilainen, Timo D. Hämäläinen\n\n"
                       "Kactus2 Website: http://funbase.cs.tut.fi/");
 }
+
+void SplashScreen::mousePressEvent( QMouseEvent* event ) {
+	event->accept();
+	close();
+}

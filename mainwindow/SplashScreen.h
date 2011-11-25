@@ -13,6 +13,7 @@
 #define SPLASHSCREEN_H
 
 #include <QSplashScreen>
+#include <QMouseEvent>
 
 //-----------------------------------------------------------------------------
 //! SplashScreen class.
@@ -33,6 +34,9 @@ public:
 protected:
     //! Draws the contents of the splash screen.
     virtual void drawContents(QPainter *painter);
+
+	//! \brief Event handler for mouse clicks
+	virtual void mousePressEvent(QMouseEvent* event);
 
 private:
     // Disable copying.

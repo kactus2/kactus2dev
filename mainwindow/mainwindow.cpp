@@ -2294,16 +2294,17 @@ void MainWindow::showAbout()
     splash->showMessage("");
 
     // Wait until the user closes the window.
-    while (splash->isVisible())
-    {
-        QCoreApplication::processEvents();
-
-        if (!splash->isActiveWindow())
-        {
-            splash->close();
-            break;
-        }
-    }
+//     while (splash->isVisible())
+//     {
+//         QCoreApplication::processEvents();
+// 
+//         if (!splash->isActiveWindow())
+//         {
+//             splash->close();
+//             break;
+//         }
+//     }
+//     
 }
 
 void MainWindow::selectVisibleDocks() {
