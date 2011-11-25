@@ -277,6 +277,9 @@ void ConfigurationEditor::setConfiguration( DesignWidget* designWidget, bool loc
 		this, SLOT(onConfigurationChanged(const QString&)), Qt::UniqueConnection);
 
 	activeViewEditor_.setDesign(designWidget, locked);
+
+	// display this widget
+	qobject_cast<QDockWidget*>(parentWidget())->show();
 }
 
 void ConfigurationEditor::clear() {
@@ -293,6 +296,8 @@ void ConfigurationEditor::clear() {
 	removeButton_.setDisabled(true);
 	
 	activeViewEditor_.clear();
+
+	qobject_cast<QDockWidget*>(parentWidget())->hide();
 }
 
 void ConfigurationEditor::onRefresh() {
