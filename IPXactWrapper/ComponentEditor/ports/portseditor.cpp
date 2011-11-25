@@ -57,7 +57,6 @@ handler_(handler) {
 	view_.horizontalHeader()->setResizeMode(QHeaderView::Interactive);
 	view_.setSelectionMode(QAbstractItemView::SingleSelection);
 	view_.setAlternatingRowColors(true);
-	//view_.setSelectionBehavior(QAbstractItemView::SelectRows);
 	view_.verticalHeader()->hide();
 	view_.setEditTriggers(QAbstractItemView::AllEditTriggers);
 	view_.setWordWrap(true);

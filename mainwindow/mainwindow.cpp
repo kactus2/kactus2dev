@@ -2290,7 +2290,9 @@ void MainWindow::showAbout()
 {
     SplashScreen* splash = new SplashScreen(this);
 	splash->setAttribute(Qt::WA_DeleteOnClose);
+	splash->setWindowFlags(splash->windowFlags() & ~(Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint));
 	splash->move(this->mapToGlobal(this->rect().center() - splash->rect().center()));
+	splash->setWindowModality(Qt::ApplicationModal);
     splash->show();
     splash->showMessage(""); 
 }
