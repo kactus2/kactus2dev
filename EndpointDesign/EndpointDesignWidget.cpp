@@ -261,41 +261,53 @@ void EndpointDesignWidget::keyPressEvent(QKeyEvent* event)
         else if (selected->type() == ProgramEntityItem::Type)
         {
             ProgramEntityItem* item = static_cast<ProgramEntityItem*>(selected);
-            QSharedPointer<ProgramEntityDeleteCommand> cmd(new ProgramEntityDeleteCommand(item));
 
-            connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
-                diagram_, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-            connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
-                diagram_, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+            if (!item->isImported())
+            {
+                QSharedPointer<ProgramEntityDeleteCommand> cmd(new ProgramEntityDeleteCommand(item));
 
-            editProvider_->addCommand(cmd);
-            emit clearItemSelection();
+                connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+                    diagram_, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+                connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+                    diagram_, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+
+                editProvider_->addCommand(cmd);
+                emit clearItemSelection();
+            }
         }
         else if (selected->type() == ApplicationItem::Type)
         {
             ApplicationItem* item = static_cast<ApplicationItem*>(selected);
-            QSharedPointer<ApplicationDeleteCommand> cmd(new ApplicationDeleteCommand(item));
 
-            connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
-                diagram_, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-            connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
-                diagram_, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+            if (!item->isImported())
+            {
+                QSharedPointer<ApplicationDeleteCommand> cmd(new ApplicationDeleteCommand(item));
 
-            editProvider_->addCommand(cmd);
-            emit clearItemSelection();
+                connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+                    diagram_, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+                connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+                    diagram_, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+
+                editProvider_->addCommand(cmd);
+                emit clearItemSelection();
+            }
         }
         else if (selected->type() == PlatformComponentItem::Type)
         {
             PlatformComponentItem* item = static_cast<PlatformComponentItem*>(selected);
-            QSharedPointer<PlatformCompDeleteCommand> cmd(new PlatformCompDeleteCommand(item));
 
-            connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
-                    diagram_, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-            connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
-                    diagram_, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+            if (!item->isImported())
+            {
+                QSharedPointer<PlatformCompDeleteCommand> cmd(new PlatformCompDeleteCommand(item));
 
-            editProvider_->addCommand(cmd);
-            emit clearItemSelection();
+                connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+                        diagram_, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+                connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+                        diagram_, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+
+                editProvider_->addCommand(cmd);
+                emit clearItemSelection();
+            }
         }
         else if (selected->type() == EndpointItem::Type)
         {
