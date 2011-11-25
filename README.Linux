@@ -3,9 +3,9 @@ Steps to build Kactus2 on Linux.
 qmake Kactus2.pro
 make
 
-To run, you need to have the built GCF library in LD_LIBRARY_PATH:
+To run Kactus2: 
 
-LD_LIBRARY_PATH=$PWD/GCF/bin executable/Kactus2
+executable/Kactus2
 
 success reports
 ---------------
