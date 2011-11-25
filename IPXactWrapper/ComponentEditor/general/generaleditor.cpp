@@ -15,6 +15,7 @@
 #include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
 
 #include <models/component.h>
+#include <LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
 #include <QGroupBox>
@@ -39,7 +40,10 @@ GeneralEditor::GeneralEditor(QWidget* parentWnd,
     // Create the VLNV displayer and attribute & description editors.
     QVBoxLayout* layout = new QVBoxLayout(this);
 
+	const QString xmlPath = libHandler->getPath(*component->getVlnv());
+
     vlnvDisplayer_ = new VLNVDisplayer(this, *component->getVlnv());
+	vlnvDisplayer_->setPath(xmlPath);
     attributeEditor_ = new KactusAttributeEditor(this);
     descEditor_ = new DescEditor();
     previewBox_ = new ComponentPreviewBox(libHandler);

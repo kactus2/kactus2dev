@@ -10,29 +10,34 @@
 #include <QGridLayout>
 #include <QHBoxLayout>
 
-VLNVDisplayer::VLNVDisplayer(QWidget *parent, const VLNV& vlnv): QGroupBox(parent),
-vendor_(this), library_(this), name_(this), version_(this) {
+VLNVDisplayer::VLNVDisplayer(QWidget *parent, const VLNV& vlnv):
+QGroupBox(parent),
+vendor_(this), 
+library_(this),
+name_(this), 
+version_(this),
+layout_(0) {
 
 	QLabel* vendor = new QLabel(tr("Vendor:"), this);
 	QLabel* library = new QLabel(tr("Library:"), this);
 	QLabel* name = new QLabel(tr("Name:"), this);
 	QLabel* version = new QLabel(tr("Version:"), this);
 
-	QGridLayout* layout = new QGridLayout();
-	layout->addWidget(vendor, 0, 0, 1, 1, Qt::AlignLeft);
-	layout->addWidget(library, 1, 0, 1, 1, Qt::AlignLeft);
-	layout->addWidget(name, 2, 0, 1, 1, Qt::AlignLeft);
-	layout->addWidget(version, 3, 0, 1, 1, Qt::AlignLeft);
+	layout_ = new QGridLayout();
+	layout_->addWidget(vendor, 0, 0, 1, 1, Qt::AlignLeft);
+	layout_->addWidget(library, 1, 0, 1, 1, Qt::AlignLeft);
+	layout_->addWidget(name, 2, 0, 1, 1, Qt::AlignLeft);
+	layout_->addWidget(version, 3, 0, 1, 1, Qt::AlignLeft);
 
-	layout->addWidget(&vendor_, 0, 1, 1, 1, Qt::AlignLeft);
-	layout->addWidget(&library_, 1, 1, 1, 1, Qt::AlignLeft);
-	layout->addWidget(&name_, 2, 1, 1, 1, Qt::AlignLeft);
-	layout->addWidget(&version_, 3, 1, 1, 1, Qt::AlignLeft);
+	layout_->addWidget(&vendor_, 0, 1, 1, 1, Qt::AlignLeft);
+	layout_->addWidget(&library_, 1, 1, 1, 1, Qt::AlignLeft);
+	layout_->addWidget(&name_, 2, 1, 1, 1, Qt::AlignLeft);
+	layout_->addWidget(&version_, 3, 1, 1, 1, Qt::AlignLeft);
 
 	setVLNV(vlnv);
 
 	QHBoxLayout* topLayout = new QHBoxLayout(this);
-	topLayout->addLayout(layout);
+	topLayout->addLayout(layout_);
 	topLayout->addStretch();
 
 	setFlat(true);
@@ -80,8 +85,12 @@ vendor_(this), library_(this), name_(this), version_(this) {
 	setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 }
 
-VLNVDisplayer::VLNVDisplayer( QWidget* parent ) : QGroupBox(parent), vendor_(this),
-                                                  library_(this), name_(this), version_(this)
+VLNVDisplayer::VLNVDisplayer( QWidget* parent ) : 
+QGroupBox(parent), 
+vendor_(this),
+library_(this), 
+name_(this), 
+version_(this)
 {
     QLabel* vendor = new QLabel(tr("Vendor:"), this);
     QLabel* library = new QLabel(tr("Library:"), this);
@@ -114,4 +123,13 @@ void VLNVDisplayer::setVLNV( const VLNV& vlnv ) {
 	library_.setText(vlnv.getLibrary());
 	name_.setText(vlnv.getName());
 	version_.setText(vlnv.getVersion());
+}
+
+void VLNVDisplayer::setPath( const QString& path ) {
+	
+	QLabel* pathHeader = new QLabel(tr("Path:"), this);
+	QLabel* pathLabel = new QLabel(path, this);
+
+	layout_->addWidget(pathHeader, 4, 0, 1, 1, Qt::AlignLeft);
+	layout_->addWidget(pathLabel, 4, 1, 1, 1, Qt::AlignLeft);
 }

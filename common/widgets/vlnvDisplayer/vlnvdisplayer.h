@@ -13,6 +13,7 @@
 #include <QGroupBox>
 #include <QLabel>
 #include <QSizePolicy>
+#include <QGridLayout>
 
 /*! \brief VLNVDisplayer is a widget to display a vlnv tag in a GUI item.
  *
@@ -55,6 +56,13 @@ public:
 	*/
 	void setVLNV(const VLNV& vlnv);
 
+	/*! \brief Also display path along with the vlnv in the widget.
+	 *
+	 * \param path The path to display
+	 *
+	*/
+	void setPath(const QString& path);
+
 private:
 
 	//! \brief No copying
@@ -74,6 +82,9 @@ private:
 
 	//! \brief The label to display the version
 	QLabel version_;
+	
+	//! \brief The layout of the widget
+	QGridLayout* layout_;
 	
 };
 
