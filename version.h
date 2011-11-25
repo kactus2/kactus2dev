@@ -17,7 +17,7 @@
 #define VERSION_TIME           "17:15:12"
 
 #define VERSION_MAJOR          1
-#define VERSION_MINOR          0
+#define VERSION_MINOR          1
 #define VERSION_BUILDNO        1
 #define VERSION_EXTEND         0
 
