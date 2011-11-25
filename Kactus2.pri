@@ -293,6 +293,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./EndpointDesign/PlatformComponentItem.h \
     ./EndpointDesign/PlatformPlaceholderItem.h \
     ./EndpointDesign/ProgramEntityItem.h \
+    ./EndpointDesign/SWComponentItem.h \
     ./EndpointDesign/SystemAddCommands.h \
     ./EndpointDesign/SystemChangeCommands.h \
     ./EndpointDesign/SystemColumn.h \
@@ -589,6 +590,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./EndpointDesign/PlatformComponentItem.cpp \
     ./EndpointDesign/PlatformPlaceholderItem.cpp \
     ./EndpointDesign/ProgramEntityItem.cpp \
+    ./EndpointDesign/SWComponentItem.cpp \
     ./EndpointDesign/SystemAddCommands.cpp \
     ./EndpointDesign/SystemChangeCommands.cpp \
     ./EndpointDesign/SystemColumn.cpp \
