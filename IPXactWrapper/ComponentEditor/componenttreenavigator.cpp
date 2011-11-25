@@ -20,7 +20,7 @@ ComponentTreeNavigator::ComponentTreeNavigator(QSharedPointer<Component> compone
 											   LibraryInterface* handler,
 											   QWidget *parent): 
 QGroupBox(parent), 
-view_(this), 
+view_(handler, *component->getVlnv(), this), 
 model_(component, handler, this), 
 addButton_(QIcon(":/icons/graphics/add.png"), QString(), this),
 removeButton_(QIcon(":/icons/graphics/remove.png"), QString(), this) {

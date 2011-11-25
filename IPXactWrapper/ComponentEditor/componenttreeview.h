@@ -7,10 +7,16 @@
 #ifndef COMPONENTTREEVIEW_H
 #define COMPONENTTREEVIEW_H
 
+#include <LibraryManager/vlnv.h>
+
 #include <QTreeView>
 #include <QModelIndex>
 #include <QMouseEvent>
 #include <QKeyEvent>
+#include <QContextMenuEvent>
+#include <QAction>
+
+class LibraryInterface;
 
 /*! \brief ComponentTreeView is a widget to display the navigation tree.
  * 
@@ -24,11 +30,12 @@ public:
 
     /*! \brief The constructor
      *
+     * \param handler Pointer to the instance that manages the library.
+     * \param compVLNV The VLNV of the component being edited.
      * \param parent Pointer to the owner of this widget
-     *
-     * \return 
-    */
-    ComponentTreeView(QWidget *parent = 0);
+     * 
+     */
+    ComponentTreeView(LibraryInterface* handler,const VLNV& compVLNV, QWidget *parent = 0);
 
 	//! \brief The destructor
     virtual ~ComponentTreeView();
@@ -71,7 +78,19 @@ protected:
 	//! \brief Handler for mouse move events
 	virtual void mouseMoveEvent(QMouseEvent* event);
 
+	//! \brief Handler for key press events
 	virtual void keyPressEvent(QKeyEvent* event);
+
+	//! \brief The context menu event handler
+	virtual void contextMenuEvent(QContextMenuEvent* event);
+
+	//! \brief The handler for mouse double clicks
+	virtual void mouseDoubleClickEvent(QMouseEvent* event);
+
+private slots:
+
+	//! \brief Open an item at position pressedPoint_
+	void onFileOpen();
 
 private:
 
@@ -86,6 +105,15 @@ private:
 
 	//! \brief The current locked state (enables/disables dragging)
 	bool locked_;
+
+	//! \brief The action to open files from the component editor.
+	QAction fileOpenAction_;
+
+	//! \brief Pointer to the instance that manages the library.
+	LibraryInterface* handler_;
+
+	//! \brief The vlnv of the component being edited.
+	VLNV componentVLNV_;
 };
 
 #endif // COMPONENTTREEVIEW_H
