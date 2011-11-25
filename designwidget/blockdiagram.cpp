@@ -1313,7 +1313,8 @@ void BlockDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
             }
             comp.clear();
         }
-        else if (vlnv->getType() == VLNV::BUSDEFINITION)
+        else if (vlnv->getType() == VLNV::BUSDEFINITION || 
+			vlnv->getType() == VLNV::ABSTRACTIONDEFINITION)
         {
             // Check that the bus definition is compatible with the edited component.
             QSharedPointer<LibraryComponent> libComp = lh_->getModel(*vlnv);
@@ -1449,19 +1450,33 @@ void BlockDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         if (highlightedEndPoint_ != 0)
         {
             // Retrieve the busdef VLNV and determine the absdef VLNV.
-            VLNV *vlnv;
-            memcpy(&vlnv, event->mimeData()->data("data/vlnvptr").data(), sizeof(vlnv));
-            
-            VLNV absdefVLNV(VLNV::ABSTRACTIONDEFINITION, vlnv->getVendor(),
-                            vlnv->getLibrary(), vlnv->getName().remove(".busDef") + ".absDef",
-                            vlnv->getVersion());
+            VLNV *droppedVlnv;
+            memcpy(&droppedVlnv, event->mimeData()->data("data/vlnvptr").data(), sizeof(droppedVlnv));
 
-            // If the absdef does not exist, set an empty VLNV for it.
-            // TODO: What else should be done?
-            if (!lh_->contains(absdefVLNV))
-            {
-                absdefVLNV = VLNV();
-            }
+			Q_ASSERT(lh_->contains(*droppedVlnv));
+
+            VLNV vlnv = *droppedVlnv;
+			vlnv.setType(lh_->getDocumentType(*droppedVlnv));
+
+			VLNV absdefVLNV;
+
+			// if the dropped was an abstraction definition
+			if (vlnv.getType() == VLNV::ABSTRACTIONDEFINITION) {
+				absdefVLNV = vlnv;
+
+				// parse the abstraction definition
+				QSharedPointer<LibraryComponent> libComp = lh_->getModel(vlnv);
+				QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
+
+				// get the bus definition referenced by the abstraction definition
+				VLNV busdefVLNV = absDef->getBusType();
+
+				// set the bus definition used
+				vlnv = busdefVLNV;
+
+				Q_ASSERT(absdefVLNV.getType() == VLNV::ABSTRACTIONDEFINITION);
+			}
+			Q_ASSERT(vlnv.getType() == VLNV::BUSDEFINITION);
 
             bool editName = highlightedEndPoint_->type() == DiagramInterface::Type &&
                             highlightedEndPoint_->getBusInterface() == 0 &&
@@ -1499,7 +1514,7 @@ void BlockDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
             }
 
             // Define the bus for the end point.
-            highlightedEndPoint_->setTypes(*vlnv, absdefVLNV, dialog.getSelectedMode());
+            highlightedEndPoint_->setTypes(vlnv, absdefVLNV, dialog.getSelectedMode());
             
             if (editName)
             {

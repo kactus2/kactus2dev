@@ -229,8 +229,8 @@ void AbstractionDefinition::setPorts(
 }
 
 void AbstractionDefinition::setBusType(const VLNV& busType) {
-
 	busType_ = busType;
+	busType_.setType(VLNV::BUSDEFINITION);
 }
 
 QList<QSharedPointer<PortAbstraction> >&
