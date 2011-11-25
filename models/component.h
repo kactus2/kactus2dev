@@ -526,6 +526,22 @@ public:
 	*/
 	void addView(View* newView);
 
+	/*! \brief Create empty non-hierarchical view for the component.
+	 * 
+	 * The name for the view is "rtl" in IP and SoC hierarchy levels and "flat" for others.
+	 *
+	*/
+	void createEmptyFlatView();
+
+	/*! \brief Create a hierarchical view for the component.
+	 * 
+	 * The name for the view is "structural" in IP and SoC levels and "hierarchical" for other.
+	 * 
+	 * \param hierRef The reference to a design or design configuration.
+	 *
+	*/
+	void createHierarchicalView(const VLNV& hierRef);
+
 	/*! \brief Get the design of a hierarchical component.
 	*
 	* This function searches the views of the component for a named view.

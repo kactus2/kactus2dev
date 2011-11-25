@@ -1800,3 +1800,63 @@ QString Component::getInterfaceDescription( const QString& interfaceName ) const
 		return QString();
 	}
 }
+
+void Component::createEmptyFlatView() {
+	// create new view
+	View* newView = new View();
+
+	// depending on the hierarchy level select the name for the view
+	KactusAttribute::ProductHierarchy hier = getComponentHierarchy();
+	switch (hier) 
+	{
+	case KactusAttribute::KTS_IP:
+	case KactusAttribute::KTS_SOC: {
+		// set the name
+		newView->setName("rtl");
+		break;
+								   }
+	default: {
+		newView->setName("flat");
+		break;
+			 }
+	}
+
+	newView->addEnvIdentifier(QString("::"));
+
+	// if model has not yet been created
+	if (!model_) {
+		model_ = QSharedPointer<Model>(new Model());
+	}
+	model_->addView(newView);
+}
+
+void Component::createHierarchicalView( const VLNV& hierRef ) {
+	// create new view
+	View* newView = new View();
+
+	// depending on the hierarchy level select the name for the view
+	KactusAttribute::ProductHierarchy hier = getComponentHierarchy();
+	switch (hier) 
+	{
+	case KactusAttribute::KTS_IP:
+	case KactusAttribute::KTS_SOC: {
+		// set the name
+		newView->setName("structural");
+		break;
+								   }
+	default: {
+		newView->setName("hierarchical");
+		break;
+			 }
+	}
+
+	newView->addEnvIdentifier(QString("::"));
+	newView->setHierarchyRef(hierRef);
+
+	// if model has not yet been created
+	if (!model_) {
+		model_ = QSharedPointer<Model>(new Model());
+	}
+
+	model_->addView(newView);
+}

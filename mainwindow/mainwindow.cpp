@@ -1572,6 +1572,7 @@ void MainWindow::createComponent(KactusAttribute::ProductHierarchy prodHier,
     component->setComponentHierarchy(prodHier);
     component->setComponentFirmness(firmness);
     component->setComponentImplementation(KactusAttribute::KTS_HW);
+	component->createEmptyFlatView();
 
     // Create the file.
     libraryHandler_->writeModelToFile(directory, component);
@@ -1602,13 +1603,9 @@ void MainWindow::createDesign(KactusAttribute::ProductHierarchy prodHier,
     component->setComponentFirmness(firmness);
     component->setComponentImplementation(KactusAttribute::KTS_HW);
 
-    View* hierView = new View(tr("structural"));
-    hierView->setHierarchyRef(desConfVLNV);
-    hierView->addEnvIdentifier("");
-
-    Model* model = new Model;
-    model->addView(hierView);
-    component->setModel(model);
+	component->createHierarchicalView(desConfVLNV);
+	QStringList viewNames = component->getHierViews();
+	Q_ASSERT(!viewNames.isEmpty());
 
     // Create the design and design configuration.
     QSharedPointer<Design> design(new Design(designVLNV));
@@ -1621,7 +1618,7 @@ void MainWindow::createDesign(KactusAttribute::ProductHierarchy prodHier,
     libraryHandler_->writeModelToFile(directory, component);
 
     // Open the design.
-    openDesign(vlnv, tr("structural"), true);
+    openDesign(vlnv, viewNames.first(), true);
 }
 
 //-----------------------------------------------------------------------------
