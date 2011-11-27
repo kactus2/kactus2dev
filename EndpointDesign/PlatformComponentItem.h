@@ -57,6 +57,9 @@ private:
 
     //! Icon for hierarchical platform components.
     QGraphicsPixmapItem* hierIcon_;
+
+    //! Icon for imported SW components.
+    QGraphicsPixmapItem* importedIcon_;
 };
 
 //-----------------------------------------------------------------------------

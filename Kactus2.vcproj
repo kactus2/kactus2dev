@@ -14506,6 +14506,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\graphics\imported.png"
+				>
+			</File>
+			<File
 				RelativePath="kactus.qrc"
 				>
 				<FileConfiguration

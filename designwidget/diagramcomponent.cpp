@@ -390,10 +390,14 @@ void DiagramComponent::updateComponent()
     }
 
     // Create a hierarchy icon if the component is a hierarchical one.
-    if (componentModel()->getModel()->hasHierView() && hierIcon_ == 0)
+    if (componentModel()->getModel()->hasHierView())
     {
-        hierIcon_ = new QGraphicsPixmapItem(QPixmap(":icons/graphics/hierarchy.png"), this);
-        hierIcon_->setPos(58, 6);
+        if (hierIcon_ == 0)
+        {
+            hierIcon_ = new QGraphicsPixmapItem(QPixmap(":icons/graphics/hierarchy.png"), this);
+            hierIcon_->setToolTip(tr("Hierarchical"));
+            hierIcon_->setPos(58, 6);
+        }
     }
     else if (hierIcon_ != 0)
     {

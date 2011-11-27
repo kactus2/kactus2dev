@@ -44,6 +44,11 @@ public:
     virtual ~SWComponentItem();
 
     /*!
+     *  Updates the diagram component to reflect the current state of the component model.
+     */
+    virtual void updateComponent();
+
+    /*!
      *  Sets the flag whether the component has been imported or not.
      *
      *      @param [in] imported If true, the component is marked as imported.

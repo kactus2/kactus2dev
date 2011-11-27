@@ -192,6 +192,9 @@ private:
         SPACING = 0
     };
 
+    //! Icon for imported SW components.
+    QGraphicsPixmapItem* importedIcon_;
+
     //! The endpoint stack.
     EndpointStack* endpointStack_;
 

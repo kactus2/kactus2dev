@@ -55,7 +55,7 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
                                                               portIDFactory_(), diagram_(diagram),
                                                               id_(id), oldColumn_(0), progEntitys_(),
                                                               platformPlaceholder_(0), platformCompItem_(0),
-                                                              oldPos_(), conns_()
+                                                              oldPos_(), conns_(), importedIcon_(0)
 {
     Q_ASSERT(diagram_ != 0);
     diagram_->addItem(this);
@@ -570,4 +570,27 @@ void MappingComponentItem::updateNameLabel(QString const& text)
 bool MappingComponentItem::isMapped() const
 {
     return getConfigurableElements().contains("kts_hw_ref");
+}
+
+//-----------------------------------------------------------------------------
+// Function: updateComponent()
+//-----------------------------------------------------------------------------
+void MappingComponentItem::updateComponent()
+{
+    SWComponentItem::updateComponent();
+
+    // Show an icon if this is an imported SW component.
+    if (isImported())
+    {
+        if (importedIcon_ == 0)
+        {
+            importedIcon_ = new QGraphicsPixmapItem(QPixmap(":icons/graphics/imported.png"), this);
+            importedIcon_->setToolTip(tr("Imported SW"));
+            importedIcon_->setPos(100, 6);
+        }
+    }
+    else if (importedIcon_ != 0)
+    {
+        delete importedIcon_;
+    }
 }

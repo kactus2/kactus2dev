@@ -70,6 +70,11 @@ public:
     ~MappingComponentItem();
 
     /*!
+     *  Updates the item to match the current state of the component.
+     */
+    virtual void updateComponent();
+
+    /*!
      *  Saves the SW mapping component to disk, including its design.
      *
      *      @param [in] libInterface The library interface.
@@ -196,6 +201,9 @@ private:
         BOTTOM_MARGIN = 80,
         SPACING = 20
     };
+
+    //! Icon for imported SW components.
+    QGraphicsPixmapItem* importedIcon_;
 
     //! Port ID factory.
     IDFactory portIDFactory_;

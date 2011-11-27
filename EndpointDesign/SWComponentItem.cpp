@@ -35,11 +35,21 @@ SWComponentItem::~SWComponentItem()
 }
 
 //-----------------------------------------------------------------------------
+// Function: updateComponent()
+//-----------------------------------------------------------------------------
+void SWComponentItem::updateComponent()
+{
+    ComponentItem::updateComponent();
+}
+
+
+//-----------------------------------------------------------------------------
 // Function: setImported()
 //-----------------------------------------------------------------------------
 void SWComponentItem::setImported(bool imported)
 {
     imported_ = imported;
+    updateComponent();
 }
 
 //-----------------------------------------------------------------------------

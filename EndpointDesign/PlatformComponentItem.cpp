@@ -28,7 +28,7 @@ PlatformComponentItem::PlatformComponentItem(QSharedPointer<Component> component
                                              QMap<QString, QString> const& configurableElementValues,
                                              QGraphicsItem *parent)
     : SWComponentItem(QRectF(-100, 0, 200, 40), component, instanceName, displayName,
-                      description, configurableElementValues, parent), hierIcon_(0)
+                      description, configurableElementValues, parent), hierIcon_(0), importedIcon_(0)
 {
     Q_ASSERT_X(component, "PlatformComponentItem constructor",
                "Null component-pointer given as parameter");
@@ -48,7 +48,7 @@ PlatformComponentItem::~PlatformComponentItem()
 //-----------------------------------------------------------------------------
 void PlatformComponentItem::updateComponent()
 {
-    ComponentItem::updateComponent();
+    SWComponentItem::updateComponent();
 
     VLNV* vlnv = componentModel()->getVlnv();
 
@@ -63,13 +63,32 @@ void PlatformComponentItem::updateComponent()
     }
 
     // Create a hierarchy icon if the component is a hierarchical one.
-    if (componentModel()->getModel()->hasHierView() && hierIcon_ == 0)
+    if (componentModel()->getModel()->hasHierView())
     {
-        hierIcon_ = new QGraphicsPixmapItem(QPixmap(":icons/graphics/hierarchy.png"), this);
-        hierIcon_->setPos(75, 6);
+        if (hierIcon_ == 0)
+        {
+            hierIcon_ = new QGraphicsPixmapItem(QPixmap(":icons/graphics/hierarchy.png"), this);
+            hierIcon_->setToolTip(tr("Hierarchical"));
+            hierIcon_->setPos(-94, 6);
+        }
     }
     else if (hierIcon_ != 0)
     {
         delete hierIcon_;
+    }
+
+    // Show an icon if this is an imported SW component.
+    if (isImported())
+    {
+        if (importedIcon_ == 0)
+        {
+            importedIcon_ = new QGraphicsPixmapItem(QPixmap(":icons/graphics/imported.png"), this);
+            importedIcon_->setToolTip(tr("Imported SW"));
+            importedIcon_->setPos(80, 6);
+        }
+    }
+    else if (importedIcon_ != 0)
+    {
+        delete importedIcon_;
     }
 }

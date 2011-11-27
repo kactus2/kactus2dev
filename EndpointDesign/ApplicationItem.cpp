@@ -30,7 +30,7 @@ ApplicationItem::ApplicationItem(QSharedPointer<Component> component,
                                  QMap<QString, QString> const& configurableElementValues,
                                  QGraphicsItem *parent)
     : SWComponentItem(QRectF(-100, 0, 200, 40), component, instanceName, displayName,
-                      description, configurableElementValues, parent)
+                      description, configurableElementValues, parent), importedIcon_(0)
 {
     Q_ASSERT_X(component, "ApplicationItem constructor",
         "Null component-pointer given as parameter");
@@ -50,7 +50,7 @@ ApplicationItem::~ApplicationItem()
 //-----------------------------------------------------------------------------
 void ApplicationItem::updateComponent()
 {
-    ComponentItem::updateComponent();
+    SWComponentItem::updateComponent();
 
     VLNV* vlnv = componentModel()->getVlnv();
 
@@ -62,6 +62,21 @@ void ApplicationItem::updateComponent()
     else
     {
         setBrush(QBrush(QColor(217, 217, 217)));
+    }
+
+    // Show an icon if this is an imported SW component.
+    if (isImported())
+    {
+        if (importedIcon_ == 0)
+        {
+            importedIcon_ = new QGraphicsPixmapItem(QPixmap(":icons/graphics/imported.png"), this);
+            importedIcon_->setToolTip(tr("Imported SW"));
+            importedIcon_->setPos(80, 6);
+        }
+    }
+    else if (importedIcon_ != 0)
+    {
+        delete importedIcon_;
     }
 }
 

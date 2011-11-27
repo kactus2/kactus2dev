@@ -71,6 +71,13 @@ private:
     // Disable copying.
     ApplicationItem(ApplicationItem const& rhs);
     ApplicationItem& operator=(ApplicationItem const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! Icon for imported SW components.
+    QGraphicsPixmapItem* importedIcon_;
 };
 
 //-----------------------------------------------------------------------------

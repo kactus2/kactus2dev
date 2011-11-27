@@ -56,7 +56,7 @@ ProgramEntityItem::ProgramEntityItem(QSharedPointer<Component> component,
                                      QMap<QString, QString> const& configurableElementValues)
     : SWComponentItem(QRectF(-WIDTH / 2, 0, WIDTH, TOP_MARGIN + BOTTOM_MARGIN),
                       component, instanceName, displayName, description, configurableElementValues),
-      endpointStack_(0), appPlaceholder_(0), appItem_(0)
+      endpointStack_(0), appPlaceholder_(0), appItem_(0), importedIcon_(0)
 {
     // Set basic graphics properties.
     setFlag(ItemIsMovable);
@@ -496,7 +496,7 @@ MappingComponentItem* ProgramEntityItem::getMappingComponent()
 //-----------------------------------------------------------------------------
 void ProgramEntityItem::updateComponent()
 {
-    ComponentItem::updateComponent();
+    SWComponentItem::updateComponent();
 
     VLNV* vlnv = componentModel()->getVlnv();
 
@@ -508,6 +508,21 @@ void ProgramEntityItem::updateComponent()
     else
     {
         setBrush(QBrush(QColor(217, 217, 217)));
+    }
+
+    // Show an icon if this is an imported SW component.
+    if (isImported())
+    {
+        if (importedIcon_ == 0)
+        {
+            importedIcon_ = new QGraphicsPixmapItem(QPixmap(":icons/graphics/imported.png"), this);
+            importedIcon_->setToolTip(tr("Imported SW"));
+            importedIcon_->setPos(100, 6);
+        }
+    }
+    else if (importedIcon_ != 0)
+    {
+        delete importedIcon_;
     }
 }
 
