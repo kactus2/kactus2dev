@@ -292,7 +292,9 @@ QStringList FileSet::getVhdlLibraryNames() const {
 	QStringList libraries;
 	foreach (QSharedPointer<File> file, files_) {
 		// if file is vhdl and the library name is not yet on the list.
-		if (file->isVhdlFile() && !libraries.contains(file->getLogicalName())) {
+		// and library is specified
+		if (file->isVhdlFile() && !file->getLogicalName().isEmpty() && 
+			!libraries.contains(file->getLogicalName())) {
 			libraries.append(file->getLogicalName());
 		}
 	}

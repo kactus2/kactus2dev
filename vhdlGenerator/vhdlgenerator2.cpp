@@ -194,13 +194,17 @@ void VhdlGenerator2::generateVhdl( const QString& outputFileName) {
 
 	// declare the libraries used.
 	foreach (QString library, libraries_) {
-		vhdlStream << "library " << library <<";" << endl;
-		vhdlStream << "use " << library << ".all;" << endl;
+		if (!library.isEmpty()) {
+			vhdlStream << "library " << library <<";" << endl;
+			vhdlStream << "use " << library << ".all;" << endl;
+		}
 	}
 
 	// write all type defs needed
 	foreach (QString portTypeDef, typeDefinitions_) {
-		vhdlStream << "use " << portTypeDef << ";" << endl;
+		if (!portTypeDef.isEmpty()) {
+			vhdlStream << "use " << portTypeDef << ";" << endl;
+		}
 	}
 	vhdlStream << endl;
 
