@@ -70,7 +70,7 @@ void ApplicationItem::updateComponent()
         if (importedIcon_ == 0)
         {
             importedIcon_ = new QGraphicsPixmapItem(QPixmap(":icons/graphics/imported.png"), this);
-            importedIcon_->setToolTip(tr("Imported SW"));
+            importedIcon_->setToolTip(tr("Auto-synced"));
             importedIcon_->setPos(80, 6);
         }
     }

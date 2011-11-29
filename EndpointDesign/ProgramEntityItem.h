@@ -86,6 +86,14 @@ public:
     void setEndpointsExpanded(bool expanded);
 
     /*!
+     *  Sets the program entity fixed/programmable. Fixed program entity does not have an application.
+     *
+     *      @param [in] fixed If true, the program entity is treated as fixed HW and
+     *                        setting application is not possible. False for programmable behavior.
+     */
+    void setFixed(bool fixed);
+
+    /*!
      *  Sets the application item.
      *
      *      @param [in] item The application item to set.
@@ -187,6 +195,7 @@ private:
     enum
     {
         WIDTH = 240,
+        FIXED_TOP_MARGIN = 40,
         TOP_MARGIN = 100,
         BOTTOM_MARGIN = 20,
         SPACING = 0
@@ -209,6 +218,9 @@ private:
 
     //! The connections that can change during mouse move.
     QSet<EndpointConnection*> conns_;
+
+    //! If true, the program entity is treated as fixed HW with no application.
+    bool fixed_;
 };
 
 //-----------------------------------------------------------------------------

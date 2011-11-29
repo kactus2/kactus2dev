@@ -114,6 +114,12 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
 
             case KactusAttribute::KTS_SW_APPLICATION:
                 {
+                    // Discard any applications if the mapping component is not a CPU.
+                    if (!componentModel()->isCpu())
+                    {
+                        continue;
+                    }
+
                     // Find the corresponding interconnection to find the linked program entity.
                     int connIndex = 0;
 
@@ -336,6 +342,7 @@ void MappingComponentItem::onEndpointStackChange(int height)
 //-----------------------------------------------------------------------------
 void MappingComponentItem::addProgramEntity(ProgramEntityItem* item)
 {
+    item->setFixed(!componentModel()->isCpu());
     item->setParentItem(this);
 
     progEntitys_.append(item);
@@ -585,7 +592,7 @@ void MappingComponentItem::updateComponent()
         if (importedIcon_ == 0)
         {
             importedIcon_ = new QGraphicsPixmapItem(QPixmap(":icons/graphics/imported.png"), this);
-            importedIcon_->setToolTip(tr("Imported SW"));
+            importedIcon_->setToolTip(tr("Auto-synced"));
             importedIcon_->setPos(100, 6);
         }
     }

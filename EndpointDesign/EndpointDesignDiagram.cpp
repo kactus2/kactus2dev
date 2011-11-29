@@ -1123,13 +1123,13 @@ void EndpointDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mous
         item = item->parentItem();
     }
 
-    if (item->type() == AppPlaceholderItem::Type)
+    if (item->type() == AppPlaceholderItem::Type && !isProtected())
     {
         ProgramEntityItem* progEntity = static_cast<ProgramEntityItem*>(item->parentItem());
         createApplication(progEntity);
 
     }
-    else if (item->type() == PlatformPlaceholderItem::Type)
+    else if (item->type() == PlatformPlaceholderItem::Type && !isProtected())
     {
         MappingComponentItem* mappingCompItem = static_cast<MappingComponentItem*>(item->parentItem());
         createPlatformComponent(mappingCompItem);
@@ -1140,7 +1140,14 @@ void EndpointDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mous
 
         if (!appItem->componentModel()->getVlnv()->isValid())
         {
-            packetizeSWComponent(appItem, tr("Application"));
+            if (!isProtected())
+            {
+                packetizeSWComponent(appItem, tr("Application"));
+            }
+        }
+        else
+        {
+            emit openComponent(*appItem->componentModel()->getVlnv());
         }
     }
     else if (item->type() == PlatformComponentItem::Type)
@@ -1149,7 +1156,14 @@ void EndpointDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mous
 
         if (!platformCompItem->componentModel()->getVlnv()->isValid())
         {
-            packetizeSWComponent(platformCompItem, tr("SW Platform"));
+            if (!isProtected())
+            {
+                packetizeSWComponent(platformCompItem, tr("SW Platform"));
+            }
+        }
+        else
+        {
+            emit openComponent(*platformCompItem->componentModel()->getVlnv());
         }
     }
     else if (item->type() == ProgramEntityItem::Type)
@@ -1158,7 +1172,14 @@ void EndpointDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mous
 
         if (!progEntity->componentModel()->getVlnv()->isValid())
         {
-            packetizeSWComponent(progEntity, tr("Endpoints"));
+            if (!isProtected())
+            {
+                packetizeSWComponent(progEntity, tr("Endpoints"));
+            }
+        }
+        else
+        {
+            emit openComponent(*progEntity->componentModel()->getVlnv());
         }
     }
 }

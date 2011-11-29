@@ -202,6 +202,9 @@ void addNewInstances(QList<Design::ComponentInstance> elements, Design& sysDesig
             swDesign->setInterconnections(softwareMap->getInterconnections());
         }
 
+        // Parse CPUs if found.
+        swComp->setCpus(comp->getCpus());
+
         // Create the view for the design.
         View* hierView = new View("kts_sys_ref");
         hierView->setHierarchyRef(designVLNV);
@@ -378,6 +381,13 @@ void updateSystemDesign(LibraryInterface* lh, QString const& directory,
                 oldDesign->setInterconnections(swConnections);
                 lh->writeModelToFile(oldDesign);
             }
+
+            // Update CPUs to the mapping component.
+            QSharedPointer<LibraryComponent> libComp = lh->getModel(instance.componentRef);
+            QSharedPointer<Component> swComp = libComp.staticCast<Component>();
+
+            swComp->setCpus(comp->getCpus());
+            lh->writeModelToFile(swComp);
 
             // Remove the element from the element list since it has been processed.
             elements.removeAt(index);

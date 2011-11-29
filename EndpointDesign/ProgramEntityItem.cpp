@@ -56,7 +56,7 @@ ProgramEntityItem::ProgramEntityItem(QSharedPointer<Component> component,
                                      QMap<QString, QString> const& configurableElementValues)
     : SWComponentItem(QRectF(-WIDTH / 2, 0, WIDTH, TOP_MARGIN + BOTTOM_MARGIN),
                       component, instanceName, displayName, description, configurableElementValues),
-      endpointStack_(0), appPlaceholder_(0), appItem_(0), importedIcon_(0)
+      endpointStack_(0), appPlaceholder_(0), appItem_(0), importedIcon_(0), fixed_(false)
 {
     // Set basic graphics properties.
     setFlag(ItemIsMovable);
@@ -254,7 +254,16 @@ QString const& ProgramEntityItem::getSourceFile() const
 //-----------------------------------------------------------------------------
 void ProgramEntityItem::onEndpointStackChange(int height)
 {
-    setRect(-WIDTH / 2, 0, WIDTH, TOP_MARGIN + height + BOTTOM_MARGIN);
+    if (fixed_)
+    {
+        endpointStack_->setPos(0.0f, FIXED_TOP_MARGIN);
+        setRect(-WIDTH / 2, 0, WIDTH, FIXED_TOP_MARGIN + height + BOTTOM_MARGIN);
+    }
+    else
+    {
+        endpointStack_->setPos(0.0f, TOP_MARGIN);
+        setRect(-WIDTH / 2, 0, WIDTH, TOP_MARGIN + height + BOTTOM_MARGIN);
+    }
 
     if (getMappingComponent() != 0)
     {
@@ -472,6 +481,12 @@ QString ProgramEntityItem::createIndentString()
 //-----------------------------------------------------------------------------
 void ProgramEntityItem::setApplication(ApplicationItem* item)
 {
+    // Disable application if the underlying mapping component is not a CPU.
+    if (!getMappingComponent()->componentModel()->isCpu())
+    {
+        return;
+    }
+
     appItem_ = item;
 
     if (appItem_ != 0)
@@ -516,7 +531,8 @@ void ProgramEntityItem::updateComponent()
         if (importedIcon_ == 0)
         {
             importedIcon_ = new QGraphicsPixmapItem(QPixmap(":icons/graphics/imported.png"), this);
-            importedIcon_->setToolTip(tr("Imported SW"));
+            importedIcon_->setToolTip(tr("Auto-synced"));
+
             importedIcon_->setPos(100, 6);
         }
     }
@@ -580,4 +596,15 @@ bool ProgramEntityItem::isEndpointsExpanded() const
 void ProgramEntityItem::setEndpointsExpanded(bool expanded)
 {
     endpointStack_->setExpanded(expanded);
+}
+
+//-----------------------------------------------------------------------------
+// Function: setFixed()
+//-----------------------------------------------------------------------------
+void ProgramEntityItem::setFixed(bool fixed)
+{
+    fixed_ = fixed;
+    appPlaceholder_->setVisible(!fixed);
+
+    onEndpointStackChange(endpointStack_->getVisibleHeight());
 }
