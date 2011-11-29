@@ -60,9 +60,10 @@ public:
      */
     MappingComponentItem(EndpointDesignDiagram* diagram, LibraryInterface* libInterface,
                          QSharedPointer<Component> component, QString const& instanceName,
-                         QString const& displayName, QString const& description,
-                         QMap<QString, QString> const& configurableElementValues,
-                         unsigned int id);
+                         QString const& displayName = QString(),
+                         QString const& description = QString(),
+                         QMap<QString, QString> const& configurableElementValues = QMap<QString, QString>(),
+                         unsigned int id = 0);
 
     /*!
      *  Destructor.

@@ -14,6 +14,7 @@
 
 #include <common/widgets/tabDocument/TabDocument.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
+#include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
 #include <models/component.h>
 
 #include <IPXactWrapper/ComponentEditor/software/SoftwareMappingsEditor.h>
@@ -141,6 +142,9 @@ private:
 
     //! VLNV editor for the linked application.
     VLNVEditor linkedAppType_;
+
+    //! Component preview for the SW design component.
+    ComponentPreviewBox previewBox_;
 
     //! Mapping data for the endpoints.
     QVector<EndpointsMappingData> endpointsMappingDatas_;

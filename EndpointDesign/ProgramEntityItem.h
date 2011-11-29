@@ -57,9 +57,9 @@ public:
      */
     ProgramEntityItem(QSharedPointer<Component> component,
                       QString const& instanceName,
-                      QString const& displayName,
-                      QString const& description,
-                      QMap<QString, QString> const& configurableElementValues);
+                      QString const& displayName = QString(),
+                      QString const& description = QString(),
+                      QMap<QString, QString> const& configurableElementValues = QMap<QString, QString>());
 
     /*!
      *  Destructor.

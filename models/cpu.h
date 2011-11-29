@@ -23,6 +23,10 @@ class Parameter;
 class Cpu {
 
 public:
+    /*!
+     *  Default constructor.
+     */
+    Cpu();
 
 	/*! \brief The constructor
 	 *

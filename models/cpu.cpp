@@ -19,6 +19,14 @@
 #include <QSharedPointer>
 #include <QXmlStreamWriter>
 
+
+//-----------------------------------------------------------------------------
+// Function: Cpu()
+//-----------------------------------------------------------------------------
+Cpu::Cpu() : name_(QString()), addressSpaceRefs_(), parameters_()
+{
+}
+
 Cpu::Cpu(QDomNode &cpuNode): name_(QString()), addressSpaceRefs_(),
 parameters_() {
 

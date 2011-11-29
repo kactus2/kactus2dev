@@ -441,6 +441,12 @@ void EndpointItem::updateText()
                              ", " + QString::number(portID_) + "&gt;");
         update();
     }
+    else
+    {
+        textLabel_->setHtml("<b>Name: </b>" + name_ +
+                            "<br><b>Endpoint:</b> &lt;HW, unset, unset&gt;");
+        update();
+    }
 }
 
 //-----------------------------------------------------------------------------

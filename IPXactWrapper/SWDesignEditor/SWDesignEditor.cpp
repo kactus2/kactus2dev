@@ -28,7 +28,8 @@ SWDesignEditor::SWDesignEditor(QWidget *parent, QWidget* parentWnd, LibraryInter
     addButton_(QIcon(":/icons/graphics/add.png"), QString(), this),
     removeButton_(QIcon(":/icons/graphics/remove.png"), QString(), this),
     endpointType_(VLNV::COMPONENT, libHandler, parentWnd, &endpointGroup_),
-    linkedAppType_(VLNV::COMPONENT, libHandler, parentWnd, &endpointGroup_)
+    linkedAppType_(VLNV::COMPONENT, libHandler, parentWnd, &endpointGroup_),
+    previewBox_(libHandler)
 {
     // Create the widgets.
     endpointList_.setFixedWidth(200);
@@ -48,10 +49,11 @@ SWDesignEditor::SWDesignEditor(QWidget *parent, QWidget* parentWnd, LibraryInter
     endpointLayout->addWidget(&endpointType_, 0, 2, 1, 1);
     endpointLayout->addWidget(&linkedAppType_, 1, 2, 1, 1);
 
-    QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(&platformMapping_);
-    layout->addWidget(&endpointGroup_);
-    layout->addStretch(1);
+    QGridLayout* layout = new QGridLayout(this);
+    layout->addWidget(&platformMapping_, 0, 0, 1, 1);
+    layout->addWidget(&endpointGroup_, 1, 0, 1, 1);
+    layout->addWidget(&previewBox_, 0, 1, 2, 1);
+    layout->setRowStretch(2, 1);
 
     // Set endpoint and application VLNV editor disabled by default.
     endpointType_.setEnabled(false);
@@ -159,6 +161,8 @@ SWDesignEditor::SWDesignEditor(QWidget *parent, QWidget* parentWnd, LibraryInter
     setDocumentName(vlnv->getName() + " (" + vlnv->getVersion() + ")");
     setDocumentType(tr("SW Design"));
 
+    previewBox_.setComponent(*component_->getVlnv());
+
     // Open in unlocked mode by default only if the version is draft.
     setProtection(vlnv->getVersion() != "draft");
 }
@@ -254,6 +258,9 @@ bool SWDesignEditor::save()
     design->setInterconnections(interconnections);
 
     libHandler_->writeModelToFile(design);
+
+    // Update the preview.
+    previewBox_.setComponent(*component_->getVlnv());
 
     return TabDocument::save();
 }

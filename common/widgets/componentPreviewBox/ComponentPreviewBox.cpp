@@ -11,6 +11,11 @@
 
 #include "ComponentPreviewBox.h"
 
+#include <EndpointDesign/ApplicationItem.h>
+#include <EndpointDesign/ProgramEntityItem.h>
+#include <EndpointDesign/PlatformComponentItem.h>
+#include <EndpointDesign/MappingComponentItem.h>
+
 #include <designwidget/diagramcomponent.h>
 #include <models/component.h>
 #include <models/librarycomponent.h>
@@ -102,9 +107,52 @@ void ComponentPreviewBox::updatePreview()
 
     if (component_ != 0)
     {
-        // Create the diagram component.
-        DiagramComponent* diagComp = new DiagramComponent(lh_, component_, component_->getVlnv()->getName());
-        scene_->addItem(diagComp);
+        QGraphicsItem* item = 0;
+
+        switch (component_->getComponentImplementation())
+        {
+        case KactusAttribute::KTS_HW:
+            {
+                // Create the diagram component.
+                item = new DiagramComponent(lh_, component_, component_->getVlnv()->getName());
+                break;
+            }
+
+        case KactusAttribute::KTS_SW:
+            {
+                switch (component_->getComponentSWType())
+                {
+                case KactusAttribute::KTS_SW_APPLICATION:
+                    {
+                        item = new ApplicationItem(component_, component_->getVlnv()->getName());
+                        break;
+                    }
+
+                case KactusAttribute::KTS_SW_ENDPOINTS:
+                    {
+                        item = new ProgramEntityItem(component_, component_->getVlnv()->getName());
+                        break;
+                    }
+
+                case KactusAttribute::KTS_SW_PLATFORM:
+                    {
+                        item = new PlatformComponentItem(component_, component_->getVlnv()->getName());
+                        break;
+                    }
+
+                case KactusAttribute::KTS_SW_MAPPING:
+                    {
+                        item = new MappingComponentItem(0, lh_, component_, component_->getVlnv()->getName());
+                    }
+                }
+                break;
+            }
+        }
+        
+        if (item != 0)
+        {
+            scene_->addItem(item);
+        }
     }
 }
 

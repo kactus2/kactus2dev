@@ -24,6 +24,7 @@
 
 #include <models/component.h>
 #include <models/businterface.h>
+#include <models/cpu.h>
 
 #include <LibraryManager/libraryinterface.h>
 
@@ -57,8 +58,10 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
                                                               platformPlaceholder_(0), platformCompItem_(0),
                                                               oldPos_(), conns_(), importedIcon_(0)
 {
-    Q_ASSERT(diagram_ != 0);
-    diagram_->addItem(this);
+    if (diagram_ != 0)
+    {
+        diagram_->addItem(this);
+    }
 
     // Set basic graphics properties.
     setFlag(ItemIsMovable);
@@ -70,7 +73,19 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
     // Parse the component's design if the component is valid.
     if (component->getVlnv()->isValid())
     {
-        QSharedPointer<LibraryComponent> libDesComp = libInterface->getModel(component->getHierRef("kts_sys_ref"));
+        VLNV designVLNV = component->getHierRef("kts_sys_ref");
+
+        if (!designVLNV.isValid())
+        {
+            designVLNV = component->getHierRef("kts_sw_ref");
+
+            // Add CPU to the component so that it can be previewed correctly.
+            QList<QSharedPointer<Cpu>> cpus;
+            cpus.append(QSharedPointer<Cpu>(new Cpu()));
+            component->setCpus(cpus);
+        }
+
+        QSharedPointer<LibraryComponent> libDesComp = libInterface->getModel(designVLNV);
         QSharedPointer<Design> design = libDesComp.staticCast<Design>();
         QMap<QString, ProgramEntityItem*> progEntityMap;
         
@@ -97,13 +112,16 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
                                                                           instance.description,
                                                                           instance.configurableElementValues);
                     progEntity->setImported(instance.imported);
-                    diagram_->onComponentInstanceAdded(progEntity);
 
-                    progEntity->setPos(instance.position);
-                    progEntity->setEndpointsExpanded(instance.endpointsExpanded);
+                    if (diagram_ != 0)
+                    {
+                        diagram_->onComponentInstanceAdded(progEntity);
+                        progEntity->setPos(instance.position);
+                        progEntity->setEndpointsExpanded(instance.endpointsExpanded);
 
-                    // Set custom endpoint positions.
-                    progEntity->setEndpointOrder(instance.portPositions);
+                        // Set custom endpoint positions.
+                        progEntity->setEndpointOrder(instance.portPositions);
+                    }
 
                     connect(progEntity, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
@@ -150,10 +168,14 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
                                                                    instance.configurableElementValues,
                                                                    progEntity);
                     appItem->setImported(instance.imported);
-                    diagram_->onComponentInstanceAdded(appItem);
 
-                    connect(appItem, SIGNAL(openSource(ProgramEntityItem*)),
+                    if (diagram_ != 0)
+                    {
+                        diagram_->onComponentInstanceAdded(appItem);
+
+                        connect(appItem, SIGNAL(openSource(ProgramEntityItem*)),
                             diagram_, SIGNAL(openSource(ProgramEntityItem*)), Qt::UniqueConnection);
+                    }
 
                     connect(appItem, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
                     progEntity->setApplication(appItem);
@@ -167,7 +189,11 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
                                                   instance.description, instance.configurableElementValues,
                                                   this);
                     platformCompItem->setImported(instance.imported);
-                    diagram_->onComponentInstanceAdded(platformCompItem);
+
+                    if (diagram_ != 0)
+                    {
+                        diagram_->onComponentInstanceAdded(platformCompItem);
+                    }
 
                     connect(platformCompItem, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
                     setPlatformComponent(platformCompItem);
