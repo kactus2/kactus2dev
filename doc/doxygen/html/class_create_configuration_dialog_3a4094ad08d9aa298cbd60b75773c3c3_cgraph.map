@@ -1,5 +1,0 @@
-<area shape="rect" id="node3" href="$class_create_configuration_dialog.html#0f276556906e654c550f017824c0ed6f" title="Get the VLNV for the design configuration to create." alt="" coords="352,5,691,32">
-<area shape="rect" id="node7" href="$class_v_l_n_v.html#41e8feb8b594eaaf4efc45dc0b520656" title="Set the document type for the vlnv." alt="" coords="761,56,876,83">
-<area shape="rect" id="node9" href="$class_v_l_n_v.html#3ff2bdff884da48aa0e936fa5595b7e8" title="Get the name of the IP block in VLNV." alt="" coords="459,107,584,133">
-<area shape="rect" id="node11" href="$class_v_l_n_v.html#71492c150d4bc3d06d7313c0b6634a9a" title="Set the name for the VLNV." alt="" coords="459,157,583,184">
-<area shape="rect" id="node5" href="$class_v_l_n_v_editor.html#ec64dfb071b106bbe96b95788cd1df25" title="VLNVEditor::getVLNV" alt="" coords="739,5,898,32">

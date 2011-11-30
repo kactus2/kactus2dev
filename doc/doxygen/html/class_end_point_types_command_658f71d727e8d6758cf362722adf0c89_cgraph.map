@@ -1,4 +1,0 @@
-<area shape="rect" id="node3" href="$class_diagram_interconnection.html#c76e3854d8ed34174e3e821497fc9bf2" title="Return the first end point connected." alt="" coords="452,5,700,32">
-<area shape="rect" id="node5" href="$class_diagram_interconnection.html#ffac0f0f479b95c98de4144dbd9c5867" title="Return the second end point connected." alt="" coords="452,56,700,83">
-<area shape="rect" id="node7" href="$class_diagram_connection_end_point.html#72cac94a1d12b11e347aa6295b1a6837" title="DiagramConnectionEndPoint::getBusInterface" alt="" coords="419,107,733,133">
-<area shape="rect" id="node9" href="$class_diagram_connection_end_point.html#77a2addc49209f183aa80fa1b2306084" title="DiagramConnectionEndPoint::getInterconnections" alt="" coords="406,157,746,184">

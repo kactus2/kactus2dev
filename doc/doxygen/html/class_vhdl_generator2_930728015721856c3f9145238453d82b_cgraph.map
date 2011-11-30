@@ -1,4 +1,0 @@
-<area shape="rect" id="node3" href="$namespace_general.html#43b6fcb74775efc5336ba40a26969524" title="Calculate the alignment for the ports from the port maps." alt="" coords="299,5,527,32">
-<area shape="rect" id="node5" href="$class_vhdl_generator2.html#0a4d7f10d0ded7866d4551d506f92433" title="Connect the specified ports together." alt="" coords="306,56,521,83">
-<area shape="rect" id="node9" href="$class_bus_interface.html#c8af36688eededc98dd936c41780c0a9" title="Get the port maps for this interface." alt="" coords="318,107,509,133">
-<area shape="rect" id="node7" href="$class_vhdl_generator2.html#6f641cc140b58e045a2258aa6edea84b" title="Connect the given endPoint with the signal." alt="" coords="577,56,815,83">

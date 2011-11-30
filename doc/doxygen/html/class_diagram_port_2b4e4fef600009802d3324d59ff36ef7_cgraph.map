@@ -1,8 +1,0 @@
-<area shape="rect" id="node3" href="$class_diagram_port.html#081bb9c5f6a62e0dea7915743ab0368f" title="DiagramPort::askCompatibleMode" alt="" coords="271,81,513,108">
-<area shape="rect" id="node13" href="$class_diagram_connection_end_point.html#72cac94a1d12b11e347aa6295b1a6837" title="DiagramConnectionEndPoint::getBusInterface" alt="" coords="235,132,549,159">
-<area shape="rect" id="node15" href="$class_diagram_connection_end_point.html#a2bea5faa8a40e3e6ae91987c280b0be" title="Returns true if the port represents a hierarchical connection." alt="" coords="243,183,541,209">
-<area shape="rect" id="node17" href="$class_diagram_port.html#e6d09570ad94a2ea417b0b70acbe7e53" title="Update the graphics to match the IP&#45;XACT bus interface." alt="" coords="286,233,498,260">
-<area shape="rect" id="node5" href="$class_bus_interface_dialog.html#f0ebe28248a10644c6826fab01b966f8" title="BusInterfaceDialog::addMode" alt="" coords="638,5,847,32">
-<area shape="rect" id="node7" href="$class_library_interface.html#92798f5c6f5e72c8f4da87e872812c4f" title="Get a model that matches given VLNV." alt="" coords="649,56,837,83">
-<area shape="rect" id="node9" href="$class_bus_interface_dialog.html#8af0ea88701b45eac484843f390268c2" title="BusInterfaceDialog::getSelectedMode" alt="" coords="611,107,874,133">
-<area shape="rect" id="node11" href="$class_diagram_connection_end_point.html#3d375e1af63aaf2ae4861c158934067b" title="DiagramConnectionEndPoint::setHighlight" alt="" coords="598,157,887,184">

@@ -1,8 +1,0 @@
-<area shape="rect" id="node3" href="$class_diagram_connection_end_point.html#de54b395d8a697d907d0ed924d877784" title="DiagramConnectionEndPoint::addInterconnection" alt="" coords="392,5,728,32">
-<area shape="rect" id="node5" href="$class_diagram_interconnection.html#3295188b9acbd2fd4cf8fedcc698aff4" title="DiagramInterconnection::createRoute" alt="" coords="429,56,691,83">
-<area shape="rect" id="node9" href="$class_diagram_interconnection.html#6f2d7ee50aea39295ed1896ec824ef5c" title="DiagramInterconnection::setItemSettings" alt="" coords="417,107,703,133">
-<area shape="rect" id="node11" href="$class_diagram_interconnection.html#ebd0f5e5c2bd399eb70ea45fba3ce8a0" title="DiagramInterconnection::updateName" alt="" coords="426,157,694,184">
-<area shape="rect" id="node7" href="$class_diagram_interconnection.html#5a1b1d9f17451bb04f79cf0184449677" title="DiagramInterconnection::simplifyPath" alt="" coords="817,56,1079,83">
-<area shape="rect" id="node13" href="$class_diagram_connection_end_point.html#e56a455b02d91aa706f78208d0b00c54" title="DiagramConnectionEndPoint::encompassingComp" alt="" coords="776,107,1120,133">
-<area shape="rect" id="node15" href="$class_diagram_connection_end_point.html#72cac94a1d12b11e347aa6295b1a6837" title="DiagramConnectionEndPoint::getBusInterface" alt="" coords="791,157,1105,184">
-<area shape="rect" id="node17" href="$class_component_item.html#065f3fb7a863a24ab7e5e1cbef4bf417" title="ComponentItem::name" alt="" coords="863,208,1033,235">

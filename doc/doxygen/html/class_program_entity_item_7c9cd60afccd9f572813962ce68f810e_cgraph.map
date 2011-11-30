@@ -1,6 +1,0 @@
-<area shape="rect" id="node3" href="$class_endpoint_connection.html#fbadb9fe63240344b210bb3dec42e77c" title="EndpointConnection::endUpdatePosition" alt="" coords="345,5,623,32">
-<area shape="rect" id="node7" href="$class_program_entity_item.html#aa817c7a10afe44a17154a52979f7ce4" title="ProgramEntityItem::getMappingComponent" alt="" coords="334,56,634,83">
-<area shape="rect" id="node9" href="$class_mapping_component_item.html#eb05fe3f34d18e0389f20242196b7d76" title="MappingComponentItem::onReleaseItem" alt="" coords="343,107,625,133">
-<area shape="rect" id="node5" href="$class_endpoint_connection.html#9796d939efdd3be4b59410b0d9deb372" title="EndpointConnection::getRoute" alt="" coords="683,5,899,32">
-<area shape="rect" id="node11" href="$namespace_v_stacked_layout.html#e377b4c99851b8d82fc5c132dac24e0b" title="VStackedLayout::setItemPos" alt="" coords="687,107,894,133">
-<area shape="rect" id="node13" href="$namespace_diagram_util.html#34372d64301c316deaa127e2bfcf4d58" title="DiagramUtil::clampCeil" alt="" coords="947,107,1115,133">

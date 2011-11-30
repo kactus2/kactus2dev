@@ -1,6 +1,0 @@
-<area shape="rect" id="node3" href="$class_component_item.html#49a73ee33e425a3ff37d93e68ca33c99" title="ComponentItem::componentModel" alt="" coords="313,5,559,32">
-<area shape="rect" id="node5" href="$class_diagram_connection_end_point.html#e56a455b02d91aa706f78208d0b00c54" title="DiagramConnectionEndPoint::encompassingComp" alt="" coords="264,56,608,83">
-<area shape="rect" id="node7" href="$class_diagram_connection_end_point.html#72cac94a1d12b11e347aa6295b1a6837" title="DiagramConnectionEndPoint::getBusInterface" alt="" coords="279,107,593,133">
-<area shape="rect" id="node9" href="$class_component_item.html#065f3fb7a863a24ab7e5e1cbef4bf417" title="ComponentItem::name" alt="" coords="351,157,521,184">
-<area shape="rect" id="node11" href="$class_diagram_interface.html#cf3ba89c9ed6c8da64d399aefb9bdd56" title="Update the graphics to match the IP&#45;XACT bus interface." alt="" coords="315,208,557,235">
-<area shape="rect" id="node13" href="$class_diagram_connection_end_point.html#24e5426821cdf4df2c7884979085d303" title="DiagramConnectionEndPoint::getDirection" alt="" coords="656,208,947,235">

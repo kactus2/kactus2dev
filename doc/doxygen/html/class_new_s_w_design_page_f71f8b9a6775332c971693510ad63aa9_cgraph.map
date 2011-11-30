@@ -1,9 +1,0 @@
-<area shape="rect" id="node3" href="$class_library_interface.html#f6944f708f9aa01568d707fdc773ea91" title="Checks if the library already contains the specified vlnv." alt="" coords="277,5,459,32">
-<area shape="rect" id="node5" href="$class_v_l_n_v.html#f00f5007636620ffeff44521bacca857" title="Get the library of the VLNV." alt="" coords="303,56,433,83">
-<area shape="rect" id="node7" href="$class_v_l_n_v.html#3ff2bdff884da48aa0e936fa5595b7e8" title="Get the name of the IP block in VLNV." alt="" coords="305,107,431,133">
-<area shape="rect" id="node9" href="$class_v_l_n_v.html#8868ebe2affad578b9c9c3aef1f38632" title="Get the vendor of the VLNV." alt="" coords="302,157,434,184">
-<area shape="rect" id="node11" href="$class_v_l_n_v.html#3a5da6ca75e9a6bf575906c2ea185051" title="Get the version of the VLNV." alt="" coords="301,208,435,235">
-<area shape="rect" id="node13" href="$class_v_l_n_v_editor.html#ec64dfb071b106bbe96b95788cd1df25" title="VLNVEditor::getVLNV" alt="" coords="289,259,447,285">
-<area shape="rect" id="node15" href="$class_new_s_w_design_page.html#d304270b35bead57fdfcda61b994ca91" title="NewSWDesignPage::prevalidate" alt="" coords="256,309,480,336">
-<area shape="rect" id="node19" href="$class_v_l_n_v.html#d44080fa56f2b1ec03cdccaa1c5ccb69" title="Create a QString that contains the vlnv." alt="" coords="310,360,426,387">
-<area shape="rect" id="node17" href="$class_v_l_n_v_editor.html#eff4ed9c7b77a464c51bae1dbc48ad6c" title="VLNVEditor::isValid" alt="" coords="529,309,671,336">

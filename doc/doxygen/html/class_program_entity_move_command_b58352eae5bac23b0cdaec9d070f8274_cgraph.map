@@ -1,4 +1,0 @@
-<area shape="rect" id="node3" href="$class_mapping_component_item.html#8a24a93efe7b678d0f943da0f52dcee2" title="MappingComponentItem::onMoveItem" alt="" coords="304,31,571,57">
-<area shape="rect" id="node5" href="$diagramgrid_8h.html#68afc106817c98c8b7787ff86acee75e" title="Snaps the given QPointF to the diagram grid." alt="" coords="677,5,803,32">
-<area shape="rect" id="node7" href="$namespace_v_stacked_layout.html#5f14204a310806c9c55dc46552b97b4d" title="VStackedLayout::updateItemMove" alt="" coords="619,56,861,83">
-<area shape="rect" id="node9" href="$namespace_diagram_util.html#34372d64301c316deaa127e2bfcf4d58" title="DiagramUtil::clampCeil" alt="" coords="909,56,1077,83">

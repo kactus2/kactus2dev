@@ -1,9 +1,0 @@
-<area shape="rect" id="node3" href="$class_library_interface.html#f6944f708f9aa01568d707fdc773ea91" title="Checks if the library already contains the specified vlnv." alt="" coords="395,5,578,32">
-<area shape="rect" id="node5" href="$class_library_interface.html#92798f5c6f5e72c8f4da87e872812c4f" title="Get a model that matches given VLNV." alt="" coords="393,56,581,83">
-<area shape="rect" id="node7" href="$class_v_l_n_v.html#3ff2bdff884da48aa0e936fa5595b7e8" title="Get the name of the IP block in VLNV." alt="" coords="635,132,760,159">
-<area shape="rect" id="node9" href="$class_v_l_n_v.html#71492c150d4bc3d06d7313c0b6634a9a" title="Set the name for the VLNV." alt="" coords="425,157,549,184">
-<area shape="rect" id="node11" href="$class_v_l_n_v.html#41e8feb8b594eaaf4efc45dc0b520656" title="Set the document type for the vlnv." alt="" coords="429,208,544,235">
-<area shape="rect" id="node13" href="$class_v_l_n_v_editor.html#edef36ca3252c366ed3d222c69d2c765" title="VLNVEditor::setVLNV" alt="" coords="408,259,565,285">
-<area shape="rect" id="node15" href="$class_v_l_n_v.html#f00f5007636620ffeff44521bacca857" title="Get the library of the VLNV." alt="" coords="633,208,762,235">
-<area shape="rect" id="node18" href="$class_v_l_n_v.html#8868ebe2affad578b9c9c3aef1f38632" title="Get the vendor of the VLNV." alt="" coords="631,259,763,285">
-<area shape="rect" id="node20" href="$class_v_l_n_v.html#3a5da6ca75e9a6bf575906c2ea185051" title="Get the version of the VLNV." alt="" coords="630,309,765,336">

@@ -1,7 +1,0 @@
-<area shape="rect" id="node3" href="$class_item_editor.html#7bba5947d0dc34b6e8b38eedc725c813" title="ItemEditor::confirmEditorChange" alt="" coords="385,5,615,32">
-<area shape="rect" id="node5" href="$class_component_tree_item.html#c054e97b791f3444fc123945bc91fddb" title="Get the data pointer to the item that this item represents." alt="" coords="371,56,629,83">
-<area shape="rect" id="node7" href="$class_item_editor.html#1e6cb23375be660879462878bfdc518e" title="Check for the validity of the edited item." alt="" coords="431,107,569,133">
-<area shape="rect" id="node9" href="$class_item_editor.html#db024f0b591e158d5494d84fd4c0b87a" title="Make the changes from the widgets editors to the IPXact model." alt="" coords="406,157,594,184">
-<area shape="rect" id="node11" href="$class_component_tree_item.html#0c29c2d60145685a5a7808c5f672124c" title="Set the validity of the item." alt="" coords="386,208,614,235">
-<area shape="rect" id="node13" href="$class_component_tree_navigator.html#da37d6505468474a78d2861700f20c87" title="Tell model to update the given item." alt="" coords="365,259,635,285">
-<area shape="rect" id="node15" href="$class_component_tree_model.html#715dd8c88623f41c2aa5d8cb98997169" title="Tell view to update the specified model index." alt="" coords="683,259,928,285">
