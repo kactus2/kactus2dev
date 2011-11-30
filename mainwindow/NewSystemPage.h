@@ -16,6 +16,7 @@
 
 #include <QTreeWidget>
 #include <QLineEdit>
+#include <QComboBox>
 
 class LibraryInterface;
 class LibraryItem;
@@ -92,7 +93,8 @@ public slots:
 
 signals:
     //! Signaled when a system design should be created.
-    void createSystem(VLNV const& compVLNV, VLNV const& sysVLNV, QString const& directory);
+    void createSystem(VLNV const& compVLNV, QString const& viewName,
+                      VLNV const& sysVLNV, QString const& directory);
 
 private:
     // Disable copying.
@@ -116,6 +118,9 @@ private:
 
     //! Component selection tree widget.
     QTreeWidget* compTreeWidget_;
+
+    //! View selection combo box.
+    QComboBox* viewComboBox_;
 
     //! VLNV editor.
     VLNVEditor* vlnvEditor_;

@@ -1543,8 +1543,8 @@ void MainWindow::createNew()
     dialog.addPage(QIcon(":icons/graphics/new-sw_design.png"), tr("SW Design"), swDesignPage);
 
     NewSystemPage* sysPage = new NewSystemPage(libraryHandler_, &dialog);
-    connect(sysPage, SIGNAL(createSystem(VLNV const&, VLNV const&, QString const&)),
-        this, SLOT(createSystem(VLNV const&, VLNV const&, QString const&)));
+    connect(sysPage, SIGNAL(createSystem(VLNV const&, QString const&, VLNV const&, QString const&)),
+        this, SLOT(createSystem(VLNV const&, QString const&, VLNV const&, QString const&)));
     dialog.addPage(QIcon(":icons/graphics/new-system.png"), tr("System"), sysPage);
 
 	NewBusPage* busPage = new NewBusPage(libraryHandler_, &dialog);
@@ -1680,7 +1680,8 @@ void MainWindow::openSettings()
 //-----------------------------------------------------------------------------
 // Function: createSystem()
 //-----------------------------------------------------------------------------
-void MainWindow::createSystem(VLNV const& compVLNV, VLNV const& sysVLNV, QString const& directory)
+void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName,
+                              VLNV const& sysVLNV, QString const& directory)
 {
     Q_ASSERT(compVLNV.isValid());
     Q_ASSERT(sysVLNV.isValid());
@@ -1707,7 +1708,7 @@ void MainWindow::createSystem(VLNV const& compVLNV, VLNV const& sysVLNV, QString
 
     // Create the view to the HW design.
     View* hwView = new View("kts_hw_ref");
-    hwView->setHierarchyRef(component->getHierRef("structural")); // TODO: View name should be asked from the user.
+    hwView->setHierarchyRef(component->getHierRef(viewName));
     hwView->addEnvIdentifier("");
 
     Model* model = new Model;
@@ -1718,7 +1719,7 @@ void MainWindow::createSystem(VLNV const& compVLNV, VLNV const& sysVLNV, QString
 
     // Flat-out the hierarchy to form the system design.
     QSharedPointer<Design> sysDesign(new Design(designVLNV));
-    generateSystemDesign(libraryHandler_, directory, component->getHierRef("structural"), *sysDesign);
+    generateSystemDesign(libraryHandler_, directory, component->getHierRef(viewName), *sysDesign);
 
     // Create the design configuration.
     QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV));

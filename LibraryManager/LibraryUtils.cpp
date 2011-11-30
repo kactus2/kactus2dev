@@ -110,7 +110,7 @@ void parseProgrammableElements(LibraryInterface* lh, VLNV designVLNV,
     }
 
     // Go through all component instances and search for programmable elements.
-    foreach (Design::ComponentInstance const& instance, compDesign->getComponentInstances())
+    foreach (Design::ComponentInstance instance, compDesign->getComponentInstances())
     {
         QSharedPointer<LibraryComponent> libComp = lh->getModel(instance.componentRef);
         QSharedPointer<Component> childComp = libComp.staticCast<Component>();
@@ -121,6 +121,8 @@ void parseProgrammableElements(LibraryInterface* lh, VLNV designVLNV,
 			// or an attached SW design.
 			if ((!childComp->isHierarchical() && childComp->isCpu()) || childComp->findView("kts_sw_ref") != 0)
 			{
+                // Make sure the name is unique by prefixing it with the design's name.
+                instance.instanceName = designVLNV.getName().remove(".design") + "_" + instance.instanceName;
 				elements.append(instance);
 			}
 			else

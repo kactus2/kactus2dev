@@ -14,6 +14,8 @@
 #include <LibraryManager/libraryitem.h>
 #include <LibraryManager/libraryinterface.h>
 
+#include <models/component.h>
+
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 
 #include <QLabel>
@@ -34,7 +36,8 @@ NewSystemPage::NewSystemPage(LibraryInterface* libInterface, QWidget* parentDlg)
                                                                                    libInterface_(libInterface),
                                                                                    compTreeWidget_(0),
                                                                                    vlnvEditor_(0),
-                                                                                   directoryEdit_(0)
+                                                                                   directoryEdit_(0),
+                                                                                   viewComboBox_(0)
 {
     // Create the title and description labels labels.
     QLabel* titleLabel = new QLabel(tr("New System"), this);
@@ -60,7 +63,7 @@ NewSystemPage::NewSystemPage(LibraryInterface* libInterface, QWidget* parentDlg)
     }
 
     // Tree widget label.
-    QLabel* treeLabel = new QLabel(tr("Select Component:"), this);
+    QLabel* treeLabel = new QLabel(tr("Select component:"), this);
 
     // Create the tree widget and fill it with VLNV data.
     compTreeWidget_ = new QTreeWidget(this);
@@ -78,6 +81,13 @@ NewSystemPage::NewSystemPage(LibraryInterface* libInterface, QWidget* parentDlg)
             // Add child items.
             addChildItems(compRoot->child(i), item);
 
+            // Add only items that have children.
+            if (item->childCount() == 0)
+            {
+                delete item;
+                continue;
+            }
+
             // Add the item to the tree.
             compTreeWidget_->addTopLevelItem(item);
         }
@@ -87,6 +97,10 @@ NewSystemPage::NewSystemPage(LibraryInterface* libInterface, QWidget* parentDlg)
 
     connect(compTreeWidget_, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
             this, SLOT(onTreeItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
+
+    // Create the view selection combo box.
+    QLabel* viewLabel = new QLabel(tr("Select configuration:"), this);
+    viewComboBox_ = new QComboBox(this);
 
     // Create the VLNV editor.
     vlnvEditor_ = new VLNVEditor(VLNV::COMPONENT, libInterface, parentDlg, this, true);
@@ -115,6 +129,8 @@ NewSystemPage::NewSystemPage(LibraryInterface* libInterface, QWidget* parentDlg)
     layout->addSpacing(12);
     layout->addWidget(treeLabel);
     layout->addWidget(compTreeWidget_);
+    layout->addWidget(viewLabel);
+    layout->addWidget(viewComboBox_);
     layout->addWidget(vlnvEditor_);
     layout->addSpacing(12);
     layout->addLayout(pathLayout);
@@ -198,7 +214,8 @@ void NewSystemPage::apply()
     Q_ASSERT(compTreeWidget_->currentItem() != 0);
     QVariant data = compTreeWidget_->currentItem()->data(0, Qt::UserRole);
 
-    emit createSystem(data.value<VLNV>(), vlnvEditor_->getVLNV(), directoryEdit_->text());
+    emit createSystem(data.value<VLNV>(), viewComboBox_->currentText(),
+                      vlnvEditor_->getVLNV(), directoryEdit_->text());
 }
 
 //-----------------------------------------------------------------------------
@@ -244,7 +261,18 @@ void NewSystemPage::onTreeItemChanged(QTreeWidgetItem* cur, QTreeWidgetItem*)
 
             // Auto-fill the VLNV editor information (vendor and library fields).
             vlnvEditor_->setVLNV(VLNV(VLNV::DESIGN, compVLNV.getVendor(), compVLNV.getLibrary(),
-                                      sysVLNV.getName(), sysVLNV.getVersion()));                            
+                                 sysVLNV.getName(), sysVLNV.getVersion()));
+
+            // Add all available hierarchical views to the view combo box.
+            QSharedPointer<LibraryComponent> libComp = libInterface_->getModel(compVLNV);
+            QSharedPointer<Component> comp = libComp.staticCast<Component>();
+
+            viewComboBox_->clear();
+
+            foreach (QString const& viewName, comp->getHierViews())
+            {
+                viewComboBox_->addItem(viewName);
+            }
         }
     }
 
@@ -268,15 +296,37 @@ void NewSystemPage::addChildItems(LibraryItem const* libItem, QTreeWidgetItem* t
         if (vlnv == 0)
         {
             addChildItems(libItem->child(i), item);
+
+            // Add the item as a child of the given tree item if it has children.
+            if (item->childCount() > 0)
+            {
+                treeItem->addChild(item);
+            }
+            else
+            {
+                delete item;
+            }
         }
         else
         {
+            // Only hierarchical HW components are added.
+            QSharedPointer<LibraryComponent> libComp = libInterface_->getModel(*vlnv);
+            QSharedPointer<Component> comp = libComp.staticCast<Component>();
+
+            QStringList views = comp->getHierViews();
+            views.removeAll("kts_sw_ref");
+            views.removeAll("kts_sys_ref");
+
+            if (comp->getComponentImplementation() != KactusAttribute::KTS_HW || views.empty())
+            {
+                delete item;
+                continue;
+            }
+
             // Add the VLNV to the item's data.
             item->setData(0, Qt::UserRole, QVariant::fromValue((*vlnv)));
+            treeItem->addChild(item);
         }
-
-        // Add the item as a child of the given tree item.
-        treeItem->addChild(item);
     }
 }
 

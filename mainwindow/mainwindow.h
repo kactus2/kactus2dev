@@ -264,10 +264,12 @@ public slots:
      *  Creates a new system design.
      *
      *      @param [in] compVLNV   The VLNV of an existing component.
+     *      @param [in] viewName   The name of the view to which the system design will be based on.
      *      @param [in] sysVLNV    The VLNV of the system to be created.
      *      @param [in] directory  The directory where to save the system.
      */
-    void createSystem(VLNV const& compVLNV, VLNV const& sysVLNV, QString const& directory);
+    void createSystem(VLNV const& compVLNV, QString const& viewName,
+                      VLNV const& sysVLNV, QString const& directory);
 
     /*! \brief Creates a new bus definition and abstraction definition
 	 *
