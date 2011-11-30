@@ -52,7 +52,7 @@ SWDesignEditor::SWDesignEditor(QWidget *parent, QWidget* parentWnd, LibraryInter
     QGridLayout* layout = new QGridLayout(this);
     layout->addWidget(&platformMapping_, 0, 0, 1, 1);
     layout->addWidget(&endpointGroup_, 1, 0, 1, 1);
-    layout->addWidget(&previewBox_, 0, 1, 2, 1);
+    layout->addWidget(&previewBox_, 0, 1, 3, 1);
     layout->setRowStretch(2, 1);
 
     // Set endpoint and application VLNV editor disabled by default.
