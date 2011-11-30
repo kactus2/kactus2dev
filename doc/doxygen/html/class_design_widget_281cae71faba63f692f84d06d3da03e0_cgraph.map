@@ -1,5 +1,0 @@
-<area shape="rect" id="node3" href="$class_block_diagram.html#d9ed3e2e19aac451a815deaf68404288" title="BlockDiagram::addColumn" alt="" coords="273,5,465,32">
-<area shape="rect" id="node7" href="$class_column_edit_dialog.html#5be96ee5dff33edc2682032ebcc5e8bd" title="ColumnEditDialog::getAllowedItems" alt="" coords="245,56,493,83">
-<area shape="rect" id="node9" href="$class_column_edit_dialog.html#2c333ad80a582d697cada56112411af7" title="ColumnEditDialog::getContentType" alt="" coords="247,107,492,133">
-<area shape="rect" id="node11" href="$class_column_edit_dialog.html#43ca6f88dea4da2d4b2ad00a774b5897" title="ColumnEditDialog::getName" alt="" coords="268,157,471,184">
-<area shape="rect" id="node5" href="$class_generic_edit_provider.html#a44aaae7b9a6c25882059e45d8b24e1c" title="GenericEditProvider::addCommand" alt="" coords="542,5,789,32">

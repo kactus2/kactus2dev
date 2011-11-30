@@ -1,4 +1,0 @@
-<area shape="rect" id="node3" href="$class_bus_if_interface_mode_editor.html#ce4c5bfca5772feae39f55f954a38bca" title="Get pointer to the bus interface being edited." alt="" coords="311,5,529,32">
-<area shape="rect" id="node5" href="$class_bus_interface.html#09102aafbd5ef70e3b68d87d1e51b528" title="Get the pointer to the monitor instance." alt="" coords="331,56,509,83">
-<area shape="rect" id="node7" href="$class_bus_interface.html#7b0fe2e2589c14854b4dbaac5d5675db" title="Set the interface mode for this interface." alt="" coords="309,107,531,133">
-<area shape="rect" id="node9" href="$namespace_general.html#bfac860a5d7536959ce362183f4b167d" title="Convert QString into boolean value." alt="" coords="321,157,519,184">

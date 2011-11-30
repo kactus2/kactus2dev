@@ -1,9 +1,0 @@
-digraph G
-{
-  bgcolor="transparent";
-  edge [fontname="FreeSans",fontsize=10,labelfontname="FreeSans",labelfontsize=10];
-  node [fontname="FreeSans",fontsize=10,shape=record];
-  Node1 [label="ObjectRemoveDialog",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled" fontcolor="black"];
-  Node2 -> Node1 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="model_",fontname="FreeSans"];
-  Node2 [label="ObjectRemoveModel",height=0.2,width=0.4,color="black",URL="$class_object_remove_model.html",tooltip="Model class to select/deselect objects to be removed from library and file system..."];
-}

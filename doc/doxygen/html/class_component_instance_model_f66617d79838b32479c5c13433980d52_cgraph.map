@@ -1,6 +1,0 @@
-<area shape="rect" id="node3" href="$class_component_item.html#8e42aa92fdca17a63e6a075826820bbe" title="ComponentItem::getConfigurableElements" alt="" coords="359,5,654,32">
-<area shape="rect" id="node5" href="$class_endpoint_design_widget.html#713c25bd272cecf4d33ff28de1539b07" title="EndpointDesignWidget::getGenericEditProvider" alt="" coords="347,56,666,83">
-<area shape="rect" id="node7" href="$class_design_widget.html#5b4567c359cc52aa1b56b69e408e2060" title="Get the edit provider that manages the undo stack." alt="" coords="375,107,638,133">
-<area shape="rect" id="node9" href="$class_endpoint_design_diagram.html#9da98836bda583a0f92cbfd8327aab2e" title="EndpointDesignDiagram::parent" alt="" coords="393,157,620,184">
-<area shape="rect" id="node11" href="$class_block_diagram.html#7de56e67568b6362de2dcd5f21583fcf" title="Get pointer to the parent of this scene." alt="" coords="426,208,587,235">
-<area shape="rect" id="node13" href="$class_component_instance_model.html#74df37ab5aae63186320897063a95dd1" title="Read the values_ and add the items to the table to be displayed." alt="" coords="372,259,641,285">

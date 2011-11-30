@@ -1,7 +1,0 @@
-<area shape="rect" id="node3" href="$class_new_system_page.html#91da792a81b0ed50a29a0a12d4e95a2a" title="NewSystemPage::addChildItems" alt="" coords="301,107,531,133">
-<area shape="rect" id="node5" href="$class_library_item.html#ae28393e0e02a877ce2f310c38ff1e83" title="Get a pointer to the child item." alt="" coords="635,5,765,32">
-<area shape="rect" id="node7" href="$class_library_item.html#a47dc28b32e66bc6425e9548294f619c" title="Get the name of the item." alt="" coords="619,56,781,83">
-<area shape="rect" id="node9" href="$class_library_item.html#cf98bbd3e02ad8c3d0a9e5f3686d0572" title="Get the number of child items the item has." alt="" coords="579,157,821,184">
-<area shape="rect" id="node16" href="$class_library_interface.html#b38e112d36b0051871b92194ca32ce9c" title="Get const&#45;pointer to the library tree&#39;s root item." alt="" coords="313,208,519,235">
-<area shape="rect" id="node18" href="$class_v_l_n_v.html#a1671c2e1d651ca917500a71ba2f1e57" title="Static function. Convert IPXactType to printable QString." alt="" coords="351,259,481,285">
-<area shape="rect" id="node11" href="$class_library_item.html#bdc833d08661fad7e0a1a9bc534ee1de" title="get the VLNV tag of this item." alt="" coords="621,107,779,133">

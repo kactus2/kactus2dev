@@ -1,5 +1,0 @@
-<area shape="rect" id="node3" href="$class_bus_ports_model.html#de5292041f48d503bc4a78375ddc68f5" title="Convert PortDirection to string." alt="" coords="208,5,443,32">
-<area shape="rect" id="node5" href="$class_bus_ports_model.html#a7fe67736cb0944633a72dda909235e6" title="Convert PortDriver to string." alt="" coords="217,56,433,83">
-<area shape="rect" id="node7" href="$class_bus_ports_model.html#f5aefa6ea7c89e9d180f173577fab848" title="Convert PortMode to string." alt="" coords="219,107,432,133">
-<area shape="rect" id="node9" href="$class_bus_ports_model.html#eb73018e157ee42f7e2816d7c24a1658" title="Convert PortQualifier to string." alt="" coords="210,157,441,184">
-<area shape="rect" id="node11" href="$namespace_general.html#af6f6307a1e3b8c7fb0ff20c5e80df15" title="Convert the enum presence to QString." alt="" coords="242,208,409,235">

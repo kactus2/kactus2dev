@@ -1,6 +1,0 @@
-<area shape="rect" id="node3" href="$class_library_interface.html#f6944f708f9aa01568d707fdc773ea91" title="Checks if the library already contains the specified vlnv." alt="" coords="182,5,365,32">
-<area shape="rect" id="node5" href="$class_v_l_n_v_editor.html#ec64dfb071b106bbe96b95788cd1df25" title="VLNVEditor::getVLNV" alt="" coords="194,56,353,83">
-<area shape="rect" id="node7" href="$class_v_l_n_v_editor.html#eff4ed9c7b77a464c51bae1dbc48ad6c" title="VLNVEditor::isValid" alt="" coords="202,107,345,133">
-<area shape="rect" id="node9" href="$class_attribute_box.html#08cf70813c3ba2f52c457f2f823874aa" title="Check that attributeBox contains only non&#45;empty name&#45;value pairs." alt="" coords="198,157,349,184">
-<area shape="rect" id="node13" href="$class_name_group_box.html#f73fb14aee9a9e968558e9f3ad84358f" title="Check if the widget is in valid mode." alt="" coords="187,208,360,235">
-<area shape="rect" id="node11" href="$class_attribute_model.html#be5f6620d6058ada164caf16e097d4cd" title="Check that all attributes stored in the model are valid." alt="" coords="413,157,629,184">

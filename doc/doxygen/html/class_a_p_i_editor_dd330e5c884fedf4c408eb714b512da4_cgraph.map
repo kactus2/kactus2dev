@@ -1,5 +1,0 @@
-<area shape="rect" id="node3" href="$class_library_interface.html#f6944f708f9aa01568d707fdc773ea91" title="Checks if the library already contains the specified vlnv." alt="" coords="301,5,483,32">
-<area shape="rect" id="node5" href="$class_api_create_dialog.html#cddbb1983c2d571ef6bc6f94cb46aec3" title="ApiCreateDialog::getDirectory" alt="" coords="286,56,498,83">
-<area shape="rect" id="node7" href="$class_v_l_n_v_editor.html#ec64dfb071b106bbe96b95788cd1df25" title="VLNVEditor::getVLNV" alt="" coords="313,107,471,133">
-<area shape="rect" id="node9" href="$class_v_l_n_v.html#f02edbeb4feca8206bdb6681963730f8" title="Checks if the vlnv is valid or not." alt="" coords="339,157,445,184">
-<area shape="rect" id="node11" href="$class_library_interface.html#a841b91f4281dc02f2d3bf871f8bab45" title="Write the model to file system to given file path." alt="" coords="275,208,509,235">

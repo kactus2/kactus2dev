@@ -1,7 +1,0 @@
-<area shape="rect" id="node3" href="$class_view.html#16ed28e630214766d27dfaf2f3015c4a" title="Get pointer to the hierarchical desing for this view." alt="" coords="311,5,473,32">
-<area shape="rect" id="node5" href="$class_view.html#7220512cd590a516468a6ec4ddb77e07" title="Get the reference to a view that contains the implementation." alt="" coords="309,56,475,83">
-<area shape="rect" id="node7" href="$class_v_l_n_v_editor.html#edef36ca3252c366ed3d222c69d2c765" title="VLNVEditor::setVLNV" alt="" coords="313,107,471,133">
-<area shape="rect" id="node9" href="$class_v_l_n_v.html#f00f5007636620ffeff44521bacca857" title="Get the library of the VLNV." alt="" coords="526,31,655,57">
-<area shape="rect" id="node11" href="$class_v_l_n_v.html#3ff2bdff884da48aa0e936fa5595b7e8" title="Get the name of the IP block in VLNV." alt="" coords="528,81,653,108">
-<area shape="rect" id="node13" href="$class_v_l_n_v.html#8868ebe2affad578b9c9c3aef1f38632" title="Get the vendor of the VLNV." alt="" coords="525,132,657,159">
-<area shape="rect" id="node15" href="$class_v_l_n_v.html#3a5da6ca75e9a6bf575906c2ea185051" title="Get the version of the VLNV." alt="" coords="523,183,658,209">

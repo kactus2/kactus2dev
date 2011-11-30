@@ -1,4 +1,0 @@
-<area shape="rect" id="node1" href="$class_memory_map_item.html" title="MemoryMapItem is a base class to be used for generalization." alt="" coords="5,56,136,83">
-<area shape="rect" id="node3" href="$class_address_block.html" title="Equals to spirit:addressBlock element in IP&#45;Xact specification." alt="" coords="186,5,294,32">
-<area shape="rect" id="node5" href="$class_bank.html" title="Equals the spirit:bank element in IP&#45;Xact specification." alt="" coords="213,56,267,83">
-<area shape="rect" id="node7" href="$class_subspace_map.html" title="Equals the spirit:subspaceMap element in IP&#45;Xact specification." alt="" coords="184,107,296,133">

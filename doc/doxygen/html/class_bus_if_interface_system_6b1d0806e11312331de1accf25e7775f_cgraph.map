@@ -1,7 +1,0 @@
-<area shape="rect" id="node3" href="$class_bus_if_interface_mode_editor.html#ce4c5bfca5772feae39f55f954a38bca" title="Get pointer to the bus interface being edited." alt="" coords="343,31,561,57">
-<area shape="rect" id="node5" href="$class_bus_if_interface_system.html#d5c31ea5ba93988d8e4cc353c83a6ea7" title="Update the display for the editor." alt="" coords="323,81,581,108">
-<area shape="rect" id="node7" href="$class_library_interface.html#f6944f708f9aa01568d707fdc773ea91" title="Checks if the library already contains the specified vlnv." alt="" coords="643,5,826,32">
-<area shape="rect" id="node9" href="$class_bus_if_general_tab.html#f130ff5fb47c68a9ecfd96923678b7ab" title="Get the currently set bus type." alt="" coords="630,56,839,83">
-<area shape="rect" id="node13" href="$class_library_interface.html#92798f5c6f5e72c8f4da87e872812c4f" title="Get a model that matches given VLNV." alt="" coords="641,107,829,133">
-<area shape="rect" id="node15" href="$class_v_l_n_v.html#f02edbeb4feca8206bdb6681963730f8" title="Checks if the vlnv is valid or not." alt="" coords="681,157,788,184">
-<area shape="rect" id="node11" href="$class_v_l_n_v_editor.html#ec64dfb071b106bbe96b95788cd1df25" title="VLNVEditor::getVLNV" alt="" coords="889,56,1047,83">

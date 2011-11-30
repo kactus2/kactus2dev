@@ -1,5 +1,0 @@
-<area shape="rect" id="node3" href="$class_api_create_dialog.html#14c9397c2e9b5d6c1600b6b2f3704af6" title="ApiCreateDialog::createPath" alt="" coords="291,100,493,127">
-<area shape="rect" id="node5" href="$class_v_l_n_v.html#f00f5007636620ffeff44521bacca857" title="Get the library of the VLNV." alt="" coords="545,5,674,32">
-<area shape="rect" id="node7" href="$class_v_l_n_v.html#3ff2bdff884da48aa0e936fa5595b7e8" title="Get the name of the IP block in VLNV." alt="" coords="547,81,672,108">
-<area shape="rect" id="node9" href="$class_v_l_n_v.html#8868ebe2affad578b9c9c3aef1f38632" title="Get the vendor of the VLNV." alt="" coords="543,144,675,171">
-<area shape="rect" id="node11" href="$class_v_l_n_v.html#3a5da6ca75e9a6bf575906c2ea185051" title="Get the version of the VLNV." alt="" coords="542,195,677,221">

@@ -1,7 +1,0 @@
-<area shape="rect" id="node3" href="$class_component_tree_item.html#c054e97b791f3444fc123945bc91fddb" title="Get the data pointer to the item that this item represents." alt="" coords="304,5,563,32">
-<area shape="rect" id="node5" href="$class_component_tree_item.html#89c97750c277290854bfe8b583755749" title="Get index of specified child." alt="" coords="865,107,1095,133">
-<area shape="rect" id="node7" href="$class_component_tree_model.html#af89165fd435ace9af707c7196e7840d" title="Get the model index of the parent of specified item." alt="" coords="327,107,540,133">
-<area shape="rect" id="node14" href="$class_component_tree_item.html#a814a9bdb0a9573c144e92883d378546" title="Remove the specified child from the parent." alt="" coords="312,157,555,184">
-<area shape="rect" id="node16" href="$class_component_tree_item.html#5fae261b58d7f4d18176b6aa812ed8d1" title="Get the type of this item." alt="" coords="338,208,529,235">
-<area shape="rect" id="node9" href="$class_component_tree_item.html#08986a46fa75d0340ad88dc5577482b5" title="Get pointer to the parent of this instance." alt="" coords="611,107,815,133">
-<area shape="rect" id="node11" href="$class_component_tree_item.html#d90a82b24c42e7d4375075c7dd75048c" title="Get row of this item." alt="" coords="621,157,805,184">

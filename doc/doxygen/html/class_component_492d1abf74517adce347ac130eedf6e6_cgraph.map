@@ -1,9 +1,0 @@
-<area shape="rect" id="node3" href="$class_library_component.html#3b74741856f127a82cf3a9417b688c8d" title="Set the attributes that define the used xml namespaces." alt="" coords="189,5,525,32">
-<area shape="rect" id="node5" href="$class_library_component.html#08fde03d41a570589aea259804bee112" title="Write the model to disk as an IP&#45;Xact document." alt="" coords="268,56,447,83">
-<area shape="rect" id="node7" href="$namespace_general.html#e87a817610c1c7dbae182b8b47b1380c" title="Write the attributes from the QMap to the writer." alt="" coords="271,107,444,133">
-<area shape="rect" id="node9" href="$class_library_component.html#46806234462b8437d14b008442e3cee0" title="Write the kactus2 attributes using the writer." alt="" coords="211,157,503,184">
-<area shape="rect" id="node11" href="$class_library_component.html#a3a303629064ae55a3df5157ab76b1a7" title="Write the VLNV information using the specified writer." alt="" coords="251,208,464,235">
-<area shape="rect" id="node13" href="$generaldeclarations_8h.html#91be6c01d4ea1c5e60aca68f0b6efed2" title="SPIRIT_LIBRARY" alt="" coords="577,132,695,159">
-<area shape="rect" id="node15" href="$generaldeclarations_8h.html#e83546a3026439475ba1c85ff811ab6f" title="SPIRIT_NAME" alt="" coords="583,183,689,209">
-<area shape="rect" id="node17" href="$generaldeclarations_8h.html#ddbf7a8d947cc80c69007e5dfd313945" title="SPIRIT_VENDOR" alt="" coords="575,233,697,260">
-<area shape="rect" id="node19" href="$generaldeclarations_8h.html#b0791c8286c4a421fb74507d6f381737" title="SPIRIT_VERSION" alt="" coords="574,284,698,311">

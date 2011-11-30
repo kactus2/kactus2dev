@@ -1,4 +1,0 @@
-<area shape="rect" id="node3" href="$class_diagram_column.html#37e22474aa7cec67f05f68bef52d937b" title="DiagramColumn::getAllowedItems" alt="" coords="314,5,553,32">
-<area shape="rect" id="node5" href="$class_diagram_column.html#3e56a4e856b3a71427b12f61d6b59125" title="DiagramColumn::getContentType" alt="" coords="315,56,551,83">
-<area shape="rect" id="node7" href="$class_diagram_column.html#e08c770e24d4dd86c341063f5c7ed2a5" title="DiagramColumn::getName" alt="" coords="336,107,531,133">
-<area shape="rect" id="node9" href="$class_column_edit_dialog.html#6c3277bde59054b45dd794621bdbd195" title="ColumnEditDialog::setAllowedItems" alt="" coords="310,157,557,184">

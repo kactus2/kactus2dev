@@ -1,6 +1,0 @@
-<area shape="rect" id="node3" href="$namespace_general.html#70fac9fbd08c1c247135cf5ae540b762" title="Converts the enum BitSteering into QString." alt="" coords="353,5,530,32">
-<area shape="rect" id="node5" href="$namespace_general.html#8b7dabe80ae4549b857f39d327f7a1e2" title="Convert the Endianness to QString." alt="" coords="351,56,531,83">
-<area shape="rect" id="node7" href="$class_bus_interface.html#108cb6722736cf98fece12ed252d94f7" title="Get bits in lau value." alt="" coords="347,107,536,133">
-<area shape="rect" id="node9" href="$class_bus_interface.html#35cb3132001ab132140acc2072efd74a" title="Is the bitSteering on or off." alt="" coords="340,157,543,184">
-<area shape="rect" id="node11" href="$class_bus_interface.html#c356282f4dae389f46d8b6997b5b00e1" title="Can this interface be left unconnected." alt="" coords="312,208,571,235">
-<area shape="rect" id="node13" href="$class_bus_interface.html#2ec43b354efc60fde40e26d009f7dab4" title="Get the endianness of the bus interface." alt="" coords="339,259,543,285">

@@ -1,8 +1,0 @@
-<area shape="rect" id="node3" href="$class_v_l_n_v.html#f00f5007636620ffeff44521bacca857" title="Get the library of the VLNV." alt="" coords="526,5,655,32">
-<area shape="rect" id="node5" href="$class_library_handler.html#e1044fd472773f1310c341a1248b4efa" title="Get a model that matches given VLNV." alt="" coords="278,157,461,184">
-<area shape="rect" id="node10" href="$class_v_l_n_v.html#3ff2bdff884da48aa0e936fa5595b7e8" title="Get the name of the IP block in VLNV." alt="" coords="528,56,653,83">
-<area shape="rect" id="node14" href="$class_v_l_n_v.html#8868ebe2affad578b9c9c3aef1f38632" title="Get the vendor of the VLNV." alt="" coords="525,259,657,285">
-<area shape="rect" id="node16" href="$class_v_l_n_v.html#3a5da6ca75e9a6bf575906c2ea185051" title="Get the version of the VLNV." alt="" coords="523,309,658,336">
-<area shape="rect" id="node7" href="$class_parse__error.html#207f8cb5ec96cfa5e58a53914712c830" title="Get the error message." alt="" coords="510,107,671,133">
-<area shape="rect" id="node12" href="$class_v_l_n_v.html#5e8bcf9abe6a26377c30a80657650059" title="Get the type of the document the VLNV belongs to." alt="" coords="533,157,649,184">
-<area shape="rect" id="node18" href="$class_v_l_n_v.html#41e8feb8b594eaaf4efc45dc0b520656" title="Set the document type for the vlnv." alt="" coords="533,208,648,235">

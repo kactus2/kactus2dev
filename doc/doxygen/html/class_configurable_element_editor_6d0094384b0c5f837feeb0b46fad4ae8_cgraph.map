@@ -1,9 +1,0 @@
-<area shape="rect" id="node3" href="$class_component_item.html#49a73ee33e425a3ff37d93e68ca33c99" title="ComponentItem::componentModel" alt="" coords="385,81,631,108">
-<area shape="rect" id="node5" href="$class_component_instance_model.html#f66617d79838b32479c5c13433980d52" title="Set the component being edited." alt="" coords="362,132,654,159">
-<area shape="rect" id="node19" href="$class_configurable_element_delegate.html#f96c9e61b4d7ae9b422b131880a63102" title="Set the component that identifies the component instance type." alt="" coords="350,183,666,209">
-<area shape="rect" id="node7" href="$class_component_item.html#8e42aa92fdca17a63e6a075826820bbe" title="ComponentItem::getConfigurableElements" alt="" coords="727,5,1022,32">
-<area shape="rect" id="node9" href="$class_endpoint_design_widget.html#713c25bd272cecf4d33ff28de1539b07" title="EndpointDesignWidget::getGenericEditProvider" alt="" coords="715,56,1034,83">
-<area shape="rect" id="node11" href="$class_design_widget.html#5b4567c359cc52aa1b56b69e408e2060" title="Get the edit provider that manages the undo stack." alt="" coords="743,107,1006,133">
-<area shape="rect" id="node13" href="$class_endpoint_design_diagram.html#9da98836bda583a0f92cbfd8327aab2e" title="EndpointDesignDiagram::parent" alt="" coords="761,157,988,184">
-<area shape="rect" id="node15" href="$class_block_diagram.html#7de56e67568b6362de2dcd5f21583fcf" title="Get pointer to the parent of this scene." alt="" coords="794,208,955,235">
-<area shape="rect" id="node17" href="$class_component_instance_model.html#74df37ab5aae63186320897063a95dd1" title="Read the values_ and add the items to the table to be displayed." alt="" coords="740,259,1009,285">

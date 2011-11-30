@@ -1,4 +1,0 @@
-<area shape="rect" id="node1" href="$class_register_model.html" title="A base class for Register, RegisterFile and AlternateRegister classes." alt="" coords="5,56,117,83">
-<area shape="rect" id="node3" href="$class_alternate_register.html" title="Equals the spirit:alternateRegister element in IP&#45;Xact specification." alt="" coords="165,5,299,32">
-<area shape="rect" id="node5" href="$class_register.html" title="Equals the spirit:register element in IP&#45;Xact specification." alt="" coords="195,56,269,83">
-<area shape="rect" id="node7" href="$class_register_file.html" title="Equals the spirit:registerFile element in IP&#45;Xact specification." alt="" coords="185,107,279,133">

@@ -1,5 +1,0 @@
-<area shape="rect" id="node3" href="$class_view.html#88f049f1259e09c9476553ca670f78d4" title="Add a new envIdentifier for this view." alt="" coords="355,5,517,32">
-<area shape="rect" id="node5" href="$class_component.html#2719278fd9cd599d3cc1bd9a5255e0c0" title="Get the hierarchy level of the component." alt="" coords="305,56,567,83">
-<area shape="rect" id="node9" href="$class_view.html#54742356d37991cc78b89f39c80cae87" title="Set the hierarchyRef for this view." alt="" coords="356,107,516,133">
-<area shape="rect" id="node11" href="$class_view.html#66631b86915d17f72e0bbab273c16ed7" title="Set the name for the view." alt="" coords="377,157,495,184">
-<area shape="rect" id="node7" href="$namespace_kactus_attribute.html#06ec1d5e06c1ef482e066183183e8e20" title="KactusAttribute::stringToValue" alt="" coords="616,56,832,83">

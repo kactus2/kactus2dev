@@ -1,7 +1,0 @@
-<area shape="rect" id="node3" href="$class_bus_interface.html#42d1081e79c22944e968ccd44cfcd99e" title="get the vlnv to the abstraction definition" alt="" coords="275,5,509,32">
-<area shape="rect" id="node5" href="$class_bus_interface.html#a6e78e9449aef04faca537229d6b1a57" title="Get the mode of this interface." alt="" coords="281,56,503,83">
-<area shape="rect" id="node7" href="$class_bus_if_portmap_tab.html#846cea22a25a19bb4ca8db6f463eddfc" title="Set the abstraction type that defines the logical signals to use." alt="" coords="285,107,499,133">
-<area shape="rect" id="node9" href="$class_logical_list_model.html#a9e122ccaca5ba338fc4579bde4d5ba8" title="Set the abstraction type that defines logical signals." alt="" coords="557,107,765,133">
-<area shape="rect" id="node11" href="$class_library_interface.html#f6944f708f9aa01568d707fdc773ea91" title="Checks if the library already contains the specified vlnv." alt="" coords="817,56,999,83">
-<area shape="rect" id="node13" href="$class_library_interface.html#92798f5c6f5e72c8f4da87e872812c4f" title="Get a model that matches given VLNV." alt="" coords="814,107,1002,133">
-<area shape="rect" id="node15" href="$class_v_l_n_v.html#f02edbeb4feca8206bdb6681963730f8" title="Checks if the vlnv is valid or not." alt="" coords="855,157,961,184">

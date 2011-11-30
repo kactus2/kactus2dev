@@ -1,6 +1,0 @@
-<area shape="rect" id="node3" href="$class_endpoint_connection.html#0a32cd162a9d63cfe562d70cb398ea6b" title="EndpointConnection::createRoute" alt="" coords="307,5,543,32">
-<area shape="rect" id="node7" href="$class_endpoint_item.html#9d87e6aa4e69bba19d8ca625600b343a" title="EndpointItem::getDirectionVector" alt="" coords="592,56,827,83">
-<area shape="rect" id="node9" href="$class_endpoint_connection.html#9870f38dddec9a2faead5564b8cd8d10" title="EndpointConnection::setRoute" alt="" coords="318,107,533,133">
-<area shape="rect" id="node14" href="$diagramgrid_8h.html#68afc106817c98c8b7787ff86acee75e" title="Snaps the given QPointF to the diagram grid." alt="" coords="362,157,489,184">
-<area shape="rect" id="node5" href="$class_endpoint_connection.html#3780d27cb97b15d07d0fcf0f442adde3" title="EndpointConnection::simplifyPath" alt="" coords="592,5,827,32">
-<area shape="rect" id="node12" href="$class_endpoint_item.html#552a2b54fcbd6059dfb5225c7c90e68e" title="EndpointItem::setDirection" alt="" coords="613,107,805,133">

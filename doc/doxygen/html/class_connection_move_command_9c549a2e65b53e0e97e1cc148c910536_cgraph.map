@@ -1,4 +1,0 @@
-<area shape="rect" id="node3" href="$class_diagram_interconnection.html#e51805440bf5672011b8d906f392a033" title="Set the routing of the interconnection." alt="" coords="286,56,527,83">
-<area shape="rect" id="node5" href="$class_diagram_connection_end_point.html#24e5426821cdf4df2c7884979085d303" title="DiagramConnectionEndPoint::getDirection" alt="" coords="588,5,879,32">
-<area shape="rect" id="node7" href="$class_diagram_connection_end_point.html#b168e7790bc3da47eef4bb85bdc8d023" title="DiagramConnectionEndPoint::isDirectionFixed" alt="" coords="577,56,890,83">
-<area shape="rect" id="node9" href="$class_diagram_connection_end_point.html#118018fc1eb247ba0466cfd1b5c128fa" title="DiagramConnectionEndPoint::setDirection" alt="" coords="588,107,879,133">

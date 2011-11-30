@@ -1,5 +1,0 @@
-<area shape="rect" id="node3" href="$class_design_widget.html#decbd554762ee54ca1825c5b760f5cdd" title="DesignWidget::getView" alt="" coords="267,5,434,32">
-<area shape="rect" id="node5" href="$class_tab_document.html#6b758f2cc09b5ca46c55dc392ef2312c" title="TabDocument::getZoomLevel" alt="" coords="504,81,717,108">
-<area shape="rect" id="node7" href="$class_block_diagram.html#7de56e67568b6362de2dcd5f21583fcf" title="Get pointer to the parent of this scene." alt="" coords="270,107,431,133">
-<area shape="rect" id="node9" href="$class_design_widget.html#cec71672325d3debd2b405de859aa094" title="DesignWidget::setZoomLevel" alt="" coords="246,157,455,184">
-<area shape="rect" id="node12" href="$class_tab_document.html#fd58af35ed1e9bc26e5e23a2df9aebf8" title="TabDocument::setZoomLevel" alt="" coords="505,157,717,184">

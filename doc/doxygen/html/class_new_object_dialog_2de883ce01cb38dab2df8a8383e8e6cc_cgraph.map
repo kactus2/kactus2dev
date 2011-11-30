@@ -1,5 +1,0 @@
-<area shape="rect" id="node3" href="$class_v_l_n_v_editor.html#edef36ca3252c366ed3d222c69d2c765" title="VLNVEditor::setVLNV" alt="" coords="248,81,405,108">
-<area shape="rect" id="node5" href="$class_v_l_n_v.html#f00f5007636620ffeff44521bacca857" title="Get the library of the VLNV." alt="" coords="457,5,586,32">
-<area shape="rect" id="node7" href="$class_v_l_n_v.html#3ff2bdff884da48aa0e936fa5595b7e8" title="Get the name of the IP block in VLNV." alt="" coords="459,56,584,83">
-<area shape="rect" id="node9" href="$class_v_l_n_v.html#8868ebe2affad578b9c9c3aef1f38632" title="Get the vendor of the VLNV." alt="" coords="455,107,587,133">
-<area shape="rect" id="node11" href="$class_v_l_n_v.html#3a5da6ca75e9a6bf575906c2ea185051" title="Get the version of the VLNV." alt="" coords="454,157,589,184">

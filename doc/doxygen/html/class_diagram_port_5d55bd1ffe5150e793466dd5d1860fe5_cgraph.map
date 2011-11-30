@@ -1,3 +1,0 @@
-<area shape="rect" id="node3" href="$class_diagram_interconnection.html#de974117c39c74a61c8c2ec238d20ed6" title="DiagramInterconnection::endUpdatePosition" alt="" coords="314,5,619,32">
-<area shape="rect" id="node7" href="$class_diagram_connection_end_point.html#77a2addc49209f183aa80fa1b2306084" title="DiagramConnectionEndPoint::getInterconnections" alt="" coords="297,56,637,83">
-<area shape="rect" id="node5" href="$class_diagram_interconnection.html#60dc7fd65e1683a2a569073f93665074" title="Returns the route of this interconnection." alt="" coords="685,5,904,32">

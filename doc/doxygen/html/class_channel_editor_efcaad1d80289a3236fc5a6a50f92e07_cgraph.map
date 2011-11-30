@@ -1,9 +1,0 @@
-<area shape="rect" id="node3" href="$class_name_group_box.html#4b0f3b5b06faa6e7264738f9c50faed8" title="Get the value of the description&#45;field." alt="" coords="271,5,497,32">
-<area shape="rect" id="node5" href="$class_name_group_box.html#0998b9c79e4e14cedac13b857c89e2a1" title="Get the value of the displayName&#45;field." alt="" coords="265,56,503,83">
-<area shape="rect" id="node7" href="$class_name_group_box.html#c97d1eb24f286de336bb427fd656155e" title="Get the value of the name&#45;field." alt="" coords="288,107,480,133">
-<area shape="rect" id="node9" href="$class_list_manager.html#ad4d988f218cdd6825515fb7c8f7cb0a" title="Get the string items currently stored in the model." alt="" coords="312,157,456,184">
-<area shape="rect" id="node13" href="$class_channel.html#37b9e9f12170dc5cfadd94dd11e7280a" title="Set the desciption of the channel." alt="" coords="297,208,471,235">
-<area shape="rect" id="node15" href="$class_channel.html#f0e49b5a509046bf0ad7e107a7f79600" title="Set the display name of the channel." alt="" coords="291,259,477,285">
-<area shape="rect" id="node17" href="$class_channel.html#a491c3c32ee0559bf41c2e29465b79ff" title="Set the interfaces that belong to this channel." alt="" coords="301,309,467,336">
-<area shape="rect" id="node19" href="$class_channel.html#dbcdc273d583b5c5e247385b7b484b4d" title="Set the name of the channel." alt="" coords="313,360,455,387">
-<area shape="rect" id="node11" href="$class_list_manager_model.html#17210cf9d60047e8004ee21e4feb920e" title="Get the items currently stored in the model." alt="" coords="553,157,735,184">

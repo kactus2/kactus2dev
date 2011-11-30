@@ -1,6 +1,0 @@
-<area shape="rect" id="node3" href="$class_bus_interface.html#3e313c0f109499dd1ff969746cd5f1a2" title="Set the bits in lau value." alt="" coords="334,5,522,32">
-<area shape="rect" id="node5" href="$class_bus_interface.html#d330673716fc35981ef05baaa1cf545e" title="Set the bit steering for this interface." alt="" coords="327,56,529,83">
-<area shape="rect" id="node7" href="$class_bus_interface.html#242587a6f8883365b10006b6b058f8ff" title="Set the connectionRequired value." alt="" coords="299,107,557,133">
-<area shape="rect" id="node9" href="$class_bus_interface.html#96a3c673c7f62ea553f2569c6cc2a99e" title="Set the endianness for this interface." alt="" coords="327,157,529,184">
-<area shape="rect" id="node11" href="$namespace_general.html#6b22c34f51900db403d06a0158e1724d" title="Converts the QString to enum BitSteering." alt="" coords="340,208,516,235">
-<area shape="rect" id="node13" href="$namespace_general.html#0a1732b74756c4e3a1e5b0b0bf397cbc" title="Convert the value of the QString into enum Endianness." alt="" coords="339,259,517,285">

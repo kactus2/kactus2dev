@@ -1,6 +1,0 @@
-<area shape="rect" id="node3" href="$class_component_item.html#49a73ee33e425a3ff37d93e68ca33c99" title="ComponentItem::componentModel" alt="" coords="272,5,517,32">
-<area shape="rect" id="node5" href="$class_block_diagram.html#3408969b23cd2a060371d05d79355685" title="BlockDiagram::getColumnLayout" alt="" coords="279,56,511,83">
-<area shape="rect" id="node7" href="$class_diagram_column.html#c6c6bcbfb628c246c069d3d8d2ab7f48" title="DiagramColumn::isEmpty" alt="" coords="302,107,487,133">
-<area shape="rect" id="node9" href="$class_tab_document.html#52576d5c5d7f62eee909c0506d37a06a" title="TabDocument::isProtected" alt="" coords="299,157,491,184">
-<area shape="rect" id="node11" href="$class_component_item.html#065f3fb7a863a24ab7e5e1cbef4bf417" title="ComponentItem::name" alt="" coords="309,208,480,235">
-<area shape="rect" id="node13" href="$class_block_diagram.html#75c35a407910ef70fac375eaf193e569" title="This function should be called when user removes component instance." alt="" coords="264,259,525,285">
