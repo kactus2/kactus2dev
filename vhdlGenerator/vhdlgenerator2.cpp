@@ -186,7 +186,7 @@ void VhdlGenerator2::generateVhdl( const QString& outputFileName) {
 
 	// always add IEEE library
 	vhdlStream << "library IEEE;" << endl;
-	vhdlStream << "library std;" << endl;
+	//vhdlStream << "library std;" << endl;
 
 	// write the libraries needed 
 	libraries_.append("work");
@@ -196,9 +196,14 @@ void VhdlGenerator2::generateVhdl( const QString& outputFileName) {
 	foreach (QString library, libraries_) {
 		if (!library.isEmpty()) {
 			vhdlStream << "library " << library <<";" << endl;
-			vhdlStream << "use " << library << ".all;" << endl;
+
+			typeDefinitions_.append(QString("%1.all").arg(library));
 		}
 	}
+
+	// always add the library for std_logic and std_logic_vector
+	typeDefinitions_.append("IEEE.std_logic_1164.all");
+	typeDefinitions_.removeDuplicates();
 
 	// write all type defs needed
 	foreach (QString portTypeDef, typeDefinitions_) {

@@ -85,7 +85,9 @@ void HierarchyItem::parseComponent( const VLNV& vlnv ) {
 
 	// parse the component model
 	QSharedPointer<LibraryComponent> libComp = handler_->getModel(vlnv);
+	Q_ASSERT(libComp);
 	component_ = libComp.staticCast<Component>();
+	Q_ASSERT(component_);
 
 	// ask the hierarchical references from the component
 	QList<VLNV> refs = component_->getHierRefs();
@@ -231,7 +233,7 @@ void HierarchyItem::createChild(VLNV* vlnv ) {
 	if (hasChild(*vlnv))
 		return;
 	// if the child does not exist in library
-	else if (handler_->contains(*vlnv)) {
+	else if (!handler_->contains(*vlnv)) {
 		emit errorMessage(tr("The vlnv %1 was not found in the library.").arg(vlnv->toString()));
 		return;
 	}
