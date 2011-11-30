@@ -1,0 +1,14 @@
+<area shape="rect" id="node3" href="$class_bus_interface.html#6fa521eaf3889923fe834413b571e489" title="Get the attributes of the bus interface." alt="" coords="257,5,452,32">
+<area shape="rect" id="node5" href="$class_bus_interface.html#4d1644c428e37e6538a864ad76fe4980" title="Get the vlnv to the bus definition." alt="" coords="262,56,447,83">
+<area shape="rect" id="node7" href="$class_bus_interface.html#fa0992e2c09350e068f15cd9814b6ef4" title="Get the description of the bus interface." alt="" coords="253,107,456,133">
+<area shape="rect" id="node9" href="$class_bus_interface.html#9c27342431908d1a5e413f3fd83ef089" title="Get the display name of the bus interface." alt="" coords="247,157,463,184">
+<area shape="rect" id="node11" href="$class_bus_interface.html#a6e78e9449aef04faca537229d6b1a57" title="Get the mode of this interface." alt="" coords="243,208,466,235">
+<area shape="rect" id="node13" href="$class_bus_interface.html#68689fb6dc2fe53c9b2bc43d0904e549" title="get the name of the bus interface" alt="" coords="269,259,440,285">
+<area shape="rect" id="node15" href="$class_v_l_n_v.html#f02edbeb4feca8206bdb6681963730f8" title="Checks if the vlnv is valid or not." alt="" coords="301,309,408,336">
+<area shape="rect" id="node17" href="$class_attribute_box.html#4f57e8d7039e9232097b3f792af5029d" title="Set the attributes to be displayed in this widget." alt="" coords="258,360,451,387">
+<area shape="rect" id="node21" href="$class_v_l_n_v_editor.html#edef36ca3252c366ed3d222c69d2c765" title="VLNVEditor::setVLNV" alt="" coords="276,436,433,463">
+<area shape="rect" id="node19" href="$class_attribute_model.html#9ef23360ab7076bf5cee71928b195bb3" title="Set attributes for the model." alt="" coords="515,335,722,361">
+<area shape="rect" id="node23" href="$class_v_l_n_v.html#f00f5007636620ffeff44521bacca857" title="Get the library of the VLNV." alt="" coords="554,385,683,412">
+<area shape="rect" id="node25" href="$class_v_l_n_v.html#3ff2bdff884da48aa0e936fa5595b7e8" title="Get the name of the IP block in VLNV." alt="" coords="556,436,681,463">
+<area shape="rect" id="node27" href="$class_v_l_n_v.html#8868ebe2affad578b9c9c3aef1f38632" title="Get the vendor of the VLNV." alt="" coords="553,487,685,513">
+<area shape="rect" id="node29" href="$class_v_l_n_v.html#3a5da6ca75e9a6bf575906c2ea185051" title="Get the version of the VLNV." alt="" coords="551,537,686,564">

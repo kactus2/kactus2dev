@@ -1,0 +1,26 @@
+digraph G
+{
+  bgcolor="transparent";
+  edge [fontname="FreeSans",fontsize=10,labelfontname="FreeSans",labelfontsize=10];
+  node [fontname="FreeSans",fontsize=10,shape=record];
+  Node1 [label="ActiveViewModel",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled" fontcolor="black"];
+  Node2 -> Node1 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="designWidget_",fontname="FreeSans"];
+  Node2 [label="DesignWidget",height=0.2,width=0.4,color="black",URL="$class_design_widget.html",tooltip="DesignWidget is used to edit and view one design."];
+  Node3 -> Node2 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node3 [label="TabDocument",height=0.2,width=0.4,color="black",URL="$class_tab_document.html",tooltip="TabDocument class."];
+  Node4 -> Node2 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="lh_",fontname="FreeSans"];
+  Node4 [label="LibraryInterface",height=0.2,width=0.4,color="black",URL="$class_library_interface.html",tooltip="LibraryInterface defines an interface to operate the IP-Xact-library."];
+  Node5 -> Node2 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="diagram_",fontname="FreeSans"];
+  Node5 [label="BlockDiagram",height=0.2,width=0.4,color="black",URL="$class_block_diagram.html",tooltip="BlockDiagram is a graphical view to a design."];
+  Node2 -> Node5 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="parent_",fontname="FreeSans"];
+  Node6 -> Node5 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="tempConnection_",fontname="FreeSans"];
+  Node6 [label="DiagramInterconnection",height=0.2,width=0.4,color="black",URL="$class_diagram_interconnection.html",tooltip="DiagramInterconnection represents graphically an IP-XACT interconnection."];
+  Node7 -> Node6 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="endPoint1_\nendPoint2_",fontname="FreeSans"];
+  Node7 [label="DiagramConnectionEndPoint",height=0.2,width=0.4,color="black",URL="$class_diagram_connection_end_point.html",tooltip="DiagramConnectionEndPoint interface."];
+  Node4 -> Node5 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="lh_",fontname="FreeSans"];
+  Node7 -> Node5 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="tempConnEndPoint_\nhighlightedEndPoint_",fontname="FreeSans"];
+  Node8 -> Node5 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="editProvider_",fontname="FreeSans"];
+  Node8 [label="GenericEditProvider",height=0.2,width=0.4,color="black",URL="$class_generic_edit_provider.html",tooltip="GenericEditProvider class."];
+  Node9 -> Node8 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node9 [label="IEditProvider",height=0.2,width=0.4,color="black",URL="$class_i_edit_provider.html",tooltip="IEditProvider interface."];
+}

@@ -1,0 +1,43 @@
+<area shape="rect" id="node3" href="$class_system_column.html#d44a2563b33b1b82ea39bde7d2c572e0" title="SystemColumn::addItem" alt="" coords="381,56,563,83">
+<area shape="rect" id="node12" href="$class_library_interface.html#55d33e9e99760ae1a12725681c034b43" title="Get the document type of given vlnv." alt="" coords="1015,360,1262,387">
+<area shape="rect" id="node14" href="$class_mapping_component_item.html#e9953151671046282dff2cf75e6574d7" title="MappingComponentItem::getEndpoint" alt="" coords="339,208,605,235">
+<area shape="rect" id="node24" href="$class_i_d_factory.html#696d85fd5777842c5a26e06d726842fd" title="IDFactory::getID" alt="" coords="410,259,534,285">
+<area shape="rect" id="node26" href="$class_endpoint_design_diagram.html#0fb1c7eef7fd733fcdf6d6475761bff4" title="EndpointDesignDiagram::getMappingComponent" alt="" coords="305,309,639,336">
+<area shape="rect" id="node29" href="$class_library_interface.html#92798f5c6f5e72c8f4da87e872812c4f" title="Get a model that matches given VLNV." alt="" coords="1045,715,1233,741">
+<area shape="rect" id="node31" href="$class_v_l_n_v.html#3ff2bdff884da48aa0e936fa5595b7e8" title="Get the name of the IP block in VLNV." alt="" coords="1325,765,1451,792">
+<area shape="rect" id="node33" href="$class_library_interface.html#d76e2648d944acbd458ae4727342bcf4" title="Get a path to the specified IP&#45;Xact document." alt="" coords="383,461,561,488">
+<area shape="rect" id="node35" href="$class_v_l_n_v.html#5e8bcf9abe6a26377c30a80657650059" title="Get the type of the document the VLNV belongs to." alt="" coords="1081,411,1197,437">
+<area shape="rect" id="node37" href="$class_v_l_n_v.html#f02edbeb4feca8206bdb6681963730f8" title="Checks if the vlnv is valid or not." alt="" coords="1335,461,1441,488">
+<area shape="rect" id="node39" href="$class_s_w_component_item.html#402966f13ad292764c94dfbbd208bd23" title="SWComponentItem::setImported" alt="" coords="356,892,588,919">
+<area shape="rect" id="node53" href="$class_endpoint_connection.html#9870f38dddec9a2faead5564b8cd8d10" title="EndpointConnection::setRoute" alt="" coords="365,613,579,640">
+<area shape="rect" id="node59" href="$class_v_l_n_v.html#41e8feb8b594eaaf4efc45dc0b520656" title="Set the document type for the vlnv." alt="" coords="1081,512,1196,539">
+<area shape="rect" id="node61" href="$_library_utils_8cpp.html#d0854b70d33dfc6efcb49a357c85674f" title="updateSystemDesign" alt="" coords="392,841,552,868">
+<area shape="rect" id="node103" href="$class_i_d_factory.html#6e0bf6e11384885550b655459591fd4a" title="IDFactory::usedID" alt="" coords="405,943,539,969">
+<area shape="rect" id="node5" href="$namespace_v_stacked_layout.html#e377b4c99851b8d82fc5c132dac24e0b" title="VStackedLayout::setItemPos" alt="" coords="722,5,929,32">
+<area shape="rect" id="node9" href="$namespace_v_stacked_layout.html#5f14204a310806c9c55dc46552b97b4d" title="VStackedLayout::updateItemMove" alt="" coords="704,56,947,83">
+<area shape="rect" id="node7" href="$namespace_diagram_util.html#34372d64301c316deaa127e2bfcf4d58" title="DiagramUtil::clampCeil" alt="" coords="1055,5,1223,32">
+<area shape="rect" id="node16" href="$class_program_entity_item.html#4945b95a6e2a057b079566f1b7d9d746" title="ProgramEntityItem::getEndpoint" alt="" coords="712,107,939,133">
+<area shape="rect" id="node22" href="$class_component_item.html#065f3fb7a863a24ab7e5e1cbef4bf417" title="ComponentItem::name" alt="" coords="740,259,911,285">
+<area shape="rect" id="node18" href="$class_endpoint_stack.html#ced0c93d0e06d730261112f7d6573860" title="EndpointStack::getEndpoints" alt="" coords="1035,107,1242,133">
+<area shape="rect" id="node20" href="$class_endpoint_item.html#8af24936977f7c7481300e7700042ad7" title="EndpointItem::getName" alt="" coords="1051,56,1226,83">
+<area shape="rect" id="node41" href="$class_s_w_component_item.html#6a5fe2d6c41a857760dce1755176de3e" title="SWComponentItem::updateComponent" alt="" coords="688,1019,963,1045">
+<area shape="rect" id="node43" href="$class_component_item.html#2c3e3dbd4ab3e6fdd363d21f4310a047" title="ComponentItem::updateComponent" alt="" coords="1011,816,1266,843">
+<area shape="rect" id="node45" href="$class_v_l_n_v.html#f00f5007636620ffeff44521bacca857" title="Get the library of the VLNV." alt="" coords="1323,853,1453,880">
+<area shape="rect" id="node48" href="$class_v_l_n_v.html#8868ebe2affad578b9c9c3aef1f38632" title="Get the vendor of the VLNV." alt="" coords="1322,980,1454,1007">
+<area shape="rect" id="node50" href="$class_v_l_n_v.html#3a5da6ca75e9a6bf575906c2ea185051" title="Get the version of the VLNV." alt="" coords="1321,1051,1455,1077">
+<area shape="rect" id="node55" href="$class_endpoint_item.html#9d87e6aa4e69bba19d8ca625600b343a" title="EndpointItem::getDirectionVector" alt="" coords="708,664,943,691">
+<area shape="rect" id="node57" href="$class_endpoint_item.html#552a2b54fcbd6059dfb5225c7c90e68e" title="EndpointItem::setDirection" alt="" coords="729,613,921,640">
+<area shape="rect" id="node63" href="$_library_utils_8cpp.html#176884967a4c4c2d8bdc034a30695f7e" title="addNewInstances" alt="" coords="758,1069,893,1096">
+<area shape="rect" id="node84" href="$class_library_interface.html#a841b91f4281dc02f2d3bf871f8bab45" title="Write the model to file system to given file path." alt="" coords="1022,1272,1255,1299">
+<area shape="rect" id="node86" href="$class_design.html#81eb24d5b036238410426d3ebcb57b89" title="Get list of the component instances in this design." alt="" coords="710,765,941,792">
+<area shape="rect" id="node88" href="$_library_utils_8cpp.html#0250d8d72cdcf7c2042abb9f6c0a51e9" title="getConnectionIndex" alt="" coords="751,816,900,843">
+<area shape="rect" id="node90" href="$_library_utils_8cpp.html#9de1d498319d5471586884d65746c2cb" title="getInstanceIndex" alt="" coords="760,867,891,893">
+<area shape="rect" id="node93" href="$_library_utils_8cpp.html#681a83e681e7e934524ba6095db8f8f0" title="parseProgrammableElements" alt="" coords="719,461,932,488">
+<area shape="rect" id="node100" href="$class_design.html#4b52418792ac7bd7047da7f9c8d7ed3c" title="Set the component instances of this design." alt="" coords="710,968,941,995">
+<area shape="rect" id="node65" href="$class_view.html#88f049f1259e09c9476553ca670f78d4" title="Add a new envIdentifier for this view." alt="" coords="1058,1120,1219,1147">
+<area shape="rect" id="node67" href="$class_model.html#b3e0f3d28719d841c38f33c99710c01f" title="Add a new view to the model." alt="" coords="1078,1171,1199,1197">
+<area shape="rect" id="node78" href="$class_library_component.html#6eec1574efa3547ee7e36ae36555edef" title="Get the vlnv of the element described in the document." alt="" coords="1041,1221,1237,1248">
+<area shape="rect" id="node80" href="$class_view.html#54742356d37991cc78b89f39c80cae87" title="Set the hierarchyRef for this view." alt="" coords="1059,867,1219,893">
+<area shape="rect" id="node82" href="$class_model.html#c49590f3f1ba0d39b5824cdcabca9917" title="Set the model parameters for this model." alt="" coords="1038,917,1239,944">
+<area shape="rect" id="node69" href="$class_view.html#944b4a70717842b92bb5c8c4064dbd07" title="Get the name of the view." alt="" coords="1329,1196,1447,1223">
+<area shape="rect" id="node71" href="$class_model.html#ef11cd1c58b59258612bc9b94289202e" title="Remove the specified name from the model." alt="" coords="1315,1145,1461,1172">

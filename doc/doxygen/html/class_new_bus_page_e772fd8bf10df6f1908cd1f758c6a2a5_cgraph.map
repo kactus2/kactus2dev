@@ -1,0 +1,5 @@
+<area shape="rect" id="node3" href="$class_library_interface.html#f6944f708f9aa01568d707fdc773ea91" title="Checks if the library already contains the specified vlnv." alt="" coords="217,5,399,32">
+<area shape="rect" id="node5" href="$class_v_l_n_v_editor.html#ec64dfb071b106bbe96b95788cd1df25" title="VLNVEditor::getVLNV" alt="" coords="229,56,387,83">
+<area shape="rect" id="node7" href="$class_new_bus_page.html#5a2af06339e33e31f5ce0782013cdc00" title="NewBusPage::prevalidate" alt="" coords="216,107,400,133">
+<area shape="rect" id="node11" href="$class_v_l_n_v.html#d44080fa56f2b1ec03cdccaa1c5ccb69" title="Create a QString that contains the vlnv." alt="" coords="250,157,366,184">
+<area shape="rect" id="node9" href="$class_v_l_n_v_editor.html#eff4ed9c7b77a464c51bae1dbc48ad6c" title="VLNVEditor::isValid" alt="" coords="449,107,591,133">

@@ -1,0 +1,24 @@
+<area shape="rect" id="node3" href="$class_vhdl_generator2.html#f5448f370453d47e638625d1c6aee1e3" title="Map ports of component instances to signals." alt="" coords="929,23,1175,50">
+<area shape="rect" id="node7" href="$class_vhdl_generator2.html#9bef4061241277afbfc902d8c0a773d5" title="Parse the ad hoc connections of a design." alt="" coords="592,99,880,126">
+<area shape="rect" id="node16" href="$class_vhdl_generator2.html#0fe607cde5bfe574b42e5c5e9a9c3848" title="Parse the design and configuration used." alt="" coords="222,394,543,420">
+<area shape="rect" id="node34" href="$class_vhdl_generator2.html#7c4a36fb7cea503b90fefefad14caf6c" title="Parse the hierarchical connections of a design." alt="" coords="247,206,519,232">
+<area shape="rect" id="node43" href="$class_vhdl_generator2.html#30159cdd9507a9a67b3569afa6aad2b9" title="Parse the component instances from the design." alt="" coords="269,444,497,471">
+<area shape="rect" id="node48" href="$class_vhdl_generator2.html#198950db4f3cebeb5e382e78458126d8" title="Parse the interconnections of a design." alt="" coords="246,332,519,359">
+<area shape="rect" id="node55" href="$class_vhdl_generator2.html#968b99f0432fb0f2185a3abcfeee02d7" title="Parse the generics for the top entity to create." alt="" coords="259,495,506,522">
+<area shape="rect" id="node57" href="$class_vhdl_generator2.html#d16778aef13c3c56765f0ed0959735f5" title="Parse the ports for the top entity to create." alt="" coords="271,546,494,572">
+<area shape="rect" id="node5" href="$namespace_vhdl_general.html#35ae117e8a6c0ca051b39f272ca17482" title="Check if the port type is scalar." alt="" coords="1250,48,1438,75">
+<area shape="rect" id="node9" href="$class_vhdl_generator2.html#63bf461182b2a8a94283354681a39be6" title="Connect the specified top port to specified instance ports." alt="" coords="935,74,1169,100">
+<area shape="rect" id="node12" href="$class_vhdl_generator2.html#0a4d7f10d0ded7866d4551d506f92433" title="Connect the specified ports together." alt="" coords="945,124,1159,151">
+<area shape="rect" id="node14" href="$class_vhdl_generator2.html#6f641cc140b58e045a2258aa6edea84b" title="Connect the given endPoint with the signal." alt="" coords="1225,124,1463,151">
+<area shape="rect" id="node18" href="$class_library_interface.html#8ef9fc0d708c53c6a8bcb8310b0551f0" title="Get pointer to the design for a given hierarchy reference." alt="" coords="639,302,833,328">
+<area shape="rect" id="node20" href="$class_library_interface.html#2469901845d9312b48844c6f41ec75d1" title="Get the VLNV of the design for a given hierarchy reference." alt="" coords="621,352,851,379">
+<area shape="rect" id="node22" href="$class_library_interface.html#55d33e9e99760ae1a12725681c034b43" title="Get the document type of given vlnv." alt="" coords="613,504,859,531">
+<area shape="rect" id="node24" href="$class_view.html#16ed28e630214766d27dfaf2f3015c4a" title="Get pointer to the hierarchical desing for this view." alt="" coords="655,403,817,430">
+<area shape="rect" id="node26" href="$class_library_interface.html#92798f5c6f5e72c8f4da87e872812c4f" title="Get a model that matches given VLNV." alt="" coords="642,555,830,582">
+<area shape="rect" id="node28" href="$class_view.html#f8d30aa133c5fda3656309515c8dfd8b" title="Is the view a hierarchical one or not." alt="" coords="664,251,808,278">
+<area shape="rect" id="node32" href="$class_v_l_n_v.html#d44080fa56f2b1ec03cdccaa1c5ccb69" title="Create a QString that contains the vlnv." alt="" coords="678,454,794,480">
+<area shape="rect" id="node30" href="$class_v_l_n_v.html#f02edbeb4feca8206bdb6681963730f8" title="Checks if the vlnv is valid or not." alt="" coords="999,276,1105,303">
+<area shape="rect" id="node36" href="$class_vhdl_generator2.html#0c742e57f97a984779636d9e716ccb5c" title="Connect the hierarchical interface to the instance interface." alt="" coords="604,150,868,176">
+<area shape="rect" id="node38" href="$namespace_general.html#43b6fcb74775efc5336ba40a26969524" title="Calculate the alignment for the ports from the port maps." alt="" coords="938,175,1166,202">
+<area shape="rect" id="node41" href="$class_bus_interface.html#c8af36688eededc98dd936c41780c0a9" title="Get the port maps for this interface." alt="" coords="957,226,1147,252">
+<area shape="rect" id="node50" href="$class_vhdl_generator2.html#930728015721856c3f9145238453d82b" title="Connect the two interfaces together with signals." alt="" coords="613,200,859,227">

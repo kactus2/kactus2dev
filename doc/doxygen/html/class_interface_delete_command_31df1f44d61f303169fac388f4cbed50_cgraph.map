@@ -1,0 +1,11 @@
+<area shape="rect" id="node3" href="$class_diagram_column.html#d2ba8c85f29f7ad0b0717f042f11a184" title="DiagramColumn::addItem" alt="" coords="280,132,467,159">
+<area shape="rect" id="node21" href="$class_diagram_interface.html#916e5d0630860680e522c99dcfa69964" title="DiagramInterface::define" alt="" coords="283,233,463,260">
+<area shape="rect" id="node5" href="$class_diagram_column.html#d06eafc748b7b697464e807761343355" title="DiagramColumn::removeItem" alt="" coords="530,5,742,32">
+<area shape="rect" id="node11" href="$namespace_v_stacked_layout.html#e377b4c99851b8d82fc5c132dac24e0b" title="VStackedLayout::setItemPos" alt="" coords="847,56,1054,83">
+<area shape="rect" id="node14" href="$namespace_v_collision_layout.html#a5d414d021b2e84936d5924e4150f100" title="VCollisionLayout::setItemPos" alt="" coords="533,107,739,133">
+<area shape="rect" id="node16" href="$namespace_v_stacked_layout.html#5f14204a310806c9c55dc46552b97b4d" title="VStackedLayout::updateItemMove" alt="" coords="829,132,1072,159">
+<area shape="rect" id="node19" href="$namespace_v_collision_layout.html#1b75da2ff617504d045ddc8d45a21856" title="VCollisionLayout::updateItemMove" alt="" coords="515,208,757,235">
+<area shape="rect" id="node7" href="$namespace_v_stacked_layout.html#4ecf5cf2db0d1e5c8f31ad07c5f0b363" title="VStackedLayout::updateItemPositions" alt="" coords="818,5,1083,32">
+<area shape="rect" id="node9" href="$namespace_diagram_util.html#34372d64301c316deaa127e2bfcf4d58" title="DiagramUtil::clampCeil" alt="" coords="1144,56,1312,83">
+<area shape="rect" id="node23" href="$class_diagram_interface.html#cf3ba89c9ed6c8da64d399aefb9bdd56" title="Update the graphics to match the IP&#45;XACT bus interface." alt="" coords="515,259,757,285">
+<area shape="rect" id="node25" href="$class_diagram_connection_end_point.html#24e5426821cdf4df2c7884979085d303" title="DiagramConnectionEndPoint::getDirection" alt="" coords="805,259,1096,285">

@@ -1,0 +1,3 @@
+<area shape="rect" id="node1" href="$class_build_model.html" title="Acts as a base class for FileBuilder &amp; BuildCommand classes." alt="" coords="5,31,96,57">
+<area shape="rect" id="node3" href="$class_build_command.html" title="Equals the spirit:buildCommand element in IP&#45;Xact specification." alt="" coords="144,5,264,32">
+<area shape="rect" id="node5" href="$class_file_builder.html" title="Equals the spirit:fileBuilderType element in IP&#45;Xact specification." alt="" coords="161,56,247,83">

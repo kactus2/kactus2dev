@@ -1,0 +1,9 @@
+<area shape="rect" id="node3" href="$class_diagram_interconnection.html#c76e3854d8ed34174e3e821497fc9bf2" title="Return the first end point connected." alt="" coords="300,5,548,32">
+<area shape="rect" id="node5" href="$class_diagram_interconnection.html#ffac0f0f479b95c98de4144dbd9c5867" title="Return the second end point connected." alt="" coords="300,56,548,83">
+<area shape="rect" id="node7" href="$class_diagram_connection_end_point.html#77a2addc49209f183aa80fa1b2306084" title="DiagramConnectionEndPoint::getInterconnections" alt="" coords="254,107,594,133">
+<area shape="rect" id="node9" href="$class_v_l_n_v.html#f02edbeb4feca8206bdb6681963730f8" title="Checks if the vlnv is valid or not." alt="" coords="371,157,477,184">
+<area shape="rect" id="node11" href="$class_diagram_connection_end_point.html#88f1921941349a0cf25447e41f30045a" title="DiagramConnectionEndPoint::onConnect" alt="" coords="283,208,565,235">
+<area shape="rect" id="node13" href="$class_diagram_connection_end_point.html#507461a037639ef2b1776a6b797d2211" title="DiagramConnectionEndPoint::onDisconnect" alt="" coords="274,259,574,285">
+<area shape="rect" id="node15" href="$class_diagram_interface.html#318c78fd1b4436e6cc0f27516ba843e0" title="DiagramInterface::setTemporary" alt="" coords="309,309,539,336">
+<area shape="rect" id="node17" href="$class_diagram_interface.html#cf3ba89c9ed6c8da64d399aefb9bdd56" title="Update the graphics to match the IP&#45;XACT bus interface." alt="" coords="303,360,545,387">
+<area shape="rect" id="node19" href="$class_diagram_connection_end_point.html#24e5426821cdf4df2c7884979085d303" title="DiagramConnectionEndPoint::getDirection" alt="" coords="643,360,933,387">

@@ -1,0 +1,32 @@
+digraph G
+{
+  bgcolor="transparent";
+  edge [fontname="FreeSans",fontsize=10,labelfontname="FreeSans",labelfontsize=10];
+  node [fontname="FreeSans",fontsize=10,shape=record];
+  Node1 [label="FileGeneralTab",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled" fontcolor="black"];
+  Node2 -> Node1 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="generalEditor_",fontname="FreeSans"];
+  Node2 [label="FileGeneralEditor",height=0.2,width=0.4,color="black",URL="$class_file_general_editor.html",tooltip="FileGeneralEditor is a widget to edit File&#39;s general settings."];
+  Node3 -> Node2 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="file_",fontname="FreeSans"];
+  Node3 [label="File",height=0.2,width=0.4,color="black",URL="$class_file.html",tooltip="Equals the spirit:file element in IP-Xact specification."];
+  Node4 -> Node3 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="parent_",fontname="FreeSans"];
+  Node4 [label="FileSet",height=0.2,width=0.4,color="black",URL="$class_file_set.html",tooltip="Equals the spirit:fileSet element in IP-Xact specification."];
+  Node5 -> Node4 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="nameGroup_",fontname="FreeSans"];
+  Node5 [label="General::NameGroup",height=0.2,width=0.4,color="black",URL="$struct_general_1_1_name_group.html",tooltip="The NameGroup matches the spirit:nameGroup element in IP-Xact."];
+  Node6 -> Node1 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="nameEditor_",fontname="FreeSans"];
+  Node6 [label="FileNameEditor",height=0.2,width=0.4,color="black",URL="$class_file_name_editor.html",tooltip="FileNameEditor is a widget to edit the name element in FileSet."];
+  Node7 -> Node6 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="nameEdit_",fontname="FreeSans"];
+  Node7 [label="FileNameLineEdit",height=0.2,width=0.4,color="black",URL="$class_file_name_line_edit.html",tooltip="FileNameLineEdit is used to select a file to QString format."];
+  Node8 -> Node6 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="attributes_",fontname="FreeSans"];
+  Node8 [label="AttributeBox",height=0.2,width=0.4,color="black",URL="$class_attribute_box.html",tooltip="AttributeBox provides services to manage attributes for IP-Xact."];
+  Node9 -> Node8 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="model_",fontname="FreeSans"];
+  Node9 [label="AttributeModel",height=0.2,width=0.4,color="black",URL="$class_attribute_model.html",tooltip="AttributeModel is a model class to display the attributes."];
+  Node8 -> Node1 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="attributes_",fontname="FreeSans"];
+  Node10 -> Node1 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="fileTypeEditor_",fontname="FreeSans"];
+  Node10 [label="FileTypeEditor",height=0.2,width=0.4,color="black",URL="$class_file_type_editor.html",tooltip="FileTypeEditor is used to specify a file type for a file."];
+  Node11 -> Node10 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node11 [label="ListManager",height=0.2,width=0.4,color="black",URL="$class_list_manager.html",tooltip="ListManager is a widget to manage a list of strings."];
+  Node12 -> Node11 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="model_",fontname="FreeSans"];
+  Node12 [label="ListManagerModel",height=0.2,width=0.4,color="black",URL="$class_list_manager_model.html",tooltip="ListManagerModel is a model class to manage a list of strings."];
+  Node3 -> Node10 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="file_",fontname="FreeSans"];
+  Node3 -> Node1 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="file_",fontname="FreeSans"];
+}

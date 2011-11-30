@@ -1,0 +1,15 @@
+<area shape="rect" id="node1" href="$class_item_editor.html" title="ItemEditor is a base class for editors in Component Editor module." alt="" coords="5,335,93,361">
+<area shape="rect" id="node3" href="$class_a_p_i_editor.html" title="Container for editors to edit a bus interface." alt="" coords="190,5,269,32">
+<area shape="rect" id="node5" href="$class_bus_interface_editor.html" title="Container for editors to edit a bus interface." alt="" coords="160,56,299,83">
+<area shape="rect" id="node7" href="$class_channel_editor.html" title="ChannelEditor is widget for editing channel&#45;element within component." alt="" coords="174,107,285,133">
+<area shape="rect" id="node9" href="$class_endpoint_editor.html" title="EndpointEditor class." alt="" coords="172,157,287,184">
+<area shape="rect" id="node11" href="$class_file_builder_editor.html" title="Container widget to edit file&#39;s file builders." alt="" coords="167,208,291,235">
+<area shape="rect" id="node13" href="$class_file_editor.html" title="FileEditor is a widget to edit the details of a File." alt="" coords="189,259,269,285">
+<area shape="rect" id="node15" href="$class_file_set_editor.html" title="FileSetEditor is a widget to edit the details of a FileSet." alt="" coords="178,309,281,336">
+<area shape="rect" id="node17" href="$class_general_editor.html" title="GeneralEditor class." alt="" coords="175,360,284,387">
+<area shape="rect" id="node19" href="$class_model_parameter_editor.html" title="Widget to edit component&#39;s model parameters." alt="" coords="147,411,312,437">
+<area shape="rect" id="node21" href="$class_other_clock_drivers_editor.html" title="Widget to edit the otherClockDrivers of a component." alt="" coords="142,461,317,488">
+<area shape="rect" id="node23" href="$class_parameters_editor.html" title="Editor to add/edit/remove parameters of a component." alt="" coords="162,512,297,539">
+<area shape="rect" id="node25" href="$class_ports_editor.html" title="Editor to edit the ports of a component." alt="" coords="183,563,275,589">
+<area shape="rect" id="node27" href="$class_software_mappings_editor.html" title="SoftwareMappingsEditor class." alt="" coords="141,613,317,640">
+<area shape="rect" id="node29" href="$class_view_editor.html" title="Editor to edit a view within a component." alt="" coords="185,664,273,691">

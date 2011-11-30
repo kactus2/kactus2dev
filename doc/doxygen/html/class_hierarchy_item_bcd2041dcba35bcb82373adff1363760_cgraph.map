@@ -1,0 +1,15 @@
+<area shape="rect" id="node3" href="$class_library_interface.html#55d33e9e99760ae1a12725681c034b43" title="Get the document type of given vlnv." alt="" coords="553,5,799,32">
+<area shape="rect" id="node5" href="$class_v_l_n_v.html#f00f5007636620ffeff44521bacca857" title="Get the library of the VLNV." alt="" coords="611,56,741,83">
+<area shape="rect" id="node7" href="$class_v_l_n_v.html#3ff2bdff884da48aa0e936fa5595b7e8" title="Get the name of the IP block in VLNV." alt="" coords="613,107,739,133">
+<area shape="rect" id="node9" href="$class_v_l_n_v.html#8868ebe2affad578b9c9c3aef1f38632" title="Get the vendor of the VLNV." alt="" coords="610,157,742,184">
+<area shape="rect" id="node11" href="$class_v_l_n_v.html#3a5da6ca75e9a6bf575906c2ea185051" title="Get the version of the VLNV." alt="" coords="609,536,743,563">
+<area shape="rect" id="node13" href="$class_hierarchy_item.html#2cba010357e109c7d87290e94ffb3730" title="Parse this hierarchy item to match an abstraction definition." alt="" coords="264,425,504,452">
+<area shape="rect" id="node17" href="$class_hierarchy_item.html#5b3aacaf02e0597374f0e7ef73b7c110" title="Parse this hierarchy item to match a bus definition." alt="" coords="264,564,504,591">
+<area shape="rect" id="node20" href="$class_hierarchy_item.html#93085e3853f1c845b3240ecbd7f2411a" title="Parse this hierarchy item to match a component." alt="" coords="269,259,499,285">
+<area shape="rect" id="node15" href="$class_library_interface.html#92798f5c6f5e72c8f4da87e872812c4f" title="Get a model that matches given VLNV." alt="" coords="582,587,770,613">
+<area shape="rect" id="node22" href="$class_library_interface.html#f6944f708f9aa01568d707fdc773ea91" title="Checks if the library already contains the specified vlnv." alt="" coords="585,208,767,235">
+<area shape="rect" id="node28" href="$class_library_interface.html#ab62407acf9e26ecc7535c7caf78d17f" title="Get pointer to the VLNV instance owned by the Library Data." alt="" coords="555,259,797,285">
+<area shape="rect" id="node32" href="$class_hierarchy_item.html#763c2b1e9017b9a53d763551a048f3e2" title="Get the vlnv of this item." alt="" coords="848,360,1024,387">
+<area shape="rect" id="node34" href="$class_hierarchy_item.html#02a02eca9864626e88a644bd08f6f987" title="Checks if this HierarchyItem already has child for given vlnv." alt="" coords="589,360,763,387">
+<area shape="rect" id="node37" href="$class_hierarchy_item.html#726c8871facc9af4dc8b8332f2aa80c2" title="Checks if the item has parent on some hierarchy&#45;level with given vlnv." alt="" coords="583,435,769,461">
+<area shape="rect" id="node42" href="$class_v_l_n_v.html#41e8feb8b594eaaf4efc45dc0b520656" title="Set the document type for the vlnv." alt="" coords="619,485,733,512">

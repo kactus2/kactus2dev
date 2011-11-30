@@ -1,0 +1,12 @@
+<area shape="rect" id="node3" href="$class_library_data.html#4e2d74a8625cfdf231f5b25044e1a412" title="Add a new IP&#45;XACT file to the component library." alt="" coords="227,132,434,159">
+<area shape="rect" id="node22" href="$class_library_data.html#ce314867e61ce0db7abdb178997b52b0" title="Check what kind of IP&#45;Xact document is the file." alt="" coords="233,208,429,235">
+<area shape="rect" id="node5" href="$class_i_p_xact_model.html#64dc7b27fc697df14ef919135af06add" title="get the VLNV of the document" alt="" coords="736,81,899,108">
+<area shape="rect" id="node15" href="$class_library_data.html#89ef7bb8c573732fbbb0b52157c1114f" title="Check that the given file path contains a valid IP&#45;Xact file." alt="" coords="483,132,688,159">
+<area shape="rect" id="node7" href="$ipxactmodel_8cpp.html#ec8bfbe1d382f3250ad1e1685e3406be" title="LIBRARY_" alt="" coords="951,5,1031,32">
+<area shape="rect" id="node9" href="$ipxactmodel_8cpp.html#bb5f30837ccf7e1f302243bce1684482" title="NAME_" alt="" coords="957,56,1024,83">
+<area shape="rect" id="node11" href="$ipxactmodel_8cpp.html#073e31dba7bddc089d043f5c7f924946" title="VENDOR_" alt="" coords="949,107,1033,133">
+<area shape="rect" id="node13" href="$ipxactmodel_8cpp.html#82fbbe1edd8d93ee573834cdcc40e3a5" title="VERSION_" alt="" coords="947,157,1034,184">
+<area shape="rect" id="node17" href="$class_parse__error.html#207f8cb5ec96cfa5e58a53914712c830" title="Get the error message." alt="" coords="737,132,898,159">
+<area shape="rect" id="node20" href="$class_v_l_n_v.html#f02edbeb4feca8206bdb6681963730f8" title="Checks if the vlnv is valid or not." alt="" coords="764,183,871,209">
+<area shape="rect" id="node24" href="$class_i_p_xact_model.html#cd2fb9871fe7465c341253b97943a38c" title="Get the type of the document." alt="" coords="494,220,677,247">
+<area shape="rect" id="node26" href="$class_v_l_n_v.html#d32c05d3acc08bc8fc70ffba5db30d59" title="Static function. Convert QString formatted type to enum Type." alt="" coords="748,233,887,260">

@@ -1,0 +1,9 @@
+<area shape="rect" id="node3" href="$class_component_item.html#49a73ee33e425a3ff37d93e68ca33c99" title="ComponentItem::componentModel" alt="" coords="340,5,585,32">
+<area shape="rect" id="node5" href="$class_s_w_component_item.html#e9e724f0741a4f4e0ca3395931e237cf" title="SWComponentItem::isImported" alt="" coords="351,56,574,83">
+<area shape="rect" id="node7" href="$class_v_l_n_v.html#f02edbeb4feca8206bdb6681963730f8" title="Checks if the vlnv is valid or not." alt="" coords="967,100,1073,127">
+<area shape="rect" id="node9" href="$class_s_w_component_item.html#6a5fe2d6c41a857760dce1755176de3e" title="SWComponentItem::updateComponent" alt="" coords="325,169,600,196">
+<area shape="rect" id="node11" href="$class_component_item.html#2c3e3dbd4ab3e6fdd363d21f4310a047" title="ComponentItem::updateComponent" alt="" coords="649,195,903,221">
+<area shape="rect" id="node13" href="$class_v_l_n_v.html#f00f5007636620ffeff44521bacca857" title="Get the library of the VLNV." alt="" coords="955,151,1085,177">
+<area shape="rect" id="node15" href="$class_v_l_n_v.html#3ff2bdff884da48aa0e936fa5595b7e8" title="Get the name of the IP block in VLNV." alt="" coords="957,201,1083,228">
+<area shape="rect" id="node17" href="$class_v_l_n_v.html#8868ebe2affad578b9c9c3aef1f38632" title="Get the vendor of the VLNV." alt="" coords="954,252,1086,279">
+<area shape="rect" id="node19" href="$class_v_l_n_v.html#3a5da6ca75e9a6bf575906c2ea185051" title="Get the version of the VLNV." alt="" coords="953,303,1087,329">

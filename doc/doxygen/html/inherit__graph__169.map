@@ -1,0 +1,7 @@
+<area shape="rect" id="node1" href="$class_library_component.html" title="LibraryComponent is a base class for the 7 IP&#45;Xact document types." alt="" coords="6,132,146,159">
+<area shape="rect" id="node3" href="$class_abstraction_definition.html" title="Equals the spirit:abstractionDefinition element in IP&#45;Xact specification." alt="" coords="195,5,349,32">
+<area shape="rect" id="node5" href="$class_bus_definition.html" title="Equals the spirit:busDefinition element in IP&#45;Xact specification." alt="" coords="219,56,325,83">
+<area shape="rect" id="node7" href="$class_component.html" title="Equals to spirit:component element in IP&#45;Xact specification." alt="" coords="223,107,321,133">
+<area shape="rect" id="node9" href="$class_design.html" title="Describes an IP&#45;XACT design." alt="" coords="239,157,305,184">
+<area shape="rect" id="node11" href="$class_design_configuration.html" title="Equals the spirit:designConfiguration element in IP&#45;Xact specification." alt="" coords="197,208,347,235">
+<area shape="rect" id="node13" href="$class_generator_chain.html" title="Equals the spirit:generatorChain element in IP&#45;Xact specification." alt="" coords="211,259,333,285">

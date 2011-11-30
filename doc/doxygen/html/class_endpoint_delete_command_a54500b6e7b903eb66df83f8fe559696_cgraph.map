@@ -1,0 +1,17 @@
+<area shape="rect" id="node3" href="$class_endpoint_stack.html#41a5c53715b07168fb97190465b43a13" title="EndpointStack::removeEndpoint" alt="" coords="277,309,504,336">
+<area shape="rect" id="node5" href="$class_component_item.html#49a73ee33e425a3ff37d93e68ca33c99" title="ComponentItem::componentModel" alt="" coords="867,157,1112,184">
+<area shape="rect" id="node7" href="$class_i_d_factory.html#a1cbad682e0956223eca6c0050b36143" title="IDFactory::freeID" alt="" coords="1244,208,1372,235">
+<area shape="rect" id="node9" href="$class_program_entity_item.html#aa817c7a10afe44a17154a52979f7ce4" title="ProgramEntityItem::getMappingComponent" alt="" coords="1505,157,1805,184">
+<area shape="rect" id="node11" href="$class_endpoint_item.html#8af24936977f7c7481300e7700042ad7" title="EndpointItem::getName" alt="" coords="598,360,773,387">
+<area shape="rect" id="node13" href="$class_endpoint_item.html#2dd5ead395b9e30c6e7af4c953b7a2d9" title="EndpointItem::getPortID" alt="" coords="598,411,773,437">
+<area shape="rect" id="node15" href="$class_mapping_component_item.html#a08c595682846b02061ca7ef1b8e956e" title="MappingComponentItem::getPortIDFactory" alt="" coords="1161,259,1455,285">
+<area shape="rect" id="node17" href="$class_endpoint_stack.html#d5bb97e9a6168a8ba87d4f4c44993a84" title="EndpointStack::getVisibleHeight" alt="" coords="572,461,799,488">
+<area shape="rect" id="node19" href="$class_endpoint_item.html#ba0c690a4e31bd637f1e04deb3b01c73" title="EndpointItem::removeBusInterface" alt="" coords="563,107,807,133">
+<area shape="rect" id="node38" href="$namespace_v_stacked_layout.html#4ecf5cf2db0d1e5c8f31ad07c5f0b363" title="VStackedLayout::updateItemPositions" alt="" coords="553,512,818,539">
+<area shape="rect" id="node22" href="$class_endpoint_item.html#d50aa902bdf0025745a12aa0ee4b3e41" title="EndpointItem::getFullName" alt="" coords="891,31,1087,57">
+<area shape="rect" id="node26" href="$class_endpoint_item.html#6e55fce2402231ed51852822295cf86e" title="EndpointItem::setPortID" alt="" coords="902,107,1077,133">
+<area shape="rect" id="node24" href="$class_component_item.html#065f3fb7a863a24ab7e5e1cbef4bf417" title="ComponentItem::name" alt="" coords="1223,5,1393,32">
+<area shape="rect" id="node31" href="$class_endpoint_item.html#96a5ea437fef728b990ef02c9b02ba1b" title="EndpointItem::updateText" alt="" coords="1215,56,1401,83">
+<area shape="rect" id="node36" href="$class_i_d_factory.html#6e0bf6e11384885550b655459591fd4a" title="IDFactory::usedID" alt="" coords="1241,107,1375,133">
+<area shape="rect" id="node33" href="$class_mapping_component_item.html#bb0464b90d277538161c88744f1d12ea" title="MappingComponentItem::getID" alt="" coords="1543,56,1766,83">
+<area shape="rect" id="node40" href="$namespace_diagram_util.html#34372d64301c316deaa127e2bfcf4d58" title="DiagramUtil::clampCeil" alt="" coords="905,512,1073,539">

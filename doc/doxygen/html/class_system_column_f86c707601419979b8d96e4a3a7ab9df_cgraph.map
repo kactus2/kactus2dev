@@ -1,0 +1,5 @@
+<area shape="rect" id="node3" href="$class_system_column_layout.html#32355713d351c23ae509a526d597f59c" title="SystemColumnLayout::findColumnAt" alt="" coords="266,5,523,32">
+<area shape="rect" id="node6" href="$diagramgrid_8h.html#68afc106817c98c8b7787ff86acee75e" title="Snaps the given QPointF to the diagram grid." alt="" coords="331,56,458,83">
+<area shape="rect" id="node8" href="$namespace_v_stacked_layout.html#5f14204a310806c9c55dc46552b97b4d" title="VStackedLayout::updateItemMove" alt="" coords="273,107,516,133">
+<area shape="rect" id="node12" href="$namespace_v_stacked_layout.html#4ecf5cf2db0d1e5c8f31ad07c5f0b363" title="VStackedLayout::updateItemPositions" alt="" coords="262,157,527,184">
+<area shape="rect" id="node10" href="$namespace_diagram_util.html#34372d64301c316deaa127e2bfcf4d58" title="DiagramUtil::clampCeil" alt="" coords="576,132,744,159">

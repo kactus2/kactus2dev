@@ -1,0 +1,6 @@
+<area shape="rect" id="node3" href="$class_kactus_attribute_editor.html#2ea1740a398074685714aa5e7771f1f8" title="KactusAttributeEditor::setAttributes" alt="" coords="286,31,535,57">
+<area shape="rect" id="node5" href="$class_v_l_n_v_editor.html#edef36ca3252c366ed3d222c69d2c765" title="VLNVEditor::setVLNV" alt="" coords="332,81,489,108">
+<area shape="rect" id="node7" href="$class_v_l_n_v.html#f00f5007636620ffeff44521bacca857" title="Get the library of the VLNV." alt="" coords="587,5,717,32">
+<area shape="rect" id="node9" href="$class_v_l_n_v.html#3ff2bdff884da48aa0e936fa5595b7e8" title="Get the name of the IP block in VLNV." alt="" coords="589,56,715,83">
+<area shape="rect" id="node11" href="$class_v_l_n_v.html#8868ebe2affad578b9c9c3aef1f38632" title="Get the vendor of the VLNV." alt="" coords="586,107,718,133">
+<area shape="rect" id="node13" href="$class_v_l_n_v.html#3a5da6ca75e9a6bf575906c2ea185051" title="Get the version of the VLNV." alt="" coords="585,157,719,184">

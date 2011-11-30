@@ -1,0 +1,11 @@
+<area shape="rect" id="node3" href="$class_v_l_n_v.html#f00f5007636620ffeff44521bacca857" title="Get the library of the VLNV." alt="" coords="479,5,609,32">
+<area shape="rect" id="node5" href="$class_library_interface.html#92798f5c6f5e72c8f4da87e872812c4f" title="Get a model that matches given VLNV." alt="" coords="222,252,410,279">
+<area shape="rect" id="node7" href="$class_v_l_n_v.html#3ff2bdff884da48aa0e936fa5595b7e8" title="Get the name of the IP block in VLNV." alt="" coords="481,68,607,95">
+<area shape="rect" id="node9" href="$class_library_item.html#a47dc28b32e66bc6425e9548294f619c" title="Get the name of the item." alt="" coords="235,303,397,329">
+<area shape="rect" id="node11" href="$class_library_data.html#24c5eff0a08109c4d688e5a9ccd79abb" title="Returns the absolute file path of the specified IP&#45;Xact document." alt="" coords="239,100,393,127">
+<area shape="rect" id="node15" href="$class_v_l_n_v.html#8868ebe2affad578b9c9c3aef1f38632" title="Get the vendor of the VLNV." alt="" coords="478,144,610,171">
+<area shape="rect" id="node17" href="$class_v_l_n_v.html#3a5da6ca75e9a6bf575906c2ea185051" title="Get the version of the VLNV." alt="" coords="477,199,611,225">
+<area shape="rect" id="node19" href="$class_v_l_n_v.html#5e8bcf9abe6a26377c30a80657650059" title="Get the type of the document the VLNV belongs to." alt="" coords="258,353,374,380">
+<area shape="rect" id="node23" href="$class_library_item.html#bdc833d08661fad7e0a1a9bc534ee1de" title="get the VLNV tag of this item." alt="" coords="237,404,395,431">
+<area shape="rect" id="node25" href="$class_library_item.html#92d2a22fcb2e27a3df7840aca79290f7" title="Check if this item is valid or not." alt="" coords="245,455,387,481">
+<area shape="rect" id="node27" href="$class_v_l_n_v.html#fbb2400b5d5d3865783f3b961aa795f6" title="Is the document identified by this vlnv valid or not." alt="" coords="459,455,629,481">

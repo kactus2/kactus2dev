@@ -1,0 +1,6 @@
+<area shape="rect" id="node3" href="$class_endpoint_stack.html#c8ff88f459faf774c1ef83fcc62ec430" title="EndpointStack::isExpanded" alt="" coords="296,5,491,32">
+<area shape="rect" id="node5" href="$class_endpoint_stack.html#40fd1f07f4006f9f389ea3b4756291a1" title="EndpointStack::setExpanded" alt="" coords="291,56,496,83">
+<area shape="rect" id="node7" href="$class_endpoint_stack.html#d5bb97e9a6168a8ba87d4f4c44993a84" title="EndpointStack::getVisibleHeight" alt="" coords="571,31,797,57">
+<area shape="rect" id="node9" href="$class_endpoint_stack.html#83cd08a469128b5391251c670cfbf855" title="EndpointStack::updateEndpointPositions" alt="" coords="544,81,824,108">
+<area shape="rect" id="node11" href="$namespace_v_stacked_layout.html#4ecf5cf2db0d1e5c8f31ad07c5f0b363" title="VStackedLayout::updateItemPositions" alt="" coords="873,81,1138,108">
+<area shape="rect" id="node13" href="$namespace_diagram_util.html#34372d64301c316deaa127e2bfcf4d58" title="DiagramUtil::clampCeil" alt="" coords="1187,81,1355,108">

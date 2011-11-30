@@ -1,0 +1,7 @@
+<area shape="rect" id="node3" href="$class_endpoint_design_diagram.html#80a9c5b00482c16a893f7f93846da531" title="EndpointDesignDiagram::getColumnLayout" alt="" coords="320,5,619,32">
+<area shape="rect" id="node5" href="$class_endpoint_stack.html#4d736c7e7c1fc1acaf6e704fd16dc72b" title="EndpointStack::isEditable" alt="" coords="378,56,561,83">
+<area shape="rect" id="node7" href="$class_system_column.html#0558ad56c55f1109a00accb81aeb813d" title="SystemColumn::isEmpty" alt="" coords="380,107,559,133">
+<area shape="rect" id="node9" href="$class_s_w_component_item.html#e9e724f0741a4f4e0ca3395931e237cf" title="SWComponentItem::isImported" alt="" coords="358,157,581,184">
+<area shape="rect" id="node11" href="$class_mapping_component_item.html#a57c599a93773b8b21d2be5b77e86aea" title="MappingComponentItem::isMapped" alt="" coords="345,208,594,235">
+<area shape="rect" id="node15" href="$class_tab_document.html#52576d5c5d7f62eee909c0506d37a06a" title="TabDocument::isProtected" alt="" coords="373,259,565,285">
+<area shape="rect" id="node13" href="$class_component_item.html#8e42aa92fdca17a63e6a075826820bbe" title="ComponentItem::getConfigurableElements" alt="" coords="667,208,962,235">

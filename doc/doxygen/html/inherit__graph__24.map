@@ -1,0 +1,6 @@
+<area shape="rect" id="node1" href="$class_bus_if_interface_mode_editor.html" title="Base class for different interface mode editors of a bus interface." alt="" coords="5,107,187,133">
+<area shape="rect" id="node3" href="$class_bus_if_interface_master.html" title="Editor to edit master or mirrored master settings of a bus interface." alt="" coords="238,5,391,32">
+<area shape="rect" id="node5" href="$class_bus_if_interface_monitor.html" title="Editor the edit a monitor settings of a bus interface." alt="" coords="236,56,393,83">
+<area shape="rect" id="node7" href="$class_bus_if_interface_m_slave.html" title="Editor to edit mirrored slave details of a bus interface." alt="" coords="237,107,392,133">
+<area shape="rect" id="node9" href="$class_bus_if_interface_slave.html" title="Editor to the slave details of a bus interface." alt="" coords="243,157,387,184">
+<area shape="rect" id="node11" href="$class_bus_if_interface_system.html" title="Editor to edit system or mirrored system details of a bus interface." alt="" coords="235,208,394,235">

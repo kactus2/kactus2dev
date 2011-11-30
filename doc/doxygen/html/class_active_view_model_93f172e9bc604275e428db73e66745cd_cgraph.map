@@ -1,0 +1,4 @@
+<area shape="rect" id="node3" href="$class_active_view_model.html#0cdbcc59cae1d949643674f1fdd03bbe" title="Clear the model&#39;s contents." alt="" coords="302,5,469,32">
+<area shape="rect" id="node5" href="$class_design_widget.html#5b4567c359cc52aa1b56b69e408e2060" title="Get the edit provider that manages the undo stack." alt="" coords="254,56,517,83">
+<area shape="rect" id="node7" href="$class_design_widget.html#6f3cc1e0af342520b23dc56a8d4545d9" title="Get the component instances contained in the design." alt="" coords="286,107,485,133">
+<area shape="rect" id="node9" href="$class_block_diagram.html#f69e6b3fcfd8323fc45e8b18defbc000" title="Get the component instances contained in this scene." alt="" coords="566,107,767,133">

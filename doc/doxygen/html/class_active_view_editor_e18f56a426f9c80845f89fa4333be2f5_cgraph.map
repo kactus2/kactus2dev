@@ -1,0 +1,8 @@
+<area shape="rect" id="node3" href="$class_active_view_editor.html#37ca8bdf65e4da44970ea0b034e258bb" title="Clear the editor&#39;s contents." alt="" coords="282,56,449,83">
+<area shape="rect" id="node7" href="$class_design_widget.html#bb2e865bdd9011d48cbfc7135e97e025" title="Get the configuration for this design." alt="" coords="254,5,477,32">
+<area shape="rect" id="node11" href="$class_active_view_model.html#93f172e9bc604275e428db73e66745cd" title="Set the design that&#39;s active views are edited." alt="" coords="265,107,465,133">
+<area shape="rect" id="node5" href="$class_active_view_model.html#0cdbcc59cae1d949643674f1fdd03bbe" title="Clear the model&#39;s contents." alt="" coords="577,56,743,83">
+<area shape="rect" id="node9" href="$class_block_diagram.html#20b29e70bf2e6839b4d274e8896f8637" title="Get pointer to the design configuration." alt="" coords="525,5,795,32">
+<area shape="rect" id="node14" href="$class_design_widget.html#5b4567c359cc52aa1b56b69e408e2060" title="Get the edit provider that manages the undo stack." alt="" coords="529,107,791,133">
+<area shape="rect" id="node16" href="$class_design_widget.html#6f3cc1e0af342520b23dc56a8d4545d9" title="Get the component instances contained in the design." alt="" coords="561,157,759,184">
+<area shape="rect" id="node18" href="$class_block_diagram.html#f69e6b3fcfd8323fc45e8b18defbc000" title="Get the component instances contained in this scene." alt="" coords="843,157,1045,184">

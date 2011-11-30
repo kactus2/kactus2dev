@@ -1,0 +1,8 @@
+<area shape="rect" id="node3" href="$class_library_interface.html#8ef9fc0d708c53c6a8bcb8310b0551f0" title="Get pointer to the design for a given hierarchy reference." alt="" coords="403,5,597,32">
+<area shape="rect" id="node5" href="$class_library_interface.html#2469901845d9312b48844c6f41ec75d1" title="Get the VLNV of the design for a given hierarchy reference." alt="" coords="385,56,615,83">
+<area shape="rect" id="node7" href="$class_library_interface.html#55d33e9e99760ae1a12725681c034b43" title="Get the document type of given vlnv." alt="" coords="377,107,623,133">
+<area shape="rect" id="node9" href="$class_view.html#16ed28e630214766d27dfaf2f3015c4a" title="Get pointer to the hierarchical desing for this view." alt="" coords="419,157,581,184">
+<area shape="rect" id="node11" href="$class_library_interface.html#92798f5c6f5e72c8f4da87e872812c4f" title="Get a model that matches given VLNV." alt="" coords="406,208,594,235">
+<area shape="rect" id="node13" href="$class_view.html#f8d30aa133c5fda3656309515c8dfd8b" title="Is the view a hierarchical one or not." alt="" coords="428,259,572,285">
+<area shape="rect" id="node17" href="$class_v_l_n_v.html#d44080fa56f2b1ec03cdccaa1c5ccb69" title="Create a QString that contains the vlnv." alt="" coords="442,309,558,336">
+<area shape="rect" id="node15" href="$class_v_l_n_v.html#f02edbeb4feca8206bdb6681963730f8" title="Checks if the vlnv is valid or not." alt="" coords="672,259,779,285">

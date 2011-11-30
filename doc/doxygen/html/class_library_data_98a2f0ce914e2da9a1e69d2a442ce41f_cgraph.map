@@ -1,0 +1,16 @@
+<area shape="rect" id="node3" href="$class_library_data.html#9515cb876bcdb26f88dcf7193804dded" title="Add the given vlnv to the library." alt="" coords="237,132,400,159">
+<area shape="rect" id="node5" href="$class_v_l_n_v.html#f00f5007636620ffeff44521bacca857" title="Get the library of the VLNV." alt="" coords="486,5,615,32">
+<area shape="rect" id="node7" href="$class_v_l_n_v.html#3ff2bdff884da48aa0e936fa5595b7e8" title="Get the name of the IP block in VLNV." alt="" coords="488,56,613,83">
+<area shape="rect" id="node9" href="$class_v_l_n_v.html#8868ebe2affad578b9c9c3aef1f38632" title="Get the vendor of the VLNV." alt="" coords="485,107,617,133">
+<area shape="rect" id="node11" href="$class_v_l_n_v.html#3a5da6ca75e9a6bf575906c2ea185051" title="Get the version of the VLNV." alt="" coords="483,157,618,184">
+<area shape="rect" id="node13" href="$class_library_data.html#89ef7bb8c573732fbbb0b52157c1114f" title="Check that the given file path contains a valid IP&#45;Xact file." alt="" coords="448,208,653,235">
+<area shape="rect" id="node29" href="$class_library_data.html#5647ac254395ab894decbf22e1c63365" title="Save the library to a file." alt="" coords="451,284,650,311">
+<area shape="rect" id="node15" href="$class_parse__error.html#207f8cb5ec96cfa5e58a53914712c830" title="Get the error message." alt="" coords="722,132,883,159">
+<area shape="rect" id="node17" href="$class_i_p_xact_model.html#64dc7b27fc697df14ef919135af06add" title="get the VLNV of the document" alt="" coords="721,183,884,209">
+<area shape="rect" id="node27" href="$class_v_l_n_v.html#f02edbeb4feca8206bdb6681963730f8" title="Checks if the vlnv is valid or not." alt="" coords="749,233,856,260">
+<area shape="rect" id="node19" href="$ipxactmodel_8cpp.html#ec8bfbe1d382f3250ad1e1685e3406be" title="LIBRARY_" alt="" coords="956,107,1036,133">
+<area shape="rect" id="node21" href="$ipxactmodel_8cpp.html#bb5f30837ccf7e1f302243bce1684482" title="NAME_" alt="" coords="963,157,1029,184">
+<area shape="rect" id="node23" href="$ipxactmodel_8cpp.html#073e31dba7bddc089d043f5c7f924946" title="VENDOR_" alt="" coords="954,208,1038,235">
+<area shape="rect" id="node25" href="$ipxactmodel_8cpp.html#82fbbe1edd8d93ee573834cdcc40e3a5" title="VERSION_" alt="" coords="953,259,1039,285">
+<area shape="rect" id="node31" href="$librarydata_8cpp.html#bf191445878103b9cb9be72628d931a1" title="KACTUS_LIBRARY_DIRNAME" alt="" coords="703,284,902,311">
+<area shape="rect" id="node33" href="$librarydata_8cpp.html#3c2d5c1b0c0d2bc814ef0775a7d2d414" title="KACTUS_LIBRARY_FILENAME" alt="" coords="701,335,904,361">

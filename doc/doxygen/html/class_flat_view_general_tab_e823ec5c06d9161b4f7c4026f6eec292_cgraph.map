@@ -1,0 +1,7 @@
+<area shape="rect" id="node3" href="$class_flat_view_general_tab.html#45c55c476de176352424519082c3f483" title="Restore the settings from the model to this editor." alt="" coords="334,107,591,133">
+<area shape="rect" id="node5" href="$class_view.html#bf0cceb99a3f881fa7b50b9189b2242b" title="Get list of the fileSetRefs for this view." alt="" coords="654,5,805,32">
+<area shape="rect" id="node7" href="$class_view.html#21ff40777da6f1a917325a7f29dda1ab" title="Get the language." alt="" coords="658,56,801,83">
+<area shape="rect" id="node9" href="$class_view.html#4c5ead40b4c4228463cc83bdf2aaebb5" title="Get the strict attribute of the language element." alt="" coords="641,107,818,133">
+<area shape="rect" id="node11" href="$class_view.html#7250ecadaecb4f2f9d197bc36ae4cfb6" title="Get the model name." alt="" coords="651,157,808,184">
+<area shape="rect" id="node13" href="$class_list_manager.html#d22fd8902a2658f34b8d50c23aadab51" title="Set the items to be stored in this widget." alt="" coords="647,208,811,235">
+<area shape="rect" id="node15" href="$class_list_manager_model.html#84ef0dc4d5f7522bad172c41d180bfc6" title="Set the items to the model." alt="" coords="867,208,1069,235">

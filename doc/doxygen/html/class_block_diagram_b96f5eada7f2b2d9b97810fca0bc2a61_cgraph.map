@@ -1,0 +1,17 @@
+<area shape="rect" id="node3" href="$class_generic_edit_provider.html#a44aaae7b9a6c25882059e45d8b24e1c" title="GenericEditProvider::addCommand" alt="" coords="285,5,531,32">
+<area shape="rect" id="node5" href="$class_bus_interface_dialog.html#f0ebe28248a10644c6826fab01b966f8" title="BusInterfaceDialog::addMode" alt="" coords="303,56,513,83">
+<area shape="rect" id="node7" href="$class_library_interface.html#f6944f708f9aa01568d707fdc773ea91" title="Checks if the library already contains the specified vlnv." alt="" coords="317,107,499,133">
+<area shape="rect" id="node9" href="$class_block_diagram.html#d502171d520cef89df7a5703c4626e46" title="Create an instanceName for the component that is being instantiated." alt="" coords="281,157,535,184">
+<area shape="rect" id="node11" href="$class_diagram_connection_end_point.html#72cac94a1d12b11e347aa6295b1a6837" title="DiagramConnectionEndPoint::getBusInterface" alt="" coords="251,208,565,235">
+<area shape="rect" id="node13" href="$class_library_interface.html#55d33e9e99760ae1a12725681c034b43" title="Get the document type of given vlnv." alt="" coords="285,259,531,285">
+<area shape="rect" id="node15" href="$class_diagram_connection_end_point.html#77a2addc49209f183aa80fa1b2306084" title="DiagramConnectionEndPoint::getInterconnections" alt="" coords="238,309,578,336">
+<area shape="rect" id="node17" href="$class_library_interface.html#92798f5c6f5e72c8f4da87e872812c4f" title="Get a model that matches given VLNV." alt="" coords="314,360,502,387">
+<area shape="rect" id="node19" href="$class_bus_interface_dialog.html#0c0aeacfab34411546114929f069cd5f" title="BusInterfaceDialog::getName" alt="" coords="303,411,513,437">
+<area shape="rect" id="node21" href="$class_bus_interface_dialog.html#8af0ea88701b45eac484843f390268c2" title="BusInterfaceDialog::getSelectedMode" alt="" coords="277,461,539,488">
+<area shape="rect" id="node23" href="$class_v_l_n_v.html#5e8bcf9abe6a26377c30a80657650059" title="Get the type of the document the VLNV belongs to." alt="" coords="350,512,466,539">
+<area shape="rect" id="node25" href="$class_block_diagram.html#7de56e67568b6362de2dcd5f21583fcf" title="Get pointer to the parent of this scene." alt="" coords="327,563,489,589">
+<area shape="rect" id="node27" href="$class_diagram_connection_end_point.html#3d375e1af63aaf2ae4861c158934067b" title="DiagramConnectionEndPoint::setHighlight" alt="" coords="263,613,553,640">
+<area shape="rect" id="node29" href="$class_v_l_n_v.html#41e8feb8b594eaaf4efc45dc0b520656" title="Set the document type for the vlnv." alt="" coords="351,664,465,691">
+<area shape="rect" id="node31" href="$class_diagram_connection_end_point.html#e00d88793f229df26e26bdf5db8146cb" title="DiagramConnectionEndPoint::setTypes" alt="" coords="273,715,543,741">
+<area shape="rect" id="node33" href="$diagramgrid_8h.html#68afc106817c98c8b7787ff86acee75e" title="Snaps the given QPointF to the diagram grid." alt="" coords="345,765,471,792">
+<area shape="rect" id="node35" href="$class_diagram_connection_end_point.html#74664669f58e436d61394dd8d0bb6205" title="DiagramConnectionEndPoint::updateInterface" alt="" coords="251,816,565,843">

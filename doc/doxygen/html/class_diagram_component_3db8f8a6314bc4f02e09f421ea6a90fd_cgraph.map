@@ -1,0 +1,6 @@
+<area shape="rect" id="node3" href="$diagramgrid_8h.html#68afc106817c98c8b7787ff86acee75e" title="Snaps the given QPointF to the diagram grid." alt="" coords="349,5,475,32">
+<area shape="rect" id="node5" href="$namespace_v_collision_layout.html#1b75da2ff617504d045ddc8d45a21856" title="VCollisionLayout::updateItemMove" alt="" coords="291,56,533,83">
+<area shape="rect" id="node7" href="$class_diagram_component.html#4e87cd9a6867f46fd3a1e467ed745f8d" title="DiagramComponent::updateSize" alt="" coords="296,107,528,133">
+<area shape="rect" id="node9" href="$class_diagram_column.html#a5cdb091f672def589f5f2cfdfb21912" title="DiagramColumn::updateItemPositions" alt="" coords="582,107,847,133">
+<area shape="rect" id="node11" href="$namespace_v_stacked_layout.html#4ecf5cf2db0d1e5c8f31ad07c5f0b363" title="VStackedLayout::updateItemPositions" alt="" coords="897,107,1162,133">
+<area shape="rect" id="node13" href="$namespace_diagram_util.html#34372d64301c316deaa127e2bfcf4d58" title="DiagramUtil::clampCeil" alt="" coords="1211,107,1379,133">

@@ -1,0 +1,38 @@
+digraph G
+{
+  bgcolor="transparent";
+  edge [fontname="FreeSans",fontsize=10,labelfontname="FreeSans",labelfontsize=10];
+  node [fontname="FreeSans",fontsize=10,shape=record];
+  rankdir=LR;
+  Node1 [label="BusIfPortmapTab",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled" fontcolor="black"];
+  Node2 -> Node1 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="physModel_",fontname="FreeSans"];
+  Node2 [label="PhysListModel",height=0.2,width=0.4,color="black",URL="$class_phys_list_model.html",tooltip="Model to display the physical ports of a component."];
+  Node3 -> Node2 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node3 [label="PortListModel",height=0.2,width=0.4,color="black",URL="$class_port_list_model.html",tooltip="The base class for logical list model and physical list model."];
+  Node4 -> Node3 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="portMapsModel_",fontname="FreeSans"];
+  Node4 [label="PortMapsModel",height=0.2,width=0.4,color="black",URL="$class_port_maps_model.html",tooltip="Model to display port maps of a bus interface."];
+  Node5 -> Node4 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="handler_",fontname="FreeSans"];
+  Node5 [label="LibraryInterface",height=0.2,width=0.4,color="black",URL="$class_library_interface.html",tooltip="LibraryInterface defines an interface to operate the IP-Xact-library."];
+  Node6 -> Node1 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="view_",fontname="FreeSans"];
+  Node6 [label="PortMapsView",height=0.2,width=0.4,color="black",URL="$class_port_maps_view.html",tooltip="The view to display the port maps of a bus interface."];
+  Node7 -> Node1 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="physicalView_",fontname="FreeSans"];
+  Node7 [label="PhysListView",height=0.2,width=0.4,color="black",URL="$class_phys_list_view.html"];
+  Node8 -> Node7 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node8 [label="PortListView",height=0.2,width=0.4,color="black",URL="$class_port_list_view.html",tooltip="View to display a list of ports."];
+  Node5 -> Node1 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="libHandler_",fontname="FreeSans"];
+  Node9 -> Node1 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="logicalView_",fontname="FreeSans"];
+  Node9 [label="LogicalListView",height=0.2,width=0.4,color="black",URL="$class_logical_list_view.html"];
+  Node8 -> Node9 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node10 -> Node1 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="busif_",fontname="FreeSans"];
+  Node10 [label="BusInterface",height=0.2,width=0.4,color="black",URL="$class_bus_interface.html",tooltip="Equals the spirit:busInterface element in IP-Xact specification."];
+  Node11 -> Node10 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="nameGroup_",fontname="FreeSans"];
+  Node11 [label="General::NameGroup",height=0.2,width=0.4,color="black",URL="$struct_general_1_1_name_group.html",tooltip="The NameGroup matches the spirit:nameGroup element in IP-Xact."];
+  Node12 -> Node10 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="abstractionType_\nbusType_",fontname="FreeSans"];
+  Node12 [label="VLNV",height=0.2,width=0.4,color="black",URL="$class_v_l_n_v.html",tooltip="The class to hold VLNV information of a single IP-XACT document."];
+  Node13 -> Node1 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="logicalModel_",fontname="FreeSans"];
+  Node13 [label="LogicalListModel",height=0.2,width=0.4,color="black",URL="$class_logical_list_model.html",tooltip="Model to display the Logical ports of an abstraction definition."];
+  Node3 -> Node13 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node5 -> Node13 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="libHandler_",fontname="FreeSans"];
+  Node12 -> Node13 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="absTypeVLNV_",fontname="FreeSans"];
+  Node4 -> Node1 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="model_",fontname="FreeSans"];
+}

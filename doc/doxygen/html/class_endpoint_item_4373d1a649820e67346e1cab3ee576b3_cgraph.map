@@ -1,0 +1,5 @@
+<area shape="rect" id="node3" href="$class_endpoint_stack.html#91908a2f83053acb91c7548e135a6e52" title="EndpointStack::onMoveEndpoint" alt="" coords="283,56,511,83">
+<area shape="rect" id="node5" href="$class_endpoint_item.html#77d931a44ea4b495d679b0b88da2b285" title="EndpointItem::boundingRect" alt="" coords="580,5,783,32">
+<area shape="rect" id="node7" href="$diagramgrid_8h.html#68afc106817c98c8b7787ff86acee75e" title="Snaps the given QPointF to the diagram grid." alt="" coords="618,56,745,83">
+<area shape="rect" id="node9" href="$namespace_v_stacked_layout.html#5f14204a310806c9c55dc46552b97b4d" title="VStackedLayout::updateItemMove" alt="" coords="560,107,803,133">
+<area shape="rect" id="node11" href="$namespace_diagram_util.html#34372d64301c316deaa127e2bfcf4d58" title="DiagramUtil::clampCeil" alt="" coords="851,107,1019,133">

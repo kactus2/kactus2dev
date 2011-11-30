@@ -1,0 +1,10 @@
+<area shape="rect" id="node3" href="$class_library_handler.html#6e74880251c82817e9ffb0d902b19c9f" title="Get the VLNV of the design for a given hierarchy reference." alt="" coords="243,157,466,184">
+<area shape="rect" id="node5" href="$class_v_l_n_v.html#f00f5007636620ffeff44521bacca857" title="Get the library of the VLNV." alt="" coords="763,56,893,83">
+<area shape="rect" id="node7" href="$class_library_handler.html#e1044fd472773f1310c341a1248b4efa" title="Get a model that matches given VLNV." alt="" coords="515,157,698,184">
+<area shape="rect" id="node12" href="$class_v_l_n_v.html#3ff2bdff884da48aa0e936fa5595b7e8" title="Get the name of the IP block in VLNV." alt="" coords="765,5,891,32">
+<area shape="rect" id="node16" href="$class_v_l_n_v.html#8868ebe2affad578b9c9c3aef1f38632" title="Get the vendor of the VLNV." alt="" coords="762,309,894,336">
+<area shape="rect" id="node18" href="$class_v_l_n_v.html#3a5da6ca75e9a6bf575906c2ea185051" title="Get the version of the VLNV." alt="" coords="761,259,895,285">
+<area shape="rect" id="node30" href="$class_v_l_n_v.html#f02edbeb4feca8206bdb6681963730f8" title="Checks if the vlnv is valid or not." alt="" coords="301,411,408,437">
+<area shape="rect" id="node9" href="$class_parse__error.html#207f8cb5ec96cfa5e58a53914712c830" title="Get the error message." alt="" coords="747,157,909,184">
+<area shape="rect" id="node14" href="$class_v_l_n_v.html#5e8bcf9abe6a26377c30a80657650059" title="Get the type of the document the VLNV belongs to." alt="" coords="770,208,886,235">
+<area shape="rect" id="node20" href="$class_v_l_n_v.html#41e8feb8b594eaaf4efc45dc0b520656" title="Set the document type for the vlnv." alt="" coords="771,107,885,133">

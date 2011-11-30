@@ -1,0 +1,5 @@
+<area shape="rect" id="node3" href="$class_endpoint_connection.html#312fa13eb89e1e880b244917fa804ad2" title="EndpointConnection::beginUpdatePosition" alt="" coords="320,5,611,32">
+<area shape="rect" id="node7" href="$class_endpoint_item.html#2cce8f18f78adc195e776862dd2e7885" title="EndpointItem::getConnections" alt="" coords="358,56,573,83">
+<area shape="rect" id="node9" href="$class_program_entity_item.html#5e5eb69d907234c570b34cb1d6553421" title="ProgramEntityItem::getEndpoints" alt="" coords="348,107,583,133">
+<area shape="rect" id="node5" href="$class_endpoint_connection.html#9796d939efdd3be4b59410b0d9deb372" title="EndpointConnection::getRoute" alt="" coords="659,5,875,32">
+<area shape="rect" id="node11" href="$class_endpoint_stack.html#ced0c93d0e06d730261112f7d6573860" title="EndpointStack::getEndpoints" alt="" coords="663,107,870,133">

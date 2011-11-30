@@ -1,0 +1,8 @@
+<area shape="rect" id="node3" href="$class_diagram_column.html#d2ba8c85f29f7ad0b0717f042f11a184" title="DiagramColumn::addItem" alt="" coords="235,107,421,133">
+<area shape="rect" id="node5" href="$class_diagram_column.html#d06eafc748b7b697464e807761343355" title="DiagramColumn::removeItem" alt="" coords="485,5,697,32">
+<area shape="rect" id="node11" href="$namespace_v_stacked_layout.html#e377b4c99851b8d82fc5c132dac24e0b" title="VStackedLayout::setItemPos" alt="" coords="790,56,997,83">
+<area shape="rect" id="node14" href="$namespace_v_collision_layout.html#a5d414d021b2e84936d5924e4150f100" title="VCollisionLayout::setItemPos" alt="" coords="487,107,694,133">
+<area shape="rect" id="node16" href="$namespace_v_stacked_layout.html#5f14204a310806c9c55dc46552b97b4d" title="VStackedLayout::updateItemMove" alt="" coords="772,132,1015,159">
+<area shape="rect" id="node19" href="$namespace_v_collision_layout.html#1b75da2ff617504d045ddc8d45a21856" title="VCollisionLayout::updateItemMove" alt="" coords="469,208,712,235">
+<area shape="rect" id="node7" href="$namespace_v_stacked_layout.html#4ecf5cf2db0d1e5c8f31ad07c5f0b363" title="VStackedLayout::updateItemPositions" alt="" coords="761,5,1026,32">
+<area shape="rect" id="node9" href="$namespace_diagram_util.html#34372d64301c316deaa127e2bfcf4d58" title="DiagramUtil::clampCeil" alt="" coords="1075,56,1243,83">

@@ -1,0 +1,22 @@
+digraph G
+{
+  bgcolor="transparent";
+  edge [fontname="FreeSans",fontsize=10,labelfontname="FreeSans",labelfontsize=10];
+  node [fontname="FreeSans",fontsize=10,shape=record];
+  Node1 [label="ComponentDeleteCommand",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled" fontcolor="black"];
+  Node2 -> Node1 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="parent_",fontname="FreeSans"];
+  Node2 [label="DiagramColumn",height=0.2,width=0.4,color="black",URL="$class_diagram_column.html",tooltip="DiagramColumn class."];
+  Node3 -> Node2 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="layout_",fontname="FreeSans"];
+  Node3 [label="DiagramColumnLayout",height=0.2,width=0.4,color="black",URL="$class_diagram_column_layout.html",tooltip="DiagramColumnLayout class."];
+  Node4 -> Node3 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="editProvider_",fontname="FreeSans"];
+  Node4 [label="GenericEditProvider",height=0.2,width=0.4,color="black",URL="$class_generic_edit_provider.html",tooltip="GenericEditProvider class."];
+  Node5 -> Node4 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node5 [label="IEditProvider",height=0.2,width=0.4,color="black",URL="$class_i_edit_provider.html",tooltip="IEditProvider interface."];
+  Node6 -> Node1 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="component_",fontname="FreeSans"];
+  Node6 [label="DiagramComponent",height=0.2,width=0.4,color="black",URL="$class_diagram_component.html",tooltip="DiagramComponent represents graphically an IP-XACT component instance."];
+  Node7 -> Node6 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node7 [label="ComponentItem",height=0.2,width=0.4,color="black",URL="$class_component_item.html",tooltip="ComponentItem class."];
+  Node2 -> Node6 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="oldColumn_",fontname="FreeSans"];
+  Node8 -> Node6 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="lh_",fontname="FreeSans"];
+  Node8 [label="LibraryInterface",height=0.2,width=0.4,color="black",URL="$class_library_interface.html",tooltip="LibraryInterface defines an interface to operate the IP-Xact-library."];
+}

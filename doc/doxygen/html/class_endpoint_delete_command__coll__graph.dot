@@ -1,0 +1,27 @@
+digraph G
+{
+  bgcolor="transparent";
+  edge [fontname="FreeSans",fontsize=10,labelfontname="FreeSans",labelfontsize=10];
+  node [fontname="FreeSans",fontsize=10,shape=record];
+  Node1 [label="EndpointDeleteCommand",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled" fontcolor="black"];
+  Node2 -> Node1 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="endpoint_",fontname="FreeSans"];
+  Node2 [label="EndpointItem",height=0.2,width=0.4,color="black",URL="$class_endpoint_item.html",tooltip="EndpointItem class."];
+  Node3 -> Node2 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="parentProgEntity_",fontname="FreeSans"];
+  Node3 [label="ProgramEntityItem",height=0.2,width=0.4,color="black",URL="$class_program_entity_item.html",tooltip="ProgramEntityItem class."];
+  Node4 -> Node3 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node4 [label="SWComponentItem",height=0.2,width=0.4,color="black",URL="$class_s_w_component_item.html",tooltip="SWComponentItem class."];
+  Node5 -> Node4 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node5 [label="ComponentItem",height=0.2,width=0.4,color="black",URL="$class_component_item.html",tooltip="ComponentItem class."];
+  Node6 -> Node3 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="appItem_",fontname="FreeSans"];
+  Node6 [label="ApplicationItem",height=0.2,width=0.4,color="black",URL="$class_application_item.html",tooltip="ApplicationItem class."];
+  Node4 -> Node6 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node7 -> Node3 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="appPlaceholder_",fontname="FreeSans"];
+  Node7 [label="AppPlaceholderItem",height=0.2,width=0.4,color="black",URL="$class_app_placeholder_item.html",tooltip="AppPlaceholderItem class."];
+  Node3 -> Node7 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="parent_",fontname="FreeSans"];
+  Node8 -> Node3 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="endpointStack_",fontname="FreeSans"];
+  Node8 [label="EndpointStack",height=0.2,width=0.4,color="black",URL="$class_endpoint_stack.html",tooltip="EndpointStack class."];
+  Node3 -> Node8 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="parentProgEntity_",fontname="FreeSans"];
+  Node9 -> Node8 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="btnAdd_",fontname="FreeSans"];
+  Node9 [label="GraphicsRectButton",height=0.2,width=0.4,color="black",URL="$class_graphics_rect_button.html",tooltip="GraphicsRectButton class."];
+  Node8 -> Node1 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="parent_",fontname="FreeSans"];
+}

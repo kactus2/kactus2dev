@@ -1,0 +1,10 @@
+<area shape="rect" id="node3" href="$class_generic_edit_provider.html#a44aaae7b9a6c25882059e45d8b24e1c" title="GenericEditProvider::addCommand" alt="" coords="373,5,619,32">
+<area shape="rect" id="node5" href="$class_diagram_interconnection.html#de974117c39c74a61c8c2ec238d20ed6" title="DiagramInterconnection::endUpdatePosition" alt="" coords="343,56,649,83">
+<area shape="rect" id="node9" href="$class_diagram_column.html#2345cf827afd09ce3e233a28146e7869" title="DiagramColumn::getEditProvider" alt="" coords="381,107,611,133">
+<area shape="rect" id="node13" href="$class_diagram_connection_end_point.html#77a2addc49209f183aa80fa1b2306084" title="DiagramConnectionEndPoint::getInterconnections" alt="" coords="326,157,666,184">
+<area shape="rect" id="node15" href="$class_diagram_column.html#9630ca472f614399dff11f3fc0580a92" title="DiagramColumn::onReleaseItem" alt="" coords="381,208,611,235">
+<area shape="rect" id="node7" href="$class_diagram_interconnection.html#60dc7fd65e1683a2a569073f93665074" title="Returns the route of this interconnection." alt="" coords="743,56,961,83">
+<area shape="rect" id="node11" href="$class_diagram_column_layout.html#41ec2abc12925671fef8870959a6e64c" title="DiagramColumnLayout::getEditProvider" alt="" coords="715,107,989,133">
+<area shape="rect" id="node17" href="$namespace_v_stacked_layout.html#e377b4c99851b8d82fc5c132dac24e0b" title="VStackedLayout::setItemPos" alt="" coords="749,183,955,209">
+<area shape="rect" id="node21" href="$namespace_v_collision_layout.html#a5d414d021b2e84936d5924e4150f100" title="VCollisionLayout::setItemPos" alt="" coords="749,233,955,260">
+<area shape="rect" id="node19" href="$namespace_diagram_util.html#34372d64301c316deaa127e2bfcf4d58" title="DiagramUtil::clampCeil" alt="" coords="1037,183,1205,209">

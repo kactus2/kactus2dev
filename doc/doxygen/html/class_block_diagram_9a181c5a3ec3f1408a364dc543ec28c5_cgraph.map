@@ -1,0 +1,7 @@
+<area shape="rect" id="node3" href="$class_component_item.html#49a73ee33e425a3ff37d93e68ca33c99" title="ComponentItem::componentModel" alt="" coords="321,5,567,32">
+<area shape="rect" id="node5" href="$class_diagram_connection_end_point.html#e56a455b02d91aa706f78208d0b00c54" title="DiagramConnectionEndPoint::encompassingComp" alt="" coords="272,56,616,83">
+<area shape="rect" id="node7" href="$class_diagram_column.html#37e22474aa7cec67f05f68bef52d937b" title="DiagramColumn::getAllowedItems" alt="" coords="325,107,563,133">
+<area shape="rect" id="node9" href="$class_diagram_connection_end_point.html#72cac94a1d12b11e347aa6295b1a6837" title="DiagramConnectionEndPoint::getBusInterface" alt="" coords="287,157,601,184">
+<area shape="rect" id="node11" href="$class_diagram_connection_end_point.html#e62a848cd22625e521d915ecc5391db0" title="DiagramConnectionEndPoint::isConnected" alt="" coords="298,208,590,235">
+<area shape="rect" id="node13" href="$class_diagram_connection_end_point.html#3d375e1af63aaf2ae4861c158934067b" title="DiagramConnectionEndPoint::setHighlight" alt="" coords="299,259,589,285">
+<area shape="rect" id="node15" href="$diagramgrid_8h.html#68afc106817c98c8b7787ff86acee75e" title="Snaps the given QPointF to the diagram grid." alt="" coords="381,309,507,336">

@@ -1,0 +1,10 @@
+<area shape="rect" id="node3" href="$class_bus_ports_model.html#8b12bb1122d367915be26497e0c45256" title="Rename port(s) with given name to another name." alt="" coords="246,5,447,32">
+<area shape="rect" id="node5" href="$class_bus_ports_model.html#12fef4bc785653d63297a7bd88fac4da" title="Set the comment(s) for port(s) with given name." alt="" coords="242,56,451,83">
+<area shape="rect" id="node7" href="$class_bus_ports_model.html#8d84a8ca21e7aa1256b59a825f8482a4" title="Set default value(s) for port(s) with given name." alt="" coords="233,107,460,133">
+<area shape="rect" id="node9" href="$class_bus_ports_model.html#e146dfab3a0b6d1cd7fb9a4594b33ec0" title="Set the driver(s) for port(s) with given name." alt="" coords="255,157,438,184">
+<area shape="rect" id="node13" href="$class_bus_ports_model.html#28689ea999d0f8db735c674dfbe17ea6" title="Set qualifier(s) for port(s) with given name." alt="" coords="248,208,445,235">
+<area shape="rect" id="node17" href="$class_bus_ports_model.html#7f5f5fc7b3816344fc4703902b896ec3" title="Convert string to a PortDirection." alt="" coords="230,259,463,285">
+<area shape="rect" id="node19" href="$class_bus_ports_model.html#a9325e21723b2ede7e57c04ba1599c8c" title="Convert a string to PortMode." alt="" coords="241,309,452,336">
+<area shape="rect" id="node21" href="$namespace_general.html#c013981fad3e63341e02d1aa64603d80" title="Convert the value of the QString into enum Presence." alt="" coords="265,360,429,387">
+<area shape="rect" id="node11" href="$class_bus_ports_model.html#22543cb487f25a57e0560d47ae41e5f1" title="Convert string to PortDriver." alt="" coords="519,157,734,184">
+<area shape="rect" id="node15" href="$class_bus_ports_model.html#42286cbc94ca4f2e9b0583db8a9eed83" title="Convert a string to PortQualifier." alt="" coords="513,208,741,235">

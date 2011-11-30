@@ -1,0 +1,16 @@
+<area shape="rect" id="node3" href="$namespace_general.html#c24c1f048c047528d3aa95d9cb61b30e" title="Convert a boolean value into QString." alt="" coords="298,5,433,32">
+<area shape="rect" id="node5" href="$class_v_l_n_v.html#f02edbeb4feca8206bdb6681963730f8" title="Checks if the vlnv is valid or not." alt="" coords="312,56,419,83">
+<area shape="rect" id="node7" href="$class_library_component.html#3b74741856f127a82cf3a9417b688c8d" title="Set the attributes that define the used xml namespaces." alt="" coords="197,107,533,133">
+<area shape="rect" id="node9" href="$class_library_component.html#08fde03d41a570589aea259804bee112" title="Write the model to disk as an IP&#45;Xact document." alt="" coords="276,157,455,184">
+<area shape="rect" id="node11" href="$namespace_general.html#e87a817610c1c7dbae182b8b47b1380c" title="Write the attributes from the QMap to the writer." alt="" coords="279,208,452,235">
+<area shape="rect" id="node13" href="$class_library_component.html#46806234462b8437d14b008442e3cee0" title="Write the kactus2 attributes using the writer." alt="" coords="219,259,511,285">
+<area shape="rect" id="node15" href="$class_library_component.html#a3a303629064ae55a3df5157ab76b1a7" title="Write the VLNV information using the specified writer." alt="" coords="259,309,472,336">
+<area shape="rect" id="node25" href="$namespace_general.html#8bac0f19ee0b1b73562c0fadbcc5f120" title="Write the attributes using the writer." alt="" coords="261,360,469,387">
+<area shape="rect" id="node17" href="$generaldeclarations_8h.html#91be6c01d4ea1c5e60aca68f0b6efed2" title="SPIRIT_LIBRARY" alt="" coords="590,309,709,336">
+<area shape="rect" id="node19" href="$generaldeclarations_8h.html#e83546a3026439475ba1c85ff811ab6f" title="SPIRIT_NAME" alt="" coords="597,360,702,387">
+<area shape="rect" id="node21" href="$generaldeclarations_8h.html#ddbf7a8d947cc80c69007e5dfd313945" title="SPIRIT_VENDOR" alt="" coords="588,208,711,235">
+<area shape="rect" id="node23" href="$generaldeclarations_8h.html#b0791c8286c4a421fb74507d6f381737" title="SPIRIT_VERSION" alt="" coords="587,259,711,285">
+<area shape="rect" id="node27" href="$class_v_l_n_v.html#f00f5007636620ffeff44521bacca857" title="Get the library of the VLNV." alt="" coords="585,411,714,437">
+<area shape="rect" id="node29" href="$class_v_l_n_v.html#3ff2bdff884da48aa0e936fa5595b7e8" title="Get the name of the IP block in VLNV." alt="" coords="587,461,712,488">
+<area shape="rect" id="node31" href="$class_v_l_n_v.html#8868ebe2affad578b9c9c3aef1f38632" title="Get the vendor of the VLNV." alt="" coords="583,512,715,539">
+<area shape="rect" id="node33" href="$class_v_l_n_v.html#3a5da6ca75e9a6bf575906c2ea185051" title="Get the version of the VLNV." alt="" coords="582,563,717,589">

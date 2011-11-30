@@ -1,0 +1,33 @@
+<area shape="rect" id="node3" href="$class_generic_edit_provider.html#a44aaae7b9a6c25882059e45d8b24e1c" title="GenericEditProvider::addCommand" alt="" coords="375,5,622,32">
+<area shape="rect" id="node5" href="$class_bus_interface_dialog.html#f0ebe28248a10644c6826fab01b966f8" title="BusInterfaceDialog::addMode" alt="" coords="394,56,603,83">
+<area shape="rect" id="node7" href="$class_component_item.html#49a73ee33e425a3ff37d93e68ca33c99" title="ComponentItem::componentModel" alt="" coords="744,157,989,184">
+<area shape="rect" id="node9" href="$class_library_interface.html#f6944f708f9aa01568d707fdc773ea91" title="Checks if the library already contains the specified vlnv." alt="" coords="407,512,590,539">
+<area shape="rect" id="node11" href="$class_diagram_connection_end_point.html#72cac94a1d12b11e347aa6295b1a6837" title="DiagramConnectionEndPoint::getBusInterface" alt="" coords="341,563,656,589">
+<area shape="rect" id="node13" href="$class_new_object_dialog.html#25a6bb70459b1485a931cdd93ff8b61a" title="NewObjectDialog::getFirmness" alt="" coords="390,613,607,640">
+<area shape="rect" id="node17" href="$class_diagram_connection_end_point.html#77a2addc49209f183aa80fa1b2306084" title="DiagramConnectionEndPoint::getInterconnections" alt="" coords="329,664,669,691">
+<area shape="rect" id="node19" href="$class_v_l_n_v.html#f00f5007636620ffeff44521bacca857" title="Get the library of the VLNV." alt="" coords="1067,272,1197,299">
+<area shape="rect" id="node21" href="$class_bus_interface_dialog.html#0c0aeacfab34411546114929f069cd5f" title="BusInterfaceDialog::getName" alt="" coords="393,715,604,741">
+<area shape="rect" id="node23" href="$class_v_l_n_v.html#3ff2bdff884da48aa0e936fa5595b7e8" title="Get the name of the IP block in VLNV." alt="" coords="1069,348,1195,375">
+<area shape="rect" id="node25" href="$class_diagram_column.html#e08c770e24d4dd86c341063f5c7ed2a5" title="DiagramColumn::getName" alt="" coords="401,765,596,792">
+<area shape="rect" id="node27" href="$class_new_object_dialog.html#017f37c8b05939b4bc5ed9ae5b79d2c8" title="Get the user inputted path." alt="" coords="405,816,593,843">
+<area shape="rect" id="node29" href="$class_new_object_dialog.html#eb502394debd2921ebe4c96e4bc62313" title="NewObjectDialog::getProductHierarchy" alt="" coords="364,867,633,893">
+<area shape="rect" id="node33" href="$class_bus_interface_dialog.html#8af0ea88701b45eac484843f390268c2" title="BusInterfaceDialog::getSelectedMode" alt="" coords="367,917,630,944">
+<area shape="rect" id="node35" href="$class_v_l_n_v.html#8868ebe2affad578b9c9c3aef1f38632" title="Get the vendor of the VLNV." alt="" coords="1066,411,1198,437">
+<area shape="rect" id="node37" href="$class_v_l_n_v.html#3a5da6ca75e9a6bf575906c2ea185051" title="Get the version of the VLNV." alt="" coords="1065,461,1199,488">
+<area shape="rect" id="node39" href="$class_new_object_dialog.html#7676e943f9f74ca3a0c90b63427b967b" title="Get the user inputted VLNV." alt="" coords="401,968,596,995">
+<area shape="rect" id="node43" href="$class_view.html#f8d30aa133c5fda3656309515c8dfd8b" title="Is the view a hierarchical one or not." alt="" coords="795,107,939,133">
+<area shape="rect" id="node47" href="$class_component_item.html#065f3fb7a863a24ab7e5e1cbef4bf417" title="ComponentItem::name" alt="" coords="413,1019,584,1045">
+<area shape="rect" id="node49" href="$class_block_diagram.html#7de56e67568b6362de2dcd5f21583fcf" title="Get pointer to the parent of this scene." alt="" coords="418,1069,579,1096">
+<area shape="rect" id="node51" href="$class_diagram_connection_end_point.html#3d375e1af63aaf2ae4861c158934067b" title="DiagramConnectionEndPoint::setHighlight" alt="" coords="354,1120,643,1147">
+<area shape="rect" id="node53" href="$class_v_l_n_v.html#71492c150d4bc3d06d7313c0b6634a9a" title="Set the name for the VLNV." alt="" coords="437,1171,561,1197">
+<area shape="rect" id="node55" href="$class_v_l_n_v.html#41e8feb8b594eaaf4efc45dc0b520656" title="Set the document type for the vlnv." alt="" coords="441,1221,556,1248">
+<area shape="rect" id="node57" href="$class_diagram_connection_end_point.html#e00d88793f229df26e26bdf5db8146cb" title="DiagramConnectionEndPoint::setTypes" alt="" coords="363,1272,634,1299">
+<area shape="rect" id="node59" href="$diagramgrid_8h.html#68afc106817c98c8b7787ff86acee75e" title="Snaps the given QPointF to the diagram grid." alt="" coords="435,1323,562,1349">
+<area shape="rect" id="node61" href="$class_diagram_component.html#8e436557f59521101333ff80912d74b3" title="DiagramComponent::updateComponent" alt="" coords="359,208,639,235">
+<area shape="rect" id="node72" href="$class_diagram_connection_end_point.html#74664669f58e436d61394dd8d0bb6205" title="DiagramConnectionEndPoint::updateInterface" alt="" coords="341,1373,656,1400">
+<area shape="rect" id="node74" href="$class_library_interface.html#a841b91f4281dc02f2d3bf871f8bab45" title="Write the model to file system to given file path." alt="" coords="382,1424,615,1451">
+<area shape="rect" id="node15" href="$class_kactus_attribute_editor.html#30fbbfd24888ce7be0c96261be5b74c2" title="KactusAttributeEditor::getFirmness" alt="" coords="744,613,989,640">
+<area shape="rect" id="node31" href="$class_kactus_attribute_editor.html#10bd2a9568b776bbdace0302192c1dec" title="KactusAttributeEditor::getProductHierarchy" alt="" coords="718,867,1015,893">
+<area shape="rect" id="node41" href="$class_v_l_n_v_editor.html#ec64dfb071b106bbe96b95788cd1df25" title="VLNVEditor::getVLNV" alt="" coords="787,968,946,995">
+<area shape="rect" id="node45" href="$class_v_l_n_v.html#f02edbeb4feca8206bdb6681963730f8" title="Checks if the vlnv is valid or not." alt="" coords="1079,208,1185,235">
+<area shape="rect" id="node65" href="$class_component_item.html#2c3e3dbd4ab3e6fdd363d21f4310a047" title="ComponentItem::updateComponent" alt="" coords="739,309,994,336">

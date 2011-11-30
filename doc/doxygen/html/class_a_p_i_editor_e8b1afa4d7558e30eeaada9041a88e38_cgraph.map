@@ -1,0 +1,19 @@
+<area shape="rect" id="node3" href="$class_item_editor.html#a23114a7736c1d0a30a51582a95c2bda" title="Get the the component pointer from the base&#45;class." alt="" coords="267,5,437,32">
+<area shape="rect" id="node5" href="$class_attribute_box.html#a7fe19b41cb0515cdae8648e6042a3ed" title="Get the attributes from the widget." alt="" coords="255,56,449,83">
+<area shape="rect" id="node9" href="$class_name_group_box.html#4b0f3b5b06faa6e7264738f9c50faed8" title="Get the value of the description&#45;field." alt="" coords="239,107,465,133">
+<area shape="rect" id="node11" href="$class_name_group_box.html#0998b9c79e4e14cedac13b857c89e2a1" title="Get the value of the displayName&#45;field." alt="" coords="233,157,471,184">
+<area shape="rect" id="node13" href="$class_name_group_box.html#c97d1eb24f286de336bb427fd656155e" title="Get the value of the name&#45;field." alt="" coords="256,208,448,235">
+<area shape="rect" id="node15" href="$class_v_l_n_v_editor.html#ec64dfb071b106bbe96b95788cd1df25" title="VLNVEditor::getVLNV" alt="" coords="545,233,703,260">
+<area shape="rect" id="node17" href="$class_a_p_i_editor.html#4ca6cb557c3f5f5e4de928c14eb9ce52" title="Check for the validity of the edited item." alt="" coords="288,309,416,336">
+<area shape="rect" id="node30" href="$class_bus_interface.html#8a92db58fed6ab0141afbac4eb7af871" title="Set the attributes for the bus interface." alt="" coords="255,360,449,387">
+<area shape="rect" id="node32" href="$class_bus_interface.html#9e1e189138dccf2a0c3ce396806d3bb9" title="Set the bus definition for this interface." alt="" coords="260,411,444,437">
+<area shape="rect" id="node34" href="$class_bus_interface.html#5ac2c074f12f9337041f2c66fa322246" title="Set the description for the bus interface." alt="" coords="251,461,453,488">
+<area shape="rect" id="node36" href="$class_bus_interface.html#bea6e29e5e01bf2e58eb42f44b910a57" title="Set the display name for the bus interface." alt="" coords="245,512,459,539">
+<area shape="rect" id="node38" href="$class_bus_interface.html#7b0fe2e2589c14854b4dbaac5d5675db" title="Set the interface mode for this interface." alt="" coords="241,563,463,589">
+<area shape="rect" id="node40" href="$class_bus_interface.html#e3728c5560b29f1b6e1509a5af164f78" title="Set the name of this interface." alt="" coords="267,613,437,640">
+<area shape="rect" id="node7" href="$class_attribute_model.html#e7e5a510bf4ede972444d18cd018baef" title="Get attributes stored in the model." alt="" coords="520,56,728,83">
+<area shape="rect" id="node19" href="$class_library_interface.html#f6944f708f9aa01568d707fdc773ea91" title="Checks if the library already contains the specified vlnv." alt="" coords="533,284,715,311">
+<area shape="rect" id="node22" href="$class_v_l_n_v_editor.html#eff4ed9c7b77a464c51bae1dbc48ad6c" title="VLNVEditor::isValid" alt="" coords="553,335,695,361">
+<area shape="rect" id="node24" href="$class_attribute_box.html#08cf70813c3ba2f52c457f2f823874aa" title="Check that attributeBox contains only non&#45;empty name&#45;value pairs." alt="" coords="549,385,699,412">
+<area shape="rect" id="node28" href="$class_name_group_box.html#f73fb14aee9a9e968558e9f3ad84358f" title="Check if the widget is in valid mode." alt="" coords="537,436,711,463">
+<area shape="rect" id="node26" href="$class_attribute_model.html#be5f6620d6058ada164caf16e097d4cd" title="Check that all attributes stored in the model are valid." alt="" coords="776,385,992,412">

@@ -1,0 +1,28 @@
+<area shape="rect" id="node3" href="$class_view.html#f1fcb390bc13f884d41c3d03127d70d6" title="Get the description of the view." alt="" coords="281,5,433,32">
+<area shape="rect" id="node5" href="$class_view.html#c371c1b3f10ab572c0e0d67cf275a084" title="Get the display name of the view." alt="" coords="275,56,440,83">
+<area shape="rect" id="node7" href="$class_view.html#944b4a70717842b92bb5c8c4064dbd07" title="Get the name of the view." alt="" coords="298,107,417,133">
+<area shape="rect" id="node9" href="$class_view.html#f8d30aa133c5fda3656309515c8dfd8b" title="Is the view a hierarchical one or not." alt="" coords="285,157,429,184">
+<area shape="rect" id="node13" href="$class_file_builders_editor.html#f6bef2f253b24e67d556de0b730decde" title="Restore the changes made in the editor back to ones in the model." alt="" coords="237,208,478,235">
+<area shape="rect" id="node17" href="$class_flat_view_parameters_tab.html#5a5c07cfdbc10d5e1f149704ba7455f7" title="Restore the changes made in the editor back to ones in the model." alt="" coords="216,259,499,285">
+<area shape="rect" id="node21" href="$class_flat_view_general_tab.html#45c55c476de176352424519082c3f483" title="Restore the settings from the model to this editor." alt="" coords="229,309,486,336">
+<area shape="rect" id="node35" href="$class_hierarchy_ref_widget.html#cfbdf4cc2f26d23377844b8a94c4aba3" title="Restore the changes made in the editor back to ones in the model." alt="" coords="229,461,485,488">
+<area shape="rect" id="node51" href="$class_env_identifier_editor.html#6b61d4f9cb3a725664a242ec8ad224ef" title="Restore the changes made in the editor back to ones in the model." alt="" coords="234,512,481,539">
+<area shape="rect" id="node57" href="$class_view_editor.html#bc7ebebdb398e8d70b8c9b911793ac92" title="Set up the layout for the editor." alt="" coords="270,563,445,589">
+<area shape="rect" id="node11" href="$class_v_l_n_v.html#f02edbeb4feca8206bdb6681963730f8" title="Checks if the vlnv is valid or not." alt="" coords="593,56,700,83">
+<area shape="rect" id="node15" href="$class_file_builders_model.html#8159de433bf68efbfc120b7de0e4bc37" title="Restore the settings from the original model." alt="" coords="553,107,740,133">
+<area shape="rect" id="node19" href="$class_parameters_model.html#1a6c91a17bc027c865adfffd95b115ed" title="Restore the settings from the original model." alt="" coords="552,157,741,184">
+<area shape="rect" id="node23" href="$class_view.html#bf0cceb99a3f881fa7b50b9189b2242b" title="Get list of the fileSetRefs for this view." alt="" coords="571,208,722,235">
+<area shape="rect" id="node25" href="$class_view.html#21ff40777da6f1a917325a7f29dda1ab" title="Get the language." alt="" coords="575,259,718,285">
+<area shape="rect" id="node27" href="$class_view.html#4c5ead40b4c4228463cc83bdf2aaebb5" title="Get the strict attribute of the language element." alt="" coords="558,309,735,336">
+<area shape="rect" id="node29" href="$class_view.html#7250ecadaecb4f2f9d197bc36ae4cfb6" title="Get the model name." alt="" coords="568,360,725,387">
+<area shape="rect" id="node31" href="$class_list_manager.html#d22fd8902a2658f34b8d50c23aadab51" title="Set the items to be stored in this widget." alt="" coords="565,411,729,437">
+<area shape="rect" id="node33" href="$class_list_manager_model.html#84ef0dc4d5f7522bad172c41d180bfc6" title="Set the items to the model." alt="" coords="795,411,997,437">
+<area shape="rect" id="node37" href="$class_view.html#16ed28e630214766d27dfaf2f3015c4a" title="Get pointer to the hierarchical desing for this view." alt="" coords="566,461,727,488">
+<area shape="rect" id="node39" href="$class_view.html#7220512cd590a516468a6ec4ddb77e07" title="Get the reference to a view that contains the implementation." alt="" coords="564,512,729,539">
+<area shape="rect" id="node41" href="$class_v_l_n_v_editor.html#edef36ca3252c366ed3d222c69d2c765" title="VLNVEditor::setVLNV" alt="" coords="568,563,725,589">
+<area shape="rect" id="node43" href="$class_v_l_n_v.html#f00f5007636620ffeff44521bacca857" title="Get the library of the VLNV." alt="" coords="831,461,961,488">
+<area shape="rect" id="node45" href="$class_v_l_n_v.html#3ff2bdff884da48aa0e936fa5595b7e8" title="Get the name of the IP block in VLNV." alt="" coords="833,512,959,539">
+<area shape="rect" id="node47" href="$class_v_l_n_v.html#8868ebe2affad578b9c9c3aef1f38632" title="Get the vendor of the VLNV." alt="" coords="830,563,962,589">
+<area shape="rect" id="node49" href="$class_v_l_n_v.html#3a5da6ca75e9a6bf575906c2ea185051" title="Get the version of the VLNV." alt="" coords="829,613,963,640">
+<area shape="rect" id="node53" href="$class_env_identifiers_model.html#c53a87f83eb440a1960b10be60449f19" title="Restore the settings from the original model." alt="" coords="547,639,746,665">
+<area shape="rect" id="node55" href="$class_view.html#08928caebe3dc464ac6b283b6436b1a3" title="Get list of the envIdentifiers for this view." alt="" coords="813,664,979,691">

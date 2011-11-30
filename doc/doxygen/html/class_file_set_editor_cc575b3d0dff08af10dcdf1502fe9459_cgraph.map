@@ -1,0 +1,12 @@
+<area shape="rect" id="node3" href="$class_name_group_box.html#4b0f3b5b06faa6e7264738f9c50faed8" title="Get the value of the description&#45;field." alt="" coords="263,5,489,32">
+<area shape="rect" id="node5" href="$class_name_group_box.html#0998b9c79e4e14cedac13b857c89e2a1" title="Get the value of the displayName&#45;field." alt="" coords="257,56,495,83">
+<area shape="rect" id="node7" href="$class_name_group_box.html#c97d1eb24f286de336bb427fd656155e" title="Get the value of the name&#45;field." alt="" coords="280,107,472,133">
+<area shape="rect" id="node9" href="$class_file_set_editor.html#eb3b0b2033a5ade103baf6dd5b4aa498" title="Check for the validity of the edited item." alt="" coords="301,157,451,184">
+<area shape="rect" id="node13" href="$class_list_manager.html#ad4d988f218cdd6825515fb7c8f7cb0a" title="Get the string items currently stored in the model." alt="" coords="304,208,448,235">
+<area shape="rect" id="node17" href="$class_file_set.html#b5450f96c995d8591838d17cafab55e3" title="Set the dependencies for this file set." alt="" coords="284,259,468,285">
+<area shape="rect" id="node19" href="$class_file_set.html#3b0bd0ae2fcebee8d19d23c878069d0c" title="Set the description for the file set." alt="" coords="293,309,459,336">
+<area shape="rect" id="node21" href="$class_file_set.html#12b7188ac86ba2c3f59a2558835d6d85" title="Set the display name for the file set." alt="" coords="287,360,465,387">
+<area shape="rect" id="node23" href="$class_file_set.html#852c6ca222567d2601c8c47396961edc" title="Set the groups for this file set." alt="" coords="307,411,445,437">
+<area shape="rect" id="node25" href="$class_file_set.html#7151dccdfa6e52360fec4b88f23b2e9c" title="Set the name for this file set." alt="" coords="310,461,442,488">
+<area shape="rect" id="node11" href="$class_name_group_box.html#f73fb14aee9a9e968558e9f3ad84358f" title="Check if the widget is in valid mode." alt="" coords="549,157,723,184">
+<area shape="rect" id="node15" href="$class_list_manager_model.html#17210cf9d60047e8004ee21e4feb920e" title="Get the items currently stored in the model." alt="" coords="545,208,727,235">

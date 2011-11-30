@@ -1,0 +1,14 @@
+<area shape="rect" id="node3" href="$class_endpoint_connection.html#d3d1832cf66559ba139c5d3e1af0385c" title="EndpointConnection::connectEnds" alt="" coords="333,183,573,209">
+<area shape="rect" id="node5" href="$class_endpoint_item.html#e4877da75b693825edfa8c61792d7752" title="EndpointItem::addConnection" alt="" coords="645,5,856,32">
+<area shape="rect" id="node7" href="$class_endpoint_connection.html#73c72e37e2002cd8356c87db7d5acc27" title="EndpointConnection::disconnectEnds" alt="" coords="621,107,880,133">
+<area shape="rect" id="node9" href="$class_endpoint_item.html#c6e9f8e781320fd39a96283c8c8d3d75" title="EndpointItem::onDisconnect" alt="" coords="945,56,1148,83">
+<area shape="rect" id="node13" href="$class_endpoint_connection.html#9796d939efdd3be4b59410b0d9deb372" title="EndpointConnection::getRoute" alt="" coords="643,157,859,184">
+<area shape="rect" id="node15" href="$class_endpoint_item.html#9f3b02d0d153244b23b35a4ad61f3649" title="EndpointItem::onConnect" alt="" coords="659,208,843,235">
+<area shape="rect" id="node18" href="$class_endpoint_connection.html#9870f38dddec9a2faead5564b8cd8d10" title="EndpointConnection::setRoute" alt="" coords="643,259,858,285">
+<area shape="rect" id="node24" href="$class_endpoint_connection.html#3780d27cb97b15d07d0fcf0f442adde3" title="EndpointConnection::simplifyPath" alt="" coords="633,309,868,336">
+<area shape="rect" id="node26" href="$class_endpoint_connection.html#cbcd727d3cf06a837aa6431ed7cc0286" title="EndpointConnection::updateName" alt="" coords="629,360,872,387">
+<area shape="rect" id="node11" href="$class_endpoint_item.html#37274397a4deaf0684a575db5ffa9a22" title="EndpointItem::removeConnection" alt="" coords="929,107,1165,133">
+<area shape="rect" id="node20" href="$class_endpoint_item.html#9d87e6aa4e69bba19d8ca625600b343a" title="EndpointItem::getDirectionVector" alt="" coords="929,233,1164,260">
+<area shape="rect" id="node22" href="$class_endpoint_item.html#552a2b54fcbd6059dfb5225c7c90e68e" title="EndpointItem::setDirection" alt="" coords="951,284,1143,311">
+<area shape="rect" id="node28" href="$class_endpoint_item.html#d50aa902bdf0025745a12aa0ee4b3e41" title="EndpointItem::getFullName" alt="" coords="949,360,1145,387">
+<area shape="rect" id="node30" href="$class_component_item.html#065f3fb7a863a24ab7e5e1cbef4bf417" title="ComponentItem::name" alt="" coords="1213,360,1384,387">

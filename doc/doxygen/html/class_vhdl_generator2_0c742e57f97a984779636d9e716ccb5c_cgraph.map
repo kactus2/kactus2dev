@@ -1,0 +1,4 @@
+<area shape="rect" id="node3" href="$namespace_general.html#43b6fcb74775efc5336ba40a26969524" title="Calculate the alignment for the ports from the port maps." alt="" coords="321,5,549,32">
+<area shape="rect" id="node5" href="$class_vhdl_generator2.html#63bf461182b2a8a94283354681a39be6" title="Connect the specified top port to specified instance ports." alt="" coords="317,56,552,83">
+<area shape="rect" id="node9" href="$class_bus_interface.html#c8af36688eededc98dd936c41780c0a9" title="Get the port maps for this interface." alt="" coords="339,107,530,133">
+<area shape="rect" id="node7" href="$namespace_vhdl_general.html#35ae117e8a6c0ca051b39f272ca17482" title="Check if the port type is scalar." alt="" coords="601,56,789,83">

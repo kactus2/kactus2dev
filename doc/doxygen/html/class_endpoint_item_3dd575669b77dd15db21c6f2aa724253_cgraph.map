@@ -1,0 +1,6 @@
+<area shape="rect" id="node3" href="$class_endpoint_connection.html#fbadb9fe63240344b210bb3dec42e77c" title="EndpointConnection::endUpdatePosition" alt="" coords="299,5,578,32">
+<area shape="rect" id="node7" href="$class_endpoint_item.html#2cce8f18f78adc195e776862dd2e7885" title="EndpointItem::getConnections" alt="" coords="331,56,546,83">
+<area shape="rect" id="node9" href="$class_endpoint_stack.html#8232975f814b2f66ab41f4e2ae686ed3" title="EndpointStack::onReleaseEndpoint" alt="" coords="317,107,561,133">
+<area shape="rect" id="node5" href="$class_endpoint_connection.html#9796d939efdd3be4b59410b0d9deb372" title="EndpointConnection::getRoute" alt="" coords="627,5,843,32">
+<area shape="rect" id="node11" href="$namespace_v_stacked_layout.html#e377b4c99851b8d82fc5c132dac24e0b" title="VStackedLayout::setItemPos" alt="" coords="631,107,838,133">
+<area shape="rect" id="node13" href="$namespace_diagram_util.html#34372d64301c316deaa127e2bfcf4d58" title="DiagramUtil::clampCeil" alt="" coords="891,107,1059,133">

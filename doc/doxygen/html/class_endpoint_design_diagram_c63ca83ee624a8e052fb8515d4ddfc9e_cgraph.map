@@ -1,0 +1,7 @@
+<area shape="rect" id="node3" href="$class_endpoint_design_diagram.html#061962cc6dfd6b50c1f63e0598567b71" title="EndpointDesignDiagram::disableHighlight" alt="" coords="353,5,639,32">
+<area shape="rect" id="node5" href="$class_endpoint_item.html#f160d0dd07b9e07e086f919f7e3ccc2a" title="EndpointItem::setHighlight" alt="" coords="689,31,879,57">
+<area shape="rect" id="node7" href="$class_endpoint_item.html#9d87e6aa4e69bba19d8ca625600b343a" title="EndpointItem::getDirectionVector" alt="" coords="379,107,613,133">
+<area shape="rect" id="node9" href="$class_endpoint_connection.html#9796d939efdd3be4b59410b0d9deb372" title="EndpointConnection::getRoute" alt="" coords="388,157,604,184">
+<area shape="rect" id="node11" href="$class_endpoint_item.html#9375342d84a1f2fbc1b5bb5b96637cd8" title="EndpointItem::isConnected" alt="" coords="399,208,593,235">
+<area shape="rect" id="node13" href="$class_endpoint_item.html#552a2b54fcbd6059dfb5225c7c90e68e" title="EndpointItem::setDirection" alt="" coords="400,259,592,285">
+<area shape="rect" id="node16" href="$diagramgrid_8h.html#68afc106817c98c8b7787ff86acee75e" title="Snaps the given QPointF to the diagram grid." alt="" coords="433,309,559,336">

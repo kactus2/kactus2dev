@@ -1,0 +1,15 @@
+<area shape="rect" id="node3" href="$class_library_handler.html#3331750b58e0045f51cafefadb9dc452" title="Add a new VLNV tag to the library." alt="" coords="282,5,459,32">
+<area shape="rect" id="node5" href="$class_main_window.html#3955ca5db289680247c46f97bd51f634" title="Restore the mainwindow&#39;s settings." alt="" coords="267,56,474,83">
+<area shape="rect" id="node7" href="$class_library_handler.html#3dd0651d73391c3c91e0a7c088b51336" title="Search for IP&#45;Xact files in the file system and add them to library." alt="" coords="244,107,497,133">
+<area shape="rect" id="node9" href="$class_main_window.html#2334d55084925506d781b8c2c5fed463" title="Set up the actions in the tool bars." alt="" coords="275,157,466,184">
+<area shape="rect" id="node13" href="$class_main_window.html#5be3eb638f8a0253dc792dbc3bc37b04" title="Set up the configuration editor." alt="" coords="238,208,503,235">
+<area shape="rect" id="node15" href="$class_main_window.html#3c116668fdb9789e2801386dda2c24de" title="Set up the connection editor." alt="" coords="245,259,497,285">
+<area shape="rect" id="node17" href="$class_main_window.html#3ace0e70e34c00edda970430b922ca3b" title="Set up the drawing view where hierarchical components are edited." alt="" coords="264,309,477,336">
+<area shape="rect" id="node19" href="$class_main_window.html#76f4404176c316578bb087b4a3c38ce8" title="Set up the component instance editor." alt="" coords="253,360,488,387">
+<area shape="rect" id="node21" href="$class_main_window.html#a04967748f0b36f8d023a0e37e8dc670" title="Set up the interface editor." alt="" coords="253,411,489,437">
+<area shape="rect" id="node23" href="$class_main_window.html#349f03a2d89d43194282f3c583e04707" title="Set up the dock for the LibraryHandler." alt="" coords="261,461,480,488">
+<area shape="rect" id="node31" href="$class_main_window.html#afc2d1eed68a7da27aacd3806b13aad6" title="Set up the message console." alt="" coords="245,512,496,539">
+<area shape="rect" id="node11" href="$class_main_window.html#33d3a9c1b743440dad41014ee6f796f5" title="Set up the menus for the main window." alt="" coords="561,157,746,184">
+<area shape="rect" id="node25" href="$class_library_handler.html#ece0cee355476ec68150c3bec7e6dd39" title="Get const&#45;pointer to the library tree&#39;s root item." alt="" coords="553,436,754,463">
+<area shape="rect" id="node27" href="$class_v_l_n_v_dialer.html#410cbe079caa7fe1774bb3aacf03dc84" title="Set the root item used to create the suggestions for dialer." alt="" coords="563,487,743,513">
+<area shape="rect" id="node29" href="$class_dialer_widget.html#f88cb9bd2a52f9dd7535d9c71b1f0558" title="Set the root item used to create the suggestions for dialer." alt="" coords="803,487,991,513">

@@ -1,0 +1,15 @@
+<area shape="rect" id="node3" href="$class_component_item.html#49a73ee33e425a3ff37d93e68ca33c99" title="ComponentItem::componentModel" alt="" coords="652,5,897,32">
+<area shape="rect" id="node5" href="$class_tab_document.html#42405e18a8d714a207c97b5819ef09fc" title="TabDocument::getDocumentName" alt="" coords="331,247,578,273">
+<area shape="rect" id="node7" href="$class_component_item.html#065f3fb7a863a24ab7e5e1cbef4bf417" title="ComponentItem::name" alt="" coords="689,56,860,83">
+<area shape="rect" id="node9" href="$class_endpoint_design_diagram.html#9da98836bda583a0f92cbfd8327aab2e" title="EndpointDesignDiagram::parent" alt="" coords="341,297,568,324">
+<area shape="rect" id="node11" href="$class_mapping_component_item.html#6b2f982fc4731eb090e2b38e6393d19e" title="MappingComponentItem::save" alt="" coords="345,196,564,223">
+<area shape="rect" id="node14" href="$class_component_item.html#06ec15dd285edbaeabcfe8626ff3bf6e" title="ComponentItem::description" alt="" coords="673,411,877,437">
+<area shape="rect" id="node16" href="$class_component_item.html#f901df7e4c0046ee3ca90e597d3969fe" title="ComponentItem::displayName" alt="" coords="666,461,883,488">
+<area shape="rect" id="node18" href="$class_program_entity_item.html#78ed97d6527f7d182c9054e8f12b7f12" title="ProgramEntityItem::getApplication" alt="" coords="654,107,895,133">
+<area shape="rect" id="node20" href="$class_component_item.html#8e42aa92fdca17a63e6a075826820bbe" title="ComponentItem::getConfigurableElements" alt="" coords="627,157,922,184">
+<area shape="rect" id="node22" href="$class_program_entity_item.html#5e5eb69d907234c570b34cb1d6553421" title="ProgramEntityItem::getEndpoints" alt="" coords="657,208,892,235">
+<area shape="rect" id="node26" href="$class_program_entity_item.html#96ed9f4d0ea4e35165409aa46ef31a99" title="ProgramEntityItem::isEndpointsExpanded" alt="" coords="631,259,918,285">
+<area shape="rect" id="node30" href="$class_s_w_component_item.html#e9e724f0741a4f4e0ca3395931e237cf" title="SWComponentItem::isImported" alt="" coords="663,309,886,336">
+<area shape="rect" id="node33" href="$class_library_interface.html#a841b91f4281dc02f2d3bf871f8bab45" title="Write the model to file system to given file path." alt="" coords="658,360,891,387">
+<area shape="rect" id="node24" href="$class_endpoint_stack.html#ced0c93d0e06d730261112f7d6573860" title="EndpointStack::getEndpoints" alt="" coords="971,208,1178,235">
+<area shape="rect" id="node28" href="$class_endpoint_stack.html#c8ff88f459faf774c1ef83fcc62ec430" title="EndpointStack::isExpanded" alt="" coords="977,259,1172,285">

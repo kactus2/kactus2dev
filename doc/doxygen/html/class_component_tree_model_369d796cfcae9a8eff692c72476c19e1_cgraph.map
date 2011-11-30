@@ -1,0 +1,27 @@
+<area shape="rect" id="node3" href="$class_component_tree_item.html#a3fb00f7fb8cb198b09e6a3520f39f83" title="Tells if the item can have children or not." alt="" coords="297,487,567,513">
+<area shape="rect" id="node5" href="$class_component_tree_item.html#98b1ffcea4c86f0f45833684252c45c9" title="Create a new child for the item." alt="" coords="315,537,549,564">
+<area shape="rect" id="node51" href="$class_component_tree_model.html#d61eebf9a2a7def96ec5fac42c8095f7" title="Create a model index for given item." alt="" coords="329,588,535,615">
+<area shape="rect" id="node55" href="$class_component_tree_item.html#b692bc8b0610cc05104ae8c609e606f6" title="Get the number of rows that exist under this item." alt="" coords="321,639,543,665">
+<area shape="rect" id="node7" href="$class_component_tree_item.html#ab730e2b2f204c5b1ffd22319dfccfe2" title="The constructor." alt="" coords="617,411,911,437">
+<area shape="rect" id="node43" href="$class_file_set.html#fb4add74f771c1bf2751de1371113f79" title="Create a new file to the file set." alt="" coords="697,461,831,488">
+<area shape="rect" id="node45" href="$class_component_tree_item.html#c054e97b791f3444fc123945bc91fddb" title="Get the data pointer to the item that this item represents." alt="" coords="635,512,893,539">
+<area shape="rect" id="node47" href="$class_library_interface.html#d76e2648d944acbd458ae4727342bcf4" title="Get a path to the specified IP&#45;Xact document." alt="" coords="675,563,853,589">
+<area shape="rect" id="node49" href="$namespace_general.html#62ccd6c717ee0d1bc3954a44e6260d00" title="Get a relative file path from one location to another." alt="" coords="674,613,854,640">
+<area shape="rect" id="node9" href="$class_file_set.html#fa27b633d85c2889934593dde5b7b063" title="Get the default file builders for this file set." alt="" coords="961,5,1173,32">
+<area shape="rect" id="node11" href="$class_function.html#d13457bf96650c7f98baa9ec0c6e9b5d" title="Get entry point of the function." alt="" coords="981,56,1152,83">
+<area shape="rect" id="node13" href="$class_function.html#1a0d4ee44dc4e4b898ccc4cfa6380a13" title="Get the file reference." alt="" coords="993,107,1140,133">
+<area shape="rect" id="node15" href="$class_file_set.html#d314d723f51f726a1f39b96948efd463" title="Get the files associated with this file set." alt="" coords="1005,157,1128,184">
+<area shape="rect" id="node17" href="$class_bank.html#fe6c7355fa18e0cfd8fe725d2c489b51" title="Get the items stored in the bank." alt="" coords="1007,208,1126,235">
+<area shape="rect" id="node19" href="$class_memory_map.html#6ce384155abed21875a83605875f40e2" title="Get list of memorymap items." alt="" coords="983,259,1150,285">
+<area shape="rect" id="node21" href="$class_cpu.html#e30e053c4ce055c060b8a067af12ef0f" title="Get the name of this cpu." alt="" coords="1009,309,1124,336">
+<area shape="rect" id="node23" href="$class_channel.html#3785abfca46c987e3940eb27844713d7" title="Get the name of the channel." alt="" coords="995,360,1138,387">
+<area shape="rect" id="node25" href="$class_bus_interface.html#68689fb6dc2fe53c9b2bc43d0904e549" title="get the name of the bus interface" alt="" coords="981,411,1152,437">
+<area shape="rect" id="node27" href="$class_view.html#944b4a70717842b92bb5c8c4064dbd07" title="Get the name of the view." alt="" coords="1007,461,1126,488">
+<area shape="rect" id="node29" href="$class_remap_state.html#0e41fdba2e23de4a775c80b8d248cd23" title="Get the name of the remap state." alt="" coords="981,512,1152,539">
+<area shape="rect" id="node31" href="$class_address_space.html#aeb2751df9f8c265f95704369be768c7" title="Get the name of the address space." alt="" coords="975,563,1158,589">
+<area shape="rect" id="node33" href="$class_memory_map_item.html#a6bb288b4152154bb4796feeee53d7f8" title="Get the name of the element." alt="" coords="967,613,1166,640">
+<area shape="rect" id="node35" href="$class_memory_map.html#6de06897dfab69e2468fc12f34840a72" title="Get the name of the memoryMap." alt="" coords="982,664,1151,691">
+<area shape="rect" id="node37" href="$class_choice.html#cf20c942bb31899b263f86dd0da14385" title="Get the name of the choice." alt="" coords="1000,715,1133,741">
+<area shape="rect" id="node39" href="$class_file.html#5498b16808f9f2df9f0f169ec31b54d6" title="Get the name of the file." alt="" coords="1011,765,1122,792">
+<area shape="rect" id="node41" href="$class_file_set.html#174e91cc7ded7f21f11a609443004696" title="Get the name of the file set." alt="" coords="1000,816,1133,843">
+<area shape="rect" id="node53" href="$class_component_tree_item.html#191ce20e5e723e9abc0f85b06dbc66ef" title="Get pointer to the child in specified index." alt="" coords="669,664,859,691">

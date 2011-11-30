@@ -1,0 +1,11 @@
+<area shape="rect" id="node3" href="$class_library_item.html#5e9399acf41b998927eaba9d734fc1b2" title="Find the library item that uniquely represents the specified vlnv." alt="" coords="281,157,436,184">
+<area shape="rect" id="node17" href="$class_library_tree_model.html#0da0b08cf333f1ae985c1a2676d1c385" title="Get the root item of the tree." alt="" coords="264,233,453,260">
+<area shape="rect" id="node19" href="$class_library_tree_model.html#159b711f8a29badf549a7dc26240f302" title="Get the model index of the specified object." alt="" coords="272,284,445,311">
+<area shape="rect" id="node23" href="$class_v_l_n_v.html#f02edbeb4feca8206bdb6681963730f8" title="Checks if the vlnv is valid or not." alt="" coords="305,335,412,361">
+<area shape="rect" id="node5" href="$class_v_l_n_v.html#f00f5007636620ffeff44521bacca857" title="Get the library of the VLNV." alt="" coords="505,5,634,32">
+<area shape="rect" id="node7" href="$class_v_l_n_v.html#3ff2bdff884da48aa0e936fa5595b7e8" title="Get the name of the IP block in VLNV." alt="" coords="507,56,632,83">
+<area shape="rect" id="node9" href="$class_v_l_n_v.html#5e8bcf9abe6a26377c30a80657650059" title="Get the type of the document the VLNV belongs to." alt="" coords="511,107,627,133">
+<area shape="rect" id="node11" href="$class_v_l_n_v.html#8868ebe2affad578b9c9c3aef1f38632" title="Get the vendor of the VLNV." alt="" coords="503,157,635,184">
+<area shape="rect" id="node13" href="$class_v_l_n_v.html#3a5da6ca75e9a6bf575906c2ea185051" title="Get the version of the VLNV." alt="" coords="502,208,637,235">
+<area shape="rect" id="node15" href="$class_v_l_n_v.html#a1671c2e1d651ca917500a71ba2f1e57" title="Static function. Convert IPXactType to printable QString." alt="" coords="504,259,635,285">
+<area shape="rect" id="node21" href="$class_library_item.html#ae28393e0e02a877ce2f310c38ff1e83" title="Get a pointer to the child item." alt="" coords="504,309,635,336">

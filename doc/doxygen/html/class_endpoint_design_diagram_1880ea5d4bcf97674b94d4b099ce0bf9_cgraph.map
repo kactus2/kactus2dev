@@ -1,0 +1,13 @@
+<area shape="rect" id="node3" href="$class_generic_edit_provider.html#a44aaae7b9a6c25882059e45d8b24e1c" title="GenericEditProvider::addCommand" alt="" coords="399,5,646,32">
+<area shape="rect" id="node5" href="$class_component_item.html#49a73ee33e425a3ff37d93e68ca33c99" title="ComponentItem::componentModel" alt="" coords="400,56,645,83">
+<area shape="rect" id="node7" href="$class_new_object_dialog.html#017f37c8b05939b4bc5ed9ae5b79d2c8" title="Get the user inputted path." alt="" coords="429,107,617,133">
+<area shape="rect" id="node9" href="$class_new_object_dialog.html#7676e943f9f74ca3a0c90b63427b967b" title="Get the user inputted VLNV." alt="" coords="425,157,620,184">
+<area shape="rect" id="node13" href="$class_endpoint_design_diagram.html#9da98836bda583a0f92cbfd8327aab2e" title="EndpointDesignDiagram::parent" alt="" coords="409,208,636,235">
+<area shape="rect" id="node15" href="$class_component_item.html#2c3e3dbd4ab3e6fdd363d21f4310a047" title="ComponentItem::updateComponent" alt="" coords="395,259,650,285">
+<area shape="rect" id="node27" href="$class_library_interface.html#a841b91f4281dc02f2d3bf871f8bab45" title="Write the model to file system to given file path." alt="" coords="406,309,639,336">
+<area shape="rect" id="node11" href="$class_v_l_n_v_editor.html#ec64dfb071b106bbe96b95788cd1df25" title="VLNVEditor::getVLNV" alt="" coords="699,132,858,159">
+<area shape="rect" id="node17" href="$class_v_l_n_v.html#f00f5007636620ffeff44521bacca857" title="Get the library of the VLNV." alt="" coords="714,183,843,209">
+<area shape="rect" id="node19" href="$class_v_l_n_v.html#3ff2bdff884da48aa0e936fa5595b7e8" title="Get the name of the IP block in VLNV." alt="" coords="716,233,841,260">
+<area shape="rect" id="node21" href="$class_v_l_n_v.html#8868ebe2affad578b9c9c3aef1f38632" title="Get the vendor of the VLNV." alt="" coords="713,284,845,311">
+<area shape="rect" id="node23" href="$class_v_l_n_v.html#3a5da6ca75e9a6bf575906c2ea185051" title="Get the version of the VLNV." alt="" coords="711,335,846,361">
+<area shape="rect" id="node25" href="$class_v_l_n_v.html#f02edbeb4feca8206bdb6681963730f8" title="Checks if the vlnv is valid or not." alt="" coords="725,385,832,412">

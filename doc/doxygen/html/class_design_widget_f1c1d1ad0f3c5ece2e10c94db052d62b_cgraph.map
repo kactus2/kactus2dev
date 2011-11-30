@@ -1,0 +1,43 @@
+<area shape="rect" id="node3" href="$class_library_interface.html#f6944f708f9aa01568d707fdc773ea91" title="Checks if the library already contains the specified vlnv." alt="" coords="669,309,851,336">
+<area shape="rect" id="node5" href="$class_design_widget.html#781af043c9a4737a85a1c9b775e8f2c4" title="Create an empty design and configuration for a component." alt="" coords="297,613,594,640">
+<area shape="rect" id="node56" href="$class_library_interface.html#92798f5c6f5e72c8f4da87e872812c4f" title="Get a model that matches given VLNV." alt="" coords="955,5,1143,32">
+<area shape="rect" id="node61" href="$class_v_l_n_v.html#f02edbeb4feca8206bdb6681963730f8" title="Checks if the vlnv is valid or not." alt="" coords="996,56,1103,83">
+<area shape="rect" id="node80" href="$class_library_interface.html#a841b91f4281dc02f2d3bf871f8bab45" title="Write the model to file system to given file path." alt="" coords="643,892,877,919">
+<area shape="rect" id="node83" href="$class_new_object_dialog.html#017f37c8b05939b4bc5ed9ae5b79d2c8" title="Get the user inputted path." alt="" coords="351,715,539,741">
+<area shape="rect" id="node85" href="$class_library_interface.html#d76e2648d944acbd458ae4727342bcf4" title="Get a path to the specified IP&#45;Xact document." alt="" coords="356,765,535,792">
+<area shape="rect" id="node87" href="$class_new_object_dialog.html#7676e943f9f74ca3a0c90b63427b967b" title="Get the user inputted VLNV." alt="" coords="348,904,543,931">
+<area shape="rect" id="node92" href="$class_new_object_dialog.html#2de883ce01cb38dab2df8a8383e8e6cc" title="Set the vlnv for the editor." alt="" coords="349,664,542,691">
+<area shape="rect" id="node7" href="$class_view.html#88f049f1259e09c9476553ca670f78d4" title="Add a new envIdentifier for this view." alt="" coords="679,360,841,387">
+<area shape="rect" id="node9" href="$class_model.html#b3e0f3d28719d841c38f33c99710c01f" title="Add a new view to the model." alt="" coords="699,588,821,615">
+<area shape="rect" id="node16" href="$class_v_l_n_v.html#f00f5007636620ffeff44521bacca857" title="Get the library of the VLNV." alt="" coords="985,765,1114,792">
+<area shape="rect" id="node18" href="$class_v_l_n_v.html#3ff2bdff884da48aa0e936fa5595b7e8" title="Get the name of the IP block in VLNV." alt="" coords="987,613,1112,640">
+<area shape="rect" id="node20" href="$class_v_l_n_v.html#8868ebe2affad578b9c9c3aef1f38632" title="Get the vendor of the VLNV." alt="" coords="983,816,1115,843">
+<area shape="rect" id="node22" href="$class_v_l_n_v.html#3a5da6ca75e9a6bf575906c2ea185051" title="Get the version of the VLNV." alt="" coords="982,867,1117,893">
+<area shape="rect" id="node24" href="$class_block_diagram.html#950f04977bccc66007e9b0bbf45ea429" title="Set the IP&#45;XACT document that is viewed in BlockDiagram." alt="" coords="669,411,851,437">
+<area shape="rect" id="node78" href="$class_view.html#54742356d37991cc78b89f39c80cae87" title="Set the hierarchyRef for this view." alt="" coords="680,689,840,716">
+<area shape="rect" id="node11" href="$class_view.html#944b4a70717842b92bb5c8c4064dbd07" title="Get the name of the view." alt="" coords="990,715,1109,741">
+<area shape="rect" id="node13" href="$class_model.html#ef11cd1c58b59258612bc9b94289202e" title="Remove the specified name from the model." alt="" coords="976,664,1123,691">
+<area shape="rect" id="node26" href="$class_diagram_column.html#d2ba8c85f29f7ad0b0717f042f11a184" title="DiagramColumn::addItem" alt="" coords="956,512,1143,539">
+<area shape="rect" id="node44" href="$class_generic_edit_provider.html#862a9b155f5e497528679b425e138e5a" title="GenericEditProvider::clear" alt="" coords="956,563,1143,589">
+<area shape="rect" id="node46" href="$class_diagram_component.html#777de3850236d939fcdbcc0ea7a8eee7" title="Get the DiagramPort that corresponds to the given bus interface name." alt="" coords="934,107,1165,133">
+<area shape="rect" id="node50" href="$class_block_diagram.html#9bc0f850652ae8af28a409e140ec57b2" title="Get DiagramComponent that has the given instance name." alt="" coords="942,157,1157,184">
+<area shape="rect" id="node54" href="$class_library_interface.html#55d33e9e99760ae1a12725681c034b43" title="Get the document type of given vlnv." alt="" coords="926,208,1173,235">
+<area shape="rect" id="node59" href="$class_v_l_n_v.html#5e8bcf9abe6a26377c30a80657650059" title="Get the type of the document the VLNV belongs to." alt="" coords="991,259,1107,285">
+<area shape="rect" id="node63" href="$class_diagram_interface.html#f80187dd750611e4bca0db569803590e" title="DiagramInterface::setDirection" alt="" coords="940,309,1159,336">
+<area shape="rect" id="node67" href="$class_diagram_interconnection.html#9d6ca23feef51b1a498558cd2b231e0a" title="Set the name for the connection." alt="" coords="928,360,1171,387">
+<area shape="rect" id="node69" href="$class_diagram_interconnection.html#e51805440bf5672011b8d906f392a033" title="Set the routing of the interconnection." alt="" coords="929,411,1170,437">
+<area shape="rect" id="node76" href="$class_v_l_n_v.html#41e8feb8b594eaaf4efc45dc0b520656" title="Set the document type for the vlnv." alt="" coords="992,461,1107,488">
+<area shape="rect" id="node28" href="$class_diagram_column.html#d06eafc748b7b697464e807761343355" title="DiagramColumn::removeItem" alt="" coords="1273,512,1485,539">
+<area shape="rect" id="node34" href="$namespace_v_stacked_layout.html#e377b4c99851b8d82fc5c132dac24e0b" title="VStackedLayout::setItemPos" alt="" coords="1614,563,1821,589">
+<area shape="rect" id="node37" href="$namespace_v_collision_layout.html#a5d414d021b2e84936d5924e4150f100" title="VCollisionLayout::setItemPos" alt="" coords="1275,613,1482,640">
+<area shape="rect" id="node39" href="$namespace_v_stacked_layout.html#5f14204a310806c9c55dc46552b97b4d" title="VStackedLayout::updateItemMove" alt="" coords="1596,639,1839,665">
+<area shape="rect" id="node42" href="$namespace_v_collision_layout.html#1b75da2ff617504d045ddc8d45a21856" title="VCollisionLayout::updateItemMove" alt="" coords="1257,461,1500,488">
+<area shape="rect" id="node30" href="$namespace_v_stacked_layout.html#4ecf5cf2db0d1e5c8f31ad07c5f0b363" title="VStackedLayout::updateItemPositions" alt="" coords="1585,512,1850,539">
+<area shape="rect" id="node32" href="$namespace_diagram_util.html#34372d64301c316deaa127e2bfcf4d58" title="DiagramUtil::clampCeil" alt="" coords="1899,563,2067,589">
+<area shape="rect" id="node48" href="$class_diagram_port.html#3ee5790c02f3b70d6befc604108ebaa1" title="Returns the name of this port." alt="" coords="1305,107,1453,133">
+<area shape="rect" id="node52" href="$class_component_item.html#065f3fb7a863a24ab7e5e1cbef4bf417" title="ComponentItem::name" alt="" coords="1293,157,1464,184">
+<area shape="rect" id="node65" href="$class_diagram_connection_end_point.html#118018fc1eb247ba0466cfd1b5c128fa" title="DiagramConnectionEndPoint::setDirection" alt="" coords="1233,309,1524,336">
+<area shape="rect" id="node71" href="$class_diagram_connection_end_point.html#24e5426821cdf4df2c7884979085d303" title="DiagramConnectionEndPoint::getDirection" alt="" coords="1233,360,1524,387">
+<area shape="rect" id="node73" href="$class_diagram_connection_end_point.html#b168e7790bc3da47eef4bb85bdc8d023" title="DiagramConnectionEndPoint::isDirectionFixed" alt="" coords="1222,411,1535,437">
+<area shape="rect" id="node89" href="$class_v_l_n_v_editor.html#ec64dfb071b106bbe96b95788cd1df25" title="VLNVEditor::getVLNV" alt="" coords="681,943,839,969">
+<area shape="rect" id="node94" href="$class_v_l_n_v_editor.html#edef36ca3252c366ed3d222c69d2c765" title="VLNVEditor::setVLNV" alt="" coords="681,791,839,817">

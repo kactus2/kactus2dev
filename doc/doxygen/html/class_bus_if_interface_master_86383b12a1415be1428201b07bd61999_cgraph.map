@@ -1,0 +1,9 @@
+<area shape="rect" id="node3" href="$class_bus_if_interface_mode_editor.html#ce4c5bfca5772feae39f55f954a38bca" title="Get pointer to the bus interface being edited." alt="" coords="335,5,553,32">
+<area shape="rect" id="node5" href="$class_attribute_box.html#84b41918849e53f9743a564433af8a6f" title="Clear all attributes from the box." alt="" coords="373,56,515,83">
+<area shape="rect" id="node9" href="$class_master_interface.html#b17df764e8f53eb408f390e7025aa16f" title="Get the base address." alt="" coords="327,107,561,133">
+<area shape="rect" id="node11" href="$class_bus_interface.html#c0148e5021c6d58ba897ca90da1f72d2" title="Get the pointer to the master&#45;element." alt="" coords="357,157,531,184">
+<area shape="rect" id="node13" href="$class_master_interface.html#8076a916c1a4efcfc43889224c5acc84" title="Get the prompt attribute." alt="" coords="345,208,543,235">
+<area shape="rect" id="node15" href="$class_attribute_box.html#4f57e8d7039e9232097b3f792af5029d" title="Set the attributes to be displayed in this widget." alt="" coords="347,259,541,285">
+<area shape="rect" id="node19" href="$class_bus_if_interface_master.html#a3ee4c647f811eabd1ad9a02fdfcbe34" title="Update the display for the editor." alt="" coords="318,309,570,336">
+<area shape="rect" id="node7" href="$class_attribute_model.html#4aa4843c8cca0fd417673efb446d059b" title="Remove all attributes from the model." alt="" coords="645,56,800,83">
+<area shape="rect" id="node17" href="$class_attribute_model.html#9ef23360ab7076bf5cee71928b195bb3" title="Set attributes for the model." alt="" coords="619,259,826,285">

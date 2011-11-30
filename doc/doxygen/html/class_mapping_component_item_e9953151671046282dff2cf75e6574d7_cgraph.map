@@ -1,0 +1,4 @@
+<area shape="rect" id="node3" href="$class_program_entity_item.html#4945b95a6e2a057b079566f1b7d9d746" title="ProgramEntityItem::getEndpoint" alt="" coords="320,31,547,57">
+<area shape="rect" id="node9" href="$class_component_item.html#065f3fb7a863a24ab7e5e1cbef4bf417" title="ComponentItem::name" alt="" coords="348,81,519,108">
+<area shape="rect" id="node5" href="$class_endpoint_stack.html#ced0c93d0e06d730261112f7d6573860" title="EndpointStack::getEndpoints" alt="" coords="595,5,802,32">
+<area shape="rect" id="node7" href="$class_endpoint_item.html#8af24936977f7c7481300e7700042ad7" title="EndpointItem::getName" alt="" coords="611,56,786,83">

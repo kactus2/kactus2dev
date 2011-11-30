@@ -1,0 +1,4 @@
+<area shape="rect" id="node3" href="$class_component_item.html#575ddc84dae2d8af4bf412bd2ea087f2" title="ComponentItem::setName" alt="" coords="347,56,541,83">
+<area shape="rect" id="node5" href="$class_endpoint_design_diagram.html#01674286b8aa62b4b584243f2037dc41" title="EndpointDesignDiagram::updateInstanceName" alt="" coords="589,5,912,32">
+<area shape="rect" id="node7" href="$class_block_diagram.html#fb078db2130da5bcffeaa826f080a563" title="Update the list of instance names." alt="" coords="622,56,879,83">
+<area shape="rect" id="node9" href="$class_component_item.html#2e26ffef30b7ad9e3dc1589f206ff983" title="ComponentItem::updateNameLabel" alt="" coords="625,107,877,133">

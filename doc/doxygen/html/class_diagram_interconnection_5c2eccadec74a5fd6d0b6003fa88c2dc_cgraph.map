@@ -1,0 +1,7 @@
+<area shape="rect" id="node3" href="$class_diagram_interconnection.html#3295188b9acbd2fd4cf8fedcc698aff4" title="DiagramInterconnection::createRoute" alt="" coords="334,5,597,32">
+<area shape="rect" id="node7" href="$class_diagram_connection_end_point.html#24e5426821cdf4df2c7884979085d303" title="DiagramConnectionEndPoint::getDirection" alt="" coords="657,56,948,83">
+<area shape="rect" id="node9" href="$class_diagram_interconnection.html#e51805440bf5672011b8d906f392a033" title="Set the routing of the interconnection." alt="" coords="345,107,586,133">
+<area shape="rect" id="node16" href="$diagramgrid_8h.html#68afc106817c98c8b7787ff86acee75e" title="Snaps the given QPointF to the diagram grid." alt="" coords="402,157,529,184">
+<area shape="rect" id="node5" href="$class_diagram_interconnection.html#5a1b1d9f17451bb04f79cf0184449677" title="DiagramInterconnection::simplifyPath" alt="" coords="672,5,933,32">
+<area shape="rect" id="node12" href="$class_diagram_connection_end_point.html#b168e7790bc3da47eef4bb85bdc8d023" title="DiagramConnectionEndPoint::isDirectionFixed" alt="" coords="646,107,959,133">
+<area shape="rect" id="node14" href="$class_diagram_connection_end_point.html#118018fc1eb247ba0466cfd1b5c128fa" title="DiagramConnectionEndPoint::setDirection" alt="" coords="657,157,948,184">

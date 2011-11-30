@@ -1,0 +1,15 @@
+<area shape="rect" id="node3" href="$class_v_l_n_v.html#3ff2bdff884da48aa0e936fa5595b7e8" title="Get the name of the IP block in VLNV." alt="" coords="267,5,392,32">
+<area shape="rect" id="node5" href="$class_v_l_n_v.html#3a5da6ca75e9a6bf575906c2ea185051" title="Get the version of the VLNV." alt="" coords="262,56,397,83">
+<area shape="rect" id="node7" href="$class_abs_def_group.html#6286f766b8b5950cdb709fe3c8e27088" title="Set the abstraction definition for the editor." alt="" coords="239,107,420,133">
+<area shape="rect" id="node15" href="$class_bus_def_group.html#fd80e13784f3d8857689c30eebff2ef1" title="Set the bus definition that is being edited." alt="" coords="239,157,420,184">
+<area shape="rect" id="node17" href="$class_tab_document.html#aa84da0d893494876d86c3256e4bb127" title="TabDocument::setDocumentName" alt="" coords="206,208,453,235">
+<area shape="rect" id="node25" href="$class_tab_document.html#37bad76cc00b2bf3338463ddd8cec21c" title="TabDocument::setDocumentType" alt="" coords="211,259,448,285">
+<area shape="rect" id="node28" href="$class_bus_editor.html#67da808952847bd47a9a1696eb7c97f1" title="BusEditor::setProtection" alt="" coords="241,309,417,336">
+<area shape="rect" id="node32" href="$class_bus_editor.html#9b514017c184a945e9b66c6f2c8acdf7" title="Set the layout of the widget." alt="" coords="244,360,415,387">
+<area shape="rect" id="node9" href="$class_bus_ports_model.html#bf22ad9a47bceb1aaa5c83c5dacf82f0" title="Set the abstraction definition for the model." alt="" coords="514,107,705,133">
+<area shape="rect" id="node11" href="$class_bus_ports_model.html#d378b1c9540bdce5e1fbcc58bb314067" title="Read the ports from the abstraction definition to the table." alt="" coords="767,107,953,133">
+<area shape="rect" id="node13" href="$class_bus_ports_model.html#f7246670c9abb5d47bd4d8b3bbe1b16c" title="Read a single port into table from port abstraction." alt="" coords="1003,107,1183,133">
+<area shape="rect" id="node19" href="$class_tab_document.html#c042a6469e9435308c70ba894efb3f40" title="TabDocument::updateTabTitle" alt="" coords="502,233,717,260">
+<area shape="rect" id="node21" href="$class_tab_document.html#c3ceea9b578b8873d64905e324418876" title="TabDocument::isModified" alt="" coords="769,208,951,235">
+<area shape="rect" id="node23" href="$class_tab_document.html#3b3905639f298b385d11ed6bffb37e62" title="TabDocument::setTabTitle" alt="" coords="765,259,955,285">
+<area shape="rect" id="node30" href="$class_tab_document.html#f1ca58c43e47d217df76d22838aaa845" title="TabDocument::setProtection" alt="" coords="507,309,712,336">

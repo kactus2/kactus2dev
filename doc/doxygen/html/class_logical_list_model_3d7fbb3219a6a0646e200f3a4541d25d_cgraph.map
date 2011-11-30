@@ -1,0 +1,5 @@
+<area shape="rect" id="node3" href="$class_logical_list_model.html#56c0f715136dcc56b98eb232e569cc17" title="Refresh the list of ports." alt="" coords="293,56,472,83">
+<area shape="rect" id="node5" href="$class_logical_list_model.html#a9e122ccaca5ba338fc4579bde4d5ba8" title="Set the abstraction type that defines logical signals." alt="" coords="520,56,728,83">
+<area shape="rect" id="node7" href="$class_library_interface.html#f6944f708f9aa01568d707fdc773ea91" title="Checks if the library already contains the specified vlnv." alt="" coords="779,5,962,32">
+<area shape="rect" id="node9" href="$class_library_interface.html#92798f5c6f5e72c8f4da87e872812c4f" title="Get a model that matches given VLNV." alt="" coords="777,56,965,83">
+<area shape="rect" id="node11" href="$class_v_l_n_v.html#f02edbeb4feca8206bdb6681963730f8" title="Checks if the vlnv is valid or not." alt="" coords="817,107,924,133">

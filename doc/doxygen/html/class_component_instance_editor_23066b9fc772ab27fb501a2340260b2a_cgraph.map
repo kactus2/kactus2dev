@@ -1,0 +1,20 @@
+<area shape="rect" id="node3" href="$class_component_item.html#49a73ee33e425a3ff37d93e68ca33c99" title="ComponentItem::componentModel" alt="" coords="724,85,969,112">
+<area shape="rect" id="node5" href="$class_component_item.html#06ec15dd285edbaeabcfe8626ff3bf6e" title="ComponentItem::description" alt="" coords="390,389,594,416">
+<area shape="rect" id="node7" href="$class_component_item.html#f901df7e4c0046ee3ca90e597d3969fe" title="ComponentItem::displayName" alt="" coords="383,440,601,466">
+<area shape="rect" id="node9" href="$class_endpoint_design_widget.html#713c25bd272cecf4d33ff28de1539b07" title="EndpointDesignWidget::getGenericEditProvider" alt="" coords="1054,60,1373,86">
+<area shape="rect" id="node11" href="$class_design_widget.html#5b4567c359cc52aa1b56b69e408e2060" title="Get the edit provider that manages the undo stack." alt="" coords="1082,237,1345,264">
+<area shape="rect" id="node13" href="$class_endpoint_design_diagram.html#4709301f9c2d8216e3e0275eb47f48b4" title="EndpointDesignDiagram::isProtected" alt="" coords="363,490,621,517">
+<area shape="rect" id="node15" href="$class_block_diagram.html#6b3bf391cbc7f2382ead168516e0373a" title="BlockDiagram::isProtected" alt="" coords="397,541,587,568">
+<area shape="rect" id="node17" href="$class_component_item.html#065f3fb7a863a24ab7e5e1cbef4bf417" title="ComponentItem::name" alt="" coords="407,592,577,618">
+<area shape="rect" id="node19" href="$class_endpoint_design_diagram.html#9da98836bda583a0f92cbfd8327aab2e" title="EndpointDesignDiagram::parent" alt="" coords="1100,288,1327,314">
+<area shape="rect" id="node21" href="$class_block_diagram.html#7de56e67568b6362de2dcd5f21583fcf" title="Get pointer to the parent of this scene." alt="" coords="1133,338,1294,365">
+<area shape="rect" id="node23" href="$class_configurable_element_editor.html#6d0094384b0c5f837feeb0b46fad4ae8" title="Set the component instance to be edited." alt="" coords="345,161,639,188">
+<area shape="rect" id="node38" href="$class_v_l_n_v_displayer.html#f7060bb094411225f5c3a4e185d8979a" title="Set the vlnv to be displayed in the widget." alt="" coords="403,642,581,669">
+<area shape="rect" id="node26" href="$class_component_instance_model.html#f66617d79838b32479c5c13433980d52" title="Set the component being edited." alt="" coords="701,186,993,213">
+<area shape="rect" id="node36" href="$class_configurable_element_delegate.html#f96c9e61b4d7ae9b422b131880a63102" title="Set the component that identifies the component instance type." alt="" coords="689,136,1005,162">
+<area shape="rect" id="node28" href="$class_component_item.html#8e42aa92fdca17a63e6a075826820bbe" title="ComponentItem::getConfigurableElements" alt="" coords="1066,136,1361,162">
+<area shape="rect" id="node34" href="$class_component_instance_model.html#74df37ab5aae63186320897063a95dd1" title="Read the values_ and add the items to the table to be displayed." alt="" coords="1079,186,1348,213">
+<area shape="rect" id="node40" href="$class_v_l_n_v.html#f00f5007636620ffeff44521bacca857" title="Get the library of the VLNV." alt="" coords="782,617,911,644">
+<area shape="rect" id="node42" href="$class_v_l_n_v.html#3ff2bdff884da48aa0e936fa5595b7e8" title="Get the name of the IP block in VLNV." alt="" coords="784,668,909,694">
+<area shape="rect" id="node44" href="$class_v_l_n_v.html#8868ebe2affad578b9c9c3aef1f38632" title="Get the vendor of the VLNV." alt="" coords="781,718,913,745">
+<area shape="rect" id="node46" href="$class_v_l_n_v.html#3a5da6ca75e9a6bf575906c2ea185051" title="Get the version of the VLNV." alt="" coords="779,566,914,593">

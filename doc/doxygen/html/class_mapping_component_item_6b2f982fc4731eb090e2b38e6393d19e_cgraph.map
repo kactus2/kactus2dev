@@ -1,0 +1,12 @@
+<area shape="rect" id="node3" href="$class_component_item.html#49a73ee33e425a3ff37d93e68ca33c99" title="ComponentItem::componentModel" alt="" coords="297,5,543,32">
+<area shape="rect" id="node5" href="$class_component_item.html#06ec15dd285edbaeabcfe8626ff3bf6e" title="ComponentItem::description" alt="" coords="318,56,522,83">
+<area shape="rect" id="node7" href="$class_component_item.html#f901df7e4c0046ee3ca90e597d3969fe" title="ComponentItem::displayName" alt="" coords="311,107,529,133">
+<area shape="rect" id="node9" href="$class_program_entity_item.html#78ed97d6527f7d182c9054e8f12b7f12" title="ProgramEntityItem::getApplication" alt="" coords="299,157,541,184">
+<area shape="rect" id="node11" href="$class_component_item.html#8e42aa92fdca17a63e6a075826820bbe" title="ComponentItem::getConfigurableElements" alt="" coords="273,208,567,235">
+<area shape="rect" id="node13" href="$class_program_entity_item.html#5e5eb69d907234c570b34cb1d6553421" title="ProgramEntityItem::getEndpoints" alt="" coords="303,259,537,285">
+<area shape="rect" id="node17" href="$class_program_entity_item.html#96ed9f4d0ea4e35165409aa46ef31a99" title="ProgramEntityItem::isEndpointsExpanded" alt="" coords="277,309,563,336">
+<area shape="rect" id="node21" href="$class_s_w_component_item.html#e9e724f0741a4f4e0ca3395931e237cf" title="SWComponentItem::isImported" alt="" coords="309,360,531,387">
+<area shape="rect" id="node23" href="$class_component_item.html#065f3fb7a863a24ab7e5e1cbef4bf417" title="ComponentItem::name" alt="" coords="335,411,505,437">
+<area shape="rect" id="node25" href="$class_library_interface.html#a841b91f4281dc02f2d3bf871f8bab45" title="Write the model to file system to given file path." alt="" coords="303,461,537,488">
+<area shape="rect" id="node15" href="$class_endpoint_stack.html#ced0c93d0e06d730261112f7d6573860" title="EndpointStack::getEndpoints" alt="" coords="617,259,823,285">
+<area shape="rect" id="node19" href="$class_endpoint_stack.html#c8ff88f459faf774c1ef83fcc62ec430" title="EndpointStack::isExpanded" alt="" coords="623,309,817,336">

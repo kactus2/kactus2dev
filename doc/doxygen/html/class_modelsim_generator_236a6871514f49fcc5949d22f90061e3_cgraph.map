@@ -1,0 +1,22 @@
+<area shape="rect" id="node3" href="$class_library_interface.html#f6944f708f9aa01568d707fdc773ea91" title="Checks if the library already contains the specified vlnv." alt="" coords="597,12,779,39">
+<area shape="rect" id="node5" href="$class_library_interface.html#55d33e9e99760ae1a12725681c034b43" title="Get the document type of given vlnv." alt="" coords="285,367,531,393">
+<area shape="rect" id="node7" href="$class_view.html#bf0cceb99a3f881fa7b50b9189b2242b" title="Get list of the fileSetRefs for this view." alt="" coords="333,417,483,444">
+<area shape="rect" id="node9" href="$class_view.html#16ed28e630214766d27dfaf2f3015c4a" title="Get pointer to the hierarchical desing for this view." alt="" coords="327,468,489,495">
+<area shape="rect" id="node11" href="$class_v_l_n_v.html#f00f5007636620ffeff44521bacca857" title="Get the library of the VLNV." alt="" coords="623,63,753,89">
+<area shape="rect" id="node13" href="$class_library_interface.html#92798f5c6f5e72c8f4da87e872812c4f" title="Get a model that matches given VLNV." alt="" coords="594,113,782,140">
+<area shape="rect" id="node15" href="$class_v_l_n_v.html#3ff2bdff884da48aa0e936fa5595b7e8" title="Get the name of the IP block in VLNV." alt="" coords="625,215,751,241">
+<area shape="rect" id="node17" href="$class_view.html#7220512cd590a516468a6ec4ddb77e07" title="Get the reference to a view that contains the implementation." alt="" coords="325,519,491,545">
+<area shape="rect" id="node19" href="$class_v_l_n_v.html#5e8bcf9abe6a26377c30a80657650059" title="Get the type of the document the VLNV belongs to." alt="" coords="350,569,466,596">
+<area shape="rect" id="node21" href="$class_v_l_n_v.html#8868ebe2affad578b9c9c3aef1f38632" title="Get the vendor of the VLNV." alt="" coords="622,265,754,292">
+<area shape="rect" id="node23" href="$class_v_l_n_v.html#3a5da6ca75e9a6bf575906c2ea185051" title="Get the version of the VLNV." alt="" coords="621,316,755,343">
+<area shape="rect" id="node25" href="$class_view.html#f8d30aa133c5fda3656309515c8dfd8b" title="Is the view a hierarchical one or not." alt="" coords="336,620,480,647">
+<area shape="rect" id="node29" href="$class_modelsim_generator.html#9012f4dde12039b3a287e46953f946b0" title="Parse the component&#39;s file sets and add all vhdl&#45; and verilog&#45;files." alt="" coords="275,671,541,697">
+<area shape="rect" id="node35" href="$class_modelsim_generator.html#f541ca93e54ce532814fdeb9bf47a239" title="Parse the given file sets and add their files to source files." alt="" coords="287,721,529,748">
+<area shape="rect" id="node41" href="$class_modelsim_generator.html#78fbfa42d2e602bbc698283c69ed0b80" title="Read the design and possibly design configuration and parse them." alt="" coords="293,164,523,191">
+<area shape="rect" id="node54" href="$class_v_l_n_v.html#41e8feb8b594eaaf4efc45dc0b520656" title="Set the document type for the vlnv." alt="" coords="351,772,465,799">
+<area shape="rect" id="node27" href="$class_v_l_n_v.html#f02edbeb4feca8206bdb6681963730f8" title="Checks if the vlnv is valid or not." alt="" coords="635,620,741,647">
+<area shape="rect" id="node31" href="$namespace_general.html#f4c2511926f7780bc115b4ba2c4d5c18" title="Get an absolute path of a file." alt="" coords="595,671,781,697">
+<area shape="rect" id="node33" href="$class_library_interface.html#d76e2648d944acbd458ae4727342bcf4" title="Get a path to the specified IP&#45;Xact document." alt="" coords="599,721,777,748">
+<area shape="rect" id="node38" href="$class_file_set.html#d314d723f51f726a1f39b96948efd463" title="Get the files associated with this file set." alt="" coords="627,772,749,799">
+<area shape="rect" id="node50" href="$class_combo_selector.html#c958978c64d749e8d04b63412c9de121" title="Static function to select a view from component." alt="" coords="590,164,786,191">
+<area shape="rect" id="node52" href="$class_combo_selector.html#d7d3e40be93fcbc09cba583ee4779d7d" title="Execute the dialog." alt="" coords="835,164,994,191">

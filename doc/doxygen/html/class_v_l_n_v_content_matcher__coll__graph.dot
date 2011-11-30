@@ -1,0 +1,14 @@
+digraph G
+{
+  bgcolor="transparent";
+  edge [fontname="FreeSans",fontsize=10,labelfontname="FreeSans",labelfontsize=10];
+  node [fontname="FreeSans",fontsize=10,shape=record];
+  Node1 [label="VLNVContentMatcher",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled" fontcolor="black"];
+  Node2 -> Node1 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node2 [label="ILineContentMatcher",height=0.2,width=0.4,color="black",URL="$class_i_line_content_matcher.html",tooltip="ILineContentMatcher class."];
+  Node3 -> Node1 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="m_item",fontname="FreeSans"];
+  Node3 [label="LibraryItem",height=0.2,width=0.4,color="black",URL="$class_library_item.html",tooltip="LibraryItem class is used to create the hierarchical structure of component library..."];
+  Node3 -> Node3 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="parentItem_",fontname="FreeSans"];
+  Node4 -> Node3 [dir=back,color="darkorchid3",fontsize=10,style="dashed",label="vlnv_",fontname="FreeSans"];
+  Node4 [label="VLNV",height=0.2,width=0.4,color="black",URL="$class_v_l_n_v.html",tooltip="The class to hold VLNV information of a single IP-XACT document."];
+}

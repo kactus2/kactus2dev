@@ -1,0 +1,22 @@
+<area shape="rect" id="node3" href="$class_block_diagram.html#0076631c933ff6ccc30d45c5143ae757" title="Create a Design that represents this BlockDiagram." alt="" coords="257,487,461,513">
+<area shape="rect" id="node5" href="$class_component_item.html#49a73ee33e425a3ff37d93e68ca33c99" title="ComponentItem::componentModel" alt="" coords="559,5,804,32">
+<area shape="rect" id="node7" href="$class_diagram_interconnection.html#0441a324e39d18b276a043320d4ec614" title="Get the description of the connection." alt="" coords="554,56,809,83">
+<area shape="rect" id="node9" href="$class_component_item.html#06ec15dd285edbaeabcfe8626ff3bf6e" title="ComponentItem::description" alt="" coords="579,107,783,133">
+<area shape="rect" id="node11" href="$class_component_item.html#f901df7e4c0046ee3ca90e597d3969fe" title="ComponentItem::displayName" alt="" coords="573,157,790,184">
+<area shape="rect" id="node13" href="$class_diagram_connection_end_point.html#e56a455b02d91aa706f78208d0b00c54" title="DiagramConnectionEndPoint::encompassingComp" alt="" coords="509,208,853,235">
+<area shape="rect" id="node15" href="$class_diagram_interconnection.html#c76e3854d8ed34174e3e821497fc9bf2" title="Return the first end point connected." alt="" coords="557,259,805,285">
+<area shape="rect" id="node17" href="$class_diagram_interconnection.html#ffac0f0f479b95c98de4144dbd9c5867" title="Return the second end point connected." alt="" coords="557,309,805,336">
+<area shape="rect" id="node19" href="$class_diagram_column.html#37e22474aa7cec67f05f68bef52d937b" title="DiagramColumn::getAllowedItems" alt="" coords="562,360,801,387">
+<area shape="rect" id="node21" href="$class_diagram_connection_end_point.html#72cac94a1d12b11e347aa6295b1a6837" title="DiagramConnectionEndPoint::getBusInterface" alt="" coords="524,411,839,437">
+<area shape="rect" id="node23" href="$class_diagram_component.html#777de3850236d939fcdbcc0ea7a8eee7" title="Get the DiagramPort that corresponds to the given bus interface name." alt="" coords="566,461,797,488">
+<area shape="rect" id="node27" href="$class_component_item.html#8e42aa92fdca17a63e6a075826820bbe" title="ComponentItem::getConfigurableElements" alt="" coords="534,512,829,539">
+<area shape="rect" id="node29" href="$class_diagram_column.html#3e56a4e856b3a71427b12f61d6b59125" title="DiagramColumn::getContentType" alt="" coords="563,563,799,589">
+<area shape="rect" id="node31" href="$class_diagram_connection_end_point.html#24e5426821cdf4df2c7884979085d303" title="DiagramConnectionEndPoint::getDirection" alt="" coords="536,613,827,640">
+<area shape="rect" id="node33" href="$class_tab_document.html#42405e18a8d714a207c97b5819ef09fc" title="TabDocument::getDocumentName" alt="" coords="558,664,805,691">
+<area shape="rect" id="node35" href="$class_diagram_column.html#e08c770e24d4dd86c341063f5c7ed2a5" title="DiagramColumn::getName" alt="" coords="584,715,779,741">
+<area shape="rect" id="node37" href="$class_diagram_interconnection.html#c980c52a3be094d578d92e0fea50afa0" title="Return the name of this interconnection." alt="" coords="571,765,792,792">
+<area shape="rect" id="node39" href="$class_diagram_connection_end_point.html#bef8a09edd1be83cf16c0e6fcbe4cf68" title="DiagramConnectionEndPoint::name" alt="" coords="556,816,807,843">
+<area shape="rect" id="node41" href="$class_component_item.html#065f3fb7a863a24ab7e5e1cbef4bf417" title="ComponentItem::name" alt="" coords="596,867,767,893">
+<area shape="rect" id="node43" href="$class_block_diagram.html#7de56e67568b6362de2dcd5f21583fcf" title="Get pointer to the parent of this scene." alt="" coords="601,917,762,944">
+<area shape="rect" id="node45" href="$class_diagram_interconnection.html#60dc7fd65e1683a2a569073f93665074" title="Returns the route of this interconnection." alt="" coords="572,968,791,995">
+<area shape="rect" id="node25" href="$class_diagram_port.html#3ee5790c02f3b70d6befc604108ebaa1" title="Returns the name of this port." alt="" coords="902,461,1050,488">

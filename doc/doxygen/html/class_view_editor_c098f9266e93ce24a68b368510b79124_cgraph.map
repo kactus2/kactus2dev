@@ -1,0 +1,36 @@
+<area shape="rect" id="node3" href="$class_file_builders_editor.html#468ffa31b6185895f2cf6ecd57e39793" title="Applies the changes made with the editor to the model." alt="" coords="264,44,493,71">
+<area shape="rect" id="node7" href="$class_flat_view_parameters_tab.html#12aaf42b2641ce8a3bf56e8f77b78e94" title="Applies the changes made with the editor to the model." alt="" coords="243,132,514,159">
+<area shape="rect" id="node13" href="$class_flat_view_general_tab.html#d59a182501b6fca30dde59fac513bbaf" title="Save the settings from editor to the model." alt="" coords="256,537,501,564">
+<area shape="rect" id="node32" href="$class_hierarchy_ref_widget.html#8d590ed8ff4a07affd9e0ca1e294ccca" title="Applies the changes made with the editor to the model." alt="" coords="257,588,501,615">
+<area shape="rect" id="node40" href="$class_env_identifier_editor.html#377ab4ef9dc135b77960de522ec48707" title="Applies the changes made with the editor to the model." alt="" coords="261,461,496,488">
+<area shape="rect" id="node48" href="$class_name_group_box.html#4b0f3b5b06faa6e7264738f9c50faed8" title="Get the value of the description&#45;field." alt="" coords="266,639,491,665">
+<area shape="rect" id="node50" href="$class_name_group_box.html#0998b9c79e4e14cedac13b857c89e2a1" title="Get the value of the displayName&#45;field." alt="" coords="259,689,498,716">
+<area shape="rect" id="node52" href="$class_name_group_box.html#c97d1eb24f286de336bb427fd656155e" title="Get the value of the name&#45;field." alt="" coords="283,740,475,767">
+<area shape="rect" id="node54" href="$class_view_editor.html#e4b35abdce0f4e1dfcec46992685fd0b" title="Check for the validity of the edited view." alt="" coords="310,259,447,285">
+<area shape="rect" id="node74" href="$class_view.html#09cb8ad73b49ea10e64c29ac9ec827d1" title="Set the description for the view." alt="" coords="303,791,454,817">
+<area shape="rect" id="node76" href="$class_view.html#14af76719de407241349348b53b76c4e" title="Set the display name for the view." alt="" coords="297,841,461,868">
+<area shape="rect" id="node78" href="$class_view.html#66631b86915d17f72e0bbab273c16ed7" title="Set the name for the view." alt="" coords="319,892,438,919">
+<area shape="rect" id="node5" href="$class_file_builders_model.html#311bb1129ca9ea46d23d2ec8f78b9ffa" title="Write the changes to the original model." alt="" coords="586,5,761,32">
+<area shape="rect" id="node9" href="$class_parameters_model.html#741058bbb86f4fc73f5950313d1dd2f9" title="Write the changes to the original model." alt="" coords="585,56,762,83">
+<area shape="rect" id="node11" href="$class_parameters_model.html#451012af49bdcaef153081e8a970c033" title="Check if the model is in valid state or not." alt="" coords="837,81,1021,108">
+<area shape="rect" id="node15" href="$class_list_manager.html#ad4d988f218cdd6825515fb7c8f7cb0a" title="Get the string items currently stored in the model." alt="" coords="601,461,745,488">
+<area shape="rect" id="node19" href="$class_view.html#d023edeb1d21518c67fa64a905fcff1a" title="Set the fileSetRefs for this view." alt="" coords="599,512,748,539">
+<area shape="rect" id="node23" href="$class_view.html#284620805c14ea3fc620708f54eee7b6" title="Set the language of this view." alt="" coords="602,563,745,589">
+<area shape="rect" id="node26" href="$class_view.html#341f0aeaa81a82842f2744d630dd3056" title="Set the strict attribute of the language element." alt="" coords="585,613,761,640">
+<area shape="rect" id="node29" href="$class_view.html#e66aae5381329f3b2d2d12130d50ff45" title="Set the model name." alt="" coords="595,664,751,691">
+<area shape="rect" id="node17" href="$class_list_manager_model.html#17210cf9d60047e8004ee21e4feb920e" title="Get the items currently stored in the model." alt="" coords="838,461,1021,488">
+<area shape="rect" id="node21" href="$class_v_l_n_v.html#98080cd3278e6b1785b3a603037eb4ef" title="Clear the vlnv (make all fields empty and type = INVALID)." alt="" coords="881,588,977,615">
+<area shape="rect" id="node34" href="$class_v_l_n_v_editor.html#ec64dfb071b106bbe96b95788cd1df25" title="VLNVEditor::getVLNV" alt="" coords="594,715,753,741">
+<area shape="rect" id="node36" href="$class_view.html#54742356d37991cc78b89f39c80cae87" title="Set the hierarchyRef for this view." alt="" coords="593,765,753,792">
+<area shape="rect" id="node38" href="$class_view.html#436bd0ff603255612bce852f57fc1c49" title="Set the reference to a top level implementation view." alt="" coords="591,816,755,843">
+<area shape="rect" id="node42" href="$class_env_identifiers_model.html#0c343ed31e3276711a8c296129b8702f" title="Write the changes to the original model." alt="" coords="580,411,767,437">
+<area shape="rect" id="node44" href="$class_env_identifiers_model.html#0c08dcc79774cc01832cd1da1919e6ed" title="Check if the model is in valid state or not." alt="" coords="832,335,1027,361">
+<area shape="rect" id="node46" href="$class_view.html#3ce22d48f0aefb8075e9f58e54adecbc" title="Set the envIdentifiers for this view." alt="" coords="847,411,1011,437">
+<area shape="rect" id="node56" href="$class_file_builders_editor.html#a5ccdbbe5666ce0b85973d8c0ce1f83f" title="Check for the validity of the edited file builders." alt="" coords="583,157,763,184">
+<area shape="rect" id="node60" href="$class_flat_view_parameters_tab.html#297f4f732f3b469d261238cb1002a42b" title="Check for the validity of the edited parameters." alt="" coords="563,107,784,133">
+<area shape="rect" id="node63" href="$class_flat_view_general_tab.html#43710e5b1954e73ef90feac19fe87ecc" title="Check for the validity of the edited view." alt="" coords="575,208,771,235">
+<area shape="rect" id="node65" href="$class_hierarchy_ref_widget.html#e7e068db756e20377df3fa1db3850644" title="Check for the validity of the edited view." alt="" coords="576,259,771,285">
+<area shape="rect" id="node69" href="$class_env_identifier_editor.html#7dfd5c7544f8c38934535c5cc810fcc7" title="Check for the validity of the edited parameters." alt="" coords="580,309,767,336">
+<area shape="rect" id="node72" href="$class_name_group_box.html#f73fb14aee9a9e968558e9f3ad84358f" title="Check if the widget is in valid mode." alt="" coords="587,360,760,387">
+<area shape="rect" id="node58" href="$class_file_builders_model.html#f6cc9636f0774193d1de108fbecdd260" title="Check if the model is in valid state or not." alt="" coords="839,157,1020,184">
+<area shape="rect" id="node67" href="$class_v_l_n_v_editor.html#eff4ed9c7b77a464c51bae1dbc48ad6c" title="VLNVEditor::isValid" alt="" coords="858,259,1001,285">

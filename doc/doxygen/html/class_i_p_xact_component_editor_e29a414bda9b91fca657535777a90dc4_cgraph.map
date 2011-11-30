@@ -1,0 +1,10 @@
+<area shape="rect" id="node3" href="$class_component_tree_navigator.html#b7af704e859f0dd654d0a8b76b1d8296" title="Clear the selection in the tree." alt="" coords="323,31,608,57">
+<area shape="rect" id="node5" href="$class_i_p_xact_component_editor.html#597953d8c1f4a5828915035ae867e353" title="Create an empty editor and add it to the widget stack." alt="" coords="326,81,605,108">
+<area shape="rect" id="node7" href="$class_i_p_xact_component_editor.html#59f585bbacce63fd2c72e8c7b242ccfa" title="Update the previous ComponentTreeItem when a new one is selected." alt="" coords="310,132,621,159">
+<area shape="rect" id="node9" href="$class_item_editor.html#7bba5947d0dc34b6e8b38eedc725c813" title="ItemEditor::confirmEditorChange" alt="" coords="689,5,919,32">
+<area shape="rect" id="node11" href="$class_component_tree_item.html#c054e97b791f3444fc123945bc91fddb" title="Get the data pointer to the item that this item represents." alt="" coords="675,56,933,83">
+<area shape="rect" id="node13" href="$class_item_editor.html#1e6cb23375be660879462878bfdc518e" title="Check for the validity of the edited item." alt="" coords="735,107,873,133">
+<area shape="rect" id="node15" href="$class_item_editor.html#db024f0b591e158d5494d84fd4c0b87a" title="Make the changes from the widgets editors to the IPXact model." alt="" coords="710,157,898,184">
+<area shape="rect" id="node17" href="$class_component_tree_item.html#0c29c2d60145685a5a7808c5f672124c" title="Set the validity of the item." alt="" coords="690,208,918,235">
+<area shape="rect" id="node19" href="$class_component_tree_navigator.html#da37d6505468474a78d2861700f20c87" title="Tell model to update the given item." alt="" coords="669,259,939,285">
+<area shape="rect" id="node21" href="$class_component_tree_model.html#715dd8c88623f41c2aa5d8cb98997169" title="Tell view to update the specified model index." alt="" coords="987,259,1232,285">

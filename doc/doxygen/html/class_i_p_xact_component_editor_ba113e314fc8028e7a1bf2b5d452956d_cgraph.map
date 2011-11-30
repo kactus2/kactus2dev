@@ -1,0 +1,16 @@
+<area shape="rect" id="node3" href="$class_component_tree_navigator.html#d1a7050f6a5d8d73c2933fc80b260e0a" title="Get the model index of the general editor." alt="" coords="387,5,701,32">
+<area shape="rect" id="node11" href="$class_v_l_n_v.html#3ff2bdff884da48aa0e936fa5595b7e8" title="Get the name of the IP block in VLNV." alt="" coords="481,56,607,83">
+<area shape="rect" id="node13" href="$class_v_l_n_v.html#3a5da6ca75e9a6bf575906c2ea185051" title="Get the version of the VLNV." alt="" coords="477,107,611,133">
+<area shape="rect" id="node15" href="$class_tab_document.html#aa84da0d893494876d86c3256e4bb127" title="TabDocument::setDocumentName" alt="" coords="421,157,667,184">
+<area shape="rect" id="node23" href="$class_tab_document.html#37bad76cc00b2bf3338463ddd8cec21c" title="TabDocument::setDocumentType" alt="" coords="425,208,663,235">
+<area shape="rect" id="node26" href="$class_i_p_xact_component_editor.html#abcafcb0c3a13c843bf43967f195c9e2" title="IPXactComponentEditor::setProtection" alt="" coords="411,259,677,285">
+<area shape="rect" id="node34" href="$class_i_p_xact_component_editor.html#597953d8c1f4a5828915035ae867e353" title="Create an empty editor and add it to the widget stack." alt="" coords="405,309,683,336">
+<area shape="rect" id="node5" href="$class_component_tree_model.html#31685e3ff8cc83aa0827cf99d90f6844" title="Get the model index of the general&#45;editor." alt="" coords="749,5,1040,32">
+<area shape="rect" id="node7" href="$class_component_tree_model.html#d61eebf9a2a7def96ec5fac42c8095f7" title="Create a model index for given item." alt="" coords="1099,5,1304,32">
+<area shape="rect" id="node9" href="$class_component_tree_item.html#191ce20e5e723e9abc0f85b06dbc66ef" title="Get pointer to the child in specified index." alt="" coords="1363,5,1554,32">
+<area shape="rect" id="node17" href="$class_tab_document.html#c042a6469e9435308c70ba894efb3f40" title="TabDocument::updateTabTitle" alt="" coords="787,171,1002,197">
+<area shape="rect" id="node19" href="$class_tab_document.html#c3ceea9b578b8873d64905e324418876" title="TabDocument::isModified" alt="" coords="1110,120,1293,147">
+<area shape="rect" id="node21" href="$class_tab_document.html#3b3905639f298b385d11ed6bffb37e62" title="TabDocument::setTabTitle" alt="" coords="1107,171,1296,197">
+<area shape="rect" id="node28" href="$class_component_tree_navigator.html#526627560e7f9e79a952ac1d112f88e0" title="Set the add and remove buttons to enabled/disabled." alt="" coords="765,247,1025,273">
+<area shape="rect" id="node32" href="$class_tab_document.html#f1ca58c43e47d217df76d22838aaa845" title="TabDocument::setProtection" alt="" coords="792,297,997,324">
+<area shape="rect" id="node30" href="$class_component_tree_view.html#1daa2b76cb200f75a776c32c3b27b9f4" title="Set the locked state (enables/disables the dragging)." alt="" coords="1088,247,1315,273">

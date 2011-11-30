@@ -1,0 +1,16 @@
+<area shape="rect" id="node3" href="$class_library_interface.html#f6944f708f9aa01568d707fdc773ea91" title="Checks if the library already contains the specified vlnv." alt="" coords="330,5,513,32">
+<area shape="rect" id="node5" href="$class_v_l_n_v.html#f00f5007636620ffeff44521bacca857" title="Get the library of the VLNV." alt="" coords="677,63,806,89">
+<area shape="rect" id="node7" href="$class_library_interface.html#92798f5c6f5e72c8f4da87e872812c4f" title="Get a model that matches given VLNV." alt="" coords="327,309,515,336">
+<area shape="rect" id="node9" href="$class_v_l_n_v.html#3ff2bdff884da48aa0e936fa5595b7e8" title="Get the name of the IP block in VLNV." alt="" coords="679,125,804,152">
+<area shape="rect" id="node11" href="$class_v_l_n_v.html#8868ebe2affad578b9c9c3aef1f38632" title="Get the vendor of the VLNV." alt="" coords="675,201,807,228">
+<area shape="rect" id="node13" href="$class_v_l_n_v.html#3a5da6ca75e9a6bf575906c2ea185051" title="Get the version of the VLNV." alt="" coords="674,256,809,283">
+<area shape="rect" id="node15" href="$class_component_preview_box.html#efb496990c83194f2341bdafaf2d5b26" title="ComponentPreviewBox::setComponent" alt="" coords="285,360,557,387">
+<area shape="rect" id="node19" href="$class_tab_document.html#aa84da0d893494876d86c3256e4bb127" title="TabDocument::setDocumentName" alt="" coords="298,461,545,488">
+<area shape="rect" id="node27" href="$class_tab_document.html#37bad76cc00b2bf3338463ddd8cec21c" title="TabDocument::setDocumentType" alt="" coords="303,411,540,437">
+<area shape="rect" id="node30" href="$class_s_w_design_editor.html#ecccd875d562b6f2179d6ab9ea7da4f1" title="SWDesignEditor::setProtection" alt="" coords="313,512,529,539">
+<area shape="rect" id="node34" href="$class_v_l_n_v_editor.html#edef36ca3252c366ed3d222c69d2c765" title="VLNVEditor::setVLNV" alt="" coords="343,157,500,184">
+<area shape="rect" id="node17" href="$class_component_preview_box.html#b9c2f644666a0c6bb6759bbc77150a04" title="ComponentPreviewBox::updatePreview" alt="" coords="606,360,877,387">
+<area shape="rect" id="node21" href="$class_tab_document.html#c042a6469e9435308c70ba894efb3f40" title="TabDocument::updateTabTitle" alt="" coords="634,436,849,463">
+<area shape="rect" id="node23" href="$class_tab_document.html#c3ceea9b578b8873d64905e324418876" title="TabDocument::isModified" alt="" coords="929,411,1111,437">
+<area shape="rect" id="node25" href="$class_tab_document.html#3b3905639f298b385d11ed6bffb37e62" title="TabDocument::setTabTitle" alt="" coords="925,461,1115,488">
+<area shape="rect" id="node32" href="$class_tab_document.html#f1ca58c43e47d217df76d22838aaa845" title="TabDocument::setProtection" alt="" coords="639,512,844,539">

@@ -1,0 +1,4 @@
+<area shape="rect" id="node3" href="$class_vhdl_generator2.html#63bf461182b2a8a94283354681a39be6" title="Connect the specified top port to specified instance ports." alt="" coords="341,5,576,32">
+<area shape="rect" id="node7" href="$class_vhdl_generator2.html#0a4d7f10d0ded7866d4551d506f92433" title="Connect the specified ports together." alt="" coords="351,56,566,83">
+<area shape="rect" id="node5" href="$namespace_vhdl_general.html#35ae117e8a6c0ca051b39f272ca17482" title="Check if the port type is scalar." alt="" coords="650,5,838,32">
+<area shape="rect" id="node9" href="$class_vhdl_generator2.html#6f641cc140b58e045a2258aa6edea84b" title="Connect the given endPoint with the signal." alt="" coords="625,56,863,83">

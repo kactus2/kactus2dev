@@ -1,0 +1,12 @@
+<area shape="rect" id="node3" href="$class_hierarchy_item.html#c305413d819dc0e0a029ba1bb2ba1bcc" title="Get the implementation of this item." alt="" coords="488,49,731,75">
+<area shape="rect" id="node5" href="$class_v_l_n_v.html#f00f5007636620ffeff44521bacca857" title="Get the library of the VLNV." alt="" coords="545,111,674,138">
+<area shape="rect" id="node7" href="$class_v_l_n_v.html#3ff2bdff884da48aa0e936fa5595b7e8" title="Get the name of the IP block in VLNV." alt="" coords="547,187,672,214">
+<area shape="rect" id="node9" href="$class_library_data.html#24c5eff0a08109c4d688e5a9ccd79abb" title="Returns the absolute file path of the specified IP&#45;Xact document." alt="" coords="249,206,404,233">
+<area shape="rect" id="node13" href="$class_v_l_n_v.html#8868ebe2affad578b9c9c3aef1f38632" title="Get the vendor of the VLNV." alt="" coords="543,247,675,274">
+<area shape="rect" id="node15" href="$class_v_l_n_v.html#3a5da6ca75e9a6bf575906c2ea185051" title="Get the version of the VLNV." alt="" coords="542,298,677,325">
+<area shape="rect" id="node17" href="$class_hierarchy_item.html#2d2b34670e3f0a628a51ebac1d87789c" title="Get the software type of this item." alt="" coords="213,54,440,81">
+<area shape="rect" id="node22" href="$class_hierarchy_item.html#763c2b1e9017b9a53d763551a048f3e2" title="Get the vlnv of this item." alt="" coords="239,358,415,385">
+<area shape="rect" id="node24" href="$class_hierarchy_item.html#6d469f4823e38b4783b8f43ae32c307a" title="Checks if the component this item represents is hierarchical or not." alt="" coords="224,409,429,435">
+<area shape="rect" id="node26" href="$class_hierarchy_item.html#f7bcfb2f1a4121307618d86d0d574749" title="Check if this item is valid or not." alt="" coords="246,459,407,486">
+<area shape="rect" id="node28" href="$class_v_l_n_v.html#f02edbeb4feca8206bdb6681963730f8" title="Checks if the vlnv is valid or not." alt="" coords="273,510,380,537">
+<area shape="rect" id="node30" href="$class_hierarchy_item.html#d071e94355ed53ff2f41579662ad059f" title="Get the type of this hierarchy item." alt="" coords="253,561,401,587">

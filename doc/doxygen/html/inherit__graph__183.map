@@ -1,0 +1,7 @@
+<area shape="rect" id="node1" href="$class_list_manager.html" title="ListManager is a widget to manage a list of strings." alt="" coords="6,132,106,159">
+<area shape="rect" id="node3" href="$class_channel_interface_manager.html" title="Widget to select bus interfaces from a component and add them to list." alt="" coords="155,5,341,32">
+<area shape="rect" id="node5" href="$class_dir_list_manager.html" title="DirListManager can be used to manage a list of relative directory paths." alt="" coords="189,56,307,83">
+<area shape="rect" id="node7" href="$class_file_list_manager.html" title="FileListManager can be used to manage a list of relative file paths." alt="" coords="187,107,309,133">
+<area shape="rect" id="node9" href="$class_file_set_ref_editor.html" title="Editor to set the file set references of a view." alt="" coords="187,157,309,184">
+<area shape="rect" id="node11" href="$class_file_type_editor.html" title="FileTypeEditor is used to specify a file type for a file." alt="" coords="193,208,303,235">
+<area shape="rect" id="node13" href="$class_group_manager.html" title="GroupManager is a widget to manage group names within FileSet." alt="" coords="189,259,307,285">

@@ -1,0 +1,33 @@
+<area shape="rect" id="node3" href="$class_file_build_command.html#49c492e4a388df8e9434017629378bf2" title="Apply the changes from editor to model." alt="" coords="235,247,418,273">
+<area shape="rect" id="node25" href="$class_file_extra_tab.html#ed95db1f0a2efe266321b7275b72b8ae" title="Apply the changes from the editor to the model." alt="" coords="256,551,397,577">
+<area shape="rect" id="node37" href="$class_file_general_tab.html#df0c3848a3d4ff5afb2a1c6c9867975e" title="Apply the changes from the editor to the model." alt="" coords="247,829,406,856">
+<area shape="rect" id="node5" href="$class_attribute_box.html#a7fe19b41cb0515cdae8648e6042a3ed" title="Get the attributes from the widget." alt="" coords="809,525,1004,552">
+<area shape="rect" id="node9" href="$class_build_model.html#fe2bc9c5d80abfa2e155ec6c10159cd7" title="Set the command." alt="" coords="519,69,705,96">
+<area shape="rect" id="node11" href="$class_build_model.html#737805e472d246e2d97f35ec0dc04bbe" title="Set the command attributes." alt="" coords="487,120,737,147">
+<area shape="rect" id="node13" href="$class_build_model.html#f1dc063c4281d6c07ccd8e1d1b510ffd" title="Set the replaceDefaultFlags attributes." alt="" coords="485,171,739,197">
+<area shape="rect" id="node15" href="$class_build_model.html#2b728fd8114d08e25ae1b2e2630a5f06" title="Set the flag attributes." alt="" coords="508,221,716,248">
+<area shape="rect" id="node17" href="$class_build_model.html#1dadee79595e6cb9997321d82654d853" title="Set the flags." alt="" coords="536,272,688,299">
+<area shape="rect" id="node19" href="$class_build_model.html#e9708592a10501381164641a590a1f95" title="Set the replaceDefaultFlags value." alt="" coords="488,323,736,349">
+<area shape="rect" id="node21" href="$class_build_command.html#ae025e8aee22aba5177c67a852b84367" title="Set the target name." alt="" coords="498,373,726,400">
+<area shape="rect" id="node23" href="$class_build_command.html#36d3e2c0484fbe6789d7fb2c6fbfe4b6" title="Set the attributes for the targetName&#45;element." alt="" coords="467,424,757,451">
+<area shape="rect" id="node7" href="$class_attribute_model.html#e7e5a510bf4ede972444d18cd018baef" title="Get attributes stored in the model." alt="" coords="1056,525,1264,552">
+<area shape="rect" id="node27" href="$class_list_manager.html#ad4d988f218cdd6825515fb7c8f7cb0a" title="Get the string items currently stored in the model." alt="" coords="835,576,979,603">
+<area shape="rect" id="node31" href="$class_file.html#c54bef143cda692041ed1913c1f31752" title="Set the dependencies for this file." alt="" coords="531,525,693,552">
+<area shape="rect" id="node33" href="$class_file.html#1f0e5e7a7aaf466252cb23ca00f1402a" title="Set the exported names for this file." alt="" coords="525,576,699,603">
+<area shape="rect" id="node35" href="$class_file.html#3c612c5912d043020adeeeeda5341d84" title="Set the image types for this file." alt="" coords="538,627,686,653">
+<area shape="rect" id="node29" href="$class_list_manager_model.html#17210cf9d60047e8004ee21e4feb920e" title="Get the items currently stored in the model." alt="" coords="1069,601,1251,628">
+<area shape="rect" id="node39" href="$class_file_type_editor.html#73d8f2df34f0ad6480495714a3cf0a21" title="Apply the changes from the editor to the model." alt="" coords="536,779,688,805">
+<area shape="rect" id="node49" href="$class_file_general_editor.html#25557565d29d17d2d2a97490212befa6" title="Apply the changes from the editor to the model." alt="" coords="526,829,698,856">
+<area shape="rect" id="node62" href="$class_file_name_editor.html#c41ed321ab3a41e328111c8320b173aa" title="Get the attributes stored in the widget." alt="" coords="507,728,717,755">
+<area shape="rect" id="node65" href="$class_file_name_editor.html#d35292dcaa4789871d3590700a5811b5" title="Get the file name stored in the widget." alt="" coords="508,880,716,907">
+<area shape="rect" id="node67" href="$class_file.html#7ac908cf016d1ce1857afdcac2388b9e" title="Set the attributes for the file." alt="" coords="545,931,679,957">
+<area shape="rect" id="node69" href="$class_file.html#b356e0dbb98f6dd3a8dcc49c22d70779" title="Set the name for this file." alt="" coords="557,981,667,1008">
+<area shape="rect" id="node71" href="$class_file.html#7197a0514cee408fccb3ac1724fd6f72" title="Set the attributes for the name&#45;element." alt="" coords="525,1032,699,1059">
+<area shape="rect" id="node41" href="$class_file.html#49ad101e1f24851fe7766438c2208a17" title="Add a new file type definition." alt="" coords="843,677,970,704">
+<area shape="rect" id="node43" href="$class_file.html#d75223b2c799d2eaef38a85c3b159678" title="Add a new user file type definition." alt="" coords="829,728,985,755">
+<area shape="rect" id="node45" href="$class_file.html#b79288e5d8752a2fba780ac59f07f373" title="Clear all the fileTypes and userFileTypes." alt="" coords="837,779,977,805">
+<area shape="rect" id="node51" href="$class_file.html#ef534f122844afde8acbb86f9c9cacac" title="Set the description for this file." alt="" coords="835,829,978,856">
+<area shape="rect" id="node53" href="$class_file.html#3600177bf9b91f1ebfc9b6d3a10e0879" title="Set the externalDeclarations setting." alt="" coords="805,880,1008,907">
+<area shape="rect" id="node55" href="$class_file.html#9191a8586dc16ada41e2a0e7c66538ad" title="Set the isIncludeFile setting for this file." alt="" coords="838,931,975,957">
+<area shape="rect" id="node57" href="$class_file.html#8bfa546658ae130d9e61db51e7b03983" title="Set the logical name for this file." alt="" coords="829,981,984,1008">
+<area shape="rect" id="node59" href="$class_file.html#df11ca069a4860458ba6868047e933fd" title="Set the logical name attribute default." alt="" coords="807,1032,1007,1059">

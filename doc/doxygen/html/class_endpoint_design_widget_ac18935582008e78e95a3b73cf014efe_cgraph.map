@@ -1,0 +1,49 @@
+<area shape="rect" id="node3" href="$class_endpoint_design_diagram.html#f803f8ffbaeba6f68c07aeab6b1ab0c7" title="EndpointDesignDiagram::getDesignConfiguration" alt="" coords="291,5,626,32">
+<area shape="rect" id="node5" href="$class_library_interface.html#92798f5c6f5e72c8f4da87e872812c4f" title="Get a model that matches given VLNV." alt="" coords="1415,816,1603,843">
+<area shape="rect" id="node7" href="$class_v_l_n_v.html#5e8bcf9abe6a26377c30a80657650059" title="Get the type of the document the VLNV belongs to." alt="" coords="1451,664,1567,691">
+<area shape="rect" id="node9" href="$class_v_l_n_v.html#3a5da6ca75e9a6bf575906c2ea185051" title="Get the version of the VLNV." alt="" coords="1686,1323,1821,1349">
+<area shape="rect" id="node11" href="$class_view.html#f8d30aa133c5fda3656309515c8dfd8b" title="Is the view a hierarchical one or not." alt="" coords="387,309,531,336">
+<area shape="rect" id="node13" href="$class_v_l_n_v.html#f02edbeb4feca8206bdb6681963730f8" title="Checks if the vlnv is valid or not." alt="" coords="1700,157,1807,184">
+<area shape="rect" id="node16" href="$class_endpoint_design_diagram.html#4fb8d0aa02c87953f3002702e04d5209" title="EndpointDesignDiagram::setDesign" alt="" coords="334,537,583,564">
+<area shape="rect" id="node103" href="$class_tab_document.html#aa84da0d893494876d86c3256e4bb127" title="TabDocument::setDocumentName" alt="" coords="335,1399,582,1425">
+<area shape="rect" id="node111" href="$class_tab_document.html#37bad76cc00b2bf3338463ddd8cec21c" title="TabDocument::setDocumentType" alt="" coords="340,1449,577,1476">
+<area shape="rect" id="node114" href="$class_endpoint_design_widget.html#7b2c4e1af0fba3dd5091db66ae2dccc3" title="EndpointDesignWidget::setProtection" alt="" coords="329,1500,588,1527">
+<area shape="rect" id="node18" href="$class_system_column.html#d44a2563b33b1b82ea39bde7d2c572e0" title="SystemColumn::addItem" alt="" coords="752,259,933,285">
+<area shape="rect" id="node27" href="$class_library_interface.html#55d33e9e99760ae1a12725681c034b43" title="Get the document type of given vlnv." alt="" coords="1386,411,1633,437">
+<area shape="rect" id="node29" href="$class_mapping_component_item.html#e9953151671046282dff2cf75e6574d7" title="MappingComponentItem::getEndpoint" alt="" coords="710,309,975,336">
+<area shape="rect" id="node39" href="$class_i_d_factory.html#696d85fd5777842c5a26e06d726842fd" title="IDFactory::getID" alt="" coords="781,613,905,640">
+<area shape="rect" id="node41" href="$class_endpoint_design_diagram.html#0fb1c7eef7fd733fcdf6d6475761bff4" title="EndpointDesignDiagram::getMappingComponent" alt="" coords="675,360,1010,387">
+<area shape="rect" id="node45" href="$class_v_l_n_v.html#3ff2bdff884da48aa0e936fa5595b7e8" title="Get the name of the IP block in VLNV." alt="" coords="1691,1221,1816,1248">
+<area shape="rect" id="node47" href="$class_library_interface.html#d76e2648d944acbd458ae4727342bcf4" title="Get a path to the specified IP&#45;Xact document." alt="" coords="753,664,932,691">
+<area shape="rect" id="node51" href="$class_s_w_component_item.html#402966f13ad292764c94dfbbd208bd23" title="SWComponentItem::setImported" alt="" coords="727,1120,959,1147">
+<area shape="rect" id="node62" href="$class_endpoint_connection.html#9870f38dddec9a2faead5564b8cd8d10" title="EndpointConnection::setRoute" alt="" coords="735,512,950,539">
+<area shape="rect" id="node68" href="$class_v_l_n_v.html#41e8feb8b594eaaf4efc45dc0b520656" title="Set the document type for the vlnv." alt="" coords="1452,487,1567,513">
+<area shape="rect" id="node70" href="$_library_utils_8cpp.html#d0854b70d33dfc6efcb49a357c85674f" title="updateSystemDesign" alt="" coords="763,968,923,995">
+<area shape="rect" id="node101" href="$class_i_d_factory.html#6e0bf6e11384885550b655459591fd4a" title="IDFactory::usedID" alt="" coords="775,208,910,235">
+<area shape="rect" id="node20" href="$namespace_v_stacked_layout.html#e377b4c99851b8d82fc5c132dac24e0b" title="VStackedLayout::setItemPos" alt="" coords="1093,259,1299,285">
+<area shape="rect" id="node24" href="$namespace_v_stacked_layout.html#5f14204a310806c9c55dc46552b97b4d" title="VStackedLayout::updateItemMove" alt="" coords="1075,208,1317,235">
+<area shape="rect" id="node22" href="$namespace_diagram_util.html#34372d64301c316deaa127e2bfcf4d58" title="DiagramUtil::clampCeil" alt="" coords="1425,233,1593,260">
+<area shape="rect" id="node31" href="$class_program_entity_item.html#4945b95a6e2a057b079566f1b7d9d746" title="ProgramEntityItem::getEndpoint" alt="" coords="1083,309,1309,336">
+<area shape="rect" id="node37" href="$class_component_item.html#065f3fb7a863a24ab7e5e1cbef4bf417" title="ComponentItem::name" alt="" coords="1111,360,1281,387">
+<area shape="rect" id="node33" href="$class_endpoint_stack.html#ced0c93d0e06d730261112f7d6573860" title="EndpointStack::getEndpoints" alt="" coords="1406,309,1613,336">
+<area shape="rect" id="node35" href="$class_endpoint_item.html#8af24936977f7c7481300e7700042ad7" title="EndpointItem::getName" alt="" coords="1422,360,1597,387">
+<area shape="rect" id="node53" href="$class_s_w_component_item.html#6a5fe2d6c41a857760dce1755176de3e" title="SWComponentItem::updateComponent" alt="" coords="1059,1221,1333,1248">
+<area shape="rect" id="node55" href="$class_component_item.html#2c3e3dbd4ab3e6fdd363d21f4310a047" title="ComponentItem::updateComponent" alt="" coords="1382,1221,1637,1248">
+<area shape="rect" id="node57" href="$class_v_l_n_v.html#f00f5007636620ffeff44521bacca857" title="Get the library of the VLNV." alt="" coords="1689,1095,1818,1121">
+<area shape="rect" id="node64" href="$class_endpoint_item.html#9d87e6aa4e69bba19d8ca625600b343a" title="EndpointItem::getDirectionVector" alt="" coords="1079,563,1313,589">
+<area shape="rect" id="node66" href="$class_endpoint_item.html#552a2b54fcbd6059dfb5225c7c90e68e" title="EndpointItem::setDirection" alt="" coords="1100,512,1292,539">
+<area shape="rect" id="node72" href="$_library_utils_8cpp.html#176884967a4c4c2d8bdc034a30695f7e" title="addNewInstances" alt="" coords="1129,1171,1263,1197">
+<area shape="rect" id="node82" href="$class_library_interface.html#a841b91f4281dc02f2d3bf871f8bab45" title="Write the model to file system to given file path." alt="" coords="1393,968,1626,995">
+<area shape="rect" id="node84" href="$class_design.html#81eb24d5b036238410426d3ebcb57b89" title="Get list of the component instances in this design." alt="" coords="1081,917,1311,944">
+<area shape="rect" id="node86" href="$_library_utils_8cpp.html#0250d8d72cdcf7c2042abb9f6c0a51e9" title="getConnectionIndex" alt="" coords="1121,968,1271,995">
+<area shape="rect" id="node88" href="$_library_utils_8cpp.html#9de1d498319d5471586884d65746c2cb" title="getInstanceIndex" alt="" coords="1131,1019,1261,1045">
+<area shape="rect" id="node91" href="$_library_utils_8cpp.html#681a83e681e7e934524ba6095db8f8f0" title="parseProgrammableElements" alt="" coords="1089,613,1303,640">
+<area shape="rect" id="node98" href="$class_design.html#4b52418792ac7bd7047da7f9c8d7ed3c" title="Set the component instances of this design." alt="" coords="1081,1069,1311,1096">
+<area shape="rect" id="node74" href="$class_view.html#88f049f1259e09c9476553ca670f78d4" title="Add a new envIdentifier for this view." alt="" coords="1429,1120,1590,1147">
+<area shape="rect" id="node76" href="$class_model.html#b3e0f3d28719d841c38f33c99710c01f" title="Add a new view to the model." alt="" coords="1449,1171,1570,1197">
+<area shape="rect" id="node105" href="$class_tab_document.html#c042a6469e9435308c70ba894efb3f40" title="TabDocument::updateTabTitle" alt="" coords="735,1399,950,1425">
+<area shape="rect" id="node107" href="$class_tab_document.html#c3ceea9b578b8873d64905e324418876" title="TabDocument::isModified" alt="" coords="1105,1399,1287,1425">
+<area shape="rect" id="node109" href="$class_tab_document.html#3b3905639f298b385d11ed6bffb37e62" title="TabDocument::setTabTitle" alt="" coords="1101,1449,1291,1476">
+<area shape="rect" id="node116" href="$class_endpoint_design_diagram.html#ff17d271daff8f7d41016e2bf6880dfe" title="EndpointDesignDiagram::setMode" alt="" coords="723,1449,963,1476">
+<area shape="rect" id="node118" href="$class_endpoint_design_diagram.html#3924241232b8f0818d5b905bb0125b19" title="EndpointDesignDiagram::setProtection" alt="" coords="707,1500,978,1527">
+<area shape="rect" id="node120" href="$class_tab_document.html#f1ca58c43e47d217df76d22838aaa845" title="TabDocument::setProtection" alt="" coords="740,1551,945,1577">

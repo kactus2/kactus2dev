@@ -1,0 +1,26 @@
+digraph G
+{
+  bgcolor="transparent";
+  edge [fontname="FreeSans",fontsize=10,labelfontname="FreeSans",labelfontsize=10];
+  node [fontname="FreeSans",fontsize=10,shape=record];
+  rankdir=LR;
+  Node1 [label="PropertyPageView",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled" fontcolor="black"];
+  Node1 -> Node2 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node2 [label="CodeEditorSettingsPage",height=0.2,width=0.4,color="black",URL="$class_code_editor_settings_page.html",tooltip="CodeEditorSettingsPage class."];
+  Node1 -> Node3 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node3 [label="GeneralSettingsPage",height=0.2,width=0.4,color="black",URL="$class_general_settings_page.html",tooltip="GeneralSettingsPage class."];
+  Node1 -> Node4 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node4 [label="LibrarySettingsPage",height=0.2,width=0.4,color="black",URL="$class_library_settings_page.html",tooltip="LibrarySettingsPage class."];
+  Node1 -> Node5 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node5 [label="NewBusPage",height=0.2,width=0.4,color="black",URL="$class_new_bus_page.html"];
+  Node1 -> Node6 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node6 [label="NewComponentPage",height=0.2,width=0.4,color="black",URL="$class_new_component_page.html",tooltip="NewComponentPage class."];
+  Node1 -> Node7 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node7 [label="NewDesignPage",height=0.2,width=0.4,color="black",URL="$class_new_design_page.html",tooltip="NewDesignPage class."];
+  Node1 -> Node8 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node8 [label="NewSWComponentPage",height=0.2,width=0.4,color="black",URL="$class_new_s_w_component_page.html",tooltip="NewSWComponentPage class."];
+  Node1 -> Node9 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node9 [label="NewSWDesignPage",height=0.2,width=0.4,color="black",URL="$class_new_s_w_design_page.html",tooltip="NewSWDesignPage class."];
+  Node1 -> Node10 [dir=back,color="midnightblue",fontsize=10,style="solid",fontname="FreeSans"];
+  Node10 [label="NewSystemPage",height=0.2,width=0.4,color="black",URL="$class_new_system_page.html",tooltip="NewSystemPage class."];
+}

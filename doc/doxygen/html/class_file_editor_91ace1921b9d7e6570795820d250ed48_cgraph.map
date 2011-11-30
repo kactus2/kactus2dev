@@ -1,0 +1,34 @@
+<area shape="rect" id="node3" href="$class_file_build_command.html#bafe40abc2da22ad613a77fb40830a9d" title="Restore the changes from the model to the editor." alt="" coords="200,233,395,260">
+<area shape="rect" id="node25" href="$class_file_extra_tab.html#e9e4971c3e3e5f8108c9946445d9984d" title="Restore the changes from the model to the editor." alt="" coords="221,537,374,564">
+<area shape="rect" id="node37" href="$class_file_general_tab.html#2122e01a0e321e080c280f3b113dafed" title="Restore the changes from the model to the editor." alt="" coords="212,816,383,843">
+<area shape="rect" id="node5" href="$class_build_model.html#799080ae78f57980076c788eb86727d1" title="Get the command." alt="" coords="496,360,683,387">
+<area shape="rect" id="node7" href="$class_build_model.html#eafe97506aaa256bad99b44ccda47d39" title="Get the attributes for the command&#45;element." alt="" coords="464,411,715,437">
+<area shape="rect" id="node9" href="$class_build_model.html#ad2905d20b7fd7d0de0de4a23e395c6c" title="Get the attributes for the replaceDefaultFlags&#45;element." alt="" coords="462,5,717,32">
+<area shape="rect" id="node11" href="$class_build_model.html#dc2703d93b2a76ad4d7797fa5793c53b" title="Get the attributes for the flags&#45;element." alt="" coords="485,56,694,83">
+<area shape="rect" id="node13" href="$class_build_model.html#ba8ce3f0a8cffb160764eac1cb33f5c5" title="Get the flags." alt="" coords="513,157,666,184">
+<area shape="rect" id="node15" href="$class_build_model.html#bac50701bd0831195db112875f2669d2" title="Get the replaceDefaultFlags value." alt="" coords="465,208,714,235">
+<area shape="rect" id="node17" href="$class_build_command.html#e3f923d73e4768f8c424be4c95823679" title="Get the target name." alt="" coords="475,259,704,285">
+<area shape="rect" id="node19" href="$class_build_command.html#1ad83c3eea45006be80bcab7dfe69f90" title="Get the attributes for the target name&#45;element." alt="" coords="443,309,735,336">
+<area shape="rect" id="node21" href="$class_attribute_box.html#4f57e8d7039e9232097b3f792af5029d" title="Set the attributes to be displayed in this widget." alt="" coords="803,613,997,640">
+<area shape="rect" id="node23" href="$class_attribute_model.html#9ef23360ab7076bf5cee71928b195bb3" title="Set attributes for the model." alt="" coords="1073,613,1279,640">
+<area shape="rect" id="node27" href="$class_file.html#4d074002000759a8a8d6dcf382958542" title="Get the dependencies for this file." alt="" coords="508,461,671,488">
+<area shape="rect" id="node29" href="$class_file.html#d90fa2949048880f005f2bb0f8f74463" title="Get the exportedName for this file." alt="" coords="502,512,677,539">
+<area shape="rect" id="node31" href="$class_file.html#d72203e9479cf1e4d95976a25fdb2990" title="Get the imageTypes of this file." alt="" coords="515,563,664,589">
+<area shape="rect" id="node33" href="$class_list_manager.html#d22fd8902a2658f34b8d50c23aadab51" title="Set the items to be stored in this widget." alt="" coords="507,664,671,691">
+<area shape="rect" id="node35" href="$class_list_manager_model.html#84ef0dc4d5f7522bad172c41d180bfc6" title="Set the items to the model." alt="" coords="799,676,1001,703">
+<area shape="rect" id="node39" href="$class_file.html#4123a1d34313c831eb2860fc2ff6dd8f" title="Get the attributes for the file&#45;element." alt="" coords="522,765,657,792">
+<area shape="rect" id="node41" href="$class_file.html#5498b16808f9f2df9f0f169ec31b54d6" title="Get the name of the file." alt="" coords="534,816,645,843">
+<area shape="rect" id="node43" href="$class_file.html#dcfb90cacc39a2822371435c06c1ec92" title="Get the list of the attributes for the name&#45;element." alt="" coords="502,1005,677,1032">
+<area shape="rect" id="node45" href="$class_file_type_editor.html#19d564fad036ea24f729a6d726d4499c" title="Restore the changes from the model to the editor." alt="" coords="507,867,671,893">
+<area shape="rect" id="node56" href="$class_file_general_editor.html#fb461b73b74c794a3a098c5ada7c7225" title="Restore the settings from the model." alt="" coords="497,955,681,981">
+<area shape="rect" id="node69" href="$class_file_name_editor.html#f9d74cd009536ef9c5021750d266fa28" title="Set the attributes for the widget." alt="" coords="484,613,695,640">
+<area shape="rect" id="node72" href="$class_file_name_editor.html#5fbcead4877e732fd33b3a30dbd62521" title="Set the file name for the widget." alt="" coords="486,1056,693,1083">
+<area shape="rect" id="node47" href="$class_list_manager_model.html#051ff1329f4106c40c91fa07059668e3" title="Append a QStringList to the current items in the list." alt="" coords="785,853,1015,880">
+<area shape="rect" id="node51" href="$class_file.html#b47213db28c36a2413b131a73003784b" title="Get the file types." alt="" coords="835,752,965,779">
+<area shape="rect" id="node53" href="$class_file.html#e2e141a57dfbff697526284fee22764f" title="Get the userFileTypes for the file." alt="" coords="820,803,980,829">
+<area shape="rect" id="node49" href="$class_list_manager_model.html#c87dfd50b7328e26e6ffea91d7f095f0" title="Append a new item to the end of the list." alt="" coords="1065,853,1287,880">
+<area shape="rect" id="node58" href="$class_file.html#5a34c13c327869ff83d7eaf732d8ad81" title="Get the description of this file." alt="" coords="828,1107,972,1133">
+<area shape="rect" id="node60" href="$class_file.html#96b8bc050c236239b9593b12be9c3376" title="Get attribute value of external declarations." alt="" coords="798,904,1002,931">
+<area shape="rect" id="node62" href="$class_file.html#bc96405bbc59f86831c852fa46fa8697" title="Get the isIncludeFile setting." alt="" coords="831,955,969,981">
+<area shape="rect" id="node64" href="$class_file.html#55399a3d8a0ba3f09378566032a1b817" title="Get the logicalName of the file." alt="" coords="823,1005,977,1032">
+<area shape="rect" id="node66" href="$class_file.html#a13e5d4c943c58b0ed9b518601104bf0" title="Get the default&#45;attribute value of the logicalName element." alt="" coords="799,1056,1001,1083">
