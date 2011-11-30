@@ -43,6 +43,8 @@ type_(HierarchyItem::ROOT) {
 	connect(this, SIGNAL(noticeMessage(const QString&)),
 		parent, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
+	Q_ASSERT(handler->contains(vlnv));
+
 
 	if (handler_->getDocumentType(vlnv) == VLNV::COMPONENT) {
 		parseComponent(vlnv);
@@ -224,13 +226,15 @@ void HierarchyItem::parseAbsDefinition( const VLNV& vlnv ) {
 }
 
 void HierarchyItem::createChild(VLNV* vlnv ) {
-	// make sure the item is the root
-// 	Q_ASSERT_X(!parentItem_, "HierarchyItem::createChild()",
-// 		"createChild was called for non-root item");
 
 	// if item already has a child for given vlnv
 	if (hasChild(*vlnv))
 		return;
+	// if the child does not exist in library
+	else if (handler_->contains(*vlnv)) {
+		emit errorMessage(tr("The vlnv %1 was not found in the library.").arg(vlnv->toString()));
+		return;
+	}
 
 	HierarchyItem* item = new HierarchyItem(handler_, this, vlnv);
 	childItems_.append(item);
