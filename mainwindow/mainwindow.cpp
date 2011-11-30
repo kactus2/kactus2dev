@@ -1613,9 +1613,11 @@ void MainWindow::createDesign(KactusAttribute::ProductHierarchy prodHier,
     designConf->setDesignRef(designVLNV);
 
     // Create the files.
+	libraryHandler_->beginSave();
     libraryHandler_->writeModelToFile(directory, designConf);
     libraryHandler_->writeModelToFile(directory, design);
     libraryHandler_->writeModelToFile(directory, component);
+	libraryHandler_->endSave();
 
     // Open the design.
     openDesign(vlnv, viewNames.first(), true);

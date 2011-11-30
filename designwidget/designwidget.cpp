@@ -226,6 +226,8 @@ bool DesignWidget::save()
 	// update the hierarchical bus interfaces of the top-component
 	diagram_->updateHierComponent(hierComponent_);
 
+	lh_->beginSave();
+
 	// if design configuration is used then write it.
 	if (designConf) {
         lh_->writeModelToFile(designConf);
@@ -233,6 +235,8 @@ bool DesignWidget::save()
 
 	lh_->writeModelToFile(design);
 	lh_->writeModelToFile(hierComponent_);
+
+	lh_->endSave();
 
     return TabDocument::save();
 }
@@ -308,6 +312,8 @@ bool DesignWidget::saveAs() {
 
 	// create the files for the documents
 
+	lh_->beginSave();
+
 	// if design configuration is used then write it.
 	if (designConf) {
         lh_->writeModelToFile(directory, designConf);
@@ -316,6 +322,8 @@ bool DesignWidget::saveAs() {
     lh_->writeModelToFile(directory, design);
     lh_->writeModelToFile(directory, hierComponent_);
 	
+	lh_->endSave();
+
 	setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");
 
 	// update the file paths of the components

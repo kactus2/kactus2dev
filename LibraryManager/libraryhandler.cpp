@@ -62,7 +62,9 @@ hierarchyModel_(),
 searchWidget_(),
 treeWidget_(),
 hierarchyWidget_(),
-objects_() {
+objects_(),
+saveInProgress_(false),
+itemsToAdd_() {
 
 	connect(this, SIGNAL(errorMessage(const QString&)),
 		parent, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
@@ -648,8 +650,13 @@ void LibraryHandler::writeModelToFile( const QString path,
     // close the file
     newFile.close();
 
-	// tell library to register the vlnv
-	data_->addVLNV(vlnv, filePath);
+	if (!saveInProgress_) {
+		// tell library to register the vlnv
+		data_->addVLNV(vlnv, filePath, true);
+	}
+	else {
+		itemsToAdd_.insert(vlnv, filePath);
+	}
 }
 
 void LibraryHandler::writeModelToFile( QSharedPointer<LibraryComponent> model ) {
@@ -698,7 +705,9 @@ void LibraryHandler::writeModelToFile( QSharedPointer<LibraryComponent> model ) 
 	// close the file
 	newFile.close();
 
-	onItemSaved(*model->getVlnv());
+	if (!saveInProgress_) {
+		onItemSaved(*model->getVlnv());
+	}
 }
 
 void LibraryHandler::searchForIPXactFiles(QString const& path)
@@ -726,6 +735,7 @@ void LibraryHandler::searchForIPXactFiles() {
 }
 
 void LibraryHandler::onCheckLibraryIntegrity() {
+	saveInProgress_ = false;
 	data_->checkIntegrity();
 }
 
@@ -1440,5 +1450,31 @@ QSharedPointer<Design> LibraryHandler::getDesign( const VLNV& hierarchyRef ) {
 	// design was not found
 	else {
 		return QSharedPointer<Design>();
+	}
+}
+
+void LibraryHandler::beginSave() {
+	saveInProgress_ = true;
+}
+
+void LibraryHandler::endSave() {
+	saveInProgress_ = false;
+
+	// if there are no new items to add
+	if (itemsToAdd_.isEmpty()) {
+		hierarchyModel_->onResetModel();
+	}
+	// if there was new items to add to the library
+	else {
+
+		// add the new items
+		for (QMap<VLNV, QString>::iterator i = itemsToAdd_.begin(); 
+			i != itemsToAdd_.end(); ++i) {
+
+			data_->addVLNV(i.key(), i.value(), false);
+		}
+
+		// rebuild the library views.
+		data_->resetLibrary();
 	}
 }

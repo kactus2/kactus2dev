@@ -80,10 +80,11 @@ public:
 	 *
 	 * \param vlnv The vlnv to be added.
 	 * \param path The absolute file path to the file to be added to the library.
+	 * \param refreshLibrary If true then the library views are rebuilt.
 	 *
 	 * \return True if the vlnv was added, false if not.
 	*/
-	bool addVLNV(const VLNV& vlnv, const QString& path);
+	bool addVLNV(const VLNV& vlnv, const QString& path, bool refreshLibrary);
 
 	/*! \brief Update the VLNV for the given document.
 	 * 
@@ -97,7 +98,7 @@ public:
 	 * \param newVLNV The new vlnv for the document.
 	 *
 	*/
-	void updateVLNV(const QString& path, const VLNV& newVLNV);
+	//void updateVLNV(const QString& path, const VLNV& newVLNV);
 
 	/*! \brief Update the path of the given vlnv object.
 	 *
@@ -289,25 +290,16 @@ public slots:
 	//! \brief When export is selected in search view
 	void onExportItem(const QModelIndex& index);
 
-	//! \brief When hide is selected in search view
-	//void onHideItem(const QModelIndex& index);
-
-	//! \brief When show is selected in search view
-	//void onShowItem(const QModelIndex& index);
-
 	//! \brief Remove the specified VLNV from the library
 	void onRemoveVLNV(VLNV* vlnv);
-
-	//! \brief Set the specified VLNV as visible
-	//void onShowVLNV(VLNV* vlnv);
-
-	//! \brief Set the specified VLNV as hidden
-	//void onHideVLNV(VLNV* vlnv);
 
 	/*! \brief Check the integrity of the library.
 	 *
 	*/
 	void checkIntegrity();
+
+	//! \brief Reset the library
+	void resetLibrary();
 
 private:
 

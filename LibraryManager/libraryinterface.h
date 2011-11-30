@@ -264,18 +264,6 @@ public Q_SLOTS:
 	*/
 	virtual void onClearSelection() = 0;
 
-	/*! \brief Apply the possible changes made to the object to the library.
-	 * 
-	 * This function updates the library to match the changes made to the
-	 * object. I.e if the vlnv of the object has changed this function can be
-	 * used to keep the library up to date with the changes.
-	 * 
-	 * \param object Pointer to the object that has changed.
-	 * \param path Path to the object's IP-Xact file in the file system.
-	 *
-	*/
-// 	virtual void onUpdateObject(const QSharedPointer<LibraryComponent> object, 
-// 		const QString& path) = 0;
 
 	/*! \brief Edit an item in the library
 	 *
@@ -326,6 +314,22 @@ public Q_SLOTS:
 	 *
 	*/
 	virtual void removeObjects(const QList<VLNV>& vlnvList) = 0;
+
+	/*! \brief Call this function before saving several objects to library.
+	*
+	* When calling this before saving and then using writeModelToFile() the 
+	* library is not update between each save operation thus making the program
+	* faster.
+	* 
+	* Be sure to call endSave() after all items are saved.
+	*/
+	virtual void beginSave() = 0;
+
+	/*! \brief End the saving operation and update the library.
+	*
+	* This function must be called always after calling the beginSave().
+	*/
+	virtual void endSave() = 0;
 
 Q_SIGNALS:
 

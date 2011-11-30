@@ -617,7 +617,7 @@ const QString LibraryData::getPath( const VLNV& vlnv ) {
 	}
 }
 
-bool LibraryData::addVLNV( const VLNV& vlnv, const QString& path ) {
+bool LibraryData::addVLNV( const VLNV& vlnv, const QString& path, bool refreshLibrary ) {
 	if (libraryItems_.contains(vlnv)) {
 		emit errorMessage(tr("The VLNV \n"
 			"Vendor: %1\n"
@@ -638,43 +638,50 @@ bool LibraryData::addVLNV( const VLNV& vlnv, const QString& path ) {
 	else if (!isValidIPXactFile(path, vlnv))
 		return false;
 
-	beginResetModel();
+	if (refreshLibrary) {
+		beginResetModel();
 
-	// add the component to the library
-	VLNV* vlnvP = const_cast<VLNV*>(&libraryItems_.insert(vlnv, path).key());
-	table_.append(vlnvP);
+		// add the component to the library
+		VLNV* vlnvP = const_cast<VLNV*>(&libraryItems_.insert(vlnv, path).key());
+		table_.append(vlnvP);
 
-	emit resetModel();
-	endResetModel();
+		emit resetModel();
+		endResetModel();
 
-	saveLibraryFile();
+		saveLibraryFile();
+	}
+	else {
+		// add the component to the library
+		VLNV* vlnvP = const_cast<VLNV*>(&libraryItems_.insert(vlnv, path).key());
+		table_.append(vlnvP);
+	}
 
 	return true;
 }
 
-void LibraryData::updateVLNV( const QString& path, const VLNV& newVLNV ) {
-
-	// find the old vlnv tags for the file
-	QList<VLNV> oldKeys = libraryItems_.keys(path);
-	for (int i = 0; i < oldKeys.size(); ++i) {
-		
-		// search the matching item in the table data structure
-		for (int j = 0; j < table_.size(); ++j) {
-
-			// if match is found
-			if (oldKeys.value(i) == *table_.value(j)) {
-
-				// remove the item from the table also
-				table_.removeAt(j);
-			}
-		}
-
-		// remove all old keys that are associated with the given file
-		libraryItems_.remove(oldKeys.value(i));
-	}
-
-	addVLNV(newVLNV, path);
-}
+// void LibraryData::updateVLNV( const QString& path, const VLNV& newVLNV ) {
+// 
+// 	// find the old vlnv tags for the file
+// 	QList<VLNV> oldKeys = libraryItems_.keys(path);
+// 	for (int i = 0; i < oldKeys.size(); ++i) {
+// 		
+// 		// search the matching item in the table data structure
+// 		for (int j = 0; j < table_.size(); ++j) {
+// 
+// 			// if match is found
+// 			if (oldKeys.value(i) == *table_.value(j)) {
+// 
+// 				// remove the item from the table also
+// 				table_.removeAt(j);
+// 			}
+// 		}
+// 
+// 		// remove all old keys that are associated with the given file
+// 		libraryItems_.remove(oldKeys.value(i));
+// 	}
+// 
+// 	addVLNV(newVLNV, path);
+// }
 
 bool LibraryData::contains( const VLNV& vlnv ) {
 	// if vlnv is found and it is of correct type
@@ -769,21 +776,6 @@ void LibraryData::checkIntegrity() {
 
 	// clear the table so only valid items are appended
 	table_.clear();
-
-	// if table contains different amount of object than the actual library
-// 	if (max != table_.size()) {
-// 		emit errorMessage(tr("The library is corrupted, refreshing..."));
-// 
-// 		// clear all items from the table
-// 		table_.clear();
-// 
-// 		// add each vlnv to the table
-// 		for (QMap<VLNV, QString>::iterator i = libraryItems_.begin();
-// 			i != libraryItems_.end(); ++i) {
-// 				VLNV* vlnvP = const_cast<VLNV*>(&i.key());
-// 				table_.append(vlnvP);
-// 		}
-// 	}
 
 	// use mutable iterator so map can be modified 
 	QMutableMapIterator<VLNV, QString> i(libraryItems_);
@@ -1098,4 +1090,11 @@ bool LibraryData::isValidIPXactFile( const QString& filePath,
 	// everything went ok
 	IPXactFile.close();
 	return true;
+}
+
+void LibraryData::resetLibrary() {
+	beginResetModel();
+	emit resetModel();
+	endResetModel();
+	saveLibraryFile();
 }

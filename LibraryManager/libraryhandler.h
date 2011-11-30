@@ -354,17 +354,6 @@ public slots:
 	*/
 	virtual void onCreateDesign(const VLNV& vlnv);
 
-	/*! \brief This function should be called every time an object is written to disk.
-	 * 
-	 * This function makes sure that the library object is displayed correctly 
-	 * on library views and possible changes made to the object are updated to
-	 * views.
-	 * 
-	 * \param vlnv Identifies the object that was saved.
-	 *
-	*/
-	void onItemSaved(const VLNV& vlnv);
-
 	/*! \brief Remove the specified library object from the library and file system.
 	 * 
 	 * This function does not ask user to verify the deletion, it just removes the object and
@@ -383,6 +372,22 @@ public slots:
 	 *
 	*/
 	virtual void removeObjects(const QList<VLNV>& vlnvList);
+
+	/*! \brief Call this function before saving several objects to library.
+	*
+	* When calling this before saving and then using writeModelToFile() the 
+	* library is not update between each save operation thus making the program
+	* faster.
+	* 
+	* Be sure to call endSave() after all items are saved.
+	*/
+	virtual void beginSave();
+
+	/*! \brief End the saving operation and update the library.
+	*
+	* This function must be called always after calling the beginSave().
+	*/
+	virtual void endSave();
 
 signals:
 
@@ -442,6 +447,17 @@ private slots:
 	 *
 	*/
 	void onCreateAbsDef(const VLNV& busDefVLNV);
+
+	/*! \brief This function should be called every time an object is written to disk.
+	* 
+	* This function makes sure that the library object is displayed correctly 
+	* on library views and possible changes made to the object are updated to
+	* views.
+	* 
+	* \param vlnv Identifies the object that was saved.
+	*
+	*/
+	void onItemSaved(const VLNV& vlnv);
 
 private:
 
@@ -525,6 +541,12 @@ private:
 	 * Value = pointer to the library object that has been parsed.
 	 */
 	QMap<VLNV, QSharedPointer<LibraryComponent> > objects_;
+
+	//! \brief If true then items are being saved and library is not refreshed
+	bool saveInProgress_;
+
+	//! \brief Contains the IP-Xact items to be added to the library
+	QMap<VLNV, QString> itemsToAdd_;
 };
 
 #endif // LIBRARYHANDLER_H
