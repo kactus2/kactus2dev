@@ -118,6 +118,11 @@ VLNV LibraryComponent::findVLNV(QDomDocument &doc) {
 	int i = 0;
 	while (!nodeList.at(i).hasChildNodes()) {
 		++i;
+
+		if (i >= nodeList.size()) {
+			throw Parse_error(QObject::tr("VLNV could not be found in the document."));
+			return;
+		}
 	}
 
 	QString type(nodeList.at(i).nodeName());
