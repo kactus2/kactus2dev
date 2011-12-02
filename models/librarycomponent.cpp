@@ -121,7 +121,7 @@ VLNV LibraryComponent::findVLNV(QDomDocument &doc) {
 
 		if (i >= nodeList.size()) {
 			throw Parse_error(QObject::tr("VLNV could not be found in the document."));
-			return;
+			return VLNV();
 		}
 	}
 
@@ -178,7 +178,7 @@ void LibraryComponent::write(QXmlStreamWriter& writer) {
 	writer.writeStartDocument();
 
 	// create a string to set as a comment to the top of the document
-	QString topComment(QObject::tr("Created by Kactus 2 document generator "));
+	QString topComment(QObject::tr("Created by Kactus2"));
 
 	// comment contains the creation date and time
 	topComment += QTime::currentTime().toString(QString("hh:mm:ss")) += QString(" ");
