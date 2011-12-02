@@ -80,7 +80,7 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
             designVLNV = component->getHierRef("kts_sw_ref");
 
             // Add CPU to the component so that it can be previewed correctly.
-            QList<QSharedPointer<Cpu>> cpus;
+            QList<QSharedPointer<Cpu> > cpus;
             cpus.append(QSharedPointer<Cpu>(new Cpu()));
             component->setCpus(cpus);
         }
