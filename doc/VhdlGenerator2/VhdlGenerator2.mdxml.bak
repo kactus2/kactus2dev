@@ -1058,14 +1058,9 @@
 					<type>Class Diagram</type>
 					<umlType>Class Diagram</umlType>
 					<zoomFactor xmi:value='1.0'/>
-					<diagramOpened xmi:value='true'/>
+					<diagramOpened xmi:value='false'/>
 					<diagramFrameInitialSizeSet xmi:value='true'/>
 					<requiredFeature>;UML_Standard_Profile.xml</requiredFeature>
-					<diagramWindowBounds>3, 25, 1176, 804</diagramWindowBounds>
-					<diagramScrollPositionX xmi:value='619'/>
-					<diagramScrollPositionY xmi:value='0'/>
-					<maximized xmi:value='false'/>
-					<active xmi:value='true'/>
 					<mdOwnedViews>
 						<mdElement elementClass='DiagramFrame' xmi:id='_16_9_b9e02e4_1322652693437_224316_1894'>
 							<elementID xmi:idref='_16_9_b9e02e4_1322652693421_350386_1881'/>
@@ -1995,7 +1990,7 @@
 						<mdElement elementClass='StringProperty'>
 							<propertyID>INFO_PROPERTY</propertyID>
 							<propertyDescriptionID>INFO_PROPERTY_DESCRIPTION</propertyDescriptionID>
-							<value>37 63 63 11 b 61 30 77 1c 38 2d 24 cc d2 3a e8 99 7f 98 2c e8 cb 81 8c 43 18 b8 e9 97 ff d2 50 b5 6b 36 fc 16 51 a1 ff 81 1a 23 7c b8 a2 26 37 6e 93 3b 6a 65 8b 8d 7a 28 cc 9f 5b a3 d9 f1 2d e9 b0 1 d3 e4 46 </value>
+							<value>37 63 63 11 b 61 30 77 1c 38 2d 24 cc d2 3a e8 99 7f 98 2c e8 cb 81 8b 43 1d bb e9 96 f8 d2 50 b5 6b 36 fc 16 51 a1 ff 81 1a 23 7c b8 a2 26 37 6e 93 3b 6a 65 8b 8d 7a 28 cc 9f 5b a3 d9 f1 2d e9 b0 1 d3 e4 46 </value>
 						</mdElement>
 						<mdElement elementClass='LIST_PROPERTY'>
 							<propertyID>ADDITIONAL_CONTAINMENT_TREES</propertyID>
@@ -2004,7 +1999,7 @@
 						<mdElement elementClass='StringProperty'>
 							<propertyID>LAST_DIRECTORY</propertyID>
 							<propertyDescriptionID>LAST_DIRECTORY_DESCRIPTION</propertyDescriptionID>
-							<value></value>
+							<value>D:\user\kamppia\SVNwork\Kactus2 SourceForge\doc\VhdlGenerator2\</value>
 						</mdElement>
 						<mdElement elementClass='NumberProperty'>
 							<propertyID>OutputTypeSelectionPanel.value</propertyID>
@@ -2036,7 +2031,7 @@
 						<mdElement elementClass='ChoiceProperty'>
 							<propertyID>RECENT_DIAGRAMS</propertyID>
 							<propertyDescriptionID>RECENT_DIAGRAMS_DESCRIPTION</propertyDescriptionID>
-							<choice xmi:value=''/>
+							<choice xmi:value='_16_9_b9e02e4_1322652693421_350386_1881'/>
 							<index xmi:value='-1'/>
 						</mdElement>
 					</mdElement>
