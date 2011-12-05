@@ -89,7 +89,7 @@ void ComponentInstanceEditor::setComponent( ComponentItem* component ) {
     }
 
 	// set the vlnv of the component to be displayed
-	vlnvDisplayer_.setVLNV(*component->componentModel()->getVlnv());
+	vlnvDisplayer_.setVLNV(*component->componentModel()->getVlnv(), true);
 	vlnvDisplayer_.show();
 
 	nameGroup_.setName(component->name());

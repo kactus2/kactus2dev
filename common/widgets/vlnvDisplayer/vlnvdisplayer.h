@@ -14,6 +14,7 @@
 #include <QLabel>
 #include <QSizePolicy>
 #include <QGridLayout>
+#include <QHBoxLayout>
 
 /*! \brief VLNVDisplayer is a widget to display a vlnv tag in a GUI item.
  *
@@ -29,7 +30,7 @@ public:
 	 * \param vlnv Reference to the vlnv to be displayed
 	 *
 	*/
-	VLNVDisplayer(QWidget *parent, const VLNV& vlnv);
+	VLNVDisplayer(QWidget *parent, const VLNV& vlnv, bool compact = false);
 
 	/*! \brief The constructor
 	 *
@@ -37,7 +38,7 @@ public:
 	 * \param vlnv Pointer to the vlnv to be displayed
 	 *
 	*/
-	VLNVDisplayer(QWidget *parent, const VLNV* vlnv);
+	VLNVDisplayer(QWidget *parent, const VLNV* vlnv, bool compact = false);
 
 	/*! \brief The constructor
 	 *
@@ -54,7 +55,7 @@ public:
 	 * \param vlnv Reference to the VLNV to be displayed
 	 *
 	*/
-	void setVLNV(const VLNV& vlnv);
+	void setVLNV(const VLNV& vlnv, bool compact = false);
 
 	/*! \brief Also display path along with the vlnv in the widget.
 	 *
@@ -71,6 +72,12 @@ private:
 	//! No assignment
 	VLNVDisplayer& operator=(const VLNVDisplayer& other);
 
+    //! Title labels for each field.
+    QLabel vendorLabel_;
+    QLabel libraryLabel_;
+    QLabel nameLabel_;
+    QLabel versionLabel_;
+
 	//! \brief The label to display the vendor
 	QLabel vendor_;
 
@@ -83,8 +90,11 @@ private:
 	//! \brief The label to display the version
 	QLabel version_;
 	
-	//! \brief The layout of the widget
+	//! \brief The layout of the widget (non-compact)
 	QGridLayout* layout_;
+
+    //! Compact layout.
+    QHBoxLayout* compactLayout_;
 	
 };
 

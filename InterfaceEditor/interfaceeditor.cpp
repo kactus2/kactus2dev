@@ -49,9 +49,9 @@ handler_(handler) {
 	Q_ASSERT(parent);
 	Q_ASSERT(handler);
 
-	busType_.setTitle(tr("Bus type"));
+	busType_.setTitle(tr("Bus type VLNV"));
 	busType_.setFlat(false);
-	absType_.setTitle(tr("Abstraction type"));
+	absType_.setTitle(tr("Abstraction type VLNV"));
 	absType_.setFlat(false);
 
 	// set validator for interface name editor
@@ -116,8 +116,8 @@ void InterfaceEditor::setInterface( DiagramConnectionEndPoint* interface ) {
 	interface_ = interface;
 
     Q_ASSERT(interface->getBusInterface());
-	busType_.setVLNV(interface->getBusInterface()->getBusType());
-    absType_.setVLNV(interface->getBusInterface()->getAbstractionType());
+	busType_.setVLNV(interface->getBusInterface()->getBusType(), true);
+    absType_.setVLNV(interface->getBusInterface()->getAbstractionType(), true);
 
 	// set text for the name editor, signal must be disconnected when name is set 
 	// to avoid loops 
@@ -202,10 +202,10 @@ void InterfaceEditor::clear() {
 	disconnect(&mappings_, SIGNAL(itemChanged(QTableWidgetItem*)),
 		this, SLOT(onPortMapChanged()));
 
-	busType_.setVLNV(VLNV());
+	busType_.setVLNV(VLNV(), true);
 	busType_.hide();
 
-	absType_.setVLNV(VLNV());
+	absType_.setVLNV(VLNV(), true);
 	absType_.hide();
 
 	nameEdit_.clear();

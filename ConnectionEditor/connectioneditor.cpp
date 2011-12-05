@@ -56,9 +56,9 @@ handler_(handler) {
 	Q_ASSERT(parent);
 	Q_ASSERT(handler);
 
-	busType_.setTitle(tr("Bus type"));
+	busType_.setTitle(tr("Bus type VLNV"));
 	busType_.setFlat(false);
-	absType_.setTitle(tr("Abstraction type"));
+	absType_.setTitle(tr("Abstraction type VLNV"));
 	absType_.setFlat(false);
 
 	separator_.setFlat(true);
@@ -112,8 +112,8 @@ void ConnectionEditor::clear() {
 		this, SLOT(onDescriptionChanged()));
 
 	// clear the contents of the editors
-	busType_.setVLNV(VLNV());
-	absType_.setVLNV(VLNV());
+	busType_.setVLNV(VLNV(), true);
+	absType_.setVLNV(VLNV(), true);
 	connectedInstances_.clear();
 	nameEdit_.clear();
 	descriptionEdit_.clear();
@@ -158,8 +158,8 @@ void ConnectionEditor::setConnection( DiagramInterconnection* connection ) {
 	DiagramConnectionEndPoint* endPoint1 = connection->endPoint1();
 	Q_ASSERT(endPoint1);
 
-	busType_.setVLNV(endPoint1->getBusInterface()->getBusType());
-	absType_.setVLNV(endPoint1->getBusInterface()->getAbstractionType());
+	busType_.setVLNV(endPoint1->getBusInterface()->getBusType(), true);
+	absType_.setVLNV(endPoint1->getBusInterface()->getAbstractionType(), true);
 
 	QString endPoint1Name = endPoint1->name();
 	QString endPoint2Name = connection->endPoint2()->name();

@@ -10,62 +10,115 @@
 #include <QGridLayout>
 #include <QHBoxLayout>
 
-VLNVDisplayer::VLNVDisplayer(QWidget *parent, const VLNV& vlnv):
-QGroupBox(parent),
-vendor_(this), 
-library_(this),
-name_(this), 
-version_(this),
-layout_(0) {
-
-	QLabel* vendor = new QLabel(tr("Vendor:"), this);
-	QLabel* library = new QLabel(tr("Library:"), this);
-	QLabel* name = new QLabel(tr("Name:"), this);
-	QLabel* version = new QLabel(tr("Version:"), this);
-
+VLNVDisplayer::VLNVDisplayer(QWidget *parent, const VLNV& vlnv, bool compact)
+    : QGroupBox(parent), vendorLabel_(tr("Vendor:"), this), libraryLabel_(tr("Library:"), this),
+      nameLabel_(tr("Name:"), this), versionLabel_(tr("Version:"), this),
+      vendor_(this), library_(this), name_(this), version_(this), layout_(0)
+{
 	layout_ = new QGridLayout();
-	layout_->addWidget(vendor, 0, 0, 1, 1, Qt::AlignLeft);
-	layout_->addWidget(library, 1, 0, 1, 1, Qt::AlignLeft);
-	layout_->addWidget(name, 2, 0, 1, 1, Qt::AlignLeft);
-	layout_->addWidget(version, 3, 0, 1, 1, Qt::AlignLeft);
+	layout_->addWidget(&vendorLabel_, 0, 0, 1, 1, Qt::AlignLeft);
+	layout_->addWidget(&libraryLabel_, 1, 0, 1, 1, Qt::AlignLeft);
+	layout_->addWidget(&nameLabel_, 2, 0, 1, 1, Qt::AlignLeft);
+	layout_->addWidget(&versionLabel_, 3, 0, 1, 1, Qt::AlignLeft);
 
 	layout_->addWidget(&vendor_, 0, 1, 1, 1, Qt::AlignLeft);
 	layout_->addWidget(&library_, 1, 1, 1, 1, Qt::AlignLeft);
 	layout_->addWidget(&name_, 2, 1, 1, 1, Qt::AlignLeft);
 	layout_->addWidget(&version_, 3, 1, 1, 1, Qt::AlignLeft);
+    layout_->setColumnStretch(2, 1);
 
-	setVLNV(vlnv);
+    compactLayout_ = new QHBoxLayout();
+    compactLayout_->setSpacing(1);
+    compactLayout_->addWidget(&vendor_);
+    compactLayout_->addWidget(&library_);
+    compactLayout_->addWidget(&name_);
+    compactLayout_->addWidget(&version_);
+    compactLayout_->addStretch(1);
 
-	QHBoxLayout* topLayout = new QHBoxLayout(this);
-	topLayout->addLayout(layout_);
-	topLayout->addStretch();
-
-	setFlat(true);
+	setVLNV(vlnv, compact);
+    setFlat(true);
 }
 
-VLNVDisplayer::VLNVDisplayer( QWidget *parent, const VLNV* vlnv ):QGroupBox(parent),
-vendor_(this), library_(this), name_(this), version_(this) {
+VLNVDisplayer::VLNVDisplayer( QWidget *parent, const VLNV* vlnv, bool compact )
+    : QGroupBox(parent), vendorLabel_(tr("Vendor:"), this), libraryLabel_(tr("Library:"), this),
+      nameLabel_(tr("Name:"), this), versionLabel_(tr("Version:"), this),
+      vendor_(this), library_(this), name_(this), version_(this) {
 
-	QLabel* vendor = new QLabel(tr("Vendor:"), this);
-	QLabel* library = new QLabel(tr("Library:"), this);
-	QLabel* name = new QLabel(tr("Name:"), this);
-	QLabel* version = new QLabel(tr("Version:"), this);
+    layout_ = new QGridLayout();
+	layout_->addWidget(&vendorLabel_, 0, 0, 1, 1, Qt::AlignLeft);
+	layout_->addWidget(&libraryLabel_, 1, 0, 1, 1, Qt::AlignLeft);
+	layout_->addWidget(&nameLabel_, 2, 0, 1, 1, Qt::AlignLeft);
+	layout_->addWidget(&versionLabel_, 3, 0, 1, 1, Qt::AlignLeft);
 
-	QGridLayout* layout = new QGridLayout();
-	layout->addWidget(vendor, 0, 0, 1, 1, Qt::AlignLeft);
-	layout->addWidget(library, 1, 0, 1, 1, Qt::AlignLeft);
-	layout->addWidget(name, 2, 0, 1, 1, Qt::AlignLeft);
-	layout->addWidget(version, 3, 0, 1, 1, Qt::AlignLeft);
+	layout_->addWidget(&vendor_, 0, 1, 1, 1, Qt::AlignLeft);
+	layout_->addWidget(&library_, 1, 1, 1, 1, Qt::AlignLeft);
+	layout_->addWidget(&name_, 2, 1, 1, 1, Qt::AlignLeft);
+	layout_->addWidget(&version_, 3, 1, 1, 1, Qt::AlignLeft);
+    layout_->setColumnStretch(2, 1);
 
-	layout->addWidget(&vendor_, 0, 1, 1, 1, Qt::AlignLeft);
-	layout->addWidget(&library_, 1, 1, 1, 1, Qt::AlignLeft);
-	layout->addWidget(&name_, 2, 1, 1, 1, Qt::AlignLeft);
-	layout->addWidget(&version_, 3, 1, 1, 1, Qt::AlignLeft);
+    compactLayout_ = new QHBoxLayout();
+    compactLayout_->setSpacing(1);
+    compactLayout_->addWidget(&vendor_);
+    compactLayout_->addWidget(&library_);
+    compactLayout_->addWidget(&name_);
+    compactLayout_->addWidget(&version_);
+    compactLayout_->addStretch(1);
 
 	// if vlnv pointer is valid
 	if (vlnv->isValid()) 
     {
-		setVLNV(*vlnv);
+		setVLNV(*vlnv, compact);
+    }
+    else
+    {
+        setVLNV(VLNV(), compact);
+    }
+
+	setFlat(true);
+
+    // this widget can not be expanded
+	setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+}
+
+VLNVDisplayer::VLNVDisplayer( QWidget* parent )
+ : QGroupBox(parent), vendorLabel_(tr("Vendor:"), this), libraryLabel_(tr("Library:"), this),
+   nameLabel_(tr("Name:"), this), versionLabel_(tr("Version:"), this),
+   vendor_(this), library_(this),  name_(this), version_(this)
+{
+    layout_ = new QGridLayout();
+    layout_->addWidget(&vendorLabel_, 0, 0, 1, 1, Qt::AlignLeft);
+    layout_->addWidget(&libraryLabel_, 1, 0, 1, 1, Qt::AlignLeft);
+    layout_->addWidget(&nameLabel_, 2, 0, 1, 1, Qt::AlignLeft);
+    layout_->addWidget(&versionLabel_, 3, 0, 1, 1, Qt::AlignLeft);
+
+    layout_->addWidget(&vendor_, 0, 1, 1, 1, Qt::AlignLeft);
+    layout_->addWidget(&library_, 1, 1, 1, 1, Qt::AlignLeft);
+    layout_->addWidget(&name_, 2, 1, 1, 1, Qt::AlignLeft);
+    layout_->addWidget(&version_, 3, 1, 1, 1, Qt::AlignLeft);
+    layout_->setColumnStretch(2, 1);
+
+    compactLayout_ = new QHBoxLayout();
+    compactLayout_->setSpacing(1);
+    compactLayout_->addWidget(&vendor_);
+    compactLayout_->addWidget(&library_);
+    compactLayout_->addWidget(&name_);
+    compactLayout_->addWidget(&version_);
+    compactLayout_->addStretch(1);
+
+    setFlat(true);
+}
+
+VLNVDisplayer::~VLNVDisplayer() {
+}
+
+void VLNVDisplayer::setVLNV( const VLNV& vlnv, bool compact )
+{
+    if (vlnv.isValid())
+    {
+        vendor_.setText(vlnv.getVendor());
+        library_.setText(vlnv.getLibrary());
+        name_.setText(vlnv.getName());
+        version_.setText(vlnv.getVersion());
     }
     else
     {
@@ -75,54 +128,43 @@ vendor_(this), library_(this), name_(this), version_(this) {
         version_.setText("UNSET");
     }
 
-	setFlat(true);
+    if (compact)
+    {
+        vendor_.setStyleSheet("border: 1px solid grey");
+        vendor_.setMinimumWidth(20);
+        library_.setStyleSheet("border: 1px solid grey");
+        library_.setMinimumWidth(20);
+        name_.setStyleSheet("border: 1px solid grey");
+        version_.setStyleSheet("border: 1px solid grey");
+        
+        // Hide the labels.
+        vendorLabel_.setVisible(false);
+        libraryLabel_.setVisible(false);
+        nameLabel_.setVisible(false);
+        versionLabel_.setVisible(false);
 
-    QHBoxLayout* topLayout = new QHBoxLayout(this);
-    topLayout->addLayout(layout);
-    topLayout->addStretch();
+        // Set the compact layout.
+        setLayout(compactLayout_);
+    }
+    else
+    {
+        vendor_.setStyleSheet("");
+        vendor_.setMinimumWidth(vendor_.sizeHint().width());
+        library_.setStyleSheet("");
+        library_.setMinimumWidth(library_.sizeHint().width());
+        
+        library_.setVisible(true);
+        version_.setVisible(true);
 
-	// this widget can not be expanded
-	setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
-}
+        // Show the labels.
+        vendorLabel_.setVisible(true);
+        libraryLabel_.setVisible(true);
+        nameLabel_.setVisible(true);
+        versionLabel_.setVisible(true);
 
-VLNVDisplayer::VLNVDisplayer( QWidget* parent ) : 
-QGroupBox(parent), 
-vendor_(this),
-library_(this), 
-name_(this), 
-version_(this)
-{
-    QLabel* vendor = new QLabel(tr("Vendor:"), this);
-    QLabel* library = new QLabel(tr("Library:"), this);
-    QLabel* name = new QLabel(tr("Name:"), this);
-    QLabel* version = new QLabel(tr("Version:"), this);
-
-    QGridLayout* layout = new QGridLayout();
-    layout->addWidget(vendor, 0, 0, 1, 1, Qt::AlignLeft);
-    layout->addWidget(library, 1, 0, 1, 1, Qt::AlignLeft);
-    layout->addWidget(name, 2, 0, 1, 1, Qt::AlignLeft);
-    layout->addWidget(version, 3, 0, 1, 1, Qt::AlignLeft);
-
-    layout->addWidget(&vendor_, 0, 1, 1, 1, Qt::AlignLeft);
-    layout->addWidget(&library_, 1, 1, 1, 1, Qt::AlignLeft);
-    layout->addWidget(&name_, 2, 1, 1, 1, Qt::AlignLeft);
-    layout->addWidget(&version_, 3, 1, 1, 1, Qt::AlignLeft);
-
-    QHBoxLayout* topLayout = new QHBoxLayout(this);
-    topLayout->addLayout(layout);
-    topLayout->addStretch();
-
-    setFlat(true);
-}
-
-VLNVDisplayer::~VLNVDisplayer() {
-}
-
-void VLNVDisplayer::setVLNV( const VLNV& vlnv ) {
-	vendor_.setText(vlnv.getVendor());
-	library_.setText(vlnv.getLibrary());
-	name_.setText(vlnv.getName());
-	version_.setText(vlnv.getVersion());
+        // Set the non-compact layout.
+        setLayout(layout_);
+    }
 }
 
 void VLNVDisplayer::setPath( const QString& path ) {
