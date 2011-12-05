@@ -309,6 +309,14 @@
 							>
 						</File>
 					</Filter>
+					<Filter
+						Name="listSelectDialog"
+						>
+						<File
+							RelativePath=".\common\dialogs\listSelectDialog\ListSelectDialog.cpp"
+							>
+						</File>
+					</Filter>
 				</Filter>
 				<Filter
 					Name="validators"
@@ -2105,6 +2113,14 @@
 									Outputs="&quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;"
 								/>
 							</FileConfiguration>
+						</File>
+					</Filter>
+					<Filter
+						Name="listSelectDialog"
+						>
+						<File
+							RelativePath=".\common\dialogs\listSelectDialog\ListSelectDialog.h"
+							>
 						</File>
 					</Filter>
 				</Filter>

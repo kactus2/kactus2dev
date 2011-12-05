@@ -65,9 +65,6 @@ public:
      */
     virtual IEditProvider* getEditProvider();
 
-signals:
-    void contentChanged();
-
 public slots:
     //! Saves the source file.
     virtual bool save();

@@ -31,6 +31,7 @@
 #include <LibraryManager/LibraryUtils.h>
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
+#include <common/dialogs/listSelectDialog/ListSelectDialog.h>
 #include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
 #include <common/dialogs/propertyPageDialog/PropertyPageDialog.h>
 
@@ -1445,15 +1446,40 @@ void MainWindow::openSource(ProgramEntityItem* progEntity)
     ApplicationItem* appItem = progEntity->getApplication();
     Q_ASSERT(appItem != 0);
 
-    if (appItem->componentModel()->getFileSet("cSources") == 0 ||
-        appItem->componentModel()->getFileSet("cSources")->getFiles().count() == 0)
+    FileSet* fileSet = appItem->componentModel()->getFileSet("cSources");
+
+    if (fileSet == 0 || fileSet->getFiles().count() == 0)
     {
         return;
     }
     
-    QString filename = appItem->componentModel()->getFileSet("cSources")->getFiles().first()->getName();
+    QString filename;
+    
+    if (fileSet->getFiles().count() > 1)
+    {
+        // Show a dialog for selecting what source file to open.
+        ListSelectDialog dlg(this);
+        dlg.setWindowTitle(tr("Open Source"));
+        dlg.setDescription(tr("Select C source file to open:"));
 
-    // TODO: Test!
+        foreach (QSharedPointer<File> file, fileSet->getFiles())
+        {
+            dlg.addItem(new QListWidgetItem(file->getName()));
+        }
+
+        if (dlg.exec() == QDialog::Rejected)
+        {
+            return;
+        }
+
+        filename = dlg.getSelectedItem()->text();
+    }
+    else
+    {
+        // Otherwise there is only one possibility.
+        filename = fileSet->getFiles().first()->getName();
+    }
+
     filename = General::getAbsolutePath(libraryHandler_->getPath(*appItem->componentModel()->getVlnv()),
                                         filename);
 
