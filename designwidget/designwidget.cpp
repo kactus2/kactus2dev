@@ -821,6 +821,10 @@ IEditProvider* DesignWidget::getEditProvider()
 void DesignWidget::refresh()
 {
     Q_ASSERT(!isModified());
+
+	QSharedPointer<LibraryComponent> libComp = lh_->getModel(*hierComponent_->getVlnv());
+	hierComponent_ = libComp.staticCast<Component>();
+
     diagram_->setDesign(hierComponent_, viewName_);
 
     setModified(false);
