@@ -30,6 +30,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./common/dialogs/newObjectDialog/newobjectdialog.h \
     ./common/dialogs/ObjectRemoveDialog/objectremovedialog.h \
     ./common/dialogs/ObjectRemoveDialog/objectremovemodel.h \
+    ./common/dialogs/listSelectDialog/ListSelectDialog.h \
     ./common/widgets/attributeBox/attributebox.h \
     ./common/widgets/attributeBox/attributemodel.h \
     ./common/widgets/libraryRefGenerator/libraryrefgenerator.h \
@@ -331,6 +332,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/dialogs/ObjectRemoveDialog/objectremovedialog.cpp \
     ./common/dialogs/ObjectRemoveDialog/objectremovemodel.cpp \
     ./common/dialogs/createConfigurationDialog/createconfigurationdialog.cpp \
+    ./common/dialogs/listSelectDialog/ListSelectDialog.cpp \
     ./common/validators/nameValidator/namevalidator.cpp \
     ./common/validators/vhdlNameValidator/vhdlnamevalidator.cpp \
     ./common/widgets/assistedLineEdit/AssistedLineEdit.cpp \
