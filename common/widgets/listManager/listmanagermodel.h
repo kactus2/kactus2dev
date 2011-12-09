@@ -58,6 +58,25 @@ public:
 	QVariant headerData(int section, Qt::Orientation orientation, 
 		int role = Qt::DisplayRole) const;
 
+	/*! \brief Save the data to the model for specified item
+	 *
+	 * \param index The model index of the item that's data is to be saved.
+	 * \param value The data that is to be saved.
+	 * \param role The role specifies what kind of data should be saved.
+	 *
+	 * \return True if saving happened successfully.
+	*/
+	bool setData(const QModelIndex& index, const QVariant& value, 
+		int role = Qt::EditRole);
+
+	/*! \brief Get the item flags that defines the possible operations for the item.
+	 *
+	 * \param index Model index that identifies the item.
+	 *
+	 * \return Qt::ItemFlags specify the possible operations for the item.
+	*/
+	Qt::ItemFlags flags(const QModelIndex& index) const;
+
 	/*! \brief Append a new item to the end of the list.
 	 *
 	 * \param item The string to be appended to the end of the list.
@@ -97,19 +116,27 @@ public slots:
 	*
 	* \param index The model index of the item to remove.
 	*/
-	void remove(QModelIndex& index);
+	void remove(const QModelIndex& index);
 
-	/*! \brief Moves the specified item up one row in the model.
-	*
-	* \parma index The model index of the item to move up.
+	/*! \brief A new item should be added to given index.
+	 *
+	 * \param index The position where new item should be added at.
+	 *
 	*/
-	void moveUp(QModelIndex& index);
+	void addItem(const QModelIndex& index);
 
-	/*! \brief Moves the specified item down one row in the model.
-	*
-	* \param index The model index of the item to move down.
+	/*! \brief Move item to another position.
+	 *
+	 * \param originalPos Identifies the item that should be moved.
+	 * \param newPos The new position the item should be moved to.
+	 *
 	*/
-	void moveDown(QModelIndex& index);
+	void moveItem(const QModelIndex& originalPos, const QModelIndex& newPos);
+
+signals: 
+
+	//! \brief Emitted when contents of the model change.
+	void contentChanged();
 
 private:
 

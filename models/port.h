@@ -336,6 +336,14 @@ public:
 	*/
 	bool hasType(const QString& viewName = QString()) const;
 
+	/*! \brief Check if the port has type or type definition set.
+	 *
+	 *
+	 * \return bool True if the either port type name or type definition or both
+	 * are defined.
+	*/
+	bool hasTypeDefinitions() const;
+
 	/*! \brief Set the type name for the port in given view.
 	 *
 	 * \param typeName The name of the type.

@@ -192,7 +192,7 @@ public:
 	 *
 	 * \return True if vlnv is found, false if not.
 	*/
-	bool exists(const VLNV& vlnv) const;
+	//bool exists(const VLNV& vlnv) const;
 
 	/*! \brief Get the type of the given document.
 	 * 

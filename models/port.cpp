@@ -549,6 +549,16 @@ bool Port::hasType( const QString& viewName /*= QString("")*/ ) const {
 	return false;
 }
 
+bool Port::hasTypeDefinitions() const {
+	if (wire_) {
+		return wire_->hasTypeDefinition();
+	}
+	// if wire don't exist then there is no type definitions
+	else {
+		return false;
+	}
+}
+
 void Port::useDefaultVhdlTypes() {
 	// if theres no wire definition
 	if (!wire_) {

@@ -334,10 +334,12 @@ void PortsModel::restore() {
 	foreach (QSharedPointer<Port> port, *ports_) {
 
 		QSharedPointer<Port> tablePort(new Port(*port.data()));
+
+		// the default port types are not used anymore
 		// if theres no specified type for the port
-		if (!tablePort->hasType()) {
-			tablePort->useDefaultVhdlTypes();
-		}
+// 		if (!tablePort->hasType()) {
+// 			tablePort->useDefaultVhdlTypes();
+// 		}
 		table_.append(tablePort);
 	}
 
@@ -364,8 +366,9 @@ void PortsModel::onAddRow() {
 	beginInsertRows(QModelIndex(), table_.size(), table_.size());
 
 	QSharedPointer<Port> port(new Port());
-	port->setTypeName("std_logic");
-	port->setTypeDefinition("std_logic", "IEEE.std_logic_1164.all");
+	// the default port types are not used anymore
+// 	port->setTypeName("std_logic");
+// 	port->setTypeDefinition("std_logic", "IEEE.std_logic_1164.all");
 	table_.append(port);
 
 	endInsertRows();

@@ -52,14 +52,6 @@ public:
 	*/
 	bool isValid() const;
 
-public slots:
-
-	//! \brief Called when user clicks "Add" button.
-	virtual void onAdd();
-
-	//! \brief Called when user clicks "Edit" button.
-	virtual void onEdit();
-
 private:
 
 	//! \brief No copying

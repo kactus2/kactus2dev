@@ -6,13 +6,17 @@
  */
 
 #include "groupmanager.h"
-#include <common/dialogs/comboSelector/comboselector.h>
 
+#include "groupmanagerdelegate.h"
+
+#include <common/dialogs/comboSelector/comboselector.h>
 
 GroupManager::GroupManager(const QString title /*= tr("Group identifiers")*/, 
 						   QWidget *parent /*= 0*/, 
 						   const QStringList& items /*= QStringList()*/ ):
 ListManager(title, parent, items) {
+
+	view_.setItemDelegate(new GroupManagerDelegate(this));
 }
 
 GroupManager::~GroupManager() {

@@ -10,6 +10,7 @@ message("You are running qmake on a generated .pro file. This may not work!")
 HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./mainwindow/SplashScreen.h \
     ./resource.h \
+    ./version.h \
     ./common/ColumnTypes.h \
     ./common/diagramgrid.h \
     ./common/DiagramUtil.h \
@@ -35,9 +36,11 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./common/widgets/attributeBox/attributemodel.h \
     ./common/widgets/libraryRefGenerator/libraryrefgenerator.h \
     ./common/widgets/listManager/dirlistmanager.h \
+    ./common/widgets/listManager/dirlistmanagerdelegate.h \
     ./common/widgets/listManager/filelistmanager.h \
     ./common/widgets/listManager/listmanager.h \
     ./common/widgets/listManager/listmanagermodel.h \
+    ./common/widgets/listManager/listview.h \
     ./common/widgets/nameGroupBox/namegroupbox.h \
     ./common/widgets/vlnvGenerator/vlnvgenerator.h \
     ./common/widgets/assistedLineEdit/AssistedLineEdit.h \
@@ -58,6 +61,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./common/widgets/colorBox/ColorBox.h \
     ./common/widgets/kactusAttributeEditor/KactusAttributeEditor.h \
     ./common/widgets/componentPreviewBox/ComponentPreviewBox.h \
+    ./common/widgets/dirLineEdit/dirlineedit.h \
     ./common/validators/nameValidator/namevalidator.h \
     ./common/validators/vhdlNameValidator/vhdlnamevalidator.h \
     ./common/layouts/HStackedLayout.h \
@@ -65,6 +69,8 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./common/layouts/VStackedLayout.h \
     ./common/graphicsItems/ComponentItem.h \
     ./common/graphicsItems/GraphicsRectButton.h \
+    ./common/delegates/combodelegate.h \
+    ./common/delegates/lineeditdelegate.h \
     ./designwidget/blockdiagram.h \
     ./designwidget/designwidget.h \
     ./designwidget/DiagramAddCommands.h \
@@ -103,7 +109,9 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/fileSet/filenamelineedit.h \
     ./IPXactWrapper/ComponentEditor/fileSet/fileseteditor.h \
     ./IPXactWrapper/ComponentEditor/fileSet/filetypeeditor.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/filetypeeditordelegate.h \
     ./IPXactWrapper/ComponentEditor/fileSet/groupmanager.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/groupmanagerdelegate.h \
     ./IPXactWrapper/ComponentEditor/fileSet/targetnameedit.h \
     ./IPXactWrapper/ComponentEditor/general/desceditor.h \
     ./IPXactWrapper/ComponentEditor/general/generaleditor.h \
@@ -121,6 +129,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/otherClockDrivers/otherclockdriversmodel.h \
     ./IPXactWrapper/ComponentEditor/channels/channeleditor.h \
     ./IPXactWrapper/ComponentEditor/channels/channelinterfacemanager.h \
+    ./IPXactWrapper/ComponentEditor/channels/channelinterfacemanagerdelegate.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/ApiCreateDialog.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/apieditor.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/busifgeneraldetails.h \
@@ -148,6 +157,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/views/envidentifiersdelegate.h \
     ./IPXactWrapper/ComponentEditor/views/envidentifiersmodel.h \
     ./IPXactWrapper/ComponentEditor/views/filesetrefeditor.h \
+    ./IPXactWrapper/ComponentEditor/views/filesetrefeditordelegate.h \
     ./IPXactWrapper/ComponentEditor/views/flatviewgeneraltab.h \
     ./IPXactWrapper/ComponentEditor/views/flatviewparameterstab.h \
     ./IPXactWrapper/ComponentEditor/views/hierarchyrefwidget.h \
@@ -318,7 +328,8 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./ConnectionEditor/connectioneditor.h \
     ./GCF/Common.h \
     ./GCF/MenuStrip.h
-SOURCES += ./common/GenericEditProvider.cpp \
+SOURCES += ./common/widgets/listManager/listview.cpp \
+    ./common/GenericEditProvider.cpp \
     ./common/KactusAttribute.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -343,6 +354,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/widgets/hexSpinBox/hexspinbox.cpp \
     ./common/widgets/libraryRefGenerator/libraryrefgenerator.cpp \
     ./common/widgets/listManager/dirlistmanager.cpp \
+    ./common/widgets/listManager/dirlistmanagerdelegate.cpp \
     ./common/widgets/listManager/filelistmanager.cpp \
     ./common/widgets/listManager/listmanager.cpp \
     ./common/widgets/listManager/listmanagermodel.cpp \
@@ -359,8 +371,11 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/widgets/kactusAttributeEditor/KactusAttributeEditor.cpp \
     ./common/widgets/componentPreviewBox/ComponentPreviewBox.cpp \
     ./common/widgets/tabDocument/TabDocument.cpp \
+    ./common/widgets/dirLineEdit/dirlineedit.cpp \
     ./common/graphicsItems/ComponentItem.cpp \
     ./common/graphicsItems/GraphicsRectButton.cpp \
+    ./common/delegates/combodelegate.cpp \
+    ./common/delegates/lineeditdelegate.cpp \
     ./designwidget/blockdiagram.cpp \
     ./designwidget/BusInterfaceDialog.cpp \
     ./designwidget/designwidget.cpp \
@@ -411,6 +426,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/portmapsview.cpp \
     ./IPXactWrapper/ComponentEditor/channels/channeleditor.cpp \
     ./IPXactWrapper/ComponentEditor/channels/channelinterfacemanager.cpp \
+    ./IPXactWrapper/ComponentEditor/channels/channelinterfacemanagerdelegate.cpp \
     ./IPXactWrapper/ComponentEditor/fileBuilders/filebuildersdelegate.cpp \
     ./IPXactWrapper/ComponentEditor/fileBuilders/filebuilderseditor.cpp \
     ./IPXactWrapper/ComponentEditor/fileBuilders/filebuildersmodel.cpp \
@@ -426,7 +442,9 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./IPXactWrapper/ComponentEditor/fileSet/filenamelineedit.cpp \
     ./IPXactWrapper/ComponentEditor/fileSet/fileseteditor.cpp \
     ./IPXactWrapper/ComponentEditor/fileSet/filetypeeditor.cpp \
+    ./IPXactWrapper/ComponentEditor/fileSet/filetypeeditordelegate.cpp \
     ./IPXactWrapper/ComponentEditor/fileSet/groupmanager.cpp \
+    ./IPXactWrapper/ComponentEditor/fileSet/groupmanagerdelegate.cpp \
     ./IPXactWrapper/ComponentEditor/fileSet/targetnameedit.cpp \
     ./IPXactWrapper/ComponentEditor/general/desceditor.cpp \
     ./IPXactWrapper/ComponentEditor/general/generaleditor.cpp \
@@ -446,6 +464,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./IPXactWrapper/ComponentEditor/views/envidentifiersdelegate.cpp \
     ./IPXactWrapper/ComponentEditor/views/envidentifiersmodel.cpp \
     ./IPXactWrapper/ComponentEditor/views/filesetrefeditor.cpp \
+    ./IPXactWrapper/ComponentEditor/views/filesetrefeditordelegate.cpp \
     ./IPXactWrapper/ComponentEditor/views/flatviewgeneraltab.cpp \
     ./IPXactWrapper/ComponentEditor/views/flatviewparameterstab.cpp \
     ./IPXactWrapper/ComponentEditor/views/hierarchyrefwidget.cpp \

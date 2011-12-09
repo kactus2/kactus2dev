@@ -32,7 +32,6 @@ public:
 	 * \param parent Pointer to the owner of this widget.
 	 * \param items List of directory paths to be added to this widget.
 	 *
-	 * \return 
 	*/
 	DirListManager(const QString title, 
 		const QFileInfo& baseLocation, QWidget *parent = 0, 
@@ -40,14 +39,6 @@ public:
 
 	//! \brief The destructor.
 	virtual ~DirListManager();
-
-public slots:
-
-	//! \brief Called when user clicks "Add" button.
-	virtual void onAdd();
-
-	//! \brief Called when user clicks "Edit" button.
-	virtual void onEdit();
 
 private:
 	

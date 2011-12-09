@@ -543,6 +543,20 @@ QStringList Model::getPortTypeDefinitions() const {
 	return typeDefs;
 }
 
+bool Model::hasPortTypes() const {
+
+	// check each port
+	foreach (QSharedPointer<Port> port, ports_) {
+
+		// if port has a type defined
+		if (port->hasTypeDefinitions()) {
+			return true;
+		}
+	}
+	// none of the port had a type defined
+	return false;
+}
+
 QString Model::getEntityName( const QString& viewName ) const {
 	// search all views
 	foreach (QSharedPointer<View> view, views_) {

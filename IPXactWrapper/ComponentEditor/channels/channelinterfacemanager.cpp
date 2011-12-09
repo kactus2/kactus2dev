@@ -7,6 +7,8 @@
 
 #include "channelinterfacemanager.h"
 
+#include "channelinterfacemanagerdelegate.h"
+
 #include <common/dialogs/comboSelector/comboselector.h>
 #include <models/channel.h>
 #include <models/component.h>
@@ -25,6 +27,8 @@ component_(component) {
 		"Null Component-pointer given as parameter");
 	Q_ASSERT_X(dataPointer, "ChannelInterfaceManager constructor",
 		"Null dataPointer given as parameter");
+
+	view_.setItemDelegate(new ChannelInterfaceManagerDelegate(this, component_));
 }
 
 ChannelInterfaceManager::~ChannelInterfaceManager() {

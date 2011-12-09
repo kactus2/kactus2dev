@@ -538,6 +538,16 @@ bool IPXactComponentEditor::save() {
 	// if all editors were valid then document can be written to disk
 	if (saveEditors()) {
 
+		// if the component has ports that's type is defined it also must have 
+		// at least one view
+		if (editableComponent_->hasPortTypes() && !editableComponent_->hasViews()) {
+			
+			emit errorMessage(tr("Component %1 had types defined for port(s) but "
+				"no view was defined. Create at least one view for component.").arg(
+				editableComponent_->getVlnv()->toString()));
+			return false;
+		}
+
 		*component_ = *editableComponent_;
 		handler_->writeModelToFile(component_);
 

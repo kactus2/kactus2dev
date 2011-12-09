@@ -38,8 +38,8 @@ QString ComboSelector::exec() {
 }
 
 QString ComboSelector::selectGroupType(QWidget* parent /* = 0*/,
-									   const QString selected /*= QString()*/,
-const QString label /* = tr("Select group type or create your own group type")*/) {
+									   const QString selected,
+									   const QString label) {
 
 	// create the selector instance
 	ComboSelector selector(parent, selected);

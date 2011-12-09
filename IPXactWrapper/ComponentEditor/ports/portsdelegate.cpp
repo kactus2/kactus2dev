@@ -26,7 +26,8 @@ static const int TYPEDEFCOLUMN = 6;
 static const int DEFAULTCOLUMN = 7;
 static const int DESCRIPTIONCOLUMN = 8;
 
-PortsDelegate::PortsDelegate(QObject *parent): QStyledItemDelegate(parent) {
+PortsDelegate::PortsDelegate(QObject *parent): 
+QStyledItemDelegate(parent) {
 }
 
 PortsDelegate::~PortsDelegate() {

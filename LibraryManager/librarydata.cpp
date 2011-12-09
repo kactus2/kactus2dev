@@ -760,9 +760,9 @@ void LibraryData::onRemoveVLNV( VLNV* vlnv ) {
 // 	saveLibraryFile();
 // }
 
-bool LibraryData::exists( const VLNV& vlnv ) const {
-	return libraryItems_.contains(vlnv);
-}
+// bool LibraryData::exists( const VLNV& vlnv ) const {
+// 	return libraryItems_.contains(vlnv);
+// }
 
 void LibraryData::checkIntegrity() {
 

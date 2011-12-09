@@ -9,10 +9,10 @@
 #define LISTMANAGER_H
 
 #include "listmanagermodel.h"
+#include "listview.h"
 
 #include <QWidget>
 #include <QGroupBox>
-#include <QListView>
 #include <QPushButton>
 #include <QObject>
 #include <QStringList>
@@ -58,23 +58,6 @@ public:
 	*/
 	int size() const;
 
-public slots:
-
-	//! \brief Called when user clicks "Add" button.
-	virtual void onAdd();
-
-	//! \brief Called when user clicks "Edit" button.
-	virtual void onEdit();
-
-	//! \brief Called when user clicks "Remove" button.
-	virtual void onRemove();
-
-	//! \brief Called when user clicks "Move Up" button.
-	virtual void onMoveUp();
-
-	//! \brief Called when user clicks "Move Down" button.
-	virtual void onMoveDown();
-
 signals:
 
 	//! \brief Emitted when contents of the ListManager change.
@@ -86,7 +69,7 @@ protected:
 	ListManagerModel model_;
 
 	//! \brief The View to display the list of strings.
-	QListView view_;
+	ListView view_;
 
 private:
 

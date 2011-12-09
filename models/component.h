@@ -914,6 +914,15 @@ public:
 	*/
 	bool hasPorts() const;
 
+	/*! \brief Checks if the component has at least one port that's type is defined.
+	 * 
+	 * This function can be used to check if component needs to have at least one
+	 * view because if port type is defined then there has to be view reference.
+	 *
+	 * \return bool True if at least one port with defined port type exists.
+	*/
+	bool hasPortTypes() const;
+
 	/*! \brief Check if the specified port exists on the implementation of the component.
 	 *
 	 * This function checks the direction of a wired port and returns true for

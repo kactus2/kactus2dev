@@ -9,6 +9,8 @@
 
 #include <common/dialogs/comboSelector/comboselector.h>
 
+#include "filetypeeditordelegate.h"
+
 FileTypeEditor::FileTypeEditor(QWidget *parent,
 							   File* file,
 							   const QStringList& items /*= QStringList()*/ ):
@@ -19,55 +21,12 @@ ListManager(tr("Specified file types"), parent, items), file_(file) {
 
 	view_.setProperty("mandatoryField", true);
 
+	view_.setItemDelegate(new FileTypeEditorDelegate(this));
+
 	restore();
 }
 
 FileTypeEditor::~FileTypeEditor() {
-}
-
-void FileTypeEditor::onAdd() {
-
-	QString item = ComboSelector::selectFileType(this);
-
-	// if user wrote an empty string or if clicked cancel
-	if (item.isEmpty()) {
-		return;
-	}
-
-	model_.appendItem(item);
-
-	// inform that content of the widget has changed
-	emit contentChanged();
-	return;
-}
-
-void FileTypeEditor::onEdit() {
-	// ask the view for the selected index
-	QModelIndex index = view_.currentIndex();
-
-	// if index was invalid (nothing was chosen)
-	if (!index.isValid()) {
-		return;
-	}
-
-	// get the old text that is currently stored in the model
-	QString oldText = model_.data(index, Qt::DisplayRole).toString();
-
-	// ask the user to set the new text
-	QString newText = ComboSelector::selectFileType(this, oldText);
-
-	// if empty string was given or cancel was pressed
-	if (newText.isEmpty()) {
-		return;
-	}
-
-	// if user changed the text
-	else if (oldText != newText) {
-		model_.replace(index, newText);
-
-		// inform that content of the widget has changed
-		emit contentChanged();
-	}
 }
 
 void FileTypeEditor::apply() {
@@ -136,7 +95,7 @@ void FileTypeEditor::restore() {
 
 bool FileTypeEditor::isValid() const {
 	
-	// atleast one file type has to be specified
+	// at least one file type has to be specified
 	if (model_.rowCount() <= 0) 
 		return false;
 

@@ -579,6 +579,11 @@ QSharedPointer<LibraryComponent> LibraryHandler::getModel( const VLNV& vlnv ) {
 // }
 
 bool LibraryHandler::contains( const VLNV& vlnv ) {
+
+	// if the 
+	if (objects_.contains(vlnv)) {
+		return true;
+	}
 	return data_->contains(vlnv);
 }
 

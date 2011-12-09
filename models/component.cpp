@@ -1891,3 +1891,13 @@ void Component::createHierarchicalView( const VLNV& hierRef ) {
 
 	model_->addView(newView);
 }
+
+bool Component::hasPortTypes() const {
+	if (model_) {
+		return model_->hasPortTypes();
+	}
+	// if there is no model there is no ports
+	else {
+		return false;
+	}
+}

@@ -367,6 +367,15 @@ public:
 	*/
 	QStringList getPortTypeDefinitions() const;
 
+	/*! \brief Checks if the component has at least one port that's type is defined.
+	 * 
+	 * This function can be used to check if component needs to have at least one
+	 * view because if port type is defined then there has to be view reference.
+	 *
+	 * \return bool True if at least one port with defined port type exists.
+	*/
+	bool hasPortTypes() const;
+
 	/*! \brief Get the entity name of the component.
 	 *
 	 * \param viewName The name of the view that's entity name is requested.
