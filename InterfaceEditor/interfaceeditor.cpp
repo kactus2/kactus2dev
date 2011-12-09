@@ -161,13 +161,15 @@ void InterfaceEditor::setInterface( DiagramConnectionEndPoint* interface ) {
 		nameEdit_.setEnabled(true);
 		modeEdit_.setEnabled(true);
 		mappings_.setEnabled(true);
+		mappings_.setEditTriggers(QAbstractItemView::NoEditTriggers);
 		descriptionEdit_.setEnabled(true);
 	}
 	else {
 		nameEdit_.setDisabled(true);
 		modeEdit_.setDisabled(true);
-		mappings_.setDisabled(true);
 		descriptionEdit_.setDisabled(true);
+
+		mappings_.setEditTriggers(QAbstractItemView::NoEditTriggers);
 	}
 
 	// show the editors
