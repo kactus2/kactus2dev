@@ -996,42 +996,43 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
         if (comp->componentModel()->getVlnv()->isValid())
         {
 			QString viewName;
-			if (designConf_)
+			QStringList hierViews = comp->componentModel()->getHierViews();
+			
+			// if configuration is used and it contains an active view for the instance
+			if (designConf_ && designConf_->hasActiveView(comp->name())) {
 				viewName = designConf_->getActiveView(comp->name());
-			
-			// if configuration is not used then open some view
+
+				View* view = comp->componentModel()->findView(viewName);
+
+				// if view was found and it is hierarchical
+				if (view && view->isHierarchical()) {
+					emit openDesign(*comp->componentModel()->getVlnv(), viewName);
+				}
+				// if view was found but it is not hierarchical
+				else if (view && !view->isHierarchical()) {
+					emit openComponent(*comp->componentModel()->getVlnv());
+				}
+				// if view was not found
+				else {
+					emit errorMessage(tr("The active view %1 was not found in "
+						"instance %2").arg(viewName).arg(comp->name()));
+				}
+			}
+			// if component does not contain any hierarchical views or contains
+			// more than one hierarchical view then it is not known which view to open
+			else if (hierViews.size() != 1) {
+
+				emit noticeMessage(tr("No active view was selected for instance %1, "
+					"opening component editor.").arg(comp->name()));
+				// just open the component because view is ambiguous
+				emit openComponent(*comp->componentModel()->getVlnv());
+			}
+			// if there is exactly one hierarchical view then open it
 			else {
-				QStringList hierViews = comp->componentModel()->getHierViews();
-				// open the first hierarchical view
-				if (!hierViews.isEmpty()) {
-					viewName = hierViews.first();
-				}
-	
-				// if component is a flat component then use the first flat view
-				QStringList flatViews = comp->componentModel()->getViewNames();
-				if (!flatViews.isEmpty()) {
-					viewName = flatViews.first();
-				}
+				emit noticeMessage(tr("No active view was selected for instance %1, "
+					"opening the only hierarhical view of the component.").arg(comp->name()));
+				emit openDesign(*comp->componentModel()->getVlnv(), hierViews.first());
 			}
-
-		    View* view = comp->componentModel()->findView(viewName);
-
-		    // if view was found and it is hierarchical
-            if (view && view->isHierarchical())
-			    emit openDesign(*comp->componentModel()->getVlnv(), viewName);
-			
-			// if view was found but it is not hierarchical
-			else if (view && !view->isHierarchical())
-				emit openComponent(*comp->componentModel()->getVlnv());
-
-			// if component does not contain any views
-			else if (!comp->componentModel()->hasViews()) {
-				emit openComponent(*comp->componentModel()->getVlnv());
-			}
-		    // view was not found but component contains views
-		    else {
-			    emit errorMessage(tr("No view selected for component instance %1").arg(comp->name()));
-		    }
         }
         else
         {

@@ -437,12 +437,16 @@ void DesignConfiguration::write(QFile& file) {
 
     for (QMap<QString, QString>::iterator i = viewConfigurations_.begin();
     		i != viewConfigurations_.end(); ++i) {
-    	writer.writeStartElement("spirit:viewConfiguration");
 
-    	writer.writeTextElement("spirit:instanceName", i.key());
-    	writer.writeTextElement("spirit:viewName", i.value());
+		// if the view name is not empty
+		if (!i.value().isEmpty()) {
+			writer.writeStartElement("spirit:viewConfiguration");
 
-    	writer.writeEndElement(); // spirit:viewConfiguration
+			writer.writeTextElement("spirit:instanceName", i.key());
+			writer.writeTextElement("spirit:viewName", i.value());
+
+			writer.writeEndElement(); // spirit:viewConfiguration
+		}
     }
 
     if (!LibraryComponent::description_.isEmpty()) {
@@ -567,7 +571,9 @@ const QList<VLNV> DesignConfiguration::getDependentVLNVs() const {
 void DesignConfiguration::addViewConfiguration( const QString& instanceName, 
 											   const QString& viewName ) {
 
-	viewConfigurations_.insert(instanceName, viewName);
+	if (!viewName.isEmpty()) {
+		viewConfigurations_.insert(instanceName, viewName);
+	}
 }
 
 void DesignConfiguration::removeViewConfiguration( const QString& instanceName ) {
@@ -585,7 +591,11 @@ QString DesignConfiguration::getActiveView( const QString& instanceName ) const 
 }
 
 bool DesignConfiguration::hasActiveView( const QString& instanceName ) const {
-	return viewConfigurations_.contains(instanceName);
+	if (viewConfigurations_.contains(instanceName) && 
+		!viewConfigurations_.value(instanceName).isEmpty()) {
+			return true;
+	}
+	return false;
 }
 
 void DesignConfiguration::setVlnv( const VLNV& vlnv ) {
