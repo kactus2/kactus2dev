@@ -48,6 +48,14 @@ fileTypes_(other.fileTypes_),
 userFileTypes_(other.userFileTypes_) {
 }
 
+FileBuilder::FileBuilder( const QString& fileType ):
+BuildModel(),
+fileTypes_(),
+userFileTypes_() {
+
+	fileTypes_.append(fileType);
+}
+
 FileBuilder & FileBuilder::operator=( const FileBuilder &other ) {
 	if (this != &other) {
 		BuildModel::operator=(other);

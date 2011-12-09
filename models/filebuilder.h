@@ -39,6 +39,13 @@ public:
 	*/
 	FileBuilder();
 
+	/*! \brief The constructor
+	 *
+	 * \param fileType Specifies the file type of the file build command.
+	 *
+	*/
+	FileBuilder(const QString& fileType);
+
 	//! \brief Copy constructor
 	FileBuilder(const FileBuilder &other);
 

@@ -331,6 +331,11 @@ public:
 	*/
 	void sortFiles(const QStringList& fileNames);
 
+	/*! \brief Add the default file build commands for vhdl files.
+	 *
+	*/
+	void useDefaultVhdlBuilders();
+
 private:
 
 	/*! \brief Contains the name and description information for file set.

@@ -76,7 +76,7 @@ void VhdlComponentDeclaration::write( QTextStream& stream ) const {
 	// write the generic declarations
 	if (!generics_.isEmpty()) {
 		stream << "\t\tgeneric (" << endl;
-                for (QMap<QString, QSharedPointer<VhdlGeneric> >::const_iterator i = generics_.begin(); i != generics_.end(); ++i) {
+        for (QMap<QString, QSharedPointer<VhdlGeneric> >::const_iterator i = generics_.begin(); i != generics_.end(); ++i) {
 			stream << "\t\t\t";
 			i.value()->write(stream);
 
@@ -100,7 +100,7 @@ void VhdlComponentDeclaration::write( QTextStream& stream ) const {
 	if (!ports_.isEmpty()) {
 		stream << "\t\tport (" << endl;
 		QString previousInterface;
-                for (QMap<VhdlPortSorter, QSharedPointer<VhdlPort> >::const_iterator i = ports_.begin(); i != ports_.end(); ++i) {
+		for (QMap<VhdlPortSorter, QSharedPointer<VhdlPort> >::const_iterator i = ports_.begin(); i != ports_.end(); ++i) {
 			
 			// if the port is first in the interface then introduce it
 			if (i.key().interface() != previousInterface) {

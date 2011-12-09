@@ -186,7 +186,6 @@ void VhdlGenerator2::generateVhdl( const QString& outputFileName) {
 
 	// always add IEEE library
 	vhdlStream << "library IEEE;" << endl;
-	//vhdlStream << "library std;" << endl;
 
 	// write the libraries needed 
 	libraries_.append("work");
@@ -296,6 +295,7 @@ bool VhdlGenerator2::addRTLView( const QString& vhdlFileName ) {
 	// if the top vhdl file set was not found. Create one
 	if (!topFileSet) {
 		topFileSet = new FileSet(fileSetName, QString("sourceFiles"));
+		topFileSet->useDefaultVhdlBuilders();
 		component_->addFileSet(topFileSet);
 	}
 
@@ -1056,13 +1056,9 @@ void VhdlGenerator2::writeGenerics( QTextStream& vhdlStream ) {
 			vhdlStream << "\t\t";
 			i.value()->write(vhdlStream);
 
-			// if this is not the last generic
-			if (i != topGenerics_.end() - 1) {
+			// if this is not the last generic to write
+			if (i + 1 != topGenerics_.end()) {
 				vhdlStream << ";";
-			}
-			// if it was last generic
-			else {
-				vhdlStream << ");";
 			}
 
 			if (!i.value()->description().isEmpty()) {
@@ -1073,6 +1069,7 @@ void VhdlGenerator2::writeGenerics( QTextStream& vhdlStream ) {
 				vhdlStream << endl;
 			}
 		}
+		vhdlStream << "\t);" << endl;
 		vhdlStream << endl;
 	}
 }
@@ -1116,12 +1113,8 @@ void VhdlGenerator2::writePorts( QTextStream& vhdlStream ) {
 				vhdlStream << "\t\t";
 				i.value()->write(vhdlStream);
 
-				// if the last port is written
-				if ( i == --topPorts_.end()) {
-					vhdlStream << ");";
-				}
-				// if theres more ports left
-				else {
+				// if this is not the last port to write
+				if (i + 1 != topPorts_.end()) {
 					vhdlStream << ";";
 				}
 				
@@ -1133,6 +1126,7 @@ void VhdlGenerator2::writePorts( QTextStream& vhdlStream ) {
 					vhdlStream << endl;
 				}
 		}
+		vhdlStream << "\t);" << endl;
 		// write extra empty line to make code readable
 		vhdlStream << endl;
 	}

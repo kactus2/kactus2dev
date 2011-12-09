@@ -86,20 +86,6 @@ public:
 	*/
 	bool addVLNV(const VLNV& vlnv, const QString& path, bool refreshLibrary);
 
-	/*! \brief Update the VLNV for the given document.
-	 * 
-	 * If the library does not contain the given vlnv yet it is added to the
-	 * library. 
-	 * Note: Although it is possible, this function should not be used to 
-	 * add new items to the library because it may be slow (linear time).
-	 * This function should be used to change the vlnv of an existing document.
-	 * 
-	 * \param path The path to the document in the file system.
-	 * \param newVLNV The new vlnv for the document.
-	 *
-	*/
-	//void updateVLNV(const QString& path, const VLNV& newVLNV);
-
 	/*! \brief Update the path of the given vlnv object.
 	 *
 	 * \param vlnv Identifies the vlnv object.

@@ -56,7 +56,8 @@
 #include <QDebug>
 
 LibraryHandler::LibraryHandler(VLNVDialer* dialer, MainWindow* parent): 
-QTabWidget(parent), data_(), 
+QTabWidget(parent), 
+data_(), 
 treeModel_(),
 hierarchyModel_(),
 searchWidget_(),

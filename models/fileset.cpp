@@ -556,3 +556,23 @@ void FileSet::sortFiles( const QStringList& fileNames ) {
 	// and set it to the sorted list.
 	files_ = tempList;
 }
+
+void FileSet::useDefaultVhdlBuilders() {
+	QSharedPointer<FileBuilder> vhdlBuilder(new FileBuilder("vhdlSource"));
+	vhdlBuilder->setCommand("vcom");
+	vhdlBuilder->setFlags("-quiet -check_synthesis -work work");
+	vhdlBuilder->setReplaceDefaultFlags(true);
+	defaultFileBuilders_.append(vhdlBuilder);
+
+	QSharedPointer<FileBuilder> vhdl87Builder(new FileBuilder("vhdlSource-87"));
+	vhdl87Builder->setCommand("vcom");
+	vhdl87Builder->setFlags("-quiet -check_synthesis -work work");
+	vhdl87Builder->setReplaceDefaultFlags(true);
+	defaultFileBuilders_.append(vhdl87Builder);
+
+	QSharedPointer<FileBuilder> vhdl93Builder(new FileBuilder("vhdlSource-93"));
+	vhdl93Builder->setCommand("vcom");
+	vhdl93Builder->setFlags("-quiet -check_synthesis -work work");
+	vhdl93Builder->setReplaceDefaultFlags(true);
+	defaultFileBuilders_.append(vhdl93Builder);
+}

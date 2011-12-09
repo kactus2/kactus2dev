@@ -287,6 +287,11 @@ attributes_() {
 			}
 		}
 	}
+
+	if (!model_) {
+		model_ = QSharedPointer<Model>(new Model());
+	}
+
 	return;
 }
 
@@ -307,6 +312,8 @@ parameters_(),
 attributes_() {
 
 	LibraryComponent::vlnv_->setType(VLNV::COMPONENT);
+
+	model_ = QSharedPointer<Model>(new Model());
 }
 
 Component::Component():
@@ -325,6 +332,7 @@ otherClockDrivers_(),
 parameters_(),
 attributes_() {
 
+	model_ = QSharedPointer<Model>(new Model());
 }
 
 Component::Component( const Component &other ):
@@ -386,6 +394,9 @@ attributes_(other.attributes_) {
 
 	if (other.model_) {
 		model_ = QSharedPointer<Model>(new Model(*other.model_.data()));
+	}
+	else {
+		model_ = QSharedPointer<Model>(new Model());
 	}
 
 	foreach (QSharedPointer<ComponentGenerator> compGen, other.compGenerators_) {
@@ -492,7 +503,7 @@ Component & Component::operator=( const Component &other ) {
 			model_ = QSharedPointer<Model>(new Model(*other.model_.data()));
 		}
 		else
-			model_ = QSharedPointer<Model>();
+			model_ = QSharedPointer<Model>(new Model());
 
 		compGenerators_.clear();
 		foreach (QSharedPointer<ComponentGenerator> compGen, other.compGenerators_) {
@@ -564,6 +575,7 @@ Component::~Component() {
 	cpus_.clear();
 	otherClockDrivers_.clear();
 	parameters_.clear();
+	model_.clear();
 	return;
 }
 
@@ -1661,6 +1673,9 @@ void Component::setHierRef(const VLNV& vlnv, const QString& viewName /*= QString
 }
 
 View* Component::findView(const QString name) const {
+	if (!model_) {
+		return NULL;
+	}
 	return model_->findView(name);
 }
 

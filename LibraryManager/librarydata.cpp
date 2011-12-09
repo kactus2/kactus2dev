@@ -52,8 +52,16 @@
 static const QString KACTUS_LIBRARY_DIRNAME(".kactus2");
 static const QString KACTUS_LIBRARY_FILENAME(".librarySettings.ini");
 
-LibraryData::LibraryData(LibraryHandler* parent): QAbstractItemModel(parent),
-		libraryItems_(), table_(), handler_(parent) {
+LibraryData::LibraryData(LibraryHandler* parent): 
+QAbstractItemModel(parent),
+libraryItems_(),
+table_(),
+handler_(parent) {
+
+	connect(this, SIGNAL(errorMessage(const QString&)),
+		parent, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
+	connect(this, SIGNAL(noticeMessage(const QString&)),
+		parent, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 }
 
 LibraryData::~LibraryData() {
@@ -362,6 +370,9 @@ void LibraryData::addFileToLibrary(const QString& filePath) {
 		}
 
 	}
+	else {
+		emit errorMessage(tr("File %1 was not valid xml.").arg(filePath));
+	}
 	return;
 }
 
@@ -381,6 +392,8 @@ VLNV::IPXactType LibraryData::checkDocType(QFileInfo & file) {
 		}
 		// content could not be read
 		else {
+			emit errorMessage(tr("The file %1 was not valid xml and could not be read.").arg(
+				file.absoluteFilePath()));
 			docFile.close();
 			return VLNV::INVALID;
 		}
@@ -515,16 +528,17 @@ void LibraryData::openLibraryFile( const QString filePath /*= QString()*/ ) {
 			emit errorMessage(errorMsg);
 		}
 		else if (!vlnv.isValid()) {
-			QString errorMsg(tr("Invalid VLNV found in library file: \n"
-				"Vendor: %1\n"
-				"Library: %2\n"
-				"Name: %3\n"
-				"Version: %4\n").arg(vendor).arg(library).arg(name).arg(version));
+			QString errorMsg(tr("Invalid VLNV %1 found in library file: %2\n").arg(
+				vlnv.toString().arg(filePath)));
 			emit errorMessage(errorMsg);
 		}
 		// if file is not valid IP-Xact
-		else if (!isValidIPXactFile(filePath))
+		else if (!isValidIPXactFile(filePath)) {
+			emit errorMessage(tr("The file %1 saved with vlnv %2 was not valid "
+				"IP-Xact and could not be read successfully.").arg(
+				filePath).arg(vlnv.toString()));
 			continue;
+		}
 
 		else {
 			VLNV* vlnvP = const_cast<VLNV*>(&libraryItems_.insert(vlnv, filePath).key());
@@ -560,43 +574,52 @@ void LibraryData::saveLibraryFile( const QString filePath /*= QString()*/ ) {
 			QString("/") + KACTUS_LIBRARY_FILENAME;
 	}
 	// if specified then use it
-	else 
+	else {
 		path = filePath;
+	}
 
 	// create the QSettings instance to read the file
 	QSettings settings(path, QSettings::IniFormat, this);
 
-	unsigned int j = 0;
-	settings.beginWriteArray("libraryItems");
-	for (QMap<VLNV, QString>::const_iterator i = libraryItems_.constBegin();
-		i != libraryItems_.constEnd(); ++i) {
+	// clear previous entries from the list
+	settings.clear();
 
-			settings.setArrayIndex(j);
+	// if there are entries to be written
+	if (!libraryItems_.isEmpty()) {
 
-			// if the file exists then write it to the library file
-			QFileInfo fileInfo(i.value());
-			if (fileInfo.exists()) {
+		unsigned int j = 0;
+		settings.beginWriteArray("libraryItems");
+		for (QMap<VLNV, QString>::const_iterator i = libraryItems_.constBegin();
+			i != libraryItems_.constEnd(); ++i) {
 
-				// write the settings
-				settings.setValue("type", i.key().getTypestr());
-				settings.setValue("vendor", i.key().getVendor());
-				settings.setValue("library", i.key().getLibrary());
-				settings.setValue("name", i.key().getName());
-				settings.setValue("version", i.key().getVersion());
-				//settings.setValue("hidden", i.key().isHidden());
-				settings.setValue("path", i.value());
-				settings.setValue("validDocument", i.key().documentIsValid());
+				// if the file exists then write it to the library file
+				QFileInfo fileInfo(i.value());
+				if (fileInfo.exists()) {
 
-				++j;
-			}
-			// if file did not exist don't write it and give an error message
-			else {
-				QString errorMsg(tr(
-					"File %1 was not found in file system, skipping...").arg(
-					i.value()));
-				emit errorMessage(errorMsg);
-			}
+					settings.setArrayIndex(j);
+
+					// write the settings
+					settings.setValue("type", i.key().getTypestr());
+					settings.setValue("vendor", i.key().getVendor());
+					settings.setValue("library", i.key().getLibrary());
+					settings.setValue("name", i.key().getName());
+					settings.setValue("version", i.key().getVersion());
+					//settings.setValue("hidden", i.key().isHidden());
+					settings.setValue("path", i.value());
+					settings.setValue("validDocument", i.key().documentIsValid());
+
+					++j;
+				}
+				// if file did not exist don't write it and give an error message
+				else {
+					QString errorMsg(tr(
+						"File %1 was not found in file system, skipping...").arg(
+						i.value()));
+					emit errorMessage(errorMsg);
+				}
+		}
 	}
+
 	settings.endArray();
 }
 
@@ -658,30 +681,6 @@ bool LibraryData::addVLNV( const VLNV& vlnv, const QString& path, bool refreshLi
 
 	return true;
 }
-
-// void LibraryData::updateVLNV( const QString& path, const VLNV& newVLNV ) {
-// 
-// 	// find the old vlnv tags for the file
-// 	QList<VLNV> oldKeys = libraryItems_.keys(path);
-// 	for (int i = 0; i < oldKeys.size(); ++i) {
-// 		
-// 		// search the matching item in the table data structure
-// 		for (int j = 0; j < table_.size(); ++j) {
-// 
-// 			// if match is found
-// 			if (oldKeys.value(i) == *table_.value(j)) {
-// 
-// 				// remove the item from the table also
-// 				table_.removeAt(j);
-// 			}
-// 		}
-// 
-// 		// remove all old keys that are associated with the given file
-// 		libraryItems_.remove(oldKeys.value(i));
-// 	}
-// 
-// 	addVLNV(newVLNV, path);
-// }
 
 bool LibraryData::contains( const VLNV& vlnv ) {
 	// if vlnv is found and it is of correct type
@@ -1069,6 +1068,7 @@ bool LibraryData::isValidIPXactFile( const QString& filePath,
 											  }
 			default: {
 				emit noticeMessage(tr("Document was not supported type"));
+				IPXactFile.close();
 				return false;
 					 }
 			}
@@ -1078,13 +1078,20 @@ bool LibraryData::isValidIPXactFile( const QString& filePath,
 			QString errorMsg(error.what() + QString(" ") + error.errorMsg() +
 				tr(" within file: %1").arg(filePath));
 			emit errorMessage(errorMsg);
+			IPXactFile.close();
 			return false;
 		}
 		catch (...) {
 			emit errorMessage(
 				tr("Error occurred during parsing of the document %1").arg(filePath));
+			IPXactFile.close();
 			return false;
 		}
+	}
+	// the xml could not be parsed
+	else {
+		IPXactFile.close();
+		return false;
 	}
 	
 	// everything went ok
