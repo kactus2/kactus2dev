@@ -451,6 +451,12 @@ public:
 	*/
 	bool isVhdlFile() const;
 
+	/*! \brief Get the name of the file set this file belongs to.
+	 *
+	 * \return QString containing the name of the parent file set.
+	*/
+	QString fileSetName() const;
+
 private:
 
 	/*! \brief Contains a path to a filename of a directory

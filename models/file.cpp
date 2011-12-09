@@ -643,3 +643,7 @@ bool File::isVhdlFile() const {
 	}
 	return false;
 }
+
+QString File::fileSetName() const {
+	return parent_->getName();
+}

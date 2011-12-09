@@ -30,14 +30,14 @@ int main(int argc, char *argv[])
     a.setPalette(palette);
 
     // Show the splash screen.
-//     SplashScreen splash;
-//     splash.show();
-//     splash.showMessage("");
-//     a.processEvents();
+    SplashScreen splash;
+    splash.show();
+    splash.showMessage("");
+    a.processEvents();
 
     // Create the main window and close the splash after 1.5 seconds.
     MainWindow w;
-    //QTimer::singleShot(1500, &splash, SLOT(close()));
+    QTimer::singleShot(1500, &splash, SLOT(close()));
     QTimer::singleShot(1500, &w, SLOT(show()));
 	return a.exec();
 }

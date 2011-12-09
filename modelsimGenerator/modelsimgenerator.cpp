@@ -33,14 +33,18 @@ ModelsimGenerator::FileOptions::FileOptions():
 absFilePath_(),
 libraryName_(),
 buildCommand_(),
-flags_() {
+flags_(),
+sourceComponent_(),
+sourceFileSet_() {
 }
 
 ModelsimGenerator::FileOptions::FileOptions( const QString& filePath ):
 absFilePath_(filePath),
 libraryName_(),
 buildCommand_(),
-flags_() {
+flags_(),
+sourceComponent_(),
+sourceFileSet_() {
 }
 
 // the copy constructor
@@ -48,7 +52,9 @@ ModelsimGenerator::FileOptions::FileOptions( const FileOptions& other):
 absFilePath_(other.absFilePath_.simplified()),
 libraryName_(other.libraryName_.simplified()),
 buildCommand_(other.buildCommand_.simplified()),
-flags_(other.flags_.simplified()) {
+flags_(other.flags_.simplified()),
+sourceComponent_(other.sourceComponent_),
+sourceFileSet_(other.sourceFileSet_) {
 }
 
 bool ModelsimGenerator::FileOptions::operator==( const FileOptions& other ) {
@@ -67,6 +73,8 @@ ModelsimGenerator::FileOptions& ModelsimGenerator::FileOptions::operator=(
 			libraryName_ = other.libraryName_.simplified();
 			buildCommand_ = other.buildCommand_.simplified();
 			flags_ = other.flags_.simplified();
+			sourceComponent_ = other.sourceComponent_;
+			sourceFileSet_ = other.sourceFileSet_;
 		}
 		return *this;
 }
@@ -173,10 +181,30 @@ void ModelsimGenerator::writeMakefile(QTextStream& stream) {
 
 	// the top component's library is already written
 	QStringList processedLibraries;
+	QString activeComponent;
+	QString activeFileSet;
 	foreach (ModelsimGenerator::FileOptions fileOpt, sourceFiles_) {
 		
-		// if library has not been used before
-		if (!processedLibraries.contains(fileOpt.libraryName_)) {
+		// if this is new component
+		if (fileOpt.sourceComponent_ != activeComponent) {
+			stream << endl;
+			activeComponent = fileOpt.sourceComponent_;
+			stream << "echo " << tr("\"Processing component %1\"").arg(activeComponent) << endl;
+
+			// component changed so set active file set to null
+			activeFileSet.clear();
+		}
+		// if this is new file set on the component
+		if (fileOpt.sourceFileSet_ != activeFileSet) {
+			activeFileSet = fileOpt.sourceFileSet_;
+			stream << "echo " << tr("\"Processing file set %1 of component %2.\"").arg(
+				activeFileSet).arg(activeComponent) << endl;
+		}
+
+		// if library has not been used before and it's name is not empty
+		if (!processedLibraries.contains(fileOpt.libraryName_) &&
+			!fileOpt.libraryName_.isEmpty()) {
+
 			stream << "echo " << tr("\" Adding library %1\"").arg(fileOpt.libraryName_) << endl;
 			processedLibraries.append(fileOpt.libraryName_);
 
@@ -193,7 +221,7 @@ void ModelsimGenerator::writeMakefile(QTextStream& stream) {
 
 	stream << tr("# remove the old makefile") << endl;
 	stream << "rm -f Makefile" << endl;
-	stream << "vmake Makefile" << endl;
+	stream << "vmake work > Makefile" << endl;
 
 	// inform user that script has been successfully executed
 	stream << "echo " << tr("\" Script has been executed \"") << endl;
@@ -395,6 +423,8 @@ void ModelsimGenerator::parseFileSets( QSharedPointer<Component> component,
 			fileOpt.libraryName_ = file->getLogicalName();
 			fileOpt.buildCommand_ = file->getCommand();
 			fileOpt.flags_ = file->getFlags();
+			fileOpt.sourceComponent_ = component->getVlnv()->toString();
+			fileOpt.sourceFileSet_ = file->fileSetName();
 
 			// if the file with options is not yet on the list, add it
 			if (!sourceFiles_.contains(fileOpt))
@@ -521,6 +551,8 @@ void ModelsimGenerator::parseBlindFileSet( QSharedPointer<Component> component )
 		fileOpt.libraryName_ = file->getLogicalName();
 		fileOpt.buildCommand_ = file->getCommand();
 		fileOpt.flags_ = file->getFlags();
+		fileOpt.sourceComponent_ = component->getVlnv()->toString();
+		fileOpt.sourceFileSet_ = file->fileSetName();
 
 		// if the file with options is not yet on the list, add it
 		if (!sourceFiles_.contains(fileOpt))

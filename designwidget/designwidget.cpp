@@ -654,7 +654,8 @@ void DesignWidget::onModelsimGenerate() {
 
 	// ask user to select a location to save the makefile
 	fileName = QFileDialog::getSaveFileName(this, 
-		tr("Set the file name for the modelsim script."), fileName);
+		tr("Set the file name for the modelsim script."), fileName,
+		tr("Modelsim scripts (*.do);;Shell cripts (*.sh)"));
 
 	// if user clicked cancel
 	if (fileName.isEmpty())

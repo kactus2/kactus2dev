@@ -47,6 +47,12 @@ public:
 		//! \brief Contains the flags for the command.
 		QString flags_;
 
+		//! \brief The component that included this file
+		QString sourceComponent_;
+
+		//! \brief The name of the file set this file belongs to
+		QString sourceFileSet_;
+
 		/*! \brief The default constructor
 		 *
 		*/
