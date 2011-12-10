@@ -7,8 +7,15 @@
 #include "attributemodel.h"
 
 // struct constructor
-AttributeModel::AttributePair::AttributePair(const QString name,
-		const QString value): name_(name), value_(value) {
+AttributeModel::AttributePair::AttributePair(const QString& name,
+		const QString& value): 
+name_(name), 
+value_(value) {
+}
+
+AttributeModel::AttributePair::AttributePair():
+name_(),
+value_() {
 }
 
 AttributeModel::AttributeModel(QObject* parent): QAbstractTableModel(parent),
@@ -201,4 +208,67 @@ void AttributeModel::clear() {
 	beginResetModel();
 	attributes_.clear();
 	endResetModel();
+}
+
+void AttributeModel::remove( const QModelIndex& index ) {
+	// don't remove anything if index is invalid
+	if (!index.isValid()) {
+		return;
+	}
+	// make sure the row number if valid
+	else if (index.row() < 0 || index.row() >= attributes_.size()) {
+		return;
+	}
+
+	// remove the specified item
+	beginRemoveRows(QModelIndex(), index.row(), index.row());
+	attributes_.removeAt(index.row());
+	endRemoveRows();
+	emit contentChanged();
+}
+
+void AttributeModel::addItem( const QModelIndex& index ) {
+	int row = attributes_.size();
+
+	// if the index is valid then add the item to the correct position
+	if (index.isValid()) {
+		row = index.row();
+	}
+
+	beginInsertRows(QModelIndex(), row, row);
+	attributes_.insert(row, QSharedPointer<AttributePair>(new AttributePair()));
+	endInsertRows();
+	emit contentChanged();
+}
+
+void AttributeModel::moveItem( const QModelIndex& originalPos,
+							  const QModelIndex& newPos ) {
+
+	// if there was no item in the starting point
+	if (!originalPos.isValid()) {
+		return;
+	}
+	// if the indexes are the same
+	else if (originalPos == newPos) {
+		return;
+	}
+	else if (originalPos.row() < 0 || originalPos.row() >= attributes_.size()) {
+		return;
+	}
+
+	// if the new position is invalid index then put the item last in the list
+	if (!newPos.isValid() || newPos.row() < 0 || newPos.row() >= attributes_.size()) {
+
+		beginResetModel();
+		QSharedPointer<AttributePair> pair = attributes_.takeAt(originalPos.row());
+		attributes_.append(pair);
+		endResetModel();
+	}
+	// if both indexes were valid
+	else {
+		beginResetModel();
+		attributes_.swap(originalPos.row(), newPos.row());
+		endResetModel();
+	}
+	emit contentChanged();
 }

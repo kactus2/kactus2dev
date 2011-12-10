@@ -8,35 +8,20 @@
 
 #include <common/dialogs/attributeDialog/attributedialog.h>
 
-#include <QGridLayout>
-#include <QPushButton>
-#include <QHeaderView>
+#include <QVBoxLayout>
 #include <QModelIndex>
 
 AttributeBox::AttributeBox(QWidget* parent, const QString title):
- QGroupBox(title, parent), model_(this), view_(this) {
+QGroupBox(title, parent),
+model_(this),
+view_(this) {
 
 	// the top layout manager
-	QGridLayout* topLayout = new QGridLayout(this);
+	QVBoxLayout* topLayout = new QVBoxLayout(this);
 
 	view_.setModel(&model_);
 
-	// cells are resized to match contents and last column is stretched take the
-	// available space in the widget
-	view_.horizontalHeader()->setResizeMode(
-			QHeaderView::ResizeToContents);
-	view_.horizontalHeader()->setStretchLastSection(true);
-
-	// vertical headers are not visible
-	view_.verticalHeader()->hide();
-
-	// words are wrapped in the cells to minimize space usage
-	view_.setWordWrap(true);
-
-	// user can only select one item at the time and the whole row is selected
-	view_.setSelectionMode(QAbstractItemView::SingleSelection);
-	view_.setSelectionBehavior(QAbstractItemView::SelectRows);
-	topLayout->addWidget(&view_, 0, 0, 1, 2);
+	topLayout->addWidget(&view_);
 
 	// connect the signal that tells view if it should resize it's columns when
 	// data in model changes
@@ -45,19 +30,19 @@ AttributeBox::AttributeBox(QWidget* parent, const QString title):
 	connect(&model_, SIGNAL(attributeChanged(int)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
-	// button to add new attributes
-	QPushButton* addButton = new QPushButton(tr("Add"), this);
-	addButton->setToolTip(tr("Add a new attribute to the list"));
-	connect(addButton, SIGNAL(clicked(bool)),
-			this, SLOT(onAdd()), Qt::UniqueConnection);
-	topLayout->addWidget(addButton, 1, 0, 1, 1);
+	// the signals from the view
+	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
+		&model_, SLOT(remove(const QModelIndex&)), Qt::UniqueConnection);
 
-	// button to remove attributes
-	QPushButton* removeButton = new QPushButton(tr("Remove"), this);
-	removeButton->setToolTip(tr("Remove selected attribute from the list"));
-	connect(removeButton, SIGNAL(clicked(bool)),
-			this, SLOT(onRemove()), Qt::UniqueConnection);
-	topLayout->addWidget(removeButton, 1, 1, 1, 1);
+	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
+		&model_, SLOT(addItem(const QModelIndex&)), Qt::UniqueConnection);
+
+	connect(&view_, SIGNAL(moveItem(const QModelIndex&, const QModelIndex&)),
+		&model_, SLOT(moveItem(const QModelIndex&, const QModelIndex&)), Qt::UniqueConnection);
+
+	// the signals from the model
+	connect(&model_, SIGNAL(contentChanged()),
+		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
 AttributeBox::~AttributeBox() {

@@ -8,6 +8,7 @@
 #define ATTRIBUTEBOX_H_
 
 #include "attributemodel.h"
+#include <common/views/EditableTableView/editabletableview.h>
 
 #include <QGroupBox>
 #include <QAbstractTableModel>
@@ -94,7 +95,7 @@ private:
 	AttributeModel model_;
 
 	//! \brief View that displays the attributes stored in the model.
-	QTableView view_;
+	EditableTableView view_;
 };
 
 #endif /* ATTRIBUTEBOX_H_ */

@@ -155,7 +155,6 @@ void ListManagerModel::remove( const QModelIndex& index ) {
 
 void ListManagerModel::moveItem( const QModelIndex& originalPos, 
 								const QModelIndex& newPos ) {
-									qDebug() << "move item";
 
 	// if there was no item in the starting point
 	if (!originalPos.isValid()) {

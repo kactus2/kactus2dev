@@ -132,7 +132,33 @@ public:
 	*/
 	void clear();
 
-signals:
+public slots:
+	 
+	/*! \brief Removes the specified item from the model.
+	*
+	* \param index The model index of the item to remove.
+	*/
+	void remove(const QModelIndex& index);
+
+	/*! \brief A new item should be added to given index.
+	 *
+	 * \param index The position where new item should be added at.
+	 *
+	*/
+	void addItem(const QModelIndex& index);
+
+	/*! \brief Move item to another position.
+	 *
+	 * \param originalPos Identifies the item that should be moved.
+	 * \param newPos The new position the item should be moved to.
+	 *
+	*/
+	void moveItem(const QModelIndex& originalPos, const QModelIndex& newPos);
+
+signals: 
+
+	//! \brief Emitted when contents of the model change.
+	void contentChanged();
 
 	/*! \brief This signal is emitted when an attribute changes in the model.
 	 *
@@ -165,7 +191,10 @@ private:
 		 * \param name Name of the attribute
 		 * \param value Value of the attribute
 		 */
-		AttributePair(const QString name, const QString value);
+		AttributePair(const QString& name, const QString& value);
+
+		//! \brief The default constructor
+		AttributePair();
 	};
 
 	//! \brief Contains the attributes in the model.
