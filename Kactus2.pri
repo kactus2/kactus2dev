@@ -10,7 +10,6 @@ message("You are running qmake on a generated .pro file. This may not work!")
 HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./mainwindow/SplashScreen.h \
     ./resource.h \
-    ./version.h \
     ./common/ColumnTypes.h \
     ./common/diagramgrid.h \
     ./common/DiagramUtil.h \
@@ -71,6 +70,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./common/graphicsItems/GraphicsRectButton.h \
     ./common/delegates/combodelegate.h \
     ./common/delegates/lineeditdelegate.h \
+    ./common/views/EditableTableView/editabletableview.h \
     ./designwidget/blockdiagram.h \
     ./designwidget/designwidget.h \
     ./designwidget/DiagramAddCommands.h \
@@ -350,7 +350,6 @@ SOURCES += ./common/widgets/listManager/listview.cpp \
     ./common/widgets/assistedLineEdit/LineContentAssistWidget.cpp \
     ./common/widgets/attributeBox/attributebox.cpp \
     ./common/widgets/attributeBox/attributemodel.cpp \
-    ./common/widgets/booleanComboBox/booleancombobox.cpp \
     ./common/widgets/hexSpinBox/hexspinbox.cpp \
     ./common/widgets/libraryRefGenerator/libraryrefgenerator.cpp \
     ./common/widgets/listManager/dirlistmanager.cpp \
@@ -372,10 +371,12 @@ SOURCES += ./common/widgets/listManager/listview.cpp \
     ./common/widgets/componentPreviewBox/ComponentPreviewBox.cpp \
     ./common/widgets/tabDocument/TabDocument.cpp \
     ./common/widgets/dirLineEdit/dirlineedit.cpp \
+    ./common/widgets/booleanComboBox/booleancombobox.cpp \
     ./common/graphicsItems/ComponentItem.cpp \
     ./common/graphicsItems/GraphicsRectButton.cpp \
     ./common/delegates/combodelegate.cpp \
     ./common/delegates/lineeditdelegate.cpp \
+    ./common/views/EditableTableView/editabletableview.cpp \
     ./designwidget/blockdiagram.cpp \
     ./designwidget/BusInterfaceDialog.cpp \
     ./designwidget/designwidget.cpp \
