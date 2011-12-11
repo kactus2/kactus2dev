@@ -118,8 +118,16 @@ void SoftwareMappingsEditor::makeChanges()
             libInterface_->writeModelToFile(fileInfo.path(), design);
         }
     }
-    else if (libInterface_->contains(designVLNV))
+    else
     {
-        libInterface_->removeObject(designVLNV);
+        if (libInterface_->contains(designVLNV))
+        {
+            libInterface_->removeObject(designVLNV);
+        }
+
+        if (component_->hasView("kts_sw_ref"))
+        {
+            component_->removeView("kts_sw_ref");
+        }
     }
 }

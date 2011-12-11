@@ -125,7 +125,7 @@ QSharedPointer<MCAPIContentMatcher> ProgramEntityItem::getContentMatcher() const
     foreach (EndpointItem* endpoint, endpointStack_->getEndpoints())
     {
         matcher->addEndpoint(endpoint->getName(), endpoint->getMCAPIDirection(),
-                             name().toUpper(), endpoint->getName().toUpper() + "_PORT_ID");
+                             name().toUpper(), endpoint->getName().toUpper() + "_PORT");
 
         // If the endpoint has a connection, add the remote endpoint
         // and the actual connection to the content matcher.
@@ -141,7 +141,7 @@ QSharedPointer<MCAPIContentMatcher> ProgramEntityItem::getContentMatcher() const
             
             matcher->addEndpoint(remoteEndpoint->getName(), remoteEndpoint->getMCAPIDirection(),
                                  remoteEndpoint->getParentProgramEntity()->name().toUpper(),
-                                 remoteEndpoint->getName().toUpper() + "_PORT_ID");
+                                 remoteEndpoint->getName().toUpper() + "_PORT");
             matcher->addConnection(endpoint->getName(), remoteEndpoint->getName(),
                                    endpoint->getConnectionType());
         }
@@ -276,55 +276,48 @@ void ProgramEntityItem::onEndpointStackChange(int height)
 //-----------------------------------------------------------------------------
 void ProgramEntityItem::createSource(QString const& filename)
 {
-    // Open the file for writing.
-    QFile file(filename);
+    generateCode(QFileInfo(filename).path());
 
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    CSourceWriter writer(filename, createIndentString());
+
+    if (!writer.open())
     {
         return;
     }
 
-    // Create the indentation string.
-    QString indent = createIndentString();
+    // Write includes.
+    writer.writeInclude("stdlib.h");
+    writer.writeInclude("stdio.h");
+    writer.writeLine();
 
-    // Start writing the file.
-    QTextStream stream(&file);
+    writer.writeLine("// This header includes the Kactus2 generated MCAPI code.");
+    writer.writeInclude("ktsmcapicode.h");
+    writer.writeLine();
 
-    // Write the file header comment.
-    stream << "/*!\n"
-              " *  File: " + QFileInfo(filename).fileName() + "\n"
-              " *\n"
-              " *  Application code for " + name() + ".\n"
-              " */" << endl << endl;
+    writer.writeLine("int main(int argc, char* argv[])");
+    writer.beginBlock();
+    writer.writeLine("// Initialize MCAPI.");
 
-    // Write the #includes.
-    stream << "#include <stdlib.h>" << endl;
-    stream << "#include <stdio.h>" << endl;
-    stream << "#include <mcapi.h>" << endl << endl;
+    writer.writeLine("if (initializeMCAPI() != 0)");
+    writer.beginBlock();
+    writer.writeLine("// TODO: Write error handling code.");
+    writer.writeLine("return EXIT_FAILURE;");
+    writer.endBlock();
+    writer.writeLine();
 
-    // Write the Kactus 2 generated MCAPI code.
-    generateCode(stream, indent);
+    writer.writeLine("// TODO: Write your application code here.");
+    writer.writeLine();
+    writer.writeLine("// Finalize MCAPI before exiting.");
+    writer.writeLine("mcapi_finalize(&status);");
+    writer.writeLine("return EXIT_SUCCESS;");
 
-    // Write the main() function.
-    stream << "int main(int argc, char* argv[])" << endl << "{" << endl
-           << indent << "// Initialize the MCAPI." << endl
-           << indent << "if (initializeMCAPI() != 0)" << endl
-           << indent << "{" << endl
-           << indent << indent << "// TODO: Write error handling code." << endl
-           << indent << indent << "return EXIT_FAILURE;" << endl
-           << indent << "}" << endl << endl
-           << indent << "// TODO: Write your application code here." << endl << endl
-           << indent << "// Finalize MCAPI before exiting." << endl
-           << indent << "mcapi_finalize(&status);" << endl
-           << indent << "return EXIT_SUCCESS;" << endl << "}" << endl;
-
-    file.close();
+    writer.endBlock();
 }
 
 //-----------------------------------------------------------------------------
 // Function: generateCode()
 //-----------------------------------------------------------------------------
-void ProgramEntityItem::generateCode(QTextStream& stream, QString const& indent)
+void ProgramEntityItem::generateCode(QString const& dir)
 {
     // Retrieve the list of connected remote nodes and endpoints.
     QList<ProgramEntityItem*> remoteNodes;
@@ -351,102 +344,8 @@ void ProgramEntityItem::generateCode(QTextStream& stream, QString const& indent)
         }
     }
 
-    // Write the Kactus 2 generated code.
-    stream << "//-----------------------------------------------" << endl
-           << "// Kactus 2 generated code begin - do not modify!" << endl << endl;
-
-    // Write the node local node ids.
-    stream << "// Local node ID." << endl
-           << "const mcapi_node_t " << name().toUpper() << " = " << getMappingComponent()->getID() << ";" << endl << endl;
-
-    // Write the remote node IDs.
-    stream << "// Remote node IDs." << endl;
-
-    foreach (ProgramEntityItem* node, remoteNodes)
-    {
-        stream << "const mcapi_node_t " << node->name().toUpper()
-               << " = " << node->getMappingComponent()->getID() << ";" << endl;
-    }
-
-    // Write the local port IDs.
-    stream << endl << "// Local port IDs." << endl;
-
-    foreach (EndpointItem* endpoint, endpointStack_->getEndpoints())
-    {
-        stream << "const mcapi_port_t " << endpoint->getName().toUpper()
-            << "_PORT_ID = " << endpoint->getPortID() << ";" << endl;
-    }
-
-    // Write the remote port IDs.
-    stream << endl << "// Remote port IDs." << endl;
-
-    foreach (EndpointItem* endpoint, remoteEndpoints)
-    {
-        stream << "const mcapi_port_t " << endpoint->getName().toUpper()
-            << "_PORT_ID = " << endpoint->getPortID() << ";" << endl;
-    }
-
-    // Write the local endpoint variables.
-    stream << endl << "// Local endpoints." << endl;
-
-    foreach (EndpointItem* endpoint, endpointStack_->getEndpoints())
-    {
-        stream << "mcapi_endpoint_t " << endpoint->getName() << ";" << endl;
-    }
-
-    // Write the remote endpoint variables.
-    stream << endl << "// Remote endpoints." << endl;
-
-    foreach (EndpointItem* endpoint, remoteEndpoints)
-    {
-        stream << "mcapi_endpoint_t " << endpoint->getName() << ";" << endl;
-    }
-
-    // Write the other variables.
-    stream << endl << "// Other variables." << endl
-           << "mcapi_status_t status;" << endl << endl;
-
-    // Write the initialization function.
-    stream << "// Initializes the MCAPI system and endpoints." << endl
-           << "// Returns zero if successful. In case of an error -1 is returned." << endl
-           << "int initializeMCAPI()" << endl << "{" << endl
-           << indent << "mcapi_version_t version;" << endl << endl
-           << indent << "// Initialize the MCAPI implementation." << endl
-           << indent << "mcapi_initialize(" << name().toUpper() << ", &version, &status);" << endl << endl
-           << indent << "if (status != MCAPI_SUCCESS)" << endl
-           << indent << "{" << endl << indent << indent << "return -1;" << endl
-           << indent << "}" << endl << endl;
-
-    // Write function calls to create local endpoints.
-    stream << indent << "// Create local endpoints." << endl;
-
-    foreach (EndpointItem* endpoint, endpointStack_->getEndpoints())
-    {
-        stream << indent << endpoint->getName() << " = mcapi_create_endpoint("
-               << endpoint->getName().toUpper() << "_PORT_ID, &status);" << endl << endl
-               << indent << "if (status != MCAPI_SUCCESS)" << endl
-               << indent << "{" << endl << indent << indent << "return -1;" << endl
-               << indent << "}" << endl << endl;
-    }
-
-    // Write function call to retrieve remote endpoints.
-    stream << indent << "// Retrieve remote endpoints." << endl;
-
-    foreach (EndpointItem* endpoint, remoteEndpoints)
-    {
-        stream << indent << endpoint->getName() << " = mcapi_get_endpoint("
-               << endpoint->getParentProgramEntity()->name().toUpper()
-               << ", " << endpoint->getName().toUpper() << "_PORT_ID, &status);" << endl << endl
-               << indent << "if (status != MCAPI_SUCCESS)" << endl
-               << indent << "{" << endl << indent << indent << "return -1;" << endl
-               << indent << "}" << endl << endl;
-    }
-
-    stream << indent << "return 0;" << endl
-           << "}" << endl << endl;
-
-    stream << "// Kactus 2 generated code end" << endl
-           << "//-----------------------------------------------" << endl << endl;
+    generateHeader(dir + "/ktsmcapicode.h", remoteNodes, remoteEndpoints);
+    generateSource(dir + "/ktsmcapicode.c", remoteNodes, remoteEndpoints);
 }
 
 //-----------------------------------------------------------------------------
@@ -607,4 +506,241 @@ void ProgramEntityItem::setFixed(bool fixed)
     appPlaceholder_->setVisible(!fixed);
 
     onEndpointStackChange(endpointStack_->getVisibleHeight());
+}
+
+//-----------------------------------------------------------------------------
+// Function: generateHeader()
+//-----------------------------------------------------------------------------
+void ProgramEntityItem::generateHeader(QString const& filename, QList<ProgramEntityItem*> const& remoteNodes,
+                                       QList<EndpointItem*> const& remoteEndpoints)
+{
+    CSourceWriter writer(filename, createIndentString());
+
+    if (!writer.open())
+    {
+        return;
+    }
+
+    // Write the Kactus 2 generated code.
+    writer.writeLine("// DO NOT MODIFY THIS FILE. ALL CHANGES WILL BE OVERWRITTEN BY KACTUS2.");
+    writer.writeLine();
+
+    writer.writeLine("#ifndef KTSMCAPICODE_H");
+    writer.writeLine("#define KTSMCAPICODE_H");
+    writer.writeLine();
+
+    writer.writeInclude("mcapi.h");
+    writer.writeLine();
+
+    writer.writeHeaderComment("Node data.");
+    writer.writeLine();
+
+    // Write a structure for local endpoints.
+    writer.writeLine("// Structure for encapsulating local endpoints.");
+    writer.beginStruct();
+
+    foreach (EndpointItem* endpoint, endpointStack_->getEndpoints())
+    {
+        writer.writeLine("mcapi_endpoint_t " + endpoint->getName() + ";");
+    }
+
+    writer.endStruct("local_node_t");
+    writer.writeLine();
+    writer.writeLine("extern local_node_t local;");
+    writer.writeLine();
+
+    // Write a structure for each remote node to encapsulate its endpoints.
+    foreach (ProgramEntityItem* node, remoteNodes)
+    {
+        writer.writeLine("// Structure for encapsulate the endpoints of " + node->name() + ".");
+        writer.beginStruct();
+
+        foreach (EndpointItem* endpoint, remoteEndpoints)
+        {
+            if (endpoint->getParentProgramEntity() == node)
+            {
+                writer.writeLine("mcapi_endpoint_t " + endpoint->getName() + ";");
+            }
+        }
+
+        writer.endStruct(node->name().toLower() + "_node_t");
+        writer.writeLine();
+
+        writer.writeLine("extern " + node->name().toLower() + "_node_t " + node->name().toLower() + ";");
+        writer.writeLine();
+    }
+
+    // Write the other variables.
+    writer.writeLine("// Other variables.");
+    writer.writeLine("extern mcapi_status_t status;");
+    writer.writeLine();
+
+    writer.writeHeaderComment("Functions.");
+    writer.writeLine();
+
+    // Write the initialization function prototype.
+    writer.writeLine("/*");
+    writer.writeLine(" *  Initializes the MCAPI system and endpoints.");
+    writer.writeLine(" *");
+    writer.writeLine(" *        @return 0 if successful. -1 in case of an error.");
+    writer.writeLine(" */");
+    writer.writeLine("int initializeMCAPI();");
+    writer.writeLine();
+
+    writer.writeLine("#endif // KTSMCAPICODE_H");
+    writer.writeLine();
+}
+
+//-----------------------------------------------------------------------------
+// Function: generateSource()
+//-----------------------------------------------------------------------------
+void ProgramEntityItem::generateSource(QString const& filename, QList<ProgramEntityItem*> const& remoteNodes,
+                                       QList<EndpointItem*> const& remoteEndpoints)
+{
+    CSourceWriter writer(filename, createIndentString());
+
+    if (!writer.open())
+    {
+        return;
+    }
+
+    // Write the Kactus 2 generated code.
+    writer.writeLine("// DO NOT MODIFY THIS FILE. ALL CHANGES WILL BE OVERWRITTEN BY KACTUS2.");
+    writer.writeLine();
+
+    writer.writeInclude("ktsmcapicode.h", true);
+    writer.writeLine();
+    writer.writeHeaderComment("Constants.");
+    writer.writeLine();
+
+    writer.writeLine("// Local node ID.");
+    writer.writeLine("const mcapi_node_t " + name().toUpper() + " = " +
+                     QString::number(getMappingComponent()->getID()) + ";");
+    writer.writeLine();
+
+    // Write the remote node IDs.
+    if (!remoteNodes.empty())
+    {
+        writer.writeLine("// Remote node IDs.");
+
+        foreach (ProgramEntityItem* node, remoteNodes)
+        {
+            writer.writeLine("const mcapi_node_t " + node->name().toUpper() +
+                             " = " + QString::number(node->getMappingComponent()->getID()) + ";");
+        }
+
+        writer.writeLine();
+    }
+
+    // Write the local port IDs.
+    writer.writeLine("// Local port IDs.");
+
+    foreach (EndpointItem* endpoint, endpointStack_->getEndpoints())
+    {
+        writer.writeLine("const mcapi_port_t " + endpoint->getParentProgramEntity()->name().toUpper() +
+                         "_" + endpoint->getName().toUpper() + "_PORT = " +
+                         QString::number(endpoint->getPortID()) + ";");
+    }
+
+    writer.writeLine();
+
+    // Write the remote port IDs.
+    if (!remoteEndpoints.empty())
+    {
+        writer.writeLine("// Remote port IDs.");
+
+        foreach (EndpointItem* endpoint, remoteEndpoints)
+        {
+            writer.writeLine("const mcapi_port_t " + endpoint->getParentProgramEntity()->name().toUpper() +
+                             "_" + endpoint->getName().toUpper() + "_PORT = " +
+                             QString::number(endpoint->getPortID()) + ";");
+        }
+
+        writer.writeLine();
+    }
+
+    writer.writeHeaderComment("Global variables.");
+    writer.writeLine();
+
+    writer.writeLine("// Local node.");
+    writer.writeLine("local_node_t local;");
+    writer.writeLine();
+
+    // Write struct instances for each remote node.
+    if (!remoteNodes.empty())
+    {
+        writer.writeLine("// Remote nodes.");
+
+        foreach (ProgramEntityItem* node, remoteNodes)
+        {
+            writer.writeLine(node->name().toLower() + "_node_t " + node->name().toLower() + ";");
+        }
+
+        writer.writeLine();
+    }
+
+    // Write the other variables.
+    writer.writeLine("// Other variables.");
+    writer.writeLine("mcapi_status_t status;");
+    writer.writeLine();
+
+    // Write the initialization function.
+    writer.writeHeaderComment("Function: initializeMCAPI()");
+    writer.writeLine("int initializeMCAPI()");
+
+    writer.beginBlock();
+    writer.writeLine("mcapi_version_t version;");
+    writer.writeLine();
+    writer.writeLine("// Initialize MCAPI implementation.");
+    writer.writeLine("mcapi_initialize(" + name().toUpper() + ", &version, &status);");
+    writer.writeLine();
+
+    writer.writeLine("if (status != MCAPI_SUCCESS)");
+    writer.beginBlock();
+    writer.writeLine("return -1;");
+    writer.endBlock();
+    writer.writeLine();
+
+    // Write function calls to create local endpoints.
+    writer.writeLine("// Create local endpoints.");
+
+    foreach (EndpointItem* endpoint, endpointStack_->getEndpoints())
+    {
+        writer.writeLine("local." + endpoint->getName() +
+                         " = mcapi_create_endpoint(" +
+                         endpoint->getParentProgramEntity()->name().toUpper() + "_" +
+                         endpoint->getName().toUpper() + "_PORT, &status);");
+        writer.writeLine();
+
+        writer.writeLine("if (status != MCAPI_SUCCESS)");
+        writer.beginBlock();
+        writer.writeLine("return -1;");
+        writer.endBlock();
+        writer.writeLine();
+    }
+
+    // Write function call to retrieve remote endpoints.
+    if (!remoteEndpoints.empty())
+    {
+        writer.writeLine("// Retrieve remote endpoints.");
+
+        foreach (EndpointItem* endpoint, remoteEndpoints)
+        {
+            writer.writeLine(endpoint->getParentProgramEntity()->name() + "." + endpoint->getName() +
+                             " = mcapi_get_endpoint(" + endpoint->getParentProgramEntity()->name().toUpper() +
+                             ", " + endpoint->getParentProgramEntity()->name().toUpper() + "_" +
+                             endpoint->getName().toUpper() + "_PORT, &status);");
+            writer.writeLine();
+
+            writer.writeLine("if (status != MCAPI_SUCCESS)");
+            writer.beginBlock();
+            writer.writeLine("return -1;");
+            writer.endBlock();
+            writer.writeLine();
+        }
+    }
+
+    writer.writeLine("return 0;");
+    writer.endBlock();
+    writer.writeLine();
 }

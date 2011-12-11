@@ -113,7 +113,6 @@ void ComponentPreviewBox::updatePreview()
         {
         case KactusAttribute::KTS_HW:
             {
-                // Create the diagram component.
                 item = new DiagramComponent(lh_, component_, component_->getVlnv()->getName());
                 break;
             }
@@ -136,7 +135,8 @@ void ComponentPreviewBox::updatePreview()
 
                 case KactusAttribute::KTS_SW_PLATFORM:
                     {
-                        item = new PlatformComponentItem(component_, component_->getVlnv()->getName());
+                        item = new DiagramComponent(lh_, component_, component_->getVlnv()->getName());
+                        //item = new PlatformComponentItem(component_, component_->getVlnv()->getName());
                         break;
                     }
 

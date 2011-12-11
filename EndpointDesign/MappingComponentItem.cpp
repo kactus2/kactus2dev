@@ -160,7 +160,13 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
                     Q_ASSERT(conn.interface2.componentRef == instance.instanceName);
 
                     ProgramEntityItem* progEntity = progEntityMap.value(conn.interface1.componentRef);
-                    Q_ASSERT(progEntity != 0);
+
+                    // Discard the application component if the program entity was not found
+                    // or it already has a non-imported application (overrides the imported one).
+                    if (progEntity == 0 || (progEntity->getApplication() != 0 && !progEntity->getApplication()->isImported()))
+                    {
+                        continue;
+                    }
                     
                     ApplicationItem* appItem = new ApplicationItem(comp, instance.instanceName,
                                                                    instance.displayName,
@@ -184,6 +190,12 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
 
             case KactusAttribute::KTS_SW_PLATFORM:
                 {
+                    // Non-imported SW platforms override the imported ones.
+                    if (platformCompItem_ != 0 && !platformCompItem_->isImported())
+                    {
+                        continue;
+                    }
+
                     PlatformComponentItem* platformCompItem =
                         new PlatformComponentItem(comp, instance.instanceName, instance.displayName,
                                                   instance.description, instance.configurableElementValues,

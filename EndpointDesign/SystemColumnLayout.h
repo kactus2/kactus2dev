@@ -97,6 +97,11 @@ public:
     void setOffsetY(qreal y);
 
     /*!
+     *  Updates the positions of components in all columns.
+     */
+    void updatePositions();
+
+    /*!
      *  Returns the columns in the column layout.
      */
     QList<SystemColumn*> const& getColumns() const;
@@ -109,7 +114,7 @@ private:
     // Disable copying.
     SystemColumnLayout(SystemColumnLayout const& rhs);
     SystemColumnLayout& operator=(SystemColumnLayout const& rhs);
-    
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

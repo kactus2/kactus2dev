@@ -14,6 +14,7 @@
 
 #include "SWComponentItem.h"
 
+#include <common/CSourceWriter.h>
 #include <MCAPI/MCAPIDesignerTypes.h>
 
 #include <QObject>
@@ -173,12 +174,23 @@ private:
     ProgramEntityItem& operator=(ProgramEntityItem const& rhs);
 
     /*!
-     *  Generates code for the node to the given stream.
+     *  Generates MCAPI code for the node, both the source and header files.
      *
-     *      @param [in] stream  The text output stream.
-     *      @param [in] indent  The indentation string.
+     *      @param [in] dir The directory where to place the files.
      */
-    void generateCode(QTextStream& stream, QString const& indent);
+    void generateCode(QString const& dir);
+
+    /*!
+     *  Generates the MCAPI header file.
+     */
+    void generateHeader(QString const& filename, QList<ProgramEntityItem*> const& remoteNodes,
+                        QList<EndpointItem*> const& remoteEndpoints);
+
+    /*!
+     *  Generates the MCAPI source file.
+     */
+    void generateSource(QString const& filename, QList<ProgramEntityItem*> const& remoteNodes,
+                        QList<EndpointItem*> const& remoteEndpoints);
 
     /*!
      *  Creates an indentation string based on QSettings.

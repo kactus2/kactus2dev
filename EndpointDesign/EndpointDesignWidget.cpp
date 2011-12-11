@@ -186,9 +186,12 @@ unsigned int EndpointDesignWidget::getSupportedDrawModes() const
 //-----------------------------------------------------------------------------
 bool EndpointDesignWidget::save()
 {
+    lh_->beginSave();
+
     // First save the design hierarchy.
     if (!diagram_->saveHierarchy())
     {
+        lh_->endSave();
         return false;
     }
 
@@ -206,6 +209,7 @@ bool EndpointDesignWidget::save()
 
     if (design == 0)
     {
+        lh_->endSave();
         return false;
     }
 
@@ -217,6 +221,8 @@ bool EndpointDesignWidget::save()
 
     lh_->writeModelToFile(design);
     lh_->writeModelToFile(system_);
+
+    lh_->endSave();
 
     return TabDocument::save();
 }

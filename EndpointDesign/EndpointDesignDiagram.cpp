@@ -271,6 +271,9 @@ bool EndpointDesignDiagram::setDesign(QSharedPointer<Component> system)
         addItem(conn);
     }
 
+    // Refresh the layout so that all components are placed in correct positions according to the stacking.
+    layout_->updatePositions();
+
     return true;
 }
 
@@ -1189,9 +1192,19 @@ void EndpointDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mous
 //-----------------------------------------------------------------------------
 void EndpointDesignDiagram::createApplication(ProgramEntityItem* progEntity)
 {
-    // Create an application component without a valid vlnv.
-    QSharedPointer<Component> comp = QSharedPointer<Component>(new Component());
-    comp->setVlnv(VLNV());
+    // Request a VLNV from the user.
+    NewObjectDialog dialog(lh_, VLNV::COMPONENT, false, (QWidget*)parent());
+    dialog.setWindowTitle(tr("Create Application"));
+
+    if (dialog.exec() == QDialog::Rejected)
+    {
+        return;
+    }
+
+    VLNV vlnv = dialog.getVLNV();
+
+    // Create a new application component.
+    QSharedPointer<Component> comp = QSharedPointer<Component>(new Component(vlnv));
     comp->setComponentImplementation(KactusAttribute::KTS_SW);
     comp->setComponentSWType(KactusAttribute::KTS_SW_APPLICATION);
 
@@ -1202,19 +1215,22 @@ void EndpointDesignDiagram::createApplication(ProgramEntityItem* progEntity)
     busIf->setBusType(VLNV(VLNV::BUSDEFINITION, "Kactus", "internal", "app_link", "1.0"));
 
     comp->addBusInterface(busIf);
-
+    
     // Ask the user if he/she wants to generate template code based on the endpoints.
     QMessageBox msgBox(QMessageBox::Question, QCoreApplication::applicationName(),
-                       tr("Do you want to auto-generate template code based on the endpoints?"),
-                       QMessageBox::Yes | QMessageBox::No, (QWidget*)parent());
+        tr("Do you want to auto-generate template code based on the endpoints?"),
+        QMessageBox::Yes | QMessageBox::No, (QWidget*)parent());
 
     bool sourceCreated = false;
+
+    // Write the model to file.
+    lh_->writeModelToFile(dialog.getPath(), comp);
 
     if (msgBox.exec() == QMessageBox::Yes)
     {
         // Ask the user where to save the source file.
         QString filename = QFileDialog::getSaveFileName((QWidget*)parent(), tr("Save Source File"),
-            QString(), tr("C Source Files (*.c)"));
+                                                         dialog.getPath(), tr("C Source Files (*.c)"));
 
         if (!filename.isEmpty())
         {
@@ -1222,19 +1238,23 @@ void EndpointDesignDiagram::createApplication(ProgramEntityItem* progEntity)
 
             FileSet* fileSet = new FileSet();
             fileSet->setName("cSources");
-            File* file = new File(filename, fileSet);
+            File* file = new File(General::getRelativePath(dialog.getPath(), filename), fileSet);
             file->addFileType("cSource");
             fileSet->addFile(file);
 
             comp->addFileSet(fileSet);
             sourceCreated = true;
+
+            // Update the model.
+            lh_->writeModelToFile(comp);
         }
     }
 
-    ApplicationItem* app = new ApplicationItem(comp, createInstanceName("unnamed_app"),
+    // Create the application item.
+    ApplicationItem* app = new ApplicationItem(comp, createInstanceName(vlnv.getName().remove(".comp")),
                                                QString(), QString(), QMap<QString, QString>(), progEntity);
     connect(app, SIGNAL(openSource(ProgramEntityItem*)),
-        this, SIGNAL(openSource(ProgramEntityItem*)), Qt::UniqueConnection);
+            this, SIGNAL(openSource(ProgramEntityItem*)), Qt::UniqueConnection);
 
     // Create the undo command and execute it.
     QSharedPointer<ApplicationAddCommand> cmd(new ApplicationAddCommand(progEntity, app));
@@ -1247,7 +1267,13 @@ void EndpointDesignDiagram::createApplication(ProgramEntityItem* progEntity)
 
     if (sourceCreated)
     {
+        // Open the source for editing.
         emit openSource(progEntity);
+    }
+    else
+    {
+        // Open up the component editor.
+        emit openComponent(*comp->getVlnv());
     }
 }
 

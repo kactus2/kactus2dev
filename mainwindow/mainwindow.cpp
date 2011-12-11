@@ -6,6 +6,8 @@
 
 #include "mainwindow.h"
 
+#include <QDateTime>
+
 #include "SplashScreen.h"
 
 #include "NewComponentPage.h"
@@ -1480,8 +1482,11 @@ void MainWindow::openSource(ProgramEntityItem* progEntity)
         filename = fileSet->getFiles().first()->getName();
     }
 
-    filename = General::getAbsolutePath(libraryHandler_->getPath(*appItem->componentModel()->getVlnv()),
-                                        filename);
+    if (appItem->componentModel()->getVlnv()->isValid())
+    {
+        filename = General::getAbsolutePath(libraryHandler_->getPath(*appItem->componentModel()->getVlnv()),
+                                            filename);
+    }
 
     // Check if the source is already open and activate it.
     for (int i = 0; i < designTabs_->count(); i++)
@@ -1714,6 +1719,8 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName,
     Q_ASSERT(compVLNV.isValid());
     Q_ASSERT(sysVLNV.isValid());
 
+    libraryHandler_->beginSave();
+
     VLNV designVLNV(VLNV::DESIGN, sysVLNV.getVendor(), sysVLNV.getLibrary(),
         sysVLNV.getName().remove(".comp") + ".design", sysVLNV.getVersion());
     VLNV desConfVLNV(VLNV::DESIGNCONFIGURATION, sysVLNV.getVendor(), sysVLNV.getLibrary(),
@@ -1757,7 +1764,8 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName,
     libraryHandler_->writeModelToFile(directory, designConf);
     libraryHandler_->writeModelToFile(directory, sysDesign);
     libraryHandler_->writeModelToFile(directory, sysComp);
-    
+
+    libraryHandler_->endSave();
     openSystem(sysVLNV, true);
 }
 
@@ -1956,6 +1964,8 @@ void MainWindow::openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool di
 //-----------------------------------------------------------------------------
 void MainWindow::openSystem(VLNV const& vlnv, bool forceUnlocked)
 {
+    libraryHandler_->beginSave();
+
     // Check if the system is already open and activate it.
     if (vlnv.isValid()) {
         for (int i = 0; i < designTabs_->count(); i++) {
@@ -2006,9 +2016,7 @@ void MainWindow::openSystem(VLNV const& vlnv, bool forceUnlocked)
 	connect(designWidget, SIGNAL(modifiedChanged(bool)),
 		actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
 
-    // A small hack to center the view correctly.
-//     designWidget->fitInView();
-//     designWidget->setZoomLevel(100);
+    libraryHandler_->endSave();
 }
 
 void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {

@@ -1073,8 +1073,17 @@ QString General::getRelativePath(const QString from, const QString to) {
 	// create file info instance to make sure that only the directory of the
 	// from parameter is used
 	QFileInfo fromInfo(from);
+
+    QString fromPath = fromInfo.absolutePath();
+
+    if (fromInfo.isDir())
+    {
+        fromPath = fromInfo.absoluteFilePath();
+    }
+
 	// if the directory does not exist
-	QDir ipXactDir(fromInfo.absolutePath());
+	QDir ipXactDir(fromPath);
+
 	if (!ipXactDir.exists()) {
 		return QString();
 	}

@@ -165,3 +165,14 @@ QList<SystemColumn*> const& SystemColumnLayout::getColumns() const
 {
     return columns_;
 }
+
+//-----------------------------------------------------------------------------
+// Function: updatePositions()
+//-----------------------------------------------------------------------------
+void SystemColumnLayout::updatePositions()
+{
+    for (int i = 0; i < columns_.size(); ++i)
+    {
+        columns_[i]->updateItemPositions();
+    }
+}

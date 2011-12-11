@@ -219,6 +219,10 @@
 				Name="common"
 				>
 				<File
+					RelativePath=".\common\CSourceWriter.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\common\DiagramUtil.inl"
 					>
 				</File>
@@ -1812,6 +1816,10 @@
 				>
 				<File
 					RelativePath=".\common\ColumnTypes.h"
+					>
+				</File>
+				<File
+					RelativePath=".\common\CSourceWriter.h"
 					>
 				</File>
 				<File
