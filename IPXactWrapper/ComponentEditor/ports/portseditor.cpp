@@ -84,7 +84,7 @@ handler_(handler) {
 
 	// create the layout, add widgets to it
 	QVBoxLayout* layout = new QVBoxLayout(this);
-	layout->addWidget(&view_);
+	layout->addWidget(&view_, 1);
 	layout->addLayout(buttonLayout);
 }
 

@@ -36,11 +36,11 @@ file_(NULL) {
 	generalTab_ = new FileGeneralTab(baseLocation, file_, &tabs_);
 	tabs_.addTab(generalTab_, tr("General settings"));
 
-	extraTab_ = new FileExtraTab(baseLocation, file_, &tabs_);
-	tabs_.addTab(extraTab_, tr("External dependencies and defines"));
-
 	buildCommand_ = new FileBuildCommand(&tabs_, file_, baseLocation);
 	tabs_.addTab(buildCommand_, tr("Build command"));
+
+	extraTab_ = new FileExtraTab(baseLocation, file_, &tabs_);
+	tabs_.addTab(extraTab_, tr("External dependencies and defines"));
 
 	// connect the signals informing that widgets have changed their status
 	connect(generalTab_, SIGNAL(contentChanged()),

@@ -17,7 +17,7 @@
 #include <QWidget>
 #include <QLineEdit>
 #include <QCheckBox>
-#include <QGridLayout>
+#include <QVBoxLayout>
 #include <QFileInfo>
 
 /*! \brief FileBuildCommand is a widget to edit File's buildCommand
@@ -85,28 +85,28 @@ private:
 	QLineEdit command_;
 
 	//! \brief Editor to edit build command's attributes
-	AttributeBox commandAttributes_;
+	//AttributeBox commandAttributes_;
 
 	//! \brief Editor to set build command's flags
 	QLineEdit flags_;
 
 	//! \brief Editor to set flag attributes
-	AttributeBox flagAttributes_;
+	//AttributeBox flagAttributes_;
 
 	//! \brief Editor to set build command's replaceDefaultFlags setting
 	QCheckBox replaceDefault_;
 
 	//! \brief Editor for replaceDefaultFlags attributes
-	AttributeBox replaceAttributes_;
+	//AttributeBox replaceAttributes_;
 
 	//! \brief Editor to set build command's target file.
 	TargetNameEdit target_;
 
 	//! \brief Editor to set target's attributes
-	AttributeBox targetAttributes_;
+	//AttributeBox targetAttributes_;
 
 	//! \brief the layout for the widget
-	QGridLayout layout_;
+	QVBoxLayout layout_;
 };
 
 #endif // FILEBUILDCOMMAND_H

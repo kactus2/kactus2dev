@@ -9,7 +9,8 @@
 #define LISTMANAGER_H
 
 #include "listmanagermodel.h"
-#include "listview.h"
+
+#include <common/views/EditableListView/editablelistview.h>
 
 #include <QWidget>
 #include <QGroupBox>
@@ -69,7 +70,7 @@ protected:
 	ListManagerModel model_;
 
 	//! \brief The View to display the list of strings.
-	ListView view_;
+	EditableListView view_;
 
 private:
 

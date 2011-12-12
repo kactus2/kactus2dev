@@ -11,7 +11,7 @@
 #include <LibraryManager/vlnv.h>
 #include <LibraryManager/libraryinterface.h>
 
-#include <QGridLayout>
+#include <QVBoxLayout>
 
 #include <QDebug>
 
@@ -20,7 +20,7 @@ BusIfGeneralTab::BusIfGeneralTab(LibraryInterface* libHandler,
 								 QWidget *parent): 
 QWidget(parent), busif_(static_cast<BusInterface*>(dataPointer)),
 nameGroup_(this, tr("Name and description")),
-attributes_(this),
+//attributes_(this),
 busType_(VLNV::BUSDEFINITION, libHandler, this, this),
 absType_(VLNV::ABSTRACTIONDEFINITION, libHandler, this, this),
 details_(dataPointer, this),
@@ -35,8 +35,8 @@ libHandler_(libHandler) {
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&nameGroup_, SIGNAL(nameChanged(const QString&)),
 		this, SIGNAL(nameChanged(const QString&)), Qt::UniqueConnection);
-	connect(&attributes_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+// 	connect(&attributes_, SIGNAL(contentChanged()),
+// 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&busType_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&absType_, SIGNAL(contentChanged()),
@@ -46,12 +46,13 @@ libHandler_(libHandler) {
 	absType_.setTitle(tr("Abstraction definition"));
 
 	// create the layout of the general tab
-	QGridLayout* layout = new QGridLayout(this);
-	layout->addWidget(&nameGroup_, 0, 0, 1, 1);
-	layout->addWidget(&attributes_, 0, 1, 3, 1);
-	layout->addWidget(&busType_, 1, 0, 1, 1);
-	layout->addWidget(&absType_, 2, 0, 1, 1);
-	layout->addWidget(&details_, 3, 0, 1, 2);
+	QVBoxLayout* layout = new QVBoxLayout(this);
+	layout->addWidget(&nameGroup_);
+	//layout->addWidget(&attributes_, 0, 1, 3, 1);
+	layout->addWidget(&busType_);
+	layout->addWidget(&absType_);
+	layout->addWidget(&details_);
+	layout->addStretch();
 
 	restoreChanges();
 }
@@ -63,8 +64,8 @@ bool BusIfGeneralTab::isValid() const {
 	
 	if (!nameGroup_.isValid())
 		return false;
-	else if (!attributes_.isValid())
-		return false;
+// 	else if (!attributes_.isValid())
+// 		return false;
 	else if (!busType_.isValid())
 		return false;
 	
@@ -92,7 +93,7 @@ void BusIfGeneralTab::restoreChanges() {
 	nameGroup_.setDisplayName(busif_->getDisplayName());
 	nameGroup_.setDescription(busif_->getDescription());
 
-	attributes_.setAttributes(busif_->getAttributes());
+	//attributes_.setAttributes(busif_->getAttributes());
 
 	if (busif_->getBusType().isValid())
 		busType_.setVLNV(busif_->getBusType());
@@ -112,7 +113,7 @@ void BusIfGeneralTab::applyChanges() {
 	busif_->setDisplayName(nameGroup_.getDisplayName());
 	busif_->setDescription(nameGroup_.getDescription());
 
-	busif_->setAttributes(attributes_.getAttributes());
+	//busif_->setAttributes(attributes_.getAttributes());
 
 	busif_->setBusType(busType_.getVLNV());
 	

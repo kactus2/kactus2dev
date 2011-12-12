@@ -177,6 +177,11 @@ void BusDefinition::write(QFile& file) {
 	// call base class to write the VLNV info
 	LibraryComponent::writeVLNV(writer);
 
+	// if description is specified in the base class
+	if (!LibraryComponent::description_.isEmpty()) {
+		writer.writeTextElement("spirit:description", description_);
+	}
+
 	writer.writeTextElement("spirit:directConnection",
 			General::bool2Str(directConnection_));
 
@@ -211,11 +216,6 @@ void BusDefinition::write(QFile& file) {
 
 		// systemGroupNames
 		writer.writeEndElement();
-	}
-
-	// if description is specified in the base class
-	if (!LibraryComponent::description_.isEmpty()) {
-		writer.writeTextElement("spirit:description", description_);
 	}
 
 	// if contains kactus2 attributes

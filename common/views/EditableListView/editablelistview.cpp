@@ -1,17 +1,15 @@
 /* 
- *  	Created on: 30.11.2011
+ *  	Created on: 12.12.2011
  *      Author: Antti Kamppi
- * 		filename: listview.cpp
+ * 		filename: editablelistview.cpp
  *		Project: Kactus 2
  */
 
-#include "listview.h"
+#include "editablelistview.h"
 
 #include <QMenu>
-#include <QCursor>
-#include <QSize>
 
-ListView::ListView(QWidget *parent):
+EditableListView::EditableListView(QWidget *parent):
 QListView(parent),
 addAction_(tr("Add new"), this),
 removeAction_(tr("Remove"), this) {
@@ -21,11 +19,10 @@ removeAction_(tr("Remove"), this) {
 	setupActions();
 }
 
-ListView::~ListView() {
+EditableListView::~EditableListView() {
 }
 
-void ListView::mouseMoveEvent( QMouseEvent* e ) {
-	
+void EditableListView::mouseMoveEvent( QMouseEvent* e ) {
 	// if left mouse button was pressed 
 	if (e->buttons() & Qt::LeftButton) {
 
@@ -47,19 +44,7 @@ void ListView::mouseMoveEvent( QMouseEvent* e ) {
 	QListView::mouseMoveEvent(e);
 }
 
-void ListView::mousePressEvent( QMouseEvent* event ) {
-	pressedPoint_ = event->pos();
-	QListView::mousePressEvent(event);
-}
-
-
-void ListView::mouseReleaseEvent( QMouseEvent* event ) {
-	setCursor(QCursor(Qt::ArrowCursor));
-	QListView::mouseReleaseEvent(event);
-}
-
-void ListView::keyPressEvent( QKeyEvent* event ) {
-
+void EditableListView::keyPressEvent( QKeyEvent* event ) {
 	// if delete was pressed for an item
 	QModelIndex index = currentIndex();
 	if (index.isValid() && event->key() == Qt::Key_Delete) {
@@ -69,8 +54,7 @@ void ListView::keyPressEvent( QKeyEvent* event ) {
 	QListView::keyPressEvent(event);
 }
 
-void ListView::mouseDoubleClickEvent( QMouseEvent* event ) {
-
+void EditableListView::mouseDoubleClickEvent( QMouseEvent* event ) {
 	// if there is no item on the clicked position then a new item should be added
 	QModelIndex index = indexAt(event->pos());
 	if (!index.isValid()) {
@@ -82,8 +66,17 @@ void ListView::mouseDoubleClickEvent( QMouseEvent* event ) {
 	QListView::mouseDoubleClickEvent(event);
 }
 
-void ListView::contextMenuEvent( QContextMenuEvent* event ) {
-	
+void EditableListView::mousePressEvent( QMouseEvent* event ) {
+	pressedPoint_ = event->pos();
+	QListView::mousePressEvent(event);
+}
+
+void EditableListView::mouseReleaseEvent( QMouseEvent* event ) {
+	setCursor(QCursor(Qt::ArrowCursor));
+	QListView::mouseReleaseEvent(event);
+}
+
+void EditableListView::contextMenuEvent( QContextMenuEvent* event ) {
 	pressedPoint_ = event->pos();
 
 	QMenu menu(this);
@@ -94,8 +87,17 @@ void ListView::contextMenuEvent( QContextMenuEvent* event ) {
 	event->accept();
 }
 
-void ListView::setupActions() {
+void EditableListView::onAddAction() {
+	QModelIndex index = indexAt(pressedPoint_);
+	emit addItem(index);
+}
 
+void EditableListView::onRemoveAction() {
+	QModelIndex index = currentIndex();
+	emit removeItem(index);
+}
+
+void EditableListView::setupActions() {
 	addAction_.setToolTip(tr("Add a new item to list"));
 	addAction_.setStatusTip(tr("Add a new item to list"));
 	connect(&addAction_, SIGNAL(triggered()),
@@ -105,14 +107,4 @@ void ListView::setupActions() {
 	removeAction_.setStatusTip(tr("Remove an item from the list"));
 	connect(&removeAction_, SIGNAL(triggered()),
 		this, SLOT(onRemoveAction()), Qt::UniqueConnection);
-}
-
-void ListView::onAddAction() {
-	QModelIndex index = indexAt(pressedPoint_);
-	emit addItem(index);
-}
-
-void ListView::onRemoveAction() {
-	QModelIndex index = currentIndex();
-	emit removeItem(index);
 }

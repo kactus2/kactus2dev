@@ -1,12 +1,12 @@
 /* 
- *  	Created on: 30.11.2011
+ *  	Created on: 12.12.2011
  *      Author: Antti Kamppi
- * 		filename: listview.h
+ * 		filename: editablelistview.h
  *		Project: Kactus 2
  */
 
-#ifndef LISTVIEW_H
-#define LISTVIEW_H
+#ifndef EDITABLELISTVIEW_H
+#define EDITABLELISTVIEW_H
 
 #include <QListView>
 #include <QPoint>
@@ -15,20 +15,20 @@
 #include <QContextMenuEvent>
 #include <QAction>
 
-class ListView : public QListView {
+class EditableListView : public QListView {
 	Q_OBJECT
 
 public:
 
 	/*! \brief The constructor
 	 *
-	 * \param parent Pointer to the owner of this widget
+	 * \param parent Pointer to the owner of this view.
 	 *
 	*/
-	ListView(QWidget *parent);
+	EditableListView(QWidget *parent);
 	
 	//! \brief The destructor
-	virtual ~ListView();
+	virtual ~EditableListView();
 
 signals:
 
@@ -84,10 +84,10 @@ private slots:
 
 private:
 	//! \brief No copying
-	ListView(const ListView& other);
+	EditableListView(const EditableListView& other);
 
 	//! \brief No assignment
-	ListView& operator=(const ListView& other);
+	EditableListView& operator=(const EditableListView& other);
 
 	//! \brief Set up the actions for the context menu
 	void setupActions();
@@ -102,4 +102,4 @@ private:
 	QAction removeAction_;
 };
 
-#endif // LISTVIEW_H
+#endif // EDITABLELISTVIEW_H

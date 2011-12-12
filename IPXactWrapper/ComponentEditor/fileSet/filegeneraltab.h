@@ -81,7 +81,7 @@ private:
 	FileNameEditor nameEditor_;
 
 	//! \brief The widget to edit file's attributes.
-	AttributeBox attributes_;
+	//AttributeBox attributes_;
 
 	//! \brief The editor to edit the general settings of the file
 	FileGeneralEditor generalEditor_;

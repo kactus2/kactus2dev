@@ -12,20 +12,19 @@
 
 #include <QGroupBox>
 #include <QLabel>
-#include <QVBoxLayout>
 #include <QHBoxLayout>
 
 FileBuildCommand::FileBuildCommand( QWidget *parent, File* file,
 								   const QFileInfo& baseLocation):
 QWidget(parent), buildCommand_(NULL), 
 command_(this),
-commandAttributes_(this, tr("Command attributes")),
+//commandAttributes_(this, tr("Command attributes")),
 flags_(this),
-flagAttributes_(this, tr("Flag attributes")),
+//flagAttributes_(this, tr("Flag attributes")),
 replaceDefault_(tr("Replace default flags"),this),
-replaceAttributes_(this, tr("Replace attributes")),
+//replaceAttributes_(this, tr("Replace attributes")),
 target_(this, baseLocation),
-targetAttributes_(this, tr("Target attributes")),
+//targetAttributes_(this, tr("Target attributes")),
 layout_(this) {
 
 	Q_ASSERT_X(file, "FileBuildCommand constructor",
@@ -48,6 +47,7 @@ layout_(this) {
 	setupFlags();
 	setupReplaceDefault();
 	setupTarget();
+	layout_.addStretch();
 
 	// get the data from the buildCommand to the editor
 	restore();
@@ -60,7 +60,7 @@ void FileBuildCommand::setupCommand() {
 
 	// setup the QGroupBox containing the elements
 	QGroupBox* commandBox = new QGroupBox(tr("Command"), this);
-	QHBoxLayout* commandLayout = new QHBoxLayout();
+	QHBoxLayout* commandLayout = new QHBoxLayout(commandBox);
 	QLabel* commandLabel = new QLabel(tr("Command:"), commandBox);
 	commandLabel->setToolTip(tr("Command defines a compiler or assembler tool"
 		" that processes files of this type"));
@@ -69,23 +69,23 @@ void FileBuildCommand::setupCommand() {
 	commandLayout->addWidget(commandLabel);
 	commandLayout->addWidget(&command_);
 
-	QVBoxLayout* boxLayout = new QVBoxLayout(commandBox);
-	boxLayout->addLayout(commandLayout);
-	boxLayout->addWidget(&commandAttributes_);
+// 	QVBoxLayout* boxLayout = new QVBoxLayout(commandBox);
+// 	boxLayout->addLayout(commandLayout);
+// 	boxLayout->addWidget(&commandAttributes_);
 
-	layout_.addWidget(commandBox, 0, 0, 1, 1);
+	layout_.addWidget(commandBox);
 
 	connect(&command_, SIGNAL(textChanged(const QString&)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&commandAttributes_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+// 	connect(&commandAttributes_, SIGNAL(contentChanged()),
+// 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
 void FileBuildCommand::setupFlags() {
 
 	// setup the QGroupBox containing the elements
 	QGroupBox* flagBox = new QGroupBox(tr("Flags"), this);
-	QHBoxLayout* flagLayout = new QHBoxLayout();
+	QHBoxLayout* flagLayout = new QHBoxLayout(flagBox);
 	QLabel* flagLabel = new QLabel(tr("Flags:"), flagBox);
 	flagLabel->setToolTip(tr("Documents any flags to be passed along with the"
 		" software tool command"));
@@ -93,43 +93,43 @@ void FileBuildCommand::setupFlags() {
 		" software tool command"));
 	flagLayout->addWidget(flagLabel);
 	flagLayout->addWidget(&flags_);
+	flagLayout->addWidget(&replaceDefault_);
 
-	QVBoxLayout* boxLayout = new QVBoxLayout(flagBox);
-	boxLayout->addLayout(flagLayout);
-	boxLayout->addWidget(&flagAttributes_);
+// 	QVBoxLayout* boxLayout = new QVBoxLayout(flagBox);
+// 	boxLayout->addLayout(flagLayout);
+// 	boxLayout->addWidget(&flagAttributes_);
 
-	layout_.addWidget(flagBox, 0, 1, 1, 1);
+	layout_.addWidget(flagBox);
+
+	replaceDefault_.setToolTip(tr("When true the flags replace any default "
+		"flags from the build script, when false the flags are appended"));
+
+	connect(&replaceDefault_, SIGNAL(clicked(bool)),
+		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
 	connect(&flags_, SIGNAL(textChanged(const QString&)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&flagAttributes_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+// 	connect(&flagAttributes_, SIGNAL(contentChanged()),
+// 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
 void FileBuildCommand::setupReplaceDefault() {
 
 	// setup the QGroupBox containing the elements
-	QGroupBox* replaceBox = new QGroupBox(tr("Replace default flags"), this);
-	QVBoxLayout* replaceLayout = new QVBoxLayout(replaceBox);
-	replaceLayout->addWidget(&replaceDefault_);
-	replaceLayout->addWidget(&replaceAttributes_);
+	//QGroupBox* replaceBox = new QGroupBox(tr("Replace default flags"), this);
+	//QVBoxLayout* replaceLayout = new QVBoxLayout(replaceBox);
+	//replaceLayout->addWidget(&replaceDefault_);
+	//replaceLayout->addWidget(&replaceAttributes_);
 
-	replaceDefault_.setToolTip(tr("When true the flags replace any default "
-		"flags from the build script, when false the flags are appended"));
-
-	layout_.addWidget(replaceBox, 1, 0, 1, 1);
-
-	connect(&replaceDefault_, SIGNAL(clicked(bool)),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&replaceAttributes_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+// 	connect(&replaceAttributes_, SIGNAL(contentChanged()),
+// 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
 void FileBuildCommand::setupTarget() {
 
 	// setup the QGroupBox containing the elements
 	QGroupBox* targetBox = new QGroupBox(tr("Build target"), this);
-	QHBoxLayout* hLayout = new QHBoxLayout();
+	QHBoxLayout* hLayout = new QHBoxLayout(targetBox);
 	QLabel* targetLabel = new QLabel(tr("Target file:"), this);
 	targetLabel->setToolTip(tr("Target defines the path to the file derived "
 		"from the source file"));
@@ -138,43 +138,43 @@ void FileBuildCommand::setupTarget() {
 	hLayout->addWidget(targetLabel);
 	hLayout->addWidget(&target_);
 
-	QVBoxLayout* boxLayout = new QVBoxLayout(targetBox);
-	boxLayout->addLayout(hLayout);
-	boxLayout->addWidget(&targetAttributes_);
+// 	QVBoxLayout* boxLayout = new QVBoxLayout(targetBox);
+// 	boxLayout->addLayout(hLayout);
+// 	boxLayout->addWidget(&targetAttributes_);
 
-	layout_.addWidget(targetBox, 1, 1, 1, 1);
+	layout_.addWidget(targetBox);
 
 	connect(&target_, SIGNAL(textChanged(const QString&)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&targetAttributes_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+// 	connect(&targetAttributes_, SIGNAL(contentChanged()),
+// 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
 void FileBuildCommand::apply() {
 
 	buildCommand_->setCommand(command_.text());
-	buildCommand_->setCommandAttributes(commandAttributes_.getAttributes());
+	//buildCommand_->setCommandAttributes(commandAttributes_.getAttributes());
 
 	buildCommand_->setFlags(flags_.text());
-	buildCommand_->setFlagAttributes(flagAttributes_.getAttributes());
+	//buildCommand_->setFlagAttributes(flagAttributes_.getAttributes());
 	
 	buildCommand_->setReplaceDefaultFlags(replaceDefault_.isChecked());
-	buildCommand_->setDefaultFlagAttributes(replaceAttributes_.getAttributes());
+	//buildCommand_->setDefaultFlagAttributes(replaceAttributes_.getAttributes());
 
 	buildCommand_->setTargetName(target_.text());
-	buildCommand_->setTargetNameAttributes(targetAttributes_.getAttributes());
+	//buildCommand_->setTargetNameAttributes(targetAttributes_.getAttributes());
 }
 
 void FileBuildCommand::restore() {
 	command_.setText(buildCommand_->getCommand());
-	commandAttributes_.setAttributes(buildCommand_->getCommandAttributes());
+	//commandAttributes_.setAttributes(buildCommand_->getCommandAttributes());
 
 	flags_.setText(buildCommand_->getFlags());
-	flagAttributes_.setAttributes(buildCommand_->getFlagAttributes());
+	//flagAttributes_.setAttributes(buildCommand_->getFlagAttributes());
 
 	replaceDefault_.setChecked(buildCommand_->getReplaceDefaultFlags());
-	replaceAttributes_.setAttributes(buildCommand_->getDefaultFlagAttributes());
+	//replaceAttributes_.setAttributes(buildCommand_->getDefaultFlagAttributes());
 
 	target_.setText(buildCommand_->getTargetName());
-	targetAttributes_.setAttributes(buildCommand_->getTargetNameAttributes());
+	//targetAttributes_.setAttributes(buildCommand_->getTargetNameAttributes());
 }

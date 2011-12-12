@@ -105,7 +105,7 @@ private:
 	NameGroupBox nameGroup_;
 
 	//! \brief Contains the attributes of the bus interface
-	AttributeBox attributes_;
+	//AttributeBox attributes_;
 
 	//! \brief Contains the vlnv of the bus type for this bus interface
 	VLNVEditor busType_;

@@ -7,7 +7,7 @@
 
 #include "filegeneraltab.h"
 
-#include <QGridLayout>
+#include <QVBoxLayout>
 #include <QStringList>
 
 FileGeneralTab::FileGeneralTab(const QFileInfo& baseLocation,  
@@ -15,22 +15,18 @@ FileGeneralTab::FileGeneralTab(const QFileInfo& baseLocation,
 							   QWidget *parent ):
 QWidget(parent), file_(file),
 nameEditor_(this, baseLocation),
-attributes_(this), 
 generalEditor_(this, file),
 fileTypeEditor_(this, file, QStringList()) {
 
-	QGridLayout* layout = new QGridLayout(this);
-	layout->addWidget(&nameEditor_, 0, 0, 1, 1);
-	layout->addWidget(&attributes_, 0, 1, 1, 1);
-	layout->addWidget(&generalEditor_, 1, 0, 1, 2);
-	layout->addWidget(&fileTypeEditor_, 2, 0, 1, 2);
+	QVBoxLayout* layout = new QVBoxLayout(this);
+	layout->addWidget(&nameEditor_);
+	layout->addWidget(&fileTypeEditor_);
+	layout->addWidget(&generalEditor_);
 
 	connect(&nameEditor_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&nameEditor_, SIGNAL(nameChanged(const QString&)),
 		this, SIGNAL(nameChanged(const QString&)), Qt::UniqueConnection);
-	connect(&attributes_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&generalEditor_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&fileTypeEditor_, SIGNAL(contentChanged()),
@@ -52,9 +48,7 @@ bool FileGeneralTab::isValid() const {
 
 void FileGeneralTab::apply() {
 	file_->setName(nameEditor_.getFileName());
-	file_->setNameAttributes(nameEditor_.getAttributes());
-
-	file_->setAttributes(attributes_.getAttributes());
+	//file_->setNameAttributes(nameEditor_.getAttributes());
 
 	generalEditor_.apply();
 	fileTypeEditor_.apply();
@@ -62,9 +56,7 @@ void FileGeneralTab::apply() {
 
 void FileGeneralTab::restore() {
 	nameEditor_.setFileName(file_->getName());
-	nameEditor_.setAttributes(file_->getNameAttributes());
-
-	attributes_.setAttributes(file_->getAttributes());
+	//nameEditor_.setAttributes(file_->getNameAttributes());
 
 	generalEditor_.restore();
 	fileTypeEditor_.restore();

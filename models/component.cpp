@@ -605,6 +605,11 @@ void Component::write(QFile& file) {
 	// call base class to write the VLNV info
 	LibraryComponent::writeVLNV(writer);
 
+	// if description is specified in the base class
+	if (!LibraryComponent::description_.isEmpty()) {
+		writer.writeTextElement("spirit:description", description_);
+	}
+
 	if (busInterfaces_.size() != 0) {
 		writer.writeStartElement("spirit:busInterfaces");
 
@@ -723,11 +728,6 @@ void Component::write(QFile& file) {
 		}
 
 		writer.writeEndElement(); // spirit:otherClockDrivers
-	}
-
-	// if description is specified in the base class
-	if (!LibraryComponent::description_.isEmpty()) {
-		writer.writeTextElement("spirit:description", description_);
 	}
 
 	if (parameters_.size() != 0) {

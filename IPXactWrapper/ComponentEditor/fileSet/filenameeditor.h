@@ -57,7 +57,7 @@ public:
 	 *
 	 * \return const QMap containing the attributes.
 	*/
-	const QMap<QString, QString> getAttributes() const;
+	//const QMap<QString, QString> getAttributes() const;
 
 	
 	/*! \brief Set the file name for the widget
@@ -73,7 +73,7 @@ public:
 	 * \param attributes QMap containing the attributes.
 	 *
 	*/
-	void setAttributes(const QMap<QString, QString>& attributes);
+	//void setAttributes(const QMap<QString, QString>& attributes);
 
 	/*! \brief Checks that the widget has valid inputs.
 	 *
@@ -102,7 +102,7 @@ private:
 	FileNameLineEdit nameEdit_;
 
 	//! \brief The editor to edit the attributes of the file name.
-	AttributeBox attributes_;
+	//AttributeBox attributes_;
 };
 
 #endif // FILENAMEEDITOR_H

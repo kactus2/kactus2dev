@@ -355,6 +355,11 @@ void DesignConfiguration::write(QFile& file) {
     // call base class to write the VLNV info
     LibraryComponent::writeVLNV(writer);
 
+	if (!LibraryComponent::description_.isEmpty()) {
+		writer.writeTextElement("spirit:description",
+			LibraryComponent::description_);
+	}
+
     // if mandatory reference to a design is missing
     if (!designRef_.isValid()) {
     	throw Write_error(QObject::tr("Mandatory element spirit:designRef "
@@ -447,11 +452,6 @@ void DesignConfiguration::write(QFile& file) {
 
 			writer.writeEndElement(); // spirit:viewConfiguration
 		}
-    }
-
-    if (!LibraryComponent::description_.isEmpty()) {
-    	writer.writeTextElement("spirit:description",
-    			LibraryComponent::description_);
     }
 
     writer.writeEndElement(); // spirit:designConfiguration
