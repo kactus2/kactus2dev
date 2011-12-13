@@ -66,7 +66,7 @@ removeButton_(QIcon(":/icons/graphics/remove.png"), QString(), this) {
 }
 
 ComponentTreeNavigator::~ComponentTreeNavigator() {
-
+	qDebug() << "Deleted navigator";
 }
 
 void ComponentTreeNavigator::onAdd() {

@@ -19,6 +19,7 @@
 #include <QSharedPointer>
 #include <QFileInfo>
 #include <QSplitter>
+#include <QVBoxLayout>
 
 class ComponentTreeItem;
 class ItemEditor;
@@ -70,6 +71,9 @@ public:
 	 * \return True if the edited object is hardware implementation.
 	*/
 	virtual bool isHWImplementation() const;
+
+	//! \brief Refreshes the editor to display the changes made.
+    virtual void refresh();
 
 public slots:
 
@@ -164,11 +168,14 @@ private:
 	*/
 	bool saveEditors();
 
+	//! \brief Refresh the editors and the navigator tree.
+	void refreshEditors();
+
 	//! \brief Represents the xml-file in the file system.
 	QFileInfo xmlFile_;
 
 	//! \brief Contains the navigator and widgetStack.
-	QSplitter splitter_;
+	QSplitter* splitter_;
 
 	//! \brief The parent library handler.
 	LibraryInterface* handler_;
@@ -177,13 +184,13 @@ private:
 	QSharedPointer<Component> component_;
 
 	//! \brief Pointer to the component being edited.
-	QSharedPointer<Component> editableComponent_;
+	//QSharedPointer<Component> editableComponent_;
 
 	//! \brief The tree navigator widget on the left side
-	ComponentTreeNavigator navigator_;
+	ComponentTreeNavigator* navigator_;
 
 	//! \brief The stack that contains the editors to display.
-	QStackedWidget widgetStack_;
+	QStackedWidget* widgetStack_;
 
 	/*! \brief Contains the pointers used to select the correct editor.
 	*
@@ -194,6 +201,9 @@ private:
 
 	//! \brief The model index that is currently selected in the navigation tree.
 	QModelIndex currentIndex_;
+
+	//! \brief The layout of the editor
+	QVBoxLayout* layout_;
 };
 
 #endif // COMPONENTGENERATOR_H

@@ -783,6 +783,7 @@ void BusInterface::setInterfaceMode(General::InterfaceMode interfaceMode) {
 			slave_.clear();
 			master_.clear();
 			mirroredSlave_.clear();
+			system_ = "default";
 			return;
 							  }
 		case General::MIRROREDSLAVE: {
@@ -809,6 +810,7 @@ void BusInterface::setInterfaceMode(General::InterfaceMode interfaceMode) {
 			slave_.clear();
 			master_.clear();
 			mirroredSlave_.clear();
+			system_ = "default";
 			return;
 									  }
 		case General::MONITOR: {

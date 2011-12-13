@@ -45,111 +45,28 @@
 
 static const int MIN_COMPONENT_EDITOR_HEIGHT = 500;
 
-IPXactComponentEditor::IPXactComponentEditor(LibraryInterface* lh, const QFileInfo& xmlLocation, 
+IPXactComponentEditor::IPXactComponentEditor(LibraryInterface* lh, 
+											 const QFileInfo& xmlLocation, 
 											 QSharedPointer<Component> component, 
 											 QWidget *parent): 
 TabDocument(parent, DOC_PROTECTION_SUPPORT), 
 xmlFile_(xmlLocation), 
-splitter_(this),
+splitter_(NULL),
 handler_(lh),
 component_(component),
-editableComponent_(QSharedPointer<Component>(new Component(*component_))),
-navigator_(editableComponent_, lh, this), 
-widgetStack_(this), indexes_(),
-currentIndex_() {
+navigator_(NULL), 
+widgetStack_(NULL), 
+indexes_(),
+currentIndex_(),
+layout_(NULL) {
 
 	Q_ASSERT_X(component_, "IPXactComponentEditor constructor",
 		"Null Component-pointer was given to IPXactComponentEditor");
 
-	QVBoxLayout* layout = new QVBoxLayout(this);
-	layout->addWidget(&splitter_, 1);
+	refreshEditors();
 
-	// add the widget that displays the navigation tree
-	splitter_.addWidget(&navigator_);
-
-	// add the stacked widget which shows the item-editors
-	splitter_.addWidget(&widgetStack_);
-
-	// set the stretch factors for the widgets
-	splitter_.setStretchFactor(0, 0);
-	splitter_.setStretchFactor(1, 1);
-
-	// set the size policy for the widget
-	//setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum));
-	setMinimumHeight(MIN_COMPONENT_EDITOR_HEIGHT);
-
-	// instance for retrieving the previously set options for the Component
-	// editor
-	QSettings settings("tut.fi", "Kactus2");
-
-	// if geometry is saved then restore it
-	if (settings.contains("ComponentEditor/geometry")) {
-		restoreGeometry(settings.value("ComponentEditor/geometry").toByteArray());
-	}
-
-	// connect the signal from the navigator that informs when user has selected
-	// another item to be edited.
-	connect(&navigator_, SIGNAL(itemSelected(const QModelIndex&)),
-		this, SLOT(selectedItemChanged(const QModelIndex&)), Qt::UniqueConnection);
-	
-	// the signal that informs when user has decided to remove on item in the
-	// tree
-	connect(&navigator_, SIGNAL(itemRemoved(const QModelIndex&)),
-		this, SLOT(onItemRemoved(const QModelIndex&)), Qt::UniqueConnection);
-
-	connect(&navigator_, SIGNAL(itemMoved()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-
-	// set up an empty editor to be displayed at startup when no item is 
-	// selected.
-	setupNullEditor();
-
-	VLNV const* vlnv = component_->getVlnv();
-	setDocumentName(vlnv->getName() + " (" + vlnv->getVersion() + ")");
-
-    if (component_->getComponentImplementation() == KactusAttribute::KTS_SW)
-    {
-        switch (component_->getComponentSWType())
-        {
-        case KactusAttribute::KTS_SW_PLATFORM:
-            {
-                setDocumentType("SW Platform");
-                break;
-            }
-
-        case KactusAttribute::KTS_SW_APPLICATION:
-            {
-                setDocumentType("SW Application");
-                break;
-            }
-        
-        case KactusAttribute::KTS_SW_ENDPOINTS:
-            {
-                setDocumentType("MCAPI Endpoints");
-                break;
-            }
-		case KactusAttribute::KTS_SW_MAPPING: 
-			{
-				setDocumentType("SW mapping");
-				break;
-			}
-
-        default:
-            {
-                Q_ASSERT(false);
-                break;
-            }
-        }
-    }
-    else
-    {
-	    setDocumentType("Component");
-    }
-
-    // Open in unlocked mode by default only if the version is draft.
-    setProtection(vlnv->getVersion() != "draft");
-
-	selectedItemChanged(navigator_.generalEditorIndex());
+	// Open in unlocked mode by default only if the version is draft.
+	setProtection(component_->getVlnv()->getVersion() != "draft");
 }
 
 IPXactComponentEditor::~IPXactComponentEditor() {
@@ -161,7 +78,7 @@ IPXactComponentEditor::~IPXactComponentEditor() {
 	while (i != indexes_.end()) {
 
 		// remove the widget from the stack
-		widgetStack_.removeWidget(i.value());
+		widgetStack_->removeWidget(i.value());
 		
 		// delete the editor
 		delete i.value();
@@ -193,7 +110,7 @@ void IPXactComponentEditor::selectedItemChanged( const QModelIndex& newIndex ) {
 	if (indexes_.contains(dataPointer)) {
 
 		// set the correct editor to be displayed
-		widgetStack_.setCurrentWidget(indexes_.value(dataPointer));
+		widgetStack_->setCurrentWidget(indexes_.value(dataPointer));
 	}
 	// if an element exists but there is not yet an editor created for it
 	else {
@@ -211,13 +128,13 @@ void IPXactComponentEditor::onItemNameChanged( const QString& newName ) {
 		return;
 	}
 
-	navigator_.updateItemName(newName, currentIndex_);
+	navigator_->updateItemName(newName, currentIndex_);
 }
 
 void IPXactComponentEditor::setupNullEditor()
 {
 	// create an empty editor
-	ItemEditor* editor = new ItemEditor(QSharedPointer<Component>(), &widgetStack_);
+	ItemEditor* editor = new ItemEditor(QSharedPointer<Component>(), widgetStack_);
 
 	// add the pointer to the map
 	indexes_.insert(0, editor);
@@ -225,8 +142,8 @@ void IPXactComponentEditor::setupNullEditor()
     // TODO: Create the general editor.
 
 	// add the empty editor to widgetStack and set it as currently visible
-	widgetStack_.insertWidget(0, editor);
-	widgetStack_.setCurrentIndex(0);
+	widgetStack_->insertWidget(0, editor);
+	widgetStack_->setCurrentIndex(0);
 }
 
 void IPXactComponentEditor::createNewEditor( ComponentTreeItem* item ) {
@@ -241,22 +158,22 @@ void IPXactComponentEditor::createNewEditor( ComponentTreeItem* item ) {
 		case ComponentTreeItem::FILESET: {
 			
 			// create the editor
-			editor = new FileSetEditor(xmlFile_, editableComponent_, 
-				item->getDataPointer(),	&widgetStack_);
+			editor = new FileSetEditor(xmlFile_, component_, 
+				item->getDataPointer(),	widgetStack_);
 
 			break;
 										 }
 		case ComponentTreeItem::FILE: {
 
 			// create the editor
-			editor = new FileEditor(xmlFile_, editableComponent_, 
-				item->getDataPointer(),	&widgetStack_);
+			editor = new FileEditor(xmlFile_, component_, 
+				item->getDataPointer(),	widgetStack_);
 			break;
 									  }
 
         case ComponentTreeItem::GENERAL: {
             // Create the general editor.
-            editor = new GeneralEditor(this, handler_, editableComponent_, &widgetStack_);
+            editor = new GeneralEditor(this, handler_, component_, widgetStack_);
             break;
                                         }
 
@@ -264,59 +181,59 @@ void IPXactComponentEditor::createNewEditor( ComponentTreeItem* item ) {
             if (component_->getComponentImplementation() == KactusAttribute::KTS_SW &&
                 component_->getComponentSWType() == KactusAttribute::KTS_SW_ENDPOINTS)
             {
-			    editor = new EndpointEditor(editableComponent_, 
+			    editor = new EndpointEditor(component_, 
 				                            item->getDataPointer(), this);
             }
             else
             {
-                editor = new ModelParameterEditor(editableComponent_, 
+                editor = new ModelParameterEditor(component_, 
                                                   item->getDataPointer(), this);
             }
 			break;
 												 }
 		case ComponentTreeItem::PORTS: {
-            editor = new PortsEditor(editableComponent_, 
+            editor = new PortsEditor(component_, 
  			                         item->getDataPointer(), handler_, this);
 			break;
 									   }
 		case ComponentTreeItem::PARAMETERS: {
-			editor = new ParametersEditor(editableComponent_, this);
+			editor = new ParametersEditor(component_, this);
 			break;
 									   }
 		case ComponentTreeItem::OTHERCLOCKDRIVERS: {
-			editor = new OtherClockDriversEditor(editableComponent_, this);
+			editor = new OtherClockDriversEditor(component_, this);
 			break;
 												   }
 		case ComponentTreeItem::CHANNEL: {
-			editor = new ChannelEditor(editableComponent_, item->getDataPointer(), this);
+			editor = new ChannelEditor(component_, item->getDataPointer(), this);
 			break;
 										 }
 		case ComponentTreeItem::BUSINTERFACE: {
             if (component_->getComponentImplementation() == KactusAttribute::KTS_SW &&
                 component_->getComponentSWType() == KactusAttribute::KTS_SW_PLATFORM)
             {
-                editor = new APIEditor(handler_, editableComponent_, 
+                editor = new APIEditor(handler_, component_, 
                                        item->getDataPointer(), this);
             }
             else
             {
-			    editor = new BusInterfaceEditor(handler_, editableComponent_, 
+			    editor = new BusInterfaceEditor(handler_, component_, 
 				    item->getDataPointer(), this);
             }
 			break;
 											  }
 		case ComponentTreeItem::VIEW: {
-			editor = new ViewEditor(editableComponent_, item->getDataPointer(), handler_, this);
+			editor = new ViewEditor(component_, item->getDataPointer(), handler_, this);
 			break;
 									  }
 		case ComponentTreeItem::DEFAULTFILEBUILDERS: {
-			editor = new FileBuilderEditor(editableComponent_, item->getDataPointer(), this);
+			editor = new FileBuilderEditor(component_, item->getDataPointer(), this);
 			break;
 													 }
 
         case ComponentTreeItem::SOFTWARE: {
-            editor = new SoftwareMappingsEditor(handler_, editableComponent_, item->getDataPointer(),
-                                                &widgetStack_, this);
+            editor = new SoftwareMappingsEditor(handler_, component_, item->getDataPointer(),
+                                                widgetStack_, this);
             break;
                                           }
 
@@ -374,7 +291,7 @@ void IPXactComponentEditor::onApply() {
 			i.value()->makeChanges();
 
 			// remove the editor from the widget stack
-			widgetStack_.removeWidget(i.value());
+			widgetStack_->removeWidget(i.value());
 
 			// delete the editor
 			delete i.value();
@@ -391,7 +308,7 @@ void IPXactComponentEditor::onApply() {
 	}
 
 	// clear the selection in the navigator
-	navigator_.clearSelection();
+	navigator_->clearSelection();
 
 	// if everything went ok then apply button is disabled and the settings 
 	// written into file
@@ -425,13 +342,13 @@ void IPXactComponentEditor::addEditor( ComponentTreeItem* item,
 									  ItemEditor* editor ) {
 
 	// add the editor to the widget stack and get it's index
-	widgetStack_.addWidget(editor);
+	widgetStack_->addWidget(editor);
 
 	// save the pointer to the editor in the map with dataPointer as key
 	indexes_.insert(item->getDataPointer(), editor);
 
 	// set the newly created editor to be displayed
-	widgetStack_.setCurrentWidget(editor);
+	widgetStack_->setCurrentWidget(editor);
 
 	// connect the editor's nameChanged signal to event handler so the name
 	// change can be informed to the model
@@ -470,7 +387,7 @@ bool IPXactComponentEditor::updateOldIndexItem() {
 
 	// tell tree navigator to update the current model index so changes become
 	// visible instantly
-	navigator_.updateItem(currentIndex_);
+	navigator_->updateItem(currentIndex_);
 
     return true;
 }
@@ -517,7 +434,7 @@ void IPXactComponentEditor::onItemRemoved( const QModelIndex& index ) {
 		indexes_.erase(indexes_.find(dataPointers.at(i)));
 
 		// remove editor from stackedWidget
-		widgetStack_.removeWidget(editor);
+		widgetStack_->removeWidget(editor);
 
 		// tell the editor to destroy the model
 		editor->removeModel();
@@ -540,15 +457,14 @@ bool IPXactComponentEditor::save() {
 
 		// if the component has ports that's type is defined it also must have 
 		// at least one view
-		if (editableComponent_->hasPortTypes() && !editableComponent_->hasViews()) {
+		if (component_->hasPortTypes() && !component_->hasViews()) {
 			
 			emit errorMessage(tr("Component %1 had types defined for port(s) but "
 				"no view was defined. Create at least one view for component.").arg(
-				editableComponent_->getVlnv()->toString()));
+				component_->getVlnv()->toString()));
 			return false;
 		}
 
-		*component_ = *editableComponent_;
 		handler_->writeModelToFile(component_);
 
 		return TabDocument::save();
@@ -577,7 +493,7 @@ bool IPXactComponentEditor::saveEditors() {
 			i.value()->makeChanges();
 
 			// remove the editor from the widget stack
-			widgetStack_.removeWidget(i.value());
+			widgetStack_->removeWidget(i.value());
 
 			// delete the editor
 			delete i.value();
@@ -594,7 +510,7 @@ bool IPXactComponentEditor::saveEditors() {
 	}
 
 	// clear the selection in the navigator
-	navigator_.clearSelection();
+	navigator_->clearSelection();
 
 	// create a null editor because it is needed to display empty editor
 	setupNullEditor();
@@ -621,12 +537,8 @@ bool IPXactComponentEditor::saveAs()
 	// if all editors were valid then document can be written to disk
 	if (saveEditors()) {
 
-        // Update the kactus2 attributes.
-		editableComponent_->setComponentHierarchy(prodHier);
-		editableComponent_->setComponentFirmness(firmness);
-
 		// create copies of the objects so saving is not done to the original component
-		component_ = QSharedPointer<Component>(new Component(*editableComponent_));
+		component_ = QSharedPointer<Component>(new Component(*component_));
 
 		// make sure the vlnv type is correct
 		VLNV compVLNV = vlnv;
@@ -634,7 +546,6 @@ bool IPXactComponentEditor::saveAs()
 
 		// update the vlnv
 		component_->setVlnv(vlnv);
-		editableComponent_->setVlnv(vlnv);
 
         // Write the component to a file.
         handler_->writeModelToFile(directory, component_);
@@ -659,8 +570,8 @@ void IPXactComponentEditor::setProtection(bool locked)
     TabDocument::setProtection(locked);
 
     // TODO: Enable/disable all editing.
-    widgetStack_.setEnabled(!locked);
-	navigator_.setLocked(locked);
+    widgetStack_->setEnabled(!locked);
+	navigator_->setLocked(locked);
 }
 
 bool IPXactComponentEditor::isHWImplementation() const {
@@ -670,7 +581,7 @@ bool IPXactComponentEditor::isHWImplementation() const {
 bool IPXactComponentEditor::onVhdlGenerate() {
 	
 	// if the component is hierarchical then it must be opened in design widget
-	if (editableComponent_->isHierarchical()) {
+	if (component_->isHierarchical()) {
 		QMessageBox::information(this, tr("Kactus2 component editor"),
 			tr("This component contains hierarchical views so you must open it"
 			" in a design editor and run the vhdl generator there."));
@@ -681,11 +592,11 @@ bool IPXactComponentEditor::onVhdlGenerate() {
 		save();
 	}
 
-	QString fileName = handler_->getPath(*editableComponent_->getVlnv());
+	QString fileName = handler_->getPath(*component_->getVlnv());
 	QFileInfo targetInfo(fileName);
 	fileName = targetInfo.absolutePath();
 	fileName += QString("/");
-	fileName += editableComponent_->getVlnv()->getName();
+	fileName += component_->getVlnv()->getName();
 	fileName += QString(".rtl.vhd");
 
 	QString path = QFileDialog::getSaveFileName(this,
@@ -697,7 +608,7 @@ bool IPXactComponentEditor::onVhdlGenerate() {
 		return false;
 
 	VhdlGenerator2 vhdlGen(handler_, this);
-	vhdlGen.parse(editableComponent_, QString());
+	vhdlGen.parse(component_, QString());
 	vhdlGen.generateVhdl(path);
 
 	// ask user if he wants to save the generated vhdl into object metadata
@@ -709,14 +620,142 @@ bool IPXactComponentEditor::onVhdlGenerate() {
 	// if the generated file is saved
 	if (button == QMessageBox::Yes) {
 
-		// add a rtl view to the editableComponent_
+		// add a rtl view to the component_
 		vhdlGen.addRTLView(path);
 
-		*component_ = *editableComponent_;
 		handler_->writeModelToFile(component_);
 		
 		return true;
 	}
 
 	return false;
+}
+
+void IPXactComponentEditor::refresh() {
+	Q_ASSERT(!isModified());
+
+	QSharedPointer<LibraryComponent> libComp = handler_->getModel(*component_->getVlnv());
+	component_ = libComp.staticCast<Component>();
+
+	currentIndex_ = QModelIndex();
+
+	// first remove the editors from the widget stack
+	foreach (ItemEditor* editor, indexes_) {
+		widgetStack_->removeWidget(editor);
+	}
+
+	// then delete all editors
+	qDeleteAll(indexes_);
+	indexes_.clear();
+
+	if (splitter_) {
+		delete splitter_;
+		splitter_ = 0;
+	}
+	if (layout_) {
+		delete layout_;
+		layout_ = 0;
+	}
+
+	refreshEditors();
+
+	setModified(false);
+
+	TabDocument::refresh();
+}
+
+void IPXactComponentEditor::refreshEditors() {
+
+	splitter_ = new QSplitter(this);
+
+	navigator_ = new ComponentTreeNavigator(component_, handler_, splitter_);
+
+	widgetStack_ = new QStackedWidget(splitter_);
+
+	layout_ = new QVBoxLayout(this);
+	layout_->addWidget(splitter_, 1);
+
+	// add the widget that displays the navigation tree
+	splitter_->addWidget(navigator_);
+
+	// add the stacked widget which shows the item-editors
+	splitter_->addWidget(widgetStack_);
+
+	// set the stretch factors for the widgets
+	splitter_->setStretchFactor(0, 0);
+	splitter_->setStretchFactor(1, 1);
+
+	// set the size policy for the widget
+	//setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum));
+	setMinimumHeight(MIN_COMPONENT_EDITOR_HEIGHT);
+
+	// instance for retrieving the previously set options for the Component
+	// editor
+	QSettings settings("tut.fi", "Kactus2");
+
+	// if geometry is saved then restore it
+	if (settings.contains("ComponentEditor/geometry")) {
+		restoreGeometry(settings.value("ComponentEditor/geometry").toByteArray());
+	}
+
+	// connect the signal from the navigator that informs when user has selected
+	// another item to be edited.
+	connect(navigator_, SIGNAL(itemSelected(const QModelIndex&)),
+		this, SLOT(selectedItemChanged(const QModelIndex&)), Qt::UniqueConnection);
+
+	// the signal that informs when user has decided to remove on item in the
+	// tree
+	connect(navigator_, SIGNAL(itemRemoved(const QModelIndex&)),
+		this, SLOT(onItemRemoved(const QModelIndex&)), Qt::UniqueConnection);
+
+	connect(navigator_, SIGNAL(itemMoved()),
+		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
+	// set up an empty editor to be displayed at startup when no item is 
+	// selected.
+	setupNullEditor();
+
+	VLNV const* vlnv = component_->getVlnv();
+	setDocumentName(vlnv->getName() + " (" + vlnv->getVersion() + ")");
+
+	if (component_->getComponentImplementation() == KactusAttribute::KTS_SW)
+	{
+		switch (component_->getComponentSWType())
+		{
+		case KactusAttribute::KTS_SW_PLATFORM:
+			{
+				setDocumentType("SW Platform");
+				break;
+			}
+
+		case KactusAttribute::KTS_SW_APPLICATION:
+			{
+				setDocumentType("SW Application");
+				break;
+			}
+
+		case KactusAttribute::KTS_SW_ENDPOINTS:
+			{
+				setDocumentType("MCAPI Endpoints");
+				break;
+			}
+		case KactusAttribute::KTS_SW_MAPPING: 
+			{
+				setDocumentType("SW mapping");
+				break;
+			}
+
+		default:
+			{
+				Q_ASSERT(false);
+				break;
+			}
+		}
+	}
+	else
+	{
+		setDocumentType("Component");
+	}
+
+	selectedItemChanged(navigator_->generalEditorIndex());
 }

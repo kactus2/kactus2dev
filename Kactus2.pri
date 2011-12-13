@@ -10,7 +10,9 @@ message("You are running qmake on a generated .pro file. This may not work!")
 HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./mainwindow/SplashScreen.h \
     ./resource.h \
+    ./version.h \
     ./common/ColumnTypes.h \
+    ./common/CSourceWriter.h \
     ./common/diagramgrid.h \
     ./common/DiagramUtil.h \
     ./common/DrawMode.h \
@@ -39,7 +41,6 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./common/widgets/listManager/filelistmanager.h \
     ./common/widgets/listManager/listmanager.h \
     ./common/widgets/listManager/listmanagermodel.h \
-    ./common/widgets/listManager/listview.h \
     ./common/widgets/nameGroupBox/namegroupbox.h \
     ./common/widgets/vlnvGenerator/vlnvgenerator.h \
     ./common/widgets/assistedLineEdit/AssistedLineEdit.h \
@@ -71,6 +72,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./common/delegates/combodelegate.h \
     ./common/delegates/lineeditdelegate.h \
     ./common/views/EditableTableView/editabletableview.h \
+    ./common/views/EditableListView/editablelistview.h \
     ./designwidget/blockdiagram.h \
     ./designwidget/designwidget.h \
     ./designwidget/DiagramAddCommands.h \
@@ -328,7 +330,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./ConnectionEditor/connectioneditor.h \
     ./GCF/Common.h \
     ./GCF/MenuStrip.h
-SOURCES += ./common/widgets/listManager/listview.cpp \
+SOURCES += ./common/CSourceWriter.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/KactusAttribute.cpp \
     ./common/TextEditProvider.cpp \
@@ -377,6 +379,7 @@ SOURCES += ./common/widgets/listManager/listview.cpp \
     ./common/delegates/combodelegate.cpp \
     ./common/delegates/lineeditdelegate.cpp \
     ./common/views/EditableTableView/editabletableview.cpp \
+    ./common/views/EditableListView/editablelistview.cpp \
     ./designwidget/blockdiagram.cpp \
     ./designwidget/BusInterfaceDialog.cpp \
     ./designwidget/designwidget.cpp \

@@ -514,7 +514,7 @@ void LibraryData::openLibraryFile( const QString filePath /*= QString()*/ ) {
 		// if the file does not exist in file system
 		QFileInfo ipxactFile(filePath);
 		if (!ipxactFile.exists()) {
-			QString errorMsg(tr("File %1 was not found in file system.").arg(path));
+			QString errorMsg(tr("File %1 was not found in file system.").arg(filePath));
 			emit errorMessage(errorMsg);
 		}
 
