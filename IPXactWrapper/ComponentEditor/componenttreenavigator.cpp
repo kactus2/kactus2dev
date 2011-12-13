@@ -166,3 +166,4 @@ void ComponentTreeNavigator::selectItem( const QModelIndex& index ) {
 QModelIndex ComponentTreeNavigator::generalEditorIndex() const {
 	return model_.generalEditorIndex();
 }
+

@@ -90,6 +90,13 @@ public slots:
 	*/
 	bool onVhdlGenerate();
 
+	/*! \brief Run modelsim generator for the component.
+	 *
+	 *
+	 * \return bool True if the metadata was changed and the editor should be re-opened.
+	*/
+	bool onModelsimGenerate();
+
 private slots:
 
 	/*! \brief Should be called when another item is selected for editing.

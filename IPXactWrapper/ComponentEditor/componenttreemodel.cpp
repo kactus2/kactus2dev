@@ -307,3 +307,4 @@ void ComponentTreeModel::moveItem( const QModelIndex& source, const QModelIndex&
 
 	emit itemMoved();
 }
+

@@ -1015,13 +1015,13 @@ void MainWindow::updateMenuStrip()
 		actGenModelSim_->setEnabled(unlocked);
 		actGenQuartus_->setEnabled(unlocked);
 	}
-	// if is hardware component then set only documentation and vhdl enabled
+	// if is hardware component then set only documentation, modelsim and vhdl enabled
 	else if (isHWComp) {
         hwDesignGroup_->setVisible(true);
 		hwDesignGroup_->setEnabled(unlocked);
 		actGenVHDL_->setEnabled(unlocked);
 		actGenDocumentation_->setEnabled(unlocked);
-		actGenModelSim_->setDisabled(true);
+		actGenModelSim_->setEnabled(unlocked);
 		actGenQuartus_->setDisabled(true);
 	}
 	else {
@@ -1169,14 +1169,20 @@ void MainWindow::generateVHDL()
 //-----------------------------------------------------------------------------
 // Function: generateModelSim()
 //-----------------------------------------------------------------------------
-void MainWindow::generateModelSim()
-{
+void MainWindow::generateModelSim() {
     DesignWidget* designWidget = dynamic_cast<DesignWidget*>(designTabs_->currentWidget());
+	IPXactComponentEditor* compEditor = dynamic_cast<IPXactComponentEditor*>(designTabs_->currentWidget());
     
-	if (designWidget != 0)
-    {
+	if (designWidget != 0) {
         designWidget->onModelsimGenerate();
     }
+	else if (compEditor) {
+		
+		// if user changed the contents of the metadata then refresh the editor
+		if (compEditor->onModelsimGenerate()) {
+			compEditor->refresh();
+		}
+	}
 	
 }
 
@@ -2174,8 +2180,8 @@ void MainWindow::changeProtection(bool locked)
             return;
         }
 		// Lock/unlock the document.
-		doc->setProtection(locked);
 		doc->refresh();
+		doc->setProtection(locked);
     }
 
 	// if the tab is designWidget

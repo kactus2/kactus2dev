@@ -190,6 +190,9 @@ private:
 
 	//! \brief List of the source files to be written to make file
 	QList<FileOptions> sourceFiles_;
+
+	//! \brief The name of the view the modelsim generator is run for.
+	QString viewName_;
 };
 
 #endif /* MODELSIMGENERATOR_H_ */

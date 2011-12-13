@@ -650,7 +650,8 @@ void DesignWidget::onModelsimGenerate() {
 	QString fileName = lh_->getPath(*component->getVlnv());
 	QFileInfo targetInfo(fileName);
 	fileName = targetInfo.absolutePath();
-	fileName += QString("/create_makefile");
+	fileName += QString("/%1.%2.create_makefile").arg(
+		component->getVlnv()->getName()).arg(viewName_);
 
 	// ask user to select a location to save the makefile
 	fileName = QFileDialog::getSaveFileName(this, 

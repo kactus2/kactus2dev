@@ -160,6 +160,8 @@ bool ModelsimGenerator::addMakefile2IPXact(QSharedPointer<Component> component,
 	File* scriptFile = new File(relativePath, modelsimFileSet);
 	scriptFile->addUserFileType(QString("ModelsimScript"));
 	scriptFile->setIncludeFile(false);
+	scriptFile->setDescription(tr(
+		"Script file for Modelsim that compiles all files for view %1.").arg(viewName_));
 
 	// add the new file to the file set
 	modelsimFileSet->addFile(scriptFile);
@@ -253,6 +255,7 @@ void ModelsimGenerator::parseFiles( QSharedPointer<Component> component, const Q
 				component->getVlnv()->getName()));
 
 			parseBlindFileSet(component);
+			viewName_ = viewName;
 			return;
 		}
 
@@ -356,6 +359,7 @@ void ModelsimGenerator::parseFiles( QSharedPointer<Component> component, const Q
 			parseFiles(component, topLevelView);
 		}
 	}
+	viewName_ = viewName;
 }
 
 void ModelsimGenerator::parseFileSets( QSharedPointer<Component> component, 

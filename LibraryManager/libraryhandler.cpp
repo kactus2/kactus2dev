@@ -1479,6 +1479,7 @@ void LibraryHandler::endSave() {
 
 			data_->addVLNV(i.key(), i.value(), false);
 		}
+		itemsToAdd_.clear();
 
 		// rebuild the library views.
 		data_->resetLibrary();

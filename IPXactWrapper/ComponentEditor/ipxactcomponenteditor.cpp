@@ -9,10 +9,12 @@
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/KactusAttribute.h>
+#include <common/dialogs/comboSelector/comboselector.h>
 
 #include <models/component.h>
 
 #include <vhdlGenerator/vhdlgenerator2.h>
+#include <modelsimGenerator/modelsimgenerator.h>
 
 #include <exceptions/write_error.h>
 
@@ -578,59 +580,6 @@ bool IPXactComponentEditor::isHWImplementation() const {
 	return component_->getComponentImplementation() == KactusAttribute::KTS_HW;
 }
 
-bool IPXactComponentEditor::onVhdlGenerate() {
-	
-	// if the component is hierarchical then it must be opened in design widget
-	if (component_->isHierarchical()) {
-		QMessageBox::information(this, tr("Kactus2 component editor"),
-			tr("This component contains hierarchical views so you must open it"
-			" in a design editor and run the vhdl generator there."));
-		return false;
-	}
-	
-	if (isModified() && askSaveFile()) {
-		save();
-	}
-
-	QString fileName = handler_->getPath(*component_->getVlnv());
-	QFileInfo targetInfo(fileName);
-	fileName = targetInfo.absolutePath();
-	fileName += QString("/");
-	fileName += component_->getVlnv()->getName();
-	fileName += QString(".rtl.vhd");
-
-	QString path = QFileDialog::getSaveFileName(this,
-		tr("Set the directory where the vhdl file is created to"),
-		fileName, tr("Vhdl files (*.vhd)"));
-
-	// if user clicks cancel then nothing is created
-	if (path.isEmpty())
-		return false;
-
-	VhdlGenerator2 vhdlGen(handler_, this);
-	vhdlGen.parse(component_, QString());
-	vhdlGen.generateVhdl(path);
-
-	// ask user if he wants to save the generated vhdl into object metadata
-	QMessageBox::StandardButton button = QMessageBox::question(this, 
-		tr("Save generated file to metadata?"),
-		tr("Would you like to save the generated vhdl-file to IP-Xact"
-		" metadata?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-
-	// if the generated file is saved
-	if (button == QMessageBox::Yes) {
-
-		// add a rtl view to the component_
-		vhdlGen.addRTLView(path);
-
-		handler_->writeModelToFile(component_);
-		
-		return true;
-	}
-
-	return false;
-}
-
 void IPXactComponentEditor::refresh() {
 	Q_ASSERT(!isModified());
 
@@ -643,6 +592,8 @@ void IPXactComponentEditor::refresh() {
 	foreach (ItemEditor* editor, indexes_) {
 		widgetStack_->removeWidget(editor);
 	}
+
+	bool locked = isProtected();
 
 	// then delete all editors
 	qDeleteAll(indexes_);
@@ -662,6 +613,8 @@ void IPXactComponentEditor::refresh() {
 	setModified(false);
 
 	TabDocument::refresh();
+	
+	setProtection(locked);
 }
 
 void IPXactComponentEditor::refreshEditors() {
@@ -756,6 +709,120 @@ void IPXactComponentEditor::refreshEditors() {
 	{
 		setDocumentType("Component");
 	}
-
+		
 	selectedItemChanged(navigator_->generalEditorIndex());
+}
+
+bool IPXactComponentEditor::onVhdlGenerate() {
+
+	// if the component is hierarchical then it must be opened in design widget
+	if (component_->isHierarchical()) {
+		QMessageBox::information(this, tr("Kactus2 component editor"),
+			tr("This component contains hierarchical views so you must open it"
+			" in a design editor and run the vhdl generator there."));
+		return false;
+	}
+
+	if (isModified() && askSaveFile()) {
+		save();
+	}
+
+	QString fileName = handler_->getPath(*component_->getVlnv());
+	QFileInfo targetInfo(fileName);
+	fileName = targetInfo.absolutePath();
+	fileName += QString("/");
+	fileName += component_->getVlnv()->getName();
+	fileName += QString(".rtl.vhd");
+
+	QString path = QFileDialog::getSaveFileName(this,
+		tr("Set the directory where the vhdl file is created to"),
+		fileName, tr("Vhdl files (*.vhd)"));
+
+	// if user clicks cancel then nothing is created
+	if (path.isEmpty())
+		return false;
+
+	VhdlGenerator2 vhdlGen(handler_, this);
+	vhdlGen.parse(component_, QString());
+	vhdlGen.generateVhdl(path);
+
+	// ask user if he wants to save the generated vhdl into object metadata
+	QMessageBox::StandardButton button = QMessageBox::question(this, 
+		tr("Save generated file to metadata?"),
+		tr("Would you like to save the generated vhdl-file to IP-Xact"
+		" metadata?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+
+	// if the generated file is saved
+	if (button == QMessageBox::Yes) {
+
+		// add a rtl view to the component_
+		vhdlGen.addRTLView(path);
+
+		handler_->writeModelToFile(component_);
+
+		return true;
+	}
+
+	return false;
+}
+
+bool IPXactComponentEditor::onModelsimGenerate() {
+	if (isModified() && askSaveFile()) {
+		save();
+	}
+
+	// select a view to generate the modelsim script for
+	QString viewName = ComboSelector::selectView(component_, this, QString(),
+		tr("Select a view to generate the modelsim script for"));
+	if (viewName.isEmpty()) {
+		return false;
+	}
+
+	QString fileName = handler_->getPath(*component_->getVlnv());
+	QFileInfo targetInfo(fileName);
+	fileName = targetInfo.absolutePath();
+	fileName += QString("/%1.%2.create_makefile").arg(
+		component_->getVlnv()->getName()).arg(viewName);
+
+	// ask user to select a location to save the makefile
+	fileName = QFileDialog::getSaveFileName(this, 
+		tr("Set the file name for the modelsim script."), fileName,
+		tr("Modelsim scripts (*.do);;Shell cripts (*.sh)"));
+
+	// if user clicked cancel
+	if (fileName.isEmpty())
+		return false;
+
+	// construct the generator
+	ModelsimGenerator generator(handler_, this);
+	connect(&generator, SIGNAL(noticeMessage(const QString&)),
+		this, SIGNAL(noticeMsg(const QString&)), Qt::UniqueConnection);
+	connect(&generator, SIGNAL(errorMessage(const QString&)),
+		this, SIGNAL(errorMsg(const QString&)), Qt::UniqueConnection);
+
+	// parse the component and view / sub-designs
+	generator.parseFiles(component_, viewName);
+
+	// create the script file
+	generator.generateMakefile(fileName);
+
+	// ask user if he wants to save the generated modelsim script into 
+	// object metadata
+	QMessageBox::StandardButton button = QMessageBox::question(this, 
+		tr("Save generated modelsim script to metadata?"),
+		tr("Would you like to save the generated modelsim script to IP-Xact"
+		" metadata?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+
+	// if the generated file is saved
+	if (button == QMessageBox::Yes) {
+
+		QString xmlPath = handler_->getPath(*component_->getVlnv());
+
+		// if the file was successfully added to the library
+		if (generator.addMakefile2IPXact(component_, fileName, xmlPath)) {
+			handler_->writeModelToFile(component_);
+			return true;
+		}
+	}
+	return false;
 }
