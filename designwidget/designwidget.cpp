@@ -26,6 +26,7 @@
 #include <models/designconfiguration.h>
 #include <models/model.h>
 #include <models/view.h>
+#include <models/generaldeclarations.h>
 
 #include <exceptions/invalid_file.h>
 #include <exceptions/parse_error.h>
@@ -586,22 +587,28 @@ void DesignWidget::onVhdlGenerate() {
 	vhdlGen.parse(hierComponent_, viewName_);
 	vhdlGen.generateVhdl(path);
 
-	// ask user if he wants to save the generated vhdl into object metadata
-	QMessageBox::StandardButton button = QMessageBox::question(this, 
-		tr("Save generated file to metadata?"),
-		tr("Would you like to save the generated vhdl-file to IP-Xact"
-		" metadata?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+	// check if the file already exists in the metadata
+	QString basePath = lh_->getPath(*hierComponent_->getVlnv());
+	QString relativePath = General::getRelativePath(basePath, path);
+	if (!hierComponent_->hasFile(relativePath)) {
 
-	// if the generated file is saved
-	if (button == QMessageBox::Yes) {
+		// ask user if he wants to save the generated vhdl into object metadata
+		QMessageBox::StandardButton button = QMessageBox::question(this, 
+			tr("Save generated file to metadata?"),
+			tr("Would you like to save the generated vhdl-file to IP-Xact"
+			" metadata?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
 
-		// add a rtl view to the hierComponent_
-		vhdlGen.addRTLView(path);
+		// if the generated file is saved
+		if (button == QMessageBox::Yes) {
 
-		// write the hierComponent_ into file system
-		lh_->writeModelToFile(hierComponent_);
+			// add a rtl view to the hierComponent_
+			vhdlGen.addRTLView(path);
 
-		emit refresh(this);
+			// write the hierComponent_ into file system
+			lh_->writeModelToFile(hierComponent_);
+
+			emit refresh(this);
+		}
 	}
 }
 
@@ -644,14 +651,11 @@ void DesignWidget::onModelsimGenerate() {
 		save();
 	}
 
-	QSharedPointer<LibraryComponent> libComp = lh_->getModel(*hierComponent_->getVlnv());
-	QSharedPointer<Component> component = libComp.staticCast<Component>();
-
-	QString fileName = lh_->getPath(*component->getVlnv());
+	QString fileName = lh_->getPath(*hierComponent_->getVlnv());
 	QFileInfo targetInfo(fileName);
 	fileName = targetInfo.absolutePath();
 	fileName += QString("/%1.%2.create_makefile").arg(
-		component->getVlnv()->getName()).arg(viewName_);
+		hierComponent_->getVlnv()->getName()).arg(viewName_);
 
 	// ask user to select a location to save the makefile
 	fileName = QFileDialog::getSaveFileName(this, 
@@ -670,27 +674,33 @@ void DesignWidget::onModelsimGenerate() {
 	connect(&generator, SIGNAL(errorMessage(const QString&)),
 		this, SIGNAL(errorMsg(const QString&)), Qt::UniqueConnection);
 
-	// parse the component and view / sub-designs
-	generator.parseFiles(component, viewName_);
+	// parse the hierComponent_ and view / sub-designs
+	generator.parseFiles(hierComponent_, viewName_);
 
 	// create the script file
 	generator.generateMakefile(fileName);
 
-	// ask user if he wants to save the generated modelsim script into 
-	// object metadata
-	QMessageBox::StandardButton button = QMessageBox::question(this, 
-		tr("Save generated modelsim script to metadata?"),
-		tr("Would you like to save the generated modelsim script to IP-Xact"
-		" metadata?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+	// check if the file already exists in the metadata
+	QString basePath = lh_->getPath(*hierComponent_->getVlnv());
+	QString relativePath = General::getRelativePath(basePath, fileName);
+	if (!hierComponent_->hasFile(relativePath)) {
 
-	// if the generated file is saved
-	if (button == QMessageBox::Yes) {
+		// ask user if he wants to save the generated modelsim script into 
+		// object metadata
+		QMessageBox::StandardButton button = QMessageBox::question(this, 
+			tr("Save generated modelsim script to metadata?"),
+			tr("Would you like to save the generated modelsim script to IP-Xact"
+			" metadata?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
 
-		QString xmlPath = lh_->getPath(*component->getVlnv());
+		// if the generated file is saved
+		if (button == QMessageBox::Yes) {
 
-		// if the file was successfully added to the library
-		if (generator.addMakefile2IPXact(component, fileName, xmlPath)) {
-			lh_->writeModelToFile(component);
+			QString xmlPath = lh_->getPath(*hierComponent_->getVlnv());
+
+			// if the file was successfully added to the library
+			if (generator.addMakefile2IPXact(hierComponent_, fileName, xmlPath)) {
+				lh_->writeModelToFile(hierComponent_);
+			}
 		}
 	}
 }

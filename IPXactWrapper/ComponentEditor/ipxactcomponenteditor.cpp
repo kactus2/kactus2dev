@@ -746,21 +746,27 @@ bool IPXactComponentEditor::onVhdlGenerate() {
 	vhdlGen.parse(component_, QString());
 	vhdlGen.generateVhdl(path);
 
-	// ask user if he wants to save the generated vhdl into object metadata
-	QMessageBox::StandardButton button = QMessageBox::question(this, 
-		tr("Save generated file to metadata?"),
-		tr("Would you like to save the generated vhdl-file to IP-Xact"
-		" metadata?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+	// check if the file already exists in the metadata
+	QString basePath = handler_->getPath(*component_->getVlnv());
+	QString relativePath = General::getRelativePath(basePath, path);
+	if (!component_->hasFile(relativePath)) {
 
-	// if the generated file is saved
-	if (button == QMessageBox::Yes) {
+		// ask user if he wants to save the generated vhdl into object metadata
+		QMessageBox::StandardButton button = QMessageBox::question(this, 
+			tr("Save generated file to metadata?"),
+			tr("Would you like to save the generated vhdl-file to IP-Xact"
+			" metadata?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
 
-		// add a rtl view to the component_
-		vhdlGen.addRTLView(path);
+		// if the generated file is saved
+		if (button == QMessageBox::Yes) {
 
-		handler_->writeModelToFile(component_);
+			// add a rtl view to the component_
+			vhdlGen.addRTLView(path);
 
-		return true;
+			handler_->writeModelToFile(component_);
+
+			return true;
+		}
 	}
 
 	return false;
@@ -806,22 +812,28 @@ bool IPXactComponentEditor::onModelsimGenerate() {
 	// create the script file
 	generator.generateMakefile(fileName);
 
-	// ask user if he wants to save the generated modelsim script into 
-	// object metadata
-	QMessageBox::StandardButton button = QMessageBox::question(this, 
-		tr("Save generated modelsim script to metadata?"),
-		tr("Would you like to save the generated modelsim script to IP-Xact"
-		" metadata?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+	// check if the file already exists in the metadata
+	QString basePath = handler_->getPath(*component_->getVlnv());
+	QString relativePath = General::getRelativePath(basePath, fileName);
+	if (!component_->hasFile(relativePath)) {
 
-	// if the generated file is saved
-	if (button == QMessageBox::Yes) {
+		// ask user if he wants to save the generated modelsim script into 
+		// object metadata
+		QMessageBox::StandardButton button = QMessageBox::question(this, 
+			tr("Save generated modelsim script to metadata?"),
+			tr("Would you like to save the generated modelsim script to IP-Xact"
+			" metadata?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
 
-		QString xmlPath = handler_->getPath(*component_->getVlnv());
+		// if the generated file is saved
+		if (button == QMessageBox::Yes) {
 
-		// if the file was successfully added to the library
-		if (generator.addMakefile2IPXact(component_, fileName, xmlPath)) {
-			handler_->writeModelToFile(component_);
-			return true;
+			QString xmlPath = handler_->getPath(*component_->getVlnv());
+
+			// if the file was successfully added to the library
+			if (generator.addMakefile2IPXact(component_, fileName, xmlPath)) {
+				handler_->writeModelToFile(component_);
+				return true;
+			}
 		}
 	}
 	return false;
