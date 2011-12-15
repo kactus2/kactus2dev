@@ -126,6 +126,9 @@ public slots:
     void onVerticalScroll(int y);
 
 signals:
+    //! \brief Emitted when the user double-clicks a hierarchical component.
+    void openDesign(const VLNV& vlnv, const QString& viewName);
+
     //! \brief Emitted when component with given vlnv should be opened in editor.
     void openComponent(const VLNV& vlnv);
 

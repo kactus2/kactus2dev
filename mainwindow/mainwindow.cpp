@@ -2002,9 +2002,11 @@ void MainWindow::openSystem(VLNV const& vlnv, bool forceUnlocked)
     connect(designWidget->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));
     connect(designWidget, SIGNAL(contentChanged()), this, SLOT(updateMenuStrip()), Qt::UniqueConnection);
     connect(designWidget, SIGNAL(openComponent(const VLNV&)),
-        this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
+            this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
+    connect(designWidget, SIGNAL(openDesign(const VLNV&, const QString&)),
+            this, SLOT(openDesign(const VLNV&, const QString&)));
     connect(designWidget, SIGNAL(openSource(ProgramEntityItem*)),
-        this, SLOT(openSource(ProgramEntityItem*)), Qt::UniqueConnection);
+            this, SLOT(openSource(ProgramEntityItem*)), Qt::UniqueConnection);
 
     connect(designWidget, SIGNAL(componentSelected(ComponentItem*)),
         this, SLOT(onComponentSelected(ComponentItem*)), Qt::UniqueConnection);

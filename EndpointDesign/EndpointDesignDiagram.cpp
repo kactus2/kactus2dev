@@ -1166,7 +1166,15 @@ void EndpointDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mous
         }
         else
         {
-            emit openComponent(*platformCompItem->componentModel()->getVlnv());
+            // Open SW stack for hierarchical platform components, component editor for flat ones.
+            if (platformCompItem->componentModel()->getHierRef("kts_sw_ref").isValid())
+            {
+                emit openDesign(*platformCompItem->componentModel()->getVlnv(), "kts_sw_ref");
+            }
+            else
+            {
+                emit openComponent(*platformCompItem->componentModel()->getVlnv());
+            }
         }
     }
     else if (item->type() == ProgramEntityItem::Type)

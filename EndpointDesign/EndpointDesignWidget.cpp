@@ -46,6 +46,8 @@ EndpointDesignWidget::EndpointDesignWidget(LibraryInterface* lh, MainWindow* mai
 
     connect(diagram_, SIGNAL(openComponent(const VLNV&)),
         this, SIGNAL(openComponent(const VLNV&)), Qt::UniqueConnection);
+    connect(diagram_, SIGNAL(openDesign(const VLNV&, QString const&)),
+        this, SIGNAL(openDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
     connect(diagram_, SIGNAL(openSource(ProgramEntityItem*)),
         this, SIGNAL(openSource(ProgramEntityItem*)), Qt::UniqueConnection);
     connect(diagram_, SIGNAL(componentSelected(ComponentItem*)),
