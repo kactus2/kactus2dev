@@ -170,7 +170,7 @@ MCAPIContentMatcher::MatchType MCAPIContentMatcher::enumerateMatches(QString con
                                                                      int& startIndex, QString* toolTipText,
                                                                      int& toolTipIndex)
 {
-    static QRegExp funcCallExp("[a-z|A-Z|_][a-z|A-Z|0-9|_]*\\([a-z|A-Z|0-9|_|,|&|\\s]*$");
+    static QRegExp funcCallExp("[a-z|A-Z|_][a-z|A-Z|0-9|_]*\\([a-z|A-Z|0-9|_|.|,|&|\\s]*$");
 
     bool exactMatch = false;
     int count = 0;
@@ -217,7 +217,7 @@ int MCAPIContentMatcher::enumerateNames(QString const &text, MatchExecFunc func,
         QString word = text.mid(startIndex, lastWordExp.matchedLength());
 
         // Search for functions that start with the retrieved word.
-        QRegExp matchExp("^" + word.toLower() + ".*");
+        QRegExp matchExp("^" + QRegExp::escape(word.toLower()) + ".*");
 
         for (unsigned int i = 0; i < s_functionSet.getCount(); ++i)
         {
@@ -256,9 +256,9 @@ int MCAPIContentMatcher::enumerateFunctionParams(QString const &text, MatchExecF
                                                  QString* toolTipText, int& toolTipIndex)
 {
     // Used static regular expressions.
-    static QRegExp funcCallExp("[a-z|A-Z|_][a-z|A-Z|0-9|_]*\\([a-z|A-Z|0-9|_|,|&|\\s]*$");
-    static QRegExp lastParamExp("[(|,]\\s*(&)?([a-z|A-Z|0-9|_][a-z|A-Z|0-9|_]*)?$");
-    static QRegExp callStartExp("\\([a-z|A-Z|0-9|_|,|&|\\s]*$");
+    static QRegExp funcCallExp("[a-z|A-Z|_][a-z|A-Z|0-9|_]*\\([a-z|A-Z|0-9|_|,|.|&|\\s]*$");
+    static QRegExp lastParamExp("[(|,]\\s*(&)?([a-z|A-Z|0-9|_][a-z|A-Z|0-9|_|.]*)?$");
+    static QRegExp callStartExp("\\([a-z|A-Z|0-9|_|,|.|&|\\s]*$");
     
     exactMatch = false;
     int count = 0;
@@ -400,6 +400,9 @@ MCAPIContentMatcher::ConnectionDesc const* MCAPIContentMatcher::findConnectionDe
 
     while (itrConn != m_connections.end())
     {
+        QString e1 = itrConn->localEndpoint;
+        QString e2 = itrConn->remoteEndpoint;
+
         if (itrConn->localEndpoint == name || itrConn->remoteEndpoint == name)
         {
             return &(*itrConn);
@@ -420,7 +423,7 @@ void MCAPIContentMatcher::tryMatchParam(MCAPIFunctionDesc const* funcDesc, QStri
     // Find out the parameter index.
     int paramIndex = params.count();
 
-    QRegExp matchExp("^" + word.toLower() + ".*");
+    QRegExp matchExp("^" + QRegExp::escape(word.toLower()) + ".*");
 
     // Based on the function parameter description, try to find matching content.
     unsigned int paramDesc = funcDesc->getParamType(paramIndex);

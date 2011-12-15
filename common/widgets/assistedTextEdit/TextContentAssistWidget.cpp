@@ -129,7 +129,7 @@ bool TextContentAssistWidget::tryHandleKey(QKeyEvent* e)
 void TextContentAssistWidget::updateAssist(QKeyEvent* e)
 {
     // Invoke the content assist for certain keys.
-    if (e->text().contains(QRegExp("^[a-z|A-z|0-9|_|;|Ä|ä|Ö|ö|Å|å|(|)|,|&]$")) ||
+    if (e->text().contains(QRegExp("^[a-z|A-z|0-9|_|;|Ä|ä|Ö|ö|Å|å|(|)|,|.|&]$")) ||
         e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Return ||
         (contentFound_ && (e->key() == Qt::Key_Down || e->key() == Qt::Key_Up || e->text().contains(' '))))
     {
@@ -200,7 +200,7 @@ void TextContentAssistWidget::updateMatches()
     QString text = parent_->toPlainText().left(parent_->textCursor().position());
 
     contentFound_ = matcher_->fillWithContent(text, *this, lastAssistStartPos_, toolTipText,
-                                                toolTipIndex);
+                                              toolTipIndex);
 
     // Show the tool tip if there was some content for it.
     if (toolTipIndex > 0)

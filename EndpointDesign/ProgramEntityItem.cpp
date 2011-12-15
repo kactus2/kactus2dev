@@ -124,7 +124,9 @@ QSharedPointer<MCAPIContentMatcher> ProgramEntityItem::getContentMatcher() const
 
     foreach (EndpointItem* endpoint, endpointStack_->getEndpoints())
     {
-        matcher->addEndpoint(endpoint->getName(), endpoint->getMCAPIDirection(),
+        QString localEndpointName = "local." + endpoint->getName();
+
+        matcher->addEndpoint(localEndpointName, endpoint->getMCAPIDirection(),
                              name().toUpper(), endpoint->getName().toUpper() + "_PORT");
 
         // If the endpoint has a connection, add the remote endpoint
@@ -138,11 +140,14 @@ QSharedPointer<MCAPIContentMatcher> ProgramEntityItem::getContentMatcher() const
             {
                 remoteEndpoint = endpoint->getConnections().first()->getEndpoint1();
             }
+
+            QString remoteEndpointName = remoteEndpoint->getParentProgramEntity()->name().toLower() +
+                                         "." + remoteEndpoint->getName();
             
-            matcher->addEndpoint(remoteEndpoint->getName(), remoteEndpoint->getMCAPIDirection(),
+            matcher->addEndpoint(remoteEndpointName, remoteEndpoint->getMCAPIDirection(),
                                  remoteEndpoint->getParentProgramEntity()->name().toUpper(),
                                  remoteEndpoint->getName().toUpper() + "_PORT");
-            matcher->addConnection(endpoint->getName(), remoteEndpoint->getName(),
+            matcher->addConnection(localEndpointName, remoteEndpointName,
                                    endpoint->getConnectionType());
         }
     }
