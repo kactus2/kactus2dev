@@ -9,6 +9,7 @@
 
 #include <QVBoxLayout>
 #include <QIcon>
+#include <QSettings>
 
 VLNVDialer::VLNVDialer(QWidget *parent):
 QWidget(parent),
@@ -17,8 +18,14 @@ dialer_(this),
 hideButton_(QIcon(":/icons/graphics/triangle_arrow_up.png"), QString(), this),
 hidden_(false) {
 
+	// set visual options for the hide/show button
 	hideButton_.setFlat(true);
 	hideButton_.setMaximumHeight(10);
+
+	// check if the filters were visible or not previously
+	QSettings settings;
+	hidden_ = !settings.value("filterWidget/hidden", false).toBool();
+	onHideShowClick();
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&filters_, 0);
@@ -49,6 +56,9 @@ hidden_(false) {
 }
 
 VLNVDialer::~VLNVDialer() {
+	// save the visibility of the filter widget
+	QSettings settings;
+	settings.setValue("filterWidget/hidden", hidden_);
 }
 
 void VLNVDialer::onHideShowClick() {
