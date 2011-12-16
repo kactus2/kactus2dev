@@ -16,6 +16,8 @@
 #include <QVBoxLayout>
 #include <QGridLayout>
 #include <QFileInfo>
+#include <QMessageBox>
+#include <QCoreApplication>
 
 //-----------------------------------------------------------------------------
 // Function: SWDesignEditor()
@@ -196,8 +198,13 @@ VLNV SWDesignEditor::getComponentVLNV() const
 bool SWDesignEditor::save()
 {
     // The mapped platform must be either totally empty or valid.
-    if (!platformMapping_.isEmpty() && !platformMapping_.isValid())
+    if (!platformMapping_.isEmpty() && (!platformMapping_.isValid() ||
+                                        !libHandler_->contains(platformMapping_.getVLNV())))
     {
+        QMessageBox::warning(this, QCoreApplication::applicationName(),
+                             "Platform component VLNV " + platformMapping_.getVLNV().toString() +
+                             " is not valid or a component with the given VLNV does "
+                             "not exist in the library.");
         return false;
     }
 
@@ -207,13 +214,28 @@ bool SWDesignEditor::save()
     {
         EndpointsMappingData const& data = endpointsMappingDatas_[i];
 
-        if (!data.endpointsVLNV.isValid())
+        if (data.endpointsVLNV.isEmpty())
         {
+            QMessageBox::warning(this, QCoreApplication::applicationName(), "Endpoints VLNV is required.");
             return false;
         }
 
-        if (!data.linkedAppVLNV.isEmpty() && !data.linkedAppVLNV.isValid())
+        if (!data.endpointsVLNV.isValid() || !libHandler_->contains(data.endpointsVLNV))
         {
+            QMessageBox::warning(this, QCoreApplication::applicationName(),
+                                 "Endpoints VLNV " + data.endpointsVLNV.toString() +
+                                 " is not valid or a component with the given VLNV does "
+                                 "not exist in the library.");
+            return false;
+        }
+
+        if (!data.linkedAppVLNV.isEmpty() && (!data.linkedAppVLNV.isValid() ||
+                                              !libHandler_->contains(data.linkedAppVLNV)))
+        {
+            QMessageBox::warning(this, QCoreApplication::applicationName(),
+                                 "SW application VLNV " + data.linkedAppVLNV.toString() +
+                                 " is not valid or a component with the given VLNV does "
+                                 "not exist in the library.");
             return false;
         }
     }
