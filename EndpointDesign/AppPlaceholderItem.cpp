@@ -36,6 +36,11 @@ AppPlaceholderItem::AppPlaceholderItem(ProgramEntityItem* parent) : QGraphicsRec
     setPen(QPen(Qt::black, 0, Qt::DashLine));
 
     QGraphicsTextItem* label = new QGraphicsTextItem(this);
+
+    QFont font = label->font();
+    font.setPixelSize(11);
+    label->setFont(font);
+
     label->setHtml("<center>Drag an <b>Application</b> from the library OR double-click to create new</center>");
     label->setTextWidth(WIDTH);
     label->setPos(-0.5 * label->boundingRect().width(), 4);

@@ -104,6 +104,11 @@ public:
     virtual void setProtection(bool locked);
 
     /*!
+     *  Sets the state that the document has previously been unlocked.
+     */
+    void setPreviouslyUnlocked();
+
+    /*!
      *  Returns the name of the document.
      */
     QString const& getDocumentName() const;
@@ -169,6 +174,11 @@ public:
 	 * \return True if the edited object is hardware implementation.
 	*/
 	virtual bool isHWImplementation() const;
+
+    /*!
+     *  Returns true if the document has previously been unlocked.
+     */
+    bool isPreviouslyUnlocked() const;
 
 public slots:
     //! Saves the document and resets the modified state.
@@ -268,6 +278,9 @@ private:
 
     //! The parent tab widget.
     QTabWidget* tabWidget_;
+
+    //! If true, the document has been previously unlocked.
+    bool previouslyUnlocked_;
 };
 
 //-----------------------------------------------------------------------------

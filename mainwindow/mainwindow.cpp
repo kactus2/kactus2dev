@@ -2121,67 +2121,106 @@ void MainWindow::changeProtection(bool locked)
     }
     else
     {
+        TabDocument* relatedDoc = NULL;
+
         // Check if there is a document with the same VLNV being edited (i.e. not unlocked).
         for (int i = 0; i < designTabs_->count(); i++)
         {
             TabDocument* otherDoc = static_cast<TabDocument*>(designTabs_->widget(i));
             Q_ASSERT(otherDoc != 0);
 
-            if (!otherDoc->isProtected() && otherDoc->getComponentVLNV() == doc->getComponentVLNV())
+            if (otherDoc != doc && otherDoc->getComponentVLNV() == doc->getComponentVLNV())
             {
-                // If there was, inform the user that the document cannot be unlocked.
-                QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                                   tr("The document cannot be unlocked because the component "
-                                   "is being edited in another view."), QMessageBox::Ok, this);
-                msgBox.exec();
+                if (!otherDoc->isProtected())
+                {
+                    // Check if the other document has unsaved changes.
+                    if (otherDoc->isModified())
+                    {
+                        // Ask the user if he wants to save and switch locks.
+                        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+                                           tr("The document is being edited in another view and "
+                                              "has unsaved changes. Changes need to be saved "
+                                              "before this view can be unlocked. "
+                                              "Save changes and switch locks?"),
+                                           QMessageBox::Yes | QMessageBox::Cancel, this);
 
+                        // Restore the lock if the user canceled.
+                        if (msgBox.exec() == QMessageBox::Cancel)
+                        {
+                            actProtect_->setChecked(true);
+                            return;
+                        }
+
+                        // Otherwise save the other document.
+                        if (!otherDoc->save())
+                        {
+                            return;
+                        }
+                    }
+                    
+                    // Lock the other document.
+                    otherDoc->setProtection(true);
+                }
+
+                relatedDoc = otherDoc;
+                break;
+            }
+        }
+
+        if (!doc->isPreviouslyUnlocked() && (relatedDoc == NULL || !relatedDoc->isPreviouslyUnlocked()))
+        {
+		    QString message = tr("Are you sure you want to unlock the document?\n");
+            QString detailMsg = "";
+
+		    // if edited document was component 
+		    VLNV vlnv = doc->getComponentVLNV();
+		    if (vlnv.isValid() && libraryHandler_->getDocumentType(vlnv) == VLNV::COMPONENT) {
+
+			    // if component has been instantiated in other components then print
+			    // a list of those components
+			    QList<VLNV> list;
+			    int refCount = libraryHandler_->getOwners(list, vlnv);
+			    if (refCount > 0) {
+				    detailMsg += tr("The component has been instantiated in the following %1 component(s):\n").arg(refCount);
+
+				    foreach (VLNV owner, list) {
+					    detailMsg += "* " + owner.getVendor() + ":" + owner.getLibrary() + ":" +
+						             owner.getName() + ":" + owner.getVersion() + "\n"; 
+				    }
+
+                    message += tr("Changes to the document can affect %1 other documents.").arg(refCount);
+			    }
+                else
+                {
+                    message += tr("Changes to the document can affect other documents.");
+                }
+		    }
+            else
+            {
+                message += tr("Changes to the document can affect other documents.");
+            }
+
+            message += " If you choose yes, this will not be asked next time for this document.";
+
+            // Ask verification from the user.
+            QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+                               message, QMessageBox::Yes | QMessageBox::No, this);
+            msgBox.setDetailedText(detailMsg);
+
+            if (msgBox.exec() == QMessageBox::No)
+            {
                 actProtect_->setChecked(true);
                 return;
             }
         }
 
-		QString message = tr("Are you sure you want to unlock the document?\n");
-        QString detailMsg = "";
-
-		// if edited document was component 
-		VLNV vlnv = doc->getComponentVLNV();
-		if (vlnv.isValid() && libraryHandler_->getDocumentType(vlnv) == VLNV::COMPONENT) {
-
-			// if component has been instantiated in other components then print
-			// a list of those components
-			QList<VLNV> list;
-			int refCount = libraryHandler_->getOwners(list, vlnv);
-			if (refCount > 0) {
-				detailMsg += tr("The component has been instantiated in the following %1 component(s):\n").arg(refCount);
-
-				foreach (VLNV owner, list) {
-					detailMsg += "* " + owner.getVendor() + ":" + owner.getLibrary() + ":" +
-						         owner.getName() + ":" + owner.getVersion() + "\n"; 
-				}
-
-                message += tr("Changes to the document can affect %1 other documents.").arg(refCount);
-			}
-            else
-            {
-                message += tr("Changes to the document can affect other documents.");
-            }
-		}
-        else
+        // Mark the related document also unlocked to keep the unlock history in sync.
+        if (relatedDoc != NULL)
         {
-            message += tr("Changes to the document can affect other documents.");
+            relatedDoc->setPreviouslyUnlocked();
         }
 
-        // Ask verification from the user.
-        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                           message, QMessageBox::Yes | QMessageBox::No, this);
-        msgBox.setDetailedText(detailMsg);
-
-        if (msgBox.exec() == QMessageBox::No)
-        {
-            actProtect_->setChecked(true);
-            return;
-        }
-		// Lock/unlock the document.
+		// Refresh and unlock the document.
 		doc->refresh();
 		doc->setProtection(locked);
     }

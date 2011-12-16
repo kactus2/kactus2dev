@@ -22,7 +22,8 @@ TabDocument::TabDocument(QWidget* parent, unsigned int flags,
                                                                locked_(false), zoomLevel_(100),
                                                                maxZoomLevel_(maxZoomLevel),
                                                                minZoomLevel_(minZoomLevel), title_(""),
-                                                               docName_(""), tabWidget_(0)
+                                                               docName_(""), tabWidget_(0),
+                                                               previouslyUnlocked_(false)
 
 {
     connect(this, SIGNAL(contentChanged()), this, SLOT(setModified()));
@@ -117,6 +118,11 @@ void TabDocument::setMode(DrawMode)
 void TabDocument::setProtection(bool locked)
 {
     locked_ = locked;
+
+    if (!locked_)
+    {
+        previouslyUnlocked_ = true;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -299,4 +305,20 @@ void TabDocument::refresh() {
 
 bool TabDocument::isHWImplementation() const {
 	return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: setPreviouslyUnlocked()
+//-----------------------------------------------------------------------------
+void TabDocument::setPreviouslyUnlocked()
+{
+    previouslyUnlocked_ = true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: isPreviouslyUnlocked()
+//-----------------------------------------------------------------------------
+bool TabDocument::isPreviouslyUnlocked() const
+{
+    return previouslyUnlocked_;
 }
