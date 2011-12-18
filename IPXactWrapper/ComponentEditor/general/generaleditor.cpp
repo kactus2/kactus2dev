@@ -44,8 +44,11 @@ GeneralEditor::GeneralEditor(QWidget* parentWnd,
 
     vlnvDisplayer_ = new VLNVDisplayer(this, *component->getVlnv());
 	vlnvDisplayer_->setPath(xmlPath);
+
     attributeEditor_ = new KactusAttributeEditor(this);
+
     descEditor_ = new DescEditor();
+
     previewBox_ = new ComponentPreviewBox(libHandler);
     previewBox_->setComponent(component_);
 
@@ -72,6 +75,12 @@ GeneralEditor::GeneralEditor(QWidget* parentWnd,
     }
 
     attributeEditor_->setImplementation(component_->getComponentImplementation());
+
+    if (component_->getComponentImplementation() == KactusAttribute::KTS_SW)
+    {
+        attributeEditor_->setSWType(component_->getComponentSWType());
+    }
+
     descEditor_->setDescription(component_->getDescription());
 }
 

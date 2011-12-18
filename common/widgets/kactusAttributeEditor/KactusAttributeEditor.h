@@ -56,6 +56,13 @@ public:
      *      @param [in] implementation Implementation.
      */
     void setImplementation(KactusAttribute::Implementation implementation);
+    
+    /*!
+     *  Sets the SW type visible with the given value.
+     *
+     *      @param [in]} type The SW type.
+     */
+    void setSWType(KactusAttribute::SWType type);
 
     /*!
      *  Returns the selected product hierarchy.
@@ -101,11 +108,17 @@ private:
     //! Firmness combo box.
     QComboBox* firmnessCombo_;
 
-    //! Firmness label.
+    //! Implementation label.
     QLabel* implementationLabel_;
 
-    //! Label for the firmness value.
+    //! Label for the implementation value.
     QLabel* implementationValue_;
+
+    //! SW type label.
+    QLabel* swTypeLabel_;
+
+    //! Label for SW type value.
+    QLabel* swTypeValue_;
 };
 
 //-----------------------------------------------------------------------------

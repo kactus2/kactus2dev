@@ -20,7 +20,8 @@
 KactusAttributeEditor::KactusAttributeEditor(QWidget* parent) : QGroupBox(tr("Kactus Attributes"), parent),
                                                                 prodHierLabel_(0), prodHierCombo_(0),
                                                                 firmnessLabel_(0), firmnessCombo_(0),
-                                                                implementationLabel_(0), implementationValue_(0)
+                                                                implementationLabel_(0), implementationValue_(0),
+                                                                swTypeLabel_(0), swTypeValue_(0)
 {
     // Create the product hierarchy label and combo box.
     prodHierLabel_ = new QLabel(tr("Product Hierarchy:"), this);
@@ -36,7 +37,7 @@ KactusAttributeEditor::KactusAttributeEditor(QWidget* parent) : QGroupBox(tr("Ka
     }
 
     // Create the firmness label and combo box.
-    firmnessLabel_ = new QLabel(tr("Firmness:"));
+    firmnessLabel_ = new QLabel(tr("Firmness:"), this);
     firmnessCombo_ = new QComboBox(this);
 
     for (unsigned int i = 0; i < FIRMNESS_COUNT; ++i)
@@ -46,11 +47,17 @@ KactusAttributeEditor::KactusAttributeEditor(QWidget* parent) : QGroupBox(tr("Ka
     }
     
     // Create the implementation label and value label (set to invisible by default).
-    implementationLabel_ = new QLabel(tr("Implementation:"));
+    implementationLabel_ = new QLabel(tr("Implementation:"), this);
     implementationLabel_->setVisible(false);
 
-    implementationValue_ = new QLabel(tr(""));
+    implementationValue_ = new QLabel(tr(""), this);
     implementationValue_->setVisible(false);
+
+    swTypeLabel_ = new QLabel(tr("SW Type:"), this);
+    swTypeLabel_->setVisible(false);
+
+    swTypeValue_= new QLabel(tr(""), this);
+    swTypeValue_->setVisible(false);
 
     QGridLayout* layout = new QGridLayout(this);
     layout->addWidget(prodHierLabel_, 0, 0, 1, 1);
@@ -59,7 +66,9 @@ KactusAttributeEditor::KactusAttributeEditor(QWidget* parent) : QGroupBox(tr("Ka
     layout->addWidget(firmnessCombo_, 1, 1, 1, 1);
     layout->addWidget(implementationLabel_, 2, 0, 1, 1);
     layout->addWidget(implementationValue_, 2, 1, 1, 1);
-    layout->setColumnStretch(2, 1);
+    layout->addWidget(swTypeLabel_, 3, 0, 1, 1);
+    layout->addWidget(swTypeValue_, 3, 1, 1, 1);
+    layout->setColumnStretch(3, 1);
 
     connect(prodHierCombo_, SIGNAL(currentIndexChanged(int)), this, SIGNAL(contentChanged()));
     connect(prodHierCombo_, SIGNAL(currentIndexChanged(int)), this, SIGNAL(productHierarchyChanged()));
@@ -107,6 +116,16 @@ void KactusAttributeEditor::setImplementation(KactusAttribute::Implementation im
     implementationValue_->setText(KactusAttribute::valueToString(implementation));
     implementationLabel_->setVisible(true);
     implementationValue_->setVisible(true);
+}
+
+//-----------------------------------------------------------------------------
+// Function: setSWType()
+//-----------------------------------------------------------------------------
+void KactusAttributeEditor::setSWType(KactusAttribute::SWType type)
+{
+    swTypeValue_->setText(KactusAttribute::valueToString(type));
+    swTypeLabel_->setVisible(true);
+    swTypeValue_->setVisible(true);
 }
 
 //-----------------------------------------------------------------------------

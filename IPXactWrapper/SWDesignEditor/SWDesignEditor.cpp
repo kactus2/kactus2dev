@@ -36,7 +36,7 @@ SWDesignEditor::SWDesignEditor(QWidget *parent, QWidget* parentWnd, LibraryInter
     // Create the widgets.
     endpointList_.setFixedWidth(200);
 
-    platformMapping_.setTitle(tr("Mapped Platform"));
+    platformMapping_.setTitle(tr("Mapped SW Platform"));
     endpointType_.setTitle(tr("Endpoints"));
     linkedAppType_.setTitle(tr("Fixed Application (optional)"));
 
