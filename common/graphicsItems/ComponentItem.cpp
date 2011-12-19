@@ -186,6 +186,14 @@ QSharedPointer<Component> ComponentItem::componentModel()
 }
 
 //-----------------------------------------------------------------------------
+// Function: componentModel()
+//-----------------------------------------------------------------------------
+QSharedPointer<Component const> ComponentItem::componentModel() const
+{
+    return component_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: getViews()
 //-----------------------------------------------------------------------------
 QStringList ComponentItem::getViews() const

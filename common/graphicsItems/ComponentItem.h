@@ -115,6 +115,11 @@ public:
      */
     QSharedPointer<Component> componentModel();
 
+    /*!
+     *  Returns the IP-XACT component model.
+     */
+    QSharedPointer<Component const> componentModel() const;
+
 	/*! \brief Get list of views the component has.
 	 *
 	 * \return QStringList containing the names of the views for the component.

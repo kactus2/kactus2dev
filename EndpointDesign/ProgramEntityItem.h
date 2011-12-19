@@ -109,6 +109,11 @@ public:
     void createSource(QString const& filename);
 
     /*!
+     *  Updates the generated code if it exists.
+     */
+    void updateGeneratedCode();
+
+    /*!
      *  Returns the application item or null if not set.
      */
     ApplicationItem* getApplication();
@@ -141,6 +146,11 @@ public:
      *  Returns the parent SW mapping component.
      */
     MappingComponentItem* getMappingComponent();
+
+    /*!
+     *  Returns the parent SW mapping component.
+     */
+    MappingComponentItem const* getMappingComponent() const;
 
     /*!
      *  Returns true if the endpoints are expanded.
@@ -199,6 +209,11 @@ private:
      */
     QString createIndentString();
 
+    /*!
+     *  Returns the source location for the generated code.
+     */
+    QString getGenSourceLocation() const;
+    
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

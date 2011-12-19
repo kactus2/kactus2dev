@@ -90,8 +90,8 @@ SWDesignEditor::SWDesignEditor(QWidget *parent, QWidget* parentWnd, LibraryInter
 
             if (comp == 0)
             {
-                //                 emit errorMessage(tr("The component %1 was not found in the library").arg(
-                //                                   instance.componentRef.name()).arg(design->getVlnv()->name()));
+                emit errorMessage(tr("The component %1 was not found in the library").arg(
+                                  instance.componentRef.getName()).arg(design->getVlnv()->getName()));
                 continue;
             }
 

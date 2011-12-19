@@ -53,6 +53,7 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
                                                                               component, instanceName,
                                                                               displayName, description,
                                                                               configurableElementValues, 0),
+                                                              libInterface_(libInterface),
                                                               portIDFactory_(), diagram_(diagram),
                                                               id_(id), oldColumn_(0), progEntitys_(),
                                                               platformPlaceholder_(0), platformCompItem_(0),
@@ -638,4 +639,12 @@ void MappingComponentItem::updateComponent()
     {
         delete importedIcon_;
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: getFileLocation()
+//-----------------------------------------------------------------------------
+QString MappingComponentItem::getFileLocation() const
+{
+    return QFileInfo(libInterface_->getPath(*componentModel()->getVlnv())).path();
 }

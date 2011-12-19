@@ -33,6 +33,7 @@
 #include "ApplicationItem.h"
 #include "MappingComponentItem.h"
 
+#include <QDir>
 #include <QGraphicsScene>
 #include <QPainter>
 #include <QPainterPath>
@@ -281,7 +282,7 @@ void ProgramEntityItem::onEndpointStackChange(int height)
 //-----------------------------------------------------------------------------
 void ProgramEntityItem::createSource(QString const& filename)
 {
-    generateCode(QFileInfo(filename).path());
+    generateCode(getGenSourceLocation());
 
     CSourceWriter writer(filename, createIndentString());
 
@@ -324,6 +325,12 @@ void ProgramEntityItem::createSource(QString const& filename)
 //-----------------------------------------------------------------------------
 void ProgramEntityItem::generateCode(QString const& dir)
 {
+    // Create the directory if it does not exist.
+    if (!QDir(dir).exists())
+    {
+        QDir().mkpath(dir);
+    }
+
     // Retrieve the list of connected remote nodes and endpoints.
     QList<ProgramEntityItem*> remoteNodes;
     QList<EndpointItem*> remoteEndpoints;
@@ -408,6 +415,14 @@ void ProgramEntityItem::setApplication(ApplicationItem* item)
 MappingComponentItem* ProgramEntityItem::getMappingComponent()
 {
     return dynamic_cast<MappingComponentItem*>(parentItem());
+}
+
+//-----------------------------------------------------------------------------
+// Function: getMappingComponent()
+//-----------------------------------------------------------------------------
+MappingComponentItem const* ProgramEntityItem::getMappingComponent() const
+{
+    return dynamic_cast<MappingComponentItem const*>(parentItem());
 }
 
 //-----------------------------------------------------------------------------
@@ -557,7 +572,7 @@ void ProgramEntityItem::generateHeader(QString const& filename, QList<ProgramEnt
     // Write a structure for each remote node to encapsulate its endpoints.
     foreach (ProgramEntityItem* node, remoteNodes)
     {
-        writer.writeLine("// Structure for encapsulate the endpoints of " + node->name() + ".");
+        writer.writeLine("// Structure for encapsulating the endpoints of " + node->name() + ".");
         writer.beginStruct();
 
         foreach (EndpointItem* endpoint, remoteEndpoints)
@@ -748,4 +763,24 @@ void ProgramEntityItem::generateSource(QString const& filename, QList<ProgramEnt
     writer.writeLine("return 0;");
     writer.endBlock();
     writer.writeLine();
+}
+
+//-----------------------------------------------------------------------------
+// Function: updateGeneratedCode()
+//-----------------------------------------------------------------------------
+void ProgramEntityItem::updateGeneratedCode()
+{
+    // Generated code should be updated only if the code files already exist.
+    if (QFileInfo(getGenSourceLocation() + "/ktsmcapicode.h").exists())
+    {
+        generateCode(getGenSourceLocation());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: getGenSourceLocation()
+//-----------------------------------------------------------------------------
+QString ProgramEntityItem::getGenSourceLocation() const
+{
+    return getMappingComponent()->getFileLocation() + '/' + name();
 }

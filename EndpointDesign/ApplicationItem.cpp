@@ -99,5 +99,8 @@ void ApplicationItem::contextMenuEvent(QGraphicsSceneContextMenuEvent* event)
 //-----------------------------------------------------------------------------
 void ApplicationItem::openSource()
 {
-    emit openSource(static_cast<ProgramEntityItem*>(parentItem()));
+    ProgramEntityItem* progEntity = static_cast<ProgramEntityItem*>(parentItem());
+    progEntity->updateGeneratedCode();
+
+    emit openSource(progEntity);
 }

@@ -165,6 +165,11 @@ public:
      */
     void onReleaseItem(ProgramEntityItem* item);
 
+    /*!
+     * Returns the component's directory where the IP-XACT document is located.
+     */
+    QString getFileLocation() const;
+
 protected:
     // Called when the user presses the mouse button.
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
@@ -202,6 +207,9 @@ private:
         BOTTOM_MARGIN = 80,
         SPACING = 20
     };
+
+    //! The library interface.
+    LibraryInterface* libInterface_;
 
     //! Icon for imported SW components.
     QGraphicsPixmapItem* importedIcon_;
