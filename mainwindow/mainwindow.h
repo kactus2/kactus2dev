@@ -19,6 +19,7 @@
 
 #include <QMainWindow>
 #include <QActionGroup>
+#include <QMenu>
 
 class DesignWidget;
 class LibraryHandler;
@@ -323,6 +324,27 @@ private slots:
 	//! \brief Create a pop up menu to select which dock widgets to display.
 	void selectVisibleDocks();
 
+	//! \brief Handler for output action's trigger.
+	void onOutputAction(bool show);
+
+	//! \brief Handler for preview box action's trigger.
+	void onPreviewAction(bool show);
+
+	//! \brief Handler for library action's trigger.
+	void onLibraryAction(bool show);
+
+	//! \brief Handler for configuration action's trigger.
+	void onConfigurationAction(bool show);
+
+	//! \brief Handler for connection action's trigger.
+	void onConnectionAction(bool show);
+
+	//! \brief Handler for interface action's trigger.
+	void onInterfaceAction(bool show);
+
+	//! \brief Handler for instance action's trigger.
+	void onInstanceAction(bool show);
+
 private:
 
 	//! \brief No copying
@@ -378,17 +400,11 @@ private:
 	//! \brief Set up the connection editor.
 	void setupConnectionEditor();
 
-	/*! \brief Display a docked editor if it is hidden or not visible on some tab.
-	 * 
-	 * The editor must be child of a QDockWidget.
-	 * 
-	 * \param dockedEditor Pointer to the editor to display.
-	 *
-	*/
-	void displayDockedEditor(QWidget* dockedEditor);
-
 	//! \brief The instance that manages the IP-Xact library
     LibraryHandler *libraryHandler_;
+
+	//! \brief The dock widget that contains the library widgets
+	QDockWidget* libraryDock_;
     
 	//! \brief Contains the designWidgets as each in it's own tab
 	QTabWidget *designTabs_;
@@ -399,20 +415,38 @@ private:
 	//! \brief The widget to display a preview of component.
 	ComponentPreviewBox* previewBox_;
 
+	//! \brief The dock widget that contains the preview box.
+	QDockWidget* previewDock_;
+
 	//! \brief The widget to print errors and notifications to user.
 	MessageConsole* console_;
+
+	//! \brief The dock widget that contains the console.
+	QDockWidget* consoleDock_;
 
 	//! \brief The widget to edit the settings of a component instance.
 	ComponentInstanceEditor* instanceEditor_;
 
+	//! \brief The dock widget that contains the instance editor.
+	QDockWidget* instanceDock_;
+
 	//! \brief The widget to edit the configuration of designs.
 	ConfigurationEditor* configurationEditor_;
+
+	//! \brief The dock widget that contains the configuration editor.
+	QDockWidget* configurationDock_;
 
 	//! \brief The widget to edit the interfaces
 	InterfaceEditor* interfaceEditor_;
 
+	//! \brief The dock widget that contains the interface editor.
+	QDockWidget* interfaceDock_;
+
 	//! \brief The widget to edit the connection
 	ConnectionEditor* connectionEditor_;
+
+	//! \brief The dock widget that contains the connection editor.
+	QDockWidget* connectionDock_;
 
 	/*******************************************************************/
 	// the actions in the menus
@@ -519,6 +553,70 @@ private:
     QAction* actExit_;
 
     QActionGroup* modeActionGroup_;
+
+	//! \brief Action to show/hide the output window.
+	QAction* showOutputAction_;
+
+	//! \brief Action to show/hide the preview box.
+	QAction* showPreviewAction_;
+
+	//! \brief Action to show/hide the library window.
+	QAction* showLibraryAction_;
+
+	//! \brief Action to show/hide the configuration window.
+	QAction* showConfigurationAction_;
+
+	//! \brief Action to show/hide the connection editor.
+	QAction* showConnectionAction_;
+
+	//! \brief Action to show/hide the interface editor.
+	QAction* showInterfaceAction_;
+
+	//! \brief Action to show/hide the instance editor.
+	QAction* showInstanceAction_;
+
+	//! \brief The menu containing the actions to select which windows to display.
+	QMenu windowsMenu_;
+
+	/*! \brief Update the windows menu to contain the supported windows.
+	 *
+	 * \param supportedWindows Bit field that specifies which windows should be displayed.
+	 *
+	*/
+	void updateWindows(unsigned int supportedWindows);
+
+	//! \brief Contains the show/hidden status for the windows.
+	struct WindowVisibility {
+		//! \brief Show the output window
+		bool showOutput_;
+
+		//! \brief Show the preview window
+		bool showPreview_;
+
+		//! \brief Show the library window
+		bool showLibrary_;
+
+		//! \brief Show the configuration window
+		bool showConfiguration_;
+
+		//! \brief Show the connection editor
+		bool showConnection_;
+
+		//! \brief Show the interface editor
+		bool showInterface_;
+
+		//! \brief Show the instance editor
+		bool showInstance_;
+
+		/*! \brief The default constructor.
+		 *
+		 * Constructs all settings as true.
+		*/
+		WindowVisibility();
+	};
+
+	//! \brief Contains the visibility options for the windows.
+	WindowVisibility visibilities_;
 };
 
 #endif // MAINWINDOW_H

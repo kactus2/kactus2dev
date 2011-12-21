@@ -56,6 +56,8 @@ handler_(handler) {
 	Q_ASSERT(parent);
 	Q_ASSERT(handler);
 
+	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+
 	busType_.setTitle(tr("Bus type VLNV"));
 	busType_.setFlat(false);
 	absType_.setTitle(tr("Abstraction type VLNV"));
@@ -132,7 +134,7 @@ void ConnectionEditor::clear() {
 	portsLabel_.hide();
 	portWidget_.hide();
 
-	qobject_cast<QDockWidget*>(parentWidget())->hide();
+	parentWidget()->setMaximumHeight(20);
 }
 
 void ConnectionEditor::refresh() {
@@ -143,7 +145,7 @@ void ConnectionEditor::refresh() {
 void ConnectionEditor::setConnection( DiagramInterconnection* connection ) {
 	Q_ASSERT(connection);
 
-	qobject_cast<QDockWidget*>(parentWidget())->show();
+	parentWidget()->raise();
 
 	// disconnect the previous connection
 	if (connection_) {
@@ -222,6 +224,8 @@ void ConnectionEditor::setConnection( DiagramInterconnection* connection ) {
 	separator_.show();
 	portsLabel_.show();
 	portWidget_.show();
+
+	parentWidget()->setMaximumHeight(QWIDGETSIZE_MAX);
 }
 
 void ConnectionEditor::onNameChanged( const QString& name ) {

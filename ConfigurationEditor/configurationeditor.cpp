@@ -37,7 +37,6 @@ removeButton_(tr("Remove\nconfiguration"), this),
 configurationSelector_(this),
 activeViewEditor_(this),
 component_(),
-/*designConfs_(),*/
 designWidget_(NULL) {
 
 	setuplayout();
@@ -279,7 +278,7 @@ void ConfigurationEditor::setConfiguration( DesignWidget* designWidget, bool loc
 	activeViewEditor_.setDesign(designWidget, locked);
 
 	// display this widget
-	qobject_cast<QDockWidget*>(parentWidget())->show();
+	parentWidget()->raise();
 }
 
 void ConfigurationEditor::clear() {
@@ -296,8 +295,6 @@ void ConfigurationEditor::clear() {
 	removeButton_.setDisabled(true);
 	
 	activeViewEditor_.clear();
-
-	qobject_cast<QDockWidget*>(parentWidget())->hide();
 }
 
 void ConfigurationEditor::onRefresh() {

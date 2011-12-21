@@ -6,8 +6,6 @@
 
 #include "mainwindow.h"
 
-#include <QDateTime>
-
 #include "SplashScreen.h"
 
 #include "NewComponentPage.h"
@@ -77,20 +75,28 @@
 #include <QUrl>
 #include <QDesktopServices>
 #include <QCursor>
+#include <QDateTime>
 
 class LibraryItem;
 
 MainWindow::MainWindow(QWidget *parent): 
 QMainWindow(parent),
 libraryHandler_(0),
+libraryDock_(0),
 designTabs_(0),  
 dialer_(0),
 previewBox_(0),
+previewDock_(0),
 console_(0),
+consoleDock_(0),
 instanceEditor_(0),
+instanceDock_(0),
 configurationEditor_(0),
+configurationDock_(0),
 interfaceEditor_(0),
+interfaceDock_(0),
 connectionEditor_(0),
+connectionDock_(0),
 actNew_(0),
 actSave_(0),
 actSaveAs_(0),
@@ -121,10 +127,19 @@ actVisibleDocks_(0),
 actProtect_(0), 
 actSettings_(0),
 actAbout_(0), 
-actExit_(0) {
+actExit_(0),
+showOutputAction_(0),
+showPreviewAction_(0),
+showLibraryAction_(0),
+showConfigurationAction_(0),
+showConnectionAction_(0),
+showInterfaceAction_(0),
+showInstanceAction_(0),
+windowsMenu_(this),
+visibilities_() {
 
-    // set the identification tags for the application
-    QCoreApplication::setOrganizationDomain(tr("tut.fi"));
+	// set the identification tags for the application
+	QCoreApplication::setOrganizationDomain(tr("tut.fi"));
 	QCoreApplication::setOrganizationName(tr("TUT"));
 	QCoreApplication::setApplicationName(tr("Kactus2"));
 	QCoreApplication::setApplicationVersion("1.0");
@@ -132,33 +147,40 @@ actExit_(0) {
 	// set the top title for the application
 	setWindowTitle(QCoreApplication::applicationName());
 
-    // Set the application icon.
-    setWindowIcon(QIcon(":icons/graphics/appicon.png"));
+	// Set the application icon.
+	setWindowIcon(QIcon(":icons/graphics/appicon.png"));
 
-    // By default, the window is 1024x768 and set to maximized state.
-    resize(1024, 768);
-    setWindowState(Qt::WindowMaximized);
+	// By default, the window is 1024x768 and set to maximized state.
+	resize(1024, 768);
+	setWindowState(Qt::WindowMaximized);
 
 	// set up the widgets
 	setupMessageConsole();
 	setupDrawBoard();
-    setupLibraryDock();
+	setupLibraryDock();
 	setupInstanceEditor();
 	setupConfigurationEditor();
 	setupInterfaceEditor();
 	setupConnectionEditor();
 
+	// some actions need the editors so set them up before the actions
+	setupActions();
+
+	// this contains settings for dock widgets and some actions so it must
+	// be called after setting up these
 	restoreSettings();
+
+	// don't display empty editors
+	updateWindows(TabDocument::OUTPUTWINDOW | TabDocument::LIBRARYWINDOW | 
+		TabDocument::PREVIEWWINDOW);
 
 	setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
 
-	setupActions();
-
-    // Load the internal library if not yet loaded.
-    if (!libraryHandler_->contains(VLNV(VLNV::BUSDEFINITION, "Kactus", "internal", "app_link", "1.0")))
-    {
-        libraryHandler_->searchForIPXactFiles(QCoreApplication::applicationDirPath() + "/Kactus/");
-    }
+	// Load the internal library if not yet loaded.
+	if (!libraryHandler_->contains(VLNV(VLNV::BUSDEFINITION, "Kactus", "internal", "app_link", "1.0")))
+	{
+		libraryHandler_->searchForIPXactFiles(QCoreApplication::applicationDirPath() + "/Kactus/");
+	}
 }
 
 MainWindow::~MainWindow() {
@@ -172,17 +194,17 @@ void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forc
 	// the vlnv must always be for a component
 	Q_ASSERT(libraryHandler_->getDocumentType(vlnv) == VLNV::COMPONENT);
 
-    // Check if the design is already open and activate it.
-    if (vlnv.isValid()) {
-        for (int i = 0; i < designTabs_->count(); i++) {
-            DesignWidget *designWidget = dynamic_cast<DesignWidget*>(designTabs_->widget(i));
+	// Check if the design is already open and activate it.
+	if (vlnv.isValid()) {
+		for (int i = 0; i < designTabs_->count(); i++) {
+			DesignWidget *designWidget = dynamic_cast<DesignWidget*>(designTabs_->widget(i));
 
-            if (designWidget != 0 && *designWidget->getOpenDocument() == vlnv) {
-                designTabs_->setCurrentIndex(i);
-                return;
-            }
-        }
-    }
+			if (designWidget != 0 && *designWidget->getOpenDocument() == vlnv) {
+				designTabs_->setCurrentIndex(i);
+				return;
+			}
+		}
+	}
 
 	// parse the referenced component
 	QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(vlnv);
@@ -225,7 +247,7 @@ void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forc
 			QSharedPointer<LibraryComponent> libComp2 = libraryHandler_->getModel(ref);
 			QSharedPointer<DesignConfiguration> desConf = libComp2.staticCast<DesignConfiguration>();
 			VLNV refToDesign = desConf->getDesignRef();
-			
+
 			// if the referenced design was not found in the library
 			if (!designVLNV.isValid()) {
 				emit errorMessage(tr("Component %1 has hierarchical reference to object %2,"
@@ -246,22 +268,22 @@ void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forc
 		return;
 	}
 
-    DesignWidget *designWidget = new DesignWidget(libraryHandler_, this);
+	DesignWidget *designWidget = new DesignWidget(libraryHandler_, this);
 
-    connect(designWidget->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));
-    connect(designWidget, SIGNAL(zoomChanged()), this, SLOT(updateZoomTools()), Qt::UniqueConnection);
-    connect(designWidget, SIGNAL(modeChanged(DrawMode)),
-            this, SLOT(onDrawModeChanged(DrawMode)), Qt::UniqueConnection);
+	connect(designWidget->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));
+	connect(designWidget, SIGNAL(zoomChanged()), this, SLOT(updateZoomTools()), Qt::UniqueConnection);
+	connect(designWidget, SIGNAL(modeChanged(DrawMode)),
+		this, SLOT(onDrawModeChanged(DrawMode)), Qt::UniqueConnection);
 
 	connect(designWidget, SIGNAL(destroyed(QObject*)),
 		this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
 
-    connect(designWidget, SIGNAL(openDesign(const VLNV&, const QString&)),
-            this, SLOT(openDesign(const VLNV&, const QString&)));
+	connect(designWidget, SIGNAL(openDesign(const VLNV&, const QString&)),
+		this, SLOT(openDesign(const VLNV&, const QString&)));
 	connect(designWidget, SIGNAL(openComponent(const VLNV&)),
 		this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
-    connect(designWidget, SIGNAL(openBus(VLNV const&, VLNV const&, bool)),
-            this, SLOT(openBus(VLNV const&, VLNV const&, bool)), Qt::UniqueConnection);
+	connect(designWidget, SIGNAL(openBus(VLNV const&, VLNV const&, bool)),
+		this, SLOT(openBus(VLNV const&, VLNV const&, bool)), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(errorMsg(const QString&)),
 		console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(noticeMsg(const QString&)),
@@ -269,11 +291,11 @@ void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forc
 
 	connect(designWidget, SIGNAL(clearItemSelection()),
 		libraryHandler_, SLOT(onClearSelection()), Qt::UniqueConnection);
-	
+
 	connect(designWidget, SIGNAL(componentSelected(ComponentItem*)),
 		this, SLOT(onComponentSelected(ComponentItem*)), Qt::UniqueConnection);
-     connect(designWidget, SIGNAL(interfaceSelected(DiagramInterface*)),
-         this, SLOT(onInterfaceSelected(DiagramInterface*)), Qt::UniqueConnection);
+	connect(designWidget, SIGNAL(interfaceSelected(DiagramInterface*)),
+		this, SLOT(onInterfaceSelected(DiagramInterface*)), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(portSelected(DiagramPort*)),
 		this, SLOT(onPortSelected(DiagramPort*)), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(connectionSelected(DiagramInterconnection*)),
@@ -294,21 +316,21 @@ void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forc
 		return;
 	}
 
-    if (forceUnlocked)
-    {
-        designWidget->setProtection(false);
-    }
+	if (forceUnlocked)
+	{
+		designWidget->setProtection(false);
+	}
 	else 
-    {
+	{
 		// Open in unlocked mode by default only if the version is draft.
 		designWidget->setProtection(vlnv.getVersion() != "draft");
-    }
+	}
 
-    designWidget->setTabWidget(designTabs_);
+	designWidget->setTabWidget(designTabs_);
 
-    // A small hack to center the view correctly.
-//     designWidget->fitInView();
-//     designWidget->setZoomLevel(100);
+	// A small hack to center the view correctly.
+	//     designWidget->fitInView();
+	//     designWidget->setZoomLevel(100);
 }
 
 
@@ -317,135 +339,88 @@ void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forc
 //-----------------------------------------------------------------------------
 void MainWindow::openSWDesign(const VLNV& vlnv, bool forceUnlocked)
 {
-    // Check if the SW design editor is already open and activate it.
-    if (vlnv.isValid())
-    {
-        for (int i = 0; i < designTabs_->count(); i++)
-        {
-            IPXactComponentEditor* editor = dynamic_cast<IPXactComponentEditor*>(designTabs_->widget(i));
+	// Check if the SW design editor is already open and activate it.
+	if (vlnv.isValid())
+	{
+		for (int i = 0; i < designTabs_->count(); i++)
+		{
+			IPXactComponentEditor* editor = dynamic_cast<IPXactComponentEditor*>(designTabs_->widget(i));
 
-            if (editor && editor->getComponentVLNV() == vlnv)
-            {
-                designTabs_->setCurrentIndex(i);
-                return;
-            }
-        }
-    }
+			if (editor && editor->getComponentVLNV() == vlnv)
+			{
+				designTabs_->setCurrentIndex(i);
+				return;
+			}
+		}
+	}
 
-    // Editor was not yet open so create it.
-    QSharedPointer<Component> component;
+	// Editor was not yet open so create it.
+	QSharedPointer<Component> component;
 
-    if (libraryHandler_->contains(vlnv))
-    {
-        QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(vlnv);
-        component = libComp.dynamicCast<Component>();
-    }
-    else
-    {
-        emit errorMessage(tr("VLNV %1:%2:%3:%4 was not found in the library").arg(
-            vlnv.getVendor()).arg(
-            vlnv.getLibrary()).arg(
-            vlnv.getName()).arg(
-            vlnv.getVersion()));
-        return;
-    }
+	if (libraryHandler_->contains(vlnv))
+	{
+		QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(vlnv);
+		component = libComp.dynamicCast<Component>();
+	}
+	else
+	{
+		emit errorMessage(tr("VLNV %1:%2:%3:%4 was not found in the library").arg(
+			vlnv.getVendor()).arg(
+			vlnv.getLibrary()).arg(
+			vlnv.getName()).arg(
+			vlnv.getVersion()));
+		return;
+	}
 
-    if (!component) {
-        emit errorMessage(tr("Document type did not match Component"));
-        return;
-    }
+	if (!component) {
+		emit errorMessage(tr("Document type did not match Component"));
+		return;
+	}
 
-    QString filePath = libraryHandler_->getPath(vlnv);
-    QFileInfo info(filePath);
+	QString filePath = libraryHandler_->getPath(vlnv);
+	QFileInfo info(filePath);
 
-    SWDesignEditor* editor = new SWDesignEditor(this, this, libraryHandler_, component);
-    
-    if (forceUnlocked)
-    {
-        editor->setProtection(false);
-    }
+	SWDesignEditor* editor = new SWDesignEditor(this, this, libraryHandler_, component);
 
-    editor->setTabWidget(designTabs_);
+	if (forceUnlocked)
+	{
+		editor->setProtection(false);
+	}
 
-    connect(editor, SIGNAL(errorMessage(const QString&)),
-        console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
-    connect(editor, SIGNAL(noticeMessage(const QString&)),
-        console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
-    connect(editor, SIGNAL(contentChanged()),
-        this, SLOT(updateMenuStrip()), Qt::UniqueConnection);
-    connect(editor, SIGNAL(modifiedChanged(bool)),
-        actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
-}
+	editor->setTabWidget(designTabs_);
 
-void MainWindow::onTabCloseRequested( int index )
-{	
-    Q_ASSERT(designTabs_->widget(index) != 0);
-    TabDocument* doc = static_cast<TabDocument*>(designTabs_->widget(index));
-
-    // If the document has been modified, ask a confirmation from the user.
-    if (doc->isModified())
-    {
-        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                           "Do you want to save changes to " + doc->getDocumentName() + "?",
-                           QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, this);
-
-        int ret = msgBox.exec();
-
-        switch (ret)
-        {
-        case QMessageBox::Yes:
-            {
-                // Try to save and if it fails, cancel the close operation.
-                if (!doc->save())
-                {
-                    return;
-                }
-                break;
-            }
-
-        case QMessageBox::No:
-            {
-                doc->setModified(false);
-                break;
-            }
-
-        case QMessageBox::Cancel:
-            {
-                // Cancel the close operation.
-                return;
-            }
-        }
-    }
-
-	// remove the widget from the tabs
-	designTabs_->removeTab(index);
-	
-	// delete the document.
-	delete doc;
+	connect(editor, SIGNAL(errorMessage(const QString&)),
+		console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
+	connect(editor, SIGNAL(noticeMessage(const QString&)),
+		console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
+	connect(editor, SIGNAL(contentChanged()),
+		this, SLOT(updateMenuStrip()), Qt::UniqueConnection);
+	connect(editor, SIGNAL(modifiedChanged(bool)),
+		actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
 }
 
 void MainWindow::onLibrarySearch() {
-	
+
 	if (libraryHandler_) {
 		libraryHandler_->searchForIPXactFiles();
 	}
 }
 
 void MainWindow::setupActions() {
-	
+
 	// the action to create a new hierarchical component
 	actNew_ = new QAction(QIcon(":/icons/graphics/file-new.png"), tr("New"), this);
-    actNew_->setShortcut(QKeySequence::New);
-    actNew_->setProperty("rowSpan", 2);
-    actNew_->setProperty("colSpan", 2);
+	actNew_->setShortcut(QKeySequence::New);
+	actNew_->setProperty("rowSpan", 2);
+	actNew_->setProperty("colSpan", 2);
 	connect(actNew_, SIGNAL(triggered()), this, SLOT(createNew()));
 
-    actSave_ = new QAction(QIcon(":/icons/graphics/file-save.png"), tr("Save"), this);
-    actSave_->setShortcut(QKeySequence::Save);
-    actSave_->setProperty("rowSpan", 2);
-    actSave_->setProperty("colSpan", 2);
-    actSave_->setEnabled(false);
-    connect(actSave_, SIGNAL(triggered()), this, SLOT(saveCurrent()));
+	actSave_ = new QAction(QIcon(":/icons/graphics/file-save.png"), tr("Save"), this);
+	actSave_->setShortcut(QKeySequence::Save);
+	actSave_->setProperty("rowSpan", 2);
+	actSave_->setProperty("colSpan", 2);
+	actSave_->setEnabled(false);
+	connect(actSave_, SIGNAL(triggered()), this, SLOT(saveCurrent()));
 
 	actSaveAs_ = new QAction(QIcon(":/icons/graphics/file-save.png"), tr("Save As"), this);
 	actSaveAs_->setShortcut(QKeySequence::SaveAs);
@@ -454,69 +429,72 @@ void MainWindow::setupActions() {
 	actSaveAs_->setEnabled(false);
 	connect(actSaveAs_, SIGNAL(triggered()), this, SLOT(saveCurrentAs()));
 
-    actSaveAll_ = new QAction(QIcon(":/icons/graphics/file-save_all.png"), tr("Save All"), this);
-    actSaveAll_->setShortcut(QKeySequence("Ctrl+Shift+S"));
-    actSaveAll_->setProperty("rowSpan", 2);
-    actSaveAll_->setProperty("colSpan", 2);
-    connect(actSaveAll_, SIGNAL(triggered()), this, SLOT(saveAll()));
+	actSaveAll_ = new QAction(QIcon(":/icons/graphics/file-save_all.png"), tr("Save All"), this);
+	actSaveAll_->setShortcut(QKeySequence("Ctrl+Shift+S"));
+	actSaveAll_->setProperty("rowSpan", 2);
+	actSaveAll_->setProperty("colSpan", 2);
+	connect(actSaveAll_, SIGNAL(triggered()), this, SLOT(saveAll()));
 
-    actPrint_ = new QAction(QIcon(":/icons/graphics/file-print.png"), tr("Print"), this);
-    actPrint_->setShortcut(QKeySequence::Print);
-    actPrint_->setProperty("rowSpan", 2);
-    actPrint_->setProperty("colSpan", 2);
-    actPrint_->setEnabled(false);
-    connect(actPrint_, SIGNAL(triggered()), this, SLOT(printCurrent()));
+	actPrint_ = new QAction(QIcon(":/icons/graphics/file-print.png"), tr("Print"), this);
+	actPrint_->setShortcut(QKeySequence::Print);
+	actPrint_->setProperty("rowSpan", 2);
+	actPrint_->setProperty("colSpan", 2);
+	actPrint_->setEnabled(false);
+	connect(actPrint_, SIGNAL(triggered()), this, SLOT(printCurrent()));
 
-    actUndo_ = new QAction(QIcon(":/icons/graphics/edit-undo.png"), tr("Undo"), this);
-    actUndo_->setShortcut(QKeySequence::Undo);
-    actUndo_->setProperty("rowSpan", 2);
-    actUndo_->setProperty("colSpan", 2);
-    connect(actUndo_, SIGNAL(triggered()), this, SLOT(undo()));
+	actUndo_ = new QAction(QIcon(":/icons/graphics/edit-undo.png"), tr("Undo"), this);
+	actUndo_->setShortcut(QKeySequence::Undo);
+	actUndo_->setProperty("rowSpan", 2);
+	actUndo_->setProperty("colSpan", 2);
+	connect(actUndo_, SIGNAL(triggered()), this, SLOT(undo()));
 
-    actRedo_ = new QAction(QIcon(":/icons/graphics/edit-redo.png"), tr("Redo"), this);
-    actRedo_->setShortcut(QKeySequence::Redo);
-    actRedo_->setProperty("rowSpan", 2);
-    actRedo_->setProperty("colSpan", 2);
-    connect(actRedo_, SIGNAL(triggered()), this, SLOT(redo()));
+	actRedo_ = new QAction(QIcon(":/icons/graphics/edit-redo.png"), tr("Redo"), this);
+	actRedo_->setShortcut(QKeySequence::Redo);
+	actRedo_->setProperty("rowSpan", 2);
+	actRedo_->setProperty("colSpan", 2);
+	connect(actRedo_, SIGNAL(triggered()), this, SLOT(redo()));
 
 	// the action to search for IP-Xact documents in file system
 	actLibrarySearch_ = new QAction(QIcon(":/icons/graphics/search.png"),
 		tr("Search IP-Xact Files"), this);
-    connect(actLibrarySearch_, SIGNAL(triggered()),
+	connect(actLibrarySearch_, SIGNAL(triggered()),
 		this, SLOT(onLibrarySearch()), Qt::UniqueConnection);
 
 	// Import a library file 
 	actImportLibFile_ = new QAction(QIcon(":/icons/graphics/import.png"),
 		tr("Import Library File"), this);
-    connect(actImportLibFile_, SIGNAL(triggered()),
+	connect(actImportLibFile_, SIGNAL(triggered()),
 		this, SLOT(onImportLibFile()), Qt::UniqueConnection);
 
 	// Export a library file
 	actExportLibFile_ = new QAction(QIcon(":/icons/graphics/export.png"),
 		tr("Export Library File"), this);
-    connect(actExportLibFile_, SIGNAL(triggered()),
+	connect(actExportLibFile_, SIGNAL(triggered()),
 		this, SLOT(onExportLibFile()), Qt::UniqueConnection);
 
 	// Check the library integrity
 	actCheckIntegrity_ = new QAction(QIcon(":/icons/graphics/checkIntegrity.png"),
 		tr("Check Integrity"), this);
-    connect(actCheckIntegrity_, SIGNAL(triggered()),
+	connect(actCheckIntegrity_, SIGNAL(triggered()),
 		libraryHandler_, SLOT(onCheckLibraryIntegrity()), Qt::UniqueConnection);
 
-    // Initialize the action to generate VHDL.
-    actGenVHDL_ = new QAction(QIcon(":/icons/graphics/vhdl_gen.png"),
-        tr("Generate Top-VHDL"), this);
-    connect(actGenVHDL_, SIGNAL(triggered()), this, SLOT(generateVHDL()), Qt::UniqueConnection);
+	// Initialize the action to generate VHDL.
+	actGenVHDL_ = new QAction(QIcon(":/icons/graphics/vhdl_gen.png"),
+		tr("Generate Top-VHDL"), this);
+	connect(actGenVHDL_, SIGNAL(triggered()), 
+		this, SLOT(generateVHDL()), Qt::UniqueConnection);
 
-    // Initialize the action to generate a ModelSim makefile.
-    actGenModelSim_ = new QAction(QIcon(":/icons/graphics/modelsim_generator.png"),
-        tr("Generate ModelSim Makefile"), this);
-    connect(actGenModelSim_, SIGNAL(triggered()), this, SLOT(generateModelSim()), Qt::UniqueConnection);
+	// Initialize the action to generate a ModelSim makefile.
+	actGenModelSim_ = new QAction(QIcon(":/icons/graphics/modelsim_generator.png"),
+		tr("Generate ModelSim Makefile"), this);
+	connect(actGenModelSim_, SIGNAL(triggered()), 
+		this, SLOT(generateModelSim()), Qt::UniqueConnection);
 
-    // Initialize the action to generate a Quartus project.
-    actGenQuartus_ = new QAction(QIcon(":/icons/graphics/quartus_generator.png"),
-                                 tr("Generate Quartus Project"), this);
-    connect(actGenQuartus_, SIGNAL(triggered()), this, SLOT(generateQuartus()), Qt::UniqueConnection);
+	// Initialize the action to generate a Quartus project.
+	actGenQuartus_ = new QAction(QIcon(":/icons/graphics/quartus_generator.png"),
+		tr("Generate Quartus Project"), this);
+	connect(actGenQuartus_, SIGNAL(triggered()), 
+		this, SLOT(generateQuartus()), Qt::UniqueConnection);
 
 	// initialize the action to generate documentation for the component/design
 	actGenDocumentation_ = new QAction(QIcon(":icons/graphics/documentation.png"),
@@ -524,60 +502,65 @@ void MainWindow::setupActions() {
 	connect(actGenDocumentation_, SIGNAL(triggered()),
 		this, SLOT(generateDoc()), Qt::UniqueConnection);
 
-    // Initialize the action to add a new column.
-    actAddColumn_ = new QAction(QIcon(":/icons/graphics/diagram-add-column.png"), tr("Add Column"), this);
-    actAddColumn_->setProperty("rowSpan", 2);
-    actAddColumn_->setProperty("colSpan", 2);
-    connect(actAddColumn_, SIGNAL(triggered()), this, SLOT(addColumn()), Qt::UniqueConnection);
+	// Initialize the action to add a new column.
+	actAddColumn_ = new QAction(QIcon(":/icons/graphics/diagram-add-column.png"), tr("Add Column"), this);
+	actAddColumn_->setProperty("rowSpan", 2);
+	actAddColumn_->setProperty("colSpan", 2);
+	connect(actAddColumn_, SIGNAL(triggered()), 
+		this, SLOT(addColumn()), Qt::UniqueConnection);
 
-    // Initialize the action to set draw mode to selection mode.
-    actToolSelect_ = new QAction(QIcon(":/icons/graphics/tool-select.png"), tr("Select Tool"), this);
-    actToolSelect_->setCheckable(true);
-    actToolSelect_->setChecked(true);
+	// Initialize the action to set draw mode to selection mode.
+	actToolSelect_ = new QAction(QIcon(":/icons/graphics/tool-select.png"), tr("Select Tool"), this);
+	actToolSelect_->setCheckable(true);
+	actToolSelect_->setChecked(true);
 
-    // Initialize the action to set draw mode to connection mode.
-    actToolConnect_ = new QAction(QIcon(":/icons/graphics/tool-interconnection.png"),
-                                  tr("Interconnection Tool"), this);
-    actToolConnect_->setCheckable(true);
+	// Initialize the action to set draw mode to connection mode.
+	actToolConnect_ = new QAction(QIcon(":/icons/graphics/tool-interconnection.png"),
+		tr("Interconnection Tool"), this);
+	actToolConnect_->setCheckable(true);
 
-    // Initialize the action to set draw mode to interface mode.
-    actToolInterface_ = new QAction(QIcon(":/icons/graphics/tool-interface.png"),
-                                    tr("Interface Tool"), this);
-    actToolInterface_->setCheckable(true);
+	// Initialize the action to set draw mode to interface mode.
+	actToolInterface_ = new QAction(QIcon(":/icons/graphics/tool-interface.png"),
+		tr("Interface Tool"), this);
+	actToolInterface_->setCheckable(true);
 
-    actToolDraft_ = new QAction(QIcon(":/icons/graphics/tool-drafting.png"), tr("Drafting Tool"), this);
-    actToolDraft_->setCheckable(true);
+	actToolDraft_ = new QAction(QIcon(":/icons/graphics/tool-drafting.png"), tr("Drafting Tool"), this);
+	actToolDraft_->setCheckable(true);
 
-    modeActionGroup_ = new QActionGroup(this);
-    modeActionGroup_->setExclusive(true);
-    modeActionGroup_->addAction(actToolSelect_);
-    modeActionGroup_->addAction(actToolConnect_);
-    modeActionGroup_->addAction(actToolInterface_);
-    modeActionGroup_->addAction(actToolDraft_);
-    connect(modeActionGroup_, SIGNAL(triggered(QAction *)),
-        this, SLOT(drawModeChange(QAction *)));
+	modeActionGroup_ = new QActionGroup(this);
+	modeActionGroup_->setExclusive(true);
+	modeActionGroup_->addAction(actToolSelect_);
+	modeActionGroup_->addAction(actToolConnect_);
+	modeActionGroup_->addAction(actToolInterface_);
+	modeActionGroup_->addAction(actToolDraft_);
+	connect(modeActionGroup_, SIGNAL(triggered(QAction *)),
+		this, SLOT(drawModeChange(QAction *)));
 
-    // Initialize the action to zoom in.
-    actZoomIn_ = new QAction(QIcon(":/icons/graphics/view-zoom_in.png"), tr("Zoom In"), this);
-    actZoomIn_->setEnabled(false);
-    connect(actZoomIn_, SIGNAL(triggered()), this, SLOT(zoomIn()));
+	// Initialize the action to zoom in.
+	actZoomIn_ = new QAction(QIcon(":/icons/graphics/view-zoom_in.png"), tr("Zoom In"), this);
+	actZoomIn_->setEnabled(false);
+	connect(actZoomIn_, SIGNAL(triggered()), 
+		this, SLOT(zoomIn()));
 
-    // Initialize the action to zoom out.
-    actZoomOut_ = new QAction(QIcon(":/icons/graphics/view-zoom_out.png"), tr("Zoom Out"), this);
-    actZoomOut_->setEnabled(false);
-    connect(actZoomOut_, SIGNAL(triggered()), this, SLOT(zoomOut()));
+	// Initialize the action to zoom out.
+	actZoomOut_ = new QAction(QIcon(":/icons/graphics/view-zoom_out.png"), tr("Zoom Out"), this);
+	actZoomOut_->setEnabled(false);
+	connect(actZoomOut_, SIGNAL(triggered()), 
+		this, SLOT(zoomOut()));
 
-    // Initialize the action to reset the zoom to original 1:1 ratio.
-    actZoomOriginal_ = new QAction(QIcon(":/icons/graphics/view-zoom_original.png"),
-                                   tr("Original 1:1 Zoom"), this);
-    actZoomOriginal_->setEnabled(false);
-    connect(actZoomOriginal_, SIGNAL(triggered()), this, SLOT(zoomOriginal()));
+	// Initialize the action to reset the zoom to original 1:1 ratio.
+	actZoomOriginal_ = new QAction(QIcon(":/icons/graphics/view-zoom_original.png"),
+		tr("Original 1:1 Zoom"), this);
+	actZoomOriginal_->setEnabled(false);
+	connect(actZoomOriginal_, SIGNAL(triggered()), 
+		this, SLOT(zoomOriginal()));
 
-    // Initialize the action to fit the document into the view.
-    actFitInView_ = new QAction(QIcon(":/icons/graphics/view-fit_best.png"),
-                                tr("Fit Document to View"), this);
-    actFitInView_->setEnabled(false);
-    connect(actFitInView_, SIGNAL(triggered()), this, SLOT(fitInView()));
+	// Initialize the action to fit the document into the view.
+	actFitInView_ = new QAction(QIcon(":/icons/graphics/view-fit_best.png"),
+		tr("Fit Document to View"), this);
+	actFitInView_->setEnabled(false);
+	connect(actFitInView_, SIGNAL(triggered()), 
+		this, SLOT(fitInView()));
 
 	// the action for user to select the visible docks
 	actVisibleDocks_ = new QAction(QIcon(":icons/graphics/dockSelect.png"),
@@ -586,31 +569,115 @@ void MainWindow::setupActions() {
 	connect(actVisibleDocks_, SIGNAL(triggered()),
 		this, SLOT(selectVisibleDocks()), Qt::UniqueConnection);
 
-    actProtect_ = new QAction(QIcon(":/icons/graphics/protection-unlocked.png"), tr("Unlocked"), this);
-    actProtect_->setProperty("rowSpan", 2);
-    actProtect_->setProperty("colSpan", 2);
-    actProtect_->setCheckable(true);
-    actProtect_->setEnabled(false);
-    connect(actProtect_, SIGNAL(triggered(bool)), this, SLOT(changeProtection(bool)));
+	actProtect_ = new QAction(QIcon(":/icons/graphics/protection-unlocked.png"), tr("Unlocked"), this);
+	actProtect_->setProperty("rowSpan", 2);
+	actProtect_->setProperty("colSpan", 2);
+	actProtect_->setCheckable(true);
+	actProtect_->setEnabled(false);
+	connect(actProtect_, SIGNAL(triggered(bool)),
+		this, SLOT(changeProtection(bool)));
 
-    // Initialize the action to open Kactus2 settings.
-    actSettings_ = new QAction(QIcon(":/icons/graphics/system-settings.png"), tr("Settings"), this);
-    actSettings_->setProperty("rowSpan", 2);
-    actSettings_->setProperty("colSpan", 2);
-    connect(actSettings_, SIGNAL(triggered()), this, SLOT(openSettings()));
+	// Initialize the action to open Kactus2 settings.
+	actSettings_ = new QAction(QIcon(":/icons/graphics/system-settings.png"), tr("Settings"), this);
+	actSettings_->setProperty("rowSpan", 2);
+	actSettings_->setProperty("colSpan", 2);
+	connect(actSettings_, SIGNAL(triggered()), 
+		this, SLOT(openSettings()));
 
-    // Initialize the action to open the about box.
-    actAbout_= new QAction(QIcon(":/icons/graphics/system-about.png"), tr("About"), this);
-    actAbout_->setProperty("rowSpan", 2);
-    actAbout_->setProperty("colSpan", 2);
-    connect(actAbout_, SIGNAL(triggered()), this, SLOT(showAbout()), Qt::UniqueConnection);
+	// Initialize the action to open the about box.
+	actAbout_= new QAction(QIcon(":/icons/graphics/system-about.png"), tr("About"), this);
+	actAbout_->setProperty("rowSpan", 2);
+	actAbout_->setProperty("colSpan", 2);
+	connect(actAbout_, SIGNAL(triggered()), 
+		this, SLOT(showAbout()), Qt::UniqueConnection);
 
-    // Initialize the action to exit the program.
-    actExit_ = new QAction(QIcon(":/icons/graphics/system-exit.png"), tr("Exit"), this);
-    actExit_->setProperty("rowSpan", 2);
-    actExit_->setProperty("colSpan", 2);
-    connect(actExit_, SIGNAL(triggered()), this, SLOT(close()), Qt::UniqueConnection);
+	// Initialize the action to exit the program.
+	actExit_ = new QAction(QIcon(":/icons/graphics/system-exit.png"), tr("Exit"), this);
+	actExit_->setProperty("rowSpan", 2);
+	actExit_->setProperty("colSpan", 2);
+	connect(actExit_, SIGNAL(triggered()),
+		this, SLOT(close()), Qt::UniqueConnection);
 
+	// the actions that select which windows to display
+
+	// Action to show/hide the output window.
+	showOutputAction_ = new QAction(tr("Output window"), this);
+	showOutputAction_->setCheckable(true);
+	showOutputAction_->setChecked(true);
+	connect(showOutputAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onOutputAction(bool)), Qt::UniqueConnection);
+// 	connect(consoleDock_, SIGNAL(visibilityChanged(bool)),
+// 		showOutputAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+	connect(consoleDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showOutputAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+	// Action to show/hide the preview box.
+	showPreviewAction_ = new QAction(tr("Preview box"), this);
+	showPreviewAction_->setCheckable(true);
+	showPreviewAction_->setChecked(true);
+	connect(showPreviewAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onPreviewAction(bool)), Qt::UniqueConnection);
+// 	connect(previewDock_, SIGNAL(visibilityChanged(bool)),
+// 		showPreviewAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+	connect(previewDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showPreviewAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+	// Action to show/hide the library window.
+	showLibraryAction_ = new QAction(tr("Library window"), this);
+	showLibraryAction_->setCheckable(true);
+	showLibraryAction_->setChecked(true);
+	connect(showLibraryAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onLibraryAction(bool)), Qt::UniqueConnection);
+// 	connect(libraryDock_, SIGNAL(visibilityChanged(bool)),
+// 		showLibraryAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+	connect(libraryDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showLibraryAction_, SLOT(setChecked(bool)), Qt::UniqueConnection); 		
+	
+
+	// Action to show/hide the configuration window.
+	showConfigurationAction_ = new QAction(tr("Configuration window"), this);
+	showConfigurationAction_->setCheckable(true);
+	showConfigurationAction_->setChecked(true);
+	connect(showConfigurationAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onConfigurationAction(bool)), Qt::UniqueConnection);
+// 	connect(configurationDock_, SIGNAL(visibilityChanged(bool)),
+// 		showConfigurationAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+	connect(configurationDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showConfigurationAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+	// Action to show/hide the connection editor.
+	showConnectionAction_ = new QAction(tr("Connection editor"), this);
+	showConnectionAction_->setCheckable(true);
+	showConnectionAction_->setChecked(true);
+	connect(showConnectionAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onConnectionAction(bool)), Qt::UniqueConnection);
+// 	connect(connectionDock_, SIGNAL(visibilityChanged(bool)),
+// 		showConnectionAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+	connect(connectionDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showConnectionAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+	// Action to show/hide the interface editor.
+	showInterfaceAction_ = new QAction(tr("Interface editor"), this);
+	showInterfaceAction_->setCheckable(true);
+	showInterfaceAction_->setChecked(true);
+	connect(showInterfaceAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onInterfaceAction(bool)), Qt::UniqueConnection);
+// 	connect(interfaceDock_, SIGNAL(visibilityChanged(bool)),
+// 		showInterfaceAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+	connect(interfaceDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showInterfaceAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+	// Action to show/hide the instance editor.
+	showInstanceAction_ = new QAction(tr("Instance editor"), this);
+	showInstanceAction_->setCheckable(true);
+	showInstanceAction_->setChecked(true);
+	connect(showInstanceAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onInstanceAction(bool)), Qt::UniqueConnection);
+// 	connect(instanceDock_, SIGNAL(visibilityChanged(bool)),
+// 		showInstanceAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+	connect(instanceDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showInstanceAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+	
 	setupMenus();
 }
 
@@ -629,6 +696,34 @@ void MainWindow::restoreSettings()
 	if (settings.contains("mainWindow/windowState")) {
 		restoreState(settings.value("mainWindow/windowState").toByteArray());
 	}
+
+	const bool configurationVisible = settings.value("mainWindow/ConfigurationVisibility", true).toBool();
+	visibilities_.showConfiguration_ = configurationVisible;
+	showConfigurationAction_->setChecked(configurationVisible);
+
+	const bool connectionVisible = settings.value("mainWindow/ConnectionVisibility", true).toBool();
+	visibilities_.showConnection_ = connectionVisible;
+	showConnectionAction_->setChecked(connectionVisible);
+
+	const bool instanceVisible = settings.value("mainWindow/InstanceVisibility", true).toBool();
+	visibilities_.showInstance_ = instanceVisible;
+	showInstanceAction_->setChecked(instanceVisible);
+
+	const bool interfaceVisible = settings.value("mainWindow/InterfaceVisibility", true).toBool();
+	visibilities_.showInterface_ = interfaceVisible;
+	showInterfaceAction_->setChecked(interfaceVisible);
+
+	const bool libraryVisible = settings.value("mainWindow/LibraryVisibility", true).toBool();
+	visibilities_.showLibrary_ = libraryVisible;
+	showLibraryAction_->setChecked(libraryVisible);
+
+	const bool outputVisible = settings.value("mainWindow/OutputVisibility", true).toBool();
+	visibilities_.showOutput_ = outputVisible;
+	showOutputAction_->setChecked(outputVisible);
+
+	const bool previewVisible = settings.value("mainWindow/PreviewVisibility", true).toBool();
+	visibilities_.showPreview_ = previewVisible;
+	showPreviewAction_->setChecked(previewVisible);
 }
 
 //-----------------------------------------------------------------------------
@@ -641,104 +736,117 @@ void MainWindow::saveSettings() {
 	// save the geometry and state of windows
 	settings.setValue("mainWindow/geometry", saveGeometry());
 	settings.setValue("mainWindow/windowState", saveState());
+
+	settings.setValue("mainWindow/ConfigurationVisibility", visibilities_.showConfiguration_);
+	settings.setValue("mainWindow/ConnectionVisibility", visibilities_.showConnection_);
+	settings.setValue("mainWindow/InstanceVisibility", visibilities_.showInstance_);
+	settings.setValue("mainWindow/InterfaceVisibility", visibilities_.showInterface_);
+	settings.setValue("mainWindow/LibraryVisibility", visibilities_.showLibrary_);
+	settings.setValue("mainWindow/OutputVisibility", visibilities_.showOutput_);
+	settings.setValue("mainWindow/PreviewVisibility", visibilities_.showPreview_);
 }
 
 void MainWindow::setupMenus() {
-    
-    QDockWidget* menuDock = new QDockWidget(tr("Menu"), this);
+
+	QDockWidget* menuDock = new QDockWidget(tr("Menu"), this);
 	menuDock->setObjectName(tr("Menu"));
-    menuDock->setTitleBarWidget(new QWidget(this));
-    menuDock->setAllowedAreas(Qt::TopDockWidgetArea);
-    menuDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
+	menuDock->setTitleBarWidget(new QWidget(this));
+	menuDock->setAllowedAreas(Qt::TopDockWidgetArea);
+	menuDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
 
-    menuStrip_ = new GCF::MenuStrip(menuDock);
-    menuStrip_->setFixedHeight(100);
+	menuStrip_ = new GCF::MenuStrip(menuDock);
+	menuStrip_->setFixedHeight(100);
 
-    menuDock->setWidget(menuStrip_);
-    addDockWidget(Qt::TopDockWidgetArea, menuDock);
+	menuDock->setWidget(menuStrip_);
+	addDockWidget(Qt::TopDockWidgetArea, menuDock);
 
-    // The "File" group.
-    GCF::MenuStripGroup* fileGroup = menuStrip_->addGroup(tr("File"));
-    fileGroup->addAction(actNew_);
-    fileGroup->addAction(actSave_);
+	// The "File" group.
+	GCF::MenuStripGroup* fileGroup = menuStrip_->addGroup(tr("File"));
+	fileGroup->addAction(actNew_);
+	fileGroup->addAction(actSave_);
 	fileGroup->addAction(actSaveAs_);
-    fileGroup->addAction(actSaveAll_);
-    fileGroup->addAction(actPrint_);
+	fileGroup->addAction(actSaveAll_);
+	fileGroup->addAction(actPrint_);
 
-    // The "Edit" group.
-    editGroup_ = menuStrip_->addGroup(tr("Edit"));
-    editGroup_->addAction(actUndo_);
-    editGroup_->addAction(actRedo_);
-    editGroup_->setVisible(false);
-    editGroup_->setEnabled(false);
-    
-    //! The "Library" group.
-    GCF::MenuStripGroup* libGroup = menuStrip_->addGroup(tr("Library"));
-    libGroup->addAction(actLibrarySearch_);
-    libGroup->addAction(actCheckIntegrity_);
-    libGroup->addAction(actImportLibFile_);
-    libGroup->addAction(actExportLibFile_);
+	// The "Edit" group.
+	editGroup_ = menuStrip_->addGroup(tr("Edit"));
+	editGroup_->addAction(actUndo_);
+	editGroup_->addAction(actRedo_);
+	editGroup_->setVisible(false);
+	editGroup_->setEnabled(false);
 
-    //! The "HW Design" group.
-    hwDesignGroup_ = menuStrip_->addGroup(tr("HW Design"));
-    hwDesignGroup_->addAction(actGenVHDL_);
-    hwDesignGroup_->addAction(actGenDocumentation_);
-    hwDesignGroup_->addAction(actGenModelSim_);
-    hwDesignGroup_->addAction(actGenQuartus_);
-    hwDesignGroup_->setVisible(false);
-    hwDesignGroup_->setEnabled(false);
+	//! The "Library" group.
+	GCF::MenuStripGroup* libGroup = menuStrip_->addGroup(tr("Library"));
+	libGroup->addAction(actLibrarySearch_);
+	libGroup->addAction(actCheckIntegrity_);
+	libGroup->addAction(actImportLibFile_);
+	libGroup->addAction(actExportLibFile_);
 
-    //! The "Diagram Tools" group.
-    diagramToolsGroup_ = menuStrip_->addGroup(tr("           Diagram Tools           "));
-    diagramToolsGroup_->addAction(actAddColumn_);
-    diagramToolsGroup_->addAction(actToolSelect_);
-    diagramToolsGroup_->addAction(actToolConnect_);
-    diagramToolsGroup_->addAction(actToolInterface_);
-    diagramToolsGroup_->addAction(actToolDraft_);
-    diagramToolsGroup_->setVisible(false);
+	//! The "HW Design" group.
+	hwDesignGroup_ = menuStrip_->addGroup(tr("HW Design"));
+	hwDesignGroup_->addAction(actGenVHDL_);
+	hwDesignGroup_->addAction(actGenDocumentation_);
+	hwDesignGroup_->addAction(actGenModelSim_);
+	hwDesignGroup_->addAction(actGenQuartus_);
+	hwDesignGroup_->setVisible(false);
+	hwDesignGroup_->setEnabled(false);
 
-    //! The "View" group.
-    GCF::MenuStripGroup* viewGroup = menuStrip_->addGroup(tr("View"));
-    viewGroup->addAction(actZoomIn_);
-    viewGroup->addAction(actZoomOut_);
-    viewGroup->addAction(actZoomOriginal_);
-    viewGroup->addAction(actFitInView_);
+	//! The "Diagram Tools" group.
+	diagramToolsGroup_ = menuStrip_->addGroup(tr("           Diagram Tools           "));
+	diagramToolsGroup_->addAction(actAddColumn_);
+	diagramToolsGroup_->addAction(actToolSelect_);
+	diagramToolsGroup_->addAction(actToolConnect_);
+	diagramToolsGroup_->addAction(actToolInterface_);
+	diagramToolsGroup_->addAction(actToolDraft_);
+	diagramToolsGroup_->setVisible(false);
+
+	//! The "View" group.
+	GCF::MenuStripGroup* viewGroup = menuStrip_->addGroup(tr("View"));
+	viewGroup->addAction(actZoomIn_);
+	viewGroup->addAction(actZoomOut_);
+	viewGroup->addAction(actZoomOriginal_);
+	viewGroup->addAction(actFitInView_);
 	viewGroup->addAction(actVisibleDocks_);
 
-    //! The Protection group.
-    protectGroup_ = menuStrip_->addGroup(tr("Protection"));
-    protectGroup_->addAction(actProtect_);
-    protectGroup_->setVisible(false);
+	//! The Protection group.
+	protectGroup_ = menuStrip_->addGroup(tr("Protection"));
+	protectGroup_->addAction(actProtect_);
+	protectGroup_->setVisible(false);
 
-    //! The "System" group.
-    GCF::MenuStripGroup* sysGroup = menuStrip_->addGroup(tr("System"));
-    sysGroup->addAction(actSettings_);
-    sysGroup->addAction(actAbout_);
-    sysGroup->addAction(actExit_);
+	//! The "System" group.
+	GCF::MenuStripGroup* sysGroup = menuStrip_->addGroup(tr("System"));
+	sysGroup->addAction(actSettings_);
+	sysGroup->addAction(actAbout_);
+	sysGroup->addAction(actExit_);
+
+	// the menu to display the dock widgets
+	windowsMenu_.addAction(showOutputAction_);
+	windowsMenu_.addAction(showPreviewAction_);
+	windowsMenu_.addAction(showLibraryAction_);
 }
 
 void MainWindow::setupDrawBoard() {
-	
+
 	designTabs_ = new QTabWidget;
 	designTabs_->setMovable(true);
 	designTabs_->setTabsClosable(true);
 	setCentralWidget(designTabs_);
-	
+
 	connect(designTabs_, SIGNAL(tabCloseRequested(int)),
 		this, SLOT(onTabCloseRequested(int)), Qt::UniqueConnection);
-    connect(designTabs_, SIGNAL(currentChanged(int)),
-            this, SLOT(onTabChanged(int)), Qt::UniqueConnection);
+	connect(designTabs_, SIGNAL(currentChanged(int)),
+		this, SLOT(onTabChanged(int)), Qt::UniqueConnection);
 }
 
 void MainWindow::setupLibraryDock() {
 
 	// set up the dock widget for the library
-	QDockWidget *libraryDock = new QDockWidget(tr("IP-XACT Library"), this);
-	libraryDock->setObjectName(tr("Library"));
-	libraryDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
-    libraryDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
+	libraryDock_ = new QDockWidget(tr("IP-XACT Library"), this);
+	libraryDock_->setObjectName(tr("Library"));
+	libraryDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
+	libraryDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
 
-	dialer_ = new VLNVDialer(libraryDock);
+	dialer_ = new VLNVDialer(libraryDock_);
 
 	libraryHandler_ = new LibraryHandler(dialer_, this);
 
@@ -746,7 +854,7 @@ void MainWindow::setupLibraryDock() {
 	const LibraryItem* root = libraryHandler_->getTreeRoot();
 	dialer_->setRootItem(root);
 
-	libraryDock->setWidget(libraryHandler_);
+	libraryDock_->setWidget(libraryHandler_);
 
 	// create a container widget for dialer and library display
 	QWidget* container = new QWidget(this);
@@ -754,21 +862,21 @@ void MainWindow::setupLibraryDock() {
 	containerLayout->addWidget(dialer_, 0);
 	containerLayout->addWidget(libraryHandler_, 1);
 	containerLayout->setSpacing(0);
-	libraryDock->setWidget(container);
+	libraryDock_->setWidget(container);
 
-	addDockWidget(Qt::LeftDockWidgetArea, libraryDock);
+	addDockWidget(Qt::LeftDockWidgetArea, libraryDock_);
 
 	// set up the preview box to display the component preview
-	QDockWidget* previewDock = new QDockWidget(tr("Component Preview"), this);
-	previewDock->setObjectName(tr("ComponentPreview"));
-	previewDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea 
+	previewDock_ = new QDockWidget(tr("Component Preview"), this);
+	previewDock_->setObjectName(tr("ComponentPreview"));
+	previewDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea 
 		| Qt::BottomDockWidgetArea);
-	previewDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
+	previewDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
 
 	previewBox_ = new ComponentPreviewBox(libraryHandler_);
-	previewDock->setWidget(previewBox_);
+	previewDock_->setWidget(previewBox_);
 
-	addDockWidget(Qt::LeftDockWidgetArea, previewDock);
+	addDockWidget(Qt::LeftDockWidgetArea, previewDock_);
 
 	connect(libraryHandler_, SIGNAL(openDesign(const VLNV&, const QString&)),
 		this, SLOT(openDesign(const VLNV&, const QString&)));
@@ -778,8 +886,8 @@ void MainWindow::setupLibraryDock() {
 		this, SLOT(createAbsDef(const VLNV&, const QString&, bool)), Qt::UniqueConnection);
 	connect(libraryHandler_, SIGNAL(openComponent(const VLNV&)),
 		this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
-    connect(libraryHandler_, SIGNAL(openSWDesign(const VLNV&)),
-        this, SLOT(openSWDesign(const VLNV&)), Qt::UniqueConnection);
+	connect(libraryHandler_, SIGNAL(openSWDesign(const VLNV&)),
+		this, SLOT(openSWDesign(const VLNV&)), Qt::UniqueConnection);
 	connect(libraryHandler_, SIGNAL(openBus(const VLNV&, const VLNV&, bool)),
 		this, SLOT(openBus(const VLNV&, const VLNV&, bool)), Qt::UniqueConnection);
 	connect(libraryHandler_, SIGNAL(refreshDialer()),
@@ -790,23 +898,23 @@ void MainWindow::setupLibraryDock() {
 		this, SLOT(openSystem(const VLNV&)), Qt::UniqueConnection);
 
 	connect(libraryHandler_, SIGNAL(createComponent(KactusAttribute::ProductHierarchy,
-		                                            KactusAttribute::Firmness,
-		                                            const VLNV&, const QString&)),
-		                                            this, SLOT(createComponent(KactusAttribute::ProductHierarchy,
-		                                            KactusAttribute::Firmness,
-		                                            const VLNV&, const QString&)), Qt::UniqueConnection);
+		KactusAttribute::Firmness,
+		const VLNV&, const QString&)),
+		this, SLOT(createComponent(KactusAttribute::ProductHierarchy,
+		KactusAttribute::Firmness,
+		const VLNV&, const QString&)), Qt::UniqueConnection);
 }
 
 void MainWindow::setupMessageConsole() {
-	
-	QDockWidget* messageDock = new QDockWidget(tr("Output"), this);
-	messageDock->setObjectName(tr("Output"));
-	messageDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
-	messageDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
 
-	console_ = new MessageConsole(messageDock);
-	messageDock->setWidget(console_);
-	addDockWidget(Qt::BottomDockWidgetArea, messageDock);
+	consoleDock_ = new QDockWidget(tr("Output"), this);
+	consoleDock_->setObjectName(tr("Output"));
+	consoleDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
+	consoleDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
+
+	console_ = new MessageConsole(consoleDock_);
+	consoleDock_->setWidget(console_);
+	addDockWidget(Qt::BottomDockWidgetArea, consoleDock_);
 
 	connect(this, SIGNAL(errorMessage(const QString&)),
 		console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
@@ -814,58 +922,58 @@ void MainWindow::setupMessageConsole() {
 		console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
 }
 
-void MainWindow::setupInstanceEditor() {
-
-	QDockWidget* instanceDock = new QDockWidget(tr("Component Instance Details"), this);
-	instanceDock->setObjectName(tr("Instance Editor"));
-	instanceDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-	instanceDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
-
-	instanceEditor_ = new ComponentInstanceEditor(instanceDock);
-	instanceDock->setWidget(instanceEditor_);
-	addDockWidget(Qt::RightDockWidgetArea, instanceDock);
-
-	connect(instanceEditor_, SIGNAL(contentChanged()),
-		this, SLOT(onDesignChanged()), Qt::UniqueConnection);
-}
-
 void MainWindow::setupConfigurationEditor() {
 
-	QDockWidget* configurationDock = new QDockWidget(tr("Configuration Details"), this);
-	configurationDock->setObjectName(tr("Configuration Editor"));
-	configurationDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-	configurationDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
+	configurationDock_ = new QDockWidget(tr("Configuration Details"), this);
+	configurationDock_->setObjectName(tr("Configuration Editor"));
+	configurationDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+	configurationDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
 
-	configurationEditor_ = new ConfigurationEditor(libraryHandler_, configurationDock);
-	configurationDock->setWidget(configurationEditor_);
-	addDockWidget(Qt::RightDockWidgetArea, configurationDock);
+	configurationEditor_ = new ConfigurationEditor(libraryHandler_, configurationDock_);
+	configurationDock_->setWidget(configurationEditor_);
+	addDockWidget(Qt::RightDockWidgetArea, configurationDock_);
 
 	connect(configurationEditor_, SIGNAL(contentChanged()),
 		this, SLOT(onDesignChanged()), Qt::UniqueConnection);
 }
 
+void MainWindow::setupInstanceEditor() {
+
+	instanceDock_ = new QDockWidget(tr("Component Instance Details"), this);
+	instanceDock_->setObjectName(tr("Instance Editor"));
+	instanceDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+	instanceDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
+
+	instanceEditor_ = new ComponentInstanceEditor(instanceDock_);
+	instanceDock_->setWidget(instanceEditor_);
+	addDockWidget(Qt::RightDockWidgetArea, instanceDock_);
+
+	connect(instanceEditor_, SIGNAL(contentChanged()),
+		this, SLOT(onDesignChanged()), Qt::UniqueConnection);
+}
+
 void MainWindow::setupInterfaceEditor() {
 
-	QDockWidget* interfaceDock = new QDockWidget(tr("Interface Editor"), this);
-	interfaceDock->setObjectName(tr("Interface Editor"));
-	interfaceDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-	interfaceDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
+	interfaceDock_ = new QDockWidget(tr("Interface Editor"), this);
+	interfaceDock_->setObjectName(tr("Interface Editor"));
+	interfaceDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+	interfaceDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
 
-	interfaceEditor_ = new InterfaceEditor(interfaceDock, libraryHandler_);
-	interfaceDock->setWidget(interfaceEditor_);
-	addDockWidget(Qt::RightDockWidgetArea, interfaceDock);
+	interfaceEditor_ = new InterfaceEditor(interfaceDock_, libraryHandler_);
+	interfaceDock_->setWidget(interfaceEditor_);
+	addDockWidget(Qt::RightDockWidgetArea, interfaceDock_);
 
 }
 
 void MainWindow::setupConnectionEditor() {
-	QDockWidget* connectionDock = new QDockWidget(tr("Connection Editor"), this);
-	connectionDock->setObjectName(tr("Connection Editor"));
-	connectionDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-	connectionDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
+	connectionDock_ = new QDockWidget(tr("Connection Editor"), this);
+	connectionDock_->setObjectName(tr("Connection Editor"));
+	connectionDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+	connectionDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
 
-	connectionEditor_ = new ConnectionEditor(connectionDock, libraryHandler_);
-	connectionDock->setWidget(connectionEditor_);
-	addDockWidget(Qt::RightDockWidgetArea, connectionDock);
+	connectionEditor_ = new ConnectionEditor(connectionDock_, libraryHandler_);
+	connectionDock_->setWidget(connectionEditor_);
+	addDockWidget(Qt::RightDockWidgetArea, connectionDock_);
 }
 
 void MainWindow::onDesignChanged() {
@@ -876,7 +984,7 @@ void MainWindow::onDesignChanged() {
 	// if editor was found
 	if (widget) {
 		DesignWidget* editor = qobject_cast<DesignWidget*>(widget);
-		
+
 		// if editor is design widget then set it to be modified.
 		if (editor) {
 			editor->setModified(true);
@@ -893,7 +1001,6 @@ void MainWindow::onClearItemSelection() {
 }
 
 void MainWindow::onComponentSelected( ComponentItem* component ) {
-
 	Q_ASSERT(component);
 
 	connectionEditor_->clear();
@@ -901,27 +1008,23 @@ void MainWindow::onComponentSelected( ComponentItem* component ) {
 
 	// update the instance editor
 	instanceEditor_->setComponent(component);
-	displayDockedEditor(instanceEditor_);
 
-    if (component->componentModel()->getVlnv()->isValid())
-    {
-	    libraryHandler_->onSelectionChanged(*component->componentModel()->getVlnv());
+	if (component->componentModel()->getVlnv()->isValid())
+	{
+		libraryHandler_->onSelectionChanged(*component->componentModel()->getVlnv());
 		previewBox_->setComponent(*component->componentModel()->getVlnv());
-    }
-    else
-    {
-        libraryHandler_->onClearSelection();
-    }
+	}
+	else
+	{
+		libraryHandler_->onClearSelection();
+	}
 }
 
 void MainWindow::onPortSelected( DiagramPort* port ) {
-
 	Q_ASSERT(port);
 
 	// if the port has an encompassing component then it is selected
 	DiagramComponent* component = port->encompassingComp();
-// 	if (component)
-// 		onComponentSelected(component);
 
 	if (component->componentModel()->getVlnv()->isValid()) {
 
@@ -935,17 +1038,14 @@ void MainWindow::onPortSelected( DiagramPort* port ) {
 	connectionEditor_->clear();
 	instanceEditor_->clear();
 	interfaceEditor_->setInterface(port);
-	displayDockedEditor(interfaceEditor_);
 }
 
 void MainWindow::onInterfaceSelected( DiagramInterface* interface ) {
-
 	Q_ASSERT(interface);
 
 	connectionEditor_->clear();
 	instanceEditor_->clear();
 	interfaceEditor_->setInterface(interface);
-	displayDockedEditor(interfaceEditor_);
 }
 
 void MainWindow::onConnectionSelected( DiagramInterconnection* connection ) {
@@ -954,7 +1054,6 @@ void MainWindow::onConnectionSelected( DiagramInterconnection* connection ) {
 	instanceEditor_->clear();
 	interfaceEditor_->clear();
 	connectionEditor_->setConnection(connection);
-	displayDockedEditor(connectionEditor_);
 }
 
 void MainWindow::onImportLibFile() {
@@ -972,7 +1071,7 @@ void MainWindow::onImportLibFile() {
 
 void MainWindow::onExportLibFile() {
 	QString file = QFileDialog::getSaveFileName(this, tr("Export Library File"),
-		                                        QDir::homePath(), tr("Ini Files (*.ini)"));
+		QDir::homePath(), tr("Ini Files (*.ini)"));
 
 	// if user clicked cancel
 	if (file.isEmpty())
@@ -986,9 +1085,9 @@ void MainWindow::onExportLibFile() {
 //-----------------------------------------------------------------------------
 void MainWindow::updateMenuStrip()
 {
-    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
-    bool unlocked = doc != 0 && (!(doc->getFlags() & TabDocument::DOC_PROTECTION_SUPPORT) ||
-                                  !doc->isProtected());
+	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+	bool unlocked = doc != 0 && (!(doc->getFlags() & TabDocument::DOC_PROTECTION_SUPPORT) ||
+		!doc->isProtected());
 
 	bool isHWComp = false;
 	IPXactComponentEditor* ipEditor = dynamic_cast<IPXactComponentEditor*>(doc);
@@ -1002,14 +1101,14 @@ void MainWindow::updateMenuStrip()
 		isHWDesign = designWidget->isHWImplementation();
 	}
 
-    actSave_->setEnabled(doc != 0 && doc->isModified());
-    actSaveAs_->setEnabled(doc != 0);
-    actPrint_->setEnabled(doc != 0 && (doc->getFlags() & TabDocument::DOC_PRINT_SUPPORT));
+	actSave_->setEnabled(doc != 0 && doc->isModified());
+	actSaveAs_->setEnabled(doc != 0);
+	actPrint_->setEnabled(doc != 0 && (doc->getFlags() & TabDocument::DOC_PRINT_SUPPORT));
 
 	// if is hardware design then set all actions enabled
 	if (isHWDesign) {
 		hwDesignGroup_->setVisible(true);
-        hwDesignGroup_->setEnabled(unlocked);
+		hwDesignGroup_->setEnabled(unlocked);
 		actGenVHDL_->setEnabled(unlocked);
 		actGenDocumentation_->setEnabled(unlocked);
 		actGenModelSim_->setEnabled(unlocked);
@@ -1017,7 +1116,7 @@ void MainWindow::updateMenuStrip()
 	}
 	// if is hardware component then set only documentation, modelsim and vhdl enabled
 	else if (isHWComp) {
-        hwDesignGroup_->setVisible(true);
+		hwDesignGroup_->setVisible(true);
 		hwDesignGroup_->setEnabled(unlocked);
 		actGenVHDL_->setEnabled(unlocked);
 		actGenDocumentation_->setEnabled(unlocked);
@@ -1028,30 +1127,30 @@ void MainWindow::updateMenuStrip()
 		hwDesignGroup_->setVisible(false);
 	}
 
-    editGroup_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_EDIT_SUPPORT));
-    editGroup_->setEnabled(doc != 0 && (doc->getFlags() & TabDocument::DOC_EDIT_SUPPORT) && unlocked);
-    actUndo_->setEnabled(doc != 0 && doc->getEditProvider() != 0 && doc->getEditProvider()->canUndo());
-    actRedo_->setEnabled(doc != 0 && doc->getEditProvider() != 0 && doc->getEditProvider()->canRedo());
+	editGroup_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_EDIT_SUPPORT));
+	editGroup_->setEnabled(doc != 0 && (doc->getFlags() & TabDocument::DOC_EDIT_SUPPORT) && unlocked);
+	actUndo_->setEnabled(doc != 0 && doc->getEditProvider() != 0 && doc->getEditProvider()->canUndo());
+	actRedo_->setEnabled(doc != 0 && doc->getEditProvider() != 0 && doc->getEditProvider()->canRedo());
 
-    diagramToolsGroup_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_DRAW_MODE_SUPPORT));
-    diagramToolsGroup_->setEnabled(doc != 0 && (doc->getFlags() & TabDocument::DOC_DRAW_MODE_SUPPORT) &&
-                                !doc->isProtected());
-    actToolSelect_->setEnabled(doc != 0 && (doc->getSupportedDrawModes() & MODE_SELECT));
-    actToolConnect_->setEnabled(doc != 0 && (doc->getSupportedDrawModes() & MODE_CONNECT));
-    actToolInterface_->setEnabled(doc != 0 && (doc->getSupportedDrawModes() & MODE_INTERFACE));
-    actToolDraft_->setEnabled(doc != 0 && (doc->getSupportedDrawModes() & MODE_DRAFT));
+	diagramToolsGroup_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_DRAW_MODE_SUPPORT));
+	diagramToolsGroup_->setEnabled(doc != 0 && (doc->getFlags() & TabDocument::DOC_DRAW_MODE_SUPPORT) &&
+		!doc->isProtected());
+	actToolSelect_->setEnabled(doc != 0 && (doc->getSupportedDrawModes() & MODE_SELECT));
+	actToolConnect_->setEnabled(doc != 0 && (doc->getSupportedDrawModes() & MODE_CONNECT));
+	actToolInterface_->setEnabled(doc != 0 && (doc->getSupportedDrawModes() & MODE_INTERFACE));
+	actToolDraft_->setEnabled(doc != 0 && (doc->getSupportedDrawModes() & MODE_DRAFT));
 
 	bool oldProtectionState = actProtect_->isChecked();
 
-    protectGroup_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_PROTECTION_SUPPORT));
+	protectGroup_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_PROTECTION_SUPPORT));
 	actProtect_->setEnabled(doc != 0 && (doc->getFlags() & TabDocument::DOC_PROTECTION_SUPPORT));
-    actProtect_->setChecked(doc != 0 && (doc->getFlags() & TabDocument::DOC_PROTECTION_SUPPORT) &&
-                            doc->isProtected());
+	actProtect_->setChecked(doc != 0 && (doc->getFlags() & TabDocument::DOC_PROTECTION_SUPPORT) &&
+		doc->isProtected());
 
-    if (oldProtectionState != actProtect_->isChecked())
+	if (oldProtectionState != actProtect_->isChecked())
 		onProtectionChanged(actProtect_->isChecked());
 
-    updateZoomTools();
+	updateZoomTools();
 }
 
 //-----------------------------------------------------------------------------
@@ -1061,8 +1160,8 @@ void MainWindow::saveCurrentAs() {
 	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
 
 	if (doc != 0)
-    {
-        doc->saveAs();
+	{
+		doc->saveAs();
 		onTabChanged(designTabs_->currentIndex());
 	}
 }
@@ -1072,13 +1171,13 @@ void MainWindow::saveCurrentAs() {
 //-----------------------------------------------------------------------------
 void MainWindow::saveCurrent()
 {
-    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
 
-    if (doc != 0)
-    {
-        doc->save();
+	if (doc != 0)
+	{
+		doc->save();
 		onTabChanged(designTabs_->currentIndex());
-    }
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -1086,26 +1185,26 @@ void MainWindow::saveCurrent()
 //-----------------------------------------------------------------------------
 void MainWindow::saveAll()
 {
-    // Go through all documents and save those that have been modified.
-    for (int i = 0; i < designTabs_->count(); ++i)
-    {
-        TabDocument* doc = static_cast<TabDocument*>(designTabs_->widget(i));
+	// Go through all documents and save those that have been modified.
+	for (int i = 0; i < designTabs_->count(); ++i)
+	{
+		TabDocument* doc = static_cast<TabDocument*>(designTabs_->widget(i));
 
-        if (doc->isModified())
-        {
-            doc->save();
-        }
-    }
+		if (doc->isModified())
+		{
+			doc->save();
+		}
+	}
 
-    if (designTabs_->currentWidget() != 0)
-    {
-        TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
-        actSave_->setEnabled(doc->isModified());
-    }
-    else
-    {
-        actSave_->setEnabled(false);
-    }
+	if (designTabs_->currentWidget() != 0)
+	{
+		TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+		actSave_->setEnabled(doc->isModified());
+	}
+	else
+	{
+		actSave_->setEnabled(false);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -1113,10 +1212,10 @@ void MainWindow::saveAll()
 //-----------------------------------------------------------------------------
 void MainWindow::printCurrent()
 {
-    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
-    Q_ASSERT(doc != 0);
+	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+	Q_ASSERT(doc != 0);
 
-    doc->print();    
+	doc->print();    
 }
 
 //-----------------------------------------------------------------------------
@@ -1124,18 +1223,18 @@ void MainWindow::printCurrent()
 //-----------------------------------------------------------------------------
 void MainWindow::addColumn()
 {
-    QWidget* curWidget = designTabs_->currentWidget();
-    DesignWidget* designWidget = dynamic_cast<DesignWidget*>(curWidget);
-    EndpointDesignWidget* endpointWidget = dynamic_cast<EndpointDesignWidget*>(curWidget);
+	QWidget* curWidget = designTabs_->currentWidget();
+	DesignWidget* designWidget = dynamic_cast<DesignWidget*>(curWidget);
+	EndpointDesignWidget* endpointWidget = dynamic_cast<EndpointDesignWidget*>(curWidget);
 
-    if (designWidget != 0)
-    {
-        designWidget->addColumn();
-    }
-    else if (endpointWidget != 0)
-    {
-        endpointWidget->addColumn();
-    }
+	if (designWidget != 0)
+	{
+		designWidget->addColumn();
+	}
+	else if (endpointWidget != 0)
+	{
+		endpointWidget->addColumn();
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -1143,15 +1242,15 @@ void MainWindow::addColumn()
 //-----------------------------------------------------------------------------
 void MainWindow::generateVHDL()
 {
-    DesignWidget* designWidget = dynamic_cast<DesignWidget*>(designTabs_->currentWidget());
+	DesignWidget* designWidget = dynamic_cast<DesignWidget*>(designTabs_->currentWidget());
 	IPXactComponentEditor* compEditor = dynamic_cast<IPXactComponentEditor*>(designTabs_->currentWidget());
 
-    if (designWidget != 0)
-    {
-        designWidget->onVhdlGenerate();
-    }
+	if (designWidget != 0)
+	{
+		designWidget->onVhdlGenerate();
+	}
 	else if (compEditor) {
-		
+
 		// if user changed the metadata then the editor must be reopened
 		if (compEditor->onVhdlGenerate()) {
 
@@ -1170,20 +1269,20 @@ void MainWindow::generateVHDL()
 // Function: generateModelSim()
 //-----------------------------------------------------------------------------
 void MainWindow::generateModelSim() {
-    DesignWidget* designWidget = dynamic_cast<DesignWidget*>(designTabs_->currentWidget());
+	DesignWidget* designWidget = dynamic_cast<DesignWidget*>(designTabs_->currentWidget());
 	IPXactComponentEditor* compEditor = dynamic_cast<IPXactComponentEditor*>(designTabs_->currentWidget());
-    
+
 	if (designWidget != 0) {
-        designWidget->onModelsimGenerate();
-    }
+		designWidget->onModelsimGenerate();
+	}
 	else if (compEditor) {
-		
+
 		// if user changed the contents of the metadata then refresh the editor
 		if (compEditor->onModelsimGenerate()) {
 			compEditor->refresh();
 		}
 	}
-	
+
 }
 
 //-----------------------------------------------------------------------------
@@ -1191,12 +1290,12 @@ void MainWindow::generateModelSim() {
 //-----------------------------------------------------------------------------
 void MainWindow::generateQuartus()
 {
-    DesignWidget* designWidget = dynamic_cast<DesignWidget*>(designTabs_->currentWidget());
+	DesignWidget* designWidget = dynamic_cast<DesignWidget*>(designTabs_->currentWidget());
 
-    if (designWidget != 0)
-    {
-        designWidget->onQuartusGenerate();
-    }
+	if (designWidget != 0)
+	{
+		designWidget->onQuartusGenerate();
+	}
 }
 
 void MainWindow::generateDoc() {
@@ -1220,13 +1319,13 @@ void MainWindow::generateDoc() {
 		console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
 	connect(&generator, SIGNAL(noticeMessage(const QString&)),
 		console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
-	
+
 	// set the component that's documentation is generated.
 	generator.setComponent(vlnv);
-	
+
 	// write the documentation
 	QString htmlFilePath = generator.writeDocumentation();
-	
+
 	// if user canceled
 	if (htmlFilePath.isEmpty()) {
 		return;
@@ -1256,10 +1355,10 @@ void MainWindow::generateDoc() {
 //-----------------------------------------------------------------------------
 void MainWindow::zoomIn()
 {
-    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
-    Q_ASSERT(doc->getFlags() & TabDocument::DOC_ZOOM_SUPPORT);
-    doc->setZoomLevel(doc->getZoomLevel() + 10);
-    updateZoomTools();
+	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+	Q_ASSERT(doc->getFlags() & TabDocument::DOC_ZOOM_SUPPORT);
+	doc->setZoomLevel(doc->getZoomLevel() + 10);
+	updateZoomTools();
 }
 
 //-----------------------------------------------------------------------------
@@ -1267,10 +1366,10 @@ void MainWindow::zoomIn()
 //-----------------------------------------------------------------------------
 void MainWindow::zoomOut()
 {
-    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
-    Q_ASSERT(doc->getFlags() & TabDocument::DOC_ZOOM_SUPPORT);
-    doc->setZoomLevel(doc->getZoomLevel() - 10);
-    updateZoomTools();
+	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+	Q_ASSERT(doc->getFlags() & TabDocument::DOC_ZOOM_SUPPORT);
+	doc->setZoomLevel(doc->getZoomLevel() - 10);
+	updateZoomTools();
 }
 
 //-----------------------------------------------------------------------------
@@ -1278,10 +1377,10 @@ void MainWindow::zoomOut()
 //-----------------------------------------------------------------------------
 void MainWindow::zoomOriginal()
 {
-    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
-    Q_ASSERT(doc->getFlags() & TabDocument::DOC_ZOOM_SUPPORT);
-    doc->setZoomLevel(100);
-    updateZoomTools();
+	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+	Q_ASSERT(doc->getFlags() & TabDocument::DOC_ZOOM_SUPPORT);
+	doc->setZoomLevel(100);
+	updateZoomTools();
 }
 
 //-----------------------------------------------------------------------------
@@ -1289,10 +1388,10 @@ void MainWindow::zoomOriginal()
 //-----------------------------------------------------------------------------
 void MainWindow::fitInView()
 {
-    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
-    Q_ASSERT(doc->getFlags() & TabDocument::DOC_ZOOM_SUPPORT);
-    doc->fitInView();
-    updateZoomTools();
+	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+	Q_ASSERT(doc->getFlags() & TabDocument::DOC_ZOOM_SUPPORT);
+	doc->fitInView();
+	updateZoomTools();
 }
 
 //-----------------------------------------------------------------------------
@@ -1300,24 +1399,24 @@ void MainWindow::fitInView()
 //-----------------------------------------------------------------------------
 void MainWindow::drawModeChange(QAction *action)
 {
-    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
 
-    if (action == actToolSelect_)
-    {
-        doc->setMode(MODE_SELECT);
-    }
-    else if (action == actToolConnect_)
-    {
-        doc->setMode(MODE_CONNECT);
-    }
-    else if (action == actToolInterface_)
-    {
-        doc->setMode(MODE_INTERFACE);
-    }
-    else if (action == actToolDraft_)
-    {
-        doc->setMode(MODE_DRAFT);
-    }
+	if (action == actToolSelect_)
+	{
+		doc->setMode(MODE_SELECT);
+	}
+	else if (action == actToolConnect_)
+	{
+		doc->setMode(MODE_CONNECT);
+	}
+	else if (action == actToolInterface_)
+	{
+		doc->setMode(MODE_INTERFACE);
+	}
+	else if (action == actToolDraft_)
+	{
+		doc->setMode(MODE_DRAFT);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -1325,33 +1424,87 @@ void MainWindow::drawModeChange(QAction *action)
 //-----------------------------------------------------------------------------
 void MainWindow::onDrawModeChanged(DrawMode mode)
 {
-    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
 
-    if (doc != 0 && doc->getFlags() & TabDocument::DOC_DRAW_MODE_SUPPORT)
-    {
-        switch (mode)
-        {
-        case MODE_CONNECT:
-        case MODE_INTERFACE:
-        case MODE_DRAFT:
-            {
-                doc->setCursor(Qt::CrossCursor);
-                break;
-            }
-        
-        default:
-            {
-                // If mode is set to select.
-                doc->setCursor(Qt::ArrowCursor);
-                break;
-            }
-        }
-    }
+	if (doc != 0 && doc->getFlags() & TabDocument::DOC_DRAW_MODE_SUPPORT)
+	{
+		switch (mode)
+		{
+		case MODE_CONNECT:
+		case MODE_INTERFACE:
+		case MODE_DRAFT:
+			{
+				doc->setCursor(Qt::CrossCursor);
+				break;
+			}
 
-    actToolSelect_->setChecked(mode == MODE_SELECT);
-    actToolConnect_->setChecked(mode == MODE_CONNECT);
-    actToolInterface_->setChecked(mode == MODE_INTERFACE);
-    actToolDraft_->setChecked(mode == MODE_DRAFT);
+		default:
+			{
+				// If mode is set to select.
+				doc->setCursor(Qt::ArrowCursor);
+				break;
+			}
+		}
+	}
+
+	actToolSelect_->setChecked(mode == MODE_SELECT);
+	actToolConnect_->setChecked(mode == MODE_CONNECT);
+	actToolInterface_->setChecked(mode == MODE_INTERFACE);
+	actToolDraft_->setChecked(mode == MODE_DRAFT);
+}
+
+void MainWindow::onTabCloseRequested( int index )
+{	
+	Q_ASSERT(designTabs_->widget(index) != 0);
+	TabDocument* doc = static_cast<TabDocument*>(designTabs_->widget(index));
+
+	// If the document has been modified, ask a confirmation from the user.
+	if (doc->isModified())
+	{
+		QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+			"Do you want to save changes to " + doc->getDocumentName() + "?",
+			QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, this);
+
+		int ret = msgBox.exec();
+
+		switch (ret)
+		{
+		case QMessageBox::Yes:
+			{
+				// Try to save and if it fails, cancel the close operation.
+				if (!doc->save())
+				{
+					return;
+				}
+				break;
+			}
+
+		case QMessageBox::No:
+			{
+				doc->setModified(false);
+				break;
+			}
+
+		case QMessageBox::Cancel:
+			{
+				// Cancel the close operation.
+				return;
+			}
+		}
+	}
+
+	// remove the widget from the tabs
+	designTabs_->removeTab(index);
+
+	// delete the document.
+	delete doc;
+
+	// if there are no more tabs in the tab widget
+	if (designTabs_->count() == 0) {
+		// don't display empty editors
+		updateWindows(TabDocument::OUTPUTWINDOW | TabDocument::LIBRARYWINDOW | 
+			TabDocument::PREVIEWWINDOW);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -1359,7 +1512,12 @@ void MainWindow::onDrawModeChanged(DrawMode mode)
 //-----------------------------------------------------------------------------
 void MainWindow::onTabChanged(int index)
 {
-    TabDocument* doc = static_cast<TabDocument*>(designTabs_->widget(index));
+	TabDocument* doc = static_cast<TabDocument*>(designTabs_->widget(index));
+
+	// update the menu 
+	if (doc) {
+		updateWindows(doc->getSupportedWindows());
+	}
 
 	// if the new tab is designWidget
 	DesignWidget* designwidget = dynamic_cast<DesignWidget*>(doc);
@@ -1367,7 +1525,7 @@ void MainWindow::onTabChanged(int index)
 	if (designwidget && designwidget->getHierComponent()->getComponentImplementation() == KactusAttribute::KTS_HW) {
 		configurationEditor_->setConfiguration(designwidget, designwidget->isProtected());
 	}
-	
+
 	else if (designwidget) {
 		configurationEditor_->setConfiguration(designwidget, true);
 	}
@@ -1379,18 +1537,18 @@ void MainWindow::onTabChanged(int index)
 		connectionEditor_->clear();
 	}
 
-    // Reset the draw mode to select.
-    if (doc != 0 && (doc->getFlags() & TabDocument::DOC_DRAW_MODE_SUPPORT))
-    {
-        doc->setMode(MODE_SELECT);
-    }
-    else
-    {
-        onDrawModeChanged(MODE_SELECT);
-    }
-    
-    // Update the menu strip.
-    updateMenuStrip();
+	// Reset the draw mode to select.
+	if (doc != 0 && (doc->getFlags() & TabDocument::DOC_DRAW_MODE_SUPPORT))
+	{
+		doc->setMode(MODE_SELECT);
+	}
+	else
+	{
+		onDrawModeChanged(MODE_SELECT);
+	}
+
+	// Update the menu strip.
+	updateMenuStrip();
 }
 
 //-----------------------------------------------------------------------------
@@ -1398,50 +1556,81 @@ void MainWindow::onTabChanged(int index)
 //-----------------------------------------------------------------------------
 void MainWindow::closeEvent(QCloseEvent* event)
 {
-    // Go through all tab documents and ask the user what to do if they are not saved.
-    while (designTabs_->count() > 0)
-    {
-        TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+	// disconnect the signals that would otherwise change the window states to 
+	// be saved
 
-        if (doc->isModified())
-        {
-            QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                               "Do you want to save changes to " + doc->getDocumentName() + "?",
-                               QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, this);
+	// Action to show/hide the output window.
+	disconnect(showOutputAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onOutputAction(bool)));
 
-            int ret = msgBox.exec();
+	// Action to show/hide the preview box.
+	disconnect(showPreviewAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onPreviewAction(bool)));
 
-            switch (ret)
-            {
-            case QMessageBox::Yes:
-                {
-                    // Try to save and if it fails, cancel the close event.
-                    if (!doc->save())
-                    {
-                        event->ignore();
-                        return;
-                    }
-                    break;
-                }
-                
-            case QMessageBox::No:
-                {
-                    doc->setModified(false);
-                    break;
-                }
+	// Action to show/hide the library window.
+	disconnect(showLibraryAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onLibraryAction(bool)));
 
-            case QMessageBox::Cancel:
-                {
-                    event->ignore();
-                    return;
-                }
-            }
-        }
+	// Action to show/hide the configuration window.
+	disconnect(showConfigurationAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onConfigurationAction(bool)));
 
-        designTabs_->removeTab(designTabs_->currentIndex());
-        delete doc;
-        doc = 0;
-    }
+	// Action to show/hide the connection editor.
+	disconnect(showConnectionAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onConnectionAction(bool)));
+
+	// Action to show/hide the interface editor.
+	disconnect(showInterfaceAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onInterfaceAction(bool)));
+
+	// Action to show/hide the instance editor.
+	disconnect(showInstanceAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onInstanceAction(bool)));
+
+	// Go through all tab documents and ask the user what to do if they are not saved.
+	while (designTabs_->count() > 0)
+	{
+		TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+
+		if (doc->isModified())
+		{
+			QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+				"Do you want to save changes to " + doc->getDocumentName() + "?",
+				QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, this);
+
+			int ret = msgBox.exec();
+
+			switch (ret)
+			{
+			case QMessageBox::Yes:
+				{
+					// Try to save and if it fails, cancel the close event.
+					if (!doc->save())
+					{
+						event->ignore();
+						return;
+					}
+					break;
+				}
+
+			case QMessageBox::No:
+				{
+					doc->setModified(false);
+					break;
+				}
+
+			case QMessageBox::Cancel:
+				{
+					event->ignore();
+					return;
+				}
+			}
+		}
+
+		designTabs_->removeTab(designTabs_->currentIndex());
+		delete doc;
+		doc = 0;
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -1449,80 +1638,80 @@ void MainWindow::closeEvent(QCloseEvent* event)
 //-----------------------------------------------------------------------------
 void MainWindow::openSource(ProgramEntityItem* progEntity)
 {
-    Q_ASSERT(progEntity != 0);
+	Q_ASSERT(progEntity != 0);
 
-    ApplicationItem* appItem = progEntity->getApplication();
-    Q_ASSERT(appItem != 0);
+	ApplicationItem* appItem = progEntity->getApplication();
+	Q_ASSERT(appItem != 0);
 
-    FileSet* fileSet = appItem->componentModel()->getFileSet("cSources");
+	FileSet* fileSet = appItem->componentModel()->getFileSet("cSources");
 
-    if (fileSet == 0 || fileSet->getFiles().count() == 0)
-    {
-        return;
-    }
-    
-    QString filename;
-    
-    if (fileSet->getFiles().count() > 1)
-    {
-        // Show a dialog for selecting what source file to open.
-        ListSelectDialog dlg(this);
-        dlg.setWindowTitle(tr("Open Source"));
-        dlg.setDescription(tr("Select C source file to open:"));
+	if (fileSet == 0 || fileSet->getFiles().count() == 0)
+	{
+		return;
+	}
 
-        foreach (QSharedPointer<File> file, fileSet->getFiles())
-        {
-            dlg.addItem(new QListWidgetItem(file->getName()));
-        }
+	QString filename;
 
-        if (dlg.exec() == QDialog::Rejected)
-        {
-            return;
-        }
+	if (fileSet->getFiles().count() > 1)
+	{
+		// Show a dialog for selecting what source file to open.
+		ListSelectDialog dlg(this);
+		dlg.setWindowTitle(tr("Open Source"));
+		dlg.setDescription(tr("Select C source file to open:"));
 
-        filename = dlg.getSelectedItem()->text();
-    }
-    else
-    {
-        // Otherwise there is only one possibility.
-        filename = fileSet->getFiles().first()->getName();
-    }
+		foreach (QSharedPointer<File> file, fileSet->getFiles())
+		{
+			dlg.addItem(new QListWidgetItem(file->getName()));
+		}
 
-    if (appItem->componentModel()->getVlnv()->isValid())
-    {
-        filename = General::getAbsolutePath(libraryHandler_->getPath(*appItem->componentModel()->getVlnv()),
-                                            filename);
-    }
+		if (dlg.exec() == QDialog::Rejected)
+		{
+			return;
+		}
 
-    // Check if the source is already open and activate it.
-    for (int i = 0; i < designTabs_->count(); i++)
-    {
-        MCAPISourceWidget* sourceWidget = dynamic_cast<MCAPISourceWidget*>(designTabs_->widget(i));
+		filename = dlg.getSelectedItem()->text();
+	}
+	else
+	{
+		// Otherwise there is only one possibility.
+		filename = fileSet->getFiles().first()->getName();
+	}
 
-        if (sourceWidget != 0 && sourceWidget->getSourceFile() == filename)
-        {
-            designTabs_->setCurrentIndex(i);
-            return;
-        }
-    }
+	if (appItem->componentModel()->getVlnv()->isValid())
+	{
+		filename = General::getAbsolutePath(libraryHandler_->getPath(*appItem->componentModel()->getVlnv()),
+			filename);
+	}
 
-    // Otherwise make sure that the file exists.
-    if (!QFile::exists(filename))
-    {
-        QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
-                           "The source file " + filename + " is not found!",
-                           QMessageBox::Ok, this);
-        msgBox.exec();
-        return;
-    }
-    
-    // And open the source to a view.
-    MCAPISourceWidget* sourceWidget = new MCAPISourceWidget(filename,
-                                                            progEntity->getContentMatcher(), this, this);
+	// Check if the source is already open and activate it.
+	for (int i = 0; i < designTabs_->count(); i++)
+	{
+		MCAPISourceWidget* sourceWidget = dynamic_cast<MCAPISourceWidget*>(designTabs_->widget(i));
 
-    connect(sourceWidget, SIGNAL(contentChanged()), this, SLOT(updateMenuStrip()));
-    connect(sourceWidget->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));
-    sourceWidget->setTabWidget(designTabs_);
+		if (sourceWidget != 0 && sourceWidget->getSourceFile() == filename)
+		{
+			designTabs_->setCurrentIndex(i);
+			return;
+		}
+	}
+
+	// Otherwise make sure that the file exists.
+	if (!QFile::exists(filename))
+	{
+		QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
+			"The source file " + filename + " is not found!",
+			QMessageBox::Ok, this);
+		msgBox.exec();
+		return;
+	}
+
+	// And open the source to a view.
+	MCAPISourceWidget* sourceWidget = new MCAPISourceWidget(filename,
+		progEntity->getContentMatcher(), this, this);
+
+	connect(sourceWidget, SIGNAL(contentChanged()), this, SLOT(updateMenuStrip()));
+	connect(sourceWidget->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));
+	sourceWidget->setTabWidget(designTabs_);
 }
 
 //-----------------------------------------------------------------------------
@@ -1530,13 +1719,13 @@ void MainWindow::openSource(ProgramEntityItem* progEntity)
 //-----------------------------------------------------------------------------
 void MainWindow::updateZoomTools()
 {
-    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
-    bool canZoom = doc != 0 && (doc->getFlags() & TabDocument::DOC_ZOOM_SUPPORT);
+	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+	bool canZoom = doc != 0 && (doc->getFlags() & TabDocument::DOC_ZOOM_SUPPORT);
 
-    actZoomIn_->setEnabled(canZoom && doc->getZoomLevel() < doc->getMaxZoomLevel());
-    actZoomOut_->setEnabled(canZoom && doc->getZoomLevel() > doc->getMinZoomLevel());
-    actZoomOriginal_->setEnabled(canZoom);
-    actFitInView_->setEnabled(canZoom);
+	actZoomIn_->setEnabled(canZoom && doc->getZoomLevel() < doc->getMaxZoomLevel());
+	actZoomOut_->setEnabled(canZoom && doc->getZoomLevel() > doc->getMinZoomLevel());
+	actZoomOriginal_->setEnabled(canZoom);
+	actFitInView_->setEnabled(canZoom);
 }
 
 //-----------------------------------------------------------------------------
@@ -1544,120 +1733,120 @@ void MainWindow::updateZoomTools()
 //-----------------------------------------------------------------------------
 void MainWindow::createNew()
 {
-    // Create a property page dialog to work as a "New" dialog.
-    PropertyPageDialog dialog(QSize(48, 48), 110, QSize(80, 70), PropertyPageDialog::APPLY_CURRENT, this);
-    dialog.setFixedWidth(620);
-    dialog.resize(620, 580);
-    dialog.setWindowTitle(tr("New"));
+	// Create a property page dialog to work as a "New" dialog.
+	PropertyPageDialog dialog(QSize(48, 48), 110, QSize(80, 70), PropertyPageDialog::APPLY_CURRENT, this);
+	dialog.setFixedWidth(620);
+	dialog.resize(620, 580);
+	dialog.setWindowTitle(tr("New"));
 
-    // Add pages to the dialog.
-    NewComponentPage* compPage = new NewComponentPage(libraryHandler_, &dialog);
-    connect(compPage, SIGNAL(createComponent(KactusAttribute::ProductHierarchy,
-                                             KactusAttribute::Firmness,
-                                             VLNV const&, QString const&)),
-            this, SLOT(createComponent(KactusAttribute::ProductHierarchy,
-                                       KactusAttribute::Firmness,
-                                       VLNV const&, QString const&)));
-    dialog.addPage(QIcon(":icons/graphics/new-component.png"), tr("Component"), compPage);
+	// Add pages to the dialog.
+	NewComponentPage* compPage = new NewComponentPage(libraryHandler_, &dialog);
+	connect(compPage, SIGNAL(createComponent(KactusAttribute::ProductHierarchy,
+		KactusAttribute::Firmness,
+		VLNV const&, QString const&)),
+		this, SLOT(createComponent(KactusAttribute::ProductHierarchy,
+		KactusAttribute::Firmness,
+		VLNV const&, QString const&)));
+	dialog.addPage(QIcon(":icons/graphics/new-component.png"), tr("Component"), compPage);
 
-    NewDesignPage* designPage = new NewDesignPage(libraryHandler_, &dialog);
-    connect(designPage, SIGNAL(createDesign(KactusAttribute::ProductHierarchy,
-                                            KactusAttribute::Firmness,
-                                            VLNV const&, QString const&)),
-            this, SLOT(createDesign(KactusAttribute::ProductHierarchy,
-                                    KactusAttribute::Firmness,
-                                    VLNV const&, QString const&)));
-    dialog.addPage(QIcon(":icons/graphics/new-design.png"), tr("Design"), designPage);
+	NewDesignPage* designPage = new NewDesignPage(libraryHandler_, &dialog);
+	connect(designPage, SIGNAL(createDesign(KactusAttribute::ProductHierarchy,
+		KactusAttribute::Firmness,
+		VLNV const&, QString const&)),
+		this, SLOT(createDesign(KactusAttribute::ProductHierarchy,
+		KactusAttribute::Firmness,
+		VLNV const&, QString const&)));
+	dialog.addPage(QIcon(":icons/graphics/new-design.png"), tr("Design"), designPage);
 
-    NewSWComponentPage* swCompPage = new NewSWComponentPage(libraryHandler_, &dialog);
-    connect(swCompPage, SIGNAL(createSWComponent(SWCreateType, VLNV const&, QString const&)),
-            this, SLOT(createSWComponent(SWCreateType, VLNV const&, QString const&)));
-    dialog.addPage(QIcon(":icons/graphics/new-sw_component.png"), tr("SW Component"), swCompPage);
+	NewSWComponentPage* swCompPage = new NewSWComponentPage(libraryHandler_, &dialog);
+	connect(swCompPage, SIGNAL(createSWComponent(SWCreateType, VLNV const&, QString const&)),
+		this, SLOT(createSWComponent(SWCreateType, VLNV const&, QString const&)));
+	dialog.addPage(QIcon(":icons/graphics/new-sw_component.png"), tr("SW Component"), swCompPage);
 
-    NewSWDesignPage* swDesignPage = new NewSWDesignPage(libraryHandler_, &dialog);
-    connect(swDesignPage, SIGNAL(createSWDesign(VLNV const&, QString const&)),
-            this, SLOT(createSWDesign(VLNV const&, QString const&)), Qt::UniqueConnection);
-    dialog.addPage(QIcon(":icons/graphics/new-sw_design.png"), tr("SW Design"), swDesignPage);
+	NewSWDesignPage* swDesignPage = new NewSWDesignPage(libraryHandler_, &dialog);
+	connect(swDesignPage, SIGNAL(createSWDesign(VLNV const&, QString const&)),
+		this, SLOT(createSWDesign(VLNV const&, QString const&)), Qt::UniqueConnection);
+	dialog.addPage(QIcon(":icons/graphics/new-sw_design.png"), tr("SW Design"), swDesignPage);
 
-    NewSystemPage* sysPage = new NewSystemPage(libraryHandler_, &dialog);
-    connect(sysPage, SIGNAL(createSystem(VLNV const&, QString const&, VLNV const&, QString const&)),
-        this, SLOT(createSystem(VLNV const&, QString const&, VLNV const&, QString const&)));
-    dialog.addPage(QIcon(":icons/graphics/new-system.png"), tr("System"), sysPage);
+	NewSystemPage* sysPage = new NewSystemPage(libraryHandler_, &dialog);
+	connect(sysPage, SIGNAL(createSystem(VLNV const&, QString const&, VLNV const&, QString const&)),
+		this, SLOT(createSystem(VLNV const&, QString const&, VLNV const&, QString const&)));
+	dialog.addPage(QIcon(":icons/graphics/new-system.png"), tr("System"), sysPage);
 
 	NewBusPage* busPage = new NewBusPage(libraryHandler_, &dialog);
 	connect(busPage, SIGNAL(createBus(VLNV const&, QString const&)),
 		this, SLOT(createBus(VLNV const&, QString const&)), Qt::UniqueConnection);
 	dialog.addPage(QIcon(":icons/graphics/new-bus.png"), tr("Bus"), busPage);
 
-    dialog.exec();
+	dialog.exec();
 }
 
 //-----------------------------------------------------------------------------
 // Function: createComponent()
 //-----------------------------------------------------------------------------
 void MainWindow::createComponent(KactusAttribute::ProductHierarchy prodHier,
-                                 KactusAttribute::Firmness firmness,
-                                 VLNV const& vlnv, QString const& directory)
+								 KactusAttribute::Firmness firmness,
+								 VLNV const& vlnv, QString const& directory)
 {
-    Q_ASSERT(vlnv.isValid());
+	Q_ASSERT(vlnv.isValid());
 
-    // Create a component.
-    QSharedPointer<Component> component = QSharedPointer<Component>(new Component());
-    component->setVlnv(vlnv);
+	// Create a component.
+	QSharedPointer<Component> component = QSharedPointer<Component>(new Component());
+	component->setVlnv(vlnv);
 
-    // Set Kactus attributes.
-    component->setComponentHierarchy(prodHier);
-    component->setComponentFirmness(firmness);
-    component->setComponentImplementation(KactusAttribute::KTS_HW);
+	// Set Kactus attributes.
+	component->setComponentHierarchy(prodHier);
+	component->setComponentFirmness(firmness);
+	component->setComponentImplementation(KactusAttribute::KTS_HW);
 	component->createEmptyFlatView();
 
-    // Create the file.
-    libraryHandler_->writeModelToFile(directory, component);
-    
-    // Open the component editor.
-    openComponent(vlnv, true);
+	// Create the file.
+	libraryHandler_->writeModelToFile(directory, component);
+
+	// Open the component editor.
+	openComponent(vlnv, true);
 }
 
 //-----------------------------------------------------------------------------
 // Function: createDesign()
 //-----------------------------------------------------------------------------
 void MainWindow::createDesign(KactusAttribute::ProductHierarchy prodHier,
-                              KactusAttribute::Firmness firmness,
-                              VLNV const& vlnv, QString const& directory)
+							  KactusAttribute::Firmness firmness,
+							  VLNV const& vlnv, QString const& directory)
 {
-    Q_ASSERT(vlnv.isValid());
+	Q_ASSERT(vlnv.isValid());
 
-    VLNV designVLNV(VLNV::DESIGN, vlnv.getVendor(), vlnv.getLibrary(),
-                    vlnv.getName().remove(".comp") + ".design", vlnv.getVersion());
-    VLNV desConfVLNV(VLNV::DESIGNCONFIGURATION, vlnv.getVendor(), vlnv.getLibrary(),
-                     vlnv.getName().remove(".comp") + ".designcfg", vlnv.getVersion());
+	VLNV designVLNV(VLNV::DESIGN, vlnv.getVendor(), vlnv.getLibrary(),
+		vlnv.getName().remove(".comp") + ".design", vlnv.getVersion());
+	VLNV desConfVLNV(VLNV::DESIGNCONFIGURATION, vlnv.getVendor(), vlnv.getLibrary(),
+		vlnv.getName().remove(".comp") + ".designcfg", vlnv.getVersion());
 
-    // Create a component and a hierarchical view .
-    QSharedPointer<Component> component(new Component(vlnv));
+	// Create a component and a hierarchical view .
+	QSharedPointer<Component> component(new Component(vlnv));
 
-    // Set Kactus attributes.
-    component->setComponentHierarchy(prodHier);
-    component->setComponentFirmness(firmness);
-    component->setComponentImplementation(KactusAttribute::KTS_HW);
+	// Set Kactus attributes.
+	component->setComponentHierarchy(prodHier);
+	component->setComponentFirmness(firmness);
+	component->setComponentImplementation(KactusAttribute::KTS_HW);
 
 	component->createHierarchicalView(desConfVLNV);
 	QStringList viewNames = component->getHierViews();
 	Q_ASSERT(!viewNames.isEmpty());
 
-    // Create the design and design configuration.
-    QSharedPointer<Design> design(new Design(designVLNV));
-    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV));
-    designConf->setDesignRef(designVLNV);
+	// Create the design and design configuration.
+	QSharedPointer<Design> design(new Design(designVLNV));
+	QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV));
+	designConf->setDesignRef(designVLNV);
 
-    // Create the files.
+	// Create the files.
 	libraryHandler_->beginSave();
-    libraryHandler_->writeModelToFile(directory, designConf);
-    libraryHandler_->writeModelToFile(directory, design);
-    libraryHandler_->writeModelToFile(directory, component);
+	libraryHandler_->writeModelToFile(directory, designConf);
+	libraryHandler_->writeModelToFile(directory, design);
+	libraryHandler_->writeModelToFile(directory, component);
 	libraryHandler_->endSave();
 
-    // Open the design.
-    openDesign(vlnv, viewNames.first(), true);
+	// Open the design.
+	openDesign(vlnv, viewNames.first(), true);
 }
 
 //-----------------------------------------------------------------------------
@@ -1665,33 +1854,33 @@ void MainWindow::createDesign(KactusAttribute::ProductHierarchy prodHier,
 //-----------------------------------------------------------------------------
 void MainWindow::createSWDesign(VLNV const& vlnv, QString const& directory)
 {
-    Q_ASSERT(vlnv.isValid());
+	Q_ASSERT(vlnv.isValid());
 
-    VLNV designVLNV(VLNV::DESIGN, vlnv.getVendor(), vlnv.getLibrary(),
-                    vlnv.getName().remove(".comp") + ".design", vlnv.getVersion());
-    
-    // Create a component and a hierarchical view.
-    QSharedPointer<Component> component(new Component(vlnv));
-    component->setComponentImplementation(KactusAttribute::KTS_SW);
-    component->setComponentSWType(KactusAttribute::KTS_SW_MAPPING);
+	VLNV designVLNV(VLNV::DESIGN, vlnv.getVendor(), vlnv.getLibrary(),
+		vlnv.getName().remove(".comp") + ".design", vlnv.getVersion());
 
-    View* hierView = new View(tr("kts_sw_ref"));
-    hierView->setHierarchyRef(designVLNV);
-    hierView->addEnvIdentifier("");
+	// Create a component and a hierarchical view.
+	QSharedPointer<Component> component(new Component(vlnv));
+	component->setComponentImplementation(KactusAttribute::KTS_SW);
+	component->setComponentSWType(KactusAttribute::KTS_SW_MAPPING);
 
-    Model* model = new Model;
-    model->addView(hierView);
-    component->setModel(model);
+	View* hierView = new View(tr("kts_sw_ref"));
+	hierView->setHierarchyRef(designVLNV);
+	hierView->addEnvIdentifier("");
 
-    // Create the design.
-    QSharedPointer<Design> design(new Design(designVLNV));
+	Model* model = new Model;
+	model->addView(hierView);
+	component->setModel(model);
 
-    // Create the files.
-    libraryHandler_->writeModelToFile(directory, design);
-    libraryHandler_->writeModelToFile(directory, component);
+	// Create the design.
+	QSharedPointer<Design> design(new Design(designVLNV));
 
-    // Open the design.
-    openSWDesign(vlnv, true);
+	// Create the files.
+	libraryHandler_->writeModelToFile(directory, design);
+	libraryHandler_->writeModelToFile(directory, component);
+
+	// Open the design.
+	openSWDesign(vlnv, true);
 }
 
 //-----------------------------------------------------------------------------
@@ -1699,80 +1888,80 @@ void MainWindow::createSWDesign(VLNV const& vlnv, QString const& directory)
 //-----------------------------------------------------------------------------
 void MainWindow::openSettings()
 {
-    SettingsDialog dialog(this);
-    
-    if (dialog.exec() == QDialog::Accepted)
-    {
-        QSettings settings;
+	SettingsDialog dialog(this);
 
-        // Apply the settings to the open documents.
-        for (int i = 0; i < designTabs_->count(); ++i)
-        {
-            TabDocument* doc = static_cast<TabDocument*>(designTabs_->widget(i));
-            Q_ASSERT(doc != 0);
+	if (dialog.exec() == QDialog::Accepted)
+	{
+		QSettings settings;
 
-            doc->applySettings(settings);
-        }
-    }
+		// Apply the settings to the open documents.
+		for (int i = 0; i < designTabs_->count(); ++i)
+		{
+			TabDocument* doc = static_cast<TabDocument*>(designTabs_->widget(i));
+			Q_ASSERT(doc != 0);
+
+			doc->applySettings(settings);
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------
 // Function: createSystem()
 //-----------------------------------------------------------------------------
 void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName,
-                              VLNV const& sysVLNV, QString const& directory)
+							  VLNV const& sysVLNV, QString const& directory)
 {
-    Q_ASSERT(compVLNV.isValid());
-    Q_ASSERT(sysVLNV.isValid());
+	Q_ASSERT(compVLNV.isValid());
+	Q_ASSERT(sysVLNV.isValid());
 
-    libraryHandler_->beginSave();
+	libraryHandler_->beginSave();
 
-    VLNV designVLNV(VLNV::DESIGN, sysVLNV.getVendor(), sysVLNV.getLibrary(),
-        sysVLNV.getName().remove(".comp") + ".design", sysVLNV.getVersion());
-    VLNV desConfVLNV(VLNV::DESIGNCONFIGURATION, sysVLNV.getVendor(), sysVLNV.getLibrary(),
-        sysVLNV.getName().remove(".comp") + ".designcfg", sysVLNV.getVersion());
+	VLNV designVLNV(VLNV::DESIGN, sysVLNV.getVendor(), sysVLNV.getLibrary(),
+		sysVLNV.getName().remove(".comp") + ".design", sysVLNV.getVersion());
+	VLNV desConfVLNV(VLNV::DESIGNCONFIGURATION, sysVLNV.getVendor(), sysVLNV.getLibrary(),
+		sysVLNV.getName().remove(".comp") + ".designcfg", sysVLNV.getVersion());
 
-    // Retrieve the component to which the system design will be based on.
-    QSharedPointer<Component> component = libraryHandler_->getModel(compVLNV).staticCast<Component>();
-    Q_ASSERT(component != 0);
+	// Retrieve the component to which the system design will be based on.
+	QSharedPointer<Component> component = libraryHandler_->getModel(compVLNV).staticCast<Component>();
+	Q_ASSERT(component != 0);
 
-    // Create a system component to encapsulate the system design.
-    QSharedPointer<Component> sysComp(new Component(sysVLNV));
-    sysComp->setComponentHierarchy(KactusAttribute::KTS_PRODUCT);
-    sysComp->setComponentFirmness(KactusAttribute::KTS_FIXED);
-    sysComp->setComponentImplementation(KactusAttribute::KTS_SYS);
+	// Create a system component to encapsulate the system design.
+	QSharedPointer<Component> sysComp(new Component(sysVLNV));
+	sysComp->setComponentHierarchy(KactusAttribute::KTS_PRODUCT);
+	sysComp->setComponentFirmness(KactusAttribute::KTS_FIXED);
+	sysComp->setComponentImplementation(KactusAttribute::KTS_SYS);
 
-    // Create the view to the system design.
-    View* hierView = new View("kts_sys_ref");
-    hierView->setHierarchyRef(desConfVLNV);
-    hierView->addEnvIdentifier("");
+	// Create the view to the system design.
+	View* hierView = new View("kts_sys_ref");
+	hierView->setHierarchyRef(desConfVLNV);
+	hierView->addEnvIdentifier("");
 
-    // Create the view to the HW design.
-    View* hwView = new View("kts_hw_ref");
-    hwView->setHierarchyRef(component->getHierRef(viewName));
-    hwView->addEnvIdentifier("");
+	// Create the view to the HW design.
+	View* hwView = new View("kts_hw_ref");
+	hwView->setHierarchyRef(component->getHierRef(viewName));
+	hwView->addEnvIdentifier("");
 
-    Model* model = new Model;
-    model->addView(hierView);
-    model->addView(hwView);
+	Model* model = new Model;
+	model->addView(hierView);
+	model->addView(hwView);
 
-    sysComp->setModel(model);
+	sysComp->setModel(model);
 
-    // Flat-out the hierarchy to form the system design.
-    QSharedPointer<Design> sysDesign(new Design(designVLNV));
-    generateSystemDesign(libraryHandler_, directory, component->getHierRef(viewName), *sysDesign);
+	// Flat-out the hierarchy to form the system design.
+	QSharedPointer<Design> sysDesign(new Design(designVLNV));
+	generateSystemDesign(libraryHandler_, directory, component->getHierRef(viewName), *sysDesign);
 
-    // Create the design configuration.
-    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV));
-    designConf->setDesignRef(designVLNV);
+	// Create the design configuration.
+	QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV));
+	designConf->setDesignRef(designVLNV);
 
-    // Create the files.
-    libraryHandler_->writeModelToFile(directory, designConf);
-    libraryHandler_->writeModelToFile(directory, sysDesign);
-    libraryHandler_->writeModelToFile(directory, sysComp);
+	// Create the files.
+	libraryHandler_->writeModelToFile(directory, designConf);
+	libraryHandler_->writeModelToFile(directory, sysDesign);
+	libraryHandler_->writeModelToFile(directory, sysComp);
 
-    libraryHandler_->endSave();
-    openSystem(sysVLNV, true);
+	libraryHandler_->endSave();
+	openSystem(sysVLNV, true);
 }
 
 void MainWindow::createBus( VLNV const& vlnv, QString const& directory ) {
@@ -1803,8 +1992,8 @@ void MainWindow::createBus( VLNV const& vlnv, QString const& directory ) {
 
 		if (!NewObjectDialog::saveAsDialog(this, libraryHandler_, absVLNV, newAbsDefVLNV, absDirectory,
 			"Set VLNV for abstraction definition")) {
-			// if user canceled
-			return;
+				// if user canceled
+				return;
 		}
 		// save the created abstraction definition vlnv
 		absVLNV = newAbsDefVLNV;
@@ -1815,7 +2004,7 @@ void MainWindow::createBus( VLNV const& vlnv, QString const& directory ) {
 	busDef->setVlnv(busVLNV);
 
 	// Create the file for the bus definition.
-    libraryHandler_->writeModelToFile(directory, busDef);
+	libraryHandler_->writeModelToFile(directory, busDef);
 
 	// create an abstraction definition
 	QSharedPointer<AbstractionDefinition> absDef = QSharedPointer<AbstractionDefinition>(new AbstractionDefinition());
@@ -1825,8 +2014,8 @@ void MainWindow::createBus( VLNV const& vlnv, QString const& directory ) {
 	absDef->setBusType(busVLNV);
 
 	// create the file for the abstraction definition
-    libraryHandler_->writeModelToFile(absDirectory, absDef);
-	
+	libraryHandler_->writeModelToFile(absDirectory, absDef);
+
 	// Open the bus editor.
 	openBus(busVLNV, absVLNV, false, true);
 }
@@ -1906,8 +2095,8 @@ void MainWindow::openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool di
 	if (libraryHandler_->contains(busDefVLNV) && 
 		libraryHandler_->getDocumentType(busDefVLNV) == VLNV::BUSDEFINITION) {
 
-		QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(busDefVLNV);
-		busDef = libComp.dynamicCast<BusDefinition>();
+			QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(busDefVLNV);
+			busDef = libComp.dynamicCast<BusDefinition>();
 	}
 	else {
 		emit errorMessage(tr("Bus definition %1:%2:%3:%4 was not found in the library").arg(
@@ -1927,11 +2116,11 @@ void MainWindow::openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool di
 		// if library contains the abstraction definition
 		if (libraryHandler_->contains(absDefVLNV) && 
 			libraryHandler_->getDocumentType(absDefVLNV) == VLNV::ABSTRACTIONDEFINITION) {
-			
-			QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(absDefVLNV);
-			absDef = libComp.staticCast<AbstractionDefinition>();
 
-			editor = new BusEditor(this, libraryHandler_, busDef, absDef, disableBusDef);
+				QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(absDefVLNV);
+				absDef = libComp.staticCast<AbstractionDefinition>();
+
+				editor = new BusEditor(this, libraryHandler_, busDef, absDef, disableBusDef);
 		}
 		else {
 			emit errorMessage(tr("Abstraction definition %1:%2:%3:%4 was not found in the library").arg(
@@ -1948,10 +2137,10 @@ void MainWindow::openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool di
 		editor = new BusEditor(this, libraryHandler_, busDef);
 	}
 
-    if (forceUnlocked)
-    {
-        editor->setProtection(false);
-    }
+	if (forceUnlocked)
+	{
+		editor->setProtection(false);
+	}
 
 	editor->setTabWidget(designTabs_);
 
@@ -1970,61 +2159,61 @@ void MainWindow::openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool di
 //-----------------------------------------------------------------------------
 void MainWindow::openSystem(VLNV const& vlnv, bool forceUnlocked)
 {
-    libraryHandler_->beginSave();
+	libraryHandler_->beginSave();
 
-    // Check if the system is already open and activate it.
-    if (vlnv.isValid()) {
-        for (int i = 0; i < designTabs_->count(); i++) {
-            EndpointDesignWidget *designWidget = dynamic_cast<EndpointDesignWidget*>(designTabs_->widget(i));
+	// Check if the system is already open and activate it.
+	if (vlnv.isValid()) {
+		for (int i = 0; i < designTabs_->count(); i++) {
+			EndpointDesignWidget *designWidget = dynamic_cast<EndpointDesignWidget*>(designTabs_->widget(i));
 
-            if (designWidget != 0 && *designWidget->getOpenDocument() == vlnv) {
-                designTabs_->setCurrentIndex(i);
-                return;
-            }
-        }
-    }
+			if (designWidget != 0 && *designWidget->getOpenDocument() == vlnv) {
+				designTabs_->setCurrentIndex(i);
+				return;
+			}
+		}
+	}
 
-    EndpointDesignWidget* designWidget = new EndpointDesignWidget(libraryHandler_, this, this);
+	EndpointDesignWidget* designWidget = new EndpointDesignWidget(libraryHandler_, this, this);
 
-    if (!designWidget->setDesign(vlnv))
-    {
-        delete designWidget;
-        return;
-    }
+	if (!designWidget->setDesign(vlnv))
+	{
+		delete designWidget;
+		return;
+	}
 
-    if (forceUnlocked)
-    {
-        designWidget->setProtection(false);
-    }
+	if (forceUnlocked)
+	{
+		designWidget->setProtection(false);
+	}
 
-    designWidget->setTabWidget(designTabs_);
+	designWidget->setTabWidget(designTabs_);
 
-    connect(designWidget->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));
-    connect(designWidget, SIGNAL(contentChanged()), this, SLOT(updateMenuStrip()), Qt::UniqueConnection);
-    connect(designWidget, SIGNAL(openComponent(const VLNV&)),
-            this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
-    connect(designWidget, SIGNAL(openDesign(const VLNV&, const QString&)),
-            this, SLOT(openDesign(const VLNV&, const QString&)));
-    connect(designWidget, SIGNAL(openSource(ProgramEntityItem*)),
-            this, SLOT(openSource(ProgramEntityItem*)), Qt::UniqueConnection);
+	connect(designWidget->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));
+	connect(designWidget, SIGNAL(contentChanged()), this, SLOT(updateMenuStrip()), Qt::UniqueConnection);
+	connect(designWidget, SIGNAL(openComponent(const VLNV&)),
+		this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
+	connect(designWidget, SIGNAL(openDesign(const VLNV&, const QString&)),
+		this, SLOT(openDesign(const VLNV&, const QString&)));
+	connect(designWidget, SIGNAL(openSource(ProgramEntityItem*)),
+		this, SLOT(openSource(ProgramEntityItem*)), Qt::UniqueConnection);
 
-    connect(designWidget, SIGNAL(componentSelected(ComponentItem*)),
-        this, SLOT(onComponentSelected(ComponentItem*)), Qt::UniqueConnection);
-    connect(designWidget, SIGNAL(destroyed(QObject*)),
-        this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
-    connect(designWidget, SIGNAL(clearItemSelection()),
-        libraryHandler_, SLOT(onClearSelection()), Qt::UniqueConnection);
-    connect(designWidget, SIGNAL(clearItemSelection()),
-        this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
+	connect(designWidget, SIGNAL(componentSelected(ComponentItem*)),
+		this, SLOT(onComponentSelected(ComponentItem*)), Qt::UniqueConnection);
+	connect(designWidget, SIGNAL(destroyed(QObject*)),
+		this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
+	connect(designWidget, SIGNAL(clearItemSelection()),
+		libraryHandler_, SLOT(onClearSelection()), Qt::UniqueConnection);
+	connect(designWidget, SIGNAL(clearItemSelection()),
+		this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
 
-    //connect(designWidget->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));
-    connect(designWidget, SIGNAL(zoomChanged()), this, SLOT(updateZoomTools()), Qt::UniqueConnection);
-    connect(designWidget, SIGNAL(modeChanged(DrawMode)),
-        this, SLOT(onDrawModeChanged(DrawMode)), Qt::UniqueConnection);
+	//connect(designWidget->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));
+	connect(designWidget, SIGNAL(zoomChanged()), this, SLOT(updateZoomTools()), Qt::UniqueConnection);
+	connect(designWidget, SIGNAL(modeChanged(DrawMode)),
+		this, SLOT(onDrawModeChanged(DrawMode)), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(modifiedChanged(bool)),
 		actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
 
-    libraryHandler_->endSave();
+	libraryHandler_->endSave();
 }
 
 void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
@@ -2070,10 +2259,10 @@ void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
 	QString styleSheet("*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
 	editor->setStyleSheet(styleSheet);
 
-    if (forceUnlocked)
-    {
-        editor->setProtection(false);
-    }
+	if (forceUnlocked)
+	{
+		editor->setProtection(false);
+	}
 
 	editor->setTabWidget(designTabs_);
 
@@ -2092,30 +2281,30 @@ void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
 //-----------------------------------------------------------------------------
 void MainWindow::changeProtection(bool locked)
 {
-    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
-    Q_ASSERT(doc != 0);
-    Q_ASSERT(doc->getComponentVLNV().isValid());
+	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+	Q_ASSERT(doc != 0);
+	Q_ASSERT(doc->getComponentVLNV().isValid());
 
-    if (doc == 0)
-    {
-        return;
-    }
+	if (doc == 0)
+	{
+		return;
+	}
 
-    if (locked)
-    {
-        if (doc->isModified())
-        {
-            QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                               tr("The document has been modified. The changes need to be saved before the "
-                                  "document can be locked. Save changes and continue?"),
-                               QMessageBox::Yes | QMessageBox::No, this);
+	if (locked)
+	{
+		if (doc->isModified())
+		{
+			QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+				tr("The document has been modified. The changes need to be saved before the "
+				"document can be locked. Save changes and continue?"),
+				QMessageBox::Yes | QMessageBox::No, this);
 
-            if (msgBox.exec() == QMessageBox::No || !doc->save())
-            {
-                actProtect_->setChecked(false);
-                return;
-            }
-        }
+			if (msgBox.exec() == QMessageBox::No || !doc->save())
+			{
+				actProtect_->setChecked(false);
+				return;
+			}
+		}
 		// Lock/unlock the document.
 		doc->setProtection(locked);
     }
@@ -2195,10 +2384,10 @@ void MainWindow::changeProtection(bool locked)
                     message += tr("Changes to the document can affect other documents.");
                 }
 		    }
-            else
-            {
-                message += tr("Changes to the document can affect other documents.");
-            }
+			else
+			{
+				message += tr("Changes to the document can affect other documents.");
+			}
 
             message += " If you choose yes, this will not be asked next time for this document.";
 
@@ -2223,7 +2412,7 @@ void MainWindow::changeProtection(bool locked)
 		// Refresh and unlock the document.
 		doc->refresh();
 		doc->setProtection(locked);
-    }
+	}
 
 	// if the tab is designWidget
 	DesignWidget* designwidget = dynamic_cast<DesignWidget*>(doc);
@@ -2238,7 +2427,7 @@ void MainWindow::changeProtection(bool locked)
 
 	onProtectionChanged(locked);
 
-    updateMenuStrip();
+	updateMenuStrip();
 }
 
 //-----------------------------------------------------------------------------
@@ -2246,16 +2435,16 @@ void MainWindow::changeProtection(bool locked)
 //-----------------------------------------------------------------------------
 void MainWindow::onProtectionChanged(bool locked)
 {
-    if (locked)
-    {
-        actProtect_->setIcon(QIcon(":icons/graphics/protection-locked.png"));
-        actProtect_->setText(tr("Locked"));
-    }
-    else
-    {
-        actProtect_->setIcon(QIcon(":icons/graphics/protection-unlocked.png"));
-        actProtect_->setText(tr("Unlocked"));
-    }
+	if (locked)
+	{
+		actProtect_->setIcon(QIcon(":icons/graphics/protection-locked.png"));
+		actProtect_->setText(tr("Locked"));
+	}
+	else
+	{
+		actProtect_->setIcon(QIcon(":icons/graphics/protection-unlocked.png"));
+		actProtect_->setText(tr("Unlocked"));
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -2263,12 +2452,12 @@ void MainWindow::onProtectionChanged(bool locked)
 //-----------------------------------------------------------------------------
 void MainWindow::undo()
 {
-    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
 
-    if (doc != 0)
-    {
-        doc->getEditProvider()->undo();
-    }
+	if (doc != 0)
+	{
+		doc->getEditProvider()->undo();
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -2276,95 +2465,95 @@ void MainWindow::undo()
 //-----------------------------------------------------------------------------
 void MainWindow::redo()
 {
-    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
 
-    if (doc != 0)
-    {
-        doc->getEditProvider()->redo();
-    }
+	if (doc != 0)
+	{
+		doc->getEditProvider()->redo();
+	}
 }
 
 //-----------------------------------------------------------------------------
 // Function: createSWComponent()
 //-----------------------------------------------------------------------------
 void MainWindow::createSWComponent(SWCreateType createType, VLNV const& vlnv,
-                                   QString const& directory)
+								   QString const& directory)
 {
-    Q_ASSERT(vlnv.isValid());
+	Q_ASSERT(vlnv.isValid());
 
-    // Create a component.
-    QSharedPointer<Component> component = QSharedPointer<Component>(new Component());
-    component->setVlnv(vlnv);
+	// Create a component.
+	QSharedPointer<Component> component = QSharedPointer<Component>(new Component());
+	component->setVlnv(vlnv);
 
-    // Set Kactus attributes.
-    component->setComponentImplementation(KactusAttribute::KTS_SW);
+	// Set Kactus attributes.
+	component->setComponentImplementation(KactusAttribute::KTS_SW);
 
-    if (createType == SW_CREATE_APPLICATION)
-    {
-        component->setComponentSWType(KactusAttribute::KTS_SW_APPLICATION);
+	if (createType == SW_CREATE_APPLICATION)
+	{
+		component->setComponentSWType(KactusAttribute::KTS_SW_APPLICATION);
 
-        // Add the fixed bus interface to the component.
-        QSharedPointer<BusInterface> busIf(new BusInterface());
-        busIf->setName("app_link");
-        busIf->setInterfaceMode(General::MASTER);
-        busIf->setBusType(VLNV(VLNV::BUSDEFINITION, "Kactus", "internal", "app_link", "1.0"));
+		// Add the fixed bus interface to the component.
+		QSharedPointer<BusInterface> busIf(new BusInterface());
+		busIf->setName("app_link");
+		busIf->setInterfaceMode(General::MASTER);
+		busIf->setBusType(VLNV(VLNV::BUSDEFINITION, "Kactus", "internal", "app_link", "1.0"));
 
-        component->addBusInterface(busIf);
-    }
-    else if (createType == SW_CREATE_ENDPOINTS)
-    {
-        component->setComponentSWType(KactusAttribute::KTS_SW_ENDPOINTS);
+		component->addBusInterface(busIf);
+	}
+	else if (createType == SW_CREATE_ENDPOINTS)
+	{
+		component->setComponentSWType(KactusAttribute::KTS_SW_ENDPOINTS);
 
-        // Add the fixed bus interface to the component.
-        QSharedPointer<BusInterface> busIf(new BusInterface());
-        busIf->setName("app_link");
-        busIf->setInterfaceMode(General::SLAVE);
-        busIf->setBusType(VLNV(VLNV::BUSDEFINITION, "Kactus", "internal", "app_link", "1.0"));
+		// Add the fixed bus interface to the component.
+		QSharedPointer<BusInterface> busIf(new BusInterface());
+		busIf->setName("app_link");
+		busIf->setInterfaceMode(General::SLAVE);
+		busIf->setBusType(VLNV(VLNV::BUSDEFINITION, "Kactus", "internal", "app_link", "1.0"));
 
-        component->addBusInterface(busIf);
-    }
-    else
-    {
-        component->setComponentSWType(KactusAttribute::KTS_SW_PLATFORM);
-    }
+		component->addBusInterface(busIf);
+	}
+	else
+	{
+		component->setComponentSWType(KactusAttribute::KTS_SW_PLATFORM);
+	}
 
-    // Create a design for the component if it is a platform stack.
-    if (createType == SW_CREATE_PLATFORM_STACK)
-    {
-        VLNV designVLNV(VLNV::DESIGN, vlnv.getVendor(), vlnv.getLibrary(),
-                        vlnv.getName().remove(".comp") + ".design", vlnv.getVersion());
+	// Create a design for the component if it is a platform stack.
+	if (createType == SW_CREATE_PLATFORM_STACK)
+	{
+		VLNV designVLNV(VLNV::DESIGN, vlnv.getVendor(), vlnv.getLibrary(),
+			vlnv.getName().remove(".comp") + ".design", vlnv.getVersion());
 
-        View* hierView = new View("kts_sw_ref");
-        hierView->setHierarchyRef(designVLNV);
-        hierView->addEnvIdentifier("");
+		View* hierView = new View("kts_sw_ref");
+		hierView->setHierarchyRef(designVLNV);
+		hierView->addEnvIdentifier("");
 
-        Model* model = new Model;
-        model->addView(hierView);
-        component->setModel(model);
+		Model* model = new Model;
+		model->addView(hierView);
+		component->setModel(model);
 
-        QSharedPointer<Design> design(new Design(designVLNV));
-        libraryHandler_->writeModelToFile(directory, design);
-    }
+		QSharedPointer<Design> design(new Design(designVLNV));
+		libraryHandler_->writeModelToFile(directory, design);
+	}
 
-    // Create the file.
-    libraryHandler_->writeModelToFile(directory, component);
+	// Create the file.
+	libraryHandler_->writeModelToFile(directory, component);
 
-    switch (createType)
-    {
-    case SW_CREATE_PLATFORM_COMPONENT:
-    case SW_CREATE_APPLICATION:
-    case SW_CREATE_ENDPOINTS:
-        {
-            openComponent(vlnv, true);
-            break;
-        }
+	switch (createType)
+	{
+	case SW_CREATE_PLATFORM_COMPONENT:
+	case SW_CREATE_APPLICATION:
+	case SW_CREATE_ENDPOINTS:
+		{
+			openComponent(vlnv, true);
+			break;
+		}
 
-    case SW_CREATE_PLATFORM_STACK:
-        {
-            openDesign(vlnv, "kts_sw_ref", true);
-            break;
-        }
-    }
+	case SW_CREATE_PLATFORM_STACK:
+		{
+			openDesign(vlnv, "kts_sw_ref", true);
+			break;
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -2372,47 +2561,164 @@ void MainWindow::createSWComponent(SWCreateType createType, VLNV const& vlnv,
 //-----------------------------------------------------------------------------
 void MainWindow::showAbout()
 {
-    SplashScreen* splash = new SplashScreen(this);
+	SplashScreen* splash = new SplashScreen(this);
 	splash->setAttribute(Qt::WA_DeleteOnClose);
 	splash->setWindowFlags(splash->windowFlags() & ~(Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint));
 	splash->move(this->mapToGlobal(this->rect().center() - splash->rect().center()));
 	splash->setWindowModality(Qt::ApplicationModal);
-    splash->show();
-    splash->showMessage(""); 
+	splash->show();
+	splash->showMessage(""); 
 }
 
 void MainWindow::selectVisibleDocks() {
-	QSharedPointer<QMenu> dockMenu(createPopupMenu());
-
-	dockMenu->exec(QCursor::pos());
-	
+	windowsMenu_.exec(QCursor::pos());
 }
 
-void MainWindow::displayDockedEditor( QWidget* dockedEditor ) {
-	QWidget* parentDock = dockedEditor->parentWidget();
-	QDockWidget* dock = qobject_cast<QDockWidget*>(parentDock);
-	
-	// if the editor's parent was not dock widget (editor is not dockable)
-	if (!dock) {
-		return;
-	}
-	
-	// find out if there are other docks tabified with the dock
-	QList<QDockWidget*> tabifiedDocks = tabifiedDockWidgets(dock);
+void MainWindow::onOutputAction( bool show ) {
+	consoleDock_->setVisible(show);
 
-	// if there were no other docks tabified
-	if (tabifiedDocks.isEmpty()) {
-
-		// get the are the editor belongs to
-		Qt::DockWidgetArea area = dockWidgetArea(dock);
-		// add dock widget to correct area
-		addDockWidget(area, dock);
-		dock->show();
+	// if the output window is supported in the current window
+	// or if there is no window open
+	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+	if (!doc || (doc && doc->getSupportedWindows() & TabDocument::OUTPUTWINDOW)) {
+		visibilities_.showOutput_ = show;
 	}
-	// there were dock widgets tabified.
+}
+
+void MainWindow::onPreviewAction( bool show ) {
+	previewDock_->setVisible(show);
+
+	// if the preview window is supported in the current window
+	// or if there is no window open
+	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+	if (!doc || (doc && doc->getSupportedWindows() & TabDocument::PREVIEWWINDOW)) {
+		visibilities_.showPreview_ = show;
+	}
+}
+
+void MainWindow::onLibraryAction( bool show ) {
+	libraryDock_->setVisible(show);
+
+	// if the library window is supported in the current window
+	// or if there is no window open
+	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+	if (!doc || (doc && doc->getSupportedWindows() & TabDocument::LIBRARYWINDOW)) {
+		visibilities_.showLibrary_ = show;
+	}
+}
+
+void MainWindow::onConfigurationAction( bool show ) {
+	configurationDock_->setVisible(show);
+
+	// if the configuration window is supported in the current window
+	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+	if (doc && doc->getSupportedWindows() & TabDocument::CONFIGURATIONWINDOW) {
+		visibilities_.showConfiguration_ = show;
+	}
+}
+
+void MainWindow::onConnectionAction( bool show ) {
+	connectionDock_->setVisible(show);
+
+	// if the connection window is supported in the current window
+	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+	if (doc && doc->getSupportedWindows() & TabDocument::CONNECTIONWINDOW) {
+		visibilities_.showConnection_ = show;
+	}
+}
+
+void MainWindow::onInterfaceAction( bool show ) {
+	interfaceDock_->setVisible(show);
+
+	// if the interface window is supported in the current window
+	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+	if (doc && doc->getSupportedWindows() & TabDocument::INTERFACEWINDOW) {
+		visibilities_.showInterface_ = show;
+	}
+}
+
+void MainWindow::onInstanceAction( bool show ) {
+	instanceDock_->setVisible(show);
+
+	// if the instance window is supported in the current window
+	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+	if (doc && doc->getSupportedWindows() & TabDocument::INSTANCEWINDOW) {
+		visibilities_.showInstance_ = show;
+	}
+}
+
+void MainWindow::updateWindows( unsigned int supportedWindows ) {
+
+	if (supportedWindows & TabDocument::LIBRARYWINDOW) {
+		windowsMenu_.addAction(showLibraryAction_);
+		libraryDock_->setVisible(visibilities_.showLibrary_);
+	}
 	else {
-		// move the dock on top of other widgets.
-		tabifyDockWidget(tabifiedDocks.first(), dock);
+		windowsMenu_.removeAction(showLibraryAction_);
+		libraryDock_->hide();
 	}
 
+	if (supportedWindows & TabDocument::OUTPUTWINDOW) {
+		windowsMenu_.addAction(showOutputAction_);
+		consoleDock_->setVisible(visibilities_.showOutput_);
+	}
+	else {
+		windowsMenu_.removeAction(showOutputAction_);
+		consoleDock_->hide();
+	}
+
+	if (supportedWindows & TabDocument::PREVIEWWINDOW) {
+		windowsMenu_.addAction(showPreviewAction_);
+		previewDock_->setVisible(visibilities_.showPreview_);
+	}
+	else {
+		windowsMenu_.removeAction(showPreviewAction_);
+		previewDock_->hide();
+	}
+
+	if (supportedWindows & TabDocument::CONFIGURATIONWINDOW) {
+		windowsMenu_.addAction(showConfigurationAction_);
+		configurationDock_->setVisible(visibilities_.showConfiguration_);
+	}
+	else {
+		windowsMenu_.removeAction(showConfigurationAction_);
+		configurationDock_->hide();
+	}
+
+	if (supportedWindows & TabDocument::CONNECTIONWINDOW) {
+		windowsMenu_.addAction(showConnectionAction_);
+		connectionDock_->setVisible(visibilities_.showConnection_);
+	}
+	else {
+		windowsMenu_.removeAction(showConnectionAction_);
+		connectionDock_->hide();
+	}
+
+	if (supportedWindows & TabDocument::INTERFACEWINDOW) {
+		windowsMenu_.addAction(showInterfaceAction_);
+		interfaceDock_->setVisible(visibilities_.showInterface_);
+	}
+	else {
+		windowsMenu_.removeAction(showInterfaceAction_);
+		interfaceDock_->hide();
+	}
+
+	if (supportedWindows & TabDocument::INSTANCEWINDOW) {
+		windowsMenu_.addAction(showInstanceAction_);
+		instanceDock_->setVisible(visibilities_.showInstance_);
+	}
+	else {
+		windowsMenu_.removeAction(showInstanceAction_);
+		instanceDock_->hide();
+	}
+}
+
+MainWindow::WindowVisibility::WindowVisibility():
+showOutput_(true),
+showPreview_(true),
+showLibrary_(true),
+showConfiguration_(true),
+showConnection_(true),
+showInterface_(true),
+showInstance_(true) {
 }

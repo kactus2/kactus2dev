@@ -29,6 +29,8 @@ nameGroup_(this, tr("Instance name")),
 configurableElements_(this),
 editProvider_() {
 
+	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+
 	vlnvDisplayer_.hide();
 	nameGroup_.hide();
 	configurableElements_.hide();
@@ -60,7 +62,7 @@ ComponentInstanceEditor::~ComponentInstanceEditor() {
 void ComponentInstanceEditor::setComponent( ComponentItem* component ) {
 	Q_ASSERT(component);
 
-	qobject_cast<QDockWidget*>(parentWidget())->show();
+	parentWidget()->raise();
 
 	// if previous component has been specified, then disconnect signals to this editor.
 	if (component_) {
@@ -113,6 +115,8 @@ void ComponentInstanceEditor::setComponent( ComponentItem* component ) {
 	// if the connected component is destroyed then clear this editor
 	connect(component_, SIGNAL(destroyed(ComponentItem*)),
 		    this, SLOT(clear()), Qt::UniqueConnection);
+
+	parentWidget()->setMaximumHeight(QWIDGETSIZE_MAX);
 }
 
 void ComponentInstanceEditor::clear() {
@@ -129,7 +133,7 @@ void ComponentInstanceEditor::clear() {
 	configurableElements_.clear();
 	editProvider_.clear();
 
-	qobject_cast<QDockWidget*>(parentWidget())->hide();
+	parentWidget()->setMaximumHeight(20);
 }
 
 void ComponentInstanceEditor::onNameChanged( const QString& newName ) {

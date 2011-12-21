@@ -69,6 +69,10 @@ lh_(NULL),
 selectionDock_(NULL), 
 editProvider_() {
 
+	// update the supported windows 
+	supportedWindows_ = (supportedWindows_ | CONFIGURATIONWINDOW |
+		CONNECTIONWINDOW | INTERFACEWINDOW |INSTANCEWINDOW);
+
     lh_ = lh;
     editProvider_ = QSharedPointer<GenericEditProvider>(new GenericEditProvider(EDIT_HISTORY_SIZE));
 

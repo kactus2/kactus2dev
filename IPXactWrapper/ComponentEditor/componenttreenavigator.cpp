@@ -14,8 +14,6 @@
 #include <QIcon>
 #include <QString>
 
-#include <QDebug>
-
 ComponentTreeNavigator::ComponentTreeNavigator(QSharedPointer<Component> component, 
 											   LibraryInterface* handler,
 											   QWidget *parent): 
@@ -66,7 +64,6 @@ removeButton_(QIcon(":/icons/graphics/remove.png"), QString(), this) {
 }
 
 ComponentTreeNavigator::~ComponentTreeNavigator() {
-	qDebug() << "Deleted navigator";
 }
 
 void ComponentTreeNavigator::onAdd() {

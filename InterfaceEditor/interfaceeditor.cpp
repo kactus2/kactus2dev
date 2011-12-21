@@ -49,6 +49,8 @@ handler_(handler) {
 	Q_ASSERT(parent);
 	Q_ASSERT(handler);
 
+	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+
 	busType_.setTitle(tr("Bus type VLNV"));
 	busType_.setFlat(false);
 	absType_.setTitle(tr("Abstraction type VLNV"));
@@ -103,7 +105,7 @@ InterfaceEditor::~InterfaceEditor() {
 void InterfaceEditor::setInterface( DiagramConnectionEndPoint* interface ) {
 	Q_ASSERT(interface);
 
-	qobject_cast<QDockWidget*>(parentWidget())->show();
+	parentWidget()->raise();
 
 	// disconnect the previous interface
 	if (interface_) {
@@ -183,6 +185,8 @@ void InterfaceEditor::setInterface( DiagramConnectionEndPoint* interface ) {
 	descriptionEdit_.show();
 	mappingsLabel_.show();
 	mappings_.show();
+
+	parentWidget()->setMaximumHeight(QWIDGETSIZE_MAX);
 }
 
 void InterfaceEditor::clear() {
@@ -225,7 +229,7 @@ void InterfaceEditor::clear() {
 	mappings_.hide();
 	mappingsLabel_.hide();
 
-	qobject_cast<QDockWidget*>(parentWidget())->hide();
+	parentWidget()->setMaximumHeight(20);
 }
 
 void InterfaceEditor::onInterfaceModeChanged( const QString& newMode ) {

@@ -42,6 +42,16 @@ public:
         DOC_EDIT_SUPPORT = 0x10,
     };
 
+	enum SupportedWindows {
+		OUTPUTWINDOW = 0x01,
+		PREVIEWWINDOW = 0x02,
+		LIBRARYWINDOW = 0x04,
+		CONFIGURATIONWINDOW = 0x08,
+		CONNECTIONWINDOW = 0x10,
+		INTERFACEWINDOW = 0x20,
+		INSTANCEWINDOW = 0x40
+	};
+
     /*!
      *  Constructor.
      *
@@ -175,6 +185,12 @@ public:
 	*/
 	virtual bool isHWImplementation() const;
 
+	/*! \brief Get the bit fields that define which windows are supported by this tab.
+	 *
+	 * \return unsigned int which contains the bit fields specifying supported windows.
+	*/
+	virtual unsigned int getSupportedWindows() const;
+
     /*!
      *  Returns true if the document has previously been unlocked.
      */
@@ -227,6 +243,9 @@ protected:
      *      @param [in] type The type name.
      */
     void setDocumentType(QString const& type);
+
+	//! \brief Contains the bit fields that define which windows are supported for this tab.
+	unsigned int supportedWindows_;
 
 private:
     // Disable copying.

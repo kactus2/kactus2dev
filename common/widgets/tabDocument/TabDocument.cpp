@@ -17,14 +17,19 @@
 // Function: TabDocument()
 //-----------------------------------------------------------------------------
 TabDocument::TabDocument(QWidget* parent, unsigned int flags, 
-						 int minZoomLevel, int maxZoomLevel) : QWidget(parent),
-                                                               flags_(flags), modified_(false),
-                                                               locked_(false), zoomLevel_(100),
-                                                               maxZoomLevel_(maxZoomLevel),
-                                                               minZoomLevel_(minZoomLevel), title_(""),
-                                                               docName_(""), tabWidget_(0),
-                                                               previouslyUnlocked_(false)
-
+						 int minZoomLevel, int maxZoomLevel) : 
+QWidget(parent),
+supportedWindows_(OUTPUTWINDOW | PREVIEWWINDOW | LIBRARYWINDOW),
+flags_(flags), 
+modified_(false),
+locked_(false),
+zoomLevel_(100),
+maxZoomLevel_(maxZoomLevel),
+minZoomLevel_(minZoomLevel),
+title_(""),
+docName_(""), 
+tabWidget_(0),
+previouslyUnlocked_(false)
 {
     connect(this, SIGNAL(contentChanged()), this, SLOT(setModified()));
 }
@@ -305,6 +310,10 @@ void TabDocument::refresh() {
 
 bool TabDocument::isHWImplementation() const {
 	return false;
+}
+
+unsigned int TabDocument::getSupportedWindows() const {
+	return supportedWindows_;
 }
 
 //-----------------------------------------------------------------------------
