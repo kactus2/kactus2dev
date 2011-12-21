@@ -81,6 +81,11 @@ public slots:
 	//! \brief Create new bus definition and abstraction definition.
 	void onCreateBus();
 
+	#ifndef NDEBUG
+	//! \brief Open the xml of the selected IP-Xact element.
+	void onOpenXml();
+	#endif
+
 signals:
 
 	//! \brief Open the selected hierarchical design
@@ -202,6 +207,12 @@ private:
 
     //! \brief Open software design to be edited
     QAction* openSWDesignAction_;
+
+	// this is available only in debug mode
+	#ifndef NDEBUG
+	//! \brief Open the xml file to be viewed by the user.
+	QAction* openXmlAction_;
+	#endif
 };
 
 #endif // HIERARCHYVIEW_H

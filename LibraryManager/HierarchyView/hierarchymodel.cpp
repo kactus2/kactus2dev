@@ -421,3 +421,4 @@ int HierarchyModel::getOwners( QList<VLNV>& list, const VLNV& vlnvToSearch ) con
 void HierarchyModel::getChildren( QList<VLNV>& childList, const VLNV& owner ) {
 	rootItem_->getChildren(childList, owner);
 }
+
