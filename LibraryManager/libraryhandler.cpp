@@ -52,6 +52,7 @@
 #include <QObject>
 #include <QCoreApplication>
 #include <QSettings>
+#include <QApplication>
 
 #include <QDebug>
 
@@ -720,7 +721,9 @@ void LibraryHandler::searchForIPXactFiles(QString const& path)
 {
     if (!path.isEmpty())
     {
+		QApplication::setOverrideCursor(Qt::WaitCursor);
         data_->searchForFiles(path);
+		QApplication::restoreOverrideCursor();
     }
 }
 
@@ -736,13 +739,17 @@ void LibraryHandler::searchForIPXactFiles() {
 
     if (!path.isEmpty())
     {
+		QApplication::setOverrideCursor(Qt::WaitCursor);
     	data_->searchForFiles(path);
+		QApplication::restoreOverrideCursor();
     }
 }
 
 void LibraryHandler::onCheckLibraryIntegrity() {
 	saveInProgress_ = false;
+	QApplication::setOverrideCursor(Qt::WaitCursor);
 	data_->checkIntegrity();
+	QApplication::restoreOverrideCursor();
 }
 
 void LibraryHandler::getNeededVLNVs( const VLNV& vlnv, QList<VLNV>& list ) {
