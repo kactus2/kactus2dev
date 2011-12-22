@@ -20,6 +20,8 @@
 #include <QMainWindow>
 #include <QActionGroup>
 #include <QMenu>
+#include <QShowEvent>
+#include <QHideEvent>
 
 class DesignWidget;
 class LibraryHandler;
@@ -310,8 +312,15 @@ signals:
 	void errorMessage(const QString& msg);
 
 protected:
-    // Called when the user requests to close the program.
-    void closeEvent(QCloseEvent* event);
+
+	//! \brief Called when the user requests to close the program.
+    virtual void closeEvent(QCloseEvent* event);
+
+	//! \brief Called when user i.e minimizes the main window.
+	virtual void hideEvent(QHideEvent* event);
+
+	//! \brief Called when user i.e maximizes the mainwindow afer it has been minimized.
+	virtual void showEvent(QShowEvent* event);
 
 private slots:
 

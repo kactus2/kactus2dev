@@ -12,9 +12,9 @@
 
 #include "parametersmodel.h"
 
+#include <common/views/EditableTableView/editabletableview.h>
+
 #include <QSortFilterProxyModel>
-#include <QTableView>
-#include <QPushButton>
 #include <QSharedPointer>
 
 class Component;
@@ -49,11 +49,6 @@ public:
 	*/
 	virtual void makeChanges();
 
-private slots:
-
-	//! \brief Remove the selected row from the model
-	void onRemove();
-
 private:
 
 	//! \brief No copying
@@ -62,14 +57,8 @@ private:
 	//! No assignment
 	ParametersEditor& operator=(const ParametersEditor& other);
 
-	//! \brief The button to add a new port
-	QPushButton addRowButton_;
-
-	//! \brief The button to remove the selected port
-	QPushButton removeRowButton_;
-
 	//! \brief The view that displays the parameters.
-	QTableView view_;
+	EditableTableView view_;
 
 	//! \brief The model that holds the data to be displayed to the user
 	ParametersModel model_;

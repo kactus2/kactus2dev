@@ -35,6 +35,15 @@ public:
 	//! \brief The destructor
 	virtual ~EditableTableView();
 
+public slots:
+
+	/*! \brief Set the items in the view to be draggable or not.
+	 *
+	 * \param draggable If true the positions of the items can change by dragging.
+	 *
+	*/
+	void setItemsDraggable(bool draggable);
+
 signals:
 
 	/*! \brief A new item should be added to given index.
@@ -105,6 +114,9 @@ private:
 
 	//! \brief Action to remove item
 	QAction removeAction_;
+
+	//! \brief Specifies if the items in the view can be dragged from position to another.
+	bool itemsDraggable_;
 };
 
 #endif // EDITABLETABLEVIEW_H

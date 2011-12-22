@@ -165,7 +165,10 @@ handler_(handler) {
 		// set the text that is shown in the editor
 		text_ = fileSet->getName();
 
-		// Fileset always has three children: Default file builders, Files and Functions
+		QStringList errorList;
+		isValid_ = fileSet->isValid(errorList, tr("edited component"), false);
+
+		// File set always has three children: Default file builders, Files and Functions
 		childItems_.append(new ComponentTreeItem(
 			ComponentTreeItem::DEFAULTFILEBUILDERS, &fileSet->getDefaultFileBuilders(), 
 			component, handler, this));
@@ -203,6 +206,9 @@ handler_(handler) {
 		// set the text shown in the editor
 		//QFileInfo fileInfo(file->getName());
 		text_ = file->getName();
+		
+		QStringList errorList;
+		isValid_ = file->isValid(errorList, tr("edited component"), true);
 
 		break;
 								  }
@@ -224,6 +230,16 @@ handler_(handler) {
 									  }
 	case ComponentTreeItem::DEFAULTFILEBUILDERS: {
 		text_ = tr("Default file builders");
+		QList<QSharedPointer<FileBuilder> >* builders = 
+			static_cast<QList<QSharedPointer<FileBuilder> >*>(dataPointer_);
+		
+		// check all default file builders and if at least one is not in valid state.
+		QStringList errorList;
+		foreach (QSharedPointer<FileBuilder> builder, *builders) {
+			if (!builder->isValid(errorList, tr("edited component"))) {
+				isValid_ = false;
+			}
+		}
 		break;
 												 }
 	case ComponentTreeItem::CHOICES: {
@@ -255,13 +271,32 @@ handler_(handler) {
 		    text_ = tr("Model parameters");
         }
 
-		dataPointer_ = component_->getModel()->getModelParametersPointer();
+		QMap<QString, QSharedPointer<ModelParameter> >* modelParams = 
+			component_->getModel()->getModelParametersPointer();
+		dataPointer_ = modelParams;
+
+		// if at least one model parameter is invalid
+		foreach (QSharedPointer<ModelParameter> modelParam, *modelParams) {
+			if (!modelParam->isValid()) {
+				isValid_ = false;
+			}
+		}
+
 		break;
 											 }
 	case ComponentTreeItem::PARAMETERS: {
 		text_ = tr("Parameters");
 
-		dataPointer_ = &component_->getParameters();
+		QList<QSharedPointer<Parameter> >* params = &component_->getParameters();
+		dataPointer_ = params;
+
+		// if at least one parameter is invalid then show this as red
+		foreach (QSharedPointer<Parameter> param, *params) {
+			if (!param->isValid()) {
+				isValid_ = false;
+				break;
+			}
+		}
 		break;
 										}
 	case ComponentTreeItem::MEMORYMAPS: {

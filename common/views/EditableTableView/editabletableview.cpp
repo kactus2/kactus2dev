@@ -13,7 +13,8 @@
 EditableTableView::EditableTableView(QWidget *parent):
 QTableView(parent),
 addAction_(tr("Add new"), this),
-removeAction_(tr("Remove"), this) {
+removeAction_(tr("Remove"), this),
+itemsDraggable_(true) {
 
 	// cells are resized to match contents 
 	horizontalHeader()->setResizeMode(QHeaderView::Interactive);
@@ -24,15 +25,17 @@ removeAction_(tr("Remove"), this) {
 	// vertical headers are not visible
 	verticalHeader()->hide();
 
+	// easies to see the different rows from one another
+	setAlternatingRowColors(true);
+
 	// words are wrapped in the cells to minimize space usage
 	setWordWrap(true);
 
-	// user can only select one item at the time and the whole row is selected
+	// user can only select one item at a time
 	setSelectionMode(QAbstractItemView::SingleSelection);
-	
-	// select rows instead of individual items
-	setSelectionBehavior(QAbstractItemView::SelectRows);
 
+	setEditTriggers(QAbstractItemView::AllEditTriggers);
+	
 	setupActions();
 }
 
@@ -40,21 +43,24 @@ EditableTableView::~EditableTableView() {
 }
 
 void EditableTableView::mouseMoveEvent( QMouseEvent* e ) {
-	// if left mouse button was pressed 
-	if (e->buttons() & Qt::LeftButton) {
+	if (itemsDraggable_) {
 
-		QModelIndex startIndex = indexAt(pressedPoint_);
-		QModelIndex thisIndex = indexAt(e->pos());
+		// if left mouse button was pressed 
+		if (e->buttons() & Qt::LeftButton) {
 
-		// if the item was dragged to new location
-		if (startIndex.isValid() && startIndex != thisIndex) {
-			setCursor(QCursor(Qt::ClosedHandCursor));
+			QModelIndex startIndex = indexAt(pressedPoint_);
+			QModelIndex thisIndex = indexAt(e->pos());
 
-			emit moveItem(startIndex, thisIndex);
+			// if the item was dragged to new location
+			if (startIndex.isValid() && startIndex != thisIndex) {
+				setCursor(QCursor(Qt::ClosedHandCursor));
 
-			// update the pressed point so the dragging works also
-			// when moving further to another index
-			pressedPoint_ = e->pos();
+				emit moveItem(startIndex, thisIndex);
+
+				// update the pressed point so the dragging works also
+				// when moving further to another index
+				pressedPoint_ = e->pos();
+			}
 		}
 	}
 
@@ -124,4 +130,8 @@ void EditableTableView::setupActions() {
 	removeAction_.setStatusTip(tr("Remove an item from the table"));
 	connect(&removeAction_, SIGNAL(triggered()),
 		this, SLOT(onRemoveAction()), Qt::UniqueConnection);
+}
+
+void EditableTableView::setItemsDraggable( bool draggable ) {
+	itemsDraggable_ = draggable;
 }

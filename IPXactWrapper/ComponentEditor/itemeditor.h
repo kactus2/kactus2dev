@@ -83,10 +83,10 @@ signals:
 	void contentChanged();
 
 	//! \brief Prints an error message to the user.
-	void errorMessage(const QString& msg);
+	void errorMessage(const QString& msg) const;
 
 	//! \brief Prints a notification to the user.
-	void noticeMessage(const QString& msg);
+	void noticeMessage(const QString& msg) const;
 
 protected:
 

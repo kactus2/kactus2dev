@@ -37,6 +37,11 @@ void FileTypeEditor::apply() {
 	file_->clearFileTypes();
 
 	foreach (const QString item, items) {
+
+		// empty strings are not added
+		if (item.isEmpty()) {
+			continue;
+		}
 		
 		// if the string was one of the types that is defined in IP-Xact standard
 		// then it is added to the fileTypes list.
@@ -96,8 +101,17 @@ void FileTypeEditor::restore() {
 bool FileTypeEditor::isValid() const {
 	
 	// at least one file type has to be specified
-	if (model_.rowCount() <= 0) 
+	if (model_.rowCount() <= 0) {
 		return false;
+	}
+
+	// get all items from the model
+	QStringList items = model_.items();
+	foreach (QString item, items) {
+		if (item.isEmpty()) {
+			return false;
+		}
+	}
 
 	return true;
 }

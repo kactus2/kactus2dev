@@ -38,10 +38,10 @@ valueAttributes_() {
 	}
 
 	// if mandatory elements are missing
-	if (nameGroup_.name_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory element name missing in "
-				"spirit:modelParameter"));
-	}
+// 	if (nameGroup_.name_.isNull()) {
+// 		throw Parse_error(QObject::tr("Mandatory element name missing in "
+// 				"spirit:modelParameter"));
+// 	}
 	return;
 }
 
@@ -116,6 +116,56 @@ void ModelParameter::write(QXmlStreamWriter& writer) {
 	writer.writeEndElement(); // spirit:modelParameter
 }
 
+bool ModelParameter::isValid() const {
+
+	// if usage type is specified
+	if (attributes_.contains(QString("spirit:usageType"))) {
+
+		// if usage is not valid type
+		QString usage = attributes_.value(QString("spirit:usageType"));
+		if (usage != QString("nontyped") && usage != QString("typed"))
+			return false;
+	}
+
+	// name and value must be defined
+	if (nameGroup_.name_.isEmpty() || value_.isEmpty())
+		return false;
+
+	return true;
+}
+
+bool ModelParameter::isValid( QStringList& errorList, const QString& parentIdentifier ) const {
+	bool valid = true;
+
+	if (nameGroup_.name_.isEmpty()) {
+		valid = false;
+
+		errorList.append(QObject::tr("No name set for model parameter within %1").arg(
+			parentIdentifier));
+	}
+
+	if (attributes_.contains(QString("spirit:usageType"))) {
+		// if usage is not valid type
+		QString usage = attributes_.value(QString("spirit:usageType"));
+		if (usage != QString("nontyped") && usage != QString("typed")) {
+			valid = false;
+
+			errorList.append(QObject::tr("Invalid usage type set for model "
+				"parameter %1 within %2").arg(
+				nameGroup_.name_).arg(parentIdentifier));
+		}
+	}
+
+	if (value_.isEmpty()) {
+		valid = false;
+
+		errorList.append(QObject::tr("No value set for model parameter %1"
+			" within %2").arg(nameGroup_.name_).arg(parentIdentifier));
+	}
+
+	return valid;
+}
+
 const QMap<QString, QString>& ModelParameter::getAttributes() {
 	return attributes_;
 }
@@ -187,22 +237,4 @@ QString ModelParameter::getUsageType() const {
 
 void ModelParameter::setUsageType( const QString& usageType ) {
 	attributes_.insert(QString("spirit:usageType"), usageType);
-}
-
-bool ModelParameter::isValid() const {
-
-	// if usage type is specified
-	if (attributes_.contains(QString("spirit:usageType"))) {
-		
-		// if usage is not valid type
-		QString usage = attributes_.value(QString("spirit:usageType"));
-		if (usage != QString("nontyped") && usage != QString("typed"))
-			return false;
-	}
-
-	// name and value must be defined
-	if (nameGroup_.name_.isEmpty() || value_.isEmpty())
-		return false;
-
-	return true;
 }

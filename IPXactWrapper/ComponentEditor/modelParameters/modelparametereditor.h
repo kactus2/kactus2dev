@@ -13,8 +13,8 @@
 #include <models/modelparameter.h>
 #include "modelparametermodel.h"
 
-#include <QTableView>
-#include <QPushButton>
+#include <common/views/EditableTableView/editabletableview.h>
+
 #include <QString>
 #include <QMap>
 #include <QList>
@@ -56,11 +56,6 @@ public:
 	*/
 	virtual void makeChanges();
 
-private slots:
-
-	//! \brief Remove the selected row from the model
-	void onRemove();
-
 private:
 
 	//! \brief No copying
@@ -68,19 +63,9 @@ private:
 
 	//! No assignment
 	ModelParameterEditor& operator=(const ModelParameterEditor& other);
-	
-	// TODO this could be added later
-	//! \brief The button to start editing the details of a single model parameter.
-	//QPushButton detailButton_;
-
-	//! \brief The button to add a new model parameter
-	QPushButton addRowButton_;
-
-	//! \brief The button to remove the selected model parameter
-	QPushButton removeRowButton_;
 
 	//! \brief The view that displays the parameters.
-	QTableView view_;
+	EditableTableView view_;
 
 	//! \brief The model that holds the data to be displayed to the user
 	ModelParameterModel model_;

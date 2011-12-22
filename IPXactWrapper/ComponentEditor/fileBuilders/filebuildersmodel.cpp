@@ -7,6 +7,8 @@
 
 #include "filebuildersmodel.h"
 
+#include <QColor>
+
 FileBuildersModel::FileBuildersModel(void* dataPointer, QObject *parent): 
 QAbstractTableModel(parent),
 fileBuilders_(static_cast<QList<QSharedPointer<FileBuilder> >* >(dataPointer)),
@@ -54,6 +56,22 @@ QVariant FileBuildersModel::data( const QModelIndex& index,
 				return table_.at(index.row())->getReplaceDefaultFlags();
 			default:
 				return QVariant();
+		}
+	}
+	else if (Qt::BackgroundRole == role) {
+		if (index.column() == 0) {
+			return QColor("LemonChiffon");
+		}
+		else {
+			return QColor("white");
+		}
+	}
+	else if (Qt::ForegroundRole == role) {
+		if (table_.at(index.row())->isValid()) {
+			return QColor("black");
+		}
+		else {
+			return QColor("red");
 		}
 	}
 	// if unsupported role
@@ -146,6 +164,7 @@ bool FileBuildersModel::isValid() const {
 		if (!fileBuilder->isValid())
 			return false;
 	}
+
 	return true;
 }
 

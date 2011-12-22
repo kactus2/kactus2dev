@@ -39,15 +39,15 @@ value_(QString()), valueAttributes_(), description_() {
 		}
 	}
 	// if name or value was not found then document is invalid
-	if (name_.isNull() ) {
-		throw Parse_error(QObject::tr("Mandatory element name missing in "
-				"spirit:parameter"));
-	}
-
-	if (value_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory element value missing in"
-				" spirit:parameter"));
-	}
+// 	if (name_.isNull() ) {
+// 		throw Parse_error(QObject::tr("Mandatory element name missing in "
+// 				"spirit:parameter"));
+// 	}
+// 
+// 	if (value_.isNull()) {
+// 		throw Parse_error(QObject::tr("Mandatory element value missing in"
+// 				" spirit:parameter"));
+// 	}
 	return;
 }
 
@@ -159,4 +159,24 @@ bool Parameter::isValid() const {
 		return false;
 
 	return true;
+}
+
+bool Parameter::isValid( QStringList& errorList, 
+						const QString& parentIdentifier) const {
+
+	bool valid = false;
+
+	if (name_.isEmpty()) {
+		errorList.append(QObject::tr("No name specified for parameter within %1").arg(
+			parentIdentifier));
+		valid = false;
+	}
+
+	if (value_.isEmpty()) {
+		errorList.append(QObject::tr("No value specified for parameter %1 within %2").arg(
+			name_).arg(parentIdentifier));
+		valid = false;
+	}
+
+	return valid;
 }

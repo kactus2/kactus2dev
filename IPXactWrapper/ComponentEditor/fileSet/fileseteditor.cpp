@@ -61,7 +61,6 @@ FileSetEditor::~FileSetEditor() {
 }
 
 bool FileSetEditor::isValid() const {
-
 	return nameBox_.isValid();
 }
 

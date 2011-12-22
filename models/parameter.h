@@ -11,6 +11,7 @@
 #include <QString>
 #include <QMap>
 #include <QXmlStreamWriter>
+#include <QStringList>
 
 /*! \brief Equals the spirit:parameter element in IP-Xact specification
  *
@@ -117,6 +118,16 @@ public:
 	 * \return True if the parameter is valid.
 	*/
 	bool isValid() const;
+
+	/*! \brief Check if the parameter is in a valid state.
+	 *
+	 * \param errorList The list to add the possible error messages to.
+	 * \param parentIdentifier String from parent to help to identify the location of the error.
+	 *
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid(QStringList& errorList, 
+		const QString& parentIdentifier) const;
 
 private:
 

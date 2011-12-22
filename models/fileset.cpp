@@ -54,10 +54,10 @@ files_(), defaultFileBuilders_(), dependencies_(), functions_() {
 	}
 
 	// if mandatory field name is missing
-	if (nameGroup_.name_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory element name missing in "
-				"spirit:fileSet"));
-	}
+// 	if (nameGroup_.name_.isNull()) {
+// 		throw Parse_error(QObject::tr("Mandatory element name missing in "
+// 				"spirit:fileSet"));
+// 	}
 	return;
 }
 
@@ -194,6 +194,48 @@ void FileSet::write(QXmlStreamWriter& writer) {
 	}
 
 	writer.writeEndElement(); // spirit:fileSet
+}
+
+bool FileSet::isValid( QStringList& errorList, 
+					  const QString& parentIdentifier, 
+					  bool checkChildren /*= true*/ ) const {
+	bool valid = true;
+	const QString thisIdentifier = QObject::tr("file set %1").arg(nameGroup_.name_);
+
+	if (nameGroup_.name_.isEmpty()) {
+		errorList.append(QObject::tr("Name of the file set missing within %1").arg(
+			parentIdentifier));
+		valid = false;
+	}
+
+	if (checkChildren) {
+		QStringList fileIDs;
+		foreach (QSharedPointer<File> file, files_) {
+
+			if (!file->isValid(errorList, thisIdentifier)) {
+				valid = false;
+			}
+
+			// if file has file id specified then save it to list to be used later.
+			if (!file->getFileId().isEmpty()) {
+				fileIDs.append(file->getFileId());
+			}
+		}
+
+		foreach (QSharedPointer<FileBuilder> fileBuilder, defaultFileBuilders_) {
+			if (!fileBuilder->isValid(errorList, thisIdentifier)) {
+				valid = false;
+			}
+		}
+
+		foreach (QSharedPointer<Function> func, functions_) {
+			if (!func->isValid(fileIDs, errorList, thisIdentifier)) {
+				valid = false;
+			}
+		}
+	}
+
+	return valid;
 }
 
 const QList<QSharedPointer<Function> >& FileSet::getFunctions() {

@@ -40,11 +40,35 @@ value_(QString()), dataType_(QString()) {
 	}
 
 	// if mandatory fields are missing
-	if (name_.isNull() || value_.isNull() || dataType_.isNull() ) {
-		throw Parse_error(QObject::tr("Mandatory element missing in "
-				"spirit:argument"));
-	}
+// 	if (name_.isNull() || value_.isNull() || dataType_.isNull() ) {
+// 		throw Parse_error(QObject::tr("Mandatory element missing in "
+// 				"spirit:argument"));
+// 	}
 	return;
+}
+
+bool Function::Argument::isValid( QStringList& errorList, const QString& parentIdentifier ) const {
+	bool valid = true;
+
+	if (name_.isEmpty()) {
+		errorList.append(QObject::tr("Mandatory name missing for argument within %1").arg(
+			parentIdentifier));
+		valid = false;
+	}
+
+	if (value_.isEmpty()) {
+		errorList.append(QObject::tr("Mandatory value missing for argument %1 within %2").arg(
+			name_).arg(parentIdentifier));
+		valid = false;
+	}
+
+	if (dataType_.isEmpty()) {
+		errorList.append(QObject::tr("Mandatory datatype not set for argument %1 within %2").arg(
+			name_).arg(parentIdentifier));
+		valid = false;
+	}
+
+	return valid;
 }
 
 Function::SourceFile::SourceFile(QDomNode &sourceFileNode): sourceName_(),
@@ -66,19 +90,40 @@ Function::SourceFile::SourceFile(QDomNode &sourceFileNode): sourceName_(),
 	}
 
 	// if mandatory fields are missing
-	if (sourceName_.isEmpty() ||
-			(fileType_.isEmpty() && userFileType_.isEmpty()) ) {
-		throw Parse_error(QObject::tr("Mandatory element missing in spirit:"
-				"sourceFile"));
-	}
-	else if (!fileType_.isEmpty() && !userFileType_.isEmpty()) {
-		throw Parse_error(QObject::tr("Both spirit:fileType and spirit:"
-				"userFileType elements can not be defined in spirit:sourceFile"));
-	}
+// 	if (sourceName_.isEmpty() ||
+// 			(fileType_.isEmpty() && userFileType_.isEmpty()) ) {
+// 		throw Parse_error(QObject::tr("Mandatory element missing in spirit:"
+// 				"sourceFile"));
+// 	}
+// 	else if (!fileType_.isEmpty() && !userFileType_.isEmpty()) {
+// 		throw Parse_error(QObject::tr("Both spirit:fileType and spirit:"
+// 				"userFileType elements can not be defined in spirit:sourceFile"));
+// 	}
 	return;
 }
 
-Function::SourceFile::SourceFile(): sourceName_(), fileType_(), userFileType_() {
+Function::SourceFile::SourceFile(): 
+sourceName_(), 
+fileType_(), 
+userFileType_() {
+}
+
+bool Function::SourceFile::isValid( QStringList& errorList, const QString& parentIdentifier ) const {
+	bool valid = true;
+
+	if (sourceName_.isEmpty()) {
+		errorList.append(QObject::tr("Mandatory source name missing for source file within %1").arg(
+			parentIdentifier));
+		valid = false;
+	}
+
+	if (fileType_.isEmpty() && userFileType_.isEmpty()) {
+		errorList.append(QObject::tr("Mandatory file type missing for source file %1 within %2").arg(
+			sourceName_).arg(parentIdentifier));
+		valid = false;
+	}
+
+	return valid;
 }
 
 // the constructor
@@ -127,10 +172,10 @@ arguments_(), disabled_(false), disabledAttributes_(), sourceFiles_() {
 	}
 
 	// if mandatory fields are missing
-	if (fileRef_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory element spirit:fileRef "
-				"missing in spirit:function"));
-	}
+// 	if (fileRef_.isNull()) {
+// 		throw Parse_error(QObject::tr("Mandatory element spirit:fileRef "
+// 				"missing in spirit:function"));
+// 	}
 	return;
 }
 
@@ -267,6 +312,41 @@ void Function::write(QXmlStreamWriter& writer) {
 	}
 
 	writer.writeEndElement(); // spirit:function
+}
+
+bool Function::isValid( const QStringList& fileIDs, 
+					   QStringList& errorList,
+					   const QString& parentIdentifier,
+					   bool checkChildren /*= true*/ ) const {
+
+	bool valid = true;
+
+	if (fileRef_.isEmpty()) {
+		errorList.append(QObject::tr("Mandatory file reference missing in function within %1").arg(
+			parentIdentifier));
+		valid = false;
+	}
+	else if (!fileIDs.contains(fileRef_)) {
+		errorList.append(QObject::tr("File reference %1 not found in files of %2").arg(
+			fileRef_).arg(parentIdentifier));
+		valid = false;
+	}
+
+	if (checkChildren) {
+		foreach (QSharedPointer<Argument> argument, arguments_) {
+			if (!argument->isValid(errorList, QObject::tr("function %1").arg(entryPoint_))) {
+				valid = false;
+			}
+		}
+
+		foreach (QSharedPointer<SourceFile> sourceFile, sourceFiles_) {
+			if (!sourceFile->isValid(errorList, QObject::tr("function %1").arg(entryPoint_))) {
+				valid = false;
+			}
+		}
+	}
+
+	return valid;
 }
 
 bool Function::getReplicate() const {

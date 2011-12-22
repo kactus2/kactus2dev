@@ -30,10 +30,10 @@ BuildModel(fileBuilderNode), fileTypes_(), userFileTypes_() {
 		}
 	}
 	// if mandatory field is missing
-	if ((fileTypes_.size() == 0) && (userFileTypes_.size() == 0)) {
-		throw Parse_error(QObject::tr(
-				"No file types found in spirit:fileBuilder"));
-	}
+// 	if ((fileTypes_.size() == 0) && (userFileTypes_.size() == 0)) {
+// 		throw Parse_error(QObject::tr(
+// 				"No file types found in spirit:fileBuilder"));
+// 	}
 	return;
 }
 
@@ -92,6 +92,52 @@ void FileBuilder::write(QXmlStreamWriter& writer) {
 	writer.writeEndElement(); // spirit:defaultFileBuilder
 }
 
+bool FileBuilder::isValid( QStringList& errorList, const QString& parentIdentifier ) const {
+	if (fileTypes_.isEmpty() && userFileTypes_.isEmpty()) {
+		errorList.append(QObject::tr("Mandatory file type missing in file builder within %1").arg(
+			parentIdentifier));
+		return false;
+	}
+	// if at least one file type is specified then make sure it is not empty
+	else {
+		foreach (QString fileType, fileTypes_) {
+			if (fileType.isEmpty()) {
+				errorList.append(QObject::tr("Empty file type specified for file "
+					"builder within %1").arg(parentIdentifier));
+				return false;
+			}
+		}
+		foreach (QString userFileType, userFileTypes_) {
+			if (userFileType.isEmpty()) {
+				errorList.append(QObject::tr("Empty user file type specified for file "
+					"builder within %1").arg(parentIdentifier));
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+bool FileBuilder::isValid() const {
+	if (fileTypes_.isEmpty() && userFileTypes_.isEmpty()) {
+		return false;
+	}
+	// if at least one file type is specified then make sure it is not empty
+	else {
+		foreach (QString fileType, fileTypes_) {
+			if (fileType.isEmpty()) {
+				return false;
+			}
+		}
+		foreach (QString userFileType, userFileTypes_) {
+			if (userFileType.isEmpty()) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
 const QList<QString>& FileBuilder::getFileTypes() {
 	return fileTypes_;
 }
@@ -123,6 +169,12 @@ void FileBuilder::setFileType( const QString& fileType ) {
 
 	// remove old file types
 	fileTypes_.clear();
+	userFileTypes_.clear();
+
+	// if the file type is empty then don't add it
+	if (fileType.isEmpty()) {
+		return;
+	}
 
 	// if file type is one of the specified by IP-Xact
 	if ((fileType == QString("asmSource")) ||
@@ -162,11 +214,6 @@ void FileBuilder::setFileType( const QString& fileType ) {
 		fileTypes_.prepend(fileType);
 	else
 		userFileTypes_.prepend(fileType);
-}
-
-bool FileBuilder::isValid() const {
-	// at least one has to have one file type specified
-	return !(fileTypes_.isEmpty() && userFileTypes_.isEmpty());
 }
 
 bool FileBuilder::hasFileType( const QString& fileType ) const {

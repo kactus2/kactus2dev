@@ -606,8 +606,6 @@ void MainWindow::setupActions() {
 	showOutputAction_->setChecked(true);
 	connect(showOutputAction_, SIGNAL(toggled(bool)),
 		this, SLOT(onOutputAction(bool)), Qt::UniqueConnection);
-// 	connect(consoleDock_, SIGNAL(visibilityChanged(bool)),
-// 		showOutputAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 	connect(consoleDock_->toggleViewAction(), SIGNAL(toggled(bool)),
 		showOutputAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 
@@ -617,8 +615,6 @@ void MainWindow::setupActions() {
 	showPreviewAction_->setChecked(true);
 	connect(showPreviewAction_, SIGNAL(toggled(bool)),
 		this, SLOT(onPreviewAction(bool)), Qt::UniqueConnection);
-// 	connect(previewDock_, SIGNAL(visibilityChanged(bool)),
-// 		showPreviewAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 	connect(previewDock_->toggleViewAction(), SIGNAL(toggled(bool)),
 		showPreviewAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 
@@ -628,8 +624,6 @@ void MainWindow::setupActions() {
 	showLibraryAction_->setChecked(true);
 	connect(showLibraryAction_, SIGNAL(toggled(bool)),
 		this, SLOT(onLibraryAction(bool)), Qt::UniqueConnection);
-// 	connect(libraryDock_, SIGNAL(visibilityChanged(bool)),
-// 		showLibraryAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 	connect(libraryDock_->toggleViewAction(), SIGNAL(toggled(bool)),
 		showLibraryAction_, SLOT(setChecked(bool)), Qt::UniqueConnection); 		
 	
@@ -640,8 +634,6 @@ void MainWindow::setupActions() {
 	showConfigurationAction_->setChecked(true);
 	connect(showConfigurationAction_, SIGNAL(toggled(bool)),
 		this, SLOT(onConfigurationAction(bool)), Qt::UniqueConnection);
-// 	connect(configurationDock_, SIGNAL(visibilityChanged(bool)),
-// 		showConfigurationAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 	connect(configurationDock_->toggleViewAction(), SIGNAL(toggled(bool)),
 		showConfigurationAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 
@@ -651,8 +643,6 @@ void MainWindow::setupActions() {
 	showConnectionAction_->setChecked(true);
 	connect(showConnectionAction_, SIGNAL(toggled(bool)),
 		this, SLOT(onConnectionAction(bool)), Qt::UniqueConnection);
-// 	connect(connectionDock_, SIGNAL(visibilityChanged(bool)),
-// 		showConnectionAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 	connect(connectionDock_->toggleViewAction(), SIGNAL(toggled(bool)),
 		showConnectionAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 
@@ -662,8 +652,6 @@ void MainWindow::setupActions() {
 	showInterfaceAction_->setChecked(true);
 	connect(showInterfaceAction_, SIGNAL(toggled(bool)),
 		this, SLOT(onInterfaceAction(bool)), Qt::UniqueConnection);
-// 	connect(interfaceDock_, SIGNAL(visibilityChanged(bool)),
-// 		showInterfaceAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 	connect(interfaceDock_->toggleViewAction(), SIGNAL(toggled(bool)),
 		showInterfaceAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 
@@ -673,8 +661,6 @@ void MainWindow::setupActions() {
 	showInstanceAction_->setChecked(true);
 	connect(showInstanceAction_, SIGNAL(toggled(bool)),
 		this, SLOT(onInstanceAction(bool)), Qt::UniqueConnection);
-// 	connect(instanceDock_, SIGNAL(visibilityChanged(bool)),
-// 		showInstanceAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 	connect(instanceDock_->toggleViewAction(), SIGNAL(toggled(bool)),
 		showInstanceAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 	
@@ -2711,6 +2697,99 @@ void MainWindow::updateWindows( unsigned int supportedWindows ) {
 		windowsMenu_.removeAction(showInstanceAction_);
 		instanceDock_->hide();
 	}
+}
+
+void MainWindow::hideEvent( QHideEvent* event ) {
+	// Action to show/hide the output window.
+	disconnect(showOutputAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onOutputAction(bool)));
+	disconnect(consoleDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showOutputAction_, SLOT(setChecked(bool)));
+
+	// Action to show/hide the preview box.
+	disconnect(showPreviewAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onPreviewAction(bool)));
+	disconnect(previewDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showPreviewAction_, SLOT(setChecked(bool)));
+
+	// Action to show/hide the library window.
+	disconnect(showLibraryAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onLibraryAction(bool)));
+	disconnect(libraryDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showLibraryAction_, SLOT(setChecked(bool))); 		
+
+	// Action to show/hide the configuration window.
+	disconnect(showConfigurationAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onConfigurationAction(bool)));
+	disconnect(configurationDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showConfigurationAction_, SLOT(setChecked(bool)));
+
+	// Action to show/hide the connection editor.
+	disconnect(showConnectionAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onConnectionAction(bool)));
+	disconnect(connectionDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showConnectionAction_, SLOT(setChecked(bool)));
+
+	// Action to show/hide the interface editor.
+	disconnect(showInterfaceAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onInterfaceAction(bool)));
+	disconnect(interfaceDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showInterfaceAction_, SLOT(setChecked(bool)));
+
+	// Action to show/hide the instance editor.
+	disconnect(showInstanceAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onInstanceAction(bool)));
+	disconnect(instanceDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showInstanceAction_, SLOT(setChecked(bool)));
+
+	QMainWindow::hideEvent(event);
+}
+
+void MainWindow::showEvent( QShowEvent* event ) {
+
+	// Action to show/hide the output window.
+	connect(showOutputAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onOutputAction(bool)), Qt::UniqueConnection);
+	connect(consoleDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showOutputAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+	// Action to show/hide the preview box.
+	connect(showPreviewAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onPreviewAction(bool)), Qt::UniqueConnection);
+	connect(previewDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showPreviewAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+	// Action to show/hide the library window.
+	connect(showLibraryAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onLibraryAction(bool)), Qt::UniqueConnection);
+	connect(libraryDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showLibraryAction_, SLOT(setChecked(bool)), Qt::UniqueConnection); 		
+
+	// Action to show/hide the configuration window.
+	connect(showConfigurationAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onConfigurationAction(bool)), Qt::UniqueConnection);
+	connect(configurationDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showConfigurationAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+	// Action to show/hide the connection editor.
+	connect(showConnectionAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onConnectionAction(bool)), Qt::UniqueConnection);
+	connect(connectionDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showConnectionAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+	// Action to show/hide the interface editor.
+	connect(showInterfaceAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onInterfaceAction(bool)), Qt::UniqueConnection);
+	connect(interfaceDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showInterfaceAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+	// Action to show/hide the instance editor.
+	connect(showInstanceAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onInstanceAction(bool)), Qt::UniqueConnection);
+	connect(instanceDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showInstanceAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+	QMainWindow::showEvent(event);
 }
 
 MainWindow::WindowVisibility::WindowVisibility():

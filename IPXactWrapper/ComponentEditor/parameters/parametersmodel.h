@@ -125,6 +125,20 @@ public slots:
 	*/
 	void onAddRow();
 
+	/*! \brief A new item should be added to given index.
+	 *
+	 * \param index The position where new item should be added at.
+	 *
+	*/
+	void onAddItem(const QModelIndex& index);
+
+	/*! \brief An item should be removed from the model.
+	 * 
+	 * \param index Identifies the item that should be removed.
+	 *
+	*/
+	void onRemoveItem(const QModelIndex& index);
+
 signals:
 
 	//! \brief Emitted when contents of the model change

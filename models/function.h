@@ -15,6 +15,7 @@
 #include <QMap>
 #include <QSharedPointer>
 #include <QXmlStreamWriter>
+#include <QStringList>
 
 /*! \brief Equals the spirit:function element in IP-Xact specification
  *
@@ -55,6 +56,15 @@ public:
 		 * this struct.
 		 */
 		Argument(QDomNode &argNode);
+
+		/*! \brief Check if the Argument is in a valid state.
+		*
+		* \param errorList The list to add the possible error messages to.
+		* \param parentIdentifier String from parent to help to identify the location of the error.
+		*
+		* \return bool True if the state is valid and writing is possible.
+		*/
+		bool isValid(QStringList& errorList, const QString& parentIdentifier) const;
 	};
 
 	/*! \brief Equals the spirit:sourceFile element in IP-Xact specification.
@@ -94,6 +104,15 @@ public:
 
 		//! \brief Default constructor
 		SourceFile();
+
+		/*! \brief Check if the SourceFile is in a valid state.
+		*
+		* \param errorList The list to add the possible error messages to.
+		* \param parentIdentifier String from parent to help to identify the location of the error.
+		*
+		* \return bool True if the state is valid and writing is possible.
+		*/
+		bool isValid(QStringList& errorList, const QString& parentIdentifier) const;
 	};
 
 	/*! \brief The constructor
@@ -234,6 +253,21 @@ public:
 	 * not valid IP-Xact in the moment of writing.
 	 */
 	void write(QXmlStreamWriter& writer);
+
+	/*! \brief Check if the Function is in a valid state.
+	 *
+	 * \param fileIDs List of IDs for the files within the same file set.
+	 * \param errorList The list to add the possible error messages to.
+	 * \param parentIdentifier String from parent to help to identify the location of the error.
+	 * \param checkChildren If true then the child-items are also checked. If
+	 * false then only this model is checked.
+	 *
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid(const QStringList& fileIDs,
+		QStringList& errorList,
+		const QString& parentIdentifier,
+		bool checkChildren = true) const;
 
 private:
 

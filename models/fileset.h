@@ -336,6 +336,19 @@ public:
 	*/
 	void useDefaultVhdlBuilders();
 
+	/*! \brief Check if the File set is in a valid state.
+	 *
+	 * \param errorList The list to add the possible error messages to.
+	 * \param parentIdentifier String from parent to help to identify the location of the error.
+	 * \param checkChildren If true then the child-items are also checked. If
+	 * false then only this model is checked.
+	 *
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid(QStringList& errorList, 
+		const QString& parentIdentifier, 
+		bool checkChildren = true) const;
+
 private:
 
 	/*! \brief Contains the name and description information for file set.

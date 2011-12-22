@@ -37,14 +37,14 @@ nameGroup_(defineNode), value_() {
 	}
 
 	// if mandatory elements are missing
-	if (nameGroup_.name_.isEmpty()) {
-		throw Parse_error(QObject::tr("Mandatory element name missing in "
-			"spirit:define"));
-	}
-	else if (value_.isEmpty()) {
-		throw Parse_error(QObject::tr("Mandatory element value missing in "
-			"spirit:define"));
-	}
+// 	if (nameGroup_.name_.isEmpty()) {
+// 		throw Parse_error(QObject::tr("Mandatory element name missing in "
+// 			"spirit:define"));
+// 	}
+// 	else if (value_.isEmpty()) {
+// 		throw Parse_error(QObject::tr("Mandatory element value missing in "
+// 			"spirit:define"));
+// 	}
 }
 
 File::Define::Define(): nameGroup_(), value_() {
@@ -61,6 +61,21 @@ File::Define& File::Define::operator=( const Define& other ) {
 		value_ = other.value_;
 	}
 	return *this;
+}
+
+bool File::Define::isValid( QStringList& errorList, const QString& parentIdentifier ) const {
+	bool valid = true;
+	if (nameGroup_.name_.isEmpty()) {
+		errorList.append(QObject::tr(
+			"Mandatory name missing for define within %1").arg(parentIdentifier));
+		valid = false;
+	}
+	if (value_.isEmpty()) {
+		errorList.append(QObject::tr("Mandatory value for define missing in %1").arg(
+			parentIdentifier));
+		valid = false;
+	}
+	return valid;
 }
 
 // the constructor
@@ -161,15 +176,15 @@ description_(), buildcommand_(), defines_(), parent_(parent) {
 
 	// if mandatory elements are missing
 
-	if (name_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory element name missing in "
-				"spirit:file"));
-	}
-
-	if (fileTypes_.size() == 0 && userFileTypes_.size() == 0) {
-		throw Parse_error(QObject::tr("Neither spirit:fileType or "
-				"spirit:userFileType elements found in spirit:file"));
-	}
+// 	if (name_.isNull()) {
+// 		throw Parse_error(QObject::tr("Mandatory element name missing in "
+// 				"spirit:file"));
+// 	}
+// 
+// 	if (fileTypes_.size() == 0 && userFileTypes_.size() == 0) {
+// 		throw Parse_error(QObject::tr("Neither spirit:fileType or "
+// 				"spirit:userFileType elements found in spirit:file"));
+// 	}
 	return;
 }
 
@@ -272,9 +287,9 @@ void File::write(QXmlStreamWriter& writer) {
 		writer.writeEndElement(); // spirit:name
 	}
 
-	// atleast one file type has to be specified
+	// at least one file type has to be specified
 	if (( fileTypes_.size() == 0) && (userFileTypes_.size() == 0)) {
-		throw Write_error(QObject::tr("Atleast one file type has to be "
+		throw Write_error(QObject::tr("At least one file type has to be "
 				"specified in spirit:file"));
 	}
 	else {
@@ -358,6 +373,50 @@ void File::write(QXmlStreamWriter& writer) {
 	}
 
 	writer.writeEndElement(); // spirit:file
+}
+
+bool File::isValid( QStringList& errorList, 
+				   const QString& parentIdentifier,
+				   bool checkChildren /*= true*/ ) const {
+	bool valid = true;
+	
+	if (name_.isEmpty()) {
+		errorList.append(QObject::tr("Mandatory name missing for file within %1").arg(
+			parentIdentifier));
+		valid = false;
+	}
+
+	if (fileTypes_.isEmpty() && userFileTypes_.isEmpty()) {
+		errorList.append(QObject::tr("Mandatory file type missing for file %1 within %2").arg(
+			name_).arg(parentIdentifier));
+		valid = false;
+	}
+	// if at least one file type was specified
+	else {
+
+		foreach (QString fileType, fileTypes_) {
+			if (fileType.isEmpty()) {
+				valid = false;
+				break;
+			}
+		}
+		foreach (QString userFileType, userFileTypes_) {
+			if (userFileType.isEmpty()) {
+				valid = false;
+				break;
+			}
+		}
+	}
+
+	if (checkChildren) {
+		foreach (Define define, defines_) {
+			if (!define.isValid(errorList, QObject::tr("file %1").arg(name_))) {
+				valid = false;
+			}
+		}
+	}
+
+	return valid;
 }
 
 void File::setAttributes(const QMap<QString, QString> &attributes) {
