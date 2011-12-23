@@ -13,31 +13,21 @@
 #include <QStringList>
 #include <QIcon>
 #include <QVBoxLayout>
-#include <QHBoxLayout>
 
 EnvIdentifierEditor::EnvIdentifierEditor(View* view, 
 										 QWidget *parent, 
 										 const QString title): 
 QGroupBox(title, parent),
-addRowButton_(QIcon(":/icons/graphics/add.png"), QString(), this),
-removeRowButton_(QIcon(":/icons/graphics/remove.png"), QString(), this),
 view_(this), model_(view, this), 
-proxy_(this)  {
-
-	//setMinimumHeight(150);
+proxy_(this) {
 
 	// set view to be sortable
 	view_.setSortingEnabled(true);
-	view_.horizontalHeader()->setStretchLastSection(true);
-	view_.horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
-	view_.setSelectionMode(QAbstractItemView::SingleSelection);
-	view_.setAlternatingRowColors(true);
-	//view_.setSelectionBehavior(QAbstractItemView::SelectRows);
-	view_.verticalHeader()->hide();
-	view_.setEditTriggers(QAbstractItemView::AllEditTriggers);
-	view_.setWordWrap(true);
 
 	view_.setItemDelegate(new EnvIdentifiersDelegate(this));
+
+	// items can not be dragged
+	view_.setItemsDraggable(false);
 
 	view_.setProperty("mandatoryField", true);
 
@@ -49,22 +39,11 @@ proxy_(this)  {
 	// sort the view
 	view_.sortByColumn(0, Qt::AscendingOrder);
 
-	QHBoxLayout* buttonLayout = new QHBoxLayout();
-	buttonLayout->addWidget(&addRowButton_, 0, Qt::AlignLeft);
-	buttonLayout->addWidget(&removeRowButton_, 0, Qt::AlignLeft);
-	buttonLayout->addStretch();
-
 	// create the layout, add widgets to it
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&view_);
-	layout->addLayout(buttonLayout);
 
 	restoreChanges();
-
-	connect(&addRowButton_, SIGNAL(clicked(bool)),
-		&model_, SLOT(onAddRow()), Qt::UniqueConnection);
-	connect(&removeRowButton_, SIGNAL(clicked(bool)),
-		this, SLOT(onRemove()), Qt::UniqueConnection);
 
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -74,6 +53,11 @@ proxy_(this)  {
 		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(noticeMessage(const QString&)),
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+
+	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
+		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
+	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
+		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 }
 
 EnvIdentifierEditor::~EnvIdentifierEditor() {
@@ -89,12 +73,4 @@ void EnvIdentifierEditor::applyChanges() {
 
 bool EnvIdentifierEditor::isValid() const {
 	return model_.isValid();
-}
-
-void EnvIdentifierEditor::onRemove() {
-	QModelIndex index = proxy_.mapToSource(view_.currentIndex());
-
-	// if index is valid then remove the row
-	if (index.isValid())
-		model_.onRemoveRow(index.row());
 }

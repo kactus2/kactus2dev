@@ -40,16 +40,16 @@ right_(-1), rightAttributes_() {
 	}
 
 	// if left bound was not specified
-	if (left_ < 0) {
-		throw Parse_error(QString("Mandatory element spirit:left missing in"
-				" spirit:vector"));
-	}
-
-	// if right was not specified
-	if (right_ < 0) {
-		throw Parse_error(QString("Mandatory element spirit:right missing"
-				" in spirit:vector"));
-	}
+// 	if (left_ < 0) {
+// 		throw Parse_error(QString("Mandatory element spirit:left missing in"
+// 				" spirit:vector"));
+// 	}
+// 
+// 	// if right was not specified
+// 	if (right_ < 0) {
+// 		throw Parse_error(QString("Mandatory element spirit:right missing"
+// 				" in spirit:vector"));
+// 	}
 	return;
 }
 
@@ -125,6 +125,33 @@ void Vector::write(QXmlStreamWriter& writer) {
 	writer.writeEndElement(); // spirit:vector
 }
 
+bool Vector::isValid() const {
+
+	if (left_ < 0 || right_ < 0)
+		return false;
+
+	return true;
+}
+
+bool Vector::isValid( QStringList& errorList, const QString& parentIdentifier ) const {
+
+	bool valid = true;
+
+	if (left_ < 0) {
+		errorList.append(QObject::tr("Invalid left value set for vector within %1").arg(
+			parentIdentifier));
+		valid = false;
+	}
+
+	if (right_ < 0) {
+		errorList.append(QObject::tr("Invalid right value set for vector within %1").arg(
+			parentIdentifier));
+		valid = false;
+	}
+
+	return valid;
+}
+
 int Vector::getLeft() const {
 	return left_;
 }
@@ -139,14 +166,6 @@ const QMap<QString, QString>& Vector::getLeftAttributes() {
 
 const QMap<QString, QString>& Vector::getRightAttributes() {
 	return rightAttributes_;
-}
-
-bool Vector::isValid() const {
-	
-	if (left_ < 0 || right_ < 0)
-		return false;
-
-	return true;
 }
 
 void Vector::setLeft( int left ) {

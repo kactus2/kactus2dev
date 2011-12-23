@@ -129,7 +129,7 @@ Qt::ItemFlags EnvIdentifiersModel::flags( const QModelIndex& index ) const {
 
 bool EnvIdentifiersModel::isValid() const {
 
-	// atleast one has to be specified.
+	// at least one has to be specified.
 	return !table_.isEmpty();
 }
 
@@ -165,11 +165,46 @@ void EnvIdentifiersModel::onRemoveRow( int row ) {
 	emit contentChanged();
 }
 
+void EnvIdentifiersModel::onRemoveItem( const QModelIndex& index ) {
+	// don't remove anything if index is invalid
+	if (!index.isValid()) {
+		return;
+	}
+	// make sure the row number if valid
+	else if (index.row() < 0 || index.row() >= table_.size()) {
+		return;
+	}
+
+	// remove the specified item
+	beginRemoveRows(QModelIndex(), index.row(), index.row());
+	table_.removeAt(index.row());
+	endRemoveRows();
+
+	// tell also parent widget that contents have been changed
+	emit contentChanged();
+}
+
 void EnvIdentifiersModel::onAddRow() {
 	beginInsertRows(QModelIndex(), table_.size(), table_.size());
 
 	table_.append(QString("::"));
 
+	endInsertRows();
+
+	// tell also parent widget that contents have been changed
+	emit contentChanged();
+}
+
+void EnvIdentifiersModel::onAddItem( const QModelIndex& index ) {
+	int row = table_.size();
+
+	// if the index is valid then add the item to the correct position
+	if (index.isValid()) {
+		row = index.row();
+	}
+
+	beginInsertRows(QModelIndex(), row, row);
+	table_.insert(row, QString("::"));
 	endInsertRows();
 
 	// tell also parent widget that contents have been changed

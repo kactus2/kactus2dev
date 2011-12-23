@@ -29,6 +29,8 @@ component_(component) {
 		"Null dataPointer given as parameter");
 
 	view_.setItemDelegate(new ChannelInterfaceManagerDelegate(this, component_));
+
+	view_.setProperty("mandatoryField", true);
 }
 
 ChannelInterfaceManager::~ChannelInterfaceManager() {

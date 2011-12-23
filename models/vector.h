@@ -70,6 +70,22 @@ public:
 	 */
 	void write(QXmlStreamWriter& writer);
 
+	/*! \brief Check if the vector is valid or not.
+	*
+	* \return True if vector is in valid state.
+	*/
+	bool isValid() const;
+
+	/*! \brief Check if the  is in a valid state.
+	 *
+	 * \param errorList The list to add the possible error messages to.
+	 * \param parentIdentifier String from parent to help to identify the location of the error.
+	 *
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid(QStringList& errorList, 
+		const QString& parentIdentifier) const;
+
 	/*! \brief Get the left bound of the vector
 	 *
 	 * \return The location of the leftmost bit in the vector.
@@ -93,12 +109,6 @@ public:
 	 * \return A reference to a QMap containing the attributes.
 	 */
 	const QMap<QString, QString>& getRightAttributes();
-
-	/*! \brief Check if the vector is valid or not.
-	 *
-	 * \return True if vector is in valid state.
-	*/
-	bool isValid() const;
 
 	/*! \brief Set the left bound of the vector.
 	 *

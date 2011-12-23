@@ -97,6 +97,16 @@ public:
 		*/
 		bool hasView(const QString& viewName);
 
+		/*! \brief Check if the wire type def is in a valid state.
+		*
+		* \param errorList The list to add the possible error messages to.
+		* \param parentIdentifier String from parent to help to identify the location of the error.
+		*
+		* \return bool True if the state is valid and writing is possible.
+		*/
+		bool isValid(QStringList& errorList, 
+			const QString& parentIdentifier) const;
+
 	};
 
 	/*! \brief The constructor
@@ -155,6 +165,28 @@ public:
 	* not valid IP-Xact in the moment of writing.
 	*/
 	void write(QXmlStreamWriter& writer, const QStringList& viewNames);
+
+	/*! \brief Check if the wire element is in valid state or not.
+	* 
+	* \param hasViews Must be true if component has at least one view. This is 
+	* needed because if port has a type specified then at least one view is needed.
+	* 
+	* \return True if wire is in valid state.
+	*/
+	bool isValid(bool hasViews) const;
+
+	/*! \brief Check if the wire is in a valid state.
+	 * 
+	 * \param hasViews Must be true if component has at least one view. This is
+	 * needed because if port has a type specified then at least one view is needed.
+	 * \param errorList The list to add the possible error messages to.
+	 * \param parentIdentifier String from parent to help to identify the location of the error.
+	 *
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid(bool hasViews,
+		QStringList& errorList, 
+		const QString& parentIdentifier) const;
 
 	/*! \brief Get the value of allLogicalDirectionsAllowed element
 	 *
@@ -220,12 +252,6 @@ public:
 	 * \param defaultDriverValue QString containing the value
 	 */
 	void setDefaultDriverValue(const QString& defaultDriverValue);
-
-	/*! \brief Check if the wire element is in valid state or not.
-	 *
-	 * \return True if wire is in valid state.
-	*/
-	bool isValid() const;
 
 	/*! \brief Set the left bound of the vector.
 	 *

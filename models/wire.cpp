@@ -49,10 +49,10 @@ constrained_(false), typeDefinitions_(), viewNameRefs_() {
 	}
 
 	// if mandatory elements are missing
-	if (Wire::WireTypeDef::typeName_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory element spirit:typeName missing"
-				" in spirit:wireTypeDef"));
-	}
+// 	if (Wire::WireTypeDef::typeName_.isNull()) {
+// 		throw Parse_error(QObject::tr("Mandatory element spirit:typeName missing"
+// 				" in spirit:wireTypeDef"));
+// 	}
 
 // 	if (Wire::WireTypeDef::viewNameRefs_.size() < 1) {
 // 		throw Parse_error(QObject::tr("Mandatory element spirit:viewNameRef "
@@ -99,6 +99,17 @@ bool Wire::WireTypeDef::hasView( const QString& viewName ) {
 
 	}
 	return false;
+}
+
+bool Wire::WireTypeDef::isValid( QStringList& errorList,
+								const QString& parentIdentifier ) const {
+
+	if (typeName_.isEmpty()) {
+		errorList.append(QObject::tr("No type name specified for wire type def"
+			" within %1").arg(parentIdentifier));
+		return false;
+	}
+	return true;
 }
 
 Wire::Wire(QDomNode &wireNode): direction_(General::DIRECTION_INVALID),
@@ -155,10 +166,10 @@ Wire::Wire(QDomNode &wireNode): direction_(General::DIRECTION_INVALID),
 	}
 
 	// if mandatory element spirit:direction was not successfully defined
-	if (direction_ == General::DIRECTION_INVALID) {
-		throw Parse_error(QObject::tr("Mandatory element direction invalid in"
-			" spirit:wire"));
-	}
+// 	if (direction_ == General::DIRECTION_INVALID) {
+// 		throw Parse_error(QObject::tr("Mandatory element direction invalid in"
+// 			" spirit:wire"));
+// 	}
 
 	return;
 }
@@ -339,6 +350,65 @@ void Wire::write( QXmlStreamWriter& writer, const QStringList& viewNames ) {
 	writer.writeEndElement(); // spirit:wire
 }
 
+bool Wire::isValid(bool hasViews) const {
+
+	// if direction is not specified
+	if (direction_ == General::DIRECTION_INVALID)
+		return false;
+
+	// if vector exists but is not valid
+	if (vector_ && !vector_->isValid())
+		return false;
+
+	// if there are types defined but no views exist
+	if (!wireTypeDefs_.isEmpty() && !hasViews) {
+		return false;
+	}
+
+	// check all wireTypeDefs
+	for (int i = 0; i < wireTypeDefs_.size(); ++i) {
+
+		// if typeName or viewNameRef is not specified for wireTypeDef
+		if (wireTypeDefs_.value(i)->typeName_.isEmpty())
+			return false;
+	}
+
+	// everything ok
+	return true;
+}
+
+bool Wire::isValid( bool hasViews,
+				   QStringList& errorList, 
+				   const QString& parentIdentifier ) const {
+
+	bool valid = true;
+
+	if (direction_ == General::DIRECTION_INVALID) {
+		errorList.append(QObject::tr("No direction set in wire within %1").arg(parentIdentifier));
+		valid = false;
+	}
+
+	if (vector_ && !vector_->isValid(errorList, parentIdentifier)) {
+		valid = false;
+	}
+
+	// if there are types defined but no views exist
+	if (!wireTypeDefs_.isEmpty() && !hasViews) {
+		errorList.append(QObject::tr("%1 has port type definitions but component"
+			" doesn't contain any views").arg(parentIdentifier));
+		valid = false;
+	}
+
+	foreach (QSharedPointer<WireTypeDef> typeDef, wireTypeDefs_) {
+		if (!typeDef->isValid(errorList, parentIdentifier)) {
+			valid = false;
+			break;
+		}
+	}
+
+	return valid;
+}
+
 General::Direction Wire::getDirection() const {
 	return direction_;
 }
@@ -389,29 +459,6 @@ void Wire::setDefaultDriverValue(const QString& defaultDriverValue) {
 
 QString Wire::getDefaultDriverValue() const {
 	return defaultDriverValue_;
-}
-
-bool Wire::isValid() const {
-	
-	// if direction is not specified
-	if (direction_ == General::DIRECTION_INVALID)
-		return false;
-
-	// if vector exists but is not valid
-	if (vector_ && !vector_->isValid())
-		return false;
-
-	// check all wireTypeDefs
-	for (int i = 0; i < wireTypeDefs_.size(); ++i) {
-
-		// if typeName or viewNameRef is not specified for wireTypeDef
-		if (wireTypeDefs_.value(i)->typeName_.isEmpty() ||
-			wireTypeDefs_.value(i)->viewNameRefs_.isEmpty())
-			return false;
-	}
-
-	// everything ok
-	return true;
 }
 
 void Wire::setLeftBound( int leftBound ) {

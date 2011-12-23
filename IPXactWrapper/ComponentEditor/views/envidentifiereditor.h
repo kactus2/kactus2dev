@@ -10,10 +10,11 @@
 
 #include "envidentifiersmodel.h"
 
+#include <common/views/EditableTableView/editabletableview.h>
+
 #include <QGroupBox>
 #include <QString>
 #include <QSortFilterProxyModel>
-#include <QTableView>
 #include <QPushButton>
 
 class View;
@@ -70,11 +71,6 @@ signals:
 	//! \brief Prints a notification to user.
 	void noticeMessage(const QString& msg) const;
 
-private slots:
-
-	//! \brief Remove a row from the model
-	void onRemove();
-
 private:
 
 	//! \brief No copying
@@ -83,14 +79,8 @@ private:
 	//! No assignment
 	EnvIdentifierEditor& operator=(const EnvIdentifierEditor& other);
 
-	//! \brief The button to add a new port
-	QPushButton addRowButton_;
-
-	//! \brief The button to remove the selected port
-	QPushButton removeRowButton_;
-
 	//! \brief The view that displays the parameters.
-	QTableView view_;
+	EditableTableView view_;
 
 	//! \brief The model that holds the data to be displayed to the user
 	EnvIdentifiersModel model_;

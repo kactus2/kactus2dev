@@ -729,10 +729,10 @@ General::ClockStruct::ClockStruct(QDomNode &clockNode): value_(0),
 	value_ = value.toDouble(&ok);
 
 	// if value could not be successfully parsed
-	if (value.isNull() || !ok) {
-		throw Parse_error(QString("Mandatory value missing in ClockStruct"));
-		return;
-	}
+// 	if (value.isNull() || !ok) {
+// 		throw Parse_error(QString("Mandatory value missing in ClockStruct"));
+// 		return;
+// 	}
 
 
 	// get the attributes
@@ -782,11 +782,11 @@ General::ClockPulseValue::ClockPulseValue(QDomNode &clockNode): value_(2),
 	value_ = value.toInt(&ok);
 
 	// if value could not be successfully parsed
-	if (value.isNull() || !ok) {
-		throw Parse_error(QString("Mandatory value missing in "
-				"spirit:clockPulseValue"));
-		return;
-	}
+// 	if (value.isNull() || !ok) {
+// 		throw Parse_error(QString("Mandatory value missing in "
+// 				"spirit:clockPulseValue"));
+// 		return;
+// 	}
 
 	// get the attributes
 	General::parseAttributes(clockNode, attributes_);

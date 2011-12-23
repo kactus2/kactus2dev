@@ -9,19 +9,13 @@
 
 #include "clockdriversdelegate.h"
 
-#include <QHeaderView>
+#include <QVBoxLayout>
 
 OtherClockDriversEditor::OtherClockDriversEditor(QSharedPointer<Component> component,
 												 QWidget *parent): 
 ItemEditor(component, parent),
-addRowButton_(QIcon(":/icons/graphics/add.png"), QString(), this),
-removeRowButton_(QIcon(":/icons/graphics/remove.png"), QString(), this),
-view_(this), model_(component, this) {
-
-	connect(&addRowButton_, SIGNAL(clicked(bool)),
-		&model_, SLOT(onAddRow()), Qt::UniqueConnection);
-	connect(&removeRowButton_, SIGNAL(clicked(bool)),
-		this, SLOT(onRemove()), Qt::UniqueConnection);
+view_(this), 
+model_(component, this) {
 
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -31,17 +25,16 @@ view_(this), model_(component, this) {
 		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(noticeMessage(const QString&)),
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
+		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
+	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
+		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 
 	// set view to be sortable
 	view_.setSortingEnabled(true);
-	view_.horizontalHeader()->setStretchLastSection(true);
-	view_.horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
-	view_.setSelectionMode(QAbstractItemView::SingleSelection);
-	view_.setAlternatingRowColors(true);
-	//view_.setSelectionBehavior(QAbstractItemView::SelectRows);
-	view_.verticalHeader()->hide();
-	view_.setEditTriggers(QAbstractItemView::AllEditTriggers);
-	view_.setWordWrap(true);
+
+	// items can not be dragged
+	view_.setItemsDraggable(false);
 
 	view_.setItemDelegate(new ClockDriversDelegate(this));
 
@@ -56,15 +49,9 @@ view_(this), model_(component, this) {
 	// sort the view
 	view_.sortByColumn(0, Qt::AscendingOrder);
 
-	QHBoxLayout* buttonLayout = new QHBoxLayout();
-	buttonLayout->addWidget(&addRowButton_, 0, Qt::AlignLeft);
-	buttonLayout->addWidget(&removeRowButton_, 0, Qt::AlignLeft);
-	buttonLayout->addStretch();
-
 	// create the layout, add widgets to it
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&view_);
-	layout->addLayout(buttonLayout);
 
 	model_.restore();
 }
@@ -74,14 +61,6 @@ OtherClockDriversEditor::~OtherClockDriversEditor() {
 
 bool OtherClockDriversEditor::isValid() const {
 	return model_.isValid();
-}
-
-void OtherClockDriversEditor::onRemove() {
-	QModelIndex index = proxy_->mapToSource(view_.currentIndex());
-
-	// if index is valid then remove the row
-	if (index.isValid())
-		model_.onRemoveRow(index.row());
 }
 
 void OtherClockDriversEditor::makeChanges() {

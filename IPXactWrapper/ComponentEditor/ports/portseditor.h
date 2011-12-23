@@ -9,11 +9,11 @@
 #define PORTSEDITOR_H
 
 #include <IPXactWrapper/ComponentEditor/itemeditor.h>
+#include <common/views/EditableTableView/editabletableview.h>
 
 #include "portsmodel.h"
 
 #include <QPushButton>
-#include <QTableView>
 #include <QSortFilterProxyModel>
 #include <QSharedPointer>
 
@@ -56,9 +56,6 @@ public:
 
 private slots:
 
-	//! \brief Remove the selected row from the model
-	void onRemove();
-
 	//! \brief Import a csv file to ports
 	void onImport();
 
@@ -73,12 +70,6 @@ private:
 	//! No assignment
 	PortsEditor& operator=(const PortsEditor& other);
 
-	//! \brief The button to add a new port
-	QPushButton addRowButton_;
-
-	//! \brief The button to remove the selected port
-	QPushButton removeRowButton_;
-
 	//! \brief The button to import a csv file
 	QPushButton importButton_;
 
@@ -86,7 +77,7 @@ private:
 	QPushButton exportButton_;
 
 	//! \brief The view that displays the parameters.
-	QTableView view_;
+	EditableTableView view_;
 
 	//! \brief The model that holds the data to be displayed to the user
 	PortsModel model_;

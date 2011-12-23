@@ -125,6 +125,28 @@ public:
      */
     Port* copy(QString const& name) const;
 
+	/*! \brief Check if the port element is valid or not.
+	* 
+	* \param hasViews Should be true if component contains views. This is needed
+	* because if the port has a type specified it needs at least one view also.
+	* 
+	* \return True if the port is in valid state.
+	*/
+	bool isValid(bool hasViews) const;
+
+	/*! \brief Check if the port is in a valid state.
+	 *
+	 * \param hasViews Should be true if component contains views. This is needed
+	 * because if the port has a type specified it needs at least one view also.
+	 * \param errorList The list to add the possible error messages to.
+	 * \param parentIdentifier String from parent to help to identify the location of the error.
+	 *
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid(bool hasViews,
+		QStringList& errorList, 
+		const QString& parentIdentifier) const;
+
 	/*! \brief Get the name of the port
 	 *
 	 * \return QString containing the name
@@ -265,12 +287,6 @@ public:
 	 * \return The value of the element. If wire is not defined return false.
 	*/
 	bool allLogicalDirectionsAllowed() const;
-
-	/*! \brief Check if the port element is valid or not.
-	 *
-	 * \return True if the port is in valid state.
-	*/
-	bool isValid() const;
 
 	/*! \brief set the direction of the port.
 	 *

@@ -63,15 +63,15 @@ portAccessType_() {
 		}
 	}
 
-	if (nameGroup_.name_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory element name missing in "
-				"spirit:port"));
-	}
-
-	if (!transactional_ && !wire_) {
-		throw Parse_error(QObject::tr("No wire or transactional elements "
-				"found in spirit:port"));
-	}
+// 	if (nameGroup_.name_.isNull()) {
+// 		throw Parse_error(QObject::tr("Mandatory element name missing in "
+// 				"spirit:port"));
+// 	}
+// 
+// 	if (!transactional_ && !wire_) {
+// 		throw Parse_error(QObject::tr("No wire or transactional elements "
+// 				"found in spirit:port"));
+// 	}
 	return;
 }
 
@@ -263,6 +263,58 @@ void Port::write(QXmlStreamWriter& writer, const QStringList& viewNames) {
 	writer.writeEndElement(); // spirit:port
 }
 
+bool Port::isValid(bool hasViews) const {
+
+	if (nameGroup_.name_.isEmpty())
+		return false;
+
+	// if port is type wire but the element is not defined.
+	if (portType_ == General::WIRE && !wire_)
+		return false;
+
+	// if port is type transactional but element is not defined.
+	if (portType_ == General::TRANSACTIONAL && !transactional_)
+		return false;
+
+	if (wire_)
+		return wire_->isValid(hasViews);
+
+	return true;
+
+}
+
+bool Port::isValid( bool hasViews, 
+				   QStringList& errorList, 
+				   const QString& parentIdentifier ) const {
+
+	bool valid = true;
+
+	if (nameGroup_.name_.isEmpty()) {
+		errorList.append(QObject::tr("Port has no name within %1").arg(parentIdentifier));
+		valid = false;
+	}
+
+	if (portType_ == General::WIRE && !wire_) {
+		errorList.append(QObject::tr("Port is type wire but has no wire-element within %1").arg(
+			parentIdentifier));
+		valid = false;
+	}
+
+	if (portType_ == General::TRANSACTIONAL && !transactional_) {
+		errorList.append(QObject::tr("Port is type transactional but has no "
+			"transactional-element within %1").arg(parentIdentifier));
+		valid = false;
+	}
+
+	if (wire_) {
+		if (!wire_->isValid(hasViews, errorList, QObject::tr("Port %1").arg(nameGroup_.name_))) {
+			valid = false;
+		}
+	}
+
+	return valid;
+}
+
 void Port::setTransactional(Transactional *transactional) {
 	// delete the old transactional if one exists
 	if (wire_) {
@@ -411,26 +463,6 @@ bool Port::allLogicalDirectionsAllowed() const {
 		return wire_->getAllLogicalDirectionsAllowed();
 
 	return false;
-}
-
-bool Port::isValid() const {
-
-	if (nameGroup_.name_.isEmpty())
-		return false;
-
-	// if port is type wire but the element is not defined.
-	if (portType_ == General::WIRE && !wire_)
-		return false;
-
-	// if port is type transactional but element is not defined.
-	if (portType_ == General::TRANSACTIONAL && !transactional_)
-		return false;
-
-	if (wire_)
-		return wire_->isValid();
-
-	return true;
-
 }
 
 void Port::setDirection( General::Direction direction ) {

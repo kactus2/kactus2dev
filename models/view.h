@@ -66,6 +66,32 @@ public:
 	 */
 	~View();
 
+	/*! \brief Write the contents of the class using the writer.
+	*
+	* Uses the specified writer to write the class contents into file as valid
+	* IP-Xact.
+	*
+	* \param writer A reference to a QXmlStreamWriter instance that is used to
+	* write the document into file.
+	*
+	* Exception guarantee: basic
+	* \exception Write_error Occurs if class or one of it's member classes is
+	* not valid IP-Xact in the moment of writing.
+	*/
+	void write(QXmlStreamWriter& writer);
+
+	/*! \brief Check if the view is in a valid state.
+	 * 
+	 * \param fileSetNames Contains the names of the file sets of the component.
+	 * \param errorList The list to add the possible error messages to.
+	 * \param parentIdentifier String from parent to help to identify the location of the error.
+	 *
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid(const QStringList& fileSetNames, 
+		QStringList& errorList, 
+		const QString& parentIdentifier) const;
+
 	/*! \brief Get list of the envIdentifiers for this view
 	 *
 	 * \return QList containing the envIdentifiers
@@ -214,20 +240,6 @@ public:
 	 */
 	void setParameters(const QList<QSharedPointer<Parameter> > &parameters);
 
-	/*! \brief Write the contents of the class using the writer.
-	 *
-	 * Uses the specified writer to write the class contents into file as valid
-	 * IP-Xact.
-	 *
-	 * \param writer A reference to a QXmlStreamWriter instance that is used to
-	 * write the document into file.
-	 *
-	 * Exception guarantee: basic
-	 * \exception Write_error Occurs if class or one of it's member classes is
-	 * not valid IP-Xact in the moment of writing.
-	 */
-	void write(QXmlStreamWriter& writer);
-
 	/*! \brief Add a new envIdentifier for this view.
 	 *
 	 * \param envIdentifier The envIdentifier to add.
@@ -302,14 +314,14 @@ private:
 
 	/*!
 	 * OPTIONAL spirit:parameters
-	 * Any additinional parameters that describe the view.
+	 * Any additional parameters that describe the view.
 	 */
 	QList<QSharedPointer<Parameter> > parameters_;
 
 	/*!
 	 * MANDATORY spirit:hierarchyRef
 	 * References a hierarchical design, mandatory only if the view is used to
-	 * reference a hierachical design.
+	 * reference a hierarchical design.
 	 */
 	VLNV hierarchyRef_;
 

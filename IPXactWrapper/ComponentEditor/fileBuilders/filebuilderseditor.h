@@ -10,10 +10,11 @@
 
 #include "filebuildersmodel.h"
 
+#include <common/views/EditableTableView/editabletableview.h>
+
 #include <QWidget>
 #include <QSortFilterProxyModel>
 #include <QTableView>
-#include <QPushButton>
 
 /*! \brief Editor to edit file builders.
  *
@@ -65,11 +66,6 @@ signals:
 	//! \brief Inform that contents of this editor have changed.
 	void contentChanged();
 
-private slots:
-
-	//! \brief Remove the selected row from the model
-	void onRemove();
-
 private:
 
 	//! \brief No copying
@@ -77,15 +73,9 @@ private:
 
 	//! No assignment
 	FileBuildersEditor& operator=(const FileBuildersEditor& other);
-	
-	//! \brief The button to add a new port
-	QPushButton addRowButton_;
-
-	//! \brief The button to remove the selected port
-	QPushButton removeRowButton_;
 
 	//! \brief The view that displays the parameters.
-	QTableView view_;
+	EditableTableView view_;
 
 	//! \brief The model that holds the data to be displayed to the user
 	FileBuildersModel model_;

@@ -25,18 +25,12 @@ PortsEditor::PortsEditor(QSharedPointer<Component> component,
 						 LibraryInterface* handler,
 						 QWidget *parent):
 ItemEditor(component, parent),
-addRowButton_(QIcon(":/icons/graphics/add.png"), QString(), this),
-removeRowButton_(QIcon(":/icons/graphics/remove.png"), QString(), this),
 importButton_(QIcon(":/icons/graphics/import.png"), tr("Import CSV-file"), this),
 exportButton_(QIcon(":/icons/graphics/export.png"), tr("Export CSV-file"), this),
 view_(this), 
-model_(dataPointer, this),
+model_(component, dataPointer, this),
 handler_(handler) {
 
-	connect(&addRowButton_, SIGNAL(clicked(bool)),
-		&model_, SLOT(onAddRow()), Qt::UniqueConnection);
-	connect(&removeRowButton_, SIGNAL(clicked(bool)),
-		this, SLOT(onRemove()), Qt::UniqueConnection);
 	connect(&importButton_, SIGNAL(clicked(bool)),
 		this, SLOT(onImport()), Qt::UniqueConnection);
 	connect(&exportButton_, SIGNAL(clicked(bool)),
@@ -51,15 +45,16 @@ handler_(handler) {
 	connect(&model_, SIGNAL(noticeMessage(const QString&)),
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
+	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
+		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
+	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
+		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+
 	// set view to be sortable
 	view_.setSortingEnabled(true);
-	view_.horizontalHeader()->setStretchLastSection(true);
-	view_.horizontalHeader()->setResizeMode(QHeaderView::Interactive);
-	view_.setSelectionMode(QAbstractItemView::SingleSelection);
-	view_.setAlternatingRowColors(true);
-	view_.verticalHeader()->hide();
-	view_.setEditTriggers(QAbstractItemView::AllEditTriggers);
-	view_.setWordWrap(true);
+
+	// items can not be dragged
+	view_.setItemsDraggable(false);
 
 	view_.setItemDelegate(new PortsDelegate(this));
 
@@ -75,9 +70,6 @@ handler_(handler) {
 	view_.sortByColumn(0, Qt::AscendingOrder);
 
 	QHBoxLayout* buttonLayout = new QHBoxLayout();
-	//buttonLayout->addWidget(&detailButton_, 0, Qt::AlignLeft);
-	buttonLayout->addWidget(&addRowButton_, 0, Qt::AlignLeft);
-	buttonLayout->addWidget(&removeRowButton_, 0, Qt::AlignLeft);
 	buttonLayout->addWidget(&importButton_, 0, Qt::AlignLeft);
 	buttonLayout->addWidget(&exportButton_, 0, Qt::AlignLeft);
 	buttonLayout->addStretch();
@@ -93,14 +85,6 @@ PortsEditor::~PortsEditor() {
 
 bool PortsEditor::isValid() const {
 	return model_.isValid();
-}
-
-void PortsEditor::onRemove() {
-	QModelIndex index = proxy_->mapToSource(view_.currentIndex());
-
-	// if index is valid then remove the row
-	if (index.isValid())
-		model_.onRemoveRow(index.row());
 }
 
 void PortsEditor::onImport() {

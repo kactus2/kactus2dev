@@ -164,7 +164,7 @@ bool Parameter::isValid() const {
 bool Parameter::isValid( QStringList& errorList, 
 						const QString& parentIdentifier) const {
 
-	bool valid = false;
+	bool valid = true;
 
 	if (name_.isEmpty()) {
 		errorList.append(QObject::tr("No name specified for parameter within %1").arg(

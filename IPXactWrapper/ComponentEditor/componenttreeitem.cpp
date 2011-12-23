@@ -578,12 +578,29 @@ handler_(handler) {
 			"static_cast failed to give valid View-pointer");
 
 		text_ = view->getName();
+
+		QStringList errorList;
+		isValid_ = view->isValid(component_->getFileSetNames(), errorList, 
+			tr("edited component"));
+
 		break;
 								  }
 	case ComponentTreeItem::PORTS: {
 		text_ = tr("Ports");
 
-		dataPointer_ = component_->getModel()->getPortsPointer();
+		QMap<QString, QSharedPointer<Port> >* ports =
+			component_->getModel()->getPortsPointer();
+		dataPointer_ = ports;
+
+		bool hasViews = component_->hasViews();
+
+		// if at least one port is invalid
+		foreach (QSharedPointer<Port> port, *ports) {
+			if (!port->isValid(hasViews)) {
+				isValid_ = false;
+				break;
+			}
+		}
 		break;
 								   }
 	case ComponentTreeItem::BUSINTERFACES: {
@@ -663,7 +680,17 @@ handler_(handler) {
 	case ComponentTreeItem::OTHERCLOCKDRIVERS: {
 		text_ = tr("Other clock drivers");
 
-		dataPointer_ = &component_->getOtherClockDrivers();
+		QList<QSharedPointer<OtherClockDriver> >* drivers = 
+			&component_->getOtherClockDrivers();
+		dataPointer_ = drivers;
+
+		// if one of the drivers is invalid
+		foreach (QSharedPointer<OtherClockDriver> driver, *drivers) {
+			if (!driver->isValid()) {
+				isValid_ = false;
+				break;
+			}
+		}
 		break;
 											   }
 	case ComponentTreeItem::COMPONENTGENERATORS: {

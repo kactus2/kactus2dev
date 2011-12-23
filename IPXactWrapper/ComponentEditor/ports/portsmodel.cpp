@@ -14,10 +14,15 @@
 #include <QTextStream>
 #include <QString>
 #include <QStringList>
+#include <QColor>
 
-PortsModel::PortsModel( void* dataPointer, QObject *parent ):
+PortsModel::PortsModel(QSharedPointer<Component> component,
+					   void* dataPointer,
+					   QObject *parent ):
 QAbstractTableModel(parent),
-ports_(), table_() {
+ports_(), 
+table_(),
+component_(component) {
 
 	Q_ASSERT_X(dataPointer, "PortsModel constructor",
 		"Null dataPointer given as parameter");
@@ -91,6 +96,27 @@ QVariant PortsModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole
 			default: {
 				return QVariant();
 					 }
+		}
+	}
+	else if (Qt::ForegroundRole == role) {
+		if (table_.at(index.row())->isValid(component_->hasViews())) {
+			return QColor("black");
+		}
+		else {
+			return QColor("red");
+		}
+	}
+	else if (Qt::BackgroundRole == role) {
+		switch (index.column()) {
+			case 0:
+			case 1:
+			case 2:
+			case 3:
+			case 4: {
+				return QColor("LemonChiffon");
+					}
+			default:
+				return QColor("white");
 		}
 	}
 
@@ -306,7 +332,7 @@ bool PortsModel::isValid() const {
 	foreach (QSharedPointer<Port> port, table_) {
 
 		// if one is in invalid state
-		if (!port->isValid())
+		if (!port->isValid(component_->hasViews()))
 			return false;
 	}
 
@@ -362,13 +388,29 @@ void PortsModel::onRemoveRow( int row ) {
 	emit contentChanged();
 }
 
+void PortsModel::onRemoveItem( const QModelIndex& index ) {
+	// don't remove anything if index is invalid
+	if (!index.isValid()) {
+		return;
+	}
+	// make sure the row number if valid
+	else if (index.row() < 0 || index.row() >= table_.size()) {
+		return;
+	}
+
+	// remove the specified item
+	beginRemoveRows(QModelIndex(), index.row(), index.row());
+	table_.removeAt(index.row());
+	endRemoveRows();
+
+	// tell also parent widget that contents have been changed
+	emit contentChanged();
+}
+
 void PortsModel::onAddRow() {
 	beginInsertRows(QModelIndex(), table_.size(), table_.size());
 
 	QSharedPointer<Port> port(new Port());
-	// the default port types are not used anymore
-// 	port->setTypeName("std_logic");
-// 	port->setTypeDefinition("std_logic", "IEEE.std_logic_1164.all");
 	table_.append(port);
 
 	endInsertRows();
@@ -377,6 +419,22 @@ void PortsModel::onAddRow() {
 	emit contentChanged();
 }
 
+
+void PortsModel::onAddItem( const QModelIndex& index ) {
+	int row = table_.size();
+
+	// if the index is valid then add the item to the correct position
+	if (index.isValid()) {
+		row = index.row();
+	}
+
+	beginInsertRows(QModelIndex(), row, row);
+	table_.insert(row, QSharedPointer<Port>(new Port()));
+	endInsertRows();
+
+	// tell also parent widget that contents have been changed
+	emit contentChanged();
+}
 
 void PortsModel::exportPorts( QFile& file ) {
 	

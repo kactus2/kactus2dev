@@ -100,15 +100,15 @@ topLevelViewRef_() {
 	}
 
 	// if mandatory elements are missing
-	if (nameGroup_.name_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory element name is missing in "
-				"spirit:view"));
-	}
-
-	if (envIdentifiers_.size() < 1) {
-		throw Parse_error(QObject::tr("Mandatory element spirit:envIdentifier"
-				" is missing in spirit:view"));
-	}
+// 	if (nameGroup_.name_.isNull()) {
+// 		throw Parse_error(QObject::tr("Mandatory element name is missing in "
+// 				"spirit:view"));
+// 	}
+// 
+// 	if (envIdentifiers_.size() < 1) {
+// 		throw Parse_error(QObject::tr("Mandatory element spirit:envIdentifier"
+// 				" is missing in spirit:view"));
+// 	}
 	return;
 }
 
@@ -284,6 +284,54 @@ void View::write(QXmlStreamWriter& writer) {
 	writer.writeEndElement(); // spirit:view
 }
 
+bool View::isValid( const QStringList& fileSetNames, 
+				   QStringList& errorList, 
+				   const QString& parentIdentifier ) const {
+
+	bool valid = true;
+	const QString thisIdentifier(QObject::tr("view %1").arg(nameGroup_.name_));
+
+	if (nameGroup_.name_.isEmpty()) {
+		errorList.append(QObject::tr("No name specified for view within %1").arg(
+			parentIdentifier));
+		valid = false;
+	}
+
+	if (envIdentifiers_.isEmpty()) {
+		errorList.append(QObject::tr("No environment identifier specified for "
+			"view %1 within %2").arg(nameGroup_.name_).arg(parentIdentifier));
+		valid = false;
+	}
+
+	// if this is flat view then check the flat elements.
+	if (!hierarchyRef_.isValid()) {
+		
+		foreach (QSharedPointer<FileBuilder> fileBuilder, defaultFileBuilders_) {
+			if (!fileBuilder->isValid(errorList, thisIdentifier)) {
+				valid = false;
+			}
+		}
+
+		// make sure the referenced file sets are found
+		foreach (QString fileSetRef, fileSetRefs_) {
+			if (!fileSetNames.contains(fileSetRef)) {
+				errorList.append(QObject::tr("View %1 contained reference to file"
+					" set %2 which is not found within %3").arg(
+					nameGroup_.name_).arg(fileSetRef).arg(parentIdentifier));
+				valid = false;
+			}
+		}
+
+		foreach (QSharedPointer<Parameter> param, parameters_) {
+			if (!param->isValid(errorList, thisIdentifier)) {
+				valid = false;
+			}
+		}
+	}
+	
+	return valid;
+}
+
 void View::setFileSetRefs(const QList<QString> &fileSetRefs) {
 	fileSetRefs_.clear();
 	fileSetRefs_ = fileSetRefs;
@@ -293,6 +341,7 @@ void View::setFileSetRefs(const QList<QString> &fileSetRefs) {
 }
 
 QString View::getLanguage() const {
+	Q_ASSERT(!hierarchyRef_.isValid());
 	return language_;
 }
 
@@ -323,6 +372,7 @@ void View::setLanguage(const QString &language) {
 }
 
 QString View::getModelName() const {
+	Q_ASSERT(!hierarchyRef_.isValid());
 	return modelName_;
 }
 
@@ -334,6 +384,7 @@ void View::setLanguageStrict(bool languageStrict) {
 }
 
 QStringList View::getFileSetRefs() const {
+	Q_ASSERT(!hierarchyRef_.isValid());
 	return fileSetRefs_;
 }
 
@@ -365,6 +416,7 @@ const QList<QString>& View::getEnvIdentifiers() {
 }
 
 QList<QSharedPointer<Parameter> >& View::getParameters() {
+	Q_ASSERT(!hierarchyRef_.isValid());
 	return parameters_;
 }
 
@@ -421,6 +473,7 @@ bool View::isHierarchical() const {
 }
 
 QList<QSharedPointer<FileBuilder> >& View::getDefaultFileBuilders() {
+	Q_ASSERT(!hierarchyRef_.isValid());
 	return defaultFileBuilders_;
 }
 

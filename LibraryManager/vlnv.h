@@ -7,6 +7,7 @@
 #define VLNV_H_
 
 #include <QString>
+#include <QStringList>
 #include <QMetaType>
 
 /*! \brief The class to hold VLNV information of a single IP-XACT document
@@ -231,6 +232,16 @@ public:
 	 * \return True if the VLNV tag is valid, otherwise false.
 	*/
 	bool isValid() const;
+
+	/*! \brief Check if the vlnv is valid.
+	 *
+	 * \param errorList The list to add the possible error messages to.
+	 * \param parentIdentifier String from parent to help to identify the location of the error.
+	 *
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid(QStringList& errorList, 
+		const QString& parentIdentifier) const;
 
 	/*! \brief Get the VLNV-element specified by column
 	 *

@@ -9,6 +9,7 @@
 #define PORTSMODEL_H
 
 #include <models/port.h>
+#include <models/component.h>
 
 #include <QAbstractTableModel>
 #include <QMap>
@@ -27,11 +28,12 @@ public:
 
 	/*! \brief The constructor
 	 *
+	 * \param component Pointer to the component being edited.
 	 * \param dataPointer Pointer to the QMap containing pointers to the ports.
 	 * \param parent Pointer to the owner of this model.
 	 *
 	*/
-	PortsModel(void* dataPointer, QObject *parent);
+	PortsModel(QSharedPointer<Component> component, void* dataPointer, QObject *parent);
 	
 	//! \brief The destructor
 	virtual ~PortsModel();
@@ -138,6 +140,20 @@ public slots:
 	*/
 	void onAddRow();
 
+	/*! \brief A new item should be added to given index.
+	 *
+	 * \param index The position where new item should be added at.
+	 *
+	*/
+	void onAddItem(const QModelIndex& index);
+
+	/*! \brief An item should be removed from the model.
+	 * 
+	 * \param index Identifies the item that should be removed.
+	 *
+	*/
+	void onRemoveItem(const QModelIndex& index);
+
 signals:
 
 	//! \brief Emitted when contents of the model change
@@ -162,6 +178,9 @@ private:
 
 	//! \brief The table that is displayed to the user.
 	QList<QSharedPointer<Port> > table_;
+
+	//! \brief Pointer to the component being edited.
+	QSharedPointer<Component> component_;
 };
 
 #endif // PORTSMODEL_H

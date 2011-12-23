@@ -454,18 +454,19 @@ VLNV IPXactComponentEditor::getComponentVLNV() const {
 
 bool IPXactComponentEditor::save() {
 
+	// if the component has ports that's type is defined it also must have 
+	// at least one view
+	// don't return yet from this check because other editors should also be 
+	// checked. If this is true then the saveEditors will always fail.
+	if (component_->hasPortTypes() && !component_->hasViews()) {
+
+		emit errorMessage(tr("Component %1 had types defined for port(s) but "
+			"no view was defined. Create at least one view for component.").arg(
+			component_->getVlnv()->toString()));
+	}
+
 	// if all editors were valid then document can be written to disk
 	if (saveEditors()) {
-
-		// if the component has ports that's type is defined it also must have 
-		// at least one view
-		if (component_->hasPortTypes() && !component_->hasViews()) {
-			
-			emit errorMessage(tr("Component %1 had types defined for port(s) but "
-				"no view was defined. Create at least one view for component.").arg(
-				component_->getVlnv()->toString()));
-			return false;
-		}
 
 		handler_->writeModelToFile(component_);
 

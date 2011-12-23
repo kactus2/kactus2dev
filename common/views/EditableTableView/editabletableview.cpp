@@ -34,7 +34,10 @@ itemsDraggable_(true) {
 	// user can only select one item at a time
 	setSelectionMode(QAbstractItemView::SingleSelection);
 
-	setEditTriggers(QAbstractItemView::AllEditTriggers);
+	setEditTriggers(QAbstractItemView::DoubleClicked |
+		QAbstractItemView::SelectedClicked |
+		QAbstractItemView::EditKeyPressed |
+		QAbstractItemView::AnyKeyPressed);
 	
 	setupActions();
 }

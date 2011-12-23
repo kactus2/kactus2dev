@@ -54,31 +54,31 @@ clockPulseValue_(0), clockPulseDuration_(0) {
 	}
 
 	// if mandatory elements are missing
-	if (clockName_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory element name missing in "
-				"spirit:otherClockDriver"));
-	}
-
-	if (!clockPeriod_) {
-		throw Parse_error(QObject::tr("Mandatory element spirit:clockPeriod"
-				" missing in spirit:otherClockDriver"));
-	}
-
-	if (!clockPulseOffset_) {
-		throw Parse_error(QObject::tr("Mandatory element spirit:"
-				"clockPulseOffset missing in spirit:otherClockDriver"));
-	}
-
-	if (!clockPulseValue_) {
-		throw Parse_error(QObject::tr("Mandatory element "
-				"spirit:clockPulseValue missing in spirit:otherClockDriver"));
-	}
-
-	if (!clockPulseDuration_) {
-		throw Parse_error(QObject::tr(
-				"Mandatory element spirit:clockPulseDuration missing in "
-				"spirit:otherClockDriver"));
-	}
+// 	if (clockName_.isNull()) {
+// 		throw Parse_error(QObject::tr("Mandatory element name missing in "
+// 				"spirit:otherClockDriver"));
+// 	}
+// 
+// 	if (!clockPeriod_) {
+// 		throw Parse_error(QObject::tr("Mandatory element spirit:clockPeriod"
+// 				" missing in spirit:otherClockDriver"));
+// 	}
+// 
+// 	if (!clockPulseOffset_) {
+// 		throw Parse_error(QObject::tr("Mandatory element spirit:"
+// 				"clockPulseOffset missing in spirit:otherClockDriver"));
+// 	}
+// 
+// 	if (!clockPulseValue_) {
+// 		throw Parse_error(QObject::tr("Mandatory element "
+// 				"spirit:clockPulseValue missing in spirit:otherClockDriver"));
+// 	}
+// 
+// 	if (!clockPulseDuration_) {
+// 		throw Parse_error(QObject::tr(
+// 				"Mandatory element spirit:clockPulseDuration missing in "
+// 				"spirit:otherClockDriver"));
+// 	}
 	return;
 }
 
@@ -350,8 +350,51 @@ bool OtherClockDriver::isValid() const {
 		return false;
 	else if (!clockPulseValue_)
 		return false;
+	else if (clockPulseValue_->value_ != 0 && clockPulseValue_->value_ != 1)
+		return false;
 	else if (!clockPulseDuration_)
 		return false;
 	else 
 		return true;
+}
+
+bool OtherClockDriver::isValid( QStringList& errorList, const QString& parentIdentifier ) const {
+	bool valid = true;
+
+	if (clockName_.isEmpty()) {
+		errorList.append(QObject::tr("Name missing in other clock driver within %1").arg(
+			parentIdentifier));
+		valid = false;
+	}
+
+	if (!clockPeriod_) {
+		errorList.append(QObject::tr("Clock period missing in other clock driver"
+			" %1 within %2").arg(clockName_).arg(parentIdentifier));
+		valid = false;
+	}
+
+	if (!clockPulseOffset_) {
+		errorList.append(QObject::tr("Clock pulse offset missing in other clock "
+			"driver %1 within %2").arg(clockName_).arg(parentIdentifier));
+		valid = false;
+	}
+
+	if (!clockPulseValue_) {
+		errorList.append(QObject::tr("Clock pulse value missing in other clock "
+			"driver %1 within %2").arg(clockName_).arg(parentIdentifier));
+		valid = false;
+	}
+	else if (clockPulseValue_->value_ != 0 && clockPulseValue_->value_ != 1) {
+		errorList.append(QObject::tr("Invalid value set for clock pulse value in"
+			" other clock driver %1 within %2").arg(clockName_).arg(parentIdentifier));
+		valid = false;
+	}
+
+	if (!clockPulseDuration_) {
+		errorList.append(QObject::tr("Clock pulse duration missing in other clock"
+			" driver %1 within %2").arg(clockName_).arg(parentIdentifier));
+		valid = false;
+	}
+
+	return valid;
 }
