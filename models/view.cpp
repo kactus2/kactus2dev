@@ -341,7 +341,7 @@ void View::setFileSetRefs(const QList<QString> &fileSetRefs) {
 }
 
 QString View::getLanguage() const {
-	Q_ASSERT(!hierarchyRef_.isValid());
+	//Q_ASSERT(!hierarchyRef_.isValid());
 	return language_;
 }
 
@@ -372,7 +372,7 @@ void View::setLanguage(const QString &language) {
 }
 
 QString View::getModelName() const {
-	Q_ASSERT(!hierarchyRef_.isValid());
+	//Q_ASSERT(!hierarchyRef_.isValid());
 	return modelName_;
 }
 
@@ -384,7 +384,7 @@ void View::setLanguageStrict(bool languageStrict) {
 }
 
 QStringList View::getFileSetRefs() const {
-	Q_ASSERT(!hierarchyRef_.isValid());
+	//Q_ASSERT(!hierarchyRef_.isValid());
 	return fileSetRefs_;
 }
 
@@ -398,6 +398,7 @@ void View::setHierarchyRef(const VLNV& hierarchyRef) {
 	modelName_.clear();
 	fileSetRefs_.clear();
 	constraintSetRefs_.clear();
+	defaultFileBuilders_.clear();
 	parameters_.clear();
 }
 
@@ -416,7 +417,7 @@ const QList<QString>& View::getEnvIdentifiers() {
 }
 
 QList<QSharedPointer<Parameter> >& View::getParameters() {
-	Q_ASSERT(!hierarchyRef_.isValid());
+	//Q_ASSERT(!hierarchyRef_.isValid());
 	return parameters_;
 }
 
@@ -473,7 +474,7 @@ bool View::isHierarchical() const {
 }
 
 QList<QSharedPointer<FileBuilder> >& View::getDefaultFileBuilders() {
-	Q_ASSERT(!hierarchyRef_.isValid());
+	//Q_ASSERT(!hierarchyRef_.isValid());
 	return defaultFileBuilders_;
 }
 

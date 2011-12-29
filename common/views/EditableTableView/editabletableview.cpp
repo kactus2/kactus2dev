@@ -40,6 +40,8 @@ itemsDraggable_(true) {
 		QAbstractItemView::AnyKeyPressed);
 	
 	setupActions();
+
+	setMinimumHeight(MINIMUM_TABLE_HEIGHT);
 }
 
 EditableTableView::~EditableTableView() {

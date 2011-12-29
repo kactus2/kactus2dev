@@ -14,7 +14,7 @@
 #include <QString>
 
 FlatViewParametersTab::FlatViewParametersTab(View* view, QWidget *parent): 
-QWidget(parent),
+QGroupBox(tr("Parameters"), parent),
 viewModel_(view),
 view_(this),
 model_(&(view->getParameters()), this),

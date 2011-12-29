@@ -69,6 +69,11 @@ public:
 	*/
 	virtual void makeChanges();
 
+private slots:
+
+	//! \brief Handler for changes on the hierarchical/flat selector.
+	void onStackChange(int index);
+
 private:
 
 	//! \brief No copying
@@ -102,7 +107,7 @@ private:
 	QStackedWidget stack_;
 
 	//! \brief Tab widget contains the editor to edit a flat view.
-	QTabWidget flatTabs_;
+	QWidget flatElements_;
 
 	//! \brief Editor to set general settings of flat view.
 	FlatViewGeneralTab generalTab_;

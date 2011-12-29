@@ -25,6 +25,9 @@ class EditableTableView : public QTableView {
 
 public:
 
+	//! \brief The minimum height for the view.
+	static const int MINIMUM_TABLE_HEIGHT = 100;
+
 	/*! \brief The constructor
 	 *
 	 * \param parent Pointer to the owner of this view.

@@ -12,7 +12,7 @@
 
 #include <common/views/EditableTableView/editabletableview.h>
 
-#include <QWidget>
+#include <QGroupBox>
 #include <QSortFilterProxyModel>
 #include <QTableView>
 
@@ -21,7 +21,7 @@ class View;
 /*! \brief Editor to edit the parameters of a view.
  *
  */
-class FlatViewParametersTab : public QWidget {
+class FlatViewParametersTab : public QGroupBox {
 	Q_OBJECT
 
 public:

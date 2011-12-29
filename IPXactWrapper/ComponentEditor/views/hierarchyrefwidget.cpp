@@ -69,10 +69,20 @@ void HierarchyRefWidget::applyChanges() {
 
 void HierarchyRefWidget::refresh() {
 	
+	// remove the previous values from the combo box
+	topLevelRef_.clear();
+
 	// ask the available views from the component
-	QStringList list = component_->getViewNames();
-	
+	QStringList list;
 	// if user does not want to reference any view
 	list.append(QString(""));
+
+	list.append(component_->getViewNames());
+
 	topLevelRef_.addItems(list);
+
+	// find the text in the combo box and select it
+	QString topRef = view_->getTopLevelView();
+	int index = topLevelRef_.findText(topRef);
+	topLevelRef_.setCurrentIndex(index);
 }

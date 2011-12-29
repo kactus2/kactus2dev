@@ -18,6 +18,8 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QSizePolicy>
+#include <QGroupBox>
+#include <QScrollArea>
 
 ViewEditor::ViewEditor(QSharedPointer<Component> component, 
 					   void* dataPointer,
@@ -31,8 +33,8 @@ nameGroup_(this, tr("View name and description")),
 viewTypeSelector_(),
 envIdentifier_(view_, this),
 stack_(this),
-flatTabs_(&stack_),
-generalTab_(component, view_, &flatTabs_),
+flatElements_(&stack_),
+generalTab_(component, view_, &flatElements_),
 parametersTab_(view_, this),
 fileBuildersTab_(&view_->getDefaultFileBuilders(), this),
 hierarchyRef_(view_, component_, libHandler, &stack_) {
@@ -47,12 +49,19 @@ hierarchyRef_(view_, component_, libHandler, &stack_) {
 	// add the widget to edit hierarchy reference to index 0 in the stackWidget
 	stack_.addWidget(&hierarchyRef_);
 	// ans tab widget that contains widgets to edit flat views to index 1
-	stack_.addWidget(&flatTabs_);
+	stack_.addWidget(&flatElements_);
 
-	// set up the tab widget for flat tabs
-	flatTabs_.addTab(&generalTab_, tr("General"));
-	flatTabs_.addTab(&fileBuildersTab_, tr("Default file builders"));
-	flatTabs_.addTab(&parametersTab_, tr("Parameters"));
+	// create a group box to contain the default file builders editor and set
+	// a layout for it.
+	QGroupBox* fileBuildersBox = new QGroupBox(tr("Default file builders"), &flatElements_);
+	QHBoxLayout* fileBuildersLayout = new QHBoxLayout(fileBuildersBox);
+	fileBuildersLayout->addWidget(&fileBuildersTab_);
+
+	// create a layout for the flat elements and add the editors
+	QVBoxLayout* flatLayout = new QVBoxLayout(&flatElements_);
+	flatLayout->addWidget(&generalTab_);
+	flatLayout->addWidget(fileBuildersBox);
+	flatLayout->addWidget(&parametersTab_);
 
 	setupLayout();
 	
@@ -75,7 +84,7 @@ hierarchyRef_(view_, component_, libHandler, &stack_) {
 
 	// when user changes the view type the correct editor is displayed
 	connect(&viewTypeSelector_, SIGNAL(currentIndexChanged(int)),
-		&stack_, SLOT(setCurrentIndex(int)), Qt::UniqueConnection);
+		this, SLOT(onStackChange(int)), Qt::UniqueConnection);
 
 	nameGroup_.setName(view_->getName());
 	nameGroup_.setDisplayName(view_->getDisplayName());
@@ -121,14 +130,28 @@ bool ViewEditor::isValid() const {
 
 void ViewEditor::setupLayout() {
 
+	// create the scroll area
+	QScrollArea* scrollArea = new QScrollArea(this);
+	scrollArea->setWidgetResizable(true);
+
+	QHBoxLayout* joku = new QHBoxLayout(this);
+	joku->addWidget(scrollArea);
+
+	// create the top widget and set it under the scroll area
+	QWidget* topWidget = new QWidget(scrollArea);
+	topWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
 	QFormLayout* viewTypeLayout = new QFormLayout();
 	viewTypeLayout->addRow(tr("View type"), &viewTypeSelector_);
 
-	QVBoxLayout* topLayout = new QVBoxLayout(this);
+	// create the layout for the top widget
+	QVBoxLayout* topLayout = new QVBoxLayout(topWidget);
 	topLayout->addWidget(&nameGroup_);
 	topLayout->addWidget(&envIdentifier_, 1);
 	topLayout->addLayout(viewTypeLayout);
 	topLayout->addWidget(&stack_);
+
+	scrollArea->setWidget(topWidget);
 }
 
 void ViewEditor::removeModel() {
@@ -152,10 +175,19 @@ void ViewEditor::makeChanges() {
 		hierarchyRef_.applyChanges();
 		return;
 	}
-	// if view is not hierarhical
+	// if view is not hierarchical
 	else {
 		generalTab_.applyChanges();
 		parametersTab_.applyChanges();
 		fileBuildersTab_.applyChanges();
+	}
+}
+
+void ViewEditor::onStackChange( int index ) {
+	stack_.setCurrentIndex(index);
+
+	// if the new index is for hierarchical view then refresh the hierarchical editor
+	if (index == 0) {
+		hierarchyRef_.refresh();
 	}
 }
