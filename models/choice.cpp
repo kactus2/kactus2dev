@@ -46,18 +46,18 @@ enumerations_() {
 	}
 
 	// name is mandatory
-	if (choiceName_.isNull()) {
-		throw Parse_error(QObject::tr(
-				"Mandatory element spirit:name missing in spirit:choice"));
-		return;
-	}
-
-	// atleast 1 enumeration must be found
-	if (enumerations_.size() < 1) {
-		throw Parse_error(QObject::tr("Mandatory element spirit:enumeration "
-				"missing in spirit:choice"));
-		return;
-	}
+// 	if (choiceName_.isNull()) {
+// 		throw Parse_error(QObject::tr(
+// 				"Mandatory element spirit:name missing in spirit:choice"));
+// 		return;
+// 	}
+// 
+// 	// at least 1 enumeration must be found
+// 	if (enumerations_.size() < 1) {
+// 		throw Parse_error(QObject::tr("Mandatory element spirit:enumeration "
+// 				"missing in spirit:choice"));
+// 		return;
+// 	}
 	return;
 }
 
@@ -126,6 +126,24 @@ void Choice::write(QXmlStreamWriter& writer) {
 	}
 	writer.writeEndElement(); // spirit:choice
 	return;
+}
+
+bool Choice::isValid( QStringList& errorList, const QString& parentIdentifier ) const {
+	bool valid = true;
+	
+	if (choiceName_.isEmpty()) {
+		errorList.append(QObject::tr("No name specified for choice within %1").arg(
+			parentIdentifier));
+		valid = false;
+	}
+
+	if (enumerations_.isEmpty()) {
+		errorList.append(QObject::tr("At least one enumeration is required in"
+			" choice %1 within %2").arg(choiceName_).arg(parentIdentifier));
+		valid = false;
+	}
+
+	return valid;
 }
 
 QString Choice::getName() const {

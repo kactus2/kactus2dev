@@ -189,6 +189,33 @@ void Model::write(QXmlStreamWriter& writer) {
 	writer.writeEndElement(); // spirit:model
 }
 
+bool Model::isValid( const QStringList& fileSetNames, 
+					QStringList& errorList, 
+					const QString& parentIdentifier ) const {
+	bool valid = true;
+	bool hasViews = !views_.isEmpty();
+
+	foreach (QSharedPointer<Port> port, ports_) {
+		if (!port->isValid(hasViews, errorList, parentIdentifier)) {
+			valid = false;
+		}
+	}
+
+	foreach (QSharedPointer<View> view, views_) {
+		if (!view->isValid(fileSetNames, errorList, parentIdentifier)) {
+			valid = false;
+		}
+	}
+
+	foreach (QSharedPointer<ModelParameter> modelParam, modelParameters_) {
+		if (!modelParam->isValid(errorList, parentIdentifier)) {
+			valid = false;
+		}
+	}
+
+	return valid;
+}
+
 const QMap<QString, QSharedPointer<ModelParameter> >& Model::getModelParameters() {
 	return modelParameters_;
 }

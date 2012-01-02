@@ -76,15 +76,15 @@ phase_(-1), parameters_(), apiType_(Generator::NONE), generatorExe_() {
 
 	// if mandatory fields are missing
 
-	if (name_.isNull() ) {
-		throw Parse_error(QObject::tr("Mandatory element name missing in "
-				" generator"));
-	}
-
-	if (generatorExe_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory element spirit:generatorExe "
-				"missing in generator"));
-	}
+// 	if (name_.isNull() ) {
+// 		throw Parse_error(QObject::tr("Mandatory element name missing in "
+// 				" generator"));
+// 	}
+// 
+// 	if (generatorExe_.isNull()) {
+// 		throw Parse_error(QObject::tr("Mandatory element spirit:generatorExe "
+// 				"missing in generator"));
+// 	}
 	return;
 }
 

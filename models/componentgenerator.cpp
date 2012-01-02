@@ -17,7 +17,9 @@
 
 // the constructor
 ComponentGenerator::ComponentGenerator(QDomNode &generatorNode):
-Generator(generatorNode), scope_(ComponentGenerator::INSTANCE), groups_() {
+Generator(generatorNode),
+scope_(ComponentGenerator::INSTANCE),
+groups_() {
 
 	QDomNamedNodeMap attributeMap = generatorNode.attributes();
 
@@ -139,6 +141,30 @@ void ComponentGenerator::write(QXmlStreamWriter& writer) {
 	}
 
 	writer.writeEndElement(); // spirit:componentGenerator
+}
+
+bool ComponentGenerator::isValid( QStringList& errorList, const QString& parentIdentifier ) const {
+	bool valid = true;
+
+	if (name_.isEmpty()) {
+		errorList.append(QObject::tr("No name specified for component generator"
+			" within %1").arg(parentIdentifier));
+		valid = false;
+	}
+
+	foreach (QSharedPointer<Parameter> param, parameters_) {
+		if (!param->isValid(errorList, QObject::tr("component generator %1").arg(name_))) {
+			valid = false;
+		}
+	}
+
+	if (generatorExe_.isEmpty()) {
+		errorList.append(QObject::tr("No path to the generator executable specified"
+			" for component generator %1 within %2").arg(name_).arg(parentIdentifier));
+		valid = false;
+	}
+
+	return valid;
 }
 
 ComponentGenerator::Instance ComponentGenerator::getScope() const {

@@ -66,6 +66,33 @@ public:
 	 */
 	~FileSet();
 
+	/*! \brief Write the contents of the class using the writer.
+	*
+	* Uses the specified writer to write the class contents into file as valid
+	* IP-Xact.
+	*
+	* \param writer A reference to a QXmlStreamWriter instance that is used to
+	* write the document into file.
+	*
+	* Exception guarantee: basic
+	* \exception Write_error Occurs if class or one of it's member classes is
+	* not valid IP-Xact in the moment of writing.
+	*/
+	void write(QXmlStreamWriter& writer);
+
+	/*! \brief Check if the File set is in a valid state.
+	*
+	* \param errorList The list to add the possible error messages to.
+	* \param parentIdentifier String from parent to help to identify the location of the error.
+	* \param checkChildren If true then the child-items are also checked. If
+	* false then only this model is checked.
+	*
+	* \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid(QStringList& errorList, 
+		const QString& parentIdentifier, 
+		bool checkChildren = true) const;
+
 	/*! \brief Get the default file builders for this file set
 	 *
 	 * \return QList containing pointers to the file builders.
@@ -178,20 +205,6 @@ public:
 	void setDescription(const QString& description);
 
 	const QList<QString> getFilePaths();
-
-	/*! \brief Write the contents of the class using the writer.
-	 *
-	 * Uses the specified writer to write the class contents into file as valid
-	 * IP-Xact.
-	 *
-	 * \param writer A reference to a QXmlStreamWriter instance that is used to
-	 * write the document into file.
-	 *
-	 * Exception guarantee: basic
-	 * \exception Write_error Occurs if class or one of it's member classes is
-	 * not valid IP-Xact in the moment of writing.
-	 */
-	void write(QXmlStreamWriter& writer);
 
 	/*! \brief Get the vhdl files and libraries used in this fileSet.
 	 *
@@ -335,19 +348,6 @@ public:
 	 *
 	*/
 	void useDefaultVhdlBuilders();
-
-	/*! \brief Check if the File set is in a valid state.
-	 *
-	 * \param errorList The list to add the possible error messages to.
-	 * \param parentIdentifier String from parent to help to identify the location of the error.
-	 * \param checkChildren If true then the child-items are also checked. If
-	 * false then only this model is checked.
-	 *
-	 * \return bool True if the state is valid and writing is possible.
-	*/
-	bool isValid(QStringList& errorList, 
-		const QString& parentIdentifier, 
-		bool checkChildren = true) const;
 
 private:
 

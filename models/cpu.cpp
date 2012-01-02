@@ -33,7 +33,7 @@ parameters_() {
 	for (int i = 0; i < cpuNode.childNodes().count(); ++i) {
 		QDomNode tempNode = cpuNode.childNodes().at(i);
 
-		// dont try to parse comments
+		// don't try to parse comments
 		if (tempNode.isComment()) {
 			continue;
 		}
@@ -78,16 +78,16 @@ parameters_() {
 
 	// if mandatory elements are missing
 
-	if (name_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory element name missing in "
-				"spirit:cpu"));
-	}
-
-	if (addressSpaceRefs_.size() == 0) {
-		throw Parse_error(QObject::tr(
-				"Mandatory element spirit:addressSpaceRef missing in "
-				"spirit:cpu"));
-	}
+// 	if (name_.isNull()) {
+// 		throw Parse_error(QObject::tr("Mandatory element name missing in "
+// 				"spirit:cpu"));
+// 	}
+// 
+// 	if (addressSpaceRefs_.size() == 0) {
+// 		throw Parse_error(QObject::tr(
+// 				"Mandatory element spirit:addressSpaceRef missing in "
+// 				"spirit:cpu"));
+// 	}
 }
 
 Cpu::Cpu( const Cpu &other ):
@@ -166,6 +166,31 @@ void Cpu::write(QXmlStreamWriter& writer) {
 	return;
 }
 
+bool Cpu::isValid( QStringList& errorList, const QString& parentIdentifier ) const {
+	bool valid = true;
+	const QString thisIdentifier(QObject::tr("cpu %1").arg(name_));
+
+	if (name_.isEmpty()) {
+		errorList.append(QObject::tr("No name specified for a cpu within %1").arg(
+			parentIdentifier));
+		valid = false;
+	}
+
+	if (addressSpaceRefs_.isEmpty()) {
+		errorList.append(QObject::tr("No address space reference defined for"
+			" cpu %1 within %2").arg(name_).arg(parentIdentifier));
+		valid = false;
+	}
+
+	foreach (QSharedPointer<Parameter> param, parameters_) {
+		if (!param->isValid(errorList, thisIdentifier)) {
+			valid = false;
+		}
+	}
+
+	return valid;
+}
+
 const QList<QSharedPointer<Parameter> >& Cpu::getParameters() {
 	return parameters_;
 }
@@ -186,7 +211,7 @@ void Cpu::setName(const QString &name) {
 	name_ = name;
 }
 
-const QList<QString>& Cpu::getAddressSpaceRefs() {
+const QStringList& Cpu::getAddressSpaceRefs() {
 	return addressSpaceRefs_;
 }
 
