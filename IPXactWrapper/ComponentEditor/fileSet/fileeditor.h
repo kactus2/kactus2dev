@@ -23,7 +23,6 @@ class Component;
 class File;
 class FileGeneralTab;
 class FileExtraTab;
-class FileBuildCommand;
 
 /*! \brief FileEditor is a widget to edit the details of a File
  * 
@@ -87,7 +86,7 @@ private:
 	FileExtraTab* extraTab_;
 
 	//! \brief Pointer to the widget that is used to edit the build command.
-	FileBuildCommand* buildCommand_;
+	//FileBuildCommand* buildCommand_;
 
 	//! \brief Pointer to the file that is edited in this editor.
 	File* file_;

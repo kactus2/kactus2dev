@@ -392,6 +392,12 @@ public:
 	*/
 	QString getArchitectureName(const QString& viewName) const;
 
+	/*! \brief Get list of the physical port names and their bounds.
+	 *
+	 * \return QList containing the port names and bounds.
+	*/
+	QList<General::PortBounds> getPortBounds() const;
+
 private:
 
 	/*!

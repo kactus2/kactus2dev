@@ -9,11 +9,10 @@
 #define BUSIFPARAMETERSTAB_H
 
 #include <IPXactWrapper/ComponentEditor/parameters/parametersmodel.h>
+#include <common/views/EditableTableView/editabletableview.h>
 
 #include <QWidget>
 #include <QSortFilterProxyModel>
-#include <QTableView>
-#include <QPushButton>
 
 class BusInterface;
 
@@ -56,11 +55,6 @@ public:
 	*/
 	virtual void applyChanges();
 
-public slots:
-
-	//! \brief Remove the selected row from the model
-	void onRemove();
-
 signals:
 
 	//! \brief Emitted when contents of the model change
@@ -83,14 +77,8 @@ private:
 	//! \brief Pointer to the bus interface being edited.
 	BusInterface* busif_;
 
-	//! \brief The button to add a new parameter
-	QPushButton addRowButton_;
-
-	//! \brief The button to remove the selected parameter
-	QPushButton removeRowButton_;
-
 	//! \brief The view that displays the parameters.
-	QTableView view_;
+	EditableTableView view_;
 
 	//! \brief The model that holds the data to be displayed to the user
 	ParametersModel model_;

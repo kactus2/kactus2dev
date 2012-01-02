@@ -51,14 +51,14 @@ displayName_(), description_(), busInterfaces_() {
 	}
 
 	// if mandatory elements are missing
-	if (name_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory element spirit:name was not"
-				" found"));
-	}
-	if (busInterfaces_.size() < 2) {
-		throw Parse_error(QObject::tr("Mandatory element spirit:busInterfaceRef"
-				" was not found"));
-	}
+// 	if (name_.isNull()) {
+// 		throw Parse_error(QObject::tr("Mandatory element spirit:name was not"
+// 				" found"));
+// 	}
+// 	if (busInterfaces_.size() < 2) {
+// 		throw Parse_error(QObject::tr("Mandatory element spirit:busInterfaceRef"
+// 				" was not found"));
+// 	}
 }
 
 Channel::Channel(): name_(),
@@ -121,6 +121,34 @@ void Channel::write(QXmlStreamWriter& writer) {
 	}
 	writer.writeEndElement(); // spirit:channel
 	return;
+}
+
+bool Channel::isValid( QStringList& errorList, const QString& parentIdentifier ) const {
+	bool valid = true;
+
+	if (name_.isEmpty()) {
+		errorList.append(QObject::tr("No name specified for channel within %1").arg(
+			parentIdentifier));
+		valid = false;
+	}
+
+	if (busInterfaces_.size() < 2) {
+		errorList.append(QObject::tr("At least two interfaces must be listed in"
+			" a channel %1 within %2").arg(name_).arg(parentIdentifier));
+		valid = false;
+	}
+
+	return valid;
+}
+
+bool Channel::isValid() const {
+	if (name_.isEmpty()) {
+		return false;
+	}
+	else if (busInterfaces_.size() < 2) {
+		return false;
+	}
+	return true;
 }
 
 QString Channel::getName() const {

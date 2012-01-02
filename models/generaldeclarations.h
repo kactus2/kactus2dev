@@ -532,6 +532,55 @@ struct ClockPulseValue {
 	ClockPulseValue& operator=(const ClockPulseValue& other);
 };
 
+//! \brief Specifies a port name and it's bounds.
+struct PortBounds {
+
+	//! \brief The name of the port.
+	QString portName_;
+
+	//! \brief The left bound of the port.
+	int left_;
+
+	//! \brief The right bound of the port.
+	int right_;
+
+	//! \brief Default constructor
+	PortBounds();
+
+	/*! \brief The constructor
+	* 
+	* Constructs a port with given name and both bounds set to 0.
+	* 
+	* \param portName The name of the port.
+	*
+	*/
+	PortBounds(const QString& portName);
+
+	/*! \brief The constructor
+	*
+	* \param portName The name of the port.
+	* \param left The left bound of the port.
+	* \param right The right bound of the port.
+	*
+	*/
+	PortBounds(const QString& portName, const int left, const int right);
+
+	//! \brief Copy constructor
+	PortBounds(const PortBounds& other);
+
+	//! \brief Assignment operator
+	PortBounds& operator=(const PortBounds& other);
+
+	//! \brief Operator <
+	bool operator<(const PortBounds& other) const;
+
+	//! \brief Operator ==
+	bool operator==(const PortBounds& other) const;
+
+	//! \brief Operator !=
+	bool operator!=(const PortBounds& other) const;
+};
+
 /*! \brief Describes the mapping between the logical and physical ports
  *
  * This struct is used to store the spirit:portMap element info. It can be used
@@ -588,6 +637,18 @@ struct PortMap {
 	 * \return Reference to this PortMap
 	*/
 	PortMap& operator=(const PortMap& other);
+
+	/*! \brief Check if the port map is in a valid state.
+	 *
+	 * \param physicalPorts List of the physical ports of the component and their bounds.
+	 * \param errorList The list to add the possible error messages to.
+	 * \param parentIdentifier String from parent to help to identify the location of the error.
+	 *
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid(const QList<General::PortBounds>& physicalPorts, 
+		QStringList& errorList, 
+		const QString& parentIdentifier) const;
 };
 
 /*! \brief Convert the physical port into string.
@@ -616,6 +677,7 @@ QString toLogicalString(const PortMap& portMap);
 */
 QString port2String(const QString& portName, int leftBound, int rightBound);
 
+//! \brief Port alignment is used to contain the physical bounds of two ports.
 struct PortAlignment {
 	
 	//! \brief The calculated left bound for port 1.

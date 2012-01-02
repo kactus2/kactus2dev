@@ -618,3 +618,13 @@ QString Model::getArchitectureName( const QString& viewName ) const {
 	}
 	return QString();
 }
+
+QList<General::PortBounds> Model::getPortBounds() const {
+	QList<General::PortBounds> portBounds;
+	foreach (QSharedPointer<Port> port, ports_) {
+		General::PortBounds tempBound(port->getName(), port->getLeftBound(), 
+			port->getRightBound());
+		portBounds.append(tempBound);
+	}
+	return portBounds;
+}

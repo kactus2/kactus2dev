@@ -203,6 +203,20 @@ void SlaveInterface::write(QXmlStreamWriter& writer) {
 	writer.writeEndElement(); // spirit:slave
 }
 
+bool SlaveInterface::isValid( QStringList& errorList, const QString& parentIdentifier ) const {
+	bool valid = true;
+
+	foreach (QSharedPointer<Bridge> bridge, bridges_) {
+		if (bridge->masterRef_.isEmpty()) {
+			errorList.append(QObject::tr("Bridge did not contain a master ref"
+				" within %1").arg(parentIdentifier));
+			valid = false;
+		}
+	}
+
+	return valid;
+}
+
 const QList<QSharedPointer<SlaveInterface::Bridge> >&
 SlaveInterface::getBridges() {
 	return bridges_;

@@ -89,6 +89,30 @@ public:
 	 */
 	~MirroredSlaveInterface();
 
+	/*! \brief Write the contents of the class using the writer.
+	*
+	* Uses the specified writer to write the class contents into file as valid
+	* IP-Xact.
+	*
+	* \param writer A reference to a QXmlStreamWriter instance that is used to
+	* write the document into file.
+	*
+	* Exception guarantee: basic
+	* \exception Write_error Occurs if class or one of it's member classes is
+	* not valid IP-Xact in the moment of writing.
+	*/
+	void write(QXmlStreamWriter& writer);
+
+	/*! \brief Check if the mirrored slave is in a valid state.
+	 *
+	 * \param errorList The list to add the possible error messages to.
+	 * \param parentIdentifier String from parent to help to identify the location of the error.
+	 *
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid(QStringList& errorList, 
+		const QString& parentIdentifier) const;
+
 	/*! \brief Get the range of the interface
 	 *
 	 * \return QString containing the range.
@@ -128,20 +152,6 @@ public:
      */
     void setRemapAddresses(const
     		QList<QSharedPointer<RemapAddress> >& remapAddresses);
-
-    /*! \brief Write the contents of the class using the writer.
-     *
-     * Uses the specified writer to write the class contents into file as valid
-     * IP-Xact.
-     *
-     * \param writer A reference to a QXmlStreamWriter instance that is used to
-     * write the document into file.
-     *
-     * Exception guarantee: basic
-     * \exception Write_error Occurs if class or one of it's member classes is
-     * not valid IP-Xact in the moment of writing.
-     */
-    void write(QXmlStreamWriter& writer);
 
 private:
 

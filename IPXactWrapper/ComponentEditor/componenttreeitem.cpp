@@ -635,6 +635,10 @@ handler_(handler) {
 
 		text_ = busInterface->getName();
 
+		QStringList errorList;
+		QList<General::PortBounds> portBounds = component_->getPortBounds();
+		isValid_ = busInterface->isValid(portBounds, errorList, tr("edited component"));
+
 		break;
 										  }
 	case ComponentTreeItem::CHANNELS: {
@@ -654,6 +658,8 @@ handler_(handler) {
 			"static_cast failed to give valid Channel-pointer");
 
 		text_ = channel->getName();
+
+		isValid_ = channel->isValid();
 
 		break;
 									 }

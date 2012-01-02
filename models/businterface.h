@@ -96,6 +96,32 @@ public:
 	 */
 	~BusInterface();
 
+	/*! \brief Write the contents of the class using the writer.
+	*
+	* Uses the specified writer to write the class contents into file as valid
+	* IP-Xact.
+	*
+	* \param writer A reference to a QXmlStreamWrite instance that is used to
+	* write the document into file.
+	*
+	* Exception guarantee: basic
+	* \exception Write_error Occurs if class or one of it's member classes is
+	* not valid IP-Xact in the moment of writing.
+	*/
+	void write(QXmlStreamWriter& writer);
+
+	/*! \brief Check if the bus interface is in a valid state.
+	 *
+	 * \param physicalPorts List of the physical ports of the component and their bounds.
+	 * \param errorList The list to add the possible error messages to.
+	 * \param parentIdentifier String from parent to help to identify the location of the error.
+	 *
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid(const QList<General::PortBounds>& physicalPorts, 
+		QStringList& errorList, 
+		const QString& parentIdentifier) const;
+
 	/*! \brief get the vlnv to the abstraction definition
 	 *
 	 * \return The vlnv tag of the abstraction definition where this bus interface
@@ -354,20 +380,6 @@ public:
 	 * \param mirroredSlave A pointer to the new mirroredSlave instance.
 	 */
 	void setMirroredSlave(MirroredSlaveInterface* mirroredSlave);
-
-	/*! \brief Write the contents of the class using the writer.
-	 *
-	 * Uses the specified writer to write the class contents into file as valid
-	 * IP-Xact.
-	 *
-	 * \param writer A reference to a QXmlStreamWrite instance that is used to
-	 * write the document into file.
-	 *
-	 * Exception guarantee: basic
-	 * \exception Write_error Occurs if class or one of it's member classes is
-	 * not valid IP-Xact in the moment of writing.
-	 */
-	void write(QXmlStreamWriter& writer);
 
 	/*! \brief Does this bus interface have a bridge element defined
 	 *

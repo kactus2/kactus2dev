@@ -1916,3 +1916,11 @@ bool Component::hasPortTypes() const {
 		return false;
 	}
 }
+
+QList<General::PortBounds> Component::getPortBounds() const {
+	if (model_) {
+		return model_->getPortBounds();
+	}
+
+	return QList<General::PortBounds>();
+}

@@ -12,6 +12,8 @@
 #include <LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QScrollArea>
 
 #include <QDebug>
 
@@ -35,24 +37,36 @@ libHandler_(libHandler) {
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&nameGroup_, SIGNAL(nameChanged(const QString&)),
 		this, SIGNAL(nameChanged(const QString&)), Qt::UniqueConnection);
-// 	connect(&attributes_, SIGNAL(contentChanged()),
-// 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&busType_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&absType_, SIGNAL(contentChanged()),
+		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&details_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
 	busType_.setTitle(tr("Bus definition"));
 	absType_.setTitle(tr("Abstraction definition"));
 
+	// create the scroll area
+	QScrollArea* scrollArea = new QScrollArea(this);
+	scrollArea->setWidgetResizable(true);
+
+	QHBoxLayout* scrollLayout = new QHBoxLayout(this);
+	scrollLayout->addWidget(scrollArea);
+
+	// create the top widget and set it under the scroll area
+	QWidget* topWidget = new QWidget(scrollArea);
+	topWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
 	// create the layout of the general tab
-	QVBoxLayout* layout = new QVBoxLayout(this);
+	QVBoxLayout* layout = new QVBoxLayout(topWidget);
 	layout->addWidget(&nameGroup_);
-	//layout->addWidget(&attributes_, 0, 1, 3, 1);
 	layout->addWidget(&busType_);
 	layout->addWidget(&absType_);
 	layout->addWidget(&details_);
 	layout->addStretch();
+
+	scrollArea->setWidget(topWidget);
 
 	restoreChanges();
 }
@@ -64,8 +78,6 @@ bool BusIfGeneralTab::isValid() const {
 	
 	if (!nameGroup_.isValid())
 		return false;
-// 	else if (!attributes_.isValid())
-// 		return false;
 	else if (!busType_.isValid())
 		return false;
 	

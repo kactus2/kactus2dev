@@ -286,15 +286,15 @@ BusInterface::BusInterface(QDomNode &busInterface):
 	}
 
 	// if mandatory elements are missing
-	if (!busType_.isValid()) {
-		throw Parse_error(QString("Mandatory element spirit:busType missing"
-				" in spirit:busInterface"));
-	}
-
-	if (nameGroup_.name_.isNull()) {
-		throw Parse_error(QString("Mandatory element spirit:name missing"
-				" in spirit:busInterface"));
-	}
+// 	if (!busType_.isValid()) {
+// 		throw Parse_error(QString("Mandatory element spirit:busType missing"
+// 				" in spirit:busInterface"));
+// 	}
+// 
+// 	if (nameGroup_.name_.isNull()) {
+// 		throw Parse_error(QString("Mandatory element spirit:name missing"
+// 				" in spirit:busInterface"));
+// 	}
 	return;
 }
 
@@ -665,6 +665,94 @@ void BusInterface::write(QXmlStreamWriter& writer) {
 	}
 
 	writer.writeEndElement(); // spirit:busInterface
+}
+
+bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts, 
+						   QStringList& errorList,
+						   const QString& parentIdentifier ) const {
+
+	bool valid = true;
+	const QString thisIdentifier(QObject::tr("bus interface %1").arg(nameGroup_.name_));
+
+	if (nameGroup_.name_.isEmpty()) {
+		errorList.append(QObject::tr("No name specified for bus interface within %1").arg(
+			parentIdentifier));
+		valid = false;
+	}
+
+	// check the bus type validity
+	if (!busType_.isValid(errorList, QObject::tr("bus type in %1").arg(thisIdentifier))) {
+		valid = false;
+	}
+
+	switch (interfaceMode_) {
+		case General::MASTER: 
+		case General::MIRROREDMASTER: {
+			if (!master_) {
+				errorList.append(QObject::tr("The interface mode of %1 is "
+					"master/mirrored master but no element for it has been defined.").arg(
+					thisIdentifier));
+				valid = false;
+			}
+			break;
+									  }
+		case General::SLAVE: {
+			if (!slave_) {
+				errorList.append(QObject::tr("The interface mode of %1 is "
+					"slave but no element for it has been defined.").arg(
+					thisIdentifier));
+				valid = false;
+			}
+			break;
+							 }
+		case General::MIRROREDSLAVE: {
+			if (!mirroredSlave_) {
+				errorList.append(QObject::tr("The interface mode of %1 is "
+					"mirrored slave but no element for it has been defined.").arg(
+					thisIdentifier));
+				valid = false;
+			}
+			break;
+									 }
+		case General::SYSTEM:
+		case General::MIRROREDSYSTEM: {
+			if (system_.isEmpty()) {
+				errorList.append(QObject::tr("Interface mode is system/mirrored system"
+					" but no group has been specified for %1 within %2").arg(
+					thisIdentifier).arg(parentIdentifier));
+				valid = false;
+			}
+			break;
+									  }
+		case General::MONITOR: {
+			if (monitor_->interfaceMode_ == General::MODE_UNDEFINED) {
+				errorList.append(QObject::tr("No interface mode set for monitor"
+					" within %1").arg(thisIdentifier));
+				valid = false;
+			}
+			break;
+							   }
+		// if the interface mode is invalid
+		default: {
+			valid = false;
+			break;
+				 }
+	}
+
+	foreach (QSharedPointer<General::PortMap> portMap, portMaps_) {
+		if (!portMap->isValid(physicalPorts, errorList, thisIdentifier)) {
+			valid = false;
+		}
+	}
+
+	foreach (QSharedPointer<Parameter> param, parameters_) {
+		if (!param->isValid(errorList, thisIdentifier)) {
+			valid = false;
+		}
+
+	}
+
+	return valid;
 }
 
 General::BitSteering BusInterface::getBitSteering() const {

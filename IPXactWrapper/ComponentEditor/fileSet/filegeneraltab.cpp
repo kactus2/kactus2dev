@@ -9,6 +9,7 @@
 
 #include <QVBoxLayout>
 #include <QStringList>
+#include <QGroupBox>
 
 FileGeneralTab::FileGeneralTab(const QFileInfo& baseLocation,  
 							   File* file, 
@@ -16,12 +17,19 @@ FileGeneralTab::FileGeneralTab(const QFileInfo& baseLocation,
 QWidget(parent), file_(file),
 nameEditor_(this, baseLocation),
 generalEditor_(this, file),
-fileTypeEditor_(this, file, QStringList()) {
+fileTypeEditor_(this, file, QStringList()),
+buildCommand_(this, file_, baseLocation) {
+
+	// the group box that contains the build command so it is clearly separated
+	QGroupBox* buildBox = new QGroupBox(tr("Build command"), this);
+	QVBoxLayout* buildLayout = new QVBoxLayout(buildBox);
+	buildLayout->addWidget(&buildCommand_);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&nameEditor_);
 	layout->addWidget(&fileTypeEditor_);
 	layout->addWidget(&generalEditor_);
+	layout->addWidget(buildBox);
 
 	connect(&nameEditor_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -30,6 +38,8 @@ fileTypeEditor_(this, file, QStringList()) {
 	connect(&generalEditor_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&fileTypeEditor_, SIGNAL(contentChanged()),
+		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&buildCommand_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
 	setLayout(layout);
@@ -48,16 +58,16 @@ bool FileGeneralTab::isValid() const {
 
 void FileGeneralTab::apply() {
 	file_->setName(nameEditor_.getFileName());
-	//file_->setNameAttributes(nameEditor_.getAttributes());
 
 	generalEditor_.apply();
 	fileTypeEditor_.apply();
+	buildCommand_.apply();
 }
 
 void FileGeneralTab::restore() {
 	nameEditor_.setFileName(file_->getName());
-	//nameEditor_.setAttributes(file_->getNameAttributes());
 
 	generalEditor_.restore();
 	fileTypeEditor_.restore();
+	buildCommand_.restore();
 }

@@ -134,6 +134,17 @@ QVariant PortMapsModel::data(const QModelIndex& index,
 		else
 			return QColor("black");
 	}
+	else if (Qt::BackgroundRole == role) {
+		switch (index.column()) {
+			case 2:
+			case 3: {
+				return QColor("LemonChiffon");
+					}
+			default: {
+				return QColor("white");
+					 }
+		}
+	}
 	// if unsupported role
 	else {
 		return QVariant();

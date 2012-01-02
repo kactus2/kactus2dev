@@ -134,8 +134,8 @@ void ViewEditor::setupLayout() {
 	QScrollArea* scrollArea = new QScrollArea(this);
 	scrollArea->setWidgetResizable(true);
 
-	QHBoxLayout* joku = new QHBoxLayout(this);
-	joku->addWidget(scrollArea);
+	QHBoxLayout* scrollLayout = new QHBoxLayout(this);
+	scrollLayout->addWidget(scrollArea);
 
 	// create the top widget and set it under the scroll area
 	QWidget* topWidget = new QWidget(scrollArea);

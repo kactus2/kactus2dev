@@ -7,8 +7,6 @@
 #include "mirroredslaveinterface.h"
 #include "generaldeclarations.h"
 
-#include "../exceptions/parse_error.h"
-
 #include <QMap>
 #include <QString>
 #include <QDomNode>
@@ -82,18 +80,6 @@ MirroredSlaveInterface::MirroredSlaveInterface(QDomNode& mirrorNode):
 			// get attributes
 			General::parseAttributes(tempNode, rangeAttributes_);
 		}
-	}
-
-	// if mandatory elements are not found
-
-	if (remapAddresses_.size() == 0) {
-		throw Parse_error(QObject::tr("Mandatory element spirit:remapAddress"
-				" missing in spirit:baseAddresses"));
-	}
-
-	else if (range_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory elemet range missing in "
-				" spirit:baseAddresses"));
 	}
 	return;
 }

@@ -179,6 +179,132 @@ General::PortMap& General::PortMap::operator=( const PortMap& other ) {
 	return *this;
 }
 
+bool General::PortMap::isValid( const QList<General::PortBounds>& physicalPorts, 
+							   QStringList& errorList, 
+							   const QString& parentIdentifier ) const {
+	bool valid = true;
+
+	if (physicalPort_.isEmpty()) {
+		errorList.append(QObject::tr("No physical port specified for port map within %1").arg(
+			parentIdentifier));
+		valid = false;
+	}
+
+	if (logicalPort_.isEmpty()) {
+		errorList.append(QObject::tr("No logical port specified for port map within %1").arg(
+			parentIdentifier));
+		valid = false;
+	}
+
+	int physSize = 1;
+	int logSize = 1;
+
+	if (physicalVector_) {
+		if (!physicalVector_->isValid(errorList, 
+			QObject::tr("port map within %1").arg(parentIdentifier))) {
+				valid = false;
+		}
+
+		physSize = physicalVector_->getSize();
+	}
+	if (logicalVector_) {
+		if (!logicalVector_->isValid(errorList,
+			QObject::tr("port map within %1").arg(parentIdentifier))) {
+				valid = false;
+		}
+
+		logSize = logicalVector_->getSize();
+	}
+
+	// if the sizes of the ports don't match
+	if (physSize != logSize) {
+		errorList.append(QObject::tr("The sizes of the vectors don't match in"
+			" port map within %1").arg(parentIdentifier));
+		valid = false;
+	}
+
+	// if there is a physical port specified
+	if (!physicalPort_.isEmpty()) {
+		
+		bool foundPhysPort = false;
+		foreach (General::PortBounds port, physicalPorts) {
+
+			// if the referenced physical port was found
+			if (port.portName_ == physicalPort_) {
+				foundPhysPort = true;
+
+				// calculate the size of the actual physical port.
+				int actualPortSize = port.left_ - port.right_ + 1;
+
+				// if the actual port size is smaller than the referenced vector in 
+				// the port map
+				if (actualPortSize < physSize) {
+					errorList.append(QObject::tr("The port map within %1 is larger"
+						" than the actual size of the port %1.").arg(
+						parentIdentifier).arg(physicalPort_));
+					valid = false;
+				}
+
+				break;
+			}
+		}
+		// if the referenced port was not found within the component
+		if (!foundPhysPort) {
+			errorList.append(QObject::tr("The port map within %1 contained reference to"
+				" physical port %2 which is not found in the component.").arg(
+				parentIdentifier).arg(physicalPort_));
+			valid = false;
+		}
+	}
+
+	return valid;
+}
+
+General::PortBounds::PortBounds():
+portName_(),
+left_(0),
+right_(0) {
+}
+
+General::PortBounds::PortBounds( const QString& portName ):
+portName_(portName),
+left_(0),
+right_(0) {
+}
+
+General::PortBounds::PortBounds( const QString& portName, const int left, const int right ):
+portName_(portName),
+left_(left),
+right_(right) {
+}
+
+General::PortBounds::PortBounds( const PortBounds& other ):
+portName_(other.portName_),
+left_(other.left_),
+right_(other.right_) {
+}
+
+General::PortBounds& General::PortBounds::operator=( const PortBounds& other ) {
+	if (&other != this) {
+		portName_ = other.portName_;
+		left_ = other.left_;
+		right_ = other.right_;
+	}
+	return *this;
+}
+
+bool General::PortBounds::operator<( const PortBounds& other ) const {
+	return portName_ < other.portName_;
+}
+
+bool General::PortBounds::operator==( const PortBounds& other ) const {
+	return portName_ == other.portName_;
+}
+
+bool General::PortBounds::operator!=( const PortBounds& other ) const {
+	return portName_ != other.portName_;
+}
+
 General::PortAlignment::PortAlignment():
 port1Left_(-1),
 port1Right_(-1),

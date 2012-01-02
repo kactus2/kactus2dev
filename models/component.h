@@ -936,6 +936,12 @@ public:
 	*/
 	bool isPhysicalPort(const QString& portName) const;
 
+	/*! \brief Get the list of component's physical ports and their bounds.
+	 *
+	 * \return QList containing the physical port names and their bounds.
+	*/
+	QList<General::PortBounds> getPortBounds() const;
+
 private:
 
 	/*! \brief Specifies all the interfaces for this component.

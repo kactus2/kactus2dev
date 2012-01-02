@@ -12,6 +12,7 @@
 #include <common/widgets/attributeBox/attributebox.h>
 #include <IPXactWrapper/ComponentEditor/fileSet/filegeneraleditor.h>
 #include <IPXactWrapper/ComponentEditor/fileSet/filetypeeditor.h>
+#include "filebuildcommand.h"
 
 #include <models/file.h>
 
@@ -88,6 +89,9 @@ private:
 
 	//! \brief The editor to set the file types of the file.
 	FileTypeEditor fileTypeEditor_;
+
+	//! \brief Pointer to the widget that is used to edit the build command.
+	FileBuildCommand buildCommand_;
 	
 };
 
