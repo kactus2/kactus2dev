@@ -79,22 +79,22 @@ bitWidthAttributes_(), enumeratedValues_(), parameters_() {
 	}
 
 	// if mandatory name is missing
-	if (name_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory name is missing in spirit:"
-				"field"));
-	}
-
-	// if mandatory bitOffset is missing
-	if (bitOffset_ < 0) {
-		throw Parse_error(QObject::tr("Mandatory bitOffset is missing in"
-				"spirit:field"));
-	}
-
-	// if mandatory bitWidth is missing
-        if (bitWidth_ <= 0) {
-		throw Parse_error(QObject::tr("Mandatory bitWidth missing in spirit:"
-				"field"));
-	}
+// 	if (name_.isNull()) {
+// 		throw Parse_error(QObject::tr("Mandatory name is missing in spirit:"
+// 				"field"));
+// 	}
+// 
+// 	// if mandatory bitOffset is missing
+// 	if (bitOffset_ < 0) {
+// 		throw Parse_error(QObject::tr("Mandatory bitOffset is missing in"
+// 				"spirit:field"));
+// 	}
+// 
+// 	// if mandatory bitWidth is missing
+//         if (bitWidth_ <= 0) {
+// 		throw Parse_error(QObject::tr("Mandatory bitWidth missing in spirit:"
+// 				"field"));
+// 	}
 
 	return;
 }
@@ -247,8 +247,43 @@ void Field::write(QXmlStreamWriter& writer) {
 	writer.writeEndElement(); // spirit:field
 }
 
-int Field::getBitOffset() const
-{
+bool Field::isValid( QStringList& errorList, const QString& parentIdentifier ) const {
+	bool valid = true;
+
+	if (name_.isEmpty()) {
+		errorList.append(QObject::tr("No name specified for a field within %1").arg(
+			parentIdentifier));
+		valid = false;
+	}
+
+	if (bitOffset_ < 0) {
+		errorList.append(QObject::tr("No bit offset set for field %1 within %2").arg(
+			name_).arg(parentIdentifier));
+		valid = false;
+	}
+
+	if (bitWidth_ <= 0) {
+		errorList.append(QObject::tr("No bit width set for field %1 within %2").arg(
+			name_).arg(parentIdentifier));
+		valid = false;
+	}
+
+	foreach (QSharedPointer<EnumeratedValue> enumValue, enumeratedValues_) {
+		if (!enumValue->isValid(errorList, QObject::tr("field %1").arg(name_))) {
+			valid = false;
+		}
+	}
+
+	foreach (QSharedPointer<Parameter> param, parameters_) {
+		if (!param->isValid(errorList, QObject::tr("field %1").arg(name_))) {
+			valid = false;
+		}
+	}
+
+	return valid;
+}
+
+int Field::getBitOffset() const {
     return bitOffset_;
 }
 
@@ -273,75 +308,61 @@ Field::getEnumeratedValues() const {
     return enumeratedValues_;
 }
 
-QString Field::getName() const
-{
+QString Field::getName() const {
     return name_;
 }
 
-const QList<QSharedPointer<Parameter> >& Field::getParameters() const
-{
+const QList<QSharedPointer<Parameter> >& Field::getParameters() const {
     return parameters_;
 }
 
-QString Field::getTypeIdentifier() const
-{
+QString Field::getTypeIdentifier() const {
     return typeIdentifier_;
 }
 
-void Field::setBitOffset(int bitOffset)
-{
+void Field::setBitOffset(int bitOffset) {
     this->bitOffset_ = bitOffset;
 }
 
-void Field::setBitWidth(unsigned int bitWidth)
-{
+void Field::setBitWidth(unsigned int bitWidth) {
     this->bitWidth_ = bitWidth;
 }
 
 void Field::setBitWidthAttributes(
-		const QMap<QString,QString>& bitWidthAttributes)
-{
+		const QMap<QString,QString>& bitWidthAttributes) {
     this->bitWidthAttributes_ = bitWidthAttributes;
 }
 
-void Field::setDescription(const QString& description)
-{
+void Field::setDescription(const QString& description) {
     this->description_ = description;
 }
 
-void Field::setDisplayName(const QString& displayName)
-{
+void Field::setDisplayName(const QString& displayName) {
     this->displayName_ = displayName;
 }
 
 void Field::setEnumeratedValues(
-		const QList<QSharedPointer<EnumeratedValue> >& enumeratedValues)
-{
+		const QList<QSharedPointer<EnumeratedValue> >& enumeratedValues) {
     this->enumeratedValues_ = enumeratedValues;
 }
 
-void Field::setName(const QString& name)
-{
+void Field::setName(const QString& name) {
     this->name_ = name;
 }
 
-void Field::setParameters(const QList<QSharedPointer<Parameter> >& parameters)
-{
+void Field::setParameters(const QList<QSharedPointer<Parameter> >& parameters) {
 	parameters_.clear();
     this->parameters_ = parameters;
 }
 
-void Field::setTypeIdentifier(const QString& typeIdentifier)
-{
+void Field::setTypeIdentifier(const QString& typeIdentifier) {
     this->typeIdentifier_ = typeIdentifier;
 }
 
-QString Field::getId() const
-{
+QString Field::getId() const {
     return id_;
 }
 
-void Field::setId(const QString& id)
-{
+void Field::setId(const QString& id) {
     this->id_ = id;
 }

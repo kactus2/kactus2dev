@@ -17,8 +17,11 @@
 #include <QObject>
 
 EnumeratedValue::EnumeratedValue(QDomNode& enumerationNode):
-usage_(EnumeratedValue::READWRITE), name_(), displayName_(), description_(),
-value_(0) {
+usage_(EnumeratedValue::READWRITE), 
+name_(), 
+displayName_(),
+description_(),
+value_() {
 
 	// parse the spirit:usage attribute
 	QDomNamedNodeMap attributeMap = enumerationNode.attributes();
@@ -40,22 +43,17 @@ value_(0) {
 			description_ = tempNode.childNodes().at(0).nodeValue();
 		}
 		else if (tempNode.nodeName() == QString("spirit:value")) {
-			value_ = tempNode.childNodes().at(0).nodeValue().toInt();
+			value_ = tempNode.childNodes().at(0).nodeValue();
 		}
 
 	}
 
 	// if mandatory name is not specified
-	if (name_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory name is missing in spirit:"
-				"enumeratedValue"));
-	}
-
-	// if mandatory value is missing
-	if (value_ < 0) {
-		throw Parse_error(QObject::tr("Mandatory value missing in spirit:"
-				"enumeratedValue"));
-	}
+// 	if (name_.isNull()) {
+// 		throw Parse_error(QObject::tr("Mandatory name is missing in spirit:"
+// 				"enumeratedValue"));
+// 	}
+// 
 	return;
 }
 
@@ -108,65 +106,75 @@ void EnumeratedValue::write(QXmlStreamWriter& writer) {
 	}
 
 	// if mandatory value is not defined
-	if (value_ <= 0) {
+	if (value_.isEmpty()) {
 		throw Write_error(QObject::tr("Mandatory value missing in spirit:"
 				"enumeratedValue"));
 	}
 	else {
-		writer.writeTextElement("spirit:value", QString::number(value_));
+		writer.writeTextElement("spirit:value", value_);
 	}
 
 	writer.writeEndElement(); // spirit:enumeratedValue
 }
 
-QString EnumeratedValue::getDescription() const
-{
+bool EnumeratedValue::isValid( QStringList& errorList, 
+							  const QString& parentIdentifier ) const {
+
+	bool valid = true;
+
+	if (name_.isEmpty()) {
+		errorList.append(QObject::tr("No name specified for enumerated value"
+			" within %1").arg(parentIdentifier));
+		valid = false;
+	}
+
+	if (value_.isEmpty()) {
+		errorList.append(QObject::tr("No value set for enumerated value %1 "
+			"within %2").arg(name_).arg(parentIdentifier));
+		valid = false;
+	}
+
+	return valid;
+}
+
+QString EnumeratedValue::getDescription() const {
     return description_;
 }
 
-QString EnumeratedValue::getDisplayName() const
-{
+QString EnumeratedValue::getDisplayName() const {
     return displayName_;
 }
 
-QString EnumeratedValue::getName() const
-{
+QString EnumeratedValue::getName() const {
     return name_;
 }
 
-EnumeratedValue::EnumeratedUsage EnumeratedValue::getUsage() const
-{
+EnumeratedValue::EnumeratedUsage EnumeratedValue::getUsage() const {
     return usage_;
 }
 
-unsigned int EnumeratedValue::getValue() const
-{
+QString EnumeratedValue::getValue() const {
     return value_;
 }
 
-void EnumeratedValue::setDescription(const QString& description)
-{
+void EnumeratedValue::setDescription(const QString& description) {
     this->description_ = description;
 }
 
-void EnumeratedValue::setDisplayName(const QString& displayName)
-{
+void EnumeratedValue::setDisplayName(const QString& displayName) {
     this->displayName_ = displayName;
 }
 
-void EnumeratedValue::setName(const QString& name)
-{
+void EnumeratedValue::setName(const QString& name) {
     this->name_ = name;
 }
 
-void EnumeratedValue::setUsage(EnumeratedValue::EnumeratedUsage usage)
-{
+void EnumeratedValue::setUsage(EnumeratedValue::EnumeratedUsage usage) {
     this->usage_ = usage;
 }
 
-void EnumeratedValue::setValue(unsigned int value)
-{
-    this->value_ = value;
+void EnumeratedValue::setValue( const QString& value ) {
+    value_ = value;
 }
 
 QString EnumeratedValue::usage2Str(EnumeratedValue::EnumeratedUsage usage) {

@@ -25,8 +25,12 @@
 
 AddressBlock::AddressBlock(QDomNode &memoryMapNode):
 MemoryMapItem(memoryMapNode),
-range_(), rangeAttributes_(), width_(0), widthAttributes_(),
-memoryBlockData_(0), registerData_() {
+range_(), 
+rangeAttributes_(),
+width_(-1),
+widthAttributes_(),
+memoryBlockData_(0),
+registerData_() {
 
 	// the temporary variables to store the parsed values for memoryBlockData_
 	General::Usage usage = General::RESERVED;
@@ -99,11 +103,11 @@ memoryBlockData_(0), registerData_() {
 	tempParameters.clear();
 
 	// if the mandatory elements were not found
-	if (range_.isNull() || width_ < 1) {
-		throw Parse_error(QObject::tr(
-				"AddressBlock: invalid AddressBlock element found"));
-		return;
-	}
+// 	if (range_.isNull() || width_ < 1) {
+// 		throw Parse_error(QObject::tr(
+// 				"AddressBlock: invalid AddressBlock element found"));
+// 		return;
+// 	}
 }
 
 AddressBlock::AddressBlock( const AddressBlock &other ):
@@ -122,8 +126,7 @@ registerData_() {
 
 	foreach (QSharedPointer<RegisterModel> regModel, other.registerData_) {
 		if (regModel) {
-			QSharedPointer<RegisterModel> copy = QSharedPointer<RegisterModel>(
-				new RegisterModel(*regModel.data()));
+			QSharedPointer<RegisterModel> copy = regModel->clone();
 			registerData_.append(copy);
 		}
 	}
@@ -147,8 +150,7 @@ AddressBlock & AddressBlock::operator=( const AddressBlock &other ) {
 		registerData_.clear();
 		foreach (QSharedPointer<RegisterModel> regModel, other.registerData_) {
 			if (regModel) {
-				QSharedPointer<RegisterModel> copy = QSharedPointer<RegisterModel>(
-					new RegisterModel(*regModel.data()));
+				QSharedPointer<RegisterModel> copy = regModel->clone();
 				registerData_.append(copy);
 			}
 		}
@@ -158,6 +160,10 @@ AddressBlock & AddressBlock::operator=( const AddressBlock &other ) {
 
 AddressBlock::~AddressBlock() {
 	memoryBlockData_.clear();
+}
+
+QSharedPointer<MemoryMapItem> AddressBlock::clone() const {
+	return QSharedPointer<MemoryMapItem>(new AddressBlock(*this));
 }
 
 void AddressBlock::write(QXmlStreamWriter& writer) {
@@ -210,6 +216,48 @@ void AddressBlock::write(QXmlStreamWriter& writer) {
 	writer.writeEndElement(); // spirit:addressBlock
 }
 
+bool AddressBlock::isValid( QStringList& errorList,
+						   const QString& parentIdentifier ) const {
+	bool valid = true;
+	const QString thisIdentifier(QObject::tr("address block %1").arg(name_));
+
+	if (name_.isEmpty()) {
+		errorList.append(QObject::tr("No name specified for address block"
+			" within %1").arg(parentIdentifier));
+		valid = false;
+	}
+
+	if (baseAddress_.isEmpty()) {
+		errorList.append(QObject::tr("No base address specified for %1 within %2").arg(
+			thisIdentifier).arg(parentIdentifier));
+		valid = false;
+	}
+
+	if (range_.isEmpty()) {
+		errorList.append(QObject::tr("No range set for %1 within %2").arg(
+			thisIdentifier).arg(parentIdentifier));
+		valid = false;
+	}
+
+	if (width_ < 0) {
+		errorList.append(QObject::tr("No width set for %1 within %2").arg(
+			thisIdentifier).arg(parentIdentifier));
+		valid = false;
+	}
+
+	if (memoryBlockData_ && !memoryBlockData_->isValid(errorList, thisIdentifier)) {
+		valid = false;
+	}
+
+	foreach (QSharedPointer<RegisterModel> regModel, registerData_) {
+		if (!regModel->isValid(errorList, thisIdentifier)) {
+			valid = false;
+		}
+	}
+
+	return valid;
+}
+
 void AddressBlock::setAccess(General::Access access) {
 	memoryBlockData_->setAccess(access);
 }
@@ -236,7 +284,7 @@ QString AddressBlock::getRange() const {
 	return range_;
 }
 
-void AddressBlock::setWidth(unsigned int width) {
+void AddressBlock::setWidth( int width ) {
 	width_ = width;
 }
 
@@ -252,7 +300,7 @@ General::BooleanValue AddressBlock::getVolatile() const {
 	return memoryBlockData_->getVolatile();
 }
 
-unsigned int AddressBlock::getWidth() const {
+int AddressBlock::getWidth() const {
 	return width_;
 }
 

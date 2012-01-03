@@ -45,6 +45,32 @@ public:
 	 */
 	~RemapPort();
 
+	/*! \brief Write the contents of the class using the writer.
+	*
+	* Uses the specified writer to write the class contents into file as valid
+	* IP-Xact.
+	*
+	* \param writer A reference to a QXmlStreamWriter instance that is used to
+	* write the document into file.
+	*
+	* Exception guarantee: basic
+	* \exception Write_error Occurs if class or one of it's member classes is
+	* not valid IP-Xact in the moment of writing.
+	*/
+	void write(QXmlStreamWriter& writer);
+
+	/*! \brief Check if the remap port is in a valid state.
+	 *
+	 * \param portNames List containing the names of the ports of the component.
+	 * \param errorList The list to add the possible error messages to.
+	 * \param parentIdentifier String from parent to help to identify the location of the error.
+	 *
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid(const QStringList& portNames,
+		QStringList& errorList, 
+		const QString& parentIdentifier) const;
+
 	/*! \brief Get the value of the port name ref element
 	 *
 	 * \return QString containing the portNameRef
@@ -81,20 +107,6 @@ public:
 	 * was not defined then -1 is returned
 	 */
     void setPortIndex(int portIndex);
-
-    /*! \brief Write the contents of the class using the writer.
-     *
-     * Uses the specified writer to write the class contents into file as valid
-     * IP-Xact.
-     *
-     * \param writer A reference to a QXmlStreamWriter instance that is used to
-     * write the document into file.
-     *
-     * Exception guarantee: basic
-     * \exception Write_error Occurs if class or one of it's member classes is
-     * not valid IP-Xact in the moment of writing.
-     */
-    void write(QXmlStreamWriter& writer);
 
 private:
 

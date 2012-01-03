@@ -43,6 +43,39 @@ public:
 	//! \brief The destructor.
 	virtual ~RegisterFile();
 
+	/*! \brief Clone the register file and return pointer to the copy.
+	 * 
+	 * This is virtual function so it can be used to make a copy of classes that
+	 * inherit register model.
+	 *
+	 * \return QSharedPointer<RegisterModel> Pointer to the cloned register file.
+	*/
+	virtual QSharedPointer<RegisterModel> clone();
+
+	/*! \brief Write the contents of the class using the writer.
+	*
+	* Uses the specified writer to write the class contents into file as valid
+	* IP-Xact.
+	*
+	* \param writer A reference to a QXmlStreamWriter instance that is used to
+	* write the document into file.
+	*
+	* Exception guarantee: basic
+	* \exception Write_error Occurs if class or one of it's member classes is
+	* not valid IP-Xact in the moment of writing.
+	*/
+	virtual void write(QXmlStreamWriter& writer);
+
+	/*! \brief Check if the register file is in a valid state.
+	 *
+	 * \param errorList The list to add the possible error messages to.
+	 * \param parentIdentifier String from parent to help to identify the location of the error.
+	 *
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	virtual bool isValid(QStringList& errorList, 
+		const QString& parentIdentifier) const;
+
 	/*! \brief Get the address offset of the registerFile.
 	 *
 	 * \return QString containing the offset.
@@ -116,20 +149,6 @@ public:
 	 * \param typeIdentifier QString containing the typeIdentifier.
 	 */
 	void setTypeIdentifier(const QString& typeIdentifier);
-
-	/*! \brief Write the contents of the class using the writer.
-	 *
-	 * Uses the specified writer to write the class contents into file as valid
-	 * IP-Xact.
-	 *
-	 * \param writer A reference to a QXmlStreamWriter instance that is used to
-	 * write the document into file.
-	 *
-	 * Exception guarantee: basic
-	 * \exception Write_error Occurs if class or one of it's member classes is
-	 * not valid IP-Xact in the moment of writing.
-	 */
-	virtual void write(QXmlStreamWriter& writer);
 
 private:
 

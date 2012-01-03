@@ -92,7 +92,7 @@ public:
 	 *
 	 * \return QSharedPointer<LibraryComponent> Pointer to the cloned component.
 	*/
-	virtual QSharedPointer<LibraryComponent> clone();
+	virtual QSharedPointer<LibraryComponent> clone() const;
 
 	/*! \brief Set the vlnv
 	 *

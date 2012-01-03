@@ -36,15 +36,15 @@ portNameRef_(QString()), portIndex_(-1) {
 	value_ = remapPortNode.childNodes().at(0).nodeValue();
 
 	// if mandatory elements are missing
-	if (value_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory value for spirit:remapPort"
-				" missing"));
-	}
-
-	if (portNameRef_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory attribute spirit:portNameRef"
-				" missing in spirit:remapPort"));
-	}
+// 	if (value_.isNull()) {
+// 		throw Parse_error(QObject::tr("Mandatory value for spirit:remapPort"
+// 				" missing"));
+// 	}
+// 
+// 	if (portNameRef_.isNull()) {
+// 		throw Parse_error(QObject::tr("Mandatory attribute spirit:portNameRef"
+// 				" missing in spirit:remapPort"));
+// 	}
 	return;
 }
 
@@ -96,6 +96,32 @@ void RemapPort::write(QXmlStreamWriter& writer) {
 	writer.writeCharacters(value_);
 	writer.writeEndElement(); // spirit:remapPort
 	return;
+}
+
+bool RemapPort::isValid( const QStringList& portNames, 
+						QStringList& errorList, 
+						const QString& parentIdentifier ) const {
+	bool valid = true;
+
+	if (value_.isEmpty()) {
+		errorList.append(QObject::tr("No value set for remap port within %1").arg(
+			parentIdentifier));
+		valid = false;
+	}
+
+	if (portNameRef_.isEmpty()) {
+		errorList.append(QObject::tr("No port reference assigned to remap port"
+			" within %1").arg(parentIdentifier));
+		valid = false;
+	}
+	else if (!portNames.contains(portNameRef_)) {
+		errorList.append(QObject::tr("The port %1 referenced in remap port "
+			" within %2 is not found in the containing component.").arg(
+			portNameRef_).arg(parentIdentifier));
+		valid = false;
+	}
+
+	return valid;
 }
 
 void RemapPort::setValue(const QString &value) {

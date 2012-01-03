@@ -17,7 +17,10 @@
 #include <QString>
 #include <QObject>
 
-Reset::Reset(QDomNode& resetNode): value_(-1), valueAttributes_(), mask_(-1),
+Reset::Reset(QDomNode& resetNode): 
+value_(-1),
+valueAttributes_(), 
+mask_(-1),
 maskAttributes_() {
 
 	// go through each node
@@ -35,10 +38,10 @@ maskAttributes_() {
 	}
 
 	// if mandatory value was not found
-        if (value_ < 0) {
-		throw Parse_error(QObject::tr("Mandatory value missing in spirit:"
-				"reset"));
-	}
+//         if (value_ < 0) {
+// 		throw Parse_error(QObject::tr("Mandatory value missing in spirit:"
+// 				"reset"));
+// 	}
 	return;
 }
 
@@ -89,6 +92,15 @@ void Reset::write(QXmlStreamWriter& writer) {
 	}
 
 	writer.writeEndElement(); // spirit:reset
+}
+
+bool Reset::isValid( QStringList& errorList, const QString& parentIdentifier ) const {
+	if (value_ < 0) {
+		errorList.append(QObject::tr("No value set for reset within %1").arg(
+			parentIdentifier));
+		return false;
+	}
+	return true;
 }
 
 int Reset::getMask() const {

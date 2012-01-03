@@ -15,10 +15,12 @@
 
 MemoryBlockData::MemoryBlockData(General::Usage usage,
 								 General::BooleanValue volatileValue,
-								 General::Access access, const QList<QSharedPointer<Parameter> >&
-								 parameters):
-usage_(usage), volatile_(volatileValue),
-access_(access), parameters_(parameters) {
+								 General::Access access, 
+								 const QList<QSharedPointer<Parameter> >& parameters):
+usage_(usage), 
+volatile_(volatileValue),
+access_(access), 
+parameters_(parameters) {
 }
 
 MemoryBlockData::MemoryBlockData( const MemoryBlockData& other ):
@@ -83,6 +85,20 @@ void MemoryBlockData::write(QXmlStreamWriter& writer) {
 
 		writer.writeEndElement(); // spirit:parameters
 	}
+}
+
+bool MemoryBlockData::isValid( QStringList& errorList, 
+							  const QString& parentIdentifier ) const {
+
+	bool valid = true;
+
+	foreach (QSharedPointer<Parameter> param, parameters_) {
+		if (!param->isValid(errorList, parentIdentifier)) {
+			valid = false;
+		}
+	}
+
+	return valid;
 }
 
 General::Usage MemoryBlockData::getUsage() const {

@@ -134,7 +134,7 @@ AbstractionDefinition::~AbstractionDefinition() {
 	ports_.clear();
 }
 
-QSharedPointer<LibraryComponent> AbstractionDefinition::clone() {
+QSharedPointer<LibraryComponent> AbstractionDefinition::clone() const {
 	return QSharedPointer<LibraryComponent>(new AbstractionDefinition(*this));
 }
 

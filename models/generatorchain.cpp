@@ -237,7 +237,7 @@ GeneratorChain::~GeneratorChain() {
 	return;
 }
 
-QSharedPointer<LibraryComponent> GeneratorChain::clone() {
+QSharedPointer<LibraryComponent> GeneratorChain::clone() const {
 	return QSharedPointer<LibraryComponent>(new GeneratorChain(*this));
 }
 

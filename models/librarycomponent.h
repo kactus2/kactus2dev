@@ -69,7 +69,7 @@ public:
 	 *
 	 * \return QSharedPointer<LibraryComponent> Pointer to the cloned library component.
 	*/
-	virtual QSharedPointer<LibraryComponent> clone() = 0;
+	virtual QSharedPointer<LibraryComponent> clone() const = 0;
 
 	/*! \brief Get the description of the document
 	 *

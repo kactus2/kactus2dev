@@ -148,7 +148,20 @@ public:
 	 *
 	 * \return QSharedPointer<LibraryComponent> Pointer to the cloned design configuration.
 	*/
-	virtual QSharedPointer<LibraryComponent> clone();
+	virtual QSharedPointer<LibraryComponent> clone() const;
+
+	/*! \brief Write the document contents into file.
+	*
+	* Prints all information stored in this document into specified file
+	* generating a valid IP-Xact document.
+	*
+	* \param file A reference to QFile instance representing the file to write
+	* the data into.
+	*
+	* \exception Write_error Occurs if the class or one of it's subclasses is
+	* not valid IP-Xact at the moment of writing.
+	*/
+	virtual void write(QFile& file);
 
 	/*! \brief Set the vlnv
 	 *
@@ -255,19 +268,6 @@ public:
      * designConfiguration.
      */
     virtual const QList<VLNV> getDependentVLNVs() const;
-
-    /*! \brief Write the document contents into file.
-     *
-     * Prints all information stored in this document into specified file
-     * generating a valid IP-Xact document.
-     *
-     * \param file A reference to QFile instance representing the file to write
-     * the data into.
-     *
-     * \exception Write_error Occurs if the class or one of it's subclasses is
-     * not valid IP-Xact at the moment of writing.
-     */
-    virtual void write(QFile& file);
 
 	/*! \brief Add a new view configuration to the design configuration.
 	 *

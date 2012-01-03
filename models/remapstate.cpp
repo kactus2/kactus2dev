@@ -43,10 +43,10 @@ RemapState::RemapState(QDomNode &remapNode): name_(QString()), remapPorts_() {
 	}
 
 	// if mandatory field is missing
-	if (name_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory element name missing in "
-				"spirit:remapState"));
-	}
+// 	if (name_.isNull()) {
+// 		throw Parse_error(QObject::tr("Mandatory element name missing in "
+// 				"spirit:remapState"));
+// 	}
 	return;
 }
 
@@ -107,6 +107,28 @@ void RemapState::write(QXmlStreamWriter& writer) {
 
 	writer.writeEndElement(); // spirit:remapState
 	return;
+}
+
+bool RemapState::isValid( const QStringList& portNames,
+						 QStringList& errorList,
+						 const QString& parentIdentifier ) const {
+
+	bool valid = true;
+
+	if (name_.isEmpty()) {
+		errorList.append(QObject::tr("No name specified for a remap state within %1").arg(
+			parentIdentifier));
+		valid = false;
+	}
+
+	foreach (QSharedPointer<RemapPort> remapPort, remapPorts_) {
+		if (!remapPort->isValid(portNames, errorList, QObject::tr("remap port %1").arg(
+			name_))) {
+				valid = false;
+		}
+	}
+
+	return valid;
 }
 
 void RemapState::setRemapPorts(const QList<QSharedPointer<RemapPort> > &remapPorts) {

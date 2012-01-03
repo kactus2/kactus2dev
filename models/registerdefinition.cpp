@@ -57,10 +57,10 @@ access_(General::UNSPECIFIED_ACCESS), reset_(), fields_() {
 	}
 
 	// if size was not defined
-	if (size_ == 0) {
-		throw Parse_error(QObject::tr("Mandatory size not defined in"
-				" spirit:register"));
-	}
+// 	if (size_ == 0) {
+// 		throw Parse_error(QObject::tr("Mandatory size not defined in"
+// 				" spirit:register"));
+// 	}
 }
 
 RegisterDefinition::RegisterDefinition( const RegisterDefinition& other ):
@@ -158,6 +158,29 @@ void RegisterDefinition::write(QXmlStreamWriter& writer) {
 		fields_.at(i)->write(writer);
 	}
 	return;
+}
+
+bool RegisterDefinition::isValid( QStringList& errorList, 
+								 const QString& parentIdentifier ) const {
+
+	bool valid = true;
+
+	if (size_ == 0) {
+		errorList.append(QObject::tr("No size specified for %1").arg(parentIdentifier));
+		valid = false;
+	}
+
+	if (reset_ && !reset_->isValid(errorList, parentIdentifier)) {
+		valid = false;
+	}
+
+	foreach (QSharedPointer<Field> field, fields_) {
+		if (!field->isValid(errorList, parentIdentifier)) {
+			valid = false;
+		}
+	}
+
+	return valid;
 }
 
 General::Access RegisterDefinition::getAccess() const {

@@ -34,11 +34,11 @@ RegisterModel(registerNode), alternateGroups_(), alternateRegisterDef_() {
 	alternateRegisterDef_ = QSharedPointer<RegisterDefinition>(
 			new RegisterDefinition(registerNode));
 
-	// atleast one alternate group must be found
-	if (alternateGroups_.size() == 0) {
-		throw Parse_error(QObject::tr("Atleast one alternateGroup must be "
-				"found in spirit:alternateRegister"));
-	}
+	// at least one alternate group must be found
+// 	if (alternateGroups_.size() == 0) {
+// 		throw Parse_error(QObject::tr("Atleast one alternateGroup must be "
+// 				"found in spirit:alternateRegister"));
+// 	}
 	return;
 }
 
@@ -74,6 +74,10 @@ AlternateRegister::~AlternateRegister() {
 	alternateRegisterDef_.clear();
 }
 
+QSharedPointer<RegisterModel> AlternateRegister::clone() {
+	return QSharedPointer<RegisterModel>(new AlternateRegister(*this));
+}
+
 void AlternateRegister::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:alternateRegister");
 
@@ -102,6 +106,38 @@ void AlternateRegister::write(QXmlStreamWriter& writer) {
 	}
 
 	writer.writeEndElement(); // spirit:alternateRegister
+}
+
+bool AlternateRegister::isValid( QStringList& errorList, 
+								const QString& parentIdentifier ) const {
+
+	bool valid = true;
+
+	if (name_.isEmpty()) {
+		errorList.append(QObject::tr("No name specified for alternate register"
+			" within %1").arg(parentIdentifier));
+		valid = false;
+	}
+
+	if (alternateGroups_.isEmpty()) {
+		errorList.append(QObject::tr("At least one alternate group must be "
+			"specified for alternate register %1 within %2").arg(name_).arg(
+			parentIdentifier));
+		valid = false;
+	}
+
+	if (alternateRegisterDef_ && !alternateRegisterDef_->isValid(errorList, QObject::tr(
+		"alternate register %1").arg(name_))) {
+		valid = false;
+	}
+
+	foreach (QSharedPointer<Parameter> param, parameters_) {
+		if (!param->isValid(errorList, QObject::tr("alternate register %1").arg(name_))) {
+			valid = false;
+		}
+	}
+
+	return valid;
 }
 
 const QList<QString>& AlternateRegister::getAlternateGroups() const {

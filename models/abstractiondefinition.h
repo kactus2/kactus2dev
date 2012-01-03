@@ -65,7 +65,7 @@ public:
 	 *
 	 * \return QSharedPointer<LibraryComponent> Pointer to the cloned abstraction definition.
 	*/
-	virtual QSharedPointer<LibraryComponent> clone();
+	virtual QSharedPointer<LibraryComponent> clone() const;
 
 	/*! \brief Set the vlnv
 	 *

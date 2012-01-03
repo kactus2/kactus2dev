@@ -105,7 +105,7 @@ Design& Design::operator=( const Design& other ) {
 Design::~Design() {
 }
 
-QSharedPointer<LibraryComponent> Design::clone() {
+QSharedPointer<LibraryComponent> Design::clone() const {
 	return QSharedPointer<LibraryComponent>(new Design(*this));
 }
 

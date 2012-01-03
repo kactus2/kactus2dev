@@ -21,7 +21,7 @@ class Parameter;
  * class needs to be inherited by one of the mentioned classes, this doesn't
  * represent any IP-Xact element alone.
  *
- * Base classes and their mathing elements in IP-Xact:
+ * Base classes and their matching elements in IP-Xact:
  *
  * Register = 			spirit:register
  * AlternateRegister = 	spirit:alternateRegister
@@ -51,59 +51,93 @@ public:
 	//! \brief The destructor
 	virtual ~RegisterModel();
 
+	/*! \brief Clone the register model and return pointer to the copy.
+	 * 
+	 * This is virtual function so it can be used to make a copy of classes that
+	 * inherit register model.
+	 *
+	 * \return QSharedPointer<RegisterModel> Pointer to the cloned register model.
+	*/
+	virtual QSharedPointer<RegisterModel> clone() = 0;
+
+	/*! \brief Writes the base class information with the given writer
+	*
+	* This function must be called by the inherited class right after writing
+	* the startElement() call because this function writes the attribute for
+	* the base element.
+	*
+	* \param writer A reference to a QXmlStreamWriter instance to write the
+	* contents of the class into file.
+	*
+	* Exception guarantee: basic
+	* \exception Write_error Occurs if this class or one of it's member
+	* classes is not valid IP-Xact at the moment of writing.
+	*/
+	virtual void write(QXmlStreamWriter& writer);
+
+	/*! \brief Check if the register model is in a valid state.
+	 *
+	 * \param errorList The list to add the possible error messages to.
+	 * \param parentIdentifier String from parent to help to identify the location of the error.
+	 *
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	virtual bool isValid(QStringList& errorList, 
+		const QString& parentIdentifier) const = 0;
+
 	/*! \brief Get the description of the register.
 	 *
 	 * \return QString containing the description
 	 */
-    QString getDescription() const;
+    virtual QString getDescription() const;
 
     /*! \brief Get the display name of the register.
      *
      * \return QString containing the display name.
      */
-    QString getDisplayName() const;
+    virtual QString getDisplayName() const;
 
     /*! \brief Get the id of the register.
      *
      * \return QString containing the id
      */
-    QString getId() const;
+    virtual QString getId() const;
 
     /*! \brief Get the name of the register.
      *
      * \return QString containing the name.
      */
-    QString getName() const;
+    virtual QString getName() const;
 
     /*! \brief Get the parameters of the register.
      *
      * \return QList containing pointers to the parameters.
      */
-    const QList<QSharedPointer<Parameter> >& getParameters() const;
+    virtual const QList<QSharedPointer<Parameter> >& getParameters() const;
 
     /*! \brief Set the description of the register.
      *
      * \param description QString containing the description.
      */
-    void setDescription(const QString& description);
+    virtual void setDescription(const QString& description);
 
     /*! \brief Set the display name of the register.
      *
      * \param displayName QString containing the name
      */
-    void setDisplayName(const QString& displayName);
+    virtual void setDisplayName(const QString& displayName);
 
     /*! \brief Set the id of the register.
      *
      * \param id QString containing the id.
      */
-    void setId(const QString& id);
+    virtual void setId(const QString& id);
 
     /*! \brief Set the name for the register.
      *
      * \param name QString containing the name.
      */
-    void setName(const QString& name);
+    virtual void setName(const QString& name);
 
     /*! \brief Set the parameters for the register.
      *
@@ -111,24 +145,9 @@ public:
      *
      * \param parameters QList containing new parameters
      */
-    void setParameters(const QList<QSharedPointer<Parameter> >& parameters);
+    virtual void setParameters(const QList<QSharedPointer<Parameter> >& parameters);
 
-    /*! \brief Writes the base class information with the given writer
-     *
-     * This function must be called by the inherited class right after writing
-     * the startElement() call because this function writes the attribute for
-     * the base element.
-     *
-     * \param writer A reference to a QXmlStreamWriter instance to write the
-     * contents of the class into file.
-     *
-     * Exception guarantee: basic
-     * \exception Write_error Occurs if this class or one of it's member
-     * classes is not valid IP-Xact at the moment of writing.
-     */
-    virtual void write(QXmlStreamWriter& writer);
-
-private:
+protected:
 
 	/*! \brief Uniquely identifies an element within this object.
 	 * OPTIONAL spirit:id

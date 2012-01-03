@@ -329,7 +329,7 @@ DesignConfiguration::~DesignConfiguration() {
     viewConfigurations_.clear();
 }
 
-QSharedPointer<LibraryComponent> DesignConfiguration::clone() {
+QSharedPointer<LibraryComponent> DesignConfiguration::clone() const {
 	return QSharedPointer<LibraryComponent>(new DesignConfiguration(*this));	
 }
 

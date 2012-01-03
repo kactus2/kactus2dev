@@ -71,16 +71,16 @@ registerData_() {
 	}
 
 	// if mandatory addressOffset is not defined
-	if (addressOffset_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory addressOffset missing in "
-				"spirit:registerFile"));
-	}
-
-	// if mandatory range is missing
-	if (range_ == 0) {
-		throw Parse_error(QObject::tr("Mandatory range missing in spirit:"
-				"registerFile"));
-	}
+// 	if (addressOffset_.isNull()) {
+// 		throw Parse_error(QObject::tr("Mandatory addressOffset missing in "
+// 				"spirit:registerFile"));
+// 	}
+// 
+// 	// if mandatory range is missing
+// 	if (range_ == 0) {
+// 		throw Parse_error(QObject::tr("Mandatory range missing in spirit:"
+// 				"registerFile"));
+// 	}
 	return;
 }
 
@@ -159,6 +159,10 @@ RegisterFile& RegisterFile::operator=( const RegisterFile& other ) {
 RegisterFile::~RegisterFile() {
 }
 
+QSharedPointer<RegisterModel> RegisterFile::clone() {
+	return QSharedPointer<RegisterModel>(new RegisterFile(*this));
+}
+
 void RegisterFile::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:registerFile");
 
@@ -204,6 +208,44 @@ void RegisterFile::write(QXmlStreamWriter& writer) {
 	}
 
 	writer.writeEndElement(); // spirit:registerFile
+}
+
+bool RegisterFile::isValid( QStringList& errorList,
+						   const QString& parentIdentifier ) const {
+	bool valid = true;
+	const QString thisIdentifier(QObject::tr("register file %1").arg(name_));
+
+	if (name_.isEmpty()) {
+		errorList.append(QObject::tr("No name specified for register file"
+			" within %1").arg(parentIdentifier));
+		valid = false;
+	}
+
+	if (addressOffset_.isEmpty()) {
+		errorList.append(QObject::tr("No address offset set for %1 within %2").arg(
+			thisIdentifier).arg(parentIdentifier));
+		valid = false;
+	}
+
+	if (range_ == 0) {
+		errorList.append(QObject::tr("No range set for %1 within %2").arg(
+			thisIdentifier).arg(parentIdentifier));
+		valid = false;
+	}
+
+	foreach (QSharedPointer<RegisterModel> regModel, registerData_) {
+		if (!regModel->isValid(errorList, thisIdentifier)) {
+			valid = false;
+		}
+	}
+
+	foreach (QSharedPointer<Parameter> param, parameters_) {
+		if (!param->isValid(errorList, thisIdentifier)) {
+			valid = false;
+		}
+	}
+
+	return valid;
 }
 
 QString RegisterFile::getAddressOffset() const {

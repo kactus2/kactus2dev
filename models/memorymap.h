@@ -45,6 +45,32 @@ public:
 	 */
 	~MemoryMap();
 
+	/*! \brief Writes the memoryMap information with the writer
+	*
+	* Before calling this function the caller must use writer to write the
+	* root element for memory map i.e spirit:memoryMap or
+	* spirit:localMemoryMap. This is because this same class is used to
+	* represent multiple different elements in IP-Xact specification.
+	*
+	* \param writer A reference to a QXmlStreamWriter instance used to write
+	* the information.
+	*
+	* Exception guarantee: basic
+	* \exception Write_error Occurs when this class or one of it's member
+	* classes is not valid IP-Xact at the moment of writing.
+	*/
+	void write(QXmlStreamWriter& writer);
+
+	/*! \brief Check if the memory map is in a valid state.
+	 *
+	 * \param errorList The list to add the possible error messages to.
+	 * \param parentIdentifier String from parent to help to identify the location of the error.
+	 *
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid(QStringList& errorList, 
+		const QString& parentIdentifier) const;
+
 	/*! \brief Get the address unit bits value
 	 *
 	 * \return The address unit bit value
@@ -86,22 +112,6 @@ public:
 	 */
 	void setName(const QString &name);
 
-	/*! \brief Writes the memoryMap information with the writer
-	 *
-	 * Before calling this function the caller must use writer to write the
-	 * root element for memory map i.e spirit:memoryMap or
-	 * spirit:localMemoryMap. This is because this same class is used to
-	 * represent multiple different elements in IP-Xact specification.
-	 *
-	 * \param writer A reference to a QXmlStreamWriter instance used to write
-	 * the information.
-	 *
-	 * Exception guarantee: basic
-	 * \exception Write_error Occurs when this class or one of it's member
-	 * classes is not valid IP-Xact at the moment of writing.
-	 */
-	void write(QXmlStreamWriter& writer);
-
 private:
 
 	/*!
@@ -118,7 +128,7 @@ private:
 
 	/*!
 	 * OPTIONAL
-	 * Contains pointers to the memorymap elements
+	 * Contains pointers to the memory map elements
 	 */
 	QList<QSharedPointer<MemoryMapItem> > items_;
 

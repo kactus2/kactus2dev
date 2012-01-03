@@ -39,10 +39,10 @@ parameters_() {
 	}
 
 	// if mandatory elements are missing
-	if (!MemoryMapItem::attributes_.contains(QString("spirit:masterRef"))) {
-		throw Parse_error(QObject::tr("Mandatory attribute spirit:masterRef"
-				" missing in spirit:subspaceMap"));
-	}
+// 	if (!MemoryMapItem::attributes_.contains(QString("spirit:masterRef"))) {
+// 		throw Parse_error(QObject::tr("Mandatory attribute spirit:masterRef"
+// 				" missing in spirit:subspaceMap"));
+// 	}
 }
 
 SubspaceMap::SubspaceMap( const SubspaceMap &other ):
@@ -79,6 +79,10 @@ SubspaceMap::~SubspaceMap() {
 	parameters_.clear();
 }
 
+QSharedPointer<MemoryMapItem> SubspaceMap::clone() const {
+	return QSharedPointer<MemoryMapItem>(new SubspaceMap(*this));
+}
+
 void SubspaceMap::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:subspaceMap");
 	// write the base class information
@@ -96,6 +100,38 @@ void SubspaceMap::write(QXmlStreamWriter& writer) {
 	}
 
 	writer.writeEndElement(); // spirit:subspaceMap
+}
+
+bool SubspaceMap::isValid( QStringList& errorList, 
+						  const QString& parentIdentifier ) const {
+	bool valid = false;
+	const QString thisIdentifier(QObject::tr("subspace map %1").arg(name_));
+
+	if (name_.isEmpty()) {
+		errorList.append(QObject::tr("No name specified for subspace map within %1").arg(
+			parentIdentifier));
+		valid = false;
+	}
+
+	if (!attributes_.contains(QString("spirit:masterRef"))) {
+		errorList.append(QObject::tr("No master reference set for %1 within %2").arg(
+			thisIdentifier).arg(parentIdentifier));
+		valid = false;
+	}
+
+	if (baseAddress_.isEmpty()) {
+		errorList.append(QObject::tr("No base address set for %1 within %2").arg(
+			thisIdentifier).arg(parentIdentifier));
+		valid = false;
+	}
+
+	foreach (QSharedPointer<Parameter> param, parameters_) {
+		if (!param->isValid(errorList, thisIdentifier)) {
+			valid = false;
+		}
+	}
+
+	return valid;
 }
 
 const QList<QSharedPointer<Parameter> >& SubspaceMap::getParameters() {

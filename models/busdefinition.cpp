@@ -151,7 +151,7 @@ BusDefinition::~BusDefinition() {
 	systemGroupNames_.clear();
 }
 
-QSharedPointer<LibraryComponent> BusDefinition::clone() {
+QSharedPointer<LibraryComponent> BusDefinition::clone() const {
 	return QSharedPointer<LibraryComponent>(new BusDefinition(*this));
 }
 
@@ -159,7 +159,7 @@ void BusDefinition::write(QFile& file) {
 	// create a writer instance and set it to operate on the given file
 	QXmlStreamWriter writer(&file);
 
-	// writer automatically adds whitespaces to make document more readable
+	// writer automatically adds white spaces to make document more readable
 	writer.setAutoFormatting(true);
 	// writer uses one tab as indentation
 	writer.setAutoFormattingIndent(-1);

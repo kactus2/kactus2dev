@@ -63,10 +63,10 @@ addressUnitBits_(0) {
 	}
 
 	// if mandatory element name is missing
-	if (name_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory element name is missing in"
-				" spirit:memoryMap"));
-	}
+// 	if (name_.isNull()) {
+// 		throw Parse_error(QObject::tr("Mandatory element name is missing in"
+// 				" spirit:memoryMap"));
+// 	}
 	return;
 }
 
@@ -78,8 +78,7 @@ addressUnitBits_(other.addressUnitBits_) {
 
 	foreach (QSharedPointer<MemoryMapItem> item, other.items_) {
 		if (item) {
-			QSharedPointer<MemoryMapItem> copy = QSharedPointer<MemoryMapItem>(
-				new MemoryMapItem(*item.data()));
+			QSharedPointer<MemoryMapItem> copy = item->clone();
 			items_.append(copy);
 		}
 	}
@@ -94,8 +93,7 @@ MemoryMap & MemoryMap::operator=( const MemoryMap &other ) {
 		items_.clear();
 		foreach (QSharedPointer<MemoryMapItem> item, other.items_) {
 			if (item) {
-				QSharedPointer<MemoryMapItem> copy = QSharedPointer<MemoryMapItem>(
-					new MemoryMapItem(*item.data()));
+				QSharedPointer<MemoryMapItem> copy = item->clone();
 				items_.append(copy);
 			}
 		}
@@ -125,7 +123,7 @@ void MemoryMap::write(QXmlStreamWriter& writer) {
 		writer.writeTextElement("spirit:name", name_);
 	}
 
-	// write all addressblock, bank and subspaceMap elements
+	// write all address block, bank and subspaceMap elements
 	for (int i = 0; i < items_.size(); ++i) {
 		items_.at(i)->write(writer);
 	}
@@ -135,6 +133,26 @@ void MemoryMap::write(QXmlStreamWriter& writer) {
 				QString::number(addressUnitBits_));
 	}
 
+}
+
+bool MemoryMap::isValid( QStringList& errorList, 
+						const QString& parentIdentifier ) const {
+	bool valid = true;
+	const QString thisIdentifier(QObject::tr("memory map %1").arg(name_));
+
+	if (name_.isEmpty()) {
+		errorList.append(QObject::tr("No name specified for memory map within %1").arg(
+			parentIdentifier));
+		valid = false;
+	}
+
+	foreach (QSharedPointer<MemoryMapItem> memItem, items_) {
+		if (!memItem->isValid(errorList, thisIdentifier)) {
+			valid = false;
+		}
+	}
+
+	return valid;
 }
 
 void MemoryMap::setName(const QString &name) {

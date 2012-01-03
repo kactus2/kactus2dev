@@ -49,10 +49,10 @@ dim_(-1), addressOffset_(), alternateRegisters_(), registerDefinition_() {
 			new RegisterDefinition(registerNode));
 
 	// if mandatory addressOffset is missing
-	if (addressOffset_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory addressOffset missing in"
-				" spirit:register"));
-	}
+// 	if (addressOffset_.isNull()) {
+// 		throw Parse_error(QObject::tr("Mandatory addressOffset missing in"
+// 				" spirit:register"));
+// 	}
 	return;
 }
 
@@ -110,6 +110,10 @@ Register::~Register() {
 	registerDefinition_.clear();
 }
 
+QSharedPointer<RegisterModel> Register::clone() {
+	return QSharedPointer<RegisterModel>(new Register(*this));
+}
+
 void Register::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:register");
 
@@ -147,6 +151,43 @@ void Register::write(QXmlStreamWriter& writer) {
 		writer.writeEndElement(); // spirit:alternateRegisters
 	}
 	writer.writeEndElement(); // spirit:register
+}
+
+bool Register::isValid( QStringList& errorList,
+					   const QString& parentIdentifier ) const {
+	bool valid = true;
+	const QString thisIdentifier(QObject::tr("register %1").arg(name_));
+
+	if (name_.isEmpty()) {
+		errorList.append(QObject::tr("No name specified for register within %1").arg(
+			parentIdentifier));
+		valid = false;
+	}
+
+	if (addressOffset_.isEmpty()) {
+		errorList.append(QObject::tr("No address offset set for register %1"
+			" within %2").arg(name_).arg(parentIdentifier));
+		valid = false;
+	}
+
+	if (registerDefinition_ && !registerDefinition_->isValid(errorList,
+		thisIdentifier)) {
+			valid = false;
+	}
+
+	foreach (QSharedPointer<AlternateRegister> alterRegister, alternateRegisters_) {
+		if (!alterRegister->isValid(errorList, thisIdentifier)) {
+			valid = false;
+		}
+	}
+
+	foreach (QSharedPointer<Parameter> param, parameters_) {
+		if (!param->isValid(errorList, thisIdentifier)) {
+			valid = false;
+		}
+	}
+
+	return valid;
 }
 
 QString Register::getAddressOffset() const {

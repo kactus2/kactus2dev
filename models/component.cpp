@@ -579,7 +579,7 @@ Component::~Component() {
 	return;
 }
 
-QSharedPointer<LibraryComponent> Component::clone() {
+QSharedPointer<LibraryComponent> Component::clone() const {
 	return QSharedPointer<LibraryComponent>(new Component(*this));
 }
 

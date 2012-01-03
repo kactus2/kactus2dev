@@ -53,10 +53,10 @@ attributes_(), baseAddress_(QString()), baseAddrAttributes_() {
 	}
 
 	// check that mandatory elements were found
-	if (name_.isNull() ) {
-		throw Parse_error(QObject::tr("Mandatory element name missing in "
-				"MemoryMapItem"));
-	}
+// 	if (name_.isNull() ) {
+// 		throw Parse_error(QObject::tr("Mandatory element name missing in "
+// 				"MemoryMapItem"));
+// 	}
 	return;
 }
 

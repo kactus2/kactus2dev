@@ -22,7 +22,9 @@
 #include <QXmlStreamWriter>
 #include <QSharedPointer>
 
-Bank::Bank(QDomNode &memoryMapNode): MemoryMapItem(memoryMapNode), items_(),
+Bank::Bank(QDomNode &memoryMapNode): 
+MemoryMapItem(memoryMapNode),
+items_(),
 memoryBlockData_(0) {
 
 	// the temporary variables to store the parsed values for memoryBlockData_
@@ -90,15 +92,15 @@ memoryBlockData_(0) {
 	tempParameters.clear();
 
 	// if mandatory elements are missing
-	if (!MemoryMapItem::attributes_.contains(QString("spirit:bankAlignment"))) {
-		throw Parse_error(QObject::tr("Mandatory element spirit:bankAlignment"
-				" missing in spirit:bank"));
-	}
-
-	// if no items are specified
-	if (items_.size() == 0) {
-		throw Parse_error(QObject::tr("No items specified in spirit:bank"));
-	}
+// 	if (!MemoryMapItem::attributes_.contains(QString("spirit:bankAlignment"))) {
+// 		throw Parse_error(QObject::tr("Mandatory element spirit:bankAlignment"
+// 				" missing in spirit:bank"));
+// 	}
+// 
+// 	// if no items are specified
+// 	if (items_.size() == 0) {
+// 		throw Parse_error(QObject::tr("No items specified in spirit:bank"));
+// 	}
 }
 
 Bank::Bank( const Bank &other ):
@@ -183,6 +185,10 @@ Bank::~Bank() {
 	memoryBlockData_.clear();
 }
 
+QSharedPointer<MemoryMapItem> Bank::clone() const {
+	return QSharedPointer<MemoryMapItem>(new Bank(*this));
+}
+
 void Bank::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:bank");
 
@@ -199,6 +205,49 @@ void Bank::write(QXmlStreamWriter& writer) {
 	}
 
 	writer.writeEndElement(); // spirit:bank
+}
+
+bool Bank::isValid( QStringList& errorList, 
+				   const QString& parentIdentifier ) const {
+	bool valid = true;
+	const QString thisIdentifier(QObject::tr("bank %1").arg(name_));
+
+	if (name_.isEmpty()) {
+		errorList.append(QObject::tr("No name specified for bank within %1").arg(
+			parentIdentifier));
+		valid = false;
+	}
+
+	if (!attributes_.contains(QString("spirit:bankAlignment"))) {
+		errorList.append(QObject::tr("No bank alignment set for %1 within %2").arg(
+			thisIdentifier).arg(parentIdentifier));
+		valid = false;
+	}
+
+	if (baseAddress_.isEmpty()) {
+		errorList.append(QObject::tr("No base address set for %1 within %2").arg(
+			thisIdentifier).arg(parentIdentifier));
+		valid = false;
+	}
+
+	if (memoryBlockData_ && !memoryBlockData_->isValid(errorList, thisIdentifier)) {
+		valid = false;
+	}
+
+	if (items_.isEmpty()) {
+		errorList.append(QObject::tr("At least one sub item must be listed in %1"
+			" within %2").arg(thisIdentifier).arg(parentIdentifier));
+		valid = false;
+	}
+	else {
+		foreach (QSharedPointer<MemoryMapItem> memItem, items_) {
+			if (!memItem->isValid(errorList, thisIdentifier)) {
+				valid = false;
+			}
+		}
+	}
+
+	return valid;
 }
 
 void Bank::setItems(QList<QSharedPointer<MemoryMapItem> > &items) {
