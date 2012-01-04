@@ -77,10 +77,10 @@ attributes_() {
 	}
 
 	// if mandatory fields is missing
-	if (!busType_.isValid()) {
-		throw Parse_error(QObject::tr("Mandatory element spirit:busType "
-				"missing in spirit:abstractionDefinition"));
-	}
+// 	if (!busType_.isValid()) {
+// 		throw Parse_error(QObject::tr("Mandatory element spirit:busType "
+// 				"missing in spirit:abstractionDefinition"));
+// 	}
 }
 
 AbstractionDefinition::AbstractionDefinition( const AbstractionDefinition& other ):
@@ -196,6 +196,35 @@ void AbstractionDefinition::write(QFile& file) {
 	return;
 
 }
+
+bool AbstractionDefinition::isValid( QStringList& errorList ) const {
+	bool valid = true;
+	QString thisIdentifier(QObject::tr("containing abstraction definition"));
+
+	if (!vlnv_) {
+		errorList.append(QObject::tr("No vlnv specified for the abstraction definition."));
+		valid = false;
+	}
+	else if (!vlnv_->isValid(errorList, thisIdentifier)) {
+		valid = false;
+	}
+	else {
+		thisIdentifier = QObject::tr("abstraction definition %1").arg(vlnv_->toString());
+	}
+
+	if (!busType_.isValid(errorList, thisIdentifier)) {
+		valid = false;
+	}
+
+	foreach (QSharedPointer<PortAbstraction> port, ports_) {
+		if (!port->isValid(errorList, thisIdentifier)) {
+			valid = false;
+		}
+	}
+
+	return valid;
+}
+
 
 // get the attributes
 const QMap<QString, QString>& AbstractionDefinition::getAttributes() {
@@ -379,4 +408,3 @@ bool AbstractionDefinition::hasDefaultValue( const QString& portName ) const {
 	// if port was not found
 	return false;
 }
-

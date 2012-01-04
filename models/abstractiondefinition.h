@@ -67,6 +67,31 @@ public:
 	*/
 	virtual QSharedPointer<LibraryComponent> clone() const;
 
+	/*! \brief Write the document contents into file.
+	*
+	* Prints all information stored in this document into specified file
+	* generating a valid IP-Xact document.
+	*
+	* \param file A reference to QFile instance representing the file to write
+	* the data into.
+	*
+	* \exception Write_error Occurs if the class or one of it's member classes
+	* is not valid IP-Xact at the moment of writing.
+	*/
+	virtual void write(QFile& file);
+
+	/*! \brief Check the validity of the abstraction definition.
+	 * 
+	 * This function should be used to check if the abstraction definition is in
+	 * valid state before writing the xml to the disk.
+	 * 
+	 * \param errorList The error messages of the detected errors are appended to
+	 * this list.
+	 *
+	 * \return bool True if the abstraction definition was valid.
+	*/
+	virtual bool isValid(QStringList& errorList) const;
+
 	/*! \brief Set the vlnv
 	 *
 	 * \param vlnv Reference to the vlnv to set
@@ -146,19 +171,6 @@ public:
 	 * \return QList containing pointers to the VLNVs.
 	 */
 	virtual const QList<VLNV> getDependentVLNVs() const;
-
-	/*! \brief Write the document contents into file.
-	 *
-	 * Prints all information stored in this document into specified file
-	 * generating a valid IP-Xact document.
-	 *
-	 * \param file A reference to QFile instance representing the file to write
-	 * the data into.
-	 *
-	 * \exception Write_error Occurs if the class or one of it's member classes
-	 * is not valid IP-Xact at the moment of writing.
-	 */
-	virtual void write(QFile& file);
 
 	/*! \brief Get the logical names of the ports defined in this abstraction definition.
 	 *

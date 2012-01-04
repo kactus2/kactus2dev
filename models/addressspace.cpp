@@ -68,20 +68,20 @@ AddressSpace::AddressSpace(QDomNode &addrSpaceNode): name_(QString()),
 		}
 	}
 
-	if (name_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory element name missing in "
-				"spirit:addressSpace"));
-	}
-
-	if (range_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory element range missing in"
-				" spirit:addressSpace"));
-	}
-
-	if (width_ < 0) {
-		throw Parse_error(QObject::tr("Mandatory element width missing in "
-				"spirit:addressSpace"));
-	}
+// 	if (name_.isNull()) {
+// 		throw Parse_error(QObject::tr("Mandatory element name missing in "
+// 				"spirit:addressSpace"));
+// 	}
+// 
+// 	if (range_.isNull()) {
+// 		throw Parse_error(QObject::tr("Mandatory element range missing in"
+// 				" spirit:addressSpace"));
+// 	}
+// 
+// 	if (width_ < 0) {
+// 		throw Parse_error(QObject::tr("Mandatory element width missing in "
+// 				"spirit:addressSpace"));
+// 	}
 	return;
 }
 
@@ -218,6 +218,42 @@ void AddressSpace::write(QXmlStreamWriter& writer) {
 	}
 
 	writer.writeEndElement(); // spirit:addressSpace
+}
+
+bool AddressSpace::isValid( QStringList& errorList, 
+						   const QString& parentIdentifier ) const {
+	bool valid = true;
+	const QString thisIdentifier(QObject::tr("address space %1").arg(name_));
+
+	if (name_.isEmpty()) {
+		errorList.append(QObject::tr("No name specified for %1 within %2").arg(
+			thisIdentifier).arg(parentIdentifier));
+		valid = false;
+	}
+
+	if (range_.isEmpty()) {
+		errorList.append(QObject::tr("No range set for %1 within %2").arg(
+			thisIdentifier).arg(parentIdentifier));
+		valid = false;
+	}
+
+	if (width_ < 0) {
+		errorList.append(QObject::tr("No width set for %1 within %2").arg(
+			thisIdentifier).arg(parentIdentifier));
+		valid = false;
+	}
+
+	if (localMemoryMap_ && !localMemoryMap_->isValid(errorList, thisIdentifier)) {
+		valid = false;
+	}
+
+	foreach (QSharedPointer<Parameter> param, parameters_) {
+		if (!param->isValid(errorList, thisIdentifier)) {
+			valid = false;
+		}
+	}
+
+	return valid;
 }
 
 void AddressSpace::setAddressUnitBits(unsigned int addressUnitBits) {

@@ -758,6 +758,108 @@ void Component::write(QFile& file) {
 
 }
 
+bool Component::isValid( QStringList& errorList ) const {
+	bool valid = true;
+	QString thisIdentifier(QObject::tr("containing component"));
+
+	if (!vlnv_) {
+		errorList.append(QObject::tr("No vlnv specified for the component."));
+		valid = false;
+	}
+	else if (!vlnv_->isValid(errorList, thisIdentifier)) {
+		valid = false;
+	}
+	else {
+		thisIdentifier = QObject::tr("component %1").arg(vlnv_->toString());
+	}
+
+	// get the names of all file sets
+	QStringList fileSetNames;
+	foreach (QSharedPointer<FileSet> fileset, fileSets_) {
+
+		fileSetNames.append(fileset->getName());
+
+		if (!fileset->isValid(errorList, thisIdentifier, true)) {
+			valid = false;
+		}
+	}
+
+	// the list to contains the bounds and names of the physical ports
+	QList<General::PortBounds> physPorts;
+	QStringList portNames;
+	
+	if (model_) {
+		physPorts = model_->getPortBounds();
+		portNames = model_->getPortNames();
+
+		if (!model_->isValid(fileSetNames, errorList, thisIdentifier)) {
+			valid = false;
+		}
+	}
+
+	foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {
+		if (!busif->isValid(physPorts, errorList, thisIdentifier)) {
+			valid = false;
+		}
+	}
+
+	foreach (QSharedPointer<Channel> channel, channels_) {
+		if (!channel->isValid(errorList, thisIdentifier)) {
+			valid = false;
+		}
+	}
+
+	foreach (QSharedPointer<RemapState> remState, remapStates_) {
+		if (!remState->isValid(portNames, errorList, thisIdentifier)) {
+			valid = false;
+		}
+	}
+
+	foreach (QSharedPointer<AddressSpace> addrSpace, addressSpaces_) {
+		if (!addrSpace->isValid(errorList, thisIdentifier)) {
+			valid = false;
+		}
+	}
+
+	foreach (QSharedPointer<MemoryMap> memMap, memoryMaps_) {
+		if (!memMap->isValid(errorList, thisIdentifier)) {
+			valid = false;
+		}
+	}
+
+	foreach (QSharedPointer<ComponentGenerator> compGen, compGenerators_) {
+		if (!compGen->isValid(errorList, thisIdentifier)) {
+			valid = false;
+		}
+	}
+
+	foreach (QSharedPointer<Choice> choice, choices_) {
+		if (!choice->isValid(errorList, thisIdentifier)) {
+			valid = false;
+		}
+	}
+
+	foreach (QSharedPointer<Cpu> cpu, cpus_) {
+		if (!cpu->isValid(errorList, thisIdentifier)) {
+			valid = false;
+		}
+	}
+
+	foreach (QSharedPointer<OtherClockDriver> otherClock, otherClockDrivers_) {
+		if (!otherClock->isValid(errorList, thisIdentifier)) {
+			valid = false;
+		}
+	}
+
+	foreach (QSharedPointer<Parameter> param, parameters_) {
+		if (!param->isValid(errorList, thisIdentifier)) {
+			valid = false;
+		}
+	}
+
+	return valid;
+}
+
 // get the attributes
 const QMap<QString, QString>& Component::getAttributes() const {
 	return attributes_;

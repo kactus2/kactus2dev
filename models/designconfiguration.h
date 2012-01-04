@@ -68,6 +68,16 @@ public:
 
 		//! \brief Assignment operator
 		GeneratorChainConfiguration& operator=(const GeneratorChainConfiguration& other);
+
+		/*! \brief Check if the generator chain configuration is in a valid state.
+		*
+		* \param errorList The list to add the possible error messages to.
+		* \param parentIdentifier String from parent to help to identify the location of the error.
+		*
+		* \return bool True if the state is valid and writing is possible.
+		*/
+		bool isValid(QStringList& errorList, 
+			const QString& parentIdentifier) const;
 	};
 
 	/*! \brief Equals the spirit:interconnectionConfiguration in IP-Xact
@@ -162,6 +172,18 @@ public:
 	* not valid IP-Xact at the moment of writing.
 	*/
 	virtual void write(QFile& file);
+
+	/*! \brief Check the validity of the design configuration.
+	 * 
+	 * This function should be used to check if the design configuration is in 
+	 * valid state before writing the xml to the disk.
+	 * 
+	 * \param errorList The error messages of the detected errors are appended to
+	 * this list.
+	 *
+	 * \return bool True if the design configuration was valid.
+	*/
+	virtual bool isValid(QStringList& errorList) const;
 
 	/*! \brief Set the vlnv
 	 *

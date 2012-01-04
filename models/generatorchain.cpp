@@ -245,16 +245,54 @@ void GeneratorChain::write(QFile& file) {
 	// create a writer instance and set it to operate on the given file
 	QXmlStreamWriter writer(&file);
 
+	// writer automatically adds whitespaces to make document more readable
+	writer.setAutoFormatting(true);
+	// writer uses one tab as indentation
+	writer.setAutoFormattingIndent(-1);
+
 	// call the base class implementation to write the top comment and
-	// vlvn info. It also starts the <spirit:busDefinition> element
+	// vlnv info. It also starts the <spirit:busDefinition> element
 	LibraryComponent::write(writer);
+
+	// set the attributes
+	setXMLNameSpaceAttributes(attributes_);
+
+	// write the attributes for the spirit:component element
+	General::writeAttributes(writer, attributes_);
+
+	// call base class to write the VLNV info
+	LibraryComponent::writeVLNV(writer);
+
+	// if description is specified in the base class
+	if (!LibraryComponent::description_.isEmpty()) {
+		writer.writeTextElement("spirit:description", description_);
+	}
 
 	// own code here
 
-	writer.writeEndElement(); // spirit:busDefinition
+	writer.writeEndElement(); // spirit:generatorChain
 	writer.writeEndDocument();
 	return;
 
+}
+
+bool GeneratorChain::isValid( QStringList& errorList ) const {
+	bool valid = true;
+	QString thisIdentifier(QObject::tr("containing generator chain"));
+
+	if (!vlnv_) {
+		errorList.append(QObject::tr("No vlnv specified for the generator chain."));
+		valid = false;
+	}
+	else if (!vlnv_->isValid(errorList, thisIdentifier)) {
+		valid = false;
+	}
+	else {
+		thisIdentifier = QObject::tr("generator chain %1").arg(vlnv_->toString());
+	}
+
+	// TODO add the validation here when the generators are supported
+	return false;
 }
 
 // get the attributes

@@ -159,6 +159,37 @@ DesignConfiguration::GeneratorChainConfiguration::operator=(
 		return *this;
 }
 
+bool DesignConfiguration::GeneratorChainConfiguration::isValid( 
+	QStringList& errorList, 
+	const QString& parentIdentifier ) const {
+
+	bool valid = true;
+
+	if (!generatorChainRef_.isValid(errorList,
+		QObject::tr("generator chain configuration within %1").arg(parentIdentifier))) {
+		valid = false;
+	}
+
+	for (QMap<QString, QString>::const_iterator i = configurableElements_.begin();
+		i != configurableElements_.end(); ++i) {
+
+			if (i.key().isEmpty()) {
+				errorList.append(QObject::tr("No configurable element value set"
+					" for generator chain configuration within %1").arg(
+					parentIdentifier));
+				valid = false;
+			}
+			if (i.value().isEmpty()) {
+				errorList.append(QObject::tr("No reference id set for configurable"
+					" element value in generator chain configuration within %1").arg(
+					parentIdentifier));
+				valid = false;
+			}
+	}
+
+	return valid;
+}
+
 // class constructor
 DesignConfiguration::DesignConfiguration(QDomDocument& doc):
 LibraryComponent(doc), 
@@ -236,10 +267,10 @@ attributes_() {
 	}
 
 	// if mandatory elemets are missing
-	if (!designRef_.isValid()) {
-		throw Parse_error(QObject::tr("Mandatory element spirit:designRef missing "
-			"in spirit:designConfiguration"));
-	}
+// 	if (!designRef_.isValid()) {
+// 		throw Parse_error(QObject::tr("Mandatory element spirit:designRef missing "
+// 			"in spirit:designConfiguration"));
+// 	}
 	return;
 }
 
@@ -457,6 +488,50 @@ void DesignConfiguration::write(QFile& file) {
     writer.writeEndElement(); // spirit:designConfiguration
     writer.writeEndDocument();
     return;
+}
+
+bool DesignConfiguration::isValid( QStringList& errorList ) const {
+	bool valid = true;
+	QString thisIdentifier(QObject::tr("containing design configuration"));
+
+	if (!vlnv_) {
+		errorList.append(QObject::tr("No vlnv specified for the design configuration."));
+		valid = false;
+	}
+	else if (!vlnv_->isValid(errorList, thisIdentifier)) {
+		valid = false;
+	}
+	else {
+		thisIdentifier = QObject::tr("design configuration %1").arg(vlnv_->toString());
+	}
+
+	if (!designRef_.isValid(errorList, thisIdentifier)) {
+		valid = false;
+	}
+
+	foreach (QSharedPointer<DesignConfiguration::GeneratorChainConfiguration> genConf, 
+		generatorChainConfs_) {
+			if (!genConf->isValid(errorList, thisIdentifier)) {
+				valid = false;
+			}
+	}
+
+	for (QMap<QString, QString>::const_iterator i = viewConfigurations_.begin();
+		i != viewConfigurations_.end(); ++i) {
+
+			if (i.key().isEmpty()) {
+				errorList.append(QObject::tr("No instance name set for view"
+					" configuration within %1").arg(thisIdentifier));
+				valid = false;
+			}
+			if (i.value().isEmpty()) {
+				errorList.append(QObject::tr("No view name set for view configuration"
+					" within %1").arg(thisIdentifier));
+				valid = false;
+			}
+	}
+
+	return valid;
 }
 
 // get the attributes

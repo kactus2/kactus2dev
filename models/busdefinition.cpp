@@ -7,9 +7,6 @@
 #include "busdefinition.h"
 #include "librarycomponent.h"
 #include "generaldeclarations.h"
-
-// exception include
-#include "../exceptions/parse_error.h"
   
 #include <QDomDocument>
 #include <QString>
@@ -53,20 +50,12 @@ attributes_()  {
 		QString directConnection = temp.item(0).childNodes().item(0).nodeValue();
 		directConnection_ = General::str2Bool(directConnection, true);
 	}
-	else {
-		throw Parse_error(QObject::tr(
-				"Mandatory element spirit:directConnection was not found"));
-	}
 
 	// get isAddressable
 	QDomNodeList temp2 = doc.elementsByTagName("spirit:isAddressable");
 	if (temp2.size() > 0) {
 		QString isAddressable = temp2.item(0).childNodes().item(0).nodeValue();
 		isAddressable_ = General::str2Bool(isAddressable, true);
-	}
-	else {
-		throw Parse_error(QObject::tr("Mandatory element spirit:isAddressable"
-				" was not found"));
 	}
 
 	// get maxMasters_
@@ -232,6 +221,20 @@ void BusDefinition::write(QFile& file) {
 	writer.writeEndElement(); // spirit:busDefinition
 	writer.writeEndDocument();
 	return;
+}
+
+bool BusDefinition::isValid( QStringList& errorList ) const {
+	bool valid = true;
+
+	if (!vlnv_) {
+		errorList.append(QObject::tr("No vlnv specified for the bus definition."));
+		valid = false;
+	}
+	else if (!vlnv_->isValid(errorList, QObject::tr("containing bus definition"))) {
+		valid = false;
+	}
+
+	return valid;
 }
 
 void BusDefinition::setMaxSlaves(int maxSlaves) {

@@ -160,6 +160,18 @@ void PortAbstraction::write(QXmlStreamWriter& writer) {
 	writer.writeEndElement(); // spirit:port
 }
 
+bool PortAbstraction::isValid( QStringList& errorList,
+							  const QString& parentIdentifier ) const {
+
+	if (logicalName_.isEmpty()) {
+		errorList.append(QObject::tr("No logical name set for port within %1").arg(
+			parentIdentifier));
+		return false;
+	}
+
+	return true;
+}
+
 void PortAbstraction::setDescription(const QString& description) {
 	description_ = description;
 }

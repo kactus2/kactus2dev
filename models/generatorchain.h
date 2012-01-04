@@ -94,6 +94,31 @@ public:
 	*/
 	virtual QSharedPointer<LibraryComponent> clone() const;
 
+	/*! \brief Write the document contents into file.
+	*
+	* Prints all information stored in this document into specified file
+	* generating a valid IP-Xact document.
+	*
+	* \param file A reference to QFile instance representing the file to write
+	* the data into.
+	*
+	* \exception Write_error Occurs if the class or one of it's subclasses is
+	* not valid IP-Xact at the moment of writing.
+	*/
+	virtual void write(QFile& file);
+
+	/*! \brief Check the validity of the generator chain.
+	 * 
+	 * This function should be used to check if the generator chain is in valid state
+	 * before writing the xml to the disk.
+	 * 
+	 * \param errorList The error messages of the detected errors are appended to
+	 * this list.
+	 *
+	 * \return bool True if the generator chain was valid.
+	*/
+	virtual bool isValid(QStringList& errorList) const;
+
 	/*! \brief Set the vlnv
 	 *
 	 * \param vlnv Reference to the vlnv to set
@@ -226,19 +251,6 @@ public:
 	 * generatorChain needs.
 	 */
 	virtual const QList<VLNV> getDependentVLNVs() const;
-
-	/*! \brief Write the document contents into file.
-	 *
-	 * Prints all information stored in this document into specified file
-	 * generating a valid IP-Xact document.
-	 *
-	 * \param file A reference to QFile instance representing the file to write
-	 * the data into.
-	 *
-	 * \exception Write_error Occurs if the class or one of it's subclasses is
-	 * not valid IP-Xact at the moment of writing.
-	 */
-	virtual void write(QFile& file);
 
 private:
 
