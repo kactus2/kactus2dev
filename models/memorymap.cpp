@@ -146,7 +146,18 @@ bool MemoryMap::isValid( QStringList& errorList,
 		valid = false;
 	}
 
+	QStringList memItemNames;
 	foreach (QSharedPointer<MemoryMapItem> memItem, items_) {
+
+		if (memItemNames.contains(memItem->getName())) {
+			errorList.append(QObject::tr("%1 contains several memory map items"
+				" with name %2").arg(thisIdentifier).arg(memItem->getName()));
+			valid = false;
+		}
+		else {
+			memItemNames.append(memItem->getName());
+		}
+
 		if (!memItem->isValid(errorList, thisIdentifier)) {
 			valid = false;
 		}

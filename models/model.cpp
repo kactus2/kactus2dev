@@ -195,19 +195,52 @@ bool Model::isValid( const QStringList& fileSetNames,
 	bool valid = true;
 	bool hasViews = !views_.isEmpty();
 
+	QStringList portNames;
 	foreach (QSharedPointer<Port> port, ports_) {
+
+		if (portNames.contains(port->getName())) {
+			errorList.append(QObject::tr("%1 contains several ports with name %2").arg(
+				parentIdentifier).arg(port->getName()));
+			valid = false;
+		}
+		else {
+			portNames.append(port->getName());
+		}
+
 		if (!port->isValid(hasViews, errorList, parentIdentifier)) {
 			valid = false;
 		}
 	}
 
+	QStringList viewNames;
 	foreach (QSharedPointer<View> view, views_) {
+
+		if (viewNames.contains(view->getName())) {
+			errorList.append(QObject::tr("%1 contains several views with name %2").arg(
+				parentIdentifier).arg(view->getName()));
+			valid = false;
+		}
+		else {
+			viewNames.append(view->getName());
+		}
+
 		if (!view->isValid(fileSetNames, errorList, parentIdentifier)) {
 			valid = false;
 		}
 	}
 
+	QStringList modelParamNames;
 	foreach (QSharedPointer<ModelParameter> modelParam, modelParameters_) {
+
+		if (modelParamNames.contains(modelParam->getName())) {
+			errorList.append(QObject::tr("%1 contains several model parameters"
+				" with name %2").arg(parentIdentifier).arg(modelParam->getName()));
+			valid = false;
+		}
+		else {
+			modelParamNames.append(modelParam->getName());
+		}
+
 		if (!modelParam->isValid(errorList, parentIdentifier)) {
 			valid = false;
 		}

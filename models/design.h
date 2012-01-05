@@ -145,6 +145,16 @@ public:
 		ComponentInstance& operator=(const ComponentInstance& other);
 
         void parsePortPositions(QDomNode& node);
+
+		/*! \brief Check if the component instance is in a valid state.
+		*
+		* \param errorList The list to add the possible error messages to.
+		* \param parentIdentifier String from parent to help to identify the location of the error.
+		*
+		* \return bool True if the state is valid and writing is possible.
+		*/
+		bool isValid(QStringList& errorList, 
+			const QString& parentIdentifier) const;
     };
 
 	/*! \brief Describes the spirit:interface type in an IP-XACT
@@ -182,6 +192,18 @@ public:
 
 		//! \brief Assignment operator
 		Interface& operator=(const Interface& other);
+
+		/*! \brief Check if the  is in a valid state.
+		* 
+		* \param instanceNames Contains the names of component instances in containing design.
+		* \param errorList The list to add the possible error messages to.
+		* \param parentIdentifier String from parent to help to identify the location of the error.
+		*
+		* \return bool True if the state is valid and writing is possible.
+		*/
+		bool isValid(const QStringList& instanceNames,
+			QStringList& errorList, 
+			const QString& parentIdentifier) const;
 	};
 
 
@@ -249,6 +271,18 @@ public:
 
 		//! \brief Assignment operator
 		Interconnection& operator=(const Interconnection& other);
+
+		/*! \brief Check if the interconnection is in a valid state.
+		* 
+		* \param instanceNames List of component instance names contained in the design.
+		* \param errorList The list to add the possible error messages to.
+		* \param parentIdentifier String from parent to help to identify the location of the error.
+		*
+		* \return bool True if the state is valid and writing is possible.
+		*/
+		bool isValid(const QStringList& instanceNames, 
+			QStringList& errorList, 
+			const QString& parentIdentifier) const;
 	};
 
 	/*! \brief Describes the spirit:hierConnection element in an
@@ -312,6 +346,17 @@ public:
 		//! \brief Assignment operator
 		HierConnection& operator=(const HierConnection& other);
 
+		/*! \brief Check if the hier connection is in a valid state.
+		* 
+		* \param instanceNames List of component instance names contained in the design.
+		* \param errorList The list to add the possible error messages to.
+		* \param parentIdentifier String from parent to help to identify the location of the error.
+		*
+		* \return bool True if the state is valid and writing is possible.
+		*/
+		bool isValid(const QStringList& instanceNames,
+			QStringList& errorList, 
+			const QString& parentIdentifier) const;
 	};
 
 	/*! \brief Describes a port reference in an ad-hoc connection
@@ -371,6 +416,21 @@ public:
 		//! \brief Assignment operator
 		PortRef& operator=(const PortRef& other);
 
+		/*! \brief Check if the port ref is in a valid state.
+		* 
+		* \param externalRef Must be true for external refs so component reference 
+		* is not checked.
+		* \param instanceNames List containing the component instance names from
+		* the containing design.
+		* \param errorList The list to add the possible error messages to.
+		* \param parentIdentifier String from parent to help to identify the location of the error.
+		*
+		* \return bool True if the state is valid and writing is possible.
+		*/
+		bool isValid(bool externalRef,
+			const QStringList& instanceNames,
+			QStringList& errorList, 
+			const QString& parentIdentifier) const;
 	};
 
 	/*! \brief Describes the spirit:adHocConnection element in an
@@ -446,6 +506,19 @@ public:
 
 		//! \brief Assignment operator
 		AdHocConnection& operator=(const AdHocConnection& other);
+
+		/*! \brief Check if the ad hoc connection is in a valid state.
+		* 
+		* \param instanceNames List containing the component instance names from
+		* the containing design.
+		* \param errorList The list to add the possible error messages to.
+		* \param parentIdentifier String from parent to help to identify the location of the error.
+		*
+		* \return bool True if the state is valid and writing is possible.
+		*/
+		bool isValid(const QStringList& instanceNames,
+			QStringList& errorList, 
+			const QString& parentIdentifier) const;
 	};
 
 	/*! \brief The constructor
@@ -476,6 +549,22 @@ public:
 	 * \return QSharedPointer<LibraryComponent> Pointer to the cloned design.
 	*/
 	virtual QSharedPointer<LibraryComponent> clone() const;
+
+	/*! \brief Write XML IP-XACT document of this design
+	*/
+	virtual void write(QFile& file);
+
+	/*! \brief Check the validity of the design.
+	 * 
+	 * This function should be used to check if the design is in valid state
+	 * before writing the xml to the disk.
+	 * 
+	 * \param errorList The error messages of the detected errors are appended to
+	 * this list.
+	 *
+	 * \return bool True if the design was valid.
+	*/
+	virtual bool isValid(QStringList& errorList) const;
 
 	/*! \brief Set the vlnv
 	 *
@@ -551,10 +640,6 @@ public:
 	/*! \brief Reimplemented from base class
 	*/
 	virtual const QList<VLNV> getDependentVLNVs() const;
-
-	/*! \brief Write XML IP-XACT document of this design
-	*/
-	virtual void write(QFile& file);
 
     /*!
      *  Writes a kactus2:position to the XML stream.

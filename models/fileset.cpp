@@ -210,7 +210,17 @@ bool FileSet::isValid( QStringList& errorList,
 
 	if (checkChildren) {
 		QStringList fileIDs;
+		QStringList fileNames;
 		foreach (QSharedPointer<File> file, files_) {
+
+			if (fileNames.contains(file->getName())) {
+				errorList.append(QObject::tr("%1 contains several files with"
+					" name %2").arg(thisIdentifier).arg(file->getName()));
+				valid = false;
+			}
+			else {
+				fileNames.append(file->getName());
+			}
 
 			if (!file->isValid(errorList, thisIdentifier)) {
 				valid = false;
