@@ -104,6 +104,9 @@ NewSystemPage::NewSystemPage(LibraryInterface* libInterface, QWidget* parentDlg)
 
     // Create the VLNV editor.
     vlnvEditor_ = new VLNVEditor(VLNV::COMPONENT, libInterface, parentDlg, this, true);
+    vlnvEditor_->setImplementationFilter(true, KactusAttribute::KTS_SYS);
+    vlnvEditor_->updateFiltering();
+
     connect(vlnvEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
     connect(vlnvEditor_, SIGNAL(contentChanged()), this, SLOT(updateDirectory()));
 

@@ -14,7 +14,8 @@
 
 #include <common/widgets/assistedLineEdit/ILineContentMatcher.h>
 
-class LibraryItem;
+class LibraryInterface;
+class VLNVDataNode;
 
 //-----------------------------------------------------------------------------
 //! VLNVContentMatcher class.
@@ -25,9 +26,9 @@ public:
     /*!
      *	Constructor.
      *
-     *      @param [in] item The library item to use for finding content.
+     *      @param [in] lh    The library interface.
      */
-    VLNVContentMatcher(LibraryItem const* item);
+    VLNVContentMatcher(LibraryInterface* lh);
 
     /*!
      *  Destructor.
@@ -35,14 +36,14 @@ public:
     virtual ~VLNVContentMatcher();
 
     /*!
-     *  Sets the library item to use for finding content.
+     *  Sets the data node to use for finding content.
      */
-    void setLibraryItem(LibraryItem const* item);
+    void setDataNode(VLNVDataNode const* item);
 
     /*!
-     *  Returns the library item associated with the content matcher.
+     *  Returns the data node associated with the content matcher.
      */
-    LibraryItem const* getLibraryItem() const;
+    VLNVDataNode const* getDataNode() const;
 
     /*!
      *  Looks forward for matching contents in the given text.
@@ -87,8 +88,11 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The library item.
-    LibraryItem const* m_item;
+    //! The library interface.
+    LibraryInterface* lh_;
+
+    //! The data node.
+    VLNVDataNode const* node_;
 };
 
 //-----------------------------------------------------------------------------

@@ -180,22 +180,21 @@ void IPXactComponentEditor::createNewEditor( ComponentTreeItem* item ) {
                                         }
 
 		case ComponentTreeItem::MODELPARAMETERS: {
-            if (component_->getComponentImplementation() == KactusAttribute::KTS_SW &&
-                component_->getComponentSWType() == KactusAttribute::KTS_SW_ENDPOINTS)
-            {
-			    editor = new EndpointEditor(component_, 
-				                            item->getDataPointer(), this);
-            }
-            else
-            {
-                editor = new ModelParameterEditor(component_, 
-                                                  item->getDataPointer(), this);
-            }
+            editor = new ModelParameterEditor(component_, item->getDataPointer(), this);
 			break;
 												 }
 		case ComponentTreeItem::PORTS: {
-            editor = new PortsEditor(component_, 
- 			                         item->getDataPointer(), handler_, this);
+            if (component_->getComponentImplementation() == KactusAttribute::KTS_SW &&
+                (component_->getComponentSWType() == KactusAttribute::KTS_SW_ENDPOINTS ||
+                component_->getComponentSWType() == KactusAttribute::KTS_SW_APPLICATION))
+            {
+                editor = new EndpointEditor(handler_, component_, item->getDataPointer(), this, widgetStack_,
+                                            component_->getComponentSWType() == KactusAttribute::KTS_SW_APPLICATION);
+            }
+            else
+            {
+                editor = new PortsEditor(component_, item->getDataPointer(), handler_, this);
+            }
 			break;
 									   }
 		case ComponentTreeItem::PARAMETERS: {

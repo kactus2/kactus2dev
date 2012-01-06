@@ -29,8 +29,10 @@ SoftwareMappingsEditor::SoftwareMappingsEditor(LibraryInterface* libHandler,
     : ItemEditor(component, parent), libInterface_(libHandler), component_(component),
       swDesignMapping_(VLNV::COMPONENT, libHandler, parentWnd, this)
 {
-
     swDesignMapping_.setTitle(tr("Mapped SW Design"));
+    swDesignMapping_.setImplementationFilter(true, KactusAttribute::KTS_SW);
+    swDesignMapping_.setSWTypeFilter(true, KactusAttribute::KTS_SW_MAPPING);
+    swDesignMapping_.updateFiltering();
     
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(&swDesignMapping_);

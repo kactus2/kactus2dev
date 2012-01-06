@@ -193,14 +193,12 @@ private:
     /*!
      *  Generates the MCAPI header file.
      */
-    void generateHeader(QString const& filename, QList<ProgramEntityItem*> const& remoteNodes,
-                        QList<EndpointItem*> const& remoteEndpoints);
+    void generateHeader(QString const& filename);
 
     /*!
      *  Generates the MCAPI source file.
      */
-    void generateSource(QString const& filename, QList<ProgramEntityItem*> const& remoteNodes,
-                        QList<EndpointItem*> const& remoteEndpoints);
+    void generateSource(QString const& filename, QList<ProgramEntityItem*> const& remoteNodes);
 
     /*!
      *  Creates an indentation string based on QSettings.

@@ -60,6 +60,8 @@ handler_(handler) {
                         component->getComponentSWType() == KactusAttribute::KTS_SW_PLATFORM;
     bool endpointComp = component->getComponentImplementation() == KactusAttribute::KTS_SW &&
                         component->getComponentSWType() == KactusAttribute::KTS_SW_ENDPOINTS;
+    bool appComp = component->getComponentImplementation() == KactusAttribute::KTS_SW &&
+                   component->getComponentSWType() == KactusAttribute::KTS_SW_APPLICATION;
     bool hwComp = component->getComponentImplementation() == KactusAttribute::KTS_HW;
 
 	// the type defines how the construction goes
@@ -105,7 +107,7 @@ handler_(handler) {
 			    ComponentTreeItem::VIEWS, 0, component, handler, this));
         }
 
-        if (hwComp)
+        if (hwComp || appComp || endpointComp)
         {
 		    childItems_.append(new ComponentTreeItem(
 			    ComponentTreeItem::PORTS, 0, component, handler, this));
@@ -262,15 +264,7 @@ handler_(handler) {
 									}
 
 	case ComponentTreeItem::MODELPARAMETERS: {
-        if (endpointComp)
-        {
-            text_ = tr("Endpoints");
-        }
-        else
-        {
-		    text_ = tr("Model parameters");
-        }
-
+        text_ = tr("Model parameters");
 		QMap<QString, QSharedPointer<ModelParameter> >* modelParams = 
 			component_->getModel()->getModelParametersPointer();
 		dataPointer_ = modelParams;
@@ -586,7 +580,14 @@ handler_(handler) {
 		break;
 								  }
 	case ComponentTreeItem::PORTS: {
-		text_ = tr("Ports");
+        if (endpointComp || appComp)
+        {
+            text_ = tr("Endpoints");
+        }
+        else
+        {
+		    text_ = tr("Ports");
+        }
 
 		QMap<QString, QSharedPointer<Port> >* ports =
 			component_->getModel()->getPortsPointer();

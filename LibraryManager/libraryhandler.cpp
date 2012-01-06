@@ -574,6 +574,99 @@ QSharedPointer<LibraryComponent> LibraryHandler::getModel( const VLNV& vlnv ) {
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: getModel()
+//-----------------------------------------------------------------------------
+QSharedPointer<LibraryComponent const> LibraryHandler::getModelReadOnly(const VLNV& vlnv)
+{
+    // if object has already been previously parsed
+    if (objects_.contains(vlnv)) {
+        return objects_.value(vlnv);
+    }
+    else {
+        if (!data_->contains(vlnv)) {
+            emit noticeMessage(tr("VLNV %1:%2:%3:%4 was not found in library").arg(
+                vlnv.getVendor()).arg(
+                vlnv.getLibrary()).arg(
+                vlnv.getName()).arg(
+                vlnv.getVersion()));
+            return QSharedPointer<LibraryComponent>();
+        }
+
+        VLNV toCreate = vlnv;
+        // make sure the vlnv is of correct type
+        toCreate.setType(data_->getType(vlnv));
+
+        // get path to the document
+        QString path = data_->getPath(toCreate);
+
+        // if the file was not found
+        if (path.isEmpty()) {
+            return QSharedPointer<LibraryComponent>();
+        }
+
+        // create file handle and use it to read the IP-Xact document into memory
+        QFile file(path);
+        QDomDocument doc;
+        doc.setContent(&file);
+        file.close();
+
+        QSharedPointer<LibraryComponent> libComp;
+
+        try {
+            // create correct type of object and cast the pointer
+            switch (toCreate.getType()) {
+            case VLNV::BUSDEFINITION: {
+                libComp = QSharedPointer<LibraryComponent>(new BusDefinition(doc));
+                break;
+                                      }
+            case VLNV::COMPONENT: {
+                libComp = QSharedPointer<LibraryComponent>(new Component(doc));
+                break;
+                                  }
+            case VLNV::DESIGN: {
+                libComp = QSharedPointer<LibraryComponent>(new Design(doc));
+                break;
+                               }
+
+            case VLNV::GENERATORCHAIN: {
+                libComp = QSharedPointer<LibraryComponent>(new GeneratorChain(doc));
+                break;
+                                       }
+            case VLNV::DESIGNCONFIGURATION: {
+                libComp = QSharedPointer<LibraryComponent>(new DesignConfiguration(doc));
+                break;
+                                            }
+
+            case VLNV::ABSTRACTIONDEFINITION: {
+                libComp = QSharedPointer<LibraryComponent>(new AbstractionDefinition(doc));
+                break;
+                                              }
+            default: {
+                emit noticeMessage(tr("Document was not supported type"));
+                return QSharedPointer<LibraryComponent>();
+                     }
+            }
+        }
+        // if an exception occurred during the parsing
+        catch (Parse_error error) {
+            QString errorMsg(error.what() + QString(" ") + error.errorMsg() +
+                tr(" within file: %1").arg(path));
+            emit errorMessage(errorMsg);
+            return QSharedPointer<LibraryComponent>();
+        }
+        catch (...) {
+            emit errorMessage(
+                tr("Error occurred during parsing of the document %1").arg(path));
+            return QSharedPointer<LibraryComponent>();
+        }
+
+        // save the parsed item to the map and return pointer to it
+        objects_.insert(vlnv, libComp);
+        return libComp;
+    }
+}
+
 // bool LibraryHandler::registerVLNV( const VLNV& vlnv, const QString& path ) {
 // 
 // 	return data_->addVLNV(vlnv, path);

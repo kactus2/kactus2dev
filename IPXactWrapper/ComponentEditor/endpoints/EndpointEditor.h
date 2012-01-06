@@ -26,6 +26,7 @@
 #include <QSortFilterProxyModel>
 
 class Component;
+class LibraryInterface;
 
 //-----------------------------------------------------------------------------
 //! EndpointEditor class.
@@ -36,15 +37,18 @@ class EndpointEditor : public ItemEditor
 
 public:
 
-	/*! \brief The constructor
+	/*!
+     *  Constructor.
 	 *
-	 * \param component Pointer to the component being edited.
-	 * \param dataPointer Pointer to the QMap containing the endpoints (model parameters).
-	 * \param parent Pointer to the owner of this widget.
-	 * 
-	*/
-	EndpointEditor(QSharedPointer<Component> component, 
-		           void* dataPointer, QWidget *parent);
+     *      @param [in]     lh           The library interface.
+	 *      @param [in]     component    Pointer to the component being edited.
+	 *      @param [in,out] dataPointer  Pointer to the QMap containing the endpoints (model parameters).
+     *      @param [in]     parentWnd    The parent window.
+     *      @param [in]     parent       Pointer to the owner of this widget.
+     *      @param [in]     showRemote   If true, the remote endpoint names are visible and editable in the editor.
+	 */
+	EndpointEditor(LibraryInterface* lh, QSharedPointer<Component> component,
+		           void* dataPointer, QWidget* parentWnd, QWidget* parent, bool showRemote = false);
 
 	//! \brief The destructor
 	virtual ~EndpointEditor();
@@ -61,9 +65,20 @@ public:
 	virtual void makeChanges();
 
 private slots:
-
-	//! \brief Remove the selected row from the model
+	/*!
+     *  Removes the selected row from the model.
+     */
 	void onRemove();
+
+    /*!
+     *  Imports endpoints by analyzing the source code.
+     */
+    void onAnalyzeSource();
+
+    /*!
+     *  Imports endpoints from an endpoint component.
+     */
+    void onImportEndpoints();
 
 private:
 
@@ -72,12 +87,24 @@ private:
 
 	//! No assignment
 	EndpointEditor& operator=(const EndpointEditor& other);
+
+    //! The library interface.
+    LibraryInterface* lh_;
+
+    //! The parent window.
+    QWidget* parentWnd_;
 	
 	//! \brief The button to add a new endpoint
 	QPushButton addRowButton_;
 
 	//! \brief The button to remove the selected endpoint
 	QPushButton removeRowButton_;
+
+    //! Button to analyze endpoints from source code.
+    QPushButton analyzeSourceButton_;
+
+    //! Button to import endpoints from an endpoint component.
+    QPushButton importEndpointsButton_;
 
 	//! \brief The view that displays the parameters.
 	QTableView view_;

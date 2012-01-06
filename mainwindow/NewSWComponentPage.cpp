@@ -67,6 +67,9 @@ NewSWComponentPage::NewSWComponentPage(LibraryInterface* libInterface,
 
     // Create the VLNV editor.
     vlnvEditor_ = new VLNVEditor(VLNV::COMPONENT, libInterface, parentDlg, this, true);
+    vlnvEditor_->setImplementationFilter(true, KactusAttribute::KTS_SW);
+    vlnvEditor_->updateFiltering();
+
     connect(vlnvEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
     connect(vlnvEditor_, SIGNAL(contentChanged()), this, SLOT(updateDirectory()));
 

@@ -137,12 +137,12 @@ void EndpointStack::addEndpoint(EndpointItem* endpoint)
     // Add the endpoint to the parent program entity's model parameters if the program entity is unpackaged.
     if (!parentProgEntity_->componentModel()->getVlnv()->isValid())
     {
-        QSharedPointer<ModelParameter> modelParam(new ModelParameter());
-        modelParam->setName(endpoint->getName());
-        modelParam->setDataType(valueToString(endpoint->getConnectionType()));
-        modelParam->setValue(valueToString(endpoint->getMCAPIDirection()));
+        QSharedPointer<Port> port(new Port());
+        port->setName(endpoint->getName());
+        port->setTypeName(valueToString(endpoint->getConnectionType()));
+        port->setDirection(General::str2Direction(valueToString(endpoint->getMCAPIDirection()), General::IN));
 
-        parentProgEntity_->componentModel()->getModel()->addModelParameter(modelParam);
+        parentProgEntity_->componentModel()->addPort(port);
     }
 
     endpoint->createBusInterface(parentProgEntity_->getMappingComponent());
@@ -178,7 +178,7 @@ void EndpointStack::removeEndpoint(EndpointItem* endpoint)
         // Remove the endpoint from the parent program entity's model parameters.
         if (!parentProgEntity_->componentModel()->getVlnv()->isValid())
         {
-            parentProgEntity_->componentModel()->getModel()->removeModelParameter(endpoint->getName());
+            parentProgEntity_->componentModel()->getModel()->removePort(endpoint->getName());
         }
 
         // Remove the bus interface from the mapping component.

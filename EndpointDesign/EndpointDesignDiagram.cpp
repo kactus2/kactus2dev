@@ -1216,13 +1216,66 @@ void EndpointDesignDiagram::createApplication(ProgramEntityItem* progEntity)
     comp->setComponentImplementation(KactusAttribute::KTS_SW);
     comp->setComponentSWType(KactusAttribute::KTS_SW_APPLICATION);
 
+    // Add endpoints to it automatically. Also create the port maps for the app link bus interface.
+    QList< QSharedPointer<General::PortMap> > portMaps;
+
+    foreach (EndpointItem* endpoint, progEntity->getEndpoints())
+    {
+        // Create the port representing the endpoint.
+        QSharedPointer<Port> port(new Port());
+        port->setName(endpoint->getName());
+        port->setDirection(General::str2Direction(valueToString(endpoint->getMCAPIDirection()), General::IN));
+        port->setTypeName(valueToString(endpoint->getConnectionType()));
+
+        // Determine the remote endpoint name by switching in<->out.
+        QString remoteName = endpoint->getName();
+
+        if (remoteName.replace("in", "out") != endpoint->getName())
+        {
+            port->setRemoteEndpointName(remoteName);
+        }
+        else
+        {
+            remoteName = endpoint->getName();
+            port->setRemoteEndpointName(remoteName.replace("out", "in"));
+        }
+
+        // Add the port to the component.
+        comp->addPort(port);
+
+        // Create the port map.
+        QSharedPointer<General::PortMap> portMap(new General::PortMap());
+        portMap->physicalPort_ = endpoint->getName();
+        portMap->logicalPort_ = endpoint->getName().toUpper();
+        portMaps.append(portMap);
+    }
+
     // Add the fixed bus interface to the component.
     QSharedPointer<BusInterface> busIf(new BusInterface());
     busIf->setName("app_link");
     busIf->setInterfaceMode(General::MASTER);
     busIf->setBusType(VLNV(VLNV::BUSDEFINITION, "Kactus", "internal", "app_link", "1.0"));
+    busIf->setPortMaps(portMaps);
 
     comp->addBusInterface(busIf);
+
+    // Write the model to file.
+    lh_->writeModelToFile(dialog.getPath(), comp);
+
+    // Create the application item.
+    ApplicationItem* app = new ApplicationItem(comp, createInstanceName(vlnv.getName().remove(".comp")),
+        QString(), QString(), QMap<QString, QString>(), progEntity);
+    connect(app, SIGNAL(openSource(ProgramEntityItem*)),
+        this, SIGNAL(openSource(ProgramEntityItem*)), Qt::UniqueConnection);
+
+    // Create the undo command and execute it.
+    QSharedPointer<ApplicationAddCommand> cmd(new ApplicationAddCommand(progEntity, app));
+    connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+        this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+    connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+        this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+
+    editProvider_.addCommand(cmd);
     
     // Ask the user if he/she wants to generate template code based on the endpoints.
     QMessageBox msgBox(QMessageBox::Question, QCoreApplication::applicationName(),
@@ -1230,9 +1283,6 @@ void EndpointDesignDiagram::createApplication(ProgramEntityItem* progEntity)
         QMessageBox::Yes | QMessageBox::No, (QWidget*)parent());
 
     bool sourceCreated = false;
-
-    // Write the model to file.
-    lh_->writeModelToFile(dialog.getPath(), comp);
 
     if (msgBox.exec() == QMessageBox::Yes)
     {
@@ -1257,21 +1307,6 @@ void EndpointDesignDiagram::createApplication(ProgramEntityItem* progEntity)
             lh_->writeModelToFile(comp);
         }
     }
-
-    // Create the application item.
-    ApplicationItem* app = new ApplicationItem(comp, createInstanceName(vlnv.getName().remove(".comp")),
-                                               QString(), QString(), QMap<QString, QString>(), progEntity);
-    connect(app, SIGNAL(openSource(ProgramEntityItem*)),
-            this, SIGNAL(openSource(ProgramEntityItem*)), Qt::UniqueConnection);
-
-    // Create the undo command and execute it.
-    QSharedPointer<ApplicationAddCommand> cmd(new ApplicationAddCommand(progEntity, app));
-    connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
-        this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-    connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
-        this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
-
-    editProvider_.addCommand(cmd);
 
     if (sourceCreated)
     {

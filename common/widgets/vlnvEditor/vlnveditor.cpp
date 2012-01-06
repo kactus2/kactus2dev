@@ -28,15 +28,22 @@
 // Function: VLNVEditor()
 //-----------------------------------------------------------------------------
 VLNVEditor::VLNVEditor(VLNV::IPXactType type, LibraryInterface* libHandler, QWidget* parentWnd,
-					   QWidget* parent, bool compact) : 
-QGroupBox(parent), m_type(type), handler_(libHandler),
-m_vendorEdit(0), m_vendorMatcher(),
-m_libraryEdit(0), m_libraryMatcher(),
-m_nameEdit(0), m_nameMatcher(),
-m_versionEdit(0), m_versionMatcher()
+					   QWidget* parent, bool compact)
+    : QGroupBox(parent),
+      type_(type),
+      handler_(libHandler),
+      dataTree_(),
+      vendorEdit_(0),
+      vendorMatcher_(),
+      libraryEdit_(0),
+      libraryMatcher_(),
+      nameEdit_(0),
+      nameMatcher_(),
+      versionEdit_(0),
+      versionMatcher_()
 {
     Q_ASSERT(libHandler != 0);
-    Q_ASSERT(m_type != VLNV::INVALID);
+    Q_ASSERT(type_ != VLNV::INVALID);
 
     // Set group box settings.
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
@@ -48,6 +55,8 @@ m_versionEdit(0), m_versionMatcher()
 
 	// accept drops from drag & drop
 	setAcceptDrops(true);
+
+    updateFiltering();
 }
 
 //-----------------------------------------------------------------------------
@@ -63,10 +72,10 @@ VLNVEditor::~VLNVEditor()
 void VLNVEditor::setVLNV(VLNV const* vlnv)
 {
     // Set the fields according to the VLNV.
-    m_vendorEdit->setText(vlnv->getVendor());
-    m_libraryEdit->setText(vlnv->getLibrary());
-    m_nameEdit->setText(vlnv->getName());
-    m_versionEdit->setText(vlnv->getVersion());
+    vendorEdit_->setText(vlnv->getVendor());
+    libraryEdit_->setText(vlnv->getLibrary());
+    nameEdit_->setText(vlnv->getName());
+    versionEdit_->setText(vlnv->getVersion());
 
     // Update the matcher items.
     updateLibraryMatcherItem();
@@ -81,8 +90,8 @@ void VLNVEditor::setVLNV( const VLNV& vlnv ) {
 //-----------------------------------------------------------------------------
 VLNV VLNVEditor::getVLNV() const
 {
-    return VLNV(m_type, m_vendorEdit->text(), m_libraryEdit->text(),
-                m_nameEdit->text(), m_versionEdit->text());
+    return VLNV(type_, vendorEdit_->text(), libraryEdit_->text(),
+                nameEdit_->text(), versionEdit_->text());
 }
 
 //-----------------------------------------------------------------------------
@@ -90,8 +99,8 @@ VLNV VLNVEditor::getVLNV() const
 //-----------------------------------------------------------------------------
 bool VLNVEditor::isValid() const
 {
-    return (!m_vendorEdit->text().isEmpty() && !m_libraryEdit->text().isEmpty() &&
-            !m_nameEdit->text().isEmpty() && !m_versionEdit->text().isEmpty());
+    return (!vendorEdit_->text().isEmpty() && !libraryEdit_->text().isEmpty() &&
+            !nameEdit_->text().isEmpty() && !versionEdit_->text().isEmpty());
 }
 
 //-----------------------------------------------------------------------------
@@ -99,7 +108,7 @@ bool VLNVEditor::isValid() const
 //-----------------------------------------------------------------------------
 void VLNVEditor::updateMatcherItems()
 {
-    m_vendorMatcher->setLibraryItem(getTypeRoot());
+    vendorMatcher_->setDataNode(&dataTree_);
     updateLibraryMatcherItem();
 }
 
@@ -108,24 +117,8 @@ void VLNVEditor::updateMatcherItems()
 //-----------------------------------------------------------------------------
 void VLNVEditor::updateLibraryMatcherItem()
 {
-    LibraryItem const* foundItem = 0;
-    LibraryItem const* typeRoot = m_vendorMatcher->getLibraryItem();
-  
-    if (typeRoot != 0)
-    {
-        for (int i = 0; i < typeRoot->getNumberOfChildren(); ++i)
-        {
-            LibraryItem const* child = typeRoot->child(i);
-
-            if (child->getName() == m_vendorEdit->text())
-            {
-                foundItem = child;
-                break;
-            }
-        }
-    }
-
-    m_libraryMatcher->setLibraryItem(foundItem);
+    VLNVDataNode const* foundItem = dataTree_.findChild(vendorEdit_->text());
+    libraryMatcher_->setDataNode(foundItem);
 
     // Update "recursively" also the name matcher item.
     updateNameMatcherItem();
@@ -136,24 +129,15 @@ void VLNVEditor::updateLibraryMatcherItem()
 //-----------------------------------------------------------------------------
 void VLNVEditor::updateNameMatcherItem()
 {
-    LibraryItem const* libItem = m_libraryMatcher->getLibraryItem();
-    LibraryItem const* foundItem = 0;
+    VLNVDataNode const* libItem = libraryMatcher_->getDataNode();
+    VLNVDataNode const* foundItem = 0;
 
     if (libItem != 0)
     {
-        for (int i = 0; i < libItem->getNumberOfChildren(); ++i)
-        {
-            LibraryItem const* child = libItem->child(i);
-
-            if (child->getName() == m_libraryEdit->text())
-            {
-                foundItem = child;
-                break;
-            }
-        }
+        foundItem = libItem->findChild(libraryEdit_->text());
     }
 
-    m_nameMatcher->setLibraryItem(foundItem);
+    nameMatcher_->setDataNode(foundItem);
 
     // Update "recursively" also the version matcher item.
     updateVersionMatcherItem();
@@ -164,24 +148,15 @@ void VLNVEditor::updateNameMatcherItem()
 //-----------------------------------------------------------------------------
 void VLNVEditor::updateVersionMatcherItem()
 {
-    LibraryItem const* nameItem = m_nameMatcher->getLibraryItem();
-    LibraryItem const* foundItem = 0;
+    VLNVDataNode const* nameItem = nameMatcher_->getDataNode();
+    VLNVDataNode const* foundItem = 0;
 
     if (nameItem != 0)
     {
-        for (int i = 0; i < nameItem->getNumberOfChildren(); ++i)
-        {
-            LibraryItem const* child = nameItem->child(i);
-
-            if (child->getName() == m_nameEdit->text())
-            {
-                foundItem = child;
-                break;
-            }
-        }
+        foundItem = nameItem->findChild(nameEdit_->text());
     }
 
-    m_versionMatcher->setLibraryItem(foundItem);
+    versionMatcher_->setDataNode(foundItem);
 }
 
 //-----------------------------------------------------------------------------
@@ -196,52 +171,52 @@ void VLNVEditor::initWidgets(QWidget* parentWnd, bool compact)
     QLabel* versionLabel = new QLabel(tr("Version:"), this);
 
     // Create the matchers.
-    m_vendorMatcher = QSharedPointer<VLNVContentMatcher>(new VLNVContentMatcher(0));
-    m_libraryMatcher = QSharedPointer<VLNVContentMatcher>(new VLNVContentMatcher(0));
-    m_nameMatcher = QSharedPointer<VLNVContentMatcher>(new VLNVContentMatcher(0));
-    m_versionMatcher = QSharedPointer<VLNVContentMatcher>(new VLNVContentMatcher(0));
+    vendorMatcher_ = QSharedPointer<VLNVContentMatcher>(new VLNVContentMatcher(handler_));
+    libraryMatcher_ = QSharedPointer<VLNVContentMatcher>(new VLNVContentMatcher(handler_));
+    nameMatcher_ = QSharedPointer<VLNVContentMatcher>(new VLNVContentMatcher(handler_));
+    versionMatcher_ = QSharedPointer<VLNVContentMatcher>(new VLNVContentMatcher(handler_));
     
     // Create the line edits.
-    m_vendorEdit = new AssistedLineEdit(m_vendorMatcher, parentWnd, this);
-    m_vendorEdit->setValidator(new NameValidator(this));
-	m_vendorEdit->setProperty("mandatoryField", true);
+    vendorEdit_ = new AssistedLineEdit(vendorMatcher_, parentWnd, this);
+    vendorEdit_->setValidator(new NameValidator(this));
+	vendorEdit_->setProperty("mandatoryField", true);
 
-    m_libraryEdit = new AssistedLineEdit(m_libraryMatcher, parentWnd, this);
-    m_libraryEdit->setValidator(new NameValidator(this));
-	m_libraryEdit->setProperty("mandatoryField", true);
+    libraryEdit_ = new AssistedLineEdit(libraryMatcher_, parentWnd, this);
+    libraryEdit_->setValidator(new NameValidator(this));
+	libraryEdit_->setProperty("mandatoryField", true);
 
-    m_nameEdit = new AssistedLineEdit(m_nameMatcher, parentWnd, this);
-	m_nameEdit->setValidator(new NameValidator(this, true));
-	m_nameEdit->setProperty("mandatoryField", true);
+    nameEdit_ = new AssistedLineEdit(nameMatcher_, parentWnd, this);
+	nameEdit_->setValidator(new NameValidator(this, true));
+	nameEdit_->setProperty("mandatoryField", true);
 
-    m_versionEdit = new AssistedLineEdit(m_versionMatcher, parentWnd, this);
-	m_versionEdit->setValidator(new NameValidator(this, true));
-	m_versionEdit->setProperty("mandatoryField", true);
+    versionEdit_ = new AssistedLineEdit(versionMatcher_, parentWnd, this);
+	versionEdit_->setValidator(new NameValidator(this, true));
+	versionEdit_->setProperty("mandatoryField", true);
     
     // Create the layout and add the widgets to it.
     if (compact)
     {
         QGridLayout* layout = new QGridLayout(this);
         layout->addWidget(vendorLabel, 0, 0, 1, 1);
-        layout->addWidget(m_vendorEdit, 0, 1, 1, 1);
+        layout->addWidget(vendorEdit_, 0, 1, 1, 1);
         layout->addWidget(libraryLabel, 1, 0, 1, 1);
-        layout->addWidget(m_libraryEdit, 1, 1, 1, 1);
+        layout->addWidget(libraryEdit_, 1, 1, 1, 1);
         layout->addWidget(nameLabel, 2, 0, 1, 1);
-        layout->addWidget(m_nameEdit, 2, 1, 1, 1);
+        layout->addWidget(nameEdit_, 2, 1, 1, 1);
         layout->addWidget(versionLabel, 3, 0, 1, 1);
-        layout->addWidget(m_versionEdit, 3, 1, 1, 1);
+        layout->addWidget(versionEdit_, 3, 1, 1, 1);
     }
     else
     {
         QVBoxLayout* layout = new QVBoxLayout(this);
         layout->addWidget(vendorLabel);
-        layout->addWidget(m_vendorEdit);
+        layout->addWidget(vendorEdit_);
         layout->addWidget(libraryLabel);
-        layout->addWidget(m_libraryEdit);
+        layout->addWidget(libraryEdit_);
         layout->addWidget(nameLabel);
-        layout->addWidget(m_nameEdit);
+        layout->addWidget(nameEdit_);
         layout->addWidget(versionLabel);
-        layout->addWidget(m_versionEdit);
+        layout->addWidget(versionEdit_);
     }
 }
 
@@ -251,33 +226,33 @@ void VLNVEditor::initWidgets(QWidget* parentWnd, bool compact)
 void VLNVEditor::initConnections()
 {
     // Connect the signals informing of changes in items.
-    connect(m_vendorEdit, SIGNAL(textChanged(const QString&)),
+    connect(vendorEdit_, SIGNAL(textChanged(const QString&)),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(m_libraryEdit, SIGNAL(textChanged(const QString&)),
+    connect(libraryEdit_, SIGNAL(textChanged(const QString&)),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(m_nameEdit, SIGNAL(textChanged(const QString&)),
+    connect(nameEdit_, SIGNAL(textChanged(const QString&)),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(m_versionEdit, SIGNAL(textChanged(const QString&)),
+    connect(versionEdit_, SIGNAL(textChanged(const QString&)),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     // Connect the signals informing the editing of items.
-    connect(m_vendorEdit, SIGNAL(textEdited(const QString&)),
+    connect(vendorEdit_, SIGNAL(textEdited(const QString&)),
         this, SIGNAL(vlnvEdited()), Qt::UniqueConnection);
-    connect(m_libraryEdit, SIGNAL(textEdited(const QString&)),
+    connect(libraryEdit_, SIGNAL(textEdited(const QString&)),
         this, SIGNAL(vlnvEdited()), Qt::UniqueConnection);
-    connect(m_nameEdit, SIGNAL(textEdited(const QString&)),
+    connect(nameEdit_, SIGNAL(textEdited(const QString&)),
         this, SIGNAL(vlnvEdited()), Qt::UniqueConnection);
-    connect(m_versionEdit, SIGNAL(textEdited(const QString&)),
+    connect(versionEdit_, SIGNAL(textEdited(const QString&)),
         this, SIGNAL(vlnvEdited()), Qt::UniqueConnection);
 
     // Connect the matcher update slots to the textChanged signals.
-    connect(m_vendorEdit, SIGNAL(textChanged(const QString&)),
+    connect(vendorEdit_, SIGNAL(textChanged(const QString&)),
         this, SLOT(updateMatcherItems()), Qt::UniqueConnection);
-    connect(m_vendorEdit, SIGNAL(textChanged(const QString&)),
+    connect(vendorEdit_, SIGNAL(textChanged(const QString&)),
         this, SLOT(updateLibraryMatcherItem()), Qt::UniqueConnection);
-    connect(m_libraryEdit, SIGNAL(textChanged(const QString&)),
+    connect(libraryEdit_, SIGNAL(textChanged(const QString&)),
         this, SLOT(updateNameMatcherItem()), Qt::UniqueConnection);
-    connect(m_nameEdit, SIGNAL(textChanged(const QString&)),
+    connect(nameEdit_, SIGNAL(textChanged(const QString&)),
         this, SLOT(updateVersionMatcherItem()), Qt::UniqueConnection);
 
     connect(static_cast<LibraryHandler*>(handler_), SIGNAL(refreshDialer()),
@@ -285,24 +260,24 @@ void VLNVEditor::initConnections()
 }
 
 bool VLNVEditor::isEmpty() const {
-	return (m_vendorEdit->text().isEmpty() && m_libraryEdit->text().isEmpty() &&
-		m_nameEdit->text().isEmpty() && m_versionEdit->text().isEmpty());
+	return (vendorEdit_->text().isEmpty() && libraryEdit_->text().isEmpty() &&
+		nameEdit_->text().isEmpty() && versionEdit_->text().isEmpty());
 }
 
 void VLNVEditor::setVendor( const QString& vendor ) {
-	m_vendorEdit->setText(vendor);
+	vendorEdit_->setText(vendor);
 }
 
 void VLNVEditor::setLibrary( const QString& library ) {
-	m_libraryEdit->setText(library);
+	libraryEdit_->setText(library);
 }
 
 void VLNVEditor::setName( const QString& name ) {
-	m_nameEdit->setText(name);
+	nameEdit_->setText(name);
 }
 
 void VLNVEditor::setVersion( const QString& version ) {
-	m_versionEdit->setText(version);
+	versionEdit_->setText(version);
 }
 
 void VLNVEditor::dropEvent( QDropEvent* event ) {
@@ -323,7 +298,7 @@ void VLNVEditor::dragEnterEvent( QDragEnterEvent* event ) {
 		memcpy(&vlnv, event->mimeData()->data("data/vlnvptr").data(), sizeof(vlnv));
 
 		// if the vlnv is of correct type
-		if (handler_->getDocumentType(*vlnv) == m_type)
+		if (handler_->getDocumentType(*vlnv) == type_)
 			event->acceptProposedAction();
 	}
 }
@@ -337,11 +312,52 @@ LibraryItem const* VLNVEditor::getTypeRoot() const
 
     for (int i = 0; i < root->getNumberOfChildren(); ++i)
     {
-        if (root->child(i)->getName() == VLNV::type2Print(m_type))
+        if (root->child(i)->getName() == VLNV::type2Print(type_))
         {
             return root->child(i);
         }
     }
 
     return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: setFirmnessFilter()
+//-----------------------------------------------------------------------------
+void VLNVEditor::setFirmnessFilter(bool on, KactusAttribute::Firmness firmness /*= KTS_TEMPLATE*/)
+{
+    dataTree_.setFirmnessFilter(on, firmness);
+}
+
+//-----------------------------------------------------------------------------
+// Function: setHierarchyFilter()
+//-----------------------------------------------------------------------------
+void VLNVEditor::setHierarchyFilter(bool on, KactusAttribute::ProductHierarchy productHier /*= KactusAttribute::KTS_IP*/)
+{
+    dataTree_.setHierarchyFilter(on, productHier);
+}
+
+//-----------------------------------------------------------------------------
+// Function: setImplementationFilter()
+//-----------------------------------------------------------------------------
+void VLNVEditor::setImplementationFilter(bool on, KactusAttribute::Implementation implementation /*= KTS_HW*/)
+{
+    dataTree_.setImplementationFilter(on, implementation);
+}
+
+//-----------------------------------------------------------------------------
+// Function: setSWTypeFilter()
+//-----------------------------------------------------------------------------
+void VLNVEditor::setSWTypeFilter(bool on, KactusAttribute::SWType swType /*= KTS_SW_MAPPING*/)
+{
+    dataTree_.setSWTypeFilter(on, swType);
+}
+
+//-----------------------------------------------------------------------------
+// Function: updateFiltering()
+//-----------------------------------------------------------------------------
+void VLNVEditor::updateFiltering()
+{
+    dataTree_.clear();
+    dataTree_.parse(handler_, type_);
 }

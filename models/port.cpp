@@ -29,7 +29,8 @@ portType_(General::WIRE),
 wire_(),
 transactional_(),
 portAccessHandle_(), 
-portAccessType_() {
+portAccessType_(),
+remoteEndpointName_() {
 
 	for (int i = 0; i < portNode.childNodes().count(); ++i) {
 		QDomNode tempNode = portNode.childNodes().at(i);
@@ -61,6 +62,16 @@ portAccessType_() {
 				}
 			}
 		}
+        else if (tempNode.nodeName() == QString("spirit:vendorExtensions"))
+        {
+            for (int j = 0; j < tempNode.childNodes().count(); ++j) {
+
+                if (tempNode.childNodes().at(j).nodeName() == QString("kactus2:remoteEndpointName"))
+                {
+                    remoteEndpointName_ = tempNode.childNodes().at(j).firstChild().nodeValue();
+                }
+            }
+        }
 	}
 
 // 	if (nameGroup_.name_.isNull()) {
@@ -83,7 +94,8 @@ nameGroup_(), portType_(other.portType_),
 wire_(), 
 transactional_(other.transactional_),
 portAccessHandle_(other.portAccessHandle_),
-portAccessType_(other.portAccessType_) {
+portAccessType_(other.portAccessType_),
+remoteEndpointName_(other.remoteEndpointName_) {
 	
 	nameGroup_.name_ = name;
 
@@ -101,7 +113,8 @@ portType_(other.portType_),
 wire_(),
 transactional_(),
 portAccessHandle_(other.portAccessHandle_),
-portAccessType_(other.portAccessType_) {
+portAccessType_(other.portAccessType_),
+remoteEndpointName_(other.remoteEndpointName_) {
 	
 	if (other.wire_) {
 		wire_ = QSharedPointer<Wire>(new Wire(*other.wire_));
@@ -120,6 +133,7 @@ Port & Port::operator=( const Port &other ) {
 		portType_ = other.portType_;
 		portAccessHandle_ = other.portAccessHandle_;
 		portAccessType_ = other.portAccessType_;
+        remoteEndpointName_ = other.remoteEndpointName_;
 
 		if (other.wire_) {
 			wire_ = QSharedPointer<Wire>(
@@ -145,7 +159,8 @@ portType_(General::WIRE),
 wire_(),
 transactional_(),
 portAccessHandle_(),
-portAccessType_()  {
+portAccessType_(),
+remoteEndpointName_() {
 
 	wire_ = QSharedPointer<Wire>(new Wire());
 }
@@ -259,6 +274,14 @@ void Port::write(QXmlStreamWriter& writer, const QStringList& viewNames) {
 
 		writer.writeEndElement(); // spirit:access
 	}
+
+    // Write remote endpoint name if specified.
+    if (!remoteEndpointName_.isEmpty())
+    {
+        writer.writeStartElement("spirit:vendorExtensions");
+        writer.writeTextElement("kactus2:remoteEndpointName", remoteEndpointName_);
+        writer.writeEndElement(); // spirit:vendorExtensions
+    }
 
 	writer.writeEndElement(); // spirit:port
 }
@@ -614,5 +637,20 @@ void Port::useDefaultVhdlTypes() {
 
 	// set the default type definition
 	wire_->setTypeDefinition(typeName, QString("IEEE.std_logic_1164.all"));
+}
 
+//-----------------------------------------------------------------------------
+// Function: setRemoteEndpointName()
+//-----------------------------------------------------------------------------
+void Port::setRemoteEndpointName(QString const& remoteName)
+{
+    remoteEndpointName_ = remoteName;
+}
+
+//-----------------------------------------------------------------------------
+// Function: getRemoteEndpointName()
+//-----------------------------------------------------------------------------
+QString const& Port::getRemoteEndpointName() const
+{
+    return remoteEndpointName_;
 }

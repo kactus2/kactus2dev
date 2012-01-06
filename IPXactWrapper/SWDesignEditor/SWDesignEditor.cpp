@@ -33,6 +33,19 @@ SWDesignEditor::SWDesignEditor(QWidget *parent, QWidget* parentWnd, LibraryInter
     linkedAppType_(VLNV::COMPONENT, libHandler, parentWnd, &endpointGroup_),
     previewBox_(libHandler)
 {
+    // Set the VLNV editor filters.
+    platformMapping_.setImplementationFilter(true, KactusAttribute::KTS_SW);
+    platformMapping_.setSWTypeFilter(true, KactusAttribute::KTS_SW_PLATFORM);
+    platformMapping_.updateFiltering();
+
+    endpointType_.setImplementationFilter(true, KactusAttribute::KTS_SW);
+    endpointType_.setSWTypeFilter(true, KactusAttribute::KTS_SW_ENDPOINTS);
+    endpointType_.updateFiltering();
+
+    linkedAppType_.setImplementationFilter(true, KactusAttribute::KTS_SW);
+    linkedAppType_.setSWTypeFilter(true, KactusAttribute::KTS_SW_APPLICATION);
+    linkedAppType_.updateFiltering();
+
     // Create the widgets.
     endpointList_.setFixedWidth(200);
 

@@ -12,6 +12,8 @@
 #ifndef VLNVEDITOR_H
 #define VLNVEDITOR_H
 
+#include "VLNVDataTree.h"
+
 #include <LibraryManager/vlnv.h>
 
 #include <QGroupBox>
@@ -58,11 +60,43 @@ public:
     void setVLNV(VLNV const* vlnv);
 
 	/*! 
-	 * Set the contents of the editor to match the given VLNV.
+	 *  Set the contents of the editor to match the given VLNV.
 	 *
 	 *		@param [in] vlnv The VLNV. 
 	 */
 	void setVLNV(const VLNV& vlnv);
+
+    /*!
+     *  Sets the firmness filter on/off.
+     *
+     *      @param [in] on        If true, the filter is turned on; otherwise it is turned off.
+     *      @param [in] firmness  The allowed firmness.
+     */
+    void setFirmnessFilter(bool on, KactusAttribute::Firmness firmness = KactusAttribute::KTS_TEMPLATE);
+
+    /*!
+     *  Sets the product hierarchy filter on/off.
+     *
+     *      @param [in] on           If true, the filter is turned on; otherwise it is turned off.
+     *      @param [in] productHier  The allowed product hierarchy.
+     */
+    void setHierarchyFilter(bool on, KactusAttribute::ProductHierarchy productHier = KactusAttribute::KTS_IP);
+
+    /*!
+     *  Sets the implementation filter on/off.
+     *
+     *      @param [in] on              If true, the filter is turned on; otherwise it is turned off.
+     *      @param [in] implementation  The allowed implementation.
+     */
+    void setImplementationFilter(bool on, KactusAttribute::Implementation implementation = KactusAttribute::KTS_HW);
+
+    /*!
+     *  Sets the SW type filter on/off.
+     *
+     *      @param [in] on      If true, the filter is turned on; otherwise it is turned off.
+     *      @param [in] swType  The allowed SW type.
+     */
+    void setSWTypeFilter(bool on, KactusAttribute::SWType swType = KactusAttribute::KTS_SW_MAPPING);
 
     /*!
      *  Generates a VLNV that matches the contents of the editor.
@@ -88,6 +122,9 @@ signals:
     void vlnvEdited();
 
 public slots:
+    //! Updates the data tree.
+    void updateFiltering();
+
     //! Updates all matcher items based on the contents of the VLNV editor fields.
     void updateMatcherItems();
 
@@ -153,31 +190,34 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The VLNV type which to edit.
-    VLNV::IPXactType m_type;
+    VLNV::IPXactType type_;
+
+    //! The VLNV data tree.
+    VLNVDataTree dataTree_;
 
     //! Line edit for the vendor element.
-    AssistedLineEdit* m_vendorEdit;
+    AssistedLineEdit* vendorEdit_;
 
     //! Content matcher for the vendor field.
-    QSharedPointer<VLNVContentMatcher> m_vendorMatcher;
+    QSharedPointer<VLNVContentMatcher> vendorMatcher_;
 
     //! Line edit for the library element.
-    AssistedLineEdit* m_libraryEdit;
+    AssistedLineEdit* libraryEdit_;
 
     //! Content matcher for the library field.
-    QSharedPointer<VLNVContentMatcher> m_libraryMatcher;
+    QSharedPointer<VLNVContentMatcher> libraryMatcher_;
 
     //! Line edit for the name element.
-    AssistedLineEdit* m_nameEdit;
+    AssistedLineEdit* nameEdit_;
 
     //! Content matcher for the name field.
-    QSharedPointer<VLNVContentMatcher> m_nameMatcher;
+    QSharedPointer<VLNVContentMatcher> nameMatcher_;
 
     //! Line edit for the version element.
-    AssistedLineEdit* m_versionEdit;
+    AssistedLineEdit* versionEdit_;
 
     //! Content matcher for the version field.
-    QSharedPointer<VLNVContentMatcher> m_versionMatcher;
+    QSharedPointer<VLNVContentMatcher> versionMatcher_;
 
 	//! \brief Pointer to the instance that manages the library
 	LibraryInterface* handler_;

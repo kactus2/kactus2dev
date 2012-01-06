@@ -28,6 +28,7 @@ QWidget* EndpointDelegate::createEditor(QWidget* parent,
     switch (index.column())
     {
     case 0:
+    case 3:
         {
             // use line edit to edit all other columns
             QLineEdit* editor = new QLineEdit(parent);
@@ -68,6 +69,7 @@ void EndpointDelegate::setEditorData( QWidget* editor, const QModelIndex& index 
     switch (index.column())
     {
     case 0:
+    case 3:
         {
             // use the line edit for other columns
             QString text = index.model()->data(index, Qt::DisplayRole).toString();
@@ -95,6 +97,7 @@ void EndpointDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
     switch (index.column())
     {
     case 0:
+    case 3:
         {
             // get the text from line edit for other columns
             QLineEdit* lineEdit = qobject_cast<QLineEdit*>(editor);

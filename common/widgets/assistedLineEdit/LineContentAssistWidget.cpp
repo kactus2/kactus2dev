@@ -40,10 +40,12 @@ LineContentAssistWidget::LineContentAssistWidget(QLineEdit* parent,
     setFont(QFont("Tahoma", 10));
 
     // We want the widget to look active even though it is inactive.
-    QPalette pal = palette();
-    pal.setColor(QPalette::Inactive, QPalette::Highlight, Qt::darkBlue);
-    pal.setColor(QPalette::Inactive, QPalette::HighlightedText, Qt::white);
-    setPalette(pal);
+//     QPalette pal = palette();
+    //     pal.setColor(QPalette::Highlight, Qt::darkBlue);
+//     pal.setColor(QPalette::HighlightedText, Qt::black);
+//     setPalette(pal);
+    setStyleSheet("selection-color: black; selection-background-color: "
+                  "QLinearGradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #d6e7ff, stop: 1 #84aede);");
 }
 
 //-----------------------------------------------------------------------------

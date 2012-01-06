@@ -89,6 +89,18 @@ public:
 	*/
 	virtual QSharedPointer<LibraryComponent> getModel(const VLNV& vlnv);
 
+    /*! \brief Get a model that matches given VLNV for read-only access.
+	 *
+	 * This function can be called to get a model that matches an IP-Xact document.
+	 * 
+	 * \param vlnv Identifies the desired document.
+	 *
+	 * \return Shared pointer to the model that matches the document.
+	 * If vlnv is not found in library a null pointer is returned. The ownership 
+	 * of the parsed object remains on Library Handler.
+	*/
+	virtual QSharedPointer<LibraryComponent const> getModelReadOnly(const VLNV& vlnv);
+
 	/*! \brief Add a new VLNV tag to the library
 	 *
 	 * This function adds the specified VLNV into the library. The document

@@ -13,12 +13,16 @@
 
 #include <QRegExp>
 #include <common/widgets/assistedLineEdit/LineContentAssistWidget.h>
-#include <LibraryManager/libraryitem.h>
+#include <common/widgets/vlnvEditor/VLNVDataTree.h>
+
+#include <models/component.h>
+
+#include <LibraryManager/libraryinterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: VLNVContentMatcher()
 //-----------------------------------------------------------------------------
-VLNVContentMatcher::VLNVContentMatcher(LibraryItem const* item) : m_item(item)
+VLNVContentMatcher::VLNVContentMatcher(LibraryInterface* lh) : lh_(lh), node_(0)
 {
 }
 
@@ -30,19 +34,19 @@ VLNVContentMatcher::~VLNVContentMatcher()
 }
 
 //-----------------------------------------------------------------------------
-// Function: setLibraryItem()
+// Function: setDataNode()
 //-----------------------------------------------------------------------------
-void VLNVContentMatcher::setLibraryItem(LibraryItem const* item)
+void VLNVContentMatcher::setDataNode(VLNVDataNode const* node)
 {
-    m_item = item;
+    node_ = node;
 }
 
 //-----------------------------------------------------------------------------
-// Function: getLibraryItem()
+// Function: getVLNVDataNode()
 //-----------------------------------------------------------------------------
-LibraryItem const* VLNVContentMatcher::getLibraryItem() const
+VLNVDataNode const* VLNVContentMatcher::getDataNode() const
 {
-    return m_item;
+    return node_;
 }
 
 //-----------------------------------------------------------------------------
@@ -75,18 +79,70 @@ bool VLNVContentMatcher::enumerateMatches(QString const& text, LineContentAssist
     int count = 0;
     bool exactMatch = false;
 
-    if (m_item != 0)
+    if (node_ != 0)
     {
         // Go through all the children and try to match with their names.
-        for (int i = 0; i < m_item->getNumberOfChildren(); ++i)
+        for (int i = 0; i < node_->getChildren().size(); ++i)
         {
-            LibraryItem const* child = m_item->child(i);
+            VLNVDataNode const* child = node_->getChildren()[i].data();
 
             if (child->getName().toLower().contains(exp))
             {
                 if (assist != 0)
                 {
-                    assist->addItem(new QListWidgetItem(child->getName()));
+                    QListWidgetItem* item = new QListWidgetItem(child->getName());
+
+                    // Add an icon if the child is at the leaf level.
+                    if (child->getLevel() == VLNVDataNode::LEVEL_VERSION)
+                    {
+                        // Retrieve the component for further examination.
+                        QSharedPointer<LibraryComponent const> libComp = lh_->getModelReadOnly(child->getVLNV());
+                        QSharedPointer<Component const> component = libComp.dynamicCast<Component const>();
+
+                        if (component != 0)
+                        {
+                            switch (component->getComponentImplementation())
+                            {
+                            case KactusAttribute::KTS_SYS:
+                                {
+                                    item->setIcon(QIcon(":/icons/graphics/new-system.png"));
+                                    break;
+                                }
+
+                            case KactusAttribute::KTS_SW:
+                                {
+                                    KactusAttribute::SWType swType = component->getComponentSWType();
+
+                                    if (swType == KactusAttribute::KTS_SW_APPLICATION)
+                                        item->setIcon(QIcon(":/icons/graphics/new-sw_component.png"));
+                                    else if (swType == KactusAttribute::KTS_SW_PLATFORM) 
+                                        item->setIcon(QIcon(":icons/graphics/API.png"));
+                                    else if (swType == KactusAttribute::KTS_SW_ENDPOINTS)
+                                        item->setIcon(QIcon(":/icons/graphics/endpoints.png"));
+                                    else if (swType == KactusAttribute::KTS_SW_MAPPING) 
+                                        item->setIcon(QIcon(":/icons/graphics/new-sw_design.png"));
+
+                                    break;
+                                }
+
+                            default:
+                                {
+                                    if (component->isHierarchical())
+                                    {
+                                        item->setIcon(QIcon(":/icons/graphics/hierarchy.png"));
+                                    }
+                                    else
+                                    {
+                                        item->setIcon(QIcon(":/icons/graphics/component.png"));
+                                    }
+
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    
+                    assist->addItem(item);
                 }
 
                 ++count;

@@ -12,7 +12,10 @@
 #ifndef ENDPOINTMODEL_H
 #define ENDPOINTMODEL_H
 
-#include <models/modelparameter.h>
+#include "ImportEndpointsDialog.h"
+
+#include <models/port.h>
+#include <models/component.h>
 
 #include <QAbstractTableModel>
 #include <QMap>
@@ -30,14 +33,23 @@ public:
 
 	/*! \brief The constructor
 	 *
+     * \param component Pointer to the component being edited.
 	 * \param dataPointer Pointer to the QMap containing the endpoints (model parameters).
 	 * \param parent Pointer to the owner of this model.
 	 *
 	*/
-	EndpointModel(void* dataPointer, QObject *parent);
+	EndpointModel(QSharedPointer<Component> component, void* dataPointer, QObject *parent);
 
 	//! \brief The destructor
 	virtual ~EndpointModel();
+
+    /*!
+     *  Imports the endpoints from the given source component.
+     *
+     *      @param [in] sourceComp The source component.
+     *      @param [in] option     The import option.
+     */
+    bool importEndpoints(Component const& sourceComp, ImportEndpointsDialog::ImportOption option);
 
 	/*! \brief Get the number of rows in the model.
 	 *
@@ -146,12 +158,14 @@ private:
 	//! No assignment
 	EndpointModel& operator=(const EndpointModel& other);
 	
-	//! \brief Pointer to the data structure that contains the actual endpoints (model parameters).
-	QMap<QString, QSharedPointer<ModelParameter> >* modelParameters_;
+	//! \brief Pointer to the data structure that contains the actual endpoints (ports).
+	QMap<QString, QSharedPointer<Port> >* endpoints_;
 
 	//! \brief The table that is displayed to the user.
-	QList<QSharedPointer<ModelParameter> > table_;
+	QList<QSharedPointer<Port> > table_;
 
+    //! \brief Pointer to the component being edited.
+    QSharedPointer<Component> component_;
 };
 
 //-----------------------------------------------------------------------------

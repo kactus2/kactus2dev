@@ -404,6 +404,18 @@ public:
 	*/
 	void setTypeDefinition(const QString& typeName, const QString& typeDefinition);
 
+    /*!
+     *  Sets the remote endpoint name (used only for endpoints).
+     *
+     *      @param [in] remoteName The name of the remote endpoint.
+     */
+    void setRemoteEndpointName(QString const& remoteName);
+
+    /*!
+     *  Returns the remote endpoint name (used only for endpoints).
+     */
+    QString const& getRemoteEndpointName() const;
+
 private:
 
 	//! \brief Contains the name, display name and description for the port.
@@ -437,6 +449,8 @@ private:
 	 */
 	QString portAccessType_;
 
+    //! The remote endpoint name.
+    QString remoteEndpointName_;
 };
 
 #endif /* PORT_H_ */

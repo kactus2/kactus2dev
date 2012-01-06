@@ -76,6 +76,7 @@
 #include <QDesktopServices>
 #include <QCursor>
 #include <QDateTime>
+#include <QElapsedTimer>
 
 class LibraryItem;
 
@@ -1725,6 +1726,9 @@ void MainWindow::createNew()
 	dialog.resize(620, 580);
 	dialog.setWindowTitle(tr("New"));
 
+    QElapsedTimer timer;
+    timer.start();
+
 	// Add pages to the dialog.
 	NewComponentPage* compPage = new NewComponentPage(libraryHandler_, &dialog);
 	connect(compPage, SIGNAL(createComponent(KactusAttribute::ProductHierarchy,
@@ -1763,6 +1767,8 @@ void MainWindow::createNew()
 	connect(busPage, SIGNAL(createBus(VLNV const&, QString const&)),
 		this, SLOT(createBus(VLNV const&, QString const&)), Qt::UniqueConnection);
 	dialog.addPage(QIcon(":icons/graphics/new-bus.png"), tr("Bus"), busPage);
+
+    emit noticeMessage(QString("Elapsed: %1").arg(QString::number(timer.elapsed())));
 
 	dialog.exec();
 }

@@ -80,20 +80,18 @@ ProgramEntityItem::ProgramEntityItem(QSharedPointer<Component> component,
     }
 
     // Load the existing endpoints from the component.
-    QMap< QString, QSharedPointer<ModelParameter> > const& endpointDefinitions =
-        componentModel()->getModel()->getModelParameters();
-
-    QMapIterator< QString, QSharedPointer<ModelParameter> > curEndpointDef(endpointDefinitions);
+    QMap< QString, QSharedPointer<Port> > const& endpointDefinitions = componentModel()->getPorts();
+    QMapIterator< QString, QSharedPointer<Port> > curEndpointDef(endpointDefinitions);
 
     while (curEndpointDef.hasNext())
     {
-        QSharedPointer<ModelParameter const> endpointDef = *curEndpointDef.next();
+        QSharedPointer<Port const> endpointDef = *curEndpointDef.next();
 
         MCAPIDataType type = MCAPI_TYPE_MESSAGE;
-		stringToValue(endpointDef->getDataType(), type);
+		stringToValue(endpointDef->getTypeName(), type);
 
         MCAPIEndpointDirection dir = MCAPI_ENDPOINT_IN;
-        stringToValue(endpointDef->getValue(), dir);
+        stringToValue(General::direction2Str(endpointDef->getDirection()), dir);
 
         endpointStack_->addEndpoint(endpointDef->getName(), dir, type);
     }
@@ -125,7 +123,7 @@ QSharedPointer<MCAPIContentMatcher> ProgramEntityItem::getContentMatcher() const
 
     foreach (EndpointItem* endpoint, endpointStack_->getEndpoints())
     {
-        QString localEndpointName = "local." + endpoint->getName();
+        QString localEndpointName = endpoint->getName();
 
         matcher->addEndpoint(localEndpointName, endpoint->getMCAPIDirection(),
                              name().toUpper(), endpoint->getName().toUpper() + "_PORT");
@@ -142,12 +140,14 @@ QSharedPointer<MCAPIContentMatcher> ProgramEntityItem::getContentMatcher() const
                 remoteEndpoint = endpoint->getConnections().first()->getEndpoint1();
             }
 
-            QString remoteEndpointName = remoteEndpoint->getParentProgramEntity()->name().toLower() +
-                                         "." + remoteEndpoint->getName();
+            Port* port = appItem_->componentModel()->getPort(endpoint->getName());
+            Q_ASSERT(port != 0);
+
+            QString remoteEndpointName = port->getRemoteEndpointName();
             
             matcher->addEndpoint(remoteEndpointName, remoteEndpoint->getMCAPIDirection(),
                                  remoteEndpoint->getParentProgramEntity()->name().toUpper(),
-                                 remoteEndpoint->getName().toUpper() + "_PORT");
+                                 remoteEndpointName.toUpper() + "_PORT");
             matcher->addConnection(localEndpointName, remoteEndpointName,
                                    endpoint->getConnectionType());
         }
@@ -331,9 +331,8 @@ void ProgramEntityItem::generateCode(QString const& dir)
         QDir().mkpath(dir);
     }
 
-    // Retrieve the list of connected remote nodes and endpoints.
+    // Retrieve the list of connected remote nodes.
     QList<ProgramEntityItem*> remoteNodes;
-    QList<EndpointItem*> remoteEndpoints;
 
     foreach (EndpointItem* endpoint, endpointStack_->getEndpoints())
     {
@@ -347,8 +346,6 @@ void ProgramEntityItem::generateCode(QString const& dir)
                 remoteEndpoint = endpoint->getConnections().first()->getEndpoint1();
             }
 
-            remoteEndpoints.append(remoteEndpoint);
-
             if (!remoteNodes.contains(remoteEndpoint->getParentProgramEntity()))
             {
                 remoteNodes.append(remoteEndpoint->getParentProgramEntity());
@@ -356,8 +353,8 @@ void ProgramEntityItem::generateCode(QString const& dir)
         }
     }
 
-    generateHeader(dir + "/ktsmcapicode.h", remoteNodes, remoteEndpoints);
-    generateSource(dir + "/ktsmcapicode.c", remoteNodes, remoteEndpoints);
+    generateHeader(dir + "/ktsmcapicode.h");
+    generateSource(dir + "/ktsmcapicode.c", remoteNodes);
 }
 
 //-----------------------------------------------------------------------------
@@ -531,8 +528,7 @@ void ProgramEntityItem::setFixed(bool fixed)
 //-----------------------------------------------------------------------------
 // Function: generateHeader()
 //-----------------------------------------------------------------------------
-void ProgramEntityItem::generateHeader(QString const& filename, QList<ProgramEntityItem*> const& remoteNodes,
-                                       QList<EndpointItem*> const& remoteEndpoints)
+void ProgramEntityItem::generateHeader(QString const& filename)
 {
     CSourceWriter writer(filename, createIndentString());
 
@@ -555,40 +551,28 @@ void ProgramEntityItem::generateHeader(QString const& filename, QList<ProgramEnt
     writer.writeHeaderComment("Node data.");
     writer.writeLine();
 
-    // Write a structure for local endpoints.
-    writer.writeLine("// Structure for encapsulating local endpoints.");
-    writer.beginStruct();
+    // Write local endpoint variables.
+    writer.writeLine("// Local endpoints.");
+    
+    foreach (EndpointItem* endpoint, endpointStack_->getEndpoints())
+    {
+        writer.writeLine("extern mcapi_endpoint_t " + endpoint->getName() + ";");
+    }
+
+    writer.writeLine();
+
+    // Write remote endpoint variables.
+    writer.writeLine("// Remote endpoints.");
 
     foreach (EndpointItem* endpoint, endpointStack_->getEndpoints())
     {
-        writer.writeLine("mcapi_endpoint_t " + endpoint->getName() + ";");
+        Port* port = appItem_->componentModel()->getPort(endpoint->getName());
+        Q_ASSERT(port != 0);
+
+        writer.writeLine("extern mcapi_endpoint_t " + port->getRemoteEndpointName() + ";");
     }
 
-    writer.endStruct("local_node_t");
     writer.writeLine();
-    writer.writeLine("extern local_node_t local;");
-    writer.writeLine();
-
-    // Write a structure for each remote node to encapsulate its endpoints.
-    foreach (ProgramEntityItem* node, remoteNodes)
-    {
-        writer.writeLine("// Structure for encapsulating the endpoints of " + node->name() + ".");
-        writer.beginStruct();
-
-        foreach (EndpointItem* endpoint, remoteEndpoints)
-        {
-            if (endpoint->getParentProgramEntity() == node)
-            {
-                writer.writeLine("mcapi_endpoint_t " + endpoint->getName() + ";");
-            }
-        }
-
-        writer.endStruct(node->name().toLower() + "_node_t");
-        writer.writeLine();
-
-        writer.writeLine("extern " + node->name().toLower() + "_node_t " + node->name().toLower() + ";");
-        writer.writeLine();
-    }
 
     // Write the other variables.
     writer.writeLine("// Other variables.");
@@ -614,8 +598,7 @@ void ProgramEntityItem::generateHeader(QString const& filename, QList<ProgramEnt
 //-----------------------------------------------------------------------------
 // Function: generateSource()
 //-----------------------------------------------------------------------------
-void ProgramEntityItem::generateSource(QString const& filename, QList<ProgramEntityItem*> const& remoteNodes,
-                                       QList<EndpointItem*> const& remoteEndpoints)
+void ProgramEntityItem::generateSource(QString const& filename, QList<ProgramEntityItem*> const& remoteNodes)
 {
     CSourceWriter writer(filename, createIndentString());
 
@@ -657,47 +640,65 @@ void ProgramEntityItem::generateSource(QString const& filename, QList<ProgramEnt
 
     foreach (EndpointItem* endpoint, endpointStack_->getEndpoints())
     {
-        writer.writeLine("const mcapi_port_t " + endpoint->getParentProgramEntity()->name().toUpper() +
-                         "_" + endpoint->getName().toUpper() + "_PORT = " +
+        writer.writeLine("const mcapi_port_t " + endpoint->getName().toUpper() + "_PORT = " +
                          QString::number(endpoint->getPortID()) + ";");
     }
 
     writer.writeLine();
 
     // Write the remote port IDs.
-    if (!remoteEndpoints.empty())
+    writer.writeLine("// Remote port IDs.");
+
+    foreach (EndpointItem* endpoint, endpointStack_->getEndpoints())
     {
-        writer.writeLine("// Remote port IDs.");
+        Port* port = appItem_->componentModel()->getPort(endpoint->getName());
+        Q_ASSERT(port != 0);
 
-        foreach (EndpointItem* endpoint, remoteEndpoints)
+        int portNumber = -1;
+
+        if (endpoint->isConnected())
         {
-            writer.writeLine("const mcapi_port_t " + endpoint->getParentProgramEntity()->name().toUpper() +
-                             "_" + endpoint->getName().toUpper() + "_PORT = " +
-                             QString::number(endpoint->getPortID()) + ";");
-        }
+            EndpointItem* remoteEndpoint = endpoint->getConnections().first()->getEndpoint2();
 
-        writer.writeLine();
+            if (remoteEndpoint == endpoint)
+            {
+                remoteEndpoint = endpoint->getConnections().first()->getEndpoint1();
+            }
+
+            portNumber = remoteEndpoint->getPortID();
+        }
+        
+        writer.writeLine("const mcapi_port_t " + port->getRemoteEndpointName().toUpper() + "_PORT = " +
+                         QString::number(portNumber) + ";");
     }
+
+    writer.writeLine();
 
     writer.writeHeaderComment("Global variables.");
     writer.writeLine();
 
-    writer.writeLine("// Local node.");
-    writer.writeLine("local_node_t local;");
+    // Write local endpoint variables.
+    writer.writeLine("// Local endpoints.");
+
+    foreach (EndpointItem* endpoint, endpointStack_->getEndpoints())
+    {
+        writer.writeLine("mcapi_endpoint_t " + endpoint->getName() + ";");
+    }
+
     writer.writeLine();
 
-    // Write struct instances for each remote node.
-    if (!remoteNodes.empty())
+    // Write remote endpoint variables.
+    writer.writeLine("// Remote endpoints.");
+
+    foreach (EndpointItem* endpoint, endpointStack_->getEndpoints())
     {
-        writer.writeLine("// Remote nodes.");
+        Port* port = appItem_->componentModel()->getPort(endpoint->getName());
+        Q_ASSERT(port != 0);
 
-        foreach (ProgramEntityItem* node, remoteNodes)
-        {
-            writer.writeLine(node->name().toLower() + "_node_t " + node->name().toLower() + ";");
-        }
-
-        writer.writeLine();
+        writer.writeLine("mcapi_endpoint_t " + port->getRemoteEndpointName() + ";");
     }
+
+    writer.writeLine();
 
     // Write the other variables.
     writer.writeLine("// Other variables.");
@@ -726,9 +727,7 @@ void ProgramEntityItem::generateSource(QString const& filename, QList<ProgramEnt
 
     foreach (EndpointItem* endpoint, endpointStack_->getEndpoints())
     {
-        writer.writeLine("local." + endpoint->getName() +
-                         " = mcapi_create_endpoint(" +
-                         endpoint->getParentProgramEntity()->name().toUpper() + "_" +
+        writer.writeLine(endpoint->getName() + " = mcapi_create_endpoint(" +
                          endpoint->getName().toUpper() + "_PORT, &status);");
         writer.writeLine();
 
@@ -739,17 +738,27 @@ void ProgramEntityItem::generateSource(QString const& filename, QList<ProgramEnt
         writer.writeLine();
     }
 
-    // Write function call to retrieve remote endpoints.
-    if (!remoteEndpoints.empty())
-    {
-        writer.writeLine("// Retrieve remote endpoints.");
+    // Write function calls to retrieve remote endpoints.
+    writer.writeLine("// Retrieve remote endpoints.");
 
-        foreach (EndpointItem* endpoint, remoteEndpoints)
+    foreach (EndpointItem* endpoint, endpointStack_->getEndpoints())
+    {
+        if (endpoint->isConnected())
         {
-            writer.writeLine(endpoint->getParentProgramEntity()->name() + "." + endpoint->getName() +
-                             " = mcapi_get_endpoint(" + endpoint->getParentProgramEntity()->name().toUpper() +
-                             ", " + endpoint->getParentProgramEntity()->name().toUpper() + "_" +
-                             endpoint->getName().toUpper() + "_PORT, &status);");
+            Port* port = appItem_->componentModel()->getPort(endpoint->getName());
+            Q_ASSERT(port != 0);
+
+            EndpointItem* remoteEndpoint = endpoint->getConnections().first()->getEndpoint2();
+
+            if (remoteEndpoint == endpoint)
+            {
+                remoteEndpoint = endpoint->getConnections().first()->getEndpoint1();
+            }
+
+            writer.writeLine(port->getRemoteEndpointName() +
+                             " = mcapi_get_endpoint(" +
+                             remoteEndpoint->getParentProgramEntity()->name().toUpper() +
+                             ", " + port->getRemoteEndpointName().toUpper() + "_PORT, &status);");
             writer.writeLine();
 
             writer.writeLine("if (status != MCAPI_SUCCESS)");
