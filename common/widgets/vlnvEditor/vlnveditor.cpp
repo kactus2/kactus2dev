@@ -304,24 +304,6 @@ void VLNVEditor::dragEnterEvent( QDragEnterEvent* event ) {
 }
 
 //-----------------------------------------------------------------------------
-// Function: getTypeRoot()
-//-----------------------------------------------------------------------------
-LibraryItem const* VLNVEditor::getTypeRoot() const
-{
-    LibraryItem const* root = handler_->getTreeRoot();
-
-    for (int i = 0; i < root->getNumberOfChildren(); ++i)
-    {
-        if (root->child(i)->getName() == VLNV::type2Print(type_))
-        {
-            return root->child(i);
-        }
-    }
-
-    return 0;
-}
-
-//-----------------------------------------------------------------------------
 // Function: setFirmnessFilter()
 //-----------------------------------------------------------------------------
 void VLNVEditor::setFirmnessFilter(bool on, KactusAttribute::Firmness firmness /*= KTS_TEMPLATE*/)

@@ -183,8 +183,6 @@ private:
      */
     void initWidgets(QWidget* parentWnd, bool compact);
 
-    LibraryItem const* getTypeRoot() const;
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

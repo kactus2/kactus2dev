@@ -212,8 +212,8 @@ QVariant LibraryTreeModel::data(const QModelIndex& index, int role) const {
 
 			if (vlnvP->getType() == VLNV::COMPONENT) {
 
-				QSharedPointer<LibraryComponent> libComp = handler_->getModel(*vlnvP);
-				QSharedPointer<Component> component = libComp.staticCast<Component>();
+				QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(*vlnvP);
+				QSharedPointer<Component const> component = libComp.staticCast<Component const>();
 
 				switch (component->getComponentImplementation()) {
 				case KactusAttribute::KTS_SYS: {

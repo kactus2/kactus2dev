@@ -108,7 +108,7 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
 	if (vlnv) {
 
 		// parse the model
-		QSharedPointer<LibraryComponent> libComp = handler_->getModel(*vlnv);
+		QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(*vlnv);
 		if (!libComp) {
 			emit errorMessage(tr("Item not found in library"));
 			return;
@@ -116,7 +116,7 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
 
 		// if component
 		if (libComp->getVlnv()->getType() == VLNV::COMPONENT) {
-			QSharedPointer<Component> component = libComp.staticCast<Component>();
+			QSharedPointer<Component const> component = libComp.staticCast<Component const>();
 
 			// depending on the type of the component
 			switch (component->getComponentImplementation()) {
@@ -161,7 +161,7 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
 		}
 		else if (libComp->getVlnv()->getType() == VLNV::BUSDEFINITION) {
 
-			QSharedPointer<BusDefinition> busDef = libComp.staticCast<BusDefinition>();
+			QSharedPointer<BusDefinition const> busDef = libComp.staticCast<BusDefinition const>();
 
 			// make sure the bus is for hardware
 			if (busDef->getType() == KactusAttribute::KTS_BUSDEF_HW) {
