@@ -54,9 +54,9 @@ instances_() {
 
 	Q_ASSERT(handler);
 	connect(this, SIGNAL(errorMessage(const QString&)),
-		parent, SIGNAL(errorMsg(const QString&)), Qt::UniqueConnection);
+		parent, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 	connect(this, SIGNAL(noticeMessage(const QString&)),
-		parent, SIGNAL(noticeMsg(const QString&)), Qt::UniqueConnection);
+		parent, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 }
 
 VhdlGenerator2::VhdlGenerator2( LibraryInterface* handler, IPXactComponentEditor* parent):

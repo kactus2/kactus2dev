@@ -285,9 +285,9 @@ void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forc
 		this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(openBus(VLNV const&, VLNV const&, bool)),
 		this, SLOT(openBus(VLNV const&, VLNV const&, bool)), Qt::UniqueConnection);
-	connect(designWidget, SIGNAL(errorMsg(const QString&)),
+	connect(designWidget, SIGNAL(errorMessage(const QString&)),
 		console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
-	connect(designWidget, SIGNAL(noticeMsg(const QString&)),
+	connect(designWidget, SIGNAL(noticeMessage(const QString&)),
 		console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
 
 	connect(designWidget, SIGNAL(clearItemSelection()),
@@ -1150,6 +1150,7 @@ void MainWindow::saveCurrentAs() {
 	{
 		doc->saveAs();
 		onTabChanged(designTabs_->currentIndex());
+		doc->refresh();
 	}
 }
 

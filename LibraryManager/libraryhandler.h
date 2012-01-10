@@ -143,8 +143,10 @@ public:
      *
      * \param path Directory path that specifies the directory to save to file into.
      * \model Pointer to the library component that is written.
+     * 
+     * \return True if the model was in valid state and was successfully written.
      */
-    virtual void writeModelToFile(const QString path, 
+    virtual bool writeModelToFile(const QString path, 
 		QSharedPointer<LibraryComponent> model);
 
 	/*! \brief Write the already registered model to file system.
@@ -155,9 +157,10 @@ public:
 	 * state after this operation.
 	 * 
 	 * \param model Pointer to the model to be written.
-	 *
+	 * 
+	 * \return True if the model was in valid state and was successfully written.
 	*/
-	virtual void writeModelToFile(QSharedPointer<LibraryComponent> model);
+	virtual bool writeModelToFile(QSharedPointer<LibraryComponent> model);
 
 	/*! \brief Search for IP-Xact files in the file system and add them to library
 	 * 
@@ -210,25 +213,6 @@ public:
 	 * \return VLNV::IPXactType Type of the document.
 	*/
 	virtual VLNV::IPXactType getDocumentType(const VLNV& vlnv);
-
-	/*! \brief Update the file path of given vlnv object
-	 *
-	 * \param vlnv Identifies the object.
-	 * \param path The path to the object file.
-	 *
-	*/
-	//virtual void updatePath(const VLNV& vlnv, const QString& path);
-
-	/*! \brief Update the file references from old component to new component.
-	 * 
-	 * This function also copies the necessary files that are in the same or lower
-	 * level level of hierarchy in directory structure.
-	 * 
-	 * \param oldComponent VLNV that identifies the old component.
-	 * \param newComponent VLNV that identifies the new component.
-	 *
-	*/
-	virtual void updateComponentFiles(const VLNV& oldComponent, const VLNV& newComponent);
 
 	/*! \brief Get pointer to the VLNV instance owned by the Library Data
 	 *

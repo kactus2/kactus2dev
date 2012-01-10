@@ -667,12 +667,6 @@ QSharedPointer<LibraryComponent const> LibraryHandler::getModelReadOnly(const VL
     }
 }
 
-// bool LibraryHandler::registerVLNV( const VLNV& vlnv, const QString& path ) {
-// 
-// 	return data_->addVLNV(vlnv, path);
-// 
-// }
-
 bool LibraryHandler::contains( const VLNV& vlnv ) {
 
 	// if the 
@@ -689,11 +683,23 @@ const QString LibraryHandler::getPath( const VLNV& vlnv ) const {
 		return data_->getPath(vlnv);
 }
 
-void LibraryHandler::writeModelToFile( const QString path, 
+bool LibraryHandler::writeModelToFile( const QString path, 
 									  QSharedPointer<LibraryComponent> model ) {
 	// if the given file path is not valid
 	if (path.isEmpty()) {
-		return;
+		return false;
+	}
+
+	// if the model is not in the state that it can be written
+	QStringList errorList;
+	if (!model->isValid(errorList)) {
+
+		// print all errors that were found
+		foreach (QString errorMsg, errorList) {
+			emit errorMessage(errorMsg);
+		}
+
+		return false;
 	}
 
 	VLNV vlnv = *model->getVlnv();
@@ -705,10 +711,10 @@ void LibraryHandler::writeModelToFile( const QString path,
     {
         if (!QDir().mkpath(path))
         {
-            QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+            QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
                                tr("Could not create directory \"%1\".").arg(path));
             msgBox.exec();
-            return;
+            return false;
         }
     }
 
@@ -728,7 +734,7 @@ void LibraryHandler::writeModelToFile( const QString path,
 	QFile newFile(filePath);
 	if (!newFile.open(QFile::WriteOnly | QFile::Truncate)) {
 		emit errorMessage(tr("Could not open file %1 for writing").arg(filePath));
-		return;
+		return false;
 	}
 
 	// write the parsed model
@@ -744,7 +750,7 @@ void LibraryHandler::writeModelToFile( const QString path,
 
 		// close the file
 		newFile.close();
-		return;
+		return false;
 	}
 
     // close the file
@@ -757,11 +763,25 @@ void LibraryHandler::writeModelToFile( const QString path,
 	else {
 		itemsToAdd_.insert(vlnv, filePath);
 	}
+
+	return true;
 }
 
-void LibraryHandler::writeModelToFile( QSharedPointer<LibraryComponent> model ) {
+bool LibraryHandler::writeModelToFile( QSharedPointer<LibraryComponent> model ) {
 	
 	Q_ASSERT(data_->contains(*model->getVlnv()));
+
+	// if the model is not in the state that it can be written
+	QStringList errorList;
+	if (!model->isValid(errorList)) {
+
+		// print all errors that were found
+		foreach (QString errorMsg, errorList) {
+			emit errorMessage(errorMsg);
+		}
+
+		return false;
+	}
 
 	// make sure the object is parsed again next time
 	VLNV objectVLNV = *model->getVlnv();
@@ -783,7 +803,7 @@ void LibraryHandler::writeModelToFile( QSharedPointer<LibraryComponent> model ) 
 	QFile newFile(filePath);
 	if (!newFile.open(QFile::WriteOnly | QFile::Truncate)) {
 		emit errorMessage(tr("Could not open file %1 for writing").arg(filePath));
-		return;
+		return false;
 	}
 
 	// write the parsed model
@@ -799,7 +819,7 @@ void LibraryHandler::writeModelToFile( QSharedPointer<LibraryComponent> model ) 
 		
 		// close the file
 		newFile.close();
-		return;
+		return false;
 	}
 
 	// close the file
@@ -808,6 +828,8 @@ void LibraryHandler::writeModelToFile( QSharedPointer<LibraryComponent> model ) 
 	if (!saveInProgress_) {
 		onItemSaved(*model->getVlnv());
 	}
+
+	return true;
 }
 
 void LibraryHandler::searchForIPXactFiles(QString const& path)
@@ -1174,43 +1196,6 @@ void LibraryHandler::onCreateAbsDef( const VLNV& busDefVLNV ) {
 
 void LibraryHandler::onCreateDesign( const VLNV& vlnv ) {
 	emit openDesign(vlnv, QString());
-}
-
-// void LibraryHandler::updatePath( const VLNV& vlnv, const QString& path ) {
-// 	data_->updatePath(vlnv, path);
-// }
-
-void LibraryHandler::updateComponentFiles( const VLNV& oldComponent, 
-										  const VLNV& newComponent ) {
-
-	if (!data_->contains(oldComponent) || !data_->contains(newComponent)) {
-		emit errorMessage(tr("Component was not found within library"));
-		return;
-	}
-	else if (data_->getType(oldComponent) != VLNV::COMPONENT ||
-		data_->getType(newComponent) != VLNV::COMPONENT) {
-			emit errorMessage(tr("Given VLNV was not component"));
-			return;
-	}
-
-	// parse the components
-	QSharedPointer<LibraryComponent> old = getModel(oldComponent);
-	QSharedPointer<Component> oldComp = old.staticCast<Component>();
-
-	QSharedPointer<LibraryComponent> newC = getModel(newComponent);
-	QSharedPointer<Component> newComp = newC.staticCast<Component>();
-
-	// get the paths to the xml files
-	QFileInfo sourceInfo(data_->getPath(oldComponent));
-	QString sourcePath = sourceInfo.absolutePath();
-	QFileInfo targetInfo(data_->getPath(newComponent));
-	QString targetPath = targetInfo.absolutePath();
-
-	// update the file paths and copy necessary files
-	newComp->updateFiles(*oldComp, sourcePath, targetPath);
-
-	// write the new component to file system
-	writeModelToFile(newComp);
 }
 
 VLNV* LibraryHandler::getOriginalPointer( const VLNV& vlnv ) const {

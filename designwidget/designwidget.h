@@ -197,12 +197,6 @@ signals:
 	*/
 	void refresh(const DesignWidget* designWidget);
 
-	//! \brief Used to report an error to user.
-	void errorMsg(const QString& errorMessage);
-
-	//! \brief Used to send a notification to user.
-	void noticeMsg(const QString& noticeMessage);
-
 	/*! \brief Emitted when user selects a component in the draw board.
 	 *
 	 * \param component Pointer to the DiagramComponent instance that is selected.

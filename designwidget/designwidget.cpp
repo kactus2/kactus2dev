@@ -85,9 +85,9 @@ editProvider_() {
     connect(diagram_, SIGNAL(openBus(VLNV const&, VLNV const&, bool)),
         this, SIGNAL(openBus(VLNV const&, VLNV const&, bool)), Qt::UniqueConnection);
 	connect(diagram_, SIGNAL(errorMessage(const QString&)),
-		this, SIGNAL(errorMsg(const QString&)), Qt::UniqueConnection);
+		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 	connect(diagram_, SIGNAL(noticeMessage(const QString&)),
-		this, SIGNAL(noticeMsg(const QString&)), Qt::UniqueConnection);
+		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 	
 	connect(diagram_, SIGNAL(portSelected(DiagramPort*)),
 		this, SIGNAL(portSelected(DiagramPort*)), Qt::UniqueConnection);
@@ -233,17 +233,31 @@ bool DesignWidget::save()
 
 	lh_->beginSave();
 
+	bool valid = true;
+
 	// if design configuration is used then write it.
 	if (designConf) {
-        lh_->writeModelToFile(designConf);
+		if (!lh_->writeModelToFile(designConf)) {
+			valid = false;
+		}
 	}
 
-	lh_->writeModelToFile(design);
-	lh_->writeModelToFile(hierComponent_);
+	if (!lh_->writeModelToFile(design)) {
+		valid = false;
+	}
+	if (!lh_->writeModelToFile(hierComponent_)) {
+		valid = false;
+	}
 
 	lh_->endSave();
 
-    return TabDocument::save();
+	if (valid) {
+	    return TabDocument::save();
+	}
+	else {
+		emit errorMessage(tr("Design was not saved to disk."));
+		return false;
+	}
 }
 
 bool DesignWidget::saveAs() {
@@ -272,6 +286,8 @@ bool DesignWidget::saveAs() {
 	QSharedPointer<Design> design;
 
 	// create the design
+
+	QSharedPointer<Component> oldComponent = hierComponent_;
 
 	// make a copy of the hierarchical component
 	hierComponent_ = QSharedPointer<Component>(new Component(*hierComponent_));
@@ -315,26 +331,43 @@ bool DesignWidget::saveAs() {
 	// update the hierarchical bus interfaces of the top-component
 	diagram_->updateHierComponent(hierComponent_);
 
+	// get the paths to the original xml file
+	QFileInfo sourceInfo(lh_->getPath(*oldComponent->getVlnv()));
+	QString sourcePath = sourceInfo.absolutePath();
+
+	// update the file paths and copy necessary files
+	hierComponent_->updateFiles(*oldComponent, sourcePath, directory);
+
 	// create the files for the documents
 
 	lh_->beginSave();
 
+	bool valid = true;
+
 	// if design configuration is used then write it.
 	if (designConf) {
-        lh_->writeModelToFile(directory, designConf);
+		if (!lh_->writeModelToFile(directory, designConf)) {
+			valid = false;
+		}
 	}
 
-    lh_->writeModelToFile(directory, design);
-    lh_->writeModelToFile(directory, hierComponent_);
+	if (!lh_->writeModelToFile(directory, design)) {
+		valid = false;
+	}
+	if (!lh_->writeModelToFile(directory, hierComponent_)) {
+		valid = false;
+	}
 	
 	lh_->endSave();
 
-	setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");
-
-	// update the file paths of the components
-	lh_->updateComponentFiles(oldVLNV, vlnv);
-
-	return TabDocument::saveAs();
+	if (valid) {
+		setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");
+		return TabDocument::saveAs();
+	}
+	else {
+		emit errorMessage(tr("Design was not saved to disk."));
+		return false;
+	}
 }
 
 const VLNV *DesignWidget::getOpenDocument() const
@@ -636,9 +669,9 @@ void DesignWidget::onQuartusGenerate() {
 	// create the quartus project
 	QuartusGenerator quartusGen(lh_, this);
 	connect(&quartusGen, SIGNAL(errorMessage(const QString&)),
-		this, SIGNAL(errorMsg(const QString&)), Qt::UniqueConnection);
+		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 	connect(&quartusGen, SIGNAL(noticeMessage(const QString&)),
-		this, SIGNAL(noticeMsg(const QString&)), Qt::UniqueConnection);
+		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
 	// try to find the pin maps
 	quartusGen.setBoardName(component);
@@ -674,9 +707,9 @@ void DesignWidget::onModelsimGenerate() {
 	// construct the generator
 	ModelsimGenerator generator(lh_, this);
 	connect(&generator, SIGNAL(noticeMessage(const QString&)),
-		this, SIGNAL(noticeMsg(const QString&)), Qt::UniqueConnection);
+		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 	connect(&generator, SIGNAL(errorMessage(const QString&)),
-		this, SIGNAL(errorMsg(const QString&)), Qt::UniqueConnection);
+		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 
 	// parse the hierComponent_ and view / sub-designs
 	generator.parseFiles(hierComponent_, viewName_);

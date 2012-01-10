@@ -467,9 +467,13 @@ bool IPXactComponentEditor::save() {
 	// if all editors were valid then document can be written to disk
 	if (saveEditors()) {
 
-		handler_->writeModelToFile(component_);
-
-		return TabDocument::save();
+		if (handler_->writeModelToFile(component_)) {
+			return TabDocument::save();
+		}
+		else {
+			emit errorMessage(tr("Component was not saved to disk."));
+			return false;
+		}
 	}
 	// there was errors so do not write
 	else {
@@ -539,6 +543,9 @@ bool IPXactComponentEditor::saveAs()
 	// if all editors were valid then document can be written to disk
 	if (saveEditors()) {
 
+		// save pointer to the old component
+		QSharedPointer<Component> oldComponent = component_;
+
 		// create copies of the objects so saving is not done to the original component
 		component_ = QSharedPointer<Component>(new Component(*component_));
 
@@ -549,12 +556,22 @@ bool IPXactComponentEditor::saveAs()
 		// update the vlnv
 		component_->setVlnv(vlnv);
 
+		// get the paths to the original xml file
+		QFileInfo sourceInfo(handler_->getPath(*oldComponent->getVlnv()));
+		QString sourcePath = sourceInfo.absolutePath();
+
+		// update the file paths and copy necessary files
+		component_->updateFiles(*oldComponent, sourcePath, directory);
+
         // Write the component to a file.
-        handler_->writeModelToFile(directory, component_);
-
-		setDocumentName(compVLNV.getName() + " (" + compVLNV.getVersion() + ")");
-
-		return TabDocument::saveAs();
+		if (handler_->writeModelToFile(directory, component_)) {
+			setDocumentName(compVLNV.getName() + " (" + compVLNV.getVersion() + ")");
+			return TabDocument::saveAs();
+		}
+		else {
+			emit errorMessage(tr("Component was not saved to disk."));
+			return false;
+		}
 	}
 	
 	// there was errors so do not write
@@ -802,9 +819,9 @@ bool IPXactComponentEditor::onModelsimGenerate() {
 	// construct the generator
 	ModelsimGenerator generator(handler_, this);
 	connect(&generator, SIGNAL(noticeMessage(const QString&)),
-		this, SIGNAL(noticeMsg(const QString&)), Qt::UniqueConnection);
+		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 	connect(&generator, SIGNAL(errorMessage(const QString&)),
-		this, SIGNAL(errorMsg(const QString&)), Qt::UniqueConnection);
+		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 
 	// parse the component and view / sub-designs
 	generator.parseFiles(component_, viewName);
