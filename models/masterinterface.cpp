@@ -7,7 +7,7 @@
 #include "masterinterface.h"
 #include "generaldeclarations.h"
 
-#include "../exceptions/parse_error.h"
+
 
 #include <QString>
 #include <QMap>
@@ -56,13 +56,6 @@ baseAddress_(), prompt_(QString("Base Address:")), baseAttributes_() {
 
 				// remove from map
 				baseAttributes_.erase(i);
-			}
-
-			// if mandatory attribute addressSpaceRef is missing
-			if (addressSpaceRef_.isNull()) {
-				throw Parse_error(QObject::tr("Mandatory attribute spirit:"
-						"addressSpaceRef is missing in spirit:addressSpaceRef"
-				));
 			}
 		}
 	}

@@ -8,7 +8,7 @@
 #include <LibraryManager/vlnv.h>
 #include "generaldeclarations.h"
 
-#include "../exceptions/parse_error.h"
+
 
 #include <QList>
 #include <QString>
@@ -42,12 +42,6 @@ unique_(false), operator_(General::OR), groupNames_(), generatorChainRef_() {
 
 			generatorChainRef_ =General::createVLNV(tempNode, VLNV::GENERATORCHAIN);
 		}
-	}
-
-	// if mandatory fields are missing
-	if (groupNames_.size() < 1) {
-		throw Parse_error(QObject::tr("Mandatory element name missing in "
-				"spirit:generatorChainSelector"));
 	}
 	return;
 }

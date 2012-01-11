@@ -28,7 +28,7 @@
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
 // the exception files
-#include <exceptions/parse_error.h>
+
 #include <exceptions/invalid_file.h>
 #include <exceptions/write_error.h>
 #include <exceptions/vhdl_error.h>
@@ -555,12 +555,6 @@ QSharedPointer<LibraryComponent> LibraryHandler::getModel( const VLNV& vlnv ) {
 			}
 		}
 		// if an exception occurred during the parsing
-		catch (Parse_error error) {
-			QString errorMsg(error.what() + QString(" ") + error.errorMsg() +
-				tr(" within file: %1").arg(path));
-			emit errorMessage(errorMsg);
-			return QSharedPointer<LibraryComponent>();
-		}
 		catch (...) {
 			emit errorMessage(
 				tr("Error occurred during parsing of the document %1").arg(path));
@@ -648,13 +642,6 @@ QSharedPointer<LibraryComponent const> LibraryHandler::getModelReadOnly(const VL
                      }
             }
         }
-        // if an exception occurred during the parsing
-        catch (Parse_error error) {
-            QString errorMsg(error.what() + QString(" ") + error.errorMsg() +
-                tr(" within file: %1").arg(path));
-            emit errorMessage(errorMsg);
-            return QSharedPointer<LibraryComponent>();
-        }
         catch (...) {
             emit errorMessage(
                 tr("Error occurred during parsing of the document %1").arg(path));
@@ -684,7 +671,8 @@ const QString LibraryHandler::getPath( const VLNV& vlnv ) const {
 }
 
 bool LibraryHandler::writeModelToFile( const QString path, 
-									  QSharedPointer<LibraryComponent> model ) {
+									  QSharedPointer<LibraryComponent> model,
+									  bool printErrors /* = true */) {
 	// if the given file path is not valid
 	if (path.isEmpty()) {
 		return false;
@@ -694,9 +682,17 @@ bool LibraryHandler::writeModelToFile( const QString path,
 	QStringList errorList;
 	if (!model->isValid(errorList)) {
 
-		// print all errors that were found
-		foreach (QString errorMsg, errorList) {
-			emit errorMessage(errorMsg);
+		if (printErrors) {
+
+			emit noticeMessage(tr("Item %1 contained following errors:").arg(
+				model->getVlnv()->toString()));
+
+			// print all errors that were found
+			foreach (QString errorMsg, errorList) {
+				emit errorMessage(errorMsg);
+			}
+
+			emit noticeMessage(tr("Item was not valid and was not written to disk.\n"));
 		}
 
 		return false;
@@ -767,7 +763,8 @@ bool LibraryHandler::writeModelToFile( const QString path,
 	return true;
 }
 
-bool LibraryHandler::writeModelToFile( QSharedPointer<LibraryComponent> model ) {
+bool LibraryHandler::writeModelToFile( QSharedPointer<LibraryComponent> model,
+									  bool printErrors /* = true */) {
 	
 	Q_ASSERT(data_->contains(*model->getVlnv()));
 
@@ -775,11 +772,18 @@ bool LibraryHandler::writeModelToFile( QSharedPointer<LibraryComponent> model ) 
 	QStringList errorList;
 	if (!model->isValid(errorList)) {
 
-		// print all errors that were found
-		foreach (QString errorMsg, errorList) {
-			emit errorMessage(errorMsg);
-		}
+		if (printErrors) {
 
+			emit noticeMessage(tr("Item %1 contained following errors:").arg(
+				model->getVlnv()->toString()));
+
+			// print all errors that were found
+			foreach (QString errorMsg, errorList) {
+				emit errorMessage(errorMsg);
+			}
+
+			emit noticeMessage(tr("Item was not valid and was not written to disk.\n"));
+		}
 		return false;
 	}
 

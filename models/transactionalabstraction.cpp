@@ -7,7 +7,7 @@
 #include "transactionalabstraction.h"
 #include "generaldeclarations.h"
 
-#include "../exceptions/parse_error.h"
+
 #include "../exceptions/write_error.h"
 
 #include <QDomNode>
@@ -43,17 +43,6 @@ TransactionalAbstraction::TransactionalPort::TransactionalPort(
 				}
 			}
 		}
-	}
-
-	// if mandatory elements are missing
-	if (serviceInitiative_ == General::NONE) {
-		throw Parse_error(QObject::tr("Mandatory element spirit:initiative missing"
-				" in spirit:service"));
-	}
-
-	if (typeNames_.size() == 0) {
-		throw Parse_error(QObject::tr("Mandatory element spirit:typeName"
-				" missing in spirit:service"));
 	}
 	return;
 }

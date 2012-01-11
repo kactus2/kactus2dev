@@ -9,7 +9,7 @@
 #include "generaldeclarations.h"
 #include "register.h"
 
-#include "../exceptions/parse_error.h"
+
 #include "../exceptions/write_error.h"
 
 #include <QString>
@@ -41,46 +41,18 @@ registerData_() {
 			General::parseAttributes(tempNode, rangeAttributes_);
 		}
 		else if (tempNode.nodeName() == QString("spirit:register")) {
+			
 			Register* reg = new Register(tempNode);
-
-			// if the map already contains register with same name
-			if (registerData_.contains(reg->getName())) {
-				throw Parse_error(QObject::tr("Multiple registers with same"
-						" name in spirit:registerFile"));
-			}
-			// if name was available then add the register to map
-			else {
-				registerData_.insert(reg->getName(), QSharedPointer<Register>(
-						reg));
-			}
+			registerData_.insert(reg->getName(), QSharedPointer<Register>(
+				reg));
 		}
 		else if (tempNode.nodeName() == QString("spirit:registerFile")) {
 			RegisterFile* reg = new RegisterFile(tempNode);
 
-			// if the map already contains register with same name
-			if (registerData_.contains(reg->getName())) {
-				throw Parse_error(QObject::tr("Multiple registerFiles with same"
-						" name in spirit:registerFile"));
-			}
-			// if name was available then add the register to map
-			else {
-				registerData_.insert(reg->getName(),
-						QSharedPointer<RegisterFile>(reg));
-			}
+			registerData_.insert(reg->getName(),
+				QSharedPointer<RegisterFile>(reg));
 		}
 	}
-
-	// if mandatory addressOffset is not defined
-// 	if (addressOffset_.isNull()) {
-// 		throw Parse_error(QObject::tr("Mandatory addressOffset missing in "
-// 				"spirit:registerFile"));
-// 	}
-// 
-// 	// if mandatory range is missing
-// 	if (range_ == 0) {
-// 		throw Parse_error(QObject::tr("Mandatory range missing in spirit:"
-// 				"registerFile"));
-// 	}
 	return;
 }
 

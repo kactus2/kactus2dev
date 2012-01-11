@@ -8,7 +8,7 @@
 #include "parameter.h"
 #include "generaldeclarations.h"
 
-#include "../exceptions/parse_error.h"
+
 #include "../exceptions/write_error.h"
 
 #include <QDomNode>
@@ -51,12 +51,6 @@ parameters_() {
 			QString str = attributeMap.namedItem(QString(
 					"spirit:addressSpaceRef")).childNodes().at(0).nodeValue();
 
-			// if the mandatory element is missing
-			if (str.isNull()) {
-				throw Parse_error(QObject::tr("Mandatory attribute spirit:"
-						"addressSpaceRef missing in spirit:addressSpaceRef"));
-			}
-
 			// all was fine and attribute can be added
 			addressSpaceRefs_.append(str);
 		}
@@ -75,19 +69,6 @@ parameters_() {
 			}
 		}
 	}
-
-	// if mandatory elements are missing
-
-// 	if (name_.isNull()) {
-// 		throw Parse_error(QObject::tr("Mandatory element name missing in "
-// 				"spirit:cpu"));
-// 	}
-// 
-// 	if (addressSpaceRefs_.size() == 0) {
-// 		throw Parse_error(QObject::tr(
-// 				"Mandatory element spirit:addressSpaceRef missing in "
-// 				"spirit:cpu"));
-// 	}
 }
 
 Cpu::Cpu( const Cpu &other ):

@@ -9,7 +9,6 @@
 #include "wireabstraction.h"
 #include "transactionalabstraction.h"
 
-#include "../exceptions/parse_error.h"
 #include "../exceptions/write_error.h"
 
 #include <QDomNode>
@@ -56,17 +55,6 @@ portType_(General::WIRE) {
 			transactional_ = QSharedPointer<TransactionalAbstraction>(
 					new TransactionalAbstraction(tempNode));
 		}
-	}
-
-	// if mandatory elements are missing
-	if (logicalName_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory element name missing in "
-				"spirit:port"));
-	}
-
-	if (!wire_ && !transactional_) {
-		throw Parse_error(QObject::tr("No spirit:wire or spirit:transactional"
-				" elements found within spirit:port"));
 	}
 	return;
 }

@@ -8,7 +8,7 @@
 #include "generaldeclarations.h"
 #include "parameter.h"
 
-#include "../exceptions/parse_error.h"
+
 #include "../exceptions/write_error.h"
 
 #include <QList>
@@ -50,12 +50,6 @@ displayName_(), description_(), parameters_() {
 						new Parameter(parameterNode)));
 			}
 		}
-	}
-
-	// if mandatory name is missing
-	if (name_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory name missing in "
-				"RegisterModel"));
 	}
 }
 

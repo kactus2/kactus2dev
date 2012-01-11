@@ -8,7 +8,6 @@
 #include "parameter.h"
 #include "generaldeclarations.h"
 
-#include "../exceptions/parse_error.h"
 #include "../exceptions/write_error.h"
 
 #include <QDomNode>
@@ -59,12 +58,6 @@ ServiceTypeDef::ServiceTypeDef(QDomNode &serviceTypeNode): typeName_(QString()),
 						new Parameter(parameterNode)));
 			}
 		}
-	}
-
-	// if mandatory element is missing
-	if (typeName_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory element spirit:typeName "
-				"missing in spirit:serviceTypeDef"));
 	}
 }
 

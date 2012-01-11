@@ -11,7 +11,7 @@
 #include "librarytreemodel.h"
 
 #include "exceptions/invalid_file.h"
-#include "exceptions/parse_error.h"
+
 
 #include <models/librarycomponent.h>
 #include <models/abstractiondefinition.h>
@@ -782,7 +782,7 @@ void LibraryData::checkIntegrity() {
 		// move iterator
 		i.next();
 
-		// if the not valid IP-Xact file
+		// if not valid IP-Xact file
 		if (!isValidIPXactFile(i.value(), i.key())) {
 			emit errorMessage(tr("Object %1:%2:%3:%4 within file %5 was not valid"
 				" IP-Xact, removing object.").arg(
@@ -840,6 +840,17 @@ void LibraryData::checkIntegrity() {
 				vlnvP->setDocumentValid(false);
 				++errors;
 				continue;
+			}
+
+			// check if the component is valid and if not then print errors of the component
+			QStringList errorList;
+			if (!libComp->isValid(errorList)) {
+
+				foreach (QString error, errorList) {
+					emit errorMessage(error);
+				}
+				errors += errorList.size();
+				vlnvP->setDocumentValid(false);
 			}
 
 			// check that all VLNVs needed by this model are found in the library
@@ -1074,13 +1085,6 @@ bool LibraryData::isValidIPXactFile( const QString& filePath,
 			}
 		}
 		// if an exception occurred during the parsing
-		catch (Parse_error error) {
-			QString errorMsg(error.what() + QString(" ") + error.errorMsg() +
-				tr(" within file: %1").arg(filePath));
-			emit errorMessage(errorMsg);
-			IPXactFile.close();
-			return false;
-		}
 		catch (...) {
 			emit errorMessage(
 				tr("Error occurred during parsing of the document %1").arg(filePath));

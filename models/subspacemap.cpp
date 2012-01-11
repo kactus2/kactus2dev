@@ -9,7 +9,7 @@
 #include "subspacemap.h"
 #include "parameter.h"
 
-#include "../exceptions/parse_error.h"
+
 #include "../exceptions/write_error.h"
 
 #include <QList>

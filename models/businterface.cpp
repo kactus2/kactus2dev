@@ -11,7 +11,6 @@
 #include "slaveinterface.h"
 #include "mirroredslaveinterface.h"
 
-#include <exceptions/parse_error.h>
 #include <exceptions/write_error.h>
 
 #include <QString>
@@ -37,12 +36,6 @@ BusInterface::MonitorInterface::MonitorInterface(QDomNode& monitorNode):
 
 	interfaceMode_ = General::str2Interfacemode(interfaceMode,
 			General::MONITOR);
-
-	// monitor can not be connected to another monitor so its an error
-	if (interfaceMode_ == General::MONITOR) {
-		throw Parse_error(QObject::tr("Invalid interfaceMode specified in "
-				"spirit:monitor"));
-	}
 
 	// get the monitor group element
 	for (int i = 0; i < monitorNode.childNodes().count(); ++i) {
@@ -117,11 +110,6 @@ BusInterface::BusInterface(QDomNode &busInterface):
 			interfaceMode_ = General::MASTER;
 			QDomNode tempNode = children.at(i);
 
-			// if one of the other elements are already defined
-			if (slave_ || monitor_ || !system_.isNull()) {
-				throw Parse_error(QObject::tr("More than one interfaceMode "
-						"defined in spirit:busInterface"));
-			}
 			master_ = QSharedPointer<MasterInterface>(new MasterInterface(
 					tempNode));
 		}
@@ -130,11 +118,6 @@ BusInterface::BusInterface(QDomNode &busInterface):
 			interfaceMode_ = General::SLAVE;
 			QDomNode tempNode = children.at(i);
 
-			// if one of the other elements are already defined
-			if (master_ || monitor_ || !system_.isNull()) {
-				throw Parse_error(QObject::tr("More than one interfaceMode "
-						"defined in spirit:busInterface"));
-			}
 			slave_ = QSharedPointer<SlaveInterface>(new SlaveInterface(
 					tempNode));
 		}
@@ -144,11 +127,6 @@ BusInterface::BusInterface(QDomNode &busInterface):
 			interfaceMode_ = General::MIRROREDMASTER;
 			QDomNode tempNode = children.at(i);
 
-			// if one of the other elements are already defined
-			if (slave_ || monitor_ || !system_.isNull()) {
-				throw Parse_error(QObject::tr("More than one interfaceMode "
-						"defined in spirit:busInterface"));
-			}
 			master_ = QSharedPointer<MasterInterface>(new MasterInterface(
 					tempNode));
 		}
@@ -158,23 +136,12 @@ BusInterface::BusInterface(QDomNode &busInterface):
 			interfaceMode_ = General::MIRROREDSLAVE;
 			QDomNode tempNode = children.at(i);
 
-			// if one of the other elements are already defined
-			if (master_ || monitor_ || !system_.isNull()) {
-				throw Parse_error(QObject::tr("More than one interfaceMode "
-						"defined in spirit:busInterface"));
-			}
 			mirroredSlave_ = QSharedPointer<MirroredSlaveInterface>(
 					new MirroredSlaveInterface(tempNode));
 		}
 		// system
 		else if (children.at(i).nodeName() == QString("spirit:system")) {
 			interfaceMode_ = General::SYSTEM;
-
-			// if one of the other elements are already defined
-			if (slave_ || monitor_ || master_) {
-				throw Parse_error(QObject::tr("More than one interfaceMode "
-						"defined in spirit:busInterface"));
-			}
 
 			QDomNode tempNode = children.at(i);
 			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
@@ -191,12 +158,6 @@ BusInterface::BusInterface(QDomNode &busInterface):
 				QString("spirit:mirroredSystem")) {
 			interfaceMode_ = General::MIRROREDSYSTEM;
 
-			// if one of the other elements are already defined
-			if (slave_ || monitor_ || master_) {
-				throw Parse_error(QObject::tr("More than one interfaceMode "
-						"defined in spirit:busInterface"));
-			}
-
 			QDomNode tempNode = children.at(i);
 			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
 				if (tempNode.childNodes().at(j).nodeName() ==
@@ -210,12 +171,6 @@ BusInterface::BusInterface(QDomNode &busInterface):
 		// monitor
 		else if (children.at(i).nodeName() == QString("spirit:monitor")) {
 			interfaceMode_ = General::MONITOR;
-
-			// if one of the other elements are already defined
-			if (slave_ || !system_.isNull() || master_) {
-				throw Parse_error(QObject::tr("More than one interfaceMode "
-						"defined in spirit:busInterface"));
-			}
 
 			QDomNode tempNode = children.at(i);
 			monitor_ = QSharedPointer<BusInterface::MonitorInterface>(

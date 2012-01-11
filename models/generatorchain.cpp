@@ -11,7 +11,7 @@
 #include "librarycomponent.h"
 #include "choice.h"
 
-#include "../exceptions/parse_error.h"
+
 
 #include <QList>
 #include <QString>
@@ -46,12 +46,6 @@ GeneratorChain::ComponentGeneratorSelector::ComponentGeneratorSelector(
 			groupNames_.append(groupNode.childNodes().at(i).childNodes().
 					at(0).nodeValue());
 		}
-	}
-
-	// at least one name has to be found
-	if (groupNames_.size() < 1) {
-		throw Parse_error(QObject::tr("Mandatory element name missing in "
-				"spirit:componentGeneratorSelector"));
 	}
 }
 
@@ -122,15 +116,6 @@ attributes_() {
 					new Choice(choiceNode)));
 			}
 		}
-	}
-
-	// if mandatory elements are missing
-
-	if ((genChainSelectors_.size() < 1) &&
-		(compGenSelectors_.size() < 1) &&
-		(generators_.size() < 1 )) {
-			throw Parse_error(QObject::tr(
-				"No generators found in spirit:generatorChain"));
 	}
 	return;
 }

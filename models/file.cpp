@@ -9,7 +9,7 @@
 #include "buildcommand.h"
 #include "fileset.h"
 
-#include "../exceptions/parse_error.h"
+
 #include "../exceptions/write_error.h"
 
 #include <QSharedPointer>

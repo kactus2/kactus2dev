@@ -5,7 +5,7 @@
  */
 
 #include "generaldeclarations.h"
-#include "../exceptions/parse_error.h"
+
 
 #include <QDomNode>
 #include <QString>
@@ -25,12 +25,6 @@
 General::Enumeration::Enumeration(QString &value, QString attText,
 		QString attHelp): value_(value), attribute_text_(attText),
 		attribute_help_(attHelp) {
-
-	if (value.isNull()) {
-		throw Parse_error(QObject::tr(
-				"Mandatory value for spirit:enumeration missing"));
-		return;
-	}
 	return;
 }
 
@@ -133,18 +127,6 @@ General::PortMap::PortMap(QDomNode &portMap): logicalPort_(),
 				}
 			}
 		}
-	}
-
-	if (logicalPort_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory name for spirit:logicalPort"
-				" missing"));
-		return;
-	}
-
-	if (physicalPort_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory name for spirit:pysicalPort"
-				" missing"));
-		return;
 	}
 	return;
 }
@@ -1074,7 +1056,6 @@ VLNV General::createVLNV(const QDomNode& node,
 			library.isNull() ||
 			name.isNull() ||
 			version.isNull() ) {
-		throw Parse_error(QString("Invalid VLNV tag found"));
 		return VLNV();
 	}
 

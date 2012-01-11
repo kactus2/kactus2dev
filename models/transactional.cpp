@@ -8,7 +8,7 @@
 #include "servicetypedef.h"
 #include "generaldeclarations.h"
 
-#include "../exceptions/parse_error.h"
+
 #include "../exceptions/write_error.h"
 
 #include <stdexcept>
@@ -49,12 +49,6 @@ Transactional::TransTypeDef::TransTypeDef(QDomNode &transTypeNode):
 			Transactional::TransTypeDef::typeDefinitions_.append(
 					tempNode.childNodes().at(0).nodeValue());
 		}
-	}
-
-	// if mandatory element is missing
-	if (Transactional::TransTypeDef::typeName_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory element spirit:typeName"
-				" missing in spirit:transTypeDef"));
 	}
 	return;
 }
@@ -131,12 +125,6 @@ Transactional::Transactional(QDomNode &transactionalNode): transTypeDef_(0),
 				}
 			}
 		}
-	}
-
-	// if mandatory element initiative was not defined
-	if (serviceInitiative_ == General::NONE) {
-		throw Parse_error(QObject::tr("Mandatory element spirit:initiative"
-				" missing in spirit:service"));
 	}
 	return;
 }

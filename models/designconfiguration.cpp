@@ -11,7 +11,7 @@
 #include "designconfabstractor.h"
 #include "generatorchain.h"
 
-#include "../exceptions/parse_error.h"
+
 #include "../exceptions/write_error.h"
 
 #include <QList>
@@ -45,17 +45,6 @@ DesignConfiguration::InterconnectionConf::InterconnectionConf(
 					new DesignConfAbstractor(abstractorNode)));
 	    }
 	}
-    }
-
-    // if mandatory elements are missing
-    if (interconnectionRef_.isNull()) {
-	throw Parse_error(QObject::tr("Mandatory element spirit:connectionRef"
-				      " missing in spirit:interconnectionConfiguration"));
-    }
-
-    if (abstractors_.size() == 0) {
-	throw Parse_error(QObject::tr("Mandatory element spirit:abstractor"
-				      " missing in spirit:interconnectionConfiguration"));
     }
     return;
 }
@@ -117,27 +106,9 @@ DesignConfiguration::GeneratorChainConfiguration::GeneratorChainConfiguration(
 		QString referenceID = attributeMap.namedItem(QString(
 								 "spirit:referenceId")).nodeValue();
 
-		// if one of the mandatory elements is missing
-		if (value.isNull()) {
-		    throw Parse_error(QObject::tr("Mandatory element spirit:"
-						  "configurableElementValue is missing in spirit:"
-						  "generatorChainConfiguration"));
-		}
-
-		if (referenceID.isNull()) {
-		    throw Parse_error(QObject::tr("Mandatory element spirit:"
-						  "referenceId is missing in spirit:configurable"
-						  "ElementValue"));
-		}
 		configurableElements_.insert(referenceID, value);
 	    }
 	}
-    }
-
-    // if mandatory element generatorChainRef is missing
-    if (!generatorChainRef_.isValid()) {
-	throw Parse_error(QObject::tr("Mandatory element spirit:generator:"
-				      "ChainRef is missing in spirit:generatorChainConfiguration"));
     }
     return;
 }

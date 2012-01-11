@@ -693,10 +693,6 @@
 					>
 				</File>
 				<File
-					RelativePath="exceptions\parse_error.cpp"
-					>
-				</File>
-				<File
 					RelativePath="exceptions\vhdl_error.cpp"
 					>
 				</File>
@@ -3518,32 +3514,6 @@
 				>
 				<File
 					RelativePath="exceptions\invalid_file.h"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-							Description="Performing Custom Build Step"
-							CommandLine=""
-							AdditionalDependencies=""
-							Outputs=""
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-							Description="Performing Custom Build Step"
-							CommandLine=""
-							AdditionalDependencies=""
-							Outputs=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="exceptions\parse_error.h"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"

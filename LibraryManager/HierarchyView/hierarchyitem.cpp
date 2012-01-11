@@ -45,7 +45,6 @@ type_(HierarchyItem::ROOT) {
 
 	Q_ASSERT(handler->contains(vlnv));
 
-
 	if (handler_->getDocumentType(vlnv) == VLNV::COMPONENT) {
 		parseComponent(vlnv);
 	}
@@ -88,6 +87,9 @@ void HierarchyItem::parseComponent( const VLNV& vlnv ) {
 	Q_ASSERT(libComp);
 	component_ = libComp.staticCast<Component>();
 	Q_ASSERT(component_);
+
+	QStringList errors;
+	isValid_ = component_->isValid(errors);
 
 	// ask the hierarchical references from the component
 	QList<VLNV> refs = component_->getHierRefs();
@@ -217,6 +219,9 @@ void HierarchyItem::parseBusDefinition( const VLNV& vlnv ) {
 	// parse the bus definition model
 	QSharedPointer<LibraryComponent> libComp = handler_->getModel(vlnv);
 	busDef_ = libComp.staticCast<BusDefinition>();
+
+	QStringList errors;
+	isValid_ = busDef_->isValid(errors);
 }
 
 void HierarchyItem::parseAbsDefinition( const VLNV& vlnv ) {
@@ -225,6 +230,9 @@ void HierarchyItem::parseAbsDefinition( const VLNV& vlnv ) {
 	// parse the abstraction definition model
 	QSharedPointer<LibraryComponent> libComp = handler_->getModel(vlnv);
 	absDef_ = libComp.staticCast<AbstractionDefinition>();
+
+	QStringList errors;
+	isValid_ = absDef_->isValid(errors);
 }
 
 void HierarchyItem::createChild(VLNV* vlnv ) {

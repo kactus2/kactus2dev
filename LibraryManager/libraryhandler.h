@@ -142,12 +142,14 @@ public:
      * onItemSaved() because it is called by this function.
      *
      * \param path Directory path that specifies the directory to save to file into.
-     * \model Pointer to the library component that is written.
+     * \param model Pointer to the library component that is written.
+     * \param printErrors If true then the errors detected in the model are printed to user.
      * 
      * \return True if the model was in valid state and was successfully written.
      */
     virtual bool writeModelToFile(const QString path, 
-		QSharedPointer<LibraryComponent> model);
+		QSharedPointer<LibraryComponent> model,
+		bool printErrors = true);
 
 	/*! \brief Write the already registered model to file system.
 	 *
@@ -157,10 +159,12 @@ public:
 	 * state after this operation.
 	 * 
 	 * \param model Pointer to the model to be written.
+	 * \param printErrors If true then the errors detected in the model are printed to user.
 	 * 
 	 * \return True if the model was in valid state and was successfully written.
 	*/
-	virtual bool writeModelToFile(QSharedPointer<LibraryComponent> model);
+	virtual bool writeModelToFile(QSharedPointer<LibraryComponent> model,
+		bool printErrors = true);
 
 	/*! \brief Search for IP-Xact files in the file system and add them to library
 	 * 

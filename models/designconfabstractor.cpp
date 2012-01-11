@@ -8,7 +8,7 @@
 #include <LibraryManager/vlnv.h>
 #include "generaldeclarations.h"
 
-#include "../exceptions/parse_error.h"
+
 #include "../exceptions/write_error.h"
 
 #include <QString>
@@ -53,18 +53,6 @@ abstractorRef_(), configurableElements_(), viewName_(QString()) {
 				QString referenceID = attributeMap.namedItem(QString(
 						"spirit:referenceId")).nodeValue();
 
-				// if one of the mandatory elements is missing
-				if (value.isNull()) {
-					throw Parse_error(QObject::tr("Mandatory element spirit:"
-							"configurableElementValue is missing in spirit:"
-							"abstractor"));
-				}
-
-				if (referenceID.isNull()) {
-					throw Parse_error(QObject::tr("Mandatory element spirit:"
-							"referenceId is missing in spirit:configurable"
-							"ElementValue"));
-				}
 				configurableElements_.insert(referenceID, value);
 			}
 		}
@@ -72,22 +60,6 @@ abstractorRef_(), configurableElements_(), viewName_(QString()) {
 		else if (tempNode.nodeName() == QString("spirit:viewName")) {
 			viewName_ = tempNode.childNodes().at(0).nodeValue();
 		}
-	}
-
-	// if mandatory elements are missing
-	if (instanceName_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory element spirit:"
-				"instanceName is missing in spirit:abstractor"));
-	}
-
-	if (!abstractorRef_.isValid()) {
-		throw Parse_error(QObject::tr("Mandatory element spirit:abstractorRef"
-				" is missing in spirit:abstractor"));
-	}
-
-	if (viewName_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory element spirit:viewName"
-				" is missing in spirit:abstractor"));
 	}
 	return;
 }

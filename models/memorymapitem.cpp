@@ -7,7 +7,7 @@
 #include "memorymapitem.h"
 #include "generaldeclarations.h"
 
-#include "../exceptions/parse_error.h"
+
 #include "../exceptions/write_error.h"
 
 #include <QString>

@@ -29,7 +29,7 @@
 #include <models/generaldeclarations.h>
 
 #include <exceptions/invalid_file.h>
-#include <exceptions/parse_error.h>
+
 #include <exceptions/vhdl_error.h>
 #include <exceptions/write_error.h>
 
@@ -132,7 +132,7 @@ void DesignWidget::setDesign( const VLNV* vlnv, const QString& viewName) {
 	// if vlnv and view name was defined which means that an existing component is opened
 	if (vlnv->isValid() && !viewName.isEmpty()) {
 
-		// if vlnv is valid and the type is component
+		// if vlnv is writeSucceeded and the type is component
 		if (vlnv->isValid() && vlnv->getType() == VLNV::COMPONENT) {
 
 			// create model 
@@ -157,7 +157,7 @@ void DesignWidget::setDesign( const VLNV* vlnv, const QString& viewName) {
 		}
 	}
 
-	// if vlnv was valid but view is empty then should create a new design for the component
+	// if vlnv was writeSucceeded but view is empty then should create a new design for the component
 	else if (vlnv->isValid() && viewName.isEmpty()) {
 		Q_ASSERT(lh_->contains(*vlnv));
 		Q_ASSERT(lh_->getDocumentType(*vlnv) == VLNV::COMPONENT);
@@ -231,27 +231,73 @@ bool DesignWidget::save()
 	// update the hierarchical bus interfaces of the top-component
 	diagram_->updateHierComponent(hierComponent_);
 
+	bool writePossible = true;
+	QStringList errorList;
+
+	// if design config is used then check that it can be written
+	if (designConf && !designConf->isValid(errorList)) {
+
+		emit noticeMessage(tr("The configuration contained the following errors:"));
+		foreach (QString error, errorList) {
+			emit errorMessage(error);
+		}
+		errorList.clear();
+		writePossible = false;
+	}
+
+	// check that the design is in writeSucceeded state and can be written
+
+	Q_ASSERT(design);
+	if (!design->isValid(errorList)) {
+
+		emit noticeMessage(tr("The design contained the following errors:"));
+		foreach (QString error, errorList) {
+			emit errorMessage(error);
+		}
+		errorList.clear();
+		writePossible = false;
+	}
+
+	// check the component validity
+
+	Q_ASSERT(hierComponent_);
+	if (!hierComponent_->isValid(errorList)) {
+
+		emit noticeMessage(tr("The component contained the following errors:"));
+		foreach (QString error, errorList) {
+			emit errorMessage(error);
+		}
+		errorList.clear();
+		writePossible = false;
+	}
+
+	// if there were errors then don't write anything
+	if (!writePossible) {
+		emit noticeMessage(tr("Nothing was written. Fix the errors and try saving again."));
+		return false;
+	}
+
 	lh_->beginSave();
 
-	bool valid = true;
+	bool writeSucceeded = true;
 
 	// if design configuration is used then write it.
 	if (designConf) {
 		if (!lh_->writeModelToFile(designConf)) {
-			valid = false;
+			writeSucceeded = false;
 		}
 	}
 
 	if (!lh_->writeModelToFile(design)) {
-		valid = false;
+		writeSucceeded = false;
 	}
 	if (!lh_->writeModelToFile(hierComponent_)) {
-		valid = false;
+		writeSucceeded = false;
 	}
 
 	lh_->endSave();
 
-	if (valid) {
+	if (writeSucceeded) {
 	    return TabDocument::save();
 	}
 	else {
@@ -310,7 +356,7 @@ bool DesignWidget::saveAs() {
 		designConf->setDesignRef(designVLNV);
 
 		// set component to reference new design configuration
-		hierComponent_->setHierRef(desConfVLNV);
+		hierComponent_->setHierRef(desConfVLNV, viewName_);
 
 		// create design with new design vlnv
 		design = diagram_->createDesign(designVLNV);
@@ -318,7 +364,7 @@ bool DesignWidget::saveAs() {
 	// if component does not use design configuration then it references directly to design
 	else {
 		// set component to reference new design
-		hierComponent_->setHierRef(designVLNV);
+		hierComponent_->setHierRef(designVLNV, viewName_);
 
 		design = diagram_->createDesign(designVLNV);
 	}
@@ -340,34 +386,82 @@ bool DesignWidget::saveAs() {
 
 	// create the files for the documents
 
-	lh_->beginSave();
+	bool writePossible = true;
+	QStringList errorList;
 
-	bool valid = true;
+	// if design config is used then check that it can be written
+	if (designConf && !designConf->isValid(errorList)) {
+		
+		emit noticeMessage(tr("The configuration contained the following errors:"));
+		foreach (QString error, errorList) {
+			emit errorMessage(error);
+		}
+		errorList.clear();
+		writePossible = false;
+	}
+
+	// check that the design is in writeSucceeded state and can be written
+
+	Q_ASSERT(design);
+	if (!design->isValid(errorList)) {
+		
+		emit noticeMessage(tr("The design contained the following errors:"));
+		foreach (QString error, errorList) {
+			emit errorMessage(error);
+		}
+		errorList.clear();
+		writePossible = false;
+	}
+
+	// check the component validity
+
+	Q_ASSERT(hierComponent_);
+	if (!hierComponent_->isValid(errorList)) {
+
+		emit noticeMessage(tr("The component contained the following errors:"));
+		foreach (QString error, errorList) {
+			emit errorMessage(error);
+		}
+		errorList.clear();
+		writePossible = false;
+	}
+
+	// if there were errors then don't write anything
+	if (!writePossible) {
+		emit noticeMessage(tr("Nothing was written. Fix the errors and try saving again."));
+		return false;
+	}
+
+	bool writeSucceeded = true;
+
+	lh_->beginSave();
 
 	// if design configuration is used then write it.
 	if (designConf) {
-		if (!lh_->writeModelToFile(directory, designConf)) {
-			valid = false;
+		if (!lh_->writeModelToFile(directory, designConf, false)) {
+			writeSucceeded = false;
 		}
 	}
 
-	if (!lh_->writeModelToFile(directory, design)) {
-		valid = false;
+	if (!lh_->writeModelToFile(directory, design, false)) {
+		writeSucceeded = false;
 	}
-	if (!lh_->writeModelToFile(directory, hierComponent_)) {
-		valid = false;
+	if (!lh_->writeModelToFile(directory, hierComponent_, false)) {
+		writeSucceeded = false;
 	}
-	
+
 	lh_->endSave();
 
-	if (valid) {
-		setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");
+	if (writeSucceeded) {
+		setDocumentName(hierComponent_->getVlnv()->getName() + " (" + 
+			hierComponent_->getVlnv()->getVersion() + ")");
 		return TabDocument::saveAs();
 	}
 	else {
 		emit errorMessage(tr("Design was not saved to disk."));
 		return false;
 	}
+
 }
 
 const VLNV *DesignWidget::getOpenDocument() const

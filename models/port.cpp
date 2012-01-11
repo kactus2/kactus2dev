@@ -9,7 +9,7 @@
 #include "transactional.h"
 #include "wire.h"
 
-#include "../exceptions/parse_error.h"
+
 #include "../exceptions/write_error.h"
 
 #include <QDomNode>

@@ -9,7 +9,7 @@
 #include <LibraryManager/vlnv.h>
 #include "librarycomponent.h"
 
-#include <exceptions/parse_error.h>
+
 #include <exceptions/write_error.h>
 
 #include <QDomDocument>

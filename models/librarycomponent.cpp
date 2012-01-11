@@ -10,7 +10,7 @@
 
 #include "generaldeclarations.h"
 
-#include "../exceptions/parse_error.h"
+
 #include "../exceptions/write_error.h"
 
 #include <QString>
@@ -120,7 +120,6 @@ VLNV LibraryComponent::findVLNV(QDomDocument &doc) {
 		++i;
 
 		if (i >= nodeList.size()) {
-			throw Parse_error(QObject::tr("VLNV could not be found in the document."));
 			return VLNV();
 		}
 	}
@@ -151,7 +150,7 @@ VLNV LibraryComponent::findVLNV(QDomDocument &doc) {
 	// if one of the mandatory elements is missing then throw exception
 	if (type.isNull() || vendor.isNull() || library.isNull() ||
 			name.isNull() || version.isNull()) {
-		throw Parse_error(QObject::tr("Invalid VLNV found for the document"));
+		return VLNV();
 	}
 
 	return VLNV(type, vendor, library, name, version);
@@ -291,13 +290,6 @@ void LibraryComponent::parseKactus2Attributes( QDomNode& attributeNode ) {
 			kactus2Attributes_.insert("kts_busdef_type", tempNode.childNodes().at(0).nodeValue());
 		}
 	}
-
-	// if this was software then the software type must also be defined.
-	if (wasSoftware != hadSoftwareType) {
-		throw Parse_error(QObject::tr("Software type must be defined if "
-			"implementation is set as software"));
-	}
-
 	return;
 }
 

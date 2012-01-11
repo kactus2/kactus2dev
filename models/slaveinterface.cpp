@@ -7,7 +7,6 @@
 #include "slaveinterface.h"
 #include "generaldeclarations.h"
 
-#include "../exceptions/parse_error.h"
 #include "../exceptions/write_error.h"
 
 #include <QString>
@@ -32,17 +31,6 @@ opaque_(false) {
 	opaque = General::removeWhiteSpace(opaque);
 
 	opaque_ = General::str2Bool(opaque, false);
-
-	// if mandatory elements are missing
-	if (masterRef_.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory element spirit:masterRef"
-				" is missing in spirit:bridge"));
-	}
-
-	if (opaque.isNull()) {
-		throw Parse_error(QObject::tr("Mandatory element spirit:opaque is "
-				"missing in spirit:bridge"));
-	}
 	return;
 }
 
@@ -105,9 +93,10 @@ SlaveInterface::SlaveInterface(QDomNode& slaveNode):
 	return;
 }
 
-SlaveInterface::SlaveInterface()
-    : memoryMapRef_(), bridges_(), fileSetRefGroup_()
-{
+SlaveInterface::SlaveInterface():
+memoryMapRef_(), 
+bridges_(), 
+fileSetRefGroup_() {
 }
 
 SlaveInterface::SlaveInterface( const SlaveInterface& other ):
