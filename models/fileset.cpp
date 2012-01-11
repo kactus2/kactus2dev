@@ -248,6 +248,48 @@ bool FileSet::isValid( QStringList& errorList,
 	return valid;
 }
 
+bool FileSet::isValid( bool checkChildren ) const {
+	if (nameGroup_.name_.isEmpty()) {
+		return false;
+	}
+
+	if (checkChildren) {
+		QStringList fileIDs;
+		QStringList fileNames;
+		foreach (QSharedPointer<File> file, files_) {
+
+			if (fileNames.contains(file->getName())) {
+				return false;
+			}
+			else {
+				fileNames.append(file->getName());
+			}
+
+			if (!file->isValid()) {
+				return false;
+			}
+
+			// if file has file id specified then save it to list to be used later.
+			if (!file->getFileId().isEmpty()) {
+				fileIDs.append(file->getFileId());
+			}
+		}
+
+		foreach (QSharedPointer<FileBuilder> fileBuilder, defaultFileBuilders_) {
+			if (!fileBuilder->isValid()) {
+				return false;
+			}
+		}
+
+		foreach (QSharedPointer<Function> func, functions_) {
+			if (!func->isValid(fileIDs, true)) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
 const QList<QSharedPointer<Function> >& FileSet::getFunctions() {
 	return functions_;
 }

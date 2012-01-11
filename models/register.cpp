@@ -190,6 +190,34 @@ bool Register::isValid( QStringList& errorList,
 	return valid;
 }
 
+bool Register::isValid() const {
+
+	if (name_.isEmpty()) {
+		return false;
+	}
+
+	if (addressOffset_.isEmpty()) {
+		return false;
+	}
+
+	if (registerDefinition_ && !registerDefinition_->isValid()) {
+		return false;
+	}
+
+	foreach (QSharedPointer<AlternateRegister> alterRegister, alternateRegisters_) {
+		if (!alterRegister->isValid()) {
+			return false;
+		}
+	}
+
+	foreach (QSharedPointer<Parameter> param, parameters_) {
+		if (!param->isValid()) {
+			return false;
+		}
+	}
+	return true;
+}
+
 QString Register::getAddressOffset() const {
     return addressOffset_;
 }

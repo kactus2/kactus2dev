@@ -53,6 +53,20 @@ public:
 	 */
 	virtual ~Generator();
 
+	/*! \brief Write the contents of the class using the writer.
+	*
+	* Uses the specified writer to write the class contents into file as valid
+	* IP-Xact.
+	*
+	* \param writer A reference to a QXmlStreamWriter instance that is used to
+	* write the document into file.
+	*
+	* Exception guarantee: basic
+	* \exception Write_error Occurs if class or one of it's member classes is
+	* not valid IP-Xact in the moment of writing.
+	*/
+	void write(QXmlStreamWriter& writer);
+
 	/*! \brief Get the API type of the generator
 	 *
 	 * \return enum ApiType containing the API type.
@@ -155,20 +169,6 @@ public:
 	 * \param QString containing the display name.
 	 */
 	virtual void setDisplayName(const QString &displayName);
-
-	/*! \brief Write the contents of the class using the writer.
-	 *
-	 * Uses the specified writer to write the class contents into file as valid
-	 * IP-Xact.
-	 *
-	 * \param writer A reference to a QXmlStreamWriter instance that is used to
-	 * write the document into file.
-	 *
-	 * Exception guarantee: basic
-	 * \exception Write_error Occurs if class or one of it's member classes is
-	 * not valid IP-Xact in the moment of writing.
-	 */
-	void write(QXmlStreamWriter& writer);
 
 protected:
 

@@ -225,6 +225,27 @@ bool AbstractionDefinition::isValid( QStringList& errorList ) const {
 	return valid;
 }
 
+bool AbstractionDefinition::isValid() const {
+	
+	if (!vlnv_) {
+		return false;
+	}
+	else if (!vlnv_->isValid()) {
+		return false;
+	}
+
+	if (!busType_.isValid()) {
+		return false;
+	}
+
+	foreach (QSharedPointer<PortAbstraction> port, ports_) {
+		if (!port->isValid()) {
+			return false;
+		}
+	}
+	return true;
+}
+
 
 // get the attributes
 const QMap<QString, QString>& AbstractionDefinition::getAttributes() {

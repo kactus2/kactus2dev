@@ -49,6 +49,36 @@ public:
 	 */
 	~Parameter();
 
+	/*! \brief Write the contents of the class using the writer.
+	*
+	* Uses the specified writer to write the class contents into file as valid
+	* IP-Xact.
+	*
+	* \param writer A reference to a QXmlStreamWriter instance that is used to
+	* write the document into file.
+	*
+	* Exception guarantee: basic
+	* \exception Write_error Occurs if class or one of it's member classes is
+	* not valid IP-Xact in the moment of writing.
+	*/
+	void write(QXmlStreamWriter& writer);
+
+	/*! \brief Check if the Parameter is in valid state or not.
+	*
+	* \return True if the parameter is valid.
+	*/
+	bool isValid() const;
+
+	/*! \brief Check if the parameter is in a valid state.
+	*
+	* \param errorList The list to add the possible error messages to.
+	* \param parentIdentifier String from parent to help to identify the location of the error.
+	*
+	* \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid(QStringList& errorList, 
+		const QString& parentIdentifier) const;
+
 	/*! \brief Get the attributes for the parameter
 	 *
 	 * \return QMap containing pointers to the attributes
@@ -98,36 +128,6 @@ public:
 	 * \param value QString containing the value
 	 */
 	void setValue(const QString &value);
-
-	/*! \brief Write the contents of the class using the writer.
-	 *
-	 * Uses the specified writer to write the class contents into file as valid
-	 * IP-Xact.
-	 *
-	 * \param writer A reference to a QXmlStreamWriter instance that is used to
-	 * write the document into file.
-	 *
-	 * Exception guarantee: basic
-	 * \exception Write_error Occurs if class or one of it's member classes is
-	 * not valid IP-Xact in the moment of writing.
-	 */
-	void write(QXmlStreamWriter& writer);
-
-	/*! \brief Check if the Parameter is in valid state or not.
-	 *
-	 * \return True if the parameter is valid.
-	*/
-	bool isValid() const;
-
-	/*! \brief Check if the parameter is in a valid state.
-	 *
-	 * \param errorList The list to add the possible error messages to.
-	 * \param parentIdentifier String from parent to help to identify the location of the error.
-	 *
-	 * \return bool True if the state is valid and writing is possible.
-	*/
-	bool isValid(QStringList& errorList, 
-		const QString& parentIdentifier) const;
 
 private:
 

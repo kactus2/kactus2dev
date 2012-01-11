@@ -124,6 +124,21 @@ bool RemapPort::isValid( const QStringList& portNames,
 	return valid;
 }
 
+bool RemapPort::isValid( const QStringList& portNames ) const {
+	if (value_.isEmpty()) {
+		return false;
+	}
+
+	if (portNameRef_.isEmpty()) {
+		return false;
+	}
+	else if (!portNames.contains(portNameRef_)) {
+		return false;
+	}
+
+	return true;
+}
+
 void RemapPort::setValue(const QString &value) {
 	value_ = value;
 }

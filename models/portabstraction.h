@@ -73,6 +73,12 @@ public:
 	bool isValid(QStringList& errorList, 
 		const QString& parentIdentifier) const;
 
+	/*! \brief Check if the port is in a valid state.
+	 *
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid() const;
+
 	/*! \brief Get the description of the port
 	 *
 	 * \return QString containing the description.

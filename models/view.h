@@ -92,6 +92,14 @@ public:
 		QStringList& errorList, 
 		const QString& parentIdentifier) const;
 
+	/*! \brief Check if the view is in a valid state.
+	 * 
+	 * \param fileSetNames Contains the names of the file sets of the component.
+	 * 
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid(const QStringList& fileSetNames) const;
+
 	/*! \brief Get list of the envIdentifiers for this view
 	 *
 	 * \return QList containing the envIdentifiers

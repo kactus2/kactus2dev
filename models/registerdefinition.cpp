@@ -183,6 +183,25 @@ bool RegisterDefinition::isValid( QStringList& errorList,
 	return valid;
 }
 
+bool RegisterDefinition::isValid() const {
+
+	if (size_ == 0) {
+		return false;
+	}
+
+	if (reset_ && !reset_->isValid()) {
+		return false;
+	}
+
+	foreach (QSharedPointer<Field> field, fields_) {
+		if (!field->isValid()) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
 General::Access RegisterDefinition::getAccess() const {
 	return access_;
 }

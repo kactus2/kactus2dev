@@ -146,6 +146,17 @@ bool Choice::isValid( QStringList& errorList, const QString& parentIdentifier ) 
 	return valid;
 }
 
+bool Choice::isValid() const {
+	if (choiceName_.isEmpty()) {
+		return false;
+	}
+
+	if (enumerations_.isEmpty()) {
+		return false;
+	}
+	return true;
+}
+
 QString Choice::getName() const {
 	return choiceName_;
 }

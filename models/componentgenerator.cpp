@@ -167,6 +167,23 @@ bool ComponentGenerator::isValid( QStringList& errorList, const QString& parentI
 	return valid;
 }
 
+bool ComponentGenerator::isValid() const {
+	if (name_.isEmpty()) {
+		return false;
+	}
+
+	foreach (QSharedPointer<Parameter> param, parameters_) {
+		if (!param->isValid()) {
+			return false;
+		}
+	}
+
+	if (generatorExe_.isEmpty()) {
+		return false;
+	}
+	return true;
+}
+
 ComponentGenerator::Instance ComponentGenerator::getScope() const {
 	return scope_;
 }

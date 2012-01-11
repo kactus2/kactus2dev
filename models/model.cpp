@@ -249,6 +249,57 @@ bool Model::isValid( const QStringList& fileSetNames,
 	return valid;
 }
 
+bool Model::isValid(const QStringList& fileSetNames) const {
+	bool hasViews = !views_.isEmpty();
+
+	QStringList portNames;
+	foreach (QSharedPointer<Port> port, ports_) {
+
+		if (portNames.contains(port->getName())) {
+			return false;
+		}
+		else {
+			portNames.append(port->getName());
+		}
+
+		if (!port->isValid(hasViews)) {
+			return false;
+		}
+	}
+
+	QStringList viewNames;
+	foreach (QSharedPointer<View> view, views_) {
+
+		if (viewNames.contains(view->getName())) {
+			return false;
+		}
+		else {
+			viewNames.append(view->getName());
+		}
+
+		if (!view->isValid(fileSetNames)) {
+			return false;
+		}
+	}
+
+	QStringList modelParamNames;
+	foreach (QSharedPointer<ModelParameter> modelParam, modelParameters_) {
+
+		if (modelParamNames.contains(modelParam->getName())) {
+			return false;
+		}
+		else {
+			modelParamNames.append(modelParam->getName());
+		}
+
+		if (!modelParam->isValid()) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
 const QMap<QString, QSharedPointer<ModelParameter> >& Model::getModelParameters() {
 	return modelParameters_;
 }

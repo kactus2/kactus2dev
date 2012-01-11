@@ -85,6 +85,12 @@ public:
 	virtual bool isValid(QStringList& errorList, 
 		const QString& parentIdentifier) const = 0;
 
+	/*! \brief Check if the register model is in a valid state.
+	 *
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	virtual bool isValid() const = 0;
+
 	/*! \brief Get the description of the register.
 	 *
 	 * \return QString containing the description

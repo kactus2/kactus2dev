@@ -649,6 +649,14 @@ struct PortMap {
 	bool isValid(const QList<General::PortBounds>& physicalPorts, 
 		QStringList& errorList, 
 		const QString& parentIdentifier) const;
+
+	/*! \brief Check if the port map is in a valid state.
+	 * 
+	 * \param physicalPorts List of the physical ports of the component and their bounds.
+	 * 
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid(const QList<General::PortBounds>& physicalPorts) const;
 };
 
 /*! \brief Convert the physical port into string.

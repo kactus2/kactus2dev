@@ -242,6 +242,69 @@ bool General::PortMap::isValid( const QList<General::PortBounds>& physicalPorts,
 	return valid;
 }
 
+bool General::PortMap::isValid( const QList<General::PortBounds>& physicalPorts ) const {
+
+	if (physicalPort_.isEmpty()) {
+		return false;
+	}
+
+	if (logicalPort_.isEmpty()) {
+		return false;
+	}
+
+	int physSize = 1;
+	int logSize = 1;
+
+	if (physicalVector_) {
+		if (!physicalVector_->isValid()) {
+				return false;
+		}
+
+		physSize = physicalVector_->getSize();
+	}
+	if (logicalVector_) {
+		if (!logicalVector_->isValid()) {
+				return false;
+		}
+
+		logSize = logicalVector_->getSize();
+	}
+
+	// if the sizes of the ports don't match
+	if (physSize != logSize) {
+		return false;
+	}
+
+	// if there is a physical port specified
+	if (!physicalPort_.isEmpty()) {
+
+		bool foundPhysPort = false;
+		foreach (General::PortBounds port, physicalPorts) {
+
+			// if the referenced physical port was found
+			if (port.portName_ == physicalPort_) {
+				foundPhysPort = true;
+
+				// calculate the size of the actual physical port.
+				int actualPortSize = port.left_ - port.right_ + 1;
+
+				// if the actual port size is smaller than the referenced vector in 
+				// the port map
+				if (actualPortSize < physSize) {
+					return false;
+				}
+
+				break;
+			}
+		}
+		// if the referenced port was not found within the component
+		if (!foundPhysPort) {
+			return false;
+		}
+	}
+	return true;
+}
+
 General::PortBounds::PortBounds():
 portName_(),
 left_(0),

@@ -78,6 +78,12 @@ public:
 		*/
 		bool isValid(QStringList& errorList, 
 			const QString& parentIdentifier) const;
+
+		/*! \brief Check if the generator chain configuration is in a valid state.
+		*
+		* \return bool True if the state is valid and writing is possible.
+		*/
+		bool isValid() const;
 	};
 
 	/*! \brief Equals the spirit:interconnectionConfiguration in IP-Xact
@@ -184,6 +190,12 @@ public:
 	 * \return bool True if the design configuration was valid.
 	*/
 	virtual bool isValid(QStringList& errorList) const;
+
+	/*! \brief Check the validity of the design configuration.
+	 *
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	virtual bool isValid() const;
 
 	/*! \brief Set the vlnv
 	 *

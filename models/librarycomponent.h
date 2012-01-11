@@ -88,6 +88,20 @@ public:
 	*/
 	virtual bool isValid(QStringList& errorList) const = 0;
 
+	/*! \brief Check the validity of the library component.
+	 * 
+	 * This function should be used to check if the component is in valid state
+	 * before writing the xml to the disk.
+	 * 
+	 * This is a pure virtual function and is implemented in all sub classes of 
+	 * library component so they can check themselves. This function can not 
+	 * check the validity of the references to objects outside this item. For 
+	 * example it can not check if the vlnv reference is to an object that exists.
+	 * 
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	virtual bool isValid() const = 0;
+
 	/*! \brief Get the description of the document
 	 *
 	 * \return QString containing the description of the document.

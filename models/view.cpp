@@ -332,6 +332,41 @@ bool View::isValid( const QStringList& fileSetNames,
 	return valid;
 }
 
+bool View::isValid( const QStringList& fileSetNames ) const {
+	if (nameGroup_.name_.isEmpty()) {
+		return false;
+	}
+
+	if (envIdentifiers_.isEmpty()) {
+		return false;
+	}
+
+	// if this is flat view then check the flat elements.
+	if (!hierarchyRef_.isValid()) {
+
+		foreach (QSharedPointer<FileBuilder> fileBuilder, defaultFileBuilders_) {
+			if (!fileBuilder->isValid()) {
+				return false;
+			}
+		}
+
+		// make sure the referenced file sets are found
+		foreach (QString fileSetRef, fileSetRefs_) {
+			if (!fileSetNames.contains(fileSetRef)) {
+				return false;
+			}
+		}
+
+		foreach (QSharedPointer<Parameter> param, parameters_) {
+			if (!param->isValid()) {
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
 void View::setFileSetRefs(const QList<QString> &fileSetRefs) {
 	fileSetRefs_.clear();
 	fileSetRefs_ = fileSetRefs;

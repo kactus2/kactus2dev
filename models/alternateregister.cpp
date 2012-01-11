@@ -140,6 +140,29 @@ bool AlternateRegister::isValid( QStringList& errorList,
 	return valid;
 }
 
+bool AlternateRegister::isValid() const {
+	
+	if (name_.isEmpty()) {
+		return false;
+	}
+
+	if (alternateGroups_.isEmpty()) {
+		return false;
+	}
+
+	if (alternateRegisterDef_ && !alternateRegisterDef_->isValid()) {
+			return false;
+	}
+
+	foreach (QSharedPointer<Parameter> param, parameters_) {
+		if (!param->isValid()) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
 const QList<QString>& AlternateRegister::getAlternateGroups() const {
 	return alternateGroups_;
 }

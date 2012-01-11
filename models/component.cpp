@@ -974,6 +974,193 @@ bool Component::isValid( QStringList& errorList ) const {
 	return valid;
 }
 
+bool Component::isValid() const {
+	if (!vlnv_) {
+		return false;
+	}
+	else if (!vlnv_->isValid()) {
+		return false;
+	}
+
+	// get the names of all file sets
+	QStringList fileSetNames;
+	foreach (QSharedPointer<FileSet> fileset, fileSets_) {
+
+		if (fileSetNames.contains(fileset->getName())) {
+			return false;
+		}
+		else {
+			fileSetNames.append(fileset->getName());
+		}
+
+		if (!fileset->isValid(true)) {
+			return false;
+		}
+	}
+
+	// the list to contains the bounds and names of the physical ports
+	QList<General::PortBounds> physPorts;
+	QStringList portNames;
+
+	if (model_) {
+		physPorts = model_->getPortBounds();
+		portNames = model_->getPortNames();
+
+		if (!model_->isValid(fileSetNames)) {
+			return false;
+		}
+	}
+
+	QStringList busifNames;
+	foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {
+
+		if (busifNames.contains(busif->getName())) {
+			return false;
+		}
+		else {
+			busifNames.append(busif->getName());
+		}
+
+		if (!busif->isValid(physPorts)) {
+			return false;
+		}
+	}
+
+	QStringList channelNames;
+	foreach (QSharedPointer<Channel> channel, channels_) {
+
+		if (channelNames.contains(channel->getName())) {
+			return false;
+		}
+
+		if (!channel->isValid()) {
+			return false;
+		}
+	}
+
+	QStringList remapNames;
+	foreach (QSharedPointer<RemapState> remState, remapStates_) {
+
+		if (remapNames.contains(remState->getName())) {
+			return false;
+		}
+		else {
+			remapNames.append(remState->getName());
+		}
+
+		if (!remState->isValid(portNames)) {
+			return false;
+		}
+	}
+
+	QStringList addSpaceNames;
+	foreach (QSharedPointer<AddressSpace> addrSpace, addressSpaces_) {
+
+		if (addSpaceNames.contains(addrSpace->getName())) {
+			return false;
+		}
+		else {
+			addSpaceNames.append(addrSpace->getName());
+		}
+
+		if (!addrSpace->isValid()) {
+			return false;
+		}
+	}
+
+	QStringList memoryMapNames;
+	foreach (QSharedPointer<MemoryMap> memMap, memoryMaps_) {
+
+		if (memoryMapNames.contains(memMap->getName())) {
+			return false;
+		}
+		else {
+			memoryMapNames.append(memMap->getName());
+		}
+
+		if (!memMap->isValid()) {
+			return false;
+		}
+	}
+
+	QStringList compGenNames;
+	foreach (QSharedPointer<ComponentGenerator> compGen, compGenerators_) {
+
+		if (compGenNames.contains(compGen->getName())) {
+			return false;
+		}
+		else {
+			compGenNames.append(compGen->getName());
+		}
+
+		if (!compGen->isValid()) {
+			return false;
+		}
+	}
+
+	QStringList choiceNames;
+	foreach (QSharedPointer<Choice> choice, choices_) {
+
+		if (choiceNames.contains(choice->getName())) {
+			return false;
+		}
+		else {
+			choiceNames.append(choice->getName());
+		}
+
+		if (!choice->isValid()) {
+			return false;
+		}
+	}
+
+	QStringList cpuNames;
+	foreach (QSharedPointer<Cpu> cpu, cpus_) {
+
+		if (cpuNames.contains(cpu->getName())) {
+			return false;
+		}
+		else {
+			cpuNames.append(cpu->getName());
+		}
+
+		if (!cpu->isValid()) {
+			return false;
+		}
+	}
+
+	QStringList clockNames;
+	foreach (QSharedPointer<OtherClockDriver> otherClock, otherClockDrivers_) {
+
+		if (clockNames.contains(otherClock->getClockName())) {
+			return false;
+		}
+		else {
+			clockNames.append(otherClock->getClockName());
+		}
+
+		if (!otherClock->isValid()) {
+			return false;
+		}
+	}
+
+	QStringList paramNames;
+	foreach (QSharedPointer<Parameter> param, parameters_) {
+
+		if (paramNames.contains(param->getName())) {
+			return false;
+		}
+		else {
+			paramNames.append(param->getName());
+		}
+
+		if (!param->isValid()) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
 // get the attributes
 const QMap<QString, QString>& Component::getAttributes() const {
 	return attributes_;

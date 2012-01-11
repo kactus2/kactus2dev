@@ -134,6 +134,28 @@ bool SubspaceMap::isValid( QStringList& errorList,
 	return valid;
 }
 
+bool SubspaceMap::isValid() const {
+	
+	if (name_.isEmpty()) {
+		return false;
+	}
+
+	if (!attributes_.contains(QString("spirit:masterRef"))) {
+		return false;
+	}
+
+	if (baseAddress_.isEmpty()) {
+		return false;
+	}
+
+	foreach (QSharedPointer<Parameter> param, parameters_) {
+		if (!param->isValid()) {
+			return false;
+		}
+	}
+	return true;
+}
+
 const QList<QSharedPointer<Parameter> >& SubspaceMap::getParameters() {
 	return parameters_;
 }

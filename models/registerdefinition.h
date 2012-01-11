@@ -71,6 +71,12 @@ public:
 	bool isValid(QStringList& errorList, 
 		const QString& parentIdentifier) const;
 
+	/*! \brief Check if the register definition is in a valid state.
+	 *
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid() const;
+
 	/*! \brief Get the access.
 	 *
 	 * \return enum Access.

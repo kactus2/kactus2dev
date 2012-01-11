@@ -166,6 +166,30 @@ bool MemoryMap::isValid( QStringList& errorList,
 	return valid;
 }
 
+bool MemoryMap::isValid() const {
+
+	if (name_.isEmpty()) {
+		return false;
+	}
+
+	QStringList memItemNames;
+	foreach (QSharedPointer<MemoryMapItem> memItem, items_) {
+
+		if (memItemNames.contains(memItem->getName())) {
+			return false;
+		}
+		else {
+			memItemNames.append(memItem->getName());
+		}
+
+		if (!memItem->isValid()) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
 void MemoryMap::setName(const QString &name) {
 	name_ = name;
 }

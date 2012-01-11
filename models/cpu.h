@@ -74,6 +74,12 @@ public:
 	bool isValid(QStringList& errorList, 
 		const QString& parentIdentifier) const;
 
+	/*! \brief Check if the cpu is in a valid state.
+	 *
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid() const;
+
 	/*! \brief Get list of the address space references for this cpu
 	 *
 	 * \return QList containing the addressSpaceRefs

@@ -710,6 +710,72 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts,
 	return valid;
 }
 
+bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts ) const {
+	
+	if (nameGroup_.name_.isEmpty()) {
+		return false;
+	}
+
+	// check the bus type validity
+	if (!busType_.isValid()) {
+		return false;
+	}
+
+	switch (interfaceMode_) {
+		case General::MASTER: 
+		case General::MIRROREDMASTER: {
+			if (!master_) {
+				return false;
+			}
+			break;
+									  }
+		case General::SLAVE: {
+			if (!slave_) {
+				return false;
+			}
+			break;
+							 }
+		case General::MIRROREDSLAVE: {
+			if (!mirroredSlave_) {
+				return false;
+			}
+			break;
+									 }
+		case General::SYSTEM:
+		case General::MIRROREDSYSTEM: {
+			if (system_.isEmpty()) {
+				return false;
+			}
+			break;
+									  }
+		case General::MONITOR: {
+			if (monitor_->interfaceMode_ == General::MODE_UNDEFINED) {
+				return false;
+			}
+			break;
+							   }
+		 // if the interface mode is invalid
+		default: {
+			return false;
+			break;
+				 }
+	}
+
+	foreach (QSharedPointer<General::PortMap> portMap, portMaps_) {
+		if (!portMap->isValid(physicalPorts)) {
+			return false;
+		}
+	}
+
+	foreach (QSharedPointer<Parameter> param, parameters_) {
+		if (!param->isValid()) {
+			return false;
+		}
+
+	}
+	return true;
+}
+
 General::BitSteering BusInterface::getBitSteering() const {
 	return bitSteering_;
 }

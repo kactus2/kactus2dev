@@ -137,6 +137,18 @@ bool EnumeratedValue::isValid( QStringList& errorList,
 	return valid;
 }
 
+bool EnumeratedValue::isValid() const {
+	if (name_.isEmpty()) {
+		return false;
+	}
+
+	if (value_.isEmpty()) {
+		return false;
+	}
+
+	return true;
+}	
+
 QString EnumeratedValue::getDescription() const {
     return description_;
 }

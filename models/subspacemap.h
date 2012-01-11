@@ -72,7 +72,7 @@ public:
 	*/
 	virtual void write(QXmlStreamWriter& writer);
 
-	/*! \brief Check if the sub space map is in a valid state.
+	/*! \brief Check if the subspace map is in a valid state.
 	 *
 	 * \param errorList The list to add the possible error messages to.
 	 * \param parentIdentifier String from parent to help to identify the location of the error.
@@ -81,6 +81,12 @@ public:
 	*/
 	virtual bool isValid(QStringList& errorList, 
 		const QString& parentIdentifier) const;
+
+	/*! \brief Check if the subspace map is in a valid state.
+	 *
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	virtual bool isValid() const;
 
 	/*! \brief Get the list of parameters for the subSpaceMap
 	 *

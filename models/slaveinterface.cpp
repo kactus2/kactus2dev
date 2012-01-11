@@ -206,6 +206,16 @@ bool SlaveInterface::isValid( QStringList& errorList, const QString& parentIdent
 	return valid;
 }
 
+bool SlaveInterface::isValid() const {
+	foreach (QSharedPointer<Bridge> bridge, bridges_) {
+		if (bridge->masterRef_.isEmpty()) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
 const QList<QSharedPointer<SlaveInterface::Bridge> >&
 SlaveInterface::getBridges() {
 	return bridges_;

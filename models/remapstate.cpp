@@ -131,6 +131,19 @@ bool RemapState::isValid( const QStringList& portNames,
 	return valid;
 }
 
+bool RemapState::isValid( const QStringList& portNames ) const {
+	if (name_.isEmpty()) {
+		return false;
+	}
+
+	foreach (QSharedPointer<RemapPort> remapPort, remapPorts_) {
+		if (!remapPort->isValid(portNames)) {
+				return false;
+		}
+	}
+	return true;
+}
+
 void RemapState::setRemapPorts(const QList<QSharedPointer<RemapPort> > &remapPorts) {
 	// delete the old remap ports
 	remapPorts_.clear();

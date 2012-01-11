@@ -283,6 +283,34 @@ bool Field::isValid( QStringList& errorList, const QString& parentIdentifier ) c
 	return valid;
 }
 
+bool Field::isValid() const {
+	if (name_.isEmpty()) {
+		return false;
+	}
+
+	if (bitOffset_ < 0) {
+		return false;
+	}
+
+	if (bitWidth_ <= 0) {
+		return false;
+	}
+
+	foreach (QSharedPointer<EnumeratedValue> enumValue, enumeratedValues_) {
+		if (!enumValue->isValid()) {
+			return false;
+		}
+	}
+
+	foreach (QSharedPointer<Parameter> param, parameters_) {
+		if (!param->isValid()) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
 int Field::getBitOffset() const {
     return bitOffset_;
 }

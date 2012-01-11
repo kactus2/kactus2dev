@@ -1574,3 +1574,21 @@ void LibraryHandler::endSave() {
 		data_->resetLibrary();
 	}
 }
+
+bool LibraryHandler::isValid( const VLNV& vlnv ) {
+	
+	// if object has already been parsed before
+	if (objects_.contains(vlnv)) {
+		return objects_.value(vlnv)->isValid();
+	}
+	else {
+		QSharedPointer<LibraryComponent> libComp = getModel(vlnv);
+
+		// if the object was not found
+		if (!libComp) {
+			return false;
+		}
+
+		return libComp->isValid();
+	}
+}

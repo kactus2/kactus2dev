@@ -258,6 +258,37 @@ bool AddressBlock::isValid( QStringList& errorList,
 	return valid;
 }
 
+bool AddressBlock::isValid() const {
+	
+	if (name_.isEmpty()) {
+		return false;
+	}
+
+	if (baseAddress_.isEmpty()) {
+		return false;
+	}
+
+	if (range_.isEmpty()) {
+		return false;
+	}
+
+	if (width_ < 0) {
+		return false;
+	}
+
+	if (memoryBlockData_ && !memoryBlockData_->isValid()) {
+		return false;
+	}
+
+	foreach (QSharedPointer<RegisterModel> regModel, registerData_) {
+		if (!regModel->isValid()) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
 void AddressBlock::setAccess(General::Access access) {
 	memoryBlockData_->setAccess(access);
 }

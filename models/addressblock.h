@@ -84,6 +84,12 @@ public:
 	virtual bool isValid(QStringList& errorList, 
 		const QString& parentIdentifier) const;
 
+	/*! \brief Check if the address block is in a valid state.
+	 *
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	 virtual bool isValid() const;
+
 	/*! \brief Get the access information
 	 *
 	 * \return Accessibility of the data in the address block

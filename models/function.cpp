@@ -71,6 +71,22 @@ bool Function::Argument::isValid( QStringList& errorList, const QString& parentI
 	return valid;
 }
 
+bool Function::Argument::isValid() const {
+	if (name_.isEmpty()) {
+		return false;
+	}
+
+	if (value_.isEmpty()) {
+		return false;
+	}
+
+	if (dataType_.isEmpty()) {
+		return false;
+	}
+
+	return true;
+}
+
 Function::SourceFile::SourceFile(QDomNode &sourceFileNode): sourceName_(),
 		fileType_(), userFileType_() {
 
@@ -124,6 +140,18 @@ bool Function::SourceFile::isValid( QStringList& errorList, const QString& paren
 	}
 
 	return valid;
+}
+
+bool Function::SourceFile::isValid() const {
+	if (sourceName_.isEmpty()) {
+		return false;
+	}
+
+	if (fileType_.isEmpty() && userFileType_.isEmpty()) {
+		return false;
+	}
+
+	return true;
 }
 
 // the constructor
@@ -347,6 +375,32 @@ bool Function::isValid( const QStringList& fileIDs,
 	}
 
 	return valid;
+}
+
+bool Function::isValid(const QStringList& fileIDs,
+					   bool checkChildren) const {
+	if (fileRef_.isEmpty()) {
+		return false;
+	}
+	else if (!fileIDs.contains(fileRef_)) {
+		return false;
+	}
+
+	if (checkChildren) {
+		foreach (QSharedPointer<Argument> argument, arguments_) {
+			if (!argument->isValid()) {
+				return false;
+			}
+		}
+
+		foreach (QSharedPointer<SourceFile> sourceFile, sourceFiles_) {
+			if (!sourceFile->isValid()) {
+				return false;
+			}
+		}
+	}
+
+	return true;
 }
 
 bool Function::getReplicate() const {

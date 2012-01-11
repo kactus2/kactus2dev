@@ -250,6 +250,38 @@ bool Bank::isValid( QStringList& errorList,
 	return valid;
 }
 
+bool Bank::isValid() const {
+	
+	if (name_.isEmpty()) {
+		return false;
+	}
+
+	if (!attributes_.contains(QString("spirit:bankAlignment"))) {
+		return false;
+	}
+
+	if (baseAddress_.isEmpty()) {
+		return false;
+	}
+
+	if (memoryBlockData_ && !memoryBlockData_->isValid()) {
+		return false;
+	}
+
+	if (items_.isEmpty()) {
+		return false;
+	}
+	else {
+		foreach (QSharedPointer<MemoryMapItem> memItem, items_) {
+			if (!memItem->isValid()) {
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
 void Bank::setItems(QList<QSharedPointer<MemoryMapItem> > &items) {
 	items_ = items;
 }

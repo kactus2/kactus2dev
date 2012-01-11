@@ -81,6 +81,12 @@ public:
 	virtual bool isValid(QStringList& errorList, 
 		const QString& parentIdentifier) const = 0;
 
+	/*! \brief Check if the memory map item is in a valid state.
+	 *
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	 virtual bool isValid() const = 0;
+
 	/*! \brief Get list of attributes for this element
 	 *
 	 * \return QMap containing pointers to the attributes

@@ -48,6 +48,20 @@ public:
 	 */
 	~DesignConfAbstractor();
 
+	/*! \brief Write the contents of the class using the writer.
+	*
+	* Uses the specified writer to write the class contents into file as valid
+	* IP-Xact.
+	*
+	* \param writer A reference to a QXmlStreamWrite instance that is used to
+	* write the document into file.
+	*
+	* Exception guarantee: basic
+	* \exception Write_error Occurs if class or one of it's member classes is
+	* not valid IP-Xact in the moment of writing.
+	*/
+	void write(QXmlStreamWriter& writer);
+
 	/*! \brief Get the VLNV tag specifying the abstractor
 	 *
 	 * \return A pointer to the VLNV tag identifying the abstractor for the
@@ -123,20 +137,6 @@ public:
 	 * \param viewName A reference to a QString containing the view name.
 	 */
 	void setViewName(const QString& viewName);
-
-	/*! \brief Write the contents of the class using the writer.
-	 *
-	 * Uses the specified writer to write the class contents into file as valid
-	 * IP-Xact.
-	 *
-	 * \param writer A reference to a QXmlStreamWrite instance that is used to
-	 * write the document into file.
-	 *
-	 * Exception guarantee: basic
-	 * \exception Write_error Occurs if class or one of it's member classes is
-	 * not valid IP-Xact in the moment of writing.
-	 */
-	void write(QXmlStreamWriter& writer);
 
 private:
 

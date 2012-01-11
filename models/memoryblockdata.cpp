@@ -101,6 +101,16 @@ bool MemoryBlockData::isValid( QStringList& errorList,
 	return valid;
 }
 
+bool MemoryBlockData::isValid() const {
+
+	foreach (QSharedPointer<Parameter> param, parameters_) {
+		if (!param->isValid()) {
+			return false;
+		}
+	}
+	return true;
+}
+
 General::Usage MemoryBlockData::getUsage() const {
 	return usage_;
 }

@@ -274,6 +274,15 @@ public:
 	*/
 	virtual QSharedPointer<Design> getDesign(const VLNV& hierarchyRef);
 
+	/*! \brief Check if the identified object is in valid state.
+	 *
+	 * \param vlnv Identifies the object to check.
+	 *
+	 * \return bool True if the object was valid. False if invalid or object was
+	 * not found in library.
+	*/
+	virtual bool isValid(const VLNV& vlnv);
+
 public slots:
 
 	/*! \brief Check the library items for validity

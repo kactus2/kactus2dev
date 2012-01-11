@@ -78,6 +78,16 @@ bool File::Define::isValid( QStringList& errorList, const QString& parentIdentif
 	return valid;
 }
 
+bool File::Define::isValid() const {
+	if (nameGroup_.name_.isEmpty()) {
+		return false;
+	}
+	if (value_.isEmpty()) {
+		return false;
+	}
+	return true;
+}
+
 // the constructor
 File::File(QDomNode &fileNode, FileSet* parent): name_(), fileId_(),
 attributes_(), nameAttributes_(), fileTypes_(), userFileTypes_(),
@@ -417,6 +427,40 @@ bool File::isValid( QStringList& errorList,
 	}
 
 	return valid;
+}
+
+bool File::isValid( bool checkChildren /*= true*/ ) const {
+	if (name_.isEmpty()) {
+		return false;
+	}
+
+	if (fileTypes_.isEmpty() && userFileTypes_.isEmpty()) {
+		return false;
+	}
+	// if at least one file type was specified
+	else {
+
+		foreach (QString fileType, fileTypes_) {
+			if (fileType.isEmpty()) {
+				return false;
+			}
+		}
+		foreach (QString userFileType, userFileTypes_) {
+			if (userFileType.isEmpty()) {
+				return false;
+			}
+		}
+	}
+
+	if (checkChildren) {
+		foreach (Define define, defines_) {
+			if (!define.isValid()) {
+				return false;
+			}
+		}
+	}
+
+	return true;
 }
 
 void File::setAttributes(const QMap<QString, QString> &attributes) {

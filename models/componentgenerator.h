@@ -78,6 +78,12 @@ public:
 	bool isValid(QStringList& errorList, 
 		const QString& parentIdentifier) const;
 
+	/*! \brief Check if the component generator is in a valid state.
+	 *
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid() const;
+
 	/*! \brief Get list of the groups for this Component Generator
 	 *
 	 * \return QList containing the names of the groups this generator belongs

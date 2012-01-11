@@ -82,6 +82,12 @@ public:
 	virtual bool isValid(QStringList& errorList, 
 		const QString& parentIdentifier) const;
 
+	/*! \brief Check if the bank is in a valid state.
+	 *
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	virtual bool isValid() const;
+
 	/*! \brief Get the items stored in the bank.
 	 *
 	 * \return QList containing pointers to the items. Pointers are base class

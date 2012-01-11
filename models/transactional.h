@@ -86,6 +86,20 @@ public:
 	 */
 	~Transactional();
 
+	/*! \brief Write the contents of the class using the writer.
+	*
+	* Uses the specified writer to write the class contents into file as valid
+	* IP-Xact.
+	*
+	* \param writer A reference to a QXmlStreamWriter instance that is used to
+	* write the document into file.
+	*
+	* Exception guarantee: basic
+	* \exception Write_error Occurs if class or one of it's member classes is
+	* not valid IP-Xact in the moment of writing.
+	*/
+	void write(QXmlStreamWriter& writer);
+
 	/*! \brief Get the allLogicalInitiativesAllowed setting
 	 *
 	 * \return boolean value of the allLogicalInitiativesAllowed
@@ -168,20 +182,6 @@ public:
 	 * \param transTypeDef A pointer to the new transTypeDef.
 	 */
 	void setTransTypeDef(TransTypeDef *transTypeDef);
-
-	/*! \brief Write the contents of the class using the writer.
-	 *
-	 * Uses the specified writer to write the class contents into file as valid
-	 * IP-Xact.
-	 *
-	 * \param writer A reference to a QXmlStreamWriter instance that is used to
-	 * write the document into file.
-	 *
-	 * Exception guarantee: basic
-	 * \exception Write_error Occurs if class or one of it's member classes is
-	 * not valid IP-Xact in the moment of writing.
-	 */
-	void write(QXmlStreamWriter& writer);
 
 private:
 

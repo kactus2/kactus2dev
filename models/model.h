@@ -82,6 +82,14 @@ public:
 		QStringList& errorList, 
 		const QString& parentIdentifier) const;
 
+	/*! \brief Check if the model is in a valid state.
+	 * 
+	 * \param fileSetNames List of names of the component's file sets.
+	 * 
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid(const QStringList& fileSetNames) const;
+
 	/*! \brief Get the model parameters of this model
 	 *
 	 * \return QMap containing pointers to the model parameters.

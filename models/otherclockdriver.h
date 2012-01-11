@@ -53,6 +53,36 @@ public:
 	 */
 	~OtherClockDriver();
 
+	/*! \brief Write the contents of the class using the writer.
+	*
+	* Uses the specified writer to write the class contents into file as valid
+	* IP-Xact.
+	*
+	* \param writer A reference to a QXmlStreamWriter instance that is used to
+	* write the document into file.
+	*
+	* Exception guarantee: basic
+	* \exception Write_error Occurs if class or one of it's member classes is
+	* not valid IP-Xact in the moment of writing.
+	*/
+	void write(QXmlStreamWriter& writer);
+
+	/*! \brief Check if the other clock driver is in a valid state.
+	*
+	* \param errorList The list to add the possible error messages to.
+	* \param parentIdentifier String from parent to help to identify the location of the error.
+	*
+	* \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid(QStringList& errorList, 
+		const QString& parentIdentifier) const;
+
+	/*! \brief Check if the OtherClockDriver-element is in valid state.
+	*
+	* \return True if the instance is in valid state.
+	*/
+	bool isValid() const;
+
 	/*! \brief Get the name of the clock
 	 *
 	 * \return QString containing the name
@@ -128,36 +158,6 @@ public:
 	 * generation cell.
 	 */
 	void setClockSource(const QString &clockSource);
-
-	/*! \brief Write the contents of the class using the writer.
-	 *
-	 * Uses the specified writer to write the class contents into file as valid
-	 * IP-Xact.
-	 *
-	 * \param writer A reference to a QXmlStreamWriter instance that is used to
-	 * write the document into file.
-	 *
-	 * Exception guarantee: basic
-	 * \exception Write_error Occurs if class or one of it's member classes is
-	 * not valid IP-Xact in the moment of writing.
-	 */
-	void write(QXmlStreamWriter& writer);
-
-	/*! \brief Check if the OtherClockDriver-element is in valid state.
-	 *
-	 * \return True if the instance is in valid state.
-	*/
-	bool isValid() const;
-
-	/*! \brief Check if the other clock driver is in a valid state.
-	 *
-	 * \param errorList The list to add the possible error messages to.
-	 * \param parentIdentifier String from parent to help to identify the location of the error.
-	 *
-	 * \return bool True if the state is valid and writing is possible.
-	*/
-	bool isValid(QStringList& errorList, 
-		const QString& parentIdentifier) const;
 
 private:
 

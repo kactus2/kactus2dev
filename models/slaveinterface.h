@@ -129,6 +129,12 @@ public:
 	bool isValid(QStringList& errorList, 
 		const QString& parentIdentifier) const;
 
+	/*! \brief Check if the slave is in a valid state.
+	 *
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid() const;
+
 	/*! \brief Get list of the bridges for this component
 	 *
 	 * \return A reference to a QList containing pointers to the bridge

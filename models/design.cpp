@@ -427,6 +427,69 @@ bool Design::isValid( QStringList& errorList ) const {
 	return valid;
 }
 
+bool Design::isValid() const {
+	if (!vlnv_) {
+		return false;
+	}
+	else if (!vlnv_->isValid()) {
+		return false;
+	}
+
+	QStringList instanceNames;
+	foreach (Design::ComponentInstance instance, componentInstances_) {
+
+		// if there are several instances with same name
+		if (instanceNames.contains(instance.instanceName)) {
+			return false;
+		}
+		else {
+			instanceNames.append(instance.instanceName);
+		}
+
+		if (!instance.isValid()) {
+			return false;
+		}
+	}
+
+	QStringList interconnectionNames;
+	foreach (Design::Interconnection interconnection, interconnections_) {
+
+		// if there are several interconnections with same name
+		if (interconnectionNames.contains(interconnection.name)) {
+			return false;
+		}
+		else {
+			interconnectionNames.append(interconnection.name);
+		}
+
+		if (!interconnection.isValid(instanceNames)) {
+			return false;
+		}
+	}
+
+	QStringList adHocNames;
+	foreach (Design::AdHocConnection adHoc, adHocConnections_) {
+		if (adHocNames.contains(adHoc.name)) {
+			return false;
+		}
+		else {
+			adHocNames.append(adHoc.name);
+		}
+
+		if (!adHoc.isValid(instanceNames)) {
+			return false;
+		}
+	}
+
+	foreach (Design::HierConnection hierConn, hierConnections_) {
+		if (!hierConn.isValid(instanceNames)) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
 const QList<Design::ComponentInstance> &Design::getComponentInstances()
 {
 	return componentInstances_;
@@ -808,6 +871,28 @@ bool Design::ComponentInstance::isValid( QStringList& errorList,
 	return valid;
 }
 
+bool Design::ComponentInstance::isValid() const {
+	if (instanceName.isEmpty()) {
+		return false;
+	}
+
+	if (!componentRef.isValid()) {
+		return false;
+	}
+
+	for (QMap<QString, QString>::const_iterator i = configurableElementValues.begin();
+		i != configurableElementValues.end(); ++i) {
+
+			if (i.key().isEmpty()) {
+				return false;
+			}
+			if (i.value().isEmpty()) {
+				return false;
+			}
+	}
+	return true;
+}
+
 Design::Interface::Interface(QDomNode &interfaceNode):
 componentRef(""), 
 busRef("")
@@ -860,6 +945,21 @@ bool Design::Interface::isValid( const QStringList& instanceNames,
 	}
 
 	return valid;
+}
+
+bool Design::Interface::isValid( const QStringList& instanceNames ) const {
+	if (componentRef.isEmpty()) {
+		return false;
+	}
+	else if (!instanceNames.contains(componentRef)) {
+		return false;
+	}
+
+	if (busRef.isEmpty()) {
+		return false;
+	}
+
+	return true;
 }
 
 Design::Interconnection::Interconnection(QDomNode &interconnectionNode)
@@ -940,6 +1040,21 @@ bool Design::Interconnection::isValid( const QStringList& instanceNames,
 	}
 
 	return valid;
+}
+
+bool Design::Interconnection::isValid( const QStringList& instanceNames ) const {
+	if (name.isEmpty()) {
+		return false;
+	}
+
+	if (!interface1.isValid(instanceNames)) {
+		return false;
+	}
+
+	if (!interface2.isValid(instanceNames)) {
+		return false;
+	}
+	return true;
 }
 
 Design::HierConnection::HierConnection(QDomNode &hierConnectionNode)
@@ -1041,6 +1156,18 @@ bool Design::HierConnection::isValid( const QStringList& instanceNames,
 	return valid;
 }
 
+bool Design::HierConnection::isValid( const QStringList& instanceNames ) const {
+	if (interfaceRef.isEmpty()) {
+		return false;
+	}
+
+	if (!interface_.isValid(instanceNames)) {
+		return false;
+	}
+
+	return true;
+}
+
 Design::PortRef::PortRef(QDomNode &portReferenceNode)
     : portRef(), componentRef(), left(-1), right(-1)
 {
@@ -1092,7 +1219,7 @@ bool Design::PortRef::isValid( bool externalRef,
 							  const QString& parentIdentifier ) const {
 	bool valid = true;
 
-	// if this is internal refenrece then the component ref must exist
+	// if this is internal reference then the component ref must exist
 	if (!externalRef) {
 		if (componentRef.isEmpty()) {
 			errorList.append(QObject::tr("No component reference set for internal"
@@ -1121,6 +1248,28 @@ bool Design::PortRef::isValid( bool externalRef,
 	}
 
 	return valid;
+}
+
+bool Design::PortRef::isValid( bool externalRef, const QStringList& instanceNames ) const {
+	// if this is internal reference then the component ref must exist
+	if (!externalRef) {
+		if (componentRef.isEmpty()) {
+			return false;
+		}
+		else if (!instanceNames.contains(componentRef)) {
+			return false;
+		}
+
+		if (portRef.isEmpty()) {
+			return false;
+		}
+	}
+	else {
+		if (portRef.isEmpty()) {
+			return false;
+		}
+	}
+	return true;
 }
 
 Design::AdHocConnection::AdHocConnection(QDomNode &adHocConnectionNode)
@@ -1218,4 +1367,29 @@ bool Design::AdHocConnection::isValid( const QStringList& instanceNames,
 	}
 
 	return valid;
+}
+
+bool Design::AdHocConnection::isValid( const QStringList& instanceNames ) const {
+	if (name.isEmpty()) {
+		return false;
+	}
+
+	if (internalPortReferences.isEmpty()) {
+		return false;
+	}
+	else {
+		foreach (PortRef portRef, internalPortReferences) {
+			if (!portRef.isValid(false, instanceNames)) {
+				return false;
+			}
+		}
+	}
+
+	foreach (PortRef portRef, externalPortReferences) {
+		if (!portRef.isValid(true, instanceNames)) {
+			return false;
+		}
+	}
+
+	return true;
 }

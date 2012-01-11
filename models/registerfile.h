@@ -76,6 +76,12 @@ public:
 	virtual bool isValid(QStringList& errorList, 
 		const QString& parentIdentifier) const;
 
+	/*! \brief Check if the register file is in a valid state.
+	 *
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	virtual bool isValid() const;
+
 	/*! \brief Get the address offset of the registerFile.
 	 *
 	 * \return QString containing the offset.

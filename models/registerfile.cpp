@@ -220,6 +220,34 @@ bool RegisterFile::isValid( QStringList& errorList,
 	return valid;
 }
 
+bool RegisterFile::isValid() const {
+
+	if (name_.isEmpty()) {
+		return false;
+	}
+
+	if (addressOffset_.isEmpty()) {
+		return false;
+	}
+
+	if (range_ == 0) {
+		return false;
+	}
+
+	foreach (QSharedPointer<RegisterModel> regModel, registerData_) {
+		if (!regModel->isValid()) {
+			return false;
+		}
+	}
+
+	foreach (QSharedPointer<Parameter> param, parameters_) {
+		if (!param->isValid()) {
+			return false;
+		}
+	}
+	return true;
+}
+
 QString RegisterFile::getAddressOffset() const {
 	return addressOffset_;
 }

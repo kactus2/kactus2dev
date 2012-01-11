@@ -172,6 +172,23 @@ bool Cpu::isValid( QStringList& errorList, const QString& parentIdentifier ) con
 	return valid;
 }
 
+bool Cpu::isValid() const {
+	if (name_.isEmpty()) {
+		return false;
+	}
+
+	if (addressSpaceRefs_.isEmpty()) {
+		return false;
+	}
+
+	foreach (QSharedPointer<Parameter> param, parameters_) {
+		if (!param->isValid()) {
+			return false;
+		}
+	}
+	return true;
+}
+
 const QList<QSharedPointer<Parameter> >& Cpu::getParameters() {
 	return parameters_;
 }

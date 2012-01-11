@@ -70,6 +70,14 @@ public:
 		QStringList& errorList, 
 		const QString& parentIdentifier) const;
 
+	/*! \brief Check if the remap state is in a valid state.
+	 * 
+	 * \param portNames List containing the names of the ports of the component.
+	 * 
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid(const QStringList& portNames) const;
+
 	/*! \brief Get the name of the remap state
 	 *
 	 * \return QString containing the name

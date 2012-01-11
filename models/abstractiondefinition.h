@@ -92,6 +92,12 @@ public:
 	*/
 	virtual bool isValid(QStringList& errorList) const;
 
+	/*! \brief Check if the abstraction definition is in a valid state.
+	 *
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	virtual bool isValid() const;
+
 	/*! \brief Set the vlnv
 	 *
 	 * \param vlnv Reference to the vlnv to set

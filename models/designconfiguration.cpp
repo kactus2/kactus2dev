@@ -161,6 +161,24 @@ bool DesignConfiguration::GeneratorChainConfiguration::isValid(
 	return valid;
 }
 
+bool DesignConfiguration::GeneratorChainConfiguration::isValid() const {
+	if (!generatorChainRef_.isValid()) {
+			return false;
+	}
+
+	for (QMap<QString, QString>::const_iterator i = configurableElements_.begin();
+		i != configurableElements_.end(); ++i) {
+
+			if (i.key().isEmpty()) {
+				return false;
+			}
+			if (i.value().isEmpty()) {
+				return false;
+			}
+	}
+	return true;
+}
+
 // class constructor
 DesignConfiguration::DesignConfiguration(QDomDocument& doc):
 LibraryComponent(doc), 
@@ -503,6 +521,39 @@ bool DesignConfiguration::isValid( QStringList& errorList ) const {
 	}
 
 	return valid;
+}
+
+bool DesignConfiguration::isValid() const {
+	if (!vlnv_) {
+		return false;
+	}
+	else if (!vlnv_->isValid()) {
+		return false;
+	}
+
+	if (!designRef_.isValid()) {
+		return false;
+	}
+
+	foreach (QSharedPointer<DesignConfiguration::GeneratorChainConfiguration> genConf, 
+		generatorChainConfs_) {
+			if (!genConf->isValid()) {
+				return false;
+			}
+	}
+
+	for (QMap<QString, QString>::const_iterator i = viewConfigurations_.begin();
+		i != viewConfigurations_.end(); ++i) {
+
+			if (i.key().isEmpty()) {
+				return false;
+			}
+			if (i.value().isEmpty()) {
+				return false;
+			}
+	}
+
+	return true;
 }
 
 // get the attributes

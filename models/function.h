@@ -65,6 +65,12 @@ public:
 		* \return bool True if the state is valid and writing is possible.
 		*/
 		bool isValid(QStringList& errorList, const QString& parentIdentifier) const;
+
+		/*! \brief Check if the argument is in a valid state.
+		*
+		* \return bool True if the state is valid and writing is possible.
+		*/
+		bool isValid() const;
 	};
 
 	/*! \brief Equals the spirit:sourceFile element in IP-Xact specification.
@@ -113,6 +119,12 @@ public:
 		* \return bool True if the state is valid and writing is possible.
 		*/
 		bool isValid(QStringList& errorList, const QString& parentIdentifier) const;
+
+		/*! \brief Check if the source file is in a valid state.
+		*
+		* \return bool True if the state is valid and writing is possible.
+		*/
+		bool isValid() const;
 	};
 
 	/*! \brief The constructor
@@ -136,6 +148,46 @@ public:
 	 *
 	 */
 	~Function();
+
+	/*! \brief Write the contents of the class using the writer.
+	*
+	* Uses the specified writer to write the class contents into file as valid
+	* IP-Xact.
+	*
+	* \param writer A reference to a QXmlStreamWriter instance that is used to
+	* write the document into file.
+	*
+	* Exception guarantee: basic
+	* \exception Write_error Occurs if class or one of it's member classes is
+	* not valid IP-Xact in the moment of writing.
+	*/
+	void write(QXmlStreamWriter& writer);
+
+	/*! \brief Check if the Function is in a valid state.
+	*
+	* \param fileIDs List of IDs for the files within the same file set.
+	* \param errorList The list to add the possible error messages to.
+	* \param parentIdentifier String from parent to help to identify the location of the error.
+	* \param checkChildren If true then the child-items are also checked. If
+	* false then only this model is checked.
+	*
+	* \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid(const QStringList& fileIDs,
+		QStringList& errorList,
+		const QString& parentIdentifier,
+		bool checkChildren = true) const;
+
+	/*! \brief Check if the function is in a valid state.
+	 * 
+	 * \param fileIDs List of IDs for the files within the same file set.
+	 * \param checkChildren If true then the child-items are also checked. If
+	 * false then only this model is checked.
+	 * 
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid(const QStringList& fileIDs,
+		bool checkChildren) const;
 
 	/*! \brief Get list of the arguments for the function
 	 *
@@ -239,35 +291,6 @@ public:
 	 * \param sourceFiles QList containing the source files.
 	 */
 	void setSourceFiles(QList<QSharedPointer<SourceFile> > &sourceFiles);
-
-	/*! \brief Write the contents of the class using the writer.
-	 *
-	 * Uses the specified writer to write the class contents into file as valid
-	 * IP-Xact.
-	 *
-	 * \param writer A reference to a QXmlStreamWriter instance that is used to
-	 * write the document into file.
-	 *
-	 * Exception guarantee: basic
-	 * \exception Write_error Occurs if class or one of it's member classes is
-	 * not valid IP-Xact in the moment of writing.
-	 */
-	void write(QXmlStreamWriter& writer);
-
-	/*! \brief Check if the Function is in a valid state.
-	 *
-	 * \param fileIDs List of IDs for the files within the same file set.
-	 * \param errorList The list to add the possible error messages to.
-	 * \param parentIdentifier String from parent to help to identify the location of the error.
-	 * \param checkChildren If true then the child-items are also checked. If
-	 * false then only this model is checked.
-	 *
-	 * \return bool True if the state is valid and writing is possible.
-	*/
-	bool isValid(const QStringList& fileIDs,
-		QStringList& errorList,
-		const QString& parentIdentifier,
-		bool checkChildren = true) const;
 
 private:
 

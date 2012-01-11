@@ -160,6 +160,13 @@ bool PortAbstraction::isValid( QStringList& errorList,
 	return true;
 }
 
+bool PortAbstraction::isValid() const {
+	if (logicalName_.isEmpty()) {
+		return false;
+	}
+	return true;
+}
+
 void PortAbstraction::setDescription(const QString& description) {
 	description_ = description;
 }

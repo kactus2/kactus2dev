@@ -155,6 +155,12 @@ public:
 		*/
 		bool isValid(QStringList& errorList, 
 			const QString& parentIdentifier) const;
+
+		/*! \brief Check if the component instance is in a valid state.
+		*
+		* \return bool True if the state is valid and writing is possible.
+		*/
+		bool isValid() const;
     };
 
 	/*! \brief Describes the spirit:interface type in an IP-XACT
@@ -193,7 +199,7 @@ public:
 		//! \brief Assignment operator
 		Interface& operator=(const Interface& other);
 
-		/*! \brief Check if the  is in a valid state.
+		/*! \brief Check if the interface is in a valid state.
 		* 
 		* \param instanceNames Contains the names of component instances in containing design.
 		* \param errorList The list to add the possible error messages to.
@@ -204,6 +210,14 @@ public:
 		bool isValid(const QStringList& instanceNames,
 			QStringList& errorList, 
 			const QString& parentIdentifier) const;
+
+		/*! \brief Check if the interface is in a valid state.
+		* 
+		* \param instanceNames Contains the names of component instances in containing design.
+		* 
+		* \return bool True if the state is valid and writing is possible.
+		*/
+		bool isValid(const QStringList& instanceNames) const;
 	};
 
 
@@ -283,6 +297,14 @@ public:
 		bool isValid(const QStringList& instanceNames, 
 			QStringList& errorList, 
 			const QString& parentIdentifier) const;
+
+		/*! \brief Check if the interconnection is in a valid state.
+		* 
+		* \param instanceNames List of component instance names contained in the design.
+		* 
+		* \return bool True if the state is valid and writing is possible.
+		*/
+		bool isValid(const QStringList& instanceNames) const;
 	};
 
 	/*! \brief Describes the spirit:hierConnection element in an
@@ -346,7 +368,7 @@ public:
 		//! \brief Assignment operator
 		HierConnection& operator=(const HierConnection& other);
 
-		/*! \brief Check if the hier connection is in a valid state.
+		/*! \brief Check if the hierarchical connection is in a valid state.
 		* 
 		* \param instanceNames List of component instance names contained in the design.
 		* \param errorList The list to add the possible error messages to.
@@ -357,6 +379,14 @@ public:
 		bool isValid(const QStringList& instanceNames,
 			QStringList& errorList, 
 			const QString& parentIdentifier) const;
+
+		/*! \brief Check if the hierarchical connection is in a valid state.
+		* 
+		* \param instanceNames List of component instance names contained in the design.
+		* 
+		* \return bool True if the state is valid and writing is possible.
+		*/
+		bool isValid(const QStringList& instanceNames) const;
 	};
 
 	/*! \brief Describes a port reference in an ad-hoc connection
@@ -431,6 +461,18 @@ public:
 			const QStringList& instanceNames,
 			QStringList& errorList, 
 			const QString& parentIdentifier) const;
+
+		/*! \brief Check if the port ref is in a valid state.
+		* 
+		* \param externalRef Must be true for external refs so component reference 
+		* is not checked.
+		* \param instanceNames List containing the component instance names from
+		* the containing design.
+		* 
+		* \return bool True if the state is valid and writing is possible.
+		*/
+		bool isValid(bool externalRef,
+			const QStringList& instanceNames) const;
 	};
 
 	/*! \brief Describes the spirit:adHocConnection element in an
@@ -519,6 +561,15 @@ public:
 		bool isValid(const QStringList& instanceNames,
 			QStringList& errorList, 
 			const QString& parentIdentifier) const;
+
+		/*! \brief Check if the ad hoc connection is in a valid state.
+		* 
+		* \param instanceNames List containing the component instance names from
+		* the containing design.
+		* 
+		* \return bool True if the state is valid and writing is possible.
+		*/
+		bool isValid(const QStringList& instanceNames) const;
 	};
 
 	/*! \brief The constructor
@@ -565,6 +616,12 @@ public:
 	 * \return bool True if the design was valid.
 	*/
 	virtual bool isValid(QStringList& errorList) const;
+
+	/*! \brief Check the validity of the design.
+	 *
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	virtual bool isValid() const;
 
 	/*! \brief Set the vlnv
 	 *

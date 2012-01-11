@@ -280,6 +280,18 @@ bool GeneratorChain::isValid( QStringList& errorList ) const {
 	return false;
 }
 
+bool GeneratorChain::isValid() const {
+	if (!vlnv_) {
+		return false;
+	}
+	else if (!vlnv_->isValid()) {
+		return false;
+	}
+
+	// TODO add the validation here when the generators are supported
+	return false;
+}
+
 // get the attributes
 const QMap<QString, QString>& GeneratorChain::getAttributes() {
 	return attributes_;

@@ -103,6 +103,13 @@ bool Reset::isValid( QStringList& errorList, const QString& parentIdentifier ) c
 	return true;
 }
 
+bool Reset::isValid() const {
+	if (value_ < 0) {
+		return false;
+	}
+	return true;
+}
+
 int Reset::getMask() const {
 	return mask_;
 }

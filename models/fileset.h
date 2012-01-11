@@ -93,6 +93,15 @@ public:
 		const QString& parentIdentifier, 
 		bool checkChildren = true) const;
 
+	/*! \brief Check if the file set is in a valid state.
+	 * 
+	 * \param checkChildren If true then the child-items are also checked. If
+	 * false then only this model is checked.
+	 * 
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid(bool checkChildren) const;
+
 	/*! \brief Get the default file builders for this file set
 	 *
 	 * \return QList containing pointers to the file builders.

@@ -256,6 +256,32 @@ bool AddressSpace::isValid( QStringList& errorList,
 	return valid;
 }
 
+bool AddressSpace::isValid() const {
+	
+	if (name_.isEmpty()) {
+		return false;
+	}
+
+	if (range_.isEmpty()) {
+		return false;
+	}
+
+	if (width_ < 0) {
+		return false;
+	}
+
+	if (localMemoryMap_ && !localMemoryMap_->isValid()) {
+		return false;
+	}
+
+	foreach (QSharedPointer<Parameter> param, parameters_) {
+		if (!param->isValid()) {
+			return false;
+		}
+	}
+	return true;
+}
+
 void AddressSpace::setAddressUnitBits(unsigned int addressUnitBits) {
 	addressUnitBits_ = addressUnitBits;
 }

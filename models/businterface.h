@@ -122,6 +122,14 @@ public:
 		QStringList& errorList, 
 		const QString& parentIdentifier) const;
 
+	/*! \brief Check if the bus interface is in a valid state.
+	 * 
+	 * \param physicalPorts List of the physical ports of the component and their bounds.
+	 * 
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid(const QList<General::PortBounds>& physicalPorts) const;
+
 	/*! \brief get the vlnv to the abstraction definition
 	 *
 	 * \return The vlnv tag of the abstraction definition where this bus interface

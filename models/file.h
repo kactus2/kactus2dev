@@ -73,8 +73,14 @@ public:
 		 * \param parentIdentifier Contains the string to help to identify the location of the error.
 		 *
 		 * \return bool True if the define is valid.
-		*/
+		 */
 		bool isValid(QStringList& errorList, const QString& parentIdentifier) const;
+
+		/*! \brief Check if the define is in a valid state.
+		*
+		* \return bool True if the state is valid and writing is possible.
+		*/
+		bool isValid() const;
 	};
 
 	/*! \brief The constructor
@@ -117,6 +123,42 @@ public:
 	 *
 	 */
 	~File();
+
+	/*! \brief Write the contents of the class using the writer.
+	*
+	* Uses the specified writer to write the class contents into file as valid
+	* IP-Xact.
+	*
+	* \param writer A reference to a QXmlStreamWriter instance that is used to
+	* write the document into file.
+	*
+	* Exception guarantee: basic
+	* \exception Write_error Occurs if class or one of it's member classes is
+	* not valid IP-Xact in the moment of writing.
+	*/
+	void write(QXmlStreamWriter& writer);
+
+	/*! \brief Check if the file is in a valid state.
+	*
+	* \param errorList The list to add the possible error messages to.
+	* \param parentIdentifier String from parent to help to identify the location of the error.
+	* \param checkChildren If true then the child-items are also checked. If
+	* false then only this model is checked.
+	*
+	* \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid(QStringList& errorList, 
+		const QString& parentIdentifier, 
+		bool checkChildren = true) const;
+
+	/*! \brief Check if the file is in a valid state.
+	 * 
+	 * \param checkChildren If true then the child-items are also checked. If
+	 * false then only this model is checked.
+	 *
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	bool isValid(bool checkChildren = true) const;
 
 	/*! \brief The == operator
 	 * 
@@ -363,20 +405,6 @@ public:
 	*/
 	void appendDefine(const Define& define);
 
-	/*! \brief Write the contents of the class using the writer.
-	 *
-	 * Uses the specified writer to write the class contents into file as valid
-	 * IP-Xact.
-	 *
-	 * \param writer A reference to a QXmlStreamWriter instance that is used to
-	 * write the document into file.
-	 *
-	 * Exception guarantee: basic
-	 * \exception Write_error Occurs if class or one of it's member classes is
-	 * not valid IP-Xact in the moment of writing.
-	 */
-	void write(QXmlStreamWriter& writer);
-
 	/*! \brief Add a new file type definition.
 	 *
 	 * FileType is only added if it is not already defined in fileTypes.
@@ -465,19 +493,6 @@ public:
 	 * \return QString containing the name of the parent file set.
 	*/
 	QString fileSetName() const;
-
-	/*! \brief Check if the file is in a valid state.
-	 *
-	 * \param errorList The list to add the possible error messages to.
-	 * \param parentIdentifier String from parent to help to identify the location of the error.
-	 * \param checkChildren If true then the child-items are also checked. If
-	 * false then only this model is checked.
-	 *
-	 * \return bool True if the state is valid and writing is possible.
-	*/
-	bool isValid(QStringList& errorList, 
-		const QString& parentIdentifier, 
-		bool checkChildren = true) const;
 
 private:
 

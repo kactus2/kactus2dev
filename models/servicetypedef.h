@@ -45,6 +45,20 @@ public:
 	 */
 	~ServiceTypeDef();
 
+	/*! \brief Write the contents of the class using the writer.
+	*
+	* Uses the specified writer to write the class contents into file as valid
+	* IP-Xact.
+	*
+	* \param writer A reference to a QXmlStreamWriter instance that is used to
+	* write the document into file.
+	*
+	* Exception guarantee: basic
+	* \exception Write_error Occurs if class or one of it's member classes is
+	* not valid IP-Xact in the moment of writing.
+	*/
+	void write(QXmlStreamWriter& writer);
+
 	/*! \brief Get list of the parameters for the service type
 	 *
 	 * \return QList conataining pointers to the parameters
@@ -108,20 +122,6 @@ public:
      * \param implicit Boolean setting for the implicit
      */
     void setImplicit(bool implicit);
-
-    /*! \brief Write the contents of the class using the writer.
-     *
-     * Uses the specified writer to write the class contents into file as valid
-     * IP-Xact.
-     *
-     * \param writer A reference to a QXmlStreamWriter instance that is used to
-     * write the document into file.
-     *
-     * Exception guarantee: basic
-     * \exception Write_error Occurs if class or one of it's member classes is
-     * not valid IP-Xact in the moment of writing.
-     */
-    void write(QXmlStreamWriter& writer);
 
 private:
 

@@ -237,6 +237,19 @@ bool BusDefinition::isValid( QStringList& errorList ) const {
 	return valid;
 }
 
+bool BusDefinition::isValid() const {
+	bool valid = true;
+
+	if (!vlnv_) {
+		valid = false;
+	}
+	else if (!vlnv_->isValid()) {
+		valid = false;
+	}
+
+	return valid;
+}
+
 void BusDefinition::setMaxSlaves(int maxSlaves) {
 	maxSlaves_ = maxSlaves;
 }
