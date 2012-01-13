@@ -467,7 +467,7 @@ bool IPXactComponentEditor::save() {
 	// if all editors were valid then document can be written to disk
 	if (saveEditors()) {
 
-		if (handler_->writeModelToFile(component_)) {
+		if (handler_->writeModelToFile(component_, false)) {
 			return TabDocument::save();
 		}
 		else {

@@ -16,7 +16,6 @@
 
 #include <QListWidget>
 #include <QPushButton>
-#include <QCheckBox>
 #include <QSettings>
 
 //-----------------------------------------------------------------------------
@@ -70,8 +69,14 @@ public slots:
     //! Called when a location is selected in the locations list.
     void onSelectLocation(QListWidgetItem* cur, QListWidgetItem* prev);
 
-    //! Called when the auto-refresh check box is toggled.
-    void onToggleAutoRefresh(bool checked);
+private slots:
+
+	/*! \brief Handler for item clicks on the lib locations list.
+	 *
+	 * \param item Pointer to the clicked item.
+	 *
+	*/
+	void onItemClicked(QListWidgetItem* item);
 
 private:
     // Disable copying.
@@ -98,12 +103,6 @@ private:
 
     //! Remove location button.
     QPushButton* removeLocationButton_;
-
-    //! Auto-refresh on startup check box.
-    QCheckBox* autoRefreshCheckBox_;
-
-    //! Ask before refresh check box.
-    QCheckBox* askBeforeRefreshCheckBox_;
 };
 
 //-----------------------------------------------------------------------------

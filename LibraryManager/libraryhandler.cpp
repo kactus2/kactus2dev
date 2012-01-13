@@ -195,7 +195,7 @@ void LibraryHandler::onExportItem( const VLNV& vlnv ) {
 	QDir savedWorkingDirectory = QDir::current();
 
 	QSettings settings;
-	QString defaultPath = settings.value("general/defaultDir", QDir::homePath()).toString();
+	QString defaultPath = settings.value("library/defaultLocation", QDir::homePath()).toString();
 
 	// ask the target directory where the package is to be exported
 	QString targetPath = QFileDialog::getExistingDirectory(this, 
@@ -231,7 +231,7 @@ void LibraryHandler::onExportItems(const QList<VLNV*>& vlnvs) {
 	QDir savedWorkingDirectory = QDir::current();
 
 	QSettings settings;
-	QString defaultPath = settings.value("general/defaultDir", QDir::homePath()).toString();
+	QString defaultPath = settings.value("library/defaultLocation", QDir::homePath()).toString();
 
 	// ask the target directory where the package is to be exported
 	QString targetPath = QFileDialog::getExistingDirectory(this, 
@@ -698,6 +698,8 @@ bool LibraryHandler::writeModelToFile( const QString path,
 		return false;
 	}
 
+	Q_ASSERT(model->isValid());
+
 	VLNV vlnv = *model->getVlnv();
 	Q_ASSERT(!data_->contains(vlnv));
 	Q_ASSERT(!objects_.contains(vlnv));
@@ -787,6 +789,8 @@ bool LibraryHandler::writeModelToFile( QSharedPointer<LibraryComponent> model,
 		return false;
 	}
 
+	Q_ASSERT(model->isValid());
+
 	// make sure the object is parsed again next time
 	VLNV objectVLNV = *model->getVlnv();
 	objects_.remove(objectVLNV);
@@ -850,7 +854,7 @@ void LibraryHandler::searchForIPXactFiles(QString const& path)
 void LibraryHandler::searchForIPXactFiles() {
 
 	QSettings settings;
-	QString defaultPath = settings.value("general/defaultDir", QDir::homePath()).toString();
+	QString defaultPath = settings.value("library/defaultLocation", QDir::homePath()).toString();
 
 	QString path = QFileDialog::getExistingDirectory(this, 
 		tr("Select a directory to start searching for IP-Xact files"),

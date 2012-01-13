@@ -24,18 +24,19 @@
 //-----------------------------------------------------------------------------
 // Function: LibrarySettingsPage()
 //-----------------------------------------------------------------------------
-LibrarySettingsPage::LibrarySettingsPage(QSettings& settings) : settings_(settings),
-                                                                libLocationsList_(0),
-                                                                addLocationButton_(0),
-                                                                removeLocationButton_(0),
-                                                                autoRefreshCheckBox_(0),
-                                                                askBeforeRefreshCheckBox_(0)
+LibrarySettingsPage::LibrarySettingsPage(QSettings& settings):
+settings_(settings),
+libLocationsList_(0),
+addLocationButton_(0),
+removeLocationButton_(0)
 {
     // Create the library location group box.
-    QGroupBox* locationGroup = new QGroupBox(tr("Library locations"), this);
+    QGroupBox* locationGroup = new QGroupBox(tr("Library locations (check the default directory)"), this);
 
     libLocationsList_ = new QListWidget(locationGroup);
     libLocationsList_->setFixedHeight(120);
+	connect(libLocationsList_, SIGNAL(itemClicked(QListWidgetItem*)),
+		this, SLOT(onItemClicked(QListWidgetItem*)), Qt::UniqueConnection);
 
     addLocationButton_ = new QPushButton(QIcon(":/icons/graphics/add.png"), QString(), this);
     removeLocationButton_ = new QPushButton(QIcon(":/icons/graphics/remove.png"), QString(), this);
@@ -49,22 +50,9 @@ LibrarySettingsPage::LibrarySettingsPage(QSettings& settings) : settings_(settin
     locationLayout->addWidget(libLocationsList_);
     locationLayout->addWidget(buttonBox);
 
-    // Create the check boxes.
-    autoRefreshCheckBox_ = new QCheckBox(tr("Auto-refresh the library on start-up"), this);
-
-    askBeforeRefreshCheckBox_ = new QCheckBox(tr("Ask before refresh"), this);
-    askBeforeRefreshCheckBox_->setEnabled(false);
-
-    QHBoxLayout* childLayout = new QHBoxLayout();
-    childLayout->addSpacing(20);
-    childLayout->addWidget(askBeforeRefreshCheckBox_);
-
     // Setup the layout.
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(locationGroup);
-    layout->addSpacing(12);
-    layout->addWidget(autoRefreshCheckBox_);
-    layout->addLayout(childLayout);
     layout->addStretch(1);
 
     // Connect the signals.
@@ -72,8 +60,7 @@ LibrarySettingsPage::LibrarySettingsPage(QSettings& settings) : settings_(settin
     connect(removeLocationButton_, SIGNAL(clicked()), this, SLOT(removeLocation()));
     connect(libLocationsList_, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
             this, SLOT(onSelectLocation(QListWidgetItem*, QListWidgetItem*)));
-    connect(autoRefreshCheckBox_, SIGNAL(toggled(bool)), this, SLOT(onToggleAutoRefresh(bool)));
-
+    
     loadSettings();
 }
 
@@ -102,16 +89,24 @@ void LibrarySettingsPage::apply()
     // Create a string list containing all the location and save it to the settings.
     QStringList locations;
 
+	// the checked item in the list is the default location
+	QString defaultLocation;
+
     for (int i = 0; i < libLocationsList_->count(); ++i)
     {
-        locations.append(libLocationsList_->item(i)->text());
+		QListWidgetItem* item = libLocationsList_->item(i);
+		
+		if (item->checkState() == Qt::Checked) {
+			defaultLocation = item->text();
+		}
+
+        locations.append(item->text());
     }
 
     settings_.setValue("library/locations", locations);
 
-    // Save the check box states.
-    settings_.setValue("library/autoRefresh", autoRefreshCheckBox_->isChecked());
-    settings_.setValue("library/askBeforeRefresh", askBeforeRefreshCheckBox_->isChecked());
+	// save the default location is one was set
+	settings_.setValue("library/defaultLocation", defaultLocation);
 }
 
 //-----------------------------------------------------------------------------
@@ -140,6 +135,16 @@ void LibrarySettingsPage::addLocation()
     if (!dir.isEmpty())
     {
         QListWidgetItem* item = new QListWidgetItem(dir);
+		
+		// if this is the only item on the list
+		if (libLocationsList_->count() == 0) {
+			item->setCheckState(Qt::Checked);
+		}	
+		// if there are others
+		else {
+			item->setCheckState(Qt::Unchecked);
+		}
+
         libLocationsList_->addItem(item);
         libLocationsList_->setCurrentItem(item);
     }
@@ -158,30 +163,28 @@ void LibrarySettingsPage::removeLocation()
 }
 
 //-----------------------------------------------------------------------------
-// Function: onToggleAutoRefresh()
-//-----------------------------------------------------------------------------
-void LibrarySettingsPage::onToggleAutoRefresh(bool checked)
-{
-    askBeforeRefreshCheckBox_->setEnabled(checked);
-}
-
-//-----------------------------------------------------------------------------
 // Function: loadSettings()
 //-----------------------------------------------------------------------------
 void LibrarySettingsPage::loadSettings()
 {
+	QString defaultLocation = settings_.value("library/defaultLocation", QString()).toString();
+
     // Load the library locations.
     QStringList locations = settings_.value("library/locations", QStringList()).toStringList();
 
     foreach (QString location, locations)
     {
         QListWidgetItem* item = new QListWidgetItem(location);
+
+		if (location == defaultLocation) {
+			item->setCheckState(Qt::Checked);
+		}
+		else {
+			item->setCheckState(Qt::Unchecked);
+		}
+
         libLocationsList_->addItem(item);
     }
-
-    // Load the check box states.
-    autoRefreshCheckBox_->setChecked(settings_.value("library/autoRefresh", true).toBool());
-    askBeforeRefreshCheckBox_->setChecked(settings_.value("library/askBeforeRefresh", false).toBool());
 }
 
 //-----------------------------------------------------------------------------
@@ -190,4 +193,22 @@ void LibrarySettingsPage::loadSettings()
 void LibrarySettingsPage::onSelectLocation(QListWidgetItem* cur, QListWidgetItem*)
 {
     removeLocationButton_->setEnabled(cur != 0);
+}
+
+void LibrarySettingsPage::onItemClicked( QListWidgetItem* item ) {
+	
+	// if the item was checked then remove the checks of other items
+	if (item->checkState() == Qt::Checked) {
+
+		for (int i = 0; i < libLocationsList_->count(); ++i) {
+			QListWidgetItem* tempItem = libLocationsList_->item(i);
+
+			// if not the clicked item
+			if (tempItem != item) {
+
+				// uncheck other items
+				tempItem->setCheckState(Qt::Unchecked);
+			}
+		}
+	}
 }

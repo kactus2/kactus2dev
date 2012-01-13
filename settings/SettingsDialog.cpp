@@ -28,8 +28,8 @@ SettingsDialog::SettingsDialog(QWidget* parent) : PropertyPageDialog(QSize(48, 4
 
     addPage(QIcon(":icons/graphics/settings-general.png"), tr("General"),
             new GeneralSettingsPage(settings_));
-//     addPage(QIcon(":icons/graphics/settings-library.png"), tr("Library"),
-//             new LibrarySettingsPage(settings_));
+    addPage(QIcon(":icons/graphics/settings-library.png"), tr("Library"),
+            new LibrarySettingsPage(settings_));
     addPage(QIcon(":icons/graphics/settings-code_editor.png"), tr("Code Editor"),
             new CodeEditorSettingsPage(settings_));
 }

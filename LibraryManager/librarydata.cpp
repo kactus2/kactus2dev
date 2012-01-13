@@ -503,7 +503,6 @@ void LibraryData::openLibraryFile( const QString filePath /*= QString()*/ ) {
 		QString library = settings.value("library").toString();
 		QString name = settings.value("name").toString();
 		QString version = settings.value("version").toString();
-		//bool hidden = settings.value("hidden").toBool();
 		QString filePath = settings.value("path").toString();
 		bool validDocument = settings.value("validDocument", true).toBool();
 

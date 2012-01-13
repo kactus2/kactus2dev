@@ -245,7 +245,7 @@ bool DesignWidget::save()
 		writePossible = false;
 	}
 
-	// check that the design is in writeSucceeded state and can be written
+	// check that the design is in valid state and can be written
 
 	Q_ASSERT(design);
 	if (!design->isValid(errorList)) {
@@ -400,7 +400,7 @@ bool DesignWidget::saveAs() {
 		writePossible = false;
 	}
 
-	// check that the design is in writeSucceeded state and can be written
+	// check that the design is in valid state and can be written
 
 	Q_ASSERT(design);
 	if (!design->isValid(errorList)) {

@@ -58,12 +58,6 @@ public:
      */
     bool onPageChange();
 
-public slots:
-    /*!
-     *  Asks the user to select a directory.
-     */
-    void selectDirectory();
-
 private:
     // Disable copying.
     GeneralSettingsPage(GeneralSettingsPage const& rhs);
@@ -78,9 +72,6 @@ private:
 
     //! Username line edit.
     QLineEdit* usernameEdit_;
-
-    //! Directory line edit.
-    QLineEdit* directoryEdit_;
 };
 
 //-----------------------------------------------------------------------------
