@@ -531,6 +531,9 @@ private:
     QAction* actToolInterface_;
     QAction* actToolDraft_;
 
+    //! Action to toggle off-page connection in a diagram.
+    QAction* actToolToggleOffPage_;
+
     //! Action to zoom in.
     QAction* actZoomIn_;
 

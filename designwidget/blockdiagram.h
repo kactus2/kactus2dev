@@ -15,6 +15,7 @@
 #include <QMap>
 #include <QVector>
 #include <QSharedPointer>
+#include <QUndoCommand>
 
 class LibraryInterface;
 class Component;
@@ -240,21 +241,31 @@ public slots:
      */
     void onShow();
 
+    /*!
+     *  Called when the selection changes in the diagram.
+     */
+    void onSelectionChanged();
+
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
+
+    void endConnect();
+
     void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
-
-    void disableHighlight();
-
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent);
     void wheelEvent(QGraphicsSceneWheelEvent *event);
+
+    void keyReleaseEvent(QKeyEvent *event);
     
     void dropEvent(QGraphicsSceneDragDropEvent *event);
     void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
     void dragMoveEvent(QGraphicsSceneDragDropEvent *event);
     void dragLeaveEvent(QGraphicsSceneDragDropEvent * event);
     void drawBackground(QPainter* painter, const QRectF& rect);
+
+    void disableHighlight();
+    void createConnection(QGraphicsSceneMouseEvent * mouseEvent);
 
 private:
 
@@ -287,6 +298,19 @@ private:
      */
 
     void addInterface(DiagramColumn* column, QPointF const& pos);
+
+    /*!
+     *  Toggles the connection style of the given connection between normal and off-page style.
+     *
+     *      @param [in] conn      The connection.
+     *      @param [in] parentCmd The parent undo command.
+     */
+    void toggleConnectionStyle(DiagramInterconnection* conn, QUndoCommand* parentCmd);
+
+    /*!
+     *  Hides all visible off-page connections.
+     */
+    void hideOffPageConnections();
 
 	//! \brief The pointer to the library handler that manages the library
     LibraryInterface *lh_;
@@ -338,6 +362,11 @@ private:
 
     //! If true, the diagram is locked and cannot be modified.
     bool locked_;
+
+    //! If true, the off-page connection mode is active.
+    bool offPageMode_;
+
+    QGraphicsItem* oldSelection_;
 };
 
 #endif // BLOCKDIAGRAM_H

@@ -1216,6 +1216,14 @@ void EndpointDesignDiagram::createApplication(ProgramEntityItem* progEntity)
     comp->setComponentImplementation(KactusAttribute::KTS_SW);
     comp->setComponentSWType(KactusAttribute::KTS_SW_APPLICATION);
 
+    // Create a view for the endpoints.
+    View* view = new View("kts_endpoints");
+    view->addEnvIdentifier("");
+
+    Model* model = new Model();
+    model->addView(view);
+    comp->setModel(model);
+
     // Add endpoints to it automatically. Also create the port maps for the app link bus interface.
     QList< QSharedPointer<General::PortMap> > portMaps;
 

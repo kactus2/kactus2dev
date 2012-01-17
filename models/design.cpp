@@ -254,6 +254,15 @@ void Design::write(QFile& file)
 			if (!hier.route.empty())
 			{
 				xmlWriter.writeStartElement("kactus2:route");
+                
+                if (hier.offPage)
+                {
+                    xmlWriter.writeAttribute("kactus2:offPage", "true");
+                }
+                else
+                {
+                    xmlWriter.writeAttribute("kactus2:offPage", "false");
+                }
 
 				foreach (QPointF const& point, hier.route)
 				{
@@ -332,6 +341,15 @@ void Design::write(QFile& file)
 			{
 				xmlWriter.writeStartElement("kactus2:route");
 				xmlWriter.writeAttribute("kactus2:connRef", conn.name);
+
+                if (conn.offPage)
+                {
+                    xmlWriter.writeAttribute("kactus2:offPage", "true");
+                }
+                else
+                {
+                    xmlWriter.writeAttribute("kactus2:offPage", "false");
+                }
 
 				foreach (QPointF const& point, conn.route)
 				{
@@ -592,6 +610,7 @@ void Design::parseVendorExtensions(QDomNode &node)
 				if (connNode.nodeName() == "kactus2:route")
 				{
 					QString name = connNode.attributes().namedItem("kactus2:connRef").nodeValue();
+                    QString offPageValue = connNode.attributes().namedItem("kactus2:offPage").nodeValue();
 					QList<QPointF> route;
 
 					// Parse the route.
@@ -614,6 +633,7 @@ void Design::parseVendorExtensions(QDomNode &node)
 						if (interconnections_[i].name == name)
 						{
 							interconnections_[i].route = route;
+                            interconnections_[i].offPage = offPageValue == "true";
 							break;
 						}
 					}
@@ -964,7 +984,7 @@ bool Design::Interface::isValid( const QStringList& instanceNames ) const {
 
 Design::Interconnection::Interconnection(QDomNode &interconnectionNode)
     : name(), displayName(), description(),
-      interface1(QString(), QString()), interface2(QString(), QString())
+      interface1(QString(), QString()), interface2(QString(), QString()), route(), offPage(false)
 {
     QDomNodeList nodes = interconnectionNode.childNodes();
 
@@ -990,10 +1010,11 @@ Design::Interconnection::Interconnection(QString name,
 					 Interface interface1,
 					 Interface interface2,
                      QList<QPointF> const& route,
+                     bool offPage,
 					 QString displayName,
 					 QString description)
     : name(name), displayName(displayName), description(description),
-      interface1(interface1), interface2(interface2), route(route)
+      interface1(interface1), interface2(interface2), route(route), offPage(offPage)
 {
 }
 
@@ -1003,7 +1024,9 @@ displayName(other.displayName),
 description(other.description),
 interface1(other.interface1),
 interface2(other.interface2),
-route(other.route) {
+route(other.route),
+offPage(other.offPage)
+{
 }
 
 Design::Interconnection& Design::Interconnection::operator=( const Interconnection& other ) {
@@ -1014,6 +1037,7 @@ Design::Interconnection& Design::Interconnection::operator=( const Interconnecti
 		interface1 = other.interface1;
 		interface2 = other.interface2;
 		route = other.route;
+        offPage = other.offPage;
 	}
 	return *this;
 }
@@ -1058,7 +1082,7 @@ bool Design::Interconnection::isValid( const QStringList& instanceNames ) const 
 }
 
 Design::HierConnection::HierConnection(QDomNode &hierConnectionNode)
-    : interfaceRef(), interface_(QString(""), QString("")), position()
+    : interfaceRef(), interface_(QString(""), QString("")), position(), route(), offPage(false)
 {
     QDomNamedNodeMap attributes = hierConnectionNode.attributes();
 
@@ -1089,6 +1113,8 @@ Design::HierConnection::HierConnection(QDomNode &hierConnectionNode)
                 }
                 else if (childNode.nodeName() == "kactus2:route")
                 {
+                    offPage = childNode.attributes().namedItem("kactus2:offPage").nodeValue() == "true";
+
                     // Parse the route.
                     for (int i = 0; i < childNode.childNodes().size(); ++i)
                     {
@@ -1112,9 +1138,10 @@ Design::HierConnection::HierConnection(QString interfaceRef_,
                                        Interface interface_,
                                        QPointF const& position,
                                        QVector2D const& direction,
-                                       QList<QPointF> const& route)
+                                       QList<QPointF> const& route,
+                                       bool offPage)
     : interfaceRef(interfaceRef_), interface_(interface_),
-      position(position), direction(direction), route(route)
+      position(position), direction(direction), route(route), offPage(offPage)
 {
 }
 
@@ -1123,7 +1150,8 @@ interfaceRef(other.interfaceRef),
 interface_(other.interface_),
 position(other.position),
 direction(other.direction),
-route(other.route) {
+route(other.route),
+offPage(other.offPage) {
 }
 
 Design::HierConnection& Design::HierConnection::operator=( const HierConnection& other ) {
@@ -1133,6 +1161,7 @@ Design::HierConnection& Design::HierConnection::operator=( const HierConnection&
 		position = other.position;
 		direction = other.direction;
 		route = other.route;
+        offPage = other.offPage;
 	}
 	return *this;
 }

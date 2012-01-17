@@ -166,7 +166,13 @@ void DiagramComponent::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
             continue;
 
         DiagramPort *diagramPort = qgraphicsitem_cast<DiagramPort *>(item);
+
         foreach (DiagramInterconnection *interconn, diagramPort->getInterconnections())
+        {
+            interconn->updatePosition();
+        }
+
+        foreach (DiagramInterconnection *interconn, diagramPort->getOffPageConnector()->getInterconnections())
         {
             interconn->updatePosition();
         }

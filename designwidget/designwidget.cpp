@@ -905,7 +905,7 @@ unsigned int DesignWidget::getSupportedDrawModes() const
 {
     if (!isProtected())
     {
-        return (MODE_SELECT | MODE_CONNECT | MODE_INTERFACE | MODE_DRAFT);
+        return (MODE_SELECT | MODE_CONNECT | MODE_INTERFACE | MODE_DRAFT | MODE_TOGGLE_OFFPAGE);
     }
     else
     {

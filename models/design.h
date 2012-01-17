@@ -264,6 +264,12 @@ public:
          */
         QList<QPointF> route;
 
+        /*! \brief VENDOREXT kactus2:offPage
+         *
+         *  If true, the route is treated as an off-page connection.
+         */
+        bool offPage;
+
 		/*! \brief The constructor
 		*
 		* \param interconnectionNode A reference to a QDomNode where
@@ -277,6 +283,7 @@ public:
 			Interface interface1,
 			Interface interface2,
             QList<QPointF> const& route = QList<QPointF>(),
+            bool offPage = false,
 			QString displayName = QString(),
 			QString description = QString());
 
@@ -347,6 +354,12 @@ public:
          */
         QList<QPointF> route;
 
+        /*! \brief VENDOREXT kactus2:offPage
+         *
+         *  If true, the route is treated as an off-page connection.
+         */
+        bool offPage;
+
 		/*! \brief The constructor
 		*
 		* \param hierConnectionNode A reference to a QDomNode where
@@ -360,7 +373,8 @@ public:
 			Interface interface_ = Interface(),
             QPointF const& position = QPointF(),
             QVector2D const& direction = QVector2D(),
-            QList<QPointF> const& route = QList<QPointF>());
+            QList<QPointF> const& route = QList<QPointF>(),
+            bool offPage = false);
 
 		//! \brief Copy constructor
 		HierConnection(const HierConnection& other);

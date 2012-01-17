@@ -15,6 +15,7 @@
 class BusInterface;
 class DiagramInterconnection;
 class DiagramComponent;
+class DiagramOffPageConnector;
 class LibraryInterface;
 
 /*! \brief DiagramInterconnection represents graphically an IP-XACT port
@@ -148,6 +149,11 @@ public:
 	*/
 	virtual void setInterfaceMode(General::InterfaceMode mode);
 
+    /*!
+     *  Returns the corresponding off-page connector or a null pointer if the end point does not have one.
+     */
+    virtual DiagramConnectionEndPoint* getOffPageConnector();
+
 protected:
     virtual QVariant itemChange(GraphicsItemChange change,
                                 const QVariant &value);
@@ -157,7 +163,6 @@ protected:
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 private:
-    bool hierarchical_;
     QGraphicsTextItem *nameLabel_;
     QSharedPointer<BusInterface> busInterface_;
     LibraryInterface* lh_;
@@ -170,6 +175,9 @@ private:
 
     //! The old positions of the other component ports before mouse move.
     QMap<DiagramPort*, QPointF> oldPortPositions_;
+
+    //! The off-page connector.
+    DiagramOffPageConnector* offPageConnector_;
 };
 
 #endif // DIAGRAMPORT_H

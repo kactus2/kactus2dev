@@ -241,11 +241,13 @@ ConnectionAddCommand::~ConnectionAddCommand()
 //-----------------------------------------------------------------------------
 void ConnectionAddCommand::undo()
 {
+    // Disconnect the ends.
+    conn_->disconnectEnds();
+    conn_->setSelected(false);
+
     // Remove the interconnection from the scene.
     scene_->removeItem(conn_);
 
-    // Disconnect the ends.
-    conn_->disconnectEnds();
     del_ = true;
 }
 
@@ -291,5 +293,8 @@ void ConnectionAddCommand::redo()
         }
     }
 
+    scene_->clearSelection();
+    conn_->setVisible(true);
+    conn_->setSelected(true);
     del_ = false;
 }

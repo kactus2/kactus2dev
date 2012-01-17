@@ -113,6 +113,14 @@ ComponentDeleteCommand::ComponentDeleteCommand(DiagramComponent* component, QUnd
         {
             QUndoCommand* cmd = new ConnectionDeleteCommand(conn, this);
         }
+
+        if (diagramPort->getOffPageConnector() != 0)
+        {
+            foreach (DiagramInterconnection* conn, diagramPort->getOffPageConnector()->getInterconnections())
+            {
+                QUndoCommand* cmd = new ConnectionDeleteCommand(conn, this);
+            }
+        }
     }
 }
 
@@ -211,7 +219,7 @@ void ConnectionDeleteCommand::undo()
     
     // Connect the ends and set the interface modes.
     conn_->connectEnds();
-
+    
     QSharedPointer<BusInterface> busIf1 = conn_->endPoint1()->getBusInterface();
     QSharedPointer<BusInterface> busIf2 = conn_->endPoint2()->getBusInterface();
 
@@ -239,6 +247,9 @@ void ConnectionDeleteCommand::undo()
         conn_->endPoint2()->updateInterface();
     }
 
+    scene_->clearSelection();
+    conn_->setVisible(true);
+    conn_->setSelected(true);
     del_ = false;
 }
 
@@ -249,6 +260,7 @@ void ConnectionDeleteCommand::redo()
 {
     // Disconnect the ends.
     conn_->disconnectEnds();
+    conn_->setSelected(false);
 
     // Remove the item from the scene.
     scene_->removeItem(conn_);
@@ -265,6 +277,11 @@ PortDeleteCommand::PortDeleteCommand(DiagramPort* port, QUndoCommand* parent) :
 {
     // Create child commands for removing interconnections.
     foreach (DiagramInterconnection* conn, port_->getInterconnections())
+    {
+        QUndoCommand* cmd = new ConnectionDeleteCommand(conn, this);
+    }
+
+    foreach (DiagramInterconnection* conn, port_->getOffPageConnector()->getInterconnections())
     {
         QUndoCommand* cmd = new ConnectionDeleteCommand(conn, this);
     }
@@ -331,6 +348,11 @@ InterfaceDeleteCommand::InterfaceDeleteCommand(DiagramInterface* interface, QUnd
 
     // Create child commands for removing interconnections.
     foreach (DiagramInterconnection* conn, interface_->getInterconnections())
+    {
+        QUndoCommand* cmd = new ConnectionDeleteCommand(conn, this);
+    }
+
+    foreach (DiagramInterconnection* conn, interface_->getOffPageConnector()->getInterconnections())
     {
         QUndoCommand* cmd = new ConnectionDeleteCommand(conn, this);
     }

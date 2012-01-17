@@ -21,6 +21,19 @@ class DiagramInterconnection : public QObject, public QGraphicsPathItem
 public:
     enum { Type = UserType + 2 };
 
+    //-----------------------------------------------------------------------------
+    //! RoutingMode enumeration.
+    //-----------------------------------------------------------------------------
+    enum RoutingMode
+    {
+        ROUTING_MODE_NORMAL = 0,  //!< The interconnection uses rectlinear routing.
+        ROUTING_MODE_OFFPAGE      //!< The interconnection goes straight from the location of the first
+                                  //!< end point to the location of the second end point.
+    };
+
+    /*!
+     *  Constructor.
+     */
     DiagramInterconnection(DiagramConnectionEndPoint *endPoint1,
                            DiagramConnectionEndPoint *endPoint2,
                            bool autoConnect = true,
@@ -28,7 +41,9 @@ public:
                            const QString &description = QString(),
                            QGraphicsItem *parent = 0);
 
-    // Creates an open-ended diagram interconnection.
+    /*!
+     *  Constructor which creates an open-ended diagram interconnection.
+     */
     DiagramInterconnection(QPointF p1, QVector2D const& dir1,
                            QPointF p2, QVector2D const& dir2,
                            const QString &displayName = QString(),
@@ -36,6 +51,13 @@ public:
                            QGraphicsItem *parent = 0);
 
     virtual ~DiagramInterconnection();
+
+    /*!
+     *  Sets the routing mode.
+     *
+     *      @param [in] mode The routing mode.
+     */
+    void setRoutingMode(RoutingMode mode);
 
     /*! 
      *  Connects the ends of the interconnection.
@@ -113,7 +135,7 @@ public:
     /*! \brief Return the second end point connected
      *
      */
-    DiagramConnectionEndPoint *endPoint2() const;    
+    DiagramConnectionEndPoint *endPoint2() const;
 
     int type() const { return Type; }
 
@@ -143,6 +165,11 @@ private:
     void simplifyPath();
 
     /*!
+     *  Sets the default color based on the routing mode.
+     */
+    void setDefaultColor();
+
+    /*!
      *  Updates the name of the interconnection.
      */
     void updateName();
@@ -155,6 +182,9 @@ private:
     int selected_;
     SelectionType selectionType_;
     QList<QPointF> oldRoute_;
+
+    //! The routing mode.
+    RoutingMode routingMode_;
 };
 
 #endif // DIAGRAMINTERCONNECTION_H

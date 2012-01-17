@@ -80,19 +80,19 @@ public:
      *
      *      @param [in] connection The connection.
      */
-    void addInterconnection(DiagramInterconnection* connection);
+    virtual void addInterconnection(DiagramInterconnection* connection);
 
     /*!
      *  Unattaches the end point from a connection.
      *
      *      @param [in] connection The connection.
      */
-    void removeInterconnection(DiagramInterconnection* connection);
+    virtual void removeInterconnection(DiagramInterconnection* connection);
 
     /*!
      *  Returns the list of connections that are connected to this end point.
      */
-    QList<DiagramInterconnection*> const& getInterconnections() const;
+    virtual QList<DiagramInterconnection*> const& getInterconnections() const;
 
     /*!
      *  Returns true if the end point has at least one connection.
@@ -202,6 +202,11 @@ public:
 	 *
 	*/
 	virtual void setInterfaceMode(General::InterfaceMode mode) = 0;
+
+    /*!
+     *  Returns the corresponding off-page connector or a null pointer if the end point does not have one.
+     */
+    virtual DiagramConnectionEndPoint* getOffPageConnector();
 
 signals:
     //! Signals that the contents of the interface have been changed.

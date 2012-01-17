@@ -17,11 +17,12 @@
 //-----------------------------------------------------------------------------
 enum DrawMode
 {
-    MODE_NONE       = 0x00,
-    MODE_SELECT     = 0x01,
-    MODE_CONNECT    = 0x02,
-    MODE_INTERFACE  = 0x04,
-    MODE_DRAFT      = 0x08,
+    MODE_NONE           = 0x00,
+    MODE_SELECT         = 0x01,
+    MODE_CONNECT        = 0x02,
+    MODE_INTERFACE      = 0x04,
+    MODE_DRAFT          = 0x08,
+    MODE_TOGGLE_OFFPAGE = 0x10
 };
 
 //-----------------------------------------------------------------------------

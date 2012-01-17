@@ -120,6 +120,7 @@ actToolSelect_(0),
 actToolConnect_(0),
 actToolInterface_(0),
 actToolDraft_(0),
+actToolToggleOffPage_(0),
 actZoomIn_(0),
 actZoomOut_(0), 
 actZoomOriginal_(0), 
@@ -521,12 +522,15 @@ void MainWindow::setupActions() {
 	actToolConnect_->setCheckable(true);
 
 	// Initialize the action to set draw mode to interface mode.
-	actToolInterface_ = new QAction(QIcon(":/icons/graphics/tool-interface.png"),
-		tr("Interface Tool"), this);
+	actToolInterface_ = new QAction(QIcon(":/icons/graphics/tool-interface.png"), tr("Interface Tool"), this);
 	actToolInterface_->setCheckable(true);
 
 	actToolDraft_ = new QAction(QIcon(":/icons/graphics/tool-drafting.png"), tr("Drafting Tool"), this);
 	actToolDraft_->setCheckable(true);
+
+    actToolToggleOffPage_ = new QAction(QIcon(":/icons/graphics/tool-toggle_offpage.png"),
+                                        tr("Toggle Off-Page Tool"), this);
+    actToolToggleOffPage_->setCheckable(true);
 
 	modeActionGroup_ = new QActionGroup(this);
 	modeActionGroup_->setExclusive(true);
@@ -534,6 +538,7 @@ void MainWindow::setupActions() {
 	modeActionGroup_->addAction(actToolConnect_);
 	modeActionGroup_->addAction(actToolInterface_);
 	modeActionGroup_->addAction(actToolDraft_);
+    modeActionGroup_->addAction(actToolToggleOffPage_);
 	connect(modeActionGroup_, SIGNAL(triggered(QAction *)),
 		this, SLOT(drawModeChange(QAction *)));
 
@@ -785,6 +790,7 @@ void MainWindow::setupMenus() {
 	diagramToolsGroup_->addAction(actToolConnect_);
 	diagramToolsGroup_->addAction(actToolInterface_);
 	diagramToolsGroup_->addAction(actToolDraft_);
+    diagramToolsGroup_->addAction(actToolToggleOffPage_);
 	diagramToolsGroup_->setVisible(false);
 
 	//! The "View" group.
@@ -1126,6 +1132,7 @@ void MainWindow::updateMenuStrip()
 	actToolConnect_->setEnabled(doc != 0 && (doc->getSupportedDrawModes() & MODE_CONNECT));
 	actToolInterface_->setEnabled(doc != 0 && (doc->getSupportedDrawModes() & MODE_INTERFACE));
 	actToolDraft_->setEnabled(doc != 0 && (doc->getSupportedDrawModes() & MODE_DRAFT));
+    actToolToggleOffPage_->setEnabled(doc != 0 && (doc->getSupportedDrawModes() & MODE_TOGGLE_OFFPAGE));
 
 	bool oldProtectionState = actProtect_->isChecked();
 
@@ -1405,6 +1412,10 @@ void MainWindow::drawModeChange(QAction *action)
 	{
 		doc->setMode(MODE_DRAFT);
 	}
+    else if (action == actToolToggleOffPage_)
+    {
+        doc->setMode(MODE_TOGGLE_OFFPAGE);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1421,6 +1432,7 @@ void MainWindow::onDrawModeChanged(DrawMode mode)
 		case MODE_CONNECT:
 		case MODE_INTERFACE:
 		case MODE_DRAFT:
+        case MODE_TOGGLE_OFFPAGE:
 			{
 				doc->setCursor(Qt::CrossCursor);
 				break;
@@ -1439,6 +1451,7 @@ void MainWindow::onDrawModeChanged(DrawMode mode)
 	actToolConnect_->setChecked(mode == MODE_CONNECT);
 	actToolInterface_->setChecked(mode == MODE_INTERFACE);
 	actToolDraft_->setChecked(mode == MODE_DRAFT);
+    actToolToggleOffPage_->setChecked(mode == MODE_TOGGLE_OFFPAGE);
 }
 
 void MainWindow::onTabCloseRequested( int index )

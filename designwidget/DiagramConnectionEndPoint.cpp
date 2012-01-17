@@ -131,3 +131,11 @@ QVector2D const& DiagramConnectionEndPoint::getDirection() const
 {
     return dir_;
 }
+
+//-----------------------------------------------------------------------------
+// Function: getOffPageConnector()
+//-----------------------------------------------------------------------------
+DiagramConnectionEndPoint* DiagramConnectionEndPoint::getOffPageConnector()
+{
+    return 0;
+}

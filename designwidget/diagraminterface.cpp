@@ -13,6 +13,7 @@
 
 #include "diagramcomponent.h"
 #include "diagraminterconnection.h"
+#include "DiagramOffPageConnector.h"
 #include "PortmapDialog.h"
 #include "BusInterfaceDialog.h"
 #include "DiagramMoveCommands.h"
@@ -49,7 +50,8 @@ DiagramInterface::DiagramInterface(LibraryInterface* lh, QSharedPointer<Componen
                                    QGraphicsItem *parent)
     : DiagramConnectionEndPoint(parent, QVector2D(1.0f, 0.0f)),
       lh_(lh), nameLabel_(0), busInterface_(), component_(component), oldColumn_(0),
-      temp_(busIf == 0), oldPos_(), oldInterfacePositions_()
+      temp_(busIf == 0), oldPos_(), oldInterfacePositions_(),
+      offPageConnector_(0)
 {
     busInterface_ = busIf;
     int squareSize = GridSize;
@@ -83,6 +85,12 @@ DiagramInterface::DiagramInterface(LibraryInterface* lh, QSharedPointer<Componen
     setFlag(ItemSendsGeometryChanges);
     setFlag(ItemSendsScenePositionChanges);
 
+    // Create the off-page connector.
+    offPageConnector_ = new DiagramOffPageConnector(this);
+    offPageConnector_->setPos(0.0, -GridSize * 3);
+    offPageConnector_->setFlag(ItemStacksBehindParent);
+    offPageConnector_->setVisible(false);
+
     updateInterface();
 }
 
@@ -102,7 +110,8 @@ QString DiagramInterface::name() const
 
 void DiagramInterface::setName( const QString& name ) {
 	busInterface_->setName(name);
-	updateInterface();
+
+    updateInterface();
 }
 
 QSharedPointer<BusInterface> DiagramInterface::getBusInterface() const
@@ -158,6 +167,7 @@ void DiagramInterface::updateInterface()
         nameLabel_->setPos(0, GridSize * 3.0 / 4.0 + nameWidth / 2.0);
     }
 
+    offPageConnector_->updateInterface();
     emit contentChanged();
 }
 
@@ -686,4 +696,12 @@ void DiagramInterface::setDescription( const QString& description ) {
 	Q_ASSERT(busInterface_);
 	busInterface_->setDescription(description);
 	emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: getOffPageConnector()
+//-----------------------------------------------------------------------------
+DiagramConnectionEndPoint* DiagramInterface::getOffPageConnector()
+{
+    return offPageConnector_;
 }

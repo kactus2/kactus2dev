@@ -21,6 +21,7 @@
 class Port;
 class BusInterface;
 class DiagramInterconnection;
+class DiagramOffPageConnector;
 class DiagramComponent;
 class DiagramColumn;
 class Component;
@@ -170,6 +171,11 @@ public:
 	*/
 	virtual void setInterfaceMode(General::InterfaceMode mode);
 
+    /*!
+     *  Returns the corresponding off-page connector or a null pointer if the end point does not have one.
+     */
+    virtual DiagramConnectionEndPoint* getOffPageConnector();
+
 signals:
     //! \brief Send an error message to the user.
     void errorMessage(const QString& errorMessage);
@@ -206,6 +212,9 @@ private:
 
     //! The old positions of the other interfaces before mouse move.
     QMap<DiagramInterface*, QPointF> oldInterfacePositions_;
+
+    //! The off-page connector.
+    DiagramOffPageConnector* offPageConnector_;
 };
 
 #endif // DIAGRAMINTERFACE_H

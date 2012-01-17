@@ -30,21 +30,21 @@ qreal const DiagramInterconnection::MIN_LENGTH = 10;
 //-----------------------------------------------------------------------------
 // Function: DiagramInterconnection()
 //-----------------------------------------------------------------------------
-DiagramInterconnection::DiagramInterconnection(
-        DiagramConnectionEndPoint *endPoint1,
-        DiagramConnectionEndPoint *endPoint2,
-        bool autoConnect,
-        const QString &displayName,
-        const QString &description,
-		QGraphicsItem *parent):
-QGraphicsPathItem(parent), 
-name_(), 
-description_(description),
-endPoint1_(0),
-endPoint2_(0), 
-pathPoints_(), 
-selected_(-1), 
-selectionType_(NONE)
+DiagramInterconnection::DiagramInterconnection(DiagramConnectionEndPoint *endPoint1,
+                                               DiagramConnectionEndPoint *endPoint2,
+                                               bool autoConnect,
+                                               const QString &displayName,
+                                               const QString &description,
+                                               QGraphicsItem *parent)
+    : QGraphicsPathItem(parent), 
+      name_(), 
+      description_(description),
+      endPoint1_(0),
+      endPoint2_(0), 
+      pathPoints_(), 
+      selected_(-1), 
+      selectionType_(NONE),
+      routingMode_(ROUTING_MODE_NORMAL)
 {
     setItemSettings();
     createRoute(endPoint1, endPoint2);
@@ -67,22 +67,26 @@ DiagramInterconnection::DiagramInterconnection(QPointF p1, QVector2D const& dir1
                                                QPointF p2, QVector2D const& dir2,
                                                const QString &displayName,
 											   const QString &description,
-											   QGraphicsItem *parent) : 
-QGraphicsPathItem(parent),
-name_(),
-description_(),
-endPoint1_(0), 
-endPoint2_(0),
-pathPoints_(),
-selected_(-1),
-selectionType_(NONE)
+											   QGraphicsItem *parent)
+    : QGraphicsPathItem(parent),
+      name_(),
+      description_(),
+      endPoint1_(0), 
+      endPoint2_(0),
+      pathPoints_(),
+      selected_(-1),
+      selectionType_(NONE),
+      routingMode_(ROUTING_MODE_NORMAL)
 {
 	setItemSettings();
     createRoute(p1, p2, dir1, dir2);
 }
 
-
-DiagramInterconnection::~DiagramInterconnection() {
+//-----------------------------------------------------------------------------
+// Function: ~DiagramInterconnection()
+//-----------------------------------------------------------------------------
+DiagramInterconnection::~DiagramInterconnection()
+{
 	disconnectEnds();
 	emit destroyed(this);
 }
@@ -281,108 +285,120 @@ DiagramConnectionEndPoint *DiagramInterconnection::endPoint2() const
 
 void DiagramInterconnection::updatePosition()
 {
-    QVector2D delta1 = QVector2D(endPoint1_->scenePos()) - QVector2D(pathPoints_.first());
-    QVector2D delta2 = QVector2D(endPoint2_->scenePos()) - QVector2D(pathPoints_.last());
-    QVector2D const& dir1 = endPoint1_->getDirection();
-    QVector2D const& dir2 = endPoint2_->getDirection();
-
-    // Recreate the route from scratch if there are not enough points in the path or
-    // the route is too complicated when the position and direction of the endpoints is considered.
-    if (pathPoints_.size() < 2 ||
-        (pathPoints_.size() > 4 && qFuzzyCompare(QVector2D::dotProduct(dir1, dir2), -1.0) &&
-        QVector2D::dotProduct(dir1, QVector2D(endPoint2_->scenePos() - endPoint1_->scenePos())) > 0.0))
+    if (routingMode_ == ROUTING_MODE_NORMAL)
     {
-        createRoute(endPoint1_, endPoint2_);
-        return;
-    }
+        QVector2D delta1 = QVector2D(endPoint1_->scenePos()) - QVector2D(pathPoints_.first());
+        QVector2D delta2 = QVector2D(endPoint2_->scenePos()) - QVector2D(pathPoints_.last());
+        QVector2D const& dir1 = endPoint1_->getDirection();
+        QVector2D const& dir2 = endPoint2_->getDirection();
 
-    // If the delta movement of both endpoints was the same, we can just
-    // move all route points by the delta1.
-    if (qFuzzyCompare(delta1, delta2))
-    {
-        if (!delta1.isNull())
+        // Recreate the route from scratch if there are not enough points in the path or
+        // the route is too complicated when the position and direction of the endpoints is considered.
+        if (pathPoints_.size() < 2 ||
+            (pathPoints_.size() > 4 && qFuzzyCompare(QVector2D::dotProduct(dir1, dir2), -1.0) &&
+            QVector2D::dotProduct(dir1, QVector2D(endPoint2_->scenePos() - endPoint1_->scenePos())) > 0.0))
         {
-            for (int i = 0; i < pathPoints_.size(); ++i)
+            createRoute(endPoint1_, endPoint2_);
+            return;
+        }
+
+        // If the delta movement of both endpoints was the same, we can just
+        // move all route points by the delta1.
+        if (qFuzzyCompare(delta1, delta2))
+        {
+            if (!delta1.isNull())
             {
-                pathPoints_[i] += delta1.toPointF();
+                for (int i = 0; i < pathPoints_.size(); ++i)
+                {
+                    pathPoints_[i] += delta1.toPointF();
+                }
+
+                setRoute(pathPoints_);
+            }
+        }
+        // Otherwise check if either the first or the last point was moved.
+        else if (!delta1.isNull() || !delta2.isNull())
+        {
+            bool pathOk = false;
+            QVector2D delta = delta1;
+            QVector2D dir = dir1;
+            DiagramConnectionEndPoint* endPoint = endPoint1_;
+            int index0 = 0;
+            int index1 = 1;
+            int index2 = 2;
+            int index3 = 3;
+
+            if (!delta2.isNull())
+            {
+                delta = delta2;
+                endPoint = endPoint2_;
+                dir = dir2;
+                index0 = pathPoints_.size() - 1;
+                index1 = pathPoints_.size() - 2;
+                index2 = pathPoints_.size() - 3;
+                index3 = pathPoints_.size() - 4;
             }
 
-            setRoute(pathPoints_);
-        }
-    }
-    // Otherwise check if either the first or the last point was moved.
-    else if (!delta1.isNull() || !delta2.isNull())
-    {
-        bool pathOk = false;
-        QVector2D delta = delta1;
-        QVector2D dir = dir1;
-        DiagramConnectionEndPoint* endPoint = endPoint1_;
-        int index0 = 0;
-        int index1 = 1;
-        int index2 = 2;
-        int index3 = 3;
+            QVector2D seg1 = QVector2D(pathPoints_[index1] - pathPoints_[index0]).normalized();
 
-        if (!delta2.isNull())
-        {
-            delta = delta2;
-            endPoint = endPoint2_;
-            dir = dir2;
-            index0 = pathPoints_.size() - 1;
-            index1 = pathPoints_.size() - 2;
-            index2 = pathPoints_.size() - 3;
-            index3 = pathPoints_.size() - 4;
-        }
+            // Try to fix the first segment with perpendicular projection.
+            if (pathPoints_.size() >= 4 && pathPoints_.size() < 7 && qFuzzyCompare(dir, seg1))
+            {
+                QVector2D perp = delta - QVector2D::dotProduct(delta, seg1) * seg1;
+                pathPoints_[index1] += perp.toPointF();
 
-        QVector2D seg1 = QVector2D(pathPoints_[index1] - pathPoints_[index0]).normalized();
+                // The path is ok if the moved point is still in view (not behind the left edge).
+                pathOk = pathPoints_[index1].x() >= 10.0;
+            }
 
-        // Try to fix the first segment with perpendicular projection.
-        if (pathPoints_.size() >= 4 && pathPoints_.size() < 7 && qFuzzyCompare(dir, seg1))
-        {
-            QVector2D perp = delta - QVector2D::dotProduct(delta, seg1) * seg1;
-            pathPoints_[index1] += perp.toPointF();
-
-            // The path is ok if the moved point is still in view (not behind the left edge).
-            pathOk = pathPoints_[index1].x() >= 10.0;
-        }
-
-        // Handle the parallel part of the delta.
-        pathPoints_[index0] = endPoint->scenePos();
-        QVector2D newSeg1 = QVector2D(pathPoints_[index1] - pathPoints_[index0]);
-        
-        if (newSeg1.length() < MIN_LENGTH || !qFuzzyCompare(seg1, newSeg1.normalized()))
-        {
-            pathOk = false;
-        }
-
-        // Check for a special case when there would be intersecting parallel lines.
-        if (pathOk && pathPoints_.size() >= 4)
-        {
-            QVector2D seg2 = QVector2D(pathPoints_[index2] - pathPoints_[index1]).normalized();
-            QVector2D seg3 = QVector2D(pathPoints_[index3] - pathPoints_[index2]).normalized();
-
-            if (QVector2D::dotProduct(seg1, seg2) < 0.0f ||
-                (seg2.isNull() && QVector2D::dotProduct(seg1, seg3) < 0.0f))
+            // Handle the parallel part of the delta.
+            pathPoints_[index0] = endPoint->scenePos();
+            QVector2D newSeg1 = QVector2D(pathPoints_[index1] - pathPoints_[index0]);
+            
+            if (newSeg1.length() < MIN_LENGTH || !qFuzzyCompare(seg1, newSeg1.normalized()))
             {
                 pathOk = false;
             }
-        }
 
-        // Snap the middle path points to grid.
-        for (int i = 1; i < pathPoints_.size() - 1; ++i)
-        {
-            pathPoints_[i] = snapPointToGrid(pathPoints_[i]);
-        }
+            // Check for a special case when there would be intersecting parallel lines.
+            if (pathOk && pathPoints_.size() >= 4)
+            {
+                QVector2D seg2 = QVector2D(pathPoints_[index2] - pathPoints_[index1]).normalized();
+                QVector2D seg3 = QVector2D(pathPoints_[index3] - pathPoints_[index2]).normalized();
 
-        // If the simple fix didn't result in a solution, just recreate the route.
-        if (!pathOk)
-        {
-            createRoute(endPoint1_, endPoint2_);
+                if (QVector2D::dotProduct(seg1, seg2) < 0.0f ||
+                    (seg2.isNull() && QVector2D::dotProduct(seg1, seg3) < 0.0f))
+                {
+                    pathOk = false;
+                }
+            }
+
+            // Snap the middle path points to grid.
+            for (int i = 1; i < pathPoints_.size() - 1; ++i)
+            {
+                pathPoints_[i] = snapPointToGrid(pathPoints_[i]);
+            }
+
+            // If the simple fix didn't result in a solution, just recreate the route.
+            if (!pathOk)
+            {
+                createRoute(endPoint1_, endPoint2_);
+            }
+            else
+            {
+                //simplifyPath();
+                setRoute(pathPoints_);
+            }
         }
-        else
-        {
-            //simplifyPath();
-            setRoute(pathPoints_);
-        }
+    }
+    else if (routingMode_ == ROUTING_MODE_OFFPAGE)
+    {
+        // Make a straight line from begin to end.
+        QList<QPointF> route;
+        route.append(endPoint1()->scenePos());
+        route.append(endPoint2()->scenePos());
+
+        setRoute(route);
     }
 
     emit contentChanged();
@@ -853,18 +869,17 @@ QVariant DiagramInterconnection::itemChange(GraphicsItemChange change, const QVa
         {
             bool selected = value.toBool();
             
-            QPen curPen = pen();
-
             if (selected)
             {
+                QPen curPen = pen();
                 curPen.setColor(Qt::red);
+                setPen(curPen);
             }
             else
             {
-                curPen.setColor(Qt::black);
+                setDefaultColor();
             }
 
-            setPen(curPen);
             return value;
         }
     }
@@ -893,4 +908,37 @@ QUndoCommand* DiagramInterconnection::endUpdatePosition(QUndoCommand* parent)
     {
         return 0;
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: setRoutingMode()
+//-----------------------------------------------------------------------------
+void DiagramInterconnection::setRoutingMode(RoutingMode style)
+{
+    if (routingMode_ != style)
+    {
+        routingMode_ = style;
+
+        setDefaultColor();
+        updatePosition();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: setDefaultColor()
+//-----------------------------------------------------------------------------
+void DiagramInterconnection::setDefaultColor()
+{
+    QPen newPen = pen();
+
+    if (routingMode_ == ROUTING_MODE_NORMAL)
+    {
+        newPen.setColor(Qt::black);
+    }
+    else
+    {
+        newPen.setColor(QColor(180, 180, 180));
+    }
+
+    setPen(newPen);
 }

@@ -9,6 +9,7 @@
 #include "BusInterfaceDialog.h"
 #include "DiagramMoveCommands.h"
 #include "blockdiagram.h"
+#include "DiagramOffPageConnector.h"
 
 #include <common/GenericEditProvider.h>
 #include <common/diagramgrid.h>
@@ -33,7 +34,8 @@
 DiagramPort::DiagramPort(QSharedPointer<BusInterface> busIf, LibraryInterface* lh,
                          QGraphicsItem *parent) : DiagramConnectionEndPoint(parent),
                                                   temp_(!busIf->getBusType().isValid()), lh_(lh),
-                                                  oldPos_(), oldPortPositions_()
+                                                  oldPos_(), oldPortPositions_(),
+                                                  offPageConnector_(0)
 {
 
     Q_ASSERT_X(busIf, "DiagramPort constructor",
@@ -69,6 +71,12 @@ DiagramPort::DiagramPort(QSharedPointer<BusInterface> busIf, LibraryInterface* l
     setFlag(ItemIsSelectable);
     setFlag(ItemSendsGeometryChanges);
     setFlag(ItemSendsScenePositionChanges);
+
+    // Create the off-page connector.
+    offPageConnector_ = new DiagramOffPageConnector(this);
+    offPageConnector_->setPos(0.0, -GridSize * 3);
+    offPageConnector_->setFlag(ItemStacksBehindParent);
+    offPageConnector_->setVisible(false);
 
     updateInterface();
 }
@@ -149,6 +157,7 @@ void DiagramPort::updateInterface()
         nameLabel_->setPos(-nameHeight/2, GridSize/2 + nameWidth);
     }
 
+    offPageConnector_->updateInterface();
     emit contentChanged();
 }
 
@@ -627,4 +636,12 @@ void DiagramPort::setDescription( const QString& description ) {
 	Q_ASSERT(busInterface_);
 	busInterface_->setDescription(description);
 	emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: getOffPageConnector()
+//-----------------------------------------------------------------------------
+DiagramConnectionEndPoint* DiagramPort::getOffPageConnector()
+{
+    return offPageConnector_;
 }
