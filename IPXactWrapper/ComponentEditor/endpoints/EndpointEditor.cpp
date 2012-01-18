@@ -146,7 +146,7 @@ void EndpointEditor::makeChanges()
     }
 
     BusInterface* busIf = component()->getBusInterface("app_link");
-    Q_ASSERT(busIf != 0),
+    Q_ASSERT(busIf != 0);
     
     busIf->setPortMaps(portMaps);
 }

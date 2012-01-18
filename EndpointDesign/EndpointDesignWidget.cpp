@@ -41,6 +41,8 @@ EndpointDesignWidget::EndpointDesignWidget(LibraryInterface* lh, MainWindow* mai
                         DOC_EDIT_SUPPORT, 30, 300),
     lh_(lh), view_(0), diagram_(0), editProvider_()
 {
+    supportedWindows_ = (supportedWindows_ | INSTANCEWINDOW);
+
     editProvider_ = QSharedPointer<GenericEditProvider>(new GenericEditProvider(EDIT_HISTORY_SIZE));
     diagram_ = new EndpointDesignDiagram(lh_, mainWnd, *editProvider_, this);
 

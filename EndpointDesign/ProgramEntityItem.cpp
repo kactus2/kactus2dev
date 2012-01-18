@@ -141,7 +141,12 @@ QSharedPointer<MCAPIContentMatcher> ProgramEntityItem::getContentMatcher() const
             }
 
             Port* port = appItem_->componentModel()->getPort(endpoint->getName());
-            Q_ASSERT(port != 0);
+
+            if (port == 0)
+            {
+                // TODO: Error printing.
+                continue;
+            }
 
             QString remoteEndpointName = port->getRemoteEndpointName();
             

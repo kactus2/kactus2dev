@@ -658,7 +658,7 @@ void EndpointDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *event)
                 emit contentChanged();
             }
         }
-        // If there was an SW mapping component, then an application item is added.
+        // If there was an SW mapping component, then an endpoints item is added.
         else if (item->type() == MappingComponentItem::Type)
         {
             MappingComponentItem* mappingComp = static_cast<MappingComponentItem*>(item);
@@ -668,11 +668,21 @@ void EndpointDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *event)
             component->setComponentImplementation(KactusAttribute::KTS_SW);
             component->setComponentSWType(KactusAttribute::KTS_SW_ENDPOINTS);
 
+            // Create a view for the endpoints.
+            View* view = new View("kts_endpoints");
+            view->addEnvIdentifier("");
+
+            Model* model = new Model();
+            model->addView(view);
+            component->setModel(model);
+
             // Add the fixed bus interface to the component.
             QSharedPointer<BusInterface> busIf(new BusInterface());
             busIf->setName("app_link");
             busIf->setInterfaceMode(General::SLAVE);
             busIf->setBusType(VLNV(VLNV::BUSDEFINITION, "Kactus", "internal", "app_link", "1.0"));
+
+            component->addBusInterface(busIf);
 
             ProgramEntityItem* progEntity =
                 new ProgramEntityItem(component, createInstanceName("unnamed_endpoints"), QString(),
