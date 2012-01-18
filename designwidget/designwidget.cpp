@@ -688,6 +688,7 @@ void DesignWidget::createDesignForComponent( QSharedPointer<Component> component
 
 	lh_->writeModelToFile(dirPath, newDesign);
 	lh_->writeModelToFile(dirPath, designConf);
+    lh_->writeModelToFile(component);
 
 	diagram_->setDesign(component, viewName_);
 }
