@@ -9,6 +9,50 @@
               * Changed or Information
 ===============================================================================
 
+18/01/2011 1.2 (Build 1)
+----------------------------------------------------
+
++ Added possibility to select the name of the generated ModelSim file with
+  an extension.
++ Added more thorough error printing for invalid/incomplete IP-XACT documents.
++ Added off-page connectors with rubber-band routing mode for often used
+  interfaces/ports to achieve more readable designs by auto-hiding the rubber-
+  band connections when they are not edited.
++ Added the ability to execute ModelSim generator through the component editor.
++ Added the possibility to select which C source file to open through the
+  system design editor when right-clicking an application component.
++ Added the SW component type visualization in the component editor.
++ Kactus2 now remembers the filter settings that were set on a previous run
+  of the program.
+
+- Fixed the modelsim generator to use the correct syntax for vmake call.
+- Fixed the inability to scroll the port map list when a bus interface is
+  selected.
+- Fixed the problem of opening the component editor by a double-click when a
+  view is not selected.
+- Fixed the out-of-sync problem of editing the same component simultaneously
+  in the component editor and design editor.
+- Fixed the crash when editing endpoints in the SW design editor.
+- Fixed the regular expression problem in the MCAPI code assist.
+- Fixed various small bugs in the system design editor.
+
+* Made the protection feature more user-friendly by not always asking
+  the confirmation whether the user wants to unlock the document.
+* Simplified some list input boxes by removing explicit add/remove buttons.
+* Reorganized the file information view in the component editor.
+* Decreased the VLNV fields area on the docking windows.
+* Moved the XML file writing order so that the general description is written
+  at the beginning part of the file.
+* Double-clicking an SW platform component in the platform stack editor now
+  opens up the hierarchy if it exists and the component editor only if it
+  does not exists (meaning a flat component).
+* Removed the always repeating question of whether the user wants to add
+  the generated VHDL-file to IP-XACT meta-data if it already exists there.
+* Docking windows are now kept visible based on the user's selection of
+  what windows to show/hide.
+
+
+
 25/11/2011 1.1 (Build 1)
 ----------------------------------------------------
 
