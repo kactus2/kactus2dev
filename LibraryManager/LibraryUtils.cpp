@@ -176,8 +176,7 @@ void addNewInstances(QList<Design::ComponentInstance> elements, Design& sysDesig
             swVLNV.getName().remove(".comp") + ".design", swVLNV.getVersion());
 
         QSharedPointer<Design> swDesign(new Design(designVLNV));
-        QList<Design::ComponentInstance> swInstances;
-
+        
         // Parse software mappings if found.
         QSharedPointer<Component> comp = lh->getModel(element.componentRef).staticCast<Component>();
         View* swView = comp->findView("kts_sw_ref");
@@ -191,17 +190,21 @@ void addNewInstances(QList<Design::ComponentInstance> elements, Design& sysDesig
             QSharedPointer<Component> swMappingComp = libComp.staticCast<Component>();
             View* swDesignView = swMappingComp->findView("kts_sw_ref");
 
-            libComp = QSharedPointer<LibraryComponent>(lh->getModel(swDesignView->getHierarchyRef()));
-            QSharedPointer<Design> softwareMap = libComp.staticCast<Design>();
-
-            foreach (Design::ComponentInstance instance, softwareMap->getComponentInstances())
+            if (swDesignView != 0)
             {
-                instance.imported = true;
-                swInstances.append(instance);
-            }
+                libComp = QSharedPointer<LibraryComponent>(lh->getModel(swDesignView->getHierarchyRef()));
+                QSharedPointer<Design> softwareMap = libComp.staticCast<Design>();
+                QList<Design::ComponentInstance> swInstances;
 
-            swDesign->setComponentInstances(swInstances);
-            swDesign->setInterconnections(softwareMap->getInterconnections());
+                foreach (Design::ComponentInstance instance, softwareMap->getComponentInstances())
+                {
+                    instance.imported = true;
+                    swInstances.append(instance);
+                }
+
+                swDesign->setComponentInstances(swInstances);
+                swDesign->setInterconnections(softwareMap->getInterconnections());
+            }
         }
 
         // Parse CPUs if found.
@@ -300,91 +303,94 @@ void updateSystemDesign(LibraryInterface* lh, QString const& directory,
                 {
                     View* swDesignView = swMappingComp->findView("kts_sw_ref");
 
-                    libComp = QSharedPointer<LibraryComponent>(lh->getModel(swDesignView->getHierarchyRef()));
-                    QSharedPointer<Design> softwareMap = libComp.staticCast<Design>();
-
-                    QList<Design::ComponentInstance> softwareMapInstances = softwareMap->getComponentInstances();
-                    QList<Design::Interconnection> softwareMapConnections = softwareMap->getInterconnections();
-
-                    // Retrieve the old design for comparison.
-                    libComp = lh->getModel(instance.componentRef);
-                    swMappingComp = libComp.staticCast<Component>();
-                    libComp = lh->getModel(swMappingComp->getHierRef("kts_sys_ref"));
-                    QSharedPointer<Design> oldDesign = libComp.staticCast<Design>();
-
-                    QList<Design::ComponentInstance> swInstances;
-                    QList<Design::Interconnection> swConnections;
-
-                    // Update the instance list by first checking the current design against the new software mapping.
-                    foreach (Design::ComponentInstance swInstance, oldDesign->getComponentInstances())
+                    if (swDesignView != 0)
                     {
-                        // Imported ones should be checked.
-                        if (swInstance.imported)
+                        libComp = QSharedPointer<LibraryComponent>(lh->getModel(swDesignView->getHierarchyRef()));
+                        QSharedPointer<Design> softwareMap = libComp.staticCast<Design>();
+
+                        QList<Design::ComponentInstance> softwareMapInstances = softwareMap->getComponentInstances();
+                        QList<Design::Interconnection> softwareMapConnections = softwareMap->getInterconnections();
+
+                        // Retrieve the old design for comparison.
+                        libComp = lh->getModel(instance.componentRef);
+                        swMappingComp = libComp.staticCast<Component>();
+                        libComp = lh->getModel(swMappingComp->getHierRef("kts_sys_ref"));
+                        QSharedPointer<Design> oldDesign = libComp.staticCast<Design>();
+
+                        QList<Design::ComponentInstance> swInstances;
+                        QList<Design::Interconnection> swConnections;
+
+                        // Update the instance list by first checking the current design against the new software mapping.
+                        foreach (Design::ComponentInstance swInstance, oldDesign->getComponentInstances())
                         {
-                            int swIndex = getInstanceIndex(softwareMapInstances, swInstance.instanceName);
-
-                            // If the element was found, it is kept in the updated design.
-                            if (swIndex != -1)
+                            // Imported ones should be checked.
+                            if (swInstance.imported)
                             {
-                                swInstances.append(swInstance);
+                                int swIndex = getInstanceIndex(softwareMapInstances, swInstance.instanceName);
 
-                                // Remove the connection from the software map instances since it has been processed.
-                                softwareMapInstances.removeAt(swIndex);
+                                // If the element was found, it is kept in the updated design.
+                                if (swIndex != -1)
+                                {
+                                    swInstances.append(swInstance);
+
+                                    // Remove the connection from the software map instances since it has been processed.
+                                    softwareMapInstances.removeAt(swIndex);
+                                }
+                            }
+                            else
+                            {
+                                // Non-imported instances are always kept.
+                                swInstances.append(swInstance);
                             }
                         }
-                        else
+
+                        // Add the brand new instances at the end.
+                        foreach (Design::ComponentInstance instance, softwareMapInstances)
                         {
-                            // Non-imported instances are always kept.
-                            swInstances.append(swInstance);
+                            instance.imported = true;
+                            swInstances.append(instance);
                         }
-                    }
 
-                    // Add the brand new instances at the end.
-                    foreach (Design::ComponentInstance instance, softwareMapInstances)
-                    {
-                        instance.imported = true;
-                        swInstances.append(instance);
-                    }
-
-                    // Same for the interconnections.
-                    foreach (Design::Interconnection const& conn, oldDesign->getInterconnections())
-                    {
-                        // The interconnection is an imported one if both of its interfaces are
-                        // found in the new software mapping design.
-                        int index1 = getInstanceIndex(softwareMap->getComponentInstances(),
-                                                      conn.interface1.componentRef);
-                        int index2 = getInstanceIndex(softwareMap->getComponentInstances(),
-                                                      conn.interface2.componentRef);
-                        bool imported = (index1 != -1) && (index2 != -1);
-
-                        if (imported)
+                        // Same for the interconnections.
+                        foreach (Design::Interconnection const& conn, oldDesign->getInterconnections())
                         {
-                            // Keep only those imported connections that are found in the new software mapping design.
-                            int connIndex = getConnectionIndex(softwareMapConnections, conn.name);
+                            // The interconnection is an imported one if both of its interfaces are
+                            // found in the new software mapping design.
+                            int index1 = getInstanceIndex(softwareMap->getComponentInstances(),
+                                                          conn.interface1.componentRef);
+                            int index2 = getInstanceIndex(softwareMap->getComponentInstances(),
+                                                          conn.interface2.componentRef);
+                            bool imported = (index1 != -1) && (index2 != -1);
 
-                            if (connIndex != -1)
+                            if (imported)
+                            {
+                                // Keep only those imported connections that are found in the new software mapping design.
+                                int connIndex = getConnectionIndex(softwareMapConnections, conn.name);
+
+                                if (connIndex != -1)
+                                {
+                                    swConnections.append(conn);
+                                    softwareMapConnections.removeAt(connIndex);
+                                }
+                            }
+                            // Non-imported interconnections are kept if the interface1
+                            // will still be part of the new design.
+                            else if (getInstanceIndex(swInstances, conn.interface1.componentRef) != -1)
                             {
                                 swConnections.append(conn);
-                                softwareMapConnections.removeAt(connIndex);
                             }
                         }
-                        // Non-imported interconnections are kept if the interface1
-                        // will still be part of the new design.
-                        else if (getInstanceIndex(swInstances, conn.interface1.componentRef) != -1)
+
+                        // Add the brand new connections at the end.
+                        foreach (Design::Interconnection const& conn, softwareMapConnections)
                         {
                             swConnections.append(conn);
                         }
-                    }
 
-                    // Add the brand new connections at the end.
-                    foreach (Design::Interconnection const& conn, softwareMapConnections)
-                    {
-                        swConnections.append(conn);
+                        oldDesign->setComponentInstances(swInstances);
+                        oldDesign->setInterconnections(swConnections);
+                        lh->writeModelToFile(oldDesign);
                     }
-
-                    oldDesign->setComponentInstances(swInstances);
-                    oldDesign->setInterconnections(swConnections);
-                    lh->writeModelToFile(oldDesign);
                 }
             }
 
