@@ -18,9 +18,7 @@
 //-----------------------------------------------------------------------------
 // Function: SettingsDialog()
 //-----------------------------------------------------------------------------
-SettingsDialog::SettingsDialog(QWidget* parent) : PropertyPageDialog(QSize(48, 48), 110,
-                                                                     QSize(80, 70), APPLY_ALL,
-                                                                     parent),
+SettingsDialog::SettingsDialog(QWidget* parent) : PropertyPageDialog(QSize(48, 48), APPLY_ALL, parent),
                                                   settings_()
 {
     setFixedSize(600, 440);
@@ -32,6 +30,8 @@ SettingsDialog::SettingsDialog(QWidget* parent) : PropertyPageDialog(QSize(48, 4
             new LibrarySettingsPage(settings_));
     addPage(QIcon(":icons/graphics/settings-code_editor.png"), tr("Code Editor"),
             new CodeEditorSettingsPage(settings_));
+
+    finalizePages();
 }
 
 //-----------------------------------------------------------------------------

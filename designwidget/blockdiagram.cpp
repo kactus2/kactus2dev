@@ -448,6 +448,11 @@ void BlockDiagram::setMode(DrawMode mode)
 {
     if (mode_ != mode)
     {
+        if (mode_ == MODE_CONNECT)
+        {
+            endConnect();
+        }
+
         mode_ = mode;
 
         if (mode_ != MODE_SELECT)
@@ -634,8 +639,6 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     // if other than left button was pressed return the mode back to select
 	if (mouseEvent->button() != Qt::LeftButton)
     {
-        endConnect();
-
         setMode(MODE_SELECT);
         return;
 	}

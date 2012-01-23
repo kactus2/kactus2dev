@@ -1735,7 +1735,7 @@ void MainWindow::updateZoomTools()
 void MainWindow::createNew()
 {
 	// Create a property page dialog to work as a "New" dialog.
-	PropertyPageDialog dialog(QSize(48, 48), 110, QSize(80, 70), PropertyPageDialog::APPLY_CURRENT, this);
+	PropertyPageDialog dialog(QSize(48, 48), PropertyPageDialog::APPLY_CURRENT, this);
 	dialog.setFixedWidth(620);
 	dialog.resize(620, 580);
 	dialog.setWindowTitle(tr("New"));
@@ -1778,6 +1778,8 @@ void MainWindow::createNew()
 	connect(busPage, SIGNAL(createBus(VLNV const&, QString const&)),
 		this, SLOT(createBus(VLNV const&, QString const&)), Qt::UniqueConnection);
 	dialog.addPage(QIcon(":icons/graphics/new-bus.png"), tr("Bus"), busPage);
+
+    dialog.finalizePages();
 
 	dialog.exec();
 }

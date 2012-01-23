@@ -41,14 +41,11 @@ public:
      *  Constructor.
      *
      *      @param [in] listIconSize  The icon size in the contents list.
-     *      @param [in] maxListWidth  The maximum width of the contents list.
-     *      @param [in] itemSize      The size for the whole item (icon and text) in the contents list.
      *      @param [in] mode          Apply mode which specifies what pages are applied when
      *                                the user presses OK.
      *      @param [in] parent        The parent widget. Can be null.
      */
-    PropertyPageDialog(QSize const& listIconSize, int maxListWidth,
-                       QSize const& itemSize, ApplyMode mode, QWidget* parent = 0);
+    PropertyPageDialog(QSize const& listIconSize, ApplyMode mode, QWidget* parent = 0);
 
     /*!
      *  Destructor.
@@ -63,6 +60,11 @@ public:
      *      @param [in] view  The page view.
      */
     void addPage(QIcon const& icon, QString const& text, PropertyPageView* view);
+
+    /*!
+     *  Finalizes the pages for display.
+     */
+    void finalizePages();
 
 public slots:
     /*!
@@ -106,9 +108,6 @@ private:
 
     //! OK button.
     QPushButton* btnOk_;
-
-    //! Item size.
-    QSize itemSize_;
 
     //! Apply mode
     ApplyMode mode_;

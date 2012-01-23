@@ -20,19 +20,18 @@
 //-----------------------------------------------------------------------------
 // Function: PropertyPageDialog()
 //-----------------------------------------------------------------------------
-PropertyPageDialog::PropertyPageDialog(QSize const& listIconSize, int maxListWidth,
-                                       QSize const& itemSize, ApplyMode mode,
-                                       QWidget* parent) : QDialog(parent), contentsList_(0),
-                                                          pages_(0), btnOk_(0), itemSize_(itemSize),
-                                                          mode_(mode)
+PropertyPageDialog::PropertyPageDialog(QSize const& listIconSize,
+                                       ApplyMode mode, QWidget* parent) : QDialog(parent), contentsList_(0),
+                                                                          pages_(0), btnOk_(0),
+                                                                          mode_(mode)
 {
     // Create the contents list.
     contentsList_ = new QListWidget(this);
     contentsList_->setViewMode(QListView::IconMode);
     contentsList_->setIconSize(listIconSize);
     contentsList_->setMovement(QListView::Static);
-    contentsList_->setMaximumWidth(maxListWidth);
     contentsList_->setSpacing(ICON_SPACING);
+    contentsList_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     contentsList_->setFlow(QListView::TopToBottom);
     
     // Create the stacked pages widget and a layout with a separator (group box).
@@ -87,9 +86,12 @@ void PropertyPageDialog::addPage(QIcon const& icon, QString const& text, Propert
     QListWidgetItem* listItem = new QListWidgetItem(contentsList_);
     listItem->setIcon(icon);
     listItem->setText(text);
-    listItem->setTextAlignment(Qt::AlignHCenter);
+    listItem->setTextAlignment(Qt::AlignHCenter | Qt::AlignBottom);
     listItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-    listItem->setSizeHint(itemSize_);
+
+    QFont font;
+    font.setPixelSize(11);
+    listItem->setFont(font);
 
     // Add the page to the stacked pages.
     pages_->addWidget(view);
@@ -183,4 +185,22 @@ void PropertyPageDialog::onContentChanged()
     // Prevalidate the page to enable/disable the OK button.
     PropertyPageView* page = static_cast<PropertyPageView*>(pages_->currentWidget());
     btnOk_->setEnabled(page->prevalidate());
+}
+
+//-----------------------------------------------------------------------------
+// Function: finalizePages()
+//-----------------------------------------------------------------------------
+void PropertyPageDialog::finalizePages()
+{
+    // Determine the best width for the list items.
+    int optimalWidth = contentsList_->sizeHintForColumn(0);
+
+    for (int i = 0; i < contentsList_->count(); ++i)
+    {
+        contentsList_->item(i)->setSizeHint(QSize(optimalWidth, contentsList_->sizeHintForRow(i)));
+    }
+
+    // Update the width of the list with some margin.
+    contentsList_->setFixedWidth(optimalWidth + 30);
+
 }
