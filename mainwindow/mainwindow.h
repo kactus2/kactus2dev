@@ -333,6 +333,9 @@ private slots:
 	//! \brief Create a pop up menu to select which dock widgets to display.
 	void selectVisibleDocks();
 
+    //! Open the workspace management menu.
+    void openWorkspaceMenu();
+
 	//! \brief Handler for output action's trigger.
 	void onOutputAction(bool show);
 
@@ -354,6 +357,21 @@ private slots:
 	//! \brief Handler for instance action's trigger.
 	void onInstanceAction(bool show);
 
+    /*!
+     *  Handles the situation when a workspace has been changed.
+     */
+    void onWorkspaceChanged(QAction* action);
+
+    /*!
+     *  Creates a new workspace, requesting a name for the workspace from the user using a dialog.
+     */
+    void onNewWorkspace();
+
+    /*!
+     *  Deletes a workspace, asking the user which workspace to delete using a dialog.
+     */
+    void onDeleteWorkspace();
+
 private:
 
 	//! \brief No copying
@@ -362,15 +380,31 @@ private:
 	//! No assignment
 	MainWindow& operator=(const MainWindow& other);
 
-	/*! \brief Restore the mainwindow's settings.
-	 *
-	*/
+	/*!
+     *  Restores the program's settings.
+	 */
 	void restoreSettings();
 
-	/*! \brief Save the mainwindow's settings
-	 *
-	*/
+    void updateWorkspaceMenu();
+
+	/*! 
+     *  Save the program's settings.
+	 */
 	void saveSettings();
+
+    /*!
+     *  Restores the settings for the given workspace.
+     *
+     *      @param [in] workspaceName The name of the workspace.
+     */
+    void loadWorkspace(QString const& workspaceName);
+
+    /*!
+     *  Saves the settings for the given workspace.
+     *
+     *      @param [in] workspaceName The name of the workspace.
+     */
+    void saveWorkspace(QString const& workspaceName);
 
 	/*! \brief Set up the actions in the tool bars
 	 *
@@ -549,6 +583,9 @@ private:
 	//! \brief Action to select which dock widgets are visible.
 	QAction* actVisibleDocks_;
 
+    //! Action to manage the workspaces.
+    QAction* actWorkspaces_;
+
     //! The protection group.
     GCF::MenuStripGroup* protectGroup_; 
 
@@ -590,15 +627,24 @@ private:
 	//! \brief The menu containing the actions to select which windows to display.
 	QMenu windowsMenu_;
 
+    //! Menu which contains the actions for managing workspaces.
+    QMenu workspaceMenu_;
+
+    //! The name of the currently active workspace.
+    QString curWorkspaceName_;
+
 	/*! \brief Update the windows menu to contain the supported windows.
 	 *
 	 * \param supportedWindows Bit field that specifies which windows should be displayed.
 	 *
 	*/
 	void updateWindows(unsigned int supportedWindows);
-
-	//! \brief Contains the show/hidden status for the windows.
-	struct WindowVisibility {
+    
+    //-----------------------------------------------------------------------------
+    //! Structure which contains the show/hidden status for the windows.
+    //-----------------------------------------------------------------------------
+	struct WindowVisibility
+    {
 		//! \brief Show the output window
 		bool showOutput_;
 

@@ -14,6 +14,9 @@
 #include "NewSystemPage.h"
 #include "newbuspage.h"
 
+#include "NewWorkspaceDialog.h"
+#include "DeleteWorkspaceDialog.h"
+
 #include <common/KactusAttribute.h>
 #include <settings/SettingsDialog.h>
 
@@ -126,6 +129,7 @@ actZoomOut_(0),
 actZoomOriginal_(0), 
 actFitInView_(0),
 actVisibleDocks_(0),
+actWorkspaces_(0),
 actProtect_(0), 
 actSettings_(0),
 actAbout_(0), 
@@ -138,6 +142,8 @@ showConnectionAction_(0),
 showInterfaceAction_(0),
 showInstanceAction_(0),
 windowsMenu_(this),
+workspaceMenu_(this),
+curWorkspaceName_("Default"),
 visibilities_() {
 
 	// set the identification tags for the application
@@ -168,8 +174,7 @@ visibilities_() {
 	// some actions need the editors so set them up before the actions
 	setupActions();
 
-	// this contains settings for dock widgets and some actions so it must
-	// be called after setting up these
+	// Restore program settings.
 	restoreSettings();
 
 	// don't display empty editors
@@ -575,6 +580,11 @@ void MainWindow::setupActions() {
 	connect(actVisibleDocks_, SIGNAL(triggered()),
 		this, SLOT(selectVisibleDocks()), Qt::UniqueConnection);
 
+    actWorkspaces_ = new QAction(QIcon(":icons/graphics/workspace.png"),
+                                 tr("Workspaces"), this);
+    connect(actWorkspaces_, SIGNAL(triggered()),
+            this, SLOT(openWorkspaceMenu()), Qt::UniqueConnection);
+
 	actProtect_ = new QAction(QIcon(":/icons/graphics/protection-unlocked.png"), tr("Unlocked"), this);
 	actProtect_->setProperty("rowSpan", 2);
 	actProtect_->setProperty("colSpan", 2);
@@ -678,68 +688,143 @@ void MainWindow::setupActions() {
 //-----------------------------------------------------------------------------
 void MainWindow::restoreSettings()
 {
-	QSettings settings;
+    QSettings settings;
 
-	// if geometry is saved then restore it
-	if (settings.contains("mainWindow/geometry")) {
-		restoreGeometry(settings.value("mainWindow/geometry").toByteArray());
-	}
-	// if state of widgets is saved then restore it
-	if (settings.contains("mainWindow/windowState")) {
-		restoreState(settings.value("mainWindow/windowState").toByteArray());
-	}
+    // Load the active workspace.
+    curWorkspaceName_ = settings.value("Workspaces/CurrentWorkspace", QString("Default")).toString();
+    loadWorkspace(curWorkspaceName_);
 
-	const bool configurationVisible = settings.value("mainWindow/ConfigurationVisibility", true).toBool();
-	visibilities_.showConfiguration_ = configurationVisible;
-	showConfigurationAction_->setChecked(configurationVisible);
+    // Create default workspaces if the workspaces registry group is not found.
+    settings.beginGroup("Workspaces");
 
-	const bool connectionVisible = settings.value("mainWindow/ConnectionVisibility", true).toBool();
-	visibilities_.showConnection_ = connectionVisible;
-	showConnectionAction_->setChecked(connectionVisible);
+    if (settings.childGroups().empty())
+    {
+        settings.endGroup();
+        saveWorkspace("Default");
+        saveWorkspace("Design");
+    }
+    else
+    {
+        settings.endGroup();
+    }
 
-	const bool instanceVisible = settings.value("mainWindow/InstanceVisibility", true).toBool();
-	visibilities_.showInstance_ = instanceVisible;
-	showInstanceAction_->setChecked(instanceVisible);
-
-	const bool interfaceVisible = settings.value("mainWindow/InterfaceVisibility", true).toBool();
-	visibilities_.showInterface_ = interfaceVisible;
-	showInterfaceAction_->setChecked(interfaceVisible);
-
-	const bool libraryVisible = settings.value("mainWindow/LibraryVisibility", true).toBool();
-	visibilities_.showLibrary_ = libraryVisible;
-	showLibraryAction_->setChecked(libraryVisible);
-
-	const bool outputVisible = settings.value("mainWindow/OutputVisibility", true).toBool();
-	visibilities_.showOutput_ = outputVisible;
-	showOutputAction_->setChecked(outputVisible);
-
-	const bool previewVisible = settings.value("mainWindow/PreviewVisibility", true).toBool();
-	visibilities_.showPreview_ = previewVisible;
-	showPreviewAction_->setChecked(previewVisible);
+    // Update the workspace menu.
+    updateWorkspaceMenu();
 }
 
 //-----------------------------------------------------------------------------
 // Function: saveSettings()
 //-----------------------------------------------------------------------------
-void MainWindow::saveSettings() {
-	// instance to save the mainWindow settings
+void MainWindow::saveSettings()
+{
 	QSettings settings;
 
-	// save the geometry and state of windows
-	settings.setValue("mainWindow/geometry", saveGeometry());
-	settings.setValue("mainWindow/windowState", saveState());
-
-	settings.setValue("mainWindow/ConfigurationVisibility", visibilities_.showConfiguration_);
-	settings.setValue("mainWindow/ConnectionVisibility", visibilities_.showConnection_);
-	settings.setValue("mainWindow/InstanceVisibility", visibilities_.showInstance_);
-	settings.setValue("mainWindow/InterfaceVisibility", visibilities_.showInterface_);
-	settings.setValue("mainWindow/LibraryVisibility", visibilities_.showLibrary_);
-	settings.setValue("mainWindow/OutputVisibility", visibilities_.showOutput_);
-	settings.setValue("mainWindow/PreviewVisibility", visibilities_.showPreview_);
+    // Save the active workspace.
+    settings.setValue("Workspaces/CurrentWorkspace", curWorkspaceName_);
+    saveWorkspace(curWorkspaceName_);
 }
 
-void MainWindow::setupMenus() {
+//-----------------------------------------------------------------------------
+// Function: loadWorkspace()
+//-----------------------------------------------------------------------------
+void MainWindow::loadWorkspace(QString const& workspaceName)
+{
+    QSettings settings;
 
+    // Create the registry key name.
+    QString keyName = "Workspaces/" + workspaceName;
+    settings.beginGroup(keyName);
+
+    if (!settings.contains("Geometry"))
+    {
+        settings.endGroup();
+        return;
+    }
+
+
+    // Set the window to normal state (this fixed a weird error with window state).
+    setWindowState(Qt::WindowNoState);
+
+    // If geometry is saved then restore it.
+    restoreGeometry(settings.value("Geometry").toByteArray());
+
+    // If state of widgets is saved then restore it.
+    if (settings.contains("WindowState")) {
+        restoreState(settings.value("WindowState").toByteArray());
+    }
+
+    const bool configurationVisible = settings.value("ConfigurationVisibility", true).toBool();
+    visibilities_.showConfiguration_ = configurationVisible;
+    showConfigurationAction_->setChecked(configurationVisible);
+
+    const bool connectionVisible = settings.value("ConnectionVisibility", true).toBool();
+    visibilities_.showConnection_ = connectionVisible;
+    showConnectionAction_->setChecked(connectionVisible);
+
+    const bool instanceVisible = settings.value("InstanceVisibility", true).toBool();
+    visibilities_.showInstance_ = instanceVisible;
+    showInstanceAction_->setChecked(instanceVisible);
+
+    const bool interfaceVisible = settings.value("InterfaceVisibility", true).toBool();
+    visibilities_.showInterface_ = interfaceVisible;
+    showInterfaceAction_->setChecked(interfaceVisible);
+
+    const bool libraryVisible = settings.value("LibraryVisibility", true).toBool();
+    visibilities_.showLibrary_ = libraryVisible;
+    showLibraryAction_->setChecked(libraryVisible);
+
+    const bool outputVisible = settings.value("OutputVisibility", true).toBool();
+    visibilities_.showOutput_ = outputVisible;
+    showOutputAction_->setChecked(outputVisible);
+
+    const bool previewVisible = settings.value("PreviewVisibility", true).toBool();
+    visibilities_.showPreview_ = previewVisible;
+    showPreviewAction_->setChecked(previewVisible);
+
+    if (designTabs_->count() == 0)
+    {
+        updateWindows(TabDocument::OUTPUTWINDOW | TabDocument::LIBRARYWINDOW | 
+            TabDocument::PREVIEWWINDOW);
+    }
+    else
+    {
+        TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+        updateWindows(doc->getSupportedWindows());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: saveWorkspace()
+//-----------------------------------------------------------------------------
+void MainWindow::saveWorkspace(QString const& workspaceName)
+{
+    // Instance to save the settings.
+    QSettings settings;
+
+    // Create the registry group name.
+    QString keyName = "Workspaces/" + workspaceName;
+
+    // Save the geometry and state of windows.
+    settings.beginGroup(keyName);
+
+    settings.setValue("Geometry", saveGeometry());
+    settings.setValue("WindowState", saveState());
+    settings.setValue("ConfigurationVisibility", visibilities_.showConfiguration_);
+    settings.setValue("ConnectionVisibility", visibilities_.showConnection_);
+    settings.setValue("InstanceVisibility", visibilities_.showInstance_);
+    settings.setValue("InterfaceVisibility", visibilities_.showInterface_);
+    settings.setValue("LibraryVisibility", visibilities_.showLibrary_);
+    settings.setValue("OutputVisibility", visibilities_.showOutput_);
+    settings.setValue("PreviewVisibility", visibilities_.showPreview_);
+
+    settings.endGroup();
+}
+
+//-----------------------------------------------------------------------------
+// Function: setupMenus()
+//-----------------------------------------------------------------------------
+void MainWindow::setupMenus()
+{
 	QDockWidget* menuDock = new QDockWidget(tr("Menu"), this);
 	menuDock->setObjectName(tr("Menu"));
 	menuDock->setTitleBarWidget(new QWidget(this));
@@ -800,6 +885,7 @@ void MainWindow::setupMenus() {
 	viewGroup->addAction(actZoomOriginal_);
 	viewGroup->addAction(actFitInView_);
 	viewGroup->addAction(actVisibleDocks_);
+    viewGroup->addAction(actWorkspaces_);
 
 	//! The Protection group.
 	protectGroup_ = menuStrip_->addGroup(tr("Protection"));
@@ -2807,6 +2893,116 @@ void MainWindow::showEvent( QShowEvent* event ) {
 		showInstanceAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 
 	QMainWindow::showEvent(event);
+}
+
+//-----------------------------------------------------------------------------
+// Function: openWorkspaceMenu()
+//-----------------------------------------------------------------------------
+void MainWindow::openWorkspaceMenu()
+{
+    workspaceMenu_.exec(QCursor::pos());
+}
+
+//-----------------------------------------------------------------------------
+// Function: onWorkspaceChanged()
+//-----------------------------------------------------------------------------
+void MainWindow::onWorkspaceChanged(QAction* action)
+{
+    saveWorkspace(curWorkspaceName_);
+
+    curWorkspaceName_ = action->text();
+    loadWorkspace(curWorkspaceName_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: onNewWorkspace()
+//-----------------------------------------------------------------------------
+void MainWindow::onNewWorkspace()
+{
+    NewWorkspaceDialog dialog(this);
+
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        // Save the new workspace with current settings and set the it as the current one.
+        saveWorkspace(dialog.getName());
+        curWorkspaceName_ = dialog.getName();
+        updateWorkspaceMenu();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: onDeleteWorkspace()
+//-----------------------------------------------------------------------------
+void MainWindow::onDeleteWorkspace()
+{
+    DeleteWorkspaceDialog dialog(this);
+
+    // Fill in the dialog with existing workspace names.
+    QSettings settings;
+    settings.beginGroup("Workspaces");
+
+    QStringList workspaces = settings.childGroups();
+
+    foreach (QString const& workspace, workspaces)
+    {
+        if (workspace != "Default" && workspace != curWorkspaceName_)
+        {        
+            dialog.addWorkspaceName(workspace);
+        }
+    }
+
+    settings.endGroup();
+
+    // Execute the dialog.
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        // Remove the workspace from the settings and update the workspace menu.
+        settings.remove("Workspaces/" + dialog.getName());
+        updateWorkspaceMenu();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: updateWorkspaceMenu()
+//-----------------------------------------------------------------------------
+void MainWindow::updateWorkspaceMenu()
+{
+    // Create the workspace menu based on the settings.
+    workspaceMenu_.clear();
+
+    QSettings settings;
+    settings.beginGroup("Workspaces");
+
+    QStringList workspaceIDs = settings.childGroups();
+    QActionGroup* workspaceGroup = new QActionGroup(this);
+    workspaceGroup->setExclusive(true);
+
+    foreach (QString const& workspaceID, workspaceIDs)
+    {
+        QString workspaceName = workspaceID;
+
+        QAction* action = new QAction(workspaceName, this);
+        action->setCheckable(true);
+        action->setChecked(curWorkspaceName_ == workspaceName);
+
+        workspaceGroup->addAction(action);
+        workspaceMenu_.addAction(action);
+    }
+
+    settings.endGroup();
+
+    connect(workspaceGroup, SIGNAL(triggered(QAction *)), this, SLOT(onWorkspaceChanged(QAction *)));
+
+    // Add actions for creating and deleting new workspaces.
+    QAction* addAction = new QAction(tr("New Workspace..."), this);
+    connect(addAction, SIGNAL(triggered()), this, SLOT(onNewWorkspace()), Qt::UniqueConnection);
+
+    QAction* deleteAction = new QAction(tr("Delete Workspace..."), this);
+    connect(deleteAction, SIGNAL(triggered()), this, SLOT(onDeleteWorkspace()), Qt::UniqueConnection);
+
+    workspaceMenu_.addSeparator();
+    workspaceMenu_.addAction(addAction);
+    workspaceMenu_.addAction(deleteAction);
 }
 
 MainWindow::WindowVisibility::WindowVisibility():
