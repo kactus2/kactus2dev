@@ -76,7 +76,7 @@ itemsToAdd_() {
 	setWindowTitle(tr("LibraryHandler"));
 
 	data_ = QSharedPointer<LibraryData>(new LibraryData(this));
-	data_->openLibraryFile();
+	data_->parseLibrary();
 
 	treeModel_ = QSharedPointer<LibraryTreeModel>(
 			new LibraryTreeModel(this, data_.data(), this));
@@ -115,9 +115,9 @@ void LibraryHandler::syncronizeModels() {
 		hierarchyModel_.data(), SLOT(onRemoveVLNV(VLNV*)), Qt::UniqueConnection);
 
 	connect(data_.data(), SIGNAL(resetModel()),
-		treeModel_.data(), SLOT(onResetModel()), Qt::UniqueConnection);
-	connect(data_.data(), SIGNAL(resetModel()),
 		hierarchyModel_.data(), SLOT(onResetModel()), Qt::UniqueConnection);
+	connect(data_.data(), SIGNAL(resetModel()),
+		treeModel_.data(), SLOT(onResetModel()), Qt::UniqueConnection);
 
 	// signals from data model to library handler
 	connect(data_.data(), SIGNAL(errorMessage(const QString&)),
@@ -474,14 +474,6 @@ QDir& targetDir, fileList& handledFiles, bool& yesToAll, bool& noToAll) {
 	return;
 }
 
-void LibraryHandler::importLibraryFile( const QString filePath /*= QString()*/ ) {
-	data_->openLibraryFile(filePath);
-}
-
-void LibraryHandler::exportLibraryFile( const QString filePath /*= QString()*/ ) {
-	data_->saveLibraryFile(filePath);
-}
-
 QSharedPointer<LibraryComponent> LibraryHandler::getModel( const VLNV& vlnv ) {
 
 	// if object has already been previously parsed
@@ -490,81 +482,19 @@ QSharedPointer<LibraryComponent> LibraryHandler::getModel( const VLNV& vlnv ) {
 		return copy;
 	}
 	else {
-		if (!data_->contains(vlnv)) {
-			emit noticeMessage(tr("VLNV %1:%2:%3:%4 was not found in library").arg(
-				vlnv.getVendor()).arg(
-				vlnv.getLibrary()).arg(
-				vlnv.getName()).arg(
-				vlnv.getVersion()));
-			return QSharedPointer<LibraryComponent>();
-		}
-		
-		VLNV toCreate = vlnv;
-		// make sure the vlnv is of correct type
-		toCreate.setType(data_->getType(vlnv));
 
-		// get path to the document
-		QString path = data_->getPath(toCreate);
+		QSharedPointer<LibraryComponent> libComp = data_->getModel(vlnv);
 
-		// if the file was not found
-		if (path.isEmpty()) {
-			return QSharedPointer<LibraryComponent>();
+		// if item was found
+		if (libComp) {
+			// save the parsed item to the map and return pointer to it
+			objects_.insert(vlnv, libComp);
+			QSharedPointer<LibraryComponent> copy = libComp->clone();
+			return copy;
 		}
 
-		// create file handle and use it to read the IP-Xact document into memory
-		QFile file(path);
-		QDomDocument doc;
-		doc.setContent(&file);
-		file.close();
-
-		QSharedPointer<LibraryComponent> libComp;
-
-		try {
-			// create correct type of object and cast the pointer
-			switch (toCreate.getType()) {
-			case VLNV::BUSDEFINITION: {
-				libComp = QSharedPointer<LibraryComponent>(new BusDefinition(doc));
-				break;
-									  }
-			case VLNV::COMPONENT: {
-				libComp = QSharedPointer<LibraryComponent>(new Component(doc));
-				break;
-								  }
-			case VLNV::DESIGN: {
-				libComp = QSharedPointer<LibraryComponent>(new Design(doc));
-				break;
-							   }
-
-			case VLNV::GENERATORCHAIN: {
-				libComp = QSharedPointer<LibraryComponent>(new GeneratorChain(doc));
-				break;
-									   }
-			case VLNV::DESIGNCONFIGURATION: {
-				libComp = QSharedPointer<LibraryComponent>(new DesignConfiguration(doc));
-				break;
-											}
-
-			case VLNV::ABSTRACTIONDEFINITION: {
-				libComp = QSharedPointer<LibraryComponent>(new AbstractionDefinition(doc));
-				break;
-											  }
-			default: {
-				emit noticeMessage(tr("Document was not supported type"));
-				return QSharedPointer<LibraryComponent>();
-					 }
-			}
-		}
-		// if an exception occurred during the parsing
-		catch (...) {
-			emit errorMessage(
-				tr("Error occurred during parsing of the document %1").arg(path));
-			return QSharedPointer<LibraryComponent>();
-		}
-		
-		// save the parsed item to the map and return pointer to it
-		objects_.insert(vlnv, libComp);
-		QSharedPointer<LibraryComponent> copy = libComp->clone();
-		return copy;
+		// if item was not found
+		return libComp;
 	}
 }
 
@@ -578,78 +508,15 @@ QSharedPointer<LibraryComponent const> LibraryHandler::getModelReadOnly(const VL
         return objects_.value(vlnv);
     }
     else {
-        if (!data_->contains(vlnv)) {
-            emit noticeMessage(tr("VLNV %1:%2:%3:%4 was not found in library").arg(
-                vlnv.getVendor()).arg(
-                vlnv.getLibrary()).arg(
-                vlnv.getName()).arg(
-                vlnv.getVersion()));
-            return QSharedPointer<LibraryComponent>();
-        }
+        
+		QSharedPointer<LibraryComponent> libComp = data_->getModel(vlnv);
 
-        VLNV toCreate = vlnv;
-        // make sure the vlnv is of correct type
-        toCreate.setType(data_->getType(vlnv));
+		// if item was found
+		if (libComp) {
+			// save the parsed item to the map and return pointer to it
+			objects_.insert(vlnv, libComp);
+		}
 
-        // get path to the document
-        QString path = data_->getPath(toCreate);
-
-        // if the file was not found
-        if (path.isEmpty()) {
-            return QSharedPointer<LibraryComponent>();
-        }
-
-        // create file handle and use it to read the IP-Xact document into memory
-        QFile file(path);
-        QDomDocument doc;
-        doc.setContent(&file);
-        file.close();
-
-        QSharedPointer<LibraryComponent> libComp;
-
-        try {
-            // create correct type of object and cast the pointer
-            switch (toCreate.getType()) {
-            case VLNV::BUSDEFINITION: {
-                libComp = QSharedPointer<LibraryComponent>(new BusDefinition(doc));
-                break;
-                                      }
-            case VLNV::COMPONENT: {
-                libComp = QSharedPointer<LibraryComponent>(new Component(doc));
-                break;
-                                  }
-            case VLNV::DESIGN: {
-                libComp = QSharedPointer<LibraryComponent>(new Design(doc));
-                break;
-                               }
-
-            case VLNV::GENERATORCHAIN: {
-                libComp = QSharedPointer<LibraryComponent>(new GeneratorChain(doc));
-                break;
-                                       }
-            case VLNV::DESIGNCONFIGURATION: {
-                libComp = QSharedPointer<LibraryComponent>(new DesignConfiguration(doc));
-                break;
-                                            }
-
-            case VLNV::ABSTRACTIONDEFINITION: {
-                libComp = QSharedPointer<LibraryComponent>(new AbstractionDefinition(doc));
-                break;
-                                              }
-            default: {
-                emit noticeMessage(tr("Document was not supported type"));
-                return QSharedPointer<LibraryComponent>();
-                     }
-            }
-        }
-        catch (...) {
-            emit errorMessage(
-                tr("Error occurred during parsing of the document %1").arg(path));
-            return QSharedPointer<LibraryComponent>();
-        }
-
-        // save the parsed item to the map and return pointer to it
-        objects_.insert(vlnv, libComp);
         return libComp;
     }
 }
@@ -840,38 +707,17 @@ bool LibraryHandler::writeModelToFile( QSharedPointer<LibraryComponent> model,
 	return true;
 }
 
-void LibraryHandler::searchForIPXactFiles(QString const& path)
-{
-    if (!path.isEmpty())
-    {
-		QApplication::setOverrideCursor(Qt::WaitCursor);
-        data_->searchForFiles(path);
-		QApplication::restoreOverrideCursor();
-    }
-}
-
-
 void LibraryHandler::searchForIPXactFiles() {
+	// first clear the library objects
+	objects_.clear();
 
-	QSettings settings;
-	QString defaultPath = settings.value("library/defaultLocation", QDir::homePath()).toString();
-
-	QString path = QFileDialog::getExistingDirectory(this, 
-		tr("Select a directory to start searching for IP-Xact files"),
-		defaultPath, QFileDialog::ReadOnly);
-
-    if (!path.isEmpty())
-    {
-		QApplication::setOverrideCursor(Qt::WaitCursor);
-    	data_->searchForFiles(path);
-		QApplication::restoreOverrideCursor();
-    }
+	data_->parseLibrary();
 }
 
 void LibraryHandler::onCheckLibraryIntegrity() {
 	saveInProgress_ = false;
 	QApplication::setOverrideCursor(Qt::WaitCursor);
-	data_->checkIntegrity();
+	data_->checkLibraryIntegrity();
 	QApplication::restoreOverrideCursor();
 }
 

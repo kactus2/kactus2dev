@@ -144,12 +144,6 @@ public slots:
 	*/
 	void onConnectionSelected(DiagramInterconnection* connection);
 
-    //! \brief Import a library file to this library.
-	void onImportLibFile();
-
-	//! \brief Export the library file to another location.
-	void onExportLibFile();
-
     //! Called when the menu strip needs to be updated.
     void updateMenuStrip();
 
@@ -522,12 +516,6 @@ private:
 
 	//! \brief Search for IP-Xact files in the file system
 	QAction* actLibrarySearch_;
-
-	//! \brief Import a library file 
-	QAction* actImportLibFile_;
-
-	//! \brief Export a library file
-	QAction* actExportLibFile_;
 
 	//! \brief Check the library integrity
 	QAction* actCheckIntegrity_;

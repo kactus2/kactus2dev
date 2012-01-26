@@ -64,27 +64,6 @@ public:
 	 */
 	//virtual bool registerVLNV(const VLNV& vlnv, const QString& path) = 0;
 
-	/*! \brief Import an existing library file to the library.
-	 *
-	 * Reads the given library file and adds the library items from it to the 
-	 * library. If the filePath is empty then the default library file is used.
-	 * This function should be called after connecting the signals from 
-	 * LibraryInterface to read the default library. If a file is found that 
-	 * does not exist in file system it is not added to library and error
-	 * message is emitted. Also if duplicate VLNVs are found then error message
-	 * is emitted.
-	 *
-	 * \param filePath Filepath to the library file to import.
-	 *
-	*/
-	virtual void importLibraryFile(const QString filePath = QString()) = 0;
-
-	/*! \brief Export the current library to a library file.
-	 *
-	 * \param filePath The path to extract the library file to.
-	*/
-	virtual void exportLibraryFile(const QString filePath = QString()) = 0;
-
 	/*! \brief Checks if the library already contains the specified vlnv.
 	 *
 	 * \param vlnv The vlnv that is searched within the library.

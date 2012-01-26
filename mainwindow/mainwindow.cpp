@@ -108,9 +108,7 @@ actPrint_(0),
 editGroup_(0),
 actUndo_(0), 
 actRedo_(0),
-actLibrarySearch_(0),
-actImportLibFile_(0),
-actExportLibFile_(0), 
+actLibrarySearch_(0), 
 actCheckIntegrity_(0),
 hwDesignGroup_(0),
 actAddColumn_(0), 
@@ -182,12 +180,6 @@ visibilities_() {
 		TabDocument::PREVIEWWINDOW);
 
 	setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
-
-	// Load the internal library if not yet loaded.
-	if (!libraryHandler_->contains(VLNV(VLNV::BUSDEFINITION, "Kactus", "internal", "app_link", "1.0")))
-	{
-		libraryHandler_->searchForIPXactFiles(QCoreApplication::applicationDirPath() + "/Kactus/");
-	}
 }
 
 MainWindow::~MainWindow() {
@@ -466,18 +458,6 @@ void MainWindow::setupActions() {
 		tr("Search IP-Xact Files"), this);
 	connect(actLibrarySearch_, SIGNAL(triggered()),
 		this, SLOT(onLibrarySearch()), Qt::UniqueConnection);
-
-	// Import a library file 
-	actImportLibFile_ = new QAction(QIcon(":/icons/graphics/import.png"),
-		tr("Import Library File"), this);
-	connect(actImportLibFile_, SIGNAL(triggered()),
-		this, SLOT(onImportLibFile()), Qt::UniqueConnection);
-
-	// Export a library file
-	actExportLibFile_ = new QAction(QIcon(":/icons/graphics/export.png"),
-		tr("Export Library File"), this);
-	connect(actExportLibFile_, SIGNAL(triggered()),
-		this, SLOT(onExportLibFile()), Qt::UniqueConnection);
 
 	// Check the library integrity
 	actCheckIntegrity_ = new QAction(QIcon(":/icons/graphics/checkIntegrity.png"),
@@ -856,8 +836,6 @@ void MainWindow::setupMenus()
 	GCF::MenuStripGroup* libGroup = menuStrip_->addGroup(tr("Library"));
 	libGroup->addAction(actLibrarySearch_);
 	libGroup->addAction(actCheckIntegrity_);
-	libGroup->addAction(actImportLibFile_);
-	libGroup->addAction(actExportLibFile_);
 
 	//! The "HW Design" group.
 	hwDesignGroup_ = menuStrip_->addGroup(tr("HW Design"));
@@ -1133,30 +1111,6 @@ void MainWindow::onConnectionSelected( DiagramInterconnection* connection ) {
 	instanceEditor_->clear();
 	interfaceEditor_->clear();
 	connectionEditor_->setConnection(connection);
-}
-
-void MainWindow::onImportLibFile() {
-	QString file = QFileDialog::getOpenFileName(this, 
-		tr("Import Library File"),
-		QDir::homePath(),
-		tr("Ini Files (*.ini)"));
-
-	// if clicked cancel
-	if (file.isEmpty())
-		return;
-
-	libraryHandler_->importLibraryFile(file);
-}
-
-void MainWindow::onExportLibFile() {
-	QString file = QFileDialog::getSaveFileName(this, tr("Export Library File"),
-		QDir::homePath(), tr("Ini Files (*.ini)"));
-
-	// if user clicked cancel
-	if (file.isEmpty())
-		return;
-
-	libraryHandler_->exportLibraryFile(file);
 }
 
 //-----------------------------------------------------------------------------

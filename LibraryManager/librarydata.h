@@ -8,6 +8,7 @@
 #define LIBRARYDATA_H
 
 #include "vlnv.h"
+#include <models/librarycomponent.h>
 
 #include <QAbstractItemModel>
 #include <QModelIndex>
@@ -43,31 +44,6 @@ public:
 	//! \brief The destructor
 	virtual ~LibraryData();
 
-	/*! \brief Search for IP-Xact files within path
-	 *
-	 * \param path Specifies the path to search for IP-Xact files.
-	*/
-	void searchForFiles(const QString& path);
-
-	/*! \brief Open a library file and parse it and add the files to the library
-	 *
-	 * \param filePath The path to the library file that is opened. If this is
-	 * not specified then the default library file is used.
-	 * 
-	 * The default library file is created to the user's home directory in 
-	 * directory ./kactus2
-	 *
-	*/
-	void openLibraryFile(const QString filePath = QString());
-
-	/*! \brief Save the library to a file.
-	 *
-	 * \param filePath The path to the file to be saved. If this is not 
-	 * specified the default library file is used.
-	 *
-	*/
-	void saveLibraryFile(const QString filePath = QString());
-
 	/*! \brief Returns the absolute file path of the specified IP-Xact document.
 	 *
 	 * \param vlnv The vlnv that specifies the wanted IP-Xact document.
@@ -85,14 +61,6 @@ public:
 	 * \return True if the vlnv was added, false if not.
 	*/
 	bool addVLNV(const VLNV& vlnv, const QString& path, bool refreshLibrary);
-
-	/*! \brief Update the path of the given vlnv object.
-	 *
-	 * \param vlnv Identifies the vlnv object.
-	 * \param path Path to the object's file.
-	 *
-	*/
-	void updatePath(const VLNV& vlnv, const QString& path);
 
 	/*! \brief Checks if the library already contains the specified vlnv
 	 *
@@ -198,19 +166,30 @@ public:
 	*/
 	VLNV* getOriginalPointer(const VLNV& vlnv) const;
 
-	/*! \brief Check that the given file path contains a valid IP-Xact file.
-	 *
-	 * If vlnvToCompare is used then this function also checks that the vlnv of
-	 * the file matches the given vlnv.
-	 *
-	 * \param filePath Absolute file path to the file to be checked.
-	 * \param vlnvToCompare If specified this vlnv is compared to the file's vlnv
-	 * and if they don't match then false is returned.
-	 *
-	 * \return bool False if file path does not contain a valid IP-Xact file or 
-	 * if vlnvToCompare is given and vlnvs don't match.
+	/*! \brief Search all saved library paths for IP-Xact objects.
+	 * 
+	 * The found objects are displayed in the library.
+	 * When search is complete the library integrity is checked.
 	*/
-	bool isValidIPXactFile(const QString& filePath, const VLNV& vlnvToCompare = VLNV());
+	void parseLibrary();
+
+	/*! \brief Get a model that matches given VLNV.
+	 *
+	 * This function can be called to get a model that matches an IP-Xact document.
+	 * 
+	 * \param vlnv Identifies the desired document.
+	 *
+	 * \return Shared pointer to the model that matches the document.
+	 * If vlnv is not found in library a null pointer is returned. The ownership 
+	 * of the parsed object is passed to the caller.
+	*/
+	QSharedPointer<LibraryComponent> getModel(const VLNV& vlnv);
+
+	/*! \brief Check the integrity of the library.
+	 *
+	 *
+	*/
+	void checkLibraryIntegrity();
 
 signals:
 
@@ -228,12 +207,6 @@ signals:
 
 	//! \brief Inform tree model that the model should be reset
 	void resetModel();
-
-	//! \brief Inform tree model that the vlnv should be hidden
-	//void hideVLNV(VLNV* vlnv);
-
-	//! \brief Inform tree model that the vlnv should be visible
-	//void showVLNV(VLNV* vlnv);
 
 	//! \brief Open the design of a component.
 	void openDesign(const VLNV& vlnv);
@@ -279,11 +252,6 @@ public slots:
 	//! \brief Remove the specified VLNV from the library
 	void onRemoveVLNV(VLNV* vlnv);
 
-	/*! \brief Check the integrity of the library.
-	 *
-	*/
-	void checkIntegrity();
-
 	//! \brief Reset the library
 	void resetLibrary();
 
@@ -305,47 +273,19 @@ private:
 	 */
 	void getDirectory(QStringList& list);
 
-	/*! \brief Scan folder and its subfolders for IP-XACT documents
+	/*! \brief Search the directory and it's sub-directories for IP-Xact objects.
 	 *
-	 * Function takes a path and starts scanning it recursively to find
-	 * valid IP-XACT documents. The documents are validated and valid ones
-	 * are added to the library database
-	 * \param path the path to start scanning from
-	 */
-	void scanFolder(const QString &path/*, QXmlSchema &schema*/);
+	 * \param directoryPath The absolute path of the directory to start the search.
+	 *
+	*/
+	void parseDirectory(const QString& directoryPath);
 
-	/*! \brief Validate xml file against given xml schema
+	/*! \brief Check if the file in given path is IP-Xact file and if it is then save it.
 	 *
-	 * This function uses the schema it is given as parameter and validates
-	 * the file given to it.
-	 * \param file QFileInfo object that points to file to be validated
-	 * \param schema QXxmlSchema object that has the schema loaded into it
-	 * \return True if the file is valid according to schema. False if not.
-	 */
-	bool validateIPXactDoc(QFileInfo &file, QXmlSchema &schema);
-
-	/*! \brief Add a new IP-XACT file to the component library
+	 * \param filePath Absolute file path to the file to check.
 	 *
-	 * Before calling this function the file to be added MUST be validated
-	 * against IP-Xact schema. If invalid files are given to this function
-	 * it will cause a segmentation fault.
-	 *
-	 * \exception Invalid_file Occurs if the file can not be opened.
-	 *
-	 * \parameter filePath the path to the IP-Xact document to be added
-	 */
-	void addFileToLibrary(const QString& filePath);
-
-	/*! \brief Check what kind of IP-Xact document is the file
-	 *
-	 * NOTE: this function must be called only for .xml files
-	 *
-	 * \param file QFileInfo object pointing to a file that's type needs to
-	 * be checked
-	 * \return enum IPXactType which tells what type IP-Xact document the file
-	 * is or if it's not a IP-Xact doc.
-	 */
-	VLNV::IPXactType checkDocType(QFileInfo &file);
+	*/
+	void parseFile(const QString& filePath);
 
 	/*! \brief Map containing all the VLNVs that are in the library.
 	 *
