@@ -25,15 +25,16 @@
 #include <QLabel>
 #include <QCoreApplication>
 #include <QMessageBox>
-#include <QSettings>
 
 //-----------------------------------------------------------------------------
 // Function: NewComponentPage()
 //-----------------------------------------------------------------------------
-NewComponentPage::NewComponentPage(LibraryInterface* libInterface,
-                                   QWidget* parentDlg) : libInterface_(libInterface), vlnvEditor_(0),
-                                                         attributeEditor_(0), directoryEdit_(0)
-{
+NewComponentPage::NewComponentPage(LibraryInterface* libInterface, QWidget* parentDlg):
+libInterface_(libInterface),
+vlnvEditor_(0),
+attributeEditor_(0),
+directoryEdit_(0) {
+
     // Create the title and description labels labels.
     QLabel* titleLabel = new QLabel(tr("New Component"), this);
     
@@ -59,17 +60,12 @@ NewComponentPage::NewComponentPage(LibraryInterface* libInterface,
     // Create the directory line edit and label.
     QLabel *directoryLabel = new QLabel(tr("Directory:"), this);
 
-    QSettings settings;
-    QString defaultDir = settings.value("library/defaultLocation", QCoreApplication::applicationDirPath()).toString();
-    directoryEdit_ = new QLineEdit(defaultDir, this);
-    connect(directoryEdit_, SIGNAL(textChanged(QString const&)), this, SIGNAL(contentChanged()));
+	directoryEdit_ = new LibraryPathSelector(this);
+    connect(directoryEdit_, SIGNAL(editTextChanged(QString const&)), this, SIGNAL(contentChanged()));
 
-    QPushButton* pathButton = new QPushButton("Browse...", this);
-    connect(pathButton, SIGNAL(clicked()), this, SLOT(selectDirectory()));
     QHBoxLayout *pathLayout = new QHBoxLayout;
     pathLayout->addWidget(directoryLabel);
     pathLayout->addWidget(directoryEdit_, 1);
-    pathLayout->addWidget(pathButton);
 
     // Setup the layout.
     QVBoxLayout* layout = new QVBoxLayout(this);
@@ -93,25 +89,11 @@ NewComponentPage::~NewComponentPage()
 }
 
 //-----------------------------------------------------------------------------
-// Function: selectDirectory()
-//-----------------------------------------------------------------------------
-void NewComponentPage::selectDirectory()
-{
-    QString dir = QFileDialog::getExistingDirectory(this, tr("Select Directory"),
-                                                    directoryEdit_->text());
-
-    if (!dir.isEmpty())
-    {
-        directoryEdit_->setText(dir);
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: prevalidate()
 //-----------------------------------------------------------------------------
 bool NewComponentPage::prevalidate() const
 {
-    return (vlnvEditor_->isValid() && !directoryEdit_->text().isEmpty());
+    return (vlnvEditor_->isValid() && !directoryEdit_->currentText().isEmpty());
 }
 
 //-----------------------------------------------------------------------------
@@ -141,7 +123,7 @@ void NewComponentPage::apply()
 {
     emit createComponent(attributeEditor_->getProductHierarchy(),
                          attributeEditor_->getFirmness(),
-                         vlnvEditor_->getVLNV(), directoryEdit_->text());
+                         vlnvEditor_->getVLNV(), directoryEdit_->currentText());
 }
 
 //-----------------------------------------------------------------------------
@@ -189,8 +171,7 @@ void NewComponentPage::onProductHierarchyChanged()
 //-----------------------------------------------------------------------------
 void NewComponentPage::updateDirectory()
 {
-    QSettings settings;
-    QString dir = settings.value("library/defaultLocation", QCoreApplication::applicationDirPath()).toString();
+	QString dir = directoryEdit_->currentLocation();
 
     VLNV vlnv = vlnvEditor_->getVLNV();
 
@@ -214,5 +195,5 @@ void NewComponentPage::updateDirectory()
         }
     }
 
-    directoryEdit_->setText(dir);
+    directoryEdit_->setEditText(dir);
 }

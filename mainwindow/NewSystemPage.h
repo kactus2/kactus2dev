@@ -13,9 +13,9 @@
 #define NEWSYSTEMPAGE_H
 
 #include <common/dialogs/propertyPageDialog/PropertyPageView.h>
+#include <common/widgets/LibraryPathSelector/librarypathselector.h>
 
 #include <QTreeWidget>
-#include <QLineEdit>
 #include <QComboBox>
 
 class LibraryInterface;
@@ -76,10 +76,6 @@ public:
     bool onPageChange();
 
 public slots:
-    /*!
-     *  Asks the user to select a directory.
-     */
-    void selectDirectory();
 
     /*!
      *  Updates the directory based on the VLNV.
@@ -125,8 +121,8 @@ private:
     //! VLNV editor.
     VLNVEditor* vlnvEditor_;
 
-    //! Line edit for the directory.
-    QLineEdit* directoryEdit_;
+	//! \brief The editor to select the directory to save to. 
+	LibraryPathSelector* directoryEdit_;
 };
 
 //-----------------------------------------------------------------------------

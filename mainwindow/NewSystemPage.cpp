@@ -27,17 +27,17 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QCoreApplication>
-#include <QSettings>
 
 //-----------------------------------------------------------------------------
 // Function: NewSystemPage()
 //-----------------------------------------------------------------------------
-NewSystemPage::NewSystemPage(LibraryInterface* libInterface, QWidget* parentDlg) : PropertyPageView(),
-                                                                                   libInterface_(libInterface),
-                                                                                   compTreeWidget_(0),
-                                                                                   vlnvEditor_(0),
-                                                                                   directoryEdit_(0),
-                                                                                   viewComboBox_(0)
+NewSystemPage::NewSystemPage(LibraryInterface* libInterface, QWidget* parentDlg):
+PropertyPageView(),
+libInterface_(libInterface),
+compTreeWidget_(0),
+vlnvEditor_(0),
+directoryEdit_(0),
+viewComboBox_(0)
 {
     // Create the title and description labels labels.
     QLabel* titleLabel = new QLabel(tr("New System"), this);
@@ -113,17 +113,12 @@ NewSystemPage::NewSystemPage(LibraryInterface* libInterface, QWidget* parentDlg)
     // Create the directory line edit and label.
     QLabel *directoryLabel = new QLabel(tr("Directory:"), this);
  
-    QSettings settings;
-    QString defaultDir = settings.value("library/defaultLocation", QCoreApplication::applicationDirPath()).toString();
-    directoryEdit_ = new QLineEdit(defaultDir, this);
-    connect(directoryEdit_, SIGNAL(textChanged(QString const&)), this, SIGNAL(contentChanged()));
+	directoryEdit_ = new LibraryPathSelector(this);
+	connect(directoryEdit_, SIGNAL(editTextChanged(QString const&)), this, SIGNAL(contentChanged()));
 
-    QPushButton* pathButton = new QPushButton("Browse...", this);
-    connect(pathButton, SIGNAL(clicked()), this, SLOT(selectDirectory()));
     QHBoxLayout *pathLayout = new QHBoxLayout;
     pathLayout->addWidget(directoryLabel);
     pathLayout->addWidget(directoryEdit_, 1);
-    pathLayout->addWidget(pathButton);
 
     // Setup the layout.
     QVBoxLayout* layout = new QVBoxLayout(this);
@@ -161,7 +156,7 @@ bool NewSystemPage::prevalidate() const
     QVariant data = compTreeWidget_->currentItem()->data(0, Qt::UserRole);
 
     return (!data.isNull() && data.value<VLNV>().isValid() &&
-            vlnvEditor_->isValid() && !directoryEdit_->text().isEmpty());
+            vlnvEditor_->isValid() && !directoryEdit_->currentText().isEmpty());
 }
 
 //-----------------------------------------------------------------------------
@@ -218,7 +213,7 @@ void NewSystemPage::apply()
     QVariant data = compTreeWidget_->currentItem()->data(0, Qt::UserRole);
 
     emit createSystem(data.value<VLNV>(), viewComboBox_->currentText(),
-                      vlnvEditor_->getVLNV(), directoryEdit_->text());
+                      vlnvEditor_->getVLNV(), directoryEdit_->currentText());
 }
 
 //-----------------------------------------------------------------------------
@@ -231,20 +226,6 @@ bool NewSystemPage::onPageChange()
     compTreeWidget_->collapseAll();
     compTreeWidget_->setCurrentItem(0);
     return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: selectDirectory()
-//-----------------------------------------------------------------------------
-void NewSystemPage::selectDirectory()
-{
-    QString dir = QFileDialog::getExistingDirectory(this, tr("Select Directory"),
-                                                    directoryEdit_->text());
-
-    if (!dir.isEmpty())
-    {
-        directoryEdit_->setText(dir);
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -338,8 +319,7 @@ void NewSystemPage::addChildItems(LibraryItem const* libItem, QTreeWidgetItem* t
 //-----------------------------------------------------------------------------
 void NewSystemPage::updateDirectory()
 {
-    QSettings settings;
-    QString dir = settings.value("library/defaultLocation", QCoreApplication::applicationDirPath()).toString();
+    QString dir = directoryEdit_->currentLocation();
 
     VLNV vlnv = vlnvEditor_->getVLNV();
 
@@ -363,5 +343,5 @@ void NewSystemPage::updateDirectory()
         }
     }
 
-    directoryEdit_->setText(dir);
+    directoryEdit_->setEditText(dir);
 }

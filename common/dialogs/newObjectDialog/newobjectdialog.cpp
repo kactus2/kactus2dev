@@ -7,7 +7,6 @@
 #include <QHBoxLayout>
 #include <QMessageBox>
 #include <QCoreApplication>
-#include <QSettings>
 
 #include <common/widgets/kactusAttributeEditor/KactusAttributeEditor.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
@@ -16,9 +15,13 @@
 #include "newobjectdialog.h"
 
 NewObjectDialog::NewObjectDialog(LibraryInterface* libInterface, VLNV::IPXactType type,
-                                 bool showAttributes, QWidget *parent) : QDialog(parent), lh_(libInterface),
-                                                                         attributeEditor_(0), vlnvEditor_(0),
-                                                                         directoryEdit_(0), okButton_(0)
+                                 bool showAttributes, QWidget *parent):
+QDialog(parent), 
+lh_(libInterface),
+attributeEditor_(0), 
+vlnvEditor_(0),
+directoryEdit_(0), 
+okButton_(0)
 {
     attributeEditor_ = new KactusAttributeEditor(this);
     attributeEditor_->setVisible(showAttributes);
@@ -30,17 +33,8 @@ NewObjectDialog::NewObjectDialog(LibraryInterface* libInterface, VLNV::IPXactTyp
 
     QLabel *directoryLabel = new QLabel(tr("Directory:"));
     
-    QSettings settings;
-    QString defaultDir = settings.value("library/defaultLocation", QCoreApplication::applicationDirPath()).toString();
-    directoryEdit_ = new QLineEdit(defaultDir, this);
-    connect(directoryEdit_, SIGNAL(textChanged(QString const&)), this, SLOT(onContentChanged()));
-
-    QPushButton *pathButton = new QPushButton("...");
-    connect(pathButton, SIGNAL(clicked()), this, SLOT(selectDirectory()));
-    pathButton->setMaximumWidth(20);
-    QHBoxLayout *pathLayout = new QHBoxLayout;
-    pathLayout->addWidget(directoryEdit_);
-    pathLayout->addWidget(pathButton);
+	directoryEdit_ = new LibraryPathSelector(this);
+	connect(directoryEdit_, SIGNAL(editTextChanged(QString const&)), this, SLOT(onContentChanged()));
 
     okButton_ = new QPushButton(tr("&OK"));
     okButton_->setEnabled(false);
@@ -57,7 +51,7 @@ NewObjectDialog::NewObjectDialog(LibraryInterface* libInterface, VLNV::IPXactTyp
     mainLayout->addWidget(attributeEditor_);
     mainLayout->addWidget(vlnvEditor_);
     mainLayout->addWidget(directoryLabel);
-    mainLayout->addLayout(pathLayout);
+    mainLayout->addWidget(directoryEdit_);
     mainLayout->addWidget(buttonBox);
     mainLayout->addStretch(1);
     setLayout(mainLayout);
@@ -76,18 +70,7 @@ VLNV NewObjectDialog::getVLNV()
 
 QString NewObjectDialog::getPath()
 {
-    return directoryEdit_->text();
-}
-
-void NewObjectDialog::selectDirectory()
-{
-    QString dir = QFileDialog::getExistingDirectory(this, tr("Select Directory"),
-                                                    directoryEdit_->text());
-
-    if (!dir.isEmpty())
-    {
-        directoryEdit_->setText(dir);
-    }
+    return directoryEdit_->currentText();
 }
 
 //-----------------------------------------------------------------------------
@@ -96,7 +79,7 @@ void NewObjectDialog::selectDirectory()
 void NewObjectDialog::onContentChanged()
 {
     // Enable/disable the ok button if the contents are valid/invalid.
-    okButton_->setEnabled(!directoryEdit_->text().isEmpty() && vlnvEditor_->isValid());
+    okButton_->setEnabled(!directoryEdit_->currentText().isEmpty() && vlnvEditor_->isValid());
 }
 
 //-----------------------------------------------------------------------------
@@ -207,8 +190,7 @@ bool NewObjectDialog::saveAsDialog(QWidget* parent, LibraryInterface* lh,
 //-----------------------------------------------------------------------------
 void NewObjectDialog::updateDirectory()
 {
-    QSettings settings;
-    QString dir = settings.value("library/defaultLocation", QCoreApplication::applicationDirPath()).toString();
+    QString dir = directoryEdit_->currentLocation();
 
     VLNV vlnv = vlnvEditor_->getVLNV();
 
@@ -232,7 +214,7 @@ void NewObjectDialog::updateDirectory()
         }
     }
 
-    directoryEdit_->setText(dir);
+    directoryEdit_->setEditText(dir);
 }
 
 //-----------------------------------------------------------------------------

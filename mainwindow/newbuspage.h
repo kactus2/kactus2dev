@@ -9,6 +9,7 @@
 #define NEWBUSPAGE_H
 
 #include <common/dialogs/propertyPageDialog/PropertyPageView.h>
+#include <common/widgets/LibraryPathSelector/librarypathselector.h>
 
 #include <LibraryManager/libraryinterface.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
@@ -55,10 +56,6 @@ public:
     virtual bool onPageChange();
 
 public slots:
-    /*!
-     *  Asks the user to select a directory.
-     */
-    void selectDirectory();
 
     /*!
      *  Updates the directory based on the VLNV.
@@ -83,8 +80,8 @@ private:
 	//! VLNV editor.
 	VLNVEditor vlnvEditor_;
 
-	//! Directory line edit.
-	QLineEdit directoryEdit_;
+	//! \brief The editor to select the directory to save to. 
+	LibraryPathSelector directoryEdit_;
 };
 
 #endif // NEWBUSPAGE_H

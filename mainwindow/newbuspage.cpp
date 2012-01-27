@@ -7,7 +7,6 @@
 
 #include "newbuspage.h"
 
-#include <QSettings>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QDir>
@@ -43,18 +42,12 @@ directoryEdit_(this) {
 	// Create the directory line edit and label.
 	QLabel *directoryLabel = new QLabel(tr("Directory:"), this);
 
-	QSettings settings;
-	QString defaultDir = settings.value("library/defaultLocation", QCoreApplication::applicationDirPath()).toString();
-	directoryEdit_.setText(defaultDir);
-	connect(&directoryEdit_, SIGNAL(textChanged(QString const&)),
+	connect(&directoryEdit_, SIGNAL(editTextChanged(QString const&)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
-	QPushButton* pathButton = new QPushButton("Browse...", this);
-	connect(pathButton, SIGNAL(clicked()), this, SLOT(selectDirectory()));
 	QHBoxLayout *pathLayout = new QHBoxLayout;
 	pathLayout->addWidget(directoryLabel);
 	pathLayout->addWidget(&directoryEdit_, 1);
-	pathLayout->addWidget(pathButton);
 
 	// Setup the layout.
 	QVBoxLayout* layout = new QVBoxLayout(this);
@@ -71,7 +64,7 @@ NewBusPage::~NewBusPage() {
 }
 
 bool NewBusPage::prevalidate() const {
-	return (vlnvEditor_.isValid() && !directoryEdit_.text().isEmpty());
+	return (vlnvEditor_.isValid() && !directoryEdit_.currentText().isEmpty());
 }
 
 bool NewBusPage::validate() {
@@ -105,7 +98,7 @@ bool NewBusPage::validate() {
 }
 
 void NewBusPage::apply() {
-	 emit createBus(vlnvEditor_.getVLNV(), directoryEdit_.text());
+	 emit createBus(vlnvEditor_.getVLNV(), directoryEdit_.currentText());
 }
 
 bool NewBusPage::onPageChange() {
@@ -114,23 +107,12 @@ bool NewBusPage::onPageChange() {
 	return true;
 }
 
-void NewBusPage::selectDirectory() {
-	QString dir = QFileDialog::getExistingDirectory(this, tr("Select Directory"),
-		directoryEdit_.text());
-
-	if (!dir.isEmpty())
-	{
-		directoryEdit_.setText(dir);
-	}
-}
-
 //-----------------------------------------------------------------------------
 // Function: updateDirectory()
 //-----------------------------------------------------------------------------
 void NewBusPage::updateDirectory()
 {
-    QSettings settings;
-    QString dir = settings.value("library/defaultLocation", QCoreApplication::applicationDirPath()).toString();
+    QString dir = directoryEdit_.currentLocation();
 
     VLNV vlnv = vlnvEditor_.getVLNV();
 
@@ -154,5 +136,5 @@ void NewBusPage::updateDirectory()
         }
     }
 
-    directoryEdit_.setText(dir);
+    directoryEdit_.setEditText(dir);
 }

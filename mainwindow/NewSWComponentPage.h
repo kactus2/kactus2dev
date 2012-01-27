@@ -14,8 +14,8 @@
 
 #include <common/dialogs/propertyPageDialog/PropertyPageView.h>
 #include <common/KactusAttribute.h>
+#include <common/widgets/LibraryPathSelector/librarypathselector.h>
 
-#include <QLineEdit>
 #include <QGroupBox>
 #include <QRadioButton>
 
@@ -89,10 +89,6 @@ public:
     bool onPageChange();
 
 public slots:
-    /*!
-     *  Asks the user to select a directory.
-     */
-    void selectDirectory();
 
     /*!
      *  Updates the directory based on the VLNV.
@@ -125,8 +121,8 @@ private:
     //! VLNV editor.
     VLNVEditor* vlnvEditor_;
 
-    //! Directory line edit.
-    QLineEdit* directoryEdit_;
+	//! \brief The editor to select the directory to save to. 
+	LibraryPathSelector* directoryEdit_;
 };
 
 //-----------------------------------------------------------------------------

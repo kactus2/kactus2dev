@@ -8,9 +8,10 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ./designwidget/BusInterfaceDialog.h \
+    ./mainwindow/DeleteWorkspaceDialog.h \
+    ./mainwindow/NewWorkspaceDialog.h \
     ./mainwindow/SplashScreen.h \
     ./resource.h \
-    ./version.h \
     ./common/ColumnTypes.h \
     ./common/CSourceWriter.h \
     ./common/diagramgrid.h \
@@ -57,13 +58,17 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./common/widgets/assistedTextEdit/TextContentAssistWidget.h \
     ./common/widgets/assistedTextEdit/ToolTipHintWidget.h \
     ./common/widgets/vlnvEditor/VLNVContentMatcher.h \
+    ./common/widgets/vlnvEditor/VLNVDataTree.h \
     ./common/widgets/vlnvEditor/vlnveditor.h \
     ./common/widgets/colorBox/ColorBox.h \
     ./common/widgets/kactusAttributeEditor/KactusAttributeEditor.h \
     ./common/widgets/componentPreviewBox/ComponentPreviewBox.h \
     ./common/widgets/dirLineEdit/dirlineedit.h \
+    ./common/widgets/LibraryPathSelector/librarypathselector.h \
+    ./common/widgets/LibraryPathEditor/librarypatheditor.h \
     ./common/validators/nameValidator/namevalidator.h \
     ./common/validators/vhdlNameValidator/vhdlnamevalidator.h \
+    ./common/validators/LibraryPathValidator/librarypathvalidator.h \
     ./common/layouts/HStackedLayout.h \
     ./common/layouts/VCollisionLayout.h \
     ./common/layouts/VStackedLayout.h \
@@ -83,6 +88,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./designwidget/diagraminterconnection.h \
     ./designwidget/diagraminterface.h \
     ./designwidget/DiagramMoveCommands.h \
+    ./designwidget/DiagramOffPageConnector.h \
     ./designwidget/diagramport.h \
     ./designwidget/PortmapDialog.h \
     ./designwidget/SelectItemTypeDialog.h \
@@ -90,7 +96,6 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./designwidget/columnview/DiagramColumn.h \
     ./designwidget/columnview/DiagramColumnLayout.h \
     ./exceptions/invalid_file.h \
-    ./exceptions/parse_error.h \
     ./exceptions/vhdl_error.h \
     ./exceptions/write_error.h \
     ./IPXactWrapper/ComponentEditor/componenttreeitem.h \
@@ -170,6 +175,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/endpoints/EndpointDelegate.h \
     ./IPXactWrapper/ComponentEditor/endpoints/EndpointEditor.h \
     ./IPXactWrapper/ComponentEditor/endpoints/EndpointModel.h \
+    ./IPXactWrapper/ComponentEditor/endpoints/ImportEndpointsDialog.h \
     ./IPXactWrapper/ComponentEditor/software/SoftwareMappingsEditor.h \
     ./IPXactWrapper/BusEditor/absdefgroup.h \
     ./IPXactWrapper/BusEditor/busdefgroup.h \
@@ -348,6 +354,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/dialogs/listSelectDialog/ListSelectDialog.cpp \
     ./common/validators/nameValidator/namevalidator.cpp \
     ./common/validators/vhdlNameValidator/vhdlnamevalidator.cpp \
+    ./common/validators/LibraryPathValidator/librarypathvalidator.cpp \
     ./common/widgets/assistedLineEdit/AssistedLineEdit.cpp \
     ./common/widgets/assistedLineEdit/LineContentAssistWidget.cpp \
     ./common/widgets/attributeBox/attributebox.cpp \
@@ -367,6 +374,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/widgets/assistedTextEdit/TextContentAssistWidget.cpp \
     ./common/widgets/assistedTextEdit/ToolTipHintWidget.cpp \
     ./common/widgets/vlnvEditor/VLNVContentMatcher.cpp \
+    ./common/widgets/vlnvEditor/VLNVDataTree.cpp \
     ./common/widgets/vlnvEditor/vlnveditor.cpp \
     ./common/widgets/colorBox/ColorBox.cpp \
     ./common/widgets/kactusAttributeEditor/KactusAttributeEditor.cpp \
@@ -374,6 +382,8 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/widgets/tabDocument/TabDocument.cpp \
     ./common/widgets/dirLineEdit/dirlineedit.cpp \
     ./common/widgets/booleanComboBox/booleancombobox.cpp \
+    ./common/widgets/LibraryPathSelector/librarypathselector.cpp \
+    ./common/widgets/LibraryPathEditor/librarypatheditor.cpp \
     ./common/graphicsItems/ComponentItem.cpp \
     ./common/graphicsItems/GraphicsRectButton.cpp \
     ./common/delegates/combodelegate.cpp \
@@ -391,6 +401,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./designwidget/diagraminterconnection.cpp \
     ./designwidget/diagraminterface.cpp \
     ./designwidget/DiagramMoveCommands.cpp \
+    ./designwidget/DiagramOffPageConnector.cpp \
     ./designwidget/diagramport.cpp \
     ./designwidget/PortmapDialog.cpp \
     ./designwidget/SelectItemTypeDialog.cpp \
@@ -398,7 +409,6 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./designwidget/columnview/DiagramColumn.cpp \
     ./designwidget/columnview/DiagramColumnLayout.cpp \
     ./exceptions/invalid_file.cpp \
-    ./exceptions/parse_error.cpp \
     ./exceptions/vhdl_error.cpp \
     ./exceptions/write_error.cpp \
     ./IPXactWrapper/ComponentEditor/componenttreeitem.cpp \
@@ -476,6 +486,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/endpoints/EndpointDelegate.cpp \
     ./IPXactWrapper/ComponentEditor/endpoints/EndpointEditor.cpp \
     ./IPXactWrapper/ComponentEditor/endpoints/EndpointModel.cpp \
+    ./IPXactWrapper/ComponentEditor/endpoints/ImportEndpointsDialog.cpp \
     ./IPXactWrapper/ComponentEditor/software/SoftwareMappingsEditor.cpp \
     ./IPXactWrapper/BusEditor/absdefgroup.cpp \
     ./IPXactWrapper/BusEditor/busdefgroup.cpp \
@@ -518,6 +529,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./LibraryManager/VLNVDialer/implementationgroup.cpp \
     ./LibraryManager/VLNVDialer/typegroup.cpp \
     ./LibraryManager/VLNVDialer/vlnvdialer.cpp \
+    ./mainwindow/DeleteWorkspaceDialog.cpp \
     ./mainwindow/main.cpp \
     ./mainwindow/mainwindow.cpp \
     ./mainwindow/newbuspage.cpp \
@@ -526,6 +538,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./mainwindow/NewSWComponentPage.cpp \
     ./mainwindow/NewSWDesignPage.cpp \
     ./mainwindow/NewSystemPage.cpp \
+    ./mainwindow/NewWorkspaceDialog.cpp \
     ./mainwindow/SplashScreen.cpp \
     ./models/abstractiondefinition.cpp \
     ./models/addressblock.cpp \

@@ -15,8 +15,7 @@
 #include <common/dialogs/propertyPageDialog/PropertyPageView.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <common/KactusAttribute.h>
-
-#include <QLineEdit>
+#include <common/widgets/LibraryPathSelector/librarypathselector.h>
 
 class LibraryInterface;
 class KactusAttributeEditor;
@@ -74,10 +73,6 @@ public:
     bool onPageChange();
 
 public slots:
-    /*!
-     *  Asks the user to select a directory.
-     */
-    void selectDirectory();
 
     /*!
      *  Updates the directory based on the VLNV.
@@ -111,8 +106,8 @@ private:
     //! VLNV editor.
     VLNVEditor* vlnvEditor_;
 
-    //! Directory line edit.
-    QLineEdit* directoryEdit_;
+	//! \brief The editor to select the directory to save to. 
+	LibraryPathSelector* directoryEdit_;
 };
 
 //-----------------------------------------------------------------------------

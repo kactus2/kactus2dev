@@ -623,7 +623,7 @@ void LibraryData::parseLibrary() {
 
 	endResetModel();
 
-	QSettings settings;
+	QSettings settings(this);
 
 	// Load the library locations.
 	QStringList locations = settings.value("library/locations", QStringList()).toStringList();

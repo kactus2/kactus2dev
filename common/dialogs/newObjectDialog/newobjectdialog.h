@@ -6,8 +6,8 @@
 
 #include <common/KactusAttribute.h>
 #include <LibraryManager/vlnv.h>
+#include <common/widgets/LibraryPathSelector/librarypathselector.h>
 
-class QLineEdit;
 class LibraryInterface;
 class VLNVEditor;
 class KactusAttributeEditor;
@@ -80,10 +80,6 @@ public:
 							 const QString& windowTitle = QString("Save As"));
 
 private slots:
-    /*!
-     *  Asks the user to select a directory.
-     */
-    void selectDirectory();
 
     /*!
      *  Updates the directory based on the VLNV.
@@ -112,8 +108,8 @@ private:
     //! The VLNV editor.
     VLNVEditor* vlnvEditor_;
 
-    //! The directory edit.
-    QLineEdit *directoryEdit_;
+	//! \brief The editor to select the directory to save to. 
+	LibraryPathSelector* directoryEdit_;
 
     //! OK button.
     QPushButton* okButton_;
