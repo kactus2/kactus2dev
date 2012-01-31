@@ -8,6 +8,9 @@
 #include "DiagramConnectionEndpoint.h"
 #include "DiagramMoveCommands.h"
 #include "blockdiagram.h"
+#include "designwidget.h"
+
+#include <models/generaldeclarations.h>
 
 #include <common/GenericEditProvider.h>
 #include <common/diagramgrid.h>
@@ -35,8 +38,8 @@ DiagramInterconnection::DiagramInterconnection(DiagramConnectionEndPoint *endPoi
                                                bool autoConnect,
                                                const QString &displayName,
                                                const QString &description,
-                                               QGraphicsItem *parent)
-    : QGraphicsPathItem(parent), 
+                                               QGraphicsScene* scene)
+    : QGraphicsPathItem(0, scene), 
       name_(), 
       description_(description),
       endPoint1_(0),
@@ -44,7 +47,8 @@ DiagramInterconnection::DiagramInterconnection(DiagramConnectionEndPoint *endPoi
       pathPoints_(), 
       selected_(-1), 
       selectionType_(NONE),
-      routingMode_(ROUTING_MODE_NORMAL)
+      routingMode_(ROUTING_MODE_NORMAL),
+      widthLabel_(0)
 {
     setItemSettings();
     createRoute(endPoint1, endPoint2);
@@ -56,6 +60,7 @@ DiagramInterconnection::DiagramInterconnection(DiagramConnectionEndPoint *endPoi
 
         endPoint1->addInterconnection(this);
         endPoint2->addInterconnection(this);
+        updateWidthLabel();
         updateName();
     }
 }
@@ -67,8 +72,8 @@ DiagramInterconnection::DiagramInterconnection(QPointF p1, QVector2D const& dir1
                                                QPointF p2, QVector2D const& dir2,
                                                const QString &displayName,
 											   const QString &description,
-											   QGraphicsItem *parent)
-    : QGraphicsPathItem(parent),
+											   QGraphicsScene* scene)
+    : QGraphicsPathItem(0, scene),
       name_(),
       description_(),
       endPoint1_(0), 
@@ -76,7 +81,8 @@ DiagramInterconnection::DiagramInterconnection(QPointF p1, QVector2D const& dir1
       pathPoints_(),
       selected_(-1),
       selectionType_(NONE),
-      routingMode_(ROUTING_MODE_NORMAL)
+      routingMode_(ROUTING_MODE_NORMAL),
+      widthLabel_(0)
 {
 	setItemSettings();
     createRoute(p1, p2, dir1, dir2);
@@ -91,6 +97,9 @@ DiagramInterconnection::~DiagramInterconnection()
 	emit destroyed(this);
 }
 
+//-----------------------------------------------------------------------------
+// Function: connectEnds()
+//-----------------------------------------------------------------------------
 bool DiagramInterconnection::connectEnds()
 {
     if (!scene())
@@ -252,6 +261,8 @@ void DiagramInterconnection::setRoute(QList<QPointF> path)
         pathPoints_ = path;
         emit contentChanged();
     }
+
+    updateWidthLabel();
 }
 
 QString DiagramInterconnection::name() const
@@ -299,6 +310,7 @@ void DiagramInterconnection::updatePosition()
             QVector2D::dotProduct(dir1, QVector2D(endPoint2_->scenePos() - endPoint1_->scenePos())) > 0.0))
         {
             createRoute(endPoint1_, endPoint2_);
+            updateWidthLabel();
             return;
         }
 
@@ -383,10 +395,11 @@ void DiagramInterconnection::updatePosition()
             if (!pathOk)
             {
                 createRoute(endPoint1_, endPoint2_);
+                updateWidthLabel();
             }
             else
             {
-                //simplifyPath();
+                simplifyPath();
                 setRoute(pathPoints_);
             }
         }
@@ -691,8 +704,7 @@ void DiagramInterconnection::createRoute(QPointF p1, QPointF p2,
     // Set the target position based on the end point's direction.
     QVector2D targetPos = QVector2D(p2) + dir2 * MIN_LENGTH;
 
-    // Add the start position to the painter path.
-    QPainterPath path(curPos.toPointF());
+    // Add the start position to the list of path points.
     pathPoints_ << curPos.toPointF();
 
     if (startPos != endPos)
@@ -779,19 +791,25 @@ void DiagramInterconnection::createRoute(QPointF p1, QPointF p2,
             }
 
             // Add the newly calculated current position to the path.
-            path.lineTo(curPos.toPointF());
             pathPoints_ << curPos.toPointF();
         }
 
         // Add the last segment if the target position was not the end position.
         if (!qFuzzyCompare(targetPos, endPos))
         {
-            path.lineTo(endPos.toPointF());
             pathPoints_ << endPos.toPointF();
         }
     }
 
     simplifyPath();
+
+    QListIterator<QPointF> i(pathPoints_);
+
+    QPainterPath path(i.next());
+
+    while (i.hasNext()) {
+        path.lineTo(i.next());
+    }
 
     QPainterPathStroker stroker;
     setPath(stroker.createStroke(path));
@@ -941,4 +959,168 @@ void DiagramInterconnection::setDefaultColor()
     }
 
     setPen(newPen);
+}
+
+//-----------------------------------------------------------------------------
+// Function: updateWidthLabel()
+//-----------------------------------------------------------------------------
+void DiagramInterconnection::updateWidthLabel()
+{
+    //simplifyPath();
+
+    // Calculate the total width over all port maps.
+    int totalWidth = 0;
+
+    foreach (QSharedPointer<General::PortMap> portMap1, endPoint1_->getBusInterface()->getPortMaps())
+    {
+        // Find the port map with the same logical port name from the other end point's port map.
+        QSharedPointer<General::PortMap> portMap2;
+
+        foreach (QSharedPointer<General::PortMap> portMap, endPoint2_->getBusInterface()->getPortMaps())
+        {
+            if (portMap->logicalPort_ == portMap1->logicalPort_)
+            {
+                portMap2 = portMap;
+            }
+        }
+
+        if (portMap2 == 0)
+        {
+            continue;
+        }
+
+        Port* port1 = endPoint1_->ownerComponent()->getPort(portMap1->physicalPort_);
+        Port* port2 = endPoint2_->ownerComponent()->getPort(portMap2->physicalPort_);
+
+        if (port1 == 0 || port2 == 0)
+        {
+            // TODO: Error handling.
+            continue;
+        }
+
+        // Calculate the intersection of the port bounds and add it to the total width.
+        General::PortAlignment align =
+            General::calculatePortAlignment(portMap1.data(), port1->getLeftBound(), port1->getRightBound(),
+                                            portMap2.data(), port2->getLeftBound(), port2->getRightBound());
+
+        int width = std::min(align.port1Left_, align.port2Left_) -
+                    std::max(align.port1Right_, align.port2Right_) + 1;
+        totalWidth += width;
+    }
+
+    if (widthLabel_ == 0)
+    {
+        widthLabel_ = new QGraphicsTextItem(QString::number(totalWidth), this);
+
+        QFont font = widthLabel_->font();
+        font.setPointSize(8);
+        font.setBold(true);
+        widthLabel_->setFont(font);
+
+        DesignWidget* designWidget = static_cast<BlockDiagram*>(scene())->parent();
+        widthLabel_->setVisible(designWidget->getVisibilityControls().value("Bus Widths"));
+    }
+    else
+    {
+        widthLabel_->setPlainText(QString::number(totalWidth));
+    }
+
+    QPointF textPos = boundingRect().center();
+
+    if (routingMode_ == ROUTING_MODE_OFFPAGE)
+    {
+        textPos.setX(textPos.x() - widthLabel_->boundingRect().width() * 0.5);
+        textPos.setY(textPos.y() - 2 * GridSize);
+    }
+    else
+    {
+        // If the end points are move apart in horizontal direction, place the text above
+        // the longest horizontal segment.
+        if (std::abs(endPoint1_->scenePos().x() - endPoint2_->scenePos().x()) >=
+            std::abs(endPoint1_->scenePos().y() - endPoint2_->scenePos().y()))
+        {
+            // Determine the longest horizontal segment.
+            int longestIndex = 0;
+            qreal longestLength = 0.0;
+
+            for (int i = 0; i < pathPoints_.size() - 1; ++i)
+            {
+                QPointF const& pt1 = pathPoints_[i];
+                QPointF const& pt2 = pathPoints_[i + 1];
+                qreal length = QVector2D(pt2 - pt1).length();
+
+                if (qFuzzyCompare(pt1.y(), pt2.y()) && length > longestLength)
+                {
+                    longestLength = length;
+                    longestIndex = i;
+                }
+            }
+
+            QPointF const& pt1 = pathPoints_[longestIndex];
+            QPointF const& pt2 = pathPoints_[longestIndex + 1];
+
+            textPos.setX((pt1.x() + pt2.x()) * 0.5 - widthLabel_->boundingRect().width() * 0.5);
+            textPos.setY(pt1.y() - 2 * GridSize);
+        }
+        // Otherwise place the text beside the longest vertical segment.
+        else
+        {
+            // Determine the longest vertical segment.
+            int longestIndex = 0;
+            qreal longestLength = 0.0;
+
+            for (int i = 0; i < pathPoints_.size() - 1; ++i)
+            {
+                QPointF const& pt1 = pathPoints_[i];
+                QPointF const& pt2 = pathPoints_[i + 1];
+                qreal length = QVector2D(pt2 - pt1).length();
+
+                if (qFuzzyCompare(pt1.x(), pt2.x()) && length > longestLength)
+                {
+                    longestLength = length;
+                    longestIndex = i;
+                }
+            }
+
+            Q_ASSERT(longestIndex > 0 && longestIndex + 2 < pathPoints_.size());
+            QPointF const& pt1 = pathPoints_[longestIndex];
+            QPointF const& pt2 = pathPoints_[longestIndex + 1];
+
+            // Place the text on the right side if the connection is fully on the left.
+            if (pathPoints_[longestIndex - 1].x() < pt1.x() && pathPoints_[longestIndex + 2].x() < pt1.x())
+            {
+                textPos.setX(pt1.x() + GridSize);
+            }
+            // Place the text on the left side if the connection is fully on the right.
+            else if (pathPoints_[longestIndex - 1].x() > pt1.x() && pathPoints_[longestIndex + 2].x() > pt1.x())
+            {
+                textPos.setX(pt1.x() - widthLabel_->boundingRect().width());
+            }
+            else
+            {
+                // Otherwise we have to determine on which side there is more space.
+                if (QVector2D(pathPoints_[longestIndex - 1] - pt1).lengthSquared() <
+                    QVector2D(pathPoints_[longestIndex + 2] - pt2).lengthSquared())
+                {
+                    textPos.setX(pt1.x() + GridSize);
+                }
+                else
+                {
+                    textPos.setX(pt1.x() - widthLabel_->boundingRect().width());
+                }
+            }
+
+            textPos.setY((pt1.y() + pt2.y()) * 0.5 - widthLabel_->boundingRect().height() * 0.5);
+        }
+    }
+
+    widthLabel_->setPos(textPos);
+}
+
+//-----------------------------------------------------------------------------
+// Function: setBusWidthVisible()
+//-----------------------------------------------------------------------------
+void DiagramInterconnection::setBusWidthVisible(bool visible)
+{
+    widthLabel_->setVisible(visible);
 }

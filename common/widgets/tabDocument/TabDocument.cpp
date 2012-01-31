@@ -331,3 +331,30 @@ bool TabDocument::isPreviouslyUnlocked() const
 {
     return previouslyUnlocked_;
 }
+
+//-----------------------------------------------------------------------------
+// Function: setVisibilityControlState()
+//-----------------------------------------------------------------------------
+void TabDocument::setVisibilityControlState(QString const& name, bool state)
+{
+    if (visibilityControls_.contains(name))
+    {
+        visibilityControls_.insert(name, state);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: addVisibilityControl()
+//-----------------------------------------------------------------------------
+void TabDocument::addVisibilityControl(QString const& name, bool state)
+{
+    visibilityControls_.insert(name, state);
+}
+
+//-----------------------------------------------------------------------------
+// Function: getVisibilityControls()
+//-----------------------------------------------------------------------------
+QMap<QString, bool> const& TabDocument::getVisibilityControls() const
+{
+    return visibilityControls_;
+}

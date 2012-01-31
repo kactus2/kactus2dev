@@ -313,7 +313,7 @@ protected:
 	//! \brief Called when user i.e minimizes the main window.
 	virtual void hideEvent(QHideEvent* event);
 
-	//! \brief Called when user i.e maximizes the mainwindow afer it has been minimized.
+	//! \brief Called when user i.e maximizes the main window after it has been minimized.
 	virtual void showEvent(QShowEvent* event);
 
 private slots:
@@ -327,7 +327,10 @@ private slots:
 	//! \brief Create a pop up menu to select which dock widgets to display.
 	void selectVisibleDocks();
 
-    //! Open the workspace management menu.
+    //! Opens the visibility control menu.
+    void openVisibilityControlMenu();
+
+    //! Opens the workspace management menu.
     void openWorkspaceMenu();
 
 	//! \brief Handler for output action's trigger.
@@ -355,6 +358,11 @@ private slots:
      *  Handles the situation when a workspace has been changed.
      */
     void onWorkspaceChanged(QAction* action);
+
+    /*!
+     *  Handles the toggling of visibility controls.
+     */
+    void onVisibilityControlToggled(QAction*);
 
     /*!
      *  Creates a new workspace, requesting a name for the workspace from the user using a dialog.
@@ -571,6 +579,9 @@ private:
 	//! \brief Action to select which dock widgets are visible.
 	QAction* actVisibleDocks_;
 
+    //! Action to manage visibility control.
+    QAction* actVisibilityControl_;
+
     //! Action to manage the workspaces.
     QAction* actWorkspaces_;
 
@@ -615,6 +626,9 @@ private:
 	//! \brief The menu containing the actions to select which windows to display.
 	QMenu windowsMenu_;
 
+    //! Menu which contains the actions for visibility control.
+    QMenu visibilityMenu_;
+
     //! Menu which contains the actions for managing workspaces.
     QMenu workspaceMenu_;
 
@@ -627,7 +641,7 @@ private:
 	 *
 	*/
 	void updateWindows(unsigned int supportedWindows);
-    
+
     //-----------------------------------------------------------------------------
     //! Structure which contains the show/hidden status for the windows.
     //-----------------------------------------------------------------------------

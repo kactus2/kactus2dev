@@ -127,6 +127,7 @@ actZoomOut_(0),
 actZoomOriginal_(0), 
 actFitInView_(0),
 actVisibleDocks_(0),
+actVisibilityControl_(0),
 actWorkspaces_(0),
 actProtect_(0), 
 actSettings_(0),
@@ -140,6 +141,7 @@ showConnectionAction_(0),
 showInterfaceAction_(0),
 showInstanceAction_(0),
 windowsMenu_(this),
+visibilityMenu_(this),
 workspaceMenu_(this),
 curWorkspaceName_("Default"),
 visibilities_() {
@@ -182,11 +184,17 @@ visibilities_() {
 	setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
 }
 
+//-----------------------------------------------------------------------------
+// Function: ~MainWindow()
+//-----------------------------------------------------------------------------
 MainWindow::~MainWindow() {
 
 	saveSettings();
 }
 
+//-----------------------------------------------------------------------------
+// Function: openDesign()
+//-----------------------------------------------------------------------------
 void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forceUnlocked)
 {
 
@@ -556,10 +564,16 @@ void MainWindow::setupActions() {
 	// the action for user to select the visible docks
 	actVisibleDocks_ = new QAction(QIcon(":icons/graphics/dockSelect.png"),
 		tr("Visible Windows"), this);
-	actVisibleDocks_->setEnabled(true);
 	connect(actVisibleDocks_, SIGNAL(triggered()),
 		this, SLOT(selectVisibleDocks()), Qt::UniqueConnection);
 
+    // Initialize the action to manage visibility control.
+    actVisibilityControl_ = new QAction(QIcon(":icons/graphics/visibility.png"), tr("Visibility Control"), this);
+    actVisibilityControl_->setEnabled(false);
+    connect(actVisibilityControl_, SIGNAL(triggered()),
+            this, SLOT(openVisibilityControlMenu()), Qt::UniqueConnection);
+
+    // Initialize the action to manage workspaces.
     actWorkspaces_ = new QAction(QIcon(":icons/graphics/workspace.png"),
                                  tr("Workspaces"), this);
     connect(actWorkspaces_, SIGNAL(triggered()),
@@ -863,6 +877,7 @@ void MainWindow::setupMenus()
 	viewGroup->addAction(actZoomOriginal_);
 	viewGroup->addAction(actFitInView_);
 	viewGroup->addAction(actVisibleDocks_);
+    viewGroup->addAction(actVisibilityControl_);
     viewGroup->addAction(actWorkspaces_);
 
 	//! The Protection group.
@@ -1183,6 +1198,8 @@ void MainWindow::updateMenuStrip()
 
 	if (oldProtectionState != actProtect_->isChecked())
 		onProtectionChanged(actProtect_->isChecked());
+
+    actVisibilityControl_->setEnabled(doc != 0 && (doc->getFlags() & TabDocument::DOC_VISIBILITY_CONTROL_SUPPORT));
 
 	updateZoomTools();
 }
@@ -2957,6 +2974,49 @@ void MainWindow::updateWorkspaceMenu()
     workspaceMenu_.addSeparator();
     workspaceMenu_.addAction(addAction);
     workspaceMenu_.addAction(deleteAction);
+}
+
+//-----------------------------------------------------------------------------
+// Function: openVisibilityControlMenu()
+//-----------------------------------------------------------------------------
+void MainWindow::openVisibilityControlMenu()
+{
+    visibilityMenu_.clear();
+
+    // Add all available visibility controls from the current document to the popup menu.
+    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+    Q_ASSERT(doc != 0);
+
+    QMapIterator<QString, bool> iter(doc->getVisibilityControls());
+    QActionGroup* group = new QActionGroup(this);
+
+    while (iter.hasNext())
+    {
+        iter.next();
+        
+        QAction* action = new QAction(tr(qPrintable(iter.key())), this);
+        action->setCheckable(true);
+        action->setChecked(iter.value());
+
+        group->addAction(action);
+        visibilityMenu_.addAction(action);
+    }
+
+    connect(group, SIGNAL(triggered(QAction*)), this, SLOT(onVisibilityControlToggled(QAction*)));
+
+    // Show the popup menu.
+    visibilityMenu_.exec(QCursor::pos());
+}
+
+//-----------------------------------------------------------------------------
+// Function: onVisibilityControlToggled()
+//-----------------------------------------------------------------------------
+void MainWindow::onVisibilityControlToggled(QAction* action)
+{
+    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+    Q_ASSERT(doc != 0);
+
+    doc->setVisibilityControlState(action->text(), !doc->getVisibilityControls().value(action->text()));
 }
 
 MainWindow::WindowVisibility::WindowVisibility():

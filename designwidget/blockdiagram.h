@@ -73,6 +73,13 @@ public:
      */
     void setProtection(bool locked);
 
+    /*!
+     *  Sets the bus widths visible/invisible.
+     *
+     *      @param [in] visible If true, the bus widths are set visible. Otherwise false.
+     */
+    void setBusWidthsVisible(bool visible);
+
     /*! \brief Create a Design that represents this BlockDiagram
      *
      * \param vlnv The vlnv to be set for the design

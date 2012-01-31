@@ -7,6 +7,7 @@
 #define DIAGRAMINTERCONNECTION_H
 
 #include <QGraphicsPathItem>
+#include <QGraphicsTextItem>
 #include <QUndoCommand>
 
 class DiagramConnectionEndPoint;
@@ -39,7 +40,7 @@ public:
                            bool autoConnect = true,
                            const QString &displayName = QString(),
                            const QString &description = QString(),
-                           QGraphicsItem *parent = 0);
+                           QGraphicsScene* scene = 0);
 
     /*!
      *  Constructor which creates an open-ended diagram interconnection.
@@ -48,7 +49,7 @@ public:
                            QPointF p2, QVector2D const& dir2,
                            const QString &displayName = QString(),
                            const QString &description = QString(),
-                           QGraphicsItem *parent = 0);
+                           QGraphicsScene* scene = 0);
 
     virtual ~DiagramInterconnection();
 
@@ -58,6 +59,13 @@ public:
      *      @param [in] mode The routing mode.
      */
     void setRoutingMode(RoutingMode mode);
+
+    /*!
+     *  Sets the bus width label visible/invisible.
+     *
+     *      @param [in] visible If true, the label is set visible. Otherwise false.
+     */
+    void setBusWidthVisible(bool visible);
 
     /*! 
      *  Connects the ends of the interconnection.
@@ -174,6 +182,15 @@ private:
      */
     void updateName();
 
+    /*!
+     *  Updates the width label based on the end points.
+     */
+    void updateWidthLabel();
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
     QString name_;
 	QString description_;
     DiagramConnectionEndPoint *endPoint1_;
@@ -185,6 +202,9 @@ private:
 
     //! The routing mode.
     RoutingMode routingMode_;
+
+    //! The connection width label.
+    QGraphicsTextItem* widthLabel_;
 };
 
 #endif // DIAGRAMINTERCONNECTION_H

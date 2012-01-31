@@ -78,6 +78,14 @@ public:
     QGraphicsView* getView();
 
     /*!
+     *  Changes the state of a visibility control.
+     *
+     *      @param [in] name   The name of the visibility control.
+     *      @param [in] state  The new state for the visibility control.
+     */
+    virtual void setVisibilityControlState(QString const& name, bool state);
+
+    /*!
      *  Refreshes the document view.
      */
     virtual void refresh();

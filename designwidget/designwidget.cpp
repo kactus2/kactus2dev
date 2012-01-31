@@ -60,7 +60,7 @@
 
 DesignWidget::DesignWidget(LibraryInterface *lh, QWidget* parent): 
 TabDocument(parent, DOC_ZOOM_SUPPORT | DOC_DRAW_MODE_SUPPORT | DOC_PRINT_SUPPORT |
-                    DOC_PROTECTION_SUPPORT | DOC_EDIT_SUPPORT, 30, 300), 
+                    DOC_PROTECTION_SUPPORT | DOC_EDIT_SUPPORT | DOC_VISIBILITY_CONTROL_SUPPORT, 30, 300), 
 hierComponent_(NULL), 
 viewName_(), 
 view_(NULL), 
@@ -117,6 +117,8 @@ editProvider_() {
 
     view_->verticalScrollBar()->setTracking(true);
     connect(view_->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(onVerticalScroll(int)));
+
+    addVisibilityControl("Bus Widths", false);
 }
 
 DesignWidget::~DesignWidget() {
@@ -1050,4 +1052,17 @@ BlockDiagram* DesignWidget::scene() const {
 
 QSharedPointer<Design> DesignWidget::createDesign( const VLNV& vlnv ) {
 	return diagram_->createDesign(vlnv);
+}
+
+//-----------------------------------------------------------------------------
+// Function: setVisibilityControlState()
+//-----------------------------------------------------------------------------
+void DesignWidget::setVisibilityControlState(QString const& name, bool state)
+{
+    TabDocument::setVisibilityControlState(name, state);
+
+    if (name == "Bus Widths")
+    {
+        diagram_->setBusWidthsVisible(state);
+    }
 }

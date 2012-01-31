@@ -40,6 +40,7 @@ public:
         DOC_PRINT_SUPPORT = 0x04,
         DOC_PROTECTION_SUPPORT = 0x08,
         DOC_EDIT_SUPPORT = 0x10,
+        DOC_VISIBILITY_CONTROL_SUPPORT = 0x20,
     };
 
 	enum SupportedWindows {
@@ -72,6 +73,14 @@ public:
      *  Applies the current settings into use.
      */
     virtual void applySettings(QSettings const& settings);
+
+    /*!
+     *  Changes the state of a visibility control.
+     *
+     *      @param [in] name   The name of the visibility control.
+     *      @param [in] state  The new state for the visibility control.
+     */
+    virtual void setVisibilityControlState(QString const& name, bool state);
 
     /*!
      *  Refreshes the document view.
@@ -196,6 +205,11 @@ public:
      */
     bool isPreviouslyUnlocked() const;
 
+    /*!
+     *  Returns the supported visibility controls.
+     */
+    QMap<QString, bool> const& getVisibilityControls() const;
+
 public slots:
     //! Saves the document and resets the modified state.
     virtual bool save();
@@ -243,6 +257,14 @@ protected:
      *      @param [in] type The type name.
      */
     void setDocumentType(QString const& type);
+
+    /*!
+     *  Adds a new visibility control to the document.
+     *
+     *      @param [in] name   The name of the new visibility control.
+     *      @param [in] state  The initial state of the visibility control.
+     */
+    void addVisibilityControl(QString const& name, bool state);
 
 	//! \brief Contains the bit fields that define which windows are supported for this tab.
 	unsigned int supportedWindows_;
@@ -300,6 +322,9 @@ private:
 
     //! If true, the document has been previously unlocked.
     bool previouslyUnlocked_;
+
+    //! Visibility control map.
+    QMap<QString, bool> visibilityControls_;
 };
 
 //-----------------------------------------------------------------------------

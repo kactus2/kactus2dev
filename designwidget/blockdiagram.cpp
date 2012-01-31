@@ -306,7 +306,7 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
 		if (comp1 && comp2 && port1 && port2) {
 			DiagramInterconnection *diagramInterconnection =
 				new DiagramInterconnection(port1, port2, true, interconnection.displayName,
-                                           interconnection.description);
+                                           interconnection.description, this);
             diagramInterconnection->setRoute(interconnection.route);
 			diagramInterconnection->setName(interconnection.name);
 
@@ -316,8 +316,6 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
             }
 
             connect(diagramInterconnection, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
-
-			addItem(diagramInterconnection);
 		}
     }
 
@@ -394,7 +392,8 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
                 diagIf = diagIf->getOffPageConnector();
             }
 
-            DiagramInterconnection* diagConn = new DiagramInterconnection(compPort, diagIf, true);
+            DiagramInterconnection* diagConn = new DiagramInterconnection(compPort, diagIf, true,
+                                                                          QString(), QString(), this);
             diagConn->setRoute(hierConn.route);
 
             if (hierConn.offPage)
@@ -403,8 +402,6 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
             }
 
             connect(diagConn, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
-
-			addItem(diagConn);
 			connectedHier.append(hierConn.interfaceRef);
 		}
     }
@@ -694,9 +691,7 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             tempConnection_ = new DiagramInterconnection(tempConnEndPoint_->scenePos(),
                 tempConnEndPoint_->getDirection(),
                 mouseEvent->scenePos(),
-                QVector2D(0.0f, 0.0f));
-
-            addItem(tempConnection_);
+                QVector2D(0.0f, 0.0f), QString(), QString(), this);
 
             // Determine all potential end points to which the starting end point could be connected
             // and highlight them.
@@ -929,20 +924,19 @@ void BlockDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
             if (highlightedEndPoint_ != 0)
             {
                  newTempConnection_ = new DiagramInterconnection(tempConnEndPoint_,
-                                                                 highlightedEndPoint_, false);
+                                                                 highlightedEndPoint_, false,
+                                                                 QString(), QString(), this);
             }
             else
             {
                 newTempConnection_ = new DiagramInterconnection(tempConnEndPoint_->scenePos(),
                     tempConnEndPoint_->getDirection(), snapPointToGrid(mouseEvent->scenePos()),
-                    QVector2D(0.0f, 0.0f));
+                    QVector2D(0.0f, 0.0f), QString(), QString(), this);
             }
 
             removeItem(tempConnection_);
 			delete tempConnection_;
 			tempConnection_ = newTempConnection_;
-
-			addItem(tempConnection_);
 			return;
         }
         else
@@ -1884,8 +1878,8 @@ void BlockDiagram::createConnection(QGraphicsSceneMouseEvent * mouseEvent)
                 endPoint = endPoint->getOffPageConnector();
             }
 
-            tempConnection_ = new DiagramInterconnection(tempConnEndPoint_, endPoint, false);
-            addItem(tempConnection_);
+            tempConnection_ = new DiagramInterconnection(tempConnEndPoint_, endPoint, false,
+                                                         QString(), QString(), this);
         }
 
         connect(tempConnection_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
@@ -2053,8 +2047,8 @@ void BlockDiagram::toggleConnectionStyle(DiagramInterconnection* conn, QUndoComm
     QUndoCommand* cmd = new ConnectionDeleteCommand(static_cast<DiagramInterconnection*>(conn), parentCmd);
     cmd->redo();
 
-    DiagramInterconnection* newConn = new DiagramInterconnection(endPoint1, endPoint2, false);
-    addItem(newConn);
+    DiagramInterconnection* newConn = new DiagramInterconnection(endPoint1, endPoint2, false,
+                                                                 QString(), QString(), this);
 
     connect(newConn, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
@@ -2081,6 +2075,22 @@ void BlockDiagram::hideOffPageConnections()
         if (conn != 0 && conn->endPoint1()->type() == DiagramOffPageConnector::Type)
         {
             conn->setVisible(false);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: setBusWidthsVisible()
+//-----------------------------------------------------------------------------
+void BlockDiagram::setBusWidthsVisible(bool visible)
+{
+    foreach (QGraphicsItem* item, items())
+    {
+        DiagramInterconnection* conn = dynamic_cast<DiagramInterconnection*>(item);
+
+        if (conn != 0)
+        {
+            conn->setBusWidthVisible(visible);
         }
     }
 }
