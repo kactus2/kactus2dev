@@ -1,3 +1,8 @@
+/* 
+ * 		filename: newobjectdialog.cpp
+ *		Project: Kactus 2
+ */
+
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>

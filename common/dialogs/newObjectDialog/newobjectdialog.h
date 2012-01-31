@@ -1,3 +1,8 @@
+/* 
+ * 		filename: newobjectdialog.h
+ *		Project: Kactus 2
+ */
+
 #ifndef NEWOBJECTDIALOG_H
 #define NEWOBJECTDIALOG_H
 

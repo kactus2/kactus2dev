@@ -14,7 +14,6 @@
 #include <QIcon>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include <QHeaderView>
 #include <QSharedPointer>
 #include <QAbstractItemDelegate>
 
@@ -24,41 +23,32 @@ QGroupBox(title, parent),
 component_(0),
 view_(this),
 filter_(this),
-model_(this),
-addButton_(QIcon(":/icons/graphics/add.png"), QString(), this),
-removeButton_(QIcon(":/icons/graphics/remove.png"), QString(), this) {
+model_(this) {
 
 	filter_.setSourceModel(&model_);
 	view_.setModel(&filter_);
 
 	// set options for the view
-	view_.horizontalHeader()->setStretchLastSection(true);
-	view_.horizontalHeader()->setResizeMode(QHeaderView::Interactive);
-	view_.setSelectionMode(QAbstractItemView::SingleSelection);
-	view_.setSelectionBehavior(QAbstractItemView::SelectItems);
-	view_.setEditTriggers(QAbstractItemView::DoubleClicked | 
-		QAbstractItemView::SelectedClicked | QAbstractItemView::EditKeyPressed);
-	view_.setWordWrap(true);
-	view_.setSortingEnabled(false);
-	view_.verticalHeader()->hide();
-	view_.setItemDelegate(new ConfigurableElementDelegate(QSharedPointer<Component>(), this));
+	
+	// set view to be sortable
 	view_.setSortingEnabled(true);
 
-	QHBoxLayout* buttonLayout = new QHBoxLayout();
-	buttonLayout->addStretch();
-	buttonLayout->addWidget(&addButton_);
-	buttonLayout->addWidget(&removeButton_);
+	// items can not be dragged
+	view_.setItemsDraggable(false);
+
+	// the delegate for editing
+	view_.setItemDelegate(new ConfigurableElementDelegate(QSharedPointer<Component>(), this));
 
 	QVBoxLayout* topLayout = new QVBoxLayout(this);
 	topLayout->addWidget(&view_);
-	topLayout->addLayout(buttonLayout);
 
-	connect(&addButton_, SIGNAL(clicked(bool)),
-		&model_, SLOT(onAdd()), Qt::UniqueConnection);
-	connect(&removeButton_, SIGNAL(clicked(bool)),
-		this, SLOT(onRemoveClick()), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
+	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
+		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
+	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
+		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 }
 
 ConfigurableElementEditor::~ConfigurableElementEditor() {

@@ -8,10 +8,11 @@
 #ifndef CONFIGURABLEELEMENTEDITOR_H
 #define CONFIGURABLEELEMENTEDITOR_H
 
+#include <common/views/EditableTableView/editabletableview.h>
+
 #include "componentinstancemodel.h"
 
 #include <QGroupBox>
-#include <QTableView>
 #include <QSortFilterProxyModel>
 #include <QPushButton>
 
@@ -70,19 +71,13 @@ private:
 	ComponentItem* component_;
 
 	//! \brief The widget to display the contents of the model.
-	QTableView view_;
+	EditableTableView view_;
 
 	//! \brief The filter to do the sorting of items to display.
 	QSortFilterProxyModel filter_;
 
 	//! \brief The model to edit the configurable elements of a component instance.
 	ComponentInstanceModel model_;
-
-	//! \brief The button to add a new configurable element value.
-	QPushButton addButton_;
-
-	//! \brief The button to remove the selected configurable element value.
-	QPushButton removeButton_;
 };
 
 #endif // CONFIGURABLEELEMENTEDITOR_H

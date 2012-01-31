@@ -105,12 +105,26 @@ public slots:
 	*/
 	void onAdd();
 
+	/*! \brief A new item should be added to given index.
+	 *
+	 * \param index The position where new item should be added at.
+	 *
+	*/
+	void onAddItem(const QModelIndex& index);
+
 	/*! \brief Remove the specified item from the model.
 	 *
 	 * \param index Identifies the configurable element to remove.
 	 *
 	*/
 	void onRemove(const QModelIndex& index);
+
+	/*! \brief An item should be removed from the model.
+	 * 
+	 * \param index Identifies the item that should be removed.
+	 *
+	*/
+	void onRemoveItem(const QModelIndex& index);
 
 	/*! \brief Clear the model.
 	 *

@@ -76,7 +76,7 @@ itemsToAdd_() {
 	setWindowTitle(tr("LibraryHandler"));
 
 	data_ = QSharedPointer<LibraryData>(new LibraryData(this));
-	data_->parseLibrary();
+	data_->parseLibrary(false);
 
 	treeModel_ = QSharedPointer<LibraryTreeModel>(
 			new LibraryTreeModel(this, data_.data(), this));

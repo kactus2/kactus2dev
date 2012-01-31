@@ -202,6 +202,26 @@ void ComponentInstanceModel::onAdd() {
 	}
 }
 
+void ComponentInstanceModel::onAddItem( const QModelIndex& index ) {
+	int row = table_.size();
+
+	// if the index is valid then add the item to the correct position
+	if (index.isValid()) {
+		row = index.row();
+	}
+
+	ComponentInstanceModel::ConfigurableElement element(QString(""), QString(""));
+
+	if (!table_.contains(element)) {
+		beginInsertRows(QModelIndex(), row, row);
+		table_.insert(row, element);
+		endInsertRows();
+
+		// tell also parent widget that contents have been changed
+		emit contentChanged();
+	}
+}
+
 void ComponentInstanceModel::onRemove( const QModelIndex& index ) {
 
 	if (!index.isValid())
@@ -217,6 +237,29 @@ void ComponentInstanceModel::onRemove( const QModelIndex& index ) {
 
 	emit contentChanged();
 }
+
+void ComponentInstanceModel::onRemoveItem( const QModelIndex& index ) {
+	// don't remove anything if index is invalid
+	if (!index.isValid()) {
+		return;
+	}
+	// make sure the row number if valid
+	else if (index.row() < 0 || index.row() >= table_.size()) {
+		return;
+	}
+
+	// remove the indexed configurable element
+	beginRemoveRows(QModelIndex(), index.row(), index.row());
+	table_.removeAt(index.row());
+	endRemoveRows();
+
+	// save the changes to the diagram component
+	save();
+
+	emit contentChanged();
+}
+
+
 
 void ComponentInstanceModel::changeElements( const QMap<QString, QString>& confElements ) {
 	values_ = confElements;
@@ -236,8 +279,6 @@ void ComponentInstanceModel::readValues() {
 	}
 	endResetModel();
 }
-
-
 
 ComponentInstanceModel::ConfigurableElement::ConfigurableElement( 
 	const QString& name, const QString& value ):

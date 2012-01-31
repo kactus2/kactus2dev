@@ -170,8 +170,11 @@ public:
 	 * 
 	 * The found objects are displayed in the library.
 	 * When search is complete the library integrity is checked.
+	 * 
+	 * \param showProgress If true then the progress bar displaying the progress
+	 * of check is displayed to user.
 	*/
-	void parseLibrary();
+	void parseLibrary(bool showProgress = true);
 
 	/*! \brief Get a model that matches given VLNV.
 	 *
@@ -187,9 +190,10 @@ public:
 
 	/*! \brief Check the integrity of the library.
 	 *
-	 *
+	 * \param showProgress If true then the progress bar displaying the progress
+	 * of check is displayed to user.
 	*/
-	void checkLibraryIntegrity();
+	void checkLibraryIntegrity(bool showProgress = true);
 
 signals:
 

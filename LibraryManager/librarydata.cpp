@@ -454,7 +454,7 @@ void LibraryData::resetLibrary() {
 	endResetModel();
 }
 
-void LibraryData::checkLibraryIntegrity() {
+void LibraryData::checkLibraryIntegrity( bool showProgress /*= true*/ ) {
 	beginResetModel();
 
 	table_.clear();
@@ -466,13 +466,16 @@ void LibraryData::checkLibraryIntegrity() {
 
 	// create the progress bar that displays the progress of the check
 	QProgressBar progBar;
-	progBar.setRange(0, max);
-	progBar.setValue(current);
-	progBar.setOrientation(Qt::Horizontal);
-	progBar.setFormat(tr("Processing item %v of %m (%p%)"));
-	progBar.move(handler_->mapToGlobal(handler_->geometry().topRight()));
-	progBar.setWindowTitle(tr("Checking integrity..."));
-	progBar.show();
+	
+	if (showProgress) {
+		progBar.setRange(0, max);
+		progBar.setValue(current);
+		progBar.setOrientation(Qt::Horizontal);
+		progBar.setFormat(tr("Processing item %v of %m (%p%)"));
+		progBar.move(handler_->mapToGlobal(handler_->geometry().topRight()));
+		progBar.setWindowTitle(tr("Checking integrity..."));
+		progBar.show();
+	}
 	
 	QMap<VLNV, QString>::iterator i = libraryItems_.begin();
 	while (i != libraryItems_.end()) {
@@ -598,8 +601,10 @@ void LibraryData::checkLibraryIntegrity() {
 		++i;
 	}
 
-	// the progress bar can now be hidden
-	progBar.hide();
+	if (showProgress) {
+		// the progress bar can now be hidden
+		progBar.hide();
+	}
 
 	// inform tree model that it needs to reset model also
 	emit resetModel();
@@ -611,7 +616,7 @@ void LibraryData::checkLibraryIntegrity() {
 		errors).arg(failedObjects));
 }
 
-void LibraryData::parseLibrary() {
+void LibraryData::parseLibrary( bool showProgress /*= true*/ ) {
 	
 	QApplication::setOverrideCursor(Qt::WaitCursor);
 
@@ -650,7 +655,7 @@ void LibraryData::parseLibrary() {
 	}
 
 	// check the integrity of the items in the library
-	checkLibraryIntegrity();
+	checkLibraryIntegrity(showProgress);
 
 	QApplication::restoreOverrideCursor();
 }

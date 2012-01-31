@@ -876,14 +876,14 @@ bool Design::ComponentInstance::isValid( QStringList& errorList,
 		i != configurableElementValues.end(); ++i) {
 
 			if (i.key().isEmpty()) {
-				errorList.append(QObject::tr("No configurable element value set"
-					" for %1 within %2").arg(thisIdentifier).arg(parentIdentifier));
-				valid = false;
-			}
-			if (i.value().isEmpty()) {
 				errorList.append(QObject::tr("No reference id set for configurable"
 					" element value in %1 within %2").arg(thisIdentifier).arg(
 					parentIdentifier));
+				valid = false;
+			}
+			if (i.value().isEmpty()) {
+				errorList.append(QObject::tr("No configurable element value set"
+					" for %1 within %2").arg(thisIdentifier).arg(parentIdentifier));
 				valid = false;
 			}
 	}
