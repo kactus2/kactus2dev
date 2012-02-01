@@ -307,7 +307,7 @@ const QString LibraryData::getPath( const VLNV& vlnv ) {
 	}
 }
 
-bool LibraryData::addVLNV( const VLNV& vlnv, const QString& path, bool refreshLibrary ) {
+bool LibraryData::addVLNV( const VLNV& vlnv, const QString& path) {
 	if (libraryItems_.contains(vlnv)) {
 		emit errorMessage(tr("The VLNV \n"
 			"Vendor: %1\n"
@@ -324,22 +324,15 @@ bool LibraryData::addVLNV( const VLNV& vlnv, const QString& path, bool refreshLi
 		emit errorMessage(tr("The file %1 was not found in file system").arg(path));
 		return false;
 	}
-	
-	if (refreshLibrary) {
-		beginResetModel();
 
-		// add the component to the library
-		VLNV* vlnvP = const_cast<VLNV*>(&libraryItems_.insert(vlnv, path).key());
-		table_.append(vlnvP);
+	beginInsertRows(QModelIndex(), table_.size(), table_.size());
 
-		emit resetModel();
-		endResetModel();
-	}
-	else {
-		// add the component to the library
-		VLNV* vlnvP = const_cast<VLNV*>(&libraryItems_.insert(vlnv, path).key());
-		table_.append(vlnvP);
-	}
+	// add the component to the library
+	VLNV* vlnvP = const_cast<VLNV*>(&libraryItems_.insert(vlnv, path).key());
+	table_.append(vlnvP);
+
+	emit addVLNV(vlnvP);
+	endInsertRows();
 
 	return true;
 }

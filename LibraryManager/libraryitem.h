@@ -62,6 +62,7 @@ public:
 	*
 	* \param vlnv A VLNV tag that is to be added to database
 	* \param level The level of the item in the hierarchy
+	* 
 	*/
 	void createChild(VLNV* vlnv, Level level);
 

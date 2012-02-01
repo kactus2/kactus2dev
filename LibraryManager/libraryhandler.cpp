@@ -119,6 +119,9 @@ void LibraryHandler::syncronizeModels() {
 	connect(data_.data(), SIGNAL(resetModel()),
 		treeModel_.data(), SLOT(onResetModel()), Qt::UniqueConnection);
 
+	connect(data_.data(), SIGNAL(addVLNV(VLNV*)),
+		treeModel_.data(), SLOT(onAddVLNV(VLNV*)), Qt::UniqueConnection);
+
 	// signals from data model to library handler
 	connect(data_.data(), SIGNAL(errorMessage(const QString&)),
 		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
@@ -623,7 +626,10 @@ bool LibraryHandler::writeModelToFile( const QString path,
 
 	if (!saveInProgress_) {
 		// tell library to register the vlnv
-		data_->addVLNV(vlnv, filePath, true);
+		data_->addVLNV(vlnv, filePath);
+
+		// the hierarchy model must be re-built
+		hierarchyModel_->onResetModel();
 	}
 	else {
 		itemsToAdd_.insert(vlnv, filePath);
@@ -1416,12 +1422,12 @@ void LibraryHandler::endSave() {
 		for (QMap<VLNV, QString>::iterator i = itemsToAdd_.begin(); 
 			i != itemsToAdd_.end(); ++i) {
 
-			data_->addVLNV(i.key(), i.value(), false);
+			data_->addVLNV(i.key(), i.value());
 		}
 		itemsToAdd_.clear();
 
-		// rebuild the library views.
-		data_->resetLibrary();
+		// rebuild the hierarchy view.
+		hierarchyModel_->onResetModel();
 	}
 }
 

@@ -202,11 +202,8 @@ public slots:
 	//! \brief Remove the specified vlnv branch from the tree.
 	void onRemoveVLNV(VLNV* vlnv);
 
-	//! \brief Hide the specified vlnv branch in the tree.
-	//void onHideVLNV(VLNV* vlnv);
-
-	//! \brief Show the specified vlnv branch in the tree.
-	//void onShowVLNV(VLNV* vlnv);
+	//! \brief Add the specified vlnv branch to the tree.
+	void onAddVLNV(VLNV* vlnv);
 
 	//! \brief Reset the model.
 	void onResetModel();

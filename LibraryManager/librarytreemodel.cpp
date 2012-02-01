@@ -346,6 +346,34 @@ void LibraryTreeModel::onRemoveVLNV(VLNV* vlnv ) {
 
 }
 
+void LibraryTreeModel::onAddVLNV( VLNV* vlnv ) {
+
+	if (!vlnv) {
+		return;
+	}
+
+	LibraryItem* parentItem = rootItem_->findHighestUnique(vlnv);
+
+	QModelIndex parentIndex;
+
+	// if the highest unique is not the root
+	if (parentItem != rootItem_) {
+
+		int row = parentItem->row();
+		Q_ASSERT(row >= 0);
+
+		parentIndex = createIndex(row, 0, parentItem);
+	}
+	
+	int rowToAdd = parentItem->getNumberOfChildren();
+
+	beginInsertRows(parentIndex, rowToAdd, rowToAdd);
+	rootItem_->createChild(vlnv, static_cast<LibraryItem::Level>(0));
+	endInsertRows();
+
+	emit refreshDialer();
+}
+
 void LibraryTreeModel::removeLibraryItem( LibraryItem* toRemove, bool emitSignals) {
 	
 	int row = toRemove->parent()->getIndexOf(toRemove);

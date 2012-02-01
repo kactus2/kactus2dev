@@ -56,11 +56,10 @@ public:
 	 *
 	 * \param vlnv The vlnv to be added.
 	 * \param path The absolute file path to the file to be added to the library.
-	 * \param refreshLibrary If true then the library views are rebuilt.
 	 *
 	 * \return True if the vlnv was added, false if not.
 	*/
-	bool addVLNV(const VLNV& vlnv, const QString& path, bool refreshLibrary);
+	bool addVLNV(const VLNV& vlnv, const QString& path);
 
 	/*! \brief Checks if the library already contains the specified vlnv
 	 *
@@ -208,6 +207,9 @@ signals:
 
 	//! \brief Inform tree model that a vlnv is to be removed from the tree.
 	void removeVLNV(VLNV* vlnv);
+
+	//! \brief Inform tree model that a vlnv is to be added to the tree.
+	void addVLNV(VLNV* vlnv);
 
 	//! \brief Inform tree model that the model should be reset
 	void resetModel();

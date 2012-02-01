@@ -81,6 +81,9 @@ void DialerWidget::setRootItem(const LibraryItem* rootItem ) {
 void DialerWidget::refreshVendors() {
 	Q_ASSERT(root_);
 
+	// get currently selected vendor search condition
+	const QString vendorText = vendorBox_.currentText();
+
 	vendorBox_.disconnect();
 	vendorBox_.clear();
 	vendors_.clear();
@@ -93,15 +96,19 @@ void DialerWidget::refreshVendors() {
 	}
 	vendorBox_.addItem(QString());
 	vendorBox_.addItems(vendorList);
+	vendorBox_.setEditText(vendorText);
 
 	connect(&vendorBox_, SIGNAL(editTextChanged(const QString&)),
 		this, SLOT(onVendorChanged(const QString&)), Qt::UniqueConnection);
 
-	onVendorChanged(QString());
+	onVendorChanged(vendorText);
 }
 
 void DialerWidget::onVendorChanged( const QString& vendorText ) {
 	Q_ASSERT(root_);
+
+	// get currently selected library search condition
+	const QString libraryText = libraryBox_.currentText();
 
 	libraryBox_.disconnect();
 	libraryBox_.clear();
@@ -120,8 +127,8 @@ void DialerWidget::onVendorChanged( const QString& vendorText ) {
 	int pos = 0;
 	foreach (LibraryItem* item, vendors_) {
 
-                QString name = item->getName();
-                if (validator.validate(name, pos) == QValidator::Acceptable) {
+		QString name = item->getName();
+		if (validator.validate(name, pos) == QValidator::Acceptable) {
 			libraries_ += item->getLibraries();
 		}
 	}
@@ -134,16 +141,20 @@ void DialerWidget::onVendorChanged( const QString& vendorText ) {
 	}
 	libraryBox_.addItem(QString());
 	libraryBox_.addItems(libraryList);
+	libraryBox_.setEditText(libraryText);
 
 	connect(&libraryBox_, SIGNAL(editTextChanged(const QString&)),
 		this, SLOT(onLibraryChanged(const QString&)), Qt::UniqueConnection);
 
 	emit vendorChanged(vendor);
-	onLibraryChanged(QString());
+	onLibraryChanged(libraryText);
 }
 
 void DialerWidget::onLibraryChanged( const QString& libraryText ) {
 	Q_ASSERT(root_);
+
+	// get currently selected name search condition
+	const QString nameText = nameBox_.currentText();
 
 	nameBox_.disconnect();
 	nameBox_.clear();
@@ -175,16 +186,20 @@ void DialerWidget::onLibraryChanged( const QString& libraryText ) {
 	}
 	nameBox_.addItem(QString());
 	nameBox_.addItems(nameList);
+	nameBox_.setEditText(nameText);
 
 	connect(&nameBox_, SIGNAL(editTextChanged(const QString&)),
 		this, SLOT(onNameChanged(const QString&)), Qt::UniqueConnection);
 
 	emit libraryChanged(library);
-	onNameChanged(QString());
+	onNameChanged(nameText);
 }
 
 void DialerWidget::onNameChanged( const QString& nameText ) {
 	Q_ASSERT(root_);
+
+	// get currently selected version condition
+	const QString versionText = versionBox_.currentText();
 
 	versionBox_.disconnect();
 	versionBox_.clear();
@@ -216,12 +231,13 @@ void DialerWidget::onNameChanged( const QString& nameText ) {
 	}
 	versionBox_.addItem(QString());
 	versionBox_.addItems(versionList);
+	versionBox_.setEditText(versionText);
 	
 	connect(&versionBox_, SIGNAL(editTextChanged(const QString&)),
 		this, SLOT(onVersionChanged(const QString&)), Qt::UniqueConnection);
 
 	emit nameChanged(name);
-	onVersionChanged(QString());
+	onVersionChanged(versionText);
 }
 
 void DialerWidget::onVersionChanged( const QString& versionText ) {

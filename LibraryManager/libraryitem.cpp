@@ -83,7 +83,7 @@ LibraryItem::~LibraryItem() {
 	childItems_.clear();
 }
 
-void LibraryItem::createChild(VLNV* vlnv, Level level ) {
+void LibraryItem::createChild( VLNV* vlnv, Level level ) {
 	QString childName;
 
 	// choose name for the item in the tree
@@ -125,8 +125,9 @@ void LibraryItem::createChild(VLNV* vlnv, Level level ) {
 	}
 
 	// no child with same name was found so create a new child
-	childItems_.push_back(new LibraryItem(vlnv,
-		static_cast<Level>(static_cast<int>(level) +1), this));
+	LibraryItem* newItem = new LibraryItem(vlnv,
+		static_cast<Level>(static_cast<int>(level) +1), this);
+	childItems_.push_back(newItem);
 	
 	return;
 }
@@ -271,8 +272,16 @@ LibraryItem* LibraryItem::findHighestUnique( const VLNV* vlnv ) {
 		}
 	}
 	}
-	// no child items existed so at least this item can be removed
-	return parentItem_->findHighestUnique(this);
+
+	// if this is not root then parent item exists.
+	if (parentItem_) {
+		// no child items existed so at least this item can be removed
+		return parentItem_->findHighestUnique(this);
+	}
+	// if this is root then there is no parent and this is the highest unique
+	else {
+		return this;
+	}
 }
 
 bool LibraryItem::isValid() {
