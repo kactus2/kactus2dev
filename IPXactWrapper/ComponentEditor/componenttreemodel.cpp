@@ -137,7 +137,15 @@ QVariant ComponentTreeModel::data(const QModelIndex& index, int role) const {
 		"static_cast failed to give valid ComponentTreeItem-pointer");
 
 	if (role == Qt::DisplayRole) {
-		return item->text();
+
+		QString text = item->text();
+
+		// if the object has not a name
+		if (text.isEmpty()) {
+			text = tr("unnamed");
+		}
+
+		return text;
 	}
 	else if (role == Qt::FontRole) {
 		return item->getFont();

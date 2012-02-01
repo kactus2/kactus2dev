@@ -126,7 +126,7 @@ void IPXactComponentEditor::selectedItemChanged( const QModelIndex& newIndex ) {
 void IPXactComponentEditor::onItemNameChanged( const QString& newName ) {
 	
 	// make sure that some item is selected and the new name is not empty string.
-	if (!currentIndex_.isValid() || newName.isEmpty()) {
+	if (!currentIndex_.isValid()) {
 		return;
 	}
 
