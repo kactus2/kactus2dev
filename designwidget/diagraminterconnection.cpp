@@ -38,8 +38,9 @@ DiagramInterconnection::DiagramInterconnection(DiagramConnectionEndPoint *endPoi
                                                bool autoConnect,
                                                const QString &displayName,
                                                const QString &description,
-                                               QGraphicsScene* scene)
-    : QGraphicsPathItem(0, scene), 
+                                               BlockDiagram* parent)
+    : QGraphicsPathItem(), 
+      parent_(parent),
       name_(), 
       description_(description),
       endPoint1_(0),
@@ -72,8 +73,9 @@ DiagramInterconnection::DiagramInterconnection(QPointF p1, QVector2D const& dir1
                                                QPointF p2, QVector2D const& dir2,
                                                const QString &displayName,
 											   const QString &description,
-											   QGraphicsScene* scene)
-    : QGraphicsPathItem(0, scene),
+											   BlockDiagram* parent)
+    : QGraphicsPathItem(),
+      parent_(parent),
       name_(),
       description_(),
       endPoint1_(0), 
@@ -485,7 +487,7 @@ void DiagramInterconnection::mousePressEvent(QGraphicsSceneMouseEvent *mouseEven
 void DiagramInterconnection::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     // Discard mouse move if the diagram is protected.
-    if (static_cast<BlockDiagram*>(scene())->isProtected())
+    if (parent_->isProtected())
     {
         return;
     }
@@ -541,20 +543,20 @@ void DiagramInterconnection::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent
 
             if (cur > next)
             {
-                delta = std::max(delta, 10 + next - cur);
+                delta = std::max(delta, GridSize + next - cur);
             }
             else
             {
-                delta = std::min(delta, -10 + next - cur);
+                delta = std::min(delta, -GridSize + next - cur);
             }
 
             if (cur > prev)
             {
-                delta = std::max(delta, 10 + prev - cur);
+                delta = std::max(delta, GridSize + prev - cur);
             }
             else
             {
-                delta = std::min(delta, -10 + prev - cur);
+                delta = std::min(delta, -GridSize + prev - cur);
             }
 
             pathPoints_[selected_].setX(pathPoints_[selected_].x() + delta);
@@ -604,7 +606,7 @@ void DiagramInterconnection::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEv
     if (route() != oldRoute_)
     {
         QSharedPointer<QUndoCommand> cmd(new ConnectionMoveCommand(this, oldRoute_));
-        static_cast<BlockDiagram*>(scene())->getEditProvider().addCommand(cmd);
+        parent_->getEditProvider().addCommand(cmd);
     }
 
     QGraphicsPathItem::mouseReleaseEvent(mouseEvent);
@@ -1017,7 +1019,7 @@ void DiagramInterconnection::updateWidthLabel()
         font.setBold(true);
         widthLabel_->setFont(font);
 
-        DesignWidget* designWidget = static_cast<BlockDiagram*>(scene())->parent();
+        DesignWidget* designWidget = parent_->parent();
         widthLabel_->setVisible(designWidget->getVisibilityControls().value("Bus Widths"));
     }
     else

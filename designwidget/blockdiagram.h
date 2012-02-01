@@ -47,6 +47,7 @@ public:
 	//! \brief The destructor
 	virtual ~BlockDiagram();
 
+
     /*! \brief Set the IP-XACT document that is viewed in BlockDiagram
      *
      */
@@ -318,6 +319,11 @@ private:
      *  Hides all visible off-page connections.
      */
     void hideOffPageConnections();
+
+    /*!
+     *  Destroys all connections in the diagram.
+     */
+    void destroyConnections();
 
 	//! \brief The pointer to the library handler that manages the library
     LibraryInterface *lh_;

@@ -121,7 +121,8 @@ editProvider_() {
     addVisibilityControl("Bus Widths", false);
 }
 
-DesignWidget::~DesignWidget() {
+DesignWidget::~DesignWidget()
+{
 }
 
 void DesignWidget::setDesign( const VLNV* vlnv, const QString& viewName) {

@@ -92,15 +92,7 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
 	// clear the previous design configuration
 	designConf_.clear();
 
-	foreach (QGraphicsItem* item, items()) {
-
-		// if the item is an interconnection
-		if (item->type() == DiagramInterconnection::Type) {
-			removeItem(item);
-			delete item;
-		}
-	}
-
+    destroyConnections();
     clear();
     component_ = hierComp;
 
@@ -316,6 +308,7 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
             }
 
             connect(diagramInterconnection, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+            addItem(diagramInterconnection);
 		}
     }
 
@@ -403,22 +396,18 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
 
             connect(diagConn, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 			connectedHier.append(hierConn.interfaceRef);
+
+            addItem(diagConn);
 		}
     }
 
     return true;
 }
 
-BlockDiagram::~BlockDiagram() {
-    
-	foreach (QGraphicsItem* item, items()) {
+BlockDiagram::~BlockDiagram()
+{
+    destroyConnections();
 
-		// if the item is an interconnection
-		if (item->type() == DiagramInterconnection::Type) {
-			removeItem(item);
-			delete item;
-		}
-	}
 }
 
 DiagramComponent *BlockDiagram::getComponent(const QString &instanceName) {
@@ -692,6 +681,7 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
                 tempConnEndPoint_->getDirection(),
                 mouseEvent->scenePos(),
                 QVector2D(0.0f, 0.0f), QString(), QString(), this);
+            addItem(tempConnection_);
 
             // Determine all potential end points to which the starting end point could be connected
             // and highlight them.
@@ -859,7 +849,9 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             {
                 hideOffPageConnections();
 
-                foreach (DiagramInterconnection* conn, endPoint->getInterconnections())
+                QList<DiagramInterconnection*> connections = endPoint->getInterconnections();
+
+                foreach (DiagramInterconnection* conn, connections)
                 {
                     toggleConnectionStyle(conn, cmd.data());
                 }
@@ -935,7 +927,9 @@ void BlockDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
             }
 
             removeItem(tempConnection_);
-			delete tempConnection_;
+            delete tempConnection_;
+
+            addItem(newTempConnection_);
 			tempConnection_ = newTempConnection_;
 			return;
         }
@@ -1846,7 +1840,7 @@ void BlockDiagram::createConnection(QGraphicsSceneMouseEvent * mouseEvent)
 
     // Check if there is no end point close enough to the cursor or the
     // end points cannot be connected together.
-    if (endPoint == 0 || endPoint == tempConnEndPoint_ ||
+    if (endPoint == 0 || endPoint == tempConnEndPoint_ || !endPoint->isVisible() ||
         !endPoint->canConnect(tempConnEndPoint_) ||
         !tempConnEndPoint_->canConnect(endPoint)) {
 
@@ -1880,6 +1874,7 @@ void BlockDiagram::createConnection(QGraphicsSceneMouseEvent * mouseEvent)
 
             tempConnection_ = new DiagramInterconnection(tempConnEndPoint_, endPoint, false,
                                                          QString(), QString(), this);
+            addItem(tempConnection_);
         }
 
         connect(tempConnection_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
@@ -2044,11 +2039,12 @@ void BlockDiagram::toggleConnectionStyle(DiagramInterconnection* conn, QUndoComm
     }
 
     // Recreate the connection by first deleting the old and then creating a new one.
-    QUndoCommand* cmd = new ConnectionDeleteCommand(static_cast<DiagramInterconnection*>(conn), parentCmd);
+    QUndoCommand* cmd = new ConnectionDeleteCommand(static_cast<DiagramInterconnection*>(conn));
     cmd->redo();
-
+    
     DiagramInterconnection* newConn = new DiagramInterconnection(endPoint1, endPoint2, false,
                                                                  QString(), QString(), this);
+    addItem(newConn);
 
     connect(newConn, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
@@ -2092,5 +2088,27 @@ void BlockDiagram::setBusWidthsVisible(bool visible)
         {
             conn->setBusWidthVisible(visible);
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: destroyConnections()
+//-----------------------------------------------------------------------------
+void BlockDiagram::destroyConnections()
+{
+    QList<QGraphicsItem*> conns;
+
+    foreach (QGraphicsItem* item, items()) {
+
+        // if the item is an interconnection
+        if (item->type() == DiagramInterconnection::Type) {
+            conns.append(item);
+        }
+    }
+
+    foreach (QGraphicsItem* item, conns)
+    {
+        removeItem(item);
+        delete item;
     }
 }

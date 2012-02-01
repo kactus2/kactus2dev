@@ -11,6 +11,7 @@
 #include <QUndoCommand>
 
 class DiagramConnectionEndPoint;
+class BlockDiagram;
 
 /*! \brief DiagramInterconnection represents graphically an IP-XACT interconnection
  *
@@ -37,19 +38,19 @@ public:
      */
     DiagramInterconnection(DiagramConnectionEndPoint *endPoint1,
                            DiagramConnectionEndPoint *endPoint2,
-                           bool autoConnect = true,
-                           const QString &displayName = QString(),
-                           const QString &description = QString(),
-                           QGraphicsScene* scene = 0);
+                           bool autoConnect,
+                           const QString &displayName,
+                           const QString &description,
+                           BlockDiagram* parent);
 
     /*!
      *  Constructor which creates an open-ended diagram interconnection.
      */
     DiagramInterconnection(QPointF p1, QVector2D const& dir1,
                            QPointF p2, QVector2D const& dir2,
-                           const QString &displayName = QString(),
-                           const QString &description = QString(),
-                           QGraphicsScene* scene = 0);
+                           const QString &displayName,
+                           const QString &description,
+                           BlockDiagram* parent);
 
     virtual ~DiagramInterconnection();
 
@@ -190,6 +191,9 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    //! The parent block diagram.
+    BlockDiagram* parent_;
 
     QString name_;
 	QString description_;
