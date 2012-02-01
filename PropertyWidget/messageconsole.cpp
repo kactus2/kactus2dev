@@ -38,11 +38,18 @@ MessageConsole::~MessageConsole() {
 }
 
 void MessageConsole::onErrorMessage( const QString& message ) {
+
+	if (message.isEmpty()) {
+		return;
+	}
+
 	moveCursor(QTextCursor::End);
+
+	QString errorText(tr("Error: "));
 
 	// errors are printed in red color
 	setTextColor(QColor("red"));
-	insertPlainText(tr("Error: ") + message);
+	insertPlainText(errorText + message);
 
 	// add endline and set cursor to the end of the text
 	insertPlainText("\n");
@@ -50,6 +57,11 @@ void MessageConsole::onErrorMessage( const QString& message ) {
 }
 
 void MessageConsole::onNoticeMessage( const QString& message ) {
+
+	if (message.isEmpty()) {
+		return;
+	}
+
 	moveCursor(QTextCursor::End);
 
 	// notices are printed in blue

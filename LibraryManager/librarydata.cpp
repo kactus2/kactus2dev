@@ -456,6 +456,9 @@ void LibraryData::checkLibraryIntegrity( bool showProgress /*= true*/ ) {
 	int current = 0;
 	int errors = 0;
 	int failedObjects = 0;
+	int syntaxErrors = 0;
+	int vlnvErrors = 0;
+	int fileErrors = 0;
 
 	// create the progress bar that displays the progress of the check
 	QProgressBar progBar;
@@ -517,9 +520,10 @@ void LibraryData::checkLibraryIntegrity( bool showProgress /*= true*/ ) {
 		if (!libComp->isValid(errorList)) {
 
 			foreach (QString error, errorList) {
-				emit errorMessage(error);
+				emit errorMessage(QString("\t") + error);
 			}
 			errors += errorList.size();
+			syntaxErrors += errorList.size();
 			
 			// if this was first failed test then increase number of failed items
 			if (wasValid) {
@@ -535,16 +539,17 @@ void LibraryData::checkLibraryIntegrity( bool showProgress /*= true*/ ) {
 			// if the document referenced by this model is not found
 			if (!libraryItems_.contains(vlnvList.at(j))) {
 				emit errorMessage(
-					tr("The following vlnv was not found in the library: \n"
+					tr("\tThe following vlnv was not found in the library: \n"
 					"\tVendor: %1\n"
 					"\tLibrary: %2\n"
 					"\tName: %3\n"
-					"\tVersion: %4\n").arg(vlnvList.at(j).getVendor()).arg(
+					"\tVersion: %4").arg(vlnvList.at(j).getVendor()).arg(
 					vlnvList.at(j).getLibrary()).arg(
 					vlnvList.at(j).getName()).arg(
 					vlnvList.at(j).getVersion()));
 				
 				++errors;
+				++vlnvErrors;
 
 				// if this was first failed test then increase number of failed items
 				if (wasValid) {
@@ -569,10 +574,11 @@ void LibraryData::checkLibraryIntegrity( bool showProgress /*= true*/ ) {
 				path = filelist.at(j);
 
 				emit errorMessage(
-					tr("File %1 was not found in the file system.").arg(
+					tr("\tFile %1 was not found in the file system.").arg(
 					path));
 				
 				++errors;
+				++ fileErrors;
 
 				// if this was first failed test then increase number of failed items
 				if (wasValid) {
@@ -599,14 +605,21 @@ void LibraryData::checkLibraryIntegrity( bool showProgress /*= true*/ ) {
 		progBar.hide();
 	}
 
+	emit noticeMessage(
+		tr("Library integrity check complete, found %1 errors within %2 item(s).").arg(
+		errors).arg(failedObjects));
+	
+	// if errors were found then print the summary of error types
+	if (errors > 0) {
+		emit noticeMessage(tr("Structural errors within item(s): %1.").arg(syntaxErrors));
+		emit noticeMessage(tr("Invalid VLNV references: %1.").arg(vlnvErrors));
+		emit noticeMessage(tr("Invalid file references: %1.").arg(fileErrors));
+	}
+
 	// inform tree model that it needs to reset model also
 	emit resetModel();
 
 	endResetModel();
-
-	emit noticeMessage(
-		tr("Library integrity check complete, found %1 errors within %2 items.").arg(
-		errors).arg(failedObjects));
 }
 
 void LibraryData::parseLibrary( bool showProgress /*= true*/ ) {
