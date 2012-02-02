@@ -619,10 +619,22 @@ void DiagramInterconnection::paint(QPainter *painter,
                                    const QStyleOptionGraphicsItem *option,
                                    QWidget *widget)
 {
+    bool selected = option->state & QStyle::State_Selected;
+    if (selected)
+    {
+        drawOverlapGraphics(painter);
+    }
+
     QStyleOptionGraphicsItem myoption = (*option);
     myoption.state &= !QStyle::State_Selected;
 
     QGraphicsPathItem::paint(painter, &myoption, widget);
+
+    if (!selected)
+    {
+        drawOverlapGraphics(painter);
+    }
+
 
     if (!endPoint1_)
         painter->fillRect(QRectF(pathPoints_.first()-QPointF(2,2),
@@ -1125,4 +1137,145 @@ void DiagramInterconnection::updateWidthLabel()
 void DiagramInterconnection::setBusWidthVisible(bool visible)
 {
     widthLabel_->setVisible(visible);
+}
+
+//-----------------------------------------------------------------------------
+// Function: drawLineGap()
+//-----------------------------------------------------------------------------
+void DiagramInterconnection::drawLineGap(QPainter* painter, QLineF const& line1, QPointF const& pt)
+{
+    QVector2D dir(line1.dx(), line1.dy());
+    dir.normalize();
+
+    qreal length1 = QVector2D(pt - line1.p1()).length();
+    qreal length2 = QVector2D(pt - line1.p2()).length();
+
+    QPointF pt1 = (QVector2D(pt) + dir * std::min(length2, (qreal)GridSize)).toPointF();
+    QPointF pt2 = (QVector2D(pt) - dir * std::min(length1, (qreal)GridSize)).toPointF();
+    painter->drawLine(pt1, pt2);
+}
+
+//-----------------------------------------------------------------------------
+// Function: drawOverlapGraphics()
+//-----------------------------------------------------------------------------
+void DiagramInterconnection::drawOverlapGraphics(QPainter* painter)
+{
+    // Determine all items that collide with this item.
+    foreach (QGraphicsItem* item, collidingItems())
+    {
+        QList<QPointF> const& route1 = pathPoints_;
+
+        // Paint junction marks to those parts that go vertically and cross another connection.
+        if (item->type() == DiagramInterconnection::Type)
+        {
+            DiagramInterconnection* conn = static_cast<DiagramInterconnection*>(item);
+            QList<QPointF> const& route2 = conn->route();
+
+            for (int i = 0; i < route1.size() - 1; ++i)
+            {
+                // Discard horizontal segments.
+                if (qFuzzyCompare(route1[i].y(), route1[i + 1].y()))
+                {
+                    continue;
+                }
+
+                QLineF line1(route1[i], route1[i + 1]);
+
+                for (int j = 0; j < route2.size() - 1; ++j)
+                {
+                    // Discard vertical segments from the intersecting connections.
+                    if (qFuzzyCompare(route2[j].x(), route2[j + 1].x()))
+                    {
+                        continue;
+                    }
+
+                    QLineF line2(route2[j], route2[j + 1]);
+
+                    QPointF pt;
+                    QLineF::IntersectType type = line1.intersect(line2, &pt);
+
+                    if (type == QLineF::BoundedIntersection)
+                    {
+                        // If the connections share an endpoint, draw a black junction circle.
+                        if (endPoint1() == conn->endPoint1() || endPoint2() == conn->endPoint2() ||
+                            endPoint1() == conn->endPoint2() || endPoint2() == conn->endPoint1())
+                        {
+                            painter->setPen(QPen(Qt::black, 0));
+
+                            QPainterPath circlePath;
+                            circlePath.addEllipse(pt, 5.0, 5.0);
+
+                            painter->fillPath(circlePath, QBrush(Qt::black));
+
+                        }
+                        else
+                        {
+                            // Otherwise draw a gray "tunnel" line close to the intersection point.
+                            // Drawing is performed using two lines, excluding the area close to
+                            // the intersection point. This way the drawing is done correctly even though
+                            // the connection is above the other connection.
+                            QVector2D dir(line1.dx(), line1.dy());
+                            dir.normalize();
+
+                            qreal length1 = QVector2D(pt - line1.p1()).length();
+                            qreal length2 = QVector2D(pt - line1.p2()).length();
+
+                            QPointF seg1Pt1 = (QVector2D(pt) + dir * std::min(length2, 4.0)).toPointF();
+                            QPointF seg1Pt2 = (QVector2D(pt) + dir * std::min(length2, (qreal)GridSize)).toPointF();
+
+                            QPointF seg2Pt1 = (QVector2D(pt) - dir * std::min(length1, 4.0)).toPointF();
+                            QPointF seg2Pt2 = (QVector2D(pt) - dir * std::min(length1, (qreal)GridSize)).toPointF();
+
+                            painter->setPen(QPen(QColor(160, 160, 160), 4));
+                            painter->drawLine(seg1Pt1, seg1Pt2);
+                            painter->drawLine(seg2Pt1, seg2Pt2);
+                        }
+                    }
+                }
+            }
+        }
+        else if (item->type() == DiagramComponent::Type)
+        {
+            DiagramComponent* comp = static_cast<DiagramComponent*>(item);
+
+            // Create the line object for each edge of the diagram component rectangle.
+            QLineF leftEdge(comp->rect().topLeft() + comp->scenePos(),
+                comp->rect().bottomLeft() + comp->scenePos());
+            QLineF rightEdge(comp->rect().topRight() + comp->scenePos(),
+                comp->rect().bottomRight() + comp->scenePos());
+            QLineF topEdge(comp->rect().topLeft() + comp->scenePos(),
+                comp->rect().topRight() + comp->scenePos());
+            QLineF bottomEdge(comp->rect().bottomLeft() + comp->scenePos(),
+                comp->rect().bottomRight() + comp->scenePos());
+
+            for (int i = 0; i < route1.size() - 1; ++i)
+            {
+                QLineF line1(route1[i], route1[i + 1]);
+
+                // Check if the line segment intersects both parallel lines (either vertical or horizontal).
+                QPointF pt, pt2;
+                QLineF::IntersectType type1 = line1.intersect(leftEdge, &pt);
+                QLineF::IntersectType type2 = line1.intersect(rightEdge, &pt2);
+
+                if (type1 == QLineF::BoundedIntersection && type2 == QLineF::BoundedIntersection)
+                {
+                    painter->drawLine(pt, pt2);
+                    drawLineGap(painter, line1, pt);
+                    drawLineGap(painter, line1, pt2);
+                    continue;
+                }
+
+                type1 = line1.intersect(topEdge, &pt);
+                type2 = line1.intersect(bottomEdge, &pt2);
+
+                if (type1 == QLineF::BoundedIntersection && type2 == QLineF::BoundedIntersection)
+                {
+                    painter->setPen(QPen(QColor(160, 160, 160), 4));
+                    painter->drawLine(pt, pt2);
+                    drawLineGap(painter, line1, pt);
+                    drawLineGap(painter, line1, pt2);
+                }
+            }
+        }
+    }
 }

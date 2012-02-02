@@ -160,6 +160,7 @@ protected:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
 private:
@@ -187,6 +188,22 @@ private:
      *  Updates the width label based on the end points.
      */
     void updateWidthLabel();
+
+    /*!
+     *  Draws specific helper graphics for overlapping graphics items.
+     *
+     *      @param [in] painter The painter.
+     */
+    void drawOverlapGraphics(QPainter* painter);
+
+    /*!
+     *  Draws a "gap" to a line with the currently selected pen.
+     *
+     *      @param [in] painter The painter.
+     *      @param [in] line    The line to which to draw the gap.
+     *      @param [in] pt      The intersection point where to draw the gap.
+     */
+    void drawLineGap(QPainter* painter, QLineF const& line, QPointF const& pt);
 
     //-----------------------------------------------------------------------------
     // Data.
