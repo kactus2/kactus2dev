@@ -53,20 +53,6 @@ public:
     virtual ~VLNVEditor();
 
     /*!
-     *  Sets the contents of the editor to match the given VLNV.
-     *
-     *      @param [in] vlnv The VLNV.
-     */
-    void setVLNV(VLNV const* vlnv);
-
-	/*! 
-	 *  Set the contents of the editor to match the given VLNV.
-	 *
-	 *		@param [in] vlnv The VLNV. 
-	 */
-	void setVLNV(const VLNV& vlnv);
-
-    /*!
      *  Sets the firmness filter on/off.
      *
      *      @param [in] on        If true, the filter is turned on; otherwise it is turned off.
@@ -115,13 +101,45 @@ public:
 	bool isEmpty() const;
 
 signals:
+
     //! Emitted when the contents of the editor have changed.
     void contentChanged();
 
     //! Emitted when the user edits the VLNV in the editor.
     void vlnvEdited();
 
+	/*! \brief Emitted when a vlnv for abstraction definition is dropped to this editor.
+	 *
+	 * \param busDefVLNV The vlnv of the matching bus definition.
+	 *
+	*/
+	void setBusDef(const VLNV& busDefVLNV);
+
+	/*! \brief Emitted when a vlnv for bus definition is dropped to this editor.
+	 * 
+	 * If there are several matching abstraction definitions then this is not emitted.
+	 * 
+	 * \param absDefVLNV Identifies the vlnv of matching abstraction definition.
+	 *
+	*/
+	void setAbsDef(const VLNV& absDefVLNV);
+
 public slots:
+
+	/*!
+     *  Sets the contents of the editor to match the given VLNV.
+     *
+     *      @param [in] vlnv The VLNV.
+     */
+    void setVLNV(VLNV const* vlnv);
+
+	/*! 
+	 *  Set the contents of the editor to match the given VLNV.
+	 *
+	 *		@param [in] vlnv The VLNV. 
+	 */
+	void setVLNV(const VLNV& vlnv);
+
     //! Updates the data tree.
     void updateFiltering();
 

@@ -17,12 +17,19 @@
 #include <LibraryManager/libraryitem.h>
 #include <LibraryManager/libraryhandler.h>
 
+#include <models/librarycomponent.h>
+#include <models/abstractiondefinition.h>
+#include <models/busdefinition.h>
+
 #include "VLNVContentMatcher.h"
 
 #include <QGridLayout>
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QMimeData>
+#include <QSharedPointer>
+#include <QMessageBox>
+#include <QCoreApplication>
 
 //-----------------------------------------------------------------------------
 // Function: VLNVEditor()
@@ -286,6 +293,43 @@ void VLNVEditor::dropEvent( QDropEvent* event ) {
 	memcpy(&vlnv, event->mimeData()->data("data/vlnvptr").data(), sizeof(vlnv));
 	setVLNV(vlnv);
 	event->acceptProposedAction();
+
+	// for abs def and bus def there is additional option to set the paired vlnv editor
+	switch (handler_->getDocumentType(*vlnv)) 
+	{
+	case VLNV::BUSDEFINITION: {
+		
+		// if there is only one abs def for the dropped bus def
+		QList<VLNV> absDefVLNVs;
+		if (handler_->getChildren(absDefVLNVs, *vlnv) == 1) {
+			emit setAbsDef(absDefVLNVs.first());
+		}
+
+		// if there are more than one abs defs for the bus def
+		else if (absDefVLNVs.size() > 1) {
+
+			// if the signal is connected then inform user that the abs def must be
+			// selected manually
+			if (receivers(SIGNAL(setAbsDef(const VLNV&))) > 0) {
+				QMessageBox::information(this, QCoreApplication::applicationName(),
+					tr("More than one abstraction definitions exist for the dropped"
+					" bus definition. Select one manually from the library."),
+					QMessageBox::Close, QMessageBox::Close);
+			}
+		}
+		break;
+							  }
+	case VLNV::ABSTRACTIONDEFINITION: {
+		QSharedPointer<LibraryComponent> libComp = handler_->getModel(*vlnv);
+		QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
+		Q_ASSERT(absDef);
+
+		VLNV busDefVLNV = absDef->getBusType();
+		emit setBusDef(busDefVLNV);
+		break;
+									  }
+	
+	}
 
     emit vlnvEdited();
 }

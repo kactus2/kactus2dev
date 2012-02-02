@@ -1073,6 +1073,17 @@ int LibraryHandler::getOwners( QList<VLNV>& list, const VLNV& vlnvToSearch ) con
 	return list.size();
 }
 
+int LibraryHandler::getChildren( QList<VLNV>& list, const VLNV& vlnvToSearch ) const {
+
+	if (!vlnvToSearch.isValid()) {
+		return 0;
+	}
+
+	// find the child items
+	hierarchyModel_->getChildren(list, vlnvToSearch);
+	return list.size();
+}
+
 void LibraryHandler::removeObject( const VLNV& vlnv ) {
 
 	if (!vlnv.isValid())

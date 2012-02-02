@@ -44,6 +44,11 @@ libHandler_(libHandler) {
 	connect(&details_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
+	connect(&busType_, SIGNAL(setAbsDef(const VLNV&)),
+		&absType_, SLOT(setVLNV(const VLNV&)), Qt::UniqueConnection);
+	connect(&absType_, SIGNAL(setBusDef(const VLNV&)),
+		&busType_, SLOT(setVLNV(const VLNV&)), Qt::UniqueConnection);
+
 	busType_.setTitle(tr("Bus definition"));
 	absType_.setTitle(tr("Abstraction definition"));
 

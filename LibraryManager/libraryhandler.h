@@ -212,15 +212,24 @@ public:
 	 */
 	virtual int referenceCount(const VLNV& vlnv) const;
 
-	/*! \brief Get the components that have instantiated the given vlnv in their design.
+	/*! \brief Get the items that have referenced the given vlnv in their meta data.
 	 *
 	 * \param list QList where the search results are appended.
-	 * \param vlnvToSearch Identifies the component to search for.
+	 * \param vlnvToSearch Identifies the item to search for.
 	 * 
 	 * \return Number of owners found.
 	 *
 	*/
 	virtual int getOwners(QList<VLNV>& list, const VLNV& vlnvToSearch) const;
+
+	/*! \brief Get the items that are needed by the specified item.
+	 *
+	 * \param list QList where the search results are appended.
+	 * \param vlnvToSearch Identifies the item thats child-items are wanted.
+	 *
+	 * \return int The number of found children.
+	*/
+	virtual int getChildren(QList<VLNV>& list, const VLNV& vlnvToSearch) const;
 
 	/*! \brief Get the VLNV of the design for a given hierarchy reference.
 	 *

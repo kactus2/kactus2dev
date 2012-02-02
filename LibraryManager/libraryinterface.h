@@ -192,6 +192,15 @@ public:
 	*/
 	virtual int getOwners(QList<VLNV>& list, const VLNV& vlnvToSearch) const = 0;
 
+	/*! \brief Get the items that are needed by the specified item.
+	 *
+	 * \param list QList where the search results are appended.
+	 * \param vlnvToSearch Identifies the item thats child-items are wanted.
+	 *
+	 * \return int The number of found children.
+	*/
+	virtual int getChildren(QList<VLNV>& list, const VLNV& vlnvToSearch) const = 0;
+
 	/*! \brief Get the VLNV of the design for a given hierarchy reference.
 	 *
 	 * This function can be used by calling it with a hierarchy reference found

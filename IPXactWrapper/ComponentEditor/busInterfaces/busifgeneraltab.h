@@ -104,9 +104,6 @@ private:
 	//! \brief Contains the name, display name and description of bus interface
 	NameGroupBox nameGroup_;
 
-	//! \brief Contains the attributes of the bus interface
-	//AttributeBox attributes_;
-
 	//! \brief Contains the vlnv of the bus type for this bus interface
 	VLNVEditor busType_;
 
