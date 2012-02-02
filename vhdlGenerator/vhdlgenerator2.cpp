@@ -299,6 +299,8 @@ bool VhdlGenerator2::addRTLView( const QString& vhdlFileName ) {
 		component_->addFileSet(topFileSet);
 	}
 
+	topFileSet->clearFiles();
+
 	// create a new file
 	File* topVhdlFile = new File(relativePath, topFileSet);
 	topVhdlFile->addFileType(QString("vhdlSource"));

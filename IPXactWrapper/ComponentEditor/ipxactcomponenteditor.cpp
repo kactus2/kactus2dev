@@ -749,7 +749,7 @@ bool IPXactComponentEditor::onVhdlGenerate() {
 	fileName = targetInfo.absolutePath();
 	fileName += QString("/");
 	fileName += component_->getVlnv()->getName();
-	fileName += QString(".rtl.vhd");
+	fileName += QString(".vhd");
 
 	QString path = QFileDialog::getSaveFileName(this,
 		tr("Set the directory where the vhdl file is created to"),

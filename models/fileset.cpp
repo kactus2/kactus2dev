@@ -670,3 +670,7 @@ void FileSet::useDefaultVhdlBuilders() {
 	vhdl93Builder->setReplaceDefaultFlags(true);
 	defaultFileBuilders_.append(vhdl93Builder);
 }
+
+void FileSet::clearFiles() {
+	files_.clear();
+}

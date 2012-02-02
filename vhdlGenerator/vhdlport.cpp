@@ -96,3 +96,7 @@ void VhdlPort::setCommented( bool commentOut ) {
 	commentOut_ = commentOut;
 }
 
+bool VhdlPort::isCommented() const {
+	return commentOut_;
+}
+

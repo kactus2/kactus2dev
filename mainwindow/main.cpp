@@ -29,15 +29,26 @@ int main(int argc, char *argv[])
     palette.setColor(QPalette::Inactive, QPalette::Highlight, QColor(166, 200, 234));
     a.setPalette(palette);
 
-    // Show the splash screen.
-    SplashScreen splash;
+	// Create the main window and close the splash after 1.5 seconds.
+	MainWindow w;
+		
+	// the release mode
+	#ifdef NDEBUG
+	
+	// Show the splash screen.
+	SplashScreen splash;
     splash.show();
     splash.showMessage("");
-    a.processEvents();
 
-    // Create the main window and close the splash after 1.5 seconds.
-    MainWindow w;
-    QTimer::singleShot(1500, &splash, SLOT(close()));
-    QTimer::singleShot(1500, &w, SLOT(show()));
+	a.processEvents();
+
+	QTimer::singleShot(1500, &splash, SLOT(close()));
+	QTimer::singleShot(1500, &w, SLOT(show()));
+	
+	// the debug mode
+	#else
+	w.show();
+	#endif
+    
 	return a.exec();
 }

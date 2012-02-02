@@ -358,6 +358,11 @@ public:
 	*/
 	void useDefaultVhdlBuilders();
 
+	/*! \brief Remove the files listed in the file set.
+	 *
+	*/
+	void clearFiles();
+
 private:
 
 	/*! \brief Contains the name and description information for file set.
@@ -394,7 +399,7 @@ private:
 
 	/*! \brief Contains the functions.
 	 * OPTIONAL spirit:function
-	 * Specifies the unboundeed information about a software function for a
+	 * Specifies the unbounded information about a software function for a
 	 * generator.
 	 */
 	QList<QSharedPointer<Function> > functions_;

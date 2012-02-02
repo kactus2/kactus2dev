@@ -706,8 +706,7 @@ void DesignWidget::onVhdlGenerate() {
 	QFileInfo targetInfo(fileName);
 	fileName = targetInfo.absolutePath();
 	fileName += QString("/");
-	fileName += hierComponent_->getVlnv()->getName();
-	fileName += QString(".%1").arg(viewName_);
+	fileName += hierComponent_->getEntityName(viewName_);
 	fileName += QString(".vhd");
 
 	QString path = QFileDialog::getSaveFileName(this,

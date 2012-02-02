@@ -79,6 +79,12 @@ public:
 	*/
 	virtual void setCommented(bool commentOut);
 
+	/*! \brief Check if the port is commented out or not.
+	 *
+	 * \return bool True if the port is commented out.
+	*/
+	virtual bool isCommented() const;
+
 private:
 	//! \brief No copying
 	VhdlPort(const VhdlPort& other);

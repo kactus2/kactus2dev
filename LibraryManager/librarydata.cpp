@@ -611,9 +611,9 @@ void LibraryData::checkLibraryIntegrity( bool showProgress /*= true*/ ) {
 	
 	// if errors were found then print the summary of error types
 	if (errors > 0) {
-		emit noticeMessage(tr("Structural errors within item(s): %1.").arg(syntaxErrors));
-		emit noticeMessage(tr("Invalid VLNV references: %1.").arg(vlnvErrors));
-		emit noticeMessage(tr("Invalid file references: %1.").arg(fileErrors));
+		emit noticeMessage(tr("Structural errors within item(s): %1").arg(syntaxErrors));
+		emit noticeMessage(tr("Invalid VLNV references: %1").arg(vlnvErrors));
+		emit noticeMessage(tr("Invalid file references: %1").arg(fileErrors));
 	}
 
 	// inform tree model that it needs to reset model also
@@ -736,6 +736,11 @@ void LibraryData::parseFile( const QString& filePath ) {
 		emit errorMessage(tr("The file %1 was not valid xml and could not be read.").arg(
 			filePath));
 		docFile.close();
+		return;
+	}
+
+	// if the vlnv is not valid (the document was not IP-Xact)
+	if (!vlnv.isValid()) {
 		return;
 	}
 	

@@ -256,10 +256,15 @@ VLNV IPXactModel::getVLNV() {
 
 	// get the type of the document
 	QDomNodeList nodeList = IPXactDoc_.childNodes();
+
 	// search for the first element with children
 	int i = 0;
 	while (!nodeList.at(i).hasChildNodes()) {
 		++i;
+
+		if (i >= nodeList.size()) {
+			return VLNV();
+		}
 	}
 	temp = nodeList.at(i).nodeName();
 	QTextStream stream(&temp);
