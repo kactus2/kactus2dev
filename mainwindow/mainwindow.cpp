@@ -462,8 +462,8 @@ void MainWindow::setupActions() {
 	connect(actRedo_, SIGNAL(triggered()), this, SLOT(redo()));
 
 	// the action to search for IP-Xact documents in file system
-	actLibrarySearch_ = new QAction(QIcon(":/icons/graphics/search.png"),
-		tr("Search IP-Xact Files"), this);
+	actLibrarySearch_ = new QAction(QIcon(":/icons/graphics/library-refresh.png"),
+		tr("Refresh Library"), this);
 	connect(actLibrarySearch_, SIGNAL(triggered()),
 		this, SLOT(onLibrarySearch()), Qt::UniqueConnection);
 

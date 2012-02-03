@@ -66,6 +66,7 @@
         <file>graphics/dockSelect.png</file>
         <file>graphics/workspace.png</file>
         <file>graphics/visibility.png</file>
+        <file>graphics/library-refresh.png</file>
     </qresource>
     <qresource prefix="/">
         <file>graphics/splash.png</file>

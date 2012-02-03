@@ -15520,6 +15520,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\graphics\library-refresh.png"
+				>
+			</File>
+			<File
 				RelativePath=".\graphics\mcapi-endpoint.png"
 				>
 			</File>

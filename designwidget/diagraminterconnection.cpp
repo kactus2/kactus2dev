@@ -1183,7 +1183,7 @@ void DiagramInterconnection::drawOverlapGraphics(QPainter* painter)
 
                 for (int j = 0; j < route2.size() - 1; ++j)
                 {
-                    // Discard vertical segments from the intersecting connections.
+                    // Discard vertical segments of the intersecting connections.
                     if (qFuzzyCompare(route2[j].x(), route2[j + 1].x()))
                     {
                         continue;
@@ -1238,15 +1238,18 @@ void DiagramInterconnection::drawOverlapGraphics(QPainter* painter)
         {
             DiagramComponent* comp = static_cast<DiagramComponent*>(item);
 
-            // Create the line object for each edge of the diagram component rectangle.
+            // Create the line objects for each edge of the diagram component rectangle.
             QLineF leftEdge(comp->rect().topLeft() + comp->scenePos(),
-                comp->rect().bottomLeft() + comp->scenePos());
+                            comp->rect().bottomLeft() + comp->scenePos());
+
             QLineF rightEdge(comp->rect().topRight() + comp->scenePos(),
-                comp->rect().bottomRight() + comp->scenePos());
+                             comp->rect().bottomRight() + comp->scenePos());
+
             QLineF topEdge(comp->rect().topLeft() + comp->scenePos(),
-                comp->rect().topRight() + comp->scenePos());
+                           comp->rect().topRight() + comp->scenePos());
+
             QLineF bottomEdge(comp->rect().bottomLeft() + comp->scenePos(),
-                comp->rect().bottomRight() + comp->scenePos());
+                              comp->rect().bottomRight() + comp->scenePos());
 
             for (int i = 0; i < route1.size() - 1; ++i)
             {
