@@ -12,11 +12,13 @@
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QGridLayout>
+#include <QStringList>
 
 FlatViewGeneralTab::FlatViewGeneralTab(QSharedPointer<Component> component, 
 									   View* view, 
 									   QWidget *parent): 
 QWidget(parent),
+component_(component),
 view_(view), 
 language_(this), 
 languageStrict_(tr("Strict"), this),
@@ -54,6 +56,17 @@ FlatViewGeneralTab::~FlatViewGeneralTab() {
 }
 
 bool FlatViewGeneralTab::isValid() const {
+
+	// check the file set references that they are to valid file sets.
+	QStringList fileSetRefs = fileSetRefs_.items();
+	foreach (QString ref, fileSetRefs) {
+		
+		// if the component does not contain the referenced file set.
+		if (!component_->hasFileSet(ref)) {
+			return false;
+		}
+	}
+
 	if (language_.text().isEmpty() && languageStrict_.isChecked())
 		return false;
 

@@ -39,14 +39,14 @@ public:
 	*
 	* \param parent ModelIndex of the item that's rowCount is requested.
 	*/
-	int rowCount(const QModelIndex& parent = QModelIndex()) const;
+	virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
 	/*! \brief Get the data stored for the specified item.
 	*
 	* \param index ModelIndex of the wanted item.
 	* \param role Specifies what kind of data is requested.
 	*/
-	QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
+	virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
 
 	/*! \brief Get the data for the header of the list.
 	*
@@ -55,7 +55,7 @@ public:
 	* supported.
 	* \param role Specifies what kind of header data is requested.
 	*/
-	QVariant headerData(int section, Qt::Orientation orientation, 
+	virtual QVariant headerData(int section, Qt::Orientation orientation, 
 		int role = Qt::DisplayRole) const;
 
 	/*! \brief Save the data to the model for specified item
@@ -66,7 +66,7 @@ public:
 	 *
 	 * \return True if saving happened successfully.
 	*/
-	bool setData(const QModelIndex& index, const QVariant& value, 
+	virtual bool setData(const QModelIndex& index, const QVariant& value, 
 		int role = Qt::EditRole);
 
 	/*! \brief Get the item flags that defines the possible operations for the item.
@@ -75,40 +75,40 @@ public:
 	 *
 	 * \return Qt::ItemFlags specify the possible operations for the item.
 	*/
-	Qt::ItemFlags flags(const QModelIndex& index) const;
+	virtual Qt::ItemFlags flags(const QModelIndex& index) const;
 
 	/*! \brief Append a new item to the end of the list.
 	 *
 	 * \param item The string to be appended to the end of the list.
 	 */
-	void appendItem(const QString item);
+	virtual void appendItem(const QString item);
 
 	/*! \brief Get the items currently stored in the model.
 	 *
 	 * \return QStringList containing the items.
 	 */
-	const QStringList& items() const;
+	virtual const QStringList& items() const;
 
 	/*! \brief Set the items to the model.
 	 *
 	 * \param items QStringList containing the items to be contained in the
 	 * model.
 	 */
-	void setItems(const QStringList& items);
+	virtual void setItems(const QStringList& items);
 
 	/*! \brief Append a QStringList to the current items in the list
 	 *
 	 * \param items QStringList containing the items to append
 	 *
 	*/
-	void appendItems(const QStringList& items);
+	virtual void appendItems(const QStringList& items);
 
 	/*! \brief Replace an item text in the list
 	 * 
 	 * \param index ModelIndex of the item that is to be replaced.
 	 * \param newText The new text for the given item.
 	 */
-	void replace(QModelIndex& index, const QString newText);
+	virtual void replace(QModelIndex& index, const QString newText);
 
 public slots:
 	 
@@ -116,14 +116,14 @@ public slots:
 	*
 	* \param index The model index of the item to remove.
 	*/
-	void remove(const QModelIndex& index);
+	virtual void remove(const QModelIndex& index);
 
 	/*! \brief A new item should be added to given index.
 	 *
 	 * \param index The position where new item should be added at.
 	 *
 	*/
-	void addItem(const QModelIndex& index);
+	virtual void addItem(const QModelIndex& index);
 
 	/*! \brief Move item to another position.
 	 *
@@ -131,7 +131,7 @@ public slots:
 	 * \param newPos The new position the item should be moved to.
 	 *
 	*/
-	void moveItem(const QModelIndex& originalPos, const QModelIndex& newPos);
+	virtual void moveItem(const QModelIndex& originalPos, const QModelIndex& newPos);
 
 signals: 
 

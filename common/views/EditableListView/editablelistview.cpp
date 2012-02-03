@@ -16,6 +16,8 @@ removeAction_(tr("Remove"), this) {
 
 	setMovement(QListView::Free);
 
+	setToolTip(tr("Double click to add new item."));
+
 	setupActions();
 }
 

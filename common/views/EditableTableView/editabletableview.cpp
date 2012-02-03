@@ -38,6 +38,8 @@ itemsDraggable_(true) {
 		QAbstractItemView::SelectedClicked |
 		QAbstractItemView::EditKeyPressed |
 		QAbstractItemView::AnyKeyPressed);
+
+	setToolTip(tr("Double click to add a new item."));
 	
 	setupActions();
 

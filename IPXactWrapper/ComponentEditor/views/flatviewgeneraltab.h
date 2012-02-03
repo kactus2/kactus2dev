@@ -78,6 +78,9 @@ private:
 	//! No assignment
 	FlatViewGeneralTab& operator=(const FlatViewGeneralTab& other);
 
+	//! \brief Pointer to the component being edited.
+	QSharedPointer<Component> component_;
+
 	//! \brief Pointer to the view being edited.
 	View* view_;
 

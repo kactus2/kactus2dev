@@ -141,8 +141,6 @@ void IPXactComponentEditor::setupNullEditor()
 	// add the pointer to the map
 	indexes_.insert(0, editor);
 
-    // TODO: Create the general editor.
-
 	// add the empty editor to widgetStack and set it as currently visible
 	widgetStack_->insertWidget(0, editor);
 	widgetStack_->setCurrentIndex(0);

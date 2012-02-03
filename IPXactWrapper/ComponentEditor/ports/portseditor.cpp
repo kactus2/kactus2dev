@@ -19,6 +19,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QHeaderView>
 
 PortsEditor::PortsEditor(QSharedPointer<Component> component,
 						 void* dataPointer, 
@@ -57,6 +58,8 @@ handler_(handler) {
 	view_.setItemsDraggable(false);
 
 	view_.setItemDelegate(new PortsDelegate(this));
+
+	view_.verticalHeader()->show();
 
 	// set proxy to do the sorting automatically
 	proxy_ = new QSortFilterProxyModel(this);

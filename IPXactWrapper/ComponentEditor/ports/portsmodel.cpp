@@ -55,8 +55,9 @@ int PortsModel::columnCount(const QModelIndex& parent /*= QModelIndex() */) cons
 
 QVariant PortsModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole */ ) const {
 
-	if (!index.isValid())
+	if (!index.isValid()) {
 		return QVariant();
+	}
 
 	// if row is invalid
 	if (index.row() < 0 || index.row() >= table_.size())
@@ -129,42 +130,46 @@ QVariant PortsModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole
 QVariant PortsModel::headerData( int section, Qt::Orientation orientation, 
 								int role /*= Qt::DisplayRole */ ) const {
 
-	if (orientation != Qt::Horizontal)
-		return QVariant();
-
 	if (role == Qt::DisplayRole) {
 
-		switch (section) {
-			case 0: {
-				return tr("Name");
-					}
-			case 1: {
-				return tr("Direction");
-					}
-			case 2: {
-				return tr("Width");
-					}
-			case 3: {
-				return tr("Left\n(higher)\nbound");
-					}
-			case 4: {
-				return tr("Right\n(lower)\nbound");
-					}
-			case 5: {
-				return tr("Type");
-					}
-			case 6: {
-				return tr("Type\ndefinition");
-					}
-			case 7: {
-				return tr("Default\nvalue");
-					}
-			case 8: {
-				return tr("Description");
-					}
-			default: {
-				return QVariant();
-					 }
+		if (orientation == Qt::Horizontal) {
+			switch (section) {
+				case 0: {
+					return tr("Name");
+						}
+				case 1: {
+					return tr("Direction");
+						}
+				case 2: {
+					return tr("Width");
+						}
+				case 3: {
+					return tr("Left\n(higher)\nbound");
+						}
+				case 4: {
+					return tr("Right\n(lower)\nbound");
+						}
+				case 5: {
+					return tr("Type");
+						}
+				case 6: {
+					return tr("Type\ndefinition");
+						}
+				case 7: {
+					return tr("Default\nvalue");
+						}
+				case 8: {
+					return tr("Description");
+						}
+				default: {
+					return QVariant();
+						 }
+			}
+		} 
+
+		// if vertical headers
+		else {
+			return section + 1;
 		}
 	}
 
