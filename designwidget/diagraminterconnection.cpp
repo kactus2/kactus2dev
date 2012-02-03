@@ -1259,6 +1259,7 @@ void DiagramInterconnection::drawOverlapGraphics(QPainter* painter)
 
                 if (type1 == QLineF::BoundedIntersection && type2 == QLineF::BoundedIntersection)
                 {
+                    painter->setPen(QPen(QColor(160, 160, 160), 4));
                     painter->drawLine(pt, pt2);
                     drawLineGap(painter, line1, pt);
                     drawLineGap(painter, line1, pt2);
