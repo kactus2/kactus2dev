@@ -1,7 +1,7 @@
 
 ===============================================================================
                                 README : Kactus2
-              Copyright (c) 2011 Tampere University of Technology
+              Copyright (c) 2012 Tampere University of Technology
                             http://funbase.cs.tut.fi
 ===============================================================================
 
@@ -80,3 +80,6 @@ http://gnome-look.org/content/show.php?content=32599 (GPL)
 
 VistaICO Toolbar Icons by VistaICO.com
 http://www.vistaico.com/ (CC Attribution 3.0 Unported)
+
+Nuvola by David Vignoni
+http://www.icon-king.com/ (LGPL)

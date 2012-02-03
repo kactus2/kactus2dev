@@ -1,7 +1,7 @@
 
 ===============================================================================
                             RELEASE NOTES : Kactus2
-              Copyright (c) 2011 Tampere University of Technology
+              Copyright (c) 2012 Tampere University of Technology
                             http://funbase.cs.tut.fi
 ===============================================================================
               + Improvement or feature added
@@ -9,7 +9,33 @@
               * Changed or Information
 ===============================================================================
 
-18/01/2011 1.2 (Build 1)
+03/02/2012 1.2 (Build 396)
+----------------------------------------------------
+
++ Added more detailed error reporting to the library's check integrity tool.
++ Added workspaces for managing different window layouts easily.
++ Added bus width display for connections (can be shown/hidden using visibility
+  control).
++ Added automatic association of bus definitions and abstraction definitions
+  when drag'n'dropping bus definitions from the library to a HW design.
++ Added dot graphics for visualizing connected bus intersections.
++ Added undercrossing graphics for visualizing bus intersections which are
+  separate (i.e., not connected with each other).
+
+- Fixed a crash when trying to remove files that were already moved on the
+  disk.
+
+* Kactus2 now saves the paths to library locations, not the direct paths
+  to the XML files.
+* Changed the plain IP-XACT view so that it is not reset when items
+  are added or removed. Also the VLNV dialer now keeps it's contents
+  regardless of the tree updates.
+* New component properties are automatically named to 'unnamed' instead of
+  having no name set.
+
+
+
+19/01/2012 1.2 (Build 1)
 ----------------------------------------------------
 
 + Added possibility to select the name of the generated ModelSim file with
