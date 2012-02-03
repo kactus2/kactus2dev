@@ -12,7 +12,7 @@
 #ifndef DIAGRAMOFFPAGECONNECTOR_H
 #define DIAGRAMOFFPAGECONNECTOR_H
 
-#include "DiagramConnectionEndPoint.h"
+#include "DiagramConnectionEndpoint.h"
 
 #include <QSharedPointer>
 #include <QVector2D>
