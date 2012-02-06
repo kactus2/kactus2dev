@@ -316,6 +316,13 @@ void ProgramEntityItem::createSource(QString const& filename)
     writer.endBlock();
     writer.writeLine();
 
+    writer.writeLine("if (createConnections() != 0)");
+    writer.beginBlock();
+    writer.writeLine("// TODO: Write error handling code.");
+    writer.writeLine("return EXIT_FAILURE;");
+    writer.endBlock();
+    writer.writeLine();
+
     writer.writeLine("// TODO: Write your application code here.");
     writer.writeLine();
     writer.writeLine("// Finalize MCAPI before exiting.");
@@ -596,6 +603,14 @@ void ProgramEntityItem::generateHeader(QString const& filename)
     writer.writeLine("int initializeMCAPI();");
     writer.writeLine();
 
+    writer.writeLine("/*");
+    writer.writeLine(" *  Creates all static connections.");
+    writer.writeLine(" *");
+    writer.writeLine(" *        @return 0 if successful. -1 in case of an error.");
+    writer.writeLine(" */");
+    writer.writeLine("int createConnections();");
+    writer.writeLine();
+
     writer.writeLine("#endif // KTSMCAPICODE_H");
     writer.writeLine();
 }
@@ -710,6 +725,94 @@ void ProgramEntityItem::generateSource(QString const& filename, QList<ProgramEnt
     writer.writeLine("mcapi_status_t status;");
     writer.writeLine();
 
+    generateInitializeMCAPIFunc(writer);
+    generateCreateConnectionsFunc(writer);
+
+    writer.writeLine();
+}
+
+//-----------------------------------------------------------------------------
+// Function: updateGeneratedCode()
+//-----------------------------------------------------------------------------
+void ProgramEntityItem::updateGeneratedCode()
+{
+    // Generated code should be updated only if the code files already exist.
+    if (QFileInfo(getGenSourceLocation() + "/ktsmcapicode.h").exists())
+    {
+        generateCode(getGenSourceLocation());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: getGenSourceLocation()
+//-----------------------------------------------------------------------------
+QString ProgramEntityItem::getGenSourceLocation() const
+{
+    return getMappingComponent()->getFileLocation() + '/' + name();
+}
+
+//-----------------------------------------------------------------------------
+// Function: generateCreateConnectionsFunc()
+//-----------------------------------------------------------------------------
+void ProgramEntityItem::generateCreateConnectionsFunc(CSourceWriter& writer)
+{
+    // Write the createConnections() function.
+    writer.writeHeaderComment("Function: createConnections()");
+    writer.writeLine("int createConnections()");
+
+    writer.beginBlock();
+    writer.writeLine("mcapi_request_t request;");
+    writer.writeLine();
+
+    foreach (EndpointItem* endpoint, endpointStack_->getEndpoints())
+    {
+        if (endpoint->isConnected() && endpoint->getMCAPIDirection() == MCAPI_ENDPOINT_OUT)
+        {
+            Port* port = appItem_->componentModel()->getPort(endpoint->getName());
+            Q_ASSERT(port != 0);
+
+            switch (endpoint->getConnectionType())
+            {
+            case MCAPI_TYPE_PACKET:
+                {
+                    writer.writeLine("mcapi_connect_pktchan_i(" + endpoint->getName() + ", " +
+                        port->getRemoteEndpointName() + ", &request, &status);");
+                    writer.writeLine();
+
+                    writer.writeLine("if (status != MCAPI_SUCCESS)");
+                    writer.beginBlock();
+                    writer.writeLine("return -1;");
+                    writer.endBlock();
+                    writer.writeLine();
+                    break;
+                }
+
+            case MCAPI_TYPE_SCALAR:
+                {
+                    writer.writeLine("mcapi_connect_sclchan_i(" + endpoint->getName() + ", " +
+                        port->getRemoteEndpointName() + ", &request, &status);");
+                    writer.writeLine();
+
+                    writer.writeLine("if (status != MCAPI_SUCCESS)");
+                    writer.beginBlock();
+                    writer.writeLine("return -1;");
+                    writer.endBlock();
+                    writer.writeLine();
+                    break;
+                }
+            }
+        }
+    }
+
+    writer.writeLine("return 0;");
+    writer.endBlock();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ProgramEntityItem::generateInitializeMCAPIFunc()
+//-----------------------------------------------------------------------------
+void ProgramEntityItem::generateInitializeMCAPIFunc(CSourceWriter& writer)
+{
     // Write the initialization function.
     writer.writeHeaderComment("Function: initializeMCAPI()");
     writer.writeLine("int initializeMCAPI()");
@@ -733,7 +836,7 @@ void ProgramEntityItem::generateSource(QString const& filename, QList<ProgramEnt
     foreach (EndpointItem* endpoint, endpointStack_->getEndpoints())
     {
         writer.writeLine(endpoint->getName() + " = mcapi_create_endpoint(" +
-                         endpoint->getName().toUpper() + "_PORT, &status);");
+            endpoint->getName().toUpper() + "_PORT, &status);");
         writer.writeLine();
 
         writer.writeLine("if (status != MCAPI_SUCCESS)");
@@ -761,9 +864,9 @@ void ProgramEntityItem::generateSource(QString const& filename, QList<ProgramEnt
             }
 
             writer.writeLine(port->getRemoteEndpointName() +
-                             " = mcapi_get_endpoint(" +
-                             remoteEndpoint->getParentProgramEntity()->name().toUpper() +
-                             ", " + port->getRemoteEndpointName().toUpper() + "_PORT, &status);");
+                " = mcapi_get_endpoint(" +
+                remoteEndpoint->getParentProgramEntity()->name().toUpper() +
+                ", " + port->getRemoteEndpointName().toUpper() + "_PORT, &status);");
             writer.writeLine();
 
             writer.writeLine("if (status != MCAPI_SUCCESS)");
@@ -776,25 +879,4 @@ void ProgramEntityItem::generateSource(QString const& filename, QList<ProgramEnt
 
     writer.writeLine("return 0;");
     writer.endBlock();
-    writer.writeLine();
-}
-
-//-----------------------------------------------------------------------------
-// Function: updateGeneratedCode()
-//-----------------------------------------------------------------------------
-void ProgramEntityItem::updateGeneratedCode()
-{
-    // Generated code should be updated only if the code files already exist.
-    if (QFileInfo(getGenSourceLocation() + "/ktsmcapicode.h").exists())
-    {
-        generateCode(getGenSourceLocation());
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: getGenSourceLocation()
-//-----------------------------------------------------------------------------
-QString ProgramEntityItem::getGenSourceLocation() const
-{
-    return getMappingComponent()->getFileLocation() + '/' + name();
 }

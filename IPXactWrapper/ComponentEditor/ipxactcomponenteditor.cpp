@@ -635,6 +635,7 @@ void IPXactComponentEditor::refresh() {
 void IPXactComponentEditor::refreshEditors() {
 
 	splitter_ = new QSplitter(this);
+    splitter_->setChildrenCollapsible(false);
 
 	navigator_ = new ComponentTreeNavigator(component_, handler_, splitter_);
 

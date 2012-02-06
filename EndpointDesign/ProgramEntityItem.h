@@ -201,6 +201,16 @@ private:
     void generateSource(QString const& filename, QList<ProgramEntityItem*> const& remoteNodes);
 
     /*!
+     *  Generates the initializeMCAPI() function code.
+     */
+    void generateInitializeMCAPIFunc(CSourceWriter& writer);
+
+    /*!
+     *  Generates the createConnections() function code.
+     */
+    void generateCreateConnectionsFunc(CSourceWriter& writer);
+
+    /*!
      *  Creates an indentation string based on QSettings.
      *
      *      @return The indentation string.

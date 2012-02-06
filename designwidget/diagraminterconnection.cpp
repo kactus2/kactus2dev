@@ -1210,7 +1210,7 @@ void DiagramInterconnection::drawOverlapGraphics(QPainter* painter)
                         }
                         else
                         {
-                            // Otherwise draw a gray "tunnel" line close to the intersection point.
+                            // Otherwise draw a gray undercrossing line close to the intersection point.
                             // Drawing is performed using two lines, excluding the area close to
                             // the intersection point. This way the drawing is done correctly even though
                             // the connection is above the other connection.

@@ -171,6 +171,8 @@ void VLNVDisplayer::setPath( const QString& path ) {
 	
 	QLabel* pathHeader = new QLabel(tr("Path:"), this);
 	QLabel* pathLabel = new QLabel(path, this);
+    pathLabel->setMinimumWidth(20);
+    pathLabel->setToolTip(path);
 
 	layout_->addWidget(pathHeader, 4, 0, 1, 1, Qt::AlignLeft);
 	layout_->addWidget(pathLabel, 4, 1, 1, 1, Qt::AlignLeft);
