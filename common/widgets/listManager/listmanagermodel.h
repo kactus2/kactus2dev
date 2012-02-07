@@ -138,6 +138,11 @@ signals:
 	//! \brief Emitted when contents of the model change.
 	void contentChanged();
 
+protected:
+
+	//! \brief Contains the items to be displayed in a list.
+	QStringList items_;
+
 private:
 
 	//! No copying
@@ -145,9 +150,6 @@ private:
 
 	//! No assignment
 	ListManagerModel& operator=(const ListManagerModel& other);
-
-	//! \brief Contains the items to be displayed in a list.
-	QStringList items_;
 };
 
 #endif // LISTMANAGERMODEL_H

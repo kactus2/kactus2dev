@@ -17,8 +17,10 @@ FileGeneralTab::FileGeneralTab(const QFileInfo& baseLocation,
 QWidget(parent), file_(file),
 nameEditor_(this, baseLocation),
 generalEditor_(this, file),
-fileTypeEditor_(this, file, QStringList()),
+fileTypeEditor_(this, file),
 buildCommand_(this, file_, baseLocation) {
+
+	fileTypeEditor_.initialize();
 
 	// the group box that contains the build command so it is clearly separated
 	QGroupBox* buildBox = new QGroupBox(tr("Build command"), this);

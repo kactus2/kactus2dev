@@ -28,24 +28,22 @@ public:
 	 * \param baseLocation Refers to the location that is used as base when 
 	 * creating relative file paths
 	 * \param parent Pointer to the owner of this widget
-	 * \param items List of file paths to be added to the list.
-	 *
-	 * \return 
 	*/
 	FileListManager(const QString title, 
-		const QFileInfo& baseLocation, QWidget *parent = 0, 
-		const QStringList& items = QStringList());
+		const QFileInfo& baseLocation, QWidget *parent = 0);
 
 	//! \brief The destructor
 	virtual ~FileListManager();
 
-public slots:
-
-	//! \brief Called when user clicks "Add" button.
-	virtual void onAdd();
-
-	//! \brief Called when user clicks "Edit" button.
-	virtual void onEdit();
+	/*! \brief Initialize the file list manager.
+	 *
+	 * This function must be called after creating the file list manager and before
+	 * using it.
+	 * 
+	 * \param items QStringList that contains the items to add to the widget.
+	 *
+	*/
+	virtual void initialize(const QStringList& items = QStringList());
 
 private:
 

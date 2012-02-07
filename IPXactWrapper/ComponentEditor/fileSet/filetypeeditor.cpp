@@ -12,18 +12,12 @@
 #include "filetypeeditordelegate.h"
 
 FileTypeEditor::FileTypeEditor(QWidget *parent,
-							   File* file,
-							   const QStringList& items /*= QStringList()*/ ):
-ListManager(tr("Specified file types"), parent, items), file_(file) {
+							   File* file):
+ListManager(tr("Specified file types"), parent), 
+file_(file) {
 
 	Q_ASSERT_X(file_, "FileTypeEditor constructor",
 		"Null File-pointer given as parameter");
-
-	view_.setProperty("mandatoryField", true);
-
-	view_.setItemDelegate(new FileTypeEditorDelegate(this));
-
-	restore();
 }
 
 FileTypeEditor::~FileTypeEditor() {
@@ -31,7 +25,7 @@ FileTypeEditor::~FileTypeEditor() {
 
 void FileTypeEditor::apply() {
 	// get all items from the model
-	QStringList items = model_.items();
+	QStringList items = model_->items();
 
 	// remove all previous file types and userFileTypes from the model
 	file_->clearFileTypes();
@@ -94,19 +88,19 @@ void FileTypeEditor::restore() {
 	QStringList fileTypes = file_->getFileTypes();
 	QStringList userFileTypes = file_->getUserFileTypes();
 
-	model_.setItems(fileTypes);
-	model_.appendItems(userFileTypes);
+	model_->setItems(fileTypes);
+	model_->appendItems(userFileTypes);
 }
 
 bool FileTypeEditor::isValid() const {
 	
 	// at least one file type has to be specified
-	if (model_.rowCount() <= 0) {
+	if (model_->rowCount() <= 0) {
 		return false;
 	}
 
 	// get all items from the model
-	QStringList items = model_.items();
+	QStringList items = model_->items();
 	foreach (QString item, items) {
 		if (item.isEmpty()) {
 			return false;
@@ -114,4 +108,14 @@ bool FileTypeEditor::isValid() const {
 	}
 
 	return true;
+}
+
+void FileTypeEditor::initialize( const QStringList& items /*= QStringList()*/ ) {
+	ListManager::initialize(items);
+
+	view_->setProperty("mandatoryField", true);
+
+	view_->setItemDelegate(new FileTypeEditorDelegate(this));
+
+	restore();
 }

@@ -782,6 +782,14 @@ public:
 	*/
 	bool hasInterfaces() const;
 
+	/*! \brief Check if the component contains the named interface.
+	 *
+	 * \param interfaceName The name of the interface to search for.
+	 *
+	 * \return bool True if the interface was found.
+	*/
+	bool hasInterface(const QString& interfaceName) const;
+
 	/*! \brief Find the interface that contains the physical port and return it's abs def vlnv and logical name.
 	 *
 	 * \param physicalPortName The name of the physical port that's interface is searched.

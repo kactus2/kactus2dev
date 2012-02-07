@@ -24,23 +24,23 @@ public:
 	 *
 	 * \param title The title for the QGroupBox.
 	 * \param parent Pointer to the owner of this widget.
-	 * \param items List of items to add to the widget.
 	 *
 	*/
 	GroupManager(const QString title = tr("Group identifiers"), 
-		QWidget *parent = 0,
-		const QStringList& items = QStringList());
+		QWidget *parent = 0);
 
 	//! \brief The destructor
 	virtual ~GroupManager();
 
-public slots:
-
-	//! \brief Called when user clicks "Add" button.
-	virtual void onAdd();
-
-	//! \brief Called when user clicks "Edit" button.
-	virtual void onEdit();
+	/*! \brief Initialize the group manager.
+	 *
+	 * This function must be called after creating the group manager and before
+	 * using it.
+	 * 
+	 * \param items QStringList that contains the items to add to the widget.
+	 *
+	*/
+	virtual void initialize(const QStringList& items = QStringList());
 
 private:
 

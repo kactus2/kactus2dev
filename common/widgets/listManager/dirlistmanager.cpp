@@ -14,14 +14,17 @@
 
 DirListManager::DirListManager( const QString title, 
 							   const QFileInfo& baseLocation, 
-							   QWidget *parent /*= 0*/, 
-							   const QStringList& items /*= QStringList()*/ ):
-ListManager(title, parent, items), 
+							   QWidget *parent /*= 0*/):
+ListManager(title, parent), 
 baseDir_(baseLocation) {
-
-	view_.setItemDelegate(new DirListManagerDelegate(this, baseDir_));
 }
 
 DirListManager::~DirListManager() {
+}
+
+void DirListManager::initialize( const QStringList& items /*= QStringList()*/ ) {
+	ListManager::initialize(items);
+
+	view_->setItemDelegate(new DirListManagerDelegate(this, baseDir_));
 }
 

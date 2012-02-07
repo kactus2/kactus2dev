@@ -8,12 +8,15 @@
 #include "channelinterfacemanager.h"
 
 #include "channelinterfacemanagerdelegate.h"
+#include "channelinterfacemodel.h"
 
 #include <common/dialogs/comboSelector/comboselector.h>
 #include <models/channel.h>
 #include <models/component.h>
 
 #include <QComboBox>
+#include <QHBoxLayout>
+#include <QLayout>
 
 ChannelInterfaceManager::ChannelInterfaceManager(
 	QSharedPointer<Component> component,
@@ -27,60 +30,80 @@ component_(component) {
 		"Null Component-pointer given as parameter");
 	Q_ASSERT_X(dataPointer, "ChannelInterfaceManager constructor",
 		"Null dataPointer given as parameter");
-
-	view_.setItemDelegate(new ChannelInterfaceManagerDelegate(this, component_));
-
-	view_.setProperty("mandatoryField", true);
 }
 
 ChannelInterfaceManager::~ChannelInterfaceManager() {
 }
 
-void ChannelInterfaceManager::onAdd() {
-	
-	QString selected = ComboSelector::selectBusInterface(component_, this);
-
-	// is user clicked cancel.
-	if (selected.isEmpty())
-		return;
-
-	model_.appendItem(selected);
-
-	emit contentChanged();
-}
-
-void ChannelInterfaceManager::onEdit() {
-	
-	// ask the view for the selected index
-	QModelIndex index = view_.currentIndex();
-
-	// if index was invalid (nothing was chosen)
-	if (!index.isValid()) {
-		return;
-	}
-
-	// get the old text that is currently stored in the model
-	QString oldText = model_.data(index, Qt::DisplayRole).toString();
-
-	// ask the user to set the new text
-	QString newText = ComboSelector::selectBusInterface(component_,
-		this, oldText);
-
-	// if empty string was given or cancel was pressed
-	if (newText.isEmpty()) {
-		return;
-	}
-
-	// if user changed the text
-	else if (oldText != newText) {
-		model_.replace(index, newText);
-
-		// inform that content of the widget has changed
-		emit contentChanged();
-	}
-}
-
 bool ChannelInterfaceManager::isValid() const {
-	// atleast two interfaces must be specified.
-	return (model_.rowCount() > 1);
+	Q_ASSERT(model_);
+
+	QStringList items = model_->items();
+
+	// at least 2 interfaces must have been referenced.
+	if (items.size() < 2) {
+		return false;
+	}
+
+	foreach (QString item, items) {
+
+		// if the component doesn't contain the referenced interface.
+		if (!component_->hasInterface(item)) {
+			return false;
+		}
+	}
+
+	// model was fine so everything is fine.
+	return true;
+}
+
+void ChannelInterfaceManager::initialize( const QStringList& items /*= QStringList()*/ ) {
+	// remove the previous model and view if there are one
+	if (model_) {
+		delete model_;
+		model_ = 0;
+	}
+	if (view_) {
+		delete view_;
+		view_ = 0;
+	}
+
+	// create new model and view
+	model_ = new ChannelInterfaceModel(this, component_, items);
+
+	view_ = new EditableListView(this);
+
+	// the signals from the view
+	connect(view_, SIGNAL(removeItem(const QModelIndex&)),
+		model_, SLOT(remove(const QModelIndex&)), Qt::UniqueConnection);
+
+	connect(view_, SIGNAL(addItem(const QModelIndex&)),
+		model_, SLOT(addItem(const QModelIndex&)), Qt::UniqueConnection);
+
+	connect(view_, SIGNAL(moveItem(const QModelIndex&, const QModelIndex&)),
+		model_, SLOT(moveItem(const QModelIndex&, const QModelIndex&)), Qt::UniqueConnection);
+
+	// the signals from the model
+	connect(model_, SIGNAL(contentChanged()),
+		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
+	connect(model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
+		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
+	QLayout* topLayout = layout();
+
+	if (!topLayout) {
+		// the top layout of the widget
+		topLayout = new QHBoxLayout(this);
+	}
+
+	// add the view on the left side
+	topLayout->addWidget(view_);
+
+	// connect the model to the view
+	view_->setModel(model_);
+
+	view_->setItemDelegate(new ChannelInterfaceManagerDelegate(this, component_));
+
+	view_->setProperty("mandatoryField", true);
 }

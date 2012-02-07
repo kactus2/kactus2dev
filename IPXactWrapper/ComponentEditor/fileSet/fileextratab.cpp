@@ -16,12 +16,17 @@
 FileExtraTab::FileExtraTab(const QFileInfo& baseLocation, 
 						   File* file, 
 						   QWidget *parent ):
-QWidget(parent), dependencies_(tr("Dependencies"), baseLocation, this),
+QWidget(parent), 
+dependencies_(tr("Dependencies"), baseLocation, this),
 exportedNames_(tr("Exported names"), this),
 imageTypes_(tr("Image types"), this),
 defineView_(this),
 defineModel_(this, file),
 file_(file) {
+
+	dependencies_.initialize();
+	exportedNames_.initialize();
+	imageTypes_.initialize();
 
 	// create a proxy model to sort the define items and connect it between
 	// the defineView and defineModel

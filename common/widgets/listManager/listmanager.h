@@ -33,13 +33,21 @@ public:
 	 *
 	 * \param title The title to be set for the QGroupBox
 	 * \param parent Pointer to the owner of this widget.
-	 * \param items QStringList that contains the items to add to the widget.
 	 */
-	ListManager(const QString title = tr("List"), QWidget *parent = 0,
-		const QStringList& items = QStringList());
+	ListManager(const QString title = tr("List"), QWidget *parent = 0);
 
 	//! \brief the destructor
 	virtual ~ListManager();
+
+	/*! \brief Initialize the list manager.
+	 *
+	 * This function must be called after creating the list manager and before
+	 * using it.
+	 * 
+	 * \param items QStringList that contains the items to add to the widget.
+	 *
+	*/
+	virtual void initialize(const QStringList& items = QStringList());
 
 	/*! \brief Get the string items currently stored in the model.
 	*
@@ -67,10 +75,10 @@ signals:
 protected:
 
 	//! \brief The model that contains the list of strings.
-	ListManagerModel model_;
+	ListManagerModel* model_;
 
 	//! \brief The View to display the list of strings.
-	EditableListView view_;
+	EditableListView* view_;
 
 private:
 

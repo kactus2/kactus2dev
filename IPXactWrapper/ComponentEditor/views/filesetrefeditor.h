@@ -26,16 +26,24 @@ public:
 	 * \param component Pointer to the component being edited.
 	 * \param title Title for the QGroupBox
 	 * \param parent Pointer to the owner of this editor.
-	 * \param items QStringList containing the file set names for the editor.
 	 *
 	*/
 	FileSetRefEditor(QSharedPointer<Component> component,
 		const QString title = tr("List"), 
-		QWidget *parent = 0,
-		const QStringList& items = QStringList());
+		QWidget *parent = 0);
 	
 	//! \brief The destructor
 	virtual ~FileSetRefEditor();
+
+	/*! \brief Initialize the file set reference editor.
+	 *
+	 * This function must be called after creating the file set reference editor and before
+	 * using it.
+	 * 
+	 * \param items QStringList that contains the items to add to the widget.
+	 *
+	*/
+	virtual void initialize(const QStringList& items = QStringList());
 
 private:
 

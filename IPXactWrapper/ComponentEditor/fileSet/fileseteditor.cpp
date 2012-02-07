@@ -21,12 +21,18 @@ FileSetEditor::FileSetEditor(const QFileInfo& baseLocation,
 ItemEditor(component, parent),
 baseLocation_(baseLocation),
 fileSet_(0), nameBox_(this), 
-groups_(tr("Group identifiers"), this, QStringList()),
-dependencies_(tr("Dependent directories"), baseLocation_, this, QStringList()) {
+groups_(tr("Group identifiers"), this),
+dependencies_(tr("Dependent directories"), baseLocation_, this) {
 
 	fileSet_ = static_cast<FileSet*>(dataPointer);
 	Q_ASSERT_X(fileSet_, "FileSetEditor::setDataPointer",
 		"static_cast failed to give valid FileSet-pointer");
+
+	// initialize groups 
+	groups_.initialize(fileSet_->getGroups());
+
+	// initialize dependencies
+	dependencies_.initialize(fileSet_->getDependencies());
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 
@@ -49,12 +55,6 @@ dependencies_(tr("Dependent directories"), baseLocation_, this, QStringList()) {
 	nameBox_.setName(fileSet_->getName());
 	nameBox_.setDisplayName(fileSet_->getDisplayName());
 	nameBox_.setDescription(fileSet_->getDescription());
-
-	// set the items for the groups list
-	groups_.setItems(fileSet_->getGroups());
-
-	// set the items for the dependencies list
-	dependencies_.setItems(fileSet_->getDependencies());
 }
 
 FileSetEditor::~FileSetEditor() {

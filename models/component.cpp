@@ -1974,6 +1974,10 @@ bool Component::hasInterfaces() const {
 	return !busInterfaces_.isEmpty();
 }
 
+bool Component::hasInterface( const QString& interfaceName ) const {
+	return busInterfaces_.contains(interfaceName);
+}
+
 bool Component::hasFileSets() const {
 	return !fileSets_.isEmpty();
 }

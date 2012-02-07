@@ -37,19 +37,21 @@ public:
 	//! \brief The destructor
 	virtual ~ChannelInterfaceManager();
 
+	/*! \brief Initialize the channel interface manager.
+	 *
+	 * This function must be called after creating the manager and before
+	 * using it.
+	 * 
+	 * \param items QStringList that contains the items to add to the widget.
+	 *
+	*/
+	virtual void initialize(const QStringList& items = QStringList());
+
 	/*! \brief Check if the editor is in valid state or not.
 	 *
 	 * \return True if the editor is in valid state.
 	*/
 	bool isValid() const;
-
-public slots:
-
-	//! \brief Called when user clicks "Add" button.
-	virtual void onAdd();
-
-	//! \brief Called when user clicks "Edit" button.
-	virtual void onEdit();
 
 private:
 

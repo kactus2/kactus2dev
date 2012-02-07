@@ -30,15 +30,23 @@ public:
 	 * \param baseLocation Refers to the location used as base for relative 
 	 * directory paths.
 	 * \param parent Pointer to the owner of this widget.
-	 * \param items List of directory paths to be added to this widget.
 	 *
 	*/
 	DirListManager(const QString title, 
-		const QFileInfo& baseLocation, QWidget *parent = 0, 
-		const QStringList& items = QStringList());
+		const QFileInfo& baseLocation, QWidget *parent = 0);
 
 	//! \brief The destructor.
 	virtual ~DirListManager();
+
+	/*! \brief Initialize the directory list manager.
+	 *
+	 * This function must be called after creating the directory list manager and before
+	 * using it.
+	 * 
+	 * \param items QStringList that contains the items to add to the widget.
+	 *
+	*/
+	virtual void initialize(const QStringList& items = QStringList());
 
 private:
 	

@@ -25,15 +25,22 @@ public:
 	 *
 	 * \param parent Pointer to the owner of this widget
 	 * \param file Pointer to the file being edited
-	 * \param items QStringList containing the items to be added to the list.
 	 *
 	*/
-	FileTypeEditor(QWidget *parent,
-		File* file,
-		const QStringList& items = QStringList());
+	FileTypeEditor(QWidget *parent,	File* file);
 
 	//! \brief The destructor
 	virtual ~FileTypeEditor();
+
+	/*! \brief Initialize the file type editor.
+	 *
+	 * This function must be called after creating the file type editor and before
+	 * using it.
+	 * 
+	 * \param items QStringList that contains the items to add to the widget.
+	 *
+	*/
+	virtual void initialize(const QStringList& items = QStringList());
 
 	/*! \brief Apply the changes from the editor to the model.
 	 *

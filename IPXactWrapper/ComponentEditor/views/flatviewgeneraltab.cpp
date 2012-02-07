@@ -25,6 +25,8 @@ languageStrict_(tr("Strict"), this),
 modelName_(this),
 fileSetRefs_(component, tr("File set references"), this) {
 
+	fileSetRefs_.initialize();
+
 	// create the labels for user to identify the editors
 	QLabel* languageLabel = new QLabel(tr("Language"), this);
 	QLabel* modelLabel = new QLabel(tr("Model name"), this);

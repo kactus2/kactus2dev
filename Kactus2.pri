@@ -335,7 +335,9 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./InterfaceEditor/interfaceeditor.h \
     ./ConnectionEditor/connectioneditor.h \
     ./GCF/Common.h \
-    ./GCF/MenuStrip.h
+    ./GCF/MenuStrip.h \
+    ./IPXactWrapper/ComponentEditor/views/filesetrefmodel.h \
+    ./IPXactWrapper/ComponentEditor/channels/channelinterfacemodel.h
 SOURCES += ./common/CSourceWriter.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/KactusAttribute.cpp \
@@ -651,5 +653,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./InterfaceEditor/interfaceeditor.cpp \
     ./ConnectionEditor/connectioneditor.cpp \
     ./GCF/MenuStrip.cpp \
-    ./common/IDFactory.cpp
+    ./common/IDFactory.cpp \
+    ./IPXactWrapper/ComponentEditor/views/filesetrefmodel.cpp \
+    ./IPXactWrapper/ComponentEditor/channels/channelinterfacemodel.cpp
 RESOURCES += kactus.qrc

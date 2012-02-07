@@ -21,6 +21,8 @@ channel_(static_cast<Channel*>(dataPointer)),
 nameGroup_(this, tr("Names and description")),
 interfaceEdit_(component, dataPointer, this) {
 
+	interfaceEdit_.initialize(channel_->getInterfaces());
+
 	Q_ASSERT_X(dataPointer, "ChannelEditor constructor",
 		"Null dataPointer given as parameter");
 
@@ -38,8 +40,6 @@ interfaceEdit_(component, dataPointer, this) {
 	nameGroup_.setName(channel_->getName());
 	nameGroup_.setDisplayName(channel_->getDisplayName());
 	nameGroup_.setDescription(channel_->getDescription());
-
-	interfaceEdit_.setItems(channel_->getInterfaces());
 }
 
 ChannelEditor::~ChannelEditor() {
