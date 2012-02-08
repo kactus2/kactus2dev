@@ -126,6 +126,15 @@ signals:
 
 public slots:
 
+	/*! \brief Set the widget to be mandatory or not.
+	 * 
+	 * The default setting is mandatory on.
+	 * 
+	 * \param mandatory If true then all 4 vlnv fields are displayed as mandatory fields.
+	 *
+	*/
+	void setMandatory(bool mandatory);
+
 	/*!
      *  Sets the contents of the editor to match the given VLNV.
      *

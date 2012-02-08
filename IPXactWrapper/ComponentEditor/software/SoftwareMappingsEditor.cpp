@@ -33,6 +33,9 @@ SoftwareMappingsEditor::SoftwareMappingsEditor(LibraryInterface* libHandler,
     swDesignMapping_.setImplementationFilter(true, KactusAttribute::KTS_SW);
     swDesignMapping_.setSWTypeFilter(true, KactusAttribute::KTS_SW_MAPPING);
     swDesignMapping_.updateFiltering();
+
+	// the mapping is not mandatory element
+	swDesignMapping_.setMandatory(false);
     
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(&swDesignMapping_);

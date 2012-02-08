@@ -52,6 +52,8 @@ libHandler_(libHandler) {
 	busType_.setTitle(tr("Bus definition"));
 	absType_.setTitle(tr("Abstraction definition"));
 
+	absType_.setMandatory(false);
+
 	// create the scroll area
 	QScrollArea* scrollArea = new QScrollArea(this);
 	scrollArea->setWidgetResizable(true);

@@ -387,3 +387,10 @@ void VLNVEditor::updateFiltering()
     dataTree_.clear();
     dataTree_.parse(handler_, type_);
 }
+
+void VLNVEditor::setMandatory( bool mandatory ) {
+	vendorEdit_->setProperty("mandatoryField", mandatory);
+	libraryEdit_->setProperty("mandatoryField", mandatory);
+	nameEdit_->setProperty("mandatoryField", mandatory);
+	versionEdit_->setProperty("mandatoryField", mandatory);
+}
