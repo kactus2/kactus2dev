@@ -830,7 +830,7 @@ bool Component::isValid( QStringList& errorList ) const {
 			valid = false;
 		}
 
-		if (!channel->isValid(errorList, thisIdentifier)) {
+		if (!channel->isValid(busifNames, errorList, thisIdentifier)) {
 			valid = false;
 		}
 	}
@@ -1033,7 +1033,7 @@ bool Component::isValid() const {
 			return false;
 		}
 
-		if (!channel->isValid()) {
+		if (!channel->isValid(busifNames)) {
 			return false;
 		}
 	}

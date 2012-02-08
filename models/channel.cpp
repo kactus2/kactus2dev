@@ -123,7 +123,9 @@ void Channel::write(QXmlStreamWriter& writer) {
 	return;
 }
 
-bool Channel::isValid( QStringList& errorList, const QString& parentIdentifier ) const {
+bool Channel::isValid(const QStringList& interfaceNames,
+					  QStringList& errorList, 
+					  const QString& parentIdentifier ) const {
 	bool valid = true;
 
 	if (name_.isEmpty()) {
@@ -138,16 +140,32 @@ bool Channel::isValid( QStringList& errorList, const QString& parentIdentifier )
 		valid = false;
 	}
 
+	foreach (QString interfaceRef, busInterfaces_) {
+		if (!interfaceNames.contains(interfaceRef)) {
+			errorList.append(QObject::tr("Channel %1 contained invalid interface "
+				"reference to %2 within %3").arg(name_).arg(interfaceRef).arg(
+				parentIdentifier));
+			valid = false;
+		}
+	}
+
 	return valid;
 }
 
-bool Channel::isValid() const {
+bool Channel::isValid(const QStringList& interfaceNames) const {
 	if (name_.isEmpty()) {
 		return false;
 	}
 	else if (busInterfaces_.size() < 2) {
 		return false;
 	}
+
+	foreach (QString interfaceRef, busInterfaces_) {
+		if (!interfaceNames.contains(interfaceRef)) {
+			return false;
+		}
+	}
+
 	return true;
 }
 

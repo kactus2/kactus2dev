@@ -15,6 +15,7 @@
 #include <QFont>
 
 class LibraryInterface;
+class ItemEditor;
 
 /*! \brief ComponentTreeItem represents a single item in the ComponentTreeView.
 *
@@ -168,17 +169,17 @@ public:
 	*/
 	QList<ComponentTreeItem*> getChildItems();
 
-	/*! \brief Should the item be displayed as valid or invalid item.
+	/*! \brief Check if the matching IP-Xact model is in valid state
 	*
-	* \return True if the item is valid. False if invalid.
+	* \return True if the model is valid. False if invalid.
+	*/
+	bool isModelValid() const;
+
+	/*! \brief Check if both the IP-Xact model and the registered editor are valid.
+	 *
+	 * \return bool True if both are valid. False if either is invalid.
 	*/
 	bool isValid() const;
-
-	/*! \brief Set the validity of the item.
-	*
-	* \param valid If true then item is set as valid.
-	*/
-	void setValidity(bool valid);
 
 	/*! \brief Get the data pointer to the item that this item represents
 	*
@@ -247,6 +248,15 @@ public:
 	*/
 	void sortModel(const QStringList& idList);
 
+	/*! \brief Register the editor for the item.
+	 * 
+	 * Editor is used to check the validity of the item.
+	 * 
+	 * \param editor Pointer to the editor that matches this item.
+	 *
+	*/
+	void registerEditor(ItemEditor* editor);
+
 private:
 
 	//! No copying
@@ -273,12 +283,11 @@ private:
 	//! \brief List of child items for this item.
 	QList<ComponentTreeItem*> childItems_;
 
-	//! \brief True if the item is 
-	bool isValid_;
-
 	//! \brief Pointer to the instance that manages the library
-	LibraryInterface* handler_;
-	
+	LibraryInterface* handler_;	
+
+	//! \brief Pointer to the editor of the item.
+	ItemEditor* editor_;
 };
 
 #endif /* COMPONENTTREEITEM_H_ */

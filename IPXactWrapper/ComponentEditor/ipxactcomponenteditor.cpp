@@ -243,6 +243,9 @@ void IPXactComponentEditor::createNewEditor( ComponentTreeItem* item ) {
 				 }
 	}
 
+	// register editor to allow validation
+	item->registerEditor(editor);
+
 	connect(editor, SIGNAL(noticeMessage(const QString&)),
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 	connect(editor, SIGNAL(errorMessage(const QString&)),
@@ -379,9 +382,6 @@ bool IPXactComponentEditor::updateOldIndexItem() {
 
 		// tell editor to save the settings
 		currentEditor->makeChanges();
-
-		// set items validity according to editor's status
-		item->setValidity(currentEditor->isValid());
 	}
 
 	// tell tree navigator to update the current model index so changes become

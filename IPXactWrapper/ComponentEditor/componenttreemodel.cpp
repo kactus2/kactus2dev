@@ -151,6 +151,7 @@ QVariant ComponentTreeModel::data(const QModelIndex& index, int role) const {
 		return item->getFont();
 	}
 	else if (role == Qt::ForegroundRole) {
+
 		if (item->isValid())
 			return QColor("black");
 		else

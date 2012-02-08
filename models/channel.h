@@ -63,19 +63,23 @@ public:
 
 	/*! \brief Check if the channel is in a valid state.
 	 *
+	 * \param interfaceNames Contains the names of the bus interfaces in the component.
 	 * \param errorList The list to add the possible error messages to.
 	 * \param parentIdentifier String from parent to help to identify the location of the error.
 	 *
 	 * \return bool True if the state is valid and writing is possible.
 	*/
-	bool isValid(QStringList& errorList, 
+	bool isValid(const QStringList& interfaceNames,
+		QStringList& errorList, 
 		const QString& parentIdentifier) const;
 
 	/*! \brief Check if the channel is in a valid state.
-	 *
+	 * 
+	 * \param interfaceNames Contains the names of the bus interfaces in the component.
+	 * 
 	 * \return bool True if the state is valid and writing is possible.
 	*/
-	bool isValid() const;
+	bool isValid(const QStringList& interfaceNames) const;
 
 	/*! \brief Get the name of the channel
 	 *

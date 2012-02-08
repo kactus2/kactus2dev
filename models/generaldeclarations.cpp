@@ -222,7 +222,7 @@ bool General::PortMap::isValid( const QList<General::PortBounds>& physicalPorts,
 				// the port map
 				if (actualPortSize < physSize) {
 					errorList.append(QObject::tr("The port map within %1 is larger"
-						" than the actual size of the port %1.").arg(
+						" than the actual size of the port %2.").arg(
 						parentIdentifier).arg(physicalPort_));
 					valid = false;
 				}

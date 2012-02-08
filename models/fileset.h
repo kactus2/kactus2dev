@@ -120,7 +120,7 @@ public:
 	 * \return QList containing pointers to the files associated with this
 	 * file set.
 	 */
-	const QList<QSharedPointer<File> >& getFiles();
+	QList<QSharedPointer<File> >& getFiles();
 
 	/*! \brief Get list of the functions for this file set
 	 *

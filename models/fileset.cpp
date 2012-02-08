@@ -294,7 +294,7 @@ const QList<QSharedPointer<Function> >& FileSet::getFunctions() {
 	return functions_;
 }
 
-const QList<QSharedPointer<File> >& FileSet::getFiles() {
+QList<QSharedPointer<File> >& FileSet::getFiles() {
 	return files_;
 }
 

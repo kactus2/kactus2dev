@@ -6,6 +6,8 @@
 
 #include "componenttreeitem.h"
 
+#include "itemeditor.h"
+
 #include <models/model.h>
 #include <models/fileset.h>
 #include <models/file.h>
@@ -53,8 +55,8 @@ dataPointer_(elementPointer),
 component_(component),
 parent_(parentItem), 
 childItems_(), 
-isValid_(true),
-handler_(handler) {
+handler_(handler),
+editor_(NULL) {
 
     bool platformComp = component->getComponentImplementation() == KactusAttribute::KTS_SW &&
                         component->getComponentSWType() == KactusAttribute::KTS_SW_PLATFORM;
@@ -149,7 +151,7 @@ handler_(handler) {
 	case ComponentTreeItem::FILESETS: {
 		text_ = tr("File sets");
 
-		// get filesets from the component
+		// get file sets from the component
 		QList<QSharedPointer<FileSet> > list = component_->getFileSets();
 		for (int i = 0; i < list.size(); ++i) {
 			childItems_.append(new ComponentTreeItem(
@@ -167,15 +169,12 @@ handler_(handler) {
 		// set the text that is shown in the editor
 		text_ = fileSet->getName();
 
-		QStringList errorList;
-		isValid_ = fileSet->isValid(errorList, tr("edited component"), false);
-
 		// File set always has three children: Default file builders, Files and Functions
 		childItems_.append(new ComponentTreeItem(
 			ComponentTreeItem::DEFAULTFILEBUILDERS, &fileSet->getDefaultFileBuilders(), 
 			component, handler, this));
 		childItems_.append(new ComponentTreeItem(
-			ComponentTreeItem::FILES, 0, component, handler, this));
+			ComponentTreeItem::FILES, &fileSet->getFiles(), component, handler, this));
 // 		childItems_.append(new ComponentTreeItem(
 // 			ComponentTreeItem::FUNCTIONS, 0, component, this));
 
@@ -208,10 +207,6 @@ handler_(handler) {
 		// set the text shown in the editor
 		//QFileInfo fileInfo(file->getName());
 		text_ = file->getName();
-		
-		QStringList errorList;
-		isValid_ = file->isValid(errorList, tr("edited component"), true);
-
 		break;
 								  }
 	case ComponentTreeItem::FUNCTIONS: {
@@ -234,14 +229,6 @@ handler_(handler) {
 		text_ = tr("Default file builders");
 		QList<QSharedPointer<FileBuilder> >* builders = 
 			static_cast<QList<QSharedPointer<FileBuilder> >*>(dataPointer_);
-		
-		// check all default file builders and if at least one is not in valid state.
-		QStringList errorList;
-		foreach (QSharedPointer<FileBuilder> builder, *builders) {
-			if (!builder->isValid(errorList, tr("edited component"))) {
-				isValid_ = false;
-			}
-		}
 		break;
 												 }
 	case ComponentTreeItem::CHOICES: {
@@ -268,14 +255,6 @@ handler_(handler) {
 		QMap<QString, QSharedPointer<ModelParameter> >* modelParams = 
 			component_->getModel()->getModelParametersPointer();
 		dataPointer_ = modelParams;
-
-		// if at least one model parameter is invalid
-		foreach (QSharedPointer<ModelParameter> modelParam, *modelParams) {
-			if (!modelParam->isValid()) {
-				isValid_ = false;
-			}
-		}
-
 		break;
 											 }
 	case ComponentTreeItem::PARAMETERS: {
@@ -283,14 +262,6 @@ handler_(handler) {
 
 		QList<QSharedPointer<Parameter> >* params = &component_->getParameters();
 		dataPointer_ = params;
-
-		// if at least one parameter is invalid then show this as red
-		foreach (QSharedPointer<Parameter> param, *params) {
-			if (!param->isValid()) {
-				isValid_ = false;
-				break;
-			}
-		}
 		break;
 										}
 	case ComponentTreeItem::MEMORYMAPS: {
@@ -572,11 +543,6 @@ handler_(handler) {
 			"static_cast failed to give valid View-pointer");
 
 		text_ = view->getName();
-
-		QStringList errorList;
-		isValid_ = view->isValid(component_->getFileSetNames(), errorList, 
-			tr("edited component"));
-
 		break;
 								  }
 	case ComponentTreeItem::PORTS: {
@@ -592,16 +558,6 @@ handler_(handler) {
 		QMap<QString, QSharedPointer<Port> >* ports =
 			component_->getModel()->getPortsPointer();
 		dataPointer_ = ports;
-
-		bool hasViews = component_->hasViews();
-
-		// if at least one port is invalid
-		foreach (QSharedPointer<Port> port, *ports) {
-			if (!port->isValid(hasViews)) {
-				isValid_ = false;
-				break;
-			}
-		}
 		break;
 								   }
 	case ComponentTreeItem::BUSINTERFACES: {
@@ -615,15 +571,11 @@ handler_(handler) {
 		    text_ = tr("Bus interfaces");
         }
 
-		// get list of keys for busInterfaces QMap
-		QList<QString> busKeys = component_->getBusInterfaces().keys();
-
-		// go through each key
-		for (int i = 0; i < busKeys.size(); ++i) {
-			
-			// append the item that matches the key
+		// add each bus interface
+		const QMap<QString, QSharedPointer<BusInterface> > busifs = component_->getBusInterfaces();
+		foreach (QSharedPointer<BusInterface> busif, busifs) {
 			childItems_.append(new ComponentTreeItem(
-				ComponentTreeItem::BUSINTERFACE, component_->getBusInterface(busKeys.at(i)),
+				ComponentTreeItem::BUSINTERFACE, busif.data(),
 				component, handler, this));
 		}
 		break;
@@ -635,11 +587,6 @@ handler_(handler) {
 			"static_cast failed to give valid BusInterface-pointer");
 
 		text_ = busInterface->getName();
-
-		QStringList errorList;
-		QList<General::PortBounds> portBounds = component_->getPortBounds();
-		isValid_ = busInterface->isValid(portBounds, errorList, tr("edited component"));
-
 		break;
 										  }
 	case ComponentTreeItem::CHANNELS: {
@@ -659,9 +606,6 @@ handler_(handler) {
 			"static_cast failed to give valid Channel-pointer");
 
 		text_ = channel->getName();
-
-		isValid_ = channel->isValid();
-
 		break;
 									 }
 	case ComponentTreeItem::CPUS: {
@@ -690,14 +634,6 @@ handler_(handler) {
 		QList<QSharedPointer<OtherClockDriver> >* drivers = 
 			&component_->getOtherClockDrivers();
 		dataPointer_ = drivers;
-
-		// if one of the drivers is invalid
-		foreach (QSharedPointer<OtherClockDriver> driver, *drivers) {
-			if (!driver->isValid()) {
-				isValid_ = false;
-				break;
-			}
-		}
 		break;
 											   }
 	case ComponentTreeItem::COMPONENTGENERATORS: {
@@ -818,14 +754,6 @@ void* ComponentTreeItem::getDataPointer() const {
 
 void ComponentTreeItem::setText( const QString newText ) {
 	text_ = newText;
-}
-
-bool ComponentTreeItem::isValid() const {
-	return isValid_;
-}
-
-void ComponentTreeItem::setValidity( bool valid ) {
-	isValid_ = valid;
 }
 
 void ComponentTreeItem::removeChild( ComponentTreeItem* childPointer ) {
@@ -1006,4 +934,267 @@ void ComponentTreeItem::sortModel(const QStringList& idList) {
 
 	FileSet* fileSet = static_cast<FileSet*>(dataPointer_);
 	fileSet->sortFiles(idList);
+}
+
+void ComponentTreeItem::registerEditor( ItemEditor* editor ) {
+	editor_ = editor;
+}
+
+bool ComponentTreeItem::isModelValid() const {
+
+	switch (type_) 
+	{
+	case ComponentTreeItem::COMPONENT: {
+		Component* comp = static_cast<Component*>(dataPointer_);
+		Q_ASSERT(comp);
+		return comp->isValid();
+									   }
+	case ComponentTreeItem::GENERAL: {
+		// general is always true
+		return true;
+									 }
+	case ComponentTreeItem::FILESETS: {
+
+		// if at least one file set is invalid then display this as invalid
+		QList<QSharedPointer<FileSet> > list = component_->getFileSets();
+		foreach (QSharedPointer<FileSet> fileSet, list) {
+			if (!fileSet->isValid(true)) {
+				return false;
+			}
+		}
+
+		// all file sets were valid
+		return true;
+									  }
+	case ComponentTreeItem::FILESET: {
+		// get pointer to the matching file set
+		FileSet* fileSet = static_cast<FileSet*>(dataPointer_);
+
+		return fileSet->isValid(true);
+									 }
+	case ComponentTreeItem::FILES: {
+
+		// if at least one file is invalid
+		const QList<QSharedPointer<File> >* files = 
+			static_cast<const QList<QSharedPointer<File> >*>(dataPointer_);
+		foreach (QSharedPointer<File> file, *files) {
+			if (!file->isValid(true)) {
+				return false;
+			}
+		}
+
+		// if all files were valid
+		return true;
+								   }
+	case ComponentTreeItem::FILE: {
+		File* file = static_cast<File*>(dataPointer_);
+
+		return file->isValid(true);
+								  }
+	case ComponentTreeItem::FUNCTIONS: {
+		return false;
+									   }
+	case ComponentTreeItem::FUNCTION: {
+		return false;
+									  }
+	case ComponentTreeItem::DEFAULTFILEBUILDERS: {
+
+		// if at least one default file builder is invalid
+		QList<QSharedPointer<FileBuilder> >* builders = 
+			static_cast<QList<QSharedPointer<FileBuilder> >*>(dataPointer_);
+		foreach (QSharedPointer<FileBuilder> fileBuilder, *builders) {
+			if (!fileBuilder->isValid()) {
+				return false;
+			}
+		}
+
+		// all builders were valid
+		return true;
+												 }
+	case ComponentTreeItem::CHOICES: {
+		return false;
+									 }
+	case ComponentTreeItem::CHOICE: {
+		return false;
+									}
+	case ComponentTreeItem::MODELPARAMETERS: {
+
+		// if at least one model parameter is invalid
+		QMap<QString, QSharedPointer<ModelParameter> >* modelParams = 
+			component_->getModel()->getModelParametersPointer();
+		foreach (QSharedPointer<ModelParameter> modelParam, *modelParams) {
+			if (!modelParam->isValid()) {
+				return false;
+			}
+		}
+
+		// all model parameters were valid
+		return true;
+											 }
+	case ComponentTreeItem::PARAMETERS: {
+
+		// if at least one parameter is invalid
+		QList<QSharedPointer<Parameter> > params = component_->getParameters();
+		foreach (QSharedPointer<Parameter> param, params) {
+			if (!param->isValid()) {
+				return false;
+			}
+		}
+
+		// all parameters were valid
+		return true;
+										}
+	case ComponentTreeItem::MEMORYMAPS: {
+		return false;
+										}
+	case ComponentTreeItem::MEMORYMAP: {
+		return false;
+									   }
+	case ComponentTreeItem::ADDRESSBLOCKS: {
+		return false;
+										   }
+	case ComponentTreeItem::ADDRESSBLOCK: {
+		return false;
+										  }
+	case ComponentTreeItem::BANKS: {
+		return false;
+								   }
+	case ComponentTreeItem::BANK: {
+		return false;
+								  }
+	case ComponentTreeItem::SUBSPACEMAPS: {
+		return false;
+										  }
+	case ComponentTreeItem::SUBSPACEMAP: {
+		return false;
+										 }
+	case ComponentTreeItem::ADDRESSSPACES: {
+		return false;
+										   }
+	case ComponentTreeItem::ADDRESSSPACE: {
+		return false;
+										  }
+	case ComponentTreeItem::REMAPSTATES: {
+		return false;
+										 }
+	case ComponentTreeItem::REMAPSTATE: {
+		return false;
+										}
+	case ComponentTreeItem::VIEWS: {
+
+		// if at least one view is invalid
+		QList<QSharedPointer<View> > list = component_->getViews();
+		QStringList fileSetNames = component_->getFileSetNames();
+		foreach (QSharedPointer<View> view, list) {
+			if (!view->isValid(fileSetNames)) {
+				return false;
+			}
+		}
+
+		// if all views are valid
+		return true;
+								   }
+	case ComponentTreeItem::VIEW: {
+		View* view = static_cast<View*>(dataPointer_);
+		return view->isValid(component_->getFileSetNames());
+								  }
+	case ComponentTreeItem::PORTS: {
+
+		// if at least one port is invalid
+		QMap<QString, QSharedPointer<Port> >* ports =
+			component_->getModel()->getPortsPointer();
+		bool hasViews = component_->hasViews();
+		foreach (QSharedPointer<Port> port, *ports) {
+			if (!port->isValid(hasViews)) {
+				return false;
+			}
+		}
+
+		// all ports were valid
+		return true;
+								   }
+	case ComponentTreeItem::BUSINTERFACES: {
+
+		// if at least one bus interface is invalid
+		const QMap<QString, QSharedPointer<BusInterface> > busifs = component_->getBusInterfaces();
+		const QList<General::PortBounds> portBounds = component_->getPortBounds();
+		foreach (QSharedPointer<BusInterface> busif, busifs) {
+			if (!busif->isValid(portBounds)) {
+				return false;
+			}
+		}
+
+		// if all bus interfaces were valid
+		return true;
+										   }
+	case ComponentTreeItem::BUSINTERFACE: {
+		BusInterface* busInterface = static_cast<BusInterface*>(dataPointer_);
+		const QList<General::PortBounds> portBounds = component_->getPortBounds();
+		return busInterface->isValid(portBounds);
+										  }
+	case ComponentTreeItem::CHANNELS: {
+
+		// if at least one channel is invalid
+		QList<QSharedPointer<Channel> > list = component_->getChannels();
+		QStringList busifNames = component_->getBusInterfaceNames();
+		foreach (QSharedPointer<Channel> channel, list) {
+			if (!channel->isValid(busifNames)) {
+				return false;
+			}
+		}
+
+		// if all channels are valid
+		return true;
+									  }
+	case ComponentTreeItem::CHANNEL: {
+		QStringList busifNames = component_->getBusInterfaceNames();
+		Channel* channel = static_cast<Channel*>(dataPointer_);
+		return channel->isValid(busifNames);
+									 }
+	case ComponentTreeItem::CPUS: {
+		return false;
+								  }
+	case ComponentTreeItem::CPU: {
+		return false;
+								 }
+	case ComponentTreeItem::OTHERCLOCKDRIVERS: {
+
+		// if at least one driver is invalid
+		QList<QSharedPointer<OtherClockDriver> > drivers = 
+			component_->getOtherClockDrivers();
+		foreach (QSharedPointer<OtherClockDriver> driver, drivers) {
+			if (!driver->isValid()) {
+				return false;
+			}
+		}
+
+		// if all drivers were valid
+		return true;
+											   }
+	case ComponentTreeItem::COMPONENTGENERATORS: {
+		return false;
+												 }
+	case ComponentTreeItem::SOFTWARE: {
+		return true;
+									  }
+	default: {
+		return false;
+			 }
+	}
+
+	return false;
+}
+
+bool ComponentTreeItem::isValid() const {
+	if (text().isEmpty()) {
+		return false;
+	}
+	else if (!isModelValid()) {
+		return false;
+	}
+	else if (editor_ && !editor_->isValid()) {
+		return false;
+	}
+
+	return true;
 }
