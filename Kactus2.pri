@@ -66,6 +66,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./common/widgets/dirLineEdit/dirlineedit.h \
     ./common/widgets/LibraryPathSelector/librarypathselector.h \
     ./common/widgets/LibraryPathEditor/librarypatheditor.h \
+    ./common/widgets/ScanProgressWidget/scanprogresswidget.h \
     ./common/validators/nameValidator/namevalidator.h \
     ./common/validators/vhdlNameValidator/vhdlnamevalidator.h \
     ./common/validators/LibraryPathValidator/librarypathvalidator.h \
@@ -137,6 +138,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/channels/channeleditor.h \
     ./IPXactWrapper/ComponentEditor/channels/channelinterfacemanager.h \
     ./IPXactWrapper/ComponentEditor/channels/channelinterfacemanagerdelegate.h \
+    ./IPXactWrapper/ComponentEditor/channels/channelinterfacemodel.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/ApiCreateDialog.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/apieditor.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/busifgeneraldetails.h \
@@ -165,6 +167,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/views/envidentifiersmodel.h \
     ./IPXactWrapper/ComponentEditor/views/filesetrefeditor.h \
     ./IPXactWrapper/ComponentEditor/views/filesetrefeditordelegate.h \
+    ./IPXactWrapper/ComponentEditor/views/filesetrefmodel.h \
     ./IPXactWrapper/ComponentEditor/views/flatviewgeneraltab.h \
     ./IPXactWrapper/ComponentEditor/views/flatviewparameterstab.h \
     ./IPXactWrapper/ComponentEditor/views/hierarchyrefwidget.h \
@@ -335,9 +338,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./InterfaceEditor/interfaceeditor.h \
     ./ConnectionEditor/connectioneditor.h \
     ./GCF/Common.h \
-    ./GCF/MenuStrip.h \
-    ./IPXactWrapper/ComponentEditor/views/filesetrefmodel.h \
-    ./IPXactWrapper/ComponentEditor/channels/channelinterfacemodel.h
+    ./GCF/MenuStrip.h
 SOURCES += ./common/CSourceWriter.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/KactusAttribute.cpp \
@@ -386,6 +387,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/widgets/booleanComboBox/booleancombobox.cpp \
     ./common/widgets/LibraryPathSelector/librarypathselector.cpp \
     ./common/widgets/LibraryPathEditor/librarypatheditor.cpp \
+    ./common/widgets/ScanProgressWidget/scanprogresswidget.cpp \
     ./common/graphicsItems/ComponentItem.cpp \
     ./common/graphicsItems/GraphicsRectButton.cpp \
     ./common/delegates/combodelegate.cpp \
@@ -443,6 +445,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/channels/channeleditor.cpp \
     ./IPXactWrapper/ComponentEditor/channels/channelinterfacemanager.cpp \
     ./IPXactWrapper/ComponentEditor/channels/channelinterfacemanagerdelegate.cpp \
+    ./IPXactWrapper/ComponentEditor/channels/channelinterfacemodel.cpp \
     ./IPXactWrapper/ComponentEditor/fileBuilders/filebuildersdelegate.cpp \
     ./IPXactWrapper/ComponentEditor/fileBuilders/filebuilderseditor.cpp \
     ./IPXactWrapper/ComponentEditor/fileBuilders/filebuildersmodel.cpp \
@@ -481,6 +484,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/views/envidentifiersmodel.cpp \
     ./IPXactWrapper/ComponentEditor/views/filesetrefeditor.cpp \
     ./IPXactWrapper/ComponentEditor/views/filesetrefeditordelegate.cpp \
+    ./IPXactWrapper/ComponentEditor/views/filesetrefmodel.cpp \
     ./IPXactWrapper/ComponentEditor/views/flatviewgeneraltab.cpp \
     ./IPXactWrapper/ComponentEditor/views/flatviewparameterstab.cpp \
     ./IPXactWrapper/ComponentEditor/views/hierarchyrefwidget.cpp \
@@ -653,7 +657,5 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./InterfaceEditor/interfaceeditor.cpp \
     ./ConnectionEditor/connectioneditor.cpp \
     ./GCF/MenuStrip.cpp \
-    ./common/IDFactory.cpp \
-    ./IPXactWrapper/ComponentEditor/views/filesetrefmodel.cpp \
-    ./IPXactWrapper/ComponentEditor/channels/channelinterfacemodel.cpp
+    ./common/IDFactory.cpp
 RESOURCES += kactus.qrc

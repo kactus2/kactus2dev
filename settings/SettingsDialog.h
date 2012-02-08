@@ -37,6 +37,11 @@ public:
 public slots:
     virtual void accept();
 
+signals:
+
+	//! \brief Emitted when user has changed the library paths and scan should be performed.
+	void scanLibrary();
+
 private:
     // Disable copying.
     SettingsDialog(SettingsDialog const& rhs);

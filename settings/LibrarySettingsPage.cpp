@@ -28,7 +28,8 @@ LibrarySettingsPage::LibrarySettingsPage(QSettings& settings):
 settings_(settings),
 libLocationsList_(0),
 addLocationButton_(0),
-removeLocationButton_(0)
+removeLocationButton_(0),
+changed_(false)
 {
     // Create the library location group box.
     QGroupBox* locationGroup = new QGroupBox(tr("Library locations (check the default directory)"), this);
@@ -107,6 +108,10 @@ void LibrarySettingsPage::apply()
 
 	// save the default location is one was set
 	settings_.setValue("library/defaultLocation", defaultLocation);
+
+	if (changed_) {
+		emit scanLibrary();
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -148,6 +153,8 @@ void LibrarySettingsPage::addLocation()
         libLocationsList_->addItem(item);
         libLocationsList_->setCurrentItem(item);
     }
+
+	changed_ = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -160,6 +167,8 @@ void LibrarySettingsPage::removeLocation()
         QListWidgetItem* item = libLocationsList_->takeItem(libLocationsList_->currentRow());
         delete item;
     }
+
+	changed_ = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -212,3 +221,4 @@ void LibrarySettingsPage::onItemClicked( QListWidgetItem* item ) {
 		}
 	}
 }
+

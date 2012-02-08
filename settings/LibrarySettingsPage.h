@@ -69,6 +69,11 @@ public slots:
     //! Called when a location is selected in the locations list.
     void onSelectLocation(QListWidgetItem* cur, QListWidgetItem* prev);
 
+signals:
+
+	//! \brief Emitted when the library settings has changed and a scan should be performed.
+	void scanLibrary();
+
 private slots:
 
 	/*! \brief Handler for item clicks on the lib locations list.
@@ -103,6 +108,9 @@ private:
 
     //! Remove location button.
     QPushButton* removeLocationButton_;
+
+	//! \brief Holds the info on if the user has changed the library or not.
+	bool changed_;
 };
 
 //-----------------------------------------------------------------------------

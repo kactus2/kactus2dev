@@ -26,9 +26,14 @@ SettingsDialog::SettingsDialog(QWidget* parent) : PropertyPageDialog(QSize(48, 4
 
     addPage(QIcon(":icons/graphics/settings-general.png"), tr("General"),
             new GeneralSettingsPage(settings_));
-    addPage(QIcon(":icons/graphics/settings-library.png"), tr("Library"),
-            new LibrarySettingsPage(settings_));
-    addPage(QIcon(":icons/graphics/settings-code_editor.png"), tr("Code Editor"),
+    
+	LibrarySettingsPage* libraryPage = new LibrarySettingsPage(settings_);
+	connect(libraryPage, SIGNAL(scanLibrary()),
+		this, SIGNAL(scanLibrary()), Qt::UniqueConnection);
+	addPage(QIcon(":icons/graphics/settings-library.png"), tr("Library"),
+            libraryPage);
+
+	addPage(QIcon(":icons/graphics/settings-code_editor.png"), tr("Code Editor"),
             new CodeEditorSettingsPage(settings_));
 
     finalizePages();

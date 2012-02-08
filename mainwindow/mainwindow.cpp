@@ -1950,6 +1950,9 @@ void MainWindow::openSettings()
 {
 	SettingsDialog dialog(this);
 
+	connect(&dialog, SIGNAL(scanLibrary()),
+		this, SLOT(onLibrarySearch()), Qt::UniqueConnection);
+
 	if (dialog.exec() == QDialog::Accepted)
 	{
 		QSettings settings;

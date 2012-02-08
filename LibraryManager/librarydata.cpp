@@ -12,6 +12,7 @@
 
 #include "exceptions/invalid_file.h"
 
+#include <common/widgets/ScanProgressWidget/scanprogresswidget.h>
 
 #include <models/librarycomponent.h>
 #include <models/abstractiondefinition.h>
@@ -642,9 +643,22 @@ void LibraryData::parseLibrary( bool showProgress /*= true*/ ) {
 	// add the default location for kactus internal objects
 	locations.append(QCoreApplication::applicationDirPath() + "/Kactus/");
 
+	// create the progress bar that displays the progress of the scan
+	ScanProgressWidget progWidget;
+	int current = 1;
+
+	if (showProgress) {
+		progWidget.setRange(0, locations.size());
+		progWidget.move(handler_->mapToGlobal(handler_->geometry().topRight()));
+		progWidget.show();
+	}
+
 	// search each directory
 	foreach (QString location, locations) {
 		QFileInfo locationInfo(location);
+
+		progWidget.setPath(location);
+		progWidget.setValue(current);
 
 		// if the location is a directory
 		if (locationInfo.isDir()) {
@@ -654,11 +668,17 @@ void LibraryData::parseLibrary( bool showProgress /*= true*/ ) {
 		else if (locationInfo.isFile()) {
 			parseFile(location);
 		}
-		// if not file or directory then do not process it and move to next one
-		else {
-			continue;
-		}
+		
+		// update the progress bar
+		++current;
 	}
+
+	if (showProgress) {
+		progWidget.hide();
+	}
+
+	// repaint so the progWidget disappears
+	handler_->repaint();
 
 	// check the integrity of the items in the library
 	checkLibraryIntegrity(showProgress);
