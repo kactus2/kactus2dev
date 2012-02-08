@@ -74,6 +74,7 @@ MCAPIContentMatcher::MCAPIContentMatcher() : m_localNode(), m_remoteNodes(), m_c
     m_icons[MCAPI_CONTENT_NODE_ID] = QIcon(":icons/graphics/mcapi-node.png");
     m_icons[MCAPI_CONTENT_PORT_ID] = QIcon(":icons/graphics/mcapi-port.png");
     m_icons[MCAPI_CONTENT_ENDPOINT] = QIcon(":icons/graphics/mcapi-endpoint.png");
+    m_icons[MCAPI_CONTENT_ENDPOINT_HANDLE] = QIcon(":icons/graphics/mcapi-endpoint_handle.png");
 }
 
 //-----------------------------------------------------------------------------
@@ -512,6 +513,13 @@ void MCAPIContentMatcher::tryMatchParam(MCAPIFunctionDesc const* funcDesc, QStri
         }
     }
 
+    // Check if the parameters is an endpoint receive/send handle.
+    if (paramDesc & VAR_TYPE_ENDPOINT_HANDLE)
+    {
+        // Try to find endpoint handles that match with the parameter description.
+        tryMatchEndpointHandles(paramDesc, matchExp, func, count);
+    }
+
     // Check if the parameter is a status pointer.
     if (paramDesc & VAR_TYPE_STATUS_PTR)
     {
@@ -541,7 +549,7 @@ void MCAPIContentMatcher::tryMatchPortParam(EndpointDesc const& desc, QRegExp& e
 //-----------------------------------------------------------------------------
 // Function: tryMatchEndpoints()
 //-----------------------------------------------------------------------------
-void MCAPIContentMatcher::tryMatchEndpoints(NodeDesc const& node, unsigned int paramDesc, QRegExp matchExp,
+void MCAPIContentMatcher::tryMatchEndpoints(NodeDesc const& node, unsigned int paramDesc, QRegExp& matchExp,
                                             MatchExecFunc func, int& count)
 {
     EndpointDescList::const_iterator itrEndpoint = node.endpoints.begin();
@@ -666,5 +674,27 @@ void MCAPIContentMatcher::extractParams(QString const& paramsListStr, QStringLis
         }
 
         index = paramExtractExp.indexIn(paramsListStr, nextComma + 1);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MCAPIContentMatcher::tryMatchEndpointHandles()
+//-----------------------------------------------------------------------------
+void MCAPIContentMatcher::tryMatchEndpointHandles(unsigned int paramDesc, QRegExp& matchExp,
+                                                  MatchExecFunc func, int& count)
+{
+    EndpointDescList::const_iterator itrEndpoint = m_localNode.endpoints.begin();
+
+    while (itrEndpoint != m_localNode.endpoints.end())
+    {
+        // Search for a matching connection.
+        ConnectionDesc const* connDesc = findConnectionDesc(itrEndpoint->name);
+
+        if (connDesc != 0 && isEndpointValid(paramDesc, itrEndpoint->type, connDesc->type))
+        {
+            tryMatchIdentifier(itrEndpoint->name + "_handle", MCAPI_CONTENT_ENDPOINT_HANDLE, matchExp, func, count);
+        }
+
+        ++itrEndpoint;
     }
 }

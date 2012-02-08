@@ -31,6 +31,7 @@
         <file>graphics/system-settings.png</file>
         <file>graphics/system-about.png</file>
         <file>graphics/mcapi-endpoint.png</file>
+        <file>graphics/mcapi-endpoint_handle.png</file>
         <file>graphics/mcapi-func.png</file>
         <file>graphics/mcapi-node.png</file>
         <file>graphics/mcapi-port.png</file>

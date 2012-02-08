@@ -177,45 +177,45 @@ void MCAPIFunctionSet::buildFunctionList()
     desc->addParam(VAR_TYPE_STATUS_PTR, "mcapi_status_t* mcapi_status");
 
     desc = addFunctionDesc("mcapi_open_pktchan_recv_i");
-    desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_pktchan_recv_hndl_t* recv_handle");
+    desc->addParam(VAR_TYPE_ENDPOINT_HANDLE | VAR_TYPE_CONN_PACKET | VAR_TYPE_CONN_IN, "mcapi_pktchan_recv_hndl_t* recv_handle");
     desc->addParam(VAR_TYPE_LOCAL_ENDPOINT | VAR_TYPE_CONN_PACKET | VAR_TYPE_CONN_IN,
                    "mcapi_endpoint_t receive_endpoint");
     desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_request_t* request");
     desc->addParam(VAR_TYPE_STATUS_PTR, "mcapi_status_t* mcapi_status");
 
     desc = addFunctionDesc("mcapi_open_pktchan_send_i");
-    desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_pktchan_send_hndl_t* send_handle");
+    desc->addParam(VAR_TYPE_ENDPOINT_HANDLE | VAR_TYPE_CONN_PACKET | VAR_TYPE_CONN_OUT, "mcapi_pktchan_send_hndl_t* send_handle");
     desc->addParam(VAR_TYPE_LOCAL_ENDPOINT | VAR_TYPE_CONN_PACKET | VAR_TYPE_CONN_OUT, "mcapi_endpoint_t  send_endpoint");
     desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_request_t* request");
     desc->addParam(VAR_TYPE_STATUS_PTR, "mcapi_status_t* mcapi_status");
 
     desc = addFunctionDesc("mcapi_pktchan_send_i");
-    desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_pktchan_send_hndl_t send_handle");
+    desc->addParam(VAR_TYPE_ENDPOINT_HANDLE | VAR_TYPE_CONN_PACKET | VAR_TYPE_CONN_OUT, "mcapi_pktchan_send_hndl_t send_handle");
     desc->addParam(VAR_TYPE_UNDEFINED, "void* buffer");
     desc->addParam(VAR_TYPE_UNDEFINED, "size_t size");
     desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_request_t* request");
     desc->addParam(VAR_TYPE_STATUS_PTR, "mcapi_status_t* mcapi_status");
 
     desc = addFunctionDesc("mcapi_pktchan_send");
-    desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_pktchan_send_hndl_t send_handle");
+    desc->addParam(VAR_TYPE_ENDPOINT_HANDLE | VAR_TYPE_CONN_PACKET | VAR_TYPE_CONN_OUT, "mcapi_pktchan_send_hndl_t send_handle");
     desc->addParam(VAR_TYPE_UNDEFINED, "void* buffer");
     desc->addParam(VAR_TYPE_UNDEFINED, "size_t size");
     desc->addParam(VAR_TYPE_STATUS_PTR, "mcapi_status_t* mcapi_status");
 
     desc = addFunctionDesc("mcapi_pktchan_recv_i");
-    desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_pktchan_recv_hndl_t receive_handle");
+    desc->addParam(VAR_TYPE_ENDPOINT_HANDLE | VAR_TYPE_CONN_PACKET | VAR_TYPE_CONN_IN, "mcapi_pktchan_recv_hndl_t receive_handle");
     desc->addParam(VAR_TYPE_UNDEFINED, "void** buffer");
     desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_request_t* request");
     desc->addParam(VAR_TYPE_STATUS_PTR, "mcapi_status_t* mcapi_status");
 
     desc = addFunctionDesc("mcapi_pktchan_recv");
-    desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_pktchan_recv_hndl_t receive_handle");
+    desc->addParam(VAR_TYPE_ENDPOINT_HANDLE | VAR_TYPE_CONN_PACKET | VAR_TYPE_CONN_IN, "mcapi_pktchan_recv_hndl_t receive_handle");
     desc->addParam(VAR_TYPE_UNDEFINED, "void** buffer");
     desc->addParam(VAR_TYPE_UNDEFINED, "size_t* received_size");
     desc->addParam(VAR_TYPE_STATUS_PTR, "mcapi_status_t* mcapi_status");
 
     desc = addFunctionDesc("mcapi_pktchan_available", VAR_TYPE_UNDEFINED, "mcapi_uint_t");
-    desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_pktchan_recv_hndl_t receive_handle");
+    desc->addParam(VAR_TYPE_ENDPOINT_HANDLE | VAR_TYPE_CONN_PACKET | VAR_TYPE_CONN_IN, "mcapi_pktchan_recv_hndl_t receive_handle");
     desc->addParam(VAR_TYPE_STATUS_PTR, "mcapi_status_t* mcapi_status");
 
     desc = addFunctionDesc("mcapi_pktchan_free");
@@ -223,12 +223,12 @@ void MCAPIFunctionSet::buildFunctionList()
     desc->addParam(VAR_TYPE_STATUS_PTR, "mcapi_status_t* mcapi_status");
 
     desc = addFunctionDesc("mcapi_pktchan_recv_close_i");
-    desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_pktchan_recv_hndl_t receive_handle");
+    desc->addParam(VAR_TYPE_ENDPOINT_HANDLE | VAR_TYPE_CONN_PACKET | VAR_TYPE_CONN_IN, "mcapi_pktchan_recv_hndl_t receive_handle");
     desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_request_t* request");
     desc->addParam(VAR_TYPE_STATUS_PTR, "mcapi_status_t* mcapi_status");
 
     desc = addFunctionDesc("mcapi_pktchan_send_close_i");
-    desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_pktchan_send_hndl_t send_handle");
+    desc->addParam(VAR_TYPE_ENDPOINT_HANDLE | VAR_TYPE_CONN_PACKET | VAR_TYPE_CONN_OUT, "mcapi_pktchan_send_hndl_t send_handle");
     desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_request_t* request");
     desc->addParam(VAR_TYPE_STATUS_PTR, "mcapi_status_t* mcapi_status");
 
@@ -241,66 +241,66 @@ void MCAPIFunctionSet::buildFunctionList()
     desc->addParam(VAR_TYPE_STATUS_PTR, "mcapi_status_t* mcapi_status");
 
     desc = addFunctionDesc("mcapi_open_sclchan_recv_i");
-    desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_sclchan_recv_hndl_t* receive_handle");
+    desc->addParam(VAR_TYPE_ENDPOINT_HANDLE | VAR_TYPE_CONN_SCALAR | VAR_TYPE_CONN_IN, "mcapi_sclchan_recv_hndl_t* receive_handle");
     desc->addParam(VAR_TYPE_LOCAL_ENDPOINT | VAR_TYPE_CONN_SCALAR | VAR_TYPE_CONN_IN,
                    "mcapi_endpoint_t receive_endpoint");
     desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_request_t* request");
     desc->addParam(VAR_TYPE_STATUS_PTR, "mcapi_status_t* mcapi_status");
 
     desc = addFunctionDesc("mcapi_open_sclchan_send_i");
-    desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_sclchan_send_hndl_t* send_handle");
+    desc->addParam(VAR_TYPE_ENDPOINT_HANDLE | VAR_TYPE_CONN_SCALAR | VAR_TYPE_CONN_OUT, "mcapi_sclchan_send_hndl_t* send_handle");
     desc->addParam(VAR_TYPE_LOCAL_ENDPOINT | VAR_TYPE_CONN_SCALAR | VAR_TYPE_CONN_OUT,
                    "mcapi_endpoint_t send_endpoint");
     desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_request_t* request");
     desc->addParam(VAR_TYPE_STATUS_PTR, "mcapi_status_t* mcapi_status");
 
     desc = addFunctionDesc("mcapi_sclchan_send_uint64");
-    desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_sclchan_send_hndl_t send_handle");
+    desc->addParam(VAR_TYPE_ENDPOINT_HANDLE | VAR_TYPE_CONN_SCALAR | VAR_TYPE_CONN_OUT, "mcapi_sclchan_send_hndl_t send_handle");
     desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_uint64_t dataword");
     desc->addParam(VAR_TYPE_STATUS_PTR, "mcapi_status_t* mcapi_status");
 
     desc = addFunctionDesc("mcapi_sclchan_send_uint32");
-    desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_sclchan_send_hndl_t send_handle");
+    desc->addParam(VAR_TYPE_ENDPOINT_HANDLE | VAR_TYPE_CONN_SCALAR | VAR_TYPE_CONN_OUT, "mcapi_sclchan_send_hndl_t send_handle");
     desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_uint32_t dataword");
     desc->addParam(VAR_TYPE_STATUS_PTR, "mcapi_status_t* mcapi_status");
 
     desc = addFunctionDesc("mcapi_sclchan_send_uint16");
-    desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_sclchan_send_hndl_t send_handle");
+    desc->addParam(VAR_TYPE_ENDPOINT_HANDLE | VAR_TYPE_CONN_SCALAR | VAR_TYPE_CONN_OUT, "mcapi_sclchan_send_hndl_t send_handle");
     desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_uint16_t dataword");
     desc->addParam(VAR_TYPE_STATUS_PTR, "mcapi_status_t* mcapi_status");
 
     desc = addFunctionDesc("mcapi_sclchan_send_uint8");
-    desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_sclchan_send_hndl_t send_handle");
+    desc->addParam(VAR_TYPE_ENDPOINT_HANDLE | VAR_TYPE_CONN_SCALAR | VAR_TYPE_CONN_OUT, "mcapi_sclchan_send_hndl_t send_handle");
     desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_uint8_t dataword");
     desc->addParam(VAR_TYPE_STATUS_PTR, "mcapi_status_t* mcapi_status");
 
     desc = addFunctionDesc("mcapi_sclchan_recv_uint64", VAR_TYPE_UNDEFINED, "mcapi_uint64_t");
-    desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_sclchan_recv_hndl_t receive_handle");
+    desc->addParam(VAR_TYPE_ENDPOINT_HANDLE | VAR_TYPE_CONN_SCALAR | VAR_TYPE_CONN_IN, "mcapi_sclchan_recv_hndl_t receive_handle");
     desc->addParam(VAR_TYPE_STATUS_PTR, "mcapi_status_t* mcapi_status");
 
     desc = addFunctionDesc("mcapi_sclchan_recv_uint32", VAR_TYPE_UNDEFINED, "mcapi_uint32_t");
-    desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_sclchan_recv_hndl_t receive_handle");
+    desc->addParam(VAR_TYPE_ENDPOINT_HANDLE | VAR_TYPE_CONN_SCALAR | VAR_TYPE_CONN_IN, "mcapi_sclchan_recv_hndl_t receive_handle");
     desc->addParam(VAR_TYPE_STATUS_PTR, "mcapi_status_t* mcapi_status");
 
     desc = addFunctionDesc("mcapi_sclchan_recv_uint16", VAR_TYPE_UNDEFINED, "mcapi_uint16_t");
-    desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_sclchan_recv_hndl_t receive_handle");
+    desc->addParam(VAR_TYPE_ENDPOINT_HANDLE | VAR_TYPE_CONN_SCALAR | VAR_TYPE_CONN_IN, "mcapi_sclchan_recv_hndl_t receive_handle");
     desc->addParam(VAR_TYPE_STATUS_PTR, "mcapi_status_t* mcapi_status");
 
     desc = addFunctionDesc("mcapi_sclchan_recv_uint8", VAR_TYPE_UNDEFINED, "mcapi_uint8_t");
-    desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_sclchan_recv_hndl_t receive_handle");
+    desc->addParam(VAR_TYPE_ENDPOINT_HANDLE | VAR_TYPE_CONN_SCALAR | VAR_TYPE_CONN_IN, "mcapi_sclchan_recv_hndl_t receive_handle");
     desc->addParam(VAR_TYPE_STATUS_PTR, "mcapi_status_t* mcapi_status");
 
     desc = addFunctionDesc("mcapi_sclchan_available", VAR_TYPE_UNDEFINED, "mcapi_uint_t");
-    desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_sclchan_recv_hndl_t receive_handle");
+    desc->addParam(VAR_TYPE_ENDPOINT_HANDLE | VAR_TYPE_CONN_SCALAR | VAR_TYPE_CONN_IN, "mcapi_sclchan_recv_hndl_t receive_handle");
     desc->addParam(VAR_TYPE_STATUS_PTR, "mcapi_status_t* mcapi_status");
 
     desc = addFunctionDesc("mcapi_sclchan_recv_close_i");
-    desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_sclchan_recv_hndl_t receive_handle");
+    desc->addParam(VAR_TYPE_ENDPOINT_HANDLE | VAR_TYPE_CONN_SCALAR | VAR_TYPE_CONN_IN, "mcapi_sclchan_recv_hndl_t receive_handle");
     desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_request_t* request");
     desc->addParam(VAR_TYPE_STATUS_PTR, "mcapi_status_t* mcapi_status");
 
     desc = addFunctionDesc("mcapi_sclchan_send_close_i");
-    desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_sclchan_send_hndl_t send_handle");
+    desc->addParam(VAR_TYPE_ENDPOINT_HANDLE | VAR_TYPE_CONN_SCALAR | VAR_TYPE_CONN_OUT, "mcapi_sclchan_send_hndl_t send_handle");
     desc->addParam(VAR_TYPE_UNDEFINED, "mcapi_request_t* request");
     desc->addParam(VAR_TYPE_STATUS_PTR, "mcapi_status_t* mcapi_status");
 

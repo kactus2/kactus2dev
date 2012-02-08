@@ -300,7 +300,7 @@ private:
      *      @param [in]     func       The match execution function.
      *      @param [in/out] count      The accumulated number of matches.
      */
-    void tryMatchEndpoints(NodeDesc const& node, unsigned int paramDesc, QRegExp matchExp,
+    void tryMatchEndpoints(NodeDesc const& node, unsigned int paramDesc, QRegExp& matchExp,
                            MatchExecFunc func, int& count);
 
     /*!
@@ -316,6 +316,16 @@ private:
      */
     bool tryMatchIdentifier(QString const& identifier, MCAPIContentType type,
                             QRegExp& exp, MatchExecFunc func, int& count);
+
+    /*!
+     *  Tries to match any endpoint handles to the parameter description.
+     *
+     *      @param [in]     paramDesc  The parameter description.
+     *      @param [in]     matchExp   The regular expression to use for matching.
+     *      @param [in]     func       The match execution function.
+     *      @param [in/out] count      The accumulated number of matches.
+     */
+    void tryMatchEndpointHandles(unsigned int paramDesc, QRegExp& matchExp, MatchExecFunc func, int& count);
 
     /*!
      *  Checks the parameter desc against the MCAPI types for validity.

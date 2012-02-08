@@ -325,7 +325,13 @@ void ProgramEntityItem::createSource(QString const& filename)
 
     writer.writeLine("// TODO: Write your application code here.");
     writer.writeLine();
-    writer.writeLine("// Finalize MCAPI before exiting.");
+    writer.writeLine("// Close connections and finalize MCAPI before exiting.");
+    writer.writeLine("if (closeConnections() != 0)");
+    writer.beginBlock();
+    writer.writeLine("// TODO: Write error handling code.");
+    writer.writeLine("return EXIT_FAILURE;");
+    writer.endBlock();
+    writer.writeLine();
     writer.writeLine("mcapi_finalize(&status);");
     writer.writeLine("return EXIT_SUCCESS;");
 
@@ -569,6 +575,31 @@ void ProgramEntityItem::generateHeader(QString const& filename)
     foreach (EndpointItem* endpoint, endpointStack_->getEndpoints())
     {
         writer.writeLine("extern mcapi_endpoint_t " + endpoint->getName() + ";");
+
+        if (endpoint->getConnectionType() == MCAPI_TYPE_PACKET)
+        {
+            if (endpoint->getMCAPIDirection() == MCAPI_ENDPOINT_OUT)
+            {
+                writer.writeLine("extern mcapi_pktchan_send_hndl_t " + endpoint->getName() + "_handle;");
+            }
+            else
+            {
+                writer.writeLine("extern mcapi_pktchan_recv_hndl_t " + endpoint->getName() + "_handle;");
+            }
+        }
+        else if (endpoint->getConnectionType() == MCAPI_TYPE_SCALAR)
+        {
+            if (endpoint->getMCAPIDirection() == MCAPI_ENDPOINT_OUT)
+            {
+                writer.writeLine("extern mcapi_sclchan_send_hndl_t " + endpoint->getName() + "_handle;");
+            }
+            else
+            {
+                writer.writeLine("extern mcapi_sclchan_recv_hndl_t " + endpoint->getName() + "_handle;");
+            }
+        }
+
+        writer.writeLine();
     }
 
     writer.writeLine();
@@ -604,11 +635,19 @@ void ProgramEntityItem::generateHeader(QString const& filename)
     writer.writeLine();
 
     writer.writeLine("/*");
-    writer.writeLine(" *  Creates all static connections.");
+    writer.writeLine(" *  Creates and opens all connections.");
     writer.writeLine(" *");
     writer.writeLine(" *        @return 0 if successful. -1 in case of an error.");
     writer.writeLine(" */");
     writer.writeLine("int createConnections();");
+    writer.writeLine();
+
+    writer.writeLine("/*");
+    writer.writeLine(" *  Closes all connections.");
+    writer.writeLine(" *");
+    writer.writeLine(" *        @return 0 if successful. -1 in case of an error.");
+    writer.writeLine(" */");
+    writer.writeLine("int closeConnections();");
     writer.writeLine();
 
     writer.writeLine("#endif // KTSMCAPICODE_H");
@@ -703,6 +742,31 @@ void ProgramEntityItem::generateSource(QString const& filename, QList<ProgramEnt
     foreach (EndpointItem* endpoint, endpointStack_->getEndpoints())
     {
         writer.writeLine("mcapi_endpoint_t " + endpoint->getName() + ";");
+
+        if (endpoint->getConnectionType() == MCAPI_TYPE_PACKET)
+        {
+            if (endpoint->getMCAPIDirection() == MCAPI_ENDPOINT_OUT)
+            {
+                writer.writeLine("mcapi_pktchan_send_hndl_t " + endpoint->getName() + "_handle;");
+            }
+            else
+            {
+                writer.writeLine("mcapi_pktchan_recv_hndl_t " + endpoint->getName() + "_handle;");
+            }
+        }
+        else
+        {
+            if (endpoint->getMCAPIDirection() == MCAPI_ENDPOINT_OUT)
+            {
+                writer.writeLine("mcapi_sclchan_send_hndl_t " + endpoint->getName() + "_handle;");
+            }
+            else
+            {
+                writer.writeLine("mcapi_sclchan_recv_hndl_t " + endpoint->getName() + "_handle;");
+            }
+        }
+
+        writer.writeLine();
     }
 
     writer.writeLine();
@@ -727,6 +791,7 @@ void ProgramEntityItem::generateSource(QString const& filename, QList<ProgramEnt
 
     generateInitializeMCAPIFunc(writer);
     generateCreateConnectionsFunc(writer);
+    generateCloseConnectionsFunc(writer);
 
     writer.writeLine();
 }
@@ -762,11 +827,12 @@ void ProgramEntityItem::generateCreateConnectionsFunc(CSourceWriter& writer)
 
     writer.beginBlock();
     writer.writeLine("mcapi_request_t request;");
+    writer.writeLine("size_t size = 0;");
     writer.writeLine();
 
     foreach (EndpointItem* endpoint, endpointStack_->getEndpoints())
     {
-        if (endpoint->isConnected() && endpoint->getMCAPIDirection() == MCAPI_ENDPOINT_OUT)
+        if (endpoint->isConnected())
         {
             Port* port = appItem_->componentModel()->getPort(endpoint->getName());
             Q_ASSERT(port != 0);
@@ -775,29 +841,64 @@ void ProgramEntityItem::generateCreateConnectionsFunc(CSourceWriter& writer)
             {
             case MCAPI_TYPE_PACKET:
                 {
-                    writer.writeLine("mcapi_connect_pktchan_i(" + endpoint->getName() + ", " +
-                        port->getRemoteEndpointName() + ", &request, &status);");
-                    writer.writeLine();
+                    if (endpoint->getMCAPIDirection() == MCAPI_ENDPOINT_OUT)
+                    {
+                        // Sender is responsible of calling the connect function.
+                        writer.writeLine("mcapi_connect_pktchan_i(" + endpoint->getName() + ", " +
+                            port->getRemoteEndpointName() + ", &request, &status);");
+                        writer.writeLine();
 
-                    writer.writeLine("if (status != MCAPI_SUCCESS)");
-                    writer.beginBlock();
-                    writer.writeLine("return -1;");
-                    writer.endBlock();
-                    writer.writeLine();
+                        writeStatusCheck(writer);
+                        writeWaitCall(writer, "request", "size");
+
+                        writer.writeLine("mcapi_open_pktchan_send_i(&" + endpoint->getName() + "_handle, " +
+                                         endpoint->getName() + ", &request, &status);");
+                        writer.writeLine();
+
+                        writeStatusCheck(writer);
+                        writeWaitCall(writer, "request", "size");
+                    }
+                    else
+                    {
+                        writer.writeLine("mcapi_open_pktchan_recv_i(&" + endpoint->getName() + "_handle, " +
+                                         endpoint->getName() + ", &request, &status);");
+                        writer.writeLine();
+
+                        writeStatusCheck(writer);
+                        writeWaitCall(writer, "request", "size");
+                    }
+
                     break;
                 }
 
             case MCAPI_TYPE_SCALAR:
                 {
-                    writer.writeLine("mcapi_connect_sclchan_i(" + endpoint->getName() + ", " +
-                        port->getRemoteEndpointName() + ", &request, &status);");
-                    writer.writeLine();
+                    if (endpoint->getMCAPIDirection() == MCAPI_ENDPOINT_OUT)
+                    {
+                        writer.writeLine("mcapi_connect_sclchan_i(" + endpoint->getName() + ", " +
+                            port->getRemoteEndpointName() + ", &request, &status);");
+                        writer.writeLine();
 
-                    writer.writeLine("if (status != MCAPI_SUCCESS)");
-                    writer.beginBlock();
-                    writer.writeLine("return -1;");
-                    writer.endBlock();
-                    writer.writeLine();
+                        writeStatusCheck(writer);
+                        writeWaitCall(writer, "request", "size");
+
+                        writer.writeLine("mcapi_open_sclchan_send_i(&" + endpoint->getName() + "_handle, " +
+                            endpoint->getName() + ", &request, &status);");
+                        writer.writeLine();
+
+                        writeStatusCheck(writer);
+                        writeWaitCall(writer, "request", "size");
+                    }
+                    else
+                    {
+                        writer.writeLine("mcapi_open_sclchan_recv_i(&" + endpoint->getName() + "_handle, " +
+                            endpoint->getName() + ", &request, &status);");
+                        writer.writeLine();
+
+                        writeStatusCheck(writer);
+                        writeWaitCall(writer, "request", "size");
+                    }
+
                     break;
                 }
             }
@@ -806,6 +907,78 @@ void ProgramEntityItem::generateCreateConnectionsFunc(CSourceWriter& writer)
 
     writer.writeLine("return 0;");
     writer.endBlock();
+    writer.writeLine();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ProgramEntityItem::generateCloseConnectionsFunc()
+//-----------------------------------------------------------------------------
+void ProgramEntityItem::generateCloseConnectionsFunc(CSourceWriter& writer)
+{
+    // Write the createConnections() function.
+    writer.writeHeaderComment("Function: closeConnections()");
+    writer.writeLine("int closeConnections()");
+
+    writer.beginBlock();
+    writer.writeLine("mcapi_request_t request;");
+    writer.writeLine("size_t size = 0;");
+    writer.writeLine();
+
+    foreach (EndpointItem* endpoint, endpointStack_->getEndpoints())
+    {
+        if (endpoint->isConnected())
+        {
+            Port* port = appItem_->componentModel()->getPort(endpoint->getName());
+            Q_ASSERT(port != 0);
+
+            switch (endpoint->getConnectionType())
+            {
+            case MCAPI_TYPE_PACKET:
+                {
+                    if (endpoint->getMCAPIDirection() == MCAPI_ENDPOINT_OUT)
+                    {
+                        writer.writeLine("mcapi_pktchan_send_close_i(" + endpoint->getName() +
+                                         "_handle, &request, &status);");
+                        writer.writeLine();
+                    }
+                    else
+                    {
+                        writer.writeLine("mcapi_pktchan_recv_close_i(" + endpoint->getName() +
+                                         "_handle, &request, &status);");
+                        writer.writeLine();
+                    }
+
+                    writeStatusCheck(writer);
+                    writeWaitCall(writer, "request", "size");
+                    break;
+                }
+
+            case MCAPI_TYPE_SCALAR:
+                {
+                    if (endpoint->getMCAPIDirection() == MCAPI_ENDPOINT_OUT)
+                    {
+                        writer.writeLine("mcapi_sclchan_send_close_i(" + endpoint->getName() +
+                                         "_handle, &request, &status);");
+                        writer.writeLine();
+                    }
+                    else
+                    {
+                        writer.writeLine("mcapi_sclchan_recv_close_i(" + endpoint->getName() +
+                                         "_handle, &request, &status);");
+                        writer.writeLine();
+                    }
+
+                    writeStatusCheck(writer);
+                    writeWaitCall(writer, "request", "size");
+                    break;
+                }
+            }
+        }
+    }
+
+    writer.writeLine("return 0;");
+    writer.endBlock();
+    writer.writeLine();
 }
 
 //-----------------------------------------------------------------------------
@@ -879,4 +1052,30 @@ void ProgramEntityItem::generateInitializeMCAPIFunc(CSourceWriter& writer)
 
     writer.writeLine("return 0;");
     writer.endBlock();
+    writer.writeLine();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ProgramEntityItem::writeWaitCall()
+//-----------------------------------------------------------------------------
+void ProgramEntityItem::writeWaitCall(CSourceWriter& writer, QString const& requestName,
+                                      QString const& sizeName)
+{
+    writer.writeLine("if (mcapi_wait(&" + requestName + ", &" + sizeName + ", &status, MCAPI_INFINITE) == MCAPI_FALSE)");
+    writer.beginBlock();
+    writer.writeLine("return -1;");
+    writer.endBlock();
+    writer.writeLine();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ProgramEntityItem::writeStatusCheck()
+//-----------------------------------------------------------------------------
+void ProgramEntityItem::writeStatusCheck(CSourceWriter &writer)
+{
+    writer.writeLine("if (status != MCAPI_SUCCESS)");
+    writer.beginBlock();
+    writer.writeLine("return -1;");
+    writer.endBlock();
+    writer.writeLine();
 }

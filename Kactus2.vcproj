@@ -15636,6 +15636,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\graphics\mcapi-endpoint_handle.png"
+				>
+			</File>
+			<File
 				RelativePath=".\graphics\mcapi-func.png"
 				>
 			</File>

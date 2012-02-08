@@ -202,13 +202,40 @@ private:
 
     /*!
      *  Generates the initializeMCAPI() function code.
+     *
+     *      @param [in] writer       The target source writer.
      */
     void generateInitializeMCAPIFunc(CSourceWriter& writer);
 
     /*!
      *  Generates the createConnections() function code.
+     *
+     *      @param [in] writer       The target source writer.
      */
     void generateCreateConnectionsFunc(CSourceWriter& writer);
+
+    /*!
+     *  Generates the closeConnections() function code.
+     *
+     *      @param [in] writer       The target source writer.
+     */
+    void generateCloseConnectionsFunc(CSourceWriter& writer);
+
+    /*!
+     *  Writes a checking routine for testing whether mcapi status is OK or not.
+     *
+     *      @param [in] writer       The target source writer.
+     */
+    void writeStatusCheck(CSourceWriter &writer);
+
+    /*!
+     *  Writes a mcapi_wait() call.
+     *
+     *      @param [in] writer       The target source writer.
+     *      @param [in] requestName  The name of the request variable.
+     *      @param [in] sizeName     The name of the size variable.
+     */
+    void writeWaitCall(CSourceWriter& writer, QString const& requestName, QString const& sizeName);
 
     /*!
      *  Creates an indentation string based on QSettings.
