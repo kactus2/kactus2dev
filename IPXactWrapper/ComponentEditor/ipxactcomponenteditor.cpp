@@ -170,6 +170,10 @@ void IPXactComponentEditor::createNewEditor( ComponentTreeItem* item ) {
 				item->getDataPointer(),	widgetStack_);
 			break;
 									  }
+		case ComponentTreeItem::FILES: {
+			editor = new ItemEditor(QSharedPointer<Component>(), widgetStack_);
+			break;
+									   }
 
         case ComponentTreeItem::GENERAL: {
             // Create the general editor.
@@ -496,15 +500,17 @@ bool IPXactComponentEditor::saveEditors() {
 			// apply the changes to the editor
 			i.value()->makeChanges();
 
+			++i;
+
 			// remove the editor from the widget stack
-			widgetStack_->removeWidget(i.value());
-
-			// delete the editor
-			delete i.value();
-
-			// remove the pointer to editor from the map and move i to the
-			// next editor
-			i = indexes_.erase(i);
+// 			widgetStack_->removeWidget(i.value());
+// 
+// 			// delete the editor
+// 			delete i.value();
+// 
+// 			// remove the pointer to editor from the map and move i to the
+// 			// next editor
+// 			i = indexes_.erase(i);
 		}
 		// if one editor is not in valid state
 		else {
@@ -517,7 +523,7 @@ bool IPXactComponentEditor::saveEditors() {
 	navigator_->clearSelection();
 
 	// create a null editor because it is needed to display empty editor
-	setupNullEditor();
+	//setupNullEditor();
 
 	return everythingValid;
 }
