@@ -242,7 +242,7 @@ void VLNVDataTree::parseSubtree(LibraryInterface* lh, LibraryItem const* libItem
             {
                 VLNVDataNode* childNode = node.addChild(item->getName());
                 childNode->setVLNV(*vlnv);
-                return;
+                continue;
             }
 
             // Retrieve the library component for filtering. Filtering is possible only if the
