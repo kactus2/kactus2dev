@@ -20,6 +20,7 @@
 #include <QMap>
 #include <QObject>
 #include <QXmlStreamWriter>
+#include <QFileInfo>
 
 File::Define::Define( const QString name, const QString value ):
 nameGroup_(name), value_(value) {
@@ -35,16 +36,6 @@ nameGroup_(defineNode), value_() {
 			value_ = tempNode.childNodes().at(0).nodeValue();
 		}
 	}
-
-	// if mandatory elements are missing
-// 	if (nameGroup_.name_.isEmpty()) {
-// 		throw Parse_error(QObject::tr("Mandatory element name missing in "
-// 			"spirit:define"));
-// 	}
-// 	else if (value_.isEmpty()) {
-// 		throw Parse_error(QObject::tr("Mandatory element value missing in "
-// 			"spirit:define"));
-// 	}
 }
 
 File::Define::Define(): nameGroup_(), value_() {
@@ -183,27 +174,51 @@ description_(), buildcommand_(), defines_(), parent_(parent) {
 			description_ = tempNode.childNodes().at(0).nodeValue();
 		}
 	}
-
-	// if mandatory elements are missing
-
-// 	if (name_.isNull()) {
-// 		throw Parse_error(QObject::tr("Mandatory element name missing in "
-// 				"spirit:file"));
-// 	}
-// 
-// 	if (fileTypes_.size() == 0 && userFileTypes_.size() == 0) {
-// 		throw Parse_error(QObject::tr("Neither spirit:fileType or "
-// 				"spirit:userFileType elements found in spirit:file"));
-// 	}
 	return;
 }
 
-File::File(const QString filePath, FileSet* parent): name_(filePath), fileId_(),
-		attributes_(), nameAttributes_(), fileTypes_(), userFileTypes_(),
-		includeFile_(false), externalDeclarations_(false), logicalName_(),
-		logicalNameDefault_(false), exportedNames_(), dependencies_(), imageTypes_(),
-		description_(), buildcommand_(), defines_(), parent_(parent)  {
+File::File(const QString filePath, FileSet* parent): 
+name_(filePath), 
+fileId_(),
+attributes_(),
+nameAttributes_(),
+fileTypes_(), 
+userFileTypes_(),
+includeFile_(false),
+externalDeclarations_(false),
+logicalName_(),
+logicalNameDefault_(false),
+exportedNames_(),
+dependencies_(),
+imageTypes_(),
+description_(),
+buildcommand_(), 
+defines_(), 
+parent_(parent)  {
 
+	QFileInfo fileInfo(filePath);
+
+	// set the default file type if it can be derived from the file suffix
+
+	if (fileInfo.suffix() == QString("vhd") ||
+		(fileInfo.suffix() == QString("vhdl"))) {
+		fileTypes_.append("vhdlSource");
+	}
+	else if (fileInfo.suffix() == QString("v")) {
+		fileTypes_.append("verilogSource");
+	}
+	else if (fileInfo.suffix() == QString("sv")) {
+		fileTypes_.append("systemVerilogSource");
+	}
+	else if (fileInfo.suffix() == QString("c")) {
+		fileTypes_.append("cSource");
+	}
+	else if (fileInfo.suffix() == QString("h") ||
+		fileInfo.suffix() == QString("hpp") ||
+		fileInfo.suffix() == QString("cpp") ||
+		fileInfo.suffix() == QString("cc")) {
+		fileTypes_.append("cppSource");
+	}
 }
 
 File::File( FileSet* parent ): name_(), fileId_(),
