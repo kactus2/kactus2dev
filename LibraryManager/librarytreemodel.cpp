@@ -357,7 +357,7 @@ void LibraryTreeModel::onAddVLNV( VLNV* vlnv ) {
 	QModelIndex parentIndex;
 
 	// if the highest unique is not the root
-	if (parentItem != rootItem_) {
+	if (parentItem != rootItem_.data()) {
 
 		int row = parentItem->row();
 		Q_ASSERT(row >= 0);

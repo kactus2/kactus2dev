@@ -212,7 +212,7 @@ void LibraryItem::removeChild(LibraryItem* childItem ) {
 }
 
 LibraryItem* LibraryItem::findHighestUnique( LibraryItem* childItem ) {
-	
+
 	// if this is the root item
 	if (!parentItem_)
 		return childItem;
@@ -231,7 +231,7 @@ LibraryItem* LibraryItem::findHighestUnique( LibraryItem* childItem ) {
 }
 
 LibraryItem* LibraryItem::findHighestUnique( const VLNV* vlnv ) {
-	
+
 	// search all children
 	for (int i = 0; i < childItems_.size(); ++i) {
 
@@ -242,6 +242,7 @@ LibraryItem* LibraryItem::findHighestUnique( const VLNV* vlnv ) {
 				return childItems_.at(i)->findHighestUnique(vlnv);
 			}
 			continue;
+				   }
 		case TYPE: {
 			if (childItems_.at(i)->getName() == vlnv->getVendor()) {
 				return childItems_.at(i)->findHighestUnique(vlnv);
@@ -267,21 +268,14 @@ LibraryItem* LibraryItem::findHighestUnique( const VLNV* vlnv ) {
 			continue;
 				   }
 		case VERSION: {
-				return parentItem_->findHighestUnique(this);
-				 }
+			return parentItem_->findHighestUnique(this);
+					  }
 		}
 	}
-	}
 
-	// if this is not root then parent item exists.
-	if (parentItem_) {
-		// no child items existed so at least this item can be removed
-		return parentItem_->findHighestUnique(this);
-	}
-	// if this is root then there is no parent and this is the highest unique
-	else {
-		return this;
-	}
+	// if there was no child that matched the vlnv then this must be the highest 
+	// unique that can be used.
+	return this;
 }
 
 bool LibraryItem::isValid() {

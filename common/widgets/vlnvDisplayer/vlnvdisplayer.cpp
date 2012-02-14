@@ -39,10 +39,16 @@ VLNVDisplayer::VLNVDisplayer(QWidget *parent, const VLNV& vlnv, bool compact)
     setFlat(true);
 }
 
-VLNVDisplayer::VLNVDisplayer( QWidget *parent, const VLNV* vlnv, bool compact )
-    : QGroupBox(parent), vendorLabel_(tr("Vendor:"), this), libraryLabel_(tr("Library:"), this),
-      nameLabel_(tr("Name:"), this), versionLabel_(tr("Version:"), this),
-      vendor_(this), library_(this), name_(this), version_(this) {
+VLNVDisplayer::VLNVDisplayer( QWidget *parent, const VLNV* vlnv, bool compact ):
+QGroupBox(parent),
+vendorLabel_(tr("Vendor:"), this), 
+libraryLabel_(tr("Library:"), this),
+nameLabel_(tr("Name:"), this),
+versionLabel_(tr("Version:"), this),
+vendor_(this), 
+library_(this),
+name_(this),
+version_(this) {
 
     layout_ = new QGridLayout();
 	layout_->addWidget(&vendorLabel_, 0, 0, 1, 1, Qt::AlignLeft);
