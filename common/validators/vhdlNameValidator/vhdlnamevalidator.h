@@ -24,7 +24,7 @@ public:
 	 * \param parent Pointer to the owner of this validator.
 	 *
 	*/
-	VhdlNameValidator(QObject *parent);
+	VhdlNameValidator(QObject *parent = 0);
 	
 	//! \brief The destructor
 	virtual ~VhdlNameValidator();

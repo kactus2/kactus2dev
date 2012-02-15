@@ -100,3 +100,16 @@ bool VhdlPort::isCommented() const {
 	return commentOut_;
 }
 
+bool VhdlPort::hasRealPorts( const QMap<VhdlPortSorter, QSharedPointer<VhdlPort> >& ports ) {
+	foreach (QSharedPointer<VhdlPort> port, ports) {
+
+		// if at least one port that is uncommented is found
+		if (!port->isCommented()) {
+			return true;
+		}
+	}
+
+	// all ports were commented out so they are not in synthesis
+	return false;
+}
+

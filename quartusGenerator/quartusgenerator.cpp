@@ -421,6 +421,12 @@ void QuartusGenerator::parseFileSets(QSharedPointer<Component> component,
 			QString absolutePath = General::getAbsolutePath(basePath,
 				file->getName());
 
+			if (absolutePath.isEmpty()) {
+				emit errorMessage(tr("The file %1 was not found within %2").arg(
+					file->getName()).arg(basePath));
+				continue;
+			}
+
 			// make sure the file exists in the file system
 			QFileInfo fileInfo(absolutePath);
 			if (!fileInfo.exists()) {

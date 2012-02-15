@@ -765,7 +765,13 @@ bool IPXactComponentEditor::onVhdlGenerate() {
 		return false;
 
 	VhdlGenerator2 vhdlGen(handler_, this);
-	vhdlGen.parse(component_, QString());
+	
+	// if errors are detected during parsing
+	if (!vhdlGen.parse(component_, QString())) {
+		return false;
+	}
+	
+	// generate the vhdl code
 	vhdlGen.generateVhdl(path);
 
 	// check if the file already exists in the metadata

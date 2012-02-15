@@ -714,11 +714,18 @@ void DesignWidget::onVhdlGenerate() {
 		fileName, tr("Vhdl files (*.vhd)"));
 
 	// if user clicks cancel then nothing is created
-	if (path.isEmpty())
+	if (path.isEmpty()) {
 		return;
+	}
 
 	VhdlGenerator2 vhdlGen(lh_, this);
-	vhdlGen.parse(hierComponent_, viewName_);
+	
+	// if errors are detected during parsing
+	if (!vhdlGen.parse(hierComponent_, viewName_)) {
+		return;
+	}
+
+	// generate the vhdl code
 	vhdlGen.generateVhdl(path);
 
 	// check if the file already exists in the metadata

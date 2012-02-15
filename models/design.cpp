@@ -2,6 +2,7 @@
 
 #include "design.h"
 
+#include <common/validators/vhdlNameValidator/vhdlnamevalidator.h>
 #include <LibraryManager/vlnv.h>
 #include "generaldeclarations.h"
 
@@ -868,6 +869,16 @@ bool Design::ComponentInstance::isValid( QStringList& errorList,
 		valid = false;
 	}
 
+	// if the instance name contains characters that are not allowed in vhdl
+	VhdlNameValidator nameValidator;
+	int pos = 0;
+	QString instName(instanceName);
+	if (nameValidator.validate(instName, pos) != QValidator::Acceptable) {
+		errorList.append(QObject::tr("The instance name %1 contains illegal "
+			"characters.").arg(instName));
+		valid = false;
+	}
+
 	if (!componentRef.isValid(errorList, thisIdentifier)) {
 		valid = false;
 	}
@@ -893,6 +904,14 @@ bool Design::ComponentInstance::isValid( QStringList& errorList,
 
 bool Design::ComponentInstance::isValid() const {
 	if (instanceName.isEmpty()) {
+		return false;
+	}
+
+	// if the instance name contains characters that are not allowed in vhdl
+	VhdlNameValidator nameValidator;
+	int pos = 0;
+	QString instName(instanceName);
+	if (nameValidator.validate(instName, pos) != QValidator::Acceptable) {
 		return false;
 	}
 

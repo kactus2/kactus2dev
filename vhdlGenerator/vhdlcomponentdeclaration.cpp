@@ -97,7 +97,7 @@ void VhdlComponentDeclaration::write( QTextStream& stream ) const {
 	}
 
 	// write the port declarations
-	if (!ports_.isEmpty()) {
+	if (!ports_.isEmpty() && VhdlPort::hasRealPorts(ports_)) {
 		stream << "\t\tport (" << endl;
 		QString previousInterface;
 		for (QMap<VhdlPortSorter, QSharedPointer<VhdlPort> >::const_iterator i = ports_.begin(); i != ports_.end(); ++i) {

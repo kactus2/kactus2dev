@@ -103,7 +103,10 @@ bool VhdlGenerator2::parse( QSharedPointer<Component> topLevelComponent,
 	topLevelEntity_ = component_->getEntityName(viewName);
 	viewName_ = viewName;
 	
-	parseDesignAndConfiguration();
+	// if the parsing fails
+	if (!parseDesignAndConfiguration()) {
+		return false;
+	}
 
 	// get the types that are used for the ports.
 	typeDefinitions_ = component_->getPortTypeDefinitions();
@@ -408,6 +411,36 @@ bool VhdlGenerator2::parseDesignAndConfiguration() {
 			designVLNV.toString()).arg(component_->getVlnv()->toString()));
 		return false;
 	}
+
+	// if design is found then make sure it is valid
+	else {
+
+		QStringList errorList;
+		if (!design_->isValid(errorList)) {
+
+			emit noticeMessage(tr("The Design contained following errors:"));
+
+			foreach (QString error, errorList) {
+				emit errorMessage(error);
+			}
+			return false;
+		}
+	}
+
+	// if design configuration is found the make sure it is also valid
+	if (desConf_) {
+		QStringList errorList;
+
+		if (!desConf_->isValid(errorList)) {
+			emit noticeMessage(tr("The configuration contained following errors:"));
+
+			foreach (QString error, errorList) {
+				emit errorMessage(error);
+			}
+			return false;
+		}
+	}
+	
 
 	// the design and possibly the configuration are now parsed
 	return true;
@@ -1078,7 +1111,7 @@ void VhdlGenerator2::writeGenerics( QTextStream& vhdlStream ) {
 
 void VhdlGenerator2::writePorts( QTextStream& vhdlStream ) {
 	// if ports exist
-	if (!topPorts_.isEmpty()) {
+	if (!topPorts_.isEmpty() && VhdlPort::hasRealPorts(topPorts_)) {
 
 		vhdlStream << "\tport (" << endl;
 

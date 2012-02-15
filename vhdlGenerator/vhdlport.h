@@ -11,6 +11,7 @@
 #include <models/generaldeclarations.h>
 
 #include "vhdlobject.h"
+#include "vhdlportsorter.h"
 
 class Port;
 class VhdlGenerator2;
@@ -84,6 +85,14 @@ public:
 	 * \return bool True if the port is commented out.
 	*/
 	virtual bool isCommented() const;
+
+	/*! \brief Checks the map for uncommented ports that are used in synthesis.
+	 *
+	 * \param QMap contains the ports that are checked.
+	 *
+	 * \return bool True if at least one uncommented port is found.
+	*/
+	static bool hasRealPorts(const QMap<VhdlPortSorter, QSharedPointer<VhdlPort> >& ports);
 
 private:
 	//! \brief No copying
