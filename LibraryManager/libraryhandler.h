@@ -511,6 +511,25 @@ private:
 	*/
 	void syncronizeModels();
 
+	/*! \brief Clear the empty directories from the disk within given path.
+	 *
+	 * \param dirPath The path that is removed until one of the base library 
+	 * locations is reached.
+	 * \param libraryLocations Contains the base library locations user has defined.
+	 *
+	*/
+	void clearDirectoryStructure(const QString& dirPath,
+		const QStringList& libraryLocations);
+
+	/*! \brief Check if the path contains one of the given paths.
+	 *
+	 * \param path The path to a directory.
+	 * \param pathsToSearch List of paths that are checked if they are contained in the
+	 * given path.
+	 *
+	*/
+	bool containsPath(const QString& path, const QStringList& pathsToSearch) const;
+
 	/*******************************************************************/
 
 	//! \brief The data model that contains the library and is model for search view

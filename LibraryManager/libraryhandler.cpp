@@ -53,6 +53,7 @@
 #include <QCoreApplication>
 #include <QSettings>
 #include <QApplication>
+#include <QVariant>
 
 #include <QDebug>
 
@@ -1145,7 +1146,10 @@ void LibraryHandler::onRemoveVLNV( QList<VLNV*> vlnvs ) {
 		}
 
 		// path to the given vlnv file
-		vlnvPaths.append(data_->getPath(*vlnv));
+		QFileInfo vlnvInfo(data_->getPath(*vlnv));
+
+		// save the dir path of the xml file
+		vlnvPaths.append(vlnvInfo.absolutePath());
 
 		// the vlnv and it's file to the dialog
 		removeDialog.createItem(*vlnv, true);
@@ -1264,8 +1268,11 @@ void LibraryHandler::onRemoveVLNV( QList<VLNV*> vlnvs ) {
 	int result = removeDialog.exec();
 	
 	// if user clicked cancel
-	if (result == QDialog::Rejected)
+	if (result == QDialog::Rejected) {
 		return;
+	}
+
+	QStringList fileDirs;
 
 	QList<ObjectRemoveModel::Item> itemsToRemove = removeDialog.getItemsToRemove();
 	foreach (ObjectRemoveModel::Item item, itemsToRemove) {
@@ -1286,36 +1293,39 @@ void LibraryHandler::onRemoveVLNV( QList<VLNV*> vlnvs ) {
 			data_->onRemoveVLNV(vlnvPointer);
 
 			QFile xmlFile(objectPath);
-			if (!xmlFile.remove())
+			if (!xmlFile.remove()) {
 				emit errorMessage(tr("File %1 could not be removed from file system.").arg(
 				objectPath));
+			}
 		}
 		// if this is file then remove it from file system
 		else {
 			QFileInfo fileInfo(item.path_);
 			if (fileInfo.exists()) {
 
+				// save the path to the files directory
+				fileDirs.append(fileInfo.absolutePath());
+
 				// remove the file specified by path
 				QFile file(item.path_);
-				if (!file.remove())
+				if (!file.remove()) {
 					emit errorMessage(tr("File %1 could not be removed from file system.").arg(
 					item.path_));
-
-				// check if the directory contains other files
-				QDir dir = fileInfo.absoluteDir();
-				dir.rmdir(fileInfo.absolutePath());
+				}
 			}
 		}
 	}
 
+	QSettings settings;
+	QStringList locations = settings.value("library/locations", QStringList()).toStringList();
+
+	foreach (QString fileDir, fileDirs) {
+		clearDirectoryStructure(fileDir, locations);
+	}
+
 	// remove the directory that contains the object name if the directory is empty
 	foreach (QString vlnvPath, vlnvPaths) {
-		QFileInfo vlnvInfo(vlnvPath);
-		QDir vlnvDir(vlnvInfo.absoluteDir());
-		if (vlnvDir.rmdir(vlnvDir.absolutePath())) {
-			vlnvDir.cdUp();
-			vlnvDir.rmdir(vlnvDir.absolutePath());
-		}
+		clearDirectoryStructure(vlnvPath, locations);
 	}
 }
 
@@ -1458,4 +1468,41 @@ bool LibraryHandler::isValid( const VLNV& vlnv ) {
 
 		return libComp->isValid();
 	}
+}
+
+void LibraryHandler::clearDirectoryStructure( const QString& dirPath,
+											 const QStringList& libraryLocations ) {
+
+	QDir dir(dirPath);
+	
+	while (containsPath(QDir::cleanPath(dir.absolutePath()), libraryLocations)) {
+
+		const QString directoryName = dir.dirName();
+		
+		// if not possible to move up anymore 
+		// (the dir could possibly have been destroyed already)
+		if (!dir.cdUp()) {
+			return;
+		}
+
+		// if the directory is not empty then it can't be removed and we can stop.
+		if (!dir.rmdir(directoryName)) {
+			return;
+		}
+	}
+}
+
+bool LibraryHandler::containsPath( const QString& path, const QStringList& pathsToSearch ) const {
+
+	foreach (QString searchPath, pathsToSearch) {
+
+		// as long as the path is not the same as search path but still contains 
+		// the search path is a parent directory of the path
+		if (path.contains(searchPath) && path != searchPath) {
+			return true;
+		}
+	}
+
+	// none of the paths to search were contained in the path
+	return false;
 }
