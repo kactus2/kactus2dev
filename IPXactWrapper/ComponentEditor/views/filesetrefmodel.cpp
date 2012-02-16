@@ -25,6 +25,21 @@ QVariant FileSetRefModel::data( const QModelIndex& index, int role /*= Qt::Displ
 		return QVariant();
 	}
 
+	// if there are no real items then display the help text
+	else if (index.row() == 0 && items_.isEmpty()) {
+		switch (role) {
+			case Qt::DisplayRole: {
+				return tr("Double click to add new item.");
+								  }
+			case Qt::ForegroundRole: {
+				return QColor("silver");
+									 }
+			default: {
+				return QVariant();
+					 }
+		}
+	}
+
 	// if index.row() is invalid
 	else if (index.row() < 0 || index.row() >= items_.size()) {
 		return QVariant();

@@ -8,6 +8,7 @@
 #include "listmanagermodel.h"
 
 #include <QVariant>
+#include <QColor>
 
 #include <QDebug>
 
@@ -22,6 +23,12 @@ ListManagerModel::~ListManagerModel() {
 }
 
 int ListManagerModel::rowCount( const QModelIndex&) const {
+	
+	// if there are no items then there is the help text
+	if (items_.isEmpty()) {
+		return 1;
+	}
+
 	return items_.size();
 }
 
@@ -30,6 +37,21 @@ QVariant ListManagerModel::data( const QModelIndex& index, int role) const {
 	// nothing for invalid indexes
 	if (!index.isValid()) {
 		return QVariant();
+	}
+
+	// if there are no real items then display the help text
+	else if (index.row() == 0 && items_.isEmpty()) {
+		switch (role) {
+			case Qt::DisplayRole: {
+				return tr("Double click to add new item.");
+								  }
+			case Qt::ForegroundRole: {
+				return QColor("silver");
+									 }
+			default: {
+				return QVariant();
+					 }
+		}
 	}
 
 	// if index.row() is invalid
@@ -73,16 +95,24 @@ bool ListManagerModel::setData( const QModelIndex& index,
 							   const QVariant& value,
 							   int role /*= Qt::EditRole*/ ) {
 								   
-	if (!index.isValid())
+	if (!index.isValid()) {
 		return false;
+	}
+
+	// if there are no real items then create one to avoid mis indexing
+	else if (index.row() == 0 && items_.isEmpty()) {
+		items_.append(QString());
+	}
 
 	// if row is invalid
-	else if (index.row() < 0 || index.row() >= items_.size())
+	else if (index.row() < 0 || index.row() >= items_.size()) {
 		return false;
+	}
 
 	// list model has only one column
-	else if (index.column() != 0)
+	else if (index.column() != 0) {
 		return false;
+	}
 
 	if (role == Qt::EditRole) {
 		
@@ -137,7 +167,7 @@ void ListManagerModel::setItems( const QStringList& items ) {
 
 void ListManagerModel::remove( const QModelIndex& index ) {
 
-	// dont remove anything if index is invalid
+	// don't remove anything if index is invalid
 	if (!index.isValid()) {
 		return;
 	}
