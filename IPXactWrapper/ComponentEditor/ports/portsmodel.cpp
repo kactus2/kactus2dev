@@ -7,6 +7,7 @@
 
 #include "portsmodel.h"
 
+#include "portsdelegate.h"
 #include <models/generaldeclarations.h>
 
 #include <vhdlGenerator/vhdlgeneral.h>
@@ -43,14 +44,14 @@ int PortsModel::rowCount(const QModelIndex& parent /*= QModelIndex() */) const {
 		return 0;
 
 	return table_.size();
-}
+}   
 
 int PortsModel::columnCount(const QModelIndex& parent /*= QModelIndex() */) const {
 
 	if (parent.isValid())
 		return 0;
 
-	return 9;
+	return PORT_COL_COUNT;
 }
 
 QVariant PortsModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole */ ) const {
@@ -66,34 +67,35 @@ QVariant PortsModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole
 	if (role == Qt::DisplayRole) {
 
 		switch (index.column()) {
-			case 0: {
+			case PORT_COL_NAME: {
 				return table_.at(index.row())->getName();
 					}
-			case 1: {
+			case PORT_COL_DIRECTION: {
 				return General::direction2Str(table_.at(index.row())->getDirection());
 					}
-			case 2: {
+			case PORT_COL_WIDTH: {
 				return table_.at(index.row())->getPortSize();
 					}
-			case 3: {
+			case PORT_COL_LEFT: {
 				return table_.at(index.row())->getLeftBound();
 					}
-			case 4: {
+			case PORT_COL_RIGHT: {
 				return table_.at(index.row())->getRightBound();
 					}
-			case 5: {
+			case PORT_COL_TYPENAME: {
 				return table_.at(index.row())->getTypeName();
 					}
-			case 6: {
+			case PORT_COL_TYPEDEF: {
 				QString typeName = table_.at(index.row())->getTypeName();
 				return table_.at(index.row())->getTypeDefinition(typeName);
 					}
-			case 7: {
+			case PORT_COL_DEFAULT: {
 				return table_.at(index.row())->getDefaultValue();
 					}
-			case 8: {
+			case PORT_COL_DESC: {
 				return table_.at(index.row())->getDescription();
 					}
+
 			default: {
 				return QVariant();
 					 }
@@ -109,18 +111,35 @@ QVariant PortsModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole
 	}
 	else if (Qt::BackgroundRole == role) {
 		switch (index.column()) {
-			case 0:
-			case 1:
-			case 2:
-			case 3:
-			case 4: {
+			case PORT_COL_NAME:
+			case PORT_COL_DIRECTION:
+			case PORT_COL_WIDTH:
+			case PORT_COL_LEFT:
+			case PORT_COL_RIGHT: {
 				return QColor("LemonChiffon");
 					}
 			default:
 				return QColor("white");
 		}
 	}
-
+    else if (Qt::CheckStateRole == role)
+    {
+        if (index.column() == PORT_COL_ADHOC_VISIBILITY)
+        {
+            if (table_.at(index.row())->isAdHocVisible())
+            {
+                return Qt::Checked;
+            }
+            else
+            {
+                return Qt::Unchecked;
+            }
+        }
+        else
+        {
+            return QVariant();
+        }
+    }
 	// if unsupported role
 	else {
 		return QVariant();
@@ -134,33 +153,40 @@ QVariant PortsModel::headerData( int section, Qt::Orientation orientation,
 
 		if (orientation == Qt::Horizontal) {
 			switch (section) {
-				case 0: {
+				case PORT_COL_NAME: {
 					return tr("Name");
 						}
-				case 1: {
+				case PORT_COL_DIRECTION: {
 					return tr("Direction");
 						}
-				case 2: {
+				case PORT_COL_WIDTH: {
 					return tr("Width");
 						}
-				case 3: {
+				case PORT_COL_LEFT: {
 					return tr("Left\n(higher)\nbound");
 						}
-				case 4: {
+				case PORT_COL_RIGHT: {
 					return tr("Right\n(lower)\nbound");
 						}
-				case 5: {
+				case PORT_COL_TYPENAME: {
 					return tr("Type");
 						}
-				case 6: {
+				case PORT_COL_TYPEDEF: {
 					return tr("Type\ndefinition");
 						}
-				case 7: {
+				case PORT_COL_DEFAULT: {
 					return tr("Default\nvalue");
 						}
-				case 8: {
+				case PORT_COL_DESC: {
 					return tr("Description");
 						}
+
+                case PORT_COL_ADHOC_VISIBILITY:
+                    {
+                        return tr("Ad-hoc");
+                        break;
+                    }
+
 				default: {
 					return QVariant();
 						 }
@@ -193,11 +219,11 @@ bool PortsModel::setData( const QModelIndex& index,
 	if (role == Qt::EditRole) {
 		
 		switch (index.column()) {
-			case 0: {
+			case PORT_COL_NAME: {
 				table_.at(index.row())->setName(value.toString());
 				break;
 					}
-			case 1: {
+			case PORT_COL_DIRECTION: {
 
 				General::Direction direction = General::str2Direction(
 					value.toString(), General::DIRECTION_INVALID);
@@ -205,7 +231,7 @@ bool PortsModel::setData( const QModelIndex& index,
 				table_.at(index.row())->setDirection(direction);
 				break;
 					}
-			case 2: {
+			case PORT_COL_WIDTH: {
 				int size = value.toInt();
 				table_.at(index.row())->setPortSize(size);
 				
@@ -226,7 +252,7 @@ bool PortsModel::setData( const QModelIndex& index,
 					QAbstractTableModel::index(index.row(), index.column()+3, QModelIndex()));
 				return true;
 					}
-			case 3: {
+			case PORT_COL_LEFT: {
 
 				// make sure left bound doesn't drop below right bound
 				if (value.toInt() < table_.at(index.row())->getRightBound())
@@ -255,7 +281,7 @@ bool PortsModel::setData( const QModelIndex& index,
 
 				return true;
 					}
-			case 4: {
+			case PORT_COL_RIGHT: {
 
 				// make sure right bound is not greater than left bound
 				if (value.toInt() > table_.at(index.row())->getLeftBound())
@@ -283,7 +309,7 @@ bool PortsModel::setData( const QModelIndex& index,
 					QAbstractTableModel::index(index.row(), index.column()-2, QModelIndex()));
 				return true;
 					}
-			case 5: {
+			case PORT_COL_TYPENAME: {
 				QString typeName = value.toString();
 				table_.at(index.row())->setTypeName(typeName);
 
@@ -295,19 +321,20 @@ bool PortsModel::setData( const QModelIndex& index,
 					QAbstractTableModel::index(index.row(), index.column()+1, QModelIndex()));
 				return true;
 					}
-			case 6: {
+			case PORT_COL_TYPEDEF: {
 				QString typeName = table_.at(index.row())->getTypeName();
 				table_.at(index.row())->setTypeDefinition(typeName, value.toString());
 				break;
 					}
-			case 7: {
+			case PORT_COL_DEFAULT: {
 				table_.at(index.row())->setDefaultValue(value.toString());
 				break;
 					}
-			case 8: {
+			case PORT_COL_DESC: {
 				table_.at(index.row())->setDescription(value.toString());
 				break;
 					}
+
 			default: {
 				return false;
 					 }
@@ -316,7 +343,12 @@ bool PortsModel::setData( const QModelIndex& index,
 		emit dataChanged(index, index);
 		return true;
 	}
-
+    else if (role == Qt::CheckStateRole)
+    {
+        table_.at(index.row())->setAdHocVisible(value == Qt::Checked);
+        emit dataChanged(index, index);
+        return true;
+    }
 	// unsupported role
 	else {
 		return false;
@@ -328,7 +360,18 @@ Qt::ItemFlags PortsModel::flags( const QModelIndex& index ) const {
 	if (!index.isValid())
 		return Qt::NoItemFlags;
 
-	return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+
+    if (index.column() == PORT_COL_ADHOC_VISIBILITY)
+    {
+        flags |= Qt::ItemIsUserCheckable;
+    }
+    else
+    {
+        flags |= Qt::ItemIsEditable;
+    }
+
+    return flags;
 }
 
 bool PortsModel::isValid() const {

@@ -10,10 +10,29 @@
 
 #include <QStyledItemDelegate>
 
-/*! \brief The delegate that provides editors to edit ports of a component.
- *
- */
-class PortsDelegate : public QStyledItemDelegate {
+//-----------------------------------------------------------------------------
+// Constants defining which column represents what kind of information.
+//-----------------------------------------------------------------------------
+enum PortEditorColumn
+{
+    PORT_COL_NAME = 0,          //!< Column for the port name.
+    PORT_COL_DIRECTION,         //!< Column for the port direction.
+    PORT_COL_WIDTH,             //!< Column for the port width.
+    PORT_COL_LEFT,              //!< Column for specifying the left bound of the port.
+    PORT_COL_RIGHT,             //!< Column for specifying the right bound of the port.
+    PORT_COL_TYPENAME,          //!< Column for the port typename.
+    PORT_COL_TYPEDEF,           //!< Column for the port type definition.
+    PORT_COL_DEFAULT,           //!< Column for setting the default value for the port.
+    PORT_COL_DESC,              //!< Column for adding a description for the port.
+    PORT_COL_ADHOC_VISIBILITY,  //!< Column for toggling ad-hoc visibility on/off.
+    PORT_COL_COUNT
+};
+
+//-----------------------------------------------------------------------------
+//! The delegate that provides editors to edit ports of a component.
+//-----------------------------------------------------------------------------
+class PortsDelegate : public QStyledItemDelegate
+{
 	Q_OBJECT
 
 public:
@@ -65,14 +84,20 @@ private slots:
 	*/
 	void commitAndCloseEditor();
 
+protected:
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index);
+
 private:
+    // Disable copying.
+    PortsDelegate(PortsDelegate const& rhs);
+    PortsDelegate& operator=(PortsDelegate const& rhs);
 
-	//! \brief No copying
-	PortsDelegate(const PortsDelegate& other);
+    //! Boolean for ad-hoc group modify.
+    bool adhocGroupModify_;
 
-	//! No assignment
-	PortsDelegate& operator=(const PortsDelegate& other);
-	
+    //! The new state for the group modify.
+    Qt::CheckState adhocGroupState_;
 };
 
 #endif // PORTSDELEGATE_H

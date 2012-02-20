@@ -35,6 +35,7 @@ class ComponentInstanceEditor;
 class ConfigurationEditor;
 class InterfaceEditor;
 class ConnectionEditor;
+class AdHocEditor;
 class DiagramInterconnection;
 
 class MainWindow : public QMainWindow {
@@ -354,6 +355,9 @@ private slots:
 	//! \brief Handler for instance action's trigger.
 	void onInstanceAction(bool show);
 
+    // Handler for ad-hoc visibility action's trigger.
+    void onAdHocAction(bool show);
+
     /*!
      *  Handles the situation when a workspace has been changed.
      */
@@ -436,6 +440,9 @@ private:
 	//! \brief Set up the component instance editor.
 	void setupInstanceEditor();
 
+    //! Sets up the ad-hoc visibility editor.
+    void setupAdHocVisibilityEditor();
+
 	//! \brief Set up the configuration editor.
 	void setupConfigurationEditor();
 
@@ -474,6 +481,10 @@ private:
 
 	//! \brief The dock widget that contains the instance editor.
 	QDockWidget* instanceDock_;
+
+    //! The ad-hoc visibility editor and its dock widget.
+    AdHocEditor* adHocEditor_;
+    QDockWidget* adHocDock_;
 
 	//! \brief The widget to edit the configuration of designs.
 	ConfigurationEditor* configurationEditor_;
@@ -623,6 +634,9 @@ private:
 	//! \brief Action to show/hide the instance editor.
 	QAction* showInstanceAction_;
 
+    //! Action to show/hide the ad-hoc visibility editor.
+    QAction* showAdHocAction_;
+
 	//! \brief The menu containing the actions to select which windows to display.
 	QMenu windowsMenu_;
 
@@ -667,6 +681,9 @@ private:
 
 		//! \brief Show the instance editor
 		bool showInstance_;
+
+        //! If true, the ad-hoc visibility editor is shown.
+        bool showAdHocVisibility;
 
 		/*! \brief The default constructor.
 		 *

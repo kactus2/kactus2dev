@@ -139,3 +139,11 @@ DiagramConnectionEndPoint* DiagramConnectionEndPoint::getOffPageConnector()
 {
     return 0;
 }
+
+//-----------------------------------------------------------------------------
+// Function: DiagramConnectionEndPoint::isAdHoc()
+//-----------------------------------------------------------------------------
+bool DiagramConnectionEndPoint::isAdHoc() const
+{
+    return (!isBus());
+}

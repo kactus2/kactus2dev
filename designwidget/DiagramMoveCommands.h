@@ -23,6 +23,7 @@ class DiagramComponent;
 class DiagramInterface;
 class DiagramColumn;
 class DiagramColumnLayout;
+class DiagramConnectionEndPoint;
 
 //-----------------------------------------------------------------------------
 //! ColumnMoveCommand class.
@@ -190,7 +191,7 @@ public:
      *      @param [in] oldPos  The port's old position.
      *      @param [in] parent  The parent command.
      */
-    PortMoveCommand(DiagramPort* port, QPointF const& oldPos, QUndoCommand* parent = 0);
+    PortMoveCommand(DiagramConnectionEndPoint* port, QPointF const& oldPos, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -217,7 +218,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The graphics port.
-    DiagramPort* port_;
+    DiagramConnectionEndPoint* port_;
 
     //! The old position of the port.
     QPointF oldPos_;

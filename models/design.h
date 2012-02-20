@@ -107,6 +107,12 @@ public:
          */
         QMap<QString, QPointF> portPositions;
 
+        /*! \brief VENDOREXT kactus2:adHocVisibilities
+         *
+         *  Specifies ad-hoc visibility of each port.
+         */
+        QMap<QString, bool> portAdHocVisibilities;
+
         /*! \brief VENDOREXT kactus2:mcapiNodeId
          *
          *  Specifies the MCAPI node id.
@@ -124,7 +130,7 @@ public:
          *  Specifies whether the component is imported from a software mapping design.
          */
         bool imported;
-
+        
         /*! \brief The constructor
 		*
 		* \param componentInstanceNode A reference to a QDomNode
@@ -145,6 +151,7 @@ public:
 		ComponentInstance& operator=(const ComponentInstance& other);
 
         void parsePortPositions(QDomNode& node);
+        void parseAdHocVisibilities(QDomNode& node);
 
 		/*! \brief Check if the component instance is in a valid state.
 		*

@@ -187,14 +187,35 @@ public:
 	virtual QSharedPointer<Component> ownerComponent() const = 0;
 
     /*! 
-     *  brief Returns the IP-XACT bus interface model of the end point.
+     *  Returns the IP-XACT bus interface model of the end point.
+     *
+     *      @remarks The function returns a null pointer if the end point is not a bus interface.
+     *               Use isBus() function to check for bus interface support.
      */
     virtual QSharedPointer<BusInterface> getBusInterface() const = 0;
+
+    /*!
+     *  Returns the ad-hoc port of the end point.
+     *
+     *      @remarks The function returns a null pointer if the end point is a bus interface.
+     *               Use isBus() function to check for ad-hoc support (isBus() == false).
+     */
+    virtual QSharedPointer<Port> getPort() const = 0;
 
     /*! \brief Returns true if the port represents a hierarchical connection
      *
      */
     virtual bool isHierarchical() const = 0;
+
+    /*!
+     *  Returns true if the end point is a bus interface end point.
+     */
+    virtual bool isBus() const = 0;
+
+    /*!
+     *  Returns true if the end point is an ad-hoc port.
+     */
+    bool isAdHoc() const;
 
 	/*! \brief Set the interface mode for the end point.
 	 *

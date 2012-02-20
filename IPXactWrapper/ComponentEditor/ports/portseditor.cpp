@@ -60,6 +60,7 @@ handler_(handler) {
 	view_.setItemDelegate(new PortsDelegate(this));
 
 	view_.verticalHeader()->show();
+    view_.verticalHeader()->setDefaultSectionSize(fontMetrics().height() + 8);
 
 	// set proxy to do the sorting automatically
 	proxy_ = new QSortFilterProxyModel(this);

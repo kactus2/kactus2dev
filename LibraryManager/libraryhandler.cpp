@@ -63,8 +63,8 @@ data_(),
 treeModel_(),
 hierarchyModel_(),
 searchWidget_(),
-treeWidget_(),
-hierarchyWidget_(),
+treeWidget_(0),
+hierarchyWidget_(0),
 objects_(),
 saveInProgress_(false),
 itemsToAdd_() {
@@ -88,20 +88,18 @@ itemsToAdd_() {
 	// create the connections between models and library handler
 	syncronizeModels();
 
-	treeWidget_ = QSharedPointer<LibraryTreeWidget>(
-			new LibraryTreeWidget(dialer, this, treeModel_.data(), this));
+	treeWidget_ = new LibraryTreeWidget(dialer, this, treeModel_.data(), this);
 
-	connect(treeWidget_.data(), SIGNAL(itemSelected(const VLNV&)),
+	connect(treeWidget_, SIGNAL(itemSelected(const VLNV&)),
 		this, SIGNAL(itemSelected(const VLNV&)), Qt::UniqueConnection);
 
-	hierarchyWidget_ = QSharedPointer<HierarchyWidget>(
-		new HierarchyWidget(dialer, this, this, hierarchyModel_.data()));
+	hierarchyWidget_ = new HierarchyWidget(dialer, this, this, hierarchyModel_.data());
 
-	connect(hierarchyWidget_.data(), SIGNAL(componentSelected(const VLNV&)),
+	connect(hierarchyWidget_, SIGNAL(componentSelected(const VLNV&)),
 		this, SIGNAL(itemSelected(const VLNV&)), Qt::UniqueConnection);
 
-	addTab(hierarchyWidget_.data(), tr("Hierarchy"));
-	addTab(treeWidget_.data(), tr("Plain IP-Xact"));
+	addTab(hierarchyWidget_, tr("Hierarchy"));
+	addTab(treeWidget_, tr("Plain IP-Xact"));
 }
 
 LibraryHandler::~LibraryHandler() {

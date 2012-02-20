@@ -160,8 +160,11 @@ void ConnectionEditor::setConnection( DiagramInterconnection* connection ) {
 	DiagramConnectionEndPoint* endPoint1 = connection->endPoint1();
 	Q_ASSERT(endPoint1);
 
-	busType_.setVLNV(endPoint1->getBusInterface()->getBusType(), true);
-	absType_.setVLNV(endPoint1->getBusInterface()->getAbstractionType(), true);
+    if (endPoint1->isBus())
+    {
+	    busType_.setVLNV(endPoint1->getBusInterface()->getBusType(), true);
+	    absType_.setVLNV(endPoint1->getBusInterface()->getAbstractionType(), true);
+    }
 
 	QString endPoint1Name = endPoint1->name();
 	QString endPoint2Name = connection->endPoint2()->name();
@@ -189,7 +192,10 @@ void ConnectionEditor::setConnection( DiagramInterconnection* connection ) {
 	connect(connection, SIGNAL(contentChanged()), 
 		this, SLOT(refresh()), Qt::UniqueConnection);
 
-	setPortMaps();
+    if (endPoint1->isBus())
+    {
+	    setPortMaps();
+    }
 
     bool locked = static_cast<BlockDiagram*>(connection->scene())->isProtected();
 	
@@ -217,8 +223,9 @@ void ConnectionEditor::setConnection( DiagramInterconnection* connection ) {
 	}
 
 	// set the objects visible
-	busType_.show();
-	absType_.show();
+    busType_.setVisible(endPoint1->isBus());
+    absType_.setVisible(endPoint1->isBus());
+    
 	instanceLabel_.show();
 	connectedInstances_.show();
 	separator_.show();

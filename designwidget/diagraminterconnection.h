@@ -62,6 +62,13 @@ public:
     void setRoutingMode(RoutingMode mode);
 
     /*!
+     *  Sets the line width.
+     *
+     *      @param [in] width The line width in pixels.
+     */
+    void setLineWidth(int width);
+
+    /*!
      *  Sets the bus width label visible/invisible.
      *
      *      @param [in] visible If true, the label is set visible. Otherwise false.
@@ -146,6 +153,12 @@ public:
      */
     DiagramConnectionEndPoint *endPoint2() const;
 
+    /*!
+     *  Returns true if the connection is a bus connection. Returns false if it isn't (i.e. it is an ad-hoc
+     *  connection).
+     */
+    bool isBus() const;
+
     int type() const { return Type; }
 
 signals:
@@ -188,6 +201,13 @@ private:
      *  Updates the width label based on the end points.
      */
     void updateWidthLabel();
+
+    /*!
+     *  Calculates the total bus width.
+     *
+     *      @return The bus width.
+     */
+    int calculateBusWidth() const;
 
     /*!
      *  Draws specific helper graphics for overlapping graphics items.

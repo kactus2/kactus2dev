@@ -170,9 +170,22 @@ public:
     virtual QSharedPointer<BusInterface> getBusInterface() const;
 
     /*!
+     *  Returns the ad-hoc port of the end point.
+     *
+     *      @remarks The function returns a null pointer if the end point is a bus interface.
+     *               Use isBus() function to check for ad-hoc support (isBus() == false).
+     */
+    virtual QSharedPointer<Port> getPort() const;
+
+    /*!
      *  Returns true if the port represents a hierarchical connection.
      */
     virtual bool isHierarchical() const;
+
+    /*!
+     *  Returns true if the end point is a bus interface end point.
+     */
+    virtual bool isBus() const;
 
 	/*! 
 	 *  Sets the interface mode for the end point.

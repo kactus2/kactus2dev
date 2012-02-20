@@ -201,7 +201,8 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
 
         DiagramComponent* diagComp = new DiagramComponent(lh_, component, instance.instanceName,
                                                           instance.displayName, instance.description,
-                                                          instance.configurableElementValues);
+                                                          instance.configurableElementValues,
+                                                          instance.portAdHocVisibilities);
 
         connect(diagComp, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
@@ -401,6 +402,12 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
 		}
     }
 
+    // Finally, update the stacking of the columns.
+    foreach (DiagramColumn* column, layout_->getColumns())
+    {
+        column->updateItemPositions();
+    }
+
     return true;
 }
 
@@ -483,6 +490,7 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv)
 
 			// save the configurable element values to the design
 			instance.configurableElementValues = comp->getConfigurableElements();
+            instance.portAdHocVisibilities = comp->getPortAdHocVisibilities();
 
             // Save the port positions.
             QMapIterator< QString, QSharedPointer<BusInterface> >
@@ -681,6 +689,12 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
                 tempConnEndPoint_->getDirection(),
                 mouseEvent->scenePos(),
                 QVector2D(0.0f, 0.0f), QString(), QString(), this);
+
+            if (tempConnEndPoint_->isBus())
+            {
+                tempConnection_->setLineWidth(3);
+            }
+
             addItem(tempConnection_);
 
             // Determine all potential end points to which the starting end point could be connected
@@ -924,6 +938,11 @@ void BlockDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
                 newTempConnection_ = new DiagramInterconnection(tempConnEndPoint_->scenePos(),
                     tempConnEndPoint_->getDirection(), snapPointToGrid(mouseEvent->scenePos()),
                     QVector2D(0.0f, 0.0f), QString(), QString(), this);
+            }
+
+            if (tempConnEndPoint_->isBus())
+            {
+                newTempConnection_->setLineWidth(3);
             }
 
             removeItem(tempConnection_);

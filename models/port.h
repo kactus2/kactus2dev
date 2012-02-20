@@ -412,9 +412,21 @@ public:
     void setRemoteEndpointName(QString const& remoteName);
 
     /*!
+     *  Sets default the ad-hoc visibility of the port.
+     *
+     *      @param [in] visible If true, the port is set visible for ad-hoc connections.
+     */
+    void setAdHocVisible(bool visible);
+
+    /*!
      *  Returns the remote endpoint name (used only for endpoints).
      */
     QString const& getRemoteEndpointName() const;
+
+    /*!
+     *  Returns true if the ad-hoc visibility is turned on.
+     */
+    bool isAdHocVisible() const;
 
 private:
 
@@ -451,6 +463,9 @@ private:
 
     //! The remote endpoint name.
     QString remoteEndpointName_;
+
+    //! If true, the port is visible for ad-hoc connections.
+    bool adHocVisible_;
 };
 
 #endif /* PORT_H_ */

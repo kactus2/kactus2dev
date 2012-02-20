@@ -54,6 +54,11 @@ DiagramInterconnection::DiagramInterconnection(DiagramConnectionEndPoint *endPoi
     setItemSettings();
     createRoute(endPoint1, endPoint2);
 
+    if (endPoint1->isBus())
+    {
+        setLineWidth(3);
+    }
+
     if (autoConnect)
     {
         endPoint1_ = endPoint1;
@@ -653,10 +658,7 @@ void DiagramInterconnection::paint(QPainter *painter,
 void DiagramInterconnection::setItemSettings()
 {
     setZValue(-1000);
-    QPen newPen = pen();
-    newPen.setWidth(3);
-    setPen(newPen);
-
+    setLineWidth(1);
     setFlag(ItemIsSelectable);
 }
 
@@ -856,15 +858,7 @@ void DiagramInterconnection::updateName()
         endCompName = end->encompassingComp()->name() + "_";
     }
 
-    // TODO: Problems?
-    if (start->getBusInterface() != 0 && end->getBusInterface() != 0)
-    {
-        name_ = start->encompassingComp()->name() + "_" + start->getBusInterface()->getName() + "_to_" +
-                endCompName + end->getBusInterface()->getName();
-    }
-    else
-    {
-    }
+    name_ = start->encompassingComp()->name() + "_" + start->name() + "_to_" + endCompName + end->name();
 }
 
 //-----------------------------------------------------------------------------
@@ -982,44 +976,17 @@ void DiagramInterconnection::updateWidthLabel()
 {
     //simplifyPath();
 
-    // Calculate the total width over all port maps.
     int totalWidth = 0;
 
-    foreach (QSharedPointer<General::PortMap> portMap1, endPoint1_->getBusInterface()->getPortMaps())
+    // for bus connections, the bus width must be calculated from the port maps.
+    if (endPoint1_->isBus())
     {
-        // Find the port map with the same logical port name from the other end point's port map.
-        QSharedPointer<General::PortMap> portMap2;
-
-        foreach (QSharedPointer<General::PortMap> portMap, endPoint2_->getBusInterface()->getPortMaps())
-        {
-            if (portMap->logicalPort_ == portMap1->logicalPort_)
-            {
-                portMap2 = portMap;
-            }
-        }
-
-        if (portMap2 == 0)
-        {
-            continue;
-        }
-
-        Port* port1 = endPoint1_->ownerComponent()->getPort(portMap1->physicalPort_);
-        Port* port2 = endPoint2_->ownerComponent()->getPort(portMap2->physicalPort_);
-
-        if (port1 == 0 || port2 == 0)
-        {
-            // TODO: Error handling.
-            continue;
-        }
-
-        // Calculate the intersection of the port bounds and add it to the total width.
-        General::PortAlignment align =
-            General::calculatePortAlignment(portMap1.data(), port1->getLeftBound(), port1->getRightBound(),
-                                            portMap2.data(), port2->getLeftBound(), port2->getRightBound());
-
-        int width = std::min(align.port1Left_, align.port2Left_) -
-                    std::max(align.port1Right_, align.port2Right_) + 1;
-        totalWidth += width;
+        totalWidth = calculateBusWidth();
+    }
+    else
+    {
+        // Otherwise the connection is for only one signal (i.e. ad-hoc).
+        totalWidth = 1;
     }
 
     if (widthLabel_ == 0)
@@ -1150,8 +1117,8 @@ void DiagramInterconnection::drawLineGap(QPainter* painter, QLineF const& line1,
     qreal length1 = QVector2D(pt - line1.p1()).length();
     qreal length2 = QVector2D(pt - line1.p2()).length();
 
-    QPointF pt1 = (QVector2D(pt) + dir * std::min(length2, (qreal)GridSize)).toPointF();
-    QPointF pt2 = (QVector2D(pt) - dir * std::min(length1, (qreal)GridSize)).toPointF();
+    QPointF pt1 = (QVector2D(pt) + dir * std::min(length2, (qreal)GridSize / 2)).toPointF();
+    QPointF pt2 = (QVector2D(pt) - dir * std::min(length1, (qreal)GridSize) / 2).toPointF();
     painter->drawLine(pt1, pt2);
 }
 
@@ -1206,7 +1173,6 @@ void DiagramInterconnection::drawOverlapGraphics(QPainter* painter)
                             circlePath.addEllipse(pt, 5.0, 5.0);
 
                             painter->fillPath(circlePath, QBrush(Qt::black));
-
                         }
                         else
                         {
@@ -1220,13 +1186,21 @@ void DiagramInterconnection::drawOverlapGraphics(QPainter* painter)
                             qreal length1 = QVector2D(pt - line1.p1()).length();
                             qreal length2 = QVector2D(pt - line1.p2()).length();
 
-                            QPointF seg1Pt1 = (QVector2D(pt) + dir * std::min(length2, 4.0)).toPointF();
+                            qreal width = 3;
+
+                            // If both lines are thick, we have to use a thicker width.
+                            if (pen().width() >= 3 && conn->pen().width() >= 3)
+                            {
+                                ++width;
+                            }
+
+                            QPointF seg1Pt1 = (QVector2D(pt) + dir * std::min(length2, width)).toPointF();
                             QPointF seg1Pt2 = (QVector2D(pt) + dir * std::min(length2, (qreal)GridSize)).toPointF();
 
-                            QPointF seg2Pt1 = (QVector2D(pt) - dir * std::min(length1, 4.0)).toPointF();
+                            QPointF seg2Pt1 = (QVector2D(pt) - dir * std::min(length1, width)).toPointF();
                             QPointF seg2Pt2 = (QVector2D(pt) - dir * std::min(length1, (qreal)GridSize)).toPointF();
 
-                            painter->setPen(QPen(QColor(160, 160, 160), 4));
+                            painter->setPen(QPen(QColor(160, 160, 160), pen().width() + 1));
                             painter->drawLine(seg1Pt1, seg1Pt2);
                             painter->drawLine(seg2Pt1, seg2Pt2);
                         }
@@ -1262,7 +1236,7 @@ void DiagramInterconnection::drawOverlapGraphics(QPainter* painter)
 
                 if (type1 == QLineF::BoundedIntersection && type2 == QLineF::BoundedIntersection)
                 {
-                    painter->setPen(QPen(QColor(160, 160, 160), 4));
+                    painter->setPen(QPen(QColor(160, 160, 160), pen().width() + 1));
                     painter->drawLine(pt, pt2);
                     drawLineGap(painter, line1, pt);
                     drawLineGap(painter, line1, pt2);
@@ -1274,7 +1248,7 @@ void DiagramInterconnection::drawOverlapGraphics(QPainter* painter)
 
                 if (type1 == QLineF::BoundedIntersection && type2 == QLineF::BoundedIntersection)
                 {
-                    painter->setPen(QPen(QColor(160, 160, 160), 4));
+                    painter->setPen(QPen(QColor(160, 160, 160), pen().width() + 1));
                     painter->drawLine(pt, pt2);
                     drawLineGap(painter, line1, pt);
                     drawLineGap(painter, line1, pt2);
@@ -1282,4 +1256,69 @@ void DiagramInterconnection::drawOverlapGraphics(QPainter* painter)
             }
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: DiagramInterconnection::calculateBusWidth()
+//-----------------------------------------------------------------------------
+int DiagramInterconnection::calculateBusWidth() const
+{
+    int totalWidth = 0;
+
+    foreach (QSharedPointer<General::PortMap> portMap1, endPoint1_->getBusInterface()->getPortMaps())
+    {
+        // Find the port map with the same logical port name from the other end point's port map.
+        QSharedPointer<General::PortMap> portMap2;
+
+        foreach (QSharedPointer<General::PortMap> portMap, endPoint2_->getBusInterface()->getPortMaps())
+        {
+            if (portMap->logicalPort_ == portMap1->logicalPort_)
+            {
+                portMap2 = portMap;
+            }
+        }
+
+        if (portMap2 == 0)
+        {
+            continue;
+        }
+
+        Port* port1 = endPoint1_->ownerComponent()->getPort(portMap1->physicalPort_);
+        Port* port2 = endPoint2_->ownerComponent()->getPort(portMap2->physicalPort_);
+
+        if (port1 == 0 || port2 == 0)
+        {
+            // TODO: Error handling.
+            continue;
+        }
+
+        // Calculate the intersection of the port bounds and add it to the total width.
+        General::PortAlignment align =
+            General::calculatePortAlignment(portMap1.data(), port1->getLeftBound(), port1->getRightBound(),
+            portMap2.data(), port2->getLeftBound(), port2->getRightBound());
+
+        int width = std::min(align.port1Left_, align.port2Left_) -
+                    std::max(align.port1Right_, align.port2Right_) + 1;
+        totalWidth += width;
+    }
+
+    return totalWidth;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DiagramInterconnection::isBus()
+//-----------------------------------------------------------------------------
+bool DiagramInterconnection::isBus() const
+{
+    return endPoint1_->isBus();
+}
+
+//-----------------------------------------------------------------------------
+// Function: DiagramInterconnection::setLineWidth()
+//-----------------------------------------------------------------------------
+void DiagramInterconnection::setLineWidth(int width)
+{
+    QPen newPen = pen();
+    newPen.setWidth(width);
+    setPen(newPen);
 }

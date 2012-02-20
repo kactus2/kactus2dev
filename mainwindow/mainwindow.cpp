@@ -63,6 +63,7 @@
 #include <ConfigurationEditor/configurationeditor.h>
 #include <InterfaceEditor/interfaceeditor.h>
 #include <ConnectionEditor/connectioneditor.h>
+#include <AdHocEditor/AdHocEditor.h>
 
 #include <QCoreApplication>
 #include <QSettings>
@@ -83,69 +84,72 @@
 
 class LibraryItem;
 
-MainWindow::MainWindow(QWidget *parent): 
-QMainWindow(parent),
-libraryHandler_(0),
-libraryDock_(0),
-designTabs_(0),  
-dialer_(0),
-previewBox_(0),
-previewDock_(0),
-console_(0),
-consoleDock_(0),
-instanceEditor_(0),
-instanceDock_(0),
-configurationEditor_(0),
-configurationDock_(0),
-interfaceEditor_(0),
-interfaceDock_(0),
-connectionEditor_(0),
-connectionDock_(0),
-actNew_(0),
-actSave_(0),
-actSaveAs_(0),
-actPrint_(0), 
-editGroup_(0),
-actUndo_(0), 
-actRedo_(0),
-actLibrarySearch_(0), 
-actCheckIntegrity_(0),
-hwDesignGroup_(0),
-actAddColumn_(0), 
-actGenVHDL_(0), 
-actGenModelSim_(0),
-actGenQuartus_(0), 
-actGenDocumentation_(0),
-diagramToolsGroup_(0), 
-actToolSelect_(0), 
-actToolConnect_(0),
-actToolInterface_(0),
-actToolDraft_(0),
-actToolToggleOffPage_(0),
-actZoomIn_(0),
-actZoomOut_(0), 
-actZoomOriginal_(0), 
-actFitInView_(0),
-actVisibleDocks_(0),
-actVisibilityControl_(0),
-actWorkspaces_(0),
-actProtect_(0), 
-actSettings_(0),
-actAbout_(0), 
-actExit_(0),
-showOutputAction_(0),
-showPreviewAction_(0),
-showLibraryAction_(0),
-showConfigurationAction_(0),
-showConnectionAction_(0),
-showInterfaceAction_(0),
-showInstanceAction_(0),
-windowsMenu_(this),
-visibilityMenu_(this),
-workspaceMenu_(this),
-curWorkspaceName_("Default"),
-visibilities_() {
-
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent),
+      libraryHandler_(0),
+      libraryDock_(0),
+      designTabs_(0),  
+      dialer_(0),
+      previewBox_(0),
+      previewDock_(0),
+      console_(0),
+      consoleDock_(0),
+      instanceEditor_(0),
+      instanceDock_(0),
+      configurationEditor_(0),
+      configurationDock_(0),
+      interfaceEditor_(0),
+      interfaceDock_(0),
+      adHocEditor_(0),
+      adHocDock_(0),
+      connectionEditor_(0),
+      connectionDock_(0),
+      actNew_(0),
+      actSave_(0),
+      actSaveAs_(0),
+      actPrint_(0), 
+      editGroup_(0),
+      actUndo_(0), 
+      actRedo_(0),
+      actLibrarySearch_(0), 
+      actCheckIntegrity_(0),
+      hwDesignGroup_(0),
+      actAddColumn_(0), 
+      actGenVHDL_(0), 
+      actGenModelSim_(0),
+      actGenQuartus_(0), 
+      actGenDocumentation_(0),
+      diagramToolsGroup_(0), 
+      actToolSelect_(0), 
+      actToolConnect_(0),
+      actToolInterface_(0),
+      actToolDraft_(0),
+      actToolToggleOffPage_(0),
+      actZoomIn_(0),
+      actZoomOut_(0), 
+      actZoomOriginal_(0), 
+      actFitInView_(0),
+      actVisibleDocks_(0),
+      actVisibilityControl_(0),
+      actWorkspaces_(0),
+      actProtect_(0), 
+      actSettings_(0),
+      actAbout_(0), 
+      actExit_(0),
+      showOutputAction_(0),
+      showPreviewAction_(0),
+      showLibraryAction_(0),
+      showConfigurationAction_(0),
+      showConnectionAction_(0),
+      showInterfaceAction_(0),
+      showInstanceAction_(0),
+      showAdHocAction_(0),
+      windowsMenu_(this),
+      visibilityMenu_(this),
+      workspaceMenu_(this),
+      curWorkspaceName_("Default"),
+      visibilities_()
+{
 	// set the identification tags for the application
 	QCoreApplication::setOrganizationDomain(tr("tut.fi"));
 	QCoreApplication::setOrganizationName(tr("TUT"));
@@ -167,6 +171,7 @@ visibilities_() {
 	setupDrawBoard();
 	setupLibraryDock();
 	setupInstanceEditor();
+    setupAdHocVisibilityEditor();
 	setupConfigurationEditor();
 	setupInterfaceEditor();
 	setupConnectionEditor();
@@ -179,7 +184,7 @@ visibilities_() {
 
 	// don't display empty editors
 	updateWindows(TabDocument::OUTPUTWINDOW | TabDocument::LIBRARYWINDOW | 
-		TabDocument::PREVIEWWINDOW);
+		          TabDocument::PREVIEWWINDOW);
 
 	setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
 }
@@ -673,6 +678,14 @@ void MainWindow::setupActions() {
 		this, SLOT(onInstanceAction(bool)), Qt::UniqueConnection);
 	connect(instanceDock_->toggleViewAction(), SIGNAL(toggled(bool)),
 		showInstanceAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+    // Action to show/hide the ad-hoc visibility editor.
+    showAdHocAction_ = new QAction(tr("Ad-hoc Visibility Editor"), this);
+    showAdHocAction_->setCheckable(true);
+    showAdHocAction_->setChecked(true);
+    connect(showAdHocAction_, SIGNAL(toggled(bool)), this, SLOT(onAdHocAction(bool)), Qt::UniqueConnection);
+    connect(adHocDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+            showAdHocAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 	
 	setupMenus();
 }
@@ -758,6 +771,10 @@ void MainWindow::loadWorkspace(QString const& workspaceName)
     const bool instanceVisible = settings.value("InstanceVisibility", true).toBool();
     visibilities_.showInstance_ = instanceVisible;
     showInstanceAction_->setChecked(instanceVisible);
+
+    const bool adHocVisible = settings.value("AdHocVisibility", true).toBool();
+    visibilities_.showAdHocVisibility = adHocVisible;
+    showAdHocAction_->setChecked(adHocVisible);
 
     const bool interfaceVisible = settings.value("InterfaceVisibility", true).toBool();
     visibilities_.showInterface_ = interfaceVisible;
@@ -1024,8 +1041,23 @@ void MainWindow::setupInstanceEditor() {
 		this, SLOT(onDesignChanged()), Qt::UniqueConnection);
 }
 
-void MainWindow::setupInterfaceEditor() {
+void MainWindow::setupAdHocVisibilityEditor()
+{
+    adHocDock_ = new QDockWidget(tr("Ad-hoc Visibility"), this);
+    adHocDock_->setObjectName(tr("Ad-hoc Visibility"));
+    adHocDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    adHocDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
 
+    adHocEditor_ = new AdHocEditor(adHocDock_);
+    adHocDock_->setWidget(adHocEditor_);
+    addDockWidget(Qt::RightDockWidgetArea, adHocDock_);
+
+    connect(adHocEditor_, SIGNAL(contentChanged()),
+            this, SLOT(onDesignChanged()), Qt::UniqueConnection);
+}
+
+void MainWindow::setupInterfaceEditor()
+{
 	interfaceDock_ = new QDockWidget(tr("Interface Editor"), this);
 	interfaceDock_->setObjectName(tr("Interface Editor"));
 	interfaceDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
@@ -1034,10 +1066,10 @@ void MainWindow::setupInterfaceEditor() {
 	interfaceEditor_ = new InterfaceEditor(interfaceDock_, libraryHandler_);
 	interfaceDock_->setWidget(interfaceEditor_);
 	addDockWidget(Qt::RightDockWidgetArea, interfaceDock_);
-
 }
 
-void MainWindow::setupConnectionEditor() {
+void MainWindow::setupConnectionEditor()
+{
 	connectionDock_ = new QDockWidget(tr("Connection Editor"), this);
 	connectionDock_->setObjectName(tr("Connection Editor"));
 	connectionDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
@@ -1065,8 +1097,9 @@ void MainWindow::onDesignChanged() {
 	}
 }
 
-void MainWindow::onClearItemSelection() {
-
+void MainWindow::onClearItemSelection()
+{
+    adHocEditor_->clear();
 	instanceEditor_->clear();
 	interfaceEditor_->clear();
 	connectionEditor_->clear();
@@ -1078,8 +1111,9 @@ void MainWindow::onComponentSelected( ComponentItem* component ) {
 	connectionEditor_->clear();
 	interfaceEditor_->clear();
 
-	// update the instance editor
+	// Update the instance and ad-hoc visibility editors.
 	instanceEditor_->setComponent(component);
+    adHocEditor_->setComponent(component);
 
 	if (component->componentModel()->getVlnv()->isValid())
 	{
@@ -1109,6 +1143,7 @@ void MainWindow::onPortSelected( DiagramPort* port ) {
 
 	connectionEditor_->clear();
 	instanceEditor_->clear();
+    adHocEditor_->clear();
 	interfaceEditor_->setInterface(port);
 }
 
@@ -1117,6 +1152,7 @@ void MainWindow::onInterfaceSelected( DiagramInterface* interface ) {
 
 	connectionEditor_->clear();
 	instanceEditor_->clear();
+    adHocEditor_->clear();
 	interfaceEditor_->setInterface(interface);
 }
 
@@ -1124,6 +1160,7 @@ void MainWindow::onConnectionSelected( DiagramInterconnection* connection ) {
 	Q_ASSERT(connection);
 
 	instanceEditor_->clear();
+    adHocEditor_->clear();
 	interfaceEditor_->clear();
 	connectionEditor_->setConnection(connection);
 }
@@ -1591,6 +1628,7 @@ void MainWindow::onTabChanged(int index)
 	else {
 		configurationEditor_->clear();
 		instanceEditor_->clear();
+        adHocEditor_->clear();
 		interfaceEditor_->clear();
 		connectionEditor_->clear();
 	}
@@ -1644,6 +1682,9 @@ void MainWindow::closeEvent(QCloseEvent* event)
 	// Action to show/hide the instance editor.
 	disconnect(showInstanceAction_, SIGNAL(toggled(bool)),
 		this, SLOT(onInstanceAction(bool)));
+
+    // Disconnect the action to show/hide the ad-hoc visibility editor.
+    disconnect(showAdHocAction_, SIGNAL(toggled(bool)), this, SLOT(onAdHocAction(bool)));
 
 	// Go through all tab documents and ask the user what to do if they are not saved.
 	while (designTabs_->count() > 0)
@@ -2487,6 +2528,7 @@ void MainWindow::changeProtection(bool locked)
 
 	// clear instance editor because the current instance is no longer valid
 	instanceEditor_->clear();
+    adHocEditor_->clear();
 
 	onProtectionChanged(locked);
 
@@ -2685,6 +2727,7 @@ void MainWindow::onConnectionAction( bool show ) {
 
 	// if the connection window is supported in the current window
 	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+
 	if (doc && doc->getSupportedWindows() & TabDocument::CONNECTIONWINDOW) {
 		visibilities_.showConnection_ = show;
 	}
@@ -2695,9 +2738,21 @@ void MainWindow::onInterfaceAction( bool show ) {
 
 	// if the interface window is supported in the current window
 	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+
 	if (doc && doc->getSupportedWindows() & TabDocument::INTERFACEWINDOW) {
 		visibilities_.showInterface_ = show;
 	}
+}
+
+void MainWindow::onAdHocAction( bool show ) {
+    adHocDock_->setVisible(show);
+
+    // if the instance window is supported in the current window
+    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+
+    if (doc && doc->getSupportedWindows() & TabDocument::ADHOC_WINDOW) {
+        visibilities_.showAdHocVisibility = show;
+    }
 }
 
 void MainWindow::onInstanceAction( bool show ) {
@@ -2705,6 +2760,7 @@ void MainWindow::onInstanceAction( bool show ) {
 
 	// if the instance window is supported in the current window
 	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+
 	if (doc && doc->getSupportedWindows() & TabDocument::INSTANCEWINDOW) {
 		visibilities_.showInstance_ = show;
 	}
@@ -2774,6 +2830,15 @@ void MainWindow::updateWindows( unsigned int supportedWindows ) {
 		windowsMenu_.removeAction(showInstanceAction_);
 		instanceDock_->hide();
 	}
+
+    if (supportedWindows & TabDocument::ADHOC_WINDOW) {
+        windowsMenu_.addAction(showAdHocAction_);
+        adHocDock_->setVisible(visibilities_.showAdHocVisibility);
+    }
+    else {
+        windowsMenu_.removeAction(showAdHocAction_);
+        adHocDock_->hide();
+    }
 }
 
 void MainWindow::hideEvent( QHideEvent* event ) {
@@ -2815,9 +2880,13 @@ void MainWindow::hideEvent( QHideEvent* event ) {
 
 	// Action to show/hide the instance editor.
 	disconnect(showInstanceAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onInstanceAction(bool)));
+		       this, SLOT(onInstanceAction(bool)));
 	disconnect(instanceDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showInstanceAction_, SLOT(setChecked(bool)));
+		       showInstanceAction_, SLOT(setChecked(bool)));
+
+    // Action to show/hide the instance editor.
+    disconnect(showAdHocAction_, SIGNAL(toggled(bool)), this, SLOT(onAdHocAction(bool)));
+    disconnect(adHocDock_->toggleViewAction(), SIGNAL(toggled(bool)), showAdHocAction_, SLOT(setChecked(bool)));
 
 	QMainWindow::hideEvent(event);
 }
@@ -2865,6 +2934,11 @@ void MainWindow::showEvent( QShowEvent* event ) {
 		this, SLOT(onInstanceAction(bool)), Qt::UniqueConnection);
 	connect(instanceDock_->toggleViewAction(), SIGNAL(toggled(bool)),
 		showInstanceAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+    // Action to show/hide the ad-hoc visibility editor.
+    connect(showAdHocAction_, SIGNAL(toggled(bool)), this, SLOT(onAdHocAction(bool)), Qt::UniqueConnection);
+    connect(adHocDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+            showAdHocAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 
 	QMainWindow::showEvent(event);
 }

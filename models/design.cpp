@@ -178,6 +178,24 @@ void Design::write(QFile& file)
 
 			xmlWriter.writeEndElement(); // kactus2:portPositions
 
+            // Write the port ad-hoc visibilities.
+            QMapIterator<QString, bool> itrAdHoc(inst.portAdHocVisibilities);
+            xmlWriter.writeStartElement("kactus2:adHocVisibilities");
+
+            while (itrAdHoc.hasNext())
+            {
+                itrAdHoc.next();
+
+                if (itrAdHoc.value())
+                {
+                    xmlWriter.writeStartElement("kactus2:adHocVisible");
+                    xmlWriter.writeAttribute("portName", itrAdHoc.key());
+                    xmlWriter.writeEndElement();
+                }
+            }
+
+            xmlWriter.writeEndElement(); // kactus2:adHocVisibilities
+
 			// Write the MCAPI node ID if specified.
 			if (inst.mcapiNodeID != -1)
 			{
@@ -737,7 +755,8 @@ Design::ColumnDesc& Design::ColumnDesc::operator=( const ColumnDesc& other ) {
 Design::ComponentInstance::ComponentInstance(
     QDomNode& componentInstanceNode)
     : instanceName(), displayName(), description(), componentRef(),
-      configurableElementValues(), portPositions(), mcapiNodeID(-1), endpointsExpanded(false), imported(false)
+      configurableElementValues(), portPositions(), portAdHocVisibilities(),
+      mcapiNodeID(-1), endpointsExpanded(false), imported(false)
 {
     QDomNodeList nodes = componentInstanceNode.childNodes();
     for (int i = 0; i < nodes.size(); i++) {
@@ -762,7 +781,8 @@ Design::ComponentInstance::ComponentInstance(
                     attributes.namedItem("spirit:referenceId").nodeValue();
                 configurableElementValues.insert(reference, value);
             }
-        } else if (node.nodeName() == "spirit:vendorExtensions") {
+        } else if (node.nodeName() == "spirit:vendorExtensions")
+        {
             for (int i = 0; i < node.childNodes().size(); ++i)
             {
                 QDomNode childNode = node.childNodes().at(i);
@@ -776,6 +796,10 @@ Design::ComponentInstance::ComponentInstance(
                 else if (childNode.nodeName() == "kactus2:portPositions")
                 {
                     parsePortPositions(childNode);
+                }
+                else if (childNode.nodeName() == "kactus2:adHocVisibilities")
+                {
+                    parseAdHocVisibilities(childNode);
                 }
                 else if (childNode.nodeName() == "kactus2:mcapiNodeId")
                 {
@@ -799,7 +823,7 @@ Design::ComponentInstance::ComponentInstance(
     VLNV const& componentRef, QPointF const& position)
     : instanceName(instanceName), displayName(displayName),
       description(description), componentRef(componentRef),
-      configurableElementValues(), position(position), mcapiNodeID(-1),
+      configurableElementValues(), position(position), portAdHocVisibilities(), mcapiNodeID(-1),
       endpointsExpanded(false), imported(false)
 {
 }
@@ -812,6 +836,7 @@ componentRef(other.componentRef),
 configurableElementValues(other.configurableElementValues),
 position(other.position),
 portPositions(other.portPositions),
+portAdHocVisibilities(other.portAdHocVisibilities),
 mcapiNodeID(other.mcapiNodeID), endpointsExpanded(other.endpointsExpanded), imported(other.imported) {
 }
 
@@ -824,6 +849,7 @@ Design::ComponentInstance& Design::ComponentInstance::operator=( const Component
 		configurableElementValues = other.configurableElementValues;
 		position = other.position;
 		portPositions = other.portPositions;
+        portAdHocVisibilities = other.portAdHocVisibilities;
         mcapiNodeID = other.mcapiNodeID;
         endpointsExpanded = other.endpointsExpanded;
         imported = other.imported;
@@ -854,6 +880,23 @@ void Design::ComponentInstance::parsePortPositions(QDomNode& node)
             }
 
             portPositions[name] = pos;
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Design::ComponentInstance::parseAdHocVisibilities()
+//-----------------------------------------------------------------------------
+void Design::ComponentInstance::parseAdHocVisibilities(QDomNode& node)
+{
+    for (int i = 0; i < node.childNodes().size(); ++i)
+    {
+        QDomNode childNode = node.childNodes().at(i);
+
+        if (childNode.nodeName() == "kactus2:adHocVisible")
+        {
+            QString name = childNode.attributes().namedItem("portName").nodeValue();
+            portAdHocVisibilities[name] = true;
         }
     }
 }

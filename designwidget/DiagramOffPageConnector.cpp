@@ -96,7 +96,7 @@ void DiagramOffPageConnector::updateInterface()
 {
     // Retrieve the correct brush from the parent diagram port.
     // Set the port black if it is temporary.
-    if (!getBusInterface()->getBusType().isValid())
+    if (getBusInterface() == 0 || !getBusInterface()->getBusType().isValid())
     {
         setBrush(QBrush(Qt::black));
     }
@@ -237,7 +237,6 @@ void DiagramOffPageConnector::setTypes(VLNV const& busType, VLNV const& absType,
 void DiagramOffPageConnector::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     DiagramConnectionEndPoint::mousePressEvent(event);
-    // TODO: Show interconnections.
 }
 
 //-----------------------------------------------------------------------------
@@ -307,4 +306,20 @@ void DiagramOffPageConnector::setDirection(QVector2D const& dir)
 QVector2D const& DiagramOffPageConnector::getDirection() const
 {
     return parent_->getDirection();
+}
+
+//-----------------------------------------------------------------------------
+// Function: DiagramOffPageConnector::isBus()
+//-----------------------------------------------------------------------------
+bool DiagramOffPageConnector::isBus() const
+{
+    return parent_->isBus();
+}
+
+//-----------------------------------------------------------------------------
+// Function: DiagramOffPageConnector::getPort()
+//-----------------------------------------------------------------------------
+QSharedPointer<Port> DiagramOffPageConnector::getPort() const
+{
+    return parent_->getPort();
 }

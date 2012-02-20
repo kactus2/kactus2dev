@@ -5,6 +5,7 @@
 
 #include "diagramcomponent.h"
 #include "diagramport.h"
+#include "DiagramAdHocPort.h"
 #include "diagraminterconnection.h"
 #include "blockdiagram.h"
 #include "DiagramMoveCommands.h"
@@ -33,10 +34,21 @@ DiagramComponent::DiagramComponent(LibraryInterface* lh_,
 								   const QString &displayName,
                                    const QString &description,
                                    const QMap<QString, QString> &configurableElementValues,
-                                   QGraphicsItem *parent):
-ComponentItem(QRectF(-GridSize * 8, 0, GridSize * 8 * 2, 40), component, instanceName, displayName,
-              description, configurableElementValues, parent),
-lh_(lh_), hierIcon_(0), oldColumn_(0), leftPorts_(), rightPorts_(), connUpdateDisabled_(false)
+                                   QMap<QString, bool> const& portAdHocVisibilities,
+                                   QGraphicsItem *parent)
+    : ComponentItem(QRectF(-GridSize * 8, 0, GridSize * 8 * 2, 40),
+                    component,
+                    instanceName,
+                    displayName,
+                    description,
+                    configurableElementValues, parent),
+      lh_(lh_),
+      hierIcon_(0),
+      oldColumn_(0),
+      leftPorts_(),
+      rightPorts_(),
+      connUpdateDisabled_(false),
+      portAdHocVisibilities_()
 {
     setFlag(ItemIsMovable);
     
@@ -82,6 +94,38 @@ lh_(lh_), hierIcon_(0), oldColumn_(0), leftPorts_(), rightPorts_(), connUpdateDi
 
         onAddPort(port, right);
         right = !right;
+    }
+
+    foreach (QSharedPointer<Port> adhocPort, componentModel()->getPorts().values())
+    {
+        portAdHocVisibilities_.insert(adhocPort->getName(), adhocPort->isAdHocVisible());
+
+        if (!adhocPort->isAdHocVisible())
+        {
+            continue;
+        }
+
+        DiagramAdHocPort *port = new DiagramAdHocPort(adhocPort, lh_, this);
+
+        if (right) {
+            port->setPos(QPointF(rect().width(), rightY) + rect().topLeft());
+            rightY += portSpacing;
+        } else {
+            port->setPos(QPointF(0, leftY) + rect().topLeft());
+            leftY += portSpacing;
+        }
+
+        onAddPort(port, right);
+        right = !right;
+    }
+
+    // Update the port ad-hoc visibilities.
+    QMapIterator<QString, bool> iterAdHoc(portAdHocVisibilities);
+
+    while (iterAdHoc.hasNext())
+    {
+        iterAdHoc.next();
+        portAdHocVisibilities_.insert(iterAdHoc.key(), iterAdHoc.value());
     }
 
     updateSize();
@@ -255,7 +299,7 @@ void DiagramComponent::mousePressEvent(QGraphicsSceneMouseEvent *event)
 //-----------------------------------------------------------------------------
 // Function: onAddPort()
 //-----------------------------------------------------------------------------
-void DiagramComponent::onAddPort(DiagramPort* port, bool right)
+void DiagramComponent::onAddPort(DiagramConnectionEndPoint* port, bool right)
 {
     if (right)
     {
@@ -274,7 +318,7 @@ void DiagramComponent::onAddPort(DiagramPort* port, bool right)
 //-----------------------------------------------------------------------------
 // Function: onMovePort()
 //-----------------------------------------------------------------------------
-void DiagramComponent::onMovePort(DiagramPort* port)
+void DiagramComponent::onMovePort(DiagramConnectionEndPoint* port)
 {
     // Remove the port from the stacks (this simplifies code).
     leftPorts_.removeAll(port);
@@ -429,4 +473,29 @@ void DiagramComponent::removePort(DiagramPort* port)
 bool DiagramComponent::isConnectionUpdateDisabled() const
 {
     return connUpdateDisabled_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DiagramComponent::setPortAdHocVisible()
+//-----------------------------------------------------------------------------
+void DiagramComponent::setPortAdHocVisible(QString const& portName, bool visible)
+{
+    portAdHocVisibilities_.insert(portName, visible);
+    emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: DiagramComponent::isPortAdHocVisible()
+//-----------------------------------------------------------------------------
+bool DiagramComponent::isPortAdHocVisible(QString const& portName) const
+{
+    return portAdHocVisibilities_.value(portName, false);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DiagramComponent::getPortAdHocVisibilities()
+//-----------------------------------------------------------------------------
+QMap<QString, bool> const& DiagramComponent::getPortAdHocVisibilities() const
+{
+    return portAdHocVisibilities_;
 }

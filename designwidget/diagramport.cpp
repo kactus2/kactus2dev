@@ -222,6 +222,12 @@ void DiagramPort::onDisconnect(DiagramConnectionEndPoint const*)
 //-----------------------------------------------------------------------------
 bool DiagramPort::canConnect(DiagramConnectionEndPoint const* other) const
 {
+    // This end point requires a bus interface connection.
+    if (!other->isBus())
+    {
+        return false;
+    }
+
     QSharedPointer<BusInterface> otherBusIf = other->getBusInterface();
 
     // If the other end point is hierarchical, we can connect to it if the interface mode
@@ -441,9 +447,9 @@ void DiagramPort::mousePressEvent(QGraphicsSceneMouseEvent *event)
     // Save old port positions for all ports in the parent component.
     foreach (QGraphicsItem* item, parentItem()->childItems())
     {
-        if (item->type() == DiagramPort::Type && item != this)
+        if (dynamic_cast<DiagramConnectionEndPoint*>(item) != 0 && item != this)
         {
-            DiagramPort* port = static_cast<DiagramPort*>(item);
+            DiagramConnectionEndPoint* port = static_cast<DiagramConnectionEndPoint*>(item);
             oldPortPositions_.insert(port, port->pos());
         }
     }
@@ -475,7 +481,7 @@ void DiagramPort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     }
 
     // Determine if the other ports changed their position and create undo commands for them.
-    QMap<DiagramPort*, QPointF>::iterator cur = oldPortPositions_.begin();
+    QMap<DiagramConnectionEndPoint*, QPointF>::iterator cur = oldPortPositions_.begin();
 
     while (cur != oldPortPositions_.end())
     {
@@ -644,4 +650,20 @@ void DiagramPort::setDescription( const QString& description ) {
 DiagramConnectionEndPoint* DiagramPort::getOffPageConnector()
 {
     return offPageConnector_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DiagramPort::isBus()
+//-----------------------------------------------------------------------------
+bool DiagramPort::isBus() const
+{
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DiagramPort::getPort()
+//-----------------------------------------------------------------------------
+QSharedPointer<Port> DiagramPort::getPort() const
+{
+    return QSharedPointer<Port>();
 }

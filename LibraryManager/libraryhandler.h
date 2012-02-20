@@ -545,10 +545,10 @@ private:
     QSharedPointer<LibrarySearchWidget> searchWidget_;
 
 	//! \brief The widget that contains the GUI items for the tree tab
-    QSharedPointer<LibraryTreeWidget> treeWidget_;
+    LibraryTreeWidget* treeWidget_;
 
 	//! \brief The widget that contains the GUI items for the hierarchy tab
-	QSharedPointer<HierarchyWidget> hierarchyWidget_;
+	HierarchyWidget* hierarchyWidget_;
 
 	/*! \brief Contains the library objects that have been parsed.
 	 *

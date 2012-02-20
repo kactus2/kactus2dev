@@ -71,7 +71,7 @@ editProvider_() {
 
 	// update the supported windows 
 	supportedWindows_ = (supportedWindows_ | CONFIGURATIONWINDOW |
-		CONNECTIONWINDOW | INTERFACEWINDOW |INSTANCEWINDOW);
+		CONNECTIONWINDOW | INTERFACEWINDOW |INSTANCEWINDOW | ADHOC_WINDOW);
 
     lh_ = lh;
     editProvider_ = QSharedPointer<GenericEditProvider>(new GenericEditProvider(EDIT_HISTORY_SIZE));

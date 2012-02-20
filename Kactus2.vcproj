@@ -48,7 +48,7 @@
 				AdditionalOptions="-Zm200 -w34100 -w34189 /MP2"
 				Optimization="4"
 				AdditionalIncludeDirectories="&quot;$(QTDIR)\include\QtCore&quot;;&quot;$(QTDIR)\include\QtGui&quot;;&quot;$(QTDIR)\include\QtXml&quot;;&quot;$(QTDIR)\include\QtXmlPatterns&quot;;&quot;$(QTDIR)\include&quot;;&quot;.&quot;;&quot;$(QTDIR)\include\ActiveQt&quot;;&quot;debug&quot;;&quot;.\GeneratedFiles&quot;;&quot;.\vhdlGenerator&quot;;&quot;.\common\widgets\listManager&quot;;&quot;.\common\widgets\dirLineEdit&quot;;&quot;.\IPXactWrapper\ComponentEditor\fileSet&quot;;&quot;.\IPXactWrapper\ComponentEditor\channels&quot;;&quot;.\IPXactWrapper\ComponentEditor\views&quot;;&quot;.\common\delegates&quot;;&quot;.\common\widgets\attributeBox&quot;;&quot;.\common\views\EditableTableView&quot;;&quot;.\common\views\EditableListView&quot;;&quot;.\common\widgets\LibraryPathSelector&quot;;&quot;.\common\widgets\LibraryPathEditor&quot;;&quot;.\common\validators\LibraryPathValidator&quot;;&quot;.\common\widgets\EditorDockWidget&quot;;&quot;.\common\widgets\EditorScrollArea&quot;;&quot;.\common\widgets\ScanProgressWidget&quot;"
-				PreprocessorDefinitions="_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,QT_DLL,QT_XMLPATTERNS_LIB,QT_XML_LIB,QT_GUI_LIB,QT_CORE_LIB,QT_HAVE_MMX,QT_HAVE_3DNOW,QT_HAVE_SSE,QT_HAVE_MMXEXT,QT_HAVE_SSE2,QT_THREAD_SUPPORT"
+				PreprocessorDefinitions="_WINDOWS;UNICODE;WIN32;QT_LARGEFILE_SUPPORT;QT_DLL;QT_XMLPATTERNS_LIB;QT_XML_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_HAVE_MMX;QT_HAVE_3DNOW;QT_HAVE_SSE;QT_HAVE_MMXEXT;QT_HAVE_SSE2;QT_THREAD_SUPPORT"
 				GeneratePreprocessedFile="0"
 				ExceptionHandling="1"
 				RuntimeLibrary="3"
@@ -143,7 +143,7 @@
 				AdditionalOptions="-Zm200 -w34100 -w34189 /MP2"
 				Optimization="2"
 				AdditionalIncludeDirectories="&quot;$(QTDIR)\include\QtCore&quot;;&quot;$(QTDIR)\include\QtGui&quot;;&quot;$(QTDIR)\include\QtXml&quot;;&quot;$(QTDIR)\include\QtXmlPatterns&quot;;&quot;$(QTDIR)\include&quot;;&quot;.&quot;;&quot;$(QTDIR)\include\ActiveQt&quot;;&quot;release&quot;;&quot;.\GeneratedFiles&quot;;&quot;.\vhdlGenerator&quot;;&quot;.\common\widgets\listManager&quot;;&quot;.\common\widgets\dirLineEdit&quot;;&quot;.\IPXactWrapper\ComponentEditor\fileSet&quot;;&quot;.\IPXactWrapper\ComponentEditor\channels&quot;;&quot;.\IPXactWrapper\ComponentEditor\views&quot;;&quot;.\common\delegates&quot;;&quot;.\common\widgets\attributeBox&quot;;&quot;.\common\views\EditableTableView&quot;;&quot;.\common\views\EditableListView&quot;;&quot;.\common\widgets\LibraryPathSelector&quot;;&quot;.\common\widgets\LibraryPathEditor&quot;;&quot;.\common\validators\LibraryPathValidator&quot;;&quot;.\common\widgets\EditorDockWidget&quot;;&quot;.\common\widgets\EditorScrollArea&quot;;&quot;.\common\widgets\ScanProgressWidget&quot;"
-				PreprocessorDefinitions="QT_NO_DEBUG,NDEBUG,_WINDOWS,UNICODE,WIN32,QT_LARGEFILE_SUPPORT,QT_DLL,QT_NO_DEBUG,QT_XMLPATTERNS_LIB,QT_XML_LIB,QT_GUI_LIB,QT_CORE_LIB,QT_HAVE_MMX,QT_HAVE_3DNOW,QT_HAVE_SSE,QT_HAVE_MMXEXT,QT_HAVE_SSE2,QT_THREAD_SUPPORT,NDEBUG"
+				PreprocessorDefinitions="QT_NO_DEBUG;NDEBUG;_WINDOWS;UNICODE;WIN32;QT_LARGEFILE_SUPPORT;QT_DLL;QT_NO_DEBUG;QT_XMLPATTERNS_LIB;QT_XML_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_HAVE_MMX;QT_HAVE_3DNOW;QT_HAVE_SSE;QT_HAVE_MMXEXT;QT_HAVE_SSE2;QT_THREAD_SUPPORT;NDEBUG"
 				GeneratePreprocessedFile="0"
 				ExceptionHandling="1"
 				RuntimeLibrary="2"
@@ -659,6 +659,10 @@
 				</File>
 				<File
 					RelativePath=".\designwidget\DiagramAddCommands.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\designwidget\DiagramAdHocPort.cpp"
 					>
 				</File>
 				<File
@@ -1900,6 +1904,100 @@
 				<File
 					RelativePath=".\GCF\MenuStrip.cpp"
 					>
+				</File>
+			</Filter>
+			<Filter
+				Name="AdHocEditor"
+				>
+				<File
+					RelativePath=".\AdHocEditor\AdHocDelegate.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AdHocEditor\AdHocDelegate.h"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputFileName)..."
+							CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;  &quot;$(InputPath)&quot; -o &quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT &quot;-I$(QTDIR)\include\QtCore&quot; &quot;-I$(QTDIR)\include\QtGui&quot; &quot;-I$(QTDIR)\include\QtXml&quot; &quot;-I$(QTDIR)\include\QtXmlPatterns&quot; &quot;-I$(QTDIR)\include&quot; &quot;-I.&quot; &quot;-I$(QTDIR)\include\ActiveQt&quot; &quot;-I.\debug&quot; &quot;-I.\GeneratedFiles&quot; &quot;-I.\vhdlGenerator&quot; &quot;-I.\common\widgets\listManager&quot; &quot;-I.\common\widgets\dirLineEdit&quot; &quot;-I.\IPXactWrapper\ComponentEditor\fileSet&quot; &quot;-I.\IPXactWrapper\ComponentEditor\channels&quot; &quot;-I.\IPXactWrapper\ComponentEditor\views&quot; &quot;-I.\common\delegates&quot; &quot;-I.\common\widgets\attributeBox&quot; &quot;-I.\common\views\EditableTableView&quot; &quot;-I.\common\views\EditableListView&quot; &quot;-I.\common\widgets\LibraryPathSelector&quot; &quot;-I.\common\widgets\LibraryPathEditor&quot; &quot;-I.\common\validators\LibraryPathValidator&quot; &quot;-I.\common\widgets\EditorDockWidget&quot; &quot;-I.\common\widgets\EditorScrollArea&quot; &quot;-I.\common\widgets\ScanProgressWidget&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
+							Outputs="&quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputFileName)..."
+							CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;  &quot;$(InputPath)&quot; -o &quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT &quot;-I$(QTDIR)\include\QtCore&quot; &quot;-I$(QTDIR)\include\QtGui&quot; &quot;-I$(QTDIR)\include\QtXml&quot; &quot;-I$(QTDIR)\include\QtXmlPatterns&quot; &quot;-I$(QTDIR)\include&quot; &quot;-I.&quot; &quot;-I$(QTDIR)\include\ActiveQt&quot; &quot;-I.\release&quot; &quot;-I.\GeneratedFiles&quot; &quot;-I.\vhdlGenerator&quot; &quot;-I.\common\widgets\listManager&quot; &quot;-I.\common\widgets\dirLineEdit&quot; &quot;-I.\IPXactWrapper\ComponentEditor\fileSet&quot; &quot;-I.\IPXactWrapper\ComponentEditor\channels&quot; &quot;-I.\IPXactWrapper\ComponentEditor\views&quot; &quot;-I.\common\delegates&quot; &quot;-I.\common\widgets\attributeBox&quot; &quot;-I.\common\views\EditableTableView&quot; &quot;-I.\common\views\EditableListView&quot; &quot;-I.\common\widgets\LibraryPathSelector&quot; &quot;-I.\common\widgets\LibraryPathEditor&quot; &quot;-I.\common\validators\LibraryPathValidator&quot; &quot;-I.\common\widgets\EditorDockWidget&quot; &quot;-I.\common\widgets\EditorScrollArea&quot; &quot;-I.\common\widgets\ScanProgressWidget&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
+							Outputs="&quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\AdHocEditor\AdHocEditor.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AdHocEditor\AdHocEditor.h"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputFileName)..."
+							CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;  &quot;$(InputPath)&quot; -o &quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT &quot;-I$(QTDIR)\include\QtCore&quot; &quot;-I$(QTDIR)\include\QtGui&quot; &quot;-I$(QTDIR)\include\QtXml&quot; &quot;-I$(QTDIR)\include\QtXmlPatterns&quot; &quot;-I$(QTDIR)\include&quot; &quot;-I.&quot; &quot;-I$(QTDIR)\include\ActiveQt&quot; &quot;-I.\debug&quot; &quot;-I.\GeneratedFiles&quot; &quot;-I.\vhdlGenerator&quot; &quot;-I.\common\widgets\listManager&quot; &quot;-I.\common\widgets\dirLineEdit&quot; &quot;-I.\IPXactWrapper\ComponentEditor\fileSet&quot; &quot;-I.\IPXactWrapper\ComponentEditor\channels&quot; &quot;-I.\IPXactWrapper\ComponentEditor\views&quot; &quot;-I.\common\delegates&quot; &quot;-I.\common\widgets\attributeBox&quot; &quot;-I.\common\views\EditableTableView&quot; &quot;-I.\common\views\EditableListView&quot; &quot;-I.\common\widgets\LibraryPathSelector&quot; &quot;-I.\common\widgets\LibraryPathEditor&quot; &quot;-I.\common\validators\LibraryPathValidator&quot; &quot;-I.\common\widgets\EditorDockWidget&quot; &quot;-I.\common\widgets\EditorScrollArea&quot; &quot;-I.\common\widgets\ScanProgressWidget&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
+							Outputs="&quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputFileName)..."
+							CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;  &quot;$(InputPath)&quot; -o &quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT &quot;-I$(QTDIR)\include\QtCore&quot; &quot;-I$(QTDIR)\include\QtGui&quot; &quot;-I$(QTDIR)\include\QtXml&quot; &quot;-I$(QTDIR)\include\QtXmlPatterns&quot; &quot;-I$(QTDIR)\include&quot; &quot;-I.&quot; &quot;-I$(QTDIR)\include\ActiveQt&quot; &quot;-I.\release&quot; &quot;-I.\GeneratedFiles&quot; &quot;-I.\vhdlGenerator&quot; &quot;-I.\common\widgets\listManager&quot; &quot;-I.\common\widgets\dirLineEdit&quot; &quot;-I.\IPXactWrapper\ComponentEditor\fileSet&quot; &quot;-I.\IPXactWrapper\ComponentEditor\channels&quot; &quot;-I.\IPXactWrapper\ComponentEditor\views&quot; &quot;-I.\common\delegates&quot; &quot;-I.\common\widgets\attributeBox&quot; &quot;-I.\common\views\EditableTableView&quot; &quot;-I.\common\views\EditableListView&quot; &quot;-I.\common\widgets\LibraryPathSelector&quot; &quot;-I.\common\widgets\LibraryPathEditor&quot; &quot;-I.\common\validators\LibraryPathValidator&quot; &quot;-I.\common\widgets\EditorDockWidget&quot; &quot;-I.\common\widgets\EditorScrollArea&quot; &quot;-I.\common\widgets\ScanProgressWidget&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
+							Outputs="&quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\AdHocEditor\AdHocModel.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AdHocEditor\AdHocModel.h"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputFileName)..."
+							CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;  &quot;$(InputPath)&quot; -o &quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT &quot;-I$(QTDIR)\include\QtCore&quot; &quot;-I$(QTDIR)\include\QtGui&quot; &quot;-I$(QTDIR)\include\QtXml&quot; &quot;-I$(QTDIR)\include\QtXmlPatterns&quot; &quot;-I$(QTDIR)\include&quot; &quot;-I.&quot; &quot;-I$(QTDIR)\include\ActiveQt&quot; &quot;-I.\debug&quot; &quot;-I.\GeneratedFiles&quot; &quot;-I.\vhdlGenerator&quot; &quot;-I.\common\widgets\listManager&quot; &quot;-I.\common\widgets\dirLineEdit&quot; &quot;-I.\IPXactWrapper\ComponentEditor\fileSet&quot; &quot;-I.\IPXactWrapper\ComponentEditor\channels&quot; &quot;-I.\IPXactWrapper\ComponentEditor\views&quot; &quot;-I.\common\delegates&quot; &quot;-I.\common\widgets\attributeBox&quot; &quot;-I.\common\views\EditableTableView&quot; &quot;-I.\common\views\EditableListView&quot; &quot;-I.\common\widgets\LibraryPathSelector&quot; &quot;-I.\common\widgets\LibraryPathEditor&quot; &quot;-I.\common\validators\LibraryPathValidator&quot; &quot;-I.\common\widgets\EditorDockWidget&quot; &quot;-I.\common\widgets\EditorScrollArea&quot; &quot;-I.\common\widgets\ScanProgressWidget&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
+							Outputs="&quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputFileName)..."
+							CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;  &quot;$(InputPath)&quot; -o &quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT &quot;-I$(QTDIR)\include\QtCore&quot; &quot;-I$(QTDIR)\include\QtGui&quot; &quot;-I$(QTDIR)\include\QtXml&quot; &quot;-I$(QTDIR)\include\QtXmlPatterns&quot; &quot;-I$(QTDIR)\include&quot; &quot;-I.&quot; &quot;-I$(QTDIR)\include\ActiveQt&quot; &quot;-I.\release&quot; &quot;-I.\GeneratedFiles&quot; &quot;-I.\vhdlGenerator&quot; &quot;-I.\common\widgets\listManager&quot; &quot;-I.\common\widgets\dirLineEdit&quot; &quot;-I.\IPXactWrapper\ComponentEditor\fileSet&quot; &quot;-I.\IPXactWrapper\ComponentEditor\channels&quot; &quot;-I.\IPXactWrapper\ComponentEditor\views&quot; &quot;-I.\common\delegates&quot; &quot;-I.\common\widgets\attributeBox&quot; &quot;-I.\common\views\EditableTableView&quot; &quot;-I.\common\views\EditableListView&quot; &quot;-I.\common\widgets\LibraryPathSelector&quot; &quot;-I.\common\widgets\LibraryPathEditor&quot; &quot;-I.\common\validators\LibraryPathValidator&quot; &quot;-I.\common\widgets\EditorDockWidget&quot; &quot;-I.\common\widgets\EditorScrollArea&quot; &quot;-I.\common\widgets\ScanProgressWidget&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
+							Outputs="&quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;"
+						/>
+					</FileConfiguration>
 				</File>
 			</Filter>
 		</Filter>
@@ -3452,6 +3550,32 @@
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputFileName)..."
 							CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;   -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT  &quot;-I$(QTDIR)\include\QtCore&quot; &quot;-I$(QTDIR)\include\QtGui&quot; &quot;-I$(QTDIR)\include\QtXml&quot; &quot;-I$(QTDIR)\include\QtXmlPatterns&quot; &quot;-I$(QTDIR)\include&quot; &quot;-I.&quot; &quot;-I$(QTDIR)\include\ActiveQt&quot; &quot;-I.\release&quot; &quot;-I.\GeneratedFiles&quot; &quot;-I.\vhdlGenerator&quot; &quot;-I.\common\widgets\listManager&quot; &quot;-I.\common\widgets\dirLineEdit&quot; &quot;-I.\IPXactWrapper\ComponentEditor\fileSet&quot; &quot;-I.\IPXactWrapper\ComponentEditor\channels&quot; &quot;-I.\IPXactWrapper\ComponentEditor\views&quot; &quot;-I.\common\delegates&quot; &quot;-I.\common\widgets\attributeBox&quot; &quot;-I.\common\views\EditableTableView&quot; &quot;-I.\common\views\EditableListView&quot; &quot;-I.\common\widgets\LibraryPathSelector&quot; &quot;-I.\common\widgets\LibraryPathEditor&quot; &quot;-I.\common\validators\LibraryPathValidator&quot; &quot;-I.\common\widgets\EditorDockWidget&quot; &quot;-I.\common\widgets\EditorScrollArea&quot; &quot;-I.\common\widgets\ScanProgressWidget&quot; &quot;.\designwidget\DiagramAddCommands.h&quot; -o &quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
+							Outputs="&quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\designwidget\DiagramAdHocPort.h"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputFileName)..."
+							CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;   -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT  &quot;-I$(QTDIR)\include\QtCore&quot; &quot;-I$(QTDIR)\include\QtGui&quot; &quot;-I$(QTDIR)\include\QtXml&quot; &quot;-I$(QTDIR)\include\QtXmlPatterns&quot; &quot;-I$(QTDIR)\include&quot; &quot;-I.&quot; &quot;-I$(QTDIR)\include\ActiveQt&quot; &quot;-I.\debug&quot; &quot;-I.\GeneratedFiles&quot; &quot;-I.\vhdlGenerator&quot; &quot;-I.\common\widgets\listManager&quot; &quot;-I.\common\widgets\dirLineEdit&quot; &quot;-I.\IPXactWrapper\ComponentEditor\fileSet&quot; &quot;-I.\IPXactWrapper\ComponentEditor\channels&quot; &quot;-I.\IPXactWrapper\ComponentEditor\views&quot; &quot;-I.\common\delegates&quot; &quot;-I.\common\widgets\attributeBox&quot; &quot;-I.\common\views\EditableTableView&quot; &quot;-I.\common\views\EditableListView&quot; &quot;-I.\common\widgets\LibraryPathSelector&quot; &quot;-I.\common\widgets\LibraryPathEditor&quot; &quot;-I.\common\validators\LibraryPathValidator&quot; &quot;-I.\common\widgets\EditorDockWidget&quot; &quot;-I.\common\widgets\EditorScrollArea&quot; &quot;-I.\common\widgets\ScanProgressWidget&quot; &quot;.\designwidget\DiagramAdHocPort.h&quot; -o &quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
+							Outputs="&quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputFileName)..."
+							CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot;   -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_XMLPATTERNS_LIB -DQT_XML_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT  &quot;-I$(QTDIR)\include\QtCore&quot; &quot;-I$(QTDIR)\include\QtGui&quot; &quot;-I$(QTDIR)\include\QtXml&quot; &quot;-I$(QTDIR)\include\QtXmlPatterns&quot; &quot;-I$(QTDIR)\include&quot; &quot;-I.&quot; &quot;-I$(QTDIR)\include\ActiveQt&quot; &quot;-I.\release&quot; &quot;-I.\GeneratedFiles&quot; &quot;-I.\vhdlGenerator&quot; &quot;-I.\common\widgets\listManager&quot; &quot;-I.\common\widgets\dirLineEdit&quot; &quot;-I.\IPXactWrapper\ComponentEditor\fileSet&quot; &quot;-I.\IPXactWrapper\ComponentEditor\channels&quot; &quot;-I.\IPXactWrapper\ComponentEditor\views&quot; &quot;-I.\common\delegates&quot; &quot;-I.\common\widgets\attributeBox&quot; &quot;-I.\common\views\EditableTableView&quot; &quot;-I.\common\views\EditableListView&quot; &quot;-I.\common\widgets\LibraryPathSelector&quot; &quot;-I.\common\widgets\LibraryPathEditor&quot; &quot;-I.\common\validators\LibraryPathValidator&quot; &quot;-I.\common\widgets\EditorDockWidget&quot; &quot;-I.\common\widgets\EditorScrollArea&quot; &quot;-I.\common\widgets\ScanProgressWidget&quot; &quot;.\designwidget\DiagramAdHocPort.h&quot; -o &quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							AdditionalDependencies="&quot;$(QTDIR)\bin\moc.exe&quot;;$(InputPath)"
 							Outputs="&quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;"
 						/>
@@ -10060,6 +10184,42 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath=".\Debug\moc_AdHocDelegate.cpp"
+					>
+					<FileConfiguration
+						Name="Release|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\Debug\moc_AdHocEditor.cpp"
+					>
+					<FileConfiguration
+						Name="Release|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\Debug\moc_AdHocModel.cpp"
+					>
+					<FileConfiguration
+						Name="Release|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
 					RelativePath=".\Debug\moc_ApiCreateDialog.cpp"
 					>
 					<FileConfiguration
@@ -10721,6 +10881,18 @@
 				</File>
 				<File
 					RelativePath=".\Debug\moc_DiagramAddCommands.cpp"
+					>
+					<FileConfiguration
+						Name="Release|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\Debug\moc_DiagramAdHocPort.cpp"
 					>
 					<FileConfiguration
 						Name="Release|Win32"
@@ -12814,6 +12986,42 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath=".\Release\moc_AdHocDelegate.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\Release\moc_AdHocEditor.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\Release\moc_AdHocModel.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
 					RelativePath=".\Release\moc_ApiCreateDialog.cpp"
 					>
 					<FileConfiguration
@@ -13475,6 +13683,18 @@
 				</File>
 				<File
 					RelativePath=".\Release\moc_DiagramAddCommands.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\Release\moc_DiagramAdHocPort.cpp"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"
@@ -15939,7 +16159,7 @@
 		/>
 		<Global
 			Name="QtVersion Win32"
-			Value="4.7.2"
+			Value="4.8.0"
 		/>
 		<Global
 			Name="RccDir"

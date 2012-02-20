@@ -353,6 +353,12 @@ void DiagramInterface::onDisconnect(DiagramConnectionEndPoint const*)
 //-----------------------------------------------------------------------------
 bool DiagramInterface::canConnect(DiagramConnectionEndPoint const* other) const
 {
+    // This end point requires a bus interface connection.
+    if (!other->isBus())
+    {
+        return false;
+    }
+
     // Two hierarchical end points cannot be connected together.
     if (other->isHierarchical())
     {
@@ -704,4 +710,20 @@ void DiagramInterface::setDescription( const QString& description ) {
 DiagramConnectionEndPoint* DiagramInterface::getOffPageConnector()
 {
     return offPageConnector_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DiagramInterface::isBus()
+//-----------------------------------------------------------------------------
+bool DiagramInterface::isBus() const
+{
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DiagramInterface::getPort()
+//-----------------------------------------------------------------------------
+QSharedPointer<Port> DiagramInterface::getPort() const
+{
+    return QSharedPointer<Port>();
 }

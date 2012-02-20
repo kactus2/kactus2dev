@@ -30,7 +30,8 @@ wire_(),
 transactional_(),
 portAccessHandle_(), 
 portAccessType_(),
-remoteEndpointName_() {
+remoteEndpointName_(),
+adHocVisible_(false) {
 
 	for (int i = 0; i < portNode.childNodes().count(); ++i) {
 		QDomNode tempNode = portNode.childNodes().at(i);
@@ -70,6 +71,10 @@ remoteEndpointName_() {
                 {
                     remoteEndpointName_ = tempNode.childNodes().at(j).firstChild().nodeValue();
                 }
+                else if (tempNode.childNodes().at(j).nodeName() == QString("kactus2:adHocVisible"))
+                {
+                    adHocVisible_ = true;
+                }
             }
         }
 	}
@@ -95,8 +100,9 @@ wire_(),
 transactional_(other.transactional_),
 portAccessHandle_(other.portAccessHandle_),
 portAccessType_(other.portAccessType_),
-remoteEndpointName_(other.remoteEndpointName_) {
-	
+remoteEndpointName_(other.remoteEndpointName_),
+adHocVisible_(other.adHocVisible_)
+{	
 	nameGroup_.name_ = name;
 
     if (other.wire_ != 0) {
@@ -114,7 +120,9 @@ wire_(),
 transactional_(),
 portAccessHandle_(other.portAccessHandle_),
 portAccessType_(other.portAccessType_),
-remoteEndpointName_(other.remoteEndpointName_) {
+remoteEndpointName_(other.remoteEndpointName_),
+adHocVisible_(other.adHocVisible_)
+{
 	
 	if (other.wire_) {
 		wire_ = QSharedPointer<Wire>(new Wire(*other.wire_));
@@ -126,7 +134,9 @@ remoteEndpointName_(other.remoteEndpointName_) {
 	}
 }
 
-
+//-----------------------------------------------------------------------------
+// Function: Port::operator=()
+//-----------------------------------------------------------------------------
 Port & Port::operator=( const Port &other ) {
 	if (this != &other) {
 		nameGroup_ = other.nameGroup_;
@@ -134,6 +144,7 @@ Port & Port::operator=( const Port &other ) {
 		portAccessHandle_ = other.portAccessHandle_;
 		portAccessType_ = other.portAccessType_;
         remoteEndpointName_ = other.remoteEndpointName_;
+        adHocVisible_ = other.adHocVisible_;
 
 		if (other.wire_) {
 			wire_ = QSharedPointer<Wire>(
@@ -152,7 +163,9 @@ Port & Port::operator=( const Port &other ) {
 	return *this;
 }
 
-
+//-----------------------------------------------------------------------------
+// Function: Port::Port()
+//-----------------------------------------------------------------------------
 Port::Port():
 nameGroup_(), 
 portType_(General::WIRE),
@@ -160,11 +173,15 @@ wire_(),
 transactional_(),
 portAccessHandle_(),
 portAccessType_(),
-remoteEndpointName_() {
+remoteEndpointName_(),
+adHocVisible_(false) {
 
 	wire_ = QSharedPointer<Wire>(new Wire());
 }
 
+//-----------------------------------------------------------------------------
+// Function: Port::Port()
+//-----------------------------------------------------------------------------
 Port::Port( const QString& name, 
 		   General::Direction direction, 
 		   int leftBound, 
@@ -176,7 +193,8 @@ portType_(General::WIRE),
 wire_(), 
 transactional_(),
 portAccessHandle_(),
-portAccessType_() {
+portAccessType_(),
+adHocVisible_(false) {
 
 	nameGroup_.name_ = name;
 
@@ -184,6 +202,9 @@ portAccessType_() {
 		rightBound, defaultValue, allLogicalDirections));
 }
 
+//-----------------------------------------------------------------------------
+// Function: Port::Port()
+//-----------------------------------------------------------------------------
 Port::Port( const QString& name,
 		   General::Direction direction, 
 		   int leftBound,
@@ -208,10 +229,17 @@ portAccessType_() {
 	wire_->setTypeDefinition(typeName, typeDefinition);
 }
 
+//-----------------------------------------------------------------------------
+// Function: ~Port()
+//-----------------------------------------------------------------------------
 Port::~Port() {
 }
 
-void Port::write(QXmlStreamWriter& writer, const QStringList& viewNames) {
+//-----------------------------------------------------------------------------
+// Function: Port::write()
+//-----------------------------------------------------------------------------
+void Port::write(QXmlStreamWriter& writer, const QStringList& viewNames)
+{
 	writer.writeStartElement("spirit:port");
 
 	// if mandatory name is missing
@@ -275,13 +303,20 @@ void Port::write(QXmlStreamWriter& writer, const QStringList& viewNames) {
 		writer.writeEndElement(); // spirit:access
 	}
 
+    writer.writeStartElement("spirit:vendorExtensions");
+
     // Write remote endpoint name if specified.
     if (!remoteEndpointName_.isEmpty())
     {
-        writer.writeStartElement("spirit:vendorExtensions");
         writer.writeTextElement("kactus2:remoteEndpointName", remoteEndpointName_);
-        writer.writeEndElement(); // spirit:vendorExtensions
     }
+
+    if (adHocVisible_)
+    {
+        writer.writeEmptyElement("kactus2:adHocVisible");
+    }
+
+    writer.writeEndElement(); // spirit:vendorExtensions
 
 	writer.writeEndElement(); // spirit:port
 }
@@ -653,4 +688,20 @@ void Port::setRemoteEndpointName(QString const& remoteName)
 QString const& Port::getRemoteEndpointName() const
 {
     return remoteEndpointName_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Port::setAdHocVisible()
+//-----------------------------------------------------------------------------
+void Port::setAdHocVisible(bool visible)
+{
+    adHocVisible_ = visible;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Port::isAdHocVisible()
+//-----------------------------------------------------------------------------
+bool Port::isAdHocVisible() const
+{
+    return adHocVisible_;
 }
