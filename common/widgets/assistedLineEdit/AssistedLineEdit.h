@@ -89,7 +89,7 @@ private:
     QWidget* m_mainWnd;
 
     //! Content assist list widget.
-    QSharedPointer<LineContentAssistWidget> m_contentAssist;
+    LineContentAssistWidget* m_contentAssist;
 };
 
 //-----------------------------------------------------------------------------

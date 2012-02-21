@@ -30,7 +30,7 @@ AssistedLineEdit::AssistedLineEdit(QSharedPointer<ILineContentMatcher> contentMa
 {
     Q_ASSERT(contentMatcher != 0);
 
-    m_contentAssist = QSharedPointer<LineContentAssistWidget>(new LineContentAssistWidget(this, contentMatcher));
+    m_contentAssist = new LineContentAssistWidget(this, contentMatcher);
 
     // Install this as an event filter so that we can track events from the main window.
     if (m_mainWnd != 0)

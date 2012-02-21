@@ -1594,6 +1594,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\models\segment.cpp"
+					>
+				</File>
+				<File
 					RelativePath="models\servicetypedef.cpp"
 					>
 				</File>
@@ -8368,6 +8372,10 @@
 							Outputs=""
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\models\segment.h"
+					>
 				</File>
 				<File
 					RelativePath="models\servicetypedef.h"

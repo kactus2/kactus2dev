@@ -216,19 +216,17 @@ editor_(NULL) {
 	case ComponentTreeItem::FUNCTION: {
 		Function* functionP = static_cast<Function*>(dataPointer_);
 		
-		// if entrypoint has been defined
+		// if entry point has been defined
 		if (!functionP->getEntryPoint().isEmpty()) {
 			text_ = functionP->getEntryPoint();
 		}
-		// if no entrypoint is defined then use the only mandatory field in function
+		// if no entry point is defined then use the only mandatory field in function
 		else {
 			text_ = functionP->getFileRef();
 		}
 									  }
 	case ComponentTreeItem::DEFAULTFILEBUILDERS: {
 		text_ = tr("Default file builders");
-		QList<QSharedPointer<FileBuilder> >* builders = 
-			static_cast<QList<QSharedPointer<FileBuilder> >*>(dataPointer_);
 		break;
 												 }
 	case ComponentTreeItem::CHOICES: {

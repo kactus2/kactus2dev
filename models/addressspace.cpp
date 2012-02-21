@@ -8,7 +8,6 @@
 #include "memorymap.h"
 #include "parameter.h"
 
-
 #include "../exceptions/write_error.h"
 
 #include <QDomNode>
@@ -21,10 +20,16 @@
 const int DEFAULT_ADDRESS_UNIT_BITS = 8;
 
 // the constructor
-AddressSpace::AddressSpace(QDomNode &addrSpaceNode): name_(QString()),
-		range_(QString()), rangeAttributes_(), width_(-1), widthAttributes_(),
-		addressUnitBits_(DEFAULT_ADDRESS_UNIT_BITS), localMemoryMap_(0),
-		parameters_() {
+AddressSpace::AddressSpace(QDomNode &addrSpaceNode):
+name_(QString()),
+range_(QString()),
+rangeAttributes_(),
+width_(-1), 
+widthAttributes_(),
+segments_(),
+addressUnitBits_(DEFAULT_ADDRESS_UNIT_BITS), 
+localMemoryMap_(0),
+parameters_() {
 	for (int i = 0; i < addrSpaceNode.childNodes().count(); ++i) {
 		QDomNode tempNode = addrSpaceNode.childNodes().at(i);
 
@@ -49,6 +54,14 @@ AddressSpace::AddressSpace(QDomNode &addrSpaceNode): name_(QString()),
 			General::parseAttributes(tempNode, widthAttributes_);
 		}
 
+		else if (tempNode.nodeName() == QString("spirit:segments")) {
+			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
+				QDomNode segmentNode = tempNode.childNodes().at(j);
+				segments_.append(QSharedPointer<Segment>(
+					new Segment(segmentNode)));
+			}
+		}
+
 		// get addressUnitBits
 		else if (tempNode.nodeName() == QString("spirit:addressUnitBits")) {
 			addressUnitBits_ = tempNode.childNodes().at(0).nodeValue().toInt();
@@ -67,21 +80,6 @@ AddressSpace::AddressSpace(QDomNode &addrSpaceNode): name_(QString()),
 			}
 		}
 	}
-
-// 	if (name_.isNull()) {
-// 		throw Parse_error(QObject::tr("Mandatory element name missing in "
-// 				"spirit:addressSpace"));
-// 	}
-// 
-// 	if (range_.isNull()) {
-// 		throw Parse_error(QObject::tr("Mandatory element range missing in"
-// 				" spirit:addressSpace"));
-// 	}
-// 
-// 	if (width_ < 0) {
-// 		throw Parse_error(QObject::tr("Mandatory element width missing in "
-// 				"spirit:addressSpace"));
-// 	}
 	return;
 }
 
@@ -91,6 +89,7 @@ range_(other.range_),
 rangeAttributes_(other.rangeAttributes_),
 width_(other.width_),
 widthAttributes_(other.widthAttributes_),
+segments_(),
 addressUnitBits_(other.addressUnitBits_),
 localMemoryMap_(),
 parameters_() {
@@ -100,10 +99,21 @@ parameters_() {
 			new MemoryMap(*other.localMemoryMap_.data()));
 	}
 
+	parameters_.clear();
 	foreach (QSharedPointer<Parameter> param, other.parameters_) {
 		if (param) {
 			QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(
 				new Parameter(*param.data()));
+			parameters_.append(copy);
+		}
+	}
+
+	segments_.clear();
+	foreach (QSharedPointer<Segment> segment, other.segments_) {
+		if (segment) {
+			QSharedPointer<Segment> copy = QSharedPointer<Segment>(
+				new Segment(*segment.data()));
+			segments_.append(copy);
 		}
 	}
 }
@@ -130,17 +140,27 @@ AddressSpace & AddressSpace::operator=( const AddressSpace &other ) {
 			if (param) {
 				QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(
 					new Parameter(*param.data()));
+				parameters_.append(copy);
+			}
+		}
+
+		segments_.clear();
+		foreach (QSharedPointer<Segment> segment, other.segments_) {
+			if (segment) {
+				QSharedPointer<Segment> copy = QSharedPointer<Segment>(
+					new Segment(*segment.data()));
+				segments_.append(copy);
 			}
 		}
 	}
 	return *this;
 }
 
-// the desctructor
+// the destructor
 AddressSpace::~AddressSpace() {
 	rangeAttributes_.clear();
-
 	widthAttributes_.clear();
+	segments_.clear();
 }
 
 void AddressSpace::write(QXmlStreamWriter& writer) {
@@ -187,6 +207,12 @@ void AddressSpace::write(QXmlStreamWriter& writer) {
 		// write the value of the element and close the tag
 		writer.writeCharacters(QString::number(width_));
 		writer.writeEndElement(); // spirit:width
+	}
+
+	if (!segments_.isEmpty()) {
+		foreach (QSharedPointer<Segment> segment, segments_) {
+			segment->write(writer);
+		}
 	}
 
 	// if addressUnitBits has illegal value
@@ -243,6 +269,12 @@ bool AddressSpace::isValid( QStringList& errorList,
 		valid = false;
 	}
 
+	foreach (QSharedPointer<Segment> segment, segments_) {
+		if (!segment->isValid(errorList, thisIdentifier)) {
+			valid = false;
+		}
+	}
+
 	if (localMemoryMap_ && !localMemoryMap_->isValid(errorList, thisIdentifier)) {
 		valid = false;
 	}
@@ -268,6 +300,12 @@ bool AddressSpace::isValid() const {
 
 	if (width_ < 0) {
 		return false;
+	}
+
+	foreach (QSharedPointer<Segment> segment, segments_) {
+		if (!segment->isValid()) {
+			return false;
+		}
 	}
 
 	if (localMemoryMap_ && !localMemoryMap_->isValid()) {
@@ -349,4 +387,12 @@ void AddressSpace::setLocalMemoryMap(MemoryMap *localMemoryMap) {
 		localMemoryMap_.clear();
 	}
 	localMemoryMap_ = QSharedPointer<MemoryMap>(localMemoryMap);
+}
+
+const QList<QSharedPointer<Segment> >& AddressSpace::getSegments() const {
+	return segments_;
+}
+
+void AddressSpace::setSegments( const QList<QSharedPointer<Segment> >& segments ) {
+	segments_ = segments;
 }

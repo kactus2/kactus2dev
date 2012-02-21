@@ -9,6 +9,7 @@
 
 #include "generaldeclarations.h"
 #include "memorymap.h"
+#include "segment.h"
 
 #include <QSharedPointer>
 #include <QDomNode>
@@ -114,6 +115,12 @@ public:
 	 */
 	const QMap<QString, QString>& getWidthAttributes();
 
+	/*! \brief Get the segments contained in this address space.
+	 *
+	 * \return QList containing pointers to the segments.
+	*/
+	const QList<QSharedPointer<Segment> >& getSegments() const;
+
 	/*! \brief Set the address unit bits
 	 *
 	 * \param addressUnitBits The wanted setting
@@ -168,6 +175,12 @@ public:
 	 */
 	void setLocalMemoryMap(MemoryMap* localMemoryMap);
 
+	/*! \brief Set the segments for this address space.
+	 *
+	 * \param segments QList containing pointers to set for the address space.
+	*/
+	void setSegments(const QList<QSharedPointer<Segment> >& segments);
+
 private:
 
 	//! \brief MANDATORY, Identifies the address space element
@@ -184,6 +197,9 @@ private:
 
 	//! \brief The attributes for configuring the width element
 	QMap<QString, QString> widthAttributes_;
+
+	//! \brief OPTIONAL Contains the segments of the address space
+	QList<QSharedPointer<Segment> > segments_;
 
 	/*! \brief The number of data bits in each address increment.
 	 * OPTIONAL
