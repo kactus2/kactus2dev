@@ -25,6 +25,9 @@ itemsDraggable_(true) {
 	// vertical headers are not visible
 	verticalHeader()->hide();
 
+	// set the height of a row to be smaller than default
+	verticalHeader()->setDefaultSectionSize(fontMetrics().height() + 8);
+
 	// easies to see the different rows from one another
 	setAlternatingRowColors(true);
 

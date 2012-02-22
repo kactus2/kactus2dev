@@ -1316,7 +1316,7 @@ Component::getBusInterfaces() const {
 	return busInterfaces_;
 }
 
-const QList<QSharedPointer<AddressSpace> >& Component::getAddressSpaces() const {
+QList<QSharedPointer<AddressSpace> >& Component::getAddressSpaces() {
 	return addressSpaces_;
 }
 
@@ -1790,6 +1790,7 @@ void Component::removeChannel( const QString& channelName ) {
 	for (int i = 0; i < channels_.size(); ++i) {
 		if (channels_.at(i)->getName() == channelName) {
 			channels_.removeAt(i);
+			return;
 		}
 	}
 }
@@ -2330,4 +2331,21 @@ QList<General::PortBounds> Component::getPortBounds() const {
 	}
 
 	return QList<General::PortBounds>();
+}
+
+void Component::removeAddressSpace( const QString& addrSpaceName ) {
+	for (int i = 0; i < addressSpaces_.size(); ++i) {
+		
+		// if the specified address space is found
+		if (addressSpaces_.at(i)->getName() == addrSpaceName) {
+			addressSpaces_.removeAt(i);
+			return;
+		}
+	}
+}
+
+AddressSpace* Component::createAddressSpace() {
+	QSharedPointer<AddressSpace> addrSpace(new AddressSpace());
+	addressSpaces_.append(addrSpace);
+	return addrSpace.data();
 }

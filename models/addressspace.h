@@ -40,6 +40,11 @@ public:
 	 */
 	AddressSpace(QDomNode &addrSpaceNode);
 
+	/*! \brief The default constructor
+	 *
+	*/
+	AddressSpace();
+
 	//! \brief The copy constructor
 	AddressSpace(const AddressSpace &other);
 
@@ -119,7 +124,7 @@ public:
 	 *
 	 * \return QList containing pointers to the segments.
 	*/
-	const QList<QSharedPointer<Segment> >& getSegments() const;
+	QList<QSharedPointer<Segment> >& getSegments();
 
 	/*! \brief Set the address unit bits
 	 *
@@ -181,10 +186,43 @@ public:
 	*/
 	void setSegments(const QList<QSharedPointer<Segment> >& segments);
 
+	/*! \brief Set the display name for the address space.
+	 *
+	 * \param dispName The display name to set.
+	 *
+	*/
+	void setDisplayName(const QString& dispName);
+
+	/*! \brief Get the display name of the address space.
+	 *
+	 * \return QString contains the display name.
+	*/
+	QString getDisplayName() const;
+
+	/*! \brief Set the description for the address space.
+	 *
+	 * \param description contains the description to set.
+	 *
+	*/
+	void setDescription(const QString& description);
+
+	/*! \brief Get the description of the address space.
+	 *
+	 * \return QString contains the description of the address space.
+	*/
+	QString getDescription() const;
+
+	/*! \brief Get the parameters of the address space.
+	 *
+	 *
+	 * \return QList containing pointers to the parameters.
+	*/
+	QList<QSharedPointer<Parameter> >& getParameters();
+
 private:
 
-	//! \brief MANDATORY, Identifies the address space element
-	QString name_;
+	//! \brief Contains the name and description.
+	General::NameGroup nameGroup_;
 
 	//! \brief MANDATORY, address range of an address space.
 	QString range_;

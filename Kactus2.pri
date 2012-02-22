@@ -11,6 +11,9 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./mainwindow/DeleteWorkspaceDialog.h \
     ./mainwindow/NewWorkspaceDialog.h \
     ./mainwindow/SplashScreen.h \
+    ./AdHocEditor/AdHocDelegate.h \
+    ./AdHocEditor/AdHocEditor.h \
+    ./AdHocEditor/AdHocModel.h \
     ./resource.h \
     ./common/ColumnTypes.h \
     ./common/CSourceWriter.h \
@@ -82,6 +85,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./designwidget/blockdiagram.h \
     ./designwidget/designwidget.h \
     ./designwidget/DiagramAddCommands.h \
+    ./designwidget/DiagramAdHocPort.h \
     ./designwidget/DiagramChangeCommands.h \
     ./designwidget/diagramcomponent.h \
     ./designwidget/DiagramConnectionEndpoint.h \
@@ -180,6 +184,9 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/endpoints/EndpointModel.h \
     ./IPXactWrapper/ComponentEditor/endpoints/ImportEndpointsDialog.h \
     ./IPXactWrapper/ComponentEditor/software/SoftwareMappingsEditor.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressspaceeditor.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacegeneraleditor.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressspaceparameterseditor.h \
     ./IPXactWrapper/BusEditor/absdefgroup.h \
     ./IPXactWrapper/BusEditor/busdefgroup.h \
     ./IPXactWrapper/BusEditor/buseditor.h \
@@ -266,6 +273,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./models/remapport.h \
     ./models/remapstate.h \
     ./models/reset.h \
+    ./models/segment.h \
     ./models/servicetypedef.h \
     ./models/slaveinterface.h \
     ./models/subspacemap.h \
@@ -338,7 +346,9 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./InterfaceEditor/interfaceeditor.h \
     ./ConnectionEditor/connectioneditor.h \
     ./GCF/Common.h \
-    ./GCF/MenuStrip.h
+    ./GCF/MenuStrip.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/segmenteditor.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/segmentsmodel.h
 SOURCES += ./common/CSourceWriter.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/KactusAttribute.cpp \
@@ -398,6 +408,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./designwidget/BusInterfaceDialog.cpp \
     ./designwidget/designwidget.cpp \
     ./designwidget/DiagramAddCommands.cpp \
+    ./designwidget/DiagramAdHocPort.cpp \
     ./designwidget/DiagramChangeCommands.cpp \
     ./designwidget/diagramcomponent.cpp \
     ./designwidget/DiagramConnectionEndPoint.cpp \
@@ -494,6 +505,9 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/endpoints/EndpointModel.cpp \
     ./IPXactWrapper/ComponentEditor/endpoints/ImportEndpointsDialog.cpp \
     ./IPXactWrapper/ComponentEditor/software/SoftwareMappingsEditor.cpp \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressspaceeditor.cpp \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacegeneraleditor.cpp \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressspaceparameterseditor.cpp \
     ./IPXactWrapper/BusEditor/absdefgroup.cpp \
     ./IPXactWrapper/BusEditor/busdefgroup.cpp \
     ./IPXactWrapper/BusEditor/buseditor.cpp \
@@ -592,6 +606,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./models/remapport.cpp \
     ./models/remapstate.cpp \
     ./models/reset.cpp \
+    ./models/segment.cpp \
     ./models/servicetypedef.cpp \
     ./models/slaveinterface.cpp \
     ./models/subspacemap.cpp \
@@ -657,5 +672,10 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./InterfaceEditor/interfaceeditor.cpp \
     ./ConnectionEditor/connectioneditor.cpp \
     ./GCF/MenuStrip.cpp \
-    ./common/IDFactory.cpp
+    ./AdHocEditor/AdHocDelegate.cpp \
+    ./AdHocEditor/AdHocEditor.cpp \
+    ./AdHocEditor/AdHocModel.cpp \
+    ./common/IDFactory.cpp \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/segmenteditor.cpp \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/segmentsmodel.cpp
 RESOURCES += kactus.qrc

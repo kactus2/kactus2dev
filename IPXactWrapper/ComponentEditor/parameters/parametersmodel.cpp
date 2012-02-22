@@ -13,7 +13,9 @@
 
 ParametersModel::ParametersModel(QList<QSharedPointer<Parameter> >* parameters,
 								 QObject *parent): 
-QAbstractTableModel(parent), parameters_(parameters), table_() {
+QAbstractTableModel(parent), 
+parameters_(parameters), 
+table_() {
 
 	Q_ASSERT_X(parameters, "ParametersModel constructor",
 		"Invalid Component-pointer given as parameter");
@@ -189,8 +191,6 @@ void ParametersModel::apply() {
 }
 
 void ParametersModel::restore() {
-
-
 	beginResetModel();
 	table_.clear();
 	table_ = *parameters_;

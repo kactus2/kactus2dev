@@ -165,18 +165,6 @@ public:
 	 */
 	bool isHierarchical() const;
 
-	/*! \brief Get this component's address spaces
-	 *
-	 * \return QList containing component's adress spaces
-	 */
-	const QList<QSharedPointer<AddressSpace> >& getAddressSpaces() const;
-
-	/*! \brief Get the names of the address spaces stored in this component.
-	 *
-	 * \return QStringList containing the names of the address spaces.
-	*/
-	const QStringList getAddressSpaceNames() const;
-
 	//QMap<QString, QSharedPointer<BusInterface> >* getBusIfPointers();
 
 	/*! \brief Get this component's channels
@@ -244,12 +232,6 @@ public:
 	 * \param attributes A reference to a QMap containing the attributes.
 	 */
 	void setAttributes(const QMap<QString, QString>& attributes);
-
-	/*! \brief Set this component's address spaces
-	 *
-	 * \param addressSpaces QList containing the address spaces to be set
-	 */
-	void setAddressSpaces(const QList<QSharedPointer<AddressSpace> > &addressSpaces);
 
 	/*! \brief Set this component's channels
 	 *
@@ -967,6 +949,37 @@ public:
 	 * \return QList containing the physical port names and their bounds.
 	*/
 	QList<General::PortBounds> getPortBounds() const;
+
+	/*! \brief Get this component's address spaces
+	*
+	* \return QList containing component's address spaces
+	*/
+	QList<QSharedPointer<AddressSpace> >& getAddressSpaces();
+
+	/*! \brief Get the names of the address spaces stored in this component.
+	*
+	* \return QStringList containing the names of the address spaces.
+	*/
+	const QStringList getAddressSpaceNames() const;
+
+	/*! \brief Set this component's address spaces
+	*
+	* \param addressSpaces QList containing the address spaces to be set
+	*/
+	void setAddressSpaces(const QList<QSharedPointer<AddressSpace> > &addressSpaces);
+
+	/*! \brief Remove the specified address space from the component.
+	 *
+	 * \param addrSpaceName The name of the address space to remove.
+	 *
+	*/
+	void removeAddressSpace(const QString& addrSpaceName);
+
+	/*! \brief Create a new empty address space to the component.
+	 *
+	 * \return Pointer to the created address space.
+	*/
+	AddressSpace* createAddressSpace();
 
 private:
 

@@ -97,8 +97,8 @@ editor_(NULL) {
 // 		childItems_.append(new ComponentTreeItem(
 // 			ComponentTreeItem::MEMORYMAPS, 0, component, this));
 
-// 		childItems_.append(new ComponentTreeItem(
-// 			ComponentTreeItem::ADDRESSSPACES, 0, component, this));
+		childItems_.append(new ComponentTreeItem(
+			ComponentTreeItem::ADDRESSSPACES, 0, component, handler, this));
 
 // 		childItems_.append(new ComponentTreeItem(
 // 			ComponentTreeItem::REMAPSTATES, 0, component, this));
@@ -490,11 +490,12 @@ editor_(NULL) {
 		text_ = tr("Address spaces");
 
 		// get addressSpaces from the component and add them to the model
-		QList<QSharedPointer<AddressSpace> > list = component_->getAddressSpaces();
-		for (int i = 0; i < list.size(); ++i) {
+		QList<QSharedPointer<AddressSpace> >* list = &component_->getAddressSpaces();
+		for (int i = 0; i < list->size(); ++i) {
 			childItems_.append(new ComponentTreeItem(
-				ComponentTreeItem::ADDRESSSPACE, list.at(i).data(), component, handler, this));
+				ComponentTreeItem::ADDRESSSPACE, list->at(i).data(), component, handler, this));
 		}
+		dataPointer_ = list;
 		break;
 										   }
 	case ComponentTreeItem::ADDRESSSPACE: {
@@ -774,6 +775,13 @@ bool ComponentTreeItem::createChild() {
 
 	// the type of parent defines how a child is created
 	switch (type_) {
+		case ComponentTreeItem::ADDRESSSPACES: {
+			AddressSpace* addrSpace = component_->createAddressSpace();
+			childItems_.append(new ComponentTreeItem(
+				ComponentTreeItem::ADDRESSSPACE, addrSpace, component_, handler_, this));
+			return true;
+											   }
+
 		case ComponentTreeItem::FILESETS: {
 			FileSet* fileSet = component_->createFileSet();
 			childItems_.append(new ComponentTreeItem(
@@ -842,6 +850,7 @@ bool ComponentTreeItem::createChild() {
 
 bool ComponentTreeItem::canHaveChildren() const {
 	switch (type_) {
+		case ComponentTreeItem::ADDRESSSPACE:
 		case ComponentTreeItem::GENERAL:
 		case ComponentTreeItem::FILE:
 		case ComponentTreeItem::FILESET:
@@ -1067,10 +1076,21 @@ bool ComponentTreeItem::isModelValid() const {
 		return false;
 										 }
 	case ComponentTreeItem::ADDRESSSPACES: {
-		return false;
+		
+		// if at least one address space is invalid
+		QList<QSharedPointer<AddressSpace> > addSpaces = component_->getAddressSpaces();
+		foreach (QSharedPointer<AddressSpace> addrSpace, addSpaces) {
+			if (!addrSpace->isValid()) {
+				return false;
+			}	
+		}
+
+		// all address spaces were valid
+		return true;
 										   }
 	case ComponentTreeItem::ADDRESSSPACE: {
-		return false;
+		AddressSpace* addrSpace = static_cast<AddressSpace*>(dataPointer_);
+		return addrSpace->isValid();
 										  }
 	case ComponentTreeItem::REMAPSTATES: {
 		return false;

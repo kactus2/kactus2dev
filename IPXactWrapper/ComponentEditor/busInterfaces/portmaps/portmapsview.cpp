@@ -37,6 +37,8 @@ startPos_() {
 	horizontalHeader()->setResizeMode(QHeaderView::Interactive);
 	horizontalHeader()->setMinimumSectionSize(50);
 
+	verticalHeader()->setDefaultSectionSize(fontMetrics().height() + 8);
+
 	setItemDelegate(new PortMapsDelegate(this));
 
 	setSelectionMode(QAbstractItemView::SingleSelection);

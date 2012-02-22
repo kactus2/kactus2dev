@@ -18,6 +18,7 @@
 
 #include <exceptions/write_error.h>
 
+#include "addressSpaces/addressspaceeditor.h"
 #include "fileSet/fileseteditor.h"
 #include "fileSet/fileeditor.h"
 #include "fileSet/filebuildereditor.h"
@@ -154,6 +155,15 @@ void IPXactComponentEditor::createNewEditor( ComponentTreeItem* item ) {
 	ItemEditor* editor = 0;
 
 	switch (item->type()) {
+
+		case ComponentTreeItem::ADDRESSSPACES: {
+			editor = new ItemEditor(QSharedPointer<Component>(), widgetStack_);
+			break;
+											   }
+		case ComponentTreeItem::ADDRESSSPACE: {
+			editor = new AddressSpaceEditor(component_, item->getDataPointer(), widgetStack_);
+			break;
+											  }
 
 		case ComponentTreeItem::FILESET: {
 			
