@@ -80,9 +80,6 @@ private:
 
     //! The ad-hoc model.
     AdHocModel adHocModel_;
-
-	//! Pointer to the generic edit provider that manages the undo/redo stack.
-	QSharedPointer<GenericEditProvider> editProvider_;
 };
 
 #endif // ADHOCEDITOR_H

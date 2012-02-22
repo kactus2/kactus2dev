@@ -107,6 +107,11 @@ public:
          */
         QMap<QString, QPointF> portPositions;
 
+        /*!
+         *  Specifies the positioning for the visible ad-hoc ports.
+         */
+        QMap<QString, QPointF> adHocPortPositions;
+
         /*! \brief VENDOREXT kactus2:adHocVisibilities
          *
          *  Specifies ad-hoc visibility of each port.

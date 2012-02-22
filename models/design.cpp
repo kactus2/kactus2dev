@@ -190,6 +190,8 @@ void Design::write(QFile& file)
                 {
                     xmlWriter.writeStartElement("kactus2:adHocVisible");
                     xmlWriter.writeAttribute("portName", itrAdHoc.key());
+                    xmlWriter.writeAttribute("x", QString::number(int(inst.adHocPortPositions.value(itrAdHoc.key()).x())));
+                    xmlWriter.writeAttribute("y", QString::number(int(inst.adHocPortPositions.value(itrAdHoc.key()).y())));
                     xmlWriter.writeEndElement();
                 }
             }
@@ -756,7 +758,7 @@ Design::ComponentInstance::ComponentInstance(
     QDomNode& componentInstanceNode)
     : instanceName(), displayName(), description(), componentRef(),
       configurableElementValues(), portPositions(), portAdHocVisibilities(),
-      mcapiNodeID(-1), endpointsExpanded(false), imported(false)
+      adHocPortPositions(), mcapiNodeID(-1), endpointsExpanded(false), imported(false)
 {
     QDomNodeList nodes = componentInstanceNode.childNodes();
     for (int i = 0; i < nodes.size(); i++) {
@@ -823,8 +825,8 @@ Design::ComponentInstance::ComponentInstance(
     VLNV const& componentRef, QPointF const& position)
     : instanceName(instanceName), displayName(displayName),
       description(description), componentRef(componentRef),
-      configurableElementValues(), position(position), portAdHocVisibilities(), mcapiNodeID(-1),
-      endpointsExpanded(false), imported(false)
+      configurableElementValues(), position(position), portAdHocVisibilities(),
+      adHocPortPositions(), mcapiNodeID(-1), endpointsExpanded(false), imported(false)
 {
 }
 
@@ -837,6 +839,7 @@ configurableElementValues(other.configurableElementValues),
 position(other.position),
 portPositions(other.portPositions),
 portAdHocVisibilities(other.portAdHocVisibilities),
+adHocPortPositions(other.adHocPortPositions),
 mcapiNodeID(other.mcapiNodeID), endpointsExpanded(other.endpointsExpanded), imported(other.imported) {
 }
 
@@ -850,6 +853,7 @@ Design::ComponentInstance& Design::ComponentInstance::operator=( const Component
 		position = other.position;
 		portPositions = other.portPositions;
         portAdHocVisibilities = other.portAdHocVisibilities;
+        adHocPortPositions = other.adHocPortPositions;
         mcapiNodeID = other.mcapiNodeID;
         endpointsExpanded = other.endpointsExpanded;
         imported = other.imported;
@@ -897,6 +901,12 @@ void Design::ComponentInstance::parseAdHocVisibilities(QDomNode& node)
         {
             QString name = childNode.attributes().namedItem("portName").nodeValue();
             portAdHocVisibilities[name] = true;
+
+            QPointF pos;
+            pos.setX(childNode.attributes().namedItem("x").nodeValue().toInt());
+            pos.setY(childNode.attributes().namedItem("y").nodeValue().toInt());
+
+            adHocPortPositions[name] = pos;
         }
     }
 }

@@ -11,6 +11,8 @@
 
 #include "DiagramChangeCommands.h"
 
+#include "DiagramDeleteCommands.h"
+
 #include <models/component.h>
 #include <common/graphicsItems/ComponentItem.h>
 
@@ -18,6 +20,8 @@
 
 #include "diagraminterconnection.h"
 #include "diagramport.h"
+#include "DiagramAdHocPort.h"
+#include "diagramcomponent.h"
 #include "diagraminterface.h"
 #include "columnview/DiagramColumn.h"
 #include "columnview/DiagramColumnLayout.h"
@@ -421,4 +425,62 @@ void ConnectionChangeCommand::undo() {
 void ConnectionChangeCommand::redo() {
 	connection_->setName(newName_);
 	connection_->setDescription(newDescription_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocVisibilityChangeCommand::AdHocVisibilityChangeCommand()
+//-----------------------------------------------------------------------------
+AdHocVisibilityChangeCommand::AdHocVisibilityChangeCommand(DiagramComponent* component, QString const& portName,
+                                                           bool newVisibility, QUndoCommand* parent)
+    : QUndoCommand(parent),
+      component_(component),
+      portName_(portName),
+      newVisibility_(newVisibility)
+{
+    if (!newVisibility_)
+    {
+        // Create child commands for removing interconnections.
+        DiagramAdHocPort* port = component->getAdHocPort(portName);
+        Q_ASSERT(port != 0);
+
+        foreach (DiagramInterconnection* conn, port->getInterconnections())
+        {
+            QUndoCommand* cmd = new ConnectionDeleteCommand(conn, this);
+        }
+
+        foreach (DiagramInterconnection* conn, port->getOffPageConnector()->getInterconnections())
+        {
+            QUndoCommand* cmd = new ConnectionDeleteCommand(conn, this);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocVisibilityChangeCommand::~AdHocVisibilityChangeCommand()
+//-----------------------------------------------------------------------------
+AdHocVisibilityChangeCommand::~AdHocVisibilityChangeCommand()
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocVisibilityChangeCommand::undo()
+//-----------------------------------------------------------------------------
+void AdHocVisibilityChangeCommand::undo()
+{
+    component_->setPortAdHocVisible(portName_, !newVisibility_);
+
+    // Execute child commands.
+    QUndoCommand::undo();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocVisibilityChangeCommand::redo()
+//-----------------------------------------------------------------------------
+void AdHocVisibilityChangeCommand::redo()
+{
+    // Execute child commands.
+    QUndoCommand::redo();
+
+    component_->setPortAdHocVisible(portName_, newVisibility_);
 }

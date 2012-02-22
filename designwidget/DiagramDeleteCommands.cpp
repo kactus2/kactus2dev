@@ -271,7 +271,7 @@ void ConnectionDeleteCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: PortDeleteCommand()
 //-----------------------------------------------------------------------------
-PortDeleteCommand::PortDeleteCommand(DiagramPort* port, QUndoCommand* parent) :
+PortDeleteCommand::PortDeleteCommand(DiagramConnectionEndPoint* port, QUndoCommand* parent) :
     QUndoCommand(parent), port_(port), parent_(static_cast<DiagramComponent*>(port->parentItem())),
     scene_(port->scene()), del_(true)
 {

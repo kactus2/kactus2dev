@@ -319,7 +319,7 @@ bool DiagramOffPageConnector::isBus() const
 //-----------------------------------------------------------------------------
 // Function: DiagramOffPageConnector::getPort()
 //-----------------------------------------------------------------------------
-QSharedPointer<Port> DiagramOffPageConnector::getPort() const
+Port* DiagramOffPageConnector::getPort() const
 {
     return parent_->getPort();
 }

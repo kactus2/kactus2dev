@@ -7,6 +7,7 @@
 #include "diagramcomponent.h"
 #include "diagraminterconnection.h"
 #include "diagramport.h"
+#include "DiagramAdHocPort.h"
 #include "diagraminterface.h"
 #include "DiagramOffPageConnector.h"
 #include "SelectItemTypeDialog.h"
@@ -213,6 +214,21 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
         {
             itrPortPos.next();
             DiagramPort* port = diagComp->getBusPort(itrPortPos.key());
+
+            if (port != 0)
+            {
+                port->setPos(itrPortPos.value());
+                diagComp->onMovePort(port);
+            }
+        }
+
+        // Setup the custom ad-hoc port positions.
+        itrPortPos = QMapIterator<QString, QPointF>(instance.adHocPortPositions);
+
+        while (itrPortPos.hasNext())
+        {
+            itrPortPos.next();
+            DiagramAdHocPort* port = diagComp->getAdHocPort(itrPortPos.key());
 
             if (port != 0)
             {
@@ -500,6 +516,18 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv)
             {
                 itrBusIf.next();
                 instance.portPositions[itrBusIf.key()] = comp->getBusPort(itrBusIf.key())->pos();
+            }
+
+            QMapIterator<QString, bool> itrAdHoc(comp->getPortAdHocVisibilities());
+
+            while (itrAdHoc.hasNext())
+            {
+                itrAdHoc.next();
+
+                if (itrAdHoc.value())
+                {
+                    instance.adHocPortPositions[itrAdHoc.key()] = comp->getAdHocPort(itrAdHoc.key())->pos();
+                }
             }
 
 			instances.append(instance);

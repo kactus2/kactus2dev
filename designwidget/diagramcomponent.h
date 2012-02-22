@@ -10,6 +10,7 @@
 #include <common/graphicsItems/ComponentItem.h>
 
 class DiagramPort;
+class DiagramAdHocPort;
 class DiagramConnectionEndPoint;
 class DiagramColumn;
 class LibraryInterface;
@@ -51,19 +52,24 @@ public:
      *
      *      @param [in] port The port to add. Must not be used in any other component.
      */
-    void addPort(DiagramPort* port);
+    void addPort(DiagramConnectionEndPoint* port);
 
     /*!
      *  Removes the given port from the component.
      *
      *      @param [in] port The port to remove.
      */
-    void removePort(DiagramPort* port);
+    void removePort(DiagramConnectionEndPoint* port);
 
     /*! \brief Get the DiagramPort that corresponds to the given bus interface name
      *
      */
     DiagramPort *getBusPort(const QString &name);
+
+    /*
+     *  Returns the ad-hoc port with the given name, or null if not found.
+     */
+    DiagramAdHocPort* getAdHocPort(QString const& portName);
 
     int type() const { return Type; }
 

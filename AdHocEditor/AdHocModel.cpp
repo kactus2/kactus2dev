@@ -15,12 +15,22 @@
 
 #include <models/port.h>
 #include <models/component.h>
+
 #include <designwidget/diagramcomponent.h>
+#include <designwidget/blockdiagram.h>
+#include <designwidget/designwidget.h>
+#include <designwidget/DiagramChangeCommands.h>
+
+#include <EndpointDesign/EndpointDesignDiagram.h>
+#include <EndpointDesign/EndpointDesignWidget.h>
+
+#include <common/GenericEditProvider.h>
 
 //-----------------------------------------------------------------------------
 // Function: AdHocModel::AdHocModel()
 //-----------------------------------------------------------------------------
-AdHocModel::AdHocModel(QObject *parent) : QAbstractTableModel(parent), component_(0), table_()
+AdHocModel::AdHocModel(QObject *parent) : QAbstractTableModel(parent),
+                                          component_(0), table_()
 {
 
 }
@@ -37,6 +47,11 @@ AdHocModel::~AdHocModel()
 //-----------------------------------------------------------------------------
 void AdHocModel::setComponent(DiagramComponent* component)
 {
+    if (component_ != 0)
+    {
+        component_->disconnect();
+    }
+
     component_ = component;
 
     beginResetModel();
@@ -44,10 +59,24 @@ void AdHocModel::setComponent(DiagramComponent* component)
     if (component_ != 0)
     {
         table_ = component->componentModel()->getPorts().values();
+
+        if (dynamic_cast<BlockDiagram*>(component->scene()) != 0)
+        {
+            BlockDiagram* diagram = static_cast<BlockDiagram*>(component->scene());
+            editProvider_ = diagram->parent()->getGenericEditProvider();
+        }
+        else
+        {
+            EndpointDesignDiagram* diagram = static_cast<EndpointDesignDiagram*>(component->scene());
+            editProvider_ = diagram->parent()->getGenericEditProvider();
+        }
+
+        connect(component_, SIGNAL(contentChanged()), this, SLOT(updateVisibilities()));
     }
     else
     {
         table_.clear();
+        editProvider_.clear();
     }
 
     endResetModel();
@@ -187,7 +216,10 @@ bool AdHocModel::setData(const QModelIndex& index, const QVariant& value, int ro
 
     if (role == Qt::CheckStateRole)
     {
-        component_->setPortAdHocVisible(table_.at(index.row())->getName(), value == Qt::Checked);
+        QSharedPointer<QUndoCommand> cmd(new AdHocVisibilityChangeCommand(component_,
+                                                                          table_.at(index.row())->getName(),
+                                                                          value == Qt::Checked));
+        editProvider_->addCommand(cmd);
         emit dataChanged(index, index);
         return true;
     }
@@ -213,4 +245,12 @@ Qt::ItemFlags AdHocModel::flags(const QModelIndex& index) const
     }
 
     return flags;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocModel::updateVisibilities()
+//-----------------------------------------------------------------------------
+void AdHocModel::updateVisibilities()
+{
+    emit dataChanged(index(0, ADHOC_COL_VISIBILITY), index(table_.size() - 1, ADHOC_COL_VISIBILITY));
 }

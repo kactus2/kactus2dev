@@ -200,7 +200,7 @@ public:
      *      @remarks The function returns a null pointer if the end point is a bus interface.
      *               Use isBus() function to check for ad-hoc support (isBus() == false).
      */
-    virtual QSharedPointer<Port> getPort() const = 0;
+    virtual Port* getPort() const = 0;
 
     /*! \brief Returns true if the port represents a hierarchical connection
      *

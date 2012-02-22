@@ -37,8 +37,7 @@
 AdHocEditor::AdHocEditor(QWidget *parent): QWidget(parent),
                                            component_(0),
                                            portAdHocTable_(this),
-                                           adHocModel_(this),
-                                           editProvider_()
+                                           adHocModel_(this)
 {
 	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 
@@ -62,14 +61,15 @@ AdHocEditor::AdHocEditor(QWidget *parent): QWidget(parent),
     portAdHocTable_.horizontalHeader()->setResizeMode(ADHOC_COL_VISIBILITY, QHeaderView::Fixed);
 
     QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(&portAdHocTable_);
-    layout->addStretch();
+    layout->addWidget(&portAdHocTable_, 1);
 }
 
 //-----------------------------------------------------------------------------
 // Function: ~AdHocEditor()
 //-----------------------------------------------------------------------------
-AdHocEditor::~AdHocEditor() {
+AdHocEditor::~AdHocEditor()
+{
+    adHocModel_.setComponent(0);
 }
 
 //-----------------------------------------------------------------------------
@@ -89,21 +89,18 @@ void AdHocEditor::setComponent( ComponentItem* component ) {
 
     bool locked = false;
 
-	// get the edit provider that manages the undo/redo stack
-    // TODO: Base class for the diagrams!
-    if (dynamic_cast<BlockDiagram*>(component->scene()) != 0)
+	if (dynamic_cast<BlockDiagram*>(component->scene()) != 0)
     {
 	    BlockDiagram* diagram = static_cast<BlockDiagram*>(component->scene());
-        DesignWidget* designWidget = diagram->parent();
-	    editProvider_ = designWidget->getGenericEditProvider();
         locked = diagram->isProtected();
     }
     else
     {
         EndpointDesignDiagram* diagram = static_cast<EndpointDesignDiagram*>(component->scene());
-        editProvider_ = diagram->parent()->getGenericEditProvider();
         locked = diagram->isProtected();
     }
+
+    portAdHocTable_.setEnabled(!locked);
 
     adHocModel_.setComponent(static_cast<DiagramComponent*>(component_));
     portAdHocTable_.resizeRowsToContents();
@@ -130,7 +127,6 @@ void AdHocEditor::clear() {
 	component_ = 0;
     adHocModel_.setComponent(0);
     portAdHocTable_.hide();
-	editProvider_.clear();
 
 	parentWidget()->setMaximumHeight(20);
 }

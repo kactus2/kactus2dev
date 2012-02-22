@@ -663,7 +663,7 @@ bool DiagramPort::isBus() const
 //-----------------------------------------------------------------------------
 // Function: DiagramPort::getPort()
 //-----------------------------------------------------------------------------
-QSharedPointer<Port> DiagramPort::getPort() const
+Port* DiagramPort::getPort() const
 {
-    return QSharedPointer<Port>();
+    return 0;
 }

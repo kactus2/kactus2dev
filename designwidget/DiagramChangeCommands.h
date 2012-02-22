@@ -24,12 +24,14 @@
 
 class DiagramInterconnection;
 class DiagramPort;
+class DiagramComponent;
 class ComponentItem;
 class DiagramInterface;
 class DiagramColumn;
 class DiagramColumnLayout;
 class DiagramConnectionEndPoint;
 class ActiveViewModel;
+class DiagramAdHocPort;
 
 //-----------------------------------------------------------------------------
 //! ColumnChangeCommand class.
@@ -580,9 +582,60 @@ private:
     QList< QSharedPointer<General::PortMap> > newPortMaps_;
 };
 
-/*! \brief Undo command for changes made to a DiagramInterConnection.
- *
- */
+//-----------------------------------------------------------------------------
+//! Undo command for changing the ad-hoc port visibility.
+//-----------------------------------------------------------------------------
+class AdHocVisibilityChangeCommand : public QUndoCommand
+{
+public:
+    /*!
+     *  Constructor.
+     *
+     *      @param [in] component     The component containing the port.
+     *      @param [in] portName      The name of the port.
+     *      @param [in] newVisiblity  The new ad-hoc visibility of the port.
+     *      @param [in] parent        The parent undo command.
+     */
+    AdHocVisibilityChangeCommand(DiagramComponent* component, QString const& portName,
+                                 bool newVisibility, QUndoCommand* parent = 0);
+
+    /*!
+     *  Destructor.
+     */
+    ~AdHocVisibilityChangeCommand();
+
+    /*!
+     *  Undoes the command.
+     */
+    virtual void undo();
+
+    /*!
+     *  Redoes the command.
+     */
+    virtual void redo();
+
+private:
+    // Disable copying.
+    AdHocVisibilityChangeCommand(AdHocVisibilityChangeCommand const& rhs);
+    AdHocVisibilityChangeCommand& operator=(AdHocVisibilityChangeCommand const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The component containing the port.
+    DiagramComponent* component_;
+
+    //! The name of the port.
+    QString portName_;
+
+    //! The new ad-hoc visibility for the port.
+    bool newVisibility_;
+};
+
+//-----------------------------------------------------------------------------
+//! Undo command for changes made to a DiagramInterConnection.
+//-----------------------------------------------------------------------------
 class ConnectionChangeCommand : public QUndoCommand {
 
 public:

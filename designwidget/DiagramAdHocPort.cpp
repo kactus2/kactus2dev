@@ -41,7 +41,7 @@
 //-----------------------------------------------------------------------------
 // Function: DiagramAdHocPort()
 //-----------------------------------------------------------------------------
-DiagramAdHocPort::DiagramAdHocPort(QSharedPointer<Port> port, LibraryInterface* lh,
+DiagramAdHocPort::DiagramAdHocPort(Port* port, LibraryInterface* lh,
                                    QGraphicsItem *parent) : DiagramConnectionEndPoint(parent),
                                                             port_(port),
                                                             temp_(false), lh_(lh),
@@ -476,7 +476,7 @@ bool DiagramAdHocPort::isBus() const
 //-----------------------------------------------------------------------------
 // Function: DiagramAdHocPort::getPort()
 //-----------------------------------------------------------------------------
-QSharedPointer<Port> DiagramAdHocPort::getPort() const
+Port* DiagramAdHocPort::getPort() const
 {
     return port_;
 }

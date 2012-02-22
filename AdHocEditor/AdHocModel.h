@@ -17,6 +17,7 @@
 
 class DiagramComponent;
 class Port;
+class GenericEditProvider;
 
 //-----------------------------------------------------------------------------
 //! Table model for visualizing ad-hoc visibility for component ports.
@@ -30,9 +31,8 @@ public:
 	/*!
      *  Constructor.
 	 *
-	 *      @param [in] component    The component item being edited.
-	 *      @param [in] dataPointer  Pointer to the QMap containing pointers to the ports.
-	 *      @param [in] parent       Pointer to the owner of this model.
+     *      @param [in] editProvider  The edit provider managing the undo/redo stack.
+	 *      @param [in] parent        Pointer to the owner of this model.
 	 *
 	 */
 	AdHocModel(QObject *parent);
@@ -111,6 +111,12 @@ public:
 	 */
 	virtual Qt::ItemFlags flags(const QModelIndex& index) const;
 
+public slots:
+    /*!
+     *  Updates the visibilities.
+     */
+    void updateVisibilities();
+
 signals:
 	//! \brief Emitted when contents of the model change
 	void contentChanged();
@@ -123,8 +129,11 @@ private:
     //! The component whose ad-hoc port visibility is being edited.
     DiagramComponent* component_;
 
-	//! \brief The table that is displayed to the user.
+	//! The table that is displayed to the user.
 	QList< QSharedPointer<Port> > table_;
+
+    //! Pointer to the generic edit provider that manages the undo/redo stack.
+    QSharedPointer<GenericEditProvider> editProvider_;
 };
 
 //-----------------------------------------------------------------------------

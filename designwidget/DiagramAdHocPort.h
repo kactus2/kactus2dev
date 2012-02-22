@@ -36,7 +36,7 @@ public:
     /*!
      *  Constructor.
      */
-    DiagramAdHocPort(QSharedPointer<Port> port, LibraryInterface* lh, QGraphicsItem* parent = 0);
+    DiagramAdHocPort(Port* port, LibraryInterface* lh, QGraphicsItem* parent = 0);
 
 	/*!
      *  Destructor.
@@ -146,7 +146,7 @@ public:
      *      @remarks The function returns a null pointer if the end point is a bus interface.
      *               Use isBus() function to check for ad-hoc support (isBus() == false).
      */
-    virtual QSharedPointer<Port> getPort() const;
+    virtual Port* getPort() const;
 
     /*! 
      *  Returns true if the port represents a hierarchical connection.
@@ -180,7 +180,7 @@ protected:
 
 private:
     QGraphicsTextItem *nameLabel_;
-    QSharedPointer<Port> port_;
+    Port* port_;
     LibraryInterface* lh_;
 
     //! Boolean flag for determining if the port is temporary or not.
