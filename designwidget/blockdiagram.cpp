@@ -272,7 +272,7 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
         DiagramComponent *comp1 = getComponent(interconnection.interface1.componentRef);
 
 		if (!comp1) {
-			emit errorMessage(tr("Component %1 was not found within the design").arg(
+			emit errorMessage(tr("Component %1 was not found in the design").arg(
 			interconnection.interface1.componentRef));
 			continue;
 		}
@@ -281,7 +281,7 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
         DiagramComponent *comp2 = getComponent(interconnection.interface2.componentRef);
 
 		if (!comp2) {
-			emit errorMessage(tr("Component %1 was not found within the design").arg(
+			emit errorMessage(tr("Component %1 was not found in the design").arg(
 			interconnection.interface2.componentRef));
 			continue;
 		}
@@ -290,7 +290,7 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
         DiagramConnectionEndPoint* port1 = comp1->getBusPort(interconnection.interface1.busRef);
 
 		if (!port1) {
-			emit errorMessage(tr("Port %1 was not found within component %2").arg(
+			emit errorMessage(tr("Port %1 was not found in the component %2").arg(
 			interconnection.interface1.busRef).arg(interconnection.interface1.componentRef));
 			continue;
 		}
@@ -299,7 +299,7 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
         DiagramConnectionEndPoint* port2 = comp2->getBusPort(interconnection.interface2.busRef);
 
 		if (!port2) {
-			emit errorMessage(tr("Port %1 was not found within component %2").arg(
+			emit errorMessage(tr("Port %1 was not found in the component %2").arg(
 			interconnection.interface2.busRef).arg(interconnection.interface2.componentRef));
 			continue;
 		}
@@ -340,7 +340,7 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
 
 		// if the bus interface was not found
 		if (!busIf) {
-			emit errorMessage(tr("Bus interface %1 was not found in top-component").arg(
+			emit errorMessage(tr("Bus interface %1 was not found in the top-component").arg(
 				hierConn.interfaceRef));
 			continue;
 		}
@@ -381,7 +381,7 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
 		// find the component where the hierarchical connection is connected to
         DiagramComponent *comp = getComponent(hierConn.interface_.componentRef);
 		if (!comp) {
-			emit errorMessage(tr("Component %1 was not found within top-design").arg(
+			emit errorMessage(tr("Component %1 was not found in the top-design").arg(
 				hierConn.interface_.componentRef));
 			continue;
 		}
@@ -390,7 +390,7 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
         DiagramConnectionEndPoint* compPort = comp->getBusPort(hierConn.interface_.busRef);
 		if (!compPort)
         {
-			emit errorMessage(tr("Port %1 was not found within component %2").arg(
+			emit errorMessage(tr("Port %1 was not found in the component %2").arg(
 				hierConn.interface_.busRef).arg(hierConn.interface_.componentRef));
 		}
         // if both the component and it's port are found the connection can be made
@@ -416,6 +416,66 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
 
             addItem(diagConn);
 		}
+    }
+
+    // Create ad-hoc connections based on the design data.
+    QList<Design::AdHocConnection> adHocConnections = design->getAdHocConnections();
+
+    foreach (Design::AdHocConnection const& adHocConn, adHocConnections)
+    {
+        // Find the first referenced component.
+        DiagramComponent* comp1 = getComponent(adHocConn.internalPortReferences.at(0).componentRef);
+
+        if (comp1 == 0)
+        {
+            emit errorMessage(tr("Component %1 was not found in the design").arg(
+                              adHocConn.internalPortReferences.at(0).componentRef));
+            continue;
+        }
+
+        // Find the second referenced component.
+        DiagramComponent* comp2 = getComponent(adHocConn.internalPortReferences.at(1).componentRef);
+
+        if (comp2 == 0)
+        {
+            emit errorMessage(tr("Component %1 was not found in the design").arg(
+                              adHocConn.internalPortReferences.at(1).componentRef));
+            continue;
+        }
+
+        // Find the ports.
+        DiagramAdHocPort* port1 = comp1->getAdHocPort(adHocConn.internalPortReferences.at(0).portRef);
+
+        if (port1 == 0)
+        {
+            emit errorMessage(tr("Port %1 was not found in the component %2").arg(
+                adHocConn.internalPortReferences.at(0).portRef).arg(adHocConn.internalPortReferences.at(0).componentRef));
+            continue;
+        }
+
+        DiagramAdHocPort* port2 = comp2->getAdHocPort(adHocConn.internalPortReferences.at(1).portRef);
+
+        if (port2 == 0)
+        {
+            emit errorMessage(tr("Port %1 was not found in the component %2").arg(
+                adHocConn.internalPortReferences.at(1).portRef).arg(adHocConn.internalPortReferences.at(1).componentRef));
+            continue;
+        }
+
+        // Create the ad-hoc connection graphics item.
+        DiagramInterconnection* conn = new DiagramInterconnection(port1, port2, true,
+                                                                  adHocConn.displayName, adHocConn.description,
+                                                                  this);
+        conn->setName(adHocConn.name);
+        conn->setRoute(adHocConn.route);
+        
+//         if (interconnection.offPage)
+//         {
+//             diagramInterconnection->setVisible(false);
+//         }
+
+        connect(conn, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+        addItem(conn);
     }
 
     // Finally, update the stacking of the columns.
@@ -484,6 +544,7 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv)
 	QList<Design::ComponentInstance> instances;
 	QList<Design::Interconnection> interconnections;
 	QList<Design::HierConnection> hierConnections;
+    QList<Design::AdHocConnection> adHocConnections;
     QList<Design::ColumnDesc> columns;
 
     QList<QString> unpackagedNames;
@@ -531,45 +592,69 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv)
             }
 
 			instances.append(instance);
-		} else if (item->type() == DiagramInterconnection::Type) {
-			DiagramInterconnection *conn = qgraphicsitem_cast<DiagramInterconnection *>(item);
+		}
+        else if (item->type() == DiagramInterconnection::Type)
+        {
+            DiagramInterconnection *conn = qgraphicsitem_cast<DiagramInterconnection *>(item);
 
-			if (conn->endPoint1()->encompassingComp() && conn->endPoint2()->encompassingComp())
+            // Save data based on the connection type.
+            if (conn->isBus())
             {
-				Design::Interface iface1(conn->endPoint1()->encompassingComp()->name(),
-					conn->endPoint1()->name());
-				Design::Interface iface2(conn->endPoint2()->encompassingComp()->name(),
-					conn->endPoint2()->name());
-				interconnections.append(Design::Interconnection(conn->name(), iface1, iface2,
-                                                                conn->route(),
-                                                                conn->endPoint1()->type() == DiagramOffPageConnector::Type,
-                                                                QString(),
-																conn->description()));
-			}
+			    if (conn->endPoint1()->encompassingComp() && conn->endPoint2()->encompassingComp())
+                {
+				    Design::Interface iface1(conn->endPoint1()->encompassingComp()->name(),
+					    conn->endPoint1()->name());
+				    Design::Interface iface2(conn->endPoint2()->encompassingComp()->name(),
+					    conn->endPoint2()->name());
+				    interconnections.append(Design::Interconnection(conn->name(), iface1, iface2,
+                                                                    conn->route(),
+                                                                    conn->endPoint1()->type() == DiagramOffPageConnector::Type,
+                                                                    QString(),
+																    conn->description()));
+			    }
+                else
+                {
+				    DiagramConnectionEndPoint *compPort;
+				    DiagramConnectionEndPoint *hierPort;
+
+                    if (conn->endPoint1()->encompassingComp()) {
+					    compPort = conn->endPoint1();
+					    hierPort = conn->endPoint2();
+				    } else {
+					    compPort = conn->endPoint2();
+					    hierPort = conn->endPoint1();
+				    }
+
+                    if (hierPort->getBusInterface() != 0)
+                    {
+                        hierConnections.append(
+					        Design::HierConnection(hierPort->name(),
+                                                   Design::Interface(compPort->encompassingComp()->name(),
+					                                                 compPort->name()),
+                                                   hierPort->scenePos(), hierPort->getDirection(),
+                                                   conn->route(),
+                                                   conn->endPoint1()->type() == DiagramOffPageConnector::Type));
+                    }
+			    }
+            }
             else
             {
-				DiagramConnectionEndPoint *compPort;
-				DiagramConnectionEndPoint *hierPort;
+                // TODO: Add support for hierarchical ad-hoc connections.
+                QList<Design::PortRef> portRefs;
+                portRefs.append(Design::PortRef(conn->endPoint1()->name(),
+                                                conn->endPoint1()->encompassingComp()->name()
+                                                /*TODO: Left and right bounds*/));
+                portRefs.append(Design::PortRef(conn->endPoint2()->name(),
+                                                conn->endPoint2()->encompassingComp()->name()
+                                                /*TODO: Left and right bounds*/));
 
-                if (conn->endPoint1()->encompassingComp()) {
-					compPort = conn->endPoint1();
-					hierPort = conn->endPoint2();
-				} else {
-					compPort = conn->endPoint2();
-					hierPort = conn->endPoint1();
-				}
-
-                if (hierPort->getBusInterface() != 0)
-                {
-                    hierConnections.append(
-					    Design::HierConnection(hierPort->name(),
-                                               Design::Interface(compPort->encompassingComp()->name(),
-					                                             compPort->name()),
-                                               hierPort->scenePos(), hierPort->getDirection(),
-                                               conn->route(),
-                                               conn->endPoint1()->type() == DiagramOffPageConnector::Type));
-                }
-			}
+                // Otherwise the connection is ad-hoc.
+                adHocConnections.append(Design::AdHocConnection(conn->name(), QString(),
+                                                                conn->description(), 0 /*TODO*/,
+                                                                portRefs, QList<Design::PortRef>(),
+                                                                conn->route(),
+                                                                conn->endPoint1()->type() == DiagramOffPageConnector::Type));
+            }
 		}
 	}
 
@@ -611,7 +696,8 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv)
 
 	design->setComponentInstances(instances);
 	design->setInterconnections(interconnections);
-	design->setHierarchicalConnections(hierConnections);
+    design->setHierarchicalConnections(hierConnections);
+    design->setAdHocConnections(adHocConnections);
     design->setColumns(columns);   
 
 	return design;

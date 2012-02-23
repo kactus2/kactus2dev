@@ -352,39 +352,64 @@ void Design::write(QFile& file)
 			xmlWriter.writeAttribute("allowedItems", QString::number(columnDesc.allowedItems));
 		}
 
-		xmlWriter.writeEndElement();
-
-		xmlWriter.writeStartElement("kactus2:routes");
-
-		foreach (Interconnection const& conn, interconnections_)
-		{
-			if (!conn.route.empty())
-			{
-				xmlWriter.writeStartElement("kactus2:route");
-				xmlWriter.writeAttribute("kactus2:connRef", conn.name);
-
-                if (conn.offPage)
-                {
-                    xmlWriter.writeAttribute("kactus2:offPage", "true");
-                }
-                else
-                {
-                    xmlWriter.writeAttribute("kactus2:offPage", "false");
-                }
-
-				foreach (QPointF const& point, conn.route)
-				{
-					writePosition(xmlWriter, point);
-				}
-
-				xmlWriter.writeEndElement();
-			}
-		}
-
-		xmlWriter.writeEndElement();
+		xmlWriter.writeEndElement(); // kactus2:columnLayout
 	}
 
-	xmlWriter.writeEndElement();
+    xmlWriter.writeStartElement("kactus2:routes");
+
+    foreach (Interconnection const& conn, interconnections_)
+    {
+        if (!conn.route.empty())
+        {
+            xmlWriter.writeStartElement("kactus2:route");
+            xmlWriter.writeAttribute("kactus2:connRef", conn.name);
+
+            if (conn.offPage)
+            {
+                xmlWriter.writeAttribute("kactus2:offPage", "true");
+            }
+            else
+            {
+                xmlWriter.writeAttribute("kactus2:offPage", "false");
+            }
+
+            foreach (QPointF const& point, conn.route)
+            {
+                writePosition(xmlWriter, point);
+            }
+
+            xmlWriter.writeEndElement();
+        }
+    }
+
+    foreach (AdHocConnection const& conn, adHocConnections_)
+    {
+        if (!conn.route.empty())
+        {
+            xmlWriter.writeStartElement("kactus2:route");
+            xmlWriter.writeAttribute("kactus2:connRef", conn.name);
+
+            if (conn.offPage)
+            {
+                xmlWriter.writeAttribute("kactus2:offPage", "true");
+            }
+            else
+            {
+                xmlWriter.writeAttribute("kactus2:offPage", "false");
+            }
+
+            foreach (QPointF const& point, conn.route)
+            {
+                writePosition(xmlWriter, point);
+            }
+
+            xmlWriter.writeEndElement();
+        }
+    }
+
+    xmlWriter.writeEndElement(); // kactus2:routes
+
+	xmlWriter.writeEndElement(); // kactus2:vendorExtensions
 
 	xmlWriter.writeEndElement();
 	xmlWriter.writeEndDocument();
@@ -648,16 +673,32 @@ void Design::parseVendorExtensions(QDomNode &node)
 						}
 					}
 
-					// Apply the route to the correct interconnection.
+					// Apply the route to the correct interconnection or ad-hoc connection.
+                    bool found = false;
+
 					for (int i = 0; i < interconnections_.size(); ++i)
 					{
 						if (interconnections_[i].name == name)
 						{
 							interconnections_[i].route = route;
                             interconnections_[i].offPage = offPageValue == "true";
+                            found = true;
 							break;
 						}
 					}
+
+                    if (!found)
+                    {
+                        for (int i = 0; i < adHocConnections_.size(); ++i)
+                        {
+                            if (adHocConnections_[i].name == name)
+                            {
+                                adHocConnections_[i].route = route;
+                                adHocConnections_[i].offPage = offPageValue == "true";
+                                break;
+                            }
+                        }
+                    }
 				}
 			}
 		}
@@ -1375,7 +1416,8 @@ bool Design::PortRef::isValid( bool externalRef, const QStringList& instanceName
 
 Design::AdHocConnection::AdHocConnection(QDomNode &adHocConnectionNode)
     : name(), displayName(), description(), tiedValue(),
-      internalPortReferences(), externalPortReferences()
+      internalPortReferences(), externalPortReferences(),
+      route(), offPage(false)
 {
     for (int i = 0; i < adHocConnectionNode.childNodes().size(); i++) {
 	QDomNode node = adHocConnectionNode.childNodes().at(i);
@@ -1405,13 +1447,15 @@ Design::AdHocConnection::AdHocConnection(QString name,
 					 QString description,
 					 QString tiedValue,
 					 QList<PortRef> internalPortReferences,
-					 QList<PortRef> externalPortReferences):
+					 QList<PortRef> externalPortReferences,
+                     QList<QPointF> const& route, bool offPage):
 name(name), 
 displayName(displayName), 
 description(description),
 tiedValue(tiedValue), 
 internalPortReferences(internalPortReferences),
-externalPortReferences(externalPortReferences)
+externalPortReferences(externalPortReferences),
+route(route), offPage(offPage)
 {
 }
 
@@ -1421,7 +1465,8 @@ displayName(other.displayName),
 description(other.description),
 tiedValue(other.tiedValue),
 internalPortReferences(other.internalPortReferences),
-externalPortReferences(other.externalPortReferences) {
+externalPortReferences(other.externalPortReferences),
+route(other.route), offPage(other.offPage) {
 }
 
 Design::AdHocConnection& Design::AdHocConnection::operator=( const AdHocConnection& other ) {
@@ -1432,6 +1477,8 @@ Design::AdHocConnection& Design::AdHocConnection::operator=( const AdHocConnecti
 		tiedValue = other.tiedValue;
 		internalPortReferences = other.internalPortReferences;
 		externalPortReferences = other.externalPortReferences;
+        route = other.route;
+        offPage = other.offPage;
 	}
 	return *this;
 }

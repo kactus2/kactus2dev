@@ -552,6 +552,18 @@ public:
 		*/
 		QList<PortRef> externalPortReferences;
 
+        /*! \brief VENDOREXT kactus2:route
+         *
+         *  The diagram route for the interconnection.
+         */
+        QList<QPointF> route;
+
+        /*! \brief VENDOREXT kactus2:offPage
+         *
+         *  If true, the route is treated as an off-page connection.
+         */
+        bool offPage;
+
 		/*! \brief The constructor
 		*
 		* \param adHocConnectionNode a reference to a QDomNode where
@@ -567,7 +579,9 @@ public:
 			QString description = QString(),
 			QString tiedValue = QString(),
 			QList<PortRef> internalPortReferences = QList<PortRef>(),
-			QList<PortRef> externalPortReferences = QList<PortRef>());
+			QList<PortRef> externalPortReferences = QList<PortRef>(),
+            QList<QPointF> const& route = QList<QPointF>(),
+            bool offPage = false);
 
 		//! \brief Copy constructor
 		AdHocConnection(const AdHocConnection& other);
