@@ -52,7 +52,7 @@ EndpointItem::EndpointItem(ProgramEntityItem* parentNode, QString const& name,
     
     textLabel_ = new QGraphicsTextItem(this);
 
-    textLabel_->setPos(-WIDTH / 2 + ARROW_WIDTH + 5, 2 - HEIGHT / 2);
+    textLabel_->setPos(-WIDTH / 2 + ARROW_WIDTH + 5, -HEIGHT / 2);
     updateText();
     updateVisuals();
 }
@@ -196,11 +196,11 @@ void EndpointItem::setDirection(DrawDirection dir)
     // Update the visuals based on the new direction.
     if (dir == DIR_RIGHT)
     {
-        textLabel_->setPos(-WIDTH / 2 + 5, 2 - HEIGHT / 2);
+        textLabel_->setPos(-WIDTH / 2 + 5, -HEIGHT / 2);
     }
     else
     {
-        textLabel_->setPos(-WIDTH / 2 + ARROW_WIDTH + 5, 2 - HEIGHT / 2);
+        textLabel_->setPos(-WIDTH / 2 + ARROW_WIDTH + 5, -HEIGHT / 2);
     }
 
     dir_ = dir;
@@ -435,16 +435,14 @@ void EndpointItem::updateText()
 {
     if (parentProgEntity_->getMappingComponent() != 0)
     {
-        textLabel_->setHtml("<b>Name: </b>" + name_ +
-                            "<br><b>Endpoint:</b> &lt;HW, " +
+        textLabel_->setHtml("<b>" + name_ + "</b> &lt;HW, " +
                             QString::number(parentProgEntity_->getMappingComponent()->getID()) +
-                             ", " + QString::number(portID_) + "&gt;");
+                            ", " + QString::number(portID_) + "&gt;");
         update();
     }
     else
     {
-        textLabel_->setHtml("<b>Name: </b>" + name_ +
-                            "<br><b>Endpoint:</b> &lt;HW, unset, unset&gt;");
+        textLabel_->setHtml("<b>" + name_ + "</b> &lt;HW, unset, unset&gt;");
         update();
     }
 }

@@ -37,7 +37,7 @@ public:
     enum
     {
         WIDTH = 240,
-        HEIGHT = 40
+        HEIGHT = 20
     };
 
     //-----------------------------------------------------------------------------
@@ -291,7 +291,7 @@ private:
     enum
     {
         THIN_LINE = 1,
-        ARROW_WIDTH = 20
+        ARROW_WIDTH = 15
     };
 
     //! Parent program entity (endpoints component).

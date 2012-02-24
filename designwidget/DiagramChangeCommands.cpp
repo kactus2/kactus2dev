@@ -236,20 +236,20 @@ EndPointChangeCommand::~EndPointChangeCommand() {
 // Function: undo()
 //-----------------------------------------------------------------------------
 void EndPointChangeCommand::undo() {
-    endPoint_->getBusInterface()->setName(oldName_);
     endPoint_->getBusInterface()->setInterfaceMode(oldMode_);
-	endPoint_->setDescription(oldDescription_);
-    endPoint_->updateInterface();
+    endPoint_->setDescription(oldDescription_);
+    endPoint_->setName(oldName_);
+    //endPoint_->updateInterface();
 }
 
 //-----------------------------------------------------------------------------
 // Function: redo()
 //-----------------------------------------------------------------------------
 void EndPointChangeCommand::redo() {
-    endPoint_->getBusInterface()->setName(newName_);
     endPoint_->getBusInterface()->setInterfaceMode(newMode_);
-	endPoint_->setDescription(newDescription_);
-    endPoint_->updateInterface();
+    endPoint_->setDescription(newDescription_);
+    endPoint_->setName(newName_);
+    //endPoint_->updateInterface();
 }
 
 //-----------------------------------------------------------------------------

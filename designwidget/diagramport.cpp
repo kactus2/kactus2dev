@@ -97,8 +97,14 @@ QString DiagramPort::name() const
     return busInterface_->getName();
 }
 
-void DiagramPort::setName( const QString& name ) {
-	busInterface_->setName(name);
+//-----------------------------------------------------------------------------
+// Function: setName()
+//-----------------------------------------------------------------------------
+void DiagramPort::setName( const QString& name )
+{
+    busInterface_->setName(name);
+    encompassingComp()->componentModel()->updateBusInterface(busInterface_.data());
+
 	updateInterface();
 }
 
