@@ -8,7 +8,7 @@
 #ifndef DIRLISTMANAGERDELEGATE_H
 #define DIRLISTMANAGERDELEGATE_H
 
-#include <common/delegates/lineeditdelegate.h>
+#include <common/delegates/LineEditDelegate/lineeditdelegate.h>
 
 #include <QFileInfo>
 

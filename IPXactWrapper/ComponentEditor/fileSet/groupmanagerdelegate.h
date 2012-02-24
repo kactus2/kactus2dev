@@ -8,7 +8,7 @@
 #ifndef GROUPMANAGERDELEGATE_H
 #define GROUPMANAGERDELEGATE_H
 
-#include <common/delegates/combodelegate.h>
+#include <common/delegates/ComboDelegate/combodelegate.h>
 
 /*! \brief Provides editor to select a group for a file set.
  *

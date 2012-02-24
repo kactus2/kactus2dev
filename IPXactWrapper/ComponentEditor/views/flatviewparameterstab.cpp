@@ -7,7 +7,7 @@
 
 #include "flatviewparameterstab.h"
 
-#include <IPXactWrapper/ComponentEditor/parameters/parametersdelegate.h>
+#include <common/delegates/LineEditDelegate/lineeditdelegate.h>
 #include <models/view.h>
 
 #include <QVBoxLayout>
@@ -40,7 +40,7 @@ proxy_(this) {
 	// items can not be dragged
 	view_.setItemsDraggable(false);
 
-	view_.setItemDelegate(new ParametersDelegate(this));
+	view_.setItemDelegate(new LineEditDelegate(this));
 
 	// set source model for proxy
 	proxy_.setSourceModel(&model_);

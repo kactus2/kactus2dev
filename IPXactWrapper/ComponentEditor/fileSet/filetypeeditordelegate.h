@@ -8,7 +8,7 @@
 #ifndef FILETYPEEDITORDELEGATE_H
 #define FILETYPEEDITORDELEGATE_H
 
-#include <common/delegates/combodelegate.h>
+#include <common/delegates/ComboDelegate/combodelegate.h>
 
 #include <QStyledItemDelegate>
 

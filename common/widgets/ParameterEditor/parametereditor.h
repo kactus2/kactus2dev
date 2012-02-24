@@ -10,7 +10,7 @@
 
 #include <models/parameter.h>
 
-#include <IPXactWrapper/ComponentEditor/parameters/parametersmodel.h>
+#include <common/models/ParameterModel/parametersmodel.h>
 #include <common/views/EditableTableView/editabletableview.h>
 
 #include <QWidget>

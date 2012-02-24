@@ -8,7 +8,7 @@
 #ifndef BUSIFPARAMETERSTAB_H
 #define BUSIFPARAMETERSTAB_H
 
-#include <IPXactWrapper/ComponentEditor/parameters/parametersmodel.h>
+#include <common/models/ParameterModel/parametersmodel.h>
 #include <common/views/EditableTableView/editabletableview.h>
 
 #include <QWidget>

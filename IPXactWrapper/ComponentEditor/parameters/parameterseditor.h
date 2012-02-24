@@ -10,7 +10,7 @@
 
 #include <IPXactWrapper/ComponentEditor/itemeditor.h>
 
-#include "parametersmodel.h"
+#include <common/models/ParameterModel/parametersmodel.h>
 
 #include <common/views/EditableTableView/editabletableview.h>
 

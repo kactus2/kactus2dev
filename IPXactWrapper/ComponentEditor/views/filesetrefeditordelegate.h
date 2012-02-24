@@ -8,7 +8,7 @@
 #ifndef FILESETREFEDITORDELEGATE_H
 #define FILESETREFEDITORDELEGATE_H
 
-#include <common/delegates/combodelegate.h>
+#include <common/delegates/ComboDelegate/combodelegate.h>
 
 #include <models/component.h>
 

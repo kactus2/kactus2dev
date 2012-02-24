@@ -9,7 +9,7 @@
 #define ADDRESSSPACEPARAMETERSEDITOR_H
 
 #include <models/addressspace.h>
-#include <IPXactWrapper/ComponentEditor/parameters/parametersmodel.h>
+#include <common/models/ParameterModel/parametersmodel.h>
 #include <common/views/EditableTableView/editabletableview.h>
 
 #include <QGroupBox>

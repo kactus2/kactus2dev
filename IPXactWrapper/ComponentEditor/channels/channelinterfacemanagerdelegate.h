@@ -8,7 +8,7 @@
 #ifndef CHANNELINTERFACEMANAGERDELEGATE_H
 #define CHANNELINTERFACEMANAGERDELEGATE_H
 
-#include <common/delegates/combodelegate.h>
+#include <common/delegates/ComboDelegate/combodelegate.h>
 
 #include <models/component.h>
 

@@ -7,7 +7,7 @@
 
 #include "segmenteditor.h"
 
-#include <common/delegates/lineeditdelegate.h>
+#include <common/delegates/LineEditDelegate/lineeditdelegate.h>
 
 #include <QVBoxLayout>
 
