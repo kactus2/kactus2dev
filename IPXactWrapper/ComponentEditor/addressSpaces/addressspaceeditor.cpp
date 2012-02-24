@@ -17,7 +17,7 @@ addrSpace_(static_cast<AddressSpace*>(dataPointer)),
 nameBox_(this, tr("Name and description")),
 general_(addrSpace_, this),
 segments_(addrSpace_, this),
-parameterEditor_(addrSpace_, this) {
+parameterEditor_(&addrSpace_->getParameters(), this) {
 
 	Q_ASSERT(addrSpace_);
 
@@ -75,7 +75,7 @@ void AddressSpaceEditor::makeChanges() {
 	addrSpace_->setDisplayName(nameBox_.getDisplayName());
 	addrSpace_->setDescription(nameBox_.getDescription());
 	general_.makeChanges();
-	parameterEditor_.applyChanges();
+	parameterEditor_.apply();
 	segments_.makeChanges();
 }
 
@@ -90,6 +90,6 @@ void AddressSpaceEditor::restoreChanges() {
 	nameBox_.setDisplayName(addrSpace_->getDisplayName());
 	nameBox_.setDescription(addrSpace_->getDescription());
 	general_.restoreChanges();
-	parameterEditor_.restoreChanges();
+	parameterEditor_.restore();
 	segments_.restore();
 }

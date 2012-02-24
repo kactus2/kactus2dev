@@ -16,8 +16,7 @@
 #include <models/addressspace.h>
 
 #include <common/widgets/nameGroupBox/namegroupbox.h>
-
-#include <IPXactWrapper/ComponentEditor/parameters/parameterseditor.h>
+#include <common/widgets/ParameterGroupBox/parametergroupbox.h>
 
 #include <IPXactWrapper/ComponentEditor/itemeditor.h>
 #include <QSharedPointer>
@@ -30,6 +29,13 @@ class AddressSpaceEditor : public ItemEditor {
 
 public:
 
+	/*! \brief The constructor
+	 *
+	 * \param component Pointer to the component being edited.
+	 * \param dataPointer Pointer to the address space being edited.
+	 * \param parent Pointer to the parent of the editor.
+	 *
+	*/
 	AddressSpaceEditor(QSharedPointer<Component> component,
 		void* dataPointer,
 		QWidget *parent);
@@ -82,8 +88,8 @@ private:
 	//! \brief The editor to set the segments of the address space.
 	SegmentEditor segments_;
 
-	//! \brief Editor to set the parameters of an address space.
-	AddressSpaceParametersEditor parameterEditor_;
+	//! \brief The editor for the parameters of the address space.
+	ParameterGroupBox parameterEditor_;
 };
 
 #endif // ADDRESSSPACEEDITOR_H

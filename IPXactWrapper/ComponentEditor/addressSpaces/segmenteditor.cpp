@@ -7,6 +7,8 @@
 
 #include "segmenteditor.h"
 
+#include <common/delegates/lineeditdelegate.h>
+
 #include <QVBoxLayout>
 
 SegmentEditor::SegmentEditor( AddressSpace* addrSpace, QWidget *parent ):
@@ -34,6 +36,8 @@ model_(addrSpace, this) {
 
 	// items can not be dragged
 	view_.setItemsDraggable(false);
+
+	view_.setItemDelegate(new LineEditDelegate(this));
 
 	// set source model for proxy
 	proxy_.setSourceModel(&model_);

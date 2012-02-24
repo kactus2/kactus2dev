@@ -1,26 +1,24 @@
 /* 
- *
- *  Created on: 5.4.2011
+ *  	Created on: 22.2.2012
  *      Author: Antti Kamppi
- * 		filename: busifparameterstab.cpp
+ * 		filename: parametereditor.cpp
+ *		Project: Kactus 2
  */
 
-#include "busifparameterstab.h"
+#include "parametereditor.h"
 
-#include <models/businterface.h>
-#include <IPXactWrapper/ComponentEditor/parameters/parametersdelegate.h>
+#include <common/delegates/lineeditdelegate.h>
 
 #include <QVBoxLayout>
 
-BusIfParametersTab::BusIfParametersTab(void* dataPointer, QWidget *parent): 
-QWidget(parent), 
-busif_(static_cast<BusInterface*>(dataPointer)),
+ParameterEditor::ParameterEditor( QList<QSharedPointer<Parameter> >* parameters, 
+								 QWidget *parent):
+QWidget(parent),
 view_(this), 
-model_(&static_cast<BusInterface*>(dataPointer)->getParameters(), this),
-proxy_(NULL) {
+model_(parameters, this),
+proxy_(this) {
 
-	Q_ASSERT_X(dataPointer, "BusIfParametersTab constructor",
-		"Null dataPointer given as parameter");
+	Q_ASSERT(parameters);
 
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -32,9 +30,9 @@ proxy_(NULL) {
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
 	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
-		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
+		this, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
-		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+		this, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 
 	// set view to be sortable
 	view_.setSortingEnabled(true);
@@ -42,36 +40,41 @@ proxy_(NULL) {
 	// items can not be dragged
 	view_.setItemsDraggable(false);
 
-	view_.setItemDelegate(new ParametersDelegate(this));
-
-	// set proxy to do the sorting automatically
-	proxy_ = new QSortFilterProxyModel(this);
+	view_.setItemDelegate(new LineEditDelegate(this));
 
 	// set source model for proxy
-	proxy_->setSourceModel(&model_);
+	proxy_.setSourceModel(&model_);
 	// set proxy to be the source for the view
-	view_.setModel(proxy_);
+	view_.setModel(&proxy_);
 
 	// sort the view
 	view_.sortByColumn(0, Qt::AscendingOrder);
 
-	// create the layout, add widgets to it
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&view_);
+	
+	restore();
 }
 
-BusIfParametersTab::~BusIfParametersTab() {
+ParameterEditor::~ParameterEditor() {
 }
 
-bool BusIfParametersTab::isValid() const {
+bool ParameterEditor::isValid() const {
 	return model_.isValid();
 }
 
-void BusIfParametersTab::restoreChanges() {
+void ParameterEditor::restore() {
 	model_.restore();
 }
 
-void BusIfParametersTab::applyChanges() {
+void ParameterEditor::apply() {
 	model_.apply();
 }
 
+void ParameterEditor::onAddItem( const QModelIndex& index ) {
+	model_.onAddItem(proxy_.mapToSource(index));
+}
+
+void ParameterEditor::onRemoveItem( const QModelIndex& index ) {
+	model_.onRemoveItem(proxy_.mapToSource(index));
+}

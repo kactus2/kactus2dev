@@ -216,7 +216,7 @@ void ParametersModel::onRemoveRow( int row ) {
 
 void ParametersModel::onRemoveItem( const QModelIndex& index ) {
 	// don't remove anything if index is invalid
-	if (!index.isValid()) {
+ 	if (!index.isValid()) {
 		return;
 	}
 	// make sure the row number if valid
