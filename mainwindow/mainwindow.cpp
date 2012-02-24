@@ -750,7 +750,7 @@ void MainWindow::loadWorkspace(QString const& workspaceName)
 
 
     // Set the window to normal state (this fixed a weird error with window state).
-    setWindowState(Qt::WindowNoState);
+    //setWindowState(Qt::WindowNoState);
 
     // If geometry is saved then restore it.
     restoreGeometry(settings.value("Geometry").toByteArray());
@@ -758,6 +758,11 @@ void MainWindow::loadWorkspace(QString const& workspaceName)
     // If state of widgets is saved then restore it.
     if (settings.contains("WindowState")) {
         restoreState(settings.value("WindowState").toByteArray());
+    }
+
+    if (settings.contains("WindowPosition"))
+    {
+        move(settings.value("WindowPosition").toPoint());
     }
 
     const bool configurationVisible = settings.value("ConfigurationVisibility", true).toBool();
@@ -795,7 +800,7 @@ void MainWindow::loadWorkspace(QString const& workspaceName)
     if (designTabs_->count() == 0)
     {
         updateWindows(TabDocument::OUTPUTWINDOW | TabDocument::LIBRARYWINDOW | 
-            TabDocument::PREVIEWWINDOW);
+                      TabDocument::PREVIEWWINDOW);
     }
     else
     {
@@ -818,8 +823,9 @@ void MainWindow::saveWorkspace(QString const& workspaceName)
     // Save the geometry and state of windows.
     settings.beginGroup(keyName);
 
-    settings.setValue("Geometry", saveGeometry());
     settings.setValue("WindowState", saveState());
+    settings.setValue("Geometry", saveGeometry());
+    settings.setValue("WindowPosition", pos());
     settings.setValue("ConfigurationVisibility", visibilities_.showConfiguration_);
     settings.setValue("ConnectionVisibility", visibilities_.showConnection_);
     settings.setValue("InstanceVisibility", visibilities_.showInstance_);
