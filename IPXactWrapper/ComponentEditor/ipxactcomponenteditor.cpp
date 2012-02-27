@@ -33,6 +33,7 @@
 #include "busInterfaces/apieditor.h"
 #include "views/vieweditor.h"
 #include "software/SoftwareMappingsEditor.h"
+#include "cpus/cpueditor.h"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -164,6 +165,10 @@ void IPXactComponentEditor::createNewEditor( ComponentTreeItem* item ) {
 			editor = new AddressSpaceEditor(component_, item->getDataPointer(), widgetStack_);
 			break;
 											  }
+		case ComponentTreeItem::CPU: {
+			editor = new CpuEditor(component_, item->getDataPointer(), widgetStack_);
+			break;
+									 }
 
 		case ComponentTreeItem::FILESET: {
 			

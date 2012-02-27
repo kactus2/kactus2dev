@@ -1,12 +1,12 @@
 /* 
- *  	Created on: 9.12.2011
+ *  	Created on: 27.2.2012
  *      Author: Antti Kamppi
- * 		filename: filesetrefeditordelegate.h
+ * 		filename: addressspacerefdelegate.h
  *		Project: Kactus 2
  */
 
-#ifndef FILESETREFEDITORDELEGATE_H
-#define FILESETREFEDITORDELEGATE_H
+#ifndef ADDRESSSPACEREFDELEGATE_H
+#define ADDRESSSPACEREFDELEGATE_H
 
 #include <common/delegates/ComboDelegate/combodelegate.h>
 
@@ -14,24 +14,25 @@
 
 #include <QSharedPointer>
 
-/*! \brief Delegate that manages the editors to select a file set in a component.
+/*! \brief Delegate that manages the editors to select an address space in component.
  *
  */
-class FileSetRefEditorDelegate : public ComboDelegate {
+class AddressSpaceRefDelegate : public ComboDelegate {
 	Q_OBJECT
 
 public:
 
 	/*! \brief The constructor
 	 *
-	 * \param parent The pointer to the owner of this delegate.
-	 * \param component The component that's file sets are being selected.
+	 * \param parent Pointer to the owner of this delegate.
+	 * \param component Pointer to the component being edited.
 	 *
 	*/
-	FileSetRefEditorDelegate(QObject *parent, QSharedPointer<Component> component);
+	AddressSpaceRefDelegate(QObject *parent,
+		QSharedPointer<Component> component);
 	
 	//! \brief The destructor
-	virtual ~FileSetRefEditorDelegate();
+	virtual ~AddressSpaceRefDelegate();
 
 	/*! \brief Create a new editor for the given item
 	 *
@@ -47,13 +48,13 @@ public:
 
 private:
 	//! \brief No copying
-	FileSetRefEditorDelegate(const FileSetRefEditorDelegate& other);
+	AddressSpaceRefDelegate(const AddressSpaceRefDelegate& other);
 
 	//! \brief No assignment
-	FileSetRefEditorDelegate& operator=(const FileSetRefEditorDelegate& other);
+	AddressSpaceRefDelegate& operator=(const AddressSpaceRefDelegate& other);
 
-	//! \brief Pointer to the component that's file set are being selected.
+	//! \brief Pointer to the component being edited.
 	QSharedPointer<Component> component_;
 };
 
-#endif // FILESETREFEDITORDELEGATE_H
+#endif // ADDRESSSPACEREFDELEGATE_H

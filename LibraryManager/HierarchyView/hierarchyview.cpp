@@ -44,10 +44,8 @@ openPlatformAction_(NULL),
 openPFStackAction_(NULL),
 openApplicationAction_(NULL),
 openEndpointAction_(NULL),
-openSWDesignAction_(NULL)
-#ifndef NDEBUG
-, openXmlAction_(NULL)
-#endif
+openSWDesignAction_(NULL),
+openXmlAction_(NULL)
 {
 
 	// the view can be sorted
@@ -157,11 +155,9 @@ void HierarchyView::setupActions() {
     connect(openSWDesignAction_, SIGNAL(triggered()),
         this, SLOT(onOpenComponent()), Qt::UniqueConnection);
 
-	#ifndef NDEBUG
 	openXmlAction_ = new QAction(tr("Open the xml-file"), this);
 	connect(openXmlAction_, SIGNAL(triggered()),
 		this, SLOT(onOpenXml()), Qt::UniqueConnection);
-	#endif
 }
 
 void HierarchyView::onOpenComponent() {
@@ -208,7 +204,6 @@ void HierarchyView::onExportAction() {
 	}
 }
 
-#ifndef NDEBUG
 void HierarchyView::onOpenXml() {
 	QModelIndex index = filter_->mapToSource(currentIndex());
 	HierarchyItem* item = static_cast<HierarchyItem*>(index.internalPointer());
@@ -218,7 +213,6 @@ void HierarchyView::onOpenXml() {
 	// open the file in operating system's default editor
 	QDesktopServices::openUrl(QUrl::fromLocalFile(xmlPath));
 }
-#endif
 
 void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
 	Q_ASSERT_X(event, "LibraryTreeView::contextMenuEvent",
@@ -322,9 +316,7 @@ void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
 	
 	menu.addAction(exportAction_);
 
-	#ifndef NDEBUG
 	menu.addAction(openXmlAction_);
-	#endif
 
 	menu.exec(event->globalPos());
 }

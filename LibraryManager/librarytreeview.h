@@ -118,10 +118,8 @@ public slots:
 	*/
 	virtual void setCurrentIndex(const QModelIndex& index);
 
-	#ifndef NDEBUG
 	//! \brief Open the xml of the selected IP-Xact element.
 	void onOpenXml();
-	#endif
 
 protected:
 
@@ -214,11 +212,8 @@ private:
     //! \brief Open software design to be edited
     QAction* openSWDesignAction_;
 
-	// this is available only in debug mode
-	#ifndef NDEBUG
 	//! \brief Open the xml file to be viewed by the user.
 	QAction* openXmlAction_;
-	#endif
 };
 
 #endif // LIBRARYTREEVIEW_H

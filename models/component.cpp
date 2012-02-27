@@ -932,7 +932,7 @@ bool Component::isValid( QStringList& errorList ) const {
 			cpuNames.append(cpu->getName());
 		}
 
-		if (!cpu->isValid(errorList, thisIdentifier)) {
+		if (!cpu->isValid(addSpaceNames, errorList, thisIdentifier)) {
 			valid = false;
 		}
 	}
@@ -1123,7 +1123,7 @@ bool Component::isValid() const {
 			cpuNames.append(cpu->getName());
 		}
 
-		if (!cpu->isValid()) {
+		if (!cpu->isValid(addSpaceNames)) {
 			return false;
 		}
 	}
@@ -1198,7 +1198,7 @@ const QList<QSharedPointer<MemoryMap> >& Component::getMemoryMaps() const {
 	return memoryMaps_;
 }
 
-const QList<QSharedPointer<Cpu> >& Component::getCpus() const {
+QList<QSharedPointer<Cpu> >& Component::getCpus() {
 	return cpus_;
 }
 
@@ -2348,4 +2348,28 @@ AddressSpace* Component::createAddressSpace() {
 	QSharedPointer<AddressSpace> addrSpace(new AddressSpace());
 	addressSpaces_.append(addrSpace);
 	return addrSpace.data();
+}
+
+bool Component::hasAddressSpace( const QString& addrSpaceName ) const {
+	foreach (QSharedPointer<AddressSpace> addrSpace, addressSpaces_) {
+		if (addrSpace->getName() == addrSpaceName) {
+			return true;
+		}
+	}
+	return false;
+}
+
+void Component::removeCpu( const QString& cpuName ) {
+	for (int i = 0; i < cpus_.size(); ++i) {
+		if (cpus_.at(i)->getName() == cpuName) {
+			cpus_.removeAt(i);
+			return;
+		}
+	}
+}
+
+Cpu* Component::createCpu() {
+	QSharedPointer<Cpu> cpu(new Cpu());
+	cpus_.append(cpu);
+	return cpu.data();
 }

@@ -23,11 +23,15 @@
 //-----------------------------------------------------------------------------
 // Function: Cpu()
 //-----------------------------------------------------------------------------
-Cpu::Cpu() : name_(QString()), addressSpaceRefs_(), parameters_()
-{
+Cpu::Cpu():
+nameGroup_(),
+addressSpaceRefs_(),
+parameters_() {
 }
 
-Cpu::Cpu(QDomNode &cpuNode): name_(QString()), addressSpaceRefs_(),
+Cpu::Cpu(QDomNode &cpuNode): 
+nameGroup_(cpuNode), 
+addressSpaceRefs_(),
 parameters_() {
 
 	for (int i = 0; i < cpuNode.childNodes().count(); ++i) {
@@ -38,13 +42,7 @@ parameters_() {
 			continue;
 		}
 
-		if (tempNode.nodeName() == QString("spirit:name")) {
-
-			// strip whitespace characters
-			name_ = tempNode.childNodes().at(0).nodeValue();
-			name_ = General::removeWhiteSpace(name_);
-		}
-		else if (tempNode.nodeName() == QString("spirit:addressSpaceRef")) {
+		if (tempNode.nodeName() == QString("spirit:addressSpaceRef")) {
 
 			// get the spirit:addressSpaceRef attribute
 			QDomNamedNodeMap attributeMap = tempNode.attributes();
@@ -72,28 +70,28 @@ parameters_() {
 }
 
 Cpu::Cpu( const Cpu &other ):
-name_(other.name_),
+nameGroup_(other.nameGroup_),
 addressSpaceRefs_(other.addressSpaceRefs_),
 parameters_() {
 
 	foreach (QSharedPointer<Parameter> param, other.parameters_) {
 		if (param) {
-			QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(
-				new Parameter(*param.data()));
+			QSharedPointer<Parameter> copy(new Parameter(*param.data()));
+			parameters_.append(copy);
 		}
 	}
 }
 
 Cpu & Cpu::operator=( const Cpu &other ) {
 	if (this != &other) {
-		name_ = other.name_;
+		nameGroup_ = other.nameGroup_;
 		addressSpaceRefs_ = other.addressSpaceRefs_;
 
 		parameters_.clear();
 		foreach (QSharedPointer<Parameter> param, other.parameters_) {
 			if (param) {
-				QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(
-					new Parameter(*param.data()));
+				QSharedPointer<Parameter> copy(new Parameter(*param.data()));
+				parameters_.append(copy);
 			}
 		}
 	}
@@ -108,15 +106,23 @@ void Cpu::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:cpu");
 
 	// if mandatory name doesn't exist
-	if (name_.isEmpty()) {
+	if (nameGroup_.name_.isEmpty()) {
 		throw Write_error(QObject::tr("Mandatory name missing in "
 				"spirit:cpu"));
 	}
 	else {
-		writer.writeTextElement("spirit:name", name_);
+		writer.writeTextElement("spirit:name", nameGroup_.name_);
 	}
 
-	// atleast one addressSpaceRef must be found
+	if (!nameGroup_.displayName_.isEmpty()) {
+		writer.writeTextElement("spirit:displayName", nameGroup_.displayName_);
+	}
+
+	if (!nameGroup_.description_.isEmpty()) {
+		writer.writeTextElement("spirit:description", nameGroup_.description_);
+	}
+
+	// at least one addressSpaceRef must be found
 	if (addressSpaceRefs_.size() == 0) {
 		throw Write_error(QObject::tr("Mandatory addressSpaceRef missing in "
 				"spirit:cpu"));
@@ -147,11 +153,13 @@ void Cpu::write(QXmlStreamWriter& writer) {
 	return;
 }
 
-bool Cpu::isValid( QStringList& errorList, const QString& parentIdentifier ) const {
+bool Cpu::isValid(const QStringList& addrSpaceNames,
+				  QStringList& errorList, 
+				  const QString& parentIdentifier ) const {
 	bool valid = true;
-	const QString thisIdentifier(QObject::tr("cpu %1").arg(name_));
+	const QString thisIdentifier(QObject::tr("cpu %1").arg(nameGroup_.name_));
 
-	if (name_.isEmpty()) {
+	if (nameGroup_.name_.isEmpty()) {
 		errorList.append(QObject::tr("No name specified for a cpu within %1").arg(
 			parentIdentifier));
 		valid = false;
@@ -159,8 +167,19 @@ bool Cpu::isValid( QStringList& errorList, const QString& parentIdentifier ) con
 
 	if (addressSpaceRefs_.isEmpty()) {
 		errorList.append(QObject::tr("No address space reference defined for"
-			" cpu %1 within %2").arg(name_).arg(parentIdentifier));
+			" cpu %1 within %2").arg(nameGroup_.name_).arg(parentIdentifier));
 		valid = false;
+	}
+	// if there are references then check that they are valid
+	else {
+		foreach (QString addrRef, addressSpaceRefs_) {
+			if (!addrSpaceNames.contains(addrRef)) {
+				errorList.append(QObject::tr("Cpu %1 contained reference to "
+					"address space %2 which is not found within %3").arg(
+					nameGroup_.name_).arg(addrRef).arg(parentIdentifier));
+				valid = false;
+			}
+		}
 	}
 
 	foreach (QSharedPointer<Parameter> param, parameters_) {
@@ -172,13 +191,21 @@ bool Cpu::isValid( QStringList& errorList, const QString& parentIdentifier ) con
 	return valid;
 }
 
-bool Cpu::isValid() const {
-	if (name_.isEmpty()) {
+bool Cpu::isValid(const QStringList& addrSpaceNames) const {
+	if (nameGroup_.name_.isEmpty()) {
 		return false;
 	}
 
 	if (addressSpaceRefs_.isEmpty()) {
 		return false;
+	}
+	// if there are references then check that they are valid.
+	else {
+		foreach (QString addrRef, addressSpaceRefs_) {
+			if (!addrSpaceNames.contains(addrRef)) {
+				return false;
+			}
+		}
 	}
 
 	foreach (QSharedPointer<Parameter> param, parameters_) {
@@ -189,7 +216,7 @@ bool Cpu::isValid() const {
 	return true;
 }
 
-const QList<QSharedPointer<Parameter> >& Cpu::getParameters() {
+QList<QSharedPointer<Parameter> >& Cpu::getParameters() {
 	return parameters_;
 }
 
@@ -202,19 +229,35 @@ void Cpu::setParameters(QList<QSharedPointer<Parameter> > &parameters) {
 }
 
 QString Cpu::getName() const {
-	return name_;
+	return nameGroup_.name_;
 }
 
 void Cpu::setName(const QString &name) {
-	name_ = name;
+	nameGroup_.name_ = name;
 }
 
 const QStringList& Cpu::getAddressSpaceRefs() {
 	return addressSpaceRefs_;
 }
 
-void Cpu::setAddressSpaceRefs(QList<QString> &addressSpaceRefs) {
+void Cpu::setAddressSpaceRefs(const QStringList& addressSpaceRefs) {
 	// remove old addressSpaceRefs
 	addressSpaceRefs_.clear();
 	addressSpaceRefs_ = addressSpaceRefs;
+}
+
+QString Cpu::getDisplayName() const {
+	return nameGroup_.displayName_;
+}
+
+QString Cpu::getDescription() const {
+	return nameGroup_.description_;
+}
+
+void Cpu::setDisplayName( const QString& displayName ) {
+	nameGroup_.displayName_ = displayName;
+}
+
+void Cpu::setDescription( const QString& description ) {
+	nameGroup_.description_ = description;
 }

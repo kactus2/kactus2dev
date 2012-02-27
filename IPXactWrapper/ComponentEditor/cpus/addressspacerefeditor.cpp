@@ -1,33 +1,29 @@
 /* 
- *
- *  Created on: 15.4.2011
+ *  	Created on: 27.2.2012
  *      Author: Antti Kamppi
- * 		filename: filesetrefeditor.cpp
+ * 		filename: addressspacerefeditor.cpp
+ *		Project: Kactus 2
  */
 
-#include "filesetrefeditor.h"
+#include "addressspacerefeditor.h"
 
-#include "filesetrefeditordelegate.h"
-#include "filesetrefmodel.h"
-
-#include <models/component.h>
+#include "addressspacerefmodel.h"
+#include "addressspacerefdelegate.h"
 
 #include <QHBoxLayout>
 #include <QLayout>
 
-FileSetRefEditor::FileSetRefEditor(QSharedPointer<Component> component,
-								   const QString title /*= "List" */, 
-								   QWidget *parent /*= 0*/):
+AddressSpaceRefEditor::AddressSpaceRefEditor( QSharedPointer<Component> component, 
+											 const QString title /*= tr("Address space references")*/, 
+											 QWidget *parent /*= 0*/ ):
 ListManager(title, parent),
 component_(component) {
-
-	Q_ASSERT(component_);
 }
 
-FileSetRefEditor::~FileSetRefEditor() {
+AddressSpaceRefEditor::~AddressSpaceRefEditor() {
 }
 
-void FileSetRefEditor::initialize( const QStringList& items /*= QStringList()*/ ) {
+void AddressSpaceRefEditor::initialize( const QStringList& items /*= QStringList()*/ ) {
 	// remove the previous model and view if there are one
 	if (model_) {
 		delete model_;
@@ -39,9 +35,11 @@ void FileSetRefEditor::initialize( const QStringList& items /*= QStringList()*/ 
 	}
 
 	// create new model and view
-	model_ = new FileSetRefModel(this, component_, items);
+	model_ = new AddressSpaceRefModel(this, component_, items);
 
 	view_ = new EditableListView(this);
+
+	view_->setProperty("mandatoryField", true);
 
 	// the signals from the view
 	connect(view_, SIGNAL(removeItem(const QModelIndex&)),
@@ -73,6 +71,5 @@ void FileSetRefEditor::initialize( const QStringList& items /*= QStringList()*/ 
 	// connect the model to the view
 	view_->setModel(model_);
 
-	view_->setItemDelegate(new FileSetRefEditorDelegate(this, component_));
+	view_->setItemDelegate(new AddressSpaceRefDelegate(this, component_));
 }
-

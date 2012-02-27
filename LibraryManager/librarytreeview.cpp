@@ -46,10 +46,8 @@ openPlatformAction_(NULL),
 openPFStackAction_(NULL),
 openApplicationAction_(NULL),
 openEndpointAction_(NULL),
-openSWDesignAction_(NULL)
-#ifndef NDEBUG
-, openXmlAction_(NULL)
-#endif
+openSWDesignAction_(NULL),
+openXmlAction_(NULL)
 {
 
 	Q_ASSERT_X(filter, "LibraryTreeView constructor",
@@ -175,9 +173,7 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
 			menu.addAction(createBusAction_);
 		}
 
-		#ifndef NDEBUG
 		menu.addAction(openXmlAction_);
-		#endif
 	}
 
 	menu.addAction(exportAction_);
@@ -278,11 +274,9 @@ void LibraryTreeView::setupActions() {
     connect(openSWDesignAction_, SIGNAL(triggered()),
         this, SLOT(onOpenComponent()), Qt::UniqueConnection);
 
-	#ifndef NDEBUG
 	openXmlAction_ = new QAction(tr("Open the xml-file"), this);
 	connect(openXmlAction_, SIGNAL(triggered()),
 		this, SLOT(onOpenXml()), Qt::UniqueConnection);
-	#endif
 }
 
 void LibraryTreeView::onDeleteAction() {	
@@ -408,7 +402,6 @@ void LibraryTreeView::onAddSignals() {
 	emit createAbsDef(filter_->mapToSource(currentIndex()));
 }
 
-#ifndef NDEBUG
 void LibraryTreeView::onOpenXml() {
 	QModelIndex index = filter_->mapToSource(currentIndex());
 	LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
@@ -420,5 +413,4 @@ void LibraryTreeView::onOpenXml() {
 		QDesktopServices::openUrl(QUrl::fromLocalFile(xmlPath));
 	}
 }
-#endif
 

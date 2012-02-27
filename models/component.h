@@ -132,12 +132,6 @@ public:
 	*/
 	virtual void setVlnv(const VLNV& vlnv);
 
-	/*! \brief Is this component a cpu
-	 *
-	 * \return boolean value
-	 */
-	bool isCpu() const;
-
 	/*! \brief Is this a bus component
 	 *
 	 * \return boolean value
@@ -189,7 +183,26 @@ public:
 	 *
 	 * \return QList containing component's cpus
 	 */
-	const QList<QSharedPointer<Cpu> >& getCpus() const;
+	QList<QSharedPointer<Cpu> >& getCpus();
+
+	/*! \brief Is this component a cpu
+	*
+	* \return boolean value
+	*/
+	bool isCpu() const;
+
+	/*! \brief Remove the named cpu from the component.
+	 *
+	 * \param cpuName The name of the cpu to remove.
+	 *
+	*/
+	void removeCpu(const QString& cpuName);
+
+	/*! \brief Create a new empty cpu-element.
+	 *
+	 * \return Pointer to the created cpu.
+	*/
+	Cpu* createCpu();
 
 	/*! \brief Get this component's memory maps
 	 *
@@ -980,6 +993,14 @@ public:
 	 * \return Pointer to the created address space.
 	*/
 	AddressSpace* createAddressSpace();
+
+	/*! \brief Check if the component contains an address space with given name.
+	 *
+	 * \param addrSpaceName The name of the address space to search for.
+	 *
+	 * \return bool True if an address space with given name is found.
+	*/
+	bool hasAddressSpace(const QString& addrSpaceName) const;
 
 private:
 

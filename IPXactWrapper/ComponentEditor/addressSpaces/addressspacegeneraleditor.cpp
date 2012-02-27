@@ -24,6 +24,11 @@ range_(this) {
 	width_.setRange(0, 4096);
 	range_.setPlaceholderText(tr("Range of address space i.e 4G"));
 
+	// set the back ground colors for mandatory fields
+	addrUnit_.setProperty("mandatoryField", true);
+	width_.setProperty("mandatoryField", true);
+	range_.setProperty("mandatoryField", true);
+
 	QLabel* unitLabel = new QLabel(tr("Addressable unit size"), this);
 	QLabel* widthLabel = new QLabel(tr("Width of address block"), this);
 	QLabel* rangeLabel = new QLabel(tr("Range of address block"), this);

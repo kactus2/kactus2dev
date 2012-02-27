@@ -127,8 +127,8 @@ editor_(NULL) {
 			    ComponentTreeItem::CHANNELS, 0, component, handler, this));
         }
 
-// 		childItems_.append(new ComponentTreeItem(
-// 			ComponentTreeItem::CPUS, 0, component, this));
+		childItems_.append(new ComponentTreeItem(
+			ComponentTreeItem::CPUS, 0, component, handler, this));
 
         if (hwComp)
         {
@@ -611,10 +611,11 @@ editor_(NULL) {
 		text_ = tr("Cpus");
 
 		// get the cpus from the component and add them to the model
-		QList<QSharedPointer<Cpu> > list = component_->getCpus();
-		for (int i = 0; i < list.size(); ++i) {
+		QList<QSharedPointer<Cpu> >* list = &component_->getCpus();
+		dataPointer_ = list;
+		for (int i = 0; i < list->size(); ++i) {
 			childItems_.append(new ComponentTreeItem(
-				ComponentTreeItem::CPU, list.at(i).data(), component, handler, this));
+				ComponentTreeItem::CPU, list->at(i).data(), component, handler, this));
 		}
 		break;
 								  }
@@ -781,6 +782,12 @@ bool ComponentTreeItem::createChild() {
 				ComponentTreeItem::ADDRESSSPACE, addrSpace, component_, handler_, this));
 			return true;
 											   }
+		case ComponentTreeItem::CPUS: {
+			Cpu* cpu = component_->createCpu();
+			childItems_.append(new ComponentTreeItem(
+				ComponentTreeItem::CPU, cpu, component_, handler_, this));
+			return true;
+									  }
 
 		case ComponentTreeItem::FILESETS: {
 			FileSet* fileSet = component_->createFileSet();
@@ -851,6 +858,7 @@ bool ComponentTreeItem::createChild() {
 bool ComponentTreeItem::canHaveChildren() const {
 	switch (type_) {
 		case ComponentTreeItem::ADDRESSSPACE:
+		case ComponentTreeItem::CPU:
 		case ComponentTreeItem::GENERAL:
 		case ComponentTreeItem::FILE:
 		case ComponentTreeItem::FILESET:
@@ -1170,10 +1178,19 @@ bool ComponentTreeItem::isModelValid() const {
 		return channel->isValid(busifNames);
 									 }
 	case ComponentTreeItem::CPUS: {
-		return false;
+		QStringList addrSpaceNames = component_->getAddressSpaceNames();
+		QList<QSharedPointer<Cpu> >* cpus = static_cast<QList<QSharedPointer<Cpu> >* >(dataPointer_);
+		foreach (QSharedPointer<Cpu> cpu, *cpus) {
+			if (!cpu->isValid(addrSpaceNames)) {
+				return false;
+			}
+		}
+		return true;
 								  }
 	case ComponentTreeItem::CPU: {
-		return false;
+		QStringList addrSpaceNames = component_->getAddressSpaceNames();
+		Cpu* cpu = static_cast<Cpu*>(dataPointer_);
+		return cpu->isValid(addrSpaceNames);
 								 }
 	case ComponentTreeItem::OTHERCLOCKDRIVERS: {
 
