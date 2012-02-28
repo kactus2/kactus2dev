@@ -6,6 +6,8 @@
 #ifndef BLOCKDIAGRAM_H
 #define BLOCKDIAGRAM_H
 
+#include "AdHocEnabled.h"
+
 #include "columnview/DiagramColumn.h"
 
 #include <common/DrawMode.h>
@@ -36,7 +38,7 @@ class DesignWidget;
 /*! \brief BlockDiagram is a graphical view to a design
  *
  */
-class BlockDiagram : public QGraphicsScene {
+class BlockDiagram : public QGraphicsScene, public AdHocEnabled {
     Q_OBJECT
 public:
     /*! \brief The constructor
@@ -143,21 +145,44 @@ public:
      */
     DiagramColumnLayout* getColumnLayout();
 
-    /*!
-     *  Returns the edit provider.
-     */
-    GenericEditProvider& getEditProvider();
-
-	/*! \brief Get pointer to the parent of this scene.
+    /*! \brief Get pointer to the parent of this scene.
 	 *
 	 * \return Pointer to the design widget that owns this scene.
 	*/
 	virtual DesignWidget* parent() const;
 
     /*!
+     *  Called when a port's ad-hoc visibility has been changed.
+     *
+     *      @param [in] portName  The name of the port.
+     *      @param [in] visible   The new ad-hoc visibility.
+     */
+    virtual void onAdHocVisibilityChanged(QString const& portName, bool visible);
+
+    /*!
+     *  Attaches the data source to an ad-hoc editor.
+     */
+    virtual void attach(AdHocEditor* editor);
+
+    /*!
+     *  Detaches the data source from the ad-hoc editor.
+     */
+    virtual void detach(AdHocEditor* editor);
+
+    /*!
+     *  Returns the edit provider.
+     */
+    virtual GenericEditProvider& getEditProvider();
+
+    /*!
      *  Returns true if the diagram is in locked state.
      */
-    bool isProtected() const;
+    virtual bool isProtected() const;
+
+    /*!
+     *  Returns the ad-hoc port with the given name or null if not found.
+     */
+    virtual DiagramConnectionEndPoint* getDiagramAdHocPort(QString const& portName);
 
 signals:
     /*! \brief Signal openDesign is emitted when user double clicks on a hierarchical component

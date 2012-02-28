@@ -6,8 +6,10 @@
 #ifndef DIAGRAMCOMPONENT_H
 #define DIAGRAMCOMPONENT_H
 
-#include <QSharedPointer>
+#include "AdHocEnabled.h"
 #include <common/graphicsItems/ComponentItem.h>
+
+#include <QSharedPointer>
 
 class DiagramPort;
 class DiagramAdHocPort;
@@ -18,7 +20,7 @@ class LibraryInterface;
 /*! \brief DiagramComponent represents graphically an IP-XACT component instance
  *
  */
-class DiagramComponent : public ComponentItem
+class DiagramComponent : public ComponentItem, public AdHocEnabled
 {
     Q_OBJECT 
 
@@ -91,24 +93,37 @@ public:
     bool isConnectionUpdateDisabled() const;
 
     /*!
-     *  Sets the ad-hoc visibility of the given port.
+     *  Called when a port's ad-hoc visibility has been changed.
      *
-     *      @param [in] portName The name of the port.
-     *      @param [in] visible  If true, the port is set visible for ad-hoc.
+     *      @param [in] portName  The name of the port.
+     *      @param [in] visible   The new ad-hoc visibility.
      */
-    void setPortAdHocVisible(QString const& portName, bool visible);
+    virtual void onAdHocVisibilityChanged(QString const& portName, bool visible);
 
     /*!
-     *  Returns true if the given port is currently visible for ad-hoc.
-     *
-     *      @param [in] portName The name of the port.
+     *  Attaches the data source to an ad-hoc editor.
      */
-    bool isPortAdHocVisible(QString const& portName) const;
+    virtual void attach(AdHocEditor* editor);
 
     /*!
-     *  Returns the ad-hoc visibility map.
+     *  Detaches the data source from the ad-hoc editor.
      */
-    QMap<QString, bool> const& getPortAdHocVisibilities() const;
+    virtual void detach(AdHocEditor* editor);
+
+    /*!
+     *  Returns true if the ad-hoc visibilities are protected.
+     */
+    virtual bool isProtected() const;
+
+    /*!
+     *  Returns the edit provider for the data.
+     */
+    virtual GenericEditProvider& getEditProvider();
+
+    /*!
+     *  Returns the ad-hoc port with the given name or null if not found.
+     */
+    virtual DiagramConnectionEndPoint* getDiagramAdHocPort(QString const& portName);
 
 signals:
     //! \brief Emitted right before this diagram component is destroyed.
@@ -167,9 +182,6 @@ private:
     QList<DiagramConnectionEndPoint*> rightPorts_;
     bool connUpdateDisabled_;
     QPointF oldPos_;
-
-    //! The ad-hoc visibility flags for ports.
-    QMap<QString, bool> portAdHocVisibilities_;
 };
 
 #endif // DIAGRAMCOMPONENT_H

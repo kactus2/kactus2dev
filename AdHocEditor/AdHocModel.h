@@ -15,9 +15,9 @@
 #include <QAbstractTableModel>
 #include <QSharedPointer>
 
-class DiagramComponent;
 class Port;
 class GenericEditProvider;
+class AdHocEnabled;
 
 //-----------------------------------------------------------------------------
 //! Table model for visualizing ad-hoc visibility for component ports.
@@ -43,11 +43,11 @@ public:
 	virtual ~AdHocModel();
 
     /*!
-     *  Sets the component whose ad-hoc port visibility is being edited.
+     *  Sets the ad-hoc port visibility data source being edited.
      *
-     *      @param [in] component The component.
+     *      @param [in] dataSource The data source.
      */
-    void setComponent(DiagramComponent* component);
+    void setDataSource(AdHocEnabled* dataSource);
 
 	/*!
      *  Returns the number of rows in the model.
@@ -127,13 +127,10 @@ private:
     AdHocModel& operator=(AdHocModel const& rhs);
 
     //! The component whose ad-hoc port visibility is being edited.
-    DiagramComponent* component_;
+    AdHocEnabled* dataSource_;
 
 	//! The table that is displayed to the user.
 	QList< QSharedPointer<Port> > table_;
-
-    //! Pointer to the generic edit provider that manages the undo/redo stack.
-    QSharedPointer<GenericEditProvider> editProvider_;
 };
 
 //-----------------------------------------------------------------------------

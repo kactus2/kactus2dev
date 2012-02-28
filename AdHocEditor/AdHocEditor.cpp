@@ -35,7 +35,7 @@
 // Function: AdHocEditor()
 //-----------------------------------------------------------------------------
 AdHocEditor::AdHocEditor(QWidget *parent): QWidget(parent),
-                                           component_(0),
+                                           dataSource_(0),
                                            portAdHocTable_(this),
                                            adHocModel_(this)
 {
@@ -69,47 +69,38 @@ AdHocEditor::AdHocEditor(QWidget *parent): QWidget(parent),
 //-----------------------------------------------------------------------------
 AdHocEditor::~AdHocEditor()
 {
-    adHocModel_.setComponent(0);
+    adHocModel_.setDataSource(0);
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocEditor::setComponent()
+// Function: AdHocEditor::setDataSource()
 //-----------------------------------------------------------------------------
-void AdHocEditor::setComponent( ComponentItem* component ) {
-	Q_ASSERT(component);
-
+void AdHocEditor::setDataSource(AdHocEnabled* dataSource)
+{
+	Q_ASSERT(dataSource);
 	parentWidget()->raise();
 
-	// if previous component has been specified, then disconnect signals to this editor.
-	if (component_) {
-		component_->disconnect(this);
+	// If a previous data source has been specified, detach it from the editor.
+	if (dataSource_ != 0)
+    {
+        dataSource_->detach(this);
 	}
 
-	component_ = component;
+	dataSource_ = dataSource;
 
-    bool locked = false;
-
-	if (dynamic_cast<BlockDiagram*>(component->scene()) != 0)
-    {
-	    BlockDiagram* diagram = static_cast<BlockDiagram*>(component->scene());
-        locked = diagram->isProtected();
-    }
-    else
-    {
-        EndpointDesignDiagram* diagram = static_cast<EndpointDesignDiagram*>(component->scene());
-        locked = diagram->isProtected();
-    }
-
+    bool locked = dataSource_->isProtected();
     portAdHocTable_.setEnabled(!locked);
 
-    adHocModel_.setComponent(static_cast<DiagramComponent*>(component_));
+    adHocModel_.setDataSource(dataSource_);
     portAdHocTable_.resizeRowsToContents();
     portAdHocTable_.show();
 
-    // if the connected component is destroyed then clear this editor
-	connect(component_, SIGNAL(destroyed(ComponentItem*)),
-		    this, SLOT(clear()), Qt::UniqueConnection);
+    // if the connected dataSource is destroyed then clear this editor
+    // 	connect(dataSource_, SIGNAL(destroyed(ComponentItem*)),
+    // 		    this, SLOT(clear()), Qt::UniqueConnection);
 
+    // Attach the data source to the editor.
+    dataSource_->attach(this);
 	parentWidget()->setMaximumHeight(QWIDGETSIZE_MAX);
 }
 
@@ -118,15 +109,23 @@ void AdHocEditor::setComponent( ComponentItem* component ) {
 //-----------------------------------------------------------------------------
 void AdHocEditor::clear() {
 
-	// If a previous component has been specified, disconnect signals to this editor.
-	if (component_)
+	// If a previous data source has been specified, detach it from the editor.
+	if (dataSource_ != 0)
     {
-		component_->disconnect(this);
+		dataSource_->detach(this);
 	}
 
-	component_ = 0;
-    adHocModel_.setComponent(0);
+	dataSource_ = 0;
+    adHocModel_.setDataSource(0);
     portAdHocTable_.hide();
 
 	parentWidget()->setMaximumHeight(20);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocEditor::onContentChanged()
+//-----------------------------------------------------------------------------
+void AdHocEditor::onContentChanged()
+{
+    adHocModel_.updateVisibilities();
 }

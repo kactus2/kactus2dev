@@ -6,7 +6,7 @@
 // Date: 20.2.2012
 //
 // Description:
-// Table model for visualizing ad-hoc visibility for component ports.
+// Table model for visualizing ad-hoc visibility for dataSource ports.
 //-----------------------------------------------------------------------------
 
 #include "AdHocModel.h"
@@ -20,6 +20,7 @@
 #include <designwidget/blockdiagram.h>
 #include <designwidget/designwidget.h>
 #include <designwidget/DiagramChangeCommands.h>
+#include <designwidget/AdHocEnabled.h>
 
 #include <EndpointDesign/EndpointDesignDiagram.h>
 #include <EndpointDesign/EndpointDesignWidget.h>
@@ -30,7 +31,7 @@
 // Function: AdHocModel::AdHocModel()
 //-----------------------------------------------------------------------------
 AdHocModel::AdHocModel(QObject *parent) : QAbstractTableModel(parent),
-                                          component_(0), table_()
+                                          dataSource_(0), table_()
 {
 
 }
@@ -43,40 +44,21 @@ AdHocModel::~AdHocModel()
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocModel::setComponent()
+// Function: AdHocModel::setDataSource()
 //-----------------------------------------------------------------------------
-void AdHocModel::setComponent(DiagramComponent* component)
+void AdHocModel::setDataSource(AdHocEnabled* dataSource)
 {
-    if (component_ != 0)
-    {
-        component_->disconnect();
-    }
-
-    component_ = component;
+    dataSource_ = dataSource;
 
     beginResetModel();
 
-    if (component_ != 0)
+    if (dataSource_ != 0)
     {
-        table_ = component->componentModel()->getPorts().values();
-
-        if (dynamic_cast<BlockDiagram*>(component->scene()) != 0)
-        {
-            BlockDiagram* diagram = static_cast<BlockDiagram*>(component->scene());
-            editProvider_ = diagram->parent()->getGenericEditProvider();
-        }
-        else
-        {
-            EndpointDesignDiagram* diagram = static_cast<EndpointDesignDiagram*>(component->scene());
-            editProvider_ = diagram->parent()->getGenericEditProvider();
-        }
-
-        connect(component_, SIGNAL(contentChanged()), this, SLOT(updateVisibilities()));
+        table_ = dataSource->getPorts();
     }
     else
     {
         table_.clear();
-        editProvider_.clear();
     }
 
     endResetModel();
@@ -143,7 +125,7 @@ QVariant AdHocModel::data(QModelIndex const& index, int role /*= Qt::DisplayRole
     {
         if (index.column() == ADHOC_COL_VISIBILITY)
         {
-            if (component_->isPortAdHocVisible(table_.at(index.row())->getName()))
+            if (dataSource_->isPortAdHocVisible(table_.at(index.row())->getName()))
             {
                 return Qt::Checked;
             }
@@ -216,10 +198,10 @@ bool AdHocModel::setData(const QModelIndex& index, const QVariant& value, int ro
 
     if (role == Qt::CheckStateRole)
     {
-        QSharedPointer<QUndoCommand> cmd(new AdHocVisibilityChangeCommand(component_,
+        QSharedPointer<QUndoCommand> cmd(new AdHocVisibilityChangeCommand(dataSource_,
                                                                           table_.at(index.row())->getName(),
                                                                           value == Qt::Checked));
-        editProvider_->addCommand(cmd);
+        dataSource_->getEditProvider().addCommand(cmd);
         emit dataChanged(index, index);
         return true;
     }

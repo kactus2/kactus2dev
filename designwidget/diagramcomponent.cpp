@@ -16,6 +16,8 @@
 #include <common/diagramgrid.h>
 #include <common/layouts/VCollisionLayout.h>
 
+#include <AdHocEditor/AdHocEditor.h>
+
 #include <models/component.h>
 #include <models/businterface.h>
 #include <models/model.h>
@@ -42,15 +44,16 @@ DiagramComponent::DiagramComponent(LibraryInterface* lh_,
                     displayName,
                     description,
                     configurableElementValues, parent),
+      AdHocEnabled(),
       lh_(lh_),
       hierIcon_(0),
       oldColumn_(0),
       leftPorts_(),
       rightPorts_(),
-      connUpdateDisabled_(false),
-      portAdHocVisibilities_()
+      connUpdateDisabled_(false)
 {
     setFlag(ItemIsMovable);
+    setAdHocData(component, portAdHocVisibilities);
     
 	QList<QSharedPointer<BusInterface> > busInterfaces
             = component->getBusInterfaces().values();
@@ -64,7 +67,8 @@ DiagramComponent::DiagramComponent(LibraryInterface* lh_,
     int leftY = 4 * GridSize;
     int rightY = 4 * GridSize;
 
-    foreach (QSharedPointer<BusInterface> busif, busInterfaces) {
+    foreach (QSharedPointer<BusInterface> busif, busInterfaces)
+    {
         DiagramPort *port = new DiagramPort(busif, lh_, this);
 
         // If this is a platform component, place master bus interfaces to the right
@@ -99,21 +103,12 @@ DiagramComponent::DiagramComponent(LibraryInterface* lh_,
     // Parse port ad-hoc visibilities.
     foreach (QSharedPointer<Port> adhocPort, componentModel()->getPorts().values())
     {
-        bool visible = adhocPort->isAdHocVisible();
-
-        if (portAdHocVisibilities.contains(adhocPort->getName()))
-        {
-            visible = portAdHocVisibilities.value(adhocPort->getName());
-        }
-
-        portAdHocVisibilities_.insert(adhocPort->getName(), visible);
-
-        if (!visible)
+        if (!isPortAdHocVisible(adhocPort->getName()))
         {
             continue;
         }
 
-        DiagramAdHocPort *port = new DiagramAdHocPort(adhocPort.data(), lh_, this);
+        DiagramAdHocPort* port = new DiagramAdHocPort(adhocPort.data(), lh_, this);
 
         if (right)
         {
@@ -486,66 +481,44 @@ bool DiagramComponent::isConnectionUpdateDisabled() const
 //-----------------------------------------------------------------------------
 // Function: DiagramComponent::setPortAdHocVisible()
 //-----------------------------------------------------------------------------
-void DiagramComponent::setPortAdHocVisible(QString const& portName, bool visible)
+void DiagramComponent::onAdHocVisibilityChanged(QString const& portName, bool visible)
 {
-    // Check if the visibility has changed.
-    if (portAdHocVisibilities_.value(portName) != visible)
+    emit contentChanged();
+
+    // Create/destroy the ad-hoc port graphics item.
+    if (visible)
     {
-        // Update the value.
-        portAdHocVisibilities_.insert(portName, visible);
-        emit contentChanged();
+        Port* adhocPort = componentModel()->getPort(portName);
+        Q_ASSERT(adhocPort != 0);
 
-        // Create/destroy the ad-hoc port graphics item.
-        if (visible)
+        DiagramAdHocPort* port = new DiagramAdHocPort(adhocPort, lh_, this);
+
+        // Place the port at the bottom of the side that contains fewer ports.
+        if (leftPorts_.size() < rightPorts_.size())
         {
-            Port* adhocPort = componentModel()->getPort(portName);
-            Q_ASSERT(adhocPort != 0);
-
-            DiagramAdHocPort* port = new DiagramAdHocPort(adhocPort, lh_, this);
-
-            // Place the port at the bottom of the side that contains fewer ports.
-            if (leftPorts_.size() < rightPorts_.size())
-            {
-                port->setPos(QPointF(0, leftPorts_.last()->pos().y() + GridSize * 3) + rect().topLeft());
-                onAddPort(port, false);
-            }
-            else
-            {
-                port->setPos(QPointF(rect().width(), rightPorts_.last()->pos().y() + GridSize * 3) + rect().topLeft());
-                onAddPort(port, true);
-            }
-
-            // Update the component's size after addition.
-            updateSize();
+            port->setPos(QPointF(0, leftPorts_.last()->pos().y() + GridSize * 3) + rect().topLeft());
+            onAddPort(port, false);
         }
         else
         {
-            // Search for the ad-hoc port from both sides.
-            DiagramConnectionEndPoint* found = getAdHocPort(portName);
-            Q_ASSERT(found != 0);
-
-            // Remove the port and delete it.
-            removePort(found);
-            delete found;
-            found = 0;
+            port->setPos(QPointF(rect().width(), rightPorts_.last()->pos().y() + GridSize * 3) + rect().topLeft());
+            onAddPort(port, true);
         }
+
+        // Update the component's size after addition.
+        updateSize();
     }
-}
+    else
+    {
+        // Search for the ad-hoc port from both sides.
+        DiagramConnectionEndPoint* found = getAdHocPort(portName);
+        Q_ASSERT(found != 0);
 
-//-----------------------------------------------------------------------------
-// Function: DiagramComponent::isPortAdHocVisible()
-//-----------------------------------------------------------------------------
-bool DiagramComponent::isPortAdHocVisible(QString const& portName) const
-{
-    return portAdHocVisibilities_.value(portName, false);
-}
-
-//-----------------------------------------------------------------------------
-// Function: DiagramComponent::getPortAdHocVisibilities()
-//-----------------------------------------------------------------------------
-QMap<QString, bool> const& DiagramComponent::getPortAdHocVisibilities() const
-{
-    return portAdHocVisibilities_;
+        // Remove the port and delete it.
+        removePort(found);
+        delete found;
+        found = 0;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -570,4 +543,45 @@ DiagramAdHocPort* DiagramComponent::getAdHocPort(QString const& portName)
     }
 
     return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DiagramComponent::attach()
+//-----------------------------------------------------------------------------
+void DiagramComponent::attach(AdHocEditor* editor)
+{
+    connect(this, SIGNAL(contentChanged()), editor, SLOT(onContentChanged()), Qt::UniqueConnection);
+    connect(this, SIGNAL(destroyed(ComponentItem*)), editor, SLOT(clear()), Qt::UniqueConnection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DiagramComponent::detach()
+//-----------------------------------------------------------------------------
+void DiagramComponent::detach(AdHocEditor* editor)
+{
+    disconnect(editor);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DiagramComponent::isProtected()
+//-----------------------------------------------------------------------------
+bool DiagramComponent::isProtected() const
+{
+    return static_cast<BlockDiagram*>(scene())->isProtected();
+}
+
+//-----------------------------------------------------------------------------
+// Function: DiagramComponent::getGenericEditProvider()
+//-----------------------------------------------------------------------------
+GenericEditProvider& DiagramComponent::getEditProvider()
+{
+    return static_cast<BlockDiagram*>(scene())->getEditProvider();
+}
+
+//-----------------------------------------------------------------------------
+// Function: DiagramComponent::getDiagramAdHocPort()
+//-----------------------------------------------------------------------------
+DiagramConnectionEndPoint* DiagramComponent::getDiagramAdHocPort(QString const& portName)
+{
+    return getAdHocPort(portName);
 }

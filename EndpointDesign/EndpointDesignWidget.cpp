@@ -60,6 +60,7 @@ EndpointDesignWidget::EndpointDesignWidget(LibraryInterface* lh, MainWindow* mai
     view_ = new QGraphicsView(this);
     view_->setScene(diagram_);
     view_->centerOn(0, 0);
+    view_->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(view_);

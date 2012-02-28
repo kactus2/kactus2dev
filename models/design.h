@@ -694,6 +694,11 @@ public:
 	*/
 	const QList<AdHocConnection> &getAdHocConnections();
 
+    /*!
+     *  Returns the port ad-hoc visibilities for the top-level component in this design.
+     */
+    QMap<QString, bool> const& getPortAdHocVisibilities() const;
+
     /*! 
      *  Returns the list of columns.
      */
@@ -726,6 +731,11 @@ public:
 	void setAdHocConnections(QList<AdHocConnection> const& adHocConnections);
 
     /*!
+     *  Sets the port ad-hoc visibilities for the top-level component in this design.
+     */
+    void setPortAdHocVisibilities(QMap<QString, bool> const& portAdHocVisibilities);
+
+    /*!
      *  Sets the columns of this design.
      */
     void setColumns(QList<ColumnDesc> const& columns);
@@ -748,6 +758,14 @@ public:
      */
     void writeDirection(QXmlStreamWriter& xmlWriter, QVector2D const& dir);
 
+    /*!
+     *  Writes the given port ad-hoc visibilities along with the port positions to
+     *  a specific XML format.
+     */
+    void writeAdHocVisibilities(QXmlStreamWriter& xmlWriter,
+                                QMap<QString, bool> const& adHocVisibilities,
+                                QMap<QString, QPointF> const& adHocPortPositions);
+
 	/*! \brief Get the VLNVs of the components referenced by this design
 	 *
 	 * \return QList<VLNV> contains the references to the components referenced
@@ -763,14 +781,17 @@ private:
      *      @param [in] node The QDomNode from where to parse the information.
      */
     void parseVendorExtensions(QDomNode& node);
-    
+
     QList<ColumnDesc> columns_;
     QList<ComponentInstance> componentInstances_;
     QList<Interconnection> interconnections_;
     QList<HierConnection> hierConnections_;
     QList<AdHocConnection> adHocConnections_;
 
+    QMap<QString, bool> portAdHocVisibilities_;
+
 	QMap<QString, QString> attributes_;
 };
 
 #endif
+

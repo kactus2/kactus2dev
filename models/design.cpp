@@ -17,6 +17,7 @@ componentInstances_(),
 interconnections_(), 
 hierConnections_(),
 adHocConnections_(),
+portAdHocVisibilities_(),
 attributes_() {
 
 	LibraryComponent::vlnv_->setType(VLNV::DESIGN);
@@ -74,6 +75,7 @@ componentInstances_(),
 interconnections_(), 
 hierConnections_(),
 adHocConnections_(),
+portAdHocVisibilities_(),
 attributes_() {
 	LibraryComponent::vlnv_->setType(VLNV::DESIGN);
 }
@@ -85,6 +87,7 @@ componentInstances_(other.componentInstances_),
 interconnections_(other.interconnections_),
 hierConnections_(other.hierConnections_),
 adHocConnections_(other.adHocConnections_),
+portAdHocVisibilities_(other.portAdHocVisibilities_),
 attributes_(other.attributes_) {
 
 }
@@ -98,6 +101,7 @@ Design& Design::operator=( const Design& other ) {
 		interconnections_ = other.interconnections_;
 		hierConnections_ = other.hierConnections_;
 		adHocConnections_ = other.adHocConnections_;
+        portAdHocVisibilities_ = other.portAdHocVisibilities_;
 		attributes_ = other.attributes_;
 	}
 	return *this;
@@ -179,24 +183,9 @@ void Design::write(QFile& file)
 			xmlWriter.writeEndElement(); // kactus2:portPositions
 
             // Write the port ad-hoc visibilities.
-            QMapIterator<QString, bool> itrAdHoc(inst.portAdHocVisibilities);
-            xmlWriter.writeStartElement("kactus2:adHocVisibilities");
-
-            while (itrAdHoc.hasNext())
-            {
-                itrAdHoc.next();
-
-                if (itrAdHoc.value())
-                {
-                    xmlWriter.writeStartElement("kactus2:adHocVisible");
-                    xmlWriter.writeAttribute("portName", itrAdHoc.key());
-                    xmlWriter.writeAttribute("x", QString::number(int(inst.adHocPortPositions.value(itrAdHoc.key()).x())));
-                    xmlWriter.writeAttribute("y", QString::number(int(inst.adHocPortPositions.value(itrAdHoc.key()).y())));
-                    xmlWriter.writeEndElement();
-                }
-            }
-
-            xmlWriter.writeEndElement(); // kactus2:adHocVisibilities
+            QMap<QString, bool> const& adHocVisibilities = inst.portAdHocVisibilities;
+            QMap<QString, QPointF> const& adHocPortPositions = inst.adHocPortPositions;
+            writeAdHocVisibilities(xmlWriter, adHocVisibilities, adHocPortPositions);
 
 			// Write the MCAPI node ID if specified.
 			if (inst.mcapiNodeID != -1)
@@ -408,6 +397,9 @@ void Design::write(QFile& file)
     }
 
     xmlWriter.writeEndElement(); // kactus2:routes
+
+    // Write the top-level component's port ad-hoc visibilities. TODO: Port positions too.
+    writeAdHocVisibilities(xmlWriter, portAdHocVisibilities_, QMap<QString, QPointF>());
 
 	xmlWriter.writeEndElement(); // kactus2:vendorExtensions
 
@@ -702,7 +694,35 @@ void Design::parseVendorExtensions(QDomNode &node)
 				}
 			}
 		}
+        else if (childNode.nodeName() == "kactus2:adHocVisibilities")
+        {
+            for (int i = 0; i < childNode.childNodes().size(); ++i)
+            {
+                QDomNode adHocNode = node.childNodes().at(i);
+
+                if (adHocNode.nodeName() == "kactus2:adHocVisible")
+                {
+                    QString name = adHocNode.attributes().namedItem("portName").nodeValue();
+                    portAdHocVisibilities_[name] = true;
+
+                    // TODO: Enable port positions.
+//                     QPointF pos;
+//                     pos.setX(adHocNode.attributes().namedItem("x").nodeValue().toInt());
+//                     pos.setY(adHocNode.attributes().namedItem("y").nodeValue().toInt());
+// 
+//                     adHocPortPositions[name] = pos;
+                }
+            }
+        }
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: Design::getPortAdHocVisibilities()
+//-----------------------------------------------------------------------------
+QMap<QString, bool> const& Design::getPortAdHocVisibilities() const
+{
+    return portAdHocVisibilities_;
 }
 
 //-----------------------------------------------------------------------------
@@ -711,6 +731,14 @@ void Design::parseVendorExtensions(QDomNode &node)
 QList<Design::ColumnDesc> const& Design::getColumns() const
 {
 	return columns_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Design::setPortAdHocVisibilities()
+//-----------------------------------------------------------------------------
+void Design::setPortAdHocVisibilities(QMap<QString, bool> const& portAdHocVisibilities)
+{
+    portAdHocVisibilities_ = portAdHocVisibilities;
 }
 
 //-----------------------------------------------------------------------------
@@ -755,6 +783,33 @@ QList<VLNV> Design::getComponents() const {
 void Design::setVlnv( const VLNV& vlnv ) {
 	LibraryComponent::setVlnv(vlnv);
 	LibraryComponent::vlnv_->setType(VLNV::DESIGN);
+}
+
+//-----------------------------------------------------------------------------
+// Function: Design::writeAdHocVisibilities()
+//-----------------------------------------------------------------------------
+void Design::writeAdHocVisibilities(QXmlStreamWriter& xmlWriter,
+                                    QMap<QString, bool> const& adHocVisibilities,
+                                    QMap<QString, QPointF> const& adHocPortPositions)
+{
+    QMapIterator<QString, bool> itrAdHoc(adHocVisibilities);
+    xmlWriter.writeStartElement("kactus2:adHocVisibilities");
+
+    while (itrAdHoc.hasNext())
+    {
+        itrAdHoc.next();
+
+        if (itrAdHoc.value())
+        {
+            xmlWriter.writeStartElement("kactus2:adHocVisible");
+            xmlWriter.writeAttribute("portName", itrAdHoc.key());
+            xmlWriter.writeAttribute("x", QString::number(int(adHocPortPositions.value(itrAdHoc.key()).x())));
+            xmlWriter.writeAttribute("y", QString::number(int(adHocPortPositions.value(itrAdHoc.key()).y())));
+            xmlWriter.writeEndElement();
+        }
+    }
+
+    xmlWriter.writeEndElement(); // kactus2:adHocVisibilities
 }
 
 //-----------------------------------------------------------------------------

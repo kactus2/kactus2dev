@@ -8,6 +8,7 @@
 #include "diagraminterconnection.h"
 #include "diagramport.h"
 #include "DiagramAdHocPort.h"
+#include "DiagramAdHocInterface.h"
 #include "diagraminterface.h"
 #include "DiagramOffPageConnector.h"
 #include "SelectItemTypeDialog.h"
@@ -28,6 +29,8 @@
 #include "columnview/DiagramColumn.h"
 
 #include <LibraryManager/libraryhandler.h>
+
+#include <AdHocEditor/AdHocEditor.h>
 
 #include <models/component.h>
 #include <models/abstractiondefinition.h>
@@ -56,6 +59,9 @@
 #include <QDebug>
 #include "columnview/ColumnEditDialog.h"
 
+//-----------------------------------------------------------------------------
+// Function: BlockDiagram()
+//-----------------------------------------------------------------------------
 BlockDiagram::BlockDiagram(LibraryInterface *lh, GenericEditProvider& editProvider, DesignWidget *parent) : 
     QGraphicsScene(parent), 
     lh_(lh),
@@ -82,6 +88,9 @@ BlockDiagram::BlockDiagram(LibraryInterface *lh, GenericEditProvider& editProvid
 	//	this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
+//-----------------------------------------------------------------------------
+// Function: setDesign()
+//-----------------------------------------------------------------------------
 bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& viewName)
 {
     Q_ASSERT_X(hierComp, "BlockDiagram::setDesign()",
@@ -429,17 +438,7 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
         if (comp1 == 0)
         {
             emit errorMessage(tr("Component %1 was not found in the design").arg(
-                              adHocConn.internalPortReferences.at(0).componentRef));
-            continue;
-        }
-
-        // Find the second referenced component.
-        DiagramComponent* comp2 = getComponent(adHocConn.internalPortReferences.at(1).componentRef);
-
-        if (comp2 == 0)
-        {
-            emit errorMessage(tr("Component %1 was not found in the design").arg(
-                              adHocConn.internalPortReferences.at(1).componentRef));
+                adHocConn.internalPortReferences.at(0).componentRef));
             continue;
         }
 
@@ -453,46 +452,95 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
             continue;
         }
 
-        DiagramAdHocPort* port2 = comp2->getAdHocPort(adHocConn.internalPortReferences.at(1).portRef);
-
-        if (port2 == 0)
+        // Convert one multiple-port connection to two-port-only connections.
+        for (int i = 1; i < adHocConn.internalPortReferences.size(); ++i)
         {
-            emit errorMessage(tr("Port %1 was not found in the component %2").arg(
-                adHocConn.internalPortReferences.at(1).portRef).arg(adHocConn.internalPortReferences.at(1).componentRef));
-            continue;
+            // Find the second referenced component.
+            DiagramComponent* comp2 = getComponent(adHocConn.internalPortReferences.at(i).componentRef);
+
+            if (comp2 == 0)
+            {
+                emit errorMessage(tr("Component %1 was not found in the design").arg(
+                    adHocConn.internalPortReferences.at(i).componentRef));
+                continue;
+            }
+
+            DiagramAdHocPort* port2 = comp2->getAdHocPort(adHocConn.internalPortReferences.at(i).portRef);
+
+            if (port2 == 0)
+            {
+                emit errorMessage(tr("Port %1 was not found in the component %2").arg(
+                    adHocConn.internalPortReferences.at(i).portRef).arg(adHocConn.internalPortReferences.at(i).componentRef));
+                continue;
+            }
+
+            // Create the ad-hoc connection graphics item.
+            DiagramInterconnection* conn = new DiagramInterconnection(port1, port2, true,
+                                                                      adHocConn.displayName,
+                                                                      adHocConn.description, this);
+            conn->setName(adHocConn.name);
+            conn->setRoute(adHocConn.route);
+
+            if (adHocConn.offPage)
+            {
+                conn->setVisible(false);
+            }
+
+            connect(conn, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+            addItem(conn);
         }
 
-        // Create the ad-hoc connection graphics item.
-        DiagramInterconnection* conn = new DiagramInterconnection(port1, port2, true,
-                                                                  adHocConn.displayName, adHocConn.description,
-                                                                  this);
-        conn->setName(adHocConn.name);
-        conn->setRoute(adHocConn.route);
-        
-//         if (interconnection.offPage)
-//         {
-//             diagramInterconnection->setVisible(false);
-//         }
-
-        connect(conn, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
-        addItem(conn);
+        for (int i = 0; i < adHocConn.externalPortReferences.size(); ++i)
+        {
+//             DiagramAdHocPort* port2 = comp2->getAdHocPort(adHocConn.internalPortReferences.at(i).portRef);
+// 
+//             if (port2 == 0)
+//             {
+//                 emit errorMessage(tr("Port %1 was not found in the component %2").arg(
+//                     adHocConn.internalPortReferences.at(i).portRef).arg(adHocConn.internalPortReferences.at(i).componentRef));
+//                 continue;
+//             }
+// 
+//             // Create the ad-hoc connection graphics item.
+//             DiagramInterconnection* conn = new DiagramInterconnection(port1, port2, true,
+//                 adHocConn.displayName,
+//                 adHocConn.description, this);
+//             conn->setName(adHocConn.name);
+//             conn->setRoute(adHocConn.route);
+// 
+//             if (adHocConn.offPage)
+//             {
+//                 conn->setVisible(false);
+//             }
+// 
+//             connect(conn, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+//             addItem(conn);
+        }
     }
 
-    // Finally, update the stacking of the columns.
+    // Update the stacking of the columns.
     foreach (DiagramColumn* column, layout_->getColumns())
     {
         column->updateItemPositions();
     }
 
+    // Set the ad-hoc data for the diagram.
+    setAdHocData(component_, design->getPortAdHocVisibilities());
+
     return true;
 }
 
+//-----------------------------------------------------------------------------
+// Function: ~BlockDiagram()
+//-----------------------------------------------------------------------------
 BlockDiagram::~BlockDiagram()
 {
     destroyConnections();
-
 }
 
+//-----------------------------------------------------------------------------
+// Function: getComponent()
+//-----------------------------------------------------------------------------
 DiagramComponent *BlockDiagram::getComponent(const QString &instanceName) {
 
 	// search all graphicsitems in the scene
@@ -513,6 +561,9 @@ DiagramComponent *BlockDiagram::getComponent(const QString &instanceName) {
     return 0;
 }
 
+//-----------------------------------------------------------------------------
+// Function: setMode()
+//-----------------------------------------------------------------------------
 void BlockDiagram::setMode(DrawMode mode)
 {
     if (mode_ != mode)
@@ -537,6 +588,9 @@ void BlockDiagram::setMode(DrawMode mode)
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: createDesign()
+//-----------------------------------------------------------------------------
 QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv)
 {
 	QSharedPointer<Design> design(new Design(vlnv));
@@ -699,10 +753,14 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv)
     design->setHierarchicalConnections(hierConnections);
     design->setAdHocConnections(adHocConnections);
     design->setColumns(columns);   
+    design->setPortAdHocVisibilities(getPortAdHocVisibilities());
 
 	return design;
 }
 
+//-----------------------------------------------------------------------------
+// Function: updateHierComponent()
+//-----------------------------------------------------------------------------
 void BlockDiagram::updateHierComponent(QSharedPointer<Component> comp) {
 
 	// store all the bus interfaces to a map
@@ -726,6 +784,9 @@ void BlockDiagram::updateHierComponent(QSharedPointer<Component> comp) {
     comp->setBusInterfaces(busIfs);
 }
 
+//-----------------------------------------------------------------------------
+// Function: selectionToFront()
+//-----------------------------------------------------------------------------
 void BlockDiagram::selectionToFront()
 {
     if (selectedItems().isEmpty())
@@ -1261,7 +1322,8 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
         DiagramConnectionEndPoint* endPoint = static_cast<DiagramConnectionEndPoint*>(item);
 
         // Check if the bus is unpackaged.
-        if (endPoint->getBusInterface() == 0 || !endPoint->getBusInterface()->getBusType().isValid())
+        if (endPoint->isBus() &&
+            (endPoint->getBusInterface() == 0 || !endPoint->getBusInterface()->getBusType().isValid()))
         {
             // Request the user to set the vlnv.
             NewObjectDialog dialog(lh_, VLNV::BUSDEFINITION, true, (QWidget*)parent());
@@ -1461,7 +1523,7 @@ void BlockDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
             comp.clear();
         }
         else if (vlnv->getType() == VLNV::BUSDEFINITION || 
-			vlnv->getType() == VLNV::ABSTRACTIONDEFINITION)
+			     vlnv->getType() == VLNV::ABSTRACTIONDEFINITION)
         {
             // Check that the bus definition is compatible with the edited component.
             QSharedPointer<LibraryComponent> libComp = lh_->getModel(*vlnv);
@@ -1513,7 +1575,7 @@ void BlockDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 
         // Allow the drop event if the end point is undefined or there are no connections
         // and the encompassing component is unpackaged.
-        if (highlightedEndPoint_ != 0 &&
+        if (highlightedEndPoint_ != 0 && highlightedEndPoint_->isBus() &&
             (highlightedEndPoint_->getBusInterface() == 0 ||
              !highlightedEndPoint_->getBusInterface()->getBusType().isValid() ||
              (!highlightedEndPoint_->isConnected() &&
@@ -2244,4 +2306,65 @@ void BlockDiagram::destroyConnections()
         removeItem(item);
         delete item;
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: BlockDiagram::onAdHocVisibilityChanged()
+//-----------------------------------------------------------------------------
+void BlockDiagram::onAdHocVisibilityChanged(QString const& portName, bool visible)
+{
+    emit contentChanged();
+    
+    if (visible)
+    {
+        DiagramAdHocInterface* adHocIf = new DiagramAdHocInterface(component_, component_->getPort(portName), lh_, 0);
+        connect(adHocIf, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+
+        // Add the ad-hoc interface to the first column where it is allowed to be placed.
+        layout_->addItem(adHocIf);
+    }
+    else
+    {
+        // Search for the ad-hoc interface and delete it.
+        DiagramConnectionEndPoint* found = getDiagramAdHocPort(portName);
+        Q_ASSERT(found != 0);
+
+        static_cast<DiagramColumn*>(found->parentItem())->removeItem(found);
+        delete found;
+        found = 0;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: BlockDiagram::attach()
+//-----------------------------------------------------------------------------
+void BlockDiagram::attach(AdHocEditor* editor)
+{
+    connect(this, SIGNAL(contentChanged()), editor, SLOT(onContentChanged()), Qt::UniqueConnection);
+    connect(this, SIGNAL(destroyed(QObject*)), editor, SLOT(clear()), Qt::UniqueConnection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: BlockDiagram::detach()
+//-----------------------------------------------------------------------------
+void BlockDiagram::detach(AdHocEditor* editor)
+{
+    disconnect(editor);
+}
+
+//-----------------------------------------------------------------------------
+// Function: BlockDiagram::getDiagramAdHocPort()
+//-----------------------------------------------------------------------------
+DiagramConnectionEndPoint* BlockDiagram::getDiagramAdHocPort(QString const& portName)
+{
+    foreach (QGraphicsItem* item, items())
+    {
+        if (item->type() == DiagramAdHocInterface::Type &&
+            static_cast<DiagramAdHocInterface*>(item)->name() == portName)
+        {
+            return static_cast<DiagramConnectionEndPoint*>(item);
+        }
+    }
+
+    return 0;
 }

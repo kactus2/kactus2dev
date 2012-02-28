@@ -32,6 +32,7 @@ class DiagramColumnLayout;
 class DiagramConnectionEndPoint;
 class ActiveViewModel;
 class DiagramAdHocPort;
+class AdHocEnabled;
 
 //-----------------------------------------------------------------------------
 //! ColumnChangeCommand class.
@@ -591,12 +592,12 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] component     The component containing the port.
+     *      @param [in] component     The ad-hoc enabled data source.
      *      @param [in] portName      The name of the port.
      *      @param [in] newVisiblity  The new ad-hoc visibility of the port.
      *      @param [in] parent        The parent undo command.
      */
-    AdHocVisibilityChangeCommand(DiagramComponent* component, QString const& portName,
+    AdHocVisibilityChangeCommand(AdHocEnabled* dataSource, QString const& portName,
                                  bool newVisibility, QUndoCommand* parent = 0);
 
     /*!
@@ -624,7 +625,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The component containing the port.
-    DiagramComponent* component_;
+    AdHocEnabled* dataSource_;
 
     //! The name of the port.
     QString portName_;

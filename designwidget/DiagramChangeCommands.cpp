@@ -430,17 +430,17 @@ void ConnectionChangeCommand::redo() {
 //-----------------------------------------------------------------------------
 // Function: AdHocVisibilityChangeCommand::AdHocVisibilityChangeCommand()
 //-----------------------------------------------------------------------------
-AdHocVisibilityChangeCommand::AdHocVisibilityChangeCommand(DiagramComponent* component, QString const& portName,
+AdHocVisibilityChangeCommand::AdHocVisibilityChangeCommand(AdHocEnabled* dataSource, QString const& portName,
                                                            bool newVisibility, QUndoCommand* parent)
     : QUndoCommand(parent),
-      component_(component),
+      dataSource_(dataSource),
       portName_(portName),
       newVisibility_(newVisibility)
 {
     if (!newVisibility_)
     {
         // Create child commands for removing interconnections.
-        DiagramAdHocPort* port = component->getAdHocPort(portName);
+        DiagramConnectionEndPoint* port = dataSource->getDiagramAdHocPort(portName);
         Q_ASSERT(port != 0);
 
         foreach (DiagramInterconnection* conn, port->getInterconnections())
@@ -468,7 +468,7 @@ AdHocVisibilityChangeCommand::~AdHocVisibilityChangeCommand()
 //-----------------------------------------------------------------------------
 void AdHocVisibilityChangeCommand::undo()
 {
-    component_->setPortAdHocVisible(portName_, !newVisibility_);
+    dataSource_->setPortAdHocVisible(portName_, !newVisibility_);
 
     // Execute child commands.
     QUndoCommand::undo();
@@ -482,5 +482,5 @@ void AdHocVisibilityChangeCommand::redo()
     // Execute child commands.
     QUndoCommand::redo();
 
-    component_->setPortAdHocVisible(portName_, newVisibility_);
+    dataSource_->setPortAdHocVisible(portName_, newVisibility_);
 }

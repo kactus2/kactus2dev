@@ -1105,7 +1105,17 @@ void MainWindow::onDesignChanged() {
 
 void MainWindow::onClearItemSelection()
 {
-    adHocEditor_->clear();
+    DesignWidget* designWidget = dynamic_cast<DesignWidget*>(designTabs_->currentWidget());
+
+    if (designWidget != 0)
+    {
+        adHocEditor_->setDataSource(designWidget->scene());
+    }
+    else
+    {
+        adHocEditor_->clear();
+    }
+
 	instanceEditor_->clear();
 	interfaceEditor_->clear();
 	connectionEditor_->clear();
@@ -1119,7 +1129,15 @@ void MainWindow::onComponentSelected( ComponentItem* component ) {
 
 	// Update the instance and ad-hoc visibility editors.
 	instanceEditor_->setComponent(component);
-    adHocEditor_->setComponent(component);
+
+    if (dynamic_cast<DiagramComponent*>(component) != 0)
+    {
+        adHocEditor_->setDataSource(dynamic_cast<DiagramComponent*>(component));
+    }
+    else
+    {
+        adHocEditor_->clear();
+    }
 
 	if (component->componentModel()->getVlnv()->isValid())
 	{
@@ -1149,24 +1167,55 @@ void MainWindow::onPortSelected( DiagramPort* port ) {
 
 	connectionEditor_->clear();
 	instanceEditor_->clear();
-    adHocEditor_->clear();
-	interfaceEditor_->setInterface(port);
+	
+    DesignWidget* designWidget = dynamic_cast<DesignWidget*>(designTabs_->currentWidget());
+
+    if (designWidget != 0)
+    {
+        adHocEditor_->setDataSource(designWidget->scene());
+    }
+    else
+    {
+        adHocEditor_->clear();
+    }
+
+    interfaceEditor_->setInterface(port);
 }
 
 void MainWindow::onInterfaceSelected( DiagramInterface* interface ) {
 	Q_ASSERT(interface);
 
+    DesignWidget* designWidget = dynamic_cast<DesignWidget*>(designTabs_->currentWidget());
+
+    if (designWidget != 0)
+    {
+        adHocEditor_->setDataSource(designWidget->scene());
+    }
+    else
+    {
+        adHocEditor_->clear();
+    }
+
 	connectionEditor_->clear();
 	instanceEditor_->clear();
-    adHocEditor_->clear();
 	interfaceEditor_->setInterface(interface);
 }
 
 void MainWindow::onConnectionSelected( DiagramInterconnection* connection ) {
 	Q_ASSERT(connection);
 
+    DesignWidget* designWidget = dynamic_cast<DesignWidget*>(designTabs_->currentWidget());
+
+    if (designWidget != 0)
+    {
+        adHocEditor_->setDataSource(designWidget->scene());
+    }
+    else
+    {
+        adHocEditor_->clear();
+    }
+
 	instanceEditor_->clear();
-    adHocEditor_->clear();
 	interfaceEditor_->clear();
 	connectionEditor_->setConnection(connection);
 }
@@ -2532,9 +2581,8 @@ void MainWindow::changeProtection(bool locked)
 	else
 		configurationEditor_->setLocked(true);
 
-	// clear instance editor because the current instance is no longer valid
-	instanceEditor_->clear();
-    adHocEditor_->clear();
+	// Clear the item selection since the current instance is no longer valid.
+    onClearItemSelection();
 
 	onProtectionChanged(locked);
 

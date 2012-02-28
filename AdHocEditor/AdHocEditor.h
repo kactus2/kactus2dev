@@ -23,6 +23,7 @@
 #include <QTableWidget>
 
 class ComponentItem;
+class AdHocEnabled;
 
 /*! \brief Editor to edit the details of a component instance within a design.
  *
@@ -45,11 +46,11 @@ public:
 	virtual ~AdHocEditor();
 
 	/*!
-     *  Sets the component whose ad-hoc ports visibility to adjust.
+     *  Sets the ad-hoc ports visibility data source.
      *
-     *      @param [in] component The component item.
+     *      @param [in] component The data source.
      */
-	void setComponent(ComponentItem* component);
+	void setDataSource(AdHocEnabled* dataSource);
 
 public slots:
     /*!
@@ -57,9 +58,10 @@ public slots:
      */
 	void clear();
 
-signals:
-	//! Emitted when contents of the editor changes.
-	void contentChanged();
+    /*!
+     *  Called when the data source contents have changed.
+     */
+    void onContentChanged();
 
 private slots:
 
@@ -72,8 +74,8 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! Pointer to the component instance being edited.
-	ComponentItem* component_;
+	//! The data source being edited.
+	AdHocEnabled* dataSource_;
 
 	//! The port ad-hoc visibility table.
     QTableView portAdHocTable_;

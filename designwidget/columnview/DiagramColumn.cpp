@@ -23,6 +23,7 @@
 #include "../diagraminterface.h"
 #include "../diagramcomponent.h"
 #include "../diagraminterconnection.h"
+#include "../DiagramAdHocInterface.h"
 #include "../diagramport.h"
 #include "../blockdiagram.h"
 
@@ -409,6 +410,7 @@ bool DiagramColumn::isItemAllowed(QGraphicsItem* item, unsigned int allowedItems
     switch (item->type())
     {
     case DiagramInterface::Type:
+    case DiagramAdHocInterface::Type:
         {
             return (allowedItems & CIT_INTERFACE);
         }
