@@ -15,6 +15,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./AdHocEditor/AdHocEditor.h \
     ./AdHocEditor/AdHocModel.h \
     ./resource.h \
+    ./version.h \
     ./common/ColumnTypes.h \
     ./common/CSourceWriter.h \
     ./common/diagramgrid.h \
@@ -72,6 +73,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./common/widgets/ScanProgressWidget/scanprogresswidget.h \
     ./common/widgets/ParameterEditor/parametereditor.h \
     ./common/widgets/ParameterGroupBox/parametergroupbox.h \
+    ./common/widgets/NumberLineEdit/numberlineedit.h \
     ./common/validators/nameValidator/namevalidator.h \
     ./common/validators/vhdlNameValidator/vhdlnamevalidator.h \
     ./common/validators/LibraryPathValidator/librarypathvalidator.h \
@@ -85,9 +87,11 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./common/views/EditableTableView/editabletableview.h \
     ./common/views/EditableListView/editablelistview.h \
     ./common/models/ParameterModel/parametersmodel.h \
+    ./designwidget/AdHocEnabled.h \
     ./designwidget/blockdiagram.h \
     ./designwidget/designwidget.h \
     ./designwidget/DiagramAddCommands.h \
+    ./designwidget/DiagramAdHocInterface.h \
     ./designwidget/DiagramAdHocPort.h \
     ./designwidget/DiagramChangeCommands.h \
     ./designwidget/diagramcomponent.h \
@@ -190,6 +194,10 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspaceparameterseditor.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmenteditor.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmentsmodel.h \
+    ./IPXactWrapper/ComponentEditor/cpus/addressspacerefdelegate.h \
+    ./IPXactWrapper/ComponentEditor/cpus/addressspacerefeditor.h \
+    ./IPXactWrapper/ComponentEditor/cpus/addressspacerefmodel.h \
+    ./IPXactWrapper/ComponentEditor/cpus/cpueditor.h \
     ./IPXactWrapper/BusEditor/absdefgroup.h \
     ./IPXactWrapper/BusEditor/busdefgroup.h \
     ./IPXactWrapper/BusEditor/buseditor.h \
@@ -349,11 +357,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./InterfaceEditor/interfaceeditor.h \
     ./ConnectionEditor/connectioneditor.h \
     ./GCF/Common.h \
-    ./GCF/MenuStrip.h \
-    ./IPXactWrapper/ComponentEditor/cpus/addressspacerefmodel.h \
-    ./IPXactWrapper/ComponentEditor/cpus/addressspacerefeditor.h \
-    ./IPXactWrapper/ComponentEditor/cpus/cpueditor.h \
-    ./IPXactWrapper/ComponentEditor/cpus/addressspacerefdelegate.h
+    ./GCF/MenuStrip.h
 SOURCES += ./common/CSourceWriter.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/KactusAttribute.cpp \
@@ -405,6 +409,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/widgets/ScanProgressWidget/scanprogresswidget.cpp \
     ./common/widgets/ParameterEditor/parametereditor.cpp \
     ./common/widgets/ParameterGroupBox/parametergroupbox.cpp \
+    ./common/widgets/NumberLineEdit/numberlineedit.cpp \
     ./common/graphicsItems/ComponentItem.cpp \
     ./common/graphicsItems/GraphicsRectButton.cpp \
     ./common/delegates/ComboDelegate/combodelegate.cpp \
@@ -412,10 +417,12 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/views/EditableTableView/editabletableview.cpp \
     ./common/views/EditableListView/editablelistview.cpp \
     ./common/models/ParameterModel/parametersmodel.cpp \
+    ./designwidget/AdHocEnabled.cpp \
     ./designwidget/blockdiagram.cpp \
     ./designwidget/BusInterfaceDialog.cpp \
     ./designwidget/designwidget.cpp \
     ./designwidget/DiagramAddCommands.cpp \
+    ./designwidget/DiagramAdHocInterface.cpp \
     ./designwidget/DiagramAdHocPort.cpp \
     ./designwidget/DiagramChangeCommands.cpp \
     ./designwidget/diagramcomponent.cpp \
@@ -516,6 +523,10 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspaceparameterseditor.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmenteditor.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmentsmodel.cpp \
+    ./IPXactWrapper/ComponentEditor/cpus/addressspacerefdelegate.cpp \
+    ./IPXactWrapper/ComponentEditor/cpus/addressspacerefeditor.cpp \
+    ./IPXactWrapper/ComponentEditor/cpus/addressspacerefmodel.cpp \
+    ./IPXactWrapper/ComponentEditor/cpus/cpueditor.cpp \
     ./IPXactWrapper/BusEditor/absdefgroup.cpp \
     ./IPXactWrapper/BusEditor/busdefgroup.cpp \
     ./IPXactWrapper/BusEditor/buseditor.cpp \
@@ -683,9 +694,5 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./AdHocEditor/AdHocDelegate.cpp \
     ./AdHocEditor/AdHocEditor.cpp \
     ./AdHocEditor/AdHocModel.cpp \
-    ./common/IDFactory.cpp \
-    ./IPXactWrapper/ComponentEditor/cpus/addressspacerefmodel.cpp \
-    ./IPXactWrapper/ComponentEditor/cpus/addressspacerefeditor.cpp \
-    ./IPXactWrapper/ComponentEditor/cpus/cpueditor.cpp \
-    ./IPXactWrapper/ComponentEditor/cpus/addressspacerefdelegate.cpp
+    ./common/IDFactory.cpp
 RESOURCES += kactus.qrc

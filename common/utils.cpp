@@ -34,6 +34,46 @@ bool Utils::checkBoxState2Bool(const int state ) {
 	}
 }
 
+int Utils::str2Int( const QString& str ) {
+	QString strNumber = str;
+	const QChar multiple = strNumber.at(strNumber.size()-1);
+	int multiplier = 1;
+
+	// get the correct multiplier and remove the letter from the string
+	if (multiple == 'k' || multiple == 'K') {
+		multiplier = 2^10;
+		strNumber.chop(1);
+	}
+	else if (multiple == 'M') {
+		multiplier = 2^20;
+		strNumber.chop(1);
+	}
+	else if (multiple == 'G') {
+		multiplier = 2^30;
+		strNumber.chop(1);
+	}
+	else if (multiple == 'T') {
+		multiplier = 2^40;
+		strNumber.chop(1);
+	}
+	else if (multiple == 'P') {
+		multiplier = 2^50;
+		strNumber.chop(1);
+	}
+
+	bool success = true;
+	int number = strNumber.toInt(&success);
+
+	// if the conversion failed
+	if (!success) {
+		return 0;
+	}
+	// otherwise return the correct int-format
+	else {
+		return number * multiplier;
+	}
+}
+
 Utils::Mapping::Mapping(): portName_(QString("---")), left_(0), right_(0){
 }
 

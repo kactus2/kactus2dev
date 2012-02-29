@@ -44,7 +44,8 @@
 DiagramAdHocPort::DiagramAdHocPort(Port* port, LibraryInterface* lh,
                                    QGraphicsItem *parent) : DiagramConnectionEndPoint(parent),
                                                             port_(port),
-                                                            temp_(false), lh_(lh),
+                                                            lh_(lh),
+                                                            temp_(false),
                                                             oldPos_(), oldPortPositions_(),
                                                             offPageConnector_(0)
 {

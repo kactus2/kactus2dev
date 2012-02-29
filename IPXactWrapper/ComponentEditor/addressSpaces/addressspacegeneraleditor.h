@@ -9,8 +9,8 @@
 #define ADDRESSSPACEGENERALEDITOR_H
 
 #include <models/addressspace.h>
+#include <common/widgets/NumberLineEdit/numberlineedit.h>
 
-#include <QLineEdit>
 #include <QSpinBox>
 #include <QGroupBox>
 
@@ -75,7 +75,7 @@ private:
 	QSpinBox width_;
 
 	//! \brief Editor to set the range of the address space.
-	QLineEdit range_;
+	NumberLineEdit range_;
 };
 
 #endif // ADDRESSSPACEGENERALEDITOR_H

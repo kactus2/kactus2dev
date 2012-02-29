@@ -38,7 +38,6 @@ VLNVEditor::VLNVEditor(VLNV::IPXactType type, LibraryInterface* libHandler, QWid
 					   QWidget* parent, bool compact)
     : QGroupBox(parent),
       type_(type),
-      handler_(libHandler),
       dataTree_(),
       vendorEdit_(0),
       vendorMatcher_(),
@@ -47,7 +46,8 @@ VLNVEditor::VLNVEditor(VLNV::IPXactType type, LibraryInterface* libHandler, QWid
       nameEdit_(0),
       nameMatcher_(),
       versionEdit_(0),
-      versionMatcher_()
+      versionMatcher_(),
+      handler_(libHandler)
 {
     Q_ASSERT(libHandler != 0);
     Q_ASSERT(type_ != VLNV::INVALID);

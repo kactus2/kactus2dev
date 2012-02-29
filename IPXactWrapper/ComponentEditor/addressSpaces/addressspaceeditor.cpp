@@ -8,6 +8,8 @@
 #include "addressspaceeditor.h"
 
 #include <QVBoxLayout>
+#include <QScrollArea>
+#include <QWidget>
 
 AddressSpaceEditor::AddressSpaceEditor( QSharedPointer<Component> component,
 									   void* dataPointer, 
@@ -21,7 +23,18 @@ parameterEditor_(&addrSpace_->getParameters(), this) {
 
 	Q_ASSERT(addrSpace_);
 
-	QVBoxLayout* layout = new QVBoxLayout(this);
+	// create the scroll area
+	QScrollArea* scrollArea = new QScrollArea(this);
+	scrollArea->setWidgetResizable(true);
+
+	QVBoxLayout* scrollLayout = new QVBoxLayout(this);
+	scrollLayout->addWidget(scrollArea);
+
+	// create the top widget and set it under the scroll area
+	QWidget* topWidget = new QWidget(scrollArea);
+	topWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+	QVBoxLayout* layout = new QVBoxLayout(topWidget);
 
 	layout->addWidget(&nameBox_);
 	connect(&nameBox_, SIGNAL(contentChanged()),
@@ -44,6 +57,8 @@ parameterEditor_(&addrSpace_->getParameters(), this) {
 		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 	connect(&parameterEditor_, SIGNAL(noticeMessage(const QString&)),
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+
+	scrollArea->setWidget(topWidget);
 
 	restoreChanges();
 }

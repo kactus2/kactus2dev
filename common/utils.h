@@ -156,6 +156,20 @@ namespace Utils {
 		bool operator>(const Mapping& other) const;
 	};
 
+	/*! \brief Convert a string to int format.
+	 * 
+	 * The multiples in the string are converted as following:
+	 * k/K = 2^10
+	 * M   = 2^20
+	 * G   = 2^30
+	 * T   = 2^40
+	 * P   = 2^50
+	 * 
+	 * \param str The string to convert.
+	 *
+	 * \return int The result of the conversion.
+	*/
+	int str2Int(const QString& str);
 }
 
 #endif // UTILS_H

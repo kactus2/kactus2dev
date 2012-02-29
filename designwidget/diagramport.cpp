@@ -33,7 +33,8 @@
 
 DiagramPort::DiagramPort(QSharedPointer<BusInterface> busIf, LibraryInterface* lh,
                          QGraphicsItem *parent) : DiagramConnectionEndPoint(parent),
-                                                  temp_(!busIf->getBusType().isValid()), lh_(lh),
+lh_(lh),
+                                                  temp_(!busIf->getBusType().isValid()),
                                                   oldPos_(), oldPortPositions_(),
                                                   offPageConnector_(0)
 {
