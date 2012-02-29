@@ -1353,6 +1353,7 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
             comp->componentModel()->setVlnv(vlnv);
             comp->componentModel()->setComponentHierarchy(dialog.getProductHierarchy());
             comp->componentModel()->setComponentFirmness(dialog.getFirmness());
+            comp->componentModel()->createEmptyFlatView();
 
             // Write the model to file.
             lh_->writeModelToFile(dialog.getPath(), comp->componentModel());
