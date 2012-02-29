@@ -73,20 +73,20 @@ DiagramAdHocInterface::DiagramAdHocInterface(QSharedPointer<Component> component
     case General::IN:
         {
             shape << QPointF(-halfSquareSize, halfSquareSize)
-                  << QPointF(-halfSquareSize, -halfSquareSize)
-                  << QPointF(halfSquareSize, -halfSquareSize)
-                  << QPointF(halfSquareSize, halfSquareSize)
-                  << QPointF(0, squareSize);
+                << QPointF(-halfSquareSize, -halfSquareSize)
+                << QPointF(0, -squareSize)
+                << QPointF(halfSquareSize, -halfSquareSize)
+                << QPointF(halfSquareSize, halfSquareSize);
             break;
         }
 
     case General::OUT:
         {
             shape << QPointF(-halfSquareSize, halfSquareSize)
-                  << QPointF(-halfSquareSize, -halfSquareSize)
-                  << QPointF(0, -squareSize)
-                  << QPointF(halfSquareSize, -halfSquareSize)
-                  << QPointF(halfSquareSize, halfSquareSize);
+                << QPointF(-halfSquareSize, -halfSquareSize)
+                << QPointF(halfSquareSize, -halfSquareSize)
+                << QPointF(halfSquareSize, halfSquareSize)
+                << QPointF(0, squareSize);
             break;
         }
 

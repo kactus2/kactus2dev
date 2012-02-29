@@ -102,21 +102,21 @@ ComponentDeleteCommand::ComponentDeleteCommand(DiagramComponent* component, QUnd
     // Create child commands for removing interconnections.
     foreach (QGraphicsItem *item, component_->childItems())
     {
-        if (item->type() != DiagramPort::Type)
+        DiagramConnectionEndPoint* endPoint = dynamic_cast<DiagramConnectionEndPoint*>(item);
+
+        if (endPoint == 0)
         {
             continue;
         }
 
-        DiagramPort *diagramPort = qgraphicsitem_cast<DiagramPort *>(item);
-
-        foreach (DiagramInterconnection* conn, diagramPort->getInterconnections())
+        foreach (DiagramInterconnection* conn, endPoint->getInterconnections())
         {
             QUndoCommand* cmd = new ConnectionDeleteCommand(conn, this);
         }
 
-        if (diagramPort->getOffPageConnector() != 0)
+        if (endPoint->getOffPageConnector() != 0)
         {
-            foreach (DiagramInterconnection* conn, diagramPort->getOffPageConnector()->getInterconnections())
+            foreach (DiagramInterconnection* conn, endPoint->getOffPageConnector()->getInterconnections())
             {
                 QUndoCommand* cmd = new ConnectionDeleteCommand(conn, this);
             }
