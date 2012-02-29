@@ -88,6 +88,7 @@ interconnections_(other.interconnections_),
 hierConnections_(other.hierConnections_),
 adHocConnections_(other.adHocConnections_),
 portAdHocVisibilities_(other.portAdHocVisibilities_),
+adHocPortPositions_(other.adHocPortPositions_),
 attributes_(other.attributes_) {
 
 }
@@ -102,6 +103,7 @@ Design& Design::operator=( const Design& other ) {
 		hierConnections_ = other.hierConnections_;
 		adHocConnections_ = other.adHocConnections_;
         portAdHocVisibilities_ = other.portAdHocVisibilities_;
+        adHocPortPositions_ = other.adHocPortPositions_;
 		attributes_ = other.attributes_;
 	}
 	return *this;
@@ -398,8 +400,8 @@ void Design::write(QFile& file)
 
     xmlWriter.writeEndElement(); // kactus2:routes
 
-    // Write the top-level component's port ad-hoc visibilities. TODO: Port positions too.
-    writeAdHocVisibilities(xmlWriter, portAdHocVisibilities_, QMap<QString, QPointF>());
+    // Write the top-level component's port ad-hoc visibilities.
+    writeAdHocVisibilities(xmlWriter, portAdHocVisibilities_, adHocPortPositions_);
 
 	xmlWriter.writeEndElement(); // kactus2:vendorExtensions
 
@@ -698,19 +700,18 @@ void Design::parseVendorExtensions(QDomNode &node)
         {
             for (int i = 0; i < childNode.childNodes().size(); ++i)
             {
-                QDomNode adHocNode = node.childNodes().at(i);
+                QDomNode adHocNode = childNode.childNodes().at(i);
 
                 if (adHocNode.nodeName() == "kactus2:adHocVisible")
                 {
                     QString name = adHocNode.attributes().namedItem("portName").nodeValue();
                     portAdHocVisibilities_[name] = true;
 
-                    // TODO: Enable port positions.
-//                     QPointF pos;
-//                     pos.setX(adHocNode.attributes().namedItem("x").nodeValue().toInt());
-//                     pos.setY(adHocNode.attributes().namedItem("y").nodeValue().toInt());
-// 
-//                     adHocPortPositions[name] = pos;
+                    QPointF pos;
+                    pos.setX(adHocNode.attributes().namedItem("x").nodeValue().toInt());
+                    pos.setY(adHocNode.attributes().namedItem("y").nodeValue().toInt());
+
+                    adHocPortPositions_[name] = pos;
                 }
             }
         }
@@ -723,6 +724,14 @@ void Design::parseVendorExtensions(QDomNode &node)
 QMap<QString, bool> const& Design::getPortAdHocVisibilities() const
 {
     return portAdHocVisibilities_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Design::getAdHocPortPositions()
+//-----------------------------------------------------------------------------
+QMap<QString, QPointF> const& Design::getAdHocPortPositions() const
+{
+    return adHocPortPositions_;
 }
 
 //-----------------------------------------------------------------------------
@@ -739,6 +748,14 @@ QList<Design::ColumnDesc> const& Design::getColumns() const
 void Design::setPortAdHocVisibilities(QMap<QString, bool> const& portAdHocVisibilities)
 {
     portAdHocVisibilities_ = portAdHocVisibilities;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Design::setAdHocPortPositions()
+//-----------------------------------------------------------------------------
+void Design::setAdHocPortPositions(QMap<QString, QPointF> const& val)
+{
+    adHocPortPositions_ = val;
 }
 
 //-----------------------------------------------------------------------------

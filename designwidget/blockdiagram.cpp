@@ -231,7 +231,7 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
             }
         }
 
-        // Setup the custom ad-hoc port positions.
+        // Setup the custom ad-hoc port positions for the component.
         itrPortPos = QMapIterator<QString, QPointF>(instance.adHocPortPositions);
 
         while (itrPortPos.hasNext())
@@ -338,7 +338,7 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
 		}
     }
 
-	// the hierarchical connections
+	// Create hierarchical connections.
     QList<QString> connectedHier;
     QList<Design::HierConnection> hierConnections = design->getHierarchicalConnections();
     for (int i = 0; i < hierConnections.size(); ++i) {
@@ -427,94 +427,158 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
 		}
     }
 
+    // Create top-level ad-hoc interfaces and set their positions.
+    QMapIterator<QString, bool> itrCurPort(design->getPortAdHocVisibilities());
+    QMap<QString, QPointF> const& adHocPortPositions = design->getAdHocPortPositions();
+
+    while (itrCurPort.hasNext())
+    {
+        itrCurPort.next();
+
+        if (itrCurPort.value())
+        {
+            QString const& name = itrCurPort.key();
+            DiagramAdHocInterface* adHocIf = new DiagramAdHocInterface(component_,
+                                                                       component_->getPort(name),
+                                                                       lh_, 0);
+            if (adHocPortPositions.contains(name))
+            {
+                QPointF pos = adHocPortPositions[name];
+                adHocIf->setPos(pos);
+            }
+
+            connect(adHocIf, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+            //layout_->addItem(adHocIf);
+
+            // Add the ad-hoc interface to the first column where it is allowed to be placed.
+            DiagramColumn* column = layout_->findColumnAt(adHocIf->scenePos());
+
+            if (column != 0)
+            {
+                column->addItem(adHocIf, true);
+            }
+            else
+            {
+                layout_->addItem(adHocIf);
+            }
+        }
+    }
+
     // Create ad-hoc connections based on the design data.
     QList<Design::AdHocConnection> adHocConnections = design->getAdHocConnections();
 
     foreach (Design::AdHocConnection const& adHocConn, adHocConnections)
     {
-        // Find the first referenced component.
-        DiagramComponent* comp1 = getComponent(adHocConn.internalPortReferences.at(0).componentRef);
-
-        if (comp1 == 0)
-        {
-            emit errorMessage(tr("Component %1 was not found in the design").arg(
-                adHocConn.internalPortReferences.at(0).componentRef));
-            continue;
-        }
-
-        // Find the ports.
-        DiagramAdHocPort* port1 = comp1->getAdHocPort(adHocConn.internalPortReferences.at(0).portRef);
-
-        if (port1 == 0)
-        {
-            emit errorMessage(tr("Port %1 was not found in the component %2").arg(
-                adHocConn.internalPortReferences.at(0).portRef).arg(adHocConn.internalPortReferences.at(0).componentRef));
-            continue;
-        }
-
         // Convert one multiple-port connection to two-port-only connections.
-        for (int i = 1; i < adHocConn.internalPortReferences.size(); ++i)
-        {
-            // Find the second referenced component.
-            DiagramComponent* comp2 = getComponent(adHocConn.internalPortReferences.at(i).componentRef);
 
-            if (comp2 == 0)
+        if (adHocConn.externalPortReferences.empty() && !adHocConn.internalPortReferences.empty())
+        {
+            // Find the first referenced component.
+            DiagramComponent* comp1 = getComponent(adHocConn.internalPortReferences.at(0).componentRef);
+
+            if (comp1 == 0)
             {
                 emit errorMessage(tr("Component %1 was not found in the design").arg(
-                    adHocConn.internalPortReferences.at(i).componentRef));
+                    adHocConn.internalPortReferences.at(0).componentRef));
                 continue;
             }
 
-            DiagramAdHocPort* port2 = comp2->getAdHocPort(adHocConn.internalPortReferences.at(i).portRef);
+            // Find the corresponding port.
+            DiagramAdHocPort* port1 = comp1->getAdHocPort(adHocConn.internalPortReferences.at(0).portRef);
 
-            if (port2 == 0)
+            if (port1 == 0)
             {
                 emit errorMessage(tr("Port %1 was not found in the component %2").arg(
-                    adHocConn.internalPortReferences.at(i).portRef).arg(adHocConn.internalPortReferences.at(i).componentRef));
+                    adHocConn.internalPortReferences.at(0).portRef).arg(adHocConn.internalPortReferences.at(0).componentRef));
                 continue;
             }
 
-            // Create the ad-hoc connection graphics item.
-            DiagramInterconnection* conn = new DiagramInterconnection(port1, port2, true,
-                                                                      adHocConn.displayName,
-                                                                      adHocConn.description, this);
-            conn->setName(adHocConn.name);
-            conn->setRoute(adHocConn.route);
-
-            if (adHocConn.offPage)
+            for (int i = 1; i < adHocConn.internalPortReferences.size(); ++i)
             {
-                conn->setVisible(false);
-            }
+                // Find the second referenced component.
+                DiagramComponent* comp2 = getComponent(adHocConn.internalPortReferences.at(i).componentRef);
 
-            connect(conn, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
-            addItem(conn);
+                if (comp2 == 0)
+                {
+                    emit errorMessage(tr("Component %1 was not found in the design").arg(
+                        adHocConn.internalPortReferences.at(i).componentRef));
+                    continue;
+                }
+
+                DiagramAdHocPort* port2 = comp2->getAdHocPort(adHocConn.internalPortReferences.at(i).portRef);
+
+                if (port2 == 0)
+                {
+                    emit errorMessage(tr("Port %1 was not found in the component %2").arg(
+                        adHocConn.internalPortReferences.at(i).portRef).arg(adHocConn.internalPortReferences.at(i).componentRef));
+                    continue;
+                }
+
+                // Create the ad-hoc connection graphics item.
+                DiagramInterconnection* conn = new DiagramInterconnection(port1, port2, true,
+                                                                          adHocConn.displayName,
+                                                                          adHocConn.description, this);
+                conn->setName(adHocConn.name);
+                conn->setRoute(adHocConn.route);
+
+                if (adHocConn.offPage)
+                {
+                    conn->setVisible(false);
+                }
+
+                connect(conn, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+                addItem(conn);
+            }
         }
 
-        for (int i = 0; i < adHocConn.externalPortReferences.size(); ++i)
+        for (int j = 0; j < adHocConn.externalPortReferences.size(); ++j)
         {
-//             DiagramAdHocPort* port2 = comp2->getAdHocPort(adHocConn.internalPortReferences.at(i).portRef);
-// 
-//             if (port2 == 0)
-//             {
-//                 emit errorMessage(tr("Port %1 was not found in the component %2").arg(
-//                     adHocConn.internalPortReferences.at(i).portRef).arg(adHocConn.internalPortReferences.at(i).componentRef));
-//                 continue;
-//             }
-// 
-//             // Create the ad-hoc connection graphics item.
-//             DiagramInterconnection* conn = new DiagramInterconnection(port1, port2, true,
-//                 adHocConn.displayName,
-//                 adHocConn.description, this);
-//             conn->setName(adHocConn.name);
-//             conn->setRoute(adHocConn.route);
-// 
-//             if (adHocConn.offPage)
-//             {
-//                 conn->setVisible(false);
-//             }
-// 
-//             connect(conn, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
-//             addItem(conn);
+            DiagramConnectionEndPoint* adHocIf =
+                getDiagramAdHocPort(adHocConn.externalPortReferences.at(j).portRef);
+
+            if (adHocIf == 0)
+            {
+                emit errorMessage(tr("Port %1 was not found in the top-level component").arg(
+                                  adHocConn.externalPortReferences.at(j).portRef));
+                continue;
+            }
+
+            for (int i = 0; i < adHocConn.internalPortReferences.size(); ++i)
+            {
+                // Find the referenced component.
+                DiagramComponent* comp = getComponent(adHocConn.internalPortReferences.at(i).componentRef);
+
+                if (comp == 0)
+                {
+                    emit errorMessage(tr("Component %1 was not found in the design").arg(
+                        adHocConn.internalPortReferences.at(i).componentRef));
+                    continue;
+                }
+
+                DiagramAdHocPort* port = comp->getAdHocPort(adHocConn.internalPortReferences.at(i).portRef);
+
+                if (port == 0)
+                {
+                    emit errorMessage(tr("Port %1 was not found in the component %2").arg(
+                        adHocConn.internalPortReferences.at(i).portRef).arg(adHocConn.internalPortReferences.at(i).componentRef));
+                    continue;
+                }
+
+                // Create the ad-hoc connection graphics item.
+                DiagramInterconnection* conn = new DiagramInterconnection(port, adHocIf, true,
+                                                                          adHocConn.displayName,
+                                                                          adHocConn.description, this);
+                conn->setName(adHocConn.name);
+                conn->setRoute(adHocConn.route);
+
+                if (adHocConn.offPage)
+                {
+                    conn->setVisible(false);
+                }
+
+                connect(conn, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+                addItem(conn);
+            }
         }
     }
 
@@ -602,6 +666,7 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv)
     QList<Design::ColumnDesc> columns;
 
     QList<QString> unpackagedNames;
+    QMap<QString, QPointF> adHocPortPositions;
 
 	foreach (QGraphicsItem *item, items())
     {
@@ -693,23 +758,46 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv)
             }
             else
             {
-                // TODO: Add support for hierarchical ad-hoc connections.
-                QList<Design::PortRef> portRefs;
-                portRefs.append(Design::PortRef(conn->endPoint1()->name(),
-                                                conn->endPoint1()->encompassingComp()->name()
-                                                /*TODO: Left and right bounds*/));
-                portRefs.append(Design::PortRef(conn->endPoint2()->name(),
-                                                conn->endPoint2()->encompassingComp()->name()
-                                                /*TODO: Left and right bounds*/));
-
                 // Otherwise the connection is ad-hoc.
+                QList<Design::PortRef> internalPortRefs;
+                QList<Design::PortRef> externalPortRefs;
+
+                if (conn->endPoint1()->isHierarchical())
+                {
+                    externalPortRefs.append(Design::PortRef(conn->endPoint1()->name()
+                                                    /*TODO: Left and right bounds*/));
+                }
+                else
+                {
+                    internalPortRefs.append(Design::PortRef(conn->endPoint1()->name(),
+                                                            conn->endPoint1()->encompassingComp()->name()
+                                                            /*TODO: Left and right bounds*/));
+                }
+
+                if (conn->endPoint2()->isHierarchical())
+                {
+                    externalPortRefs.append(Design::PortRef(conn->endPoint2()->name()
+                                                            /*TODO: Left and right bounds*/));
+                }
+                else
+                {
+                    internalPortRefs.append(Design::PortRef(conn->endPoint2()->name(),
+                                                            conn->endPoint2()->encompassingComp()->name()
+                                                            /*TODO: Left and right bounds*/));
+                }
+
                 adHocConnections.append(Design::AdHocConnection(conn->name(), QString(),
                                                                 conn->description(), 0 /*TODO*/,
-                                                                portRefs, QList<Design::PortRef>(),
+                                                                internalPortRefs, externalPortRefs,
                                                                 conn->route(),
                                                                 conn->endPoint1()->type() == DiagramOffPageConnector::Type));
             }
 		}
+        else if (item->type() == DiagramAdHocInterface::Type)
+        {
+            DiagramAdHocInterface* adHocIf = static_cast<DiagramAdHocInterface*>(item);
+            adHocPortPositions[adHocIf->name()] = adHocIf->scenePos();
+        }
 	}
 
     // If there were unpacked components, show a message box and do not save.
@@ -733,15 +821,6 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv)
         return QSharedPointer<Design>();
     }
 
-//     if (layout_ == 0)
-//     {
-//         layout_ = QSharedPointer<DiagramColumnLayout>(new DiagramColumnLayout(editProvider_, this));
-//         layout_->addColumn("IO", COLUMN_CONTENT_IO);
-//         layout_->addColumn("Buses", COLUMN_CONTENT_BUSES);
-//         layout_->addColumn("Components", COLUMN_CONTENT_COMPONENTS);
-//         layout_->addColumn("IO", COLUMN_CONTENT_IO);
-//     }
-
     foreach(DiagramColumn* column, layout_->getColumns())
     {
         columns.append(Design::ColumnDesc(column->getName(), column->getContentType(),
@@ -754,6 +833,7 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv)
     design->setAdHocConnections(adHocConnections);
     design->setColumns(columns);   
     design->setPortAdHocVisibilities(getPortAdHocVisibilities());
+    design->setAdHocPortPositions(adHocPortPositions);
 
 	return design;
 }

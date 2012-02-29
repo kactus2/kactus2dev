@@ -699,6 +699,11 @@ public:
      */
     QMap<QString, bool> const& getPortAdHocVisibilities() const;
 
+    /*!
+     *  Returns the ad-hoc port positions.
+     */
+    QMap<QString, QPointF> const& getAdHocPortPositions() const;
+
     /*! 
      *  Returns the list of columns.
      */
@@ -734,6 +739,11 @@ public:
      *  Sets the port ad-hoc visibilities for the top-level component in this design.
      */
     void setPortAdHocVisibilities(QMap<QString, bool> const& portAdHocVisibilities);
+
+    /*!
+     *  Sets the ad-hoc port positions.
+     */
+    void setAdHocPortPositions(QMap<QString, QPointF> const& val);
 
     /*!
      *  Sets the columns of this design.
@@ -790,6 +800,8 @@ private:
 
     QMap<QString, bool> portAdHocVisibilities_;
 
+    //! The port positions for ad-hoc ports.
+    QMap<QString, QPointF> adHocPortPositions_;
 	QMap<QString, QString> attributes_;
 };
 

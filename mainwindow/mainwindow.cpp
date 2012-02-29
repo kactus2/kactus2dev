@@ -1057,9 +1057,6 @@ void MainWindow::setupAdHocVisibilityEditor()
     adHocEditor_ = new AdHocEditor(adHocDock_);
     adHocDock_->setWidget(adHocEditor_);
     addDockWidget(Qt::RightDockWidgetArea, adHocDock_);
-
-    connect(adHocEditor_, SIGNAL(contentChanged()),
-            this, SLOT(onDesignChanged()), Qt::UniqueConnection);
 }
 
 void MainWindow::setupInterfaceEditor()
