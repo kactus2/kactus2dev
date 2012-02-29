@@ -21,6 +21,7 @@
 #include "diagraminterconnection.h"
 #include "diagramport.h"
 #include "DiagramAdHocPort.h"
+#include "DiagramAdHocInterface.h"
 #include "diagramcomponent.h"
 #include "diagraminterface.h"
 #include "columnview/DiagramColumn.h"
@@ -435,6 +436,7 @@ AdHocVisibilityChangeCommand::AdHocVisibilityChangeCommand(AdHocEnabled* dataSou
     : QUndoCommand(parent),
       dataSource_(dataSource),
       portName_(portName),
+      pos_(),
       newVisibility_(newVisibility)
 {
     if (!newVisibility_)
@@ -442,6 +444,8 @@ AdHocVisibilityChangeCommand::AdHocVisibilityChangeCommand(AdHocEnabled* dataSou
         // Create child commands for removing interconnections.
         DiagramConnectionEndPoint* port = dataSource->getDiagramAdHocPort(portName);
         Q_ASSERT(port != 0);
+
+        pos_ = port->scenePos();
 
         foreach (DiagramInterconnection* conn, port->getInterconnections())
         {
@@ -469,6 +473,22 @@ AdHocVisibilityChangeCommand::~AdHocVisibilityChangeCommand()
 void AdHocVisibilityChangeCommand::undo()
 {
     dataSource_->setPortAdHocVisible(portName_, !newVisibility_);
+
+    if (!newVisibility_)
+    {
+        DiagramConnectionEndPoint* port = dataSource_->getDiagramAdHocPort(portName_);
+        port->setPos(port->parentItem()->mapFromScene(pos_));
+
+        // Ad-hoc interfaces require an instruction for the parent column to move the port
+        // to the correct column.
+        DiagramAdHocInterface* adHocIf = dynamic_cast<DiagramAdHocInterface*>(port);
+
+        if (adHocIf != 0)
+        {
+            DiagramColumn* column = static_cast<DiagramColumn*>(adHocIf->parentItem());
+            column->onMoveItem(adHocIf, column);
+        }
+    }
 
     // Execute child commands.
     QUndoCommand::undo();

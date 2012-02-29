@@ -630,6 +630,9 @@ private:
     //! The name of the port.
     QString portName_;
 
+    //! The saved port position.
+    QPointF pos_;
+
     //! The new ad-hoc visibility for the port.
     bool newVisibility_;
 };
