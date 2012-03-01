@@ -504,3 +504,56 @@ void AdHocVisibilityChangeCommand::redo()
 
     dataSource_->setPortAdHocVisible(portName_, newVisibility_);
 }
+
+//-----------------------------------------------------------------------------
+// Function: AdHocBoundsChangeCommand::AdHocBoundsChangeCommand()
+//-----------------------------------------------------------------------------
+AdHocBoundsChangeCommand::AdHocBoundsChangeCommand(DiagramInterconnection* connection,
+                                                   bool right, int endpointIndex,
+                                                   int oldValue, int newValue, QUndoCommand* parent)
+    : QUndoCommand(parent),
+      connection_(connection),
+      right_(right),
+      endpointIndex_(endpointIndex),
+      oldValue_(oldValue),
+      newValue_(newValue)
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocBoundsChangeCommand::~AdHocBoundChangeCommand()
+//-----------------------------------------------------------------------------
+AdHocBoundsChangeCommand::~AdHocBoundsChangeCommand()
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocBoundsChangeCommand::undo()
+//-----------------------------------------------------------------------------
+void AdHocBoundsChangeCommand::undo()
+{
+    if (right_)
+    {
+        connection_->setAdHocRightBound(endpointIndex_, oldValue_);
+    }
+    else
+    {
+        connection_->setAdHocLeftBound(endpointIndex_, oldValue_);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocBoundsChangeCommand::redo()
+//-----------------------------------------------------------------------------
+void AdHocBoundsChangeCommand::redo()
+{
+    if (right_)
+    {
+        connection_->setAdHocRightBound(endpointIndex_, newValue_);
+    }
+    else
+    {
+        connection_->setAdHocLeftBound(endpointIndex_, newValue_);
+    }
+}

@@ -7,6 +7,8 @@
 
 #include "connectioneditor.h"
 
+#include "AdHocBoundsDelegate.h"
+
 #include <designwidget/diagraminterconnection.h>
 #include <designwidget/DiagramConnectionEndpoint.h>
 #include <designwidget/blockdiagram.h>
@@ -31,6 +33,7 @@
 #include <QStringList>
 #include <QBrush>
 #include <QDockWidget>
+#include <QSortFilterProxyModel>
 
 #include <QDebug>
 
@@ -41,18 +44,20 @@ ConnectionEditor::ConnectionEditor(QWidget *parent, LibraryInterface* handler):
 QWidget(parent),
 busType_(this),
 absType_(this),
-instanceLabel_(tr("Connected interfaces"), this),
+instanceLabel_(tr("Connected interfaces:"), this),
 connectedInstances_(this),
 separator_(this),
-nameLabel_(tr("Connection name"), this),
+nameLabel_(tr("Connection name:"), this),
 nameEdit_(this),
-descriptionLabel_(tr("Description"), this),
+descriptionLabel_(tr("Description:"), this),
 descriptionEdit_(this),
-portsLabel_(tr("Connected physical ports"), this),
+portsLabel_(tr("Connected physical ports:"), this),
 portWidget_(this),
 connection_(NULL),
-handler_(handler) {
-
+handler_(handler),
+adHocBoundsTable_(this),
+adHocBoundsModel_(this)
+{
 	Q_ASSERT(parent);
 	Q_ASSERT(handler);
 
@@ -80,6 +85,23 @@ handler_(handler) {
 	// set the maximum height for the description editor
 	descriptionEdit_.setMaximumHeight(MAX_DESC_HEIGHT);
 
+    // Set settings for the table view.
+    adHocBoundsTable_.setSortingEnabled(true);
+    adHocBoundsTable_.setSelectionMode(QAbstractItemView::SingleSelection);
+    adHocBoundsTable_.setItemDelegate(new AdHocBoundsDelegate(this));
+    adHocBoundsTable_.verticalHeader()->hide();
+
+    QSortFilterProxyModel* proxy = new QSortFilterProxyModel(this);
+    proxy->setSourceModel(&adHocBoundsModel_);
+    adHocBoundsTable_.setModel(proxy);
+
+    adHocBoundsTable_.setColumnWidth(ADHOC_BOUNDS_COL_LEFT, 70);
+    adHocBoundsTable_.setColumnWidth(ADHOC_BOUNDS_COL_RIGHT, 70);
+    adHocBoundsTable_.horizontalHeader()->setResizeMode(QHeaderView::Stretch);
+    adHocBoundsTable_.horizontalHeader()->setResizeMode(ADHOC_BOUNDS_COL_LEFT, QHeaderView::Fixed);
+    adHocBoundsTable_.horizontalHeader()->setResizeMode(ADHOC_BOUNDS_COL_RIGHT, QHeaderView::Fixed);
+
+
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&busType_);
 	layout->addWidget(&absType_);
@@ -92,6 +114,7 @@ handler_(handler) {
 	layout->addWidget(&descriptionEdit_);
 	layout->addWidget(&portsLabel_);
 	layout->addWidget(&portWidget_, 1);
+    layout->addWidget(&adHocBoundsTable_, 1);
 
 	clear();
 }
@@ -120,6 +143,7 @@ void ConnectionEditor::clear() {
 	nameEdit_.clear();
 	descriptionEdit_.clear();
 	portWidget_.clearContents();
+    adHocBoundsModel_.setConnection(0);
 
 	// set objects as hidden
 	busType_.hide();
@@ -133,6 +157,7 @@ void ConnectionEditor::clear() {
 	descriptionEdit_.hide();
 	portsLabel_.hide();
 	portWidget_.hide();
+    adHocBoundsTable_.hide();
 
 	parentWidget()->setMaximumHeight(20);
 }
@@ -164,6 +189,11 @@ void ConnectionEditor::setConnection( DiagramInterconnection* connection ) {
     {
 	    busType_.setVLNV(endPoint1->getBusInterface()->getBusType(), true);
 	    absType_.setVLNV(endPoint1->getBusInterface()->getAbstractionType(), true);
+    }
+    else
+    {
+        adHocBoundsModel_.setConnection(connection_);
+        adHocBoundsTable_.resizeRowsToContents();
     }
 
 	QString endPoint1Name = endPoint1->name();
@@ -200,8 +230,9 @@ void ConnectionEditor::setConnection( DiagramInterconnection* connection ) {
     bool locked = static_cast<BlockDiagram*>(connection->scene())->isProtected();
 	
 	// if either end point is hierarchical then there is no description to set
-	if (endPoint1->isHierarchical() || connection->endPoint2()->isHierarchical()) {
-		
+	if (connection_->isBus() &&
+        (endPoint1->isHierarchical() || connection->endPoint2()->isHierarchical()))
+    {		
 		// description exists only for normal interconnections
 		descriptionEdit_.setDisabled(true);
 		descriptionLabel_.hide();
@@ -212,7 +243,8 @@ void ConnectionEditor::setConnection( DiagramInterconnection* connection ) {
 		nameEdit_.hide();
 		nameEdit_.setDisabled(true);
 	}
-	else {
+	else
+    {
 		descriptionEdit_.setEnabled(!locked);
 		descriptionLabel_.show();
 		descriptionEdit_.show();
@@ -222,15 +254,18 @@ void ConnectionEditor::setConnection( DiagramInterconnection* connection ) {
 		nameEdit_.setEnabled(!locked);
 	}
 
+    adHocBoundsTable_.setEnabled(!locked);
+
 	// set the objects visible
-    busType_.setVisible(endPoint1->isBus());
-    absType_.setVisible(endPoint1->isBus());
-    
-	instanceLabel_.show();
+    instanceLabel_.show();
 	connectedInstances_.show();
-	separator_.show();
-	portsLabel_.show();
-	portWidget_.show();
+    separator_.show();
+    portsLabel_.show();
+
+    busType_.setVisible(connection_->isBus());
+    absType_.setVisible(connection_->isBus());
+    portWidget_.setVisible(connection_->isBus());
+    adHocBoundsTable_.setVisible(!connection_->isBus());
 
 	parentWidget()->setMaximumHeight(QWIDGETSIZE_MAX);
 }

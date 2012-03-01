@@ -470,7 +470,6 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
     foreach (Design::AdHocConnection const& adHocConn, adHocConnections)
     {
         // Convert one multiple-port connection to two-port-only connections.
-
         if (adHocConn.externalPortReferences.empty() && !adHocConn.internalPortReferences.empty())
         {
             // Find the first referenced component.
@@ -520,6 +519,12 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
                                                                           adHocConn.description, this);
                 conn->setName(adHocConn.name);
                 conn->setRoute(adHocConn.route);
+                
+                conn->setAdHocLeftBound(0, adHocConn.internalPortReferences.at(0).left);
+                conn->setAdHocRightBound(0, adHocConn.internalPortReferences.at(0).right);
+
+                conn->setAdHocLeftBound(1, adHocConn.internalPortReferences.at(i).left);
+                conn->setAdHocRightBound(1, adHocConn.internalPortReferences.at(i).right);
 
                 if (adHocConn.offPage)
                 {
@@ -570,6 +575,12 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
                                                                           adHocConn.description, this);
                 conn->setName(adHocConn.name);
                 conn->setRoute(adHocConn.route);
+
+                conn->setAdHocLeftBound(0, adHocConn.internalPortReferences.at(i).left);
+                conn->setAdHocRightBound(0, adHocConn.internalPortReferences.at(i).right);
+
+                conn->setAdHocLeftBound(1, adHocConn.externalPortReferences.at(j).left);
+                conn->setAdHocRightBound(1, adHocConn.externalPortReferences.at(j).right);
 
                 if (adHocConn.offPage)
                 {
@@ -764,26 +775,30 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv)
 
                 if (conn->endPoint1()->isHierarchical())
                 {
-                    externalPortRefs.append(Design::PortRef(conn->endPoint1()->name()
-                                                    /*TODO: Left and right bounds*/));
+                    externalPortRefs.append(Design::PortRef(conn->endPoint1()->name(), QString(),
+                                                            conn->getAdHocLeftBound(0),
+                                                            conn->getAdHocRightBound(0)));
                 }
                 else
                 {
                     internalPortRefs.append(Design::PortRef(conn->endPoint1()->name(),
-                                                            conn->endPoint1()->encompassingComp()->name()
-                                                            /*TODO: Left and right bounds*/));
+                                                            conn->endPoint1()->encompassingComp()->name(),
+                                                            conn->getAdHocLeftBound(0),
+                                                            conn->getAdHocRightBound(0)));
                 }
 
                 if (conn->endPoint2()->isHierarchical())
                 {
-                    externalPortRefs.append(Design::PortRef(conn->endPoint2()->name()
-                                                            /*TODO: Left and right bounds*/));
+                    externalPortRefs.append(Design::PortRef(conn->endPoint2()->name(), QString(),
+                                                            conn->getAdHocLeftBound(1),
+                                                            conn->getAdHocRightBound(1)));
                 }
                 else
                 {
                     internalPortRefs.append(Design::PortRef(conn->endPoint2()->name(),
-                                                            conn->endPoint2()->encompassingComp()->name()
-                                                            /*TODO: Left and right bounds*/));
+                                                            conn->endPoint2()->encompassingComp()->name(),
+                                                            conn->getAdHocLeftBound(1),
+                                                            conn->getAdHocRightBound(1)));
                 }
 
                 adHocConnections.append(Design::AdHocConnection(conn->name(), QString(),
@@ -1534,6 +1549,9 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: drawBackground()
+//-----------------------------------------------------------------------------
 void BlockDiagram::drawBackground(QPainter* painter, const QRectF& rect)
 {
     if (dynamic_cast<QPrinter*>(painter->device()) == 0)

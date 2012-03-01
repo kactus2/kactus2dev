@@ -154,6 +154,40 @@ public:
     DiagramConnectionEndPoint *endPoint2() const;
 
     /*!
+     *  Sets the left bound of the ad-hoc end point involved in the connection.
+     *
+     *      @param [in] endPointIndex Which endpoint is concerned. Either 1 or 2.
+     *      @param [in] leftBound     The left bound.
+     */
+    void setAdHocLeftBound(int endPointIndex, int leftBound);
+
+    /*!
+     *  Sets the right bound of the ad-hoc end point involved in the connection.
+     *
+     *      @param [in] endPointIndex Which endpoint is concerned. Either 1 or 2.
+     *      @param [in] rightBound    The right bound.
+     */
+    void setAdHocRightBound(int endPointIndex, int rightBound);
+
+    /*!
+     *  Returns the left bound of the ad-hoc end point involved in the connection.
+     *
+     *      @param [in] endPointIndex Which endpoint is concerned. Either 1 or 2.
+     *
+     *      @return The left bound of the end point.
+     */
+    int getAdHocLeftBound(int endPointIndex) const;
+
+    /*!
+     *  Returns the left bound of the ad-hoc end point involved in the connection.
+     *
+     *      @param [in] endPointIndex Which endpoint data is concerned. Either 1 or 2.
+     *
+     *      @return The right bound of the end point.
+     */
+    int getAdHocRightBound(int endPointIndex) const;
+
+    /*!
      *  Returns true if the connection is a bus connection. Returns false if it isn't (i.e. it is an ad-hoc
      *  connection).
      */
@@ -180,6 +214,25 @@ private:
     enum SelectionType {END, SEGMENT, NONE};
     static qreal const MIN_LENGTH;
 
+    //-----------------------------------------------------------------------------
+    //! Structure for storing ad-hoc port bounds.
+    //-----------------------------------------------------------------------------
+    struct AdHocPortBound
+    {
+        int left_;
+        int right_;
+
+        /*!
+         *  Default constructor.
+         */
+        AdHocPortBound() : left_(-1), right_(-1)
+        {
+        }
+    };
+
+    /*!
+     *  Sets the default graphics item settings.
+     */
     void setItemSettings();
 
     void createRoute(QPointF p1, QPointF p2, QVector2D const& dir1, QVector2D const& dir2);
@@ -246,6 +299,9 @@ private:
 
     //! The connection width label.
     QGraphicsTextItem* widthLabel_;
+
+    //! The ad-hoc port bounds.
+    AdHocPortBound portBounds_[2];
 };
 
 #endif // DIAGRAMINTERCONNECTION_H

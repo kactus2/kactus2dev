@@ -295,32 +295,47 @@ void Design::write(QFile& file)
 	if (!adHocConnections_.isEmpty()) {
 		xmlWriter.writeStartElement("spirit:adHocConnections");
 
-		foreach (AdHocConnection adhoc, adHocConnections_) {
+		foreach (AdHocConnection adhoc, adHocConnections_)
+        {
 			xmlWriter.writeStartElement("spirit:adHocConnection");
 
-			xmlWriter.writeTextElement("spirit:name",
-				adhoc.name);
-			xmlWriter.writeTextElement("spirit:displayName",
-				adhoc.displayName);
-			xmlWriter.writeTextElement("spirit:description",
-				adhoc.description);
+			xmlWriter.writeTextElement("spirit:name", adhoc.name);
+			xmlWriter.writeTextElement("spirit:displayName", adhoc.displayName);
+			xmlWriter.writeTextElement("spirit:description", adhoc.description);
 
-			foreach (PortRef portRef, adhoc.internalPortReferences) {
-				xmlWriter.writeEmptyElement(
-					"spirit:internalPortReference");
+			foreach (PortRef portRef, adhoc.internalPortReferences)
+            {
+				xmlWriter.writeEmptyElement("spirit:internalPortReference");
 
-				xmlWriter.writeAttribute("spirit:componentRef",
-					portRef.componentRef);
-				xmlWriter.writeAttribute("spirit:portRef",
-					portRef.portRef);
+				xmlWriter.writeAttribute("spirit:componentRef", portRef.componentRef);
+				xmlWriter.writeAttribute("spirit:portRef", portRef.portRef);
+
+                if (portRef.left >= 0)
+                {
+                    xmlWriter.writeAttribute("spirit:left", QString::number(portRef.left));
+                }
+
+                if (portRef.right >= 0)
+                {
+                    xmlWriter.writeAttribute("spirit:right", QString::number(portRef.right));
+                }
 			}
 
-			foreach (PortRef portRef, adhoc.externalPortReferences) {
-				xmlWriter.writeEmptyElement(
-					"spirit:externalPortReference");
+			foreach (PortRef portRef, adhoc.externalPortReferences)
+            {
+				xmlWriter.writeEmptyElement("spirit:externalPortReference");
 
-				xmlWriter.writeAttribute("spirit:portRef",
-					portRef.portRef);
+				xmlWriter.writeAttribute("spirit:portRef", portRef.portRef);
+
+                if (portRef.left >= 0)
+                {
+                    xmlWriter.writeAttribute("spirit:left", QString::number(portRef.left));
+                }
+
+                if (portRef.right >= 0)
+                {
+                    xmlWriter.writeAttribute("spirit:right", QString::number(portRef.right));
+                }
 			}
 
 			xmlWriter.writeEndElement();
@@ -1390,12 +1405,19 @@ Design::PortRef::PortRef(QDomNode &portReferenceNode)
     portRef = attributes.namedItem("spirit:portRef").nodeValue();
 
     if (portReferenceNode.nodeName() == "spirit:internalPortReference")
-	componentRef = attributes.namedItem("spirit:componentRef").nodeValue();
+    {
+	    componentRef = attributes.namedItem("spirit:componentRef").nodeValue();
+    }
 
     if (attributes.contains("spirit:left"))
-	left = attributes.namedItem("spirit:left").nodeValue().toInt();
+    {
+	    left = attributes.namedItem("spirit:left").nodeValue().toInt();
+    }
+
     if (attributes.contains("spirit:right"))
-	right = attributes.namedItem("spirit:right").nodeValue().toInt();
+    {
+	    right = attributes.namedItem("spirit:right").nodeValue().toInt();
+    }
 }
 
 Design::PortRef::PortRef(QString portRef,

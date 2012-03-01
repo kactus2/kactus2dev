@@ -8,6 +8,8 @@
 #ifndef CONNECTIONEDITOR_H
 #define CONNECTIONEDITOR_H
 
+#include "AdHocBoundsModel.h"
+
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
 
 #include <models/generaldeclarations.h>
@@ -143,6 +145,12 @@ private:
 
 	//! \brief Pointer to the instance that manages the library
 	LibraryInterface* handler_;
+
+    //! The port ad-hoc bounds table.
+    QTableView adHocBoundsTable_;
+
+    //! The ad-hoc bounds model.
+    AdHocBoundsModel adHocBoundsModel_;
 };
 
 #endif // CONNECTIONEDITOR_H

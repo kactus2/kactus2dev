@@ -204,8 +204,8 @@ private:
     {
         WIDTH = 240,
         TOP_MARGIN = 40,
-        BOTTOM_MARGIN = 80,
-        SPACING = 20
+        BOTTOM_MARGIN = 60,
+        SPACING = 10
     };
 
     //! The library interface.

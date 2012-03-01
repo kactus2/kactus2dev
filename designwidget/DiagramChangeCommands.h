@@ -695,5 +695,58 @@ private:
 };
 
 //-----------------------------------------------------------------------------
+//! Undo command for changing the ad-hoc bounds of an ad-hoc connection.
+//-----------------------------------------------------------------------------
+class AdHocBoundsChangeCommand : public QUndoCommand
+{
+public:
+
+	/*!
+     *  Constructor.
+	 */
+	AdHocBoundsChangeCommand(DiagramInterconnection* connection, bool right, int endpointIndex,
+                             int oldValue, int newValue, QUndoCommand* parent = 0);
+
+	/*!
+     *  Destructor.
+     */
+	virtual ~AdHocBoundsChangeCommand();
+
+	/*!
+	 *  Undoes the command.
+	 */
+	virtual void undo();
+
+	/*! 
+	 *  Redoes the command.
+	 */
+	virtual void redo();
+
+private:
+    // Disable copying.
+    AdHocBoundsChangeCommand(AdHocBoundsChangeCommand const& rhs);
+    AdHocBoundsChangeCommand& operator=(AdHocBoundsChangeCommand const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+	//! Pointer to the connection to change.
+	DiagramInterconnection* connection_;
+
+    //! If true, the change concerns the right bound. Otherwise it concerns the left bound.
+    bool right_;
+
+    //! The end point index.
+    int endpointIndex_;
+
+    //! The old bound value.
+    int oldValue_;
+
+    //! The new bound value.
+    int newValue_;
+};
+
+//-----------------------------------------------------------------------------
 
 #endif // DIAGRAMCHANGECOMMANDS_H

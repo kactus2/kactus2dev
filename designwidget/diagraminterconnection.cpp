@@ -1322,3 +1322,37 @@ void DiagramInterconnection::setLineWidth(int width)
     newPen.setWidth(width);
     setPen(newPen);
 }
+
+//-----------------------------------------------------------------------------
+// Function: DiagramInterconnection::getAdHocLeftBound()
+//-----------------------------------------------------------------------------
+int DiagramInterconnection::getAdHocLeftBound(int endPointIndex) const
+{
+    return portBounds_[endPointIndex].left_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DiagramInterconnection::getAdHocRightBound()
+//-----------------------------------------------------------------------------
+int DiagramInterconnection::getAdHocRightBound(int endPointIndex) const
+{
+    return portBounds_[endPointIndex].right_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DiagramInterconnection::setAdHocLeftBound()
+//-----------------------------------------------------------------------------
+void DiagramInterconnection::setAdHocLeftBound(int endPointIndex, int leftBound)
+{
+    portBounds_[endPointIndex].left_ = leftBound;
+    emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: DiagramInterconnection::setAdHocRightBound()
+//-----------------------------------------------------------------------------
+void DiagramInterconnection::setAdHocRightBound(int endPointIndex, int rightBound)
+{
+    portBounds_[endPointIndex].right_ = rightBound;
+    emit contentChanged();
+}
