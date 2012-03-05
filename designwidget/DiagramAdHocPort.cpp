@@ -171,7 +171,7 @@ void DiagramAdHocPort::updateInterface()
     setBrush(QBrush(Qt::black));
 
     nameLabel_->setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">" +
-                        port_->getName().left(15) + "</div>");
+                        port_->getName() + "</div>");
 
     qreal nameWidth = nameLabel_->boundingRect().width();
     qreal nameHeight = nameLabel_->boundingRect().height();
@@ -364,7 +364,6 @@ void DiagramAdHocPort::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 //-----------------------------------------------------------------------------
 void DiagramAdHocPort::setTypes(VLNV const& busType, VLNV const& absType, General::InterfaceMode mode)
 {
-    // TODO: Not useful for ad-hoc ports at all (?)
 }
 
 //-----------------------------------------------------------------------------
@@ -444,9 +443,6 @@ void DiagramAdHocPort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 //-----------------------------------------------------------------------------
 void DiagramAdHocPort::setInterfaceMode(General::InterfaceMode mode)
 {
-	Q_ASSERT(port_);
-    // TODO:
-	updateInterface();
 }
 
 //-----------------------------------------------------------------------------

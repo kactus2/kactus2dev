@@ -152,7 +152,7 @@ void DiagramInterface::updateInterface()
     }
 
     nameLabel_->setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">"
-                        +busInterface_->getName().left(15)+"</div>");
+                        + busInterface_->getName() + "</div>");
 
     qreal nameWidth = nameLabel_->boundingRect().width();
     

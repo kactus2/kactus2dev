@@ -184,7 +184,7 @@ void DiagramAdHocInterface::updateInterface()
     setBrush(QBrush(Qt::black));
 
     nameLabel_->setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">" +
-                        port_->getName().left(15) + "</div>");
+                        port_->getName() + "</div>");
 
     qreal nameWidth = nameLabel_->boundingRect().width();
 

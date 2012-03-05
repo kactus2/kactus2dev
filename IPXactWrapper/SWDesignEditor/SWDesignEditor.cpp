@@ -118,10 +118,10 @@ SWDesignEditor::SWDesignEditor(QWidget *parent, QWidget* parentWnd, LibraryInter
                     endpointsMappingDatas_.push_back(data);
 
                     QListWidgetItem* item = new QListWidgetItem(QIcon(":/icons/graphics/endpoints.png"),
-                        data.endpointsVLNV.getVendor() + ":" +
-                        data.endpointsVLNV.getLibrary() + "\n" +
-                        data.endpointsVLNV.getName() + ":" +
-                        data.endpointsVLNV.getVersion());
+                                                                data.endpointsVLNV.getVendor() + ":" +
+                                                                data.endpointsVLNV.getLibrary() + "\n" +
+                                                                data.endpointsVLNV.getName() + ":" +
+                                                                data.endpointsVLNV.getVersion());
                     item->setSizeHint(QSize(item->sizeHint().width(), 35));
                     endpointList_.addItem(item);
                     endpointMap.insert(instance.instanceName, &endpointsMappingDatas_.back());
