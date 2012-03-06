@@ -19,8 +19,7 @@
 
 #include <QSharedPointer>
 #include <QMultiMap>
-
-#include <QDebug>
+#include <QChar>
 
 VhdlComponentInstance::VhdlComponentInstance( VhdlGenerator2* parent,
 											 VhdlComponentDeclaration* compDeclaration,
@@ -45,11 +44,6 @@ portMap_() {
 	LibraryInterface* handler = parent->handler();
 	Q_ASSERT(handler);
 
-	// if view name is not specified
-	if (viewName.isEmpty()) {
-		return;
-	}
-
 	QSharedPointer<Component> component = compDeclaration_->componentModel();
 	Q_ASSERT(component);
  	
@@ -61,13 +55,28 @@ portMap_() {
 	architecture_ = component->getArchitectureName(viewName);
 
 	// get the default values of the in and inout ports
-	defaultPortConnections_ = component->getPortDefaultValues();
+	QMap<QString, QString> defaultValues = component->getPortDefaultValues();
+	for (QMap<QString, QString>::iterator i = defaultValues.begin(); 
+		i != defaultValues.end(); ++i) {
+
+			if (!i.value().isEmpty()) {
+				defaultPortConnections_.insert(i.key(), i.value());
+			}
+	}
+
 	QMap<QString, QString> tempDefaults;
 	for (QMap<QString, QString>::iterator i = defaultPortConnections_.begin();
 		i != defaultPortConnections_.end(); ++i) {
 
 		// get the VLNVs of the abstraction definitions for the port
 		QMultiMap<QString, VLNV> absDefs = component->getInterfaceAbsDefForPort(i.key());
+
+		// if the port is not in any interface then use the ports own default value.
+		if (absDefs.isEmpty()) {
+			tempDefaults.insert(i.key(), i.value());
+		}
+
+		// try to find the abstraction definition and use it's default value if possible
 		for (QMultiMap<QString, VLNV>::Iterator j = absDefs.begin();
 			j != absDefs.end(); ++j) {
 
@@ -81,10 +90,14 @@ portMap_() {
 			QSharedPointer<LibraryComponent> libComp = handler->getModel(j.value());
 			QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
 
+			// if the abstraction definition has defined a default value for the port
+			// then use it before the port's own default value
 			if (absDef->hasDefaultValue(j.key())) {
 				tempDefaults.insert(i.key(), QString::number(absDef->getDefaultValue(j.key())));
 				break;
 			}
+
+			// if abstraction definition did not contain 
 			else {
 				if (!tempDefaults.contains(i.key()))
 					tempDefaults.insert(i.key(), i.value());
@@ -245,7 +258,6 @@ void VhdlComponentInstance::useDefaultsForOtherPorts() {
 	// check all ports that have a connection
 	for (QMap<VhdlPortMap, VhdlPortMap>::iterator i = portMap_.begin();
 		i != portMap_.end(); ++i) {
-
 			defaultPortConnections_.remove(i.key().name());
 	}
 
@@ -255,8 +267,33 @@ void VhdlComponentInstance::useDefaultsForOtherPorts() {
 	for (QMap<QString, QString>::iterator i = defaultPortConnections_.begin();
 		i != defaultPortConnections_.end(); ++i) {
 		
+			// if the default value is not set
+			if (i.value().isEmpty()) {
+				continue;
+			}
+
 		VhdlPortMap port(i.key());
-		VhdlPortMap defaultValue(i.value());
+		
+		QString mapValue(i.value());
+		
+		// char for '
+		QChar charToAdd(39);
+
+		// if theres several digits then use "
+		if (mapValue.size() != 1) {
+			charToAdd = 34;
+		}
+
+		// if default does not start with correct ' or "
+		if (mapValue.at(0) != charToAdd) {
+			mapValue.prepend(charToAdd);
+		}
+		// if the default does not end with correct ' or "
+		if (mapValue.at(mapValue.size()-1) != charToAdd) {
+			mapValue.append(charToAdd);
+		}
+
+		VhdlPortMap defaultValue(mapValue);
 		addMapping(port, defaultValue);
 	}
 }
