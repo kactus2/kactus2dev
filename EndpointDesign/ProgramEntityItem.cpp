@@ -144,7 +144,7 @@ QSharedPointer<MCAPIContentMatcher> ProgramEntityItem::getContentMatcher() const
 
             if (port == 0)
             {
-                // TODO: Error printing.
+                emit errorMessage(tr("Endpoint '%1' not found in the SW application instance '%2'").arg(endpoint->getName(), appItem_->name()));
                 continue;
             }
 

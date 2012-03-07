@@ -199,6 +199,9 @@ signals:
     //! Signals that the interconnection has changed.
     void contentChanged();
 
+    //! Sends an error message to the user.
+    void errorMessage(const QString& errorMessage) const;
+
 	//! \brief This signal is emitted when this connection is destroyed.
 	void destroyed(DiagramInterconnection* connection);
 

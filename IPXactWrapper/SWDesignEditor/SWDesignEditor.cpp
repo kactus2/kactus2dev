@@ -144,7 +144,8 @@ SWDesignEditor::SWDesignEditor(QWidget *parent, QWidget* parentWnd, LibraryInter
 
                     if (connIndex == design->getInterconnections().size())
                     {
-                        // TODO: Error message to the output window.
+                        emit errorMessage(tr("Parent endpoints component instance for SW application "
+                                             "instance '%1' not found in the design").arg(instance.instanceName));
                         continue;
                     }
 

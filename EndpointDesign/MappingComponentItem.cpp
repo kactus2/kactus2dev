@@ -98,8 +98,11 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
 
             if (comp == 0)
             {
-//                 emit errorMessage(tr("The component %1 was not found in the library").arg(
-//                                   instance.componentRef.name()).arg(design->getVlnv()->name()));
+                emit errorMessage(tr("Component with the VLNV %1:%2:%3:%4 was not found in the library.").arg(
+                    instance.componentRef.getVendor(),
+                    instance.componentRef.getLibrary(),
+                    instance.componentRef.getName(),
+                    instance.componentRef.getVersion()));
                 continue;
             }
 
@@ -153,7 +156,9 @@ MappingComponentItem::MappingComponentItem(EndpointDesignDiagram* diagram,
 
                     if (connIndex == design->getInterconnections().size())
                     {
-                        // TODO: Error message to the output window.
+                        emit errorMessage(tr("Parent endpoints component instance for SW application "
+                                             "instance '%1' not found in the design of the SW mapping "
+                                             "component instance '%2'").arg(instance.instanceName, instanceName));
                         continue;
                     }
 

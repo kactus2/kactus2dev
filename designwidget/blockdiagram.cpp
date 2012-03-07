@@ -334,6 +334,9 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
             }
 
             connect(diagramInterconnection, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+            connect(diagramInterconnection, SIGNAL(errorMessage(QString const&)), this,
+                    SIGNAL(errorMessage(QString const&)));
+
             addItem(diagramInterconnection);
 		}
     }
@@ -421,6 +424,8 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
             }
 
             connect(diagConn, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+            connect(diagConn, SIGNAL(errorMessage(QString const&)), this,
+                    SIGNAL(errorMessage(QString const&)));
 			connectedHier.append(hierConn.interfaceRef);
 
             addItem(diagConn);
@@ -532,6 +537,8 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
                 }
 
                 connect(conn, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+                connect(conn, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
+
                 addItem(conn);
             }
         }
@@ -588,6 +595,7 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
                 }
 
                 connect(conn, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+                connect(conn, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
                 addItem(conn);
             }
         }
@@ -2341,6 +2349,7 @@ void BlockDiagram::toggleConnectionStyle(DiagramInterconnection* conn, QUndoComm
     addItem(newConn);
 
     connect(newConn, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+    connect(newConn, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
     if (newConn->connectEnds())
     {

@@ -132,6 +132,9 @@ signals:
     //! Signals that the contents of the component have been changed.
     void contentChanged();
 
+    //! Sends an error message to the user.
+    void errorMessage(const QString& errorMessage) const;
+
 	//! \brief Emitted when the name of the diagramComponent changes.
 	void nameChanged(QString const& newName, QString const& oldName);
 

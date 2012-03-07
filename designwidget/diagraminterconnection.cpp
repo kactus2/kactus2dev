@@ -1286,9 +1286,17 @@ int DiagramInterconnection::calculateBusWidth() const
         Port* port1 = endPoint1_->ownerComponent()->getPort(portMap1->physicalPort_);
         Port* port2 = endPoint2_->ownerComponent()->getPort(portMap2->physicalPort_);
 
-        if (port1 == 0 || port2 == 0)
+        if (port1 == 0)
         {
-            // TODO: Error handling.
+            emit errorMessage(tr("Port '%1' not found in the component '%1'.").arg(portMap1->physicalPort_,
+                endPoint1_->ownerComponent()->getVlnv()->getName()));
+            continue;
+        }
+        
+        if (port2 == 0)
+        {
+            emit errorMessage(tr("Port '%1' not found in the component '%1'.").arg(portMap2->physicalPort_,
+                endPoint2_->ownerComponent()->getVlnv()->getName()));
             continue;
         }
 

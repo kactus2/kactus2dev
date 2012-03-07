@@ -194,6 +194,7 @@ bool EndpointDesignDiagram::setDesign(QSharedPointer<Component> system)
                                                               instance.configurableElementValues, id);
         item->setImported(instance.imported);
         connect(item, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+        connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
         // Check if the position is not found.
         if (instance.position.isNull())
@@ -319,6 +320,7 @@ void EndpointDesignDiagram::addMappingComponent(SystemColumn* column, QPointF co
                                                           nodeIDFactory_.getID());
     item->setPos(pos);
     connect(item, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+    connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
     // Create an undo command and execute it.
     QSharedPointer<MappingCompAddCommand> cmd(new MappingCompAddCommand(column, item));
