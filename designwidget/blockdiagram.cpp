@@ -1856,7 +1856,7 @@ void BlockDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 }
 
 QString BlockDiagram::createInstanceName( QSharedPointer<Component> component ) {
-	int runningNumber = 1;
+	int runningNumber = 0;
 	QString instanceName = component->getVlnv()->getName();
 	instanceName.remove(QString(".comp"));
 	QString tempName = instanceName;
