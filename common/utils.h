@@ -167,9 +167,9 @@ namespace Utils {
 	 * 
 	 * \param str The string to convert.
 	 *
-	 * \return int The result of the conversion.
+	 * \return The result of the conversion.
 	*/
-	int str2Int(const QString& str);
+	quint64 str2Int(const QString& str);
 }
 
 #endif // UTILS_H

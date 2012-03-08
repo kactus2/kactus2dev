@@ -693,13 +693,6 @@ public:
 	*/
 	bool hasFile(const QString& fileName) const;
 
-	/*! \brief Get the type definitions for the ports of the component.
-	 *
-	 *
-	 * \return QStringList contains the type definitions for the ports.
-	*/
-	QStringList getPortTypeDefinitions() const;
-
 	/*! \brief Get this component's bus interfaces
 	*
 	* \return QMap containing component's bus interfaces
@@ -887,6 +880,12 @@ public:
 	 * Value: The default value for the specified port.
 	*/
 	QMap<QString, QString> getPortDefaultValues() const;
+
+	/*! \brief Get the type definitions for the ports of the component.
+	*
+	* \return QStringList contains the type definitions for the ports.
+	*/
+	QStringList getPortTypeDefinitions() const;
 
 	/*! \brief Check if the component has the specified port or not.
 	*

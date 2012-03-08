@@ -11,11 +11,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./mainwindow/DeleteWorkspaceDialog.h \
     ./mainwindow/NewWorkspaceDialog.h \
     ./mainwindow/SplashScreen.h \
-    ./AdHocEditor/AdHocDelegate.h \
-    ./AdHocEditor/AdHocEditor.h \
-    ./AdHocEditor/AdHocModel.h \
     ./resource.h \
-    ./version.h \
     ./common/ColumnTypes.h \
     ./common/CSourceWriter.h \
     ./common/diagramgrid.h \
@@ -192,6 +188,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspaceeditor.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacegeneraleditor.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspaceparameterseditor.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacevisualizer.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmenteditor.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmentsmodel.h \
     ./IPXactWrapper/ComponentEditor/cpus/addressspacerefdelegate.h \
@@ -355,9 +352,14 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./ConfigurationEditor/configurationeditor.h \
     ./DocumentGenerator/documentgenerator.h \
     ./InterfaceEditor/interfaceeditor.h \
+    ./ConnectionEditor/AdHocBoundsDelegate.h \
+    ./ConnectionEditor/AdHocBoundsModel.h \
     ./ConnectionEditor/connectioneditor.h \
     ./GCF/Common.h \
-    ./GCF/MenuStrip.h
+    ./GCF/MenuStrip.h \
+    ./AdHocEditor/AdHocDelegate.h \
+    ./AdHocEditor/AdHocEditor.h \
+    ./AdHocEditor/AdHocModel.h
 SOURCES += ./common/CSourceWriter.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/KactusAttribute.cpp \
@@ -521,6 +523,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspaceeditor.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacegeneraleditor.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspaceparameterseditor.cpp \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacevisualizer.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmenteditor.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmentsmodel.cpp \
     ./IPXactWrapper/ComponentEditor/cpus/addressspacerefdelegate.cpp \
@@ -689,6 +692,8 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./ConfigurationEditor/configurationeditor.cpp \
     ./DocumentGenerator/documentgenerator.cpp \
     ./InterfaceEditor/interfaceeditor.cpp \
+    ./ConnectionEditor/AdHocBoundsDelegate.cpp \
+    ./ConnectionEditor/AdHocBoundsModel.cpp \
     ./ConnectionEditor/connectioneditor.cpp \
     ./GCF/MenuStrip.cpp \
     ./AdHocEditor/AdHocDelegate.cpp \

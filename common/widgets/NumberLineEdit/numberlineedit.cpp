@@ -15,7 +15,7 @@ QLineEdit(parent) {
 
 	// set validator to accept only strings that begin with number and may
 	// contain one multiple letter in the end
-	QRegExp regExp("[0-9]+[kKMGTP]", Qt::CaseSensitive, QRegExp::W3CXmlSchema11);
+	QRegExp regExp("[0-9]+[kKMGTP]?", Qt::CaseSensitive, QRegExp::W3CXmlSchema11);
 	QRegExpValidator* validator = new QRegExpValidator(regExp, this);
 	setValidator(validator);
 

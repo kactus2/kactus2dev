@@ -8,6 +8,7 @@
 #include "addressspaceeditor.h"
 
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QScrollArea>
 #include <QWidget>
 
@@ -19,7 +20,8 @@ addrSpace_(static_cast<AddressSpace*>(dataPointer)),
 nameBox_(this, tr("Name and description")),
 general_(addrSpace_, this),
 segments_(addrSpace_, this),
-parameterEditor_(&addrSpace_->getParameters(), this) {
+parameterEditor_(&addrSpace_->getParameters(), this),
+visualizer_(this) {
 
 	Q_ASSERT(addrSpace_);
 
@@ -34,7 +36,7 @@ parameterEditor_(&addrSpace_->getParameters(), this) {
 	QWidget* topWidget = new QWidget(scrollArea);
 	topWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-	QVBoxLayout* layout = new QVBoxLayout(topWidget);
+	QVBoxLayout* layout = new QVBoxLayout();
 
 	layout->addWidget(&nameBox_);
 	connect(&nameBox_, SIGNAL(contentChanged()),
@@ -45,10 +47,20 @@ parameterEditor_(&addrSpace_->getParameters(), this) {
 	layout->addWidget(&general_);
 	connect(&general_, SIGNAL(contentChanged()), 
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&general_, SIGNAL(addressableUnitsChanged(int)),
+		&visualizer_, SLOT(setByteSize(int)), Qt::UniqueConnection);
+	connect(&general_, SIGNAL(widthChanged(int)),
+		&visualizer_, SLOT(setRowWidth(int)), Qt::UniqueConnection);
+	connect(&general_, SIGNAL(rangeChanged(const QString&)),
+		&visualizer_, SLOT(setRange(const QString&)), Qt::UniqueConnection);
 
 	layout->addWidget(&segments_);
 	connect(&segments_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&segments_, SIGNAL(errorMessage(const QString&)),
+		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
+	connect(&segments_, SIGNAL(noticeMessage(const QString&)),
+		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
 	layout->addWidget(&parameterEditor_);
 	connect(&parameterEditor_, SIGNAL(contentChanged()),
@@ -57,6 +69,11 @@ parameterEditor_(&addrSpace_->getParameters(), this) {
 		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 	connect(&parameterEditor_, SIGNAL(noticeMessage(const QString&)),
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+
+	// the horizontal layout contains the visualizer and other widgets
+	QHBoxLayout* topLayout = new QHBoxLayout(topWidget);
+	topLayout->addLayout(layout);
+	topLayout->addWidget(&visualizer_);
 
 	scrollArea->setWidget(topWidget);
 
@@ -107,4 +124,8 @@ void AddressSpaceEditor::restoreChanges() {
 	general_.restoreChanges();
 	parameterEditor_.restore();
 	segments_.restore();
+
+	visualizer_.setByteSize(addrSpace_->getAddressUnitBits());
+	visualizer_.setRowWidth(addrSpace_->getWidth());
+	visualizer_.setRange(addrSpace_->getRange());
 }

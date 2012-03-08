@@ -11,6 +11,7 @@
 #include "addressspacegeneraleditor.h"
 #include "addressspaceparameterseditor.h"
 #include "segmenteditor.h"
+#include "addressspacevisualizer.h"
 
 #include <models/component.h>
 #include <models/addressspace.h>
@@ -90,6 +91,9 @@ private:
 
 	//! \brief The editor for the parameters of the address space.
 	ParameterGroupBox parameterEditor_;
+
+	//! \brief The widget to visualize the address space.
+	AddressSpaceVisualizer visualizer_;
 };
 
 #endif // ADDRESSSPACEEDITOR_H

@@ -58,6 +58,27 @@ signals:
 	//! \brief Emitted when the contents of one of the editor fields changes.
 	void contentChanged();
 
+	/*! \brief Emitted when user changes the size of an addressable unit.
+	 *
+	 * \param units The new addressable unit size.
+	 *
+	*/
+	void addressableUnitsChanged(int units);
+
+	/*! \brief Emitted when user changes the width of a row in address space.
+	 *
+	 * \param width The new width of a row.
+	 *
+	*/
+	void widthChanged(int width);
+
+	/*! \brief Emitted when user changes the range of an address space.
+	 *
+	 * \param range The new range as number of addressable units.
+	 *
+	*/
+	void rangeChanged(const QString& range);
+
 private:
 	//! \brief No copying
 	AddressSpaceGeneralEditor(const AddressSpaceGeneralEditor& other);

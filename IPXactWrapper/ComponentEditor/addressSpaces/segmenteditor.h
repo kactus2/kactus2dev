@@ -56,6 +56,12 @@ signals:
 	//! \brief Emitted when the contents of the editor change.
 	void contentChanged();
 
+	//! \brief Print an error message to the user.
+	void errorMessage(const QString& msg);
+
+	//! \brief Print a notification to the user.
+	void noticeMessage(const QString& msg);
+
 private:
 	//! \brief No copying
 	SegmentEditor(const SegmentEditor& other);

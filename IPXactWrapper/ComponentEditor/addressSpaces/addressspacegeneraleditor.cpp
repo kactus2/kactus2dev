@@ -45,10 +45,18 @@ range_(this) {
 
 	connect(&addrUnit_, SIGNAL(valueChanged(int)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&addrUnit_, SIGNAL(valueChanged(int)),
+		this, SIGNAL(addressableUnitsChanged(int)), Qt::UniqueConnection);
+
 	connect(&width_, SIGNAL(valueChanged(int)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&width_, SIGNAL(valueChanged(int)),
+		this, SIGNAL(widthChanged(int)), Qt::UniqueConnection);
+
 	connect(&range_, SIGNAL(textEdited(const QString&)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&range_, SIGNAL(textEdited(const QString&)),
+		this, SIGNAL(rangeChanged(const QString&)), Qt::UniqueConnection);
 }
 
 AddressSpaceGeneralEditor::~AddressSpaceGeneralEditor() {

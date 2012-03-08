@@ -132,6 +132,18 @@ signals:
 	//! \brief Prints a notification to user.
 	void noticeMessage(const QString& msg) const;
 
+	//! \brief Emitted when a new segment is added to the address space.
+	void segmentAdded(QSharedPointer<Segment> segment);
+
+	//! \brief Emitted when a segment is removed from the address space.
+	void segmentRemoved(const QString& segmentName);
+
+	//! \brief Emitted when a segment is renamed.
+	void segmentRenamed(const QString& oldName, const QString& newName);
+
+	//! \brief Emitted when the range or offset of a segment has changed.
+	void segmentChanged(QSharedPointer<Segment> segment);
+
 private:
 	//! \brief No copying
 	SegmentsModel(const SegmentsModel& other);

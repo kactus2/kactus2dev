@@ -10,6 +10,8 @@
 
 #include "utils.h"
 
+#include <qmath.h>
+
 Qt::CheckState Utils::bool2CheckState(const bool state) {
 	if (state) 
 		return Qt::Checked;
@@ -34,35 +36,40 @@ bool Utils::checkBoxState2Bool(const int state ) {
 	}
 }
 
-int Utils::str2Int( const QString& str ) {
+quint64 Utils::str2Int( const QString& str ) {
+
+	if (str.isEmpty()) {
+		return 0;
+	}
+
 	QString strNumber = str;
 	const QChar multiple = strNumber.at(strNumber.size()-1);
-	int multiplier = 1;
+	quint64 multiplier = 1;
 
 	// get the correct multiplier and remove the letter from the string
 	if (multiple == 'k' || multiple == 'K') {
-		multiplier = 2^10;
+		multiplier = qPow(2, 10);
 		strNumber.chop(1);
 	}
 	else if (multiple == 'M') {
-		multiplier = 2^20;
+		multiplier = qPow(2, 20);
 		strNumber.chop(1);
 	}
 	else if (multiple == 'G') {
-		multiplier = 2^30;
+		multiplier = qPow(2, 30);
 		strNumber.chop(1);
 	}
 	else if (multiple == 'T') {
-		multiplier = 2^40;
+		multiplier = qPow(2, 40);
 		strNumber.chop(1);
 	}
 	else if (multiple == 'P') {
-		multiplier = 2^50;
+		multiplier = qPow(2, 50);
 		strNumber.chop(1);
 	}
 
 	bool success = true;
-	int number = strNumber.toInt(&success);
+	quint64 number = strNumber.toInt(&success);
 
 	// if the conversion failed
 	if (!success) {

@@ -132,15 +132,20 @@ bool SegmentsModel::setData( const QModelIndex& index,
 
 		switch (index.column()) {
 			case 0: {
+				const QString oldName = table_.at(index.row())->getName();
+				emit segmentRenamed(oldName, value.toString());
+
 				table_.at(index.row())->setName(value.toString());
 				break;
 					}
 			case 1: {
 				table_.at(index.row())->setOffset(value.toString());
+				emit segmentChanged(table_.at(index.row()));
 				break;
 					}
 			case 2: {
 				table_.at(index.row())->setRange(value.toString());
+				emit segmentChanged(table_.at(index.row()));
 				break;
 					}
 			case 3: {
@@ -150,7 +155,7 @@ bool SegmentsModel::setData( const QModelIndex& index,
 			default: 
 				return false;
 		}
-		emit contentChanged();
+		emit dataChanged(index, index);
 		return true;
 	}
 
@@ -201,12 +206,16 @@ void SegmentsModel::onAddItem( const QModelIndex& index ) {
 		row = index.row();
 	}
 
+	QSharedPointer<Segment> segment(new Segment());
+
 	beginInsertRows(QModelIndex(), row, row);
-	table_.insert(row, QSharedPointer<Segment>(new Segment()));
+	table_.insert(row, segment);
 	endInsertRows();
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
+
+	emit segmentAdded(segment);
 }
 
 void SegmentsModel::onRemoveItem( const QModelIndex& index ) {
@@ -218,6 +227,8 @@ void SegmentsModel::onRemoveItem( const QModelIndex& index ) {
 	else if (index.row() < 0 || index.row() >= table_.size()) {
 		return;
 	}
+
+	emit segmentRemoved(table_.at(index.row())->getName());
 
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
