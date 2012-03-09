@@ -342,7 +342,7 @@ void DiagramInterface::onDisconnect(DiagramConnectionEndPoint const*)
     }
 
     // Otherwise undefine the interface.
-    undefine();
+    //undefine();
 
     // Update the interface visuals.
     updateInterface();
@@ -629,7 +629,7 @@ void DiagramInterface::setTypes(VLNV const& busType, VLNV const& absType, Genera
 //-----------------------------------------------------------------------------
 // Function: define()
 //-----------------------------------------------------------------------------
-void DiagramInterface::define(QSharedPointer<BusInterface> busIf,
+void DiagramInterface::define(QSharedPointer<BusInterface> busIf, bool addPorts,
                               QList< QSharedPointer<Port> > ports)
 {
     // Add the ports to the top-level component.
@@ -649,14 +649,17 @@ void DiagramInterface::define(QSharedPointer<BusInterface> busIf,
 //-----------------------------------------------------------------------------
 // Function: undefine()
 //-----------------------------------------------------------------------------
-void DiagramInterface::undefine()
+void DiagramInterface::undefine(bool removePorts)
 {
-    // Delete all ports related to the bus interface from the top-level component.
-    QList< QSharedPointer<General::PortMap> > const& portMaps = busInterface_->getPortMaps();
-
-    for (int i = 0; i < portMaps.size(); ++i)
+    if (removePorts)
     {
-        component_->removePort(portMaps.at(i)->physicalPort_);
+        // Delete all ports related to the bus interface from the top-level component.
+        QList< QSharedPointer<General::PortMap> > const& portMaps = busInterface_->getPortMaps();
+
+        for (int i = 0; i < portMaps.size(); ++i)
+        {
+            component_->removePort(portMaps.at(i)->physicalPort_);
+        }
     }
 
     // Remove the bus interface from the top-level component and destroy it.

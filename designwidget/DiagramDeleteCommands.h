@@ -250,9 +250,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] interface The interface to delete.
+     *      @param [in] interface    The interface to delete.
+     *      @param [in] removePorts  If true, the ports that are part of the interface are also removed.
      */
-    InterfaceDeleteCommand(DiagramInterface* interface, QUndoCommand* parent = 0);
+    InterfaceDeleteCommand(DiagramInterface* interface, bool removePorts, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -295,6 +296,9 @@ private:
 
     //! Boolean flag for indicating if the connection should be deleted in the destructor.
     bool del_;
+
+    //! If true, the command also removes the ports that are part of the bus interface.
+    bool removePorts_;
 };
 
 //-----------------------------------------------------------------------------

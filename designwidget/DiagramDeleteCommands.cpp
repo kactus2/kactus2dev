@@ -333,17 +333,25 @@ void PortDeleteCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: InterfaceDeleteCommand()
 //-----------------------------------------------------------------------------
-InterfaceDeleteCommand::InterfaceDeleteCommand(DiagramInterface* interface, QUndoCommand* parent) :
-    QUndoCommand(parent), interface_(interface), busIf_(interface_->getBusInterface()),
-    parent_(static_cast<DiagramColumn*>(interface->parentItem())),
-    scene_(interface->scene()), del_(true)
+InterfaceDeleteCommand::InterfaceDeleteCommand(DiagramInterface* interface,
+                                               bool removePorts, QUndoCommand* parent)
+    : QUndoCommand(parent),
+      interface_(interface),
+      busIf_(interface_->getBusInterface()),
+      parent_(static_cast<DiagramColumn*>(interface->parentItem())),
+      scene_(interface->scene()),
+      del_(true),
+      removePorts_(removePorts)
 {
-    // Create copies of the related ports.
-    QList<Port*> ports = interface_->getPorts();
-
-    foreach (Port* port, ports)
+    if (removePorts_)
     {
-        ports_.append(QSharedPointer<Port>(new Port(*port)));
+        // Create copies of the related ports.
+        QList<Port*> ports = interface_->getPorts();
+
+        foreach (Port* port, ports)
+        {
+            ports_.append(QSharedPointer<Port>(new Port(*port)));
+        }
     }
 
     // Create child commands for removing interconnections.
@@ -381,7 +389,7 @@ void InterfaceDeleteCommand::undo()
     // Redefine the interface.
     if (busIf_ != 0)
     {
-        interface_->define(busIf_, ports_);
+        interface_->define(busIf_, removePorts_, ports_);
     }
 
     // Execute child commands.
@@ -399,7 +407,7 @@ void InterfaceDeleteCommand::redo()
     // Undefine the interface.
     if (busIf_ != 0)
     {
-        interface_->undefine();
+        interface_->undefine(removePorts_);
     }
 
     // Remove the interface from the scene.

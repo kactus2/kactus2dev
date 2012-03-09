@@ -60,15 +60,20 @@ public:
     /*!
      *  Defines the interface.
      *
-     *      @param [in] busIf The bus interface.
-     *      @param [in] ports The related ports.
+     *      @param [in] busIf     The bus interface.
+     *      @param [in] addPorts  If true, the given ports are added to the parent component.
+     *      @param [in] ports     The related ports.
      */
-    void define(QSharedPointer<BusInterface> busIf, QList< QSharedPointer<Port> > ports);
+    void define(QSharedPointer<BusInterface> busIf, bool addPorts,
+                QList< QSharedPointer<Port> > ports = QList< QSharedPointer<Port> >());
 
     /*!
      *  Sets the interface undefined.
+     *
+     *      @param [in] removePorts If true, the ports that are part of the bus interface are
+     *                  removed from the parent component.
      */
-    void undefine();
+    void undefine(bool removePorts);
 
     /*!
      *  Returns the ports in the top-level component that are related to the bus interface.
