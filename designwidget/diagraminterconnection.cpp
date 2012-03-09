@@ -56,7 +56,7 @@ DiagramInterconnection::DiagramInterconnection(DiagramConnectionEndPoint *endPoi
 
     if (endPoint1->isBus())
     {
-        setLineWidth(3);
+        setLineWidth(2);
     }
 
     if (autoConnect)

@@ -970,7 +970,7 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
             if (tempConnEndPoint_->isBus())
             {
-                tempConnection_->setLineWidth(3);
+                tempConnection_->setLineWidth(2);
             }
 
             addItem(tempConnection_);
@@ -1220,7 +1220,7 @@ void BlockDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
             if (tempConnEndPoint_->isBus())
             {
-                newTempConnection_->setLineWidth(3);
+                newTempConnection_->setLineWidth(2);
             }
 
             removeItem(tempConnection_);
