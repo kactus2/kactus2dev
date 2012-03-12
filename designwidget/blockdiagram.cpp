@@ -488,13 +488,18 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
             }
 
             // Find the corresponding port.
-            DiagramAdHocPort* port1 = comp1->getAdHocPort(adHocConn.internalPortReferences.at(0).portRef);
+            DiagramConnectionEndPoint* port1 = comp1->getAdHocPort(adHocConn.internalPortReferences.at(0).portRef);
 
             if (port1 == 0)
             {
                 emit errorMessage(tr("Port %1 was not found in the component %2").arg(
                     adHocConn.internalPortReferences.at(0).portRef).arg(adHocConn.internalPortReferences.at(0).componentRef));
                 continue;
+            }
+
+            if (adHocConn.offPage)
+            {
+                port1 = port1->getOffPageConnector();
             }
 
             for (int i = 1; i < adHocConn.internalPortReferences.size(); ++i)
@@ -509,13 +514,18 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
                     continue;
                 }
 
-                DiagramAdHocPort* port2 = comp2->getAdHocPort(adHocConn.internalPortReferences.at(i).portRef);
+                DiagramConnectionEndPoint* port2 = comp2->getAdHocPort(adHocConn.internalPortReferences.at(i).portRef);
 
                 if (port2 == 0)
                 {
                     emit errorMessage(tr("Port %1 was not found in the component %2").arg(
                         adHocConn.internalPortReferences.at(i).portRef).arg(adHocConn.internalPortReferences.at(i).componentRef));
                     continue;
+                }
+
+                if (adHocConn.offPage)
+                {
+                    port2 = port2->getOffPageConnector();
                 }
 
                 // Create the ad-hoc connection graphics item.
@@ -555,6 +565,11 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
                 continue;
             }
 
+            if (adHocConn.offPage)
+            {
+                adHocIf = adHocIf->getOffPageConnector();
+            }
+
             for (int i = 0; i < adHocConn.internalPortReferences.size(); ++i)
             {
                 // Find the referenced component.
@@ -567,13 +582,18 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
                     continue;
                 }
 
-                DiagramAdHocPort* port = comp->getAdHocPort(adHocConn.internalPortReferences.at(i).portRef);
+                DiagramConnectionEndPoint* port = comp->getAdHocPort(adHocConn.internalPortReferences.at(i).portRef);
 
                 if (port == 0)
                 {
                     emit errorMessage(tr("Port %1 was not found in the component %2").arg(
                         adHocConn.internalPortReferences.at(i).portRef).arg(adHocConn.internalPortReferences.at(i).componentRef));
                     continue;
+                }
+
+                if (adHocConn.offPage)
+                {
+                    port = port->getOffPageConnector();
                 }
 
                 // Create the ad-hoc connection graphics item.

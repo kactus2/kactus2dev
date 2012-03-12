@@ -517,12 +517,11 @@ void DesignWidget::keyPressEvent(QKeyEvent *event)
             bool removePorts = (msgBox.exec() == QMessageBox::Yes);
 
             diagram_->clearSelection();
+            emit clearItemSelection();
 
             // Delete the interface.
             QSharedPointer<QUndoCommand> cmd(new InterfaceDeleteCommand(diagIf, removePorts));
             editProvider_->addCommand(cmd);
-            
-            emit clearItemSelection();
         }
         else if (selected->type() == DiagramPort::Type)
         {
