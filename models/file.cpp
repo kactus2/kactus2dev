@@ -290,6 +290,8 @@ File::~File() {
 void File::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:file");
 
+    // TODO: Calculate the hash for the file (will be used as the file id).
+
 	// if fileId is defined
 	if (!fileId_.isEmpty()) {
 		writer.writeAttribute("spirit:fileId", fileId_);

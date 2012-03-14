@@ -432,8 +432,11 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
 		}
     }
 
+    // Set the ad-hoc data for the diagram.
+    setAdHocData(component_, design->getPortAdHocVisibilities());
+
     // Create top-level ad-hoc interfaces and set their positions.
-    QMapIterator<QString, bool> itrCurPort(design->getPortAdHocVisibilities());
+    QMapIterator<QString, bool> itrCurPort(getPortAdHocVisibilities());
     QMap<QString, QPointF> const& adHocPortPositions = design->getAdHocPortPositions();
 
     while (itrCurPort.hasNext())
@@ -458,7 +461,7 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
             // Add the ad-hoc interface to the first column where it is allowed to be placed.
             DiagramColumn* column = layout_->findColumnAt(adHocIf->scenePos());
 
-            if (column != 0)
+            if (column != 0 && adHocPortPositions.contains(name))
             {
                 column->addItem(adHocIf, true);
             }
@@ -626,9 +629,6 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
     {
         column->updateItemPositions();
     }
-
-    // Set the ad-hoc data for the diagram.
-    setAdHocData(component_, design->getPortAdHocVisibilities());
 
     return true;
 }

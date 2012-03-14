@@ -1850,8 +1850,8 @@ void MainWindow::openSource(ProgramEntityItem* progEntity)
 	if (!QFile::exists(filename))
 	{
 		QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
-			"The source file " + filename + " is not found!",
-			QMessageBox::Ok, this);
+			               "The source file " + filename + " is not found!",
+			               QMessageBox::Ok, this);
 		msgBox.exec();
 		return;
 	}
