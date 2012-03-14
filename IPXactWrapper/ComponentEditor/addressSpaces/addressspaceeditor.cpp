@@ -62,6 +62,15 @@ visualizer_(this) {
 	connect(&segments_, SIGNAL(noticeMessage(const QString&)),
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
+	connect(&segments_, SIGNAL(segmentAdded(QSharedPointer<Segment>)),
+		&visualizer_, SLOT(addSegment(QSharedPointer<Segment>)), Qt::UniqueConnection);
+	connect(&segments_, SIGNAL(segmentRemoved(const QString&)),
+		&visualizer_, SLOT(removeSegment(const QString&)), Qt::UniqueConnection);
+	connect(&segments_, SIGNAL(segmentRenamed(const QString&, const QString&)),
+		&visualizer_, SLOT(renameSegment(const QString&, const QString&)), Qt::UniqueConnection);
+	connect(&segments_, SIGNAL(segmentChanged(QSharedPointer<Segment>)),
+		&visualizer_, SLOT(updateSegment(QSharedPointer<Segment>)), Qt::UniqueConnection);
+
 	layout->addWidget(&parameterEditor_);
 	connect(&parameterEditor_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -128,4 +137,5 @@ void AddressSpaceEditor::restoreChanges() {
 	visualizer_.setByteSize(addrSpace_->getAddressUnitBits());
 	visualizer_.setRowWidth(addrSpace_->getWidth());
 	visualizer_.setRange(addrSpace_->getRange());
+	visualizer_.setSegments(addrSpace_);
 }

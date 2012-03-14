@@ -42,7 +42,23 @@ quint64 Utils::str2Int( const QString& str ) {
 		return 0;
 	}
 
+	// used to detect if the conversion was successful
+	bool success = true;
+	quint64 number = 0;
+
+	// if starts with "0x" then it is hexadecimal digit
+	if (str.startsWith("0x", Qt::CaseInsensitive)) {
+		
+		number = str.toULongLong(&success, 16);
+		if (success) {
+			return number;
+		}
+	}
+
+	// needed because the last letter is chopped if one is found
 	QString strNumber = str;
+
+	// the multiple is the last letter if one exists
 	const QChar multiple = strNumber.at(strNumber.size()-1);
 	quint64 multiplier = 1;
 
@@ -68,8 +84,8 @@ quint64 Utils::str2Int( const QString& str ) {
 		strNumber.chop(1);
 	}
 
-	bool success = true;
-	quint64 number = strNumber.toInt(&success);
+	// try to convert the number 
+	number = strNumber.toULongLong(&success);
 
 	// if the conversion failed
 	if (!success) {

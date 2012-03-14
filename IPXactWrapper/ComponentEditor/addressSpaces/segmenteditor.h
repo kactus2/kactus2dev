@@ -9,10 +9,12 @@
 #define SEGMENTEDITOR_H
 
 #include <models/addressspace.h>
+#include <models/segment.h>
 
 #include <common/views/EditableTableView/editabletableview.h>
 #include "segmentsmodel.h"
 
+#include <QSharedPointer>
 #include <QGroupBox>
 #include <QSortFilterProxyModel>
 
@@ -61,6 +63,27 @@ signals:
 
 	//! \brief Print a notification to the user.
 	void noticeMessage(const QString& msg);
+
+	//! \brief Emitted when a new segment is added to the address space.
+	void segmentAdded(QSharedPointer<Segment> segment);
+
+	//! \brief Emitted when a segment is removed from the address space.
+	void segmentRemoved(const QString& segmentName);
+
+	//! \brief Emitted when a segment is renamed.
+	void segmentRenamed(const QString& oldName, const QString& newName);
+
+	//! \brief Emitted when the range or offset of a segment has changed.
+	void segmentChanged(QSharedPointer<Segment> segment);
+
+private slots:
+
+	/*! \brief Remove the indexed item from the model.
+	 *
+	 * \param index The model index of the item to remove. The index is proxy index.
+	 *
+	*/
+	void onRemoveItem(const QModelIndex& index);
 
 private:
 	//! \brief No copying

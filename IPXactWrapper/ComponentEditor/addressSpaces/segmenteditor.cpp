@@ -26,10 +26,19 @@ model_(addrSpace, this) {
 	connect(&model_, SIGNAL(noticeMessage(const QString&)),
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
+	connect(&model_, SIGNAL(segmentAdded(QSharedPointer<Segment>)),
+		this, SIGNAL(segmentAdded(QSharedPointer<Segment>)), Qt::UniqueConnection);
+	connect(&model_, SIGNAL(segmentRemoved(const QString&)),
+		this, SIGNAL(segmentRemoved(const QString&)), Qt::UniqueConnection);
+	connect(&model_, SIGNAL(segmentRenamed(const QString&, const QString&)),
+		this, SIGNAL(segmentRenamed(const QString&, const QString&)), Qt::UniqueConnection);
+	connect(&model_, SIGNAL(segmentChanged(QSharedPointer<Segment>)),
+		this, SIGNAL(segmentChanged(QSharedPointer<Segment>)), Qt::UniqueConnection);
+
 	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
 		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
-		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+		this, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 
 	// set view to be sortable
 	view_.setSortingEnabled(true);
@@ -62,8 +71,14 @@ bool SegmentEditor::isValid() const {
 
 void SegmentEditor::restore() {
 	model_.restore();
+
+	view_.sortByColumn(1, Qt::AscendingOrder);
 }
 
 void SegmentEditor::makeChanges() {
 	model_.apply();
+}
+
+void SegmentEditor::onRemoveItem( const QModelIndex& index ) {
+	model_.onRemoveItem(proxy_.mapToSource(index));
 }

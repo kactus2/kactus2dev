@@ -9,11 +9,14 @@
 #define ADDRESSSPACEVISUALIZER_H
 
 #include <models/segment.h>
+#include <models/addressspace.h>
 
 #include <QWidget>
 #include <QSharedPointer>
 #include <QPaintEvent>
 #include <QString>
+#include <QList>
+#include <QColor>
 
 /*! \brief A visualizer class to draw the address space being edited.
  *
@@ -32,6 +35,13 @@ public:
 	
 	//! \brief The destructor
 	virtual ~AddressSpaceVisualizer();
+
+	/*! \brief Set the segments that are to be displayed.
+	 *
+	 * \param addrSpace Pointer to the address space that contains the segments.
+	 *
+	*/
+	void setSegments(AddressSpace* addrSpace);
 
 public slots:
 
@@ -87,9 +97,8 @@ public slots:
 
 	/*! \brief Update the segment 
 	 *
-	 * \param segment
+	 * \param segment Pointer to the segment that's range or/and offset has changed.
 	 *
-	 * \return void
 	*/
 	void updateSegment(QSharedPointer<Segment> segment);
 
@@ -113,6 +122,53 @@ private:
 	*/
 	void drawGrid(QPainter& painter, const QRect& bounds);
 
+	/*! \brief Draw the segments to the visualization.
+	 *
+	 * \param painter The painter to use to paint the segments.
+	 * \param bounds The bounds for the drawing.
+	 * \param columnCount The number of columns in the address space.
+	 * \param rowCount The number of rows in the address space.
+	 *
+	*/
+	void drawSegments(QPainter& painter, const QRect& bounds, quint64 columnCount, quint64 rowCount);
+
+	/*! \brief Get the rectangle that matches the area reserved by given address range.
+	 *
+	 * \param bounds Specifies the bounds that limit the address space.
+	 * \param startAddress The starting address of the segment.
+	 * \param endAddress The end address of the segment. This address is the last
+	 * address within the segment.
+	 * \param columnCount The number of columns the address space contains.
+	 * \param rowCount The number of rows the address space contains.
+	 *
+	 * \return QRect The rectangle that limits the area of the segment.
+	*/
+	QRect segmentArea(const QRect& bounds, quint64 startAddress, quint64 endAddress, quint64 columnCount, quint64 rowCount) const;
+
+	//! \brief Represents the 
+	struct Area {
+		//! \brief The name of the area.
+		QString name_;
+
+		//! \brief The offset from the start of the address space.
+		quint64 offSet_;
+
+		//! \brief The range of the area.
+		quint64 range_;
+
+		//! \brief The constructor
+		Area(const QString& name, quint64 offset, quint64 range);
+
+		//! \brief Copy constructor
+		Area(const Area& other);
+
+		//! \brief Assignment operator
+		Area& operator=(const Area& other);
+
+		//! \brief The < operator
+		bool operator<(const Area& other) const;
+	};
+
 	//! \brief The number of bits in one byte.
 	int byteSize_;
 
@@ -121,6 +177,9 @@ private:
 
 	//! \brief The number of bytes in the address space.
 	quint64 byteCount_;
+
+	//! \brief Contains the segments to display.
+	QList<Area> segments_;
 };
 
 #endif // ADDRESSSPACEVISUALIZER_H
