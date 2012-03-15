@@ -114,6 +114,22 @@ private:
 	//! \brief No assignment
 	AddressSpaceVisualizer& operator=(const AddressSpaceVisualizer& other);
 
+	/*! \brief Draw the headers for the address space.
+	 *
+	 * \param painter The painter instance to use for drawing.
+	 *
+	 * \return QRect The area that is taken by the headers.
+	*/
+	QRect drawHeaders(QPainter& painter);
+
+	/*! \brief Draw a horizontal line that shows size limit |--------|
+	 *
+	 * \param painter The painter instance to use.
+	 * \param bounds The bounds of the line.
+	 *
+	*/
+	void drawHorizontalLimiter(QPainter& painter, const QRect& bounds, const QString& legend);
+
 	/*! \brief Draw the grid that specifies the memory blocks.
 	 *
 	 * \param painter The painter to use for drawing.

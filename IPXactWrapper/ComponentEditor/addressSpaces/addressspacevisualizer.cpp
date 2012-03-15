@@ -76,8 +76,6 @@ void AddressSpaceVisualizer::paintEvent( QPaintEvent* event ) {
 	// first call the base class implementation to draw widget
 	QWidget::paintEvent(event);
 
-	QPalette palette = QApplication::palette();
-
 	// create painter instance and initialize it
 	QPainter painter(this);
 
@@ -87,9 +85,15 @@ void AddressSpaceVisualizer::paintEvent( QPaintEvent* event ) {
 
 	painter.setPen(pen);
 
-	// the bounds to draw
+	// the rectangle surrounding widget
 	QRect bounds = rect();
-	bounds.adjust(0, 0, -2, -2);
+
+	// the rectangle needed by the headers
+	QRect headerArea = drawHeaders(painter);
+
+	// the bounds to draw, leave a little space on the bottom and enough for headers on top
+	// the drawing of the address space is started below the headers
+	bounds.adjust(0, headerArea.y() + headerArea.height(), -2, -2);
 
 	// the brush that uses the gradient
 	QBrush brush(QColor("white"));
@@ -100,6 +104,76 @@ void AddressSpaceVisualizer::paintEvent( QPaintEvent* event ) {
 
 	// after the base has been drawn then draw the segments and the vertical column lines
 	drawGrid(painter, bounds);
+}
+
+QRect AddressSpaceVisualizer::drawHeaders( QPainter& painter ) {
+
+	// the maximum area for the headers
+	QRect bounds = rect();
+
+	// the height and width of the fonts
+	int fontHeight = painter.fontMetrics().height();
+
+	// The headers require 5 rows of font height
+	bounds.setHeight(fontHeight * 5);
+
+	QPoint line1(bounds.x(), bounds.y() + fontHeight);
+	QPoint line2(bounds.x(), bounds.y() + 2 * fontHeight);
+	QPoint line3(bounds.x(), bounds.y() + 3* fontHeight);
+	QPoint line4(bounds.x(), bounds.y() + 4* fontHeight);
+	QPoint line5(bounds.bottomLeft());
+
+	// draw the horizontal line that shows the size of maximum transfer size
+	// and also the legend for the line
+	QRect transferLineRect(line1, QPoint(bounds.right(), line2.y()));
+	drawHorizontalLimiter(painter, transferLineRect, tr("Max transfer length"));
+
+// 	painter.drawText(line3, tr("Kolmas"));
+// 	painter.drawText(line4, tr("Neljäs"));
+// 	
+	// the number of columns to draw
+	quint64 columnCount = rowWidth_ / byteSize_;
+	if (columnCount <= 0) {
+		return bounds;
+	}
+
+	QPoint addrUnitTopLeft((bounds.width() / columnCount) * (columnCount - 1),
+		line3.y());
+	QPoint addrUnitBottomRight(bounds.right(), line4.y());
+	QRect addrUnitRect(addrUnitTopLeft, addrUnitBottomRight);
+	drawHorizontalLimiter(painter, addrUnitRect, tr("Addressable unit"));
+
+	return bounds;
+}
+
+void AddressSpaceVisualizer::drawHorizontalLimiter( QPainter& painter, const QRect& bounds, 
+												   const QString& legend ) {
+
+	// draw the vertical lines
+	painter.drawLine(bounds.topLeft(), bounds.bottomLeft());
+	painter.drawLine(bounds.topRight(), bounds.bottomRight());
+
+	int fontHeight = painter.fontMetrics().height();
+
+	int heightIncrease =  bounds.bottomLeft().y() - fontHeight / 2;
+
+	// draw the horizontal line
+	QPoint leftHor(bounds.left(),heightIncrease);
+	QPoint rightHor(bounds.right(), heightIncrease);
+
+	// draw the horizontal line
+	painter.drawLine(leftHor, rightHor);
+
+	// Get the location to write the text into
+	QPoint textStart = bounds.center();
+	
+	// make sure the text is centered on the center of the line
+	QRect textRect = painter.fontMetrics().boundingRect(legend);
+	int xDifference = qAbs(textRect.center().x() - textRect.x());
+	textStart.setX(textStart.x() - xDifference);
+
+	// draw the text
+	painter.drawText(textStart, legend);
 }
 
 void AddressSpaceVisualizer::drawGrid( QPainter& painter, const QRect& bounds) {
@@ -122,7 +196,6 @@ void AddressSpaceVisualizer::drawGrid( QPainter& painter, const QRect& bounds) {
 	}
 
 	// calculate the number of rows the address space contains
-
 	if (rowWidth_ <= 0) {
 		return;
 	}
@@ -134,6 +207,16 @@ void AddressSpaceVisualizer::drawGrid( QPainter& painter, const QRect& bounds) {
 		return;
 	}
 
+	// draw the bit limits of the columns
+	
+	// the limit of LSB (always 0)
+	QPoint zeroPoint(bounds.topRight());
+	// make sure the text is on the right of the point
+	QRect textRect = painter.fontMetrics().boundingRect('0');
+	int xDifference = textRect.width();
+	zeroPoint.setX(zeroPoint.x() - xDifference);
+	painter.drawText(zeroPoint, QString::number(0));
+
 	// draw the rectangles for the segments
 	drawSegments(painter, bounds, columnCount, rowCount);
 
@@ -142,28 +225,46 @@ void AddressSpaceVisualizer::drawGrid( QPainter& painter, const QRect& bounds) {
 
 	// draw the horizontal grid lines
 
-	double increaseStep = (rightBound - leftBound) / double(columnCount);
-	double currentPos = leftBound;
+	double delta = (rightBound - leftBound) / double(columnCount);
+	double currentPos = rightBound;
 	
-	// draw the right amount of columns
-	for (int currentColumn = 0; currentColumn < columnCount -1; ++currentColumn) {
+	int bitLimiter = 0;
 
-		currentPos += increaseStep;
+	// draw the right amount of columns
+	for (int currentColumn = columnCount; currentColumn > 0; --currentColumn) {
+
+		currentPos -= delta;
 
 		// draw the vertical line from top to bottom
 		QPointF top(currentPos, topBound);
 		QPointF bottom(currentPos, bottomBound);
 		painter.drawLine(top, bottom);
+
+		// draw the bit limits of the columns for user to see
+		top.setX(top.x() + 3);
+		++bitLimiter;
+		painter.drawText(top, QString::number(byteSize_ * bitLimiter - 1));
+
+		// draw until the last
+		if (currentColumn > 1) {
+			
+			// make sure the text is on the right of the point
+			QRect textRect = painter.fontMetrics().boundingRect(
+				QString::number(byteSize_ * bitLimiter));
+			int xDifference = textRect.width();
+			top.setX(top.x() - xDifference - 3);
+			painter.drawText(top, QString::number(byteSize_ * bitLimiter));
+		}
 	}
 
 // 
-// 	increaseStep = (bottomBound - topBound) / double(rowCount);
+// 	delta = (bottomBound - topBound) / double(rowCount);
 // 	currentPos = topBound;
 // 
 // 	// draw the right amount of rows
 // 	for (int currentRow = 0; currentRow < rowCount - 1; ++currentRow) {
 // 
-// 		currentPos += increaseStep;
+// 		currentPos += delta;
 // 
 // 		// draw the horizontal line from left to right
 // 		QPointF left(leftBound, currentPos);
@@ -338,15 +439,15 @@ QRect AddressSpaceVisualizer::segmentArea( const QRect& bounds,
 	Q_ASSERT(rowCount > 0);
 
 	// total number of pixels divided by the number of rows there are 
-	double rowHeight = bounds.bottomRight().y() / double(rowCount);
+	double rowHeight = bounds.height() / double(rowCount);
 
 	// calculate the row numbers of the limits
 	quint64 startRow = startAddress / columnCount;
 	quint64 endRow = endAddress / columnCount;
 
-	// The heights of the limits of the segmentRect
-	quint64 startHeight = startRow * rowHeight;
-	quint64 endHeight = (endRow + 1) * rowHeight;
+	// The heights of the limits of the segmentRect (the rectangle may not start at 0)
+	quint64 startHeight = startRow * rowHeight + bounds.top();
+	quint64 endHeight = (endRow + 1) * rowHeight + bounds.top();
 
 	// the top left and bottom right corners that define the segmentRect
 	QPoint topLeft(bounds.left(), startHeight);

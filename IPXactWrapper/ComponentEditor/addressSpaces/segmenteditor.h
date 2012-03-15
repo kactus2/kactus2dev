@@ -13,10 +13,10 @@
 
 #include <common/views/EditableTableView/editabletableview.h>
 #include "segmentsmodel.h"
+#include "segmentproxy.h"
 
 #include <QSharedPointer>
 #include <QGroupBox>
-#include <QSortFilterProxyModel>
 
 /*! \brief The editor to edit the segments of an address space.
  *
@@ -96,7 +96,7 @@ private:
 	EditableTableView view_;
 
 	//! \brief The proxy to do the sorting of segments.
-	QSortFilterProxyModel proxy_;
+	SegmentProxy proxy_;
 
 	//! \brief The model that contains the segments.
 	SegmentsModel model_;
