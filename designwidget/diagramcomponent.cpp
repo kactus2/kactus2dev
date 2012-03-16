@@ -109,6 +109,7 @@ DiagramComponent::DiagramComponent(LibraryInterface* lh_,
         }
 
         DiagramAdHocPort* port = new DiagramAdHocPort(adhocPort.data(), lh_, this);
+        connect(port, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
         if (right)
         {
