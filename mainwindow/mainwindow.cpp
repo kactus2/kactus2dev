@@ -310,6 +310,10 @@ void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forc
 		this, SLOT(onInterfaceSelected(DiagramInterface*)), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(portSelected(DiagramPort*)),
 		this, SLOT(onPortSelected(DiagramPort*)), Qt::UniqueConnection);
+    connect(designWidget, SIGNAL(adHocPortSelected(DiagramAdHocPort*)),
+        this, SLOT(onAdHocPortSelected(DiagramAdHocPort*)), Qt::UniqueConnection);
+    connect(designWidget, SIGNAL(adHocInterfaceSelected(DiagramAdHocInterface*)),
+        this, SLOT(onAdHocInterfaceSelected(DiagramAdHocInterface*)), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(connectionSelected(DiagramInterconnection*)),
 		this, SLOT(onConnectionSelected(DiagramInterconnection*)), Qt::UniqueConnection);
 
@@ -1164,17 +1168,7 @@ void MainWindow::onPortSelected( DiagramPort* port ) {
 
 	connectionEditor_->clear();
 	instanceEditor_->clear();
-	
-    DesignWidget* designWidget = dynamic_cast<DesignWidget*>(designTabs_->currentWidget());
-
-    if (designWidget != 0)
-    {
-        adHocEditor_->setDataSource(designWidget->scene());
-    }
-    else
-    {
-        adHocEditor_->clear();
-    }
+    adHocEditor_->clear();
 
     interfaceEditor_->setInterface(port);
 }
@@ -1182,36 +1176,37 @@ void MainWindow::onPortSelected( DiagramPort* port ) {
 void MainWindow::onInterfaceSelected( DiagramInterface* interface ) {
 	Q_ASSERT(interface);
 
-    DesignWidget* designWidget = dynamic_cast<DesignWidget*>(designTabs_->currentWidget());
-
-    if (designWidget != 0)
-    {
-        adHocEditor_->setDataSource(designWidget->scene());
-    }
-    else
-    {
-        adHocEditor_->clear();
-    }
-
+    adHocEditor_->clear();
 	connectionEditor_->clear();
 	instanceEditor_->clear();
 	interfaceEditor_->setInterface(interface);
 }
 
+//-----------------------------------------------------------------------------
+// Function: MainWindow::onAdHocPortSelected()
+//-----------------------------------------------------------------------------
+void MainWindow::onAdHocPortSelected(DiagramAdHocPort* port)
+{
+    adHocEditor_->clear();
+    connectionEditor_->clear();
+    instanceEditor_->clear();
+    interfaceEditor_->clear();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::onAdHocInterfaceSelected()
+//-----------------------------------------------------------------------------
+void MainWindow::onAdHocInterfaceSelected(DiagramAdHocInterface* interface)
+{
+    adHocEditor_->clear();
+    connectionEditor_->clear();
+    instanceEditor_->clear();
+    interfaceEditor_->clear();
+}
+
 void MainWindow::onConnectionSelected( DiagramInterconnection* connection ) {
 	Q_ASSERT(connection);
-
-    DesignWidget* designWidget = dynamic_cast<DesignWidget*>(designTabs_->currentWidget());
-
-    if (designWidget != 0)
-    {
-        adHocEditor_->setDataSource(designWidget->scene());
-    }
-    else
-    {
-        adHocEditor_->clear();
-    }
-
+    adHocEditor_->clear();
 	instanceEditor_->clear();
 	interfaceEditor_->clear();
 	connectionEditor_->setConnection(connection);

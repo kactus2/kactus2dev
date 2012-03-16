@@ -228,6 +228,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\common\IDFactory.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\common\KactusAttribute.cpp"
 					>
 				</File>
@@ -2100,10 +2104,6 @@
 							Outputs="&quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\common\IDFactory.cpp"
-					>
 				</File>
 				<File
 					RelativePath=".\common\IDFactory.h"

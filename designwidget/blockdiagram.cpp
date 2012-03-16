@@ -2005,12 +2005,23 @@ void BlockDiagram::onSelected(QGraphicsItem* newSelection)
             DiagramInterface* interface = qgraphicsitem_cast<DiagramInterface*>(newSelection);
             emit interfaceSelected(interface);
         }
+        // Check if the selected item was an ad-hoc port.
+        else if (newSelection->type() == DiagramAdHocPort::Type)
+        {
+            DiagramAdHocPort* adHocPort = static_cast<DiagramAdHocPort*>(newSelection);
+            emit adHocPortSelected(adHocPort);
+        }
+        // Check if the selected item was an ad-hoc interface.
+        else if (newSelection->type() == DiagramAdHocInterface::Type)
+        {
+            DiagramAdHocInterface* adHocIf = static_cast<DiagramAdHocInterface*>(newSelection);
+            emit adHocInterfaceSelected(adHocIf);
+        }
 		// check if the selected item was a connection
 		else if (newSelection->type() == DiagramInterconnection::Type) {
 			DiagramInterconnection* connection = qgraphicsitem_cast<DiagramInterconnection*>(newSelection);
 			emit connectionSelected(connection);
 		}
-        // Otherwise the selection was an interconnection
         else
         {
             // inform others that nothing is currently selected

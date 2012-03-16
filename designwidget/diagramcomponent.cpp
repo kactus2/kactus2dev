@@ -496,12 +496,28 @@ void DiagramComponent::onAdHocVisibilityChanged(QString const& portName, bool vi
         // Place the port at the bottom of the side that contains fewer ports.
         if (leftPorts_.size() < rightPorts_.size())
         {
-            port->setPos(QPointF(0, leftPorts_.last()->pos().y() + GridSize * 3) + rect().topLeft());
+            if (!leftPorts_.empty())
+            {
+                port->setPos(QPointF(0, leftPorts_.last()->pos().y() + GridSize * 3) + rect().topLeft());
+            }
+            else
+            {
+                port->setPos(QPointF(0, GridSize * 4) + rect().topLeft());
+            }
+
             onAddPort(port, false);
         }
         else
         {
-            port->setPos(QPointF(rect().width(), rightPorts_.last()->pos().y() + GridSize * 3) + rect().topLeft());
+            if (!rightPorts_.empty())
+            {
+                port->setPos(QPointF(rect().width(), rightPorts_.last()->pos().y() + GridSize * 3) + rect().topLeft());
+            }
+            else
+            {
+                port->setPos(QPointF(rect().width(), GridSize * 4) + rect().topLeft());
+            }
+
             onAddPort(port, true);
         }
 

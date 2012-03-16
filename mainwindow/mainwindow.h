@@ -31,6 +31,8 @@ class ProgramEntityItem;
 class ComponentPreviewBox;
 class MessageConsole;
 class DiagramInterface;
+class DiagramAdHocPort;
+class DiagramAdHocInterface;
 class ComponentInstanceEditor;
 class ConfigurationEditor;
 class InterfaceEditor;
@@ -144,6 +146,16 @@ public slots:
 	 *
 	*/
 	void onConnectionSelected(DiagramInterconnection* connection);
+
+    /*!
+     *  Called when the user selects an ad-hoc port on the draw board.
+     */
+    void onAdHocPortSelected(DiagramAdHocPort*);
+
+    /*! 
+     *  Called when the user selects an ad-hoc interface on the draw board.
+     */
+    void onAdHocInterfaceSelected(DiagramAdHocInterface*);
 
     //! Called when the menu strip needs to be updated.
     void updateMenuStrip();
@@ -655,7 +667,7 @@ private:
 	 *
 	*/
 	void updateWindows(unsigned int supportedWindows);
-
+    
     //-----------------------------------------------------------------------------
     //! Structure which contains the show/hidden status for the windows.
     //-----------------------------------------------------------------------------

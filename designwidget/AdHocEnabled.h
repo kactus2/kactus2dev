@@ -40,7 +40,7 @@ public:
      *      @param [in] portAdHocVisibilities  The saved ad-hoc visibilities for the ports.
      */
     void setAdHocData(QSharedPointer<Component> component,
-                 QMap<QString, bool> const& portAdHocVisibilities = QMap<QString, bool>());
+                      QMap<QString, bool> const& portAdHocVisibilities = QMap<QString, bool>());
 
     /*!
      *  Sets the ad-hoc visibility of the given port.

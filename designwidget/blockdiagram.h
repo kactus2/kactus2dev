@@ -27,6 +27,8 @@ class DiagramComponent;
 class ComponentItem;
 class DiagramPort;
 class DiagramInterface;
+class DiagramAdHocPort;
+class DiagramAdHocInterface;
 class DiagramInterconnection;
 class DiagramConnectionEndPoint;
 class DiagramColumnLayout;
@@ -246,6 +248,12 @@ signals:
 	 *
 	*/
 	void connectionSelected(DiagramInterconnection* connection);
+
+    //! Emitted when the user selects an ad-hoc port.
+    void adHocPortSelected(DiagramAdHocPort* port);
+
+    //! Emitted when the user selects an ad-hoc interface.
+    void adHocInterfaceSelected(DiagramAdHocInterface* interface);
 
 	/*! \brief Emitted when user de-selects all items.
 	 *

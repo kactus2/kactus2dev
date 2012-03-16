@@ -19,6 +19,7 @@
 #include <common/GenericEditProvider.h>
 
 #include <QWidget>
+#include <QLabel>
 #include <QSharedPointer>
 #include <QTableWidget>
 
@@ -76,6 +77,9 @@ private:
 
 	//! The data source being edited.
 	AdHocEnabled* dataSource_;
+
+    //! The name label.
+    QLabel nameLabel_;
 
 	//! The port ad-hoc visibility table.
     QTableView portAdHocTable_;

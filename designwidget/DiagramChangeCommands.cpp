@@ -479,14 +479,21 @@ void AdHocVisibilityChangeCommand::undo()
         DiagramConnectionEndPoint* port = dataSource_->getDiagramAdHocPort(portName_);
         port->setPos(port->parentItem()->mapFromScene(pos_));
 
-        // Ad-hoc interfaces require an instruction for the parent column to move the port
-        // to the correct column.
+        // 
         DiagramAdHocInterface* adHocIf = dynamic_cast<DiagramAdHocInterface*>(port);
 
         if (adHocIf != 0)
         {
             DiagramColumn* column = static_cast<DiagramColumn*>(adHocIf->parentItem());
             column->onMoveItem(adHocIf, column);
+        }
+
+        DiagramAdHocPort* adHocPort = dynamic_cast<DiagramAdHocPort*>(port);
+
+        if (adHocPort != 0)
+        {
+            DiagramComponent* comp = static_cast<DiagramComponent*>(adHocPort->parentItem());
+            comp->onMovePort(adHocPort);
         }
     }
 

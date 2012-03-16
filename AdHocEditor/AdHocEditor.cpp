@@ -20,6 +20,7 @@
 
 #include <designwidget/blockdiagram.h>
 #include <designwidget/designwidget.h>
+#include <designwidget/diagramcomponent.h>
 
 #include <EndpointDesign/EndpointDesignDiagram.h>
 #include <EndpointDesign/EndpointDesignWidget.h>
@@ -36,6 +37,7 @@
 //-----------------------------------------------------------------------------
 AdHocEditor::AdHocEditor(QWidget *parent): QWidget(parent),
                                            dataSource_(0),
+                                           nameLabel_(tr("Component: "), this),
                                            portAdHocTable_(this),
                                            adHocModel_(this)
 {
@@ -61,6 +63,7 @@ AdHocEditor::AdHocEditor(QWidget *parent): QWidget(parent),
     portAdHocTable_.horizontalHeader()->setResizeMode(ADHOC_COL_VISIBILITY, QHeaderView::Fixed);
 
     QVBoxLayout* layout = new QVBoxLayout(this);
+    layout->addWidget(&nameLabel_);
     layout->addWidget(&portAdHocTable_, 1);
 }
 
@@ -87,6 +90,17 @@ void AdHocEditor::setDataSource(AdHocEnabled* dataSource)
 	}
 
 	dataSource_ = dataSource;
+
+    if (dynamic_cast<BlockDiagram*>(dataSource_) != 0)
+    {
+        nameLabel_.setText(tr("Component: top-level"));
+    }
+    else
+    {
+        DiagramComponent* compItem = dynamic_cast<DiagramComponent*>(dataSource_);
+        Q_ASSERT(compItem != 0);
+        nameLabel_.setText(tr("Component: %1").arg(compItem->name()));
+    }
 
     bool locked = dataSource_->isProtected();
     portAdHocTable_.setEnabled(!locked);
