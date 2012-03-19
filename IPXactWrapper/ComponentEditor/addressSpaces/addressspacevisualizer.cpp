@@ -121,16 +121,12 @@ QRect AddressSpaceVisualizer::drawHeaders( QPainter& painter ) {
 	QPoint line2(bounds.x(), bounds.y() + 2 * fontHeight);
 	QPoint line3(bounds.x(), bounds.y() + 3* fontHeight);
 	QPoint line4(bounds.x(), bounds.y() + 4* fontHeight);
-	QPoint line5(bounds.bottomLeft());
 
 	// draw the horizontal line that shows the size of maximum transfer size
 	// and also the legend for the line
 	QRect transferLineRect(line1, QPoint(bounds.right(), line2.y()));
 	drawHorizontalLimiter(painter, transferLineRect, tr("Max transfer length"));
-
-// 	painter.drawText(line3, tr("Kolmas"));
-// 	painter.drawText(line4, tr("Neljäs"));
-// 	
+	
 	// the number of columns to draw
 	quint64 columnCount = rowWidth_ / byteSize_;
 	if (columnCount <= 0) {
@@ -164,16 +160,27 @@ void AddressSpaceVisualizer::drawHorizontalLimiter( QPainter& painter, const QRe
 	// draw the horizontal line
 	painter.drawLine(leftHor, rightHor);
 
-	// Get the location to write the text into
-	QPoint textStart = bounds.center();
-	
-	// make sure the text is centered on the center of the line
-	QRect textRect = painter.fontMetrics().boundingRect(legend);
+	// draw the text
+	drawCenteredText(painter, legend, bounds.center());
+}
+
+void AddressSpaceVisualizer::drawCenteredText( QPainter& painter,
+											  const QString& text,
+											  const QPoint& textCenterPoint ) {
+	// the point to start the text drawing at
+	QPoint textStart(textCenterPoint);
+
+	// how much does the text take space
+	QRect textRect = painter.fontMetrics().boundingRect(text);
+
+	// the length from the text center to the left side
 	int xDifference = qAbs(textRect.center().x() - textRect.x());
+
+	// adjust the text starting point to the left the amount of the length
 	textStart.setX(textStart.x() - xDifference);
 
 	// draw the text
-	painter.drawText(textStart, legend);
+	painter.drawText(textStart, text);
 }
 
 void AddressSpaceVisualizer::drawGrid( QPainter& painter, const QRect& bounds) {
@@ -363,12 +370,12 @@ void AddressSpaceVisualizer::drawSegments( QPainter& painter, const QRect& bound
 			QPoint previousEnd(errorArea.bottomLeft().x() + fontWidth, errorArea.bottomLeft().y());
 			QString prevEndStr = QString::number(previousLimit, 16).toUpper();
 			prevEndStr.prepend("0x");
-			painter.drawText(previousEnd, prevEndStr);
+			drawCenteredText(painter, prevEndStr, previousEnd);
 
 			// if the name of the previous segment was drawn over by the new segment
 			if (errorArea.contains(previousRect.center())) {
 				QPoint oldNamePoint(errorArea.center().x(), errorArea.top());
-				painter.drawText(oldNamePoint, previousName);
+				drawCenteredText(painter, previousName, oldNamePoint);
 			}
 
 			painter.setBrush(brush);
@@ -383,13 +390,13 @@ void AddressSpaceVisualizer::drawSegments( QPainter& painter, const QRect& bound
 			QPoint previousEnd(segmentRect.topLeft().x() + fontWidth, segmentRect.topLeft().y());
 			QString prevEndStr = QString::number(previousLimit, 16).toUpper();
 			prevEndStr.prepend("0x");
-			painter.drawText(previousEnd, prevEndStr);
+			drawCenteredText(painter, prevEndStr, previousEnd);
 
 			// if the name of the previous segment was drawn over by the new segment
 			if (segmentRect.contains(previousRect.center())) {
 				QRect intersectingRect = segmentRect.intersected(previousRect);
 				QPoint oldNamePoint(intersectingRect.center().x(), intersectingRect.top());
-				painter.drawText(oldNamePoint, previousName);
+				drawCenteredText(painter, previousName, oldNamePoint);
 			}
 		}
 
@@ -398,7 +405,7 @@ void AddressSpaceVisualizer::drawSegments( QPainter& painter, const QRect& bound
 
 		// draw the name of the segment to the center of the segment
 		QPoint centerPoint = segmentRect.center();
-		painter.drawText(centerPoint, segment.name_);
+		drawCenteredText(painter, segment.name_, centerPoint);
 
 		// update the name for the next round
 		previousName = segment.name_;
@@ -407,13 +414,13 @@ void AddressSpaceVisualizer::drawSegments( QPainter& painter, const QRect& bound
 		QPoint startPoint = QPoint(segmentRect.topLeft().x() + fontWidth, segmentRect.topLeft().y() + fontHeight);
 		QString startStr = QString::number(segment.offSet_, 16).toUpper();
 		startStr.prepend("0x");
-		painter.drawText(startPoint, startStr);
+		drawCenteredText(painter, startStr, startPoint);
 
 		// draw the end address to the end of the segment
 		QPoint endPoint = QPoint(segmentRect.bottomLeft().x() + fontWidth, segmentRect.bottomLeft().y());
 		QString endStr = QString::number(segment.offSet_ + segment.range_ - 1, 16).toUpper();
 		endStr.prepend("0x");
-		painter.drawText(endPoint, endStr);
+		drawCenteredText(painter, endStr, endPoint);
 
 		// if the segment goes further than the limit of the address space
 		if (previousLimit > byteCount_ - 1) {

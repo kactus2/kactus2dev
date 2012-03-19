@@ -114,6 +114,17 @@ private:
 	//! \brief No assignment
 	AddressSpaceVisualizer& operator=(const AddressSpaceVisualizer& other);
 
+	/*! \brief Draw the given text with painter so text center is in given position.
+	 *
+	 * \param painter The painter to use for drawing.
+	 * \param text The text to draw.
+	 * \param textCenterPoint The point where text center is to be located.
+	 *
+	*/
+	void drawCenteredText(QPainter& painter,
+		const QString& text,
+		const QPoint& textCenterPoint);
+
 	/*! \brief Draw the headers for the address space.
 	 *
 	 * \param painter The painter instance to use for drawing.

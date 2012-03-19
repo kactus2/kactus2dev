@@ -190,6 +190,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspaceparameterseditor.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacevisualizer.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmenteditor.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/segmentproxy.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmentsmodel.h \
     ./IPXactWrapper/ComponentEditor/cpus/addressspacerefdelegate.h \
     ./IPXactWrapper/ComponentEditor/cpus/addressspacerefeditor.h \
@@ -362,6 +363,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./AdHocEditor/AdHocModel.h
 SOURCES += ./common/CSourceWriter.cpp \
     ./common/GenericEditProvider.cpp \
+    ./common/IDFactory.cpp \
     ./common/KactusAttribute.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -525,6 +527,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspaceparameterseditor.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacevisualizer.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmenteditor.cpp \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/segmentproxy.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmentsmodel.cpp \
     ./IPXactWrapper/ComponentEditor/cpus/addressspacerefdelegate.cpp \
     ./IPXactWrapper/ComponentEditor/cpus/addressspacerefeditor.cpp \
@@ -698,6 +701,5 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./GCF/MenuStrip.cpp \
     ./AdHocEditor/AdHocDelegate.cpp \
     ./AdHocEditor/AdHocEditor.cpp \
-    ./AdHocEditor/AdHocModel.cpp \
-    ./common/IDFactory.cpp
+    ./AdHocEditor/AdHocModel.cpp
 RESOURCES += kactus.qrc
