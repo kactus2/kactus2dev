@@ -131,16 +131,34 @@ namespace Utils {
 	//! \brief The struct to handle a port name and its left and right boundary.
 	struct Mapping {
 
+	//! \brief The name of the port.
 		QString portName_;
 
+	//! \brief The left bound of the port.
 		int left_;
 
+	//! \brief The right bound of the port.
 		int right_;
 
+		/*! \brief The default constructor
+		 *
+		*/
 		Mapping();
 
+		/*! \brief The constructor
+		 *
+		 * \param name The name for the port in the mapping.
+		 *
+		*/
 		Mapping(const QString& name);
 
+		/*! \brief The constructor
+		 *
+		 * \param name The name for the port in the mapping.
+		 * \param left The left bound for the port.
+		 * \param right The right bound for the port.
+		 *
+		*/
 		Mapping(const QString& name, int left, int right);
 
 		//! \brief Operator that returns true if the port names are identical.

@@ -104,6 +104,25 @@ namespace VhdlGeneral {
 		QTextStream& stream, 
 		const QString& lineSeparator = QString(""),
 		bool addStartComment = true);
+
+	/*! \brief Check the vhdl types if they can be connected to each other.
+	 *
+	 * \param type1 The first type to compare.
+	 * \param type2 The second type to compare.
+	 *
+	 * \return bool True if the types are compatible.
+	*/
+	bool checkVhdlTypeMatch(const QString& type1, const QString& type2);
+
+	/*! \brief Take a default value and add "" or '' around it if needed depending on the type
+	 *
+	 * \param originalDefaultValue The default value
+	 * \param type The type of the value.
+	 *
+	 * \return QString The default value that can be written to vhdl (this contains the "" or '')
+	*/
+	QString convertDefaultValue(const QString& originalDefaultValue, 
+		const QString& type);
 }
 
 #endif // VHDLGENERAL_H

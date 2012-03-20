@@ -83,13 +83,21 @@ public:
 	 * \param portName The name of the port on this instance.
 	 * \param portLeft The left bound of this instance's port.
 	 * \param portRight The right bound of this instance's port.
+	 * \param portType The type of the port.
 	 * \param signalName The name of the signal/top port to connect the instance to.
 	 * \param signalLeft The left bound of the signal/top port.
 	 * \param signalRight The right bound of the signal/top port.
+	 * \param signalType The type of the signal.
 	 *
 	*/
-	void addPortMap(const QString& portName, int portLeft, int portRight,
-		const QString& signalName, int signalLeft, int signalRight);
+	void addPortMap(const QString& portName, 
+		int portLeft, 
+		int portRight,
+		const QString& portType,
+		const QString& signalName,
+		int signalLeft,
+		int signalRight,
+		const QString& signalType);
 
 	/*! \brief Add a new generic map to the instance.
 	 *

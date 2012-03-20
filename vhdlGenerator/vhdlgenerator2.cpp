@@ -29,6 +29,8 @@
 #include <QDate>
 #include <QSettings>
 
+#include <QDebug>
+
 static const QString BLACK_BOX_DECL_START = "-- ##KACTUS2_BLACK_BOX_DECLARATIONS_BEGIN##";
 static const QString BLACK_BOX_DECL_END = "-- ##KACTUS2_BLACK_BOX_DECLARATIONS_END##";
 static const QString BLACK_BOX_ASSIGN_START = "-- ##KACTUS2_BLACK_BOX_ASSIGNMENTS_BEGIN##";
@@ -724,10 +726,21 @@ void VhdlGenerator2::connectPorts(const QString& connectionName,
 	// at least 2 ports must be found
 	Q_ASSERT(ports.size() > 1);
 
-	// calculate the bounds for the signal
-	int left = ports.first().leftBound_;
-	int right = ports.first().rightBound_;
+	// the type of the signal
 	QString type = ports.first().instance_->portType(ports.first().portName_);
+
+	// the size for the signal
+	int size = ports.first().leftBound_ - ports.first().rightBound_ + 1;
+
+	// first find out the smallest possible size for the signal
+	foreach (VhdlGenerator2::PortConnection connection, ports) {
+		// the smallest size needed is used
+		size = qMin(size, (connection.leftBound_ - connection.rightBound_ + 1));
+	}
+
+	// calculate the bounds for the signal
+	int left = size - 1;
+	int right = 0;
 
 	// create the endPoints
 	QList<VhdlConnectionEndPoint> endPoints;
@@ -735,8 +748,8 @@ void VhdlGenerator2::connectPorts(const QString& connectionName,
 
 		QString connectionType = connection.instance_->portType(connection.portName_);
 
-		// make sure all ports are for same type
-		if (type != connectionType) {
+		// make sure all ports are for compatible type
+		if (!VhdlGeneral::checkVhdlTypeMatch(type, connectionType)) {
 			QString instance1(QString("instance %1 port %2 type %3").arg(
 				ports.first().instance_->name()).arg(
 				ports.first().portName_).arg(
@@ -753,6 +766,16 @@ void VhdlGenerator2::connectPorts(const QString& connectionName,
 		VhdlConnectionEndPoint endPoint(connection.instance_->name(), connection.portName_,
 			connection.leftBound_, connection.rightBound_, left, right);
 		endPoints.append(endPoint);
+	}
+
+	// if vectored but size is only one then convert to scalar signal type
+	if (type == "std_logic_vector" && size == 1) {
+		type = "std_logic";
+	}
+
+	// if scalar signal type but size is larger than 1 then convert to vectored
+	else if (type == "std_logic" && size > 1) {
+		type == "std_logic_vector";
 	}
 
 	// the signal that connects the end points
@@ -904,7 +927,8 @@ void VhdlGenerator2::connectHierPort( const QString& topPort,
 
 		// tell each instance to create a port map between the ports
 		port.instance_->addPortMap(port.portName_, portLeft, portRight,
-			topPort, leftBound, rightBound);
+			port.instance_->portType(port.portName_),
+			topPort, leftBound, rightBound, topPorts_.value(sorter)->type());
 	}
 }
 
@@ -1043,7 +1067,7 @@ void VhdlGenerator2::mapPorts2Signals() {
 		// if port is scalar then don't add the bit boundaries
 		int portLeft = i.key().portLeft();
 		int portRight = i.key().portRight();
-		if (portLeft == portRight || instance->isScalarPort(i.key().portName())) {
+		if (instance->isScalarPort(i.key().portName())) {
 			portLeft = -1;
 			portRight = -1;
 		}
@@ -1051,14 +1075,15 @@ void VhdlGenerator2::mapPorts2Signals() {
 		// if signal is scalar then don't add the bit boundaries
 		int signalLeft = i.key().signalLeft();
 		int signalRight = i.key().signalRight();
-		if (signalLeft == signalRight || VhdlGeneral::isScalarType(i.value()->type())) {
+		if (VhdlGeneral::isScalarType(i.value()->type())) {
 			signalLeft = -1;
 			signalRight = -1;
 		}
 
 		// add a port map for the instance to connect port to signal
-		instance->addPortMap(i.key().portName(), portLeft, portRight,
-			i.value()->name(), signalLeft, signalRight);	
+		instance->addPortMap(i.key().portName(), portLeft, portRight, 
+			instance->portType(i.key().portName()),
+			i.value()->name(), signalLeft, signalRight, i.value()->type());	
 	}
 }
 

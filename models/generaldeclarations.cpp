@@ -470,8 +470,8 @@ General::PortAlignment General::calculatePortAlignment(
 	}
 
 	// check if the sizes of the ports match
-	int port1Size = phys1LeftBound - phys1RightBound + 1;
-	int port2Size = phys2LeftBound - phys2RightBound + 1;
+	int port1Size = alignment.port1Left_ - alignment.port1Right_ + 1;
+	int port2Size = alignment.port2Left_ - alignment.port2Right_ + 1;
 	if (port1Size != port2Size) {
 		alignment.invalidAlignment_ = true;
 	}

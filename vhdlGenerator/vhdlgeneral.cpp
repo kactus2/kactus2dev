@@ -10,6 +10,7 @@
 #include <QString>
 #include <QStringList>
 #include <QChar>
+#include <QObject>
 
 QString VhdlGeneral::useDefaultType( const int leftBound, const int rightBound ) {
 	
@@ -131,5 +132,107 @@ bool VhdlGeneral::isScalarType( const QString& typeName ) {
 	}
 	else {
 		return false;
+	}
+}
+
+bool VhdlGeneral::checkVhdlTypeMatch( const QString& type1, const QString& type2 ) {
+
+	// if the types are the same then of course they are compatible
+	if (type1 == type2) {
+		return true;
+	}
+
+	// std_logic and std_logic_vector can be connected to each other
+	else if (type1 == "std_logic" && type2 == "std_logic_vector") {
+		return true;
+	}
+	else if (type1 == "std_logic_vector" && type2 == "std_logic") {
+		return true;
+	}
+
+	// other types can't be connected to each other
+	else {
+		return false;
+	}
+}
+
+QString VhdlGeneral::convertDefaultValue( const QString& originalDefaultValue, const QString& type ) {
+
+	// if there is no original default value given
+	if (originalDefaultValue.isEmpty()) {
+		return QObject::tr("No default value given");
+	}
+
+	// the types that do not need "" or ''
+	if (type == "boolean" ||
+		type == "integer" ||
+		type == "natural" ||
+		type == "positive" ||
+		type == "real" ||
+		type == "severity_level" ||
+		type == "time") {
+		return originalDefaultValue;
+	}
+	// the types that use ''
+	else if (type == "bit" ||
+		type == "character" ||
+		type == "std_logic" ||
+		type == "std_ulogic") {
+		
+			// char for '
+			QChar charToAdd(39);
+
+			QString result(originalDefaultValue);
+
+			// if theres only one character then add ' to both start and end
+			if (originalDefaultValue.size() == 1) {
+				return QString("'%1'").arg(originalDefaultValue);
+			}
+
+			// if start is missing '
+			else if (result.at(0) != charToAdd) {
+				result.prepend(charToAdd);
+			}
+
+			// if end is missing '
+			if (result.at(result.size() - 1) != charToAdd) {
+				result.append(charToAdd);
+			} 
+
+			return result;
+	}
+	
+	// types that use ""
+	else if (type == "bit_vector" ||
+		type == "std_logic_vector" ||
+		type == "std_ulogic_vector" ||
+		type == "string" ||
+		type == "signed" ||
+		type == "unsigned") {
+
+		// char for "
+		QChar charToAdd(34);
+
+		QString result(originalDefaultValue);
+
+		// if theres only one character then add " to both start and end
+		if (originalDefaultValue.size() == 1) {
+			return QString("\"%1\"").arg(originalDefaultValue);
+		}
+
+		// if start is missing "
+		else if (result.at(0) != charToAdd) {
+			result.prepend(charToAdd);
+		}
+
+		// if end is missing "
+		if (result.at(result.size() - 1) != charToAdd) {
+			result.append(charToAdd);
+		} 
+
+		return result;
+	}
+	else {
+		return originalDefaultValue;
 	}
 }

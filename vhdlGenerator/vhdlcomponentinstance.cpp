@@ -180,15 +180,17 @@ void VhdlComponentInstance::addPortMap( const VhdlConnectionEndPoint& endPoint,
 void VhdlComponentInstance::addPortMap( const QString& portName,
 									   int portLeft, 
 									   int portRight,
+									   const QString& portType,
 									   const QString& signalName,
 									   int signalLeft, 
-									   int signalRight ) {
+									   int signalRight,
+									   const QString& signalType) {
 	
 	// create a map for the port of this instance
-	VhdlPortMap instancePort(portName, portLeft, portRight);
+	VhdlPortMap instancePort(portName, portLeft, portRight, portType);
 
 	// create a map for the defaultValue/top port that is connected
-	VhdlPortMap signalMapping(signalName, signalLeft, signalRight);
+	VhdlPortMap signalMapping(signalName, signalLeft, signalRight, signalType);
 
 	addMapping(instancePort, signalMapping);
 }
@@ -273,27 +275,14 @@ void VhdlComponentInstance::useDefaultsForOtherPorts() {
 			}
 
 		VhdlPortMap port(i.key());
-		
-		QString mapValue(i.value());
-		
-		// char for '
-		QChar charToAdd(39);
 
-		// if theres several digits then use "
-		if (mapValue.size() != 1) {
-			charToAdd = 34;
-		}
+		// get the type of the port
+		QString portType(portType(i.key()));
 
-		// if default does not start with correct ' or "
-		if (mapValue.at(0) != charToAdd) {
-			mapValue.prepend(charToAdd);
-		}
-		// if the default does not end with correct ' or "
-		if (mapValue.at(mapValue.size()-1) != charToAdd) {
-			mapValue.append(charToAdd);
-		}
+		// make sure the default value is in correct form
+		QString defaultStr = VhdlGeneral::convertDefaultValue(i.value(), portType);
 
-		VhdlPortMap defaultValue(mapValue);
+		VhdlPortMap defaultValue(defaultStr);
 		addMapping(port, defaultValue);
 	}
 }

@@ -45,9 +45,13 @@ public:
 	 * \param name The name of the port
 	 * \param leftBound The left bound of the port.
 	 * \param rightBound The right bound of the port.
+	 * \param type The type of the mapped item.
 	 *
 	*/
-	VhdlPortMap(const QString& name, int leftBound, int rightBound);
+	VhdlPortMap(const QString& name, 
+		int leftBound, 
+		int rightBound,
+		const QString& type = QString());
 
 	//! \brief Copy constructor
 	VhdlPortMap(const VhdlPortMap& other);
@@ -101,6 +105,9 @@ private:
 
 	//! \brief The right bound of the port for the port map
 	int right_;
+
+	//! \brief The type of the mapped port or signal.
+	QString type_;
 };
 
 #endif // VHDLPORTMAP_H
