@@ -154,6 +154,30 @@ bool DiagramInterconnection::connectEnds()
     endPoint1_->addInterconnection(this);
     endPoint2_->addInterconnection(this);
 
+    // If the connection is ad-hoc, take the default left and right bounds from the ports if they are undefined.
+    if (!isBus())
+    {
+        if (getAdHocLeftBound(0) == -1)
+        {
+            setAdHocLeftBound(0, endPoint1_->getPort()->getLeftBound());
+        }
+
+        if (getAdHocRightBound(0) == -1)
+        {
+            setAdHocRightBound(0, endPoint1_->getPort()->getRightBound());
+        }
+
+        if (getAdHocLeftBound(1) == -1)
+        {
+            setAdHocLeftBound(1, endPoint1_->getPort()->getLeftBound());
+        }
+
+        if (getAdHocRightBound(1) == -1)
+        {
+            setAdHocRightBound(1, endPoint1_->getPort()->getRightBound());
+        }
+    }
+
     // Check if both end points were found.
     if (endPoint1_ && endPoint2_) {
         simplifyPath();
