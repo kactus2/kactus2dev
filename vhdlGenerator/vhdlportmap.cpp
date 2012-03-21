@@ -135,6 +135,11 @@ QString VhdlPortMap::toString() const {
 	Q_ASSERT((left_ >= 0 && right_ >= 0) || (left_ < 0 && right_ < 0));
 	Q_ASSERT(left_ >= right_);
 
+	// if there are no indexes specified then don't write indexing
+	if (left_ < 0) {
+		return result;
+	}
+
 	int size = left_ - right_ + 1;
 
 	// if the type is vectored then the indexing depends on the size

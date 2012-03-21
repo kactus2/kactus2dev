@@ -729,17 +729,18 @@ void VhdlGenerator2::connectPorts(const QString& connectionName,
 	// the type of the signal
 	QString type = ports.first().instance_->portType(ports.first().portName_);
 
-	// the size for the signal
-	int size = ports.first().leftBound_ - ports.first().rightBound_ + 1;
+	// the minSize for the signal
+	int minSize = ports.first().leftBound_ - ports.first().rightBound_ + 1;
+	int maxSize = minSize;
 
-	// first find out the smallest possible size for the signal
+	// first find out the smallest possible minSize for the signal
 	foreach (VhdlGenerator2::PortConnection connection, ports) {
-		// the smallest size needed is used
-		size = qMin(size, (connection.leftBound_ - connection.rightBound_ + 1));
+		// the smallest minSize needed is used
+		minSize = qMin(minSize, (connection.leftBound_ - connection.rightBound_ + 1));
 	}
 
 	// calculate the bounds for the signal
-	int left = size - 1;
+	int left = minSize - 1;
 	int right = 0;
 
 	// create the endPoints
@@ -764,17 +765,17 @@ void VhdlGenerator2::connectPorts(const QString& connectionName,
 		}
 
 		VhdlConnectionEndPoint endPoint(connection.instance_->name(), connection.portName_,
-			connection.leftBound_, connection.rightBound_, left, right);
+			connection.leftBound_, connection.rightBound_, maxSize-1, right);
 		endPoints.append(endPoint);
 	}
 
-	// if vectored but size is only one then convert to scalar signal type
-	if (type == "std_logic_vector" && size == 1) {
+	// if vectored but minSize is only one then convert to scalar signal type
+	if (type == "std_logic_vector" && minSize == 1) {
 		type = "std_logic";
 	}
 
-	// if scalar signal type but size is larger than 1 then convert to vectored
-	else if (type == "std_logic" && size > 1) {
+	// if scalar signal type but minSize is larger than 1 then convert to vectored
+	else if (type == "std_logic" && minSize > 1) {
 		type == "std_logic_vector";
 	}
 
@@ -843,6 +844,7 @@ void VhdlGenerator2::parseAdHocConnections() {
 			}
 			QSharedPointer<VhdlComponentInstance> instance =
 				instances_.value(portRef.componentRef);
+			Q_ASSERT(instance);
 
 			// if the specified port is not found
 			if (!instance->hasPort(portRef.portRef)) {
@@ -853,9 +855,21 @@ void VhdlGenerator2::parseAdHocConnections() {
 				continue;
 			}
 
+			int left = portRef.left;
+			// if left bound is not defined then use the port physical bound
+			if (left < 0) {
+				left = instance->getPortPhysLeftBound(portRef.portRef);
+			}
+
+			int right = portRef.right;
+			// if right bound is not defined then use the port physical bound
+			if (right < 0) {
+				right = instance->getPortPhysRightBound(portRef.portRef);
+			}
+
 			// create the port specification
-			VhdlGenerator2::PortConnection port(instance, portRef.componentRef,
-				portRef.left, portRef.right);
+			VhdlGenerator2::PortConnection port(instance, portRef.portRef,
+				left, right);
 
 			// add port to the list
 			ports.append(port);
@@ -877,8 +891,23 @@ void VhdlGenerator2::parseAdHocConnections() {
 					continue;
 				}
 
+				QSharedPointer<VhdlPort> port = topPorts_.value(sorter);
+				Q_ASSERT(port);
+
+				int left = portRef.left;
+				// if left bound is not defined then use the port physical bound
+				if (left < 0) {
+					left = port->left();
+				}
+
+				int right = portRef.right;
+				// if right bound is not defined then use the port physical bound
+				if (right < 0) {
+					right = port->right();
+				}
+
 				// connect each instance port to the top port
-				connectHierPort(portRef.portRef, portRef.left, portRef.right, ports);
+				connectHierPort(portRef.portRef, left, right, ports);
 			}
 		}
 		// otherwise the connection is just between the ports of the instances
@@ -900,7 +929,7 @@ void VhdlGenerator2::connectHierPort( const QString& topPort,
 		// if port is scalar then don't add the bit boundaries
 		int portLeft = port.leftBound_;
 		int portRight = port.rightBound_;
-		if (portLeft == portRight || port.instance_->isScalarPort(port.portName_)) {
+		if (port.instance_->isScalarPort(port.portName_)) {
 			portLeft = -1;
 			portRight = -1;
 		}
@@ -914,7 +943,7 @@ void VhdlGenerator2::connectHierPort( const QString& topPort,
 			vhdlPort->setCommented(false);
 
 			// if the top port is scalar then don't use the bit boundaries
-			if (leftBound == rightBound || VhdlGeneral::isScalarType(vhdlPort->type())) {
+			if (VhdlGeneral::isScalarType(vhdlPort->type())) {
 				leftBound = -1;
 				rightBound = -1;
 			}

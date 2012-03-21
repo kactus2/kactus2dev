@@ -80,5 +80,15 @@ void VhdlSignal::setRight( int right ) {
 void VhdlSignal::setBounds( int left, int right ) {
 	left_ = left;
 	right_ = right;
+
+	// if scalar port changed to vectored
+	if (type_ == "std_logic" && left != right) {
+		type_ = "std_logic_vector";
+	}
+
+	// if vectored port changed to scalar
+	else if (type_ == "std_logic_vector" && left == right) {
+		type_ = "std_logic";
+	}
 }
 

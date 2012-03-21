@@ -325,3 +325,11 @@ bool VhdlComponentInstance::isScalarPort( const QString& portName ) const {
 General::Direction VhdlComponentInstance::portDirection( const QString& portName ) const {
 	return compDeclaration_->portDirection(portName);
 }
+
+int VhdlComponentInstance::getPortPhysLeftBound( const QString& portName ) const {
+	return compDeclaration_->getPortPhysLeftBound(portName);
+}
+
+int VhdlComponentInstance::getPortPhysRightBound( const QString& portName ) const {
+	return compDeclaration_->getPortPhysRightBound(portName);
+}

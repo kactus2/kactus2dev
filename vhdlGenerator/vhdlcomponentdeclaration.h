@@ -123,6 +123,22 @@ public:
 	*/
 	General::Direction portDirection(const QString& portName) const;
 
+	/*! \brief Get the physical left bound of the port.
+	 *
+	 * \param portName The name of the port that's bound is wanted.
+	 *
+	 * \return int The left bound.
+	*/
+	int getPortPhysLeftBound(const QString& portName) const;
+
+	/*! \brief Get the physical right bound of the port.
+	 *
+	 * \param portName The name of the port that's bound is wanted.
+	 *
+	 * \return int The right bound.
+	*/
+	int getPortPhysRightBound(const QString& portName) const;
+
 signals:
 
 	//! \brief Send a notification to user.

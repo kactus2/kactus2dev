@@ -230,3 +230,11 @@ void VhdlComponentDeclaration::setEntityName( const QString& entityName ) {
 General::Direction VhdlComponentDeclaration::portDirection( const QString& portName ) const {
 	return component_->getPortDirection(portName);
 }
+
+int VhdlComponentDeclaration::getPortPhysLeftBound( const QString& portName ) const {
+	return component_->getPortLeftBound(portName);
+}
+
+int VhdlComponentDeclaration::getPortPhysRightBound( const QString& portName ) const {
+	return component_->getPortRightBound(portName);
+}	
