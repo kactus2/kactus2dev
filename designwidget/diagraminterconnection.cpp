@@ -169,12 +169,12 @@ bool DiagramInterconnection::connectEnds()
 
         if (getAdHocLeftBound(1) == -1)
         {
-            setAdHocLeftBound(1, endPoint1_->getPort()->getLeftBound());
+            setAdHocLeftBound(1, endPoint2_->getPort()->getLeftBound());
         }
 
         if (getAdHocRightBound(1) == -1)
         {
-            setAdHocRightBound(1, endPoint1_->getPort()->getRightBound());
+            setAdHocRightBound(1, endPoint2_->getPort()->getRightBound());
         }
     }
 
