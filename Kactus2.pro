@@ -6,10 +6,10 @@ TEMPLATE = app
 TARGET = Kactus2
 DESTDIR = ./executable
 QT += core gui xml xmlpatterns
-CONFIG += debug
+CONFIG += release
 DEFINES += _WINDOWS QT_LARGEFILE_SUPPORT QT_DLL QT_XMLPATTERNS_LIB QT_XML_LIB QT_HAVE_MMX QT_HAVE_3DNOW QT_HAVE_SSE QT_HAVE_MMXEXT QT_HAVE_SSE2
 INCLUDEPATH += . \
-    ./debug \
+    ./release \
     ./GeneratedFiles \
     ./vhdlGenerator \
     ./common/widgets/listManager \
@@ -34,8 +34,8 @@ INCLUDEPATH += . \
     ./common/widgets/NumberLineEdit
 LIBS += -L"."
 DEPENDPATH += .
-MOC_DIR += debug
-OBJECTS_DIR += debug
+MOC_DIR += release
+OBJECTS_DIR += release
 UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
 include(Kactus2.pri)

@@ -12,6 +12,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./mainwindow/NewWorkspaceDialog.h \
     ./mainwindow/SplashScreen.h \
     ./resource.h \
+    ./version.h \
     ./common/ColumnTypes.h \
     ./common/CSourceWriter.h \
     ./common/diagramgrid.h \
