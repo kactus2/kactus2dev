@@ -277,10 +277,10 @@ void VhdlComponentInstance::useDefaultsForOtherPorts() {
 		VhdlPortMap port(i.key());
 
 		// get the type of the port
-		QString portType(portType(i.key()));
+		QString portTypeStr(portType(i.key()));
 
 		// make sure the default value is in correct form
-		QString defaultStr = VhdlGeneral::convertDefaultValue(i.value(), portType);
+		QString defaultStr = VhdlGeneral::convertDefaultValue(i.value(), portTypeStr);
 
 		VhdlPortMap defaultValue(defaultStr);
 		addMapping(port, defaultValue);
