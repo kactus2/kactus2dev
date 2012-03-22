@@ -215,20 +215,15 @@ QString VhdlGeneral::convertDefaultValue( const QString& originalDefaultValue, c
 
 		QString result(originalDefaultValue);
 
-		// if theres only one character then add " to both start and end
-		if (originalDefaultValue.size() == 1) {
-			return QString("\"%1\"").arg(originalDefaultValue);
-		}
-
-		// if start is missing "
-		else if (result.at(0) != charToAdd) {
+		// if the first letter is a decimal digit
+		if (result.at(0).isDigit()) {
 			result.prepend(charToAdd);
-		}
 
-		// if end is missing "
-		if (result.at(result.size() - 1) != charToAdd) {
-			result.append(charToAdd);
-		} 
+			// if end is missing "
+			if (result.at(result.size() - 1) != charToAdd) {
+				result.append(charToAdd);
+			}
+		}
 
 		return result;
 	}
