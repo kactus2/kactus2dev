@@ -14,8 +14,7 @@ xx/03/2012 1.3 (Build 1)
 
 + NEW CORE FEATURE: Added support for ad-hoc connections and setting ad-hoc
   visibility for each port separately.
-+ Added name validity checks for HW designs when generating VHDL.
-+ Added better validity checking for component's port maps and channels.
++ Added better validity checking for IP-Xact objects.
 + Added usage instructions to lists that are editable by double clicking.
 + Added address space editor and CPU editing features to the component editor.
 
@@ -26,6 +25,7 @@ xx/03/2012 1.3 (Build 1)
 - Fixed a regression bug of workspaces working incorrectly with Qt 4.8.0.
 - Removed the unnecessary dependencies to Qt ActiveX modules.
 
+* Migrated to Qt 4.8.0.
 * The library locations are now scanned automatically on program start or
   when the library locations are changed.
 * Enhanced the error messages coming from the Quartus generator.
