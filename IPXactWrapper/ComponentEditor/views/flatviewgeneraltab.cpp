@@ -44,11 +44,11 @@ fileSetRefs_(component, tr("File set references"), this) {
 
 	restoreChanges();
 
-	connect(&language_, SIGNAL(editingFinished()),
+	connect(&language_, SIGNAL(textEdited(const QString&)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&languageStrict_, SIGNAL(toggled(bool)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&modelName_, SIGNAL(editingFinished()),
+	connect(&modelName_, SIGNAL(textEdited(const QString&)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&fileSetRefs_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
