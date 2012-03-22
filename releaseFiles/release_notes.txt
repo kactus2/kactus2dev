@@ -9,13 +9,47 @@
               * Changed or Information
 ===============================================================================
 
+xx/03/2012 1.3 (Build 1)
+----------------------------------------------------
+
++ NEW CORE FEATURE: Added support for ad-hoc connections and setting ad-hoc
+  visibility for each port separately.
++ Added name validity checks for HW designs when generating VHDL.
++ Added better validity checking for component's port maps and channels.
++ Added usage instructions to lists that are editable by double clicking.
++ Added address space editor and CPU editing features to the component editor.
+
+- Fixed an incorrect connection of Qt signals in HW designs.
+- Fixed a scroll bar issue in New dialog when using larger fonts in Windows.
+- Fixed the scaling issue of the component editor's left pane.
+- Fixed a crash when saving a design with a packetized draft component.
+- Fixed a regression bug of workspaces working incorrectly with Qt 4.8.0.
+- Removed the unnecessary dependencies to Qt ActiveX modules.
+
+* The library locations are now scanned automatically on program start or
+  when the library locations are changed.
+* Enhanced the error messages coming from the Quartus generator.
+* Enhanced the error messages when saving an incomplete component.
+* Error messages from the library check are now indented.
+* Library check now prints more detailed error summary.
+* Also the MCAPI channel connection function calls are now automatically
+  generated to sender side application code.
+* A flat view is now automatically added to drafted components when they
+  are packetized.
+* Changed the component instance numbering to start from zero instead of one.
+* Abstraction definition is not compulsory anymore in the component editor,
+  but is auto-filled when using bus and abstraction definitions created with
+  Kactus2.
+
+
+
 03/02/2012 1.2 (Build 396)
 ----------------------------------------------------
 
 + Added more detailed error reporting to the library's check integrity tool.
 + Added workspaces for managing different window layouts easily.
-+ Added bus width display for connections (can be shown/hidden using visibility
-  control).
++ Added bus width display for connections (can be shown/hidden using
+  visibility control).
 + Added automatic association of bus definitions and abstraction definitions
   when drag'n'dropping bus definitions from the library to a HW design.
 + Added dot graphics for visualizing connected bus intersections.
