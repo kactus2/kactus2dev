@@ -208,6 +208,7 @@ void addNewInstances(QList<Design::ComponentInstance> elements, Design& sysDesig
         }
 
         // Parse CPUs if found.
+        swComp->setAddressSpaces(comp->getAddressSpaces());
         swComp->setCpus(comp->getCpus());
 
         // Create the view for the design.
@@ -396,10 +397,14 @@ void updateSystemDesign(LibraryInterface* lh, QString const& directory,
 
             // Update CPUs to the mapping component.
             QSharedPointer<LibraryComponent> libComp = lh->getModel(instance.componentRef);
-            QSharedPointer<Component> swComp = libComp.staticCast<Component>();
+            QSharedPointer<Component> swComp = libComp.dynamicCast<Component>();
 
-            swComp->setCpus(comp->getCpus());
-            lh->writeModelToFile(swComp);
+            if (swComp != 0)
+            {
+                swComp->setAddressSpaces(comp->getAddressSpaces());
+                swComp->setCpus(comp->getCpus());
+                lh->writeModelToFile(swComp);
+            }
 
             // Remove the element from the element list since it has been processed.
             elements.removeAt(index);
