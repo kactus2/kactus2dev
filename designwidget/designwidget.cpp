@@ -484,6 +484,7 @@ void DesignWidget::keyPressEvent(QKeyEvent *event)
     // If the document is protected, skip all delete events.
     if (isProtected())
     {
+        TabDocument::keyPressEvent(event);
         return;
     }
 
@@ -586,6 +587,10 @@ void DesignWidget::keyPressEvent(QKeyEvent *event)
 
         // if something was removed then save button must be enabled again
         emit contentChanged();
+    }
+    else
+    {
+        TabDocument::keyPressEvent(event);
     }
 }
 

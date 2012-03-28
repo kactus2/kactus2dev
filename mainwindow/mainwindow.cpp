@@ -37,6 +37,7 @@
 #include <common/dialogs/listSelectDialog/ListSelectDialog.h>
 #include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
 #include <common/dialogs/propertyPageDialog/PropertyPageDialog.h>
+#include <common/widgets/tabWidgetEx/TabWidgetEx.h>
 
 #include <models/view.h>
 #include <models/component.h>
@@ -926,7 +927,7 @@ void MainWindow::setupMenus()
 
 void MainWindow::setupDrawBoard() {
 
-	designTabs_ = new QTabWidget;
+	designTabs_ = new TabWidgetEx();
 	designTabs_->setMovable(true);
 	designTabs_->setTabsClosable(true);
 	setCentralWidget(designTabs_);

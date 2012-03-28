@@ -39,6 +39,7 @@ class InterfaceEditor;
 class ConnectionEditor;
 class AdHocEditor;
 class DiagramInterconnection;
+class TabWidgetEx;
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -471,7 +472,7 @@ private:
 	QDockWidget* libraryDock_;
     
 	//! \brief Contains the designWidgets as each in it's own tab
-	QTabWidget *designTabs_;
+	TabWidgetEx* designTabs_;
 
 	//! \brief The widget to set the display rules for library items in library handler.
 	VLNVDialer* dialer_;
