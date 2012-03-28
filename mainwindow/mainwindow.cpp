@@ -133,6 +133,7 @@ MainWindow::MainWindow(QWidget *parent)
       actVisibleDocks_(0),
       actVisibilityControl_(0),
       actWorkspaces_(0),
+      actRefresh_(0),
       actProtect_(0), 
       actSettings_(0),
       actAbout_(0), 
@@ -542,8 +543,7 @@ void MainWindow::setupActions() {
 	modeActionGroup_->addAction(actToolInterface_);
 	modeActionGroup_->addAction(actToolDraft_);
     modeActionGroup_->addAction(actToolToggleOffPage_);
-	connect(modeActionGroup_, SIGNAL(triggered(QAction *)),
-		this, SLOT(drawModeChange(QAction *)));
+	connect(modeActionGroup_, SIGNAL(triggered(QAction *)), this, SLOT(drawModeChange(QAction *)));
 
 	// Initialize the action to zoom in.
 	actZoomIn_ = new QAction(QIcon(":/icons/graphics/view-zoom_in.png"), tr("Zoom In"), this);
@@ -554,28 +554,24 @@ void MainWindow::setupActions() {
 	// Initialize the action to zoom out.
 	actZoomOut_ = new QAction(QIcon(":/icons/graphics/view-zoom_out.png"), tr("Zoom Out"), this);
 	actZoomOut_->setEnabled(false);
-	connect(actZoomOut_, SIGNAL(triggered()), 
-		this, SLOT(zoomOut()));
+	connect(actZoomOut_, SIGNAL(triggered()), this, SLOT(zoomOut()));
 
 	// Initialize the action to reset the zoom to original 1:1 ratio.
 	actZoomOriginal_ = new QAction(QIcon(":/icons/graphics/view-zoom_original.png"),
 		tr("Original 1:1 Zoom"), this);
 	actZoomOriginal_->setEnabled(false);
-	connect(actZoomOriginal_, SIGNAL(triggered()), 
-		this, SLOT(zoomOriginal()));
+	connect(actZoomOriginal_, SIGNAL(triggered()), this, SLOT(zoomOriginal()));
 
 	// Initialize the action to fit the document into the view.
 	actFitInView_ = new QAction(QIcon(":/icons/graphics/view-fit_best.png"),
 		tr("Fit Document to View"), this);
 	actFitInView_->setEnabled(false);
-	connect(actFitInView_, SIGNAL(triggered()), 
-		this, SLOT(fitInView()));
+	connect(actFitInView_, SIGNAL(triggered()), this, SLOT(fitInView()));
 
 	// the action for user to select the visible docks
 	actVisibleDocks_ = new QAction(QIcon(":icons/graphics/dockSelect.png"),
 		tr("Visible Windows"), this);
-	connect(actVisibleDocks_, SIGNAL(triggered()),
-		this, SLOT(selectVisibleDocks()), Qt::UniqueConnection);
+	connect(actVisibleDocks_, SIGNAL(triggered()), this, SLOT(selectVisibleDocks()), Qt::UniqueConnection);
 
     // Initialize the action to manage visibility control.
     actVisibilityControl_ = new QAction(QIcon(":icons/graphics/visibility.png"), tr("Visibility Control"), this);
@@ -586,23 +582,27 @@ void MainWindow::setupActions() {
     // Initialize the action to manage workspaces.
     actWorkspaces_ = new QAction(QIcon(":icons/graphics/workspace.png"),
                                  tr("Workspaces"), this);
-    connect(actWorkspaces_, SIGNAL(triggered()),
-            this, SLOT(openWorkspaceMenu()), Qt::UniqueConnection);
+    connect(actWorkspaces_, SIGNAL(triggered()), this, SLOT(openWorkspaceMenu()), Qt::UniqueConnection);
+
+    actRefresh_ = new QAction(QIcon(":/icons/graphics/refresh.png"), tr("Refresh"), this);
+    actRefresh_->setProperty("rowSpan", 2);
+    actRefresh_->setProperty("colSpan", 2);
+    actRefresh_->setShortcut(QKeySequence("F5"));
+    connect(actRefresh_, SIGNAL(triggered(bool)), this, SLOT(refresh()));
 
 	actProtect_ = new QAction(QIcon(":/icons/graphics/protection-unlocked.png"), tr("Unlocked"), this);
 	actProtect_->setProperty("rowSpan", 2);
 	actProtect_->setProperty("colSpan", 2);
 	actProtect_->setCheckable(true);
 	actProtect_->setEnabled(false);
-	connect(actProtect_, SIGNAL(triggered(bool)),
-		this, SLOT(changeProtection(bool)));
+    actProtect_->setShortcut(QKeySequence("Ctrl+Space"));
+	connect(actProtect_, SIGNAL(triggered(bool)), this, SLOT(changeProtection(bool)));
 
 	// Initialize the action to open Kactus2 settings.
 	actSettings_ = new QAction(QIcon(":/icons/graphics/system-settings.png"), tr("Settings"), this);
 	actSettings_->setProperty("rowSpan", 2);
 	actSettings_->setProperty("colSpan", 2);
-	connect(actSettings_, SIGNAL(triggered()), 
-		this, SLOT(openSettings()));
+	connect(actSettings_, SIGNAL(triggered()), this, SLOT(openSettings()));
 
 	// Initialize the action to open the about box.
 	actAbout_= new QAction(QIcon(":/icons/graphics/system-about.png"), tr("About"), this);
@@ -911,6 +911,7 @@ void MainWindow::setupMenus()
 	//! The Protection group.
 	protectGroup_ = menuStrip_->addGroup(tr("Protection"));
 	protectGroup_->addAction(actProtect_);
+    protectGroup_->addAction(actRefresh_);
 	protectGroup_->setVisible(false);
 
 	//! The "System" group.
@@ -3141,6 +3142,33 @@ void MainWindow::onVisibilityControlToggled(QAction* action)
     Q_ASSERT(doc != 0);
 
     doc->setVisibilityControlState(action->text(), !doc->getVisibilityControls().value(action->text()));
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::refresh()
+//-----------------------------------------------------------------------------
+void MainWindow::refresh()
+{
+    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+    
+    if (doc == 0)
+    {
+        return;
+    }
+
+    if (doc->isModified())
+    {
+        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+            tr("The document has been modified. Save changes before refresh?"),
+            QMessageBox::Yes | QMessageBox::No, this);
+
+        if (msgBox.exec() == QMessageBox::Yes)
+        {
+            doc->save();
+        }
+    }
+
+    doc->refresh();
 }
 
 MainWindow::WindowVisibility::WindowVisibility():

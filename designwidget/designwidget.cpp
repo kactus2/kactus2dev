@@ -481,14 +481,8 @@ const VLNV *DesignWidget::getOpenDocument() const
 
 void DesignWidget::keyPressEvent(QKeyEvent *event)
 {
-    // If the document is protected, skip all delete events.
-    if (isProtected())
-    {
-        TabDocument::keyPressEvent(event);
-        return;
-    }
-
-    if (event->key() == Qt::Key_Delete) {
+    // Handle delete events if the document is not protected.
+    if (!isProtected() && event->key() == Qt::Key_Delete) {
         if (diagram_->selectedItems().empty()) {
             return;
         }
@@ -988,7 +982,7 @@ IEditProvider* DesignWidget::getEditProvider()
 //-----------------------------------------------------------------------------
 void DesignWidget::refresh()
 {
-    Q_ASSERT(!isModified());
+    //Q_ASSERT(!isModified());
 
 	QSharedPointer<LibraryComponent> libComp = lh_->getModel(*hierComponent_->getVlnv());
 	hierComponent_ = libComp.staticCast<Component>();

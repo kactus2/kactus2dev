@@ -219,6 +219,9 @@ public slots:
     //! Changes the protection of the current document.
     void changeProtection(bool locked);
 
+    //! Refreshes the current view.
+    void refresh();
+
     /*!
      *  Creates a new component to the library.
      *
@@ -612,6 +615,9 @@ private:
     //! The protection group.
     GCF::MenuStripGroup* protectGroup_; 
 
+    //! Action to refresh the current document.
+    QAction* actRefresh_;
+
     //! Action to set protection on/off.
     QAction* actProtect_;
 
@@ -668,7 +674,7 @@ private:
 	 *
 	*/
 	void updateWindows(unsigned int supportedWindows);
-    
+
     //-----------------------------------------------------------------------------
     //! Structure which contains the show/hidden status for the windows.
     //-----------------------------------------------------------------------------
