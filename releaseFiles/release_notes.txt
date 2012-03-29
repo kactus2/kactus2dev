@@ -9,6 +9,16 @@
               * Changed or Information
 ===============================================================================
 
+28/03/2012 1.3 (Build 27)
+----------------------------------------------------
+
++ Added shortcuts: Ctrl+Tab for switching tabs, Ctrl+W for closing tabs,
+  F5 for refreshing the documents and Ctrl+Space for switching protection mode.
+
+- Fixed a critical crash in system designs and components having CPU elements.
+
+
+
 22/03/2012 1.3 (Build 1)
 ----------------------------------------------------
 

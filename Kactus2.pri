@@ -361,7 +361,8 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./GCF/MenuStrip.h \
     ./AdHocEditor/AdHocDelegate.h \
     ./AdHocEditor/AdHocEditor.h \
-    ./AdHocEditor/AdHocModel.h
+    ./AdHocEditor/AdHocModel.h \
+    ./common/widgets/tabWidgetEx/TabWidgetEx.h
 SOURCES += ./common/CSourceWriter.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/IDFactory.cpp \
@@ -702,5 +703,6 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./GCF/MenuStrip.cpp \
     ./AdHocEditor/AdHocDelegate.cpp \
     ./AdHocEditor/AdHocEditor.cpp \
-    ./AdHocEditor/AdHocModel.cpp
+    ./AdHocEditor/AdHocModel.cpp \
+    ./common/widgets/tabWidgetEx/TabWidgetEx.cpp
 RESOURCES += kactus.qrc
