@@ -370,7 +370,7 @@ void AddressSpaceVisualizer::drawSegments( QPainter& painter, const QRect& bound
 			QPoint previousEnd(errorArea.bottomLeft().x() + fontWidth, errorArea.bottomLeft().y());
 			QString prevEndStr = QString::number(previousLimit, 16).toUpper();
 			prevEndStr.prepend("0x");
-			drawCenteredText(painter, prevEndStr, previousEnd);
+			painter.drawText(previousEnd, prevEndStr);
 
 			// if the name of the previous segment was drawn over by the new segment
 			if (errorArea.contains(previousRect.center())) {
@@ -390,7 +390,7 @@ void AddressSpaceVisualizer::drawSegments( QPainter& painter, const QRect& bound
 			QPoint previousEnd(segmentRect.topLeft().x() + fontWidth, segmentRect.topLeft().y());
 			QString prevEndStr = QString::number(previousLimit, 16).toUpper();
 			prevEndStr.prepend("0x");
-			drawCenteredText(painter, prevEndStr, previousEnd);
+			painter.drawText(previousEnd, prevEndStr);
 
 			// if the name of the previous segment was drawn over by the new segment
 			if (segmentRect.contains(previousRect.center())) {
@@ -414,13 +414,13 @@ void AddressSpaceVisualizer::drawSegments( QPainter& painter, const QRect& bound
 		QPoint startPoint = QPoint(segmentRect.topLeft().x() + fontWidth, segmentRect.topLeft().y() + fontHeight);
 		QString startStr = QString::number(segment.offSet_, 16).toUpper();
 		startStr.prepend("0x");
-		drawCenteredText(painter, startStr, startPoint);
+		painter.drawText(startPoint, startStr);
 
 		// draw the end address to the end of the segment
 		QPoint endPoint = QPoint(segmentRect.bottomLeft().x() + fontWidth, segmentRect.bottomLeft().y());
 		QString endStr = QString::number(segment.offSet_ + segment.range_ - 1, 16).toUpper();
 		endStr.prepend("0x");
-		drawCenteredText(painter, endStr, endPoint);
+		painter.drawText(endPoint, endStr);
 
 		// if the segment goes further than the limit of the address space
 		if (previousLimit > byteCount_ - 1) {
