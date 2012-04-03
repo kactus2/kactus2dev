@@ -12,8 +12,8 @@
 
 EditableTableView::EditableTableView(QWidget *parent):
 QTableView(parent),
-addAction_(tr("Add new"), this),
-removeAction_(tr("Remove"), this),
+addAction_(tr("Add row"), this),
+removeAction_(tr("Remove row"), this),
 itemsDraggable_(true) {
 
 	// cells are resized to match contents 

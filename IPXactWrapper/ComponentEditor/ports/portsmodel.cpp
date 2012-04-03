@@ -498,7 +498,8 @@ void PortsModel::exportPorts( QFile& file ) {
 	stream << tr("Type") << ";";
 	stream << tr("Type definition") << ";";
 	stream << tr("Default value") << ";";
-	stream << tr("Description");
+	stream << tr("Description") << ";";
+	stream << tr("Ad-hoc");
 	stream << endl;
 
 	// write each port
@@ -512,7 +513,8 @@ void PortsModel::exportPorts( QFile& file ) {
 		stream << port->getTypeName() << ";";
 		stream << port->getTypeDefinition(port->getTypeName()) << ";";
 		stream << port->getDefaultValue() << ";";
-		stream << port->getDescription();
+		stream << port->getDescription() << ";";
+		stream << General::bool2Str(port->isAdHocVisible());
 		stream << endl;
 	}
 }
@@ -527,7 +529,7 @@ void PortsModel::importPorts( QFile& file ) {
 	QStringList headerList = headers.split(";");
 
 	// if the file is not supported type (not same amount of lines)
-	if (headerList.count() != 9)
+	if (headerList.count() != 10)
 		return;
 
 	beginResetModel();
@@ -550,13 +552,17 @@ void PortsModel::importPorts( QFile& file ) {
 		QString typeDefinition = elements.value(6);
 		QString defaultValue = elements.value(7);
 		QString description = elements.value(8);
+		QString isAdHoc = elements.value(9);
+		bool adHoc = General::str2Bool(isAdHoc, false);
 
 		if (width != (left - right + 1))
 			emit errorMessage(tr("Port %1 width does not match port bounds").arg(
 			name));
 
-		table_.append(QSharedPointer<Port>(new Port(name, direction, left, right,
-			typeName, typeDefinition, defaultValue, description)));
+		QSharedPointer<Port> port(new Port(name, direction, left, right,
+			typeName, typeDefinition, defaultValue, description));
+		port->setAdHocVisible(adHoc);
+		table_.append(port);
 	}
 	
 	endResetModel();
