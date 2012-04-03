@@ -22,14 +22,19 @@ public:
 	/*! \brief Enum Type is used to tell the type of IP-XACT document
 	 *
 	 */
-	enum IPXactType {BUSDEFINITION = 0, 		// spirit:busDefinition
-				COMPONENT = 1,					// spirit:component
-				DESIGN = 2, 					// spirit:design
-				GENERATORCHAIN = 3,				// spirit:generatorChain
-				ABSTRACTOR = 4,					// spirit:abstractor
-				DESIGNCONFIGURATION = 5,		// spirit:designConfiguration
-				ABSTRACTIONDEFINITION = 6,		// spirit:abstractionDefinition
-				INVALID = 7 };					// invalid type
+	enum IPXactType
+    {
+        BUSDEFINITION = 0,      // spirit:busDefinition
+        COMPONENT,				// spirit:component
+        DESIGN, 				// spirit:design
+        GENERATORCHAIN,         // spirit:generatorChain
+        ABSTRACTOR,             // spirit:abstractor
+        DESIGNCONFIGURATION,    // spirit:designConfiguration
+        ABSTRACTIONDEFINITION,  // spirit:abstractionDefinition
+        COMDEFINITION,          // kactus2:comDefinition
+        APIDEFINITION,          // kactus2:apiDefinition
+		INVALID                 // invalid type
+    };
 
 	/*! \brief Constructor with parameters
 	 *

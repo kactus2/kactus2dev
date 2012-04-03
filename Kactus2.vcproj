@@ -1534,6 +1534,18 @@
 					>
 				</File>
 				<File
+					RelativePath=".\models\ApiDefinition.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\models\ApiFunction.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\models\ApiFunctionParameter.cpp"
+					>
+				</File>
+				<File
 					RelativePath="models\bank.cpp"
 					>
 				</File>
@@ -1562,11 +1574,19 @@
 					>
 				</File>
 				<File
+					RelativePath=".\models\ComDefinition.cpp"
+					>
+				</File>
+				<File
 					RelativePath="models\component.cpp"
 					>
 				</File>
 				<File
 					RelativePath="models\componentgenerator.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\models\ComProperty.cpp"
 					>
 				</File>
 				<File
@@ -7750,6 +7770,18 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath=".\models\ApiDefinition.h"
+					>
+				</File>
+				<File
+					RelativePath=".\models\ApiFunction.h"
+					>
+				</File>
+				<File
+					RelativePath=".\models\ApiFunctionParameter.h"
+					>
+				</File>
+				<File
 					RelativePath="models\bank.h"
 					>
 					<FileConfiguration
@@ -7932,6 +7964,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath=".\models\ComDefinition.h"
+					>
+				</File>
+				<File
 					RelativePath="models\component.h"
 					>
 					<FileConfiguration
@@ -7982,6 +8018,10 @@
 							Outputs=""
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\models\ComProperty.h"
+					>
 				</File>
 				<File
 					RelativePath="models\cpu.h"

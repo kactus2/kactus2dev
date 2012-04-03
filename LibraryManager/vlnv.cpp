@@ -240,6 +240,10 @@ QString VLNV::IPXactType2String(const IPXactType &type) {
 		return QObject::tr("spirit:designConfiguration");
 	case ABSTRACTIONDEFINITION:
 		return QObject::tr("spirit:abstractionDefinition");
+    case COMDEFINITION:
+        return QObject::tr("kactus2:comDefinition");
+    case APIDEFINITION:
+        return QObject::tr("kactus2:apiDefinition");
 	default:
 		return QObject::tr("invalid");
 	}

@@ -138,13 +138,13 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //!< The name of the function.
+    //! The name of the function.
     QString m_name;
 
-    //!< The return variable description.
+    //! The return variable description.
     VariableDesc m_returnValueDesc;
 
-    //!< The function parameters.
+    //! The function parameters.
     QList<VariableDesc> m_params;
 };
 
