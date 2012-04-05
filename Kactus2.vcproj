@@ -1582,6 +1582,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\models\ComInterface.cpp"
+					>
+				</File>
+				<File
 					RelativePath="models\component.cpp"
 					>
 				</File>
@@ -1739,6 +1743,10 @@
 				</File>
 				<File
 					RelativePath="models\subspacemap.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\models\SWInstance.cpp"
 					>
 				</File>
 				<File
@@ -7976,6 +7984,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\models\ComInterface.h"
+					>
+				</File>
+				<File
 					RelativePath="models\component.h"
 					>
 					<FileConfiguration
@@ -8970,6 +8982,10 @@
 							Outputs=""
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\models\SWInstance.h"
+					>
 				</File>
 				<File
 					RelativePath="models\transactional.h"

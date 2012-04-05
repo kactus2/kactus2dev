@@ -67,6 +67,11 @@ public:
     ApiInterface(QDomNode& node);
 
     /*!
+     *  Destructor.
+     */
+    ~ApiInterface();
+
+    /*!
      *  Writes the contents of the API interface to an XML stream.
      */
     void write(QXmlStreamWriter& writer) const;

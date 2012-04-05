@@ -107,6 +107,14 @@ ApiInterface::ApiInterface(QDomNode& node) : name_(), displayName_(), desc_(), a
 }
 
 //-----------------------------------------------------------------------------
+// Function: ApiInterface::~ApiInterface()
+//-----------------------------------------------------------------------------
+ApiInterface::~ApiInterface()
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: ApiInterface::write()
 //-----------------------------------------------------------------------------
 void ApiInterface::write(QXmlStreamWriter& writer) const
