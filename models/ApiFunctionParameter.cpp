@@ -11,6 +11,8 @@
 
 #include "ApiFunctionParameter.h"
 
+#include <QStringList>
+
 //-----------------------------------------------------------------------------
 // Function: ApiFunctionParameter::ApiFunctionParameter()
 //-----------------------------------------------------------------------------
@@ -56,6 +58,29 @@ void ApiFunctionParameter::write(QXmlStreamWriter& writer)
     writer.writeAttribute("kactus2:name", name_);
     writer.writeAttribute("kactus2:type", type_);
     writer.writeAttribute("kactus2:description", desc_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiFunctionParameter::isValid()
+//-----------------------------------------------------------------------------
+bool ApiFunctionParameter::isValid(QStringList& errorList, QString const& parentId) const
+{
+    bool valid = false;
+    QString const thisId = QObject::tr("function parameter '%1'").arg(name_);
+
+    if (name_.isEmpty())
+    {
+        errorList.append(QObject::tr("No name specified for a function parameter in %1").arg(parentId));
+        valid = false;
+    }
+
+    if (type_.isEmpty())
+    {
+        errorList.append(QObject::tr("No type specified for %1").arg(thisId));
+        valid = false;
+    }
+
+    return valid;
 }
 
 //-----------------------------------------------------------------------------

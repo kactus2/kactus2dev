@@ -133,6 +133,118 @@ void ApiDefinition::write(QFile& file)
 }
 
 //-----------------------------------------------------------------------------
+// Function: ApiDefinition::isValid()
+//-----------------------------------------------------------------------------
+bool ApiDefinition::isValid(QStringList& errorList) const
+{
+    QString thisIdentifier(QObject::tr("the containing API definition"));
+    bool valid = true;
+
+    if (!vlnv_)
+    {
+        errorList.append(QObject::tr("No vlnv specified for the API definition."));
+        valid = false;
+    }
+    else if (!vlnv_->isValid(errorList, thisIdentifier))
+    {
+        valid = false;
+    }
+    else
+    {
+        thisIdentifier = QObject::tr("API definition '%1'").arg(vlnv_->toString());
+    }
+
+    // Check for multiple definitions of same data type.
+    QStringList dataTypeNames;
+
+    foreach (QString const& dataType, dataTypes_)
+    {
+        if (dataTypeNames.contains(dataType))
+        {
+            errorList.append(QObject::tr("Data type '%1' defined multiple times"
+                                         "in '%2'").arg(dataType, thisIdentifier));
+            valid = false;
+        }
+        else
+        {
+            dataTypeNames.push_back(dataType);
+        }
+    }
+
+    // Validate the functions.
+    QStringList funcNames;
+
+    foreach (QSharedPointer<ApiFunction> func, functions_)
+    {
+        if (funcNames.contains(func->getName()))
+        {
+            errorList.append(QObject::tr("Function with name '%1' defined multiple times"
+                                         "in %2").arg(func->getName(), thisIdentifier));
+            valid = false;
+        }
+        else
+        {
+            funcNames.append(func->getName());
+        }
+
+        if (!func->isValid(errorList, thisIdentifier))
+        {
+            valid = false;
+        }
+    }
+
+    return valid;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiDefinition::isValid()
+//-----------------------------------------------------------------------------
+bool ApiDefinition::isValid() const
+{
+    if (!vlnv_ || !vlnv_->isValid())
+    {
+        return false;
+    }
+
+    // Check for multiple definitions of same data type.
+    QStringList dataTypeNames;
+
+    foreach (QString const& dataType, dataTypes_)
+    {
+        if (dataTypeNames.contains(dataType))
+        {
+            return false;
+        }
+        else
+        {
+            dataTypeNames.push_back(dataType);
+        }
+    }
+
+    // Validate the functions.
+    QStringList funcNames;
+
+    foreach (QSharedPointer<ApiFunction> func, functions_)
+    {
+        if (funcNames.contains(func->getName()))
+        {
+            return false;
+        }
+        else
+        {
+            funcNames.append(func->getName());
+        }
+
+        if (!func->isValid())
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ApiDefinition::setLanguage()
 //-----------------------------------------------------------------------------
 void ApiDefinition::setLanguage(QString const& language)

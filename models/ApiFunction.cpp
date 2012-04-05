@@ -13,6 +13,8 @@
 
 #include "ApiFunctionParameter.h"
 
+#include <QStringList>
+
 //-----------------------------------------------------------------------------
 // Function: ApiFunction::ApiFunction()
 //-----------------------------------------------------------------------------
@@ -82,6 +84,86 @@ void ApiFunction::write(QXmlStreamWriter& writer)
     }
 
     writer.writeEndElement(); // kactus2:function
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: ApiFunction::isValid()
+//-----------------------------------------------------------------------------
+bool ApiFunction::isValid(QStringList& errorList, QString const& parentId) const
+{
+    bool valid = true;
+    QString const thisId = QObject::tr("API function '%1'").arg(name_);
+
+    if (name_.isEmpty())
+    {
+        errorList.append(QObject::tr("No name specified for an API function in %1").arg(parentId));
+        valid = false;
+    }
+
+    if (returnType_.isEmpty())
+    {
+        errorList.append(QObject::tr("No return value type specified for %1").arg(thisId));
+        valid = false;
+    }
+
+    // Validate the function parameters.
+    QStringList paramNames;
+
+    foreach (QSharedPointer<ApiFunctionParameter> param, params_)
+    {
+        if (paramNames.contains(param->getName()))
+        {
+            errorList.append(QObject::tr("Multiple definitions of function parameter '%1'"
+                                         "in %2").arg(param->getName(), thisId));
+            valid = false;
+        }
+        else
+        {
+            paramNames.append(param->getName());
+        }
+
+        if (!param->isValid(errorList, thisId))
+        {
+            valid = false;
+        }
+    }
+
+    return valid;
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: ApiFunction::isValid()
+//-----------------------------------------------------------------------------
+bool ApiFunction::isValid() const
+{
+    if (name_.isEmpty() || returnType_.isEmpty())
+    {
+        return false;
+    }
+
+    // Validate the function parameters.
+    QStringList paramNames;
+
+    foreach (QSharedPointer<ApiFunctionParameter> param, params_)
+    {
+        if (paramNames.contains(param->getName()))
+        {
+            return false;
+        }
+        else
+        {
+            paramNames.append(param->getName());
+        }
+
+        if (!param->isValid())
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------

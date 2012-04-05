@@ -61,6 +61,18 @@ class ComDefinition : public LibraryComponent
     virtual void write(QFile& file);
 
     /*!
+     *  Returns true if the communication definition is valid.
+     *
+     *      @param [out] errorList  The list of errors found in the contents.
+     */
+    bool isValid(QStringList& errorList) const;
+
+    /*!
+     *  Returns true if the communication definition is valid.
+     */
+    bool isValid() const;
+
+    /*!
      *  Adds a new data type to the communication definition.
      *
      *      @param [in] type The name of the data type to add.

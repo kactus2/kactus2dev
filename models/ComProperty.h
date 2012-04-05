@@ -50,7 +50,15 @@ public:
     void write(QXmlStreamWriter& writer);
 
     /*!
-     *  Returns true if the property is in valid state.
+     *  Returns true if the property contents are valid.
+     *
+     *      @param [out] errorList  The list of errors found in the contents.
+     *      @param [in]  parentId   The identifier of the containing COM definition.
+     */
+    bool isValid(QStringList& errorList, QString const& parentId) const;
+
+    /*!
+     *  Returns true if the property contents are valid.
      */
     bool isValid() const;
 

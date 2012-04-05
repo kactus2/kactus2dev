@@ -24,7 +24,7 @@ directConnection_(true),
 isAddressable_(true), 
 maxMasters_(-1),
 maxSlaves_(-1),
-systemGroupNames_(),	
+systemGroupNames_(),
 extends_(),
 attributes_()  {
 

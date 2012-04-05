@@ -59,6 +59,18 @@ class ApiDefinition : public LibraryComponent
     virtual void write(QFile& file);
 
     /*!
+     *  Returns true if the contents are valid.
+     *
+     *      @param [in/out] errorList Error list which is appended with errors if found while validating.
+     */
+    bool isValid(QStringList& errorList) const;
+
+    /*!
+     *  Returns true if the contents are valid.
+     */
+    bool isValid() const;
+
+    /*!
      *  Sets the API programming language.
      *
      *      @param [in] language The name of the programming language.

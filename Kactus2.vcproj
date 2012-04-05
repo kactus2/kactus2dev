@@ -1546,6 +1546,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\models\ApiInterface.cpp"
+					>
+				</File>
+				<File
 					RelativePath="models\bank.cpp"
 					>
 				</File>
@@ -7779,6 +7783,10 @@
 				</File>
 				<File
 					RelativePath=".\models\ApiFunctionParameter.h"
+					>
+				</File>
+				<File
+					RelativePath=".\models\ApiInterface.h"
 					>
 				</File>
 				<File

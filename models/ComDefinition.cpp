@@ -129,6 +129,118 @@ void ComDefinition::write(QFile& file)
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComDefinition::isValid()
+//-----------------------------------------------------------------------------
+bool ComDefinition::isValid(QStringList& errorList) const
+{
+    QString thisIdentifier(QObject::tr("the containing COM definition"));
+    bool valid = true;
+
+    if (!vlnv_)
+    {
+        errorList.append(QObject::tr("No vlnv specified for the COM definition."));
+        valid = false;
+    }
+    else if (!vlnv_->isValid(errorList, thisIdentifier))
+    {
+        valid = false;
+    }
+    else
+    {
+        thisIdentifier = QObject::tr("COM definition '%1'").arg(vlnv_->toString());
+    }
+
+    // Check for multiple definitions of same data type.
+    QStringList dataTypeNames;
+
+    foreach (QString const& dataType, dataTypes_)
+    {
+        if (dataTypeNames.contains(dataType))
+        {
+            errorList.append(QObject::tr("Data type '%1' defined multiple times"
+                                         "in '%2'").arg(dataType, thisIdentifier));
+            valid = false;
+        }
+        else
+        {
+            dataTypeNames.push_back(dataType);
+        }
+    }
+
+    // Validate the properties.
+    QStringList propertyNames;
+
+    foreach (QSharedPointer<ComProperty> prop, properties_)
+    {
+        if (propertyNames.contains(prop->getName()))
+        {
+            errorList.append(QObject::tr("Property '%1' defined multiple times"
+                                         "in %2").arg(prop->getName(), thisIdentifier));
+            valid = false;
+        }
+        else
+        {
+            propertyNames.append(prop->getName());
+        }
+
+        if (!prop->isValid(errorList, thisIdentifier))
+        {
+            valid = false;
+        }
+    }
+
+    return valid;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComDefinition::isValid()
+//-----------------------------------------------------------------------------
+bool ComDefinition::isValid() const
+{
+    if (!vlnv_ || !vlnv_->isValid())
+    {
+        return false;
+    }
+    
+    // Check for multiple definitions of same data type.
+    QStringList dataTypeNames;
+
+    foreach (QString const& dataType, dataTypes_)
+    {
+        if (dataTypeNames.contains(dataType))
+        {
+            return false;
+        }
+        else
+        {
+            dataTypeNames.push_back(dataType);
+        }
+    }
+
+    // Validate the properties.
+    QStringList propertyNames;
+
+    foreach (QSharedPointer<ComProperty> prop, properties_)
+    {
+        if (propertyNames.contains(prop->getName()))
+        {
+            return false;
+        }
+        else
+        {
+            propertyNames.append(prop->getName());
+        }
+
+        if (!prop->isValid())
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComDefinition::addDataType()
 //-----------------------------------------------------------------------------
 void ComDefinition::addDataType(QString const& type)
