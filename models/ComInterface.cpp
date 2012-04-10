@@ -50,15 +50,15 @@ ComInterface::ComInterface(QDomNode& node) : name_(), displayName_(), desc_(), c
             continue;
         }
 
-        if (childNode.nodeName() == "kactus2:name")
+        if (childNode.nodeName() == "spirit:name")
         {
             name_ = childNode.nodeValue();
         }
-        else if (childNode.nodeName() == "kactus2:displayName")
+        else if (childNode.nodeName() == "spirit:displayName")
         {
             displayName_ = childNode.nodeValue();
         }
-        else if (childNode.nodeName() == "kactus2:description")
+        else if (childNode.nodeName() == "spirit:description")
         {
             desc_ = childNode.nodeValue();
         }
@@ -97,9 +97,9 @@ void ComInterface::write(QXmlStreamWriter& writer) const
     writer.writeStartElement("kactus2:comInterface");
 
     // Write basic name info.
-    writer.writeTextElement("kactus2:name", name_);
-    writer.writeTextElement("kactus2:displayName", displayName_);
-    writer.writeTextElement("kactus2:description", desc_);
+    writer.writeTextElement("spirit:name", name_);
+    writer.writeTextElement("spirit:displayName", displayName_);
+    writer.writeTextElement("spirit:description", desc_);
 
     // Write communication type, data type and communication direction.
     writer.writeEmptyElement("kactus2:comType");
@@ -267,7 +267,7 @@ void ComInterface::parsePropertyValues(QDomNode& node)
         if (propNode.nodeName() == "kactus2:propertyValue")
         {
             QString name = propNode.attributes().namedItem("kactus2:name").nodeValue();
-            QString value = propNode.attributes().namedItem("kactus:value").nodeValue();
+            QString value = propNode.attributes().namedItem("kactus2:value").nodeValue();
 
             propertyValues_.insert(name, value);
         }
