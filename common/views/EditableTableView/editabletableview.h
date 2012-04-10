@@ -99,6 +99,15 @@ private slots:
 	//! \brief Handler for remove action
 	void onRemoveAction();
 
+	//! \brief Handler for copy action.
+	void onCopyAction();
+
+	//! \brief Handler for paste action
+	void onPasteAction();
+
+	//! \brief Handler for cell clear action
+	void onClearAction(); 
+
 private:
 	//! \brief No copying
 	EditableTableView(const EditableTableView& other);
@@ -117,6 +126,15 @@ private:
 
 	//! \brief Action to remove item
 	QAction removeAction_;
+
+	//! \brief Action to copy item
+	QAction copyAction_;
+
+	//! \brief Action to paste item
+	QAction pasteAction_;
+
+	//! \brief Action to clear selected cells
+	QAction clearAction_;
 
 	//! \brief Specifies if the items in the view can be dragged from position to another.
 	bool itemsDraggable_;

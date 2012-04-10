@@ -95,6 +95,9 @@ QVariant PortsModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole
 			case PORT_COL_DESC: {
 				return table_.at(index.row())->getDescription();
 					}
+			case PORT_COL_ADHOC_VISIBILITY: {
+				return table_.at(index.row())->isAdHocVisible();
+															  }
 
 			default: {
 				return QVariant();
@@ -334,6 +337,10 @@ bool PortsModel::setData( const QModelIndex& index,
 				table_.at(index.row())->setDescription(value.toString());
 				break;
 					}
+			case PORT_COL_ADHOC_VISIBILITY: {
+				table_.at(index.row())->setAdHocVisible(value.toBool());
+				break;
+											}
 
 			default: {
 				return false;

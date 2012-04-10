@@ -14,7 +14,7 @@
 FileNameEditor::FileNameEditor(QWidget *parent,
 							   const QFileInfo& baseLocation,
 							   const QString fileName,
-							   const QMap<QString, QString>& attributes): 
+							   const QMap<QString, QString>& ): 
 QGroupBox(tr("File name and path"), parent), 
 nameEdit_(this, baseLocation, fileName) 
 //attributes_(this)
