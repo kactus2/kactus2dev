@@ -54,14 +54,6 @@ public:
 	*/
 	virtual void makeChanges();
 
-private slots:
-
-	//! \brief Import a csv file to ports
-	void onImport();
-
-	//! \brief Export ports to a csv file
-	void onExport();
-
 private:
 
 	//! \brief No copying

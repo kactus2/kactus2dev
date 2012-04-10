@@ -10,6 +10,7 @@
 #include "portsdelegate.h"
 
 #include <LibraryManager/libraryinterface.h>
+#include <models/component.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -32,10 +33,12 @@ view_(this),
 model_(component, dataPointer, this),
 handler_(handler) {
 
+	view_.setDefaultImportExportPath(handler_->getPath(*ItemEditor::component()->getVlnv()));
+
 	connect(&importButton_, SIGNAL(clicked(bool)),
-		this, SLOT(onImport()), Qt::UniqueConnection);
+		&view_, SLOT(onCSVImport()), Qt::UniqueConnection);
 	connect(&exportButton_, SIGNAL(clicked(bool)),
-		this, SLOT(onExport()), Qt::UniqueConnection);
+		&view_, SLOT(onCSVExport()), Qt::UniqueConnection);
 
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -99,69 +102,6 @@ PortsEditor::~PortsEditor() {
 
 bool PortsEditor::isValid() const {
 	return model_.isValid();
-}
-
-void PortsEditor::onImport() {
-	
-	QString componentPath = handler_->getPath(*component()->getVlnv());
-	QFileInfo fileInfo(componentPath);
-	componentPath = fileInfo.absolutePath();
-	if (componentPath.isEmpty()) {
-		componentPath = QDir::homePath();
-	}
-
-	QString location = QFileDialog::getOpenFileName(this, tr("Open file"),
-		componentPath, tr("csv-files (*.csv)"));
-
-	// if user clicked cancel
-	if (location.isEmpty())
-		return;
-
-	QFile file(location);
-
-	// if file can not be opened 
-	if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-		QMessageBox::critical(this, tr("Error opening file"),
-			tr("Could not open file %1 for reading").arg(location));
-		return;
-	}
-
-	// tell model to import the port information
-	model_.importPorts(file);
-
-	file.close();
-}
-
-void PortsEditor::onExport() {
-
-	QString componentPath = handler_->getPath(*component()->getVlnv());
-	QFileInfo fileInfo(componentPath);
-	componentPath = fileInfo.absolutePath();
-	if (componentPath.isEmpty()) {
-		componentPath = QDir::homePath();
-	}
-
-	QString target = QFileDialog::getSaveFileName(this, 
-		tr("Set name and location for csv-file"),
-		componentPath, tr("csv-files (*.csv)"));
-
-	// if user clicked cancel
-	if (target.isEmpty())
-		return;
-
-	QFile file(target);
-
-	// if file can not be opened 
-	if (!file.open(QIODevice::Truncate | QIODevice::WriteOnly)) {
-		QMessageBox::critical(this, tr("Error opening file"),
-		tr("Could not open file %1 for writing").arg(target));
-		return;
-	}
-
-	// tell model to save the information
-	model_.exportPorts(file);
-
-	file.close();
 }
 
 void PortsEditor::makeChanges() {

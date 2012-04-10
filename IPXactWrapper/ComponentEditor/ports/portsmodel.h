@@ -113,20 +113,6 @@ public:
 	*/
 	void restore();
 
-	/*! \brief Export port information to a file in file system.
-	 *
-	 * \param file The file to read the information from. Must be opened.
-	 *
-	*/
-	void exportPorts(QFile& file);
-
-	/*! \brief Import port information from a file in file system.
-	 *
-	 * \param file The file to save the information to. Must be opened.
-	 *
-	*/
-	void importPorts(QFile& file);
-
 public slots:
 
 	/*! \brief Remove a row from the model

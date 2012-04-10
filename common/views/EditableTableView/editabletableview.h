@@ -47,6 +47,27 @@ public slots:
 	*/
 	void setItemsDraggable(bool draggable);
 
+	/*! \brief Create a csv-file of the editor contents.
+	 *
+	 * \param filePath Contains an absolute file path to the file to create.
+	 *
+	*/
+	void onCSVExport(const QString& filePath = QString());
+
+	/*! \brief Import contents of a csv-file to the editor.
+	 *
+	 * \param filePath The path to the csv-file to import.
+	 *
+	*/
+	void onCSVImport(const QString& filePath = QString());
+
+	/*! \brief Set the default path to use for import/export csv.
+	 *
+	 * \param path The path to use as default.
+	 *
+	*/
+	void setDefaultImportExportPath(const QString& path);
+
 signals:
 
 	/*! \brief A new item should be added to given index.
@@ -118,6 +139,9 @@ private:
 	//! \brief Set up the actions for the context menu
 	void setupActions();
 
+	//! \brief The default path to use for import/export csv
+	QString defImportExportPath_;
+
 	//! \brief The point where mouse was clicked
 	QPoint pressedPoint_;
 
@@ -135,6 +159,12 @@ private:
 
 	//! \brief Action to clear selected cells
 	QAction clearAction_;
+
+	//! \brief Action to import a csv-file
+	QAction importAction_;
+
+	//! \brief Action to export a csv-file
+	QAction exportAction_;
 
 	//! \brief Specifies if the items in the view can be dragged from position to another.
 	bool itemsDraggable_;

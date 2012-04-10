@@ -13,16 +13,21 @@
 #include <QClipboard>
 #include <QApplication>
 #include <QModelIndexList>
-
-#include <QDebug>
+#include <QMessageBox>
+#include <QFile>
+#include <QTextStream>
+#include <QFileDialog>
 
 EditableTableView::EditableTableView(QWidget *parent):
 QTableView(parent),
+defImportExportPath_(),
 addAction_(tr("Add row"), this),
 removeAction_(tr("Remove row"), this),
 copyAction_(tr("Copy"), this),
 pasteAction_(tr("Paste"), this),
 clearAction_(tr("Clear"), this),
+importAction_(tr("Import csv-file"), this),
+exportAction_(tr("Export csv-file"), this),
 itemsDraggable_(true) {
 
 	// cells are resized to match contents 
@@ -148,8 +153,10 @@ void EditableTableView::contextMenuEvent( QContextMenuEvent* event ) {
 		menu.addAction(&clearAction_);
 		menu.addAction(&copyAction_);
 	}
-	
 	menu.addAction(&pasteAction_);
+	menu.addAction(&importAction_);
+	menu.addAction(&exportAction_);
+
 	menu.exec(event->globalPos());
 
 	event->accept();
@@ -241,6 +248,16 @@ void EditableTableView::setupActions() {
 	connect(&clearAction_, SIGNAL(triggered()),
 		this, SLOT(onClearAction()), Qt::UniqueConnection);
 	clearAction_.setShortcut(QKeySequence::Delete);
+
+	importAction_.setToolTip(tr("Import a csv-file to table"));
+	importAction_.setStatusTip(tr("Import a csv-file to table"));
+	connect(&importAction_, SIGNAL(triggered()),
+		this, SLOT(onCSVImport()), Qt::UniqueConnection);
+
+	exportAction_.setToolTip(tr("Export table to a csv-file"));
+	exportAction_.setStatusTip(tr("Export table to a csv-file"));
+	connect(&exportAction_, SIGNAL(triggered()),
+		this, SLOT(onCSVExport()), Qt::UniqueConnection);
 }
 
 void EditableTableView::setItemsDraggable( bool draggable ) {
@@ -346,4 +363,101 @@ void EditableTableView::onClearAction() {
 	foreach (QModelIndex index, indexes) {
 		model()->setData(index, QVariant(), Qt::EditRole);
 	}
+}
+
+void EditableTableView::onCSVExport( const QString& filePath ) {
+
+	QString target(filePath);
+
+	if (filePath.isEmpty()) {
+		target = QFileDialog::getSaveFileName(this, 
+			tr("Set name and location for csv-file"),
+			defImportExportPath_, tr("csv-files (*.csv)"));
+	}
+
+	QFile file(target);
+
+	// if file can not be opened 
+	if (!file.open(QIODevice::Truncate | QIODevice::WriteOnly)) {
+		QMessageBox::critical(this, tr("Error opening file"),
+			tr("Could not open file %1 for writing").arg(target));
+		return;
+	}
+
+	int columnCount = model()->columnCount(QModelIndex());
+	int rowCount = model()->rowCount(QModelIndex());
+
+	// create a stream to write into
+	QTextStream stream(&file);
+
+	// write the headers
+	for (int i = 0; i < columnCount; ++i) {
+		stream << model()->headerData(i, Qt::Horizontal, Qt::DisplayRole).toString().simplified();
+		stream << ";";
+	}
+	stream << endl;
+
+	// write each row
+	for (int row = 0; row < rowCount; ++row) {
+		
+		// write each column
+		for (int col = 0; col < columnCount; ++col) {
+
+			QModelIndex index = model()->index(row, col, QModelIndex());
+			stream << model()->data(index, Qt::DisplayRole).toString();
+			stream << ";";
+		}
+		stream << endl;
+	}
+	file.close();
+}
+
+void EditableTableView::onCSVImport( const QString& filePath ) {
+	
+	QString target(filePath);
+	
+	if (filePath.isEmpty()) {
+		target = QFileDialog::getOpenFileName(this, tr("Open file"),
+			defImportExportPath_, tr("csv-files (*.csv)"));
+	}
+	
+	QFile file(target);
+
+	// if file can not be opened 
+	if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+		QMessageBox::critical(this, tr("Error opening file"),
+			tr("Could not open file %1 for reading").arg(target));
+		return;
+	}
+
+	int columnCount = model()->columnCount(QModelIndex());
+
+	// create a stream to read from
+	QTextStream stream(&file);
+
+	// read the headers from the file
+	QString headers = stream.readLine();
+
+	while (!stream.atEnd()) {
+		QString line = stream.readLine();
+		QStringList columns = line.split(";");
+
+		// add a new empty row
+		emit addItem(QModelIndex());
+
+		// data is always added to the last row
+		int rowCount = model()->rowCount(QModelIndex());
+
+		for (int col = 0; col < columnCount && col < columns.size(); ++col) {
+
+			QModelIndex index = model()->index(rowCount - 1, col, QModelIndex());
+			model()->setData(index, columns.at(col), Qt::EditRole);
+		}
+	}
+
+	file.close();
+}
+
+void EditableTableView::setDefaultImportExportPath( const QString& path ) {
+	defImportExportPath_ = path;
 }
