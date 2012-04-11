@@ -319,7 +319,7 @@ bool VhdlGenerator2::addRTLView( const QString& vhdlFileName ) {
 
 	QString viewName;
 	if (!viewName_.isEmpty()) {
-		viewName = QString("%1_rtl").arg(viewName_);
+		viewName = QString("%1_vhd").arg(viewName_);
 	}
 	else {
 		viewName = "rtl";
