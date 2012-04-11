@@ -124,6 +124,22 @@ void ApiDependency::setDescription(QString const& description)
 }
 
 //-----------------------------------------------------------------------------
+// Function: ApiDependency::setProviderRef()
+//-----------------------------------------------------------------------------
+void ApiDependency::setProviderRef(ApiInterfaceRef const& providerRef)
+{
+    providerRef_ = providerRef;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiDependency::setRequesterRef()
+//-----------------------------------------------------------------------------
+void ApiDependency::setRequesterRef(ApiInterfaceRef const& requesterRef)
+{
+    requesterRef_ = requesterRef;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ApiDependency::getName()
 //-----------------------------------------------------------------------------
 QString const& ApiDependency::getName() const
@@ -145,6 +161,22 @@ QString const& ApiDependency::getDisplayName() const
 QString const& ApiDependency::getDescription() const
 {
     return desc_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiDependency::getProviderRef()
+//-----------------------------------------------------------------------------
+ApiInterfaceRef const& ApiDependency::getProviderRef() const
+{
+    return providerRef_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiDependency::getRequesterRef()
+//-----------------------------------------------------------------------------
+ApiInterfaceRef const& ApiDependency::getRequesterRef() const
+{
+    return requesterRef_;
 }
 
 //-----------------------------------------------------------------------------

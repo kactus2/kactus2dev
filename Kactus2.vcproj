@@ -1582,6 +1582,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\models\ComConnection.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\models\ComDefinition.cpp"
 					>
 				</File>
@@ -7986,6 +7990,10 @@
 							Outputs=""
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\models\ComConnection.h"
+					>
 				</File>
 				<File
 					RelativePath=".\models\ComDefinition.h"

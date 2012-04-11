@@ -1,57 +1,57 @@
 //-----------------------------------------------------------------------------
-// File: ApiDependency.h
+// File: ComConnection.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
 // Date: 11.4.2012
 //
 // Description:
-// Class encapsulating API dependency connection data.
+// Class encapsulating communication connection data.
 //-----------------------------------------------------------------------------
 
-#ifndef APIDEPENDENCY_H
-#define APIDEPENDENCY_H
+#ifndef COMCONNECTION_H
+#define COMCONNECTION_H
 
 #include <QString>
 #include <QDomNode>
 #include <QXmlStreamWriter>
 
 //-----------------------------------------------------------------------------
-//! ApiInterfaceRef structure.
+//! ComInterfaceRef structure.
 //-----------------------------------------------------------------------------
-struct ApiInterfaceRef
+struct ComInterfaceRef
 {
     QString componentRef;   //!< Name reference to an SW component instance.
-    QString apiRef;         //!< Name reference to an API interface that is contained by the SW component instance.
+    QString comRef;         //!< Name reference to a COM interface that is contained by the SW component instance.
 };
 
 //-----------------------------------------------------------------------------
 //! Class encapsulating API dependency connection data.
 //-----------------------------------------------------------------------------
-class ApiDependency
+class ComConnection
 {
 public:
     /*!
      *  Default constructor.
      */
-    ApiDependency();
+    ComConnection();
 
     /*!
      *  Copy constructor.
      */
-    ApiDependency(ApiDependency const& rhs);
+    ComConnection(ComConnection const& rhs);
 
     /*!
      *  Constructor which reads the API dependency from an XML node.
      *
      *      @param [in] node The source XML node.
      */
-    ApiDependency(QDomNode& node);
+    ComConnection(QDomNode& node);
 
     /*!
      *  Destructor.
      */
-    ~ApiDependency();
+    ~ComConnection();
 
     /*!
      *  Writes the contents to an XML stream.
@@ -80,20 +80,6 @@ public:
     void setDescription(QString const& description);
 
     /*!
-     *  Sets the provider reference.
-     *
-     *      @param [in] providerRef The provider reference.
-     */
-    void setProviderRef(ApiInterfaceRef const& providerRef);
-
-    /*!
-     *  Sets the requester reference.
-     *
-     *      @param [in] requesterRef The requester reference.
-     */
-    void setRequesterRef(ApiInterfaceRef const& requesterRef);
-
-    /*!
      *  Returns the name of the dependency.
      */
     QString const& getName() const;
@@ -109,19 +95,9 @@ public:
     QString const& getDescription() const;
 
     /*!
-     *  Returns the provider reference.
-     */
-    ApiInterfaceRef const& getProviderRef() const;
-
-    /*!
-     *  Returns the requester reference.
-     */
-    ApiInterfaceRef const& getRequesterRef() const;
-
-    /*!
      *  Assignment operator.
      */
-    ApiDependency& operator=(ApiDependency const& rhs);
+    ComConnection& operator=(ComConnection const& rhs);
 
 private:
     //-----------------------------------------------------------------------------
@@ -138,12 +114,12 @@ private:
     QString desc_;
 
     //! Provider reference.
-    ApiInterfaceRef providerRef_;
+    ComInterfaceRef interface1_;
 
     //! Requester reference.
-    ApiInterfaceRef requesterRef_;
+    ComInterfaceRef interface2_;
 };
 
 //-----------------------------------------------------------------------------
 
-#endif // APIDEPENDENCY_H
+#endif // COMCONNECTION_H
