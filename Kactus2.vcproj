@@ -1538,6 +1538,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\models\ApiDependency.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\models\ApiFunction.cpp"
 					>
 				</File>
@@ -7783,6 +7787,10 @@
 				</File>
 				<File
 					RelativePath=".\models\ApiDefinition.h"
+					>
+				</File>
+				<File
+					RelativePath=".\models\ApiDependency.h"
 					>
 				</File>
 				<File

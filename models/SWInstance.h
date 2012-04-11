@@ -20,6 +20,7 @@
 #include <QMap>
 #include <QSharedPointer>
 #include <QDomNode>
+#include <QXmlStreamWriter>
 
 class ComInterface;
 
@@ -50,6 +51,13 @@ public:
      *  Destructor.
      */
     ~SWInstance();
+
+    /*!
+     *  Writes the contents to an XML stream.
+     *
+     *      @param [in] writer The XML stream writer.
+     */
+    void write(QXmlStreamWriter& writer) const;
 
     /*!
      *  Sets the name of the SW instance.

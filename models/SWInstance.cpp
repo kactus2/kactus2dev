@@ -106,6 +106,65 @@ SWInstance::~SWInstance()
 }
 
 //-----------------------------------------------------------------------------
+// Function: SWInstance::write()
+//-----------------------------------------------------------------------------
+void SWInstance::write(QXmlStreamWriter& writer) const
+{
+    writer.writeStartElement("kactus2:swInstance");
+
+    // Write general data.
+    writer.writeTextElement("spirit:instanceName", instanceName_);
+    writer.writeTextElement("spirit:displayName", displayName_);
+    writer.writeTextElement("spirit:description", desc_);
+
+    writer.writeEmptyElement("kactus2:componentRef");
+    General::writeVLNVAttributes(writer, &componentRef_);
+    
+    writer.writeTextElement("kactus2:fileSetRef", fileSetRef_);
+    
+    writer.writeEmptyElement("kactus2:mapping");
+    writer.writeAttribute("kactus2:hwRef", hwRef_);
+
+    writer.writeEmptyElement("kactus2:position");
+    writer.writeAttribute("x", QString::number(int(pos_.x())));
+    writer.writeAttribute("y", QString::number(int(pos_.y())));
+
+    // Write communication interfaces.
+    if (!comInterfaces_.empty())
+    {
+        writer.writeStartElement("kactus2:comInterfaces");
+
+        foreach (QSharedPointer<ComInterface> comIf, comInterfaces_)
+        {
+            comIf->write(writer);
+        }
+
+        writer.writeEndElement(); // kactus2:comInterfaces
+    }
+
+    // Write property values.
+    if (!propertyValues_.empty())
+    {
+        writer.writeStartElement("kactus2:propertyValues");
+
+        QMapIterator<QString, QString> iter(propertyValues_);
+
+        while (iter.hasNext())
+        {
+            iter.next();
+
+            writer.writeEmptyElement("kactus2:propertyValue");
+            writer.writeAttribute("kactus2:name", iter.key());
+            writer.writeAttribute("kactus2:value", iter.value());
+        }
+
+        writer.writeEndElement(); // kactus2:propertyValues
+    }
+
+    writer.writeEndElement(); // kactus2:swInstance
+}
+
+//-----------------------------------------------------------------------------
 // Function: SWInstance::setInstanceName()
 //-----------------------------------------------------------------------------
 void SWInstance::setInstanceName(QString const& name)
