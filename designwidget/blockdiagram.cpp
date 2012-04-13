@@ -178,7 +178,7 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
     }
     else
     {
-        foreach(Design::ColumnDesc desc, design->getColumns())
+        foreach(ColumnDesc desc, design->getColumns())
         {
             layout_->addColumn(desc.name, desc.contentType, desc.allowedItems);
         }
@@ -202,7 +202,7 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
 
 		if (!libComponent) {
 			emit errorMessage(tr("The component %1 instantiated within design "
-				"%2 was not found within library").arg(
+				"%2 was not found in the library").arg(
 				instance.componentRef.getName()).arg(design->getVlnv()->getName()));
 			continue;
 		}
@@ -702,7 +702,7 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv)
 	QList<Design::Interconnection> interconnections;
 	QList<Design::HierConnection> hierConnections;
     QList<Design::AdHocConnection> adHocConnections;
-    QList<Design::ColumnDesc> columns;
+    QList<ColumnDesc> columns;
 
     QList<QString> unpackagedNames;
     QMap<QString, QPointF> adHocPortPositions;
@@ -866,7 +866,7 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv)
 
     foreach(DiagramColumn* column, layout_->getColumns())
     {
-        columns.append(Design::ColumnDesc(column->getName(), column->getContentType(),
+        columns.append(ColumnDesc(column->getName(), column->getContentType(),
                                           column->getAllowedItems()));
     }
 
@@ -1466,7 +1466,7 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
             // Make sure that both VLNVs are not yet used.
             if (lh_->contains(busVLNV))
             {
-                emit errorMessage(tr("Bus definition %1:%2:%3:%4 was already found in library").arg(
+                emit errorMessage(tr("Bus definition %1:%2:%3:%4 was already found in the library").arg(
                     busVLNV.getVendor()).arg(
                     busVLNV.getLibrary()).arg(
                     busVLNV.getName()).arg(
@@ -1474,7 +1474,7 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
                 return;
             }
             else if (lh_->contains(absVLNV)) {
-                emit errorMessage(tr("Abstraction definition %1:%2:%3:%4 was already found in library").arg(
+                emit errorMessage(tr("Abstraction definition %1:%2:%3:%4 was already found in the library").arg(
                     absVLNV.getVendor()).arg(
                     absVLNV.getLibrary()).arg(
                     absVLNV.getName()).arg(

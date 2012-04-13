@@ -58,7 +58,7 @@ SWInstance::SWInstance(QDomNode& node) : instanceName_(), displayName_(), desc_(
             continue;
         }
 
-        if (childNode.nodeName() == "spirit:instanceName")
+        if (childNode.nodeName() == "spirit:instanceName_")
         {
             instanceName_ = childNode.nodeValue();
         }
@@ -113,7 +113,7 @@ void SWInstance::write(QXmlStreamWriter& writer) const
     writer.writeStartElement("kactus2:swInstance");
 
     // Write general data.
-    writer.writeTextElement("spirit:instanceName", instanceName_);
+    writer.writeTextElement("spirit:instanceName_", instanceName_);
     writer.writeTextElement("spirit:displayName", displayName_);
     writer.writeTextElement("spirit:description", desc_);
 
@@ -162,6 +162,61 @@ void SWInstance::write(QXmlStreamWriter& writer) const
     }
 
     writer.writeEndElement(); // kactus2:swInstance
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWInstance::isValid()
+//-----------------------------------------------------------------------------
+bool SWInstance::isValid(QStringList& errorList, QStringList const& instanceNames,
+                         QString const& parentId) const
+{
+    bool valid = true;
+    const QString thisId(QObject::tr("SW instance '%1'").arg(instanceName_));
+
+    if (instanceName_.isEmpty())
+    {
+        errorList.append(QObject::tr("No name specified for SW instance in %1").arg(parentId));
+        valid = false;
+    }
+
+    if (!componentRef_.isValid() && fileSetRef_.isEmpty())
+    {
+        errorList.append(QObject::tr("No valid VLNV reference or a file set reference "
+                                     "specified for %1").arg(thisId));
+        valid = false;
+    }
+
+    // Check whether the mapping is valid or not.
+    if (!instanceNames.contains(hwRef_))
+    {
+        errorList.append(QObject::tr("Component instance '%1' referenced "
+                                     "by %2 not found in %3").arg(hwRef_, thisId, parentId));
+        valid = false;
+    }
+
+    // Validate COM interfaces.
+    QStringList interfaceNames;
+
+    foreach (QSharedPointer<ComInterface> comIf, comInterfaces_)
+    {
+        if (interfaceNames.contains(comIf->getName()))
+        {
+            errorList.append(QObject::tr("%1 contains several COM interfaces with"
+                                         " name '%2'").arg(thisId, comIf->getName()));
+            valid = false;
+        }
+        else
+        {
+            interfaceNames.append(comIf->getName());
+        }
+
+        if (!comIf->isValid(errorList, thisId))
+        {
+            valid = false;
+        }
+    }
+
+    return valid;
 }
 
 //-----------------------------------------------------------------------------

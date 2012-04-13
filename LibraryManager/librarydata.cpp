@@ -780,7 +780,7 @@ void LibraryData::parseFile( const QString& filePath ) {
 
 QSharedPointer<LibraryComponent> LibraryData::getModel( const VLNV& vlnv ) {
 	if (!libraryItems_.contains(vlnv)) {
-		emit noticeMessage(tr("VLNV %1:%2:%3:%4 was not found in library").arg(
+		emit noticeMessage(tr("VLNV %1:%2:%3:%4 was not found in the library").arg(
 			vlnv.getVendor()).arg(
 			vlnv.getLibrary()).arg(
 			vlnv.getName()).arg(

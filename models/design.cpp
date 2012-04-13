@@ -11,15 +11,21 @@
 
 #include <QDebug>
 
-Design::Design(QDomDocument& doc):
-LibraryComponent(doc), 
-componentInstances_(),
-interconnections_(), 
-hierConnections_(),
-adHocConnections_(),
-portAdHocVisibilities_(),
-attributes_() {
-
+//-----------------------------------------------------------------------------
+// Function: Design::Design()
+//-----------------------------------------------------------------------------
+Design::Design(QDomDocument& doc)
+    : LibraryComponent(doc), 
+      componentInstances_(),
+      swInstances_(),
+      interconnections_(), 
+      hierConnections_(),
+      adHocConnections_(),
+      portAdHocVisibilities_(),
+      attributes_(),
+      apiDependencies_(),
+      comConnections_()
+{
 	LibraryComponent::vlnv_->setType(VLNV::DESIGN);
 
     QDomNodeList nodes = doc.childNodes();
@@ -34,357 +40,445 @@ attributes_() {
     for (int i = 0; i < nodes.size(); i++) {
         QDomNode node = nodes.at(i);
 
-        if (node.nodeName() == "spirit:componentInstances") {
+        if (node.nodeName() == "spirit:componentInstances")
+        {
             QDomNodeList instanceNodes = node.childNodes();
-            for (int i = 0; i < instanceNodes.size(); i++) {
+            for (int i = 0; i < instanceNodes.size(); i++)
+            {
                 QDomNode instanceNode = instanceNodes.at(i);
                 componentInstances_.append(ComponentInstance(instanceNode));
             }
-        } else if (node.nodeName() == "spirit:interconnections") {
+        }
+        else if (node.nodeName() == "spirit:interconnections")
+        {
             QDomNodeList interconnectionNodes = node.childNodes();
-            for (int i = 0; i < interconnectionNodes.size(); i++) {
+
+            for (int i = 0; i < interconnectionNodes.size(); i++)
+            {
                 QDomNode interconnectionNode = interconnectionNodes.at(i);
+
                 if (interconnectionNode.nodeName() == "spirit:interconnection")
                 {
                     interconnections_.append(Interconnection(interconnectionNode));
-                } else {
+                }
+                else
+                {
                     // TODO spirit::monitorInterconnection
                 }
             }
-        } else if (node.nodeName() == "spirit:adHocConnections") {
+        }
+        else if (node.nodeName() == "spirit:adHocConnections")
+        {
             QDomNodeList adHocNodes = node.childNodes();
-            for (int i = 0; i < adHocNodes.size(); i++) {
+
+            for (int i = 0; i < adHocNodes.size(); i++)
+            {
                 QDomNode adHocNode = adHocNodes.at(i);
                 adHocConnections_.append(AdHocConnection(adHocNode));
             }
-        } else if (node.nodeName() == "spirit:hierConnections") {
+        }
+        else if (node.nodeName() == "spirit:hierConnections")
+        {
             QDomNodeList hierConnectionNodes = node.childNodes();
-            for (int i = 0; i < hierConnectionNodes.size(); i++) {
+
+            for (int i = 0; i < hierConnectionNodes.size(); i++)
+            {
                 QDomNode hierConnectionNode = hierConnectionNodes.at(i);
                 hierConnections_.append(HierConnection(hierConnectionNode));
             }
-        } else if (node.nodeName() == "spirit:vendorExtensions") {
+        }
+        else if (node.nodeName() == "spirit:vendorExtensions")
+        {
             parseVendorExtensions(node);
         }
     }
 }
 
-Design::Design(const VLNV &vlnv):
-LibraryComponent(vlnv), 
-componentInstances_(),
-interconnections_(), 
-hierConnections_(),
-adHocConnections_(),
-portAdHocVisibilities_(),
-attributes_() {
+//-----------------------------------------------------------------------------
+// Function: Design::Design()
+//-----------------------------------------------------------------------------
+Design::Design(const VLNV &vlnv)
+    : LibraryComponent(vlnv), 
+      componentInstances_(),
+      swInstances_(),
+      interconnections_(), 
+      hierConnections_(),
+      adHocConnections_(),
+      portAdHocVisibilities_(),
+      attributes_(),
+      apiDependencies_(),
+      comConnections_()
+{
 	LibraryComponent::vlnv_->setType(VLNV::DESIGN);
 }
 
-Design::Design( const Design& other ):
-LibraryComponent(other),
-columns_(other.columns_),
-componentInstances_(other.componentInstances_),
-interconnections_(other.interconnections_),
-hierConnections_(other.hierConnections_),
-adHocConnections_(other.adHocConnections_),
-portAdHocVisibilities_(other.portAdHocVisibilities_),
-adHocPortPositions_(other.adHocPortPositions_),
-attributes_(other.attributes_) {
-
+//-----------------------------------------------------------------------------
+// Function: Design::Design()
+//-----------------------------------------------------------------------------
+Design::Design(Design const& other)
+    : LibraryComponent(other),
+      columns_(other.columns_),
+      componentInstances_(other.componentInstances_),
+      swInstances_(other.swInstances_),
+      interconnections_(other.interconnections_),
+      hierConnections_(other.hierConnections_),
+      adHocConnections_(other.adHocConnections_),
+      portAdHocVisibilities_(other.portAdHocVisibilities_),
+      adHocPortPositions_(other.adHocPortPositions_),
+      attributes_(other.attributes_),
+      apiDependencies_(other.apiDependencies_),
+      comConnections_(other.comConnections_)
+{
 }
 
-Design& Design::operator=( const Design& other ) {
+//-----------------------------------------------------------------------------
+// Function: Design::operator=()
+//-----------------------------------------------------------------------------
+Design& Design::operator=( const Design& other )
+{
 	if (this != &other) {
 		LibraryComponent::operator=(other);
 		
 		columns_ = other.columns_;
 		componentInstances_ = other.componentInstances_;
+        swInstances_ = other.swInstances_;
 		interconnections_ = other.interconnections_;
 		hierConnections_ = other.hierConnections_;
 		adHocConnections_ = other.adHocConnections_;
         portAdHocVisibilities_ = other.portAdHocVisibilities_;
         adHocPortPositions_ = other.adHocPortPositions_;
 		attributes_ = other.attributes_;
+        apiDependencies_ = other.apiDependencies_;
+        comConnections_ = other.comConnections_;
 	}
 	return *this;
 }
 
-Design::~Design() {
+//-----------------------------------------------------------------------------
+// Function: Design::~Design()
+//-----------------------------------------------------------------------------
+Design::~Design()
+{
 }
 
+//-----------------------------------------------------------------------------
+// Function: Design::close()
+//-----------------------------------------------------------------------------
 QSharedPointer<LibraryComponent> Design::clone() const {
 	return QSharedPointer<LibraryComponent>(new Design(*this));
 }
 
+//-----------------------------------------------------------------------------
+// Function: Design::write()
+//-----------------------------------------------------------------------------
 void Design::write(QFile& file)
 {
-	QXmlStreamWriter xmlWriter(&file);
+	QXmlStreamWriter writer(&file);
 
-	xmlWriter.setAutoFormatting(true);
-	xmlWriter.setAutoFormattingIndent(-1);
+	writer.setAutoFormatting(true);
+	writer.setAutoFormattingIndent(-1);
 
-	LibraryComponent::write(xmlWriter);
+	LibraryComponent::write(writer);
 
 	// set the attributes
 	setXMLNameSpaceAttributes(attributes_);
 
 	// write the attributes for the spirit:designConfiguration element
-	General::writeAttributes(xmlWriter, attributes_);
+	General::writeAttributes(writer, attributes_);
 
-	LibraryComponent::writeVLNV(xmlWriter);
+	LibraryComponent::writeVLNV(writer);
 
 	if (!componentInstances_.isEmpty()) {
-		xmlWriter.writeStartElement("spirit:componentInstances");
+		writer.writeStartElement("spirit:componentInstances");
 
 		foreach (ComponentInstance inst, componentInstances_) {
-			xmlWriter.writeStartElement("spirit:componentInstance");
+			writer.writeStartElement("spirit:componentInstance");
 
-			xmlWriter.writeTextElement("spirit:instanceName",
+			writer.writeTextElement("spirit:instanceName",
 				inst.instanceName);
-			xmlWriter.writeTextElement("spirit:displayName",
+			writer.writeTextElement("spirit:displayName",
 				inst.displayName);
-			xmlWriter.writeTextElement("spirit:description",
+			writer.writeTextElement("spirit:description",
 				inst.description);
-			xmlWriter.writeEmptyElement("spirit:componentRef");
-			General::writeVLNVAttributes(xmlWriter,
+			writer.writeEmptyElement("spirit:componentRef");
+			General::writeVLNVAttributes(writer,
 				&inst.componentRef);
 
 			QMapIterator<QString, QString> i(inst.configurableElementValues);
-			xmlWriter.writeStartElement("spirit:configurableElementValues");
+			writer.writeStartElement("spirit:configurableElementValues");
 			while (i.hasNext()) {
 				i.next();
 
-				xmlWriter.writeStartElement("spirit:configurableElementValue");
-				xmlWriter.writeAttribute("spirit:referenceId", i.key());
-				xmlWriter.writeCharacters(i.value());
-				xmlWriter.writeEndElement();
+				writer.writeStartElement("spirit:configurableElementValue");
+				writer.writeAttribute("spirit:referenceId", i.key());
+				writer.writeCharacters(i.value());
+				writer.writeEndElement();
 			}
 
-			xmlWriter.writeEndElement();
+			writer.writeEndElement();
 
 			// Write custom data to vendor extensions.
-			xmlWriter.writeStartElement("spirit:vendorExtensions");
+			writer.writeStartElement("spirit:vendorExtensions");
 
 			// Write the component position.
-			writePosition(xmlWriter, inst.position);
+			writePosition(writer, inst.position);
 
 			// Write the port positions.
 			QMapIterator<QString, QPointF> itrPortPos(inst.portPositions);
-			xmlWriter.writeStartElement("kactus2:portPositions");
+			writer.writeStartElement("kactus2:portPositions");
 
 			while (itrPortPos.hasNext())
 			{
 				itrPortPos.next();
 
-				xmlWriter.writeStartElement("kactus2:portPosition");
-				xmlWriter.writeAttribute("kactus2:busRef", itrPortPos.key());
-				writePosition(xmlWriter, itrPortPos.value());
-				xmlWriter.writeEndElement();
+				writer.writeStartElement("kactus2:portPosition");
+				writer.writeAttribute("kactus2:busRef", itrPortPos.key());
+				writePosition(writer, itrPortPos.value());
+				writer.writeEndElement();
 			}
 
-			xmlWriter.writeEndElement(); // kactus2:portPositions
+			writer.writeEndElement(); // kactus2:portPositions
 
             // Write the port ad-hoc visibilities.
             QMap<QString, bool> const& adHocVisibilities = inst.portAdHocVisibilities;
             QMap<QString, QPointF> const& adHocPortPositions = inst.adHocPortPositions;
-            writeAdHocVisibilities(xmlWriter, adHocVisibilities, adHocPortPositions);
+            writeAdHocVisibilities(writer, adHocVisibilities, adHocPortPositions);
 
 			// Write the MCAPI node ID if specified.
 			if (inst.mcapiNodeID != -1)
 			{
-				xmlWriter.writeEmptyElement("kactus2:mcapiNodeId");
-				xmlWriter.writeAttribute("value", QString::number(inst.mcapiNodeID));
+				writer.writeEmptyElement("kactus2:mcapiNodeId");
+				writer.writeAttribute("value", QString::number(inst.mcapiNodeID));
 			}
 
 			if (inst.endpointsExpanded)
 			{
-				xmlWriter.writeEmptyElement("kactus2:endpointsExpanded");
+				writer.writeEmptyElement("kactus2:endpointsExpanded");
 			}
 
 			if (inst.imported)
 			{
-				xmlWriter.writeEmptyElement("kactus2:imported");
+				writer.writeEmptyElement("kactus2:imported");
 			}
 
-			xmlWriter.writeEndElement(); // spirit:vendorExtensions
-			xmlWriter.writeEndElement(); // spirit:componentInstance
+			writer.writeEndElement(); // spirit:vendorExtensions
+			writer.writeEndElement(); // spirit:componentInstance
 		}
 
-		xmlWriter.writeEndElement();
+		writer.writeEndElement();
 	}
 
 	if (!interconnections_.isEmpty()) {
-		xmlWriter.writeStartElement("spirit:interconnections");
+		writer.writeStartElement("spirit:interconnections");
 
 		foreach (Interconnection inter, interconnections_) {
-			xmlWriter.writeStartElement("spirit:interconnection");
+			writer.writeStartElement("spirit:interconnection");
 
-			xmlWriter.writeTextElement("spirit:name",
+			writer.writeTextElement("spirit:name",
 				inter.name);
-			xmlWriter.writeTextElement("spirit:displayName",
+			writer.writeTextElement("spirit:displayName",
 				inter.displayName);
-			xmlWriter.writeTextElement("spirit:description",
+			writer.writeTextElement("spirit:description",
 				inter.description);
 
-			xmlWriter.writeEmptyElement("spirit:activeInterface");
-			xmlWriter.writeAttribute("spirit:componentRef",
+			writer.writeEmptyElement("spirit:activeInterface");
+			writer.writeAttribute("spirit:componentRef",
 				inter.interface1.componentRef);
-			xmlWriter.writeAttribute("spirit:busRef",
+			writer.writeAttribute("spirit:busRef",
 				inter.interface1.busRef);
 
-			xmlWriter.writeEmptyElement("spirit:activeInterface");
-			xmlWriter.writeAttribute("spirit:componentRef",
+			writer.writeEmptyElement("spirit:activeInterface");
+			writer.writeAttribute("spirit:componentRef",
 				inter.interface2.componentRef);
-			xmlWriter.writeAttribute("spirit:busRef",
+			writer.writeAttribute("spirit:busRef",
 				inter.interface2.busRef);
 
-			xmlWriter.writeEndElement();
+			writer.writeEndElement();
 		}
 
-		xmlWriter.writeEndElement();
+		writer.writeEndElement();
 	}
 
 	if (!hierConnections_.isEmpty()) {
-		xmlWriter.writeStartElement("spirit:hierConnections");
+		writer.writeStartElement("spirit:hierConnections");
 
 		foreach (HierConnection hier, hierConnections_) {
-			xmlWriter.writeStartElement("spirit:hierConnection");
-			xmlWriter.writeAttribute("spirit:interfaceRef",
+			writer.writeStartElement("spirit:hierConnection");
+			writer.writeAttribute("spirit:interfaceRef",
 				hier.interfaceRef);
 
-			xmlWriter.writeEmptyElement("spirit:interface");
-			xmlWriter.writeAttribute("spirit:componentRef",
+			writer.writeEmptyElement("spirit:interface");
+			writer.writeAttribute("spirit:componentRef",
 				hier.interface_.componentRef);
-			xmlWriter.writeAttribute("spirit:busRef",
+			writer.writeAttribute("spirit:busRef",
 				hier.interface_.busRef);
 
 			// Write custom data to vendor extensions.
-			xmlWriter.writeStartElement("spirit:vendorExtensions");
-			writePosition(xmlWriter, hier.position);
-			writeDirection(xmlWriter, hier.direction);
+			writer.writeStartElement("spirit:vendorExtensions");
+			writePosition(writer, hier.position);
+			writeDirection(writer, hier.direction);
 
 			if (!hier.route.empty())
 			{
-				xmlWriter.writeStartElement("kactus2:route");
+				writer.writeStartElement("kactus2:route");
                 
                 if (hier.offPage)
                 {
-                    xmlWriter.writeAttribute("kactus2:offPage", "true");
+                    writer.writeAttribute("kactus2:offPage", "true");
                 }
                 else
                 {
-                    xmlWriter.writeAttribute("kactus2:offPage", "false");
+                    writer.writeAttribute("kactus2:offPage", "false");
                 }
 
 				foreach (QPointF const& point, hier.route)
 				{
-					writePosition(xmlWriter, point);
+					writePosition(writer, point);
 				}
 
-				xmlWriter.writeEndElement();
+				writer.writeEndElement();
 			}
 
-			xmlWriter.writeEndElement();
+			writer.writeEndElement();
 
-			xmlWriter.writeEndElement();
+			writer.writeEndElement();
 		}
 
-		xmlWriter.writeEndElement();
+		writer.writeEndElement();
 	}
 
 	if (!adHocConnections_.isEmpty()) {
-		xmlWriter.writeStartElement("spirit:adHocConnections");
+		writer.writeStartElement("spirit:adHocConnections");
 
 		foreach (AdHocConnection adhoc, adHocConnections_)
         {
-			xmlWriter.writeStartElement("spirit:adHocConnection");
+			writer.writeStartElement("spirit:adHocConnection");
 
-			xmlWriter.writeTextElement("spirit:name", adhoc.name);
-			xmlWriter.writeTextElement("spirit:displayName", adhoc.displayName);
-			xmlWriter.writeTextElement("spirit:description", adhoc.description);
+			writer.writeTextElement("spirit:name", adhoc.name);
+			writer.writeTextElement("spirit:displayName", adhoc.displayName);
+			writer.writeTextElement("spirit:description", adhoc.description);
 
 			foreach (PortRef portRef, adhoc.internalPortReferences)
             {
-				xmlWriter.writeEmptyElement("spirit:internalPortReference");
+				writer.writeEmptyElement("spirit:internalPortReference");
 
-				xmlWriter.writeAttribute("spirit:componentRef", portRef.componentRef);
-				xmlWriter.writeAttribute("spirit:portRef", portRef.portRef);
+				writer.writeAttribute("spirit:componentRef", portRef.componentRef);
+				writer.writeAttribute("spirit:portRef", portRef.portRef);
 
                 if (portRef.left >= 0)
                 {
-                    xmlWriter.writeAttribute("spirit:left", QString::number(portRef.left));
+                    writer.writeAttribute("spirit:left", QString::number(portRef.left));
                 }
 
                 if (portRef.right >= 0)
                 {
-                    xmlWriter.writeAttribute("spirit:right", QString::number(portRef.right));
+                    writer.writeAttribute("spirit:right", QString::number(portRef.right));
                 }
 			}
 
 			foreach (PortRef portRef, adhoc.externalPortReferences)
             {
-				xmlWriter.writeEmptyElement("spirit:externalPortReference");
+				writer.writeEmptyElement("spirit:externalPortReference");
 
-				xmlWriter.writeAttribute("spirit:portRef", portRef.portRef);
+				writer.writeAttribute("spirit:portRef", portRef.portRef);
 
                 if (portRef.left >= 0)
                 {
-                    xmlWriter.writeAttribute("spirit:left", QString::number(portRef.left));
+                    writer.writeAttribute("spirit:left", QString::number(portRef.left));
                 }
 
                 if (portRef.right >= 0)
                 {
-                    xmlWriter.writeAttribute("spirit:right", QString::number(portRef.right));
+                    writer.writeAttribute("spirit:right", QString::number(portRef.right));
                 }
 			}
 
-			xmlWriter.writeEndElement();
+			writer.writeEndElement();
 		}
 
-		xmlWriter.writeEndElement();
+		writer.writeEndElement();
 	}
 
-	xmlWriter.writeStartElement("spirit:vendorExtensions");
+	writer.writeStartElement("spirit:vendorExtensions");
+
+    // Write SW instances if any.
+    if (!swInstances_.empty())
+    {
+        writer.writeStartElement("kactus2:swInstances");
+
+        foreach (SWInstance const& instance, swInstances_)
+        {
+            instance.write(writer);
+        }
+        
+        writer.writeEndElement(); // kactus2:swInstances
+    }
+
+    // Write API dependencies if any.
+    if (!apiDependencies_.empty())
+    {
+        writer.writeStartElement("kactus2:apiDependencies");
+
+        foreach (ApiDependency const& dependency, apiDependencies_)
+        {
+            dependency.write(writer);
+        }
+
+        writer.writeEndElement(); // kactus2:apiDependencies
+    }
+
+    // Write communication connections if any.
+    if (!comConnections_.empty())
+    {
+        writer.writeStartElement("kactus2:comConnections");
+
+        foreach (ComConnection const& conn, comConnections_)
+        {
+            conn.write(writer);
+        }
+
+        writer.writeEndElement(); // kactus2:comConnections
+    }
 
 	if (!columns_.isEmpty())
 	{
-		xmlWriter.writeStartElement("kactus2:columnLayout");
+		writer.writeStartElement("kactus2:columnLayout");
 
 		foreach (ColumnDesc const& columnDesc, columns_)
 		{
-			xmlWriter.writeEmptyElement("kactus2:column");
-			xmlWriter.writeAttribute("name", columnDesc.name);
-			xmlWriter.writeAttribute("contentType", QString::number(columnDesc.contentType));
-			xmlWriter.writeAttribute("allowedItems", QString::number(columnDesc.allowedItems));
+			writer.writeEmptyElement("kactus2:column");
+			writer.writeAttribute("name", columnDesc.name);
+			writer.writeAttribute("contentType", QString::number(columnDesc.contentType));
+			writer.writeAttribute("allowedItems", QString::number(columnDesc.allowedItems));
 		}
 
-		xmlWriter.writeEndElement(); // kactus2:columnLayout
+		writer.writeEndElement(); // kactus2:columnLayout
 	}
 
-    xmlWriter.writeStartElement("kactus2:routes");
+    writer.writeStartElement("kactus2:routes");
 
     foreach (Interconnection const& conn, interconnections_)
     {
         if (!conn.route.empty())
         {
-            xmlWriter.writeStartElement("kactus2:route");
-            xmlWriter.writeAttribute("kactus2:connRef", conn.name);
+            writer.writeStartElement("kactus2:route");
+            writer.writeAttribute("kactus2:connRef", conn.name);
 
             if (conn.offPage)
             {
-                xmlWriter.writeAttribute("kactus2:offPage", "true");
+                writer.writeAttribute("kactus2:offPage", "true");
             }
             else
             {
-                xmlWriter.writeAttribute("kactus2:offPage", "false");
+                writer.writeAttribute("kactus2:offPage", "false");
             }
 
             foreach (QPointF const& point, conn.route)
             {
-                writePosition(xmlWriter, point);
+                writePosition(writer, point);
             }
 
-            xmlWriter.writeEndElement();
+            writer.writeEndElement();
         }
     }
 
@@ -392,36 +486,36 @@ void Design::write(QFile& file)
     {
         if (!conn.route.empty())
         {
-            xmlWriter.writeStartElement("kactus2:route");
-            xmlWriter.writeAttribute("kactus2:connRef", conn.name);
+            writer.writeStartElement("kactus2:route");
+            writer.writeAttribute("kactus2:connRef", conn.name);
 
             if (conn.offPage)
             {
-                xmlWriter.writeAttribute("kactus2:offPage", "true");
+                writer.writeAttribute("kactus2:offPage", "true");
             }
             else
             {
-                xmlWriter.writeAttribute("kactus2:offPage", "false");
+                writer.writeAttribute("kactus2:offPage", "false");
             }
 
             foreach (QPointF const& point, conn.route)
             {
-                writePosition(xmlWriter, point);
+                writePosition(writer, point);
             }
 
-            xmlWriter.writeEndElement();
+            writer.writeEndElement();
         }
     }
 
-    xmlWriter.writeEndElement(); // kactus2:routes
+    writer.writeEndElement(); // kactus2:routes
 
     // Write the top-level component's port ad-hoc visibilities.
-    writeAdHocVisibilities(xmlWriter, portAdHocVisibilities_, adHocPortPositions_);
+    writeAdHocVisibilities(writer, portAdHocVisibilities_, adHocPortPositions_);
 
-	xmlWriter.writeEndElement(); // kactus2:vendorExtensions
+	writer.writeEndElement(); // kactus2:vendorExtensions
 
-	xmlWriter.writeEndElement();
-	xmlWriter.writeEndDocument();
+	writer.writeEndElement();
+	writer.writeEndDocument();
 }
 
 bool Design::isValid( QStringList& errorList ) const {
@@ -457,13 +551,34 @@ bool Design::isValid( QStringList& errorList ) const {
 		}
 	}
 
+    QStringList swInstanceNames;
+
+    foreach (SWInstance const& instance, swInstances_)
+    {
+        if (swInstanceNames.contains(instance.getInstanceName()))
+        {
+            errorList.append(QObject::tr("Design contains several SW instances "
+                                         "with name %1").arg(instance.getInstanceName()));
+            valid = false;
+        }
+        else
+        {
+            swInstanceNames.append(instance.getInstanceName());
+        }
+
+        if (!instance.isValid(errorList, instanceNames, thisIdentifier))
+        {
+            valid = false;
+        }
+    }
+
 	QStringList interconnectionNames;
 	foreach (Design::Interconnection interconnection, interconnections_) {
 		
 		// if there are several interconnections with same name
 		if (interconnectionNames.contains(interconnection.name)) {
 			errorList.append(QObject::tr("Design contains several interconnections"
-				" with name %1").arg(interconnection.name));
+				" with name '%1'").arg(interconnection.name));
 			valid = false;
 		}
 		else {
@@ -474,6 +589,28 @@ bool Design::isValid( QStringList& errorList ) const {
 			valid = false;
 		}
 	}
+
+    QStringList comConnectionNames;
+    QStringList allInstanceNames = instanceNames + swInstanceNames;
+
+    foreach (ComConnection const& conn, comConnections_)
+    {
+        if (comConnectionNames.contains(conn.getName()))
+        {
+            errorList.append(QObject::tr("Design contains several COM connections "
+                                         "with name '%1'").arg(conn.getName()));
+            valid = false;
+        }
+        else
+        {
+            comConnectionNames.append(conn.getName());
+        }
+
+        if (!conn.isValid(errorList, allInstanceNames, thisIdentifier))
+        {
+            valid = false;
+        }
+    }
 
 	QStringList adHocNames;
 	foreach (Design::AdHocConnection adHoc, adHocConnections_) {
@@ -730,6 +867,42 @@ void Design::parseVendorExtensions(QDomNode &node)
                 }
             }
         }
+        else if (childNode.nodeName() == "kactus2:swInstances")
+        {
+            for (int j = 0; j < childNode.childNodes().count(); ++j)
+            {
+                QDomNode swNode = childNode.childNodes().at(j);
+
+                if (swNode.nodeName() == "kactus2:swInstance")
+                {
+                    swInstances_.append(SWInstance(swNode));
+                }
+            }
+        }
+        else if (childNode.nodeName() == "kactus2:apiDependencies")
+        {
+            for (int j = 0; j < childNode.childNodes().count(); ++j)
+            {
+                QDomNode apiNode = childNode.childNodes().at(j);
+
+                if (apiNode.nodeName() == "kactus2:apiDependency")
+                {
+                    apiDependencies_.append(ApiDependency(apiNode));
+                }
+            }
+        }
+        else if (childNode.nodeName() == "kactus2:comConnections")
+        {
+            for (int j = 0; j < childNode.childNodes().count(); ++j)
+            {
+                QDomNode comNode = childNode.childNodes().at(j);
+
+                if (comNode.nodeName() == "kactus2:comConnection")
+                {
+                    comConnections_.append(ComConnection(comNode));
+                }
+            }
+        }
 	}
 }
 
@@ -752,7 +925,7 @@ QMap<QString, QPointF> const& Design::getAdHocPortPositions() const
 //-----------------------------------------------------------------------------
 // Function: getColumns()
 //-----------------------------------------------------------------------------
-QList<Design::ColumnDesc> const& Design::getColumns() const
+QList<ColumnDesc> const& Design::getColumns() const
 {
 	return columns_;
 }
@@ -845,41 +1018,35 @@ void Design::writeAdHocVisibilities(QXmlStreamWriter& xmlWriter,
 }
 
 //-----------------------------------------------------------------------------
-// Function: ColumnDesc()
+// Function: Design::setApiDependencies()
 //-----------------------------------------------------------------------------
-Design::ColumnDesc::ColumnDesc(const QDomNode& node) : name(), contentType(COLUMN_CONTENT_IO),
-                                                 allowedItems(CIT_NONE)
+void Design::setApiDependencies(QList<ApiDependency> const& apiDependencies)
 {
-    // Read the column description data from the attributes.
-    QDomNamedNodeMap attributeMap =  node.attributes();
-
-    name = attributeMap.namedItem("name").nodeValue();
-    contentType = static_cast<ColumnContentType>(attributeMap.namedItem("contentType").nodeValue().toInt());
-    allowedItems = attributeMap.namedItem("allowedItems").nodeValue().toInt();
+    apiDependencies_ = apiDependencies;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ColumnDesc()
+// Function: Design::setComConnections()
 //-----------------------------------------------------------------------------
-Design::ColumnDesc::ColumnDesc(QString const& name, ColumnContentType contentType,
-                               unsigned int allowedItems) : name(name), contentType(contentType),
-                                                            allowedItems(allowedItems)
+void Design::setComConnections(QList<ComConnection> const& comConnections)
 {
+    comConnections_ = comConnections;
 }
 
-Design::ColumnDesc::ColumnDesc( const ColumnDesc& other ):
-name(other.name),
-contentType(other.contentType),
-allowedItems(other.allowedItems) {
+//-----------------------------------------------------------------------------
+// Function: Design::getSWInstances()
+//-----------------------------------------------------------------------------
+QList<SWInstance> const& Design::getSWInstances() const
+{
+    return swInstances_;
 }
 
-Design::ColumnDesc& Design::ColumnDesc::operator=( const ColumnDesc& other ) {
-	if (this != &other) {
-		name = other.name;
-		contentType = other.contentType;
-		allowedItems = other.allowedItems;
-	}
-	return *this;
+//-----------------------------------------------------------------------------
+// Function: Design::setSWInstances()
+//-----------------------------------------------------------------------------
+void Design::setSWInstances(QList<SWInstance> const& swInstances)
+{
+    swInstances_ = swInstances;
 }
 
 Design::ComponentInstance::ComponentInstance(

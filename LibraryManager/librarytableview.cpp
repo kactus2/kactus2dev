@@ -100,7 +100,7 @@ void LibraryTableView::contextMenuEvent(QContextMenuEvent* event) {
 	// parse the model
 	QSharedPointer<LibraryComponent> libComp = handler_->getModel(*vlnv);
 	if (!libComp) {
-		emit errorMessage(tr("Item not found in library"));
+		emit errorMessage(tr("Item not found in the library"));
 		return;
 	}
 

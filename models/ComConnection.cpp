@@ -11,6 +11,8 @@
 
 #include "ComConnection.h"
 
+#include <QStringList>
+
 //-----------------------------------------------------------------------------
 // Function: ComConnection::ComConnection()
 //-----------------------------------------------------------------------------
@@ -103,6 +105,63 @@ void ComConnection::write(QXmlStreamWriter& writer) const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComConnection::isValid()
+//-----------------------------------------------------------------------------
+bool ComConnection::isValid(QStringList& errorList, QStringList const& instanceNames,
+                            QString const& parentId) const
+{
+    bool valid = true;
+    QString const thisId(QObject::tr("COM connection in %1").arg(parentId));
+
+    if (name_.isEmpty())
+    {
+        errorList.append(QObject::tr("No name specified for COM connection in %1").arg(parentId));
+        valid = false;
+    }
+
+    // Validate the interface references.
+    if (interface1_.componentRef.isEmpty())
+    {
+        errorList.append(QObject::tr("No component reference set for active COM interface in %1").arg(thisId));
+        valid = false;
+    }
+    else if (!instanceNames.contains(interface1_.componentRef))
+    {
+        errorList.append(QObject::tr("Active COM interface in %1 contains a reference "
+                                     "to component instance '%2' that does not exist.").arg(
+                                        thisId).arg(interface1_.componentRef));
+        valid = false;
+    }
+
+    if (interface1_.comRef.isEmpty())
+    {
+        errorList.append(QObject::tr("No COM reference set for active COM interface in %1").arg(thisId));
+        valid = false;
+    }
+
+    if (interface2_.componentRef.isEmpty())
+    {
+        errorList.append(QObject::tr("No component reference set for active COM interface in %1").arg(thisId));
+        valid = false;
+    }
+    else if (!instanceNames.contains(interface2_.componentRef))
+    {
+        errorList.append(QObject::tr("Active COM interface in %1 contains a reference "
+                                     "to component instance '%2' that does not exist.").arg(
+                                        thisId).arg(interface2_.componentRef));
+        valid = false;
+    }
+
+    if (interface2_.comRef.isEmpty())
+    {
+        errorList.append(QObject::tr("No COM reference set for active COM interface in %1").arg(thisId));
+        valid = false;
+    }
+
+    return valid;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComConnection::setName()
 //-----------------------------------------------------------------------------
 void ComConnection::setName(QString const& name)
@@ -124,6 +183,22 @@ void ComConnection::setDisplayName(QString const& displayName)
 void ComConnection::setDescription(QString const& description)
 {
     desc_ = description;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComConnection::setInterface1()
+//-----------------------------------------------------------------------------
+void ComConnection::setInterface1(ComInterfaceRef const& ref)
+{
+    interface1_ = ref;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComConnection::setInterface2()
+//-----------------------------------------------------------------------------
+void ComConnection::setInterface2(ComInterfaceRef const& ref)
+{
+    interface2_ = ref;
 }
 
 //-----------------------------------------------------------------------------
@@ -151,6 +226,22 @@ QString const& ComConnection::getDescription() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComConnection::getInterface1()
+//-----------------------------------------------------------------------------
+ComInterfaceRef const& ComConnection::getInterface1() const
+{
+    return interface1_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComConnection::getInterface2()
+//-----------------------------------------------------------------------------
+ComInterfaceRef const& ComConnection::getInterface2() const
+{
+    return interface2_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComConnection::operator=()
 //-----------------------------------------------------------------------------
 ComConnection& ComConnection::operator=(ComConnection const& rhs)
@@ -166,3 +257,4 @@ ComConnection& ComConnection::operator=(ComConnection const& rhs)
 
     return *this;
 }
+

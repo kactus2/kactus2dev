@@ -100,7 +100,7 @@ void HierarchyItem::parseComponent( const VLNV& vlnv ) {
 
 		// make sure the library contains the vlnv
 		if (!handler_->contains(reference)) {
-			emit errorMessage(tr("VLNV %1:%2:%3:%4 was not found in library").arg(
+			emit errorMessage(tr("VLNV %1:%2:%3:%4 was not found in the library").arg(
 				reference.getVendor()).arg(
 				reference.getLibrary()).arg(
 				reference.getName()).arg(
@@ -124,7 +124,7 @@ void HierarchyItem::parseComponent( const VLNV& vlnv ) {
 
 			if (!handler_->contains(designVLNV) || 
 				handler_->getDocumentType(designVLNV) != VLNV::DESIGN) {
-					emit errorMessage(tr("Design %1:%2:%3:%4 was not found in library").arg(
+					emit errorMessage(tr("Design %1:%2:%3:%4 was not found in the library").arg(
 						reference.getVendor()).arg(
 						reference.getLibrary()).arg(
 						reference.getName()).arg(
@@ -163,7 +163,7 @@ void HierarchyItem::parseComponent( const VLNV& vlnv ) {
 		foreach (VLNV compVLNV, components) {
 
 			if (!handler_->contains(compVLNV)) {
-				emit errorMessage(tr("VLNV %1:%2:%3:%4 was not found in library").arg(
+				emit errorMessage(tr("VLNV %1:%2:%3:%4 was not found in the library").arg(
 					compVLNV.getVendor()).arg(
 					compVLNV.getLibrary()).arg(
 					compVLNV.getName()).arg(

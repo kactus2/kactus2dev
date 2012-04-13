@@ -57,8 +57,8 @@ public:
     /*!
      *  Returns true if the contents of the COM interface are valid.
      *
-     *      @param [in/out] errorList Error list which is appended with errors if found while validating.
-     *      @param [in]     parentId  The identifier of the containing component.
+     *      @param [out] errorList Error list which is appended with errors if found while validating.
+     *      @param [in]  parentId  The identifier of the containing component.
      */
     bool isValid(QStringList& errorList, QString const& parentId) const;
 

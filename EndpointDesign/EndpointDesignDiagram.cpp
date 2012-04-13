@@ -155,7 +155,7 @@ bool EndpointDesignDiagram::setDesign(QSharedPointer<Component> system)
     }
     else
     {
-        foreach(Design::ColumnDesc desc, design->getColumns())
+        foreach(ColumnDesc desc, design->getColumns())
         {
             layout_->addColumn(desc.name);
         }
@@ -1007,7 +1007,7 @@ QSharedPointer<Design> EndpointDesignDiagram::createDesign(VLNV const& vlnv)
 
     QList<Design::ComponentInstance> instances;
     QList<Design::Interconnection> interconnections;
-    QList<Design::ColumnDesc> columns;
+    QList<ColumnDesc> columns;
 
     foreach (QGraphicsItem *item, items())
     {
@@ -1039,7 +1039,7 @@ QSharedPointer<Design> EndpointDesignDiagram::createDesign(VLNV const& vlnv)
 
     foreach (SystemColumn* column, layout_->getColumns())
     {
-        columns.append(Design::ColumnDesc(column->getName(), COLUMN_CONTENT_CUSTOM, 0));
+        columns.append(ColumnDesc(column->getName(), COLUMN_CONTENT_CUSTOM, 0));
     }
 
     design->setComponentInstances(instances);

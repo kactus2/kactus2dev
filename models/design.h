@@ -1,6 +1,11 @@
 #ifndef DESIGN_H
 #define DESIGN_H
 
+#include "SWInstance.h"
+#include "ApiDependency.h"
+#include "ComConnection.h"
+#include "ColumnDesc.h"
+
 #include "librarycomponent.h"
 #include <LibraryManager/vlnv.h>
 #include <common/ColumnTypes.h>
@@ -23,37 +28,7 @@
 class Design: public LibraryComponent {
 
 public:
-    //-----------------------------------------------------------------------------
-    //! ColumnDesc structure which describes the kactus2:column element
-    //! in an IP-XACT document.
-    //-----------------------------------------------------------------------------
-    struct ColumnDesc
-    {
-        QString name;                       //!< The name of the column.
-        ColumnContentType contentType;      //!< The content type for the column.
-        unsigned int allowedItems;          //!< The allowed items for the column.
-
-        /*!
-         *  Constructor which parses the column description from an XML node.
-         *
-         *      @param [in] node A QDomNode from where the information is parsed.
-         */
-        ColumnDesc(const QDomNode& node);
-
-        /*!
-         *  Convenience constructor.
-         */
-        ColumnDesc(QString const& name, ColumnContentType contentType,
-                   unsigned int allowedItems);
-
-		//! \brief Copy constructor
-		ColumnDesc(const ColumnDesc& other);
-
-		//! \brief Assignment operator
-		ColumnDesc& operator=(const ColumnDesc& other);
-    };
-
-	/*! \brief Describes the spirit:componentInstance element in an
+    /*! \brief Describes the spirit:componentInstance element in an
 	* IP-XACT document
 	*
 	* ComponentInstance holds component instance's configuration
@@ -676,6 +651,11 @@ public:
 	*/
 	const QList<ComponentInstance> &getComponentInstances();
 
+    /*!
+     *  Returns a list of SW instances in the design.
+     */
+    QList<SWInstance> const& getSWInstances() const;
+
 	/*! \brief Get list of the interconnections
 	*
 	* \return QList containing the interconnections
@@ -716,6 +696,13 @@ public:
 	*/
 	void setComponentInstances(QList<ComponentInstance> const& componentInstances);
 
+    /*!
+     *  Sets the SW instances for the design.
+     *
+     *      @param [in] swInstances A list of SW instances.
+     */
+    void setSWInstances(QList<SWInstance> const& swInstances);
+
 	/*! \brief Set the interconnections of this design
 	*
 	* \param interconnections QList containing the interconnections.
@@ -734,6 +721,20 @@ public:
 	* \param adHocConnections QList containing the ad-hoc connections.
 	*/
 	void setAdHocConnections(QList<AdHocConnection> const& adHocConnections);
+
+    /*!
+     *  Sets the API dependencies for the design.
+     *
+     *      @param [in] apiDependencies A list of API dependencies.
+     */
+    void setApiDependencies(QList<ApiDependency> const& apiDependencies);
+
+    /*!
+     *  Sets the COM connections for the design.
+     *
+     *      @param [in] comConnections A list of COM connections.
+     */
+    void setComConnections(QList<ComConnection> const& comConnections);
 
     /*!
      *  Sets the port ad-hoc visibilities for the top-level component in this design.
@@ -758,6 +759,22 @@ public:
 	*/
 	virtual const QList<VLNV> getDependentVLNVs() const;
 
+    /*! \brief Get the VLNVs of the components referenced by this design
+	 *
+	 * \return QList<VLNV> contains the references to the components referenced
+	 * within this design.
+	*/
+	QList<VLNV> getComponents() const;
+
+private:
+
+    /*!
+     *  Parses the vendor extensions of the design from a QDomNode.
+     *
+     *      @param [in] node The QDomNode from where to parse the information.
+     */
+    void parseVendorExtensions(QDomNode& node);
+
     /*!
      *  Writes a kactus2:position to the XML stream.
      */
@@ -776,24 +793,15 @@ public:
                                 QMap<QString, bool> const& adHocVisibilities,
                                 QMap<QString, QPointF> const& adHocPortPositions);
 
-	/*! \brief Get the VLNVs of the components referenced by this design
-	 *
-	 * \return QList<VLNV> contains the references to the components referenced
-	 * within this design.
-	*/
-	QList<VLNV> getComponents() const;
-
-private:
-
-    /*!
-     *  Parses the vendor extensions of the design from a QDomNode.
-     *
-     *      @param [in] node The QDomNode from where to parse the information.
-     */
-    void parseVendorExtensions(QDomNode& node);
-
     QList<ColumnDesc> columns_;
+
+    //! The HW component instances.
     QList<ComponentInstance> componentInstances_;
+
+    //! The SW component instances (extension).
+    QList<SWInstance> swInstances_;
+
+
     QList<Interconnection> interconnections_;
     QList<HierConnection> hierConnections_;
     QList<AdHocConnection> adHocConnections_;
@@ -803,6 +811,12 @@ private:
     //! The port positions for ad-hoc ports.
     QMap<QString, QPointF> adHocPortPositions_;
 	QMap<QString, QString> attributes_;
+
+    //! The API dependencies (extension).
+    QList<ApiDependency> apiDependencies_;
+
+    //! The COM connections (extension).
+    QList<ComConnection> comConnections_;
 };
 
 #endif

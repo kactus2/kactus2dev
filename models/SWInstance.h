@@ -60,6 +60,16 @@ public:
     void write(QXmlStreamWriter& writer) const;
 
     /*!
+     *  Returns true if the SW instance is in a valid state.
+     *
+     *      @param [out] errorList      Error list which is appended with errors if found while validating.
+     *      @param [in]  instanceNames  The list of HW instance names in the containing design.
+     *      @param [in]  parentId       The identifier of the containing design.
+     */
+    bool isValid(QStringList& errorList, QStringList const& instanceNames,
+                 QString const& parentId) const;
+
+    /*!
      *  Sets the name of the SW instance.
      *
      *      @param [in] name The name to set.
