@@ -28,6 +28,8 @@
 
 // implemented classes that only need to be declared
 class BusInterface;
+class ComInterface;
+class ApiInterface;
 class ComponentGenerator;
 class Cpu;
 class FileSet;
@@ -778,6 +780,79 @@ public:
 	*/
 	bool hasInterface(const QString& interfaceName) const;
 
+    /*!
+     *  Returns the COM interfaces.
+     */
+    QMap< QString, QSharedPointer<ComInterface> > const& getComInterfaces() const;
+
+    /*!
+     *  Returns the names of the COM interfaces.
+     */
+    QStringList getComInterfaceNames() const;
+
+    /*!
+     *  Finds the COM interface with the given name.
+     *
+     *      @param [in] name The name of the COM interface.
+     *
+     *      @return The COM interface, or 0 if there is no COM interface with the given name.
+     */
+    ComInterface* getComInterface(QString const& name);
+
+    /*!
+     *  Adds a new COM interface to the component.
+     *
+     *      @param [in] comInterface The COM interface to add.
+     *
+     *      @return True, if the COM interface was added successfully. False, if a COM interface
+     *              with the same name already exists.
+     */
+    bool addComInterface(QSharedPointer<ComInterface> comInterface);
+
+    /*!
+     *  Removes a COM interface from the component.
+     *
+     *      @param [in] name The name of the COM interface to remove.
+     */
+    void removeComInterface(QString const& name);
+
+    /*!
+     *  Returns the API interfaces.
+     */
+    QMap< QString, QSharedPointer<ApiInterface> > const& getApiInterfaces() const;
+
+    /*!
+     *  Returns the names of the API interfaces.
+     */
+    QStringList getApiInterfaceNames() const;
+
+    /*!
+     *  Finds the API interface with the given name.
+     *
+     *      @param [in] name The name of the API interface.
+     *
+     *      @return The API interface, or 0 if there is no API interface with the given name.
+     */
+    ApiInterface* getApiInterface(QString const& name);
+
+    /*!
+     *  Adds a new API interface to the component.
+     *
+     *      @param [in] apiInterface The API interface to add.
+     *
+     *      @return True, if the API interface was added successfully. False, if a API interface
+     *              with the same name already exists.
+     */
+    bool addApiInterface(QSharedPointer<ApiInterface> apiInterface);
+
+    /*!
+     *  Removes a API interface from the component.
+     *
+     *      @param [in] name The name of the API interface to remove.
+     */
+    void removeApiInterface(QString const& name);
+
+
 	/*! \brief Find the interface that contains the physical port and return it's abs def vlnv and logical name.
 	 *
 	 * \param physicalPortName The name of the physical port that's interface is searched.
@@ -1003,6 +1078,20 @@ public:
 
 private:
 
+    /*!
+     *  Parses COM interfaces from the given XML node.
+     *
+     *      @param [in] node The source XML node.
+     */
+    void parseComInterfaces(QDomNode& node);
+
+    /*!
+     *  Parses API interfaces from the given XML node.
+     *
+     *      @param [in] node The source XML node.
+     */
+    void parseApiInterfaces(QDomNode& node);
+
 	/*! \brief Specifies all the interfaces for this component.
 	 * OPTIONAL spirit:busInterfaces
 	 *
@@ -1010,6 +1099,12 @@ private:
 	 * Value = Pointer to the bus interface instance.
 	 */
 	QMap<QString, QSharedPointer<BusInterface> > busInterfaces_;
+
+    //! The communication interfaces (extension).
+    QMap< QString, QSharedPointer<ComInterface> > comInterfaces_;
+
+    //! The API interfaces (extension).
+    QMap< QString, QSharedPointer<ApiInterface> > apiInterfaces_;
 
 	/*! \brief specifies the interconnection between interfaces within component
 	 * OPTIONAL spirit:channels
