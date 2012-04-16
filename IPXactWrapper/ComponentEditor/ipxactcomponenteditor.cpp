@@ -33,6 +33,7 @@
 #include "busInterfaces/apieditor.h"
 #include "views/vieweditor.h"
 #include "software/SoftwareMappingsEditor.h"
+#include "software/ComInterfaceEditor.h"
 #include "cpus/cpueditor.h"
 
 #include <QHBoxLayout>
@@ -240,6 +241,10 @@ void IPXactComponentEditor::createNewEditor( ComponentTreeItem* item ) {
             }
 			break;
 											  }
+        case ComponentTreeItem::COMINTERFACE: {
+            editor = new ComInterfaceEditor(handler_, component_, item->getDataPointer(), this);
+            break;
+                                              }
 		case ComponentTreeItem::VIEW: {
 			editor = new ViewEditor(component_, item->getDataPointer(), handler_, this);
 			break;

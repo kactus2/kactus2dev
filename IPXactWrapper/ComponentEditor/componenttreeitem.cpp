@@ -30,6 +30,7 @@
 #include <models/bank.h>
 #include <models/subspacemap.h>
 #include <models/generaldeclarations.h>
+#include <models/ComInterface.h>
 
 #include <LibraryManager/libraryinterface.h>
 
@@ -139,6 +140,8 @@ editor_(NULL) {
             childItems_.append(new ComponentTreeItem(
                 ComponentTreeItem::SOFTWARE, component->getVlnv(), component, handler, this));
         }
+
+        childItems_.append(new ComponentTreeItem(ComponentTreeItem::COMINTERFACES, 0, component, handler, this));
 
 // 		childItems_.append(new ComponentTreeItem(
 // 			ComponentTreeItem::COMPONENTGENERATORS, 0, component, this));
@@ -571,7 +574,8 @@ editor_(NULL) {
         }
 
 		// add each bus interface
-		const QMap<QString, QSharedPointer<BusInterface> > busifs = component_->getBusInterfaces();
+		QMap<QString, QSharedPointer<BusInterface> > const& busifs = component_->getBusInterfaces();
+
 		foreach (QSharedPointer<BusInterface> busif, busifs) {
 			childItems_.append(new ComponentTreeItem(
 				ComponentTreeItem::BUSINTERFACE, busif.data(),
@@ -646,6 +650,29 @@ editor_(NULL) {
         //dataPointer_ = 0;
         break;
                                       }
+
+    case ComponentTreeItem::COMINTERFACES: {
+        text_ = tr("COM interfaces");
+        
+        // Add each COM interface.
+        QMap<QString, QSharedPointer<ComInterface> > const& interfaces = component_->getComInterfaces();
+
+        foreach (QSharedPointer<ComInterface> comIf, interfaces)
+        {
+            childItems_.append(new ComponentTreeItem(ComponentTreeItem::COMINTERFACE, comIf.data(),
+                                                     component, handler, this));
+        }
+        break;
+                                           }
+
+    case ComponentTreeItem::COMINTERFACE: {
+        ComInterface* comIf = static_cast<ComInterface*>(dataPointer_);
+        Q_ASSERT_X(comIf, "ComponentTreeItem constructor in case COMINTERFACE",
+                   "static_cast failed to give valid BusInterface-pointer");
+
+        text_ = comIf->getName();
+        break;
+                                          }
 
 	default: {
 
@@ -725,11 +752,12 @@ case ComponentTreeItem::CHANNELS:
 case ComponentTreeItem::CPUS: 
 case ComponentTreeItem::OTHERCLOCKDRIVERS: 
 case ComponentTreeItem::COMPONENTGENERATORS:
-case ComponentTreeItem::SOFTWARE: {
+case ComponentTreeItem::SOFTWARE:
+case ComponentTreeItem::COMINTERFACES: {
 	font.setPointSize(font.pointSize() + 2);
 	font.setBold(true);
 	return font;
-											 }
+                                       }
 default: {
 	return font;
 		 }
@@ -837,6 +865,17 @@ bool ComponentTreeItem::createChild() {
 
 			return true;
 											   }
+        case ComponentTreeItem::COMINTERFACES: {
+
+            // Create a new empty COM interface.
+            ComInterface* comIf = component_->createComInterface();
+
+            // create a child item that represents the bus interface
+            childItems_.append(new ComponentTreeItem(
+                ComponentTreeItem::COMINTERFACE, comIf, component_, handler_, this));
+
+            return true;
+                                               }
 		case ComponentTreeItem::VIEWS: {
 
 			// create a new empty view
@@ -869,9 +908,10 @@ bool ComponentTreeItem::canHaveChildren() const {
 		case ComponentTreeItem::BUSINTERFACE:
 		case ComponentTreeItem::VIEW:
 		case ComponentTreeItem::DEFAULTFILEBUILDERS:
-        case ComponentTreeItem::SOFTWARE: {
+        case ComponentTreeItem::SOFTWARE:
+        case ComponentTreeItem::COMINTERFACE: {
 			return false;
-													 }
+											  }
 		default: {
 			return true;
 				 }
@@ -900,9 +940,10 @@ bool ComponentTreeItem::canBeRemoved() const {
 		case ComponentTreeItem::FILES:
 		case ComponentTreeItem::FUNCTIONS:
 		case ComponentTreeItem::COMPONENTGENERATORS:
-        case ComponentTreeItem::SOFTWARE: {
+        case ComponentTreeItem::SOFTWARE:
+        case ComponentTreeItem::COMINTERFACES: {
 			return false;
-													 }
+                                               }
 		default: {
 			return true;
 				 }
@@ -1142,8 +1183,9 @@ bool ComponentTreeItem::isModelValid() const {
 	case ComponentTreeItem::BUSINTERFACES: {
 
 		// if at least one bus interface is invalid
-		const QMap<QString, QSharedPointer<BusInterface> > busifs = component_->getBusInterfaces();
-		const QList<General::PortBounds> portBounds = component_->getPortBounds();
+		QMap<QString, QSharedPointer<BusInterface> > const& busifs = component_->getBusInterfaces();
+		QList<General::PortBounds> const& portBounds = component_->getPortBounds();
+
 		foreach (QSharedPointer<BusInterface> busif, busifs) {
 			if (!busif->isValid(portBounds)) {
 				return false;
@@ -1158,6 +1200,25 @@ bool ComponentTreeItem::isModelValid() const {
 		const QList<General::PortBounds> portBounds = component_->getPortBounds();
 		return busInterface->isValid(portBounds);
 										  }
+    case ComponentTreeItem::COMINTERFACES: {
+        // Check for invalid COM interfaces.
+        QMap<QString, QSharedPointer<ComInterface> > const& interfaces = component_->getComInterfaces();
+        
+        foreach (QSharedPointer<ComInterface> comIf, interfaces)
+        {
+            if (!comIf->isValid())
+            {
+                return false;
+            }
+        }
+
+        // All COM interfaces were valid.
+        return true;
+                                           }
+    case ComponentTreeItem::COMINTERFACE: {
+        ComInterface* comIf = static_cast<ComInterface*>(dataPointer_);
+        return comIf->isValid();
+                                          }
 	case ComponentTreeItem::CHANNELS: {
 
 		// if at least one channel is invalid

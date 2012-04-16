@@ -800,6 +800,11 @@ public:
     ComInterface* getComInterface(QString const& name);
 
     /*!
+     *  Creates a new empty COM interface to the component.
+     */
+    ComInterface* createComInterface();
+
+    /*!
      *  Adds a new COM interface to the component.
      *
      *      @param [in] comInterface The COM interface to add.
@@ -810,11 +815,25 @@ public:
     bool addComInterface(QSharedPointer<ComInterface> comInterface);
 
     /*!
+     *  Updates an existing COM interface.
+     *
+     *      @param [in] comInterface The COM interface to update.
+     */
+    void updateComInteface(ComInterface* comInterface);
+
+    /*!
      *  Removes a COM interface from the component.
      *
      *      @param [in] name The name of the COM interface to remove.
      */
     void removeComInterface(QString const& name);
+
+    /*!
+     *  Removes a COM interface from the component.
+     *
+     *      @param [in] comInterface The COM interface to remove.
+     */
+    void removeComInterface(ComInterface* comInterface);
 
     /*!
      *  Returns the API interfaces.

@@ -803,6 +803,32 @@ void Component::write(QFile& file) {
 		
 		writeKactus2Attributes(writer);
 
+        // Write COM interfaces if found.
+        if (!comInterfaces_.empty())
+        {
+            writer.writeStartElement("kactus2:comInterfaces");
+
+            foreach (QSharedPointer<ComInterface> comIf, comInterfaces_)
+            {
+                comIf->write(writer);
+            }
+
+            writer.writeEndElement(); // kactus2:comInterfaces
+        }
+
+        // Write API interfaces if found.
+        if (!apiInterfaces_.empty())
+        {
+            writer.writeStartElement("kactus2:apiInterfaces");
+
+            foreach (QSharedPointer<ApiInterface> apiIf, apiInterfaces_)
+            {
+                apiIf->write(writer);
+            }
+
+            writer.writeEndElement(); // kactus2:apiInterfaces
+        }
+
 		writer.writeEndElement(); // kactus2:extensions
 		writer.writeEndElement(); // spirit:vendorExtensions
 	}
@@ -2493,6 +2519,16 @@ ComInterface* Component::getComInterface(QString const& name)
 }
 
 //-----------------------------------------------------------------------------
+// Function: Component::createComInterface()
+//-----------------------------------------------------------------------------
+ComInterface* Component::createComInterface()
+{
+    ComInterface* comIf = new ComInterface();
+    comInterfaces_.insertMulti(comIf->getName(), QSharedPointer<ComInterface>(comIf));
+    return comIf;
+}
+
+//-----------------------------------------------------------------------------
 // Function: Component::addComInterface()
 //-----------------------------------------------------------------------------
 bool Component::addComInterface(QSharedPointer<ComInterface> comInterface)
@@ -2507,11 +2543,62 @@ bool Component::addComInterface(QSharedPointer<ComInterface> comInterface)
 }
 
 //-----------------------------------------------------------------------------
+// Function: Component::updateComInteface()
+//-----------------------------------------------------------------------------
+void Component::updateComInteface(ComInterface* comInterface)
+{
+    // get all com interface pointers
+    QList<QSharedPointer<ComInterface> > list = comInterfaces_.values();
+    // and check if any matches with given com interface
+    foreach (QSharedPointer<ComInterface> comif, list) {
+
+        // if they match
+        if (comif.data() == comInterface) {
+
+            // remove the old item in the map
+            comInterfaces_.take(comInterfaces_.key(comif)/*comif->getName()*/);
+
+            // update the name
+            comif->setName(comInterface->getName());
+
+            // add new item to the map 
+            comInterfaces_.insert(comif->getName(), comif);
+
+            return;
+        }
+    }
+
+    // if no match was found, add the com interface to the map
+    comInterfaces_.insert(comInterface->getName(), 
+        QSharedPointer<ComInterface>(comInterface));
+}
+
+//-----------------------------------------------------------------------------
 // Function: Component::removeComInterface()
 //-----------------------------------------------------------------------------
 void Component::removeComInterface(QString const& name)
 {
     comInterfaces_.remove(name);
+}
+
+//-----------------------------------------------------------------------------
+// Function: Component::removeComInterface()
+//-----------------------------------------------------------------------------
+void Component::removeComInterface(ComInterface* comInterface)
+{
+    // Retrieve all COM interface pointers.
+    QList<QSharedPointer<ComInterface> > list = comInterfaces_.values();
+
+    // Check for a match with the one that is being removed.
+    foreach (QSharedPointer<ComInterface> comIf, list)
+    {
+        if (comIf.data() == comInterface)
+        {
+            // remove the old item in the map
+            comInterfaces_.remove(comIf->getName());
+            continue;
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

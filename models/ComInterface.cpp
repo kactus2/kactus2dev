@@ -52,15 +52,15 @@ ComInterface::ComInterface(QDomNode& node) : name_(), displayName_(), desc_(), c
 
         if (childNode.nodeName() == "spirit:name")
         {
-            name_ = childNode.nodeValue();
+            name_ = General::removeWhiteSpace(childNode.childNodes().at(0).nodeValue());
         }
         else if (childNode.nodeName() == "spirit:displayName")
         {
-            displayName_ = childNode.nodeValue();
+            displayName_ = childNode.childNodes().at(0).nodeValue();
         }
         else if (childNode.nodeName() == "spirit:description")
         {
-            desc_ = childNode.nodeValue();
+            desc_ = childNode.childNodes().at(0).nodeValue();
         }
         else if (childNode.nodeName() == "kactus2:comType")
         {
@@ -68,11 +68,11 @@ ComInterface::ComInterface(QDomNode& node) : name_(), displayName_(), desc_(), c
         }
         else if (childNode.nodeName() == "kactus2:dataType")
         {
-            dataType_ = childNode.nodeValue();
+            dataType_ = childNode.childNodes().at(0).nodeValue();
         }
         else if (childNode.nodeName() == "kactus2:direction")
         {
-            dir_ = General::str2Direction(childNode.nodeValue(), General::INOUT);
+            dir_ = General::str2Direction(childNode.childNodes().at(0).nodeValue(), General::INOUT);
         }
         else if (childNode.nodeName() == "kactus2:propertyValues")
         {
@@ -191,11 +191,27 @@ void ComInterface::setComType(VLNV const& vlnv)
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComInterface::setDataType()
+//-----------------------------------------------------------------------------
+void ComInterface::setDataType(QString const& dataType)
+{
+    dataType_ = dataType;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComInterface::setDirection()
 //-----------------------------------------------------------------------------
 void ComInterface::setDirection(General::Direction dir)
 {
     dir_ = dir;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComInterface::setPropertyValues()
+//-----------------------------------------------------------------------------
+void ComInterface::setPropertyValues(QMap<QString, QString> const& values)
+{
+    propertyValues_ = values;
 }
 
 //-----------------------------------------------------------------------------
@@ -231,11 +247,27 @@ VLNV const& ComInterface::getComType() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComInterface::getDataType()
+//-----------------------------------------------------------------------------
+QString const& ComInterface::getDataType() const
+{
+    return dataType_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComInterface::getDirection()
 //-----------------------------------------------------------------------------
 General::Direction ComInterface::getDirection() const
 {
     return dir_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComInterface::getPropertyValues()
+//-----------------------------------------------------------------------------
+QMap<QString, QString> const& ComInterface::getPropertyValues() const
+{
+    return propertyValues_;
 }
 
 //-----------------------------------------------------------------------------

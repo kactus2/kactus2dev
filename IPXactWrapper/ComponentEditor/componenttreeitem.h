@@ -67,6 +67,8 @@ public:
 		OTHERCLOCKDRIVERS,	// for "Other clock drivers" item
 		COMPONENTGENERATORS,// for "Component generators" item
         SOFTWARE,           // for "Software Mappings" item
+        COMINTERFACES,      // for "COM interfaces" item
+        COMINTERFACE,       // for a single COM interface item
 	};
 
 	

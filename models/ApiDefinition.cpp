@@ -69,7 +69,7 @@ ApiDefinition::ApiDefinition(QDomDocument& doc)
 
         if (childNode.nodeName() == "kactus2:language")
         {
-            language_ = childNode.nodeValue();
+            language_ = childNode.childNodes().at(0).nodeValue();
         }
         else if (childNode.nodeName() == "kactus2:dataTypes")
         {

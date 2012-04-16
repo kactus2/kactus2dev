@@ -96,6 +96,13 @@ public:
     void setComType(VLNV const& vlnv);
 
     /*!
+     *  Sets the data type.
+     *
+     *      @param [in] dataType The data type to set.
+     */
+    void setDataType(QString const& dataType);
+
+    /*!
      *  Sets the direction.
      *
      *      @param [in] dir The direction.
@@ -128,6 +135,11 @@ public:
      *  Returns the COM type (COM definition VLNV).
      */
     VLNV const& getComType() const;
+
+    /*!
+     *  Returns the data type.
+     */
+    QString const& getDataType() const;
 
     /*!
      *  Returns the direction.

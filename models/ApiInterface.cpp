@@ -85,15 +85,15 @@ ApiInterface::ApiInterface(QDomNode& node) : name_(), displayName_(), desc_(), a
 
         if (childNode.nodeName() == "kactus2:name")
         {
-            name_ = childNode.nodeValue();
+            name_ = General::removeWhiteSpace(childNode.childNodes().at(0).nodeValue());
         }
         else if (childNode.nodeName() == "kactus2:displayName")
         {
-            displayName_ = childNode.nodeValue();
+            displayName_ = childNode.childNodes().at(0).nodeValue();
         }
         else if (childNode.nodeName() == "kactus2:description")
         {
-            desc_ = childNode.nodeValue();
+            desc_ = childNode.childNodes().at(0).nodeValue();
         }
         else if (childNode.nodeName() == "kactus2:apiType")
         {
@@ -101,7 +101,7 @@ ApiInterface::ApiInterface(QDomNode& node) : name_(), displayName_(), desc_(), a
         }
         else if (childNode.nodeName() == "kactus2:dependencyDirection")
         {
-            dependencyDir_ = str2DependencyDirection(childNode.nodeValue(), DEPENDENCY_PROVIDER);
+            dependencyDir_ = str2DependencyDirection(childNode.childNodes().at(0).nodeValue(), DEPENDENCY_PROVIDER);
         }
     }
 }

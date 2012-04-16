@@ -49,15 +49,15 @@ ComConnection::ComConnection(QDomNode& node) : name_(), displayName_(), desc_(),
 
         if (childNode.nodeName() == "spirit:name")
         {
-            name_ = childNode.nodeValue();
+            name_ = childNode.childNodes().at(0).nodeValue();
         }
         else if (childNode.nodeName() == "spirit:displayName")
         {
-            displayName_ = childNode.nodeValue();
+            displayName_ = childNode.childNodes().at(0).nodeValue();
         }
         else if (childNode.nodeName() == "spirit:description")
         {
-            desc_ = childNode.nodeValue();
+            desc_ = childNode.childNodes().at(0).nodeValue();
         }
         else if (childNode.nodeName() == "kactus2:activeComInterface")
         {
