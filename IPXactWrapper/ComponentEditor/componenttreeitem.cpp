@@ -67,6 +67,7 @@ editor_(NULL) {
     bool appComp = component->getComponentImplementation() == KactusAttribute::KTS_SW &&
                    component->getComponentSWType() == KactusAttribute::KTS_SW_APPLICATION;
     bool hwComp = component->getComponentImplementation() == KactusAttribute::KTS_HW;
+    bool swComp = component->getComponentImplementation() == KactusAttribute::KTS_SW;
 
 	// the type defines how the construction goes
 	switch (type) {
@@ -143,7 +144,11 @@ editor_(NULL) {
         }
 
         childItems_.append(new ComponentTreeItem(ComponentTreeItem::COMINTERFACES, 0, component, handler, this));
-        childItems_.append(new ComponentTreeItem(ComponentTreeItem::APIINTERFACES, 0, component, handler, this));
+
+        if (swComp)
+        {
+            childItems_.append(new ComponentTreeItem(ComponentTreeItem::APIINTERFACES, 0, component, handler, this));
+        }
 
 // 		childItems_.append(new ComponentTreeItem(
 // 			ComponentTreeItem::COMPONENTGENERATORS, 0, component, this));
