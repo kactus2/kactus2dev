@@ -53,7 +53,8 @@ ComInterfaceEditor::ComInterfaceEditor(LibraryInterface* libHandler,
     connect(&propertyValueEditor_, SIGNAL(contentChanged()),
             this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     
-    // Set VLNV editor settings.
+    // Set name group and VLNV editor settings.
+    nameGroup_.setTitle(tr("Name and description"));
     comType_.setTitle(tr("COM definition"));
     comType_.setMandatory(false);
 

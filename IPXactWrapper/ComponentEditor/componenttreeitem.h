@@ -69,6 +69,8 @@ public:
         SOFTWARE,           // for "Software Mappings" item
         COMINTERFACES,      // for "COM interfaces" item
         COMINTERFACE,       // for a single COM interface item
+        APIINTERFACES,      // for "API interfaces" item
+        APIINTERFACE,       // for a single API interface item
 	};
 
 	

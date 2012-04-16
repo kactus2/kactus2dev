@@ -31,6 +31,7 @@
 #include <models/subspacemap.h>
 #include <models/generaldeclarations.h>
 #include <models/ComInterface.h>
+#include <models/ApiInterface.h>
 
 #include <LibraryManager/libraryinterface.h>
 
@@ -142,6 +143,7 @@ editor_(NULL) {
         }
 
         childItems_.append(new ComponentTreeItem(ComponentTreeItem::COMINTERFACES, 0, component, handler, this));
+        childItems_.append(new ComponentTreeItem(ComponentTreeItem::APIINTERFACES, 0, component, handler, this));
 
 // 		childItems_.append(new ComponentTreeItem(
 // 			ComponentTreeItem::COMPONENTGENERATORS, 0, component, this));
@@ -668,9 +670,32 @@ editor_(NULL) {
     case ComponentTreeItem::COMINTERFACE: {
         ComInterface* comIf = static_cast<ComInterface*>(dataPointer_);
         Q_ASSERT_X(comIf, "ComponentTreeItem constructor in case COMINTERFACE",
-                   "static_cast failed to give valid BusInterface-pointer");
+                   "static_cast failed to give valid ApiInterface-pointer");
 
         text_ = comIf->getName();
+        break;
+                                          }
+
+    case ComponentTreeItem::APIINTERFACES: {
+        text_ = tr("API interfaces");
+
+        // Add each API interface.
+        QMap<QString, QSharedPointer<ApiInterface> > const& interfaces = component_->getApiInterfaces();
+
+        foreach (QSharedPointer<ApiInterface> apiIf, interfaces)
+        {
+            childItems_.append(new ComponentTreeItem(ComponentTreeItem::APIINTERFACE, apiIf.data(),
+                                                     component, handler, this));
+        }
+        break;
+                                           }
+
+    case ComponentTreeItem::APIINTERFACE: {
+        ApiInterface* apiIf = static_cast<ApiInterface*>(dataPointer_);
+        Q_ASSERT_X(apiIf, "ComponentTreeItem constructor in case APIINTERFACE",
+            "static_cast failed to give valid ApiInterface-pointer");
+
+        text_ = apiIf->getName();
         break;
                                           }
 
@@ -736,31 +761,33 @@ QFont ComponentTreeItem::getFont() const {
 
 	QFont font(QApplication::font());
 
-	switch (type_) {
-case ComponentTreeItem::GENERAL: 
-case ComponentTreeItem::FILESETS: 
-case ComponentTreeItem::CHOICES: 
-case ComponentTreeItem::MODELPARAMETERS:
-case ComponentTreeItem::PARAMETERS: 
-case ComponentTreeItem::MEMORYMAPS: 
-case ComponentTreeItem::ADDRESSSPACES: 
-case ComponentTreeItem::REMAPSTATES: 
-case ComponentTreeItem::VIEWS: 
-case ComponentTreeItem::PORTS: 
-case ComponentTreeItem::BUSINTERFACES:
-case ComponentTreeItem::CHANNELS: 
-case ComponentTreeItem::CPUS: 
-case ComponentTreeItem::OTHERCLOCKDRIVERS: 
-case ComponentTreeItem::COMPONENTGENERATORS:
-case ComponentTreeItem::SOFTWARE:
-case ComponentTreeItem::COMINTERFACES: {
-	font.setPointSize(font.pointSize() + 2);
-	font.setBold(true);
-	return font;
-                                       }
-default: {
-	return font;
-		 }
+	switch (type_)
+    {
+    case ComponentTreeItem::GENERAL: 
+    case ComponentTreeItem::FILESETS: 
+    case ComponentTreeItem::CHOICES: 
+    case ComponentTreeItem::MODELPARAMETERS:
+    case ComponentTreeItem::PARAMETERS: 
+    case ComponentTreeItem::MEMORYMAPS: 
+    case ComponentTreeItem::ADDRESSSPACES: 
+    case ComponentTreeItem::REMAPSTATES: 
+    case ComponentTreeItem::VIEWS: 
+    case ComponentTreeItem::PORTS: 
+    case ComponentTreeItem::BUSINTERFACES:
+    case ComponentTreeItem::CHANNELS: 
+    case ComponentTreeItem::CPUS: 
+    case ComponentTreeItem::OTHERCLOCKDRIVERS: 
+    case ComponentTreeItem::COMPONENTGENERATORS:
+    case ComponentTreeItem::SOFTWARE:
+    case ComponentTreeItem::COMINTERFACES:
+    case ComponentTreeItem::APIINTERFACES: {
+	    font.setPointSize(font.pointSize() + 2);
+	    font.setBold(true);
+	    return font;
+                                           }
+    default: {
+	    return font;
+             }
 	}
 }
 
@@ -870,9 +897,20 @@ bool ComponentTreeItem::createChild() {
             // Create a new empty COM interface.
             ComInterface* comIf = component_->createComInterface();
 
-            // create a child item that represents the bus interface
+            // create a child item that represents the COM interface
             childItems_.append(new ComponentTreeItem(
                 ComponentTreeItem::COMINTERFACE, comIf, component_, handler_, this));
+
+            return true;
+                                               }
+        case ComponentTreeItem::APIINTERFACES: {
+
+            // Create a new empty API interface.
+            ApiInterface* apiIf = component_->createApiInterface();
+
+            // create a child item that represents the API interface
+            childItems_.append(new ComponentTreeItem(
+                ComponentTreeItem::APIINTERFACE, apiIf, component_, handler_, this));
 
             return true;
                                                }
@@ -909,7 +947,8 @@ bool ComponentTreeItem::canHaveChildren() const {
 		case ComponentTreeItem::VIEW:
 		case ComponentTreeItem::DEFAULTFILEBUILDERS:
         case ComponentTreeItem::SOFTWARE:
-        case ComponentTreeItem::COMINTERFACE: {
+        case ComponentTreeItem::COMINTERFACE:
+        case ComponentTreeItem::APIINTERFACE: {
 			return false;
 											  }
 		default: {
@@ -941,7 +980,8 @@ bool ComponentTreeItem::canBeRemoved() const {
 		case ComponentTreeItem::FUNCTIONS:
 		case ComponentTreeItem::COMPONENTGENERATORS:
         case ComponentTreeItem::SOFTWARE:
-        case ComponentTreeItem::COMINTERFACES: {
+        case ComponentTreeItem::COMINTERFACES:
+        case ComponentTreeItem::APIINTERFACES: {
 			return false;
                                                }
 		default: {
@@ -1218,6 +1258,25 @@ bool ComponentTreeItem::isModelValid() const {
     case ComponentTreeItem::COMINTERFACE: {
         ComInterface* comIf = static_cast<ComInterface*>(dataPointer_);
         return comIf->isValid();
+                                          }
+    case ComponentTreeItem::APIINTERFACES: {
+        // Check for invalid API interfaces.
+        QMap<QString, QSharedPointer<ApiInterface> > const& interfaces = component_->getApiInterfaces();
+
+        foreach (QSharedPointer<ApiInterface> apiIf, interfaces)
+        {
+            if (!apiIf->isValid())
+            {
+                return false;
+            }
+        }
+
+        // All API interfaces were valid.
+        return true;
+                                           }
+    case ComponentTreeItem::APIINTERFACE: {
+        ApiInterface* apiIf = static_cast<ApiInterface*>(dataPointer_);
+        return apiIf->isValid();
                                           }
 	case ComponentTreeItem::CHANNELS: {
 

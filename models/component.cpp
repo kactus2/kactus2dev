@@ -2550,19 +2550,19 @@ void Component::updateComInteface(ComInterface* comInterface)
     // get all com interface pointers
     QList<QSharedPointer<ComInterface> > list = comInterfaces_.values();
     // and check if any matches with given com interface
-    foreach (QSharedPointer<ComInterface> comif, list) {
+    foreach (QSharedPointer<ComInterface> comIf, list) {
 
         // if they match
-        if (comif.data() == comInterface) {
+        if (comIf.data() == comInterface) {
 
             // remove the old item in the map
-            comInterfaces_.take(comInterfaces_.key(comif)/*comif->getName()*/);
+            comInterfaces_.take(comInterfaces_.key(comIf)/*comIf->getName()*/);
 
             // update the name
-            comif->setName(comInterface->getName());
+            comIf->setName(comInterface->getName());
 
             // add new item to the map 
-            comInterfaces_.insert(comif->getName(), comif);
+            comInterfaces_.insert(comIf->getName(), comIf);
 
             return;
         }
@@ -2631,6 +2631,16 @@ ApiInterface* Component::getApiInterface(QString const& name)
 }
 
 //-----------------------------------------------------------------------------
+// Function: Component::createApiInterface()
+//-----------------------------------------------------------------------------
+ApiInterface* Component::createApiInterface()
+{
+    ApiInterface* apiIf = new ApiInterface();
+    apiInterfaces_.insertMulti(apiIf->getName(), QSharedPointer<ApiInterface>(apiIf));
+    return apiIf;
+}
+
+//-----------------------------------------------------------------------------
 // Function: Component::addApiInterface()
 //-----------------------------------------------------------------------------
 bool Component::addApiInterface(QSharedPointer<ApiInterface> apiInterface)
@@ -2645,9 +2655,60 @@ bool Component::addApiInterface(QSharedPointer<ApiInterface> apiInterface)
 }
 
 //-----------------------------------------------------------------------------
+// Function: Component::updateApiInteface()
+//-----------------------------------------------------------------------------
+void Component::updateApiInteface(ApiInterface* apiInterface)
+{
+    // get all api interface pointers
+    QList<QSharedPointer<ApiInterface> > list = apiInterfaces_.values();
+    // and check if any matches with given api interface
+    foreach (QSharedPointer<ApiInterface> apiIf, list) {
+
+        // if they match
+        if (apiIf.data() == apiInterface) {
+
+            // remove the old item in the map
+            apiInterfaces_.take(apiInterfaces_.key(apiIf)/*apiIf->getName()*/);
+
+            // update the name
+            apiIf->setName(apiInterface->getName());
+
+            // add new item to the map 
+            apiInterfaces_.insert(apiIf->getName(), apiIf);
+
+            return;
+        }
+    }
+
+    // if no match was found, add the api interface to the map
+    apiInterfaces_.insert(apiInterface->getName(), 
+        QSharedPointer<ApiInterface>(apiInterface));
+}
+
+//-----------------------------------------------------------------------------
 // Function: Component::removeApiInterface()
 //-----------------------------------------------------------------------------
 void Component::removeApiInterface(QString const& name)
 {
     comInterfaces_.remove(name);
+}
+
+//-----------------------------------------------------------------------------
+// Function: Component::removeApiInterface()
+//-----------------------------------------------------------------------------
+void Component::removeApiInterface(ApiInterface* apiInterface)
+{
+    // Retrieve all COM interface pointers.
+    QList<QSharedPointer<ApiInterface> > list = apiInterfaces_.values();
+
+    // Check for a match with the one that is being removed.
+    foreach (QSharedPointer<ApiInterface> apiIf, list)
+    {
+        if (apiIf.data() == apiInterface)
+        {
+            // remove the old item in the map
+            apiInterfaces_.remove(apiIf->getName());
+            continue;
+        }
+    }
 }

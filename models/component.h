@@ -801,6 +801,8 @@ public:
 
     /*!
      *  Creates a new empty COM interface to the component.
+     *
+     *      @return The created COM interface.
      */
     ComInterface* createComInterface();
 
@@ -855,6 +857,13 @@ public:
     ApiInterface* getApiInterface(QString const& name);
 
     /*!
+     *  Creates a new empty API interface to the component.
+     *
+     *      @return The created API interface.
+     */
+    ApiInterface* createApiInterface();
+
+    /*!
      *  Adds a new API interface to the component.
      *
      *      @param [in] apiInterface The API interface to add.
@@ -865,11 +874,25 @@ public:
     bool addApiInterface(QSharedPointer<ApiInterface> apiInterface);
 
     /*!
+     *  Updates an existing API interface.
+     *
+     *      @param [in] apiInterface The API interface to update.
+     */
+    void updateApiInteface(ApiInterface* apiInterface);
+
+    /*!
      *  Removes a API interface from the component.
      *
      *      @param [in] name The name of the API interface to remove.
      */
     void removeApiInterface(QString const& name);
+
+    /*!
+     *  Removes an API interface from the component.
+     *
+     *      @param [in] apiInterface The API interface to remove.
+     */
+    void removeApiInterface(ApiInterface* apiInterface);
 
 
 	/*! \brief Find the interface that contains the physical port and return it's abs def vlnv and logical name.
@@ -1110,7 +1133,7 @@ private:
      *      @param [in] node The source XML node.
      */
     void parseApiInterfaces(QDomNode& node);
-
+    
 	/*! \brief Specifies all the interfaces for this component.
 	 * OPTIONAL spirit:busInterfaces
 	 *
