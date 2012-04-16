@@ -25,14 +25,14 @@
 //-----------------------------------------------------------------------------
 AssistedTextEdit::AssistedTextEdit(QSharedPointer<ITextContentMatcher> contentMatcher,
                                    QWidget* mainWnd, QWidget* parent) : QPlainTextEdit(parent),
-                                                                        contentAssist_(),
+                                                                        contentAssist_(0),
                                                                         indentStyle_(INDENT_STYLE_TAB),
                                                                         indentWidth_(DEFAULT_INDENT_WIDTH)
 {
     setFont(QFont("Courier", 10));
     setLineWrapMode(NoWrap);
 
-    contentAssist_ = QSharedPointer<TextContentAssistWidget>(new TextContentAssistWidget(this, contentMatcher));
+    contentAssist_ = new TextContentAssistWidget(this, contentMatcher);
 
     // Install this as an event filter so that we can track events from the main window.
     mainWnd->installEventFilter(this);

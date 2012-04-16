@@ -152,7 +152,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! Content assist list widget.
-    QSharedPointer<TextContentAssistWidget> contentAssist_;
+    TextContentAssistWidget* contentAssist_;
 
     //! The indentation style.
     IndentStyle indentStyle_;
