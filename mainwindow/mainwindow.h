@@ -112,6 +112,14 @@ public slots:
      */
     void openComDefinition(VLNV const& vlnv, bool forceUnlocked = false);
 
+    /*!
+     *  Opens an API definition for editing.
+     *
+     *      @param [in] vlnv           The VLNV of the API definition to open.
+     *      @param [in] forceUnlocked  Forces the API definition to be opened in unlocked mode.
+     */
+    void openApiDefinition(VLNV const& vlnv, bool forceUnlocked = false);
+
     /*! \brief Called when user wants to close a design tab
 	 *
 	 * \param index Index of the tab to close

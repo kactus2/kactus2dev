@@ -2267,8 +2267,8 @@ void MainWindow::createApiDefinition(VLNV const& vlnv, QString const& directory)
     QSharedPointer<ApiDefinition> apiDef(new ApiDefinition(vlnv));
     libraryHandler_->writeModelToFile(directory, apiDef);
 
-    // TODO: Open the API definition.
-    //openApiDefinition(vlnv, true);
+    // Open the API definition.
+    openApiDefinition(vlnv, true);
 }
 
 void MainWindow::openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool disableBusDef, bool forceUnlocked ) {
@@ -2545,6 +2545,15 @@ void MainWindow::openComDefinition(VLNV const& vlnv, bool forceUnlocked /*= fals
     connect(editor, SIGNAL(modifiedChanged(bool)),
             actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
 }
+
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::openApiDefinition()
+//-----------------------------------------------------------------------------
+void MainWindow::openApiDefinition(VLNV const& vlnv, bool forceUnlocked /*= false*/)
+{
+}
+
 
 //-----------------------------------------------------------------------------
 // Function: changeProtection()
