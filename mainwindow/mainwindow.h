@@ -104,6 +104,14 @@ public slots:
 	 */
 	void openComponent(const VLNV& vlnv, bool forceUnlocked = false);
 
+    /*!
+     *  Opens a COM definition for editing.
+     *
+     *      @param [in] vlnv           The VLNV of the COM definition to open.
+     *      @param [in] forceUnlocked  Forces the COM definition to be opened in unlocked mode.
+     */
+    void openComDefinition(VLNV const& vlnv, bool forceUnlocked = false);
+
     /*! \brief Called when user wants to close a design tab
 	 *
 	 * \param index Index of the tab to close
@@ -303,6 +311,26 @@ public slots:
 	 *
 	*/
 	void createAbsDef(const VLNV& busDefVLNV, const QString& directory, bool disableBusDef);
+
+    /*!
+     *  Creates a new COM definition.
+     *
+     *      @param [in] vlnv        VLNV for the COM definition.
+     *      @param [in] directory   The directory where to save the design.
+     *
+     *      @remarks The COM definition editor is opened automatically after successful creation.
+     */
+    void createComDefinition(VLNV const& vlnv, QString const& directory);
+
+    /*!
+     *  Creates a new API definition.
+     *
+     *      @param [in] vlnv        VLNV for the API definition.
+     *      @param [in] directory   The directory where to save the design.
+     *
+     *      @remarks The API definition editor is opened automatically after successful creation.
+     */
+    void createApiDefinition(VLNV const& vlnv, QString const& directory);
 
     /*!
      *  Opens the settings dialog.

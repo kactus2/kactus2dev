@@ -405,6 +405,12 @@ signals:
 	//! \brief Signal that user wants to open specified component for editing
 	void openComponent(const VLNV& vlnv);
 
+    //! \brief Signal that user wants to open specified COM definition for editing
+    void openComDefinition(const VLNV& vlnv);
+
+    //! \brief Signal that user wants to open specified API definition for editing
+    void openApiDefinition(const VLNV& vlnv);
+
 	//! \brief Signal that user wants to create a new bus with given vlnv
 	void createBus(const VLNV& vlnv, const QString& directory);
 
@@ -415,6 +421,12 @@ signals:
 
 	//! \brief Signal that user wants to create a new abstraction definition for given bus definition.
 	void createAbsDef(const VLNV& busDefVLNV, const QString& directory, bool disableBusDef);
+
+    //! \brief Signal that user wants to create a new COM definition with given vlnv
+    void createComDef(const VLNV& vlnv, const QString& directory);
+
+    //! \brief Signal that user wants to create a new API definition with given vlnv
+    void createApiDef(const VLNV& vlnv, const QString& directory);
 
 	//! \brief Signal that library has changed and VLNVDialer should be refreshed.
 	void refreshDialer();

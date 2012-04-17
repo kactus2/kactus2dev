@@ -129,6 +129,14 @@ bool LibrarySearchFilter::checkTypeMatch(VLNV* vlnv) const {
 	case VLNV::BUSDEFINITION: {
 		return typeSettings_.busDefs_;
 	}
+    // if comDefinitions are included in search
+    case VLNV::COMDEFINITION: {
+        return typeSettings_.busDefs_; // TODO: New flag?
+    }
+    // if apiDefinitions are included in search
+    case VLNV::APIDEFINITION: {
+        return typeSettings_.busDefs_; // TODO: New flag?
+    }
 	// if Components are included in search
 	case VLNV::COMPONENT: {
 		return typeSettings_.components_;

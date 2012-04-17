@@ -22,6 +22,8 @@ QObject(parent),
 component_(),
 busDef_(),
 absDef_(),
+comDef_(),
+apiDef_(),
 handler_(handler),
 childItems_(),
 parentItem_(parent),
@@ -54,6 +56,12 @@ type_(HierarchyItem::ROOT) {
 	else if (handler_->getDocumentType(vlnv) == VLNV::ABSTRACTIONDEFINITION) {
 		parseAbsDefinition(vlnv);
 	}
+    else if (handler_->getDocumentType(vlnv) == VLNV::COMDEFINITION) {
+        parseComDefinition(vlnv);
+    }
+    else if (handler_->getDocumentType(vlnv) == VLNV::APIDEFINITION) {
+        parseApiDefinition(vlnv);
+    }
 	else {
 		emit errorMessage(tr("VLNV %1:%2:%3:%4 was not for supported item").arg(
 			vlnv.getVendor()).arg(
@@ -235,6 +243,28 @@ void HierarchyItem::parseAbsDefinition( const VLNV& vlnv ) {
 	isValid_ = absDef_->isValid(errors);
 }
 
+void HierarchyItem::parseComDefinition( const VLNV& vlnv ) {
+    type_ = HierarchyItem::COMDEFINITION;
+
+    // parse the COM definition model
+    QSharedPointer<LibraryComponent> libComp = handler_->getModel(vlnv);
+    comDef_ = libComp.staticCast<ComDefinition>();
+
+    QStringList errors;
+    isValid_ = comDef_->isValid(errors);
+}
+
+void HierarchyItem::parseApiDefinition( const VLNV& vlnv ) {
+    type_ = HierarchyItem::APIDEFINITION;
+
+    // parse the API definition model
+    QSharedPointer<LibraryComponent> libComp = handler_->getModel(vlnv);
+    apiDef_ = libComp.staticCast<ApiDefinition>();
+
+    QStringList errors;
+    isValid_ = apiDef_->isValid(errors);
+}
+
 void HierarchyItem::createChild(VLNV* vlnv ) {
 
 	// if item already has a child for given vlnv
@@ -260,6 +290,10 @@ VLNV HierarchyItem::getVLNV() const {
 		return *busDef_->getVlnv();
 	else if (type_ == HierarchyItem::ABSDEFINITION && absDef_)
 		return *absDef_->getVlnv();
+    else if (type_ == HierarchyItem::COMDEFINITION && comDef_)
+        return *comDef_->getVlnv();
+    else if (type_ == HierarchyItem::APIDEFINITION && apiDef_)
+        return *apiDef_->getVlnv();
 	return VLNV();
 }
 
@@ -322,6 +356,14 @@ bool HierarchyItem::contains( const VLNV& vlnv ) const {
 	// if abstraction definition matches the vlnv
 	else if (absDef_ && *absDef_->getVlnv() == vlnv)
 		return true;
+
+    // if COM definition matches the vlnv
+    else if (comDef_ && *comDef_->getVlnv() == vlnv)
+        return true;
+
+    // if API definition matches the vlnv
+    else if (apiDef_ && *apiDef_->getVlnv() == vlnv)
+        return true;
 
 	// ask the children if they have the vlnv
 	foreach (HierarchyItem* item, childItems_) {

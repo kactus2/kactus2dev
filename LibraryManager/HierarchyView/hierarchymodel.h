@@ -182,6 +182,12 @@ public slots:
 	//! \brief Create new abstraction definition
 	void onCreateNewAbsDef(const QModelIndex& index);
 
+    //! \brief Create new COM definition
+    void onCreateNewComDef(const QModelIndex& index);
+
+    //! \brief Create new API definition
+    void onCreateNewApiDef(const QModelIndex& index);
+
 	//! \brief When export is selected in search view
 	void onExportItem(const QModelIndex& index);
 
@@ -226,6 +232,12 @@ signals:
 
 	//! \brief Create new design with given vlnv.
 	void createDesign(const VLNV& vlnv);
+
+    //! \brief Create a new COM definition with given vlnv.
+    void createComDef(const VLNV& vlnv);
+
+    //! \brief Create a new API definition with given vlnv.
+    void createApiDef(const VLNV& vlnv);
 
 	//! \brief Export an item to a new location.
 	void exportItem(const VLNV& vlnv);

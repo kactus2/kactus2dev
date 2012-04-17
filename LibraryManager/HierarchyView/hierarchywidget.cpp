@@ -65,6 +65,18 @@ void HierarchyWidget::setupConnections( HierarchyModel* dataModel ) {
 	connect(&view_, SIGNAL(createNewAbsDef(const QModelIndex&)),
 		dataModel, SLOT(onCreateNewAbsDef(const QModelIndex&)), Qt::UniqueConnection);
 
+    connect(&view_, SIGNAL(createNewComDef(const QModelIndex&)),
+        dataModel, SLOT(onCreateNewComDef(const QModelIndex&)), Qt::UniqueConnection);
+
+    connect(&view_, SIGNAL(createNewComDef(const QModelIndex&)),
+        dataModel, SLOT(onCreateNewComDef(const QModelIndex&)), Qt::UniqueConnection);
+
+    connect(&view_, SIGNAL(createNewApiDef(const QModelIndex&)),
+        dataModel, SLOT(onCreateNewApiDef(const QModelIndex&)), Qt::UniqueConnection);
+
+    connect(&view_, SIGNAL(createNewApiDef(const QModelIndex&)),
+        dataModel, SLOT(onCreateNewApiDef(const QModelIndex&)), Qt::UniqueConnection);
+
 	connect(&view_, SIGNAL(exportItem(const QModelIndex&)),
 		dataModel, SLOT(onExportItem(const QModelIndex&)), Qt::UniqueConnection);
 

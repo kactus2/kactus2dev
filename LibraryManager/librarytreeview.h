@@ -64,11 +64,23 @@ signals:
 	//! \brief Open bus definition in an editor
 	void openBus(const QModelIndex& index);
 
+    //! \brief Open COM definition in an editor
+    void openComDef(const QModelIndex& index);
+
+    //! \brief Open API definition in an editor
+    void openApiDef(const QModelIndex& index);
+
 	//! \brief Create a new bus definition
 	void createBus(const QModelIndex& index);
 
 	//! \brief Create a new abstraction definition for given bus def.
 	void createAbsDef(const QModelIndex& index);
+
+    //! \brief Create a new COM definition
+    void createComDef(const QModelIndex& index);
+
+    //! \brief Create a new API definition
+    void createApiDef(const QModelIndex& index);
 
 	//! \brief A drag operation has been initiated.
 	void dragInitiated(const QModelIndex& index);
@@ -105,8 +117,20 @@ public slots:
 	//! \brief Open bus.
 	void onOpenBus();
 
+    //! \brief Open COM definition.
+    void onOpenComDef();
+
+    //! \brief Open API definition.
+    void onOpenApiDef();
+
 	//! \brief Create new bus.
 	void onCreateBus();
+
+    //! \brief Create new COM definition.
+    void onCreateComDef();
+
+    //! \brief Create new API definition.
+    void onCreateApiDef();
 
 	//! \brief Create new abstraction definition for selected bus definition.
 	void onAddSignals();
@@ -193,6 +217,18 @@ private:
 
 	//! \brief Create new abstraction definition for bus definition.
 	QAction* addSignalsAction_;
+
+    //! \brief Open a COM definition
+    QAction* openComDefAction_;
+
+    //! \brief Create a COM definition
+    QAction* createComDefAction_;
+
+    //! \brief Open an API definition
+    QAction* openApiDefAction_;
+
+    //! \brief Create a API definition
+    QAction* createApiDefAction_;
 
 	//! \brief Open an existing system for editing.
 	QAction* openSystemAction_;

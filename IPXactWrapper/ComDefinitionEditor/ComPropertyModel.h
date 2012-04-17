@@ -1,16 +1,16 @@
 //-----------------------------------------------------------------------------
-// File: PropertyValueModel.h
+// File: ComPropertyModel.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
-// Date: 16.4.2012
+// Date: 17.4.2012
 //
 // Description:
-// Model for property values.
+// Model for COM properties.
 //-----------------------------------------------------------------------------
 
-#ifndef PROPERTYVALUEMODEL_H
-#define PROPERTYVALUEMODEL_H
+#ifndef COMPROPERTYMODEL_H
+#define COMPROPERTYMODEL_H
 
 #include <QAbstractTableModel>
 #include <QMap>
@@ -18,10 +18,12 @@
 #include <QString>
 #include <QSharedPointer>
 
+class ComProperty;
+
 //-----------------------------------------------------------------------------
-//! PropertyValueModel class.
+//! ComPropertyModel class.
 //-----------------------------------------------------------------------------
-class PropertyValueModel : public QAbstractTableModel
+class ComPropertyModel : public QAbstractTableModel
 {
 	Q_OBJECT
 
@@ -31,24 +33,24 @@ public:
      *
      *      @param [in] parent The parent object.
 	 */
-	PropertyValueModel(QObject *parent);
+	ComPropertyModel(QObject *parent);
 
 	/*!
      *  Destructor.
      */
-	virtual ~PropertyValueModel();
+	virtual ~ComPropertyModel();
 
     /*!
-     *  Sets the data for editing.
+     *  Sets the properties for editing.
      *
-     *      @param [in] propertyValue The property values.
+     *      @param [in] properties The list of properties.
      */
-    void setData(QMap<QString, QString> const& propertyValues);
+    void setProperties(QList< QSharedPointer<ComProperty> > const& properties);
 
     /*!
-     *  Returns the edited data.
+     *  Returns the properties.
      */
-    QMap<QString, QString> getData() const;
+    QList< QSharedPointer<ComProperty> > const& getProperties() const;
 
     /*!
      *  Returns the number of rows in the model.
@@ -66,7 +68,7 @@ public:
 	 *      @param [in] parent Model index of the parent of the item. Must be invalid
 	 *                         because this is not hierarchical model.
 	 *
-	 *      @return Always returns 2.
+	 *      @return Always returns PROPERTY_COL_COUNT.
 	 */
 	virtual int columnCount(QModelIndex const& parent = QModelIndex()) const;
 
@@ -138,8 +140,8 @@ signals:
 
 private:
     // Disable copying.
-    PropertyValueModel(PropertyValueModel const& rhs);
-    PropertyValueModel& operator=(PropertyValueModel const& rhs);
+    ComPropertyModel(ComPropertyModel const& rhs);
+    ComPropertyModel& operator=(ComPropertyModel const& rhs);
     
     //! NameValuePair type.
     typedef QPair<QString, QString> NameValuePair;
@@ -149,9 +151,9 @@ private:
     //-----------------------------------------------------------------------------
 	
 	//! The table that is displayed to the user.
-	QList<NameValuePair> table_;
+	QList< QSharedPointer<ComProperty> > table_;
 };
 
 //-----------------------------------------------------------------------------
 
-#endif // PROPERTYVALUEMODEL_H
+#endif // COMPROPERTYMODEL_H

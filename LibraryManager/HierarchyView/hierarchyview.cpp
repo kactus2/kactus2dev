@@ -25,27 +25,31 @@
 
 HierarchyView::HierarchyView(QWidget *parent, 
 							 LibraryInterface* handler,
-							 HierarchyFilter* filter):
-QTreeView(parent),
-handler_(handler),
-filter_(filter),
-startPos_(),
-dragIndex_(),
-openDesignAction_(NULL),
-openCompAction_(NULL),
-createNewComponentAction_(NULL),
-createNewDesignAction_(NULL),
-exportAction_(NULL),
-openBusAction_(NULL),
-addSignalsAction_(NULL),
-createBusAction_(NULL),
-openSystemAction_(NULL),
-openPlatformAction_(NULL),
-openPFStackAction_(NULL),
-openApplicationAction_(NULL),
-openEndpointAction_(NULL),
-openSWDesignAction_(NULL),
-openXmlAction_(NULL)
+							 HierarchyFilter* filter)
+    : QTreeView(parent),
+      handler_(handler),
+      filter_(filter),
+      startPos_(),
+      dragIndex_(),
+      openDesignAction_(NULL),
+      openCompAction_(NULL),
+      createNewComponentAction_(NULL),
+      createNewDesignAction_(NULL),
+      exportAction_(NULL),
+      openBusAction_(NULL),
+      addSignalsAction_(NULL),
+      createBusAction_(NULL),
+      openComDefAction_(NULL),
+      createComDefAction_(NULL),
+      openApiDefAction_(NULL),
+      createApiDefAction_(NULL),
+      openSystemAction_(NULL),
+      openPlatformAction_(NULL),
+      openPFStackAction_(NULL),
+      openApplicationAction_(NULL),
+      openEndpointAction_(NULL),
+      openSWDesignAction_(NULL),
+      openXmlAction_(NULL)
 {
 
 	// the view can be sorted
@@ -113,11 +117,35 @@ void HierarchyView::setupActions() {
 	connect(addSignalsAction_, SIGNAL(triggered()),
 		this, SLOT(onAddSignals()), Qt::UniqueConnection);
 
-	createBusAction_ = new QAction(tr("Create New Buss"), this);
+	createBusAction_ = new QAction(tr("Create New Bus"), this);
 	createBusAction_->setStatusTip(tr("Create new bus"));
 	createBusAction_->setToolTip(tr("Create new bus"));
 	connect(createBusAction_, SIGNAL(triggered()),
 		this, SLOT(onCreateBus()), Qt::UniqueConnection);
+
+    openComDefAction_ = new QAction(tr("Open COM Definition"), this);
+    openComDefAction_->setStatusTip(tr("Open the COM definition in an editor"));
+    openComDefAction_->setToolTip(tr("Open the COM definition in an editor"));
+    connect(openComDefAction_, SIGNAL(triggered()),
+        this, SLOT(onOpenComDef()), Qt::UniqueConnection);
+
+    createComDefAction_ = new QAction(tr("Create New COM Definition"), this);
+    createComDefAction_->setStatusTip(tr("Create new COM definition"));
+    createComDefAction_->setToolTip(tr("Create new COM definition"));
+    connect(createComDefAction_, SIGNAL(triggered()),
+        this, SLOT(onCreateComDef()), Qt::UniqueConnection);
+
+    openApiDefAction_ = new QAction(tr("Open API Definition"), this);
+    openApiDefAction_->setStatusTip(tr("Open the API definition in an editor"));
+    openApiDefAction_->setToolTip(tr("Open the API definition in an editor"));
+    connect(openApiDefAction_, SIGNAL(triggered()),
+        this, SLOT(onOpenApiDef()), Qt::UniqueConnection);
+
+    createApiDefAction_ = new QAction(tr("Create New API Definition"), this);
+    createApiDefAction_->setStatusTip(tr("Create new API definition"));
+    createApiDefAction_->setToolTip(tr("Create new API definition"));
+    connect(createApiDefAction_, SIGNAL(triggered()),
+        this, SLOT(onCreateApiDef()), Qt::UniqueConnection);
 
 	openSystemAction_ = new QAction(tr("Open System"), this);
 	openSystemAction_->setStatusTip(tr("Open system for editing"));
@@ -174,6 +202,20 @@ void HierarchyView::onOpenBus() {
 	}
 }
 
+void HierarchyView::onOpenComDef() {
+    QModelIndexList indexes = selectedIndexes();
+    foreach (QModelIndex index, indexes) {
+        emit openComponent(filter_->mapToSource(index));
+    }
+}
+
+void HierarchyView::onOpenApiDef() {
+    QModelIndexList indexes = selectedIndexes();
+    foreach (QModelIndex index, indexes) {
+        emit openComponent(filter_->mapToSource(index));
+    }
+}
+
 void HierarchyView::onOpenDesign() {
 	QModelIndexList indexes = selectedIndexes();
 	foreach (QModelIndex index, indexes) {
@@ -195,6 +237,14 @@ void HierarchyView::onAddSignals() {
 
 void HierarchyView::onCreateBus() {
 	emit createNewBus(filter_->mapToSource(currentIndex()));
+}
+
+void HierarchyView::onCreateComDef() {
+    emit createNewComDef(filter_->mapToSource(currentIndex()));
+}
+
+void HierarchyView::onCreateApiDef() {
+    emit createNewApiDef(filter_->mapToSource(currentIndex()));
 }
 
 void HierarchyView::onExportAction() {
@@ -312,6 +362,14 @@ void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
 			menu.addAction(openBusAction_);
 			menu.addAction(createBusAction_);
 		}
+        else if (item->type() == HierarchyItem::COMDEFINITION) {
+            menu.addAction(openComDefAction_);
+            menu.addAction(createComDefAction_);
+        }
+        else if (item->type() == HierarchyItem::APIDEFINITION) {
+            menu.addAction(openApiDefAction_);
+            menu.addAction(createApiDefAction_);
+        }
 	}
 	
 	menu.addAction(exportAction_);

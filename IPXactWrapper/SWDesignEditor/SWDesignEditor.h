@@ -28,7 +28,6 @@
 #include <QMap>
 #include <QList>
 #include <QSharedPointer>
-#include <QSortFilterProxyModel>
 
 //-----------------------------------------------------------------------------
 //! Editor for editing SW mapping designs.

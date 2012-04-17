@@ -132,6 +132,10 @@ void LibraryHandler::syncronizeModels() {
 		this, SLOT(onEditItem(const VLNV&)), Qt::UniqueConnection);
 	connect(data_.data(), SIGNAL(createBusDef(const VLNV&)),
 		this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
+    connect(data_.data(), SIGNAL(createComDef(const VLNV&)),
+        this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
+    connect(data_.data(), SIGNAL(createApiDef(const VLNV&)),
+        this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
 	connect(data_.data(), SIGNAL(createComponent(const VLNV&)),
 		this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
 	connect(data_.data(), SIGNAL(createDesign(const VLNV&)),
@@ -155,6 +159,10 @@ void LibraryHandler::syncronizeModels() {
 		this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
 	connect(treeModel_.data(), SIGNAL(createAbsDef(const VLNV&)),
 		this, SLOT(onCreateAbsDef(const VLNV&)), Qt::UniqueConnection);
+    connect(treeModel_.data(), SIGNAL(createComDef(const VLNV&)),
+        this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
+    connect(treeModel_.data(), SIGNAL(createApiDef(const VLNV&)),
+        this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
 	connect(treeModel_.data(), SIGNAL(createComponent(const VLNV&)),
 		this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
 	connect(treeModel_.data(), SIGNAL(createDesign(const VLNV&)),
@@ -180,6 +188,10 @@ void LibraryHandler::syncronizeModels() {
 		this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
 	connect(hierarchyModel_.data(), SIGNAL(createAbsDef(const VLNV&)),
 		this, SLOT(onCreateAbsDef(const VLNV&)), Qt::UniqueConnection);
+    connect(hierarchyModel_.data(), SIGNAL(createComDef(const VLNV&)),
+        this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
+    connect(hierarchyModel_.data(), SIGNAL(createApiDef(const VLNV&)),
+        this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
 	connect(hierarchyModel_.data(), SIGNAL(createDesign(const VLNV&)),
 		this, SLOT(onCreateDesign(const VLNV&)), Qt::UniqueConnection);
 	connect(hierarchyModel_.data(), SIGNAL(exportItem(const VLNV&)),
@@ -880,6 +892,19 @@ void LibraryHandler::onEditItem( const VLNV& vlnv ) {
 			}
 			return;
 							  }
+
+        case VLNV::COMDEFINITION:
+            {
+                emit openComDefinition(vlnv);
+                break;
+            }
+
+        case VLNV::APIDEFINITION:
+            {
+                emit openApiDefinition(vlnv);
+                break;
+            }
+
 		case VLNV::BUSDEFINITION: {
 						
 			// find the child items of the bus definition
@@ -992,6 +1017,18 @@ void LibraryHandler::onCreateNewItem( const VLNV& vlnv ) {
 			newDesignDialog.setWindowTitle("Set new component VLNV");
 			break;
 							  }
+
+        case VLNV::COMDEFINITION:
+            {
+                newDesignDialog.setWindowTitle(tr("Set new COM definition VLNV"));
+                break;
+            }
+
+        case VLNV::APIDEFINITION:
+            {
+                newDesignDialog.setWindowTitle(tr("Set new API definition VLNV"));
+                break;
+            }
 	}
 
 	newDesignDialog.exec();
@@ -1015,6 +1052,19 @@ void LibraryHandler::onCreateNewItem( const VLNV& vlnv ) {
 			emit createBus(newVlnv, directory);
 			return;
 								  }
+
+        case VLNV::COMDEFINITION:
+            {
+                emit createComDef(newVlnv, directory);
+                return;
+            }
+
+        case VLNV::APIDEFINITION:
+            {
+                emit createApiDef(newVlnv, directory);
+                return;
+            }
+
 		case VLNV::COMPONENT: {
 			emit createComponent(newDesignDialog.getProductHierarchy(),
                                  newDesignDialog.getFirmness(),

@@ -247,6 +247,16 @@ QVariant LibraryTreeModel::data(const QModelIndex& index, int role) const {
 				return QIcon(":/icons/graphics/new-bus.png");
 			}
 
+            // if item is for a COM definition
+            else if (vlnvP->getType() == VLNV::COMDEFINITION) {
+                    return QIcon(":/icons/graphics/new-com_definition.png");
+            }
+
+            // if item is for an API definition
+            else if (vlnvP->getType() == VLNV::APIDEFINITION) {
+                return QIcon(":/icons/graphics/new-api_definition.png");
+            }
+
 			// if item is for a design
 			else if (vlnvP->getType() == VLNV::DESIGN) {
 				return QIcon(":/icons/graphics/new-design.png");
@@ -446,6 +456,32 @@ void LibraryTreeModel::onOpenBus( const QModelIndex& index ) {
 		emit editItem(*vlnv);
 }
 
+void LibraryTreeModel::onOpenComDef( const QModelIndex& index ) {
+
+    if (!index.isValid())
+        return;
+
+    LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
+
+    VLNV* vlnv = item->getVLNV();
+
+    if (vlnv && vlnv->isValid())
+        emit editItem(*vlnv);
+}
+
+void LibraryTreeModel::onOpenApiDef( const QModelIndex& index ) {
+
+    if (!index.isValid())
+        return;
+
+    LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
+
+    VLNV* vlnv = item->getVLNV();
+
+    if (vlnv && vlnv->isValid())
+        emit editItem(*vlnv);
+}
+
 void LibraryTreeModel::onCreateBus( const QModelIndex& index ) {
 
 	if (!index.isValid())
@@ -471,6 +507,34 @@ void LibraryTreeModel::onCreateAbsDef( const QModelIndex& index ) {
 	item->setVlnv(vlnv);
 
 	emit createAbsDef(vlnv);
+}
+
+void LibraryTreeModel::onCreateComDef( const QModelIndex& index ) {
+
+    if (!index.isValid())
+        return;
+
+    LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
+
+    VLNV vlnv;
+    vlnv.setType(VLNV::COMDEFINITION);
+    item->setVlnv(vlnv);
+
+    emit createComDef(vlnv);
+}
+
+void LibraryTreeModel::onCreateApiDef( const QModelIndex& index ) {
+
+    if (!index.isValid())
+        return;
+
+    LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
+
+    VLNV vlnv;
+    vlnv.setType(VLNV::APIDEFINITION);
+    item->setVlnv(vlnv);
+
+    emit createApiDef(vlnv);
 }
 
 void LibraryTreeModel::onOpenComponent( const QModelIndex& index ) {

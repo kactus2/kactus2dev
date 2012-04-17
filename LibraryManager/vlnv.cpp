@@ -217,6 +217,18 @@ VLNV::IPXactType VLNV::string2Type(const QString &type) {
 		return GENERATORCHAIN;
 	}
 
+    // if comDefinition
+    else if (QString::compare(type, QObject::tr("kactus2:comDefinition"),
+                              Qt::CaseInsensitive) == 0) {
+        return COMDEFINITION;
+    }
+
+    // if apiDefinition
+    else if (QString::compare(type, QObject::tr("kactus2:apiDefinition"),
+                              Qt::CaseInsensitive) == 0) {
+            return APIDEFINITION;
+    }
+
 	// if the string was unrecognizable
 	else {
 		return INVALID;
@@ -265,6 +277,10 @@ QString VLNV::type2Print(const IPXactType &type) {
 		return QObject::tr("designConfiguration");
 	case ABSTRACTIONDEFINITION:
 		return QObject::tr("abstractionDefinition");
+    case COMDEFINITION:
+        return QObject::tr("comDefinition");
+    case APIDEFINITION:
+        return QObject::tr("apiDefinition");
 	default:
 		return QObject::tr("invalid");
 	}
@@ -286,6 +302,10 @@ QString VLNV::type2Show(const IPXactType &type) {
         return QObject::tr("Design Configuration");
     case ABSTRACTIONDEFINITION:
         return QObject::tr("Abstraction Definition");
+    case COMDEFINITION:
+        return QObject::tr("COM Definition");
+    case APIDEFINITION:
+        return QObject::tr("API Definition");
     default:
         return QObject::tr("Invalid");
     }
@@ -445,6 +465,10 @@ void VLNV::setType( const QString& type ) {
 		type_ = VLNV::DESIGNCONFIGURATION;
 	else if (type == QString("abstractionDefinition"))
 		type_ = VLNV::ABSTRACTIONDEFINITION;
+    else if (type == QString("comDefinition"))
+        type_ = VLNV::COMDEFINITION;
+    else if (type == QString("apiDefinition"))
+        type_ = VLNV::APIDEFINITION;
 	else
 		type_ = VLNV::INVALID;
 }

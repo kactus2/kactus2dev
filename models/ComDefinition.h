@@ -27,6 +27,7 @@ class ComProperty;
 //-----------------------------------------------------------------------------
 class ComDefinition : public LibraryComponent
 {
+public:
     /*!
      *  Constructor which creates an empty communication definition.
      *
@@ -54,6 +55,13 @@ class ComDefinition : public LibraryComponent
     virtual ~ComDefinition();
 
     /*!
+     *  Makes a copy of the document.
+     *
+     *      @return The created copy of the COM definition.
+     */
+    virtual QSharedPointer<LibraryComponent> clone() const;
+
+    /*!
      *  Writes the communication definition to an XML file.
      *
      *      @param [in] file The file handle.
@@ -65,12 +73,22 @@ class ComDefinition : public LibraryComponent
      *
      *      @param [out] errorList  The list of errors found in the contents.
      */
-    bool isValid(QStringList& errorList) const;
+    virtual bool isValid(QStringList& errorList) const;
 
     /*!
      *  Returns true if the communication definition is valid.
      */
-    bool isValid() const;
+    virtual bool isValid() const;
+
+    /*!
+     *  Returns the dependent files (none).
+     */
+    virtual QStringList const getDependentFiles() const;
+
+    /*!
+     *  Returns the dependent VLNVs (none).
+     */
+    virtual QList<VLNV> const getDependentVLNVs() const;
 
     /*!
      *  Adds a new data type to the communication definition.
@@ -138,7 +156,7 @@ private:
      *      @param [in] node The source XML node.
      */
     void parseProperties(QDomNode& node);
-
+    
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

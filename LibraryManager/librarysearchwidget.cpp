@@ -138,6 +138,18 @@ void LibrarySearchWidget::connectDataModel(LibraryData* dataModel) {
 	connect(&view_, SIGNAL(createBusDef(const QModelIndex&)),
 		dataModel, SLOT(onCreateBusDef(const QModelIndex&)), Qt::UniqueConnection);
 
+    connect(&view_, SIGNAL(openComDef(const QModelIndex&)),
+        dataModel, SLOT(onOpenComDef(const QModelIndex&)), Qt::UniqueConnection);
+
+    connect(&view_, SIGNAL(createComDef(const QModelIndex&)),
+        dataModel, SLOT(onCreateComDef(const QModelIndex&)), Qt::UniqueConnection);
+
+    connect(&view_, SIGNAL(openApiDef(const QModelIndex&)),
+        dataModel, SLOT(onOpenApiDef(const QModelIndex&)), Qt::UniqueConnection);
+
+    connect(&view_, SIGNAL(createApiDef(const QModelIndex&)),
+        dataModel, SLOT(onCreateApiDef(const QModelIndex&)), Qt::UniqueConnection);
+
 	connect(&view_, SIGNAL(errorMessage(const QString&)),
 		dataModel, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 

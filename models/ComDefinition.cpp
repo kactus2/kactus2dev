@@ -87,6 +87,14 @@ ComDefinition::~ComDefinition()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComDefinition::clone()
+//-----------------------------------------------------------------------------
+QSharedPointer<LibraryComponent> ComDefinition::clone() const
+{
+    return QSharedPointer<LibraryComponent>(new ComDefinition(*this));
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComDefinition::write()
 //-----------------------------------------------------------------------------
 void ComDefinition::write(QFile& file)
@@ -126,6 +134,9 @@ void ComDefinition::write(QFile& file)
     }
 
     writer.writeEndElement(); // kactus2:properties
+
+    writer.writeEndElement(); // kactus2:comDefinition
+    writer.writeEndDocument();
 }
 
 //-----------------------------------------------------------------------------
@@ -238,6 +249,22 @@ bool ComDefinition::isValid() const
     }
 
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComDefinition::getDependentFiles()
+//-----------------------------------------------------------------------------
+QStringList const ComDefinition::getDependentFiles() const
+{
+    return QStringList();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComDefinition::getDependentVLNVs()
+//-----------------------------------------------------------------------------
+QList<VLNV> const ComDefinition::getDependentVLNVs() const
+{
+    return QList<VLNV>();
 }
 
 //-----------------------------------------------------------------------------

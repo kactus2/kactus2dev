@@ -20,22 +20,26 @@
 
 LibraryTableView::LibraryTableView(LibraryHandler* handler, 
 								   LibrarySearchFilter* filter, 
-								   QWidget *parent):
-QTableView(parent),
-filter_(filter),
-handler_(handler),
-openDesignAction_(NULL),
-openCompAction_(NULL),
-createNewComponentAction_(NULL),
-createNewDesignAction_(NULL),
-deleteAction_(NULL),
-exportAction_(NULL),
-hideAction_(NULL),
-showAction_(NULL),
-refreshAction_(NULL),
-openBusDefAction_(NULL),
-createBusDefAction_(NULL) {
-
+								   QWidget *parent)
+    : QTableView(parent),
+      filter_(filter),
+      handler_(handler),
+      openDesignAction_(NULL),
+      openCompAction_(NULL),
+      createNewComponentAction_(NULL),
+      createNewDesignAction_(NULL),
+      deleteAction_(NULL),
+      exportAction_(NULL),
+      hideAction_(NULL),
+      showAction_(NULL),
+      refreshAction_(NULL),
+      openBusDefAction_(NULL),
+      createBusDefAction_(NULL),
+      openComDefAction_(NULL),
+      createComDefAction_(NULL),
+      openApiDefAction_(NULL),
+      createApiDefAction_(NULL)
+{
 	// the view can be sorted
 	setSortingEnabled(true);
 
@@ -120,6 +124,14 @@ void LibraryTableView::contextMenuEvent(QContextMenuEvent* event) {
 
 		menu.addAction(openBusDefAction_);
 	}
+    else if (libComp->getVlnv()->getType() == VLNV::COMDEFINITION) {
+
+        menu.addAction(openComDefAction_);
+    }
+    else if (libComp->getVlnv()->getType() == VLNV::APIDEFINITION) {
+
+        menu.addAction(openApiDefAction_);
+    }
 
 	// if item is a component
 	if (vlnv->getType() == VLNV::COMPONENT) {
@@ -133,6 +145,14 @@ void LibraryTableView::contextMenuEvent(QContextMenuEvent* event) {
 	else if (vlnv->getType() == VLNV::BUSDEFINITION) {
 		menu.addAction(createBusDefAction_);
 	}
+    // if item is for COM definitions
+    else if (vlnv->getType() == VLNV::COMDEFINITION) {
+        menu.addAction(createComDefAction_);
+    }
+    // if item is for API definitions
+    else if (vlnv->getType() == VLNV::APIDEFINITION) {
+        menu.addAction(createApiDefAction_);
+    }
 
 	menu.addAction(deleteAction_);
 	menu.addAction(exportAction_);
@@ -217,6 +237,30 @@ void LibraryTableView::setupActions() {
 	createBusDefAction_->setToolTip(tr("Create new"));
 	connect(createBusDefAction_, SIGNAL(triggered()),
 		this, SLOT(onCreateBusDef()), Qt::UniqueConnection);
+
+    openComDefAction_ = new QAction(tr("Open"), this);
+    openComDefAction_->setStatusTip(tr("Open"));
+    openComDefAction_->setToolTip(tr("Open"));
+    connect(openComDefAction_, SIGNAL(triggered()),
+        this, SLOT(onOpenComDef()), Qt::UniqueConnection);
+
+    createComDefAction_ = new QAction(tr("Create New"), this);
+    createComDefAction_->setStatusTip(tr("Create new"));
+    createComDefAction_->setToolTip(tr("Create new"));
+    connect(createComDefAction_, SIGNAL(triggered()),
+        this, SLOT(onCreateComDef()), Qt::UniqueConnection);
+
+    openApiDefAction_ = new QAction(tr("Open"), this);
+    openApiDefAction_->setStatusTip(tr("Open"));
+    openApiDefAction_->setToolTip(tr("Open"));
+    connect(openApiDefAction_, SIGNAL(triggered()),
+        this, SLOT(onOpenApiDef()), Qt::UniqueConnection);
+
+    createApiDefAction_ = new QAction(tr("Create New"), this);
+    createApiDefAction_->setStatusTip(tr("Create new"));
+    createApiDefAction_->setToolTip(tr("Create new"));
+    connect(createApiDefAction_, SIGNAL(triggered()),
+        this, SLOT(onCreateApiDef()), Qt::UniqueConnection);
 }
 
 void LibraryTableView::onExportAction() {
@@ -266,4 +310,20 @@ void LibraryTableView::onOpenBusDef() {
 
 void LibraryTableView::onCreateBusDef() {
 	emit createBusDef(filter_->mapToSource(currentIndex()));
+}
+
+void LibraryTableView::onOpenComDef() {
+    emit openComDef(filter_->mapToSource(currentIndex()));
+}
+
+void LibraryTableView::onCreateComDef() {
+    emit createComDef(filter_->mapToSource(currentIndex()));
+}
+
+void LibraryTableView::onOpenApiDef() {
+    emit openApiDef(filter_->mapToSource(currentIndex()));
+}
+
+void LibraryTableView::onCreateApiDef() {
+    emit createApiDef(filter_->mapToSource(currentIndex()));
 }

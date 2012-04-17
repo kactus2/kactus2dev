@@ -223,6 +223,12 @@ signals:
 	//! \brief Create a new bus definition.
 	void createBusDef(const VLNV& vlnv);
 
+    //! \brief Create a new COM definition.
+    void createComDef(const VLNV& vlnv);
+
+    //! \brief Create a new API definition.
+    void createApiDef(const VLNV& vlnv);
+
 	//! \brief Create a new component with given vlnv.
 	void createComponent(const VLNV& vlnv);
 
@@ -246,8 +252,20 @@ public slots:
 	//! \brief Open bus definition in an editor
 	void onOpenBusDef(const QModelIndex& index);
 
+    //! \brief Open COM definition in an editor
+    void onOpenComDef(const QModelIndex& index);
+
+    //! \brief Open API definition in an editor
+    void onOpenApiDef(const QModelIndex& index);
+
 	//! \brief Create a new bus definition
 	void onCreateBusDef(const QModelIndex& index);
+
+    //! \brief Create a new COM definition
+    void onCreateComDef(const QModelIndex& index);
+
+    //! \brief Create a new API definition
+    void onCreateApiDef(const QModelIndex& index);
 
 	//! \brief When delete is selected in search view
 	void onDeleteItem(const QModelIndex& index);

@@ -1,70 +1,65 @@
 //-----------------------------------------------------------------------------
-// File: PropertyValueModel.cpp
+// File: ComPropertyModel.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
-// Date: 16.4.2012
+// Date: 17.4.2012
 //
 // Description:
-// Model for property values.
+// Model for COM properties.
 //-----------------------------------------------------------------------------
 
-#include "PropertyValueModel.h"
+#include "ComPropertyModel.h"
+
+#include "ComPropertyDelegate.h"
+
+#include <models/ComProperty.h>
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueModel::PropertyValueModel()
+// Function: ComPropertyModel::ComPropertyModel()
 //-----------------------------------------------------------------------------
-PropertyValueModel::PropertyValueModel(QObject *parent)
-    : QAbstractTableModel(parent)
+ComPropertyModel::ComPropertyModel(QObject *parent)
+    : QAbstractTableModel(parent),
+      table_()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueModel::~PropertyValueModel()
+// Function: ComPropertyModel::~ComPropertyModel()
 //-----------------------------------------------------------------------------
-PropertyValueModel::~PropertyValueModel()
+ComPropertyModel::~ComPropertyModel()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueModel::setData()
+// Function: ComPropertyModel::setProperties()
 //-----------------------------------------------------------------------------
-void PropertyValueModel::setData(QMap<QString, QString> const& propertyValues)
+void ComPropertyModel::setProperties(QList< QSharedPointer<ComProperty> > const& properties)
 {
     beginResetModel();
 
     table_.clear();
 
-    QMapIterator<QString, QString> iter(propertyValues);
-
-    while (iter.hasNext())
+    foreach (QSharedPointer<ComProperty> prop, properties)
     {
-        iter.next();
-        table_.append(NameValuePair(iter.key(), iter.value()));
+        table_.append(QSharedPointer<ComProperty>(new ComProperty(*prop.data())));
     }
 
     endResetModel();
 }
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueModel::getData()
+// Function: ComPropertyModel::getProperties()
 //-----------------------------------------------------------------------------
-QMap<QString, QString> PropertyValueModel::getData() const
+QList< QSharedPointer<ComProperty> > const& ComPropertyModel::getProperties() const
 {
-    QMap<QString, QString> values;
-
-    foreach (NameValuePair const& pair, table_)
-    {
-        values[pair.first] = pair.second;
-    }
-
-    return values;
+    return table_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueModel::rowCount()
+// Function: ComPropertyModel::rowCount()
 //-----------------------------------------------------------------------------
-int PropertyValueModel::rowCount(QModelIndex const& parent /*= QModelIndex()*/) const
+int ComPropertyModel::rowCount(QModelIndex const& parent /*= QModelIndex()*/) const
 {
     if (parent.isValid())
     {
@@ -75,22 +70,22 @@ int PropertyValueModel::rowCount(QModelIndex const& parent /*= QModelIndex()*/) 
 }
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueModel::columnCount()
+// Function: ComPropertyModel::columnCount()
 //-----------------------------------------------------------------------------
-int PropertyValueModel::columnCount(QModelIndex const& parent /*= QModelIndex()*/) const
+int ComPropertyModel::columnCount(QModelIndex const& parent /*= QModelIndex()*/) const
 {
     if (parent.isValid())
     {
         return 0;
     }
 
-    return 2;
+    return PROPERTY_COL_COUNT;
 }
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueModel::data()
+// Function: ComPropertyModel::data()
 //-----------------------------------------------------------------------------
-QVariant PropertyValueModel::data(QModelIndex const& index, int role /*= Qt::DisplayRole*/) const
+QVariant ComPropertyModel::data(QModelIndex const& index, int role /*= Qt::DisplayRole*/) const
 {
     if (!index.isValid())
     {
@@ -105,11 +100,20 @@ QVariant PropertyValueModel::data(QModelIndex const& index, int role /*= Qt::Dis
     {
         switch (index.column())
         {
-        case 0:
-            return table_.at(index.row()).first;
-        
-        case 1:
-            return table_.at(index.row()).second;
+        case PROPERTY_COL_NAME:
+            return table_.at(index.row())->getName();
+
+        case PROPERTY_COL_REQUIRED:
+            return table_.at(index.row())->isRequired();
+
+        case PROPERTY_COL_TYPE:
+            return table_.at(index.row())->getType();
+
+        case PROPERTY_COL_DEFAULT:
+            return table_.at(index.row())->getDefaultValue();
+
+        case PROPERTY_COL_DESC:
+            return table_.at(index.row())->getDescription();
         
         default:
             return QVariant();
@@ -122,9 +126,9 @@ QVariant PropertyValueModel::data(QModelIndex const& index, int role /*= Qt::Dis
 }
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueModel::headerData()
+// Function: ComPropertyModel::headerData()
 //-----------------------------------------------------------------------------
-QVariant PropertyValueModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant ComPropertyModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (orientation != Qt::Horizontal)
     {
@@ -135,11 +139,20 @@ QVariant PropertyValueModel::headerData(int section, Qt::Orientation orientation
     {
         switch (section)
         {
-        case 0:
+        case PROPERTY_COL_NAME:
             return tr("Name");
 
-        case 1:
-            return tr("Value");
+        case PROPERTY_COL_REQUIRED:
+            return tr("Required");
+
+        case PROPERTY_COL_TYPE:
+            return tr("Type");
+
+        case PROPERTY_COL_DEFAULT:
+            return tr("Default Value");
+
+        case PROPERTY_COL_DESC:
+            return tr("Description");
 
         default:
             return QVariant();
@@ -152,9 +165,9 @@ QVariant PropertyValueModel::headerData(int section, Qt::Orientation orientation
 }
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueModel::flags()
+// Function: ComPropertyModel::flags()
 //-----------------------------------------------------------------------------
-Qt::ItemFlags PropertyValueModel::flags(QModelIndex const& index) const
+Qt::ItemFlags ComPropertyModel::flags(QModelIndex const& index) const
 {
     if (!index.isValid())
     {
@@ -165,9 +178,9 @@ Qt::ItemFlags PropertyValueModel::flags(QModelIndex const& index) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueModel::setData()
+// Function: ComPropertyModel::setData()
 //-----------------------------------------------------------------------------
-bool PropertyValueModel::setData(QModelIndex const& index, QVariant const& value, int role /*= Qt::EditRole*/)
+bool ComPropertyModel::setData(QModelIndex const& index, QVariant const& value, int role /*= Qt::EditRole*/)
 {
     if (!index.isValid())
     {
@@ -182,15 +195,34 @@ bool PropertyValueModel::setData(QModelIndex const& index, QVariant const& value
     {
         switch (index.column())
         {
-        case 0:
+        case PROPERTY_COL_NAME:
             {
-                table_[index.row()].first = value.toString();
+                table_[index.row()]->setName(value.toString());
+                break;
+            }
+            
+
+        case PROPERTY_COL_REQUIRED:
+            {
+                table_[index.row()]->setRequired(value.toBool());
                 break;
             }
 
-        case 1:
+        case PROPERTY_COL_TYPE:
             {
-                table_[index.row()].second = value.toString();
+                table_[index.row()]->setType(value.toString());
+                break;
+            }
+
+        case PROPERTY_COL_DEFAULT:
+            {
+                table_[index.row()]->setDefaultValue(value.toString());
+                break;
+            }
+
+        case PROPERTY_COL_DESC:
+            {
+                table_[index.row()]->setDescription(value.toString());
                 break;
             }
 
@@ -209,34 +241,28 @@ bool PropertyValueModel::setData(QModelIndex const& index, QVariant const& value
 }
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueModel::isValid()
+// Function: ComPropertyModel::isValid()
 //-----------------------------------------------------------------------------
-bool PropertyValueModel::isValid() const
+bool ComPropertyModel::isValid() const
 {
-    // TODO:
     return true;
 }
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueModel::onAdd()
+// Function: ComPropertyModel::onAdd()
 //-----------------------------------------------------------------------------
-void PropertyValueModel::onAdd()
+void ComPropertyModel::onAdd()
 {
-    NameValuePair element(QString(""), QString(""));
-
-    if (!table_.contains(element))
-    {
-        beginInsertRows(QModelIndex(), table_.size(), table_.size());
-        table_.append(element);
-        endInsertRows();
-        emit contentChanged();
-    }
+    beginInsertRows(QModelIndex(), table_.size(), table_.size());
+    table_.append(QSharedPointer<ComProperty>(new ComProperty()));
+    endInsertRows();
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueModel::onAddItem()
+// Function: ComPropertyModel::onAddItem()
 //-----------------------------------------------------------------------------
-void PropertyValueModel::onAddItem(QModelIndex const& index)
+void ComPropertyModel::onAddItem(QModelIndex const& index)
 {
     int row = table_.size();
 
@@ -246,23 +272,18 @@ void PropertyValueModel::onAddItem(QModelIndex const& index)
         row = index.row();
     }
 
-    NameValuePair element(QString(""), QString(""));
+    beginInsertRows(QModelIndex(), row, row);
+    table_.insert(row, QSharedPointer<ComProperty>(new ComProperty()));
+    endInsertRows();
 
-    if (!table_.contains(element))
-    {
-        beginInsertRows(QModelIndex(), row, row);
-        table_.insert(row, element);
-        endInsertRows();
-
-        // tell also parent widget that contents have been changed
-        emit contentChanged();
-    }
+    // tell also parent widget that contents have been changed
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueModel::onRemove()
+// Function: ComPropertyModel::onRemove()
 //-----------------------------------------------------------------------------
-void PropertyValueModel::onRemove(QModelIndex const& index )
+void ComPropertyModel::onRemove(QModelIndex const& index )
 {
     if (!index.isValid())
     {
@@ -278,9 +299,9 @@ void PropertyValueModel::onRemove(QModelIndex const& index )
 }
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueModel::onRemoveItem()
+// Function: ComPropertyModel::onRemoveItem()
 //-----------------------------------------------------------------------------
-void PropertyValueModel::onRemoveItem(QModelIndex const& index )
+void ComPropertyModel::onRemoveItem(QModelIndex const& index )
 {
     // don't remove anything if index is invalid
     if (!index.isValid())

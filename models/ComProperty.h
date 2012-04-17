@@ -83,8 +83,17 @@ public:
 
     /*!
      *  Sets the default value for the property.
+     *
+     *      @param [in] defaultValue The default value to set.
      */
     void setDefaultValue(QString const& defaultValue);
+
+    /*!
+     *  Sets the description of the property.
+     *
+     *      @param [in] description The description to set.
+     */
+    void setDescription(QString const& description);
 
     /*!
      *  Returns the name of the property.
@@ -107,6 +116,11 @@ public:
     QString const& getDefaultValue() const;
 
     /*!
+     *  Returns the description of the property.
+     */
+    QString const& getDescription() const;
+
+    /*!
      *  Assignment operator.
      */
     ComProperty& operator=(ComProperty const& rhs);
@@ -127,6 +141,9 @@ private:
 
     //! The default value.
     QString defaultValue_;
+
+    //! The property description.
+    QString desc_;
 };
 
 //-----------------------------------------------------------------------------

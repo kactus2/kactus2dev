@@ -65,9 +65,11 @@ void HierarchyModel::onResetModel() {
 		if (!libComp)
 			continue;
 
-		// if item is component or bus definition
+		// if item is component, bus definition, COM definition or API definition
 		if (items.at(i) && (handler_->getDocumentType(*items.at(i)) == VLNV::COMPONENT ||
-			handler_->getDocumentType(*items.at(i)) == VLNV::BUSDEFINITION)) {
+			                handler_->getDocumentType(*items.at(i)) == VLNV::BUSDEFINITION ||
+                            handler_->getDocumentType(*items.at(i)) == VLNV::COMDEFINITION ||
+                            handler_->getDocumentType(*items.at(i)) == VLNV::APIDEFINITION)) {
 			
 			rootItem_->createChild(items.at(i));
 		}
@@ -278,8 +280,18 @@ QVariant HierarchyModel::data(const QModelIndex& index,
 			
 		}
 		// if item is bus
-		else 
+        else if (item->type() == HierarchyItem::COMDEFINITION)
+        {
+            return QIcon(":/icons/graphics/new-com_definition.png");
+        }
+        else if (item->type() == HierarchyItem::APIDEFINITION)
+        {
+            return QIcon(":/icons/graphics/new-api_definition.png");
+        }
+        else
+        {
 			return QIcon(":/icons/graphics/new-bus.png");
+        }
 	}
 
 	// unsupported role
@@ -380,6 +392,30 @@ void HierarchyModel::onCreateNewAbsDef( const QModelIndex& index ) {
 	vlnv.setType(VLNV::BUSDEFINITION);
 
 	emit createAbsDef(vlnv);
+}
+
+void HierarchyModel::onCreateNewComDef( const QModelIndex& index ) {
+    if (!index.isValid())
+        return;
+
+    HierarchyItem* item = static_cast<HierarchyItem*>(index.internalPointer());
+
+    VLNV vlnv = item->getVLNV();
+    vlnv.setType(VLNV::COMDEFINITION);
+
+    emit createComDef(vlnv);
+}
+
+void HierarchyModel::onCreateNewApiDef( const QModelIndex& index ) {
+    if (!index.isValid())
+        return;
+
+    HierarchyItem* item = static_cast<HierarchyItem*>(index.internalPointer());
+
+    VLNV vlnv = item->getVLNV();
+    vlnv.setType(VLNV::APIDEFINITION);
+
+    emit createApiDef(vlnv);
 }
 
 void HierarchyModel::onExportItem( const QModelIndex& index ) {

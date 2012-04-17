@@ -18,7 +18,12 @@
 //-----------------------------------------------------------------------------
 // Function: ComProperty::ComProperty()
 //-----------------------------------------------------------------------------
-ComProperty::ComProperty() : name_(), required_(true), type_("string"), defaultValue_("")
+ComProperty::ComProperty()
+    : name_(),
+      required_(true),
+      type_("string"),
+      defaultValue_(""),
+      desc_("")
 {
 }
 
@@ -28,19 +33,26 @@ ComProperty::ComProperty() : name_(), required_(true), type_("string"), defaultV
 ComProperty::ComProperty(ComProperty const& rhs) : name_(rhs.name_),
                                                    required_(rhs.required_),
                                                    type_(rhs.type_),
-                                                   defaultValue_(rhs.defaultValue_)
+                                                   defaultValue_(rhs.defaultValue_),
+                                                   desc_(rhs.desc_)
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComProperty::ComProperty()
 //-----------------------------------------------------------------------------
-ComProperty::ComProperty(QDomNode& node) : name_(), required_(true), type_("string"), defaultValue_("")
+ComProperty::ComProperty(QDomNode& node)
+    : name_(),
+      required_(true),
+      type_("string"),
+      defaultValue_(""),
+      desc_("")
 {
     name_ = node.attributes().namedItem("kactus2:name").nodeValue();
     required_ = General::str2Bool(node.attributes().namedItem("kactus2:required").nodeValue(), false);
     type_ = node.attributes().namedItem("kactus2:propertyType").nodeValue();
     defaultValue_ = node.attributes().namedItem("kactus2:defaultValue").nodeValue();
+    desc_ = node.attributes().namedItem("kactus2:description").nodeValue();
 }
 
 //-----------------------------------------------------------------------------
@@ -71,6 +83,7 @@ void ComProperty::write(QXmlStreamWriter& writer)
     writer.writeAttribute("kactus2:required", General::bool2Str(required_));
     writer.writeAttribute("kactus2:propertyType", type_);
     writer.writeAttribute("kactus2:defaultValue", defaultValue_);
+    writer.writeAttribute("kactus2:description", desc_);
 }
 
 //-----------------------------------------------------------------------------
@@ -78,7 +91,7 @@ void ComProperty::write(QXmlStreamWriter& writer)
 //-----------------------------------------------------------------------------
 bool ComProperty::isValid(QStringList& errorList, QString const& parentId) const
 {
-    bool valid = false;
+    bool valid = true;
     QString const thisId = QObject::tr("COM property '%1'").arg(name_);
 
     if (name_.isEmpty())
@@ -121,11 +134,27 @@ void ComProperty::setRequired(bool required)
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComProperty::setType()
+//-----------------------------------------------------------------------------
+void ComProperty::setType(QString const& type)
+{
+    type_ = type;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComProperty::setDefaultValue()
 //-----------------------------------------------------------------------------
 void ComProperty::setDefaultValue(QString const& defaultValue)
 {
     defaultValue_ = defaultValue;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComProperty::setDescription()
+//-----------------------------------------------------------------------------
+void ComProperty::setDescription(QString const& description)
+{
+    desc_ = description;
 }
 
 //-----------------------------------------------------------------------------
@@ -161,6 +190,14 @@ QString const& ComProperty::getDefaultValue() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComProperty::getDescription()
+//-----------------------------------------------------------------------------
+QString const& ComProperty::getDescription() const
+{
+    return desc_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComProperty::operator=()
 //-----------------------------------------------------------------------------
 ComProperty& ComProperty::operator=(ComProperty const& rhs)
@@ -171,6 +208,7 @@ ComProperty& ComProperty::operator=(ComProperty const& rhs)
         required_ = rhs.required_;
         type_ = rhs.type_;
         defaultValue_ = rhs.defaultValue_;
+        desc_ = rhs.desc_;
     }
 
     return *this;

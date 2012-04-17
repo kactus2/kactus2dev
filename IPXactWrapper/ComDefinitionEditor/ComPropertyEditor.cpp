@@ -1,25 +1,25 @@
 //-----------------------------------------------------------------------------
-// File: PropertyValueEditor.cpp
+// File: ComPropertyEditor.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
-// Date: 16.4.2012
+// Date: 17.4.2012
 //
 // Description:
-// Editor for property values.
+// Editor for COM properties.
 //-----------------------------------------------------------------------------
 
-#include "PropertyValueEditor.h"
+#include "ComPropertyEditor.h"
 
-#include "PropertyValueDelegate.h"
+#include "ComPropertyDelegate.h"
 
 #include <QHBoxLayout>
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueEditor::PropertyValueEditor()
+// Function: ComPropertyEditor::ComPropertyEditor()
 //-----------------------------------------------------------------------------
-PropertyValueEditor::PropertyValueEditor(QWidget* parent)
-    : QGroupBox(tr("Property values"), parent),
+ComPropertyEditor::ComPropertyEditor(QWidget* parent)
+    : QGroupBox(tr("Properties"), parent),
       view_(this),
       filter_(this),
       model_(this)
@@ -30,38 +30,38 @@ PropertyValueEditor::PropertyValueEditor(QWidget* parent)
     view_.setModel(&filter_);
     view_.setSortingEnabled(true);
     view_.setItemsDraggable(false);
-    view_.setItemDelegate(new PropertyValueDelegate(this));
+    view_.setItemDelegate(new ComPropertyDelegate(this));
 
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->addWidget(&view_);
 
     connect(&model_, SIGNAL(contentChanged()),
-            this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&view_, SIGNAL(addItem(const QModelIndex&)),
-            &model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
+        &model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
     connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
-            &model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+        &model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueEditor::~PropertyValueEditor()
+// Function: ComPropertyEditor::~ComPropertyEditor()
 //-----------------------------------------------------------------------------
-PropertyValueEditor::~PropertyValueEditor()
+ComPropertyEditor::~ComPropertyEditor()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueEditor::setData()
+// Function: ComPropertyEditor::setData()
 //-----------------------------------------------------------------------------
-void PropertyValueEditor::setData(QMap<QString, QString> const& propertyValues)
+void ComPropertyEditor::setProperties(QList< QSharedPointer<ComProperty> > const& properties)
 {
-    model_.setData(propertyValues);
+    model_.setProperties(properties);
 }
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueEditor::getData()
+// Function: ComPropertyEditor::getData()
 //-----------------------------------------------------------------------------
-QMap<QString, QString> PropertyValueEditor::getData() const
+QList< QSharedPointer<ComProperty> > const& ComPropertyEditor::getProperties() const
 {
-    return model_.getData();
+    return model_.getProperties();
 }

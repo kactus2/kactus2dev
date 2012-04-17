@@ -91,6 +91,14 @@ ApiDefinition::~ApiDefinition()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ApiDefinition::clone()
+//-----------------------------------------------------------------------------
+QSharedPointer<LibraryComponent> ApiDefinition::clone() const
+{
+    return QSharedPointer<LibraryComponent>(new ApiDefinition(*this));
+}
+
+//-----------------------------------------------------------------------------
 // Function: ApiDefinition::write()
 //-----------------------------------------------------------------------------
 void ApiDefinition::write(QFile& file)
@@ -130,6 +138,9 @@ void ApiDefinition::write(QFile& file)
     }
 
     writer.writeEndElement(); // kactus2:functions
+
+    writer.writeEndElement(); // kactus2:apiDefinition
+    writer.writeEndDocument();
 }
 
 //-----------------------------------------------------------------------------
@@ -242,6 +253,22 @@ bool ApiDefinition::isValid() const
     }
 
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiDefinition::getDependentFiles()
+//-----------------------------------------------------------------------------
+QStringList const ApiDefinition::getDependentFiles() const
+{
+    return QStringList();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiDefinition::getDependentVLNVs()
+//-----------------------------------------------------------------------------
+QList<VLNV> const ApiDefinition::getDependentVLNVs() const
+{
+    return QList<VLNV>();
 }
 
 //-----------------------------------------------------------------------------

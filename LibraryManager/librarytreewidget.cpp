@@ -50,28 +50,40 @@ void LibraryTreeWidget::setupConnections(LibraryTreeModel* dataModel) {
 
 	// connect the view to the tree model
 	connect(&view_, SIGNAL(openComponent(const QModelIndex&)),
-		dataModel, SLOT(onOpenComponent(const QModelIndex&)), Qt::UniqueConnection);
+		    dataModel, SLOT(onOpenComponent(const QModelIndex&)), Qt::UniqueConnection);
 
 	connect(&view_, SIGNAL(openDesign(const QModelIndex&)), 
-		dataModel, SLOT(onOpenDesign(const QModelIndex&)), Qt::UniqueConnection);
+		    dataModel, SLOT(onOpenDesign(const QModelIndex&)), Qt::UniqueConnection);
 
 	connect(&view_, SIGNAL(createNewComponent(const QModelIndex&)),
-		dataModel, SLOT(onCreateNewComponent(const QModelIndex&)), Qt::UniqueConnection);
+		    dataModel, SLOT(onCreateNewComponent(const QModelIndex&)), Qt::UniqueConnection);
 
 	connect(&view_, SIGNAL(createNewDesign(const QModelIndex&)),
-		dataModel, SLOT(onCreateNewDesign(const QModelIndex&)), Qt::UniqueConnection);
+		    dataModel, SLOT(onCreateNewDesign(const QModelIndex&)), Qt::UniqueConnection);
 
 	connect(&view_, SIGNAL(openBus(const QModelIndex&)),
-		dataModel, SLOT(onOpenBus(const QModelIndex&)), Qt::UniqueConnection);
+		    dataModel, SLOT(onOpenBus(const QModelIndex&)), Qt::UniqueConnection);
 
 	connect(&view_, SIGNAL(createBus(const QModelIndex&)),
-		dataModel, SLOT(onCreateBus(const QModelIndex&)), Qt::UniqueConnection);
+		    dataModel, SLOT(onCreateBus(const QModelIndex&)), Qt::UniqueConnection);
 
 	connect(&view_, SIGNAL(createAbsDef(const QModelIndex&)),
-		dataModel, SLOT(onCreateAbsDef(const QModelIndex&)), Qt::UniqueConnection);
+		    dataModel, SLOT(onCreateAbsDef(const QModelIndex&)), Qt::UniqueConnection);
+
+    connect(&view_, SIGNAL(openComDef(const QModelIndex&)),
+            dataModel, SLOT(onOpenComDef(const QModelIndex&)), Qt::UniqueConnection);
+
+    connect(&view_, SIGNAL(createComDef(const QModelIndex&)),
+            dataModel, SLOT(onCreateComDef(const QModelIndex&)), Qt::UniqueConnection);
+
+    connect(&view_, SIGNAL(openApiDef(const QModelIndex&)),
+            dataModel, SLOT(onOpenApiDef(const QModelIndex&)), Qt::UniqueConnection);
+
+    connect(&view_, SIGNAL(createApiDef(const QModelIndex&)),
+            dataModel, SLOT(onCreateApiDef(const QModelIndex&)), Qt::UniqueConnection);
 
 	connect(&view_, SIGNAL(deleteItem(const QModelIndex&)),
-		dataModel, SLOT(onDeleteItem(const QModelIndex&)), Qt::UniqueConnection);
+		    dataModel, SLOT(onDeleteItem(const QModelIndex&)), Qt::UniqueConnection);
 
 	connect(&view_, SIGNAL(exportItem(const QModelIndex&)),
 		dataModel, SLOT(onExportItem(const QModelIndex&)), Qt::UniqueConnection);

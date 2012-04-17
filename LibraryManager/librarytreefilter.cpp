@@ -135,6 +135,17 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow,
 				else
 					return true;
 									  }
+
+            case VLNV::COMDEFINITION:
+            case VLNV::APIDEFINITION: {
+
+                // if buses are not to be displayed
+                if (!type_.buses_) {
+                    continue;
+                }
+
+                return true;
+                                      }
 			// if other types should be displayed
 			default:
 				return type_.advanced_;

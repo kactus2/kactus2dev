@@ -41,6 +41,10 @@ exportAction_(NULL),
 openBusAction_(NULL),
 createBusAction_(NULL),
 addSignalsAction_(NULL),
+openComDefAction_(NULL),
+createComDefAction_(NULL),
+openApiDefAction_(NULL),
+createApiDefAction_(NULL),
 openSystemAction_(NULL),
 openPlatformAction_(NULL),
 openPFStackAction_(NULL),
@@ -172,6 +176,14 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
 			menu.addAction(openBusAction_);
 			menu.addAction(createBusAction_);
 		}
+        else if (libComp->getVlnv()->getType() == VLNV::COMDEFINITION) {
+            menu.addAction(openComDefAction_);
+            menu.addAction(createComDefAction_);
+        }
+        else if (libComp->getVlnv()->getType() == VLNV::APIDEFINITION) {
+            menu.addAction(openApiDefAction_);
+            menu.addAction(createApiDefAction_);
+        }
 
 		menu.addAction(openXmlAction_);
 	}
@@ -237,6 +249,30 @@ void LibraryTreeView::setupActions() {
 	addSignalsAction_->setToolTip(tr("Add new signal definitions to selected bus"));
 	connect(addSignalsAction_, SIGNAL(triggered()),
 		this, SLOT(onAddSignals()), Qt::UniqueConnection);
+
+    openComDefAction_ = new QAction(tr("Open"), this);
+    openComDefAction_->setStatusTip(tr("Open"));
+    openComDefAction_->setToolTip(tr("Open"));
+    connect(openComDefAction_, SIGNAL(triggered()),
+        this, SLOT(onOpenComDef()), Qt::UniqueConnection);
+
+    createComDefAction_ = new QAction(tr("Create New"), this);
+    createComDefAction_->setStatusTip(tr("Create new"));
+    createComDefAction_->setToolTip(tr("Create new"));
+    connect(createComDefAction_, SIGNAL(triggered()),
+        this, SLOT(onCreateComDef()), Qt::UniqueConnection);
+
+    openApiDefAction_ = new QAction(tr("Open"), this);
+    openApiDefAction_->setStatusTip(tr("Open"));
+    openApiDefAction_->setToolTip(tr("Open"));
+    connect(openApiDefAction_, SIGNAL(triggered()),
+        this, SLOT(onOpenApiDef()), Qt::UniqueConnection);
+
+    createApiDefAction_ = new QAction(tr("Create New"), this);
+    createApiDefAction_->setStatusTip(tr("Create new"));
+    createApiDefAction_->setToolTip(tr("Create new"));
+    connect(createApiDefAction_, SIGNAL(triggered()),
+        this, SLOT(onCreateApiDef()), Qt::UniqueConnection);
 
 	openSystemAction_ = new QAction(tr("Open System"), this);
 	openSystemAction_->setStatusTip(tr("Open system for editing"));
@@ -400,6 +436,22 @@ void LibraryTreeView::onCreateBus() {
 
 void LibraryTreeView::onAddSignals() {
 	emit createAbsDef(filter_->mapToSource(currentIndex()));
+}
+
+void LibraryTreeView::onOpenComDef() {
+    emit openComDef(filter_->mapToSource(currentIndex()));
+}
+
+void LibraryTreeView::onCreateComDef() {
+    emit createComDef(filter_->mapToSource(currentIndex()));
+}
+
+void LibraryTreeView::onOpenApiDef() {
+    emit openApiDef(filter_->mapToSource(currentIndex()));
+}
+
+void LibraryTreeView::onCreateApiDef() {
+    emit createApiDef(filter_->mapToSource(currentIndex()));
 }
 
 void LibraryTreeView::onOpenXml() {

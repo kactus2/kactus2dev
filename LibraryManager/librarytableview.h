@@ -69,6 +69,18 @@ signals:
 	//! \brief Create a new bus definition
 	void createBusDef(const QModelIndex& index);
 
+    //! \brief Open COM definition in an editor
+    void openComDef(const QModelIndex& index);
+
+    //! \brief Create a new COM definition
+    void createComDef(const QModelIndex& index);
+
+    //! \brief Open API definition in an editor
+    void openApiDef(const QModelIndex& index);
+
+    //! \brief Create a new API definition
+    void createApiDef(const QModelIndex& index);
+
 	//! \brief Delete the selected item
 	void deleteItem(const QModelIndex& index);
 
@@ -115,6 +127,18 @@ public slots:
 
 	//! \brief Create new bus definition.
 	void onCreateBusDef();
+
+    //! \brief Open COM definition.
+    void onOpenComDef();
+
+    //! \brief Create new COM definition.
+    void onCreateComDef();
+
+    //! \brief Open API definition.
+    void onOpenApiDef();
+
+    //! \brief Create new API definition.
+    void onCreateApiDef();
 
 private:
 
@@ -169,6 +193,17 @@ private:
 	//! \brief Create a bus definition
 	QAction* createBusDefAction_;
 
+    //! \brief Open a COM definition
+    QAction* openComDefAction_;
+
+    //! \brief Create a COM definition
+    QAction* createComDefAction_;
+
+    //! \brief Open an API definition
+    QAction* openApiDefAction_;
+
+    //! \brief Create an API definition
+    QAction* createApiDefAction_;
 };
 
 #endif // LIBRARYTABLEVIEW_H

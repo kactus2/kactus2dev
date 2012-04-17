@@ -155,6 +155,12 @@ signals:
 	//! \brief Create new design with given vlnv.
 	void createDesign(const VLNV& vlnv);
 
+    //! \brief Create a new COM definition.
+    void createComDef(const VLNV& vlnv);
+
+    //! \brief Create a new API definition.
+    void createApiDef(const VLNV& vlnv);
+
 	//! \brief Remove the specified VLNV from the library
 	void removeVLNV(QList<VLNV*> vlnvs);
 
@@ -193,11 +199,23 @@ public slots:
 	//! \brief Open bus definition in an editor
 	void onOpenBus(const QModelIndex& index);
 
+    //! \brief Open COM definition in an editor
+    void onOpenComDef(const QModelIndex& index);
+
+    //! \brief Open API definition in an editor
+    void onOpenApiDef(const QModelIndex& index);
+
 	//! \brief Create a new bus definition
 	void onCreateBus(const QModelIndex& index);
 
 	//! \brief Create a new abstraction definition for given bus definition.
 	void onCreateAbsDef(const QModelIndex& index);
+
+    //! \brief Create a new COM definition
+    void onCreateComDef(const QModelIndex& index);
+
+    //! \brief Create a new API definition
+    void onCreateApiDef(const QModelIndex& index);
 
 	//! \brief Remove the specified vlnv branch from the tree.
 	void onRemoveVLNV(VLNV* vlnv);

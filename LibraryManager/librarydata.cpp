@@ -22,6 +22,8 @@
 #include <models/designconfiguration.h>
 #include <models/generatorchain.h>
 #include <models/generaldeclarations.h>
+#include <models/ComDefinition.h>
+#include <models/ApiDefinition.h>
 
 #include "vlnv.h"
 
@@ -442,6 +444,42 @@ void LibraryData::onCreateBusDef( const QModelIndex& index ) {
 	emit createBusDef(*vlnv);
 }
 
+void LibraryData::onOpenComDef( const QModelIndex& index ) {
+
+    if (!index.isValid())
+        return;
+
+    VLNV* vlnv = static_cast<VLNV*>(index.internalPointer());
+    emit editItem(*vlnv);
+}
+
+void LibraryData::onCreateComDef( const QModelIndex& index ) {
+
+    if (!index.isValid())
+        return;
+
+    VLNV* vlnv = static_cast<VLNV*>(index.internalPointer());
+    emit createComDef(*vlnv);
+}
+
+void LibraryData::onOpenApiDef( const QModelIndex& index ) {
+
+    if (!index.isValid())
+        return;
+
+    VLNV* vlnv = static_cast<VLNV*>(index.internalPointer());
+    emit editItem(*vlnv);
+}
+
+void LibraryData::onCreateApiDef( const QModelIndex& index ) {
+
+    if (!index.isValid())
+        return;
+
+    VLNV* vlnv = static_cast<VLNV*>(index.internalPointer());
+    emit createApiDef(*vlnv);
+}
+
 void LibraryData::resetLibrary() {
 	beginResetModel();
 	emit resetModel();
@@ -841,6 +879,16 @@ QSharedPointer<LibraryComponent> LibraryData::getModel( const VLNV& vlnv ) {
 				libComp = QSharedPointer<LibraryComponent>(new AbstractionDefinition(doc));
 				break;
 											  }
+
+            case VLNV::COMDEFINITION: {
+                libComp = QSharedPointer<LibraryComponent>(new ComDefinition(doc));
+                break;
+                                      }
+
+            case VLNV::APIDEFINITION: {
+                libComp = QSharedPointer<LibraryComponent>(new ApiDefinition(doc));
+                break;
+                                      }
 			default: {
 				emit noticeMessage(tr("Document was not supported type"));
 				return QSharedPointer<LibraryComponent>();

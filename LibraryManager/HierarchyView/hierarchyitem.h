@@ -11,6 +11,8 @@
 #include <models/component.h>
 #include <models/busdefinition.h>
 #include <models/abstractiondefinition.h>
+#include <models/ApiDefinition.h>
+#include <models/ComDefinition.h>
 
 #include <common/KactusAttribute.h>
 
@@ -33,7 +35,9 @@ public:
 		ROOT = 0,
 		COMPONENT,
 		BUSDEFINITION,
-		ABSDEFINITION
+		ABSDEFINITION,
+        COMDEFINITION,
+        APIDEFINITION
 	};
 
 	/*! \brief The constructor
@@ -348,6 +352,20 @@ private:
 	*/
 	void parseAbsDefinition(const VLNV& vlnv);
 
+    /*! \brief Parse this hierarchy item to match a COM definition.
+	 *
+	 * \param vlnv The vlnv of the COM definition.
+	 *
+	*/
+	void parseComDefinition(const VLNV& vlnv);
+
+    /*! \brief Parse this hierarchy item to match an API definition.
+	 *
+	 * \param vlnv The vlnv of the API definition.
+	 *
+	*/
+	void parseApiDefinition(const VLNV& vlnv);
+
 	//! \brief Pointer to the component that this hierarhcyItem represents.
 	QSharedPointer<Component> component_;
 
@@ -356,6 +374,12 @@ private:
 
 	//! \brief Pointer to the abstraction definition that this hierarchyItem represents.
 	QSharedPointer<AbstractionDefinition> absDef_;
+
+    //! \brief Pointer to the COM definition that this hierarchyItem represents.
+    QSharedPointer<ComDefinition> comDef_;
+
+    //! \brief Pointer to the API definition that this hierarchyItem represents.
+    QSharedPointer<ApiDefinition> apiDef_;
 
 	//! \brief Pointer to the object that manages the library.
 	LibraryInterface* handler_;

@@ -81,6 +81,18 @@ public slots:
 	//! \brief Create new bus definition and abstraction definition.
 	void onCreateBus();
 
+    //! \brief Open COM definition in editor
+    void onOpenComDef();
+
+    //! \brief Create new COM definition.
+    void onCreateComDef();
+
+    //! \brief Open API definition in editor
+    void onOpenApiDef();
+
+    //! \brief Create new API definition.
+    void onCreateApiDef();
+
 	//! \brief Open the xml of the selected IP-Xact element.
 	void onOpenXml();
 
@@ -100,6 +112,12 @@ signals:
 
 	//! \brief Create new abstraction definition for given bus definition.
 	void createNewAbsDef(const QModelIndex& index);
+
+    //! \brief create new COM definition
+    void createNewComDef(const QModelIndex& index);
+
+    //! \brief create new API definition
+    void createNewApiDef(const QModelIndex& index);
 
 	//! \brief Create new design
 	void createNewDesign(const QModelIndex& index);
@@ -187,6 +205,18 @@ private:
 
 	//! \brief Create new bus
 	QAction* createBusAction_;
+
+    //! \brief Open the COM definition editor
+    QAction* openComDefAction_;
+
+    //! \brief Create new COM definition
+    QAction* createComDefAction_;
+
+    //! \brief Open the API definition editor
+    QAction* openApiDefAction_;
+
+    //! \brief Create new API definition
+    QAction* createApiDefAction_;
 
 	//! \brief Open an existing system for editing.
 	QAction* openSystemAction_;

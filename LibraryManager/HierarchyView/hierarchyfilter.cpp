@@ -151,6 +151,16 @@ bool HierarchyFilter::filterAcceptsRow( int source_row,
 				return false;
 			break;
 									   }
+
+        case HierarchyItem::APIDEFINITION:
+        case HierarchyItem::COMDEFINITION:
+            {
+                if (!type_.buses_)
+                    return false;
+
+                break;
+            }
+
 		case HierarchyItem::BUSDEFINITION:
 		case HierarchyItem::ABSDEFINITION: {
 			if (!type_.buses_)

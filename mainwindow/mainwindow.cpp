@@ -12,6 +12,8 @@
 #include "NewDesignPage.h"
 #include "NewSWDesignPage.h"
 #include "NewSystemPage.h"
+#include "NewComDefinitionPage.h"
+#include "NewApiDefinitionPage.h"
 #include "newbuspage.h"
 
 #include "NewWorkspaceDialog.h"
@@ -48,12 +50,15 @@
 #include <models/busdefinition.h>
 #include <models/fileset.h>
 #include <models/file.h>
+#include <models/ComDefinition.h>
+#include <models/ApiDefinition.h>
 
 #include <designwidget/designwidget.h>
 #include <designwidget/diagramcomponent.h>
 #include <designwidget/diagramport.h>
 #include <designwidget/diagraminterface.h>
 
+#include <IPXactWrapper/ComDefinitionEditor/ComDefinitionEditor.h>
 #include <IPXactWrapper/BusEditor/buseditor.h>
 #include <IPXactWrapper/ComponentEditor/ipxactcomponenteditor.h>
 #include <IPXactWrapper/SWDesignEditor/SWDesignEditor.h>
@@ -362,7 +367,7 @@ void MainWindow::openSWDesign(const VLNV& vlnv, bool forceUnlocked)
 	{
 		for (int i = 0; i < designTabs_->count(); i++)
 		{
-			IPXactComponentEditor* editor = dynamic_cast<IPXactComponentEditor*>(designTabs_->widget(i));
+			SWDesignEditor* editor = dynamic_cast<SWDesignEditor*>(designTabs_->widget(i));
 
 			if (editor && editor->getComponentVLNV() == vlnv)
 			{
@@ -985,12 +990,20 @@ void MainWindow::setupLibraryDock() {
 		this, SLOT(createBus(const VLNV&, const QString&)), Qt::UniqueConnection);
 	connect(libraryHandler_, SIGNAL(createAbsDef(const VLNV&, const QString&, bool)),
 		this, SLOT(createAbsDef(const VLNV&, const QString&, bool)), Qt::UniqueConnection);
+    connect(libraryHandler_, SIGNAL(createComDef(const VLNV&, const QString&)),
+        this, SLOT(createComDefinition(const VLNV&, const QString&)), Qt::UniqueConnection);
+    connect(libraryHandler_, SIGNAL(createApiDef(const VLNV&, const QString&)),
+        this, SLOT(createApiDefinition(const VLNV&, const QString&)), Qt::UniqueConnection);
 	connect(libraryHandler_, SIGNAL(openComponent(const VLNV&)),
 		this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
 	connect(libraryHandler_, SIGNAL(openSWDesign(const VLNV&)),
 		this, SLOT(openSWDesign(const VLNV&)), Qt::UniqueConnection);
 	connect(libraryHandler_, SIGNAL(openBus(const VLNV&, const VLNV&, bool)),
 		this, SLOT(openBus(const VLNV&, const VLNV&, bool)), Qt::UniqueConnection);
+    connect(libraryHandler_, SIGNAL(openComDefinition(const VLNV&)),
+        this, SLOT(openComDefinition(const VLNV&)), Qt::UniqueConnection);
+    connect(libraryHandler_, SIGNAL(openApiDefinition(const VLNV&)),
+        this, SLOT(openApiDefinition(const VLNV&)), Qt::UniqueConnection);
 	connect(libraryHandler_, SIGNAL(refreshDialer()),
 		dialer_, SLOT(refreshLibrary()), Qt::UniqueConnection);
 	connect(libraryHandler_, SIGNAL(itemSelected(const VLNV&)),
@@ -1884,7 +1897,7 @@ void MainWindow::createNew()
 	// Create a property page dialog to work as a "New" dialog.
 	PropertyPageDialog dialog(QSize(48, 48), PropertyPageDialog::APPLY_CURRENT, this);
 	dialog.setFixedWidth(620);
-	dialog.resize(620, 580);
+	dialog.resize(620, 680);
 	dialog.setWindowTitle(tr("New"));
 
     // Add pages to the dialog.
@@ -1925,6 +1938,16 @@ void MainWindow::createNew()
 	connect(busPage, SIGNAL(createBus(VLNV const&, QString const&)),
 		this, SLOT(createBus(VLNV const&, QString const&)), Qt::UniqueConnection);
 	dialog.addPage(QIcon(":icons/graphics/new-bus.png"), tr("Bus"), busPage);
+
+    NewComDefinitionPage* comDefPage = new NewComDefinitionPage(libraryHandler_, &dialog);
+    connect(comDefPage, SIGNAL(createComDefinition(VLNV const&, QString const&)),
+            this, SLOT(createComDefinition(VLNV const&, QString const&)), Qt::UniqueConnection);
+    dialog.addPage(QIcon(":icons/graphics/new-com_definition.png"), tr("COM Definition"), comDefPage);
+
+    NewApiDefinitionPage* apiDefPage = new NewApiDefinitionPage(libraryHandler_, &dialog);
+    connect(apiDefPage, SIGNAL(createApiDefinition(VLNV const&, QString const&)),
+        this, SLOT(createApiDefinition(VLNV const&, QString const&)), Qt::UniqueConnection);
+    dialog.addPage(QIcon(":icons/graphics/new-api_definition.png"), tr("API Definition"), apiDefPage);
 
     dialog.finalizePages();
 
@@ -2216,6 +2239,38 @@ void MainWindow::createAbsDef( const VLNV& busDefVLNV, const QString& directory,
 	openBus(busDefVLNV, absVLNV, disableBusDef, true);
 }
 
+//-----------------------------------------------------------------------------
+// Function: MainWindow::createComDefinition()
+//-----------------------------------------------------------------------------
+void MainWindow::createComDefinition(VLNV const& vlnv, QString const& directory)
+{
+    Q_ASSERT(vlnv.isValid());
+    Q_ASSERT(!directory.isEmpty());
+
+    // Create an empty COM definition and save it.
+    QSharedPointer<ComDefinition> comDef(new ComDefinition(vlnv));
+    libraryHandler_->writeModelToFile(directory, comDef);
+
+    // Open the COM definition.
+    openComDefinition(vlnv, true);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::createApiDefinition()
+//-----------------------------------------------------------------------------
+void MainWindow::createApiDefinition(VLNV const& vlnv, QString const& directory)
+{
+    Q_ASSERT(vlnv.isValid());
+    Q_ASSERT(!directory.isEmpty());
+
+    // Create an empty API definition and save it.
+    QSharedPointer<ApiDefinition> apiDef(new ApiDefinition(vlnv));
+    libraryHandler_->writeModelToFile(directory, apiDef);
+
+    // TODO: Open the API definition.
+    //openApiDefinition(vlnv, true);
+}
+
 void MainWindow::openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool disableBusDef, bool forceUnlocked ) {
 
 	// Check if the bus editor is already open and activate it.
@@ -2427,6 +2482,68 @@ void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
 		this, SLOT(updateMenuStrip()), Qt::UniqueConnection);
 	connect(editor, SIGNAL(modifiedChanged(bool)),
 		actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::openComDefinition()
+//-----------------------------------------------------------------------------
+void MainWindow::openComDefinition(VLNV const& vlnv, bool forceUnlocked /*= false*/)
+{
+    // Check if the COM definition is already open and activate it.
+    if (vlnv.isValid())
+    {
+        for (int i = 0; i < designTabs_->count(); i++)
+        {
+            ComDefinitionEditor* editor = dynamic_cast<ComDefinitionEditor*>(designTabs_->widget(i));
+
+            if (editor && editor->getComponentVLNV() == vlnv)
+            {
+                designTabs_->setCurrentIndex(i);
+                return;
+            }
+        }
+    }
+
+    // Editor was not yet open so create it.
+    QSharedPointer<ComDefinition> comDef;
+
+    if (libraryHandler_->contains(vlnv))
+    {
+        QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(vlnv);
+        comDef = libComp.dynamicCast<ComDefinition>();
+    }
+    else
+    {
+        emit errorMessage(tr("VLNV %1:%2:%3:%4 was not found in the library").arg(vlnv.getVendor(),
+                                                                                  vlnv.getLibrary(),
+                                                                                  vlnv.getName(),
+                                                                                  vlnv.getVersion()));
+        return;
+    }
+
+    if (comDef == 0)
+    {
+        emit errorMessage(tr("Document type did not match Com Definition"));
+        return;
+    }
+
+    ComDefinitionEditor* editor = new ComDefinitionEditor(this, this, libraryHandler_, comDef);
+
+    if (forceUnlocked)
+    {
+        editor->setProtection(false);
+    }
+
+    editor->setTabWidget(designTabs_);
+
+    connect(editor, SIGNAL(errorMessage(const QString&)),
+            console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
+    connect(editor, SIGNAL(noticeMessage(const QString&)),
+            console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
+    connect(editor, SIGNAL(contentChanged()),
+            this, SLOT(updateMenuStrip()), Qt::UniqueConnection);
+    connect(editor, SIGNAL(modifiedChanged(bool)),
+            actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

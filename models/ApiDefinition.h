@@ -25,6 +25,7 @@ class ApiFunction;
 //-----------------------------------------------------------------------------
 class ApiDefinition : public LibraryComponent
 {
+public:
     /*!
      *  Constructor which creates an empty API definition.
      *
@@ -52,6 +53,13 @@ class ApiDefinition : public LibraryComponent
     virtual ~ApiDefinition();
 
     /*!
+     *  Makes a copy of the document.
+     *
+     *      @return The created copy of the API definition.
+     */
+    virtual QSharedPointer<LibraryComponent> clone() const;
+
+    /*!
      *  Writes the API definition to an XML file.
      *
      *      @param [in] file The file handle.
@@ -63,12 +71,22 @@ class ApiDefinition : public LibraryComponent
      *
      *      @param [in/out] errorList Error list which is appended with errors if found while validating.
      */
-    bool isValid(QStringList& errorList) const;
+    virtual bool isValid(QStringList& errorList) const;
 
     /*!
      *  Returns true if the contents are valid.
      */
-    bool isValid() const;
+    virtual bool isValid() const;
+
+    /*!
+     *  Returns the dependent files (none).
+     */
+    virtual QStringList const getDependentFiles() const;
+
+    /*!
+     *  Returns the dependent VLNVs (none).
+     */
+    virtual QList<VLNV> const getDependentVLNVs() const;
 
     /*!
      *  Sets the API programming language.

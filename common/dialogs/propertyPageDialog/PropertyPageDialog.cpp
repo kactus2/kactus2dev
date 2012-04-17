@@ -30,6 +30,7 @@ PropertyPageDialog::PropertyPageDialog(QSize const& listIconSize,
     contentsList_->setViewMode(QListView::IconMode);
     contentsList_->setIconSize(listIconSize);
     contentsList_->setMovement(QListView::Static);
+    contentsList_->setWrapping(false);
     contentsList_->setSpacing(ICON_SPACING);
     contentsList_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     contentsList_->setFlow(QListView::TopToBottom);
