@@ -59,6 +59,7 @@
 #include <designwidget/diagraminterface.h>
 
 #include <IPXactWrapper/ComDefinitionEditor/ComDefinitionEditor.h>
+#include <IPXactWrapper/ApiDefinitionEditor/ApiDefinitionEditor.h>
 #include <IPXactWrapper/BusEditor/buseditor.h>
 #include <IPXactWrapper/ComponentEditor/ipxactcomponenteditor.h>
 #include <IPXactWrapper/SWDesignEditor/SWDesignEditor.h>
@@ -2523,7 +2524,7 @@ void MainWindow::openComDefinition(VLNV const& vlnv, bool forceUnlocked /*= fals
 
     if (comDef == 0)
     {
-        emit errorMessage(tr("Document type did not match Com Definition"));
+        emit errorMessage(tr("Document type did not match COM Definition"));
         return;
     }
 
@@ -2552,8 +2553,62 @@ void MainWindow::openComDefinition(VLNV const& vlnv, bool forceUnlocked /*= fals
 //-----------------------------------------------------------------------------
 void MainWindow::openApiDefinition(VLNV const& vlnv, bool forceUnlocked /*= false*/)
 {
-}
+    // Check if the API definition is already open and activate it.
+    if (vlnv.isValid())
+    {
+        for (int i = 0; i < designTabs_->count(); i++)
+        {
+            ApiDefinitionEditor* editor = dynamic_cast<ApiDefinitionEditor*>(designTabs_->widget(i));
 
+            if (editor && editor->getComponentVLNV() == vlnv)
+            {
+                designTabs_->setCurrentIndex(i);
+                return;
+            }
+        }
+    }
+
+    // Editor was not yet open so create it.
+    QSharedPointer<ApiDefinition> apiDef;
+
+    if (libraryHandler_->contains(vlnv))
+    {
+        QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(vlnv);
+        apiDef = libComp.dynamicCast<ApiDefinition>();
+    }
+    else
+    {
+        emit errorMessage(tr("VLNV %1:%2:%3:%4 was not found in the library").arg(vlnv.getVendor(),
+                                                                                  vlnv.getLibrary(),
+                                                                                  vlnv.getName(),
+                                                                                  vlnv.getVersion()));
+        return;
+    }
+
+    if (apiDef == 0)
+    {
+        emit errorMessage(tr("Document type did not match API Definition"));
+        return;
+    }
+
+    ApiDefinitionEditor* editor = new ApiDefinitionEditor(this, this, libraryHandler_, apiDef);
+
+    if (forceUnlocked)
+    {
+        editor->setProtection(false);
+    }
+
+    editor->setTabWidget(designTabs_);
+
+    connect(editor, SIGNAL(errorMessage(const QString&)),
+            console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
+    connect(editor, SIGNAL(noticeMessage(const QString&)),
+            console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
+    connect(editor, SIGNAL(contentChanged()),
+            this, SLOT(updateMenuStrip()), Qt::UniqueConnection);
+    connect(editor, SIGNAL(modifiedChanged(bool)),
+            actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
+}
 
 //-----------------------------------------------------------------------------
 // Function: changeProtection()

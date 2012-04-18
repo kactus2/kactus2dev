@@ -226,7 +226,7 @@ VLNV::IPXactType VLNV::string2Type(const QString &type) {
     // if apiDefinition
     else if (QString::compare(type, QObject::tr("kactus2:apiDefinition"),
                               Qt::CaseInsensitive) == 0) {
-            return APIDEFINITION;
+        return APIDEFINITION;
     }
 
 	// if the string was unrecognizable

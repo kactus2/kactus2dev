@@ -42,8 +42,12 @@ ApiDefinition::ApiDefinition(ApiDefinition const& rhs) : LibraryComponent(rhs),
 // Function: ApiDefinition::ApiDefinition()
 //-----------------------------------------------------------------------------
 ApiDefinition::ApiDefinition(QDomDocument& doc)
+    : LibraryComponent(doc),
+      language_(),
+      dataTypes_(),
+      functions_()
 {
-    LibraryComponent::vlnv_->setType(VLNV::COMDEFINITION);
+    LibraryComponent::vlnv_->setType(VLNV::APIDEFINITION);
 
     // Find the IP-Xact root element.
     QDomNodeList nodeList = doc.childNodes();
