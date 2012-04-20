@@ -45,12 +45,8 @@ public:
 		PARAMETERS,			// for "Parameters" item
 		MEMORYMAPS,			// for "Memory maps" item
 		MEMORYMAP,			// for a single memory map item
-		ADDRESSBLOCKS,		// for "Address blocks" item
 		ADDRESSBLOCK,		// for a single AddressBlock item
-		BANKS,				// for "Banks" item
-		BANK,				// for a single Bank item
-		SUBSPACEMAPS,		// for "Subspace maps" item
-		SUBSPACEMAP,		// for a single SubspaceMap item
+		REGISTER,			// for a single register item
 		ADDRESSSPACES,		// for "Address spaces" item
 		ADDRESSSPACE,		// for a single address space item
 		REMAPSTATES,		// for "Remap states" item

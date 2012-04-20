@@ -367,3 +367,7 @@ void AddressBlock::setParameters(
 	// save the new parameters
 	memoryBlockData_->setParameters(parameters);
 }
+
+QList<QSharedPointer<RegisterModel> >* AddressBlock::getRegisterPointer() {
+	return &registerData_;
+}

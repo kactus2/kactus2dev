@@ -36,6 +36,7 @@
 #include "software/ComInterfaceEditor.h"
 #include "software/ApiInterfaceEditor.h"
 #include "cpus/cpueditor.h"
+#include "memoryMaps/memorymapseditor.h"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -264,6 +265,16 @@ void IPXactComponentEditor::createNewEditor( ComponentTreeItem* item ) {
                                                 widgetStack_, this);
             break;
                                           }
+		case ComponentTreeItem::MEMORYMAPS: {
+			editor = new MemoryMapsEditor(component_, item->getDataPointer(), handler_, this);
+			break;
+											}
+		case ComponentTreeItem::REGISTER:
+		case ComponentTreeItem::ADDRESSBLOCK:
+		case ComponentTreeItem::MEMORYMAP: {
+			editor = new ItemEditor(component_, this);
+			break;
+										   }
 
 		// item type that does not have a direct editor
 		default: {

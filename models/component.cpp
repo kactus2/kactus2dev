@@ -2455,6 +2455,9 @@ Cpu* Component::createCpu() {
 	return cpu.data();
 }
 
+QList<QSharedPointer<MemoryMap> >* Component::getMemoryMapsPointer() {
+	return &memoryMaps_;
+}
 //-----------------------------------------------------------------------------
 // Function: Component::parseComInterfaces()
 //-----------------------------------------------------------------------------

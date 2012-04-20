@@ -30,6 +30,7 @@
 #include <models/bank.h>
 #include <models/subspacemap.h>
 #include <models/generaldeclarations.h>
+#include <models/register.h>
 #include <models/ComInterface.h>
 #include <models/ApiInterface.h>
 
@@ -97,8 +98,8 @@ editor_(NULL) {
 		childItems_.append(new ComponentTreeItem(
 			ComponentTreeItem::PARAMETERS, 0, component, handler, this));
 
-// 		childItems_.append(new ComponentTreeItem(
-// 			ComponentTreeItem::MEMORYMAPS, 0, component, this));
+		childItems_.append(new ComponentTreeItem(
+			ComponentTreeItem::MEMORYMAPS, 0, component, handler, this));
 
         if (hwComp)
         {
@@ -278,12 +279,12 @@ editor_(NULL) {
 	case ComponentTreeItem::MEMORYMAPS: {
 		text_ = tr("Memory maps");
 
-		// get memoryMaps from the component and add them to the model
-		QList<QSharedPointer<MemoryMap> > list = component_->getMemoryMaps();
-		for (int i = 0; i < list.size(); ++i) {
+		QList<QSharedPointer<MemoryMap> >* list = component_->getMemoryMapsPointer();
+		foreach (QSharedPointer<MemoryMap> memMap, *list) {
 			childItems_.append(new ComponentTreeItem(
-				ComponentTreeItem::MEMORYMAP, list.at(i).data(), component, handler, this));
+				ComponentTreeItem::MEMORYMAP, memMap.data(), component_, handler_, this));
 		}
+		dataPointer_ = list;
 		break;
 										}
 	case ComponentTreeItem::MEMORYMAP: {
@@ -291,214 +292,47 @@ editor_(NULL) {
 		Q_ASSERT_X(memMap, "ComponentTreeItem constructor in case MEMORYMAP",
 			"static_cast failed to give valid MemoryMap-pointer");
 
-		// memory map always has 3 child-items: Address blocks, banks and subspace maps
-		childItems_.append(new ComponentTreeItem(
-			ComponentTreeItem::ADDRESSBLOCKS, 0, component, handler, this));
-		childItems_.append(new ComponentTreeItem(
-			ComponentTreeItem::BANKS, 0, component, handler, this));
-		childItems_.append(new ComponentTreeItem(
-			ComponentTreeItem::SUBSPACEMAPS, 0, component, handler, this));
-
 		text_ = memMap->getName();
 
-		// get list of addressBlocks, banks and subspaceMaps
-		QList<QSharedPointer<MemoryMapItem> > list = memMap->getItems();
-		for (int i = 0; i < list.size(); ++i) {
-			
-			// find out what class the MemoryMapItem actually is
-			// (this is done because MemoryMapItem is base-class for 
-			// AddressBlock, Bank and SubspaceMap
-			
-			// if object was addressBlock
-			if (typeid(*list.at(i).data()).name() == typeid(AddressBlock).name()) {
-				
-				// search the addressBlocks child item where the new addressBlock is added to
-				for (int j = 0; j < childItems_.size(); ++j) {
+		// the address blocks are created as children
+		QList<QSharedPointer<MemoryMapItem> >* list = memMap->getItemsPointer();
+		foreach (QSharedPointer<MemoryMapItem> item, *list) {
+			QSharedPointer<AddressBlock> addrBlock = item.dynamicCast<AddressBlock>();
 
-					if (childItems_.at(j)->type() == ComponentTreeItem::ADDRESSBLOCKS) {
-						
-						// create the new ComponentTreeItem that matches the addressBlock
-						ComponentTreeItem* item = new ComponentTreeItem(
-							ComponentTreeItem::ADDRESSBLOCK, list.at(i).data(), 
-							component, handler, childItems_.at(j));
-						
-						// add the created item for the addressBlocks item
-						childItems_.at(j)->addChild(item);
-						break;
-					}
-
-				}
-			}
-
-			// if object was Bank
-			else if (typeid(*list.at(i).data()).name() == typeid(Bank).name()) {
-				
-				// search the banks child item where the new bank is added to
-				for (int j = 0; j < childItems_.size(); ++j) {
-
-					if (childItems_.at(j)->type() == ComponentTreeItem::BANKS) {
-
-						// create the new ComponentTreeItem that matches the addressBlock
-						ComponentTreeItem* item = new ComponentTreeItem(
-							ComponentTreeItem::BANK, list.at(i).data(), component, 
-							handler, childItems_.at(j));
-
-						// add the created item for the addressBlocks item
-						childItems_.at(j)->addChild(item);
-						break;
-					}
-
-				}
-			}
-
-			// if object was SubspaceMap
-			else if (typeid(*list.at(i).data()).name() == typeid(SubspaceMap).name()) {
-				
-				// search the addressBlocks child item where the new addressBlock is added to
-				for (int j = 0; j < childItems_.size(); ++j) {
-
-					if (childItems_.at(j)->type() == ComponentTreeItem::SUBSPACEMAPS) {
-
-						// create the new ComponentTreeItem that matches the addressBlock
-						ComponentTreeItem* item = new ComponentTreeItem(
-							ComponentTreeItem::SUBSPACEMAP, list.at(i).data(), component, handler, childItems_.at(j));
-
-						// add the created item for the addressBlocks item
-						childItems_.at(j)->addChild(item);
-						break;
-					}
-
-				}
-			}
-
-			// TODO remove this in final
-			else {
-				qDebug() << "UnIdentified item in memorymap";
+			if (addrBlock) {
+				childItems_.append(new ComponentTreeItem(
+					ComponentTreeItem::ADDRESSBLOCK, addrBlock.data(), component_, handler_, this));
 			}
 		}
 		break;
 									   }
-	case ComponentTreeItem::ADDRESSBLOCKS: {
-		text_ = tr("Address blocks");
-		break;
-										   }
 	case ComponentTreeItem::ADDRESSBLOCK: {
 		AddressBlock* addrBlock = static_cast<AddressBlock*>(dataPointer_);
 		Q_ASSERT_X(addrBlock, "ComponentTreeItem constructor in case ADDRESSBLOCK",
 			"static_cast failed to give valid AddressBlock-pointer");
 
 		text_ = addrBlock->getName();
-		break;
-										  }
-	case ComponentTreeItem::BANKS: {
-		text_ = tr("Banks");
-		break;
-								   }
-	case ComponentTreeItem::BANK: {
-		Bank* bank = static_cast<Bank*>(dataPointer_);
-		Q_ASSERT_X(bank, "ComponentTreeItem constructor in case BANK",
-			"static_cast failed to give valid Bank-pointer");
 
-		text_ = bank->getName();
+		// The registers are created as children
+		QList<QSharedPointer<RegisterModel> >* list = addrBlock->getRegisterPointer();
+		foreach (QSharedPointer<RegisterModel> registerM, *list) {
 
-		// bank always has 3 child-items: Address blocks, banks and subspace maps
-		childItems_.append(new ComponentTreeItem(
-			ComponentTreeItem::ADDRESSBLOCKS, 0, component, handler, this));
-		childItems_.append(new ComponentTreeItem(
-			ComponentTreeItem::BANKS, 0, component, handler, this));
-		childItems_.append(new ComponentTreeItem(
-			ComponentTreeItem::SUBSPACEMAPS, 0, component, handler, this));
+			QSharedPointer<Register> reg = registerM.dynamicCast<Register>();
 
-		// get list of addressBlocks, banks and subspaceMaps
-		QList<QSharedPointer<MemoryMapItem> > list = bank->getItems();
-		for (int i = 0; i < list.size(); ++i) {
-
-			// find out what class the MemoryMapItem actually is
-			// (this is done because MemoryMapItem is base-class for 
-			// AddressBlock, Bank and SubspaceMap
-
-			// if object was addressBlock
-			if (typeid(*list.at(i).data()).name() == typeid(AddressBlock).name()) {
-
-				// search the addressBlocks child item where the new addressBlock is added to
-				for (int j = 0; j < childItems_.size(); ++j) {
-
-					if (childItems_.at(j)->type() == ComponentTreeItem::ADDRESSBLOCKS) {
-
-						// create the new ComponentTreeItem that matches the addressBlock
-						ComponentTreeItem* item = new ComponentTreeItem(
-							ComponentTreeItem::ADDRESSBLOCK, list.at(i).data(),
-							component, handler, childItems_.at(j));
-
-						// add the created item for the addressBlocks item
-						childItems_.at(j)->addChild(item);
-						break;
-					}
-
-				}
-			}
-
-			// if object was Bank
-			else if (typeid(*list.at(i).data()).name() == typeid(Bank).name()) {
-
-				// search the banks child item where the new bank is added to
-				for (int j = 0; j < childItems_.size(); ++j) {
-
-					if (childItems_.at(j)->type() == ComponentTreeItem::BANKS) {
-
-						// create the new ComponentTreeItem that matches the addressBlock
-						ComponentTreeItem* item = new ComponentTreeItem(
-							ComponentTreeItem::BANK, list.at(i).data(), component,
-							handler, childItems_.at(j));
-
-						// add the created item for the addressBlocks item
-						childItems_.at(j)->addChild(item);
-						break;
-					}
-
-				}
-			}
-
-			// if object was SubspaceMap
-			else if (typeid(*list.at(i).data()).name() == typeid(SubspaceMap).name()) {
-
-				// search the addressBlocks child item where the new addressBlock is added to
-				for (int j = 0; j < childItems_.size(); ++j) {
-
-					if (childItems_.at(j)->type() == ComponentTreeItem::SUBSPACEMAPS) {
-
-						// create the new ComponentTreeItem that matches the addressBlock
-						ComponentTreeItem* item = new ComponentTreeItem(
-							ComponentTreeItem::SUBSPACEMAP, list.at(i).data(), 
-							component, handler, childItems_.at(j));
-
-						// add the created item for the addressBlocks item
-						childItems_.at(j)->addChild(item);
-						break;
-					}
-
-				}
-			}
-
-			// TODO remove this in final
-			else {
-				qDebug() << "UnIdentified item in memorymap";
+			if (reg) {
+				childItems_.append(new ComponentTreeItem(
+					ComponentTreeItem::REGISTER, reg.data(), component_, handler_, this));
 			}
 		}
 		break;
-								  }
-	case ComponentTreeItem::SUBSPACEMAPS: {
-		text_ = tr("Subspace maps");
-		break;
 										  }
-	case ComponentTreeItem::SUBSPACEMAP: {
-		SubspaceMap* subMap = static_cast<SubspaceMap*>(dataPointer_);
-		Q_ASSERT_X(subMap, "ComponentTreeItem constructor in case SUBSPACEMAP",
-			"static_cast failed to give valid SubspaceMap-pointer");
+	case ComponentTreeItem::REGISTER: {
+		Register* reg = static_cast<Register*>(dataPointer_);
+		Q_ASSERT(reg);
 
-		text_ = subMap->getName();
+		text_ = reg->getName();
 		break;
-								   }
+									  }
 	case ComponentTreeItem::ADDRESSSPACES: {
 		text_ = tr("Address spaces");
 
@@ -1149,29 +983,26 @@ bool ComponentTreeItem::isModelValid() const {
 		return true;
 										}
 	case ComponentTreeItem::MEMORYMAPS: {
-		return false;
+		QList<QSharedPointer<MemoryMap> > memMaps = component_->getMemoryMaps();
+		foreach (QSharedPointer<MemoryMap> memMap, memMaps) {
+			if (!memMap->isValid()) {
+				return false;
+			}
+		}
+		return true;
 										}
 	case ComponentTreeItem::MEMORYMAP: {
-		return false;
+		MemoryMap* memMap = static_cast<MemoryMap*>(dataPointer_);
+		return memMap->isValid();
 									   }
-	case ComponentTreeItem::ADDRESSBLOCKS: {
-		return false;
-										   }
 	case ComponentTreeItem::ADDRESSBLOCK: {
-		return false;
+		AddressBlock* addrBlock = static_cast<AddressBlock*>(dataPointer_);
+		return addrBlock->isValid();
 										  }
-	case ComponentTreeItem::BANKS: {
-		return false;
-								   }
-	case ComponentTreeItem::BANK: {
-		return false;
-								  }
-	case ComponentTreeItem::SUBSPACEMAPS: {
-		return false;
-										  }
-	case ComponentTreeItem::SUBSPACEMAP: {
-		return false;
-										 }
+	case ComponentTreeItem::REGISTER: {
+		Register* reg = static_cast<Register*>(dataPointer_);
+		return reg->isValid();
+									  }
 	case ComponentTreeItem::ADDRESSSPACES: {
 		
 		// if at least one address space is invalid

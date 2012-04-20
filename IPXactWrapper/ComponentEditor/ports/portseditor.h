@@ -43,9 +43,9 @@ public:
 	//! \brief The destructor
 	virtual ~PortsEditor();
 
-	/*! \brief Check for the validity of the edited model parameters.
+	/*! \brief Check for the validity of the edited ports.
 	*
-	* \return True if all model parameters are in valid state.
+	* \return True if all ports are in valid state.
 	*/
 	virtual bool isValid() const;
 

@@ -198,7 +198,7 @@ void MemoryMap::setAddressUnitBits(unsigned int addressUnitBits) {
 	addressUnitBits_ = addressUnitBits;
 }
 
-const QList<QSharedPointer<MemoryMapItem> >& MemoryMap::getItems() {
+const QList<QSharedPointer<MemoryMapItem> >& MemoryMap::getItems() const {
 	return items_;
 }
 
@@ -216,4 +216,8 @@ void MemoryMap::setItems(const QList<QSharedPointer<MemoryMapItem> > &items) {
 
 	// save the new items
 	items_ = items;
+}
+
+QList<QSharedPointer<MemoryMapItem> >* MemoryMap::getItemsPointer() {
+	return &items_;
 }

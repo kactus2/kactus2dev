@@ -133,6 +133,12 @@ public:
 	 */
 	const QMap<QString, QString>& getWidthAttributes();
 
+	/*! \brief Get pointer to the list containing the registers.
+	 *
+	 * \return Pointer to QList containing pointers to the registers.
+	*/
+	QList<QSharedPointer<RegisterModel> >* getRegisterPointer();
+
 	/*! \brief Set the accessibility of the address block
 	 *
 	 * \param access Enum holding the access type of the address block

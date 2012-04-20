@@ -88,7 +88,14 @@ public:
 	 * \return QList containing pointers to the memorymap items stored in
 	 * this instance.
 	 */
-	const QList<QSharedPointer<MemoryMapItem> >& getItems();
+	const QList<QSharedPointer<MemoryMapItem> >& getItems() const;
+
+	/*! \brief Get pointer to the list containing the memory map items.
+	 *
+	 *
+	 * \return QList containing pointers to the memory map items of this memory map.
+	*/
+	QList<QSharedPointer<MemoryMapItem> >* getItemsPointer();
 
 	/*! \brief Get the name of the memoryMap
 	 *
