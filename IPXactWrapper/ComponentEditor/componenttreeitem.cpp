@@ -100,8 +100,11 @@ editor_(NULL) {
 // 		childItems_.append(new ComponentTreeItem(
 // 			ComponentTreeItem::MEMORYMAPS, 0, component, this));
 
-		childItems_.append(new ComponentTreeItem(
-			ComponentTreeItem::ADDRESSSPACES, 0, component, handler, this));
+        if (hwComp)
+        {
+		    childItems_.append(new ComponentTreeItem(
+			    ComponentTreeItem::ADDRESSSPACES, 0, component, handler, this));
+        }
 
 // 		childItems_.append(new ComponentTreeItem(
 // 			ComponentTreeItem::REMAPSTATES, 0, component, this));
@@ -130,11 +133,11 @@ editor_(NULL) {
 			    ComponentTreeItem::CHANNELS, 0, component, handler, this));
         }
 
-		childItems_.append(new ComponentTreeItem(
-			ComponentTreeItem::CPUS, 0, component, handler, this));
-
-        if (hwComp)
+		if (hwComp)
         {
+            childItems_.append(new ComponentTreeItem(
+                ComponentTreeItem::CPUS, 0, component, handler, this));
+
 		    childItems_.append(new ComponentTreeItem(
 			    ComponentTreeItem::OTHERCLOCKDRIVERS, 0, component, handler, this));
 

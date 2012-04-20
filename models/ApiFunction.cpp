@@ -18,7 +18,12 @@
 //-----------------------------------------------------------------------------
 // Function: ApiFunction::ApiFunction()
 //-----------------------------------------------------------------------------
-ApiFunction::ApiFunction() : name_(), returnType_(), desc_(), params_()
+ApiFunction::ApiFunction()
+    : name_(),
+      returnType_("void"),
+      returnValueDesc_(),
+      desc_(),
+      params_()
 {
 }
 
@@ -27,6 +32,7 @@ ApiFunction::ApiFunction() : name_(), returnType_(), desc_(), params_()
 //-----------------------------------------------------------------------------
 ApiFunction::ApiFunction(ApiFunction const& rhs) : name_(rhs.name_),
                                                    returnType_(rhs.returnType_),
+                                                   returnValueDesc_(rhs.returnValueDesc_),
                                                    desc_(rhs.desc_),
                                                    params_()
 {
@@ -39,7 +45,12 @@ ApiFunction::ApiFunction(ApiFunction const& rhs) : name_(rhs.name_),
 //-----------------------------------------------------------------------------
 // Function: ApiFunction::ApiFunction()
 //-----------------------------------------------------------------------------
-ApiFunction::ApiFunction(QDomNode& node) : name_(), returnType_(), desc_(), params_()
+ApiFunction::ApiFunction(QDomNode& node)
+    : name_(),
+      returnType_("void"),
+      returnValueDesc_(),
+      desc_(),
+      params_()
 {
     Q_ASSERT(node.nodeName() == "kactus2:function");
 
@@ -48,11 +59,16 @@ ApiFunction::ApiFunction(QDomNode& node) : name_(), returnType_(), desc_(), para
     returnType_ = node.attributes().namedItem("kactus2:returnType").nodeValue();
     desc_ = node.attributes().namedItem("kactus2:description").nodeValue();
 
-    // Parse parameters from the child nodes.
+    // Parse return value and parameters from the child nodes.
     for (int i = 0; i < node.childNodes().count(); ++i)
     {
         QDomNode paramNode = node.childNodes().at(i);
 
+        if (paramNode.nodeName() == "kactus2:returnValue")
+        {
+            returnType_ = paramNode.attributes().namedItem("kactus2:type").nodeValue();
+            returnValueDesc_ = paramNode.attributes().namedItem("kactus2:description").nodeValue();
+        }
         if (paramNode.nodeName() == "kactus2:functionParameter")
         {
             QSharedPointer<ApiFunctionParameter> param(new ApiFunctionParameter(paramNode));
@@ -75,8 +91,11 @@ void ApiFunction::write(QXmlStreamWriter& writer)
 {
     writer.writeStartElement("kactus2:function");
     writer.writeAttribute("kactus2:name", name_);
-    writer.writeAttribute("kactus2:returnType", returnType_);
     writer.writeAttribute("kactus2:description", desc_);
+
+    writer.writeEmptyElement("kactus2:returnValue");
+    writer.writeAttribute("kactus2:type", returnType_);
+    writer.writeAttribute("kactus2:description", returnValueDesc_);
 
     foreach (QSharedPointer<ApiFunctionParameter> param, params_)
     {
@@ -183,6 +202,14 @@ void ApiFunction::setReturnValueType(QString const& type)
 }
 
 //-----------------------------------------------------------------------------
+// Function: ApiFunction::setReturnValueDescription()
+//-----------------------------------------------------------------------------
+void ApiFunction::setReturnValueDescription(QString const& desc)
+{
+    returnValueDesc_ = desc;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ApiFunction::setDescription()
 //-----------------------------------------------------------------------------
 void ApiFunction::setDescription(QString const& desc)
@@ -230,6 +257,14 @@ QString const& ApiFunction::getName() const
 QString const& ApiFunction::getReturnValueType() const
 {
     return returnType_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiFunction::getReturnValueDescription()
+//-----------------------------------------------------------------------------
+QString const& ApiFunction::getReturnValueDescription() const
+{
+    return returnValueDesc_;
 }
 
 //-----------------------------------------------------------------------------

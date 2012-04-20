@@ -104,7 +104,7 @@ void SubspaceMap::write(QXmlStreamWriter& writer) {
 
 bool SubspaceMap::isValid( QStringList& errorList, 
 						  const QString& parentIdentifier ) const {
-	bool valid = false;
+	bool valid = true;
 	const QString thisIdentifier(QObject::tr("subspace map %1").arg(name_));
 
 	if (name_.isEmpty()) {

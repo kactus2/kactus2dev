@@ -1,16 +1,16 @@
 //-----------------------------------------------------------------------------
-// File: PropertyValueModel.h
+// File: ApiFunctionParameterModel.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
-// Date: 16.4.2012
+// Date: 18.4.2012
 //
 // Description:
-// Model for property values.
+// Model for API function parameters.
 //-----------------------------------------------------------------------------
 
-#ifndef PROPERTYVALUEMODEL_H
-#define PROPERTYVALUEMODEL_H
+#ifndef APIFUNCTIONPARAMETERMODEL_H
+#define APIFUNCTIONPARAMETERMODEL_H
 
 #include <QAbstractTableModel>
 #include <QMap>
@@ -18,10 +18,13 @@
 #include <QString>
 #include <QSharedPointer>
 
+class ApiFunction;
+class ApiFunctionParameter;
+
 //-----------------------------------------------------------------------------
-//! PropertyValueModel class.
+//! ApiFunctionParameterModel class.
 //-----------------------------------------------------------------------------
-class PropertyValueModel : public QAbstractTableModel
+class ApiFunctionParameterModel : public QAbstractTableModel
 {
 	Q_OBJECT
 
@@ -31,24 +34,19 @@ public:
      *
      *      @param [in] parent The parent object.
 	 */
-	PropertyValueModel(QObject *parent);
+	ApiFunctionParameterModel(QObject *parent);
 
 	/*!
      *  Destructor.
      */
-	virtual ~PropertyValueModel();
+	virtual ~ApiFunctionParameterModel();
 
     /*!
-     *  Sets the data for editing.
+     *  Sets the edited API function.
      *
-     *      @param [in] propertyValue The property values.
+     *      @param [in] func The function to edit.
      */
-    void setData(QMap<QString, QString> const& propertyValues);
-
-    /*!
-     *  Returns the edited data.
-     */
-    QMap<QString, QString> getData() const;
+    void setFunction(QSharedPointer<ApiFunction> func);
 
     /*!
      *  Returns the number of rows in the model.
@@ -66,7 +64,7 @@ public:
 	 *      @param [in] parent Model index of the parent of the item. Must be invalid
 	 *                         because this is not hierarchical model.
 	 *
-	 *      @return Always returns 2.
+	 *      @return Always returns API_FUNC_PARAM_COL_COUNT.
 	 */
 	virtual int columnCount(QModelIndex const& parent = QModelIndex()) const;
 
@@ -113,6 +111,13 @@ public:
 	virtual bool setData(QModelIndex const& index, QVariant const& value, 
 		                 int role = Qt::EditRole);
 
+	/*!
+     *  Checks whether the model is in valid state or not.
+     *
+	 *      @return True if all items in model are valid.
+	 */
+	bool isValid() const;
+
 public slots:
     void onAdd();
     void onAddItem(QModelIndex const& index);
@@ -131,8 +136,8 @@ signals:
 
 private:
     // Disable copying.
-    PropertyValueModel(PropertyValueModel const& rhs);
-    PropertyValueModel& operator=(PropertyValueModel const& rhs);
+    ApiFunctionParameterModel(ApiFunctionParameterModel const& rhs);
+    ApiFunctionParameterModel& operator=(ApiFunctionParameterModel const& rhs);
     
     //! NameValuePair type.
     typedef QPair<QString, QString> NameValuePair;
@@ -141,10 +146,10 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 	
-	//! The table that is displayed to the user.
-	QList<NameValuePair> table_;
+	//! The API function being edited.
+    QSharedPointer<ApiFunction> func_;
 };
 
 //-----------------------------------------------------------------------------
 
-#endif // PROPERTYVALUEMODEL_H
+#endif // APIFUNCTIONPARAMETERMODEL_H

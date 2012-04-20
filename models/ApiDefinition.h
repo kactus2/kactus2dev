@@ -129,6 +129,11 @@ public:
     void removeFunction(int index);
 
     /*!
+     *  Removes all functions.
+     */
+    void removeFunctions();
+
+    /*!
      *  Returns the API programming language.
      */
     QString const& getLanguage() const;
@@ -142,6 +147,11 @@ public:
      *  Returns the function at the given index.
      */
     QSharedPointer<ApiFunction> getFunction(int index);
+
+    /*!
+     *  Returns the function at the given index.
+     */
+    QSharedPointer<ApiFunction const> getFunction(int index) const;
 
     /*!
      *  Returns the number of functions in the API.

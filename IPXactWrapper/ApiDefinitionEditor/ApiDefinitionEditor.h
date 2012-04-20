@@ -12,6 +12,8 @@
 #ifndef APIDEFINITIONEDITOR_H
 #define APIDEFINITIONEDITOR_H
 
+#include "ApiFunctionEditor.h"
+
 #include <common/widgets/tabDocument/TabDocument.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <common/widgets/listManager/listmanager.h>
@@ -89,6 +91,9 @@ private:
 
     //! The data type list manager.
     ListManager dataTypeList_;
+
+    //! The function editor.
+    ApiFunctionEditor functionEditor_;
 };
 
 //-----------------------------------------------------------------------------

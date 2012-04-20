@@ -1,102 +1,83 @@
 //-----------------------------------------------------------------------------
-// File: PropertyValueModel.cpp
+// File: ApiFunctionParameterModel.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
-// Date: 16.4.2012
+// Date: 18.4.2012
 //
 // Description:
-// Model for property values.
+// Model for API function parameters.
 //-----------------------------------------------------------------------------
 
-#include "PropertyValueModel.h"
+#include "ApiFunctionParameterModel.h"
+
+#include "ApiFunctionParameterDelegate.h"
+
+#include <models/ApiFunction.h>
+#include <models/ApiFunctionParameter.h>
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueModel::PropertyValueModel()
+// Function: ApiFunctionParameterModel::ApiFunctionParameterModel()
 //-----------------------------------------------------------------------------
-PropertyValueModel::PropertyValueModel(QObject *parent)
-    : QAbstractTableModel(parent)
+ApiFunctionParameterModel::ApiFunctionParameterModel(QObject *parent)
+    : QAbstractTableModel(parent),
+      func_()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueModel::~PropertyValueModel()
+// Function: ApiFunctionParameterModel::~ApiFunctionParameterModel()
 //-----------------------------------------------------------------------------
-PropertyValueModel::~PropertyValueModel()
+ApiFunctionParameterModel::~ApiFunctionParameterModel()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueModel::setData()
+// Function: ApiFunctionParameterModel::setFunction()
 //-----------------------------------------------------------------------------
-void PropertyValueModel::setData(QMap<QString, QString> const& propertyValues)
+void ApiFunctionParameterModel::setFunction(QSharedPointer<ApiFunction> func)
 {
     beginResetModel();
-
-    table_.clear();
-
-    QMapIterator<QString, QString> iter(propertyValues);
-
-    while (iter.hasNext())
-    {
-        iter.next();
-        table_.append(NameValuePair(iter.key(), iter.value()));
-    }
-
+    func_ = func;
     endResetModel();
 }
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueModel::getData()
+// Function: ApiFunctionParameterModel::rowCount()
 //-----------------------------------------------------------------------------
-QMap<QString, QString> PropertyValueModel::getData() const
+int ApiFunctionParameterModel::rowCount(QModelIndex const& parent /*= QModelIndex()*/) const
 {
-    QMap<QString, QString> values;
-
-    foreach (NameValuePair const& pair, table_)
+    if (parent.isValid() || func_ == 0)
     {
-        values[pair.first] = pair.second;
+        return 0;
     }
 
-    return values;
+    return func_->getParamCount();
 }
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueModel::rowCount()
+// Function: ApiFunctionParameterModel::columnCount()
 //-----------------------------------------------------------------------------
-int PropertyValueModel::rowCount(QModelIndex const& parent /*= QModelIndex()*/) const
+int ApiFunctionParameterModel::columnCount(QModelIndex const& parent /*= QModelIndex()*/) const
 {
     if (parent.isValid())
     {
         return 0;
     }
 
-    return table_.size();
+    return API_FUNC_PARAM_COL_COUNT;
 }
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueModel::columnCount()
+// Function: ApiFunctionParameterModel::data()
 //-----------------------------------------------------------------------------
-int PropertyValueModel::columnCount(QModelIndex const& parent /*= QModelIndex()*/) const
-{
-    if (parent.isValid())
-    {
-        return 0;
-    }
-
-    return 2;
-}
-
-//-----------------------------------------------------------------------------
-// Function: PropertyValueModel::data()
-//-----------------------------------------------------------------------------
-QVariant PropertyValueModel::data(QModelIndex const& index, int role /*= Qt::DisplayRole*/) const
+QVariant ApiFunctionParameterModel::data(QModelIndex const& index, int role /*= Qt::DisplayRole*/) const
 {
     if (!index.isValid())
     {
         return QVariant();
     }
-    else if (index.row() < 0 || index.row() >= table_.size())
+    else if (func_ == 0 || index.row() < 0 || index.row() >= func_->getParamCount())
     {
         return QVariant();
     }
@@ -105,12 +86,15 @@ QVariant PropertyValueModel::data(QModelIndex const& index, int role /*= Qt::Dis
     {
         switch (index.column())
         {
-        case 0:
-            return table_.at(index.row()).first;
-        
-        case 1:
-            return table_.at(index.row()).second;
-        
+        case API_FUNC_PARAM_COL_NAME:
+            return func_->getParam(index.row())->getName();
+
+        case API_FUNC_PARAM_COL_TYPE:
+            return func_->getParam(index.row())->getType();
+
+        case API_FUNC_PARAM_COL_DESC:
+            return func_->getParam(index.row())->getDescription();
+
         default:
             return QVariant();
         }
@@ -122,9 +106,9 @@ QVariant PropertyValueModel::data(QModelIndex const& index, int role /*= Qt::Dis
 }
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueModel::headerData()
+// Function: ApiFunctionParameterModel::headerData()
 //-----------------------------------------------------------------------------
-QVariant PropertyValueModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant ApiFunctionParameterModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (orientation != Qt::Horizontal)
     {
@@ -135,11 +119,14 @@ QVariant PropertyValueModel::headerData(int section, Qt::Orientation orientation
     {
         switch (section)
         {
-        case 0:
+        case API_FUNC_PARAM_COL_NAME:
             return tr("Name");
 
-        case 1:
-            return tr("Value");
+        case API_FUNC_PARAM_COL_TYPE:
+            return tr("Type");
+
+        case API_FUNC_PARAM_COL_DESC:
+            return tr("Description");
 
         default:
             return QVariant();
@@ -152,9 +139,9 @@ QVariant PropertyValueModel::headerData(int section, Qt::Orientation orientation
 }
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueModel::flags()
+// Function: ApiFunctionParameterModel::flags()
 //-----------------------------------------------------------------------------
-Qt::ItemFlags PropertyValueModel::flags(QModelIndex const& index) const
+Qt::ItemFlags ApiFunctionParameterModel::flags(QModelIndex const& index) const
 {
     if (!index.isValid())
     {
@@ -165,15 +152,15 @@ Qt::ItemFlags PropertyValueModel::flags(QModelIndex const& index) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueModel::setData()
+// Function: ApiFunctionParameterModel::setData()
 //-----------------------------------------------------------------------------
-bool PropertyValueModel::setData(QModelIndex const& index, QVariant const& value, int role /*= Qt::EditRole*/)
+bool ApiFunctionParameterModel::setData(QModelIndex const& index, QVariant const& value, int role /*= Qt::EditRole*/)
 {
     if (!index.isValid())
     {
         return false;
     }
-    else if (index.row() < 0 || index.row() >= table_.size())
+    else if (func_ == 0 || index.row() < 0 || index.row() >= func_->getParamCount())
     {
         return false;
     }
@@ -182,15 +169,21 @@ bool PropertyValueModel::setData(QModelIndex const& index, QVariant const& value
     {
         switch (index.column())
         {
-        case 0:
+        case API_FUNC_PARAM_COL_NAME:
             {
-                table_[index.row()].first = value.toString();
+                func_->getParam(index.row())->setName(value.toString());
                 break;
             }
 
-        case 1:
+        case API_FUNC_PARAM_COL_TYPE:
             {
-                table_[index.row()].second = value.toString();
+                func_->getParam(index.row())->setType(value.toString());
+                break;
+            }
+
+        case API_FUNC_PARAM_COL_DESC:
+            {
+                func_->getParam(index.row())->setDescription(value.toString());
                 break;
             }
 
@@ -209,27 +202,30 @@ bool PropertyValueModel::setData(QModelIndex const& index, QVariant const& value
 }
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueModel::onAdd()
+// Function: ApiFunctionParameterModel::isValid()
 //-----------------------------------------------------------------------------
-void PropertyValueModel::onAdd()
+bool ApiFunctionParameterModel::isValid() const
 {
-    NameValuePair element(QString(""), QString(""));
-
-    if (!table_.contains(element))
-    {
-        beginInsertRows(QModelIndex(), table_.size(), table_.size());
-        table_.append(element);
-        endInsertRows();
-        emit contentChanged();
-    }
+    return true;
 }
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueModel::onAddItem()
+// Function: ApiFunctionParameterModel::onAdd()
 //-----------------------------------------------------------------------------
-void PropertyValueModel::onAddItem(QModelIndex const& index)
+void ApiFunctionParameterModel::onAdd()
 {
-    int row = table_.size();
+    beginInsertRows(QModelIndex(), func_->getParamCount(), func_->getParamCount());
+    func_->addParam(QSharedPointer<ApiFunctionParameter>(new ApiFunctionParameter()));
+    endInsertRows();
+    emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiFunctionParameterModel::onAddItem()
+//-----------------------------------------------------------------------------
+void ApiFunctionParameterModel::onAddItem(QModelIndex const& index)
+{
+    int row = func_->getParamCount();
 
     // if the index is valid then add the item to the correct position
     if (index.isValid())
@@ -237,41 +233,37 @@ void PropertyValueModel::onAddItem(QModelIndex const& index)
         row = index.row();
     }
 
-    NameValuePair element(QString(""), QString(""));
+    beginInsertRows(QModelIndex(), row, row);
+    // TODO: Insert into middle.
+    func_->addParam(QSharedPointer<ApiFunctionParameter>(new ApiFunctionParameter()));
+    endInsertRows();
 
-    if (!table_.contains(element))
-    {
-        beginInsertRows(QModelIndex(), row, row);
-        table_.insert(row, element);
-        endInsertRows();
-
-        // tell also parent widget that contents have been changed
-        emit contentChanged();
-    }
+    // tell also parent widget that contents have been changed
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueModel::onRemove()
+// Function: ApiFunctionParameterModel::onRemove()
 //-----------------------------------------------------------------------------
-void PropertyValueModel::onRemove(QModelIndex const& index )
+void ApiFunctionParameterModel::onRemove(QModelIndex const& index )
 {
-    if (!index.isValid())
+    if (!index.isValid() || func_ == 0)
     {
         return;
     }
 
     // remove the indexed configurable element
     beginRemoveRows(QModelIndex(), index.row(), index.row());
-    table_.removeAt(index.row());
+    func_->removeParam(index.row());
     endRemoveRows();
 
     emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueModel::onRemoveItem()
+// Function: ApiFunctionParameterModel::onRemoveItem()
 //-----------------------------------------------------------------------------
-void PropertyValueModel::onRemoveItem(QModelIndex const& index )
+void ApiFunctionParameterModel::onRemoveItem(QModelIndex const& index )
 {
     // don't remove anything if index is invalid
     if (!index.isValid())
@@ -279,14 +271,14 @@ void PropertyValueModel::onRemoveItem(QModelIndex const& index )
         return;
     }
     // make sure the row number if valid
-    else if (index.row() < 0 || index.row() >= table_.size())
+    else if (func_ == 0 || index.row() < 0 || index.row() >= func_->getParamCount())
     {
         return;
     }
 
     // remove the indexed configurable element
     beginRemoveRows(QModelIndex(), index.row(), index.row());
-    table_.removeAt(index.row());
+    func_->removeParam(index.row());
     endRemoveRows();
 
     emit contentChanged();

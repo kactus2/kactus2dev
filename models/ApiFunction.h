@@ -82,6 +82,13 @@ public:
     void setReturnValueType(QString const& type);
 
     /*!
+     *  Sets the return value description.
+     *
+     *      @param [in] desc The return value description to set.
+     */
+    void setReturnValueDescription(QString const& desc);
+
+    /*!
      *  Sets the function description.
      *
      *      @param [in] desc The description.
@@ -112,6 +119,11 @@ public:
      *  Returns the return value type.
      */
     QString const& getReturnValueType() const;
+
+    /*!
+     *  Returns the return value description.
+     */
+    QString const& getReturnValueDescription() const;
 
     /*!
      *  Returns the function description.
@@ -153,6 +165,9 @@ private:
 
     //! The return value type.
     QString returnType_;
+
+    //! The return value description.
+    QString returnValueDesc_;
 
     //! The function description.
     QString desc_;

@@ -328,6 +328,14 @@ void ApiDefinition::removeFunction(int index)
 }
 
 //-----------------------------------------------------------------------------
+// Function: ApiDefinition::removeFunctions()
+//-----------------------------------------------------------------------------
+void ApiDefinition::removeFunctions()
+{
+    functions_.clear();
+}
+
+//-----------------------------------------------------------------------------
 // Function: ApiDefinition::getLanguage()
 //-----------------------------------------------------------------------------
 QString const& ApiDefinition::getLanguage() const
@@ -381,6 +389,15 @@ void ApiDefinition::parseFunctions(QDomNode& node)
 // Function: ApiDefinition::getFunction()
 //-----------------------------------------------------------------------------
 QSharedPointer<ApiFunction> ApiDefinition::getFunction(int index)
+{
+    Q_ASSERT(index >= 0 && index < getFunctionCount());
+    return functions_.at(index);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiDefinition::getFunction()
+//-----------------------------------------------------------------------------
+QSharedPointer<ApiFunction const> ApiDefinition::getFunction(int index) const
 {
     Q_ASSERT(index >= 0 && index < getFunctionCount());
     return functions_.at(index);

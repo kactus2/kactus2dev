@@ -10,20 +10,20 @@
 #ifndef VERSIONNO__H
 #define VERSIONNO__H
 
-#define VERSION_FULL           1.3.189.0
+#define VERSION_FULL           1.3.238.0
 
 #define VERSION_BASEYEAR       0
-#define VERSION_DATE           "2012-04-18"
-#define VERSION_TIME           "09:09:11"
+#define VERSION_DATE           "2012-04-20"
+#define VERSION_TIME           "13:26:20"
 
 #define VERSION_MAJOR          1
 #define VERSION_MINOR          3
-#define VERSION_BUILDNO        189
+#define VERSION_BUILDNO        238
 #define VERSION_EXTEND         0
 
-#define VERSION_FILE           1,3,189,0
-#define VERSION_PRODUCT        1,3,189,0
-#define VERSION_FILESTR        "1,3,189,0"
-#define VERSION_PRODUCTSTR     "1,3,189,0"
+#define VERSION_FILE           1,3,238,0
+#define VERSION_PRODUCT        1,3,238,0
+#define VERSION_FILESTR        "1,3,238,0"
+#define VERSION_PRODUCTSTR     "1,3,238,0"
 
 #endif

@@ -65,7 +65,7 @@ void ApiFunctionParameter::write(QXmlStreamWriter& writer)
 //-----------------------------------------------------------------------------
 bool ApiFunctionParameter::isValid(QStringList& errorList, QString const& parentId) const
 {
-    bool valid = false;
+    bool valid = true;
     QString const thisId = QObject::tr("function parameter '%1'").arg(name_);
 
     if (name_.isEmpty())

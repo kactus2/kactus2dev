@@ -31,6 +31,8 @@ public:
 	virtual ~EditableListView();
 
 signals:
+    //! Emitted when the selection has changed.
+    void selectionChanged(QModelIndex const& index);
 
 	/*! \brief A new item should be added to given index.
 	 *
@@ -73,6 +75,8 @@ protected:
 
 	//! \brief Handler for context menu events
 	virtual void contextMenuEvent(QContextMenuEvent* event);
+
+    virtual void currentChanged(const QModelIndex &current, const QModelIndex &previous);
 
 private slots:
 

@@ -110,3 +110,11 @@ void EditableListView::setupActions() {
 	connect(&removeAction_, SIGNAL(triggered()),
 		this, SLOT(onRemoveAction()), Qt::UniqueConnection);
 }
+
+//-----------------------------------------------------------------------------
+// Function: EditableListView::currentChanged()
+//-----------------------------------------------------------------------------
+void EditableListView::currentChanged(const QModelIndex &current, const QModelIndex &previous)
+{
+    emit selectionChanged(current);
+}

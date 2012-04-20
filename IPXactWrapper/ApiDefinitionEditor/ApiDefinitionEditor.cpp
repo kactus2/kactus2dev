@@ -25,17 +25,20 @@ ApiDefinitionEditor::ApiDefinitionEditor(QWidget *parent, QWidget* parentWnd,
     : TabDocument(parent, DOC_PROTECTION_SUPPORT),
       libHandler_(libHandler),
       apiDef_(apiDef),
-      dataTypeList_(tr("Data types"), this)
+      dataTypeList_(tr("Data types"), this),
+      functionEditor_(this)
 {
     // Initialize the editors.
     dataTypeList_.initialize(apiDef->getDataTypes());
+    functionEditor_.restore(*apiDef);
 
     connect(&dataTypeList_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&functionEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     // Setup the layout.
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(&dataTypeList_);
-    layout->addStretch(1);
+    layout->addWidget(&functionEditor_, 1);
 
     setModified(false);
 
@@ -61,6 +64,8 @@ ApiDefinitionEditor::~ApiDefinitionEditor()
 void ApiDefinitionEditor::setProtection(bool locked)
 {
     TabDocument::setProtection(locked);
+    dataTypeList_.setEnabled(!locked);
+    functionEditor_.setEnabled(!locked);
 }
 
 //-----------------------------------------------------------------------------
@@ -77,6 +82,8 @@ VLNV ApiDefinitionEditor::getComponentVLNV() const
 bool ApiDefinitionEditor::save()
 {
     apiDef_->setDataTypes(dataTypeList_.items());
+    functionEditor_.save(*apiDef_);
+
     libHandler_->writeModelToFile(apiDef_);
 
     return TabDocument::save();
