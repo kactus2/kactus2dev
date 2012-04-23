@@ -140,7 +140,7 @@ public:
     /*!
      *  Returns the list of properties.
      */
-    QList< QSharedPointer<ComProperty> > getProperties() const;
+    QList< QSharedPointer<ComProperty> > const& getProperties() const;
 
 private:
     /*!

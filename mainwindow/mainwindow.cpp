@@ -2528,7 +2528,7 @@ void MainWindow::openComDefinition(VLNV const& vlnv, bool forceUnlocked /*= fals
         return;
     }
 
-    ComDefinitionEditor* editor = new ComDefinitionEditor(this, this, libraryHandler_, comDef);
+    ComDefinitionEditor* editor = new ComDefinitionEditor(this, libraryHandler_, comDef);
 
     if (forceUnlocked)
     {

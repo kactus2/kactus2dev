@@ -143,8 +143,8 @@ private:
     ComPropertyModel(ComPropertyModel const& rhs);
     ComPropertyModel& operator=(ComPropertyModel const& rhs);
     
-    //! NameValuePair type.
-    typedef QPair<QString, QString> NameValuePair;
+    //! IP address regular expression string.
+    static QString const IP_ADDRESS_REGEX;
 
     //-----------------------------------------------------------------------------
     // Data.

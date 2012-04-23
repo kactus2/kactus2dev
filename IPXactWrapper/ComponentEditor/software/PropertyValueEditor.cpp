@@ -11,8 +11,6 @@
 
 #include "PropertyValueEditor.h"
 
-#include "PropertyValueDelegate.h"
-
 #include <QHBoxLayout>
 
 //-----------------------------------------------------------------------------
@@ -21,6 +19,7 @@
 PropertyValueEditor::PropertyValueEditor(QWidget* parent)
     : QGroupBox(tr("Property values"), parent),
       view_(this),
+      delegate_(this),
       filter_(this),
       model_(this)
 {
@@ -30,7 +29,7 @@ PropertyValueEditor::PropertyValueEditor(QWidget* parent)
     view_.setModel(&filter_);
     view_.setSortingEnabled(true);
     view_.setItemsDraggable(false);
-    view_.setItemDelegate(new PropertyValueDelegate(this));
+    view_.setItemDelegate(&delegate_);
 
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->addWidget(&view_);
@@ -48,6 +47,15 @@ PropertyValueEditor::PropertyValueEditor(QWidget* parent)
 //-----------------------------------------------------------------------------
 PropertyValueEditor::~PropertyValueEditor()
 {
+}
+
+//-----------------------------------------------------------------------------
+// Function: PropertyValueEditor::setAllowedProperties()
+//-----------------------------------------------------------------------------
+void PropertyValueEditor::setAllowedProperties(QList< QSharedPointer<ComProperty> > const* properties)
+{
+    delegate_.setAllowedProperties(properties);
+    model_.setAllowedProperties(properties);
 }
 
 //-----------------------------------------------------------------------------

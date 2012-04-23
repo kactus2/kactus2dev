@@ -23,7 +23,7 @@
 //-----------------------------------------------------------------------------
 // Function: ComDefinitionEditor()
 //-----------------------------------------------------------------------------
-ComDefinitionEditor::ComDefinitionEditor(QWidget *parent, QWidget* parentWnd,
+ComDefinitionEditor::ComDefinitionEditor(QWidget *parent,
                                          LibraryInterface* libHandler,
                                          QSharedPointer<ComDefinition> comDef)
     : TabDocument(parent, DOC_PROTECTION_SUPPORT),

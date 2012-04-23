@@ -15,6 +15,10 @@
 
 #include <models/ComProperty.h>
 
+#include <QRegExp>
+
+QString const ComPropertyModel::IP_ADDRESS_REGEX("^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$");
+
 //-----------------------------------------------------------------------------
 // Function: ComPropertyModel::ComPropertyModel()
 //-----------------------------------------------------------------------------
@@ -117,6 +121,40 @@ QVariant ComPropertyModel::data(QModelIndex const& index, int role /*= Qt::Displ
         
         default:
             return QVariant();
+        }
+    }
+    else if (role == Qt::TextColorRole)
+    {
+        switch (index.column())
+        {
+        case PROPERTY_COL_DEFAULT:
+            {
+                // Validate the default value against the data type.
+                QString const& value = table_.at(index.row())->getDefaultValue();
+                QString const& type = table_.at(index.row())->getType();
+                bool ok = true;
+
+                if (type == "integer")
+                {
+                    value.toInt(&ok);
+                }
+                else if (type == "ip_address")
+                {
+                    ok = value.contains(QRegExp(IP_ADDRESS_REGEX));
+                }
+
+                if (ok)
+                {
+                    return Qt::black;
+                }
+                else
+                {
+                    return Qt::red;
+                }
+            }
+
+        default:
+            return Qt::black;
         }
     }
     else

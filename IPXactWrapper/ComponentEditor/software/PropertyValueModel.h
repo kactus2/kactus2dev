@@ -18,6 +18,8 @@
 #include <QString>
 #include <QSharedPointer>
 
+class ComProperty;
+
 //-----------------------------------------------------------------------------
 //! PropertyValueModel class.
 //-----------------------------------------------------------------------------
@@ -39,6 +41,13 @@ public:
 	virtual ~PropertyValueModel();
 
     /*!
+     *  Synchronizes the model to match with the given list of allowed properties.
+     *
+     *      @param [in] properties The list of allowed properties.
+     */
+    void setAllowedProperties(QList< QSharedPointer<ComProperty> > const* properties);
+
+    /*!
      *  Sets the data for editing.
      *
      *      @param [in] propertyValue The property values.
@@ -49,6 +58,13 @@ public:
      *  Returns the edited data.
      */
     QMap<QString, QString> getData() const;
+
+    /*!
+     *  Validates the data and print errors/warnings if there is invalid data.
+     *
+     *      @return True, if any errors were found. Otherwise false.
+     */
+    bool isValid() const;
 
     /*!
      *  Returns the number of rows in the model.
@@ -137,12 +153,18 @@ private:
     //! NameValuePair type.
     typedef QPair<QString, QString> NameValuePair;
 
+    //! IP address regular expression string.
+    static QString const IP_ADDRESS_REGEX;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 	
 	//! The table that is displayed to the user.
 	QList<NameValuePair> table_;
+
+    //! The list of allowed properties.
+    QList< QSharedPointer<ComProperty> > const* allowedProperties_;
 };
 
 //-----------------------------------------------------------------------------

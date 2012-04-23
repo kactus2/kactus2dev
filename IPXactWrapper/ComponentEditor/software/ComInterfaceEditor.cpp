@@ -13,6 +13,7 @@
 
 #include <LibraryManager/libraryinterface.h>
 #include <models/ComInterface.h>
+#include <models/ComDefinition.h>
 
 #include <QScrollArea>
 #include <QHBoxLayout>
@@ -52,6 +53,9 @@ ComInterfaceEditor::ComInterfaceEditor(LibraryInterface* libHandler,
             this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&propertyValueEditor_, SIGNAL(contentChanged()),
             this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
+    connect(&comType_, SIGNAL(contentChanged()),
+            this, SLOT(onComDefinitionChanged()), Qt::UniqueConnection);
     
     // Set name group and VLNV editor settings.
     nameGroup_.setTitle(tr("Name and description"));
@@ -158,6 +162,8 @@ void ComInterfaceEditor::restoreChanges()
     nameGroup_.setDisplayName(comIf_->getDisplayName());
     nameGroup_.setDescription(comIf_->getDescription());
 
+    propertyValueEditor_.setData(comIf_->getPropertyValues());
+
     comType_.setVLNV(comIf_->getComType());
     directionCombo_.setCurrentIndex(comIf_->getDirection());
 
@@ -173,6 +179,25 @@ void ComInterfaceEditor::restoreChanges()
 
         dataTypeCombo_.setCurrentIndex(index);
     }
+}
 
-    propertyValueEditor_.setData(comIf_->getPropertyValues());
+//-----------------------------------------------------------------------------
+// Function: ComInterfaceEditor::onComDefinitionChanged()
+//-----------------------------------------------------------------------------
+void ComInterfaceEditor::onComDefinitionChanged()
+{
+    if (comType_.getVLNV().isValid())
+    {
+        // Retrieve the COM definition from the library.
+        QSharedPointer<LibraryComponent const> libComp = libInterface_->getModelReadOnly(comType_.getVLNV());
+        QSharedPointer<ComDefinition const> comDef = libComp.dynamicCast<ComDefinition const>();
+
+        if (comDef == 0)
+        {
+            emit errorMessage("COM definition with the given VLNV does not exist");
+            return;
+        }
+
+        propertyValueEditor_.setAllowedProperties(&comDef->getProperties());
+    }
 }

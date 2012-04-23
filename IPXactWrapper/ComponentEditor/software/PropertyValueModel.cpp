@@ -11,11 +11,18 @@
 
 #include "PropertyValueModel.h"
 
+#include <models/ComProperty.h>
+
+#include <QRegExp>
+
+QString const PropertyValueModel::IP_ADDRESS_REGEX("^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$");
+
 //-----------------------------------------------------------------------------
 // Function: PropertyValueModel::PropertyValueModel()
 //-----------------------------------------------------------------------------
 PropertyValueModel::PropertyValueModel(QObject *parent)
-    : QAbstractTableModel(parent)
+    : QAbstractTableModel(parent),
+      allowedProperties_(0)
 {
 }
 
@@ -24,6 +31,41 @@ PropertyValueModel::PropertyValueModel(QObject *parent)
 //-----------------------------------------------------------------------------
 PropertyValueModel::~PropertyValueModel()
 {
+}
+
+//-----------------------------------------------------------------------------
+// Function: PropertyValueModel::setAllowedProperties()
+//-----------------------------------------------------------------------------
+void PropertyValueModel::setAllowedProperties(QList< QSharedPointer<ComProperty> > const* properties)
+{
+    beginResetModel();
+
+    allowedProperties_ = properties;
+
+    // Check that at least all required properties are found in the values.
+    foreach (QSharedPointer<ComProperty const> prop, *properties)
+    {
+        if (prop->isRequired())
+        {
+            int i = 0;
+
+            for (; i < table_.size(); ++i)
+            {
+                if (table_.at(i).first == prop->getName())
+                {
+                    break;
+                }
+            }
+
+            // If the value was not found, add it.
+            if (i == table_.size())
+            {
+                table_.append(NameValuePair(prop->getName(), prop->getDefaultValue()));
+            }
+        }
+    }
+
+    endResetModel();
 }
 
 //-----------------------------------------------------------------------------
@@ -113,6 +155,71 @@ QVariant PropertyValueModel::data(QModelIndex const& index, int role /*= Qt::Dis
         
         default:
             return QVariant();
+        }
+    }
+    else if (role == Qt::TextColorRole)
+    {
+        switch (index.column())
+        {
+        case 0:
+            {
+                // Check if the property value is found from the list of allowed properties.
+                if (allowedProperties_ != 0)
+                {
+                    foreach (QSharedPointer<ComProperty const> prop, *allowedProperties_)
+                    {
+                        if (prop->getName() == table_.at(index.row()).first)
+                        {
+                            return Qt::black;
+                        }
+                    }
+                }
+
+                // Use red to indicate property values that are not found in the allowed properties.
+                return Qt::red;
+            }
+            
+        case 1:
+            {
+                // Validate the property value against the data type defined in the property definition.
+                if (allowedProperties_ != 0)
+                {
+                    foreach (QSharedPointer<ComProperty const> prop, *allowedProperties_)
+                    {
+                        // Check if we found a match.
+                        if (prop->getName() == table_.at(index.row()).first)
+                        {
+                            QString const& value = table_.at(index.row()).second;
+                            bool ok = true;
+
+                            if (prop->getType() == "integer")
+                            {
+                                value.toInt(&ok);
+                            }
+                            else if (prop->getType() == "ip_address")
+                            {
+                                ok = value.contains(QRegExp(IP_ADDRESS_REGEX));
+                            }
+
+                            if (ok)
+                            {
+                                return Qt::black;
+                            }
+                            else
+                            {
+                                return Qt::red;
+                            }
+                        }
+                    }
+                }
+
+                return Qt::black;
+            }
+
+        default:
+            {
+                return Qt::black;
+            }
         }
     }
     else
@@ -290,4 +397,35 @@ void PropertyValueModel::onRemoveItem(QModelIndex const& index )
     endRemoveRows();
 
     emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PropertyValueModel::isValid()
+//-----------------------------------------------------------------------------
+bool PropertyValueModel::isValid() const
+{
+    // Validate the property values against the allowed properties.
+    if (allowedProperties_ != 0)
+    {
+        foreach (NameValuePair const& pair, table_)
+        {
+            int i = 0;
+
+            for (; i < allowedProperties_->size(); ++i)
+            {
+                if (allowedProperties_->at(i)->getName() == pair.first)
+                {
+                    break;
+                }
+            }
+
+            // Check if the property was not found.
+            if (i == allowedProperties_->size())
+            {
+                emit noticeMessage(tr("Property value '%1' not found in the COM definition").arg(pair.first));                                                                                             
+            }
+        }
+    }
+
+    return true;
 }

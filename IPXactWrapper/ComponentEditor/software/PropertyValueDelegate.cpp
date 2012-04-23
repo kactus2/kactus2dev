@@ -11,6 +11,8 @@
 
 #include "PropertyValueDelegate.h"
 
+#include <models/ComProperty.h>
+
 #include <QComboBox>
 #include <QLineEdit>
 
@@ -18,7 +20,8 @@
 // Function: PropertyValueDelegate::PropertyValueDelegate()
 //-----------------------------------------------------------------------------
 PropertyValueDelegate::PropertyValueDelegate(QObject* parent)
-    : QStyledItemDelegate(parent)
+    : QStyledItemDelegate(parent),
+      m_allowedProperties(0)
 {
 }
 
@@ -27,6 +30,14 @@ PropertyValueDelegate::PropertyValueDelegate(QObject* parent)
 //-----------------------------------------------------------------------------
 PropertyValueDelegate::~PropertyValueDelegate()
 {
+}
+
+//-----------------------------------------------------------------------------
+// Function: PropertyValueDelegate::setAllowedProperties()
+//-----------------------------------------------------------------------------
+void PropertyValueDelegate::setAllowedProperties(QList< QSharedPointer<ComProperty> > const* properties)
+{
+    m_allowedProperties = properties;
 }
 
 //-----------------------------------------------------------------------------
@@ -44,7 +55,12 @@ QWidget* PropertyValueDelegate::createEditor(QWidget* parent, QStyleOptionViewIt
                 // set box to be editable
                 box->setEditable(true);
 
-                // TODO: Fill in with possible values from the COM definition.
+                // Fill in with allowed values from the list of properties.
+                foreach (QSharedPointer<ComProperty const> prop, *m_allowedProperties)
+                {
+                    box->addItem(prop->getName());
+                }
+                
                 return box;
             }
 

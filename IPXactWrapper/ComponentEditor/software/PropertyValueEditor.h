@@ -14,6 +14,8 @@
 
 #include "PropertyValueModel.h"
 
+#include "PropertyValueDelegate.h"
+
 #include <common/views/EditableTableView/editabletableview.h>
 
 #include <QGroupBox>
@@ -38,6 +40,13 @@ public:
      *  Destructor.
      */
     ~PropertyValueEditor();
+
+    /*!
+     *  Sets the allowed properties.
+     *
+     *      @param [in] properties The list of allowed properties.
+     */
+    void setAllowedProperties(QList< QSharedPointer<ComProperty> > const* properties);
 
     /*!
      *  Sets the data for editing.
@@ -66,6 +75,9 @@ private:
 
     //! The table view widget.
     EditableTableView view_;
+
+    //! The item delegate.
+    PropertyValueDelegate delegate_;
 
     //! \brief The filter to do the sorting of items to display.
     QSortFilterProxyModel filter_;

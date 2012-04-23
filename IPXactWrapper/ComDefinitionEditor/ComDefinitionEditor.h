@@ -43,11 +43,10 @@ public:
      *  Constructor.
 	 *
 	 *      @param [in] parent      The parent widget.
-     *      @param [in] parentWnd   The parent window.
-	 *      @param [in] libHandler  The library interface.
+     *      @param [in] libHandler  The library interface.
      *      @param [in] comDef      The COM definition.
 	 */
-	ComDefinitionEditor(QWidget* parent, QWidget* parentWnd, LibraryInterface* libHandler,
+	ComDefinitionEditor(QWidget* parent, LibraryInterface* libHandler,
                         QSharedPointer<ComDefinition> comDef);
 	
 	/*!

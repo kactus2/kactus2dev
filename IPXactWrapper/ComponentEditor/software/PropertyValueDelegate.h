@@ -13,6 +13,10 @@
 #define PROPERTYVALUEDELEGATE_H
 
 #include <QStyledItemDelegate>
+#include <QList>
+#include <QSharedPointer>
+
+class ComProperty;
 
 //-----------------------------------------------------------------------------
 // Delegate for property values.
@@ -33,6 +37,13 @@ public:
      *  Destructor.
      */
 	virtual ~PropertyValueDelegate();
+
+    /*!
+     *  Sets the allowed properties.
+     *
+     *      @param [in] properties The list of allowed properties.
+     */
+    void setAllowedProperties(QList< QSharedPointer<ComProperty> > const* properties);
 
 	/*!
      *  Creates a new editor for the given item.
@@ -74,6 +85,14 @@ private:
     // Disable copying.
     PropertyValueDelegate(PropertyValueDelegate const& rhs);
     PropertyValueDelegate& operator=(PropertyValueDelegate const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The list of allowed properties.
+    //! The allowed properties.
+    QList< QSharedPointer<ComProperty> > const* m_allowedProperties;
 };
 
 //-----------------------------------------------------------------------------

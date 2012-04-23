@@ -67,6 +67,12 @@ public:
      *  Applies the changes from the widgets editors to the IP-Xact model.
      */
 	void makeChanges();
+    
+public slots:
+    /*!
+     *  Called when the COM definition has been changed.
+     */
+    void onComDefinitionChanged();
 
 private:
     // Disable copying.
