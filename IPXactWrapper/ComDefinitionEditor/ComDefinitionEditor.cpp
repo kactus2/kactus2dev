@@ -11,6 +11,8 @@
 
 #include "ComDefinitionEditor.h"
 
+#include <common/dialogs/newObjectDialog/newobjectdialog.h>
+
 #include <models/ComProperty.h>
 
 #include <QVBoxLayout>
@@ -31,8 +33,8 @@ ComDefinitionEditor::ComDefinitionEditor(QWidget *parent, QWidget* parentWnd,
       propertyEditor_(this)
 {
     // Initialize the editors.
-    dataTypeList_.initialize(comDef->getDataTypes());
-    propertyEditor_.setProperties(comDef->getProperties());
+    dataTypeList_.initialize(comDef_->getDataTypes());
+    propertyEditor_.setProperties(comDef_->getProperties());
 
     connect(&dataTypeList_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&propertyEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -66,6 +68,23 @@ ComDefinitionEditor::~ComDefinitionEditor()
 void ComDefinitionEditor::setProtection(bool locked)
 {
     TabDocument::setProtection(locked);
+    setEnabled(!locked);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComDefinitionEditor::refresh()
+//-----------------------------------------------------------------------------
+void ComDefinitionEditor::refresh()
+{
+    QSharedPointer<LibraryComponent> libComp = libHandler_->getModel(*comDef_->getVlnv());
+    comDef_ = libComp.staticCast<ComDefinition>();
+
+    // Initialize the editors.
+    dataTypeList_.initialize(comDef_->getDataTypes());
+    propertyEditor_.setProperties(comDef_->getProperties());
+
+    setModified(false);
+    TabDocument::refresh();
 }
 
 //-----------------------------------------------------------------------------
@@ -81,16 +100,7 @@ VLNV ComDefinitionEditor::getComponentVLNV() const
 //-----------------------------------------------------------------------------
 bool ComDefinitionEditor::save()
 {
-    QList< QSharedPointer<ComProperty> > properties;
-
-    foreach (QSharedPointer<ComProperty> prop, propertyEditor_.getProperties())
-    {
-        properties.append(QSharedPointer<ComProperty>(new ComProperty(*prop.data())));
-    }
-
-    comDef_->setProperties(properties);
-    comDef_->setDataTypes(dataTypeList_.items());
-
+    applyChanges();
     libHandler_->writeModelToFile(comDef_);
 
     return TabDocument::save();
@@ -101,6 +111,49 @@ bool ComDefinitionEditor::save()
 //-----------------------------------------------------------------------------
 bool ComDefinitionEditor::saveAs()
 {
-    return TabDocument::saveAs();
+    // Ask the user for a new VLNV and directory.
+    VLNV vlnv;
+    QString directory;
+
+    if (!NewObjectDialog::saveAsDialog(parentWidget(), libHandler_, *comDef_->getVlnv(), vlnv, directory))
+    {
+        // The user canceled.
+        return true;
+    }
+
+    // Create a copy of the object and update its VLNV.
+    comDef_ = QSharedPointer<ComDefinition>(new ComDefinition(*comDef_));
+
+    vlnv.setType(VLNV::COMDEFINITION);
+    comDef_->setVlnv(vlnv);
+
+    // Apply changes to the copy.
+    applyChanges();
+
+    if (libHandler_->writeModelToFile(directory, comDef_))
+    {
+        setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");
+        return TabDocument::saveAs();
+    }
+    else
+    {
+        return false;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComDefinitionEditor::applyChanges()
+//-----------------------------------------------------------------------------
+void ComDefinitionEditor::applyChanges()
+{
+    QList< QSharedPointer<ComProperty> > properties;
+
+    foreach (QSharedPointer<ComProperty> prop, propertyEditor_.getProperties())
+    {
+        properties.append(QSharedPointer<ComProperty>(new ComProperty(*prop.data())));
+    }
+
+    comDef_->setProperties(properties);
+    comDef_->setDataTypes(dataTypeList_.items());
 }
 

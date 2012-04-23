@@ -62,6 +62,11 @@ public:
      */
     virtual void setProtection(bool locked);
 
+    /*!
+     *  Refreshes the editor.
+     */
+    virtual void refresh();
+
 	/*!
      *  Returns the VLNV of the SW design component.
      */
@@ -70,6 +75,8 @@ public:
 public slots:
 	//! Saves the document and resets the modified state.
 	virtual bool save();
+
+    void applyChanges();
 
 	//! \brief Saves the document as new object and resets modifies state
 	virtual bool saveAs();
