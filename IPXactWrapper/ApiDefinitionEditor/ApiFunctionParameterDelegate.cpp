@@ -20,6 +20,20 @@
 ApiFunctionParameterDelegate::ApiFunctionParameterDelegate(QObject* parent)
     : QStyledItemDelegate(parent)
 {
+    builtInTypes_.append("char");
+    builtInTypes_.append("char*");
+    builtInTypes_.append("const char*");
+    builtInTypes_.append("double");
+    builtInTypes_.append("float");
+    builtInTypes_.append("int");
+    builtInTypes_.append("long");
+    builtInTypes_.append("short");
+    builtInTypes_.append("signed char");
+    builtInTypes_.append("unsigned char");
+    builtInTypes_.append("unsigned int");
+    builtInTypes_.append("unsigned long");
+    builtInTypes_.append("unsigned short");
+    builtInTypes_.append("void");
 }
 
 //-----------------------------------------------------------------------------
@@ -27,6 +41,14 @@ ApiFunctionParameterDelegate::ApiFunctionParameterDelegate(QObject* parent)
 //-----------------------------------------------------------------------------
 ApiFunctionParameterDelegate::~ApiFunctionParameterDelegate()
 {
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiFunctionParameterDelegate::updateDataTypes()
+//-----------------------------------------------------------------------------
+void ApiFunctionParameterDelegate::updateDataTypes(QStringList const& dataTypes)
+{
+    customTypes_ = dataTypes;
 }
 
 //-----------------------------------------------------------------------------
@@ -52,12 +74,7 @@ QWidget* ApiFunctionParameterDelegate::createEditor(QWidget* parent, QStyleOptio
             box->setEditable(true);
             box->setInsertPolicy(QComboBox::InsertAlphabetically);
 
-            box->addItem("char");
-            box->addItem("char*");
-            box->addItem("const char*");
-            box->addItem("double");
-            box->addItem("float");
-            box->addItem("int");
+            box->addItems(getDataTypesList());
             return box;
         }
 
@@ -151,4 +168,15 @@ void ApiFunctionParameterDelegate::commitAndCloseEditor()
         emit commitData(lineEdit);
         emit closeEditor(lineEdit);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiFunctionParameterDelegate::getDataTypesList()
+//-----------------------------------------------------------------------------
+QStringList ApiFunctionParameterDelegate::getDataTypesList() const
+{
+    QStringList list = builtInTypes_ + customTypes_;
+    list.sort();
+    list.removeDuplicates();
+    return list;
 }

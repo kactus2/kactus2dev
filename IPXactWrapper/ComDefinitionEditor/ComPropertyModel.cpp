@@ -321,7 +321,7 @@ void ComPropertyModel::onAddItem(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 // Function: ComPropertyModel::onRemove()
 //-----------------------------------------------------------------------------
-void ComPropertyModel::onRemove(QModelIndex const& index )
+void ComPropertyModel::onRemove(QModelIndex const& index)
 {
     if (!index.isValid())
     {

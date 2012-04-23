@@ -14,6 +14,7 @@
 
 #include "ApiFunctionParameterModel.h"
 #include "ApiFunctionModel.h"
+#include "ApiFunctionParameterDelegate.h"
 
 #include <common/views/EditableTableView/editabletableview.h>
 #include <common/widgets/listManager/listmanager.h>
@@ -46,6 +47,13 @@ public:
      *  Destructor.
      */
     ~ApiFunctionEditor();
+
+    /*!
+     *  Updates the data types suggestions list.
+     *
+     *      @param [in] dataTypes The list of custom data types.
+     */
+    void updateDataTypes(QStringList const& dataTypes);
 
     /*!
      *  Restores the API functions from the given API definition.
@@ -101,6 +109,9 @@ private:
 
     //! The table view widget for API function parameters.
     EditableTableView paramView_;
+
+    //! The parameter delegate.
+    ApiFunctionParameterDelegate paramDelegate_;
 
     //! The model to edit the parameters.
     ApiFunctionParameterModel paramModel_;

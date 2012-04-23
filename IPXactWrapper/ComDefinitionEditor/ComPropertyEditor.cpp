@@ -40,7 +40,7 @@ ComPropertyEditor::ComPropertyEditor(QWidget* parent)
     connect(&view_, SIGNAL(addItem(const QModelIndex&)),
         &model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
     connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
-        &model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+            &model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

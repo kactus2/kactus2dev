@@ -43,11 +43,10 @@ public:
      *  Constructor.
 	 *
 	 *      @param [in] parent      The parent widget.
-     *      @param [in] parentWnd   The parent window.
 	 *      @param [in] libHandler  The library interface.
      *      @param [in] apiDef      The API definition.
 	 */
-	ApiDefinitionEditor(QWidget* parent, QWidget* parentWnd, LibraryInterface* libHandler,
+	ApiDefinitionEditor(QWidget* parent, LibraryInterface* libHandler,
                         QSharedPointer<ApiDefinition> apiDef);
 	
 	/*!
@@ -78,6 +77,9 @@ public slots:
 
 	//! \brief Saves the document as new object and resets modifies state
 	virtual bool saveAs();
+
+    //! Updates the data types suggestion lists for return value and function parameter editors.
+    void updateDataTypeLists();
 
 private:
     // Disable copying.

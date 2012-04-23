@@ -68,7 +68,6 @@ public:
 	int size() const;
 
 signals:
-
 	//! \brief Emitted when contents of the ListManager change.
 	void contentChanged();
 

@@ -11,8 +11,6 @@
 
 #include "ApiFunctionEditor.h"
 
-#include "ApiFunctionParameterDelegate.h"
-
 #include <models/ApiFunction.h>
 #include <models/ApiDefinition.h>
 
@@ -31,6 +29,7 @@ ApiFunctionEditor::ApiFunctionEditor(QWidget* parent)
       returnTypeCombo_(this),
       returnValueDesc_(this),
       paramView_(this),
+      paramDelegate_(this),
       paramModel_(this),
       curFunc_()
 {
@@ -41,20 +40,6 @@ ApiFunctionEditor::ApiFunctionEditor(QWidget* parent)
     returnTypeCombo_.setEditable(true);
     returnTypeCombo_.setMaximumWidth(180);
     returnTypeCombo_.setInsertPolicy(QComboBox::InsertAlphabetically);
-    returnTypeCombo_.addItem("char");
-    returnTypeCombo_.addItem("char*");
-    returnTypeCombo_.addItem("const char*");
-    returnTypeCombo_.addItem("double");
-    returnTypeCombo_.addItem("float");
-    returnTypeCombo_.addItem("int");
-    returnTypeCombo_.addItem("long");
-    returnTypeCombo_.addItem("short");
-    returnTypeCombo_.addItem("signed char");
-    returnTypeCombo_.addItem("unsigned char");
-    returnTypeCombo_.addItem("unsigned int");
-    returnTypeCombo_.addItem("unsigned long");
-    returnTypeCombo_.addItem("unsigned short");
-    returnTypeCombo_.addItem("void");
     returnTypeCombo_.setEditText("");
 
     functionList_.setModel(&functionModel_);
@@ -62,7 +47,7 @@ ApiFunctionEditor::ApiFunctionEditor(QWidget* parent)
     paramView_.setModel(&paramModel_);
     paramView_.setSortingEnabled(false);
     paramView_.setItemsDraggable(false);
-    paramView_.setItemDelegate(new ApiFunctionParameterDelegate(this));
+    paramView_.setItemDelegate(&paramDelegate_);
 
     // Create the layouts.
     QVBoxLayout* funcLayout = new QVBoxLayout();
@@ -114,6 +99,19 @@ ApiFunctionEditor::ApiFunctionEditor(QWidget* parent)
 //-----------------------------------------------------------------------------
 ApiFunctionEditor::~ApiFunctionEditor()
 {
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiFunctionEditor::updateDataTypes()
+//-----------------------------------------------------------------------------
+void ApiFunctionEditor::updateDataTypes(QStringList const& dataTypes)
+{
+    paramDelegate_.updateDataTypes(dataTypes);
+
+    QString value = returnTypeCombo_.currentText();
+    returnTypeCombo_.clear();
+    returnTypeCombo_.addItems(paramDelegate_.getDataTypesList());
+    returnTypeCombo_.setEditText(value);
 }
 
 //-----------------------------------------------------------------------------

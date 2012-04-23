@@ -2591,7 +2591,7 @@ void MainWindow::openApiDefinition(VLNV const& vlnv, bool forceUnlocked /*= fals
         return;
     }
 
-    ApiDefinitionEditor* editor = new ApiDefinitionEditor(this, this, libraryHandler_, apiDef);
+    ApiDefinitionEditor* editor = new ApiDefinitionEditor(this, libraryHandler_, apiDef);
 
     if (forceUnlocked)
     {

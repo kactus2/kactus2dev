@@ -45,6 +45,18 @@ public:
      */
 	virtual ~ApiFunctionParameterDelegate();
 
+    /*!
+     *  Adds the given data types to the list of parameter type suggestions.
+     *
+     *      @param [in] dataTypes The list of data types to add.
+     */
+    void updateDataTypes(QStringList const& dataTypes);
+
+    /*!
+     *  Returns the list of all data type suggestions.
+     */
+    QStringList getDataTypesList() const;
+
 	/*!
      *  Creates a new editor for the given item.
 	 *
@@ -85,6 +97,16 @@ private:
     // Disable copying.
     ApiFunctionParameterDelegate(ApiFunctionParameterDelegate const& rhs);
     ApiFunctionParameterDelegate& operator=(ApiFunctionParameterDelegate const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The list of built-in data types.
+    QStringList builtInTypes_;
+
+    //! The list of custom parameter data types.
+    QStringList customTypes_;
 };
 
 //-----------------------------------------------------------------------------

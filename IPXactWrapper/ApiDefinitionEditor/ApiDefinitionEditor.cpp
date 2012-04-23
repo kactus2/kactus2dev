@@ -21,8 +21,7 @@
 //-----------------------------------------------------------------------------
 // Function: ApiDefinitionEditor()
 //-----------------------------------------------------------------------------
-ApiDefinitionEditor::ApiDefinitionEditor(QWidget *parent, QWidget* parentWnd,
-                                         LibraryInterface* libHandler,
+ApiDefinitionEditor::ApiDefinitionEditor(QWidget *parent, LibraryInterface* libHandler,
                                          QSharedPointer<ApiDefinition> apiDef)
     : TabDocument(parent, DOC_PROTECTION_SUPPORT),
       libHandler_(libHandler),
@@ -32,9 +31,12 @@ ApiDefinitionEditor::ApiDefinitionEditor(QWidget *parent, QWidget* parentWnd,
 {
     // Initialize the editors.
     dataTypeList_.initialize(apiDef->getDataTypes());
+
+    functionEditor_.updateDataTypes(apiDef->getDataTypes());
     functionEditor_.restore(*apiDef);
 
     connect(&dataTypeList_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&dataTypeList_, SIGNAL(contentChanged()), this, SLOT(updateDataTypeLists()), Qt::UniqueConnection);
     connect(&functionEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     // Setup the layout.
@@ -137,6 +139,14 @@ bool ApiDefinitionEditor::saveAs()
     {
         return false;
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiDefinitionEditor::updateDataTypeLists()
+//-----------------------------------------------------------------------------
+void ApiDefinitionEditor::updateDataTypeLists()
+{
+    functionEditor_.updateDataTypes(dataTypeList_.items());
 }
 
 //-----------------------------------------------------------------------------
