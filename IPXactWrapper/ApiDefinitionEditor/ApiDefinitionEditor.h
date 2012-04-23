@@ -62,6 +62,11 @@ public:
      */
     virtual void setProtection(bool locked);
 
+    /*!
+     *  Refreshes the editor.
+     */
+    virtual void refresh();
+
 	/*!
      *  Returns the VLNV of the SW design component.
      */
@@ -78,6 +83,11 @@ private:
     // Disable copying.
     ApiDefinitionEditor(ApiDefinitionEditor const& rhs);
     ApiDefinitionEditor& operator=(ApiDefinitionEditor const& rhs);
+
+    /*!
+     *  Applies the changes made in the editor to the document.
+     */
+    void applyChanges();
 
     //-----------------------------------------------------------------------------
     // Data.

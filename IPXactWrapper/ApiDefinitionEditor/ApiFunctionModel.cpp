@@ -25,6 +25,8 @@ ApiFunctionModel::ApiFunctionModel(QObject *parent)
     : QAbstractListModel(parent),
       apiFunctions_()
 {
+    connect(this, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
+            this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -169,6 +171,7 @@ bool ApiFunctionModel::setData(const QModelIndex& index, const QVariant& value, 
     if (role == Qt::EditRole) {
         apiFunctions_[index.row()]->setName(value.toString());
         emit dataChanged(index, index);
+        emit contentChanged();
         return true;
     }
 

@@ -76,8 +76,6 @@ public slots:
 	//! Saves the document and resets the modified state.
 	virtual bool save();
 
-    void applyChanges();
-
 	//! \brief Saves the document as new object and resets modifies state
 	virtual bool saveAs();
 
@@ -85,6 +83,11 @@ private:
     // Disable copying.
     ComDefinitionEditor(ComDefinitionEditor const& rhs);
     ComDefinitionEditor& operator=(ComDefinitionEditor const& rhs);
+
+    /*!
+     *  Applies the changes made in the editor to the document.
+     */
+    void applyChanges();
 
     //-----------------------------------------------------------------------------
     // Data.

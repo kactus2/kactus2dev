@@ -11,6 +11,8 @@
 
 #include "ApiDefinitionEditor.h"
 
+#include <common/dialogs/newObjectDialog/newobjectdialog.h>
+
 #include <QVBoxLayout>
 #include <QGridLayout>
 #include <QMessageBox>
@@ -64,8 +66,23 @@ ApiDefinitionEditor::~ApiDefinitionEditor()
 void ApiDefinitionEditor::setProtection(bool locked)
 {
     TabDocument::setProtection(locked);
-    dataTypeList_.setEnabled(!locked);
-    functionEditor_.setEnabled(!locked);
+    setEnabled(!locked);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiDefinitionEditor::refresh()
+//-----------------------------------------------------------------------------
+void ApiDefinitionEditor::refresh()
+{
+    QSharedPointer<LibraryComponent> libComp = libHandler_->getModel(*apiDef_->getVlnv());
+    apiDef_ = libComp.staticCast<ApiDefinition>();
+
+    // Update the editors.
+    dataTypeList_.initialize(apiDef_->getDataTypes());
+    functionEditor_.restore(*apiDef_);
+
+    setModified(false);
+    TabDocument::refresh();
 }
 
 //-----------------------------------------------------------------------------
@@ -81,9 +98,7 @@ VLNV ApiDefinitionEditor::getComponentVLNV() const
 //-----------------------------------------------------------------------------
 bool ApiDefinitionEditor::save()
 {
-    apiDef_->setDataTypes(dataTypeList_.items());
-    functionEditor_.save(*apiDef_);
-
+    applyChanges();
     libHandler_->writeModelToFile(apiDef_);
 
     return TabDocument::save();
@@ -94,6 +109,42 @@ bool ApiDefinitionEditor::save()
 //-----------------------------------------------------------------------------
 bool ApiDefinitionEditor::saveAs()
 {
-    return TabDocument::saveAs();
+    // Ask the user for a new VLNV and directory.
+    VLNV vlnv;
+    QString directory;
+
+    if (!NewObjectDialog::saveAsDialog(parentWidget(), libHandler_, *apiDef_->getVlnv(), vlnv, directory))
+    {
+        // The user canceled.
+        return true;
+    }
+
+    // Create a copy of the object and update its VLNV.
+    apiDef_ = QSharedPointer<ApiDefinition>(new ApiDefinition(*apiDef_));
+
+    vlnv.setType(VLNV::APIDEFINITION);
+    apiDef_->setVlnv(vlnv);
+
+    // Apply changes to the copy.
+    applyChanges();
+
+    if (libHandler_->writeModelToFile(directory, apiDef_))
+    {
+        setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");
+        return TabDocument::saveAs();
+    }
+    else
+    {
+        return false;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiDefinitionEditor::applyChanges()
+//-----------------------------------------------------------------------------
+void ApiDefinitionEditor::applyChanges()
+{
+    apiDef_->setDataTypes(dataTypeList_.items());
+    functionEditor_.save(*apiDef_);
 }
 

@@ -122,6 +122,7 @@ ApiFunctionEditor::~ApiFunctionEditor()
 void ApiFunctionEditor::restore(ApiDefinition const& apiDef)
 {
     functionModel_.restore(apiDef);
+    selectionFunctionChanged(functionList_.currentIndex());
 }
 
 //-----------------------------------------------------------------------------
