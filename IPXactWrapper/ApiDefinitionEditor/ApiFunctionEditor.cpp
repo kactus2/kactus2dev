@@ -17,6 +17,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QHeaderView>
 
 //-----------------------------------------------------------------------------
 // Function: ApiFunctionEditor::ApiFunctionEditor()
@@ -48,6 +49,7 @@ ApiFunctionEditor::ApiFunctionEditor(QWidget* parent)
     paramView_.setSortingEnabled(false);
     paramView_.setItemsDraggable(false);
     paramView_.setItemDelegate(&paramDelegate_);
+    paramView_.verticalHeader()->show();
 
     // Create the layouts.
     QVBoxLayout* funcLayout = new QVBoxLayout();

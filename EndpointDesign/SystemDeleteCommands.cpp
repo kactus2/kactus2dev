@@ -11,8 +11,8 @@
 
 #include "SystemDeleteCommands.h"
 
-#include "SystemColumnLayout.h"
-#include "SystemColumn.h"
+#include "../SystemDesign/SystemColumnLayout.h"
+#include "../SystemDesign/SystemColumn.h"
 #include "MappingComponentItem.h"
 #include "ProgramEntityItem.h"
 #include "PlatformComponentItem.h"

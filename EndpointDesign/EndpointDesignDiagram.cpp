@@ -51,26 +51,16 @@
 //-----------------------------------------------------------------------------
 EndpointDesignDiagram::EndpointDesignDiagram(LibraryInterface* lh, MainWindow* mainWnd,
                                              GenericEditProvider& editProvider,
-                                             EndpointDesignWidget* parent) : QGraphicsScene(parent), lh_(lh),
-                                                                             mainWnd_(mainWnd),
-                                                                             parent_(parent),
-                                                                             editProvider_(editProvider),
-                                                                             system_(), designConf_(),
-                                                                             nodeIDFactory_(),
-                                                                             layout_(), mode_(MODE_SELECT),
-                                                                             tempConnEndpoint_(0),
-                                                                             tempConnection_(0),
-                                                                             tempPotentialEndingEndPoints_(0),
-                                                                             highlightedEndPoint_(0),
-                                                                             instanceNames_(), locked_(false)
-                                                                         
+                                             EndpointDesignWidget* parent)
+    : DesignDiagram(lh, mainWnd, editProvider, parent),
+      parent_(parent),
+      nodeIDFactory_(),
+      layout_(),
+      tempConnEndpoint_(0),
+      tempConnection_(0),
+      tempPotentialEndingEndPoints_(0),
+      highlightedEndPoint_(0)
 {
-    setSceneRect(0, 0, 100000, 100000);
-
-    connect(this, SIGNAL(componentInstantiated(ComponentItem*)),
-            this, SLOT(onComponentInstanceAdded(ComponentItem*)), Qt::UniqueConnection);
-    connect(this, SIGNAL(componentInstanceRemoved(ComponentItem*)),
-            this, SLOT(onComponentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -90,59 +80,14 @@ EndpointDesignDiagram::~EndpointDesignDiagram()
 }
 
 //-----------------------------------------------------------------------------
-// Function: setDesign()
+// Function: openDesign()
 //-----------------------------------------------------------------------------
-bool EndpointDesignDiagram::setDesign(QSharedPointer<Component> system)
+void EndpointDesignDiagram::openDesign(QSharedPointer<Design> design)
 {
-    Q_ASSERT(system != 0);
-    system_ = system;
-
-    VLNV designVLNV = system->getHierRef("kts_sys_ref");
-
-    // The received type is always VLNV::DESIGN so it must be asked from the
-    // library handler to make sure the type is correct.
-    designVLNV.setType(lh_->getDocumentType(designVLNV));
-
-    if (!designVLNV.isValid())
-    {
-        emit errorMessage(tr("System %1 did not contain a hierarchical view").arg(
-                          system->getVlnv()->getName()));
-        return false;
-    }
-
-    QSharedPointer<Design> design;
-
-    // Check if the component contains a direct reference to a design.
-    if (designVLNV.getType() == VLNV::DESIGN)
-    {
-        QSharedPointer<LibraryComponent> libComp = lh_->getModel(designVLNV);	
-        design = libComp.staticCast<Design>();
-    }
-    // Otherwise check if the component had reference to a design configuration.
-    else if (designVLNV.getType() == VLNV::DESIGNCONFIGURATION)
-    {
-        QSharedPointer<LibraryComponent> libComp = lh_->getModel(designVLNV);
-        designConf_ = libComp.staticCast<DesignConfiguration>();
-
-        designVLNV = designConf_->getDesignRef();
-
-        if (designVLNV.isValid())
-        {
-            QSharedPointer<LibraryComponent> libComp = lh_->getModel(designVLNV);	
-            design = libComp.staticCast<Design>();
-        }
-
-        // If design configuration did not contain a reference to a design.
-        if (!design)
-        {
-            emit errorMessage(tr("System %1 did not contain a hierarchical view").arg(
-                              system->getVlnv()->getName()));
-            return false;
-        }
-    }
-
     // Update the design.
-    updateSystemDesign(lh_, QFileInfo(lh_->getPath(designVLNV)).path(), system->getHierRef("kts_hw_ref"), *design);
+    updateSystemDesign(getLibraryInterface(),
+                       QFileInfo(getLibraryInterface()->getPath(*design->getVlnv())).path(),
+                       getEditedComponent()->getHierRef("kts_hw_ref"), *design);
 
     // Create the column layout.
     layout_ = QSharedPointer<SystemColumnLayout>(new SystemColumnLayout(this));
@@ -166,7 +111,7 @@ bool EndpointDesignDiagram::setDesign(QSharedPointer<Component> system)
     // Add component instances.
     foreach (Design::ComponentInstance const& instance, design->getComponentInstances())
     {
-        QSharedPointer<LibraryComponent> libComponent = lh_->getModel(instance.componentRef);
+        QSharedPointer<LibraryComponent> libComponent = getLibraryInterface()->getModel(instance.componentRef);
 
         if (!libComponent)
         {
@@ -189,7 +134,7 @@ bool EndpointDesignDiagram::setDesign(QSharedPointer<Component> system)
             nodeIDFactory_.usedID(id);
         }
 
-        MappingComponentItem* item = new MappingComponentItem(this, lh_, component, instance.instanceName,
+        MappingComponentItem* item = new MappingComponentItem(this, getLibraryInterface(), component, instance.instanceName,
                                                               instance.displayName, instance.description,
                                                               instance.configurableElementValues, id);
         item->setImported(instance.imported);
@@ -219,7 +164,7 @@ bool EndpointDesignDiagram::setDesign(QSharedPointer<Component> system)
             }
         }
 
-        instanceNames_.append(instance.instanceName);
+        addInstanceName(instance.instanceName);
     }
 
     // Add interconnections.
@@ -274,33 +219,6 @@ bool EndpointDesignDiagram::setDesign(QSharedPointer<Component> system)
 
     // Refresh the layout so that all components are placed in correct positions according to the stacking.
     layout_->updatePositions();
-
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: getDesignConfiguration()
-//-----------------------------------------------------------------------------
-QSharedPointer<DesignConfiguration> EndpointDesignDiagram::getDesignConfiguration() const
-{
-    return designConf_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: removeInstanceName()
-//-----------------------------------------------------------------------------
-void EndpointDesignDiagram::removeInstanceName(QString const& name)
-{
-    instanceNames_.removeAll(name);
-}
-
-//-----------------------------------------------------------------------------
-// Function: updateInstanceName()
-//-----------------------------------------------------------------------------
-void EndpointDesignDiagram::updateInstanceName(QString const& oldName, QString const& newName)
-{
-    instanceNames_.removeAll(oldName);
-    instanceNames_.append(newName);
 }
 
 //-----------------------------------------------------------------------------
@@ -315,7 +233,7 @@ void EndpointDesignDiagram::addMappingComponent(SystemColumn* column, QPointF co
     comp->setVlnv(VLNV());
     
     // Create the mapping component graphics item.
-    MappingComponentItem* item = new MappingComponentItem(this, lh_, comp, createInstanceName("unnamed"),
+    MappingComponentItem* item = new MappingComponentItem(this, getLibraryInterface(), comp, createInstanceName("unnamed"),
                                                           QString(), QString(), QMap<QString, QString>(),
                                                           nodeIDFactory_.getID());
     item->setPos(pos);
@@ -329,47 +247,7 @@ void EndpointDesignDiagram::addMappingComponent(SystemColumn* column, QPointF co
     connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
         this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
-    editProvider_.addCommand(cmd);
-}
-
-//-----------------------------------------------------------------------------
-// Function: drawBackground
-//-----------------------------------------------------------------------------
-void EndpointDesignDiagram::drawBackground(QPainter* painter, QRectF const& rect)
-{
-    painter->setWorldMatrixEnabled(true);
-    painter->setBrush(Qt::lightGray);
-
-    qreal left = int(rect.left()) - (int(rect.left()) % GridSize );
-    qreal top = int(rect.top()) - (int(rect.top()) % GridSize );
-
-    for (qreal x = left; x < rect.right(); x += GridSize ) {
-        for (qreal y = top; y < rect.bottom(); y += GridSize )
-            painter->drawPoint(x, y);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: getMainWindow()
-//-----------------------------------------------------------------------------
-MainWindow* EndpointDesignDiagram::getMainWindow() const
-{
-    return mainWnd_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: setMode()
-//-----------------------------------------------------------------------------
-void EndpointDesignDiagram::setMode(DrawMode mode)
-{
-    mode_ = mode;
-
-    if (mode_ != MODE_SELECT)
-    {
-        emit clearItemSelection();
-    }
-
-    emit modeChanged(mode);
+    getEditProvider().addCommand(cmd);
 }
 
 //-----------------------------------------------------------------------------
@@ -379,7 +257,7 @@ void EndpointDesignDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
 {
     dragSW_ = false;
 
-    if (!locked_ && event->mimeData()->hasFormat("data/vlnvptr"))
+    if (!isProtected() && event->mimeData()->hasFormat("data/vlnvptr"))
     {
         event->acceptProposedAction();
 
@@ -389,7 +267,7 @@ void EndpointDesignDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
         if (vlnv->getType() == VLNV::COMPONENT)
         {
             // Determine the component type.
-            QSharedPointer<LibraryComponent> libComp = lh_->getModel(*vlnv);
+            QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(*vlnv);
             QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
             // component with given vlnv was not found
@@ -483,7 +361,7 @@ void EndpointDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         memcpy(&vlnv, event->mimeData()->data("data/vlnvptr").data(), sizeof(vlnv));
 
         // Create the component model.
-        QSharedPointer<LibraryComponent> libComp = lh_->getModel(*vlnv);
+        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(*vlnv);
         QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
         // Set the instance name for the new component instance.
@@ -517,7 +395,7 @@ void EndpointDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
                 connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
                     this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
-                editProvider_.addCommand(cmd);
+                getEditProvider().addCommand(cmd);
             }
             else
             {
@@ -535,7 +413,7 @@ void EndpointDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
                 connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
                     this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
-                editProvider_.addCommand(cmd);
+                getEditProvider().addCommand(cmd);
             }
         }
         else if (dragSWType_ == KactusAttribute::KTS_SW_APPLICATION)
@@ -568,7 +446,7 @@ void EndpointDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
             connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
                 this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
-            editProvider_.addCommand(cmd);
+            getEditProvider().addCommand(cmd);
         }
     }
 }
@@ -601,7 +479,7 @@ void EndpointDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *event)
         return;
     }
 
-    if (mode_ == MODE_CONNECT)
+    if (getDrawMode() == MODE_CONNECT)
     {
         // Deselect all items.
         clearSelection();
@@ -636,7 +514,7 @@ void EndpointDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *event)
             }
         }
     }
-    else if (mode_ == MODE_DRAFT)
+    else if (getDrawMode() == MODE_DRAFT)
     {
         // Find the bottom-most item under the cursor.
         QGraphicsItem* item = 0;
@@ -697,10 +575,10 @@ void EndpointDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *event)
             connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
                 this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
-            editProvider_.addCommand(cmd);
+            getEditProvider().addCommand(cmd);
         }
     }
-    else if (mode_ == MODE_SELECT)
+    else if (getDrawMode() == MODE_SELECT)
     {
         // Save the old selection.
         QGraphicsItem *oldSelection = 0;
@@ -763,7 +641,7 @@ void EndpointDesignDiagram::onSelected(QGraphicsItem* newSelection)
 void EndpointDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
     // Check if the connect mode is active.
-    if (mode_ == MODE_CONNECT)
+    if (getDrawMode() == MODE_CONNECT)
     {
         // Find out if there is an endpoint currently close to the cursor.
         EndpointItem* endpoint = DiagramUtil::snapToItem<EndpointItem>(event->scenePos(), this, GridSize);
@@ -863,7 +741,7 @@ void EndpointDesignDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
     // If there is a connection being drawn while in the connect mode,
     // finalize or discard the connection.
-    if (mode_ == MODE_CONNECT && tempConnection_)
+    if (getDrawMode() == MODE_CONNECT && tempConnection_)
     {
         // Disable highlights from all potential endpoints.
         for (int i = 0 ; i < tempPotentialEndingEndPoints_.size(); ++i)
@@ -892,7 +770,7 @@ void EndpointDesignDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
                 connect(tempConnection_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
                 QSharedPointer<QUndoCommand> cmd(new EndpointConnectionAddCommand(this, tempConnection_));
-                editProvider_.addCommand(cmd, false);
+                getEditProvider().addCommand(cmd, false);
 
                 tempConnection_ = 0;
                 tempConnEndpoint_ = 0;
@@ -941,7 +819,6 @@ void EndpointDesignDiagram::wheelEvent(QGraphicsSceneWheelEvent *event)
     }
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: saveHierarchy()
 //-----------------------------------------------------------------------------
@@ -988,7 +865,7 @@ bool EndpointDesignDiagram::saveHierarchy() const
         {
             MappingComponentItem* mappingCompItem = static_cast<MappingComponentItem*>(item);
 
-            if (!mappingCompItem->save(lh_))
+            if (!mappingCompItem->save(getLibraryInterface()))
             {
                 return false;
             }
@@ -1050,41 +927,12 @@ QSharedPointer<Design> EndpointDesignDiagram::createDesign(VLNV const& vlnv)
 }
 
 //-----------------------------------------------------------------------------
-// Function: createInstanceName()
-//-----------------------------------------------------------------------------
-QString EndpointDesignDiagram::createInstanceName(QString const& baseName)
-{
-    // Determine a unique name by using a running number.
-    int runningNumber = 0;
-    QString name = baseName + "_" + QString::number(runningNumber);
-
-    while (instanceNames_.contains(name))
-    {
-        ++runningNumber;
-        name = baseName + "_" + QString::number(runningNumber);
-    }
-
-    instanceNames_.append(name);
-    return name;
-}
-
-//-----------------------------------------------------------------------------
-// Function: createInstanceName()
-//-----------------------------------------------------------------------------
-QString EndpointDesignDiagram::createInstanceName(QSharedPointer<Component> component)
-{
-    QString instanceName = component->getVlnv()->getName();
-    instanceName.remove(QString(".comp"));
-    return createInstanceName(instanceName);
-}
-
-//-----------------------------------------------------------------------------
 // Function: addColumn()
 //-----------------------------------------------------------------------------
 void EndpointDesignDiagram::addColumn(QString const& name)
 {
     QSharedPointer<QUndoCommand> cmd(new SystemColumnAddCommand(layout_.data(), name));
-    editProvider_.addCommand(cmd);
+    getEditProvider().addCommand(cmd);
 }
 
 //-----------------------------------------------------------------------------
@@ -1117,7 +965,7 @@ MappingComponentItem* EndpointDesignDiagram::getMappingComponent(QString const& 
 void EndpointDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     // Allow double click only when the mode is select.
-    if (mode_ != MODE_SELECT)
+    if (getDrawMode() != MODE_SELECT)
     {
         return;
     }
@@ -1213,7 +1061,7 @@ void EndpointDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mous
 void EndpointDesignDiagram::createApplication(ProgramEntityItem* progEntity)
 {
     // Request a VLNV from the user.
-    NewObjectDialog dialog(lh_, VLNV::COMPONENT, false, (QWidget*)parent());
+    NewObjectDialog dialog(getLibraryInterface(), VLNV::COMPONENT, false, (QWidget*)parent());
     dialog.setWindowTitle(tr("Create Application"));
 
     if (dialog.exec() == QDialog::Rejected)
@@ -1280,7 +1128,7 @@ void EndpointDesignDiagram::createApplication(ProgramEntityItem* progEntity)
     comp->addBusInterface(busIf);
 
     // Write the model to file.
-    lh_->writeModelToFile(dialog.getPath(), comp);
+    getLibraryInterface()->writeModelToFile(dialog.getPath(), comp);
 
     // Create the application item.
     ApplicationItem* app = new ApplicationItem(comp, createInstanceName(vlnv.getName().remove(".comp")),
@@ -1295,7 +1143,7 @@ void EndpointDesignDiagram::createApplication(ProgramEntityItem* progEntity)
     connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
         this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
-    editProvider_.addCommand(cmd);
+    getEditProvider().addCommand(cmd);
     
     // Ask the user if he/she wants to generate template code based on the endpoints.
     QMessageBox msgBox(QMessageBox::Question, QCoreApplication::applicationName(),
@@ -1324,7 +1172,7 @@ void EndpointDesignDiagram::createApplication(ProgramEntityItem* progEntity)
             sourceCreated = true;
 
             // Update the model.
-            lh_->writeModelToFile(comp);
+            getLibraryInterface()->writeModelToFile(comp);
         }
     }
 
@@ -1346,7 +1194,7 @@ void EndpointDesignDiagram::createApplication(ProgramEntityItem* progEntity)
 void EndpointDesignDiagram::packetizeSWComponent(ComponentItem* item, QString const& itemTypeName)
 {
     // Request the user to set the vlnv.
-    NewObjectDialog dialog(lh_, VLNV::COMPONENT, false, (QWidget*)parent());
+    NewObjectDialog dialog(getLibraryInterface(), VLNV::COMPONENT, false, (QWidget*)parent());
     dialog.setWindowTitle(tr("Add ") + itemTypeName + tr(" to Library"));
 
     if (dialog.exec() == QDialog::Rejected)
@@ -1358,14 +1206,14 @@ void EndpointDesignDiagram::packetizeSWComponent(ComponentItem* item, QString co
     item->componentModel()->setVlnv(vlnv);
 
     // Write the model to file.
-    lh_->writeModelToFile(dialog.getPath(), item->componentModel());
+    getLibraryInterface()->writeModelToFile(dialog.getPath(), item->componentModel());
 
     // Update the diagram component.
     item->updateComponent();
 
     // Create an undo command.
     QSharedPointer<QUndoCommand> cmd(new SWComponentPacketizeCommand(item, vlnv));
-    editProvider_.addCommand(cmd, false);
+    getEditProvider().addCommand(cmd, false);
 
     // Ask the user if he wants to complete the component.
     QMessageBox msgBox(QMessageBox::Question, QCoreApplication::applicationName(),
@@ -1409,7 +1257,7 @@ void EndpointDesignDiagram::createPlatformComponent(MappingComponentItem* mappin
     connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
         this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
-    editProvider_.addCommand(cmd);
+    getEditProvider().addCommand(cmd);
 }
 
 //-----------------------------------------------------------------------------
@@ -1425,7 +1273,7 @@ SystemColumnLayout* EndpointDesignDiagram::getColumnLayout()
 //-----------------------------------------------------------------------------
 void EndpointDesignDiagram::onComponentInstanceAdded(ComponentItem* item)
 {
-    instanceNames_.append(item->name());
+    DesignDiagram::onComponentInstanceAdded(item);
 
     if (item->type() == MappingComponentItem::Type)
     {
@@ -1438,38 +1286,12 @@ void EndpointDesignDiagram::onComponentInstanceAdded(ComponentItem* item)
 //-----------------------------------------------------------------------------
 void EndpointDesignDiagram::onComponentInstanceRemoved(ComponentItem* item)
 {
-    instanceNames_.removeAll(item->name());
+    DesignDiagram::onComponentInstanceRemoved(item);
 
     if (item->type() == MappingComponentItem::Type)
     {
         nodeIDFactory_.freeID(static_cast<MappingComponentItem*>(item)->getID());
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: getEditProvider()
-//-----------------------------------------------------------------------------
-GenericEditProvider& EndpointDesignDiagram::getEditProvider()
-{
-    return editProvider_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: setProtection()
-//-----------------------------------------------------------------------------
-void EndpointDesignDiagram::setProtection(bool locked)
-{
-    locked_ = locked;
-    clearSelection();
-    emit clearItemSelection();
-}
-
-//-----------------------------------------------------------------------------
-// Function: isProtected()
-//-----------------------------------------------------------------------------
-bool EndpointDesignDiagram::isProtected() const
-{
-    return locked_;
 }
 
 //-----------------------------------------------------------------------------

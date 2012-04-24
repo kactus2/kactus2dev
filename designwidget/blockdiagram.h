@@ -10,10 +10,9 @@
 
 #include "columnview/DiagramColumn.h"
 
-#include <common/DrawMode.h>
+#include <common/DesignDiagram.h>
 #include <models/businterface.h>
 
-#include <QGraphicsScene>
 #include <QMap>
 #include <QVector>
 #include <QSharedPointer>
@@ -40,8 +39,10 @@ class DesignWidget;
 /*! \brief BlockDiagram is a graphical view to a design
  *
  */
-class BlockDiagram : public QGraphicsScene, public AdHocEnabled {
+class BlockDiagram : public DesignDiagram
+{
     Q_OBJECT
+
 public:
     /*! \brief The constructor
      *
@@ -51,11 +52,21 @@ public:
 	//! \brief The destructor
 	virtual ~BlockDiagram();
 
+    /*!
+     *  Clears the scene.
+     */
+    virtual void clearScene();
+
+    /*!
+     *  Sets the draw mode.
+     */
+    virtual void setMode(DrawMode mode);
+
 
     /*! \brief Set the IP-XACT document that is viewed in BlockDiagram
      *
      */
-    bool setDesign(QSharedPointer<Component> hierComp, const QString& viewName);
+    void openDesign(QSharedPointer<Design> design);
 
     /*! \brief Get DiagramComponent that has the given instance name
      *
@@ -67,16 +78,6 @@ public:
 	 * \return QList containing pointers to the component instances.
 	*/
 	QList<DiagramComponent*> getInstances() const;
-
-    /*! \brief Set the mode, how BlockDiagran responds to mouse events
-     *
-     */
-    void setMode(DrawMode mode);
-
-    /*!
-     *  Sets the block diagram locked/unlocked.
-     */
-    void setProtection(bool locked);
 
     /*!
      *  Sets the bus widths visible/invisible.
@@ -93,14 +94,7 @@ public:
     */
     QSharedPointer<Design> createDesign(const VLNV &vlnv);
 
-	/*! \brief Get pointer to the design configuration.
-	 *
-	 * \return Pointer to the design configuration. Null pointer if no design
-	 * configuration is used.
-	*/
-	QSharedPointer<DesignConfiguration> getDesignConfiguration() const;
-
-    /*! \brief Update the given hierarchical component to match this BlockDiagram
+	/*! \brief Update the given hierarchical component to match this BlockDiagram
      *
      */
     void updateHierComponent(QSharedPointer<Component> comp);
@@ -124,24 +118,6 @@ public:
      */
     void removeColumn(DiagramColumn* column);
 
-		/*! \brief This function should be called when user removes component instance.
-	 *
-	 * Removes the instance name from the list so the name can be used again in
-	 * the design.
-	 *
-	 * \param name The name of the removed instance.
-	 *
-	*/
-	void removeInstanceName(const QString& name);
-
-	/*! \brief Update the list of instance names.
-	 *
-	 * \param oldName The old name of the component instance.
-	 * \param newName The new name of the component instance.
-	 *
-	*/
-	void updateInstanceName(const QString& oldName, const QString& newName);
-
     /*!
      *  Returns the diagram column layout.
      */
@@ -162,26 +138,6 @@ public:
     virtual void onAdHocVisibilityChanged(QString const& portName, bool visible);
 
     /*!
-     *  Attaches the data source to an ad-hoc editor.
-     */
-    virtual void attach(AdHocEditor* editor);
-
-    /*!
-     *  Detaches the data source from the ad-hoc editor.
-     */
-    virtual void detach(AdHocEditor* editor);
-
-    /*!
-     *  Returns the edit provider.
-     */
-    virtual GenericEditProvider& getEditProvider();
-
-    /*!
-     *  Returns true if the diagram is in locked state.
-     */
-    virtual bool isProtected() const;
-
-    /*!
      *  Returns the ad-hoc port with the given name or null if not found.
      */
     virtual DiagramConnectionEndPoint* getDiagramAdHocPort(QString const& portName);
@@ -197,29 +153,6 @@ signals:
 
     //! Signaled when the bus with the given vlnv should be opened for editing.
     void openBus(VLNV const& vlnv, VLNV const& absDefVLNV, bool disableBusDef);
-
-	//! \brief Emitted when user changes settings in blockDiagram
-	void contentChanged();
-
-	/*! \brief This signal is emitted when user wants to change mode
-	 *
-	 * \param mode Defines the mode to set
-	 *
-	*/
-	void modeChanged(DrawMode mode);
-
-	//! \brief Send an error message to the user.
-	void errorMessage(const QString& errorMessage);
-
-	//! \brief Send a notification to the user.
-	void noticeMessage(const QString& noticeMessage);
-
-	/*! \brief Emitted when user selects a component on the draw board.
-	 *
-	 * \param component Pointer to the DiagramComponent instance that is selected.
-	 *
-	*/
-	void componentSelected(ComponentItem* component);
 
 	/*! \brief Emitted when user selects a port on the draw board.
 	 *
@@ -254,17 +187,6 @@ signals:
 
     //! Emitted when the user selects an ad-hoc interface.
     void adHocInterfaceSelected(DiagramAdHocInterface* interface);
-
-	/*! \brief Emitted when user de-selects all items.
-	 *
-	*/
-	void clearItemSelection();
-
-	//! \brief Emitted when a new component is instantiated to the design.
-	void componentInstantiated(DiagramComponent* comp);
-
-	//! \brief Emitted when a component instance is removed.
-	void componentInstanceRemoved(DiagramComponent* comp);
 
 public slots:
     /*! \brief Bring the selected item to front
@@ -303,26 +225,14 @@ protected:
     void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
     void dragMoveEvent(QGraphicsSceneDragDropEvent *event);
     void dragLeaveEvent(QGraphicsSceneDragDropEvent * event);
-    void drawBackground(QPainter* painter, const QRectF& rect);
 
     void disableHighlight();
     void createConnection(QGraphicsSceneMouseEvent * mouseEvent);
 
 private:
-
-	//! \brief No copying
-	BlockDiagram(const BlockDiagram& other);
-
-	//! No assignment
-	BlockDiagram& operator=(const BlockDiagram& other);
-
-    /*! \brief Create an instanceName for the component that is being instantiated
-	 *
-	 * \param component Pointer to the component being instantiated.
-	 *
-	 * \return QString containing the name for the component instance
-	*/
-	QString createInstanceName(QSharedPointer<Component> component);
+    // Disable copying.
+    BlockDiagram(BlockDiagram const& rhs);
+    BlockDiagram& operator=(BlockDiagram const& rhs);
 
     /*!
      *  Called when an item has been selected in the diagram.
@@ -358,14 +268,12 @@ private:
      */
     void destroyConnections();
 
-	//! \brief The pointer to the library handler that manages the library
-    LibraryInterface *lh_;
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
 	//! \brief Pointer to the parent of this scene.
 	DesignWidget* parent_;
-
-	//! \brief Contains the current draw mode of the editor
-    DrawMode mode_;
 
     //! The connection that is being drawn.
     DiagramInterconnection *tempConnection_;
@@ -379,35 +287,12 @@ private:
     //! The highlighted end point to which the connection could be snapped automatically.
     DiagramConnectionEndPoint* highlightedEndPoint_;
 
-	/*! \brief The map that contains the instance names for components
-	 *
-	 * Key = name of the component instance
-	 * Value = the number of component instances with this name
-	 * 
-	 * This map is used to generate a running number for each component 
-	 * instance so all instance names are unique but may contain the component's
-	 * VLNV name.
-	 */
-	QStringList instanceNames_;
-
-    //! The component that is being edited in the block diagram.
-    QSharedPointer<Component> component_;
-
-	//! \brief The design configuration of the edited design.
-	QSharedPointer<DesignConfiguration> designConf_;
-
     //! The diagram column layout.
     QSharedPointer<DiagramColumnLayout> layout_;
 
     //! The type of the item being dragged.
     ColumnItemType dragCompType_;
     bool dragBus_;
-
-    //! The edit provider for undo/redo.
-    GenericEditProvider& editProvider_;
-
-    //! If true, the diagram is locked and cannot be modified.
-    bool locked_;
 
     //! If true, the off-page connection mode is active.
     bool offPageMode_;

@@ -1,24 +1,19 @@
 //-----------------------------------------------------------------------------
-// File: EndpointDesignWidget.cpp
+// File: SystemDesignWidget.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
-// Date: 9.5.2011
+// Date: 23.4.2012
 //
 // Description:
-// Endpoint design widget.
+// System design widget.
 //-----------------------------------------------------------------------------
 
-#include "EndpointDesignWidget.h"
+#include "SystemDesignWidget.h"
 
-#include "SystemDeleteCommands.h"
+#include "../EndpointDesign/SystemDeleteCommands.h"
 
-#include "EndpointDesignDiagram.h"
-#include "EndpointItem.h"
-#include "EndpointConnection.h"
-#include "ApplicationItem.h"
-#include "PlatformComponentItem.h"
-#include "EndpointStack.h"
+#include "SystemDesignDiagram.h"
 
 #include <LibraryManager/libraryinterface.h>
 
@@ -34,17 +29,19 @@
 #include <QMessageBox>
 
 //-----------------------------------------------------------------------------
-// Function: EndpointDesignWidget()
+// Function: SystemDesignWidget()
 //-----------------------------------------------------------------------------
-EndpointDesignWidget::EndpointDesignWidget(LibraryInterface* lh, MainWindow* mainWnd, QWidget* parent) :
-    TabDocument(parent, DOC_ZOOM_SUPPORT | DOC_DRAW_MODE_SUPPORT | DOC_PROTECTION_SUPPORT |
-                        DOC_EDIT_SUPPORT, 30, 300),
-    lh_(lh), view_(0), diagram_(0), editProvider_()
+SystemDesignWidget::SystemDesignWidget(LibraryInterface* lh, MainWindow* mainWnd, QWidget* parent)
+    : TabDocument(parent, DOC_ZOOM_SUPPORT | DOC_DRAW_MODE_SUPPORT | DOC_PROTECTION_SUPPORT | DOC_EDIT_SUPPORT, 30, 300),
+      lh_(lh),
+      view_(0),
+      diagram_(0),
+      editProvider_()
 {
     supportedWindows_ = (supportedWindows_ | INSTANCEWINDOW);
 
     editProvider_ = QSharedPointer<GenericEditProvider>(new GenericEditProvider(EDIT_HISTORY_SIZE));
-    diagram_ = new EndpointDesignDiagram(lh_, mainWnd, *editProvider_, this);
+    diagram_ = new SystemDesignDiagram(lh_, mainWnd, *editProvider_, this);
 
     connect(diagram_, SIGNAL(openComponent(const VLNV&)),
         this, SIGNAL(openComponent(const VLNV&)), Qt::UniqueConnection);
@@ -56,13 +53,13 @@ EndpointDesignWidget::EndpointDesignWidget(LibraryInterface* lh, MainWindow* mai
         this, SIGNAL(componentSelected(ComponentItem*)), Qt::UniqueConnection);
     connect(diagram_, SIGNAL(clearItemSelection()),
         this, SIGNAL(clearItemSelection()), Qt::UniqueConnection);
-    
+
     view_ = new QGraphicsView(this);
     view_->setScene(diagram_);
     view_->centerOn(0, 0);
     view_->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
 
-	QVBoxLayout* layout = new QVBoxLayout(this);
+    QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(view_);
 
     view_->verticalScrollBar()->setTracking(true);
@@ -70,16 +67,16 @@ EndpointDesignWidget::EndpointDesignWidget(LibraryInterface* lh, MainWindow* mai
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~EndpointDesignWidget()
+// Function: ~SystemDesignWidget()
 //-----------------------------------------------------------------------------
-EndpointDesignWidget::~EndpointDesignWidget()
+SystemDesignWidget::~SystemDesignWidget()
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: setDesign()
 //-----------------------------------------------------------------------------
-bool EndpointDesignWidget::setDesign(VLNV const& vlnv)
+bool SystemDesignWidget::setDesign(VLNV const& vlnv)
 {
     // Check if the vlnv is not valid.
     if (!vlnv.isValid() || vlnv.getType() != VLNV::COMPONENT)
@@ -96,7 +93,7 @@ bool EndpointDesignWidget::setDesign(VLNV const& vlnv)
     }
 
     // Check that the component is actually a system.
-	KactusAttribute::Implementation implementation = system->getComponentImplementation();
+    KactusAttribute::Implementation implementation = system->getComponentImplementation();
 
     if (implementation != KactusAttribute::KTS_SYS)
     {
@@ -112,10 +109,7 @@ bool EndpointDesignWidget::setDesign(VLNV const& vlnv)
     }
 
     // Open the design to the diagram.
-    if (!diagram_->setDesign(system, "kts_sys_ref"))
-    {
-        return false;
-    }
+    diagram_->setDesign(system, "kts_sys_ref");
 
     system_ = system;
     designConf_ = diagram_->getDesignConfiguration();
@@ -126,7 +120,7 @@ bool EndpointDesignWidget::setDesign(VLNV const& vlnv)
         this, SIGNAL(modeChanged(DrawMode)), Qt::UniqueConnection);
 
     setDocumentName(system_->getVlnv()->getName() + 
-                    " (" + system_->getVlnv()->getVersion() + ")");
+        " (" + system_->getVlnv()->getVersion() + ")");
     setDocumentType("System");
 
     // Open in unlocked mode by default only if the version is draft.
@@ -138,7 +132,7 @@ bool EndpointDesignWidget::setDesign(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 // Function: setZoomLevel()
 //-----------------------------------------------------------------------------
-void EndpointDesignWidget::setZoomLevel(int level)
+void SystemDesignWidget::setZoomLevel(int level)
 {
     TabDocument::setZoomLevel(level);
 
@@ -154,7 +148,7 @@ void EndpointDesignWidget::setZoomLevel(int level)
 //-----------------------------------------------------------------------------
 // Function: fitInView()
 //-----------------------------------------------------------------------------
-void EndpointDesignWidget::fitInView()
+void SystemDesignWidget::fitInView()
 {
     QRectF itemRect = diagram_->itemsBoundingRect();
     float scaleX = std::max(0, view_->width() - 10 - view_->verticalScrollBar()->width()) / itemRect.width();
@@ -169,7 +163,7 @@ void EndpointDesignWidget::fitInView()
 //-----------------------------------------------------------------------------
 // Function: setMode()
 //-----------------------------------------------------------------------------
-void EndpointDesignWidget::setMode(DrawMode mode)
+void SystemDesignWidget::setMode(DrawMode mode)
 {
     diagram_->setMode(mode);
 }
@@ -177,7 +171,7 @@ void EndpointDesignWidget::setMode(DrawMode mode)
 //-----------------------------------------------------------------------------
 // Function: getSupportedDrawModes()
 //-----------------------------------------------------------------------------
-unsigned int EndpointDesignWidget::getSupportedDrawModes() const
+unsigned int SystemDesignWidget::getSupportedDrawModes() const
 {
     if (view_->isInteractive())
     {
@@ -192,17 +186,10 @@ unsigned int EndpointDesignWidget::getSupportedDrawModes() const
 //-----------------------------------------------------------------------------
 // Function: save()
 //-----------------------------------------------------------------------------
-bool EndpointDesignWidget::save()
+bool SystemDesignWidget::save()
 {
     lh_->beginSave();
-
-    // First save the design hierarchy.
-    if (!diagram_->saveHierarchy())
-    {
-        lh_->endSave();
-        return false;
-    }
-
+    
     // Create the design.
     QSharedPointer<Design> design;
 
@@ -238,7 +225,7 @@ bool EndpointDesignWidget::save()
 //-----------------------------------------------------------------------------
 // Function: keyPressEvent()
 //-----------------------------------------------------------------------------
-void EndpointDesignWidget::keyPressEvent(QKeyEvent* event)
+void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
 {
     // If the document is protected, skip all delete events.
     if (isProtected())
@@ -255,95 +242,7 @@ void EndpointDesignWidget::keyPressEvent(QKeyEvent* event)
 
         QGraphicsItem* selected = diagram_->selectedItems().first();
 
-        if (selected->type() == MappingComponentItem::Type)
-        {
-            MappingComponentItem* item = static_cast<MappingComponentItem*>(selected);
-
-            if (!item->isMapped())
-            {
-                QSharedPointer<MappingCompDeleteCommand> cmd(new MappingCompDeleteCommand(item));
-
-                connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
-                    diagram_, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-                connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
-                    diagram_, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
-
-                editProvider_->addCommand(cmd);
-                emit clearItemSelection();
-            }
-        }
-        else if (selected->type() == ProgramEntityItem::Type)
-        {
-            ProgramEntityItem* item = static_cast<ProgramEntityItem*>(selected);
-
-            if (!item->isImported())
-            {
-                QSharedPointer<ProgramEntityDeleteCommand> cmd(new ProgramEntityDeleteCommand(item));
-
-                connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
-                    diagram_, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-                connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
-                    diagram_, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
-
-                editProvider_->addCommand(cmd);
-                emit clearItemSelection();
-            }
-        }
-        else if (selected->type() == ApplicationItem::Type)
-        {
-            ApplicationItem* item = static_cast<ApplicationItem*>(selected);
-
-            if (!item->isImported())
-            {
-                QSharedPointer<ApplicationDeleteCommand> cmd(new ApplicationDeleteCommand(item));
-
-                connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
-                    diagram_, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-                connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
-                    diagram_, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
-
-                editProvider_->addCommand(cmd);
-                emit clearItemSelection();
-            }
-        }
-        else if (selected->type() == PlatformComponentItem::Type)
-        {
-            PlatformComponentItem* item = static_cast<PlatformComponentItem*>(selected);
-
-            if (!item->isImported())
-            {
-                QSharedPointer<PlatformCompDeleteCommand> cmd(new PlatformCompDeleteCommand(item));
-
-                connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
-                        diagram_, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-                connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
-                        diagram_, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
-
-                editProvider_->addCommand(cmd);
-                emit clearItemSelection();
-            }
-        }
-        else if (selected->type() == EndpointItem::Type)
-        {
-            // Allow deletion only if the parent endpoint stack is editable.
-            EndpointStack* stack = static_cast<EndpointStack*>(selected->parentItem());
-
-            if (stack->isEditable())
-            {
-                QSharedPointer<QUndoCommand> cmd(new EndpointDeleteCommand(static_cast<EndpointItem*>(selected)));
-                editProvider_->addCommand(cmd);
-                emit clearItemSelection();
-            }
-        }
-        else if (selected->type() == EndpointConnection::Type)
-        {
-            // Delete the connection.
-            QSharedPointer<QUndoCommand> cmd(new EndpointConnectionDeleteCommand(
-                static_cast<EndpointConnection*>(selected)));
-            editProvider_->addCommand(cmd);
-            emit clearItemSelection();
-        }
-        else if (selected->type() == SystemColumn::Type)
+        if (selected->type() == SystemColumn::Type)
         {
             // Ask a confirmation if the user really wants to delete the entire column if it is not empty.
             SystemColumn* column = static_cast<SystemColumn*>(selected);
@@ -353,9 +252,9 @@ void EndpointDesignWidget::keyPressEvent(QKeyEvent* event)
             if (!column->isEmpty())
             {
                 QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                                    tr("The column is not empty. Do you want to "
-                                    "delete the column and all of its contents?"),
-                                    QMessageBox::Yes | QMessageBox::No, this);
+                                   tr("The column is not empty. Do you want to "
+                                      "delete the column and all of its contents?"),
+                                   QMessageBox::Yes | QMessageBox::No, this);
 
                 if (msgBox.exec() == QMessageBox::No)
                 {
@@ -367,7 +266,7 @@ void EndpointDesignWidget::keyPressEvent(QKeyEvent* event)
             if (del)
             {
                 QSharedPointer<QUndoCommand> cmd(new SystemColumnDeleteCommand(diagram_->getColumnLayout(),
-                                                                               column));
+                    column));
                 editProvider_->addCommand(cmd);
                 emit clearItemSelection();
             }
@@ -378,7 +277,7 @@ void EndpointDesignWidget::keyPressEvent(QKeyEvent* event)
 //-----------------------------------------------------------------------------
 // Function: onVerticalScroll()
 //-----------------------------------------------------------------------------
-void EndpointDesignWidget::onVerticalScroll(int y)
+void SystemDesignWidget::onVerticalScroll(int y)
 {
     QPointF pt(0.0, y);
     QMatrix mat = view_->matrix().inverted();
@@ -388,7 +287,7 @@ void EndpointDesignWidget::onVerticalScroll(int y)
 //-----------------------------------------------------------------------------
 // Function: String()
 //-----------------------------------------------------------------------------
-QGraphicsView* EndpointDesignWidget::getView()
+QGraphicsView* SystemDesignWidget::getView()
 {
     return view_;
 }
@@ -396,7 +295,7 @@ QGraphicsView* EndpointDesignWidget::getView()
 //-----------------------------------------------------------------------------
 // Function: getOpenDocument()
 //-----------------------------------------------------------------------------
-VLNV const* EndpointDesignWidget::getOpenDocument() const
+VLNV const* SystemDesignWidget::getOpenDocument() const
 {
     if (system_ == 0)
     {
@@ -409,7 +308,7 @@ VLNV const* EndpointDesignWidget::getOpenDocument() const
 //-----------------------------------------------------------------------------
 // Function: setProtection()
 //-----------------------------------------------------------------------------
-void EndpointDesignWidget::setProtection(bool locked)
+void SystemDesignWidget::setProtection(bool locked)
 {
     TabDocument::setProtection(locked);
     diagram_->setProtection(locked);
@@ -419,7 +318,7 @@ void EndpointDesignWidget::setProtection(bool locked)
 //-----------------------------------------------------------------------------
 // Function: getComponentVLNV()
 //-----------------------------------------------------------------------------
-VLNV EndpointDesignWidget::getComponentVLNV() const
+VLNV SystemDesignWidget::getComponentVLNV() const
 {
     return *system_->getVlnv();
 }
@@ -427,7 +326,7 @@ VLNV EndpointDesignWidget::getComponentVLNV() const
 //-----------------------------------------------------------------------------
 // Function: addColumn()
 //-----------------------------------------------------------------------------
-void EndpointDesignWidget::addColumn()
+void SystemDesignWidget::addColumn()
 {
     diagram_->addColumn("SW Components");
 }
@@ -435,7 +334,7 @@ void EndpointDesignWidget::addColumn()
 //-----------------------------------------------------------------------------
 // Function: getEditProvider()
 //-----------------------------------------------------------------------------
-IEditProvider* EndpointDesignWidget::getEditProvider()
+IEditProvider* SystemDesignWidget::getEditProvider()
 {
     return editProvider_.data();
 }
@@ -443,7 +342,7 @@ IEditProvider* EndpointDesignWidget::getEditProvider()
 //-----------------------------------------------------------------------------
 // Function: getGenericEditProvider()
 //-----------------------------------------------------------------------------
-QSharedPointer<GenericEditProvider> EndpointDesignWidget::getGenericEditProvider() const
+QSharedPointer<GenericEditProvider> SystemDesignWidget::getGenericEditProvider() const
 {
     return editProvider_;
 }

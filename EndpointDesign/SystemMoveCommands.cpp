@@ -11,8 +11,8 @@
 
 #include "SystemMoveCommands.h"
 
-#include "SystemColumnLayout.h"
-#include "SystemColumn.h"
+#include "../SystemDesign/SystemColumnLayout.h"
+#include "../SystemDesign/SystemColumn.h"
 #include "EndpointConnection.h"
 #include "EndpointItem.h"
 #include "EndpointStack.h"

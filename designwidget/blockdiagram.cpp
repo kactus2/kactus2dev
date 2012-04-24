@@ -62,106 +62,42 @@
 //-----------------------------------------------------------------------------
 // Function: BlockDiagram()
 //-----------------------------------------------------------------------------
-BlockDiagram::BlockDiagram(LibraryInterface *lh, GenericEditProvider& editProvider, DesignWidget *parent) : 
-    QGraphicsScene(parent), 
-    lh_(lh),
-    parent_(parent),
-    mode_(MODE_SELECT),
-    tempConnection_(0),
-    tempConnEndPoint_(0), 
-    highlightedEndPoint_(0),
-    instanceNames_(),
-    component_(),
-    designConf_(),
-    dragCompType_(CIT_NONE),
-    dragBus_(false),
-    editProvider_(editProvider),
-    locked_(false),
-    offPageMode_(false),
-    oldSelection_(0)
+BlockDiagram::BlockDiagram(LibraryInterface *lh, GenericEditProvider& editProvider, DesignWidget *parent)
+    : DesignDiagram(lh, NULL, editProvider, parent),
+      parent_(parent),
+      tempConnection_(0),
+      tempConnEndPoint_(0), 
+      highlightedEndPoint_(0),
+      dragCompType_(CIT_NONE),
+      dragBus_(false),
+      offPageMode_(false),
+      oldSelection_(0)
 {
-    setSceneRect(0, 0, 100000, 100000);
-
     connect(this, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
-
-    //connect(this, SIGNAL(sceneRectChanged(const QRectF&)),
-	//	this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
-// Function: setDesign()
+// Function: BlockDiagram::clearScene()
 //-----------------------------------------------------------------------------
-bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& viewName)
+void BlockDiagram::clearScene()
 {
-    Q_ASSERT_X(hierComp, "BlockDiagram::setDesign()",
-		"Null component pointer given as parameter");
-
-    // Clear the edit provider.
-	editProvider_.clear();
-
-	// clear the previous design configuration
-	designConf_.clear();
-
     destroyConnections();
-    clear();
-    component_ = hierComp;
+    DesignDiagram::clearScene();
+}
 
-    VLNV designVLNV = hierComp->getHierRef(viewName);
-
-	// the received type is always VLNV::DESIGN so it must be asked from the
-	// library handler to make sure the type is correct.
-	designVLNV.setType(lh_->getDocumentType(designVLNV));
-
-	if (!designVLNV.isValid()) {
-		emit errorMessage(tr("Component %1 did not contain a hierarchical view").arg(
-		hierComp->getVlnv()->getName()));
-		return false;
-	}
-
-	QSharedPointer<Design> design;
-
-	// if the component contains a direct reference to a design
-	if (designVLNV.getType() == VLNV::DESIGN) {
-		QSharedPointer<LibraryComponent> libComp = lh_->getModel(designVLNV);	
-		design = libComp.staticCast<Design>();
-	}
-	
-	// if component had reference to a design configuration
-	else if (designVLNV.getType() == VLNV::DESIGNCONFIGURATION) {
-		QSharedPointer<LibraryComponent> libComp = lh_->getModel(designVLNV);
-		designConf_ = libComp.staticCast<DesignConfiguration>();
-
-		designVLNV = designConf_->getDesignRef();
-
-		if (designVLNV.isValid()) {
-			QSharedPointer<LibraryComponent> libComp = lh_->getModel(designVLNV);	
-			design = libComp.staticCast<Design>();
-		}
-		
-		// if design configuration did not contain a reference to a design.
-		if (!design) {
-			emit errorMessage(tr("Component %1 did not contain a hierarchical view").arg(
-				hierComp->getVlnv()->getName()));
-			return false;
-		}
-	}
-
-	// if referenced view was not found
-	else {
-		emit errorMessage(tr("The hierarchical design %1 referenced within "
-		"component %2 was not found in the library").arg(designVLNV.getName()).arg(
-		hierComp->getVlnv()->getName()));
-		return false;
-	}
-
+//-----------------------------------------------------------------------------
+// Function: BlockDiagram::openDesign()
+//-----------------------------------------------------------------------------
+void BlockDiagram::openDesign(QSharedPointer<Design> design)
+{
     // Create the column layout.
-    layout_ = QSharedPointer<DiagramColumnLayout>(new DiagramColumnLayout(editProvider_, this));
+    layout_ = QSharedPointer<DiagramColumnLayout>(new DiagramColumnLayout(getEditProvider(), this));
     connect(layout_.data(), SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
     if (design->getColumns().isEmpty())
     {
-        if (component_->getComponentImplementation() == KactusAttribute::KTS_SW &&
-            component_->getComponentSWType() == KactusAttribute::KTS_SW_PLATFORM)
+        if (getEditedComponent()->getComponentImplementation() == KactusAttribute::KTS_SW &&
+            getEditedComponent()->getComponentSWType() == KactusAttribute::KTS_SW_PLATFORM)
         {
             layout_->addColumn("Low-level", COLUMN_CONTENT_COMPONENTS);
             layout_->addColumn("Middle-level", COLUMN_CONTENT_COMPONENTS);
@@ -185,9 +121,9 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
     }
 
     // Create diagram interfaces for the top-level bus interfaces.
-    foreach (QSharedPointer<BusInterface> busIf, hierComp->getBusInterfaces())
+    foreach (QSharedPointer<BusInterface> busIf, getEditedComponent()->getBusInterfaces())
     {
-        DiagramInterface* diagIf = new DiagramInterface(lh_, component_, busIf, 0);
+        DiagramInterface* diagIf = new DiagramInterface(getLibraryInterface(), getEditedComponent(), busIf, 0);
         connect(diagIf, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
         // Add the diagram interface to the first column where it is allowed to be placed.
@@ -198,7 +134,7 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
     foreach (Design::ComponentInstance instance,
              design->getComponentInstances()) {
         
-		QSharedPointer<LibraryComponent> libComponent = lh_->getModel(instance.componentRef);
+		QSharedPointer<LibraryComponent> libComponent = getLibraryInterface()->getModel(instance.componentRef);
 
 		if (!libComponent) {
 			emit errorMessage(tr("The component %1 instantiated within design "
@@ -209,7 +145,7 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
 
         QSharedPointer<Component> component = libComponent.staticCast<Component>();
 
-        DiagramComponent* diagComp = new DiagramComponent(lh_, component, instance.instanceName,
+        DiagramComponent* diagComp = new DiagramComponent(getLibraryInterface(), component, instance.instanceName,
                                                           instance.displayName, instance.description,
                                                           instance.configurableElementValues,
                                                           instance.portAdHocVisibilities);
@@ -270,7 +206,7 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
 
 		// add the name to the list of instance names so no items with same 
 		// names are added
-		instanceNames_.append(instance.instanceName);
+		addInstanceName(instance.instanceName);
     }
 
     /* interconnections */
@@ -348,7 +284,7 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
 
         Design::HierConnection hierConn = hierConnections.at(i);
 
-		QSharedPointer<BusInterface> busIf = hierComp->getBusInterfaces().value(hierConn.interfaceRef);
+		QSharedPointer<BusInterface> busIf = getEditedComponent()->getBusInterfaces().value(hierConn.interfaceRef);
 
 		// if the bus interface was not found
 		if (!busIf) {
@@ -433,7 +369,7 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
     }
 
     // Set the ad-hoc data for the diagram.
-    setAdHocData(component_, design->getPortAdHocVisibilities());
+    setAdHocData(getEditedComponent(), design->getPortAdHocVisibilities());
 
     // Create top-level ad-hoc interfaces and set their positions.
     QMapIterator<QString, bool> itrCurPort(getPortAdHocVisibilities());
@@ -446,9 +382,9 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
         if (itrCurPort.value())
         {
             QString const& name = itrCurPort.key();
-            DiagramAdHocInterface* adHocIf = new DiagramAdHocInterface(component_,
-                                                                       component_->getPort(name),
-                                                                       lh_, 0);
+            DiagramAdHocInterface* adHocIf = new DiagramAdHocInterface(getEditedComponent(),
+                                                                       getEditedComponent()->getPort(name),
+                                                                       getLibraryInterface(), 0);
             if (adHocPortPositions.contains(name))
             {
                 QPointF pos = adHocPortPositions[name];
@@ -629,8 +565,6 @@ bool BlockDiagram::setDesign(QSharedPointer<Component> hierComp, const QString& 
     {
         column->updateItemPositions();
     }
-
-    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -642,10 +576,10 @@ BlockDiagram::~BlockDiagram()
 }
 
 //-----------------------------------------------------------------------------
-// Function: getComponent()
+// Function: getEditedComponent()
 //-----------------------------------------------------------------------------
-DiagramComponent *BlockDiagram::getComponent(const QString &instanceName) {
-
+DiagramComponent *BlockDiagram::getComponent(const QString &instanceName)
+{
 	// search all graphicsitems in the scene
 	foreach (QGraphicsItem *item, items()) {
 
@@ -669,26 +603,20 @@ DiagramComponent *BlockDiagram::getComponent(const QString &instanceName) {
 //-----------------------------------------------------------------------------
 void BlockDiagram::setMode(DrawMode mode)
 {
-    if (mode_ != mode)
+    if (getDrawMode() != mode)
     {
-        if (mode_ == MODE_CONNECT)
+        if (getDrawMode() == MODE_CONNECT)
         {
             endConnect();
         }
 
-        mode_ = mode;
-
-        if (mode_ != MODE_SELECT)
-        {
-            clearSelection();
-        }
-        else
+        if (mode == MODE_SELECT)
         {
             hideOffPageConnections();
         }
-
-        emit modeChanged(mode);
     }
+
+    DesignDiagram::setMode(mode);
 }
 
 //-----------------------------------------------------------------------------
@@ -935,7 +863,7 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         return;
 	}
 
-    if (mode_ == MODE_CONNECT)
+    if (getDrawMode() == MODE_CONNECT)
     {
         bool creating = tempConnection_ != 0;
 
@@ -1011,7 +939,7 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             }
         }
     }
-    else if (mode_ == MODE_INTERFACE)
+    else if (getDrawMode() == MODE_INTERFACE)
     {
         // Find the column under the cursor.
         DiagramColumn* column = layout_->findColumnAt(mouseEvent->scenePos());
@@ -1022,7 +950,7 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             addInterface(column, mouseEvent->scenePos());
         }
     }
-    else if (mode_ == MODE_DRAFT)
+    else if (getDrawMode() == MODE_DRAFT)
     {
         // Find the bottom-most item under the cursor.
         QGraphicsItem* item = 0;
@@ -1066,29 +994,20 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
                 else
                 {
                     // Determine an unused name for the component instance.
-                    QString name = "unnamed";
-                    int runningNumber = 0;
-                    
-                    while (instanceNames_.contains(name))
-                    {
-                        ++runningNumber;
-                        name = "unnamed_" + QString::number(runningNumber);
-                    }
-
-                    instanceNames_.append(name);
+                    QString name = createInstanceName("unnamed");
 
                     // Create a component model without a valid vlnv.
                     QSharedPointer<Component> comp = QSharedPointer<Component>(new Component());
                     comp->setVlnv(VLNV());
-                    comp->setComponentImplementation(component_->getComponentImplementation());
+                    comp->setComponentImplementation(getEditedComponent()->getComponentImplementation());
 
-                    if (component_->getComponentImplementation() == KactusAttribute::KTS_SW)
+                    if (getEditedComponent()->getComponentImplementation() == KactusAttribute::KTS_SW)
                     {
-                        comp->setComponentSWType(component_->getComponentSWType());
+                        comp->setComponentSWType(getEditedComponent()->getComponentSWType());
                     }
 
                     // Create the corresponding diagram component.
-                    DiagramComponent* diagComp = new DiagramComponent(lh_, comp, name);
+                    DiagramComponent* diagComp = new DiagramComponent(getLibraryInterface(), comp, name);
                     diagComp->setPos(snapPointToGrid(mouseEvent->scenePos()));
                     connect(diagComp, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
@@ -1099,7 +1018,7 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 					connect(cmd.data(), SIGNAL(componentInstanceRemoved(DiagramComponent*)),
 						this, SIGNAL(componentInstanceRemoved(DiagramComponent*)), Qt::UniqueConnection);
 
-                    editProvider_.addCommand(cmd);
+                    getEditProvider().addCommand(cmd);
                 }
 
                 emit contentChanged();
@@ -1143,11 +1062,11 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
                 }
 
                 // Add the command to the edit stack.
-                editProvider_.addCommand(cmd, false);
+                getEditProvider().addCommand(cmd, false);
             }
         }
     }
-    else if (mode_ == MODE_TOGGLE_OFFPAGE)
+    else if (getDrawMode() == MODE_TOGGLE_OFFPAGE)
     {
         // Try to snap to a connection end point.
         DiagramConnectionEndPoint* endPoint =
@@ -1181,10 +1100,10 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
         if (cmd->childCount() > 0)
         {
-            editProvider_.addCommand(cmd, false);
+            getEditProvider().addCommand(cmd, false);
         }
     }
-    else if (mode_ == MODE_SELECT)
+    else if (getDrawMode() == MODE_SELECT)
     {
         // Handle the mouse press and bring the new selection to front.
         QGraphicsScene::mousePressEvent(mouseEvent);
@@ -1197,7 +1116,7 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 void BlockDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     // Check if the connect mode is active.
-    if (mode_ == MODE_CONNECT || mode_ == MODE_TOGGLE_OFFPAGE)
+    if (getDrawMode() == MODE_CONNECT || getDrawMode() == MODE_TOGGLE_OFFPAGE)
     {
         // Find out if there is an end point currently under the cursor.
         DiagramConnectionEndPoint* endPoint =
@@ -1282,7 +1201,7 @@ void BlockDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 void BlockDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
 	// Try to create a connection if in connection mode.
-//     if (mode_ == MODE_CONNECT && tempConnection_ && !offPageMode_)
+//     if (getDrawMode() == MODE_CONNECT && tempConnection_ && !offPageMode_)
 //     {
 //         createConnection(mouseEvent);
 //     }
@@ -1294,7 +1213,7 @@ void BlockDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     // Allow double click only when the mode is select.
-    if (mode_ != MODE_SELECT)
+    if (getDrawMode() != MODE_SELECT)
     {
         return;
     }
@@ -1329,8 +1248,8 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
 			QStringList hierViews = comp->componentModel()->getHierViews();
 			
 			// if configuration is used and it contains an active view for the instance
-			if (designConf_ && designConf_->hasActiveView(comp->name())) {
-				viewName = designConf_->getActiveView(comp->name());
+			if (getDesignConfiguration() && getDesignConfiguration()->hasActiveView(comp->name())) {
+				viewName = getDesignConfiguration()->getActiveView(comp->name());
 
 				View* view = comp->componentModel()->findView(viewName);
 
@@ -1384,7 +1303,7 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
             }
             
             // Request the user to set the vlnv.
-            NewObjectDialog dialog(lh_, VLNV::COMPONENT, true, (QWidget*)parent());
+            NewObjectDialog dialog(getLibraryInterface(), VLNV::COMPONENT, true, (QWidget*)parent());
             dialog.setWindowTitle(tr("Add Component to Library"));
 
             if (dialog.exec() == QDialog::Rejected)
@@ -1399,14 +1318,14 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
             comp->componentModel()->createEmptyFlatView();
 
             // Write the model to file.
-            lh_->writeModelToFile(dialog.getPath(), comp->componentModel());
+            getLibraryInterface()->writeModelToFile(dialog.getPath(), comp->componentModel());
 
             // Update the diagram component.
             comp->updateComponent();
 
             // Create an undo command.
             QSharedPointer<QUndoCommand> cmd(new ComponentPacketizeCommand(comp, vlnv));
-            editProvider_.addCommand(cmd, false);
+            getEditProvider().addCommand(cmd, false);
 
             // Ask the user if he wants to complete the component.
             QMessageBox msgBox(QMessageBox::Question, QCoreApplication::applicationName(),
@@ -1437,7 +1356,7 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
             QSharedPointer<QUndoCommand> cmd(new ColumnChangeCommand(column, dialog.getName(),
                                                                      dialog.getContentType(),
                                                                      dialog.getAllowedItems()));
-            editProvider_.addCommand(cmd);
+            getEditProvider().addCommand(cmd);
 
         }
     }
@@ -1450,7 +1369,7 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
             (endPoint->getBusInterface() == 0 || !endPoint->getBusInterface()->getBusType().isValid()))
         {
             // Request the user to set the vlnv.
-            NewObjectDialog dialog(lh_, VLNV::BUSDEFINITION, true, (QWidget*)parent());
+            NewObjectDialog dialog(getLibraryInterface(), VLNV::BUSDEFINITION, true, (QWidget*)parent());
             dialog.setWindowTitle(tr("Create New Bus"));
 
             if (dialog.exec() == QDialog::Rejected)
@@ -1464,7 +1383,7 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
             absVLNV.setType(VLNV::ABSTRACTIONDEFINITION);
 
             // Make sure that both VLNVs are not yet used.
-            if (lh_->contains(busVLNV))
+            if (getLibraryInterface()->contains(busVLNV))
             {
                 emit errorMessage(tr("Bus definition %1:%2:%3:%4 was already found in the library").arg(
                     busVLNV.getVendor()).arg(
@@ -1473,7 +1392,7 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
                     busVLNV.getVersion()));
                 return;
             }
-            else if (lh_->contains(absVLNV)) {
+            else if (getLibraryInterface()->contains(absVLNV)) {
                 emit errorMessage(tr("Abstraction definition %1:%2:%3:%4 was already found in the library").arg(
                     absVLNV.getVendor()).arg(
                     absVLNV.getLibrary()).arg(
@@ -1487,7 +1406,7 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
             busDef->setVlnv(busVLNV);
 
             // Create the file for the bus definition.
-            lh_->writeModelToFile(dialog.getPath(), busDef);
+            getLibraryInterface()->writeModelToFile(dialog.getPath(), busDef);
 
             // Create an abstraction definition.
             QSharedPointer<AbstractionDefinition> absDef = QSharedPointer<AbstractionDefinition>(new AbstractionDefinition());
@@ -1497,7 +1416,7 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
             absDef->setBusType(busVLNV);
 
             // Create the file for the abstraction definition.
-            lh_->writeModelToFile(dialog.getPath(), absDef);
+            getLibraryInterface()->writeModelToFile(dialog.getPath(), absDef);
 
             // Ask the user for the interface mode.
             endPoint->setHighlight(DiagramConnectionEndPoint::HIGHLIGHT_HOVER);
@@ -1547,7 +1466,7 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
             QSharedPointer<QUndoCommand> cmd(new EndPointTypesCommand(endPoint, oldBusType,
                                                                       oldAbsType, oldMode, oldName));
-            editProvider_.addCommand(cmd, false);
+            getEditProvider().addCommand(cmd, false);
 
             // Select the end point (to update the property widget contents).
             if (endPoint->type() == DiagramPort::Type)
@@ -1578,26 +1497,6 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
 }
 
 //-----------------------------------------------------------------------------
-// Function: drawBackground()
-//-----------------------------------------------------------------------------
-void BlockDiagram::drawBackground(QPainter* painter, const QRectF& rect)
-{
-    if (dynamic_cast<QPrinter*>(painter->device()) == 0)
-    {
-        painter->setWorldMatrixEnabled(true);
-        painter->setBrush(Qt::lightGray);
-
-        qreal left = int(rect.left()) - (int(rect.left()) % GridSize );
-        qreal top = int(rect.top()) - (int(rect.top()) % GridSize );
-
-        for (qreal x = left; x < rect.right(); x += GridSize ) {
-            for (qreal y = top; y < rect.bottom(); y += GridSize )
-                painter->drawPoint(x, y);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: dragEnterEvent()
 //-----------------------------------------------------------------------------
 void BlockDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
@@ -1606,7 +1505,7 @@ void BlockDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
     dragBus_ = false;
 
     // Allow drag only if the diagram is not locked and the dragged object is a vlnv.
-    if (!locked_ && event->mimeData()->hasFormat("data/vlnvptr"))
+    if (!isProtected() && event->mimeData()->hasFormat("data/vlnvptr"))
     {
         event->acceptProposedAction();
 
@@ -1616,7 +1515,7 @@ void BlockDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
         if (vlnv->getType() == VLNV::COMPONENT)
         {
             // Determine the component type.
-			QSharedPointer<LibraryComponent> libComp = lh_->getModel(*vlnv);
+			QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(*vlnv);
             QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
             // component with given vlnv was not found
@@ -1630,7 +1529,7 @@ void BlockDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
             }
 
             // Check if the implementation does not match with the edited component.
-            if (comp->getComponentImplementation() != component_->getComponentImplementation())
+            if (comp->getComponentImplementation() != getEditedComponent()->getComponentImplementation())
             {
                 return;
             }
@@ -1653,12 +1552,12 @@ void BlockDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
 			     vlnv->getType() == VLNV::ABSTRACTIONDEFINITION)
         {
             // Check that the bus definition is compatible with the edited component.
-            QSharedPointer<LibraryComponent> libComp = lh_->getModel(*vlnv);
+            QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(*vlnv);
             QSharedPointer<BusDefinition> busDef = libComp.staticCast<BusDefinition>();
 
-            if ((component_->getComponentImplementation() == KactusAttribute::KTS_HW &&
+            if ((getEditedComponent()->getComponentImplementation() == KactusAttribute::KTS_HW &&
                  busDef->getType() == KactusAttribute::KTS_BUSDEF_HW) ||
-                (component_->getComponentImplementation() == KactusAttribute::KTS_SW &&
+                (getEditedComponent()->getComponentImplementation() == KactusAttribute::KTS_SW &&
                  busDef->getType() == KactusAttribute::KTS_BUSDEF_API))
             {
                 dragBus_ = true;
@@ -1753,7 +1652,7 @@ void BlockDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         memcpy(&vlnv, event->mimeData()->data("data/vlnvptr").data(), sizeof(vlnv));
 
         // Disallow self-instantiation.
-        if (*vlnv == *component_->getVlnv())
+        if (*vlnv == *getEditedComponent()->getVlnv())
         {
             QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
                                tr("Component cannot be instantiated to its own design."),
@@ -1763,14 +1662,14 @@ void BlockDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         }
 
         // Create the component model.
-		QSharedPointer<LibraryComponent> libComp = lh_->getModel(*vlnv);
+		QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(*vlnv);
         QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
 		// Set the instance name for the new component instance.
 		QString instanceName = createInstanceName(comp);
 
         // Create the diagram component.
-        DiagramComponent *newItem = new DiagramComponent(lh_, comp, instanceName);
+        DiagramComponent *newItem = new DiagramComponent(getLibraryInterface(), comp, instanceName);
         newItem->setPos(snapPointToGrid(event->scenePos()));
         connect(newItem, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
@@ -1783,7 +1682,7 @@ void BlockDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 			connect(cmd.data(), SIGNAL(componentInstanceRemoved(DiagramComponent*)),
 				this, SIGNAL(componentInstanceRemoved(DiagramComponent*)), Qt::UniqueConnection);
 
-            editProvider_.addCommand(cmd);
+            getEditProvider().addCommand(cmd);
         }
     }
     else if (dragBus_)
@@ -1794,10 +1693,10 @@ void BlockDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
             VLNV *droppedVlnv;
             memcpy(&droppedVlnv, event->mimeData()->data("data/vlnvptr").data(), sizeof(droppedVlnv));
 
-			Q_ASSERT(lh_->contains(*droppedVlnv));
+			Q_ASSERT(getLibraryInterface()->contains(*droppedVlnv));
 
             VLNV vlnv = *droppedVlnv;
-			vlnv.setType(lh_->getDocumentType(*droppedVlnv));
+			vlnv.setType(getLibraryInterface()->getDocumentType(*droppedVlnv));
 
 			VLNV absdefVLNV;
 
@@ -1806,7 +1705,7 @@ void BlockDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 				absdefVLNV = vlnv;
 
 				// parse the abstraction definition
-				QSharedPointer<LibraryComponent> libComp = lh_->getModel(vlnv);
+				QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(vlnv);
 				QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
 
 				// get the bus definition referenced by the abstraction definition
@@ -1868,32 +1767,11 @@ void BlockDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
             QSharedPointer<QUndoCommand> cmd(new EndPointTypesCommand(highlightedEndPoint_,
                                                                       oldBusType, oldAbsType,
                                                                       oldMode, oldName));
-            editProvider_.addCommand(cmd, false);
+            getEditProvider().addCommand(cmd, false);
 
             highlightedEndPoint_ = 0;
         }
     }
-}
-
-QString BlockDiagram::createInstanceName( QSharedPointer<Component> component ) {
-	int runningNumber = 0;
-	QString instanceName = component->getVlnv()->getName();
-	instanceName.remove(QString(".comp"));
-	QString tempName = instanceName;
-	tempName += "_";
-	tempName += QString::number(runningNumber);
-
-	// increase the number as long as there is another instance with same name
-	while (instanceNames_.contains(tempName)) {
-		++runningNumber;
-		tempName = instanceName;
-		tempName += "_";
-		tempName += QString::number(runningNumber);
-	}
-
-	// when temp name is unique
-	instanceNames_.append(tempName);
-	return tempName;
 }
 
 //-----------------------------------------------------------------------------
@@ -1932,7 +1810,7 @@ void BlockDiagram::addColumn(QString const& name, ColumnContentType contentType,
                              unsigned int allowedItems)
 {
     QSharedPointer<QUndoCommand> cmd(new ColumnAddCommand(layout_.data(), name, contentType, allowedItems));
-    editProvider_.addCommand(cmd);
+    getEditProvider().addCommand(cmd);
 }
 
 //-----------------------------------------------------------------------------
@@ -1941,7 +1819,7 @@ void BlockDiagram::addColumn(QString const& name, ColumnContentType contentType,
 void BlockDiagram::removeColumn(DiagramColumn* column)
 {
     QSharedPointer<QUndoCommand> cmd(new ColumnDeleteCommand(layout_.data(), column));
-    editProvider_.addCommand(cmd);
+    getEditProvider().addCommand(cmd);
 }
 
 //-----------------------------------------------------------------------------
@@ -1964,19 +1842,6 @@ void BlockDiagram::wheelEvent(QGraphicsSceneWheelEvent *event)
         view->centerOn(centerPos);
         event->accept();
     }
-}
-
-QSharedPointer<DesignConfiguration> BlockDiagram::getDesignConfiguration() const {
-	return designConf_;
-}
-
-void BlockDiagram::removeInstanceName( const QString& name ) {
-	instanceNames_.removeAll(name);
-}
-
-void BlockDiagram::updateInstanceName( const QString& oldName, const QString& newName ) {
-	instanceNames_.removeAll(oldName);
-	instanceNames_.append(newName);
 }
 
 //-----------------------------------------------------------------------------
@@ -2060,20 +1925,12 @@ DiagramColumnLayout* BlockDiagram::getColumnLayout()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ()
-//-----------------------------------------------------------------------------
-GenericEditProvider& BlockDiagram::getEditProvider()
-{
-    return editProvider_;
-}
-
-//-----------------------------------------------------------------------------
 // Function: addInterface()
 //-----------------------------------------------------------------------------
 void BlockDiagram::addInterface(DiagramColumn* column, QPointF const& pos)
 {
 	QSharedPointer<BusInterface> busif(new BusInterface());
-    DiagramInterface *newItem = new DiagramInterface(lh_, component_, busif, 0);
+    DiagramInterface *newItem = new DiagramInterface(getLibraryInterface(), getEditedComponent(), busif, 0);
     newItem->setPos(snapPointToGrid(pos));
 
     connect(newItem, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
@@ -2113,7 +1970,7 @@ void BlockDiagram::addInterface(DiagramColumn* column, QPointF const& pos)
         }
     }
 
-    editProvider_.addCommand(cmd, false);
+    getEditProvider().addCommand(cmd, false);
 }
 
 QList<DiagramComponent*> BlockDiagram::getInstances() const {
@@ -2136,24 +1993,6 @@ QList<DiagramComponent*> BlockDiagram::getInstances() const {
 
 DesignWidget* BlockDiagram::parent() const {
 	return parent_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: setProtection()
-//-----------------------------------------------------------------------------
-void BlockDiagram::setProtection(bool locked)
-{
-    locked_ = locked;
-    clearSelection();
-    emit clearItemSelection();
-}
-
-//-----------------------------------------------------------------------------
-// Function: isProtected()
-//-----------------------------------------------------------------------------
-bool BlockDiagram::isProtected() const
-{
-    return locked_;
 }
 
 //-----------------------------------------------------------------------------
@@ -2215,7 +2054,7 @@ void BlockDiagram::createConnection(QGraphicsSceneMouseEvent * mouseEvent)
         if (tempConnection_->connectEnds())
         {
             QSharedPointer<QUndoCommand> cmd(new ConnectionAddCommand(this, tempConnection_));
-            editProvider_.addCommand(cmd, false);
+            getEditProvider().addCommand(cmd, false);
 
             tempConnection_ = 0;
 
@@ -2456,7 +2295,9 @@ void BlockDiagram::onAdHocVisibilityChanged(QString const& portName, bool visibl
     
     if (visible)
     {
-        DiagramAdHocInterface* adHocIf = new DiagramAdHocInterface(component_, component_->getPort(portName), lh_, 0);
+        DiagramAdHocInterface* adHocIf = new DiagramAdHocInterface(getEditedComponent(),
+                                                                   getEditedComponent()->getPort(portName),
+                                                                   getLibraryInterface(), 0);
         connect(adHocIf, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
         // Add the ad-hoc interface to the first column where it is allowed to be placed.
@@ -2472,23 +2313,6 @@ void BlockDiagram::onAdHocVisibilityChanged(QString const& portName, bool visibl
         delete found;
         found = 0;
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: BlockDiagram::attach()
-//-----------------------------------------------------------------------------
-void BlockDiagram::attach(AdHocEditor* editor)
-{
-    connect(this, SIGNAL(contentChanged()), editor, SLOT(onContentChanged()), Qt::UniqueConnection);
-    connect(this, SIGNAL(destroyed(QObject*)), editor, SLOT(clear()), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: BlockDiagram::detach()
-//-----------------------------------------------------------------------------
-void BlockDiagram::detach(AdHocEditor* editor)
-{
-    disconnect(editor);
 }
 
 //-----------------------------------------------------------------------------

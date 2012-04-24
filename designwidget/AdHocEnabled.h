@@ -98,7 +98,7 @@ public:
     /*!
      *  Returns the ad-hoc port with the given name or null if not found.
      */
-    virtual DiagramConnectionEndPoint* getDiagramAdHocPort(QString const& portName) = 0;
+    virtual DiagramConnectionEndPoint* getDiagramAdHocPort(QString const& portName);
 
 private:
     // Disable copying.

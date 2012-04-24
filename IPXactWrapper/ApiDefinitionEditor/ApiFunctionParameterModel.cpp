@@ -110,26 +110,28 @@ QVariant ApiFunctionParameterModel::data(QModelIndex const& index, int role /*= 
 //-----------------------------------------------------------------------------
 QVariant ApiFunctionParameterModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if (orientation != Qt::Horizontal)
-    {
-        return QVariant();
-    }
-
     if (role == Qt::DisplayRole)
     {
-        switch (section)
+        if (orientation == Qt::Horizontal)
         {
-        case API_FUNC_PARAM_COL_NAME:
-            return tr("Name");
+            switch (section)
+            {
+            case API_FUNC_PARAM_COL_NAME:
+                return tr("Name");
 
-        case API_FUNC_PARAM_COL_TYPE:
-            return tr("Type");
+            case API_FUNC_PARAM_COL_TYPE:
+                return tr("Type");
 
-        case API_FUNC_PARAM_COL_DESC:
-            return tr("Description");
+            case API_FUNC_PARAM_COL_DESC:
+                return tr("Description");
 
-        default:
-            return QVariant();
+            default:
+                return QVariant();
+            }
+        }
+        else
+        {
+            return section + 1;
         }
     }
     else
