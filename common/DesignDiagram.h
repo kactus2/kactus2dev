@@ -24,6 +24,7 @@ class Component;
 class ComponentItem;
 class DesignConfiguration;
 class Design;
+class VLNV;
 
 //-----------------------------------------------------------------------------
 //! Base class for all design diagrams.
@@ -61,6 +62,15 @@ public:
      *      @param [in] viewName   The name of the view to open.
      */
     bool setDesign(QSharedPointer<Component> component, QString const& viewName);
+
+    /*! 
+     *  Creates a design based on the contents in the diagram.
+     *
+     *      @param [in] vlnv The vlnv for the design.
+     *
+     *      @return The created design.
+     */
+    virtual QSharedPointer<Design> createDesign(VLNV const& vlnv) const = 0;
 
     /*!
      *  Attaches the data source to an ad-hoc editor.

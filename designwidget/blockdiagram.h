@@ -57,6 +57,15 @@ public:
      */
     virtual void clearScene();
 
+    /*! 
+     *  Creates a design based on the contents in the diagram.
+     *
+     *      @param [in] vlnv The vlnv for the design.
+     *
+     *      @return The created design.
+     */
+    virtual QSharedPointer<Design> createDesign(VLNV const& vlnv) const;
+
     /*!
      *  Sets the draw mode.
      */
@@ -85,14 +94,6 @@ public:
      *      @param [in] visible If true, the bus widths are set visible. Otherwise false.
      */
     void setBusWidthsVisible(bool visible);
-
-    /*! \brief Create a Design that represents this BlockDiagram
-     *
-     * \param vlnv The vlnv to be set for the design
-     *
-     * \return QSharedPointer<Design> Pointer to the created design.
-    */
-    QSharedPointer<Design> createDesign(const VLNV &vlnv);
 
 	/*! \brief Update the given hierarchical component to match this BlockDiagram
      *

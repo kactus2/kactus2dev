@@ -118,7 +118,6 @@ bool EndpointDesignWidget::setDesign(VLNV const& vlnv)
     }
 
     system_ = system;
-    designConf_ = diagram_->getDesignConfiguration();
 
     connect(diagram_, SIGNAL(contentChanged()),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -206,9 +205,9 @@ bool EndpointDesignWidget::save()
     // Create the design.
     QSharedPointer<Design> design;
 
-    if (designConf_)
+    if (diagram_->getDesignConfiguration())
     {
-        design = diagram_->createDesign(designConf_->getDesignRef());
+        design = diagram_->createDesign(diagram_->getDesignConfiguration()->getDesignRef());
     }
     else
     {
@@ -222,9 +221,9 @@ bool EndpointDesignWidget::save()
     }
 
     // Write the files.
-    if (designConf_)
+    if (diagram_->getDesignConfiguration())
     {
-        lh_->writeModelToFile(designConf_);
+        lh_->writeModelToFile(diagram_->getDesignConfiguration());
     }
 
     lh_->writeModelToFile(design);

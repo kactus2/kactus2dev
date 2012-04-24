@@ -176,9 +176,6 @@ private:
     //! The system that is being edited.
     QSharedPointer<Component> system_;
 
-    //! The attached design configuration.
-    QSharedPointer<DesignConfiguration> designConf_;
-
     //! The edit provider
     QSharedPointer<GenericEditProvider> editProvider_;
 };

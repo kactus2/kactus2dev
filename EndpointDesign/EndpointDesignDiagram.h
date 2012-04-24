@@ -48,19 +48,19 @@ public:
      */
     ~EndpointDesignDiagram();
 
+    /*! 
+     *  Creates a design based on the contents in the diagram.
+     *
+     *      @param [in] vlnv The vlnv for the design.
+     *
+     *      @return The created design.
+     */
+    virtual QSharedPointer<Design> createDesign(VLNV const& vlnv) const;
+
     /*!
      *  Saves the hierarchy inside the design to components and designs.
      */
     bool saveHierarchy() const;
-
-    /*! 
-     *  Creates a design based on the contents in the diagram.
-     *
-     *      @param [in] vlnv     The vlnv for the design.
-     *
-     *      @return The created system design.
-     */
-    QSharedPointer<Design> createDesign(VLNV const& vlnv);
 
     /*!
      *  Adds a new column to the diagram.

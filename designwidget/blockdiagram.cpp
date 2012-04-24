@@ -599,30 +599,9 @@ DiagramComponent *BlockDiagram::getComponent(const QString &instanceName)
 }
 
 //-----------------------------------------------------------------------------
-// Function: setMode()
-//-----------------------------------------------------------------------------
-void BlockDiagram::setMode(DrawMode mode)
-{
-    if (getDrawMode() != mode)
-    {
-        if (getDrawMode() == MODE_CONNECT)
-        {
-            endConnect();
-        }
-
-        if (mode == MODE_SELECT)
-        {
-            hideOffPageConnections();
-        }
-    }
-
-    DesignDiagram::setMode(mode);
-}
-
-//-----------------------------------------------------------------------------
 // Function: createDesign()
 //-----------------------------------------------------------------------------
-QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv)
+QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv) const
 {
 	QSharedPointer<Design> design(new Design(vlnv));
 
@@ -807,6 +786,27 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv)
     design->setAdHocPortPositions(adHocPortPositions);
 
 	return design;
+}
+
+//-----------------------------------------------------------------------------
+// Function: setMode()
+//-----------------------------------------------------------------------------
+void BlockDiagram::setMode(DrawMode mode)
+{
+    if (getDrawMode() != mode)
+    {
+        if (getDrawMode() == MODE_CONNECT)
+        {
+            endConnect();
+        }
+
+        if (mode == MODE_SELECT)
+        {
+            hideOffPageConnections();
+        }
+    }
+
+    DesignDiagram::setMode(mode);
 }
 
 //-----------------------------------------------------------------------------

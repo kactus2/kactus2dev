@@ -54,11 +54,11 @@ public:
     /*! 
      *  Creates a design based on the contents in the diagram.
      *
-     *      @param [in] vlnv     The vlnv for the design.
+     *      @param [in] vlnv The vlnv for the design.
      *
-     *      @return The created system design.
+     *      @return The created design.
      */
-    QSharedPointer<Design> createDesign(VLNV const& vlnv);
+    virtual QSharedPointer<Design> createDesign(VLNV const& vlnv) const;
 
     /*!
      *  Adds a new column to the diagram.

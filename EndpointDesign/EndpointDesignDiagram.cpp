@@ -878,7 +878,7 @@ bool EndpointDesignDiagram::saveHierarchy() const
 //-----------------------------------------------------------------------------
 // Function: createDesign()
 //-----------------------------------------------------------------------------
-QSharedPointer<Design> EndpointDesignDiagram::createDesign(VLNV const& vlnv)
+QSharedPointer<Design> EndpointDesignDiagram::createDesign(VLNV const& vlnv) const
 {
     QSharedPointer<Design> design(new Design(vlnv));
 
