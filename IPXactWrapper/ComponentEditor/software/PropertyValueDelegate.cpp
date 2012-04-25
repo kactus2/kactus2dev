@@ -55,10 +55,16 @@ QWidget* PropertyValueDelegate::createEditor(QWidget* parent, QStyleOptionViewIt
                 // set box to be editable
                 box->setEditable(true);
 
-                // Fill in with allowed values from the list of properties.
-                foreach (QSharedPointer<ComProperty const> prop, *m_allowedProperties)
+                if (m_allowedProperties != 0)
                 {
-                    box->addItem(prop->getName());
+                    // Fill in with allowed values from the list of properties.
+                    foreach (QSharedPointer<ComProperty const> prop, *m_allowedProperties)
+                    {
+                        if (!prop->isRequired())
+                        {
+                            box->addItem(prop->getName());
+                        }
+                    }
                 }
                 
                 return box;

@@ -14,6 +14,7 @@
 #include <models/ComProperty.h>
 
 #include <QRegExp>
+#include <QFont>
 
 QString const PropertyValueModel::IP_ADDRESS_REGEX("^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$");
 
@@ -42,25 +43,28 @@ void PropertyValueModel::setAllowedProperties(QList< QSharedPointer<ComProperty>
 
     allowedProperties_ = properties;
 
-    // Check that at least all required properties are found in the values.
-    foreach (QSharedPointer<ComProperty const> prop, *properties)
+    if (allowedProperties_ != 0)
     {
-        if (prop->isRequired())
+        // Check that at least all required properties are found in the values.
+        foreach (QSharedPointer<ComProperty const> prop, *properties)
         {
-            int i = 0;
-
-            for (; i < table_.size(); ++i)
+            if (prop->isRequired())
             {
-                if (table_.at(i).first == prop->getName())
+                int i = 0;
+
+                for (; i < table_.size(); ++i)
                 {
-                    break;
+                    if (table_.at(i).first == prop->getName())
+                    {
+                        break;
+                    }
                 }
-            }
 
-            // If the value was not found, add it.
-            if (i == table_.size())
-            {
-                table_.append(NameValuePair(prop->getName(), prop->getDefaultValue()));
+                // If the value was not found, add it.
+                if (i == table_.size())
+                {
+                    table_.append(NameValuePair(prop->getName(), prop->getDefaultValue()));
+                }
             }
         }
     }
@@ -156,6 +160,24 @@ QVariant PropertyValueModel::data(QModelIndex const& index, int role /*= Qt::Dis
         default:
             return QVariant();
         }
+    }
+    else if (role == Qt::FontRole)
+    {
+        if (index.column() == 0 && allowedProperties_ != 0)
+        {
+            foreach (QSharedPointer<ComProperty const> prop, *allowedProperties_)
+            {
+                if (prop->getName() == table_.at(index.row()).first &&
+                    prop->isRequired())
+                {
+                    QFont font;
+                    font.setBold(true);
+                    return font;
+                }
+            }
+        }
+
+        return QVariant();
     }
     else if (role == Qt::TextColorRole)
     {
@@ -268,6 +290,18 @@ Qt::ItemFlags PropertyValueModel::flags(QModelIndex const& index) const
         return Qt::NoItemFlags;
     }
 
+    if (index.column() == 0)
+    {
+        foreach (QSharedPointer<ComProperty const> prop, *allowedProperties_)
+        {
+            // Check if we found a match.
+            if (prop->getName() == table_.at(index.row()).first && prop->isRequired())
+            {
+                return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+            }
+        }
+    }
+
     return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
 }
 
@@ -316,22 +350,6 @@ bool PropertyValueModel::setData(QModelIndex const& index, QVariant const& value
 }
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueModel::onAdd()
-//-----------------------------------------------------------------------------
-void PropertyValueModel::onAdd()
-{
-    NameValuePair element(QString(""), QString(""));
-
-    if (!table_.contains(element))
-    {
-        beginInsertRows(QModelIndex(), table_.size(), table_.size());
-        table_.append(element);
-        endInsertRows();
-        emit contentChanged();
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: PropertyValueModel::onAddItem()
 //-----------------------------------------------------------------------------
 void PropertyValueModel::onAddItem(QModelIndex const& index)
@@ -358,27 +376,9 @@ void PropertyValueModel::onAddItem(QModelIndex const& index)
 }
 
 //-----------------------------------------------------------------------------
-// Function: PropertyValueModel::onRemove()
-//-----------------------------------------------------------------------------
-void PropertyValueModel::onRemove(QModelIndex const& index )
-{
-    if (!index.isValid())
-    {
-        return;
-    }
-
-    // remove the indexed configurable element
-    beginRemoveRows(QModelIndex(), index.row(), index.row());
-    table_.removeAt(index.row());
-    endRemoveRows();
-
-    emit contentChanged();
-}
-
-//-----------------------------------------------------------------------------
 // Function: PropertyValueModel::onRemoveItem()
 //-----------------------------------------------------------------------------
-void PropertyValueModel::onRemoveItem(QModelIndex const& index )
+void PropertyValueModel::onRemoveItem(QModelIndex const& index)
 {
     // don't remove anything if index is invalid
     if (!index.isValid())
@@ -389,6 +389,19 @@ void PropertyValueModel::onRemoveItem(QModelIndex const& index )
     else if (index.row() < 0 || index.row() >= table_.size())
     {
         return;
+    }
+
+    // Required property values cannot be deleted.
+    if (allowedProperties_ != 0)
+    {
+        foreach (QSharedPointer<ComProperty const> prop, *allowedProperties_)
+        {
+            // Check if we found a match.
+            if (prop->getName() == table_.at(index.row()).first && prop->isRequired())
+            {
+                return;
+            }
+        }
     }
 
     // remove the indexed configurable element

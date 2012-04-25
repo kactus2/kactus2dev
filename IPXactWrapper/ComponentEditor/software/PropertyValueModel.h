@@ -130,9 +130,7 @@ public:
 		                 int role = Qt::EditRole);
 
 public slots:
-    void onAdd();
     void onAddItem(QModelIndex const& index);
-    void onRemove(QModelIndex const& index );
     void onRemoveItem(QModelIndex const& index );
 
 signals:

@@ -64,7 +64,7 @@ ComInterfaceEditor::ComInterfaceEditor(LibraryInterface* libHandler,
 
     // Initialize the details group.
     QLabel* dataTypeLabel = new QLabel(tr("Data type:"), &detailsGroup_);
-    dataTypeCombo_.setEditable(true);
+    dataTypeCombo_.addItem("");
     dataTypeCombo_.setInsertPolicy(QComboBox::InsertAlphabetically);
 
     QLabel* directionLabel = new QLabel(tr("Direction:"), &detailsGroup_);
@@ -194,5 +194,25 @@ void ComInterfaceEditor::onComDefinitionChanged()
         }
 
         propertyValueEditor_.setAllowedProperties(&comDef->getProperties());
+
+        QString type = dataTypeCombo_.currentText();
+
+        dataTypeCombo_.clear();
+        dataTypeCombo_.addItem("");
+        dataTypeCombo_.addItems(comDef->getDataTypes());
+
+        if (comDef->getDataTypes().contains(type))
+        {
+            dataTypeCombo_.setCurrentIndex(dataTypeCombo_.findText(type));
+        }
+    }
+    else if (comType_.getVLNV().isEmpty())
+    {
+        // Clear the allowed properties.
+        propertyValueEditor_.setAllowedProperties(0);
+
+        // Clear the data type combo.
+        dataTypeCombo_.clear();
+        dataTypeCombo_.addItem("");
     }
 }

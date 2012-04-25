@@ -17,6 +17,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QFileDialog>
+#include <QSortFilterProxyModel>
 
 EditableTableView::EditableTableView(QWidget *parent):
 QTableView(parent),
@@ -79,7 +80,11 @@ void EditableTableView::mouseMoveEvent( QMouseEvent* e ) {
 			if (startIndex.isValid() && startIndex != thisIndex) {
 				setCursor(QCursor(Qt::ClosedHandCursor));
 
-				emit moveItem(startIndex, thisIndex);
+                // Allow movement only if there is no sorting proxy.
+                if (dynamic_cast<QSortFilterProxyModel*>(model()) == 0)
+                {
+				    emit moveItem(startIndex, thisIndex);
+                }
 
 				// update the pressed point so the dragging works also
 				// when moving further to another index
@@ -113,7 +118,7 @@ void EditableTableView::keyPressEvent( QKeyEvent* event ) {
 void EditableTableView::mouseDoubleClickEvent( QMouseEvent* event ) {
 	// if there is no item on the clicked position then a new item should be added
 	QModelIndex index = indexAt(event->pos());
-	if (!index.isValid()) {
+	if (!index.isValid()){
 		emit addItem(index);
 		event->accept();
 		return;
@@ -211,8 +216,18 @@ void EditableTableView::onRemoveAction() {
 	}
 
 	// remove as many rows as wanted
-	for (int i = 0; i < rowCount; ++i) {
-		emit removeItem(indexes.first());
+    QSortFilterProxyModel* sortProxy = dynamic_cast<QSortFilterProxyModel*>(model());
+
+	for (int i = 0; i < rowCount; ++i)
+    {
+        QModelIndex index = indexes.first();
+
+        if (sortProxy != 0)
+        {
+            index = sortProxy->mapToSource(index);
+        }
+
+		emit removeItem(index);
 	}
 
 	clearSelection();

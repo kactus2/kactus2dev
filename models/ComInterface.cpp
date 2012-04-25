@@ -147,6 +147,20 @@ bool ComInterface::isValid(QStringList& errorList, QString const& parentId) cons
         valid = false;
     }
 
+    // Check for property values having no name.
+    QMapIterator<QString, QString> iter(propertyValues_);
+
+    while (iter.hasNext())
+    {
+        iter.next();
+
+        if (iter.key().isEmpty())
+        {
+            errorList.append(QObject::tr("No name specified for a property value in %1").arg(thisId));
+            valid = false;
+        }
+    }
+
     return valid;
 }
 
@@ -155,7 +169,30 @@ bool ComInterface::isValid(QStringList& errorList, QString const& parentId) cons
 //-----------------------------------------------------------------------------
 bool ComInterface::isValid() const
 {
-    return (!name_.isEmpty() && (comType_.isEmpty() || comType_.isValid()));
+    if (name_.isEmpty())
+    {
+        return false;
+    }
+
+    if (!comType_.isEmpty() && !comType_.isValid())
+    {
+        return false;
+    }
+
+    // Check for property values having no name.
+    QMapIterator<QString, QString> iter(propertyValues_);
+
+    while (iter.hasNext())
+    {
+        iter.next();
+
+        if (iter.key().isEmpty())
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
