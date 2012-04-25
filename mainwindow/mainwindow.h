@@ -40,6 +40,7 @@ class ConnectionEditor;
 class AdHocEditor;
 class DiagramInterconnection;
 class TabWidgetEx;
+class TabDocument;
 
 class MainWindow : public QMainWindow {
     Q_OBJECT

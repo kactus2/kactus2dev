@@ -10,8 +10,6 @@
 #include "librarycomponent.h"
 
 
-#include <exceptions/write_error.h>
-
 #include <QDomDocument>
 #include <QDomNode>
 #include <QString>
@@ -165,15 +163,8 @@ void AbstractionDefinition::write(QFile& file) {
 			LibraryComponent::description_);
 	}
 
-	// if mandatory reference to a busDefinition is missing
-	if (!busType_.isValid()) {
-		throw Write_error(QObject::tr("Mandatory element spirit:busType is "
-				"missing in spirit:abstractionDefinition"));
-	}
-	else {
-		writer.writeEmptyElement("spirit:busType");
-		General::writeVLNVAttributes(writer, &busType_);
-	}
+	writer.writeEmptyElement("spirit:busType");
+	General::writeVLNVAttributes(writer, &busType_);
 
 	// if extension is defined
 	if (extends_.isValid()) {

@@ -135,11 +135,6 @@ void ComInterfaceEditor::removeModel()
 //-----------------------------------------------------------------------------
 void ComInterfaceEditor::makeChanges()
 {
-    if (!isValid())
-    {
-        return;
-    }
-
     comIf_->setName(nameGroup_.getName());
     comIf_->setDisplayName(nameGroup_.getDisplayName());
     comIf_->setDescription(nameGroup_.getDescription());

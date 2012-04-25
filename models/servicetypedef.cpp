@@ -8,8 +8,6 @@
 #include "parameter.h"
 #include "generaldeclarations.h"
 
-#include "../exceptions/write_error.h"
-
 #include <QDomNode>
 #include <QString>
 #include <QList>
@@ -105,25 +103,16 @@ ServiceTypeDef::~ServiceTypeDef() {
 void ServiceTypeDef::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:serviceTypeDef");
 
-	if (typeName_.isEmpty()) {
-		throw Write_error(QObject::tr("mandatory element typeName missing in"
-				" spirit:serviceTypeDef"));
-	}
-	// if name was found write it + attributes for it
-	else {
-		// start the spirit:typeName tag
-		writer.writeStartElement("spirit:typeName");
+	// start the spirit:typeName tag
+	writer.writeStartElement("spirit:typeName");
 
-		// write attributes for the element
-		writer.writeAttribute("spirit:constrained",
-				General::bool2Str(constrained_));
-		writer.writeAttribute("spirit:implicit",
-				General::bool2Str(implicit_));
+    // write attributes for the element
+    writer.writeAttribute("spirit:constrained", General::bool2Str(constrained_));
+    writer.writeAttribute("spirit:implicit", General::bool2Str(implicit_));
 
-		// write the value of the element and close the tag
-		writer.writeCharacters(typeName_);
-		writer.writeEndElement(); // spirit:typeName
-	}
+    // write the value of the element and close the tag
+    writer.writeCharacters(typeName_);
+    writer.writeEndElement(); // spirit:typeName
 
 	// if optional typeDefinition is specified
 	if (!typeDefinition_.isEmpty()) {

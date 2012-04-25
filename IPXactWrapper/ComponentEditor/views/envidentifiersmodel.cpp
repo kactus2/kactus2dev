@@ -134,10 +134,6 @@ bool EnvIdentifiersModel::isValid() const {
 }
 
 void EnvIdentifiersModel::apply() {
-	
-	if (!isValid())
-		return;
-
 	view_->setEnvIdentifiers(table_);
 }
 

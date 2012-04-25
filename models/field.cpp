@@ -9,9 +9,6 @@
 #include "parameter.h"
 #include "enumeratedvalue.h"
 
-
-#include "../exceptions/write_error.h"
-
 #include <QString>
 #include <QXmlStreamWriter>
 #include <QMap>
@@ -174,14 +171,7 @@ void Field::write(QXmlStreamWriter& writer) {
 		writer.writeAttribute("spirit:id", id_);
 	}
 
-	// if mandatory name is not defined
-	if (name_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory name missing in spirit:"
-				"field"));
-	}
-	else {
-		writer.writeTextElement("spirit:name", name_);
-	}
+	writer.writeTextElement("spirit:name", name_);
 
 	// if optional displayName is defined
 	if (!displayName_.isEmpty()) {
@@ -193,34 +183,19 @@ void Field::write(QXmlStreamWriter& writer) {
 		writer.writeTextElement("spirit:description", description_);
 	}
 
-	// if mandatory bitOffset is not defined
-	if (bitOffset_ < 0) {
-		throw Write_error(QObject::tr("Mandatory bitOffset missing in spirit:"
-				"field"));
-	}
-	else {
-		writer.writeTextElement("spirit:bitOffset",
-				QString::number(bitOffset_));
-	}
+	writer.writeTextElement("spirit:bitOffset", QString::number(bitOffset_));
 
 	// if optional typeIdentifier is defined
 	if (!typeIdentifier_.isEmpty()) {
 		writer.writeTextElement("spirit:typeIdentifier", typeIdentifier_);
 	}
 
-	// if mandatory bitWidth is not defined
-	if (bitWidth_ <= 0) {
-		throw Write_error(QObject::tr("Mandatory bitWidth missing in spirit:"
-				"field"));
-	}
-	else {
-		writer.writeStartElement("spirit:bitWidth");
+    writer.writeStartElement("spirit:bitWidth");
 
-		General::writeAttributes(writer, bitWidthAttributes_);
-		writer.writeCharacters(QString::number(bitWidth_));
+    General::writeAttributes(writer, bitWidthAttributes_);
+    writer.writeCharacters(QString::number(bitWidth_));
 
-		writer.writeEndElement(); // spirit:bitWidth
-	}
+    writer.writeEndElement(); // spirit:bitWidth
 
 	// if optional enumeratedValues exist
 	if (enumeratedValues_.size() != 0) {

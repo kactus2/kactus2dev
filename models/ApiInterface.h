@@ -79,9 +79,10 @@ public:
     /*!
      *  Returns true if the contents of the API interface are valid.
      *
-     *      @param [in/out] errorList Error list which is appended with errors if found while validating.
+     *      @param [out] errorList  Error list which is appended with errors if found while validating.
+     *      @param [in]  parentId   The identifier of the containing component.
      */
-    bool isValid(QStringList& errorList) const;
+    bool isValid(QStringList& errorList, QString const& parentId) const;
 
     /*!
      *  Returns true if the contents of the API interface are valid.

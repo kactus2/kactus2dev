@@ -11,9 +11,6 @@
 #include "designconfabstractor.h"
 #include "generatorchain.h"
 
-
-#include "../exceptions/write_error.h"
-
 #include <QList>
 #include <QDomNode>
 #include <QMap>
@@ -380,31 +377,14 @@ void DesignConfiguration::write(QFile& file) {
 			LibraryComponent::description_);
 	}
 
-    // if mandatory reference to a design is missing
-    if (!designRef_.isValid()) {
-    	throw Write_error(QObject::tr("Mandatory element spirit:designRef "
-    			"missing in spirit:designConfiguration"));
-    }
-    else {
-    	writer.writeEmptyElement("spirit:designRef");
-    	General::writeVLNVAttributes(writer, &designRef_);
-    }
-
-
+    writer.writeEmptyElement("spirit:designRef");
+    General::writeVLNVAttributes(writer, &designRef_);
+    
     for (int i = 0; i < generatorChainConfs_.size(); ++i) {
     	writer.writeStartElement("spirit:generatorChainConfiguration");
 
-    	// if mandatory reference to a generator chain is missing
-    	if (!generatorChainConfs_.at(i)->generatorChainRef_.isValid()) {
-    		throw Write_error(QObject::tr("Mandatory element "
-    				"spirit:generatorChainRef missing in "
-    				"spirit:generatorChainConfiguration"));
-    	}
-    	else {
-    		writer.writeEmptyElement("spirit:generatorChainRef");
-    		General::writeVLNVAttributes(writer,
-    				&generatorChainConfs_.at(i)->generatorChainRef_);
-    	}
+    	writer.writeEmptyElement("spirit:generatorChainRef");
+    	General::writeVLNVAttributes(writer, &generatorChainConfs_.at(i)->generatorChainRef_);
 
     	if (generatorChainConfs_.at(i)->configurableElements_.size() != 0) {
     		writer.writeStartElement("spirit:configurableElementValues");
@@ -428,29 +408,14 @@ void DesignConfiguration::write(QFile& file) {
 
     for (int i = 0; i < interconnectionConfs_.size(); ++i) {
     	writer.writeStartElement("spirit:interconnectionConfiguration");
+    	writer.writeTextElement("spirit:interconnectionRef", interconnectionConfs_.at(i)->interconnectionRef_);
 
-    	// if mandatory reference to an interconnection is missing
-    	if (interconnectionConfs_.at(i)->interconnectionRef_.isEmpty()) {
-    		throw Write_error(QObject::tr("Mandatory element "
-    				"spirit:interconnectionRef is missing in "
-    				"spirit:interconnectionConfiguration"));
-    	}
-    	else {
-                writer.writeTextElement("spirit:interconnectionRef",
-                                        interconnectionConfs_.at(i)->interconnectionRef_);
-    	}
-
-    	// at least one abstractor must exist
-    	if (interconnectionConfs_.at(i)->abstractors_.size() == 0) {
-    		throw Write_error(QObject::tr("Mandatory element spirit:abstractors"
-    				" missing in spirit:interconnectionConfiguration"));
-    	}
-    	else {
+    	if (interconnectionConfs_.at(i)->abstractors_.size() > 0)
+        {
     		writer.writeStartElement("spirit:abstractors");
 
     		// all abstractors write themselves
-    		for (int j = 0; j < interconnectionConfs_.at(i)->abstractors_.size();
-    				++j) {
+    		for (int j = 0; j < interconnectionConfs_.at(i)->abstractors_.size(); ++j) {
     			interconnectionConfs_.at(i)->abstractors_.at(j)->write(writer);
     		}
 

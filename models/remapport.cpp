@@ -7,9 +7,6 @@
 #include "generaldeclarations.h"
 #include "remapport.h"
 
-
-#include "../exceptions/write_error.h"
-
 #include <QString>
 #include <QList>
 #include <QDomNode>
@@ -34,18 +31,6 @@ portNameRef_(QString()), portIndex_(-1) {
 	}
 
 	value_ = remapPortNode.childNodes().at(0).nodeValue();
-
-	// if mandatory elements are missing
-// 	if (value_.isNull()) {
-// 		throw Parse_error(QObject::tr("Mandatory value for spirit:remapPort"
-// 				" missing"));
-// 	}
-// 
-// 	if (portNameRef_.isNull()) {
-// 		throw Parse_error(QObject::tr("Mandatory attribute spirit:portNameRef"
-// 				" missing in spirit:remapPort"));
-// 	}
-	return;
 }
 
 RemapPort::RemapPort( const RemapPort &other ):
@@ -70,22 +55,9 @@ RemapPort::~RemapPort() {
 }
 
 void RemapPort::write(QXmlStreamWriter& writer) {
-	if (value_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory value for spirit:remapPort is"
-				" missing"));
-	}
-
 	// start the remapPort element
 	writer.writeStartElement("spirit:remapPort");
-
-	// if mandatory portNameRef is empty
-	if (portNameRef_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory element spirit:portNameRef"
-				" is missing"));
-	}
-	else {
-		writer.writeAttribute("spirit:portNameRef", portNameRef_);
-	}
+	writer.writeAttribute("spirit:portNameRef", portNameRef_);
 
 	// if optional portIndex is positive its written
 	if (portIndex_ >= 0) {

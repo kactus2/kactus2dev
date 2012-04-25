@@ -11,8 +11,6 @@
 
 #include "ComProperty.h"
 
-#include "../exceptions/write_error.h"
-
 #include "generaldeclarations.h"
 
 //-----------------------------------------------------------------------------
@@ -67,17 +65,6 @@ ComProperty::~ComProperty()
 //-----------------------------------------------------------------------------
 void ComProperty::write(QXmlStreamWriter& writer)
 {
-    // Check that the name and type are valid.
-    if (name_.isEmpty())
-    {
-        throw Write_error(QObject::tr("Mandatory name missing in kactus2:property"));
-    }
-
-    if (type_.isEmpty())
-    {
-        throw Write_error(QObject::tr("Mandatory type missing in kactus2:property"));
-    }
-
     writer.writeEmptyElement("kactus2:property");
     writer.writeAttribute("kactus2:name", name_);
     writer.writeAttribute("kactus2:required", General::bool2Str(required_));

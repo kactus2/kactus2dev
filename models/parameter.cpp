@@ -7,9 +7,6 @@
 #include "parameter.h"
 #include "generaldeclarations.h"
 
-
-#include "../exceptions/write_error.h"
-
 #include <QDomNode>
 #include <QString>
 #include <QList>
@@ -78,37 +75,23 @@ Parameter::~Parameter() {
 void Parameter::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:parameter");
 
-	// if the mandatory name is not specified
-	if (name_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory name missing in "
-				"spirit:parameter"));
-	}
-	else {
-		// write the name of the attribute
-		writer.writeTextElement("spirit:name", name_);
-	}
+	// write the name of the attribute
+	writer.writeTextElement("spirit:name", name_);
 
 	// write the description if it exists
 	if (!description_.isEmpty()) {
 		writer.writeTextElement("spirit:description", description_);
 	}
+	
+    // start the spirit:value tag
+    writer.writeStartElement("spirit:value");
 
-	// if the mandatory value is not specified
-	if (value_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory value missing in spirit:"
-				"parameter"));
-	}
-	else {
-		// start the spirit:value tag
-		writer.writeStartElement("spirit:value");
+    // write the attributes for the element
+    General::writeAttributes(writer, valueAttributes_);
 
-		// write the attributes for the element
-		General::writeAttributes(writer, valueAttributes_);
-
-		// write the value of the element and close the tag
-		writer.writeCharacters(value_);
-		writer.writeEndElement(); // spirit:value
-	}
+    // write the value of the element and close the tag
+    writer.writeCharacters(value_);
+    writer.writeEndElement(); // spirit:value
 
 	writer.writeEndElement(); // spirit:parameter
 	return;

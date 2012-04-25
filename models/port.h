@@ -111,10 +111,6 @@ public:
 	* \param writer A reference to a QXmlStreamWriter instance that is used to
 	* write the document into file.
 	* \param viewNames The list of views the component has. (Needed for port types)
-	*
-	* Exception guarantee: basic
-	* \exception Write_error Occurs if class or one of it's member classes is
-	* not valid IP-Xact in the moment of writing.
 	*/
 	void write(QXmlStreamWriter& writer, const QStringList& viewNames);
 

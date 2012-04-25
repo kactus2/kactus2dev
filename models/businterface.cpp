@@ -11,8 +11,6 @@
 #include "slaveinterface.h"
 #include "mirroredslaveinterface.h"
 
-#include <exceptions/write_error.h>
-
 #include <QString>
 #include <QList>
 #include <QDomNamedNodeMap>
@@ -405,14 +403,7 @@ void BusInterface::write(QXmlStreamWriter& writer) {
 	if (!attributes_.isEmpty())
 		General::writeAttributes(writer, attributes_);
 
-	// if mandatory element name is empty
-	if (nameGroup_.name_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory element name missing in "
-				"spirit:busInterface"));
-	}
-	else {
-		writer.writeTextElement("spirit:name", nameGroup_.name_);
-	}
+	writer.writeTextElement("spirit:name", nameGroup_.name_);
 
 	if (!nameGroup_.displayName_.isEmpty())
 		writer.writeTextElement("spirit:displayName", nameGroup_.displayName_);
@@ -420,22 +411,11 @@ void BusInterface::write(QXmlStreamWriter& writer) {
 	if (!nameGroup_.description_.isEmpty())
 		writer.writeTextElement("spirit:description", nameGroup_.description_);
 
-	// if mandatory element busType is missing
-	if (!busType_.isValid()) {
-		throw Write_error(QObject::tr("Mandatory element busType missing in "
-				"spirit:busInterface"));
-	}
-	// if bus type is found its written
-	else {
-		writer.writeEmptyElement("spirit:busType");
-		General::writeVLNVAttributes(writer, &busType_);
-	}
+	writer.writeEmptyElement("spirit:busType");
+	General::writeVLNVAttributes(writer, &busType_);
 
-	// if optional abstraction type is found
-	if (abstractionType_.isValid()) {
-		writer.writeEmptyElement("spirit:abstractionType");
-		General::writeVLNVAttributes(writer, &abstractionType_);
-	}
+	writer.writeEmptyElement("spirit:abstractionType");
+	General::writeVLNVAttributes(writer, &abstractionType_);
 
 	// write the interface mode
 	switch (interfaceMode_) {
@@ -445,19 +425,11 @@ void BusInterface::write(QXmlStreamWriter& writer) {
 			master_->write(writer);
 			writer.writeEndElement(); // spirit:master
 		}
-		else {
-			throw Write_error(QObject::tr("Interface mode is set to master "
-					"but spirit:master element is not defined"));
-		}
 		break;
 	}
 	case General::SLAVE: {
 		if (slave_) {
 			slave_->write(writer);
-		}
-		else {
-			throw Write_error(QObject::tr("Interface mode is set to slave "
-					"but spirit:slave element is not defined"));
 		}
 		break;
 	}
@@ -467,10 +439,6 @@ void BusInterface::write(QXmlStreamWriter& writer) {
 			writer.writeTextElement("spirit:group", system_);
 			writer.writeEndElement(); // spirit:system
 		}
-		else {
-			throw Write_error(QObject::tr("Interface mode is set to system "
-					"but spirit:system element is not defined"));
-		}
 		break;
 	}
 	case General::MIRROREDMASTER: {
@@ -479,20 +447,11 @@ void BusInterface::write(QXmlStreamWriter& writer) {
 			master_->write(writer);
 			writer.writeEndElement(); // spirit:mirroredMaster
 		}
-		else {
-			throw Write_error(QObject::tr("Interface mode is set to master "
-					"but spirit:master element is not defined"));
-		}
 		break;
 	}
 	case General::MIRROREDSLAVE: {
 		if (mirroredSlave_) {
 			mirroredSlave_->write(writer);
-		}
-		else {
-			throw Write_error(QObject::tr("Interface mode is set to "
-					"mirroredSlave but spirit:mirroredSlave element is not "
-					"defined"));
 		}
 		break;
 	}
@@ -502,25 +461,14 @@ void BusInterface::write(QXmlStreamWriter& writer) {
 			writer.writeTextElement("spirit:group", system_);
 			writer.writeEndElement(); // spirit:system
 		}
-		else {
-			throw Write_error(QObject::tr("Interface mode is set to "
-					"mirroredSystem but spirit:system element is not defined"));
-		}
 		break;
 	}
 	case General::MONITOR: {
 		if (monitor_) {
 			writer.writeStartElement("spirit:monitor");
 
-			// monitor can't be connected to another monitor
-			if (monitor_->interfaceMode_ == General::MONITOR) {
-				throw Write_error(QObject::tr("InterfaceMode of a monitor can"
-						" not be monitor"));
-			}
-			else {
-				writer.writeAttribute("spirit:interfaceMode",
-						General::interfaceMode2Str(monitor_->interfaceMode_));
-			}
+			writer.writeAttribute("spirit:interfaceMode",
+						          General::interfaceMode2Str(monitor_->interfaceMode_));
 
 			// if mandatory group is defined
 			if (!monitor_->group_.isEmpty()) {
@@ -529,10 +477,6 @@ void BusInterface::write(QXmlStreamWriter& writer) {
 			writer.writeEndElement(); // spirit:monitor
 		}
 		break;
-	}
-	default: {
-		throw Write_error(QObject::tr("Interface mode was not of supported"
-				" type"));
 	}
 	}
 
@@ -547,40 +491,25 @@ void BusInterface::write(QXmlStreamWriter& writer) {
 		for (int i = 0; i < portMaps_.size(); ++i) {
 			writer.writeStartElement("spirit:portMap");
 
-			// if logical name of the port is missing
-			if (portMaps_.at(i)->logicalPort_.isEmpty()) {
-				throw Write_error(QObject::tr("Mandatory element name missing"
-						" in spirit:logicalPort"));
-			}
-			else {
-				writer.writeStartElement("spirit:logicalPort");
-				writer.writeTextElement("spirit:name",
-						portMaps_.at(i)->logicalPort_);
+			writer.writeStartElement("spirit:logicalPort");
+			writer.writeTextElement("spirit:name", portMaps_.at(i)->logicalPort_);
 
-				// if a logical vector is defined
-				if (portMaps_.value(i)->logicalVector_) {
-					portMaps_.value(i)->logicalVector_->write(writer);
-				}
-				writer.writeEndElement(); // spirit:logicalPort
-			}
+            // if a logical vector is defined
+            if (portMaps_.value(i)->logicalVector_) {
+                portMaps_.value(i)->logicalVector_->write(writer);
+            }
+            writer.writeEndElement(); // spirit:logicalPort
 
-			// if physical name of the port is missing
-			if (portMaps_.at(i)->physicalPort_.isEmpty()) {
-				throw Write_error(QObject::tr("Mandatory element name missing"
-						" in spirit:physicalPort"));
-			}
-			else {
-				writer.writeStartElement("spirit:physicalPort");
-				writer.writeTextElement("spirit:name",
-						portMaps_.at(i)->physicalPort_);
+            writer.writeStartElement("spirit:physicalPort");
+            writer.writeTextElement("spirit:name",
+                portMaps_.at(i)->physicalPort_);
 
-				// if a physical vector is defined
-				if (portMaps_.value(i)->physicalVector_) {
-					portMaps_.value(i)->physicalVector_->write(writer);
-				}
+            // if a physical vector is defined
+            if (portMaps_.value(i)->physicalVector_) {
+                portMaps_.value(i)->physicalVector_->write(writer);
+            }
 
-				writer.writeEndElement(); // spirit:physicalPort
-			}
+            writer.writeEndElement(); // spirit:physicalPort
 
 			writer.writeEndElement(); // spirit:portMap
 		}
@@ -639,6 +568,11 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts,
 	if (!busType_.isValid(errorList, QObject::tr("bus type in %1").arg(thisIdentifier))) {
 		valid = false;
 	}
+
+    if (!abstractionType_.isEmpty() &&
+        !abstractionType_.isValid(errorList, QObject::tr("abstraction type in %1").arg(thisIdentifier))) {
+        valid = false;
+    }
 
 	switch (interfaceMode_) {
 		case General::MASTER: 

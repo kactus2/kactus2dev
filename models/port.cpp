@@ -9,9 +9,6 @@
 #include "transactional.h"
 #include "wire.h"
 
-
-#include "../exceptions/write_error.h"
-
 #include <QDomNode>
 #include <QString>
 #include <QList>
@@ -242,14 +239,7 @@ void Port::write(QXmlStreamWriter& writer, const QStringList& viewNames)
 {
 	writer.writeStartElement("spirit:port");
 
-	// if mandatory name is missing
-	if (nameGroup_.name_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory element name missing in "
-				"spirit:port"));
-	}
-	else {
-		writer.writeTextElement("spirit:name", nameGroup_.name_);
-	}
+	writer.writeTextElement("spirit:name", nameGroup_.name_);
 
 	if (!nameGroup_.displayName_.isEmpty()) {
 		writer.writeTextElement("spirit:displayName", nameGroup_.displayName_);
@@ -265,24 +255,16 @@ void Port::write(QXmlStreamWriter& writer, const QStringList& viewNames)
 		if (wire_) {
 			wire_->write(writer, viewNames);
 		}
-		else {
-			throw Write_error(QObject::tr("Port type defined as wire but not"
-					" instantiated in spirit:port"));
-		}
 		break;
 	}
 	case General::TRANSACTIONAL: {
 		if (transactional_) {
 			transactional_->write(writer);
 		}
-		else {
-			throw Write_error(QObject::tr("Port type defined as transactional"
-					" but not instantiated in spirit:port"));
-		}
 		break;
 	}
 	default: {
-		throw Write_error(QObject::tr("Invalid port type in spirit:port"));
+        Q_ASSERT(false);
 		break;
 	}
 	}

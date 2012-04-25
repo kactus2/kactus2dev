@@ -8,8 +8,6 @@
 #include "memorymap.h"
 #include "parameter.h"
 
-#include "../exceptions/write_error.h"
-
 #include <QDomNode>
 #include <QDomNamedNodeMap>
 #include <QString>
@@ -172,14 +170,7 @@ AddressSpace::~AddressSpace() {
 void AddressSpace::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:addressSpace");
 
-	// if mandatory name is missing
-	if (nameGroup_.name_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory name missing in spirit:"
-				"addressSpace"));
-	}
-	else {
-		writer.writeTextElement("spirit:name", nameGroup_.name_);
-	}
+	writer.writeTextElement("spirit:name", nameGroup_.name_);
 
 	if (!nameGroup_.displayName_.isEmpty()) {
 		writer.writeTextElement("spirit:displayName", nameGroup_.displayName_);
@@ -189,39 +180,25 @@ void AddressSpace::write(QXmlStreamWriter& writer) {
 		writer.writeTextElement("spirit:description", nameGroup_.description_);
 	}
 
-	// if mandatory range is missing
-	if (range_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory element range is missing in "
-				"spirit:addressSpace"));
-	}
-	else {
-		// start the spirit:range tag
-		writer.writeStartElement("spirit:range");
+    // start the spirit:range tag
+    writer.writeStartElement("spirit:range");
 
-		// write the attributes for the element
-		General::writeAttributes(writer, rangeAttributes_);
+    // write the attributes for the element
+    General::writeAttributes(writer, rangeAttributes_);
 
-		// write the value of the element and close the tag
-		writer.writeCharacters(range_);
-		writer.writeEndElement(); // spirit:range
-	}
+    // write the value of the element and close the tag
+    writer.writeCharacters(range_);
+    writer.writeEndElement(); // spirit:range
 
-	// if mandatory element width is missing
-	if (width_ < 0) {
-		throw Write_error(QObject::tr("Mandatory element width missing in "
-				"spirit:addressSpace"));
-	}
-	else {
-		// start the spirit:width element
-		writer.writeStartElement("spirit:width");
+    // start the spirit:width element
+    writer.writeStartElement("spirit:width");
 
-		// write the attributes for the element
-		General::writeAttributes(writer, widthAttributes_);
+    // write the attributes for the element
+    General::writeAttributes(writer, widthAttributes_);
 
-		// write the value of the element and close the tag
-		writer.writeCharacters(QString::number(width_));
-		writer.writeEndElement(); // spirit:width
-	}
+    // write the value of the element and close the tag
+    writer.writeCharacters(QString::number(width_));
+    writer.writeEndElement(); // spirit:width
 
 	if (!segments_.isEmpty()) {
 
@@ -232,15 +209,7 @@ void AddressSpace::write(QXmlStreamWriter& writer) {
 		writer.writeEndElement(); // spirit:segments
 	}
 
-	// if addressUnitBits has illegal value
-	if (addressUnitBits_ < 1) {
-		throw Write_error(QObject::tr("AddressUnitBits has illegal value in "
-				"spirit:addressSpace"));
-	}
-	else {
-		writer.writeTextElement("spirit:addressUnitBits",
-				QString::number(addressUnitBits_));
-	}
+	writer.writeTextElement("spirit:addressUnitBits", QString::number(addressUnitBits_));
 
 	if (localMemoryMap_) {
 		writer.writeStartElement("spirit:localMemoryMap");

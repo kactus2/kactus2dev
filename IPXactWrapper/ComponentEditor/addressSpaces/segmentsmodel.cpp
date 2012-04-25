@@ -184,10 +184,6 @@ bool SegmentsModel::isValid() const {
 }
 
 void SegmentsModel::apply() {
-	// if not valid then don't apply changes
-	if (!isValid())
-		return;
-
 	*segments_ = table_;
 }
 

@@ -9,9 +9,6 @@
 #include "reset.h"
 #include "field.h"
 
-
-#include "../exceptions/write_error.h"
-
 #include <QString>
 #include <QXmlStreamWriter>
 #include <QList>
@@ -121,20 +118,13 @@ void RegisterDefinition::write(QXmlStreamWriter& writer) {
 		writer.writeTextElement("spirit:typeIdentifier", typeIdentifier_);
 	}
 
-	// if mandatory size is not defined
-	if (size_ == 0) {
-		throw Write_error(QObject::tr("Mandatory size not defined in spirit:"
-				"register"));
-	}
-	else {
-		// open the spirit:size tag
-		writer.writeStartElement("spirit:size");
+    // open the spirit:size tag
+    writer.writeStartElement("spirit:size");
 
-		General::writeAttributes(writer, sizeAttributes_);
-		writer.writeCharacters(QString::number(size_));
+    General::writeAttributes(writer, sizeAttributes_);
+    writer.writeCharacters(QString::number(size_));
 
-		writer.writeEndElement(); // spirit:size
-	}
+    writer.writeEndElement(); // spirit:size
 
 	// if optional volatile is defined
 	if (volatile_ != General::BOOL_UNSPECIFIED) {

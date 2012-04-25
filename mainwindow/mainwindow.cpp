@@ -1312,9 +1312,30 @@ void MainWindow::saveCurrentAs() {
 
 	if (doc != 0)
 	{
-		doc->saveAs();
-		onTabChanged(designTabs_->currentIndex());
-		doc->refresh();
+        // Validate the document before saving.
+        QStringList errorList;
+
+        if (!doc->validate(errorList))
+        {
+            // If the document contained errors, inform the user and give options to save or cancel.
+            QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+                               tr("The document contained %1 error(s). The document can be saved but "
+                                  "may not be opened with other IP-XACT tools. Continue save?").arg(errorList.size()),
+                QMessageBox::Yes | QMessageBox::No, this);
+
+            msgBox.setDetailedText("The document contained the following error(s):\n* " + errorList.join("\n* "));
+
+            if (msgBox.exec() == QMessageBox::No)
+            {
+                return;
+            }
+        }
+
+		if (doc->saveAs())
+        {
+		    onTabChanged(designTabs_->currentIndex());
+		    doc->refresh();
+        }
 	}
 }
 
@@ -1327,6 +1348,25 @@ void MainWindow::saveCurrent()
 
 	if (doc != 0)
 	{
+        // Validate the document before saving.
+        QStringList errorList;
+
+        if (!doc->validate(errorList))
+        {
+            // If the document contained errors, inform the user and give options to save or cancel.
+            QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+                               tr("The document contained %1 error(s). The document can be saved but "
+                                  "may not be opened with other IP-XACT tools. Continue save?").arg(errorList.size()),
+                               QMessageBox::Yes | QMessageBox::No, this);
+
+            msgBox.setDetailedText("The document contained the following error(s):\n* " + errorList.join("\n* "));
+
+            if (msgBox.exec() == QMessageBox::No)
+            {
+                return;
+            }
+        }
+
 		doc->save();
 		onTabChanged(designTabs_->currentIndex());
 	}
@@ -1344,6 +1384,25 @@ void MainWindow::saveAll()
 
 		if (doc->isModified())
 		{
+            // Validate the document before saving.
+            QStringList errorList;
+
+            if (!doc->validate(errorList))
+            {
+                // If the document contained errors, inform the user and give options to save or cancel.
+                QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+                    tr("Document %1 contained %2 error(s). The document can be saved but "
+                    "may not be opened with other IP-XACT tools. Continue save?").arg(doc->getDocumentName(), errorList.size()),
+                    QMessageBox::Yes | QMessageBox::No, this);
+
+                msgBox.setDetailedText("The document contained the following error(s):\n* " + errorList.join("\n* "));
+
+                if (msgBox.exec() == QMessageBox::No)
+                {
+                    return;
+                }
+            }
+
 			doc->save();
 		}
 	}
@@ -1462,7 +1521,7 @@ void MainWindow::generateDoc() {
 	if (doc->isModified()) {
 		QMessageBox::information(this, QCoreApplication::applicationName(), 
 			tr("Changes have been made to the component. Save the changes before "
-			"generating documentation."));
+			   "generating documentation."));
 		return;
 	}
 

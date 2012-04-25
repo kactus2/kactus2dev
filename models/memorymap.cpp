@@ -11,9 +11,6 @@
 #include "addressblock.h"
 #include "bank.h"
 
-
-#include "../exceptions/write_error.h"
-
 #include <QString>
 #include <QDomNode>
 #include <QList>
@@ -114,14 +111,7 @@ void MemoryMap::write(QXmlStreamWriter& writer) {
 		writer.writeAttribute("spirit:id", id_);
 	}
 
-	// if mandatory name is missing
-	if (name_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory name is missing in spirit:"
-				"memoryMap"));
-	}
-	else {
-		writer.writeTextElement("spirit:name", name_);
-	}
+	writer.writeTextElement("spirit:name", name_);
 
 	// write all address block, bank and subspaceMap elements
 	for (int i = 0; i < items_.size(); ++i) {

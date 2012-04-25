@@ -8,9 +8,6 @@
 #include "generaldeclarations.h"
 #include "vector.h"
 
-
-#include "../exceptions/write_error.h"
-
 #include <QString>
 #include <QList>
 #include <QDomNode>
@@ -47,17 +44,6 @@ constrained_(false), typeDefinitions_(), viewNameRefs_() {
 					tempNode.childNodes().at(0).nodeValue());
 		}
 	}
-
-	// if mandatory elements are missing
-// 	if (Wire::WireTypeDef::typeName_.isNull()) {
-// 		throw Parse_error(QObject::tr("Mandatory element spirit:typeName missing"
-// 				" in spirit:wireTypeDef"));
-// 	}
-
-// 	if (Wire::WireTypeDef::viewNameRefs_.size() < 1) {
-// 		throw Parse_error(QObject::tr("Mandatory element spirit:viewNameRef "
-// 				"missing in spirit:wireTypeDef"));
-// 	}
 }
 
 Wire::WireTypeDef::WireTypeDef( const QString& typeName /*= QString()*/, 
@@ -257,14 +243,7 @@ void Wire::write( QXmlStreamWriter& writer, const QStringList& viewNames ) {
 	writer.writeAttribute("spirit:allLogicalDirectionsAllowed",
 			General::bool2Str(allLogicalDirectionsAllowed_));
 
-	if (direction_ == General::DIRECTION_INVALID) {
-		throw Write_error(QObject::tr("Mandatory element directions invalid in"
-				" spirit:wire"));
-	}
-	else {
-		writer.writeTextElement("spirit:direction",
-				General::direction2Str(direction_));
-	}
+	writer.writeTextElement("spirit:direction", General::direction2Str(direction_));
 
 	// if optional element spirit:vector is defined
 	if (vector_) {
@@ -278,36 +257,22 @@ void Wire::write( QXmlStreamWriter& writer, const QStringList& viewNames ) {
 		for (int i = 0; i < wireTypeDefs_.size(); ++i) {
 			writer.writeStartElement("spirit:wireTypeDef");
 
-			// write typeName is its found
-			if (wireTypeDefs_.at(i)->typeName_.isEmpty()) {
-				throw Write_error(QObject::tr("Mandatory typeName missing in"
-						" spirit:wireTypeDef"));
-			}
-			else {
-				// start the spirit:typeName tag
-				writer.writeStartElement("spirit:typeName");
+            // start the spirit:typeName tag
+            writer.writeStartElement("spirit:typeName");
 
-				// write the attribute for type name
-				writer.writeAttribute("spirit:constrained",
-						General::bool2Str(wireTypeDefs_.at(i)->constrained_));
+            // write the attribute for type name
+            writer.writeAttribute("spirit:constrained",
+                General::bool2Str(wireTypeDefs_.at(i)->constrained_));
 
-				// write the value of the element and close the tag
-				writer.writeCharacters(wireTypeDefs_.at(i)->typeName_);
-				writer.writeEndElement(); // spirit:typeName
-			}
+            // write the value of the element and close the tag
+            writer.writeCharacters(wireTypeDefs_.at(i)->typeName_);
+            writer.writeEndElement(); // spirit:typeName
 
 			// write all type definitions
 			for (int j = 0; j < wireTypeDefs_.at(i)->typeDefinitions_.size();
 					++j) {
 				writer.writeTextElement("spirit:typeDefinition",
 						wireTypeDefs_.at(i)->typeDefinitions_.at(j));
-			}
-
-			// if no viewNameRefs are defined
-			if (wireTypeDefs_.at(i)->viewNameRefs_.size() == 0 &&
-				viewNames.isEmpty()) {
-				throw Write_error(QObject::tr("Mandatory element viewNameRef "
-						"missing in spirit:wireTypeDef"));
 			}
 
 			// write all viewNameRefs that were already specified

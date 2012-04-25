@@ -273,10 +273,6 @@ bool ModelParameterModel::isValid() const {
 }
 
 void ModelParameterModel::apply() {
-
-	if (!isValid())
-		return;
-
 	// remove old model parameters from original model
 	modelParameters_->clear();
 

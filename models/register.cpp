@@ -10,9 +10,6 @@
 #include "alternateregister.h"
 #include "registermodel.h"
 
-
-#include "../exceptions/write_error.h"
-
 #include <QDomNode>
 #include <QXmlStreamWriter>
 #include <QString>
@@ -125,14 +122,7 @@ void Register::write(QXmlStreamWriter& writer) {
 		writer.writeTextElement("spirit:dim", QString::number(dim_));
 	}
 
-	// if mandatory addressOffset is not defined
-	if (addressOffset_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory addressOffset missing in "
-				"spirit:register"));
-	}
-	else {
-		writer.writeTextElement("spirit:addressOffset", addressOffset_);
-	}
+	writer.writeTextElement("spirit:addressOffset", addressOffset_);
 
 	// call registerDefinition to write itself
 	if (registerDefinition_) {

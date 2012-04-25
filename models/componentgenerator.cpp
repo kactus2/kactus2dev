@@ -7,8 +7,6 @@
 #include "componentgenerator.h"
 #include "generaldeclarations.h"
 
-#include "../exceptions/write_error.h"
-
 #include <QList>
 #include <QString>
 #include <QDomNode>
@@ -81,14 +79,7 @@ void ComponentGenerator::write(QXmlStreamWriter& writer) {
 	}
 	}
 
-	// if mandatory name is missing
-	if (name_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory name missing in spirit:"
-				"generator"));
-	}
-	else {
-		writer.writeTextElement("spirit:name", name_);
-	}
+	writer.writeTextElement("spirit:name", name_);
 
 	if (!displayName_.isEmpty()) {
 		writer.writeTextElement("spirit:displayName", displayName_);
@@ -126,14 +117,7 @@ void ComponentGenerator::write(QXmlStreamWriter& writer) {
 	}
 	}
 
-	// if mandatory generatorExe is missing
-	if (generatorExe_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory generatorExe is missing in "
-				"spirit:generator"));
-	}
-	else {
-		writer.writeTextElement("spirit:generatorExe", generatorExe_);
-	}
+	writer.writeTextElement("spirit:generatorExe", generatorExe_);
 
 	// write all groups
 	for (int i = 0; i < groups_.size(); ++i) {

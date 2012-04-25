@@ -71,11 +71,6 @@ void FileSetEditor::removeModel() {
 }
 
 void FileSetEditor::makeChanges() {
-	// if widget is in invalid state then don't apply the changes
-	if (!isValid()) {
-		return;
-	}
-
 	fileSet_->setName(nameBox_.getName());
 	fileSet_->setDisplayName(nameBox_.getDisplayName());
 	fileSet_->setDescription(nameBox_.getDescription());

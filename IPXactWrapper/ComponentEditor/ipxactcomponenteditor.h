@@ -76,6 +76,14 @@ public:
     virtual void refresh();
 
 public slots:
+    /*!
+     *  Validates the document against the IP-XACT standard.
+     *
+     *      @param [out] errorList Error message list for reporting standard violations.
+     *
+     *      @return True if the document is valid. False if there were any violations.
+     */
+    virtual bool validate(QStringList& errorList);
 
 	//! Saves the document and resets the modified state.
 	virtual bool save();
@@ -173,7 +181,7 @@ private:
 	 *
 	 * \return True if all editors were valid and all contents is saved
 	*/
-	bool saveEditors();
+	void saveEditors();
 
 	//! \brief Refresh the editors and the navigator tree.
 	void refreshEditors();

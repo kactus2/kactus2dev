@@ -9,9 +9,6 @@
 #include "generaldeclarations.h"
 #include "register.h"
 
-
-#include "../exceptions/write_error.h"
-
 #include <QString>
 #include <QDomNode>
 #include <QXmlStreamWriter>
@@ -146,33 +143,19 @@ void RegisterFile::write(QXmlStreamWriter& writer) {
 		writer.writeTextElement("spirit:dim", QString::number(dim_));
 	}
 
-	// if mandatory addressOffset is not defined
-	if (addressOffset_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory addressOffset missing in "
-				"spirit:registerFile"));
-	}
-	else {
-		writer.writeTextElement("spirit:addressOffset", addressOffset_);
-	}
+	writer.writeTextElement("spirit:addressOffset", addressOffset_);
 
 	// if optional typeIdentifier is defined
 	if (!typeIdentifier_.isEmpty()) {
 		writer.writeTextElement("spirit:typeIdentifier", typeIdentifier_);
 	}
 
-	// if mandatory range is not defined
-	if (range_ <= 0) {
-		throw Write_error(QObject::tr("Mandatory range missing in spirit:"
-				"registerFile"));
-	}
-	else {
-		writer.writeStartElement("spirit:range");
+    writer.writeStartElement("spirit:range");
 
-		General::writeAttributes(writer, rangeAttributes_);
-		writer.writeCharacters(QString::number(range_));
+    General::writeAttributes(writer, rangeAttributes_);
+    writer.writeCharacters(QString::number(range_));
 
-		writer.writeEndElement(); // spirit:range
-	}
+    writer.writeEndElement(); // spirit:range
 
 	for (QMap<QString, QSharedPointer<RegisterModel> >::iterator i =
 			registerData_.begin(); i != registerData_.end(); ++i) {

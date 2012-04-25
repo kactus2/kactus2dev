@@ -194,9 +194,9 @@ void DesignDiagram::setProtection(bool locked)
 }
 
 //-----------------------------------------------------------------------------
-// Function: DesignDiagram::getDrawMode()
+// Function: DesignDiagram::getMode()
 //-----------------------------------------------------------------------------
-DrawMode DesignDiagram::getDrawMode() const
+DrawMode DesignDiagram::getMode() const
 {
     return mode_;
 }

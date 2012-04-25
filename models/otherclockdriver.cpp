@@ -7,9 +7,6 @@
 #include "otherclockdriver.h"
 #include "generaldeclarations.h"
 
-
-#include "../exceptions/write_error.h"
-
 #include <QString>
 #include <QList>
 #include <QDomNode>
@@ -161,26 +158,14 @@ OtherClockDriver::~OtherClockDriver() {
 
 void OtherClockDriver::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:otherClockDriver");
-	// if mandatory name is missing
-	if (clockName_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory clockName missing in spirit:"
-				"otherClockDriver"));
-	}
-	else {
-		writer.writeAttribute("spirit:clockName", clockName_);
-	}
-
+	writer.writeAttribute("spirit:clockName", clockName_);
+	
 	// if optional attribute clockSource exists
 	if (!clockSource_.isEmpty()) {
 		writer.writeAttribute("spirit:clockSource", clockSource_);
 	}
 
-	// write the spirit:clockPeriod element
-	if (!clockPeriod_) {
-		throw Write_error(QObject::tr("Mandatory spirit:clockPeriod missing in"
-				" spirit:otherClockDriver"));
-	}
-	else {
+    if (clockPeriod_) {
 		// start the spirit:clockPeriod tag
 		writer.writeStartElement("spirit:clockPeriod");
 
@@ -194,12 +179,7 @@ void OtherClockDriver::write(QXmlStreamWriter& writer) {
 		writer.writeEndElement(); // spirit:clockPeriod
 	}
 
-	// write the spirit:clockPulseOffset
-	if (!clockPulseOffset_) {
-		throw Write_error(QObject::tr("Mandatory spirit:clockPulseOffset "
-				" missing in spirit:otherClockDriver"));
-	}
-	else {
+	if (clockPulseOffset_) {
 		// start the spirit:clockPulseOffset tag
 		writer.writeStartElement("spirit:clockPulseOffset");
 
@@ -213,12 +193,7 @@ void OtherClockDriver::write(QXmlStreamWriter& writer) {
 		writer.writeEndElement(); // spirit:clockPulseOffset
 	}
 
-	// write the spirit:clockPulseValue
-	if (!clockPulseValue_) {
-		throw Write_error(QObject::tr("Mandatory spirit:clockPulseValue "
-				"missing in spirit:otherClockDriver"));
-	}
-	else {
+    if (clockPulseValue_) {
 		// start the spirit:clockPulseValue tag
 		writer.writeStartElement("spirit:clockPulseValue");
 
@@ -230,12 +205,7 @@ void OtherClockDriver::write(QXmlStreamWriter& writer) {
 		writer.writeEndElement(); // spirit:clockPulseValue
 	}
 
-	// write the spirit:clockPulseDuration
-	if (!clockPulseDuration_) {
-		throw Write_error(QObject::tr("Mandatory spirit:clockPulseDuration"
-				" missing int spirit:otherClockDriver"));
-	}
-	else {
+    if (clockPulseDuration_) {
 		// start the spirit:clockPulseDuration tag
 		writer.writeStartElement("spirit:clockPulseDuration");
 

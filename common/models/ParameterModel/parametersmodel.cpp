@@ -182,11 +182,6 @@ bool ParametersModel::isValid() const {
 }
 
 void ParametersModel::apply() {
-
-	// if not valid then dont apply changes
-	if (!isValid())
-		return;
-
 	*parameters_ = table_;
 }
 

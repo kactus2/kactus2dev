@@ -30,7 +30,6 @@
 // the exception files
 
 #include <exceptions/invalid_file.h>
-#include <exceptions/write_error.h>
 #include <exceptions/vhdl_error.h>
 
 #include <QLabel>
@@ -617,20 +616,20 @@ bool LibraryHandler::writeModelToFile( const QString path,
 	}
 
 	// write the parsed model
-	try {
+//	try {
 		model->write(newFile);
-	}
-	catch (Write_error error) {
-		QString errorMsg = QString("%1 %2 within file: %3").arg(
-			error.what()).arg(
-			error.errorMsg()).arg(
-			newFile.fileName());
-		emit errorMessage(errorMsg);
-
-		// close the file
-		newFile.close();
-		return false;
-	}
+//	}
+// 	catch (Write_error error) {
+// 		QString errorMsg = QString("%1 %2 within file: %3").arg(
+// 			error.what()).arg(
+// 			error.errorMsg()).arg(
+// 			newFile.fileName());
+// 		emit errorMessage(errorMsg);
+// 
+// 		// close the file
+// 		newFile.close();
+// 		return false;
+// 	}
 
     // close the file
     newFile.close();
@@ -668,12 +667,12 @@ bool LibraryHandler::writeModelToFile( QSharedPointer<LibraryComponent> model,
 				emit errorMessage(errorMsg);
 			}
 
-			emit noticeMessage(tr("Item was not valid and was not written to disk.\n"));
+			//emit noticeMessage(tr("Item was not valid and was not written to disk.\n"));
 		}
-		return false;
+		//return false;
 	}
 
-	Q_ASSERT(model->isValid());
+	//Q_ASSERT(model->isValid());
 
 	// make sure the object is parsed again next time
 	VLNV objectVLNV = *model->getVlnv();
@@ -699,20 +698,20 @@ bool LibraryHandler::writeModelToFile( QSharedPointer<LibraryComponent> model,
 	}
 
 	// write the parsed model
-	try {
+//	try {
 		model->write(newFile);
-	}
-	catch (Write_error error) {
-		QString errorMsg = QString("%1 %2 within file: %3").arg(
-			error.what()).arg(
-			error.errorMsg()).arg(
-			newFile.fileName());
-		emit errorMessage(errorMsg);
-		
-		// close the file
-		newFile.close();
-		return false;
-	}
+//	}
+// 	catch (Write_error error) {
+// 		QString errorMsg = QString("%1 %2 within file: %3").arg(
+// 			error.what()).arg(
+// 			error.errorMsg()).arg(
+// 			newFile.fileName());
+// 		emit errorMessage(errorMsg);
+// 		
+// 		// close the file
+// 		newFile.close();
+// 		return false;
+// 	}
 
 	// close the file
 	newFile.close();

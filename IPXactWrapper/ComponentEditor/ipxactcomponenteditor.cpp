@@ -16,8 +16,6 @@
 #include <vhdlGenerator/vhdlgenerator2.h>
 #include <modelsimGenerator/modelsimgenerator.h>
 
-#include <exceptions/write_error.h>
-
 #include "addressSpaces/addressspaceeditor.h"
 #include "fileSet/fileseteditor.h"
 #include "fileSet/fileeditor.h"
@@ -365,15 +363,15 @@ void IPXactComponentEditor::onApply() {
 		}
 
 		// write the parsed model
-		try {
+//		try {
 			component_->write(file);
-		}
-		catch (Write_error error) {
-			QString msg(error.what());
-			msg += error.errorMsg();
-			emit errorMessage(msg);
-			return;
-		}
+// 		}
+// 		catch (Write_error error) {
+// 			QString msg(error.what());
+// 			msg += error.errorMsg();
+// 			emit errorMessage(msg);
+// 			return;
+// 		}
 
 		// close the file
 		file.close();
@@ -489,39 +487,42 @@ VLNV IPXactComponentEditor::getComponentVLNV() const {
 	return *component_->getVlnv();
 }
 
+//-----------------------------------------------------------------------------
+// Function: IPXactComponentEditor::validate()
+//-----------------------------------------------------------------------------
+bool IPXactComponentEditor::validate(QStringList& errorList)
+{
+    saveEditors();
+    return (component_->isValid(errorList));
+}
+
 bool IPXactComponentEditor::save() {
 
 	// if the component has ports that's type is defined it also must have 
 	// at least one view
 	// don't return yet from this check because other editors should also be 
 	// checked. If this is true then the saveEditors will always fail.
-	if (component_->hasPortTypes() && !component_->hasViews()) {
+// 	if (component_->hasPortTypes() && !component_->hasViews()) {
+// 
+// 		emit errorMessage(tr("Component %1 had types defined for port(s) but "
+// 			"no view was defined. Create at least one view for component.").arg(
+// 			component_->getVlnv()->toString()));
+// 	}
 
-		emit errorMessage(tr("Component %1 had types defined for port(s) but "
-			"no view was defined. Create at least one view for component.").arg(
-			component_->getVlnv()->toString()));
-	}
+	saveEditors();
 
-	// if all editors were valid then document can be written to disk
-	if (saveEditors()) {
-
-		if (handler_->writeModelToFile(component_, false)) {
-			return TabDocument::save();
-		}
-		else {
-			emit errorMessage(tr("Component was not saved to disk."));
-			return false;
-		}
-	}
-	// there was errors so do not write
-	else {
-		emit errorMessage(tr("Component was not valid and was not saved to disk."));
-		return false;
-	}
+    if (handler_->writeModelToFile(component_, false)) {
+        return TabDocument::save();
+    }
+    else {
+        emit errorMessage(tr("Component was not saved to disk."));
+        return false;
+    }
 }
 
-bool IPXactComponentEditor::saveEditors() {
-	bool everythingValid = true;
+void IPXactComponentEditor::saveEditors()
+{
+	//bool everythingValid = true;
 
 	// check the validity of the current editor
 	updateOldIndexItem();
@@ -532,36 +533,21 @@ bool IPXactComponentEditor::saveEditors() {
 	while (i != indexes_.end()) {
 
 		// make sure the editor is in a valid state.
-		if (i.value()->confirmEditorChange() && i.value()->isValid()) {
+		if (i.value()->confirmEditorChange() /*&& i.value()->isValid()*/) {
 			// apply the changes to the editor
 			i.value()->makeChanges();
-
 			++i;
-
-			// remove the editor from the widget stack
-// 			widgetStack_->removeWidget(i.value());
-// 
-// 			// delete the editor
-// 			delete i.value();
-// 
-// 			// remove the pointer to editor from the map and move i to the
-// 			// next editor
-// 			i = indexes_.erase(i);
 		}
 		// if one editor is not in valid state
 		else {
-			everythingValid = false;
+			//everythingValid = false;
 			++i;
 		}
 	}
 
 	// clear the selection in the navigator
 	navigator_->clearSelection();
-
-	// create a null editor because it is needed to display empty editor
-	//setupNullEditor();
-
-	return everythingValid;
+	//return everythingValid;
 }
 
 bool IPXactComponentEditor::saveAs()
@@ -576,49 +562,41 @@ bool IPXactComponentEditor::saveAs()
     if (!NewObjectDialog::saveAsDialog(parentWidget(), handler_, *component_->getVlnv(),
                                        prodHier, firmness, vlnv, directory))
     {
-        // If the user canceled, there was no error.
-        return true;
+        return false;
     }
 
 	// if all editors were valid then document can be written to disk
-	if (saveEditors()) {
+	saveEditors();
 
-		// save pointer to the old component
-		QSharedPointer<Component> oldComponent = component_;
+    // save pointer to the old component
+    QSharedPointer<Component> oldComponent = component_;
 
-		// create copies of the objects so saving is not done to the original component
-		component_ = QSharedPointer<Component>(new Component(*component_));
+    // create copies of the objects so saving is not done to the original component
+    component_ = QSharedPointer<Component>(new Component(*component_));
 
-		// make sure the vlnv type is correct
-		VLNV compVLNV = vlnv;
-		compVLNV.setType(VLNV::COMPONENT);
+    // make sure the vlnv type is correct
+    VLNV compVLNV = vlnv;
+    compVLNV.setType(VLNV::COMPONENT);
 
-		// update the vlnv
-		component_->setVlnv(vlnv);
+    // update the vlnv
+    component_->setVlnv(vlnv);
 
-		// get the paths to the original xml file
-		QFileInfo sourceInfo(handler_->getPath(*oldComponent->getVlnv()));
-		QString sourcePath = sourceInfo.absolutePath();
+    // get the paths to the original xml file
+    QFileInfo sourceInfo(handler_->getPath(*oldComponent->getVlnv()));
+    QString sourcePath = sourceInfo.absolutePath();
 
-		// update the file paths and copy necessary files
-		component_->updateFiles(*oldComponent, sourcePath, directory);
+    // update the file paths and copy necessary files
+    component_->updateFiles(*oldComponent, sourcePath, directory);
 
-        // Write the component to a file.
-		if (handler_->writeModelToFile(directory, component_)) {
-			setDocumentName(compVLNV.getName() + " (" + compVLNV.getVersion() + ")");
-			return TabDocument::saveAs();
-		}
-		else {
-			emit errorMessage(tr("Component was not saved to disk."));
-			return false;
-		}
-	}
-	
-	// there was errors so do not write
-	else {
-		emit errorMessage(tr("Component was not valid and was not saved to disk."));
-		return false;
-	}
+    // Write the component to a file.
+    if (handler_->writeModelToFile(directory, component_)) {
+        setDocumentName(compVLNV.getName() + " (" + compVLNV.getVersion() + ")");
+        return TabDocument::saveAs();
+    }
+    else {
+        emit errorMessage(tr("Component was not saved to disk."));
+        return false;
+    }
 }
 
 //-----------------------------------------------------------------------------

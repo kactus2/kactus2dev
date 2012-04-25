@@ -902,6 +902,40 @@ bool Component::isValid( QStringList& errorList ) const {
 		}
 	}
 
+    QStringList comIfNames;
+    foreach (QSharedPointer<ComInterface> comIf, comInterfaces_) {
+
+        if (comIfNames.contains(comIf->getName())) {
+            errorList.append(QObject::tr("%1 contains several COM interfaces"
+                " with name %2").arg(thisIdentifier).arg(comIf->getName()));
+            valid = false;
+        }
+        else {
+            comIfNames.append(comIf->getName());
+        }
+
+        if (!comIf->isValid(errorList, thisIdentifier)) {
+            valid = false;
+        }
+    }
+
+    QStringList apiIfNames;
+    foreach (QSharedPointer<ApiInterface> apiIf, apiInterfaces_) {
+
+        if (apiIfNames.contains(apiIf->getName())) {
+            errorList.append(QObject::tr("%1 contains several API interfaces"
+                " with name %2").arg(thisIdentifier).arg(apiIf->getName()));
+            valid = false;
+        }
+        else {
+            apiIfNames.append(apiIf->getName());
+        }
+
+        if (!apiIf->isValid(errorList, thisIdentifier)) {
+            valid = false;
+        }
+    }
+
 	QStringList channelNames;
 	foreach (QSharedPointer<Channel> channel, channels_) {
 
@@ -1106,6 +1140,37 @@ bool Component::isValid() const {
 			return false;
 		}
 	}
+
+    QStringList comIfNames;
+    foreach (QSharedPointer<ComInterface> comIf, comInterfaces_) {
+
+        if (comIfNames.contains(comIf->getName())) {
+            return false;
+        }
+        else {
+            comIfNames.append(comIf->getName());
+        }
+
+        if (!comIf->isValid()) {
+            return false;
+        }
+    }
+
+    QStringList apiIfNames;
+    foreach (QSharedPointer<ApiInterface> apiIf, apiInterfaces_) {
+
+        if (apiIfNames.contains(apiIf->getName())) {
+            return false;
+        }
+        else {
+            apiIfNames.append(apiIf->getName());
+        }
+
+        if (!apiIf->isValid()) {
+            return false;
+        }
+    }
+
 
 	QStringList channelNames;
 	foreach (QSharedPointer<Channel> channel, channels_) {

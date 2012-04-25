@@ -8,9 +8,6 @@
 #include "parameter.h"
 #include "generaldeclarations.h"
 
-
-#include "../exceptions/write_error.h"
-
 #include <QDomNode>
 #include <QString>
 #include <QList>
@@ -105,14 +102,7 @@ Cpu::~Cpu() {
 void Cpu::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:cpu");
 
-	// if mandatory name doesn't exist
-	if (nameGroup_.name_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory name missing in "
-				"spirit:cpu"));
-	}
-	else {
-		writer.writeTextElement("spirit:name", nameGroup_.name_);
-	}
+	writer.writeTextElement("spirit:name", nameGroup_.name_);
 
 	if (!nameGroup_.displayName_.isEmpty()) {
 		writer.writeTextElement("spirit:displayName", nameGroup_.displayName_);
@@ -122,22 +112,15 @@ void Cpu::write(QXmlStreamWriter& writer) {
 		writer.writeTextElement("spirit:description", nameGroup_.description_);
 	}
 
-	// at least one addressSpaceRef must be found
-	if (addressSpaceRefs_.size() == 0) {
-		throw Write_error(QObject::tr("Mandatory addressSpaceRef missing in "
-				"spirit:cpu"));
-	}
-	else {
-		for (int i = 0; i < addressSpaceRefs_.size(); ++i) {
+    for (int i = 0; i < addressSpaceRefs_.size(); ++i) {
 
-			// the IP-Xact specification defines this to be empty element with
-			// mandatory attribute of same name. Maybe this will change in
-			// future.
-			writer.writeEmptyElement("spirit:addressSpaceRef");
-			writer.writeAttribute("spirit:addressSpaceRef",
-					addressSpaceRefs_.at(i));
-		}
-	}
+        // the IP-Xact specification defines this to be empty element with
+        // mandatory attribute of same name. Maybe this will change in
+        // future.
+        writer.writeEmptyElement("spirit:addressSpaceRef");
+        writer.writeAttribute("spirit:addressSpaceRef",
+            addressSpaceRefs_.at(i));
+    }
 
 	// write parameters if they exist
 	if (parameters_.size() != 0) {

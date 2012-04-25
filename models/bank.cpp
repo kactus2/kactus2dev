@@ -12,9 +12,6 @@
 #include "parameter.h"
 #include "memoryblockdata.h"
 
-
-#include "../exceptions/write_error.h"
- 
 #include <QString>
 #include <QDomNode>
 #include <QList>

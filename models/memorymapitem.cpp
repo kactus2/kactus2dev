@@ -7,9 +7,6 @@
 #include "memorymapitem.h"
 #include "generaldeclarations.h"
 
-
-#include "../exceptions/write_error.h"
-
 #include <QString>
 #include <QMap>
 #include <QDomNode>
@@ -91,14 +88,7 @@ void MemoryMapItem::write(QXmlStreamWriter& writer) {
 	// otherwise the attributes are printed under the wrong element
 	General::writeAttributes(writer, attributes_);
 
-	// if mandatory element name is missing
-	if (name_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory name missing in "
-				"MemoryMapItem"));
-	}
-	else {
-		writer.writeTextElement("spirit:name", name_);
-	}
+	writer.writeTextElement("spirit:name", name_);
 
 	if (!displayName_.isEmpty()) {
 		writer.writeTextElement("spirit:displayName", displayName_);

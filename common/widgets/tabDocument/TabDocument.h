@@ -212,6 +212,15 @@ public:
     QMap<QString, bool> const& getVisibilityControls() const;
 
 public slots:
+    /*!
+     *  Validates the document against the IP-XACT standard.
+     *
+     *      @param [out] errorList Error message list for reporting standard violations.
+     *
+     *      @return True if the document is valid. False if there were any violations.
+     */
+    virtual bool validate(QStringList& errorList);
+
     //! Saves the document and resets the modified state.
     virtual bool save();
 

@@ -141,14 +141,14 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *event)
         return;
     }
 
-    if (getDrawMode() == MODE_CONNECT)
+    if (getMode() == MODE_CONNECT)
     {
         // Deselect all items.
         clearSelection();
 
         // TODO: Creating connections.
     }
-    else if (getDrawMode() == MODE_DRAFT)
+    else if (getMode() == MODE_DRAFT)
     {
         // Find the bottom-most item under the cursor.
         QGraphicsItem* item = 0;
@@ -161,7 +161,7 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
         // TODO:
     }
-    else if (getDrawMode() == MODE_SELECT)
+    else if (getMode() == MODE_SELECT)
     {
         // Save the old selection.
         QGraphicsItem *oldSelection = 0;
@@ -224,7 +224,7 @@ void SystemDesignDiagram::onSelected(QGraphicsItem* newSelection)
 void SystemDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
     // Check if the connect mode is active.
-    if (getDrawMode() == MODE_CONNECT)
+    if (getMode() == MODE_CONNECT)
     {
         // TODO:
     }
@@ -239,7 +239,7 @@ void SystemDesignDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
     // If there is a connection being drawn while in the connect mode,
     // finalize or discard the connection.
-    if (getDrawMode() == MODE_CONNECT /*&& tempConnection_*/)
+    if (getMode() == MODE_CONNECT /*&& tempConnection_*/)
     {
     }
 
@@ -280,7 +280,7 @@ void SystemDesignDiagram::wheelEvent(QGraphicsSceneWheelEvent *event)
 //-----------------------------------------------------------------------------
 // Function: createDesign()
 //-----------------------------------------------------------------------------
-QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv)
+QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
 {
     QSharedPointer<Design> design(new Design(vlnv));
 
@@ -320,7 +320,7 @@ void SystemDesignDiagram::addColumn(QString const& name)
 void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     // Allow double click only when the mode is select.
-    if (getDrawMode() != MODE_SELECT)
+    if (getMode() != MODE_SELECT)
     {
         return;
     }

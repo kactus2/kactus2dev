@@ -12,9 +12,6 @@
 #include "registerfile.h"
 #include "register.h"
 
-
-#include "../exceptions/write_error.h"
-
 #include <QString>
 #include <QMap>
 #include <QDomNode>
@@ -172,37 +169,25 @@ void AddressBlock::write(QXmlStreamWriter& writer) {
 	// call base class write() to write the base class info
 	MemoryMapItem::write(writer);
 
-	if (range_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory element range missing in "
-				"spirit:addressBlock"));
-	}
-	else {
-		// start the spirit:range element
-		writer.writeStartElement("spirit:range");
+    // start the spirit:range element
+    writer.writeStartElement("spirit:range");
 
-		// write the attributes for the element
-		General::writeAttributes(writer, rangeAttributes_);
+    // write the attributes for the element
+    General::writeAttributes(writer, rangeAttributes_);
 
-		// write the value of the element and close the tag
-		writer.writeCharacters(range_);
-		writer.writeEndElement(); // spirit:range
-	}
+    // write the value of the element and close the tag
+    writer.writeCharacters(range_);
+    writer.writeEndElement(); // spirit:range
 
-	if (width_ == 0) {
-		throw Write_error(QObject::tr("Mandatory element width missing in "
-				"spirit:addressBlock"));
-	}
-	else {
-		// start the spirit:width tag
-		writer.writeStartElement("spirit:width");
+    // start the spirit:width tag
+    writer.writeStartElement("spirit:width");
 
-		// write the attributes for the element
-		General::writeAttributes(writer, widthAttributes_);
+    // write the attributes for the element
+    General::writeAttributes(writer, widthAttributes_);
 
-		// write the value of the element and close the tag
-		writer.writeCharacters(QString::number(width_));
-		writer.writeEndElement(); // spirit:width
-	}
+    // write the value of the element and close the tag
+    writer.writeCharacters(QString::number(width_));
+    writer.writeEndElement(); // spirit:width
 
 	// if optional memoryBlockData instance is found
 	if (memoryBlockData_) {

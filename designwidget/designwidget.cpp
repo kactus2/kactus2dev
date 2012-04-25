@@ -28,11 +28,6 @@
 #include <models/view.h>
 #include <models/generaldeclarations.h>
 
-#include <exceptions/invalid_file.h>
-
-#include <exceptions/vhdl_error.h>
-#include <exceptions/write_error.h>
-
 #include <vhdlGenerator/vhdlgenerator2.h>
 #include <quartusGenerator/quartusgenerator.h>
 #include <modelsimGenerator/modelsimgenerator.h>
@@ -326,8 +321,7 @@ bool DesignWidget::saveAs() {
 
     if (!NewObjectDialog::saveAsDialog(this, lh_, oldVLNV, prodHier, firmness, vlnv, directory))
     {
-        // If the user canceled, there was no error.
-        return true;
+        return false;
     }
 
 	// create the vlnv for design and design configuration

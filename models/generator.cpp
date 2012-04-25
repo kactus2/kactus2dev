@@ -8,9 +8,6 @@
 #include "parameter.h"
 #include "generaldeclarations.h"
 
-
-#include "../exceptions/write_error.h"
-
 #include <QList>
 #include <QString>
 #include <QDomNode>
@@ -138,14 +135,7 @@ void Generator::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:generator");
 	writer.writeAttribute("spirit:hidden", General::bool2Str(hidden_));
 
-	// if mandatory name is missing
-	if (name_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory name missing in spirit:"
-				"generator"));
-	}
-	else {
-		writer.writeTextElement("spirit:name", name_);
-	}
+	writer.writeTextElement("spirit:name", name_);
 
 	if (!displayName_.isEmpty()) {
                 writer.writeTextElement("spirit:displayName", displayName_);
@@ -183,14 +173,7 @@ void Generator::write(QXmlStreamWriter& writer) {
 	}
 	}
 
-	// if mandatory generatorExe is missing
-	if (generatorExe_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory generatorExe is missing in "
-				"spirit:generator"));
-	}
-	else {
-		writer.writeTextElement("spirit:generatorExe", generatorExe_);
-	}
+	writer.writeTextElement("spirit:generatorExe", generatorExe_);
 
 	writer.writeEndElement(); // spirit:generator
 }

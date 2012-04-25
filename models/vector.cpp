@@ -7,9 +7,6 @@
 #include "vector.h"
 #include "generaldeclarations.h"
 
-
-#include "../exceptions/write_error.h"
-
 #include <QDomNode>
 #include <QXmlStreamWriter>
 #include <QString>
@@ -90,37 +87,26 @@ Vector::~Vector() {
 void Vector::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:vector");
 
-	// if left bound is invalid
-	if (left_ < 0) {
-		throw Write_error(QObject::tr("Invalid left bound in spirit:vector"));
-	}
-	else {
-		// start the spirit:left tag
-		writer.writeStartElement("spirit:left");
+	
+    // start the spirit:left tag
+    writer.writeStartElement("spirit:left");
 
-		// write the attributes for the element
-		General::writeAttributes(writer, leftAttributes_);
+    // write the attributes for the element
+    General::writeAttributes(writer, leftAttributes_);
 
-		// write the value of the element and close the tag
-		writer.writeCharacters(QString::number(left_));
-		writer.writeEndElement(); // spirit:left
-	}
+    // write the value of the element and close the tag
+    writer.writeCharacters(QString::number(left_));
+    writer.writeEndElement(); // spirit:left
 
-	// if right bound is invalid
-	if (right_ < 0) {
-		throw Write_error(QObject::tr("Invalid right bound in spirit:vector"));
-	}
-	else {
-		// start the spirit:right tag
-		writer.writeStartElement("spirit:right");
+	// start the spirit:right tag
+    writer.writeStartElement("spirit:right");
 
-		// write the attributes for the element
-		General::writeAttributes(writer, rightAttributes_);
+    // write the attributes for the element
+    General::writeAttributes(writer, rightAttributes_);
 
-		// write the value of the element and close the tag
-		writer.writeCharacters(QString::number(right_));
-		writer.writeEndElement(); // spirit:right
-	}
+    // write the value of the element and close the tag
+    writer.writeCharacters(QString::number(right_));
+    writer.writeEndElement(); // spirit:right
 
 	writer.writeEndElement(); // spirit:vector
 }

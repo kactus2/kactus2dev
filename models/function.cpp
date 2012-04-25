@@ -7,9 +7,6 @@
 #include "function.h"
 #include "generaldeclarations.h"
 
-
-#include "../exceptions/write_error.h"
-
 #include <QMap>
 #include <QSharedPointer>
 #include <QList>
@@ -278,14 +275,7 @@ void Function::write(QXmlStreamWriter& writer) {
 		writer.writeTextElement("spirit:entryPoint", entryPoint_);
 	}
 
-	// if mandatory fileRef is not defined
-	if (fileRef_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory element fileRef missing in "
-				"spirit:function"));
-	}
-	else {
-		writer.writeTextElement("spirit:fileRef", fileRef_);
-	}
+	writer.writeTextElement("spirit:fileRef", fileRef_);
 
 	if (!returnType_.isEmpty()) {
 		writer.writeTextElement("spirit:returnType", returnType_);
@@ -329,11 +319,6 @@ void Function::write(QXmlStreamWriter& writer) {
 				!sourceFiles_.at(i)->userFileType_.isEmpty()) {
 			writer.writeTextElement("spirit:userFileType",
 					sourceFiles_.at(i)->userFileType_);
-		}
-		// if both are defined or neither is defined
-		else {
-			throw Write_error(QObject::tr("Invalid spirit:sourceFile element "
-					"within spirit:function"));
 		}
 
 		writer.writeEndElement(); // spirit:sourceFile

@@ -9,9 +9,6 @@
 #include "subspacemap.h"
 #include "parameter.h"
 
-
-#include "../exceptions/write_error.h"
-
 #include <QList>
 #include <QSharedPointer>
 #include <QDomNode>

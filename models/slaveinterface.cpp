@@ -7,8 +7,6 @@
 #include "slaveinterface.h"
 #include "generaldeclarations.h"
 
-#include "../exceptions/write_error.h"
-
 #include <QString>
 #include <QList>
 #include <QSharedPointer>
@@ -163,18 +161,8 @@ void SlaveInterface::write(QXmlStreamWriter& writer) {
 	// write all spirit:bridge elements
 	for (int i = 0; i < bridges_.size(); ++i) {
 		writer.writeEmptyElement("spirit:bridge");
-
-		// if mandatory element is missing
-		if (bridges_.at(i)->masterRef_.isEmpty()) {
-			throw Write_error(QObject::tr("Mandatory element masterRef missing"
-					" in spirit:bridge"));
-		}
-		else {
-			writer.writeAttribute("spirit:masterRef",
-					bridges_.at(i)->masterRef_);
-		}
-		writer.writeAttribute("spirit:opaque", General::bool2Str(
-				bridges_.at(i)->opaque_));
+		writer.writeAttribute("spirit:masterRef", bridges_.at(i)->masterRef_);
+		writer.writeAttribute("spirit:opaque", General::bool2Str(bridges_.at(i)->opaque_));
 	}
 
 	// write all filesetRefGroups

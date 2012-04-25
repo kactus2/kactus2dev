@@ -54,10 +54,6 @@ public:
 	*
 	* \param writer A reference to a QXmlStreamWriter instance used to write
 	* the information.
-	*
-	* Exception guarantee: basic
-	* \exception Write_error Occurs when this class or one of it's member
-	* classes is not valid IP-Xact at the moment of writing.
 	*/
 	void write(QXmlStreamWriter& writer);
 

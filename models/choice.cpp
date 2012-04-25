@@ -7,8 +7,6 @@
 #include "choice.h"
 #include "generaldeclarations.h"
 
-#include "../exceptions/write_error.h"
-
 #include <QList>
 #include <QString>
 #include <QXmlStreamWriter>
@@ -80,50 +78,31 @@ Choice::~Choice() {
 void Choice::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:choice");
 
-	// if mandatory name is missing
-	if (choiceName_.isEmpty()) {
-		throw Write_error(QObject::tr("mandatory element name is missing in "
-				"spirit:choice"));
-	}
-	else {
-		writer.writeTextElement("spirit:name", choiceName_);
-	}
+	writer.writeTextElement("spirit:name", choiceName_);
 
 	// if atleast one enumeration exists
-	if (enumerations_.size() != 0) {
-		for (int i = 0; i < enumerations_.size(); ++i) {
+    for (int i = 0; i < enumerations_.size(); ++i) {
 
-			// if mandatory value is missing
-			if (enumerations_.at(i).value_.isEmpty()) {
-				throw Write_error(QObject::tr("Mandatory value missing in "
-						"spirit:enumeration"));
-			}
-			else {
-				// open the spirit:enumeration tag
-				writer.writeStartElement("spirit:enumeration");
-			}
+        // open the spirit:enumeration tag
+        writer.writeStartElement("spirit:enumeration");
 
-			// if attribute exists
-			if (!enumerations_.at(i).attribute_text_.isEmpty()) {
-				writer.writeAttribute("spirit:text",
-						enumerations_.at(i).attribute_text_);
-			}
+        // if attribute exists
+        if (!enumerations_.at(i).attribute_text_.isEmpty()) {
+            writer.writeAttribute("spirit:text",
+                enumerations_.at(i).attribute_text_);
+        }
 
-			// if attribute exists
-			if (!enumerations_.at(i).attribute_help_.isEmpty()) {
-				writer.writeAttribute("spirit:help",
-						enumerations_.at(i).attribute_help_);
-			}
+        // if attribute exists
+        if (!enumerations_.at(i).attribute_help_.isEmpty()) {
+            writer.writeAttribute("spirit:help",
+                enumerations_.at(i).attribute_help_);
+        }
 
-			// write the enumeration value and close the enumeration-tag
-			writer.writeCharacters(enumerations_.at(i).value_);
-			writer.writeEndElement(); // spirit:enumeration
-		}
-	}
-	else {
-		throw Write_error(QObject::tr("Mandatory element spirit:enumeration"
-				" is missing in spirit:choice"));
-	}
+        // write the enumeration value and close the enumeration-tag
+        writer.writeCharacters(enumerations_.at(i).value_);
+        writer.writeEndElement(); // spirit:enumeration
+    }
+
 	writer.writeEndElement(); // spirit:choice
 	return;
 }

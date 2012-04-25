@@ -6,7 +6,6 @@
 
 #include "channel.h"
 
-#include "../exceptions/write_error.h"
 #include "generaldeclarations.h"
 
 #include <QXmlStreamWriter>
@@ -88,14 +87,7 @@ Channel::~Channel() {
 void Channel::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:channel");
 
-	// make sure the mandatory elements are defined
-	if (name_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory element spirit:name is empty"));
-	}
-	// if name was found its written
-	else {
-		writer.writeTextElement("spirit:name", name_);
-	}
+	writer.writeTextElement("spirit:name", name_);
 
 	// optional element
 	if (!displayName_.isEmpty()) {
@@ -107,18 +99,11 @@ void Channel::write(QXmlStreamWriter& writer) {
 		writer.writeTextElement("spirit:description", description_);
 	}
 
-	// atleast 2 businterface refs must be found
-	if (busInterfaces_.size() < 2) {
-		throw Write_error(QObject::tr("Mandatory element spirit:busInterfaceRef is"
-				" missing"));
+	for (int i = 0; i < busInterfaces_.size(); ++i)
+    {
+        writer.writeTextElement("spirit:busInterfaceRef", busInterfaces_.at(i));
 	}
-	// if they were found then write them to document
-	else {
-		for (int i = 0; i < busInterfaces_.size(); ++i) {
-			writer.writeTextElement("spirit:busInterfaceRef",
-					busInterfaces_.at(i));
-		}
-	}
+
 	writer.writeEndElement(); // spirit:channel
 	return;
 }

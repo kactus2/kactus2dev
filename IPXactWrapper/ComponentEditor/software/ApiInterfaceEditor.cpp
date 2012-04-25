@@ -115,11 +115,6 @@ void ApiInterfaceEditor::removeModel()
 //-----------------------------------------------------------------------------
 void ApiInterfaceEditor::makeChanges()
 {
-    if (!isValid())
-    {
-        return;
-    }
-
     apiIf_->setName(nameGroup_.getName());
     apiIf_->setDisplayName(nameGroup_.getDisplayName());
     apiIf_->setDescription(nameGroup_.getDescription());

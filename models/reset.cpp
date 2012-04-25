@@ -7,9 +7,6 @@
 #include "reset.h"
 #include "generaldeclarations.h"
 
-
-#include "../exceptions/write_error.h"
-
 #include <QDomNode>
 #include <QList>
 #include <QMap>
@@ -68,21 +65,15 @@ Reset::~Reset() {
 void Reset::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:reset");
 
-	// if mandatory value is not defined
-        if (value_ < 0) {
-		throw Write_error(QObject::tr("Mandatory value is not defined"));
-	}
-	else {
-		writer.writeStartElement("spirit:value");
+	writer.writeStartElement("spirit:value");
 
-		General::writeAttributes(writer, valueAttributes_);
-		writer.writeCharacters(QString::number(value_));
+	General::writeAttributes(writer, valueAttributes_);
+	writer.writeCharacters(QString::number(value_));
 
-		writer.writeEndElement(); // spirit:value
-	}
+	writer.writeEndElement(); // spirit:value
 
 	// if optional mask has been defined
-        if (mask_ >= 0) {
+    if (mask_ >= 0) {
 		writer.writeStartElement("spirit:mask");
 
 		General::writeAttributes(writer, maskAttributes_);

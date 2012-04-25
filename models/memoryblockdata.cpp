@@ -7,8 +7,6 @@
 #include "memoryblockdata.h"
 #include "generaldeclarations.h"
 
-#include "../exceptions/write_error.h"
-
 #include <QSharedPointer>
 #include <QList>
 #include <QXmlStreamWriter>

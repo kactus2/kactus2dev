@@ -8,9 +8,6 @@
 #include "parameter.h"
 #include "generaldeclarations.h"
 
-
-#include "../exceptions/write_error.h"
-
 #include <QDomNode>
 #include <QObject>
 #include <QString>
@@ -197,13 +194,7 @@ View::~View() {
 void View::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:view");
 
-	// mandatory name must be found
-	if (nameGroup_.name_.isEmpty()) {
-		throw Write_error(QObject::tr("mandatory name missing in spirit:view"));
-	}
-	else {
-		writer.writeTextElement("spirit:name", nameGroup_.name_);
-	}
+    writer.writeTextElement("spirit:name", nameGroup_.name_);
 	
 	// if display name is defined
 	if (!nameGroup_.displayName_.isEmpty())

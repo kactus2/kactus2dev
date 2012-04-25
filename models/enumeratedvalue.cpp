@@ -7,9 +7,6 @@
 #include "enumeratedvalue.h"
 #include "generaldeclarations.h"
 
-
-#include "../exceptions/write_error.h"
-
 #include <QDomNode>
 #include <QString>
 #include <QXmlStreamWriter>
@@ -86,15 +83,8 @@ void EnumeratedValue::write(QXmlStreamWriter& writer) {
 	// write the spirit:usage attribute
 	writer.writeAttribute("spirit:usage", EnumeratedValue::usage2Str(usage_));
 
-	// if mandatory name is missing
-	if (name_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory name missing in spirit:"
-				"enumeratedValue"));
-	}
-	else {
-		writer.writeTextElement("spirit:name", name_);
-	}
-
+	writer.writeTextElement("spirit:name", name_);
+	
 	// if optional displayName is defined
 	if (!displayName_.isEmpty()) {
 		writer.writeTextElement("spirit:displayName", displayName_);
@@ -105,14 +95,7 @@ void EnumeratedValue::write(QXmlStreamWriter& writer) {
 		writer.writeTextElement("spirit:description", description_);
 	}
 
-	// if mandatory value is not defined
-	if (value_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory value missing in spirit:"
-				"enumeratedValue"));
-	}
-	else {
-		writer.writeTextElement("spirit:value", value_);
-	}
+	writer.writeTextElement("spirit:value", value_);
 
 	writer.writeEndElement(); // spirit:enumeratedValue
 }

@@ -96,6 +96,15 @@ VLNV ComDefinitionEditor::getComponentVLNV() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComDefinitionEditor::validate()
+//-----------------------------------------------------------------------------
+bool ComDefinitionEditor::validate(QStringList& errorList)
+{
+    applyChanges();
+    return comDef_->isValid(errorList);
+}
+
+//-----------------------------------------------------------------------------
 // Function: save()
 //-----------------------------------------------------------------------------
 bool ComDefinitionEditor::save()
@@ -117,8 +126,7 @@ bool ComDefinitionEditor::saveAs()
 
     if (!NewObjectDialog::saveAsDialog(parentWidget(), libHandler_, *comDef_->getVlnv(), vlnv, directory))
     {
-        // The user canceled.
-        return true;
+        return false;
     }
 
     // Create a copy of the object and update its VLNV.

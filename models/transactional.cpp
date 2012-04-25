@@ -8,10 +8,6 @@
 #include "servicetypedef.h"
 #include "generaldeclarations.h"
 
-
-#include "../exceptions/write_error.h"
-
-#include <stdexcept>
 #include <QString>
 #include <QDomNode>
 #include <QDomNamedNodeMap>
@@ -190,23 +186,15 @@ void Transactional::write(QXmlStreamWriter& writer) {
 	if (transTypeDef_) {
 		writer.writeStartElement("spirit:transTypeDef");
 
-		// if mandatory typeName is not found
-		if (transTypeDef_->typeName_.isEmpty()) {
-			throw Write_error(QObject::tr("Mandatory typeName missing in "
-					"spirit:transTypeDef"));
-		}
-		else {
-			// start the spirit:typeName tag
-			writer.writeStartElement("spirit:typeName");
+        // start the spirit:typeName tag
+        writer.writeStartElement("spirit:typeName");
 
-			// write the attributes for the element
-			writer.writeAttribute("spirit:constrained",
-					General::bool2Str(transTypeDef_->constrained_));
+        // write the attributes for the element
+        writer.writeAttribute("spirit:constrained", General::bool2Str(transTypeDef_->constrained_));
 
-			// write the value of the element and close the tag
-			writer.writeCharacters(transTypeDef_->typeName_);
-			writer.writeEndElement(); // spirit:typeName
-		}
+        // write the value of the element and close the tag
+        writer.writeCharacters(transTypeDef_->typeName_);
+        writer.writeEndElement(); // spirit:typeName
 
 		// write all typeDefinitions
 		for (int i = 0; i < transTypeDef_->typeDefinitions_.size(); ++i) {
@@ -218,16 +206,7 @@ void Transactional::write(QXmlStreamWriter& writer) {
 	}
 
 	writer.writeStartElement("spirit:service");
-
-	// if mandatory spirit:initiative is not defined
-	if (General::Initiative2Str(serviceInitiative_).isEmpty()) {
-		throw Write_error(QObject::tr("Invalid service initiative defined in"
-				" spirit:service"));
-	}
-	else {
-		writer.writeTextElement("spirit:initiative",
-				General::Initiative2Str(serviceInitiative_));
-	}
+	writer.writeTextElement("spirit:initiative", General::Initiative2Str(serviceInitiative_));
 
 	if (serviceTypeDefs_.size() != 0) {
 		writer.writeStartElement("spirit:serviceTypeDefs");

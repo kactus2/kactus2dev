@@ -7,9 +7,6 @@
 #include "transactionalabstraction.h"
 #include "generaldeclarations.h"
 
-
-#include "../exceptions/write_error.h"
-
 #include <QDomNode>
 #include <QList>
 #include <QObject>
@@ -160,20 +157,10 @@ void TransactionalAbstraction::writeTransactionalPort(QXmlStreamWriter& writer,
 		writer.writeTextElement("spirit:initiative",
 				General::Initiative2Str(port->serviceInitiative_));
 	}
-	else {
-		throw Write_error(QObject::tr("Mandatory element spirit:initiative "
-				"missing in spirit:service"));
-	}
 
-	if (port->typeNames_.size() == 0) {
-		throw Write_error(QObject::tr("Mandatory element spirit:typeName "
-				"missing in spirit:service"));
-	}
-	else {
-		for (int i = 0; i < port->typeNames_.size(); ++i) {
-			writer.writeTextElement("spirit:typeName", port->typeNames_.at(i));
-		}
-	}
+    for (int i = 0; i < port->typeNames_.size(); ++i) {
+        writer.writeTextElement("spirit:typeName", port->typeNames_.at(i));
+    }
 
 	writer.writeEndElement(); // spirit:service
 }

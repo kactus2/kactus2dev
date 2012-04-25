@@ -10,8 +10,6 @@
 #include "function.h"
 #include "generaldeclarations.h"
 
-
-#include "../exceptions/write_error.h"
 #include "../exceptions/invalid_file.h"
 
 #include <QString>
@@ -151,14 +149,7 @@ void FileSet::write(QXmlStreamWriter& writer) {
 
 	writer.writeStartElement("spirit:fileSet");
 
-	// if mandatory name is not defined
-	if (nameGroup_.name_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory name missing in "
-			"spirit:fileSet"));
-	}
-	else {
-		writer.writeTextElement("spirit:name", nameGroup_.name_);
-	}
+	writer.writeTextElement("spirit:name", nameGroup_.name_);
 
 	if (!nameGroup_.displayName_.isEmpty()) {
 		writer.writeTextElement("spirit:displayName", nameGroup_.displayName_);

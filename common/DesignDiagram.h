@@ -125,7 +125,7 @@ public:
     /*!
      *  Returns the current draw mode.
      */
-    DrawMode getDrawMode() const;
+    DrawMode getMode() const;
 
     /*!
      *  Returns true if the diagram is in locked state.

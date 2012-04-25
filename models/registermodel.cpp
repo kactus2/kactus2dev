@@ -8,9 +8,6 @@
 #include "generaldeclarations.h"
 #include "parameter.h"
 
-
-#include "../exceptions/write_error.h"
-
 #include <QList>
 #include <QDomNode>
 #include <QString>
@@ -98,14 +95,7 @@ void RegisterModel::write(QXmlStreamWriter& writer) {
 		writer.writeAttribute("spirit:id", id_);
 	}
 
-	// if mandatory name is missing
-	if (name_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory name missing in "
-				"RegisterModel"));
-	}
-	else {
-		writer.writeTextElement("spirit:name", name_);
-	}
+	writer.writeTextElement("spirit:name", name_);
 
 	// if optional displayName defined
 	if (!displayName_.isEmpty()) {

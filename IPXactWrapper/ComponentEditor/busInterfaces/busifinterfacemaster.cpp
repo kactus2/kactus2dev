@@ -86,11 +86,8 @@ void BusIfInterfaceMaster::restoreChanges() {
 	onIndexChanged();
 }
 
-void BusIfInterfaceMaster::applyChanges() {
-
-	if (!isValid())
-		return;
-
+void BusIfInterfaceMaster::applyChanges()
+{
 	busIf()->setInterfaceMode(mode_);
 
 	// if address space ref is defined

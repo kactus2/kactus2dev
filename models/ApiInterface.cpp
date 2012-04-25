@@ -136,19 +136,20 @@ void ApiInterface::write(QXmlStreamWriter& writer) const
 //-----------------------------------------------------------------------------
 // Function: ApiInterface::isValid()
 //-----------------------------------------------------------------------------
-bool ApiInterface::isValid(QStringList& errorList) const
+bool ApiInterface::isValid(QStringList& errorList, QString const& parentId) const
 {
+    QString const thisId = QObject::tr("COM interface '%1'").arg(name_);
     bool valid = true;
 
     if (name_.isEmpty())
     {
-        errorList.append(QObject::tr("Mandatory name not found in an API interface"));
+        errorList.append(QObject::tr("No name specified for an API interface in %1").arg(parentId));
         valid = false;
     }
 
     if (!apiType_.isEmpty() && !apiType_.isValid())
     {
-        errorList.append(QObject::tr("Invalid API type set in API interface '%1'").arg(name_));
+        errorList.append(QObject::tr("Invalid API type set in %1").arg(thisId));
         valid = false;
     }
 

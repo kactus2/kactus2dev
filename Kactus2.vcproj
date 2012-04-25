@@ -805,10 +805,6 @@
 					RelativePath="exceptions\vhdl_error.cpp"
 					>
 				</File>
-				<File
-					RelativePath="exceptions\write_error.cpp"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="IPXactWrapper"
@@ -4339,32 +4335,6 @@
 				</File>
 				<File
 					RelativePath="exceptions\vhdl_error.h"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-							Description="Performing Custom Build Step"
-							CommandLine=""
-							AdditionalDependencies=""
-							Outputs=""
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-							Description="Performing Custom Build Step"
-							CommandLine=""
-							AdditionalDependencies=""
-							Outputs=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="exceptions\write_error.h"
 					>
 					<FileConfiguration
 						Name="Debug|Win32"

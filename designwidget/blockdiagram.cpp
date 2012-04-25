@@ -793,9 +793,9 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv) const
 //-----------------------------------------------------------------------------
 void BlockDiagram::setMode(DrawMode mode)
 {
-    if (getDrawMode() != mode)
+    if (getMode() != mode)
     {
-        if (getDrawMode() == MODE_CONNECT)
+        if (getMode() == MODE_CONNECT)
         {
             endConnect();
         }
@@ -863,7 +863,7 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         return;
 	}
 
-    if (getDrawMode() == MODE_CONNECT)
+    if (getMode() == MODE_CONNECT)
     {
         bool creating = tempConnection_ != 0;
 
@@ -939,7 +939,7 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             }
         }
     }
-    else if (getDrawMode() == MODE_INTERFACE)
+    else if (getMode() == MODE_INTERFACE)
     {
         // Find the column under the cursor.
         DiagramColumn* column = layout_->findColumnAt(mouseEvent->scenePos());
@@ -950,7 +950,7 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             addInterface(column, mouseEvent->scenePos());
         }
     }
-    else if (getDrawMode() == MODE_DRAFT)
+    else if (getMode() == MODE_DRAFT)
     {
         // Find the bottom-most item under the cursor.
         QGraphicsItem* item = 0;
@@ -1066,7 +1066,7 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             }
         }
     }
-    else if (getDrawMode() == MODE_TOGGLE_OFFPAGE)
+    else if (getMode() == MODE_TOGGLE_OFFPAGE)
     {
         // Try to snap to a connection end point.
         DiagramConnectionEndPoint* endPoint =
@@ -1103,7 +1103,7 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             getEditProvider().addCommand(cmd, false);
         }
     }
-    else if (getDrawMode() == MODE_SELECT)
+    else if (getMode() == MODE_SELECT)
     {
         // Handle the mouse press and bring the new selection to front.
         QGraphicsScene::mousePressEvent(mouseEvent);
@@ -1116,7 +1116,7 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 void BlockDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     // Check if the connect mode is active.
-    if (getDrawMode() == MODE_CONNECT || getDrawMode() == MODE_TOGGLE_OFFPAGE)
+    if (getMode() == MODE_CONNECT || getMode() == MODE_TOGGLE_OFFPAGE)
     {
         // Find out if there is an end point currently under the cursor.
         DiagramConnectionEndPoint* endPoint =
@@ -1201,7 +1201,7 @@ void BlockDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 void BlockDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
 	// Try to create a connection if in connection mode.
-//     if (getDrawMode() == MODE_CONNECT && tempConnection_ && !offPageMode_)
+//     if (getMode() == MODE_CONNECT && tempConnection_ && !offPageMode_)
 //     {
 //         createConnection(mouseEvent);
 //     }
@@ -1213,7 +1213,7 @@ void BlockDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     // Allow double click only when the mode is select.
-    if (getDrawMode() != MODE_SELECT)
+    if (getMode() != MODE_SELECT)
     {
         return;
     }

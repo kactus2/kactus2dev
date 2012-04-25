@@ -160,10 +160,6 @@ void ViewEditor::removeModel() {
 }
 
 void ViewEditor::makeChanges() {
-	// if not valid do nothing
-	if (!isValid())
-		return;
-
 	view_->setName(nameGroup_.getName());
 	view_->setDisplayName(nameGroup_.getDisplayName());
 	view_->setDescription(nameGroup_.getDescription());

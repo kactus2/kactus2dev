@@ -121,9 +121,6 @@ void APIEditor::removeModel()
 //-----------------------------------------------------------------------------
 void APIEditor::makeChanges()
 {
-    if (!isValid())
-        return;
-
     api_->setName(nameGroup_.getName());
     api_->setDisplayName(nameGroup_.getDisplayName());
     api_->setDescription(nameGroup_.getDescription());

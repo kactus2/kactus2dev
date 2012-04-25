@@ -114,20 +114,14 @@ void BusIfGeneralTab::restoreChanges() {
 
 	//attributes_.setAttributes(busif_->getAttributes());
 
-	if (busif_->getBusType().isValid())
-		busType_.setVLNV(busif_->getBusType());
-	
-	if (busif_->getAbstractionType().isValid())
-		absType_.setVLNV(busif_->getAbstractionType());
+	busType_.setVLNV(busif_->getBusType());
+	absType_.setVLNV(busif_->getAbstractionType());
 
 	details_.restoreChanges();
 }
 
-void BusIfGeneralTab::applyChanges() {
-
-	if (!isValid())
-		return;
-
+void BusIfGeneralTab::applyChanges()
+{
 	busif_->setName(nameGroup_.getName());
 	busif_->setDisplayName(nameGroup_.getDisplayName());
 	busif_->setDescription(nameGroup_.getDescription());
@@ -135,10 +129,7 @@ void BusIfGeneralTab::applyChanges() {
 	//busif_->setAttributes(attributes_.getAttributes());
 
 	busif_->setBusType(busType_.getVLNV());
-	
-	// abstraction type is optional element and is set only if its valid
-	if (!absType_.isEmpty())
-		busif_->setAbstractionType(absType_.getVLNV());
+	busif_->setAbstractionType(absType_.getVLNV());
 
 	details_.applyChanges();
 }

@@ -9,9 +9,6 @@
 #include "buildcommand.h"
 #include "fileset.h"
 
-
-#include "../exceptions/write_error.h"
-
 #include <QSharedPointer>
 #include <QString>
 #include <QList>
@@ -298,39 +295,26 @@ void File::write(QXmlStreamWriter& writer) {
 	}
 	General::writeAttributes(writer, attributes_);
 
-	// if mandatory name is undefined
-	if (name_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory name missing in spirit:file"));
-	}
-	else {
-		// start the spirit:name tag
-		writer.writeStartElement("spirit:name");
+    // start the spirit:name tag
+    writer.writeStartElement("spirit:name");
 
-		// write the attributes for the element
-		General::writeAttributes(writer, nameAttributes_);
+    // write the attributes for the element
+    General::writeAttributes(writer, nameAttributes_);
 
-		// write the value of the element and close the tag
-		writer.writeCharacters(name_);
-		writer.writeEndElement(); // spirit:name
-	}
+    // write the value of the element and close the tag
+    writer.writeCharacters(name_);
+    writer.writeEndElement(); // spirit:name
 
-	// at least one file type has to be specified
-	if (( fileTypes_.size() == 0) && (userFileTypes_.size() == 0)) {
-		throw Write_error(QObject::tr("At least one file type has to be "
-				"specified in spirit:file"));
-	}
-	else {
-		// write file types
-		for (int i = 0; i < fileTypes_.size(); ++i) {
-			writer.writeTextElement("spirit:fileType", fileTypes_.at(i));
-		}
+    // write file types
+    for (int i = 0; i < fileTypes_.size(); ++i) {
+        writer.writeTextElement("spirit:fileType", fileTypes_.at(i));
+    }
 
-		// write user file types
-		for (int i = 0; i < userFileTypes_.size(); ++i) {
-			writer.writeTextElement("spirit:userFileType",
-					userFileTypes_.at(i));
-		}
-	}
+    // write user file types
+    for (int i = 0; i < userFileTypes_.size(); ++i) {
+        writer.writeTextElement("spirit:userFileType",
+            userFileTypes_.at(i));
+    }
 
 	// start the spirit:includeFile tag
 	writer.writeStartElement("spirit:isIncludeFile");

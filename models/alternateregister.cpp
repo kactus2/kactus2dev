@@ -8,9 +8,6 @@
 #include "registerdefinition.h"
 #include "generaldeclarations.h"
 
-
-#include "../exceptions/write_error.h"
-
 #include <QXmlStreamWriter>
 #include <QDomNode>
 #include <QString>
@@ -84,12 +81,8 @@ void AlternateRegister::write(QXmlStreamWriter& writer) {
 	// call base class to write itself
 	RegisterModel::write(writer);
 
-	// if no alternateGroups exist
-	if (alternateGroups_.size() == 0) {
-		throw Write_error(QObject::tr("Atleast one alternateGroup must be "
-				"found in spirit:alternateRegister"));
-	}
-	else {
+	if (alternateGroups_.size() > 0)
+    {
 		writer.writeStartElement("spirit:alternateGroups");
 
 		for (int i = 0; i < alternateGroups_.size(); ++i) {

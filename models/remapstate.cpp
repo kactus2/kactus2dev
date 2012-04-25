@@ -8,9 +8,6 @@
 #include "remapport.h"
 #include "generaldeclarations.h"
 
-
-#include "../exceptions/write_error.h"
-
 #include <QList>
 #include <QString>
 #include <QDomNode>
@@ -86,14 +83,8 @@ RemapState::~RemapState() {
 void RemapState::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:remapState");
 
-	// if mandatory name is empty
-	if (name_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory element name missing in "
-				"spirit:remapState"));
-	}
-	else {
-		writer.writeTextElement("spirit:name", name_);
-	}
+	writer.writeTextElement("spirit:name", name_);
+	
 	// if remapPorts exist
 	if (remapPorts_.size() != 0) {
 		writer.writeStartElement("spirit:remapPorts");

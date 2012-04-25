@@ -8,9 +8,6 @@
 #include <LibraryManager/vlnv.h>
 #include "generaldeclarations.h"
 
-
-#include "../exceptions/write_error.h"
-
 #include <QString>
 #include <QSharedPointer>
 #include <QObject>
@@ -93,14 +90,7 @@ void DesignConfAbstractor::write(QXmlStreamWriter& writer) {
 
 	writer.writeStartElement("spirit:abstractor");
 
-	// if mandatory name missing
-	if (instanceName_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory element instanceName is "
-				"missing in spirit:abstractor"));
-	}
-	else {
-		writer.writeTextElement("spirit:instanceName", instanceName_);
-	}
+	writer.writeTextElement("spirit:instanceName", instanceName_);
 
 	if (!displayName_.isEmpty()) {
 		writer.writeTextElement("spirit:displayName", displayName_);
@@ -110,15 +100,8 @@ void DesignConfAbstractor::write(QXmlStreamWriter& writer) {
 		writer.writeTextElement("spirit:description", description_);
 	}
 
-	// if mandatory reference to abstractor is missing
-	if (!abstractorRef_.isValid()) {
-		throw Write_error(QObject::tr("Mandatory element spirit:abstractorRef"
-				" missing in spirit:abstractor"));
-	}
-	else {
-		writer.writeEmptyElement("spirit:abstractorRef");
-		General::writeVLNVAttributes(writer, &abstractorRef_);
-	}
+	writer.writeEmptyElement("spirit:abstractorRef");
+	General::writeVLNVAttributes(writer, &abstractorRef_);
 
 	// if there are any configurable elements
 	if (configurableElements_.size() != 0) {
@@ -136,13 +119,7 @@ void DesignConfAbstractor::write(QXmlStreamWriter& writer) {
 		writer.writeEndElement(); // spirit:configurableElementValues
 	}
 
-	if (viewName_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory element spirit:viewName "
-				"missing in spirit:abstractor"));
-	}
-	else {
-		writer.writeTextElement("spirit:viewName", viewName_);
-	}
+	writer.writeTextElement("spirit:viewName", viewName_);
 
 	writer.writeEndElement(); // spirit:abstractor
 }

@@ -9,8 +9,6 @@
 #include "wireabstraction.h"
 #include "transactionalabstraction.h"
 
-#include "../exceptions/write_error.h"
-
 #include <QDomNode>
 #include <QString>
 #include <QSharedPointer>
@@ -118,13 +116,7 @@ PortAbstraction::~PortAbstraction() {
 void PortAbstraction::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:port");
 
-	if (logicalName_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory element spirit:logicalname is "
-				"missing in spirit:port"));
-	}
-	else {
-		writer.writeTextElement("spirit:logicalName", logicalName_);
-	}
+	writer.writeTextElement("spirit:logicalName", logicalName_);
 
 	if (!displayName_.isEmpty()) {
 		writer.writeTextElement("spirit:displayName", displayName_);
@@ -139,10 +131,6 @@ void PortAbstraction::write(QXmlStreamWriter& writer) {
 	}
 	else if (transactional_) {
 		transactional_->write(writer);
-	}
-	else {
-		throw Write_error(QObject::tr("spirit:port does not define the port "
-				"type, no wire or transactional element"));
 	}
 
 	writer.writeEndElement(); // spirit:port

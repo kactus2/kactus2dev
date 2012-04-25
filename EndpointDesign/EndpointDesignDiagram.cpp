@@ -479,7 +479,7 @@ void EndpointDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *event)
         return;
     }
 
-    if (getDrawMode() == MODE_CONNECT)
+    if (getMode() == MODE_CONNECT)
     {
         // Deselect all items.
         clearSelection();
@@ -514,7 +514,7 @@ void EndpointDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *event)
             }
         }
     }
-    else if (getDrawMode() == MODE_DRAFT)
+    else if (getMode() == MODE_DRAFT)
     {
         // Find the bottom-most item under the cursor.
         QGraphicsItem* item = 0;
@@ -578,7 +578,7 @@ void EndpointDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *event)
             getEditProvider().addCommand(cmd);
         }
     }
-    else if (getDrawMode() == MODE_SELECT)
+    else if (getMode() == MODE_SELECT)
     {
         // Save the old selection.
         QGraphicsItem *oldSelection = 0;
@@ -641,7 +641,7 @@ void EndpointDesignDiagram::onSelected(QGraphicsItem* newSelection)
 void EndpointDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
     // Check if the connect mode is active.
-    if (getDrawMode() == MODE_CONNECT)
+    if (getMode() == MODE_CONNECT)
     {
         // Find out if there is an endpoint currently close to the cursor.
         EndpointItem* endpoint = DiagramUtil::snapToItem<EndpointItem>(event->scenePos(), this, GridSize);
@@ -741,7 +741,7 @@ void EndpointDesignDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
     // If there is a connection being drawn while in the connect mode,
     // finalize or discard the connection.
-    if (getDrawMode() == MODE_CONNECT && tempConnection_)
+    if (getMode() == MODE_CONNECT && tempConnection_)
     {
         // Disable highlights from all potential endpoints.
         for (int i = 0 ; i < tempPotentialEndingEndPoints_.size(); ++i)
@@ -965,7 +965,7 @@ MappingComponentItem* EndpointDesignDiagram::getMappingComponent(QString const& 
 void EndpointDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     // Allow double click only when the mode is select.
-    if (getDrawMode() != MODE_SELECT)
+    if (getMode() != MODE_SELECT)
     {
         return;
     }

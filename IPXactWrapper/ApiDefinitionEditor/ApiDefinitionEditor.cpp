@@ -96,6 +96,15 @@ VLNV ApiDefinitionEditor::getComponentVLNV() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ApiDefinitionEditor::validate()
+//-----------------------------------------------------------------------------
+bool ApiDefinitionEditor::validate(QStringList& errorList)
+{
+    applyChanges();
+    return apiDef_->isValid(errorList);
+}
+
+//-----------------------------------------------------------------------------
 // Function: save()
 //-----------------------------------------------------------------------------
 bool ApiDefinitionEditor::save()
@@ -117,8 +126,7 @@ bool ApiDefinitionEditor::saveAs()
 
     if (!NewObjectDialog::saveAsDialog(parentWidget(), libHandler_, *apiDef_->getVlnv(), vlnv, directory))
     {
-        // The user canceled.
-        return true;
+        return false;
     }
 
     // Create a copy of the object and update its VLNV.

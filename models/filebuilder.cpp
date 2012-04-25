@@ -7,9 +7,6 @@
 #include "filebuilder.h"
 #include "buildmodel.h"
 
-
-#include "../exceptions/write_error.h"
-
 #include <QList>
 #include <QString>
 #include <QDomNode>
@@ -71,12 +68,6 @@ FileBuilder::~FileBuilder() {
 
 void FileBuilder::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:defaultFileBuilder");
-
-	// atleast one file type must be specified
-	if ((fileTypes_.size() == 0) && (userFileTypes_.size() == 0)) {
-		throw Write_error(QObject::tr("No file type specified in spirit:"
-				"defaultFileBuilder"));
-	}
 
 	for (int i = 0; i < fileTypes_.size(); ++i) {
 		writer.writeTextElement("spirit:fileType", fileTypes_.at(i));

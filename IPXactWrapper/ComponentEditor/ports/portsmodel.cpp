@@ -395,10 +395,6 @@ bool PortsModel::isValid() const {
 }
 
 void PortsModel::apply() {
-
-	if (!isValid())
-		return;
-
 	// remove old ports
 	ports_->clear();
 

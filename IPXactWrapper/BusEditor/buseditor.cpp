@@ -73,6 +73,31 @@ absDefGroup_(this) {
 BusEditor::~BusEditor() {
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusEditor::validate()
+//-----------------------------------------------------------------------------
+bool BusEditor::validate(QStringList& errorList)
+{
+    bool valid = false;
+
+    // if abstraction definition is being edited
+    if (absDefGroup_.isEnabled())
+    {
+        // save the changes from the model to the abstraction definition
+        absDefGroup_.save();
+
+        valid = editableAbsDef_->isValid(errorList);
+    }
+
+    // if bus definition is being edited
+    if (busDefGroup_.isEnabled())
+    {
+        valid = editableBusDef_->isValid(errorList) && valid;
+    }
+
+    return valid;
+}
+
 bool BusEditor::save() {
 
 	// if abstraction definition is being edited
@@ -109,8 +134,7 @@ bool BusEditor::saveAs() {
 	// if bus definition is being edited
 	if (busDefGroup_.isEnabled()) {
 		if (!NewObjectDialog::saveAsDialog(this, libHandler_, *busDef_->getVlnv(), vlnv, busDirectory))	{
-			// If the user canceled, there was no error.
-			return true;
+			return false;
 		}
 
 		// copy the settings from the temporary items to the original
@@ -127,8 +151,7 @@ bool BusEditor::saveAs() {
 	// if abstraction definition is being edited but not the bus definition
 	else if (absDef_ && !busDefGroup_.isEnabled()) {
 		if (!NewObjectDialog::saveAsDialog(this, libHandler_, *absDef_->getVlnv(), vlnv, absDirectory))	{
-			// If the user canceled, there was no error.
-			return true;
+			return false;
 		}
 
 		absDefGroup_.save();
@@ -173,8 +196,7 @@ bool BusEditor::saveAs() {
 			VLNV newAbsDefVLNV;
 
 			if (!NewObjectDialog::saveAsDialog(this, libHandler_, absDefVLNV, newAbsDefVLNV, absDirectory)) {
-				// if user canceled
-				return true;
+				return false;
 			}
 			// save the created abstraction definition vlnv
 			absDefVLNV = newAbsDefVLNV;

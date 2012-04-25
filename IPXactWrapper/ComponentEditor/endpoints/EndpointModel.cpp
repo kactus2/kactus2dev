@@ -207,11 +207,8 @@ bool EndpointModel::isValid() const {
     return true;
 }
 
-void EndpointModel::apply() {
-
-    if (!isValid())
-        return;
-
+void EndpointModel::apply()
+{
     // remove old model parameters from original model
     endpoints_->clear();
 

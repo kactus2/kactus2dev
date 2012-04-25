@@ -7,9 +7,6 @@
 #include "modelparameter.h"
 #include "generaldeclarations.h"
 
-
-#include "../exceptions/write_error.h"
-
 #include <QString>
 #include <QDomNode>
 #include <QMap>
@@ -80,14 +77,7 @@ void ModelParameter::write(QXmlStreamWriter& writer) {
 	writer.writeStartElement("spirit:modelParameter");
 	General::writeAttributes(writer, attributes_);
 
-	// if name is not defined
-	if (nameGroup_.name_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory name missing in "
-				"spirit:modelParameter"));
-	}
-	else {
-		writer.writeTextElement("spirit:name", nameGroup_.name_);
-	}
+	writer.writeTextElement("spirit:name", nameGroup_.name_);
 
 	if (!nameGroup_.displayName_.isEmpty()) {
 		writer.writeTextElement("spirit:displayName", nameGroup_.displayName_);
@@ -97,21 +87,15 @@ void ModelParameter::write(QXmlStreamWriter& writer) {
 		writer.writeTextElement("spirit:description", nameGroup_.description_);
 	}
 
-	if (value_.isEmpty()) {
-		throw Write_error(QObject::tr("Mandatory value missing is spirit:"
-				"modelParameter"));
-	}
-	else {
-		// start the spirit:value tag
-		writer.writeStartElement("spirit:value");
+    // start the spirit:value tag
+    writer.writeStartElement("spirit:value");
 
-		// write the attributes for the element
-		General::writeAttributes(writer, valueAttributes_);
+    // write the attributes for the element
+    General::writeAttributes(writer, valueAttributes_);
 
-		// write the value of the element and close the tag
-		writer.writeCharacters(value_);
-		writer.writeEndElement(); // spirit:value
-	}
+    // write the value of the element and close the tag
+    writer.writeCharacters(value_);
+    writer.writeEndElement(); // spirit:value
 
 	writer.writeEndElement(); // spirit:modelParameter
 }

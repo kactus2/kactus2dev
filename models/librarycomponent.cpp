@@ -10,9 +10,6 @@
 
 #include "generaldeclarations.h"
 
-
-#include "../exceptions/write_error.h"
-
 #include <QString>
 #include <QDomDocument>
 #include <QTextStream>
@@ -218,26 +215,14 @@ void LibraryComponent::writeKactus2Attributes( QXmlStreamWriter& writer ) {
 	}
 
 	// write the implementation attribute
-	bool wasSoftware = false;
 	if (kactus2Attributes_.contains("kts_implementation")) {
-
-		// if this is defined as software
-		if (kactus2Attributes_.value("kts_implementation") == "SW") {
-			wasSoftware = true;
-		}
-
-		writer.writeTextElement("kactus2:kts_implementation", 
-			kactus2Attributes_.value("kts_implementation"));
+		writer.writeTextElement("kactus2:kts_implementation", kactus2Attributes_.value("kts_implementation"));
 	}
 
-	// if was software but the software type is not defined
-	if (wasSoftware && !kactus2Attributes_.contains("kts_sw_type")) {
-		throw Write_error(QObject::tr("Software type must be specified for software"));
-	}
-	// if was software and software type is defined
-	else if (wasSoftware) {
-		writer.writeTextElement("kactus2:kts_sw_type", kactus2Attributes_.value("kts_sw_type"));
-	}
+    if (kactus2Attributes_.contains("kts_sw_type"))
+    {
+    	writer.writeTextElement("kactus2:kts_sw_type", kactus2Attributes_.value("kts_sw_type"));
+    }
 
 	// if firmness is defined
 	if (kactus2Attributes_.contains("kts_firmness")) {
@@ -256,10 +241,6 @@ void LibraryComponent::writeKactus2Attributes( QXmlStreamWriter& writer ) {
 
 void LibraryComponent::parseKactus2Attributes( QDomNode& attributeNode ) {
 	
-	// used to check that if one is found then both must be found.
-	bool wasSoftware = false;
-	bool hadSoftwareType = false;
-
 	// go through all the child nodes of the fileNode
 	for (int i = 0; i < attributeNode.childNodes().count(); ++i) {
 		QDomNode tempNode = attributeNode.childNodes().at(i);
@@ -274,14 +255,9 @@ void LibraryComponent::parseKactus2Attributes( QDomNode& attributeNode ) {
 		else if (tempNode.nodeName() == "kactus2:kts_implementation") {
 			QString value = tempNode.childNodes().at(0).nodeValue();
 			kactus2Attributes_.insert("kts_implementation", value);
-
-			// if implementation was defined as software
-			if (value == "SW")
-				wasSoftware = true;
 		}
 		else if (tempNode.nodeName() == "kactus2:kts_sw_type") {
 			kactus2Attributes_.insert("kts_sw_type", tempNode.childNodes().at(0).nodeValue());
-			hadSoftwareType = true;
 		}
 		else if (tempNode.nodeName() == "kactus2:kts_firmness") {
 			kactus2Attributes_.insert("kts_firmness", tempNode.childNodes().at(0).nodeValue());

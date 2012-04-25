@@ -173,9 +173,6 @@ public:
 	*
 	* \param file A reference to QFile instance representing the file to write
 	* the data into.
-	*
-	* \exception Write_error Occurs if the class or one of it's subclasses is
-	* not valid IP-Xact at the moment of writing.
 	*/
 	virtual void write(QFile& file);
 
