@@ -8,6 +8,7 @@
 #define REGISTER_H_
 
 #include "registermodel.h"
+#include "field.h"
 
 #include <QDomNode>
 #include <QXmlStreamWriter>
@@ -136,6 +137,12 @@ public:
      * element.
      */
     void setRegisterDefinition(RegisterDefinition* registerDefinition);
+
+	/*! \brief Get list of the fields.
+     *
+     * \return QList containing pointers to the fields.
+     */
+    const QList<QSharedPointer<Field> >& getFields();
 
 private:
 

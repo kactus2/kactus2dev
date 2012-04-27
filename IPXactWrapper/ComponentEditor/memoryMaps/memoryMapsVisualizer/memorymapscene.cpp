@@ -35,9 +35,9 @@ void MemoryMapScene::setMemoryMaps( QList<QSharedPointer<MemoryMap> >& memoryMap
 
 		// if there is a previous then add the new after it
 		if (previous) {
-			item->setPos(0, previous->boundingRect().bottom() + 10);
-
-			qDebug() << "bottom: " << previous->boundingRect().bottom() + 10;
+			QRectF previousRect = previous->childrenBoundingRect();
+			previousRect |= previous->boundingRect();
+			item->setPos(0, previousRect.bottom() + 10);
 		}
 		// if this is the first item to add
 		else {

@@ -196,7 +196,7 @@ General::Access RegisterDefinition::getAccess() const {
 	return access_;
 }
 
-const QList<QSharedPointer<Field> >& RegisterDefinition::getFields() const {
+const QList<QSharedPointer<Field> >& RegisterDefinition::getFields() {
 	return fields_;
 }
 

@@ -8,12 +8,14 @@
 #ifndef ADDRESSBLOCKGRAPHITEM_H
 #define ADDRESSBLOCKGRAPHITEM_H
 
-#include <models/addressblock.h>
-
 #include "memoryvisualizeritem.h"
+#include "registergraphitem.h"
+#include <models/addressblock.h>
 
 #include <QGraphicsItem>
 #include <QSharedPointer>
+#include <QList>
+#include <QRectF>
 
 /*! \brief The graphical item that represents one address block.
  *
@@ -35,6 +37,19 @@ public:
 	//! \brief The destructor
 	virtual ~AddressBlockGraphItem();
 
+	/*! \brief Set the width for the item.
+	 *
+	 * \param width The new width of the item.
+	 *
+	*/
+	virtual void setWidth(qreal width);
+
+	/*! \brief Get the offset of the address block.
+	 *
+	 * \return The offset from the base of the containing memory map.
+	*/
+	virtual int getOffset() const;
+
 protected:
 
 	//! \brief Set new positions for the register graph items
@@ -50,6 +65,9 @@ private:
 
 	//! \brief Pointer to the address block being displayed.
 	QSharedPointer<AddressBlock> addrBlock_;
+
+	//! \brief Contains the registers of the address block.
+	QList<QSharedPointer<RegisterGraphItem> > registers_;
 };
 
 #endif // ADDRESSBLOCKGRAPHITEM_H

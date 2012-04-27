@@ -26,7 +26,7 @@ adBlocks_() {
 
 	setName(memoryMap_->getName());
 
-	setBrush(QBrush(QColor(150, 200, 255)));
+	setBrush(QBrush(QColor(100, 200, 255)));
 
 	// find all sub-items of the memory map
 	QList<QSharedPointer<MemoryMapItem> >* memItems = memoryMap_->getItemsPointer();
@@ -37,7 +37,7 @@ adBlocks_() {
 		if (addrBlock) {
 
 			QSharedPointer<AddressBlockGraphItem> adBlock(new AddressBlockGraphItem(addrBlock, this));
-			adBlocks_.append(adBlock);	
+			adBlocks_.append(adBlock);
 		}
 	}
 
@@ -48,27 +48,17 @@ adBlocks_() {
 MemoryMapGraphItem::~MemoryMapGraphItem() {
 }
 
-QRectF MemoryMapGraphItem::boundingRect() const {
-	
-	// if there are no sub items
-	if (adBlocks_.isEmpty()) {
-		return rect();
-	}
-
-	QPointF topLeft(rect().topLeft());
-	QPointF bottomRight(mapFromItem(adBlocks_.last().data(), 
-		adBlocks_.last()->boundingRect().bottomRight()));
-
-	return QRectF(topLeft, bottomRight);
-}
-
 void MemoryMapGraphItem::reorganizeChildren() {
+
+	qreal width = MemoryVisualizerItem::itemTotalWidth();
 
 	QSharedPointer<AddressBlockGraphItem> previous;
 	foreach (QSharedPointer<AddressBlockGraphItem> addrBlock, adBlocks_) {
-		
+
+		addrBlock->setWidth(width);
+
 		if (previous) {
-			addrBlock->setPos(0, previous->rect().bottom());
+			addrBlock->setPos(0, mapRectFromItem(previous.data(), previous->itemTotalRect()).bottom());
 		}
 		else {
 			addrBlock->setPos(0, rect().bottom());
@@ -76,5 +66,8 @@ void MemoryMapGraphItem::reorganizeChildren() {
 
 		previous = addrBlock;
 	}
+
+	setRect(0, 0, width, MemoryVisualizerItem::ITEM_HEIGHT);
+	MemoryVisualizerItem::reorganizeChildren();
 }
 

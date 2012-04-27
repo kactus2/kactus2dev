@@ -356,3 +356,7 @@ void AddressBlock::setParameters(
 QList<QSharedPointer<RegisterModel> >* AddressBlock::getRegisterPointer() {
 	return &registerData_;
 }
+
+QList<QSharedPointer<RegisterModel> >& AddressBlock::getRegisterData() {
+	return registerData_;
+}

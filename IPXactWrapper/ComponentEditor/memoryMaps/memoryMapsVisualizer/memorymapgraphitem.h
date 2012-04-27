@@ -35,12 +35,6 @@ public:
 	//! \brief The destructor
 	virtual ~MemoryMapGraphItem();
 
-	/*! \brief Get the bounding rect of the memory map.
-	 *
-	 * \return QRectF The area that contains the memory map and it's sub items.
-	*/
-	virtual QRectF boundingRect() const;
-
 protected:
 
 	//! \brief Set new positions for the address block graph items.

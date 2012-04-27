@@ -204,6 +204,12 @@ public:
 	 */
 	void setParameters(QList<QSharedPointer<Parameter> > &parameters);
 
+	/*! \brief Get the list containing the register elements of address block.
+	 *
+	 * \return QList containing the pointers to the register elements.
+	*/
+	QList<QSharedPointer<RegisterModel> >& getRegisterData();
+
 private:
 
 	/*!

@@ -83,7 +83,7 @@ public:
      *
      * \return QList containing pointers to the fields.
      */
-    const QList<QSharedPointer<Field> >& getFields() const;
+    const QList<QSharedPointer<Field> >& getFields();
 
     /*! \brief Get the reset-element.
      *

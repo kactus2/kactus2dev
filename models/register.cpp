@@ -244,3 +244,7 @@ void Register::setRegisterDefinition(RegisterDefinition* registerDefinition) {
     this->registerDefinition_ =
     		QSharedPointer<RegisterDefinition>(registerDefinition);
 }
+
+const QList<QSharedPointer<Field> >& Register::getFields() {
+	return registerDefinition_->getFields();
+}
