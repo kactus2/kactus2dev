@@ -1,82 +1,64 @@
 //-----------------------------------------------------------------------------
-// File: SystemColumn.h
+// File: HWMappingItem.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
-// Date: 31.5.2011
+// Date: 30.4.2012
 //
 // Description:
-// System column class for managing SW mapping components in a system design.
+// Graphics item for visualizing the underlying HW in system designs.
 //-----------------------------------------------------------------------------
 
-#ifndef SYSTEMCOLUMN_H
-#define SYSTEMCOLUMN_H
+#ifndef HWMAPPINGITEM_H
+#define HWMAPPINGITEM_H
 
 #include "IComponentStack.h"
 
-#include <common/ColumnTypes.h>
+#include <common/graphicsItems/ComponentItem.h>
 
-#include <QGraphicsRectItem>
-#include <QSet>
-
-class SystemColumnLayout;
-class ComponentItem;
-class EndpointConnection;
+class SWCompItem;
 
 //-----------------------------------------------------------------------------
-//! SystemColumn class.
+//! Graphics item for visualizing the underlying HW in system designs.
 //-----------------------------------------------------------------------------
-class SystemColumn : public QObject, public QGraphicsRectItem, public IComponentStack
+class HWMappingItem : public ComponentItem, public IComponentStack
 {
-    Q_OBJECT
-
 public:
-    enum { Type = UserType + 6 };
-
-    enum
-    {
-        WIDTH = 349,
-        HEIGHT = 30
-    };
+    enum { Type = UserType + 30 };
 
     /*!
      *  Constructor.
-     *
-     *      @param [in] name          The name of the column.
-     *      @param [in] layout        The parent column layout.
-     *      @param [in] scene         The graphics scene.
      */
-    SystemColumn(QString const& name, SystemColumnLayout* layout, QGraphicsScene* scene);
+    HWMappingItem(QSharedPointer<Component> component, QString const& instanceName,
+                  QString const& displayName = QString(),
+                  QString const& description = QString(),
+                  QMap<QString, QString> const& configurableElementValues = QMap<QString, QString>(),
+                  unsigned int id = 0);
 
     /*!
      *  Destructor.
      */
-    virtual ~SystemColumn();
+    ~HWMappingItem();
 
     /*!
-     *  Sets the name of the system column.
+     *  Maps the given SW component item to this HW.
      *
-     *      @param [in] name The name of the column.
+     *      @param [in] item The SW component to map.
      */
-    void setName(QString const& name);
+    void mapComponent(SWCompItem* item);
 
     /*!
-     *  Sets the y coordinate offset.
+     *  Removes a mapping of the given SW component item from this HW.
      *
-     *      @param [in] y The y coordinate offset.
+     *      @param [in] item The SW component to unmap.
      */
-    void setOffsetY(qreal y);
+    void unmapComponent(SWCompItem* item);
+
+    void updateSize();
 
     /*!
-     *  Returns the name of the system column.
+     *  Returns the graphics item type.
      */
-    QString const& getName() const;
-
-    /*!
-     *  Returns true if the column is empty (i.e. not containing any items).
-     */
-    bool isEmpty() const;
-
     int type() const { return Type; }
 
     //-----------------------------------------------------------------------------
@@ -134,13 +116,9 @@ public:
      */
     bool isItemAllowed(ComponentItem* item) const;
 
-signals:
-    //! Signals that the contents of the column have changed.
-    void contentChanged();
-
 protected:
-    //! Called when the user presses the mouse over the column.
-    void mousePressEvent(QGraphicsSceneMouseEvent* event);
+    // Called when the user presses the mouse button.
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
     //! Called when the user moves the column with the mouse.
     void mouseMoveEvent(QGraphicsSceneMouseEvent* event);
@@ -148,43 +126,37 @@ protected:
     //! Called when the user release the mouse.
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
 
-    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
-
 private:
     // Disable copying.
-    SystemColumn(SystemColumn const& rhs);
-    SystemColumn& operator=(SystemColumn const& rhs);
-    
+    HWMappingItem(HWMappingItem const& rhs);
+    HWMappingItem& operator=(HWMappingItem const& rhs);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
+    // Constants.
     enum
     {
-        MIN_Y_PLACEMENT = 60,
-        SPACING = 30,
-        IO_SPACING = 4,
+        WIDTH = 240,
+        TOP_MARGIN = 40,
+        BOTTOM_MARGIN = 60,
+        SPACING = 10,
     };
 
-    //! The parent column layout.
-    SystemColumnLayout* layout_;
+    //! The node id.
+    unsigned int id_;
 
-    //! The name of the column.
-    QString name_;
+    //! The old column from where the mouse drag event began.
+    IComponentStack* oldStack_;
 
-    //! The column name label.
-    QGraphicsTextItem* nameLabel_;
+    //! The mapped SW components.
+    QList<ComponentItem*> swComponents_;
 
-    //! The node items ordered from top to bottom.
-    QList<ComponentItem*> items_;
-
-    //! The old position of the column before mouse move.
+    //! The mapping component's old position before mouse move.
     QPointF oldPos_;
-
-    //! The connections that need to be also stored for undo.
-    QSet<EndpointConnection*> conns_;
 };
 
 //-----------------------------------------------------------------------------
 
-#endif // SYSTEMCOLUMN_H
+#endif // HWMAPPINGITEM_H

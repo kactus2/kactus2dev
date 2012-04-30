@@ -14,6 +14,7 @@
 #include "../EndpointDesign/SystemChangeCommands.h"
 #include "../EndpointDesign/SystemAddCommands.h"
 
+#include "HWMappingItem.h"
 #include "SystemDesignWidget.h"
 
 #include <QPainter>
@@ -89,6 +90,67 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
         {
             layout_->addColumn(desc.name);
         }
+    }
+
+    unsigned int colIndex = 0;
+
+    // Add (HW) component instances.
+    foreach (Design::ComponentInstance const& instance, design->getComponentInstances())
+    {
+        QSharedPointer<LibraryComponent> libComponent = getLibraryInterface()->getModel(instance.componentRef);
+
+        if (!libComponent)
+        {
+            emit errorMessage(tr("The component %1 was not found in the library").arg(
+                instance.componentRef.getName()).arg(design->getVlnv()->getName()));
+            continue;
+        }
+
+        QSharedPointer<Component> component = libComponent.staticCast<Component>();
+
+        int id = instance.mcapiNodeID;
+
+        // If the id is not set, generate a new ID. TODO: The id should be set in the generation phase.
+        if (id == -1)
+        {
+            id = nodeIDFactory_.getID();
+        }
+        else
+        {
+            nodeIDFactory_.usedID(id);
+        }
+
+        HWMappingItem* item = new HWMappingItem(component, instance.instanceName,
+                                                instance.displayName, instance.description,
+                                                instance.configurableElementValues, id);
+
+        connect(item, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+        connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
+
+        // Check if the position is not found.
+        if (instance.position.isNull())
+        {
+            layout_->getColumns().at(colIndex)->addItem(item);
+            colIndex = 1 - colIndex;
+        }
+        else
+        {
+            item->setPos(instance.position);
+
+            SystemColumn* column = layout_->findColumnAt(instance.position);
+
+            if (column != 0)
+            {
+                column->addItem(item, true);
+            }
+            else
+            {
+                layout_->getColumns().at(colIndex)->addItem(item);
+                colIndex = 1 - colIndex;
+            }
+        }
+
+        addInstanceName(instance.instanceName);
     }
 
     // Refresh the layout so that all components are placed in correct positions according to the stacking.

@@ -319,7 +319,7 @@ void MappingComponentItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
         
         SystemColumn* column = dynamic_cast<SystemColumn*>(parentItem());
         Q_ASSERT(column != 0);
-        column->onMoveItem(this, oldColumn_);
+        column->onMoveItem(this);
     }
 }
 

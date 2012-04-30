@@ -11,6 +11,9 @@
 
 #include "SystemColumn.h"
 
+#include "SWCompItem.h"
+#include "HWMappingItem.h"
+
 #include "../EndpointDesign/SystemMoveCommands.h"
 
 #include <QLinearGradient>
@@ -191,13 +194,42 @@ void SystemColumn::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 //-----------------------------------------------------------------------------
 // Function: onMoveItem()
 //-----------------------------------------------------------------------------
-void SystemColumn::onMoveItem(ComponentItem* item, SystemColumn* oldColumn)
+void SystemColumn::onMoveItem(ComponentItem* item)
 {
-    // Determine the column under the item's current position.
+    // Check if any HW mapping item is under the item.
+    foreach (ComponentItem* childItem, items_)
+    {
+        HWMappingItem* mappingItem = dynamic_cast<HWMappingItem*>(childItem);
+
+        QPointF itemPos = item->scenePos() + item->boundingRect().center();
+
+        if (mappingItem != 0 && mappingItem->isItemAllowed(item) &&
+            mappingItem->contains(mappingItem->mapFromScene(itemPos))) // TODO:
+        {
+            // We have to switch the column and update this column's item positions
+            // without the moving item.
+            items_.removeAll(item);
+
+            VStackedLayout::updateItemPositions(items_, WIDTH / 2, MIN_Y_PLACEMENT, SPACING);
+            setZValue(0.0);
+
+            QPointF newPos = mappingItem->mapFromScene(item->scenePos());
+            item->setParentItem(mappingItem);
+            item->setPos(newPos);
+
+            // And call the mapping item's onMoveItem().
+            mappingItem->onMoveItem(item);
+            mappingItem->updateSize();
+            return;
+        }
+    }
+
+    // If none of the child component handled the movement, determine the column under
+    // the item's current position.
     SystemColumn* column = layout_->findColumnAt(item->scenePos());
 
     // Check if the column is different than the current one.
-    if (column != 0 && column != this)
+    if (column != 0 && column != this && column->isItemAllowed(item))
     {
         // We have to switch the column and update this column's item positions
         // without the moving item.
@@ -211,14 +243,14 @@ void SystemColumn::onMoveItem(ComponentItem* item, SystemColumn* oldColumn)
         setZValue(0.0);
 
         // And call the new column's onMoveItem().
-        column->onMoveItem(item, oldColumn);
+        column->onMoveItem(item);
         return;
     }
 
     setZValue(1001.0);
 
     // Restrict the position so that the item cannot be placed too high.
-    item->setPos(snapPointToGrid(item->x(), std::max(MIN_Y_PLACEMENT - item->boundingRect().top(), item->y())));
+    //item->setPos(snapPointToGrid(item->x(), std::max(MIN_Y_PLACEMENT - item->boundingRect().top(), item->y())));
     VStackedLayout::updateItemMove(items_, item, MIN_Y_PLACEMENT, SPACING);
 }
 
@@ -304,4 +336,28 @@ void SystemColumn::mousePressEvent(QGraphicsSceneMouseEvent* event)
             }
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemColumn::mapStackToScene()
+//-----------------------------------------------------------------------------
+QPointF SystemColumn::mapStackToScene(QPointF const& pos) const
+{
+    return mapToScene(pos);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemColumn::isItemAllowed()
+//-----------------------------------------------------------------------------
+bool SystemColumn::isItemAllowed(ComponentItem* item) const
+{
+    return (item->type() == SWCompItem::Type || item->type() == HWMappingItem::Type);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemColumn::mapStackFromScene()
+//-----------------------------------------------------------------------------
+QPointF SystemColumn::mapStackFromScene(QPointF const& pos) const
+{
+    return mapFromScene(pos);
 }

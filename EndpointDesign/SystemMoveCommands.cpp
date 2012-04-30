@@ -123,7 +123,7 @@ void MappingCompMoveCommand::undo()
     SystemColumn* oldColumn = static_cast<SystemColumn*>(item_->parentItem());
 
     item_->setPos(oldColumn->mapFromScene(oldPos_));
-    oldColumn->onMoveItem(item_, oldColumn);
+    oldColumn->onMoveItem(item_);
 
     SystemColumn* newColumn = static_cast<SystemColumn*>(item_->parentItem());
     newColumn->onReleaseItem(item_);
@@ -140,7 +140,7 @@ void MappingCompMoveCommand::redo()
     SystemColumn* oldColumn = static_cast<SystemColumn*>(item_->parentItem());
 
     item_->setPos(oldColumn->mapFromScene(newPos_));
-    oldColumn->onMoveItem(item_, oldColumn);
+    oldColumn->onMoveItem(item_);
 
     SystemColumn* newColumn = static_cast<SystemColumn*>(item_->parentItem());
     newColumn->onReleaseItem(item_);

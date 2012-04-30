@@ -2198,6 +2198,14 @@
 				Name="SystemDesign"
 				>
 				<File
+					RelativePath=".\SystemDesign\HWMappingItem.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SystemDesign\SWCompItem.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\SystemDesign\SystemColumn.cpp"
 					>
 				</File>
@@ -11547,6 +11555,18 @@
 			<Filter
 				Name="SystemDesign"
 				>
+				<File
+					RelativePath=".\SystemDesign\HWMappingItem.h"
+					>
+				</File>
+				<File
+					RelativePath=".\SystemDesign\IComponentStack.h"
+					>
+				</File>
+				<File
+					RelativePath=".\SystemDesign\SWCompItem.h"
+					>
+				</File>
 				<File
 					RelativePath=".\SystemDesign\SystemColumn.h"
 					>
