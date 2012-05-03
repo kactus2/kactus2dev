@@ -30,6 +30,25 @@ field_(field) {
 	reorganizeChildren();
 }
 
+FieldGraphItem::FieldGraphItem( unsigned int leftBound, 
+							   unsigned int rightBound,
+							   QGraphicsItem* parent ):
+MemoryVisualizerItem(parent, leftBound),
+field_() {
+
+	int fieldWidth = leftBound - rightBound + 1;
+	setRect(0, 0, MemoryVisualizerItem::MIN_BIT_WIDTH * fieldWidth,
+		MemoryVisualizerItem::ITEM_HEIGHT);
+
+	setName(tr("undefined"));
+	setBrush(QBrush(QColor("lightgrey")));
+
+	setRightCornerText(QString::number(rightBound));
+	setLeftCornerText(QString::number(leftBound));
+
+	reorganizeChildren();
+}
+
 FieldGraphItem::~FieldGraphItem() {
 }
 
@@ -39,4 +58,8 @@ void FieldGraphItem::reorganizeChildren() {
 
 int FieldGraphItem::getOffset() const {
 	return field_->getBitOffset();
+}
+
+int FieldGraphItem::getWidth() const {
+	return field_->getBitWidth();
 }

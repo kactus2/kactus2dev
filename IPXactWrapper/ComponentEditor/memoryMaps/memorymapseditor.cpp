@@ -16,12 +16,20 @@ MemoryMapsEditor::MemoryMapsEditor( QSharedPointer<Component> component,
 ItemEditor(component, parent),
 handler_(handler),
 memoryMaps_(static_cast<QList<QSharedPointer<MemoryMap> >* >(dataPointer)),
-visualizer_(this) {
+splitter_(this),
+visualizer_(&splitter_),
+view_(&splitter_),
+model_(this) {
 
 	Q_ASSERT(memoryMaps_);
 
+	view_.setModel(&model_);
+
+	splitter_.addWidget(&view_);
+	splitter_.addWidget(&visualizer_);
+
 	QHBoxLayout* layout = new QHBoxLayout(this);
-	layout->addWidget(&visualizer_);
+	layout->addWidget(&splitter_);
 
 	visualizer_.setMemoryMaps(*memoryMaps_);
 }

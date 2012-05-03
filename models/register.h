@@ -92,8 +92,7 @@ public:
      *
      * \return QList containing pointers to the alternate registers.
      */
-    const QList<QSharedPointer<AlternateRegister> >&
-    getAlternateRegisters() const;
+    const QList<QSharedPointer<AlternateRegister> >& getAlternateRegisters() const;
 
     /*! \brief Get the dimension of the register.
      *
@@ -120,8 +119,8 @@ public:
      * \param alternateRegisters QList containing pointers to the new
      * alternateRegisters.
      */
-    void setAlternateRegisters(const QList<QSharedPointer<AlternateRegister> >&
-    		alternateRegisters);
+    void setAlternateRegisters(
+		const QList<QSharedPointer<AlternateRegister> >& alternateRegisters);
 
     /*! \brief Set the dimension of the register.
      *
@@ -143,6 +142,12 @@ public:
      * \return QList containing pointers to the fields.
      */
     const QList<QSharedPointer<Field> >& getFields();
+
+	/*! \brief Get the width of the register.
+	 *
+	 * \return The number of bits this register contains.
+	*/
+	unsigned int getWidth() const;
 
 private:
 

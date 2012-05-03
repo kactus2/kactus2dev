@@ -241,10 +241,20 @@ void Register::setDim(int dim) {
 
 void Register::setRegisterDefinition(RegisterDefinition* registerDefinition) {
 	registerDefinition_.clear();
-    this->registerDefinition_ =
-    		QSharedPointer<RegisterDefinition>(registerDefinition);
+    registerDefinition_ = QSharedPointer<RegisterDefinition>(registerDefinition);
 }
 
 const QList<QSharedPointer<Field> >& Register::getFields() {
-	return registerDefinition_->getFields();
+	if (registerDefinition_) {
+		return registerDefinition_->getFields();
+	}
+	return QList<QSharedPointer<Field> >();
+}
+
+unsigned int Register::getWidth() const {
+	if (registerDefinition_) {
+		return registerDefinition_->getSize();
+	}
+
+	return 0;
 }

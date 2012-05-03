@@ -50,6 +50,12 @@ public:
 	*/
 	virtual int getOffset() const;
 
+	/*! \brief Get the width of the address block.
+	 *
+	 * \return The width of a row in the address block.
+	*/
+	virtual int getWidth() const;
+
 protected:
 
 	//! \brief Set new positions for the register graph items

@@ -67,12 +67,20 @@ public:
 
 	/*! \brief Get the offset of the item. 
 	 * 
-	 * The default implementation return always 0. 
+	 * The default implementation returns always 0. 
 	 * All sub classes must implement this function if they contain an offset value.
 	 *
 	 * \return int The offset of the item from the parent item's base address.
 	*/
 	virtual int getOffset() const;
+
+	/*! \brief Get the width of the item.
+	 * 
+	 * The default implementation returns the maximum width.
+	 *
+	 * \return The width of the item.
+	*/
+	virtual int getWidth() const;
 
 signals:
 

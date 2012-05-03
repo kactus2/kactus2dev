@@ -149,3 +149,7 @@ int MemoryVisualizerItem::getOffset() const {
 	return 0;
 }
 
+int MemoryVisualizerItem::getWidth() const {
+	return maxWidth_;
+}
+

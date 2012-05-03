@@ -84,3 +84,7 @@ void AddressBlockGraphItem::setWidth( qreal width ) {
 int AddressBlockGraphItem::getOffset() const {
 	return addrBlock_->getBaseAddress().toInt();
 }
+
+int AddressBlockGraphItem::getWidth() const {
+	return addrBlock_->getWidth();
+}

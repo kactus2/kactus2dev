@@ -52,6 +52,12 @@ public:
 	*/
 	virtual int getOffset() const;
 
+	/*! \brief Get the width of the register.
+	 *
+	 * \return The number of the bits this register contains.
+	*/
+	virtual int getWidth() const;
+
 protected:
 
 	//! \brief Set new positions for the register graph items
@@ -70,6 +76,9 @@ private:
 
 	//! \brief Contains pointers to the editors of the fields in this register.
 	QList<QSharedPointer<FieldGraphItem> > fields_;
+
+	//! \brief Contains the editors for undefined fields in this register.
+	QList<QSharedPointer<FieldGraphItem> > undefinedFields_;
 };
 
 #endif // REGISTERGRAPHITEM_H

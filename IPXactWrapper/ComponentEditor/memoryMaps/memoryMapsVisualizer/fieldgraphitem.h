@@ -32,6 +32,17 @@ public:
 		QGraphicsItem* parent,
 		int maxWidth);
 	
+	/*! \brief The constructor for an undefined bit field.
+	 *
+	 * \param leftBound Left bound of the undefined field.
+	 * \param rightBound Right bound of the undefined field.
+	 * \param parent The pointer to the register that owns this field.
+	 *
+	*/
+	FieldGraphItem(unsigned int leftBound, 
+		unsigned int rightBound, 
+		QGraphicsItem* parent);
+
 	//! \brief The destructor
 	virtual ~FieldGraphItem();
 
@@ -40,6 +51,12 @@ public:
 	 * \return The offset of the field.
 	*/
 	virtual int getOffset() const;
+
+	/*! \brief Get the width of the field.
+	 *
+	 * \return The number of the bits this field contains.
+	*/
+	virtual int getWidth() const;
 
 protected:
 
