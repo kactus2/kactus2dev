@@ -224,8 +224,8 @@ void ProgramEntityAddCommand::redo()
 // Function: ApplicationAddCommand()
 //-----------------------------------------------------------------------------
 ApplicationAddCommand::ApplicationAddCommand(ProgramEntityItem* progEntity, ApplicationItem* item,
-                                               QUndoCommand* parent) : QUndoCommand(parent), item_(item),
-                                               progEntity_(progEntity), del_(false)
+                                             QUndoCommand* parent) : QUndoCommand(parent), item_(item),
+                                                                     progEntity_(progEntity), del_(false)
 {
 }
 
@@ -269,18 +269,21 @@ void ApplicationAddCommand::redo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: MappingCompAddCommand()
+// Function: SystemItemAddCommand()
 //-----------------------------------------------------------------------------
-MappingCompAddCommand::MappingCompAddCommand(SystemColumn* column, MappingComponentItem* item,
-                                             QUndoCommand* parent) : QUndoCommand(parent), item_(item),
-                                             column_(column), del_(false)
+SystemItemAddCommand::SystemItemAddCommand(IComponentStack* stack, ComponentItem* item,
+                                           QUndoCommand* parent)
+    : QUndoCommand(parent),
+      item_(item),
+      stack_(stack),
+      del_(false)
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~MappingCompAddCommand()
+// Function: ~SystemItemAddCommand()
 //-----------------------------------------------------------------------------
-MappingCompAddCommand::~MappingCompAddCommand()
+SystemItemAddCommand::~SystemItemAddCommand()
 {
     if (del_)
     {
@@ -291,11 +294,11 @@ MappingCompAddCommand::~MappingCompAddCommand()
 //-----------------------------------------------------------------------------
 // Function: undo()
 //-----------------------------------------------------------------------------
-void MappingCompAddCommand::undo()
+void SystemItemAddCommand::undo()
 {
     // Remove the item from the column and the scene.
-    column_->removeItem(item_);
-    column_->scene()->removeItem(item_);
+    stack_->removeItem(item_);
+    item_->scene()->removeItem(item_);
     del_ = true;
 
     emit componentInstanceRemoved(item_);
@@ -304,10 +307,10 @@ void MappingCompAddCommand::undo()
 //-----------------------------------------------------------------------------
 // Function: redo()
 //-----------------------------------------------------------------------------
-void MappingCompAddCommand::redo()
+void SystemItemAddCommand::redo()
 {
     // Add the item to the column.
-    column_->addItem(item_);
+    stack_->addItem(item_);
     del_ = false;
 
     emit componentInstantiated(item_);

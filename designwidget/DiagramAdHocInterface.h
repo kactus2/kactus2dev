@@ -17,6 +17,8 @@
 
 #include "DiagramConnectionEndpoint.h"
 
+#include <common/graphicsItems/GraphicsItemTypes.h>
+
 class DiagramInterconnection;
 class DiagramComponent;
 class DiagramColumn;
@@ -32,7 +34,7 @@ class DiagramAdHocInterface : public DiagramConnectionEndPoint
     Q_OBJECT
 
 public:
-    enum { Type = UserType + 31 };
+    enum { Type = GFX_TYPE_DIAGRAM_ADHOC_INTERFACE };
 
     /*!
      *  Constructor.

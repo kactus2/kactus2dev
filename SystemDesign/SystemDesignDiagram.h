@@ -26,6 +26,7 @@ class LibraryInterface;
 class VLNV;
 class GenericEditProvider;
 class SystemDesignWidget;
+class HWMappingItem;
 
 //-----------------------------------------------------------------------------
 //! SystemDesignDiagram class.
@@ -133,6 +134,11 @@ private:
      */
     void openDesign(QSharedPointer<Design> design);
 
+    /*!
+     *  Returns the HW component instance with the given name.
+     */
+    HWMappingItem* getHWComponent(QString const& instanceName);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -148,9 +154,6 @@ private:
 
     //! Boolean flag for indicating that an SW component is being dragged to the diagram.
     bool dragSW_;
-
-    //! The type of the SW component being dragged.
-    KactusAttribute::SWType dragSWType_;
 };
 
 //-----------------------------------------------------------------------------

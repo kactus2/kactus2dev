@@ -14,6 +14,7 @@
 #include "../EndpointDesign/SystemDeleteCommands.h"
 
 #include "SystemDesignDiagram.h"
+#include "SWCompItem.h"
 
 #include <LibraryManager/libraryinterface.h>
 
@@ -266,10 +267,27 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
             if (del)
             {
                 QSharedPointer<QUndoCommand> cmd(new SystemColumnDeleteCommand(diagram_->getColumnLayout(),
-                    column));
+                                                                               column));
                 editProvider_->addCommand(cmd);
                 emit clearItemSelection();
             }
+        }
+        else if (selected->type() == SWCompItem::Type)
+        {
+            SWCompItem* component = static_cast<SWCompItem*>(selected);
+            diagram_->removeInstanceName(component->name());
+            diagram_->clearSelection();
+
+            QSharedPointer<SystemItemDeleteCommand> cmd(new SystemItemDeleteCommand(component));
+
+            connect(cmd.data(), SIGNAL(componentInstanceRemoved(DiagramComponent*)),
+                this, SIGNAL(componentInstanceRemoved(DiagramComponent*)), Qt::UniqueConnection);
+            connect(cmd.data(), SIGNAL(componentInstantiated(DiagramComponent*)),
+                this, SIGNAL(componentInstantiated(DiagramComponent*)), Qt::UniqueConnection);
+
+            editProvider_->addCommand(cmd);
+
+            emit clearItemSelection();
         }
     }
 }

@@ -22,6 +22,9 @@ class EndpointConnection;
 class MappingComponentItem;
 class ProgramEntityItem;
 class EndpointItem;
+class ComponentItem;
+class IComponentStack;
+class SWPortItem;
 
 //-----------------------------------------------------------------------------
 //! SystemColumnMoveCommand class.
@@ -128,24 +131,26 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-//! MappingCompMoveCommand class.
+//! SystemItemMoveCommand class.
 //-----------------------------------------------------------------------------
-class MappingCompMoveCommand : public QUndoCommand
+class SystemItemMoveCommand : public QUndoCommand
 {
 public:
     /*!
      *  Constructor.
      *
-     *      @param [in] item    The item to move.
-     *      @param [in] oldPos  The item's old position.
-     *      @param [in] parent  The parent command.
+     *      @param [in] item      The item to move.
+     *      @param [in] oldPos    The item's old position.
+     *      @param [in] oldStack  The item's old stack.
+     *      @param [in] parent    The parent command.
      */
-    MappingCompMoveCommand(MappingComponentItem* item, QPointF const& oldPos, QUndoCommand* parent = 0);
+    SystemItemMoveCommand(ComponentItem* item, QPointF const& oldPos,
+                          IComponentStack* oldStack, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
      */
-    ~MappingCompMoveCommand();
+    ~SystemItemMoveCommand();
 
     /*!
      *  Undoes the command.
@@ -159,21 +164,27 @@ public:
 
 private:
     // Disable copying.
-    MappingCompMoveCommand(MappingCompMoveCommand const& rhs);
-    MappingCompMoveCommand& operator=(MappingCompMoveCommand const& rhs);
+    SystemItemMoveCommand(SystemItemMoveCommand const& rhs);
+    SystemItemMoveCommand& operator=(SystemItemMoveCommand const& rhs);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! The graphics item.
-    MappingComponentItem* item_;
+    ComponentItem* item_;
 
     //! The old position of the item.
     QPointF oldPos_;
 
+    //! The old parent stack.
+    IComponentStack* oldStack_;
+
     //! The new position of the item.
     QPointF newPos_;
+
+    //! The new parent stack.
+    IComponentStack* newStack_;
 };
 
 //-----------------------------------------------------------------------------
@@ -271,6 +282,55 @@ private:
     QPointF oldPos_;
 
     //! The new position of the item.
+    QPointF newPos_;
+};
+
+//-----------------------------------------------------------------------------
+//! SWPortMoveCommand class.
+//-----------------------------------------------------------------------------
+class SWPortMoveCommand : public QUndoCommand
+{
+public:
+    /*!
+     *  Constructor.
+     *
+     *      @param [in] port    The port to move.
+     *      @param [in] oldPos  The port's old position.
+     *      @param [in] parent  The parent command.
+     */
+    SWPortMoveCommand(SWPortItem* port, QPointF const& oldPos, QUndoCommand* parent = 0);
+
+    /*!
+     *  Destructor.
+     */
+    ~SWPortMoveCommand();
+
+    /*!
+     *  Undoes the command.
+     */
+    virtual void undo();
+
+    /*!
+     *  Redoes the command.
+     */
+    virtual void redo();
+
+private:
+    // Disable copying.
+    SWPortMoveCommand(SWPortMoveCommand const& rhs);
+    SWPortMoveCommand& operator=(SWPortMoveCommand const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The port item.
+    SWPortItem* port_;
+
+    //! The old position of the port.
+    QPointF oldPos_;
+
+    //! The new position of the port.
     QPointF newPos_;
 };
 

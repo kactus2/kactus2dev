@@ -12,7 +12,10 @@
 #ifndef SWCOMPITEM_H
 #define SWCOMPITEM_H
 
+#include "SWComponentItem.h"
+
 #include <common/graphicsItems/ComponentItem.h>
+#include <common/graphicsItems/GraphicsItemTypes.h>
 
 class SystemColumn;
 class IComponentStack;
@@ -20,10 +23,10 @@ class IComponentStack;
 //-----------------------------------------------------------------------------
 //! Graphics item for visualizing SW components.
 //-----------------------------------------------------------------------------
-class SWCompItem : public ComponentItem
+class SWCompItem : public SWComponentItem
 {
 public:
-    enum { Type = UserType + 31 };
+    enum { Type = GFX_TYPE_SW_COMPONENT_ITEM };
 
     /*!
      *  Constructor.

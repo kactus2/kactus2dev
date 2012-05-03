@@ -27,6 +27,7 @@ class MappingComponentItem;
 class ComponentItem;
 class ApplicationItem;
 class ProgramEntityItem;
+class IComponentStack;
 
 //-----------------------------------------------------------------------------
 //! SystemColumnAddCommand class.
@@ -309,9 +310,9 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-//! MappingCompAddCommand class.
+//! SystemItemAddCommand class.
 //-----------------------------------------------------------------------------
-class MappingCompAddCommand : public QObject, public QUndoCommand
+class SystemItemAddCommand : public QObject, public QUndoCommand
 {
 	Q_OBJECT
 
@@ -319,16 +320,16 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] column     The column to which to add the mapping component.
-     *      @param [in] item       The mapping component item to add.
-     *      @param [in] parent     The parent command.
+     *      @param [in] stack   The component stack to which to add the componetn.
+     *      @param [in] item    The mapping component item to add.
+     *      @param [in] parent  The parent command.
      */
-    MappingCompAddCommand(SystemColumn* column, MappingComponentItem* item, QUndoCommand* parent = 0);
+    SystemItemAddCommand(IComponentStack* stack, ComponentItem* item, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
      */
-    ~MappingCompAddCommand();
+    ~SystemItemAddCommand();
 
     /*!
      *  Undoes the command.
@@ -350,18 +351,18 @@ signals:
 
 private:
     // Disable copying.
-    MappingCompAddCommand(MappingCompAddCommand const& rhs);
-    MappingCompAddCommand& operator=(MappingCompAddCommand const& rhs);
+    SystemItemAddCommand(SystemItemAddCommand const& rhs);
+    SystemItemAddCommand& operator=(SystemItemAddCommand const& rhs);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The mapping component item.
-    MappingComponentItem* item_;
+    //! The component item.
+    ComponentItem* item_;
 
-    //! The item's parent column.
-    SystemColumn* column_;
+    //! The item's parent component stack.
+    IComponentStack* stack_;
 
     //! Boolean flag for indicating if the component should be deleted in the destructor.
     bool del_;

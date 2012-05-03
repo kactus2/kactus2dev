@@ -17,6 +17,8 @@
 
 #include "DiagramConnectionEndpoint.h"
 
+#include <common/graphicsItems/GraphicsItemTypes.h>
+
 class DiagramInterconnection;
 class DiagramComponent;
 class DiagramOffPageConnector;
@@ -31,7 +33,7 @@ class DiagramAdHocPort : public DiagramConnectionEndPoint
     Q_OBJECT
 
 public:
-    enum { Type = UserType + 30 };
+    enum { Type = GFX_TYPE_DIAGRAM_ADHOC_PORT };
 
     /*!
      *  Constructor.

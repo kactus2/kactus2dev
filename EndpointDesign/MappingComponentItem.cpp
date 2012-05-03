@@ -343,7 +343,7 @@ void MappingComponentItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 
         if (scenePos() != oldPos_)
         {
-            cmd = QSharedPointer<QUndoCommand>(new MappingCompMoveCommand(this, oldPos_));
+            cmd = QSharedPointer<QUndoCommand>(new SystemItemMoveCommand(this, oldPos_, oldColumn_));
         }
         else
         {

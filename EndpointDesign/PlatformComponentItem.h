@@ -12,7 +12,9 @@
 #ifndef PLATFORMCOMPONENTITEM_H
 #define PLATFORMCOMPONENTITEM_H
 
-#include "SWComponentItem.h"
+#include "../SystemDesign/SWComponentItem.h"
+
+#include <common/graphicsItems/GraphicsItemTypes.h>
 
 //-----------------------------------------------------------------------------
 //! PlatformComponentItem class.
@@ -22,7 +24,7 @@ class PlatformComponentItem : public SWComponentItem
     Q_OBJECT 
 
 public:
-    enum { Type = UserType + 14 };
+    enum { Type = GFX_TYPE_PLATFORM_COMPONENT };
 
     /*!
      *  Constructor.

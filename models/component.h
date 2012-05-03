@@ -824,7 +824,7 @@ public:
      *
      *      @param [in] comInterface The COM interface to update.
      */
-    void updateComInteface(ComInterface* comInterface);
+    void updateComInterface(ComInterface* comInterface);
 
     /*!
      *  Removes a COM interface from the component.

@@ -12,9 +12,11 @@
 #ifndef PROGRAMENTITYITEM_H
 #define PROGRAMENTITYITEM_H
 
-#include "SWComponentItem.h"
+#include "../SystemDesign/SWComponentItem.h"
 
 #include <common/CSourceWriter.h>
+#include <common/graphicsItems/GraphicsItemTypes.h>
+
 #include <MCAPI/MCAPIDesignerTypes.h>
 
 #include <QObject>
@@ -45,7 +47,7 @@ class ProgramEntityItem : public SWComponentItem
     Q_OBJECT
 
 public:
-    enum { Type = UserType + 8 };
+    enum { Type = GFX_TYPE_PROGRAM_ENTITY };
 
     /*!
      *  Constructor.

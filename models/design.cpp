@@ -224,20 +224,23 @@ void Design::write(QFile& file)
 			writePosition(writer, inst.position);
 
 			// Write the port positions.
-			QMapIterator<QString, QPointF> itrPortPos(inst.portPositions);
-			writer.writeStartElement("kactus2:portPositions");
+            if (!inst.portPositions.isEmpty())
+            {
+			    QMapIterator<QString, QPointF> itrPortPos(inst.portPositions);
+			    writer.writeStartElement("kactus2:portPositions");
 
-			while (itrPortPos.hasNext())
-			{
-				itrPortPos.next();
+			    while (itrPortPos.hasNext())
+			    {
+				    itrPortPos.next();
 
-				writer.writeStartElement("kactus2:portPosition");
-				writer.writeAttribute("kactus2:busRef", itrPortPos.key());
-				writePosition(writer, itrPortPos.value());
-				writer.writeEndElement();
-			}
+				    writer.writeStartElement("kactus2:portPosition");
+				    writer.writeAttribute("kactus2:busRef", itrPortPos.key());
+				    writePosition(writer, itrPortPos.value());
+				    writer.writeEndElement();
+			    }
 
-			writer.writeEndElement(); // kactus2:portPositions
+			    writer.writeEndElement(); // kactus2:portPositions
+            }
 
             // Write the port ad-hoc visibilities.
             QMap<QString, bool> const& adHocVisibilities = inst.portAdHocVisibilities;
@@ -998,23 +1001,27 @@ void Design::writeAdHocVisibilities(QXmlStreamWriter& xmlWriter,
                                     QMap<QString, QPointF> const& adHocPortPositions)
 {
     QMapIterator<QString, bool> itrAdHoc(adHocVisibilities);
-    xmlWriter.writeStartElement("kactus2:adHocVisibilities");
 
-    while (itrAdHoc.hasNext())
+    if (!adHocVisibilities.isEmpty())
     {
-        itrAdHoc.next();
+        xmlWriter.writeStartElement("kactus2:adHocVisibilities");
 
-        if (itrAdHoc.value())
+        while (itrAdHoc.hasNext())
         {
-            xmlWriter.writeStartElement("kactus2:adHocVisible");
-            xmlWriter.writeAttribute("portName", itrAdHoc.key());
-            xmlWriter.writeAttribute("x", QString::number(int(adHocPortPositions.value(itrAdHoc.key()).x())));
-            xmlWriter.writeAttribute("y", QString::number(int(adHocPortPositions.value(itrAdHoc.key()).y())));
-            xmlWriter.writeEndElement();
-        }
-    }
+            itrAdHoc.next();
 
-    xmlWriter.writeEndElement(); // kactus2:adHocVisibilities
+            if (itrAdHoc.value())
+            {
+                xmlWriter.writeStartElement("kactus2:adHocVisible");
+                xmlWriter.writeAttribute("portName", itrAdHoc.key());
+                xmlWriter.writeAttribute("x", QString::number(int(adHocPortPositions.value(itrAdHoc.key()).x())));
+                xmlWriter.writeAttribute("y", QString::number(int(adHocPortPositions.value(itrAdHoc.key()).y())));
+                xmlWriter.writeEndElement();
+            }
+        }
+
+        xmlWriter.writeEndElement(); // kactus2:adHocVisibilities
+    }
 }
 
 //-----------------------------------------------------------------------------

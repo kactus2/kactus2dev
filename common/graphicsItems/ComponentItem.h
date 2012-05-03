@@ -27,8 +27,6 @@ class ComponentItem : public QObject, public QGraphicsRectItem
     Q_OBJECT 
 
 public:
-    //enum { Type = UserType + 16 };
-
     /*!
      *  Constructor.
      *
@@ -125,8 +123,6 @@ public:
 	 * \return QStringList containing the names of the views for the component.
 	*/
 	QStringList getViews() const;
-
-    int type() const { return Type; }
 
 signals:
     //! Signals that the contents of the component have been changed.

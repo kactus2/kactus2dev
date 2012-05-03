@@ -14,13 +14,15 @@
 
 #include <QGraphicsRectItem>
 
+#include <common/graphicsItems/GraphicsItemTypes.h>
+
 //-----------------------------------------------------------------------------
 //! PlatformPlaceholderItem class.
 //-----------------------------------------------------------------------------
 class PlatformPlaceholderItem : public QGraphicsRectItem
 {
 public:
-    enum { Type = UserType + 15 };
+    enum { Type = GFX_TYPE_PLATFORM_PLACEHOLDER };
 
     /*!
      *  Constructor.

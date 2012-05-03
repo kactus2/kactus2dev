@@ -14,6 +14,8 @@
 
 #include "DiagramConnectionEndpoint.h"
 
+#include <common/graphicsItems/GraphicsItemTypes.h>
+
 #include <QSharedPointer>
 #include <QVector2D>
 #include <QPolygonF>
@@ -34,7 +36,7 @@ class DiagramOffPageConnector : public DiagramConnectionEndPoint
 public:
     enum
     {
-        Type = UserType + 18
+        Type = GFX_TYPE_DIAGRAM_OFF_PAGE_CONNECTOR
     };
 
     /*!

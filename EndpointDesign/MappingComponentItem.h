@@ -12,10 +12,12 @@
 #ifndef MAPPINGCOMPONENTITEM_H
 #define MAPPINGCOMPONENTITEM_H
 
-#include "SWComponentItem.h"
+#include "../SystemDesign/SWComponentItem.h"
 
 #include <MCAPI/MCAPIDesignerTypes.h>
+
 #include <common/IDFactory.h>
+#include <common/graphicsItems/GraphicsItemTypes.h>
 
 #include <QObject>
 #include <QGraphicsItem>
@@ -47,7 +49,7 @@ class MappingComponentItem : public SWComponentItem
     Q_OBJECT
 
 public:
-    enum { Type = UserType + 13 };
+    enum { Type = GFX_TYPE_MAPPING_COMPONENT };
 
     /*!
      *  Constructor.

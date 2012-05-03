@@ -10,6 +10,8 @@
 #include <QGraphicsTextItem>
 #include <QUndoCommand>
 
+#include <common/graphicsItems/GraphicsItemTypes.h>
+
 class DiagramConnectionEndPoint;
 class BlockDiagram;
 
@@ -21,7 +23,7 @@ class DiagramInterconnection : public QObject, public QGraphicsPathItem
     Q_OBJECT
 
 public:
-    enum { Type = UserType + 2 };
+    enum { Type = GFX_TYPE_DIAGRAM_INTERCONNECTION };
 
     //-----------------------------------------------------------------------------
     //! RoutingMode enumeration.

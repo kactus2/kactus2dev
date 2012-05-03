@@ -12,6 +12,8 @@
 #ifndef ENDPOINTCONNECTION_H
 #define ENDPOINTCONNECTION_H
 
+#include <common/graphicsItems/GraphicsItemTypes.h>
+
 #include <QObject>
 #include <QGraphicsPathItem>
 #include <QList>
@@ -28,7 +30,7 @@ class EndpointConnection : public QObject, public QGraphicsPathItem
     Q_OBJECT
 
 public:
-    enum { Type = UserType + 11 };
+    enum { Type = GFX_TYPE_ENDPOINT_CONNECTION };
 
     /*!
      *  Constructor which creates a connection between two MCAPI endpoints.

@@ -58,17 +58,17 @@ SWInstance::SWInstance(QDomNode& node) : instanceName_(), displayName_(), desc_(
             continue;
         }
 
-        if (childNode.nodeName() == "spirit:instanceName_")
+        if (childNode.nodeName() == "spirit:instanceName")
         {
-            instanceName_ = childNode.nodeValue();
+            instanceName_ = General::removeWhiteSpace(childNode.childNodes().at(0).nodeValue());
         }
         else if (childNode.nodeName() == "spirit:displayName")
         {
-            displayName_ = childNode.nodeValue();
+            displayName_ = childNode.childNodes().at(0).nodeValue();
         }
         else if (childNode.nodeName() == "spirit:description")
         {
-            desc_ = childNode.nodeValue();
+            desc_ = childNode.childNodes().at(0).nodeValue();
         }
         else if (childNode.nodeName() == "kactus2:componentRef")
         {
@@ -113,14 +113,20 @@ void SWInstance::write(QXmlStreamWriter& writer) const
     writer.writeStartElement("kactus2:swInstance");
 
     // Write general data.
-    writer.writeTextElement("spirit:instanceName_", instanceName_);
+    writer.writeTextElement("spirit:instanceName", instanceName_);
     writer.writeTextElement("spirit:displayName", displayName_);
     writer.writeTextElement("spirit:description", desc_);
 
-    writer.writeEmptyElement("kactus2:componentRef");
-    General::writeVLNVAttributes(writer, &componentRef_);
+    if (!componentRef_.isEmpty())
+    {
+        writer.writeEmptyElement("kactus2:componentRef");
+        General::writeVLNVAttributes(writer, &componentRef_);
+    }
     
-    writer.writeTextElement("kactus2:fileSetRef", fileSetRef_);
+    if (!fileSetRef_.isEmpty())
+    {
+        writer.writeTextElement("kactus2:fileSetRef", fileSetRef_);
+    }
     
     writer.writeEmptyElement("kactus2:mapping");
     writer.writeAttribute("kactus2:hwRef", hwRef_);

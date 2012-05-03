@@ -241,7 +241,7 @@ void EndpointDesignDiagram::addMappingComponent(SystemColumn* column, QPointF co
     connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
     // Create an undo command and execute it.
-    QSharedPointer<MappingCompAddCommand> cmd(new MappingCompAddCommand(column, item));
+    QSharedPointer<SystemItemAddCommand> cmd(new SystemItemAddCommand(column, item));
     connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
         this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
     connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),

@@ -576,7 +576,7 @@ BlockDiagram::~BlockDiagram()
 }
 
 //-----------------------------------------------------------------------------
-// Function: getEditedComponent()
+// Function: getComponent()
 //-----------------------------------------------------------------------------
 DiagramComponent *BlockDiagram::getComponent(const QString &instanceName)
 {

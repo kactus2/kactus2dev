@@ -12,6 +12,8 @@
 
 #include "DiagramConnectionEndpoint.h"
 
+#include <common/graphicsItems/GraphicsItemTypes.h>
+
 class BusInterface;
 class DiagramInterconnection;
 class DiagramComponent;
@@ -26,7 +28,7 @@ class DiagramPort : public DiagramConnectionEndPoint
     Q_OBJECT
 
 public:
-    enum { Type = UserType + 3 };
+    enum { Type = GFX_TYPE_DIAGRAM_PORT };
 
     DiagramPort(QSharedPointer<BusInterface> busIf, LibraryInterface* lh,
                 QGraphicsItem *parent = 0);

@@ -70,7 +70,7 @@ ComInterface::ComInterface(QDomNode& node) : name_(), displayName_(), desc_(), c
         {
             dataType_ = childNode.childNodes().at(0).nodeValue();
         }
-        else if (childNode.nodeName() == "kactus2:direction")
+        else if (childNode.nodeName() == "kactus2:comDirection")
         {
             dir_ = General::str2Direction(childNode.childNodes().at(0).nodeValue(), General::INOUT);
         }

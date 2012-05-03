@@ -8,6 +8,7 @@
 
 #include "AdHocEnabled.h"
 #include <common/graphicsItems/ComponentItem.h>
+#include <common/graphicsItems/GraphicsItemtypes.h>
 
 #include <QSharedPointer>
 
@@ -25,7 +26,7 @@ class DiagramComponent : public ComponentItem, public AdHocEnabled
     Q_OBJECT 
 
 public:
-    enum { Type = UserType + 1 };
+    enum { Type = GFX_TYPE_DIAGRAM_COMPONENT };
 
     DiagramComponent(LibraryInterface* lh,
                      QSharedPointer<Component> component,

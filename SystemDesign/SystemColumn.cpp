@@ -196,31 +196,36 @@ void SystemColumn::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 //-----------------------------------------------------------------------------
 void SystemColumn::onMoveItem(ComponentItem* item)
 {
+    // Restrict the position so that the item cannot be placed too high.
+    //item->setPos(snapPointToGrid(item->x(), std::max(MIN_Y_PLACEMENT - item->boundingRect().top(), item->y())));
+    VStackedLayout::updateItemMove(items_, item, MIN_Y_PLACEMENT, SPACING);
+
     // Check if any HW mapping item is under the item.
     foreach (ComponentItem* childItem, items_)
     {
         HWMappingItem* mappingItem = dynamic_cast<HWMappingItem*>(childItem);
 
-        QPointF itemPos = item->scenePos() + item->boundingRect().center();
-
-        if (mappingItem != 0 && mappingItem->isItemAllowed(item) &&
-            mappingItem->contains(mappingItem->mapFromScene(itemPos))) // TODO:
+        if (mappingItem != 0 && mappingItem->isItemAllowed(item))
         {
-            // We have to switch the column and update this column's item positions
-            // without the moving item.
-            items_.removeAll(item);
+            QRectF intersection = mappingItem->sceneBoundingRect().intersected(item->sceneBoundingRect());
 
-            VStackedLayout::updateItemPositions(items_, WIDTH / 2, MIN_Y_PLACEMENT, SPACING);
-            setZValue(0.0);
+            if (intersection.height() >= 3 * GridSize)
+            {
+                // Switch the mapping item as the parent.
+                items_.removeAll(item);
 
-            QPointF newPos = mappingItem->mapFromScene(item->scenePos());
-            item->setParentItem(mappingItem);
-            item->setPos(newPos);
+                VStackedLayout::updateItemPositions(items_, WIDTH / 2, MIN_Y_PLACEMENT, SPACING);
+                setZValue(0.0);
 
-            // And call the mapping item's onMoveItem().
-            mappingItem->onMoveItem(item);
-            mappingItem->updateSize();
-            return;
+                QPointF newPos = mappingItem->mapFromScene(item->scenePos());
+                item->setParentItem(mappingItem);
+                item->setPos(newPos);
+                item->setFlag(ItemStacksBehindParent, false);
+
+                // And call its onMoveItem().
+                mappingItem->onMoveItem(item);
+                return;
+            }
         }
     }
 
@@ -248,10 +253,6 @@ void SystemColumn::onMoveItem(ComponentItem* item)
     }
 
     setZValue(1001.0);
-
-    // Restrict the position so that the item cannot be placed too high.
-    //item->setPos(snapPointToGrid(item->x(), std::max(MIN_Y_PLACEMENT - item->boundingRect().top(), item->y())));
-    VStackedLayout::updateItemMove(items_, item, MIN_Y_PLACEMENT, SPACING);
 }
 
 //-----------------------------------------------------------------------------

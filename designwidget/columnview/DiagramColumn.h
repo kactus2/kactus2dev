@@ -13,6 +13,7 @@
 #define DIAGRAMCOLUMN_H
 
 #include <common/ColumnTypes.h>
+#include <common/graphicsItems/GraphicsItemTypes.h>
 
 #include <QGraphicsRectItem>
 #include <QSet>
@@ -31,7 +32,7 @@ class DiagramColumn : public QObject, public QGraphicsRectItem
     Q_OBJECT
 
 public:
-    enum { Type = UserType + 5 };
+    enum { Type = GFX_TYPE_DIAGRAM_COLUMN };
 
     /*!
      *  Constructor.

@@ -358,13 +358,16 @@ void ProgramEntityDeleteCommand::redo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: MappingCompDeleteCommand()
+// Function: SystemItemDeleteCommand()
 //-----------------------------------------------------------------------------
-MappingCompDeleteCommand::MappingCompDeleteCommand(MappingComponentItem* item, QUndoCommand* parent) :
-    QUndoCommand(parent), item_(item), column_(static_cast<SystemColumn*>(item->parentItem())),
-    scene_(item->scene()), del_(true)
+SystemItemDeleteCommand::SystemItemDeleteCommand(ComponentItem* item, QUndoCommand* parent)
+    : QUndoCommand(parent),
+      item_(item),
+      stack_(dynamic_cast<IComponentStack*>(item->parentItem())),
+      scene_(item->scene()),
+      del_(true)
 {
-    // Create child commands for removing connections.
+    // Create child commands for removing connections. TODO: Update when the old system design has been removed.
     foreach (QGraphicsItem* childItem, item->childItems())
     {
         if (childItem->type() != ProgramEntityItem::Type)
@@ -385,9 +388,9 @@ MappingCompDeleteCommand::MappingCompDeleteCommand(MappingComponentItem* item, Q
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~MappingCompDeleteCommand()
+// Function: ~SystemItemDeleteCommand()
 //-----------------------------------------------------------------------------
-MappingCompDeleteCommand::~MappingCompDeleteCommand()
+SystemItemDeleteCommand::~SystemItemDeleteCommand()
 {
     if (del_)
     {
@@ -398,10 +401,10 @@ MappingCompDeleteCommand::~MappingCompDeleteCommand()
 //-----------------------------------------------------------------------------
 // Function: undo()
 //-----------------------------------------------------------------------------
-void MappingCompDeleteCommand::undo()
+void SystemItemDeleteCommand::undo()
 {
     // Add the item back to the scene.
-    column_->addItem(item_);
+    stack_->addItem(item_);
     del_ = false;
 
     emit componentInstantiated(item_);
@@ -413,13 +416,13 @@ void MappingCompDeleteCommand::undo()
 //-----------------------------------------------------------------------------
 // Function: redo()
 //-----------------------------------------------------------------------------
-void MappingCompDeleteCommand::redo()
+void SystemItemDeleteCommand::redo()
 {
     // Execute child commands.
     QUndoCommand::redo();
 
     // Remove the item from the scene.
-    column_->removeItem(item_);
+    stack_->removeItem(item_);
     scene_->removeItem(item_);
     del_ = true;
 

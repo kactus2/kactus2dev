@@ -36,6 +36,7 @@ AssistedLineEdit::AssistedLineEdit(QSharedPointer<ILineContentMatcher> contentMa
     if (m_mainWnd != 0)
     {
         m_mainWnd->installEventFilter(this);
+        installEventFilter(this);
     }
 }
 
@@ -47,6 +48,7 @@ AssistedLineEdit::~AssistedLineEdit()
     // Remove the event filter.
     if (m_mainWnd != 0)
     {
+        removeEventFilter(this);
         m_mainWnd->removeEventFilter(this);
     }
 }
@@ -57,9 +59,21 @@ AssistedLineEdit::~AssistedLineEdit()
 bool AssistedLineEdit::eventFilter(QObject* /*obj*/, QEvent* e)
 {
     // Cancel the assist if the main window is moved or resized.
-    if (m_contentAssist->isContentShown() && (e->type() == QEvent::Move || e->type() == QEvent::Resize))
+    if (m_contentAssist->isContentShown())
     {
-        m_contentAssist->cancel();
+        if (e->type() == QEvent::Move || e->type() == QEvent::Resize)
+        {
+            m_contentAssist->cancel();
+        }
+        else if (e->type() == QEvent::KeyPress)
+        {
+            QKeyEvent* keyEvent = static_cast<QKeyEvent*>(e);
+
+            if (keyEvent->key() == Qt::Key_Tab)
+            {
+                keyPressEvent(keyEvent);
+            }
+        }
     }
 
     return false;

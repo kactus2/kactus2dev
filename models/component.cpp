@@ -2611,9 +2611,9 @@ bool Component::addComInterface(QSharedPointer<ComInterface> comInterface)
 }
 
 //-----------------------------------------------------------------------------
-// Function: Component::updateComInteface()
+// Function: Component::updateComInterface()
 //-----------------------------------------------------------------------------
-void Component::updateComInteface(ComInterface* comInterface)
+void Component::updateComInterface(ComInterface* comInterface)
 {
     // get all com interface pointers
     QList<QSharedPointer<ComInterface> > list = comInterfaces_.values();

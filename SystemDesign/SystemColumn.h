@@ -15,6 +15,7 @@
 #include "IComponentStack.h"
 
 #include <common/ColumnTypes.h>
+#include <common/graphicsItems/GraphicsItemTypes.h>
 
 #include <QGraphicsRectItem>
 #include <QSet>
@@ -31,11 +32,11 @@ class SystemColumn : public QObject, public QGraphicsRectItem, public IComponent
     Q_OBJECT
 
 public:
-    enum { Type = UserType + 6 };
+    enum { Type = GFX_TYPE_SYSTEM_COLUMN };
 
     enum
     {
-        WIDTH = 349,
+        WIDTH = 319,
         HEIGHT = 30
     };
 

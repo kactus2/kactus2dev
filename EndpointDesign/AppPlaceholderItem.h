@@ -12,6 +12,8 @@
 #ifndef APPPLACEHOLDER_H
 #define APPPLACEHOLDER_H
 
+#include <common/graphicsItems/GraphicsItemTypes.h>
+
 #include <QObject>
 #include <QGraphicsTextItem>
 #include <QGraphicsRectItem>
@@ -26,7 +28,7 @@ class AppPlaceholderItem : public QObject, public QGraphicsRectItem
     Q_OBJECT
     
 public:
-    enum { Type = UserType + 9 };
+    enum { Type = GFX_TYPE_APP_PLACEHOLDER };
 
     enum
     {

@@ -12,7 +12,9 @@
 #ifndef APPLICATIONITEM_H
 #define APPLICATIONITEM_H
 
-#include "SWComponentItem.h"
+#include "../SystemDesign/SWComponentItem.h"
+
+#include <common/graphicsItems/GraphicsItemTypes.h>
 
 class ProgramEntityItem;
 
@@ -24,7 +26,7 @@ class ApplicationItem : public SWComponentItem
     Q_OBJECT 
 
 public:
-    enum { Type = UserType + 17 };
+    enum { Type = GFX_TYPE_APPLICATION_ITEM };
 
     /*!
      *  Constructor.

@@ -13,6 +13,8 @@
 
 #include "../SystemDesign/SystemColumnLayout.h"
 #include "../SystemDesign/SystemColumn.h"
+#include "../SystemDesign/SWComponentItem.h"
+
 #include "EndpointConnection.h"
 #include "EndpointItem.h"
 #include "EndpointStack.h"
@@ -100,33 +102,36 @@ void EndpointConnectionMoveCommand::redo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: MappingCompMoveCommand()
+// Function: SystemItemMoveCommand()
 //-----------------------------------------------------------------------------
-MappingCompMoveCommand::MappingCompMoveCommand(MappingComponentItem* item, QPointF const& oldPos,
-                                               QUndoCommand* parent) : QUndoCommand(parent), item_(item),
-                                                                       oldPos_(oldPos), newPos_(item->scenePos())
+SystemItemMoveCommand::SystemItemMoveCommand(ComponentItem* item, QPointF const& oldPos,
+                                             IComponentStack* oldStack, QUndoCommand* parent)
+    : QUndoCommand(parent),
+      item_(item),
+      oldPos_(oldPos),
+      oldStack_(oldStack),
+      newPos_(item->scenePos()),
+      newStack_(dynamic_cast<IComponentStack*>(item->parentItem()))
 {
+    Q_ASSERT(oldStack != 0);
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~MappingCompMoveCommand()
+// Function: ~SystemItemMoveCommand()
 //-----------------------------------------------------------------------------
-MappingCompMoveCommand::~MappingCompMoveCommand()
+SystemItemMoveCommand::~SystemItemMoveCommand()
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: undo()
 //-----------------------------------------------------------------------------
-void MappingCompMoveCommand::undo()
+void SystemItemMoveCommand::undo()
 {
-    SystemColumn* oldColumn = static_cast<SystemColumn*>(item_->parentItem());
+    newStack_->removeItem(item_);
 
-    item_->setPos(oldColumn->mapFromScene(oldPos_));
-    oldColumn->onMoveItem(item_);
-
-    SystemColumn* newColumn = static_cast<SystemColumn*>(item_->parentItem());
-    newColumn->onReleaseItem(item_);
+    item_->setPos(oldStack_->mapStackFromScene(oldPos_));
+    oldStack_->addItem(item_);
 
     // Execute child commands.
     QUndoCommand::undo();
@@ -135,15 +140,12 @@ void MappingCompMoveCommand::undo()
 //-----------------------------------------------------------------------------
 // Function: redo()
 //-----------------------------------------------------------------------------
-void MappingCompMoveCommand::redo()
+void SystemItemMoveCommand::redo()
 {
-    SystemColumn* oldColumn = static_cast<SystemColumn*>(item_->parentItem());
-
-    item_->setPos(oldColumn->mapFromScene(newPos_));
-    oldColumn->onMoveItem(item_);
-
-    SystemColumn* newColumn = static_cast<SystemColumn*>(item_->parentItem());
-    newColumn->onReleaseItem(item_);
+    oldStack_->removeItem(item_);
+    
+    item_->setPos(newStack_->mapStackFromScene(newPos_));
+    newStack_->addItem(item_);
 
     // Execute child commands.
     QUndoCommand::redo();
@@ -233,6 +235,53 @@ void EndpointMoveCommand::redo()
 
     EndpointStack* stack = static_cast<EndpointStack*>(item_->parentItem());
     stack->onMoveEndpoint(item_);    
+
+    // Execute child commands.
+    QUndoCommand::redo();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ItemMoveCommand()
+//-----------------------------------------------------------------------------
+SWPortMoveCommand::SWPortMoveCommand(SWPortItem* port, QPointF const& oldPos,
+                                     QUndoCommand* parent)
+    : QUndoCommand(parent),
+      port_(port),
+      oldPos_(oldPos),
+      newPos_(port->pos())
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: ~SWPortMoveCommand()
+//-----------------------------------------------------------------------------
+SWPortMoveCommand::~SWPortMoveCommand()
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: undo()
+//-----------------------------------------------------------------------------
+void SWPortMoveCommand::undo()
+{
+    SWComponentItem* comp = static_cast<SWComponentItem*>(port_->parentItem());
+
+    port_->setPos(oldPos_);
+    comp->onMovePort(port_);
+
+    // Execute child commands.
+    QUndoCommand::undo();
+}
+
+//-----------------------------------------------------------------------------
+// Function: redo()
+//-----------------------------------------------------------------------------
+void SWPortMoveCommand::redo()
+{
+    SWComponentItem* comp = static_cast<SWComponentItem*>(port_->parentItem());
+
+    port_->setPos(newPos_);
+    comp->onMovePort(port_);
 
     // Execute child commands.
     QUndoCommand::redo();

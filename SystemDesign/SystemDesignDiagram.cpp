@@ -15,6 +15,7 @@
 #include "../EndpointDesign/SystemAddCommands.h"
 
 #include "HWMappingItem.h"
+#include "SWCompItem.h"
 #include "SystemDesignWidget.h"
 
 #include <QPainter>
@@ -30,6 +31,7 @@
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/graphicsItems/ComponentItem.h>
 
+#include <models/SWInstance.h>
 #include <models/component.h>
 #include <models/designconfiguration.h>
 #include <models/design.h>
@@ -52,8 +54,7 @@ SystemDesignDiagram::SystemDesignDiagram(LibraryInterface* lh, MainWindow* mainW
       parent_(parent),
       nodeIDFactory_(),
       layout_(),
-      dragSW_(false),
-      dragSWType_(KactusAttribute::KTS_SW_MAPPING)
+      dragSW_(false)
 {
 }
 
@@ -94,7 +95,7 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
 
     unsigned int colIndex = 0;
 
-    // Add (HW) component instances.
+    // Create (HW) component instances.
     foreach (Design::ComponentInstance const& instance, design->getComponentInstances())
     {
         QSharedPointer<LibraryComponent> libComponent = getLibraryInterface()->getModel(instance.componentRef);
@@ -123,6 +124,7 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
         HWMappingItem* item = new HWMappingItem(component, instance.instanceName,
                                                 instance.displayName, instance.description,
                                                 instance.configurableElementValues, id);
+        item->setImported(instance.imported);
 
         connect(item, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
         connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
@@ -152,6 +154,69 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
 
         addInstanceName(instance.instanceName);
     }
+    
+    // Create SW instances.
+    foreach (SWInstance const& instance, design->getSWInstances())
+    {
+        QSharedPointer<LibraryComponent> libComponent = getLibraryInterface()->getModel(instance.getComponentRef());
+
+        if (!libComponent)
+        {
+            emit errorMessage(tr("The SW component %1 was not found in the library").arg(
+                                    instance.getComponentRef().getName()).arg(design->getVlnv()->getName()));
+            continue;
+        }
+
+        QSharedPointer<Component> component = libComponent.staticCast<Component>();
+
+        // TODO: Determine ID.
+        int id = 0;
+
+        SWCompItem* item = new SWCompItem(component, instance.getInstanceName(),
+                                          instance.getDisplayName(), instance.getDescription(),
+                                          QMap<QString, QString>(), id);
+        //item->setImported(instance.imported);
+        item->setPos(instance.getPosition());
+
+        connect(item, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+        connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
+
+        if (instance.getMapping().isEmpty())
+        {
+            // Check if the position is not found.
+            if (instance.getPosition().isNull())
+            {
+                layout_->getColumns().at(colIndex)->addItem(item);
+                colIndex = 1 - colIndex;
+            }
+            else
+            {
+                SystemColumn* column = layout_->findColumnAt(instance.getPosition());
+
+                if (column != 0)
+                {
+                    column->addItem(item, true);
+                }
+                else
+                {
+                    layout_->getColumns().at(colIndex)->addItem(item);
+                    colIndex = 1 - colIndex;
+                }
+            }
+        }
+        else
+        {
+            // Otherwise the mapping has been specified. Find the corresponding HW component instance.
+            HWMappingItem* mappingItem = getHWComponent(instance.getMapping());
+
+            if (mappingItem != 0)
+            {
+                mappingItem->addItem(item, true);
+            }
+        }
+
+        addInstanceName(instance.getInstanceName());
+    }
 
     // Refresh the layout so that all components are placed in correct positions according to the stacking.
     layout_->updatePositions();
@@ -162,6 +227,45 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
 {
+    dragSW_ = false;
+
+    if (!isProtected() && event->mimeData()->hasFormat("data/vlnvptr"))
+    {
+        event->acceptProposedAction();
+
+        VLNV *vlnv;
+        memcpy(&vlnv, event->mimeData()->data("data/vlnvptr").data(), sizeof(vlnv));
+
+        if (vlnv->getType() == VLNV::COMPONENT)
+        {
+            // Determine the component type.
+            QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(*vlnv);
+            QSharedPointer<Component> comp = libComp.staticCast<Component>();
+
+            // component with given vlnv was not found
+            if (!comp) {
+                emit errorMessage(tr("Component with the VLNV %1:%2:%3:%4 was not found in the library.").arg(
+                    vlnv->getVendor()).arg(
+                    vlnv->getLibrary()).arg(
+                    vlnv->getName()).arg(
+                    vlnv->getVersion()));
+                return;
+            }
+
+            // Check if the firmness does not match with the edited component.
+            if (comp->getComponentImplementation() != KactusAttribute::KTS_SW)
+            {
+                return;
+            }
+
+            dragSW_ = true;
+            comp.clear();
+        }
+        // TODO:
+        else if (vlnv->getType() == VLNV::COMDEFINITION)
+        {
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -169,6 +273,48 @@ void SystemDesignDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 {
+    if (dragSW_)
+    {
+        // Find the top-most item under the cursor.
+        QGraphicsItem* item = 0;
+        QList<QGraphicsItem*> itemList = items(event->scenePos());
+
+        if (!itemList.empty())
+        {
+            item = itemList.front();
+
+            if (item->type() == QGraphicsTextItem::Type)
+            {
+                item = item->parentItem();
+            }
+        }
+
+        // If the underlying object is a HW mapping item, accept the drag here.
+        if (item != 0 && item->type() == HWMappingItem::Type)
+        {
+            event->setDropAction(Qt::CopyAction);
+        }
+        else
+        {
+            // Otherwise check which column should receive the SW component.
+            SystemColumn* column = layout_->findColumnAt(snapPointToGrid(event->scenePos()));
+
+            if (column != 0)
+            {
+                event->setDropAction(Qt::CopyAction);
+            }
+            else
+            {
+                event->setDropAction(Qt::IgnoreAction);
+            }
+        }
+
+        event->accept();
+    }
+    else
+    {
+        event->setDropAction(Qt::IgnoreAction);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -187,6 +333,55 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
     // Check if the dragged item was a valid one.
     if (dragSW_)
     {
+        // Determine the component stack who gets the component (either HW mapping item or a system column).
+        IComponentStack* stack = 0;
+
+        QList<QGraphicsItem*> itemList = items(event->scenePos());
+        
+        if (!itemList.empty())
+        {
+            QGraphicsItem* item = itemList.back();
+
+            if (item != 0 && item->type() == HWMappingItem::Type)
+            {
+                stack = static_cast<HWMappingItem*>(item);
+            }
+        }
+
+        if (stack == 0)
+        {
+            stack = layout_->findColumnAt(snapPointToGrid(event->scenePos()));
+        }
+
+        // Retrieve the vlnv.
+        VLNV *vlnv;
+        memcpy(&vlnv, event->mimeData()->data("data/vlnvptr").data(), sizeof(vlnv));
+
+        // Create the component model.
+        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(*vlnv);
+        QSharedPointer<Component> comp = libComp.staticCast<Component>();
+
+        // Set the instance name for the new component instance.
+        QString instanceName = createInstanceName(comp);
+
+        if (stack != 0)
+        {
+            // Create the SW component item.
+            SWCompItem* item = new SWCompItem(comp, instanceName, QString(), QString(),
+                QMap<QString, QString>(), nodeIDFactory_.getID());
+            
+            item->setPos(stack->mapStackFromScene(snapPointToGrid(event->scenePos())));
+            connect(item, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+
+            // Create the undo command and execute it.
+            QSharedPointer<SystemItemAddCommand> cmd(new SystemItemAddCommand(stack, item));
+            connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+                this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+            connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+                this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+
+            getEditProvider().addCommand(cmd);
+        }
     }
 }
 
@@ -347,12 +542,49 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
     QSharedPointer<Design> design(new Design(vlnv));
 
     QList<Design::ComponentInstance> instances;
+    QList<SWInstance> swInstances;
     QList<Design::Interconnection> interconnections;
     QList<ColumnDesc> columns;
 
-    foreach (QGraphicsItem *item, items())
+    foreach (QGraphicsItem const* item, items())
     {
-        // TODO:
+        if (item->type() == HWMappingItem::Type)
+        {
+            HWMappingItem const* mappingItem = static_cast<HWMappingItem const*>(item);
+
+            Design::ComponentInstance instance(mappingItem->name(), mappingItem->displayName(),
+                                               mappingItem->description(),
+                                               *mappingItem->componentModel()->getVlnv(),
+                                               mappingItem->scenePos());
+            instance.configurableElementValues = mappingItem->getConfigurableElements();
+            instance.imported = mappingItem->isImported();
+            //instance.mcapiNodeID = 
+
+            instances.append(instance);
+        }
+        else if (item->type() == SWCompItem::Type)
+        {
+            SWCompItem const* swCompItem = static_cast<SWCompItem const*>(item);
+
+            SWInstance instance;
+            instance.setInstanceName(swCompItem->name());
+            instance.setDisplayName(swCompItem->displayName());
+            instance.setDescription(swCompItem->description());
+            instance.setComponentRef(*swCompItem->componentModel()->getVlnv());
+                        
+            if (swCompItem->parentItem()->type() == HWMappingItem::Type)
+            {
+                HWMappingItem const* parent = static_cast<HWMappingItem*>(swCompItem->parentItem());
+                instance.setMapping(parent->name());
+                instance.setPosition(swCompItem->pos());
+            }
+            else
+            {
+                instance.setPosition(swCompItem->scenePos());
+            }
+
+            swInstances.append(instance);
+        }
     }
 
     foreach (SystemColumn* column, layout_->getColumns())
@@ -361,6 +593,7 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
     }
 
     design->setComponentInstances(instances);
+    design->setSWInstances(swInstances);
     design->setInterconnections(interconnections);
     design->setColumns(columns);   
 
@@ -446,4 +679,28 @@ void SystemDesignDiagram::onComponentInstanceRemoved(ComponentItem* item)
 SystemDesignWidget* SystemDesignDiagram::parent() const
 {
     return parent_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: getHWComponent()
+//-----------------------------------------------------------------------------
+HWMappingItem* SystemDesignDiagram::getHWComponent(QString const& instanceName)
+{
+    // search all graphicsitems in the scene
+    foreach (QGraphicsItem *item, items())
+    {
+        if (item->type() == HWMappingItem::Type)
+        {
+            HWMappingItem* comp = qgraphicsitem_cast<HWMappingItem*>(item);
+
+            if (comp->name() == instanceName)
+            {
+                return comp;
+            }
+        }
+    }
+
+    // if no component was found
+    emit errorMessage(tr("Component %1 was not found in the design").arg(instanceName));
+    return 0;
 }

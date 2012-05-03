@@ -260,7 +260,7 @@ void EndpointDesignWidget::keyPressEvent(QKeyEvent* event)
 
             if (!item->isMapped())
             {
-                QSharedPointer<MappingCompDeleteCommand> cmd(new MappingCompDeleteCommand(item));
+                QSharedPointer<SystemItemDeleteCommand> cmd(new SystemItemDeleteCommand(item));
 
                 connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
                     diagram_, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);

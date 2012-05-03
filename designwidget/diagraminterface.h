@@ -18,6 +18,8 @@
 
 #include "DiagramConnectionEndpoint.h"
 
+#include <common/graphicsItems/GraphicsItemTypes.h>
+
 class Port;
 class BusInterface;
 class DiagramInterconnection;
@@ -35,7 +37,7 @@ class DiagramInterface : public DiagramConnectionEndPoint
     Q_OBJECT
 
 public:
-    enum { Type = UserType + 4 };
+    enum { Type = GFX_TYPE_DIAGRAM_INTERFACE };
 
     DiagramInterface(LibraryInterface* lh, QSharedPointer<Component> component,
                      QSharedPointer<BusInterface> busIf, QGraphicsItem *parent = 0);

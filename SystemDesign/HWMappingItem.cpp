@@ -11,6 +11,8 @@
 
 #include "HWMappingItem.h"
 
+#include "../EndpointDesign/SystemMoveCommands.h"
+
 #include "SystemDesignDiagram.h"
 #include "SWCompItem.h"
 
@@ -31,8 +33,8 @@ HWMappingItem::HWMappingItem(QSharedPointer<Component> component,
                              QString const& description,
                              QMap<QString, QString> const& configurableElementValues,
                              unsigned int id)
-    : ComponentItem(QRectF(-WIDTH / 2, 0, WIDTH, 0), component, instanceName,
-                    displayName, description, configurableElementValues, 0),
+    : SWComponentItem(QRectF(-WIDTH / 2, 0, WIDTH, 0), component, instanceName,
+                      displayName, description, configurableElementValues, 0),
       id_(id),
       oldStack_(0),
       swComponents_(),
@@ -42,11 +44,7 @@ HWMappingItem::HWMappingItem(QSharedPointer<Component> component,
     setBrush(QBrush(QColor(0xa5,0xc3,0xef)));
 
     updateComponent();
-    updateSize();
-
-    mapComponent(new SWCompItem(component, "testi"));
-    mapComponent(new SWCompItem(component, "testi2"));
-    mapComponent(new SWCompItem(component, "testi3"));
+    updateItemPositions();
 }
 
 //-----------------------------------------------------------------------------
@@ -61,22 +59,6 @@ HWMappingItem::~HWMappingItem()
     {
         column->removeItem(this);
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWMappingItem::mapComponent()
-//-----------------------------------------------------------------------------
-void HWMappingItem::mapComponent(SWCompItem* item)
-{
-    addItem(item, false);
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWMappingItem::unmapComponent()
-//-----------------------------------------------------------------------------
-void HWMappingItem::unmapComponent(SWCompItem* item)
-{
-    removeItem(item);
 }
 
 //-----------------------------------------------------------------------------
@@ -130,63 +112,50 @@ void HWMappingItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         Q_ASSERT(column != 0);
         column->onReleaseItem(this);
 
-        oldStack_ = 0;
-
         QSharedPointer<QUndoCommand> cmd;
 
-//         if (scenePos() != oldPos_)
-//         {
-//             cmd = QSharedPointer<QUndoCommand>(new MappingCompMoveCommand(this, oldPos_));
-//         }
-//         else
-//         {
-//             cmd = QSharedPointer<QUndoCommand>(new QUndoCommand());
-//         }
-// 
-//         // TODO: End the position update for the connections and clear the list.
-//         
-//         // Add the undo command to the edit stack only if it has at least some real changes.
-//         if (cmd->childCount() > 0 || scenePos() != oldPos_)
-//         {
-//             static_cast<SystemDesignDiagram*>(scene())->getEditProvider().addCommand(cmd, false);
-//         }
+        if (scenePos() != oldPos_)
+        {
+            cmd = QSharedPointer<QUndoCommand>(new SystemItemMoveCommand(this, oldPos_, oldStack_));
+        }
+        else
+        {
+            cmd = QSharedPointer<QUndoCommand>(new QUndoCommand());
+        }
+
+        // TODO: End the position update for the connections and clear the list.
+        
+        // Add the undo command to the edit stack only if it has at least some real changes.
+        if (cmd->childCount() > 0 || scenePos() != oldPos_)
+        {
+            static_cast<SystemDesignDiagram*>(scene())->getEditProvider().addCommand(cmd, false);
+        }
+
+        oldStack_ = 0;
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: HWMappingItem::updateSize()
 //-----------------------------------------------------------------------------
-void HWMappingItem::updateSize()
+qreal HWMappingItem::getHeight() const
 {
-    // Update the SW component item positions.
-    //VStackedLayout::updateItemPositions(swComponents_, 0.0, TOP_MARGIN, SPACING);
+    // Calculate the minimum height based on the stack contents.
+    qreal stackHeight = TOP_MARGIN + BOTTOM_MARGIN;
 
-    // Update the component's size based on the item that is positioned at
-    // the lowest level of them all.
-    qreal bottom = TOP_MARGIN;
-
-//     if (!swComponents_.empty())
-//     {
-//         bottom = swComponents_.back()->y() + swComponents_.back()->boundingRect().bottom();
-//     }
-
-    foreach (ComponentItem* item, swComponents_)
+    if (!swComponents_.isEmpty())
     {
-        bottom += item->boundingRect().height();
+        foreach (ComponentItem* item, swComponents_)
+        {
+            stackHeight += item->boundingRect().height();
+        }
+
+        stackHeight += (swComponents_.size() - 1) * SPACING;
     }
 
-    bottom += (swComponents_.size() - 1) * SPACING;
-
-    setRect(-WIDTH / 2, 0, WIDTH, bottom + BOTTOM_MARGIN);
-
-
-
-    IComponentStack* column = dynamic_cast<IComponentStack*>(parentItem());
-
-    if (column != 0)
-    {
-        column->updateItemPositions();
-    }
+    // Determine the largest one from the stack height, minimum height (empty) and the height
+    // calculated by the base class.
+    return std::max<qreal>(std::max<qreal>(stackHeight, MIN_HEIGHT), SWComponentItem::getHeight());
 }
 
 //-----------------------------------------------------------------------------
@@ -195,11 +164,12 @@ void HWMappingItem::updateSize()
 void HWMappingItem::addItem(ComponentItem* item, bool load)
 {
     item->setParentItem(this);
+    item->setFlag(ItemStacksBehindParent, false);
 
     swComponents_.append(item);
     VStackedLayout::updateItemMove(swComponents_, item, TOP_MARGIN, SPACING);
     VStackedLayout::setItemPos(swComponents_, item, 0.0, TOP_MARGIN, SPACING);
-    updateSize();
+    updateItemPositions();
 
     emit contentChanged();
 }
@@ -211,7 +181,7 @@ void HWMappingItem::removeItem(ComponentItem* item)
 {
     swComponents_.removeAll(item);
     item->setParentItem(0);
-    updateSize();
+    updateItemPositions();
 
     emit contentChanged();
 }
@@ -221,23 +191,26 @@ void HWMappingItem::removeItem(ComponentItem* item)
 //-----------------------------------------------------------------------------
 void HWMappingItem::onMoveItem(ComponentItem* item)
 {
-    // Check if the item is not inside the HW mapping item.
-    if (!contains(item->pos() + item->boundingRect().center())) // TODO:
+    VStackedLayout::updateItemMove(swComponents_, item, TOP_MARGIN, SPACING);
+    updateSize();
+
+    // Check if the item is not overlapping the HW mapping item enough.
+    QRectF intersection = sceneBoundingRect().intersected(item->sceneBoundingRect());
+
+    if (item->rect().height() - intersection.height() >= 3 * GridSize)
     {
+        swComponents_.removeAll(item);
+
         // Let the parent component stack handle the mouse move.
         SystemColumn* parentStack = static_cast<SystemColumn*>(parentItem());
         Q_ASSERT(parentStack != 0);
-
-        swComponents_.removeAll(item);
-
-        QPointF oldPos = item->scenePos();
-
+        
         QPointF newPos = parentStack->mapStackFromScene(item->scenePos());
         item->setParentItem(parentStack);
         item->setPos(newPos);
+        item->setFlag(ItemStacksBehindParent);
 
         updateItemPositions();
-        updateSize();
         setZValue(0.0);
 
         parentStack->onMoveItem(item);
@@ -245,8 +218,6 @@ void HWMappingItem::onMoveItem(ComponentItem* item)
     }
 
     setZValue(1001.0);
-    VStackedLayout::updateItemMove(swComponents_, item, TOP_MARGIN, SPACING);
-    updateSize();
 }
 
 //-----------------------------------------------------------------------------
@@ -265,6 +236,7 @@ void HWMappingItem::updateItemPositions()
 {
     // Just update the item positions.
     VStackedLayout::updateItemPositions(swComponents_, 0.0, TOP_MARGIN, SPACING);
+    updateSize();
 }
 
 //-----------------------------------------------------------------------------

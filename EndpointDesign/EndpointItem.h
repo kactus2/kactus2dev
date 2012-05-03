@@ -12,6 +12,8 @@
 #ifndef ENDPOINTITEM_H
 #define ENDPOINTITEM_H
 
+#include <common/graphicsItems/GraphicsItemTypes.h>
+
 #include <QObject>
 #include <QAbstractGraphicsShapeItem>
 #include <QVector2D>
@@ -31,7 +33,7 @@ class EndpointItem : public QObject, public QAbstractGraphicsShapeItem
     Q_INTERFACES(QGraphicsItem)
 
 public:
-    enum { Type = UserType + 12 };
+    enum { Type = GFX_TYPE_ENDPOINT };
 
     // Public constants.
     enum

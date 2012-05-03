@@ -145,7 +145,7 @@ void ComInterfaceEditor::makeChanges()
     QMap<QString, QString> propertyValues = propertyValueEditor_.getData();
     comIf_->setPropertyValues(propertyValues);
 
-    component()->updateComInteface(comIf_);
+    component()->updateComInterface(comIf_);
 }
 
 //-----------------------------------------------------------------------------

@@ -27,6 +27,7 @@ class MappingComponentItem;
 class ComponentItem;
 class ApplicationItem;
 class ProgramEntityItem;
+class IComponentStack;
 
 //-----------------------------------------------------------------------------
 //! SystemColumnDeleteCommand class.
@@ -357,9 +358,9 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-//! MappingCompDeleteCommand class.
+//! SystemItemDeleteCommand class.
 //-----------------------------------------------------------------------------
-class MappingCompDeleteCommand : public QObject, public QUndoCommand
+class SystemItemDeleteCommand : public QObject, public QUndoCommand
 {
 	Q_OBJECT
 
@@ -367,14 +368,14 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] item The mapping component item to delete.
+     *      @param [in] item The component item to delete.
      */
-    MappingCompDeleteCommand(MappingComponentItem* item, QUndoCommand* parent = 0);
+    SystemItemDeleteCommand(ComponentItem* item, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
      */
-    ~MappingCompDeleteCommand();
+    ~SystemItemDeleteCommand();
 
     /*!
      *  Undoes the command.
@@ -387,7 +388,6 @@ public:
     virtual void redo();
 
 signals:
-
 	//! \brief Emitted when a new component is instantiated to the design.
 	void componentInstantiated(ComponentItem* comp);
 
@@ -396,18 +396,18 @@ signals:
 
 private:
     // Disable copying.
-    MappingCompDeleteCommand(MappingCompDeleteCommand const& rhs);
-    MappingCompDeleteCommand& operator=(MappingCompDeleteCommand const& rhs);
+    SystemItemDeleteCommand(SystemItemDeleteCommand const& rhs);
+    SystemItemDeleteCommand& operator=(SystemItemDeleteCommand const& rhs);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The mapping component item.
-    MappingComponentItem* item_;
+    //! The component item.
+    ComponentItem* item_;
 
     //! The component's parent column.
-    SystemColumn* column_;
+    IComponentStack* stack_;
 
     //! The graphics scene.
     QGraphicsScene* scene_;

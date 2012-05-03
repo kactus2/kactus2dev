@@ -12,6 +12,8 @@
 #ifndef ENDPOINTSTACK_H
 #define ENDPOINTSTACK_H
 
+#include <common/graphicsItems/GraphicsItemTypes.h>
+
 #include <MCAPI/MCAPIDesignerTypes.h>
 
 #include <QGraphicsRectItem>
@@ -31,7 +33,7 @@ class EndpointStack : public QObject, public QGraphicsRectItem
     Q_OBJECT 
 
 public:
-    enum { Type = UserType + 10 };
+    enum { Type = GFX_TYPE_ENDPOINT_STACK };
 
     /*!
      *  Constructor.

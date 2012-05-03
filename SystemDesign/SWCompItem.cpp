@@ -11,10 +11,14 @@
 
 #include "SWCompItem.h"
 
+#include "../EndpointDesign/SystemMoveCommands.h"
+
 #include "IComponentStack.h"
 #include "SystemDesignDiagram.h"
 
 #include <models/component.h>
+
+#include <common/GenericEditProvider.h>
 
 #include <QBrush>
 #include <QUndoCommand>
@@ -28,8 +32,8 @@ SWCompItem::SWCompItem(QSharedPointer<Component> component,
                        QString const& description,
                        QMap<QString, QString> const& configurableElementValues,
                        unsigned int id)
-    : ComponentItem(QRectF(-WIDTH / 2, 0, WIDTH, MIN_HEIGHT), component, instanceName,
-                    displayName, description, configurableElementValues, 0),
+    : SWComponentItem(QRectF(-WIDTH / 2, 0, WIDTH, MIN_HEIGHT), component, instanceName,
+                      displayName, description, configurableElementValues, 0),
       id_(id),
       oldStack_(0),
       oldPos_()
@@ -38,6 +42,7 @@ SWCompItem::SWCompItem(QSharedPointer<Component> component,
     setBrush(QBrush(QColor(0xce,0xdf,0xff)));
 
     updateComponent();
+    updateSize();
 }
 
 //-----------------------------------------------------------------------------
@@ -59,8 +64,8 @@ SWCompItem::~SWCompItem()
 //-----------------------------------------------------------------------------
 void SWCompItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    ComponentItem::mousePressEvent(event);
     setZValue(1001.0);
+    ComponentItem::mousePressEvent(event);
 
     oldPos_ = scenePos();
     oldStack_ = dynamic_cast<IComponentStack*>(parentItem());
@@ -106,25 +111,25 @@ void SWCompItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         Q_ASSERT(stack != 0);
         stack->onReleaseItem(this);
 
-        oldStack_ = 0;
-
         QSharedPointer<QUndoCommand> cmd;
 
-        //         if (scenePos() != oldPos_)
-        //         {
-        //             cmd = QSharedPointer<QUndoCommand>(new MappingCompMoveCommand(this, oldPos_));
-        //         }
-        //         else
-        //         {
-        //             cmd = QSharedPointer<QUndoCommand>(new QUndoCommand());
-        //         }
-        // 
-        //         // TODO: End the position update for the connections and clear the list.
-        //         
-        //         // Add the undo command to the edit stack only if it has at least some real changes.
-        //         if (cmd->childCount() > 0 || scenePos() != oldPos_)
-        //         {
-        //             static_cast<SystemDesignDiagram*>(scene())->getEditProvider().addCommand(cmd, false);
-        //         }
+        if (scenePos() != oldPos_)
+        {
+            cmd = QSharedPointer<QUndoCommand>(new SystemItemMoveCommand(this, oldPos_, oldStack_));
+        }
+        else
+        {
+            cmd = QSharedPointer<QUndoCommand>(new QUndoCommand());
+        }
+
+        // TODO: End the position update for the connections and clear the list.
+        
+        // Add the undo command to the edit stack only if it has at least some real changes.
+        if (cmd->childCount() > 0 || scenePos() != oldPos_)
+        {
+            static_cast<SystemDesignDiagram*>(scene())->getEditProvider().addCommand(cmd, false);
+        }
+
+        oldStack_ = 0;
     }
 }

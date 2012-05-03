@@ -14,17 +14,20 @@
 
 #include "IComponentStack.h"
 
+#include "SWComponentItem.h"
+
 #include <common/graphicsItems/ComponentItem.h>
+#include <common/graphicsItems/GraphicsItemTypes.h>
 
 class SWCompItem;
 
 //-----------------------------------------------------------------------------
 //! Graphics item for visualizing the underlying HW in system designs.
 //-----------------------------------------------------------------------------
-class HWMappingItem : public ComponentItem, public IComponentStack
+class HWMappingItem : public SWComponentItem, public IComponentStack
 {
 public:
-    enum { Type = UserType + 30 };
+    enum { Type = GFX_TYPE_HW_MAPPING_ITEM };
 
     /*!
      *  Constructor.
@@ -39,22 +42,6 @@ public:
      *  Destructor.
      */
     ~HWMappingItem();
-
-    /*!
-     *  Maps the given SW component item to this HW.
-     *
-     *      @param [in] item The SW component to map.
-     */
-    void mapComponent(SWCompItem* item);
-
-    /*!
-     *  Removes a mapping of the given SW component item from this HW.
-     *
-     *      @param [in] item The SW component to unmap.
-     */
-    void unmapComponent(SWCompItem* item);
-
-    void updateSize();
 
     /*!
      *  Returns the graphics item type.
@@ -126,6 +113,8 @@ protected:
     //! Called when the user release the mouse.
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
 
+    qreal getHeight() const;
+
 private:
     // Disable copying.
     HWMappingItem(HWMappingItem const& rhs);
@@ -138,9 +127,10 @@ private:
     // Constants.
     enum
     {
-        WIDTH = 240,
+        MIN_HEIGHT = 100,
+        WIDTH = 200,
         TOP_MARGIN = 40,
-        BOTTOM_MARGIN = 60,
+        BOTTOM_MARGIN = 20,
         SPACING = 10,
     };
 
