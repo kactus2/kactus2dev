@@ -87,17 +87,6 @@ memoryBlockData_(0) {
 	memoryBlockData_ = QSharedPointer<MemoryBlockData>(
 			new MemoryBlockData(usage, volatileValue, access, tempParameters));
 	tempParameters.clear();
-
-	// if mandatory elements are missing
-// 	if (!MemoryMapItem::attributes_.contains(QString("spirit:bankAlignment"))) {
-// 		throw Parse_error(QObject::tr("Mandatory element spirit:bankAlignment"
-// 				" missing in spirit:bank"));
-// 	}
-// 
-// 	// if no items are specified
-// 	if (items_.size() == 0) {
-// 		throw Parse_error(QObject::tr("No items specified in spirit:bank"));
-// 	}
 }
 
 Bank::Bank( const Bank &other ):
@@ -192,7 +181,7 @@ void Bank::write(QXmlStreamWriter& writer) {
 	// write the base class information
 	MemoryMapItem::write(writer);
 
-	// write the collection of addressblocks, banks or subspaceMaps
+	// write the collection of address blocks, banks or subspaceMaps
 	for (int i = 0; i < items_.size(); ++i) {
 		items_.at(i)->write(writer);
 	}

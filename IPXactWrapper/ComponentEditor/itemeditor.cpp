@@ -8,8 +8,6 @@
 #include "itemeditor.h"
 #include <models/component.h>
 
-#include <QSizePolicy>
-
 ItemEditor::ItemEditor( QSharedPointer<Component> component, QWidget *parent): 
 QWidget(parent), 
 component_(component) {

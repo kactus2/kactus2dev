@@ -51,21 +51,21 @@ QVariant FieldTableModel::headerData( int section,
 		case 5: 
 			return tr("Access");
 		case 6: 
-			return tr("Reset Value");
+			return tr("Reset\nValue");
 		case 7: 
-			return tr("Modified write");
+			return tr("Modified\nwrite");
 		case 8: 
-			return tr("Read action");
+			return tr("Read\naction");
 		case 9: 
 			return tr("Testable");
 		case 10: 
-			return tr("Test constraint");
+			return tr("Test\nconstraint");
 		case 11: 
-			return tr("Write as read");
+			return tr("Write\nas\nread");
 		case 12: 
-			return tr("Minimum value");
+			return tr("Minimum\nvalue");
 		case 13: 
-			return tr("Maximum value");
+			return tr("Maximum\nvalue");
 		case 14: 
 			return tr("Enumeration\nPair-Name\nValue");
 		default: 

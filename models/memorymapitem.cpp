@@ -14,8 +14,11 @@
 #include <QXmlStreamWriter>
 
 // the constructor
-MemoryMapItem::MemoryMapItem(QDomNode &memoryMapNode): name_(QString()),
-attributes_(), baseAddress_(QString()), baseAddrAttributes_() {
+MemoryMapItem::MemoryMapItem(QDomNode &memoryMapNode): 
+name_(),
+attributes_(),
+baseAddress_(), 
+baseAddrAttributes_() {
 
 	// parse the attributes
 	General::parseAttributes(memoryMapNode, attributes_);
@@ -48,12 +51,6 @@ attributes_(), baseAddress_(QString()), baseAddrAttributes_() {
 			General::parseAttributes(tempNode, baseAddrAttributes_);
 		}
 	}
-
-	// check that mandatory elements were found
-// 	if (name_.isNull() ) {
-// 		throw Parse_error(QObject::tr("Mandatory element name missing in "
-// 				"MemoryMapItem"));
-// 	}
 	return;
 }
 
