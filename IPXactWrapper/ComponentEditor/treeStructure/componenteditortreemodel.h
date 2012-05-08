@@ -30,6 +30,15 @@ public:
 	*/
 	virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
+	/*! \brief Does the specified item have any child items
+     *
+     * \param parent Model index of the item.
+     *
+     * \return True if the item has any child items. This function is implemented
+     * for performance reasons.
+    */
+    virtual bool hasChildren(const QModelIndex& parent = QModelIndex()) const;
+
 	/*! \brief Get the number of columns the item has to be displayed.
 	 *
 	 * \param parent Identifies the parent that's column count is requested.
@@ -47,24 +56,49 @@ public:
 	*/
 	virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
 
-	/*! \brief Save the data to the model for specified item
-	 *
-	 * \param index The model index of the item that's data is to be saved.
-	 * \param value The data that is to be saved.
-	 * \param role The role specifies what kind of data should be saved.
-	 *
-	 * \return True if saving happened successfully.
-	*/
-	bool setData(const QModelIndex& index, const QVariant& value, 
-		int role = Qt::EditRole);
-
 	/*! \brief Get the item flags that defines the possible operations for the item.
 	 *
 	 * \param index Model index that identifies the item.
 	 *
 	 * \return Qt::ItemFlags specify the possible operations for the item.
 	*/
-	Qt::ItemFlags flags(const QModelIndex& index) const;
+	virtual Qt::ItemFlags flags(const QModelIndex& index) const;
+
+	/*! \brief Get index that identifies the given item.
+	 *
+	 * \param row The row of the item.
+	 * \param column The column of the item.
+	 * \param parent The parent index of the item.
+	 *
+	 * \return QModelIndex The model index that identifies the item.
+	*/
+	virtual QModelIndex index(int row, int column, 
+		const QModelIndex& parent = QModelIndex()) const;
+
+	/*! \brief Get the index that identifies the given item.
+	 *
+	 * \param item Pointer to the item that's index is wanted.
+	 *
+	 * \return QModelIndex The model index that identifies the item.
+	*/
+	virtual QModelIndex index(ComponentEditorItem* item) const;
+
+	/*! \brief Get the index of the parent of given index.
+	 *
+	 * \param index The index that identifies the item that's parent is wanted.
+	 *
+	 * \return QModelIndex The model index that identifies the parent.
+	*/
+	virtual QModelIndex parent(const QModelIndex& index) const;
+
+public slots:
+
+	/*! \brief Handler for component editor item's content changed signal.
+	 *
+	 * \param item Pointer to the item that changed.
+	 *
+	*/
+	void onContentChanged(ComponentEditorItem* item);
 
 private:
 	//! \brief No copying

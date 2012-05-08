@@ -79,15 +79,99 @@ QVariant ComponentEditorTreeModel::data( const QModelIndex& index,
 	}
 }
 
-bool ComponentEditorTreeModel::setData( const QModelIndex& index, 
-									   const QVariant& value, int role /*= Qt::EditRole*/ ) {
-	return false;
-}
-
 Qt::ItemFlags ComponentEditorTreeModel::flags( const QModelIndex& index ) const {
 	if (!index.isValid()) {
 		return Qt::NoItemFlags;
 	}
 
 	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+}
+
+bool ComponentEditorTreeModel::hasChildren( const QModelIndex& parent /*= QModelIndex()*/ ) const {
+
+	ComponentEditorItem* parentItem = 0;
+
+	// if the given item is invalid, it is interpreted as root item
+	if (!parent.isValid()) {
+		parentItem = rootItem_.data();
+	}
+	else {
+		parentItem = static_cast<ComponentEditorItem*>(
+			parent.internalPointer());
+	}
+
+	// return how many children the parent has
+	return parentItem->hasChildren();
+}
+
+void ComponentEditorTreeModel::onContentChanged( ComponentEditorItem* item ) {
+	QModelIndex index = ComponentEditorTreeModel::index(item);
+	emit dataChanged(index, index);
+}
+
+QModelIndex ComponentEditorTreeModel::index(int row,
+											int column, 
+											const QModelIndex& parent /*= QModelIndex()*/ ) const {
+
+	if (!hasIndex(row, column, parent)) {
+		return QModelIndex();
+	}
+
+	ComponentEditorItem* parentItem = 0;
+
+	// if parent is invalid the asked index is for the root item
+	if (!parent.isValid()) {
+		parentItem = rootItem_.data();
+	}
+	else {
+		parentItem = static_cast<ComponentEditorItem*>(
+			parent.internalPointer());
+	}
+
+	Q_ASSERT(parentItem);
+
+	// get pointer to specified child of the parent
+	ComponentEditorItem* child = parentItem->child(row);
+
+	// if the item was found
+	if (child) {
+		return createIndex(row, column, child);
+	}
+	// if child was not found
+	else {
+		return QModelIndex();
+	}
+}
+
+QModelIndex ComponentEditorTreeModel::index(ComponentEditorItem* item ) const {
+	Q_ASSERT(item);
+
+	return createIndex(item->row(), 0, item);
+}
+
+QModelIndex ComponentEditorTreeModel::parent( const QModelIndex& index ) const {
+	// if the child parameter is invalid then there is no parent
+	if (!index.isValid()) {
+		return QModelIndex();
+	}
+
+	// pointer to the child item
+	ComponentEditorItem* childItem =
+		static_cast<ComponentEditorItem*>(index.internalPointer());
+	ComponentEditorItem* parent = childItem->parent();
+
+	// if the parent does not exist then this item is root item
+	if (!parent) {
+		return QModelIndex();
+	}
+
+	// if row is invalid then the grandparent does not exist and parent is
+	// a root item so we return an invalid QModelIndex
+	int row = parent->row();
+	if (row == -1) {
+		return QModelIndex();
+	}
+
+	// create new index and return it
+	return createIndex(row, 0, parent);
 }
