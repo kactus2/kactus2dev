@@ -15,6 +15,7 @@
 #include <QSharedPointer>
 #include <QFont>
 #include <QList>
+#include <QWidget>
 
 class LibraryInterface;
 class ItemEditor;
@@ -30,12 +31,14 @@ public:
 
 	/*! \brief The constructor
 	 *
+	 * \param model Pointer to the model that owns the items.
 	 * \param libHandler Pointer to the instance that manages the library.
 	 * \param component Pointer to the component being edited.
 	 * \param parent Pointer to the parent item.
 	 *
 	*/
-	ComponentEditorItem(LibraryInterface* libHandler,
+	ComponentEditorItem(ComponentEditorTreeModel* model,
+		LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
 		ComponentEditorItem* parent);
 	
@@ -93,14 +96,6 @@ public:
 	*/
 	ComponentEditorItem* parent();
 
-	/*! \brief Get the font to be used for text of this item.
-	*
-	* The default implementation is for the base elements that can not be removed.
-	*
-	* \return QFont instance that defines the font to be used.
-	*/
-	QFont getFont() const;
-
 	/*! \brief Add a new child to the item.
 	 *
 	 * \param child Pointer to the child to add.
@@ -124,25 +119,31 @@ public:
 	*/
 	void moveChild(const int sourceIndex, int targetIndex);
 
+	/*! \brief Get the font to be used for text of this item.
+	*
+	* The default implementation is for the base elements that can not be removed.
+	*
+	* \return QFont instance that defines the font to be used.
+	*/
+	virtual QFont getFont() const;
+
 	/*! \brief Get the text to be displayed to user in the tree for this item.
 	 *
 	 * \return QString Contains the text to display.
 	*/
-	virtual QString text() const;
+	virtual QString text() const = 0;
 
 	/*! \brief Check the validity of this item and sub items.
 	 *
 	 * \return bool True if item is in valid state.
 	*/
-	virtual bool isValid() const;
+	virtual bool isValid() const = 0;
 
 	/*! \brief Get pointer to the editor of this item.
 	 *
-	 * The default implementation returns null pointer. 
-	 *
 	 * \return Pointer to the editor to use for this item.
 	*/
-	virtual ItemEditor* editor();
+	virtual ItemEditor* editor() = 0;
 
 signals:
 
@@ -159,6 +160,13 @@ protected:
 
 	//! \brief Contains the children of this item.
 	QList<ComponentEditorItem*> childItems_;
+
+protected slots:
+
+	/*! \brief Handler for editor's contentChanged signal.
+	 *
+	*/
+	void onContentChanged();
 
 private:
 	//! \brief No copying

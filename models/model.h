@@ -92,7 +92,14 @@ public:
 	 * 		Key = name of the model parameter.
 	 * 		Value = Pointer to the model parameter.
 	 */
-	const QMap<QString, QSharedPointer<ModelParameter> >& getModelParameters();
+	const QMap<QString, QSharedPointer<ModelParameter> >& getModelParameters() const;
+
+	/*! \brief Get the model parameters of this model.
+	 *
+	 *
+	 * \return QMap containing the model parameters. Key is the name of the model parameter.
+	*/
+	QMap<QString, QSharedPointer<ModelParameter> >& getModelParameters();
 
 	/*! \brief Get the ports of this model
 	 *

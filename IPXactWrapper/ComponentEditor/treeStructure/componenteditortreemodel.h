@@ -8,19 +8,38 @@
 #ifndef COMPONENTEDITORTREEMODEL_H
 #define COMPONENTEDITORTREEMODEL_H
 
-#include "componenteditoritem.h"
+#include "componenteditorrootitem.h"
+#include <models/component.h>
 
 #include <QAbstractItemModel>
+#include <QWidget>
+#include <QSharedPointer>
 
+class LibraryInterface;
+
+/*! \brief The tree model that manages the component editor's navigation tree.
+ *
+ */
 class ComponentEditorTreeModel : public QAbstractItemModel {
 	Q_OBJECT
 
 public:
 
-	ComponentEditorTreeModel(QObject *parent);
+	/*! \brief The constructor
+	 *
+	 * \param libHandler Pointer to the instance that manages the library.
+	 * \param parent Pointer to the instance that owns this model.
+	 * \param displayWidget Pointer to the instance that displays the editors of items.
+	 *
+	*/
+	ComponentEditorTreeModel(LibraryInterface* libHandler,
+		QObject* parent, 
+		QWidget* displayWidget);
 	
 	//! \brief The destructor
 	virtual ~ComponentEditorTreeModel();
+
+	void setComponent(QSharedPointer<Component> component);
 
 	/*! \brief Get the number of rows an item contains.
 	 *
@@ -107,8 +126,14 @@ private:
 	//! \brief No assignment
 	ComponentEditorTreeModel& operator=(const ComponentEditorTreeModel& other);
 
+	//! \brief Pointer to the instance that manages the library.
+	LibraryInterface* libHandler_;
+
+	//! \brief Pointer to the widget that displays the items' editors.
+	QWidget* displayWidget_;
+
 	//! \brief Pointer to the root item of the tree.
-	QSharedPointer<ComponentEditorItem> rootItem_;
+	QSharedPointer<ComponentEditorRootItem> rootItem_;
 };
 
 #endif // COMPONENTEDITORTREEMODEL_H

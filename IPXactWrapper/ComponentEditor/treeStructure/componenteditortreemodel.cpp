@@ -9,11 +9,26 @@
 
 #include <QColor>
 
-ComponentEditorTreeModel::ComponentEditorTreeModel(QObject *parent):
-QAbstractItemModel(parent) {
+ComponentEditorTreeModel::ComponentEditorTreeModel( LibraryInterface* libHandler,
+												   QObject* parent,
+												   QWidget* displayWidget ):
+QAbstractItemModel(parent),
+libHandler_(libHandler),
+displayWidget_(displayWidget),
+rootItem_() {
+
 }
 
 ComponentEditorTreeModel::~ComponentEditorTreeModel() {
+}
+
+void ComponentEditorTreeModel::setComponent( QSharedPointer<Component> component ) {
+
+	beginResetModel();
+	rootItem_.clear();
+	rootItem_ = QSharedPointer<ComponentEditorRootItem>(
+		new ComponentEditorRootItem(libHandler_, component, displayWidget_, this));
+	endResetModel();
 }
 
 int ComponentEditorTreeModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
@@ -146,7 +161,13 @@ QModelIndex ComponentEditorTreeModel::index(int row,
 QModelIndex ComponentEditorTreeModel::index(ComponentEditorItem* item ) const {
 	Q_ASSERT(item);
 
-	return createIndex(item->row(), 0, item);
+	// if the item is the root item then it's model index is invalid
+	if (item == rootItem_.data()) {
+		return QModelIndex();
+	}
+	else {
+		return createIndex(item->row(), 0, item);
+	}
 }
 
 QModelIndex ComponentEditorTreeModel::parent( const QModelIndex& index ) const {

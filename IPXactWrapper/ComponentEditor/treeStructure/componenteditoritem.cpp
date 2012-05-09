@@ -10,7 +10,8 @@
 
 #include <QApplication>
 
-ComponentEditorItem::ComponentEditorItem( LibraryInterface* libHandler,
+ComponentEditorItem::ComponentEditorItem(ComponentEditorTreeModel* model,
+										 LibraryInterface* libHandler,
 										 QSharedPointer<Component> component,
 										 ComponentEditorItem* parent ):
 QObject(parent),
@@ -19,6 +20,8 @@ component_(component),
 childItems_(),
 parent_(parent) {
 
+	connect(this, SIGNAL(contentChanged(ComponentEditorItem*)),
+		model, SLOT(onContentChanged(ComponentEditorItem*)), Qt::UniqueConnection);
 }
 
 ComponentEditorItem::ComponentEditorItem( LibraryInterface* libHandler, 
@@ -30,6 +33,8 @@ component_(component),
 childItems_(),
 parent_(NULL) {
 
+	connect(this, SIGNAL(contentChanged(ComponentEditorItem*)),
+		parent, SLOT(onContentChanged(ComponentEditorItem*)), Qt::UniqueConnection);
 }
 
 ComponentEditorItem::~ComponentEditorItem() {
@@ -112,4 +117,8 @@ bool ComponentEditorItem::isValid() const {
 
 ItemEditor* ComponentEditorItem::editor() {
 	return NULL;
+}
+
+void ComponentEditorItem::onContentChanged() {
+	emit contentChanged(this);
 }

@@ -300,7 +300,11 @@ bool Model::isValid(const QStringList& fileSetNames) const {
 	return true;
 }
 
-const QMap<QString, QSharedPointer<ModelParameter> >& Model::getModelParameters() {
+const QMap<QString, QSharedPointer<ModelParameter> >& Model::getModelParameters() const {
+	return modelParameters_;
+}
+
+QMap<QString, QSharedPointer<ModelParameter> >& Model::getModelParameters() {
 	return modelParameters_;
 }
 

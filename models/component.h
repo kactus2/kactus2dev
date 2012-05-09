@@ -359,11 +359,11 @@ public:
 	*/
 	Channel* createChannel();
 
-	/*! \brief Get the model parameters of the component
+	/*! \brief Get the model parameters of the component.
 	 *
-	 * \return QMap containing the model parameters.
+	 * \return QMap containing the model parameters. Key is the name of the model parameter.
 	*/
-	const QMap<QString, QSharedPointer<ModelParameter> > getModelParameters() const;
+	QMap<QString, QSharedPointer<ModelParameter> >& getModelParameters();
 
 	/*! \brief Remove a channel from the component
 	 *

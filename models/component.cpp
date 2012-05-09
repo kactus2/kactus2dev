@@ -1914,13 +1914,14 @@ QList<QSharedPointer<File> > Component::getRTLFiles() const {
 	return list;
 }
 
-const QMap<QString, QSharedPointer<ModelParameter> > Component::getModelParameters() const {
+QMap<QString, QSharedPointer<ModelParameter> >& Component::getModelParameters() {
 	if (model_) {
 		return model_->getModelParameters();
 	}
-	// if theres no model theres no model parameters
-    // Pekka: cannot return a reference to a temporary object!
-	return QMap<QString, QSharedPointer<ModelParameter> >();
+	else {
+		model_ = QSharedPointer<Model>(new Model());
+		return model_->getModelParameters();
+	}
 }
 
 General::Direction Component::getPortDirection( const QString& portName ) const {
