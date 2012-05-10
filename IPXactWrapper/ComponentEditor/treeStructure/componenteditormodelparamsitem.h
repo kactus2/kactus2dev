@@ -11,6 +11,11 @@
 #include "componenteditoritem.h"
 
 #include <IPXactWrapper/ComponentEditor/modelParameters/modelparametereditor.h>
+#include <models/modelparameter.h>
+
+#include <QString>
+#include <QMap>
+#include <QSharedPointer>
 
 /*! \brief The Model parameters-item in the component editor navigation tree.
  *
@@ -62,6 +67,9 @@ private:
 
 	//! \brief No assignment
 	ComponentEditorModelParamsItem& operator=(const ComponentEditorModelParamsItem& other);
+
+	//! \brief The map that contains the model parameters.
+	QMap<QString, QSharedPointer<ModelParameter> >& modelParams_;
 
 	//! \brief The editor to edit the model parameters of the component.
 	ModelParameterEditor editor_;

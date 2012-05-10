@@ -12,7 +12,8 @@ ComponentEditorAddrSpacesItem::ComponentEditorAddrSpacesItem(ComponentEditorTree
 															 QSharedPointer<Component> component,
 															 QWidget* widget, 
 															 ComponentEditorItem* parent):
-ComponentEditorItem(model, libHandler, component, parent) {
+ComponentEditorItem(model, libHandler, component, parent),
+addSpaces_(component->getAddressSpaces()) {
 
 }
 

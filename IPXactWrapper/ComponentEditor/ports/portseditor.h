@@ -30,13 +30,11 @@ public:
 	/*! \brief The constructor
 	 *
 	 * \param component Pointer to the component being edited.
-	 * \param dataPointer Pointer to the QMap containing pointers to the ports.
 	 * \param handler Pointer to the instance that manages the library
 	 * \param parent Pointer to the owner of this widget.
 	 *
 	*/
 	PortsEditor(QSharedPointer<Component> component, 
-		void* dataPointer,
 		LibraryInterface* handler,
 		QWidget *parent);
 

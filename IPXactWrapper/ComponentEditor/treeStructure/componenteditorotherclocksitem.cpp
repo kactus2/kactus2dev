@@ -12,7 +12,9 @@ ComponentEditorOtherClocksItem::ComponentEditorOtherClocksItem(ComponentEditorTr
 															   QSharedPointer<Component> component, 
 															   QWidget* widget,
 															   ComponentEditorItem* parent):
-ComponentEditorItem(model, libHandler, component, parent) {
+ComponentEditorItem(model, libHandler, component, parent),
+otherClocks_(component->getOtherClockDrivers()),
+editor_(component, widget) {
 
 }
 
@@ -24,9 +26,14 @@ QString ComponentEditorOtherClocksItem::text() const {
 }
 
 bool ComponentEditorOtherClocksItem::isValid() const {
-	return true;
+	foreach (QSharedPointer<OtherClockDriver> otherClock, otherClocks_) {
+		if (!otherClock->isValid()) {
+			return false;
+		}
+	}
+	return editor_.isValid();
 }
 
 ItemEditor* ComponentEditorOtherClocksItem::editor() {
-	return NULL;
+	return &editor_;
 }

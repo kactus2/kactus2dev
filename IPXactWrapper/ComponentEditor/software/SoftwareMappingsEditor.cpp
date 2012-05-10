@@ -24,10 +24,11 @@
 //-----------------------------------------------------------------------------
 SoftwareMappingsEditor::SoftwareMappingsEditor(LibraryInterface* libHandler,
                                                QSharedPointer<Component> component,
-                                               void* dataPointer, QWidget *parent,
-                                               QWidget* parentWnd)
-    : ItemEditor(component, parent), libInterface_(libHandler), component_(component),
-      swDesignMapping_(VLNV::COMPONENT, libHandler, parentWnd, this)
+											   QWidget *parent,
+											   QWidget* parentWnd):
+ItemEditor(component, parent), 
+libInterface_(libHandler), component_(component),
+swDesignMapping_(VLNV::COMPONENT, libHandler, parentWnd, this)
 {
     swDesignMapping_.setTitle(tr("Mapped SW Design"));
     swDesignMapping_.setImplementationFilter(true, KactusAttribute::KTS_SW);

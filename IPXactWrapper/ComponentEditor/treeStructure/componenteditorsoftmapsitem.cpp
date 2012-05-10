@@ -12,7 +12,8 @@ ComponentEditorSoftMapsItem::ComponentEditorSoftMapsItem(ComponentEditorTreeMode
 														 QSharedPointer<Component> component,
 														 QWidget* widget,
 														 ComponentEditorItem* parent ):
-ComponentEditorItem(model, libHandler, component, parent) {
+ComponentEditorItem(model, libHandler, component, parent),
+editor_(libHandler, component, widget, widget) {
 
 }
 
@@ -24,9 +25,9 @@ QString ComponentEditorSoftMapsItem::text() const {
 }
 
 bool ComponentEditorSoftMapsItem::isValid() const {
-	return true;
+	return editor_.isValid();
 }
 
 ItemEditor* ComponentEditorSoftMapsItem::editor() {
-	return NULL;
+	return &editor_;
 }

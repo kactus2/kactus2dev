@@ -9,6 +9,8 @@
 #define COMPONENTEDITORPORTSITEM_H
 
 #include "componenteditoritem.h"
+#include <IPXactWrapper/ComponentEditor/ports/portseditor.h>
+#include <models/port.h>
 
 /*! \brief The Ports-item in the component editor's navigation tree.
  *
@@ -60,6 +62,12 @@ private:
 
 	//! \brief No assignment
 	ComponentEditorPortsItem& operator=(const ComponentEditorPortsItem& other);
+
+	//! \brief Contains the ports to edit
+	QMap<QString, QSharedPointer<Port> >& ports_;
+
+	//! \brief The editor to edit the ports
+	PortsEditor editor_;
 };
 
 #endif // COMPONENTEDITORPORTSITEM_H

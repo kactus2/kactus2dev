@@ -1,27 +1,29 @@
 /* 
- *  	Created on: 9.5.2012
+ *  	Created on: 10.5.2012
  *      Author: Antti Kamppi
- * 		filename: componenteditorparametersitem.h
+ * 		filename: componenteditorfilesetitem.h
  *		Project: Kactus 2
  */
 
-#ifndef COMPONENTEDITORPARAMETERITEM_H
-#define COMPONENTEDITORPARAMETERITEM_H
+#ifndef COMPONENTEDITORFILESETITEM_H
+#define COMPONENTEDITORFILESETITEM_H
 
 #include "componenteditoritem.h"
-#include <IPXactWrapper/ComponentEditor/parameters/parameterseditor.h>
-#include <models/parameter.h>
+#include <IPXactWrapper/ComponentEditor/fileSet/fileseteditor.h>
+#include <models/fileset.h>
+#include <QSharedPointer>
 
-/*! \brief The parameters-item in the component editor navigation tree.
- *
+/*! \brief The item for a single file set in the component editor's navigation tree.
+ * 
  */
-class ComponentEditorParametersItem : public ComponentEditorItem {
+class ComponentEditorFileSetItem : public ComponentEditorItem {
 	Q_OBJECT
 
 public:
-	
+
 	/*! \brief The constructor
 	 *
+	 * \param fileSet Pointer to the file set being edited.
 	 * \param model Pointer to the model that owns the items.
 	 * \param libHandler Pointer to the instance that manages the library.
 	 * \param component Pointer to the component being edited.
@@ -29,14 +31,15 @@ public:
 	 * \param parent Pointer to the parent item.
 	 *
 	*/
-	ComponentEditorParametersItem(ComponentEditorTreeModel* model,
+	ComponentEditorFileSetItem(QSharedPointer<FileSet> fileSet,
+		ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
 		QWidget* widget,
 		ComponentEditorItem* parent);
 
 	//! \brief The destructor
-	virtual ~ComponentEditorParametersItem();
+	virtual ~ComponentEditorFileSetItem();
 
 	/*! \brief Get the text to be displayed to user in the tree for this item.
 	 *
@@ -58,16 +61,16 @@ public:
 
 private:
 	//! \brief No copying
-	ComponentEditorParametersItem(const ComponentEditorParametersItem& other);
+	ComponentEditorFileSetItem(const ComponentEditorFileSetItem& other);
 
 	//! \brief No assignment
-	ComponentEditorParametersItem& operator=(const ComponentEditorParametersItem& other);
+	ComponentEditorFileSetItem& operator=(const ComponentEditorFileSetItem& other);
 
-	//! \brief The list containing the parameters to edit.
-	QList<QSharedPointer<Parameter> >& parameters_;
+	//! \brief Pointer to the file set being edited.
+	QSharedPointer<FileSet> fileSet_;
 
-	//! \brief The editor to edit the parameters of a component
-	ParametersEditor editor_;
+	//! \brief The editor to edit the file set.
+	FileSetEditor editor_;
 };
 
-#endif // COMPONENTEDITORPARAMETERITEM_H
+#endif // COMPONENTEDITORFILESETITEM_H

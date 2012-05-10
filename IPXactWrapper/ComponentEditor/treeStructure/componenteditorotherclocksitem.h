@@ -9,6 +9,8 @@
 #define COMPONENTEDITOROTHERCLOCKSITEM_H
 
 #include "componenteditoritem.h"
+#include <IPXactWrapper/ComponentEditor/otherClockDrivers/otherclockdriverseditor.h>
+#include <models/otherclockdriver.h>
 
 /*! \brief The Other clock drivers-item in the component editor's navigation tree.
  *
@@ -60,6 +62,12 @@ private:
 
 	//! \brief No assignment
 	ComponentEditorOtherClocksItem& operator=(const ComponentEditorOtherClocksItem& other);
+
+	//! \brief The other clock drivers to edit
+	QList<QSharedPointer<OtherClockDriver> >& otherClocks_;
+
+	//! \brief The editor to edit the other clock drivers
+	OtherClockDriversEditor editor_;
 };
 
 #endif // COMPONENTEDITOROTHERCLOCKSITEM_H

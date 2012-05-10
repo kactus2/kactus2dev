@@ -109,6 +109,15 @@ public:
 	 */
 	const QMap<QString, QSharedPointer<Port> >& getPorts() const;
 
+	/*! \brief Get the ports of this model
+	 *
+	 *
+	 * \return QMap containing pointers to the ports of this model
+	 *		Key = name of a port
+	 *		Value = Pointer to the port
+	*/
+	QMap<QString, QSharedPointer<Port> >& getPorts();
+
 	/*! \brief Get the views of this model
 	 *
 	 * \return QList containing pointers to the views of this model

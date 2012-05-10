@@ -211,7 +211,7 @@ void IPXactComponentEditor::createNewEditor( ComponentTreeItem* item ) {
             }
             else
             {
-                editor = new PortsEditor(component_, item->getDataPointer(), handler_, this);
+                editor = new PortsEditor(component_, handler_, this);
             }
 			break;
 									   }
@@ -259,8 +259,7 @@ void IPXactComponentEditor::createNewEditor( ComponentTreeItem* item ) {
 													 }
 
         case ComponentTreeItem::SOFTWARE: {
-            editor = new SoftwareMappingsEditor(handler_, component_, item->getDataPointer(),
-                                                widgetStack_, this);
+            editor = new SoftwareMappingsEditor(handler_, component_, widgetStack_, this);
             break;
                                           }
 		case ComponentTreeItem::MEMORYMAPS: {

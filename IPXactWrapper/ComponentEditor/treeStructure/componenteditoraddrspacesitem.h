@@ -60,6 +60,10 @@ private:
 
 	//! \brief No assignment
 	ComponentEditorAddrSpacesItem& operator=(const ComponentEditorAddrSpacesItem& other);
+
+	//! \brief The address spaces being edited.
+	QList<QSharedPointer<AddressSpace> >& addSpaces_;
+
 };
 
 #endif // COMPONENTEDITORADDRSPACESITEM_H

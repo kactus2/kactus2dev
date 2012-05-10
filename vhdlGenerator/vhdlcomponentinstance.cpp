@@ -131,7 +131,7 @@ void VhdlComponentInstance::write( QTextStream& stream ) const {
 
 	if (!genericMap_.isEmpty()) {
 		stream << "\t\tgeneric map (" << endl;
-                for (QMap<QString, QString>::const_iterator i = genericMap_.begin(); i != genericMap_.end(); ++i) {
+		for (QMap<QString, QString>::const_iterator i = genericMap_.begin(); i != genericMap_.end(); ++i) {
 			stream << "\t\t\t" << i.key() << " => " << i.value();
 
 			// if this is not the last generic to print

@@ -10,6 +10,9 @@
 
 #include "componenteditoritem.h"
 
+/*! \brief The Cpus-item in the component editor's navigation tree.
+ *
+ */
 class ComponentEditorCpusItem : public ComponentEditorItem {
 	Q_OBJECT
 

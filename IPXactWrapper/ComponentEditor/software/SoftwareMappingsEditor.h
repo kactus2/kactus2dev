@@ -40,12 +40,13 @@ public:
      *  Constructor.
      *
 	 *      @param [in] component    Pointer to the component being edited.
-	 *      @param [in] dataPointer  Pointer to the QMap containing the model parameters.
 	 *      @param [in] parent       Pointer to the owner of this widget.
 	 * 
 	 */
-	SoftwareMappingsEditor(LibraryInterface* libHandler, QSharedPointer<Component> component,
-                          void* dataPointer, QWidget* parent, QWidget* parentWnd);
+	SoftwareMappingsEditor(LibraryInterface* libHandler, 
+		QSharedPointer<Component> component,
+						  QWidget* parent,
+						  QWidget* parentWnd);
 
 	/*!
      *  Destructor.

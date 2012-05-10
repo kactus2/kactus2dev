@@ -9,6 +9,7 @@
 #define COMPONENTEDITORSOFTMAPSITEM_H
 
 #include "componenteditoritem.h"
+#include <IPXactWrapper/ComponentEditor/software/SoftwareMappingsEditor.h>
 
 /*! \brief The Software mappings-item in the component editor's navigation tree.
  *
@@ -60,6 +61,9 @@ private:
 
 	//! \brief No assignment
 	ComponentEditorSoftMapsItem& operator=(const ComponentEditorSoftMapsItem& other);
+
+	//! \brief The editor to edit the software mappings
+	SoftwareMappingsEditor editor_;
 };
 
 #endif // COMPONENTEDITORSOFTMAPSITEM_H

@@ -13,7 +13,8 @@ ComponentEditorModelParamsItem::ComponentEditorModelParamsItem( ComponentEditorT
 															   QWidget* widget, 
 															   ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
-editor_(component, 0, widget){
+modelParams_(component->getModelParameters()), 
+editor_(component, &modelParams_, widget) {
 
 }
 
@@ -25,9 +26,18 @@ QString ComponentEditorModelParamsItem::text() const {
 }
 
 bool ComponentEditorModelParamsItem::isValid() const {
-	return true;
+
+	// if one model parameter is invalid
+	foreach (QSharedPointer<ModelParameter> modelParam, modelParams_) {
+		if (!modelParam->isValid()) {
+			return false;
+		}
+	}
+
+	// if model parameters were valid then the editor decides the validity
+	return editor_.isValid();
 }
 
 ItemEditor* ComponentEditorModelParamsItem::editor() {
-	return NULL;
+	return &editor_;
 }

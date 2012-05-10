@@ -320,6 +320,10 @@ const QMap<QString, QSharedPointer<Port> >& Model::getPorts() const {
 	return ports_;
 }
 
+QMap<QString, QSharedPointer<Port> >& Model::getPorts() {
+	return ports_;
+}
+
 void Model::setModelParameters(const
 		QMap<QString, QSharedPointer<ModelParameter> > &modelParameters) {
 	// delete the old model parameters

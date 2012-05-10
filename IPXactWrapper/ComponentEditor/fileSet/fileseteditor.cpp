@@ -20,13 +20,30 @@ FileSetEditor::FileSetEditor(const QFileInfo& baseLocation,
 							 QWidget *parent):
 ItemEditor(component, parent),
 baseLocation_(baseLocation),
-fileSet_(0), nameBox_(this), 
+fileSet_(static_cast<FileSet*>(dataPointer)), 
+nameBox_(this), 
 groups_(tr("Group identifiers"), this),
 dependencies_(tr("Dependent directories"), baseLocation_, this) {
 
-	fileSet_ = static_cast<FileSet*>(dataPointer);
-	Q_ASSERT_X(fileSet_, "FileSetEditor::setDataPointer",
-		"static_cast failed to give valid FileSet-pointer");
+	initialize();
+}
+
+FileSetEditor::FileSetEditor( const QString& baseLocation,
+							 QSharedPointer<Component> component,
+							 FileSet* fileSet, 
+							 QWidget *parent ):
+ItemEditor(component, parent),
+baseLocation_(baseLocation),
+fileSet_(fileSet), 
+nameBox_(this), 
+groups_(tr("Group identifiers"), this),
+dependencies_(tr("Dependent directories"), baseLocation_, this) {
+
+	initialize();
+}
+
+void FileSetEditor::initialize() {
+	Q_ASSERT(fileSet_);
 
 	// initialize groups 
 	groups_.initialize(fileSet_->getGroups());

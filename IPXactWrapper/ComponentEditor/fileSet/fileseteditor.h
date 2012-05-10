@@ -18,6 +18,7 @@
 #include <QWidget>
 #include <QFileInfo>
 #include <QSharedPointer>
+#include <QString>
 
 /*! \brief FileSetEditor is a widget to edit the details of a FileSet.
  *
@@ -39,6 +40,19 @@ public:
 	FileSetEditor(const QFileInfo& baseLocation, 
 		QSharedPointer<Component> component, 
 		void* dataPointer,
+		QWidget *parent);
+
+	/*! \brief The constructor
+	 *
+	 * \param baseLocation The file path used as base for the relative paths.
+	 * \param component Pointer to the component model that is being edited.
+	 * \param dataPointer Pointer to the FileSet that is being edited
+	 * \param parent Pointer to the owner of this widget.
+	 *
+	*/
+	FileSetEditor(const QString& baseLocation, 
+		QSharedPointer<Component> component, 
+		FileSet* fileSet,
 		QWidget *parent);
 
 	//! \brief The destructor.
@@ -73,6 +87,9 @@ private:
 
 	//! No assignment
 	FileSetEditor& operator=(const FileSetEditor& other);
+
+	//! \brief Initialize the editor
+	void initialize();
 
 	//! \brief Refers to the location of the base xml-file.
 	QFileInfo baseLocation_;

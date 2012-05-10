@@ -33,7 +33,8 @@ public:
 	 * \param parent Pointer to the owner of this model.
 	 *
 	*/
-	PortsModel(QSharedPointer<Component> component, void* dataPointer, QObject *parent);
+	PortsModel(QSharedPointer<Component> component, 
+		QObject *parent);
 	
 	//! \brief The destructor
 	virtual ~PortsModel();

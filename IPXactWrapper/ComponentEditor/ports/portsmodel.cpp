@@ -18,19 +18,13 @@
 #include <QColor>
 
 PortsModel::PortsModel(QSharedPointer<Component> component,
-					   void* dataPointer,
 					   QObject *parent ):
 QAbstractTableModel(parent),
-ports_(), 
+ports_(&component->getPorts()), 
 table_(),
 component_(component) {
 
-	Q_ASSERT_X(dataPointer, "PortsModel constructor",
-		"Null dataPointer given as parameter");
-
-	// set the pointer to the actual data structure containing the 
-	// model parameters
-	ports_ = static_cast<QMap<QString, QSharedPointer<Port> > *>(dataPointer);
+	Q_ASSERT(component_);
 
 	restore();
 }

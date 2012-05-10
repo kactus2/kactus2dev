@@ -23,14 +23,13 @@
 #include <QHeaderView>
 
 PortsEditor::PortsEditor(QSharedPointer<Component> component,
-						 void* dataPointer, 
 						 LibraryInterface* handler,
 						 QWidget *parent):
 ItemEditor(component, parent),
 importButton_(QIcon(":/icons/graphics/import.png"), tr("Import CSV-file"), this),
 exportButton_(QIcon(":/icons/graphics/export.png"), tr("Export CSV-file"), this),
 view_(this), 
-model_(component, dataPointer, this),
+model_(component, this),
 handler_(handler) {
 
 	view_.setDefaultImportExportPath(handler_->getPath(*ItemEditor::component()->getVlnv()));

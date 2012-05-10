@@ -12,7 +12,9 @@ ComponentEditorParametersItem::ComponentEditorParametersItem(ComponentEditorTree
 															 QSharedPointer<Component> component,
 															 QWidget* widget,
 															 ComponentEditorItem* parent ):
-ComponentEditorItem(model, libHandler, component, parent) {
+ComponentEditorItem(model, libHandler, component, parent),
+parameters_(component->getParameters()),
+editor_(component, widget) {
 
 }
 
@@ -24,9 +26,14 @@ QString ComponentEditorParametersItem::text() const {
 }
 
 bool ComponentEditorParametersItem::isValid() const {
-	return true;
+	foreach (QSharedPointer<Parameter> param, parameters_) {
+		if (!param->isValid()) {
+			return false;
+		}
+	}
+	return editor_.isValid();
 }
 
 ItemEditor* ComponentEditorParametersItem::editor() {
-	return NULL;
+	return &editor_;
 }

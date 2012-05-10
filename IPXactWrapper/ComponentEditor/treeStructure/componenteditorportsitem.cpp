@@ -12,7 +12,9 @@ ComponentEditorPortsItem::ComponentEditorPortsItem(ComponentEditorTreeModel* mod
 												   QSharedPointer<Component> component,
 												   QWidget* widget, 
 												   ComponentEditorItem* parent ):
-ComponentEditorItem(model, libHandler, component, parent) {
+ComponentEditorItem(model, libHandler, component, parent),
+ports_(component->getPorts()),
+editor_(component, libHandler, widget) {
 
 }
 

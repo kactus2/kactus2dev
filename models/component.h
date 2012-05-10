@@ -227,6 +227,12 @@ public:
 	 */
 	QList<QSharedPointer<OtherClockDriver> >& getOtherClockDrivers();
 
+	/*! \brief Get this component's other clock drivers.
+	 *
+	 * \return QList containing component's other clock driver.
+	*/
+	const QList<QSharedPointer<OtherClockDriver> >& getOtherClockDrivers() const;
+
 	/*! \brief Get this component's parameters
 	 *
 	 * \return QList containing component's parameters
@@ -596,6 +602,12 @@ public:
 	*/
 	const QList<QSharedPointer<FileSet> >& getFileSets() const;
 
+	/*! \brief Get the file sets of this component.
+	 *
+	 * \return QList containing pointers to the file sets.
+	*/
+	QList<QSharedPointer<FileSet> >& getFileSets();
+
 	/*! \brief Get names of the file sets stored in the component.
 	*
 	* \return QStringList containing the names of the file sets of the component.
@@ -938,11 +950,21 @@ public:
 	*/
 	Port* getPort(const QString& name) const;
 
+	/*! \brief Get the ports contained in this component
+	 *
+	 * \return QMap containing pointers to the ports.
+	 *		Key = name of the port
+	 *		Value = Pointer to the port
+	*/
+	QMap<QString, QSharedPointer<Port> > getPorts() const;
+
 	/*! \brief Get the ports contained in this component.
 	*
 	* \return QMap containing pointers to the ports.
+	*		Key = name of the port
+	*		Value = Pointer to the port
 	*/
-	const QMap<QString, QSharedPointer<Port> > getPorts() const;
+	QMap<QString, QSharedPointer<Port> >& getPorts();
 
 	/*! \brief Get the ports that are found in specified interface.
 	 *
@@ -1087,6 +1109,12 @@ public:
 	* \return QList containing component's address spaces
 	*/
 	QList<QSharedPointer<AddressSpace> >& getAddressSpaces();
+
+	/*! \brief Get address spaces of this component.
+	 *
+	 * \return QList containing pointers to component's address spaces.
+	*/
+	const QList<QSharedPointer<AddressSpace> >& getAddressSpaces() const;
 
 	/*! \brief Get the names of the address spaces stored in this component.
 	*

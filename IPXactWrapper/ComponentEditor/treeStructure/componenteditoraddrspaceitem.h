@@ -1,27 +1,28 @@
 /* 
- *  	Created on: 9.5.2012
+ *  	Created on: 10.5.2012
  *      Author: Antti Kamppi
- * 		filename: componenteditorparametersitem.h
+ * 		filename: componenteditoraddrspaceitem.h
  *		Project: Kactus 2
  */
 
-#ifndef COMPONENTEDITORPARAMETERITEM_H
-#define COMPONENTEDITORPARAMETERITEM_H
+#ifndef COMPONENTEDITORADDRSPACEITEM_H
+#define COMPONENTEDITORADDRSPACEITEM_H
 
 #include "componenteditoritem.h"
-#include <IPXactWrapper/ComponentEditor/parameters/parameterseditor.h>
-#include <models/parameter.h>
+#include <models/addressspace.h>
+#include <IPXactWrapper/ComponentEditor/addressSpaces/addressspaceeditor.h>
 
-/*! \brief The parameters-item in the component editor navigation tree.
+/*! \brief The item for a single address space in the component editor's navigation tree.
  *
  */
-class ComponentEditorParametersItem : public ComponentEditorItem {
+class ComponentEditorAddrSpaceItem : public ComponentEditorItem {
 	Q_OBJECT
 
 public:
-	
+
 	/*! \brief The constructor
-	 *
+	 * 
+	 * \param addrSpace Pointer to the address space being edited.
 	 * \param model Pointer to the model that owns the items.
 	 * \param libHandler Pointer to the instance that manages the library.
 	 * \param component Pointer to the component being edited.
@@ -29,14 +30,15 @@ public:
 	 * \param parent Pointer to the parent item.
 	 *
 	*/
-	ComponentEditorParametersItem(ComponentEditorTreeModel* model,
+	ComponentEditorAddrSpaceItem(QSharedPointer<AddressSpace> addrSpace,
+		ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
 		QWidget* widget,
 		ComponentEditorItem* parent);
 
 	//! \brief The destructor
-	virtual ~ComponentEditorParametersItem();
+	virtual ~ComponentEditorAddrSpaceItem();
 
 	/*! \brief Get the text to be displayed to user in the tree for this item.
 	 *
@@ -58,16 +60,16 @@ public:
 
 private:
 	//! \brief No copying
-	ComponentEditorParametersItem(const ComponentEditorParametersItem& other);
+	ComponentEditorAddrSpaceItem(const ComponentEditorAddrSpaceItem& other);
 
 	//! \brief No assignment
-	ComponentEditorParametersItem& operator=(const ComponentEditorParametersItem& other);
+	ComponentEditorAddrSpaceItem& operator=(const ComponentEditorAddrSpaceItem& other);
 
-	//! \brief The list containing the parameters to edit.
-	QList<QSharedPointer<Parameter> >& parameters_;
+	//! \brief Pointer to the address space being edited.
+	QSharedPointer<AddressSpace> addrSpace_;
 
-	//! \brief The editor to edit the parameters of a component
-	ParametersEditor editor_;
+	//! \brief The editor used to edit the address space.
+	AddressSpaceEditor editor_;
 };
 
-#endif // COMPONENTEDITORPARAMETERITEM_H
+#endif // COMPONENTEDITORADDRSPACEITEM_H

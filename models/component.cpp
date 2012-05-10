@@ -1369,6 +1369,10 @@ const QList<QSharedPointer<FileSet> >& Component::getFileSets() const {
 	return fileSets_;
 }
 
+QList<QSharedPointer<FileSet> >& Component::getFileSets() {
+	return fileSets_;
+}
+
 void Component::setParameters(const QList<QSharedPointer<Parameter> >
 &parameters) {
 	// remove old parameters first
@@ -1466,6 +1470,10 @@ QList<QSharedPointer<AddressSpace> >& Component::getAddressSpaces() {
 	return addressSpaces_;
 }
 
+const QList<QSharedPointer<AddressSpace> >& Component::getAddressSpaces() const {
+	return addressSpaces_;
+}
+
 const QList<QSharedPointer<RemapState> >& Component::getRemapStates() const {
 	return remapStates_;
 }
@@ -1474,8 +1482,11 @@ const QList<QSharedPointer<Choice> >& Component::getChoices() const {
 	return choices_;
 }
 
-QList<QSharedPointer<OtherClockDriver> >&
-Component::getOtherClockDrivers() {
+QList<QSharedPointer<OtherClockDriver> >& Component::getOtherClockDrivers() {
+	return otherClockDrivers_;
+}
+
+const QList<QSharedPointer<OtherClockDriver> >& Component::getOtherClockDrivers() const {
 	return otherClockDrivers_;
 }
 
@@ -2130,11 +2141,23 @@ bool Component::hasFileSets() const {
 	return !fileSets_.isEmpty();
 }
 
-const QMap<QString, QSharedPointer<Port> > Component::getPorts() const {
-	if (model_)
+QMap<QString, QSharedPointer<Port> >& Component::getPorts() {
+	if (model_) {
 		return model_->getPorts();
-	else
+	}
+	else {
+		model_ = QSharedPointer<Model>(new Model());
+		return model_->getPorts();
+	}
+}
+
+QMap<QString, QSharedPointer<Port> > Component::getPorts() const {
+	if (model_) {
+		return model_->getPorts();
+	}
+	else {
 		return QMap<QString, QSharedPointer<Port> >();
+	}
 }
 
 const QMap<QString, QSharedPointer<Port> > Component::getPorts( const QString& interfaceName ) const {

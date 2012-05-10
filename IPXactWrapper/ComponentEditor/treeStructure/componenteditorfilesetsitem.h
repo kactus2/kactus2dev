@@ -9,6 +9,9 @@
 #define COMPONENTEDITORFILESETSITEM_H
 
 #include "componenteditoritem.h"
+#include <models/fileset.h>
+
+#include <QSharedPointer>
 
 /*! \brief The file sets-item in the component editor navigation tree.
  *
@@ -60,6 +63,9 @@ private:
 
 	//! \brief No assignment
 	ComponentEditorFileSetsItem& operator=(const ComponentEditorFileSetsItem& other);
+
+	//! \brief The file sets to edit.
+	QList<QSharedPointer<FileSet> >& fileSets_;
 };
 
 #endif // COMPONENTEDITORFILESETSITEM_H
