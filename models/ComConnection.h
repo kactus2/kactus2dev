@@ -23,6 +23,22 @@ struct ComInterfaceRef
 {
     QString componentRef;   //!< Name reference to an SW component instance.
     QString comRef;         //!< Name reference to a COM interface that is contained by the SW component instance.
+
+    /*!
+     *  Default constructor.
+     */
+    ComInterfaceRef() : componentRef(), comRef()
+    {
+    }
+
+    /*!
+     *  Constructor.
+     */
+    ComInterfaceRef(QString const& componentRef_, QString const& comRef_)
+        : componentRef(componentRef_),
+          comRef(comRef_)
+    {
+    }
 };
 
 //-----------------------------------------------------------------------------
@@ -35,6 +51,20 @@ public:
      *  Default constructor.
      */
     ComConnection();
+
+    /*!
+     *  Constructor which sets all the values as given.
+     *
+     *      @param [in] name         The name to set.
+     *      @param [in] displayName  The display name to set.
+     *      @param [in] description  The description to set.
+     *      @param [in] ref1         A reference to the first COM interface.
+     *      @param [in] ref2         A reference to the second COM interface.
+     *      @param [in] route        The connection route.
+     */
+    ComConnection(QString const& name, QString const& displayName, QString const& description,
+                  ComInterfaceRef const& ref1, ComInterfaceRef const& ref2,
+                  QList<QPointF> const& route);
 
     /*!
      *  Copy constructor.
@@ -129,6 +159,11 @@ public:
     ComInterfaceRef const& getInterface2() const;
 
     /*!
+     *  Returns the connection route.
+     */
+    QList<QPointF> const& getRoute() const;
+
+    /*!
      *  Assignment operator.
      */
     ComConnection& operator=(ComConnection const& rhs);
@@ -152,6 +187,9 @@ private:
 
     //! Requester reference.
     ComInterfaceRef interface2_;
+
+    //! The route of the connection.
+    QList<QPointF> route_;
 };
 
 //-----------------------------------------------------------------------------

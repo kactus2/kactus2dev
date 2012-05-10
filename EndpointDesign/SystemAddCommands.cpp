@@ -13,6 +13,8 @@
 
 #include "../SystemDesign/SystemColumnLayout.h"
 #include "../SystemDesign/SystemColumn.h"
+#include "../SystemDesign/SWConnection.h"
+
 #include "MappingComponentItem.h"
 #include "ProgramEntityItem.h"
 #include "PlatformComponentItem.h"
@@ -70,6 +72,58 @@ void SystemColumnAddCommand::redo()
         layout_->addColumn(column_);
     }
 
+    del_ = false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWConnectionAddCommand()
+//-----------------------------------------------------------------------------
+SWConnectionAddCommand::SWConnectionAddCommand(QGraphicsScene* scene, SWConnection* conn,
+                                               QUndoCommand* parent)
+    : QUndoCommand(parent),
+      conn_(conn),
+      scene_(scene),
+      del_(false)
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: ~SWConnectionAddCommand()
+//-----------------------------------------------------------------------------
+SWConnectionAddCommand::~SWConnectionAddCommand()
+{
+    if (del_)
+    {
+        delete conn_;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: undo()
+//-----------------------------------------------------------------------------
+void SWConnectionAddCommand::undo()
+{
+    // Remove the interconnection from the scene.
+    scene_->removeItem(conn_);
+
+    // Disconnect the ends.
+    conn_->disconnectEnds();
+    del_ = true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: redo()
+//-----------------------------------------------------------------------------
+void SWConnectionAddCommand::redo()
+{
+    // Add the back to the scene.
+    if (!scene_->items().contains(conn_))
+    {
+        scene_->addItem(conn_);
+    }
+
+    // Connect the ends and set the interface modes and port map for the hierarchical end point.
+    conn_->connectEnds();
     del_ = false;
 }
 

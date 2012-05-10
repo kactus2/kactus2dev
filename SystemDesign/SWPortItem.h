@@ -46,6 +46,23 @@ public:
 	virtual ~SWPortItem();
 
     /*!
+     *  Called when creating of a connection for this port has begun.
+     */
+    virtual void onBeginConnect();
+
+    /*!
+     *  Called when creating of a connection has ended.
+     */
+    virtual void onEndConnect();
+
+    /*!
+     *  Sets the selection highlight on/off.
+     *
+     *      @param [in] on If true, the selection highlight is turned on. Otherwise it is turned off.
+     */
+    virtual void setSelectionHighlight(bool on);
+
+    /*!
      *  Sets the port temporary or not temporary. Temporary port set its interfaces undefined
      *  automatically if the connections are removed.
      *
@@ -58,6 +75,20 @@ public:
     //-----------------------------------------------------------------------------
     // SWConnectionEndpoint implementation.
     //-----------------------------------------------------------------------------
+
+    /*!
+     *  Attaches the endpoint to a connection.
+     *
+     *      @param [in] connection The connection.
+     */
+    virtual void addConnection(SWConnection* connection);
+
+    /*!
+     *  Unattaches the endpoint from a connection.
+     *
+     *      @param [in] connection The connection.
+     */
+    virtual void removeConnection(SWConnection* connection);
 
     /*!
      *  Updates the endpoint interface.
@@ -177,6 +208,9 @@ private:
 
     //! The old positions of the other component ports before mouse move.
     QMap<SWPortItem*, QPointF> oldPortPositions_;
+
+    //! Stub line for fixing the overdraw issue.
+    QGraphicsLineItem stubLine_;
 };
 
 //-----------------------------------------------------------------------------

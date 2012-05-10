@@ -13,6 +13,8 @@
 
 #include "../SystemDesign/SystemColumnLayout.h"
 #include "../SystemDesign/SystemColumn.h"
+#include "../SystemDesign/SWConnection.h"
+
 #include "MappingComponentItem.h"
 #include "ProgramEntityItem.h"
 #include "PlatformComponentItem.h"
@@ -91,6 +93,54 @@ void SystemColumnDeleteCommand::redo()
 
     // Remove the item from the layout.
     layout_->removeColumn(column_);
+    del_ = true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWConnectionDeleteCommand()
+//-----------------------------------------------------------------------------
+SWConnectionDeleteCommand::SWConnectionDeleteCommand(SWConnection* conn, QUndoCommand* parent)
+    : QUndoCommand(parent),
+      conn_(conn),
+      scene_(conn->scene()),
+      del_(true)
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: ~SWConnectionDeleteCommand()
+//-----------------------------------------------------------------------------
+SWConnectionDeleteCommand::~SWConnectionDeleteCommand()
+{
+    if (del_)
+    {
+        delete conn_;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: undo()
+//-----------------------------------------------------------------------------
+void SWConnectionDeleteCommand::undo()
+{
+    // Add the item back to the scene.
+    scene_->addItem(conn_);
+
+    // Connect the ends.
+    conn_->connectEnds();
+    del_ = false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: redo()
+//-----------------------------------------------------------------------------
+void SWConnectionDeleteCommand::redo()
+{
+    // Remove the item from the scene.
+    scene_->removeItem(conn_);
+
+    // Disconnect the ends.
+    conn_->disconnectEnds();
     del_ = true;
 }
 

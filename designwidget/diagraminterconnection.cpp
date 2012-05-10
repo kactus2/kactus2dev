@@ -823,7 +823,8 @@ void DiagramInterconnection::createRoute(QPointF p1, QPointF p2,
                 QVector2D newDelta = targetPos - curPos;
                 qreal endDot = QVector2D::dotProduct(newDelta, dir2);
 
-                if (endDot > 0.0 && qFuzzyCompare(newDelta, endDot * dir2))
+                if (endDot > 0.0 && qFuzzyCompare(newDelta, endDot * dir2) &&
+                    !qFuzzyCompare(curPos, startPos + curDir * MIN_LENGTH))
                 {
                     // Make an adjustment to the current position.
                     curPos += curDir * MIN_LENGTH;

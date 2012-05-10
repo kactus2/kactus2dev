@@ -221,3 +221,18 @@ bool SWConnectionEndpoint::canConnect(SWConnectionEndpoint const* other) const
     
     return true;
 }
+
+//-----------------------------------------------------------------------------
+// Function: SWConnectionEndpoint::setSelectionHighlight()
+//-----------------------------------------------------------------------------
+void SWConnectionEndpoint::setSelectionHighlight(bool on)
+{
+    if (on)
+    {
+        setHighlight(HIGHLIGHT_HOVER);
+    }
+    else
+    {
+        setHighlight(HIGHLIGHT_OFF);
+    }
+}

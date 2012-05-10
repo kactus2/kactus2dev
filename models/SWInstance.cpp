@@ -12,13 +12,15 @@
 #include "SWInstance.h"
 
 #include "ComInterface.h"
+#include "XmlUtils.h"
 
 //-----------------------------------------------------------------------------
 // Function: SWInstance::SWInstance()
 //-----------------------------------------------------------------------------
 SWInstance::SWInstance() : instanceName_(), displayName_(), desc_(),
                            componentRef_(), fileSetRef_(), hwRef_(), pos_(),
-                           comInterfaces_(), propertyValues_()
+                           comInterfaces_(), propertyValues_(),
+                           apiInterfacePositions_(), comInterfacePositions_()
 {
 }
 
@@ -34,7 +36,9 @@ SWInstance::SWInstance(SWInstance const& rhs)
       hwRef_(rhs.hwRef_),
       pos_(rhs.pos_),
       comInterfaces_(),
-      propertyValues_(rhs.propertyValues_)
+      propertyValues_(rhs.propertyValues_),
+      apiInterfacePositions_(rhs.apiInterfacePositions_),
+      comInterfacePositions_(rhs.comInterfacePositions_)
 {
     foreach (QSharedPointer<ComInterface> comIf, rhs.comInterfaces_)
     {
@@ -47,7 +51,8 @@ SWInstance::SWInstance(SWInstance const& rhs)
 //-----------------------------------------------------------------------------
 SWInstance::SWInstance(QDomNode& node) : instanceName_(), displayName_(), desc_(),
                                          componentRef_(), fileSetRef_(), hwRef_(), pos_(),
-                                         comInterfaces_(), propertyValues_()
+                                         comInterfaces_(), propertyValues_(),
+                                         apiInterfacePositions_(), comInterfacePositions_()
 {
     for (int i = 0; i < node.childNodes().count(); ++i)
     {
@@ -94,6 +99,16 @@ SWInstance::SWInstance(QDomNode& node) : instanceName_(), displayName_(), desc_(
         else if (childNode.nodeName() == "kactus2:propertyValues")
         {
             parsePropertyValues(childNode);
+        }
+        else if (childNode.nodeName() == "kactus2:apiInterfacePositions")
+        {
+            XmlUtils::parsePositionsMap(childNode, "kactus2:apiInterfacePosition",
+                                        "kactus2:apiRef", apiInterfacePositions_);
+        }
+        else if (childNode.nodeName() == "kactus2:comInterfacePositions")
+        {
+            XmlUtils::parsePositionsMap(childNode, "kactus2:comInterfacePosition",
+                                        "kactus2:comRef", comInterfacePositions_);
         }
     }
 }
@@ -167,6 +182,13 @@ void SWInstance::write(QXmlStreamWriter& writer) const
         writer.writeEndElement(); // kactus2:propertyValues
     }
 
+    // Write API and COM interface positions.
+    XmlUtils::writePositionsMap(writer, apiInterfacePositions_, "kactus2:apiInterfacePosition",
+                                "kactus2:apiRef");
+
+    XmlUtils::writePositionsMap(writer, comInterfacePositions_, "kactus2:comInterfacePosition",
+                                "kactus2:comRef");
+
     writer.writeEndElement(); // kactus2:swInstance
 }
 
@@ -193,7 +215,7 @@ bool SWInstance::isValid(QStringList& errorList, QStringList const& instanceName
     }
 
     // Check whether the mapping is valid or not.
-    if (!instanceNames.contains(hwRef_))
+    if (!hwRef_.isEmpty() && !instanceNames.contains(hwRef_))
     {
         errorList.append(QObject::tr("Component instance '%1' referenced "
                                      "by %2 not found in %3").arg(hwRef_, thisId, parentId));
@@ -283,6 +305,22 @@ void SWInstance::setPosition(QPointF const& pos)
 }
 
 //-----------------------------------------------------------------------------
+// Function: SWInstance::updateApiInterfacePosition()
+//-----------------------------------------------------------------------------
+void SWInstance::updateApiInterfacePosition(QString const& name, QPointF const& pos)
+{
+    apiInterfacePositions_[name] = pos;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWInstance::updateComInterfacePosition()
+//-----------------------------------------------------------------------------
+void SWInstance::updateComInterfacePosition(QString const& name, QPointF const& pos)
+{
+    comInterfacePositions_[name] = pos;
+}
+
+//-----------------------------------------------------------------------------
 // Function: SWInstance::getInstanceName()
 //-----------------------------------------------------------------------------
 QString const& SWInstance::getInstanceName() const
@@ -361,6 +399,8 @@ SWInstance& SWInstance::operator=(SWInstance const& rhs)
         }
 
         propertyValues_ = rhs.propertyValues_;
+        apiInterfacePositions_ = rhs.apiInterfacePositions_;
+        comInterfacePositions_ = rhs.comInterfacePositions_;
     }
 
     return *this;
@@ -400,4 +440,20 @@ void SWInstance::parsePropertyValues(QDomNode& node)
             propertyValues_.insert(name, value);
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWInstance::getApiInterfacePositions()
+//-----------------------------------------------------------------------------
+QMap<QString, QPointF> const& SWInstance::getApiInterfacePositions() const
+{
+    return apiInterfacePositions_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWInstance::getComInterfacePositions()
+//-----------------------------------------------------------------------------
+QMap<QString, QPointF> const& SWInstance::getComInterfacePositions() const
+{
+    return comInterfacePositions_;
 }

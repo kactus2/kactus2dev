@@ -15,6 +15,7 @@
 
 #include "SystemDesignDiagram.h"
 #include "SWCompItem.h"
+#include "SWConnection.h"
 
 #include <LibraryManager/libraryinterface.h>
 
@@ -285,6 +286,14 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
             connect(cmd.data(), SIGNAL(componentInstantiated(DiagramComponent*)),
                 this, SIGNAL(componentInstantiated(DiagramComponent*)), Qt::UniqueConnection);
 
+            editProvider_->addCommand(cmd);
+
+            emit clearItemSelection();
+        }
+        else if (selected->type() == SWConnection::Type)
+        {
+            // Delete the connection.
+            QSharedPointer<QUndoCommand> cmd(new SWConnectionDeleteCommand(static_cast<SWConnection*>(selected)));
             editProvider_->addCommand(cmd);
 
             emit clearItemSelection();

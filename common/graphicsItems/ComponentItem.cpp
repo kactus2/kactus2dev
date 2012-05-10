@@ -88,17 +88,8 @@ void ComponentItem::setName(QString const& name)
 {
     QString oldName = name_;
 
-    // TODO: Make a base class for the diagrams.
-    if (dynamic_cast<EndpointDesignDiagram*>(scene()) == 0)
-    {
-        BlockDiagram* diagram = dynamic_cast<BlockDiagram*>(scene());
-        diagram->updateInstanceName(oldName, name);
-    }
-    else
-    {
-        EndpointDesignDiagram* diagram = dynamic_cast<EndpointDesignDiagram*>(scene());
-        diagram->updateInstanceName(oldName, name);
-    }
+    DesignDiagram* diagram = static_cast<DesignDiagram*>(scene());
+    diagram->updateInstanceName(oldName, name);
 
     name_ = name;
     updateNameLabel(name);

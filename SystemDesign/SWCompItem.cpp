@@ -11,6 +11,9 @@
 
 #include "SWCompItem.h"
 
+#include "SWPortItem.h"
+#include "SWConnection.h"
+
 #include "../EndpointDesign/SystemMoveCommands.h"
 
 #include "IComponentStack.h"
@@ -71,7 +74,19 @@ void SWCompItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
     oldStack_ = dynamic_cast<IComponentStack*>(parentItem());
     oldStackPos_ = parentItem()->scenePos();
 
-    // TODO: Begin the position update for the connections.
+    // Begin the position update for the connections.
+    foreach (QGraphicsItem* item, childItems())
+    {
+        if (item->type() == SWPortItem::Type)
+        {
+            SWPortItem* port = qgraphicsitem_cast<SWPortItem*>(item);
+
+            foreach (SWConnection* conn, port->getConnections())
+            {
+                conn->beginUpdatePosition();
+            }
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -122,12 +137,24 @@ void SWCompItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
             cmd = QSharedPointer<QUndoCommand>(new QUndoCommand());
         }
 
-        // TODO: End the position update for the connections and clear the list.
+        // End the position update for the connections and clear the list.
+        foreach (QGraphicsItem* item, childItems())
+        {
+            if (item->type() == SWPortItem::Type)
+            {
+                SWPortItem* port = qgraphicsitem_cast<SWPortItem*>(item);
+
+                foreach (SWConnection* conn, port->getConnections())
+                {
+                    conn->endUpdatePosition(cmd.data());
+                }
+            }
+        }
         
         // Add the undo command to the edit stack only if it has at least some real changes.
         if (cmd->childCount() > 0 || scenePos() != oldPos_)
         {
-            static_cast<SystemDesignDiagram*>(scene())->getEditProvider().addCommand(cmd, false);
+            static_cast<DesignDiagram*>(scene())->getEditProvider().addCommand(cmd, false);
         }
 
         oldStack_ = 0;

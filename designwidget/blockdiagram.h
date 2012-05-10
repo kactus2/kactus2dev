@@ -228,7 +228,6 @@ protected:
     void dragLeaveEvent(QGraphicsSceneDragDropEvent * event);
 
     void disableHighlight();
-    void createConnection(QGraphicsSceneMouseEvent * mouseEvent);
 
 private:
     // Disable copying.
@@ -268,6 +267,13 @@ private:
      *  Destroys all connections in the diagram.
      */
     void destroyConnections();
+
+    /*!
+     *  Creates the currently drawn connection.
+     *
+     *      @param [in] event The ending mouse press event.
+     */
+    void createConnection(QGraphicsSceneMouseEvent* event);
 
     //-----------------------------------------------------------------------------
     // Data.

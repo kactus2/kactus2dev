@@ -119,6 +119,22 @@ public:
     void setPosition(QPointF const& pos);
 
     /*!
+     *  Updates the position of the API interface with the given name.
+     *
+     *      @param [in] name The name of the API interface.
+     *      @param [in] pos  The local position of the API interface.
+     */
+    void updateApiInterfacePosition(QString const& name, QPointF const& pos);
+
+    /*!
+     *  Updates the position of the API interface with the given name.
+     *
+     *      @param [in] name The name of the API interface.
+     *      @param [in] pos  The local position of the API interface.
+     */
+    void updateComInterfacePosition(QString const& name, QPointF const& pos);
+
+    /*!
      *  Returns the name of the SW instance.
      */
     QString const& getInstanceName() const;
@@ -152,6 +168,16 @@ public:
      *  Returns the global position of the SW instance in the design.
      */
     QPointF const& getPosition() const;
+
+    /*!
+     *  Returns the local API interface positions of the SW instance in the design.
+     */
+    QMap<QString, QPointF> const& getApiInterfacePositions() const;
+
+    /*!
+     *  Returns the local COM interface positions of the SW instance in the design.
+     */
+    QMap<QString, QPointF> const& getComInterfacePositions() const;
 
     /*!
      *  Assignment operator.
@@ -203,6 +229,12 @@ private:
 
     //! The set property values.
     QMap<QString, QString> propertyValues_;
+
+    //! API interface positions.
+    QMap<QString, QPointF> apiInterfacePositions_;
+
+    //! COM interface positions.
+    QMap<QString, QPointF> comInterfacePositions_;
 };
 
 //-----------------------------------------------------------------------------

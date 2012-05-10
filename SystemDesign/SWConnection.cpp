@@ -11,11 +11,9 @@
 
 #include "SWConnection.h"
 
-// #include "diagraminterconnection.h"
-// #include "diagramcomponent.h"
-// #include "DiagramConnectionEndpoint.h"
-// #include "DiagramMoveCommands.h"
-// #include "designwidget.h"
+#include "../EndpointDesign/SystemMoveCommands.h"
+
+#include "SWComponentItem.h"
 
 #include <common/DesignDiagram.h>
 #include <common/GenericEditProvider.h>
@@ -37,40 +35,45 @@
 #include <cmath>
 
 qreal const SWConnection::MIN_LENGTH = 10;
+qreal const SWConnection::MIN_START_LENGTH = 20;
 
 //-----------------------------------------------------------------------------
 // Function: SWConnection()
 //-----------------------------------------------------------------------------
-SWConnection::SWConnection(SWConnectionEndpoint *endPoint1, SWConnectionEndpoint *endPoint2,
-                           bool autoConnect, QString const& displayName,
+SWConnection::SWConnection(SWConnectionEndpoint *endpoint1, SWConnectionEndpoint *endpoint2,
+                           bool autoConnect, QString const& name, QString const& displayName,
                            QString const& description, DesignDiagram* parent)
     : QGraphicsPathItem(), 
       parent_(parent),
-      name_(), 
+      name_(name), 
       description_(description),
-      endPoint1_(0),
-      endPoint2_(0), 
+      endpoint1_(0),
+      endpoint2_(0), 
       pathPoints_(), 
       selected_(-1), 
       selectionType_(NONE),
       routingMode_(ROUTING_MODE_NORMAL)
 {
     setItemSettings();
-    createRoute(endPoint1, endPoint2);
+    createRoute(endpoint1, endpoint2);
 
-    if (endPoint1->isApi())
+    if (endpoint1->isApi())
     {
         setLineWidth(2);
     }
 
     if (autoConnect)
     {
-        endPoint1_ = endPoint1;
-        endPoint2_ = endPoint2;
+        endpoint1_ = endpoint1;
+        endpoint2_ = endpoint2;
 
-        endPoint1->addConnection(this);
-        endPoint2->addConnection(this);
-        updateName();
+        endpoint1->addConnection(this);
+        endpoint2->addConnection(this);
+
+        if (name_.isEmpty())
+        {
+            updateName();
+        }
     }
 }
 
@@ -78,21 +81,20 @@ SWConnection::SWConnection(SWConnectionEndpoint *endPoint1, SWConnectionEndpoint
 // Function: SWConnection()
 //-----------------------------------------------------------------------------
 SWConnection::SWConnection(QPointF p1, QVector2D const& dir1,
-                                               QPointF p2, QVector2D const& dir2,
-                                               const QString &displayName,
-                                               const QString &description,
-                                               DesignDiagram* parent)
-                                               : QGraphicsPathItem(),
-                                               parent_(parent),
-                                               name_(),
-                                               description_(),
-                                               endPoint1_(0), 
-                                               endPoint2_(0),
-                                               pathPoints_(),
-                                               selected_(-1),
-                                               selectionType_(NONE),
-                                               routingMode_(ROUTING_MODE_NORMAL),
-                                               widthLabel_(0)
+                           QPointF p2, QVector2D const& dir2,
+                           QString const& displayName,
+                           QString const& description,
+                           DesignDiagram* parent)
+    : QGraphicsPathItem(),
+      parent_(parent),
+      name_(),
+      description_(description),
+      endpoint1_(0), 
+      endpoint2_(0),
+      pathPoints_(),
+      selected_(-1),
+      selectionType_(NONE),
+      routingMode_(ROUTING_MODE_NORMAL)
 {
     setItemSettings();
     createRoute(p1, p2, dir1, dir2);
@@ -121,16 +123,16 @@ bool SWConnection::connectEnds()
     disconnectEnds();
 
     // Find the new end points.
-    endPoint1_ = DiagramUtil::snapToItem<SWConnectionEndpoint>(pathPoints_.first(), scene(), GridSize);
-    Q_ASSERT(endPoint1_ != 0);
+    endpoint1_ = DiagramUtil::snapToItem<SWConnectionEndpoint>(pathPoints_.first(), scene(), GridSize);
+    Q_ASSERT(endpoint1_ != 0);
 
-    endPoint2_ = DiagramUtil::snapToItem<SWConnectionEndpoint>(pathPoints_.last(), scene(), GridSize);
-    Q_ASSERT(endPoint2_ != 0);
+    endpoint2_ = DiagramUtil::snapToItem<SWConnectionEndpoint>(pathPoints_.last(), scene(), GridSize);
+    Q_ASSERT(endpoint2_ != 0);
 
     // Swap the end points in a way that the first one at least has an encompassing component.
-    if (endPoint1_->encompassingComp() == 0)
+    if (endpoint1_->encompassingComp() == 0)
     {
-        std::swap(endPoint1_, endPoint2_);
+        std::swap(endpoint1_, endpoint2_);
 
         // The path points have to be reversed.
         for (int i = 0; i < pathPoints_.size() / 2; ++i)
@@ -140,142 +142,121 @@ bool SWConnection::connectEnds()
     }
 
     // Make the connections and check for errors.
-    if (!endPoint1_->onConnect(endPoint2_))
+    if (!endpoint1_->onConnect(endpoint2_))
     {
-        endPoint1_ = 0;
+        endpoint1_ = 0;
         return false;
     }
 
-    if (!endPoint2_->onConnect(endPoint1_))
+    if (!endpoint2_->onConnect(endpoint1_))
     {
-        endPoint1_->onDisconnect(endPoint2_);
-        endPoint1_ = 0;
-        endPoint2_ = 0;
+        endpoint1_->onDisconnect(endpoint2_);
+        endpoint1_ = 0;
+        endpoint2_ = 0;
         return false;
     }
 
-    endPoint1_->addConnection(this);
-    endPoint2_->addConnection(this);
-
-    // If the connection is ad-hoc, take the default left and right bounds from the ports if they are undefined.
-    if (!isBus())
-    {
-        if (getAdHocLeftBound(0) == -1)
-        {
-            setAdHocLeftBound(0, endPoint1_->getPort()->getLeftBound());
-        }
-
-        if (getAdHocRightBound(0) == -1)
-        {
-            setAdHocRightBound(0, endPoint1_->getPort()->getRightBound());
-        }
-
-        if (getAdHocLeftBound(1) == -1)
-        {
-            setAdHocLeftBound(1, endPoint2_->getPort()->getLeftBound());
-        }
-
-        if (getAdHocRightBound(1) == -1)
-        {
-            setAdHocRightBound(1, endPoint2_->getPort()->getRightBound());
-        }
-    }
+    endpoint1_->addConnection(this);
+    endpoint2_->addConnection(this);
 
     // Check if both end points were found.
-    if (endPoint1_ && endPoint2_) {
+    if (endpoint1_ && endpoint2_) {
         simplifyPath();
         setRoute(pathPoints_);
         updateName();
         return true;
     }
 
-    foreach (QGraphicsItem *item, scene()->items(pathPoints_.first())) {
-        if (item == this)
-            continue;
-
-        if (item->type() == SWConnection::Type) {
-            SWConnection *segment
-                = qgraphicsitem_cast<SWConnection *>(item);
-
-            if (segment->route().last() == pathPoints_.first()) {
-                QList<QPointF> newPath = segment->route();
-                newPath.append(pathPoints_);
-                pathPoints_ = newPath;
-                scene()->removeItem(segment);
-                delete segment;
-
-                return connectEnds();
-            } else if (segment->route().first() == pathPoints_.first()) {
-                QList<QPointF> newPath = segment->route();
-                for(int i = 0; i < (newPath.size()/2); i++)
-                    newPath.swap(i, newPath.size()-(1+i));
-                newPath.append(pathPoints_);
-                pathPoints_ = newPath;
-                scene()->removeItem(segment);
-                delete segment;
-
-                return connectEnds();
-            }
-        }
-    }
-
-    foreach (QGraphicsItem *item, scene()->items(pathPoints_.last())) {
-        if (item == this)
-            continue;
-
-        if (item->type() == SWConnection::Type) {
-            SWConnection *segment
-                = qgraphicsitem_cast<SWConnection *>(item);
-
-            if (segment->route().first() == pathPoints_.last()) {
-                pathPoints_.append(segment->route());
-                scene()->removeItem(segment);
-                delete segment;
-
-                return connectEnds();
-            } else if (segment->route().last() == pathPoints_.last()) {
-                QList<QPointF> newPath = segment->route();
-                for(int i = 0; i < (newPath.size()/2); i++)
-                    newPath.swap(i, newPath.size()-(1+i));
-                pathPoints_.append(newPath);
-                scene()->removeItem(segment);
-                delete segment;
-
-                return connectEnds();
-            }
-        }
-    }
-
-    simplifyPath();
-    setRoute(pathPoints_);
-    updateName();
+//     foreach (QGraphicsItem *item, scene()->items(pathPoints_.first())) {
+//         if (item == this)
+//             continue;
+// 
+//         if (item->type() == SWConnection::Type) {
+//             SWConnection *segment
+//                 = qgraphicsitem_cast<SWConnection *>(item);
+// 
+//             if (segment->route().last() == pathPoints_.first()) {
+//                 QList<QPointF> newPath = segment->route();
+//                 newPath.append(pathPoints_);
+//                 pathPoints_ = newPath;
+//                 scene()->removeItem(segment);
+//                 delete segment;
+// 
+//                 return connectEnds();
+//             } else if (segment->route().first() == pathPoints_.first()) {
+//                 QList<QPointF> newPath = segment->route();
+//                 for(int i = 0; i < (newPath.size()/2); i++)
+//                     newPath.swap(i, newPath.size()-(1+i));
+//                 newPath.append(pathPoints_);
+//                 pathPoints_ = newPath;
+//                 scene()->removeItem(segment);
+//                 delete segment;
+// 
+//                 return connectEnds();
+//             }
+//         }
+//     }
+// 
+//     foreach (QGraphicsItem *item, scene()->items(pathPoints_.last())) {
+//         if (item == this)
+//             continue;
+// 
+//         if (item->type() == SWConnection::Type) {
+//             SWConnection *segment
+//                 = qgraphicsitem_cast<SWConnection *>(item);
+// 
+//             if (segment->route().first() == pathPoints_.last()) {
+//                 pathPoints_.append(segment->route());
+//                 scene()->removeItem(segment);
+//                 delete segment;
+// 
+//                 return connectEnds();
+//             } else if (segment->route().last() == pathPoints_.last()) {
+//                 QList<QPointF> newPath = segment->route();
+//                 for(int i = 0; i < (newPath.size()/2); i++)
+//                     newPath.swap(i, newPath.size()-(1+i));
+//                 pathPoints_.append(newPath);
+//                 scene()->removeItem(segment);
+//                 delete segment;
+// 
+//                 return connectEnds();
+//             }
+//         }
+//     }
+// 
+//     simplifyPath();
+//     setRoute(pathPoints_);
+//     updateName();
     return true;
 }
 
+//-----------------------------------------------------------------------------
+// Function: setRoute()
+//-----------------------------------------------------------------------------
 void SWConnection::setRoute(QList<QPointF> path)
 {
     if (path.size() < 2)
         return;
 
-    if (endPoint1_)
+    if (endpoint1_)
     {
         QVector2D dir = QVector2D(path[1] - path[0]).normalized();
 
         // Switch the direction of the end point if it is not correct.
-        if (!endPoint1_->isDirectionFixed() && QVector2D::dotProduct(dir, endPoint1_->getDirection()) < 0)
+        if (!endpoint1_->isDirectionFixed() && QVector2D::dotProduct(dir, endpoint1_->getDirection()) < 0)
         {
-            endPoint1_->setDirection(dir);
+            endpoint1_->setDirection(dir);
         }
     }
 
-    if (endPoint2_)
+    if (endpoint2_)
     {
         QVector2D dir = QVector2D(path[path.size() - 2] - path[path.size() - 1]).normalized();
 
         // Switch the direction of the end point if it is not correct.
-        if (!endPoint2_->isDirectionFixed() && QVector2D::dotProduct(dir, endPoint2_->getDirection()) < 0)
+        if (!endpoint2_->isDirectionFixed() && QVector2D::dotProduct(dir, endpoint2_->getDirection()) < 0)
         {
-            endPoint2_->setDirection(dir);
+            endpoint2_->setDirection(dir);
         }
     }
 
@@ -297,51 +278,75 @@ void SWConnection::setRoute(QList<QPointF> path)
     }
 }
 
-QString SWConnection::name() const
+//-----------------------------------------------------------------------------
+// Function: name()
+//-----------------------------------------------------------------------------
+QString const& SWConnection::name() const
 {
     return name_;
 }
 
-void SWConnection::setName( const QString& name ) {
+//-----------------------------------------------------------------------------
+// Function: setName()
+//-----------------------------------------------------------------------------
+void SWConnection::setName(QString const& name)
+{
     name_ = name;
     emit contentChanged();
 }
 
-QString SWConnection::description() const {
+//-----------------------------------------------------------------------------
+// Function: description()
+//-----------------------------------------------------------------------------
+QString const& SWConnection::description() const
+{
     return description_;
 }
 
-void SWConnection::setDescription( const QString& description ) {
+//-----------------------------------------------------------------------------
+// Function: setDescription()
+//-----------------------------------------------------------------------------
+void SWConnection::setDescription( const QString& description )
+{
     description_ = description;
     emit contentChanged();
 }
 
-SWConnectionEndpoint *SWConnection::endPoint1() const
+//-----------------------------------------------------------------------------
+// Function: endpoint1()
+//-----------------------------------------------------------------------------
+SWConnectionEndpoint *SWConnection::endpoint1() const
 {
-    return endPoint1_;
+    return endpoint1_;
 }
 
-SWConnectionEndpoint *SWConnection::endPoint2() const
+//-----------------------------------------------------------------------------
+// Function: endpoint2()
+//-----------------------------------------------------------------------------
+SWConnectionEndpoint *SWConnection::endpoint2() const
 {
-    return endPoint2_;
+    return endpoint2_;
 }
 
+//-----------------------------------------------------------------------------
+// Function: updatePosition()
+//-----------------------------------------------------------------------------
 void SWConnection::updatePosition()
 {
     if (routingMode_ == ROUTING_MODE_NORMAL)
     {
-        QVector2D delta1 = QVector2D(endPoint1_->scenePos()) - QVector2D(pathPoints_.first());
-        QVector2D delta2 = QVector2D(endPoint2_->scenePos()) - QVector2D(pathPoints_.last());
-        QVector2D const& dir1 = endPoint1_->getDirection();
-        QVector2D const& dir2 = endPoint2_->getDirection();
+        QVector2D delta1 = QVector2D(endpoint1_->scenePos()) - QVector2D(pathPoints_.first());
+        QVector2D delta2 = QVector2D(endpoint2_->scenePos()) - QVector2D(pathPoints_.last());
+        QVector2D const& dir1 = endpoint1_->getDirection();
+        QVector2D const& dir2 = endpoint2_->getDirection();
 
         // Recreate the route from scratch if there are not enough points in the path or
         // the route is too complicated when the position and direction of the endpoints is considered.
         if (pathPoints_.size() < 2 ||
             (pathPoints_.size() > 4 && qFuzzyCompare(QVector2D::dotProduct(dir1, dir2), -1.0) &&
-            QVector2D::dotProduct(dir1, QVector2D(endPoint2_->scenePos() - endPoint1_->scenePos())) > 0.0))
+            QVector2D::dotProduct(dir1, QVector2D(endpoint2_->scenePos() - endpoint1_->scenePos())) > 0.0))
         {
-            createRoute(endPoint1_, endPoint2_);
+            createRoute(endpoint1_, endpoint2_);
             return;
         }
 
@@ -365,7 +370,7 @@ void SWConnection::updatePosition()
             bool pathOk = false;
             QVector2D delta = delta1;
             QVector2D dir = dir1;
-            SWConnectionEndpoint* endPoint = endPoint1_;
+            SWConnectionEndpoint* endPoint = endpoint1_;
             int index0 = 0;
             int index1 = 1;
             int index2 = 2;
@@ -374,7 +379,7 @@ void SWConnection::updatePosition()
             if (!delta2.isNull())
             {
                 delta = delta2;
-                endPoint = endPoint2_;
+                endPoint = endpoint2_;
                 dir = dir2;
                 index0 = pathPoints_.size() - 1;
                 index1 = pathPoints_.size() - 2;
@@ -398,7 +403,7 @@ void SWConnection::updatePosition()
             pathPoints_[index0] = endPoint->scenePos();
             QVector2D newSeg1 = QVector2D(pathPoints_[index1] - pathPoints_[index0]);
 
-            if (newSeg1.length() < MIN_LENGTH || !qFuzzyCompare(seg1, newSeg1.normalized()))
+            if (newSeg1.length() < MIN_START_LENGTH || !qFuzzyCompare(seg1, newSeg1.normalized()))
             {
                 pathOk = false;
             }
@@ -425,7 +430,7 @@ void SWConnection::updatePosition()
             // If the simple fix didn't result in a solution, just recreate the route.
             if (!pathOk)
             {
-                createRoute(endPoint1_, endPoint2_);
+                createRoute(endpoint1_, endpoint2_);
             }
             else
             {
@@ -438,8 +443,8 @@ void SWConnection::updatePosition()
     {
         // Make a straight line from begin to end.
         QList<QPointF> route;
-        route.append(endPoint1()->scenePos());
-        route.append(endPoint2()->scenePos());
+        route.append(endpoint1()->scenePos());
+        route.append(endpoint2()->scenePos());
 
         setRoute(route);
     }
@@ -447,11 +452,17 @@ void SWConnection::updatePosition()
     emit contentChanged();
 }
 
-const QList<QPointF> &SWConnection::route()
+//-----------------------------------------------------------------------------
+// Function: route()
+//-----------------------------------------------------------------------------
+QList<QPointF> const& SWConnection::route() const
 {
     return pathPoints_;
 }
 
+//-----------------------------------------------------------------------------
+// Function: simplifyPath()
+//-----------------------------------------------------------------------------
 void SWConnection::simplifyPath()
 {
     if (pathPoints_.size() < 3)
@@ -480,31 +491,43 @@ void SWConnection::simplifyPath()
     selectionType_ = NONE;
 }
 
+//-----------------------------------------------------------------------------
+// Function: mousePressEvent()
+//-----------------------------------------------------------------------------
 void SWConnection::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     QPointF pos = snapPointToGrid(mouseEvent->pos());
 
     oldRoute_ = route();
 
-    if (pathPoints_.first() == pos) {
+    if (pathPoints_.first() == pos)
+    {
         selectionType_ = END;
         selected_ = 0;
-    } else if (pathPoints_.last() == pos) {
+    }
+    else if (pathPoints_.last() == pos)
+    {
         selectionType_ = END;
         selected_ = pathPoints_.size()-1;
-    } else if (pathPoints_.size() > 1) {
-        for (int i = 0; i < pathPoints_.size()-1; i++) {
-            if ((i == 0 && endPoint1_) || (i == pathPoints_.size()-2 && endPoint2_))
+    }
+    else if (pathPoints_.size() > 1)
+    {
+        for (int i = 0; i < pathPoints_.size()-1; i++)
+        {
+            if ((i == 0 && endpoint1_) || (i == pathPoints_.size()-2 && endpoint2_))
+            {
                 continue;
-            if ((qFuzzyCompare(pathPoints_[i].x(), pos.x())
-                && qFuzzyCompare(pathPoints_[i+1].x(), pos.x()))
-                || (qFuzzyCompare(pathPoints_[i].y(), pos.y())
-                && qFuzzyCompare(pathPoints_[i+1].y(), pos.y()))) {
-                    selected_ = i;
-                    selectionType_ = SEGMENT;
+            }
+
+            if ((qFuzzyCompare(pathPoints_[i].x(), pos.x()) && qFuzzyCompare(pathPoints_[i+1].x(), pos.x())) ||
+                (qFuzzyCompare(pathPoints_[i].y(), pos.y()) && qFuzzyCompare(pathPoints_[i+1].y(), pos.y())))
+            {
+                selected_ = i;
+                selectionType_ = SEGMENT;
             }
         }
-    } else {
+    } else
+    {
         selected_ = -1;
         selectionType_ = NONE;
     }
@@ -571,20 +594,20 @@ void SWConnection::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
             if (cur > next)
             {
-                delta = std::max(delta, GridSize + next - cur);
+                delta = std::max(delta, MIN_START_LENGTH + next - cur);
             }
             else
             {
-                delta = std::min(delta, -GridSize + next - cur);
+                delta = std::min(delta, -MIN_START_LENGTH + next - cur);
             }
 
             if (cur > prev)
             {
-                delta = std::max(delta, GridSize + prev - cur);
+                delta = std::max(delta, MIN_START_LENGTH + prev - cur);
             }
             else
             {
-                delta = std::min(delta, -GridSize + prev - cur);
+                delta = std::min(delta, -MIN_START_LENGTH + prev - cur);
             }
 
             pathPoints_[selected_].setX(pathPoints_[selected_].x() + delta);
@@ -614,13 +637,13 @@ void SWConnection::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (selectionType_ == END)
     {
-        SWConnectionEndpoint* endPoint1 =
+        SWConnectionEndpoint* endpoint1 =
             DiagramUtil::snapToItem<SWConnectionEndpoint>(pathPoints_.first(), scene(), GridSize);
-        SWConnectionEndpoint* endPoint2 =
+        SWConnectionEndpoint* endpoint2 =
             DiagramUtil::snapToItem<SWConnectionEndpoint>(pathPoints_.last(), scene(), GridSize);
 
-        if (endPoint1 != 0 && endPoint2 != 0 &&
-            endPoint1->canConnect(endPoint2) && endPoint2->canConnect(endPoint1))
+        if (endpoint1 != 0 && endpoint2 != 0 &&
+            endpoint1->canConnect(endpoint2) && endpoint2->canConnect(endpoint1))
         {
             connectEnds();
         }
@@ -633,7 +656,7 @@ void SWConnection::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
     if (route() != oldRoute_)
     {
-        QSharedPointer<QUndoCommand> cmd(new ConnectionMoveCommand(this, oldRoute_));
+        QSharedPointer<QUndoCommand> cmd(new SWConnectionMoveCommand(this, oldRoute_));
         parent_->getEditProvider().addCommand(cmd);
     }
 
@@ -643,11 +666,11 @@ void SWConnection::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 //-----------------------------------------------------------------------------
 // Function: paint()
 //-----------------------------------------------------------------------------
-void SWConnection::paint(QPainter *painter,
-                                   const QStyleOptionGraphicsItem *option,
-                                   QWidget *widget)
+void SWConnection::paint(QPainter* painter, QStyleOptionGraphicsItem const* option,
+                         QWidget* widget)
 {
     bool selected = option->state & QStyle::State_Selected;
+
     if (selected)
     {
         drawOverlapGraphics(painter);
@@ -664,15 +687,19 @@ void SWConnection::paint(QPainter *painter,
     }
 
 
-    if (!endPoint1_)
+    if (!endpoint1_)
+    {
         painter->fillRect(QRectF(pathPoints_.first()-QPointF(2,2),
         pathPoints_.first()+QPointF(2,2)),
         QBrush(Qt::red));
+    }
 
-    if (!endPoint2_)
+    if (!endpoint2_)
+    {
         painter->fillRect(QRectF(pathPoints_.last()-QPointF(2,2),
         pathPoints_.last()+QPointF(2,2)),
         QBrush(Qt::red));
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -688,47 +715,46 @@ void SWConnection::setItemSettings()
 //-----------------------------------------------------------------------------
 // Function: createRoute()
 //-----------------------------------------------------------------------------
-void SWConnection::createRoute(SWConnectionEndpoint* endPoint1,
-                                         SWConnectionEndpoint* endPoint2)
+void SWConnection::createRoute(SWConnectionEndpoint* endpoint1, SWConnectionEndpoint* endpoint2)
 {
-    Q_ASSERT(endPoint1 != 0);
-    Q_ASSERT(endPoint2 != 0);
+    Q_ASSERT(endpoint1 != 0);
+    Q_ASSERT(endpoint2 != 0);
 
-    QPointF p1 = endPoint1->scenePos();
-    QPointF p2 = endPoint2->scenePos();
+    QPointF p1 = endpoint1->scenePos();
+    QPointF p2 = endpoint2->scenePos();
 
-    if (!endPoint1->isDirectionFixed())
+    if (!endpoint1->isDirectionFixed())
     {
         if (p1.x() <= p2.x())
         {
-            endPoint1->setDirection(QVector2D(1.0f, 0.0f));
+            endpoint1->setDirection(QVector2D(1.0f, 0.0f));
         }
         else
         {
-            endPoint1->setDirection(QVector2D(-1.0f, 0.0f));
+            endpoint1->setDirection(QVector2D(-1.0f, 0.0f));
         }
     }
 
-    if (!endPoint2->isDirectionFixed())
+    if (!endpoint2->isDirectionFixed())
     {
         if (p1.x() <= p2.x())
         {
-            endPoint2->setDirection(QVector2D(-1.0f, 0.0f));
+            endpoint2->setDirection(QVector2D(-1.0f, 0.0f));
         }
         else
         {
-            endPoint2->setDirection(QVector2D(1.0f, 0.0f));
+            endpoint2->setDirection(QVector2D(1.0f, 0.0f));
         }
     }
 
-    createRoute(p1, p2, endPoint1->getDirection(), endPoint2->getDirection());
+    createRoute(p1, p2, endpoint1->getDirection(), endpoint2->getDirection());
 }
 
 //-----------------------------------------------------------------------------
 // Function: createRoute()
 //-----------------------------------------------------------------------------
 void SWConnection::createRoute(QPointF p1, QPointF p2,
-                                         QVector2D const& dir1, QVector2D const& dir2)
+                               QVector2D const& dir1, QVector2D const& dir2)
 {
     pathPoints_.clear();
 
@@ -741,7 +767,7 @@ void SWConnection::createRoute(QPointF p1, QPointF p2,
     QVector2D curDir = dir1;
 
     // Set the target position based on the end point's direction.
-    QVector2D targetPos = QVector2D(p2) + dir2 * MIN_LENGTH;
+    QVector2D targetPos = QVector2D(p2) + dir2 * MIN_START_LENGTH;
 
     // Add the start position to the list of path points.
     pathPoints_ << curPos.toPointF();
@@ -775,17 +801,16 @@ void SWConnection::createRoute(QPointF p1, QPointF p2,
                     {
                         // Draw the length of the projection to the current direction
                         // or at least the minimum length.
-                        curPos = curPos + curDir * std::max(MIN_LENGTH, proj.length());
+                        curPos = curPos + curDir * std::max(MIN_START_LENGTH, proj.length());
                     }
                     else
                     {
-                        // Otherwise we just draw the minimum length thub.
-                        curPos = curPos + curDir * MIN_LENGTH;
+                        curPos = curPos + curDir * MIN_START_LENGTH;
                     }
                 }
                 // Check if the target is in the opposite direction compared to the current
                 // direction and we previously draw the starting thub.
-                else if (dot < 0 && qFuzzyCompare(curPos, startPos + curDir * MIN_LENGTH))
+                else if (dot < 0.0 && qFuzzyCompare(curPos, startPos + curDir * MIN_START_LENGTH))
                 {
                     // Draw to the perpendicular direction at least the minimum length.
                     qreal length = std::max(perp.length(), MIN_LENGTH);
@@ -822,7 +847,8 @@ void SWConnection::createRoute(QPointF p1, QPointF p2,
                 QVector2D newDelta = targetPos - curPos;
                 qreal endDot = QVector2D::dotProduct(newDelta, dir2);
 
-                if (endDot > 0.0 && qFuzzyCompare(newDelta, endDot * dir2))
+                if (endDot > 0.0 && qFuzzyCompare(newDelta, endDot * dir2) &&
+                    !qFuzzyCompare(curPos, startPos + curDir * MIN_START_LENGTH))
                 {
                     // Make an adjustment to the current position.
                     curPos += curDir * MIN_LENGTH;
@@ -859,13 +885,13 @@ void SWConnection::createRoute(QPointF p1, QPointF p2,
 //-----------------------------------------------------------------------------
 void SWConnection::updateName()
 {
-    Q_ASSERT(endPoint1_ != 0);
-    Q_ASSERT(endPoint2_ != 0);
+    Q_ASSERT(endpoint1_ != 0);
+    Q_ASSERT(endpoint2_ != 0);
 
     // Determine one of the end points as the starting point in a way that its
     // encompassing component is defined.
-    SWConnectionEndpoint* start = endPoint1_;
-    SWConnectionEndpoint* end = endPoint2_;
+    SWConnectionEndpoint* start = endpoint1_;
+    SWConnectionEndpoint* end = endpoint2_;
 
     if (start->encompassingComp() == 0)
     {
@@ -890,21 +916,23 @@ void SWConnection::updateName()
 void SWConnection::disconnectEnds()
 {
     // Discard existing connections.
-    if (endPoint1_)
+    if (endpoint1_)
     {
-        endPoint1_->removeInterconnection(this);
-        endPoint1_->onDisconnect(endPoint2_);
+        endpoint1_->removeConnection(this);
+        endpoint1_->onDisconnect(endpoint2_);
+        endpoint1_->setSelectionHighlight(false);
     }
 
-    if (endPoint2_)
+    if (endpoint2_)
     {
-        endPoint2_->removeInterconnection(this);
-        endPoint2_->onDisconnect(endPoint1_);
+        endpoint2_->removeConnection(this);
+        endpoint2_->onDisconnect(endpoint1_);
+        endpoint2_->setSelectionHighlight(false);
     }
 
     emit contentChanged();
-    endPoint1_ = 0;
-    endPoint2_ = 0;
+    endpoint1_ = 0;
+    endpoint2_ = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -929,6 +957,9 @@ QVariant SWConnection::itemChange(GraphicsItemChange change, const QVariant &val
                 setDefaultColor();
             }
 
+            endpoint1_->setSelectionHighlight(selected);
+            endpoint2_->setSelectionHighlight(selected);
+
             return value;
         }
     }
@@ -951,7 +982,8 @@ QUndoCommand* SWConnection::endUpdatePosition(QUndoCommand* parent)
 {
     if (route() != oldRoute_)
     {
-        return new ConnectionMoveCommand(this, oldRoute_, parent);
+        return new SWConnectionMoveCommand(this, oldRoute_, parent);
+        return 0;
     }
     else
     {
@@ -1050,8 +1082,8 @@ void SWConnection::drawOverlapGraphics(QPainter* painter)
                     if (type == QLineF::BoundedIntersection)
                     {
                         // If the connections share an endpoint, draw a black junction circle.
-                        if (endPoint1() == conn->endPoint1() || endPoint2() == conn->endPoint2() ||
-                            endPoint1() == conn->endPoint2() || endPoint2() == conn->endPoint1())
+                        if (endpoint1() == conn->endpoint1() || endpoint2() == conn->endpoint2() ||
+                            endpoint1() == conn->endpoint2() || endpoint2() == conn->endpoint1())
                         {
                             painter->setPen(QPen(Qt::black, 0));
 
@@ -1094,9 +1126,9 @@ void SWConnection::drawOverlapGraphics(QPainter* painter)
                 }
             }
         }
-        else if (item->type() == DiagramComponent::Type)
+        else if (dynamic_cast<SWComponentItem*>(item) != 0)
         {
-            DiagramComponent* comp = static_cast<DiagramComponent*>(item);
+            SWComponentItem* comp = static_cast<SWComponentItem*>(item);
 
             // Create the line objects for each edge of the diagram component rectangle.
             QLineF leftEdge(comp->rect().topLeft() + comp->scenePos(),
@@ -1145,69 +1177,6 @@ void SWConnection::drawOverlapGraphics(QPainter* painter)
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWConnection::calculateBusWidth()
-//-----------------------------------------------------------------------------
-int SWConnection::calculateBusWidth() const
-{
-    int totalWidth = 0;
-
-    foreach (QSharedPointer<General::PortMap> portMap1, endPoint1_->getBusInterface()->getPortMaps())
-    {
-        // Find the port map with the same logical port name from the other end point's port map.
-        QSharedPointer<General::PortMap> portMap2;
-
-        foreach (QSharedPointer<General::PortMap> portMap, endPoint2_->getBusInterface()->getPortMaps())
-        {
-            if (portMap->logicalPort_ == portMap1->logicalPort_)
-            {
-                portMap2 = portMap;
-            }
-        }
-
-        if (portMap2 == 0)
-        {
-            continue;
-        }
-
-        Port* port1 = endPoint1_->ownerComponent()->getPort(portMap1->physicalPort_);
-        Port* port2 = endPoint2_->ownerComponent()->getPort(portMap2->physicalPort_);
-
-        if (port1 == 0)
-        {
-            emit errorMessage(tr("Port '%1' not found in the component '%1'.").arg(portMap1->physicalPort_,
-                endPoint1_->ownerComponent()->getVlnv()->getName()));
-            continue;
-        }
-
-        if (port2 == 0)
-        {
-            emit errorMessage(tr("Port '%1' not found in the component '%1'.").arg(portMap2->physicalPort_,
-                endPoint2_->ownerComponent()->getVlnv()->getName()));
-            continue;
-        }
-
-        // Calculate the intersection of the port bounds and add it to the total width.
-        General::PortAlignment align =
-            General::calculatePortAlignment(portMap1.data(), port1->getLeftBound(), port1->getRightBound(),
-            portMap2.data(), port2->getLeftBound(), port2->getRightBound());
-
-        int width = std::min(align.port1Left_, align.port2Left_) -
-            std::max(align.port1Right_, align.port2Right_) + 1;
-        totalWidth += width;
-    }
-
-    return totalWidth;
-}
-
-//-----------------------------------------------------------------------------
-// Function: SWConnection::isBus()
-//-----------------------------------------------------------------------------
-bool SWConnection::isBus() const
-{
-    return endPoint1_->isBus();
-}
-
-//-----------------------------------------------------------------------------
 // Function: SWConnection::setLineWidth()
 //-----------------------------------------------------------------------------
 void SWConnection::setLineWidth(int width)
@@ -1215,4 +1184,12 @@ void SWConnection::setLineWidth(int width)
     QPen newPen = pen();
     newPen.setWidth(width);
     setPen(newPen);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWConnection::getConnectionType()
+//-----------------------------------------------------------------------------
+SWConnectionEndpoint::EndpointType SWConnection::getConnectionType() const
+{
+    return endpoint1_->getType();
 }

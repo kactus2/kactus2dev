@@ -25,6 +25,7 @@ class EndpointItem;
 class ComponentItem;
 class IComponentStack;
 class SWPortItem;
+class SWConnection;
 
 //-----------------------------------------------------------------------------
 //! SystemColumnMoveCommand class.
@@ -78,6 +79,56 @@ private:
 
     //! The new position of the column.
     QPointF newPos_;
+};
+
+//-----------------------------------------------------------------------------
+//! SWConnectionMoveCommand class.
+//-----------------------------------------------------------------------------
+class SWConnectionMoveCommand : public QUndoCommand
+{
+public:
+    /*!
+     *  Constructor.
+     *
+     *      @param [in] conn      The SW connection.
+     *      @param [in] oldRoute  The old route of the connection.
+     *      @param [in] parent    The parent command.
+     */
+    SWConnectionMoveCommand(SWConnection* conn, QList<QPointF> const& oldRoute,
+                            QUndoCommand* parent = 0);
+
+    /*!
+     *  Destructor.
+     */
+    ~SWConnectionMoveCommand();
+
+    /*!
+     *  Undoes the command.
+     */
+    virtual void undo();
+
+    /*!
+     *  Redoes the command.
+     */
+    virtual void redo();
+
+private:
+    // Disable copying.
+    SWConnectionMoveCommand(SWConnectionMoveCommand const& rhs);
+    SWConnectionMoveCommand& operator=(SWConnectionMoveCommand const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The SW connection.
+    SWConnection* conn_;
+
+    //! The old route of the connection.
+    QList<QPointF> oldRoute_;
+
+    //! The new route of the connection.
+    QList<QPointF> newRoute_;
 };
 
 //-----------------------------------------------------------------------------

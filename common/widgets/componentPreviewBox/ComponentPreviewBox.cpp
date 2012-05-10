@@ -11,6 +11,8 @@
 
 #include "ComponentPreviewBox.h"
 
+#include <SystemDesign/SWCompItem.h>
+
 #include <EndpointDesign/ApplicationItem.h>
 #include <EndpointDesign/ProgramEntityItem.h>
 #include <EndpointDesign/PlatformComponentItem.h>
@@ -119,32 +121,34 @@ void ComponentPreviewBox::updatePreview()
 
         case KactusAttribute::KTS_SW:
             {
-                switch (component_->getComponentSWType())
-                {
-                case KactusAttribute::KTS_SW_APPLICATION:
-                    {
-                        item = new ApplicationItem(component_, component_->getVlnv()->getName());
-                        break;
-                    }
+                item = new SWCompItem(component_, component_->getVlnv()->getName());
 
-                case KactusAttribute::KTS_SW_ENDPOINTS:
-                    {
-                        item = new ProgramEntityItem(component_, component_->getVlnv()->getName());
-                        break;
-                    }
-
-                case KactusAttribute::KTS_SW_PLATFORM:
-                    {
-                        item = new DiagramComponent(lh_, component_, component_->getVlnv()->getName());
-                        //item = new PlatformComponentItem(component_, component_->getVlnv()->getName());
-                        break;
-                    }
-
-                case KactusAttribute::KTS_SW_MAPPING:
-                    {
-                        item = new MappingComponentItem(0, lh_, component_, component_->getVlnv()->getName());
-                    }
-                }
+//                 switch (component_->getComponentSWType())
+//                 {
+//                 case KactusAttribute::KTS_SW_APPLICATION:
+//                     {
+//                         item = new ApplicationItem(component_, component_->getVlnv()->getName());
+//                         break;
+//                     }
+// 
+//                 case KactusAttribute::KTS_SW_ENDPOINTS:
+//                     {
+//                         item = new ProgramEntityItem(component_, component_->getVlnv()->getName());
+//                         break;
+//                     }
+// 
+//                 case KactusAttribute::KTS_SW_PLATFORM:
+//                     {
+//                         item = new DiagramComponent(lh_, component_, component_->getVlnv()->getName());
+//                         //item = new PlatformComponentItem(component_, component_->getVlnv()->getName());
+//                         break;
+//                     }
+// 
+//                 case KactusAttribute::KTS_SW_MAPPING:
+//                     {
+//                         item = new MappingComponentItem(0, lh_, component_, component_->getVlnv()->getName());
+//                     }
+//                 }
                 break;
             }
         }

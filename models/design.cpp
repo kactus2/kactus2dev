@@ -1,6 +1,8 @@
-// TODO: check datatypes and use Parse_error exceptions
+// TODO: check datatypes
 
 #include "design.h"
+
+#include "XmlUtils.h"
 
 #include <common/validators/vhdlNameValidator/vhdlnamevalidator.h>
 #include <LibraryManager/vlnv.h>
@@ -221,31 +223,17 @@ void Design::write(QFile& file)
 			writer.writeStartElement("spirit:vendorExtensions");
 
 			// Write the component position.
-			writePosition(writer, inst.position);
+            XmlUtils::writePosition(writer, inst.position);
 
-			// Write the port positions.
-            if (!inst.portPositions.isEmpty())
-            {
-			    QMapIterator<QString, QPointF> itrPortPos(inst.portPositions);
-			    writer.writeStartElement("kactus2:portPositions");
-
-			    while (itrPortPos.hasNext())
-			    {
-				    itrPortPos.next();
-
-				    writer.writeStartElement("kactus2:portPosition");
-				    writer.writeAttribute("kactus2:busRef", itrPortPos.key());
-				    writePosition(writer, itrPortPos.value());
-				    writer.writeEndElement();
-			    }
-
-			    writer.writeEndElement(); // kactus2:portPositions
-            }
+			// Write the bus, API and COM interface positions.
+            XmlUtils::writePositionsMap(writer, inst.portPositions, "kactus2:portPosition", "kactus2:busRef");
+            XmlUtils::writePositionsMap(writer, inst.apiInterfacePositions, "kactus2:apiInterfacePosition", "kactus2:apiRef");
+            XmlUtils::writePositionsMap(writer, inst.apiInterfacePositions, "kactus2:comInterfacePosition", "kactus2:comRef");            
 
             // Write the port ad-hoc visibilities.
             QMap<QString, bool> const& adHocVisibilities = inst.portAdHocVisibilities;
             QMap<QString, QPointF> const& adHocPortPositions = inst.adHocPortPositions;
-            writeAdHocVisibilities(writer, adHocVisibilities, adHocPortPositions);
+            XmlUtils::writeAdHocVisibilities(writer, adHocVisibilities, adHocPortPositions);
 
 			// Write the MCAPI node ID if specified.
 			if (inst.mcapiNodeID != -1)
@@ -318,8 +306,9 @@ void Design::write(QFile& file)
 
 			// Write custom data to vendor extensions.
 			writer.writeStartElement("spirit:vendorExtensions");
-			writePosition(writer, hier.position);
-			writeDirection(writer, hier.direction);
+
+			XmlUtils::writePosition(writer, hier.position);
+			XmlUtils::writeDirection(writer, hier.direction);
 
 			if (!hier.route.empty())
 			{
@@ -336,7 +325,7 @@ void Design::write(QFile& file)
 
 				foreach (QPointF const& point, hier.route)
 				{
-					writePosition(writer, point);
+					XmlUtils::writePosition(writer, point);
 				}
 
 				writer.writeEndElement();
@@ -478,7 +467,7 @@ void Design::write(QFile& file)
 
             foreach (QPointF const& point, conn.route)
             {
-                writePosition(writer, point);
+                XmlUtils::writePosition(writer, point);
             }
 
             writer.writeEndElement();
@@ -503,7 +492,7 @@ void Design::write(QFile& file)
 
             foreach (QPointF const& point, conn.route)
             {
-                writePosition(writer, point);
+                XmlUtils::writePosition(writer, point);
             }
 
             writer.writeEndElement();
@@ -513,7 +502,7 @@ void Design::write(QFile& file)
     writer.writeEndElement(); // kactus2:routes
 
     // Write the top-level component's port ad-hoc visibilities.
-    writeAdHocVisibilities(writer, portAdHocVisibilities_, adHocPortPositions_);
+    XmlUtils::writeAdHocVisibilities(writer, portAdHocVisibilities_, adHocPortPositions_);
 
 	writer.writeEndElement(); // kactus2:vendorExtensions
 
@@ -957,25 +946,6 @@ void Design::setColumns(QList<ColumnDesc> const& columns)
 	columns_ = columns;
 }
 
-//-----------------------------------------------------------------------------
-// Function: writePosition()
-//-----------------------------------------------------------------------------
-void Design::writePosition(QXmlStreamWriter& xmlWriter, QPointF const& pos)
-{
-	xmlWriter.writeEmptyElement("kactus2:position");
-	xmlWriter.writeAttribute("x", QString::number(int(pos.x())));
-	xmlWriter.writeAttribute("y", QString::number(int(pos.y())));
-}
-
-//-----------------------------------------------------------------------------
-// Function: writeDirection()
-//-----------------------------------------------------------------------------
-void Design::writeDirection(QXmlStreamWriter& xmlWriter, QVector2D const& dir)
-{
-	xmlWriter.writeEmptyElement("kactus2:direction");
-	xmlWriter.writeAttribute("x", QString::number(int(dir.x())));
-	xmlWriter.writeAttribute("y", QString::number(int(dir.y())));
-}
 
 QList<VLNV> Design::getComponents() const {
 
@@ -991,37 +961,6 @@ QList<VLNV> Design::getComponents() const {
 void Design::setVlnv( const VLNV& vlnv ) {
 	LibraryComponent::setVlnv(vlnv);
 	LibraryComponent::vlnv_->setType(VLNV::DESIGN);
-}
-
-//-----------------------------------------------------------------------------
-// Function: Design::writeAdHocVisibilities()
-//-----------------------------------------------------------------------------
-void Design::writeAdHocVisibilities(QXmlStreamWriter& xmlWriter,
-                                    QMap<QString, bool> const& adHocVisibilities,
-                                    QMap<QString, QPointF> const& adHocPortPositions)
-{
-    QMapIterator<QString, bool> itrAdHoc(adHocVisibilities);
-
-    if (!adHocVisibilities.isEmpty())
-    {
-        xmlWriter.writeStartElement("kactus2:adHocVisibilities");
-
-        while (itrAdHoc.hasNext())
-        {
-            itrAdHoc.next();
-
-            if (itrAdHoc.value())
-            {
-                xmlWriter.writeStartElement("kactus2:adHocVisible");
-                xmlWriter.writeAttribute("portName", itrAdHoc.key());
-                xmlWriter.writeAttribute("x", QString::number(int(adHocPortPositions.value(itrAdHoc.key()).x())));
-                xmlWriter.writeAttribute("y", QString::number(int(adHocPortPositions.value(itrAdHoc.key()).y())));
-                xmlWriter.writeEndElement();
-            }
-        }
-
-        xmlWriter.writeEndElement(); // kactus2:adHocVisibilities
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1054,6 +993,22 @@ QList<SWInstance> const& Design::getSWInstances() const
 void Design::setSWInstances(QList<SWInstance> const& swInstances)
 {
     swInstances_ = swInstances;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Design::getApiDependencies()
+//-----------------------------------------------------------------------------
+QList<ApiDependency> const& Design::getApiDependencies() const
+{
+    return apiDependencies_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Design::getComConnections()
+//-----------------------------------------------------------------------------
+QList<ComConnection> const& Design::getComConnections() const
+{
+    return comConnections_;
 }
 
 Design::ComponentInstance::ComponentInstance(
@@ -1099,11 +1054,22 @@ Design::ComponentInstance::ComponentInstance(
                 }
                 else if (childNode.nodeName() == "kactus2:portPositions")
                 {
-                    parsePortPositions(childNode);
+                    XmlUtils::parsePositionsMap(childNode, "kactus2:portPosition",
+                                                "kactus2:busRef", portPositions);
+                }
+                else if (childNode.nodeName() == "kactus2:apiInterfacePositions")
+                {
+                    XmlUtils::parsePositionsMap(childNode, "kactus2:apiInterfacePosition",
+                                                "kactus2:apiRef", apiInterfacePositions);
+                }
+                else if (childNode.nodeName() == "kactus2:comInterfacePositions")
+                {
+                    XmlUtils::parsePositionsMap(childNode, "kactus2:comInterfacePosition",
+                                                "kactus2:comRef", comInterfacePositions);
                 }
                 else if (childNode.nodeName() == "kactus2:adHocVisibilities")
                 {
-                    parseAdHocVisibilities(childNode);
+                    XmlUtils::parseAdHocVisibilities(childNode, portAdHocVisibilities, adHocPortPositions);
                 }
                 else if (childNode.nodeName() == "kactus2:mcapiNodeId")
                 {
@@ -1161,56 +1127,6 @@ Design::ComponentInstance& Design::ComponentInstance::operator=( const Component
         imported = other.imported;
 	}
 	return *this;
-}
-
-//-----------------------------------------------------------------------------
-// Function: parsePortPositions()
-//-----------------------------------------------------------------------------
-void Design::ComponentInstance::parsePortPositions(QDomNode& node)
-{
-    for (int i = 0; i < node.childNodes().size(); ++i)
-    {
-        QDomNode childNode = node.childNodes().at(i);
-
-        if (childNode.nodeName() == "kactus2:portPosition")
-        {
-            QString name = childNode.attributes().namedItem("kactus2:busRef").nodeValue();
-            QPointF pos;
-
-            if (childNode.childNodes().size() > 0 &&
-                childNode.childNodes().at(0).nodeName() == "kactus2:position")
-            {
-                QDomNode posNode = childNode.childNodes().at(0);
-                pos.setX(posNode.attributes().namedItem("x").nodeValue().toInt());
-                pos.setY(posNode.attributes().namedItem("y").nodeValue().toInt());
-            }
-
-            portPositions[name] = pos;
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: Design::ComponentInstance::parseAdHocVisibilities()
-//-----------------------------------------------------------------------------
-void Design::ComponentInstance::parseAdHocVisibilities(QDomNode& node)
-{
-    for (int i = 0; i < node.childNodes().size(); ++i)
-    {
-        QDomNode childNode = node.childNodes().at(i);
-
-        if (childNode.nodeName() == "kactus2:adHocVisible")
-        {
-            QString name = childNode.attributes().namedItem("portName").nodeValue();
-            portAdHocVisibilities[name] = true;
-
-            QPointF pos;
-            pos.setX(childNode.attributes().namedItem("x").nodeValue().toInt());
-            pos.setY(childNode.attributes().namedItem("y").nodeValue().toInt());
-
-            adHocPortPositions[name] = pos;
-        }
-    }
 }
 
 bool Design::ComponentInstance::isValid( QStringList& errorList, 

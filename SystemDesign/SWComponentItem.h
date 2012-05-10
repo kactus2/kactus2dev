@@ -68,10 +68,34 @@ public:
      *      @param [in] port The port that is being moved.
      */
     void onMovePort(SWPortItem* port);
+
     /*!
      *  Updates the size of the component box.
      */
     void updateSize();
+
+    /*!
+     *  Returns true if the connections should not be updated automatically in
+     *  the port's itemChange() function. Otherwise false.
+     */
+    bool isConnectionUpdateDisabled() const;
+
+    /*!
+     *  Sets the connection update disabled/enabled.
+     *
+     *      @param [in] disabled If true, the connection update is set disabled, otherwise it is enabled.
+     */
+    void setConnectionUpdateDisabled(bool disabled);
+
+    /*!
+     *  Retrieves the port with the given name and type (API/COM).
+     *
+     *      @param [in] name  The name of the port.
+     *      @param [in] type  The endpoint type.
+     *
+     *      @return The corresponding port item, or null if no match was found.
+     */
+    SWPortItem* getSWPort(QString const& name, SWConnectionEndpoint::EndpointType type) const;
 
 protected:
     /*!
@@ -92,7 +116,7 @@ private:
      *                         is added to the left side.
      */
     void onAddPort(SWPortItem* port, bool right);
-
+    
     enum
     {
         SPACING = 8,
@@ -110,6 +134,9 @@ private:
     //! The left and right port stacks.
     QList<SWPortItem*> leftPorts_;
     QList<SWPortItem*> rightPorts_;
+
+    //! If true, connection updates coming from ports are disabled.
+    bool connUpdateDisabled_;
 };
 
 //-----------------------------------------------------------------------------

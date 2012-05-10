@@ -87,6 +87,12 @@ public:
          */
         QMap<QString, QPointF> adHocPortPositions;
 
+        //! API interface positions.
+        QMap<QString, QPointF> apiInterfacePositions;
+
+        //! COM interface positions.
+        QMap<QString, QPointF> comInterfacePositions;
+
         /*! \brief VENDOREXT kactus2:adHocVisibilities
          *
          *  Specifies ad-hoc visibility of each port.
@@ -130,10 +136,7 @@ public:
 		//! \brief Assignment operator
 		ComponentInstance& operator=(const ComponentInstance& other);
 
-        void parsePortPositions(QDomNode& node);
-        void parseAdHocVisibilities(QDomNode& node);
-
-		/*! \brief Check if the component instance is in a valid state.
+        /*! \brief Check if the component instance is in a valid state.
 		*
 		* \param errorList The list to add the possible error messages to.
 		* \param parentIdentifier String from parent to help to identify the location of the error.
@@ -620,7 +623,7 @@ public:
 	*/
 	virtual void write(QFile& file);
 
-	/*! \brief Check the validity of the design.
+    /*! \brief Check the validity of the design.
 	 * 
 	 * This function should be used to check if the design is in valid state
 	 * before writing the xml to the disk.
@@ -673,6 +676,16 @@ public:
 	* \return QList containing the ad-hoc connections
 	*/
 	const QList<AdHocConnection> &getAdHocConnections();
+
+    /*!
+     *  Returns the list of API dependencies.
+     */
+    QList<ApiDependency> const& getApiDependencies() const;
+
+    /*!
+     *  Returns the list of COM connections.
+     */
+    QList<ComConnection> const& getComConnections() const;
 
     /*!
      *  Returns the port ad-hoc visibilities for the top-level component in this design.
@@ -774,24 +787,6 @@ private:
      *      @param [in] node The QDomNode from where to parse the information.
      */
     void parseVendorExtensions(QDomNode& node);
-
-    /*!
-     *  Writes a kactus2:position to the XML stream.
-     */
-    void writePosition(QXmlStreamWriter& xmlWriter, QPointF const& pos);
-
-    /*!
-     *  Writes a kactus2:direction to the XML stream.
-     */
-    void writeDirection(QXmlStreamWriter& xmlWriter, QVector2D const& dir);
-
-    /*!
-     *  Writes the given port ad-hoc visibilities along with the port positions to
-     *  a specific XML format.
-     */
-    void writeAdHocVisibilities(QXmlStreamWriter& xmlWriter,
-                                QMap<QString, bool> const& adHocVisibilities,
-                                QMap<QString, QPointF> const& adHocPortPositions);
 
     QList<ColumnDesc> columns_;
 

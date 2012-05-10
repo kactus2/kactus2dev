@@ -23,6 +23,22 @@ struct ApiInterfaceRef
 {
     QString componentRef;   //!< Name reference to an SW component instance.
     QString apiRef;         //!< Name reference to an API interface that is contained by the SW component instance.
+
+    /*!
+     *  Default constructor.
+     */
+    ApiInterfaceRef() : componentRef(), apiRef()
+    {
+    }
+
+    /*!
+     *  Constructor.
+     */
+    ApiInterfaceRef(QString const& componentRef_, QString const& apiRef_)
+        : componentRef(componentRef_),
+          apiRef(apiRef_)
+    {
+    }
 };
 
 //-----------------------------------------------------------------------------
@@ -35,6 +51,20 @@ public:
      *  Default constructor.
      */
     ApiDependency();
+
+    /*!
+     *  Constructor which sets all the values as given.
+     *
+     *      @param [in] name         The name to set.
+     *      @param [in] displayName  The display name to set.
+     *      @param [in] description  The description to set.
+     *      @param [in] ref1         The first interface reference.
+     *      @param [in] ref2         The second interface reference.
+     *      @param [in] route        The connection route.
+     */
+    ApiDependency(QString const& name, QString const& displayName, QString const& description,
+                  ApiInterfaceRef const& ref1, ApiInterfaceRef const& ref2,
+                  QList<QPointF> const& route);
 
     /*!
      *  Copy constructor.
@@ -82,16 +112,16 @@ public:
     /*!
      *  Sets the provider reference.
      *
-     *      @param [in] providerRef The provider reference.
+     *      @param [in] ref The interface reference.
      */
-    void setProviderRef(ApiInterfaceRef const& providerRef);
+    void setInterface1(ApiInterfaceRef const& ref);
 
     /*!
      *  Sets the requester reference.
      *
-     *      @param [in] requesterRef The requester reference.
+     *      @param [in] ref The interface reference.
      */
-    void setRequesterRef(ApiInterfaceRef const& requesterRef);
+    void setInterface2(ApiInterfaceRef const& ref);
 
     /*!
      *  Returns the name of the dependency.
@@ -111,12 +141,17 @@ public:
     /*!
      *  Returns the provider reference.
      */
-    ApiInterfaceRef const& getProviderRef() const;
+    ApiInterfaceRef const& getInterface1() const;
 
     /*!
      *  Returns the requester reference.
      */
-    ApiInterfaceRef const& getRequesterRef() const;
+    ApiInterfaceRef const& getInterface2() const;
+
+    /*!
+     *  Returns the connection route.
+     */
+    QList<QPointF> const& getRoute() const;
 
     /*!
      *  Assignment operator.
@@ -138,10 +173,13 @@ private:
     QString desc_;
 
     //! Provider reference.
-    ApiInterfaceRef providerRef_;
+    ApiInterfaceRef interface1_;
 
     //! Requester reference.
-    ApiInterfaceRef requesterRef_;
+    ApiInterfaceRef interface2_;
+
+    //! The connection route.
+    QList<QPointF> route_;
 };
 
 //-----------------------------------------------------------------------------

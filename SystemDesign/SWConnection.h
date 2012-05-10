@@ -12,13 +12,14 @@
 #ifndef SWCONNECTION_H
 #define SWCONNECTION_H
 
+#include "SWConnectionEndpoint.h"
+
 #include <common/graphicsItems/GraphicsItemTypes.h>
 
 #include <QGraphicsPathItem>
 #include <QGraphicsTextItem>
 #include <QUndoCommand>
 
-class SWConnectionEndpoint;
 class DesignDiagram;
 
 //-----------------------------------------------------------------------------
@@ -44,8 +45,9 @@ public:
     /*!
      *  Constructor.
      */
-    SWConnection(SWConnectionEndpoint *endPoint1, SWConnectionEndpoint *endPoint2,
-                 bool autoConnect, const QString &displayName, const QString &description,
+    SWConnection(SWConnectionEndpoint *endpoint1, SWConnectionEndpoint *endpoint2,
+                 bool autoConnect, QString const& name, 
+                 QString const& displayName, QString const& description,
                  DesignDiagram* parent);
 
     /*!
@@ -98,7 +100,7 @@ public:
     /*!
      *  Returns the route of this connection.
      */
-    QList<QPointF> const& route();
+    QList<QPointF> const& route() const;
 
     /*! 
      *  Updates the end positions when connected endpoints are moved.
@@ -146,18 +148,17 @@ public:
     /*!
      *  Returns the first endpoint connected.
      */
-    SWConnectionEndpoint* endPoint1() const;
+    SWConnectionEndpoint* endpoint1() const;
 
     /*!
      *  Return the second endpoint connected.
      */
-    SWConnectionEndpoint* endPoint2() const;
+    SWConnectionEndpoint* endpoint2() const;
 
     /*!
-     *  Returns true if the connection is a bus connection. Returns false if it isn't (i.e. it is an ad-hoc
-     *  connection).
+     *  Returns the connection type (API/COM/undefined).
      */
-    bool isBus() const;
+    SWConnectionEndpoint::EndpointType getConnectionType() const;
 
     int type() const { return Type; }
 
@@ -192,6 +193,7 @@ private:
 
     //! Minimum length for a line segment.
     static qreal const MIN_LENGTH;
+    static qreal const MIN_START_LENGTH;
 
     /*!
      *  Sets the default graphics item settings.
@@ -206,7 +208,7 @@ private:
     /*!
      *  Creates an optimal route between the given endpoints.
      */
-    void createRoute(SWConnectionEndpoint* endPoint1, SWConnectionEndpoint* endPoint2);
+    void createRoute(SWConnectionEndpoint* endpoint1, SWConnectionEndpoint* endpoint2);
 
     /*!
      *  Simplifies the path by removing parallel consecutive segments.
@@ -253,10 +255,10 @@ private:
 	QString description_;
 
     //! The first endpoint.
-    SWConnectionEndpoint *endPoint1_;
+    SWConnectionEndpoint *endpoint1_;
 
     //! The second endpoint.
-    SWConnectionEndpoint *endPoint2_;
+    SWConnectionEndpoint *endpoint2_;
 
     //! The route path points.
     QList<QPointF> pathPoints_;

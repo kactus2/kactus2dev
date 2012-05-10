@@ -28,6 +28,7 @@ class ComponentItem;
 class ApplicationItem;
 class ProgramEntityItem;
 class IComponentStack;
+class SWConnection;
 
 //-----------------------------------------------------------------------------
 //! SystemColumnAddCommand class.
@@ -79,6 +80,56 @@ private:
     SystemColumn* column_;
 
     //! Boolean flag for indicating if the component should be deleted in the destructor.
+    bool del_;
+};
+
+//-----------------------------------------------------------------------------
+//! SWConnectionAddCommand class.
+//-----------------------------------------------------------------------------
+class SWConnectionAddCommand : public QUndoCommand
+{
+public:
+    /*!
+     *  Constructor.
+     *
+     *      @param [in] scene  The scene.
+     *      @param [in] conn   The connection to add.
+     *      @param [in] parent The parent command.
+     */
+    SWConnectionAddCommand(QGraphicsScene* scene, SWConnection* conn,
+                           QUndoCommand* parent = 0);
+
+    /*!
+     *  Destructor.
+     */
+    ~SWConnectionAddCommand();
+
+    /*!
+     *  Undoes the command.
+     */
+    virtual void undo();
+
+    /*!
+     *  Redoes the command.
+     */
+    virtual void redo();
+
+private:
+    // Disable copying.
+    SWConnectionAddCommand(SWConnectionAddCommand const& rhs);
+    SWConnectionAddCommand& operator=(SWConnectionAddCommand const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The endpoint connection.
+    SWConnection* conn_;
+
+    //! The graphics scene.
+    QGraphicsScene* scene_;
+
+    //! Boolean flag for indicating if the connection should be deleted in the destructor.
     bool del_;
 };
 

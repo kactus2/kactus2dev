@@ -28,6 +28,7 @@ class ComponentItem;
 class ApplicationItem;
 class ProgramEntityItem;
 class IComponentStack;
+class SWConnection;
 
 //-----------------------------------------------------------------------------
 //! SystemColumnDeleteCommand class.
@@ -75,6 +76,54 @@ private:
     SystemColumn* column_;
 
     //! Boolean flag for indicating if the column should be deleted in the destructor.
+    bool del_;
+};
+
+//-----------------------------------------------------------------------------
+//! SWConnectionDeleteCommand class.
+//-----------------------------------------------------------------------------
+class SWConnectionDeleteCommand : public QUndoCommand
+{
+public:
+    /*!
+     *  Constructor.
+     *
+     *      @param [in] conn    The connection to delete.
+     *      @param [in] parent  The parent undo command.
+     */
+    SWConnectionDeleteCommand(SWConnection* conn, QUndoCommand* parent = 0);
+
+    /*!
+     *  Destructor.
+     */
+    ~SWConnectionDeleteCommand();
+
+    /*!
+     *  Undoes the command.
+     */
+    virtual void undo();
+
+    /*!
+     *  Redoes the command.
+     */
+    virtual void redo();
+
+private:
+    // Disable copying.
+    SWConnectionDeleteCommand(SWConnectionDeleteCommand const& rhs);
+    SWConnectionDeleteCommand& operator=(SWConnectionDeleteCommand const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The interconnection.
+    SWConnection* conn_;
+
+    //! The graphics scene.
+    QGraphicsScene* scene_;
+
+    //! Boolean flag for indicating if the connection should be deleted in the destructor.
     bool del_;
 };
 

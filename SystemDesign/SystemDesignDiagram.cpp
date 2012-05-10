@@ -17,6 +17,8 @@
 #include "HWMappingItem.h"
 #include "SWCompItem.h"
 #include "SystemDesignWidget.h"
+#include "SWConnection.h"
+#include "SWConnectionEndpoint.h"
 
 #include <QPainter>
 #include <QGraphicsSceneMouseEvent>
@@ -39,6 +41,9 @@
 #include <models/businterface.h>
 #include <models/fileset.h>
 #include <models/file.h>
+#include <models/ApiInterface.h>
+#include <models/ComInterface.h>
+
 #include <mainwindow/mainwindow.h>
 
 #include <LibraryManager/libraryinterface.h>
@@ -54,7 +59,11 @@ SystemDesignDiagram::SystemDesignDiagram(LibraryInterface* lh, MainWindow* mainW
       parent_(parent),
       nodeIDFactory_(),
       layout_(),
-      dragSW_(false)
+      dragSW_(false),
+      tempConnection_(0),
+      tempConnEndpoint_(0),
+      tempPotentialEndingEndpoints_(),
+      highlightedEndpoint_(0)
 {
 }
 
@@ -63,7 +72,33 @@ SystemDesignDiagram::SystemDesignDiagram(LibraryInterface* lh, MainWindow* mainW
 //-----------------------------------------------------------------------------
 SystemDesignDiagram::~SystemDesignDiagram()
 {
-    // TODO: Delete connections.
+    destroyConnections();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::clearScene()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::clearScene()
+{
+    destroyConnections();
+    DesignDiagram::clearScene();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::setMode()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::setMode(DrawMode mode)
+{
+    if (getMode() != mode)
+    {
+        if (getMode() == MODE_CONNECT)
+        {
+            discardConnection();
+            disableHighlights();
+        }
+    }
+
+    DesignDiagram::setMode(mode);
 }
 
 //-----------------------------------------------------------------------------
@@ -129,6 +164,39 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
         connect(item, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
         connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
+        // Setup custom port positions.
+        {
+            QMapIterator<QString, QPointF> itrPortPos(instance.apiInterfacePositions);
+
+            while (itrPortPos.hasNext())
+            {
+                itrPortPos.next();
+                SWPortItem* port = item->getSWPort(itrPortPos.key(), SWConnectionEndpoint::ENDPOINT_TYPE_API);
+
+                if (port != 0)
+                {
+                    port->setPos(itrPortPos.value());
+                    item->onMovePort(port);
+                }
+            }
+        }
+
+        {
+            QMapIterator<QString, QPointF> itrPortPos(instance.comInterfacePositions);
+
+            while (itrPortPos.hasNext())
+            {
+                itrPortPos.next();
+                SWPortItem* port = item->getSWPort(itrPortPos.key(), SWConnectionEndpoint::ENDPOINT_TYPE_COM);
+
+                if (port != 0)
+                {
+                    port->setPos(itrPortPos.value());
+                    item->onMovePort(port);
+                }
+            }
+        }
+
         // Check if the position is not found.
         if (instance.position.isNull())
         {
@@ -181,6 +249,39 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
         connect(item, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
         connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
+        // Setup custom port positions.
+        {
+            QMapIterator<QString, QPointF> itrPortPos(instance.getApiInterfacePositions());
+
+            while (itrPortPos.hasNext())
+            {
+                itrPortPos.next();
+                SWPortItem* port = item->getSWPort(itrPortPos.key(), SWConnectionEndpoint::ENDPOINT_TYPE_API);
+
+                if (port != 0)
+                {
+                    port->setPos(itrPortPos.value());
+                    item->onMovePort(port);
+                }
+            }
+        }
+
+        {
+            QMapIterator<QString, QPointF> itrPortPos(instance.getComInterfacePositions());
+
+            while (itrPortPos.hasNext())
+            {
+                itrPortPos.next();
+                SWPortItem* port = item->getSWPort(itrPortPos.key(), SWConnectionEndpoint::ENDPOINT_TYPE_COM);
+
+                if (port != 0)
+                {
+                    port->setPos(itrPortPos.value());
+                    item->onMovePort(port);
+                }
+            }
+        }
+
         if (instance.getMapping().isEmpty())
         {
             // Check if the position is not found.
@@ -217,6 +318,12 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
 
         addInstanceName(instance.getInstanceName());
     }
+
+    loadApiDependencies(design);
+
+
+    loadComConnections(design);
+
 
     // Refresh the layout so that all components are placed in correct positions according to the stacking.
     layout_->updatePositions();
@@ -388,22 +495,71 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 //-----------------------------------------------------------------------------
 // Function: mousePressEvent()
 //-----------------------------------------------------------------------------
-void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
     // If other than left button was pressed return back to select mode.
     if (event->button() != Qt::LeftButton)
     {
-        // TODO: Disable highlights.
         setMode(MODE_SELECT);
         return;
     }
 
     if (getMode() == MODE_CONNECT)
     {
-        // Deselect all items.
-        clearSelection();
+        bool creating = tempConnection_ != 0;
 
-        // TODO: Creating connections.
+        // Check if we need to change the temporary connection into a persistent one.
+        if (creating)
+        {
+            createConnection(event);
+            disableHighlights();
+        }
+        // Otherwise choose a new start endpoint.
+        else
+        {
+            // Deselect all items.
+            clearSelection();
+
+            // Try to snap to a connection endpoint.
+            SWConnectionEndpoint* endpoint =
+                DiagramUtil::snapToItem<SWConnectionEndpoint>(event->scenePos(), this, GridSize);
+
+            if (endpoint == 0)
+            {
+                return;
+            }
+
+            tempConnEndpoint_ = endpoint;
+            tempConnEndpoint_->onBeginConnect();
+            
+            // Create the connection.
+            tempConnection_ = new SWConnection(tempConnEndpoint_->scenePos(),
+                                               tempConnEndpoint_->getDirection(),
+                                               event->scenePos(),
+                                               QVector2D(0.0f, 0.0f), QString(), QString(), this);
+
+            if (tempConnEndpoint_->isApi())
+            {
+                tempConnection_->setLineWidth(2);
+            }
+
+            addItem(tempConnection_);
+
+            // Determine all potential endpoints to which the starting endpoint could be connected
+            // and highlight them.
+            foreach (QGraphicsItem* item, items())
+            {
+                SWConnectionEndpoint* endpoint = dynamic_cast<SWConnectionEndpoint*>(item);
+
+                if (endpoint != 0 && endpoint->isVisible() &&
+                    endpoint != tempConnEndpoint_ &&
+                    endpoint->canConnect(tempConnEndpoint_) && tempConnEndpoint_->canConnect(endpoint))
+                {
+                    tempPotentialEndingEndpoints_.append(endpoint);
+                    endpoint->setHighlight(SWConnectionEndpoint::HIGHLIGHT_ALLOWED);
+                }
+            }
+        }
     }
     else if (getMode() == MODE_DRAFT)
     {
@@ -483,7 +639,71 @@ void SystemDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
     // Check if the connect mode is active.
     if (getMode() == MODE_CONNECT)
     {
-        // TODO:
+        // Find out if there is an endpoint currently under the cursor.
+        SWConnectionEndpoint* endpoint =
+            DiagramUtil::snapToItem<SWConnectionEndpoint>(event->scenePos(), this, GridSize);
+
+        if (tempConnection_)
+        {
+            // Check if there was a valid endpoint close enough.
+            if (endpoint != 0 && tempPotentialEndingEndpoints_.contains(endpoint))
+            {
+                // Highlight the endpoint.
+                disableCurrentHighlight();                
+                highlightedEndpoint_ = endpoint;
+                highlightedEndpoint_->setHighlight(SWConnectionEndpoint::HIGHLIGHT_HOVER);
+                highlightedEndpoint_->onBeginConnect();
+
+            }
+            // Disable the highlight if there was no endpoint close enough.
+            else
+            {
+                disableCurrentHighlight();
+            }
+
+            // Update the connection.
+            Q_ASSERT(tempConnection_->route().size() != 0);
+
+            SWConnection* newTempConnection_ = 0;
+
+            if (highlightedEndpoint_ != 0)
+            {
+                newTempConnection_ = new SWConnection(tempConnEndpoint_, highlightedEndpoint_, false,
+                                                      QString(), QString(), QString(), this);
+            }
+            else
+            {
+                newTempConnection_ = new SWConnection(tempConnEndpoint_->scenePos(),
+                                                      tempConnEndpoint_->getDirection(),
+                                                      snapPointToGrid(event->scenePos()),
+                                                      QVector2D(0.0f, 0.0f), QString(), QString(), this);
+            }
+
+            if (tempConnEndpoint_->isApi())
+            {
+                newTempConnection_->setLineWidth(2);
+            }
+
+            discardConnection();
+            
+            addItem(newTempConnection_);
+            tempConnection_ = newTempConnection_;
+            return;
+        }
+        else
+        {
+            if (highlightedEndpoint_ != 0)
+            {
+                highlightedEndpoint_->setHighlight(SWConnectionEndpoint::HIGHLIGHT_OFF);
+                highlightedEndpoint_ = 0;
+            }
+
+            if (endpoint != 0 && endpoint->isVisible())
+            {
+                highlightedEndpoint_ = endpoint;
+                highlightedEndpoint_->setHighlight(SWConnectionEndpoint::HIGHLIGHT_HOVER);
+            }
+        }
     }
 
     QGraphicsScene::mouseMoveEvent(event);
@@ -494,12 +714,6 @@ void SystemDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
-    // If there is a connection being drawn while in the connect mode,
-    // finalize or discard the connection.
-    if (getMode() == MODE_CONNECT /*&& tempConnection_*/)
-    {
-    }
-
     // Process the normal mouse release event.
     QGraphicsScene::mouseReleaseEvent(event);
 }
@@ -543,7 +757,8 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
 
     QList<Design::ComponentInstance> instances;
     QList<SWInstance> swInstances;
-    QList<Design::Interconnection> interconnections;
+    QList<ApiDependency> apiDependencies;
+    QList<ComConnection> comConnections;
     QList<ColumnDesc> columns;
 
     foreach (QGraphicsItem const* item, items())
@@ -559,6 +774,27 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
             instance.configurableElementValues = mappingItem->getConfigurableElements();
             instance.imported = mappingItem->isImported();
             //instance.mcapiNodeID = 
+
+            // Save API and COM interface positions.
+            QMapIterator< QString, QSharedPointer<ApiInterface> >
+                itrApiIf(mappingItem->componentModel()->getApiInterfaces());
+
+            while (itrApiIf.hasNext())
+            {
+                itrApiIf.next();
+                instance.apiInterfacePositions[itrApiIf.key()] =
+                    mappingItem->getSWPort(itrApiIf.key(), SWConnectionEndpoint::ENDPOINT_TYPE_API)->pos();
+            }
+
+            QMapIterator< QString, QSharedPointer<ComInterface> >
+                itrComIf(mappingItem->componentModel()->getComInterfaces());
+
+            while (itrComIf.hasNext())
+            {
+                itrComIf.next();
+                instance.apiInterfacePositions[itrComIf.key()] =
+                    mappingItem->getSWPort(itrComIf.key(), SWConnectionEndpoint::ENDPOINT_TYPE_COM)->pos();
+            }
 
             instances.append(instance);
         }
@@ -583,7 +819,63 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
                 instance.setPosition(swCompItem->scenePos());
             }
 
+            // Save API and COM interface positions.
+            QMapIterator< QString, QSharedPointer<ApiInterface> >
+                itrApiIf(swCompItem->componentModel()->getApiInterfaces());
+
+            while (itrApiIf.hasNext())
+            {
+                itrApiIf.next();
+                instance.updateApiInterfacePosition(itrApiIf.key(),
+                    swCompItem->getSWPort(itrApiIf.key(), SWConnectionEndpoint::ENDPOINT_TYPE_API)->pos());
+            }
+
+            QMapIterator< QString, QSharedPointer<ComInterface> >
+                itrComIf(swCompItem->componentModel()->getComInterfaces());
+
+            while (itrComIf.hasNext())
+            {
+                itrComIf.next();
+                instance.updateComInterfacePosition(itrComIf.key(),
+                    swCompItem->getSWPort(itrComIf.key(), SWConnectionEndpoint::ENDPOINT_TYPE_COM)->pos());
+            }
+
             swInstances.append(instance);
+        }
+        else if (item->type() == SWConnection::Type)
+        {
+            SWConnection const* conn = static_cast<SWConnection const*>(item);
+
+            if (conn->getConnectionType() == SWConnectionEndpoint::ENDPOINT_TYPE_API)
+            {
+                SWConnectionEndpoint* endpoint1 = conn->endpoint1();
+                SWConnectionEndpoint* endpoint2 = conn->endpoint2();
+
+                if (endpoint1->getApiInterface()->getDependencyDirection() == DEPENDENCY_REQUESTER)
+                {
+                    std::swap(endpoint1, endpoint2);
+                }
+
+                ApiInterfaceRef providerRef(conn->endpoint1()->encompassingComp()->name(),
+                                            conn->endpoint1()->name());
+                ApiInterfaceRef requesterRef(conn->endpoint2()->encompassingComp()->name(),
+                                             conn->endpoint2()->name());
+
+                ApiDependency dependency(conn->name(), QString(), conn->description(),
+                                         providerRef, requesterRef, conn->route());
+                apiDependencies.append(dependency);
+            }
+            else if (conn->getConnectionType() == SWConnectionEndpoint::ENDPOINT_TYPE_COM)
+            {
+                ComInterfaceRef ref1(conn->endpoint1()->encompassingComp()->name(),
+                                     conn->endpoint1()->name());
+                ComInterfaceRef ref2(conn->endpoint2()->encompassingComp()->name(),
+                                     conn->endpoint2()->name());
+
+                ComConnection comConnection(conn->name(), QString(), conn->description(),
+                                            ref1, ref2, conn->route());
+                comConnections.append(comConnection);
+            }
         }
     }
 
@@ -594,7 +886,8 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
 
     design->setComponentInstances(instances);
     design->setSWInstances(swInstances);
-    design->setInterconnections(interconnections);
+    design->setApiDependencies(apiDependencies);
+    design->setComConnections(comConnections);
     design->setColumns(columns);   
 
     return design;
@@ -612,7 +905,7 @@ void SystemDesignDiagram::addColumn(QString const& name)
 //-----------------------------------------------------------------------------
 // Function: mouseDoubleClickEvent()
 //-----------------------------------------------------------------------------
-void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
+void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 {
     // Allow double click only when the mode is select.
     if (getMode() != MODE_SELECT)
@@ -621,7 +914,7 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseE
     }
 
     // Find the item under the cursor.
-    QGraphicsItem *item = itemAt(snapPointToGrid(mouseEvent->scenePos()));
+    QGraphicsItem *item = itemAt(snapPointToGrid(event->scenePos()));
 
     if (item == 0)
     {
@@ -684,9 +977,27 @@ SystemDesignWidget* SystemDesignDiagram::parent() const
 //-----------------------------------------------------------------------------
 // Function: getHWComponent()
 //-----------------------------------------------------------------------------
+SWComponentItem* SystemDesignDiagram::getComponent(QString const& instanceName)
+{
+    foreach (QGraphicsItem *item, items())
+    {
+        SWComponentItem* comp = dynamic_cast<SWComponentItem*>(item);
+
+        if (comp != 0 && comp->name() == instanceName)
+        {
+            return comp;
+        }
+    }
+
+    emit errorMessage(tr("Component %1 was not found in the design").arg(instanceName));
+    return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: getHWComponent()
+//-----------------------------------------------------------------------------
 HWMappingItem* SystemDesignDiagram::getHWComponent(QString const& instanceName)
 {
-    // search all graphicsitems in the scene
     foreach (QGraphicsItem *item, items())
     {
         if (item->type() == HWMappingItem::Type)
@@ -700,7 +1011,251 @@ HWMappingItem* SystemDesignDiagram::getHWComponent(QString const& instanceName)
         }
     }
 
-    // if no component was found
     emit errorMessage(tr("Component %1 was not found in the design").arg(instanceName));
     return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::createConnection()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::createConnection(QGraphicsSceneMouseEvent* event)
+{
+    // Check if there is no endpoint close enough to the cursor or the endpoints cannot be connected together.
+    SWConnectionEndpoint* endpoint =
+        DiagramUtil::snapToItem<SWConnectionEndpoint>(event->scenePos(), this, GridSize);
+
+    if (endpoint == 0 || endpoint == tempConnEndpoint_ || !endpoint->isVisible() ||
+        !endpoint->canConnect(tempConnEndpoint_) || !tempConnEndpoint_->canConnect(endpoint))
+    {
+        discardConnection();
+    }
+    else 
+    {
+        // Otherwise make the temporary connection a permanent one by connecting the ends.
+        connect(tempConnection_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+
+        if (tempConnection_->connectEnds())
+        {
+            QSharedPointer<QUndoCommand> cmd(new SWConnectionAddCommand(this, tempConnection_));
+            getEditProvider().addCommand(cmd, false);
+
+            tempConnection_ = 0;
+            tempConnEndpoint_ = 0;
+            emit contentChanged();
+        }
+        else
+        {
+            // Discard the connection if connecting ends failed.
+            discardConnection();
+            tempConnEndpoint_ = 0;
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::destroyConnections()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::destroyConnections()
+{
+    QList<QGraphicsItem*> conns;
+
+    // Search all SW connections.
+    foreach (QGraphicsItem* item, items())
+    {
+        if (item->type() == SWConnection::Type)
+        {
+            conns.append(item);
+        }
+    }
+
+    // And destroy them.
+    foreach (QGraphicsItem* item, conns)
+    {
+        removeItem(item);
+        delete item;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::discardConnection()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::discardConnection()
+{
+    if (tempConnection_ != 0)
+    {
+        removeItem(tempConnection_);
+        delete tempConnection_;
+
+        tempConnection_ = 0;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::disableHighlights()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::disableHighlights()
+{
+    // Disable highlights from all potential endpoints.
+    for (int i = 0 ; i < tempPotentialEndingEndpoints_.size(); ++i)
+    {
+        tempPotentialEndingEndpoints_.at(i)->setHighlight(SWConnectionEndpoint::HIGHLIGHT_OFF);
+        tempPotentialEndingEndpoints_.at(i)->onEndConnect();
+    }
+
+    tempPotentialEndingEndpoints_.clear();
+
+    // If the starting point is set, disable highlight from it too.
+    if (tempConnEndpoint_ != 0)
+    {
+        tempConnEndpoint_->setHighlight(SWConnectionEndpoint::HIGHLIGHT_OFF);
+        tempConnEndpoint_->onEndConnect();
+        tempConnEndpoint_ = 0;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::disableCurrentHighlight()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::disableCurrentHighlight()
+{
+    if (highlightedEndpoint_ != 0)
+    {
+        if (tempConnEndpoint_ != 0 && highlightedEndpoint_ != tempConnEndpoint_)
+        {
+            highlightedEndpoint_->setHighlight(SWConnectionEndpoint::HIGHLIGHT_ALLOWED);
+            highlightedEndpoint_->onEndConnect();
+        }
+        else
+        {
+            highlightedEndpoint_->setHighlight(SWConnectionEndpoint::HIGHLIGHT_OFF);
+        }
+
+        highlightedEndpoint_ = 0;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::loadApiDependencies()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
+{
+    foreach (ApiDependency const& dependency, design->getApiDependencies())
+    {
+        // Find the referenced components.
+        SWComponentItem* comp1 = getComponent(dependency.getInterface1().componentRef);
+
+        if (comp1 == 0)
+        {
+            emit errorMessage(tr("Component '%1' was not found in the design").arg(
+                dependency.getInterface1().componentRef));
+            continue;
+        }
+
+        SWComponentItem* comp2 = getComponent(dependency.getInterface2().componentRef);
+
+        if (comp2 == 0)
+        {
+            emit errorMessage(tr("Component '%1' was not found in the design").arg(
+                dependency.getInterface2().componentRef));
+            continue;
+        }
+
+        // Find the connected ports in the components.
+        SWConnectionEndpoint* port1 = comp1->getSWPort(dependency.getInterface1().apiRef,
+                                                       SWConnectionEndpoint::ENDPOINT_TYPE_API);
+
+        if (port1 == 0)
+        {
+            emit errorMessage(tr("API interface '%1' was not found in the component '%2'").arg(
+                dependency.getInterface1().apiRef).arg(dependency.getInterface1().componentRef));
+            continue;
+        }
+
+        SWConnectionEndpoint* port2 = comp2->getSWPort(dependency.getInterface2().apiRef,
+                                                       SWConnectionEndpoint::ENDPOINT_TYPE_API);
+
+        if (port2 == 0)
+        {
+            emit errorMessage(tr("API interface '%1' was not found in the component '%2'").arg(
+                dependency.getInterface2().apiRef).arg(dependency.getInterface2().componentRef));
+            continue;
+        }
+
+
+        SWConnection* connection = new SWConnection(port1, port2, true,
+            dependency.getName(),
+            dependency.getDisplayName(),
+            dependency.getDescription(), this);
+        connection->setRoute(dependency.getRoute());
+
+        connect(connection, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+        connect(connection, SIGNAL(errorMessage(QString const&)),
+            this, SIGNAL(errorMessage(QString const&)));
+
+        addItem(connection);
+        connection->updatePosition();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::loadComConnections()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
+{
+    foreach (ComConnection const& conn, design->getComConnections())
+    {
+        // Find the referenced components.
+        SWComponentItem* comp1 = getComponent(conn.getInterface1().componentRef);
+
+        if (comp1 == 0)
+        {
+            emit errorMessage(tr("Component '%1' was not found in the design").arg(
+                conn.getInterface1().componentRef));
+            continue;
+        }
+
+        SWComponentItem* comp2 = getComponent(conn.getInterface2().componentRef);
+
+        if (comp2 == 0)
+        {
+            emit errorMessage(tr("Component '%1' was not found in the design").arg(
+                conn.getInterface2().componentRef));
+            continue;
+        }
+
+        // Find the connected ports in the components.
+        SWConnectionEndpoint* port1 = comp1->getSWPort(conn.getInterface1().comRef,
+                                                       SWConnectionEndpoint::ENDPOINT_TYPE_API);
+
+        if (port1 == 0)
+        {
+            emit errorMessage(tr("API interface '%1' was not found in the component '%2'").arg(
+                conn.getInterface1().comRef).arg(conn.getInterface1().componentRef));
+            continue;
+        }
+
+        SWConnectionEndpoint* port2 = comp2->getSWPort(conn.getInterface2().comRef,
+                                                       SWConnectionEndpoint::ENDPOINT_TYPE_API);
+
+        if (port2 == 0)
+        {
+            emit errorMessage(tr("API interface '%1' was not found in the component '%2'").arg(
+                conn.getInterface2().comRef).arg(conn.getInterface2().componentRef));
+            continue;
+        }
+
+
+        SWConnection* connection = new SWConnection(port1, port2, true,
+            conn.getName(),
+            conn.getDisplayName(),
+            conn.getDescription(), this);
+        connection->setRoute(conn.getRoute());
+
+        connect(connection, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+        connect(connection, SIGNAL(errorMessage(QString const&)),
+            this, SIGNAL(errorMessage(QString const&)));
+
+        addItem(connection);
+        connection->updatePosition();
+    }
 }

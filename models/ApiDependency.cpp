@@ -15,8 +15,25 @@
 // Function: ApiDependency::ApiDependency()
 //-----------------------------------------------------------------------------
 ApiDependency::ApiDependency() : name_(), displayName_(), desc_(),
-                                 providerRef_(), requesterRef_()
+                                 interface1_(), interface2_(),
+                                 route_()
 {
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiDependency::ApiDependency()
+//-----------------------------------------------------------------------------
+ApiDependency::ApiDependency(QString const& name, QString const& displayName,
+                             QString const& description, ApiInterfaceRef const& ref1,
+                             ApiInterfaceRef const& ref2, QList<QPointF> const& route)
+    : name_(name),
+      displayName_(displayName),
+      desc_(description),
+      interface1_(ref1),
+      interface2_(ref2),
+      route_(route)
+{
+
 }
 
 //-----------------------------------------------------------------------------
@@ -25,8 +42,9 @@ ApiDependency::ApiDependency() : name_(), displayName_(), desc_(),
 ApiDependency::ApiDependency(ApiDependency const& rhs) : name_(rhs.name_),
                                                          displayName_(rhs.displayName_),
                                                          desc_(rhs.desc_),
-                                                         providerRef_(rhs.providerRef_),
-                                                         requesterRef_(rhs.requesterRef_)
+                                                         interface1_(rhs.interface1_),
+                                                         interface2_(rhs.interface2_),
+                                                         route_(rhs.route_)
 {
 }
 
@@ -34,7 +52,8 @@ ApiDependency::ApiDependency(ApiDependency const& rhs) : name_(rhs.name_),
 // Function: ApiDependency::ApiDependency()
 //-----------------------------------------------------------------------------
 ApiDependency::ApiDependency(QDomNode& node) : name_(), displayName_(), desc_(),
-                                               providerRef_(), requesterRef_()
+                                               interface1_(), interface2_(),
+                                               route_()
 {
     for (int i = 0; i < node.childNodes().count(); ++i)
     {
@@ -57,15 +76,33 @@ ApiDependency::ApiDependency(QDomNode& node) : name_(), displayName_(), desc_(),
         {
             desc_ = childNode.childNodes().at(0).nodeValue();
         }
-        else if (childNode.nodeName() == "kactus2:provider")
+        else if (childNode.nodeName() == "kactus2:activeApiInterface")
         {
-            providerRef_.componentRef = childNode.attributes().namedItem("kactus2:componentRef").nodeValue();
-            providerRef_.apiRef = childNode.attributes().namedItem("kactus2:apiRef").nodeValue();
+            if (interface1_.componentRef.isNull())
+            {
+                interface1_.componentRef = childNode.attributes().namedItem("kactus2:componentRef").nodeValue();
+                interface1_.apiRef = childNode.attributes().namedItem("kactus2:apiRef").nodeValue();
+            }
+            else
+            {
+                interface2_.componentRef = childNode.attributes().namedItem("kactus2:componentRef").nodeValue();
+                interface2_.apiRef = childNode.attributes().namedItem("kactus2:apiRef").nodeValue();
+            }
         }
-        else if (childNode.nodeName() == "kactus2:requester")
+        else if (childNode.nodeName() == "kactus2:route")
         {
-            requesterRef_.componentRef = childNode.attributes().namedItem("kactus2:componentRef").nodeValue();
-            requesterRef_.apiRef = childNode.attributes().namedItem("kactus2:apiRef").nodeValue();
+            for (int i = 0; i < childNode.childNodes().size(); ++i)
+            {
+                QDomNode posNode = childNode.childNodes().at(i);
+                QPointF pos;
+
+                if (posNode.nodeName() == "kactus2:position")
+                {
+                    pos.setX(posNode.attributes().namedItem("x").nodeValue().toInt());
+                    pos.setY(posNode.attributes().namedItem("y").nodeValue().toInt());
+                    route_.append(pos);
+                }
+            }
         }
     }
 }
@@ -88,13 +125,27 @@ void ApiDependency::write(QXmlStreamWriter& writer) const
     writer.writeTextElement("spirit:displayName", displayName_);
     writer.writeTextElement("spirit:description", desc_);
 
-    writer.writeEmptyElement("kactus2:provider");
-    writer.writeAttribute("kactus2:componentRef", providerRef_.componentRef);
-    writer.writeAttribute("kactus2:apiRef", providerRef_.apiRef);
+    writer.writeEmptyElement("kactus2:activeApiInterface");
+    writer.writeAttribute("kactus2:componentRef", interface1_.componentRef);
+    writer.writeAttribute("kactus2:apiRef", interface1_.apiRef);
 
-    writer.writeEmptyElement("kactus2:requester");
-    writer.writeAttribute("kactus2:componentRef", requesterRef_.componentRef);
-    writer.writeAttribute("kactus2:apiRef", requesterRef_.apiRef);
+    writer.writeEmptyElement("kactus2:activeApiInterface");
+    writer.writeAttribute("kactus2:componentRef", interface2_.componentRef);
+    writer.writeAttribute("kactus2:apiRef", interface2_.apiRef);
+
+    if (!route_.isEmpty())
+    {
+        writer.writeStartElement("kactus2:route");
+
+        foreach (QPointF const& point, route_)
+        {
+            writer.writeEmptyElement("kactus2:position");
+            writer.writeAttribute("x", QString::number(int(point.x())));
+            writer.writeAttribute("y", QString::number(int(point.y())));
+        }
+
+        writer.writeEndElement();
+    }
 
     writer.writeEndElement(); // kactus2:apiDependency
 }
@@ -124,19 +175,19 @@ void ApiDependency::setDescription(QString const& description)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ApiDependency::setProviderRef()
+// Function: ApiDependency::setInterface1()
 //-----------------------------------------------------------------------------
-void ApiDependency::setProviderRef(ApiInterfaceRef const& providerRef)
+void ApiDependency::setInterface1(ApiInterfaceRef const& ref)
 {
-    providerRef_ = providerRef;
+    interface1_ = ref;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ApiDependency::setRequesterRef()
+// Function: ApiDependency::setInterface2()
 //-----------------------------------------------------------------------------
-void ApiDependency::setRequesterRef(ApiInterfaceRef const& requesterRef)
+void ApiDependency::setInterface2(ApiInterfaceRef const& ref)
 {
-    requesterRef_ = requesterRef;
+    interface2_ = ref;
 }
 
 //-----------------------------------------------------------------------------
@@ -164,19 +215,27 @@ QString const& ApiDependency::getDescription() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ApiDependency::getProviderRef()
+// Function: ApiDependency::getInterface1()
 //-----------------------------------------------------------------------------
-ApiInterfaceRef const& ApiDependency::getProviderRef() const
+ApiInterfaceRef const& ApiDependency::getInterface1() const
 {
-    return providerRef_;
+    return interface1_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ApiDependency::getRequesterRef()
+// Function: ApiDependency::getInterface2()
 //-----------------------------------------------------------------------------
-ApiInterfaceRef const& ApiDependency::getRequesterRef() const
+ApiInterfaceRef const& ApiDependency::getInterface2() const
 {
-    return requesterRef_;
+    return interface2_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiDependency::getRoute()
+//-----------------------------------------------------------------------------
+QList<QPointF> const& ApiDependency::getRoute() const
+{
+    return route_;
 }
 
 //-----------------------------------------------------------------------------
@@ -189,8 +248,9 @@ ApiDependency& ApiDependency::operator=(ApiDependency const& rhs)
         name_ = rhs.name_;
         displayName_ = rhs.displayName_;
         desc_ = rhs.desc_;
-        providerRef_ = rhs.providerRef_;
-        requesterRef_ = rhs.requesterRef_;
+        interface1_ = rhs.interface1_;
+        interface2_ = rhs.interface2_;
+        route_ = rhs.route_;
     }
 
     return *this;

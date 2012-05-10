@@ -14,6 +14,7 @@
 #include "../SystemDesign/SystemColumnLayout.h"
 #include "../SystemDesign/SystemColumn.h"
 #include "../SystemDesign/SWComponentItem.h"
+#include "../SystemDesign/SWConnection.h"
 
 #include "EndpointConnection.h"
 #include "EndpointItem.h"
@@ -64,6 +65,41 @@ void SystemColumnMoveCommand::redo()
 
     // Execute child commands.
     QUndoCommand::redo();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWConnectionMoveCommand()
+//-----------------------------------------------------------------------------
+SWConnectionMoveCommand::SWConnectionMoveCommand(SWConnection* conn,
+                                                 QList<QPointF> const& oldRoute,
+                                                 QUndoCommand* parent) : QUndoCommand(parent),
+                                                 conn_(conn),
+                                                 oldRoute_(oldRoute),
+                                                 newRoute_(conn->route())
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: ~SWConnectionMoveCommand()
+//-----------------------------------------------------------------------------
+SWConnectionMoveCommand::~SWConnectionMoveCommand()
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: undo()
+//-----------------------------------------------------------------------------
+void SWConnectionMoveCommand::undo()
+{
+    conn_->setRoute(oldRoute_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: redo()
+//-----------------------------------------------------------------------------
+void SWConnectionMoveCommand::redo()
+{
+    conn_->setRoute(newRoute_);
 }
 
 //-----------------------------------------------------------------------------

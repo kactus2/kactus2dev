@@ -128,7 +128,7 @@ private:
     enum
     {
         MIN_HEIGHT = 100,
-        WIDTH = 200,
+        WIDTH = 180,
         TOP_MARGIN = 40,
         BOTTOM_MARGIN = 20,
         SPACING = 10,

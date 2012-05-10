@@ -29,7 +29,8 @@ SWComponentItem::SWComponentItem(QRectF const& size, QSharedPointer<Component> c
                                  QMap<QString, QString> const& configurableElementValues,
                                  QGraphicsItem *parent)
     : ComponentItem(size, component, instanceName, displayName, description, configurableElementValues, parent),
-      imported_(false)
+      imported_(false),
+      connUpdateDisabled_(false)
 {
     int portSpacing = 3 * GridSize;
     int leftY = 4 * GridSize;
@@ -195,4 +196,41 @@ qreal SWComponentItem::getHeight() const
     }
 
     return (maxY + BOTTOM_MARGIN);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWComponentItem::isConnectionUpdateDisabled()
+//-----------------------------------------------------------------------------
+bool SWComponentItem::isConnectionUpdateDisabled() const
+{
+    return connUpdateDisabled_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWComponentItem::setConnectionUpdateDisabled()
+//-----------------------------------------------------------------------------
+void SWComponentItem::setConnectionUpdateDisabled(bool disabled)
+{
+    connUpdateDisabled_ = disabled;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWComponentItem::getSWPort()
+//-----------------------------------------------------------------------------
+SWPortItem* SWComponentItem::getSWPort(QString const& name, SWConnectionEndpoint::EndpointType type) const
+{
+    foreach (QGraphicsItem *item, QGraphicsRectItem::children())
+    {
+        if (item->type() == SWPortItem::Type)
+        {
+            SWPortItem* port = static_cast<SWPortItem*>(item);
+
+            if (port->name() == name && port->getType() == type)
+            {
+                return port;
+            }
+        }
+    }
+
+    return 0;
 }

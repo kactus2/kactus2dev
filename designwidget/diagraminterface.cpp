@@ -234,72 +234,53 @@ bool DiagramInterface::onConnect(DiagramConnectionEndPoint const* other)
             Q_ASSERT(other->encompassingComp() != 0);
             QSharedPointer<Component> otherComp = other->encompassingComp()->componentModel();
 
-            QList< QSharedPointer<Port> > newPorts;
-            QList< QSharedPointer<General::PortMap> > newPortMaps;
-
             QList< QSharedPointer<General::PortMap> > const& portMaps = other->getBusInterface()->getPortMaps();
 
-            for (int i = 0; i < portMaps.size(); ++i)
+            // Duplicate the ports referenced by the port maps and duplicate the port maps.
+            // Translation table keeps track of the mapped port names.
+            QMap<QString, QString> nameMappings;
+            QList< QSharedPointer<General::PortMap> > newPortMaps;
+
+            foreach (QSharedPointer<General::PortMap> portMap, portMaps)
             {
-                // Retrieve the port from the model.
-                Port* port = otherComp->getPort(portMaps.at(i)->physicalPort_);
-
-                // Check if the port was not found.
-                if (port == 0)
+                // Duplicate the port if it hasn't already been duplicated.
+                if (!nameMappings.contains(portMap->physicalPort_))
                 {
-                    emit errorMessage(tr("Port %1 was not found in component %2 while "
-                                         "copying the bus interface.").arg(portMaps.at(i)->physicalPort_).arg(
-                                         other->encompassingComp()->name()));
-                    return false;
+                    // Retrieve the port from the model.
+                    Port* port = otherComp->getPort(portMap->physicalPort_);
+
+                    // Check if the port was not found.
+                    if (port == 0)
+                    {
+                        emit errorMessage(tr("Port %1 was not found in component %2 while "
+                                             "copying the bus interface.").arg(portMap->physicalPort_,
+                                                                               other->encompassingComp()->name()));
+                        return false;
+                    }
+
+                    // The new port inherits the same name as the physical port in the other component.
+                    QString newPortName = portMap->physicalPort_;
+                    unsigned int runningNumber = 0;
+
+                    // Make sure that the port name is unique.
+                    while (component_->getPort(newPortName) != 0)
+                    {
+                        ++runningNumber;
+                        newPortName = portMap->physicalPort_ + "_" + QString::number(runningNumber);
+                    }
+
+                    // Create the port and add it to the component.
+                    QSharedPointer<Port> newPort(new Port(newPortName, *port));
+                    component_->addPort(newPort);
+
+                    // Update the translation table.
+                    nameMappings.insert(portMap->physicalPort_, newPortName);
                 }
 
-                // The new port inherits the same name as the physical port in the other component.
-                QString newPortName = portMaps.at(i)->physicalPort_;
-                unsigned int runningNumber = 0;
-
-                // Make sure that the port name is unique.
-                while (component_->getPort(newPortName) != 0)
-                {
-                    ++runningNumber;
-                    newPortName = portMaps.at(i)->physicalPort_ + "_" + QString::number(runningNumber);
-                }
-
-                // Make a duplicate of the port with the new name.
-                QSharedPointer<Port> newPort(new Port(newPortName, *port));
-
-                // And add the port map to the bus interface.
-                QSharedPointer<General::PortMap> portMap(new General::PortMap);
-                portMap->logicalPort_ = portMaps.at(i)->logicalPort_;
-                portMap->physicalPort_ = newPortName;
-
-                // Use the same logical vector but set the physical vector accordingly.
-                portMap->logicalVector_ = portMaps.at(i)->logicalVector_;
-
-                if (portMaps.at(i)->logicalVector_ != 0)
-                {
-                    portMap->physicalVector_ =
-                        QSharedPointer<Vector>(new Vector(portMaps.at(i)->logicalVector_->getSize() - 1, 0));
-
-                    newPort->setLeftBound(portMaps.at(i)->logicalVector_->getSize() - 1);
-                    newPort->setRightBound(0);
-                }
-                else if (portMaps.at(i)->physicalVector_ != 0)
-                {
-                    portMap->physicalVector_ =
-                        QSharedPointer<Vector>(new Vector(portMaps.at(i)->physicalVector_->getSize() - 1, 0));
-
-                    newPort->setLeftBound(portMaps.at(i)->physicalVector_->getSize() - 1);
-                    newPort->setRightBound(0);
-                }
-
-                newPorts.append(newPort);
-                newPortMaps.append(portMap);
-            }
-
-            // Add the duplicated ports to the top-level component.
-            foreach(QSharedPointer<Port> port, newPorts)
-            {
-                component_->addPort(port);
+                // Duplicate and add the port map to the bus interface.
+                QSharedPointer<General::PortMap> newPortMap(new General::PortMap(*portMap));
+                newPortMap->physicalPort_ = nameMappings.value(portMap->physicalPort_);
+                newPortMaps.append(newPortMap);
             }
 
             newBusIf->setPortMaps(newPortMaps);

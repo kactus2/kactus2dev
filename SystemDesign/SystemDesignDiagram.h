@@ -18,6 +18,8 @@
 #include <common/KactusAttribute.h>
 #include <common/DesignDiagram.h>
 
+#include <QVector>
+
 class MainWindow;
 class Component;
 class Design;
@@ -27,6 +29,9 @@ class VLNV;
 class GenericEditProvider;
 class SystemDesignWidget;
 class HWMappingItem;
+class SWComponentItem;
+class SWConnection;
+class SWConnectionEndpoint;
 
 //-----------------------------------------------------------------------------
 //! SystemDesignDiagram class.
@@ -52,6 +57,11 @@ public:
      */
     ~SystemDesignDiagram();
 
+    /*!
+     *  Clears the scene.
+     */
+    virtual void clearScene();
+
     /*! 
      *  Creates a design based on the contents in the diagram.
      *
@@ -60,6 +70,11 @@ public:
      *      @return The created design.
      */
     virtual QSharedPointer<Design> createDesign(VLNV const& vlnv) const;
+
+    /*!
+     *  Sets the draw mode.
+     */
+    virtual void setMode(DrawMode mode);
 
     /*!
      *  Adds a new column to the diagram.
@@ -135,9 +150,57 @@ private:
     void openDesign(QSharedPointer<Design> design);
 
     /*!
+     *  Loads the COM connections from the given design.
+     */
+    void loadComConnections(QSharedPointer<Design> design);
+
+    /*!
+     *  Loads the API dependencies from the given design.
+     */
+    void loadApiDependencies(QSharedPointer<Design> design);
+
+    /*!
      *  Returns the HW component instance with the given name.
      */
     HWMappingItem* getHWComponent(QString const& instanceName);
+
+    /*!
+     *  Returns the component with the given name (either HW or SW).
+     *
+     *      @param [in] instanceName The name of the instance to search for.
+     *
+     *      @return The corresponding component, or null if not found.
+     */
+    SWComponentItem* getComponent(QString const& instanceName);
+
+    /*!
+     *  Creates the currently drawn connection.
+     *
+     *      @param [in] event The ending mouse press event.
+     */
+    void createConnection(QGraphicsSceneMouseEvent* event);
+
+    /*!
+     *  Discards and destroys the temporary (currently drawn) connection.
+     */
+    void discardConnection();
+
+    /*!
+     *  Destroys all connections in the diagram.
+     */
+    void destroyConnections();
+
+    /*!
+     *  Disables all highlights.
+     */
+    void disableHighlights();
+
+    /*!
+     *  Disables the current highlight. In case of a potential ending endpoint, the highlight is
+     *  set to allowed state.
+     */
+    void disableCurrentHighlight();
+    
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -154,6 +217,18 @@ private:
 
     //! Boolean flag for indicating that an SW component is being dragged to the diagram.
     bool dragSW_;
+
+    //! The connection that is being drawn.
+    SWConnection* tempConnection_;
+
+    //! The starting endpoint of a connection that is being drawn.
+    SWConnectionEndpoint* tempConnEndpoint_;
+
+    //! The potential endpoints that can be connected to the starting end point.
+    QVector<SWConnectionEndpoint*> tempPotentialEndingEndpoints_;
+    
+    //! The highlighted endpoint to which the connection could be snapped automatically.
+    SWConnectionEndpoint* highlightedEndpoint_;
 };
 
 //-----------------------------------------------------------------------------

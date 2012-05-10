@@ -15,6 +15,8 @@
 
 #include "SystemDesignDiagram.h"
 #include "SWCompItem.h"
+#include "SWPortItem.h"
+#include "SWConnection.h"
 
 #include <common/GenericEditProvider.h>
 #include <common/layouts/VStackedLayout.h>
@@ -72,7 +74,19 @@ void HWMappingItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
     oldPos_ = scenePos();
     oldStack_ = dynamic_cast<IComponentStack*>(parentItem());
 
-    // TODO: Begin the position update for the connections.
+    // Begin the position update for the connections.
+    foreach (QGraphicsItem* item, childItems())
+    {
+        if (item->type() == SWPortItem::Type)
+        {
+            SWPortItem* port = qgraphicsitem_cast<SWPortItem*>(item);
+
+            foreach (SWConnection* conn, port->getConnections())
+            {
+                conn->beginUpdatePosition();
+            }
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -81,10 +95,12 @@ void HWMappingItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 void HWMappingItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
     // Discard mouse move if the diagram is protected.
-    if (static_cast<SystemDesignDiagram*>(scene())->isProtected())
+    if (static_cast<DesignDiagram*>(scene())->isProtected())
     {
         return;
     }
+
+    setConnectionUpdateDisabled(true);
 
     ComponentItem::mouseMoveEvent(event);
 
@@ -96,6 +112,8 @@ void HWMappingItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
         Q_ASSERT(column != 0);
         column->onMoveItem(this);
     }
+
+    setConnectionUpdateDisabled(false);
 }
 
 //-----------------------------------------------------------------------------
@@ -123,7 +141,19 @@ void HWMappingItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
             cmd = QSharedPointer<QUndoCommand>(new QUndoCommand());
         }
 
-        // TODO: End the position update for the connections and clear the list.
+        // End the position update for the connections and clear the list.
+        foreach (QGraphicsItem* item, childItems())
+        {
+            if (item->type() == SWPortItem::Type)
+            {
+                SWPortItem* port = qgraphicsitem_cast<SWPortItem*>(item);
+
+                foreach (SWConnection* conn, port->getConnections())
+                {
+                    conn->endUpdatePosition(cmd.data());
+                }
+            }
+        }
         
         // Add the undo command to the edit stack only if it has at least some real changes.
         if (cmd->childCount() > 0 || scenePos() != oldPos_)

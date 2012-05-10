@@ -77,9 +77,26 @@ public:
     void setHighlight(HighlightMode mode);
 
     /*!
+     *  Sets the selection highlight on/off.
+     *
+     *      @param [in] on If true, the selection highlight is turned on. Otherwise it is turned off.
+     */
+    virtual void setSelectionHighlight(bool on);
+
+    /*!
      *  Sets the COM/API type. The type of the VLNV determines the type of the endpoint.
      */
     //virtual void setTypeDefinition(VLNV const& type) = 0;
+
+    /*!
+     *  Called when creating of a connection for this port has begun.
+     */
+    virtual void onBeginConnect() = 0;
+
+    /*!
+     *  Called when creating of a connection has ended.
+     */
+    virtual void onEndConnect() = 0;
 
     /*!
      *  Attaches the endpoint to a connection.

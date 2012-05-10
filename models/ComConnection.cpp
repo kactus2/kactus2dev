@@ -24,11 +24,28 @@ ComConnection::ComConnection() : name_(), displayName_(), desc_(),
 //-----------------------------------------------------------------------------
 // Function: ComConnection::ComConnection()
 //-----------------------------------------------------------------------------
+ComConnection::ComConnection(QString const& name, QString const& displayName,
+                             QString const& description, ComInterfaceRef const& ref1,
+                             ComInterfaceRef const& ref2, QList<QPointF> const& route)
+    : name_(name),
+      displayName_(displayName),
+      desc_(description),
+      interface1_(ref1),
+      interface2_(ref2),
+      route_(route)
+{
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: ComConnection::ComConnection()
+//-----------------------------------------------------------------------------
 ComConnection::ComConnection(ComConnection const& rhs) : name_(rhs.name_),
                                                          displayName_(rhs.displayName_),
                                                          desc_(rhs.desc_),
                                                          interface1_(rhs.interface1_),
-                                                         interface2_(rhs.interface2_)
+                                                         interface2_(rhs.interface2_),
+                                                         route_(rhs.route_)
 {
 }
 
@@ -36,7 +53,8 @@ ComConnection::ComConnection(ComConnection const& rhs) : name_(rhs.name_),
 // Function: ComConnection::ComConnection()
 //-----------------------------------------------------------------------------
 ComConnection::ComConnection(QDomNode& node) : name_(), displayName_(), desc_(),
-                                               interface1_(), interface2_()
+                                               interface1_(), interface2_(),
+                                               route_()
 {
     for (int i = 0; i < node.childNodes().count(); ++i)
     {
@@ -72,6 +90,21 @@ ComConnection::ComConnection(QDomNode& node) : name_(), displayName_(), desc_(),
                 interface2_.comRef = childNode.attributes().namedItem("kactus2:comRef").nodeValue();
             }
         }
+        else if (childNode.nodeName() == "kactus2:route")
+        {
+            for (int i = 0; i < childNode.childNodes().size(); ++i)
+            {
+                QDomNode posNode = childNode.childNodes().at(i);
+                QPointF pos;
+
+                if (posNode.nodeName() == "kactus2:position")
+                {
+                    pos.setX(posNode.attributes().namedItem("x").nodeValue().toInt());
+                    pos.setY(posNode.attributes().namedItem("y").nodeValue().toInt());
+                    route_.append(pos);
+                }
+            }
+        }
     }
 }
 
@@ -100,6 +133,20 @@ void ComConnection::write(QXmlStreamWriter& writer) const
     writer.writeEmptyElement("kactus2:activeComInterface");
     writer.writeAttribute("kactus2:componentRef", interface2_.componentRef);
     writer.writeAttribute("kactus2:comRef", interface2_.comRef);
+
+    if (!route_.isEmpty())
+    {
+        writer.writeStartElement("kactus2:route");
+
+        foreach (QPointF const& point, route_)
+        {
+            writer.writeEmptyElement("kactus2:position");
+            writer.writeAttribute("x", QString::number(int(point.x())));
+            writer.writeAttribute("y", QString::number(int(point.y())));
+        }
+
+        writer.writeEndElement();
+    }
 
     writer.writeEndElement(); // kactus2:comConnection
 }
@@ -242,6 +289,14 @@ ComInterfaceRef const& ComConnection::getInterface2() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComConnection::getRoute()
+//-----------------------------------------------------------------------------
+QList<QPointF> const& ComConnection::getRoute() const
+{
+    return route_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComConnection::operator=()
 //-----------------------------------------------------------------------------
 ComConnection& ComConnection::operator=(ComConnection const& rhs)
@@ -257,4 +312,5 @@ ComConnection& ComConnection::operator=(ComConnection const& rhs)
 
     return *this;
 }
+
 

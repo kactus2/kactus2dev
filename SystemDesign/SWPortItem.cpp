@@ -12,6 +12,9 @@
 #include "SWPortItem.h"
 
 #include "SWComponentItem.h"
+#include "SWConnection.h"
+#include "HWMappingItem.h"
+
 #include "../EndpointDesign/SystemMoveCommands.h"
 
 #include <common/GenericEditProvider.h>
@@ -44,9 +47,9 @@ SWPortItem::SWPortItem(QSharedPointer<ApiInterface> apiIf, QGraphicsItem *parent
       comInterface_(),
       temp_(false),
       oldPos_(),
-      oldPortPositions_()
+      oldPortPositions_(),
+      stubLine_(0, 0, 0, -GridSize, this)
 {
-
     Q_ASSERT(apiIf != 0);
     setType(ENDPOINT_TYPE_API);
     initialize();
@@ -61,7 +64,8 @@ SWPortItem::SWPortItem(QSharedPointer<ComInterface> comIf, QGraphicsItem *parent
       comInterface_(comIf),
       temp_(false),
       oldPos_(),
-      oldPortPositions_()
+      oldPortPositions_(),
+      stubLine_(-1, 0, -1, -GridSize, this)
 {
     Q_ASSERT(comIf != 0);
     setType(ENDPOINT_TYPE_COM);
@@ -264,6 +268,7 @@ bool SWPortItem::isHierarchical() const
 //-----------------------------------------------------------------------------
 bool SWPortItem::onConnect(SWConnectionEndpoint const* other)
 {
+    // TODO:
     return true;
 }
 
@@ -299,6 +304,12 @@ bool SWPortItem::canConnect(SWConnectionEndpoint const* other) const
             QSharedPointer<ApiInterface> apiIf1 = getApiInterface();
             QSharedPointer<ApiInterface> apiIf2 = other->getApiInterface();
 
+            // Provider can have only one connection.
+            if (isConnected() && apiIf1->getDependencyDirection() == DEPENDENCY_PROVIDER)
+            {
+                return false;
+            }
+
             // Check if the API types are not compatible.
             if (!apiIf1->getApiType().isEmpty() && !apiIf2->getApiType().isEmpty() &&
                 apiIf1->getApiType() != apiIf2->getApiType())
@@ -315,6 +326,12 @@ bool SWPortItem::canConnect(SWConnectionEndpoint const* other) const
         {
             QSharedPointer<ComInterface> comIf1 = getComInterface();
             QSharedPointer<ComInterface> comIf2 = other->getComInterface();
+
+            // Allow only one connection per endpoint.
+            if (isConnected())
+            {
+                return false;
+            }
 
             // Check if the COM types are not compatible.
             if (!comIf1->getComType().isEmpty() && !comIf2->getComType().isEmpty() &&
@@ -369,6 +386,28 @@ QSharedPointer<Component> SWPortItem::getOwnerComponent() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: addConnection()
+//-----------------------------------------------------------------------------
+void SWPortItem::addConnection(SWConnection* connection)
+{
+    SWConnectionEndpoint::addConnection(connection);
+    stubLine_.setVisible(true);
+}
+
+//-----------------------------------------------------------------------------
+// Function: removeInterconnection()
+//-----------------------------------------------------------------------------
+void SWPortItem::removeConnection(SWConnection* connection)
+{
+    SWConnectionEndpoint::removeConnection(connection);
+
+    if (getConnections().size() == 0)
+    {
+        stubLine_.setVisible(false);
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: SWPortItem::itemChange()
 //-----------------------------------------------------------------------------
 QVariant SWPortItem::itemChange(GraphicsItemChange change, QVariant const& value)
@@ -412,12 +451,20 @@ QVariant SWPortItem::itemChange(GraphicsItemChange change, QVariant const& value
             {
                 setDirection(QVector2D(-1.0f, 0.0f));
                 nameLabel_->setPos(nameHeight/2, GridSize);
+
+                QLineF line = stubLine_.line();
+                qreal x = std::abs(line.x1());
+                stubLine_.setLine(-x, 0.0, -x, line.p2().y());
             }
             // Otherwise the port is directed to the right.
             else
             {
                 setDirection(QVector2D(1.0f, 0.0f));
                 nameLabel_->setPos(-nameHeight/2, GridSize + nameWidth);
+
+                QLineF line = stubLine_.line();
+                qreal x = std::abs(line.x1());
+                stubLine_.setLine(x, 0.0, x, line.p2().y());
             }
 
             emit contentChanged();
@@ -426,14 +473,35 @@ QVariant SWPortItem::itemChange(GraphicsItemChange change, QVariant const& value
 
     case ItemScenePositionHasChanged:
         // Check if the updates are not disabled.
-//         if (!static_cast<SWComponentItem*>(parentItem())->isConnectionUpdateDisabled())
-//         {
-//             // Update the connections.
-//             foreach (SWConnection *connection, getConnections())
-//             {
-//                 connection->updatePosition();
-//             }
-//         }
+        if (!static_cast<SWComponentItem*>(parentItem())->isConnectionUpdateDisabled())
+        {
+            // Update the connections.
+            foreach (SWConnection* connection, getConnections())
+            {
+                connection->updatePosition();
+            }
+
+            // Update the stub length if the parent's parent is a HW mapping item.
+            HWMappingItem* mappingItem = dynamic_cast<HWMappingItem*>(parentItem()->parentItem());
+
+            if (mappingItem != 0)
+            {
+                if (pos().x() < 0)
+                {
+                    qreal offset = stubLine_.line().x1();
+                    stubLine_.setLine(offset, 0, offset, std::min(0.0, mappingItem->sceneBoundingRect().left() - scenePos().x()));
+                }
+                else
+                {
+                    qreal offset = stubLine_.line().x1();
+                    stubLine_.setLine(offset, 0, offset, std::min(0.0, scenePos().x() - mappingItem->sceneBoundingRect().right()));
+                }
+            }
+            else
+            {
+                stubLine_.setLine(0, 0, 0, -GridSize);
+            }
+        }
 
         break;
 
@@ -486,10 +554,10 @@ void SWPortItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
     }
 
     // Begin the position update for the connections.
-//     foreach (SWConnection* conn, getConnections())
-//     {
-//         conn->beginUpdatePosition();
-//     }
+    foreach (SWConnection* conn, getConnections())
+    {
+        conn->beginUpdatePosition();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -527,11 +595,11 @@ void SWPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
     oldPortPositions_.clear();
     
     // End the position update of the connections.
-//     foreach (SWConnection* conn, getConnections())
-//     {
-//         conn->endUpdatePosition(cmd.data());
-//     }
-// 
+    foreach (SWConnection* conn, getConnections())
+    {
+        conn->endUpdatePosition(cmd.data());
+    }
+
     // Add the undo command to the edit stack only if it has changes.
     if (cmd->childCount() > 0 || oldPos_ != pos())
     {
@@ -580,6 +648,22 @@ void SWPortItem::setDescription(QString const& description)
 //-----------------------------------------------------------------------------
 void SWPortItem::initialize()
 {
+    stubLine_.setFlag(ItemStacksBehindParent);
+    stubLine_.setVisible(false);
+
+    QPen newPen = stubLine_.pen();
+
+    if (getType() == ENDPOINT_TYPE_API)
+    {
+        newPen.setWidth(3);
+    }
+    else
+    {
+        newPen.setWidth(2);
+    }
+
+    stubLine_.setPen(newPen);
+
     nameLabel_ = new QGraphicsTextItem("", this);
     QFont font = nameLabel_->font();
     font.setPointSize(8);
@@ -598,4 +682,44 @@ void SWPortItem::initialize()
     setFlag(ItemSendsScenePositionChanges);
 
     updateInterface();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWPortItem::onBeginConnect()
+//-----------------------------------------------------------------------------
+void SWPortItem::onBeginConnect()
+{
+    stubLine_.setVisible(true);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWPortItem::onEndConnect()
+//-----------------------------------------------------------------------------
+void SWPortItem::onEndConnect()
+{
+    if (!isConnected())
+    {
+        stubLine_.setVisible(false);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWPortItem::setSelectionHighlight()
+//-----------------------------------------------------------------------------
+void SWPortItem::setSelectionHighlight(bool on)
+{
+    SWConnectionEndpoint::setSelectionHighlight(on);
+
+    QPen curPen = stubLine_.pen();
+    
+    if (on)
+    {
+        curPen.setColor(Qt::red);
+    }
+    else
+    {
+        curPen.setColor(Qt::black);
+    }
+
+    stubLine_.setPen(curPen);
 }

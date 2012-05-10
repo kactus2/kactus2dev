@@ -1200,12 +1200,6 @@ void BlockDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 void BlockDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
-	// Try to create a connection if in connection mode.
-//     if (getMode() == MODE_CONNECT && tempConnection_ && !offPageMode_)
-//     {
-//         createConnection(mouseEvent);
-//     }
-
 	// process the normal mouse release event
     QGraphicsScene::mouseReleaseEvent(mouseEvent);
 }
