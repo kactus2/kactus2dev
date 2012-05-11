@@ -6,6 +6,7 @@
  */
 
 #include "componenteditoraddrspacesitem.h"
+#include "componenteditoraddrspaceitem.h"
 
 ComponentEditorAddrSpacesItem::ComponentEditorAddrSpacesItem(ComponentEditorTreeModel* model,
 															 LibraryInterface* libHandler,
@@ -13,8 +14,13 @@ ComponentEditorAddrSpacesItem::ComponentEditorAddrSpacesItem(ComponentEditorTree
 															 QWidget* widget, 
 															 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-addSpaces_(component->getAddressSpaces()) {
+addrSpaces_(component->getAddressSpaces()) {
 
+	foreach (QSharedPointer<AddressSpace> addrSpace, addrSpaces_) {
+		ComponentEditorAddrSpaceItem* addrItem = 
+			new ComponentEditorAddrSpaceItem(addrSpace, model, libHandler, component, widget, this);	
+		childItems_.append(addrItem);
+	}
 }
 
 ComponentEditorAddrSpacesItem::~ComponentEditorAddrSpacesItem() {
@@ -25,6 +31,11 @@ QString ComponentEditorAddrSpacesItem::text() const {
 }
 
 bool ComponentEditorAddrSpacesItem::isValid() const {
+	foreach (QSharedPointer<AddressSpace> addrSpace, addrSpaces_) {
+		if (!addrSpace->isValid()) {
+			return false;
+		}
+	}
 	return true;
 }
 

@@ -9,6 +9,9 @@
 #define COMPONENTEDITORADDRSPACESITEM_H
 
 #include "componenteditoritem.h"
+#include <models/addressspace.h>
+
+#include <QList>
 
 /*! \brief The Address spaces-item in the component editor navigation tree.
 *
@@ -62,7 +65,7 @@ private:
 	ComponentEditorAddrSpacesItem& operator=(const ComponentEditorAddrSpacesItem& other);
 
 	//! \brief The address spaces being edited.
-	QList<QSharedPointer<AddressSpace> >& addSpaces_;
+	QList<QSharedPointer<AddressSpace> >& addrSpaces_;
 
 };
 
