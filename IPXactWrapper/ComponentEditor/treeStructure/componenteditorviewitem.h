@@ -1,25 +1,30 @@
 /* 
- *  	Created on: 9.5.2012
+ *  	Created on: 14.5.2012
  *      Author: Antti Kamppi
- * 		filename: componenteditorbusinterfacesitem.h
+ * 		filename: componenteditorviewitem.h
  *		Project: Kactus 2
  */
 
-#ifndef COMPONENTEDITORBUSINTERFACESITEM_H
-#define COMPONENTEDITORBUSINTERFACESITEM_H
+#ifndef COMPONENTEDITORVIEWITEM_H
+#define COMPONENTEDITORVIEWITEM_H
 
 #include "componenteditoritem.h"
+#include <models/view.h>
+#include <IPXactWrapper/ComponentEditor/views/vieweditor.h>
 
-/*! \brief The Bus interfaces-item in the component editor's navigation tree.
+#include <QSharedPointer>
+
+/*! \brief The item for a single view in the component editor's navigation tree.
  *
  */
-class ComponentEditorBusInterfacesItem : public ComponentEditorItem {
+class ComponentEditorViewItem : public ComponentEditorItem {
 	Q_OBJECT
 
 public:
 
 	/*! \brief The constructor
 	 *
+	 * \param view Pointer to the view being edited.
 	 * \param model Pointer to the model that owns the items.
 	 * \param libHandler Pointer to the instance that manages the library.
 	 * \param component Pointer to the component being edited.
@@ -27,14 +32,15 @@ public:
 	 * \param parent Pointer to the parent item.
 	 *
 	*/
-	ComponentEditorBusInterfacesItem(ComponentEditorTreeModel* model,
+	ComponentEditorViewItem(QSharedPointer<View> view, 
+		ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
 		QWidget* widget,
 		ComponentEditorItem* parent);
 
 	//! \brief The destructor
-	virtual ~ComponentEditorBusInterfacesItem();
+	virtual ~ComponentEditorViewItem();
 
 	/*! \brief Get the text to be displayed to user in the tree for this item.
 	 *
@@ -56,13 +62,16 @@ public:
 
 private:
 	//! \brief No copying
-	ComponentEditorBusInterfacesItem(const ComponentEditorBusInterfacesItem& other);
+	ComponentEditorViewItem(const ComponentEditorViewItem& other);
 
 	//! \brief No assignment
-	ComponentEditorBusInterfacesItem& operator=(const ComponentEditorBusInterfacesItem& other);
+	ComponentEditorViewItem& operator=(const ComponentEditorViewItem& other);
 
-	//! \brief Contains the bus interfaces to edit.
-	QMap<QString, QSharedPointer<BusInterface> >& busifs_;
+	//! \brief Pointer to the view being edited.
+	QSharedPointer<View> view_;
+
+	//! \brief The editor to edit the view.
+	ViewEditor editor_;
 };
 
-#endif // COMPONENTEDITORBUSINTERFACESITEM_H
+#endif // COMPONENTEDITORVIEWITEM_H

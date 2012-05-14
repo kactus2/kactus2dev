@@ -60,6 +60,9 @@ private:
 
 	//! \brief No assignment
 	ComponentEditorViewsItem& operator=(const ComponentEditorViewsItem& other);
+
+	//! \brief The views being edited.
+	QList<QSharedPointer<View> >& views_;
 };
 
 #endif // COMPONENTEDITORVIEWSITEM_H

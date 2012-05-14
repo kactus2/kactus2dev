@@ -17,7 +17,7 @@ BusInterfaceEditor::BusInterfaceEditor(LibraryInterface* libHandler,
 									   void* dataPointer, 
 									   QWidget *parent): 
 ItemEditor(component, parent),
-busif_(),
+busif_(static_cast<BusInterface*>(dataPointer)),
 tabs_(this), 
 general_(libHandler, dataPointer, &tabs_), 
 portmaps_(libHandler, component, dataPointer, &tabs_), 
@@ -29,8 +29,33 @@ parameters_(dataPointer, &tabs_) {
 	Q_ASSERT_X(dataPointer, "BusInterfaceEditor constructor",
 		"Null dataPointer given as parameter");
 
-	busif_ = static_cast<BusInterface*>(dataPointer);
+	initialize();
+}
 
+BusInterfaceEditor::BusInterfaceEditor(LibraryInterface* libHandler,
+									   QSharedPointer<Component> component, 
+									   QSharedPointer<BusInterface> busif,
+									   QWidget *parent): 
+ItemEditor(component, parent),
+busif_(busif.data()),
+tabs_(this), 
+general_(libHandler, busif_, &tabs_), 
+portmaps_(libHandler, component, busif_, &tabs_), 
+interfaceMode_(libHandler, &general_, component, busif_, &tabs_), 
+parameters_(busif_, &tabs_) {
+
+	Q_ASSERT(component);
+	Q_ASSERT(libHandler);
+	Q_ASSERT(busif);
+
+	initialize();
+}
+
+BusInterfaceEditor::~BusInterfaceEditor() {
+	tabs_.disconnect();
+}
+
+void BusInterfaceEditor::initialize() {
 	QHBoxLayout* layout = new QHBoxLayout(this);
 	layout->addWidget(&tabs_);
 
@@ -76,10 +101,6 @@ parameters_(dataPointer, &tabs_) {
 
 	connect(&tabs_, SIGNAL(currentChanged(int)),
 		this, SLOT(onTabChange(int)), Qt::UniqueConnection);
-}
-
-BusInterfaceEditor::~BusInterfaceEditor() {
-	tabs_.disconnect();
 }
 
 bool BusInterfaceEditor::isValid() const {

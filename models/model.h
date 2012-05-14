@@ -120,9 +120,15 @@ public:
 
 	/*! \brief Get the views of this model
 	 *
-	 * \return QList containing pointers to the views of this model
+	 * \return QList containing pointers to the views of this model.
 	 */
-	const QList<QSharedPointer<View> >& getViews();
+	const QList<QSharedPointer<View> >& getViews() const;
+
+	/*! \brief Get the views of this model.
+	 *
+	 * \return QList containing pointers to the views of this model.
+	*/
+	QList<QSharedPointer<View> >& getViews();
 
 	/*! \brief Set the model parameters for this model
 	 *

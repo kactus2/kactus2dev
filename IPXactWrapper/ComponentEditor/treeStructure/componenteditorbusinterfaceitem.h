@@ -1,25 +1,30 @@
 /* 
- *  	Created on: 9.5.2012
+ *  	Created on: 14.5.2012
  *      Author: Antti Kamppi
- * 		filename: componenteditorbusinterfacesitem.h
+ * 		filename: componenteditorbusinterfaceitem.h
  *		Project: Kactus 2
  */
 
-#ifndef COMPONENTEDITORBUSINTERFACESITEM_H
-#define COMPONENTEDITORBUSINTERFACESITEM_H
+#ifndef COMPONENTEDITORBUSINTERFACEITEM_H
+#define COMPONENTEDITORBUSINTERFACEITEM_H
 
 #include "componenteditoritem.h"
+#include <models/businterface.h>
+#include <IPXactWrapper/ComponentEditor/busInterfaces/businterfaceeditor.h>
 
-/*! \brief The Bus interfaces-item in the component editor's navigation tree.
+#include <QSharedPointer>
+
+/*! \brief The item for single bus interface in the component editor's navigation tree.
  *
  */
-class ComponentEditorBusInterfacesItem : public ComponentEditorItem {
+class ComponentEditorBusInterfaceItem : public ComponentEditorItem {
 	Q_OBJECT
 
 public:
 
 	/*! \brief The constructor
 	 *
+	 * \param busif Pointer to the bus interface being edited.
 	 * \param model Pointer to the model that owns the items.
 	 * \param libHandler Pointer to the instance that manages the library.
 	 * \param component Pointer to the component being edited.
@@ -27,14 +32,15 @@ public:
 	 * \param parent Pointer to the parent item.
 	 *
 	*/
-	ComponentEditorBusInterfacesItem(ComponentEditorTreeModel* model,
+	ComponentEditorBusInterfaceItem(QSharedPointer<BusInterface> busif,
+		ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
 		QWidget* widget,
 		ComponentEditorItem* parent);
 
 	//! \brief The destructor
-	virtual ~ComponentEditorBusInterfacesItem();
+	virtual ~ComponentEditorBusInterfaceItem();
 
 	/*! \brief Get the text to be displayed to user in the tree for this item.
 	 *
@@ -56,13 +62,16 @@ public:
 
 private:
 	//! \brief No copying
-	ComponentEditorBusInterfacesItem(const ComponentEditorBusInterfacesItem& other);
+	ComponentEditorBusInterfaceItem(const ComponentEditorBusInterfaceItem& other);
 
 	//! \brief No assignment
-	ComponentEditorBusInterfacesItem& operator=(const ComponentEditorBusInterfacesItem& other);
+	ComponentEditorBusInterfaceItem& operator=(const ComponentEditorBusInterfaceItem& other);
 
-	//! \brief Contains the bus interfaces to edit.
-	QMap<QString, QSharedPointer<BusInterface> >& busifs_;
+	//! \brief Pointer to the bus interface being edited.
+	QSharedPointer<BusInterface> busif_;
+
+	//! \brief The editor to edit the bus interface.
+	BusInterfaceEditor editor_;
 };
 
-#endif // COMPONENTEDITORBUSINTERFACESITEM_H
+#endif // COMPONENTEDITORBUSINTERFACEITEM_H

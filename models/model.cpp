@@ -341,7 +341,11 @@ void Model::setPorts(const QMap<QString, QSharedPointer<Port> > &ports) {
 	ports_ = ports;
 }
 
-const QList<QSharedPointer<View> >& Model::getViews() {
+const QList<QSharedPointer<View> >& Model::getViews() const {
+	return views_;
+}
+
+QList<QSharedPointer<View> >& Model::getViews() {
 	return views_;
 }
 
@@ -350,13 +354,13 @@ bool Model::hasHierView() const {
 	// search all views
 	for (int i = 0; i < views_.size(); ++i) {
 
-		// if a hierarchyref is found
+		// if a hierarchy ref is found
 		if (views_.at(i)->getHierarchyRef().isValid()) {
 			return true;
 		}
 	}
 
-	// if none of the views contained hierarchyrefs then return false
+	// if none of the views contained hierarchy refs then return false
 	return false;
 }
 

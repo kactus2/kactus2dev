@@ -40,7 +40,21 @@ public:
 	*/
 	BusInterfaceEditor(LibraryInterface* libHandler,
 		QSharedPointer<Component> component, 
-		void* dataPointer, QWidget *parent);
+		void* dataPointer,
+		QWidget *parent);
+
+	/*! \brief The constructor
+	 *
+	 * \param libHandler Pointer to the library handler instance.
+	 * \param component Pointer to the component being edited.
+	 * \param busif Pointer  to the bus interface being edited.
+	 * \param parent Pointer to the owner of this container.
+	 *
+	*/
+	BusInterfaceEditor(LibraryInterface* libHandler,
+		QSharedPointer<Component> component, 
+		QSharedPointer<BusInterface> busif,
+		QWidget *parent);
 	
 	//! \brief The destructor
 	virtual ~BusInterfaceEditor();
@@ -77,6 +91,9 @@ private:
 
 	//! No assignment
 	BusInterfaceEditor& operator=(const BusInterfaceEditor& other);
+
+	//! \brief Set up the the editor.
+	void initialize();
 
 	//! \brief Pointer to the bus interface being edited.
 	BusInterface* busif_;

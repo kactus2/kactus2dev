@@ -16,6 +16,7 @@
 #include "flatviewparameterstab.h"
 #include <IPXactWrapper/ComponentEditor/fileBuilders/filebuilderseditor.h>
 #include "hierarchyrefwidget.h"
+#include <models/view.h>
 
 #include <QComboBox>
 #include <QStackedWidget>
@@ -23,7 +24,6 @@
 #include <QSharedPointer>
 
 class Component;
-class View;
 class LibraryInterface;
 
 /*! \brief Editor to edit a view within a component.
@@ -44,6 +44,19 @@ public:
 	*/
 	ViewEditor(QSharedPointer<Component> component, 
 		void* dataPointer,
+		LibraryInterface* libHandler,
+		QWidget *parent);
+
+	/*! \brief The constructor
+	 *
+	 * \param component Pointer to the component that contains the view.
+	 * \param view Pointer to the view being edited.
+	 * \param libHandler Pointer to the instance that manages the library
+	 * \param parent Pointer to the owner of this editor.
+	 *
+	*/
+	ViewEditor(QSharedPointer<Component> component, 
+		QSharedPointer<View> view,
 		LibraryInterface* libHandler,
 		QWidget *parent);
 	
@@ -84,6 +97,9 @@ private:
 
 	//! \brief Set up the layout for the editor.
 	void setupLayout();
+
+	//! \brief Set up the editor.
+	void initialize();
 
 	//! \brief Pointer to the instance that manages the library.
 	LibraryInterface* libHandler_;

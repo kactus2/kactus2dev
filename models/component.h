@@ -507,6 +507,12 @@ public:
 	*/
 	const QList<QSharedPointer<View> > getViews() const;
 
+	/*! \brief Get the views of the component
+	 *
+	 * \return QList containing pointers to the views.
+	*/
+	QList<QSharedPointer<View> >& getViews();
+
 	/*! \brief Get the names of the views of the component.
 	*
 	* \return QStringList containing the view names.
@@ -715,6 +721,12 @@ public:
 	* \return QMap containing component's bus interfaces
 	*/
 	const QMap<QString, QSharedPointer<BusInterface> >& getBusInterfaces() const;
+
+	/*! \brief Get the bus interfaces of this component.
+	 *
+	 * \return QMap containing pointers to the component's bus interfaces.
+	*/
+	QMap<QString, QSharedPointer<BusInterface> >& getBusInterfaces();
 
 	/*! \brief Get list of names of all the bus interfaces in this component.
 	*

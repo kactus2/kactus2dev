@@ -42,6 +42,31 @@ hierarchyRef_(view_, component_, libHandler, &stack_) {
 	Q_ASSERT_X(dataPointer, "ViewEditor constructor",
 		"Null data pointer given as parameter");
 
+	initialize();
+}
+
+ViewEditor::ViewEditor( QSharedPointer<Component> component, 
+					   QSharedPointer<View> view, 
+					   LibraryInterface* libHandler,
+					   QWidget *parent ): 
+ItemEditor(component, parent), 
+libHandler_(libHandler),
+component_(component),
+view_(view.data()),
+nameGroup_(this, tr("View name and description")),
+viewTypeSelector_(),
+envIdentifier_(view_, this),
+stack_(this),
+flatElements_(&stack_),
+generalTab_(component, view_, &flatElements_),
+parametersTab_(view_, this),
+fileBuildersTab_(&view_->getDefaultFileBuilders(), this),
+hierarchyRef_(view_, component_, libHandler, &stack_) {
+
+	initialize();
+}
+
+void ViewEditor::initialize() {
 	// set the possible options to the view type selector.
 	viewTypeSelector_.addItem(tr("hierarchical"));
 	viewTypeSelector_.addItem(tr("non-hierarchical"));
@@ -64,7 +89,7 @@ hierarchyRef_(view_, component_, libHandler, &stack_) {
 	flatLayout->addWidget(&parametersTab_);
 
 	setupLayout();
-	
+
 	connect(&nameGroup_, SIGNAL(nameChanged(const QString&)),
 		this, SIGNAL(nameChanged(const QString&)), Qt::UniqueConnection);
 	connect(&nameGroup_, SIGNAL(contentChanged()),

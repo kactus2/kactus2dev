@@ -1454,15 +1454,18 @@ QList<QSharedPointer<AddressSpace> > &addressSpaces) {
 
 void Component::setRemapStates(const
 QList<QSharedPointer<RemapState> > &remapStates) {
-	// delete old remapstates
+	// delete old remap states
 	remapStates_.clear();
 
 	// save new remap states
 	remapStates_ = remapStates;
 }
 
-const QMap<QString, QSharedPointer<BusInterface> >&
-Component::getBusInterfaces() const {
+const QMap<QString, QSharedPointer<BusInterface> >& Component::getBusInterfaces() const {
+	return busInterfaces_;
+}
+
+QMap<QString, QSharedPointer<BusInterface> >& Component::getBusInterfaces() {
 	return busInterfaces_;
 }
 
@@ -2264,12 +2267,24 @@ void Component::addView(View* newView) {
 const QList<QSharedPointer<View> > Component::getViews() const {
 
 	// if model exists then ask it for views
-	if (model_)
+	if (model_) {
 		return model_->getViews();
+	}
 
 	// if not then return empty list
-	else
+	else {
 		return QList<QSharedPointer<View> >();
+	}
+}
+
+QList<QSharedPointer<View> >& Component::getViews() {
+	if (model_) {
+		return model_->getViews();
+	}
+	else {
+		model_ = QSharedPointer<Model>(new Model());
+		return model_->getViews();
+	}
 }
 
 View* Component::createView() {
