@@ -38,6 +38,17 @@ public:
 	ChannelEditor(QSharedPointer<Component> component, 
 		void* dataPointer, 
 		QWidget *parent);
+
+	/*! \brief The constructor
+	 *
+	 * \param component Pointer to the component being edited.
+	 * \param channel Pointer to the channel being edited.
+	 * \param parent Pointer to the owner of this widget.
+	 *
+	*/
+	ChannelEditor(QSharedPointer<Component> component, 
+		QSharedPointer<Channel> channel, 
+		QWidget *parent);
 	
 	//! \brief The destructor
 	virtual ~ChannelEditor();
@@ -68,6 +79,9 @@ private:
 
 	//! No assignment
 	ChannelEditor& operator=(const ChannelEditor& other);
+
+	//! \brief Set up the channel editor
+	void initialize();
 
 	//! \brief Pointer to the component being edited.
 	QSharedPointer<Component> component_;

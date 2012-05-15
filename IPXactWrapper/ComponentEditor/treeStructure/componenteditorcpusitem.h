@@ -10,6 +10,8 @@
 
 #include "componenteditoritem.h"
 
+#include <QList>
+
 /*! \brief The Cpus-item in the component editor's navigation tree.
  *
  */
@@ -60,6 +62,9 @@ private:
 
 	//! \brief No assignment
 	ComponentEditorCpusItem& operator=(const ComponentEditorCpusItem& other);
+
+	//! \brief The cpus being edited
+	QList<QSharedPointer<Cpu> >& cpus_;
 };
 
 #endif // COMPONENTEDITORCPUSITEM_H

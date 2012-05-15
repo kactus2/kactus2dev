@@ -17,12 +17,13 @@
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <common/widgets/nameGroupBox/namegroupbox.h>
+#include <models/ComInterface.h>
+#include <models/component.h>
 
 #include <QComboBox>
 #include <QGroupBox>
+#include <QSharedPointer>
 
-class Component;
-class ComInterface;
 class LibraryInterface;
 
 //-----------------------------------------------------------------------------
@@ -40,9 +41,24 @@ public:
      *      @param [in] component    The component being edited.
      *      @param [in] dataPointer  The COM interface being edited.
      *      @param [in] parent       The parent widget.
-     */
-    ComInterfaceEditor(LibraryInterface* libHandler, QSharedPointer<Component> component, 
-                       void* dataPointer, QWidget *parent);
+	 */
+	ComInterfaceEditor(LibraryInterface* libHandler, 
+		QSharedPointer<Component> component, 
+		void* dataPointer,
+		QWidget *parent);
+
+	/*! \brief The constructor
+	 *
+	 * \param libHandler Pointer to the instance that manages the library.
+	 * \param component Pointer to component being edited.
+	 * \param comInterface Pointer to COM interface being edited.
+	 * \param parent The parent widget.
+	 *
+	*/
+	ComInterfaceEditor(LibraryInterface* libHandler, 
+		QSharedPointer<Component> component, 
+		QSharedPointer<ComInterface> comInterface,
+		QWidget *parent);
 
     /*!
      *  Destructor.
@@ -83,6 +99,9 @@ private:
      *  Restores changes made to the contents.
      */
     void restoreChanges();
+
+	//! \brief Set up the editor.
+	void initialize();
 
     //-----------------------------------------------------------------------------
     // Data.

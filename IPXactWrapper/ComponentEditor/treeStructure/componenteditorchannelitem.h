@@ -1,25 +1,30 @@
 /* 
- *  	Created on: 9.5.2012
+ *  	Created on: 15.5.2012
  *      Author: Antti Kamppi
- * 		filename: componenteditorchannelsitem.h
+ * 		filename: componenteditorchannelitem.h
  *		Project: Kactus 2
  */
 
-#ifndef COMPONENTEDITORCHANNELSITEM_H
-#define COMPONENTEDITORCHANNELSITEM_H
+#ifndef COMPONENTEDITORCHANNELITEM_H
+#define COMPONENTEDITORCHANNELITEM_H
 
 #include "componenteditoritem.h"
+#include <IPXactWrapper/ComponentEditor/channels/channeleditor.h>
+#include <models/channel.h>
 
-/*! \brief The channels-item in the component editor's navigation tree.
+#include <QSharedPointer>
+
+/*! \brief The item for a single channel in the component's navigation tree.
  *
  */
-class ComponentEditorChannelsItem : public ComponentEditorItem {
+class ComponentEditorChannelItem : public ComponentEditorItem {
 	Q_OBJECT
 
 public:
 
 	/*! \brief The constructor
 	 *
+	 * \param channel Pointer to the channel being edited.
 	 * \param model Pointer to the model that owns the items.
 	 * \param libHandler Pointer to the instance that manages the library.
 	 * \param component Pointer to the component being edited.
@@ -27,14 +32,15 @@ public:
 	 * \param parent Pointer to the parent item.
 	 *
 	*/
-	ComponentEditorChannelsItem(ComponentEditorTreeModel* model,
+	ComponentEditorChannelItem(QSharedPointer<Channel> channel,
+		ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
 		QWidget* widget,
 		ComponentEditorItem* parent);
 
 	//! \brief The destructor
-	virtual ~ComponentEditorChannelsItem();
+	virtual ~ComponentEditorChannelItem();
 
 	/*! \brief Get the text to be displayed to user in the tree for this item.
 	 *
@@ -56,13 +62,16 @@ public:
 
 private:
 	//! \brief No copying
-	ComponentEditorChannelsItem(const ComponentEditorChannelsItem& other);
+	ComponentEditorChannelItem(const ComponentEditorChannelItem& other);
 
 	//! \brief No assignment
-	ComponentEditorChannelsItem& operator=(const ComponentEditorChannelsItem& other);
+	ComponentEditorChannelItem& operator=(const ComponentEditorChannelItem& other);
 
-	//! \brief The channels being edited.
-	QList<QSharedPointer<Channel> >& channels_;
+	//! \brief Pointer to the channel being edited.
+	QSharedPointer<Channel> channel_;
+
+	//! \brief The editor to edit the channel.
+	ChannelEditor editor_;
 };
 
-#endif // COMPONENTEDITORCHANNELSITEM_H
+#endif // COMPONENTEDITORCHANNELITEM_H

@@ -1348,6 +1348,10 @@ QList<QSharedPointer<Cpu> >& Component::getCpus() {
 	return cpus_;
 }
 
+const QList<QSharedPointer<Cpu> >& Component::getCpus() const {
+	return cpus_;
+}
+
 void Component::setOtherClockDrivers(const
 QList<QSharedPointer<OtherClockDriver> > &otherClockDrivers) {
 	// first remove old clock drivers and free the memory
@@ -1431,6 +1435,10 @@ void Component::setFileSets(const QList<QSharedPointer<FileSet> > &fileSets) {
 }
 
 const QList<QSharedPointer<Channel> >& Component::getChannels() const {
+	return channels_;
+}
+
+QList<QSharedPointer<Channel> >& Component::getChannels() {
 	return channels_;
 }
 

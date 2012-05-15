@@ -21,10 +21,29 @@ channel_(static_cast<Channel*>(dataPointer)),
 nameGroup_(this, tr("Names and description")),
 interfaceEdit_(component, dataPointer, this) {
 
-	interfaceEdit_.initialize(channel_->getInterfaces());
+	Q_ASSERT(dataPointer);
+	initialize();
+}
 
-	Q_ASSERT_X(dataPointer, "ChannelEditor constructor",
-		"Null dataPointer given as parameter");
+ChannelEditor::ChannelEditor( QSharedPointer<Component> component,
+							 QSharedPointer<Channel> channel,
+							 QWidget *parent ):
+ItemEditor(component, parent),
+component_(component),
+channel_(channel.data()),
+nameGroup_(this, tr("Names and description")),
+interfaceEdit_(component, channel_, this) {
+
+	Q_ASSERT(component);
+	Q_ASSERT(channel);
+	initialize();
+}
+
+ChannelEditor::~ChannelEditor() {
+}
+
+void ChannelEditor::initialize() {
+	interfaceEdit_.initialize(channel_->getInterfaces());
 
 	connect(&nameGroup_, SIGNAL(nameChanged(const QString&)),
 		this, SIGNAL(nameChanged(const QString&)), Qt::UniqueConnection);
@@ -40,9 +59,6 @@ interfaceEdit_(component, dataPointer, this) {
 	nameGroup_.setName(channel_->getName());
 	nameGroup_.setDisplayName(channel_->getDisplayName());
 	nameGroup_.setDescription(channel_->getDescription());
-}
-
-ChannelEditor::~ChannelEditor() {
 }
 
 bool ChannelEditor::isValid() const {

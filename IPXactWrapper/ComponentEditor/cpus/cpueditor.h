@@ -37,6 +37,17 @@ public:
 	CpuEditor(QSharedPointer<Component> component,
 		void* dataPointer,
 		QWidget *parent);
+
+	/*! \brief The constructor
+	 *
+	 * \param component Pointer to the component being edited.
+	 * \param cpu Pointer to the cpu being edited.
+	 * \param parent Pointer to the owner of the editor.
+	 *
+	*/
+	CpuEditor(QSharedPointer<Component> component,
+		QSharedPointer<Cpu> cpu,
+		QWidget *parent);
 	
 	//! \brief The destructor
 	virtual ~CpuEditor();
@@ -68,6 +79,9 @@ private:
 
 	//! \brief No assignment
 	CpuEditor& operator=(const CpuEditor& other);
+
+	//! \brief Set up the cpu editor.
+	void initialize();
 
 	//! \brief Pointer to the cpu being edited.
 	Cpu* cpu_;

@@ -18,6 +18,30 @@ nameGroup_(this, tr("Name and description")),
 addrSpaceRefs_(component, tr("Address space references"), this), 
 parameters_(&cpu_->getParameters(), this) {
 
+	Q_ASSERT(component);
+	Q_ASSERT(dataPointer);
+	initialize();
+}
+
+CpuEditor::CpuEditor( QSharedPointer<Component> component,
+					 QSharedPointer<Cpu> cpu,
+					 QWidget *parent ):
+ItemEditor(component, parent),
+cpu_(cpu.data()),
+nameGroup_(this, tr("Name and description")), 
+addrSpaceRefs_(component, tr("Address space references"), this), 
+parameters_(&cpu_->getParameters(), this) {
+
+	Q_ASSERT(component);
+	Q_ASSERT(cpu_);
+	initialize();
+}
+
+CpuEditor::~CpuEditor() {
+}
+
+void CpuEditor::initialize() {
+	
 	connect(&nameGroup_, SIGNAL(nameChanged(const QString&)),
 		this, SIGNAL(nameChanged(const QString&)), Qt::UniqueConnection);
 	connect(&nameGroup_, SIGNAL(contentChanged()),
@@ -37,9 +61,6 @@ parameters_(&cpu_->getParameters(), this) {
 	layout->addWidget(&parameters_);
 
 	restore();
-}
-
-CpuEditor::~CpuEditor() {
 }
 
 bool CpuEditor::isValid() const {

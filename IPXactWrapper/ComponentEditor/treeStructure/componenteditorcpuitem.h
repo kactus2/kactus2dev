@@ -1,25 +1,30 @@
 /* 
- *  	Created on: 9.5.2012
+ *  	Created on: 15.5.2012
  *      Author: Antti Kamppi
- * 		filename: componenteditorchannelsitem.h
+ * 		filename: componenteditorcpuitem.h
  *		Project: Kactus 2
  */
 
-#ifndef COMPONENTEDITORCHANNELSITEM_H
-#define COMPONENTEDITORCHANNELSITEM_H
+#ifndef COMPONENTEDITORCPUITEM_H
+#define COMPONENTEDITORCPUITEM_H
 
 #include "componenteditoritem.h"
+#include <models/cpu.h>
+#include <IPXactWrapper/ComponentEditor/cpus/cpueditor.h>
 
-/*! \brief The channels-item in the component editor's navigation tree.
+#include <QSharedPointer>
+
+/*! \brief The item for a single cpu in component editor's navigation tree.
  *
  */
-class ComponentEditorChannelsItem : public ComponentEditorItem {
+class ComponentEditorCpuItem : public ComponentEditorItem {
 	Q_OBJECT
 
 public:
 
 	/*! \brief The constructor
 	 *
+	 * \param cpu Pointer to the cpu being edited.
 	 * \param model Pointer to the model that owns the items.
 	 * \param libHandler Pointer to the instance that manages the library.
 	 * \param component Pointer to the component being edited.
@@ -27,14 +32,15 @@ public:
 	 * \param parent Pointer to the parent item.
 	 *
 	*/
-	ComponentEditorChannelsItem(ComponentEditorTreeModel* model,
+	ComponentEditorCpuItem(QSharedPointer<Cpu> cpu,
+		ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
 		QWidget* widget,
 		ComponentEditorItem* parent);
 
 	//! \brief The destructor
-	virtual ~ComponentEditorChannelsItem();
+	virtual ~ComponentEditorCpuItem();
 
 	/*! \brief Get the text to be displayed to user in the tree for this item.
 	 *
@@ -56,13 +62,16 @@ public:
 
 private:
 	//! \brief No copying
-	ComponentEditorChannelsItem(const ComponentEditorChannelsItem& other);
+	ComponentEditorCpuItem(const ComponentEditorCpuItem& other);
 
 	//! \brief No assignment
-	ComponentEditorChannelsItem& operator=(const ComponentEditorChannelsItem& other);
+	ComponentEditorCpuItem& operator=(const ComponentEditorCpuItem& other);
 
-	//! \brief The channels being edited.
-	QList<QSharedPointer<Channel> >& channels_;
+	//! \brief Pointer to the cpu being edited.
+	QSharedPointer<Cpu> cpu_;
+
+	//! \brief The editor to edit the cpu.
+	CpuEditor editor_;
 };
 
-#endif // COMPONENTEDITORCHANNELSITEM_H
+#endif // COMPONENTEDITORCPUITEM_H

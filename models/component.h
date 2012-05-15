@@ -166,6 +166,12 @@ public:
 	 */
 	const QList<QSharedPointer<Channel> >& getChannels() const;
 
+	/*! \brief Get the channels of this component.
+	 *
+	 * \return QList containing the pointers to the channels.
+	*/
+	QList<QSharedPointer<Channel> >& getChannels();
+
 	/*! \brief Get this component's choices
 	 *
 	 * \return QList containing component's choices
@@ -183,6 +189,12 @@ public:
 	 * \return QList containing component's cpus
 	 */
 	QList<QSharedPointer<Cpu> >& getCpus();
+
+	/*! \brief Get component's cpus
+	 *
+	 * \return QList containing component's cpus
+	*/
+	const QList<QSharedPointer<Cpu> >& getCpus() const;
 
 	/*! \brief Is this component a cpu
 	*

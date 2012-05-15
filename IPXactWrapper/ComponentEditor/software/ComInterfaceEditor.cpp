@@ -39,71 +39,24 @@ ComInterfaceEditor::ComInterfaceEditor(LibraryInterface* libHandler,
     Q_ASSERT(dataPointer != 0);
     Q_ASSERT(libHandler != 0);
 
-    connect(&nameGroup_, SIGNAL(contentChanged()),
-            this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(&nameGroup_, SIGNAL(nameChanged(const QString&)),
-            this, SIGNAL(nameChanged(const QString&)), Qt::UniqueConnection);
-    connect(&comType_, SIGNAL(contentChanged()),
-            this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(&dataTypeCombo_, SIGNAL(currentIndexChanged(int)),
-            this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(&dataTypeCombo_, SIGNAL(editTextChanged(QString const&)),
-            this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(&directionCombo_, SIGNAL(currentIndexChanged(int)),
-            this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(&propertyValueEditor_, SIGNAL(contentChanged()),
-            this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    initialize();
+}
 
-    connect(&comType_, SIGNAL(contentChanged()),
-            this, SLOT(onComDefinitionChanged()), Qt::UniqueConnection);
-    
-    // Set name group and VLNV editor settings.
-    nameGroup_.setTitle(tr("Name and description"));
-    comType_.setTitle(tr("COM definition"));
-    comType_.setMandatory(false);
+ComInterfaceEditor::ComInterfaceEditor(LibraryInterface* libHandler,
+									   QSharedPointer<Component> component,
+									   QSharedPointer<ComInterface> comInterface,
+									   QWidget *parent):
+ItemEditor(component, parent),
+libInterface_(libHandler),
+comIf_(comInterface.data()),
+nameGroup_(this),
+comType_(VLNV::COMDEFINITION, libHandler, this, this),
+detailsGroup_(tr("Details"), this),
+dataTypeCombo_(this),
+directionCombo_(this),
+propertyValueEditor_(this) {
 
-    // Initialize the details group.
-    QLabel* dataTypeLabel = new QLabel(tr("Data type:"), &detailsGroup_);
-    dataTypeCombo_.addItem("");
-    dataTypeCombo_.setInsertPolicy(QComboBox::InsertAlphabetically);
-
-    QLabel* directionLabel = new QLabel(tr("Direction:"), &detailsGroup_);
-    directionCombo_.addItem(tr("in"));
-    directionCombo_.addItem(tr("out"));
-    directionCombo_.addItem(tr("inout"));
-    directionCombo_.setCurrentIndex(0);
-
-    QGridLayout* detailsLayout = new QGridLayout(&detailsGroup_);
-    detailsLayout->addWidget(dataTypeLabel, 0, 0, 1, 1);
-    detailsLayout->addWidget(&dataTypeCombo_, 0, 1, 1, 1);
-    detailsLayout->addWidget(directionLabel, 1, 0, 1, 1);
-    detailsLayout->addWidget(&directionCombo_, 1, 1, 1, 1);
-
-    detailsLayout->setColumnMinimumWidth(1, 150);
-    detailsLayout->setColumnStretch(2, 1);
-
-    // Create the scroll area.
-    QScrollArea* scrollArea = new QScrollArea(this);
-    scrollArea->setWidgetResizable(true);
-
-    QHBoxLayout* scrollLayout = new QHBoxLayout(this);
-    scrollLayout->addWidget(scrollArea);
-
-    // Create the top widget and set it under the scroll area.
-    QWidget* topWidget = new QWidget(scrollArea);
-    topWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-    // Create the layout for the actual editor.
-    QVBoxLayout* layout = new QVBoxLayout(topWidget);
-    layout->addWidget(&nameGroup_);
-    layout->addWidget(&comType_);
-    layout->addWidget(&detailsGroup_);
-    layout->addWidget(&propertyValueEditor_);
-    layout->addStretch();
-
-    scrollArea->setWidget(topWidget);
-
-    restoreChanges();
+	initialize();
 }
 
 //-----------------------------------------------------------------------------
@@ -111,6 +64,74 @@ ComInterfaceEditor::ComInterfaceEditor(LibraryInterface* libHandler,
 //-----------------------------------------------------------------------------
 ComInterfaceEditor::~ComInterfaceEditor()
 {
+}
+
+void ComInterfaceEditor::initialize() {
+	connect(&nameGroup_, SIGNAL(contentChanged()),
+		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&nameGroup_, SIGNAL(nameChanged(const QString&)),
+		this, SIGNAL(nameChanged(const QString&)), Qt::UniqueConnection);
+	connect(&comType_, SIGNAL(contentChanged()),
+		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&dataTypeCombo_, SIGNAL(currentIndexChanged(int)),
+		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&dataTypeCombo_, SIGNAL(editTextChanged(QString const&)),
+		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&directionCombo_, SIGNAL(currentIndexChanged(int)),
+		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&propertyValueEditor_, SIGNAL(contentChanged()),
+		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
+	connect(&comType_, SIGNAL(contentChanged()),
+		this, SLOT(onComDefinitionChanged()), Qt::UniqueConnection);
+
+	// Set name group and VLNV editor settings.
+	nameGroup_.setTitle(tr("Name and description"));
+	comType_.setTitle(tr("COM definition"));
+	comType_.setMandatory(false);
+
+	// Initialize the details group.
+	QLabel* dataTypeLabel = new QLabel(tr("Data type:"), &detailsGroup_);
+	dataTypeCombo_.addItem("");
+	dataTypeCombo_.setInsertPolicy(QComboBox::InsertAlphabetically);
+
+	QLabel* directionLabel = new QLabel(tr("Direction:"), &detailsGroup_);
+	directionCombo_.addItem(tr("in"));
+	directionCombo_.addItem(tr("out"));
+	directionCombo_.addItem(tr("inout"));
+	directionCombo_.setCurrentIndex(0);
+
+	QGridLayout* detailsLayout = new QGridLayout(&detailsGroup_);
+	detailsLayout->addWidget(dataTypeLabel, 0, 0, 1, 1);
+	detailsLayout->addWidget(&dataTypeCombo_, 0, 1, 1, 1);
+	detailsLayout->addWidget(directionLabel, 1, 0, 1, 1);
+	detailsLayout->addWidget(&directionCombo_, 1, 1, 1, 1);
+
+	detailsLayout->setColumnMinimumWidth(1, 150);
+	detailsLayout->setColumnStretch(2, 1);
+
+	// Create the scroll area.
+	QScrollArea* scrollArea = new QScrollArea(this);
+	scrollArea->setWidgetResizable(true);
+
+	QHBoxLayout* scrollLayout = new QHBoxLayout(this);
+	scrollLayout->addWidget(scrollArea);
+
+	// Create the top widget and set it under the scroll area.
+	QWidget* topWidget = new QWidget(scrollArea);
+	topWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+	// Create the layout for the actual editor.
+	QVBoxLayout* layout = new QVBoxLayout(topWidget);
+	layout->addWidget(&nameGroup_);
+	layout->addWidget(&comType_);
+	layout->addWidget(&detailsGroup_);
+	layout->addWidget(&propertyValueEditor_);
+	layout->addStretch();
+
+	scrollArea->setWidget(topWidget);
+
+	restoreChanges();
 }
 
 //-----------------------------------------------------------------------------
