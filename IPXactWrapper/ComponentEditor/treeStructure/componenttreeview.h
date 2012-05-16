@@ -35,7 +35,9 @@ public:
      * \param parent Pointer to the owner of this widget
      * 
      */
-    ComponentTreeView(LibraryInterface* handler,const VLNV& compVLNV, QWidget *parent = 0);
+    ComponentTreeView(LibraryInterface* handler,
+		const VLNV& compVLNV,
+		QWidget *parent = 0);
 
 	//! \brief The destructor
     virtual ~ComponentTreeView();

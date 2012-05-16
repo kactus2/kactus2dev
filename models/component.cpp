@@ -1344,6 +1344,10 @@ const QList<QSharedPointer<MemoryMap> >& Component::getMemoryMaps() const {
 	return memoryMaps_;
 }
 
+QList<QSharedPointer<MemoryMap> >& Component::getMemoryMaps() {
+	return memoryMaps_;
+}
+
 QList<QSharedPointer<Cpu> >& Component::getCpus() {
 	return cpus_;
 }
@@ -2610,6 +2614,10 @@ void Component::parseApiInterfaces(QDomNode& node)
 QMap< QString, QSharedPointer<ComInterface> > const& Component::getComInterfaces() const
 {
     return comInterfaces_;
+}
+
+QMap<QString, QSharedPointer<ComInterface> >& Component::getComInterfaces() {
+	return comInterfaces_;
 }
 
 //-----------------------------------------------------------------------------

@@ -60,12 +60,14 @@ public:
      *      @param [in] parent        The parent widget.
      *      @param [in] flags         The document support flags.
      *      @param [in] minZoomLevel  The minimum zoom level.
-     *      @param [in] maxZoomLevel  The maximum zoom level.
-     */
-    TabDocument(QWidget* parent, unsigned int flags = 0,
-                int minZoomLevel = 100, int maxZoomLevel = 100);
+	 *      @param [in] maxZoomLevel  The maximum zoom level.
+	 */
+	TabDocument(QWidget* parent, 
+		unsigned int flags = 0,
+		int minZoomLevel = 100,
+		int maxZoomLevel = 100);
 
-    /*!
+	/*!
      *  Destructor.
      */
     virtual ~TabDocument();

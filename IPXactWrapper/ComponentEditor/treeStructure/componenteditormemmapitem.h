@@ -1,25 +1,27 @@
 /* 
- *  	Created on: 9.5.2012
+ *  	Created on: 16.5.2012
  *      Author: Antti Kamppi
- * 		filename: componenteditormemmapsitem.h
+ * 		filename: componenteditormemmapitem.h
  *		Project: Kactus 2
  */
 
-#ifndef COMPONENTEDITORMEMMAPSITEM_H
-#define COMPONENTEDITORMEMMAPSITEM_H
+#ifndef COMPONENTEDITORMEMMAPITEM_H
+#define COMPONENTEDITORMEMMAPITEM_H
 
 #include "componenteditoritem.h"
+#include <models/memorymap.h>
 
-/*! \brief The Memory maps-item in the component navigation tree.
+/*! \brief The item for a single memory map in component editor's navigation tree.
  *
  */
-class ComponentEditorMemMapsItem : public ComponentEditorItem {
+class ComponentEditorMemMapItem : public ComponentEditorItem {
 	Q_OBJECT
 
 public:
 
 	/*! \brief The constructor
 	 *
+	 * \param memoryMap Pointer to the memory map being edited.
 	 * \param model Pointer to the model that owns the items.
 	 * \param libHandler Pointer to the instance that manages the library.
 	 * \param component Pointer to the component being edited.
@@ -27,14 +29,15 @@ public:
 	 * \param parent Pointer to the parent item.
 	 *
 	*/
-	ComponentEditorMemMapsItem(ComponentEditorTreeModel* model,
+	ComponentEditorMemMapItem(QSharedPointer<MemoryMap> memoryMap,
+		ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
 		QWidget* widget,
 		ComponentEditorItem* parent);
 
 	//! \brief The destructor
-	virtual ~ComponentEditorMemMapsItem();
+	virtual ~ComponentEditorMemMapItem();
 
 	/*! \brief Get the text to be displayed to user in the tree for this item.
 	 *
@@ -56,13 +59,13 @@ public:
 
 private:
 	//! \brief No copying
-	ComponentEditorMemMapsItem(const ComponentEditorMemMapsItem& other);
+	ComponentEditorMemMapItem(const ComponentEditorMemMapItem& other);
 
 	//! \brief No assignment
-	ComponentEditorMemMapsItem& operator=(const ComponentEditorMemMapsItem& other);
+	ComponentEditorMemMapItem& operator=(const ComponentEditorMemMapItem& other);
 
-	//! \brief Contains the memory maps being edited.
-	QList<QSharedPointer<MemoryMap> >& memoryMaps_;
+	//! \brief Pointer to the memory map being edited.
+	QSharedPointer<MemoryMap> memoryMap_;
 };
 
-#endif // COMPONENTEDITORMEMMAPSITEM_H
+#endif // COMPONENTEDITORMEMMAPITEM_H

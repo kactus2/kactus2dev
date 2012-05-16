@@ -1,25 +1,28 @@
 /* 
- *  	Created on: 9.5.2012
+ *  	Created on: 16.5.2012
  *      Author: Antti Kamppi
- * 		filename: componenteditormemmapsitem.h
+ * 		filename: componenteditorfileitem.h
  *		Project: Kactus 2
  */
 
-#ifndef COMPONENTEDITORMEMMAPSITEM_H
-#define COMPONENTEDITORMEMMAPSITEM_H
+#ifndef COMPONENTEDITORFILEITEM_H
+#define COMPONENTEDITORFILEITEM_H
 
 #include "componenteditoritem.h"
+#include <models/file.h>
+#include <IPXactWrapper/ComponentEditor/fileSet/fileeditor.h>
 
-/*! \brief The Memory maps-item in the component navigation tree.
+/*! \brief The item for a single file in component editor's navigation tree.
  *
  */
-class ComponentEditorMemMapsItem : public ComponentEditorItem {
+class ComponentEditorFileItem : public ComponentEditorItem {
 	Q_OBJECT
 
 public:
 
 	/*! \brief The constructor
 	 *
+	 * \param file Pointer to the file being edited.
 	 * \param model Pointer to the model that owns the items.
 	 * \param libHandler Pointer to the instance that manages the library.
 	 * \param component Pointer to the component being edited.
@@ -27,14 +30,15 @@ public:
 	 * \param parent Pointer to the parent item.
 	 *
 	*/
-	ComponentEditorMemMapsItem(ComponentEditorTreeModel* model,
+	ComponentEditorFileItem(QSharedPointer<File> file,
+		ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
 		QWidget* widget,
 		ComponentEditorItem* parent);
 
 	//! \brief The destructor
-	virtual ~ComponentEditorMemMapsItem();
+	virtual ~ComponentEditorFileItem();
 
 	/*! \brief Get the text to be displayed to user in the tree for this item.
 	 *
@@ -56,13 +60,16 @@ public:
 
 private:
 	//! \brief No copying
-	ComponentEditorMemMapsItem(const ComponentEditorMemMapsItem& other);
+	ComponentEditorFileItem(const ComponentEditorFileItem& other);
 
 	//! \brief No assignment
-	ComponentEditorMemMapsItem& operator=(const ComponentEditorMemMapsItem& other);
+	ComponentEditorFileItem& operator=(const ComponentEditorFileItem& other);
 
-	//! \brief Contains the memory maps being edited.
-	QList<QSharedPointer<MemoryMap> >& memoryMaps_;
+	//! \brief Pointer to the file being edited.
+	QSharedPointer<File> file_;
+
+	//! \brief The editor to edit the file.
+	FileEditor editor_;
 };
 
-#endif // COMPONENTEDITORMEMMAPSITEM_H
+#endif // COMPONENTEDITORFILEITEM_H

@@ -39,6 +39,11 @@ public:
 	//! \brief The destructor
 	virtual ~ComponentEditorTreeModel();
 
+	/*! \brief Set the component to be edited.
+	 *
+	 * \param component Pointer to the component to edit.
+	 *
+	*/
 	void setComponent(QSharedPointer<Component> component);
 
 	/*! \brief Get the number of rows an item contains.

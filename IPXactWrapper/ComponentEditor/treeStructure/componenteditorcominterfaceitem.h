@@ -1,25 +1,28 @@
 /* 
- *  	Created on: 9.5.2012
+ *  	Created on: 16.5.2012
  *      Author: Antti Kamppi
- * 		filename: componenteditormemmapsitem.h
+ * 		filename: componenteditorcominterfaceitem.h
  *		Project: Kactus 2
  */
 
-#ifndef COMPONENTEDITORMEMMAPSITEM_H
-#define COMPONENTEDITORMEMMAPSITEM_H
+#ifndef COMPONENTEDITORCOMINTERFACEITEM_H
+#define COMPONENTEDITORCOMINTERFACEITEM_H
 
 #include "componenteditoritem.h"
+#include <models/ComInterface.h>
+#include <IPXactWrapper/ComponentEditor/software/ComInterfaceEditor.h>
 
-/*! \brief The Memory maps-item in the component navigation tree.
+/*! \brief The item for a single COM interface in component editor's navigation tree.
  *
  */
-class ComponentEditorMemMapsItem : public ComponentEditorItem {
+class ComponentEditorComInterfaceItem : public ComponentEditorItem {
 	Q_OBJECT
 
 public:
 
 	/*! \brief The constructor
 	 *
+	 * \param comInterface Pointer to the COM interface being edited.
 	 * \param model Pointer to the model that owns the items.
 	 * \param libHandler Pointer to the instance that manages the library.
 	 * \param component Pointer to the component being edited.
@@ -27,14 +30,15 @@ public:
 	 * \param parent Pointer to the parent item.
 	 *
 	*/
-	ComponentEditorMemMapsItem(ComponentEditorTreeModel* model,
+	ComponentEditorComInterfaceItem(QSharedPointer<ComInterface> comInterface,
+		ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
 		QWidget* widget,
 		ComponentEditorItem* parent);
 
 	//! \brief The destructor
-	virtual ~ComponentEditorMemMapsItem();
+	virtual ~ComponentEditorComInterfaceItem();
 
 	/*! \brief Get the text to be displayed to user in the tree for this item.
 	 *
@@ -56,13 +60,16 @@ public:
 
 private:
 	//! \brief No copying
-	ComponentEditorMemMapsItem(const ComponentEditorMemMapsItem& other);
+	ComponentEditorComInterfaceItem(const ComponentEditorComInterfaceItem& other);
 
 	//! \brief No assignment
-	ComponentEditorMemMapsItem& operator=(const ComponentEditorMemMapsItem& other);
+	ComponentEditorComInterfaceItem& operator=(const ComponentEditorComInterfaceItem& other);
 
-	//! \brief Contains the memory maps being edited.
-	QList<QSharedPointer<MemoryMap> >& memoryMaps_;
+	//! \brief Pointer to the com interface being edited.
+	QSharedPointer<ComInterface> interface_;
+
+	//! \brief The editor to edit the com interface.
+	ComInterfaceEditor editor_;
 };
 
-#endif // COMPONENTEDITORMEMMAPSITEM_H
+#endif // COMPONENTEDITORCOMINTERFACEITEM_H

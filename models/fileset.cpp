@@ -289,6 +289,10 @@ QList<QSharedPointer<File> >& FileSet::getFiles() {
 	return files_;
 }
 
+const QList<QSharedPointer<File> >& FileSet::getFiles() const {
+	return files_;
+}
+
 void FileSet::setFiles(QList<QSharedPointer<File> > &files) {
 	// delete old files
 	files_.clear();
@@ -332,6 +336,10 @@ const QStringList& FileSet::getGroups() {
 }
 
 QList<QSharedPointer<FileBuilder> >& FileSet::getDefaultFileBuilders() {
+	return defaultFileBuilders_;
+}
+
+const QList<QSharedPointer<FileBuilder> >& FileSet::getDefaultFileBuilders() const {
 	return defaultFileBuilders_;
 }
 

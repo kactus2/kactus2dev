@@ -1,19 +1,24 @@
 /* 
- *  	Created on: 9.5.2012
+ *  	Created on: 16.5.2012
  *      Author: Antti Kamppi
- * 		filename: componenteditormemmapsitem.h
+ * 		filename: componenteditordeffilebuildersitem.h
  *		Project: Kactus 2
  */
 
-#ifndef COMPONENTEDITORMEMMAPSITEM_H
-#define COMPONENTEDITORMEMMAPSITEM_H
+#ifndef COMPONENTEDITORDEFFILEBUILDERSITEM_H
+#define COMPONENTEDITORDEFFILEBUILDERSITEM_H
 
 #include "componenteditoritem.h"
+#include <models/filebuilder.h>
+#include <IPXactWrapper/ComponentEditor/fileSet/filebuildereditor.h>
 
-/*! \brief The Memory maps-item in the component navigation tree.
+#include <QList>
+#include <QSharedPointer>
+
+/*! \brief The item for default file builders under file set in component editor's navigation tree.
  *
  */
-class ComponentEditorMemMapsItem : public ComponentEditorItem {
+class ComponentEditorDefFileBuildersItem : public ComponentEditorItem {
 	Q_OBJECT
 
 public:
@@ -27,14 +32,15 @@ public:
 	 * \param parent Pointer to the parent item.
 	 *
 	*/
-	ComponentEditorMemMapsItem(ComponentEditorTreeModel* model,
+	ComponentEditorDefFileBuildersItem(QList<QSharedPointer<FileBuilder> >& fileBuilders,
+		ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
 		QWidget* widget,
 		ComponentEditorItem* parent);
 
 	//! \brief The destructor
-	virtual ~ComponentEditorMemMapsItem();
+	virtual ~ComponentEditorDefFileBuildersItem();
 
 	/*! \brief Get the text to be displayed to user in the tree for this item.
 	 *
@@ -56,13 +62,16 @@ public:
 
 private:
 	//! \brief No copying
-	ComponentEditorMemMapsItem(const ComponentEditorMemMapsItem& other);
+	ComponentEditorDefFileBuildersItem(const ComponentEditorDefFileBuildersItem& other);
 
 	//! \brief No assignment
-	ComponentEditorMemMapsItem& operator=(const ComponentEditorMemMapsItem& other);
+	ComponentEditorDefFileBuildersItem& operator=(const ComponentEditorDefFileBuildersItem& other);
 
-	//! \brief Contains the memory maps being edited.
-	QList<QSharedPointer<MemoryMap> >& memoryMaps_;
+	//! \brief Contains the file builders to edit.
+	QList<QSharedPointer<FileBuilder> >& fileBuilders_;
+
+	//! \brief The editor to edit the file builders.
+	FileBuilderEditor editor_;
 };
 
-#endif // COMPONENTEDITORMEMMAPSITEM_H
+#endif // COMPONENTEDITORDEFFILEBUILDERSITEM_H

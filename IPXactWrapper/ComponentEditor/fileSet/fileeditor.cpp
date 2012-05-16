@@ -23,23 +23,41 @@ ItemEditor(component, parent),
 tabs_(this), 
 generalTab_(NULL),
 extraTab_(NULL),
-//buildCommand_(NULL),
-file_(NULL) {
+file_(static_cast<File*>(dataPointer)),
+baseLocation_(baseLocation) {
 
-	file_ = static_cast<File*>(dataPointer);
 	Q_ASSERT_X(file_, "FileEditor::setDataPointer",
 		"static_cast failed to give valid File-pointer");
 
+	initialize();
+}
+
+FileEditor::FileEditor( const QString& baseLocation,
+					   QSharedPointer<Component> component, 
+					   QSharedPointer<File> file, 
+					   QWidget *parent ):
+ItemEditor(component, parent),
+tabs_(this), 
+generalTab_(NULL),
+extraTab_(NULL),
+file_(file.data()),
+baseLocation_(baseLocation) {
+
+	Q_ASSERT(component);
+	Q_ASSERT(file);
+}
+
+FileEditor::~FileEditor() {
+}
+
+void FileEditor::initialize() {
 	QHBoxLayout* layout = new QHBoxLayout(this);
 	layout->addWidget(&tabs_);
 
-	generalTab_ = new FileGeneralTab(baseLocation, file_, &tabs_);
+	generalTab_ = new FileGeneralTab(baseLocation_, file_, &tabs_);
 	tabs_.addTab(generalTab_, tr("General settings"));
 
-// 	buildCommand_ = new FileBuildCommand(&tabs_, file_, baseLocation);
-// 	tabs_.addTab(buildCommand_, tr("Build command"));
-
-	extraTab_ = new FileExtraTab(baseLocation, file_, &tabs_);
+	extraTab_ = new FileExtraTab(baseLocation_, file_, &tabs_);
 	tabs_.addTab(extraTab_, tr("External dependencies and defines"));
 
 	// connect the signals informing that widgets have changed their status
@@ -49,16 +67,10 @@ file_(NULL) {
 		this, SIGNAL(nameChanged(const QString&)), Qt::UniqueConnection);
 	connect(extraTab_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-// 	connect(buildCommand_, SIGNAL(contentChanged()),
-// 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
 	// fetch the data from the model and disable the discard button
 	generalTab_->restore();
 	extraTab_->restore();
-	//buildCommand_->restore();
-}
-
-FileEditor::~FileEditor() {
 }
 
 bool FileEditor::isValid() const {
@@ -76,6 +88,5 @@ void FileEditor::makeChanges() {
 	if (file_) {
 		generalTab_->apply();
 		extraTab_->apply();
-		//buildCommand_->apply();
 	}
 }

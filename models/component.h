@@ -221,7 +221,13 @@ public:
 	 */
 	const QList<QSharedPointer<MemoryMap> >& getMemoryMaps() const;
 
-	/*! \brief Get pointer to the list containing the memorymaps of the component.
+	/*! \brief Get component's memory maps
+	 *
+	 * \return QList containing pointers to the component's memory maps.
+	*/
+	QList<QSharedPointer<MemoryMap> >& getMemoryMaps();
+
+	/*! \brief Get pointer to the list containing the memory maps of the component.
 	 *
 	 * \return Pointer to the QList containing pointers to the memory maps.
 	*/
@@ -823,6 +829,12 @@ public:
      *  Returns the COM interfaces.
      */
     QMap< QString, QSharedPointer<ComInterface> > const& getComInterfaces() const;
+
+	/*! \brief Get the COM interfaces of the component.
+	 *
+	 * \return QMap containing the pointers to COM interfaces.
+	*/
+	QMap<QString, QSharedPointer<ComInterface> >& getComInterfaces();
 
     /*!
      *  Returns the names of the COM interfaces.

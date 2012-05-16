@@ -104,6 +104,12 @@ public:
 	 */
 	QList<QSharedPointer<FileBuilder> >& getDefaultFileBuilders();
 
+	/*! \brief Get the default file builders for this file set.
+	 *
+	 * \return QList containing pointers to the file builders.
+	*/
+	const QList<QSharedPointer<FileBuilder> >& getDefaultFileBuilders() const;
+
 	/*! \brief Get the dependencies for this file set
 	 *
 	 * \return QList containing paths for the directories containing files
@@ -113,10 +119,15 @@ public:
 
 	/*! \brief Get the files associated with this file set
 	 *
-	 * \return QList containing pointers to the files associated with this
-	 * file set.
+	 * \return QList containing pointers to the files associated with this file set.
 	 */
 	QList<QSharedPointer<File> >& getFiles();
+
+	/*! \brief Get the files associated with this file set.
+	 *
+	 * \return QList containing pointers to the files associated with this file set.
+	*/
+	const QList<QSharedPointer<File> >& getFiles() const;
 
 	/*! \brief Get list of the functions for this file set
 	 *

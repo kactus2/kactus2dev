@@ -6,6 +6,8 @@
  */
 
 #include "componenteditorfilesetitem.h"
+#include "componenteditordeffilebuildersitem.h"
+#include "componenteditorfilesitem.h"
 
 ComponentEditorFileSetItem::ComponentEditorFileSetItem(QSharedPointer<FileSet> fileSet,
 													   ComponentEditorTreeModel* model,
@@ -18,6 +20,14 @@ fileSet_(fileSet),
 editor_(libHandler->getPath(*component->getVlnv()), component, fileSet.data(), widget) {
 
 	Q_ASSERT(fileSet);
+
+	ComponentEditorDefFileBuildersItem* fileBuildersItem = new ComponentEditorDefFileBuildersItem(
+		fileSet_->getDefaultFileBuilders(), model, libHandler, component, widget, this);
+	childItems_.append(fileBuildersItem);
+
+	ComponentEditorFilesItem* filesItem = new ComponentEditorFilesItem(
+		fileSet_->getFiles(), model, libHandler, component, widget, this);
+	childItems_.append(filesItem);
 }
 
 ComponentEditorFileSetItem::~ComponentEditorFileSetItem() {
