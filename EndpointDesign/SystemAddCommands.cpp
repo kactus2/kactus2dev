@@ -413,3 +413,66 @@ void EndpointAddCommand::redo()
     stack_->addEndpoint(item_);
     del_ = false;
 }
+
+//-----------------------------------------------------------------------------
+// Function: SWPortAddCommand()
+//-----------------------------------------------------------------------------
+SWPortAddCommand::SWPortAddCommand(SWComponentItem* component, QPointF const& pos,
+                                           QUndoCommand* parent)
+    : QUndoCommand(parent),
+      component_(component),
+      pos_(pos),
+      port_(0),
+      scene_(component->scene()),
+      del_(false)
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: ~SWPortAddCommand()
+//-----------------------------------------------------------------------------
+SWPortAddCommand::~SWPortAddCommand()
+{
+    if (del_)
+    {
+        delete port_;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: undo()
+//-----------------------------------------------------------------------------
+void SWPortAddCommand::undo()
+{
+    Q_ASSERT(port_ != 0);
+
+    // Remove the port from the component and from the scene
+    component_->removePort(port_);
+    scene_->removeItem(port_);
+    del_ = true;
+
+    // Execute child commands.
+    QUndoCommand::undo();
+}
+
+//-----------------------------------------------------------------------------
+// Function: redo()
+//-----------------------------------------------------------------------------
+void SWPortAddCommand::redo()
+{
+    // Add a port to the component.
+    if (port_ == 0)
+    {
+        port_ = component_->addPort(pos_);
+    }
+    else
+    {
+        component_->addPort(port_);
+    }
+
+    del_ = false;
+
+    // Child commands need not be executed because the other ports change their position
+    // in a deterministic way.
+    //QUndoCommand::redo();
+}

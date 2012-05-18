@@ -85,8 +85,15 @@ public:
 
     /*!
      *  Sets the COM/API type. The type of the VLNV determines the type of the endpoint.
+     *
+     *      @param [in] type The VLNV of the COM/API definition.
      */
-    //virtual void setTypeDefinition(VLNV const& type) = 0;
+    virtual void setTypeDefinition(VLNV const& type) = 0;
+
+    /*!
+     *  Returns the currently set COM/API definition.
+     */
+    virtual VLNV getTypeDefinition() const = 0;
 
     /*!
      *  Called when creating of a connection for this port has begun.

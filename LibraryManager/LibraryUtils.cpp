@@ -421,3 +421,170 @@ void updateSystemDesign(LibraryInterface* lh, QString const& directory,
 
     sysDesign.setComponentInstances(sysInstances);
 }
+
+//-----------------------------------------------------------------------------
+// Function: parseProgrammableElements()
+//-----------------------------------------------------------------------------
+void parseProgrammableElementsV2(LibraryInterface* lh, VLNV designVLNV,
+                                 QList<Design::ComponentInstance>& elements)
+{
+    // The received type is always VLNV::DESIGN so it must be asked from the
+    // library handler to make sure the type is correct.
+    designVLNV.setType(lh->getDocumentType(designVLNV));
+
+    if (!designVLNV.isValid())
+    {
+        return;
+    }
+
+    QSharedPointer<Design> compDesign;
+    QSharedPointer<DesignConfiguration> designConf;
+
+    // Check if the component contains a direct reference to a design.
+    if (designVLNV.getType() == VLNV::DESIGN)
+    {
+        QSharedPointer<LibraryComponent> libComp = lh->getModel(designVLNV);
+        compDesign = libComp.staticCast<Design>();
+    }
+    // Otherwise check if the component had reference to a design configuration.
+    else if (designVLNV.getType() == VLNV::DESIGNCONFIGURATION)
+    {
+        QSharedPointer<LibraryComponent> libComp = lh->getModel(designVLNV);
+        designConf = libComp.staticCast<DesignConfiguration>();
+
+        designVLNV = designConf->getDesignRef();
+
+        if (designVLNV.isValid())
+        {
+            QSharedPointer<LibraryComponent> libComp = lh->getModel(designVLNV);
+            compDesign = libComp.staticCast<Design>();
+        }
+
+        // If design configuration did not contain a reference to a design.
+        if (!compDesign)
+        {
+            return;
+        }
+    }
+    // If referenced view was not found.
+    else
+    {
+        return;
+    }
+
+    // Go through all component instances and search for programmable elements.
+    foreach (Design::ComponentInstance instance, compDesign->getComponentInstances())
+    {
+        QSharedPointer<LibraryComponent> libComp = lh->getModel(instance.componentRef);
+        QSharedPointer<Component> childComp = libComp.staticCast<Component>();
+
+        if (childComp)
+        {
+            // Add the component to the system design only if it is a leaf component and has a CPU
+            // or COM interfaces.
+            if ((!childComp->isHierarchical() && childComp->isCpu()) || !childComp->getComInterfaces().isEmpty())
+            {
+                // Make sure the name is unique by prefixing it with the design's name.
+                instance.instanceName = designVLNV.getName().remove(".design") + "_" + instance.instanceName;
+                elements.append(instance);
+            }
+            else
+            {
+                QString view = "";
+
+                if (designConf != 0)
+                {
+                    view = designConf->getActiveView(instance.instanceName);
+                }
+
+                // Otherwise parse the hierarchical components recursively.
+                parseProgrammableElementsV2(lh, childComp->getHierRef(view), elements);
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: addNewInstances()
+//-----------------------------------------------------------------------------
+void addNewInstancesV2(QList<Design::ComponentInstance> elements, Design& sysDesign, LibraryInterface* lh,
+                       QString const& directory, QList<Design::ComponentInstance>& sysInstances)
+{
+    foreach (Design::ComponentInstance const& element, elements)
+    {
+        // Duplicate the component instance and set its kts_hw_ref.
+        Design::ComponentInstance instance(element.instanceName, element.displayName,
+                                           QString(), element.componentRef, QPointF(0, 0));
+        instance.imported = true;
+        instance.configurableElementValues.insert("kts_hw_ref", element.instanceName);
+
+        // Add the newly created SW component to the list of SW instances.
+        sysInstances.append(instance);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: generateSystemDesign()
+//-----------------------------------------------------------------------------
+void generateSystemDesignV2(LibraryInterface* lh, QString const& directory,
+                            VLNV const& designVLNV, Design& sysDesign)
+{
+    // Parse all programmable elements from the HW component.
+    QList<Design::ComponentInstance> elements;
+    parseProgrammableElements(lh, designVLNV, elements);
+
+    // Add them as instances to the system design.
+    QList<Design::ComponentInstance> sysInstances;
+    addNewInstances(elements, sysDesign, lh, directory, sysInstances);
+
+    sysDesign.setComponentInstances(sysInstances);
+}
+
+//-----------------------------------------------------------------------------
+// Function: updateSystemDesign()
+//-----------------------------------------------------------------------------
+void updateSystemDesignV2(LibraryInterface* lh, QString const& directory,
+                          VLNV const& designVLNV, Design& sysDesign)
+{
+    // Parse all programmable elements from the HW design.
+    QList<Design::ComponentInstance> elements;
+    parseProgrammableElements(lh, designVLNV, elements);
+
+    // Reflect changes in the programmable elements to the system design.
+    QList<Design::ComponentInstance> sysInstances;
+
+    // 1. PHASE: Check already existing elements against the new list and remove those that
+    // are no longer part of the new element list.
+    foreach (Design::ComponentInstance const& instance, sysDesign.getComponentInstances())
+    {
+        // Imported ones should be checked.
+        if (instance.imported)
+        {
+            // Search for the corresponding element in the new list.
+            int index = getInstanceIndex(elements, instance.configurableElementValues.value("kts_hw_ref", ""));
+
+            // If the element was removed, it is not added to the updated design.
+            if (index == -1)
+            {
+                continue;
+            }
+
+            Design::ComponentInstance instanceCopy = instance;
+            instanceCopy.componentRef = elements[index].componentRef;
+            sysInstances.append(instanceCopy);
+
+            // Remove the element from the element list since it has been processed.
+            elements.removeAt(index);
+        }
+        else
+        {
+            // Non-imported instances are always kept.
+            sysInstances.append(instance);
+        }
+    }
+
+    // 2. PHASE: Add rest of the elements as brand new instances.
+    addNewInstancesV2(elements, sysDesign, lh, directory, sysInstances);
+
+    sysDesign.setComponentInstances(sysInstances);
+}

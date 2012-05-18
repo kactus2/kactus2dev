@@ -17,6 +17,8 @@
 #include <QUndoCommand>
 
 class ComponentItem;
+class SWConnectionEndpoint;
+class VLNV;
 
 //-----------------------------------------------------------------------------
 //! SWComponentPacketizeCommand class.
@@ -62,6 +64,56 @@ private:
 
     //! The component VLNV.
     VLNV vlnv_;
+};
+
+//-----------------------------------------------------------------------------
+//! TypeDefinitionChangeCommand class.
+//-----------------------------------------------------------------------------
+class TypeDefinitionChangeCommand : public QUndoCommand
+{
+public:
+    /*!
+     *  Constructor.
+     *
+     *      @param [in] endPoint          The SW connection end point.
+     *      @param [in] oldBusType        The endpoint's old API/COM type.
+     *      @param [in] parent            The parent command.
+     */
+    TypeDefinitionChangeCommand(SWConnectionEndpoint* endpoint, VLNV const& oldType,
+                                QUndoCommand* parent = 0);
+
+    /*!
+     *  Destructor.
+     */
+    ~TypeDefinitionChangeCommand();
+
+    /*!
+     *  Undoes the command.
+     */
+    virtual void undo();
+
+    /*!
+     *  Redoes the command.
+     */
+    virtual void redo();
+
+private:
+    // Disable copying.
+    TypeDefinitionChangeCommand(TypeDefinitionChangeCommand const& rhs);
+    TypeDefinitionChangeCommand& operator=(TypeDefinitionChangeCommand const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The diagram connection endpoint.
+    SWConnectionEndpoint* endpoint_;
+
+    //! The endpoint's old COM/API type.
+    VLNV oldType_;
+
+    //! The endpoint's new COM/API type.
+    VLNV newType_;
 };
 
 //-----------------------------------------------------------------------------

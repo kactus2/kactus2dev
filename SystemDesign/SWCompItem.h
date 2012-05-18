@@ -31,7 +31,9 @@ public:
     /*!
      *  Constructor.
      */
-    SWCompItem(QSharedPointer<Component> component, QString const& instanceName,
+    SWCompItem(LibraryInterface* libInterface,
+               QSharedPointer<Component> component,
+               QString const& instanceName,
                QString const& displayName = QString(),
                QString const& description = QString(),
                QMap<QString, QString> const& configurableElementValues = QMap<QString, QString>(),
@@ -46,6 +48,8 @@ public:
      *  Returns the graphics item type.
      */
     int type() const { return Type; }
+
+    virtual void updateComponent();
 
 protected:
     // Called when the user presses the mouse button.
@@ -82,6 +86,8 @@ private:
     //! The mapping component's old position before mouse move.
     QPointF oldPos_;
     QPointF oldStackPos_;
+
+    QGraphicsPixmapItem* hierIcon_;
 };
 
 //-----------------------------------------------------------------------------

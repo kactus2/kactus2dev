@@ -41,6 +41,22 @@
 //-----------------------------------------------------------------------------
 // Function: SWPortItem::SWPortItem()
 //-----------------------------------------------------------------------------
+SWPortItem::SWPortItem(QString const& name, QGraphicsItem *parent)
+    : SWConnectionEndpoint(parent),
+      apiInterface_(),
+      comInterface_(),
+      temp_(true),
+      oldPos_(),
+      oldPortPositions_(),
+      stubLine_(0, 0, 0, -GridSize, this)
+{
+    setType(ENDPOINT_TYPE_UNDEFINED);
+    initialize();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWPortItem::SWPortItem()
+//-----------------------------------------------------------------------------
 SWPortItem::SWPortItem(QSharedPointer<ApiInterface> apiIf, QGraphicsItem *parent)
     : SWConnectionEndpoint(parent),
       apiInterface_(apiIf),
@@ -65,7 +81,7 @@ SWPortItem::SWPortItem(QSharedPointer<ComInterface> comIf, QGraphicsItem *parent
       temp_(false),
       oldPos_(),
       oldPortPositions_(),
-      stubLine_(-1, 0, -1, -GridSize, this)
+      stubLine_(0, 0, 0, -GridSize, this)
 {
     Q_ASSERT(comIf != 0);
     setType(ENDPOINT_TYPE_COM);
@@ -102,7 +118,7 @@ QString SWPortItem::name() const
     }
     else
     {
-        return QString();
+        return nameLabel_->toPlainText();
     }
 }
 
@@ -120,6 +136,10 @@ void SWPortItem::setName(const QString& name)
     {
         apiInterface_->setName(name);
         encompassingComp()->componentModel()->updateApiInteface(apiInterface_.data());
+    }
+    else
+    {
+        nameLabel_->setPlainText(name);
     }
 
 	updateInterface();
@@ -268,7 +288,61 @@ bool SWPortItem::isHierarchical() const
 //-----------------------------------------------------------------------------
 bool SWPortItem::onConnect(SWConnectionEndpoint const* other)
 {
-    // TODO:
+    // If the port is undefined, try to copy the configuration from the other end point.
+    if (getType() == ENDPOINT_TYPE_UNDEFINED)
+    {
+        if (other->getType() == ENDPOINT_TYPE_API)
+        {
+            apiInterface_ = QSharedPointer<ApiInterface>(new ApiInterface());
+            apiInterface_->setName(nameLabel_->toPlainText());
+            apiInterface_->setApiType(other->getApiInterface()->getApiType());
+            
+            if (other->getApiInterface()->getDependencyDirection() == DEPENDENCY_PROVIDER)
+            {
+                apiInterface_->setDependencyDirection(DEPENDENCY_REQUESTER);
+            }
+            else
+            {
+                apiInterface_->setDependencyDirection(DEPENDENCY_PROVIDER);
+            }
+
+            getOwnerComponent()->addApiInterface(apiInterface_);
+        }
+        else if (other->getType() == ENDPOINT_TYPE_COM)
+        {
+            comInterface_ = QSharedPointer<ComInterface>(new ComInterface());
+            comInterface_->setName(nameLabel_->toPlainText());
+            comInterface_->setComType(other->getComInterface()->getComType());
+            comInterface_->setDataType(other->getComInterface()->getDataType());
+
+            switch (other->getComInterface()->getDirection())
+            {
+            case General::IN:
+                {
+                    comInterface_->setDirection(General::OUT);
+                    break;
+                }
+                
+            case General::OUT:
+                {
+                    comInterface_->setDirection(General::IN);
+                    break;
+                }
+
+            case General::INOUT:
+                {
+                    comInterface_->setDirection(General::INOUT);
+                    break;
+                }
+            }
+
+            getOwnerComponent()->addComInterface(comInterface_);
+        }
+
+        setType(other->getType());
+        updateInterface();
+    }
+
     return true;
 }
 
@@ -277,9 +351,10 @@ bool SWPortItem::onConnect(SWConnectionEndpoint const* other)
 //-----------------------------------------------------------------------------
 void SWPortItem::onDisconnect(SWConnectionEndpoint const*)
 {
-    // TODO:
-    if (temp_)
+    // Undefine the interface if it is temporary.
+    if (temp_ && !isConnected())
     {
+        setTypeDefinition(VLNV());
         updateInterface();
     }
 }
@@ -451,20 +526,12 @@ QVariant SWPortItem::itemChange(GraphicsItemChange change, QVariant const& value
             {
                 setDirection(QVector2D(-1.0f, 0.0f));
                 nameLabel_->setPos(nameHeight/2, GridSize);
-
-                QLineF line = stubLine_.line();
-                qreal x = std::abs(line.x1());
-                stubLine_.setLine(-x, 0.0, -x, line.p2().y());
             }
             // Otherwise the port is directed to the right.
             else
             {
                 setDirection(QVector2D(1.0f, 0.0f));
                 nameLabel_->setPos(-nameHeight/2, GridSize + nameWidth);
-
-                QLineF line = stubLine_.line();
-                qreal x = std::abs(line.x1());
-                stubLine_.setLine(x, 0.0, x, line.p2().y());
             }
 
             emit contentChanged();
@@ -488,13 +555,11 @@ QVariant SWPortItem::itemChange(GraphicsItemChange change, QVariant const& value
             {
                 if (pos().x() < 0)
                 {
-                    qreal offset = stubLine_.line().x1();
-                    stubLine_.setLine(offset, 0, offset, std::min(0.0, mappingItem->sceneBoundingRect().left() - scenePos().x()));
+                    stubLine_.setLine(0, 0, 0, std::min(0.0, mappingItem->sceneBoundingRect().left() - scenePos().x()));
                 }
                 else
                 {
-                    qreal offset = stubLine_.line().x1();
-                    stubLine_.setLine(offset, 0, offset, std::min(0.0, scenePos().x() - mappingItem->sceneBoundingRect().right()));
+                    stubLine_.setLine(0, 0, 0, std::min(0.0, scenePos().x() - mappingItem->sceneBoundingRect().right()));
                 }
             }
             else
@@ -652,16 +717,7 @@ void SWPortItem::initialize()
     stubLine_.setVisible(false);
 
     QPen newPen = stubLine_.pen();
-
-    if (getType() == ENDPOINT_TYPE_API)
-    {
-        newPen.setWidth(3);
-    }
-    else
-    {
-        newPen.setWidth(2);
-    }
-
+    newPen.setWidth(3);
     stubLine_.setPen(newPen);
 
     nameLabel_ = new QGraphicsTextItem("", this);
@@ -722,4 +778,108 @@ void SWPortItem::setSelectionHighlight(bool on)
     }
 
     stubLine_.setPen(curPen);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWPortItem::setTypeDefinition()
+//-----------------------------------------------------------------------------
+void SWPortItem::setTypeDefinition(VLNV const& type)
+{
+    // Disconnect existing connections before setting the type.
+    foreach(SWConnection* conn, getConnections())
+    {
+        if (conn->endpoint1() != this)
+        {
+            conn->endpoint1()->removeConnection(conn);
+            conn->endpoint1()->onDisconnect(this);
+            conn->endpoint1()->addConnection(conn);
+        }
+        else
+        {
+            conn->endpoint2()->removeConnection(conn);
+            conn->endpoint2()->onDisconnect(this);
+            conn->endpoint2()->addConnection(conn);
+        }
+    }
+
+    // Check if the type is valid.
+    if (type.isValid())
+    {
+        if (type.getType() == VLNV::APIDEFINITION)
+        {
+            apiInterface_ = QSharedPointer<ApiInterface>(new ApiInterface());
+            apiInterface_->setName(nameLabel_->toPlainText());
+            apiInterface_->setApiType(type);
+            getOwnerComponent()->addApiInterface(apiInterface_);
+
+            setType(ENDPOINT_TYPE_API);
+            setTemporary(false);
+        }
+        else if (type.getType() == VLNV::COMDEFINITION)
+        {
+            comInterface_ = QSharedPointer<ComInterface>(new ComInterface());
+            comInterface_->setName(nameLabel_->toPlainText());
+            comInterface_->setComType(type);
+            getOwnerComponent()->addComInterface(comInterface_);
+
+            setType(ENDPOINT_TYPE_COM);
+            setTemporary(false);
+        }
+    }
+    else
+    {
+        if (apiInterface_ != 0)
+        {
+            getOwnerComponent()->removeApiInterface(apiInterface_.data());
+            apiInterface_.clear();
+        }
+
+        if (comInterface_ != 0)
+        {
+            getOwnerComponent()->removeComInterface(comInterface_.data());
+            comInterface_.clear();
+        }
+
+        setType(ENDPOINT_TYPE_UNDEFINED);
+        setTemporary(true);
+    }
+
+    updateInterface();
+
+    if (getType() != ENDPOINT_TYPE_UNDEFINED)
+    {
+        // Undefined endpoints of the connections can now be defined.
+        foreach(SWConnection* conn, getConnections())
+        {
+            if (conn->endpoint1() != this)
+            {
+                conn->endpoint1()->onConnect(this);
+                conn->endpoint2()->onConnect(conn->endpoint1());
+            }
+            else
+            {
+                conn->endpoint2()->onConnect(this);
+                conn->endpoint1()->onConnect(conn->endpoint2());
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWConnectionEndpoint::getTypeDefinition()
+//-----------------------------------------------------------------------------
+VLNV SWPortItem::getTypeDefinition() const
+{
+    if (isCom())
+    {
+        return comInterface_->getComType();
+    }
+    else if (isApi())
+    {
+        return apiInterface_->getApiType();
+    }
+    else
+    {
+        return VLNV();
+    }
 }

@@ -23,12 +23,14 @@
 //-----------------------------------------------------------------------------
 // Function: SWComponentItem()
 //-----------------------------------------------------------------------------
-SWComponentItem::SWComponentItem(QRectF const& size, QSharedPointer<Component> component,
+SWComponentItem::SWComponentItem(QRectF const& size,
+                                 LibraryInterface* libInterface,
+                                 QSharedPointer<Component> component,
                                  QString const& instanceName, QString const& displayName,
                                  QString const& description,
                                  QMap<QString, QString> const& configurableElementValues,
                                  QGraphicsItem *parent)
-    : ComponentItem(size, component, instanceName, displayName, description, configurableElementValues, parent),
+    : ComponentItem(size, libInterface, component, instanceName, displayName, description, configurableElementValues, parent),
       imported_(false),
       connUpdateDisabled_(false)
 {
@@ -89,13 +91,79 @@ SWComponentItem::~SWComponentItem()
 }
 
 //-----------------------------------------------------------------------------
+// Function: addPort()
+//-----------------------------------------------------------------------------
+SWPortItem* SWComponentItem::addPort(QPointF const& pos)
+{
+    // Determine a unique name for the port.
+    QString name = "interface";
+    unsigned int count = 0;
+
+    while (componentModel()->getBusInterface(name) != 0)
+    {
+        ++count;
+        name = "interface_" + QString::number(count);
+    }
+
+    // Create an empty bus interface and add it to the component model.
+//     QSharedPointer<BusInterface> busIf(new BusInterface());
+//     busIf->setName(name);
+//     busIf->setInterfaceMode(General::MODE_UNDEFINED);
+//     componentModel()->addBusInterface(busIf);
+
+    // Create the visualization for the bus interface.
+    SWPortItem* port = new SWPortItem(name, this);
+    port->setName(name);
+    port->setPos(mapFromScene(pos));
+    onAddPort(port, mapFromScene(pos).x() >= 0);
+
+    // Update the component size.
+    updateSize();
+    return port;
+}
+
+//-----------------------------------------------------------------------------
+// Function: addPort()
+//-----------------------------------------------------------------------------
+void SWComponentItem::addPort(SWPortItem* port)
+{
+    port->setParentItem(this);
+
+//     if (port->type() == DiagramPort::Type)
+//     {
+//         // Add the bus interface to the component.
+//         componentModel()->add(port->getBusInterface());
+//     }
+
+    // Make preparations.
+    onAddPort(port, port->x() >= 0);
+
+    // Update the component size.
+    updateSize();
+}
+
+//-----------------------------------------------------------------------------
+// Function: removePort()
+//-----------------------------------------------------------------------------
+void SWComponentItem::removePort(SWPortItem* port)
+{
+    leftPorts_.removeAll(port);
+    rightPorts_.removeAll(port);
+    updateSize();
+
+//     if (port->type() == DiagramPort::Type)
+//     {
+//         componentModel()->removeBusInterface(port->getBusInterface().data());
+//     }
+}
+
+//-----------------------------------------------------------------------------
 // Function: updateComponent()
 //-----------------------------------------------------------------------------
 void SWComponentItem::updateComponent()
 {
     ComponentItem::updateComponent();
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: setImported()
@@ -233,4 +301,34 @@ SWPortItem* SWComponentItem::getSWPort(QString const& name, SWConnectionEndpoint
     }
 
     return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWComponentItem::offsetPortPositions()
+//-----------------------------------------------------------------------------
+void SWComponentItem::offsetPortPositions(qreal minY)
+{
+    // Determine the smallest Y from the ports.
+    int curMinY = MIN_Y_PLACEMENT;
+
+    if (!leftPorts_.isEmpty())
+    {
+        curMinY = leftPorts_.first()->pos().y();
+    }
+    else if (!rightPorts_.isEmpty())
+    {
+        curMinY = rightPorts_.first()->pos().y();
+    }
+
+    qreal offset = minY - curMinY;
+
+    foreach (SWPortItem* port, leftPorts_)
+    {
+        port->setPos(port->x(), port->y() + offset);
+    }
+
+    foreach (SWPortItem* port, rightPorts_)
+    {
+        port->setPos(port->x(), port->y() + offset);
+    }
 }

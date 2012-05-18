@@ -26,6 +26,8 @@ public:
      *  Constructor.
      *
      *      @param [in] size                      The initial rectangle size.
+     *      @param [in9 libInterface              The library interface.
+     *      @param [in] component                 The component model.
      *      @param [in] instanceName              The name of the component instance.
      *      @param [in] displayName               The component instance's display name.
      *      @param [in] description               The component instance's description.
@@ -33,6 +35,7 @@ public:
      *      @param [in] parent                    The parent graphics item.
      */
     SWComponentItem(QRectF const& size,
+                    LibraryInterface* libInterface,
                     QSharedPointer<Component> component,
                     QString const& instanceName = QString("unnamed"),
                     QString const& displayName = QString(),
@@ -44,6 +47,29 @@ public:
      *  Destructor.
      */
     virtual ~SWComponentItem();
+
+    /*!
+     *  Adds a new, empty port to the component.
+     *
+     *      @param [in] pos The position hint for the port.
+     *
+     *      @return The newly created port.
+     */
+    SWPortItem* addPort(QPointF const& pos);
+
+    /*!
+     *  Adds an already created port to the component.
+     *
+     *      @param [in] port The port to add. Must not be used in any other component.
+     */
+    void addPort(SWPortItem* port);
+
+    /*!
+     *  Removes the given port from the component.
+     *
+     *      @param [in] port The port to remove.
+     */
+    void removePort(SWPortItem* port);
 
     /*!
      *  Updates the diagram component to reflect the current state of the component model.
@@ -102,6 +128,11 @@ protected:
      *  Returns the height for the component box.
      */
     virtual qreal getHeight() const;
+
+    /*!
+     *  Updates the port positions so that they have at minimum the given Y coordinate value.
+     */
+    void offsetPortPositions(qreal minY);
 
 private:
     // Disable copying.

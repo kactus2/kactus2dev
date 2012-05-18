@@ -18,6 +18,8 @@
 #include "SWPortItem.h"
 #include "SWConnection.h"
 
+#include <LibraryManager/libraryinterface.h>
+
 #include <common/GenericEditProvider.h>
 #include <common/layouts/VStackedLayout.h>
 
@@ -29,13 +31,14 @@
 //-----------------------------------------------------------------------------
 // Function: HWMappingItem::HWMappingItem()
 //-----------------------------------------------------------------------------
-HWMappingItem::HWMappingItem(QSharedPointer<Component> component,
+HWMappingItem::HWMappingItem(LibraryInterface* libInterface,
+                             QSharedPointer<Component> component,
                              QString const& instanceName,
                              QString const& displayName,
                              QString const& description,
                              QMap<QString, QString> const& configurableElementValues,
                              unsigned int id)
-    : SWComponentItem(QRectF(-WIDTH / 2, 0, WIDTH, 0), component, instanceName,
+    : SWComponentItem(QRectF(-WIDTH / 2, 0, WIDTH, 0), libInterface, component, instanceName,
                       displayName, description, configurableElementValues, 0),
       id_(id),
       oldStack_(0),
@@ -43,8 +46,7 @@ HWMappingItem::HWMappingItem(QSharedPointer<Component> component,
       oldPos_()
 {
     setFlag(ItemIsMovable);
-    setBrush(QBrush(QColor(0xa5,0xc3,0xef)));
-
+    
     updateComponent();
     updateItemPositions();
 }
@@ -166,22 +168,12 @@ void HWMappingItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWMappingItem::updateSize()
+// Function: HWMappingItem::getHeight()
 //-----------------------------------------------------------------------------
 qreal HWMappingItem::getHeight() const
 {
     // Calculate the minimum height based on the stack contents.
-    qreal stackHeight = TOP_MARGIN + BOTTOM_MARGIN;
-
-    if (!swComponents_.isEmpty())
-    {
-        foreach (ComponentItem* item, swComponents_)
-        {
-            stackHeight += item->boundingRect().height();
-        }
-
-        stackHeight += (swComponents_.size() - 1) * SPACING;
-    }
+    qreal stackHeight = getComponentStackHeight();
 
     // Determine the largest one from the stack height, minimum height (empty) and the height
     // calculated by the base class.
@@ -222,6 +214,7 @@ void HWMappingItem::removeItem(ComponentItem* item)
 void HWMappingItem::onMoveItem(ComponentItem* item)
 {
     VStackedLayout::updateItemMove(swComponents_, item, TOP_MARGIN, SPACING);
+    offsetPortPositions(getComponentStackHeight() + SPACING);
     updateSize();
 
     // Check if the item is not overlapping the HW mapping item enough.
@@ -257,6 +250,7 @@ void HWMappingItem::onReleaseItem(ComponentItem* item)
 {
     setZValue(0.0);
     VStackedLayout::setItemPos(swComponents_, item, 0.0, TOP_MARGIN, SPACING);
+    offsetPortPositions(getComponentStackHeight() + SPACING);
 }
 
 //-----------------------------------------------------------------------------
@@ -266,6 +260,7 @@ void HWMappingItem::updateItemPositions()
 {
     // Just update the item positions.
     VStackedLayout::updateItemPositions(swComponents_, 0.0, TOP_MARGIN, SPACING);
+    offsetPortPositions(getComponentStackHeight() + SPACING);
     updateSize();
 }
 
@@ -291,4 +286,48 @@ QPointF HWMappingItem::mapStackFromScene(QPointF const& pos) const
 bool HWMappingItem::isItemAllowed(ComponentItem* item) const
 {
     return (item->type() == SWCompItem::Type);
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWMappingItem::getComponentStackHeight()
+//-----------------------------------------------------------------------------
+qreal HWMappingItem::getComponentStackHeight() const
+{
+    qreal stackHeight = TOP_MARGIN + BOTTOM_MARGIN;
+
+    if (!swComponents_.isEmpty())
+    {
+        foreach (ComponentItem* item, swComponents_)
+        {
+            stackHeight += item->boundingRect().height();
+        }
+
+        stackHeight += (swComponents_.size() - 1) * SPACING;
+    }
+
+    return stackHeight;
+}
+
+void HWMappingItem::updateComponent()
+{
+    ComponentItem::updateComponent();
+
+    VLNV* vlnv = componentModel()->getVlnv();
+
+    // Check whether the component is packaged (valid vlnv) or not.
+    if (vlnv->isValid())
+    {
+        if (!getLibraryInterface()->contains(*vlnv))
+        {
+            setBrush(QBrush(QColor(0xe8, 0xc5, 0xc5)));
+        }
+        else
+        {
+            setBrush(QBrush(QColor(0xa5,0xc3,0xef)));
+        }
+    }
+    else
+    {
+        setBrush(QBrush(QColor(217, 217, 217)));
+    }
 }

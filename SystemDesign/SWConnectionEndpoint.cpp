@@ -236,3 +236,4 @@ void SWConnectionEndpoint::setSelectionHighlight(bool on)
         setHighlight(HIGHLIGHT_OFF);
     }
 }
+

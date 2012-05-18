@@ -20,6 +20,9 @@
 #include "SystemDesignDiagram.h"
 
 #include <models/component.h>
+#include <models/model.h>
+
+#include <LibraryManager/libraryinterface.h>
 
 #include <common/GenericEditProvider.h>
 
@@ -29,21 +32,22 @@
 //-----------------------------------------------------------------------------
 // Function: SWCompItem::SWCompItem()
 //-----------------------------------------------------------------------------
-SWCompItem::SWCompItem(QSharedPointer<Component> component,
+SWCompItem::SWCompItem(LibraryInterface* libInterface,
+                       QSharedPointer<Component> component,
                        QString const& instanceName,
                        QString const& displayName,
                        QString const& description,
                        QMap<QString, QString> const& configurableElementValues,
                        unsigned int id)
-    : SWComponentItem(QRectF(-WIDTH / 2, 0, WIDTH, MIN_HEIGHT), component, instanceName,
+    : SWComponentItem(QRectF(-WIDTH / 2, 0, WIDTH, MIN_HEIGHT), libInterface, component, instanceName,
                       displayName, description, configurableElementValues, 0),
       id_(id),
       oldStack_(0),
-      oldPos_()
+      oldPos_(),
+      hierIcon_(0)
 {
     setFlag(ItemIsMovable);
-    setBrush(QBrush(QColor(0xce,0xdf,0xff)));
-
+    
     updateComponent();
     updateSize();
 }
@@ -100,6 +104,8 @@ void SWCompItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
         return;
     }
 
+    setConnectionUpdateDisabled(true);
+
     ComponentItem::mouseMoveEvent(event);
 
     if (oldStack_ != 0)
@@ -109,6 +115,24 @@ void SWCompItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
         IComponentStack* stack = dynamic_cast<IComponentStack*>(parentItem());
         Q_ASSERT(stack != 0);
         stack->onMoveItem(this);
+    }
+
+    setConnectionUpdateDisabled(false);
+
+    // Update the port connections manually.
+    foreach (QGraphicsItem *item, childItems())
+    {
+        if (item->type() != SWPortItem::Type)
+        {
+            continue;
+        }
+
+        SWPortItem* port = static_cast<SWPortItem*>(item);
+
+        foreach (SWConnection* conn, port->getConnections())
+        {
+            conn->updatePosition();
+        }
     }
 }
 
@@ -160,3 +184,46 @@ void SWCompItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         oldStack_ = 0;
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: SWCompItem::updateComponent()
+//-----------------------------------------------------------------------------
+void SWCompItem::updateComponent()
+{
+    ComponentItem::updateComponent();
+
+    VLNV* vlnv = componentModel()->getVlnv();
+
+    // Check whether the component is packaged (valid vlnv) or not.
+    if (vlnv->isValid())
+    {
+        if (!getLibraryInterface()->contains(*vlnv))
+        {
+            setBrush(QBrush(QColor(0xe8, 0xc5, 0xc5)));
+        }
+        else
+        {
+            setBrush(QBrush(QColor(0xce,0xdf,0xff)));
+        }
+    }
+    else
+    {
+        setBrush(QBrush(QColor(217, 217, 217)));
+    }
+
+    // Create a hierarchy icon if the component is a hierarchical one.
+    if (componentModel()->getModel()->hasHierView())
+    {
+        if (hierIcon_ == 0)
+        {
+            hierIcon_ = new QGraphicsPixmapItem(QPixmap(":icons/graphics/hierarchy.png"), this);
+            hierIcon_->setToolTip(tr("Hierarchical"));
+            hierIcon_->setPos(58, 6);
+        }
+    }
+    else if (hierIcon_ != 0)
+    {
+        delete hierIcon_;
+    }
+}
+

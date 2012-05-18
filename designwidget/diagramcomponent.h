@@ -172,7 +172,6 @@ private:
         MIN_Y_PLACEMENT = 3 * GridSize
     };
 
-    LibraryInterface* lh_;
     QGraphicsPixmapItem* hierIcon_;
 
     //! The old column from where the mouse drag event began.

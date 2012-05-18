@@ -121,7 +121,7 @@ void ComponentPreviewBox::updatePreview()
 
         case KactusAttribute::KTS_SW:
             {
-                item = new SWCompItem(component_, component_->getVlnv()->getName());
+                item = new SWCompItem(lh_, component_, component_->getVlnv()->getName());
 
 //                 switch (component_->getComponentSWType())
 //                 {

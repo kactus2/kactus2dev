@@ -31,6 +31,11 @@ public:
     enum { Type = GFX_TYPE_SW_PORT_ITEM };
 
     /*!
+     *  Constructor which creates a graphics item for an undefined interface.
+     */
+    SWPortItem(QString const& name, QGraphicsItem *parent);
+
+    /*!
      *  Constructor which creates a graphics item for an API interface.
      */
     SWPortItem(QSharedPointer<ApiInterface> apiIf, QGraphicsItem *parent = 0);
@@ -39,7 +44,7 @@ public:
      *  Constructor which creates a graphics item for a COM interface.
      */
     SWPortItem(QSharedPointer<ComInterface> comIf, QGraphicsItem *parent = 0);
-
+    
     /*!
      *  Destructor.
      */
@@ -61,6 +66,18 @@ public:
      *      @param [in] on If true, the selection highlight is turned on. Otherwise it is turned off.
      */
     virtual void setSelectionHighlight(bool on);
+
+    /*!
+     *  Sets the COM/API type. The type of the VLNV determines the type of the endpoint.
+     *
+     *      @param [in] type The VLNV of the COM/API definition.
+     */
+    virtual void setTypeDefinition(VLNV const& type);
+
+    /*!
+     *  Returns the currently set COM/API definition.
+     */
+    virtual VLNV getTypeDefinition() const;
 
     /*!
      *  Sets the port temporary or not temporary. Temporary port set its interfaces undefined

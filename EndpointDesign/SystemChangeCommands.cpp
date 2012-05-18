@@ -11,6 +11,8 @@
 
 #include "SystemChangeCommands.h"
 
+#include <SystemDesign/SWConnectionEndpoint.h>
+
 #include <common/graphicsItems/ComponentItem.h>
 
 #include <models/component.h>
@@ -50,4 +52,40 @@ void SWComponentPacketizeCommand::redo()
 {
     component_->componentModel()->setVlnv(vlnv_);
     component_->updateComponent();
+}
+
+//-----------------------------------------------------------------------------
+// Function: TypeDefinitionChangeCommand()
+//-----------------------------------------------------------------------------
+TypeDefinitionChangeCommand::TypeDefinitionChangeCommand(SWConnectionEndpoint* endPoint,
+                                                         VLNV const& oldType,
+                                                         QUndoCommand* parent)
+    : QUndoCommand(parent),
+      endpoint_(endPoint),
+      oldType_(oldType),
+      newType_(endPoint->getTypeDefinition())
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: ~TypeDefinitionChangeCommand()
+//-----------------------------------------------------------------------------
+TypeDefinitionChangeCommand::~TypeDefinitionChangeCommand()
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: undo()
+//-----------------------------------------------------------------------------
+void TypeDefinitionChangeCommand::undo()
+{
+    endpoint_->setTypeDefinition(oldType_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: redo()
+//-----------------------------------------------------------------------------
+void TypeDefinitionChangeCommand::redo()
+{
+    endpoint_->setTypeDefinition(newType_);
 }

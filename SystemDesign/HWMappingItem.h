@@ -32,7 +32,9 @@ public:
     /*!
      *  Constructor.
      */
-    HWMappingItem(QSharedPointer<Component> component, QString const& instanceName,
+    HWMappingItem(LibraryInterface* libInterface,
+                  QSharedPointer<Component> component,
+                  QString const& instanceName,
                   QString const& displayName = QString(),
                   QString const& description = QString(),
                   QMap<QString, QString> const& configurableElementValues = QMap<QString, QString>(),
@@ -103,6 +105,8 @@ public:
      */
     bool isItemAllowed(ComponentItem* item) const;
 
+    virtual void updateComponent();
+
 protected:
     // Called when the user presses the mouse button.
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
@@ -114,6 +118,8 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
 
     qreal getHeight() const;
+
+    qreal getComponentStackHeight() const;
 
 private:
     // Disable copying.

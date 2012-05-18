@@ -12,6 +12,7 @@
 #include "SystemDesignDiagram.h"
 
 #include "../EndpointDesign/SystemChangeCommands.h"
+#include "../EndpointDesign/SystemMoveCommands.h"
 #include "../EndpointDesign/SystemAddCommands.h"
 
 #include "HWMappingItem.h"
@@ -60,6 +61,7 @@ SystemDesignDiagram::SystemDesignDiagram(LibraryInterface* lh, MainWindow* mainW
       nodeIDFactory_(),
       layout_(),
       dragSW_(false),
+      dragDefinition_(false),
       tempConnection_(0),
       tempConnEndpoint_(0),
       tempPotentialEndingEndpoints_(),
@@ -107,9 +109,9 @@ void SystemDesignDiagram::setMode(DrawMode mode)
 void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
 {
     // Update the design.
-    updateSystemDesign(getLibraryInterface(),
-                       QFileInfo(getLibraryInterface()->getPath(*design->getVlnv())).path(),
-                       getEditedComponent()->getHierRef("kts_hw_ref"), *design);
+    updateSystemDesignV2(getLibraryInterface(),
+                         QFileInfo(getLibraryInterface()->getPath(*design->getVlnv())).path(),
+                         getEditedComponent()->getHierRef("kts_hw_ref"), *design);
 
     // Create the column layout.
     layout_ = QSharedPointer<SystemColumnLayout>(new SystemColumnLayout(this));
@@ -134,15 +136,18 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
     foreach (Design::ComponentInstance const& instance, design->getComponentInstances())
     {
         QSharedPointer<LibraryComponent> libComponent = getLibraryInterface()->getModel(instance.componentRef);
-
-        if (!libComponent)
-        {
-            emit errorMessage(tr("The component %1 was not found in the library").arg(
-                instance.componentRef.getName()).arg(design->getVlnv()->getName()));
-            continue;
-        }
-
         QSharedPointer<Component> component = libComponent.staticCast<Component>();
+
+        if (!component)
+        {
+            emit errorMessage(tr("The component '%1' instantiated in the design '%2' "
+                                 "was not found in the library").arg(
+                instance.componentRef.getName()).arg(design->getVlnv()->getName()));
+
+            // Create an unpackaged component so that we can still visualize the component instance.
+            component = QSharedPointer<Component>(new Component(instance.componentRef));
+            component->setComponentImplementation(KactusAttribute::KTS_HW);
+        }
 
         int id = instance.mcapiNodeID;
 
@@ -156,7 +161,7 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
             nodeIDFactory_.usedID(id);
         }
 
-        HWMappingItem* item = new HWMappingItem(component, instance.instanceName,
+        HWMappingItem* item = new HWMappingItem(getLibraryInterface(), component, instance.instanceName,
                                                 instance.displayName, instance.description,
                                                 instance.configurableElementValues, id);
         item->setImported(instance.imported);
@@ -227,20 +232,23 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
     foreach (SWInstance const& instance, design->getSWInstances())
     {
         QSharedPointer<LibraryComponent> libComponent = getLibraryInterface()->getModel(instance.getComponentRef());
-
-        if (!libComponent)
-        {
-            emit errorMessage(tr("The SW component %1 was not found in the library").arg(
-                                    instance.getComponentRef().getName()).arg(design->getVlnv()->getName()));
-            continue;
-        }
-
         QSharedPointer<Component> component = libComponent.staticCast<Component>();
+
+        if (!component)
+        {
+            emit errorMessage(tr("The SW component '%1' instantiated in the design '%2' "
+                                 "was not found in the library").arg(
+                instance.getComponentRef().getName()).arg(design->getVlnv()->getName()));
+
+            // Create an unpackaged component so that we can still visualize the component instance.
+            component = QSharedPointer<Component>(new Component(instance.getComponentRef()));
+            component->setComponentImplementation(KactusAttribute::KTS_SW);
+        }
 
         // TODO: Determine ID.
         int id = 0;
 
-        SWCompItem* item = new SWCompItem(component, instance.getInstanceName(),
+        SWCompItem* item = new SWCompItem(getLibraryInterface(), component, instance.getInstanceName(),
                                           instance.getDisplayName(), instance.getDescription(),
                                           QMap<QString, QString>(), id);
         //item->setImported(instance.imported);
@@ -320,10 +328,7 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
     }
 
     loadApiDependencies(design);
-
-
     loadComConnections(design);
-
 
     // Refresh the layout so that all components are placed in correct positions according to the stacking.
     layout_->updatePositions();
@@ -335,6 +340,7 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
 void SystemDesignDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
 {
     dragSW_ = false;
+    dragDefinition_ = false;
 
     if (!isProtected() && event->mimeData()->hasFormat("data/vlnvptr"))
     {
@@ -368,9 +374,9 @@ void SystemDesignDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
             dragSW_ = true;
             comp.clear();
         }
-        // TODO:
-        else if (vlnv->getType() == VLNV::COMDEFINITION)
+        else if (vlnv->getType() == VLNV::COMDEFINITION || vlnv->getType() == VLNV::APIDEFINITION)
         {
+            dragDefinition_ = true;
         }
     }
 }
@@ -418,6 +424,34 @@ void SystemDesignDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 
         event->accept();
     }
+    else if (dragDefinition_)
+    {
+        // Check if there is an endpoint close enough the cursor.
+        SWConnectionEndpoint* endPoint =
+            DiagramUtil::snapToItem<SWConnectionEndpoint>(event->scenePos(), this, GridSize);
+
+        if (highlightedEndpoint_ != 0)
+        {
+            highlightedEndpoint_->setHighlight(SWConnectionEndpoint::HIGHLIGHT_OFF);
+        }
+
+        highlightedEndpoint_ = endPoint;
+
+        // Allow the drop event if the end point is undefined or there are no connections
+        // and the encompassing component is unpackaged.
+        if (highlightedEndpoint_ != 0 &&
+            (highlightedEndpoint_->getType() == SWConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED ||
+             (!highlightedEndpoint_->isConnected() && highlightedEndpoint_->getOwnerComponent() != 0 &&
+              !highlightedEndpoint_->getOwnerComponent()->isValid())))
+        {
+            event->setDropAction(Qt::CopyAction);
+            highlightedEndpoint_->setHighlight(SWConnectionEndpoint::HIGHLIGHT_HOVER);
+        }
+        else
+        {
+            event->setDropAction(Qt::IgnoreAction);
+        }
+    }
     else
     {
         event->setDropAction(Qt::IgnoreAction);
@@ -430,6 +464,13 @@ void SystemDesignDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 void SystemDesignDiagram::dragLeaveEvent(QGraphicsSceneDragDropEvent*)
 {
     dragSW_ = false;
+    dragDefinition_ = false;
+
+    if (highlightedEndpoint_ != 0)
+    {
+        highlightedEndpoint_->setHighlight(SWConnectionEndpoint::HIGHLIGHT_OFF);
+        highlightedEndpoint_ = 0;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -474,7 +515,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         if (stack != 0)
         {
             // Create the SW component item.
-            SWCompItem* item = new SWCompItem(comp, instanceName, QString(), QString(),
+            SWCompItem* item = new SWCompItem(getLibraryInterface(), comp, instanceName, QString(), QString(),
                 QMap<QString, QString>(), nodeIDFactory_.getID());
             
             item->setPos(stack->mapStackFromScene(snapPointToGrid(event->scenePos())));
@@ -488,6 +529,30 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
                 this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
             getEditProvider().addCommand(cmd);
+        }
+    }
+    else if (dragDefinition_)
+    {
+        if (highlightedEndpoint_ != 0)
+        {
+            VLNV *droppedVlnv;
+            memcpy(&droppedVlnv, event->mimeData()->data("data/vlnvptr").data(), sizeof(droppedVlnv));
+
+            Q_ASSERT(getLibraryInterface()->contains(*droppedVlnv));
+
+            VLNV vlnv = *droppedVlnv;
+            vlnv.setType(getLibraryInterface()->getDocumentType(*droppedVlnv));
+
+            // Save old type and set the new one.
+            VLNV oldType = highlightedEndpoint_->getTypeDefinition();
+            highlightedEndpoint_->setTypeDefinition(vlnv);
+
+            // Create an undo command.
+            QSharedPointer<QUndoCommand> cmd(new TypeDefinitionChangeCommand(highlightedEndpoint_, oldType));
+            getEditProvider().addCommand(cmd, false);
+
+            highlightedEndpoint_->setHighlight(SWConnectionEndpoint::HIGHLIGHT_OFF);
+            highlightedEndpoint_ = 0;
         }
     }
 }
@@ -538,10 +603,10 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
                                                event->scenePos(),
                                                QVector2D(0.0f, 0.0f), QString(), QString(), this);
 
-            if (tempConnEndpoint_->isApi())
-            {
-                tempConnection_->setLineWidth(2);
-            }
+//             if (tempConnEndpoint_->isApi())
+//             {
+//                 tempConnection_->setLineWidth(2);
+//             }
 
             addItem(tempConnection_);
 
@@ -569,10 +634,109 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
 
         if (!itemList.empty())
         {
-            item = itemList.back();
+            item = itemList.front();
+
+            if (item->type() == QGraphicsTextItem::Type)
+            {
+                item = item->parentItem();
+            }
         }
 
-        // TODO:
+        // If there was no item, then a new HW mapping item should be added to the column under the cursor.
+        if (item == 0)
+        {
+            SystemColumn* column = layout_->findColumnAt(event->scenePos());
+
+            if (column != 0)
+            {
+                // Determine an unused name for the component instance.
+                QString name = createInstanceName("unnamed_hw");
+
+                // Create a component model without a valid vlnv.
+                QSharedPointer<Component> comp = QSharedPointer<Component>(new Component());
+                comp->setVlnv(VLNV());
+                comp->setComponentImplementation(KactusAttribute::KTS_HW);
+
+                // Create the corresponding SW component item.
+                HWMappingItem* mappingItem = new HWMappingItem(getLibraryInterface(), comp, name);
+                mappingItem->setPos(snapPointToGrid(event->scenePos()));
+                connect(mappingItem, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+
+                QSharedPointer<SystemItemAddCommand> cmd(new SystemItemAddCommand(column, mappingItem));
+
+                connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+                    this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+                connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+                    this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+
+                getEditProvider().addCommand(cmd);
+                emit contentChanged();
+            }
+        }
+        else if (item->type() == HWMappingItem::Type)
+        {
+            // Determine an unused name for the component instance.
+            QString name = createInstanceName("unnamed_sw");
+
+            // Create a component model without a valid vlnv.
+            QSharedPointer<Component> comp = QSharedPointer<Component>(new Component());
+            comp->setVlnv(VLNV());
+            comp->setComponentImplementation(KactusAttribute::KTS_SW);
+
+            // Create the corresponding SW component item.
+            SWCompItem* swCompItem = new SWCompItem(getLibraryInterface(), comp, name);
+            swCompItem->setPos(snapPointToGrid(event->scenePos()));
+            connect(swCompItem, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+
+            QSharedPointer<SystemItemAddCommand> cmd(new SystemItemAddCommand(static_cast<HWMappingItem*>(item), swCompItem));
+
+            connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+                this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+            connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+                this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+
+            getEditProvider().addCommand(cmd);
+            emit contentChanged();
+        }
+        else if (item->type() == SWCompItem::Type)
+        {
+            SWCompItem* comp = static_cast<SWCompItem*>(item);
+
+            // The component is unpackaged if it has an invalid vlnv.
+            if (!comp->componentModel()->getVlnv()->isValid())
+            {
+                QMap<SWPortItem*, QPointF> oldPositions;
+
+                // Save old port positions.
+                foreach (QGraphicsItem* item, comp->childItems())
+                {
+                    if (item->type() == SWPortItem::Type)
+                    {
+                        SWPortItem* port = static_cast<SWPortItem*>(item);
+                        oldPositions.insert(port, port->pos());
+                    }
+                }
+
+                QSharedPointer<QUndoCommand> cmd(new SWPortAddCommand(comp, snapPointToGrid(event->scenePos())));
+                cmd->redo();
+
+                // Create child undo commands for the changed ports.
+                QMap<SWPortItem*, QPointF>::iterator cur = oldPositions.begin();
+
+                while (cur != oldPositions.end())
+                {
+                    if (cur.key()->pos() != cur.value())
+                    {
+                        QUndoCommand* childCmd = new SWPortMoveCommand(cur.key(), cur.value(), cmd.data());
+                    }
+
+                    ++cur;
+                }
+
+                // Add the command to the edit stack.
+                getEditProvider().addCommand(cmd, false);
+            }
+        }
     }
     else if (getMode() == MODE_SELECT)
     {
@@ -679,10 +843,10 @@ void SystemDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
                                                       QVector2D(0.0f, 0.0f), QString(), QString(), this);
             }
 
-            if (tempConnEndpoint_->isApi())
-            {
-                newTempConnection_->setLineWidth(2);
-            }
+//             if (tempConnEndpoint_->isApi())
+//             {
+//                 newTempConnection_->setLineWidth(2);
+//             }
 
             discardConnection();
             
@@ -929,7 +1093,57 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
         item = item->parentItem();
     }
 
-    // TODO:
+    if (dynamic_cast<SWComponentItem*>(item) != 0)
+    {
+        item->setSelected(true);
+        SWComponentItem* comp = static_cast<SWComponentItem*>(item);
+
+        if (getLibraryInterface()->contains(*comp->componentModel()->getVlnv()))
+        {
+            QString viewName;
+            QStringList hierViews = comp->componentModel()->getHierViews();
+
+            // if configuration is used and it contains an active view for the instance
+            if (getDesignConfiguration() && getDesignConfiguration()->hasActiveView(comp->name())) {
+                viewName = getDesignConfiguration()->getActiveView(comp->name());
+
+                View* view = comp->componentModel()->findView(viewName);
+
+                // if view was found and it is hierarchical
+                if (view && view->isHierarchical()) {
+                    emit openDesign(*comp->componentModel()->getVlnv(), viewName);
+                }
+                // if view was found but it is not hierarchical
+                else if (view && !view->isHierarchical()) {
+                    emit openComponent(*comp->componentModel()->getVlnv());
+                }
+                // if view was not found
+                else {
+                    emit errorMessage(tr("The active view %1 was not found in "
+                        "instance %2").arg(viewName).arg(comp->name()));
+                }
+            }
+            // if component does not contain any hierarchical views or contains
+            // more than one hierarchical view then it is not known which view to open
+            else if (hierViews.size() != 1) {
+
+                emit noticeMessage(tr("No active view was selected for instance %1, "
+                    "opening component editor.").arg(comp->name()));
+                // just open the component because view is ambiguous
+                emit openComponent(*comp->componentModel()->getVlnv());
+            }
+            // if there is exactly one hierarchical view then open it
+            else {
+                emit noticeMessage(tr("No active view was selected for instance %1, "
+                    "opening the only hierarhical view of the component.").arg(comp->name()));
+                emit openDesign(*comp->componentModel()->getVlnv(), hierViews.first());
+            }
+        }
+        else if (!isProtected())
+        {
+            // Otherwise this is an unpackaged component. TODO: Packetize.
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1225,7 +1439,7 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
 
         // Find the connected ports in the components.
         SWConnectionEndpoint* port1 = comp1->getSWPort(conn.getInterface1().comRef,
-                                                       SWConnectionEndpoint::ENDPOINT_TYPE_API);
+                                                       SWConnectionEndpoint::ENDPOINT_TYPE_COM);
 
         if (port1 == 0)
         {
@@ -1235,7 +1449,7 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
         }
 
         SWConnectionEndpoint* port2 = comp2->getSWPort(conn.getInterface2().comRef,
-                                                       SWConnectionEndpoint::ENDPOINT_TYPE_API);
+                                                       SWConnectionEndpoint::ENDPOINT_TYPE_COM);
 
         if (port2 == 0)
         {

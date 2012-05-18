@@ -57,10 +57,10 @@ SWConnection::SWConnection(SWConnectionEndpoint *endpoint1, SWConnectionEndpoint
     setItemSettings();
     createRoute(endpoint1, endpoint2);
 
-    if (endpoint1->isApi())
-    {
-        setLineWidth(2);
-    }
+//     if (endpoint1->isApi())
+//     {
+//         setLineWidth(2);
+//     }
 
     if (autoConnect)
     {
@@ -708,7 +708,7 @@ void SWConnection::paint(QPainter* painter, QStyleOptionGraphicsItem const* opti
 void SWConnection::setItemSettings()
 {
     setZValue(-1000);
-    setLineWidth(1);
+    setLineWidth(2); // TODO: Set back to one if multiple line widths
     setFlag(ItemIsSelectable);
 }
 

@@ -18,6 +18,7 @@
 #include "common/diagramgrid.h"
 
 class Component;
+class LibraryInterface;
 
 //-----------------------------------------------------------------------------
 //! ComponentItem class.
@@ -31,6 +32,8 @@ public:
      *  Constructor.
      *
      *      @param [in] size                      The initial rectangle size.
+     *      @param [in] libInterface              The library interface.
+     *      @param [in] component                 The actual component.
      *      @param [in] instanceName              The name of the component instance.
      *      @param [in] displayName               The component instance's display name.
      *      @param [in] description               The component instance's description.
@@ -38,6 +41,7 @@ public:
      *      @param [in] parent                    The parent graphics item.
      */
     ComponentItem(QRectF const& size,
+                  LibraryInterface* libInterface,
                   QSharedPointer<Component> component,
                   QString const& instanceName = QString("unnamed"),
                   QString const& displayName = QString(),
@@ -118,6 +122,11 @@ public:
      */
     QSharedPointer<Component const> componentModel() const;
 
+    /*!
+     *  Returns the library interface.
+     */
+    LibraryInterface* getLibraryInterface();
+
 	/*! \brief Get list of views the component has.
 	 *
 	 * \return QStringList containing the names of the views for the component.
@@ -164,6 +173,9 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    //! The library interface.
+    LibraryInterface* libInterface_;
 
     //! The component model.
     QSharedPointer<Component> component_;

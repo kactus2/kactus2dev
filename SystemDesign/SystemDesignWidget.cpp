@@ -55,6 +55,11 @@ SystemDesignWidget::SystemDesignWidget(LibraryInterface* lh, MainWindow* mainWnd
         this, SIGNAL(componentSelected(ComponentItem*)), Qt::UniqueConnection);
     connect(diagram_, SIGNAL(clearItemSelection()),
         this, SIGNAL(clearItemSelection()), Qt::UniqueConnection);
+    
+    connect(diagram_, SIGNAL(errorMessage(const QString&)),
+        this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
+    connect(diagram_, SIGNAL(noticeMessage(const QString&)),
+        this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
     view_ = new QGraphicsView(this);
     view_->setScene(diagram_);

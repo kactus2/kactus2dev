@@ -12,6 +12,8 @@
 
 #include "columnview/DiagramColumn.h"
 
+#include <LibraryManager/libraryinterface.h>
+
 #include <common/GenericEditProvider.h>
 #include <common/diagramgrid.h>
 #include <common/layouts/VCollisionLayout.h>
@@ -39,13 +41,13 @@ DiagramComponent::DiagramComponent(LibraryInterface* lh_,
                                    QMap<QString, bool> const& portAdHocVisibilities,
                                    QGraphicsItem *parent)
     : ComponentItem(QRectF(-GridSize * 8, 0, GridSize * 8 * 2, 40),
+                    lh_,
                     component,
                     instanceName,
                     displayName,
                     description,
                     configurableElementValues, parent),
       AdHocEnabled(),
-      lh_(lh_),
       hierIcon_(0),
       oldColumn_(0),
       leftPorts_(),
@@ -69,7 +71,7 @@ DiagramComponent::DiagramComponent(LibraryInterface* lh_,
 
     foreach (QSharedPointer<BusInterface> busif, busInterfaces)
     {
-        DiagramPort *port = new DiagramPort(busif, lh_, this);
+        DiagramPort *port = new DiagramPort(busif, getLibraryInterface(), this);
 
         // If this is a platform component, place master bus interfaces to the right
         // and slave bus interfaces to the left.
@@ -108,7 +110,7 @@ DiagramComponent::DiagramComponent(LibraryInterface* lh_,
             continue;
         }
 
-        DiagramAdHocPort* port = new DiagramAdHocPort(adhocPort.data(), lh_, this);
+        DiagramAdHocPort* port = new DiagramAdHocPort(adhocPort.data(), getLibraryInterface(), this);
         connect(port, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
         if (right)
@@ -360,7 +362,7 @@ DiagramPort* DiagramComponent::addPort(QPointF const& pos)
     componentModel()->addBusInterface(busIf);
 
     // Create the visualization for the bus interface.
-    DiagramPort* port = new DiagramPort(busIf, lh_, this);
+    DiagramPort* port = new DiagramPort(busIf, getLibraryInterface(), this);
     port->setPos(mapFromScene(pos));
     onAddPort(port, mapFromScene(pos).x() >= 0);
 
@@ -430,10 +432,18 @@ void DiagramComponent::updateComponent()
     // Check whether the component is packaged (valid vlnv) or not.
     if (vlnv->isValid())
     {
-        if (componentModel()->isBus())
+        if (!getLibraryInterface()->contains(*vlnv))
+        {
+            setBrush(QBrush(QColor(0xe8, 0xc5, 0xc5)));
+        }
+        else if (componentModel()->isBus())
+        {
             setBrush(QBrush(QColor(0xce,0xdf,0xff))); 
+        }
         else
+        {
             setBrush(QBrush(QColor(0xa5,0xc3,0xef)));
+        }
     }
     else
     {
@@ -492,7 +502,7 @@ void DiagramComponent::onAdHocVisibilityChanged(QString const& portName, bool vi
         Port* adhocPort = componentModel()->getPort(portName);
         Q_ASSERT(adhocPort != 0);
 
-        DiagramAdHocPort* port = new DiagramAdHocPort(adhocPort, lh_, this);
+        DiagramAdHocPort* port = new DiagramAdHocPort(adhocPort, getLibraryInterface(), this);
 
         // Place the port at the bottom of the side that contains fewer ports.
         if (leftPorts_.size() < rightPorts_.size())

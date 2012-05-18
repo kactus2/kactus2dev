@@ -135,15 +135,22 @@ void BlockDiagram::openDesign(QSharedPointer<Design> design)
              design->getComponentInstances()) {
         
 		QSharedPointer<LibraryComponent> libComponent = getLibraryInterface()->getModel(instance.componentRef);
-
-		if (!libComponent) {
-			emit errorMessage(tr("The component %1 instantiated within design "
-				"%2 was not found in the library").arg(
-				instance.componentRef.getName()).arg(design->getVlnv()->getName()));
-			continue;
-		}
-
         QSharedPointer<Component> component = libComponent.staticCast<Component>();
+
+		if (!component) {
+			emit errorMessage(tr("The component %1 instantiated within design "
+				                 "%2 was not found in the library").arg(
+				              instance.componentRef.getName()).arg(design->getVlnv()->getName()));
+			
+            // Create an unpackaged component so that we can still visualize the component instance.
+            component = QSharedPointer<Component>(new Component(instance.componentRef));
+            component->setComponentImplementation(getEditedComponent()->getComponentImplementation());
+
+            if (getEditedComponent()->getComponentImplementation() == KactusAttribute::KTS_SW)
+            {
+                component->setComponentSWType(getEditedComponent()->getComponentSWType());
+            }
+		}
 
         DiagramComponent* diagComp = new DiagramComponent(getLibraryInterface(), component, instance.instanceName,
                                                           instance.displayName, instance.description,
@@ -1236,7 +1243,7 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
         item->setSelected(true);
         DiagramComponent *comp = qgraphicsitem_cast<DiagramComponent *>(item);
 
-        if (comp->componentModel()->getVlnv()->isValid())
+        if (getLibraryInterface()->contains(*comp->componentModel()->getVlnv()))
         {
 			QString viewName;
 			QStringList hierViews = comp->componentModel()->getHierViews();
@@ -1277,7 +1284,7 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
 				emit openDesign(*comp->componentModel()->getVlnv(), hierViews.first());
 			}
         }
-        else
+        else if (!isProtected())
         {
             // Otherwise this is an unpackaged component. Check if the bus interfaces are valid.
             foreach (QSharedPointer<BusInterface> busIf, comp->componentModel()->getBusInterfaces())
@@ -1298,6 +1305,7 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
             
             // Request the user to set the vlnv.
             NewObjectDialog dialog(getLibraryInterface(), VLNV::COMPONENT, true, (QWidget*)parent());
+            dialog.setVLNV(*comp->componentModel()->getVlnv());
             dialog.setWindowTitle(tr("Add Component to Library"));
 
             if (dialog.exec() == QDialog::Rejected)

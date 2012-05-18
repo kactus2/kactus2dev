@@ -218,6 +218,9 @@ private:
     //! Boolean flag for indicating that an SW component is being dragged to the diagram.
     bool dragSW_;
 
+    //! Boolean flag for indicating that a API/COM definition is being dragged to the diagram.
+    bool dragDefinition_;
+
     //! The connection that is being drawn.
     SWConnection* tempConnection_;
 

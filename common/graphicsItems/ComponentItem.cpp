@@ -24,13 +24,22 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentItem()
 //-----------------------------------------------------------------------------
-ComponentItem::ComponentItem(QRectF const& size, QSharedPointer<Component> component,
-                             QString const& instanceName, QString const& displayName,
+ComponentItem::ComponentItem(QRectF const& size,
+                             LibraryInterface* libInterface,
+                             QSharedPointer<Component> component,
+                             QString const& instanceName,
+                             QString const& displayName,
                              QString const& description,
                              QMap<QString, QString> const& configurableElementValues,
-                             QGraphicsItem *parent) :
-QGraphicsRectItem(parent), component_(component), name_(instanceName), nameLabel_(0), displayName_(displayName),
-description_(description), configurableValues_(configurableElementValues)
+                             QGraphicsItem *parent)
+    : QGraphicsRectItem(parent),
+      libInterface_(libInterface),
+      component_(component),
+      name_(instanceName),
+      nameLabel_(0),
+      displayName_(displayName),
+      description_(description),
+      configurableValues_(configurableElementValues)
 {
     setFlag(ItemSendsGeometryChanges);
     setFlag(ItemIsSelectable);
@@ -197,7 +206,8 @@ QStringList ComponentItem::getViews() const
 //-----------------------------------------------------------------------------
 QVariant ComponentItem::itemChange(GraphicsItemChange change, const QVariant &value)
 {
-    if (change == ItemPositionChange) {
+    if (change == ItemPositionChange)
+    {
         QPointF newPos = value.toPointF();
         return snapPointToGrid(newPos);
     }
@@ -215,4 +225,12 @@ QVariant ComponentItem::itemChange(GraphicsItemChange change, const QVariant &va
 void ComponentItem::updateNameLabel(QString const& text)
 {
     nameLabel_->setHtml("<center>" + text + "</center>");
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentItem::getLibraryInterface()
+//-----------------------------------------------------------------------------
+LibraryInterface* ComponentItem::getLibraryInterface()
+{
+    return libInterface_;
 }

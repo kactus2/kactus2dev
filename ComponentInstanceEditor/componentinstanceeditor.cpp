@@ -74,22 +74,11 @@ void ComponentInstanceEditor::setComponent( ComponentItem* component ) {
 
     bool locked = false;
 
-	// get the edit provider that manages the undo/redo stack
-    // TODO: Base class for the diagrams!
-    if (dynamic_cast<BlockDiagram*>(component->scene()) != 0)
-    {
-	    BlockDiagram* diagram = static_cast<BlockDiagram*>(component->scene());
-        DesignWidget* designWidget = diagram->parent();
-	    editProvider_ = designWidget->getGenericEditProvider();
-        locked = diagram->isProtected();
-    }
-    else
-    {
-        EndpointDesignDiagram* diagram = static_cast<EndpointDesignDiagram*>(component->scene());
-        editProvider_ = diagram->parent()->getGenericEditProvider();
-        locked = diagram->isProtected();
-    }
-
+	// Get the edit provider that manages the undo/redo stack.
+    DesignDiagram* diagram = static_cast<DesignDiagram*>(component->scene());
+    editProvider_ = &diagram->getEditProvider();
+    locked = diagram->isProtected();
+    
 	// set the vlnv of the component to be displayed
 	vlnvDisplayer_.setVLNV(*component->componentModel()->getVlnv(), true);
 	vlnvDisplayer_.show();
@@ -131,7 +120,7 @@ void ComponentInstanceEditor::clear() {
 	nameGroup_.hide();
 	configurableElements_.hide();
 	configurableElements_.clear();
-	editProvider_.clear();
+	editProvider_ = 0;
 
 	parentWidget()->setMaximumHeight(20);
 }

@@ -29,6 +29,8 @@ class ApplicationItem;
 class ProgramEntityItem;
 class IComponentStack;
 class SWConnection;
+class SWComponentItem;
+class SWPortItem;
 
 //-----------------------------------------------------------------------------
 //! SystemColumnAddCommand class.
@@ -467,6 +469,61 @@ private:
     EndpointStack* stack_;
 
     //! Boolean flag for indicating if the endpoint should be deleted in the destructor.
+    bool del_;
+};
+
+//-----------------------------------------------------------------------------
+//! SWPortAddCommand class.
+//-----------------------------------------------------------------------------
+class SWPortAddCommand : public QUndoCommand
+{
+public:
+    /*!
+     *  Constructor.
+     *
+     *      @param [in] component  The component to which to add a port.
+     *      @param [in] pos        The position where to add the port.
+     *      @param [in] parent     The parent command.
+     */
+    SWPortAddCommand(SWComponentItem* component, QPointF const& pos, QUndoCommand* parent = 0);
+
+    /*!
+     *  Destructor.
+     */
+    ~SWPortAddCommand();
+
+    /*!
+     *  Undoes the command.
+     */
+    virtual void undo();
+
+    /*!
+     *  Redoes the command.
+     */
+    virtual void redo();
+
+private:
+    // Disable copying.
+    SWPortAddCommand(SWPortAddCommand const& rhs);
+    SWPortAddCommand& operator=(SWPortAddCommand const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The parent component.
+    SWComponentItem* component_;
+
+    //! The port position.
+    QPointF pos_;
+
+    //! The diagram port.
+    SWPortItem* port_;
+
+    //! The graphics scene.
+    QGraphicsScene* scene_;
+
+    //! Boolean flag for indicating if the port should be deleted in the destructor.
     bool del_;
 };
 

@@ -55,7 +55,7 @@ ProgramEntityItem::ProgramEntityItem(QSharedPointer<Component> component,
                                      QString const& displayName,
                                      QString const& description,
                                      QMap<QString, QString> const& configurableElementValues)
-    : SWComponentItem(QRectF(-WIDTH / 2, 0, WIDTH, TOP_MARGIN + BOTTOM_MARGIN),
+    : SWComponentItem(QRectF(-WIDTH / 2, 0, WIDTH, TOP_MARGIN + BOTTOM_MARGIN), 0,
                       component, instanceName, displayName, description, configurableElementValues),
       endpointStack_(0), appPlaceholder_(0), appItem_(0), importedIcon_(0), fixed_(false)
 {
