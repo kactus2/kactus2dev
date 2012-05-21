@@ -22,6 +22,7 @@
 
 #include <designwidget/designwidget.h>
 #include <IPXactWrapper/ComponentEditor/ipxactcomponenteditor.h>
+#include <IPXactWrapper/ComponentEditor/treeStructure/componenteditor.h>
 
 #include <QFile>
 #include <QFileInfo>
@@ -61,7 +62,34 @@ instances_() {
 		parent, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 }
 
-VhdlGenerator2::VhdlGenerator2( LibraryInterface* handler, IPXactComponentEditor* parent):
+VhdlGenerator2::VhdlGenerator2( LibraryInterface* handler, 
+							   IPXactComponentEditor* parent):
+QObject(parent),
+handler_(handler),
+component_(),
+design_(),
+desConf_(),
+viewName_(),
+topLevelEntity_(),
+libraries_(),
+typeDefinitions_(),
+userModifiedDeclarations_(),
+userModifiedAssignments_(),
+topGenerics_(),
+topPorts_(),
+signals_(),
+components_(),
+instances_() {
+
+	Q_ASSERT(handler);
+	connect(this, SIGNAL(errorMessage(const QString&)),
+		parent, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
+	connect(this, SIGNAL(noticeMessage(const QString&)),
+		parent, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+}
+
+VhdlGenerator2::VhdlGenerator2( LibraryInterface* handler, 
+							   ComponentEditor* parent ):
 QObject(parent),
 handler_(handler),
 component_(),

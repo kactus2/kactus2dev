@@ -12,6 +12,7 @@
 #include <models/component.h>
 #include "componenttreeview.h"
 #include "componenteditortreemodel.h"
+#include "componenteditorgroupslot.h"
 
 #include <QSharedPointer>
 #include <QSplitter>
@@ -40,6 +41,65 @@ public:
 	//! \brief The destructor
 	~ComponentEditor();
 
+	/*! \brief Set the protection state of the component.
+	 *
+	 * \param locked The locked state to set.
+	 *
+	*/
+	virtual void setProtection(bool locked);
+
+	/*! \brief Get the vlnv of the current component.
+	 *
+	 * \return VLNV of the component being edited.
+	*/
+	virtual VLNV getComponentVLNV() const;
+
+	/*! \brief Check if the editor is editing a hardware implementation or not.
+	 *
+	 * \return Component editor always returns true.
+	*/
+	virtual bool isHWImplementation() const;
+
+	//! \brief Refreshes the editor to display the changes made.
+    virtual void refresh();
+
+public slots:
+
+    /*! \brief Validates the document against the IP-XACT standard.
+     *
+     * \param errorList Error message list for reporting standard violations.
+     *
+     * \return True if the document is valid. False if there were any violations.
+    */
+    virtual bool validate(QStringList& errorList);
+
+	//! \brief Saves the document and resets the modified state.
+	virtual bool save();
+
+	//! \brief Saves the document as new object and resets modifies state
+	virtual bool saveAs();
+
+	/*! \brief Run vhdl generator for the component.
+	 *
+	 * \return bool True if the metadata was changed and the editor should be refreshed.
+	*/
+	bool onVhdlGenerate();
+
+	/*! \brief Run modelsim generator for the component.
+	 *
+	 * \return bool True if the metadata was changed and the editor should be refreshed.
+	*/
+	bool onModelsimGenerate();
+
+private slots:
+
+	/*! \brief This slot is called when an item is selected in the navigation tree.
+	 *
+	 * \param index The index identifying the item.
+	 *
+	*/
+	void onItemActivated(const QModelIndex& index);
+
 private:
 	//! \brief No copying
 	ComponentEditor(const ComponentEditor& other);
@@ -58,6 +118,18 @@ private:
 
 	//! \brief The model to control the navigation view.
 	ComponentEditorTreeModel navigationModel_;
+
+	//! \brief The splitter to contain the navigation tree.
+	QSplitter navigationSplitter_;
+
+	//! \brief The splitter to display the editors and visualizers.
+	QSplitter editorVisualizerSplitter;
+
+	//! \brief The slot to display the editors in.
+	ComponentEditorGroupSlot editorSlot_;
+
+	//! \brief The slot to display the visualizers in.
+	ComponentEditorGroupSlot visualizerSlot_;
 };
 
 #endif // COMPONENTEDITOR_H

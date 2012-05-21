@@ -33,6 +33,7 @@ class LibraryInterface;
 class VhdlConnectionEndPoint;
 class DesignWidget;
 class IPXactComponentEditor;
+class ComponentEditor;
 
 /*! \brief Vhdl Generator generates top-level vhdl for hierarchical component.
  *
@@ -59,6 +60,14 @@ public:
 	 *
 	*/
 	VhdlGenerator2(LibraryInterface* handler, IPXactComponentEditor* parent);
+
+	/*! \brief The constructor
+	 *
+	 * \param handler Pointer to the instance that manages the library.
+	 * \param parent Pointer to the owner of this generator.
+	 *
+	*/
+	VhdlGenerator2(LibraryInterface* handler, ComponentEditor* parent);
 	
 	//! \brief The destructor
 	virtual ~VhdlGenerator2();
