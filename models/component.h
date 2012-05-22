@@ -27,6 +27,7 @@
 #include <QMap>
 
 // implemented classes that only need to be declared
+class SWView;
 class BusInterface;
 class ComInterface;
 class ApiInterface;
@@ -42,6 +43,7 @@ class AddressSpace;
 class Channel;
 class Choice;
 class File;
+class ComProperty;
 
 /*! \brief Equals to spirit:component element in IP-Xact specification
  *
@@ -620,6 +622,119 @@ public:
 	*/
 	void setHierRef(const VLNV& vlnv, const QString& viewName = QString());
 
+    /*! \brief Checks if the component contains SW views.
+	*
+	* \return bool True if SW views exist.
+	*/
+	bool hasSWViews() const;
+
+	/*! \brief Check if the component has a SW view with given name.
+	 *
+	 * \param viewName The name of the SW view to search for.
+	 *
+	 * \return bool True if the view is found.
+	*/
+	bool hasSWView(const QString& viewName) const;
+
+	/*! \brief Get the description of specified view.
+	* 
+	* If view is not found a null string is returned.
+	*
+	* \param viewName Identifies the view that's description is wanted.
+	*
+	* \return QString Contains the description for the view.
+	*/
+	QString getSWViewDescription(const QString& viewName) const;
+
+	/*! \brief Remove view from the component.
+	*
+	* \param viewName The name of the view to remove
+	*
+	*/
+	void removeSWView(const QString& viewName);
+
+	/*! \brief Get the number of SW views the component has.
+	*
+	* \return The number of SW views found in the meta data.
+	*/
+	int getSWViewCount() const;
+
+	/*! \brief Create an empty SW view and return a pointer to it.
+	*
+	* \return Pointer to the created SW view element.
+	*/
+	SWView* createSWView();
+
+	/*! \brief Get the SW views of the component
+	*
+	* \return QList containing pointers to the SW views.
+	*/
+	const QList<QSharedPointer<SWView> > getSWViews() const;
+
+	/*! \brief Get the SW views of the component
+	 *
+	 * \return QList containing pointers to the SW views.
+	*/
+	QList<QSharedPointer<SWView> >& getSWViews();
+
+	/*! \brief Get the names of the SW views of the component.
+	*
+	* \return QStringList containing the SW view names.
+	*/
+	QStringList getSWViewNames() const;
+
+	/*! \brief Find a named SW view within a component.
+	*
+	* \param name The name of the SW view to search for.
+	*
+	* \return Pointer to the specified SW view. Null pointer if the SW view was not
+	* found.
+	*/
+	SWView* findSWView(const QString name) const;
+
+	/*! \brief Add a new SW view to the component's model.
+	*
+	* \param newView A pointer to the component's new SW view.
+	*
+	*/
+	void addSWView(SWView* newView);
+
+	/*! \brief Create a SW view for the component.
+	 * 
+	 * \param hierRef The reference to a design or design configuration.
+	 *
+	*/
+	void createSWView(const VLNV& hierRef);
+
+	/*! \brief Get the SW design of a hierarchical component.
+	*
+	* This function searches the SW views of the component for a named SW view.
+	* If SW view if a given name is not found then invalid vlnv is returned.
+	* If the component is not a hierarchical component then invalid vlnv is
+	* returned.
+	* If name is not given then the first found VLNV is returned.
+	*
+	* \return A vlnv of a design or configuration that is used within this
+	* component. Invalid vlnv if design is not found.
+	*/
+	VLNV getHierSWRef(const QString viewName = QString()) const;
+
+	/*! \brief Get the hierarchical SW references this component contains.
+	*
+	* \return QList<VLNV> contains the VLNVs of the hierarchical SW references.
+	*/
+	QList<VLNV> getHierSWRefs() const;
+
+	/*! \brief Set hierarchical reference for given SW view.
+	* 
+	* If SW view name is not specified then the first SW view is used.
+	*
+	* \param vlnv The reference to set as hierarchical SW reference.
+	* \param viewName The name of the SW view to set the hierarchical SW reference for.
+	*
+	*/
+	void setHierSWRef(const VLNV& vlnv, const QString& viewName = QString());
+
 	/*! \brief Get this component's file sets
 	*
 	* \return QList containing component's file sets
@@ -1185,6 +1300,18 @@ public:
 	*/
 	bool hasAddressSpace(const QString& addrSpaceName) const;
 
+    /*!
+     *  Sets the SW properties.
+     *
+     *      @param [in] properties A list of properties to set.
+     */
+    void setSWProperties(QList< QSharedPointer<ComProperty> > const& properties);
+
+    /*!
+     *  Returns the list of SW properties.
+     */
+    QList< QSharedPointer<ComProperty> >& getSWProperties();
+
 private:
 
     /*!
@@ -1200,6 +1327,20 @@ private:
      *      @param [in] node The source XML node.
      */
     void parseApiInterfaces(QDomNode& node);
+
+    /*!
+     *  Parses properties from the given XML node.
+     *
+     *      @param [in] node The source XML node.
+     */
+    void parseSWProperties(QDomNode& childNode);
+
+    /*!
+     *  Parses SW views from the given XML node.
+     *
+     *      @param [in] node The source XML node.
+     */
+    void parseSWViews(QDomNode& node);
     
 	/*! \brief Specifies all the interfaces for this component.
 	 * OPTIONAL spirit:busInterfaces
@@ -1290,6 +1431,12 @@ private:
 	//! \brief Contains the attributes for the spirit:component element.
 	//! OPTIONAL
 	QMap<QString, QString> attributes_;
+
+    //! The list of properties.
+    QList< QSharedPointer<ComProperty> > swProperties_;
+
+    //! The list of SW views.
+    QList< QSharedPointer<SWView> > swViews_;
 };
 
 

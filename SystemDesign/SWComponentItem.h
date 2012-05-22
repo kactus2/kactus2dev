@@ -21,6 +21,8 @@
 //-----------------------------------------------------------------------------
 class SWComponentItem : public ComponentItem
 {
+    Q_OBJECT
+
 public:
     /*!
      *  Constructor.
@@ -47,6 +49,18 @@ public:
      *  Destructor.
      */
     virtual ~SWComponentItem();
+
+    /*!
+     *  Sets the property values.
+     *
+     *      @param [in] values The property values.
+     */
+    void setPropertyValues(QMap<QString, QString> const& values);
+
+    /*!
+     *  Returns the property values.
+     */
+    QMap<QString, QString> const& getPropertyValues() const;
 
     /*!
      *  Adds a new, empty port to the component.
@@ -123,6 +137,10 @@ public:
      */
     SWPortItem* getSWPort(QString const& name, SWConnectionEndpoint::EndpointType type) const;
 
+signals:
+    //! Occurs when the property values have been changed.
+    void propertyValuesChanged(QMap<QString, QString> const& propertyValues);
+
 protected:
     /*!
      *  Returns the height for the component box.
@@ -168,6 +186,9 @@ private:
 
     //! If true, connection updates coming from ports are disabled.
     bool connUpdateDisabled_;
+
+    //! The set property values.
+    QMap<QString, QString> propertyValues_;
 };
 
 //-----------------------------------------------------------------------------

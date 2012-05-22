@@ -15,6 +15,8 @@
 #include "../EndpointDesign/SystemMoveCommands.h"
 #include "../EndpointDesign/SystemAddCommands.h"
 
+#include <designwidget/DiagramChangeCommands.h>
+
 #include "HWMappingItem.h"
 #include "SWCompItem.h"
 #include "SystemDesignWidget.h"
@@ -58,7 +60,6 @@ SystemDesignDiagram::SystemDesignDiagram(LibraryInterface* lh, MainWindow* mainW
                                          SystemDesignWidget* parent)
     : DesignDiagram(lh, mainWnd, editProvider, parent),
       parent_(parent),
-      nodeIDFactory_(),
       layout_(),
       dragSW_(false),
       dragDefinition_(false),
@@ -149,22 +150,11 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
             component->setComponentImplementation(KactusAttribute::KTS_HW);
         }
 
-        int id = instance.mcapiNodeID;
-
-        // If the id is not set, generate a new ID. TODO: The id should be set in the generation phase.
-        if (id == -1)
-        {
-            id = nodeIDFactory_.getID();
-        }
-        else
-        {
-            nodeIDFactory_.usedID(id);
-        }
-
         HWMappingItem* item = new HWMappingItem(getLibraryInterface(), component, instance.instanceName,
                                                 instance.displayName, instance.description,
-                                                instance.configurableElementValues, id);
+                                                instance.configurableElementValues, 0);
         item->setImported(instance.imported);
+        item->setPropertyValues(instance.swPropertyValues);
 
         connect(item, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
         connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
@@ -253,8 +243,10 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
                                           QMap<QString, QString>(), id);
         //item->setImported(instance.imported);
         item->setPos(instance.getPosition());
+        item->setPropertyValues(instance.getPropertyValues());
 
         connect(item, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+        connect(item, SIGNAL(openSource(ComponentItem*)), this, SIGNAL(openSource(ComponentItem*)));
         connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
         // Setup custom port positions.
@@ -516,10 +508,12 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         {
             // Create the SW component item.
             SWCompItem* item = new SWCompItem(getLibraryInterface(), comp, instanceName, QString(), QString(),
-                QMap<QString, QString>(), nodeIDFactory_.getID());
+                                              QMap<QString, QString>());
             
             item->setPos(stack->mapStackFromScene(snapPointToGrid(event->scenePos())));
             connect(item, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+            connect(item, SIGNAL(openSource(ComponentItem*)), this, SIGNAL(openSource(ComponentItem*)));
+            connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
             // Create the undo command and execute it.
             QSharedPointer<SystemItemAddCommand> cmd(new SystemItemAddCommand(stack, item));
@@ -642,63 +636,8 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
             }
         }
 
-        // If there was no item, then a new HW mapping item should be added to the column under the cursor.
-        if (item == 0)
-        {
-            SystemColumn* column = layout_->findColumnAt(event->scenePos());
-
-            if (column != 0)
-            {
-                // Determine an unused name for the component instance.
-                QString name = createInstanceName("unnamed_hw");
-
-                // Create a component model without a valid vlnv.
-                QSharedPointer<Component> comp = QSharedPointer<Component>(new Component());
-                comp->setVlnv(VLNV());
-                comp->setComponentImplementation(KactusAttribute::KTS_HW);
-
-                // Create the corresponding SW component item.
-                HWMappingItem* mappingItem = new HWMappingItem(getLibraryInterface(), comp, name);
-                mappingItem->setPos(snapPointToGrid(event->scenePos()));
-                connect(mappingItem, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
-
-                QSharedPointer<SystemItemAddCommand> cmd(new SystemItemAddCommand(column, mappingItem));
-
-                connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
-                    this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-                connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
-                    this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
-
-                getEditProvider().addCommand(cmd);
-                emit contentChanged();
-            }
-        }
-        else if (item->type() == HWMappingItem::Type)
-        {
-            // Determine an unused name for the component instance.
-            QString name = createInstanceName("unnamed_sw");
-
-            // Create a component model without a valid vlnv.
-            QSharedPointer<Component> comp = QSharedPointer<Component>(new Component());
-            comp->setVlnv(VLNV());
-            comp->setComponentImplementation(KactusAttribute::KTS_SW);
-
-            // Create the corresponding SW component item.
-            SWCompItem* swCompItem = new SWCompItem(getLibraryInterface(), comp, name);
-            swCompItem->setPos(snapPointToGrid(event->scenePos()));
-            connect(swCompItem, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
-
-            QSharedPointer<SystemItemAddCommand> cmd(new SystemItemAddCommand(static_cast<HWMappingItem*>(item), swCompItem));
-
-            connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
-                this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-            connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
-                this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
-
-            getEditProvider().addCommand(cmd);
-            emit contentChanged();
-        }
-        else if (item->type() == SWCompItem::Type)
+        // If the item was a SW component, add an undefined interface port to it.
+        if (item != 0 && item->type() == SWCompItem::Type)
         {
             SWCompItem* comp = static_cast<SWCompItem*>(item);
 
@@ -735,6 +674,49 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
 
                 // Add the command to the edit stack.
                 getEditProvider().addCommand(cmd, false);
+            }
+        }
+        else if (item == 0 || item->type() == HWMappingItem::Type)
+        {
+            IComponentStack* stack = 0;
+
+            if (item != 0)
+            {
+                stack = dynamic_cast<IComponentStack*>(item);
+            }
+            else
+            {
+                stack = layout_->findColumnAt(event->scenePos());
+            }
+
+            if (stack != 0)
+            {
+                // Determine an unused name for the component instance.
+                QString name = createInstanceName("unnamed_sw");
+
+                // Create a component model without a valid vlnv.
+                QSharedPointer<Component> comp = QSharedPointer<Component>(new Component());
+                comp->setVlnv(VLNV());
+                comp->setComponentImplementation(KactusAttribute::KTS_SW);
+                comp->setComponentSWType(KactusAttribute::KTS_SW_PLATFORM); // TODO: Remove when complete.
+
+                // Create the corresponding SW component item.
+                SWCompItem* swCompItem = new SWCompItem(getLibraryInterface(), comp, name);
+                swCompItem->setPos(snapPointToGrid(event->scenePos()));
+
+                connect(swCompItem, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+                connect(swCompItem, SIGNAL(openSource(ComponentItem*)), this, SIGNAL(openSource(ComponentItem*)));
+                connect(swCompItem, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
+
+                QSharedPointer<SystemItemAddCommand> cmd(new SystemItemAddCommand(stack, swCompItem));
+
+                connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+                    this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+                connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+                    this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+
+                getEditProvider().addCommand(cmd);
+                emit contentChanged();
             }
         }
     }
@@ -937,7 +919,7 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
                                                mappingItem->scenePos());
             instance.configurableElementValues = mappingItem->getConfigurableElements();
             instance.imported = mappingItem->isImported();
-            //instance.mcapiNodeID = 
+            instance.swPropertyValues = mappingItem->getPropertyValues();
 
             // Save API and COM interface positions.
             QMapIterator< QString, QSharedPointer<ApiInterface> >
@@ -971,6 +953,7 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
             instance.setDisplayName(swCompItem->displayName());
             instance.setDescription(swCompItem->description());
             instance.setComponentRef(*swCompItem->componentModel()->getVlnv());
+            instance.setPropertyValues(swCompItem->getPropertyValues());
                         
             if (swCompItem->parentItem()->type() == HWMappingItem::Type)
             {
@@ -1141,7 +1124,55 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
         }
         else if (!isProtected())
         {
-            // Otherwise this is an unpackaged component. TODO: Packetize.
+            // Otherwise this is an unpackaged component.
+
+            // Request the user to set the vlnv.
+            NewObjectDialog dialog(getLibraryInterface(), VLNV::COMPONENT, true, (QWidget*)parent());
+            dialog.setVLNV(*comp->componentModel()->getVlnv());
+            dialog.setWindowTitle(tr("Add Component to Library"));
+
+            if (dialog.exec() == QDialog::Rejected)
+            {
+                return;
+            }
+
+            VLNV vlnv = dialog.getVLNV();
+            comp->componentModel()->setVlnv(vlnv);
+            comp->componentModel()->setComponentHierarchy(dialog.getProductHierarchy());
+            comp->componentModel()->setComponentFirmness(dialog.getFirmness());
+
+            if (comp->type() == HWMappingItem::Type)
+            {
+                comp->componentModel()->createEmptyFlatView();
+            }
+
+            // Write the model to file.
+            getLibraryInterface()->writeModelToFile(dialog.getPath(), comp->componentModel());
+
+            // Update the diagram component.
+            comp->updateComponent();
+            emit contentChanged();
+
+            // Create an undo command.
+            QSharedPointer<ComponentPacketizeCommand> cmd(new ComponentPacketizeCommand(comp, vlnv));
+            connect(cmd.data(), SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+            getEditProvider().addCommand(cmd, false);
+
+            // Ask the user if he wants to complete the component.
+            QMessageBox msgBox(QMessageBox::Question, QCoreApplication::applicationName(),
+                               "Do you want to continue packaging the component completely?",
+                               QMessageBox::NoButton, (QWidget*)parent());
+            msgBox.setInformativeText("Pressing Continue opens up the component editor.");
+            QPushButton* btnContinue = msgBox.addButton(tr("Continue"), QMessageBox::ActionRole);
+            msgBox.addButton(tr("Skip"), QMessageBox::RejectRole);
+
+            msgBox.exec();
+
+            if (msgBox.clickedButton() == btnContinue)
+            {
+                // Open up the component editor.
+                emit openComponent(*comp->componentModel()->getVlnv());
+            }
         }
     }
 }
@@ -1160,11 +1191,6 @@ SystemColumnLayout* SystemDesignDiagram::getColumnLayout()
 void SystemDesignDiagram::onComponentInstanceAdded(ComponentItem* item)
 {
     DesignDiagram::onComponentInstanceAdded(item);
-
-//     if (item->type() == MappingComponentItem::Type)
-//     {
-//         nodeIDFactory_.usedID(static_cast<MappingComponentItem*>(item)->getID());
-//     }
 }
 
 //-----------------------------------------------------------------------------
@@ -1173,11 +1199,6 @@ void SystemDesignDiagram::onComponentInstanceAdded(ComponentItem* item)
 void SystemDesignDiagram::onComponentInstanceRemoved(ComponentItem* item)
 {
     DesignDiagram::onComponentInstanceRemoved(item);
-
-//     if (item->type() == MappingComponentItem::Type)
-//     {
-//         nodeIDFactory_.freeID(static_cast<MappingComponentItem*>(item)->getID());
-//     }
 }
 
 //-----------------------------------------------------------------------------

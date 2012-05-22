@@ -252,6 +252,22 @@ void Design::write(QFile& file)
 				writer.writeEmptyElement("kactus2:imported");
 			}
 
+            writer.writeStartElement("kactus2:propertyValues");
+
+            // Write property values.
+            QMapIterator<QString, QString> iter(inst.swPropertyValues);
+
+            while (iter.hasNext())
+            {
+                iter.next();
+
+                writer.writeEmptyElement("kactus2:propertyValue");
+                writer.writeAttribute("kactus2:name", iter.key());
+                writer.writeAttribute("kactus2:value", iter.value());
+            }
+
+            writer.writeEndElement(); // kactus2:propertyValues
+
 			writer.writeEndElement(); // spirit:vendorExtensions
 			writer.writeEndElement(); // spirit:componentInstance
 		}
@@ -1015,7 +1031,8 @@ Design::ComponentInstance::ComponentInstance(
     QDomNode& componentInstanceNode)
     : instanceName(), displayName(), description(), componentRef(),
       configurableElementValues(), portPositions(), portAdHocVisibilities(),
-      adHocPortPositions(), mcapiNodeID(-1), endpointsExpanded(false), imported(false)
+      adHocPortPositions(), mcapiNodeID(-1), endpointsExpanded(false), imported(false),
+      swPropertyValues()
 {
     QDomNodeList nodes = componentInstanceNode.childNodes();
     for (int i = 0; i < nodes.size(); i++) {
@@ -1082,6 +1099,10 @@ Design::ComponentInstance::ComponentInstance(
                 else if (childNode.nodeName() == "kactus2:imported")
                 {
                     imported = true;
+                }
+                else if (childNode.nodeName() == "kactus2:propertyValues")
+                {
+                    parsePropertyValues(childNode);
                 }
             }
         }
@@ -1201,6 +1222,25 @@ bool Design::ComponentInstance::isValid() const {
 			}
 	}
 	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Design::ComponentInstance::parsePropertyValues()
+//-----------------------------------------------------------------------------
+void Design::ComponentInstance::parsePropertyValues(QDomNode& node)
+{
+    for (int i = 0; i < node.childNodes().count(); ++i)
+    {
+        QDomNode propNode = node.childNodes().at(i);
+
+        if (propNode.nodeName() == "kactus2:propertyValue")
+        {
+            QString name = propNode.attributes().namedItem("kactus2:name").nodeValue();
+            QString value = propNode.attributes().namedItem("kactus2:value").nodeValue();
+
+            swPropertyValues.insert(name, value);
+        }
+    }
 }
 
 Design::Interface::Interface(QDomNode &interfaceNode):

@@ -14,6 +14,10 @@
 #include <algorithm>
 #include <QTextCursor>
 
+#include <models/ApiDefinition.h>
+#include <models/ApiFunction.h>
+#include <models/ComDefinition.h>
+
 #include <common/widgets/assistedTextEdit/TextContentAssistWidget.h>
 
 namespace
@@ -65,16 +69,22 @@ MCAPIFunctionSet MCAPIContentMatcher::s_functionSet;
 //-----------------------------------------------------------------------------
 // Function: MCAPIContentMatcher()
 //-----------------------------------------------------------------------------
-MCAPIContentMatcher::MCAPIContentMatcher() : m_localNode(), m_remoteNodes(), m_connections(),
-                                             m_lastMatchType(MATCH_NONE), curAssist_(0),
-                                             m_tooltipText()
+MCAPIContentMatcher::MCAPIContentMatcher()
+    : sourceApiDefinitions_(),
+      sourceComDefinitions_(),
+      localNode_(),
+      remoteNodes_(),
+      connections_(),
+      lastMatchType_(MATCH_NONE),
+      curAssist_(0),
+      tooltipText_()
 {
-    m_icons[MCAPI_CONTENT_FUNC] = QIcon(":icons/graphics/mcapi-func.png");
-    m_icons[MCAPI_CONTENT_TYPENAME] = QIcon(":icons/graphics/mcapi-type.png");
-    m_icons[MCAPI_CONTENT_NODE_ID] = QIcon(":icons/graphics/mcapi-node.png");
-    m_icons[MCAPI_CONTENT_PORT_ID] = QIcon(":icons/graphics/mcapi-port.png");
-    m_icons[MCAPI_CONTENT_ENDPOINT] = QIcon(":icons/graphics/mcapi-endpoint.png");
-    m_icons[MCAPI_CONTENT_ENDPOINT_HANDLE] = QIcon(":icons/graphics/mcapi-endpoint_handle.png");
+    icons_[MCAPI_CONTENT_FUNC] = QIcon(":icons/graphics/mcapi-func.png");
+    icons_[MCAPI_CONTENT_TYPENAME] = QIcon(":icons/graphics/mcapi-type.png");
+    icons_[MCAPI_CONTENT_NODE_ID] = QIcon(":icons/graphics/mcapi-node.png");
+    icons_[MCAPI_CONTENT_PORT_ID] = QIcon(":icons/graphics/mcapi-port.png");
+    icons_[MCAPI_CONTENT_ENDPOINT] = QIcon(":icons/graphics/mcapi-endpoint.png");
+    icons_[MCAPI_CONTENT_ENDPOINT_HANDLE] = QIcon(":icons/graphics/mcapi-endpoint_handle.png");
 }
 
 //-----------------------------------------------------------------------------
@@ -89,7 +99,7 @@ MCAPIContentMatcher::~MCAPIContentMatcher()
 //-----------------------------------------------------------------------------
 void MCAPIContentMatcher::setLocalNodeName(QString const& name)
 {
-    m_localNode.name = name;
+    localNode_.name = name;
 }
 
 //-----------------------------------------------------------------------------
@@ -101,16 +111,16 @@ void MCAPIContentMatcher::addEndpoint(QString const& name, MCAPIEndpointDirectio
     EndpointDesc endpointDesc(name, type, portName);
 
     // Check if the node is the local node.
-    if (m_localNode.name == nodeName)
+    if (localNode_.name == nodeName)
     {
-        m_localNode.endpoints.push_back(endpointDesc);
+        localNode_.endpoints.push_back(endpointDesc);
         return;
     }
 
     // Otherwise find out the correct remote node.
-    QList<NodeDesc>::iterator node = m_remoteNodes.begin();
+    QList<NodeDesc>::iterator node = remoteNodes_.begin();
 
-    while (node != m_remoteNodes.end())
+    while (node != remoteNodes_.end())
     {
         if (node->name == nodeName)
         {
@@ -123,8 +133,8 @@ void MCAPIContentMatcher::addEndpoint(QString const& name, MCAPIEndpointDirectio
     }
 
     // If the receiver node was not found, add it to the list.
-    m_remoteNodes.push_back(NodeDesc(nodeName));
-    m_remoteNodes.back().endpoints.push_back(endpointDesc);
+    remoteNodes_.push_back(NodeDesc(nodeName));
+    remoteNodes_.back().endpoints.push_back(endpointDesc);
 }
 
 //-----------------------------------------------------------------------------
@@ -133,7 +143,7 @@ void MCAPIContentMatcher::addEndpoint(QString const& name, MCAPIEndpointDirectio
 void MCAPIContentMatcher::addConnection(QString const& localEndpoint, QString const& remoteEndpoint,
                                         MCAPIDataType type)
 {
-    m_connections.push_back(ConnectionDesc(localEndpoint, remoteEndpoint, type));
+    connections_.push_back(ConnectionDesc(localEndpoint, remoteEndpoint, type));
 }
 
 //-----------------------------------------------------------------------------
@@ -143,8 +153,8 @@ bool MCAPIContentMatcher::lookForwardMatch(QString const& text)
 {
     int index = 0;
     int toolTipIndex = 0;
-    return (m_lastMatchType != MATCH_NONE &&
-            enumerateMatches(text, 0, index, 0, toolTipIndex) == m_lastMatchType);
+    return (lastMatchType_ != MATCH_NONE &&
+            enumerateMatches(text, 0, index, 0, toolTipIndex) == lastMatchType_);
 }
 
 //-----------------------------------------------------------------------------
@@ -156,12 +166,12 @@ bool MCAPIContentMatcher::lookForwardMatch(QString const& text)
     curAssist_ = &assist;
 
     toolTipText.clear();    
-    m_lastMatchType = enumerateMatches(text, &MCAPIContentMatcher::addMatchToAssist,
+    lastMatchType_ = enumerateMatches(text, &MCAPIContentMatcher::addMatchToAssist,
                                        startIndex, &toolTipText, toolTipIndex);
 
     curAssist_->sortItems();
 
-    return (m_lastMatchType != MATCH_NONE);
+    return (lastMatchType_ != MATCH_NONE);
 }
 
 //-----------------------------------------------------------------------------
@@ -216,10 +226,41 @@ int MCAPIContentMatcher::enumerateNames(QString const &text, MatchExecFunc func,
     if (startIndex >= 0)
     {
         QString word = text.mid(startIndex, lastWordExp.matchedLength());
-
-        // Search for functions that start with the retrieved word.
         QRegExp matchExp("^" + QRegExp::escape(word.toLower()) + ".*");
 
+        foreach (QSharedPointer<ApiDefinition const> apiDef, sourceApiDefinitions_)
+        {
+            // Search for functions that start with the retrieved word.
+            for (int i = 0; i < apiDef->getFunctionCount(); ++i)
+            {
+                QSharedPointer<ApiFunction const> apiFunc = apiDef->getFunction(i);
+
+                if (tryMatchIdentifier(apiFunc->getName(), MCAPI_CONTENT_FUNC, matchExp, func, count))
+                {
+                    // Check if this was an exact match.
+                    if (!exactMatch && apiFunc->getName() == word)
+                    {
+                        exactMatch = true;
+                    }
+                }
+            }
+
+            // Search for types that start with the retrieved word.
+            foreach (QString const& dataType, apiDef->getDataTypes())
+            {
+                if (tryMatchIdentifier(dataType, MCAPI_CONTENT_TYPENAME, matchExp, func, count))
+                {
+                    // Check if this was an exact match.
+                    if (!exactMatch && dataType == word)
+                    {
+                        exactMatch = true;
+                    }
+                }
+            }
+        }
+
+        // Search for functions that start with the retrieved word.
+        // TODO: Remove function set based matching when the API definition based system is complete.
         for (unsigned int i = 0; i < s_functionSet.getCount(); ++i)
         {
             if (tryMatchIdentifier(s_functionSet.getAt(i).getName(), MCAPI_CONTENT_FUNC, matchExp, func, count))
@@ -295,20 +336,52 @@ int MCAPIContentMatcher::enumerateFunctionParams(QString const &text, MatchExecF
         extractParams(paramListText, params);
 
         // Based on the function description, try to match content.
-        MCAPIFunctionDesc const* funcDesc = s_functionSet.find(funcName);
+        ApiFunction const* matchingApiFunc = 0;
 
-        if (funcDesc != 0 &&
-            static_cast<unsigned int>(params.count()) < funcDesc->getParamCount())
+        foreach (QSharedPointer<ApiDefinition const> apiDef, sourceApiDefinitions_)
+        {
+            for (int i = 0; i < apiDef->getFunctionCount(); ++i)
+            {
+                QSharedPointer<ApiFunction const> apiFunc = apiDef->getFunction(i);
+
+                if (apiFunc->getName() == funcName)
+                {
+                    matchingApiFunc = apiFunc.data();
+                    break;
+                }
+            }
+        }
+
+        if (matchingApiFunc != 0 && params.count() < matchingApiFunc->getParamCount())
         {
             // Generate a tooltip text.
             if (toolTipText != 0)
             {
-                funcDesc->generateToolTipText(params.count(), *toolTipText);
+                matchingApiFunc->generateToolTipText(params.count(), *toolTipText);
                 toolTipIndex = index + 1;
             }
 
-            // Try to match the parameter to the corresponding function.
-            tryMatchParam(funcDesc, params, word, func, count);
+            // TODO:
+            //tryMatchParam(matchingApiFunc, params, word, func, count);
+        }
+        else
+        {
+            // TODO: Remove function set based matching when the API definition based system is complete.
+            MCAPIFunctionDesc const* funcDesc = s_functionSet.find(funcName);
+
+            if (funcDesc != 0 &&
+                static_cast<unsigned int>(params.count()) < funcDesc->getParamCount())
+            {
+                // Generate a tooltip text.
+                if (toolTipText != 0)
+                {
+                    funcDesc->generateToolTipText(params.count(), *toolTipText);
+                    toolTipIndex = index + 1;
+                }
+
+                // Try to match the parameter to the corresponding function.
+                tryMatchParam(funcDesc, params, word, func, count);
+            }
         }
     }
 
@@ -321,7 +394,10 @@ int MCAPIContentMatcher::enumerateFunctionParams(QString const &text, MatchExecF
 void MCAPIContentMatcher::addMatchToAssist(TextContentAssistWidget& assist, QString const& match,
                                            QIcon const& icon)
 {
-    assist.addItem(new QListWidgetItem(icon, match));
+    if (assist.findItems(match, Qt::MatchExactly).isEmpty())
+    {
+        assist.addItem(new QListWidgetItem(icon, match));
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -330,15 +406,15 @@ void MCAPIContentMatcher::addMatchToAssist(TextContentAssistWidget& assist, QStr
 MCAPIContentMatcher::NodeDesc const* MCAPIContentMatcher::findNodeDesc(QString const& name) const
 {
     // Check if the name matches with the name of the local node.
-    if (m_localNode.name == name)
+    if (localNode_.name == name)
     {
-        return &m_localNode;
+        return &localNode_;
     }
 
     // Otherwise try to find a match from the remote nodes.
-    QList<NodeDesc>::const_iterator itrNode = m_remoteNodes.begin();
+    QList<NodeDesc>::const_iterator itrNode = remoteNodes_.begin();
 
-    while (itrNode != m_remoteNodes.end())
+    while (itrNode != remoteNodes_.end())
     {
         if (itrNode->name == name)
         {
@@ -357,9 +433,9 @@ MCAPIContentMatcher::NodeDesc const* MCAPIContentMatcher::findNodeDesc(QString c
 MCAPIContentMatcher::EndpointDesc const* MCAPIContentMatcher::findEndpointDesc(QString const& name) const
 {
     // Check for the endpoint from the local node first.
-    EndpointDescList::const_iterator itrEndpoint = m_localNode.endpoints.begin();
+    EndpointDescList::const_iterator itrEndpoint = localNode_.endpoints.begin();
 
-    while (itrEndpoint != m_localNode.endpoints.end())
+    while (itrEndpoint != localNode_.endpoints.end())
     {
         if (itrEndpoint->name == name)
         {
@@ -370,9 +446,9 @@ MCAPIContentMatcher::EndpointDesc const* MCAPIContentMatcher::findEndpointDesc(Q
     }
 
     // Otherwise try to find it from the remote nodes.
-    QList<NodeDesc>::const_iterator itrNode = m_remoteNodes.begin();
+    QList<NodeDesc>::const_iterator itrNode = remoteNodes_.begin();
 
-    while (itrNode != m_remoteNodes.end())
+    while (itrNode != remoteNodes_.end())
     {
         itrEndpoint = itrNode->endpoints.begin();
 
@@ -397,9 +473,9 @@ MCAPIContentMatcher::EndpointDesc const* MCAPIContentMatcher::findEndpointDesc(Q
 //-----------------------------------------------------------------------------
 MCAPIContentMatcher::ConnectionDesc const* MCAPIContentMatcher::findConnectionDesc(QString const& name) const
 {
-    ConnectionDescList::const_iterator itrConn = m_connections.begin();
+    ConnectionDescList::const_iterator itrConn = connections_.begin();
 
-    while (itrConn != m_connections.end())
+    while (itrConn != connections_.end())
     {
         QString e1 = itrConn->localEndpoint;
         QString e2 = itrConn->remoteEndpoint;
@@ -432,15 +508,15 @@ void MCAPIContentMatcher::tryMatchParam(MCAPIFunctionDesc const* funcDesc, QStri
     // Check if the parameter is a local node id.
     if (paramDesc & VAR_TYPE_LOCAL_NODE_ID)
     {
-        tryMatchNodeParam(m_localNode, matchExp, func, count);
+        tryMatchNodeParam(localNode_, matchExp, func, count);
     }
 
     // Check if the parameter is a remote node id.
     if (paramDesc & VAR_TYPE_REMOTE_NODE_ID)
     {
-        for (int i = 0; i < m_remoteNodes.size(); ++i)
+        for (int i = 0; i < remoteNodes_.size(); ++i)
         {
-            tryMatchNodeParam(m_remoteNodes.at(i), matchExp, func, count);
+            tryMatchNodeParam(remoteNodes_.at(i), matchExp, func, count);
         }
     }
 
@@ -449,7 +525,7 @@ void MCAPIContentMatcher::tryMatchParam(MCAPIFunctionDesc const* funcDesc, QStri
     {
         // The node is assumed to be the local node if not otherwise specified in the
         // first parameter of the function.
-        QString nodeName = m_localNode.name;
+        QString nodeName = localNode_.name;
 
         if (funcDesc->getParamCount() > 0 && (funcDesc->getParamType(0) & VAR_TYPE_NODE_ID) &&
             params.count() > 0)
@@ -486,7 +562,7 @@ void MCAPIContentMatcher::tryMatchParam(MCAPIFunctionDesc const* funcDesc, QStri
         {
             // Otherwise browse through the local endpoints, trying to find endpoints that match
             // with the parameter description.
-            tryMatchEndpoints(m_localNode, paramDesc, matchExp, func, count);
+            tryMatchEndpoints(localNode_, paramDesc, matchExp, func, count);
         }
     }
 
@@ -506,9 +582,9 @@ void MCAPIContentMatcher::tryMatchParam(MCAPIFunctionDesc const* funcDesc, QStri
         {
             // Otherwise browse through the remote endpoints, trying to find endpoints that match
             // with the parameter description.
-            for (int i = 0; i < m_remoteNodes.size(); ++i)
+            for (int i = 0; i < remoteNodes_.size(); ++i)
             {
-                tryMatchEndpoints(m_remoteNodes.at(i), paramDesc, matchExp, func, count);
+                tryMatchEndpoints(remoteNodes_.at(i), paramDesc, matchExp, func, count);
             }
         }
     }
@@ -578,7 +654,7 @@ bool MCAPIContentMatcher::tryMatchIdentifier(QString const& identifier, MCAPICon
     {
         if (func != 0)
         {
-            func(*curAssist_, identifier, m_icons[type]);
+            func(*curAssist_, identifier, icons_[type]);
         }
 
         ++count;
@@ -683,9 +759,9 @@ void MCAPIContentMatcher::extractParams(QString const& paramsListStr, QStringLis
 void MCAPIContentMatcher::tryMatchEndpointHandles(unsigned int paramDesc, QRegExp& matchExp,
                                                   MatchExecFunc func, int& count)
 {
-    EndpointDescList::const_iterator itrEndpoint = m_localNode.endpoints.begin();
+    EndpointDescList::const_iterator itrEndpoint = localNode_.endpoints.begin();
 
-    while (itrEndpoint != m_localNode.endpoints.end())
+    while (itrEndpoint != localNode_.endpoints.end())
     {
         // Search for a matching connection.
         ConnectionDesc const* connDesc = findConnectionDesc(itrEndpoint->name);
@@ -698,3 +774,20 @@ void MCAPIContentMatcher::tryMatchEndpointHandles(unsigned int paramDesc, QRegEx
         ++itrEndpoint;
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: MCAPIContentMatcher::addSourceApiDefinition()
+//-----------------------------------------------------------------------------
+void MCAPIContentMatcher::addSourceApiDefinition(QSharedPointer<ApiDefinition const> apiDef)
+{
+    sourceApiDefinitions_.append(apiDef);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MCAPIContentMatcher::addsourceComDefinition()
+//-----------------------------------------------------------------------------
+void MCAPIContentMatcher::addsourceComDefinition(QSharedPointer<ComDefinition const> comDef)
+{
+    sourceComDefinitions_.append(comDef);
+}
+

@@ -25,6 +25,8 @@ class IComponentStack;
 //-----------------------------------------------------------------------------
 class SWCompItem : public SWComponentItem
 {
+    Q_OBJECT
+
 public:
     enum { Type = GFX_TYPE_SW_COMPONENT_ITEM };
 
@@ -51,6 +53,12 @@ public:
 
     virtual void updateComponent();
 
+public slots:
+    void openSource();
+
+signals:
+    void openSource(ComponentItem* compItem);
+
 protected:
     // Called when the user presses the mouse button.
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
@@ -61,11 +69,14 @@ protected:
     //! Called when the user release the mouse.
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
 
+    //! Opens up the context menu when right mouse button is pressed.
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent* event);
+
 private:
     // Disable copying.
     SWCompItem(SWCompItem const& rhs);
     SWCompItem& operator=(SWCompItem const& rhs);
-
+    
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

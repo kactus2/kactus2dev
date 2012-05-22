@@ -49,16 +49,17 @@ public:
     void setAllowedProperties(QList< QSharedPointer<ComProperty> > const* properties);
 
     /*!
+     *  Returns the edited data.
+     */
+    QMap<QString, QString> getData() const;
+
+public slots:
+    /*!
      *  Sets the data for editing.
      *
      *      @param [in] propertyValue The property values.
      */
     void setData(QMap<QString, QString> const& propertyValues);
-
-    /*!
-     *  Returns the edited data.
-     */
-    QMap<QString, QString> getData() const;
 
 signals:
     //! Emitted when contents of the editor changes.

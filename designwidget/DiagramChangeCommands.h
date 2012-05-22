@@ -347,8 +347,10 @@ private:
 //-----------------------------------------------------------------------------
 //! ComponentPacketizeCommand class.
 //-----------------------------------------------------------------------------
-class ComponentPacketizeCommand : public QUndoCommand
+class ComponentPacketizeCommand : public QObject, public QUndoCommand
 {
+    Q_OBJECT
+
 public:
     /*!
      *  Constructor.
@@ -373,6 +375,9 @@ public:
      *  Redoes the command.
      */
     virtual void redo();
+
+signals:
+    void contentChanged();
 
 private:
     // Disable copying.

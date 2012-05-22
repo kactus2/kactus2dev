@@ -28,6 +28,8 @@
 
 #include <QBrush>
 #include <QUndoCommand>
+#include <QMenu>
+#include <QGraphicsSceneContextMenuEvent>
 
 //-----------------------------------------------------------------------------
 // Function: SWCompItem::SWCompItem()
@@ -227,3 +229,25 @@ void SWCompItem::updateComponent()
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: mouseDoubleClickEvent()
+//-----------------------------------------------------------------------------
+void SWCompItem::contextMenuEvent(QGraphicsSceneContextMenuEvent* event)
+{
+    QGraphicsItem::contextMenuEvent(event);
+
+    QMenu menu;
+    menu.addAction("Open Source...", this, SLOT(openSource()));
+
+    menu.exec(event->screenPos());
+    event->accept();
+}
+
+//-----------------------------------------------------------------------------
+// Function: openSource()
+//-----------------------------------------------------------------------------
+void SWCompItem::openSource()
+{
+    // TODO: Auto-generate code.
+    emit openSource(this);
+}

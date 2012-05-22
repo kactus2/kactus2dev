@@ -8,6 +8,8 @@
 #ifndef COMPONENTINSTANCEEDITOR_H
 #define COMPONENTINSTANCEEDITOR_H
 
+#include <IPXactWrapper/ComponentEditor/software/PropertyValueEditor.h>
+
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
 #include <common/widgets/nameGroupBox/namegroupbox.h>
 #include <common/GenericEditProvider.h>
@@ -66,13 +68,16 @@ private slots:
 	//! \brief Handler when user changes the description of the component instance.
 	void onDescriptionChanged(const QString& newDescription);
 
+    //! Handler when the user changes any property values.
+    void onPropertyValuesChanged();
+
 private:
 	//! \brief No copying
 	ComponentInstanceEditor(const ComponentInstanceEditor& other);
 
 	//! \brief No assignment
 	ComponentInstanceEditor& operator=(const ComponentInstanceEditor& other);
-
+    
 	//! \brief Pointer to the component instance being edited.
 	ComponentItem* component_;
 
@@ -84,6 +89,9 @@ private:
 
 	//! \brief The widget to set the configurable elements of a component instance.
 	ConfigurableElementEditor configurableElements_;
+
+    //! Property value editor for SW properties.
+    PropertyValueEditor propertyValueEditor_;
 
 	//! \brief Pointer to the generic edit provider that manages the undo/redo stack.
 	GenericEditProvider* editProvider_;

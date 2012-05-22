@@ -95,18 +95,6 @@ topLevelViewRef_() {
 			}
 		}
 	}
-
-	// if mandatory elements are missing
-// 	if (nameGroup_.name_.isNull()) {
-// 		throw Parse_error(QObject::tr("Mandatory element name is missing in "
-// 				"spirit:view"));
-// 	}
-// 
-// 	if (envIdentifiers_.size() < 1) {
-// 		throw Parse_error(QObject::tr("Mandatory element spirit:envIdentifier"
-// 				" is missing in spirit:view"));
-// 	}
-	return;
 }
 
 View::View(const QString name): 

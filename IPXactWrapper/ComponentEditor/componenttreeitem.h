@@ -53,6 +53,8 @@ public:
 		REMAPSTATE,			// for a single remap state item
 		VIEWS,				// for "Views" item
 		VIEW,				// for a single view item
+        SWVIEWS,	        // for "SW views" item
+        SWVIEW,				// for a single SW view item
 		PORTS,				// for "Ports" item
 		BUSINTERFACES,		// for "Bus interfaces" item
 		BUSINTERFACE,		// for a single bus interface item
@@ -67,6 +69,7 @@ public:
         COMINTERFACE,       // for a single COM interface item
         APIINTERFACES,      // for "API interfaces" item
         APIINTERFACE,       // for a single API interface item
+        SWPROPERTIES,       // for "SW Properties" item
 	};
 
 	

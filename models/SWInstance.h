@@ -119,6 +119,13 @@ public:
     void setPosition(QPointF const& pos);
 
     /*!
+     *  Sets the property values.
+     *
+     *      @param [in] values The property values.
+     */
+    void setPropertyValues(QMap<QString, QString> const& values);
+
+    /*!
      *  Updates the position of the API interface with the given name.
      *
      *      @param [in] name The name of the API interface.
@@ -168,6 +175,11 @@ public:
      *  Returns the global position of the SW instance in the design.
      */
     QPointF const& getPosition() const;
+
+    /*!
+     *  Returns the property values.
+     */
+    QMap<QString, QString> const& getPropertyValues() const;
 
     /*!
      *  Returns the local API interface positions of the SW instance in the design.

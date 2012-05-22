@@ -132,6 +132,9 @@ signals:
     //! \brief Emitted when component with given vlnv should be opened in editor.
     void openComponent(const VLNV& vlnv);
 
+    //! Emitted when a C source file should be opened for editing.
+    void openSource(ComponentItem* compItem);
+
     //! Signaled when the draw mode of the diagram has changed.
     void modeChanged(DrawMode mode);
 

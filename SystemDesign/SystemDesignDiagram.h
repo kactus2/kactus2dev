@@ -108,6 +108,9 @@ signals:
 
     //! \brief Emitted when component with given vlnv should be opened in editor.
     void openComponent(const VLNV& vlnv);
+
+    //! Emitted when a C source file should be opened for editing.
+    void openSource(ComponentItem* compItem);
      
 protected:
     //! Called when the user presses a mouse button.
@@ -208,9 +211,6 @@ private:
 
     //! The parent widget.
     SystemDesignWidget* parent_;
-
-    //! The node ID factory.
-    IDFactory nodeIDFactory_;
 
     // Node column layout.
     QSharedPointer<SystemColumnLayout> layout_;

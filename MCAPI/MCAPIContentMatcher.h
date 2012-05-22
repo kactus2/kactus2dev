@@ -20,6 +20,9 @@
 #include "MCAPIFunctionSet.h"
 #include "common/widgets/assistedTextEdit/ITextContentMatcher.h"
 
+class ApiDefinition;
+class ComDefinition;
+
 //-----------------------------------------------------------------------------
 //! MCAPIContentMatcher class.
 //-----------------------------------------------------------------------------
@@ -35,6 +38,20 @@ public:
      *  Destructor.
      */
     ~MCAPIContentMatcher();
+
+    /*!
+     *  Adds a source API definition for content matching.
+     *
+     *      @param [in] apiDef The API definition to add.
+     */
+    void addSourceApiDefinition(QSharedPointer<ApiDefinition const> apiDef);
+
+    /*!
+     *  Adds a source COM definition for content matching.
+     *
+     *      @param [in] comDef The COM definition to add.
+     */
+    void addsourceComDefinition(QSharedPointer<ComDefinition const> comDef);
 
     /*!
      *  Sets the name of the local node.
@@ -359,25 +376,31 @@ private:
     static MCAPIFunctionSet s_functionSet;
 
     //! Content icons.
-    QIcon m_icons[MCAPI_CONTENT_TYPE_COUNT];
+    QIcon icons_[MCAPI_CONTENT_TYPE_COUNT];
+
+    //! Source API definitions.
+    QList< QSharedPointer<ApiDefinition const> > sourceApiDefinitions_;
+
+    //! Source COM definitions.
+    QList< QSharedPointer<ComDefinition const> > sourceComDefinitions_;
 
     //! The sender node description.
-    NodeDesc m_localNode;
+    NodeDesc localNode_;
 
     //! The receiver node descriptions.
-    QList<NodeDesc> m_remoteNodes;
+    QList<NodeDesc> remoteNodes_;
 
     //! Available endpoint connections.
-    ConnectionDescList m_connections;
+    ConnectionDescList connections_;
 
     //! Last found match type.
-    MatchType m_lastMatchType;
+    MatchType lastMatchType_;
 
     //! The current assist that is being filled with content.
     TextContentAssistWidget* curAssist_;
 
     //! The generated tooltip text.
-    QString m_tooltipText;
+    QString tooltipText_;
 };
 
 //-----------------------------------------------------------------------------

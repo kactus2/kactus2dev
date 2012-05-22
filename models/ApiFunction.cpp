@@ -324,7 +324,12 @@ void ApiFunction::generateToolTipText(unsigned int paramIndex, QString& text) co
         }
     }
 
-    text += ')';
+    text += ")<br>" + desc_;
+    
+    if (paramIndex < params_.size())
+    {
+        text += "<br><b>Parameter:</b> " + params_.at(paramIndex)->getDescription();
+    }
 }
 
 //-----------------------------------------------------------------------------

@@ -5,10 +5,9 @@
  */
 
 #include "component.h"
+
 #include "librarycomponent.h"
 #include "businterface.h"
-#include "ComInterface.h"
-#include "ApiInterface.h"
 #include "parameter.h"
 #include "addressspace.h"
 #include "memorymap.h"
@@ -21,6 +20,11 @@
 #include "channel.h"
 #include "choice.h"
 #include "file.h"
+
+#include "ComInterface.h"
+#include "ApiInterface.h"
+#include "ComProperty.h"
+#include "SWView.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -279,23 +283,32 @@ Component::Component(QDomDocument &doc)
 				QDomNode extensionNode = children.at(i).childNodes().at(j);
 
 				// if node is for kactus2 extensions
-				if (extensionNode.nodeName() == QString("kactus2:extensions")) {
-
+				if (extensionNode.nodeName() == "kactus2:extensions")
+                {
 					for (int k = 0; k < extensionNode.childNodes().count(); ++k) {
 						
-						QDomNode kactusExtension = extensionNode.childNodes().at(k);
+						QDomNode childNode = extensionNode.childNodes().at(k);
 
 						// if node is for kactus2 attributes
-						if (kactusExtension.nodeName() == QString("kactus2:kts_attributes")) {
-							parseKactus2Attributes(kactusExtension);
-						}
-                        else if (kactusExtension.nodeName() == "kactus2:comInterfaces")
+                        if (childNode.nodeName() == "kactus2:properties")
                         {
-                            parseComInterfaces(kactusExtension);
+                            parseSWProperties(childNode);
                         }
-                        else if (kactusExtension.nodeName() == "kactus2:apiInterfaces")
+                        else if (childNode.nodeName() == "kactus2:swViews")
                         {
-                            parseApiInterfaces(kactusExtension);
+                            parseSWViews(childNode);
+                        }
+						if (childNode.nodeName() == "kactus2:kts_attributes")
+                        {
+							parseKactus2Attributes(childNode);
+						}
+                        else if (childNode.nodeName() == "kactus2:comInterfaces")
+                        {
+                            parseComInterfaces(childNode);
+                        }
+                        else if (childNode.nodeName() == "kactus2:apiInterfaces")
+                        {
+                            parseApiInterfaces(childNode);
                         }
 					}
 				}
@@ -501,6 +514,17 @@ Component::Component(const Component &other)
 			parameters_.append(copy);
 		}
 	}
+
+    // Make deep copies of the properties and SW views.
+    foreach (QSharedPointer<ComProperty> property, other.swProperties_)
+    {
+        swProperties_.append(QSharedPointer<ComProperty>(new ComProperty(*property.data())));
+    }
+
+    foreach (QSharedPointer<SWView> view, other.swViews_)
+    {
+        swViews_.append(QSharedPointer<SWView>(new SWView(*view.data())));
+    }
 }
 
 Component & Component::operator=( const Component &other ) {
@@ -517,6 +541,32 @@ Component & Component::operator=( const Component &other ) {
 					busInterfaces_.insert(copy->getName(), copy);
 				}
 		}
+
+        comInterfaces_.clear();
+        for (QMap<QString, QSharedPointer<ComInterface> >::const_iterator i = other.comInterfaces_.begin();
+            i != other.comInterfaces_.end(); ++i)
+        {
+            if (i.value())
+            {
+                QSharedPointer<ComInterface> copy =
+                    QSharedPointer<ComInterface>(new ComInterface(*i.value().data()));
+
+                comInterfaces_.insert(copy->getName(), copy);
+            }
+        }
+
+        apiInterfaces_.clear();
+        for (QMap<QString, QSharedPointer<ApiInterface> >::const_iterator i = other.apiInterfaces_.begin();
+            i != other.apiInterfaces_.end(); ++i)
+        {
+            if (i.value())
+            {
+                QSharedPointer<ApiInterface> copy =
+                    QSharedPointer<ApiInterface>(new ApiInterface(*i.value().data()));
+
+                apiInterfaces_.insert(copy->getName(), copy);
+            }
+        }
 
 		channels_.clear();
 		foreach (QSharedPointer<Channel> channel, other.channels_) {
@@ -613,6 +663,19 @@ Component & Component::operator=( const Component &other ) {
 				parameters_.append(copy);
 			}
 		}
+
+        // Make deep copies of the properties.
+        swProperties_.clear();
+        foreach (QSharedPointer<ComProperty> property, other.swProperties_)
+        {
+            swProperties_.append(QSharedPointer<ComProperty>(new ComProperty(*property.data())));
+        }
+
+        swViews_.clear();
+        foreach (QSharedPointer<SWView> view, other.swViews_)
+        {
+            swViews_.append(QSharedPointer<SWView>(new SWView(*view.data())));
+        }
 	}
 	return *this;
 }
@@ -802,6 +865,32 @@ void Component::write(QFile& file) {
 		writer.writeStartElement("kactus2:extensions");
 		
 		writeKactus2Attributes(writer);
+
+        // Write properties.
+        if (!swProperties_.isEmpty())
+        {
+            writer.writeStartElement("kactus2:properties");
+
+            foreach (QSharedPointer<ComProperty> prop, swProperties_)
+            {
+                prop->write(writer);
+            }
+
+            writer.writeEndElement(); // kactus2:properties
+        }
+
+        // Write SW views.
+        if (!swViews_.isEmpty())
+        {
+            writer.writeStartElement("kactus2:swViews");
+
+            foreach (QSharedPointer<SWView> view, swViews_)
+            {
+                view->write(writer);
+            }
+
+            writer.writeEndElement(); // kactus2:swViews
+        }
 
         // Write COM interfaces if found.
         if (!comInterfaces_.empty())
@@ -2233,13 +2322,6 @@ int Component::getPortRightBound( const QString& port ) const {
 	}
 }
 
-
-
-
-
-
-
-
 VLNV Component::getHierRef(const QString viewName) const {
 
 	// if no model is specified
@@ -2383,6 +2465,129 @@ QString Component::getViewDescription( const QString& viewName ) const {
 		return QString();
 
 	return view->getDescription();
+}
+
+VLNV Component::getHierSWRef(const QString viewName) const {
+
+    // search all views
+    for (int i = 0; i < swViews_.size(); ++i) {
+
+        // if the view has the given name 
+        // or no name is given AND the view is hierarchical
+        if (swViews_.at(i)->getName() == viewName ||
+            (viewName.isEmpty() && swViews_.at(i)->getHierarchyRef().isValid())) {
+                return swViews_.at(i)->getHierarchyRef();
+        }
+    }
+
+    // if no hierarchical view was found or none matched the given name
+    return VLNV();
+}
+
+
+QList<VLNV> Component::getHierSWRefs() const {
+    // list to store the pointers to VLNVs
+    QList<VLNV> refs;
+
+    // search all views
+    for (int i = 0; i < swViews_.size(); ++i) {
+
+        // if view contains hierarchy reference
+        if (swViews_.at(i)->getHierarchyRef().isValid()) {
+            refs.append(swViews_.at(i)->getHierarchyRef());
+        }
+    }
+    return refs;
+}
+
+
+void Component::setHierSWRef(const VLNV& vlnv, const QString& viewName /*= QString()*/ ) {
+    // search all views
+    foreach (QSharedPointer<SWView> view, swViews_) {
+
+        // if the view has given name or no name is given AND view is hierarchical
+        if (view->getName() == viewName ||
+            (viewName.isEmpty() && view->getHierarchyRef().isValid())) {
+                view->setHierarchyRef(vlnv);
+        }
+    }
+}
+
+SWView* Component::findSWView(const QString name) const {
+    // search all views
+    for (int i = 0; i < swViews_.size(); ++i) {
+
+        // if the view has the specified name
+        if (swViews_.at(i)->getName() == name) {
+            return swViews_.at(i).data();
+        }
+    }
+
+    // view was not found
+    return 0;
+}
+
+void Component::addSWView(SWView* newView) {
+    // remove previous views with the same name.
+    removeSWView(newView->getName());
+
+    // add the new view
+    swViews_.append(QSharedPointer<SWView>(newView));
+}
+
+const QList<QSharedPointer<SWView> > Component::getSWViews() const{
+    return swViews_;
+}
+
+QList<QSharedPointer<SWView> >& Component::getSWViews() {
+    return swViews_;
+}
+
+SWView* Component::createSWView() {
+    QSharedPointer<SWView> viewP = QSharedPointer<SWView>(new SWView());
+    swViews_.append(viewP);
+    return viewP.data();
+}
+
+QStringList Component::getSWViewNames() const {
+    QStringList list;
+    foreach (QSharedPointer<SWView> view, swViews_) {
+        list.append(view->getName());
+    }
+    return list;
+}
+
+int Component::getSWViewCount() const {
+    return swViews_.count();
+}
+
+void Component::removeSWView( const QString& viewName ) {
+    // search all views
+    for (int i = 0; i < swViews_.size(); ++i) {
+
+        // if the view has the specified name
+        if (swViews_.at(i)->getName() == viewName) {
+
+            // remove the view
+            swViews_.removeAt(i);
+        }
+    }
+}
+
+bool Component::hasSWViews() const {
+    return !swViews_.isEmpty();
+}
+
+bool Component::hasSWView( const QString& viewName ) const {
+    return findSWView(viewName) != 0;
+}
+
+QString Component::getSWViewDescription( const QString& viewName ) const {
+    SWView* view = findSWView(viewName);
+    if (!view)
+        return QString();
+
+    return view->getDescription();
 }
 
 QMap<QString, QString> Component::getPortDefaultValues() const {
@@ -2832,6 +3037,56 @@ void Component::removeApiInterface(ApiInterface* apiInterface)
             // remove the old item in the map
             apiInterfaces_.remove(apiIf->getName());
             continue;
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComDefinition::setProperties()
+//-----------------------------------------------------------------------------
+void Component::setSWProperties(QList< QSharedPointer<ComProperty> > const& properties)
+{
+    swProperties_ = properties;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComDefinition::getProperties()
+//-----------------------------------------------------------------------------
+QList< QSharedPointer<ComProperty> >& Component::getSWProperties()
+{
+    return swProperties_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Component::parseSWProperties()
+//-----------------------------------------------------------------------------
+void Component::parseSWProperties(QDomNode& node)
+{
+    for (int i = 0; i < node.childNodes().count(); ++i)
+    {
+        QDomNode propNode = node.childNodes().at(i);
+
+        if (propNode.nodeName() == "kactus2:property")
+        {
+            QSharedPointer<ComProperty> prop(new ComProperty(propNode));
+            swProperties_.append(prop);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Component::parseSWViews()
+//-----------------------------------------------------------------------------
+void Component::parseSWViews(QDomNode& node)
+{
+    for (int i = 0; i < node.childNodes().count(); ++i)
+    {
+        QDomNode viewNode = node.childNodes().at(i);
+
+        if (viewNode.nodeName() == "kactus2:swView")
+        {
+            QSharedPointer<SWView> view(new SWView(viewNode));
+            swViews_.append(view);
         }
     }
 }

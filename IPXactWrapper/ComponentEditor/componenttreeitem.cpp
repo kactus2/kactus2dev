@@ -31,8 +31,10 @@
 #include <models/subspacemap.h>
 #include <models/generaldeclarations.h>
 #include <models/register.h>
+#include <models/ComProperty.h>
 #include <models/ComInterface.h>
 #include <models/ApiInterface.h>
+#include <models/SWView.h>
 
 #include <LibraryManager/libraryinterface.h>
 
@@ -147,6 +149,8 @@ editor_(NULL) {
                 ComponentTreeItem::SOFTWARE, component->getVlnv(), component, handler, this));
         }
 
+        childItems_.append(new ComponentTreeItem(ComponentTreeItem::SWVIEWS, 0, component, handler, this));
+        childItems_.append(new ComponentTreeItem(ComponentTreeItem::SWPROPERTIES, 0, component, handler, this));
         childItems_.append(new ComponentTreeItem(ComponentTreeItem::COMINTERFACES, 0, component, handler, this));
 
         if (swComp)
@@ -391,6 +395,27 @@ editor_(NULL) {
 		text_ = view->getName();
 		break;
 								  }
+
+    case ComponentTreeItem::SWVIEWS: {
+        text_ = tr("SW views");
+
+        // get views from the component through model and set them to the model
+        QList<QSharedPointer<SWView> > list = component_->getSWViews();
+        for (int i = 0; i < list.size(); ++i) {
+            childItems_.append(new ComponentTreeItem(
+                ComponentTreeItem::SWVIEW, list.at(i).data(), component, handler, this));
+        }
+        break;
+                                   }
+    case ComponentTreeItem::SWVIEW: {
+        SWView* view = static_cast<SWView*>(dataPointer_);
+        Q_ASSERT_X(view, "ComponentTreeItem constructor in case SWVIEW",
+            "static_cast failed to give valid SWView-pointer");
+
+        text_ = view->getName();
+        break;
+                                  }
+
 	case ComponentTreeItem::PORTS: {
         if (endpointComp || appComp)
         {
@@ -494,6 +519,14 @@ editor_(NULL) {
         //dataPointer_ = 0;
         break;
                                       }
+
+    case ComponentTreeItem::SWPROPERTIES: {
+        text_ = tr("SW properties");
+
+        QList<QSharedPointer<ComProperty> >* params = &component_->getSWProperties();
+        dataPointer_ = params;
+        break;
+                                          }
 
     case ComponentTreeItem::COMINTERFACES: {
         text_ = tr("COM interfaces");
@@ -614,6 +647,7 @@ QFont ComponentTreeItem::getFont() const {
     case ComponentTreeItem::ADDRESSSPACES: 
     case ComponentTreeItem::REMAPSTATES: 
     case ComponentTreeItem::VIEWS: 
+    case ComponentTreeItem::SWVIEWS: 
     case ComponentTreeItem::PORTS: 
     case ComponentTreeItem::BUSINTERFACES:
     case ComponentTreeItem::CHANNELS: 
@@ -621,6 +655,7 @@ QFont ComponentTreeItem::getFont() const {
     case ComponentTreeItem::OTHERCLOCKDRIVERS: 
     case ComponentTreeItem::COMPONENTGENERATORS:
     case ComponentTreeItem::SOFTWARE:
+    case ComponentTreeItem::SWPROPERTIES:
     case ComponentTreeItem::COMINTERFACES:
     case ComponentTreeItem::APIINTERFACES: {
 	    font.setPointSize(font.pointSize() + 2);
@@ -767,6 +802,18 @@ bool ComponentTreeItem::createChild() {
 
 			return true;
 									   }
+
+        case ComponentTreeItem::SWVIEWS: {
+
+            // create a new empty view
+            SWView* view = component_->createSWView();
+
+            // create a child item that represents the view
+            childItems_.append(new ComponentTreeItem(
+                ComponentTreeItem::SWVIEW, view, component_, handler_, this));
+
+            return true;
+                                       }
 		// if the item type is such that the child can't be created
 		default: {
 			return false;
@@ -787,8 +834,10 @@ bool ComponentTreeItem::canHaveChildren() const {
 		case ComponentTreeItem::OTHERCLOCKDRIVERS:
 		case ComponentTreeItem::BUSINTERFACE:
 		case ComponentTreeItem::VIEW:
+        case ComponentTreeItem::SWVIEW:
 		case ComponentTreeItem::DEFAULTFILEBUILDERS:
         case ComponentTreeItem::SOFTWARE:
+        case ComponentTreeItem::SWPROPERTIES:
         case ComponentTreeItem::COMINTERFACE:
         case ComponentTreeItem::APIINTERFACE: {
 			return false;
@@ -812,6 +861,7 @@ bool ComponentTreeItem::canBeRemoved() const {
 		case ComponentTreeItem::ADDRESSSPACES:
 		case ComponentTreeItem::REMAPSTATES:
 		case ComponentTreeItem::VIEWS:
+        case ComponentTreeItem::SWVIEWS:
 		case ComponentTreeItem::PORTS:
 		case ComponentTreeItem::BUSINTERFACES:
 		case ComponentTreeItem::CHANNELS:
@@ -822,6 +872,7 @@ bool ComponentTreeItem::canBeRemoved() const {
 		case ComponentTreeItem::FUNCTIONS:
 		case ComponentTreeItem::COMPONENTGENERATORS:
         case ComponentTreeItem::SOFTWARE:
+        case ComponentTreeItem::SWPROPERTIES:
         case ComponentTreeItem::COMINTERFACES:
         case ComponentTreeItem::APIINTERFACES: {
 			return false;
@@ -1044,6 +1095,26 @@ bool ComponentTreeItem::isModelValid() const {
 		View* view = static_cast<View*>(dataPointer_);
 		return view->isValid(component_->getFileSetNames());
 								  }
+
+    case ComponentTreeItem::SWVIEWS: {
+
+        // if at least one view is invalid
+        QList<QSharedPointer<SWView> > list = component_->getSWViews();
+        QStringList fileSetNames = component_->getFileSetNames();
+        foreach (QSharedPointer<SWView> view, list) {
+            if (!view->isValid()) {
+                return false;
+            }
+        }
+
+        // if all views are valid
+        return true;
+                                   }
+    case ComponentTreeItem::SWVIEW: {
+        SWView* view = static_cast<SWView*>(dataPointer_);
+        return view->isValid();
+                                  }
+
 	case ComponentTreeItem::PORTS: {
 
 		// if at least one port is invalid
@@ -1079,6 +1150,22 @@ bool ComponentTreeItem::isModelValid() const {
 		const QList<General::PortBounds> portBounds = component_->getPortBounds();
 		return busInterface->isValid(portBounds);
 										  }
+
+    case ComponentTreeItem::SWPROPERTIES: {
+
+        // if at least one property is invalid
+        QList<QSharedPointer<ComProperty> > properties = component_->getSWProperties();
+        foreach (QSharedPointer<ComProperty> prop, properties) {
+            if (!prop->isValid()) {
+                return false;
+            }
+        }
+
+        // all parameters were valid
+        return true;
+                                        }
+
+
     case ComponentTreeItem::COMINTERFACES: {
         // Check for invalid COM interfaces.
         QMap<QString, QSharedPointer<ComInterface> > const& interfaces = component_->getComInterfaces();

@@ -116,6 +116,9 @@ public:
          *  Specifies whether the component is imported from a software mapping design.
          */
         bool imported;
+
+        //! SW property values for this instance.
+        QMap<QString, QString> swPropertyValues;
         
         /*! \brief The constructor
 		*
@@ -151,6 +154,11 @@ public:
 		* \return bool True if the state is valid and writing is possible.
 		*/
 		bool isValid() const;
+        
+        /*!
+         *  Parses the property values from the given XML node.
+         */
+        void parsePropertyValues(QDomNode& node);
     };
 
 	/*! \brief Describes the spirit:interface type in an IP-XACT

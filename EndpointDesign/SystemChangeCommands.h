@@ -14,9 +14,11 @@
 
 #include <LibraryManager/vlnv.h>
 
+#include <QMap>
 #include <QUndoCommand>
 
 class ComponentItem;
+class SWComponentItem;
 class SWConnectionEndpoint;
 class VLNV;
 
@@ -114,6 +116,59 @@ private:
 
     //! The endpoint's new COM/API type.
     VLNV newType_;
+};
+
+//-----------------------------------------------------------------------------
+//! PropertyValuesChangeCommand class.
+//-----------------------------------------------------------------------------
+class PropertyValuesChangeCommand: public QUndoCommand {
+
+public:
+
+	/*!
+     *  Constructor.
+     *
+	 *      @param [in] component        Pointer to the component instance that is being edited.
+	 *      @param [in] newConfElements  The new property values for the instance.
+	 *      @param [in] parent           Pointer to the owner of this command.
+	 *
+	*/
+	PropertyValuesChangeCommand(SWComponentItem* component,
+		                        QMap<QString, QString> const& newPropertyValues, 
+		                        QUndoCommand* parent = 0);
+
+	/*!
+     *  Destructor.
+     */
+	~PropertyValuesChangeCommand();
+
+	/*!
+     *  Undoes the command.
+     */
+    virtual void undo();
+
+    /*!
+     *  Redoes the command.
+     */
+    virtual void redo();
+
+private:
+	// Disable copying.
+	PropertyValuesChangeCommand(PropertyValuesChangeCommand const& rhs);
+	PropertyValuesChangeCommand& operator=(PropertyValuesChangeCommand const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+	//! Pointer to the component instance.
+	SWComponentItem* component_;
+
+	//! The old property values.
+	QMap<QString, QString> oldPropertyValues_;
+
+	//! The new property values..
+	QMap<QString, QString> newPropertyValues_;
 };
 
 //-----------------------------------------------------------------------------

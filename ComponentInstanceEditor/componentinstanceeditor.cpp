@@ -7,6 +7,7 @@
 
 #include "componentinstanceeditor.h"
 
+#include <EndpointDesign/SystemChangeCommands.h>
 #include <designwidget/diagramcomponent.h>
 #include <models/component.h>
 #include <LibraryManager/vlnv.h>
@@ -27,6 +28,7 @@ component_(0),
 vlnvDisplayer_(this),
 nameGroup_(this, tr("Instance name")),
 configurableElements_(this),
+propertyValueEditor_(this),
 editProvider_() {
 
 	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
@@ -46,14 +48,17 @@ editProvider_() {
 	layout->addWidget(&vlnvDisplayer_);
 	layout->addWidget(&nameGroup_);
 	layout->addWidget(&configurableElements_);
+    layout->addWidget(&propertyValueEditor_);
 	layout->addStretch();
 
 	connect(&nameGroup_, SIGNAL(nameChanged(const QString&)),
-		this, SLOT(onNameChanged(const QString&)), Qt::UniqueConnection);
+		    this, SLOT(onNameChanged(const QString&)), Qt::UniqueConnection);
 	connect(&nameGroup_, SIGNAL(displayNameChanged(const QString)),
-		this, SLOT(onDisplayNameChanged(const QString)), Qt::UniqueConnection);
+		    this, SLOT(onDisplayNameChanged(const QString)), Qt::UniqueConnection);
 	connect(&nameGroup_, SIGNAL(descriptionChanged(const QString)),
-		this, SLOT(onDescriptionChanged(const QString&)), Qt::UniqueConnection);
+		    this, SLOT(onDescriptionChanged(const QString&)), Qt::UniqueConnection);
+    connect(&propertyValueEditor_, SIGNAL(contentChanged()),
+            this, SLOT(onPropertyValuesChanged()), Qt::UniqueConnection);
 }
 
 ComponentInstanceEditor::~ComponentInstanceEditor() {
@@ -90,9 +95,21 @@ void ComponentInstanceEditor::setComponent( ComponentItem* component ) {
 	nameGroup_.show();
 
 	// set the component's configurable elements
-	configurableElements_.setComponent(component);
-    configurableElements_.setEnabled(!locked);
-	configurableElements_.show();
+    if (dynamic_cast<SWComponentItem*>(component) != 0)
+    {
+        SWComponentItem* swComponent = static_cast<SWComponentItem*>(component);
+
+        propertyValueEditor_.setData(swComponent->getPropertyValues());
+        propertyValueEditor_.setAllowedProperties(&swComponent->componentModel()->getSWProperties());
+        propertyValueEditor_.setEnabled(!locked);
+        propertyValueEditor_.show();
+    }
+    else
+    {
+	    configurableElements_.setComponent(component);
+        configurableElements_.setEnabled(!locked);
+	    configurableElements_.show();
+    }
 
 	connect(component_, SIGNAL(nameChanged(const QString&, const QString&)),
 		&nameGroup_, SLOT(setName(const QString&)), Qt::UniqueConnection);
@@ -100,6 +117,8 @@ void ComponentInstanceEditor::setComponent( ComponentItem* component ) {
 		&nameGroup_, SLOT(setDisplayName(const QString&)), Qt::UniqueConnection);
 	connect(component_, SIGNAL(descriptionChanged(const QString&)),
 		&nameGroup_, SLOT(setDescription(const QString&)), Qt::UniqueConnection);
+    connect(component_, SIGNAL(propertyValuesChanged(QMap<QString, QString> const&)),
+        &propertyValueEditor_, SLOT(setData(QMap<QString, QString> const&)), Qt::UniqueConnection);
 
 	// if the connected component is destroyed then clear this editor
 	connect(component_, SIGNAL(destroyed(ComponentItem*)),
@@ -118,6 +137,7 @@ void ComponentInstanceEditor::clear() {
 	component_ = 0;
 	vlnvDisplayer_.hide();
 	nameGroup_.hide();
+    propertyValueEditor_.hide();
 	configurableElements_.hide();
 	configurableElements_.clear();
 	editProvider_ = 0;
@@ -156,4 +176,18 @@ void ComponentInstanceEditor::onDescriptionChanged( const QString& newDescriptio
 	editProvider_->addCommand(cmd);
 	connect(component_, SIGNAL(descriptionChanged(const QString&)),
 		&nameGroup_, SLOT(setDescription(const QString&)), Qt::UniqueConnection);
+}
+
+void ComponentInstanceEditor::onPropertyValuesChanged()
+{
+    SWComponentItem* swComp = static_cast<SWComponentItem*>(component_);
+    QSharedPointer<PropertyValuesChangeCommand> cmd(new PropertyValuesChangeCommand(swComp, propertyValueEditor_.getData()));
+
+    disconnect(component_, SIGNAL(propertyValuesChanged(QMap<QString, QString> const&)),
+               &propertyValueEditor_, SLOT(setData(QMap<QString, QString> const&)));
+
+    editProvider_->addCommand(cmd);
+
+    connect(component_, SIGNAL(propertyValuesChanged(QMap<QString, QString> const&)),
+            &propertyValueEditor_, SLOT(setData(QMap<QString, QString> const&)), Qt::UniqueConnection);
 }

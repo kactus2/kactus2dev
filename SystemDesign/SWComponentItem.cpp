@@ -19,6 +19,7 @@
 #include <models/component.h>
 #include <models/ComInterface.h>
 #include <models/ApiInterface.h>
+#include <models/ComProperty.h>
 
 //-----------------------------------------------------------------------------
 // Function: SWComponentItem()
@@ -331,4 +332,33 @@ void SWComponentItem::offsetPortPositions(qreal minY)
     {
         port->setPos(port->x(), port->y() + offset);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWComponentItem::setPropertyValues()
+//-----------------------------------------------------------------------------
+void SWComponentItem::setPropertyValues(QMap<QString, QString> const& values)
+{
+    propertyValues_ = values;
+
+    // Check that at least all required properties are found in the values.
+    foreach (QSharedPointer<ComProperty const> prop, componentModel()->getSWProperties())
+    {
+        if (prop->isRequired() && !propertyValues_.contains(prop->getName()))
+        {
+            propertyValues_.insert(prop->getName(), prop->getDefaultValue());
+        }
+    }
+
+
+    emit propertyValuesChanged(propertyValues_);
+    emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWComponentItem::getPropertyValues()
+//-----------------------------------------------------------------------------
+QMap<QString, QString> const& SWComponentItem::getPropertyValues() const
+{
+    return propertyValues_;
 }

@@ -457,3 +457,19 @@ QMap<QString, QPointF> const& SWInstance::getComInterfacePositions() const
 {
     return comInterfacePositions_;
 }
+
+//-----------------------------------------------------------------------------
+// Function: SWInstance::setPropertyValues()
+//-----------------------------------------------------------------------------
+void SWInstance::setPropertyValues(QMap<QString, QString> const& values)
+{
+    propertyValues_ = values;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWInstance::getPropertyValues()
+//-----------------------------------------------------------------------------
+QMap<QString, QString> const& SWInstance::getPropertyValues() const
+{
+    return propertyValues_;
+}

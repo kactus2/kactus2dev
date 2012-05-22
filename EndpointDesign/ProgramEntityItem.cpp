@@ -22,7 +22,7 @@
 #include <models/model.h>
 
 #include <MCAPI/MCAPIContentMatcher.h>
-#include <MCAPI/MCAPITextEdit.h>
+#include <MCAPI/CSourceTextEdit.h>
 #include <MCAPI/MCAPIDesignerTypes.h>
 
 #include "EndpointDesignDiagram.h"
@@ -383,14 +383,14 @@ QString ProgramEntityItem::createIndentString()
     QSettings settings;
 
     // Read indentation settings.
-    MCAPITextEdit::IndentStyle style =
-        static_cast<MCAPITextEdit::IndentStyle>(settings.value("editor/indentStyle",
-                                                               MCAPITextEdit::INDENT_STYLE_SPACES).toInt());
+    CSourceTextEdit::IndentStyle style =
+        static_cast<CSourceTextEdit::IndentStyle>(settings.value("editor/indentStyle",
+                                                               CSourceTextEdit::INDENT_STYLE_SPACES).toInt());
     unsigned int width = settings.value("editor/indentWidth", 4).toInt();
 
     QString indent;
 
-    if (style == MCAPITextEdit::INDENT_STYLE_SPACES)
+    if (style == CSourceTextEdit::INDENT_STYLE_SPACES)
     {
         indent.fill(' ', width);
     }

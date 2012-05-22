@@ -12,6 +12,7 @@
 #include "SystemChangeCommands.h"
 
 #include <SystemDesign/SWConnectionEndpoint.h>
+#include <SystemDesign/SWComponentItem.h>
 
 #include <common/graphicsItems/ComponentItem.h>
 
@@ -88,4 +89,40 @@ void TypeDefinitionChangeCommand::undo()
 void TypeDefinitionChangeCommand::redo()
 {
     endpoint_->setTypeDefinition(newType_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PropertyValuesChangeCommand()
+//-----------------------------------------------------------------------------
+PropertyValuesChangeCommand::PropertyValuesChangeCommand(SWComponentItem* component, 
+                                                         QMap<QString, QString> const& newPropertyValues, 
+                                                         QUndoCommand* parent)
+    : QUndoCommand(parent),
+      component_(component),
+      oldPropertyValues_(component->getPropertyValues()),
+      newPropertyValues_(newPropertyValues)
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: ~PropertyValuesChangeCommand()
+//-----------------------------------------------------------------------------
+PropertyValuesChangeCommand::~PropertyValuesChangeCommand()
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: undo()
+//-----------------------------------------------------------------------------
+void PropertyValuesChangeCommand::undo()
+{
+    component_->setPropertyValues(oldPropertyValues_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: redo()
+//-----------------------------------------------------------------------------
+void PropertyValuesChangeCommand::redo()
+{
+    component_->setPropertyValues(newPropertyValues_);
 }

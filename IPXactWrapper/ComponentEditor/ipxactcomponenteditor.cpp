@@ -31,8 +31,10 @@
 #include "busInterfaces/apieditor.h"
 #include "views/vieweditor.h"
 #include "software/SoftwareMappingsEditor.h"
+#include "software/SWPropertiesEditor.h"
 #include "software/ComInterfaceEditor.h"
 #include "software/ApiInterfaceEditor.h"
+#include "software/SWViewEditor.h"
 #include "cpus/cpueditor.h"
 #include "memoryMaps/memorymapseditor.h"
 
@@ -241,6 +243,12 @@ void IPXactComponentEditor::createNewEditor( ComponentTreeItem* item ) {
             }
 			break;
 											  }
+
+        case ComponentTreeItem::SWPROPERTIES: {
+            editor = new SWPropertiesEditor(component_, this);
+            break;
+                                            }
+
         case ComponentTreeItem::COMINTERFACE: {
             editor = new ComInterfaceEditor(handler_, component_, item->getDataPointer(), this);
             break;
@@ -253,6 +261,12 @@ void IPXactComponentEditor::createNewEditor( ComponentTreeItem* item ) {
 			editor = new ViewEditor(component_, item->getDataPointer(), handler_, this);
 			break;
 									  }
+
+        case ComponentTreeItem::SWVIEW: {
+            editor = new SWViewEditor(component_, item->getDataPointer(), handler_, this);
+            break;
+                                      }
+
 		case ComponentTreeItem::DEFAULTFILEBUILDERS: {
 			editor = new FileBuilderEditor(component_, item->getDataPointer(), this);
 			break;
