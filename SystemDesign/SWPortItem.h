@@ -209,7 +209,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The name label.
-    QGraphicsTextItem* nameLabel_;
+    QGraphicsTextItem nameLabel_;
 
     //! The COM interface, or null if not set.
     QSharedPointer<ComInterface> comInterface_;

@@ -22,9 +22,6 @@
 #include <designwidget/designwidget.h>
 #include <designwidget/diagramcomponent.h>
 
-#include <EndpointDesign/EndpointDesignDiagram.h>
-#include <EndpointDesign/EndpointDesignWidget.h>
-
 #include <designwidget/DiagramChangeCommands.h>
 
 #include <QVBoxLayout>

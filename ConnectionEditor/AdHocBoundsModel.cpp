@@ -19,9 +19,6 @@
 #include <designwidget/designwidget.h>
 #include <designwidget/DiagramChangeCommands.h>
 
-#include <EndpointDesign/EndpointDesignDiagram.h>
-#include <EndpointDesign/EndpointDesignWidget.h>
-
 #include <common/GenericEditProvider.h>
 
 //-----------------------------------------------------------------------------

@@ -16,12 +16,6 @@
 #include "../SystemDesign/SWComponentItem.h"
 #include "../SystemDesign/SWConnection.h"
 
-#include "EndpointConnection.h"
-#include "EndpointItem.h"
-#include "EndpointStack.h"
-#include "MappingComponentItem.h"
-#include "ProgramEntityItem.h"
-
 //-----------------------------------------------------------------------------
 // Function: SystemColumnMoveCommand()
 //-----------------------------------------------------------------------------
@@ -103,41 +97,6 @@ void SWConnectionMoveCommand::redo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: EndpointConnectionMoveCommand()
-//-----------------------------------------------------------------------------
-EndpointConnectionMoveCommand::EndpointConnectionMoveCommand(EndpointConnection* conn,
-                                                             QList<QPointF> const& oldRoute,
-                                                             QUndoCommand* parent) : QUndoCommand(parent),
-                                                                                     conn_(conn),
-                                                                                     oldRoute_(oldRoute),
-                                                                                     newRoute_(conn->getRoute())
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: ~EndpointConnectionMoveCommand()
-//-----------------------------------------------------------------------------
-EndpointConnectionMoveCommand::~EndpointConnectionMoveCommand()
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: undo()
-//-----------------------------------------------------------------------------
-void EndpointConnectionMoveCommand::undo()
-{
-    conn_->setRoute(oldRoute_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: redo()
-//-----------------------------------------------------------------------------
-void EndpointConnectionMoveCommand::redo()
-{
-    conn_->setRoute(newRoute_);
-}
-
-//-----------------------------------------------------------------------------
 // Function: SystemItemMoveCommand()
 //-----------------------------------------------------------------------------
 SystemItemMoveCommand::SystemItemMoveCommand(ComponentItem* item, QPointF const& oldPos,
@@ -182,95 +141,6 @@ void SystemItemMoveCommand::redo()
     
     item_->setPos(newStack_->mapStackFromScene(newPos_));
     newStack_->addItem(item_);
-
-    // Execute child commands.
-    QUndoCommand::redo();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ProgramEntityMoveCommand()
-//-----------------------------------------------------------------------------
-ProgramEntityMoveCommand::ProgramEntityMoveCommand(ProgramEntityItem* item, QPointF const& oldPos,
-                                                   QUndoCommand* parent) : QUndoCommand(parent), item_(item),
-                                                                           oldPos_(oldPos),
-                                                                           newPos_(item->pos())
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: ~ProgramEntityMoveCommand()
-//-----------------------------------------------------------------------------
-ProgramEntityMoveCommand::~ProgramEntityMoveCommand()
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: undo()
-//-----------------------------------------------------------------------------
-void ProgramEntityMoveCommand::undo()
-{
-    item_->setPos(oldPos_);
-
-    MappingComponentItem* mappingComp = static_cast<MappingComponentItem*>(item_->parentItem());
-    mappingComp->onMoveItem(item_);
-    
-    // Execute child commands.
-    QUndoCommand::undo();
-}
-
-//-----------------------------------------------------------------------------
-// Function: redo()
-//-----------------------------------------------------------------------------
-void ProgramEntityMoveCommand::redo()
-{
-    item_->setPos(newPos_);
-
-    MappingComponentItem* mappingComp = static_cast<MappingComponentItem*>(item_->parentItem());
-    mappingComp->onMoveItem(item_);    
-
-    // Execute child commands.
-    QUndoCommand::redo();
-}
-
-//-----------------------------------------------------------------------------
-// Function: EndpointMoveCommand()
-//-----------------------------------------------------------------------------
-EndpointMoveCommand::EndpointMoveCommand(EndpointItem* item, QPointF const& oldPos,
-                                         QUndoCommand* parent) : QUndoCommand(parent), item_(item),
-                                                                 oldPos_(oldPos), newPos_(item->pos())
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: ~EndpointMoveCommand()
-//-----------------------------------------------------------------------------
-EndpointMoveCommand::~EndpointMoveCommand()
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: undo()
-//-----------------------------------------------------------------------------
-void EndpointMoveCommand::undo()
-{
-    item_->setPos(oldPos_);
-
-    EndpointStack* stack = static_cast<EndpointStack*>(item_->parentItem());
-    stack->onMoveEndpoint(item_);
-
-    // Execute child commands.
-    QUndoCommand::undo();
-}
-
-//-----------------------------------------------------------------------------
-// Function: redo()
-//-----------------------------------------------------------------------------
-void EndpointMoveCommand::redo()
-{
-    item_->setPos(newPos_);
-
-    EndpointStack* stack = static_cast<EndpointStack*>(item_->parentItem());
-    stack->onMoveEndpoint(item_);    
 
     // Execute child commands.
     QUndoCommand::redo();

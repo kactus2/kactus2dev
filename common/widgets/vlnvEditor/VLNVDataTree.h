@@ -185,14 +185,6 @@ public:
      */
     void setImplementationFilter(bool on, KactusAttribute::Implementation implementation = KactusAttribute::KTS_HW);
 
-    /*!
-     *  Sets the SW type filter on/off.
-     *
-     *      @param [in] on      If true, the filter is turned on; otherwise it is turned off.
-     *      @param [in] swType  The allowed SW type.
-     */
-    void setSWTypeFilter(bool on, KactusAttribute::SWType swType = KactusAttribute::KTS_SW_MAPPING);
-
 private:
     // Disable copying.
     VLNVDataTree(VLNVDataTree const& rhs);
@@ -222,10 +214,6 @@ private:
     //! Implementation filter data.
     bool implementationFilterEnabled_;
     KactusAttribute::Implementation implementationFilter_;
-
-    //! SW type filter data.
-    bool swTypeFilterEnabled_;
-    KactusAttribute::SWType swTypeFilter_;
 };
 
 //-----------------------------------------------------------------------------

@@ -258,16 +258,7 @@ QVariant HierarchyModel::data(const QModelIndex& index,
 					return QIcon(":/icons/graphics/new-system.png");
 											   }
 				case KactusAttribute::KTS_SW: {
-					KactusAttribute::SWType swType = item->getSoftwareType();
-
-					if (swType == KactusAttribute::KTS_SW_APPLICATION)
-						return QIcon(":/icons/graphics/new-sw_component.png");
-					else if (swType == KactusAttribute::KTS_SW_PLATFORM) 
-						return QIcon(":icons/graphics/API.png");
-					else if (swType == KactusAttribute::KTS_SW_ENDPOINTS)
-						return QIcon(":/icons/graphics/endpoints.png");
-					else if (swType == KactusAttribute::KTS_SW_MAPPING) 
-						return QIcon(":/icons/graphics/new-sw_design.png");
+					return QIcon(":/icons/graphics/new-sw_component.png");
 											  }
 				default: {
 					if (item->isHierarchical()) {
@@ -334,6 +325,17 @@ void HierarchyModel::onOpenDesign( const QModelIndex& index ) {
 		emit openDesign(vlnv);
 }
 
+void HierarchyModel::onOpenSWDesign( const QModelIndex& index ) {
+    if (!index.isValid())
+        return;
+
+    HierarchyItem* item = static_cast<HierarchyItem*>(index.internalPointer());
+    VLNV vlnv = item->getVLNV();
+
+    if (vlnv.isValid())
+        emit openSWDesign(vlnv);
+}
+
 void HierarchyModel::onOpenComponent( const QModelIndex& index ) {
 	if (!index.isValid())
 		return;
@@ -368,6 +370,18 @@ void HierarchyModel::onCreateNewDesign( const QModelIndex& index ) {
 	vlnv.setType(VLNV::COMPONENT);
 
 	emit createDesign(vlnv);
+}
+
+void HierarchyModel::onCreateNewSWDesign( const QModelIndex& index ) {
+    if (!index.isValid())
+        return;
+
+    HierarchyItem* item = static_cast<HierarchyItem*>(index.internalPointer());
+
+    VLNV vlnv = item->getVLNV();
+    vlnv.setType(VLNV::COMPONENT);
+
+    emit createSWDesign(vlnv);
 }
 
 void HierarchyModel::onCreateNewBus( const QModelIndex& index ) {

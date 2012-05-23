@@ -125,6 +125,8 @@ void LibraryHandler::syncronizeModels() {
 		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 	connect(data_.data(), SIGNAL(noticeMessage(const QString&)),
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+    connect(data_.data(), SIGNAL(openSWDesign(const VLNV&)),
+        this, SLOT(onOpenSWDesign(const VLNV&)), Qt::UniqueConnection);
 	connect(data_.data(), SIGNAL(openDesign(const VLNV&)),
 		this, SLOT(onOpenDesign(const VLNV&)), Qt::UniqueConnection);
 	connect(data_.data(), SIGNAL(editItem(const VLNV&)),
@@ -139,6 +141,8 @@ void LibraryHandler::syncronizeModels() {
 		this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
 	connect(data_.data(), SIGNAL(createDesign(const VLNV&)),
 		this, SLOT(onCreateDesign(const VLNV&)), Qt::UniqueConnection);
+    connect(data_.data(), SIGNAL(createSWDesign(const VLNV&)),
+        this, SIGNAL(createSWDesign(const VLNV&)), Qt::UniqueConnection);
 
 	/**************************************************************************/
 	// connect the signals from the tree model
@@ -152,6 +156,8 @@ void LibraryHandler::syncronizeModels() {
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 	connect(treeModel_.data(), SIGNAL(openDesign(const VLNV&)),
 		this, SLOT(onOpenDesign(const VLNV&)), Qt::UniqueConnection);
+    connect(treeModel_.data(), SIGNAL(openSWDesign(const VLNV&)),
+        this, SLOT(onOpenSWDesign(const VLNV&)), Qt::UniqueConnection);
 	connect(treeModel_.data(), SIGNAL(editItem(const VLNV&)),
 		this, SLOT(onEditItem(const VLNV&)), Qt::UniqueConnection);
 	connect(treeModel_.data(), SIGNAL(createBus(const VLNV&)),
@@ -166,6 +172,8 @@ void LibraryHandler::syncronizeModels() {
 		this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
 	connect(treeModel_.data(), SIGNAL(createDesign(const VLNV&)),
 		this, SLOT(onCreateDesign(const VLNV&)), Qt::UniqueConnection);
+    connect(treeModel_.data(), SIGNAL(createSWDesign(const VLNV&)),
+        this, SIGNAL(createSWDesign(const VLNV&)), Qt::UniqueConnection);
 	connect(treeModel_.data(), SIGNAL(exportItems(const QList<VLNV*>&)),
 		this, SLOT(onExportItems(const QList<VLNV*>&)), Qt::UniqueConnection);
 	connect(treeModel_.data(), SIGNAL(refreshDialer()),
@@ -177,6 +185,8 @@ void LibraryHandler::syncronizeModels() {
 	// signals from hierarchy model to library handler
 	connect(hierarchyModel_.data(), SIGNAL(openDesign(const VLNV&)),
 		this, SLOT(onOpenDesign(const VLNV&)), Qt::UniqueConnection);
+    connect(hierarchyModel_.data(), SIGNAL(openSWDesign(const VLNV&)),
+        this, SLOT(onOpenSWDesign(const VLNV&)), Qt::UniqueConnection);
 	connect(hierarchyModel_.data(), SIGNAL(editItem(const VLNV&)),
 		this, SLOT(onEditItem(const VLNV&)), Qt::UniqueConnection);
 	connect(hierarchyModel_.data(), SIGNAL(createBusDef(const VLNV&)),
@@ -191,8 +201,8 @@ void LibraryHandler::syncronizeModels() {
         this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
     connect(hierarchyModel_.data(), SIGNAL(createApiDef(const VLNV&)),
         this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
-	connect(hierarchyModel_.data(), SIGNAL(createDesign(const VLNV&)),
-		this, SLOT(onCreateDesign(const VLNV&)), Qt::UniqueConnection);
+	connect(hierarchyModel_.data(), SIGNAL(createSWDesign(const VLNV&)),
+		this, SIGNAL(createSWDesign(const VLNV&)), Qt::UniqueConnection);
 	connect(hierarchyModel_.data(), SIGNAL(exportItem(const VLNV&)),
 		this, SLOT(onExportItem(const VLNV&)), Qt::UniqueConnection);
 }
@@ -873,15 +883,7 @@ void LibraryHandler::onEditItem( const VLNV& vlnv ) {
 			break;
 									   }
 		case KactusAttribute::KTS_SW: {
-
-			if (component->getComponentSWType() == KactusAttribute::KTS_SW_MAPPING)
-            {
-                emit openSWDesign(vlnv);
-            }
-            else
-            {
-			    emit openComponent(vlnv);
-            }
+			emit openComponent(vlnv);
 			break;
 									  }
 		default: {
@@ -984,6 +986,28 @@ void LibraryHandler::onOpenDesign( const VLNV& vlnv ) {
 		}
 		emit openDesign(vlnv, views.first());
 	}
+}
+
+void LibraryHandler::onOpenSWDesign( const VLNV& vlnv ) {
+    QSharedPointer<LibraryComponent> libComb = getModel(vlnv);
+    if (!libComb) {
+        emit errorMessage(tr("Component was not found"));
+        return;
+    }
+
+    // make type cast
+    QSharedPointer<Component> component;
+    if (libComb->getVlnv()->getType() == VLNV::COMPONENT) {
+        QSharedPointer<Component> component = libComb.staticCast<Component>();
+
+        QStringList views = component->getSWViewNames();
+
+        // if component does not have any SW views
+        if (views.size() == 0) {
+            return;
+        }
+        emit openSWDesign(vlnv, views.first());
+    }
 }
 
 void LibraryHandler::onCreateNewItem( const VLNV& vlnv ) {

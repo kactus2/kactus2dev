@@ -49,7 +49,7 @@ public:
      *      @param [in] editProvider  The edit provider.
      *      @param [in] parent        The parent widget.
      */
-    SystemDesignDiagram(LibraryInterface* lh, MainWindow* mainWnd,
+    SystemDesignDiagram(bool onlySW, LibraryInterface* lh, MainWindow* mainWnd,
                         GenericEditProvider& editProvider, SystemDesignWidget* parent = 0);
 
     /*!
@@ -208,6 +208,9 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    //! If true, the widget is used for editing SW designs.
+    bool onlySW_;
 
     //! The parent widget.
     SystemDesignWidget* parent_;

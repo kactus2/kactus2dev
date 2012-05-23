@@ -22,6 +22,7 @@
 #include "SystemDesignWidget.h"
 #include "SWConnection.h"
 #include "SWConnectionEndpoint.h"
+#include "SWPortItem.h"
 
 #include <QPainter>
 #include <QGraphicsSceneMouseEvent>
@@ -29,6 +30,8 @@
 #include <QMimeData>
 #include <QMessageBox>
 #include <QFileDialog>
+
+#include <LibraryManager/libraryinterface.h>
 
 #include <common/diagramgrid.h>
 #include <common/DiagramUtil.h>
@@ -49,16 +52,14 @@
 
 #include <mainwindow/mainwindow.h>
 
-#include <LibraryManager/libraryinterface.h>
-#include <LibraryManager/LibraryUtils.h>
-
 //-----------------------------------------------------------------------------
 // Function: SystemDesignDiagram()
 //-----------------------------------------------------------------------------
-SystemDesignDiagram::SystemDesignDiagram(LibraryInterface* lh, MainWindow* mainWnd,
+SystemDesignDiagram::SystemDesignDiagram(bool onlySW, LibraryInterface* lh, MainWindow* mainWnd,
                                          GenericEditProvider& editProvider,
                                          SystemDesignWidget* parent)
     : DesignDiagram(lh, mainWnd, editProvider, parent),
+      onlySW_(onlySW),
       parent_(parent),
       layout_(),
       dragSW_(false),
@@ -109,26 +110,13 @@ void SystemDesignDiagram::setMode(DrawMode mode)
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
 {
-    // Update the design.
-    updateSystemDesignV2(getLibraryInterface(),
-                         QFileInfo(getLibraryInterface()->getPath(*design->getVlnv())).path(),
-                         getEditedComponent()->getHierRef("kts_hw_ref"), *design);
-
     // Create the column layout.
     layout_ = QSharedPointer<SystemColumnLayout>(new SystemColumnLayout(this));
     connect(layout_.data(), SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
-    if (design->getColumns().isEmpty())
+    foreach(ColumnDesc desc, design->getColumns())
     {
-        layout_->addColumn("SW Components");
-        layout_->addColumn("SW Components");
-    }
-    else
-    {
-        foreach(ColumnDesc desc, design->getColumns())
-        {
-            layout_->addColumn(desc.name);
-        }
+        layout_->addColumn(desc.name);
     }
 
     unsigned int colIndex = 0;
@@ -168,11 +156,15 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
                 itrPortPos.next();
                 SWPortItem* port = item->getSWPort(itrPortPos.key(), SWConnectionEndpoint::ENDPOINT_TYPE_API);
 
-                if (port != 0)
+                // If the port was not found, create it.
+                if (port == 0)
                 {
-                    port->setPos(itrPortPos.value());
-                    item->onMovePort(port);
+                    port = new SWPortItem(itrPortPos.key(), item);
+                    item->addPort(port);
                 }
+
+                port->setPos(itrPortPos.value());
+                item->onMovePort(port);
             }
         }
 
@@ -184,11 +176,15 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
                 itrPortPos.next();
                 SWPortItem* port = item->getSWPort(itrPortPos.key(), SWConnectionEndpoint::ENDPOINT_TYPE_COM);
 
-                if (port != 0)
+                // If the port was not found, create it.
+                if (port == 0)
                 {
-                    port->setPos(itrPortPos.value());
-                    item->onMovePort(port);
+                    port = new SWPortItem(itrPortPos.key(), item);
+                    item->addPort(port);
                 }
+
+                port->setPos(itrPortPos.value());
+                item->onMovePort(port);
             }
         }
 
@@ -258,11 +254,15 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
                 itrPortPos.next();
                 SWPortItem* port = item->getSWPort(itrPortPos.key(), SWConnectionEndpoint::ENDPOINT_TYPE_API);
 
-                if (port != 0)
+                // If the port was not found, create it.
+                if (port == 0)
                 {
-                    port->setPos(itrPortPos.value());
-                    item->onMovePort(port);
+                    port = new SWPortItem(itrPortPos.key(), item);
+                    item->addPort(port);
                 }
+
+                port->setPos(itrPortPos.value());
+                item->onMovePort(port);
             }
         }
 
@@ -274,11 +274,15 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
                 itrPortPos.next();
                 SWPortItem* port = item->getSWPort(itrPortPos.key(), SWConnectionEndpoint::ENDPOINT_TYPE_COM);
 
-                if (port != 0)
+                // If the port was not found, create it.
+                if (port == 0)
                 {
-                    port->setPos(itrPortPos.value());
-                    item->onMovePort(port);
+                    port = new SWPortItem(itrPortPos.key(), item);
+                    item->addPort(port);
                 }
+
+                port->setPos(itrPortPos.value());
+                item->onMovePort(port);
             }
         }
 
@@ -698,7 +702,6 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
                 QSharedPointer<Component> comp = QSharedPointer<Component>(new Component());
                 comp->setVlnv(VLNV());
                 comp->setComponentImplementation(KactusAttribute::KTS_SW);
-                comp->setComponentSWType(KactusAttribute::KTS_SW_PLATFORM); // TODO: Remove when complete.
 
                 // Create the corresponding SW component item.
                 SWCompItem* swCompItem = new SWCompItem(getLibraryInterface(), comp, name);

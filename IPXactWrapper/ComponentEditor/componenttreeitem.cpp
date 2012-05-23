@@ -63,12 +63,6 @@ childItems_(),
 handler_(handler),
 editor_(NULL) {
 
-    bool platformComp = component->getComponentImplementation() == KactusAttribute::KTS_SW &&
-                        component->getComponentSWType() == KactusAttribute::KTS_SW_PLATFORM;
-    bool endpointComp = component->getComponentImplementation() == KactusAttribute::KTS_SW &&
-                        component->getComponentSWType() == KactusAttribute::KTS_SW_ENDPOINTS;
-    bool appComp = component->getComponentImplementation() == KactusAttribute::KTS_SW &&
-                   component->getComponentSWType() == KactusAttribute::KTS_SW_APPLICATION;
     bool hwComp = component->getComponentImplementation() == KactusAttribute::KTS_HW;
     bool swComp = component->getComponentImplementation() == KactusAttribute::KTS_SW;
 
@@ -85,11 +79,8 @@ editor_(NULL) {
 		childItems_.append(new ComponentTreeItem(
 			ComponentTreeItem::GENERAL, component.data(), component, handler, this));
 
-        if (!endpointComp)
-        {
-		    childItems_.append(new ComponentTreeItem(
-			    ComponentTreeItem::FILESETS, 0, component, handler, this));
-        }
+        childItems_.append(new ComponentTreeItem(
+		    ComponentTreeItem::FILESETS, 0, component, handler, this));
 
 // 		childItems_.append(new ComponentTreeItem(
 // 			ComponentTreeItem::CHOICES, 0, component, this));
@@ -112,32 +103,20 @@ editor_(NULL) {
 // 		childItems_.append(new ComponentTreeItem(
 // 			ComponentTreeItem::REMAPSTATES, 0, component, this));
 
-        if (!endpointComp)
-        {
-		    childItems_.append(new ComponentTreeItem(
-			    ComponentTreeItem::VIEWS, 0, component, handler, this));
-        }
-
-        if (hwComp || appComp || endpointComp)
-        {
-		    childItems_.append(new ComponentTreeItem(
-			    ComponentTreeItem::PORTS, 0, component, handler, this));
-        }
-
-        if (hwComp || platformComp)
-        {
-		    childItems_.append(new ComponentTreeItem(
-			    ComponentTreeItem::BUSINTERFACES, 0, component, handler, this));
-        }
-
         if (hwComp)
         {
 		    childItems_.append(new ComponentTreeItem(
-			    ComponentTreeItem::CHANNELS, 0, component, handler, this));
-        }
+			    ComponentTreeItem::VIEWS, 0, component, handler, this));
 
-		if (hwComp)
-        {
+		    childItems_.append(new ComponentTreeItem(
+			    ComponentTreeItem::PORTS, 0, component, handler, this));
+
+            childItems_.append(new ComponentTreeItem(
+                ComponentTreeItem::BUSINTERFACES, 0, component, handler, this));
+
+            childItems_.append(new ComponentTreeItem(
+                ComponentTreeItem::CHANNELS, 0, component, handler, this));
+        
             childItems_.append(new ComponentTreeItem(
                 ComponentTreeItem::CPUS, 0, component, handler, this));
 
@@ -417,31 +396,15 @@ editor_(NULL) {
                                   }
 
 	case ComponentTreeItem::PORTS: {
-        if (endpointComp || appComp)
-        {
-            text_ = tr("Endpoints");
-        }
-        else
-        {
-		    text_ = tr("Ports");
-        }
-
+        text_ = tr("Ports");
 		QMap<QString, QSharedPointer<Port> >* ports =
 			component_->getModel()->getPortsPointer();
 		dataPointer_ = ports;
 		break;
 								   }
 	case ComponentTreeItem::BUSINTERFACES: {
-
-        if (platformComp)
-        {
-            text_ = tr("APIs");
-        }
-        else
-        {
-		    text_ = tr("Bus interfaces");
-        }
-
+        text_ = tr("Bus interfaces");
+        
 		// add each bus interface
 		QMap<QString, QSharedPointer<BusInterface> > const& busifs = component_->getBusInterfaces();
 

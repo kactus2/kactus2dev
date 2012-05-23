@@ -217,6 +217,9 @@ signals:
 	//! \brief Open the design of a component.
 	void openDesign(const VLNV& vlnv);
 
+    //! \brief Open the design of a component.
+    void openSWDesign(const VLNV& vlnv);
+
 	//! \brief Open the component in a component editor.
 	void editItem(const VLNV& vlnv);
 
@@ -235,10 +238,16 @@ signals:
 	//! \brief Create new design with given vlnv.
 	void createDesign(const VLNV& vlnv);
 
+    //! \brief Create new SW design with given vlnv.
+    void createSWDesign(const VLNV& vlnv);
+
 public slots:
 
 	//! \brief Open the selected hierarchical design
 	void onOpenDesign(const QModelIndex& index);
+
+    //! \brief Open the selected SW design
+    void onOpenSWDesign(const QModelIndex& index);
 
 	//! \brief When open is selected in search view
 	void onOpenComponent(const QModelIndex& index);
@@ -248,6 +257,10 @@ public slots:
 
 	//! \brief Create new design
 	void onCreateNewDesign(const QModelIndex& index);
+
+
+    //! \brief Create new SW design
+    void onCreateNewSWDesign(const QModelIndex& index);
 
 	//! \brief Open bus definition in an editor
 	void onOpenBusDef(const QModelIndex& index);

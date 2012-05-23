@@ -11,8 +11,6 @@
 #include <designwidget/blockdiagram.h>
 #include <designwidget/designwidget.h>
 #include <designwidget/DiagramChangeCommands.h>
-#include <EndpointDesign/EndpointDesignDiagram.h>
-#include <EndpointDesign/EndpointDesignWidget.h>
 
 ComponentInstanceModel::ComponentInstanceModel(QObject *parent):
 QAbstractTableModel(parent),
@@ -38,18 +36,9 @@ void ComponentInstanceModel::setComponent( ComponentItem* component ) {
 
     // get the edit provider that manages the undo/redo stack
     // TODO: Base class for the diagrams!
-    if (dynamic_cast<BlockDiagram*>(component->scene()) != 0)
-    {
-        BlockDiagram* diagram = static_cast<BlockDiagram*>(component->scene());
-        DesignWidget* designWidget = diagram->parent();
-        editProvider_ = designWidget->getGenericEditProvider();
-    }
-    else
-    {
-        EndpointDesignDiagram* diagram = static_cast<EndpointDesignDiagram*>(component->scene());
-        editProvider_ = diagram->parent()->getGenericEditProvider();
-    }
-	
+    DesignDiagram* diagram = static_cast<DesignDiagram*>(component->scene());
+    editProvider_ = &diagram->getEditProvider();
+    	
 	values_ = component->getConfigurableElements();
 	readValues();
 

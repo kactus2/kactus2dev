@@ -86,7 +86,7 @@ public:
 	 *
 	 * \return QList containing pointers to the component instances.
 	*/
-	QList<DiagramComponent*> getInstances() const;
+	QList<ComponentItem*> getInstances() const;
 
     /*!
      *  Sets the bus widths visible/invisible.

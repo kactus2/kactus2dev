@@ -22,7 +22,7 @@
 
 class SystemColumnLayout;
 class ComponentItem;
-class EndpointConnection;
+class SWConnection;
 
 //-----------------------------------------------------------------------------
 //! SystemColumn class.
@@ -183,7 +183,7 @@ private:
     QPointF oldPos_;
 
     //! The connections that need to be also stored for undo.
-    QSet<EndpointConnection*> conns_;
+    QSet<SWConnection*> conns_;
 };
 
 //-----------------------------------------------------------------------------

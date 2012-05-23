@@ -115,37 +115,6 @@ namespace KactusAttribute
     bool stringToValue(QString const& str, Implementation& val);
 
     //-----------------------------------------------------------------------------
-    //! SWType enumeration.
-    //-----------------------------------------------------------------------------
-    enum SWType
-    {
-        KTS_SW_MAPPING = 0,
-        KTS_SW_APPLICATION,
-        KTS_SW_ENDPOINTS,
-        KTS_SW_PLATFORM,
-        KTS_SW_TYPE_COUNT
-    };
-
-    /*!
-     *  Converts the given SW type enum value to a string.
-     *
-     *      @param [i] swType The SW type.
-     *
-     *      @return The equivalent string.
-     */
-    QString valueToString(SWType swType);
-
-    /*!
-     *  Converts the given string to a SW type enum value.
-     *
-     *      @param [in]  str  The SW type string.
-     *      @param [out] val  The equivalent enum value.
-     *
-     *      @return False if the string does not match any value; otherwise true.
-     */
-    bool stringToValue(QString const& str, SWType& val);
-
-    //-----------------------------------------------------------------------------
     //! BusDefType enumeration.
     //-----------------------------------------------------------------------------
     enum BusDefType

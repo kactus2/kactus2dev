@@ -18,10 +18,6 @@
 
 class SystemColumnLayout;
 class SystemColumn;
-class EndpointConnection;
-class MappingComponentItem;
-class ProgramEntityItem;
-class EndpointItem;
 class ComponentItem;
 class IComponentStack;
 class SWPortItem;
@@ -132,56 +128,6 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-//! EndpointConnectionMoveCommand class.
-//-----------------------------------------------------------------------------
-class EndpointConnectionMoveCommand : public QUndoCommand
-{
-public:
-    /*!
-     *  Constructor.
-     *
-     *      @param [in] conn      The endpoint connection.
-     *      @param [in] oldRoute  The old route of the connection.
-     *      @param [in] parent    The parent command.
-     */
-    EndpointConnectionMoveCommand(EndpointConnection* conn, QList<QPointF> const& oldRoute,
-                                  QUndoCommand* parent = 0);
-
-    /*!
-     *  Destructor.
-     */
-    ~EndpointConnectionMoveCommand();
-
-    /*!
-     *  Undoes the command.
-     */
-    virtual void undo();
-
-    /*!
-     *  Redoes the command.
-     */
-    virtual void redo();
-
-private:
-    // Disable copying.
-    EndpointConnectionMoveCommand(EndpointConnectionMoveCommand const& rhs);
-    EndpointConnectionMoveCommand& operator=(EndpointConnectionMoveCommand const& rhs);
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-    //! The endpoint connection.
-    EndpointConnection* conn_;
-
-    //! The old route of the connection.
-    QList<QPointF> oldRoute_;
-
-    //! The new route of the connection.
-    QList<QPointF> newRoute_;
-};
-
-//-----------------------------------------------------------------------------
 //! SystemItemMoveCommand class.
 //-----------------------------------------------------------------------------
 class SystemItemMoveCommand : public QUndoCommand
@@ -236,104 +182,6 @@ private:
 
     //! The new parent stack.
     IComponentStack* newStack_;
-};
-
-//-----------------------------------------------------------------------------
-//! ProgramEntityMoveCommand class.
-//-----------------------------------------------------------------------------
-class ProgramEntityMoveCommand : public QUndoCommand
-{
-public:
-    /*!
-     *  Constructor.
-     *
-     *      @param [in] item    The item to move.
-     *      @param [in] oldPos  The item's old position.
-     *      @param [in] parent  The parent command.
-     */
-    ProgramEntityMoveCommand(ProgramEntityItem* item, QPointF const& oldPos, QUndoCommand* parent = 0);
-
-    /*!
-     *  Destructor.
-     */
-    ~ProgramEntityMoveCommand();
-
-    /*!
-     *  Undoes the command.
-     */
-    virtual void undo();
-
-    /*!
-     *  Redoes the command.
-     */
-    virtual void redo();
-
-private:
-    // Disable copying.
-    ProgramEntityMoveCommand(ProgramEntityMoveCommand const& rhs);
-    ProgramEntityMoveCommand& operator=(ProgramEntityMoveCommand const& rhs);
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-    //! The program entity item.
-    ProgramEntityItem* item_;
-
-    //! The old position of the item.
-    QPointF oldPos_;
-
-    //! The new position of the item.
-    QPointF newPos_;
-};
-
-//-----------------------------------------------------------------------------
-//! EndpointMoveCommand class.
-//-----------------------------------------------------------------------------
-class EndpointMoveCommand : public QUndoCommand
-{
-public:
-    /*!
-     *  Constructor.
-     *
-     *      @param [in] item    The item to move.
-     *      @param [in] oldPos  The item's old position.
-     *      @param [in] parent  The parent command.
-     */
-    EndpointMoveCommand(EndpointItem* item, QPointF const& oldPos, QUndoCommand* parent = 0);
-
-    /*!
-     *  Destructor.
-     */
-    ~EndpointMoveCommand();
-
-    /*!
-     *  Undoes the command.
-     */
-    virtual void undo();
-
-    /*!
-     *  Redoes the command.
-     */
-    virtual void redo();
-
-private:
-    // Disable copying.
-    EndpointMoveCommand(EndpointMoveCommand const& rhs);
-    EndpointMoveCommand& operator=(EndpointMoveCommand const& rhs);
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-    //! The endpoint item.
-    EndpointItem* item_;
-
-    //! The old position of the item.
-    QPointF oldPos_;
-
-    //! The new position of the item.
-    QPointF newPos_;
 };
 
 //-----------------------------------------------------------------------------

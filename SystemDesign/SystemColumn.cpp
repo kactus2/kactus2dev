@@ -13,6 +13,7 @@
 
 #include "SWCompItem.h"
 #include "HWMappingItem.h"
+#include "SWConnection.h"
 
 #include "../EndpointDesign/SystemMoveCommands.h"
 
@@ -23,9 +24,6 @@
 #include <QDebug>
 
 #include "SystemColumnLayout.h"
-#include "../EndpointDesign/EndpointConnection.h"
-#include "../EndpointDesign/ProgramEntityItem.h"
-#include "../EndpointDesign/EndpointItem.h"
 
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/layouts/VStackedLayout.h>
@@ -176,8 +174,8 @@ void SystemColumn::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         cmd = QSharedPointer<QUndoCommand>(new QUndoCommand());
     }
 
-    // End position update for the interconnections.
-    foreach (EndpointConnection* conn, conns_)
+    // End position update for the connections.
+    foreach (SWConnection* conn, conns_)
     {
         conn->endUpdatePosition(cmd.data());
     }
@@ -319,19 +317,35 @@ void SystemColumn::mousePressEvent(QGraphicsSceneMouseEvent* event)
     {
         foreach (QGraphicsItem* childItem, item->childItems())
         {
-            if (childItem->type() == ProgramEntityItem::Type)
+            if (childItem->type() == SWCompItem::Type)
             {
-                ProgramEntityItem* progEntity = static_cast<ProgramEntityItem*>(childItem);
-
-                foreach (EndpointItem* endpoint, progEntity->getEndpoints())
+                foreach (QGraphicsItem* childItem2, childItem->childItems())
                 {
-                    foreach (EndpointConnection* conn, endpoint->getConnections())
+                    if (childItem2->type() == SWPortItem::Type)
                     {
-                        if (!conns_.contains(conn))
+                        SWConnectionEndpoint* endpoint = static_cast<SWConnectionEndpoint*>(childItem2);
+
+                        foreach (SWConnection* conn, endpoint->getConnections())
                         {
-                            conn->beginUpdatePosition();
-                            conns_.insert(conn);
+                            if (!conns_.contains(conn))
+                            {
+                                conn->beginUpdatePosition();
+                                conns_.insert(conn);
+                            }
                         }
+                    }
+                }
+            }
+            else if (dynamic_cast<SWConnectionEndpoint*>(childItem))
+            {
+                SWConnectionEndpoint* endpoint = static_cast<SWConnectionEndpoint*>(childItem);
+
+                foreach (SWConnection* conn, endpoint->getConnections())
+                {
+                    if (!conns_.contains(conn))
+                    {
+                        conn->beginUpdatePosition();
+                        conns_.insert(conn);
                     }
                 }
             }

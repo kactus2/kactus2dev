@@ -132,6 +132,9 @@ void LibrarySearchWidget::connectDataModel(LibraryData* dataModel) {
 	connect(&view_, SIGNAL(createNewDesign(const QModelIndex&)),
 		dataModel, SLOT(onCreateNewDesign(const QModelIndex&)), Qt::UniqueConnection);
 
+    connect(&view_, SIGNAL(createNewSWDesign(const QModelIndex&)),
+        dataModel, SLOT(onCreateNewSWDesign(const QModelIndex&)), Qt::UniqueConnection);
+
 	connect(&view_, SIGNAL(openBusDef(const QModelIndex&)),
 		dataModel, SLOT(onOpenBusDef(const QModelIndex&)), Qt::UniqueConnection);
 

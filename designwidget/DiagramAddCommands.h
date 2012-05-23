@@ -27,6 +27,7 @@ class DiagramComponent;
 class DiagramInterface;
 class DiagramColumn;
 class DiagramColumnLayout;
+class ComponentItem;
 
 //-----------------------------------------------------------------------------
 //! ColumnAddCommand class.
@@ -128,10 +129,10 @@ public:
 signals:
 
 	//! \brief Emitted when a new component is instantiated to the design.
-	void componentInstantiated(DiagramComponent* comp);
+	void componentInstantiated(ComponentItem*);
 
 	//! \brief Emitted when a component instance is removed from the design.
-	void componentInstanceRemoved(DiagramComponent* comp);
+	void componentInstanceRemoved(ComponentItem*);
 
 private:
     // Disable copying.

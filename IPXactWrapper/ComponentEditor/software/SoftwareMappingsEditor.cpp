@@ -32,7 +32,6 @@ swDesignMapping_(VLNV::COMPONENT, libHandler, parentWnd, this)
 {
     swDesignMapping_.setTitle(tr("Mapped SW Design"));
     swDesignMapping_.setImplementationFilter(true, KactusAttribute::KTS_SW);
-    swDesignMapping_.setSWTypeFilter(true, KactusAttribute::KTS_SW_MAPPING);
     swDesignMapping_.updateFiltering();
 
 	// the mapping is not mandatory element

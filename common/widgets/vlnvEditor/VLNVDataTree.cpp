@@ -140,8 +140,7 @@ void VLNVDataNode::setVLNV(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 VLNVDataTree::VLNVDataTree() : firmnessFilterEnabled_(false), firmnessFilter_(KactusAttribute::KTS_TEMPLATE),
                                hierarchyFilterEnabled_(false), hierarchyFilter_(KactusAttribute::KTS_IP),
-                               implementationFilterEnabled_(false), implementationFilter_(KactusAttribute::KTS_HW),
-                               swTypeFilterEnabled_(false), swTypeFilter_(KactusAttribute::KTS_SW_MAPPING)
+                               implementationFilterEnabled_(false), implementationFilter_(KactusAttribute::KTS_HW)
 {
 }
 
@@ -213,15 +212,6 @@ void VLNVDataTree::setImplementationFilter(bool on, KactusAttribute::Implementat
 }
 
 //-----------------------------------------------------------------------------
-// Function: setSWTypeFilter()
-//-----------------------------------------------------------------------------
-void VLNVDataTree::setSWTypeFilter(bool on, KactusAttribute::SWType swType /*= KactusAttribute::KTS_SW_MAPPING*/)
-{
-    swTypeFilterEnabled_ = on;
-    swTypeFilter_ = swType;
-}
-
-//-----------------------------------------------------------------------------
 // Function: parseVendor()
 //-----------------------------------------------------------------------------
 void VLNVDataTree::parseSubtree(LibraryInterface* lh, LibraryItem const* libItem, VLNVDataNode& node)
@@ -237,8 +227,7 @@ void VLNVDataTree::parseSubtree(LibraryInterface* lh, LibraryItem const* libItem
             Q_ASSERT(vlnv != 0);
 
             // If filtering is off, just accept the item.
-            if (!firmnessFilterEnabled_ && !hierarchyFilterEnabled_ &&
-                !implementationFilterEnabled_ && !swTypeFilterEnabled_)
+            if (!firmnessFilterEnabled_ && !hierarchyFilterEnabled_ && !implementationFilterEnabled_)
             {
                 VLNVDataNode* childNode = node.addChild(item->getName());
                 childNode->setVLNV(*vlnv);
@@ -253,8 +242,7 @@ void VLNVDataTree::parseSubtree(LibraryInterface* lh, LibraryItem const* libItem
             if (component == 0 ||
                 ((!firmnessFilterEnabled_ || firmnessFilter_ == component->getComponentFirmness()) &&
                 (!hierarchyFilterEnabled_ || hierarchyFilter_ == component->getComponentHierarchy()) &&
-                (!implementationFilterEnabled_ || implementationFilter_ == component->getComponentImplementation()) &&
-                (!swTypeFilterEnabled_|| swTypeFilter_ == component->getComponentSWType())))
+                (!implementationFilterEnabled_ || implementationFilter_ == component->getComponentImplementation())))
             {
                 VLNVDataNode* childNode = node.addChild(item->getName());
                 childNode->setVLNV(*vlnv);

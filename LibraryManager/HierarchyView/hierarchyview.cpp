@@ -32,9 +32,11 @@ HierarchyView::HierarchyView(QWidget *parent,
       startPos_(),
       dragIndex_(),
       openDesignAction_(NULL),
+      openSWDesignAction_(NULL),
       openCompAction_(NULL),
       createNewComponentAction_(NULL),
       createNewDesignAction_(NULL),
+      createNewSWDesignAction_(NULL),
       exportAction_(NULL),
       openBusAction_(NULL),
       addSignalsAction_(NULL),
@@ -44,11 +46,6 @@ HierarchyView::HierarchyView(QWidget *parent,
       openApiDefAction_(NULL),
       createApiDefAction_(NULL),
       openSystemAction_(NULL),
-      openPlatformAction_(NULL),
-      openPFStackAction_(NULL),
-      openApplicationAction_(NULL),
-      openEndpointAction_(NULL),
-      openSWDesignAction_(NULL),
       openXmlAction_(NULL)
 {
 
@@ -79,7 +76,13 @@ void HierarchyView::setupActions() {
 	openDesignAction_->setStatusTip(tr("Open a hierarchical design"));
 	openDesignAction_->setToolTip(tr("Open a hierarchical design"));
 	connect(openDesignAction_, SIGNAL(triggered()),
-		this, SLOT(onOpenDesign()), Qt::UniqueConnection);
+		    this, SLOT(onOpenDesign()), Qt::UniqueConnection);
+
+    openSWDesignAction_ = new QAction(tr("Open SW Design"), this);
+    openSWDesignAction_->setStatusTip(tr("Open a SW design"));
+    openSWDesignAction_->setToolTip(tr("Open a SW design"));
+    connect(openSWDesignAction_, SIGNAL(triggered()),
+            this, SLOT(onOpenSWDesign()), Qt::UniqueConnection);
 
 	openCompAction_ = new QAction(tr("Open Component"), this);
 	openCompAction_->setStatusTip(tr("Open component editor"));
@@ -98,6 +101,12 @@ void HierarchyView::setupActions() {
 	createNewDesignAction_->setToolTip(tr("Create new design"));
 	connect(createNewDesignAction_, SIGNAL(triggered()),
 		this, SLOT(onCreateDesign()), Qt::UniqueConnection);
+
+    createNewSWDesignAction_ = new QAction(tr("Create New SW Design"), this);
+    createNewSWDesignAction_->setStatusTip(tr("Create new SW design"));
+    createNewSWDesignAction_->setToolTip(tr("Create new SW design"));
+    connect(createNewSWDesignAction_, SIGNAL(triggered()),
+        this, SLOT(onCreateSWDesign()), Qt::UniqueConnection);
 
 	exportAction_ = new QAction(tr("Export"), this);
 	exportAction_->setStatusTip(tr("Export item and it's sub-items to another location"));
@@ -153,36 +162,6 @@ void HierarchyView::setupActions() {
 	connect(openSystemAction_, SIGNAL(triggered()),
 		this, SLOT(onOpenComponent()), Qt::UniqueConnection);
 
-	openPlatformAction_ = new QAction(tr("Open SW Platform"), this);
-	openPlatformAction_->setStatusTip(tr("Open software platform for editing"));
-	openPlatformAction_->setToolTip(tr("Open software platform for editing"));
-	connect(openPlatformAction_, SIGNAL(triggered()),
-		this, SLOT(onOpenComponent()), Qt::UniqueConnection);
-
-	openPFStackAction_ = new QAction(tr("Open SW Platform Stack"), this);
-	openPFStackAction_->setStatusTip(tr("Open software platform stack for editing"));
-	openPFStackAction_->setToolTip(tr("Open software platform stack for editing"));
-	connect(openPFStackAction_, SIGNAL(triggered()),
-		this, SLOT(onOpenDesign()), Qt::UniqueConnection);
-
-	openApplicationAction_ = new QAction(tr("Open Application"), this);
-	openApplicationAction_->setStatusTip(tr("Open software application for editing"));
-	openApplicationAction_->setToolTip(tr("Open software application for editing"));
-	connect(openApplicationAction_, SIGNAL(triggered()),
-		this, SLOT(onOpenComponent()), Qt::UniqueConnection);
-
-	openEndpointAction_ = new QAction(tr("Open Endpoints"), this);
-	openEndpointAction_->setStatusTip(tr("Open endpoints for editing"));
-	openEndpointAction_->setToolTip(tr("Open endpoints for editing"));
-	connect(openEndpointAction_, SIGNAL(triggered()),
-		this, SLOT(onOpenComponent()), Qt::UniqueConnection);
-
-    openSWDesignAction_ = new QAction(tr("Open SW Design"), this);
-    openSWDesignAction_->setStatusTip(tr("Open software design for editing"));
-    openSWDesignAction_->setToolTip(tr("Open software design for editing"));
-    connect(openSWDesignAction_, SIGNAL(triggered()),
-        this, SLOT(onOpenComponent()), Qt::UniqueConnection);
-
 	openXmlAction_ = new QAction(tr("Open the xml-file"), this);
 	connect(openXmlAction_, SIGNAL(triggered()),
 		this, SLOT(onOpenXml()), Qt::UniqueConnection);
@@ -223,12 +202,23 @@ void HierarchyView::onOpenDesign() {
 	}
 }
 
+void HierarchyView::onOpenSWDesign() {
+    QModelIndexList indexes = selectedIndexes();
+    foreach (QModelIndex index, indexes) {
+        emit openSWDesign(filter_->mapToSource(index));
+    }
+}
+
 void HierarchyView::onCreateComponent() {
 	emit createNewComponent(filter_->mapToSource(currentIndex()));
 }
 
 void HierarchyView::onCreateDesign() {
 	emit createNewDesign(filter_->mapToSource(currentIndex()));
+}
+
+void HierarchyView::onCreateSWDesign() {
+    emit createNewSWDesign(filter_->mapToSource(currentIndex()));
 }
 
 void HierarchyView::onAddSignals() {
@@ -299,53 +289,69 @@ void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
 			"Object was not found in library.");
 
 		// if component
-		if (item->type() == HierarchyItem::COMPONENT) {
+		if (item->type() == HierarchyItem::COMPONENT)
+        {
 			QSharedPointer<Component> component = libComp.staticCast<Component>();
 
 			// depending on the type of the component
-			switch (component->getComponentImplementation()) {
-				case KactusAttribute::KTS_SYS: {
-					menu.addAction(openSystemAction_);
-					break;
-											   }
-				case KactusAttribute::KTS_SW: {
-					
-					KactusAttribute::SWType swType = component->getComponentSWType();
-					if (swType == KactusAttribute::KTS_SW_PLATFORM) {
-						menu.addAction(openPlatformAction_);
-						
-						if (component->isHierarchical())
-							menu.addAction(openPFStackAction_);
-					}
+			switch (component->getComponentImplementation())
+            {
+            case KactusAttribute::KTS_SYS:
+                {
+                    menu.addAction(openSystemAction_);
+                    break;
+                }
 
-					else if (swType == KactusAttribute::KTS_SW_APPLICATION)
-						menu.addAction(openApplicationAction_);
-
-					else if (swType == KactusAttribute::KTS_SW_ENDPOINTS)
-						menu.addAction(openEndpointAction_);
-
-                    else if (swType == KactusAttribute::KTS_SW_MAPPING)
+            case KactusAttribute::KTS_SW:
+                {
+                    if (component->hasSWViews())
+                    {
                         menu.addAction(openSWDesignAction_);
+                    }
 
-					break;
-											  }
-				default: {
-					if (component->isHierarchical()) {
-						menu.addAction(openDesignAction_);
-						hierarchical = true;
-					}
+                    menu.addAction(openCompAction_);
 
-					menu.addAction(openCompAction_);
-					// only if just one object is selected
-					if (indexes.size() == 1)
-						menu.addAction(createNewComponentAction_);
+                    if (!component->hasSWViews() && indexes.size() == 1)
+                    {
+                        menu.addAction(createNewSWDesignAction_);
+                    }
+                    break;
+                }
 
-					// if component was not hierarchical then design can be created for it.
-					if (!hierarchical && indexes.size() == 1)
-						menu.addAction(createNewDesignAction_);
-					break;
-						 }
-			}
+            default:
+                {
+                    if (component->isHierarchical())
+                    {
+                        menu.addAction(openDesignAction_);
+                        hierarchical = true;
+                    }
+
+                    if (component->hasSWViews())
+                    {
+                        menu.addAction(openSWDesignAction_);
+                    }
+
+                    menu.addAction(openCompAction_);
+
+                    // only if just one object is selected
+                    if (indexes.size() == 1)
+                    {
+                        menu.addAction(createNewComponentAction_);
+                    }
+
+                    // if component was not hierarchical then design can be created for it.
+                    if (!hierarchical && indexes.size() == 1)
+                    {
+                        menu.addAction(createNewDesignAction_);
+                    }
+
+                    if (!component->hasSWViews() && indexes.size() == 1)
+                    {
+                        menu.addAction(createNewSWDesignAction_);
+                    }
+                    break;
+                }
+            }
 		}
 		else if (item->type() == HierarchyItem::BUSDEFINITION) {
 

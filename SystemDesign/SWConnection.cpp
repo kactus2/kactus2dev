@@ -70,6 +70,9 @@ SWConnection::SWConnection(SWConnectionEndpoint *endpoint1, SWConnectionEndpoint
         endpoint1->addConnection(this);
         endpoint2->addConnection(this);
 
+        endpoint1->onConnect(endpoint2);
+        endpoint2->onConnect(endpoint1);
+
         if (name_.isEmpty())
         {
             updateName();

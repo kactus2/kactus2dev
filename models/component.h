@@ -425,15 +425,7 @@ public:
      */
     void setComponentFirmness(KactusAttribute::Firmness firmness);
 
-    /*!
-     *  Sets the SW type of the component.
-     *
-     *      @param [in] type The SW type of the component.
-     */
-    void setComponentSWType(KactusAttribute::SWType type);
-
-
-	/*! \brief Get the hierarchy level of the component.
+    /*! \brief Get the hierarchy level of the component.
 	 * 
 	 * If the hierarchy is undefined then ProductHierarchy::KTS_IP is returned
 	 * as default.
@@ -459,14 +451,7 @@ public:
 	*/
 	KactusAttribute::Firmness getComponentFirmness() const;
 
-    /*!
-     *  Returns the SW type of the component.
-     *
-     *      @remarks If the firmness is not defined, SWType::KTS_SW_MAPPING is returned as the default value.
-	 */
-	KactusAttribute::SWType getComponentSWType() const;
-
-	/*! \brief Checks if the component contains model parameters.
+    /*! \brief Checks if the component contains model parameters.
 	 *
 	 * \return bool True if model parameters exist.
 	*/

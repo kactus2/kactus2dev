@@ -111,17 +111,7 @@ bool VLNVContentMatcher::enumerateMatches(QString const& text, LineContentAssist
 
                             case KactusAttribute::KTS_SW:
                                 {
-                                    KactusAttribute::SWType swType = component->getComponentSWType();
-
-                                    if (swType == KactusAttribute::KTS_SW_APPLICATION)
-                                        item->setIcon(QIcon(":/icons/graphics/new-sw_component.png"));
-                                    else if (swType == KactusAttribute::KTS_SW_PLATFORM) 
-                                        item->setIcon(QIcon(":icons/graphics/API.png"));
-                                    else if (swType == KactusAttribute::KTS_SW_ENDPOINTS)
-                                        item->setIcon(QIcon(":/icons/graphics/endpoints.png"));
-                                    else if (swType == KactusAttribute::KTS_SW_MAPPING) 
-                                        item->setIcon(QIcon(":/icons/graphics/new-sw_design.png"));
-
+                                    item->setIcon(QIcon(":/icons/graphics/new-sw_component.png"));
                                     break;
                                 }
 

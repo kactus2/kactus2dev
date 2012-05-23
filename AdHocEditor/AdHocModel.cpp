@@ -22,9 +22,6 @@
 #include <designwidget/DiagramChangeCommands.h>
 #include <designwidget/AdHocEnabled.h>
 
-#include <EndpointDesign/EndpointDesignDiagram.h>
-#include <EndpointDesign/EndpointDesignWidget.h>
-
 #include <common/GenericEditProvider.h>
 
 //-----------------------------------------------------------------------------

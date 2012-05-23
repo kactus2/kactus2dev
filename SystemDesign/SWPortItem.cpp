@@ -43,6 +43,7 @@
 //-----------------------------------------------------------------------------
 SWPortItem::SWPortItem(QString const& name, QGraphicsItem *parent)
     : SWConnectionEndpoint(parent),
+      nameLabel_(name, this),
       apiInterface_(),
       comInterface_(),
       temp_(true),
@@ -59,6 +60,7 @@ SWPortItem::SWPortItem(QString const& name, QGraphicsItem *parent)
 //-----------------------------------------------------------------------------
 SWPortItem::SWPortItem(QSharedPointer<ApiInterface> apiIf, QGraphicsItem *parent)
     : SWConnectionEndpoint(parent),
+      nameLabel_(this),
       apiInterface_(apiIf),
       comInterface_(),
       temp_(false),
@@ -76,6 +78,7 @@ SWPortItem::SWPortItem(QSharedPointer<ApiInterface> apiIf, QGraphicsItem *parent
 //-----------------------------------------------------------------------------
 SWPortItem::SWPortItem(QSharedPointer<ComInterface> comIf, QGraphicsItem *parent)
     : SWConnectionEndpoint(parent),
+      nameLabel_(this),
       apiInterface_(),
       comInterface_(comIf),
       temp_(false),
@@ -118,7 +121,7 @@ QString SWPortItem::name() const
     }
     else
     {
-        return nameLabel_->toPlainText();
+        return nameLabel_.toPlainText();
     }
 }
 
@@ -139,7 +142,7 @@ void SWPortItem::setName(const QString& name)
     }
     else
     {
-        nameLabel_->setPlainText(name);
+        nameLabel_.setPlainText(name);
     }
 
 	updateInterface();
@@ -258,18 +261,18 @@ void SWPortItem::updateInterface()
     setPolygon(shape);
 
     // Update the name label.
-    nameLabel_->setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">" + name() + "</div>");
+    nameLabel_.setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">" + name() + "</div>");
 
-    qreal nameWidth = nameLabel_->boundingRect().width();
-    qreal nameHeight = nameLabel_->boundingRect().height();
+    qreal nameWidth = nameLabel_.boundingRect().width();
+    qreal nameHeight = nameLabel_.boundingRect().height();
 
     if (pos().x() < 0)
     {
-        nameLabel_->setPos(nameHeight / 2, GridSize);
+        nameLabel_.setPos(nameHeight / 2, GridSize);
     }
     else
     {
-        nameLabel_->setPos(-nameHeight / 2, GridSize + nameWidth);
+        nameLabel_.setPos(-nameHeight / 2, GridSize + nameWidth);
     }
 
     emit contentChanged();
@@ -294,7 +297,7 @@ bool SWPortItem::onConnect(SWConnectionEndpoint const* other)
         if (other->getType() == ENDPOINT_TYPE_API)
         {
             apiInterface_ = QSharedPointer<ApiInterface>(new ApiInterface());
-            apiInterface_->setName(nameLabel_->toPlainText());
+            apiInterface_->setName(nameLabel_.toPlainText());
             apiInterface_->setApiType(other->getApiInterface()->getApiType());
             
             if (other->getApiInterface()->getDependencyDirection() == DEPENDENCY_PROVIDER)
@@ -311,7 +314,7 @@ bool SWPortItem::onConnect(SWConnectionEndpoint const* other)
         else if (other->getType() == ENDPOINT_TYPE_COM)
         {
             comInterface_ = QSharedPointer<ComInterface>(new ComInterface());
-            comInterface_->setName(nameLabel_->toPlainText());
+            comInterface_->setName(nameLabel_.toPlainText());
             comInterface_->setComType(other->getComInterface()->getComType());
             comInterface_->setDataType(other->getComInterface()->getDataType());
 
@@ -516,8 +519,8 @@ QVariant SWPortItem::itemChange(GraphicsItemChange change, QVariant const& value
             if (!parentItem())
                 break;
 
-            qreal nameWidth = nameLabel_->boundingRect().width();
-            qreal nameHeight = nameLabel_->boundingRect().height();
+            qreal nameWidth = nameLabel_.boundingRect().width();
+            qreal nameHeight = nameLabel_.boundingRect().height();
 
             QRectF parentRect = static_cast<SWComponentItem*>(parentItem())->rect();
 
@@ -525,13 +528,13 @@ QVariant SWPortItem::itemChange(GraphicsItemChange change, QVariant const& value
             if (pos().x() < 0)
             {
                 setDirection(QVector2D(-1.0f, 0.0f));
-                nameLabel_->setPos(nameHeight/2, GridSize);
+                nameLabel_.setPos(nameHeight/2, GridSize);
             }
             // Otherwise the port is directed to the right.
             else
             {
                 setDirection(QVector2D(1.0f, 0.0f));
-                nameLabel_->setPos(-nameHeight/2, GridSize + nameWidth);
+                nameLabel_.setPos(-nameHeight/2, GridSize + nameWidth);
             }
 
             emit contentChanged();
@@ -720,17 +723,16 @@ void SWPortItem::initialize()
     newPen.setWidth(3);
     stubLine_.setPen(newPen);
 
-    nameLabel_ = new QGraphicsTextItem("", this);
-    QFont font = nameLabel_->font();
+    QFont font = nameLabel_.font();
     font.setPointSize(8);
-    nameLabel_->setFont(font);
-    nameLabel_->setFlag(ItemIgnoresTransformations);
-    nameLabel_->setFlag(ItemStacksBehindParent);
+    nameLabel_.setFont(font);
+    nameLabel_.setFlag(ItemIgnoresTransformations);
+    nameLabel_.setFlag(ItemStacksBehindParent);
     QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect;
     shadow->setXOffset(0);
     shadow->setYOffset(0);
     shadow->setBlurRadius(5);
-    nameLabel_->setGraphicsEffect(shadow);
+    nameLabel_.setGraphicsEffect(shadow);
 
     setFlag(ItemIsMovable);
     setFlag(ItemIsSelectable);
@@ -808,7 +810,7 @@ void SWPortItem::setTypeDefinition(VLNV const& type)
         if (type.getType() == VLNV::APIDEFINITION)
         {
             apiInterface_ = QSharedPointer<ApiInterface>(new ApiInterface());
-            apiInterface_->setName(nameLabel_->toPlainText());
+            apiInterface_->setName(nameLabel_.toPlainText());
             apiInterface_->setApiType(type);
             getOwnerComponent()->addApiInterface(apiInterface_);
 
@@ -818,7 +820,7 @@ void SWPortItem::setTypeDefinition(VLNV const& type)
         else if (type.getType() == VLNV::COMDEFINITION)
         {
             comInterface_ = QSharedPointer<ComInterface>(new ComInterface());
-            comInterface_->setName(nameLabel_->toPlainText());
+            comInterface_->setName(nameLabel_.toPlainText());
             comInterface_->setComType(type);
             getOwnerComponent()->addComInterface(comInterface_);
 

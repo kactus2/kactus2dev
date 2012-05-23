@@ -15,6 +15,9 @@
 #include <QGraphicsScene>
 
 #include <designwidget/AdHocEnabled.h>
+
+#include <models/designconfiguration.h>
+
 #include <common/DrawMode.h>
 
 class MainWindow;
@@ -22,7 +25,6 @@ class LibraryInterface;
 class GenericEditProvider;
 class Component;
 class ComponentItem;
-class DesignConfiguration;
 class Design;
 class VLNV;
 
@@ -59,9 +61,11 @@ public:
      *  Opens a design for editing.
      *
      *      @param [in] component  The component whose design to edit.
-     *      @param [in] viewName   The name of the view to open.
+     *      @param [in] design     The design to edit.
+     *      @param [in] designConf The design configuration if one exists.
      */
-    bool setDesign(QSharedPointer<Component> component, QString const& viewName);
+    bool setDesign(QSharedPointer<Component> component, QSharedPointer<Design> design,
+                   QSharedPointer<DesignConfiguration> designConf = QSharedPointer<DesignConfiguration>());
 
     /*! 
      *  Creates a design based on the contents in the diagram.

@@ -408,6 +408,15 @@ void LibraryData::onOpenDesign( const QModelIndex& index ) {
 	emit openDesign(*vlnv);
 }
 
+void LibraryData::onOpenSWDesign( const QModelIndex& index ) {
+
+    if (!index.isValid())
+        return;
+
+    VLNV* vlnv = static_cast<VLNV*>(index.internalPointer());
+    emit openSWDesign(*vlnv);
+}
+
 void LibraryData::onCreateNewComponent( const QModelIndex& index ) {
 
 	if (!index.isValid())
@@ -424,6 +433,15 @@ void LibraryData::onCreateNewDesign( const QModelIndex& index ) {
 
 	VLNV* vlnv = static_cast<VLNV*>(index.internalPointer());
 	emit createDesign(*vlnv);
+}
+
+void LibraryData::onCreateNewSWDesign( const QModelIndex& index ) {
+
+    if (!index.isValid())
+        return;
+
+    VLNV* vlnv = static_cast<VLNV*>(index.internalPointer());
+    emit createSWDesign(*vlnv);
 }
 
 void LibraryData::onOpenBusDef( const QModelIndex& index ) {

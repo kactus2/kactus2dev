@@ -195,7 +195,7 @@ private:
 	QList<ConfigurableElement> table_;
 
 	//! \brief Pointer to the generic edit provider that manages the undo/redo stack.
-	QSharedPointer<GenericEditProvider> editProvider_;
+	GenericEditProvider* editProvider_;
 };
 
 #endif // COMPONENTINSTANCEMODEL_H

@@ -98,10 +98,10 @@ editProvider_() {
         this, SIGNAL(adHocInterfaceSelected(DiagramAdHocInterface*)), Qt::UniqueConnection);
 	connect(diagram_, SIGNAL(clearItemSelection()),
 		this, SIGNAL(clearItemSelection()), Qt::UniqueConnection);
-	connect(diagram_, SIGNAL(componentInstantiated(DiagramComponent*)),
-		this, SIGNAL(componentInstantiated(DiagramComponent*)), Qt::UniqueConnection);
-	connect(diagram_, SIGNAL(componentInstanceRemoved(DiagramComponent*)),
-		this, SIGNAL(componentInstanceRemoved(DiagramComponent*)), Qt::UniqueConnection);
+	connect(diagram_, SIGNAL(componentInstantiated(ComponentItem*)),
+		this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+	connect(diagram_, SIGNAL(componentInstanceRemoved(ComponentItem*)),
+		this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
     diagram_->setProtection(false);
 	diagram_->setMode(MODE_SELECT);
@@ -139,23 +139,17 @@ void DesignWidget::setDesign( const VLNV* vlnv, const QString& viewName) {
 
 			// create model 
 			QSharedPointer<LibraryComponent> libComponent = lh_->getModel(*vlnv);
-			if (!libComponent)
+            QSharedPointer<Component> comp = libComponent.staticCast<Component>();
+
+			if (comp == 0)
+            {
 				return;
+            }
 
-			QSharedPointer<Component> comp = libComponent.staticCast<Component>();
-
-			View* view = comp->findView(viewName);
-
-			if (!view || !view->isHierarchical()) {
-				return;
-				
-			}
-
-			// save the name of the view being edited.
-			viewName_ = viewName;
-
-			diagram_->setDesign(comp, viewName);
-			hierComponent_ = comp;
+			if (!setDesign(comp, viewName))
+            {
+                return;
+            }
 		}
 	}
 
@@ -165,24 +159,22 @@ void DesignWidget::setDesign( const VLNV* vlnv, const QString& viewName) {
 		Q_ASSERT(lh_->getDocumentType(*vlnv) == VLNV::COMPONENT);
 
 		QSharedPointer<LibraryComponent> libComp = lh_->getModel(*vlnv);
-		hierComponent_ = libComp.staticCast<Component>();
+		QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
 		// get the directory path where the component's xml file is located
 		const QString xmlPath = lh_->getPath(*vlnv);
 		QFileInfo xmlInfo(xmlPath);
 		const QString dirPath = xmlInfo.absolutePath();
 
-		createDesignForComponent(hierComponent_, dirPath);
+		createDesignForComponent(comp, dirPath);
 	}
 
 	// if vlnv was not defined (a new hierarchical component is created)
 	else {
-		hierComponent_ = createEmptyDesign(vlnv);
-		if (!hierComponent_) {
-			return;
-		}
-		diagram_->setDesign(hierComponent_, viewName);
-		viewName_ = viewName;
+		if (!createEmptyDesign(vlnv))
+        {
+            return;
+        }
 	}
 
 	// disable the save at startup
@@ -194,18 +186,73 @@ void DesignWidget::setDesign( const VLNV* vlnv, const QString& viewName) {
 
     setDocumentName(hierComponent_->getVlnv()->getName() + 
 		            " (" + hierComponent_->getVlnv()->getVersion() + ")");
-
-    if (hierComponent_->getComponentImplementation() == KactusAttribute::KTS_SW &&
-        hierComponent_->getComponentSWType() == KactusAttribute::KTS_SW_PLATFORM)
-    {
-        setDocumentType("SW Platform Stack");
-    }
-    else
-    {
-        setDocumentType("Design");
-    }
+    setDocumentType("Design");
 
 	emit clearItemSelection();
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignWidget::setDesign()
+//-----------------------------------------------------------------------------
+bool DesignWidget::setDesign(QSharedPointer<Component> comp, const QString& viewName)
+{
+    View* view = comp->findView(viewName);
+
+    if (!view || !view->isHierarchical()) {
+        return false;
+    }
+
+    VLNV designVLNV = comp->getHierRef(viewName);
+
+    // Check for a valid VLNV type.
+    designVLNV.setType(lh_->getDocumentType(designVLNV));
+
+    if (!designVLNV.isValid())
+    {
+        emit errorMessage(tr("Component %1 did not contain a hierarchical view").arg(comp->getVlnv()->getName()));
+        return false;
+    }
+
+    QSharedPointer<Design> design;
+    QSharedPointer<DesignConfiguration> designConf;
+
+    // if the component contains a direct reference to a design
+    if (designVLNV.getType() == VLNV::DESIGN)
+    {
+        QSharedPointer<LibraryComponent> libComp = lh_->getModel(designVLNV);	
+        design = libComp.staticCast<Design>();
+    }
+    // if component had reference to a design configuration
+    else if (designVLNV.getType() == VLNV::DESIGNCONFIGURATION)
+    {
+        QSharedPointer<LibraryComponent> libComp = lh_->getModel(designVLNV);
+        designConf = libComp.staticCast<DesignConfiguration>();
+
+        designVLNV = designConf->getDesignRef();
+
+        if (designVLNV.isValid())
+        {
+            QSharedPointer<LibraryComponent> libComp = lh_->getModel(designVLNV);	
+            design = libComp.staticCast<Design>();
+        }
+
+        // if design configuration did not contain a reference to a design.
+        if (!design)
+        {
+            emit errorMessage(tr("Component %1 did not contain a hierarchical view").arg(
+                comp->getVlnv()->getName()));
+            return false;;
+        }
+    }
+
+    if (!diagram_->setDesign(comp, design, designConf))
+    {
+        return false;
+    }
+
+    hierComponent_ = comp;
+    viewName_ = viewName;
+    return true;
 }
 
 bool DesignWidget::save()
@@ -490,10 +537,10 @@ void DesignWidget::keyPressEvent(QKeyEvent *event)
             
             QSharedPointer<ComponentDeleteCommand> cmd(new ComponentDeleteCommand(component));
 
-			connect(cmd.data(), SIGNAL(componentInstanceRemoved(DiagramComponent*)),
-				this, SIGNAL(componentInstanceRemoved(DiagramComponent*)), Qt::UniqueConnection);
-			connect(cmd.data(), SIGNAL(componentInstantiated(DiagramComponent*)),
-				this, SIGNAL(componentInstantiated(DiagramComponent*)), Qt::UniqueConnection);
+			connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+				this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+			connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+				this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
 
             editProvider_->addCommand(cmd);
 
@@ -623,33 +670,14 @@ QSharedPointer<Component> DesignWidget::createEmptyDesign(const VLNV* prevlnv) {
 		newComponent = QSharedPointer<Component>(new Component(vlnv));
 	}
 
+    lh_->writeModelToFile(path, newComponent);
+
 	createDesignForComponent(newComponent, path);
-
-	lh_->writeModelToFile(path, newComponent);
-
-//     QFile compFile(path + "/" + vlnv.getName() + "." + 
-// 		designVLNV.getVersion() + ".xml");
-//     compFile.open(QFile::WriteOnly | QFile::Truncate);
-//     newComponent->write(compFile);
-// 	compFile.close();
-
-	// register the vlnvs to the library
-
-	// if the component already existed in the library
-// 	if (lh_->contains(*prevlnv)) {
-// 		lh_->updatePath(vlnv, compFile.fileName());
-// 	}
-// 	else {
-// 		lh_->registerVLNV(vlnv, compFile.fileName());
-// 	}
-
-//     lh_->registerVLNV(designVLNV, designFile.fileName());
-// 	lh_->registerVLNV(desConfVLNV, desConfFile.fileName());
 
     return newComponent;
 }
 
-void DesignWidget::createDesignForComponent( QSharedPointer<Component> component,
+void DesignWidget::createDesignForComponent(QSharedPointer<Component> component,
 											const QString& dirPath) {
 	VLNV vlnv = *component->getVlnv();
 
@@ -676,12 +704,12 @@ void DesignWidget::createDesignForComponent( QSharedPointer<Component> component
 	}
 
 	// the name of the view to create
-	viewName_ = tr("structural");
+	QString viewName = tr("structural");
 
 	// and a hierarchical view for it
 	Model *model = component->getModel();
 	Q_ASSERT(model);
-	View *hierView = new View(viewName_);
+	View *hierView = new View(viewName);
 	hierView->setHierarchyRef(desConfVLNV);
 	hierView->addEnvIdentifier("");
 	model->addView(hierView);
@@ -696,7 +724,7 @@ void DesignWidget::createDesignForComponent( QSharedPointer<Component> component
 	lh_->writeModelToFile(dirPath, designConf);
     lh_->writeModelToFile(component);
 
-	diagram_->setDesign(component, viewName_);
+	setDesign(component, viewName);
 }
 
 void DesignWidget::onVhdlGenerate() {
@@ -979,10 +1007,9 @@ void DesignWidget::refresh()
     //Q_ASSERT(!isModified());
 
 	QSharedPointer<LibraryComponent> libComp = lh_->getModel(*hierComponent_->getVlnv());
-	hierComponent_ = libComp.staticCast<Component>();
+	QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
-    diagram_->setDesign(hierComponent_, viewName_);
-
+    setDesign(comp, viewName_);
     setModified(false);
 
 	TabDocument::refresh();
@@ -1036,7 +1063,7 @@ QSharedPointer<Component> DesignWidget::getHierComponent() const {
 	return hierComponent_;
 }
 
-QList<DiagramComponent*> DesignWidget::getInstances() const {
+QList<ComponentItem*> DesignWidget::getInstances() const {
 	return diagram_->getInstances();
 }
 

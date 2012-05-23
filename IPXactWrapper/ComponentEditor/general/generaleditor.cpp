@@ -76,11 +76,6 @@ GeneralEditor::GeneralEditor(QWidget* parentWnd,
 
     attributeEditor_->setImplementation(component_->getComponentImplementation());
 
-    if (component_->getComponentImplementation() == KactusAttribute::KTS_SW)
-    {
-        attributeEditor_->setSWType(component_->getComponentSWType());
-    }
-
     descEditor_->setDescription(component_->getDescription());
 }
 

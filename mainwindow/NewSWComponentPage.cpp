@@ -25,16 +25,6 @@
 #include <QCoreApplication>
 #include <QMessageBox>
 
-namespace
-{
-    QString const SW_CREATE_NAMES[SW_CREATE_COUNT] =
-    {
-        "SW Application\nCreates a software component for packetizing application code.",
-        "MCAPI Endpoints\nCreates a software component for packetizing MCAPI endpoints.",
-        "SW Platform\nCreates a flat (non-hierarchical) software platform component.",
-        "SW Platform Stack\nCreates a hierarchical software platform for combining software platform components."
-    };
-}
 //-----------------------------------------------------------------------------
 // Function: NewSWComponentPage()
 //-----------------------------------------------------------------------------
@@ -52,18 +42,6 @@ directoryEdit_(0)
     titleLabel->setFont(font);
 
     QLabel* descLabel = new QLabel(tr("Creates a SW component"), this);
-
-    // Create the SW create type radio button group and a layout for it.
-    typeGroup_ = new QGroupBox(tr("Type"), this);
-    QGridLayout* itemLayout = new QGridLayout(typeGroup_);
-
-    for (unsigned int i = 0; i < SW_CREATE_COUNT; ++i)
-    {
-        typeButtons_[i] = new QRadioButton(SW_CREATE_NAMES[i], typeGroup_);
-        itemLayout->addWidget(typeButtons_[i], i, 0, 1, 1);
-    }
-
-    typeButtons_[0]->setChecked(true);
 
     // Create the VLNV editor.
     vlnvEditor_ = new VLNVEditor(VLNV::COMPONENT, libInterface, parentDlg, this, true);
@@ -88,7 +66,6 @@ directoryEdit_(0)
     layout->addWidget(titleLabel);
     layout->addWidget(descLabel);
     layout->addSpacing(12);
-    layout->addWidget(typeGroup_);
     layout->addWidget(vlnvEditor_);
     layout->addSpacing(12);
     layout->addLayout(pathLayout);
@@ -135,19 +112,7 @@ bool NewSWComponentPage::validate()
 //-----------------------------------------------------------------------------
 void NewSWComponentPage::apply()
 {
-    // Determine the create type.
-    SWCreateType createType = SW_CREATE_APPLICATION;
-
-    for (unsigned int i = 0; i < SW_CREATE_COUNT; ++i)
-    {
-        if (typeButtons_[i]->isChecked())
-        {
-            createType = static_cast<SWCreateType>(i);
-            break;
-        }
-    }
-
-    emit createSWComponent(createType, vlnvEditor_->getVLNV(), directoryEdit_->currentText());
+    emit createSWComponent(vlnvEditor_->getVLNV(), directoryEdit_->currentText());
 }
 
 //-----------------------------------------------------------------------------
@@ -157,7 +122,6 @@ bool NewSWComponentPage::onPageChange()
 {
     // Reset all fields.
     vlnvEditor_->setVLNV(VLNV());
-    typeButtons_[0]->setChecked(true);
     return true;
 }
 

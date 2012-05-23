@@ -46,6 +46,9 @@ signals:
 	//! \brief Open the selected hierarchical design
 	void openDesign(const QModelIndex& index);
 
+    //! \brief Open the SW design of a component
+    void openSWDesign(const QModelIndex& index);
+
 	//! \brief Open the given object in the component editor
 	void openComponent(const QModelIndex& index);
 
@@ -54,6 +57,9 @@ signals:
 
 	//! \brief Create new design
 	void createNewDesign(const QModelIndex& index);
+
+    //! \brief Create new SW design
+    void createNewSWDesign(const QModelIndex& index);
 
 	//! \brief Delete the selected item
 	void deleteItem(const QModelIndex& index);
@@ -99,6 +105,9 @@ public slots:
 	//! \brief Open a hierarchical component
 	void onOpenDesign();
 
+    //! \brief Open the SW design of a component
+    void onOpenSWDesign();
+
 	//! \brief Open component editor
 	void onOpenComponent();
 
@@ -107,6 +116,9 @@ public slots:
 
 	//! \brief Create new design
 	void onCreateDesign();
+
+    //! \brief Create new SW design
+    void onCreateSWDesign();
 
 	//! \brief Called when user selects "Delete item" in contextMenu
 	void onDeleteAction();
@@ -194,6 +206,9 @@ private:
 	//! \brief Open the hierarchical design of a component
 	QAction* openDesignAction_;
 
+    //! \brief Open the SW design of a component
+    QAction* openSWDesignAction_;
+
 	//! \brief Open the component editor
 	QAction* openCompAction_;
 
@@ -202,6 +217,9 @@ private:
 
 	//! \brief Create new design for a component
 	QAction* createNewDesignAction_;
+
+    //! Create new SW design for a component.
+    QAction* createNewSWDesignAction_;
 
 	//! \brief Delete the item from the library
 	QAction* deleteAction_;
@@ -232,21 +250,6 @@ private:
 
 	//! \brief Open an existing system for editing.
 	QAction* openSystemAction_;
-
-	//! \brief Open an existing software platform.
-	QAction* openPlatformAction_;
-
-	//! \brief Open a SW platform stack (hierarchical platform)
-	QAction* openPFStackAction_;
-
-	//! \brief Open a software application
-	QAction* openApplicationAction_;
-
-	//! \brief Open end point to be edited
-	QAction* openEndpointAction_;
-
-    //! \brief Open software design to be edited
-    QAction* openSWDesignAction_;
 
 	//! \brief Open the xml file to be viewed by the user.
 	QAction* openXmlAction_;

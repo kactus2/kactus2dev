@@ -25,18 +25,6 @@ class KactusAttributeEditor;
 class VLNV;
 
 //-----------------------------------------------------------------------------
-//! SWCreateType enumeration.
-//-----------------------------------------------------------------------------
-enum SWCreateType
-{
-    SW_CREATE_APPLICATION = 0,
-    SW_CREATE_ENDPOINTS,
-    SW_CREATE_PLATFORM_COMPONENT,
-    SW_CREATE_PLATFORM_STACK,
-    SW_CREATE_COUNT
-};
-
-//-----------------------------------------------------------------------------
 //! NewSWComponentPage class.
 //-----------------------------------------------------------------------------
 class NewSWComponentPage : public PropertyPageView
@@ -97,8 +85,7 @@ public slots:
 
 signals:
     //! Signaled when a SW component should be created.
-    void createSWComponent(SWCreateType createType, VLNV const& vlnv,
-                           QString const& directory);
+    void createSWComponent(VLNV const& vlnv, QString const& directory);
 
 private:
     // Disable copying.
@@ -111,12 +98,6 @@ private:
 
     //! The library interface.
     LibraryInterface* libInterface_;
-
-    //! SW component type group.
-    QGroupBox* typeGroup_;
-
-    //! Component type selection radio buttons.
-    QRadioButton* typeButtons_[SW_CREATE_COUNT];
 
     //! VLNV editor.
     VLNVEditor* vlnvEditor_;

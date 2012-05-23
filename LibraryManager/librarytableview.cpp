@@ -25,9 +25,11 @@ LibraryTableView::LibraryTableView(LibraryHandler* handler,
       filter_(filter),
       handler_(handler),
       openDesignAction_(NULL),
+      openSWDesignAction_(NULL),
       openCompAction_(NULL),
       createNewComponentAction_(NULL),
       createNewDesignAction_(NULL),
+      createNewSWDesignAction_(NULL),
       deleteAction_(NULL),
       exportAction_(NULL),
       hideAction_(NULL),
@@ -117,6 +119,11 @@ void LibraryTableView::contextMenuEvent(QContextMenuEvent* event) {
 			hierarchical = true;
 		}
 
+        if (component->hasSWViews())
+        {
+            menu.addAction(openSWDesignAction_);
+        }
+
 		menu.addAction(openCompAction_);
 
 	}
@@ -140,6 +147,8 @@ void LibraryTableView::contextMenuEvent(QContextMenuEvent* event) {
 		// if component was not hierarchical then design can be created for it.
 		if (!hierarchical)
 			menu.addAction(createNewDesignAction_);
+
+        menu.addAction(createNewSWDesignAction_);
 	}
 	// if item is for bus definitions
 	else if (vlnv->getType() == VLNV::BUSDEFINITION) {
@@ -178,6 +187,12 @@ void LibraryTableView::setupActions() {
 	connect(openDesignAction_, SIGNAL(triggered()),
 		this, SLOT(onOpenDesign()), Qt::UniqueConnection);
 
+    openSWDesignAction_ = new QAction(tr("Open SW Design"), this);
+    openSWDesignAction_->setStatusTip(tr("Open a SW design"));
+    openSWDesignAction_->setToolTip(tr("Open a SW design"));
+    connect(openSWDesignAction_, SIGNAL(triggered()),
+        this, SLOT(onOpenSWDesign()), Qt::UniqueConnection);
+
 	openCompAction_ = new QAction(tr("Open Component"), this);
 	openCompAction_->setStatusTip(tr("Open component editor"));
 	openCompAction_->setToolTip(tr("Open component editor"));
@@ -195,6 +210,12 @@ void LibraryTableView::setupActions() {
 	createNewDesignAction_->setToolTip(tr("Create new design"));
 	connect(createNewDesignAction_, SIGNAL(triggered()),
 		this, SLOT(onCreateDesign()), Qt::UniqueConnection);
+
+    createNewSWDesignAction_ = new QAction(tr("Create New SW Design"), this);
+    createNewSWDesignAction_->setStatusTip(tr("Create new SW design"));
+    createNewSWDesignAction_->setToolTip(tr("Create new SW design"));
+    connect(createNewSWDesignAction_, SIGNAL(triggered()),
+        this, SLOT(onCreateSWDesign()), Qt::UniqueConnection);
 
 	deleteAction_ = new QAction(tr("Delete Item"), this);
 	deleteAction_->setStatusTip(tr("Delete item from the library"));
@@ -290,6 +311,10 @@ void LibraryTableView::onShowAction() {
 
 void LibraryTableView::onOpenDesign() {
 	emit openDesign(filter_->mapToSource(currentIndex()));
+}
+
+void LibraryTableView::onOpenSWDesign() {
+    emit openSWDesign(filter_->mapToSource(currentIndex()));
 }
 
 void LibraryTableView::onOpenComponent() {

@@ -22,7 +22,6 @@
 #include "fileSet/filebuildereditor.h"
 #include "general/generaleditor.h"
 #include "modelParameters/modelparametereditor.h"
-#include "endpoints/EndpointEditor.h"
 #include "ports/portseditor.h"
 #include "parameters/parameterseditor.h"
 #include "otherClockDrivers/otherclockdriverseditor.h"
@@ -204,17 +203,7 @@ void IPXactComponentEditor::createNewEditor( ComponentTreeItem* item ) {
 			break;
 												 }
 		case ComponentTreeItem::PORTS: {
-            if (component_->getComponentImplementation() == KactusAttribute::KTS_SW &&
-                (component_->getComponentSWType() == KactusAttribute::KTS_SW_ENDPOINTS ||
-                component_->getComponentSWType() == KactusAttribute::KTS_SW_APPLICATION))
-            {
-                editor = new EndpointEditor(handler_, component_, item->getDataPointer(), this, widgetStack_,
-                                            component_->getComponentSWType() == KactusAttribute::KTS_SW_APPLICATION);
-            }
-            else
-            {
-                editor = new PortsEditor(component_, handler_, this);
-            }
+            editor = new PortsEditor(component_, handler_, this);
 			break;
 									   }
 		case ComponentTreeItem::PARAMETERS: {
@@ -230,17 +219,7 @@ void IPXactComponentEditor::createNewEditor( ComponentTreeItem* item ) {
 			break;
 										 }
 		case ComponentTreeItem::BUSINTERFACE: {
-            if (component_->getComponentImplementation() == KactusAttribute::KTS_SW &&
-                component_->getComponentSWType() == KactusAttribute::KTS_SW_PLATFORM)
-            {
-                editor = new APIEditor(handler_, component_, 
-                                       item->getDataPointer(), this);
-            }
-            else
-            {
-			    editor = new BusInterfaceEditor(handler_, component_, 
-				    item->getDataPointer(), this);
-            }
+            editor = new BusInterfaceEditor(handler_, component_, item->getDataPointer(), this);
 			break;
 											  }
 
@@ -722,37 +701,7 @@ void IPXactComponentEditor::refreshEditors() {
 
 	if (component_->getComponentImplementation() == KactusAttribute::KTS_SW)
 	{
-		switch (component_->getComponentSWType())
-		{
-		case KactusAttribute::KTS_SW_PLATFORM:
-			{
-				setDocumentType("SW Platform");
-				break;
-			}
-
-		case KactusAttribute::KTS_SW_APPLICATION:
-			{
-				setDocumentType("SW Application");
-				break;
-			}
-
-		case KactusAttribute::KTS_SW_ENDPOINTS:
-			{
-				setDocumentType("MCAPI Endpoints");
-				break;
-			}
-		case KactusAttribute::KTS_SW_MAPPING: 
-			{
-				setDocumentType("SW mapping");
-				break;
-			}
-
-		default:
-			{
-				Q_ASSERT(false);
-				break;
-			}
-		}
+        setDocumentType("SW Component");
 	}
 	else
 	{

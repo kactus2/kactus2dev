@@ -372,14 +372,6 @@ void VLNVEditor::setImplementationFilter(bool on, KactusAttribute::Implementatio
 }
 
 //-----------------------------------------------------------------------------
-// Function: setSWTypeFilter()
-//-----------------------------------------------------------------------------
-void VLNVEditor::setSWTypeFilter(bool on, KactusAttribute::SWType swType /*= KTS_SW_MAPPING*/)
-{
-    dataTree_.setSWTypeFilter(on, swType);
-}
-
-//-----------------------------------------------------------------------------
 // Function: updateFiltering()
 //-----------------------------------------------------------------------------
 void VLNVEditor::updateFiltering()

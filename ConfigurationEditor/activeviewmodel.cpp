@@ -61,16 +61,16 @@ void ActiveViewModel::setDesign( DesignWidget* designWidget,
 
 		connect(instances_.at(i), SIGNAL(nameChanged(const QString&, const QString&)),
 			this, SLOT(renameInstance(const QString&, const QString&)), Qt::UniqueConnection);
-		connect(instances_.at(i), SIGNAL(destroyed(DiagramComponent*)),
-			this, SLOT(removeInstance(DiagramComponent*)), Qt::UniqueConnection);
+		connect(instances_.at(i), SIGNAL(destroyed(ComponentItem*)),
+			this, SLOT(removeInstance(ComponentItem*)), Qt::UniqueConnection);
 	}
 
 	endResetModel();
 
-	connect(designWidget, SIGNAL(componentInstantiated(DiagramComponent*)),
-		this, SLOT(addInstance(DiagramComponent*)), Qt::UniqueConnection);
-	connect(designWidget, SIGNAL(componentInstanceRemoved(DiagramComponent*)),
-		this, SLOT(removeInstance(DiagramComponent*)), Qt::UniqueConnection);
+	connect(designWidget, SIGNAL(componentInstantiated(ComponentItem*)),
+		this, SLOT(addInstance(ComponentItem*)), Qt::UniqueConnection);
+	connect(designWidget, SIGNAL(componentInstanceRemoved(ComponentItem*)),
+		this, SLOT(removeInstance(ComponentItem*)), Qt::UniqueConnection);
 }
 
 void ActiveViewModel::clear() {
@@ -82,7 +82,7 @@ void ActiveViewModel::clear() {
 	}
 
 	// disconnect all component instances and clear the list
-	foreach(DiagramComponent* diaComp, instances_) {
+	foreach(ComponentItem* diaComp, instances_) {
 		diaComp->disconnect(this);
 	}
 	instances_.clear();
@@ -132,8 +132,8 @@ QVariant ActiveViewModel::data(const QModelIndex& index, int role /*= Qt::Displa
 		if (index.column() == 1) {
 			
 			// search the diagram component that matches the asked instance name.
-			DiagramComponent* searched = 0;
-			foreach (DiagramComponent* diaComp, instances_) {
+			ComponentItem* searched = 0;
+			foreach (ComponentItem* diaComp, instances_) {
 				// if instance name matches
 				if (diaComp->name() == table_.at(index.row()).instanceName_) {
 					searched = diaComp;
@@ -258,7 +258,7 @@ void ActiveViewModel::renameInstance(const QString& newName,  const QString& old
 	}
 }
 
-void ActiveViewModel::removeInstance( DiagramComponent* diaComp ) {
+void ActiveViewModel::removeInstance( ComponentItem* diaComp ) {
 
 	if (diaComp) {
 		InstanceViewPair itemToRemove(diaComp->name());
@@ -281,7 +281,7 @@ void ActiveViewModel::removeInstance( DiagramComponent* diaComp ) {
 	}
 }
 
-void ActiveViewModel::addInstance( DiagramComponent* diaComp ) {
+void ActiveViewModel::addInstance( ComponentItem* diaComp ) {
 
 	// if instance is already in the model
 	if (instances_.contains(diaComp))
@@ -296,8 +296,8 @@ void ActiveViewModel::addInstance( DiagramComponent* diaComp ) {
 	table_.append(newItem);
 	endInsertRows();
 
-	connect(diaComp, SIGNAL(destroyed(DiagramComponent*)),
-		this, SLOT(removeInstance(DiagramComponent*)), Qt::UniqueConnection);
+	connect(diaComp, SIGNAL(destroyed(ComponentItem*)),
+		this, SLOT(removeInstance(ComponentItem*)), Qt::UniqueConnection);
 	connect(diaComp, SIGNAL(nameChanged(const QString&, const QString&)),
 		this, SLOT(renameInstance(const QString&, const QString&)), Qt::UniqueConnection);
 }

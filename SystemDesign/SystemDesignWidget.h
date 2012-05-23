@@ -36,7 +36,7 @@ public:
     /*!
      *  Constructor.
      */
-    SystemDesignWidget(LibraryInterface* lh, MainWindow* mainWnd, QWidget* parent = 0);
+    SystemDesignWidget(bool onlySW, LibraryInterface* lh, MainWindow* mainWnd, QWidget* parent = 0);
 
     /*!
      *  Destructor.
@@ -48,8 +48,8 @@ public:
      *
      *      @return False if there were errors opening the system; otherwise true.
      */
-    bool setDesign(VLNV const& vlnv);
-
+    bool setDesign(VLNV const& vlnv, QString const& viewName);
+    
     /*!
      *  Sets the zoom level of the design.
      *
@@ -160,9 +160,14 @@ private:
         EDIT_HISTORY_SIZE = 50
     };
 
+    bool setDesign(QSharedPointer<Component> comp, const QString& viewName);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    //! If true, the widget is used for editing SW designs.
+    bool onlySW_;
 
     //! The library interface.
     LibraryInterface* lh_;

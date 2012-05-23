@@ -72,22 +72,6 @@ DiagramComponent::DiagramComponent(LibraryInterface* lh_,
     foreach (QSharedPointer<BusInterface> busif, busInterfaces)
     {
         DiagramPort *port = new DiagramPort(busif, getLibraryInterface(), this);
-
-        // If this is a platform component, place master bus interfaces to the right
-        // and slave bus interfaces to the left.
-        if (componentModel()->getComponentImplementation() == KactusAttribute::KTS_SW &&
-            componentModel()->getComponentSWType() == KactusAttribute::KTS_SW_PLATFORM)
-        {
-            if (busif->getInterfaceMode() == General::MASTER)
-            {
-                right = true;
-            }
-            else
-            {
-                right = false;
-            }
-        }
-
         connect(port, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
         if (right) {
@@ -155,8 +139,6 @@ DiagramComponent::~DiagramComponent()
     {
         column->removeItem(this);
     }
-
-	emit destroyed(this);
 }
 
 //-----------------------------------------------------------------------------

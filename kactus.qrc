@@ -64,8 +64,6 @@
         <file>graphics/edit-redo.png</file>
         <file>graphics/configuration.png</file>
         <file>graphics/documentation.png</file>
-        <file>graphics/API.png</file>
-        <file>graphics/endpoints.png</file>
         <file>graphics/dockSelect.png</file>
         <file>graphics/workspace.png</file>
         <file>graphics/visibility.png</file>

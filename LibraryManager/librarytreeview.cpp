@@ -33,9 +33,11 @@ filter_(filter),
 startPos_(),
 dragIndex_(),
 openDesignAction_(NULL),
+openSWDesignAction_(NULL),
 openCompAction_(NULL),
 createNewComponentAction_(NULL),
 createNewDesignAction_(NULL),
+createNewSWDesignAction_(NULL),
 deleteAction_(NULL), 
 exportAction_(NULL),  
 openBusAction_(NULL),
@@ -46,11 +48,6 @@ createComDefAction_(NULL),
 openApiDefAction_(NULL),
 createApiDefAction_(NULL),
 openSystemAction_(NULL),
-openPlatformAction_(NULL),
-openPFStackAction_(NULL),
-openApplicationAction_(NULL),
-openEndpointAction_(NULL),
-openSWDesignAction_(NULL),
 openXmlAction_(NULL)
 {
 
@@ -127,22 +124,15 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
 					break;
 											   }
 				case KactusAttribute::KTS_SW: {
-					KactusAttribute::SWType swType = component->getComponentSWType();
-					if (swType == KactusAttribute::KTS_SW_PLATFORM) {
-						menu.addAction(openPlatformAction_);
-
-						if (component->isHierarchical())
-							menu.addAction(openPFStackAction_);
-					}
-
-					else if (swType == KactusAttribute::KTS_SW_APPLICATION)
-						menu.addAction(openApplicationAction_);
-
-					else if (swType == KactusAttribute::KTS_SW_ENDPOINTS)
-						menu.addAction(openEndpointAction_);
-
-                    else if (swType == KactusAttribute::KTS_SW_MAPPING)
+					if (component->hasSWViews())
                         menu.addAction(openSWDesignAction_);
+
+                    menu.addAction(openCompAction_);
+
+                    if (!component->hasSWViews())
+                    {
+                        menu.addAction(createNewSWDesignAction_);
+                    }
 
 					break;
 											  }
@@ -152,11 +142,22 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
 						hierarchical = true;
 					}
 
+                    if (component->hasSWViews())
+                    {
+                        menu.addAction(openSWDesignAction_);
+                        hierarchical = true;
+                    }
+
 					menu.addAction(openCompAction_);
 					menu.addAction(createNewComponentAction_);
 					// if component was not hierarchical then design can be created for it.
 					if (!hierarchical)
 						menu.addAction(createNewDesignAction_);
+
+                    if (!component->hasSWViews())
+                    {
+                        menu.addAction(createNewSWDesignAction_);
+                    }
 					break;
 						 }
 			}		
@@ -202,6 +203,12 @@ void LibraryTreeView::setupActions() {
 	connect(openDesignAction_, SIGNAL(triggered()),
 		this, SLOT(onOpenDesign()), Qt::UniqueConnection);
 
+    openSWDesignAction_ = new QAction(tr("Open SW Design"), this);
+    openSWDesignAction_->setStatusTip(tr("Open a SW design"));
+    openSWDesignAction_->setToolTip(tr("Open a SW design"));
+    connect(openSWDesignAction_, SIGNAL(triggered()),
+        this, SLOT(onOpenSWDesign()), Qt::UniqueConnection);
+
 	openCompAction_ = new QAction(tr("Open Component"), this);
 	openCompAction_->setStatusTip(tr("Open component editor"));
 	openCompAction_->setToolTip(tr("Open component editor"));
@@ -214,11 +221,17 @@ void LibraryTreeView::setupActions() {
 	connect(createNewComponentAction_, SIGNAL(triggered()),
 		this, SLOT(onCreateComponent()), Qt::UniqueConnection);
 
-	createNewDesignAction_ = new QAction(tr("Create New design"), this);
+	createNewDesignAction_ = new QAction(tr("Create New Design"), this);
 	createNewDesignAction_->setStatusTip(tr("Create new design"));
 	createNewDesignAction_->setToolTip(tr("Create new design"));
 	connect(createNewDesignAction_, SIGNAL(triggered()),
 		this, SLOT(onCreateDesign()), Qt::UniqueConnection);
+
+    createNewSWDesignAction_ = new QAction(tr("Create New Design"), this);
+    createNewSWDesignAction_->setStatusTip(tr("Create new design"));
+    createNewSWDesignAction_->setToolTip(tr("Create new design"));
+    connect(createNewSWDesignAction_, SIGNAL(triggered()),
+            this, SLOT(onCreateSWDesign()), Qt::UniqueConnection);
 
 	deleteAction_ = new QAction(tr("Delete Item"), this);
 	deleteAction_->setStatusTip(tr("Delete item from the library"));
@@ -279,36 +292,6 @@ void LibraryTreeView::setupActions() {
 	openSystemAction_->setToolTip(tr("Open system for editing"));
 	connect(openSystemAction_, SIGNAL(triggered()),
 		this, SLOT(onOpenComponent()), Qt::UniqueConnection);
-
-	openPlatformAction_ = new QAction(tr("Open SW Platform"), this);
-	openPlatformAction_->setStatusTip(tr("Open software platform for editing"));
-	openPlatformAction_->setToolTip(tr("Open software platform for editing"));
-	connect(openPlatformAction_, SIGNAL(triggered()),
-		this, SLOT(onOpenComponent()), Qt::UniqueConnection);
-
-	openPFStackAction_ = new QAction(tr("Open SW Platform Stack"), this);
-	openPFStackAction_->setStatusTip(tr("Open software platform stack for editing"));
-	openPFStackAction_->setToolTip(tr("Open software platform stack for editing"));
-	connect(openPFStackAction_, SIGNAL(triggered()),
-		this, SLOT(onOpenDesign()), Qt::UniqueConnection);
-
-	openApplicationAction_ = new QAction(tr("Open Application"), this);
-	openApplicationAction_->setStatusTip(tr("Open software application for editing"));
-	openApplicationAction_->setToolTip(tr("Open software application for editing"));
-	connect(openApplicationAction_, SIGNAL(triggered()),
-		this, SLOT(onOpenComponent()), Qt::UniqueConnection);
-
-	openEndpointAction_ = new QAction(tr("Open Endpoints"), this);
-	openEndpointAction_->setStatusTip(tr("Open endpoints for editing"));
-	openEndpointAction_->setToolTip(tr("Open endpoints for editing"));
-	connect(openEndpointAction_, SIGNAL(triggered()),
-		this, SLOT(onOpenComponent()), Qt::UniqueConnection);
-
-    openSWDesignAction_ = new QAction(tr("Open SW Design"), this);
-    openSWDesignAction_->setStatusTip(tr("Open software design for editing"));
-    openSWDesignAction_->setToolTip(tr("Open software design for editing"));
-    connect(openSWDesignAction_, SIGNAL(triggered()),
-        this, SLOT(onOpenComponent()), Qt::UniqueConnection);
 
 	openXmlAction_ = new QAction(tr("Open the xml-file"), this);
 	connect(openXmlAction_, SIGNAL(triggered()),
@@ -414,6 +397,10 @@ void LibraryTreeView::onOpenDesign() {
 	emit openDesign(filter_->mapToSource(currentIndex()));
 }
 
+void LibraryTreeView::onOpenSWDesign() {
+    emit openSWDesign(filter_->mapToSource(currentIndex()));
+}
+
 void LibraryTreeView::onOpenComponent() {
 	emit openComponent(filter_->mapToSource(currentIndex()));
 }
@@ -424,6 +411,10 @@ void LibraryTreeView::onCreateComponent() {
 
 void LibraryTreeView::onCreateDesign() {
 	emit createNewDesign(filter_->mapToSource(currentIndex()));
+}
+
+void LibraryTreeView::onCreateSWDesign() {
+    emit createNewSWDesign(filter_->mapToSource(currentIndex()));
 }
 
 void LibraryTreeView::onOpenBus() {

@@ -96,21 +96,10 @@ void BlockDiagram::openDesign(QSharedPointer<Design> design)
 
     if (design->getColumns().isEmpty())
     {
-        if (getEditedComponent()->getComponentImplementation() == KactusAttribute::KTS_SW &&
-            getEditedComponent()->getComponentSWType() == KactusAttribute::KTS_SW_PLATFORM)
-        {
-            layout_->addColumn("Low-level", COLUMN_CONTENT_COMPONENTS);
-            layout_->addColumn("Middle-level", COLUMN_CONTENT_COMPONENTS);
-            layout_->addColumn("High-level", COLUMN_CONTENT_COMPONENTS);
-            layout_->addColumn("Out", COLUMN_CONTENT_IO);
-        }
-        else
-        {
-            layout_->addColumn("IO", COLUMN_CONTENT_IO);
-            layout_->addColumn("Buses", COLUMN_CONTENT_BUSES);
-            layout_->addColumn("Components", COLUMN_CONTENT_COMPONENTS);
-            layout_->addColumn("IO", COLUMN_CONTENT_IO);
-        }
+        layout_->addColumn("IO", COLUMN_CONTENT_IO);
+        layout_->addColumn("Buses", COLUMN_CONTENT_BUSES);
+        layout_->addColumn("Components", COLUMN_CONTENT_COMPONENTS);
+        layout_->addColumn("IO", COLUMN_CONTENT_IO);
     }
     else
     {
@@ -145,11 +134,6 @@ void BlockDiagram::openDesign(QSharedPointer<Design> design)
             // Create an unpackaged component so that we can still visualize the component instance.
             component = QSharedPointer<Component>(new Component(instance.componentRef));
             component->setComponentImplementation(getEditedComponent()->getComponentImplementation());
-
-            if (getEditedComponent()->getComponentImplementation() == KactusAttribute::KTS_SW)
-            {
-                component->setComponentSWType(getEditedComponent()->getComponentSWType());
-            }
 		}
 
         DiagramComponent* diagComp = new DiagramComponent(getLibraryInterface(), component, instance.instanceName,
@@ -1008,11 +992,6 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
                     comp->setVlnv(VLNV());
                     comp->setComponentImplementation(getEditedComponent()->getComponentImplementation());
 
-                    if (getEditedComponent()->getComponentImplementation() == KactusAttribute::KTS_SW)
-                    {
-                        comp->setComponentSWType(getEditedComponent()->getComponentSWType());
-                    }
-
                     // Create the corresponding diagram component.
                     DiagramComponent* diagComp = new DiagramComponent(getLibraryInterface(), comp, name);
                     diagComp->setPos(snapPointToGrid(mouseEvent->scenePos()));
@@ -1020,10 +999,10 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
                     QSharedPointer<ItemAddCommand> cmd(new ItemAddCommand(column, diagComp));
 
-					connect(cmd.data(), SIGNAL(componentInstantiated(DiagramComponent*)),
-						this, SIGNAL(componentInstantiated(DiagramComponent*)), Qt::UniqueConnection);
-					connect(cmd.data(), SIGNAL(componentInstanceRemoved(DiagramComponent*)),
-						this, SIGNAL(componentInstanceRemoved(DiagramComponent*)), Qt::UniqueConnection);
+					connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+						this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+					connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+						this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
                     getEditProvider().addCommand(cmd);
                 }
@@ -1679,10 +1658,10 @@ void BlockDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         {
             QSharedPointer<ItemAddCommand> cmd(new ItemAddCommand(column, newItem));
 
-			connect(cmd.data(), SIGNAL(componentInstantiated(DiagramComponent*)),
-				this, SIGNAL(componentInstantiated(DiagramComponent*)), Qt::UniqueConnection);
-			connect(cmd.data(), SIGNAL(componentInstanceRemoved(DiagramComponent*)),
-				this, SIGNAL(componentInstanceRemoved(DiagramComponent*)), Qt::UniqueConnection);
+			connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+				this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+			connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+				this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
             getEditProvider().addCommand(cmd);
         }
@@ -1975,17 +1954,17 @@ void BlockDiagram::addInterface(DiagramColumn* column, QPointF const& pos)
     getEditProvider().addCommand(cmd, false);
 }
 
-QList<DiagramComponent*> BlockDiagram::getInstances() const {
+QList<ComponentItem*> BlockDiagram::getInstances() const {
 
 	// the list to store the diagram components to
-	QList<DiagramComponent*> instances;
+	QList<ComponentItem*> instances;
 
 	// ask for all graphics items.
 	QList<QGraphicsItem*> graphItems = items();
 	foreach (QGraphicsItem* graphItem, graphItems) {
 
 		// make dynamic type conversion
-		DiagramComponent* diagComp = dynamic_cast<DiagramComponent*>(graphItem);
+		ComponentItem* diagComp = dynamic_cast<ComponentItem*>(graphItem);
 		// if the item was a diagram component then add it to the list.
 		if (diagComp) 
 			instances.append(diagComp);

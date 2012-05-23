@@ -45,7 +45,6 @@ directoryEdit_(0)
     // Create the VLNV editor.
     vlnvEditor_ = new VLNVEditor(VLNV::COMPONENT, libInterface, parentDlg, this, true);
     vlnvEditor_->setImplementationFilter(true, KactusAttribute::KTS_SW);
-    vlnvEditor_->setSWTypeFilter(true, KactusAttribute::KTS_SW_MAPPING);
     vlnvEditor_->updateFiltering();
 
     connect(vlnvEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));

@@ -270,14 +270,6 @@ public:
 	*/
 	KactusAttribute::Implementation getImplementation() const;
 
-	/*! \brief Get the software type of this item.
-	 *
-	 * This function must be called only for items that represent software item.
-	 *
-	 * \return KactusAttribute::SWType Specifies the software type.
-	*/
-	KactusAttribute::SWType getSoftwareType() const;
-
 	/*! \brief Get the type of the bus definition.
 	 *
 	 *

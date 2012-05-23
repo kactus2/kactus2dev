@@ -54,6 +54,9 @@ signals:
 	//! \brief Open the selected hierarchical design
 	void openDesign(const QModelIndex& index);
 
+    //! \brief Open the selected hierarchical design
+    void openSWDesign(const QModelIndex& index);
+
 	//! \brief Open the given object in the component editor
 	void openComponent(const QModelIndex& index);
 
@@ -62,6 +65,9 @@ signals:
 
 	//! \brief Create new design
 	void createNewDesign(const QModelIndex& index);
+
+    //! Create new SW design.
+    void createNewSWDesign(QModelIndex const& index);
 
 	//! \brief Open bus definition in an editor
 	void openBusDef(const QModelIndex& index);
@@ -100,6 +106,9 @@ public slots:
 
 	//! \brief Open a hierarchical component
 	void onOpenDesign();
+
+    //! \brief Open an SW design of a component
+    void onOpenSWDesign();
 
 	//! \brief Open component editor
 	void onOpenComponent();
@@ -163,6 +172,9 @@ private:
 	//! \brief Open the hierarchical design of a component
 	QAction* openDesignAction_;
 
+    //! \brief Open the hierarchical SW design of a component
+    QAction* openSWDesignAction_;
+
 	//! \brief Open the component editor
 	QAction* openCompAction_;
 
@@ -171,6 +183,9 @@ private:
 
 	//! \brief Create new design for a component
 	QAction* createNewDesignAction_;
+
+    //! \brief Create new SW design for a component
+    QAction* createNewSWDesignAction_;
 
 	//! \brief Delete the item from the library
 	QAction* deleteAction_;

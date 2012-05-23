@@ -66,7 +66,8 @@ void DesignDiagram::clearScene()
 //-----------------------------------------------------------------------------
 // Function: DesignDiagram::setDesign()
 //-----------------------------------------------------------------------------
-bool DesignDiagram::setDesign(QSharedPointer<Component> component, QString const& viewName)
+bool DesignDiagram::setDesign(QSharedPointer<Component> component, QSharedPointer<Design> design,
+                              QSharedPointer<DesignConfiguration> designConf)
 {
     // Clear the edit provider.
     editProvider_.clear();
@@ -77,47 +78,9 @@ bool DesignDiagram::setDesign(QSharedPointer<Component> component, QString const
     // Clear the scene.
     clearScene();
 
-    // Set the new component.
+    // Set the new component and open the design.
     component_ = component;
-
-    VLNV designVLNV = component_->getHierRef(viewName);
-
-    // Check for a valid VLNV type.
-    designVLNV.setType(lh_->getDocumentType(designVLNV));
-
-    if (!designVLNV.isValid())
-    {
-        emit errorMessage(tr("Component %1 did not contain a hierarchical view").arg(component_->getVlnv()->getName()));
-        return false;
-    }
-
-    QSharedPointer<Design> design;
-
-    // if the component contains a direct reference to a design
-    if (designVLNV.getType() == VLNV::DESIGN) {
-        QSharedPointer<LibraryComponent> libComp = lh_->getModel(designVLNV);	
-        design = libComp.staticCast<Design>();
-    }
-
-    // if component had reference to a design configuration
-    else if (designVLNV.getType() == VLNV::DESIGNCONFIGURATION) {
-        QSharedPointer<LibraryComponent> libComp = lh_->getModel(designVLNV);
-        designConf_ = libComp.staticCast<DesignConfiguration>();
-
-        designVLNV = designConf_->getDesignRef();
-
-        if (designVLNV.isValid()) {
-            QSharedPointer<LibraryComponent> libComp = lh_->getModel(designVLNV);	
-            design = libComp.staticCast<Design>();
-        }
-
-        // if design configuration did not contain a reference to a design.
-        if (!design) {
-            emit errorMessage(tr("Component %1 did not contain a hierarchical view").arg(
-                component_->getVlnv()->getName()));
-            return false;
-        }
-    }
+    designConf_ = designConf;
 
     openDesign(design);
     return true;

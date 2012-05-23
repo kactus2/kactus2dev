@@ -58,13 +58,6 @@ public:
     void setImplementation(KactusAttribute::Implementation implementation);
     
     /*!
-     *  Sets the SW type visible with the given value.
-     *
-     *      @param [in]} type The SW type.
-     */
-    void setSWType(KactusAttribute::SWType type);
-
-    /*!
      *  Returns the selected product hierarchy.
      */
     KactusAttribute::ProductHierarchy getProductHierarchy() const;
@@ -113,12 +106,6 @@ private:
 
     //! Label for the implementation value.
     QLabel* implementationValue_;
-
-    //! SW type label.
-    QLabel* swTypeLabel_;
-
-    //! Label for SW type value.
-    QLabel* swTypeValue_;
 };
 
 //-----------------------------------------------------------------------------

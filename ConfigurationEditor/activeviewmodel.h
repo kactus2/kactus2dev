@@ -131,7 +131,7 @@ public slots:
 	 * \param obj Pointer to the diagram component being removed.
 	 *
 	*/
-	void removeInstance(DiagramComponent* diaComp);
+	void removeInstance(ComponentItem* diaComp);
 
 	/*! \brief Set the active view for given component instance.
 	 * 
@@ -149,7 +149,7 @@ public slots:
 	 * \param diaComp Pointer to the new component instance.
 	 *
 	*/
-	void addInstance(DiagramComponent* diaComp);
+	void addInstance(ComponentItem* diaComp);
 
 private:
 	//! \brief No copying
@@ -209,7 +209,7 @@ private:
 	QSharedPointer<DesignConfiguration> desConf_;
 
 	//! \brief Contains pointers to the component instances being displayed.
-	QList<DiagramComponent*> instances_;
+	QList<ComponentItem*> instances_;
 
 	//! \brief Pointer to the edit provider that manages the undo stack.
 	QSharedPointer<GenericEditProvider> editProvider_;

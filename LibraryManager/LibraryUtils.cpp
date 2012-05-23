@@ -160,7 +160,6 @@ void addNewInstances(QList<Design::ComponentInstance> elements, Design& sysDesig
         swComp->setComponentHierarchy(KactusAttribute::KTS_PRODUCT);
         swComp->setComponentFirmness(KactusAttribute::KTS_FIXED);
         swComp->setComponentImplementation(KactusAttribute::KTS_SW);
-        swComp->setComponentSWType(KactusAttribute::KTS_SW_MAPPING);
 
         // Create the model parameter for mapping HW to SW.
         QSharedPointer<ModelParameter> modelParam(new ModelParameter());

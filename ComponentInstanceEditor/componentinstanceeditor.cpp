@@ -9,12 +9,14 @@
 
 #include <EndpointDesign/SystemChangeCommands.h>
 #include <designwidget/diagramcomponent.h>
+#include <SystemDesign/SWComponentItem.h>
+
 #include <models/component.h>
+#include <models/designconfiguration.h>
+
 #include <LibraryManager/vlnv.h>
 #include <designwidget/blockdiagram.h>
 #include <designwidget/designwidget.h>
-#include <EndpointDesign/EndpointDesignDiagram.h>
-#include <EndpointDesign/EndpointDesignWidget.h>
 #include <designwidget/DiagramChangeCommands.h>
 
 #include <common/validators/vhdlNameValidator/vhdlnamevalidator.h>
@@ -29,7 +31,7 @@ vlnvDisplayer_(this),
 nameGroup_(this, tr("Instance name")),
 configurableElements_(this),
 propertyValueEditor_(this),
-editProvider_() {
+editProvider_(0) {
 
 	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 

@@ -2165,20 +2165,6 @@ KactusAttribute::Implementation Component::getComponentImplementation() const {
 }
 
 //-----------------------------------------------------------------------------
-// Function: getComponentSWType()
-//-----------------------------------------------------------------------------
-KactusAttribute::SWType Component::getComponentSWType() const
-{
-	KactusAttribute::SWType type = KactusAttribute::KTS_SW_MAPPING;
-
-	if (kactus2Attributes_.contains(QString("kts_sw_type"))) {
-		KactusAttribute::stringToValue(kactus2Attributes_.value(QString("kts_sw_type")), type);
-	}
-
-	return type;
-}
-
-//-----------------------------------------------------------------------------
 // Function: setComponentHierarchy()
 //-----------------------------------------------------------------------------
 void Component::setComponentHierarchy(KactusAttribute::ProductHierarchy prodHier) {
@@ -2194,16 +2180,6 @@ void Component::setComponentImplementation( KactusAttribute::Implementation impl
 //-----------------------------------------------------------------------------
 void Component::setComponentFirmness(KactusAttribute::Firmness firmness) {
     kactus2Attributes_.insert("kts_firmness", KactusAttribute::valueToString(firmness));
-}
-
-//-----------------------------------------------------------------------------
-// Function: setComponentSWType()
-//-----------------------------------------------------------------------------
-void Component::setComponentSWType(KactusAttribute::SWType type) {
-    kactus2Attributes_.insert("kts_sw_type", KactusAttribute::valueToString(type));
-	
-	// also set component type as software
-	kactus2Attributes_.insert("kts_implementation", "SW");
 }
 
 bool Component::hasModelParameters() const {

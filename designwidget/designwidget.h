@@ -49,7 +49,7 @@ public:
 	 *
 	*/
 	void setDesign(const VLNV* vlnv, const QString& viewName);
-
+    
     /*! \brief Get the VLNV of the design that is being edited
      *
      */
@@ -145,7 +145,7 @@ public:
 	 *
 	 * \return QList containing pointers to the component instances.
 	*/
-	QList<DiagramComponent*> getInstances() const;
+	QList<ComponentItem*> getInstances() const;
 
 	/*! \brief Get the configuration for this design.
 	 *
@@ -248,10 +248,10 @@ signals:
     void zoomChanged();
 
 	//! \brief Emitted when a new component is instantiated to the design.
-	void componentInstantiated(DiagramComponent* comp);
+	void componentInstantiated(ComponentItem* comp);
 
 	//! \brief Emitted when a component instance is removed from the design.
-	void componentInstanceRemoved(DiagramComponent* comp);
+	void componentInstanceRemoved(ComponentItem* comp);
 
 public slots:
     /*! \brief Saves the design to disk
@@ -292,6 +292,8 @@ private:
      * \return Pointer to the created component.
     */
     QSharedPointer<Component> createEmptyDesign(const VLNV* prevlnv);
+
+    bool setDesign(QSharedPointer<Component> comp, const QString& viewName);
 
 	/*! \brief Create an empty design and configuration for a component.
 	 *

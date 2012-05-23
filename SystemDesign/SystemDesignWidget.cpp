@@ -18,6 +18,7 @@
 #include "SWConnection.h"
 
 #include <LibraryManager/libraryinterface.h>
+#include <LibraryManager/LibraryUtils.h>
 
 #include <models/component.h>
 #include <models/design.h>
@@ -29,12 +30,14 @@
 #include <QKeyEvent>
 #include <QVBoxLayout>
 #include <QMessageBox>
+#include <QFileInfo>
 
 //-----------------------------------------------------------------------------
 // Function: SystemDesignWidget()
 //-----------------------------------------------------------------------------
-SystemDesignWidget::SystemDesignWidget(LibraryInterface* lh, MainWindow* mainWnd, QWidget* parent)
+SystemDesignWidget::SystemDesignWidget(bool onlySW, LibraryInterface* lh, MainWindow* mainWnd, QWidget* parent)
     : TabDocument(parent, DOC_ZOOM_SUPPORT | DOC_DRAW_MODE_SUPPORT | DOC_PROTECTION_SUPPORT | DOC_EDIT_SUPPORT, 30, 300),
+      onlySW_(onlySW),
       lh_(lh),
       view_(0),
       diagram_(0),
@@ -43,7 +46,7 @@ SystemDesignWidget::SystemDesignWidget(LibraryInterface* lh, MainWindow* mainWnd
     supportedWindows_ = (supportedWindows_ | INSTANCEWINDOW);
 
     editProvider_ = QSharedPointer<GenericEditProvider>(new GenericEditProvider(EDIT_HISTORY_SIZE));
-    diagram_ = new SystemDesignDiagram(lh_, mainWnd, *editProvider_, this);
+    diagram_ = new SystemDesignDiagram(onlySW, lh_, mainWnd, *editProvider_, this);
 
     connect(diagram_, SIGNAL(openComponent(const VLNV&)),
         this, SIGNAL(openComponent(const VLNV&)), Qt::UniqueConnection);
@@ -83,7 +86,7 @@ SystemDesignWidget::~SystemDesignWidget()
 //-----------------------------------------------------------------------------
 // Function: setDesign()
 //-----------------------------------------------------------------------------
-bool SystemDesignWidget::setDesign(VLNV const& vlnv)
+bool SystemDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
 {
     // Check if the vlnv is not valid.
     if (!vlnv.isValid() || vlnv.getType() != VLNV::COMPONENT)
@@ -99,27 +102,11 @@ bool SystemDesignWidget::setDesign(VLNV const& vlnv)
         return false;
     }
 
-    // Check that the component is actually a system.
-    KactusAttribute::Implementation implementation = system->getComponentImplementation();
-
-    if (implementation != KactusAttribute::KTS_SYS)
-    {
-        return false;
-    }
-
-    // Retrieve the view and check that it is hierarchical.
-    View* view = system->findView("kts_sys_ref");
-
-    if (view == 0 || !view->isHierarchical())
-    {
-        return false;
-    }
-
     // Open the design to the diagram.
-    diagram_->setDesign(system, "kts_sys_ref");
-
-    system_ = system;
-    designConf_ = diagram_->getDesignConfiguration();
+    if (!setDesign(system, viewName))
+    {
+        return false;
+    }
 
     connect(diagram_, SIGNAL(contentChanged()),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -133,6 +120,79 @@ bool SystemDesignWidget::setDesign(VLNV const& vlnv)
     // Open in unlocked mode by default only if the version is draft.
     setProtection(vlnv.getVersion() != "draft");
 
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignWidget::setDesign()
+//-----------------------------------------------------------------------------
+bool SystemDesignWidget::setDesign(QSharedPointer<Component> comp, const QString& viewName)
+{
+    SWView* view = comp->findSWView(viewName);
+
+    if (!view)
+    {
+        return false;
+    }
+
+    VLNV designVLNV = comp->getHierSWRef(viewName);
+
+    // Check for a valid VLNV type.
+    designVLNV.setType(lh_->getDocumentType(designVLNV));
+
+    if (!designVLNV.isValid())
+    {
+        emit errorMessage(tr("Component %1 did not contain a system design view").arg(comp->getVlnv()->getName()));
+        return false;
+    }
+
+    QSharedPointer<Design> design;
+    QSharedPointer<DesignConfiguration> designConf;
+
+    // if the component contains a direct reference to a design
+    if (designVLNV.getType() == VLNV::DESIGN)
+    {
+        QSharedPointer<LibraryComponent> libComp = lh_->getModel(designVLNV);	
+        design = libComp.staticCast<Design>();
+    }
+    // if component had reference to a design configuration
+    else if (designVLNV.getType() == VLNV::DESIGNCONFIGURATION)
+    {
+        QSharedPointer<LibraryComponent> libComp = lh_->getModel(designVLNV);
+        designConf = libComp.staticCast<DesignConfiguration>();
+
+        designVLNV = designConf->getDesignRef();
+
+        if (designVLNV.isValid())
+        {
+            QSharedPointer<LibraryComponent> libComp = lh_->getModel(designVLNV);	
+            design = libComp.staticCast<Design>();
+        }
+
+        // if design configuration did not contain a reference to a design.
+        if (!design)
+        {
+            emit errorMessage(tr("Component %1 did not contain a system design view").arg(
+                comp->getVlnv()->getName()));
+            return false;;
+        }
+    }
+
+    if (!onlySW_)
+    {
+        // Update the design.
+        updateSystemDesignV2(lh_, QFileInfo(lh_->getPath(*design->getVlnv())).path(),
+                             comp->getHierRef("kts_hw_ref"), *design);
+    }
+
+    if (!diagram_->setDesign(comp, design, designConf))
+    {
+        return false;
+    }
+
+    system_ = comp;
+    designConf_ = designConf;
+    //viewName_ = viewName;
     return true;
 }
 
@@ -286,10 +346,10 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
 
             QSharedPointer<SystemItemDeleteCommand> cmd(new SystemItemDeleteCommand(component));
 
-            connect(cmd.data(), SIGNAL(componentInstanceRemoved(DiagramComponent*)),
-                this, SIGNAL(componentInstanceRemoved(DiagramComponent*)), Qt::UniqueConnection);
-            connect(cmd.data(), SIGNAL(componentInstantiated(DiagramComponent*)),
-                this, SIGNAL(componentInstantiated(DiagramComponent*)), Qt::UniqueConnection);
+            connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+                this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+            connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+                this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
 
             editProvider_->addCommand(cmd);
 

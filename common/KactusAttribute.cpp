@@ -40,14 +40,6 @@ namespace KactusAttribute
             "SYS"
         };
 
-        QString const SW_TYPE_NAMES[KTS_SW_TYPE_COUNT] =
-        {
-            "Mapping",
-            "Application",
-            "Endpoints",
-            "Platform"
-        };
-
         QString const BUSDEF_TYPE_NAMES[KTS_BUSDEF_TYPE_COUNT] =
         {
             "BusHW",
@@ -130,33 +122,6 @@ namespace KactusAttribute
             if (lowStr == IMPLEMENTATION_NAMES[i].toLower())
             {
                 val = static_cast<Implementation>(i);
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    //-----------------------------------------------------------------------------
-    // Function: valueToString()
-    //-----------------------------------------------------------------------------
-    QString valueToString(SWType swType)
-    {
-        return SW_TYPE_NAMES[swType];
-    }
-
-    //-----------------------------------------------------------------------------
-    // Function: stringToValue()
-    //-----------------------------------------------------------------------------
-    bool stringToValue(QString const& str, SWType& val)
-    {
-        QString lowStr = str.toLower();
-
-        for (unsigned int i = 0; i < KTS_SW_TYPE_COUNT; ++i)
-        {
-            if (lowStr == SW_TYPE_NAMES[i].toLower())
-            {
-                val = static_cast<SWType>(i);
                 return true;
             }
         }

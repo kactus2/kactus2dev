@@ -58,12 +58,12 @@ public slots:
     void createNew();
 
     /*!
-     *  Opens the source file of the given node.
+     *  Opens the source file of the given component.
      *
      *      @param [in] node The node.
      */
-    void openSource(ProgramEntityItem* node);
-    
+    void openSource(ComponentItem* compItem);
+
     /*!
      *  Opens a HW design.
      *
@@ -77,10 +77,11 @@ public slots:
     /*!
      *  Opens a SW design.
      *
-     *      @param [in] vlnv           The VLNV of the top-level SW component.
+     *      @param [in] vlnv           The VLNV of the top-level component.
      *      @param [in] forceUnlocked  Forces the design to be opened in unlocked mode.
      */
-	void openSWDesign(const VLNV& vlnv = VLNV(), bool forceUnlocked = false);
+	void openSWDesign(const VLNV& vlnv = VLNV(), QString const& viewName = QString(),
+                      bool forceUnlocked = false);
 
     /*!
      *  Opens a system design.
@@ -256,16 +257,12 @@ public slots:
     /*!
      *  Creates a SW component to the library.
      *
-     *      @param [in] createType  The type of component to create.
      *      @param [in] vlnv        The component's VLNV.
      *      @param [in] directory   The directory where to save the component.
      *
-     *      @remarks Based on the create type, either the platform component editor,
-     *               platform stack designer or the application designer is opened automatically
-     *               after successful creation.
+     *      @remarks The component editor is opened automatically after successful creation.
      */
-    void createSWComponent(SWCreateType createType, VLNV const& vlnv,
-                           QString const& directory);
+    void createSWComponent(VLNV const& vlnv, QString const& directory);
 
     /*!
      *  Creates a new design.
@@ -282,14 +279,13 @@ public slots:
                       VLNV const& vlnv, QString const& directory);
 
     /*!
-     *  Creates a SW design to the library.
+     *  Creates a SW design for an existing component.
      *
-     *      @param [in] vlnv        The design's VLNV.
-     *      @param [in] directory   The directory where to save the design.
+     *      @param [in] vlnv        The component's VLNV.
      *
      *      @remarks The SW design editor is opened automatically after successful creation.
      */
-    void createSWDesign(VLNV const& vlnv, QString const& directory);
+    void createSWDesign(VLNV const& vlnv);
 
     /*!
      *  Creates a new system design.

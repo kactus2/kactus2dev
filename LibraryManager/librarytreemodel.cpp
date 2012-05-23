@@ -220,16 +220,7 @@ QVariant LibraryTreeModel::data(const QModelIndex& index, int role) const {
 					return QIcon(":/icons/graphics/new-system.png");
 											   }
 				case KactusAttribute::KTS_SW: {
-					KactusAttribute::SWType swType = component->getComponentSWType();
-
-					if (swType == KactusAttribute::KTS_SW_APPLICATION)
-						return QIcon(":/icons/graphics/new-sw_component.png");
-					else if (swType == KactusAttribute::KTS_SW_PLATFORM) 
-						return QIcon(":icons/graphics/API.png");
-					else if (swType == KactusAttribute::KTS_SW_ENDPOINTS)
-						return QIcon(":/icons/graphics/endpoints.png");
-					else if (swType == KactusAttribute::KTS_SW_MAPPING) 
-						return QIcon(":/icons/graphics/new-sw_design.png");
+					return QIcon(":/icons/graphics/new-sw_component.png");
 											  }
 				default: {
 					if (component->isHierarchical()) {
@@ -561,6 +552,18 @@ void LibraryTreeModel::onOpenDesign( const QModelIndex& index ) {
 		emit openDesign(*vlnv);
 }
 
+void LibraryTreeModel::onOpenSWDesign( const QModelIndex& index ) {
+
+    if (!index.isValid())
+        return;
+
+    LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
+    VLNV* vlnv = item->getVLNV();
+
+    if (vlnv && vlnv->isValid())
+        emit openSWDesign(*vlnv);
+}
+
 void LibraryTreeModel::onCreateNewComponent( const QModelIndex& index ) {
 
 	if (!index.isValid())
@@ -591,4 +594,20 @@ void LibraryTreeModel::onCreateNewDesign( const QModelIndex& index ) {
 	item->setVlnv(vlnv);
 
 	emit createDesign(vlnv);
+}
+
+void LibraryTreeModel::onCreateNewSWDesign( const QModelIndex& index ) {
+
+    if (!index.isValid())
+        return;
+
+    LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
+
+    VLNV vlnv;
+    vlnv.setType(VLNV::COMPONENT);
+
+    // tell items to set the fields for the vlnv
+    item->setVlnv(vlnv);
+
+    emit createSWDesign(vlnv);
 }

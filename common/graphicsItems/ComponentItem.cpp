@@ -13,8 +13,7 @@
 
 #include <LibraryManager/vlnv.h>
 
-#include <EndpointDesign/EndpointDesignDiagram.h>
-#include <designwidget/blockdiagram.h>
+#include <common/DesignDiagram.h>
 
 #include <models/component.h>
 

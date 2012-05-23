@@ -22,11 +22,9 @@
 #include <common/KactusAttribute.h>
 #include <settings/SettingsDialog.h>
 
-#include <EndpointDesign/EndpointDesignWidget.h>
-#include <EndpointDesign/ProgramEntityItem.h>
-#include <EndpointDesign/ApplicationItem.h>
+#include <SystemDesign/SystemDesignWidget.h>
 
-#include <MCAPI/MCAPISourceWidget.h>
+#include <MCAPI/CSourceWidget.h>
 #include <MCAPI/MCAPIContentMatcher.h>
 
 #include <DocumentGenerator/documentgenerator.h>
@@ -52,6 +50,8 @@
 #include <models/file.h>
 #include <models/ComDefinition.h>
 #include <models/ApiDefinition.h>
+#include <models/ApiInterface.h>
+#include <models/SWView.h>
 
 #include <designwidget/designwidget.h>
 #include <designwidget/diagramcomponent.h>
@@ -62,7 +62,6 @@
 #include <IPXactWrapper/ApiDefinitionEditor/ApiDefinitionEditor.h>
 #include <IPXactWrapper/BusEditor/buseditor.h>
 #include <IPXactWrapper/ComponentEditor/ipxactcomponenteditor.h>
-#include <IPXactWrapper/SWDesignEditor/SWDesignEditor.h>
 
 #include <PropertyWidget/messageconsole.h>
 
@@ -361,66 +360,68 @@ void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forc
 //-----------------------------------------------------------------------------
 // Function: openSWDesign()
 //-----------------------------------------------------------------------------
-void MainWindow::openSWDesign(const VLNV& vlnv, bool forceUnlocked)
+void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName, bool forceUnlocked)
 {
 	// Check if the SW design editor is already open and activate it.
 	if (vlnv.isValid())
 	{
 		for (int i = 0; i < designTabs_->count(); i++)
 		{
-			SWDesignEditor* editor = dynamic_cast<SWDesignEditor*>(designTabs_->widget(i));
+			SystemDesignWidget* editor = dynamic_cast<SystemDesignWidget*>(designTabs_->widget(i));
 
 			if (editor && editor->getComponentVLNV() == vlnv)
 			{
+                // TODO: Check that the view name matches.
 				designTabs_->setCurrentIndex(i);
 				return;
 			}
 		}
 	}
 
-	// Editor was not yet open so create it.
-	QSharedPointer<Component> component;
+    SystemDesignWidget* designWidget = new SystemDesignWidget(true, libraryHandler_, this, this);
 
-	if (libraryHandler_->contains(vlnv))
-	{
-		QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(vlnv);
-		component = libComp.dynamicCast<Component>();
-	}
-	else
-	{
-		emit errorMessage(tr("VLNV %1:%2:%3:%4 was not found in the library").arg(
-			vlnv.getVendor()).arg(
-			vlnv.getLibrary()).arg(
-			vlnv.getName()).arg(
-			vlnv.getVersion()));
-		return;
-	}
+    connect(designWidget, SIGNAL(errorMessage(const QString&)),
+        console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
+    connect(designWidget, SIGNAL(noticeMessage(const QString&)),
+        console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
 
-	if (!component) {
-		emit errorMessage(tr("Document type did not match Component"));
-		return;
-	}
+    if (!designWidget->setDesign(vlnv, viewName))
+    {
+        delete designWidget;
+        return;
+    }
 
-	QString filePath = libraryHandler_->getPath(vlnv);
-	QFileInfo info(filePath);
+    if (forceUnlocked)
+    {
+        designWidget->setProtection(false);
+    }
 
-	SWDesignEditor* editor = new SWDesignEditor(this, this, libraryHandler_, component);
+    designWidget->setTabWidget(designTabs_);
 
-	if (forceUnlocked)
-	{
-		editor->setProtection(false);
-	}
+    connect(designWidget->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));
+    connect(designWidget, SIGNAL(contentChanged()), this, SLOT(updateMenuStrip()), Qt::UniqueConnection);
+    connect(designWidget, SIGNAL(openComponent(const VLNV&)),
+        this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
+    connect(designWidget, SIGNAL(openDesign(const VLNV&, const QString&)),
+        this, SLOT(openDesign(const VLNV&, const QString&)));
+    connect(designWidget, SIGNAL(openSource(ComponentItem*)),
+        this, SLOT(openSource(ComponentItem*)), Qt::UniqueConnection);
 
-	editor->setTabWidget(designTabs_);
+    connect(designWidget, SIGNAL(componentSelected(ComponentItem*)),
+        this, SLOT(onComponentSelected(ComponentItem*)), Qt::UniqueConnection);
+    connect(designWidget, SIGNAL(destroyed(QObject*)),
+        this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
+    connect(designWidget, SIGNAL(clearItemSelection()),
+        libraryHandler_, SLOT(onClearSelection()), Qt::UniqueConnection);
+    connect(designWidget, SIGNAL(clearItemSelection()),
+        this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
 
-	connect(editor, SIGNAL(errorMessage(const QString&)),
-		console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
-	connect(editor, SIGNAL(noticeMessage(const QString&)),
-		console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
-	connect(editor, SIGNAL(contentChanged()),
-		this, SLOT(updateMenuStrip()), Qt::UniqueConnection);
-	connect(editor, SIGNAL(modifiedChanged(bool)),
-		actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
+    //connect(designWidget->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));
+    connect(designWidget, SIGNAL(zoomChanged()), this, SLOT(updateZoomTools()), Qt::UniqueConnection);
+    connect(designWidget, SIGNAL(modeChanged(DrawMode)),
+        this, SLOT(onDrawModeChanged(DrawMode)), Qt::UniqueConnection);
+    connect(designWidget, SIGNAL(modifiedChanged(bool)),
+        actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
 }
 
 void MainWindow::onLibrarySearch() {
@@ -995,10 +996,12 @@ void MainWindow::setupLibraryDock() {
         this, SLOT(createComDefinition(const VLNV&, const QString&)), Qt::UniqueConnection);
     connect(libraryHandler_, SIGNAL(createApiDef(const VLNV&, const QString&)),
         this, SLOT(createApiDefinition(const VLNV&, const QString&)), Qt::UniqueConnection);
+    connect(libraryHandler_, SIGNAL(createSWDesign(const VLNV&)),
+        this, SLOT(createSWDesign(const VLNV&)), Qt::UniqueConnection);
 	connect(libraryHandler_, SIGNAL(openComponent(const VLNV&)),
 		this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
-	connect(libraryHandler_, SIGNAL(openSWDesign(const VLNV&)),
-		this, SLOT(openSWDesign(const VLNV&)), Qt::UniqueConnection);
+	connect(libraryHandler_, SIGNAL(openSWDesign(const VLNV&, QString const&)),
+		this, SLOT(openSWDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
 	connect(libraryHandler_, SIGNAL(openBus(const VLNV&, const VLNV&, bool)),
 		this, SLOT(openBus(const VLNV&, const VLNV&, bool)), Qt::UniqueConnection);
     connect(libraryHandler_, SIGNAL(openComDefinition(const VLNV&)),
@@ -1201,7 +1204,7 @@ void MainWindow::onInterfaceSelected( DiagramInterface* interface ) {
 //-----------------------------------------------------------------------------
 // Function: MainWindow::onAdHocPortSelected()
 //-----------------------------------------------------------------------------
-void MainWindow::onAdHocPortSelected(DiagramAdHocPort* port)
+void MainWindow::onAdHocPortSelected(DiagramAdHocPort*)
 {
     adHocEditor_->clear();
     connectionEditor_->clear();
@@ -1212,7 +1215,7 @@ void MainWindow::onAdHocPortSelected(DiagramAdHocPort* port)
 //-----------------------------------------------------------------------------
 // Function: MainWindow::onAdHocInterfaceSelected()
 //-----------------------------------------------------------------------------
-void MainWindow::onAdHocInterfaceSelected(DiagramAdHocInterface* interface)
+void MainWindow::onAdHocInterfaceSelected(DiagramAdHocInterface*)
 {
     adHocEditor_->clear();
     connectionEditor_->clear();
@@ -1436,7 +1439,7 @@ void MainWindow::addColumn()
 {
 	QWidget* curWidget = designTabs_->currentWidget();
 	DesignWidget* designWidget = dynamic_cast<DesignWidget*>(curWidget);
-	EndpointDesignWidget* endpointWidget = dynamic_cast<EndpointDesignWidget*>(curWidget);
+	SystemDesignWidget* endpointWidget = dynamic_cast<SystemDesignWidget*>(curWidget);
 
 	if (designWidget != 0)
 	{
@@ -1857,82 +1860,91 @@ void MainWindow::closeEvent(QCloseEvent* event)
 //-----------------------------------------------------------------------------
 // Function: openSource()
 //-----------------------------------------------------------------------------
-void MainWindow::openSource(ProgramEntityItem* progEntity)
+void MainWindow::openSource(ComponentItem* compItem)
 {
-	Q_ASSERT(progEntity != 0);
+    Q_ASSERT(compItem != 0);
+   
+    FileSet* fileSet = compItem->componentModel()->getFileSet("cSources");
 
-	ApplicationItem* appItem = progEntity->getApplication();
-	Q_ASSERT(appItem != 0);
+    if (fileSet == 0 || fileSet->getFiles().count() == 0)
+    {
+        return;
+    }
 
-	FileSet* fileSet = appItem->componentModel()->getFileSet("cSources");
+    QString filename;
 
-	if (fileSet == 0 || fileSet->getFiles().count() == 0)
-	{
-		return;
-	}
+    if (fileSet->getFiles().count() > 1)
+    {
+        // Show a dialog for selecting what source file to open.
+        ListSelectDialog dlg(this);
+        dlg.setWindowTitle(tr("Open Source"));
+        dlg.setDescription(tr("Select C source file to open:"));
 
-	QString filename;
+        foreach (QSharedPointer<File> file, fileSet->getFiles())
+        {
+            dlg.addItem(new QListWidgetItem(file->getName()));
+        }
 
-	if (fileSet->getFiles().count() > 1)
-	{
-		// Show a dialog for selecting what source file to open.
-		ListSelectDialog dlg(this);
-		dlg.setWindowTitle(tr("Open Source"));
-		dlg.setDescription(tr("Select C source file to open:"));
+        if (dlg.exec() == QDialog::Rejected)
+        {
+            return;
+        }
 
-		foreach (QSharedPointer<File> file, fileSet->getFiles())
-		{
-			dlg.addItem(new QListWidgetItem(file->getName()));
-		}
+        filename = dlg.getSelectedItem()->text();
+    }
+    else
+    {
+        // Otherwise there is only one possibility.
+        filename = fileSet->getFiles().first()->getName();
+    }
 
-		if (dlg.exec() == QDialog::Rejected)
-		{
-			return;
-		}
+    if (compItem->componentModel()->getVlnv()->isValid())
+    {
+        filename = General::getAbsolutePath(libraryHandler_->getPath(*compItem->componentModel()->getVlnv()),
+                                                                     filename);
+    }
 
-		filename = dlg.getSelectedItem()->text();
-	}
-	else
-	{
-		// Otherwise there is only one possibility.
-		filename = fileSet->getFiles().first()->getName();
-	}
+    // Check if the source is already open and activate it.
+    for (int i = 0; i < designTabs_->count(); i++)
+    {
+        CSourceWidget* sourceWidget = dynamic_cast<CSourceWidget*>(designTabs_->widget(i));
 
-	if (appItem->componentModel()->getVlnv()->isValid())
-	{
-		filename = General::getAbsolutePath(libraryHandler_->getPath(*appItem->componentModel()->getVlnv()),
-			filename);
-	}
+        if (sourceWidget != 0 && sourceWidget->getSourceFile() == filename)
+        {
+            designTabs_->setCurrentIndex(i);
+            return;
+        }
+    }
 
-	// Check if the source is already open and activate it.
-	for (int i = 0; i < designTabs_->count(); i++)
-	{
-		MCAPISourceWidget* sourceWidget = dynamic_cast<MCAPISourceWidget*>(designTabs_->widget(i));
+    // Otherwise make sure that the file exists.
+    if (!QFile::exists(filename))
+    {
+        QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
+                           "The source file " + filename + " is not found!", QMessageBox::Ok, this);
+        msgBox.exec();
+        return;
+    }
 
-		if (sourceWidget != 0 && sourceWidget->getSourceFile() == filename)
-		{
-			designTabs_->setCurrentIndex(i);
-			return;
-		}
-	}
+    // Create a content matcher for the component.
+    QSharedPointer<MCAPIContentMatcher> contentMatcher(new MCAPIContentMatcher());
+    
+    foreach (QSharedPointer<ApiInterface const> apiIf, compItem->componentModel()->getApiInterfaces().values())
+    {
+        QSharedPointer<LibraryComponent const> libComp = libraryHandler_->getModelReadOnly(apiIf->getApiType());
+        QSharedPointer<ApiDefinition const> apiDef = libComp.dynamicCast<ApiDefinition const>();
 
-	// Otherwise make sure that the file exists.
-	if (!QFile::exists(filename))
-	{
-		QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
-			               "The source file " + filename + " is not found!",
-			               QMessageBox::Ok, this);
-		msgBox.exec();
-		return;
-	}
+        if (apiDef != 0)
+        {
+            contentMatcher->addSourceApiDefinition(apiDef);
+        }
+    }
 
-	// And open the source to a view.
-	MCAPISourceWidget* sourceWidget = new MCAPISourceWidget(filename,
-		progEntity->getContentMatcher(), this, this);
+    // And open the source to a view.
+    CSourceWidget* sourceWidget = new CSourceWidget(filename, contentMatcher, this, this);
 
-	connect(sourceWidget, SIGNAL(contentChanged()), this, SLOT(updateMenuStrip()));
-	connect(sourceWidget->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));
-	sourceWidget->setTabWidget(designTabs_);
+    connect(sourceWidget, SIGNAL(contentChanged()), this, SLOT(updateMenuStrip()));
+    connect(sourceWidget->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));
+    sourceWidget->setTabWidget(designTabs_);
 }
 
 //-----------------------------------------------------------------------------
@@ -1980,8 +1992,8 @@ void MainWindow::createNew()
 	dialog.addPage(QIcon(":icons/graphics/new-design.png"), tr("Design"), designPage);
 
 	NewSWComponentPage* swCompPage = new NewSWComponentPage(libraryHandler_, &dialog);
-	connect(swCompPage, SIGNAL(createSWComponent(SWCreateType, VLNV const&, QString const&)),
-		this, SLOT(createSWComponent(SWCreateType, VLNV const&, QString const&)));
+	connect(swCompPage, SIGNAL(createSWComponent(VLNV const&, QString const&)),
+		this, SLOT(createSWComponent(VLNV const&, QString const&)));
 	dialog.addPage(QIcon(":icons/graphics/new-sw_component.png"), tr("SW Component"), swCompPage);
 
 	NewSWDesignPage* swDesignPage = new NewSWDesignPage(libraryHandler_, &dialog);
@@ -2083,37 +2095,71 @@ void MainWindow::createDesign(KactusAttribute::ProductHierarchy prodHier,
 }
 
 //-----------------------------------------------------------------------------
-// Function: createSWDesign()
+// Function: MainWindow::createSWDesign()
 //-----------------------------------------------------------------------------
-void MainWindow::createSWDesign(VLNV const& vlnv, QString const& directory)
+void MainWindow::createSWDesign(VLNV const& vlnv)
 {
-	Q_ASSERT(vlnv.isValid());
+    Q_ASSERT(libraryHandler_->contains(vlnv));
+    Q_ASSERT(libraryHandler_->getDocumentType(vlnv) == VLNV::COMPONENT);
 
-	VLNV designVLNV(VLNV::DESIGN, vlnv.getVendor(), vlnv.getLibrary(),
-		vlnv.getName().remove(".comp") + ".design", vlnv.getVersion());
+    // Retrieve the component to which the SW design will be created.
+    QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(vlnv);
+    QSharedPointer<Component> component = libComp.staticCast<Component>();
 
-	// Create a component and a hierarchical view.
-	QSharedPointer<Component> component(new Component(vlnv));
-	component->setComponentImplementation(KactusAttribute::KTS_SW);
-	component->setComponentSWType(KactusAttribute::KTS_SW_MAPPING);
+    // Create a unique vlnv for the design.
+    VLNV designVLNV(VLNV::DESIGN, vlnv.getVendor(), vlnv.getLibrary(),
+                    vlnv.getName().remove(".comp") + ".design", vlnv.getVersion());
 
-	View* hierView = new View(tr("kts_sw_ref"));
-	hierView->setHierarchyRef(designVLNV);
-	hierView->addEnvIdentifier("");
+    int runningNumber = 1;
+    QString version = designVLNV.getVersion();
 
-	Model* model = new Model;
-	model->addView(hierView);
-	component->setModel(model);
+    while (libraryHandler_->contains(designVLNV))
+    {
+        ++runningNumber;
+        designVLNV.setVersion(version + "(" + QString::number(runningNumber) + ")");
+    }
 
-	// Create the design.
-	QSharedPointer<Design> design(new Design(designVLNV));
+    // Create a unique vlnv for the design configuration.
+    VLNV desConfVLNV(VLNV::DESIGNCONFIGURATION, vlnv.getVendor(), vlnv.getLibrary(),
+                     vlnv.getName().remove(".comp") + ".designcfg", vlnv.getVersion());
 
-	// Create the files.
-	libraryHandler_->writeModelToFile(directory, design);
-	libraryHandler_->writeModelToFile(directory, component);
+    runningNumber = 1;
+    version = desConfVLNV.getVersion();
 
-	// Open the design.
-	openSWDesign(vlnv, true);
+    while (libraryHandler_->contains(desConfVLNV))
+    {
+        ++runningNumber;
+        desConfVLNV.setVersion(version + "(" + QString::number(runningNumber) + ")");
+    }
+
+    // Create the view.
+    SWView* view = new SWView(tr("software"));
+    view->setHierarchyRef(desConfVLNV);   
+    component->addSWView(view);
+
+    // Create the design and design configuration objects to the same folder as the component.
+    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV));
+    designConf->setDesignRef(designVLNV);
+
+    QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(designVLNV));
+
+    QList<ColumnDesc> columns;
+    columns.append(ColumnDesc("Low-level", COLUMN_CONTENT_CUSTOM, 0));
+    columns.append(ColumnDesc("Middle-level", COLUMN_CONTENT_CUSTOM, 0));
+    columns.append(ColumnDesc("High-level", COLUMN_CONTENT_CUSTOM, 0));
+    columns.append(ColumnDesc("Out", COLUMN_CONTENT_CUSTOM, 0));
+    newDesign->setColumns(columns);
+
+    QString xmlPath = libraryHandler_->getPath(vlnv);
+    QFileInfo xmlInfo(xmlPath);
+    QString dirPath = xmlInfo.absolutePath();
+
+    libraryHandler_->writeModelToFile(dirPath, newDesign);
+    libraryHandler_->writeModelToFile(dirPath, designConf);
+    libraryHandler_->writeModelToFile(component);
+
+    // Open the design.
+    openSWDesign(vlnv, view->getName(), true);
 }
 
 //-----------------------------------------------------------------------------
@@ -2185,6 +2231,12 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName,
 
 	// Flat-out the hierarchy to form the system design.
 	QSharedPointer<Design> sysDesign(new Design(designVLNV));
+
+    QList<ColumnDesc> columns;
+    columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_CUSTOM, 0));
+    columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_CUSTOM, 0));
+    sysDesign->setColumns(columns);
+    
 	generateSystemDesign(libraryHandler_, directory, component->getHierRef(viewName), *sysDesign);
 
 	// Create the design configuration.
@@ -2432,7 +2484,7 @@ void MainWindow::openSystem(VLNV const& vlnv, bool forceUnlocked)
 	// Check if the system is already open and activate it.
 	if (vlnv.isValid()) {
 		for (int i = 0; i < designTabs_->count(); i++) {
-			EndpointDesignWidget *designWidget = dynamic_cast<EndpointDesignWidget*>(designTabs_->widget(i));
+			SystemDesignWidget *designWidget = dynamic_cast<SystemDesignWidget*>(designTabs_->widget(i));
 
 			if (designWidget != 0 && *designWidget->getOpenDocument() == vlnv) {
 				designTabs_->setCurrentIndex(i);
@@ -2441,9 +2493,14 @@ void MainWindow::openSystem(VLNV const& vlnv, bool forceUnlocked)
 		}
 	}
 
-	EndpointDesignWidget* designWidget = new EndpointDesignWidget(libraryHandler_, this, this);
+	SystemDesignWidget* designWidget = new SystemDesignWidget(false, libraryHandler_, this, this);
 
-	if (!designWidget->setDesign(vlnv))
+    connect(designWidget, SIGNAL(errorMessage(const QString&)),
+        console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
+    connect(designWidget, SIGNAL(noticeMessage(const QString&)),
+        console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
+
+	if (!designWidget->setDesign(vlnv, "kts_sys_ref"))
 	{
 		delete designWidget;
 		return;
@@ -2462,9 +2519,9 @@ void MainWindow::openSystem(VLNV const& vlnv, bool forceUnlocked)
 		this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(openDesign(const VLNV&, const QString&)),
 		this, SLOT(openDesign(const VLNV&, const QString&)));
-	connect(designWidget, SIGNAL(openSource(ProgramEntityItem*)),
-		this, SLOT(openSource(ProgramEntityItem*)), Qt::UniqueConnection);
-
+	connect(designWidget, SIGNAL(openSource(ComponentItem*)),
+		this, SLOT(openSource(ComponentItem*)), Qt::UniqueConnection);
+    
 	connect(designWidget, SIGNAL(componentSelected(ComponentItem*)),
 		this, SLOT(onComponentSelected(ComponentItem*)), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(destroyed(QObject*)),
@@ -2474,7 +2531,7 @@ void MainWindow::openSystem(VLNV const& vlnv, bool forceUnlocked)
 	connect(designWidget, SIGNAL(clearItemSelection()),
 		this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
 
-	//connect(designWidget->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));
+    //connect(designWidget->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));
 	connect(designWidget, SIGNAL(zoomChanged()), this, SLOT(updateZoomTools()), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(modeChanged(DrawMode)),
 		this, SLOT(onDrawModeChanged(DrawMode)), Qt::UniqueConnection);
@@ -2869,8 +2926,7 @@ void MainWindow::redo()
 //-----------------------------------------------------------------------------
 // Function: createSWComponent()
 //-----------------------------------------------------------------------------
-void MainWindow::createSWComponent(SWCreateType createType, VLNV const& vlnv,
-								   QString const& directory)
+void MainWindow::createSWComponent(VLNV const& vlnv, QString const& directory)
 {
 	Q_ASSERT(vlnv.isValid());
 
@@ -2881,72 +2937,10 @@ void MainWindow::createSWComponent(SWCreateType createType, VLNV const& vlnv,
 	// Set Kactus attributes.
 	component->setComponentImplementation(KactusAttribute::KTS_SW);
 
-	if (createType == SW_CREATE_APPLICATION)
-	{
-		component->setComponentSWType(KactusAttribute::KTS_SW_APPLICATION);
-
-		// Add the fixed bus interface to the component.
-		QSharedPointer<BusInterface> busIf(new BusInterface());
-		busIf->setName("app_link");
-		busIf->setInterfaceMode(General::MASTER);
-		busIf->setBusType(VLNV(VLNV::BUSDEFINITION, "Kactus", "internal", "app_link", "1.0"));
-
-		component->addBusInterface(busIf);
-	}
-	else if (createType == SW_CREATE_ENDPOINTS)
-	{
-		component->setComponentSWType(KactusAttribute::KTS_SW_ENDPOINTS);
-
-		// Add the fixed bus interface to the component.
-		QSharedPointer<BusInterface> busIf(new BusInterface());
-		busIf->setName("app_link");
-		busIf->setInterfaceMode(General::SLAVE);
-		busIf->setBusType(VLNV(VLNV::BUSDEFINITION, "Kactus", "internal", "app_link", "1.0"));
-
-		component->addBusInterface(busIf);
-	}
-	else
-	{
-		component->setComponentSWType(KactusAttribute::KTS_SW_PLATFORM);
-	}
-
-	// Create a design for the component if it is a platform stack.
-	if (createType == SW_CREATE_PLATFORM_STACK)
-	{
-		VLNV designVLNV(VLNV::DESIGN, vlnv.getVendor(), vlnv.getLibrary(),
-			vlnv.getName().remove(".comp") + ".design", vlnv.getVersion());
-
-		View* hierView = new View("kts_sw_ref");
-		hierView->setHierarchyRef(designVLNV);
-		hierView->addEnvIdentifier("");
-
-		Model* model = new Model;
-		model->addView(hierView);
-		component->setModel(model);
-
-		QSharedPointer<Design> design(new Design(designVLNV));
-		libraryHandler_->writeModelToFile(directory, design);
-	}
-
 	// Create the file.
 	libraryHandler_->writeModelToFile(directory, component);
 
-	switch (createType)
-	{
-	case SW_CREATE_PLATFORM_COMPONENT:
-	case SW_CREATE_APPLICATION:
-	case SW_CREATE_ENDPOINTS:
-		{
-			openComponent(vlnv, true);
-			break;
-		}
-
-	case SW_CREATE_PLATFORM_STACK:
-		{
-			openDesign(vlnv, "kts_sw_ref", true);
-			break;
-		}
-	}
+	openComponent(vlnv, true);
 }
 
 //-----------------------------------------------------------------------------

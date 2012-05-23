@@ -333,6 +333,13 @@ public slots:
 	*/
 	virtual void onOpenDesign(const VLNV& vlnv);
 
+    /*! \brief Open the specified component SW design
+	 *
+	 * \param vlnv Identifies the component that's SW design is wanted
+	 *
+	*/
+	virtual void onOpenSWDesign(const VLNV& vlnv);
+
 	/*! \brief Create a new item for given vlnv.
 	 * 
 	 * The type of the vlnv defines the type of the object to create.
@@ -397,7 +404,7 @@ signals:
 	void openDesign(const VLNV& vlnv, const QString& viewName);
 
     //! \brief Signal that user wants to open the specified software design for editing.
-    void openSWDesign(const VLNV& vlnv);
+    void openSWDesign(const VLNV& vlnv, QString const& viewName);
 
 	//! \brief Signal that user wants to open specified bus for editing
 	void openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool disableBusDef);
@@ -418,6 +425,9 @@ signals:
     void createComponent(KactusAttribute::ProductHierarchy,
                          KactusAttribute::Firmness,
                          const VLNV& vlnv, const QString& directory);
+
+    //! \brief Signal that user wants to create a new SW design for the given component.
+    void createSWDesign(VLNV const& vlnv);
 
 	//! \brief Signal that user wants to create a new abstraction definition for given bus definition.
 	void createAbsDef(const VLNV& busDefVLNV, const QString& directory, bool disableBusDef);

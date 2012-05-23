@@ -619,13 +619,6 @@ KactusAttribute::Implementation HierarchyItem::getImplementation() const {
 	return component_->getComponentImplementation();
 }
 
-KactusAttribute::SWType HierarchyItem::getSoftwareType() const {
-	// make sure item is software item
-	Q_ASSERT(getImplementation() == KactusAttribute::KTS_SW);
-	return component_->getComponentSWType();
-}
-
-
 KactusAttribute::BusDefType HierarchyItem::getBusDefType() {
 	// make sure item is for bus def or abs def
 	Q_ASSERT(busDef_ || absDef_);
