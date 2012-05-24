@@ -52,6 +52,7 @@
 #include <models/ApiDefinition.h>
 #include <models/ApiInterface.h>
 #include <models/SWView.h>
+#include <models/SystemView.h>
 
 #include <designwidget/designwidget.h>
 #include <designwidget/diagramcomponent.h>
@@ -764,17 +765,17 @@ void MainWindow::loadWorkspace(QString const& workspaceName)
     // Set the window to normal state (this fixed a weird error with window state).
     //setWindowState(Qt::WindowNoState);
 
+    if (settings.contains("WindowPosition"))
+    {
+        move(settings.value("WindowPosition").toPoint());
+    }
+
     // If geometry is saved then restore it.
     restoreGeometry(settings.value("Geometry").toByteArray());
 
     // If state of widgets is saved then restore it.
     if (settings.contains("WindowState")) {
         restoreState(settings.value("WindowState").toByteArray());
-    }
-
-    if (settings.contains("WindowPosition"))
-    {
-        move(settings.value("WindowPosition").toPoint());
     }
 
     const bool configurationVisible = settings.value("ConfigurationVisibility", true).toBool();
@@ -1002,6 +1003,8 @@ void MainWindow::setupLibraryDock() {
 		this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
 	connect(libraryHandler_, SIGNAL(openSWDesign(const VLNV&, QString const&)),
 		this, SLOT(openSWDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
+    connect(libraryHandler_, SIGNAL(openSystemDesign(const VLNV&, QString const&)),
+        this, SLOT(openSystemDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
 	connect(libraryHandler_, SIGNAL(openBus(const VLNV&, const VLNV&, bool)),
 		this, SLOT(openBus(const VLNV&, const VLNV&, bool)), Qt::UniqueConnection);
     connect(libraryHandler_, SIGNAL(openComDefinition(const VLNV&)),
@@ -1012,9 +1015,7 @@ void MainWindow::setupLibraryDock() {
 		dialer_, SLOT(refreshLibrary()), Qt::UniqueConnection);
 	connect(libraryHandler_, SIGNAL(itemSelected(const VLNV&)),
 		previewBox_, SLOT(setComponent(const VLNV&)), Qt::UniqueConnection);
-	connect(libraryHandler_, SIGNAL(openSystem(const VLNV&)),
-		this, SLOT(openSystem(const VLNV&)), Qt::UniqueConnection);
-
+	
 	connect(libraryHandler_, SIGNAL(createComponent(KactusAttribute::ProductHierarchy,
 		KactusAttribute::Firmness,
 		const VLNV&, const QString&)),
@@ -1969,7 +1970,7 @@ void MainWindow::createNew()
 	// Create a property page dialog to work as a "New" dialog.
 	PropertyPageDialog dialog(QSize(48, 48), PropertyPageDialog::APPLY_CURRENT, this);
 	dialog.setFixedWidth(620);
-	dialog.resize(620, 680);
+	dialog.resize(620, 640);
 	dialog.setWindowTitle(tr("New"));
 
     // Add pages to the dialog.
@@ -1996,10 +1997,10 @@ void MainWindow::createNew()
 		this, SLOT(createSWComponent(VLNV const&, QString const&)));
 	dialog.addPage(QIcon(":icons/graphics/new-sw_component.png"), tr("SW Component"), swCompPage);
 
-	NewSWDesignPage* swDesignPage = new NewSWDesignPage(libraryHandler_, &dialog);
-	connect(swDesignPage, SIGNAL(createSWDesign(VLNV const&, QString const&)),
-		this, SLOT(createSWDesign(VLNV const&, QString const&)), Qt::UniqueConnection);
-	dialog.addPage(QIcon(":icons/graphics/new-sw_design.png"), tr("SW Design"), swDesignPage);
+// 	NewSWDesignPage* swDesignPage = new NewSWDesignPage(libraryHandler_, &dialog);
+// 	connect(swDesignPage, SIGNAL(createSWDesign(VLNV const&, QString const&)),
+// 		this, SLOT(createSWDesign(VLNV const&, QString const&)), Qt::UniqueConnection);
+// 	dialog.addPage(QIcon(":icons/graphics/new-sw_design.png"), tr("SW Design"), swDesignPage);
 
 	NewSystemPage* sysPage = new NewSystemPage(libraryHandler_, &dialog);
 	connect(sysPage, SIGNAL(createSystem(VLNV const&, QString const&, VLNV const&, QString const&)),
@@ -2108,7 +2109,7 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
 
     // Create a unique vlnv for the design.
     VLNV designVLNV(VLNV::DESIGN, vlnv.getVendor(), vlnv.getLibrary(),
-                    vlnv.getName().remove(".comp") + ".design", vlnv.getVersion());
+                    vlnv.getName().remove(".comp") + ".swdesign", vlnv.getVersion());
 
     int runningNumber = 1;
     QString version = designVLNV.getVersion();
@@ -2121,7 +2122,7 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
 
     // Create a unique vlnv for the design configuration.
     VLNV desConfVLNV(VLNV::DESIGNCONFIGURATION, vlnv.getVendor(), vlnv.getLibrary(),
-                     vlnv.getName().remove(".comp") + ".designcfg", vlnv.getVersion());
+                     vlnv.getName().remove(".comp") + ".swdesigncfg", vlnv.getVersion());
 
     runningNumber = 1;
     version = desConfVLNV.getVersion();
@@ -2199,9 +2200,9 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName,
 	libraryHandler_->beginSave();
 
 	VLNV designVLNV(VLNV::DESIGN, sysVLNV.getVendor(), sysVLNV.getLibrary(),
-		sysVLNV.getName().remove(".comp") + ".design", sysVLNV.getVersion());
+		sysVLNV.getName().remove(".comp") + ".sysdesign", sysVLNV.getVersion());
 	VLNV desConfVLNV(VLNV::DESIGNCONFIGURATION, sysVLNV.getVendor(), sysVLNV.getLibrary(),
-		sysVLNV.getName().remove(".comp") + ".designcfg", sysVLNV.getVersion());
+		sysVLNV.getName().remove(".comp") + ".sysdesigncfg", sysVLNV.getVersion());
 
 	// Retrieve the component to which the system design will be based on.
 	QSharedPointer<Component> component = libraryHandler_->getModel(compVLNV).staticCast<Component>();
@@ -2213,20 +2214,19 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName,
 	sysComp->setComponentFirmness(KactusAttribute::KTS_FIXED);
 	sysComp->setComponentImplementation(KactusAttribute::KTS_SYS);
 
-	// Create the view to the system design.
-	View* hierView = new View("kts_sys_ref");
-	hierView->setHierarchyRef(desConfVLNV);
-	hierView->addEnvIdentifier("");
+	// Create the systemView to the system design.
+	SystemView* systemView = new SystemView("kts_sys_ref");
+	systemView->setHierarchyRef(desConfVLNV);
 
-	// Create the view to the HW design.
+	// Create the systemView to the HW design.
 	View* hwView = new View("kts_hw_ref");
 	hwView->setHierarchyRef(component->getHierRef(viewName));
 	hwView->addEnvIdentifier("");
 
 	Model* model = new Model;
-	model->addView(hierView);
 	model->addView(hwView);
 
+    sysComp->addSystemView(systemView);
 	sysComp->setModel(model);
 
 	// Flat-out the hierarchy to form the system design.
@@ -2249,7 +2249,7 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName,
 	libraryHandler_->writeModelToFile(directory, sysComp);
 
 	libraryHandler_->endSave();
-	openSystem(sysVLNV, true);
+	openSystemDesign(sysVLNV, "kts_sys_ref", true);
 }
 
 void MainWindow::createBus( VLNV const& vlnv, QString const& directory ) {
@@ -2475,9 +2475,9 @@ void MainWindow::openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool di
 }
 
 //-----------------------------------------------------------------------------
-// Function: openSystem()
+// Function: openSystemDesign()
 //-----------------------------------------------------------------------------
-void MainWindow::openSystem(VLNV const& vlnv, bool forceUnlocked)
+void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName, bool forceUnlocked)
 {
 	libraryHandler_->beginSave();
 
@@ -2500,7 +2500,7 @@ void MainWindow::openSystem(VLNV const& vlnv, bool forceUnlocked)
     connect(designWidget, SIGNAL(noticeMessage(const QString&)),
         console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
 
-	if (!designWidget->setDesign(vlnv, "kts_sys_ref"))
+	if (!designWidget->setDesign(vlnv, viewName))
 	{
 		delete designWidget;
 		return;
@@ -2777,9 +2777,9 @@ void MainWindow::changeProtection(bool locked)
                     {
                         // Ask the user if he wants to save and switch locks.
                         QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                                           tr("The document is being edited in another view and "
+                                           tr("The document is being edited in another systemView and "
                                               "has unsaved changes. Changes need to be saved "
-                                              "before this view can be unlocked. "
+                                              "before this systemView can be unlocked. "
                                               "Save changes and switch locks?"),
                                            QMessageBox::Yes | QMessageBox::Cancel, this);
 

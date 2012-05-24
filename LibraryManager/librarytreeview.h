@@ -49,6 +49,9 @@ signals:
     //! \brief Open the SW design of a component
     void openSWDesign(const QModelIndex& index);
 
+    //! \brief Open the system design of a component
+    void openSystemDesign(const QModelIndex& index);
+
 	//! \brief Open the given object in the component editor
 	void openComponent(const QModelIndex& index);
 
@@ -107,6 +110,9 @@ public slots:
 
     //! \brief Open the SW design of a component
     void onOpenSWDesign();
+
+    //! \brief Open the system design of a component
+    void onOpenSystemDesign();
 
 	//! \brief Open component editor
 	void onOpenComponent();

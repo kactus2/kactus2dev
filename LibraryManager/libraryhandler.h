@@ -340,6 +340,13 @@ public slots:
 	*/
 	virtual void onOpenSWDesign(const VLNV& vlnv);
 
+    /*! \brief Open the specified component system design
+	 *
+	 * \param vlnv Identifies the component that's system design is wanted
+	 *
+	*/
+	virtual void onOpenSystemDesign(const VLNV& vlnv);
+
 	/*! \brief Create a new item for given vlnv.
 	 * 
 	 * The type of the vlnv defines the type of the object to create.
@@ -406,6 +413,9 @@ signals:
     //! \brief Signal that user wants to open the specified software design for editing.
     void openSWDesign(const VLNV& vlnv, QString const& viewName);
 
+    //! \brief Signal that user wants to open a system for editing.
+    void openSystemDesign(const VLNV& vlnv, QString const& viewName);
+
 	//! \brief Signal that user wants to open specified bus for editing
 	void openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool disableBusDef);
 
@@ -443,9 +453,6 @@ signals:
 
 	//! \brief Signal that the library item specified by vlnv is selected in one of the views.
 	void itemSelected(const VLNV& vlnv);
-
-	//! \brief Signal that user wants to open a system for editing.
-	void openSystem(const VLNV& vlnv);
 
 	//! \brief Signal that user wants to open a platform component.
 	void openPlatformComponent(const VLNV& vlnv);

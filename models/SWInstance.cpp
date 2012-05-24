@@ -81,7 +81,7 @@ SWInstance::SWInstance(QDomNode& node) : instanceName_(), displayName_(), desc_(
         }
         else if (childNode.nodeName() == "kactus2:fileSetRef")
         {
-            fileSetRef_ = childNode.nodeValue();
+            fileSetRef_ = childNode.childNodes().at(0).nodeValue();
         }
         else if (childNode.nodeName() == "kactus2:mapping")
         {

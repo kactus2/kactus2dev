@@ -13,6 +13,7 @@
 
 #include <SystemDesign/SWConnectionEndpoint.h>
 #include <SystemDesign/SWComponentItem.h>
+#include <SystemDesign/SWCompItem.h>
 
 #include <common/graphicsItems/ComponentItem.h>
 
@@ -125,4 +126,39 @@ void PropertyValuesChangeCommand::undo()
 void PropertyValuesChangeCommand::redo()
 {
     component_->setPropertyValues(newPropertyValues_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileSetRefChangeCommand()
+//-----------------------------------------------------------------------------
+FileSetRefChangeCommand::FileSetRefChangeCommand(SWCompItem* component, QString const& newFileSetRef,
+                                                 QUndoCommand* parent)
+    : QUndoCommand(parent),
+      component_(component),
+      oldFileSetRef_(component->getFileSetRef()),
+      newFileSetRef_(newFileSetRef)
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: ~FileSetRefChangeCommand()
+//-----------------------------------------------------------------------------
+FileSetRefChangeCommand::~FileSetRefChangeCommand()
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: undo()
+//-----------------------------------------------------------------------------
+void FileSetRefChangeCommand::undo()
+{
+    component_->setFileSetRef(oldFileSetRef_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: redo()
+//-----------------------------------------------------------------------------
+void FileSetRefChangeCommand::redo()
+{
+    component_->setFileSetRef(newFileSetRef_);
 }

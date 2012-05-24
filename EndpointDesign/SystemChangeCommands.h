@@ -19,6 +19,7 @@
 
 class ComponentItem;
 class SWComponentItem;
+class SWCompItem;
 class SWConnectionEndpoint;
 class VLNV;
 
@@ -121,7 +122,7 @@ private:
 //-----------------------------------------------------------------------------
 //! PropertyValuesChangeCommand class.
 //-----------------------------------------------------------------------------
-class PropertyValuesChangeCommand: public QUndoCommand {
+class PropertyValuesChangeCommand : public QUndoCommand {
 
 public:
 
@@ -169,6 +170,58 @@ private:
 
 	//! The new property values..
 	QMap<QString, QString> newPropertyValues_;
+};
+
+//-----------------------------------------------------------------------------
+//! FileSetRefChangeCommand class.
+//-----------------------------------------------------------------------------
+class FileSetRefChangeCommand : public QUndoCommand
+{
+public:
+
+	/*!
+     *  Constructor.
+     *
+	 *      @param [in] component        Pointer to the component instance that is being edited.
+	 *      @param [in] newConfElements  The new file set reference for the instance.
+	 *      @param [in] parent           Pointer to the owner of this command.
+	 *
+	*/
+	FileSetRefChangeCommand(SWCompItem* component, QString const& newFileSetRef, 
+		                    QUndoCommand* parent = 0);
+
+	/*!
+     *  Destructor.
+     */
+	~FileSetRefChangeCommand();
+
+	/*!
+     *  Undoes the command.
+     */
+    virtual void undo();
+
+    /*!
+     *  Redoes the command.
+     */
+    virtual void redo();
+
+private:
+	// Disable copying.
+	FileSetRefChangeCommand(FileSetRefChangeCommand const& rhs);
+	FileSetRefChangeCommand& operator=(FileSetRefChangeCommand const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+	//! Pointer to the component instance.
+	SWCompItem* component_;
+
+	//! The old file set reference.
+    QString oldFileSetRef_;
+
+    //! The new file set reference.
+    QString newFileSetRef_;
 };
 
 //-----------------------------------------------------------------------------

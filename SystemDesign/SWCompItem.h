@@ -47,6 +47,18 @@ public:
     ~SWCompItem();
 
     /*!
+     *  Sets the file set reference.
+     *
+     *      @param [in] fileSetName The name of the referenced file set in the top-level component.
+     */
+    void setFileSetRef(QString const& fileSetName);
+
+    /*!
+     *  Returns the file set reference (i.e. the name of the referenced file set).
+     */
+    QString const& getFileSetRef() const;
+
+    /*!
      *  Returns the graphics item type.
      */
     int type() const { return Type; }
@@ -57,7 +69,11 @@ public slots:
     void openSource();
 
 signals:
+    //! Requests to open the C source for this component.
     void openSource(ComponentItem* compItem);
+
+    //! Occurs when the file set reference has been changed.
+    void fileSetRefChanged(QString const& fileSetRef);
 
 protected:
     // Called when the user presses the mouse button.
@@ -99,6 +115,9 @@ private:
     QPointF oldStackPos_;
 
     QGraphicsPixmapItem* hierIcon_;
+
+    //! The file set reference. Empty string if no reference.
+    QString fileSetRef_;
 };
 
 //-----------------------------------------------------------------------------

@@ -217,8 +217,11 @@ signals:
 	//! \brief Open the design of a component.
 	void openDesign(const VLNV& vlnv);
 
-    //! \brief Open the design of a component.
+    //! \brief Open the SW design of a component.
     void openSWDesign(const VLNV& vlnv);
+
+    //! \brief Open the system design of a component.
+    void openSystemDesign(const VLNV& vlnv);
 
 	//! \brief Open the component in a component editor.
 	void editItem(const VLNV& vlnv);
@@ -248,6 +251,9 @@ public slots:
 
     //! \brief Open the selected SW design
     void onOpenSWDesign(const QModelIndex& index);
+
+    //! \brief Open the selected system design
+    void onOpenSystemDesign(const QModelIndex& index);
 
 	//! \brief When open is selected in search view
 	void onOpenComponent(const QModelIndex& index);

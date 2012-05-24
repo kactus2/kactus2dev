@@ -251,3 +251,24 @@ void SWCompItem::openSource()
     // TODO: Auto-generate code.
     emit openSource(this);
 }
+
+//-----------------------------------------------------------------------------
+// Function: SWCompItem::setFileSetRef()
+//-----------------------------------------------------------------------------
+void SWCompItem::setFileSetRef(QString const& fileSetName)
+{
+    if (fileSetRef_ != fileSetName)
+    {
+        fileSetRef_ = fileSetName;
+        emit fileSetRefChanged(fileSetRef_);
+        emit contentChanged();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWCompItem::getFileSetRef()
+//-----------------------------------------------------------------------------
+QString const& SWCompItem::getFileSetRef() const
+{
+    return fileSetRef_;
+}

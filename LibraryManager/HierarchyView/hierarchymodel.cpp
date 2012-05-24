@@ -336,6 +336,17 @@ void HierarchyModel::onOpenSWDesign( const QModelIndex& index ) {
         emit openSWDesign(vlnv);
 }
 
+void HierarchyModel::onOpenSystemDesign( const QModelIndex& index ) {
+    if (!index.isValid())
+        return;
+
+    HierarchyItem* item = static_cast<HierarchyItem*>(index.internalPointer());
+    VLNV vlnv = item->getVLNV();
+
+    if (vlnv.isValid())
+        emit openSystemDesign(vlnv);
+}
+
 void HierarchyModel::onOpenComponent( const QModelIndex& index ) {
 	if (!index.isValid())
 		return;

@@ -317,6 +317,10 @@ void LibraryTableView::onOpenSWDesign() {
     emit openSWDesign(filter_->mapToSource(currentIndex()));
 }
 
+void LibraryTableView::onOpenSystemDesign() {
+    emit openSystemDesign(filter_->mapToSource(currentIndex()));
+}
+
 void LibraryTableView::onOpenComponent() {
 	emit openComponent(filter_->mapToSource(currentIndex()));
 }

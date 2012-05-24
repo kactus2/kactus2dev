@@ -56,6 +56,9 @@ void HierarchyWidget::setupConnections( HierarchyModel* dataModel ) {
     connect(&view_, SIGNAL(openSWDesign(const QModelIndex&)), 
         dataModel, SLOT(onOpenSWDesign(const QModelIndex&)), Qt::UniqueConnection);
 
+    connect(&view_, SIGNAL(openSystemDesign(const QModelIndex&)), 
+        dataModel, SLOT(onOpenSystemDesign(const QModelIndex&)), Qt::UniqueConnection);
+
 	connect(&view_, SIGNAL(createNewComponent(const QModelIndex&)),
 		dataModel, SLOT(onCreateNewComponent(const QModelIndex&)), Qt::UniqueConnection);
 

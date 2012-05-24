@@ -361,7 +361,7 @@ Q_SIGNALS:
 	void itemSelected(const VLNV& vlnv);
 
 	//! \brief Signal that user wants to open a system for editing.
-	void openSystem(const VLNV& vlnv);
+	void openSystemDesign(const VLNV& vlnv);
 
 	//! \brief Signal that user wants to open a platform component.
 	void openPlatformComponent(const VLNV& vlnv);

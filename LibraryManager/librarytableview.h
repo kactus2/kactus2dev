@@ -57,6 +57,9 @@ signals:
     //! \brief Open the selected hierarchical design
     void openSWDesign(const QModelIndex& index);
 
+    //! \brief Open the selected system design
+    void openSystemDesign(const QModelIndex& index);
+
 	//! \brief Open the given object in the component editor
 	void openComponent(const QModelIndex& index);
 
@@ -109,6 +112,9 @@ public slots:
 
     //! \brief Open an SW design of a component
     void onOpenSWDesign();
+
+    //! \brief Open an system design of a component
+    void onOpenSystemDesign();
 
 	//! \brief Open component editor
 	void onOpenComponent();

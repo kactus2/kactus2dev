@@ -78,6 +78,7 @@ public slots:
      *  Opens a SW design.
      *
      *      @param [in] vlnv           The VLNV of the top-level component.
+     *      @param [in] viewName       The name of the view to open.
      *      @param [in] forceUnlocked  Forces the design to be opened in unlocked mode.
      */
 	void openSWDesign(const VLNV& vlnv = VLNV(), QString const& viewName = QString(),
@@ -87,9 +88,10 @@ public slots:
      *  Opens a system design.
      *
      *      @param [in] vlnv           The VLNV of the system component whose system design to open.
+     *      @param [in] viewName       The name of the view to open.
      *      @param [in] forceUnlocked  Forces the system to be opened in unlocked mode.
      */
-    void openSystem(VLNV const &vlnv, bool forceUnlocked = false);
+    void openSystemDesign(VLNV const &vlnv, QString const& viewName = QString(), bool forceUnlocked = false);
 
 	/*! \brief Open bus to be edited
 	 *

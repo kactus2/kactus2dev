@@ -10,6 +10,7 @@
 #include <EndpointDesign/SystemChangeCommands.h>
 #include <designwidget/diagramcomponent.h>
 #include <SystemDesign/SWComponentItem.h>
+#include <SystemDesign/SWCompItem.h>
 
 #include <models/component.h>
 #include <models/designconfiguration.h>
@@ -29,6 +30,8 @@ QWidget(parent),
 component_(0),
 vlnvDisplayer_(this),
 nameGroup_(this, tr("Instance name")),
+swGroup_("SW", this),
+fileSetRefCombo_(this),
 configurableElements_(this),
 propertyValueEditor_(this),
 editProvider_(0) {
@@ -37,7 +40,9 @@ editProvider_(0) {
 
 	vlnvDisplayer_.hide();
 	nameGroup_.hide();
+    swGroup_.hide();
 	configurableElements_.hide();
+    propertyValueEditor_.hide();
 
 	vlnvDisplayer_.setTitle(tr("Instance model VLNV"));
 	vlnvDisplayer_.setFlat(false);
@@ -46,10 +51,15 @@ editProvider_(0) {
 	VhdlNameValidator* vhdlNameValidator = new VhdlNameValidator(NULL);
 	nameGroup_.setNameValidator(vhdlNameValidator);
 
+    QVBoxLayout* swGroupLayout = new QVBoxLayout(&swGroup_);
+    swGroupLayout->addWidget(new QLabel(tr("File set reference:"), this));
+    swGroupLayout->addWidget(&fileSetRefCombo_);
+
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&vlnvDisplayer_);
 	layout->addWidget(&nameGroup_);
 	layout->addWidget(&configurableElements_);
+    layout->addWidget(&swGroup_);
     layout->addWidget(&propertyValueEditor_);
 	layout->addStretch();
 
@@ -60,7 +70,7 @@ editProvider_(0) {
 	connect(&nameGroup_, SIGNAL(descriptionChanged(const QString)),
 		    this, SLOT(onDescriptionChanged(const QString&)), Qt::UniqueConnection);
     connect(&propertyValueEditor_, SIGNAL(contentChanged()),
-            this, SLOT(onPropertyValuesChanged()), Qt::UniqueConnection);
+            this, SLOT(onPropertyValuesChanged()), Qt::UniqueConnection);            
 }
 
 ComponentInstanceEditor::~ComponentInstanceEditor() {
@@ -74,7 +84,12 @@ void ComponentInstanceEditor::setComponent( ComponentItem* component ) {
 	// if previous component has been specified, then disconnect signals to this editor.
 	if (component_) {
 		component_->disconnect(this);
+        component_->disconnect(&propertyValueEditor_);
 		component_->disconnect(&nameGroup_);
+        component_->disconnect(&fileSetRefCombo_);
+
+        disconnect(&fileSetRefCombo_, SIGNAL(currentIndexChanged(QString const&)),
+            this, SLOT(onFileSetRefChanged(QString const&)));
 	}
 
 	component_ = component;
@@ -96,8 +111,32 @@ void ComponentInstanceEditor::setComponent( ComponentItem* component ) {
     nameGroup_.setEnabled(!locked);
 	nameGroup_.show();
 
-	// set the component's configurable elements
-    if (dynamic_cast<SWComponentItem*>(component) != 0)
+    // Show the file set reference if the component is software.
+    if (dynamic_cast<SWCompItem*>(component) != 0)
+    {
+        SWCompItem* swComponent = static_cast<SWCompItem*>(component);
+
+        fileSetRefCombo_.clear();
+        fileSetRefCombo_.addItem("");
+        fileSetRefCombo_.addItems(diagram->getEditedComponent()->getFileSetNames());
+        fileSetRefCombo_.setEnabled(!locked);
+
+        int index = fileSetRefCombo_.findText(swComponent->getFileSetRef());
+
+        if (index != -1)
+        {
+            fileSetRefCombo_.setCurrentIndex(index);
+        }
+
+        swGroup_.show();
+    }
+    else
+    {
+        swGroup_.hide();
+    }
+
+    // Show the component's property values in case of SW/HW mapping.
+	if (dynamic_cast<SWComponentItem*>(component) != 0)
     {
         SWComponentItem* swComponent = static_cast<SWComponentItem*>(component);
 
@@ -105,22 +144,32 @@ void ComponentInstanceEditor::setComponent( ComponentItem* component ) {
         propertyValueEditor_.setAllowedProperties(&swComponent->componentModel()->getSWProperties());
         propertyValueEditor_.setEnabled(!locked);
         propertyValueEditor_.show();
+
+        configurableElements_.hide();
     }
     else
     {
+        propertyValueEditor_.hide();
+
+        // Show the component's configurable elements in case of HW.
 	    configurableElements_.setComponent(component);
         configurableElements_.setEnabled(!locked);
 	    configurableElements_.show();
     }
 
 	connect(component_, SIGNAL(nameChanged(const QString&, const QString&)),
-		&nameGroup_, SLOT(setName(const QString&)), Qt::UniqueConnection);
+		    &nameGroup_, SLOT(setName(const QString&)), Qt::UniqueConnection);
 	connect(component_, SIGNAL(displayNameChanged(const QString&)),
-		&nameGroup_, SLOT(setDisplayName(const QString&)), Qt::UniqueConnection);
+		    &nameGroup_, SLOT(setDisplayName(const QString&)), Qt::UniqueConnection);
 	connect(component_, SIGNAL(descriptionChanged(const QString&)),
-		&nameGroup_, SLOT(setDescription(const QString&)), Qt::UniqueConnection);
+		    &nameGroup_, SLOT(setDescription(const QString&)), Qt::UniqueConnection);
     connect(component_, SIGNAL(propertyValuesChanged(QMap<QString, QString> const&)),
-        &propertyValueEditor_, SLOT(setData(QMap<QString, QString> const&)), Qt::UniqueConnection);
+            &propertyValueEditor_, SLOT(setData(QMap<QString, QString> const&)), Qt::UniqueConnection);
+    connect(component_, SIGNAL(fileSetRefChanged(QString const&)),
+            this, SLOT(updateFileSetRef(QString const&)), Qt::UniqueConnection);
+
+    connect(&fileSetRefCombo_, SIGNAL(currentIndexChanged(QString const&)),
+        this, SLOT(onFileSetRefChanged(QString const&)), Qt::UniqueConnection);
 
 	// if the connected component is destroyed then clear this editor
 	connect(component_, SIGNAL(destroyed(ComponentItem*)),
@@ -133,12 +182,20 @@ void ComponentInstanceEditor::clear() {
 
 	// if previous component has been specified, then disconnect signals to this editor.
 	if (component_) {
-		component_->disconnect(this);
+        component_->disconnect(this);
+        component_->disconnect(&propertyValueEditor_);
+        component_->disconnect(&nameGroup_);
+        component_->disconnect(&fileSetRefCombo_);
+
+        disconnect(&fileSetRefCombo_, SIGNAL(currentIndexChanged(QString const&)),
+                   this, SLOT(onFileSetRefChanged(QString const&)));
 	}
 
 	component_ = 0;
 	vlnvDisplayer_.hide();
 	nameGroup_.hide();
+    swGroup_.hide();
+    fileSetRefCombo_.clear();
     propertyValueEditor_.hide();
 	configurableElements_.hide();
 	configurableElements_.clear();
@@ -182,14 +239,46 @@ void ComponentInstanceEditor::onDescriptionChanged( const QString& newDescriptio
 
 void ComponentInstanceEditor::onPropertyValuesChanged()
 {
-    SWComponentItem* swComp = static_cast<SWComponentItem*>(component_);
-    QSharedPointer<PropertyValuesChangeCommand> cmd(new PropertyValuesChangeCommand(swComp, propertyValueEditor_.getData()));
-
     disconnect(component_, SIGNAL(propertyValuesChanged(QMap<QString, QString> const&)),
                &propertyValueEditor_, SLOT(setData(QMap<QString, QString> const&)));
 
+    SWComponentItem* swComp = static_cast<SWComponentItem*>(component_);
+    QSharedPointer<PropertyValuesChangeCommand> cmd(new PropertyValuesChangeCommand(swComp, propertyValueEditor_.getData()));
     editProvider_->addCommand(cmd);
 
     connect(component_, SIGNAL(propertyValuesChanged(QMap<QString, QString> const&)),
             &propertyValueEditor_, SLOT(setData(QMap<QString, QString> const&)), Qt::UniqueConnection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstanceEditor::onFileSetRefChanged()
+//-----------------------------------------------------------------------------
+void ComponentInstanceEditor::onFileSetRefChanged(QString const& fileSetRef)
+{
+    disconnect(component_, SIGNAL(fileSetRefChanged(QString const&)),
+               this, SLOT(updateFileSetRef(QString const&)));
+
+    SWCompItem* swComp = static_cast<SWCompItem*>(component_);
+    QSharedPointer<FileSetRefChangeCommand> cmd(new FileSetRefChangeCommand(swComp, fileSetRef));
+    editProvider_->addCommand(cmd);
+
+    connect(component_, SIGNAL(fileSetRefChanged(QString const&)),
+            this, SLOT(updateFileSetRef(QString const&)), Qt::UniqueConnection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstanceEditor::updateFileSetRef()
+//-----------------------------------------------------------------------------
+void ComponentInstanceEditor::updateFileSetRef(QString const& fileSetRef)
+{
+    int index = fileSetRefCombo_.findText(fileSetRef);
+
+    if (index != -1)
+    {
+        fileSetRefCombo_.setCurrentIndex(index);
+    }
+    else
+    {
+        fileSetRefCombo_.setCurrentIndex(0);
+    }
 }

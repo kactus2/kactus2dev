@@ -127,6 +127,8 @@ void LibraryHandler::syncronizeModels() {
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
     connect(data_.data(), SIGNAL(openSWDesign(const VLNV&)),
         this, SLOT(onOpenSWDesign(const VLNV&)), Qt::UniqueConnection);
+    connect(data_.data(), SIGNAL(openSystemDesign(const VLNV&)),
+        this, SLOT(onOpenSystemDesign(const VLNV&)), Qt::UniqueConnection);
 	connect(data_.data(), SIGNAL(openDesign(const VLNV&)),
 		this, SLOT(onOpenDesign(const VLNV&)), Qt::UniqueConnection);
 	connect(data_.data(), SIGNAL(editItem(const VLNV&)),
@@ -158,6 +160,8 @@ void LibraryHandler::syncronizeModels() {
 		this, SLOT(onOpenDesign(const VLNV&)), Qt::UniqueConnection);
     connect(treeModel_.data(), SIGNAL(openSWDesign(const VLNV&)),
         this, SLOT(onOpenSWDesign(const VLNV&)), Qt::UniqueConnection);
+    connect(treeModel_.data(), SIGNAL(openSystemDesign(const VLNV&)),
+        this, SLOT(onOpenSystemDesign(const VLNV&)), Qt::UniqueConnection);
 	connect(treeModel_.data(), SIGNAL(editItem(const VLNV&)),
 		this, SLOT(onEditItem(const VLNV&)), Qt::UniqueConnection);
 	connect(treeModel_.data(), SIGNAL(createBus(const VLNV&)),
@@ -187,6 +191,8 @@ void LibraryHandler::syncronizeModels() {
 		this, SLOT(onOpenDesign(const VLNV&)), Qt::UniqueConnection);
     connect(hierarchyModel_.data(), SIGNAL(openSWDesign(const VLNV&)),
         this, SLOT(onOpenSWDesign(const VLNV&)), Qt::UniqueConnection);
+    connect(hierarchyModel_.data(), SIGNAL(openSystemDesign(const VLNV&)),
+        this, SLOT(onOpenSystemDesign(const VLNV&)), Qt::UniqueConnection);
 	connect(hierarchyModel_.data(), SIGNAL(editItem(const VLNV&)),
 		this, SLOT(onEditItem(const VLNV&)), Qt::UniqueConnection);
 	connect(hierarchyModel_.data(), SIGNAL(createBusDef(const VLNV&)),
@@ -873,26 +879,11 @@ void LibraryHandler::onEditItem( const VLNV& vlnv ) {
 
 	// if vlnv is for bus
 	switch (data_->getType(vlnv)) {
-		case VLNV::COMPONENT: {
-			QSharedPointer<LibraryComponent> libComp = getModel(vlnv);
-			QSharedPointer<Component> component = libComp.staticCast<Component>();
-
-			switch (component->getComponentImplementation()) {
-		case KactusAttribute::KTS_SYS: {
-			emit openSystem(vlnv);
-			break;
-									   }
-		case KactusAttribute::KTS_SW: {
-			emit openComponent(vlnv);
-			break;
-									  }
-		default: {
-			emit openComponent(vlnv);
-			break;
-				 }
-			}
-			return;
-							  }
+		case VLNV::COMPONENT:
+            {
+			    emit openComponent(vlnv);
+			    return;
+		    }
 
         case VLNV::COMDEFINITION:
             {
@@ -1007,6 +998,28 @@ void LibraryHandler::onOpenSWDesign( const VLNV& vlnv ) {
             return;
         }
         emit openSWDesign(vlnv, views.first());
+    }
+}
+
+void LibraryHandler::onOpenSystemDesign( const VLNV& vlnv ) {
+    QSharedPointer<LibraryComponent> libComb = getModel(vlnv);
+    if (!libComb) {
+        emit errorMessage(tr("Component was not found"));
+        return;
+    }
+
+    // make type cast
+    QSharedPointer<Component> component;
+    if (libComb->getVlnv()->getType() == VLNV::COMPONENT) {
+        QSharedPointer<Component> component = libComb.staticCast<Component>();
+
+        QStringList views = component->getSystemViewNames();
+
+        // if component does not have any system views
+        if (views.size() == 0) {
+            return;
+        }
+        emit openSystemDesign(vlnv, views.first());
     }
 }
 

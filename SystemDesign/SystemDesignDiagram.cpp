@@ -231,15 +231,12 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
             component->setComponentImplementation(KactusAttribute::KTS_SW);
         }
 
-        // TODO: Determine ID.
-        int id = 0;
-
         SWCompItem* item = new SWCompItem(getLibraryInterface(), component, instance.getInstanceName(),
-                                          instance.getDisplayName(), instance.getDescription(),
-                                          QMap<QString, QString>(), id);
+                                          instance.getDisplayName(), instance.getDescription());
         //item->setImported(instance.imported);
         item->setPos(instance.getPosition());
         item->setPropertyValues(instance.getPropertyValues());
+        item->setFileSetRef(instance.getFileSetRef());
 
         connect(item, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
         connect(item, SIGNAL(openSource(ComponentItem*)), this, SIGNAL(openSource(ComponentItem*)));
@@ -957,6 +954,7 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
             instance.setDescription(swCompItem->description());
             instance.setComponentRef(*swCompItem->componentModel()->getVlnv());
             instance.setPropertyValues(swCompItem->getPropertyValues());
+            instance.setFileSetRef(swCompItem->getFileSetRef());
                         
             if (swCompItem->parentItem()->type() == HWMappingItem::Type)
             {

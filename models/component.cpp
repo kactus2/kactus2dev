@@ -25,6 +25,7 @@
 #include "ApiInterface.h"
 #include "ComProperty.h"
 #include "SWView.h"
+#include "SystemView.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -60,7 +61,9 @@ Component::Component(QDomDocument &doc)
       cpus_(),
       otherClockDrivers_(),
       parameters_(), 
-      attributes_()
+      attributes_(),
+      swViews_(),
+      systemViews_()
 {
 	LibraryComponent::vlnv_->setType(VLNV::COMPONENT);
 
@@ -298,6 +301,10 @@ Component::Component(QDomDocument &doc)
                         {
                             parseSWViews(childNode);
                         }
+                        else if (childNode.nodeName() == "kactus2:systemViews")
+                        {
+                            parseSystemViews(childNode);
+                        }
 						if (childNode.nodeName() == "kactus2:kts_attributes")
                         {
 							parseKactus2Attributes(childNode);
@@ -525,6 +532,11 @@ Component::Component(const Component &other)
     {
         swViews_.append(QSharedPointer<SWView>(new SWView(*view.data())));
     }
+
+    foreach (QSharedPointer<SystemView> view, other.systemViews_)
+    {
+        systemViews_.append(QSharedPointer<SystemView>(new SystemView(*view.data())));
+    }
 }
 
 Component & Component::operator=( const Component &other ) {
@@ -675,6 +687,12 @@ Component & Component::operator=( const Component &other ) {
         foreach (QSharedPointer<SWView> view, other.swViews_)
         {
             swViews_.append(QSharedPointer<SWView>(new SWView(*view.data())));
+        }
+
+        systemViews_.clear();
+        foreach (QSharedPointer<SystemView> view, other.systemViews_)
+        {
+            systemViews_.append(QSharedPointer<SystemView>(new SystemView(*view.data())));
         }
 	}
 	return *this;
@@ -885,6 +903,19 @@ void Component::write(QFile& file) {
             writer.writeStartElement("kactus2:swViews");
 
             foreach (QSharedPointer<SWView> view, swViews_)
+            {
+                view->write(writer);
+            }
+
+            writer.writeEndElement(); // kactus2:swViews
+        }
+
+        // Write system views.
+        if (!systemViews_.isEmpty())
+        {
+            writer.writeStartElement("kactus2:systemViews");
+
+            foreach (QSharedPointer<SystemView> view, systemViews_)
             {
                 view->write(writer);
             }
@@ -2566,6 +2597,129 @@ QString Component::getSWViewDescription( const QString& viewName ) const {
     return view->getDescription();
 }
 
+VLNV Component::getHierSystemRef(const QString viewName) const {
+
+    // search all views
+    for (int i = 0; i < systemViews_.size(); ++i) {
+
+        // if the view has the given name 
+        // or no name is given AND the view is hierarchical
+        if (systemViews_.at(i)->getName() == viewName ||
+            (viewName.isEmpty() && systemViews_.at(i)->getHierarchyRef().isValid())) {
+                return systemViews_.at(i)->getHierarchyRef();
+        }
+    }
+
+    // if no hierarchical view was found or none matched the given name
+    return VLNV();
+}
+
+
+QList<VLNV> Component::getHierSystemRefs() const {
+    // list to store the pointers to VLNVs
+    QList<VLNV> refs;
+
+    // search all views
+    for (int i = 0; i < systemViews_.size(); ++i) {
+
+        // if view contains hierarchy reference
+        if (systemViews_.at(i)->getHierarchyRef().isValid()) {
+            refs.append(systemViews_.at(i)->getHierarchyRef());
+        }
+    }
+    return refs;
+}
+
+
+void Component::setHierSystemRef(const VLNV& vlnv, const QString& viewName /*= QString()*/ ) {
+    // search all views
+    foreach (QSharedPointer<SystemView> view, systemViews_) {
+
+        // if the view has given name or no name is given AND view is hierarchical
+        if (view->getName() == viewName ||
+            (viewName.isEmpty() && view->getHierarchyRef().isValid())) {
+                view->setHierarchyRef(vlnv);
+        }
+    }
+}
+
+SystemView* Component::findSystemView(const QString name) const {
+    // search all views
+    for (int i = 0; i < systemViews_.size(); ++i) {
+
+        // if the view has the specified name
+        if (systemViews_.at(i)->getName() == name) {
+            return systemViews_.at(i).data();
+        }
+    }
+
+    // view was not found
+    return 0;
+}
+
+void Component::addSystemView(SystemView* newView) {
+    // remove previous views with the same name.
+    removeSystemView(newView->getName());
+
+    // add the new view
+    systemViews_.append(QSharedPointer<SystemView>(newView));
+}
+
+const QList<QSharedPointer<SystemView> > Component::getSystemViews() const{
+    return systemViews_;
+}
+
+QList<QSharedPointer<SystemView> >& Component::getSystemViews() {
+    return systemViews_;
+}
+
+SystemView* Component::createSystemView() {
+    QSharedPointer<SystemView> viewP = QSharedPointer<SystemView>(new SystemView());
+    systemViews_.append(viewP);
+    return viewP.data();
+}
+
+QStringList Component::getSystemViewNames() const {
+    QStringList list;
+    foreach (QSharedPointer<SystemView> view, systemViews_) {
+        list.append(view->getName());
+    }
+    return list;
+}
+
+int Component::getSystemViewCount() const {
+    return systemViews_.count();
+}
+
+void Component::removeSystemView( const QString& viewName ) {
+    // search all views
+    for (int i = 0; i < systemViews_.size(); ++i) {
+
+        // if the view has the specified name
+        if (systemViews_.at(i)->getName() == viewName) {
+
+            // remove the view
+            systemViews_.removeAt(i);
+        }
+    }
+}
+
+bool Component::hasSystemViews() const {
+    return !systemViews_.isEmpty();
+}
+
+bool Component::hasSystemView( const QString& viewName ) const {
+    return findSystemView(viewName) != 0;
+}
+
+QString Component::getSystemViewDescription( const QString& viewName ) const {
+    SystemView* view = findSystemView(viewName);
+    if (!view)
+        return QString();
+
+    return view->getDescription();
+}
+
 QMap<QString, QString> Component::getPortDefaultValues() const {
 	if (model_) {
 		return model_->getPortDefaultValues();
@@ -3063,6 +3217,23 @@ void Component::parseSWViews(QDomNode& node)
         {
             QSharedPointer<SWView> view(new SWView(viewNode));
             swViews_.append(view);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Component::parseSWViews()
+//-----------------------------------------------------------------------------
+void Component::parseSystemViews(QDomNode& node)
+{
+    for (int i = 0; i < node.childNodes().count(); ++i)
+    {
+        QDomNode viewNode = node.childNodes().at(i);
+
+        if (viewNode.nodeName() == "kactus2:systemView")
+        {
+            QSharedPointer<SystemView> view(new SystemView(viewNode));
+            systemViews_.append(view);
         }
     }
 }

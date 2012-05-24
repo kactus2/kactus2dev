@@ -28,6 +28,7 @@
 
 // implemented classes that only need to be declared
 class SWView;
+class SystemView;
 class BusInterface;
 class ComInterface;
 class ApiInterface;
@@ -720,6 +721,119 @@ public:
 	*/
 	void setHierSWRef(const VLNV& vlnv, const QString& viewName = QString());
 
+    /*! \brief Checks if the component contains system views.
+	*
+	* \return bool True if system views exist.
+	*/
+	bool hasSystemViews() const;
+
+	/*! \brief Check if the component has a system view with given name.
+	 *
+	 * \param viewName The name of the system view to search for.
+	 *
+	 * \return bool True if the view is found.
+	*/
+	bool hasSystemView(const QString& viewName) const;
+
+	/*! \brief Get the description of specified view.
+	* 
+	* If view is not found a null string is returned.
+	*
+	* \param viewName Identifies the view that's description is wanted.
+	*
+	* \return QString Contains the description for the view.
+	*/
+	QString getSystemViewDescription(const QString& viewName) const;
+
+	/*! \brief Remove view from the component.
+	*
+	* \param viewName The name of the view to remove
+	*
+	*/
+	void removeSystemView(const QString& viewName);
+
+	/*! \brief Get the number of system views the component has.
+	*
+	* \return The number of system views found in the meta data.
+	*/
+	int getSystemViewCount() const;
+
+	/*! \brief Create an empty system view and return a pointer to it.
+	*
+	* \return Pointer to the created system view element.
+	*/
+	SystemView* createSystemView();
+
+	/*! \brief Get the system views of the component
+	*
+	* \return QList containing pointers to the system views.
+	*/
+	const QList<QSharedPointer<SystemView> > getSystemViews() const;
+
+	/*! \brief Get the system views of the component
+	 *
+	 * \return QList containing pointers to the system views.
+	*/
+	QList<QSharedPointer<SystemView> >& getSystemViews();
+
+	/*! \brief Get the names of the system views of the component.
+	*
+	* \return QStringList containing the system view names.
+	*/
+	QStringList getSystemViewNames() const;
+
+	/*! \brief Find a named system view within a component.
+	*
+	* \param name The name of the system view to search for.
+	*
+	* \return Pointer to the specified system view. Null pointer if the system view was not
+	* found.
+	*/
+	SystemView* findSystemView(const QString name) const;
+
+	/*! \brief Add a new system view to the component's model.
+	*
+	* \param newView A pointer to the component's new system view.
+	*
+	*/
+	void addSystemView(SystemView* newView);
+
+	/*! \brief Create a system view for the component.
+	 * 
+	 * \param hierRef The reference to a design or design configuration.
+	 *
+	*/
+	void createSystemView(const VLNV& hierRef);
+
+	/*! \brief Get the system design of a hierarchical component.
+	*
+	* This function searches the system views of the component for a named system view.
+	* If system view if a given name is not found then invalid vlnv is returned.
+	* If the component is not a hierarchical component then invalid vlnv is
+	* returned.
+	* If name is not given then the first found VLNV is returned.
+	*
+	* \return A vlnv of a design or configuration that is used within this
+	* component. Invalid vlnv if design is not found.
+	*/
+	VLNV getHierSystemRef(const QString viewName = QString()) const;
+
+	/*! \brief Get the hierarchical system references this component contains.
+	*
+	* \return QList<VLNV> contains the VLNVs of the hierarchical system references.
+	*/
+	QList<VLNV> getHierSystemRefs() const;
+
+	/*! \brief Set hierarchical reference for given system view.
+	* 
+	* If system view name is not specified then the first system view is used.
+	*
+	* \param vlnv The reference to set as hierarchical system reference.
+	* \param viewName The name of the system view to set the hierarchical system reference for.
+	*
+	*/
+	void setHierSystemRef(const VLNV& vlnv, const QString& viewName = QString());
+
 	/*! \brief Get this component's file sets
 	*
 	* \return QList containing component's file sets
@@ -1326,6 +1440,13 @@ private:
      *      @param [in] node The source XML node.
      */
     void parseSWViews(QDomNode& node);
+
+    /*!
+     *  Parses system views from the given XML node.
+     *
+     *      @param [in] node The source XML node.
+     */
+    void parseSystemViews(QDomNode& node);
     
 	/*! \brief Specifies all the interfaces for this component.
 	 * OPTIONAL spirit:busInterfaces
@@ -1408,7 +1529,7 @@ private:
 
 	/*! \brief Contains the parameters.
 	 * OPTIONAL spirit:parameters
-	 * Describes anu parameter that can be used to configure or hold information
+	 * Describes any parameter that can be used to configure or hold information
 	 * related to this component.
 	 */
 	QList<QSharedPointer<Parameter> > parameters_;
@@ -1422,6 +1543,9 @@ private:
 
     //! The list of SW views.
     QList< QSharedPointer<SWView> > swViews_;
+
+    //! The list of system views.
+    QList< QSharedPointer<SystemView> > systemViews_;
 };
 
 

@@ -35,7 +35,6 @@ void ComponentInstanceModel::setComponent( ComponentItem* component ) {
 	component_ = component;
 
     // get the edit provider that manages the undo/redo stack
-    // TODO: Base class for the diagrams!
     DesignDiagram* diagram = static_cast<DesignDiagram*>(component->scene());
     editProvider_ = &diagram->getEditProvider();
     	

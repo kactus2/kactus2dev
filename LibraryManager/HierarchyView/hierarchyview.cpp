@@ -156,11 +156,11 @@ void HierarchyView::setupActions() {
     connect(createApiDefAction_, SIGNAL(triggered()),
         this, SLOT(onCreateApiDef()), Qt::UniqueConnection);
 
-	openSystemAction_ = new QAction(tr("Open System"), this);
-	openSystemAction_->setStatusTip(tr("Open system for editing"));
-	openSystemAction_->setToolTip(tr("Open system for editing"));
+	openSystemAction_ = new QAction(tr("Open System Design"), this);
+	openSystemAction_->setStatusTip(tr("Open system design for editing"));
+	openSystemAction_->setToolTip(tr("Open system design for editing"));
 	connect(openSystemAction_, SIGNAL(triggered()),
-		this, SLOT(onOpenComponent()), Qt::UniqueConnection);
+		this, SLOT(onOpenSystemDesign()), Qt::UniqueConnection);
 
 	openXmlAction_ = new QAction(tr("Open the xml-file"), this);
 	connect(openXmlAction_, SIGNAL(triggered()),
@@ -206,6 +206,13 @@ void HierarchyView::onOpenSWDesign() {
     QModelIndexList indexes = selectedIndexes();
     foreach (QModelIndex index, indexes) {
         emit openSWDesign(filter_->mapToSource(index));
+    }
+}
+
+void HierarchyView::onOpenSystemDesign() {
+    QModelIndexList indexes = selectedIndexes();
+    foreach (QModelIndex index, indexes) {
+        emit openSystemDesign(filter_->mapToSource(index));
     }
 }
 
@@ -298,7 +305,12 @@ void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
             {
             case KactusAttribute::KTS_SYS:
                 {
-                    menu.addAction(openSystemAction_);
+                    if (component->hasSystemViews())
+                    {
+                        menu.addAction(openSystemAction_);
+                    }
+
+                    menu.addAction(openCompAction_);
                     break;
                 }
 
@@ -310,6 +322,8 @@ void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
                     }
 
                     menu.addAction(openCompAction_);
+
+                    menu.addSeparator();
 
                     if (!component->hasSWViews() && indexes.size() == 1)
                     {
@@ -332,6 +346,8 @@ void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
                     }
 
                     menu.addAction(openCompAction_);
+
+                    menu.addSeparator();
 
                     // only if just one object is selected
                     if (indexes.size() == 1)

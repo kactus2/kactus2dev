@@ -564,6 +564,18 @@ void LibraryTreeModel::onOpenSWDesign( const QModelIndex& index ) {
         emit openSWDesign(*vlnv);
 }
 
+void LibraryTreeModel::onOpenSystemDesign( const QModelIndex& index ) {
+
+    if (!index.isValid())
+        return;
+
+    LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
+    VLNV* vlnv = item->getVLNV();
+
+    if (vlnv && vlnv->isValid())
+        emit openSystemDesign(*vlnv);
+}
+
 void LibraryTreeModel::onCreateNewComponent( const QModelIndex& index ) {
 
 	if (!index.isValid())

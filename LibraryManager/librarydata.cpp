@@ -417,6 +417,15 @@ void LibraryData::onOpenSWDesign( const QModelIndex& index ) {
     emit openSWDesign(*vlnv);
 }
 
+void LibraryData::onOpenSystemDesign( const QModelIndex& index ) {
+
+    if (!index.isValid())
+        return;
+
+    VLNV* vlnv = static_cast<VLNV*>(index.internalPointer());
+    emit openSystemDesign(*vlnv);
+}
+
 void LibraryData::onCreateNewComponent( const QModelIndex& index ) {
 
 	if (!index.isValid())

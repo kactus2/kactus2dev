@@ -16,6 +16,8 @@
 #include "configurableelementeditor.h"
 
 #include <QWidget>
+#include <QComboBox>
+#include <QGroupBox>
 #include <QSharedPointer>
 
 class ComponentItem;
@@ -71,6 +73,12 @@ private slots:
     //! Handler when the user changes any property values.
     void onPropertyValuesChanged();
 
+    //! Handler when the user changes the file set reference.
+    void onFileSetRefChanged(QString const& fileSetRef);
+
+    //! Updates the file set reference when it is changed from the component.
+    void updateFileSetRef(QString const& fileSetRef);
+
 private:
 	//! \brief No copying
 	ComponentInstanceEditor(const ComponentInstanceEditor& other);
@@ -89,6 +97,12 @@ private:
 
 	//! \brief The widget to set the configurable elements of a component instance.
 	ConfigurableElementEditor configurableElements_;
+
+    //! SW group.
+    QGroupBox swGroup_;
+
+    //! File set reference combo box.
+    QComboBox fileSetRefCombo_;
 
     //! Property value editor for SW properties.
     PropertyValueEditor propertyValueEditor_;

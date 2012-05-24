@@ -120,7 +120,12 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
 			// depending on the type of the component
 			switch (component->getComponentImplementation()) {
 				case KactusAttribute::KTS_SYS: {
-					menu.addAction(openSystemAction_);
+                    if (component->hasSystemViews())
+                    {
+					    menu.addAction(openSystemAction_);
+                    }
+
+                    menu.addAction(openCompAction_);
 					break;
 											   }
 				case KactusAttribute::KTS_SW: {
@@ -287,11 +292,11 @@ void LibraryTreeView::setupActions() {
     connect(createApiDefAction_, SIGNAL(triggered()),
         this, SLOT(onCreateApiDef()), Qt::UniqueConnection);
 
-	openSystemAction_ = new QAction(tr("Open System"), this);
-	openSystemAction_->setStatusTip(tr("Open system for editing"));
-	openSystemAction_->setToolTip(tr("Open system for editing"));
+	openSystemAction_ = new QAction(tr("Open System Design"), this);
+	openSystemAction_->setStatusTip(tr("Open system design for editing"));
+	openSystemAction_->setToolTip(tr("Open system design for editing"));
 	connect(openSystemAction_, SIGNAL(triggered()),
-		this, SLOT(onOpenComponent()), Qt::UniqueConnection);
+		this, SLOT(onOpenSystemDesign()), Qt::UniqueConnection);
 
 	openXmlAction_ = new QAction(tr("Open the xml-file"), this);
 	connect(openXmlAction_, SIGNAL(triggered()),
@@ -399,6 +404,10 @@ void LibraryTreeView::onOpenDesign() {
 
 void LibraryTreeView::onOpenSWDesign() {
     emit openSWDesign(filter_->mapToSource(currentIndex()));
+}
+
+void LibraryTreeView::onOpenSystemDesign() {
+    emit openSystemDesign(filter_->mapToSource(currentIndex()));
 }
 
 void LibraryTreeView::onOpenComponent() {

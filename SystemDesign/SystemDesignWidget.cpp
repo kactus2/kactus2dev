@@ -115,7 +115,15 @@ bool SystemDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
 
     setDocumentName(system_->getVlnv()->getName() + 
         " (" + system_->getVlnv()->getVersion() + ")");
-    setDocumentType("System");
+
+    if (onlySW_)
+    {
+        setDocumentType("SW Design");
+    }
+    else
+    {
+        setDocumentType("System Design");
+    }
 
     // Open in unlocked mode by default only if the version is draft.
     setProtection(vlnv.getVersion() != "draft");
@@ -128,21 +136,37 @@ bool SystemDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
 //-----------------------------------------------------------------------------
 bool SystemDesignWidget::setDesign(QSharedPointer<Component> comp, const QString& viewName)
 {
-    SWView* view = comp->findSWView(viewName);
+    VLNV designVLNV;
 
-    if (!view)
+    if (onlySW_)
     {
-        return false;
-    }
+        SWView* view = comp->findSWView(viewName);
 
-    VLNV designVLNV = comp->getHierSWRef(viewName);
+        if (!view)
+        {
+            return false;
+        }
+
+        designVLNV = comp->getHierSWRef(viewName);
+    }
+    else
+    {
+        SystemView* view = comp->findSystemView(viewName);
+
+        if (!view)
+        {
+            return false;
+        }
+
+        designVLNV = comp->getHierSystemRef(viewName);
+    }
 
     // Check for a valid VLNV type.
     designVLNV.setType(lh_->getDocumentType(designVLNV));
 
     if (!designVLNV.isValid())
     {
-        emit errorMessage(tr("Component %1 did not contain a system design view").arg(comp->getVlnv()->getName()));
+        emit errorMessage(tr("Component %1 did not contain a view").arg(comp->getVlnv()->getName()));
         return false;
     }
 
@@ -172,7 +196,7 @@ bool SystemDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
         // if design configuration did not contain a reference to a design.
         if (!design)
         {
-            emit errorMessage(tr("Component %1 did not contain a system design view").arg(
+            emit errorMessage(tr("Component %1 did not contain a view").arg(
                 comp->getVlnv()->getName()));
             return false;;
         }
