@@ -11,7 +11,7 @@
 
 #include "SystemDesignWidget.h"
 
-#include "../EndpointDesign/SystemDeleteCommands.h"
+#include "SystemDeleteCommands.h"
 
 #include "SystemDesignDiagram.h"
 #include "SWCompItem.h"

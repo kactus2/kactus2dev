@@ -7,7 +7,7 @@
 
 #include "componentinstanceeditor.h"
 
-#include <EndpointDesign/SystemChangeCommands.h>
+#include <SystemDesign/SystemChangeCommands.h>
 #include <designwidget/diagramcomponent.h>
 #include <SystemDesign/SWComponentItem.h>
 #include <SystemDesign/SWCompItem.h>
@@ -89,7 +89,7 @@ void ComponentInstanceEditor::setComponent( ComponentItem* component ) {
         component_->disconnect(&fileSetRefCombo_);
 
         disconnect(&fileSetRefCombo_, SIGNAL(currentIndexChanged(QString const&)),
-            this, SLOT(onFileSetRefChanged(QString const&)));
+                   this, SLOT(onFileSetRefChanged(QString const&)));
 	}
 
 	component_ = component;
@@ -129,6 +129,9 @@ void ComponentInstanceEditor::setComponent( ComponentItem* component ) {
         }
 
         swGroup_.show();
+
+        connect(swComponent, SIGNAL(fileSetRefChanged(QString const&)),
+                this, SLOT(updateFileSetRef(QString const&)), Qt::UniqueConnection);
     }
     else
     {
@@ -146,6 +149,9 @@ void ComponentInstanceEditor::setComponent( ComponentItem* component ) {
         propertyValueEditor_.show();
 
         configurableElements_.hide();
+
+        connect(swComponent, SIGNAL(propertyValuesChanged(QMap<QString, QString> const&)),
+                &propertyValueEditor_, SLOT(setData(QMap<QString, QString> const&)), Qt::UniqueConnection);
     }
     else
     {
@@ -163,10 +169,6 @@ void ComponentInstanceEditor::setComponent( ComponentItem* component ) {
 		    &nameGroup_, SLOT(setDisplayName(const QString&)), Qt::UniqueConnection);
 	connect(component_, SIGNAL(descriptionChanged(const QString&)),
 		    &nameGroup_, SLOT(setDescription(const QString&)), Qt::UniqueConnection);
-    connect(component_, SIGNAL(propertyValuesChanged(QMap<QString, QString> const&)),
-            &propertyValueEditor_, SLOT(setData(QMap<QString, QString> const&)), Qt::UniqueConnection);
-    connect(component_, SIGNAL(fileSetRefChanged(QString const&)),
-            this, SLOT(updateFileSetRef(QString const&)), Qt::UniqueConnection);
 
     connect(&fileSetRefCombo_, SIGNAL(currentIndexChanged(QString const&)),
         this, SLOT(onFileSetRefChanged(QString const&)), Qt::UniqueConnection);

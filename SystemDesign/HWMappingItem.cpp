@@ -11,7 +11,7 @@
 
 #include "HWMappingItem.h"
 
-#include "../EndpointDesign/SystemMoveCommands.h"
+#include "SystemMoveCommands.h"
 
 #include "SystemDesignDiagram.h"
 #include "SWCompItem.h"

@@ -15,7 +15,7 @@
 #include "SWConnection.h"
 #include "HWMappingItem.h"
 
-#include "../EndpointDesign/SystemMoveCommands.h"
+#include "SystemMoveCommands.h"
 
 #include <common/GenericEditProvider.h>
 #include <common/diagramgrid.h>

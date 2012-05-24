@@ -11,9 +11,9 @@
 
 #include "SystemChangeCommands.h"
 
-#include <SystemDesign/SWConnectionEndpoint.h>
-#include <SystemDesign/SWComponentItem.h>
-#include <SystemDesign/SWCompItem.h>
+#include "SWConnectionEndpoint.h"
+#include "SWComponentItem.h"
+#include "SWCompItem.h"
 
 #include <common/graphicsItems/ComponentItem.h>
 

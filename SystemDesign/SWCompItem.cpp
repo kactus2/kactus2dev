@@ -14,7 +14,7 @@
 #include "SWPortItem.h"
 #include "SWConnection.h"
 
-#include "../EndpointDesign/SystemMoveCommands.h"
+#include "SystemMoveCommands.h"
 
 #include "IComponentStack.h"
 #include "SystemDesignDiagram.h"

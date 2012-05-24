@@ -11,9 +11,9 @@
 
 #include "SystemDesignDiagram.h"
 
-#include "../EndpointDesign/SystemChangeCommands.h"
-#include "../EndpointDesign/SystemMoveCommands.h"
-#include "../EndpointDesign/SystemAddCommands.h"
+#include "SystemChangeCommands.h"
+#include "SystemMoveCommands.h"
+#include "SystemAddCommands.h"
 
 #include <designwidget/DiagramChangeCommands.h>
 

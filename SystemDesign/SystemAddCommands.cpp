@@ -11,10 +11,10 @@
 
 #include "SystemAddCommands.h"
 
-#include "../SystemDesign/SystemColumnLayout.h"
-#include "../SystemDesign/SystemColumn.h"
-#include "../SystemDesign/SWConnection.h"
-#include "../SystemDesign/SWComponentItem.h"
+#include "SystemColumnLayout.h"
+#include "SystemColumn.h"
+#include "SWConnection.h"
+#include "SWComponentItem.h"
 
 #include <common/graphicsItems/ComponentItem.h>
 

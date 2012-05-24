@@ -11,7 +11,7 @@
 
 #include "SWConnection.h"
 
-#include "../EndpointDesign/SystemMoveCommands.h"
+#include "SystemMoveCommands.h"
 
 #include "SWComponentItem.h"
 

@@ -11,10 +11,10 @@
 
 #include "SystemMoveCommands.h"
 
-#include "../SystemDesign/SystemColumnLayout.h"
-#include "../SystemDesign/SystemColumn.h"
-#include "../SystemDesign/SWComponentItem.h"
-#include "../SystemDesign/SWConnection.h"
+#include "SystemColumnLayout.h"
+#include "SystemColumn.h"
+#include "SWComponentItem.h"
+#include "SWConnection.h"
 
 //-----------------------------------------------------------------------------
 // Function: SystemColumnMoveCommand()
