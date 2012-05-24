@@ -140,7 +140,7 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
 
         HWMappingItem* item = new HWMappingItem(getLibraryInterface(), component, instance.instanceName,
                                                 instance.displayName, instance.description,
-                                                instance.configurableElementValues, 0);
+                                                instance.configurableElementValues);
         item->setImported(instance.imported);
         item->setPropertyValues(instance.swPropertyValues);
 

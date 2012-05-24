@@ -36,11 +36,9 @@ HWMappingItem::HWMappingItem(LibraryInterface* libInterface,
                              QString const& instanceName,
                              QString const& displayName,
                              QString const& description,
-                             QMap<QString, QString> const& configurableElementValues,
-                             unsigned int id)
+                             QMap<QString, QString> const& configurableElementValues)
     : SWComponentItem(QRectF(-WIDTH / 2, 0, WIDTH, 0), libInterface, component, instanceName,
                       displayName, description, configurableElementValues, 0),
-      id_(id),
       oldStack_(0),
       swComponents_(),
       oldPos_()

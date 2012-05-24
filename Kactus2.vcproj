@@ -14720,6 +14720,14 @@
 				<File
 					RelativePath=".\debug\moc_librarytreewidget.cpp"
 					>
+					<FileConfiguration
+						Name="Release|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath=".\debug\moc_lineeditdelegate.cpp"

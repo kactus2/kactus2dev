@@ -39,11 +39,9 @@ SWCompItem::SWCompItem(LibraryInterface* libInterface,
                        QString const& instanceName,
                        QString const& displayName,
                        QString const& description,
-                       QMap<QString, QString> const& configurableElementValues,
-                       unsigned int id)
+                       QMap<QString, QString> const& configurableElementValues)
     : SWComponentItem(QRectF(-WIDTH / 2, 0, WIDTH, MIN_HEIGHT), libInterface, component, instanceName,
                       displayName, description, configurableElementValues, 0),
-      id_(id),
       oldStack_(0),
       oldPos_(),
       hierIcon_(0)

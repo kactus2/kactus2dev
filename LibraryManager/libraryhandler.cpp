@@ -195,6 +195,7 @@ void LibraryHandler::syncronizeModels() {
         this, SLOT(onOpenSystemDesign(const VLNV&)), Qt::UniqueConnection);
 	connect(hierarchyModel_.data(), SIGNAL(editItem(const VLNV&)),
 		this, SLOT(onEditItem(const VLNV&)), Qt::UniqueConnection);
+
 	connect(hierarchyModel_.data(), SIGNAL(createBusDef(const VLNV&)),
 		this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
 	connect(hierarchyModel_.data(), SIGNAL(createComponent(const VLNV&)),
@@ -207,10 +208,14 @@ void LibraryHandler::syncronizeModels() {
         this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
     connect(hierarchyModel_.data(), SIGNAL(createApiDef(const VLNV&)),
         this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
+
+    connect(hierarchyModel_.data(), SIGNAL(createDesign(const VLNV&)),
+            this, SLOT(onCreateDesign(const VLNV&)), Qt::UniqueConnection);
 	connect(hierarchyModel_.data(), SIGNAL(createSWDesign(const VLNV&)),
-		this, SIGNAL(createSWDesign(const VLNV&)), Qt::UniqueConnection);
+		    this, SIGNAL(createSWDesign(const VLNV&)), Qt::UniqueConnection);
+
 	connect(hierarchyModel_.data(), SIGNAL(exportItem(const VLNV&)),
-		this, SLOT(onExportItem(const VLNV&)), Qt::UniqueConnection);
+		    this, SLOT(onExportItem(const VLNV&)), Qt::UniqueConnection);
 }
 
 void LibraryHandler::onExportItem( const VLNV& vlnv ) {

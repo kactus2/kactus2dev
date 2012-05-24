@@ -154,6 +154,8 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
                     }
 
 					menu.addAction(openCompAction_);
+                    menu.addSeparator();
+
 					menu.addAction(createNewComponentAction_);
 					// if component was not hierarchical then design can be created for it.
 					if (!hierarchical)
@@ -232,9 +234,9 @@ void LibraryTreeView::setupActions() {
 	connect(createNewDesignAction_, SIGNAL(triggered()),
 		this, SLOT(onCreateDesign()), Qt::UniqueConnection);
 
-    createNewSWDesignAction_ = new QAction(tr("Create New Design"), this);
-    createNewSWDesignAction_->setStatusTip(tr("Create new design"));
-    createNewSWDesignAction_->setToolTip(tr("Create new design"));
+    createNewSWDesignAction_ = new QAction(tr("Create New SW Design"), this);
+    createNewSWDesignAction_->setStatusTip(tr("Create new SW design"));
+    createNewSWDesignAction_->setToolTip(tr("Create new SW design"));
     connect(createNewSWDesignAction_, SIGNAL(triggered()),
             this, SLOT(onCreateSWDesign()), Qt::UniqueConnection);
 

@@ -38,8 +38,7 @@ public:
                QString const& instanceName,
                QString const& displayName = QString(),
                QString const& description = QString(),
-               QMap<QString, QString> const& configurableElementValues = QMap<QString, QString>(),
-               unsigned int id = 0);
+               QMap<QString, QString> const& configurableElementValues = QMap<QString, QString>());
 
     /*!
      *  Destructor.
@@ -103,9 +102,6 @@ private:
         WIDTH = 160,
         MIN_HEIGHT = 60
     };
-
-    //! The node id.
-    unsigned int id_;
 
     //! The old stack from where the mouse drag event began.
     IComponentStack* oldStack_;
