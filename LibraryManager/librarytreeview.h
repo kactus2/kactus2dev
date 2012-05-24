@@ -64,6 +64,9 @@ signals:
     //! \brief Create new SW design
     void createNewSWDesign(const QModelIndex& index);
 
+    //! \brief Create new system design
+    void createNewSystemDesign(const QModelIndex& index);
+
 	//! \brief Delete the selected item
 	void deleteItem(const QModelIndex& index);
 
@@ -125,6 +128,9 @@ public slots:
 
     //! \brief Create new SW design
     void onCreateSWDesign();
+
+    //! \brief Create new SW design
+    void onCreateSystemDesign();
 
 	//! \brief Called when user selects "Delete item" in contextMenu
 	void onDeleteAction();
@@ -226,6 +232,9 @@ private:
 
     //! Create new SW design for a component.
     QAction* createNewSWDesignAction_;
+
+    //! Create new system design for a component.
+    QAction* createNewSystemDesignAction_;
 
 	//! \brief Delete the item from the library
 	QAction* deleteAction_;

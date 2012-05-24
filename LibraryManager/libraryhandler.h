@@ -439,6 +439,9 @@ signals:
     //! \brief Signal that user wants to create a new SW design for the given component.
     void createSWDesign(VLNV const& vlnv);
 
+    //! \brief Signal that user wants to create a new system design for the given component.
+    void createSystemDesign(VLNV const& vlnv);
+
 	//! \brief Signal that user wants to create a new abstraction definition for given bus definition.
 	void createAbsDef(const VLNV& busDefVLNV, const QString& directory, bool disableBusDef);
 

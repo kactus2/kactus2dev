@@ -44,6 +44,7 @@
 #include <models/designconfiguration.h>
 #include <models/design.h>
 #include <models/model.h>
+#include <models/SWView.h>
 #include <models/businterface.h>
 #include <models/fileset.h>
 #include <models/file.h>
@@ -233,7 +234,7 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
 
         SWCompItem* item = new SWCompItem(getLibraryInterface(), component, instance.getInstanceName(),
                                           instance.getDisplayName(), instance.getDescription());
-        //item->setImported(instance.imported);
+        item->setImported(true);
         item->setPos(instance.getPosition());
         item->setPropertyValues(instance.getPropertyValues());
         item->setFileSetRef(instance.getFileSetRef());
@@ -1085,27 +1086,28 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
         if (getLibraryInterface()->contains(*comp->componentModel()->getVlnv()))
         {
             QString viewName;
-            QStringList hierViews = comp->componentModel()->getHierViews();
+            QStringList hierViews = comp->componentModel()->getSWViewNames();
 
             // if configuration is used and it contains an active view for the instance
             if (getDesignConfiguration() && getDesignConfiguration()->hasActiveView(comp->name())) {
                 viewName = getDesignConfiguration()->getActiveView(comp->name());
 
-                View* view = comp->componentModel()->findView(viewName);
+                SWView* view = comp->componentModel()->findSWView(viewName);
 
-                // if view was found and it is hierarchical
-                if (view && view->isHierarchical()) {
-                    emit openDesign(*comp->componentModel()->getVlnv(), viewName);
+                // if view was found
+                if (view)
+                {
+                    emit openSWDesign(*comp->componentModel()->getVlnv(), viewName);
                 }
-                // if view was found but it is not hierarchical
-                else if (view && !view->isHierarchical()) {
+                else
+                {
                     emit openComponent(*comp->componentModel()->getVlnv());
                 }
                 // if view was not found
-                else {
-                    emit errorMessage(tr("The active view %1 was not found in "
-                        "instance %2").arg(viewName).arg(comp->name()));
-                }
+//                 else {
+//                     emit errorMessage(tr("The active view %1 was not found in "
+//                         "instance %2").arg(viewName).arg(comp->name()));
+//                 }
             }
             // if component does not contain any hierarchical views or contains
             // more than one hierarchical view then it is not known which view to open
@@ -1120,7 +1122,7 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
             else {
                 emit noticeMessage(tr("No active view was selected for instance %1, "
                     "opening the only hierarhical view of the component.").arg(comp->name()));
-                emit openDesign(*comp->componentModel()->getVlnv(), hierViews.first());
+                emit openSWDesign(*comp->componentModel()->getVlnv(), hierViews.first());
             }
         }
         else if (!isProtected())

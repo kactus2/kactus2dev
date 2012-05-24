@@ -300,6 +300,8 @@ public slots:
     void createSystem(VLNV const& compVLNV, QString const& viewName,
                       VLNV const& sysVLNV, QString const& directory);
 
+    void createSystemDesign(VLNV const& vlnv);
+
     /*! \brief Creates a new bus definition and abstraction definition
 	 *
 	 * \param vlnv The vlnv for the bus definition
@@ -709,7 +711,7 @@ private:
 	 *
 	*/
 	void updateWindows(unsigned int supportedWindows);
-
+    
     //-----------------------------------------------------------------------------
     //! Structure which contains the show/hidden status for the windows.
     //-----------------------------------------------------------------------------

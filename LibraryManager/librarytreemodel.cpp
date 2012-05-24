@@ -623,3 +623,19 @@ void LibraryTreeModel::onCreateNewSWDesign( const QModelIndex& index ) {
 
     emit createSWDesign(vlnv);
 }
+
+void LibraryTreeModel::onCreateNewSystemDesign( const QModelIndex& index ) {
+
+    if (!index.isValid())
+        return;
+
+    LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
+
+    VLNV vlnv;
+    vlnv.setType(VLNV::COMPONENT);
+
+    // tell items to set the fields for the vlnv
+    item->setVlnv(vlnv);
+
+    emit createSystemDesign(vlnv);
+}

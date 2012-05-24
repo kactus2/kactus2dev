@@ -37,6 +37,7 @@ HierarchyView::HierarchyView(QWidget *parent,
       createNewComponentAction_(NULL),
       createNewDesignAction_(NULL),
       createNewSWDesignAction_(NULL),
+      createNewSystemDesignAction_(NULL),
       exportAction_(NULL),
       openBusAction_(NULL),
       addSignalsAction_(NULL),
@@ -107,6 +108,12 @@ void HierarchyView::setupActions() {
     createNewSWDesignAction_->setToolTip(tr("Create new SW design"));
     connect(createNewSWDesignAction_, SIGNAL(triggered()),
         this, SLOT(onCreateSWDesign()), Qt::UniqueConnection);
+
+    createNewSystemDesignAction_ = new QAction(tr("Create New System Design"), this);
+    createNewSystemDesignAction_->setStatusTip(tr("Create new System design"));
+    createNewSystemDesignAction_->setToolTip(tr("Create new System design"));
+    connect(createNewSystemDesignAction_, SIGNAL(triggered()),
+        this, SLOT(onCreateSystemDesign()), Qt::UniqueConnection);
 
 	exportAction_ = new QAction(tr("Export"), this);
 	exportAction_->setStatusTip(tr("Export item and it's sub-items to another location"));
@@ -228,6 +235,10 @@ void HierarchyView::onCreateSWDesign() {
     emit createNewSWDesign(filter_->mapToSource(currentIndex()));
 }
 
+void HierarchyView::onCreateSystemDesign() {
+    emit createNewSystemDesign(filter_->mapToSource(currentIndex()));
+}
+
 void HierarchyView::onAddSignals() {
 	emit createNewAbsDef(filter_->mapToSource(currentIndex()));
 }
@@ -329,6 +340,7 @@ void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
                     {
                         menu.addAction(createNewSWDesignAction_);
                     }
+
                     break;
                 }
 
@@ -343,6 +355,11 @@ void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
                     if (component->hasSWViews())
                     {
                         menu.addAction(openSWDesignAction_);
+                    }
+
+                    if (component->hasSystemViews())
+                    {
+                        menu.addAction(openSystemAction_);
                     }
 
                     menu.addAction(openCompAction_);
@@ -364,6 +381,11 @@ void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
                     if (!component->hasSWViews() && indexes.size() == 1)
                     {
                         menu.addAction(createNewSWDesignAction_);
+                    }
+
+                    if (!component->hasSystemViews() && indexes.size() == 1)
+                    {
+                        menu.addAction(createNewSystemDesignAction_);
                     }
                     break;
                 }

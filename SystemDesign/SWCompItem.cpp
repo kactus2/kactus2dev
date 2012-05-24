@@ -44,7 +44,8 @@ SWCompItem::SWCompItem(LibraryInterface* libInterface,
                       displayName, description, configurableElementValues, 0),
       oldStack_(0),
       oldPos_(),
-      hierIcon_(0)
+      hierIcon_(0),
+      importedIcon_(0)
 {
     setFlag(ItemIsMovable);
     
@@ -212,7 +213,7 @@ void SWCompItem::updateComponent()
     }
 
     // Create a hierarchy icon if the component is a hierarchical one.
-    if (componentModel()->getModel()->hasHierView())
+    if (componentModel()->hasSWViews())
     {
         if (hierIcon_ == 0)
         {
@@ -224,6 +225,23 @@ void SWCompItem::updateComponent()
     else if (hierIcon_ != 0)
     {
         delete hierIcon_;
+        hierIcon_ = 0;
+    }
+
+    // Create imported icon if the component is an imported one.
+    if (isImported())
+    {
+        if (importedIcon_ == 0)
+        {
+            hierIcon_ = new QGraphicsPixmapItem(QPixmap(":icons/graphics/imported.png"), this);
+            hierIcon_->setToolTip(tr("Auto-synced"));
+            hierIcon_->setPos(-75, 6);
+        }
+    }
+    else if (importedIcon_ != 0)
+    {
+        delete importedIcon_;
+        importedIcon_ = 0;
     }
 }
 

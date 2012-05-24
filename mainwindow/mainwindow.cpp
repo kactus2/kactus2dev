@@ -403,8 +403,8 @@ void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName, bool fo
     connect(designWidget, SIGNAL(contentChanged()), this, SLOT(updateMenuStrip()), Qt::UniqueConnection);
     connect(designWidget, SIGNAL(openComponent(const VLNV&)),
         this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
-    connect(designWidget, SIGNAL(openDesign(const VLNV&, const QString&)),
-        this, SLOT(openDesign(const VLNV&, const QString&)));
+    connect(designWidget, SIGNAL(openSWDesign(const VLNV&, const QString&)),
+        this, SLOT(openSWDesign(const VLNV&, const QString&)));
     connect(designWidget, SIGNAL(openSource(ComponentItem*)),
         this, SLOT(openSource(ComponentItem*)), Qt::UniqueConnection);
 
@@ -999,6 +999,8 @@ void MainWindow::setupLibraryDock() {
         this, SLOT(createApiDefinition(const VLNV&, const QString&)), Qt::UniqueConnection);
     connect(libraryHandler_, SIGNAL(createSWDesign(const VLNV&)),
         this, SLOT(createSWDesign(const VLNV&)), Qt::UniqueConnection);
+    connect(libraryHandler_, SIGNAL(createSystemDesign(const VLNV&)),
+        this, SLOT(createSystemDesign(const VLNV&)), Qt::UniqueConnection);
 	connect(libraryHandler_, SIGNAL(openComponent(const VLNV&)),
 		this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
 	connect(libraryHandler_, SIGNAL(openSWDesign(const VLNV&, QString const&)),
@@ -2237,7 +2239,7 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName,
     columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_CUSTOM, 0));
     sysDesign->setColumns(columns);
     
-	generateSystemDesign(libraryHandler_, directory, component->getHierRef(viewName), *sysDesign);
+	generateSystemDesignV2(libraryHandler_, directory, component->getHierRef(viewName), *sysDesign);
 
 	// Create the design configuration.
 	QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV));
@@ -2252,6 +2254,80 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName,
 	openSystemDesign(sysVLNV, "kts_sys_ref", true);
 }
 
+//-----------------------------------------------------------------------------
+// Function: MainWindow::createSWDesign()
+//-----------------------------------------------------------------------------
+void MainWindow::createSystemDesign(VLNV const& vlnv)
+{
+    Q_ASSERT(libraryHandler_->contains(vlnv));
+    Q_ASSERT(libraryHandler_->getDocumentType(vlnv) == VLNV::COMPONENT);
+
+    libraryHandler_->beginSave();
+
+    // Retrieve the component to which the system design will be created.
+    QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(vlnv);
+    QSharedPointer<Component> component = libComp.staticCast<Component>();
+
+    // Create a unique vlnv for the design.
+    VLNV designVLNV(VLNV::DESIGN, vlnv.getVendor(), vlnv.getLibrary(),
+        vlnv.getName().remove(".comp") + ".sysdesign", vlnv.getVersion());
+
+    int runningNumber = 1;
+    QString version = designVLNV.getVersion();
+
+    while (libraryHandler_->contains(designVLNV))
+    {
+        ++runningNumber;
+        designVLNV.setVersion(version + "(" + QString::number(runningNumber) + ")");
+    }
+
+    // Create a unique vlnv for the design configuration.
+    VLNV desConfVLNV(VLNV::DESIGNCONFIGURATION, vlnv.getVendor(), vlnv.getLibrary(),
+        vlnv.getName().remove(".comp") + ".sysdesigncfg", vlnv.getVersion());
+
+    runningNumber = 1;
+    version = desConfVLNV.getVersion();
+
+    while (libraryHandler_->contains(desConfVLNV))
+    {
+        ++runningNumber;
+        desConfVLNV.setVersion(version + "(" + QString::number(runningNumber) + ")");
+    }
+
+    // Create the view.
+    SystemView* view = new SystemView(tr("system"));
+    view->setHierarchyRef(desConfVLNV);   
+    component->addSystemView(view);
+
+    // Create the design and design configuration objects to the same folder as the component.
+    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV));
+    designConf->setDesignRef(designVLNV);
+
+    QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(designVLNV));
+
+    QList<ColumnDesc> columns;
+    columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_CUSTOM, 0));
+    columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_CUSTOM, 0));
+    newDesign->setColumns(columns);
+
+    QString xmlPath = libraryHandler_->getPath(vlnv);
+    QFileInfo xmlInfo(xmlPath);
+    QString dirPath = xmlInfo.absolutePath();
+
+    generateSystemDesignV2(libraryHandler_, dirPath, component->getHierRef(), *newDesign);
+
+    libraryHandler_->writeModelToFile(dirPath, newDesign);
+    libraryHandler_->writeModelToFile(dirPath, designConf);
+    libraryHandler_->writeModelToFile(component);
+
+    // Open the design.
+    libraryHandler_->endSave();
+    openSystemDesign(vlnv, view->getName(), true);
+}
+
+//-----------------------------------------------------------------------------
+// Function: createBus()
+//-----------------------------------------------------------------------------
 void MainWindow::createBus( VLNV const& vlnv, QString const& directory ) {
 
 	Q_ASSERT(vlnv.isValid());
@@ -2517,8 +2593,8 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName, boo
 	connect(designWidget, SIGNAL(contentChanged()), this, SLOT(updateMenuStrip()), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(openComponent(const VLNV&)),
 		this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
-	connect(designWidget, SIGNAL(openDesign(const VLNV&, const QString&)),
-		this, SLOT(openDesign(const VLNV&, const QString&)));
+	connect(designWidget, SIGNAL(openSWDesign(const VLNV&, const QString&)),
+		this, SLOT(openSWDesign(const VLNV&, const QString&)));
 	connect(designWidget, SIGNAL(openSource(ComponentItem*)),
 		this, SLOT(openSource(ComponentItem*)), Qt::UniqueConnection);
     

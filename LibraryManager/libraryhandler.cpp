@@ -145,6 +145,8 @@ void LibraryHandler::syncronizeModels() {
 		this, SLOT(onCreateDesign(const VLNV&)), Qt::UniqueConnection);
     connect(data_.data(), SIGNAL(createSWDesign(const VLNV&)),
         this, SIGNAL(createSWDesign(const VLNV&)), Qt::UniqueConnection);
+//     connect(data_.data(), SIGNAL(createSystemDesign(const VLNV&)),
+//         this, SIGNAL(createSystemDesign(const VLNV&)), Qt::UniqueConnection);
 
 	/**************************************************************************/
 	// connect the signals from the tree model
@@ -178,6 +180,8 @@ void LibraryHandler::syncronizeModels() {
 		this, SLOT(onCreateDesign(const VLNV&)), Qt::UniqueConnection);
     connect(treeModel_.data(), SIGNAL(createSWDesign(const VLNV&)),
         this, SIGNAL(createSWDesign(const VLNV&)), Qt::UniqueConnection);
+    connect(treeModel_.data(), SIGNAL(createSystemDesign(const VLNV&)),
+        this, SIGNAL(createSystemDesign(const VLNV&)), Qt::UniqueConnection);
 	connect(treeModel_.data(), SIGNAL(exportItems(const QList<VLNV*>&)),
 		this, SLOT(onExportItems(const QList<VLNV*>&)), Qt::UniqueConnection);
 	connect(treeModel_.data(), SIGNAL(refreshDialer()),
@@ -213,6 +217,8 @@ void LibraryHandler::syncronizeModels() {
             this, SLOT(onCreateDesign(const VLNV&)), Qt::UniqueConnection);
 	connect(hierarchyModel_.data(), SIGNAL(createSWDesign(const VLNV&)),
 		    this, SIGNAL(createSWDesign(const VLNV&)), Qt::UniqueConnection);
+    connect(hierarchyModel_.data(), SIGNAL(createSystemDesign(const VLNV&)),
+            this, SIGNAL(createSystemDesign(const VLNV&)), Qt::UniqueConnection);
 
 	connect(hierarchyModel_.data(), SIGNAL(exportItem(const VLNV&)),
 		    this, SLOT(onExportItem(const VLNV&)), Qt::UniqueConnection);

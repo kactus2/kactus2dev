@@ -50,8 +50,8 @@ SystemDesignWidget::SystemDesignWidget(bool onlySW, LibraryInterface* lh, MainWi
 
     connect(diagram_, SIGNAL(openComponent(const VLNV&)),
         this, SIGNAL(openComponent(const VLNV&)), Qt::UniqueConnection);
-    connect(diagram_, SIGNAL(openDesign(const VLNV&, QString const&)),
-        this, SIGNAL(openDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
+    connect(diagram_, SIGNAL(openSWDesign(const VLNV&, QString const&)),
+        this, SIGNAL(openSWDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
     connect(diagram_, SIGNAL(openSource(ComponentItem*)),
         this, SIGNAL(openSource(ComponentItem*)), Qt::UniqueConnection);
     connect(diagram_, SIGNAL(componentSelected(ComponentItem*)),
@@ -206,7 +206,7 @@ bool SystemDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
     {
         // Update the design.
         updateSystemDesignV2(lh_, QFileInfo(lh_->getPath(*design->getVlnv())).path(),
-                             comp->getHierRef("kts_hw_ref"), *design);
+                             comp->getHierRef(""), *design);
     }
 
     if (!diagram_->setDesign(comp, design, designConf))

@@ -67,6 +67,9 @@ void LibraryTreeWidget::setupConnections(LibraryTreeModel* dataModel) {
     connect(&view_, SIGNAL(createNewSWDesign(const QModelIndex&)),
             dataModel, SLOT(onCreateNewSWDesign(const QModelIndex&)), Qt::UniqueConnection);
 
+    connect(&view_, SIGNAL(createNewSystemDesign(const QModelIndex&)),
+            dataModel, SLOT(onCreateNewSystemDesign(const QModelIndex&)), Qt::UniqueConnection);
+
 	connect(&view_, SIGNAL(openBus(const QModelIndex&)),
 		    dataModel, SLOT(onOpenBus(const QModelIndex&)), Qt::UniqueConnection);
 

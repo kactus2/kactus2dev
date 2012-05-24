@@ -71,6 +71,9 @@ public slots:
     //! \brief Create new SW design
     void onCreateSWDesign();
 
+    //! \brief Create new system design
+    void onCreateSystemDesign();
+
 	//! \brief Called when user selects "Export item and sub-items" in contextMenu
 	void onExportAction();
 
@@ -139,6 +142,9 @@ signals:
 
     //! Create new SW design.
     void createNewSWDesign(QModelIndex const& index);
+
+    //! Create new system design.
+    void createNewSystemDesign(QModelIndex const& index);
 
 	//! \brief Export the selected item and it's sub-items.
 	void exportItem(const QModelIndex& index);
@@ -217,6 +223,9 @@ private:
 
     //! \brief Create new SW design for a component
     QAction* createNewSWDesignAction_;
+
+    //! \brief Create new system design for a component
+    QAction* createNewSystemDesignAction_;
 
 	//! \brief Export the item(s) to a new location in file system
 	QAction* exportAction_;

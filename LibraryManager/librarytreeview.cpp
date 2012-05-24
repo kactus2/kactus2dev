@@ -38,6 +38,7 @@ openCompAction_(NULL),
 createNewComponentAction_(NULL),
 createNewDesignAction_(NULL),
 createNewSWDesignAction_(NULL),
+createNewSystemDesignAction_(NULL),
 deleteAction_(NULL), 
 exportAction_(NULL),  
 openBusAction_(NULL),
@@ -153,6 +154,11 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
                         hierarchical = true;
                     }
 
+                    if (component->hasSystemViews())
+                    {
+                        menu.addAction(openSystemAction_);
+                    }
+
 					menu.addAction(openCompAction_);
                     menu.addSeparator();
 
@@ -165,6 +171,12 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
                     {
                         menu.addAction(createNewSWDesignAction_);
                     }
+
+                    if (!component->hasSystemViews())
+                    {
+                        menu.addAction(createNewSystemDesignAction_);
+                    }
+
 					break;
 						 }
 			}		
@@ -239,6 +251,12 @@ void LibraryTreeView::setupActions() {
     createNewSWDesignAction_->setToolTip(tr("Create new SW design"));
     connect(createNewSWDesignAction_, SIGNAL(triggered()),
             this, SLOT(onCreateSWDesign()), Qt::UniqueConnection);
+
+    createNewSystemDesignAction_ = new QAction(tr("Create New System Design"), this);
+    createNewSystemDesignAction_->setStatusTip(tr("Create new system design"));
+    createNewSystemDesignAction_->setToolTip(tr("Create new system design"));
+    connect(createNewSystemDesignAction_, SIGNAL(triggered()),
+        this, SLOT(onCreateSystemDesign()), Qt::UniqueConnection);
 
 	deleteAction_ = new QAction(tr("Delete Item"), this);
 	deleteAction_->setStatusTip(tr("Delete item from the library"));
@@ -426,6 +444,10 @@ void LibraryTreeView::onCreateDesign() {
 
 void LibraryTreeView::onCreateSWDesign() {
     emit createNewSWDesign(filter_->mapToSource(currentIndex()));
+}
+
+void LibraryTreeView::onCreateSystemDesign() {
+    emit createNewSystemDesign(filter_->mapToSource(currentIndex()));
 }
 
 void LibraryTreeView::onOpenBus() {

@@ -111,6 +111,7 @@ private:
     QPointF oldStackPos_;
 
     QGraphicsPixmapItem* hierIcon_;
+    QGraphicsPixmapItem* importedIcon_;
 
     //! The file set reference. Empty string if no reference.
     QString fileSetRef_;

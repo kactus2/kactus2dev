@@ -395,6 +395,18 @@ void HierarchyModel::onCreateNewSWDesign( const QModelIndex& index ) {
     emit createSWDesign(vlnv);
 }
 
+void HierarchyModel::onCreateNewSystemDesign( const QModelIndex& index ) {
+    if (!index.isValid())
+        return;
+
+    HierarchyItem* item = static_cast<HierarchyItem*>(index.internalPointer());
+
+    VLNV vlnv = item->getVLNV();
+    vlnv.setType(VLNV::COMPONENT);
+
+    emit createSystemDesign(vlnv);
+}
+
 void HierarchyModel::onCreateNewBus( const QModelIndex& index ) {
 	if (!index.isValid())
 		return;

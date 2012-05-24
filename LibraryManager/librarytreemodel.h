@@ -164,6 +164,9 @@ signals:
     //! \brief Create new SW design with given vlnv.
     void createSWDesign(const VLNV& vlnv);
 
+    //! \brief Create new system design with given vlnv.
+    void createSystemDesign(const VLNV& vlnv);
+
     //! \brief Create a new COM definition.
     void createComDef(const VLNV& vlnv);
 
@@ -207,6 +210,9 @@ public slots:
 
     //! \brief Create new SW design
     void onCreateNewSWDesign(const QModelIndex& index);
+
+    //! \brief Create new system design
+    void onCreateNewSystemDesign(const QModelIndex& index);
 
 	//! \brief When delete is selected in search view
 	void onDeleteItem(const QModelIndex& index);
