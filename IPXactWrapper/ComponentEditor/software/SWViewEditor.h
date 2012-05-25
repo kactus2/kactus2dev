@@ -31,12 +31,14 @@ public:
      *  Constructor.
      *
      *      @param [in] component    The component being edited.
-     *      @param [in] dataPointer  The SW view being edited.
+     *      @param [in] swView		 The SW view being edited.
      *      @param [in] libHandler   The library handler.
      *      @param [in] parent       The parent widget.
      */
-    SWViewEditor(QSharedPointer<Component> component, void* dataPointer,
-                 LibraryInterface* libHandler, QWidget *parent);
+	SWViewEditor(QSharedPointer<Component> component,
+		QSharedPointer<SWView> swView,
+		LibraryInterface* libHandler, 
+		QWidget *parent);
 
     /*!
      *  Destructor.

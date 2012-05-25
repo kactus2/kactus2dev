@@ -32,18 +32,16 @@ public:
 	* \param parent Pointer to the owner of this widget.
 	*/
 	ItemEditor(QSharedPointer<Component> component, 
-		QWidget *parent);
+		QWidget *parent = 0);
 
 	//! \brief The destructor.
 	virtual ~ItemEditor();
 
 	/*! \brief Check for the validity of the edited item.
-	*
-	* Base class implementation always returns true.
 	* 
 	* \return True if item is valid.
 	*/
-	virtual bool isValid() const;
+	virtual bool isValid() const = 0;
 
 	/*! \brief Remove the edited element from the model.
 	 *
@@ -55,9 +53,8 @@ public:
 
 	/*! \brief Make the changes from the widgets editors to the IPXact model.
 	 *
-	 * The base class implementation does nothing.
 	*/
-	virtual void makeChanges();
+	virtual void makeChanges() = 0;
 
     /*!
      *  Allows/disallows the editor change.
@@ -65,6 +62,10 @@ public:
      *      @return True, if this editor can be hidden without consequences. Otherwise false.
      */
     virtual bool confirmEditorChange();
+
+	/*! \brief Reload the information from the model to the editor.
+	*/
+	//virtual void refresh() = 0;
 
 signals:
 

@@ -7,6 +7,8 @@
 
 #include "componenteditoritem.h"
 #include "componenteditortreemodel.h"
+#include <IPXactWrapper/ComponentEditor/itemeditor.h>
+#include <IPXactWrapper/ComponentEditor/itemvisualizer.h>
 
 #include <QApplication>
 
@@ -38,6 +40,7 @@ parent_(NULL) {
 }
 
 ComponentEditorItem::~ComponentEditorItem() {
+	childItems_.clear();
 }
 
 int ComponentEditorItem::row() const {
@@ -47,8 +50,14 @@ int ComponentEditorItem::row() const {
 	return -1;
 }
 
-int ComponentEditorItem::getIndexOf(const ComponentEditorItem* child ) const {
-	return childItems_.indexOf(const_cast<ComponentEditorItem* const>(child));
+int ComponentEditorItem::getIndexOf( const ComponentEditorItem* child ) const {
+
+	for (int i = 0; i < childItems_.size(); ++i) {
+		if (childItems_.at(i).data() == child) {
+			return i;
+		}
+	}
+	return -1;
 }
 
 int ComponentEditorItem::rowCount() const {
@@ -59,9 +68,9 @@ bool ComponentEditorItem::hasChildren() const {
 	return !childItems_.isEmpty();
 }
 
-ComponentEditorItem* ComponentEditorItem::child( const int index ) {
+QSharedPointer<ComponentEditorItem> ComponentEditorItem::child( const int index ) {
 	if (index < 0 || childItems_.count() < index) {
-		return NULL;
+		return QSharedPointer<ComponentEditorItem>();
 	}
 
 	return childItems_.at(index);
@@ -78,12 +87,12 @@ QFont ComponentEditorItem::getFont() const {
 	return font;
 }
 
-void ComponentEditorItem::addChild( ComponentEditorItem* child ) {
+void ComponentEditorItem::addChild( QSharedPointer<ComponentEditorItem> child ) {
 	Q_ASSERT(child);
 	childItems_.append(child);
 }
 
-void ComponentEditorItem::removeChild( ComponentEditorItem* child ) {
+void ComponentEditorItem::removeChild( QSharedPointer<ComponentEditorItem> child ) {
 	Q_ASSERT(child);
 	childItems_.removeAll(child);
 }
@@ -96,7 +105,7 @@ void ComponentEditorItem::moveChild( const int sourceIndex, int targetIndex ) {
 	}
 
 	// Take the item from the list
-	ComponentEditorItem* itemToMove = childItems_.takeAt(sourceIndex);
+	QSharedPointer<ComponentEditorItem> itemToMove = childItems_.takeAt(sourceIndex);
 
 	// if item is moved down then the target must be decremented because on item is
 	// removed before adding to the list
@@ -107,18 +116,52 @@ void ComponentEditorItem::moveChild( const int sourceIndex, int targetIndex ) {
 	childItems_.insert(targetIndex, itemToMove);
 }
 
-QString ComponentEditorItem::text() const {
-	return tr("root");
-}
-
 bool ComponentEditorItem::isValid() const {
+	
+	// if at least one child is not valid then this is not valid
+	foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_) {
+		if (!childItem->isValid()) {
+			return false;
+		}
+	}
+
+	// all children were valid
 	return true;
 }
 
-ItemEditor* ComponentEditorItem::editor() {
+ItemVisualizer* ComponentEditorItem::visualizer() {
 	return NULL;
 }
 
-void ComponentEditorItem::onContentChanged() {
+void ComponentEditorItem::onEditorChanged() {
 	emit contentChanged(this);
+}
+
+void ComponentEditorItem::makeEditorChanges() {
+
+	// tell all children to make the changes
+	foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_) {
+		childItem->makeEditorChanges();
+	}
+
+	// if there is an editor then tell it to make the changes to the model
+	if (editor()) {
+		editor()->makeChanges();
+	}
+}
+
+void ComponentEditorItem::setLocked( bool locked ) {
+	// if this item contains an editor
+	if (editor()) {
+		editor()->setDisabled(locked);
+	}
+	// if this item contains a visualizer
+	if (visualizer()) {
+		visualizer()->setDisabled(locked);
+	}
+
+	// also tell child items
+	foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_) {
+		childItem->setLocked(locked);
+	}
 }

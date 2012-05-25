@@ -37,11 +37,13 @@ public:
      *
      *      @param [in] libHandler   The library handler.
      *      @param [in] component    The component being edited.
-     *      @param [in] dataPointer  The API interface being edited.
+     *      @param [in] APIInterface The API interface being edited.
      *      @param [in] parent       The parent widget.
-     */
-    ApiInterfaceEditor(LibraryInterface* libHandler, QSharedPointer<Component> component, 
-                       void* dataPointer, QWidget *parent);
+	 */
+	ApiInterfaceEditor(LibraryInterface* libHandler,
+		QSharedPointer<Component> component, 
+		QSharedPointer<ApiInterface> APIInterface,
+		QWidget *parent);
 
     /*!
      *  Destructor.

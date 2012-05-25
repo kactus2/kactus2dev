@@ -10,10 +10,12 @@
 ComponentEditorGeneralItem::ComponentEditorGeneralItem( ComponentEditorTreeModel* model,
 													   LibraryInterface* libHandler,
 													   QSharedPointer<Component> component,
-													   QWidget* widget,
 													   ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
-editor_(widget, libHandler, component, widget) {
+editor_(libHandler, component) {
+	editor_.hide();
+	connect(&editor_, SIGNAL(contentChanged()),
+		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 }
 
 ComponentEditorGeneralItem::~ComponentEditorGeneralItem() {
@@ -29,4 +31,8 @@ bool ComponentEditorGeneralItem::isValid() const {
 
 ItemEditor* ComponentEditorGeneralItem::editor() {
 	return &editor_;
+}
+
+QString ComponentEditorGeneralItem::getTooltip() const {
+	return tr("Contains the general settings of a component");
 }

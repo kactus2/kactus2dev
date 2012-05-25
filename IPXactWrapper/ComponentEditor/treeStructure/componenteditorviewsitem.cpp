@@ -11,15 +11,16 @@
 ComponentEditorViewsItem::ComponentEditorViewsItem(ComponentEditorTreeModel* model,
 												   LibraryInterface* libHandler,
 												   QSharedPointer<Component> component,
-												   QWidget* widget, 
 												   ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 views_(component->getViews()) {
 
+	setObjectName(tr("ComponentEditorViewsItem"));
+
 	foreach (QSharedPointer<View> view, views_) {
 
-		ComponentEditorViewItem* viewItem(new ComponentEditorViewItem(
-			view, model, libHandler, component, widget, this));
+		QSharedPointer<ComponentEditorViewItem> viewItem(new ComponentEditorViewItem(
+			view, model, libHandler, component, this));
 		childItems_.append(viewItem);
 	}
 }
@@ -31,15 +32,10 @@ QString ComponentEditorViewsItem::text() const {
 	return tr("Views");
 }
 
-bool ComponentEditorViewsItem::isValid() const {
-	foreach (QSharedPointer<View> view, views_) {
-		if (!view->isValid(component_->getFileSetNames())) {
-			return false;
-		}
-	}
-	return true;
-}
-
 ItemEditor* ComponentEditorViewsItem::editor() {
 	return NULL;
+}
+
+QString ComponentEditorViewsItem::getTooltip() const {
+	return tr("Contains the views of the component");
 }

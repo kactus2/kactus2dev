@@ -28,7 +28,6 @@ public:
 	 * \param model Pointer to the model that owns the items.
 	 * \param libHandler Pointer to the instance that manages the library.
 	 * \param component Pointer to the component being edited.
-	 * \param widget Pointer to the QWidget that displays the editor.
 	 * \param parent Pointer to the parent item.
 	 *
 	*/
@@ -36,11 +35,22 @@ public:
 		ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
-		QWidget* widget,
 		ComponentEditorItem* parent);
 
 	//! \brief The destructor
 	virtual ~ComponentEditorDefFileBuildersItem();
+
+	/*! \brief Get the font to be used for text of this item.
+	*
+	* \return QFont instance that defines the font to be used.
+	*/
+	virtual QFont getFont() const;
+
+	/*! \brief Get the tool tip for the item.
+	 * 
+	 * \return The text for the tool tip to print to user.
+	*/
+	virtual QString getTooltip() const;
 
 	/*! \brief Get the text to be displayed to user in the tree for this item.
 	 *

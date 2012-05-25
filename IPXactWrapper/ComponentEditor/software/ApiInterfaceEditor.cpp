@@ -24,16 +24,17 @@
 //-----------------------------------------------------------------------------
 ApiInterfaceEditor::ApiInterfaceEditor(LibraryInterface* libHandler,
                                        QSharedPointer<Component> component,
-                                       void* dataPointer, QWidget *parent)
+                                       QSharedPointer<ApiInterface> APIInterface,
+									   QWidget *parent)
     : ItemEditor(component, parent),
       libInterface_(libHandler),
-      apiIf_(static_cast<ApiInterface*>(dataPointer)),
+      apiIf_(APIInterface.data()),
       nameGroup_(this),
       apiType_(VLNV::APIDEFINITION, libHandler, this, this),
       detailsGroup_(tr("Details"), this),
       dependencyCombo_(this)
 {
-    Q_ASSERT(dataPointer != 0);
+    Q_ASSERT(APIInterface != 0);
     Q_ASSERT(libHandler != 0);
 
     connect(&nameGroup_, SIGNAL(contentChanged()),

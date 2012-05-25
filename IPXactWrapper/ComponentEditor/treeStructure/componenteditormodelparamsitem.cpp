@@ -9,13 +9,14 @@
 
 ComponentEditorModelParamsItem::ComponentEditorModelParamsItem( ComponentEditorTreeModel* model,
 															   LibraryInterface* libHandler,
-															   QSharedPointer<Component> component, 
-															   QWidget* widget, 
+															   QSharedPointer<Component> component,
 															   ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
 modelParams_(component->getModelParameters()), 
-editor_(component, &modelParams_, widget) {
-
+editor_(component, &modelParams_) {
+	editor_.hide();
+	connect(&editor_, SIGNAL(contentChanged()),
+		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 }
 
 ComponentEditorModelParamsItem::~ComponentEditorModelParamsItem() {
@@ -40,4 +41,8 @@ bool ComponentEditorModelParamsItem::isValid() const {
 
 ItemEditor* ComponentEditorModelParamsItem::editor() {
 	return &editor_;
+}
+
+QString ComponentEditorModelParamsItem::getTooltip() const {
+	return tr("Contains the implementation parameters");
 }

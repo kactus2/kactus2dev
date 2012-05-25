@@ -20,6 +20,7 @@
 class LibraryInterface;
 class ItemEditor;
 class ComponentEditorTreeModel;
+class ItemVisualizer;
 
 /*! \brief ComponentEditorItem is one item in the navigation tree in component editor.
  *
@@ -88,7 +89,7 @@ public:
 	 *
 	 * \return Pointer to the indexed child. Null pointer is returned if index is invalid.
 	*/
-	ComponentEditorItem* child(const int index);
+	QSharedPointer<ComponentEditorItem> child(const int index);
 
 	/*! \brief Get pointer to the parent of this item.
 	 *
@@ -101,14 +102,14 @@ public:
 	 * \param child Pointer to the child to add.
 	 *
 	*/
-	void addChild(ComponentEditorItem* child);
+	void addChild(QSharedPointer<ComponentEditorItem> child);
 
 	/*! \brief Remove a child from the item.
 	 *
 	 * \param child Pointer to the child to remove.
 	 *
 	*/
-	void removeChild(ComponentEditorItem* child);
+	void removeChild(QSharedPointer<ComponentEditorItem> child);
 
 	/*! \brief Move child from source index to target index under the same parent.
 	 *
@@ -127,6 +128,24 @@ public:
 	*/
 	virtual QFont getFont() const;
 
+	/*! \brief Tell the editor and child items to make the changes to the component model.
+	 * 
+	*/
+	virtual void makeEditorChanges();
+
+	/*! \brief Set the locked state of the editor and possible visualizer.
+	 *
+	 * \param locked True to set the editor and visualizer in read only mode.
+	 *
+	*/
+	virtual void setLocked(bool locked);
+
+	/*! \brief Get the tool tip for the item.
+	 * 
+	 * \return The text for the tool tip to print to user.
+	*/
+	virtual QString getTooltip() const = 0;
+
 	/*! \brief Get the text to be displayed to user in the tree for this item.
 	 *
 	 * \return QString Contains the text to display.
@@ -137,13 +156,21 @@ public:
 	 *
 	 * \return bool True if item is in valid state.
 	*/
-	virtual bool isValid() const = 0;
+	virtual bool isValid() const;
 
 	/*! \brief Get pointer to the editor of this item.
 	 *
 	 * \return Pointer to the editor to use for this item.
 	*/
 	virtual ItemEditor* editor() = 0;
+
+	/*! \brief Get pointer to the visualizer of this item.
+	 * 
+	 * The default implementation returns a null pointer.
+	 * 
+	 * \return Pointer to the visualizer to use for this item.
+	*/
+	virtual ItemVisualizer* visualizer();
 
 signals:
 
@@ -159,14 +186,14 @@ protected:
 	QSharedPointer<Component> component_;
 
 	//! \brief Contains the children of this item.
-	QList<ComponentEditorItem*> childItems_;
+	QList<QSharedPointer<ComponentEditorItem> > childItems_;
 
 protected slots:
 
 	/*! \brief Handler for editor's contentChanged signal.
 	 *
 	*/
-	void onContentChanged();
+	void onEditorChanged();
 
 private:
 	//! \brief No copying

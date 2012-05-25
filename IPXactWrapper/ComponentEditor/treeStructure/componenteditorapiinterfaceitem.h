@@ -1,50 +1,42 @@
 /* 
- *  	Created on: 15.5.2012
+ *  	Created on: 24.5.2012
  *      Author: Antti Kamppi
- * 		filename: componenteditorchannelitem.h
+ * 		filename: componenteditorapiinterfaceitem.h
  *		Project: Kactus 2
  */
 
-#ifndef COMPONENTEDITORCHANNELITEM_H
-#define COMPONENTEDITORCHANNELITEM_H
+#ifndef COMPONENTEDITORAPIINTERFACEITEM_H
+#define COMPONENTEDITORAPIINTERFACEITEM_H
 
 #include "componenteditoritem.h"
-#include <IPXactWrapper/ComponentEditor/channels/channeleditor.h>
-#include <models/channel.h>
+#include <models/ApiInterface.h>
+#include <IPXactWrapper/ComponentEditor/software/ApiInterfaceEditor.h>
 
-#include <QSharedPointer>
-
-/*! \brief The item for a single channel in the component's navigation tree.
+/*! \brief The item for single API-interface in component editor's navigation tree.
  *
  */
-class ComponentEditorChannelItem : public ComponentEditorItem {
+class ComponentEditorAPIInterfaceItem : public ComponentEditorItem {
 	Q_OBJECT
 
 public:
 
 	/*! \brief The constructor
 	 *
-	 * \param channel Pointer to the channel being edited.
+	 * \param APIInterface Pointer to the API interface to edit.
 	 * \param model Pointer to the model that owns the items.
 	 * \param libHandler Pointer to the instance that manages the library.
 	 * \param component Pointer to the component being edited.
 	 * \param parent Pointer to the parent item.
 	 *
 	*/
-	ComponentEditorChannelItem(QSharedPointer<Channel> channel,
+	ComponentEditorAPIInterfaceItem(QSharedPointer<ApiInterface> APIInterface,
 		ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
 		ComponentEditorItem* parent);
 
 	//! \brief The destructor
-	virtual ~ComponentEditorChannelItem();
-
-	/*! \brief Get the font to be used for text of this item.
-	*
-	* \return QFont instance that defines the font to be used.
-	*/
-	virtual QFont getFont() const;
+	virtual ~ComponentEditorAPIInterfaceItem();
 
 	/*! \brief Get the tool tip for the item.
 	 * 
@@ -71,17 +63,18 @@ public:
 	virtual ItemEditor* editor();
 
 private:
+	
 	//! \brief No copying
-	ComponentEditorChannelItem(const ComponentEditorChannelItem& other);
+	ComponentEditorAPIInterfaceItem(const ComponentEditorAPIInterfaceItem& other);
 
 	//! \brief No assignment
-	ComponentEditorChannelItem& operator=(const ComponentEditorChannelItem& other);
+	ComponentEditorAPIInterfaceItem& operator=(const ComponentEditorAPIInterfaceItem& other);
 
-	//! \brief Pointer to the channel being edited.
-	QSharedPointer<Channel> channel_;
+	//! \brief Pointer to the interface being edited.
+	QSharedPointer<ApiInterface> apiIf_;
 
-	//! \brief The editor to edit the channel.
-	ChannelEditor editor_;
+	//! \brief The editor to edit the api interface.
+	ApiInterfaceEditor editor_;
 };
 
-#endif // COMPONENTEDITORCHANNELITEM_H
+#endif // COMPONENTEDITORAPIINTERFACEITEM_H

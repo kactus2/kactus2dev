@@ -8,10 +8,10 @@
 #ifndef COMPONENTEDITORGROUPSLOT_H
 #define COMPONENTEDITORGROUPSLOT_H
 
-#include <QGroupBox>
+#include <QWidget>
 #include <QHBoxLayout>
 
-class ComponentEditorGroupSlot : public QGroupBox {
+class ComponentEditorGroupSlot : public QWidget {
 	Q_OBJECT
 
 public:
@@ -22,8 +22,7 @@ public:
 	 * \param title The title for the group box.
 	 *
 	*/
-	ComponentEditorGroupSlot(QWidget *parent, 
-		const QString& title = QString());
+	ComponentEditorGroupSlot(QWidget *parent);
 	
 	//! \brief The destructor
 	~ComponentEditorGroupSlot();

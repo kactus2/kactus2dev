@@ -7,16 +7,21 @@
 
 #include "componenteditorchannelitem.h"
 
+#include <QFont>
+#include <QApplication>
+
 ComponentEditorChannelItem::ComponentEditorChannelItem(QSharedPointer<Channel> channel, 
 													   ComponentEditorTreeModel* model,
 													   LibraryInterface* libHandler,
 													   QSharedPointer<Component> component,
-													   QWidget* widget,
 													   ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 channel_(channel),
-editor_(component_, channel, widget) {
+editor_(component_, channel) {
+	editor_.hide();
 
+	connect(&editor_, SIGNAL(contentChanged()),
+		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 }
 
 ComponentEditorChannelItem::~ComponentEditorChannelItem() {
@@ -35,4 +40,13 @@ bool ComponentEditorChannelItem::isValid() const {
 
 ItemEditor* ComponentEditorChannelItem::editor() {
 	return &editor_;
+}
+
+QFont ComponentEditorChannelItem::getFont() const {
+	return QApplication::font();
+}
+
+QString ComponentEditorChannelItem::getTooltip() const {
+	return tr("Contains a list of all mirrored bus interfaces that belong to the"
+		" same channel");
 }

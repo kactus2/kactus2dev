@@ -11,14 +11,13 @@
 ComponentEditorAddrSpacesItem::ComponentEditorAddrSpacesItem(ComponentEditorTreeModel* model,
 															 LibraryInterface* libHandler,
 															 QSharedPointer<Component> component,
-															 QWidget* widget, 
 															 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 addrSpaces_(component->getAddressSpaces()) {
 
 	foreach (QSharedPointer<AddressSpace> addrSpace, addrSpaces_) {
-		ComponentEditorAddrSpaceItem* addrItem = 
-			new ComponentEditorAddrSpaceItem(addrSpace, model, libHandler, component, widget, this);	
+		QSharedPointer<ComponentEditorAddrSpaceItem> addrItem(
+			new ComponentEditorAddrSpaceItem(addrSpace, model, libHandler, component, this));	
 		childItems_.append(addrItem);
 	}
 }
@@ -30,15 +29,10 @@ QString ComponentEditorAddrSpacesItem::text() const {
 	return tr("Address spaces");
 }
 
-bool ComponentEditorAddrSpacesItem::isValid() const {
-	foreach (QSharedPointer<AddressSpace> addrSpace, addrSpaces_) {
-		if (!addrSpace->isValid()) {
-			return false;
-		}
-	}
-	return true;
-}
-
 ItemEditor* ComponentEditorAddrSpacesItem::editor() {
 	return NULL;
+}
+
+QString ComponentEditorAddrSpacesItem::getTooltip() const {
+	return tr("Contains the address spaces specified for the component");
 }

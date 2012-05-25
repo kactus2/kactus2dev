@@ -7,15 +7,21 @@
 
 #include "componenteditoraddrspaceitem.h"
 
+#include <QFont>
+#include <QApplication>
+
 ComponentEditorAddrSpaceItem::ComponentEditorAddrSpaceItem(QSharedPointer<AddressSpace> addrSpace,
 														   ComponentEditorTreeModel* model,
 														   LibraryInterface* libHandler,
 														   QSharedPointer<Component> component,
-														   QWidget* widget, 
 														   ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 addrSpace_(addrSpace),
-editor_(component, addrSpace.data(), widget) {
+editor_(component, addrSpace.data()) {
+	editor_.hide();
+
+	connect(&editor_, SIGNAL(contentChanged()),
+		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 }
 
 ComponentEditorAddrSpaceItem::~ComponentEditorAddrSpaceItem() {
@@ -34,4 +40,13 @@ bool ComponentEditorAddrSpaceItem::isValid() const {
 
 ItemEditor* ComponentEditorAddrSpaceItem::editor() {
 	return &editor_;
+}
+
+QFont ComponentEditorAddrSpaceItem::getFont() const {
+	return QApplication::font();
+}
+
+QString ComponentEditorAddrSpaceItem::getTooltip() const {
+	return tr("Address space defines a logical address space seen by a master"
+		" bus interface");
 }

@@ -1,19 +1,22 @@
 /* 
- *  	Created on: 9.5.2012
+ *  	Created on: 24.5.2012
  *      Author: Antti Kamppi
- * 		filename: componenteditorbusinterfacesitem.h
+ * 		filename: componenteditorapiinterfacesitem.h
  *		Project: Kactus 2
  */
 
-#ifndef COMPONENTEDITORBUSINTERFACESITEM_H
-#define COMPONENTEDITORBUSINTERFACESITEM_H
+#ifndef COMPONENTEDITORAPIINTERFACESITEM_H
+#define COMPONENTEDITORAPIINTERFACESITEM_H
 
 #include "componenteditoritem.h"
+#include <models/ApiInterface.h>
 
-/*! \brief The Bus interfaces-item in the component editor's navigation tree.
+#include <QMap>
+
+/*! The API interfaces-item in the component editor's navigation tree.
  *
  */
-class ComponentEditorBusInterfacesItem : public ComponentEditorItem {
+class ComponentEditorAPIInterfacesItem : public ComponentEditorItem {
 	Q_OBJECT
 
 public:
@@ -26,13 +29,13 @@ public:
 	 * \param parent Pointer to the parent item.
 	 *
 	*/
-	ComponentEditorBusInterfacesItem(ComponentEditorTreeModel* model,
+	ComponentEditorAPIInterfacesItem(ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
 		ComponentEditorItem* parent);
 
 	//! \brief The destructor
-	virtual ~ComponentEditorBusInterfacesItem();
+	virtual ~ComponentEditorAPIInterfacesItem();
 
 	/*! \brief Get the tool tip for the item.
 	 * 
@@ -54,13 +57,13 @@ public:
 
 private:
 	//! \brief No copying
-	ComponentEditorBusInterfacesItem(const ComponentEditorBusInterfacesItem& other);
+	ComponentEditorAPIInterfacesItem(const ComponentEditorAPIInterfacesItem& other);
 
 	//! \brief No assignment
-	ComponentEditorBusInterfacesItem& operator=(const ComponentEditorBusInterfacesItem& other);
+	ComponentEditorAPIInterfacesItem& operator=(const ComponentEditorAPIInterfacesItem& other);
 
-	//! \brief Contains the bus interfaces to edit.
-	QMap<QString, QSharedPointer<BusInterface> >& busifs_;
+	//! \brief Contains the api interfaces to edit.
+	QMap<QString, QSharedPointer<ApiInterface> >& apiInterfaces_;
 };
 
-#endif // COMPONENTEDITORBUSINTERFACESITEM_H
+#endif // COMPONENTEDITORAPIINTERFACESITEM_H

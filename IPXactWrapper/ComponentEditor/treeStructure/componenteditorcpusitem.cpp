@@ -10,15 +10,14 @@
 
 ComponentEditorCpusItem::ComponentEditorCpusItem(ComponentEditorTreeModel* model, 
 												 LibraryInterface* libHandler,
-												 QSharedPointer<Component> component, 
-												 QWidget* widget, 
+												 QSharedPointer<Component> component,
 												 ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
 cpus_(component->getCpus()) {
 
 	foreach (QSharedPointer<Cpu> cpu, cpus_) {
-		ComponentEditorCpuItem* cpuItem = new ComponentEditorCpuItem(
-			cpu, model, libHandler, component, widget, this);
+		QSharedPointer<ComponentEditorCpuItem> cpuItem(new ComponentEditorCpuItem(
+			cpu, model, libHandler, component, this));
 		childItems_.append(cpuItem);
 	}
 }
@@ -30,16 +29,10 @@ QString ComponentEditorCpusItem::text() const {
 	return tr("Cpus");
 }
 
-bool ComponentEditorCpusItem::isValid() const {
-	QStringList addrSpaceNames = component_->getAddressSpaceNames();
-	foreach (QSharedPointer<Cpu> cpu, cpus_) {
-		if (!cpu->isValid(addrSpaceNames)) {
-			return false;
-		}
-	}
-	return true;
-}
-
 ItemEditor* ComponentEditorCpusItem::editor() {
 	return NULL;
+}
+
+QString ComponentEditorCpusItem::getTooltip() const {
+	return tr("Contains the programmable cores of the component");
 }

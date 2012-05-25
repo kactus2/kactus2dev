@@ -36,7 +36,7 @@ public:
 	*/
 	CpuEditor(QSharedPointer<Component> component,
 		void* dataPointer,
-		QWidget *parent);
+		QWidget *parent = 0);
 
 	/*! \brief The constructor
 	 *
@@ -47,7 +47,7 @@ public:
 	*/
 	CpuEditor(QSharedPointer<Component> component,
 		QSharedPointer<Cpu> cpu,
-		QWidget *parent);
+		QWidget *parent = 0);
 	
 	//! \brief The destructor
 	virtual ~CpuEditor();

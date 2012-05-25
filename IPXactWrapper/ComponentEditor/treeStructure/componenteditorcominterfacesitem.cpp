@@ -11,14 +11,13 @@
 ComponentEditorComInterfacesItem::ComponentEditorComInterfacesItem(ComponentEditorTreeModel* model, 
 																   LibraryInterface* libHandler,
 																   QSharedPointer<Component> component,
-																   QWidget* widget,
 																   ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 interfaces_(component->getComInterfaces()) {
 
 	foreach (QSharedPointer<ComInterface> iface, interfaces_) {
-		ComponentEditorComInterfaceItem* interfaceItem = new ComponentEditorComInterfaceItem(
-			iface, model, libHandler, component, widget, this);
+		QSharedPointer<ComponentEditorComInterfaceItem> interfaceItem(new ComponentEditorComInterfaceItem(
+			iface, model, libHandler, component, this));
 		childItems_.append(interfaceItem);
 	}
 }
@@ -30,15 +29,10 @@ QString ComponentEditorComInterfacesItem::text() const {
 	return tr("COM interfaces");
 }
 
-bool ComponentEditorComInterfacesItem::isValid() const {
-	foreach (QSharedPointer<ComInterface> iface, interfaces_) {
-		if (!iface->isValid()) {
-			return false;
-		}
-	}
-	return true;
-}
-
 ItemEditor* ComponentEditorComInterfacesItem::editor() {
 	return NULL;
+}
+
+QString ComponentEditorComInterfacesItem::getTooltip() const {
+	return tr("Contains the COM interfaces of a component");
 }

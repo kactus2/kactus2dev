@@ -10,11 +10,12 @@
 ComponentEditorSoftMapsItem::ComponentEditorSoftMapsItem(ComponentEditorTreeModel* model,
 														 LibraryInterface* libHandler, 
 														 QSharedPointer<Component> component,
-														 QWidget* widget,
 														 ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
-editor_(libHandler, component, widget, widget) {
-
+editor_(libHandler, component) {
+	editor_.hide();
+	connect(&editor_, SIGNAL(contentChanged()),
+		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 }
 
 ComponentEditorSoftMapsItem::~ComponentEditorSoftMapsItem() {
@@ -30,4 +31,8 @@ bool ComponentEditorSoftMapsItem::isValid() const {
 
 ItemEditor* ComponentEditorSoftMapsItem::editor() {
 	return &editor_;
+}
+
+QString ComponentEditorSoftMapsItem::getTooltip() const {
+	return tr("Contains the software mappings of the component");
 }

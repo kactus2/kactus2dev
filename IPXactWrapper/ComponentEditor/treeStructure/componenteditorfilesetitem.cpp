@@ -9,25 +9,32 @@
 #include "componenteditordeffilebuildersitem.h"
 #include "componenteditorfilesitem.h"
 
+#include <QFont>
+#include <QApplication>
+
 ComponentEditorFileSetItem::ComponentEditorFileSetItem(QSharedPointer<FileSet> fileSet,
 													   ComponentEditorTreeModel* model,
 													   LibraryInterface* libHandler,
 													   QSharedPointer<Component> component,
-													   QWidget* widget,
 													   ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
 fileSet_(fileSet),
-editor_(libHandler->getPath(*component->getVlnv()), component, fileSet.data(), widget) {
+editor_(libHandler->getPath(*component->getVlnv()), component, fileSet.data()) {
 
 	Q_ASSERT(fileSet);
 
-	ComponentEditorDefFileBuildersItem* fileBuildersItem = new ComponentEditorDefFileBuildersItem(
-		fileSet_->getDefaultFileBuilders(), model, libHandler, component, widget, this);
+	QSharedPointer<ComponentEditorDefFileBuildersItem> fileBuildersItem(new ComponentEditorDefFileBuildersItem(
+		fileSet_->getDefaultFileBuilders(), model, libHandler, component, this));
 	childItems_.append(fileBuildersItem);
 
-	ComponentEditorFilesItem* filesItem = new ComponentEditorFilesItem(
-		fileSet_->getFiles(), model, libHandler, component, widget, this);
+	QSharedPointer<ComponentEditorFilesItem> filesItem(new ComponentEditorFilesItem(
+		fileSet_->getFiles(), model, libHandler, component, this));
 	childItems_.append(filesItem);
+
+	editor_.hide();
+
+	connect(&editor_, SIGNAL(contentChanged()),
+		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 }
 
 ComponentEditorFileSetItem::~ComponentEditorFileSetItem() {
@@ -46,4 +53,12 @@ bool ComponentEditorFileSetItem::isValid() const {
 
 ItemEditor* ComponentEditorFileSetItem::editor() {
 	return &editor_;
+}
+
+QFont ComponentEditorFileSetItem::getFont() const {
+	return QApplication::font();
+}
+
+QString ComponentEditorFileSetItem::getTooltip() const {
+	return tr("Contains a list of files and their build commands");
 }

@@ -33,7 +33,8 @@ public:
 	 * \param parent Pointer to the owner of this widget.
 	 *
 	*/
-	ParametersEditor(QSharedPointer<Component> component, QWidget *parent);
+	ParametersEditor(QSharedPointer<Component> component, 
+		QWidget *parent = 0);
 	
 	//! \brief The destructor
 	virtual ~ParametersEditor();

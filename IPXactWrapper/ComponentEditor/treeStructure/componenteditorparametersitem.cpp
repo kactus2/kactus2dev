@@ -10,12 +10,13 @@
 ComponentEditorParametersItem::ComponentEditorParametersItem(ComponentEditorTreeModel* model,
 															 LibraryInterface* libHandler,
 															 QSharedPointer<Component> component,
-															 QWidget* widget,
 															 ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
 parameters_(component->getParameters()),
-editor_(component, widget) {
-
+editor_(component) {
+	editor_.hide();
+	connect(&editor_, SIGNAL(contentChanged()),
+		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 }
 
 ComponentEditorParametersItem::~ComponentEditorParametersItem() {
@@ -36,4 +37,8 @@ bool ComponentEditorParametersItem::isValid() const {
 
 ItemEditor* ComponentEditorParametersItem::editor() {
 	return &editor_;
+}
+
+QString ComponentEditorParametersItem::getTooltip() const {
+	return tr("Contains the configurable elements of the component");
 }

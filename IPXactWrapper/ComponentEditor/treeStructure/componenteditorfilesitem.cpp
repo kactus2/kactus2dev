@@ -8,18 +8,20 @@
 #include "componenteditorfilesitem.h"
 #include "componenteditorfileitem.h"
 
+#include <QFont>
+#include <QApplication>
+
 ComponentEditorFilesItem::ComponentEditorFilesItem(QList<QSharedPointer<File> >& files,
 												   ComponentEditorTreeModel* model,
 												   LibraryInterface* libHandler, 
 												   QSharedPointer<Component> component,
-												   QWidget* widget,
 												   ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 files_(files) {
 
 	foreach (QSharedPointer<File> file, files_) {
-		ComponentEditorFileItem* fileItem = new ComponentEditorFileItem(
-			file, model, libHandler, component, widget, this);
+		QSharedPointer<ComponentEditorFileItem> fileItem(new ComponentEditorFileItem(
+			file, model, libHandler, component, this));
 		childItems_.append(fileItem);
 	}
 }
@@ -31,15 +33,14 @@ QString ComponentEditorFilesItem::text() const {
 	return tr("Files");
 }
 
-bool ComponentEditorFilesItem::isValid() const {
-	foreach (QSharedPointer<File> file, files_) {
-		if (!file->isValid(true)) {
-			return false;
-		}
-	}
-	return true;
-}
-
 ItemEditor* ComponentEditorFilesItem::editor() {
 	return NULL;
+}
+
+QFont ComponentEditorFilesItem::getFont() const {
+	return QApplication::font();
+}
+
+QString ComponentEditorFilesItem::getTooltip() const {
+	return tr("Contains the files contained in the file set");
 }

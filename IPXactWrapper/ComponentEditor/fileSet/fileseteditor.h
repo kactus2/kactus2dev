@@ -40,7 +40,7 @@ public:
 	FileSetEditor(const QFileInfo& baseLocation, 
 		QSharedPointer<Component> component, 
 		void* dataPointer,
-		QWidget *parent);
+		QWidget *parent = 0);
 
 	/*! \brief The constructor
 	 *

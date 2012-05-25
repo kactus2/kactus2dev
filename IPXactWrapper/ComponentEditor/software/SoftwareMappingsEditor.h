@@ -45,8 +45,8 @@ public:
 	 */
 	SoftwareMappingsEditor(LibraryInterface* libHandler, 
 		QSharedPointer<Component> component,
-						  QWidget* parent,
-						  QWidget* parentWnd);
+						  QWidget* parent = 0,
+						  QWidget* parentWnd = 0);
 
 	/*!
      *  Destructor.

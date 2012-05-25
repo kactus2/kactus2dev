@@ -10,12 +10,14 @@
 ComponentEditorPortsItem::ComponentEditorPortsItem(ComponentEditorTreeModel* model,
 												   LibraryInterface* libHandler,
 												   QSharedPointer<Component> component,
-												   QWidget* widget, 
 												   ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
 ports_(component->getPorts()),
-editor_(component, libHandler, widget) {
-
+editor_(component, libHandler) {
+	
+	editor_.hide();
+	connect(&editor_, SIGNAL(contentChanged()),
+		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 }
 
 ComponentEditorPortsItem::~ComponentEditorPortsItem() {
@@ -26,9 +28,19 @@ QString ComponentEditorPortsItem::text() const {
 }
 
 bool ComponentEditorPortsItem::isValid() const {
-	return true;
+	bool hasViews = component_->hasViews();
+	foreach (QSharedPointer<Port> port, ports_) {
+		if (!port->isValid(hasViews)) {
+			return false;
+		}
+	}
+	return editor_.isValid();
 }
 
 ItemEditor* ComponentEditorPortsItem::editor() {
-	return NULL;
+	return &editor_;
+}
+
+QString ComponentEditorPortsItem::getTooltip() const {
+	return tr("Contains the external ports of the component");
 }

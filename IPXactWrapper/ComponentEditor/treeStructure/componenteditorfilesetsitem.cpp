@@ -10,17 +10,20 @@
 
 ComponentEditorFileSetsItem::ComponentEditorFileSetsItem( ComponentEditorTreeModel* model,
 														 LibraryInterface* libHandler,
-														 QSharedPointer<Component> component, 
-														 QWidget* widget, 
+														 QSharedPointer<Component> component,
 														 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-fileSets_(component->getFileSets()) {
+fileSets_(component->getFileSets()),
+editor_(component) {
 
 	foreach (QSharedPointer<FileSet> fileSet, fileSets_) {
-		ComponentEditorFileSetItem* fileSetItem = 
-			new ComponentEditorFileSetItem(fileSet, model, libHandler, component, widget, this);
+		QSharedPointer<ComponentEditorFileSetItem> fileSetItem(
+			new ComponentEditorFileSetItem(fileSet, model, libHandler, component, this));
 		childItems_.append(fileSetItem);
 	}
+
+	connect(&editor_, SIGNAL(contentChanged()), 
+		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 }
 
 ComponentEditorFileSetsItem::~ComponentEditorFileSetsItem() {
@@ -30,16 +33,10 @@ QString ComponentEditorFileSetsItem::text() const {
 	return tr("File sets");
 }
 
-bool ComponentEditorFileSetsItem::isValid() const {
-	foreach (QSharedPointer<FileSet> fileSet, fileSets_) {
-		if (!fileSet->isValid(true)) {
-			return false;
-		}
-	}
-	// if all file sets were valid
-	return true;
+ItemEditor* ComponentEditorFileSetsItem::editor() {
+	return &editor_;
 }
 
-ItemEditor* ComponentEditorFileSetsItem::editor() {
-	return NULL;
+QString ComponentEditorFileSetsItem::getTooltip() const {
+	return tr("Contains the file sets of the component");
 }

@@ -1,19 +1,19 @@
 /* 
- *  	Created on: 9.5.2012
+ *  	Created on: 24.5.2012
  *      Author: Antti Kamppi
- * 		filename: componenteditorbusinterfacesitem.h
+ * 		filename: componenteditorswviewsitem.h
  *		Project: Kactus 2
  */
 
-#ifndef COMPONENTEDITORBUSINTERFACESITEM_H
-#define COMPONENTEDITORBUSINTERFACESITEM_H
+#ifndef COMPONENTEDITORSWVIEWSITEM_H
+#define COMPONENTEDITORSWVIEWSITEM_H
 
 #include "componenteditoritem.h"
 
-/*! \brief The Bus interfaces-item in the component editor's navigation tree.
+/*! \brief The Software Views-item in the component editor's navigation tree.
  *
  */
-class ComponentEditorBusInterfacesItem : public ComponentEditorItem {
+class ComponentEditorSWViewsItem : public ComponentEditorItem {
 	Q_OBJECT
 
 public:
@@ -26,13 +26,13 @@ public:
 	 * \param parent Pointer to the parent item.
 	 *
 	*/
-	ComponentEditorBusInterfacesItem(ComponentEditorTreeModel* model,
+	ComponentEditorSWViewsItem(ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
 		ComponentEditorItem* parent);
 
 	//! \brief The destructor
-	virtual ~ComponentEditorBusInterfacesItem();
+	virtual ~ComponentEditorSWViewsItem();
 
 	/*! \brief Get the tool tip for the item.
 	 * 
@@ -54,13 +54,13 @@ public:
 
 private:
 	//! \brief No copying
-	ComponentEditorBusInterfacesItem(const ComponentEditorBusInterfacesItem& other);
+	ComponentEditorSWViewsItem(const ComponentEditorSWViewsItem& other);
 
 	//! \brief No assignment
-	ComponentEditorBusInterfacesItem& operator=(const ComponentEditorBusInterfacesItem& other);
+	ComponentEditorSWViewsItem& operator=(const ComponentEditorSWViewsItem& other);
 
-	//! \brief Contains the bus interfaces to edit.
-	QMap<QString, QSharedPointer<BusInterface> >& busifs_;
+	//! \brief Contains the software views being edited.
+	QList<QSharedPointer<SWView> >& swViews_;
 };
 
-#endif // COMPONENTEDITORBUSINTERFACESITEM_H
+#endif // COMPONENTEDITORSWVIEWSITEM_H

@@ -11,14 +11,13 @@
 ComponentEditorBusInterfacesItem::ComponentEditorBusInterfacesItem(ComponentEditorTreeModel* model,
 																   LibraryInterface* libHandler,
 																   QSharedPointer<Component> component,
-																   QWidget* widget,
 																   ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 busifs_(component->getBusInterfaces()) {
 
 	foreach (QSharedPointer<BusInterface> busif, busifs_) {
-		ComponentEditorBusInterfaceItem* busifItem(
-			new ComponentEditorBusInterfaceItem(busif, model, libHandler, component, widget, this));
+		QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(
+			new ComponentEditorBusInterfaceItem(busif, model, libHandler, component, this));
 		childItems_.append(busifItem);
 	}
 }
@@ -30,15 +29,10 @@ QString ComponentEditorBusInterfacesItem::text() const {
 	return tr("Bus interfaces");
 }
 
-bool ComponentEditorBusInterfacesItem::isValid() const {
-	foreach (QSharedPointer<BusInterface> busif, busifs_) {
-		if (!busif->isValid(component_->getPortBounds())) {
-			return false;
-		}
-	}
-	return true;
-}
-
 ItemEditor* ComponentEditorBusInterfacesItem::editor() {
 	return NULL;
+}
+
+QString ComponentEditorBusInterfacesItem::getTooltip() const {
+	return tr("Contains the bus interfaces specified for a component");
 }

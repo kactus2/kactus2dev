@@ -28,6 +28,9 @@ class ComponentTreeView : public QTreeView {
 
 public:
 
+	//! \brief The default width of the navigation tree.
+	static const int DEFAULT_WIDTH = 150;
+
     /*! \brief The constructor
      *
      * \param handler Pointer to the instance that manages the library.
@@ -37,7 +40,7 @@ public:
      */
     ComponentTreeView(LibraryInterface* handler,
 		const VLNV& compVLNV,
-		QWidget *parent = 0);
+		QWidget *parent);
 
 	//! \brief The destructor
     virtual ~ComponentTreeView();

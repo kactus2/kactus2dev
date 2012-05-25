@@ -45,7 +45,7 @@ public:
 	ComInterfaceEditor(LibraryInterface* libHandler, 
 		QSharedPointer<Component> component, 
 		void* dataPointer,
-		QWidget *parent);
+		QWidget *parent = 0);
 
 	/*! \brief The constructor
 	 *
@@ -58,7 +58,7 @@ public:
 	ComInterfaceEditor(LibraryInterface* libHandler, 
 		QSharedPointer<Component> component, 
 		QSharedPointer<ComInterface> comInterface,
-		QWidget *parent);
+		QWidget *parent = 0);
 
     /*!
      *  Destructor.

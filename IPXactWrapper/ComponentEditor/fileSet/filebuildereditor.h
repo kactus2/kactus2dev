@@ -33,7 +33,7 @@ public:
 	*/
 	FileBuilderEditor(QSharedPointer<Component> component, 
 		void* dataPointer, 
-		QWidget *parent);
+		QWidget *parent = 0);
 	
 	//! \brief The destructor
 	virtual ~FileBuilderEditor();

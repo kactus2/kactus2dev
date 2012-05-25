@@ -7,16 +7,20 @@
 
 #include "componenteditorcpuitem.h"
 
+#include <QFont>
+#include <QApplication>
+
 ComponentEditorCpuItem::ComponentEditorCpuItem(QSharedPointer<Cpu> cpu,
 											   ComponentEditorTreeModel* model,
 											   LibraryInterface* libHandler, 
-											   QSharedPointer<Component> component, 
-											   QWidget* widget, 
+											   QSharedPointer<Component> component,
 											   ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 cpu_(cpu),
-editor_(component, cpu, widget) {
-
+editor_(component, cpu) {
+	editor_.hide();
+	connect(&editor_, SIGNAL(contentChanged()),
+		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 }
 
 ComponentEditorCpuItem::~ComponentEditorCpuItem() {
@@ -35,4 +39,12 @@ bool ComponentEditorCpuItem::isValid() const {
 
 ItemEditor* ComponentEditorCpuItem::editor() {
 	return &editor_;
+}
+
+QFont ComponentEditorCpuItem::getFont() const {
+	return QApplication::font();
+}
+
+QString ComponentEditorCpuItem::getTooltip() const {
+	return tr("Describes the containing component with a programmable core");
 }

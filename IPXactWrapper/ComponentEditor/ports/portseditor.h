@@ -36,7 +36,7 @@ public:
 	*/
 	PortsEditor(QSharedPointer<Component> component, 
 		LibraryInterface* handler,
-		QWidget *parent);
+		QWidget *parent = 0);
 
 	//! \brief The destructor
 	virtual ~PortsEditor();

@@ -7,17 +7,21 @@
 
 #include "componenteditordeffilebuildersitem.h"
 
+#include <QFont>
+#include <QApplication>
+
 ComponentEditorDefFileBuildersItem::ComponentEditorDefFileBuildersItem(
 	QList<QSharedPointer<FileBuilder> >& fileBuilders,
 	ComponentEditorTreeModel* model,
 	LibraryInterface* libHandler,
 	QSharedPointer<Component> component,
-	QWidget* widget,
 	ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 fileBuilders_(fileBuilders),
-editor_(component, &fileBuilders, widget) {
-
+editor_(component, &fileBuilders) {
+	editor_.hide();
+	connect(&editor_, SIGNAL(contentChanged()),
+		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 }
 
 ComponentEditorDefFileBuildersItem::~ComponentEditorDefFileBuildersItem() {
@@ -33,4 +37,12 @@ bool ComponentEditorDefFileBuildersItem::isValid() const {
 
 ItemEditor* ComponentEditorDefFileBuildersItem::editor() {
 	return &editor_;
+}
+
+QFont ComponentEditorDefFileBuildersItem::getFont() const {
+	return QApplication::font();
+}
+
+QString ComponentEditorDefFileBuildersItem::getTooltip() const {
+	return tr("Specifies the build commands for the files within file set");
 }

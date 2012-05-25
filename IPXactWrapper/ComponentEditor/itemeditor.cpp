@@ -16,19 +16,11 @@ component_(component) {
 ItemEditor::~ItemEditor() {
 }
 
-bool ItemEditor::isValid() const {
-	return true;
-}
-
 QSharedPointer<Component> ItemEditor::component() const {
 	return component_;
 }
 
 void ItemEditor::removeModel() {
-	return;
-}
-
-void ItemEditor::makeChanges() {
 	return;
 }
 

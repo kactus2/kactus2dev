@@ -41,7 +41,7 @@ public:
 	BusInterfaceEditor(LibraryInterface* libHandler,
 		QSharedPointer<Component> component, 
 		void* dataPointer,
-		QWidget *parent);
+		QWidget *parent = 0);
 
 	/*! \brief The constructor
 	 *
@@ -54,7 +54,7 @@ public:
 	BusInterfaceEditor(LibraryInterface* libHandler,
 		QSharedPointer<Component> component, 
 		QSharedPointer<BusInterface> busif,
-		QWidget *parent);
+		QWidget *parent = 0);
 	
 	//! \brief The destructor
 	virtual ~BusInterfaceEditor();

@@ -30,23 +30,22 @@ public:
 	ComponentEditorViewsItem(ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
-		QWidget* widget,
 		ComponentEditorItem* parent);
 
 	//! \brief The destructor
 	virtual ~ComponentEditorViewsItem();
+
+	/*! \brief Get the tool tip for the item.
+	 * 
+	 * \return The text for the tool tip to print to user.
+	*/
+	virtual QString getTooltip() const;
 
 	/*! \brief Get the text to be displayed to user in the tree for this item.
 	 *
 	 * \return QString Contains the text to display.
 	*/
 	virtual QString text() const;
-
-	/*! \brief Check the validity of this item and sub items.
-	 *
-	 * \return bool True if item is in valid state.
-	*/
-	virtual bool isValid() const;
 
 	/*! \brief Get pointer to the editor of this item.
 	 *

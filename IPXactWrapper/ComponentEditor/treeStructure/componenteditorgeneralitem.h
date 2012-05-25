@@ -36,11 +36,16 @@ public:
 	ComponentEditorGeneralItem(ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
-		QWidget* widget,
 		ComponentEditorItem* parent);
 
 	//! \brief The destructor
 	virtual ~ComponentEditorGeneralItem();
+
+	/*! \brief Get the tool tip for the item.
+	 * 
+	 * \return The text for the tool tip to print to user.
+	*/
+	virtual QString getTooltip() const;
 
 	/*! \brief Get the text to be displayed to user in the tree for this item.
 	 *

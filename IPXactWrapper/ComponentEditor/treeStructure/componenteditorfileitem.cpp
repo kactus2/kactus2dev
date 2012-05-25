@@ -7,16 +7,20 @@
 
 #include "componenteditorfileitem.h"
 
+#include <QFont>
+#include <QApplication>
+
 ComponentEditorFileItem::ComponentEditorFileItem(QSharedPointer<File> file,
 												 ComponentEditorTreeModel* model,
 												 LibraryInterface* libHandler,
 												 QSharedPointer<Component> component,
-												 QWidget* widget,
 												 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 file_(file),
-editor_(libHandler->getPath(*component->getVlnv()), component, file, widget) {
-
+editor_(libHandler->getPath(*component->getVlnv()), component, file) {
+	editor_.hide();
+	connect(&editor_, SIGNAL(contentChanged()),
+		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 }
 
 ComponentEditorFileItem::~ComponentEditorFileItem() {
@@ -35,4 +39,12 @@ bool ComponentEditorFileItem::isValid() const {
 
 ItemEditor* ComponentEditorFileItem::editor() {
 	return &editor_;
+}
+
+QFont ComponentEditorFileItem::getFont() const {
+	return QApplication::font();
+}
+
+QString ComponentEditorFileItem::getTooltip() const {
+	return tr("Specifies a single file associated with the file set");
 }

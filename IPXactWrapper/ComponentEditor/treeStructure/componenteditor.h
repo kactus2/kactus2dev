@@ -41,13 +41,6 @@ public:
 	//! \brief The destructor
 	~ComponentEditor();
 
-	/*! \brief Set the protection state of the component.
-	 *
-	 * \param locked The locked state to set.
-	 *
-	*/
-	virtual void setProtection(bool locked);
-
 	/*! \brief Get the vlnv of the current component.
 	 *
 	 * \return VLNV of the component being edited.
@@ -91,6 +84,13 @@ public slots:
 	*/
 	bool onModelsimGenerate();
 
+	/*! \brief Set the protection state of the document.
+	 *
+	 * \param locked True for locked state, false for unlocked.
+	 *
+	*/
+	virtual void setProtection(bool locked);
+
 private slots:
 
 	/*! \brief This slot is called when an item is selected in the navigation tree.
@@ -99,6 +99,11 @@ private slots:
 	 *
 	*/
 	void onItemActivated(const QModelIndex& index);
+
+	/*! \brief This slot is called when one of the component editors changes state.
+	 *
+	*/
+	void onItemChanged();
 
 private:
 	//! \brief No copying
@@ -113,17 +118,17 @@ private:
 	//! \brief The component being edited.
 	QSharedPointer<Component> component_;
 
-	//! \brief The tree view to navigate in the editor.
-	ComponentTreeView navigationView_;
-
-	//! \brief The model to control the navigation view.
-	ComponentEditorTreeModel navigationModel_;
-
 	//! \brief The splitter to contain the navigation tree.
 	QSplitter navigationSplitter_;
 
 	//! \brief The splitter to display the editors and visualizers.
-	QSplitter editorVisualizerSplitter;
+	QSplitter editorVisualizerSplitter_;
+
+	//! \brief The model to control the navigation view.
+	ComponentEditorTreeModel navigationModel_;
+
+	//! \brief The tree view to navigate in the editor.
+	ComponentTreeView navigationView_;
 
 	//! \brief The slot to display the editors in.
 	ComponentEditorGroupSlot editorSlot_;

@@ -21,27 +21,65 @@
 #include "componenteditorotherclocksitem.h"
 #include "componenteditorsoftmapsitem.h"
 #include "componenteditorcominterfacesitem.h"
+#include "componenteditorswviewsitem.h"
+#include "componenteditorapiinterfacesitem.h"
+#include "componenteditorswpropertiesitem.h"
 
 ComponentEditorRootItem::ComponentEditorRootItem( LibraryInterface* libHandler,
 												 QSharedPointer<Component> component,
-												 QWidget* widget,
 												 ComponentEditorTreeModel* parent ):
 ComponentEditorItem(libHandler, component, parent) {
 
-	childItems_.append(new ComponentEditorGeneralItem(parent, libHandler, component, widget, this));
-	childItems_.append(new ComponentEditorFileSetsItem(parent, libHandler, component, widget, this));
-	childItems_.append(new ComponentEditorModelParamsItem(parent, libHandler, component, widget, this));
-	childItems_.append(new ComponentEditorParametersItem(parent, libHandler, component, widget, this));
-	childItems_.append(new ComponentEditorMemMapsItem(parent, libHandler, component, widget, this));
-	childItems_.append(new ComponentEditorAddrSpacesItem(parent, libHandler, component, widget, this));
-	childItems_.append(new ComponentEditorViewsItem(parent, libHandler, component, widget, this));
-	childItems_.append(new ComponentEditorPortsItem(parent, libHandler, component, widget, this));
-	childItems_.append(new ComponentEditorBusInterfacesItem(parent, libHandler, component, widget, this));
-	childItems_.append(new ComponentEditorChannelsItem(parent, libHandler, component, widget, this));
-	childItems_.append(new ComponentEditorCpusItem(parent, libHandler, component, widget, this));
-	childItems_.append(new ComponentEditorOtherClocksItem(parent, libHandler, component, widget, this));
-	childItems_.append(new ComponentEditorSoftMapsItem(parent, libHandler, component, widget , this));
-	childItems_.append(new ComponentEditorComInterfacesItem(parent, libHandler, component, widget, this));
+	childItems_.append(QSharedPointer<ComponentEditorGeneralItem>(
+		new ComponentEditorGeneralItem(parent, libHandler, component, this)));
+	
+	childItems_.append(QSharedPointer<ComponentEditorFileSetsItem>(
+		new ComponentEditorFileSetsItem(parent, libHandler, component, this)));
+	
+	childItems_.append(QSharedPointer<ComponentEditorModelParamsItem>(
+		new ComponentEditorModelParamsItem(parent, libHandler, component, this)));
+	
+	childItems_.append(QSharedPointer<ComponentEditorParametersItem>(
+		new ComponentEditorParametersItem(parent, libHandler, component, this)));
+	
+	childItems_.append(QSharedPointer<ComponentEditorMemMapsItem>(
+		new ComponentEditorMemMapsItem(parent, libHandler, component, this)));
+	
+	childItems_.append(QSharedPointer<ComponentEditorAddrSpacesItem>(
+		new ComponentEditorAddrSpacesItem(parent, libHandler, component, this)));
+	
+	childItems_.append(QSharedPointer<ComponentEditorViewsItem>(
+		new ComponentEditorViewsItem(parent, libHandler, component, this)));
+
+	childItems_.append(QSharedPointer<ComponentEditorSWViewsItem>(
+		new ComponentEditorSWViewsItem(parent, libHandler, component, this)));
+	
+	childItems_.append(QSharedPointer<ComponentEditorPortsItem>(
+		new ComponentEditorPortsItem(parent, libHandler, component, this)));
+	
+	childItems_.append(QSharedPointer<ComponentEditorBusInterfacesItem>(
+		new ComponentEditorBusInterfacesItem(parent, libHandler, component, this)));
+	
+	childItems_.append(QSharedPointer<ComponentEditorChannelsItem>(
+		new ComponentEditorChannelsItem(parent, libHandler, component, this)));
+	
+	childItems_.append(QSharedPointer<ComponentEditorCpusItem>(
+		new ComponentEditorCpusItem(parent, libHandler, component, this)));
+	
+	childItems_.append(QSharedPointer<ComponentEditorOtherClocksItem>(
+		new ComponentEditorOtherClocksItem(parent, libHandler, component, this)));
+	
+	childItems_.append(QSharedPointer<ComponentEditorSoftMapsItem>(
+		new ComponentEditorSoftMapsItem(parent, libHandler, component, this)));
+	
+	childItems_.append(QSharedPointer<ComponentEditorComInterfacesItem>(
+		new ComponentEditorComInterfacesItem(parent, libHandler, component, this)));
+
+	childItems_.append(QSharedPointer<ComponentEditorAPIInterfacesItem>(
+		new ComponentEditorAPIInterfacesItem(parent, libHandler, component, this)));
+
+	childItems_.append(QSharedPointer<ComponentEditorSWPropertiesItem>(
+		new ComponentEditorSWPropertiesItem(parent, libHandler, component, this)));
 }
 
 ComponentEditorRootItem::~ComponentEditorRootItem() {
@@ -58,4 +96,8 @@ bool ComponentEditorRootItem::isValid() const {
 
 ItemEditor* ComponentEditorRootItem::editor() {
 	return NULL;
+}
+
+QString ComponentEditorRootItem::getTooltip() const {
+	return tr("The root item of the navigation tree");
 }

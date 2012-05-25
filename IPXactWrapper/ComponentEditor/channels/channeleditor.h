@@ -37,7 +37,7 @@ public:
 	*/
 	ChannelEditor(QSharedPointer<Component> component, 
 		void* dataPointer, 
-		QWidget *parent);
+		QWidget *parent = 0);
 
 	/*! \brief The constructor
 	 *
@@ -48,7 +48,7 @@ public:
 	*/
 	ChannelEditor(QSharedPointer<Component> component, 
 		QSharedPointer<Channel> channel, 
-		QWidget *parent);
+		QWidget *parent = 0);
 	
 	//! \brief The destructor
 	virtual ~ChannelEditor();

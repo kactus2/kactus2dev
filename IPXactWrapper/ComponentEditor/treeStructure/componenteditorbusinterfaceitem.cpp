@@ -7,16 +7,21 @@
 
 #include "componenteditorbusinterfaceitem.h"
 
+#include <QFont>
+#include <QApplication>
+
 ComponentEditorBusInterfaceItem::ComponentEditorBusInterfaceItem(QSharedPointer<BusInterface> busif,
 																 ComponentEditorTreeModel* model,
 																 LibraryInterface* libHandler,
 																 QSharedPointer<Component> component,
-																 QWidget* widget,
 																 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 busif_(busif),
-editor_(libHandler, component, busif, widget) {
+editor_(libHandler, component, busif) {
+	editor_.hide();
 
+	connect(&editor_, SIGNAL(contentChanged()),
+		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 }
 
 ComponentEditorBusInterfaceItem::~ComponentEditorBusInterfaceItem() {
@@ -35,4 +40,12 @@ bool ComponentEditorBusInterfaceItem::isValid() const {
 
 ItemEditor* ComponentEditorBusInterfaceItem::editor() {
 	return &editor_;
+}
+
+QFont ComponentEditorBusInterfaceItem::getFont() const {
+	return QApplication::font();
+}
+
+QString ComponentEditorBusInterfaceItem::getTooltip() const {
+	return tr("Defines properties of a specific interface in a component");
 }

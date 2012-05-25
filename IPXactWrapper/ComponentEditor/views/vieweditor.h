@@ -37,19 +37,6 @@ public:
 	/*! \brief The constructor
 	 *
 	 * \param component Pointer to the component that contains the view.
-	 * \param dataPointer Pointer to the view being edited.
-	 * \param libHandler Pointer to the instance that manages the library
-	 * \param parent Pointer to the owner of this editor.
-	 *
-	*/
-	ViewEditor(QSharedPointer<Component> component, 
-		void* dataPointer,
-		LibraryInterface* libHandler,
-		QWidget *parent);
-
-	/*! \brief The constructor
-	 *
-	 * \param component Pointer to the component that contains the view.
 	 * \param view Pointer to the view being edited.
 	 * \param libHandler Pointer to the instance that manages the library
 	 * \param parent Pointer to the owner of this editor.
@@ -58,7 +45,7 @@ public:
 	ViewEditor(QSharedPointer<Component> component, 
 		QSharedPointer<View> view,
 		LibraryInterface* libHandler,
-		QWidget *parent);
+		QWidget *parent = 0);
 	
 	//! \brief The destructor
 	virtual ~ViewEditor();

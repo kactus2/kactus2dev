@@ -7,17 +7,26 @@
 
 #include "componenteditorviewitem.h"
 
+#include <QFont>
+#include <QApplication>
+
 ComponentEditorViewItem::ComponentEditorViewItem(QSharedPointer<View> view,
 												 ComponentEditorTreeModel* model,
 												 LibraryInterface* libHandler,
 												 QSharedPointer<Component> component,
-												 QWidget* widget,
 												 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 view_(view),
-editor_(component, view, libHandler, widget) {
-
+editor_(component, view, libHandler) {
+	
 	Q_ASSERT(view_);
+
+	setObjectName(tr("ComponentEditorViewItem: %1").arg(view->getName()));
+	
+	editor_.hide();
+
+	connect(&editor_, SIGNAL(contentChanged()),
+		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 }
 
 ComponentEditorViewItem::~ComponentEditorViewItem() {
@@ -36,4 +45,12 @@ bool ComponentEditorViewItem::isValid() const {
 
 ItemEditor* ComponentEditorViewItem::editor() {
 	return &editor_;
+}
+
+QFont ComponentEditorViewItem::getFont() const {
+	return QApplication::font();
+}
+
+QString ComponentEditorViewItem::getTooltip() const {
+	return tr("Specifies a representation level of the component");
 }

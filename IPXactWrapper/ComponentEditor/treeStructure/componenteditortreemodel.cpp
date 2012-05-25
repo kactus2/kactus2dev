@@ -10,16 +10,16 @@
 #include <QColor>
 
 ComponentEditorTreeModel::ComponentEditorTreeModel( LibraryInterface* libHandler,
-												   QObject* parent,
-												   QWidget* displayWidget ):
+												   QObject* parent):
 QAbstractItemModel(parent),
 libHandler_(libHandler),
-displayWidget_(displayWidget),
 rootItem_() {
 
+	setObjectName(tr("ComponentEditorTreeModel"));
 }
 
 ComponentEditorTreeModel::~ComponentEditorTreeModel() {
+	rootItem_.clear();
 }
 
 void ComponentEditorTreeModel::setComponent( QSharedPointer<Component> component ) {
@@ -27,7 +27,7 @@ void ComponentEditorTreeModel::setComponent( QSharedPointer<Component> component
 	beginResetModel();
 	rootItem_.clear();
 	rootItem_ = QSharedPointer<ComponentEditorRootItem>(
-		new ComponentEditorRootItem(libHandler_, component, displayWidget_, this));
+		new ComponentEditorRootItem(libHandler_, component, this));
 	endResetModel();
 }
 
@@ -88,6 +88,9 @@ QVariant ComponentEditorTreeModel::data( const QModelIndex& index,
 		else
 			return QColor("red");
 	}
+	else if (role == Qt::ToolTipRole) {
+		return item->getTooltip();
+	}
 	// not supported role
 	else {
 		return QVariant();
@@ -146,11 +149,11 @@ QModelIndex ComponentEditorTreeModel::index(int row,
 	Q_ASSERT(parentItem);
 
 	// get pointer to specified child of the parent
-	ComponentEditorItem* child = parentItem->child(row);
+	QSharedPointer<ComponentEditorItem> child = parentItem->child(row);
 
 	// if the item was found
 	if (child) {
-		return createIndex(row, column, child);
+		return createIndex(row, column, child.data());
 	}
 	// if child was not found
 	else {
@@ -195,4 +198,12 @@ QModelIndex ComponentEditorTreeModel::parent( const QModelIndex& index ) const {
 
 	// create new index and return it
 	return createIndex(row, 0, parent);
+}
+
+void ComponentEditorTreeModel::makeEditorChanges() {
+	rootItem_->makeEditorChanges();
+}
+
+void ComponentEditorTreeModel::setLocked( bool locked ) {
+	rootItem_->setLocked(locked);
 }

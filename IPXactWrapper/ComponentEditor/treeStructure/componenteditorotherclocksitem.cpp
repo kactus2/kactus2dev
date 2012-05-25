@@ -9,13 +9,14 @@
 
 ComponentEditorOtherClocksItem::ComponentEditorOtherClocksItem(ComponentEditorTreeModel* model, 
 															   LibraryInterface* libHandler,
-															   QSharedPointer<Component> component, 
-															   QWidget* widget,
+															   QSharedPointer<Component> component,
 															   ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 otherClocks_(component->getOtherClockDrivers()),
-editor_(component, widget) {
-
+editor_(component) {
+	editor_.hide();
+	connect(&editor_, SIGNAL(contentChanged()),
+		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 }
 
 ComponentEditorOtherClocksItem::~ComponentEditorOtherClocksItem() {
@@ -36,4 +37,8 @@ bool ComponentEditorOtherClocksItem::isValid() const {
 
 ItemEditor* ComponentEditorOtherClocksItem::editor() {
 	return &editor_;
+}
+
+QString ComponentEditorOtherClocksItem::getTooltip() const {
+	return tr("Contains the details that define clock waveforms");
 }

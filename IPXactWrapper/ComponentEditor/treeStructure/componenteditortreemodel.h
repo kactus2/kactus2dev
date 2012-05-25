@@ -29,12 +29,10 @@ public:
 	 *
 	 * \param libHandler Pointer to the instance that manages the library.
 	 * \param parent Pointer to the instance that owns this model.
-	 * \param displayWidget Pointer to the instance that displays the editors of items.
 	 *
 	*/
 	ComponentEditorTreeModel(LibraryInterface* libHandler,
-		QObject* parent, 
-		QWidget* displayWidget);
+		QObject* parent);
 	
 	//! \brief The destructor
 	virtual ~ComponentEditorTreeModel();
@@ -124,6 +122,18 @@ public slots:
 	*/
 	void onContentChanged(ComponentEditorItem* item);
 
+	/*! \brief Apply the changes from the editors to the component model.
+	 *
+	*/
+	void makeEditorChanges();
+
+	/*! \brief Set the locked state of the editors and visualizers.
+	 *
+	 * \param locked True to set the editor's to view only mode.
+	 *
+	*/
+	void setLocked(bool locked);
+
 private:
 	//! \brief No copying
 	ComponentEditorTreeModel(const ComponentEditorTreeModel& other);
@@ -133,9 +143,6 @@ private:
 
 	//! \brief Pointer to the instance that manages the library.
 	LibraryInterface* libHandler_;
-
-	//! \brief Pointer to the widget that displays the items' editors.
-	QWidget* displayWidget_;
 
 	//! \brief Pointer to the root item of the tree.
 	QSharedPointer<ComponentEditorRootItem> rootItem_;

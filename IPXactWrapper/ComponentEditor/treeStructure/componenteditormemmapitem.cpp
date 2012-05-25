@@ -7,11 +7,13 @@
 
 #include "componenteditormemmapitem.h"
 
+#include <QFont>
+#include <QApplication>
+
 ComponentEditorMemMapItem::ComponentEditorMemMapItem(QSharedPointer<MemoryMap> memoryMap, 
 													 ComponentEditorTreeModel* model,
 													 LibraryInterface* libHandler,
 													 QSharedPointer<Component> component,
-													 QWidget* widget,
 													 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 memoryMap_(memoryMap) {
@@ -32,4 +34,13 @@ bool ComponentEditorMemMapItem::isValid() const {
 
 ItemEditor* ComponentEditorMemMapItem::editor() {
 	return NULL;
+}
+
+QFont ComponentEditorMemMapItem::getFont() const {
+	return QApplication::font();
+}
+
+QString ComponentEditorMemMapItem::getTooltip() const {
+	return tr("Contains the details of a single memory map that can be referenced"
+		" by containing component's slave interfaces");
 }

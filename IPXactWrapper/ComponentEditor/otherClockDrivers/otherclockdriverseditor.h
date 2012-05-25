@@ -32,7 +32,8 @@ public:
 	 * \param parent Pointer to the owner of this widget.
 	 *
 	*/
-	OtherClockDriversEditor(QSharedPointer<Component> component, QWidget *parent);
+	OtherClockDriversEditor(QSharedPointer<Component> component,
+		QWidget *parent = 0);
 	
 	//! \brief The destructor
 	virtual ~OtherClockDriversEditor();

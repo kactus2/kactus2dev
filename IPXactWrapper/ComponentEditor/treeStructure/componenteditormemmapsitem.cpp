@@ -11,14 +11,13 @@
 ComponentEditorMemMapsItem::ComponentEditorMemMapsItem( ComponentEditorTreeModel* model,
 													   LibraryInterface* libHandler,
 													   QSharedPointer<Component> component,
-													   QWidget* widget,
 													   ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
 memoryMaps_(component->getMemoryMaps()) {
 
 	foreach (QSharedPointer<MemoryMap> memoryMap, memoryMaps_) {
-		ComponentEditorMemMapItem* memoryMapItem = new ComponentEditorMemMapItem(
-			memoryMap, model, libHandler, component, widget, this);
+		QSharedPointer<ComponentEditorMemMapItem> memoryMapItem(new ComponentEditorMemMapItem(
+			memoryMap, model, libHandler, component, this));
 		childItems_.append(memoryMapItem);
 	}
 }
@@ -30,15 +29,10 @@ QString ComponentEditorMemMapsItem::text() const {
 	return tr("Memory maps");
 }
 
-bool ComponentEditorMemMapsItem::isValid() const {
-	foreach (QSharedPointer<MemoryMap> memoryMap, memoryMaps_) {
-		if (!memoryMap->isValid()) {
-			return false;
-		}
-	}
-	return true;
-}
-
 ItemEditor* ComponentEditorMemMapsItem::editor() {
 	return NULL;
+}
+
+QString ComponentEditorMemMapsItem::getTooltip() const {
+	return tr("Contains the memory maps of the component");
 }

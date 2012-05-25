@@ -18,8 +18,6 @@
 #include <QDesktopServices>
 #include <QUrl>
 
-#include <QDebug>
-
 ComponentTreeView::ComponentTreeView(LibraryInterface* handler,
 									 const VLNV& compVLNV,
 									 QWidget *parent):
@@ -29,14 +27,14 @@ locked_(true),
 fileOpenAction_(tr("Open"), this),
 handler_(handler),
 componentVLNV_(compVLNV) {
-	
+
+	// can be used in debugging to identify the object
+	setObjectName(tr("ComponentTreeView"));
+
 	// header is not shown 
 	setHeaderHidden(true);
 
 	setIndentation(20);
-
-	// alternating row colors to make reading easier
-	//setAlternatingRowColors(true);
 
 	// only one item can be selected at a time
 	setSelectionMode(QAbstractItemView::SingleSelection);
@@ -50,7 +48,6 @@ componentVLNV_(compVLNV) {
 }
 
 ComponentTreeView::~ComponentTreeView() {
-
 }
 
 void ComponentTreeView::currentChanged(const QModelIndex & current, 

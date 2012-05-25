@@ -16,13 +16,15 @@
 //-----------------------------------------------------------------------------
 // Function: SWViewEditor::SWViewEditor()
 //-----------------------------------------------------------------------------
-SWViewEditor::SWViewEditor(QSharedPointer<Component> component, void* dataPointer,
-                           LibraryInterface* libHandler, QWidget *parent)
-    : ItemEditor(component, parent), 
-      libHandler_(libHandler),
-      view_(static_cast<SWView*>(dataPointer)),
-      nameGroup_(this),
-      hierRefEditor_(VLNV::DESIGNCONFIGURATION, libHandler, this, this)
+SWViewEditor::SWViewEditor(QSharedPointer<Component> component, 
+						   QSharedPointer<SWView> swView,
+                           LibraryInterface* libHandler, 
+						   QWidget *parent):
+ItemEditor(component, parent), 
+libHandler_(libHandler),
+view_(swView.data()),
+nameGroup_(this),
+hierRefEditor_(VLNV::DESIGNCONFIGURATION, libHandler, this, this)
 {
     connect(&nameGroup_, SIGNAL(nameChanged(const QString&)),
             this, SIGNAL(nameChanged(const QString&)), Qt::UniqueConnection);

@@ -31,17 +31,21 @@ public:
 	 *
 	 * \param libHandler Pointer to the instance that manages the library.
 	 * \param component Pointer to the component being edited.
-	 * \param widget Pointer to the widget that displays the editor.
 	 * \param parent Pointer to the owner model of this root item.
 	 *
 	*/
 	ComponentEditorRootItem(LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
-		QWidget* widget,
 		ComponentEditorTreeModel* parent);
 	
 	//! \brief The destructor
 	virtual ~ComponentEditorRootItem();
+
+	/*! \brief Get the tool tip for the item.
+	 * 
+	 * \return The text for the tool tip to print to user.
+	*/
+	virtual QString getTooltip() const;
 
 	/*! \brief Get the text to be displayed to user in the tree for this item.
 	 *
