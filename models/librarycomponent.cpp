@@ -173,13 +173,11 @@ void LibraryComponent::setDescription(const QString & description) {
 void LibraryComponent::write(QXmlStreamWriter& writer) {
 	writer.writeStartDocument();
 
-	// create a string to set as a comment to the top of the document
-	QString topComment(QObject::tr("Created by Kactus2"));
-
-	// comment contains the creation date and time
-	topComment += QTime::currentTime().toString(QString("hh:mm:ss")) += QString(" ");
-	topComment += QDate::currentDate().toString(QString("dd.MM.yyyy"));
-	writer.writeComment(topComment);
+	// write the comment to top of the xml-file
+	writer.writeComment(QObject::tr(" Created by Kactus2 - Open source IP-Xact toolset "));
+	writer.writeComment(QObject::tr(" http://sourceforge.net/projects/kactus2/ "));
+	writer.writeComment(QObject::tr(" Date: %1 ").arg(QDate::currentDate().toString(QString("dd.MM.yyyy"))));
+	writer.writeComment(QObject::tr(" Time: %1 ").arg(QTime::currentTime().toString(QString("hh:mm:ss"))));
 
 	// the comment has been generated to the top of the document and we can
 	// write the actual data
