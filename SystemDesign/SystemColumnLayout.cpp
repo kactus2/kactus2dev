@@ -21,8 +21,11 @@
 //-----------------------------------------------------------------------------
 // Function: SystemColumnLayout()
 //-----------------------------------------------------------------------------
-SystemColumnLayout::SystemColumnLayout(QGraphicsScene* scene) : scene_(scene), columns_(),
-                                                            layoutWidth_(0.0), offsetY_(0)
+SystemColumnLayout::SystemColumnLayout(QGraphicsScene* scene)
+    : scene_(scene),
+      columns_(),
+      layoutWidth_(0.0),
+      offsetY_(0)
 {
 }
 
@@ -43,10 +46,10 @@ SystemColumnLayout::~SystemColumnLayout()
 //-----------------------------------------------------------------------------
 // Function: addColumn()
 //-----------------------------------------------------------------------------
-void SystemColumnLayout::addColumn(QString const& name)
+void SystemColumnLayout::addColumn(ColumnDesc const& desc)
 {
     // Create the node column and position it accordingly.
-    SystemColumn* column = new SystemColumn(name, this, scene_);
+    SystemColumn* column = new SystemColumn(desc, this, scene_);
     column->setPos(layoutWidth_, 0.0);
 
     addColumn(column);
@@ -143,6 +146,14 @@ void SystemColumnLayout::onMoveColumn(SystemColumn* column)
 void SystemColumnLayout::onReleaseColumn(SystemColumn* column)
 {
     HStackedLayout::setItemPos(columns_, column, 0.0);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemColumnLayout::updateColumnPositions()
+//-----------------------------------------------------------------------------
+void SystemColumnLayout::updateColumnPositions()
+{
+    HStackedLayout::updateItemPositions(columns_, 0.0, 0.0, 0.0);
 }
 
 //-----------------------------------------------------------------------------

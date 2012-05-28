@@ -12,7 +12,7 @@
 #ifndef SYSTEMCOLUMN_H
 #define SYSTEMCOLUMN_H
 
-#include "IComponentStack.h"
+#include "IGraphicsItemStack.h"
 
 #include <common/ColumnTypes.h>
 #include <common/graphicsItems/GraphicsItemTypes.h>
@@ -21,13 +21,12 @@
 #include <QSet>
 
 class SystemColumnLayout;
-class ComponentItem;
 class SWConnection;
 
 //-----------------------------------------------------------------------------
 //! SystemColumn class.
 //-----------------------------------------------------------------------------
-class SystemColumn : public QObject, public QGraphicsRectItem, public IComponentStack
+class SystemColumn : public QObject, public QGraphicsRectItem, public IGraphicsItemStack
 {
     Q_OBJECT
 
@@ -36,18 +35,17 @@ public:
 
     enum
     {
-        WIDTH = 319,
         HEIGHT = 30
     };
 
     /*!
      *  Constructor.
      *
-     *      @param [in] name          The name of the column.
+     *      @param [in] name          The column description.
      *      @param [in] layout        The parent column layout.
      *      @param [in] scene         The graphics scene.
      */
-    SystemColumn(QString const& name, SystemColumnLayout* layout, QGraphicsScene* scene);
+    SystemColumn(ColumnDesc const& desc, SystemColumnLayout* layout, QGraphicsScene* scene);
 
     /*!
      *  Destructor.
@@ -62,6 +60,11 @@ public:
     void setName(QString const& name);
 
     /*!
+     *  Sets the column description.
+     */
+    void setColumnDesc(ColumnDesc const& desc);
+
+    /*!
      *  Sets the y coordinate offset.
      *
      *      @param [in] y The y coordinate offset.
@@ -74,6 +77,21 @@ public:
     QString const& getName() const;
 
     /*!
+     *  Returns the content type.
+     */
+    ColumnContentType getContentType() const;
+
+    /*!
+     *  Returns the column description.
+     */
+    ColumnDesc const& getColumnDesc() const;
+
+    /*!
+     *  Returns the parent layout.
+     */
+    SystemColumnLayout& getLayout();
+
+    /*!
      *  Returns true if the column is empty (i.e. not containing any items).
      */
     bool isEmpty() const;
@@ -81,7 +99,7 @@ public:
     int type() const { return Type; }
 
     //-----------------------------------------------------------------------------
-    // IComponentStack implementation.
+    // IGraphicsItemStack implementation.
     //-----------------------------------------------------------------------------
 
     /*!
@@ -90,28 +108,28 @@ public:
      *      @param [in] item  The item to add.
      *      @param [in] load  If true, the item is being loaded from a design.
      */
-    void addItem(ComponentItem* item, bool load = false);
+    void addItem(QGraphicsItem* item, bool load = false);
 
     /*!
      *  Removes an item from the system column.
      *
      *      @param [in] item the item to remove.
      */
-    void removeItem(ComponentItem* item);
+    void removeItem(QGraphicsItem* item);
 
     /*!
      *  Called when an item is moved within the column.
      *
      *      @param [in] item       The item that has been moved.
      */
-    void onMoveItem(ComponentItem* item);
+    void onMoveItem(QGraphicsItem* item);
 
     /*!
      *  Called when an item is released from being moved by mouse.
      *
      *      @param [in] item The item that has been released.
      */
-    void onReleaseItem(ComponentItem* item);
+    void onReleaseItem(QGraphicsItem* item);
 
     /*!
      *  Updates the item positions so that there are no violations of the stacking rule.
@@ -133,7 +151,7 @@ public:
      *
      *      @param [in] item The item to test for.
      */
-    bool isItemAllowed(ComponentItem* item) const;
+    bool isItemAllowed(QGraphicsItem* item) const;
 
 signals:
     //! Signals that the contents of the column have changed.
@@ -155,6 +173,11 @@ private:
     // Disable copying.
     SystemColumn(SystemColumn const& rhs);
     SystemColumn& operator=(SystemColumn const& rhs);
+
+    /*!
+     *  Updates the name label.
+     */
+    void updateNameLabel();
     
     //-----------------------------------------------------------------------------
     // Data.
@@ -170,14 +193,14 @@ private:
     //! The parent column layout.
     SystemColumnLayout* layout_;
 
-    //! The name of the column.
-    QString name_;
+    //! The column description.
+    ColumnDesc desc_;
 
     //! The column name label.
     QGraphicsTextItem* nameLabel_;
 
     //! The node items ordered from top to bottom.
-    QList<ComponentItem*> items_;
+    QList<QGraphicsItem*> items_;
 
     //! The old position of the column before mouse move.
     QPointF oldPos_;

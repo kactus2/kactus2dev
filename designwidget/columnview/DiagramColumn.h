@@ -15,6 +15,8 @@
 #include <common/ColumnTypes.h>
 #include <common/graphicsItems/GraphicsItemTypes.h>
 
+#include <models/ColumnDesc.h>
+
 #include <QGraphicsRectItem>
 #include <QSet>
 
@@ -37,15 +39,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] name          The name of the column.
-     *      @param [in] type          The content type.
-     *      @param [in] allowedItems  The allowed items, if the content type is custom.
-     *                                This value is discarded if the content type is something else.
-     *                                See ColumnItemType for possible values.
-     *      @param [in] layout        The parent column layout.
+     *      @param [in] desc    The column description.
+     *      @param [in] layout  The parent column layout.
      */
-    DiagramColumn(QString const& name, ColumnContentType contentType,
-                  unsigned int allowedItems, DiagramColumnLayout* layout);
+    DiagramColumn(ColumnDesc const& desc, DiagramColumnLayout* layout);
 
     /*!
      *  Destructor.
@@ -59,16 +56,14 @@ public:
      */
     void setName(QString const& name);
 
+    void updateNameLabel();
+
     /*!
-     *  Specifies the content type for the column. The content type indicates what kind of items
-     *  can be placed into the column.
+     *  Sets the column description which determines the name and width of the column and the allowed items.
      *
-     *      @param [in] type          The content type.
-     *      @param [in] allowedItems  The allowed items, if the content type is custom.
-     *                                This value is discarded if the content type is something else.
-     *                                See ColumnItemType for possible values.
+     *      @param [in] desc The column description.
      */
-    void setContentType(ColumnContentType type, unsigned int allowedItems = CIT_NONE);
+    void setColumnDesc(ColumnDesc const& desc);
 
     /*!
      *  Checks whether the given item is allowed to be placed to this column.
@@ -135,6 +130,11 @@ public:
      *  Returns the list of allowed items. See ColumnItemType for possible values.
      */
     unsigned int getAllowedItems() const;
+
+    /*!
+     *  Returns the column description.
+     */
+    ColumnDesc const& getColumnDesc() const;
 
     /*!
      *  Returns true if the contents of the column conforms to the given allowed items configuration.
@@ -209,17 +209,8 @@ private:
     //! The parent column layout.
     DiagramColumnLayout* layout_;
 
-    //! The name of the column.
-    QString name_;
-
-    //! The column width.
-    unsigned int width_;
-    
-    //! The content type.
-    ColumnContentType contentType_;
-    
-    //! The allowed items (represented as bit flags).
-    unsigned int allowedItems_;
+    //! The column description.
+    ColumnDesc desc_;
 
     //! The column name label.
     QGraphicsTextItem* nameLabel_;

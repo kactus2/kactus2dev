@@ -214,7 +214,7 @@ bool DiagramAdHocInterface::isHierarchical() const
 //-----------------------------------------------------------------------------
 // Function: onConnect()
 //-----------------------------------------------------------------------------
-bool DiagramAdHocInterface::onConnect(DiagramConnectionEndPoint const* other)
+bool DiagramAdHocInterface::onConnect(DiagramConnectionEndPoint const*)
 {
     return true;
 }
@@ -330,7 +330,7 @@ void DiagramAdHocInterface::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 //-----------------------------------------------------------------------------
 // Function: setTypes()
 //-----------------------------------------------------------------------------
-void DiagramAdHocInterface::setTypes(VLNV const& busType, VLNV const& absType, General::InterfaceMode mode)
+void DiagramAdHocInterface::setTypes(VLNV const&, VLNV const&, General::InterfaceMode)
 {
 }
 
@@ -451,7 +451,7 @@ void DiagramAdHocInterface::setDirection(QVector2D const& dir)
 //-----------------------------------------------------------------------------
 // Function: setInterfaceMode()
 //-----------------------------------------------------------------------------
-void DiagramAdHocInterface::setInterfaceMode(General::InterfaceMode mode)
+void DiagramAdHocInterface::setInterfaceMode(General::InterfaceMode)
 {
 }
 

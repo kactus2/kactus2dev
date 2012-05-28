@@ -16,6 +16,13 @@
 
 #include <common/graphicsItems/ComponentItem.h>
 
+enum PortDirection
+{
+    PORT_LEFT = 0,
+    PORT_RIGHT,
+    PORT_BOTTOM
+};
+
 //-----------------------------------------------------------------------------
 //! SWComponentItem class.
 //-----------------------------------------------------------------------------
@@ -160,17 +167,16 @@ private:
     /*!
      *  Adds the given port to the component.
      *
-     *      @param [in] port   The port to add.
-     *      @param [in] right  If true, the port is added on the right side. Otherwise it
-     *                         is added to the left side.
+     *      @param [in] port  The port to add.
+     *      @param [in] dir   The port direction which determines to which side to port will be placed.
      */
-    void onAddPort(SWPortItem* port, bool right);
+    void onAddPort(SWPortItem* port, PortDirection dir);
     
     enum
     {
         SPACING = 8,
         MIN_Y_PLACEMENT = 3 * GridSize,
-        BOTTOM_MARGIN = 2 * GridSize
+        BOTTOM_MARGIN = 3 * GridSize
     };
 
     //-----------------------------------------------------------------------------
@@ -180,9 +186,10 @@ private:
     //! The boolean flag for imported property.
     bool imported_;
 
-    //! The left and right port stacks.
+    //! The left, right and bottom port stacks.
     QList<SWPortItem*> leftPorts_;
     QList<SWPortItem*> rightPorts_;
+    QList<SWPortItem*> bottomPorts_;
 
     //! If true, connection updates coming from ports are disabled.
     bool connUpdateDisabled_;

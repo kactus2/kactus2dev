@@ -14,6 +14,7 @@
 
 #include <common/ColumnTypes.h>
 #include <models/generaldeclarations.h>
+#include <models/ColumnDesc.h>
 
 #include <QUndoCommand>
 #include <QGraphicsItem>
@@ -38,16 +39,11 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] layout        The column layout.
-     *      @param [in] name          The name of the column.
-     *      @param [in] type          The content type.
-     *      @param [in] allowedItems  The allowed items, if the content type is custom.
-     *                                This value is discarded if the content type is something else.
-     *                                See ColumnItemType for possible values.
-     *      @param [in] parent        The parent command.
+     *      @param [in] layout  The column layout.
+     *      @param [in] desc    The column description.
+     *      @param [in] parent  The parent command.
      */
-    ColumnAddCommand(DiagramColumnLayout* layout, QString const& name,
-                     ColumnContentType contentType, unsigned int allowedItems,
+    ColumnAddCommand(DiagramColumnLayout* layout, ColumnDesc const& desc,
                      QUndoCommand* parent = 0);
 
     /*!
@@ -77,14 +73,8 @@ private:
     //! The column layout.
     DiagramColumnLayout* layout_;
 
-    //! The name of the column.
-    QString name_;
-
-    //! The content type.
-    ColumnContentType contentType_;
-
-    //! The allowed items.
-    unsigned int allowedItems_;
+    //! The column description.
+    ColumnDesc desc_;
 
     //! Created diagram column.
     DiagramColumn* column_;

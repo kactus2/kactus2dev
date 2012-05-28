@@ -17,6 +17,8 @@
 #include "SWCompItem.h"
 #include "SWConnection.h"
 
+#include <designwidget/columnview/ColumnEditDialog.h>
+
 #include <LibraryManager/libraryinterface.h>
 #include <LibraryManager/LibraryUtils.h>
 
@@ -52,8 +54,8 @@ SystemDesignWidget::SystemDesignWidget(bool onlySW, LibraryInterface* lh, MainWi
         this, SIGNAL(openComponent(const VLNV&)), Qt::UniqueConnection);
     connect(diagram_, SIGNAL(openSWDesign(const VLNV&, QString const&)),
         this, SIGNAL(openSWDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
-    connect(diagram_, SIGNAL(openSource(ComponentItem*)),
-        this, SIGNAL(openSource(ComponentItem*)), Qt::UniqueConnection);
+    connect(diagram_, SIGNAL(openCSource(ComponentItem*)),
+        this, SIGNAL(openCSource(ComponentItem*)), Qt::UniqueConnection);
     connect(diagram_, SIGNAL(componentSelected(ComponentItem*)),
         this, SIGNAL(componentSelected(ComponentItem*)), Qt::UniqueConnection);
     connect(diagram_, SIGNAL(clearItemSelection()),
@@ -444,7 +446,31 @@ VLNV SystemDesignWidget::getComponentVLNV() const
 //-----------------------------------------------------------------------------
 void SystemDesignWidget::addColumn()
 {
-    diagram_->addColumn("SW Components");
+    if (onlySW_)
+    {
+        ColumnEditDialog dlg(this);
+        // TODO: Enable only part of the options in the column edit dialog.
+
+        if (dlg.exec() == QDialog::Accepted)
+        {
+            ColumnDesc desc(dlg.getName(), dlg.getContentType(), 0);
+            
+            if (desc.getContentType() == COLUMN_CONTENT_COMPONENTS)
+            {
+                desc.setWidth(SW_COLUMN_WIDTH);
+            }
+            else
+            {
+                desc.setWidth(IO_COLUMN_WIDTH);
+            }
+
+            diagram_->addColumn(desc);
+        }
+    }
+    else
+    {
+        diagram_->addColumn(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, SYSTEM_COLUMN_WIDTH));
+    }
 }
 
 //-----------------------------------------------------------------------------

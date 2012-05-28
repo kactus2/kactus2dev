@@ -26,7 +26,9 @@ Design::Design(QDomDocument& doc)
       portAdHocVisibilities_(),
       attributes_(),
       apiDependencies_(),
-      comConnections_()
+      hierApiDependencies_(),
+      comConnections_(),
+      hierComConnections_()
 {
 	LibraryComponent::vlnv_->setType(VLNV::DESIGN);
 
@@ -109,7 +111,9 @@ Design::Design(const VLNV &vlnv)
       portAdHocVisibilities_(),
       attributes_(),
       apiDependencies_(),
-      comConnections_()
+      hierApiDependencies_(),
+      comConnections_(),
+      hierComConnections_()
 {
 	LibraryComponent::vlnv_->setType(VLNV::DESIGN);
 }
@@ -129,7 +133,9 @@ Design::Design(Design const& other)
       adHocPortPositions_(other.adHocPortPositions_),
       attributes_(other.attributes_),
       apiDependencies_(other.apiDependencies_),
-      comConnections_(other.comConnections_)
+      hierApiDependencies_(other.hierApiDependencies_),
+      comConnections_(other.comConnections_),
+      hierComConnections_(other.hierComConnections_)
 {
 }
 
@@ -151,7 +157,9 @@ Design& Design::operator=( const Design& other )
         adHocPortPositions_ = other.adHocPortPositions_;
 		attributes_ = other.attributes_;
         apiDependencies_ = other.apiDependencies_;
+        hierApiDependencies_ = other.hierApiDependencies_;
         comConnections_ = other.comConnections_;
+        hierComConnections_ = other.hierComConnections_;
 	}
 	return *this;
 }
@@ -435,7 +443,20 @@ void Design::write(QFile& file)
         writer.writeEndElement(); // kactus2:apiDependencies
     }
 
-    // Write communication connections if any.
+    // Write hierarchical API dependencies if any.
+    if (!hierApiDependencies_.empty())
+    {
+        writer.writeStartElement("kactus2:hierApiDependencies");
+
+        foreach (HierApiDependency const& dependency, hierApiDependencies_)
+        {
+            dependency.write(writer);
+        }
+
+        writer.writeEndElement(); // kactus2:hierApiDependencies
+    }
+
+    // Write COM connections if any.
     if (!comConnections_.empty())
     {
         writer.writeStartElement("kactus2:comConnections");
@@ -448,16 +469,26 @@ void Design::write(QFile& file)
         writer.writeEndElement(); // kactus2:comConnections
     }
 
+    // Write hierarchical COM connections if any.
+    if (!hierComConnections_.empty())
+    {
+        writer.writeStartElement("kactus2:hierComConnections");
+
+        foreach (HierComConnection const& conn, hierComConnections_)
+        {
+            conn.write(writer);
+        }
+
+        writer.writeEndElement(); // kactus2:hierComConnections
+    }
+
 	if (!columns_.isEmpty())
 	{
 		writer.writeStartElement("kactus2:columnLayout");
 
 		foreach (ColumnDesc const& columnDesc, columns_)
 		{
-			writer.writeEmptyElement("kactus2:column");
-			writer.writeAttribute("name", columnDesc.name);
-			writer.writeAttribute("contentType", QString::number(columnDesc.contentType));
-			writer.writeAttribute("allowedItems", QString::number(columnDesc.allowedItems));
+            columnDesc.write(writer);
 		}
 
 		writer.writeEndElement(); // kactus2:columnLayout
@@ -899,6 +930,18 @@ void Design::parseVendorExtensions(QDomNode &node)
                 }
             }
         }
+        else if (childNode.nodeName() == "kactus2:hierApiDependencies")
+        {
+            for (int j = 0; j < childNode.childNodes().count(); ++j)
+            {
+                QDomNode apiNode = childNode.childNodes().at(j);
+
+                if (apiNode.nodeName() == "kactus2:hierApiDependency")
+                {
+                    hierApiDependencies_.append(HierApiDependency(apiNode));
+                }
+            }
+        }
         else if (childNode.nodeName() == "kactus2:comConnections")
         {
             for (int j = 0; j < childNode.childNodes().count(); ++j)
@@ -908,6 +951,18 @@ void Design::parseVendorExtensions(QDomNode &node)
                 if (comNode.nodeName() == "kactus2:comConnection")
                 {
                     comConnections_.append(ComConnection(comNode));
+                }
+            }
+        }
+        else if (childNode.nodeName() == "kactus2:hierComConnections")
+        {
+            for (int j = 0; j < childNode.childNodes().count(); ++j)
+            {
+                QDomNode comNode = childNode.childNodes().at(j);
+
+                if (comNode.nodeName() == "kactus2:hierComConnection")
+                {
+                    hierComConnections_.append(HierComConnection(comNode));
                 }
             }
         }
@@ -988,11 +1043,27 @@ void Design::setApiDependencies(QList<ApiDependency> const& apiDependencies)
 }
 
 //-----------------------------------------------------------------------------
+// Function: Design::setApiDependencies()
+//-----------------------------------------------------------------------------
+void Design::setHierApiDependencies(QList<HierApiDependency> const& hierApiDependencies)
+{
+    hierApiDependencies_ = hierApiDependencies;
+}
+
+//-----------------------------------------------------------------------------
 // Function: Design::setComConnections()
 //-----------------------------------------------------------------------------
 void Design::setComConnections(QList<ComConnection> const& comConnections)
 {
     comConnections_ = comConnections;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Design::setHierComConnections()
+//-----------------------------------------------------------------------------
+void Design::setHierComConnections(QList<HierComConnection> const& hierComConnections)
+{
+    hierComConnections_ = hierComConnections;
 }
 
 //-----------------------------------------------------------------------------
@@ -1020,11 +1091,27 @@ QList<ApiDependency> const& Design::getApiDependencies() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: Design::getHierApiDependencies()
+//-----------------------------------------------------------------------------
+QList<HierApiDependency> const& Design::getHierApiDependencies() const
+{
+    return hierApiDependencies_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: Design::getComConnections()
 //-----------------------------------------------------------------------------
 QList<ComConnection> const& Design::getComConnections() const
 {
     return comConnections_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Design::getHierComConnections()
+//-----------------------------------------------------------------------------
+QList<HierComConnection> const& Design::getHierComConnections() const
+{
+    return hierComConnections_;
 }
 
 Design::ComponentInstance::ComponentInstance(

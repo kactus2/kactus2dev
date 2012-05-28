@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: SWPortItem.cpp
+// File: SWInterfaceItem.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
@@ -9,12 +9,13 @@
 // Graphics item for visualizing API/COM interfaces as ports of a component.
 //-----------------------------------------------------------------------------
 
-#include "SWPortItem.h"
+#include "SWInterfaceItem.h"
 
+#include "SystemColumn.h"
+#include "SystemColumnLayout.h"
 #include "SWComponentItem.h"
 #include "SWConnection.h"
 #include "HWMappingItem.h"
-
 #include "SystemMoveCommands.h"
 
 #include <common/GenericEditProvider.h>
@@ -39,34 +40,37 @@
 #include <QGraphicsScene>
 
 //-----------------------------------------------------------------------------
-// Function: SWPortItem::SWPortItem()
+// Function: SWInterfaceItem::SWInterfaceItem()
 //-----------------------------------------------------------------------------
-SWPortItem::SWPortItem(QString const& name, QGraphicsItem *parent)
-    : SWConnectionEndpoint(parent),
+SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component,
+                                 QString const& name, QGraphicsItem *parent)
+    : SWConnectionEndpoint(parent, QVector2D(1.0f, 0.0f)),
       nameLabel_(name, this),
+      component_(component),
       apiInterface_(),
       comInterface_(),
       temp_(true),
       oldPos_(),
-      oldPortPositions_(),
-      stubLine_(0, 0, 0, -GridSize, this)
+      oldStack_(0),
+      oldInterfacePositions_()
 {
     setType(ENDPOINT_TYPE_UNDEFINED);
     initialize();
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWPortItem::SWPortItem()
+// Function: SWInterfaceItem::SWInterfaceItem()
 //-----------------------------------------------------------------------------
-SWPortItem::SWPortItem(QSharedPointer<ApiInterface> apiIf, QGraphicsItem *parent)
+SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component,
+                                 QSharedPointer<ApiInterface> apiIf, QGraphicsItem *parent)
     : SWConnectionEndpoint(parent),
       nameLabel_(this),
+      component_(component),
       apiInterface_(apiIf),
       comInterface_(),
       temp_(false),
       oldPos_(),
-      oldPortPositions_(),
-      stubLine_(0, 0, 0, -GridSize, this)
+      oldInterfacePositions_()
 {
     Q_ASSERT(apiIf != 0);
     setType(ENDPOINT_TYPE_API);
@@ -74,17 +78,18 @@ SWPortItem::SWPortItem(QSharedPointer<ApiInterface> apiIf, QGraphicsItem *parent
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWPortItem::SWPortItem()
+// Function: SWInterfaceItem::SWInterfaceItem()
 //-----------------------------------------------------------------------------
-SWPortItem::SWPortItem(QSharedPointer<ComInterface> comIf, QGraphicsItem *parent)
+SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component, 
+                                 QSharedPointer<ComInterface> comIf, QGraphicsItem *parent)
     : SWConnectionEndpoint(parent),
       nameLabel_(this),
+      component_(component),
       apiInterface_(),
       comInterface_(comIf),
       temp_(false),
       oldPos_(),
-      oldPortPositions_(),
-      stubLine_(0, 0, 0, -GridSize, this)
+      oldInterfacePositions_()
 {
     Q_ASSERT(comIf != 0);
     setType(ENDPOINT_TYPE_COM);
@@ -92,24 +97,24 @@ SWPortItem::SWPortItem(QSharedPointer<ComInterface> comIf, QGraphicsItem *parent
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWPortItem::~SWPortItem()
+// Function: SWInterfaceItem::~SWInterfaceItem()
 //-----------------------------------------------------------------------------
-SWPortItem::~SWPortItem()
+SWInterfaceItem::~SWInterfaceItem()
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: setTemporary()
 //-----------------------------------------------------------------------------
-void SWPortItem::setTemporary(bool temp)
+void SWInterfaceItem::setTemporary(bool temp)
 {
     temp_ = temp;
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWPortItem::name()
+// Function: SWInterfaceItem::name()
 //-----------------------------------------------------------------------------
-QString SWPortItem::name() const
+QString SWInterfaceItem::name() const
 {
     if (isCom())
     {
@@ -128,7 +133,7 @@ QString SWPortItem::name() const
 //-----------------------------------------------------------------------------
 // Function: setName()
 //-----------------------------------------------------------------------------
-void SWPortItem::setName(const QString& name)
+void SWInterfaceItem::setName(const QString& name)
 {
     if (isCom())
     {
@@ -149,25 +154,25 @@ void SWPortItem::setName(const QString& name)
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWPortItem::getComInterface()
+// Function: SWInterfaceItem::getComInterface()
 //-----------------------------------------------------------------------------
-QSharedPointer<ComInterface> SWPortItem::getComInterface() const
+QSharedPointer<ComInterface> SWInterfaceItem::getComInterface() const
 {
     return comInterface_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWPortItem::getApiInterface()
+// Function: SWInterfaceItem::getApiInterface()
 //-----------------------------------------------------------------------------
-QSharedPointer<ApiInterface> SWPortItem::getApiInterface() const
+QSharedPointer<ApiInterface> SWInterfaceItem::getApiInterface() const
 {
     return apiInterface_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWPortItem::updateInterface()
+// Function: SWInterfaceItem::updateInterface()
 //-----------------------------------------------------------------------------
-void SWPortItem::updateInterface()
+void SWInterfaceItem::updateInterface()
 {
     SWConnectionEndpoint::updateInterface();
 
@@ -179,25 +184,25 @@ void SWPortItem::updateInterface()
     {
         if (apiInterface_->getDependencyDirection() == DEPENDENCY_PROVIDER)
         {
-            /*  /\
-             *  ||
+            /*  ||
+             *  \/
              */
-            shape << QPointF(-squareSize/2, squareSize/2)
-                  << QPointF(-squareSize/2, 0)
-                  << QPointF(0, -squareSize/2)
-                  << QPointF(squareSize/2, 0)
-                  << QPointF(squareSize/2, squareSize/2);
+            shape << QPointF(-squareSize/2, squareSize)
+                  << QPointF(-squareSize/2, -squareSize)
+                  << QPointF(squareSize/2, -squareSize)
+                  << QPointF(squareSize/2, squareSize)
+                  << QPointF(0, squareSize * 1.5);
         }
         else
         {
-            /*  \/
-             *  ||
+            /*  ||
+             *  /\
              */
-            shape << QPointF(-squareSize/2, squareSize/2)
-                  << QPointF(-squareSize/2, -squareSize/2)
-                  << QPointF(0, 0)
-                  << QPointF(squareSize/2, -squareSize/2)
-                  << QPointF(squareSize/2, squareSize/2);
+            shape << QPointF(-squareSize/2, squareSize * 1.5)
+                  << QPointF(-squareSize/2, -squareSize)
+                  << QPointF(squareSize/2, -squareSize)
+                  << QPointF(squareSize/2, squareSize * 1.5)
+                  << QPointF(0, squareSize);
         }
     }
     else if (isCom())
@@ -206,27 +211,27 @@ void SWPortItem::updateInterface()
         {
         case General::IN:
             {
-                /*  ||
-                 *  \/
+                /*  /\
+                 *  ||
                  */
-                shape << QPointF(-squareSize/2, 0)
-                      << QPointF(-squareSize/2, -squareSize/2)
-                      << QPointF(squareSize/2, -squareSize/2)
+                shape << QPointF(-squareSize/2, squareSize * 2)
+                      << QPointF(-squareSize/2, 0)
+                      << QPointF(0, -squareSize/2)
                       << QPointF(squareSize/2, 0)
-                      << QPointF(0, squareSize/2);
+                      << QPointF(squareSize/2, squareSize * 2);
                 break;
             }
 
         case General::OUT:
             {
-                /*  /\
-                 *  ||
+                /*  ||
+                 *  \/
                  */
-                shape << QPointF(-squareSize/2, squareSize/2)
-                      << QPointF(-squareSize/2, 0)
-                      << QPointF(0, -squareSize/2)
-                      << QPointF(squareSize/2, 0)
-                      << QPointF(squareSize/2, squareSize/2);
+                shape << QPointF(-squareSize/2, squareSize)
+                      << QPointF(-squareSize/2, -squareSize)
+                      << QPointF(squareSize/2, -squareSize)
+                      << QPointF(squareSize/2, squareSize)
+                      << QPointF(0, squareSize * 1.5);
                 break;
             }
 
@@ -236,12 +241,12 @@ void SWPortItem::updateInterface()
                  *  ||
                  *  \/
                  */
-                shape << QPointF(-squareSize/2, squareSize/2)
+                shape << QPointF(-squareSize/2, squareSize * 1.5)
                       << QPointF(-squareSize/2, 0)
                       << QPointF(0, -squareSize/2)
                       << QPointF(squareSize/2, 0)
-                      << QPointF(squareSize/2, squareSize/2)
-                      << QPointF(0, squareSize);
+                      << QPointF(squareSize/2, squareSize * 1.5)
+                      << QPointF(0, squareSize * 2);
                 break;
             }
         }
@@ -251,11 +256,11 @@ void SWPortItem::updateInterface()
         /*  /\
          *  ||
          */
-        shape << QPointF(-squareSize/2, squareSize/2)
-              << QPointF(-squareSize/2, 0)
-              << QPointF(0, -squareSize/2)
-              << QPointF(squareSize/2, 0)
-              << QPointF(squareSize/2, squareSize/2);
+        shape << QPointF(-squareSize/2, squareSize)
+              << QPointF(-squareSize/2, -squareSize)
+              << QPointF(squareSize/2, -squareSize)
+              << QPointF(squareSize/2, squareSize)
+              << QPointF(0, squareSize * 1.5);
     }
 
     setPolygon(shape);
@@ -264,80 +269,73 @@ void SWPortItem::updateInterface()
     nameLabel_.setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">" + name() + "</div>");
 
     qreal nameWidth = nameLabel_.boundingRect().width();
-    qreal nameHeight = nameLabel_.boundingRect().height();
-
-    if (pos().x() < 0)
+    
+    // Check if the port is directed to the left.
+    if (getDirection().x() < 0)
     {
-        nameLabel_.setPos(nameHeight / 2, GridSize);
+        nameLabel_.setPos(0, GridSize * 3.0 / 4.0 - nameWidth / 2.0);
     }
+    // Otherwise the port is directed to the right.
     else
     {
-        nameLabel_.setPos(-nameHeight / 2, GridSize + nameWidth);
+        nameLabel_.setPos(0, GridSize * 3.0 / 4.0 + nameWidth / 2.0);
     }
 
     emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWPortItem::isHierachical()
+// Function: SWInterfaceItem::isHierachical()
 //-----------------------------------------------------------------------------
-bool SWPortItem::isHierarchical() const
+bool SWInterfaceItem::isHierarchical() const
 {
-    return false;
+    return true;
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWPortItem::onConnect()
+// Function: SWInterfaceItem::onConnect()
 //-----------------------------------------------------------------------------
-bool SWPortItem::onConnect(SWConnectionEndpoint const* other)
+bool SWInterfaceItem::onConnect(SWConnectionEndpoint const* other)
 {
     // If the port is undefined, try to copy the configuration from the other end point.
     if (getType() == ENDPOINT_TYPE_UNDEFINED)
     {
         if (other->getType() == ENDPOINT_TYPE_API)
         {
-            apiInterface_ = QSharedPointer<ApiInterface>(new ApiInterface());
-            apiInterface_->setName(nameLabel_.toPlainText());
-            apiInterface_->setApiType(other->getApiInterface()->getApiType());
-            
-            if (other->getApiInterface()->getDependencyDirection() == DEPENDENCY_PROVIDER)
+            // Determine the name for the interface.
+            QString name = other->getApiInterface()->getName();
+            unsigned int index = 0;
+
+            while (component_->getApiInterface(name) != 0)
             {
-                apiInterface_->setDependencyDirection(DEPENDENCY_REQUESTER);
-            }
-            else
-            {
-                apiInterface_->setDependencyDirection(DEPENDENCY_PROVIDER);
+                ++index;
+                name = other->getApiInterface()->getName() + "_" + QString::number(index);
             }
 
+            apiInterface_ = QSharedPointer<ApiInterface>(new ApiInterface());
+            apiInterface_->setName(name);
+            apiInterface_->setApiType(other->getApiInterface()->getApiType());
+            apiInterface_->setDependencyDirection(other->getApiInterface()->getDependencyDirection());
+            
             getOwnerComponent()->addApiInterface(apiInterface_);
         }
         else if (other->getType() == ENDPOINT_TYPE_COM)
         {
+            // Determine the name for the interface.
+            QString name = other->getComInterface()->getName();
+            unsigned int index = 0;
+
+            while (component_->getComInterface(name) != 0)
+            {
+                ++index;
+                name = other->getApiInterface()->getName() + "_" + QString::number(index);
+            }
+
             comInterface_ = QSharedPointer<ComInterface>(new ComInterface());
-            comInterface_->setName(nameLabel_.toPlainText());
+            comInterface_->setName(name);
             comInterface_->setComType(other->getComInterface()->getComType());
             comInterface_->setDataType(other->getComInterface()->getDataType());
-
-            switch (other->getComInterface()->getDirection())
-            {
-            case General::IN:
-                {
-                    comInterface_->setDirection(General::OUT);
-                    break;
-                }
-                
-            case General::OUT:
-                {
-                    comInterface_->setDirection(General::IN);
-                    break;
-                }
-
-            case General::INOUT:
-                {
-                    comInterface_->setDirection(General::INOUT);
-                    break;
-                }
-            }
+            comInterface_->setDirection(other->getComInterface()->getDirection());
 
             getOwnerComponent()->addComInterface(comInterface_);
         }
@@ -350,9 +348,9 @@ bool SWPortItem::onConnect(SWConnectionEndpoint const* other)
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWPortItem::onDisconnect()
+// Function: SWInterfaceItem::onDisconnect()
 //-----------------------------------------------------------------------------
-void SWPortItem::onDisconnect(SWConnectionEndpoint const*)
+void SWInterfaceItem::onDisconnect(SWConnectionEndpoint const*)
 {
     // Undefine the interface if it is temporary.
     if (temp_ && !isConnected())
@@ -363,9 +361,9 @@ void SWPortItem::onDisconnect(SWConnectionEndpoint const*)
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWPortItem::canConnect()
+// Function: SWInterfaceItem::canConnect()
 //-----------------------------------------------------------------------------
-bool SWPortItem::canConnect(SWConnectionEndpoint const* other) const
+bool SWInterfaceItem::canConnect(SWConnectionEndpoint const* other) const
 {
     if (!SWConnectionEndpoint::canConnect(other))
     {
@@ -395,10 +393,8 @@ bool SWPortItem::canConnect(SWConnectionEndpoint const* other) const
                 return false;
             }
 
-            // If the other one is a hierarchical, then the dependency directions must be the same.
-            // Otherwise they must be different (provider <-> requester).
-            return ((other->isHierarchical() && apiIf1->getDependencyDirection() == apiIf2->getDependencyDirection()) ||
-                    (!other->isHierarchical() && apiIf1->getDependencyDirection() != apiIf2->getDependencyDirection()));
+            return (!other->isHierarchical() &&
+                     apiIf1->getDependencyDirection() != apiIf2->getDependencyDirection());
         }
         else if (getType() == ENDPOINT_TYPE_COM)
         {
@@ -425,12 +421,9 @@ bool SWPortItem::canConnect(SWConnectionEndpoint const* other) const
                 return false;
             }
 
-            // If the other one is a hierarchical, then the direction must be the same.
-            // Otherwise they must be just compatible (in <-> out or any <-> inout).
-            return ((other->isHierarchical() && comIf1->getDirection() == comIf2->getDirection()) ||
-                    (!other->isHierarchical() && (comIf1->getDirection() == General::INOUT ||
-                                                  comIf2->getDirection() == General::INOUT ||
-                                                  comIf1->getDirection() != comIf2->getDirection())));
+            return (comIf1->getDirection() == General::INOUT ||
+                    comIf2->getDirection() == General::INOUT ||
+                    comIf1->getDirection() != comIf2->getDirection());
         }
         else
         {
@@ -443,79 +436,31 @@ bool SWPortItem::canConnect(SWConnectionEndpoint const* other) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWPortItem::encompassingComp()
+// Function: SWInterfaceItem::encompassingComp()
 //-----------------------------------------------------------------------------
-SWComponentItem* SWPortItem::encompassingComp() const
+SWComponentItem* SWInterfaceItem::encompassingComp() const
 {
-    return static_cast<SWComponentItem*>(parentItem());
+    return 0;
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWPortItem::getOwnerComponent()
+// Function: SWInterfaceItem::getOwnerComponent()
 //-----------------------------------------------------------------------------
-QSharedPointer<Component> SWPortItem::getOwnerComponent() const
+QSharedPointer<Component> SWInterfaceItem::getOwnerComponent() const
 {
-	SWComponentItem* comp = encompassingComp();
-	Q_ASSERT(comp);
-
-	QSharedPointer<Component> compModel = comp->componentModel();
-	Q_ASSERT(compModel);
-	return compModel;
+	return component_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: addConnection()
+// Function: SWInterfaceItem::itemChange()
 //-----------------------------------------------------------------------------
-void SWPortItem::addConnection(SWConnection* connection)
-{
-    SWConnectionEndpoint::addConnection(connection);
-    stubLine_.setVisible(true);
-}
-
-//-----------------------------------------------------------------------------
-// Function: removeInterconnection()
-//-----------------------------------------------------------------------------
-void SWPortItem::removeConnection(SWConnection* connection)
-{
-    SWConnectionEndpoint::removeConnection(connection);
-
-    if (getConnections().size() == 0)
-    {
-        stubLine_.setVisible(false);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: SWPortItem::itemChange()
-//-----------------------------------------------------------------------------
-QVariant SWPortItem::itemChange(GraphicsItemChange change, QVariant const& value)
+QVariant SWInterfaceItem::itemChange(GraphicsItemChange change, QVariant const& value)
 {
     switch (change)
     {
     case ItemPositionChange:
         {
-            if (!parentItem())
-            {
-                return snapPointToGrid(value.toPointF());
-            }
-
-            QPointF pos = value.toPointF();
-            QRectF parentRect = static_cast<SWComponentItem*>(parentItem())->rect();
-
-            /*if (pos.y() - parentRect.bottom() >= -35.0 && std::abs(pos.x()) < 50.0)
-            {
-                pos.setY(parentRect.bottom());
-            }
-            else*/ if (pos.x() < 0)
-            {
-                pos.setX(parentRect.left());
-            }
-            else
-            {
-                pos.setX(parentRect.right());
-            }
-
-            return snapPointToGrid(pos);
+            return snapPointToGrid(value.toPointF());
         }
 
     case ItemPositionHasChanged:
@@ -523,66 +468,19 @@ QVariant SWPortItem::itemChange(GraphicsItemChange change, QVariant const& value
             if (!parentItem())
                 break;
 
-            qreal nameWidth = nameLabel_.boundingRect().width();
-            qreal nameHeight = nameLabel_.boundingRect().height();
-            QPointF newPos = pos();
-
-            QRectF parentRect = static_cast<SWComponentItem*>(parentItem())->rect();
-
-            // Check if the port is directed to the bottom.
-            /*if (pos().y() - parentRect.bottom() >= -35.0 && std::abs(pos().x()) < 50.0)
-            {
-                setDirection(QVector2D(0.0f, 1.0f));
-                nameLabel_.setPos(nameWidth / 2, GridSize * 3);
-            }
-            // Check if the port is directed to the left.
-            else*/ if (pos().x() < 0)
-            {
-                setDirection(QVector2D(-1.0f, 0.0f));
-                nameLabel_.setPos(nameHeight/2, GridSize);
-            }
-            // Otherwise the port is directed to the right.
-            else
-            {
-                setDirection(QVector2D(1.0f, 0.0f));
-                nameLabel_.setPos(-nameHeight/2, GridSize + nameWidth);
-            }
-
             emit contentChanged();
             break;
         }
 
     case ItemScenePositionHasChanged:
-        // Check if the updates are not disabled.
-        if (!static_cast<SWComponentItem*>(parentItem())->isConnectionUpdateDisabled())
         {
-            // Update the connections.
-            foreach (SWConnection* connection, getConnections())
+            foreach (SWConnection* conn, getConnections())
             {
-                connection->updatePosition();
+                conn->updatePosition();
             }
 
-            // Update the stub length if the parent's parent is a HW mapping item.
-            HWMappingItem* mappingItem = dynamic_cast<HWMappingItem*>(parentItem()->parentItem());
-
-            if (mappingItem != 0)
-            {
-                if (pos().x() < 0)
-                {
-                    stubLine_.setLine(0, 0, 0, std::min(0.0, mappingItem->sceneBoundingRect().left() - scenePos().x()));
-                }
-                else
-                {
-                    stubLine_.setLine(0, 0, 0, std::min(0.0, scenePos().x() - mappingItem->sceneBoundingRect().right()));
-                }
-            }
-            else
-            {
-                stubLine_.setLine(0, 0, 0, -GridSize);
-            }
+            break;
         }
-
-        break;
 
     default:
         break;
@@ -592,43 +490,54 @@ QVariant SWPortItem::itemChange(GraphicsItemChange change, QVariant const& value
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWPortItem::isDirectionFixed()
+// Function: SWInterfaceItem::isDirectionFixed()
 //-----------------------------------------------------------------------------
-bool SWPortItem::isDirectionFixed() const
+bool SWInterfaceItem::isDirectionFixed() const
 {
-    return true;
+    return false;
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWPortItem::mouseMoveEvent()
+// Function: SWInterfaceItem::mouseMoveEvent()
 //-----------------------------------------------------------------------------
-void SWPortItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+void SWInterfaceItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    // Discard mouse move if the diagram is protected.
+    // Discard mouse move if the System is protected.
     if (static_cast<DesignDiagram*>(scene())->isProtected())
     {
         return;
     }
 
     SWConnectionEndpoint::mouseMoveEvent(event);
-    encompassingComp()->onMovePort(this);
+
+    setPos(parentItem()->mapFromScene(oldStack_->mapStackToScene(pos())));
+
+    IGraphicsItemStack* stack = dynamic_cast<IGraphicsItemStack*>(parentItem());
+    Q_ASSERT(stack != 0);
+    stack->onMoveItem(this);
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWPortItem::mousePressEvent()
+// Function: SWInterfaceItem::mousePressEvent()
 //-----------------------------------------------------------------------------
-void SWPortItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void SWInterfaceItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     SWConnectionEndpoint::mousePressEvent(event);    
-    oldPos_ = pos();
 
-    // Save old port positions for all ports in the parent component.
-    foreach (QGraphicsItem* item, parentItem()->childItems())
+    oldPos_ = scenePos();
+    oldStack_ = dynamic_cast<IGraphicsItemStack*>(parentItem());
+    Q_ASSERT(oldStack_ != 0);
+
+    // Save the positions of the other interfaces.
+    foreach (SystemColumn* column, static_cast<SystemColumn*>(oldStack_)->getLayout().getColumns())
     {
-        if (dynamic_cast<SWPortItem*>(item) != 0 && item != this)
+        foreach (QGraphicsItem* item, column->childItems())
         {
-            SWPortItem* port = static_cast<SWPortItem*>(item);
-            oldPortPositions_.insert(port, port->pos());
+            if (item->type() == SWInterfaceItem::Type)
+            {
+                SWInterfaceItem* interface = static_cast<SWInterfaceItem*>(item);
+                oldInterfacePositions_.insert(interface, interface->scenePos());
+            }
         }
     }
 
@@ -640,56 +549,68 @@ void SWPortItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWPortItem::mouseReleaseEvent()
+// Function: SWInterfaceItem::mouseReleaseEvent()
 //-----------------------------------------------------------------------------
-void SWPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
+void SWInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
     SWConnectionEndpoint::mouseReleaseEvent(event);
 
-    QSharedPointer<QUndoCommand> cmd;
-
-    // Check if the port position was really changed.
-    if (oldPos_ != pos())
+    if (oldStack_ != 0)
     {
-        cmd = QSharedPointer<QUndoCommand>(new SWPortMoveCommand(this, oldPos_));
-    }
-    else
-    {
-        cmd = QSharedPointer<QUndoCommand>(new QUndoCommand());
-    }
+        IGraphicsItemStack* stack = dynamic_cast<IGraphicsItemStack*>(parentItem());
+        Q_ASSERT(stack != 0);
+        stack->onReleaseItem(this);
 
-    // Determine if the other ports changed their position and create undo commands for them.
-    QMap<SWPortItem*, QPointF>::iterator cur = oldPortPositions_.begin();
+        oldStack_ = 0;
 
-    while (cur != oldPortPositions_.end())
-    {
-        if (cur.key()->pos() != cur.value())
+        QSharedPointer<QUndoCommand> cmd;
+
+        // Check if the interface position was really changed.
+        if (oldPos_ != scenePos())
         {
-            QUndoCommand* childCmd = new SWPortMoveCommand(cur.key(), cur.value(), cmd.data());
+            cmd = QSharedPointer<QUndoCommand>(new SystemItemMoveCommand(this, oldPos_, oldStack_));
+        }
+        else
+        {
+            cmd = QSharedPointer<QUndoCommand>(new QUndoCommand());
         }
 
-        ++cur;
-    }
+        // Determine if the other interfaces changed their position and create undo commands for them.
+        QMap<SWInterfaceItem*, QPointF>::iterator cur = oldInterfacePositions_.begin();
 
-    oldPortPositions_.clear();
-    
-    // End the position update of the connections.
-    foreach (SWConnection* conn, getConnections())
-    {
-        conn->endUpdatePosition(cmd.data());
-    }
+        while (cur != oldInterfacePositions_.end())
+        {
+            if (cur.key()->scenePos() != cur.value())
+            {
+                QUndoCommand* childCmd = new SystemItemMoveCommand(cur.key(), cur.value(),
+                                                                   dynamic_cast<IGraphicsItemStack*>(cur.key()->parentItem()),
+                                                                   cmd.data());
+            }
 
-    // Add the undo command to the edit stack only if it has changes.
-    if (cmd->childCount() > 0 || oldPos_ != pos())
-    {
-        static_cast<DesignDiagram*>(scene())->getEditProvider().addCommand(cmd, false);
+            ++cur;
+        }
+
+        oldInterfacePositions_.clear();
+
+        // End the position update of the connections.
+        foreach (SWConnection* conn, getConnections())
+        {
+            conn->endUpdatePosition(cmd.data());
+        }
+
+        // Add the undo command to the edit stack only if it has changes.
+        if (cmd->childCount() > 0 || oldPos_ != scenePos())
+        {
+
+            static_cast<DesignDiagram*>(scene())->getEditProvider().addCommand(cmd, false);
+        }
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWPortItem::description()
+// Function: SWInterfaceItem::description()
 //-----------------------------------------------------------------------------
-QString SWPortItem::description() const
+QString SWInterfaceItem::description() const
 {
 	if (isCom())
     {
@@ -706,9 +627,9 @@ QString SWPortItem::description() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWPortItem::setDescription()
+// Function: SWInterfaceItem::setDescription()
 //-----------------------------------------------------------------------------
-void SWPortItem::setDescription(QString const& description)
+void SWInterfaceItem::setDescription(QString const& description)
 {
 	if (isCom())
     {
@@ -723,17 +644,10 @@ void SWPortItem::setDescription(QString const& description)
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWPortItem::initialize()
+// Function: SWInterfaceItem::initialize()
 //-----------------------------------------------------------------------------
-void SWPortItem::initialize()
+void SWInterfaceItem::initialize()
 {
-    stubLine_.setFlag(ItemStacksBehindParent);
-    stubLine_.setVisible(false);
-
-    QPen newPen = stubLine_.pen();
-    newPen.setWidth(3);
-    stubLine_.setPen(newPen);
-
     QFont font = nameLabel_.font();
     font.setPointSize(8);
     nameLabel_.setFont(font);
@@ -754,52 +668,26 @@ void SWPortItem::initialize()
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWPortItem::onBeginConnect()
+// Function: SWInterfaceItem::onBeginConnect()
 //-----------------------------------------------------------------------------
-void SWPortItem::onBeginConnect()
+void SWInterfaceItem::onBeginConnect()
 {
-    stubLine_.setVisible(true);
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWPortItem::onEndConnect()
+// Function: SWInterfaceItem::onEndConnect()
 //-----------------------------------------------------------------------------
-void SWPortItem::onEndConnect()
+void SWInterfaceItem::onEndConnect()
 {
-    if (!isConnected())
-    {
-        stubLine_.setVisible(false);
-    }
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWPortItem::setSelectionHighlight()
+// Function: SWInterfaceItem::setTypeDefinition()
 //-----------------------------------------------------------------------------
-void SWPortItem::setSelectionHighlight(bool on)
-{
-    SWConnectionEndpoint::setSelectionHighlight(on);
-
-    QPen curPen = stubLine_.pen();
-    
-    if (on)
-    {
-        curPen.setColor(Qt::red);
-    }
-    else
-    {
-        curPen.setColor(Qt::black);
-    }
-
-    stubLine_.setPen(curPen);
-}
-
-//-----------------------------------------------------------------------------
-// Function: SWPortItem::setTypeDefinition()
-//-----------------------------------------------------------------------------
-void SWPortItem::setTypeDefinition(VLNV const& type)
+void SWInterfaceItem::setTypeDefinition(VLNV const& type)
 {
     // Disconnect existing connections before setting the type.
-    foreach(SWConnection* conn, getConnections())
+    foreach (SWConnection* conn, getConnections())
     {
         if (conn->endpoint1() != this)
         {
@@ -855,6 +743,7 @@ void SWPortItem::setTypeDefinition(VLNV const& type)
 
         setType(ENDPOINT_TYPE_UNDEFINED);
         setTemporary(true);
+        nameLabel_.setPlainText("");
     }
 
     updateInterface();
@@ -862,7 +751,7 @@ void SWPortItem::setTypeDefinition(VLNV const& type)
     if (getType() != ENDPOINT_TYPE_UNDEFINED)
     {
         // Undefined endpoints of the connections can now be defined.
-        foreach(SWConnection* conn, getConnections())
+        foreach (SWConnection* conn, getConnections())
         {
             if (conn->endpoint1() != this)
             {
@@ -881,7 +770,7 @@ void SWPortItem::setTypeDefinition(VLNV const& type)
 //-----------------------------------------------------------------------------
 // Function: SWConnectionEndpoint::getTypeDefinition()
 //-----------------------------------------------------------------------------
-VLNV SWPortItem::getTypeDefinition() const
+VLNV SWInterfaceItem::getTypeDefinition() const
 {
     if (isCom())
     {

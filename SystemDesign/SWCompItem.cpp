@@ -16,7 +16,7 @@
 
 #include "SystemMoveCommands.h"
 
-#include "IComponentStack.h"
+#include "IGraphicsItemStack.h"
 #include "SystemDesignDiagram.h"
 
 #include <models/component.h>
@@ -59,7 +59,7 @@ SWCompItem::SWCompItem(LibraryInterface* libInterface,
 SWCompItem::~SWCompItem()
 {
     // Remove this item from the stack where it resides.
-    IComponentStack* stack = dynamic_cast<IComponentStack*>(parentItem());
+    IGraphicsItemStack* stack = dynamic_cast<IGraphicsItemStack*>(parentItem());
 
     if (stack != 0)
     {
@@ -76,7 +76,7 @@ void SWCompItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
     ComponentItem::mousePressEvent(event);
 
     oldPos_ = scenePos();
-    oldStack_ = dynamic_cast<IComponentStack*>(parentItem());
+    oldStack_ = dynamic_cast<IGraphicsItemStack*>(parentItem());
     oldStackPos_ = parentItem()->scenePos();
 
     // Begin the position update for the connections.
@@ -113,7 +113,7 @@ void SWCompItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
     {
         setPos(parentItem()->mapFromScene(oldStackPos_ + pos()));
 
-        IComponentStack* stack = dynamic_cast<IComponentStack*>(parentItem());
+        IGraphicsItemStack* stack = dynamic_cast<IGraphicsItemStack*>(parentItem());
         Q_ASSERT(stack != 0);
         stack->onMoveItem(this);
     }
@@ -147,7 +147,7 @@ void SWCompItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 
     if (oldStack_ != 0)
     {
-        IComponentStack* stack = dynamic_cast<IComponentStack*>(parentItem());
+        IGraphicsItemStack* stack = dynamic_cast<IGraphicsItemStack*>(parentItem());
         Q_ASSERT(stack != 0);
         stack->onReleaseItem(this);
 
@@ -253,19 +253,19 @@ void SWCompItem::contextMenuEvent(QGraphicsSceneContextMenuEvent* event)
     QGraphicsItem::contextMenuEvent(event);
 
     QMenu menu;
-    menu.addAction("Open Source...", this, SLOT(openSource()));
+    menu.addAction("Open Source...", this, SLOT(openCSource()));
 
     menu.exec(event->screenPos());
     event->accept();
 }
 
 //-----------------------------------------------------------------------------
-// Function: openSource()
+// Function: openCSource()
 //-----------------------------------------------------------------------------
-void SWCompItem::openSource()
+void SWCompItem::openCSource()
 {
     // TODO: Auto-generate code.
-    emit openSource(this);
+    emit openCSource(this);
 }
 
 //-----------------------------------------------------------------------------

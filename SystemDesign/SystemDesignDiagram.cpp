@@ -23,6 +23,7 @@
 #include "SWConnection.h"
 #include "SWConnectionEndpoint.h"
 #include "SWPortItem.h"
+#include "SWInterfaceItem.h"
 
 #include <QPainter>
 #include <QGraphicsSceneMouseEvent>
@@ -117,7 +118,7 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
 
     foreach(ColumnDesc desc, design->getColumns())
     {
-        layout_->addColumn(desc.name);
+        layout_->addColumn(desc);
     }
 
     unsigned int colIndex = 0;
@@ -234,13 +235,13 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
 
         SWCompItem* item = new SWCompItem(getLibraryInterface(), component, instance.getInstanceName(),
                                           instance.getDisplayName(), instance.getDescription());
-        item->setImported(true);
+        item->setImported(false); // TODO:
         item->setPos(instance.getPosition());
         item->setPropertyValues(instance.getPropertyValues());
         item->setFileSetRef(instance.getFileSetRef());
 
         connect(item, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
-        connect(item, SIGNAL(openSource(ComponentItem*)), this, SIGNAL(openSource(ComponentItem*)));
+        connect(item, SIGNAL(openCSource(ComponentItem*)), this, SIGNAL(openCSource(ComponentItem*)));
         connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
         // Setup custom port positions.
@@ -476,7 +477,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
     if (dragSW_)
     {
         // Determine the component stack who gets the component (either HW mapping item or a system column).
-        IComponentStack* stack = 0;
+        IGraphicsItemStack* stack = 0;
 
         QList<QGraphicsItem*> itemList = items(event->scenePos());
         
@@ -514,7 +515,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
             
             item->setPos(stack->mapStackFromScene(snapPointToGrid(event->scenePos())));
             connect(item, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
-            connect(item, SIGNAL(openSource(ComponentItem*)), this, SIGNAL(openSource(ComponentItem*)));
+            connect(item, SIGNAL(openCSource(ComponentItem*)), this, SIGNAL(openCSource(ComponentItem*)));
             connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
             // Create the undo command and execute it.
@@ -680,11 +681,11 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
         }
         else if (item == 0 || item->type() == HWMappingItem::Type)
         {
-            IComponentStack* stack = 0;
+            IGraphicsItemStack* stack = 0;
 
             if (item != 0)
             {
-                stack = dynamic_cast<IComponentStack*>(item);
+                stack = dynamic_cast<IGraphicsItemStack*>(item);
             }
             else
             {
@@ -693,31 +694,71 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
 
             if (stack != 0)
             {
-                // Determine an unused name for the component instance.
-                QString name = createInstanceName("unnamed_sw");
+                if (stack->getContentType() == COLUMN_CONTENT_COMPONENTS)
+                {
+                    // Determine an unused name for the component instance.
+                    QString name = createInstanceName("unnamed_sw");
 
-                // Create a component model without a valid vlnv.
-                QSharedPointer<Component> comp = QSharedPointer<Component>(new Component());
-                comp->setVlnv(VLNV());
-                comp->setComponentImplementation(KactusAttribute::KTS_SW);
+                    // Create a component model without a valid vlnv.
+                    QSharedPointer<Component> comp = QSharedPointer<Component>(new Component());
+                    comp->setVlnv(VLNV());
+                    comp->setComponentImplementation(KactusAttribute::KTS_SW);
 
-                // Create the corresponding SW component item.
-                SWCompItem* swCompItem = new SWCompItem(getLibraryInterface(), comp, name);
-                swCompItem->setPos(snapPointToGrid(event->scenePos()));
+                    // Create the corresponding SW component item.
+                    SWCompItem* swCompItem = new SWCompItem(getLibraryInterface(), comp, name);
+                    swCompItem->setPos(snapPointToGrid(event->scenePos()));
 
-                connect(swCompItem, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
-                connect(swCompItem, SIGNAL(openSource(ComponentItem*)), this, SIGNAL(openSource(ComponentItem*)));
-                connect(swCompItem, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
+                    connect(swCompItem, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+                    connect(swCompItem, SIGNAL(openCSource(ComponentItem*)), this, SIGNAL(openCSource(ComponentItem*)));
+                    connect(swCompItem, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
-                QSharedPointer<SystemItemAddCommand> cmd(new SystemItemAddCommand(stack, swCompItem));
+                    QSharedPointer<SystemItemAddCommand> cmd(new SystemItemAddCommand(stack, swCompItem));
 
-                connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
-                    this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-                connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
-                    this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+                    connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+                        this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+                    connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+                        this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
-                getEditProvider().addCommand(cmd);
-                emit contentChanged();
+                    getEditProvider().addCommand(cmd);
+                    emit contentChanged();
+                }
+                else if (stack->getContentType() == COLUMN_CONTENT_IO)
+                {
+                    SWInterfaceItem* newItem = new SWInterfaceItem(getEditedComponent(), "", 0);
+                    newItem->setPos(snapPointToGrid(event->scenePos()));
+
+                    connect(newItem, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+
+                    // Save the positions of the other diagram interfaces.
+//                     QMap<DiagramInterface*, QPointF> oldPositions;
+// 
+//                     foreach (QGraphicsItem* item, stack->childItems())
+//                     {
+//                         if (item->type() == DiagramInterface::Type)
+//                         {
+//                             DiagramInterface* interface = static_cast<DiagramInterface*>(item);
+//                             oldPositions.insert(interface, interface->scenePos());
+//                         }
+//                     }
+
+                    QSharedPointer<QUndoCommand> cmd(new SystemItemAddCommand(stack, newItem));
+                    cmd->redo();
+
+                    // Determine if the other interfaces changed their position and create undo commands for them.
+//                     QMap<DiagramInterface*, QPointF>::iterator cur = oldPositions.begin();
+// 
+//                     while (cur != oldPositions.end())
+//                     {
+//                         if (cur.key()->scenePos() != cur.value())
+//                         {
+//                             QUndoCommand* childCmd = new SystemItemMoveCommand(cur.key(), cur.value(), cmd.data());
+//                         }
+// 
+//                         ++cur;
+//                     }
+
+                    getEditProvider().addCommand(cmd, false);
+                }
             }
         }
     }
@@ -1030,7 +1071,7 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
 
     foreach (SystemColumn* column, layout_->getColumns())
     {
-        columns.append(ColumnDesc(column->getName(), COLUMN_CONTENT_CUSTOM, 0));
+        columns.append(column->getColumnDesc());
     }
 
     design->setComponentInstances(instances);
@@ -1045,9 +1086,9 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
 //-----------------------------------------------------------------------------
 // Function: addColumn()
 //-----------------------------------------------------------------------------
-void SystemDesignDiagram::addColumn(QString const& name)
+void SystemDesignDiagram::addColumn(ColumnDesc const& desc)
 {
-    QSharedPointer<QUndoCommand> cmd(new SystemColumnAddCommand(layout_.data(), name));
+    QSharedPointer<QUndoCommand> cmd(new SystemColumnAddCommand(layout_.data(), desc));
     getEditProvider().addCommand(cmd);
 }
 

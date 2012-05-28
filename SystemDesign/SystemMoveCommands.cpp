@@ -99,14 +99,14 @@ void SWConnectionMoveCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: SystemItemMoveCommand()
 //-----------------------------------------------------------------------------
-SystemItemMoveCommand::SystemItemMoveCommand(ComponentItem* item, QPointF const& oldPos,
-                                             IComponentStack* oldStack, QUndoCommand* parent)
+SystemItemMoveCommand::SystemItemMoveCommand(QGraphicsItem* item, QPointF const& oldPos,
+                                             IGraphicsItemStack* oldStack, QUndoCommand* parent)
     : QUndoCommand(parent),
       item_(item),
       oldPos_(oldPos),
       oldStack_(oldStack),
       newPos_(item->scenePos()),
-      newStack_(dynamic_cast<IComponentStack*>(item->parentItem()))
+      newStack_(dynamic_cast<IGraphicsItemStack*>(item->parentItem()))
 {
     Q_ASSERT(oldStack != 0);
 }

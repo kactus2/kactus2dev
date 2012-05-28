@@ -14,6 +14,7 @@
 #include "SWCompItem.h"
 #include "HWMappingItem.h"
 #include "SWConnection.h"
+#include "SWInterfaceItem.h"
 
 #include "SystemMoveCommands.h"
 
@@ -25,7 +26,6 @@
 
 #include "SystemColumnLayout.h"
 
-#include <common/graphicsItems/ComponentItem.h>
 #include <common/layouts/VStackedLayout.h>
 #include <common/diagramgrid.h>
 #include <common/DiagramUtil.h>
@@ -37,9 +37,11 @@
 //-----------------------------------------------------------------------------
 // Function: SystemColumn()
 //-----------------------------------------------------------------------------
-SystemColumn::SystemColumn(QString const& name, SystemColumnLayout* layout,
-                           QGraphicsScene* scene) : QGraphicsRectItem(0, scene),
-                                                    layout_(layout), name_(), nameLabel_(0)
+SystemColumn::SystemColumn(ColumnDesc const& desc, SystemColumnLayout* layout, QGraphicsScene* scene)
+    : QGraphicsRectItem(0, scene),
+      layout_(layout),
+      desc_(),
+      nameLabel_(0)
 {
     setFlag(ItemIsMovable);
     setFlag(ItemIsSelectable);
@@ -52,7 +54,8 @@ SystemColumn::SystemColumn(QString const& name, SystemColumnLayout* layout,
     QFont font = nameLabel_->font();
     font.setBold(true);
     nameLabel_->setFont(font);
-    setName(name);
+    
+    setColumnDesc(desc);
 }
 
 //-----------------------------------------------------------------------------
@@ -67,23 +70,21 @@ SystemColumn::~SystemColumn()
 //-----------------------------------------------------------------------------
 void SystemColumn::setName(QString const& name)
 {
-    nameLabel_->setHtml("<center>" + name + "</center>");
-    nameLabel_->setTextWidth(std::max<unsigned int>(140, WIDTH));
-    nameLabel_->setPos((WIDTH - nameLabel_->textWidth()) / 2.0, 5.0);
+    desc_.setName(name);
+    updateNameLabel();
 
-    name_ = name;
     emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
 // Function: addItem()
 //-----------------------------------------------------------------------------
-void SystemColumn::addItem(ComponentItem* item, bool load)
+void SystemColumn::addItem(QGraphicsItem* item, bool load)
 {
     // Map the position to the column's local coordinate system
     // and constrain the item to the horizontal center of the column.
     QPointF pos = mapFromScene(item->scenePos());
-    pos.setX(WIDTH / 2.0);
+    pos.setX(desc_.getWidth() / 2.0);
 
     item->setPos(pos);
     item->setFlag(ItemStacksBehindParent);
@@ -111,18 +112,18 @@ void SystemColumn::addItem(ComponentItem* item, bool load)
         items_.append(item);
 
         VStackedLayout::updateItemMove(items_, item, MIN_Y_PLACEMENT, SPACING);
-        VStackedLayout::setItemPos(items_, item, WIDTH / 2, MIN_Y_PLACEMENT, SPACING);
+        VStackedLayout::setItemPos(items_, item, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: removeItem()
 //-----------------------------------------------------------------------------
-void SystemColumn::removeItem(ComponentItem* item)
+void SystemColumn::removeItem(QGraphicsItem* item)
 {
     items_.removeAll(item);
     setParentItem(0);
-    VStackedLayout::updateItemPositions(items_, WIDTH / 2, MIN_Y_PLACEMENT, SPACING);
+    VStackedLayout::updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
 }
 
 //-----------------------------------------------------------------------------
@@ -131,7 +132,7 @@ void SystemColumn::removeItem(ComponentItem* item)
 void SystemColumn::setOffsetY(qreal y)
 {
     // Update the rectangle and the label position.
-    setRect(0, y, WIDTH, HEIGHT);
+    setRect(0, y, desc_.getWidth(), HEIGHT);
     nameLabel_->setPos(nameLabel_->x(), 5 + y);
 }
 
@@ -192,14 +193,14 @@ void SystemColumn::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 //-----------------------------------------------------------------------------
 // Function: onMoveItem()
 //-----------------------------------------------------------------------------
-void SystemColumn::onMoveItem(ComponentItem* item)
+void SystemColumn::onMoveItem(QGraphicsItem* item)
 {
     // Restrict the position so that the item cannot be placed too high.
     //item->setPos(snapPointToGrid(item->x(), std::max(MIN_Y_PLACEMENT - item->boundingRect().top(), item->y())));
     VStackedLayout::updateItemMove(items_, item, MIN_Y_PLACEMENT, SPACING);
 
     // Check if any HW mapping item is under the item.
-    foreach (ComponentItem* childItem, items_)
+    foreach (QGraphicsItem* childItem, items_)
     {
         HWMappingItem* mappingItem = dynamic_cast<HWMappingItem*>(childItem);
 
@@ -212,7 +213,7 @@ void SystemColumn::onMoveItem(ComponentItem* item)
                 // Switch the mapping item as the parent.
                 items_.removeAll(item);
 
-                VStackedLayout::updateItemPositions(items_, WIDTH / 2, MIN_Y_PLACEMENT, SPACING);
+                VStackedLayout::updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
                 setZValue(0.0);
 
                 QPointF newPos = mappingItem->mapFromScene(item->scenePos());
@@ -242,7 +243,7 @@ void SystemColumn::onMoveItem(ComponentItem* item)
         item->setParentItem(column);
         item->setPos(newPos);
 
-        VStackedLayout::updateItemPositions(items_, WIDTH / 2, MIN_Y_PLACEMENT, SPACING);
+        VStackedLayout::updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
         setZValue(0.0);
 
         // And call the new column's onMoveItem().
@@ -256,10 +257,10 @@ void SystemColumn::onMoveItem(ComponentItem* item)
 //-----------------------------------------------------------------------------
 // Function: onReleaseItem()
 //-----------------------------------------------------------------------------
-void SystemColumn::onReleaseItem(ComponentItem* item)
+void SystemColumn::onReleaseItem(QGraphicsItem* item)
 {
     setZValue(0.0);
-    VStackedLayout::setItemPos(items_, item, WIDTH / 2, MIN_Y_PLACEMENT, SPACING);
+    VStackedLayout::setItemPos(items_, item, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
 }
 
 //-----------------------------------------------------------------------------
@@ -268,7 +269,7 @@ void SystemColumn::onReleaseItem(ComponentItem* item)
 void SystemColumn::updateItemPositions()
 {
     // Just update the item positions.
-    VStackedLayout::updateItemPositions(items_, WIDTH / 2, MIN_Y_PLACEMENT, SPACING);
+    VStackedLayout::updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
 }
 
 //-----------------------------------------------------------------------------
@@ -276,7 +277,7 @@ void SystemColumn::updateItemPositions()
 //-----------------------------------------------------------------------------
 QString const& SystemColumn::getName() const
 {
-    return name_;
+    return desc_.getName();
 }
 
 //-----------------------------------------------------------------------------
@@ -313,7 +314,7 @@ void SystemColumn::mousePressEvent(QGraphicsSceneMouseEvent* event)
     oldPos_ = pos();
 
     // Begin position update for the connections.
-    foreach (ComponentItem* item, items_)
+    foreach (QGraphicsItem* item, items_)
     {
         foreach (QGraphicsItem* childItem, item->childItems())
         {
@@ -364,9 +365,10 @@ QPointF SystemColumn::mapStackToScene(QPointF const& pos) const
 //-----------------------------------------------------------------------------
 // Function: SystemColumn::isItemAllowed()
 //-----------------------------------------------------------------------------
-bool SystemColumn::isItemAllowed(ComponentItem* item) const
+bool SystemColumn::isItemAllowed(QGraphicsItem* item) const
 {
-    return (item->type() == SWCompItem::Type || item->type() == HWMappingItem::Type);
+    return (item->type() == SWCompItem::Type || item->type() == HWMappingItem::Type ||
+            item->type() == SWInterfaceItem::Type);
 }
 
 //-----------------------------------------------------------------------------
@@ -375,4 +377,52 @@ bool SystemColumn::isItemAllowed(ComponentItem* item) const
 QPointF SystemColumn::mapStackFromScene(QPointF const& pos) const
 {
     return mapFromScene(pos);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemColumn::getLayout()
+//-----------------------------------------------------------------------------
+SystemColumnLayout& SystemColumn::getLayout()
+{
+    return *layout_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemColumn::getContentType()
+//-----------------------------------------------------------------------------
+ColumnContentType SystemColumn::getContentType() const
+{
+    return desc_.getContentType();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemColumn::getColumnDesc()
+//-----------------------------------------------------------------------------
+ColumnDesc const& SystemColumn::getColumnDesc() const
+{
+    return desc_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemColumn::setColumnDesc()
+//-----------------------------------------------------------------------------
+void SystemColumn::setColumnDesc(ColumnDesc const& desc)
+{
+    desc_ = desc;
+    setRect(0, 0, desc_.getWidth(), HEIGHT);
+    layout_->updateColumnPositions();
+
+    updateNameLabel();
+
+    emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemColumn::updateNameLabel()
+//-----------------------------------------------------------------------------
+void SystemColumn::updateNameLabel()
+{
+    nameLabel_->setHtml("<center>" + desc_.getName() + "</center>");
+    nameLabel_->setTextWidth(std::max<unsigned int>(140, desc_.getWidth()));
+    nameLabel_->setPos((desc_.getWidth() - nameLabel_->textWidth()) / 2.0, 5.0);
 }

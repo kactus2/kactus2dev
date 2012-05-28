@@ -145,7 +145,7 @@ void SWConnectionDeleteCommand::redo()
 SystemItemDeleteCommand::SystemItemDeleteCommand(ComponentItem* item, QUndoCommand* parent)
     : QUndoCommand(parent),
       item_(item),
-      stack_(dynamic_cast<IComponentStack*>(item->parentItem())),
+      stack_(dynamic_cast<IGraphicsItemStack*>(item->parentItem())),
       scene_(item->scene()),
       del_(true)
 {

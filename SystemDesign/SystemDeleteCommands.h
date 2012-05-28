@@ -22,7 +22,7 @@ class SystemColumn;
 class ComponentItem;
 class ApplicationItem;
 class ProgramEntityItem;
-class IComponentStack;
+class IGraphicsItemStack;
 class SWConnection;
 
 //-----------------------------------------------------------------------------
@@ -172,7 +172,7 @@ private:
     ComponentItem* item_;
 
     //! The component's parent column.
-    IComponentStack* stack_;
+    IGraphicsItemStack* stack_;
 
     //! The graphics scene.
     QGraphicsScene* scene_;

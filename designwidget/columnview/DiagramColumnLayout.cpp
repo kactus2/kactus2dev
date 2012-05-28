@@ -40,11 +40,10 @@ DiagramColumnLayout::~DiagramColumnLayout()
 //-----------------------------------------------------------------------------
 // Function: addColumn()
 //-----------------------------------------------------------------------------
-void DiagramColumnLayout::addColumn(QString const& name, ColumnContentType contentType,
-                                    unsigned int allowedItems)
+void DiagramColumnLayout::addColumn(ColumnDesc const& desc)
 {
     // Create the diagram column and position it accordingly.
-    DiagramColumn* column = new DiagramColumn(name, contentType, allowedItems, this);
+    DiagramColumn* column = new DiagramColumn(desc, this);
     column->setPos(layoutWidth_, 0.0);
 
     addColumn(column);

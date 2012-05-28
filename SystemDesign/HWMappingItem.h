@@ -12,7 +12,7 @@
 #ifndef HWMAPPINGITEM_H
 #define HWMAPPINGITEM_H
 
-#include "IComponentStack.h"
+#include "IGraphicsItemStack.h"
 
 #include "SWComponentItem.h"
 
@@ -24,7 +24,7 @@ class SWCompItem;
 //-----------------------------------------------------------------------------
 //! Graphics item for visualizing the underlying HW in system designs.
 //-----------------------------------------------------------------------------
-class HWMappingItem : public SWComponentItem, public IComponentStack
+class HWMappingItem : public SWComponentItem, public IGraphicsItemStack
 {
 public:
     enum { Type = GFX_TYPE_HW_MAPPING_ITEM };
@@ -50,7 +50,7 @@ public:
     int type() const { return Type; }
 
     //-----------------------------------------------------------------------------
-    // IComponentStack implementation.
+    // IGraphicsItemStack implementation.
     //-----------------------------------------------------------------------------
 
     /*!
@@ -59,28 +59,28 @@ public:
      *      @param [in] item  The item to add.
      *      @param [in] load  If true, the item is being loaded from a design.
      */
-    void addItem(ComponentItem* item, bool load = false);
+    void addItem(QGraphicsItem* item, bool load = false);
 
     /*!
      *  Removes an item from the system column.
      *
      *      @param [in] item the item to remove.
      */
-    void removeItem(ComponentItem* item);
+    void removeItem(QGraphicsItem* item);
 
     /*!
      *  Called when an item is moved within the column.
      *
      *      @param [in] item       The item that has been moved.
      */
-    void onMoveItem(ComponentItem* item);
+    void onMoveItem(QGraphicsItem* item);
 
     /*!
      *  Called when an item is released from being moved by mouse.
      *
      *      @param [in] item The item that has been released.
      */
-    void onReleaseItem(ComponentItem* item);
+    void onReleaseItem(QGraphicsItem* item);
 
     /*!
      *  Updates the item positions so that there are no violations of the stacking rule.
@@ -102,7 +102,12 @@ public:
      *
      *      @param [in] item The item to test for.
      */
-    bool isItemAllowed(ComponentItem* item) const;
+    bool isItemAllowed(QGraphicsItem* item) const;
+
+    /*!
+     *  Returns the content type.
+     */
+    ColumnContentType getContentType() const;
 
     virtual void updateComponent();
 
@@ -140,7 +145,7 @@ private:
     };
 
     //! The old column from where the mouse drag event began.
-    IComponentStack* oldStack_;
+    IGraphicsItemStack* oldStack_;
 
     //! The mapped SW components.
     QList<ComponentItem*> swComponents_;

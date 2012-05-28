@@ -14,9 +14,12 @@
 //-----------------------------------------------------------------------------
 // Function: GenericEditProvider()
 //-----------------------------------------------------------------------------
-GenericEditProvider::GenericEditProvider(unsigned int historySize) : historySize_(historySize),
-                                                                     undoStack_(), redoStack_(),
-                                                                     undoing_(false), redoing_(false)
+GenericEditProvider::GenericEditProvider(int historySize)
+    : historySize_(historySize),
+      undoStack_(),
+      redoStack_(),
+      undoing_(false),
+      redoing_(false)
 {
 }
 

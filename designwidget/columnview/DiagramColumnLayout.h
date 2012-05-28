@@ -44,14 +44,9 @@ public:
     /*!
      *  Adds a column to the layout.
      *
-     *      @param [in] name          The name of the column.
-     *      @param [in] type          The content type.
-     *      @param [in] allowedItems  The allowed items, if the content type is custom.
-     *                                This value is discarded if the content type is something else.
-     *                                See ColumnItemType for possible values.
+     *      @param [in] desc The column description.
      */
-    void addColumn(QString const& name, ColumnContentType contentType,
-                   unsigned int allowedItems = CIT_NONE);
+    void addColumn(ColumnDesc const& desc);
 
     /*!
      *  Adds a column to the layout.

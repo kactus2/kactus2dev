@@ -138,12 +138,13 @@ void PortAddCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: ColumnAddCommand()
 //-----------------------------------------------------------------------------
-ColumnAddCommand::ColumnAddCommand(DiagramColumnLayout* layout, QString const& name,
-                                   ColumnContentType contentType, unsigned int allowedItems,
-                                   QUndoCommand* parent) : QUndoCommand(parent), layout_(layout),
-                                                           name_(name), contentType_(contentType),
-                                                           allowedItems_(allowedItems),
-                                                           column_(0), del_(false)
+ColumnAddCommand::ColumnAddCommand(DiagramColumnLayout* layout, ColumnDesc const& desc,
+                                   QUndoCommand* parent)
+    : QUndoCommand(parent),
+      layout_(layout),
+      desc_(desc),
+      column_(0),
+      del_(false)
 {
 }
 
@@ -178,7 +179,7 @@ void ColumnAddCommand::redo()
     // If this is the first time, create the column.
     if (column_ == 0)
     {
-        layout_->addColumn(name_, contentType_, allowedItems_);
+        layout_->addColumn(desc_);
         column_ = layout_->getColumns().back();
     }
     else

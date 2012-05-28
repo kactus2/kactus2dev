@@ -133,7 +133,7 @@ signals:
     void openComponent(const VLNV& vlnv);
 
     //! Emitted when a C source file should be opened for editing.
-    void openSource(ComponentItem* compItem);
+    void openCSource(ComponentItem* compItem);
 
     //! Signaled when the draw mode of the diagram has changed.
     void modeChanged(DrawMode mode);
@@ -157,6 +157,9 @@ private:
 
     enum
     {
+        SYSTEM_COLUMN_WIDTH = 319,
+        SW_COLUMN_WIDTH = 259,
+        IO_COLUMN_WIDTH = 119,
         EDIT_HISTORY_SIZE = 50
     };
 

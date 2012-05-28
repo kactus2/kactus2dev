@@ -3,7 +3,9 @@
 
 #include "SWInstance.h"
 #include "ApiDependency.h"
+#include "HierApiDependency.h"
 #include "ComConnection.h"
+#include "HierComConnection.h"
 #include "ColumnDesc.h"
 
 #include "librarycomponent.h"
@@ -691,9 +693,19 @@ public:
     QList<ApiDependency> const& getApiDependencies() const;
 
     /*!
+     *  Returns the list of hierarchical API dependencies.
+     */
+    QList<HierApiDependency> const& getHierApiDependencies() const;
+
+    /*!
      *  Returns the list of COM connections.
      */
     QList<ComConnection> const& getComConnections() const;
+
+    /*!
+     *  Returns the list of hierarchical COM connections.
+     */
+    QList<HierComConnection> const& getHierComConnections() const;
 
     /*!
      *  Returns the port ad-hoc visibilities for the top-level component in this design.
@@ -750,12 +762,25 @@ public:
      */
     void setApiDependencies(QList<ApiDependency> const& apiDependencies);
 
+    /*! Sets the hierarchical API dependencies for the design.
+     *
+     *      @param [in] hierApiDependencies A list of hierarchical API dependencies.
+     */
+    void setHierApiDependencies(QList<HierApiDependency> const& hierApiDependencies);
+
     /*!
      *  Sets the COM connections for the design.
      *
      *      @param [in] comConnections A list of COM connections.
      */
     void setComConnections(QList<ComConnection> const& comConnections);
+
+    /*!
+     *  Sets the hierarchical COM connections for the design.
+     *
+     *      @param [in] hierComConnections A list of hierarchical COM connections.
+     */
+    void setHierComConnections(QList<HierComConnection> const& hierComConnections);
 
     /*!
      *  Sets the port ad-hoc visibilities for the top-level component in this design.
@@ -818,8 +843,14 @@ private:
     //! The API dependencies (extension).
     QList<ApiDependency> apiDependencies_;
 
+    //! The hierarchical API dependencies (extension).
+    QList<HierApiDependency> hierApiDependencies_;
+
     //! The COM connections (extension).
     QList<ComConnection> comConnections_;
+
+    //! The hierarchical COM connections (extension).
+    QList<HierComConnection> hierComConnections_;
 };
 
 #endif

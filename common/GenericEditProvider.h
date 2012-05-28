@@ -32,7 +32,7 @@ public:
      *
      *      @param [in] historySize The maximum number of undo commands kept in the history.
      */
-    GenericEditProvider(unsigned int historySize);
+    GenericEditProvider(int historySize);
 
     /*!
      *  Destructor.
@@ -88,7 +88,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The history size.
-    unsigned int historySize_;
+    int historySize_;
 
     //! Undo stack.
     QList< QSharedPointer<QUndoCommand> > undoStack_;

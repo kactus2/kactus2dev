@@ -41,9 +41,9 @@ public:
     /*!
      *  Adds a column to the layout.
      *
-     *      @param [in] name The name of the column.
+     *      @param [in] desc The column description.
      */
-    void addColumn(QString const& name);
+    void addColumn(ColumnDesc const& desc);
 
     /*!
      *  Adds a column to the layout.
@@ -90,6 +90,11 @@ public:
     void onReleaseColumn(SystemColumn* column);
 
     /*!
+     *  Updates the column positions.
+     */
+    void updateColumnPositions();
+
+    /*!
      *  Sets the drawing offset for the title bars.
      *
      *      @param [in] y The y coordinate offset.
@@ -114,7 +119,7 @@ private:
     // Disable copying.
     SystemColumnLayout(SystemColumnLayout const& rhs);
     SystemColumnLayout& operator=(SystemColumnLayout const& rhs);
-
+    
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

@@ -59,10 +59,10 @@
 #include <designwidget/diagramport.h>
 #include <designwidget/diagraminterface.h>
 
+#include <IPXactWrapper/ComponentEditor/treeStructure/componenteditor.h>
 #include <IPXactWrapper/ComDefinitionEditor/ComDefinitionEditor.h>
 #include <IPXactWrapper/ApiDefinitionEditor/ApiDefinitionEditor.h>
 #include <IPXactWrapper/BusEditor/buseditor.h>
-#include <IPXactWrapper/ComponentEditor/ipxactcomponenteditor.h>
 
 #include <PropertyWidget/messageconsole.h>
 
@@ -405,8 +405,8 @@ void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName, bool fo
         this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
     connect(designWidget, SIGNAL(openSWDesign(const VLNV&, const QString&)),
         this, SLOT(openSWDesign(const VLNV&, const QString&)));
-    connect(designWidget, SIGNAL(openSource(ComponentItem*)),
-        this, SLOT(openSource(ComponentItem*)), Qt::UniqueConnection);
+    connect(designWidget, SIGNAL(openCSource(ComponentItem*)),
+        this, SLOT(openCSource(ComponentItem*)), Qt::UniqueConnection);
 
     connect(designWidget, SIGNAL(componentSelected(ComponentItem*)),
         this, SLOT(onComponentSelected(ComponentItem*)), Qt::UniqueConnection);
@@ -1244,7 +1244,7 @@ void MainWindow::updateMenuStrip()
 		!doc->isProtected());
 
 	bool isHWComp = false;
-	IPXactComponentEditor* ipEditor = dynamic_cast<IPXactComponentEditor*>(doc);
+	ComponentEditor* ipEditor = dynamic_cast<ComponentEditor*>(doc);
 	if (ipEditor) {
 		isHWComp = ipEditor->isHWImplementation();
 	}
@@ -1460,7 +1460,7 @@ void MainWindow::addColumn()
 void MainWindow::generateVHDL()
 {
 	DesignWidget* designWidget = dynamic_cast<DesignWidget*>(designTabs_->currentWidget());
-	IPXactComponentEditor* compEditor = dynamic_cast<IPXactComponentEditor*>(designTabs_->currentWidget());
+	ComponentEditor* compEditor = dynamic_cast<ComponentEditor*>(designTabs_->currentWidget());
 
 	if (designWidget != 0)
 	{
@@ -1487,7 +1487,7 @@ void MainWindow::generateVHDL()
 //-----------------------------------------------------------------------------
 void MainWindow::generateModelSim() {
 	DesignWidget* designWidget = dynamic_cast<DesignWidget*>(designTabs_->currentWidget());
-	IPXactComponentEditor* compEditor = dynamic_cast<IPXactComponentEditor*>(designTabs_->currentWidget());
+	ComponentEditor* compEditor = dynamic_cast<ComponentEditor*>(designTabs_->currentWidget());
 
 	if (designWidget != 0) {
 		designWidget->onModelsimGenerate();
@@ -1553,7 +1553,7 @@ void MainWindow::generateDoc() {
 
 	// if the editor was component editor then it must be refreshed to make the
 	// changes to metadata visible
-	IPXactComponentEditor* compEditor = dynamic_cast<IPXactComponentEditor*>(doc);
+	ComponentEditor* compEditor = dynamic_cast<ComponentEditor*>(doc);
 	if (compEditor) {
 
 		// close the editor
@@ -1861,9 +1861,9 @@ void MainWindow::closeEvent(QCloseEvent* event)
 }
 
 //-----------------------------------------------------------------------------
-// Function: openSource()
+// Function: openCSource()
 //-----------------------------------------------------------------------------
-void MainWindow::openSource(ComponentItem* compItem)
+void MainWindow::openCSource(ComponentItem* compItem)
 {
     Q_ASSERT(compItem != 0);
    
@@ -2150,7 +2150,7 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
     columns.append(ColumnDesc("Low-level", COLUMN_CONTENT_CUSTOM, 0));
     columns.append(ColumnDesc("Middle-level", COLUMN_CONTENT_CUSTOM, 0));
     columns.append(ColumnDesc("High-level", COLUMN_CONTENT_CUSTOM, 0));
-    columns.append(ColumnDesc("Out", COLUMN_CONTENT_CUSTOM, 0));
+    columns.append(ColumnDesc("Out", COLUMN_CONTENT_IO, 0));
     newDesign->setColumns(columns);
 
     QString xmlPath = libraryHandler_->getPath(vlnv);
@@ -2595,8 +2595,8 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName, boo
 		this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(openSWDesign(const VLNV&, const QString&)),
 		this, SLOT(openSWDesign(const VLNV&, const QString&)));
-	connect(designWidget, SIGNAL(openSource(ComponentItem*)),
-		this, SLOT(openSource(ComponentItem*)), Qt::UniqueConnection);
+	connect(designWidget, SIGNAL(openCSource(ComponentItem*)),
+		this, SLOT(openCSource(ComponentItem*)), Qt::UniqueConnection);
     
 	connect(designWidget, SIGNAL(componentSelected(ComponentItem*)),
 		this, SLOT(onComponentSelected(ComponentItem*)), Qt::UniqueConnection);
@@ -2622,7 +2622,7 @@ void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
 	// Check if the component editor is already open and activate it.
 	if (vlnv.isValid()) {
 		for (int i = 0; i < designTabs_->count(); i++) {
-			IPXactComponentEditor* editor = dynamic_cast<IPXactComponentEditor*>(designTabs_->widget(i));
+			ComponentEditor* editor = dynamic_cast<ComponentEditor*>(designTabs_->widget(i));
 
 			if (editor && editor->getComponentVLNV() == vlnv) {
 				designTabs_->setCurrentIndex(i);
@@ -2656,7 +2656,7 @@ void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
 	QString filePath = libraryHandler_->getPath(vlnv);
 	QFileInfo info(filePath);
 
-	IPXactComponentEditor* editor = new IPXactComponentEditor(libraryHandler_, info, component, this);
+	ComponentEditor* editor = new ComponentEditor(libraryHandler_, component, this);
 	QString styleSheet("*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
 	editor->setStyleSheet(styleSheet);
 

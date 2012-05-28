@@ -12,6 +12,7 @@
 #ifndef DIAGRAMCHANGECOMMANDS_H
 #define DIAGRAMCHANGECOMMANDS_H
 
+#include <models/ColumnDesc.h>
 #include <models/generaldeclarations.h>
 
 #include <common/ColumnTypes.h>
@@ -43,15 +44,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] column           The column.
-     *      @param [in] newName          The column's new name.
-     *      @param [in] newContentType   The new content type.
-     *      @param [in] newAllowedItems  The new allowed items.
-     *      @param [in] parent           The parent command.
+     *      @param [in] column   The column.
+     *      @param [in] newDesc  The column's new description.
      */
-    ColumnChangeCommand(DiagramColumn* column, QString const& newName,
-                        ColumnContentType newContentType,
-                        unsigned int newAllowedItems,
+    ColumnChangeCommand(DiagramColumn* column, ColumnDesc const& newDesc,
                         QUndoCommand* parent = 0);
 
     /*!
@@ -84,23 +80,11 @@ private:
     //! The diagram column.
     DiagramColumn* column_;
 
-    //! The column's old name.
-    QString oldName_;
+    //! The column's old description.
+    ColumnDesc oldDesc_;
 
-    //! The column's old content type.
-    ColumnContentType oldContentType_;
-
-    //! The column's old allowed items.
-    unsigned int oldAllowedItems_;
-
-    //! The column's new name.
-    QString newName_;
-
-    //! The column's new content type.
-    ColumnContentType newContentType_;
-
-    //! The column's new allowed items.
-    unsigned int newAllowedItems_;
+    //! The column's new description.
+    ColumnDesc newDesc_;
 };
 
 //-----------------------------------------------------------------------------

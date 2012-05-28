@@ -38,10 +38,13 @@
 //-----------------------------------------------------------------------------
 // Function: DiagramColumn()
 //-----------------------------------------------------------------------------
-DiagramColumn::DiagramColumn(QString const& name, ColumnContentType contentType,
-                             unsigned int allowedItems, DiagramColumnLayout* layout) :
-    QGraphicsRectItem(), layout_(layout), name_(), width_(0),
-    contentType_(contentType), allowedItems_(CIT_NONE), nameLabel_(0), oldPos_(), conns_()
+DiagramColumn::DiagramColumn(ColumnDesc const& desc, DiagramColumnLayout* layout)
+    : QGraphicsRectItem(),
+      layout_(layout),
+      desc_(),
+      nameLabel_(0),
+      oldPos_(),
+      conns_()
 {
     setFlag(ItemIsMovable);
     setFlag(ItemIsSelectable);
@@ -54,9 +57,8 @@ DiagramColumn::DiagramColumn(QString const& name, ColumnContentType contentType,
     QFont font = nameLabel_->font();
     font.setBold(true);
     nameLabel_->setFont(font);
-    setName(name);
 
-    setContentType(contentType, allowedItems);
+    setColumnDesc(desc);
 }
 
 //-----------------------------------------------------------------------------
@@ -71,11 +73,9 @@ DiagramColumn::~DiagramColumn()
 //-----------------------------------------------------------------------------
 void DiagramColumn::setName(QString const& name)
 {
-    nameLabel_->setHtml("<center>" + name + "</center>");
-    nameLabel_->setTextWidth(std::max<unsigned int>(140, width_));
-    nameLabel_->setPos((width_ - nameLabel_->textWidth()) / 2.0, 5.0);
+    desc_.setName(name);
+    updateNameLabel();
 
-    name_ = name;
     emit contentChanged();
 }
 
@@ -84,7 +84,7 @@ void DiagramColumn::setName(QString const& name)
 //-----------------------------------------------------------------------------
 bool DiagramColumn::isItemAllowed(QGraphicsItem* item) const
 {
-    return isItemAllowed(item, allowedItems_);
+    return isItemAllowed(item, desc_.getAllowedItems());
 }
 
 //-----------------------------------------------------------------------------
@@ -101,7 +101,7 @@ void DiagramColumn::addItem(QGraphicsItem* item, bool load)
     // Map the position to the column's local coordinate system
     // and constrain the item to the horizontal center of the column.
     QPointF pos = mapFromScene(item->scenePos());
-    pos.setX(width_ / 2.0);
+    pos.setX(desc_.getWidth() / 2.0);
 
     item->setPos(pos);
     item->setFlag(ItemStacksBehindParent);
@@ -128,15 +128,15 @@ void DiagramColumn::addItem(QGraphicsItem* item, bool load)
     {
         items_.append(item);
 
-        if (contentType_ == COLUMN_CONTENT_IO)
+        if (desc_.getContentType() == COLUMN_CONTENT_IO)
         {
             VCollisionLayout::updateItemMove(items_, item, MIN_Y_PLACEMENT, IO_SPACING);
-            VCollisionLayout::setItemPos(items_, item, width_ / 2, MIN_Y_PLACEMENT, IO_SPACING);
+            VCollisionLayout::setItemPos(items_, item, desc_.getWidth() / 2, MIN_Y_PLACEMENT, IO_SPACING);
         }
         else
         {
             VStackedLayout::updateItemMove(items_, item, MIN_Y_PLACEMENT, SPACING);
-            VStackedLayout::setItemPos(items_, item, width_ / 2, MIN_Y_PLACEMENT, SPACING);
+            VStackedLayout::setItemPos(items_, item, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
         }
     }
 
@@ -151,9 +151,9 @@ void DiagramColumn::removeItem(QGraphicsItem* item)
     items_.removeAll(item);
     setParentItem(0);
 
-    if (contentType_ != COLUMN_CONTENT_IO)
+    if (desc_.getContentType() != COLUMN_CONTENT_IO)
     {
-        VStackedLayout::updateItemPositions(items_, width_ / 2, MIN_Y_PLACEMENT, SPACING);
+        VStackedLayout::updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
     }
 
     emit contentChanged();
@@ -165,7 +165,7 @@ void DiagramColumn::removeItem(QGraphicsItem* item)
 void DiagramColumn::setOffsetY(qreal y)
 {
     // Update the rectangle and the label position.
-    setRect(0, y, width_, HEIGHT);
+    setRect(0, y, desc_.getWidth(), HEIGHT);
     nameLabel_->setPos(nameLabel_->x(), 5 + y);
 }
 
@@ -249,9 +249,9 @@ void DiagramColumn::onMoveItem(QGraphicsItem* item, DiagramColumn* oldColumn)
         item->setParentItem(column);
         item->setPos(newPos);
 
-        if (contentType_ != COLUMN_CONTENT_IO)
+        if (desc_.getContentType() != COLUMN_CONTENT_IO)
         {
-            VStackedLayout::updateItemPositions(items_, width_ / 2, MIN_Y_PLACEMENT, SPACING);
+            VStackedLayout::updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
         }
 
         setZValue(0.0);
@@ -266,7 +266,7 @@ void DiagramColumn::onMoveItem(QGraphicsItem* item, DiagramColumn* oldColumn)
     // Restrict the position so that the item cannot be placed too high.
     item->setPos(snapPointToGrid(item->x(), std::max(MIN_Y_PLACEMENT - item->boundingRect().top(), item->y())));
 
-    if (contentType_ == COLUMN_CONTENT_IO)
+    if (desc_.getContentType() == COLUMN_CONTENT_IO)
     {
         VCollisionLayout::updateItemMove(items_, item, MIN_Y_PLACEMENT, IO_SPACING);
     }
@@ -283,13 +283,13 @@ void DiagramColumn::onReleaseItem(QGraphicsItem* item)
 {
     setZValue(0.0);
 
-    if (contentType_ == COLUMN_CONTENT_IO)
+    if (desc_.getContentType() == COLUMN_CONTENT_IO)
     {
-        VCollisionLayout::setItemPos(items_, item, width_ / 2, MIN_Y_PLACEMENT, IO_SPACING);
+        VCollisionLayout::setItemPos(items_, item, desc_.getWidth() / 2, MIN_Y_PLACEMENT, IO_SPACING);
     }
     else
     {
-        VStackedLayout::setItemPos(items_, item, width_ / 2, MIN_Y_PLACEMENT, SPACING);
+        VStackedLayout::setItemPos(items_, item, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
     }
 }
 
@@ -299,9 +299,9 @@ void DiagramColumn::onReleaseItem(QGraphicsItem* item)
 void DiagramColumn::updateItemPositions()
 {
     // Just update the item positions.
-    if (contentType_ != COLUMN_CONTENT_IO)
+    if (desc_.getContentType() != COLUMN_CONTENT_IO)
     {
-        VStackedLayout::updateItemPositions(items_, width_ / 2, MIN_Y_PLACEMENT, SPACING);
+        VStackedLayout::updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
     }
 }
 
@@ -310,7 +310,7 @@ void DiagramColumn::updateItemPositions()
 //-----------------------------------------------------------------------------
 QString const& DiagramColumn::getName() const
 {
-    return name_;
+    return desc_.getName();
 }
 
 //-----------------------------------------------------------------------------
@@ -318,54 +318,54 @@ QString const& DiagramColumn::getName() const
 //-----------------------------------------------------------------------------
 unsigned int DiagramColumn::getAllowedItems() const
 {
-    return allowedItems_;
+    return desc_.getAllowedItems();
 }
 
 //-----------------------------------------------------------------------------
-// Function: setContentType()
+// Function: setColumnDesc()
 //-----------------------------------------------------------------------------
-void DiagramColumn::setContentType(ColumnContentType type, unsigned int allowedItems)
+void DiagramColumn::setColumnDesc(ColumnDesc const& desc)
 {
-    contentType_ = type;
+    desc_ = desc;
 
-    switch (type)
+    switch (desc.getContentType())
     {
     case COLUMN_CONTENT_IO:
         {
-            allowedItems_ = CIT_INTERFACE;
+            desc_.setAllowedItems(CIT_INTERFACE);
             break;
         }
 
     case COLUMN_CONTENT_COMPONENTS:
         {
-            allowedItems_ = CIT_COMPONENT;
+            desc_.setAllowedItems(CIT_COMPONENT);
             break;
         }
 
     case COLUMN_CONTENT_BUSES:
         {
-            allowedItems_ = CIT_CHANNEL | CIT_BRIDGE;
+            desc_.setAllowedItems(CIT_CHANNEL | CIT_BRIDGE);
             break;
         }
 
-    case COLUMN_CONTENT_CUSTOM:
+    default:
         {
-            allowedItems_ = allowedItems;
             break;
         }
     }
 
     // Update the width based on the content type.
-    width_ = 259;
+    desc_.setWidth(259);
 
-    if (allowedItems_ == CIT_INTERFACE)
+    if (desc_.getAllowedItems() == CIT_INTERFACE)
     {
-        width_ = 119;
+        desc_.setWidth(119);
     }
 
-    setRect(0, 0, width_, HEIGHT);
-    nameLabel_->setPos((width_ - nameLabel_->textWidth()) / 2.0, 5.0);
+    setRect(0, 0, desc_.getWidth(), HEIGHT);
     layout_->updateColumnPositions();
+
+    updateNameLabel();
 
     emit contentChanged();
 }
@@ -375,7 +375,7 @@ void DiagramColumn::setContentType(ColumnContentType type, unsigned int allowedI
 //-----------------------------------------------------------------------------
 ColumnContentType DiagramColumn::getContentType() const
 {
-    return contentType_;
+    return desc_.getContentType();
 }
 
 //-----------------------------------------------------------------------------
@@ -428,7 +428,7 @@ bool DiagramColumn::isItemAllowed(QGraphicsItem* item, unsigned int allowedItems
             }
             else
             {
-                // Otherwise this is an unpacked component and can of any type.
+                // Otherwise this is an unpacked component and can be of any type.
                 return (allowedItems & (CIT_BRIDGE | CIT_CHANNEL | CIT_COMPONENT));
             }
         }
@@ -513,4 +513,22 @@ void DiagramColumn::beginUpdateConnPositions(DiagramConnectionEndPoint* endPoint
 DiagramColumnLayout& DiagramColumn::getLayout()
 {
     return *layout_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DiagramColumn::updateNameLabel()
+//-----------------------------------------------------------------------------
+void DiagramColumn::updateNameLabel()
+{
+    nameLabel_->setHtml("<center>" + desc_.getName() + "</center>");
+    nameLabel_->setTextWidth(std::max<unsigned int>(140, desc_.getWidth()));
+    nameLabel_->setPos((desc_.getWidth() - nameLabel_->textWidth()) / 2.0, 5.0);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DiagramColumn::getColumnDesc()
+//-----------------------------------------------------------------------------
+ColumnDesc const& DiagramColumn::getColumnDesc() const
+{
+    return desc_;
 }

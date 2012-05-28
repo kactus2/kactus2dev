@@ -896,7 +896,8 @@ void DesignWidget::addColumn()
 
     if (dlg.exec() == QDialog::Accepted)
     {
-        diagram_->addColumn(dlg.getName(), dlg.getContentType(), dlg.getAllowedItems());
+        ColumnDesc desc(dlg.getName(), dlg.getContentType(), dlg.getAllowedItems());
+        diagram_->addColumn(desc);
     }
 }
 

@@ -96,16 +96,16 @@ void BlockDiagram::openDesign(QSharedPointer<Design> design)
 
     if (design->getColumns().isEmpty())
     {
-        layout_->addColumn("IO", COLUMN_CONTENT_IO);
-        layout_->addColumn("Buses", COLUMN_CONTENT_BUSES);
-        layout_->addColumn("Components", COLUMN_CONTENT_COMPONENTS);
-        layout_->addColumn("IO", COLUMN_CONTENT_IO);
+        layout_->addColumn(ColumnDesc("IO", COLUMN_CONTENT_IO));
+        layout_->addColumn(ColumnDesc("Buses", COLUMN_CONTENT_BUSES));
+        layout_->addColumn(ColumnDesc("Components", COLUMN_CONTENT_COMPONENTS));
+        layout_->addColumn(ColumnDesc("IO", COLUMN_CONTENT_IO));
     }
     else
     {
         foreach(ColumnDesc desc, design->getColumns())
         {
-            layout_->addColumn(desc.name, desc.contentType, desc.allowedItems);
+            layout_->addColumn(desc);
         }
     }
 
@@ -764,8 +764,7 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv) const
 
     foreach(DiagramColumn* column, layout_->getColumns())
     {
-        columns.append(ColumnDesc(column->getName(), column->getContentType(),
-                                          column->getAllowedItems()));
+        columns.append(column->getColumnDesc());
     }
 
 	design->setComponentInstances(instances);
@@ -1334,9 +1333,8 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
         if (dialog.exec() == QDialog::Accepted)
         {
-            QSharedPointer<QUndoCommand> cmd(new ColumnChangeCommand(column, dialog.getName(),
-                                                                     dialog.getContentType(),
-                                                                     dialog.getAllowedItems()));
+            ColumnDesc desc(dialog.getName(), dialog.getContentType(), dialog.getAllowedItems());
+            QSharedPointer<QUndoCommand> cmd(new ColumnChangeCommand(column, desc));
             getEditProvider().addCommand(cmd);
 
         }
@@ -1787,10 +1785,9 @@ void BlockDiagram::disableHighlight()
 //-----------------------------------------------------------------------------
 // Function: addColumn()
 //-----------------------------------------------------------------------------
-void BlockDiagram::addColumn(QString const& name, ColumnContentType contentType,
-                             unsigned int allowedItems)
+void BlockDiagram::addColumn(ColumnDesc const& desc)
 {
-    QSharedPointer<QUndoCommand> cmd(new ColumnAddCommand(layout_.data(), name, contentType, allowedItems));
+    QSharedPointer<QUndoCommand> cmd(new ColumnAddCommand(layout_.data(), desc));
     getEditProvider().addCommand(cmd);
 }
 

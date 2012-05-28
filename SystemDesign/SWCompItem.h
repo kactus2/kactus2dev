@@ -18,7 +18,7 @@
 #include <common/graphicsItems/GraphicsItemTypes.h>
 
 class SystemColumn;
-class IComponentStack;
+class IGraphicsItemStack;
 
 //-----------------------------------------------------------------------------
 //! Graphics item for visualizing SW components.
@@ -65,11 +65,11 @@ public:
     virtual void updateComponent();
 
 public slots:
-    void openSource();
+    void openCSource();
 
 signals:
     //! Requests to open the C source for this component.
-    void openSource(ComponentItem* compItem);
+    void openCSource(ComponentItem* compItem);
 
     //! Occurs when the file set reference has been changed.
     void fileSetRefChanged(QString const& fileSetRef);
@@ -104,7 +104,7 @@ private:
     };
 
     //! The old stack from where the mouse drag event began.
-    IComponentStack* oldStack_;
+    IGraphicsItemStack* oldStack_;
 
     //! The mapping component's old position before mouse move.
     QPointF oldPos_;

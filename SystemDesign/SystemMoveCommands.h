@@ -19,7 +19,7 @@
 class SystemColumnLayout;
 class SystemColumn;
 class ComponentItem;
-class IComponentStack;
+class IGraphicsItemStack;
 class SWPortItem;
 class SWConnection;
 
@@ -141,8 +141,8 @@ public:
      *      @param [in] oldStack  The item's old stack.
      *      @param [in] parent    The parent command.
      */
-    SystemItemMoveCommand(ComponentItem* item, QPointF const& oldPos,
-                          IComponentStack* oldStack, QUndoCommand* parent = 0);
+    SystemItemMoveCommand(QGraphicsItem* item, QPointF const& oldPos,
+                          IGraphicsItemStack* oldStack, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -169,19 +169,19 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The graphics item.
-    ComponentItem* item_;
+    QGraphicsItem* item_;
 
     //! The old position of the item.
     QPointF oldPos_;
 
     //! The old parent stack.
-    IComponentStack* oldStack_;
+    IGraphicsItemStack* oldStack_;
 
     //! The new position of the item.
     QPointF newPos_;
 
     //! The new parent stack.
-    IComponentStack* newStack_;
+    IGraphicsItemStack* newStack_;
 };
 
 //-----------------------------------------------------------------------------

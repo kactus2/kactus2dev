@@ -32,17 +32,11 @@
 //-----------------------------------------------------------------------------
 // Function: ColumnChangeCommand()
 //-----------------------------------------------------------------------------
-ColumnChangeCommand::ColumnChangeCommand(DiagramColumn* column, QString const& newName,
-                                         ColumnContentType newContentType,
-                                         unsigned int newAllowedItems,
+ColumnChangeCommand::ColumnChangeCommand(DiagramColumn* column, ColumnDesc const& newDesc,
                                          QUndoCommand* parent) : QUndoCommand(parent),
                                                                  column_(column),
-                                                                 oldName_(column->getName()),
-                                                                 oldContentType_(column->getContentType()),
-                                                                 oldAllowedItems_(column->getAllowedItems()),
-                                                                 newName_(newName),
-                                                                 newContentType_(newContentType),
-                                                                 newAllowedItems_(newAllowedItems)
+                                                                 oldDesc_(column->getColumnDesc()),
+                                                                 newDesc_(newDesc)
 
 {
 }
@@ -59,8 +53,7 @@ ColumnChangeCommand::~ColumnChangeCommand()
 //-----------------------------------------------------------------------------
 void ColumnChangeCommand::undo()
 {
-    column_->setName(oldName_);
-    column_->setContentType(oldContentType_, oldAllowedItems_);
+    column_->setColumnDesc(oldDesc_);
 }
 
 //-----------------------------------------------------------------------------
@@ -68,8 +61,7 @@ void ColumnChangeCommand::undo()
 //-----------------------------------------------------------------------------
 void ColumnChangeCommand::redo()
 {
-    column_->setName(newName_);
-    column_->setContentType(newContentType_, newAllowedItems_);
+    column_->setColumnDesc(newDesc_);
 }
 
 //-----------------------------------------------------------------------------

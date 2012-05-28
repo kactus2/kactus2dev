@@ -12,8 +12,9 @@
 #include "SWComponentItem.h"
 
 #include "SWPortItem.h"
-#include "IComponentStack.h"
+#include "IGraphicsItemStack.h"
 
+#include <common/layouts/HCollisionLayout.h>
 #include <common/layouts/VCollisionLayout.h>
 
 #include <models/component.h>
@@ -57,7 +58,15 @@ SWComponentItem::SWComponentItem(QRectF const& size,
             leftY += portSpacing;
         }
 
-        onAddPort(port, right);
+        if (right)
+        {
+            onAddPort(port, PORT_RIGHT);
+        }
+        else
+        {
+            onAddPort(port, PORT_LEFT);
+        }
+
         right = !right;
     }
 
@@ -78,7 +87,15 @@ SWComponentItem::SWComponentItem(QRectF const& size,
             leftY += portSpacing;
         }
 
-        onAddPort(port, right);
+        if (right)
+        {
+            onAddPort(port, PORT_RIGHT);
+        }
+        else
+        {
+            onAddPort(port, PORT_LEFT);
+        }
+
         right = !right;
     }
 }
@@ -116,7 +133,15 @@ SWPortItem* SWComponentItem::addPort(QPointF const& pos)
     SWPortItem* port = new SWPortItem(name, this);
     port->setName(name);
     port->setPos(mapFromScene(pos));
-    onAddPort(port, mapFromScene(pos).x() >= 0);
+
+    if (mapFromScene(pos).x() >= 0)
+    {
+        onAddPort(port, PORT_RIGHT);
+    }
+    else
+    {
+        onAddPort(port, PORT_LEFT);
+    }
 
     // Update the component size.
     updateSize();
@@ -137,7 +162,14 @@ void SWComponentItem::addPort(SWPortItem* port)
 //     }
 
     // Make preparations.
-    onAddPort(port, port->x() >= 0);
+    if (port->x() >= 0)
+    {
+        onAddPort(port, PORT_RIGHT);
+    }
+    else
+    {
+        onAddPort(port, PORT_LEFT);
+    }
 
     // Update the component size.
     updateSize();
@@ -150,6 +182,7 @@ void SWComponentItem::removePort(SWPortItem* port)
 {
     leftPorts_.removeAll(port);
     rightPorts_.removeAll(port);
+    bottomPorts_.removeAll(port);
     updateSize();
 
 //     if (port->type() == DiagramPort::Type)
@@ -186,19 +219,25 @@ bool SWComponentItem::isImported() const
 //-----------------------------------------------------------------------------
 // Function: onAddPort()
 //-----------------------------------------------------------------------------
-void SWComponentItem::onAddPort(SWPortItem* port, bool right)
+void SWComponentItem::onAddPort(SWPortItem* port, PortDirection dir)
 {
-    if (right)
+    if (dir == PORT_RIGHT)
     {
         rightPorts_.append(port);
         VCollisionLayout::updateItemMove(rightPorts_, port, MIN_Y_PLACEMENT, SPACING);
         VCollisionLayout::setItemPos(rightPorts_, port, rect().right(), MIN_Y_PLACEMENT, SPACING);
     }
-    else
+    else if (dir == PORT_LEFT)
     {
         leftPorts_.append(port);
         VCollisionLayout::updateItemMove(leftPorts_, port, MIN_Y_PLACEMENT, SPACING);
         VCollisionLayout::setItemPos(leftPorts_, port, rect().left(), MIN_Y_PLACEMENT, SPACING);
+    }
+    else if (dir == PORT_BOTTOM)
+    {
+        bottomPorts_.append(port);
+        HCollisionLayout::updateItemMove(bottomPorts_, port, 0.0, SPACING);
+        HCollisionLayout::setItemPos(bottomPorts_, port, rect().bottom(), 0.0, SPACING);
     }
 }
 
@@ -210,12 +249,17 @@ void SWComponentItem::onMovePort(SWPortItem* port)
     // Remove the port from the stacks (this simplifies code).
     leftPorts_.removeAll(port);
     rightPorts_.removeAll(port);
+    bottomPorts_.removeAll(port);
 
     // Restrict the position so that the port cannot be placed too high.
     port->setPos(snapPointToGrid(port->x(), std::max(MIN_Y_PLACEMENT - port->boundingRect().top(), port->y())));
 
     // Check on which side the port is to determine the stack to which it should be placed.
-    if (port->x() < 0.0)
+    /*if (port->y() - rect().bottom() >= -35.0 && std::abs(port->x()) <= 50.0)
+    {
+        HCollisionLayout::updateItemMove(bottomPorts_, port, 0.0, SPACING);
+    }
+    else*/ if (port->x() < 0.0)
     {
         VCollisionLayout::updateItemMove(leftPorts_, port, MIN_Y_PLACEMENT, SPACING);
     }
@@ -237,7 +281,7 @@ void SWComponentItem::updateSize()
 
     setRect(oldRect);
 
-    IComponentStack* stack = dynamic_cast<IComponentStack*>(parentItem());
+    IGraphicsItemStack* stack = dynamic_cast<IGraphicsItemStack*>(parentItem());
 
     if (stack != 0)
     {
@@ -333,6 +377,11 @@ void SWComponentItem::offsetPortPositions(qreal minY)
     {
         port->setPos(port->x(), port->y() + offset);
     }
+
+    foreach (SWPortItem* port, bottomPorts_)
+    {
+        port->setY(boundingRect().bottom());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -350,7 +399,6 @@ void SWComponentItem::setPropertyValues(QMap<QString, QString> const& values)
             propertyValues_.insert(prop->getName(), prop->getDefaultValue());
         }
     }
-
 
     emit propertyValuesChanged(propertyValues_);
     emit contentChanged();

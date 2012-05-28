@@ -55,7 +55,7 @@ HWMappingItem::HWMappingItem(LibraryInterface* libInterface,
 HWMappingItem::~HWMappingItem()
 {
     // Remove this item from the column where it resides.
-    IComponentStack* column = dynamic_cast<IComponentStack*>(parentItem());
+    IGraphicsItemStack* column = dynamic_cast<IGraphicsItemStack*>(parentItem());
 
     if (column != 0)
     {
@@ -72,7 +72,7 @@ void HWMappingItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
     setZValue(1001.0);
 
     oldPos_ = scenePos();
-    oldStack_ = dynamic_cast<IComponentStack*>(parentItem());
+    oldStack_ = dynamic_cast<IGraphicsItemStack*>(parentItem());
 
     // Begin the position update for the connections.
     foreach (QGraphicsItem* item, childItems())
@@ -108,7 +108,7 @@ void HWMappingItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
     {
         setPos(parentItem()->mapFromScene(oldStack_->mapStackToScene(pos())));
 
-        IComponentStack* column = dynamic_cast<IComponentStack*>(parentItem());
+        IGraphicsItemStack* column = dynamic_cast<IGraphicsItemStack*>(parentItem());
         Q_ASSERT(column != 0);
         column->onMoveItem(this);
     }
@@ -126,7 +126,7 @@ void HWMappingItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 
     if (oldStack_ != 0)
     {
-        IComponentStack* column = dynamic_cast<IComponentStack*>(parentItem());
+        IGraphicsItemStack* column = dynamic_cast<IGraphicsItemStack*>(parentItem());
         Q_ASSERT(column != 0);
         column->onReleaseItem(this);
 
@@ -181,14 +181,16 @@ qreal HWMappingItem::getHeight() const
 //-----------------------------------------------------------------------------
 // Function: HWMappingItem::addItem()
 //-----------------------------------------------------------------------------
-void HWMappingItem::addItem(ComponentItem* item, bool load)
+void HWMappingItem::addItem(QGraphicsItem* item, bool load)
 {
     item->setParentItem(this);
     item->setFlag(ItemStacksBehindParent, false);
 
-    swComponents_.append(item);
-    VStackedLayout::updateItemMove(swComponents_, item, TOP_MARGIN, SPACING);
-    VStackedLayout::setItemPos(swComponents_, item, 0.0, TOP_MARGIN, SPACING);
+    ComponentItem* compItem = static_cast<ComponentItem*>(item);
+
+    swComponents_.append(compItem);
+    VStackedLayout::updateItemMove(swComponents_, compItem, TOP_MARGIN, SPACING);
+    VStackedLayout::setItemPos(swComponents_, compItem, 0.0, TOP_MARGIN, SPACING);
     updateItemPositions();
 
     emit contentChanged();
@@ -197,9 +199,9 @@ void HWMappingItem::addItem(ComponentItem* item, bool load)
 //-----------------------------------------------------------------------------
 // Function: HWMappingItem::removeItem()
 //-----------------------------------------------------------------------------
-void HWMappingItem::removeItem(ComponentItem* item)
+void HWMappingItem::removeItem(QGraphicsItem* item)
 {
-    swComponents_.removeAll(item);
+    swComponents_.removeAll(static_cast<ComponentItem*>(item));
     item->setParentItem(0);
     updateItemPositions();
 
@@ -209,32 +211,34 @@ void HWMappingItem::removeItem(ComponentItem* item)
 //-----------------------------------------------------------------------------
 // Function: HWMappingItem::onMoveItem()
 //-----------------------------------------------------------------------------
-void HWMappingItem::onMoveItem(ComponentItem* item)
+void HWMappingItem::onMoveItem(QGraphicsItem* item)
 {
-    VStackedLayout::updateItemMove(swComponents_, item, TOP_MARGIN, SPACING);
+    ComponentItem* compItem = static_cast<ComponentItem*>(item);
+
+    VStackedLayout::updateItemMove(swComponents_, compItem, TOP_MARGIN, SPACING);
     offsetPortPositions(getComponentStackHeight() + SPACING);
     updateSize();
 
     // Check if the item is not overlapping the HW mapping item enough.
     QRectF intersection = sceneBoundingRect().intersected(item->sceneBoundingRect());
 
-    if (item->rect().height() - intersection.height() >= 3 * GridSize)
+    if (compItem->rect().height() - intersection.height() >= 3 * GridSize)
     {
-        swComponents_.removeAll(item);
+        swComponents_.removeAll(compItem);
 
         // Let the parent component stack handle the mouse move.
         SystemColumn* parentStack = static_cast<SystemColumn*>(parentItem());
         Q_ASSERT(parentStack != 0);
         
-        QPointF newPos = parentStack->mapStackFromScene(item->scenePos());
-        item->setParentItem(parentStack);
-        item->setPos(newPos);
-        item->setFlag(ItemStacksBehindParent);
+        QPointF newPos = parentStack->mapStackFromScene(compItem->scenePos());
+        compItem->setParentItem(parentStack);
+        compItem->setPos(newPos);
+        compItem->setFlag(ItemStacksBehindParent);
 
         updateItemPositions();
         setZValue(0.0);
 
-        parentStack->onMoveItem(item);
+        parentStack->onMoveItem(compItem);
         return;
     }
 
@@ -244,10 +248,10 @@ void HWMappingItem::onMoveItem(ComponentItem* item)
 //-----------------------------------------------------------------------------
 // Function: HWMappingItem::onReleaseItem()
 //-----------------------------------------------------------------------------
-void HWMappingItem::onReleaseItem(ComponentItem* item)
+void HWMappingItem::onReleaseItem(QGraphicsItem* item)
 {
     setZValue(0.0);
-    VStackedLayout::setItemPos(swComponents_, item, 0.0, TOP_MARGIN, SPACING);
+    VStackedLayout::setItemPos(swComponents_, static_cast<ComponentItem*>(item), 0.0, TOP_MARGIN, SPACING);
     offsetPortPositions(getComponentStackHeight() + SPACING);
 }
 
@@ -281,7 +285,7 @@ QPointF HWMappingItem::mapStackFromScene(QPointF const& pos) const
 //-----------------------------------------------------------------------------
 // Function: HWMappingItem::isItemAllowed()
 //-----------------------------------------------------------------------------
-bool HWMappingItem::isItemAllowed(ComponentItem* item) const
+bool HWMappingItem::isItemAllowed(QGraphicsItem* item) const
 {
     return (item->type() == SWCompItem::Type);
 }
@@ -328,4 +332,12 @@ void HWMappingItem::updateComponent()
     {
         setBrush(QBrush(QColor(217, 217, 217)));
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWMappingItem::getContentType()
+//-----------------------------------------------------------------------------
+ColumnContentType HWMappingItem::getContentType() const
+{
+    return COLUMN_CONTENT_COMPONENTS;
 }

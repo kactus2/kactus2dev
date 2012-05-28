@@ -79,9 +79,9 @@ public:
     /*!
      *  Adds a new column to the diagram.
      *
-     *      @param [in] name The name of the column.
+     *      @param [in] desc The column description.
      */
-    void addColumn(QString const& name);
+    void addColumn(ColumnDesc const& desc);
 
     /*!
      * Returns the parent widget.
@@ -110,7 +110,7 @@ signals:
     void openComponent(const VLNV& vlnv);
 
     //! Emitted when a C source file should be opened for editing.
-    void openSource(ComponentItem* compItem);
+    void openCSource(ComponentItem* compItem);
      
 protected:
     //! Called when the user presses a mouse button.
@@ -204,7 +204,6 @@ private:
      */
     void disableCurrentHighlight();
     
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

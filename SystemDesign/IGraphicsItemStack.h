@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: IComponentStack.h
+// File: IGraphicsItemStack.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
@@ -9,23 +9,24 @@
 // Interface for managing a component stack.
 //-----------------------------------------------------------------------------
 
-#ifndef ICOMPONENTSTACK_H
-#define ICOMPONENTSTACK_H
+#ifndef IGRAPHICSITEMSTACK_H
+#define IGRAPHICSITEMSTACK_H
+
+#include <models/ColumnDesc.h>
 
 #include <QPointF>
-
-class ComponentItem;
+#include <QGraphicsItem>
 
 //-----------------------------------------------------------------------------
 //! Interface for managing a component stack.
 //-----------------------------------------------------------------------------
-class IComponentStack
+class IGraphicsItemStack
 {
 public:
     /*!
      *  Destructor.
      */
-    virtual ~IComponentStack() {}
+    virtual ~IGraphicsItemStack() {}
 
     /*!
      *  Adds an item to stack.
@@ -33,28 +34,28 @@ public:
      *      @param [in] item  The item to add.
      *      @param [in] load  If true, the item is being loaded from a design.
      */
-    virtual void addItem(ComponentItem* item, bool load = false) = 0;
+    virtual void addItem(QGraphicsItem* item, bool load = false) = 0;
 
     /*!
      *  Removes an item from the stack.
      *
      *      @param [in] item the item to remove.
      */
-    virtual void removeItem(ComponentItem* item) = 0;
+    virtual void removeItem(QGraphicsItem* item) = 0;
 
     /*!
      *  Called when an item is moved within the stack.
      *
      *      @param [in] item     The item that has been moved.
      */
-    virtual void onMoveItem(ComponentItem* item) = 0;
+    virtual void onMoveItem(QGraphicsItem* item) = 0;
 
     /*!
      *  Called when an item is released from being moved by mouse.
      *
      *      @param [in] item The item that has been released.
      */
-    virtual void onReleaseItem(ComponentItem* item) = 0;
+    virtual void onReleaseItem(QGraphicsItem* item) = 0;
 
     /*!
      *  Updates the item positions so that there are no violations of the stacking rule.
@@ -76,9 +77,14 @@ public:
      *
      *      @param [in] item The item to test for.
      */
-    virtual bool isItemAllowed(ComponentItem* item) const = 0;
+    virtual bool isItemAllowed(QGraphicsItem* item) const = 0;
+
+    /*!
+     *  Returns the content type.
+     */
+    virtual ColumnContentType getContentType() const = 0;
 };
 
 //-----------------------------------------------------------------------------
 
-#endif // ICOMPONENTSTACK_H
+#endif // IGRAPHICSITEMSTACK_H

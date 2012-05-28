@@ -21,9 +21,9 @@
 //-----------------------------------------------------------------------------
 // Function: SystemColumnAddCommand()
 //-----------------------------------------------------------------------------
-SystemColumnAddCommand::SystemColumnAddCommand(SystemColumnLayout* layout, QString const& name,
+SystemColumnAddCommand::SystemColumnAddCommand(SystemColumnLayout* layout, ColumnDesc const& desc,
                                                QUndoCommand* parent) : QUndoCommand(parent), layout_(layout),
-                                                                       name_(name), column_(0), del_(false)
+                                                                       desc_(desc), column_(0), del_(false)
 {
 }
 
@@ -58,7 +58,7 @@ void SystemColumnAddCommand::redo()
     // If this is the first time, create the column.
     if (column_ == 0)
     {
-        layout_->addColumn(name_);
+        layout_->addColumn(desc_);
         column_ = layout_->getColumns().back();
     }
     else
@@ -125,7 +125,7 @@ void SWConnectionAddCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: SystemItemAddCommand()
 //-----------------------------------------------------------------------------
-SystemItemAddCommand::SystemItemAddCommand(IComponentStack* stack, ComponentItem* item,
+SystemItemAddCommand::SystemItemAddCommand(IGraphicsItemStack* stack, QGraphicsItem* item,
                                            QUndoCommand* parent)
     : QUndoCommand(parent),
       item_(item),
@@ -155,7 +155,10 @@ void SystemItemAddCommand::undo()
     item_->scene()->removeItem(item_);
     del_ = true;
 
-    emit componentInstanceRemoved(item_);
+    if (dynamic_cast<ComponentItem*>(item_) != 0)
+    {
+        emit componentInstanceRemoved(static_cast<ComponentItem*>(item_));
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -167,7 +170,10 @@ void SystemItemAddCommand::redo()
     stack_->addItem(item_);
     del_ = false;
 
-    emit componentInstantiated(item_);
+    if (dynamic_cast<ComponentItem*>(item_) != 0)
+    {
+        emit componentInstantiated(static_cast<ComponentItem*>(item_));
+    }
 }
 
 //-----------------------------------------------------------------------------

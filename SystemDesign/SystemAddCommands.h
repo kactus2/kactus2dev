@@ -12,6 +12,8 @@
 #ifndef SYSTEMADDCOMMANDS_H
 #define SYSTEMADDCOMMANDS_H
 
+#include <models/ColumnDesc.h>
+
 #include <QUndoCommand>
 #include <QGraphicsItem>
 #include <QGraphicsScene>
@@ -20,7 +22,7 @@
 class SystemColumnLayout;
 class SystemColumn;
 class ComponentItem;
-class IComponentStack;
+class IGraphicsItemStack;
 class SWConnection;
 class SWComponentItem;
 class SWPortItem;
@@ -34,11 +36,11 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] layout        The column layout.
-     *      @param [in] name          The name of the column.
-     *      @param [in] parent        The parent command.
+     *      @param [in] layout  The column layout.
+     *      @param [in] desc    The column description.
+     *      @param [in] parent  The parent command.
      */
-    SystemColumnAddCommand(SystemColumnLayout* layout, QString const& name,
+    SystemColumnAddCommand(SystemColumnLayout* layout, ColumnDesc const& desc,
                            QUndoCommand* parent = 0);
 
     /*!
@@ -68,8 +70,8 @@ private:
     //! The column layout.
     SystemColumnLayout* layout_;
 
-    //! The name of the column.
-    QString name_;
+    //! The column description.
+    ColumnDesc desc_;
 
     //! Created diagram column.
     SystemColumn* column_;
@@ -139,11 +141,11 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] stack   The component stack to which to add the componetn.
-     *      @param [in] item    The mapping component item to add.
+     *      @param [in] stack   The graphics item stack to which to add the item.
+     *      @param [in] item    The graphics item to add.
      *      @param [in] parent  The parent command.
      */
-    SystemItemAddCommand(IComponentStack* stack, ComponentItem* item, QUndoCommand* parent = 0);
+    SystemItemAddCommand(IGraphicsItemStack* stack, QGraphicsItem* item, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -177,11 +179,11 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The component item.
-    ComponentItem* item_;
+    //! The graphics item.
+    QGraphicsItem* item_;
 
     //! The item's parent component stack.
-    IComponentStack* stack_;
+    IGraphicsItemStack* stack_;
 
     //! Boolean flag for indicating if the component should be deleted in the destructor.
     bool del_;

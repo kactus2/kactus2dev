@@ -200,7 +200,7 @@ bool DiagramAdHocPort::isHierarchical() const
 //-----------------------------------------------------------------------------
 // Function: onConnect()
 //-----------------------------------------------------------------------------
-bool DiagramAdHocPort::onConnect(DiagramConnectionEndPoint const* other)
+bool DiagramAdHocPort::onConnect(DiagramConnectionEndPoint const*)
 {
     return true;
 }
@@ -362,7 +362,7 @@ void DiagramAdHocPort::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 //-----------------------------------------------------------------------------
 // Function: setTypes()
 //-----------------------------------------------------------------------------
-void DiagramAdHocPort::setTypes(VLNV const& busType, VLNV const& absType, General::InterfaceMode mode)
+void DiagramAdHocPort::setTypes(VLNV const&, VLNV const&, General::InterfaceMode)
 {
 }
 
@@ -441,7 +441,7 @@ void DiagramAdHocPort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 //-----------------------------------------------------------------------------
 // Function: setInterfaceMode()
 //-----------------------------------------------------------------------------
-void DiagramAdHocPort::setInterfaceMode(General::InterfaceMode mode)
+void DiagramAdHocPort::setInterfaceMode(General::InterfaceMode)
 {
 }
 

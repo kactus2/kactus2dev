@@ -62,7 +62,7 @@ public slots:
      *
      *      @param [in] node The node.
      */
-    void openSource(ComponentItem* compItem);
+    void openCSource(ComponentItem* compItem);
 
     /*!
      *  Opens a HW design.
