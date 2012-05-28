@@ -76,15 +76,19 @@ void EditableTableView::mouseMoveEvent( QMouseEvent* e ) {
 			QModelIndex startIndex = indexAt(pressedPoint_);
 			QModelIndex thisIndex = indexAt(e->pos());
 
+			// if the model is a sort proxy then convert the indexes to source indexes
+			QSortFilterProxyModel* sortProxy = dynamic_cast<QSortFilterProxyModel*>(model());
+			if (sortProxy) {
+
+				startIndex = sortProxy->mapToSource(startIndex);
+				thisIndex = sortProxy->mapToSource(thisIndex);
+			}
+
 			// if the item was dragged to new location
 			if (startIndex.isValid() && startIndex != thisIndex) {
 				setCursor(QCursor(Qt::ClosedHandCursor));
 
-                // Allow movement only if there is no sorting proxy.
-                if (dynamic_cast<QSortFilterProxyModel*>(model()) == 0)
-                {
-				    emit moveItem(startIndex, thisIndex);
-                }
+				emit moveItem(startIndex, thisIndex);
 
 				// update the pressed point so the dragging works also
 				// when moving further to another index
@@ -173,11 +177,17 @@ void EditableTableView::onAddAction() {
 	QModelIndex posToAdd;
 	int rowCount = 1;
 
+	QSortFilterProxyModel* sortProxy = dynamic_cast<QSortFilterProxyModel*>(model());
+
 	// if there were indexes selected
 	if (!indexes.isEmpty()) {
 		qSort(indexes);
 
 		posToAdd = indexes.first();
+
+		if (sortProxy) {
+			posToAdd = sortProxy->mapToSource(posToAdd);
+		}
 
 		// count how many rows are to be added
 		int previousRow = indexes.first().row();
