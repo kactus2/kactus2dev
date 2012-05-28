@@ -6,6 +6,7 @@
  */
 
 #include "filesetseditor.h"
+#include <common/delegates/LineEditDelegate/lineeditdelegate.h>
 
 #include <QHBoxLayout>
 
@@ -21,6 +22,8 @@ proxy_(this) {
 	proxy_.setSourceModel(&model_);
 
 	view_.setModel(&proxy_);
+
+	view_.setItemDelegate(new LineEditDelegate(this));
 
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
