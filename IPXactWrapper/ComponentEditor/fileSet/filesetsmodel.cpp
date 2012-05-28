@@ -9,6 +9,7 @@
 
 #include <QStringList>
 #include <QString>
+#include <QColor>
 
 FileSetsModel::FileSetsModel(QSharedPointer<Component> component, 
 							 QObject *parent):
@@ -19,7 +20,6 @@ fileSets_(component->getFileSets()) {
 }
 
 FileSetsModel::~FileSetsModel() {
-
 }
 
 int FileSetsModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
@@ -109,6 +109,14 @@ QVariant FileSetsModel::data( const QModelIndex& index,
 					 }
 		}
 	}
+	else if (Qt::ForegroundRole == role) {
+		if (fileSets_.at(index.row())->isValid(false)) {
+			return QColor("black");
+		}
+		else {
+			return QColor("red");
+		}
+	}
 	else {
 		return QVariant();
 	}
@@ -153,4 +161,39 @@ bool FileSetsModel::setData( const QModelIndex& index,
 	else {
 		return false;
 	}
+}
+
+void FileSetsModel::onAddItem( const QModelIndex& index ) {
+	int row = fileSets_.size();
+
+	// if the index is valid then add the item to the correct position
+	if (index.isValid()) {
+		row = index.row();
+	}
+
+	beginInsertRows(QModelIndex(), row, row);
+	fileSets_.insert(row, QSharedPointer<FileSet>(new FileSet()));
+	endInsertRows();
+
+	// tell also parent widget that contents have been changed
+	emit contentChanged();
+}
+
+void FileSetsModel::onRemoveItem( const QModelIndex& index ) {
+	// don't remove anything if index is invalid
+	if (!index.isValid()) {
+		return;
+	}
+	// make sure the row number if valid
+	else if (index.row() < 0 || index.row() >= fileSets_.size()) {
+		return;
+	}
+
+	// remove the specified item
+	beginRemoveRows(QModelIndex(), index.row(), index.row());
+	fileSets_.removeAt(index.row());
+	endRemoveRows();
+
+	// tell also parent widget that contents have been changed
+	emit contentChanged();
 }

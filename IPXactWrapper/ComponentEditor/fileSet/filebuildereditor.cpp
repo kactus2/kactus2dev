@@ -25,7 +25,7 @@ editor_(dataPointer, this) {
 	QHBoxLayout* layout = new QHBoxLayout(this);
 	layout->addWidget(&editor_);
 
-	editor_.restoreChanges();
+	refresh();
 }
 
 FileBuilderEditor::~FileBuilderEditor() {
@@ -37,4 +37,8 @@ bool FileBuilderEditor::isValid() const {
 
 void FileBuilderEditor::makeChanges() {
 	editor_.applyChanges();
+}
+
+void FileBuilderEditor::refresh() {
+	editor_.restoreChanges();
 }

@@ -45,12 +45,6 @@ dependencies_(tr("Dependent directories"), baseLocation_, this) {
 void FileSetEditor::initialize() {
 	Q_ASSERT(fileSet_);
 
-	// initialize groups 
-	groups_.initialize(fileSet_->getGroups());
-
-	// initialize dependencies
-	dependencies_.initialize(fileSet_->getDependencies());
-
 	QVBoxLayout* layout = new QVBoxLayout(this);
 
 	// connect the signals informing of data changes
@@ -68,10 +62,7 @@ void FileSetEditor::initialize() {
 	connect(&dependencies_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
-	// set the values for the nameGroupBox
-	nameBox_.setName(fileSet_->getName());
-	nameBox_.setDisplayName(fileSet_->getDisplayName());
-	nameBox_.setDescription(fileSet_->getDescription());
+	refresh();
 }
 
 FileSetEditor::~FileSetEditor() {
@@ -95,4 +86,17 @@ void FileSetEditor::makeChanges() {
 	fileSet_->setGroups(groups_.items());
 
 	fileSet_->setDependencies(dependencies_.items());
+}
+
+void FileSetEditor::refresh() {
+	// set the values for the nameGroupBox
+	nameBox_.setName(fileSet_->getName());
+	nameBox_.setDisplayName(fileSet_->getDisplayName());
+	nameBox_.setDescription(fileSet_->getDescription());
+	
+	// initialize groups 
+	groups_.initialize(fileSet_->getGroups());
+
+	// initialize dependencies
+	dependencies_.initialize(fileSet_->getDependencies());
 }

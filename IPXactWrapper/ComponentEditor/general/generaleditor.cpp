@@ -25,12 +25,14 @@
 //-----------------------------------------------------------------------------
 // Function: GeneralEditor()
 //-----------------------------------------------------------------------------
-GeneralEditor::GeneralEditor(QWidget* parentWnd,
-							 LibraryInterface* libHandler,
+GeneralEditor::GeneralEditor(LibraryInterface* libHandler,
 							 QSharedPointer<Component> component,
-							 QWidget *parent) : ItemEditor(component, parent),
-                                                vlnvDisplayer_(0), attributeEditor_(0),
-                                                previewBox_(0), component_()
+							 QWidget *parent):
+ItemEditor(component, parent),
+vlnvDisplayer_(0),
+attributeEditor_(0),
+previewBox_(0),
+component_()
 {
     Q_ASSERT(libHandler != 0);
     Q_ASSERT(component != 0);
@@ -63,20 +65,7 @@ GeneralEditor::GeneralEditor(QWidget* parentWnd,
     connect(descEditor_, SIGNAL(contentChanged()),
             this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
-    if (component_->getComponentImplementation() != KactusAttribute::KTS_SW)
-    {
-        KactusAttribute::ProductHierarchy prodHier = component_->getComponentHierarchy();
-        KactusAttribute::Firmness firmness = component_->getComponentFirmness();
-        attributeEditor_->setAttributes(prodHier, firmness);
-    }
-    else
-    {
-        attributeEditor_->hideAttributes();
-    }
-
-    attributeEditor_->setImplementation(component_->getComponentImplementation());
-
-    descEditor_->setDescription(component_->getDescription());
+    refresh();
 }
 
 //-----------------------------------------------------------------------------
@@ -106,4 +95,22 @@ void GeneralEditor::makeChanges()
     }
 
     component_->setDescription(descEditor_->getDescription());
+}
+
+void GeneralEditor::refresh() {
+	if (component_->getComponentImplementation() != KactusAttribute::KTS_SW)
+	{
+		KactusAttribute::ProductHierarchy prodHier = component_->getComponentHierarchy();
+		KactusAttribute::Firmness firmness = component_->getComponentFirmness();
+		attributeEditor_->setAttributes(prodHier, firmness);
+	}
+	else
+	{
+		attributeEditor_->hideAttributes();
+	}
+
+	attributeEditor_->setImplementation(component_->getComponentImplementation());
+
+
+	descEditor_->setDescription(component_->getDescription());
 }

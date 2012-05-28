@@ -60,7 +60,7 @@ void CpuEditor::initialize() {
 	layout->addWidget(&addrSpaceRefs_);
 	layout->addWidget(&parameters_);
 
-	restore();
+	refresh();
 }
 
 bool CpuEditor::isValid() const {
@@ -99,5 +99,13 @@ void CpuEditor::restore() {
 
 	addrSpaceRefs_.initialize(cpu_->getAddressSpaceRefs());
 
+	parameters_.restore();
+}
+
+void CpuEditor::refresh() {
+	nameGroup_.setName(cpu_->getName());
+	nameGroup_.setDisplayName(cpu_->getDisplayName());
+	nameGroup_.setDescription(cpu_->getDescription());
+	addrSpaceRefs_.initialize(cpu_->getAddressSpaceRefs());
 	parameters_.restore();
 }

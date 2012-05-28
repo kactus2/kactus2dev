@@ -65,3 +65,7 @@ bool MemoryMapsEditor::isValid() const {
 
 	return true;
 }
+
+void MemoryMapsEditor::refresh() {
+
+}

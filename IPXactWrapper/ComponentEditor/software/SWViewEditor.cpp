@@ -36,10 +36,7 @@ hierRefEditor_(VLNV::DESIGNCONFIGURATION, libHandler, this, this)
     nameGroup_.setTitle(tr("Name and description"));
     hierRefEditor_.setTitle(tr("Hierarchy reference"));
 
-    nameGroup_.setName(view_->getName());
-    nameGroup_.setDisplayName(view_->getDisplayName());
-    nameGroup_.setDescription(view_->getDescription());
-    hierRefEditor_.setVLNV(view_->getHierarchyRef());
+    refresh();
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(&nameGroup_);
@@ -85,4 +82,11 @@ void SWViewEditor::makeChanges()
     view_->setDisplayName(nameGroup_.getDisplayName());
     view_->setDescription(nameGroup_.getDescription());
     view_->setHierarchyRef(hierRefEditor_.getVLNV());
+}
+
+void SWViewEditor::refresh() {
+	nameGroup_.setName(view_->getName());
+	nameGroup_.setDisplayName(view_->getDisplayName());
+	nameGroup_.setDescription(view_->getDescription());
+	hierRefEditor_.setVLNV(view_->getHierarchyRef());
 }

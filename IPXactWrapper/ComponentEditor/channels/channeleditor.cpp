@@ -43,7 +43,6 @@ ChannelEditor::~ChannelEditor() {
 }
 
 void ChannelEditor::initialize() {
-	interfaceEdit_.initialize(channel_->getInterfaces());
 
 	connect(&nameGroup_, SIGNAL(nameChanged(const QString&)),
 		this, SIGNAL(nameChanged(const QString&)), Qt::UniqueConnection);
@@ -56,9 +55,7 @@ void ChannelEditor::initialize() {
 	layout->addWidget(&nameGroup_);
 	layout->addWidget(&interfaceEdit_);
 
-	nameGroup_.setName(channel_->getName());
-	nameGroup_.setDisplayName(channel_->getDisplayName());
-	nameGroup_.setDescription(channel_->getDescription());
+	refresh();
 }
 
 bool ChannelEditor::isValid() const {
@@ -81,4 +78,11 @@ void ChannelEditor::makeChanges() {
 	channel_->setDescription(nameGroup_.getDescription());
 
 	channel_->setInterfaces(interfaceEdit_.items());
+}
+
+void ChannelEditor::refresh() {
+	nameGroup_.setName(channel_->getName());
+	nameGroup_.setDisplayName(channel_->getDisplayName());
+	nameGroup_.setDescription(channel_->getDescription());
+	interfaceEdit_.initialize(channel_->getInterfaces());
 }

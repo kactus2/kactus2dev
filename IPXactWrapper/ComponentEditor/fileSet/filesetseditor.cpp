@@ -12,15 +12,23 @@
 FileSetsEditor::FileSetsEditor( QSharedPointer<Component> component):
 ItemEditor(component),
 view_(this),
-model_(component, this) {
+model_(component, this),
+proxy_(this) {
 
 	QHBoxLayout* layout = new QHBoxLayout(this);
 	layout->addWidget(&view_);
 
-	view_.setModel(&model_);
+	proxy_.setSourceModel(&model_);
+
+	view_.setModel(&proxy_);
 
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
+	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
+		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
+	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
+		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 }
 
 FileSetsEditor::~FileSetsEditor() {
@@ -32,5 +40,9 @@ bool FileSetsEditor::isValid() const {
 }
 
 void FileSetsEditor::makeChanges() {
+
+}
+
+void FileSetsEditor::refresh() {
 
 }

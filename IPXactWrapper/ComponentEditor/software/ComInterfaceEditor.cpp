@@ -131,7 +131,7 @@ void ComInterfaceEditor::initialize() {
 
 	scrollArea->setWidget(topWidget);
 
-	restoreChanges();
+	refresh();
 }
 
 //-----------------------------------------------------------------------------
@@ -236,4 +236,28 @@ void ComInterfaceEditor::onComDefinitionChanged()
         dataTypeCombo_.clear();
         dataTypeCombo_.addItem("");
     }
+}
+
+void ComInterfaceEditor::refresh() {
+	nameGroup_.setName(comIf_->getName());
+	nameGroup_.setDisplayName(comIf_->getDisplayName());
+	nameGroup_.setDescription(comIf_->getDescription());
+
+	propertyValueEditor_.setData(comIf_->getPropertyValues());
+
+	comType_.setVLNV(comIf_->getComType());
+	directionCombo_.setCurrentIndex(comIf_->getDirection());
+
+	if (!comIf_->getDataType().isEmpty())
+	{
+		int index = dataTypeCombo_.findText(comIf_->getDataType());
+
+		if (index == -1)
+		{
+			dataTypeCombo_.addItem(comIf_->getDataType());
+			index = dataTypeCombo_.findText(comIf_->getDataType());
+		}
+
+		dataTypeCombo_.setCurrentIndex(index);
+	}
 }

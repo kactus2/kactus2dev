@@ -36,13 +36,13 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parentWnd  The parent window (having a title bar).
      *      @param [in] libHandler The library handler.
      *      @param [in] component  The component model to edit.
      *      @param [in] parent     The parent widget.
-     */
-    GeneralEditor(QWidget* parentWnd, LibraryInterface* libHandler,
-		          QSharedPointer<Component> component, QWidget *parent);
+	 */
+	GeneralEditor(LibraryInterface* libHandler,
+		QSharedPointer<Component> component,
+		QWidget *parent = 0);
 
     /*!
      *  Destructor.
@@ -61,6 +61,10 @@ public:
 	 *
 	 */
 	virtual void makeChanges();
+
+	/*! \brief Reload the information from the model to the editor.
+	*/
+	virtual void refresh();
 
 private:
     // Disable copying.

@@ -64,11 +64,6 @@ void BusInterfaceEditor::initialize() {
 	tabs_.addTab(&portmaps_, tr("Port maps"));
 	tabs_.addTab(&parameters_, tr("Parameters"));
 
-	general_.restoreChanges();
-	portmaps_.restoreChanges();
-	interfaceMode_.restoreChanges();
-	parameters_.restoreChanges();
-
 	connect(&portmaps_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&portmaps_, SIGNAL(errorMessage(const QString&)),
@@ -101,6 +96,8 @@ void BusInterfaceEditor::initialize() {
 
 	connect(&tabs_, SIGNAL(currentChanged(int)),
 		this, SLOT(onTabChange(int)), Qt::UniqueConnection);
+
+	refresh();
 }
 
 bool BusInterfaceEditor::isValid() const {
@@ -138,4 +135,11 @@ void BusInterfaceEditor::makeChanges() {
 	parameters_.applyChanges();
 
 	component()->updateBusInterface(busif_);
+}
+
+void BusInterfaceEditor::refresh() {
+	general_.restoreChanges();
+	portmaps_.restoreChanges();
+	interfaceMode_.restoreChanges();
+	parameters_.restoreChanges();
 }

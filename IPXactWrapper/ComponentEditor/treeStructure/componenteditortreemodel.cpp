@@ -122,9 +122,13 @@ bool ComponentEditorTreeModel::hasChildren( const QModelIndex& parent /*= QModel
 	return parentItem->hasChildren();
 }
 
-void ComponentEditorTreeModel::onContentChanged( ComponentEditorItem* item ) {
+void ComponentEditorTreeModel::onContentChanged(ComponentEditorItem* item ) {
 	QModelIndex index = ComponentEditorTreeModel::index(item);
 	emit dataChanged(index, index);
+}
+
+void ComponentEditorTreeModel::onItemAdded( const ComponentEditorItem* parentItem, int childIndex ) {
+
 }
 
 QModelIndex ComponentEditorTreeModel::index(int row,

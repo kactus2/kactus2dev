@@ -84,7 +84,7 @@ ApiInterfaceEditor::ApiInterfaceEditor(LibraryInterface* libHandler,
 
     scrollArea->setWidget(topWidget);
 
-    restoreChanges();
+    refresh();
 }
 
 //-----------------------------------------------------------------------------
@@ -135,4 +135,12 @@ void ApiInterfaceEditor::restoreChanges()
     nameGroup_.setDescription(apiIf_->getDescription());
     apiType_.setVLNV(apiIf_->getApiType());
     dependencyCombo_.setCurrentIndex(apiIf_->getDependencyDirection());
+}
+
+void ApiInterfaceEditor::refresh() {
+	nameGroup_.setName(apiIf_->getName());
+	nameGroup_.setDisplayName(apiIf_->getDisplayName());
+	nameGroup_.setDescription(apiIf_->getDescription());
+	apiType_.setVLNV(apiIf_->getApiType());
+	dependencyCombo_.setCurrentIndex(apiIf_->getDependencyDirection());
 }

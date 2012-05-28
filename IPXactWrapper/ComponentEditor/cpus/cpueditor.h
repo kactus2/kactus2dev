@@ -73,6 +73,10 @@ public:
 	*/
 	virtual void restore();
 
+	/*! \brief Reload the information from the model to the editor.
+	*/
+	virtual void refresh();
+
 private:
 	//! \brief No copying
 	CpuEditor(const CpuEditor& other);

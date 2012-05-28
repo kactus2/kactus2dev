@@ -56,7 +56,7 @@ model_(dataPointer, this) {
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&view_);
 
-	model_.restore();
+	refresh();
 }
 
 ModelParameterEditor::~ModelParameterEditor() {
@@ -68,4 +68,8 @@ bool ModelParameterEditor::isValid() const {
 
 void ModelParameterEditor::makeChanges() {
 	model_.apply();
+}
+
+void ModelParameterEditor::refresh() {
+	model_.restore();
 }

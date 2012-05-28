@@ -36,7 +36,7 @@ SWPropertiesEditor::SWPropertiesEditor(QSharedPointer<Component> component, QWid
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->addWidget(&view_);
 
-    model_.setProperties(component->getSWProperties());
+    refresh();
 
     connect(&model_, SIGNAL(contentChanged()),
             this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -74,4 +74,8 @@ void SWPropertiesEditor::makeChanges()
     }
 
     component()->setSWProperties(properties);
+}
+
+void SWPropertiesEditor::refresh() {
+	 model_.setProperties(component()->getSWProperties());
 }

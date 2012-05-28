@@ -87,23 +87,7 @@ void ViewEditor::initialize() {
 	connect(&viewTypeSelector_, SIGNAL(currentIndexChanged(int)),
 		this, SLOT(onStackChange(int)), Qt::UniqueConnection);
 
-	nameGroup_.setName(view_->getName());
-	nameGroup_.setDisplayName(view_->getDisplayName());
-	nameGroup_.setDescription(view_->getDescription());
-
-	envIdentifier_.restoreChanges();	
-
-	// if view is hierarchical then set it to be selected
-	if (view_->isHierarchical()) {
-		viewTypeSelector_.setCurrentIndex(0);
-		hierarchyRef_.restoreChanges();
-	}
-	else {
-		viewTypeSelector_.setCurrentIndex(1);
-		generalTab_.restoreChanges();
-		parametersTab_.restoreChanges();
-		fileBuildersTab_.restoreChanges();
-	}
+	refresh();
 }
 
 ViewEditor::~ViewEditor() {
@@ -186,5 +170,25 @@ void ViewEditor::onStackChange( int index ) {
 	// if the new index is for hierarchical view then refresh the hierarchical editor
 	if (index == 0) {
 		hierarchyRef_.refresh();
+	}
+}
+
+void ViewEditor::refresh() {
+	nameGroup_.setName(view_->getName());
+	nameGroup_.setDisplayName(view_->getDisplayName());
+	nameGroup_.setDescription(view_->getDescription());
+
+	envIdentifier_.restoreChanges();	
+
+	// if view is hierarchical then set it to be selected
+	if (view_->isHierarchical()) {
+		viewTypeSelector_.setCurrentIndex(0);
+		hierarchyRef_.restoreChanges();
+	}
+	else {
+		viewTypeSelector_.setCurrentIndex(1);
+		generalTab_.restoreChanges();
+		parametersTab_.restoreChanges();
+		fileBuildersTab_.restoreChanges();
 	}
 }

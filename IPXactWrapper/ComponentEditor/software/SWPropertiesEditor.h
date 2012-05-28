@@ -52,6 +52,10 @@ public:
 	 */
 	virtual void makeChanges();
 
+	/*! \brief Reload the information from the model to the editor.
+	*/
+	virtual void refresh();
+
 private:
 	// Disable copying.
 	SWPropertiesEditor(SWPropertiesEditor const& rhs);

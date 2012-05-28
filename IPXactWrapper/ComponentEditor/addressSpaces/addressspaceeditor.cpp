@@ -139,3 +139,17 @@ void AddressSpaceEditor::restoreChanges() {
 	visualizer_.setRange(addrSpace_->getRange());
 	visualizer_.setSegments(addrSpace_);
 }
+
+void AddressSpaceEditor::refresh() {
+	nameBox_.setName(addrSpace_->getName());
+	nameBox_.setDisplayName(addrSpace_->getDisplayName());
+	nameBox_.setDescription(addrSpace_->getDescription());
+	general_.restoreChanges();
+	parameterEditor_.restore();
+	segments_.restore();
+
+	visualizer_.setByteSize(addrSpace_->getAddressUnitBits());
+	visualizer_.setRowWidth(addrSpace_->getWidth());
+	visualizer_.setRange(addrSpace_->getRange());
+	visualizer_.setSegments(addrSpace_);
+}

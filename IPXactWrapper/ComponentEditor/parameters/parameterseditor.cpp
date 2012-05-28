@@ -54,7 +54,7 @@ proxy_(NULL) {
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&view_);
 
-	model_.restore();
+	refresh();
 }
 
 ParametersEditor::~ParametersEditor() {
@@ -66,4 +66,8 @@ bool ParametersEditor::isValid() const {
 
 void ParametersEditor::makeChanges() {
 	model_.apply();
+}
+
+void ParametersEditor::refresh() {
+	model_.restore();
 }

@@ -93,6 +93,22 @@ public:
 	*/
 	Qt::ItemFlags flags(const QModelIndex& index) const;
 
+public slots:
+
+	/*! \brief Add a new item to the given index.
+	 *
+	 * \param index The index identifying the position for new item.
+	 *
+	*/
+	virtual void onAddItem(const QModelIndex& index);
+
+	/*! \brief Remove the item in the given index.
+	 *
+	 * \param index The index identifying the item to remove.
+	 *
+	*/
+	virtual void onRemoveItem(const QModelIndex& index);
+
 signals:
 
 	//! \brief Emitted when the contents of the model change.

@@ -15,23 +15,6 @@
 
 #include <QVBoxLayout>
 
-FileEditor::FileEditor( const QFileInfo& baseLocation, 
-					   QSharedPointer<Component> component,
-					   void* dataPointer,
-					   QWidget *parent ):
-ItemEditor(component, parent),
-tabs_(this), 
-generalTab_(NULL),
-extraTab_(NULL),
-file_(static_cast<File*>(dataPointer)),
-baseLocation_(baseLocation) {
-
-	Q_ASSERT_X(file_, "FileEditor::setDataPointer",
-		"static_cast failed to give valid File-pointer");
-
-	initialize();
-}
-
 FileEditor::FileEditor( const QString& baseLocation,
 					   QSharedPointer<Component> component, 
 					   QSharedPointer<File> file, 
@@ -45,6 +28,8 @@ baseLocation_(baseLocation) {
 
 	Q_ASSERT(component);
 	Q_ASSERT(file);
+
+	initialize();
 }
 
 FileEditor::~FileEditor() {
@@ -68,9 +53,7 @@ void FileEditor::initialize() {
 	connect(extraTab_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
-	// fetch the data from the model and disable the discard button
-	generalTab_->restore();
-	extraTab_->restore();
+	refresh();
 }
 
 bool FileEditor::isValid() const {
@@ -89,4 +72,10 @@ void FileEditor::makeChanges() {
 		generalTab_->apply();
 		extraTab_->apply();
 	}
+}
+
+void FileEditor::refresh() {
+	// fetch the data from the model
+	generalTab_->restore();
+	extraTab_->restore();
 }

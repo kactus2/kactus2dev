@@ -34,19 +34,6 @@ public:
 
 	/*! \brief The constructor
 	 *
-	 * \param baseLocation Refers to the containing component's xml-file location
-	 * \param component Pointer to the component being edited.
-	 * \param dataPointer Pointer to the element that is edited
-	 * \param parent Pointer to the owner of this widget
-	 *
-	*/
-	FileEditor(const QFileInfo& baseLocation, 
-		QSharedPointer<Component> component, 
-		void* dataPointer,
-		QWidget *parent);
-
-	/*! \brief The constructor
-	 *
 	 * \param baseLocation Path to the containing component's xml-file location
 	 * \param component Pointer to the component being edited.
 	 * \param file Pointer to the file that is edited.
@@ -56,7 +43,7 @@ public:
 	FileEditor(const QString& baseLocation, 
 		QSharedPointer<Component> component, 
 		QSharedPointer<File> file,
-		QWidget *parent);
+		QWidget *parent = 0);
 
 	//! \brief The destructor
 	virtual ~FileEditor();
@@ -80,6 +67,10 @@ public:
 	 * The base class implementation does nothing.
 	*/
 	virtual void makeChanges();
+
+	/*! \brief Reload the information from the model to the editor.
+	*/
+	virtual void refresh();
 
 private:
 

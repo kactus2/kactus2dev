@@ -44,22 +44,7 @@ swDesignMapping_(VLNV::COMPONENT, libHandler, parentWnd, this)
     // Connect signals.
     connect(&swDesignMapping_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
-    // Read the existing SW design if found.
-    VLNV designVLNV = *component_->getVlnv();
-    designVLNV.setType(VLNV::DESIGN);
-    designVLNV.setName(designVLNV.getName().remove(".comp") + "_swmap.design");
-
-    if (libInterface_->contains(designVLNV))
-    {
-        QSharedPointer<LibraryComponent> libComp = libInterface_->getModel(designVLNV);
-        QSharedPointer<Design> design = libComp.staticCast<Design>();
-
-        if (design->getComponentInstances().count() > 0)
-        {
-            Design::ComponentInstance const& instance =design->getComponentInstances().first();
-            swDesignMapping_.setVLNV(instance.componentRef);
-        }
-    }
+    refresh();
 }
 
 //-----------------------------------------------------------------------------
@@ -135,4 +120,23 @@ void SoftwareMappingsEditor::makeChanges()
             component_->removeView("kts_sw_ref");
         }
     }
+}
+
+void SoftwareMappingsEditor::refresh() {
+	// Read the existing SW design if found.
+	VLNV designVLNV = *component_->getVlnv();
+	designVLNV.setType(VLNV::DESIGN);
+	designVLNV.setName(designVLNV.getName().remove(".comp") + "_swmap.design");
+
+	if (libInterface_->contains(designVLNV))
+	{
+		QSharedPointer<LibraryComponent> libComp = libInterface_->getModel(designVLNV);
+		QSharedPointer<Design> design = libComp.staticCast<Design>();
+
+		if (design->getComponentInstances().count() > 0)
+		{
+			Design::ComponentInstance const& instance =design->getComponentInstances().first();
+			swDesignMapping_.setVLNV(instance.componentRef);
+		}
+	}
 }

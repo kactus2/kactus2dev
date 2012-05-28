@@ -53,7 +53,7 @@ model_(component, this) {
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&view_);
 
-	model_.restore();
+	refresh();
 }
 
 OtherClockDriversEditor::~OtherClockDriversEditor() {
@@ -65,4 +65,8 @@ bool OtherClockDriversEditor::isValid() const {
 
 void OtherClockDriversEditor::makeChanges() {
 	model_.apply();
+}
+
+void OtherClockDriversEditor::refresh() {
+	model_.restore();
 }

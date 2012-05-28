@@ -122,6 +122,14 @@ public slots:
 	*/
 	void onContentChanged(ComponentEditorItem* item);
 
+	/*! \brief This function should be called when a new item is added to the navigation tree.
+	 *
+	 * \param parentItem Pointer to the parent of the added item.
+	 * \param childIndex The index for the child.
+	 *
+	*/
+	void onItemAdded(const ComponentEditorItem* parentItem, int childIndex);
+
 	/*! \brief Apply the changes from the editors to the component model.
 	 *
 	*/

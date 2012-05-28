@@ -12,6 +12,8 @@
 #include <common/views/EditableTableView/editabletableview.h>
 #include "filesetsmodel.h"
 
+#include <QSortFilterProxyModel>
+
 /*! \brief The editor to add/remove/edit file sets of a component.
  *
  */
@@ -41,6 +43,10 @@ public:
 	*/
 	virtual void makeChanges();
 
+	/*! \brief Reload the information from the model to the editor.
+	*/
+	virtual void refresh();
+
 private:
 
 	//! \brief No copying
@@ -54,6 +60,9 @@ private:
 
 	//! \brief The model that manages the file set objects for the view.
 	FileSetsModel model_;
+
+	//! \brief The proxy to do the sorting
+	QSortFilterProxyModel proxy_;
 };
 
 #endif // FILESETSEDITOR_H
