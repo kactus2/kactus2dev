@@ -655,7 +655,7 @@ public:
 	*
 	* \return QList containing pointers to the SW views.
 	*/
-	const QList<QSharedPointer<SWView> > getSWViews() const;
+	const QList<QSharedPointer<SWView> >& getSWViews() const;
 
 	/*! \brief Get the SW views of the component
 	 *
@@ -1107,6 +1107,12 @@ public:
      */
     QMap< QString, QSharedPointer<ApiInterface> > const& getApiInterfaces() const;
 
+	/*! \brief Get the API interfaces of the component.
+	 *
+	 * \return QMap containing pointers to the API interfaces.
+	*/
+	QMap<QString, QSharedPointer<ApiInterface> >& getApiInterfaces();
+
     /*!
      *  Returns the names of the API interfaces.
      */
@@ -1410,6 +1416,12 @@ public:
      *  Returns the list of SW properties.
      */
     QList< QSharedPointer<ComProperty> >& getSWProperties();
+
+	/*! \brief Get the list of SW properties.
+	 *
+	 * \return QList containing pointers to the SW properties.
+	*/
+	const QList<QSharedPointer<ComProperty> >& getSWProperties() const;
 
 private:
 

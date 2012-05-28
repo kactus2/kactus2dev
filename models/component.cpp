@@ -2542,7 +2542,7 @@ void Component::addSWView(SWView* newView) {
     swViews_.append(QSharedPointer<SWView>(newView));
 }
 
-const QList<QSharedPointer<SWView> > Component::getSWViews() const{
+const QList<QSharedPointer<SWView> >& Component::getSWViews() const {
     return swViews_;
 }
 
@@ -3062,9 +3062,12 @@ void Component::removeComInterface(ComInterface* comInterface)
 //-----------------------------------------------------------------------------
 // Function: Component::getApiInterfaces()
 //-----------------------------------------------------------------------------
-QMap< QString, QSharedPointer<ApiInterface> > const& Component::getApiInterfaces() const
-{
+QMap< QString, QSharedPointer<ApiInterface> > const& Component::getApiInterfaces() const {
     return apiInterfaces_;
+}
+
+QMap<QString, QSharedPointer<ApiInterface> >& Component::getApiInterfaces() {
+	return apiInterfaces_;
 }
 
 //-----------------------------------------------------------------------------
@@ -3182,9 +3185,12 @@ void Component::setSWProperties(QList< QSharedPointer<ComProperty> > const& prop
 //-----------------------------------------------------------------------------
 // Function: ComDefinition::getProperties()
 //-----------------------------------------------------------------------------
-QList< QSharedPointer<ComProperty> >& Component::getSWProperties()
-{
+QList< QSharedPointer<ComProperty> >& Component::getSWProperties() {
     return swProperties_;
+}
+
+const QList<QSharedPointer<ComProperty> >& Component::getSWProperties() const {
+	return swProperties_;
 }
 
 //-----------------------------------------------------------------------------
