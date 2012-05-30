@@ -55,6 +55,19 @@ public:
 	*/
 	QString getDescription() const;
 
+	/*! \brief Check if the editor is in valid state.
+	 *
+	 * \return True if the name-field is not empty.
+	*/
+	bool isValid() const;
+
+public slots:
+
+	/*! \brief Refresh the edit fields.
+	 *
+	*/
+	void refresh();
+
 signals:
 
 	//! \brief Emitted when user edits one of the fields.

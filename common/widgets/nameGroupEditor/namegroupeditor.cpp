@@ -45,10 +45,12 @@ descriptionEdit_(this) {
 	descriptionEdit_.setToolTip(tr("Set the description for the element"));
 	layout->addWidget(&descriptionEdit_, 3, 0, 1, 2);
 
+	refresh();
+
 	connect(&nameEdit_, SIGNAL(textEdited(const QString&)),
-		this, SIGNAL(onNameChanged(const QString&)), Qt::UniqueConnection);
+		this, SLOT(onNameChanged(const QString&)), Qt::UniqueConnection);
 	connect(&displayNameEdit_, SIGNAL(textEdited(const QString&)),
-		this, SIGNAL(onDisplayNameChanged(const QString&)), Qt::UniqueConnection);
+		this, SLOT(onDisplayNameChanged(const QString&)), Qt::UniqueConnection);
 	connect(&descriptionEdit_, SIGNAL(textChanged()),
 		this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
 }
@@ -81,4 +83,14 @@ void NameGroupEditor::onDisplayNameChanged( const QString& newName ) {
 void NameGroupEditor::onDescriptionChanged() {
 	nameGroup_.description_ = descriptionEdit_.toPlainText();
 	emit contentChanged();
+}
+
+bool NameGroupEditor::isValid() const {
+	return !nameGroup_.name_.isEmpty();
+}
+
+void NameGroupEditor::refresh() {
+	nameEdit_.setText(nameGroup_.name_);
+	displayNameEdit_.setText(nameGroup_.displayName_);
+	descriptionEdit_.setPlainText(nameGroup_.description_);
 }

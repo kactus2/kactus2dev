@@ -6,8 +6,7 @@
  */
 
 #include "dirlistmanager.h"
-
-#include "dirlistmanagerdelegate.h"
+#include <common/delegates/LineEditDelegate/lineeditdelegate.h>
 
 #include <QFileDialog>
 #include <QDir>
@@ -25,6 +24,6 @@ DirListManager::~DirListManager() {
 void DirListManager::initialize( const QStringList& items /*= QStringList()*/ ) {
 	ListManager::initialize(items);
 
-	view_->setItemDelegate(new DirListManagerDelegate(this, baseDir_));
+	view_->setItemDelegate(new LineEditDelegate(this));
 }
 
