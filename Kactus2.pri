@@ -39,7 +39,6 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./common/widgets/attributeBox/attributemodel.h \
     ./common/widgets/libraryRefGenerator/libraryrefgenerator.h \
     ./common/widgets/listManager/dirlistmanager.h \
-    ./common/widgets/listManager/dirlistmanagerdelegate.h \
     ./common/widgets/listManager/filelistmanager.h \
     ./common/widgets/listManager/listmanager.h \
     ./common/widgets/listManager/listmanagermodel.h \
