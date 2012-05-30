@@ -410,10 +410,6 @@
 							>
 						</File>
 						<File
-							RelativePath=".\common\widgets\listManager\dirlistmanagerdelegate.cpp"
-							>
-						</File>
-						<File
 							RelativePath=".\common\widgets\listManager\filelistmanager.cpp"
 							>
 						</File>

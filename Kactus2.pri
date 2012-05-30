@@ -462,7 +462,6 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/widgets/hexSpinBox/hexspinbox.cpp \
     ./common/widgets/libraryRefGenerator/libraryrefgenerator.cpp \
     ./common/widgets/listManager/dirlistmanager.cpp \
-    ./common/widgets/listManager/dirlistmanagerdelegate.cpp \
     ./common/widgets/listManager/filelistmanager.cpp \
     ./common/widgets/listManager/listmanager.cpp \
     ./common/widgets/listManager/listmanagermodel.cpp \
