@@ -97,20 +97,6 @@ public:
 	*/
 	ComponentEditorItem* parent();
 
-	/*! \brief Add a new child to the item.
-	 *
-	 * \param child Pointer to the child to add.
-	 *
-	*/
-	void addChild(QSharedPointer<ComponentEditorItem> child);
-
-	/*! \brief Remove a child from the item.
-	 *
-	 * \param child Pointer to the child to remove.
-	 *
-	*/
-	void removeChild(QSharedPointer<ComponentEditorItem> child);
-
 	/*! \brief Move child from source index to target index under the same parent.
 	 *
 	 * \param sourceIndex The index identifying which item to move. If not valid then nothing is done.
@@ -139,6 +125,22 @@ public:
 	 *
 	*/
 	virtual void setLocked(bool locked);
+
+	/*! \brief Add a new child to the item.
+	 *
+	 * The base class implementation does nothing.
+	 * 
+	 * \param index The index to add the child into.
+	 *
+	*/
+	virtual void createChild(int index);
+
+	/*! \brief Remove the child from the given index.
+	 *
+	 * \param index Identifies the child to remove.
+	 *
+	*/
+	virtual void removeChild(int index);
 
 	/*! \brief Get the tool tip for the item.
 	 * 
@@ -172,10 +174,31 @@ public:
 	*/
 	virtual ItemVisualizer* visualizer();
 
+	/*! \brief Refresh the contents of the editor associated with this item.
+	 *
+	*/
+	virtual void refreshEditor();
+
 signals:
 
 	//! \brief This signal is emitted when the item should be updated in view.
 	void contentChanged(ComponentEditorItem* item);
+
+	/*! \brief Emitted when a child should be added to this item.
+	 *
+	 * \param item Pointer to this item.
+	 * \param childIndex The index the child should be added to.
+	 *
+	*/
+	void createChild(ComponentEditorItem* item, int childIndex);
+
+	/*! \brief Emitted when a child should be removed from the item.
+	 *
+	 * \param item Pointer to this item.
+	 * \param childIndex The index of the child that should be removed.
+	 *
+	*/
+	void removeChild(ComponentEditorItem* item, int childIndex);
 
 protected:
 
@@ -185,6 +208,9 @@ protected:
 	//! \brief Pointer to the component being edited.
 	QSharedPointer<Component> component_;
 
+	//! \brief Pointer to the model that owns this item.
+	ComponentEditorTreeModel* model_;
+
 	//! \brief Contains the children of this item.
 	QList<QSharedPointer<ComponentEditorItem> > childItems_;
 
@@ -193,7 +219,21 @@ protected slots:
 	/*! \brief Handler for editor's contentChanged signal.
 	 *
 	*/
-	void onEditorChanged();
+	virtual void onEditorChanged();
+
+	/*! \brief Handler for ItemEditor's childAdded(int) signal.
+	 *
+	 * \param index The index to add the child to.
+	 *
+	*/
+	virtual void onAddChild(int index);
+
+	/*! \brief Handler for ItemEditor's childRemoved(int) signal.
+	 *
+	 * \param index The index of the child to remove.
+	 *
+	*/
+	virtual void onRemoveChild(int index);
 
 private:
 	//! \brief No copying

@@ -141,6 +141,18 @@ public:
 	 */
 	const QStringList& getGroups();
 
+	/*! \brief Get the name group that contains the name, display name and description.
+	 *
+	 * \return Reference to the group.
+	*/
+	General::NameGroup& getNameGroup();
+
+	/*! \brief Get the name group that contains the name, display name and description.
+	 *
+	 * \return Reference to the group.
+	*/
+	const General::NameGroup& getNameGroup() const;
+
 	/*! \brief Get the name of the file set.
 	 *
 	 * \return QString containing the name.

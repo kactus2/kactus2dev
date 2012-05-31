@@ -673,3 +673,11 @@ void FileSet::useDefaultVhdlBuilders() {
 void FileSet::clearFiles() {
 	files_.clear();
 }
+
+General::NameGroup& FileSet::getNameGroup() {
+	return nameGroup_;
+}
+
+const General::NameGroup& FileSet::getNameGroup() const {
+	return nameGroup_;
+}

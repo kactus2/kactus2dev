@@ -127,10 +127,6 @@ void ComponentEditorTreeModel::onContentChanged(ComponentEditorItem* item ) {
 	emit dataChanged(index, index);
 }
 
-void ComponentEditorTreeModel::onItemAdded( const ComponentEditorItem* parentItem, int childIndex ) {
-
-}
-
 QModelIndex ComponentEditorTreeModel::index(int row,
 											int column, 
 											const QModelIndex& parent /*= QModelIndex()*/ ) const {
@@ -210,4 +206,28 @@ void ComponentEditorTreeModel::makeEditorChanges() {
 
 void ComponentEditorTreeModel::setLocked( bool locked ) {
 	rootItem_->setLocked(locked);
+}
+
+void ComponentEditorTreeModel::addItem( ComponentEditorItem* parentItem, int childIndex ) {
+	Q_ASSERT(parentItem);
+	Q_ASSERT(childIndex >= 0);
+
+	// find the index of the parent item
+	QModelIndex parentIndex = index(parentItem);
+
+	beginInsertRows(parentIndex, childIndex, childIndex);
+	parentItem->createChild(childIndex);
+	endInsertRows();
+}
+
+void ComponentEditorTreeModel::removeItem( ComponentEditorItem* parentItem, int childIndex ) {
+	Q_ASSERT(parentItem);
+	Q_ASSERT(childIndex >= 0);
+
+	// find the index of the parent item
+	QModelIndex parentIndex = index(parentItem);
+
+	beginRemoveRows(parentIndex, childIndex, childIndex);
+	parentItem->removeChild(childIndex);
+	endRemoveRows();
 }

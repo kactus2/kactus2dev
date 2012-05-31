@@ -93,6 +93,12 @@ public:
 	*/
 	Qt::ItemFlags flags(const QModelIndex& index) const;
 
+	/*! \brief Check the validity of the items in the model.
+	 *
+	 * \return True if all items are in valid state.
+	*/
+	virtual bool isValid() const;
+
 public slots:
 
 	/*! \brief Add a new item to the given index.
@@ -113,6 +119,20 @@ signals:
 
 	//! \brief Emitted when the contents of the model change.
 	void contentChanged();
+
+	/*! \brief Emitted when a new file set is added to the model.
+	 *
+	 * \param index The index of the added file set.
+	 *
+	*/
+	void fileSetAdded(int index);
+
+	/*! \brief Emitted when a file set is removed from the model.
+	 *
+	 * \param index The index of the remove file set.
+	 *
+	*/
+	void fileSetRemoved(int index);
 
 private:
 	//! \brief No copying

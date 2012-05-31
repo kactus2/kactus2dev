@@ -12,7 +12,7 @@
 #include "groupmanager.h"
 
 #include <models/fileset.h>
-#include <common/widgets/nameGroupBox/namegroupbox.h>
+#include <common/widgets/nameGroupEditor/namegroupeditor.h>
 #include <common/widgets/listManager/dirlistmanager.h>
 
 #include <QWidget>
@@ -76,13 +76,21 @@ public:
 
 	/*! \brief Make the changes from the widgets editors to the IPXact model.
 	 *
-	 * The base class implementation does nothing.
 	*/
 	virtual void makeChanges();
 
-	/*! \brief Reload the information from the model to the editor.
-	*/
+	//! \brief Reload the information from the model to the editor.
 	virtual void refresh();
+
+private slots:
+
+	/*! \brief Handler for changes in the group manager.
+	 *
+	*/
+	void onGroupsChange();
+
+	//! \brief Handler for changes in the dependency manager
+	void onDependenciesChange();
 
 private:
 
@@ -101,8 +109,8 @@ private:
 	//! \brief The pointer to the edited item.
 	FileSet* fileSet_;
 
-	//! \brief Used to manage the name, displayName and description of FileSet.
-	NameGroupBox nameBox_;
+	//! \brief Used to edit the name, display name and description.
+	NameGroupEditor nameEditor_;
 
 	//! \brief Used to manage groups of FileSet.
 	GroupManager groups_;

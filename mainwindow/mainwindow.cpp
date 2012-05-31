@@ -63,6 +63,7 @@
 #include <IPXactWrapper/ComDefinitionEditor/ComDefinitionEditor.h>
 #include <IPXactWrapper/ApiDefinitionEditor/ApiDefinitionEditor.h>
 #include <IPXactWrapper/BusEditor/buseditor.h>
+#include <IPXactWrapper/ComponentEditor/treeStructure/componenteditor.h>
 
 #include <PropertyWidget/messageconsole.h>
 
@@ -2652,9 +2653,6 @@ void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
 		emit errorMessage(tr("Document type did not match Component"));
 		return;
 	}
-
-	QString filePath = libraryHandler_->getPath(vlnv);
-	QFileInfo info(filePath);
 
 	ComponentEditor* editor = new ComponentEditor(libraryHandler_, component, this);
 	QString styleSheet("*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");

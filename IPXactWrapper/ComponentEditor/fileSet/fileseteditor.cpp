@@ -21,7 +21,7 @@ FileSetEditor::FileSetEditor(const QFileInfo& baseLocation,
 ItemEditor(component, parent),
 baseLocation_(baseLocation),
 fileSet_(static_cast<FileSet*>(dataPointer)), 
-nameBox_(this), 
+nameEditor_(fileSet_->getNameGroup(), this),
 groups_(tr("Group identifiers"), this),
 dependencies_(tr("Dependent directories"), baseLocation_, this) {
 
@@ -35,7 +35,7 @@ FileSetEditor::FileSetEditor( const QString& baseLocation,
 ItemEditor(component, parent),
 baseLocation_(baseLocation),
 fileSet_(fileSet), 
-nameBox_(this), 
+nameEditor_(fileSet->getNameGroup(), this),
 groups_(tr("Group identifiers"), this),
 dependencies_(tr("Dependent directories"), baseLocation_, this) {
 
@@ -48,19 +48,17 @@ void FileSetEditor::initialize() {
 	QVBoxLayout* layout = new QVBoxLayout(this);
 
 	// connect the signals informing of data changes
-	layout->addWidget(&nameBox_);
-	connect(&nameBox_, SIGNAL(contentChanged()),
+	layout->addWidget(&nameEditor_);
+	connect(&nameEditor_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&nameBox_, SIGNAL(nameChanged(const QString&)),
-		this, SIGNAL(nameChanged(const QString&)), Qt::UniqueConnection);
 
 	layout->addWidget(&groups_);
 	connect(&groups_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+		this, SLOT(onGroupsChange()), Qt::UniqueConnection);
 
 	layout->addWidget(&dependencies_);
 	connect(&dependencies_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+		this, SLOT(onDependenciesChange()), Qt::UniqueConnection);
 
 	refresh();
 }
@@ -69,7 +67,7 @@ FileSetEditor::~FileSetEditor() {
 }
 
 bool FileSetEditor::isValid() const {
-	return nameBox_.isValid();
+	return nameEditor_.isValid();
 }
 
 void FileSetEditor::removeModel() {
@@ -79,24 +77,26 @@ void FileSetEditor::removeModel() {
 }
 
 void FileSetEditor::makeChanges() {
-	fileSet_->setName(nameBox_.getName());
-	fileSet_->setDisplayName(nameBox_.getDisplayName());
-	fileSet_->setDescription(nameBox_.getDescription());
-
-	fileSet_->setGroups(groups_.items());
-
-	fileSet_->setDependencies(dependencies_.items());
+	// this is empty because all changes are applied to model immediately 
 }
 
 void FileSetEditor::refresh() {
 	// set the values for the nameGroupBox
-	nameBox_.setName(fileSet_->getName());
-	nameBox_.setDisplayName(fileSet_->getDisplayName());
-	nameBox_.setDescription(fileSet_->getDescription());
-	
+	nameEditor_.refresh();
+
 	// initialize groups 
 	groups_.initialize(fileSet_->getGroups());
 
 	// initialize dependencies
 	dependencies_.initialize(fileSet_->getDependencies());
+}
+
+void FileSetEditor::onGroupsChange() {
+	fileSet_->setGroups(groups_.items());
+	emit contentChanged();
+}
+
+void FileSetEditor::onDependenciesChange() {
+	fileSet_->setDependencies(dependencies_.items());
+	emit contentChanged();
 }

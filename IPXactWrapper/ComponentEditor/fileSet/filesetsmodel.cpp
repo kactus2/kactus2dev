@@ -99,7 +99,7 @@ QVariant FileSetsModel::data( const QModelIndex& index,
 				foreach (QString groupName, groupNames) {
 					str += groupName;
 					str += " ";
-					}
+				}
 
 				// return the string with all group names
 				return str;
@@ -108,6 +108,9 @@ QVariant FileSetsModel::data( const QModelIndex& index,
 				return QVariant();
 					 }
 		}
+	}
+	else if (Qt::UserRole == role && index.column() == 2) {
+		return fileSets_.at(index.row())->getGroups();
 	}
 	else if (Qt::ForegroundRole == role) {
 		if (fileSets_.at(index.row())->isValid(false)) {
@@ -144,9 +147,7 @@ bool FileSetsModel::setData( const QModelIndex& index,
 				break;
 					}
 			case 2: {
-				QString str = value.toString();
-				QStringList groupNames = str.split(' ', QString::SkipEmptyParts);
-				fileSets_[index.row()]->setGroups(groupNames);
+				fileSets_[index.row()]->setGroups(value.toStringList());
 				break;
 					}
 			default: {
@@ -175,6 +176,9 @@ void FileSetsModel::onAddItem( const QModelIndex& index ) {
 	fileSets_.insert(row, QSharedPointer<FileSet>(new FileSet()));
 	endInsertRows();
 
+	// inform navigation tree that file set is added
+	emit fileSetAdded(row);
+
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
 }
@@ -194,6 +198,21 @@ void FileSetsModel::onRemoveItem( const QModelIndex& index ) {
 	fileSets_.removeAt(index.row());
 	endRemoveRows();
 
+	// inform navigation tree that file set has been removed
+	emit fileSetRemoved(index.row());
+
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
+}
+
+bool FileSetsModel::isValid() const {
+	
+	// if at least one file set is invalid
+	foreach (QSharedPointer<FileSet> fileSet, fileSets_) {
+		if (!fileSet->isValid(true)) {
+			return false;
+		}
+	}
+	// all file sets valid
+	return true;
 }

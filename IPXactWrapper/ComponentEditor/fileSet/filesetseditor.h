@@ -22,6 +22,12 @@ class FileSetsEditor : public ItemEditor {
 
 public:
 
+	//! \brief The default width of the name column.
+	static const int NAME_COLUMN_WIDTH = 200;
+
+	//! \brief The default width of the description column.
+	static const int DESC_COLUMN_WIDTH = 300;
+
 	/*! \brief The constructor
 	 *
 	 * \param component Pointer to the component being edited.

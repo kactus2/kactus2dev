@@ -20,10 +20,15 @@ QObject(parent),
 libHandler_(libHandler),
 component_(component), 
 childItems_(),
+model_(model),
 parent_(parent) {
 
 	connect(this, SIGNAL(contentChanged(ComponentEditorItem*)),
 		model, SLOT(onContentChanged(ComponentEditorItem*)), Qt::UniqueConnection);
+	connect(this, SIGNAL(createChild(ComponentEditorItem*, int)),
+		model, SLOT(addItem(ComponentEditorItem*, int)), Qt::UniqueConnection);
+	connect(this, SIGNAL(removeChild(ComponentEditorItem*, int)),
+		model, SLOT(removeItem(ComponentEditorItem*, int)), Qt::UniqueConnection);
 }
 
 ComponentEditorItem::ComponentEditorItem( LibraryInterface* libHandler, 
@@ -33,6 +38,7 @@ QObject(parent),
 libHandler_(libHandler),
 component_(component),
 childItems_(),
+model_(parent), 
 parent_(NULL) {
 
 	connect(this, SIGNAL(contentChanged(ComponentEditorItem*)),
@@ -85,16 +91,6 @@ QFont ComponentEditorItem::getFont() const {
 	font.setPointSize(font.pointSize() + 2);
 	font.setBold(true);
 	return font;
-}
-
-void ComponentEditorItem::addChild( QSharedPointer<ComponentEditorItem> child ) {
-	Q_ASSERT(child);
-	childItems_.append(child);
-}
-
-void ComponentEditorItem::removeChild( QSharedPointer<ComponentEditorItem> child ) {
-	Q_ASSERT(child);
-	childItems_.removeAll(child);
 }
 
 void ComponentEditorItem::moveChild( const int sourceIndex, int targetIndex ) {
@@ -164,4 +160,28 @@ void ComponentEditorItem::setLocked( bool locked ) {
 	foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_) {
 		childItem->setLocked(locked);
 	}
+}
+
+void ComponentEditorItem::refreshEditor() {
+	if (editor()) {
+		editor()->refresh();
+	}
+}
+
+void ComponentEditorItem::onAddChild( int index ) {
+	emit createChild(this, index);
+}
+
+void ComponentEditorItem::onRemoveChild( int index ) {
+	emit removeChild(this, index);
+}
+
+void ComponentEditorItem::createChild( int index ) {
+	// This must be implemented in sub classes to create the correct type of child.
+}
+
+void ComponentEditorItem::removeChild( int index ) {
+	Q_ASSERT(index >= 0);
+	Q_ASSERT(index < childItems_.size());
+	childItems_.removeAt(index);
 }

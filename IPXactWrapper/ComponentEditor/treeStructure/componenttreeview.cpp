@@ -6,7 +6,7 @@
 
 #include "componenttreeview.h"
 
-#include "componenttreeitem.h"
+#include "../componenttreeitem.h"
 
 #include <LibraryManager/libraryinterface.h>
 #include <models/generaldeclarations.h>

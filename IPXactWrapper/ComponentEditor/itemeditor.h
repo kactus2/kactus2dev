@@ -65,7 +65,7 @@ public:
 
 	/*! \brief Reload the information from the model to the editor.
 	*/
-	//virtual void refresh() = 0;
+	virtual void refresh() = 0;
 
 signals:
 
@@ -88,6 +88,20 @@ signals:
 
 	//! \brief Prints a notification to the user.
 	void noticeMessage(const QString& msg) const;
+
+	/*! \brief Emitted when the editor adds a new item that should be shown in navigation tree.
+	 *
+	 * \param index The index of the added item.
+	 *
+	*/
+	void childAdded(int index);
+
+	/*! \brief Emitted when the editor removes a child that should also be removed from navigation tree.
+	 *
+	 * \param index The index of the removed item.
+	 *
+	*/
+	void childRemoved(int index);
 
 protected:
 
