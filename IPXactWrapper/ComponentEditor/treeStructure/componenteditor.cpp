@@ -51,6 +51,7 @@ visualizerSlot_(&editorVisualizerSplitter_) {
 	// the top layout contains only the navigation splitter
 	QHBoxLayout* layout = new QHBoxLayout(this);
 	layout->addWidget(&navigationSplitter_);
+	layout->setContentsMargins(5, 5, 5, 5);
 
 	// editor visualizer splitter contains the editor- and visualizer slots
 	editorVisualizerSplitter_.addWidget(&editorSlot_);

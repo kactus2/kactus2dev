@@ -66,6 +66,7 @@ versions_() {
 	layout->addWidget(&nameBox_, 1, 2, 1, 1);
 	layout->addWidget(&versionBox_, 1, 3, 1, 1);
 	layout->setSpacing(0);
+	layout->setContentsMargins(0, 0, 0, 0);
 
 	connectBoxes();
 }

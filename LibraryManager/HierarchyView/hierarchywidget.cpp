@@ -27,6 +27,7 @@ model_(dataModel) {
 
 	QHBoxLayout* layout = new QHBoxLayout(this);
 	layout->addWidget(&view_);
+	layout->setContentsMargins(0, 0, 0, 0);
 
 	filter_.setSourceModel(dataModel);
 	view_.setModel(&filter_);

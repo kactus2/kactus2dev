@@ -21,6 +21,7 @@ options_() {
 	layout->addWidget(&swBox_, 0, 1, 1, 1);
 	layout->addWidget(&systemBox_, 0, 2, 1, 1);
 	layout->setSpacing(0);
+	layout->setContentsMargins(4, 4, 4, 4);
 
 	hwBox_.setChecked(true);
 	swBox_.setChecked(true);

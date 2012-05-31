@@ -32,6 +32,7 @@ hidden_(false) {
 	layout->addWidget(&hideButton_, 0);
 	layout->addWidget(&dialer_, 1);
 	layout->setSpacing(0);
+	layout->setContentsMargins(4, 4, 4, 4);
 
 	connect(&hideButton_, SIGNAL(clicked(bool)),
 		this, SLOT(onHideShowClick()), Qt::UniqueConnection);

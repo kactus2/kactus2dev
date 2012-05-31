@@ -21,6 +21,7 @@ options_() {
 	layout->addWidget(&busApiBox_, 0, 1, 1, 1);
 	layout->addWidget(&advancedBox_, 0, 2, 1, 1);
 	layout->setSpacing(0);
+	layout->setContentsMargins(4, 4, 4, 4);
 
 	componentBox_.setChecked(true);
 	busApiBox_.setChecked(true);

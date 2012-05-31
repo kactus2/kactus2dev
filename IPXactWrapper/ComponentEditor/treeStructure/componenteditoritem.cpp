@@ -185,3 +185,14 @@ void ComponentEditorItem::removeChild( int index ) {
 	Q_ASSERT(index < childItems_.size());
 	childItems_.removeAt(index);
 }
+
+bool ComponentEditorItem::canBeOpened() const {
+	// Normally items can't be opened
+	return false;
+}
+
+void ComponentEditorItem::openItem() {
+
+	// Normally items can't be opened
+	return;
+}

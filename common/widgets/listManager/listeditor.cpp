@@ -33,6 +33,7 @@ view_(this) {
 
 	QHBoxLayout* topLayout = new QHBoxLayout(this);
 	topLayout->addWidget(&view_);
+	topLayout->setContentsMargins(0, 0, 0, 0);
 
 	// connect the model to the view
 	view_.setModel(&model_);

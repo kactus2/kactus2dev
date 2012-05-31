@@ -972,6 +972,7 @@ void MainWindow::setupLibraryDock() {
 	containerLayout->addWidget(dialer_, 0);
 	containerLayout->addWidget(libraryHandler_, 1);
 	containerLayout->setSpacing(0);
+	containerLayout->setContentsMargins(0, 0, 0, 0);
 	libraryDock_->setWidget(container);
 
 	addDockWidget(Qt::LeftDockWidgetArea, libraryDock_);

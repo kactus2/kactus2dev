@@ -46,6 +46,7 @@ void FileSetEditor::initialize() {
 	Q_ASSERT(fileSet_);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
+	layout->setContentsMargins(0, 0, 0, 0);
 
 	// connect the signals informing of data changes
 	layout->addWidget(&nameEditor_);

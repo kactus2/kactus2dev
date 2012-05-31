@@ -29,6 +29,7 @@ options_() {
 	layout->addWidget(&socBox_, 1, 1, 1, 1);
 	layout->addWidget(&ipBox_, 1, 2, 1, 1);
 	layout->setSpacing(0);
+	layout->setContentsMargins(4, 4, 4, 4);
 
 	globalBox_.setChecked(true);
 	productBox_.setChecked(true);

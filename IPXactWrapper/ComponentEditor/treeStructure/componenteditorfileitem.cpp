@@ -7,8 +7,12 @@
 
 #include "componenteditorfileitem.h"
 
+#include <models/generaldeclarations.h>
+
 #include <QFont>
 #include <QApplication>
+#include <QDesktopServices>
+#include <QUrl>
 
 ComponentEditorFileItem::ComponentEditorFileItem(QSharedPointer<File> file,
 												 ComponentEditorTreeModel* model,
@@ -47,4 +51,19 @@ QFont ComponentEditorFileItem::getFont() const {
 
 QString ComponentEditorFileItem::getTooltip() const {
 	return tr("Specifies a single file associated with the file set");
+}
+
+bool ComponentEditorFileItem::canBeOpened() const {
+	return true;
+}
+
+void ComponentEditorFileItem::openItem() {
+
+	// create the necessary paths
+	const QString relPath = file_->getName();
+	const QString xmlPath = libHandler_->getPath(*component_->getVlnv());
+	const QString absolutePath = General::getAbsolutePath(xmlPath, relPath);
+
+	// open the file
+	QDesktopServices::openUrl(QUrl::fromLocalFile(absolutePath));
 }

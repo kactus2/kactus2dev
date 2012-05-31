@@ -25,6 +25,7 @@ options_() {
 	layout->addWidget(&parameterizableBox_, 0, 2, 1, 1);
 	layout->addWidget(&fixedBox_, 0, 3, 1, 1);
 	layout->setSpacing(0);
+	layout->setContentsMargins(4, 4, 4, 4);
 
 	templateBox_.setChecked(true);
 	mutableBox_.setChecked(true);

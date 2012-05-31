@@ -61,7 +61,6 @@ QTabWidget(parent),
 data_(), 
 treeModel_(),
 hierarchyModel_(),
-searchWidget_(),
 treeWidget_(0),
 hierarchyWidget_(0),
 objects_(),
@@ -145,8 +144,6 @@ void LibraryHandler::syncronizeModels() {
 		this, SLOT(onCreateDesign(const VLNV&)), Qt::UniqueConnection);
     connect(data_.data(), SIGNAL(createSWDesign(const VLNV&)),
         this, SIGNAL(createSWDesign(const VLNV&)), Qt::UniqueConnection);
-//     connect(data_.data(), SIGNAL(createSystemDesign(const VLNV&)),
-//         this, SIGNAL(createSystemDesign(const VLNV&)), Qt::UniqueConnection);
 
 	/**************************************************************************/
 	// connect the signals from the tree model

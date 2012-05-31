@@ -8,7 +8,6 @@
 #define LIBRARYHANDLER_H
 
 #include "libraryinterface.h"
-#include "librarysearchwidget.h"
 #include "librarytreewidget.h"
 #include "librarydata.h"
 #include "librarytreemodel.h"
@@ -572,9 +571,6 @@ private:
 
 	//! \brief The model for the hierarchy view
 	QSharedPointer<HierarchyModel> hierarchyModel_;
-
-	//! \brief The widget that contains GUI-items for the search tab
-    QSharedPointer<LibrarySearchWidget> searchWidget_;
 
 	//! \brief The widget that contains the GUI items for the tree tab
     LibraryTreeWidget* treeWidget_;

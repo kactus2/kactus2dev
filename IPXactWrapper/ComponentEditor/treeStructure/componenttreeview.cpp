@@ -5,9 +5,7 @@
  */
 
 #include "componenttreeview.h"
-
-#include "../componenttreeitem.h"
-
+#include "componenteditoritem.h"
 #include <LibraryManager/libraryinterface.h>
 #include <models/generaldeclarations.h>
 
@@ -155,9 +153,10 @@ void ComponentTreeView::contextMenuEvent( QContextMenuEvent* event ) {
 	// save the position where click occurred
 	pressedPoint_ = event->pos();
 
-	ComponentTreeItem* item = static_cast<ComponentTreeItem*>(index.internalPointer());
-
-	if (item->type() == ComponentTreeItem::FILE) {
+	ComponentEditorItem* item = static_cast<ComponentEditorItem*>(index.internalPointer());
+	
+	// if item can be opened then show the context menu
+	if (item->canBeOpened()) {
 		QMenu menu(this);
 		menu.addAction(&fileOpenAction_);
 		menu.exec(event->globalPos());
@@ -172,9 +171,9 @@ void ComponentTreeView::mouseDoubleClickEvent( QMouseEvent* event ) {
 	// save the position where click occurred
 	pressedPoint_ = event->pos();
 
-	ComponentTreeItem* item = static_cast<ComponentTreeItem*>(index.internalPointer());
+	ComponentEditorItem* item = static_cast<ComponentEditorItem*>(index.internalPointer());
 
-	if (item->type() == ComponentTreeItem::FILE) {
+	if (item->canBeOpened()) {
 		onFileOpen();
 	}
 
@@ -186,17 +185,11 @@ void ComponentTreeView::onFileOpen() {
 	const QString xmlPath = handler_->getPath(componentVLNV_);
 	
 	QModelIndex index = indexAt(pressedPoint_);
-	ComponentTreeItem* item = static_cast<ComponentTreeItem*>(index.internalPointer());
-	Q_ASSERT(item->type() == ComponentTreeItem::FILE);
+	
+	ComponentEditorItem* item = static_cast<ComponentEditorItem*>(index.internalPointer());
+	Q_ASSERT(item->canBeOpened());
 
-	// get the relative path of the file
-	const QString relFilePath = item->text();
-
-	// get the absolute file path to the file
-	const QString absolutePath = General::getAbsolutePath(xmlPath, relFilePath);
-
-	// open the file in operating system's default editor
-	QDesktopServices::openUrl(QUrl::fromLocalFile(absolutePath));
+	item->openItem();
 }
 
 

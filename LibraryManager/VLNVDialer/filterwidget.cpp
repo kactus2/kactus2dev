@@ -23,6 +23,7 @@ hierarchy_(this) {
 	layout->addWidget(&hierarchy_);
 	layout->addStretch();
 	layout->setSpacing(0);
+	layout->setContentsMargins(0, 0, 0, 0);
 
 	connect(&firmness_, SIGNAL(optionsChanged(const Utils::FirmnessOptions&)),
 		this, SIGNAL(firmnessChanged(const Utils::FirmnessOptions&)), Qt::UniqueConnection);

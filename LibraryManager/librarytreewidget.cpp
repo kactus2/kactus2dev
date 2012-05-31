@@ -30,6 +30,7 @@ dataModel_(dataModel) {
 	// the layout to manage the visible items in the widget
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&view_);
+	layout->setContentsMargins(0, 0, 0, 0);
 
 	setupConnections(dataModel);
 

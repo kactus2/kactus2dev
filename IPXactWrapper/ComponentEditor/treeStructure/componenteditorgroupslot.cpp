@@ -12,6 +12,7 @@ QWidget(parent),
 layout_(this),
 currentWidget_(NULL) {
 
+	layout_.setContentsMargins(0, 0, 0, 0);
 }
 
 ComponentEditorGroupSlot::~ComponentEditorGroupSlot() {
