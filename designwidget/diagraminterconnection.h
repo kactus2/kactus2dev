@@ -218,6 +218,7 @@ protected:
 private:
     enum SelectionType {END, SEGMENT, NONE};
     static qreal const MIN_LENGTH;
+    static qreal const MIN_START_LENGTH;
 
     //-----------------------------------------------------------------------------
     //! Structure for storing ad-hoc port bounds.

@@ -59,13 +59,12 @@ DiagramInterface::DiagramInterface(LibraryInterface* lh, QSharedPointer<Componen
     // The shape is of form:
     // /\
     // ||
-    // ||
     QPolygonF shape;
-    shape << QPointF(-squareSize/2, squareSize * 2)
-          << QPointF(-squareSize/2, 0)
-          << QPointF(0, -squareSize/2)
-          << QPointF(squareSize/2, 0)
-          << QPointF(squareSize/2, squareSize * 2);
+    shape << QPointF(-squareSize/2, squareSize / 2)
+          << QPointF(-squareSize/2, -squareSize)
+          << QPointF(squareSize/2, -squareSize)
+          << QPointF(squareSize/2, squareSize / 2)
+          << QPointF(0, squareSize);
     setPolygon(shape);
     
     nameLabel_ = new QGraphicsTextItem("", this);

@@ -143,7 +143,7 @@ HierComConnection::~HierComConnection()
 //-----------------------------------------------------------------------------
 void HierComConnection::write(QXmlStreamWriter& writer) const
 {
-    writer.writeStartElement("kactus2:apiDependency");
+    writer.writeStartElement("kactus2:hierComConnection");
     writer.writeAttribute("kactus2:interfaceRef", interfaceRef_);
 
     writer.writeTextElement("spirit:name", name_);
@@ -171,7 +171,7 @@ void HierComConnection::write(QXmlStreamWriter& writer) const
         writer.writeEndElement();
     }
 
-    writer.writeEndElement(); // kactus2:apiDependency
+    writer.writeEndElement(); // kactus2:hierComConnection
 }
 
 //-----------------------------------------------------------------------------

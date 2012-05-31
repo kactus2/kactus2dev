@@ -27,6 +27,7 @@
 #include "SystemColumnLayout.h"
 
 #include <common/layouts/VStackedLayout.h>
+#include <common/layouts/VCollisionLayout.h>
 #include <common/diagramgrid.h>
 #include <common/DiagramUtil.h>
 #include <common/GenericEditProvider.h>
@@ -81,6 +82,12 @@ void SystemColumn::setName(QString const& name)
 //-----------------------------------------------------------------------------
 void SystemColumn::addItem(QGraphicsItem* item, bool load)
 {
+    // Remove the item from the previous column.
+    if (item->parentItem() != 0)
+    {
+        dynamic_cast<IGraphicsItemStack*>(item->parentItem())->removeItem(item);
+    }
+
     // Map the position to the column's local coordinate system
     // and constrain the item to the horizontal center of the column.
     QPointF pos = mapFromScene(item->scenePos());
@@ -111,8 +118,16 @@ void SystemColumn::addItem(QGraphicsItem* item, bool load)
     {
         items_.append(item);
 
-        VStackedLayout::updateItemMove(items_, item, MIN_Y_PLACEMENT, SPACING);
-        VStackedLayout::setItemPos(items_, item, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
+        if (desc_.getContentType() == COLUMN_CONTENT_IO)
+        {
+            VCollisionLayout::updateItemMove(items_, item, MIN_Y_PLACEMENT, IO_SPACING);
+            VCollisionLayout::setItemPos(items_, item, desc_.getWidth() / 2, MIN_Y_PLACEMENT, IO_SPACING);
+        }
+        else
+        {
+            VStackedLayout::updateItemMove(items_, item, MIN_Y_PLACEMENT, SPACING);
+            VStackedLayout::setItemPos(items_, item, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
+        }
     }
 }
 
@@ -123,7 +138,11 @@ void SystemColumn::removeItem(QGraphicsItem* item)
 {
     items_.removeAll(item);
     setParentItem(0);
-    VStackedLayout::updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
+
+    if (desc_.getContentType() != COLUMN_CONTENT_IO)
+    {
+        VStackedLayout::updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -197,38 +216,49 @@ void SystemColumn::onMoveItem(QGraphicsItem* item)
 {
     // Restrict the position so that the item cannot be placed too high.
     //item->setPos(snapPointToGrid(item->x(), std::max(MIN_Y_PLACEMENT - item->boundingRect().top(), item->y())));
-    VStackedLayout::updateItemMove(items_, item, MIN_Y_PLACEMENT, SPACING);
+    if (desc_.getContentType() == COLUMN_CONTENT_IO)
+    {
+        VCollisionLayout::updateItemMove(items_, item, MIN_Y_PLACEMENT, IO_SPACING);
+    }
+    else
+    {
+        VStackedLayout::updateItemMove(items_, item, MIN_Y_PLACEMENT, SPACING);
+    }
 
     // Check if any HW mapping item is under the item.
     foreach (QGraphicsItem* childItem, items_)
     {
-        HWMappingItem* mappingItem = dynamic_cast<HWMappingItem*>(childItem);
+        IGraphicsItemStack* childStack = dynamic_cast<IGraphicsItemStack*>(childItem);
 
-        if (mappingItem != 0 && mappingItem->isItemAllowed(item))
+        if (childStack != 0 && childStack->isItemAllowed(item))
         {
-            QRectF intersection = mappingItem->sceneBoundingRect().intersected(item->sceneBoundingRect());
+            QRectF intersection = childItem->sceneBoundingRect().intersected(item->sceneBoundingRect());
 
             if (intersection.height() >= 3 * GridSize)
             {
                 // Switch the mapping item as the parent.
                 items_.removeAll(item);
 
-                VStackedLayout::updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
+                if (desc_.getContentType() != COLUMN_CONTENT_IO)
+                {
+                    VStackedLayout::updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
+                }
+
                 setZValue(0.0);
 
-                QPointF newPos = mappingItem->mapFromScene(item->scenePos());
-                item->setParentItem(mappingItem);
+                QPointF newPos = childStack->mapStackFromScene(item->scenePos());
+                item->setParentItem(childItem);
                 item->setPos(newPos);
                 item->setFlag(ItemStacksBehindParent, false);
 
                 // And call its onMoveItem().
-                mappingItem->onMoveItem(item);
+                childStack->onMoveItem(item);
                 return;
             }
         }
     }
 
-    // If none of the child component handled the movement, determine the column under
+    // If none of the child components handled the movement, determine the column under
     // the item's current position.
     SystemColumn* column = layout_->findColumnAt(item->scenePos());
 
@@ -243,7 +273,11 @@ void SystemColumn::onMoveItem(QGraphicsItem* item)
         item->setParentItem(column);
         item->setPos(newPos);
 
-        VStackedLayout::updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
+        if (desc_.getContentType() != COLUMN_CONTENT_IO)
+        {
+            VStackedLayout::updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
+        }
+
         setZValue(0.0);
 
         // And call the new column's onMoveItem().
@@ -260,7 +294,15 @@ void SystemColumn::onMoveItem(QGraphicsItem* item)
 void SystemColumn::onReleaseItem(QGraphicsItem* item)
 {
     setZValue(0.0);
-    VStackedLayout::setItemPos(items_, item, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
+    
+    if (desc_.getContentType() == COLUMN_CONTENT_IO)
+    {
+        VCollisionLayout::setItemPos(items_, item, desc_.getWidth() / 2, MIN_Y_PLACEMENT, IO_SPACING);
+    }
+    else
+    {
+        VStackedLayout::setItemPos(items_, item, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -269,7 +311,10 @@ void SystemColumn::onReleaseItem(QGraphicsItem* item)
 void SystemColumn::updateItemPositions()
 {
     // Just update the item positions.
-    VStackedLayout::updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
+    if (desc_.getContentType() != COLUMN_CONTENT_IO)
+    {
+        VStackedLayout::updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -367,8 +412,14 @@ QPointF SystemColumn::mapStackToScene(QPointF const& pos) const
 //-----------------------------------------------------------------------------
 bool SystemColumn::isItemAllowed(QGraphicsItem* item) const
 {
-    return (item->type() == SWCompItem::Type || item->type() == HWMappingItem::Type ||
-            item->type() == SWInterfaceItem::Type);
+    if (desc_.getContentType() == COLUMN_CONTENT_IO)
+    {
+        return (item->type() == SWInterfaceItem::Type);
+    }
+    else
+    {
+        return (item->type() == SWCompItem::Type || item->type() == HWMappingItem::Type);
+    }
 }
 
 //-----------------------------------------------------------------------------

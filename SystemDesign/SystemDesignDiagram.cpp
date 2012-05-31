@@ -322,6 +322,25 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
         addInstanceName(instance.getInstanceName());
     }
 
+    // Create SW interface items for the top-level API and COM interfaces.
+    foreach (QSharedPointer<ApiInterface> apiIf, getEditedComponent()->getApiInterfaces())
+    {
+        SWInterfaceItem* item = new SWInterfaceItem(getEditedComponent(), apiIf);
+        connect(item, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+
+        // Add the interface to the first column where it is allowed to be placed.
+        layout_->addItem(item);
+    }
+
+    foreach (QSharedPointer<ComInterface> comIf, getEditedComponent()->getComInterfaces())
+    {
+        SWInterfaceItem* item = new SWInterfaceItem(getEditedComponent(), comIf);
+        connect(item, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+
+        // Add the interface to the first column where it is allowed to be placed.
+        layout_->addItem(item);
+    }
+
     loadApiDependencies(design);
     loadComConnections(design);
 
@@ -946,7 +965,9 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
     QList<Design::ComponentInstance> instances;
     QList<SWInstance> swInstances;
     QList<ApiDependency> apiDependencies;
+    QList<HierApiDependency> hierApiDependencies;
     QList<ComConnection> comConnections;
+    QList<HierComConnection> hierComConnections;
     QList<ColumnDesc> columns;
 
     foreach (QGraphicsItem const* item, items())
@@ -1036,35 +1057,89 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
         {
             SWConnection const* conn = static_cast<SWConnection const*>(item);
 
+            SWConnectionEndpoint* endpoint1 = conn->endpoint1();
+            SWConnectionEndpoint* endpoint2 = conn->endpoint2();
+
             if (conn->getConnectionType() == SWConnectionEndpoint::ENDPOINT_TYPE_API)
             {
-                SWConnectionEndpoint* endpoint1 = conn->endpoint1();
-                SWConnectionEndpoint* endpoint2 = conn->endpoint2();
+//                 if (endpoint1->getApiInterface()->getDependencyDirection() == DEPENDENCY_REQUESTER)
+//                 {
+//                     std::swap(endpoint1, endpoint2);
+//                 }
 
-                if (endpoint1->getApiInterface()->getDependencyDirection() == DEPENDENCY_REQUESTER)
+                if (endpoint1->encompassingComp() != 0 && endpoint2->encompassingComp() != 0)
                 {
-                    std::swap(endpoint1, endpoint2);
+                    ApiInterfaceRef providerRef(endpoint1->encompassingComp()->name(),
+                                                endpoint1->name());
+                    ApiInterfaceRef requesterRef(endpoint2->encompassingComp()->name(),
+                                                 endpoint2->name());
+
+                    ApiDependency dependency(conn->name(), QString(), conn->description(),
+                                             providerRef, requesterRef, conn->route());
+                    apiDependencies.append(dependency);
                 }
+                else
+                {
+                    SWConnectionEndpoint* compPort = endpoint1;
+                    SWConnectionEndpoint* hierPort = endpoint2;
 
-                ApiInterfaceRef providerRef(conn->endpoint1()->encompassingComp()->name(),
-                                            conn->endpoint1()->name());
-                ApiInterfaceRef requesterRef(conn->endpoint2()->encompassingComp()->name(),
-                                             conn->endpoint2()->name());
+                    if (compPort->encompassingComp() == 0)
+                    {
+                        std::swap(compPort, hierPort);
+                    }
 
-                ApiDependency dependency(conn->name(), QString(), conn->description(),
-                                         providerRef, requesterRef, conn->route());
-                apiDependencies.append(dependency);
+                    if (endpoint2->getApiInterface() != 0)
+                    {
+                        ApiInterfaceRef ref(compPort->encompassingComp()->name(), compPort->name());
+
+                        HierApiDependency hierDependency(conn->name(), QString(),
+                                                         conn->description(),
+                                                         hierPort->name(), ref,
+                                                         hierPort->scenePos(), hierPort->getDirection(),
+                                                         conn->route());
+                                                         
+
+                        hierApiDependencies.append(hierDependency);
+                    }
+                }
             }
             else if (conn->getConnectionType() == SWConnectionEndpoint::ENDPOINT_TYPE_COM)
             {
-                ComInterfaceRef ref1(conn->endpoint1()->encompassingComp()->name(),
-                                     conn->endpoint1()->name());
-                ComInterfaceRef ref2(conn->endpoint2()->encompassingComp()->name(),
-                                     conn->endpoint2()->name());
+                if (endpoint1->encompassingComp() != 0 && endpoint2->encompassingComp() != 0)
+                {
+                    ComInterfaceRef ref1(endpoint1->encompassingComp()->name(),
+                                         endpoint1->name());
+                    ComInterfaceRef ref2(endpoint2->encompassingComp()->name(),
+                                         endpoint2->name());
 
-                ComConnection comConnection(conn->name(), QString(), conn->description(),
-                                            ref1, ref2, conn->route());
-                comConnections.append(comConnection);
+                    ComConnection comConnection(conn->name(), QString(), conn->description(),
+                                                ref1, ref2, conn->route());
+                    comConnections.append(comConnection);
+                }
+                else
+                {
+                    SWConnectionEndpoint* compPort = endpoint1;
+                    SWConnectionEndpoint* hierPort = endpoint2;
+
+                    if (compPort->encompassingComp() == 0)
+                    {
+                        std::swap(compPort, hierPort);
+                    }
+
+                    if (endpoint2->getApiInterface() != 0)
+                    {
+                        ComInterfaceRef ref(compPort->encompassingComp()->name(), compPort->name());
+
+                        HierComConnection hierComConnection(conn->name(), QString(),
+                                                            conn->description(),
+                                                            hierPort->name(), ref,
+                                                            hierPort->scenePos(), hierPort->getDirection(),
+                                                            conn->route());
+
+
+                        hierComConnections.append(hierComConnection);
+                    }
+                }
             }
         }
     }
@@ -1077,7 +1152,9 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
     design->setComponentInstances(instances);
     design->setSWInstances(swInstances);
     design->setApiDependencies(apiDependencies);
+    design->setHierApiDependencies(hierApiDependencies);
     design->setComConnections(comConnections);
+    design->setHierComConnections(hierComConnections);
     design->setColumns(columns);   
 
     return design;
@@ -1474,6 +1551,88 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
         addItem(connection);
         connection->updatePosition();
     }
+
+    // Load hierarchical dependencies.
+    foreach (HierApiDependency const& dependency, design->getHierApiDependencies())
+    {
+        QSharedPointer<ApiInterface> apiIf =
+            getEditedComponent()->getApiInterfaces().value(dependency.getInterfaceRef());
+
+        if (apiIf == 0)
+        {
+            emit errorMessage(tr("API interface '%1' was not found in the top-component").arg(
+                dependency.getInterfaceRef()));
+            continue;
+        }
+
+        // Find the corresponding SW interface item.
+        SWInterfaceItem* interface = 0;
+
+        foreach (QGraphicsItem* item, items())
+        {
+            if (item->type() == SWInterfaceItem::Type &&
+                static_cast<SWInterfaceItem*>(item)->getApiInterface() == apiIf)
+            {
+                interface = static_cast<SWInterfaceItem*>(item);
+                break;
+            }
+        }
+
+        Q_ASSERT(interface != 0);
+
+        // Check if the position is found.
+        if (!dependency.getPosition().isNull())
+        {
+            interface->setPos(dependency.getPosition());
+            interface->setDirection(dependency.getDirection());
+
+            SystemColumn* column = layout_->findColumnAt(dependency.getPosition());
+
+            if (column != 0)
+            {
+                column->addItem(interface);
+            }
+            else
+            {
+                layout_->addItem(interface);
+            }
+        }
+
+        // Find the component where the hierarchical dependency is connected to.
+        SWComponentItem* componentItem = getComponent(dependency.getInterface().componentRef);
+
+        if (componentItem == 0)
+        {
+            emit errorMessage(tr("Component '%1' was not found in the top-design").arg(
+                dependency.getInterface().componentRef));
+            continue;
+        }
+
+        // Find the port of the component.
+        SWPortItem* port = componentItem->getSWPort(dependency.getInterface().apiRef, SWConnectionEndpoint::ENDPOINT_TYPE_API);
+
+        if (port == 0)
+        {
+            emit errorMessage(tr("Port '%1' was not found in the component '%2'").arg(
+                dependency.getInterface().apiRef, dependency.getInterface().componentRef));
+        }
+        // If both the component and it's port are found the connection can be made.
+        else
+        {
+            SWConnection* connection = new SWConnection(port, interface, true,
+                                                        dependency.getName(),
+                                                        dependency.getDisplayName(),
+                                                        dependency.getDescription(), this);
+            connection->setRoute(dependency.getRoute());
+
+            connect(connection, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+            connect(connection, SIGNAL(errorMessage(QString const&)),
+                this, SIGNAL(errorMessage(QString const&)));
+
+            addItem(connection);
+            connection->updatePosition();
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1536,5 +1695,87 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
 
         addItem(connection);
         connection->updatePosition();
+    }
+
+    // Load hierarchical COM connections.
+    foreach (HierComConnection const& hierConn, design->getHierComConnections())
+    {
+        QSharedPointer<ComInterface> comIf =
+            getEditedComponent()->getComInterfaces().value(hierConn.getInterfaceRef());
+
+        if (comIf == 0)
+        {
+            emit errorMessage(tr("COM interface '%1' was not found in the top-component").arg(
+                hierConn.getInterfaceRef()));
+            continue;
+        }
+
+        // Find the corresponding SW interface item.
+        SWInterfaceItem* interface = 0;
+
+        foreach (QGraphicsItem* item, items())
+        {
+            if (item->type() == SWInterfaceItem::Type &&
+                static_cast<SWInterfaceItem*>(item)->getComInterface() == comIf)
+            {
+                interface = static_cast<SWInterfaceItem*>(item);
+                break;
+            }
+        }
+
+        Q_ASSERT(interface != 0);
+
+        // Check if the position is found.
+        if (!hierConn.getPosition().isNull())
+        {
+            interface->setPos(hierConn.getPosition());
+            interface->setDirection(hierConn.getDirection());
+
+            SystemColumn* column = layout_->findColumnAt(hierConn.getPosition());
+
+            if (column != 0)
+            {
+                column->addItem(interface);
+            }
+            else
+            {
+                layout_->addItem(interface);
+            }
+        }
+
+        // Find the component where the hierarchical hierConn is connected to.
+        SWComponentItem* componentItem = getComponent(hierConn.getInterface().componentRef);
+
+        if (componentItem == 0)
+        {
+            emit errorMessage(tr("Component '%1' was not found in the top-design").arg(
+                hierConn.getInterface().componentRef));
+            continue;
+        }
+
+        // Find the port of the component.
+        SWPortItem* port = componentItem->getSWPort(hierConn.getInterface().comRef, SWConnectionEndpoint::ENDPOINT_TYPE_COM);
+
+        if (port == 0)
+        {
+            emit errorMessage(tr("Port '%1' was not found in the component '%2'").arg(
+                hierConn.getInterface().comRef, hierConn.getInterface().componentRef));
+        }
+        // If both the component and it's port are found the connection can be made.
+        else
+        {
+            SWConnection* connection = new SWConnection(port, interface, true,
+                hierConn.getName(),
+                hierConn.getDisplayName(),
+                hierConn.getDescription(), this);
+            connection->setRoute(hierConn.getRoute());
+
+            connect(connection, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+            connect(connection, SIGNAL(errorMessage(QString const&)),
+                this, SIGNAL(errorMessage(QString const&)));
+
+            addItem(connection);
+            connection->updatePosition();
+        }
     }
 }

@@ -18,6 +18,7 @@ namespace VCollisionLayout
     void updateItemMove(QList<T*>& items, T* item, qreal minY, qreal spacing)
     {
         item->setY(std::max(minY - item->boundingRect().top(), item->y()));
+        QRectF itemRect = item->mapRectToParent(item->boundingRect());
 
         // Remove the moved item from the list.
         items.removeAt(items.indexOf(item));
@@ -29,14 +30,14 @@ namespace VCollisionLayout
         for (index = 0; index < items.size(); ++index)
         {
             T* curItem = items.at(index);
+            QRectF curItemRect = curItem->mapRectToParent(curItem->boundingRect());
 
-            if (curItem->y() + curItem->boundingRect().bottom() + spacing >
-                item->y() + item->boundingRect().top())
+            if (curItemRect.bottom() + spacing > itemRect.top())
             {
                 break;
             }
 
-            y = curItem->y() + curItem->boundingRect().bottom() + spacing;
+            y = curItemRect.bottom() + spacing;
         }
 
         // Phase 2. Move the first colliding item above the moved item if it is possible
@@ -44,15 +45,14 @@ namespace VCollisionLayout
         if (index < items.size())
         {
             T* curItem = items.at(index);
+            QRectF curItemRect = curItem->mapRectToParent(curItem->boundingRect());
 
-            if (item->y() < curItem->y() && curItem->y() + curItem->boundingRect().top() <
-                item->y() + item->boundingRect().bottom() + spacing &&
-                y + curItem->boundingRect().height() + spacing <= item->y() + item->boundingRect().top() &&
-                item->y() + item->boundingRect().top() - spacing - curItem->boundingRect().bottom() >= minY)
+            if (item->y() < curItem->y() &&
+                curItemRect.top() < itemRect.bottom() + spacing &&
+                y + curItemRect.height() + spacing <= itemRect.top() &&
+                itemRect.top() - spacing - (curItemRect.bottom() - curItem->y()) >= minY)
             {
-                curItem->setY(item->y() + item->boundingRect().top() - spacing -
-                              curItem->boundingRect().bottom());
-
+                curItem->setY(itemRect.top() - spacing - (curItemRect.bottom() - curItem->y()));
                 ++index;
             }
         }
@@ -66,11 +66,12 @@ namespace VCollisionLayout
             T* item1 = items.at(index);
             T* item2 = items.at(index + 1);
 
-            if (item1->y() + item1->boundingRect().bottom() + spacing >
-                item2->y() + item2->boundingRect().top())
+            QRectF itemRect1 = item1->mapRectToParent(item1->boundingRect());
+            QRectF itemRect2 = item2->mapRectToParent(item2->boundingRect());
+
+            if (itemRect1.bottom() + spacing > itemRect2.top())
             {
-                item2->setY(item1->y() + item1->boundingRect().bottom() + spacing -
-                                item2->boundingRect().top());
+                item2->setY(itemRect1.bottom() + spacing - (itemRect2.top() - item2->y()));
             }
 
             ++index;

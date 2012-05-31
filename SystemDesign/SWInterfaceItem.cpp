@@ -44,7 +44,7 @@
 //-----------------------------------------------------------------------------
 SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component,
                                  QString const& name, QGraphicsItem *parent)
-    : SWConnectionEndpoint(parent, QVector2D(1.0f, 0.0f)),
+    : SWConnectionEndpoint(parent, QVector2D(-1.0f, 0.0f)),
       nameLabel_(name, this),
       component_(component),
       apiInterface_(),
@@ -63,7 +63,7 @@ SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component,
 //-----------------------------------------------------------------------------
 SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component,
                                  QSharedPointer<ApiInterface> apiIf, QGraphicsItem *parent)
-    : SWConnectionEndpoint(parent),
+    : SWConnectionEndpoint(parent, QVector2D(-1.0f, 0.0f)),
       nameLabel_(this),
       component_(component),
       apiInterface_(apiIf),
@@ -82,7 +82,7 @@ SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component,
 //-----------------------------------------------------------------------------
 SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component, 
                                  QSharedPointer<ComInterface> comIf, QGraphicsItem *parent)
-    : SWConnectionEndpoint(parent),
+    : SWConnectionEndpoint(parent, QVector2D(-1.0f, 0.0f)),
       nameLabel_(this),
       component_(component),
       apiInterface_(),
@@ -187,22 +187,22 @@ void SWInterfaceItem::updateInterface()
             /*  ||
              *  \/
              */
-            shape << QPointF(-squareSize/2, squareSize)
+            shape << QPointF(-squareSize/2, squareSize / 2)
                   << QPointF(-squareSize/2, -squareSize)
                   << QPointF(squareSize/2, -squareSize)
-                  << QPointF(squareSize/2, squareSize)
-                  << QPointF(0, squareSize * 1.5);
+                  << QPointF(squareSize/2, squareSize / 2)
+                  << QPointF(0, squareSize);
         }
         else
         {
             /*  ||
              *  /\
              */
-            shape << QPointF(-squareSize/2, squareSize * 1.5)
+            shape << QPointF(-squareSize/2, squareSize)
                   << QPointF(-squareSize/2, -squareSize)
                   << QPointF(squareSize/2, -squareSize)
-                  << QPointF(squareSize/2, squareSize * 1.5)
-                  << QPointF(0, squareSize);
+                  << QPointF(squareSize/2, squareSize)
+                  << QPointF(0, squareSize / 2);
         }
     }
     else if (isCom())
@@ -214,11 +214,11 @@ void SWInterfaceItem::updateInterface()
                 /*  /\
                  *  ||
                  */
-                shape << QPointF(-squareSize/2, squareSize * 2)
-                      << QPointF(-squareSize/2, 0)
-                      << QPointF(0, -squareSize/2)
-                      << QPointF(squareSize/2, 0)
-                      << QPointF(squareSize/2, squareSize * 2);
+                shape << QPointF(-squareSize/2, squareSize)
+                      << QPointF(-squareSize/2, -squareSize / 2)
+                      << QPointF(0, -squareSize)
+                      << QPointF(squareSize/2, -squareSize / 2)
+                      << QPointF(squareSize/2, squareSize);
                 break;
             }
 
@@ -227,11 +227,11 @@ void SWInterfaceItem::updateInterface()
                 /*  ||
                  *  \/
                  */
-                shape << QPointF(-squareSize/2, squareSize)
+                shape << QPointF(-squareSize/2, squareSize / 2)
                       << QPointF(-squareSize/2, -squareSize)
                       << QPointF(squareSize/2, -squareSize)
-                      << QPointF(squareSize/2, squareSize)
-                      << QPointF(0, squareSize * 1.5);
+                      << QPointF(squareSize/2, squareSize / 2)
+                      << QPointF(0, squareSize);
                 break;
             }
 
@@ -241,12 +241,12 @@ void SWInterfaceItem::updateInterface()
                  *  ||
                  *  \/
                  */
-                shape << QPointF(-squareSize/2, squareSize * 1.5)
-                      << QPointF(-squareSize/2, 0)
-                      << QPointF(0, -squareSize/2)
-                      << QPointF(squareSize/2, 0)
-                      << QPointF(squareSize/2, squareSize * 1.5)
-                      << QPointF(0, squareSize * 2);
+                shape << QPointF(-squareSize/2, squareSize / 2)
+                      << QPointF(-squareSize/2, -squareSize / 2)
+                      << QPointF(0, -squareSize)
+                      << QPointF(squareSize/2, -squareSize / 2)
+                      << QPointF(squareSize/2, squareSize / 2)
+                      << QPointF(0, squareSize);
                 break;
             }
         }
@@ -256,11 +256,11 @@ void SWInterfaceItem::updateInterface()
         /*  /\
          *  ||
          */
-        shape << QPointF(-squareSize/2, squareSize)
+        shape << QPointF(-squareSize/2, squareSize / 2)
               << QPointF(-squareSize/2, -squareSize)
               << QPointF(squareSize/2, -squareSize)
-              << QPointF(squareSize/2, squareSize)
-              << QPointF(0, squareSize * 1.5);
+              << QPointF(squareSize/2, squareSize / 2)
+              << QPointF(0, squareSize);
     }
 
     setPolygon(shape);
@@ -393,8 +393,7 @@ bool SWInterfaceItem::canConnect(SWConnectionEndpoint const* other) const
                 return false;
             }
 
-            return (!other->isHierarchical() &&
-                     apiIf1->getDependencyDirection() != apiIf2->getDependencyDirection());
+            return (apiIf1->getDependencyDirection() == apiIf2->getDependencyDirection());
         }
         else if (getType() == ENDPOINT_TYPE_COM)
         {
@@ -421,9 +420,7 @@ bool SWInterfaceItem::canConnect(SWConnectionEndpoint const* other) const
                 return false;
             }
 
-            return (comIf1->getDirection() == General::INOUT ||
-                    comIf2->getDirection() == General::INOUT ||
-                    comIf1->getDirection() != comIf2->getDirection());
+            return (comIf1->getDirection() == comIf2->getDirection());
         }
         else
         {
@@ -561,8 +558,6 @@ void SWInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         Q_ASSERT(stack != 0);
         stack->onReleaseItem(this);
 
-        oldStack_ = 0;
-
         QSharedPointer<QUndoCommand> cmd;
 
         // Check if the interface position was really changed.
@@ -604,6 +599,8 @@ void SWInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 
             static_cast<DesignDiagram*>(scene())->getEditProvider().addCommand(cmd, false);
         }
+
+        oldStack_ = 0;
     }
 }
 
@@ -783,5 +780,27 @@ VLNV SWInterfaceItem::getTypeDefinition() const
     else
     {
         return VLNV();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: setDirection()
+//-----------------------------------------------------------------------------
+void SWInterfaceItem::setDirection(QVector2D const& dir)
+{
+    SWConnectionEndpoint::setDirection(dir);
+
+    // Update the position of the name label based on the direction.
+    qreal nameWidth = nameLabel_.boundingRect().width();
+
+    // Check if the interface is directed to the left.
+    if (dir.x() < 0)
+    {
+        nameLabel_.setPos(0, GridSize * 3.0 / 4.0 - nameWidth / 2.0);
+    }
+    // Otherwise the interface is directed to the right.
+    else
+    {
+        nameLabel_.setPos(0, GridSize * 3.0 / 4.0 + nameWidth / 2.0);
     }
 }

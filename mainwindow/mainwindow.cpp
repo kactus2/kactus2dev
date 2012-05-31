@@ -2149,10 +2149,10 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
     QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(designVLNV));
 
     QList<ColumnDesc> columns;
-    columns.append(ColumnDesc("Low-level", COLUMN_CONTENT_CUSTOM, 0));
-    columns.append(ColumnDesc("Middle-level", COLUMN_CONTENT_CUSTOM, 0));
-    columns.append(ColumnDesc("High-level", COLUMN_CONTENT_CUSTOM, 0));
-    columns.append(ColumnDesc("Out", COLUMN_CONTENT_IO, 0));
+    columns.append(ColumnDesc("Low-level", COLUMN_CONTENT_COMPONENTS, 0, 259));
+    columns.append(ColumnDesc("Middle-level", COLUMN_CONTENT_COMPONENTS, 0, 259));
+    columns.append(ColumnDesc("High-level", COLUMN_CONTENT_COMPONENTS, 0, 259));
+    columns.append(ColumnDesc("Out", COLUMN_CONTENT_IO, 0, 119));
     newDesign->setColumns(columns);
 
     QString xmlPath = libraryHandler_->getPath(vlnv);
@@ -2237,8 +2237,8 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName,
 	QSharedPointer<Design> sysDesign(new Design(designVLNV));
 
     QList<ColumnDesc> columns;
-    columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_CUSTOM, 0));
-    columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_CUSTOM, 0));
+    columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, 319));
+    columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, 319));
     sysDesign->setColumns(columns);
     
 	generateSystemDesignV2(libraryHandler_, directory, component->getHierRef(viewName), *sysDesign);
@@ -2308,8 +2308,8 @@ void MainWindow::createSystemDesign(VLNV const& vlnv)
     QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(designVLNV));
 
     QList<ColumnDesc> columns;
-    columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_CUSTOM, 0));
-    columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_CUSTOM, 0));
+    columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, 319));
+    columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, 319));
     newDesign->setColumns(columns);
 
     QString xmlPath = libraryHandler_->getPath(vlnv);

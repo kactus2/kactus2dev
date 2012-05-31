@@ -265,6 +265,7 @@ void BlockDiagram::openDesign(QSharedPointer<Design> design)
                     SIGNAL(errorMessage(QString const&)));
 
             addItem(diagramInterconnection);
+            diagramInterconnection->updatePosition();
 		}
     }
 
@@ -309,7 +310,7 @@ void BlockDiagram::openDesign(QSharedPointer<Design> design)
             
             if (column != 0)
             {
-                column->addItem(diagIf, true);
+                column->addItem(diagIf);
             }
             else
             {
@@ -356,6 +357,7 @@ void BlockDiagram::openDesign(QSharedPointer<Design> design)
 			connectedHier.append(hierConn.interfaceRef);
 
             addItem(diagConn);
+            diagConn->updatePosition();
 		}
     }
 
@@ -480,6 +482,7 @@ void BlockDiagram::openDesign(QSharedPointer<Design> design)
                 connect(conn, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
                 addItem(conn);
+                conn->updatePosition();
             }
         }
 
@@ -547,6 +550,7 @@ void BlockDiagram::openDesign(QSharedPointer<Design> design)
                 connect(conn, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
                 connect(conn, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
                 addItem(conn);
+                conn->updatePosition();
             }
         }
     }

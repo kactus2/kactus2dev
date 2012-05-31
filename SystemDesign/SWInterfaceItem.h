@@ -78,6 +78,15 @@ public:
     virtual VLNV getTypeDefinition() const;
 
     /*!
+     *  Sets the draw direction of the endpoint.
+     *
+     *      @param [in] dir The draw direction to set.
+     *
+     *      @remarks The direction can be changed only if isDirectionFixed() returns false.
+     */
+    virtual void setDirection(QVector2D const& dir);
+
+    /*!
      *  Sets the interface temporary or not temporary. Temporary interface set its model interfaces undefined
      *  automatically if the connections are removed.
      *

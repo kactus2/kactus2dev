@@ -203,7 +203,7 @@ private:
         HEIGHT = 30,
         MIN_Y_PLACEMENT = 60,
         SPACING = 30,
-        IO_SPACING = 4
+        IO_SPACING = 18
     };
 
     //! The parent column layout.

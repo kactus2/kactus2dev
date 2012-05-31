@@ -29,6 +29,7 @@
 #include <cmath>
 
 qreal const DiagramInterconnection::MIN_LENGTH = 10;
+qreal const DiagramInterconnection::MIN_START_LENGTH = 20;
 
 //-----------------------------------------------------------------------------
 // Function: DiagramInterconnection()
@@ -398,7 +399,7 @@ void DiagramInterconnection::updatePosition()
             pathPoints_[index0] = endPoint->scenePos();
             QVector2D newSeg1 = QVector2D(pathPoints_[index1] - pathPoints_[index0]);
             
-            if (newSeg1.length() < MIN_LENGTH || !qFuzzyCompare(seg1, newSeg1.normalized()))
+            if (newSeg1.length() < MIN_START_LENGTH || !qFuzzyCompare(seg1, newSeg1.normalized()))
             {
                 pathOk = false;
             }
@@ -572,20 +573,20 @@ void DiagramInterconnection::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent
 
             if (cur > next)
             {
-                delta = std::max(delta, GridSize + next - cur);
+                delta = std::max(delta, MIN_START_LENGTH + next - cur);
             }
             else
             {
-                delta = std::min(delta, -GridSize + next - cur);
+                delta = std::min(delta, -MIN_START_LENGTH + next - cur);
             }
 
             if (cur > prev)
             {
-                delta = std::max(delta, GridSize + prev - cur);
+                delta = std::max(delta, MIN_START_LENGTH + prev - cur);
             }
             else
             {
-                delta = std::min(delta, -GridSize + prev - cur);
+                delta = std::min(delta, -MIN_START_LENGTH + prev - cur);
             }
 
             pathPoints_[selected_].setX(pathPoints_[selected_].x() + delta);
@@ -742,7 +743,7 @@ void DiagramInterconnection::createRoute(QPointF p1, QPointF p2,
     QVector2D curDir = dir1;
 
     // Set the target position based on the end point's direction.
-    QVector2D targetPos = QVector2D(p2) + dir2 * MIN_LENGTH;
+    QVector2D targetPos = QVector2D(p2) + dir2 * MIN_START_LENGTH;
 
     // Add the start position to the list of path points.
     pathPoints_ << curPos.toPointF();
@@ -776,17 +777,17 @@ void DiagramInterconnection::createRoute(QPointF p1, QPointF p2,
                     {
                         // Draw the length of the projection to the current direction
                         // or at least the minimum length.
-                        curPos = curPos + curDir * std::max(MIN_LENGTH, proj.length());
+                        curPos = curPos + curDir * std::max(MIN_START_LENGTH, proj.length());
                     }
                     else
                     {
                         // Otherwise we just draw the minimum length thub.
-                        curPos = curPos + curDir * MIN_LENGTH;
+                        curPos = curPos + curDir * MIN_START_LENGTH;
                     }
                 }
                 // Check if the target is in the opposite direction compared to the current
                 // direction and we previously draw the starting thub.
-                else if (dot < 0 && qFuzzyCompare(curPos, startPos + curDir * MIN_LENGTH))
+                else if (dot < 0.0 && qFuzzyCompare(curPos, startPos + curDir * MIN_START_LENGTH))
                 {
                     // Draw to the perpendicular direction at least the minimum length.
                     qreal length = std::max(perp.length(), MIN_LENGTH);
@@ -824,7 +825,7 @@ void DiagramInterconnection::createRoute(QPointF p1, QPointF p2,
                 qreal endDot = QVector2D::dotProduct(newDelta, dir2);
 
                 if (endDot > 0.0 && qFuzzyCompare(newDelta, endDot * dir2) &&
-                    !qFuzzyCompare(curPos, startPos + curDir * MIN_LENGTH))
+                    !qFuzzyCompare(curPos, startPos + curDir * MIN_START_LENGTH))
                 {
                     // Make an adjustment to the current position.
                     curPos += curDir * MIN_LENGTH;

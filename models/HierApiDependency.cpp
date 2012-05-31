@@ -143,7 +143,7 @@ HierApiDependency::~HierApiDependency()
 //-----------------------------------------------------------------------------
 void HierApiDependency::write(QXmlStreamWriter& writer) const
 {
-    writer.writeStartElement("kactus2:apiDependency");
+    writer.writeStartElement("kactus2:hierApiDependency");
     writer.writeAttribute("kactus2:interfaceRef", interfaceRef_);
 
     writer.writeTextElement("spirit:name", name_);
@@ -171,7 +171,7 @@ void HierApiDependency::write(QXmlStreamWriter& writer) const
         writer.writeEndElement();
     }
 
-    writer.writeEndElement(); // kactus2:apiDependency
+    writer.writeEndElement(); // kactus2:hierApiDependency
 }
 
 //-----------------------------------------------------------------------------

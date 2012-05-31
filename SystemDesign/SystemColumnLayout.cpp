@@ -44,6 +44,21 @@ SystemColumnLayout::~SystemColumnLayout()
 }
 
 //-----------------------------------------------------------------------------
+// Function: addItem()
+//-----------------------------------------------------------------------------
+void SystemColumnLayout::addItem(QGraphicsItem* item)
+{
+    for (int i = 0; i < columns_.size(); ++i)
+    {
+        if (columns_.at(i)->isItemAllowed(item))
+        {
+            columns_.at(i)->addItem(item);
+            break;
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: addColumn()
 //-----------------------------------------------------------------------------
 void SystemColumnLayout::addColumn(ColumnDesc const& desc)

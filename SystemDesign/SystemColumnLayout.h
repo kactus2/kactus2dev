@@ -39,6 +39,13 @@ public:
     virtual ~SystemColumnLayout();
 
     /*!
+     *  Adds an item to the first column where it is allowed to be placed.
+     *
+     *      @param [in] item The item to add.
+     */
+    void addItem(QGraphicsItem* item);
+
+    /*!
      *  Adds a column to the layout.
      *
      *      @param [in] desc The column description.

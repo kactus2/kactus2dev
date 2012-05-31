@@ -808,6 +808,7 @@ void SWConnection::createRoute(QPointF p1, QPointF p2,
                     }
                     else
                     {
+                        // Otherwise we just draw the minimum length thub.
                         curPos = curPos + curDir * MIN_START_LENGTH;
                     }
                 }
