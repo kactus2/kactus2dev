@@ -14,6 +14,7 @@
 #include <models/fileset.h>
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 #include <common/widgets/listManager/dirlistmanager.h>
+#include <IPXactWrapper/ComponentEditor/fileBuilders/filebuilderseditor.h>
 
 #include <QWidget>
 #include <QFileInfo>
@@ -30,20 +31,6 @@ public:
 
 	/*! \brief The constructor
 	 *
-	 * \param baseLocation Refers to the location in file system that is used
-	 * as base to create relative file paths.
-	 * \param component Pointer to the component model that is being edited.
-	 * \param dataPointer Pointer to the FileSet that is being edited
-	 * \param parent Pointer to the owner of this widget.
-	 *
-	*/
-	FileSetEditor(const QFileInfo& baseLocation, 
-		QSharedPointer<Component> component, 
-		void* dataPointer,
-		QWidget *parent = 0);
-
-	/*! \brief The constructor
-	 *
 	 * \param baseLocation The file path used as base for the relative paths.
 	 * \param component Pointer to the component model that is being edited.
 	 * \param dataPointer Pointer to the FileSet that is being edited
@@ -52,7 +39,7 @@ public:
 	*/
 	FileSetEditor(const QString& baseLocation, 
 		QSharedPointer<Component> component, 
-		FileSet* fileSet,
+		QSharedPointer<FileSet> fileSet,
 		QWidget *parent);
 
 	//! \brief The destructor.
@@ -107,13 +94,16 @@ private:
 	QFileInfo baseLocation_;
 
 	//! \brief The pointer to the edited item.
-	FileSet* fileSet_;
+	QSharedPointer<FileSet> fileSet_;
 
 	//! \brief Used to edit the name, display name and description.
 	NameGroupEditor nameEditor_;
 
 	//! \brief Used to manage groups of FileSet.
 	GroupManager groups_;
+
+	//! \brief Used to edit the default file builders of file set.
+	FileBuildersEditor fileBuilders_;
 
 	//! \brief Used to manage dependencies of the FileSet.
 	DirListManager dependencies_;

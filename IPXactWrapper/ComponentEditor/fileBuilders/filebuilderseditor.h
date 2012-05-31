@@ -1,8 +1,8 @@
 /* 
- *
- *  Created on: 18.4.2011
+ *  	Created on: 31.5.2012
  *      Author: Antti Kamppi
  * 		filename: filebuilderseditor.h
+ *		Project: Kactus 2
  */
 
 #ifndef FILEBUILDERSEDITOR_H
@@ -12,25 +12,27 @@
 
 #include <common/views/EditableTableView/editabletableview.h>
 
-#include <QWidget>
+#include <QGroupBox>
 #include <QSortFilterProxyModel>
 #include <QTableView>
 
 /*! \brief Editor to edit file builders.
  *
  */
-class FileBuildersEditor : public QWidget {
+class FileBuildersEditor : public QGroupBox {
 	Q_OBJECT
 
 public:
 
 	/*! \brief The constructor
 	 *
-	 * \param dataPointer Pointer to the QList containing the file builders.
-	 * \param parent Pointer to the owner of the editor.
+	 * \param fileBuilders QList that contains the file builders to edit.
+	 * \param parent Pointer to the owner of this editor.
 	 *
 	*/
-	FileBuildersEditor(void* dataPointer, QWidget *parent);
+	FileBuildersEditor(QList<QSharedPointer<FileBuilder> >& fileBuilders,
+		QWidget* parent,
+		const QString& title = tr("Default file build commands"));
 
 	//! \brief the destructor
 	virtual ~FileBuildersEditor();
@@ -40,20 +42,6 @@ public:
 	* \return True if all file builders are in valid state.
 	*/
 	virtual bool isValid() const;
-
-	/*! \brief Restore the changes made in the editor back to ones in the model.
-	*
-	*/
-	virtual void restoreChanges();
-
-	/*! \brief Applies the changes made with the editor to the model.
-	*
-	* After calling this function it is no longer possible to automatically 
-	* restore the previous state of the model.
-	* 
-	* Note: if the editor is not in valid state nothing is changed.
-	*/
-	virtual void applyChanges();
 
 signals:
 

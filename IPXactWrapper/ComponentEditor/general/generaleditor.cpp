@@ -41,6 +41,7 @@ component_()
 
     // Create the VLNV displayer and attribute & description editors.
     QVBoxLayout* layout = new QVBoxLayout(this);
+	layout->setContentsMargins(0, 0, 0, 0);
 
 	const QString xmlPath = libHandler->getPath(*component->getVlnv());
 

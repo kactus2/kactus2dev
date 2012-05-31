@@ -6,7 +6,6 @@
  */
 
 #include "componenteditorfilesetitem.h"
-#include "componenteditordeffilebuildersitem.h"
 #include "componenteditorfilesitem.h"
 
 #include <QFont>
@@ -19,13 +18,9 @@ ComponentEditorFileSetItem::ComponentEditorFileSetItem(QSharedPointer<FileSet> f
 													   ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
 fileSet_(fileSet),
-editor_(libHandler->getPath(*component->getVlnv()), component, fileSet.data()) {
+editor_(libHandler->getPath(*component->getVlnv()), component, fileSet, NULL) {
 
 	Q_ASSERT(fileSet);
-
-	QSharedPointer<ComponentEditorDefFileBuildersItem> fileBuildersItem(new ComponentEditorDefFileBuildersItem(
-		fileSet_->getDefaultFileBuilders(), model, libHandler, component, this));
-	childItems_.append(fileBuildersItem);
 
 	QSharedPointer<ComponentEditorFilesItem> filesItem(new ComponentEditorFilesItem(
 		fileSet_->getFiles(), model, libHandler, component, this));

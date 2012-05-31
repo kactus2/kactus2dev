@@ -14,29 +14,16 @@
 
 #include <QDebug>
 
-FileSetEditor::FileSetEditor(const QFileInfo& baseLocation,
-							 QSharedPointer<Component> component, 
-							 void* dataPointer,
-							 QWidget *parent):
-ItemEditor(component, parent),
-baseLocation_(baseLocation),
-fileSet_(static_cast<FileSet*>(dataPointer)), 
-nameEditor_(fileSet_->getNameGroup(), this),
-groups_(tr("Group identifiers"), this),
-dependencies_(tr("Dependent directories"), baseLocation_, this) {
-
-	initialize();
-}
-
 FileSetEditor::FileSetEditor( const QString& baseLocation,
 							 QSharedPointer<Component> component,
-							 FileSet* fileSet, 
+							 QSharedPointer<FileSet> fileSet, 
 							 QWidget *parent ):
 ItemEditor(component, parent),
 baseLocation_(baseLocation),
 fileSet_(fileSet), 
 nameEditor_(fileSet->getNameGroup(), this),
 groups_(tr("Group identifiers"), this),
+fileBuilders_(fileSet->getDefaultFileBuilders(), this),
 dependencies_(tr("Dependent directories"), baseLocation_, this) {
 
 	initialize();
@@ -57,6 +44,10 @@ void FileSetEditor::initialize() {
 	connect(&groups_, SIGNAL(contentChanged()),
 		this, SLOT(onGroupsChange()), Qt::UniqueConnection);
 
+	layout->addWidget(&fileBuilders_);
+	connect(&fileBuilders_, SIGNAL(contentChanged()),
+		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
 	layout->addWidget(&dependencies_);
 	connect(&dependencies_, SIGNAL(contentChanged()),
 		this, SLOT(onDependenciesChange()), Qt::UniqueConnection);
@@ -74,7 +65,7 @@ bool FileSetEditor::isValid() const {
 void FileSetEditor::removeModel() {
 	QSharedPointer<Component> component = ItemEditor::component();
 	component->removeFileSet(fileSet_->getName());
-	fileSet_ = 0;
+	fileSet_.clear();
 }
 
 void FileSetEditor::makeChanges() {

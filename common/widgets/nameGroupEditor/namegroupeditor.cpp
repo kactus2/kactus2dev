@@ -20,6 +20,9 @@ nameEdit_(this),
 displayNameEdit_(this),
 descriptionEdit_(this) {
 
+	// set the maximum height for this widget
+	setMaximumHeight(NameGroupEditor::MAX_EDITOR_HEIGHT);
+
 	// the layout manager for this widget
 	QGridLayout* layout = new QGridLayout(this);
 

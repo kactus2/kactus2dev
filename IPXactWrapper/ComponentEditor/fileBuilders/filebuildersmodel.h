@@ -1,8 +1,8 @@
 /* 
- *
- *  Created on: 18.4.2011
+ *  	Created on: 31.5.2012
  *      Author: Antti Kamppi
  * 		filename: filebuildersmodel.h
+ *		Project: Kactus 2
  */
 
 #ifndef FILEBUILDERSMODEL_H
@@ -24,11 +24,12 @@ public:
 
 	/*! \brief The constructor
 	 *
-	 * \param dataPointer Pointer to the QList containing the file builders.
-	 * \param parent Pointer to the owner of this model
+	 * \param fileBuilders Contains the file builders to edit.
+	 * \param parent Pointer to the owner of this model.
 	 *
 	*/
-	FileBuildersModel(void* dataPointer, QObject *parent);
+	FileBuildersModel(QList<QSharedPointer<FileBuilder> >& fileBuilders,
+		QObject* parent);
 	
 	//! \brief The destructor
 	virtual ~FileBuildersModel();
@@ -98,28 +99,7 @@ public:
 	*/
 	bool isValid() const;
 
-	/*! \brief Write the changes to the original model.
-	 *
-	*/
-	void apply();
-
-	/*! \brief Restore the settings from the original model.
-	 *
-	*/
-	void restore();
-
 public slots:
-
-	/*! \brief Remove a row from the model
-	 *
-	 * \param row Specifies the row to remove
-	*/
-	void onRemoveRow(int row);
-
-	/*! \brief Add a new empty row to the model
-	 *
-	*/
-	void onAddRow();
 
 	/*! \brief A new item should be added to given index.
 	 *
@@ -154,11 +134,8 @@ private:
 	//! No assignment
 	FileBuildersModel& operator=(const FileBuildersModel& other);
 	
-	//! \brief Pointer to the file builders in the model
-	QList<QSharedPointer<FileBuilder> >* fileBuilders_;
-
-	//! \brief The file builders that are currently in the editor.
-	QList<QSharedPointer<FileBuilder> > table_;
+	//! \brief Contains the file builders to edit.
+	QList<QSharedPointer<FileBuilder> >& fileBuilders_;
 };
 
 #endif // FILEBUILDERSMODEL_H

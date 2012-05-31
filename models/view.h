@@ -158,6 +158,12 @@ public:
 	*/
 	QList<QSharedPointer<FileBuilder> >& getDefaultFileBuilders();
 
+	/*! \brief Get the default file builders for this view.
+	 *
+	 * \return QList containing pointers to the file builders for this view.
+	*/
+	const QList<QSharedPointer<FileBuilder> >& getDefaultFileBuilders() const;
+
 	/*! \brief Set the default file builders for this view.
 	 *
 	 * \param defaultFileBuilders QList containing pointer to the file builders.

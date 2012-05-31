@@ -488,7 +488,10 @@ bool View::isHierarchical() const {
 }
 
 QList<QSharedPointer<FileBuilder> >& View::getDefaultFileBuilders() {
-	//Q_ASSERT(!hierarchyRef_.isValid());
+	return defaultFileBuilders_;
+}
+
+const QList<QSharedPointer<FileBuilder> >& View::getDefaultFileBuilders() const {
 	return defaultFileBuilders_;
 }
 

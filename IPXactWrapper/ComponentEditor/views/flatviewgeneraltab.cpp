@@ -41,6 +41,7 @@ fileSetRefs_(component, tr("File set references"), this) {
 	QVBoxLayout* topLayout = new QVBoxLayout(this);
 	topLayout->addLayout(gridLayout);
 	topLayout->addWidget(&fileSetRefs_, 1);
+	topLayout->setContentsMargins(0, 0, 0, 0);
 
 	restoreChanges();
 

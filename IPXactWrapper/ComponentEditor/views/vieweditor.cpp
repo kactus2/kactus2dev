@@ -36,7 +36,7 @@ stack_(this),
 flatElements_(&stack_),
 generalTab_(component, view_, &flatElements_),
 parametersTab_(view_, this),
-fileBuildersTab_(&view_->getDefaultFileBuilders(), this),
+fileBuildersTab_(view_->getDefaultFileBuilders(), this),
 hierarchyRef_(view_, component_, libHandler, &stack_) {
 
 	initialize();
@@ -52,17 +52,12 @@ void ViewEditor::initialize() {
 	// ans tab widget that contains widgets to edit flat views to index 1
 	stack_.addWidget(&flatElements_);
 
-	// create a group box to contain the default file builders editor and set
-	// a layout for it.
-	QGroupBox* fileBuildersBox = new QGroupBox(tr("Default file builders"), &flatElements_);
-	QHBoxLayout* fileBuildersLayout = new QHBoxLayout(fileBuildersBox);
-	fileBuildersLayout->addWidget(&fileBuildersTab_);
-
 	// create a layout for the flat elements and add the editors
 	QVBoxLayout* flatLayout = new QVBoxLayout(&flatElements_);
 	flatLayout->addWidget(&generalTab_);
-	flatLayout->addWidget(fileBuildersBox);
+	flatLayout->addWidget(&fileBuildersTab_);
 	flatLayout->addWidget(&parametersTab_);
+	flatLayout->setContentsMargins(0, 0, 0, 0);
 
 	setupLayout();
 
@@ -121,6 +116,7 @@ void ViewEditor::setupLayout() {
 
 	QHBoxLayout* scrollLayout = new QHBoxLayout(this);
 	scrollLayout->addWidget(scrollArea);
+	scrollLayout->setContentsMargins(0, 0, 0, 0);
 
 	// create the top widget and set it under the scroll area
 	QWidget* topWidget = new QWidget(scrollArea);
@@ -160,7 +156,6 @@ void ViewEditor::makeChanges() {
 	else {
 		generalTab_.applyChanges();
 		parametersTab_.applyChanges();
-		fileBuildersTab_.applyChanges();
 	}
 }
 
@@ -189,6 +184,5 @@ void ViewEditor::refresh() {
 		viewTypeSelector_.setCurrentIndex(1);
 		generalTab_.restoreChanges();
 		parametersTab_.restoreChanges();
-		fileBuildersTab_.restoreChanges();
 	}
 }

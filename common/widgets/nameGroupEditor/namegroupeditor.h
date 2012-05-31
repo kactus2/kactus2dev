@@ -23,6 +23,8 @@ class NameGroupEditor : public QGroupBox {
 
 public:
 
+	static const int MAX_EDITOR_HEIGHT = 150;
+
 	/*! \brief The constructor
 	 *
 	 * \param nameGroup Reference to the name group to edit.
