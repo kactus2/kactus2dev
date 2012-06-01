@@ -19,6 +19,7 @@
 
 #include <QGraphicsRectItem>
 #include <QSet>
+#include <QCursor>
 
 class SystemColumnLayout;
 class SWConnection;
@@ -63,6 +64,13 @@ public:
      *  Sets the column description.
      */
     void setColumnDesc(ColumnDesc const& desc);
+
+    /*!
+     *  Sets the column width.
+     *
+     *      @param [in] width The new width to set.
+     */
+    void setWidth(unsigned int width);
 
     /*!
      *  Sets the y coordinate offset.
@@ -167,12 +175,28 @@ protected:
     //! Called when the user release the mouse.
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
 
+    //! Called when the mouse hover enters the column header.
+    void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
+
+    //! Called when the mouse hover moves inside the column header.
+    void hoverMoveEvent(QGraphicsSceneHoverEvent* event);
+
+    //! Called when the mouse hover leaves the column header.
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
+
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
 private:
     // Disable copying.
     SystemColumn(SystemColumn const& rhs);
     SystemColumn& operator=(SystemColumn const& rhs);
+
+    /*!
+     *  Updates the mouse cursor based on the hover position.
+     *
+     *      @param [in] event The hover event information.
+     */
+    void updateCursor(QGraphicsSceneHoverEvent* event);
 
     /*!
      *  Updates the name label.
@@ -207,6 +231,12 @@ private:
 
     //! The connections that need to be also stored for undo.
     QSet<SWConnection*> conns_;
+
+    //! If true, the mouse hovers near the resize area.
+    bool mouseNearResizeArea_;
+
+    //! Old cursor for restoring purposes.
+    QCursor oldCursor_;
 };
 
 //-----------------------------------------------------------------------------

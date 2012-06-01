@@ -19,6 +19,7 @@
 
 #include <QGraphicsRectItem>
 #include <QSet>
+#include <QCursor>
 
 class DiagramColumnLayout;
 class DiagramInterconnection;
@@ -56,14 +57,19 @@ public:
      */
     void setName(QString const& name);
 
-    void updateNameLabel();
-
     /*!
      *  Sets the column description which determines the name and width of the column and the allowed items.
      *
      *      @param [in] desc The column description.
      */
     void setColumnDesc(ColumnDesc const& desc);
+
+    /*!
+     *  Sets the column width.
+     *
+     *      @param [in] width The new width to set.
+     */
+    void setWidth(unsigned int width);
 
     /*!
      *  Checks whether the given item is allowed to be placed to this column.
@@ -172,12 +178,33 @@ protected:
     //! Called when the user release the mouse.
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
 
+    //! Called when the mouse hover enters the column header.
+    void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
+
+    //! Called when the mouse hover moves inside the column header.
+    void hoverMoveEvent(QGraphicsSceneHoverEvent* event);
+
+    //! Called when the mouse hover leaves the column header.
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
+
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
 private:
     // Disable copying.
     DiagramColumn(DiagramColumn const& rhs);
     DiagramColumn& operator=(DiagramColumn const& rhs);
+
+    /*!
+     *  Updates the mouse cursor based on the hover position.
+     *
+     *      @param [in] event The hover event information.
+     */
+    void updateCursor(QGraphicsSceneHoverEvent* event);
+
+    /*!
+     *  Updates the name label.
+     */
+    void updateNameLabel();
 
     /*!
      *  Returns true if the given item is allowed to reside in the column based on the allowed items.
@@ -223,6 +250,13 @@ private:
 
     //! The connections that need to be also stored for undo.
     QSet<DiagramInterconnection*> conns_;
+
+
+    //! If true, the mouse hovers near the resize area.
+    bool mouseNearResizeArea_;
+
+    //! Old cursor for restoring purposes.
+    QCursor oldCursor_;
 };
 
 //-----------------------------------------------------------------------------

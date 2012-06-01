@@ -18,7 +18,8 @@ ColumnDesc::ColumnDesc()
     : name_(),
       contentType_(COLUMN_CONTENT_IO),
       allowedItems_(CIT_NONE),
-      width_(259)
+      width_(119),
+      minWidth_(119)
 {
 }
 
@@ -29,26 +30,46 @@ ColumnDesc::ColumnDesc(const QDomNode& node)
     : name_(),
       contentType_(COLUMN_CONTENT_IO),
       allowedItems_(CIT_NONE),
-      width_(259)
+      width_(259),
+      minWidth_(259)
 {
+
     // Read the column description data from the attributes.
     QDomNamedNodeMap attributeMap =  node.attributes();
 
     name_ = attributeMap.namedItem("name").nodeValue();
     contentType_ = static_cast<ColumnContentType>(attributeMap.namedItem("contentType").nodeValue().toInt());
     allowedItems_ = attributeMap.namedItem("allowedItems").nodeValue().toUInt();
-    width_ = attributeMap.namedItem("width").nodeValue().toUInt();
+
+    if (attributeMap.contains("width"))
+    {
+        width_ = attributeMap.namedItem("width").nodeValue().toUInt();
+    }
+    else if (contentType_ == COLUMN_CONTENT_IO)
+    {
+        width_ = 119;
+    }
+
+    if (attributeMap.contains("minWidth"))
+    {
+        minWidth_ = attributeMap.namedItem("minWidth").nodeValue().toUInt();
+    }
+    else if (contentType_ == COLUMN_CONTENT_IO)
+    {
+        minWidth_ = 119;
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: ColumnDesc()
 //-----------------------------------------------------------------------------
 ColumnDesc::ColumnDesc(QString const& name, ColumnContentType contentType,
-                       unsigned int allowedItems, unsigned int width)
+                       unsigned int allowedItems, unsigned int minWidth)
     : name_(name),
       contentType_(contentType),
       allowedItems_(allowedItems),
-      width_(width)
+      width_(minWidth),
+      minWidth_(minWidth)
 {
 }
 
@@ -59,9 +80,10 @@ void ColumnDesc::write(QXmlStreamWriter& writer) const
 {
     writer.writeEmptyElement("kactus2:column");
     writer.writeAttribute("name", name_);
-    writer.writeAttribute("width", QString::number(width_));
     writer.writeAttribute("contentType", QString::number(contentType_));
     writer.writeAttribute("allowedItems", QString::number(allowedItems_));
+    writer.writeAttribute("minWidth", QString::number(minWidth_));
+    writer.writeAttribute("width", QString::number(width_));
 }
 
 //-----------------------------------------------------------------------------
@@ -71,7 +93,8 @@ ColumnDesc::ColumnDesc(const ColumnDesc& other)
     : name_(other.name_),
       contentType_(other.contentType_),
       allowedItems_(other.allowedItems_),
-      width_(other.width_)
+      width_(other.width_),
+      minWidth_(other.minWidth_)
 {
 }
 
@@ -86,6 +109,7 @@ ColumnDesc& ColumnDesc::operator=(const ColumnDesc& other)
         contentType_ = other.contentType_;
         allowedItems_ = other.allowedItems_;
         width_ = other.width_;
+        minWidth_ = other.minWidth_;
     }
 
     return *this;
@@ -120,7 +144,7 @@ void ColumnDesc::setAllowedItems(unsigned int allowedItems)
 //-----------------------------------------------------------------------------
 void ColumnDesc::setWidth(unsigned int width)
 {
-    width_ = width;
+    width_ = std::max(minWidth_, width);
 }
 
 //-----------------------------------------------------------------------------

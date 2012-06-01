@@ -15,15 +15,7 @@
 #include "HWMappingItem.h"
 #include "SWConnection.h"
 #include "SWInterfaceItem.h"
-
 #include "SystemMoveCommands.h"
-
-#include <QLinearGradient>
-#include <QPen>
-#include <QFont>
-#include <QGraphicsSceneMouseEvent>
-#include <QDebug>
-
 #include "SystemColumnLayout.h"
 
 #include <common/layouts/VStackedLayout.h>
@@ -35,6 +27,13 @@
 
 #include <models/component.h>
 
+#include <QLinearGradient>
+#include <QPen>
+#include <QFont>
+#include <QGraphicsSceneMouseEvent>
+#include <QDebug>
+#include <QCursor>
+
 //-----------------------------------------------------------------------------
 // Function: SystemColumn()
 //-----------------------------------------------------------------------------
@@ -42,16 +41,20 @@ SystemColumn::SystemColumn(ColumnDesc const& desc, SystemColumnLayout* layout, Q
     : QGraphicsRectItem(0, scene),
       layout_(layout),
       desc_(),
-      nameLabel_(0)
+      nameLabel_(0),
+      mouseNearResizeArea_(false),
+      oldCursor_()
 {
     setFlag(ItemIsMovable);
     setFlag(ItemIsSelectable);
     setFlag(ItemSendsGeometryChanges);
     setBrush(QBrush(QColor(210, 210, 210)));
     setPen(QPen(Qt::black, 1));
+    setAcceptHoverEvents(true);
 
     // Update the name label.
     nameLabel_ = new QGraphicsTextItem(this);
+    nameLabel_->setAcceptHoverEvents(false);
     QFont font = nameLabel_->font();
     font.setBold(true);
     nameLabel_->setFont(font);
@@ -166,10 +169,20 @@ void SystemColumn::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
         return;
     }
 
-    QGraphicsRectItem::mouseMoveEvent(event);
+    // If the mouse is moved near the resize area, change the column's width accordingly.
+    if (mouseNearResizeArea_)
+    {
+        qreal snappedRight = (static_cast<int>(event->pos().x() + 10.0) / 20) * 20;
+        setWidth(std::max<int>(0, snappedRight - 1));
+    }
+    else
+    {
+        // Otherwise handle the movement of the column.
+        QGraphicsRectItem::mouseMoveEvent(event);
 
-    setZValue(1001.0);
-    layout_->onMoveColumn(this);
+        setZValue(1001.0);
+        layout_->onMoveColumn(this);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -476,4 +489,75 @@ void SystemColumn::updateNameLabel()
     nameLabel_->setHtml("<center>" + desc_.getName() + "</center>");
     nameLabel_->setTextWidth(std::max<unsigned int>(140, desc_.getWidth()));
     nameLabel_->setPos((desc_.getWidth() - nameLabel_->textWidth()) / 2.0, 5.0);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemColumn::hoverMoveEvent()
+//-----------------------------------------------------------------------------
+void SystemColumn::hoverMoveEvent(QGraphicsSceneHoverEvent* event)
+{
+    QGraphicsRectItem::hoverMoveEvent(event);
+    updateCursor(event);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemColumn::hoverEnterEvent()
+//-----------------------------------------------------------------------------
+void SystemColumn::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
+{
+    QGraphicsRectItem::hoverEnterEvent(event);
+    updateCursor(event);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemColumn::hoverLeaveEvent()
+//-----------------------------------------------------------------------------
+void SystemColumn::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
+    QGraphicsRectItem::hoverLeaveEvent(event);
+    updateCursor(event);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemColumn::updateCursor()
+//-----------------------------------------------------------------------------
+void SystemColumn::updateCursor(QGraphicsSceneHoverEvent* event)
+{
+    if (!static_cast<DesignDiagram*>(scene())->isProtected() &&
+        std::abs(event->pos().x() - boundingRect().right()) <= 10)
+    {
+        if (!mouseNearResizeArea_ )
+        {
+            oldCursor_ = cursor();
+            setCursor(QCursor(Qt::SplitHCursor));
+            mouseNearResizeArea_ = true;
+        }
+    }
+    else
+    {
+        if (mouseNearResizeArea_)
+        {
+            // Restore the old cursor.
+            setCursor(oldCursor_);
+            mouseNearResizeArea_ = false;
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemColumn::setWidth()
+//-----------------------------------------------------------------------------
+void SystemColumn::setWidth(unsigned int width)
+{
+    desc_.setWidth(width);
+
+    setRect(0, 0, desc_.getWidth(), HEIGHT);
+    layout_->updateColumnPositions();
+
+    foreach (QGraphicsItem* item, items_)
+    {
+        item->setX(desc_.getWidth() / 2);
+    }
+
+    updateNameLabel();
 }

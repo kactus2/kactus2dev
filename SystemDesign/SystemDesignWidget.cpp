@@ -69,6 +69,7 @@ SystemDesignWidget::SystemDesignWidget(bool onlySW, LibraryInterface* lh, MainWi
     view_ = new QGraphicsView(this);
     view_->setScene(diagram_);
     view_->centerOn(0, 0);
+    view_->setMouseTracking(true);
     view_->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
 
     QVBoxLayout* layout = new QVBoxLayout(this);

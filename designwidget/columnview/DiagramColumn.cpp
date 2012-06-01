@@ -44,16 +44,20 @@ DiagramColumn::DiagramColumn(ColumnDesc const& desc, DiagramColumnLayout* layout
       desc_(),
       nameLabel_(0),
       oldPos_(),
-      conns_()
+      conns_(),
+      mouseNearResizeArea_(false),
+      oldCursor_()
 {
     setFlag(ItemIsMovable);
     setFlag(ItemIsSelectable);
     setFlag(ItemSendsGeometryChanges);
     setBrush(QBrush(QColor(210, 210, 210)));
     setPen(QPen(Qt::black, 1));
+    setAcceptHoverEvents(true);
 
     // Update the name label.
     nameLabel_ = new QGraphicsTextItem(this);
+    nameLabel_->setAcceptHoverEvents(false);
     QFont font = nameLabel_->font();
     font.setBold(true);
     nameLabel_->setFont(font);
@@ -180,10 +184,20 @@ void DiagramColumn::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
         return;
     }
 
-    QGraphicsRectItem::mouseMoveEvent(event);
+    // If the mouse is moved near the resize area, change the column's width accordingly.
+    if (mouseNearResizeArea_)
+    {
+        qreal snappedRight = (static_cast<int>(event->pos().x() + 10.0) / 20) * 20;
+        setWidth(std::max<int>(0, snappedRight - 1));
+    }
+    else
+    {
+        // Otherwise handle the movement of the column.
+        QGraphicsRectItem::mouseMoveEvent(event);
 
-    setZValue(1001.0);
-    layout_->onMoveColumn(this);
+        setZValue(1001.0);
+        layout_->onMoveColumn(this);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -531,4 +545,75 @@ void DiagramColumn::updateNameLabel()
 ColumnDesc const& DiagramColumn::getColumnDesc() const
 {
     return desc_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DiagramColumn::hoverEnterEvent()
+//-----------------------------------------------------------------------------
+void DiagramColumn::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
+{
+    QGraphicsRectItem::hoverEnterEvent(event);
+    updateCursor(event);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DiagramColumn::hoverMoveEvent()
+//-----------------------------------------------------------------------------
+void DiagramColumn::hoverMoveEvent(QGraphicsSceneHoverEvent* event)
+{
+    QGraphicsRectItem::hoverMoveEvent(event);
+    updateCursor(event);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DiagramColumn::hoverLeaveEvent()
+//-----------------------------------------------------------------------------
+void DiagramColumn::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
+{
+    QGraphicsRectItem::hoverLeaveEvent(event);
+    updateCursor(event);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DiagramColumn::updateCursor()
+//-----------------------------------------------------------------------------
+void DiagramColumn::updateCursor(QGraphicsSceneHoverEvent* event)
+{
+    if (!static_cast<DesignDiagram*>(scene())->isProtected() &&
+        std::abs(event->pos().x() - boundingRect().right()) <= 10)
+    {
+        if (!mouseNearResizeArea_ )
+        {
+            oldCursor_ = cursor();
+            setCursor(QCursor(Qt::SplitHCursor));
+            mouseNearResizeArea_ = true;
+        }
+    }
+    else
+    {
+        if (mouseNearResizeArea_)
+        {
+            // Restore the old cursor.
+            setCursor(oldCursor_);
+            mouseNearResizeArea_ = false;
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemColumn::setWidth()
+//-----------------------------------------------------------------------------
+void DiagramColumn::setWidth(unsigned int width)
+{
+    desc_.setWidth(width);
+
+    setRect(0, 0, desc_.getWidth(), HEIGHT);
+    layout_->updateColumnPositions();
+
+    foreach (QGraphicsItem* item, items_)
+    {
+        item->setX(desc_.getWidth() / 2);
+    }
+
+    updateNameLabel();
 }

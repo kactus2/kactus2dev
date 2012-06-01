@@ -41,7 +41,7 @@ public:
      *  Constructor which initializes the column description fully.
      */
     ColumnDesc(QString const& name, ColumnContentType contentType,
-               unsigned int allowedItems = CIT_NONE, unsigned int width = 259);
+               unsigned int allowedItems = CIT_NONE, unsigned int minWidth = 259);
 
     /*!
      *  Writes the column description to an XML stream.
@@ -118,6 +118,9 @@ private:
 
     //! The width of the column.
     unsigned int width_;
+
+    //! The minimum width for the column.
+    unsigned int minWidth_;
 };
 
 //-----------------------------------------------------------------------------
