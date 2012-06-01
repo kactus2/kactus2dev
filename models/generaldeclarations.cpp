@@ -1292,6 +1292,19 @@ QString General::getAbsolutePath(const QString originalPath,
 	return file.canonicalFilePath();
 }
 
+bool General::isSpecifiedFileType( const QString& fileType ) {
+
+	// check all the pre-specified file types
+	for (unsigned int i = 0; i < General::FILE_TYPE_COUNT; ++i) {
+		
+		// if the file type is one of the specified ones
+		if (QString(General::FILE_TYPES[i]) == fileType) {
+			return true;
+		}
+	}
+	return false;
+}
+
 General::NameGroup::NameGroup(): 
 name_(),
 displayName_(),

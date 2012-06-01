@@ -10,7 +10,7 @@
 
 #include "../itemeditor.h"
 #include "groupmanager.h"
-
+#include "fileseditor.h"
 #include <models/fileset.h>
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 #include <common/widgets/listManager/dirlistmanager.h>
@@ -104,6 +104,9 @@ private:
 
 	//! \brief Used to edit the default file builders of file set.
 	FileBuildersEditor fileBuilders_;
+
+	//! \brief The editor to add/remove/edit the files of file set.
+	FilesEditor files_;
 
 	//! \brief Used to manage dependencies of the FileSet.
 	DirListManager dependencies_;

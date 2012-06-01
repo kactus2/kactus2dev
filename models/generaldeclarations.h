@@ -33,6 +33,54 @@ const QString SPIRIT_VERSION("spirit:version");
  */
 namespace General {
 
+	//! \brief The file types specified in the IP-Xact
+	const QString FILE_TYPES[] = {
+		"asmSource",
+		"cSource",
+		"cppSource",
+		"eSource",
+		"OVASource",
+		"perlSource",
+		"pslSource",
+		"SVASource",
+		"tclSource",
+		"veraSource",
+		"systemCSource",
+		"systemCSource-2.0",
+		"systemCSource-2.0.1",
+		"systemCSource-2.1",
+		"systemCSource-2.2",
+		"systemVerilogSource",
+		"systemVerilogSource-3.0",
+		"systemVerilogSource-3.1",
+		"systemVerilogSource-3.1a",
+		"verilogSource",
+		"verilogSource-95",
+		"verilogSource-2001",
+		"vhdlSource",
+		"vhdlSource-87",
+		"vhdlSource-93",
+		"swObject",
+		"swObjectLibrary",
+		"vhdlBinaryLibrary",
+		"verilogBinaryLibrary",
+		"executableHdl",
+		"unelaboratedHdl",
+		"SDC",
+		"unknown"
+	};
+
+	//! \brief The number of supported file type definitions
+	const unsigned int FILE_TYPE_COUNT = 33;
+
+	/*! \brief Check if the file type is one of the specified ones.
+	 *
+	 * \param fileType The file type to check.
+	 *
+	 * \return True if the file type is one of the specified ones.
+	*/
+	bool isSpecifiedFileType(const QString& fileType);
+
 /*!
  * Provides the capability to require or forbid a port to appear in a
  * bus interface.

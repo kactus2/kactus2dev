@@ -751,3 +751,27 @@ bool File::isVhdlFile() const {
 QString File::fileSetName() const {
 	return parent_->getName();
 }
+
+QStringList File::getAllFileTypes() const {
+	QStringList types = fileTypes_;
+	types.append(userFileTypes_);
+	return types;
+}
+
+void File::setAllFileTypes( const QStringList& fileTypes ) {
+
+	fileTypes_.clear();
+	userFileTypes_.clear();
+
+	foreach (QString fileType, fileTypes) {
+
+		// if the file type is one of the specified ones
+		if (General::isSpecifiedFileType(fileType)) {
+			fileTypes_.append(fileTypes);
+		}
+		// if the file type is user defined
+		else {
+			userFileTypes_.append(fileType);
+		}
+	}
+}

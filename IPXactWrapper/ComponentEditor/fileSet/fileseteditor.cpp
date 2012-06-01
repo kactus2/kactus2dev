@@ -24,6 +24,7 @@ fileSet_(fileSet),
 nameEditor_(fileSet->getNameGroup(), this),
 groups_(tr("Group identifiers"), this),
 fileBuilders_(fileSet->getDefaultFileBuilders(), this),
+files_(component, fileSet, this),
 dependencies_(tr("Dependent directories"), baseLocation_, this) {
 
 	initialize();
@@ -48,6 +49,10 @@ void FileSetEditor::initialize() {
 	connect(&fileBuilders_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
+	layout->addWidget(&files_);
+	connect(&files_, SIGNAL(contentChanged()),
+		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
 	layout->addWidget(&dependencies_);
 	connect(&dependencies_, SIGNAL(contentChanged()),
 		this, SLOT(onDependenciesChange()), Qt::UniqueConnection);
@@ -59,7 +64,18 @@ FileSetEditor::~FileSetEditor() {
 }
 
 bool FileSetEditor::isValid() const {
-	return nameEditor_.isValid();
+	if (!nameEditor_.isValid()) {
+		return false;
+	}
+	else if (!fileBuilders_.isValid()) {
+		return false;
+	}
+	else if (!files_.isValid()) {
+		return false;
+	}
+	else {
+		return true;
+	}
 }
 
 void FileSetEditor::removeModel() {

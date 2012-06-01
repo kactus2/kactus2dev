@@ -176,6 +176,62 @@ public:
 	*/
 	bool operator!=(const File& other) const;
 
+	/*! \brief Get the file types
+	*
+	* \return QList containing the file types.
+	*/
+	const QList<QString>& getFileTypes() const;
+
+	/*! \brief Get the userFileTypes for the file
+	*
+	* \return QList containing the userFileTypes for the file.
+	*/
+	const QList<QString>& getUserFileTypes();
+
+	/*! \brief Set the file types for this file
+	*
+	* Calling this function will delete old file types
+	*
+	* \param fileTypes QList containing the file types.
+	*/
+	void setFileTypes(const QList<QString> &fileTypes);
+
+	/*! \brief Add a new file type definition.
+	*
+	* FileType is only added if it is not already defined in fileTypes.
+	*
+	* \param fileType The name of the file type. This must be one of the file
+	* types defined in IP-Xact standard specification.
+	*/
+	void addFileType(const QString fileType);
+
+	/*! \brief Add a new user file type definition.
+	*
+	* UserFileType is only added if it is not already defined in userFileTypes.
+	*
+	* \param userFileType The name of the file type. This file type is added
+	* to the userFileTypes element so it is not defined in IP-Xact standard.
+	*/
+	void addUserFileType(const QString userFileType);
+
+	/*! \brief Clear all the fileTypes and userFileTypes
+	*
+	*/
+	void clearFileTypes();
+
+	/*! \brief Get both the file types and user file types in the same list.
+	 *
+	 * \return QStringList containing all file types.
+	*/
+	QStringList getAllFileTypes() const;
+
+	/*! \brief Set the file types for the file.
+	 *
+	 * \param fileTypes Contains both the IP-Xact file types and user file types.
+	 *
+	*/
+	void setAllFileTypes(const QStringList& fileTypes);
+
 	/*! \brief Get the attributes for the file-element
 	 *
 	 * \return QList containing pointers to the attributes.
@@ -219,12 +275,6 @@ public:
 	 */
 	QString getFileId() const;
 
-	/*! \brief Get the file types
-	 *
-	 * \return QList containing the file types.
-	 */
-	const QList<QString>& getFileTypes() const;
-
 	/*! \brief Get the imageTypes of this file
 	 *
 	 * \return QList containing the imageTypes.
@@ -260,12 +310,6 @@ public:
 	 * \return QMap containing the attributes for the name-element.
 	 */
 	const QMap<QString, QString>& getNameAttributes();
-
-	/*! \brief Get the userFileTypes for the file
-	 *
-	 * \return QList containing the userFileTypes for the file.
-	 */
-	const QList<QString>& getUserFileTypes();
 
 	/*! \brief Set the attributes for the file
 	 *
@@ -317,14 +361,6 @@ public:
 	 * \param field QString containing the setting
 	 */
 	void setFileId(const QString &fileId);
-
-	/*! \brief Set the file types for this file
-	 *
-	 * Calling this function will delete old file types
-	 *
-	 * \param fileTypes QList containing the file types.
-	 */
-	void setFileTypes(const QList<QString> &fileTypes);
 
 	/*! \brief Set the image types for this file
 	 *
@@ -400,29 +436,6 @@ public:
 	 *
 	*/
 	void appendDefine(const Define& define);
-
-	/*! \brief Add a new file type definition.
-	 *
-	 * FileType is only added if it is not already defined in fileTypes.
-	 *
-	 * \param fileType The name of the file type. This must be one of the file
-	 * types defined in IP-Xact standard specification.
-	 */
-	void addFileType(const QString fileType);
-
-	/*! \brief Add a new user file type definition.
-	 *
-	 * UserFileType is only added if it is not already defined in userFileTypes.
-	 *
-	 * \param userFileType The name of the file type. This file type is added
-	 * to the userFileTypes element so it is not defined in IP-Xact standard.
-	 */
-	void addUserFileType(const QString userFileType);
-
-	/*! \brief Clear all the fileTypes and userFileTypes
-	 *
-	*/
-	void clearFileTypes();
 
 	/*! \brief Remove this file.
 	 * 
