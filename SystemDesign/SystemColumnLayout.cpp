@@ -169,6 +169,13 @@ void SystemColumnLayout::onReleaseColumn(SystemColumn* column)
 void SystemColumnLayout::updateColumnPositions()
 {
     HStackedLayout::updateItemPositions(columns_, 0.0, 0.0, 0.0);
+
+    layoutWidth_ = 0.0;
+
+    foreach (SystemColumn* column, columns_)
+    {
+        layoutWidth_ += column->boundingRect().width();
+    }
 }
 
 //-----------------------------------------------------------------------------

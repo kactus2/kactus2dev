@@ -183,6 +183,13 @@ QList<DiagramColumn*> const& DiagramColumnLayout::getColumns() const
 void DiagramColumnLayout::updateColumnPositions()
 {    
     HStackedLayout::updateItemPositions(columns_, 0.0, 0.0, 0.0);
+
+    layoutWidth_ = 0.0;
+
+    foreach (DiagramColumn* column, columns_)
+    {
+        layoutWidth_ += column->boundingRect().width();
+    }
 }
 
 //-----------------------------------------------------------------------------
