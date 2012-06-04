@@ -81,9 +81,9 @@ private:
     /*!
      *  Begins the position updates for the connections that start from the given end point.
      *
-     *      @param [in] endPoint The end point.
+     *      @param [in] endpoint The end point.
      */
-    void beginUpdateConnPositions(DiagramConnectionEndpoint* endPoint);
+    void beginUpdateConnPositions(DiagramConnectionEndpoint* endpoint);
 
     //-----------------------------------------------------------------------------
     // Data.

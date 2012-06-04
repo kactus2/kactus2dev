@@ -34,58 +34,7 @@ class DiagramConnectionEndpoint;
 class ActiveViewModel;
 class DiagramAdHocPort;
 class AdHocEnabled;
-
-//-----------------------------------------------------------------------------
-//! ColumnChangeCommand class.
-//-----------------------------------------------------------------------------
-class ColumnChangeCommand : public QUndoCommand
-{
-public:
-    /*!
-     *  Constructor.
-     *
-     *      @param [in] column   The column.
-     *      @param [in] newDesc  The column's new description.
-     */
-    ColumnChangeCommand(GraphicsColumn* column, ColumnDesc const& newDesc,
-                        QUndoCommand* parent = 0);
-
-    /*!
-     *  Destructor.
-     */
-    ~ColumnChangeCommand();
-
-    /*!
-     *  Undoes the command.
-     */
-    virtual void undo();
-
-    /*!
-     *  Redoes the command.
-     */
-    virtual void redo();
-
-private:
-    // Disable copying.
-    ColumnChangeCommand(ColumnChangeCommand const& rhs);
-    ColumnChangeCommand& operator=(ColumnChangeCommand const& rhs);
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-    //! The column layout.
-    GraphicsColumnLayout* layout_;
-
-    //! The diagram column.
-    GraphicsColumn* column_;
-
-    //! The column's old description.
-    ColumnDesc oldDesc_;
-
-    //! The column's new description.
-    ColumnDesc newDesc_;
-};
+class ConnectionEndpoint;
 
 //-----------------------------------------------------------------------------
 //! ComponentChangeNameCommand class.
@@ -380,21 +329,21 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-//! EndPointChangeCommand class.
+//! EndpointChangeCommand class.
 //-----------------------------------------------------------------------------
-class EndPointChangeCommand : public QUndoCommand
+class EndpointChangeCommand : public QUndoCommand
 {
 public:
     /*!
      *  Constructor.
      *
-     *      @param [in] endPoint          The diagram connection end point.
+     *      @param [in] endpoint          The diagram connection end point.
      *      @param [in] newName           The end point's new name.
      *      @param [in] newInterfaceMode  The end point's new interface mode.
      *      @param [in] newDescription	  The end point's new description.
      *      @param [in] parent            The parent command.
      */
-	EndPointChangeCommand(DiagramConnectionEndpoint* endPoint,
+	EndpointChangeCommand(DiagramConnectionEndpoint* endpoint,
 		QString const& newName,
 		General::InterfaceMode newMode,
 		QString const& newDescription,
@@ -403,7 +352,7 @@ public:
     /*!
      *  Destructor.
      */
-    ~EndPointChangeCommand();
+    ~EndpointChangeCommand();
 
     /*!
      *  Undoes the command.
@@ -417,15 +366,15 @@ public:
 
 private:
     // Disable copying.
-    EndPointChangeCommand(EndPointChangeCommand const& rhs);
-    EndPointChangeCommand& operator=(EndPointChangeCommand const& rhs);
+    EndpointChangeCommand(EndpointChangeCommand const& rhs);
+    EndpointChangeCommand& operator=(EndpointChangeCommand const& rhs);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! The diagram connection end point.
-    DiagramConnectionEndpoint* endPoint_;
+    DiagramConnectionEndpoint* endpoint_;
 
     //! The end point's old name.
     QString oldName_;
@@ -447,6 +396,105 @@ private:
 };
 
 //-----------------------------------------------------------------------------
+//! EndpointNameChangeCommand class.
+//-----------------------------------------------------------------------------
+class EndpointNameChangeCommand : public QUndoCommand
+{
+public:
+    /*!
+     *  Constructor.
+     *
+     *      @param [in] endpoint  The connection endpoint.
+     *      @param [in] newName   The endpoint's new name.
+     *      @param [in] parent    The parent command.
+     */
+	EndpointNameChangeCommand(ConnectionEndpoint* endpoint, QString const& newName, QUndoCommand* parent = 0);
+
+    /*!
+     *  Destructor.
+     */
+    ~EndpointNameChangeCommand();
+
+    /*!
+     *  Undoes the command.
+     */
+    virtual void undo();
+
+    /*!
+     *  Redoes the command.
+     */
+    virtual void redo();
+
+private:
+    // Disable copying.
+    EndpointNameChangeCommand(EndpointNameChangeCommand const& rhs);
+    EndpointNameChangeCommand& operator=(EndpointNameChangeCommand const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The connection endpoint.
+    ConnectionEndpoint* endpoint_;
+
+    //! The endpoint's old name.
+    QString oldName_;
+
+    //! The endpoint's new name.
+    QString newName_;
+};
+
+//-----------------------------------------------------------------------------
+//! EndpointDescChangeCommand class.
+//-----------------------------------------------------------------------------
+class EndpointDescChangeCommand : public QUndoCommand
+{
+public:
+    /*!
+     *  Constructor.
+     *
+     *      @param [in] endpoint        The connection endpoint.
+     *      @param [in] newDescription  The endpoint's new description.
+     *      @param [in] parent          The parent command.
+     */
+	EndpointDescChangeCommand(ConnectionEndpoint* endpoint, QString const& newDescription,
+                              QUndoCommand* parent = 0);
+
+    /*!
+     *  Destructor.
+     */
+    ~EndpointDescChangeCommand();
+
+    /*!
+     *  Undoes the command.
+     */
+    virtual void undo();
+
+    /*!
+     *  Redoes the command.
+     */
+    virtual void redo();
+
+private:
+    // Disable copying.
+    EndpointDescChangeCommand(EndpointDescChangeCommand const& rhs);
+    EndpointDescChangeCommand& operator=(EndpointDescChangeCommand const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The connection endpoint.
+    ConnectionEndpoint* endpoint_;
+
+    //! The endpoint's old description.
+    QString oldDescription_;
+
+    //! The endpoint's new description.
+    QString newDescription_;
+};
+
+//-----------------------------------------------------------------------------
 //! EndPointTypesCommand class.
 //-----------------------------------------------------------------------------
 class EndPointTypesCommand : public QUndoCommand
@@ -455,14 +503,14 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] endPoint          The diagram connection end point.
+     *      @param [in] endpoint          The diagram connection end point.
      *      @param [in] oldBusType        The end point's old bus type.
      *      @param [in] oldAbsType        The end point's old abs type.
      *      @param [in] oldInterfaceMode  The end point's old interface mode.
      *      @param [in] oldName           The end point's old name.
      *      @param [in] parent            The parent command.
      */
-    EndPointTypesCommand(DiagramConnectionEndpoint* endPoint, VLNV const& oldBusType,
+    EndPointTypesCommand(DiagramConnectionEndpoint* endpoint, VLNV const& oldBusType,
                          VLNV const& oldAbsType, General::InterfaceMode oldMode,
                          QString const& oldName, QUndoCommand* parent = 0);
 
@@ -491,7 +539,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The diagram connection end point.
-    DiagramConnectionEndpoint* endPoint_;
+    DiagramConnectionEndpoint* endpoint_;
 
     //! The end point's old bus type.
     VLNV oldBusType_;
@@ -530,11 +578,11 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] endPoint          The diagram connection end point.
+     *      @param [in] endpoint          The diagram connection end point.
      *      @param [in] newPortMaps       The new port maps for the end point.
      *      @param [in] parent            The parent command.
      */
-    EndPointPortMapCommand(DiagramConnectionEndpoint* endPoint,
+    EndPointPortMapCommand(DiagramConnectionEndpoint* endpoint,
                            QList< QSharedPointer<General::PortMap> > newPortMaps,
                            QUndoCommand* parent = 0);
 
@@ -563,7 +611,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The diagram connection end point.
-    DiagramConnectionEndpoint* endPoint_;
+    DiagramConnectionEndpoint* endpoint_;
 
     //! The end point's old port maps.
     QList< QSharedPointer<General::PortMap> > oldPortMaps_;

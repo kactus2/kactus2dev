@@ -38,8 +38,8 @@ public:
     /*!
      *  Constructor.
      */
-    DiagramInterconnection(DiagramConnectionEndpoint *endPoint1,
-                           DiagramConnectionEndpoint *endPoint2,
+    DiagramInterconnection(DiagramConnectionEndpoint *endpoint1,
+                           DiagramConnectionEndpoint *endpoint2,
                            bool autoConnect,
                            const QString &displayName,
                            const QString &description,
@@ -148,46 +148,46 @@ public:
     /*! \brief Return the first end point connected
      *
      */
-    DiagramConnectionEndpoint *endPoint1() const;
+    DiagramConnectionEndpoint *endpoint1() const;
 
     /*! \brief Return the second end point connected
      *
      */
-    DiagramConnectionEndpoint *endPoint2() const;
+    DiagramConnectionEndpoint *endpoint2() const;
 
     /*!
      *  Sets the left bound of the ad-hoc end point involved in the connection.
      *
-     *      @param [in] endPointIndex Which endpoint is concerned. Either 1 or 2.
+     *      @param [in] endpointIndex Which endpoint is concerned. Either 1 or 2.
      *      @param [in] leftBound     The left bound.
      */
-    void setAdHocLeftBound(int endPointIndex, int leftBound);
+    void setAdHocLeftBound(int endpointIndex, int leftBound);
 
     /*!
      *  Sets the right bound of the ad-hoc end point involved in the connection.
      *
-     *      @param [in] endPointIndex Which endpoint is concerned. Either 1 or 2.
+     *      @param [in] endpointIndex Which endpoint is concerned. Either 1 or 2.
      *      @param [in] rightBound    The right bound.
      */
-    void setAdHocRightBound(int endPointIndex, int rightBound);
+    void setAdHocRightBound(int endpointIndex, int rightBound);
 
     /*!
      *  Returns the left bound of the ad-hoc end point involved in the connection.
      *
-     *      @param [in] endPointIndex Which endpoint is concerned. Either 1 or 2.
+     *      @param [in] endpointIndex Which endpoint is concerned. Either 1 or 2.
      *
      *      @return The left bound of the end point.
      */
-    int getAdHocLeftBound(int endPointIndex) const;
+    int getAdHocLeftBound(int endpointIndex) const;
 
     /*!
      *  Returns the left bound of the ad-hoc end point involved in the connection.
      *
-     *      @param [in] endPointIndex Which endpoint data is concerned. Either 1 or 2.
+     *      @param [in] endpointIndex Which endpoint data is concerned. Either 1 or 2.
      *
      *      @return The right bound of the end point.
      */
-    int getAdHocRightBound(int endPointIndex) const;
+    int getAdHocRightBound(int endpointIndex) const;
 
     /*!
      *  Returns true if the connection is a bus connection. Returns false if it isn't (i.e. it is an ad-hoc
@@ -242,7 +242,7 @@ private:
     void setItemSettings();
 
     void createRoute(QPointF p1, QPointF p2, QVector2D const& dir1, QVector2D const& dir2);
-    void createRoute(DiagramConnectionEndpoint* endPoint1, DiagramConnectionEndpoint* endPoint2);
+    void createRoute(DiagramConnectionEndpoint* endpoint1, DiagramConnectionEndpoint* endpoint2);
 
     void simplifyPath();
 
@@ -293,8 +293,8 @@ private:
 
     QString name_;
 	QString description_;
-    DiagramConnectionEndpoint *endPoint1_;
-    DiagramConnectionEndpoint *endPoint2_;
+    DiagramConnectionEndpoint *endpoint1_;
+    DiagramConnectionEndpoint *endpoint2_;
     QList<QPointF> pathPoints_;
     int selected_;
     SelectionType selectionType_;

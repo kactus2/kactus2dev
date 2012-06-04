@@ -138,12 +138,12 @@ void SWInterfaceItem::setName(const QString& name)
     if (isCom())
     {
         comInterface_->setName(name);
-        encompassingComp()->componentModel()->updateComInterface(comInterface_.data());
+        getOwnerComponent()->updateComInterface(comInterface_.data());
     }
     else if (isApi())
     {
         apiInterface_->setName(name);
-        encompassingComp()->componentModel()->updateApiInteface(apiInterface_.data());
+        getOwnerComponent()->updateApiInteface(apiInterface_.data());
     }
     else
     {

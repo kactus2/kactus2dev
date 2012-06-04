@@ -29,41 +29,6 @@
 #include <models/businterface.h>
 
 //-----------------------------------------------------------------------------
-// Function: ColumnChangeCommand()
-//-----------------------------------------------------------------------------
-ColumnChangeCommand::ColumnChangeCommand(GraphicsColumn* column, ColumnDesc const& newDesc,
-                                         QUndoCommand* parent) : QUndoCommand(parent),
-                                                                 column_(column),
-                                                                 oldDesc_(column->getColumnDesc()),
-                                                                 newDesc_(newDesc)
-
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: ~ColumnChangeCommand()
-//-----------------------------------------------------------------------------
-ColumnChangeCommand::~ColumnChangeCommand()
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: undo()
-//-----------------------------------------------------------------------------
-void ColumnChangeCommand::undo()
-{
-    column_->setColumnDesc(oldDesc_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: redo()
-//-----------------------------------------------------------------------------
-void ColumnChangeCommand::redo()
-{
-    column_->setColumnDesc(newDesc_);
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComponentChangeNameCommand()
 //-----------------------------------------------------------------------------
 ComponentChangeNameCommand::ComponentChangeNameCommand(ComponentItem* component,
@@ -203,83 +168,153 @@ void ComponentPacketizeCommand::redo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: EndPointChangeCommand()
+// Function: EndpointChangeCommand()
 //-----------------------------------------------------------------------------
-EndPointChangeCommand::EndPointChangeCommand(DiagramConnectionEndpoint* endPoint, 
+EndpointChangeCommand::EndpointChangeCommand(DiagramConnectionEndpoint* endpoint, 
 											 QString const& newName,
                                              General::InterfaceMode newMode,
 											 QString const& newDescription,
 											 QUndoCommand* parent):
 QUndoCommand(parent), 
-endPoint_(endPoint),
-oldName_(endPoint->name()), 
-oldMode_(endPoint->getBusInterface()->getInterfaceMode()),
-oldDescription_(endPoint->description()),
+endpoint_(endpoint),
+oldName_(endpoint->name()), 
+oldMode_(endpoint->getBusInterface()->getInterfaceMode()),
+oldDescription_(endpoint->description()),
 newName_(newName),
 newMode_(newMode),
 newDescription_(newDescription) {
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~EndPointChangeCommand()
+// Function: ~EndpointChangeCommand()
 //-----------------------------------------------------------------------------
-EndPointChangeCommand::~EndPointChangeCommand() {
+EndpointChangeCommand::~EndpointChangeCommand() {
 }
 
 //-----------------------------------------------------------------------------
 // Function: undo()
 //-----------------------------------------------------------------------------
-void EndPointChangeCommand::undo() {
-    endPoint_->getBusInterface()->setInterfaceMode(oldMode_);
-    endPoint_->setDescription(oldDescription_);
-    endPoint_->setName(oldName_);
-    //endPoint_->updateInterface();
+void EndpointChangeCommand::undo() {
+    endpoint_->getBusInterface()->setInterfaceMode(oldMode_);
+    endpoint_->setDescription(oldDescription_);
+    endpoint_->setName(oldName_);
+    //endpoint_->updateInterface();
 }
 
 //-----------------------------------------------------------------------------
 // Function: redo()
 //-----------------------------------------------------------------------------
-void EndPointChangeCommand::redo() {
-    endPoint_->getBusInterface()->setInterfaceMode(newMode_);
-    endPoint_->setDescription(newDescription_);
-    endPoint_->setName(newName_);
-    //endPoint_->updateInterface();
+void EndpointChangeCommand::redo() {
+    endpoint_->getBusInterface()->setInterfaceMode(newMode_);
+    endpoint_->setDescription(newDescription_);
+    endpoint_->setName(newName_);
+    //endpoint_->updateInterface();
+}
+
+//-----------------------------------------------------------------------------
+// Function: EndpointChangeCommand()
+//-----------------------------------------------------------------------------
+EndpointNameChangeCommand::EndpointNameChangeCommand(ConnectionEndpoint* endpoint, 
+                                                     QString const& newName,
+                                                     QUndoCommand* parent)
+    : QUndoCommand(parent), 
+       endpoint_(endpoint),
+       oldName_(endpoint->name()), 
+       newName_(newName)
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: ~EndpointChangeCommand()
+//-----------------------------------------------------------------------------
+EndpointNameChangeCommand::~EndpointNameChangeCommand() {
+}
+
+//-----------------------------------------------------------------------------
+// Function: undo()
+//-----------------------------------------------------------------------------
+void EndpointNameChangeCommand::undo()
+{
+    endpoint_->setName(oldName_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: redo()
+//-----------------------------------------------------------------------------
+void EndpointNameChangeCommand::redo()
+{
+    endpoint_->setName(newName_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: EndpointDescChangeCommand()
+//-----------------------------------------------------------------------------
+EndpointDescChangeCommand::EndpointDescChangeCommand(ConnectionEndpoint* endpoint, 
+                                                     QString const& newDescription,
+                                                     QUndoCommand* parent)
+    : QUndoCommand(parent), 
+      endpoint_(endpoint),
+      oldDescription_(endpoint->description()), 
+      newDescription_(newDescription)
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: ~EndpointDescChangeCommand()
+//-----------------------------------------------------------------------------
+EndpointDescChangeCommand::~EndpointDescChangeCommand() {
+}
+
+//-----------------------------------------------------------------------------
+// Function: undo()
+//-----------------------------------------------------------------------------
+void EndpointDescChangeCommand::undo()
+{
+    endpoint_->setDescription(oldDescription_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: redo()
+//-----------------------------------------------------------------------------
+void EndpointDescChangeCommand::redo()
+{
+    endpoint_->setDescription(newDescription_);
 }
 
 //-----------------------------------------------------------------------------
 // Function: EndPointTypesCommand()
 //-----------------------------------------------------------------------------
-EndPointTypesCommand::EndPointTypesCommand(DiagramConnectionEndpoint* endPoint,
+EndPointTypesCommand::EndPointTypesCommand(DiagramConnectionEndpoint* endpoint,
                                            VLNV const& oldBusType, VLNV const& oldAbsType,
                                            General::InterfaceMode oldMode,
                                            QString const& oldName, QUndoCommand* parent)
-    : QUndoCommand(parent), endPoint_(endPoint), oldBusType_(oldBusType), oldAbsType_(oldAbsType),
+    : QUndoCommand(parent), endpoint_(endpoint), oldBusType_(oldBusType), oldAbsType_(oldAbsType),
       oldMode_(oldMode), oldName_(oldName), newBusType_(), newAbsType_(),
       newMode_(General::MASTER), newName_(""), connModes_()
 {
-    if (endPoint_->getBusInterface() != 0)
+    if (endpoint_->getBusInterface() != 0)
     {
-        newBusType_ = endPoint_->getBusInterface()->getBusType();
-        newAbsType_ = endPoint_->getBusInterface()->getAbstractionType();
-        newMode_ = endPoint_->getBusInterface()->getInterfaceMode();
-        newName_ = endPoint_->getBusInterface()->getName();
+        newBusType_ = endpoint_->getBusInterface()->getBusType();
+        newAbsType_ = endpoint_->getBusInterface()->getAbstractionType();
+        newMode_ = endpoint_->getBusInterface()->getInterfaceMode();
+        newName_ = endpoint_->getBusInterface()->getName();
     }
 
     // Save the interface modes for each connection.
-    foreach (DiagramInterconnection* conn, endPoint_->getInterconnections())
+    foreach (DiagramInterconnection* conn, endpoint_->getInterconnections())
     {
-        DiagramConnectionEndpoint* endPoint = conn->endPoint1();
+        DiagramConnectionEndpoint* endpoint = conn->endpoint1();
 
-        if (conn->endPoint1() == endPoint_)
+        if (conn->endpoint1() == endpoint_)
         {
-            endPoint = conn->endPoint2();
+            endpoint = conn->endpoint2();
         }
         
-        QSharedPointer<BusInterface> busIf = endPoint->getBusInterface();
+        QSharedPointer<BusInterface> busIf = endpoint->getBusInterface();
 
         if (busIf != 0 && busIf->getBusType().isValid())
         {
-            connModes_.insert(endPoint, busIf->getInterfaceMode());
+            connModes_.insert(endpoint, busIf->getInterfaceMode());
         }
     }
 }
@@ -296,14 +331,14 @@ EndPointTypesCommand::~EndPointTypesCommand()
 //-----------------------------------------------------------------------------
 void EndPointTypesCommand::undo()
 {
-    endPoint_->setTypes(oldBusType_, oldAbsType_, oldMode_);
+    endpoint_->setTypes(oldBusType_, oldAbsType_, oldMode_);
 
-    if (endPoint_->getBusInterface() != 0 && oldName_ != newName_)
+    if (endpoint_->getBusInterface() != 0 && oldName_ != newName_)
     {
-        endPoint_->getBusInterface()->setName(oldName_);
+        endpoint_->getBusInterface()->setName(oldName_);
     }
 
-    endPoint_->updateInterface();
+    endpoint_->updateInterface();
 }
 
 //-----------------------------------------------------------------------------
@@ -311,14 +346,14 @@ void EndPointTypesCommand::undo()
 //-----------------------------------------------------------------------------
 void EndPointTypesCommand::redo()
 {
-    endPoint_->setTypes(newBusType_, newAbsType_, newMode_);
+    endpoint_->setTypes(newBusType_, newAbsType_, newMode_);
 
     if (oldName_ != newName_)
     {
-        endPoint_->getBusInterface()->setName(newName_);
+        endpoint_->getBusInterface()->setName(newName_);
     }
 
-    endPoint_->updateInterface();
+    endpoint_->updateInterface();
 
     // Set interface modes for the other end points.
     QMap<DiagramConnectionEndpoint*, General::InterfaceMode>::iterator cur = connModes_.begin();
@@ -334,11 +369,11 @@ void EndPointTypesCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: EndPointPortMapCommand()
 //-----------------------------------------------------------------------------
-EndPointPortMapCommand::EndPointPortMapCommand(DiagramConnectionEndpoint* endPoint,
+EndPointPortMapCommand::EndPointPortMapCommand(DiagramConnectionEndpoint* endpoint,
                                                QList< QSharedPointer<General::PortMap> > newPortMaps,
                                                QUndoCommand* parent)
-    : QUndoCommand(parent), endPoint_(endPoint),
-      oldPortMaps_(endPoint->getBusInterface()->getPortMaps()),
+    : QUndoCommand(parent), endpoint_(endpoint),
+      oldPortMaps_(endpoint->getBusInterface()->getPortMaps()),
       newPortMaps_(newPortMaps)
 {
 }
@@ -355,10 +390,10 @@ EndPointPortMapCommand::~EndPointPortMapCommand()
 //-----------------------------------------------------------------------------
 void EndPointPortMapCommand::undo()
 {
-    if (endPoint_->isHierarchical())
+    if (endpoint_->isHierarchical())
     {
-        endPoint_->getBusInterface()->setPortMaps(oldPortMaps_);
-        endPoint_->updateInterface();
+        endpoint_->getBusInterface()->setPortMaps(oldPortMaps_);
+        endpoint_->updateInterface();
     }
 }
 
@@ -367,10 +402,10 @@ void EndPointPortMapCommand::undo()
 //-----------------------------------------------------------------------------
 void EndPointPortMapCommand::redo()
 {
-    if (endPoint_->isHierarchical())
+    if (endpoint_->isHierarchical())
     {
-        endPoint_->getBusInterface()->setPortMaps(newPortMaps_);
-        endPoint_->updateInterface();
+        endpoint_->getBusInterface()->setPortMaps(newPortMaps_);
+        endpoint_->updateInterface();
     }
 }
 

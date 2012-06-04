@@ -131,6 +131,8 @@ SWPortItem* SWComponentItem::addPort(QPointF const& pos)
 
     // Create the visualization for the bus interface.
     SWPortItem* port = new SWPortItem(name, this);
+    connect(port, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+
     port->setName(name);
     port->setPos(mapFromScene(pos));
 

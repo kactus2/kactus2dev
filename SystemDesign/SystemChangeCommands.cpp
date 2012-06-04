@@ -59,13 +59,13 @@ void SWComponentPacketizeCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: TypeDefinitionChangeCommand()
 //-----------------------------------------------------------------------------
-TypeDefinitionChangeCommand::TypeDefinitionChangeCommand(SWConnectionEndpoint* endPoint,
+TypeDefinitionChangeCommand::TypeDefinitionChangeCommand(SWConnectionEndpoint* endpoint,
                                                          VLNV const& oldType,
                                                          QUndoCommand* parent)
     : QUndoCommand(parent),
-      endpoint_(endPoint),
+      endpoint_(endpoint),
       oldType_(oldType),
-      newType_(endPoint->getTypeDefinition())
+      newType_(endpoint->getTypeDefinition())
 {
 }
 

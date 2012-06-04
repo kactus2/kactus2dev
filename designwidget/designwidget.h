@@ -212,19 +212,12 @@ signals:
 	*/
 	void componentSelected(ComponentItem* component);
 
-	/*! \brief Emitted when user selects a port in the draw board.
+	/*! \brief Emitted when user selects an interface in the draw board.
 	 *
-	 * \param port Pointer to the DiagramPort instance that is selected.
-	 *
-	*/
-	void portSelected(DiagramPort* port);
-
-    /*! \brief Emitted when user selects an interface in the draw board.
-	 *
-	 * \param port Pointer to the DiagramPort instance that is selected.
+	 * \param port Pointer to the interface instance that is selected.
 	 *
 	*/
-	void interfaceSelected(DiagramInterface* interface);
+	void interfaceSelected(ConnectionEndpoint* interface);
 
 	/*! \brief Emitted when user selects a connection in the draw board.
 	 *
@@ -233,13 +226,7 @@ signals:
 	*/
 	void connectionSelected(DiagramInterconnection* connection);
 
-    //! Emitted when the user selects an ad-hoc port.
-    void adHocPortSelected(DiagramAdHocPort* port);
-
-    //! Emitted when the user selects an ad-hoc interface.
-    void adHocInterfaceSelected(DiagramAdHocInterface* interface);
-
-	/*! \brief Emitted when user de-selects all items.
+    /*! \brief Emitted when user de-selects all items.
 	 *
 	*/
 	void clearItemSelection();

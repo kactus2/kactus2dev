@@ -24,6 +24,7 @@ class MainWindow;
 class LibraryInterface;
 class GenericEditProvider;
 class Component;
+class ConnectionEndpoint;
 class ComponentItem;
 class Design;
 class VLNV;
@@ -189,6 +190,9 @@ signals:
 
     //! Signaled when user selects a component on the draw board.
     void componentSelected(ComponentItem* component);
+
+    //! Signaled when the user selects an interface on the draw board.
+    void interfaceSelected(ConnectionEndpoint* endpoint);
 
     //! Signaled when all items are deselected.
     void clearItemSelection();

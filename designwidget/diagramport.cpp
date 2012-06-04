@@ -400,17 +400,17 @@ void DiagramPort::setTypes(VLNV const& busType, VLNV const& absType, General::In
     {
         foreach(DiagramInterconnection* conn, getInterconnections())
         {
-            if (conn->endPoint1() != this)
+            if (conn->endpoint1() != this)
             {
-                conn->endPoint1()->removeInterconnection(conn);
-                conn->endPoint1()->onDisconnect(this);
-                conn->endPoint1()->addInterconnection(conn);
+                conn->endpoint1()->removeInterconnection(conn);
+                conn->endpoint1()->onDisconnect(this);
+                conn->endpoint1()->addInterconnection(conn);
             }
             else
             {
-                conn->endPoint2()->removeInterconnection(conn);
-                conn->endPoint2()->onDisconnect(this);
-                conn->endPoint2()->addInterconnection(conn);
+                conn->endpoint2()->removeInterconnection(conn);
+                conn->endpoint2()->onDisconnect(this);
+                conn->endpoint2()->addInterconnection(conn);
             }
         }
     }
@@ -429,15 +429,15 @@ void DiagramPort::setTypes(VLNV const& busType, VLNV const& absType, General::In
         // Undefined end points of the connections can now be defined.
         foreach(DiagramInterconnection* conn, getInterconnections())
         {
-            if (conn->endPoint1() != this)
+            if (conn->endpoint1() != this)
             {
-                conn->endPoint1()->onConnect(this);
-                conn->endPoint2()->onConnect(conn->endPoint1());
+                conn->endpoint1()->onConnect(this);
+                conn->endpoint2()->onConnect(conn->endpoint1());
             }
             else
             {
-                conn->endPoint2()->onConnect(this);
-                conn->endPoint1()->onConnect(conn->endPoint2());
+                conn->endpoint2()->onConnect(this);
+                conn->endpoint1()->onConnect(conn->endpoint2());
             }
         }
     }

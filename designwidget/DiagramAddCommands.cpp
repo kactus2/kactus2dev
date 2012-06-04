@@ -145,14 +145,14 @@ ConnectionAddCommand::ConnectionAddCommand(QGraphicsScene* scene, DiagramInterco
                                                                    del_(false)
                                                                    
 {
-    QSharedPointer<BusInterface> busIf1 = conn_->endPoint1()->getBusInterface();
-    QSharedPointer<BusInterface> busIf2 = conn_->endPoint2()->getBusInterface();
+    QSharedPointer<BusInterface> busIf1 = conn_->endpoint1()->getBusInterface();
+    QSharedPointer<BusInterface> busIf2 = conn_->endpoint2()->getBusInterface();
 
     if (busIf1 != 0 && busIf1->getBusType().isValid())
     {
         mode1_ = busIf1->getInterfaceMode();
 
-        if (conn_->endPoint1()->isHierarchical())
+        if (conn_->endpoint1()->isHierarchical())
         {
             portMaps_ = busIf1->getPortMaps();
         }
@@ -162,7 +162,7 @@ ConnectionAddCommand::ConnectionAddCommand(QGraphicsScene* scene, DiagramInterco
     {
         mode2_ = busIf2->getInterfaceMode();
 
-        if (conn_->endPoint2()->isHierarchical())
+        if (conn_->endpoint2()->isHierarchical())
         {
             portMaps_ = busIf2->getPortMaps();
         }
@@ -209,31 +209,31 @@ void ConnectionAddCommand::redo()
     // Connect the ends and set the interface modes and port map for the hierarchical end point.
     if (conn_->connectEnds())
     {
-        QSharedPointer<BusInterface> busIf1 = conn_->endPoint1()->getBusInterface();
-        QSharedPointer<BusInterface> busIf2 = conn_->endPoint2()->getBusInterface();
+        QSharedPointer<BusInterface> busIf1 = conn_->endpoint1()->getBusInterface();
+        QSharedPointer<BusInterface> busIf2 = conn_->endpoint2()->getBusInterface();
 
         if (busIf1 != 0 && busIf1->getBusType().isValid())
         {
             busIf1->setInterfaceMode(mode1_);
 
-            if (conn_->endPoint1()->isHierarchical())
+            if (conn_->endpoint1()->isHierarchical())
             {
                 busIf1->setPortMaps(portMaps_);
             }
 
-            conn_->endPoint1()->updateInterface();
+            conn_->endpoint1()->updateInterface();
         }
 
         if (busIf2 != 0 && busIf2->getBusType().isValid())
         {
             busIf2->setInterfaceMode(mode2_);
 
-            if (conn_->endPoint2()->isHierarchical())
+            if (conn_->endpoint2()->isHierarchical())
             {
                 busIf2->setPortMaps(portMaps_);
             }
 
-            conn_->endPoint2()->updateInterface();
+            conn_->endpoint2()->updateInterface();
         }
     }
 

@@ -78,7 +78,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] endPoint          The SW connection end point.
+     *      @param [in] endpoint          The SW connection end point.
      *      @param [in] oldBusType        The endpoint's old API/COM type.
      *      @param [in] parent            The parent command.
      */

@@ -24,6 +24,7 @@ class Component;
 class DesignConfiguration;
 class ProgramEntityItem;
 class ComponentItem;
+class ConnectionEndpoint;
 
 //-----------------------------------------------------------------------------
 //! SystemDesignWidget class.
@@ -146,8 +147,11 @@ signals:
     //! Signaled when the zoom level has changed.
     void zoomChanged();
 
-    //! Signaled when user selects a component on the draw board.
+    //! Signaled when the user selects a component on the draw board.
     void componentSelected(ComponentItem* component);
+
+    //! Signaled when the user selects an interface on the draw board.
+    void interfaceSelected(ConnectionEndpoint* endpoint);
 
     //! Signaled when all items are deselected.
     void clearItemSelection();

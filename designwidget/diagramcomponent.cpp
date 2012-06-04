@@ -345,6 +345,8 @@ DiagramPort* DiagramComponent::addPort(QPointF const& pos)
 
     // Create the visualization for the bus interface.
     DiagramPort* port = new DiagramPort(busIf, getLibraryInterface(), this);
+    connect(port, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+
     port->setPos(mapFromScene(pos));
     onAddPort(port, mapFromScene(pos).x() >= 0);
 
@@ -535,19 +537,19 @@ void DiagramComponent::onAdHocVisibilityChanged(QString const& portName, bool vi
 //-----------------------------------------------------------------------------
 DiagramAdHocPort* DiagramComponent::getAdHocPort(QString const& portName)
 {
-    foreach (DiagramConnectionEndpoint* endPoint, leftPorts_)
+    foreach (DiagramConnectionEndpoint* endpoint, leftPorts_)
     {
-        if (dynamic_cast<DiagramAdHocPort*>(endPoint) != 0 && endPoint->name() == portName)
+        if (dynamic_cast<DiagramAdHocPort*>(endpoint) != 0 && endpoint->name() == portName)
         {
-            return static_cast<DiagramAdHocPort*>(endPoint);
+            return static_cast<DiagramAdHocPort*>(endpoint);
         }
     }
     
-    foreach (DiagramConnectionEndpoint* endPoint, rightPorts_)
+    foreach (DiagramConnectionEndpoint* endpoint, rightPorts_)
     {
-        if (dynamic_cast<DiagramAdHocPort*>(endPoint) != 0 && endPoint->name() == portName)
+        if (dynamic_cast<DiagramAdHocPort*>(endpoint) != 0 && endpoint->name() == portName)
         {
-            return static_cast<DiagramAdHocPort*>(endPoint);
+            return static_cast<DiagramAdHocPort*>(endpoint);
         }
     }
 

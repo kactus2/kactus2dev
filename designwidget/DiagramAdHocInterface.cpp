@@ -251,7 +251,7 @@ bool DiagramAdHocInterface::canConnect(DiagramConnectionEndpoint const* other) c
 //-----------------------------------------------------------------------------
 ComponentItem* DiagramAdHocInterface::encompassingComp() const
 {
-    return static_cast<ComponentItem*>(parentItem());
+    return 0;
 }
 
 //-----------------------------------------------------------------------------

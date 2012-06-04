@@ -10,6 +10,8 @@
 #include <models/businterface.h>
 #include <models/generaldeclarations.h>
 #include <models/abstractiondefinition.h>
+#include <models/ApiInterface.h>
+#include <models/ComInterface.h>
 
 #include <common/GenericEditProvider.h>
 
@@ -33,7 +35,7 @@ static const int MAX_DESC_HEIGHT = 50;
 
 InterfaceEditor::InterfaceEditor(QWidget *parent, LibraryInterface* handler):
 QWidget(parent),
-busType_(this),
+type_(this),
 absType_(this),
 nameEdit_(this),
 nameLabel_(tr("Interface name"), this),
@@ -51,8 +53,8 @@ handler_(handler) {
 
 	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 
-	busType_.setTitle(tr("Bus type VLNV"));
-	busType_.setFlat(false);
+	type_.setTitle(tr("Bus type VLNV"));
+	type_.setFlat(false);
 	absType_.setTitle(tr("Abstraction type VLNV"));
 	absType_.setFlat(false);
 
@@ -85,7 +87,7 @@ handler_(handler) {
 	descriptionEdit_.setMaximumHeight(MAX_DESC_HEIGHT);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
-	layout->addWidget(&busType_);
+	layout->addWidget(&type_);
 	layout->addWidget(&absType_);
 	layout->addWidget(&nameLabel_);
 	layout->addWidget(&nameEdit_);
@@ -109,7 +111,7 @@ void InterfaceEditor::setInterface( ConnectionEndpoint* interface ) {
 
 	// disconnect the previous interface
 	if (interface_) {
-		disconnect(interface_, SIGNAL(destroyed(ConnectionEndPoint*)),
+		disconnect(interface_, SIGNAL(destroyed(ConnectionEndpoint*)),
 			this, SLOT(clear()));
 		disconnect(interface_, SIGNAL(contentChanged()),
 			this, SLOT(refresh()));
@@ -117,38 +119,54 @@ void InterfaceEditor::setInterface( ConnectionEndpoint* interface ) {
 
 	interface_ = interface;
 
-    Q_ASSERT(interface->getBusInterface());
-	busType_.setVLNV(interface->getBusInterface()->getBusType(), true);
-    absType_.setVLNV(interface->getBusInterface()->getAbstractionType(), true);
+    // set text for the name editor, signal must be disconnected when name is set 
+    // to avoid loops 
+    disconnect(&nameEdit_, SIGNAL(textEdited(const QString&)),
+        this, SLOT(onInterfaceNameChanged(const QString&)));
+    nameEdit_.setText(interface->name());
+    connect(&nameEdit_, SIGNAL(textEdited(const QString&)),
+        this, SLOT(onInterfaceNameChanged(const QString&)), Qt::UniqueConnection);
 
-	// set text for the name editor, signal must be disconnected when name is set 
-	// to avoid loops 
-	disconnect(&nameEdit_, SIGNAL(textEdited(const QString&)),
-		this, SLOT(onInterfaceNameChanged(const QString&)));
-	nameEdit_.setText(interface->name());
-	connect(&nameEdit_, SIGNAL(textEdited(const QString&)),
-		this, SLOT(onInterfaceNameChanged(const QString&)), Qt::UniqueConnection);
+    // display the current description of the interface.
+    disconnect(&descriptionEdit_, SIGNAL(textChanged()),
+        this, SLOT(onDescriptionChanged()));
+    descriptionEdit_.setPlainText(interface->description());
+    connect(&descriptionEdit_, SIGNAL(textChanged()),
+        this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
 
-	// set selection for mode editor, signal must be disconnected when mode is set 
-	// to avoid loops 
-	disconnect(&modeEdit_, SIGNAL(currentIndexChanged(const QString&)),
-		this, SLOT(onInterfaceModeChanged(const QString&)));
-	// select the correct mode for mode editor
-	int index = modeEdit_.findText(General::interfaceMode2Str(
-		interface->getBusInterface()->getInterfaceMode()));
-	modeEdit_.setCurrentIndex(index);
-	connect(&modeEdit_, SIGNAL(currentIndexChanged(const QString&)),
-		this, SLOT(onInterfaceModeChanged(const QString&)), Qt::UniqueConnection);
+    if (interface->isBus())
+    {
+        Q_ASSERT(interface->getBusInterface());
+        type_.setTitle(tr("Bus type VLNV"));
+	    type_.setVLNV(interface->getBusInterface()->getBusType(), true);
+        absType_.setVLNV(interface->getBusInterface()->getAbstractionType(), true);
 
-	// display the current description of the interface.
-	disconnect(&descriptionEdit_, SIGNAL(textChanged()),
-		this, SLOT(onDescriptionChanged()));
-	descriptionEdit_.setPlainText(interface->description());
-	connect(&descriptionEdit_, SIGNAL(textChanged()),
-		this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
+	    // set selection for mode editor, signal must be disconnected when mode is set 
+	    // to avoid loops 
+	    disconnect(&modeEdit_, SIGNAL(currentIndexChanged(const QString&)),
+		    this, SLOT(onInterfaceModeChanged(const QString&)));
+	    // select the correct mode for mode editor
+	    int index = modeEdit_.findText(General::interfaceMode2Str(
+		    interface->getBusInterface()->getInterfaceMode()));
+	    modeEdit_.setCurrentIndex(index);
+	    connect(&modeEdit_, SIGNAL(currentIndexChanged(const QString&)),
+		    this, SLOT(onInterfaceModeChanged(const QString&)), Qt::UniqueConnection);
 
-	// set port maps to be displayed in the table widget.
-	setPortMaps();
+	    // set port maps to be displayed in the table widget.
+	    setPortMaps();
+    }
+    else if (interface->isApi())
+    {
+        Q_ASSERT(interface->getApiInterface());
+        type_.setTitle(tr("API type VLNV"));
+        type_.setVLNV(interface->getApiInterface()->getApiType(), true);
+    }
+    else if (interface->isCom())
+    {
+        Q_ASSERT(interface->getComInterface());
+        type_.setTitle(tr("COM type VLNV"));
+        type_.setVLNV(interface->getComInterface()->getComType(), true);
+    }
 
 	connect(interface, SIGNAL(destroyed(ConnectionEndpoint*)),
 		this, SLOT(clear()), Qt::UniqueConnection);
@@ -175,16 +193,21 @@ void InterfaceEditor::setInterface( ConnectionEndpoint* interface ) {
 	}
 
 	// show the editors
-	busType_.show();
-	absType_.show();
+    type_.show();
 	nameEdit_.show();
 	nameLabel_.show();
-	modeEdit_.show();
-	modeLabel_.show();
 	descriptionLabel_.show();
 	descriptionEdit_.show();
-	mappingsLabel_.show();
-	mappings_.show();
+
+    if (interface->isBus())
+    {
+        absType_.show();
+        modeEdit_.show();
+        modeLabel_.show();
+    }
+
+    mappingsLabel_.show();
+    mappings_.show();
 
 	parentWidget()->setMaximumHeight(QWIDGETSIZE_MAX);
 }
@@ -208,8 +231,8 @@ void InterfaceEditor::clear() {
 	disconnect(&mappings_, SIGNAL(itemChanged(QTableWidgetItem*)),
 		this, SLOT(onPortMapChanged()));
 
-	busType_.setVLNV(VLNV(), true);
-	busType_.hide();
+	type_.setVLNV(VLNV(), true);
+	type_.hide();
 
 	absType_.setVLNV(VLNV(), true);
 	absType_.hide();
@@ -238,7 +261,7 @@ void InterfaceEditor::onInterfaceModeChanged( const QString& newMode ) {
 	disconnect(interface_, SIGNAL(contentChanged()),
 		this, SLOT(refresh()));
 
-	QSharedPointer<QUndoCommand> cmd(new EndPointChangeCommand(
+	QSharedPointer<QUndoCommand> cmd(new EndpointChangeCommand(
 		static_cast<DiagramConnectionEndpoint*>(interface_), nameEdit_.text(),
         General::str2Interfacemode(newMode, General::MONITOR),
 		descriptionEdit_.toPlainText()));
@@ -254,10 +277,7 @@ void InterfaceEditor::onInterfaceNameChanged( const QString& newName ) {
 	disconnect(interface_, SIGNAL(contentChanged()),
 		this, SLOT(refresh()));	
 
-	QSharedPointer<QUndoCommand> cmd(new EndPointChangeCommand(
-		static_cast<DiagramConnectionEndpoint*>(interface_), newName, 
-		General::str2Interfacemode(modeEdit_.currentText(), General::MONITOR),
-		descriptionEdit_.toPlainText()));
+	QSharedPointer<QUndoCommand> cmd(new EndpointNameChangeCommand(interface_, newName));
 	static_cast<DesignDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
 	
 	connect(interface_, SIGNAL(contentChanged()), 
@@ -270,10 +290,7 @@ void InterfaceEditor::onDescriptionChanged() {
 	disconnect(interface_, SIGNAL(contentChanged()),
 		this, SLOT(refresh()));
 
-	QSharedPointer<QUndoCommand> cmd(new EndPointChangeCommand(
-		static_cast<DiagramConnectionEndpoint*>(interface_), nameEdit_.text(), 
-		General::str2Interfacemode(modeEdit_.currentText(), General::MONITOR),
-		descriptionEdit_.toPlainText()));
+	QSharedPointer<QUndoCommand> cmd(new EndpointDescChangeCommand(interface_, descriptionEdit_.toPlainText()));
 	static_cast<DesignDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
 
 	connect(interface_, SIGNAL(contentChanged()), 

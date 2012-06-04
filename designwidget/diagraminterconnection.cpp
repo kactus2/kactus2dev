@@ -34,8 +34,8 @@ qreal const DiagramInterconnection::MIN_START_LENGTH = 20;
 //-----------------------------------------------------------------------------
 // Function: DiagramInterconnection()
 //-----------------------------------------------------------------------------
-DiagramInterconnection::DiagramInterconnection(DiagramConnectionEndpoint *endPoint1,
-                                               DiagramConnectionEndpoint *endPoint2,
+DiagramInterconnection::DiagramInterconnection(DiagramConnectionEndpoint *endpoint1,
+                                               DiagramConnectionEndpoint *endpoint2,
                                                bool autoConnect,
                                                const QString &displayName,
                                                const QString &description,
@@ -44,8 +44,8 @@ DiagramInterconnection::DiagramInterconnection(DiagramConnectionEndpoint *endPoi
       parent_(parent),
       name_(), 
       description_(description),
-      endPoint1_(0),
-      endPoint2_(0), 
+      endpoint1_(0),
+      endpoint2_(0), 
       pathPoints_(), 
       selected_(-1), 
       selectionType_(NONE),
@@ -53,20 +53,20 @@ DiagramInterconnection::DiagramInterconnection(DiagramConnectionEndpoint *endPoi
       widthLabel_(0)
 {
     setItemSettings();
-    createRoute(endPoint1, endPoint2);
+    createRoute(endpoint1, endpoint2);
 
-    if (endPoint1->isBus())
+    if (endpoint1->isBus())
     {
         setLineWidth(2);
     }
 
     if (autoConnect)
     {
-        endPoint1_ = endPoint1;
-        endPoint2_ = endPoint2;
+        endpoint1_ = endpoint1;
+        endpoint2_ = endpoint2;
 
-        endPoint1->addInterconnection(this);
-        endPoint2->addInterconnection(this);
+        endpoint1->addInterconnection(this);
+        endpoint2->addInterconnection(this);
         updateWidthLabel();
         updateName();
     }
@@ -84,8 +84,8 @@ DiagramInterconnection::DiagramInterconnection(QPointF p1, QVector2D const& dir1
       parent_(parent),
       name_(),
       description_(),
-      endPoint1_(0), 
-      endPoint2_(0),
+      endpoint1_(0), 
+      endpoint2_(0),
       pathPoints_(),
       selected_(-1),
       selectionType_(NONE),
@@ -119,16 +119,16 @@ bool DiagramInterconnection::connectEnds()
     disconnectEnds();
     
     // Find the new end points.
-    endPoint1_ = DiagramUtil::snapToItem<DiagramConnectionEndpoint>(pathPoints_.first(), scene(), GridSize);
-    Q_ASSERT(endPoint1_ != 0);
+    endpoint1_ = DiagramUtil::snapToItem<DiagramConnectionEndpoint>(pathPoints_.first(), scene(), GridSize);
+    Q_ASSERT(endpoint1_ != 0);
     
-    endPoint2_ = DiagramUtil::snapToItem<DiagramConnectionEndpoint>(pathPoints_.last(), scene(), GridSize);
-    Q_ASSERT(endPoint2_ != 0);
+    endpoint2_ = DiagramUtil::snapToItem<DiagramConnectionEndpoint>(pathPoints_.last(), scene(), GridSize);
+    Q_ASSERT(endpoint2_ != 0);
 
     // Swap the end points in a way that the first one at least has an encompassing component.
-    if (endPoint1_->encompassingComp() == 0)
+    if (endpoint1_->encompassingComp() == 0)
     {
-        std::swap(endPoint1_, endPoint2_);
+        std::swap(endpoint1_, endpoint2_);
         
         // The path points have to be reversed.
         for (int i = 0; i < pathPoints_.size() / 2; ++i)
@@ -138,49 +138,49 @@ bool DiagramInterconnection::connectEnds()
     }
     
     // Make the connections and check for errors.
-    if (!endPoint1_->onConnect(endPoint2_))
+    if (!endpoint1_->onConnect(endpoint2_))
     {
-        endPoint1_ = 0;
+        endpoint1_ = 0;
         return false;
     }
     
-    if (!endPoint2_->onConnect(endPoint1_))
+    if (!endpoint2_->onConnect(endpoint1_))
     {
-        endPoint1_->onDisconnect(endPoint2_);
-        endPoint1_ = 0;
-        endPoint2_ = 0;
+        endpoint1_->onDisconnect(endpoint2_);
+        endpoint1_ = 0;
+        endpoint2_ = 0;
         return false;
     }
 
-    endPoint1_->addInterconnection(this);
-    endPoint2_->addInterconnection(this);
+    endpoint1_->addInterconnection(this);
+    endpoint2_->addInterconnection(this);
 
     // If the connection is ad-hoc, take the default left and right bounds from the ports if they are undefined.
     if (!isBus())
     {
         if (getAdHocLeftBound(0) == -1)
         {
-            setAdHocLeftBound(0, endPoint1_->getPort()->getLeftBound());
+            setAdHocLeftBound(0, endpoint1_->getPort()->getLeftBound());
         }
 
         if (getAdHocRightBound(0) == -1)
         {
-            setAdHocRightBound(0, endPoint1_->getPort()->getRightBound());
+            setAdHocRightBound(0, endpoint1_->getPort()->getRightBound());
         }
 
         if (getAdHocLeftBound(1) == -1)
         {
-            setAdHocLeftBound(1, endPoint2_->getPort()->getLeftBound());
+            setAdHocLeftBound(1, endpoint2_->getPort()->getLeftBound());
         }
 
         if (getAdHocRightBound(1) == -1)
         {
-            setAdHocRightBound(1, endPoint2_->getPort()->getRightBound());
+            setAdHocRightBound(1, endpoint2_->getPort()->getRightBound());
         }
     }
 
     // Check if both end points were found.
-    if (endPoint1_ && endPoint2_) {
+    if (endpoint1_ && endpoint2_) {
         simplifyPath();
         setRoute(pathPoints_);
         updateName();
@@ -255,25 +255,25 @@ void DiagramInterconnection::setRoute(QList<QPointF> path)
     if (path.size() < 2)
         return;
 
-    if (endPoint1_)
+    if (endpoint1_)
     {
         QVector2D dir = QVector2D(path[1] - path[0]).normalized();
 
         // Switch the direction of the end point if it is not correct.
-        if (!endPoint1_->isDirectionFixed() && QVector2D::dotProduct(dir, endPoint1_->getDirection()) < 0)
+        if (!endpoint1_->isDirectionFixed() && QVector2D::dotProduct(dir, endpoint1_->getDirection()) < 0)
         {
-            endPoint1_->setDirection(dir);
+            endpoint1_->setDirection(dir);
         }
     }
 
-    if (endPoint2_)
+    if (endpoint2_)
     {
         QVector2D dir = QVector2D(path[path.size() - 2] - path[path.size() - 1]).normalized();
 
         // Switch the direction of the end point if it is not correct.
-        if (!endPoint2_->isDirectionFixed() && QVector2D::dotProduct(dir, endPoint2_->getDirection()) < 0)
+        if (!endpoint2_->isDirectionFixed() && QVector2D::dotProduct(dir, endpoint2_->getDirection()) < 0)
         {
-            endPoint2_->setDirection(dir);
+            endpoint2_->setDirection(dir);
         }
     }
 
@@ -316,32 +316,32 @@ void DiagramInterconnection::setDescription( const QString& description ) {
 	emit contentChanged();
 }
 
-DiagramConnectionEndpoint *DiagramInterconnection::endPoint1() const
+DiagramConnectionEndpoint *DiagramInterconnection::endpoint1() const
 {
-    return endPoint1_;
+    return endpoint1_;
 }
 
-DiagramConnectionEndpoint *DiagramInterconnection::endPoint2() const
+DiagramConnectionEndpoint *DiagramInterconnection::endpoint2() const
 {
-    return endPoint2_;
+    return endpoint2_;
 }
 
 void DiagramInterconnection::updatePosition()
 {
     if (routingMode_ == ROUTING_MODE_NORMAL)
     {
-        QVector2D delta1 = QVector2D(endPoint1_->scenePos()) - QVector2D(pathPoints_.first());
-        QVector2D delta2 = QVector2D(endPoint2_->scenePos()) - QVector2D(pathPoints_.last());
-        QVector2D const& dir1 = endPoint1_->getDirection();
-        QVector2D const& dir2 = endPoint2_->getDirection();
+        QVector2D delta1 = QVector2D(endpoint1_->scenePos()) - QVector2D(pathPoints_.first());
+        QVector2D delta2 = QVector2D(endpoint2_->scenePos()) - QVector2D(pathPoints_.last());
+        QVector2D const& dir1 = endpoint1_->getDirection();
+        QVector2D const& dir2 = endpoint2_->getDirection();
 
         // Recreate the route from scratch if there are not enough points in the path or
         // the route is too complicated when the position and direction of the endpoints is considered.
         if (pathPoints_.size() < 2 ||
             (pathPoints_.size() > 4 && qFuzzyCompare(QVector2D::dotProduct(dir1, dir2), -1.0) &&
-            QVector2D::dotProduct(dir1, QVector2D(endPoint2_->scenePos() - endPoint1_->scenePos())) > 0.0))
+            QVector2D::dotProduct(dir1, QVector2D(endpoint2_->scenePos() - endpoint1_->scenePos())) > 0.0))
         {
-            createRoute(endPoint1_, endPoint2_);
+            createRoute(endpoint1_, endpoint2_);
             updateWidthLabel();
             return;
         }
@@ -366,7 +366,7 @@ void DiagramInterconnection::updatePosition()
             bool pathOk = false;
             QVector2D delta = delta1;
             QVector2D dir = dir1;
-            DiagramConnectionEndpoint* endPoint = endPoint1_;
+            DiagramConnectionEndpoint* endpoint = endpoint1_;
             int index0 = 0;
             int index1 = 1;
             int index2 = 2;
@@ -375,7 +375,7 @@ void DiagramInterconnection::updatePosition()
             if (!delta2.isNull())
             {
                 delta = delta2;
-                endPoint = endPoint2_;
+                endpoint = endpoint2_;
                 dir = dir2;
                 index0 = pathPoints_.size() - 1;
                 index1 = pathPoints_.size() - 2;
@@ -396,7 +396,7 @@ void DiagramInterconnection::updatePosition()
             }
 
             // Handle the parallel part of the delta.
-            pathPoints_[index0] = endPoint->scenePos();
+            pathPoints_[index0] = endpoint->scenePos();
             QVector2D newSeg1 = QVector2D(pathPoints_[index1] - pathPoints_[index0]);
             
             if (newSeg1.length() < MIN_START_LENGTH || !qFuzzyCompare(seg1, newSeg1.normalized()))
@@ -426,7 +426,7 @@ void DiagramInterconnection::updatePosition()
             // If the simple fix didn't result in a solution, just recreate the route.
             if (!pathOk)
             {
-                createRoute(endPoint1_, endPoint2_);
+                createRoute(endpoint1_, endpoint2_);
                 updateWidthLabel();
             }
             else
@@ -440,8 +440,8 @@ void DiagramInterconnection::updatePosition()
     {
         // Make a straight line from begin to end.
         QList<QPointF> route;
-        route.append(endPoint1()->scenePos());
-        route.append(endPoint2()->scenePos());
+        route.append(endpoint1()->scenePos());
+        route.append(endpoint2()->scenePos());
 
         setRoute(route);
     }
@@ -496,7 +496,7 @@ void DiagramInterconnection::mousePressEvent(QGraphicsSceneMouseEvent *mouseEven
         selected_ = pathPoints_.size()-1;
     } else if (pathPoints_.size() > 1) {
         for (int i = 0; i < pathPoints_.size()-1; i++) {
-            if ((i == 0 && endPoint1_) || (i == pathPoints_.size()-2 && endPoint2_))
+            if ((i == 0 && endpoint1_) || (i == pathPoints_.size()-2 && endpoint2_))
                 continue;
             if ((qFuzzyCompare(pathPoints_[i].x(), pos.x())
                 && qFuzzyCompare(pathPoints_[i+1].x(), pos.x()))
@@ -616,13 +616,13 @@ void DiagramInterconnection::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEv
 {
     if (selectionType_ == END)
     {
-        DiagramConnectionEndpoint* endPoint1 =
+        DiagramConnectionEndpoint* endpoint1 =
             DiagramUtil::snapToItem<DiagramConnectionEndpoint>(pathPoints_.first(), scene(), GridSize);
-        DiagramConnectionEndpoint* endPoint2 =
+        DiagramConnectionEndpoint* endpoint2 =
             DiagramUtil::snapToItem<DiagramConnectionEndpoint>(pathPoints_.last(), scene(), GridSize);
 
-        if (endPoint1 != 0 && endPoint2 != 0 &&
-            endPoint1->canConnect(endPoint2) && endPoint2->canConnect(endPoint1))
+        if (endpoint1 != 0 && endpoint2 != 0 &&
+            endpoint1->canConnect(endpoint2) && endpoint2->canConnect(endpoint1))
         {
             connectEnds();
         }
@@ -666,12 +666,12 @@ void DiagramInterconnection::paint(QPainter *painter,
     }
 
 
-    if (!endPoint1_)
+    if (!endpoint1_)
         painter->fillRect(QRectF(pathPoints_.first()-QPointF(2,2),
                                  pathPoints_.first()+QPointF(2,2)),
                           QBrush(Qt::red));
 
-    if (!endPoint2_)
+    if (!endpoint2_)
         painter->fillRect(QRectF(pathPoints_.last()-QPointF(2,2),
                                  pathPoints_.last()+QPointF(2,2)),
                           QBrush(Qt::red));
@@ -690,40 +690,40 @@ void DiagramInterconnection::setItemSettings()
 //-----------------------------------------------------------------------------
 // Function: createRoute()
 //-----------------------------------------------------------------------------
-void DiagramInterconnection::createRoute(DiagramConnectionEndpoint* endPoint1,
-                                         DiagramConnectionEndpoint* endPoint2)
+void DiagramInterconnection::createRoute(DiagramConnectionEndpoint* endpoint1,
+                                         DiagramConnectionEndpoint* endpoint2)
 {
-    Q_ASSERT(endPoint1 != 0);
-    Q_ASSERT(endPoint2 != 0);
+    Q_ASSERT(endpoint1 != 0);
+    Q_ASSERT(endpoint2 != 0);
     
-    QPointF p1 = endPoint1->scenePos();
-    QPointF p2 = endPoint2->scenePos();
+    QPointF p1 = endpoint1->scenePos();
+    QPointF p2 = endpoint2->scenePos();
     
-    if (!endPoint1->isDirectionFixed())
+    if (!endpoint1->isDirectionFixed())
     {
         if (p1.x() <= p2.x())
         {
-            endPoint1->setDirection(QVector2D(1.0f, 0.0f));
+            endpoint1->setDirection(QVector2D(1.0f, 0.0f));
         }
         else
         {
-            endPoint1->setDirection(QVector2D(-1.0f, 0.0f));
+            endpoint1->setDirection(QVector2D(-1.0f, 0.0f));
         }
     }
 
-    if (!endPoint2->isDirectionFixed())
+    if (!endpoint2->isDirectionFixed())
     {
         if (p1.x() <= p2.x())
         {
-            endPoint2->setDirection(QVector2D(-1.0f, 0.0f));
+            endpoint2->setDirection(QVector2D(-1.0f, 0.0f));
         }
         else
         {
-            endPoint2->setDirection(QVector2D(1.0f, 0.0f));
+            endpoint2->setDirection(QVector2D(1.0f, 0.0f));
         }
     }
 
-    createRoute(p1, p2, endPoint1->getDirection(), endPoint2->getDirection());
+    createRoute(p1, p2, endpoint1->getDirection(), endpoint2->getDirection());
 }
 
 //-----------------------------------------------------------------------------
@@ -862,13 +862,13 @@ void DiagramInterconnection::createRoute(QPointF p1, QPointF p2,
 //-----------------------------------------------------------------------------
 void DiagramInterconnection::updateName()
 {
-    Q_ASSERT(endPoint1_ != 0);
-    Q_ASSERT(endPoint2_ != 0);
+    Q_ASSERT(endpoint1_ != 0);
+    Q_ASSERT(endpoint2_ != 0);
 
     // Determine one of the end points as the starting point in a way that its
     // encompassing component is defined.
-    DiagramConnectionEndpoint* start = endPoint1_;
-    DiagramConnectionEndpoint* end = endPoint2_;
+    DiagramConnectionEndpoint* start = endpoint1_;
+    DiagramConnectionEndpoint* end = endpoint2_;
 
     if (start->encompassingComp() == 0)
     {
@@ -893,21 +893,21 @@ void DiagramInterconnection::updateName()
 void DiagramInterconnection::disconnectEnds()
 {
     // Discard existing connections.
-    if (endPoint1_)
+    if (endpoint1_)
     {
-        endPoint1_->removeInterconnection(this);
-        endPoint1_->onDisconnect(endPoint2_);
+        endpoint1_->removeInterconnection(this);
+        endpoint1_->onDisconnect(endpoint2_);
     }
 
-    if (endPoint2_)
+    if (endpoint2_)
     {
-        endPoint2_->removeInterconnection(this);
-        endPoint2_->onDisconnect(endPoint1_);
+        endpoint2_->removeInterconnection(this);
+        endpoint2_->onDisconnect(endpoint1_);
     }
 
     emit contentChanged();
-    endPoint1_ = 0;
-    endPoint2_ = 0;
+    endpoint1_ = 0;
+    endpoint2_ = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -1005,7 +1005,7 @@ void DiagramInterconnection::updateWidthLabel()
     int totalWidth = 0;
 
     // for bus connections, the bus width must be calculated from the port maps.
-    if (endPoint1_->isBus())
+    if (endpoint1_->isBus())
     {
         totalWidth = calculateBusWidth();
     }
@@ -1043,8 +1043,8 @@ void DiagramInterconnection::updateWidthLabel()
     {
         // If the end points are move apart in horizontal direction, place the text above
         // the longest horizontal segment.
-        if (std::abs(endPoint1_->scenePos().x() - endPoint2_->scenePos().x()) >=
-            std::abs(endPoint1_->scenePos().y() - endPoint2_->scenePos().y()))
+        if (std::abs(endpoint1_->scenePos().x() - endpoint2_->scenePos().x()) >=
+            std::abs(endpoint1_->scenePos().y() - endpoint2_->scenePos().y()))
         {
             // Determine the longest horizontal segment.
             int longestIndex = 0;
@@ -1190,8 +1190,8 @@ void DiagramInterconnection::drawOverlapGraphics(QPainter* painter)
                     if (type == QLineF::BoundedIntersection)
                     {
                         // If the connections share an endpoint, draw a black junction circle.
-                        if (endPoint1() == conn->endPoint1() || endPoint2() == conn->endPoint2() ||
-                            endPoint1() == conn->endPoint2() || endPoint2() == conn->endPoint1())
+                        if (endpoint1() == conn->endpoint1() || endpoint2() == conn->endpoint2() ||
+                            endpoint1() == conn->endpoint2() || endpoint2() == conn->endpoint1())
                         {
                             painter->setPen(QPen(Qt::black, 0));
 
@@ -1291,12 +1291,12 @@ int DiagramInterconnection::calculateBusWidth() const
 {
     int totalWidth = 0;
 
-    foreach (QSharedPointer<General::PortMap> portMap1, endPoint1_->getBusInterface()->getPortMaps())
+    foreach (QSharedPointer<General::PortMap> portMap1, endpoint1_->getBusInterface()->getPortMaps())
     {
         // Find the port map with the same logical port name from the other end point's port map.
         QSharedPointer<General::PortMap> portMap2;
 
-        foreach (QSharedPointer<General::PortMap> portMap, endPoint2_->getBusInterface()->getPortMaps())
+        foreach (QSharedPointer<General::PortMap> portMap, endpoint2_->getBusInterface()->getPortMaps())
         {
             if (portMap->logicalPort_ == portMap1->logicalPort_)
             {
@@ -1309,20 +1309,20 @@ int DiagramInterconnection::calculateBusWidth() const
             continue;
         }
 
-        Port* port1 = endPoint1_->getOwnerComponent()->getPort(portMap1->physicalPort_);
-        Port* port2 = endPoint2_->getOwnerComponent()->getPort(portMap2->physicalPort_);
+        Port* port1 = endpoint1_->getOwnerComponent()->getPort(portMap1->physicalPort_);
+        Port* port2 = endpoint2_->getOwnerComponent()->getPort(portMap2->physicalPort_);
 
         if (port1 == 0)
         {
             emit errorMessage(tr("Port '%1' not found in the component '%1'.").arg(portMap1->physicalPort_,
-                endPoint1_->getOwnerComponent()->getVlnv()->getName()));
+                endpoint1_->getOwnerComponent()->getVlnv()->getName()));
             continue;
         }
         
         if (port2 == 0)
         {
             emit errorMessage(tr("Port '%1' not found in the component '%1'.").arg(portMap2->physicalPort_,
-                endPoint2_->getOwnerComponent()->getVlnv()->getName()));
+                endpoint2_->getOwnerComponent()->getVlnv()->getName()));
             continue;
         }
 
@@ -1344,7 +1344,7 @@ int DiagramInterconnection::calculateBusWidth() const
 //-----------------------------------------------------------------------------
 bool DiagramInterconnection::isBus() const
 {
-    return endPoint1_->isBus();
+    return endpoint1_->isBus();
 }
 
 //-----------------------------------------------------------------------------
@@ -1360,33 +1360,33 @@ void DiagramInterconnection::setLineWidth(int width)
 //-----------------------------------------------------------------------------
 // Function: DiagramInterconnection::getAdHocLeftBound()
 //-----------------------------------------------------------------------------
-int DiagramInterconnection::getAdHocLeftBound(int endPointIndex) const
+int DiagramInterconnection::getAdHocLeftBound(int endpointIndex) const
 {
-    return portBounds_[endPointIndex].left_;
+    return portBounds_[endpointIndex].left_;
 }
 
 //-----------------------------------------------------------------------------
 // Function: DiagramInterconnection::getAdHocRightBound()
 //-----------------------------------------------------------------------------
-int DiagramInterconnection::getAdHocRightBound(int endPointIndex) const
+int DiagramInterconnection::getAdHocRightBound(int endpointIndex) const
 {
-    return portBounds_[endPointIndex].right_;
+    return portBounds_[endpointIndex].right_;
 }
 
 //-----------------------------------------------------------------------------
 // Function: DiagramInterconnection::setAdHocLeftBound()
 //-----------------------------------------------------------------------------
-void DiagramInterconnection::setAdHocLeftBound(int endPointIndex, int leftBound)
+void DiagramInterconnection::setAdHocLeftBound(int endpointIndex, int leftBound)
 {
-    portBounds_[endPointIndex].left_ = leftBound;
+    portBounds_[endpointIndex].left_ = leftBound;
     emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
 // Function: DiagramInterconnection::setAdHocRightBound()
 //-----------------------------------------------------------------------------
-void DiagramInterconnection::setAdHocRightBound(int endPointIndex, int rightBound)
+void DiagramInterconnection::setAdHocRightBound(int endpointIndex, int rightBound)
 {
-    portBounds_[endPointIndex].right_ = rightBound;
+    portBounds_[endpointIndex].right_ = rightBound;
     emit contentChanged();
 }

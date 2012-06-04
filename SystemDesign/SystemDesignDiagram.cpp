@@ -167,6 +167,7 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
                 if (port == 0)
                 {
                     port = new SWPortItem(itrPortPos.key(), item);
+                    connect(port, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
                     item->addPort(port);
                 }
 
@@ -187,6 +188,7 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
                 if (port == 0)
                 {
                     port = new SWPortItem(itrPortPos.key(), item);
+                    connect(port, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
                     item->addPort(port);
                 }
 
@@ -262,6 +264,7 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
                 if (port == 0)
                 {
                     port = new SWPortItem(itrPortPos.key(), item);
+                    connect(port, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
                     item->addPort(port);
                 }
 
@@ -282,6 +285,7 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
                 if (port == 0)
                 {
                     port = new SWPortItem(itrPortPos.key(), item);
+                    connect(port, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
                     item->addPort(port);
                 }
 
@@ -446,7 +450,7 @@ void SystemDesignDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
     else if (dragDefinition_)
     {
         // Check if there is an endpoint close enough the cursor.
-        SWConnectionEndpoint* endPoint =
+        SWConnectionEndpoint* endpoint =
             DiagramUtil::snapToItem<SWConnectionEndpoint>(event->scenePos(), this, GridSize);
 
         if (highlightedEndpoint_ != 0)
@@ -454,7 +458,7 @@ void SystemDesignDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
             highlightedEndpoint_->setHighlight(SWConnectionEndpoint::HIGHLIGHT_OFF);
         }
 
-        highlightedEndpoint_ = endPoint;
+        highlightedEndpoint_ = endpoint;
 
         // Allow the drop event if the end point is undefined or there are no connections
         // and the encompassing component is unpackaged.
@@ -828,7 +832,11 @@ void SystemDesignDiagram::onSelected(QGraphicsItem* newSelection)
         // Check if the selected item was a component.
         if (dynamic_cast<ComponentItem*>(newSelection) != 0)
         {
-            emit componentSelected(dynamic_cast<ComponentItem*>(newSelection));
+            emit componentSelected(static_cast<ComponentItem*>(newSelection));
+        }
+        else if (dynamic_cast<ConnectionEndpoint*>(newSelection) != 0)
+        {
+            emit interfaceSelected(static_cast<ConnectionEndpoint*>(newSelection));
         }
         else
         {
@@ -1322,7 +1330,7 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
                 }
 
                 ColumnDesc desc(dialog.getName(), dialog.getContentType(), dialog.getAllowedItems(), columnWidth);
-                QSharedPointer<QUndoCommand> cmd(new ColumnChangeCommand(column, desc));
+                QSharedPointer<QUndoCommand> cmd(new GraphicsColumnChangeCommand(column, desc));
                 getEditProvider().addCommand(cmd);
             }
         }

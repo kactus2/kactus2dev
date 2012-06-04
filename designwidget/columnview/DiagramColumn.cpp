@@ -127,9 +127,9 @@ QSharedPointer<QUndoCommand> DiagramColumn::createMoveUndoCommand()
 //-----------------------------------------------------------------------------
 // Function: beginUpdateConnPositions()
 //-----------------------------------------------------------------------------
-void DiagramColumn::beginUpdateConnPositions(DiagramConnectionEndpoint* endPoint)
+void DiagramColumn::beginUpdateConnPositions(DiagramConnectionEndpoint* endpoint)
 {
-    foreach (DiagramInterconnection* conn, endPoint->getInterconnections())
+    foreach (DiagramInterconnection* conn, endpoint->getInterconnections())
     {
         if (!conns_.contains(conn))
         {

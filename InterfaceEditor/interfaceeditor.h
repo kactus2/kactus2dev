@@ -96,8 +96,8 @@ private:
 	*/
 	void setPortMaps();
 
-	//! \brief Widget to display the bus type.
-	VLNVDisplayer busType_;
+	//! \brief Widget to display the bus/API/COM type.
+	VLNVDisplayer type_;
 
 	//! \brief Widget to display the abstraction type.
 	VLNVDisplayer absType_;

@@ -106,3 +106,38 @@ void GraphicsColumnAddCommand::redo()
     layout_->addColumn(column_, true);
     del_ = false;
 }
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsColumnChangeCommand()
+//-----------------------------------------------------------------------------
+GraphicsColumnChangeCommand::GraphicsColumnChangeCommand(GraphicsColumn* column, ColumnDesc const& newDesc,
+                                         QUndoCommand* parent) : QUndoCommand(parent),
+                                         column_(column),
+                                         oldDesc_(column->getColumnDesc()),
+                                         newDesc_(newDesc)
+
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: ~GraphicsColumnChangeCommand()
+//-----------------------------------------------------------------------------
+GraphicsColumnChangeCommand::~GraphicsColumnChangeCommand()
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: undo()
+//-----------------------------------------------------------------------------
+void GraphicsColumnChangeCommand::undo()
+{
+    column_->setColumnDesc(oldDesc_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: redo()
+//-----------------------------------------------------------------------------
+void GraphicsColumnChangeCommand::redo()
+{
+    column_->setColumnDesc(newDesc_);
+}

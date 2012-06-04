@@ -85,19 +85,13 @@ editProvider_() {
 	connect(diagram_, SIGNAL(noticeMessage(const QString&)),
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 	
-	connect(diagram_, SIGNAL(portSelected(DiagramPort*)),
-		this, SIGNAL(portSelected(DiagramPort*)), Qt::UniqueConnection);
-    connect(diagram_, SIGNAL(interfaceSelected(DiagramInterface*)),
-        this, SIGNAL(interfaceSelected(DiagramInterface*)), Qt::UniqueConnection);
+	connect(diagram_, SIGNAL(interfaceSelected(ConnectionEndpoint*)),
+        this, SIGNAL(interfaceSelected(ConnectionEndpoint*)), Qt::UniqueConnection);
 	connect(diagram_, SIGNAL(componentSelected(ComponentItem*)),
 		this, SIGNAL(componentSelected(ComponentItem*)), Qt::UniqueConnection);
 	connect(diagram_, SIGNAL(connectionSelected(DiagramInterconnection*)),
 		this, SIGNAL(connectionSelected(DiagramInterconnection*)), Qt::UniqueConnection);
-    connect(diagram_, SIGNAL(adHocPortSelected(DiagramAdHocPort*)),
-        this, SIGNAL(adHocPortSelected(DiagramAdHocPort*)), Qt::UniqueConnection);
-    connect(diagram_, SIGNAL(adHocInterfaceSelected(DiagramAdHocInterface*)),
-        this, SIGNAL(adHocInterfaceSelected(DiagramAdHocInterface*)), Qt::UniqueConnection);
-	connect(diagram_, SIGNAL(clearItemSelection()),
+    connect(diagram_, SIGNAL(clearItemSelection()),
 		this, SIGNAL(clearItemSelection()), Qt::UniqueConnection);
 	connect(diagram_, SIGNAL(componentInstantiated(ComponentItem*)),
 		this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);

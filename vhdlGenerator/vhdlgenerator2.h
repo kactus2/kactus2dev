@@ -235,13 +235,13 @@ private:
 		int rightBound,
 		const QList<VhdlGenerator2::PortConnection>& ports);
 
-	/*! \brief Connect the given endPoint with the signal.
+	/*! \brief Connect the given endpoint with the signal.
 	 *
-	 * \param endPoint The end point that specified the port to connect.
+	 * \param endpoint The end point that specified the port to connect.
 	 * \param signal The signal the port is connected to.
 	 *
 	*/
-	void connectEndPoint(const VhdlConnectionEndPoint& endPoint,
+	void connectEndPoint(const VhdlConnectionEndPoint& endpoint,
 		const QSharedPointer<VhdlSignal> signal);
 
 	/*! \brief Connect the hierarchical interface to the instance interface.

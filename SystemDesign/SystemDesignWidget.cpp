@@ -46,7 +46,7 @@ SystemDesignWidget::SystemDesignWidget(bool onlySW, LibraryInterface* lh, MainWi
       diagram_(0),
       editProvider_()
 {
-    supportedWindows_ = (supportedWindows_ | INSTANCEWINDOW);
+    supportedWindows_ = (supportedWindows_ | INSTANCEWINDOW | INTERFACEWINDOW);
 
     editProvider_ = QSharedPointer<GenericEditProvider>(new GenericEditProvider(EDIT_HISTORY_SIZE));
     diagram_ = new SystemDesignDiagram(onlySW, lh_, mainWnd, *editProvider_, this);
@@ -59,6 +59,8 @@ SystemDesignWidget::SystemDesignWidget(bool onlySW, LibraryInterface* lh, MainWi
         this, SIGNAL(openCSource(ComponentItem*)), Qt::UniqueConnection);
     connect(diagram_, SIGNAL(componentSelected(ComponentItem*)),
         this, SIGNAL(componentSelected(ComponentItem*)), Qt::UniqueConnection);
+    connect(diagram_, SIGNAL(interfaceSelected(ConnectionEndpoint*)),
+        this, SIGNAL(interfaceSelected(ConnectionEndpoint*)), Qt::UniqueConnection);
     connect(diagram_, SIGNAL(clearItemSelection()),
         this, SIGNAL(clearItemSelection()), Qt::UniqueConnection);
     

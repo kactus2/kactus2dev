@@ -102,21 +102,21 @@ ComponentDeleteCommand::ComponentDeleteCommand(DiagramComponent* component, QUnd
     // Create child commands for removing interconnections.
     foreach (QGraphicsItem *item, component_->childItems())
     {
-        DiagramConnectionEndpoint* endPoint = dynamic_cast<DiagramConnectionEndpoint*>(item);
+        DiagramConnectionEndpoint* endpoint = dynamic_cast<DiagramConnectionEndpoint*>(item);
 
-        if (endPoint == 0)
+        if (endpoint == 0)
         {
             continue;
         }
 
-        foreach (DiagramInterconnection* conn, endPoint->getInterconnections())
+        foreach (DiagramInterconnection* conn, endpoint->getInterconnections())
         {
             QUndoCommand* cmd = new ConnectionDeleteCommand(conn, this);
         }
 
-        if (endPoint->getOffPageConnector() != 0)
+        if (endpoint->getOffPageConnector() != 0)
         {
-            foreach (DiagramInterconnection* conn, endPoint->getOffPageConnector()->getInterconnections())
+            foreach (DiagramInterconnection* conn, endpoint->getOffPageConnector()->getInterconnections())
             {
                 QUndoCommand* cmd = new ConnectionDeleteCommand(conn, this);
             }
@@ -174,14 +174,14 @@ ConnectionDeleteCommand::ConnectionDeleteCommand(DiagramInterconnection* conn,
                                                  mode1_(General::MASTER), mode2_(General::MASTER),
                                                  portMaps_(), scene_(conn->scene()), del_(true)
 {
-    QSharedPointer<BusInterface> busIf1 = conn_->endPoint1()->getBusInterface();
-    QSharedPointer<BusInterface> busIf2 = conn_->endPoint2()->getBusInterface();
+    QSharedPointer<BusInterface> busIf1 = conn_->endpoint1()->getBusInterface();
+    QSharedPointer<BusInterface> busIf2 = conn_->endpoint2()->getBusInterface();
 
     if (busIf1 != 0 && busIf1->getBusType().isValid())
     {
         mode1_ = busIf1->getInterfaceMode();
 
-        if (conn_->endPoint1()->isHierarchical())
+        if (conn_->endpoint1()->isHierarchical())
         {
             portMaps_ = busIf1->getPortMaps();
         }
@@ -191,7 +191,7 @@ ConnectionDeleteCommand::ConnectionDeleteCommand(DiagramInterconnection* conn,
     {
         mode2_ = busIf2->getInterfaceMode();
 
-        if (conn_->endPoint2()->isHierarchical())
+        if (conn_->endpoint2()->isHierarchical())
         {
             portMaps_ = busIf2->getPortMaps();
         }
@@ -220,31 +220,31 @@ void ConnectionDeleteCommand::undo()
     // Connect the ends and set the interface modes.
     conn_->connectEnds();
     
-    QSharedPointer<BusInterface> busIf1 = conn_->endPoint1()->getBusInterface();
-    QSharedPointer<BusInterface> busIf2 = conn_->endPoint2()->getBusInterface();
+    QSharedPointer<BusInterface> busIf1 = conn_->endpoint1()->getBusInterface();
+    QSharedPointer<BusInterface> busIf2 = conn_->endpoint2()->getBusInterface();
 
     if (busIf1 != 0 && busIf1->getBusType().isValid())
     {
         busIf1->setInterfaceMode(mode1_);
 
-        if (conn_->endPoint1()->isHierarchical())
+        if (conn_->endpoint1()->isHierarchical())
         {
             busIf1->setPortMaps(portMaps_);
         }
 
-        conn_->endPoint1()->updateInterface();
+        conn_->endpoint1()->updateInterface();
     }
 
     if (busIf2 != 0 && busIf2->getBusType().isValid())
     {
         busIf2->setInterfaceMode(mode2_);
 
-        if (conn_->endPoint2()->isHierarchical())
+        if (conn_->endpoint2()->isHierarchical())
         {
             busIf2->setPortMaps(portMaps_);
         }
 
-        conn_->endPoint2()->updateInterface();
+        conn_->endpoint2()->updateInterface();
     }
 
     scene_->clearSelection();

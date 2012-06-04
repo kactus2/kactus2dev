@@ -12,6 +12,8 @@
 #ifndef GRAPHICSCOLUMNUNDOCOMMANDS_H
 #define GRAPHICSCOLUMNUNDOCOMMANDS_H
 
+#include <models/ColumnDesc.h>
+
 #include <QUndoCommand>
 #include <QPointF>
 
@@ -120,6 +122,58 @@ private:
 
     //! Boolean flag for indicating if the component should be deleted in the destructor.
     bool del_;
+};
+
+//-----------------------------------------------------------------------------
+//! GraphicsColumnChangeCommand class.
+//-----------------------------------------------------------------------------
+class GraphicsColumnChangeCommand : public QUndoCommand
+{
+public:
+    /*!
+     *  Constructor.
+     *
+     *      @param [in] column   The column.
+     *      @param [in] newDesc  The column's new description.
+     */
+    GraphicsColumnChangeCommand(GraphicsColumn* column, ColumnDesc const& newDesc,
+                        QUndoCommand* parent = 0);
+
+    /*!
+     *  Destructor.
+     */
+    ~GraphicsColumnChangeCommand();
+
+    /*!
+     *  Undoes the command.
+     */
+    virtual void undo();
+
+    /*!
+     *  Redoes the command.
+     */
+    virtual void redo();
+
+private:
+    // Disable copying.
+    GraphicsColumnChangeCommand(GraphicsColumnChangeCommand const& rhs);
+    GraphicsColumnChangeCommand& operator=(GraphicsColumnChangeCommand const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The column layout.
+    GraphicsColumnLayout* layout_;
+
+    //! The diagram column.
+    GraphicsColumn* column_;
+
+    //! The column's old description.
+    ColumnDesc oldDesc_;
+
+    //! The column's new description.
+    ColumnDesc newDesc_;
 };
 
 //-----------------------------------------------------------------------------

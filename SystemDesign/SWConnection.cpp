@@ -373,7 +373,7 @@ void SWConnection::updatePosition()
             bool pathOk = false;
             QVector2D delta = delta1;
             QVector2D dir = dir1;
-            SWConnectionEndpoint* endPoint = endpoint1_;
+            SWConnectionEndpoint* endpoint = endpoint1_;
             int index0 = 0;
             int index1 = 1;
             int index2 = 2;
@@ -382,7 +382,7 @@ void SWConnection::updatePosition()
             if (!delta2.isNull())
             {
                 delta = delta2;
-                endPoint = endpoint2_;
+                endpoint = endpoint2_;
                 dir = dir2;
                 index0 = pathPoints_.size() - 1;
                 index1 = pathPoints_.size() - 2;
@@ -403,7 +403,7 @@ void SWConnection::updatePosition()
             }
 
             // Handle the parallel part of the delta.
-            pathPoints_[index0] = endPoint->scenePos();
+            pathPoints_[index0] = endpoint->scenePos();
             QVector2D newSeg1 = QVector2D(pathPoints_[index1] - pathPoints_[index0]);
 
             if (newSeg1.length() < MIN_START_LENGTH || !qFuzzyCompare(seg1, newSeg1.normalized()))

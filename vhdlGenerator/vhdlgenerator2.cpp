@@ -744,8 +744,8 @@ void VhdlGenerator2::connectPorts(const QString& connectionName,
 	int left = minSize - 1;
 	int right = 0;
 
-	// create the endPoints
-	QList<VhdlConnectionEndPoint> endPoints;
+	// create the endpoints
+	QList<VhdlConnectionEndPoint> endpoints;
 	foreach (VhdlGenerator2::PortConnection connection, ports) {
 
 		QString connectionType = connection.instance_->portType(connection.portName_);
@@ -765,9 +765,9 @@ void VhdlGenerator2::connectPorts(const QString& connectionName,
 				instance2));
 		}
 
-		VhdlConnectionEndPoint endPoint(connection.instance_->name(), connection.portName_,
+		VhdlConnectionEndPoint endpoint(connection.instance_->name(), connection.portName_,
 			connection.leftBound_, connection.rightBound_, maxSize-1, right);
-		endPoints.append(endPoint);
+		endpoints.append(endpoint);
 	}
 
 	// if vectored but minSize is only one then convert to scalar signal type
@@ -784,9 +784,9 @@ void VhdlGenerator2::connectPorts(const QString& connectionName,
 	QSharedPointer<VhdlSignal> signal;
 
 	// find a signal to use for connecting the end points
-	foreach (VhdlConnectionEndPoint endPoint, endPoints) {
-		if (signals_.contains(endPoint)) {
-			signal = signals_.value(endPoint);
+	foreach (VhdlConnectionEndPoint endpoint, endpoints) {
+		if (signals_.contains(endpoint)) {
+			signal = signals_.value(endpoint);
 			signal->setBounds(qMax(left, int(signal->left())),
 				qMin(right, int(signal->right())));
 			break;
@@ -800,30 +800,30 @@ void VhdlGenerator2::connectPorts(const QString& connectionName,
 	}
 
 	// connect each end point to given signal
-	foreach (VhdlConnectionEndPoint endPoint, endPoints) {
-		connectEndPoint(endPoint, signal);
+	foreach (VhdlConnectionEndPoint endpoint, endpoints) {
+		connectEndPoint(endpoint, signal);
 	}
 }
 
-void VhdlGenerator2::connectEndPoint( const VhdlConnectionEndPoint& endPoint,
+void VhdlGenerator2::connectEndPoint( const VhdlConnectionEndPoint& endpoint,
 									 const QSharedPointer<VhdlSignal> signal ) {
 
 	Q_ASSERT(signal);
 
 	// if the end point already has a signal associated with it
-	if (signals_.contains(endPoint)) {
+	if (signals_.contains(endpoint)) {
 
-		QSharedPointer<VhdlSignal> oldSignal = signals_.value(endPoint);
+		QSharedPointer<VhdlSignal> oldSignal = signals_.value(endpoint);
 		// get all end points associated with signal for endpoint 2
-		QList<VhdlConnectionEndPoint> endPoints = signals_.keys(oldSignal);
+		QList<VhdlConnectionEndPoint> endpoints = signals_.keys(oldSignal);
 		// replace each end point with association to signal for endpoint
-		foreach (VhdlConnectionEndPoint temp, endPoints) {
+		foreach (VhdlConnectionEndPoint temp, endpoints) {
 			signals_.insert(temp, signal);
 		}
 	}
 	// if end point was not yet specified
 	else {
-		signals_.insert(endPoint, signal);
+		signals_.insert(endpoint, signal);
 	}
 }
 

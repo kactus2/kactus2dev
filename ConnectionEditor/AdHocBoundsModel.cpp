@@ -91,11 +91,11 @@ QVariant AdHocBoundsModel::data(QModelIndex const& index, int role /*= Qt::Displ
             {
                 if (index.row() == 0)
                 {
-                    return connection_->endPoint1()->name();
+                    return connection_->endpoint1()->name();
                 }
                 else
                 {
-                    return connection_->endPoint2()->name();
+                    return connection_->endpoint2()->name();
                 }
             }
 
@@ -107,11 +107,11 @@ QVariant AdHocBoundsModel::data(QModelIndex const& index, int role /*= Qt::Displ
                 {
                     if (index.row() == 0)
                     {
-                        value = connection_->endPoint1()->getPort()->getLeftBound();
+                        value = connection_->endpoint1()->getPort()->getLeftBound();
                     }
                     else
                     {
-                        value = connection_->endPoint2()->getPort()->getLeftBound();
+                        value = connection_->endpoint2()->getPort()->getLeftBound();
                     }
                 }
 
@@ -126,11 +126,11 @@ QVariant AdHocBoundsModel::data(QModelIndex const& index, int role /*= Qt::Displ
                 {
                     if (index.row() == 0)
                     {
-                        value = connection_->endPoint1()->getPort()->getRightBound();
+                        value = connection_->endpoint1()->getPort()->getRightBound();
                     }
                     else
                     {
-                        value = connection_->endPoint2()->getPort()->getRightBound();
+                        value = connection_->endpoint2()->getPort()->getRightBound();
                     }
                 }
 
@@ -149,11 +149,11 @@ QVariant AdHocBoundsModel::data(QModelIndex const& index, int role /*= Qt::Displ
         {
             if (index.row() == 0)
             {
-                return connection_->endPoint1()->getPort()->getLeftBound();
+                return connection_->endpoint1()->getPort()->getLeftBound();
             }
             else
             {
-                return connection_->endPoint2()->getPort()->getLeftBound();
+                return connection_->endpoint2()->getPort()->getLeftBound();
             }
         }
     }
@@ -163,11 +163,11 @@ QVariant AdHocBoundsModel::data(QModelIndex const& index, int role /*= Qt::Displ
         {
             if (index.row() == 0)
             {
-                return connection_->endPoint1()->getPort()->getRightBound();
+                return connection_->endpoint1()->getPort()->getRightBound();
             }
             else
             {
-                return connection_->endPoint2()->getPort()->getRightBound();
+                return connection_->endpoint2()->getPort()->getRightBound();
             }
         }
     }

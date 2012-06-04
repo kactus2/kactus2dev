@@ -41,6 +41,7 @@ class AdHocEditor;
 class DiagramInterconnection;
 class TabWidgetEx;
 class TabDocument;
+class ConnectionEndpoint;
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -147,19 +148,12 @@ public slots:
 	*/
 	void onComponentSelected(ComponentItem* component);
 
-	/*! \brief Called when user selects a port on the draw board.
-	 *
-	 * \param port Pointer to the DiagramPort instance that is selected.
-	 *
-	*/
-	void onPortSelected(DiagramPort* port);
-
 	/*! \brief Called when user selects an interface on the draw board.
 	 *
-	 * \param interface Pointer to the DiagramInterface instance that is selected.
+	 * \param interface Pointer to the interface instance that is selected.
 	 *
 	*/
-	void onInterfaceSelected(DiagramInterface* interface);
+	void onInterfaceSelected(ConnectionEndpoint* interface);
 
 	/*! \brief Called when user selects a connection on the draw board.
 	 *
@@ -167,16 +161,6 @@ public slots:
 	 *
 	*/
 	void onConnectionSelected(DiagramInterconnection* connection);
-
-    /*!
-     *  Called when the user selects an ad-hoc port on the draw board.
-     */
-    void onAdHocPortSelected(DiagramAdHocPort*);
-
-    /*! 
-     *  Called when the user selects an ad-hoc interface on the draw board.
-     */
-    void onAdHocInterfaceSelected(DiagramAdHocInterface*);
 
     //! Called when the menu strip needs to be updated.
     void updateMenuStrip();

@@ -72,11 +72,11 @@ public:
 
 	/*! \brief Add a new port map for the instance.
 	 *
-	 * \param endPoint The end point that specifies the port and signal bounds.
+	 * \param endpoint The end point that specifies the port and signal bounds.
 	 * \param signalName The name of the signal/top port to map the port to.
 	 *
 	*/
-	void addPortMap(const VhdlConnectionEndPoint& endPoint, const QString& signalName);
+	void addPortMap(const VhdlConnectionEndPoint& endpoint, const QString& signalName);
 
 	/*! \brief Add a new port map for the instance.
 	 *

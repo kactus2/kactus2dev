@@ -165,14 +165,14 @@ QString VhdlComponentInstance::name() const {
 	return instanceName_;
 }
 
-void VhdlComponentInstance::addPortMap( const VhdlConnectionEndPoint& endPoint, 
+void VhdlComponentInstance::addPortMap( const VhdlConnectionEndPoint& endpoint, 
 									   const QString& signalName ) {
 
 	// create a map for the port of this instance
-	VhdlPortMap instancePort(endPoint.portName(), endPoint.portLeft(), endPoint.portRight());
+	VhdlPortMap instancePort(endpoint.portName(), endpoint.portLeft(), endpoint.portRight());
 
 	// create a map for the defaultValue/top port that is connected
-	VhdlPortMap signalMapping(signalName, endPoint.signalLeft(), endPoint.signalRight());
+	VhdlPortMap signalMapping(signalName, endpoint.signalLeft(), endpoint.signalRight());
 
 	addMapping(instancePort, signalMapping);
 }

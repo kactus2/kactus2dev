@@ -315,14 +315,8 @@ void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forc
 
 	connect(designWidget, SIGNAL(componentSelected(ComponentItem*)),
 		this, SLOT(onComponentSelected(ComponentItem*)), Qt::UniqueConnection);
-	connect(designWidget, SIGNAL(interfaceSelected(DiagramInterface*)),
-		this, SLOT(onInterfaceSelected(DiagramInterface*)), Qt::UniqueConnection);
-	connect(designWidget, SIGNAL(portSelected(DiagramPort*)),
-		this, SLOT(onPortSelected(DiagramPort*)), Qt::UniqueConnection);
-    connect(designWidget, SIGNAL(adHocPortSelected(DiagramAdHocPort*)),
-        this, SLOT(onAdHocPortSelected(DiagramAdHocPort*)), Qt::UniqueConnection);
-    connect(designWidget, SIGNAL(adHocInterfaceSelected(DiagramAdHocInterface*)),
-        this, SLOT(onAdHocInterfaceSelected(DiagramAdHocInterface*)), Qt::UniqueConnection);
+	connect(designWidget, SIGNAL(interfaceSelected(ConnectionEndpoint*)),
+		this, SLOT(onInterfaceSelected(ConnectionEndpoint*)), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(connectionSelected(DiagramInterconnection*)),
 		this, SLOT(onConnectionSelected(DiagramInterconnection*)), Qt::UniqueConnection);
 
@@ -411,6 +405,8 @@ void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName, bool fo
 
     connect(designWidget, SIGNAL(componentSelected(ComponentItem*)),
         this, SLOT(onComponentSelected(ComponentItem*)), Qt::UniqueConnection);
+    connect(designWidget, SIGNAL(interfaceSelected(ConnectionEndpoint*)),
+        this, SLOT(onInterfaceSelected(ConnectionEndpoint*)), Qt::UniqueConnection);
     connect(designWidget, SIGNAL(destroyed(QObject*)),
         this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
     connect(designWidget, SIGNAL(clearItemSelection()),
@@ -1175,57 +1171,33 @@ void MainWindow::onComponentSelected( ComponentItem* component ) {
 	}
 }
 
-void MainWindow::onPortSelected( DiagramPort* port ) {
-	Q_ASSERT(port);
-
-	// if the port has an encompassing component then it is selected
-	ComponentItem* component = port->encompassingComp();
-
-	if (component->componentModel()->getVlnv()->isValid()) {
-
-		libraryHandler_->onSelectionChanged(*component->componentModel()->getVlnv());
-		previewBox_->setComponent(*component->componentModel()->getVlnv());
-	}
-	// if no component can be identified
-	else
-		libraryHandler_->onClearSelection();
-
-	connectionEditor_->clear();
-	instanceEditor_->clear();
-    adHocEditor_->clear();
-
-    interfaceEditor_->setInterface(port);
-}
-
-void MainWindow::onInterfaceSelected( DiagramInterface* interface ) {
+void MainWindow::onInterfaceSelected( ConnectionEndpoint* interface ) {
 	Q_ASSERT(interface);
 
+    // if the port has an encompassing component then it is selected
+    ComponentItem* component = interface->encompassingComp();
+
+    if (component != 0 && component->componentModel()->getVlnv()->isValid()) {
+
+        libraryHandler_->onSelectionChanged(*component->componentModel()->getVlnv());
+        previewBox_->setComponent(*component->componentModel()->getVlnv());
+    }
+    // if no component can be identified
+    else
+        libraryHandler_->onClearSelection();
+
     adHocEditor_->clear();
 	connectionEditor_->clear();
 	instanceEditor_->clear();
-	interfaceEditor_->setInterface(interface);
-}
 
-//-----------------------------------------------------------------------------
-// Function: MainWindow::onAdHocPortSelected()
-//-----------------------------------------------------------------------------
-void MainWindow::onAdHocPortSelected(DiagramAdHocPort*)
-{
-    adHocEditor_->clear();
-    connectionEditor_->clear();
-    instanceEditor_->clear();
-    interfaceEditor_->clear();
-}
-
-//-----------------------------------------------------------------------------
-// Function: MainWindow::onAdHocInterfaceSelected()
-//-----------------------------------------------------------------------------
-void MainWindow::onAdHocInterfaceSelected(DiagramAdHocInterface*)
-{
-    adHocEditor_->clear();
-    connectionEditor_->clear();
-    instanceEditor_->clear();
-    interfaceEditor_->clear();
+    if (!interface->isAdHoc())
+    {
+	    interfaceEditor_->setInterface(interface);
+    }
+    else
+    {
+        interfaceEditor_->clear();
+    }
 }
 
 void MainWindow::onConnectionSelected( DiagramInterconnection* connection ) {
@@ -2602,6 +2574,8 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName, boo
     
 	connect(designWidget, SIGNAL(componentSelected(ComponentItem*)),
 		this, SLOT(onComponentSelected(ComponentItem*)), Qt::UniqueConnection);
+    connect(designWidget, SIGNAL(interfaceSelected(ConnectionEndpoint*)),
+        this, SLOT(onInterfaceSelected(ConnectionEndpoint*)), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(destroyed(QObject*)),
 		this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(clearItemSelection()),

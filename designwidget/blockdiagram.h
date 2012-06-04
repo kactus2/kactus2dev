@@ -35,6 +35,7 @@ class AbstractionDefinition;
 class VLNV;
 class GenericEditProvider;
 class DesignWidget;
+class ConnectionEndpoint;
 
 /*! \brief BlockDiagram is a graphical view to a design
  *
@@ -150,39 +151,12 @@ signals:
     //! Signaled when the bus with the given vlnv should be opened for editing.
     void openBus(VLNV const& vlnv, VLNV const& absDefVLNV, bool disableBusDef);
 
-	/*! \brief Emitted when user selects a port on the draw board.
-	 *
-	 * \param port Pointer to the DiagramPort instance that is selected.
-	 *
-	*/
-	void portSelected(DiagramPort* port);
-
-    /*! \brief Emitted when user selects an interface on the draw board.
-	 *
-	 * \param interface Pointer to the DiagramInterface instance that is selected.
-	 *
-	*/
-	void interfaceSelected(DiagramPort* interface);
-
-    /*!
-     *  Emitted when user selects an interface on the draw board.
-     *
-     *      @param [in] interface The selected interface.
-     */
-    void interfaceSelected(DiagramInterface* interface);
-
 	/*! \brief Emitted when user selects a connection on the draw board.
 	 *
 	 * \param connection Pointer to the selected connection.
 	 *
 	*/
 	void connectionSelected(DiagramInterconnection* connection);
-
-    //! Emitted when the user selects an ad-hoc port.
-    void adHocPortSelected(DiagramAdHocPort* port);
-
-    //! Emitted when the user selects an ad-hoc interface.
-    void adHocInterfaceSelected(DiagramAdHocInterface* interface);
 
 public slots:
     /*! \brief Bring the selected item to front

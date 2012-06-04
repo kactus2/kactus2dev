@@ -182,13 +182,13 @@ void ConnectionEditor::setConnection( DiagramInterconnection* connection ) {
 
 	connection_ = connection;
 
-	DiagramConnectionEndpoint* endPoint1 = connection->endPoint1();
-	Q_ASSERT(endPoint1);
+	DiagramConnectionEndpoint* endpoint1 = connection->endpoint1();
+	Q_ASSERT(endpoint1);
 
-    if (endPoint1->isBus())
+    if (endpoint1->isBus())
     {
-	    busType_.setVLNV(endPoint1->getBusInterface()->getBusType(), true);
-	    absType_.setVLNV(endPoint1->getBusInterface()->getAbstractionType(), true);
+	    busType_.setVLNV(endpoint1->getBusInterface()->getBusType(), true);
+	    absType_.setVLNV(endpoint1->getBusInterface()->getAbstractionType(), true);
     }
     else
     {
@@ -196,11 +196,11 @@ void ConnectionEditor::setConnection( DiagramInterconnection* connection ) {
         adHocBoundsTable_.resizeRowsToContents();
     }
 
-	QString endPoint1Name = endPoint1->name();
-	QString endPoint2Name = connection->endPoint2()->name();
+	QString endpoint1Name = endpoint1->name();
+	QString endpoint2Name = connection->endpoint2()->name();
 
 	// set the names of the connected instances
-	connectedInstances_.setText(QString("%1 - %2").arg(endPoint1Name).arg(endPoint2Name));
+	connectedInstances_.setText(QString("%1 - %2").arg(endpoint1Name).arg(endpoint2Name));
 
 	// set text for the name editor, signal must be disconnected when name is set 
 	// to avoid loops 
@@ -222,7 +222,7 @@ void ConnectionEditor::setConnection( DiagramInterconnection* connection ) {
 	connect(connection, SIGNAL(contentChanged()), 
 		this, SLOT(refresh()), Qt::UniqueConnection);
 
-    if (endPoint1->isBus())
+    if (endpoint1->isBus())
     {
 	    setPortMaps();
     }
@@ -231,7 +231,7 @@ void ConnectionEditor::setConnection( DiagramInterconnection* connection ) {
 	
 	// if either end point is hierarchical then there is no description to set
 	if (connection_->isBus() &&
-        (endPoint1->isHierarchical() || connection->endPoint2()->isHierarchical()))
+        (endpoint1->isHierarchical() || connection->endpoint2()->isHierarchical()))
     {		
 		// description exists only for normal interconnections
 		descriptionEdit_.setDisabled(true);
@@ -305,21 +305,21 @@ void ConnectionEditor::setPortMaps() {
 	portWidget_.clearContents();
 
 	// get the interface and component for end point 1
-	QSharedPointer<BusInterface> busIf1 = connection_->endPoint1()->getBusInterface();
+	QSharedPointer<BusInterface> busIf1 = connection_->endpoint1()->getBusInterface();
 	Q_ASSERT(busIf1);
 	QList<QSharedPointer<General::PortMap> > portMaps1 = busIf1->getPortMaps();
-	QSharedPointer<Component> comp1 = connection_->endPoint1()->getOwnerComponent();
+	QSharedPointer<Component> comp1 = connection_->endpoint1()->getOwnerComponent();
 	Q_ASSERT(comp1);
 
 	// get the interface and component for end point 2
-	QSharedPointer<BusInterface> busIf2 = connection_->endPoint2()->getBusInterface();
+	QSharedPointer<BusInterface> busIf2 = connection_->endpoint2()->getBusInterface();
 	Q_ASSERT(busIf2);
 	QList<QSharedPointer<General::PortMap> > portMaps2 = busIf2->getPortMaps();
-	QSharedPointer<Component> comp2 = connection_->endPoint2()->getOwnerComponent();
+	QSharedPointer<Component> comp2 = connection_->endpoint2()->getOwnerComponent();
 	Q_ASSERT(comp2);
 
 	// set the header for end point 1
-	ComponentItem* diacomp1 = connection_->endPoint1()->encompassingComp();
+	ComponentItem* diacomp1 = connection_->endpoint1()->encompassingComp();
 	// if endpoint1 was a component instance
 	if (diacomp1) {
 		portWidget_.horizontalHeaderItem(0)->setText(diacomp1->name());
@@ -330,7 +330,7 @@ void ConnectionEditor::setPortMaps() {
 	}
 
 	// set the header for end point 2
-	ComponentItem* diacomp2 = connection_->endPoint2()->encompassingComp();
+	ComponentItem* diacomp2 = connection_->endpoint2()->encompassingComp();
 	// if endpoint1 was a component instance
 	if (diacomp2) {
 		portWidget_.horizontalHeaderItem(1)->setText(diacomp2->name());
