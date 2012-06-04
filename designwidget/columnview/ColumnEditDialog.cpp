@@ -19,7 +19,7 @@
 //-----------------------------------------------------------------------------
 // Function: ColumnEditDialog()
 //-----------------------------------------------------------------------------
-ColumnEditDialog::ColumnEditDialog(QWidget* parent, DiagramColumn const* column)
+ColumnEditDialog::ColumnEditDialog(QWidget* parent, bool sw, GraphicsColumn const* column)
     : QDialog(parent), layout_(0), nameLabel_(0), typeLabel_(0), typeCombo_(0),
       allowedItemsGroup_(0), column_(column)
 {
@@ -38,9 +38,14 @@ ColumnEditDialog::ColumnEditDialog(QWidget* parent, DiagramColumn const* column)
 
     typeCombo_ = new QComboBox(this);
     typeCombo_->addItem(tr("IO"));
-    typeCombo_->addItem(tr("Buses"));
     typeCombo_->addItem(tr("Components"));
-    typeCombo_->addItem(tr("Custom"));
+
+    if (!sw)
+    {
+        typeCombo_->addItem(tr("Buses"));
+        typeCombo_->addItem(tr("Custom"));
+    }
+
     typeCombo_->setCurrentIndex(-1);
 
     layout_->addWidget(typeCombo_, 3, 0, 1, 2);
@@ -61,6 +66,7 @@ ColumnEditDialog::ColumnEditDialog(QWidget* parent, DiagramColumn const* column)
     }
 
     layout_->addWidget(allowedItemsGroup_, 4, 0, 1, 2);
+    allowedItemsGroup_->setVisible(!sw);
 
     // Create the OK and Cancel buttons.
     QPushButton* btnOK = new QPushButton(this);
@@ -82,7 +88,39 @@ ColumnEditDialog::ColumnEditDialog(QWidget* parent, DiagramColumn const* column)
         setWindowTitle(tr("Edit Column"));
         nameEdit_->setText(column_->getName());
         setAllowedItems(column_->getColumnDesc().getAllowedItems());
-        typeCombo_->setCurrentIndex(column_->getContentType());
+
+        switch (column_->getContentType())
+        {
+        case COLUMN_CONTENT_IO:
+            {
+                typeCombo_->setCurrentIndex(typeCombo_->findText("IO"));
+                break;
+            }
+
+        case COLUMN_CONTENT_BUSES:
+            {
+                typeCombo_->setCurrentIndex(typeCombo_->findText("Buses"));
+                break;
+            }
+
+        case COLUMN_CONTENT_COMPONENTS:
+            {
+                typeCombo_->setCurrentIndex(typeCombo_->findText("Components"));
+                break;
+            }
+
+        case COLUMN_CONTENT_CUSTOM:
+            {
+                typeCombo_->setCurrentIndex(typeCombo_->findText("Custom"));
+                break;
+            }
+
+        default:
+            {
+                Q_ASSERT(false);
+                break;
+            }
+        }
     }
     else
     {

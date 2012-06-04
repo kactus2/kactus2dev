@@ -19,6 +19,7 @@
 #include "LibraryManager/libraryinterface.h"
 
 #include "columnview/ColumnEditDialog.h"
+#include "columnview/DiagramColumn.h"
 
 #include <models/librarycomponent.h>
 #include <models/component.h>
@@ -892,7 +893,7 @@ void DesignWidget::onVerticalScroll(int y)
 //-----------------------------------------------------------------------------
 void DesignWidget::addColumn()
 {
-    ColumnEditDialog dlg(this);
+    ColumnEditDialog dlg(this, false);
 
     if (dlg.exec() == QDialog::Accepted)
     {

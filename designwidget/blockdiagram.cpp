@@ -1333,24 +1333,26 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
     }
     else if (item->type() == DiagramColumn::Type)
     {
-        item->setSelected(true);
-        DiagramColumn* column = qgraphicsitem_cast<DiagramColumn*>(item);
-
-        ColumnEditDialog dialog((QWidget*)parent(), column);
-
-        if (dialog.exec() == QDialog::Accepted)
+        if (!isProtected())
         {
-            int columnWidth = 259;
+            item->setSelected(true);
+            DiagramColumn* column = qgraphicsitem_cast<DiagramColumn*>(item);
 
-            if (dialog.getContentType() == COLUMN_CONTENT_IO)
+            ColumnEditDialog dialog((QWidget*)parent(), false, column);
+
+            if (dialog.exec() == QDialog::Accepted)
             {
-                columnWidth = 119;
+                int columnWidth = 259;
+
+                if (dialog.getContentType() == COLUMN_CONTENT_IO)
+                {
+                    columnWidth = 119;
+                }
+
+                ColumnDesc desc(dialog.getName(), dialog.getContentType(), dialog.getAllowedItems(), columnWidth);
+                QSharedPointer<QUndoCommand> cmd(new ColumnChangeCommand(column, desc));
+                getEditProvider().addCommand(cmd);
             }
-
-            ColumnDesc desc(dialog.getName(), dialog.getContentType(), dialog.getAllowedItems(), columnWidth);
-            QSharedPointer<QUndoCommand> cmd(new ColumnChangeCommand(column, desc));
-            getEditProvider().addCommand(cmd);
-
         }
     }
     else if (item->type() == DiagramPort::Type || item->type() == DiagramInterface::Type)

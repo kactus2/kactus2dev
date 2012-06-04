@@ -15,6 +15,7 @@
 #include "SystemMoveCommands.h"
 #include "SystemAddCommands.h"
 
+#include <designwidget/columnview/ColumnEditDialog.h>
 #include <designwidget/DiagramChangeCommands.h>
 
 #include "SystemColumn.h"
@@ -1299,6 +1300,30 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
             {
                 // Open up the component editor.
                 emit openComponent(*comp->componentModel()->getVlnv());
+            }
+        }
+    }
+    else if (item->type() == SystemColumn::Type)
+    {
+        if (!isProtected() && onlySW_)
+        {
+            item->setSelected(true);
+            SystemColumn* column = qgraphicsitem_cast<SystemColumn*>(item);
+
+            ColumnEditDialog dialog((QWidget*)parent(), true, column);
+
+            if (dialog.exec() == QDialog::Accepted)
+            {
+                int columnWidth = 259;
+
+                if (dialog.getContentType() == COLUMN_CONTENT_IO)
+                {
+                    columnWidth = 119;
+                }
+
+                ColumnDesc desc(dialog.getName(), dialog.getContentType(), dialog.getAllowedItems(), columnWidth);
+                QSharedPointer<QUndoCommand> cmd(new ColumnChangeCommand(column, desc));
+                getEditProvider().addCommand(cmd);
             }
         }
     }

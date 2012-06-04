@@ -450,7 +450,7 @@ void SystemDesignWidget::addColumn()
 {
     if (onlySW_)
     {
-        ColumnEditDialog dlg(this);
+        ColumnEditDialog dlg(this, true);
         // TODO: Enable only part of the options in the column edit dialog.
 
         if (dlg.exec() == QDialog::Accepted)

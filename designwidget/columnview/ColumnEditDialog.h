@@ -20,7 +20,7 @@
 #include <QCheckBox>
 #include <QGridLayout>
 
-#include "DiagramColumn.h"
+#include <common/graphicsItems/GraphicsColumn.h>
 
 //-----------------------------------------------------------------------------
 //! ColumnEditDialog class.
@@ -32,8 +32,12 @@ class ColumnEditDialog : public QDialog
 public:
     /*!
      *  Constructor.
+     *
+     *      @param [in] parent  The parent widget.
+     *      @param [in] sw      If true, the dialog shows only options valid for SW designs.
+     *      @param [in] column  The existing column to edit.
      */
-    ColumnEditDialog(QWidget* parent, DiagramColumn const* column = 0);
+    ColumnEditDialog(QWidget* parent, bool sw, GraphicsColumn const* column = 0);
 
     /*!
      *  Destructor.
@@ -99,7 +103,7 @@ private:
     QCheckBox* itemCheckBoxes_[CIT_COUNT];
 
     //! The column that is being edited. If null, we're creating a new column.
-    DiagramColumn const* column_;
+    GraphicsColumn const* column_;
 };
 
 //-----------------------------------------------------------------------------

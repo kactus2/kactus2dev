@@ -11,8 +11,6 @@
 
 #include "DiagramColumn.h"
 
-#include "ColumnEditDialog.h"
-
 #include "../DiagramMoveCommands.h"
 #include "../diagraminterface.h"
 #include "../diagramcomponent.h"

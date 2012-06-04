@@ -388,7 +388,7 @@ bool GraphicsColumn::isItemAllowed(QGraphicsItem* item) const
 //-----------------------------------------------------------------------------
 // Function: GraphicsColumn::isItemAllowed()
 //-----------------------------------------------------------------------------
-bool GraphicsColumn::isItemAllowed(QGraphicsItem* item, unsigned int allowedItems) const
+bool GraphicsColumn::isItemAllowed(QGraphicsItem* item, unsigned int) const
 {
     return (item->type() != type());
 }
