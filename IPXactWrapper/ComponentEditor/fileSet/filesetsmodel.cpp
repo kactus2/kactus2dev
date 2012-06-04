@@ -109,7 +109,8 @@ QVariant FileSetsModel::data( const QModelIndex& index,
 					 }
 		}
 	}
-	else if (Qt::UserRole == role && index.column() == 2) {
+	// for user role a QStringList is returned
+	else if (FileSetsModel::USER_DISPLAY_ROLE == role && index.column() == 2) {
 		return fileSets_.at(index.row())->getGroups();
 	}
 	else if (Qt::ForegroundRole == role) {
@@ -147,7 +148,9 @@ bool FileSetsModel::setData( const QModelIndex& index,
 				break;
 					}
 			case 2: {
-				fileSets_[index.row()]->setGroups(value.toStringList());
+				QString str = value.toString();
+				QStringList groupNames = str.split(' ', QString::SkipEmptyParts);
+				fileSets_[index.row()]->setGroups(groupNames);
 				break;
 					}
 			default: {
@@ -155,6 +158,13 @@ bool FileSetsModel::setData( const QModelIndex& index,
 					 }
 		}
 
+		emit dataChanged(index, index);
+		emit contentChanged();
+		return true;
+	}
+	// for user edit role a QStringList is used
+	else if (FileSetsModel::USER_EDIT_ROLE == role && index.column() == 2) {
+		fileSets_[index.row()]->setGroups(value.toStringList());
 		emit dataChanged(index, index);
 		emit contentChanged();
 		return true;

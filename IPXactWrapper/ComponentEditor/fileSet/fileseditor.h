@@ -9,14 +9,16 @@
 #define FILESEDITOR_H
 
 #include "filesmodel.h"
+#include "filesview.h"
 #include <models/fileset.h>
 #include <models/file.h>
 #include <models/component.h>
-#include <common/views/EditableTableView/editabletableview.h>
 
 #include <QGroupBox>
 #include <QSharedPointer>
 #include <QPushButton>
+
+class LibraryInterface;
 
 /*! \brief The editor to add/remove/edit files of a file set.
  *
@@ -30,12 +32,14 @@ public:
 	 *
 	 * \param component Pointer to the component being edited.
 	 * \param fileSet Pointer to the file set being edited.
+	 * \param handler Pointer to the instance that manages the library.
 	 * \param parent Pointer to the owner of this editor.
 	 * \param title The title for the group box.
 	 *
 	*/
 	FilesEditor(QSharedPointer<Component> component,
 		QSharedPointer<FileSet> fileSet,
+		LibraryInterface* handler,
 		QWidget *parent,
 		const QString& title = tr("Files"));
 
@@ -61,9 +65,7 @@ signals:
 
 private slots:
 
-	/*! \brief Add new files to file set.
-	 *
-	*/
+	//! \brief Handler for addFilesButton clicked() signal.
 	void onAddFiles();
 
 private:
@@ -74,11 +76,20 @@ private:
 	//! \brief No assignment
 	FilesEditor& operator=(const FilesEditor& other);
 
+	//! \brief Pointer to the instance that manages the library.
+	LibraryInterface* handler_;
+
+	//! \brief Pointer to the component being edited.
+	QSharedPointer<Component> component_;
+
+	//! \brief Pointer to the file set being edited.
+	QSharedPointer<FileSet> fileSet_; 
+
 	//! \brief Contains the files to display.
 	QList<QSharedPointer<File> >& files_;
 
 	//! \brief The view to display the file information.
-	EditableTableView view_;
+	FilesView view_;
 
 	//! \brief The model to edit the file summary.
 	FilesModel model_;

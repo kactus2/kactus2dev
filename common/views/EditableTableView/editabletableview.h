@@ -115,19 +115,19 @@ protected:
 private slots:
 
 	//! \brief Handler for add action
-	void onAddAction();
+	virtual void onAddAction();
 
 	//! \brief Handler for remove action
-	void onRemoveAction();
+	virtual void onRemoveAction();
 
 	//! \brief Handler for copy action.
-	void onCopyAction();
+	virtual void onCopyAction();
 
 	//! \brief Handler for paste action
-	void onPasteAction();
+	virtual void onPasteAction();
 
 	//! \brief Handler for cell clear action
-	void onClearAction(); 
+	virtual void onClearAction(); 
 
 private:
 	//! \brief No copying

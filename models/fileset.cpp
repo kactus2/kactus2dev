@@ -459,6 +459,18 @@ void FileSet::addFile(File* file) {
 	files_.append(QSharedPointer<File>(file));
 }
 
+void FileSet::addFile( const QString& filePath ) {
+
+	// if file already exists
+	if (contains(filePath)) {
+		return;
+	}
+
+	// create the file and add it to list
+	QSharedPointer<File> file(new File(filePath, this));
+	files_.append(file);
+}
+
 File* FileSet::getFile(const QString logicalName) const {
 	// search all files
 	for (int i = 0; i < files_.size(); ++i) {

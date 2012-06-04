@@ -6,7 +6,7 @@
  */
 
 #include "fileseteditor.h"
-
+#include <LibraryManager/libraryinterface.h>
 #include <models/component.h>
 
 #include <QStringList>
@@ -14,18 +14,18 @@
 
 #include <QDebug>
 
-FileSetEditor::FileSetEditor( const QString& baseLocation,
+FileSetEditor::FileSetEditor(LibraryInterface* handler,
 							 QSharedPointer<Component> component,
 							 QSharedPointer<FileSet> fileSet, 
 							 QWidget *parent ):
 ItemEditor(component, parent),
-baseLocation_(baseLocation),
+baseLocation_(handler->getPath(*component->getVlnv())),
 fileSet_(fileSet), 
 nameEditor_(fileSet->getNameGroup(), this),
 groups_(tr("Group identifiers"), this),
 fileBuilders_(fileSet->getDefaultFileBuilders(), this),
-files_(component, fileSet, this),
-dependencies_(tr("Dependent directories"), baseLocation_, this) {
+files_(component, fileSet, handler, this),
+dependencies_(tr("Dependent directories"), handler->getPath(*component->getVlnv()), this) {
 
 	initialize();
 }

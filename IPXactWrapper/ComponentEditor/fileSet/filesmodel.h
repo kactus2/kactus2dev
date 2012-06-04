@@ -9,10 +9,14 @@
 #define FILESMODEL_H
 
 #include <models/file.h>
+#include <models/fileset.h>
+#include <models/component.h>
 
 #include <QAbstractTableModel>
 #include <QList>
 #include <QSharedPointer>
+
+class LibraryInterface;
 
 /*! \brief The model that contains the files to edit in files summary editor.
  *
@@ -23,13 +27,17 @@ class FilesModel : public QAbstractTableModel {
 public:
 
 	/*! \brief The constructor
-	 *
-	 * \param files Contains the files to edit.
+	 * 
+	 * \param handler Pointer to the instance that manages the library.
+	 * \param component Pointer to the component being edited.
+	 * \param fileSet Pointer to the file set being edited.
 	 * \param parent Pointer to the owner of this model.
 	 *
 	*/
-	FilesModel(QList<QSharedPointer<File> >& files,
-		QObject *parent);
+	FilesModel(LibraryInterface* handler,
+		QSharedPointer<Component> component,
+		QSharedPointer<FileSet> fileSet,
+		QObject* parent);
 	
 	//! \brief The destructor
 	~FilesModel();
@@ -93,10 +101,11 @@ public slots:
 
 	/*! \brief Add a new item to the given index.
 	 *
-	 * \param index The index identifying the position for new item.
+	 * \param index The index identifying the position for new file.
+	 * \param filePath The file path to the file to be added.
 	 *
 	*/
-	virtual void onAddItem(const QModelIndex& index);
+	virtual void onAddItem(const QModelIndex& index, const QString& filePath);
 
 	/*! \brief Remove the item in the given index.
 	 *
@@ -105,12 +114,32 @@ public slots:
 	*/
 	virtual void onRemoveItem(const QModelIndex& index);
 
+signals:
+
+	//! \brief Emitted when the model changes.
+	void contentChanged();
+
+	//! \brief Emitted when a file is added to the list.
+	void fileAdded(int index);
+
+	//! \brief Emitted when a file is removed from the list.
+	void fileRemoved(int index);
+
 private:
 	//! \brief No copying
 	FilesModel(const FilesModel& other);
 
 	//! \brief No assignment
 	FilesModel& operator=(const FilesModel& other);
+
+	//! \brief Pointer to the instance that manages the library.
+	LibraryInterface* handler_;
+
+	//! \brief Pointer to the component being edited.
+	QSharedPointer<Component> component_;
+
+	//! \brief Pointer to the file set that contains the files.
+	QSharedPointer<FileSet> fileSet_;
 
 	//! \brief Contains the files to display.
 	QList<QSharedPointer<File> >& files_;

@@ -79,6 +79,9 @@ private:
 	//! \brief Pointer to the file set being edited.
 	QSharedPointer<FileSet> fileSet_;
 
+	//! \brief Contains the files of the file set.
+	QList<QSharedPointer<File> >& files_;
+
 	//! \brief The editor to edit the file set.
 	FileSetEditor editor_;
 };

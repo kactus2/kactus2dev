@@ -271,6 +271,15 @@ public:
 	 */
 	void addFile(File* file);
 
+	/*! \brief Add a new file to the file set.
+	 *
+	 * If the file is already contained in the file set then nothing is done.
+	 *
+	 * \param filePath Path to the file to add (this should be relative path).
+	 *
+	*/
+	void addFile(const QString& filePath);
+
 	/*! \brief Get pointer to the file with given logical name.
 	 *
 	 * \param logicalName The logical name of the wanted file. If multiple

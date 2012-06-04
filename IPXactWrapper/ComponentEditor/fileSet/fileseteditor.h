@@ -21,6 +21,8 @@
 #include <QSharedPointer>
 #include <QString>
 
+class LibraryInterface;
+
 /*! \brief FileSetEditor is a widget to edit the details of a FileSet.
  *
  */
@@ -31,13 +33,13 @@ public:
 
 	/*! \brief The constructor
 	 *
-	 * \param baseLocation The file path used as base for the relative paths.
+	 * \param handler Pointer to the instance that manages the library.
 	 * \param component Pointer to the component model that is being edited.
 	 * \param dataPointer Pointer to the FileSet that is being edited
 	 * \param parent Pointer to the owner of this widget.
 	 *
 	*/
-	FileSetEditor(const QString& baseLocation, 
+	FileSetEditor(LibraryInterface* handler,
 		QSharedPointer<Component> component, 
 		QSharedPointer<FileSet> fileSet,
 		QWidget *parent);

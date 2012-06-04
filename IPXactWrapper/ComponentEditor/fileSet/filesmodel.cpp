@@ -6,15 +6,22 @@
  */
 
 #include "filesmodel.h"
+#include <models/generaldeclarations.h>
+#include <LibraryManager/libraryinterface.h>
 
 #include <QStringList>
 #include <QColor>
 #include <QFileInfo>
 
-FilesModel::FilesModel( QList<QSharedPointer<File> >& files, 
-					   QObject *parent ):
+FilesModel::FilesModel(LibraryInterface* handler,
+					   QSharedPointer<Component> component,
+					   QSharedPointer<FileSet> fileSet,
+					   QObject* parent):
 QAbstractTableModel(parent),
-files_(files) {
+handler_(handler),
+component_(component),
+fileSet_(fileSet), 
+files_(fileSet->getFiles()) {
 
 }
 
@@ -137,10 +144,52 @@ bool FilesModel::setData( const QModelIndex& index, const QVariant& value, int r
 	return false;
 }
 
-void FilesModel::onAddItem( const QModelIndex& index ) {
+void FilesModel::onAddItem( const QModelIndex& index, const QString& filePath ) {
+	int row = files_.size();
 
+	// if the index is valid then add the item to the correct position
+	if (index.isValid()) {
+		row = index.row();
+	}
+
+	// convert the given path into relative path
+	const QString xmlPath = handler_->getPath(*component_->getVlnv());
+	const QString relPath = General::getRelativePath(xmlPath, filePath);
+
+	// if relative path could not be created.
+	if (relPath.isEmpty()) {
+		return;
+	}
+
+	beginInsertRows(QModelIndex(), row, row);
+	files_.insert(row, QSharedPointer<File>(new File(relPath, fileSet_.data())));
+	endInsertRows();
+
+	// inform navigation tree that file set is added
+	emit fileAdded(row);
+
+	// tell also parent widget that contents have been changed
+	emit contentChanged();
 }
 
 void FilesModel::onRemoveItem( const QModelIndex& index ) {
+	// don't remove anything if index is invalid
+	if (!index.isValid()) {
+		return;
+	}
+	// make sure the row number if valid
+	else if (index.row() < 0 || index.row() >= files_.size()) {
+		return;
+	}
 
+	// remove the specified item
+	beginRemoveRows(QModelIndex(), index.row(), index.row());
+	files_.removeAt(index.row());
+	endRemoveRows();
+
+	// inform navigation tree that file set has been removed
+	emit fileRemoved(index.row());
+
+	// tell also parent widget that contents have been changed
+	emit contentChanged();
 }

@@ -30,6 +30,12 @@ public:
 	//! \brief The minimum height for the custom list editor.
 	static const int LIST_EDITOR_MIN_HEIGHT = 100;
 
+	//! \brief USER_DISPLAY_ROLE returns QStringList for column 2
+	static const int USER_DISPLAY_ROLE = Qt::UserRole;
+
+	//! \brief USER_EDIT_ROLE takes QStringList for column 2
+	static const int USER_EDIT_ROLE = Qt::UserRole + 1;
+
 	/*! \brief The constructor
 	 *
 	 * \param parent Pointer to the owner of the delegate.

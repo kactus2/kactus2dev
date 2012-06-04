@@ -24,6 +24,7 @@ proxy_(this) {
 	// items can not be dragged
 	view_.setItemsDraggable(false);
 
+	// set the delegate to provide editors
 	view_.setItemDelegate(new FileBuildersDelegate(this));
 
 	// set source model for proxy
@@ -38,7 +39,10 @@ proxy_(this) {
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&view_);
 
-	setMinimumWidth(450);
+	// set default widths for columns
+	view_.setColumnWidth(0, 170);
+	view_.setColumnWidth(1, 100);
+	view_.setColumnWidth(2, 300);
 
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);

@@ -64,7 +64,7 @@ void FileSetsDelegate::setEditorData( QWidget* editor, const QModelIndex& index 
 		case FileSetsDelegate::GROUP_COLUMN: {
 			ListEditor* listEditor = qobject_cast<ListEditor*>(editor);
 			Q_ASSERT(listEditor);
-			QStringList groups = index.model()->data(index, Qt::UserRole).toStringList();
+			QStringList groups = index.model()->data(index, FileSetsDelegate::USER_DISPLAY_ROLE).toStringList();
 			listEditor->setItems(groups);
 
 			break;
@@ -93,7 +93,7 @@ void FileSetsDelegate::setModelData( QWidget* editor, QAbstractItemModel* model,
 			Q_ASSERT(listEditor);
 
 			QStringList groups = listEditor->items();
-			model->setData(index, groups, Qt::EditRole);
+			model->setData(index, groups, FileSetsDelegate::USER_EDIT_ROLE);
 
 			break;
 											 }

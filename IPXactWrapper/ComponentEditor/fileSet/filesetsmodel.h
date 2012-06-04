@@ -26,6 +26,12 @@ public:
 	//! \brief The number of columns the model contains.
 	static const int COLUMN_COUNT = 3;
 
+	//! \brief USER_DISPLAY_ROLE returns QStringList for column 2
+	static const int USER_DISPLAY_ROLE = Qt::UserRole;
+
+	//! \brief USER_EDIT_ROLE takes QStringList for column 2
+	static const int USER_EDIT_ROLE = Qt::UserRole + 1;
+
 	/*! \brief The constructor
 	 *
 	 * \param component Pointer to the component being edited.
