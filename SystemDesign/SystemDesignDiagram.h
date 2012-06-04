@@ -12,8 +12,7 @@
 #ifndef SYSTEMDESIGNDIAGRAM_H
 #define SYSTEMDESIGNDIAGRAM_H
 
-#include "SystemColumnLayout.h"
-
+#include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/IDFactory.h>
 #include <common/KactusAttribute.h>
 #include <common/DesignDiagram.h>
@@ -91,7 +90,7 @@ public:
     /*!
      *  Returns the column layout.
      */
-    SystemColumnLayout* getColumnLayout();
+    GraphicsColumnLayout* getColumnLayout();
 
     void onVerticalScroll(qreal y);
 
@@ -214,8 +213,8 @@ private:
     //! The parent widget.
     SystemDesignWidget* parent_;
 
-    // Node column layout.
-    QSharedPointer<SystemColumnLayout> layout_;
+    // Graphics column layout.
+    QSharedPointer<GraphicsColumnLayout> layout_;
 
     //! Boolean flag for indicating that an SW component is being dragged to the diagram.
     bool dragSW_;

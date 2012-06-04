@@ -81,7 +81,7 @@ ColumnEditDialog::ColumnEditDialog(QWidget* parent, DiagramColumn const* column)
     {
         setWindowTitle(tr("Edit Column"));
         nameEdit_->setText(column_->getName());
-        setAllowedItems(column_->getAllowedItems());
+        setAllowedItems(column_->getColumnDesc().getAllowedItems());
         typeCombo_->setCurrentIndex(column_->getContentType());
     }
     else

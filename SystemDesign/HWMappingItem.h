@@ -12,12 +12,11 @@
 #ifndef HWMAPPINGITEM_H
 #define HWMAPPINGITEM_H
 
-#include "IGraphicsItemStack.h"
-
 #include "SWComponentItem.h"
 
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsItemTypes.h>
+#include <common/graphicsItems/IGraphicsItemStack.h>
 
 class SWCompItem;
 

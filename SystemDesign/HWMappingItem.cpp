@@ -227,11 +227,11 @@ void HWMappingItem::onMoveItem(QGraphicsItem* item)
         swComponents_.removeAll(compItem);
 
         // Let the parent component stack handle the mouse move.
-        SystemColumn* parentStack = static_cast<SystemColumn*>(parentItem());
+        IGraphicsItemStack* parentStack = dynamic_cast<IGraphicsItemStack*>(parentItem());
         Q_ASSERT(parentStack != 0);
         
         QPointF newPos = parentStack->mapStackFromScene(compItem->scenePos());
-        compItem->setParentItem(parentStack);
+        compItem->setParentItem(parentItem());
         compItem->setPos(newPos);
         compItem->setFlag(ItemStacksBehindParent);
 

@@ -21,63 +21,7 @@ class DiagramInterconnection;
 class DiagramPort;
 class DiagramComponent;
 class DiagramInterface;
-class DiagramColumn;
-class DiagramColumnLayout;
 class DiagramConnectionEndPoint;
-
-//-----------------------------------------------------------------------------
-//! ColumnMoveCommand class.
-//-----------------------------------------------------------------------------
-class ColumnMoveCommand : public QUndoCommand
-{
-public:
-    /*!
-     *  Constructor.
-     *
-     *      @param [in] layout  The column layout.
-     *      @param [in] column  The column to move.
-     *      @param [in] oldPos  The column's old position.
-     *      @param [in] parent  The parent command.
-     */
-    ColumnMoveCommand(DiagramColumnLayout* layout, DiagramColumn* column,
-                      QPointF const& oldPos, QUndoCommand* parent = 0);
-
-    /*!
-     *  Destructor.
-     */
-    ~ColumnMoveCommand();
-
-    /*!
-     *  Undoes the command.
-     */
-    virtual void undo();
-
-    /*!
-     *  Redoes the command.
-     */
-    virtual void redo();
-
-private:
-    // Disable copying.
-    ColumnMoveCommand(ColumnMoveCommand const& rhs);
-    ColumnMoveCommand& operator=(ColumnMoveCommand const& rhs);
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-    //! The column layout.
-    DiagramColumnLayout* layout_;
-
-    //! The diagram column.
-    DiagramColumn* column_;
-
-    //! The old position of the column.
-    QPointF oldPos_;
-
-    //! The new position of the column.
-    QPointF newPos_;
-};
 
 //-----------------------------------------------------------------------------
 //! ItemMoveCommand class.

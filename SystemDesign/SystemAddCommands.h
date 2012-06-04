@@ -28,59 +28,6 @@ class SWComponentItem;
 class SWPortItem;
 
 //-----------------------------------------------------------------------------
-//! SystemColumnAddCommand class.
-//-----------------------------------------------------------------------------
-class SystemColumnAddCommand : public QUndoCommand
-{
-public:
-    /*!
-     *  Constructor.
-     *
-     *      @param [in] layout  The column layout.
-     *      @param [in] desc    The column description.
-     *      @param [in] parent  The parent command.
-     */
-    SystemColumnAddCommand(SystemColumnLayout* layout, ColumnDesc const& desc,
-                           QUndoCommand* parent = 0);
-
-    /*!
-     *  Destructor.
-     */
-    ~SystemColumnAddCommand();
-
-    /*!
-     *  Undoes the command.
-     */
-    virtual void undo();
-
-    /*!
-     *  Redoes the command.
-     */
-    virtual void redo();
-
-private:
-    // Disable copying.
-    SystemColumnAddCommand(SystemColumnAddCommand const& rhs);
-    SystemColumnAddCommand& operator=(SystemColumnAddCommand const& rhs);
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-    //! The column layout.
-    SystemColumnLayout* layout_;
-
-    //! The column description.
-    ColumnDesc desc_;
-
-    //! Created diagram column.
-    SystemColumn* column_;
-
-    //! Boolean flag for indicating if the component should be deleted in the destructor.
-    bool del_;
-};
-
-//-----------------------------------------------------------------------------
 //! SWConnectionAddCommand class.
 //-----------------------------------------------------------------------------
 class SWConnectionAddCommand : public QUndoCommand

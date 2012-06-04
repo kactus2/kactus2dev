@@ -12,12 +12,12 @@
 #include "SWInterfaceItem.h"
 
 #include "SystemColumn.h"
-#include "SystemColumnLayout.h"
 #include "SWComponentItem.h"
 #include "SWConnection.h"
 #include "HWMappingItem.h"
 #include "SystemMoveCommands.h"
 
+#include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/GenericEditProvider.h>
 #include <common/diagramgrid.h>
 #include <common/DesignDiagram.h>
@@ -526,7 +526,7 @@ void SWInterfaceItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
     Q_ASSERT(oldStack_ != 0);
 
     // Save the positions of the other interfaces.
-    foreach (SystemColumn* column, static_cast<SystemColumn*>(oldStack_)->getLayout().getColumns())
+    foreach (GraphicsColumn* column, static_cast<GraphicsColumn*>(oldStack_)->getLayout().getColumns())
     {
         foreach (QGraphicsItem* item, column->childItems())
         {

@@ -14,18 +14,19 @@
 #include "diagramcomponent.h"
 #include "diagraminterconnection.h"
 #include "DiagramOffPageConnector.h"
+#include "DiagramAdHocInterface.h"
 #include "PortmapDialog.h"
 #include "BusInterfaceDialog.h"
 #include "DiagramMoveCommands.h"
 #include "blockdiagram.h"
 
 #include "columnview/DiagramColumn.h"
-#include "columnview/DiagramColumnLayout.h"
 
 #include <models/businterface.h>
 #include <models/component.h>
 #include <models/port.h>
 
+#include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/GenericEditProvider.h>
 #include <common/diagramgrid.h>
 
@@ -422,7 +423,7 @@ void DiagramInterface::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 
     DiagramColumn* column = dynamic_cast<DiagramColumn*>(parentItem());
     Q_ASSERT(column != 0);
-    column->onMoveItem(this, oldColumn_);
+    column->onMoveItem(this);
 }
 
 //-----------------------------------------------------------------------------
@@ -454,7 +455,7 @@ void DiagramInterface::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         }
 
         // Determine if the other interfaces changed their position and create undo commands for them.
-        QMap<DiagramInterface*, QPointF>::iterator cur = oldInterfacePositions_.begin();
+        QMap<QGraphicsItem*, QPointF>::iterator cur = oldInterfacePositions_.begin();
 
         while (cur != oldInterfacePositions_.end())
         {
@@ -477,7 +478,7 @@ void DiagramInterface::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         // Add the undo command to the edit stack only if it has changes.
         if (cmd->childCount() > 0 || oldPos_ != scenePos())
         {
-            column->getEditProvider().addCommand(cmd, false);
+            static_cast<DesignDiagram*>(scene())->getEditProvider().addCommand(cmd, false);
         }
     }
 }
@@ -494,17 +495,17 @@ void DiagramInterface::mousePressEvent(QGraphicsSceneMouseEvent *event)
     oldPos_ = scenePos();
     Q_ASSERT(oldColumn_ != 0);
 
-    // Save the positions of the other diagram interfaces.
-    foreach (DiagramColumn* column, oldColumn_->getLayout().getColumns())
+    // Save the positions of the other diagram/ad-hoc interfaces.
+    foreach (GraphicsColumn* column, oldColumn_->getLayout().getColumns())
     {
         if (column->getContentType() == COLUMN_CONTENT_IO)
         {
             foreach (QGraphicsItem* item, column->childItems())
             {
-                if (item->type() == DiagramInterface::Type)
+                if (item->type() == DiagramInterface::Type ||
+                    item->type() == DiagramAdHocInterface::Type)
                 {
-                    DiagramInterface* interface = static_cast<DiagramInterface*>(item);
-                    oldInterfacePositions_.insert(interface, interface->scenePos());
+                    oldInterfacePositions_.insert(item, item->scenePos());
                 }
             }
         }

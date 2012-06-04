@@ -26,62 +26,9 @@ class DiagramInterconnection;
 class DiagramPort;
 class DiagramComponent;
 class DiagramInterface;
-class DiagramColumn;
-class DiagramColumnLayout;
+class GraphicsColumn;
+class GraphicsColumnLayout;
 class ComponentItem;
-
-//-----------------------------------------------------------------------------
-//! ColumnAddCommand class.
-//-----------------------------------------------------------------------------
-class ColumnAddCommand : public QUndoCommand
-{
-public:
-    /*!
-     *  Constructor.
-     *
-     *      @param [in] layout  The column layout.
-     *      @param [in] desc    The column description.
-     *      @param [in] parent  The parent command.
-     */
-    ColumnAddCommand(DiagramColumnLayout* layout, ColumnDesc const& desc,
-                     QUndoCommand* parent = 0);
-
-    /*!
-     *  Destructor.
-     */
-    ~ColumnAddCommand();
-
-    /*!
-     *  Undoes the command.
-     */
-    virtual void undo();
-
-    /*!
-     *  Redoes the command.
-     */
-    virtual void redo();
-
-private:
-    // Disable copying.
-    ColumnAddCommand(ColumnAddCommand const& rhs);
-    ColumnAddCommand& operator=(ColumnAddCommand const& rhs);
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-    //! The column layout.
-    DiagramColumnLayout* layout_;
-
-    //! The column description.
-    ColumnDesc desc_;
-
-    //! Created diagram column.
-    DiagramColumn* column_;
-
-    //! Boolean flag for indicating if the component should be deleted in the destructor.
-    bool del_;
-};
 
 //-----------------------------------------------------------------------------
 //! ItemAddCommand class.
@@ -99,7 +46,7 @@ public:
      *      @param [in] item       The item to add.
      *      @param [in] parent     The parent command.
      */
-    ItemAddCommand(DiagramColumn* column, QGraphicsItem* item, QUndoCommand* parent = 0);
+    ItemAddCommand(GraphicsColumn* column, QGraphicsItem* item, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -137,7 +84,7 @@ private:
     QGraphicsItem* item_;
 
     //! The item's parent column.
-    DiagramColumn* column_;
+    GraphicsColumn* column_;
 
     //! Boolean flag for indicating if the component should be deleted in the destructor.
     bool del_;

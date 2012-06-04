@@ -12,8 +12,8 @@
 #include "SWComponentItem.h"
 
 #include "SWPortItem.h"
-#include "IGraphicsItemStack.h"
 
+#include <common/graphicsItems/IGraphicsItemStack.h>
 #include <common/layouts/HCollisionLayout.h>
 #include <common/layouts/VCollisionLayout.h>
 

@@ -231,7 +231,7 @@ private:
     QPointF oldPos_;
 
     //! The old positions of the other interfaces before mouse move.
-    QMap<DiagramInterface*, QPointF> oldInterfacePositions_;
+    QMap<QGraphicsItem*, QPointF> oldInterfacePositions_;
 
     //! The off-page connector.
     DiagramOffPageConnector* offPageConnector_;

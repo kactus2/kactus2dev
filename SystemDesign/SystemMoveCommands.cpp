@@ -11,55 +11,9 @@
 
 #include "SystemMoveCommands.h"
 
-#include "SystemColumnLayout.h"
 #include "SystemColumn.h"
 #include "SWComponentItem.h"
 #include "SWConnection.h"
-
-//-----------------------------------------------------------------------------
-// Function: SystemColumnMoveCommand()
-//-----------------------------------------------------------------------------
-SystemColumnMoveCommand::SystemColumnMoveCommand(SystemColumnLayout* layout,
-                                                 SystemColumn* column,
-                                                 QPointF const& oldPos,
-                                                 QUndoCommand* parent) : QUndoCommand(parent),
-                                                 layout_(layout), column_(column),
-                                                 oldPos_(oldPos), newPos_(column->pos())
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: ~SystemColumnMoveCommand()
-//-----------------------------------------------------------------------------
-SystemColumnMoveCommand::~SystemColumnMoveCommand()
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: undo()
-//-----------------------------------------------------------------------------
-void SystemColumnMoveCommand::undo()
-{
-    column_->setPos(oldPos_);
-    layout_->onMoveColumn(column_);
-    layout_->onReleaseColumn(column_);
-
-    // Execute child commands.
-    QUndoCommand::undo();
-}
-
-//-----------------------------------------------------------------------------
-// Function: redo()
-//-----------------------------------------------------------------------------
-void SystemColumnMoveCommand::redo()
-{
-    column_->setPos(newPos_);
-    layout_->onMoveColumn(column_);
-    layout_->onReleaseColumn(column_);
-
-    // Execute child commands.
-    QUndoCommand::redo();
-}
 
 //-----------------------------------------------------------------------------
 // Function: SWConnectionMoveCommand()

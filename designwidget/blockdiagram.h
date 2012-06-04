@@ -8,10 +8,9 @@
 
 #include "AdHocEnabled.h"
 
-#include "columnview/DiagramColumn.h"
-
 #include <common/DesignDiagram.h>
 #include <models/businterface.h>
+#include <models/ColumnDesc.h>
 
 #include <QMap>
 #include <QVector>
@@ -30,7 +29,8 @@ class DiagramAdHocPort;
 class DiagramAdHocInterface;
 class DiagramInterconnection;
 class DiagramConnectionEndPoint;
-class DiagramColumnLayout;
+class GraphicsColumn;
+class GraphicsColumnLayout;
 class AbstractionDefinition;
 class VLNV;
 class GenericEditProvider;
@@ -112,12 +112,12 @@ public:
      *
      *      @param [in] column The column to remove.
      */
-    void removeColumn(DiagramColumn* column);
+    void removeColumn(GraphicsColumn* column);
 
     /*!
      *  Returns the diagram column layout.
      */
-    DiagramColumnLayout* getColumnLayout();
+    GraphicsColumnLayout* getColumnLayout();
 
     /*! \brief Get pointer to the parent of this scene.
 	 *
@@ -243,7 +243,7 @@ private:
      *      @param [in] pos    The interface position.
      */
 
-    void addInterface(DiagramColumn* column, QPointF const& pos);
+    void addInterface(GraphicsColumn* column, QPointF const& pos);
 
     /*!
      *  Toggles the connection style of the given connection between normal and off-page style.
@@ -289,8 +289,8 @@ private:
     //! The highlighted end point to which the connection could be snapped automatically.
     DiagramConnectionEndPoint* highlightedEndPoint_;
 
-    //! The diagram column layout.
-    QSharedPointer<DiagramColumnLayout> layout_;
+    //! The column layout.
+    QSharedPointer<GraphicsColumnLayout> layout_;
 
     //! The type of the item being dragged.
     ColumnItemType dragCompType_;

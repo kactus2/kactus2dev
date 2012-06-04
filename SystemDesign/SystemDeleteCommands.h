@@ -17,7 +17,7 @@
 #include <QGraphicsScene>
 #include <QObject>
 
-class SystemColumnLayout;
+class GraphicsColumnLayout;
 class SystemColumn;
 class ComponentItem;
 class ApplicationItem;
@@ -37,7 +37,7 @@ public:
      *      @param [in] layout  The column layout.
      *      @param [in] column  The column to delete.
      */
-    SystemColumnDeleteCommand(SystemColumnLayout* layout, SystemColumn* column,
+    SystemColumnDeleteCommand(GraphicsColumnLayout* layout, SystemColumn* column,
                               QUndoCommand* parent = 0);
 
     /*!
@@ -65,7 +65,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The column layout.
-    SystemColumnLayout* layout_;
+    GraphicsColumnLayout* layout_;
 
     //! The diagram column.
     SystemColumn* column_;

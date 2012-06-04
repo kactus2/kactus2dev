@@ -16,15 +16,14 @@
 #include "diagramcomponent.h"
 #include "diagraminterface.h"
 
-#include "columnview/DiagramColumn.h"
-#include "columnview/DiagramColumnLayout.h"
+#include <common/graphicsItems/GraphicsColumn.h>
 
 #include <models/businterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: ItemAddCommand()
 //-----------------------------------------------------------------------------
-ItemAddCommand::ItemAddCommand(DiagramColumn* column, QGraphicsItem* item,
+ItemAddCommand::ItemAddCommand(GraphicsColumn* column, QGraphicsItem* item,
                                QUndoCommand* parent) : QUndoCommand(parent), item_(item),
                                                        column_(column), del_(false)
 {
@@ -133,62 +132,6 @@ void PortAddCommand::redo()
     // Child commands need not be executed because the other ports change their position
     // in a deterministic way.
     //QUndoCommand::redo();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ColumnAddCommand()
-//-----------------------------------------------------------------------------
-ColumnAddCommand::ColumnAddCommand(DiagramColumnLayout* layout, ColumnDesc const& desc,
-                                   QUndoCommand* parent)
-    : QUndoCommand(parent),
-      layout_(layout),
-      desc_(desc),
-      column_(0),
-      del_(false)
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: ~ColumnAddCommand()
-//-----------------------------------------------------------------------------
-ColumnAddCommand::~ColumnAddCommand()
-{
-    if (del_)
-    {
-        delete column_;
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: undo()
-//-----------------------------------------------------------------------------
-void ColumnAddCommand::undo()
-{
-    Q_ASSERT(column_ != 0);
-
-    // Remove the column from the layout.
-    layout_->removeColumn(column_);
-    del_ = true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: redo()
-//-----------------------------------------------------------------------------
-void ColumnAddCommand::redo()
-{
-    // If this is the first time, create the column.
-    if (column_ == 0)
-    {
-        layout_->addColumn(desc_);
-        column_ = layout_->getColumns().back();
-    }
-    else
-    {
-        // Otherwise add the existing column to the layout.
-        layout_->addColumn(column_);
-    }
-
-    del_ = false;
 }
 
 //-----------------------------------------------------------------------------

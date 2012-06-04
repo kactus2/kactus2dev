@@ -11,64 +11,11 @@
 
 #include "SystemAddCommands.h"
 
-#include "SystemColumnLayout.h"
 #include "SystemColumn.h"
 #include "SWConnection.h"
 #include "SWComponentItem.h"
 
 #include <common/graphicsItems/ComponentItem.h>
-
-//-----------------------------------------------------------------------------
-// Function: SystemColumnAddCommand()
-//-----------------------------------------------------------------------------
-SystemColumnAddCommand::SystemColumnAddCommand(SystemColumnLayout* layout, ColumnDesc const& desc,
-                                               QUndoCommand* parent) : QUndoCommand(parent), layout_(layout),
-                                                                       desc_(desc), column_(0), del_(false)
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: ~SystemColumnAddCommand()
-//-----------------------------------------------------------------------------
-SystemColumnAddCommand::~SystemColumnAddCommand()
-{
-    if (del_)
-    {
-        delete column_;
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: undo()
-//-----------------------------------------------------------------------------
-void SystemColumnAddCommand::undo()
-{
-    Q_ASSERT(column_ != 0);
-
-    // Remove the column from the layout.
-    layout_->removeColumn(column_);
-    del_ = true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: redo()
-//-----------------------------------------------------------------------------
-void SystemColumnAddCommand::redo()
-{
-    // If this is the first time, create the column.
-    if (column_ == 0)
-    {
-        layout_->addColumn(desc_);
-        column_ = layout_->getColumns().back();
-    }
-    else
-    {
-        // Otherwise add the existing column to the layout.
-        layout_->addColumn(column_);
-    }
-
-    del_ = false;
-}
 
 //-----------------------------------------------------------------------------
 // Function: SWConnectionAddCommand()

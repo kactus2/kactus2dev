@@ -25,14 +25,13 @@
 #include "diagramcomponent.h"
 #include "diagraminterface.h"
 #include "columnview/DiagramColumn.h"
-#include "columnview/DiagramColumnLayout.h"
 
 #include <models/businterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: ColumnChangeCommand()
 //-----------------------------------------------------------------------------
-ColumnChangeCommand::ColumnChangeCommand(DiagramColumn* column, ColumnDesc const& newDesc,
+ColumnChangeCommand::ColumnChangeCommand(GraphicsColumn* column, ColumnDesc const& newDesc,
                                          QUndoCommand* parent) : QUndoCommand(parent),
                                                                  column_(column),
                                                                  oldDesc_(column->getColumnDesc()),
@@ -478,8 +477,8 @@ void AdHocVisibilityChangeCommand::undo()
 
         if (adHocIf != 0)
         {
-            DiagramColumn* column = static_cast<DiagramColumn*>(adHocIf->parentItem());
-            column->onMoveItem(adHocIf, column);
+            GraphicsColumn* column = static_cast<GraphicsColumn*>(adHocIf->parentItem());
+            column->onMoveItem(adHocIf);
         }
 
         DiagramAdHocPort* adHocPort = dynamic_cast<DiagramAdHocPort*>(port);

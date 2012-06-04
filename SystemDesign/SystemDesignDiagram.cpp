@@ -17,6 +17,7 @@
 
 #include <designwidget/DiagramChangeCommands.h>
 
+#include "SystemColumn.h"
 #include "HWMappingItem.h"
 #include "SWCompItem.h"
 #include "SystemDesignWidget.h"
@@ -39,6 +40,7 @@
 #include <common/GenericEditProvider.h>
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/graphicsItems/ComponentItem.h>
+#include <common/graphicsItems/GraphicsColumnUndoCommands.h>
 
 #include <models/SWInstance.h>
 #include <models/component.h>
@@ -87,6 +89,7 @@ SystemDesignDiagram::~SystemDesignDiagram()
 void SystemDesignDiagram::clearScene()
 {
     destroyConnections();
+    layout_.clear();
     DesignDiagram::clearScene();
 }
 
@@ -113,12 +116,13 @@ void SystemDesignDiagram::setMode(DrawMode mode)
 void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
 {
     // Create the column layout.
-    layout_ = QSharedPointer<SystemColumnLayout>(new SystemColumnLayout(this));
+    layout_ = QSharedPointer<GraphicsColumnLayout>(new GraphicsColumnLayout(this));
     connect(layout_.data(), SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
-    foreach(ColumnDesc desc, design->getColumns())
+    foreach(ColumnDesc const& desc, design->getColumns())
     {
-        layout_->addColumn(desc);
+        SystemColumn* column = new SystemColumn(desc, layout_.data(), this);
+        layout_->addColumn(column, true);
     }
 
     unsigned int colIndex = 0;
@@ -200,7 +204,7 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
         {
             item->setPos(instance.position);
 
-            SystemColumn* column = layout_->findColumnAt(instance.position);
+            GraphicsColumn* column = layout_->findColumnAt(instance.position);
 
             if (column != 0)
             {
@@ -295,7 +299,7 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
             }
             else
             {
-                SystemColumn* column = layout_->findColumnAt(instance.getPosition());
+                GraphicsColumn* column = layout_->findColumnAt(instance.getPosition());
 
                 if (column != 0)
                 {
@@ -424,7 +428,7 @@ void SystemDesignDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
         else
         {
             // Otherwise check which column should receive the SW component.
-            SystemColumn* column = layout_->findColumnAt(snapPointToGrid(event->scenePos()));
+            GraphicsColumn* column = layout_->findColumnAt(snapPointToGrid(event->scenePos()));
 
             if (column != 0)
             {
@@ -1144,7 +1148,7 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
         }
     }
 
-    foreach (SystemColumn* column, layout_->getColumns())
+    foreach (GraphicsColumn* column, layout_->getColumns())
     {
         columns.append(column->getColumnDesc());
     }
@@ -1165,7 +1169,9 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::addColumn(ColumnDesc const& desc)
 {
-    QSharedPointer<QUndoCommand> cmd(new SystemColumnAddCommand(layout_.data(), desc));
+    SystemColumn* column = new SystemColumn(desc, layout_.data(), this);
+
+    QSharedPointer<QUndoCommand> cmd(new GraphicsColumnAddCommand(layout_.data(), column));
     getEditProvider().addCommand(cmd);
 }
 
@@ -1301,7 +1307,7 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 //-----------------------------------------------------------------------------
 // Function: getColumnLayout()
 //-----------------------------------------------------------------------------
-SystemColumnLayout* SystemDesignDiagram::getColumnLayout()
+GraphicsColumnLayout* SystemDesignDiagram::getColumnLayout()
 {
     return layout_.data();
 }
@@ -1586,7 +1592,7 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
             interface->setPos(dependency.getPosition());
             interface->setDirection(dependency.getDirection());
 
-            SystemColumn* column = layout_->findColumnAt(dependency.getPosition());
+            GraphicsColumn* column = layout_->findColumnAt(dependency.getPosition());
 
             if (column != 0)
             {
@@ -1731,7 +1737,7 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
             interface->setPos(hierConn.getPosition());
             interface->setDirection(hierConn.getDirection());
 
-            SystemColumn* column = layout_->findColumnAt(hierConn.getPosition());
+            GraphicsColumn* column = layout_->findColumnAt(hierConn.getPosition());
 
             if (column != 0)
             {

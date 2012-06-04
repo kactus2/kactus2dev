@@ -19,13 +19,14 @@
 #include "DiagramChangeCommands.h"
 #include "BusInterfaceDialog.h"
 
+#include <common/graphicsItems/GraphicsColumnUndoCommands.h>
+#include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/DiagramUtil.h>
 #include <common/diagramgrid.h>
 #include <common/dialogs/comboSelector/comboselector.h>
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/GenericEditProvider.h>
 
-#include "columnview/DiagramColumnLayout.h"
 #include "columnview/DiagramColumn.h"
 
 #include <LibraryManager/libraryhandler.h>
@@ -82,6 +83,7 @@ BlockDiagram::BlockDiagram(LibraryInterface *lh, GenericEditProvider& editProvid
 void BlockDiagram::clearScene()
 {
     destroyConnections();
+    layout_.clear();
     DesignDiagram::clearScene();
 }
 
@@ -91,21 +93,22 @@ void BlockDiagram::clearScene()
 void BlockDiagram::openDesign(QSharedPointer<Design> design)
 {
     // Create the column layout.
-    layout_ = QSharedPointer<DiagramColumnLayout>(new DiagramColumnLayout(getEditProvider(), this));
+    layout_ = QSharedPointer<GraphicsColumnLayout>(new GraphicsColumnLayout(this));
     connect(layout_.data(), SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
     if (design->getColumns().isEmpty())
     {
-        layout_->addColumn(ColumnDesc("IO", COLUMN_CONTENT_IO));
-        layout_->addColumn(ColumnDesc("Buses", COLUMN_CONTENT_BUSES));
-        layout_->addColumn(ColumnDesc("Components", COLUMN_CONTENT_COMPONENTS));
-        layout_->addColumn(ColumnDesc("IO", COLUMN_CONTENT_IO));
+//         addColumn(ColumnDesc("IO", COLUMN_CONTENT_IO));
+//         addColumn(ColumnDesc("Buses", COLUMN_CONTENT_BUSES));
+//         addColumn(ColumnDesc("Components", COLUMN_CONTENT_COMPONENTS));
+//         addColumn(ColumnDesc("IO", COLUMN_CONTENT_IO));
     }
     else
     {
-        foreach(ColumnDesc desc, design->getColumns())
+        foreach (ColumnDesc const& desc, design->getColumns())
         {
-            layout_->addColumn(desc);
+            DiagramColumn* column = new DiagramColumn(desc, layout_.data(), this);
+            layout_->addColumn(column, true);
         }
     }
 
@@ -183,7 +186,7 @@ void BlockDiagram::openDesign(QSharedPointer<Design> design)
         {
             diagComp->setPos(instance.position);
 
-            DiagramColumn* column = layout_->findColumnAt(instance.position);
+            GraphicsColumn* column = layout_->findColumnAt(instance.position);
             
             if (column != 0)
             {
@@ -306,7 +309,7 @@ void BlockDiagram::openDesign(QSharedPointer<Design> design)
             diagIf->setPos(hierConn.position);
             diagIf->setDirection(hierConn.direction);
 
-            DiagramColumn* column = layout_->findColumnAt(hierConn.position);
+            GraphicsColumn* column = layout_->findColumnAt(hierConn.position);
             
             if (column != 0)
             {
@@ -388,7 +391,7 @@ void BlockDiagram::openDesign(QSharedPointer<Design> design)
             //layout_->addItem(adHocIf);
 
             // Add the ad-hoc interface to the first column where it is allowed to be placed.
-            DiagramColumn* column = layout_->findColumnAt(adHocIf->scenePos());
+            GraphicsColumn* column = layout_->findColumnAt(adHocIf->scenePos());
 
             if (column != 0 && adHocPortPositions.contains(name))
             {
@@ -556,7 +559,7 @@ void BlockDiagram::openDesign(QSharedPointer<Design> design)
     }
 
     // Update the stacking of the columns.
-    foreach (DiagramColumn* column, layout_->getColumns())
+    foreach (GraphicsColumn* column, layout_->getColumns())
     {
         column->updateItemPositions();
     }
@@ -766,7 +769,7 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv) const
         return QSharedPointer<Design>();
     }
 
-    foreach(DiagramColumn* column, layout_->getColumns())
+    foreach(GraphicsColumn* column, layout_->getColumns())
     {
         columns.append(column->getColumnDesc());
     }
@@ -936,10 +939,10 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     else if (getMode() == MODE_INTERFACE)
     {
         // Find the column under the cursor.
-        DiagramColumn* column = layout_->findColumnAt(mouseEvent->scenePos());
+        GraphicsColumn* column = layout_->findColumnAt(mouseEvent->scenePos());
 
         // Add a new diagram interface to the column it it is allowed.
-        if (column != 0 && column->getAllowedItems() & CIT_INTERFACE)
+        if (column != 0 && column->getColumnDesc().getAllowedItems() & CIT_INTERFACE)
         {
             addInterface(column, mouseEvent->scenePos());
         }
@@ -959,18 +962,18 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         // to the column under cursor.
         if (item == 0)
         {
-            DiagramColumn* column = layout_->findColumnAt(mouseEvent->scenePos());
+            GraphicsColumn* column = layout_->findColumnAt(mouseEvent->scenePos());
             
             if (column != 0)
             {
                 // Check what kind of item should be created.
-                unsigned int itemType = column->getAllowedItems();
+                unsigned int itemType = column->getColumnDesc().getAllowedItems();
                 
                 // Check if the item type is ambiguous (interface vs. the rest of the types).
                 if (itemType != CIT_INTERFACE && itemType & CIT_INTERFACE)
                 {
                     // Open a dialog to determine which type of item to create.
-                    SelectItemTypeDialog dialog((QWidget*)parent(), column->getAllowedItems());
+                    SelectItemTypeDialog dialog((QWidget*)parent(), column->getColumnDesc().getAllowedItems());
 
                     if (dialog.exec() != QDialog::Accepted)
                     {
@@ -1337,7 +1340,14 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
         if (dialog.exec() == QDialog::Accepted)
         {
-            ColumnDesc desc(dialog.getName(), dialog.getContentType(), dialog.getAllowedItems());
+            int columnWidth = 259;
+
+            if (dialog.getContentType() == COLUMN_CONTENT_IO)
+            {
+                columnWidth = 119;
+            }
+
+            ColumnDesc desc(dialog.getName(), dialog.getContentType(), dialog.getAllowedItems(), columnWidth);
             QSharedPointer<QUndoCommand> cmd(new ColumnChangeCommand(column, desc));
             getEditProvider().addCommand(cmd);
 
@@ -1556,9 +1566,9 @@ void BlockDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 {
     if (dragCompType_ != CIT_NONE)
     {
-        DiagramColumn* column = layout_->findColumnAt(snapPointToGrid(event->scenePos()));
+        GraphicsColumn* column = layout_->findColumnAt(snapPointToGrid(event->scenePos()));
 
-        if (column != 0 && column->getAllowedItems() & dragCompType_)
+        if (column != 0 && column->getColumnDesc().getAllowedItems() & dragCompType_)
         {
             event->setDropAction(Qt::CopyAction);
         }
@@ -1628,7 +1638,7 @@ void BlockDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
     // Check if the dragged item was a valid one.
     if (dragCompType_ != CIT_NONE)
     {
-        DiagramColumn* column = layout_->findColumnAt(snapPointToGrid(event->scenePos()));
+        GraphicsColumn* column = layout_->findColumnAt(snapPointToGrid(event->scenePos()));
 
         // Retrieve the vlnv.
         VLNV *vlnv;
@@ -1791,14 +1801,16 @@ void BlockDiagram::disableHighlight()
 //-----------------------------------------------------------------------------
 void BlockDiagram::addColumn(ColumnDesc const& desc)
 {
-    QSharedPointer<QUndoCommand> cmd(new ColumnAddCommand(layout_.data(), desc));
+    DiagramColumn* column = new DiagramColumn(desc, layout_.data(), this);
+
+    QSharedPointer<QUndoCommand> cmd(new GraphicsColumnAddCommand(layout_.data(), column));
     getEditProvider().addCommand(cmd);
 }
 
 //-----------------------------------------------------------------------------
 // Function: removeColumn()
 //-----------------------------------------------------------------------------
-void BlockDiagram::removeColumn(DiagramColumn* column)
+void BlockDiagram::removeColumn(GraphicsColumn* column)
 {
     QSharedPointer<QUndoCommand> cmd(new ColumnDeleteCommand(layout_.data(), column));
     getEditProvider().addCommand(cmd);
@@ -1901,7 +1913,7 @@ void BlockDiagram::onShow()
 //-----------------------------------------------------------------------------
 // Function: getColumnLayout()
 //-----------------------------------------------------------------------------
-DiagramColumnLayout* BlockDiagram::getColumnLayout()
+GraphicsColumnLayout* BlockDiagram::getColumnLayout()
 {
     return layout_.data();
 }
@@ -1909,7 +1921,7 @@ DiagramColumnLayout* BlockDiagram::getColumnLayout()
 //-----------------------------------------------------------------------------
 // Function: addInterface()
 //-----------------------------------------------------------------------------
-void BlockDiagram::addInterface(DiagramColumn* column, QPointF const& pos)
+void BlockDiagram::addInterface(GraphicsColumn* column, QPointF const& pos)
 {
 	QSharedPointer<BusInterface> busif(new BusInterface());
     DiagramInterface *newItem = new DiagramInterface(getLibraryInterface(), getEditedComponent(), busif, 0);
@@ -2291,7 +2303,7 @@ void BlockDiagram::onAdHocVisibilityChanged(QString const& portName, bool visibl
         DiagramConnectionEndPoint* found = getDiagramAdHocPort(portName);
         Q_ASSERT(found != 0);
 
-        static_cast<DiagramColumn*>(found->parentItem())->removeItem(found);
+        static_cast<GraphicsColumn*>(found->parentItem())->removeItem(found);
         delete found;
         found = 0;
     }

@@ -16,7 +16,6 @@
 
 #include "SystemMoveCommands.h"
 
-#include "IGraphicsItemStack.h"
 #include "SystemDesignDiagram.h"
 
 #include <models/component.h>
@@ -24,6 +23,7 @@
 
 #include <LibraryManager/libraryinterface.h>
 
+#include <common/graphicsItems/IGraphicsItemStack.h>
 #include <common/GenericEditProvider.h>
 
 #include <QBrush>

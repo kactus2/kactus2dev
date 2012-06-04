@@ -13,6 +13,7 @@
 
 #include "SystemDeleteCommands.h"
 
+#include "SystemColumn.h"
 #include "SystemDesignDiagram.h"
 #include "SWCompItem.h"
 #include "SWConnection.h"
@@ -219,7 +220,7 @@ bool SystemDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
 
     system_ = comp;
     designConf_ = designConf;
-    //viewName_ = viewName;
+    viewName_ = viewName;
     return true;
 }
 
@@ -454,18 +455,16 @@ void SystemDesignWidget::addColumn()
 
         if (dlg.exec() == QDialog::Accepted)
         {
-            ColumnDesc desc(dlg.getName(), dlg.getContentType(), 0);
-            
-            if (desc.getContentType() == COLUMN_CONTENT_COMPONENTS)
+            if (dlg.getContentType() == COLUMN_CONTENT_IO)
             {
-                desc.setWidth(SW_COLUMN_WIDTH);
+                ColumnDesc desc(dlg.getName(), dlg.getContentType(), 0, IO_COLUMN_WIDTH);
+                diagram_->addColumn(desc);
             }
             else
             {
-                desc.setWidth(IO_COLUMN_WIDTH);
+                ColumnDesc desc(dlg.getName(), dlg.getContentType(), 0, SW_COLUMN_WIDTH);
+                diagram_->addColumn(desc);
             }
-
-            diagram_->addColumn(desc);
         }
     }
     else
@@ -480,6 +479,20 @@ void SystemDesignWidget::addColumn()
 IEditProvider* SystemDesignWidget::getEditProvider()
 {
     return editProvider_.data();
+}
+
+//-----------------------------------------------------------------------------
+// Function: refresh()
+//-----------------------------------------------------------------------------
+void SystemDesignWidget::refresh()
+{
+    QSharedPointer<LibraryComponent> libComp = lh_->getModel(*system_->getVlnv());
+    QSharedPointer<Component> comp = libComp.staticCast<Component>();
+
+    setDesign(system_, viewName_);
+    setModified(false);
+
+    TabDocument::refresh();
 }
 
 //-----------------------------------------------------------------------------

@@ -16,8 +16,8 @@
 #include "diagramcomponent.h"
 #include "diagraminterface.h"
 
-#include "columnview/DiagramColumn.h"
-#include "columnview/DiagramColumnLayout.h"
+#include <common/graphicsItems/GraphicsColumn.h>
+#include <common/graphicsItems/GraphicsColumnLayout.h>
 
 #include <models/component.h>
 #include <models/businterface.h>
@@ -26,7 +26,7 @@
 //-----------------------------------------------------------------------------
 // Function: ColumnDeleteCommand()
 //-----------------------------------------------------------------------------
-ColumnDeleteCommand::ColumnDeleteCommand(DiagramColumnLayout* layout, DiagramColumn* column,
+ColumnDeleteCommand::ColumnDeleteCommand(GraphicsColumnLayout* layout, GraphicsColumn* column,
                                          QUndoCommand* parent) : QUndoCommand(parent),
                                                                  layout_(layout), column_(column), del_(true)
 {
@@ -96,7 +96,7 @@ void ColumnDeleteCommand::redo()
 // Function: ComponentDeleteCommand()
 //-----------------------------------------------------------------------------
 ComponentDeleteCommand::ComponentDeleteCommand(DiagramComponent* component, QUndoCommand* parent) :
-    QUndoCommand(parent), component_(component), parent_(static_cast<DiagramColumn*>(component->parentItem())),
+    QUndoCommand(parent), component_(component), parent_(static_cast<GraphicsColumn*>(component->parentItem())),
     scene_(component->scene()), del_(true)
 {
     // Create child commands for removing interconnections.
@@ -338,7 +338,7 @@ InterfaceDeleteCommand::InterfaceDeleteCommand(DiagramInterface* interface,
     : QUndoCommand(parent),
       interface_(interface),
       busIf_(interface_->getBusInterface()),
-      parent_(static_cast<DiagramColumn*>(interface->parentItem())),
+      parent_(static_cast<GraphicsColumn*>(interface->parentItem())),
       scene_(interface->scene()),
       del_(true),
       removePorts_(removePorts)

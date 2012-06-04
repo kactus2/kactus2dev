@@ -21,7 +21,7 @@
 
 class DiagramInterconnection;
 class DiagramComponent;
-class DiagramColumn;
+class GraphicsColumn;
 class DiagramOffPageConnector;
 class LibraryInterface;
 class Port;
@@ -198,7 +198,7 @@ private:
     QSharedPointer<Component> component_;
 
     //! The old column from where the mouse drag event began.
-    DiagramColumn* oldColumn_;
+    GraphicsColumn* oldColumn_;
 
     //! Boolean flag for determining if the port is temporary or not.
     bool temp_;
@@ -207,7 +207,7 @@ private:
     QPointF oldPos_;
 
     //! The old positions of the other interfaces before mouse move.
-    QMap<DiagramConnectionEndPoint*, QPointF> oldInterfacePositions_;
+    QMap<QGraphicsItem*, QPointF> oldInterfacePositions_;
 
     //! The off-page connector.
     DiagramOffPageConnector* offPageConnector_;

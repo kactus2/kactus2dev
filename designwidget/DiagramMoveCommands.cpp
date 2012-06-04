@@ -16,52 +16,6 @@
 #include "diagramcomponent.h"
 #include "diagraminterface.h"
 #include "columnview/DiagramColumn.h"
-#include "columnview/DiagramColumnLayout.h"
-
-//-----------------------------------------------------------------------------
-// Function: ColumnMoveCommand()
-//-----------------------------------------------------------------------------
-ColumnMoveCommand::ColumnMoveCommand(DiagramColumnLayout* layout,
-                                     DiagramColumn* column,
-                                     QPointF const& oldPos,
-                                     QUndoCommand* parent) : QUndoCommand(parent),
-                                                             layout_(layout), column_(column),
-                                                             oldPos_(oldPos), newPos_(column->pos())
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: ~ColumnMoveCommand()
-//-----------------------------------------------------------------------------
-ColumnMoveCommand::~ColumnMoveCommand()
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: undo()
-//-----------------------------------------------------------------------------
-void ColumnMoveCommand::undo()
-{
-    column_->setPos(oldPos_);
-    layout_->onMoveColumn(column_);
-    layout_->onReleaseColumn(column_);
-
-    // Execute child commands.
-    QUndoCommand::undo();
-}
-
-//-----------------------------------------------------------------------------
-// Function: redo()
-//-----------------------------------------------------------------------------
-void ColumnMoveCommand::redo()
-{
-    column_->setPos(newPos_);
-    layout_->onMoveColumn(column_);
-    layout_->onReleaseColumn(column_);
-
-    // Execute child commands.
-    QUndoCommand::redo();
-}
 
 //-----------------------------------------------------------------------------
 // Function: ItemMoveCommand()
@@ -87,7 +41,7 @@ void ItemMoveCommand::undo()
     DiagramColumn* oldColumn = static_cast<DiagramColumn*>(item_->parentItem());
 
     item_->setPos(oldColumn->mapFromScene(oldPos_));
-    oldColumn->onMoveItem(item_, oldColumn);
+    oldColumn->onMoveItem(item_);
 
     DiagramColumn* newColumn = static_cast<DiagramColumn*>(item_->parentItem());
     newColumn->onReleaseItem(item_);
@@ -104,7 +58,7 @@ void ItemMoveCommand::redo()
     DiagramColumn* oldColumn = static_cast<DiagramColumn*>(item_->parentItem());
 
     item_->setPos(oldColumn->mapFromScene(newPos_));
-    oldColumn->onMoveItem(item_, oldColumn);
+    oldColumn->onMoveItem(item_);
 
     DiagramColumn* newColumn = static_cast<DiagramColumn*>(item_->parentItem());
     newColumn->onReleaseItem(item_);

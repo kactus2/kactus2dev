@@ -11,16 +11,16 @@
 
 #include "SystemDeleteCommands.h"
 
-#include "SystemColumnLayout.h"
 #include "SystemColumn.h"
 #include "SWConnection.h"
 
+#include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/graphicsItems/ComponentItem.h>
 
 //-----------------------------------------------------------------------------
 // Function: SystemColumnDeleteCommand()
 //-----------------------------------------------------------------------------
-SystemColumnDeleteCommand::SystemColumnDeleteCommand(SystemColumnLayout* layout, SystemColumn* column,
+SystemColumnDeleteCommand::SystemColumnDeleteCommand(GraphicsColumnLayout* layout, SystemColumn* column,
                                                      QUndoCommand* parent) : QUndoCommand(parent),
                                                                              layout_(layout),
                                                                              column_(column), del_(true)

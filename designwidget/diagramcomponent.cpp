@@ -163,7 +163,7 @@ DiagramPort *DiagramComponent::getBusPort(const QString &name)
 void DiagramComponent::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
     // Discard movement if the diagram is protected.
-    if (static_cast<BlockDiagram*>(scene())->isProtected())
+    if (static_cast<DesignDiagram*>(scene())->isProtected())
     {
         return;
     }
@@ -180,7 +180,7 @@ void DiagramComponent::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 
         DiagramColumn* column = dynamic_cast<DiagramColumn*>(parentItem());
         Q_ASSERT(column != 0);
-        column->onMoveItem(this, oldColumn_);
+        column->onMoveItem(this);
     }
 
     connUpdateDisabled_ = false;
@@ -248,7 +248,7 @@ void DiagramComponent::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         // Add the undo command to the edit stack only if it has at least some real changes.
         if (cmd->childCount() > 0 || scenePos() != oldPos_)
         {
-            column->getEditProvider().addCommand(cmd, false);
+            static_cast<DesignDiagram*>(scene())->getEditProvider().addCommand(cmd, false);
         }
     }
 }

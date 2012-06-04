@@ -24,60 +24,6 @@ class SWPortItem;
 class SWConnection;
 
 //-----------------------------------------------------------------------------
-//! SystemColumnMoveCommand class.
-//-----------------------------------------------------------------------------
-class SystemColumnMoveCommand : public QUndoCommand
-{
-public:
-    /*!
-     *  Constructor.
-     *
-     *      @param [in] layout  The column layout.
-     *      @param [in] column  The column to move.
-     *      @param [in] oldPos  The column's old position.
-     *      @param [in] parent  The parent command.
-     */
-    SystemColumnMoveCommand(SystemColumnLayout* layout, SystemColumn* column,
-                            QPointF const& oldPos, QUndoCommand* parent = 0);
-
-    /*!
-     *  Destructor.
-     */
-    ~SystemColumnMoveCommand();
-
-    /*!
-     *  Undoes the command.
-     */
-    virtual void undo();
-
-    /*!
-     *  Redoes the command.
-     */
-    virtual void redo();
-
-private:
-    // Disable copying.
-    SystemColumnMoveCommand(SystemColumnMoveCommand const& rhs);
-    SystemColumnMoveCommand& operator=(SystemColumnMoveCommand const& rhs);
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-    //! The column layout.
-    SystemColumnLayout* layout_;
-
-    //! The diagram column.
-    SystemColumn* column_;
-
-    //! The old position of the column.
-    QPointF oldPos_;
-
-    //! The new position of the column.
-    QPointF newPos_;
-};
-
-//-----------------------------------------------------------------------------
 //! SWConnectionMoveCommand class.
 //-----------------------------------------------------------------------------
 class SWConnectionMoveCommand : public QUndoCommand

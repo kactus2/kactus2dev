@@ -87,6 +87,11 @@ public:
     QGraphicsView* getView();
 
     /*!
+     *  Refreshes the document view.
+     */
+    virtual void refresh();
+
+    /*!
      *  Returns the VLNV of the currently open system.
      */
     VLNV const* getOpenDocument() const;
@@ -183,6 +188,9 @@ private:
 
     //! The system that is being edited.
     QSharedPointer<Component> system_;
+
+    //! The name of the view being edited.
+    QString viewName_;
 
     //! The attached design configuration.
     QSharedPointer<DesignConfiguration> designConf_;

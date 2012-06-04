@@ -13,14 +13,14 @@
 
 #include "diagramcomponent.h"
 #include "diagraminterconnection.h"
+#include "diagraminterface.h"
 #include "BusInterfaceDialog.h"
 #include "DiagramMoveCommands.h"
 #include "blockdiagram.h"
 #include "DiagramOffPageConnector.h"
 
-#include "columnview/DiagramColumn.h"
-#include "columnview/DiagramColumnLayout.h"
-
+#include <common/graphicsItems/GraphicsColumn.h>
+#include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/GenericEditProvider.h>
 #include <common/diagramgrid.h>
 
@@ -135,7 +135,7 @@ DiagramAdHocInterface::DiagramAdHocInterface(QSharedPointer<Component> component
 //-----------------------------------------------------------------------------
 DiagramAdHocInterface::~DiagramAdHocInterface()
 {
-    DiagramColumn* column = dynamic_cast<DiagramColumn*>(parentItem());
+    GraphicsColumn* column = dynamic_cast<GraphicsColumn*>(parentItem());
 
     if (column != 0)
     {
@@ -322,9 +322,9 @@ void DiagramAdHocInterface::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
     setPos(parentItem()->mapFromScene(oldColumn_->mapToScene(pos())));
 
-    DiagramColumn* column = dynamic_cast<DiagramColumn*>(parentItem());
+    GraphicsColumn* column = dynamic_cast<GraphicsColumn*>(parentItem());
     Q_ASSERT(column != 0);
-    column->onMoveItem(this, oldColumn_);
+    column->onMoveItem(this);
 }
 
 //-----------------------------------------------------------------------------
@@ -342,21 +342,21 @@ void DiagramAdHocInterface::mousePressEvent(QGraphicsSceneMouseEvent *event)
     DiagramConnectionEndPoint::mousePressEvent(event);
     setZValue(1001.0);
 
-    oldColumn_ = dynamic_cast<DiagramColumn*>(parentItem());
+    oldColumn_ = dynamic_cast<GraphicsColumn*>(parentItem());
     oldPos_ = scenePos();
     Q_ASSERT(oldColumn_ != 0);
 
-    // Save the positions of the other diagram interfaces.
-    foreach (DiagramColumn* column, oldColumn_->getLayout().getColumns())
+    // Save the positions of the other diagram/ad-hoc interfaces.
+    foreach (GraphicsColumn* column, oldColumn_->getLayout().getColumns())
     {
         if (column->getContentType() == COLUMN_CONTENT_IO)
         {
             foreach (QGraphicsItem* item, column->childItems())
             {
-                if (item->type() == DiagramAdHocInterface::Type)
+                if (item->type() == DiagramInterface::Type ||
+                    item->type() == DiagramAdHocInterface::Type)
                 {
-                    DiagramAdHocInterface* interface = static_cast<DiagramAdHocInterface*>(item);
-                    oldInterfacePositions_.insert(interface, interface->scenePos());
+                    oldInterfacePositions_.insert(item, item->scenePos());
                 }
             }
         }
@@ -379,7 +379,7 @@ void DiagramAdHocInterface::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
     if (oldColumn_ != 0)
     {
-        DiagramColumn* column = dynamic_cast<DiagramColumn*>(parentItem());
+        GraphicsColumn* column = dynamic_cast<GraphicsColumn*>(parentItem());
         Q_ASSERT(column != 0);
         column->onReleaseItem(this);
 
@@ -398,7 +398,7 @@ void DiagramAdHocInterface::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         }
 
         // Determine if the other interfaces changed their position and create undo commands for them.
-        QMap<DiagramConnectionEndPoint*, QPointF>::iterator cur = oldInterfacePositions_.begin();
+        QMap<QGraphicsItem*, QPointF>::iterator cur = oldInterfacePositions_.begin();
 
         while (cur != oldInterfacePositions_.end())
         {
@@ -410,8 +410,6 @@ void DiagramAdHocInterface::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
             ++cur;
         }
 
-        oldInterfacePositions_.clear();
-
         // End the position update of the connections.
         foreach (DiagramInterconnection* conn, getInterconnections())
         {
@@ -421,7 +419,7 @@ void DiagramAdHocInterface::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         // Add the undo command to the edit stack only if it has changes.
         if (cmd->childCount() > 0 || oldPos_ != scenePos())
         {
-            column->getEditProvider().addCommand(cmd, false);
+            static_cast<DesignDiagram*>(scene())->getEditProvider().addCommand(cmd, false);
         }
     }
 }

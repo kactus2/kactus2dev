@@ -26,8 +26,8 @@ class DiagramConnectionEndPoint;
 class DiagramPort;
 class DiagramComponent;
 class DiagramInterface;
-class DiagramColumn;
-class DiagramColumnLayout;
+class GraphicsColumn;
+class GraphicsColumnLayout;
 class ComponentItem;
 
 //-----------------------------------------------------------------------------
@@ -42,7 +42,7 @@ public:
      *      @param [in] layout  The column layout.
      *      @param [in] column  The column to delete.
      */
-    ColumnDeleteCommand(DiagramColumnLayout* layout, DiagramColumn* column,
+    ColumnDeleteCommand(GraphicsColumnLayout* layout, GraphicsColumn* column,
                         QUndoCommand* parent = 0);
 
     /*!
@@ -70,10 +70,10 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The column layout.
-    DiagramColumnLayout* layout_;
+    GraphicsColumnLayout* layout_;
 
     //! The diagram column.
-    DiagramColumn* column_;
+    GraphicsColumn* column_;
 
     //! Boolean flag for indicating if the column should be deleted in the destructor.
     bool del_;
@@ -129,7 +129,7 @@ private:
     DiagramComponent* component_;
 
     //! The component's parent column.
-    DiagramColumn* parent_;
+    GraphicsColumn* parent_;
 
     //! The graphics scene.
     QGraphicsScene* scene_;
@@ -290,7 +290,7 @@ private:
     QList< QSharedPointer<Port> > ports_;
 
     //! The port's parent.
-    DiagramColumn* parent_;
+    GraphicsColumn* parent_;
 
     //! The graphics scene.
     QGraphicsScene* scene_;

@@ -28,8 +28,8 @@ class DiagramPort;
 class DiagramComponent;
 class ComponentItem;
 class DiagramInterface;
-class DiagramColumn;
-class DiagramColumnLayout;
+class GraphicsColumn;
+class GraphicsColumnLayout;
 class DiagramConnectionEndPoint;
 class ActiveViewModel;
 class DiagramAdHocPort;
@@ -47,7 +47,7 @@ public:
      *      @param [in] column   The column.
      *      @param [in] newDesc  The column's new description.
      */
-    ColumnChangeCommand(DiagramColumn* column, ColumnDesc const& newDesc,
+    ColumnChangeCommand(GraphicsColumn* column, ColumnDesc const& newDesc,
                         QUndoCommand* parent = 0);
 
     /*!
@@ -75,10 +75,10 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The column layout.
-    DiagramColumnLayout* layout_;
+    GraphicsColumnLayout* layout_;
 
     //! The diagram column.
-    DiagramColumn* column_;
+    GraphicsColumn* column_;
 
     //! The column's old description.
     ColumnDesc oldDesc_;
