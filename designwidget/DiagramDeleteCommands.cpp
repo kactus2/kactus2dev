@@ -102,7 +102,7 @@ ComponentDeleteCommand::ComponentDeleteCommand(DiagramComponent* component, QUnd
     // Create child commands for removing interconnections.
     foreach (QGraphicsItem *item, component_->childItems())
     {
-        DiagramConnectionEndPoint* endPoint = dynamic_cast<DiagramConnectionEndPoint*>(item);
+        DiagramConnectionEndpoint* endPoint = dynamic_cast<DiagramConnectionEndpoint*>(item);
 
         if (endPoint == 0)
         {
@@ -271,7 +271,7 @@ void ConnectionDeleteCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: PortDeleteCommand()
 //-----------------------------------------------------------------------------
-PortDeleteCommand::PortDeleteCommand(DiagramConnectionEndPoint* port, QUndoCommand* parent) :
+PortDeleteCommand::PortDeleteCommand(DiagramConnectionEndpoint* port, QUndoCommand* parent) :
     QUndoCommand(parent), port_(port), parent_(static_cast<DiagramComponent*>(port->parentItem())),
     scene_(port->scene()), del_(true)
 {

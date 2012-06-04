@@ -95,13 +95,13 @@ void DiagramColumn::prepareColumnMove()
             {
                 if (childItem->type() == DiagramPort::Type)
                 {
-                    beginUpdateConnPositions(static_cast<DiagramConnectionEndPoint*>(childItem));
+                    beginUpdateConnPositions(static_cast<DiagramConnectionEndpoint*>(childItem));
                 }
             }
         }
         else if (item->type() == DiagramInterface::Type)
         {
-            beginUpdateConnPositions(static_cast<DiagramConnectionEndPoint*>(item));
+            beginUpdateConnPositions(static_cast<DiagramConnectionEndpoint*>(item));
         }
     }
 }
@@ -127,7 +127,7 @@ QSharedPointer<QUndoCommand> DiagramColumn::createMoveUndoCommand()
 //-----------------------------------------------------------------------------
 // Function: beginUpdateConnPositions()
 //-----------------------------------------------------------------------------
-void DiagramColumn::beginUpdateConnPositions(DiagramConnectionEndPoint* endPoint)
+void DiagramColumn::beginUpdateConnPositions(DiagramConnectionEndpoint* endPoint)
 {
     foreach (DiagramInterconnection* conn, endPoint->getInterconnections())
     {

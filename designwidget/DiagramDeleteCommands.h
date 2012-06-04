@@ -22,7 +22,7 @@
 class BusInterface;
 class Port;
 class DiagramInterconnection;
-class DiagramConnectionEndPoint;
+class DiagramConnectionEndpoint;
 class DiagramPort;
 class DiagramComponent;
 class DiagramInterface;
@@ -203,7 +203,7 @@ public:
      *
      *      @param [in] port The port to delete.
      */
-    PortDeleteCommand(DiagramConnectionEndPoint* port, QUndoCommand* parent = 0);
+    PortDeleteCommand(DiagramConnectionEndpoint* port, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -230,7 +230,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The diagram port.
-    DiagramConnectionEndPoint* port_;
+    DiagramConnectionEndpoint* port_;
 
     //! The port's parent.
     DiagramComponent* parent_;

@@ -281,7 +281,7 @@ void DiagramComponent::mousePressEvent(QGraphicsSceneMouseEvent *event)
 //-----------------------------------------------------------------------------
 // Function: onAddPort()
 //-----------------------------------------------------------------------------
-void DiagramComponent::onAddPort(DiagramConnectionEndPoint* port, bool right)
+void DiagramComponent::onAddPort(DiagramConnectionEndpoint* port, bool right)
 {
     if (right)
     {
@@ -300,7 +300,7 @@ void DiagramComponent::onAddPort(DiagramConnectionEndPoint* port, bool right)
 //-----------------------------------------------------------------------------
 // Function: onMovePort()
 //-----------------------------------------------------------------------------
-void DiagramComponent::onMovePort(DiagramConnectionEndPoint* port)
+void DiagramComponent::onMovePort(DiagramConnectionEndpoint* port)
 {
     // Remove the port from the stacks (this simplifies code).
     leftPorts_.removeAll(port);
@@ -356,7 +356,7 @@ DiagramPort* DiagramComponent::addPort(QPointF const& pos)
 //-----------------------------------------------------------------------------
 // Function: addPort()
 //-----------------------------------------------------------------------------
-void DiagramComponent::addPort(DiagramConnectionEndPoint* port)
+void DiagramComponent::addPort(DiagramConnectionEndpoint* port)
 {
     port->setParentItem(this);
 
@@ -451,7 +451,7 @@ void DiagramComponent::updateComponent()
 //-----------------------------------------------------------------------------
 // Function: removePort()
 //-----------------------------------------------------------------------------
-void DiagramComponent::removePort(DiagramConnectionEndPoint* port)
+void DiagramComponent::removePort(DiagramConnectionEndpoint* port)
 {
     leftPorts_.removeAll(port);
     rightPorts_.removeAll(port);
@@ -520,7 +520,7 @@ void DiagramComponent::onAdHocVisibilityChanged(QString const& portName, bool vi
     else
     {
         // Search for the ad-hoc port from both sides.
-        DiagramConnectionEndPoint* found = getAdHocPort(portName);
+        DiagramConnectionEndpoint* found = getAdHocPort(portName);
         Q_ASSERT(found != 0);
 
         // Remove the port and delete it.
@@ -535,7 +535,7 @@ void DiagramComponent::onAdHocVisibilityChanged(QString const& portName, bool vi
 //-----------------------------------------------------------------------------
 DiagramAdHocPort* DiagramComponent::getAdHocPort(QString const& portName)
 {
-    foreach (DiagramConnectionEndPoint* endPoint, leftPorts_)
+    foreach (DiagramConnectionEndpoint* endPoint, leftPorts_)
     {
         if (dynamic_cast<DiagramAdHocPort*>(endPoint) != 0 && endPoint->name() == portName)
         {
@@ -543,7 +543,7 @@ DiagramAdHocPort* DiagramComponent::getAdHocPort(QString const& portName)
         }
     }
     
-    foreach (DiagramConnectionEndPoint* endPoint, rightPorts_)
+    foreach (DiagramConnectionEndpoint* endPoint, rightPorts_)
     {
         if (dynamic_cast<DiagramAdHocPort*>(endPoint) != 0 && endPoint->name() == portName)
         {
@@ -590,7 +590,7 @@ GenericEditProvider& DiagramComponent::getEditProvider()
 //-----------------------------------------------------------------------------
 // Function: DiagramComponent::getDiagramAdHocPort()
 //-----------------------------------------------------------------------------
-DiagramConnectionEndPoint* DiagramComponent::getDiagramAdHocPort(QString const& portName)
+DiagramConnectionEndpoint* DiagramComponent::getDiagramAdHocPort(QString const& portName)
 {
     return getAdHocPort(portName);
 }

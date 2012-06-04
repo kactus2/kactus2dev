@@ -133,6 +133,12 @@ public:
 	*/
 	QStringList getViews() const;
 
+    /*!
+     *  Returns true if the connections should not be updated automatically in
+     *  the port's itemChange() function. Otherwise false.
+     */
+    virtual bool isConnectionUpdateDisabled() const = 0;
+
 signals:
     //! Signals that the contents of the component have been changed.
     void contentChanged();

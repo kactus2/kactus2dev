@@ -435,7 +435,7 @@ bool SWInterfaceItem::canConnect(SWConnectionEndpoint const* other) const
 //-----------------------------------------------------------------------------
 // Function: SWInterfaceItem::encompassingComp()
 //-----------------------------------------------------------------------------
-SWComponentItem* SWInterfaceItem::encompassingComp() const
+ComponentItem* SWInterfaceItem::encompassingComp() const
 {
     return 0;
 }

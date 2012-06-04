@@ -182,7 +182,7 @@ void ConnectionEditor::setConnection( DiagramInterconnection* connection ) {
 
 	connection_ = connection;
 
-	DiagramConnectionEndPoint* endPoint1 = connection->endPoint1();
+	DiagramConnectionEndpoint* endPoint1 = connection->endPoint1();
 	Q_ASSERT(endPoint1);
 
     if (endPoint1->isBus())
@@ -308,18 +308,18 @@ void ConnectionEditor::setPortMaps() {
 	QSharedPointer<BusInterface> busIf1 = connection_->endPoint1()->getBusInterface();
 	Q_ASSERT(busIf1);
 	QList<QSharedPointer<General::PortMap> > portMaps1 = busIf1->getPortMaps();
-	QSharedPointer<Component> comp1 = connection_->endPoint1()->ownerComponent();
+	QSharedPointer<Component> comp1 = connection_->endPoint1()->getOwnerComponent();
 	Q_ASSERT(comp1);
 
 	// get the interface and component for end point 2
 	QSharedPointer<BusInterface> busIf2 = connection_->endPoint2()->getBusInterface();
 	Q_ASSERT(busIf2);
 	QList<QSharedPointer<General::PortMap> > portMaps2 = busIf2->getPortMaps();
-	QSharedPointer<Component> comp2 = connection_->endPoint2()->ownerComponent();
+	QSharedPointer<Component> comp2 = connection_->endPoint2()->getOwnerComponent();
 	Q_ASSERT(comp2);
 
 	// set the header for end point 1
-	DiagramComponent* diacomp1 = connection_->endPoint1()->encompassingComp();
+	ComponentItem* diacomp1 = connection_->endPoint1()->encompassingComp();
 	// if endpoint1 was a component instance
 	if (diacomp1) {
 		portWidget_.horizontalHeaderItem(0)->setText(diacomp1->name());
@@ -330,7 +330,7 @@ void ConnectionEditor::setPortMaps() {
 	}
 
 	// set the header for end point 2
-	DiagramComponent* diacomp2 = connection_->endPoint2()->encompassingComp();
+	ComponentItem* diacomp2 = connection_->endPoint2()->encompassingComp();
 	// if endpoint1 was a component instance
 	if (diacomp2) {
 		portWidget_.horizontalHeaderItem(1)->setText(diacomp2->name());

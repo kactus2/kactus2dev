@@ -42,7 +42,7 @@
 // Function: DiagramAdHocPort()
 //-----------------------------------------------------------------------------
 DiagramAdHocPort::DiagramAdHocPort(Port* port, LibraryInterface* lh,
-                                   QGraphicsItem *parent) : DiagramConnectionEndPoint(parent),
+                                   QGraphicsItem *parent) : DiagramConnectionEndpoint(parent),
                                                             port_(port),
                                                             lh_(lh),
                                                             temp_(false),
@@ -200,7 +200,7 @@ bool DiagramAdHocPort::isHierarchical() const
 //-----------------------------------------------------------------------------
 // Function: onConnect()
 //-----------------------------------------------------------------------------
-bool DiagramAdHocPort::onConnect(DiagramConnectionEndPoint const*)
+bool DiagramAdHocPort::onConnect(DiagramConnectionEndpoint const*)
 {
     return true;
 }
@@ -208,14 +208,14 @@ bool DiagramAdHocPort::onConnect(DiagramConnectionEndPoint const*)
 //-----------------------------------------------------------------------------
 // Function: onDisonnect()
 //-----------------------------------------------------------------------------
-void DiagramAdHocPort::onDisconnect(DiagramConnectionEndPoint const*)
+void DiagramAdHocPort::onDisconnect(DiagramConnectionEndpoint const*)
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: canConnect()
 //-----------------------------------------------------------------------------
-bool DiagramAdHocPort::canConnect(DiagramConnectionEndPoint const* other) const
+bool DiagramAdHocPort::canConnect(DiagramConnectionEndpoint const* other) const
 {
     // Ad-hoc connection is not possible to a bus end point.
     if (other->isBus())
@@ -242,17 +242,17 @@ bool DiagramAdHocPort::canConnect(DiagramConnectionEndPoint const* other) const
 //-----------------------------------------------------------------------------
 // Function: encompassingComp()
 //-----------------------------------------------------------------------------
-DiagramComponent* DiagramAdHocPort::encompassingComp() const
+ComponentItem* DiagramAdHocPort::encompassingComp() const
 {
-    return qgraphicsitem_cast<DiagramComponent*>(parentItem());
+    return static_cast<ComponentItem*>(parentItem());
 }
 
 //-----------------------------------------------------------------------------
-// Function: ownerComponent()
+// Function: getOwnerComponent()
 //-----------------------------------------------------------------------------
-QSharedPointer<Component> DiagramAdHocPort::ownerComponent() const
+QSharedPointer<Component> DiagramAdHocPort::getOwnerComponent() const
 {
-	DiagramComponent* comp = encompassingComp();
+	ComponentItem* comp = encompassingComp();
 	Q_ASSERT(comp);
 	QSharedPointer<Component> compModel = comp->componentModel();
 	Q_ASSERT(compModel);
@@ -355,8 +355,8 @@ void DiagramAdHocPort::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         return;
     }
 
-    DiagramConnectionEndPoint::mouseMoveEvent(event);
-    encompassingComp()->onMovePort(this);
+    DiagramConnectionEndpoint::mouseMoveEvent(event);
+    static_cast<DiagramComponent*>(parentItem())->onMovePort(this);
 }
 
 //-----------------------------------------------------------------------------
@@ -371,15 +371,15 @@ void DiagramAdHocPort::setTypes(VLNV const&, VLNV const&, General::InterfaceMode
 //-----------------------------------------------------------------------------
 void DiagramAdHocPort::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    DiagramConnectionEndPoint::mousePressEvent(event);    
+    DiagramConnectionEndpoint::mousePressEvent(event);    
     oldPos_ = pos();
 
     // Save old port positions for all ports in the parent component.
     foreach (QGraphicsItem* item, parentItem()->childItems())
     {
-        if (dynamic_cast<DiagramConnectionEndPoint*>(item) != 0 && item != this)
+        if (dynamic_cast<DiagramConnectionEndpoint*>(item) != 0 && item != this)
         {
-            DiagramConnectionEndPoint* port = static_cast<DiagramConnectionEndPoint*>(item);
+            DiagramConnectionEndpoint* port = static_cast<DiagramConnectionEndpoint*>(item);
             oldPortPositions_.insert(port, port->pos());
         }
     }
@@ -396,7 +396,7 @@ void DiagramAdHocPort::mousePressEvent(QGraphicsSceneMouseEvent *event)
 //-----------------------------------------------------------------------------
 void DiagramAdHocPort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    DiagramConnectionEndPoint::mouseReleaseEvent(event);
+    DiagramConnectionEndpoint::mouseReleaseEvent(event);
 
     QSharedPointer<QUndoCommand> cmd;
 
@@ -411,7 +411,7 @@ void DiagramAdHocPort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     }
 
     // Determine if the other ports changed their position and create undo commands for them.
-    QMap<DiagramConnectionEndPoint*, QPointF>::iterator cur = oldPortPositions_.begin();
+    QMap<DiagramConnectionEndpoint*, QPointF>::iterator cur = oldPortPositions_.begin();
 
     while (cur != oldPortPositions_.end())
     {
@@ -467,7 +467,7 @@ void DiagramAdHocPort::setDescription(QString const& description)
 //-----------------------------------------------------------------------------
 // Function: getOffPageConnector()
 //-----------------------------------------------------------------------------
-DiagramConnectionEndPoint* DiagramAdHocPort::getOffPageConnector()
+DiagramConnectionEndpoint* DiagramAdHocPort::getOffPageConnector()
 {
     return offPageConnector_;
 }

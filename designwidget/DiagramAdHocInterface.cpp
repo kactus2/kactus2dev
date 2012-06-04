@@ -46,7 +46,7 @@
 //-----------------------------------------------------------------------------
 DiagramAdHocInterface::DiagramAdHocInterface(QSharedPointer<Component> component,
                                              Port* port, LibraryInterface* lh,
-                                             QGraphicsItem *parent) : DiagramConnectionEndPoint(parent, QVector2D(1.0f, 0.0f)),
+                                             QGraphicsItem *parent) : DiagramConnectionEndpoint(parent, QVector2D(1.0f, 0.0f)),
                                                                       lh_(lh),
                                                                       nameLabel_(0),
                                                                       port_(port),
@@ -214,7 +214,7 @@ bool DiagramAdHocInterface::isHierarchical() const
 //-----------------------------------------------------------------------------
 // Function: onConnect()
 //-----------------------------------------------------------------------------
-bool DiagramAdHocInterface::onConnect(DiagramConnectionEndPoint const*)
+bool DiagramAdHocInterface::onConnect(DiagramConnectionEndpoint const*)
 {
     return true;
 }
@@ -222,14 +222,14 @@ bool DiagramAdHocInterface::onConnect(DiagramConnectionEndPoint const*)
 //-----------------------------------------------------------------------------
 // Function: onDisonnect()
 //-----------------------------------------------------------------------------
-void DiagramAdHocInterface::onDisconnect(DiagramConnectionEndPoint const*)
+void DiagramAdHocInterface::onDisconnect(DiagramConnectionEndpoint const*)
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: canConnect()
 //-----------------------------------------------------------------------------
-bool DiagramAdHocInterface::canConnect(DiagramConnectionEndPoint const* other) const
+bool DiagramAdHocInterface::canConnect(DiagramConnectionEndpoint const* other) const
 {
     // Ad-hoc connection is not possible to a bus end point.
     if (other->isBus())
@@ -249,15 +249,15 @@ bool DiagramAdHocInterface::canConnect(DiagramConnectionEndPoint const* other) c
 //-----------------------------------------------------------------------------
 // Function: encompassingComp()
 //-----------------------------------------------------------------------------
-DiagramComponent* DiagramAdHocInterface::encompassingComp() const
+ComponentItem* DiagramAdHocInterface::encompassingComp() const
 {
-    return qgraphicsitem_cast<DiagramComponent*>(parentItem());
+    return static_cast<ComponentItem*>(parentItem());
 }
 
 //-----------------------------------------------------------------------------
-// Function: ownerComponent()
+// Function: getOwnerComponent()
 //-----------------------------------------------------------------------------
-QSharedPointer<Component> DiagramAdHocInterface::ownerComponent() const
+QSharedPointer<Component> DiagramAdHocInterface::getOwnerComponent() const
 {
     return component_;
 }
@@ -318,7 +318,7 @@ void DiagramAdHocInterface::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         return;
     }
 
-    DiagramConnectionEndPoint::mouseMoveEvent(event);
+    DiagramConnectionEndpoint::mouseMoveEvent(event);
 
     setPos(parentItem()->mapFromScene(oldColumn_->mapToScene(pos())));
 
@@ -339,7 +339,7 @@ void DiagramAdHocInterface::setTypes(VLNV const&, VLNV const&, General::Interfac
 //-----------------------------------------------------------------------------
 void DiagramAdHocInterface::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    DiagramConnectionEndPoint::mousePressEvent(event);
+    DiagramConnectionEndpoint::mousePressEvent(event);
     setZValue(1001.0);
 
     oldColumn_ = dynamic_cast<GraphicsColumn*>(parentItem());
@@ -374,7 +374,7 @@ void DiagramAdHocInterface::mousePressEvent(QGraphicsSceneMouseEvent *event)
 //-----------------------------------------------------------------------------
 void DiagramAdHocInterface::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    DiagramConnectionEndPoint::mouseReleaseEvent(event);
+    DiagramConnectionEndpoint::mouseReleaseEvent(event);
     setZValue(0.0);
 
     if (oldColumn_ != 0)
@@ -429,7 +429,7 @@ void DiagramAdHocInterface::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 //-----------------------------------------------------------------------------
 void DiagramAdHocInterface::setDirection(QVector2D const& dir)
 {
-    DiagramConnectionEndPoint::setDirection(dir);
+    DiagramConnectionEndpoint::setDirection(dir);
 
     // Update the position of the name label based on the direction.
     qreal nameWidth = nameLabel_->boundingRect().width();
@@ -475,7 +475,7 @@ void DiagramAdHocInterface::setDescription(QString const& description)
 //-----------------------------------------------------------------------------
 // Function: getOffPageConnector()
 //-----------------------------------------------------------------------------
-DiagramConnectionEndPoint* DiagramAdHocInterface::getOffPageConnector()
+DiagramConnectionEndpoint* DiagramAdHocInterface::getOffPageConnector()
 {
     return offPageConnector_;
 }

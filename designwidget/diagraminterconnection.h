@@ -12,7 +12,7 @@
 
 #include <common/graphicsItems/GraphicsItemTypes.h>
 
-class DiagramConnectionEndPoint;
+class DiagramConnectionEndpoint;
 class BlockDiagram;
 
 /*! \brief DiagramInterconnection represents graphically an IP-XACT interconnection
@@ -38,8 +38,8 @@ public:
     /*!
      *  Constructor.
      */
-    DiagramInterconnection(DiagramConnectionEndPoint *endPoint1,
-                           DiagramConnectionEndPoint *endPoint2,
+    DiagramInterconnection(DiagramConnectionEndpoint *endPoint1,
+                           DiagramConnectionEndpoint *endPoint2,
                            bool autoConnect,
                            const QString &displayName,
                            const QString &description,
@@ -148,12 +148,12 @@ public:
     /*! \brief Return the first end point connected
      *
      */
-    DiagramConnectionEndPoint *endPoint1() const;
+    DiagramConnectionEndpoint *endPoint1() const;
 
     /*! \brief Return the second end point connected
      *
      */
-    DiagramConnectionEndPoint *endPoint2() const;
+    DiagramConnectionEndpoint *endPoint2() const;
 
     /*!
      *  Sets the left bound of the ad-hoc end point involved in the connection.
@@ -242,7 +242,7 @@ private:
     void setItemSettings();
 
     void createRoute(QPointF p1, QPointF p2, QVector2D const& dir1, QVector2D const& dir2);
-    void createRoute(DiagramConnectionEndPoint* endPoint1, DiagramConnectionEndPoint* endPoint2);
+    void createRoute(DiagramConnectionEndpoint* endPoint1, DiagramConnectionEndpoint* endPoint2);
 
     void simplifyPath();
 
@@ -293,8 +293,8 @@ private:
 
     QString name_;
 	QString description_;
-    DiagramConnectionEndPoint *endPoint1_;
-    DiagramConnectionEndPoint *endPoint2_;
+    DiagramConnectionEndpoint *endPoint1_;
+    DiagramConnectionEndpoint *endPoint2_;
     QList<QPointF> pathPoints_;
     int selected_;
     SelectionType selectionType_;

@@ -18,10 +18,9 @@
 //-----------------------------------------------------------------------------
 SWConnectionEndpoint::SWConnectionEndpoint(QGraphicsItem* parent,
                                            QVector2D const& dir)
-    : QGraphicsPolygonItem(parent),
+    : ConnectionEndpoint(parent),
       type_(ENDPOINT_TYPE_UNDEFINED),
-      connections_(),
-      dir_()
+      connections_()
 {
     setDirection(dir);
 }
@@ -31,34 +30,6 @@ SWConnectionEndpoint::SWConnectionEndpoint(QGraphicsItem* parent,
 //-----------------------------------------------------------------------------
 SWConnectionEndpoint::~SWConnectionEndpoint()
 {
-    emit destroyed(this);
-}
-
-//-----------------------------------------------------------------------------
-// Function: setHighlight()
-//-----------------------------------------------------------------------------
-void SWConnectionEndpoint::setHighlight(HighlightMode mode)
-{
-    switch (mode)
-    {
-    case HIGHLIGHT_OFF:
-        {
-            setPen(QPen(Qt::black, 1));
-            break;
-        }
-
-    case HIGHLIGHT_ALLOWED:
-        {
-            setPen(QPen(Qt::blue, 2));
-            break;
-        }
-
-    case HIGHLIGHT_HOVER:
-        {
-            setPen(QPen(Qt::red, 2));
-            break;
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -91,49 +62,6 @@ QList<SWConnection*> const& SWConnectionEndpoint::getConnections() const
 bool SWConnectionEndpoint::isConnected() const
 {
     return (!connections_.empty());
-}
-
-//-----------------------------------------------------------------------------
-// Function: setDirection()
-//-----------------------------------------------------------------------------
-void SWConnectionEndpoint::setDirection(QVector2D const& dir)
-{
-    // Determine the rotation based on the new direction.
-    if (qFuzzyCompare(dir, QVector2D(0.0f, -1.0f)))
-    {
-        setRotation(0.0);
-    }
-    else if (qFuzzyCompare(dir, QVector2D(0.0f, 1.0f)))
-    {
-        setRotation(180.0);
-    }
-    else if (qFuzzyCompare(dir, QVector2D(1.0f, 0.0f)))
-    {
-        setRotation(90.0);
-    }
-    else if (qFuzzyCompare(dir, QVector2D(-1.0f, 0.0f)))
-    {
-        setRotation(-90.0);
-    }
-
-    dir_ = dir;
-}
-
-//-----------------------------------------------------------------------------
-// Function: isDirectionFixed()
-//-----------------------------------------------------------------------------
-bool SWConnectionEndpoint::isDirectionFixed() const
-{
-    // The end point direction is not fixed by default.
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: getDirection()
-//-----------------------------------------------------------------------------
-QVector2D const& SWConnectionEndpoint::getDirection() const
-{
-    return dir_;
 }
 
 //-----------------------------------------------------------------------------

@@ -24,8 +24,8 @@
 //-----------------------------------------------------------------------------
 // Function: DiagramOffPageConnector()
 //-----------------------------------------------------------------------------
-DiagramOffPageConnector::DiagramOffPageConnector(DiagramConnectionEndPoint* parent)
-    : DiagramConnectionEndPoint(parent),
+DiagramOffPageConnector::DiagramOffPageConnector(DiagramConnectionEndpoint* parent)
+    : DiagramConnectionEndpoint(parent),
       parent_(parent)        
 {
     Q_ASSERT(parent != 0);
@@ -139,7 +139,7 @@ bool DiagramOffPageConnector::isHierarchical() const
 //-----------------------------------------------------------------------------
 // Function: onConnect()
 //-----------------------------------------------------------------------------
-bool DiagramOffPageConnector::onConnect(DiagramConnectionEndPoint const* other)
+bool DiagramOffPageConnector::onConnect(DiagramConnectionEndpoint const* other)
 {
     return parent_->onConnect(other);
 }
@@ -147,7 +147,7 @@ bool DiagramOffPageConnector::onConnect(DiagramConnectionEndPoint const* other)
 //-----------------------------------------------------------------------------
 // Function: onDisonnect()
 //-----------------------------------------------------------------------------
-void DiagramOffPageConnector::onDisconnect(DiagramConnectionEndPoint const* other)
+void DiagramOffPageConnector::onDisconnect(DiagramConnectionEndpoint const* other)
 {
     parent_->onDisconnect(other);
 }
@@ -155,7 +155,7 @@ void DiagramOffPageConnector::onDisconnect(DiagramConnectionEndPoint const* othe
 //-----------------------------------------------------------------------------
 // Function: canConnect()
 //-----------------------------------------------------------------------------
-bool DiagramOffPageConnector::canConnect(DiagramConnectionEndPoint const* other) const
+bool DiagramOffPageConnector::canConnect(DiagramConnectionEndpoint const* other) const
 {
     return parent_->canConnect(other);
 }
@@ -163,17 +163,17 @@ bool DiagramOffPageConnector::canConnect(DiagramConnectionEndPoint const* other)
 //-----------------------------------------------------------------------------
 // Function: encompassingComp()
 //-----------------------------------------------------------------------------
-DiagramComponent *DiagramOffPageConnector::encompassingComp() const
+ComponentItem* DiagramOffPageConnector::encompassingComp() const
 {
     return parent_->encompassingComp();
 }
 
 //-----------------------------------------------------------------------------
-// Function: ownerComponent()
+// Function: getOwnerComponent()
 //-----------------------------------------------------------------------------
-QSharedPointer<Component> DiagramOffPageConnector::ownerComponent() const
+QSharedPointer<Component> DiagramOffPageConnector::getOwnerComponent() const
 {
-    return parent_->ownerComponent();
+    return parent_->getOwnerComponent();
 }
 
 //-----------------------------------------------------------------------------
@@ -236,7 +236,7 @@ void DiagramOffPageConnector::setTypes(VLNV const& busType, VLNV const& absType,
 //-----------------------------------------------------------------------------
 void DiagramOffPageConnector::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    DiagramConnectionEndPoint::mousePressEvent(event);
+    DiagramConnectionEndpoint::mousePressEvent(event);
 }
 
 //-----------------------------------------------------------------------------
@@ -265,7 +265,7 @@ void DiagramOffPageConnector::setDescription(QString const& description)
 //-----------------------------------------------------------------------------
 void DiagramOffPageConnector::addInterconnection(DiagramInterconnection* connection)
 {
-    DiagramConnectionEndPoint::addInterconnection(connection);
+    DiagramConnectionEndpoint::addInterconnection(connection);
     connection->setRoutingMode(DiagramInterconnection::ROUTING_MODE_OFFPAGE);
 
     setVisible(true);
@@ -276,7 +276,7 @@ void DiagramOffPageConnector::addInterconnection(DiagramInterconnection* connect
 //-----------------------------------------------------------------------------
 void DiagramOffPageConnector::removeInterconnection(DiagramInterconnection* connection)
 {
-    DiagramConnectionEndPoint::removeInterconnection(connection);
+    DiagramConnectionEndpoint::removeInterconnection(connection);
 
     if (getInterconnections().size() == 0)
     {

@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: DiagramConnectionEndPoint.cpp
+// File: DiagramConnectionEndpoint.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
@@ -14,53 +14,27 @@
 #include <QPen>
 
 //-----------------------------------------------------------------------------
-// Function: DiagramConnectionEndPoint()
+// Function: DiagramConnectionEndpoint()
 //-----------------------------------------------------------------------------
-DiagramConnectionEndPoint::DiagramConnectionEndPoint(QGraphicsItem* parent,
-                                                     QVector2D const& dir) : QGraphicsPolygonItem(parent),
-                                                                             connections_(), dir_()
+DiagramConnectionEndpoint::DiagramConnectionEndpoint(QGraphicsItem* parent,
+                                                     QVector2D const& dir)
+    : ConnectionEndpoint(parent),
+      connections_()
 {
     setDirection(dir);
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~DiagramConnectionEndPoint()
+// Function: ~DiagramConnectionEndpoint()
 //-----------------------------------------------------------------------------
-DiagramConnectionEndPoint::~DiagramConnectionEndPoint() {
-	emit destroyed(this);
-}
-
-//-----------------------------------------------------------------------------
-// Function: setHighlight()
-//-----------------------------------------------------------------------------
-void DiagramConnectionEndPoint::setHighlight(HighlightMode mode)
+DiagramConnectionEndpoint::~DiagramConnectionEndpoint()
 {
-    switch (mode)
-    {
-    case HIGHLIGHT_OFF:
-        {
-            setPen(QPen(Qt::black, 1));
-            break;
-        }
-
-    case HIGHLIGHT_ALLOWED:
-        {
-            setPen(QPen(Qt::blue, 2));
-            break;
-        }
-
-    case HIGHLIGHT_HOVER:
-        {
-            setPen(QPen(Qt::red, 2));
-            break;
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: addInterconnection()
 //-----------------------------------------------------------------------------
-void DiagramConnectionEndPoint::addInterconnection(DiagramInterconnection* connection)
+void DiagramConnectionEndpoint::addInterconnection(DiagramInterconnection* connection)
 {
     connections_.append(connection);
 }
@@ -68,7 +42,7 @@ void DiagramConnectionEndPoint::addInterconnection(DiagramInterconnection* conne
 //-----------------------------------------------------------------------------
 // Function: removeInterconnection()
 //-----------------------------------------------------------------------------
-void DiagramConnectionEndPoint::removeInterconnection(DiagramInterconnection* connection)
+void DiagramConnectionEndpoint::removeInterconnection(DiagramInterconnection* connection)
 {
     connections_.removeAll(connection);
 }
@@ -76,7 +50,7 @@ void DiagramConnectionEndPoint::removeInterconnection(DiagramInterconnection* co
 //-----------------------------------------------------------------------------
 // Function: getInterconnections()
 //-----------------------------------------------------------------------------
-QList<DiagramInterconnection*> const& DiagramConnectionEndPoint::getInterconnections() const
+QList<DiagramInterconnection*> const& DiagramConnectionEndpoint::getInterconnections() const
 {
     return connections_;
 }
@@ -84,66 +58,23 @@ QList<DiagramInterconnection*> const& DiagramConnectionEndPoint::getInterconnect
 //-----------------------------------------------------------------------------
 // Function: isConnected()
 //-----------------------------------------------------------------------------
-bool DiagramConnectionEndPoint::isConnected() const
+bool DiagramConnectionEndpoint::isConnected() const
 {
     return (!connections_.empty());
 }
 
 //-----------------------------------------------------------------------------
-// Function: setDirection()
-//-----------------------------------------------------------------------------
-void DiagramConnectionEndPoint::setDirection(QVector2D const& dir)
-{
-    // Determine the rotation based on the new direction.
-    if (qFuzzyCompare(dir, QVector2D(0.0f, -1.0f)))
-    {
-        setRotation(0.0);
-    }
-    else if (qFuzzyCompare(dir, QVector2D(0.0f, 1.0f)))
-    {
-        setRotation(180.0);
-    }
-    else if (qFuzzyCompare(dir, QVector2D(1.0f, 0.0f)))
-    {
-        setRotation(90.0);
-    }
-    else if (qFuzzyCompare(dir, QVector2D(-1.0f, 0.0f)))
-    {
-        setRotation(-90.0);
-    }
-
-    dir_ = dir;
-}
-
-//-----------------------------------------------------------------------------
-// Function: isDirectionFixed()
-//-----------------------------------------------------------------------------
-bool DiagramConnectionEndPoint::isDirectionFixed() const
-{
-    // The end point direction is not fixed by default.
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: getDirection()
-//-----------------------------------------------------------------------------
-QVector2D const& DiagramConnectionEndPoint::getDirection() const
-{
-    return dir_;
-}
-
-//-----------------------------------------------------------------------------
 // Function: getOffPageConnector()
 //-----------------------------------------------------------------------------
-DiagramConnectionEndPoint* DiagramConnectionEndPoint::getOffPageConnector()
+DiagramConnectionEndpoint* DiagramConnectionEndpoint::getOffPageConnector()
 {
     return 0;
 }
 
 //-----------------------------------------------------------------------------
-// Function: DiagramConnectionEndPoint::isAdHoc()
+// Function: DiagramConnectionEndpoint::isAdHoc()
 //-----------------------------------------------------------------------------
-bool DiagramConnectionEndPoint::isAdHoc() const
+bool DiagramConnectionEndpoint::isAdHoc() const
 {
     return (!isBus());
 }

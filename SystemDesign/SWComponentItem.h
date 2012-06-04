@@ -35,7 +35,7 @@ public:
      *  Constructor.
      *
      *      @param [in] size                      The initial rectangle size.
-     *      @param [in9 libInterface              The library interface.
+     *      @param [in] libInterface              The library interface.
      *      @param [in] component                 The component model.
      *      @param [in] instanceName              The name of the component instance.
      *      @param [in] displayName               The component instance's display name.

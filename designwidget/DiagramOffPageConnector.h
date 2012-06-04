@@ -23,13 +23,13 @@
 class BusInterface;
 class DiagramInterconnection;
 class DiagramComponent;
-class DiagramConnectionEndPoint;
+class DiagramConnectionEndpoint;
 class LibraryInterface;
 
 //-----------------------------------------------------------------------------
 //! DiagramOffPageConnector class.
 //-----------------------------------------------------------------------------
-class DiagramOffPageConnector : public DiagramConnectionEndPoint
+class DiagramOffPageConnector : public DiagramConnectionEndpoint
 {
     Q_OBJECT
 
@@ -44,7 +44,7 @@ public:
      *
      *      @param [in] parent The parent diagram connection end point.
      */
-    DiagramOffPageConnector(DiagramConnectionEndPoint* parent);
+    DiagramOffPageConnector(DiagramConnectionEndpoint* parent);
 
 	/*!
      *  Destructor.
@@ -68,7 +68,7 @@ public:
 	int type() const { return Type; }
 
     //-----------------------------------------------------------------------------
-    // DiagramConnectionEndPoint implementation.
+    // DiagramConnectionEndpoint implementation.
     //-----------------------------------------------------------------------------
 
     /*!
@@ -124,21 +124,21 @@ public:
      *
      *      @return False if there was an error in the connection. Otherwise true.
      */
-    virtual bool onConnect(DiagramConnectionEndPoint const* other);
+    virtual bool onConnect(DiagramConnectionEndpoint const* other);
 
     /*!
      *  Called when a connection has been removed from between this and another end point.
      *
      *      @param [in] other The other end point of the connection.
      */
-    virtual void onDisconnect(DiagramConnectionEndPoint const* other);
+    virtual void onDisconnect(DiagramConnectionEndpoint const* other);
 
     /*! 
      *  Returns true if the connector can be connected to the given end point.
      *
      *      @param [in] other The end point to which to connect.
      */
-    virtual bool canConnect(DiagramConnectionEndPoint const* other) const;
+    virtual bool canConnect(DiagramConnectionEndpoint const* other) const;
 
     /*!
      *  Sets the draw direction of the end point.
@@ -157,14 +157,14 @@ public:
     /*! 
      *  Returns the encompassing component, if it represents a bus interface on a component.
      */
-    virtual DiagramComponent *encompassingComp() const;
+    virtual ComponentItem* encompassingComp() const;
 
 	/*!
 	 *  Returns pointer to the top component that owns this interface.
 	 *
 	 *      @return Pointer to the component to which this interface belongs to.
 	*/
-	virtual QSharedPointer<Component> ownerComponent() const;
+	virtual QSharedPointer<Component> getOwnerComponent() const;
 
     /*! 
      *  Returns the IP-XACT bus interface model of the parent diagram connection end point.
@@ -213,7 +213,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The parent diagram connection end point.
-    DiagramConnectionEndPoint* parent_;
+    DiagramConnectionEndpoint* parent_;
 };
 
 //-----------------------------------------------------------------------------

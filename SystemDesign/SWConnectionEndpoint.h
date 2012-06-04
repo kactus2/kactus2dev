@@ -15,13 +15,15 @@
 #include <models/generaldeclarations.h>
 #include <models/component.h>
 
+#include <common/graphicsItems/ConnectionEndpoint.h>
+
 #include <QList>
 #include <QPointF>
 #include <QVector2D>
 #include <QSharedPointer>
 #include <QGraphicsPolygonItem>
 
-class SWComponentItem;
+class ComponentItem;
 class ApiInterface;
 class ComInterface;
 class SWConnection;
@@ -30,21 +32,11 @@ class VLNV;
 //-----------------------------------------------------------------------------
 //! Common interface for SW connection endpoints.
 //-----------------------------------------------------------------------------
-class SWConnectionEndpoint : public QObject, public QGraphicsPolygonItem
+class SWConnectionEndpoint : public ConnectionEndpoint
 {
     Q_OBJECT
 
 public:
-    //-----------------------------------------------------------------------------
-    //! HighlightMode enumeration.
-    //-----------------------------------------------------------------------------
-    enum HighlightMode
-    {
-        HIGHLIGHT_OFF = 0,
-        HIGHLIGHT_ALLOWED,
-        HIGHLIGHT_HOVER,
-    };
-
     //-----------------------------------------------------------------------------
     //! Endpoint type enumeration.
     //-----------------------------------------------------------------------------
@@ -68,13 +60,6 @@ public:
      *  Destructor.
      */
     virtual ~SWConnectionEndpoint();
-
-    /*!
-     *  Sets the highlighting mode.
-     *
-     *      @param [in] mode The highlight mode.
-     */
-    void setHighlight(HighlightMode mode);
 
     /*!
      *  Sets the selection highlight on/off.
@@ -130,51 +115,6 @@ public:
     bool isConnected() const;
 
     /*!
-     *  Sets the draw direction of the endpoint.
-     *
-     *      @param [in] dir The draw direction to set.
-     *
-     *      @remarks The direction can be changed only if isDirectionFixed() returns false.
-     */
-    virtual void setDirection(QVector2D const& dir);
-
-    /*!
-	 *	Returns the draw direction of the endpoint.
-	 */
-	virtual QVector2D const& getDirection() const;
-
-    /*!
-     *  Returns true if the draw direction is fixed and thus, cannot be changed.
-     */
-    virtual bool isDirectionFixed() const;
-
-    /*! 
-     *  Returns the name of the endpoint.
-     */
-    virtual QString name() const = 0;
-
-	/*! \brief Set the name of the endpoint.
-	 *
-	 * \param name The name to set for the endpoint.
-	 *
-	*/
-	virtual void setName(const QString& name) = 0;
-
-	/*! \brief Get the description of the endpoint.
-	 *
-	 *
-	 * \return QString contains the description.
-	*/
-	virtual QString description() const = 0;
-
-	/*! \brief Set the description for the endpoint.
-	 *
-	 * \param description Contains the description to set.
-	 *
-	*/
-	virtual void setDescription(const QString& description) = 0;
-
-    /*!
      *  Called when a connection between this and another endpoint is done.
      *
      *      @param [in] other The other endpoint of the connection.
@@ -202,37 +142,6 @@ public:
      */
     virtual void updateInterface();
 
-    /*! 
-     *  Returns the encompassing component, if the endpoint represents a COM/API interface on a component.
-     */
-    virtual SWComponentItem* encompassingComp() const = 0;
-
-	/*!
-     *  Returns pointer to the top component that owns this interface.
-	 */
-	virtual QSharedPointer<Component> getOwnerComponent() const = 0;
-
-    /*! 
-     *  Returns the COM interface model of the endpoint.
-     *
-     *      @remarks The function returns a null pointer if the endpoint is not a COM interface.
-     *               Use isCom() function to check for COM interface support.
-     */
-    virtual QSharedPointer<ComInterface> getComInterface() const = 0;
-
-    /*! 
-     *  Returns the API interface model of the endpoint.
-     *
-     *      @remarks The function returns a null pointer if the endpoint is not a API interface.
-     *               Use isApi() function to check for API interface support.
-     */
-    virtual QSharedPointer<ApiInterface> getApiInterface() const = 0;
-
-    /*!
-     *  Returns true if the endpoint represents a hierarchical connection.
-     */
-    virtual bool isHierarchical() const = 0;
-
     /*!
      *  Returns true if the endpoint is a COM interface endpoint.
      */
@@ -253,13 +162,6 @@ public:
      */
     EndpointType getType() const;
 
-signals:
-    //! Signals that the contents of the interface have been changed.
-    void contentChanged();
-
-	//! \brief Emitted when a SWConnectionEndpoint is destroyed.
-	void destroyed(SWConnectionEndpoint* endPoint);
-
 private:
     // Disable copying.
     SWConnectionEndpoint(SWConnectionEndpoint const& rhs);
@@ -274,9 +176,6 @@ private:
 
     //! The connections to this endpoint.
     QList<SWConnection*> connections_;
-
-    //! The endpoint's direction.
-    QVector2D dir_;
 };
 
 //-----------------------------------------------------------------------------

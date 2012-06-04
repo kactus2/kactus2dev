@@ -160,7 +160,7 @@ public:
     /*! 
      *  Returns the encompassing component.
      */
-    virtual SWComponentItem* encompassingComp() const;
+    virtual ComponentItem* encompassingComp() const;
 
 	/*!
      *  Returns a pointer to the top component that owns this interface.

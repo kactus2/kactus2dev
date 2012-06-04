@@ -34,8 +34,8 @@ qreal const DiagramInterconnection::MIN_START_LENGTH = 20;
 //-----------------------------------------------------------------------------
 // Function: DiagramInterconnection()
 //-----------------------------------------------------------------------------
-DiagramInterconnection::DiagramInterconnection(DiagramConnectionEndPoint *endPoint1,
-                                               DiagramConnectionEndPoint *endPoint2,
+DiagramInterconnection::DiagramInterconnection(DiagramConnectionEndpoint *endPoint1,
+                                               DiagramConnectionEndpoint *endPoint2,
                                                bool autoConnect,
                                                const QString &displayName,
                                                const QString &description,
@@ -119,10 +119,10 @@ bool DiagramInterconnection::connectEnds()
     disconnectEnds();
     
     // Find the new end points.
-    endPoint1_ = DiagramUtil::snapToItem<DiagramConnectionEndPoint>(pathPoints_.first(), scene(), GridSize);
+    endPoint1_ = DiagramUtil::snapToItem<DiagramConnectionEndpoint>(pathPoints_.first(), scene(), GridSize);
     Q_ASSERT(endPoint1_ != 0);
     
-    endPoint2_ = DiagramUtil::snapToItem<DiagramConnectionEndPoint>(pathPoints_.last(), scene(), GridSize);
+    endPoint2_ = DiagramUtil::snapToItem<DiagramConnectionEndpoint>(pathPoints_.last(), scene(), GridSize);
     Q_ASSERT(endPoint2_ != 0);
 
     // Swap the end points in a way that the first one at least has an encompassing component.
@@ -316,12 +316,12 @@ void DiagramInterconnection::setDescription( const QString& description ) {
 	emit contentChanged();
 }
 
-DiagramConnectionEndPoint *DiagramInterconnection::endPoint1() const
+DiagramConnectionEndpoint *DiagramInterconnection::endPoint1() const
 {
     return endPoint1_;
 }
 
-DiagramConnectionEndPoint *DiagramInterconnection::endPoint2() const
+DiagramConnectionEndpoint *DiagramInterconnection::endPoint2() const
 {
     return endPoint2_;
 }
@@ -366,7 +366,7 @@ void DiagramInterconnection::updatePosition()
             bool pathOk = false;
             QVector2D delta = delta1;
             QVector2D dir = dir1;
-            DiagramConnectionEndPoint* endPoint = endPoint1_;
+            DiagramConnectionEndpoint* endPoint = endPoint1_;
             int index0 = 0;
             int index1 = 1;
             int index2 = 2;
@@ -616,10 +616,10 @@ void DiagramInterconnection::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEv
 {
     if (selectionType_ == END)
     {
-        DiagramConnectionEndPoint* endPoint1 =
-            DiagramUtil::snapToItem<DiagramConnectionEndPoint>(pathPoints_.first(), scene(), GridSize);
-        DiagramConnectionEndPoint* endPoint2 =
-            DiagramUtil::snapToItem<DiagramConnectionEndPoint>(pathPoints_.last(), scene(), GridSize);
+        DiagramConnectionEndpoint* endPoint1 =
+            DiagramUtil::snapToItem<DiagramConnectionEndpoint>(pathPoints_.first(), scene(), GridSize);
+        DiagramConnectionEndpoint* endPoint2 =
+            DiagramUtil::snapToItem<DiagramConnectionEndpoint>(pathPoints_.last(), scene(), GridSize);
 
         if (endPoint1 != 0 && endPoint2 != 0 &&
             endPoint1->canConnect(endPoint2) && endPoint2->canConnect(endPoint1))
@@ -690,8 +690,8 @@ void DiagramInterconnection::setItemSettings()
 //-----------------------------------------------------------------------------
 // Function: createRoute()
 //-----------------------------------------------------------------------------
-void DiagramInterconnection::createRoute(DiagramConnectionEndPoint* endPoint1,
-                                         DiagramConnectionEndPoint* endPoint2)
+void DiagramInterconnection::createRoute(DiagramConnectionEndpoint* endPoint1,
+                                         DiagramConnectionEndpoint* endPoint2)
 {
     Q_ASSERT(endPoint1 != 0);
     Q_ASSERT(endPoint2 != 0);
@@ -867,8 +867,8 @@ void DiagramInterconnection::updateName()
 
     // Determine one of the end points as the starting point in a way that its
     // encompassing component is defined.
-    DiagramConnectionEndPoint* start = endPoint1_;
-    DiagramConnectionEndPoint* end = endPoint2_;
+    DiagramConnectionEndpoint* start = endPoint1_;
+    DiagramConnectionEndpoint* end = endPoint2_;
 
     if (start->encompassingComp() == 0)
     {
@@ -1309,20 +1309,20 @@ int DiagramInterconnection::calculateBusWidth() const
             continue;
         }
 
-        Port* port1 = endPoint1_->ownerComponent()->getPort(portMap1->physicalPort_);
-        Port* port2 = endPoint2_->ownerComponent()->getPort(portMap2->physicalPort_);
+        Port* port1 = endPoint1_->getOwnerComponent()->getPort(portMap1->physicalPort_);
+        Port* port2 = endPoint2_->getOwnerComponent()->getPort(portMap2->physicalPort_);
 
         if (port1 == 0)
         {
             emit errorMessage(tr("Port '%1' not found in the component '%1'.").arg(portMap1->physicalPort_,
-                endPoint1_->ownerComponent()->getVlnv()->getName()));
+                endPoint1_->getOwnerComponent()->getVlnv()->getName()));
             continue;
         }
         
         if (port2 == 0)
         {
             emit errorMessage(tr("Port '%1' not found in the component '%1'.").arg(portMap2->physicalPort_,
-                endPoint2_->ownerComponent()->getVlnv()->getName()));
+                endPoint2_->getOwnerComponent()->getVlnv()->getName()));
             continue;
         }
 

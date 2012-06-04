@@ -102,14 +102,14 @@ handler_(handler) {
 InterfaceEditor::~InterfaceEditor() {
 }
 
-void InterfaceEditor::setInterface( DiagramConnectionEndPoint* interface ) {
+void InterfaceEditor::setInterface( ConnectionEndpoint* interface ) {
 	Q_ASSERT(interface);
 
 	parentWidget()->raise();
 
 	// disconnect the previous interface
 	if (interface_) {
-		disconnect(interface_, SIGNAL(destroyed(DiagramConnectionEndPoint*)),
+		disconnect(interface_, SIGNAL(destroyed(ConnectionEndPoint*)),
 			this, SLOT(clear()));
 		disconnect(interface_, SIGNAL(contentChanged()),
 			this, SLOT(refresh()));
@@ -150,12 +150,12 @@ void InterfaceEditor::setInterface( DiagramConnectionEndPoint* interface ) {
 	// set port maps to be displayed in the table widget.
 	setPortMaps();
 
-	connect(interface, SIGNAL(destroyed(DiagramConnectionEndPoint*)),
+	connect(interface, SIGNAL(destroyed(ConnectionEndpoint*)),
 		this, SLOT(clear()), Qt::UniqueConnection);
 	connect(interface_, SIGNAL(contentChanged()), 
 		this, SLOT(refresh()), Qt::UniqueConnection);
 
-    bool locked = static_cast<BlockDiagram*>(interface->scene())->isProtected();
+    bool locked = static_cast<DesignDiagram*>(interface->scene())->isProtected();
 
 	if (!locked && (interface->isHierarchical() ||
                     (interface->encompassingComp() != 0 &&
@@ -192,7 +192,7 @@ void InterfaceEditor::setInterface( DiagramConnectionEndPoint* interface ) {
 void InterfaceEditor::clear() {
 	
 	if (interface_) {
-		disconnect(interface_, SIGNAL(destroyed(DiagramConnectionEndPoint*)),
+		disconnect(interface_, SIGNAL(destroyed(ConnectionEndpoint*)),
 			this, SLOT(clear()));
 		disconnect(interface_, SIGNAL(contentChanged()),
 			this, SLOT(refresh()));
@@ -239,9 +239,10 @@ void InterfaceEditor::onInterfaceModeChanged( const QString& newMode ) {
 		this, SLOT(refresh()));
 
 	QSharedPointer<QUndoCommand> cmd(new EndPointChangeCommand(
-		interface_, nameEdit_.text(), General::str2Interfacemode(newMode, General::MONITOR),
+		static_cast<DiagramConnectionEndpoint*>(interface_), nameEdit_.text(),
+        General::str2Interfacemode(newMode, General::MONITOR),
 		descriptionEdit_.toPlainText()));
-	static_cast<BlockDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
+	static_cast<DesignDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
 
 	connect(interface_, SIGNAL(contentChanged()), 
 		this, SLOT(refresh()), Qt::UniqueConnection);
@@ -254,10 +255,10 @@ void InterfaceEditor::onInterfaceNameChanged( const QString& newName ) {
 		this, SLOT(refresh()));	
 
 	QSharedPointer<QUndoCommand> cmd(new EndPointChangeCommand(
-		interface_, newName, 
+		static_cast<DiagramConnectionEndpoint*>(interface_), newName, 
 		General::str2Interfacemode(modeEdit_.currentText(), General::MONITOR),
 		descriptionEdit_.toPlainText()));
-	static_cast<BlockDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
+	static_cast<DesignDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
 	
 	connect(interface_, SIGNAL(contentChanged()), 
 		this, SLOT(refresh()), Qt::UniqueConnection);
@@ -270,10 +271,10 @@ void InterfaceEditor::onDescriptionChanged() {
 		this, SLOT(refresh()));
 
 	QSharedPointer<QUndoCommand> cmd(new EndPointChangeCommand(
-		interface_, nameEdit_.text(), 
+		static_cast<DiagramConnectionEndpoint*>(interface_), nameEdit_.text(), 
 		General::str2Interfacemode(modeEdit_.currentText(), General::MONITOR),
 		descriptionEdit_.toPlainText()));
-	static_cast<BlockDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
+	static_cast<DesignDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
 
 	connect(interface_, SIGNAL(contentChanged()), 
 		this, SLOT(refresh()), Qt::UniqueConnection);
@@ -302,8 +303,8 @@ void InterfaceEditor::onPortMapChanged() {
 		portMaps.append(portMap);
 	}
 
-	QSharedPointer<QUndoCommand> cmd(new EndPointPortMapCommand(interface_, portMaps));
-	static_cast<BlockDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
+	QSharedPointer<QUndoCommand> cmd(new EndPointPortMapCommand(static_cast<DiagramConnectionEndpoint*>(interface_), portMaps));
+	static_cast<DesignDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
 	connect(interface_, SIGNAL(contentChanged()), 
 		this, SLOT(refresh()), Qt::UniqueConnection);
 }
@@ -329,7 +330,7 @@ void InterfaceEditor::setPortMaps() {
 	}
 
 	// get the component that contains the selected interface
-	QSharedPointer<Component> component = interface_->ownerComponent();
+	QSharedPointer<Component> component = interface_->getOwnerComponent();
 	Q_ASSERT(component);
 
 	// get the interface mode of the bus interface

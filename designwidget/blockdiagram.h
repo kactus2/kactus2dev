@@ -28,7 +28,7 @@ class DiagramInterface;
 class DiagramAdHocPort;
 class DiagramAdHocInterface;
 class DiagramInterconnection;
-class DiagramConnectionEndPoint;
+class DiagramConnectionEndpoint;
 class GraphicsColumn;
 class GraphicsColumnLayout;
 class AbstractionDefinition;
@@ -136,7 +136,7 @@ public:
     /*!
      *  Returns the ad-hoc port with the given name or null if not found.
      */
-    virtual DiagramConnectionEndPoint* getDiagramAdHocPort(QString const& portName);
+    virtual DiagramConnectionEndpoint* getDiagramAdHocPort(QString const& portName);
 
 signals:
     /*! \brief Signal openDesign is emitted when user double clicks on a hierarchical component
@@ -281,13 +281,13 @@ private:
     DiagramInterconnection *tempConnection_;
 
     //! The starting end point of a connection that is being drawn.
-    DiagramConnectionEndPoint* tempConnEndPoint_;
+    DiagramConnectionEndpoint* tempConnEndPoint_;
 
     //! The potential end points that can be connected to the starting end point.
-    QVector<DiagramConnectionEndPoint*> tempPotentialEndingEndPoints_;
+    QVector<DiagramConnectionEndpoint*> tempPotentialEndingEndPoints_;
 
     //! The highlighted end point to which the connection could be snapped automatically.
-    DiagramConnectionEndPoint* highlightedEndPoint_;
+    DiagramConnectionEndpoint* highlightedEndPoint_;
 
     //! The column layout.
     QSharedPointer<GraphicsColumnLayout> layout_;

@@ -32,7 +32,7 @@
 #include <QGraphicsScene>
 
 DiagramPort::DiagramPort(QSharedPointer<BusInterface> busIf, LibraryInterface* lh,
-                         QGraphicsItem *parent) : DiagramConnectionEndPoint(parent),
+                         QGraphicsItem *parent) : DiagramConnectionEndpoint(parent),
 lh_(lh),
                                                   temp_(!busIf->getBusType().isValid()),
                                                   oldPos_(), oldPortPositions_(),
@@ -176,7 +176,7 @@ bool DiagramPort::isHierarchical() const
 //-----------------------------------------------------------------------------
 // Function: onConnect()
 //-----------------------------------------------------------------------------
-bool DiagramPort::onConnect(DiagramConnectionEndPoint const* other)
+bool DiagramPort::onConnect(DiagramConnectionEndpoint const* other)
 {
     QSharedPointer<BusInterface> otherBusIf = other->getBusInterface();
 
@@ -213,7 +213,7 @@ bool DiagramPort::onConnect(DiagramConnectionEndPoint const* other)
 //-----------------------------------------------------------------------------
 // Function: onDisonnect()
 //-----------------------------------------------------------------------------
-void DiagramPort::onDisconnect(DiagramConnectionEndPoint const*)
+void DiagramPort::onDisconnect(DiagramConnectionEndpoint const*)
 {
     // If the port is a temporary one, set the bus and abstraction definitions undefined.
     if (temp_)
@@ -227,7 +227,7 @@ void DiagramPort::onDisconnect(DiagramConnectionEndPoint const*)
 //-----------------------------------------------------------------------------
 // Function: canConnect()
 //-----------------------------------------------------------------------------
-bool DiagramPort::canConnect(DiagramConnectionEndPoint const* other) const
+bool DiagramPort::canConnect(DiagramConnectionEndpoint const* other) const
 {
     // This end point requires a bus interface connection.
     if (!other->isBus())
@@ -278,13 +278,13 @@ bool DiagramPort::canConnect(DiagramConnectionEndPoint const* other) const
     return false;
 }
 
-DiagramComponent *DiagramPort::encompassingComp() const
+ComponentItem* DiagramPort::encompassingComp() const
 {
-    return qgraphicsitem_cast<DiagramComponent *>(parentItem());
+    return static_cast<ComponentItem*>(parentItem());
 }
 
-QSharedPointer<Component> DiagramPort::ownerComponent() const {
-	DiagramComponent* comp = encompassingComp();
+QSharedPointer<Component> DiagramPort::getOwnerComponent() const {
+	ComponentItem* comp = encompassingComp();
 	Q_ASSERT(comp);
 	QSharedPointer<Component> compModel = comp->componentModel();
 	Q_ASSERT(compModel);
@@ -384,8 +384,8 @@ void DiagramPort::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         return;
     }
 
-    DiagramConnectionEndPoint::mouseMoveEvent(event);
-    encompassingComp()->onMovePort(this);
+    DiagramConnectionEndpoint::mouseMoveEvent(event);
+    static_cast<DiagramComponent*>(parentItem())->onMovePort(this);
 }
 
 //-----------------------------------------------------------------------------
@@ -448,15 +448,15 @@ void DiagramPort::setTypes(VLNV const& busType, VLNV const& absType, General::In
 //-----------------------------------------------------------------------------
 void DiagramPort::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    DiagramConnectionEndPoint::mousePressEvent(event);    
+    DiagramConnectionEndpoint::mousePressEvent(event);    
     oldPos_ = pos();
 
     // Save old port positions for all ports in the parent component.
     foreach (QGraphicsItem* item, parentItem()->childItems())
     {
-        if (dynamic_cast<DiagramConnectionEndPoint*>(item) != 0 && item != this)
+        if (dynamic_cast<DiagramConnectionEndpoint*>(item) != 0 && item != this)
         {
-            DiagramConnectionEndPoint* port = static_cast<DiagramConnectionEndPoint*>(item);
+            DiagramConnectionEndpoint* port = static_cast<DiagramConnectionEndpoint*>(item);
             oldPortPositions_.insert(port, port->pos());
         }
     }
@@ -473,7 +473,7 @@ void DiagramPort::mousePressEvent(QGraphicsSceneMouseEvent *event)
 //-----------------------------------------------------------------------------
 void DiagramPort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    DiagramConnectionEndPoint::mouseReleaseEvent(event);
+    DiagramConnectionEndpoint::mouseReleaseEvent(event);
 
     QSharedPointer<QUndoCommand> cmd;
 
@@ -488,7 +488,7 @@ void DiagramPort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     }
 
     // Determine if the other ports changed their position and create undo commands for them.
-    QMap<DiagramConnectionEndPoint*, QPointF>::iterator cur = oldPortPositions_.begin();
+    QMap<DiagramConnectionEndpoint*, QPointF>::iterator cur = oldPortPositions_.begin();
 
     while (cur != oldPortPositions_.end())
     {
@@ -654,7 +654,7 @@ void DiagramPort::setDescription( const QString& description ) {
 //-----------------------------------------------------------------------------
 // Function: getOffPageConnector()
 //-----------------------------------------------------------------------------
-DiagramConnectionEndPoint* DiagramPort::getOffPageConnector()
+DiagramConnectionEndpoint* DiagramPort::getOffPageConnector()
 {
     return offPageConnector_;
 }

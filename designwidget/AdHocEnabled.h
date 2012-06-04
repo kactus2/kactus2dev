@@ -18,7 +18,7 @@
 
 class Component;
 class Port;
-class DiagramConnectionEndPoint;
+class DiagramConnectionEndpoint;
 class GenericEditProvider;
 class AdHocEditor;
 
@@ -98,7 +98,7 @@ public:
     /*!
      *  Returns the ad-hoc port with the given name or null if not found.
      */
-    virtual DiagramConnectionEndPoint* getDiagramAdHocPort(QString const& portName);
+    virtual DiagramConnectionEndpoint* getDiagramAdHocPort(QString const& portName);
 
 private:
     // Disable copying.

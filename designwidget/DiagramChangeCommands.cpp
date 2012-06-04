@@ -205,7 +205,7 @@ void ComponentPacketizeCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: EndPointChangeCommand()
 //-----------------------------------------------------------------------------
-EndPointChangeCommand::EndPointChangeCommand(DiagramConnectionEndPoint* endPoint, 
+EndPointChangeCommand::EndPointChangeCommand(DiagramConnectionEndpoint* endPoint, 
 											 QString const& newName,
                                              General::InterfaceMode newMode,
 											 QString const& newDescription,
@@ -249,7 +249,7 @@ void EndPointChangeCommand::redo() {
 //-----------------------------------------------------------------------------
 // Function: EndPointTypesCommand()
 //-----------------------------------------------------------------------------
-EndPointTypesCommand::EndPointTypesCommand(DiagramConnectionEndPoint* endPoint,
+EndPointTypesCommand::EndPointTypesCommand(DiagramConnectionEndpoint* endPoint,
                                            VLNV const& oldBusType, VLNV const& oldAbsType,
                                            General::InterfaceMode oldMode,
                                            QString const& oldName, QUndoCommand* parent)
@@ -268,7 +268,7 @@ EndPointTypesCommand::EndPointTypesCommand(DiagramConnectionEndPoint* endPoint,
     // Save the interface modes for each connection.
     foreach (DiagramInterconnection* conn, endPoint_->getInterconnections())
     {
-        DiagramConnectionEndPoint* endPoint = conn->endPoint1();
+        DiagramConnectionEndpoint* endPoint = conn->endPoint1();
 
         if (conn->endPoint1() == endPoint_)
         {
@@ -321,7 +321,7 @@ void EndPointTypesCommand::redo()
     endPoint_->updateInterface();
 
     // Set interface modes for the other end points.
-    QMap<DiagramConnectionEndPoint*, General::InterfaceMode>::iterator cur = connModes_.begin();
+    QMap<DiagramConnectionEndpoint*, General::InterfaceMode>::iterator cur = connModes_.begin();
 
     while (cur != connModes_.end())
     {
@@ -334,7 +334,7 @@ void EndPointTypesCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: EndPointPortMapCommand()
 //-----------------------------------------------------------------------------
-EndPointPortMapCommand::EndPointPortMapCommand(DiagramConnectionEndPoint* endPoint,
+EndPointPortMapCommand::EndPointPortMapCommand(DiagramConnectionEndpoint* endPoint,
                                                QList< QSharedPointer<General::PortMap> > newPortMaps,
                                                QUndoCommand* parent)
     : QUndoCommand(parent), endPoint_(endPoint),
@@ -435,7 +435,7 @@ AdHocVisibilityChangeCommand::AdHocVisibilityChangeCommand(AdHocEnabled* dataSou
     if (!newVisibility_)
     {
         // Create child commands for removing interconnections.
-        DiagramConnectionEndPoint* port = dataSource->getDiagramAdHocPort(portName);
+        DiagramConnectionEndpoint* port = dataSource->getDiagramAdHocPort(portName);
         Q_ASSERT(port != 0);
 
         pos_ = port->scenePos();
@@ -469,7 +469,7 @@ void AdHocVisibilityChangeCommand::undo()
 
     if (!newVisibility_)
     {
-        DiagramConnectionEndPoint* port = dataSource_->getDiagramAdHocPort(portName_);
+        DiagramConnectionEndpoint* port = dataSource_->getDiagramAdHocPort(portName_);
         port->setPos(port->parentItem()->mapFromScene(pos_));
 
         // 

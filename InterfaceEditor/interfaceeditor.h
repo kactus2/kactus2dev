@@ -19,7 +19,7 @@
 #include <QTableWidget>
 #include <QPlainTextEdit>
 
-class DiagramConnectionEndPoint;
+class ConnectionEndpoint;
 
 /*! \brief Editor to display/edit the details of a bus interface.
  *
@@ -44,7 +44,7 @@ public:
 	 * \param interface Pointer to the interface.
 	 *
 	*/
-	void setInterface(DiagramConnectionEndPoint* interface);
+	void setInterface(ConnectionEndpoint* interface);
 
 public slots:
 
@@ -115,7 +115,7 @@ private:
 	QLabel modeLabel_;
 
 	//! \brief Pointer to the interface being edited.
-	DiagramConnectionEndPoint* interface_;
+	ConnectionEndpoint* interface_;
 
 	//! \brief Label for the mappings of logical and physical ports
 	QLabel mappingsLabel_;

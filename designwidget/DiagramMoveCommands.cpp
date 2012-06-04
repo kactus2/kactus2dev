@@ -104,7 +104,7 @@ void ConnectionMoveCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: ItemMoveCommand()
 //-----------------------------------------------------------------------------
-PortMoveCommand::PortMoveCommand(DiagramConnectionEndPoint* port, QPointF const& oldPos,
+PortMoveCommand::PortMoveCommand(DiagramConnectionEndpoint* port, QPointF const& oldPos,
                                  QUndoCommand* parent) : QUndoCommand(parent), port_(port),
                                  oldPos_(oldPos), newPos_(port->pos())
 {

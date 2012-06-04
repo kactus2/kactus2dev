@@ -30,7 +30,7 @@ class ComponentItem;
 class DiagramInterface;
 class GraphicsColumn;
 class GraphicsColumnLayout;
-class DiagramConnectionEndPoint;
+class DiagramConnectionEndpoint;
 class ActiveViewModel;
 class DiagramAdHocPort;
 class AdHocEnabled;
@@ -394,7 +394,7 @@ public:
      *      @param [in] newDescription	  The end point's new description.
      *      @param [in] parent            The parent command.
      */
-	EndPointChangeCommand(DiagramConnectionEndPoint* endPoint,
+	EndPointChangeCommand(DiagramConnectionEndpoint* endPoint,
 		QString const& newName,
 		General::InterfaceMode newMode,
 		QString const& newDescription,
@@ -425,7 +425,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The diagram connection end point.
-    DiagramConnectionEndPoint* endPoint_;
+    DiagramConnectionEndpoint* endPoint_;
 
     //! The end point's old name.
     QString oldName_;
@@ -462,7 +462,7 @@ public:
      *      @param [in] oldName           The end point's old name.
      *      @param [in] parent            The parent command.
      */
-    EndPointTypesCommand(DiagramConnectionEndPoint* endPoint, VLNV const& oldBusType,
+    EndPointTypesCommand(DiagramConnectionEndpoint* endPoint, VLNV const& oldBusType,
                          VLNV const& oldAbsType, General::InterfaceMode oldMode,
                          QString const& oldName, QUndoCommand* parent = 0);
 
@@ -491,7 +491,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The diagram connection end point.
-    DiagramConnectionEndPoint* endPoint_;
+    DiagramConnectionEndpoint* endPoint_;
 
     //! The end point's old bus type.
     VLNV oldBusType_;
@@ -518,7 +518,7 @@ private:
     QString newName_;
 
     //! The interface modes for the other end points of the connections.
-    QMap<DiagramConnectionEndPoint*, General::InterfaceMode> connModes_;
+    QMap<DiagramConnectionEndpoint*, General::InterfaceMode> connModes_;
 };
 
 //-----------------------------------------------------------------------------
@@ -534,7 +534,7 @@ public:
      *      @param [in] newPortMaps       The new port maps for the end point.
      *      @param [in] parent            The parent command.
      */
-    EndPointPortMapCommand(DiagramConnectionEndPoint* endPoint,
+    EndPointPortMapCommand(DiagramConnectionEndpoint* endPoint,
                            QList< QSharedPointer<General::PortMap> > newPortMaps,
                            QUndoCommand* parent = 0);
 
@@ -563,7 +563,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The diagram connection end point.
-    DiagramConnectionEndPoint* endPoint_;
+    DiagramConnectionEndpoint* endPoint_;
 
     //! The end point's old port maps.
     QList< QSharedPointer<General::PortMap> > oldPortMaps_;

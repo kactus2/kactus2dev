@@ -1179,7 +1179,7 @@ void MainWindow::onPortSelected( DiagramPort* port ) {
 	Q_ASSERT(port);
 
 	// if the port has an encompassing component then it is selected
-	DiagramComponent* component = port->encompassingComp();
+	ComponentItem* component = port->encompassingComp();
 
 	if (component->componentModel()->getVlnv()->isValid()) {
 

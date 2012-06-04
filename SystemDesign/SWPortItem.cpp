@@ -445,9 +445,9 @@ bool SWPortItem::canConnect(SWConnectionEndpoint const* other) const
 //-----------------------------------------------------------------------------
 // Function: SWPortItem::encompassingComp()
 //-----------------------------------------------------------------------------
-SWComponentItem* SWPortItem::encompassingComp() const
+ComponentItem* SWPortItem::encompassingComp() const
 {
-    return static_cast<SWComponentItem*>(parentItem());
+    return static_cast<ComponentItem*>(parentItem());
 }
 
 //-----------------------------------------------------------------------------
@@ -455,7 +455,7 @@ SWComponentItem* SWPortItem::encompassingComp() const
 //-----------------------------------------------------------------------------
 QSharedPointer<Component> SWPortItem::getOwnerComponent() const
 {
-	SWComponentItem* comp = encompassingComp();
+	ComponentItem* comp = encompassingComp();
 	Q_ASSERT(comp);
 
 	QSharedPointer<Component> compModel = comp->componentModel();
@@ -611,7 +611,7 @@ void SWPortItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     }
 
     SWConnectionEndpoint::mouseMoveEvent(event);
-    encompassingComp()->onMovePort(this);
+    static_cast<SWComponentItem*>(parentItem())->onMovePort(this);
 }
 
 //-----------------------------------------------------------------------------

@@ -23,7 +23,7 @@
 #include <QCursor>
 
 class DiagramInterconnection;
-class DiagramConnectionEndPoint;
+class DiagramConnectionEndpoint;
 class Component;
 class GenericEditProvider;
 
@@ -83,7 +83,7 @@ private:
      *
      *      @param [in] endPoint The end point.
      */
-    void beginUpdateConnPositions(DiagramConnectionEndPoint* endPoint);
+    void beginUpdateConnPositions(DiagramConnectionEndpoint* endPoint);
 
     //-----------------------------------------------------------------------------
     // Data.

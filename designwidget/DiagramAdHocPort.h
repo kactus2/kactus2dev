@@ -28,7 +28,7 @@ class Port;
 //-----------------------------------------------------------------------------
 //! DiagramAdHocPort class.
 //-----------------------------------------------------------------------------
-class DiagramAdHocPort : public DiagramConnectionEndPoint
+class DiagramAdHocPort : public DiagramConnectionEndpoint
 {
     Q_OBJECT
 
@@ -70,7 +70,7 @@ public:
 	int type() const { return Type; }
 
     //-----------------------------------------------------------------------------
-    // DiagramConnectionEndPoint implementation.
+    // DiagramConnectionEndpoint implementation.
     //-----------------------------------------------------------------------------
 
     /*!
@@ -109,7 +109,7 @@ public:
      *
      *      @return False if there was an error in the connection. Otherwise true.
      */
-    virtual bool onConnect(DiagramConnectionEndPoint const* other);
+    virtual bool onConnect(DiagramConnectionEndpoint const* other);
 
 
     /*!
@@ -117,25 +117,25 @@ public:
      *
      *      @param [in] other The other end point of the connection.
      */
-    virtual void onDisconnect(DiagramConnectionEndPoint const* other);
+    virtual void onDisconnect(DiagramConnectionEndpoint const* other);
 
     /*! 
      *  Returns true if this port can be connected to the given end point.
      *
      *      @param [in] other The end point to which to connect.
      */
-    virtual bool canConnect(DiagramConnectionEndPoint const* other) const;
+    virtual bool canConnect(DiagramConnectionEndpoint const* other) const;
 
     /*! 
-     *  Returns the encompassing port, if this DiagramComponent represents
-     *  a bus interface on a component
+    *  Returns the encompassing component. if this port represents
+    *  a bus interface on a component.
      */
-    virtual DiagramComponent *encompassingComp() const;
+    virtual ComponentItem* encompassingComp() const;
 
 	/*!
      *  Returns a pointer to the top component that owns this interface
 	 */
-	virtual QSharedPointer<Component> ownerComponent() const;
+	virtual QSharedPointer<Component> getOwnerComponent() const;
 
     /*! 
      *  Returns the IP-XACT bus interface model of the port.
@@ -170,7 +170,7 @@ public:
     /*!
      *  Returns the corresponding off-page connector or a null pointer if the end point does not have one.
      */
-    virtual DiagramConnectionEndPoint* getOffPageConnector();
+    virtual DiagramConnectionEndpoint* getOffPageConnector();
 
 protected:
     virtual QVariant itemChange(GraphicsItemChange change,
@@ -192,7 +192,7 @@ private:
     QPointF oldPos_;
 
     //! The old positions of the other component ports before mouse move.
-    QMap<DiagramConnectionEndPoint*, QPointF> oldPortPositions_;
+    QMap<DiagramConnectionEndpoint*, QPointF> oldPortPositions_;
 
     //! The off-page connector.
     DiagramOffPageConnector* offPageConnector_;

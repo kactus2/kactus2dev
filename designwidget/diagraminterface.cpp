@@ -49,7 +49,7 @@
 DiagramInterface::DiagramInterface(LibraryInterface* lh, QSharedPointer<Component> component,
                                    QSharedPointer<BusInterface> busIf,
                                    QGraphicsItem *parent)
-    : DiagramConnectionEndPoint(parent, QVector2D(1.0f, 0.0f)),
+    : DiagramConnectionEndpoint(parent, QVector2D(1.0f, 0.0f)),
       lh_(lh), nameLabel_(0), busInterface_(), component_(component), oldColumn_(0),
       temp_(busIf == 0), oldPos_(), oldInterfacePositions_(),
       offPageConnector_(0)
@@ -179,7 +179,7 @@ bool DiagramInterface::isHierarchical() const
 //-----------------------------------------------------------------------------
 // Function: onConnect()
 //-----------------------------------------------------------------------------
-bool DiagramInterface::onConnect(DiagramConnectionEndPoint const* other)
+bool DiagramInterface::onConnect(DiagramConnectionEndpoint const* other)
 {
     // Update the name if the bus interface is defined but its name is empty.
     if (busInterface_->getInterfaceMode() != General::MODE_UNDEFINED && busInterface_->getName() == "")
@@ -215,7 +215,7 @@ bool DiagramInterface::onConnect(DiagramConnectionEndPoint const* other)
     newBusIf->setBusType(other->getBusInterface()->getBusType());
     newBusIf->setAbstractionType(other->getBusInterface()->getAbstractionType());
 
-    if (!static_cast<BlockDiagram*>(scene())->getEditProvider().isPerformingUndoRedo())
+    if (!static_cast<DesignDiagram*>(scene())->getEditProvider().isPerformingUndoRedo())
     {
         // Ask the user if he wants to auto-copy the port maps from the other end point.
         QMessageBox msgBox(QMessageBox::Question, QCoreApplication::applicationName(),
@@ -311,7 +311,7 @@ bool DiagramInterface::onConnect(DiagramConnectionEndPoint const* other)
 //-----------------------------------------------------------------------------
 // Function: onDisonnect()
 //-----------------------------------------------------------------------------
-void DiagramInterface::onDisconnect(DiagramConnectionEndPoint const*)
+void DiagramInterface::onDisconnect(DiagramConnectionEndpoint const*)
 {
     // Check if there is still some connections left, the bus interface is not defined
     // or the interface is not temporary.
@@ -332,7 +332,7 @@ void DiagramInterface::onDisconnect(DiagramConnectionEndPoint const*)
 //-----------------------------------------------------------------------------
 // Function: canConnect()
 //-----------------------------------------------------------------------------
-bool DiagramInterface::canConnect(DiagramConnectionEndPoint const* other) const
+bool DiagramInterface::canConnect(DiagramConnectionEndpoint const* other) const
 {
     // This end point requires a bus interface connection.
     if (!other->isBus())
@@ -362,12 +362,12 @@ bool DiagramInterface::canConnect(DiagramConnectionEndPoint const* other) const
              otherBusIf->getBusType() == busInterface_->getBusType()));
 }
 
-DiagramComponent *DiagramInterface::encompassingComp() const
+ComponentItem* DiagramInterface::encompassingComp() const
 {
-    return qgraphicsitem_cast<DiagramComponent *>(parentItem());
+    return 0;
 }
 
-QSharedPointer<Component> DiagramInterface::ownerComponent() const {
+QSharedPointer<Component> DiagramInterface::getOwnerComponent() const {
 	Q_ASSERT(component_);
 	return component_;
 }
@@ -417,7 +417,7 @@ void DiagramInterface::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
         return;
     }
 
-    DiagramConnectionEndPoint::mouseMoveEvent(event);
+    DiagramConnectionEndpoint::mouseMoveEvent(event);
 
     setPos(parentItem()->mapFromScene(oldColumn_->mapToScene(pos())));
 
@@ -431,7 +431,7 @@ void DiagramInterface::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 //-----------------------------------------------------------------------------
 void DiagramInterface::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
-    DiagramConnectionEndPoint::mouseReleaseEvent(event);
+    DiagramConnectionEndpoint::mouseReleaseEvent(event);
     setZValue(0.0);
 
     if (oldColumn_ != 0)
@@ -488,7 +488,7 @@ void DiagramInterface::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 //-----------------------------------------------------------------------------
 void DiagramInterface::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    DiagramConnectionEndPoint::mousePressEvent(event);
+    DiagramConnectionEndpoint::mousePressEvent(event);
     setZValue(1001.0);
 
     oldColumn_ = dynamic_cast<DiagramColumn*>(parentItem());
@@ -523,7 +523,7 @@ void DiagramInterface::mousePressEvent(QGraphicsSceneMouseEvent *event)
 //-----------------------------------------------------------------------------
 void DiagramInterface::setDirection(QVector2D const& dir)
 {
-    DiagramConnectionEndPoint::setDirection(dir);
+    DiagramConnectionEndpoint::setDirection(dir);
 
     // Update the position of the name label based on the direction.
     qreal nameWidth = nameLabel_->boundingRect().width();
@@ -691,7 +691,7 @@ void DiagramInterface::setDescription( const QString& description ) {
 //-----------------------------------------------------------------------------
 // Function: getOffPageConnector()
 //-----------------------------------------------------------------------------
-DiagramConnectionEndPoint* DiagramInterface::getOffPageConnector()
+DiagramConnectionEndpoint* DiagramInterface::getOffPageConnector()
 {
     return offPageConnector_;
 }

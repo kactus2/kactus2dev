@@ -14,7 +14,7 @@
 
 class DiagramPort;
 class DiagramAdHocPort;
-class DiagramConnectionEndPoint;
+class DiagramConnectionEndpoint;
 class DiagramColumn;
 class LibraryInterface;
 
@@ -55,14 +55,14 @@ public:
      *
      *      @param [in] port The port to add. Must not be used in any other component.
      */
-    void addPort(DiagramConnectionEndPoint* port);
+    void addPort(DiagramConnectionEndpoint* port);
 
     /*!
      *  Removes the given port from the component.
      *
      *      @param [in] port The port to remove.
      */
-    void removePort(DiagramConnectionEndPoint* port);
+    void removePort(DiagramConnectionEndpoint* port);
 
     /*! \brief Get the DiagramPort that corresponds to the given bus interface name
      *
@@ -80,7 +80,7 @@ public:
      *
      *      @param [in] port The port that is being moved.
      */
-    void onMovePort(DiagramConnectionEndPoint* port);
+    void onMovePort(DiagramConnectionEndpoint* port);
 
     /*!
      *  Updates the diagram component to reflect the current state of the component model.
@@ -124,7 +124,7 @@ public:
     /*!
      *  Returns the ad-hoc port with the given name or null if not found.
      */
-    virtual DiagramConnectionEndPoint* getDiagramAdHocPort(QString const& portName);
+    virtual DiagramConnectionEndpoint* getDiagramAdHocPort(QString const& portName);
 
 signals:
     //! \brief Emitted right before this diagram component is destroyed.
@@ -155,7 +155,7 @@ private:
      *      @param [in] right  If true, the port is added to the right port stack. If false, it is
      *                         added to the left port stack.
      */
-    void onAddPort(DiagramConnectionEndPoint* port, bool right);
+    void onAddPort(DiagramConnectionEndpoint* port, bool right);
 
     /*!
      *  Updates the size of the component based on the port positions.
@@ -178,8 +178,8 @@ private:
     DiagramColumn* oldColumn_;
 
     //! The left and right port stacks.
-    QList<DiagramConnectionEndPoint*> leftPorts_;
-    QList<DiagramConnectionEndPoint*> rightPorts_;
+    QList<DiagramConnectionEndpoint*> leftPorts_;
+    QList<DiagramConnectionEndpoint*> rightPorts_;
     bool connUpdateDisabled_;
     QPointF oldPos_;
 };
