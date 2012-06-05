@@ -9,6 +9,8 @@
 
 #include <QColor>
 
+#include <QDebug>
+
 ComponentEditorTreeModel::ComponentEditorTreeModel( LibraryInterface* libHandler,
 												   QObject* parent):
 QAbstractItemModel(parent),
@@ -230,4 +232,33 @@ void ComponentEditorTreeModel::removeItem( ComponentEditorItem* parentItem, int 
 	beginRemoveRows(parentIndex, childIndex, childIndex);
 	parentItem->removeChild(childIndex);
 	endRemoveRows();
+}
+
+void ComponentEditorTreeModel::moveItem( ComponentEditorItem* parentItem, int childSource, int childtarget ) {
+	Q_ASSERT(parentItem);
+	Q_ASSERT(childSource >= 0);
+	Q_ASSERT(childtarget >= 0);
+
+	// if the location of the item does not change
+	if (childSource == childtarget) {
+		return;
+	}
+
+	qDebug() << "Parent to move from: " << parentItem->text();
+
+	QModelIndex parentIndex = index(parentItem);
+
+	//int targetIndex = childtarget;
+
+	// if item is moved down then the target must be decremented because on item is
+	// removed before adding to the list
+// 	if (childtarget > childSource) {
+// 		--targetIndex;
+// 	}
+
+// 	beginResetModel();
+// 	//beginMoveRows(parentIndex, childSource, childSource, parentIndex, childtarget);
+// 	parentItem->moveChild(childSource, childtarget);
+// 	//endMoveRows();
+// 	endResetModel();
 }

@@ -103,6 +103,14 @@ signals:
 	*/
 	void childRemoved(int index);
 
+	/*! \brief Emitted when the editor moves child from one position to another.
+	 *
+	 * \param source The index of the moved item.
+	 * \param target The index to move the child to.
+	 *
+	*/
+	void childMoved(int source, int target);
+
 protected:
 
 	/*! \brief Get the the component pointer from the base-class.

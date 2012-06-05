@@ -138,6 +138,15 @@ public slots:
 	*/
 	void removeItem(ComponentEditorItem* parentItem, int childIndex);
 
+	/*! \brief Move a child from one position to another.
+	 *
+	 * \param parentItem Pointer to the item that owns the child.
+	 * \param childSource The index of the child to move. 
+	 * \param childtarget The index to move the child into.
+	 *
+	*/
+	void moveItem(ComponentEditorItem* parentItem, int childSource, int childtarget);
+
 	/*! \brief Apply the changes from the editors to the component model.
 	 *
 	*/

@@ -37,6 +37,8 @@ editor_(libHandler, component, fileSet, NULL) {
 		this, SLOT(onAddChild(int)), Qt::UniqueConnection);
 	connect(&editor_, SIGNAL(childRemoved(int)),
 		this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
+	connect(&editor_, SIGNAL(childMoved(int, int)),
+		this, SLOT(onMoveChild(int, int)), Qt::UniqueConnection);
 }
 
 ComponentEditorFileSetItem::~ComponentEditorFileSetItem() {

@@ -114,6 +114,14 @@ public slots:
 	*/
 	virtual void onRemoveItem(const QModelIndex& index);
 
+	/*! \brief Move item from one position to another.
+	 *
+	 * \param originalPos The index identifying which item to move.
+	 * \param newPos The position to move the item to.
+	 *
+	*/
+	virtual void onMoveItem(const QModelIndex& originalPos, const QModelIndex& newPos);
+
 signals:
 
 	//! \brief Emitted when the model changes.
@@ -124,6 +132,9 @@ signals:
 
 	//! \brief Emitted when a file is removed from the list.
 	void fileRemoved(int index);
+
+	//! \brief Emitted when a file is moved from one position to another.
+	void fileMoved(int source, int target);
 
 private:
 	//! \brief No copying

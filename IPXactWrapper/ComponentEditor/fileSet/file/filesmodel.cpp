@@ -161,6 +161,14 @@ void FilesModel::onAddItem( const QModelIndex& index, const QString& filePath ) 
 		return;
 	}
 
+	// if the file is already contained in the list
+	foreach (QSharedPointer<File> file, files_) {
+
+		if (file->getName() == relPath) {
+			return;
+		}
+	}
+
 	beginInsertRows(QModelIndex(), row, row);
 	files_.insert(row, QSharedPointer<File>(new File(relPath, fileSet_.data())));
 	endInsertRows();
@@ -191,5 +199,44 @@ void FilesModel::onRemoveItem( const QModelIndex& index ) {
 	emit fileRemoved(index.row());
 
 	// tell also parent widget that contents have been changed
+	emit contentChanged();
+}
+
+void FilesModel::onMoveItem( const QModelIndex& originalPos, const QModelIndex& newPos ) {
+
+	// if there was no item in the starting point
+	if (!originalPos.isValid()) {
+		return;
+	}
+	// if the indexes are the same
+	else if (originalPos == newPos) {
+		return;
+	}
+	else if (originalPos.row() < 0 || originalPos.row() >= files_.size()) {
+		return;
+	}
+
+	int source = originalPos.row();
+	int target = 0;
+
+	// if the new position is invalid index then put the item last in the table
+	if (!newPos.isValid() || newPos.row() < 0 || newPos.row() >= files_.size()) {
+
+		beginResetModel();
+		QSharedPointer<File> file = files_.takeAt(originalPos.row());
+		files_.append(file);
+		target = files_.size() - 1;
+		endResetModel();
+	}
+	// if both indexes were valid
+	else {
+		beginResetModel();
+		files_.swap(originalPos.row(), newPos.row());
+		target = newPos.row();
+		endResetModel();
+	}
+
+	emit fileMoved(source, target);
+
 	emit contentChanged();
 }

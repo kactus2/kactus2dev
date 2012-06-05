@@ -221,6 +221,15 @@ signals:
 	*/
 	void removeChild(ComponentEditorItem* item, int childIndex);
 
+	/*! \brief Emitted when a child should be moved from one place to another.
+	 *
+	 * \param item Pointer to this item.
+	 * \param sourceIndex The index of the child item to move.
+	 * \param targetIndex The index to move the child into.
+	 *
+	*/
+	void moveChild(ComponentEditorItem* item, int sourceIndex, int targetIndex);
+
 protected:
 
 	//! \brief Pointer to the instance that manages the library.
@@ -255,6 +264,14 @@ protected slots:
 	 *
 	*/
 	virtual void onRemoveChild(int index);
+
+	/*! \brief Handler for ItemEditor's childMoved(int, int) signal.
+	 *
+	 * \param source The index of the child to move.
+	 * \param target The position to move the child into.
+	 *
+	*/
+	virtual void onMoveChild(int source, int target);
 
 private:
 	//! \brief No copying

@@ -69,6 +69,9 @@ signals:
 	//! \brief Emitted when a file is removed from the list.
 	void fileRemoved(int index);
 
+	//! \brief Emitted when a file is moved from position to another
+	void fileMoved(int source, int target);
+
 private slots:
 
 	//! \brief Handler for addFilesButton clicked() signal.

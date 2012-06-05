@@ -29,6 +29,8 @@ parent_(parent) {
 		model, SLOT(addItem(ComponentEditorItem*, int)), Qt::UniqueConnection);
 	connect(this, SIGNAL(removeChild(ComponentEditorItem*, int)),
 		model, SLOT(removeItem(ComponentEditorItem*, int)), Qt::UniqueConnection);
+	connect(this, SIGNAL(moveChild(ComponentEditorItem*, int, int)),
+		model, SLOT(moveItem(ComponentEditorItem*, int, int)), Qt::UniqueConnection);
 }
 
 ComponentEditorItem::ComponentEditorItem( LibraryInterface* libHandler, 
@@ -93,25 +95,6 @@ QFont ComponentEditorItem::getFont() const {
 	return font;
 }
 
-void ComponentEditorItem::moveChild( const int sourceIndex, int targetIndex ) {
-
-	// if the source index can not be used to identify an item
-	if (sourceIndex < 0 || sourceIndex > childItems_.count()) {
-		return;
-	}
-
-	// Take the item from the list
-	QSharedPointer<ComponentEditorItem> itemToMove = childItems_.takeAt(sourceIndex);
-
-	// if item is moved down then the target must be decremented because on item is
-	// removed before adding to the list
-	if (targetIndex > sourceIndex) {
-		--targetIndex;
-	}
-
-	childItems_.insert(targetIndex, itemToMove);
-}
-
 bool ComponentEditorItem::isValid() const {
 	
 	// if at least one child is not valid then this is not valid
@@ -174,6 +157,29 @@ void ComponentEditorItem::onAddChild( int index ) {
 
 void ComponentEditorItem::onRemoveChild( int index ) {
 	emit removeChild(this, index);
+}
+
+void ComponentEditorItem::onMoveChild( int source, int target ) {
+	emit moveChild(this, source, target);
+}
+
+void ComponentEditorItem::moveChild( const int sourceIndex, int targetIndex ) {
+
+	// if the source index can not be used to identify an item
+	if (sourceIndex < 0 || sourceIndex >= childItems_.count()) {
+		return;
+	}
+
+	// Take the item from the list
+	QSharedPointer<ComponentEditorItem> itemToMove = childItems_.takeAt(sourceIndex);
+
+	// if item is moved down then the target must be decremented because on item is
+	// removed before adding to the list
+// 	if (targetIndex > sourceIndex) {
+// 		--targetIndex;
+// 	}
+
+	childItems_.insert(targetIndex, itemToMove);
 }
 
 void ComponentEditorItem::createChild( int index ) {

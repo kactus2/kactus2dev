@@ -41,7 +41,7 @@ addFilesButton_(QIcon(":/icons/graphics/add.png"), tr("Add Files"), this) {
 	view_.setSortingEnabled(false);
 
 	// TODO change this
-	view_.setItemsDraggable(false);
+	view_.setItemsDraggable(true);
 
 	// set the delegate to provide editors
 	//view_.setItemDelegate(new FileBuildersDelegate(this));
@@ -52,6 +52,8 @@ addFilesButton_(QIcon(":/icons/graphics/add.png"), tr("Add Files"), this) {
 		&model_, SLOT(onAddItem(const QModelIndex&, const QString&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+	connect(&view_, SIGNAL(moveItem(const QModelIndex&, const QModelIndex&)),
+		&model_, SLOT(onMoveItem(const QModelIndex&, const QModelIndex&)), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
@@ -60,6 +62,8 @@ addFilesButton_(QIcon(":/icons/graphics/add.png"), tr("Add Files"), this) {
 		this, SIGNAL(fileAdded(int)), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(fileRemoved(int)),
 		this, SIGNAL(fileRemoved(int)), Qt::UniqueConnection);
+	connect(&model_, SIGNAL(fileMoved(int, int)),
+		this, SIGNAL(fileMoved(int, int)), Qt::UniqueConnection);
 }
 
 FilesEditor::~FilesEditor() {

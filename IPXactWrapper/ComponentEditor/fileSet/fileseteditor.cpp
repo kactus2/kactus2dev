@@ -56,6 +56,8 @@ void FileSetEditor::initialize() {
 		this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
 	connect(&files_, SIGNAL(fileRemoved(int)),
 		this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
+	connect(&files_, SIGNAL(fileMoved(int, int)),
+		this, SIGNAL(childMoved(int, int)), Qt::UniqueConnection);
 
 	layout->addWidget(&dependencies_);
 	connect(&dependencies_, SIGNAL(contentChanged()),

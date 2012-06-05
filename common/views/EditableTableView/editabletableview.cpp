@@ -68,6 +68,9 @@ EditableTableView::~EditableTableView() {
 }
 
 void EditableTableView::mouseMoveEvent( QMouseEvent* e ) {
+
+		QModelIndex selected;
+
 	if (itemsDraggable_) {
 
 		// if left mouse button was pressed 
@@ -75,6 +78,7 @@ void EditableTableView::mouseMoveEvent( QMouseEvent* e ) {
 
 			QModelIndex startIndex = indexAt(pressedPoint_);
 			QModelIndex thisIndex = indexAt(e->pos());
+			selected = thisIndex;
 
 			// if the model is a sort proxy then convert the indexes to source indexes
 			QSortFilterProxyModel* sortProxy = dynamic_cast<QSortFilterProxyModel*>(model());
@@ -98,6 +102,12 @@ void EditableTableView::mouseMoveEvent( QMouseEvent* e ) {
 	}
 
 	QTableView::mouseMoveEvent(e);
+
+	// if item is being dragged then do not select an area
+	if (itemsDraggable_) {
+		clearSelection();
+		setCurrentIndex(selected);
+	}
 }
 
 void EditableTableView::keyPressEvent( QKeyEvent* event ) {
