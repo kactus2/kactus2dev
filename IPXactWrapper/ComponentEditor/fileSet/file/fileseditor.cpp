@@ -23,7 +23,7 @@ handler_(handler),
 component_(component),
 fileSet_(fileSet),
 files_(fileSet->getFiles()),
-view_(this),
+view_(handler, component, this),
 model_(handler, component, fileSet, this),
 addFilesButton_(QIcon(":/icons/graphics/add.png"), tr("Add Files"), this) {
 
@@ -37,6 +37,15 @@ addFilesButton_(QIcon(":/icons/graphics/add.png"), tr("Add Files"), this) {
 	view_.setColumnWidth(1, 300);
 	view_.setColumnWidth(2, 170);
 
+	// the order of files must be maintained
+	view_.setSortingEnabled(false);
+
+	// TODO change this
+	view_.setItemsDraggable(false);
+
+	// set the delegate to provide editors
+	//view_.setItemDelegate(new FileBuildersDelegate(this));
+
 	connect(&addFilesButton_, SIGNAL(clicked(bool)),
 		this, SLOT(onAddFiles()), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(addItem(const QModelIndex&, const QString&)),
@@ -45,6 +54,12 @@ addFilesButton_(QIcon(":/icons/graphics/add.png"), tr("Add Files"), this) {
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
+	// the signals from model informing that a child is added/removed
+	connect(&model_, SIGNAL(fileAdded(int)),
+		this, SIGNAL(fileAdded(int)), Qt::UniqueConnection);
+	connect(&model_, SIGNAL(fileRemoved(int)),
+		this, SIGNAL(fileRemoved(int)), Qt::UniqueConnection);
 }
 
 FilesEditor::~FilesEditor() {

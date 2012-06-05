@@ -63,6 +63,12 @@ signals:
 	//! \brief Emitted when the files change.
 	void contentChanged();
 
+	//! \brief Emitted when a file is added to the list.
+	void fileAdded(int index);
+
+	//! \brief Emitted when a file is removed from the list.
+	void fileRemoved(int index);
+
 private slots:
 
 	//! \brief Handler for addFilesButton clicked() signal.

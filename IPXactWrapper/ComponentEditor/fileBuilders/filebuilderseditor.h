@@ -43,6 +43,11 @@ public:
 	*/
 	virtual bool isValid() const;
 
+public slots:
+
+	//! \brief Refresh the contents to display.
+	void refresh();
+
 signals:
 
 	//! \brief Emit an error message to user.

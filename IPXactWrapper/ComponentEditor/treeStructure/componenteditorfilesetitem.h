@@ -69,6 +69,20 @@ public:
 	*/
 	virtual ItemEditor* editor();
 
+	/*! \brief Add a new child to the item.
+	 *
+	 * \param index The index to add the child into.
+	 *
+	*/
+	virtual void createChild(int index);
+
+protected slots:
+
+	/*! \brief Handler for editor's contentChanged signal.
+	 *
+	*/
+	virtual void onEditorChanged();
+
 private:
 	//! \brief No copying
 	ComponentEditorFileSetItem(const ComponentEditorFileSetItem& other);

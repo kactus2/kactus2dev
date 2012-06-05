@@ -33,6 +33,10 @@ editor_(libHandler, component, fileSet, NULL) {
 
 	connect(&editor_, SIGNAL(contentChanged()),
 		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+	connect(&editor_, SIGNAL(childAdded(int)),
+		this, SLOT(onAddChild(int)), Qt::UniqueConnection);
+	connect(&editor_, SIGNAL(childRemoved(int)),
+		this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
 }
 
 ComponentEditorFileSetItem::~ComponentEditorFileSetItem() {
@@ -59,4 +63,25 @@ QFont ComponentEditorFileSetItem::getFont() const {
 
 QString ComponentEditorFileSetItem::getTooltip() const {
 	return tr("Contains a list of files and their build commands");
+}
+
+void ComponentEditorFileSetItem::createChild( int index ) {
+
+	QSharedPointer<ComponentEditorFileItem> fileItem(new ComponentEditorFileItem(
+		files_.at(index), model_, libHandler_, component_, this));
+	childItems_.insert(index, fileItem);
+}
+
+void ComponentEditorFileSetItem::onEditorChanged() {
+	// call the base class implementation
+	ComponentEditorItem::onEditorChanged();
+
+	// also inform of child changes
+	foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_) {
+		// tell the model that data has changed for the child
+		emit contentChanged(childItem.data());
+
+		// tell the child to update it's editor contents
+		childItem->refreshEditor();
+	}
 }

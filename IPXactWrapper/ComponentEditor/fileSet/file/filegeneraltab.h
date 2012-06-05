@@ -8,10 +8,10 @@
 #ifndef FILEGENERALTAB_H
 #define FILEGENERALTAB_H
 
-#include <IPXactWrapper/ComponentEditor/fileSet/filenameeditor.h>
+#include <IPXactWrapper/ComponentEditor/fileSet/file/filenameeditor.h>
 #include <common/widgets/attributeBox/attributebox.h>
-#include <IPXactWrapper/ComponentEditor/fileSet/filegeneraleditor.h>
-#include <IPXactWrapper/ComponentEditor/fileSet/filetypeeditor.h>
+#include <IPXactWrapper/ComponentEditor/fileSet/file/filegeneraleditor.h>
+#include <IPXactWrapper/ComponentEditor/fileSet/file/filetypeeditor.h>
 #include "filebuildcommand.h"
 
 #include <models/file.h>

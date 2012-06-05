@@ -52,6 +52,10 @@ void FileSetEditor::initialize() {
 	layout->addWidget(&files_);
 	connect(&files_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&files_, SIGNAL(fileAdded(int)),
+		this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
+	connect(&files_, SIGNAL(fileRemoved(int)),
+		this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 
 	layout->addWidget(&dependencies_);
 	connect(&dependencies_, SIGNAL(contentChanged()),
@@ -94,6 +98,10 @@ void FileSetEditor::refresh() {
 
 	// initialize groups 
 	groups_.initialize(fileSet_->getGroups());
+
+	files_.refresh();
+
+	fileBuilders_.refresh();
 
 	// initialize dependencies
 	dependencies_.initialize(fileSet_->getDependencies());

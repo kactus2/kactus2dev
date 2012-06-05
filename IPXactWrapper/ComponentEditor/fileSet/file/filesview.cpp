@@ -6,11 +6,18 @@
  */
 
 #include "filesview.h"
+#include <LibraryManager/libraryinterface.h>
 
 #include <QSortFilterProxyModel>
+#include <QStringList>
+#include <QFileDialog>
 
-FilesView::FilesView(QWidget *parent):
-EditableTableView(parent) {
+FilesView::FilesView(LibraryInterface* handler,
+					 QSharedPointer<Component> component,
+					 QWidget *parent):
+EditableTableView(parent),
+handler_(handler),
+component_(component) {
 }
 
 FilesView::~FilesView() {
@@ -19,8 +26,23 @@ FilesView::~FilesView() {
 void FilesView::mouseDoubleClickEvent( QMouseEvent* event ) {
 	// if there is no item on the clicked position then a new item should be added
 	QModelIndex index = indexAt(event->pos());
-	if (!index.isValid()){
-		emit addItem(index, QString("joku.test"));
+	if (!index.isValid()) {
+
+		// ask user to select the files to add
+		QStringList files = QFileDialog::getOpenFileNames(this, tr("Select files to add."),
+			handler_->getPath(*component_->getVlnv()));
+		
+		// if user clicked cancel
+		if (files.isEmpty()) {
+			event->accept();
+			return;
+		}
+
+		// add each file
+		foreach (QString file, files) {
+			emit addItem(index, file);
+		}
+
 		event->accept();
 		return;
 	}
@@ -31,7 +53,6 @@ void FilesView::mouseDoubleClickEvent( QMouseEvent* event ) {
 void FilesView::onAddAction() {
 	QModelIndexList indexes = selectedIndexes();
 	QModelIndex posToAdd;
-	int rowCount = 1;
 
 	QSortFilterProxyModel* sortProxy = dynamic_cast<QSortFilterProxyModel*>(model());
 
@@ -39,25 +60,26 @@ void FilesView::onAddAction() {
 	if (!indexes.isEmpty()) {
 		qSort(indexes);
 
+		// the position to add the files to
 		posToAdd = indexes.first();
-
-		if (sortProxy) {
-			posToAdd = sortProxy->mapToSource(posToAdd);
-		}
-
-		// count how many rows are to be added
-		int previousRow = indexes.first().row();
-		foreach (QModelIndex index, indexes) {
-
-			if (index.row() != previousRow) {
-				++rowCount;
-			}
-
-			previousRow = index.row();
-		}
 	}
 
-	for (int i = 0; i < rowCount; ++i) {
-		emit addItem(posToAdd, QString("add.test"));
+	// if proxy is used then map the index to source indexes
+	if (sortProxy) {
+		posToAdd = sortProxy->mapToSource(posToAdd);
+	}
+
+	// ask user to select the files to add
+	QStringList files = QFileDialog::getOpenFileNames(this, tr("Select files to add."),
+		handler_->getPath(*component_->getVlnv()));
+
+	// if user clicked cancel
+	if (files.isEmpty()) {
+		return;
+	}
+
+	// add each file
+	foreach (QString file, files) {
+		emit addItem(posToAdd, file);
 	}
 }

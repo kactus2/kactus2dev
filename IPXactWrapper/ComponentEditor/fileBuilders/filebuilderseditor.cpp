@@ -63,3 +63,7 @@ FileBuildersEditor::~FileBuildersEditor() {
 bool FileBuildersEditor::isValid() const {
 	return model_.isValid();
 }
+
+void FileBuildersEditor::refresh() {
+	view_.update();
+}

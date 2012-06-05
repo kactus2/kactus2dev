@@ -10,7 +10,7 @@
 
 #include "../itemeditor.h"
 #include "groupmanager.h"
-#include "fileseditor.h"
+#include "file/fileseditor.h"
 #include <models/fileset.h>
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 #include <common/widgets/listManager/dirlistmanager.h>

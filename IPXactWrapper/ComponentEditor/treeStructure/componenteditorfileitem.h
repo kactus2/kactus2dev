@@ -10,7 +10,7 @@
 
 #include "componenteditoritem.h"
 #include <models/file.h>
-#include <IPXactWrapper/ComponentEditor/fileSet/fileeditor.h>
+#include <IPXactWrapper/ComponentEditor/fileSet/file/fileeditor.h>
 
 /*! \brief The item for a single file in component editor's navigation tree.
  *
