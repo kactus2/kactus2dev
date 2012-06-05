@@ -46,9 +46,10 @@ ColumnDeleteCommand::ColumnDeleteCommand(GraphicsColumnLayout* layout, GraphicsC
 
                 DiagramPort *diagramPort = qgraphicsitem_cast<DiagramPort *>(childItem);
 
-                foreach (DiagramInterconnection* conn, diagramPort->getInterconnections())
+                foreach (GraphicsConnection* conn, diagramPort->getConnections())
                 {
-                    QUndoCommand* cmd = new ConnectionDeleteCommand(conn, this);
+                    QUndoCommand* cmd =
+                        new ConnectionDeleteCommand(static_cast<DiagramInterconnection*>(conn), this);
                 }
             }
         }
@@ -109,16 +110,18 @@ ComponentDeleteCommand::ComponentDeleteCommand(DiagramComponent* component, QUnd
             continue;
         }
 
-        foreach (DiagramInterconnection* conn, endpoint->getInterconnections())
+        foreach (GraphicsConnection* conn, endpoint->getConnections())
         {
-            QUndoCommand* cmd = new ConnectionDeleteCommand(conn, this);
+            QUndoCommand* cmd =
+                new ConnectionDeleteCommand(static_cast<DiagramInterconnection*>(conn), this);
         }
 
         if (endpoint->getOffPageConnector() != 0)
         {
-            foreach (DiagramInterconnection* conn, endpoint->getOffPageConnector()->getInterconnections())
+            foreach (GraphicsConnection* conn, endpoint->getOffPageConnector()->getConnections())
             {
-                QUndoCommand* cmd = new ConnectionDeleteCommand(conn, this);
+                QUndoCommand* cmd =
+                    new ConnectionDeleteCommand(static_cast<DiagramInterconnection*>(conn), this);
             }
         }
     }
@@ -276,14 +279,16 @@ PortDeleteCommand::PortDeleteCommand(DiagramConnectionEndpoint* port, QUndoComma
     scene_(port->scene()), del_(true)
 {
     // Create child commands for removing interconnections.
-    foreach (DiagramInterconnection* conn, port_->getInterconnections())
+    foreach (GraphicsConnection* conn, port_->getConnections())
     {
-        QUndoCommand* cmd = new ConnectionDeleteCommand(conn, this);
+        QUndoCommand* cmd =
+            new ConnectionDeleteCommand(static_cast<DiagramInterconnection*>(conn), this);
     }
 
-    foreach (DiagramInterconnection* conn, port_->getOffPageConnector()->getInterconnections())
+    foreach (GraphicsConnection* conn, port_->getOffPageConnector()->getConnections())
     {
-        QUndoCommand* cmd = new ConnectionDeleteCommand(conn, this);
+        QUndoCommand* cmd =
+            new ConnectionDeleteCommand(static_cast<DiagramInterconnection*>(conn), this);
     }
 }
 
@@ -355,14 +360,16 @@ InterfaceDeleteCommand::InterfaceDeleteCommand(DiagramInterface* interface,
     }
 
     // Create child commands for removing interconnections.
-    foreach (DiagramInterconnection* conn, interface_->getInterconnections())
+    foreach (GraphicsConnection* conn, interface_->getConnections())
     {
-        QUndoCommand* cmd = new ConnectionDeleteCommand(conn, this);
+        QUndoCommand* cmd =
+            new ConnectionDeleteCommand(static_cast<DiagramInterconnection*>(conn), this);
     }
 
-    foreach (DiagramInterconnection* conn, interface_->getOffPageConnector()->getInterconnections())
+    foreach (GraphicsConnection* conn, interface_->getOffPageConnector()->getConnections())
     {
-        QUndoCommand* cmd = new ConnectionDeleteCommand(conn, this);
+        QUndoCommand* cmd =
+            new ConnectionDeleteCommand(static_cast<DiagramInterconnection*>(conn), this);
     }
 }
 

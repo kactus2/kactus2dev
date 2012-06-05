@@ -204,9 +204,8 @@ void BlockDiagram::openDesign(QSharedPointer<Design> design)
     }
 
     /* interconnections */
-    foreach(Design::Interconnection interconnection,
-            design->getInterconnections()) {
-
+    foreach(Design::Interconnection interconnection, design->getInterconnections())
+    {
 		// find the first referenced component
         DiagramComponent *comp1 = getComponent(interconnection.interface1.componentRef);
 
@@ -226,7 +225,7 @@ void BlockDiagram::openDesign(QSharedPointer<Design> design)
 		}
 
 		// find the port of the first referenced component
-        DiagramConnectionEndpoint* port1 = comp1->getBusPort(interconnection.interface1.busRef);
+        ConnectionEndpoint* port1 = comp1->getBusPort(interconnection.interface1.busRef);
 
 		if (!port1) {
 			emit errorMessage(tr("Port %1 was not found in the component %2").arg(
@@ -235,7 +234,7 @@ void BlockDiagram::openDesign(QSharedPointer<Design> design)
 		}
 		
 		// find the port of the second referenced component
-        DiagramConnectionEndpoint* port2 = comp2->getBusPort(interconnection.interface2.busRef);
+        ConnectionEndpoint* port2 = comp2->getBusPort(interconnection.interface2.busRef);
 
 		if (!port2) {
 			emit errorMessage(tr("Port %1 was not found in the component %2").arg(
@@ -251,9 +250,10 @@ void BlockDiagram::openDesign(QSharedPointer<Design> design)
 
 		// if both components and their ports are found an interconnection can be
 		// created
-		if (comp1 && comp2 && port1 && port2) {
+		if (comp1 && comp2 && port1 && port2)
+        {
 			DiagramInterconnection *diagramInterconnection =
-				new DiagramInterconnection(port1, port2, true, interconnection.displayName,
+				new DiagramInterconnection(port1, port2, true, QString(), interconnection.displayName,
                                            interconnection.description, this);
             diagramInterconnection->setRoute(interconnection.route);
 			diagramInterconnection->setName(interconnection.name);
@@ -289,7 +289,7 @@ void BlockDiagram::openDesign(QSharedPointer<Design> design)
 		}
 
         // Find the corresponding diagram interface.
-        DiagramConnectionEndpoint* diagIf = 0;
+        ConnectionEndpoint* diagIf = 0;
 
         foreach (QGraphicsItem* item, items())
         {
@@ -330,7 +330,7 @@ void BlockDiagram::openDesign(QSharedPointer<Design> design)
 		}
 
 		// find the port of the component
-        DiagramConnectionEndpoint* compPort = comp->getBusPort(hierConn.interface_.busRef);
+        ConnectionEndpoint* compPort = comp->getBusPort(hierConn.interface_.busRef);
 		if (!compPort)
         {
 			emit errorMessage(tr("Port %1 was not found in the component %2").arg(
@@ -345,7 +345,7 @@ void BlockDiagram::openDesign(QSharedPointer<Design> design)
                 diagIf = diagIf->getOffPageConnector();
             }
 
-            DiagramInterconnection* diagConn = new DiagramInterconnection(compPort, diagIf, true,
+            DiagramInterconnection* diagConn = new DiagramInterconnection(compPort, diagIf, true, QString(),
                                                                           QString(), QString(), this);
             diagConn->setRoute(hierConn.route);
 
@@ -423,7 +423,7 @@ void BlockDiagram::openDesign(QSharedPointer<Design> design)
             }
 
             // Find the corresponding port.
-            DiagramConnectionEndpoint* port1 = comp1->getAdHocPort(adHocConn.internalPortReferences.at(0).portRef);
+            ConnectionEndpoint* port1 = comp1->getAdHocPort(adHocConn.internalPortReferences.at(0).portRef);
 
             if (port1 == 0)
             {
@@ -449,7 +449,7 @@ void BlockDiagram::openDesign(QSharedPointer<Design> design)
                     continue;
                 }
 
-                DiagramConnectionEndpoint* port2 = comp2->getAdHocPort(adHocConn.internalPortReferences.at(i).portRef);
+                ConnectionEndpoint* port2 = comp2->getAdHocPort(adHocConn.internalPortReferences.at(i).portRef);
 
                 if (port2 == 0)
                 {
@@ -464,10 +464,9 @@ void BlockDiagram::openDesign(QSharedPointer<Design> design)
                 }
 
                 // Create the ad-hoc connection graphics item.
-                DiagramInterconnection* conn = new DiagramInterconnection(port1, port2, true,
+                DiagramInterconnection* conn = new DiagramInterconnection(port1, port2, true, adHocConn.name,
                                                                           adHocConn.displayName,
                                                                           adHocConn.description, this);
-                conn->setName(adHocConn.name);
                 conn->setRoute(adHocConn.route);
                 
                 conn->setAdHocLeftBound(0, adHocConn.internalPortReferences.at(0).left);
@@ -491,7 +490,7 @@ void BlockDiagram::openDesign(QSharedPointer<Design> design)
 
         for (int j = 0; j < adHocConn.externalPortReferences.size(); ++j)
         {
-            DiagramConnectionEndpoint* adHocIf =
+            ConnectionEndpoint* adHocIf =
                 getDiagramAdHocPort(adHocConn.externalPortReferences.at(j).portRef);
 
             if (adHocIf == 0)
@@ -518,7 +517,7 @@ void BlockDiagram::openDesign(QSharedPointer<Design> design)
                     continue;
                 }
 
-                DiagramConnectionEndpoint* port = comp->getAdHocPort(adHocConn.internalPortReferences.at(i).portRef);
+                ConnectionEndpoint* port = comp->getAdHocPort(adHocConn.internalPortReferences.at(i).portRef);
 
                 if (port == 0)
                 {
@@ -534,9 +533,9 @@ void BlockDiagram::openDesign(QSharedPointer<Design> design)
 
                 // Create the ad-hoc connection graphics item.
                 DiagramInterconnection* conn = new DiagramInterconnection(port, adHocIf, true,
+                                                                          adHocConn.name,
                                                                           adHocConn.displayName,
                                                                           adHocConn.description, this);
-                conn->setName(adHocConn.name);
                 conn->setRoute(adHocConn.route);
 
                 conn->setAdHocLeftBound(0, adHocConn.internalPortReferences.at(i).left);
@@ -677,8 +676,8 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv) const
 			    }
                 else
                 {
-				    DiagramConnectionEndpoint *compPort;
-				    DiagramConnectionEndpoint *hierPort;
+				    ConnectionEndpoint *compPort;
+				    ConnectionEndpoint *hierPort;
 
                     if (conn->endpoint1()->encompassingComp()) {
 					    compPort = conn->endpoint1();
@@ -878,8 +877,8 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             clearSelection();
 
             // Try to snap to a connection end point.
-            DiagramConnectionEndpoint* endpoint =
-                DiagramUtil::snapToItem<DiagramConnectionEndpoint>(mouseEvent->scenePos(), this, GridSize);
+            ConnectionEndpoint* endpoint =
+                DiagramUtil::snapToItem<ConnectionEndpoint>(mouseEvent->scenePos(), this, GridSize);
 
             if (endpoint == 0)
             {
@@ -890,7 +889,7 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             {
                 if (highlightedEndPoint_ != 0)
                 {
-                    highlightedEndPoint_->setHighlight(DiagramConnectionEndpoint::HIGHLIGHT_OFF);
+                    highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
                     highlightedEndPoint_ = 0;
                 }
 
@@ -924,14 +923,14 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             // and highlight them.
             foreach(QGraphicsItem* item, items())
             {
-                DiagramConnectionEndpoint* endpoint = dynamic_cast<DiagramConnectionEndpoint*>(item);
+                ConnectionEndpoint* endpoint = dynamic_cast<ConnectionEndpoint*>(item);
 
                 if (endpoint != 0 && endpoint->isVisible() && endpoint != tempConnEndPoint_ &&
                     endpoint->getOffPageConnector() != tempConnEndPoint_ &&
                     endpoint->canConnect(tempConnEndPoint_) && tempConnEndPoint_->canConnect(endpoint))
                 {
                     tempPotentialEndingEndPoints_.append(endpoint);
-                    endpoint->setHighlight(DiagramConnectionEndpoint::HIGHLIGHT_ALLOWED);
+                    endpoint->setHighlight(ConnectionEndpoint::HIGHLIGHT_ALLOWED);
                 }
             }
         }
@@ -1061,20 +1060,20 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     else if (getMode() == MODE_TOGGLE_OFFPAGE)
     {
         // Try to snap to a connection end point.
-        DiagramConnectionEndpoint* endpoint =
-            DiagramUtil::snapToItem<DiagramConnectionEndpoint>(mouseEvent->scenePos(), this, GridSize);
+        ConnectionEndpoint* endpoint =
+            DiagramUtil::snapToItem<ConnectionEndpoint>(mouseEvent->scenePos(), this, GridSize);
 
         QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
 
         if (endpoint != 0 && endpoint->isVisible())
         {
-            if (endpoint->getInterconnections().size() > 0)
+            if (endpoint->getConnections().size() > 0)
             {
                 hideOffPageConnections();
 
-                QList<DiagramInterconnection*> connections = endpoint->getInterconnections();
+                QList<GraphicsConnection*> connections = endpoint->getConnections();
 
-                foreach (DiagramInterconnection* conn, connections)
+                foreach (GraphicsConnection* conn, connections)
                 {
                     toggleConnectionStyle(conn, cmd.data());
                 }
@@ -1122,7 +1121,7 @@ void BlockDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
                 // Highlight the end point.
                 disableHighlight();                
                 highlightedEndPoint_ = endpoint;
-                highlightedEndPoint_->setHighlight(DiagramConnectionEndpoint::HIGHLIGHT_HOVER);
+                highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_HOVER);
 
             }
             // Disable the highlight if there was no end point close enough.
@@ -1140,7 +1139,7 @@ void BlockDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
             {
                  newTempConnection_ = new DiagramInterconnection(tempConnEndPoint_,
                                                                  highlightedEndPoint_, false,
-                                                                 QString(), QString(), this);
+                                                                 QString(), QString(), QString(), this);
             }
             else
             {
@@ -1165,20 +1164,20 @@ void BlockDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
         {
             if (highlightedEndPoint_ != 0)
             {
-                highlightedEndPoint_->setHighlight(DiagramConnectionEndpoint::HIGHLIGHT_OFF);
+                highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
                 highlightedEndPoint_ = 0;
             }
 
             if (endpoint != 0 && endpoint->isVisible())
             {
                 highlightedEndPoint_ = endpoint;
-                highlightedEndPoint_->setHighlight(DiagramConnectionEndpoint::HIGHLIGHT_HOVER);
+                highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_HOVER);
 
                 if (highlightedEndPoint_->type() == DiagramOffPageConnector::Type)
                 {
                     hideOffPageConnections();
 
-                    foreach (DiagramInterconnection* conn, highlightedEndPoint_->getInterconnections())
+                    foreach (GraphicsConnection* conn, highlightedEndPoint_->getConnections())
                     {
                         conn->setVisible(true);
                     }
@@ -1414,10 +1413,10 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
             getLibraryInterface()->writeModelToFile(dialog.getPath(), absDef);
 
             // Ask the user for the interface mode.
-            endpoint->setHighlight(DiagramConnectionEndpoint::HIGHLIGHT_HOVER);
+            endpoint->setHighlight(ConnectionEndpoint::HIGHLIGHT_HOVER);
 
             bool editName = endpoint->type() == DiagramInterface::Type &&
-                            endpoint->getInterconnections().empty();
+                            endpoint->getConnections().empty();
 
             BusInterfaceDialog modeDialog(editName, (QWidget*)parent());
             modeDialog.addMode(General::MIRROREDMASTER);
@@ -1429,11 +1428,11 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
             if (modeDialog.exec() == QDialog::Rejected)
             {
-                endpoint->setHighlight(DiagramConnectionEndpoint::HIGHLIGHT_OFF);
+                endpoint->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
                 return;
             }
 
-            endpoint->setHighlight(DiagramConnectionEndpoint::HIGHLIGHT_OFF);
+            endpoint->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
 
             // Save old settings.
             VLNV oldBusType;
@@ -1581,7 +1580,7 @@ void BlockDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 
         if (highlightedEndPoint_ != 0)
         {
-            highlightedEndPoint_->setHighlight(DiagramConnectionEndpoint::HIGHLIGHT_OFF);
+            highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
         }
         
         highlightedEndPoint_ = endpoint;
@@ -1596,7 +1595,7 @@ void BlockDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
               !highlightedEndPoint_->encompassingComp()->componentModel()->getVlnv()->isValid())))
         {
             event->setDropAction(Qt::CopyAction);
-            highlightedEndPoint_->setHighlight(DiagramConnectionEndpoint::HIGHLIGHT_HOVER);
+            highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_HOVER);
         }
         else
         {
@@ -1619,7 +1618,7 @@ void BlockDiagram::dragLeaveEvent(QGraphicsSceneDragDropEvent*)
     
     if (highlightedEndPoint_ != 0)
     {
-        highlightedEndPoint_->setHighlight(DiagramConnectionEndpoint::HIGHLIGHT_OFF);
+        highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
         highlightedEndPoint_ = 0;
     }
 }
@@ -1707,7 +1706,7 @@ void BlockDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 
             bool editName = highlightedEndPoint_->type() == DiagramInterface::Type &&
                             highlightedEndPoint_->getBusInterface() == 0 &&
-                            highlightedEndPoint_->getInterconnections().empty();
+                            highlightedEndPoint_->getConnections().empty();
 
             // Ask the user for the interface mode.
             BusInterfaceDialog dialog(editName, (QWidget*)parent());
@@ -1720,11 +1719,11 @@ void BlockDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 
             if (dialog.exec() == QDialog::Rejected)
             {
-                highlightedEndPoint_->setHighlight(DiagramConnectionEndpoint::HIGHLIGHT_OFF);
+                highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
                 return;
             }
 
-            highlightedEndPoint_->setHighlight(DiagramConnectionEndpoint::HIGHLIGHT_OFF);
+            highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
 
             // Save old settings.
             VLNV oldBusType;
@@ -1779,11 +1778,11 @@ void BlockDiagram::disableHighlight()
     {
         if (tempConnEndPoint_ != 0 && highlightedEndPoint_ != tempConnEndPoint_)
         {
-            highlightedEndPoint_->setHighlight(DiagramConnectionEndpoint::HIGHLIGHT_ALLOWED);
+            highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_ALLOWED);
         }
         else
         {
-            highlightedEndPoint_->setHighlight(DiagramConnectionEndpoint::HIGHLIGHT_OFF);
+            highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
         }
 
         highlightedEndPoint_ = 0;
@@ -1991,12 +1990,12 @@ void BlockDiagram::createConnection(QGraphicsSceneMouseEvent * mouseEvent)
     // Disable highlights from all potential end points.
     for (int i = 0 ; i < tempPotentialEndingEndPoints_.size(); ++i)
     {
-        tempPotentialEndingEndPoints_.at(i)->setHighlight(DiagramConnectionEndpoint::HIGHLIGHT_OFF);
+        tempPotentialEndingEndPoints_.at(i)->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
     }
     tempPotentialEndingEndPoints_.clear();
 
-    DiagramConnectionEndpoint* endpoint =
-        DiagramUtil::snapToItem<DiagramConnectionEndpoint>(mouseEvent->scenePos(), this, GridSize);
+    ConnectionEndpoint* endpoint =
+        DiagramUtil::snapToItem<ConnectionEndpoint>(mouseEvent->scenePos(), this, GridSize);
 
     // Check if there is no end point close enough to the cursor or the
     // end points cannot be connected together.
@@ -2033,7 +2032,7 @@ void BlockDiagram::createConnection(QGraphicsSceneMouseEvent * mouseEvent)
             }
 
             tempConnection_ = new DiagramInterconnection(tempConnEndPoint_, endpoint, false,
-                                                         QString(), QString(), this);
+                                                         QString(), QString(), QString(), this);
             addItem(tempConnection_);
         }
 
@@ -2072,7 +2071,7 @@ void BlockDiagram::keyReleaseEvent(QKeyEvent *event)
     {
         if (tempConnEndPoint_ != 0)
         {
-            if (tempConnEndPoint_->getInterconnections().size() == 0)
+            if (tempConnEndPoint_->getConnections().size() == 0)
             {
                 tempConnEndPoint_->setVisible(false);
             }
@@ -2096,13 +2095,13 @@ void BlockDiagram::endConnect()
     // Disable highlights from all end points.
     if (highlightedEndPoint_ != 0)
     {
-        highlightedEndPoint_->setHighlight(DiagramConnectionEndpoint::HIGHLIGHT_OFF);
+        highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
         highlightedEndPoint_ = 0;
     }
 
     for (int i = 0 ; i < tempPotentialEndingEndPoints_.size(); ++i)
     {
-        tempPotentialEndingEndPoints_.at(i)->setHighlight(DiagramConnectionEndpoint::HIGHLIGHT_OFF);
+        tempPotentialEndingEndPoints_.at(i)->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
     }
     tempPotentialEndingEndPoints_.clear();
 
@@ -2132,7 +2131,7 @@ void BlockDiagram::onSelectionChanged()
         {
             DiagramOffPageConnector* connector = static_cast<DiagramOffPageConnector*>(oldSelection_);
 
-            foreach (DiagramInterconnection* conn, connector->getInterconnections())
+            foreach (GraphicsConnection* conn, connector->getConnections())
             {
                 if (conn != newSelection)
                 {
@@ -2163,7 +2162,7 @@ void BlockDiagram::onSelectionChanged()
     {
         DiagramOffPageConnector* connector = static_cast<DiagramOffPageConnector*>(newSelection);
 
-        foreach (DiagramInterconnection* conn, connector->getInterconnections())
+        foreach (GraphicsConnection* conn, connector->getConnections())
         {
             conn->setVisible(true);
         }
@@ -2178,19 +2177,19 @@ void BlockDiagram::onSelectionChanged()
 //-----------------------------------------------------------------------------
 // Function: toggleConnectionStyle()
 //-----------------------------------------------------------------------------
-void BlockDiagram::toggleConnectionStyle(DiagramInterconnection* conn, QUndoCommand* parentCmd)
+void BlockDiagram::toggleConnectionStyle(GraphicsConnection* conn, QUndoCommand* parentCmd)
 {
     Q_ASSERT(parentCmd != 0);
     emit clearItemSelection();
 
     // Determine the new end points for the connection.
-    DiagramConnectionEndpoint* endpoint1 = conn->endpoint1();
-    DiagramConnectionEndpoint* endpoint2 = conn->endpoint2();
+    ConnectionEndpoint* endpoint1 = conn->endpoint1();
+    ConnectionEndpoint* endpoint2 = conn->endpoint2();
 
     if (endpoint1->type() == DiagramOffPageConnector::Type)
     {
-        endpoint1 = static_cast<DiagramConnectionEndpoint*>(endpoint1->parentItem());
-        endpoint2 = static_cast<DiagramConnectionEndpoint*>(endpoint2->parentItem());
+        endpoint1 = static_cast<ConnectionEndpoint*>(endpoint1->parentItem());
+        endpoint2 = static_cast<ConnectionEndpoint*>(endpoint2->parentItem());
     }
     else
     {
@@ -2203,7 +2202,7 @@ void BlockDiagram::toggleConnectionStyle(DiagramInterconnection* conn, QUndoComm
     cmd->redo();
     
     DiagramInterconnection* newConn = new DiagramInterconnection(endpoint1, endpoint2, false,
-                                                                 QString(), QString(), this);
+                                                                 QString(), QString(), QString(), this);
     addItem(newConn);
 
     connect(newConn, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
@@ -2227,7 +2226,7 @@ void BlockDiagram::hideOffPageConnections()
 {
     foreach (QGraphicsItem* item, items())
     {
-        DiagramInterconnection* conn = dynamic_cast<DiagramInterconnection*>(item);
+        GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
 
         if (conn != 0 && conn->endpoint1()->type() == DiagramOffPageConnector::Type)
         {
@@ -2294,7 +2293,7 @@ void BlockDiagram::onAdHocVisibilityChanged(QString const& portName, bool visibl
     else
     {
         // Search for the ad-hoc interface and delete it.
-        DiagramConnectionEndpoint* found = getDiagramAdHocPort(portName);
+        ConnectionEndpoint* found = getDiagramAdHocPort(portName);
         Q_ASSERT(found != 0);
 
         static_cast<GraphicsColumn*>(found->parentItem())->removeItem(found);

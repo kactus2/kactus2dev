@@ -18,6 +18,7 @@
 #include "blockdiagram.h"
 #include "DiagramOffPageConnector.h"
 
+#include <common/graphicsItems/GraphicsConnection.h>
 #include <common/GenericEditProvider.h>
 #include <common/diagramgrid.h>
 
@@ -52,6 +53,8 @@ DiagramAdHocPort::DiagramAdHocPort(Port* port, LibraryInterface* lh,
 
     Q_ASSERT_X(port, "DiagramAdHocPort constructor",
         "Null BusInterface pointer given as parameter");
+
+    setType(ENDPOINT_TYPE_ADHOC);
 
     int squareSize = GridSize - 4;
     int halfSquareSize = squareSize / 2;
@@ -200,7 +203,7 @@ bool DiagramAdHocPort::isHierarchical() const
 //-----------------------------------------------------------------------------
 // Function: onConnect()
 //-----------------------------------------------------------------------------
-bool DiagramAdHocPort::onConnect(DiagramConnectionEndpoint const*)
+bool DiagramAdHocPort::onConnect(ConnectionEndpoint const*)
 {
     return true;
 }
@@ -208,17 +211,17 @@ bool DiagramAdHocPort::onConnect(DiagramConnectionEndpoint const*)
 //-----------------------------------------------------------------------------
 // Function: onDisonnect()
 //-----------------------------------------------------------------------------
-void DiagramAdHocPort::onDisconnect(DiagramConnectionEndpoint const*)
+void DiagramAdHocPort::onDisconnect(ConnectionEndpoint const*)
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: canConnect()
 //-----------------------------------------------------------------------------
-bool DiagramAdHocPort::canConnect(DiagramConnectionEndpoint const* other) const
+bool DiagramAdHocPort::canConnect(ConnectionEndpoint const* other) const
 {
-    // Ad-hoc connection is not possible to a bus end point.
-    if (other->isBus())
+    // Ad-hoc connection is not possible to other type of endpoint.
+    if (!other->isAdHoc())
     {
         return false;
     }
@@ -321,7 +324,7 @@ QVariant DiagramAdHocPort::itemChange(GraphicsItemChange change,
         if (!static_cast<DiagramComponent*>(parentItem())->isConnectionUpdateDisabled())
         {
             // Update the connections.
-            foreach (DiagramInterconnection *interconnection, getInterconnections())
+            foreach (GraphicsConnection *interconnection, getConnections())
             {
                 interconnection->updatePosition();
             }
@@ -377,15 +380,15 @@ void DiagramAdHocPort::mousePressEvent(QGraphicsSceneMouseEvent *event)
     // Save old port positions for all ports in the parent component.
     foreach (QGraphicsItem* item, parentItem()->childItems())
     {
-        if (dynamic_cast<DiagramConnectionEndpoint*>(item) != 0 && item != this)
+        if (dynamic_cast<ConnectionEndpoint*>(item) != 0 && item != this)
         {
-            DiagramConnectionEndpoint* port = static_cast<DiagramConnectionEndpoint*>(item);
+            ConnectionEndpoint* port = static_cast<ConnectionEndpoint*>(item);
             oldPortPositions_.insert(port, port->pos());
         }
     }
 
     // Begin the position update for the connections.
-    foreach (DiagramInterconnection* conn, getInterconnections())
+    foreach (GraphicsConnection* conn, getConnections())
     {
         conn->beginUpdatePosition();
     }
@@ -411,13 +414,14 @@ void DiagramAdHocPort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     }
 
     // Determine if the other ports changed their position and create undo commands for them.
-    QMap<DiagramConnectionEndpoint*, QPointF>::iterator cur = oldPortPositions_.begin();
+    QMap<ConnectionEndpoint*, QPointF>::iterator cur = oldPortPositions_.begin();
 
     while (cur != oldPortPositions_.end())
     {
         if (cur.key()->pos() != cur.value())
         {
-            QUndoCommand* childCmd = new PortMoveCommand(cur.key(), cur.value(), cmd.data());
+            QUndoCommand* childCmd =
+                new PortMoveCommand(static_cast<DiagramConnectionEndpoint*>(cur.key()), cur.value(), cmd.data());
         }
 
         ++cur;
@@ -426,7 +430,7 @@ void DiagramAdHocPort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     oldPortPositions_.clear();
     
     // End the position update of the connections.
-    foreach (DiagramInterconnection* conn, getInterconnections())
+    foreach (GraphicsConnection* conn, getConnections())
     {
         conn->endUpdatePosition(cmd.data());
     }
@@ -467,7 +471,7 @@ void DiagramAdHocPort::setDescription(QString const& description)
 //-----------------------------------------------------------------------------
 // Function: getOffPageConnector()
 //-----------------------------------------------------------------------------
-DiagramConnectionEndpoint* DiagramAdHocPort::getOffPageConnector()
+ConnectionEndpoint* DiagramAdHocPort::getOffPageConnector()
 {
     return offPageConnector_;
 }

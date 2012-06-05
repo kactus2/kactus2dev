@@ -19,6 +19,7 @@
 #include "blockdiagram.h"
 #include "DiagramOffPageConnector.h"
 
+#include <common/graphicsItems/GraphicsConnection.h>
 #include <common/graphicsItems/GraphicsColumn.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/GenericEditProvider.h>
@@ -59,6 +60,8 @@ DiagramAdHocInterface::DiagramAdHocInterface(QSharedPointer<Component> component
 {
     Q_ASSERT_X(port, "DiagramAdHocInterface constructor",
                "Null port pointer given as parameter");
+
+    setType(ENDPOINT_TYPE_ADHOC);
 
     int squareSize = GridSize - 4;
     int halfSquareSize = squareSize / 2;
@@ -214,7 +217,7 @@ bool DiagramAdHocInterface::isHierarchical() const
 //-----------------------------------------------------------------------------
 // Function: onConnect()
 //-----------------------------------------------------------------------------
-bool DiagramAdHocInterface::onConnect(DiagramConnectionEndpoint const*)
+bool DiagramAdHocInterface::onConnect(ConnectionEndpoint const*)
 {
     return true;
 }
@@ -222,14 +225,14 @@ bool DiagramAdHocInterface::onConnect(DiagramConnectionEndpoint const*)
 //-----------------------------------------------------------------------------
 // Function: onDisonnect()
 //-----------------------------------------------------------------------------
-void DiagramAdHocInterface::onDisconnect(DiagramConnectionEndpoint const*)
+void DiagramAdHocInterface::onDisconnect(ConnectionEndpoint const*)
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: canConnect()
 //-----------------------------------------------------------------------------
-bool DiagramAdHocInterface::canConnect(DiagramConnectionEndpoint const* other) const
+bool DiagramAdHocInterface::canConnect(ConnectionEndpoint const* other) const
 {
     // Ad-hoc connection is not possible to a bus end point.
     if (other->isBus())
@@ -286,7 +289,7 @@ QVariant DiagramAdHocInterface::itemChange(GraphicsItemChange change,
 
     case ItemScenePositionHasChanged:
 
-        foreach (DiagramInterconnection *interconnection, getInterconnections()) {
+        foreach (GraphicsConnection *interconnection, getConnections()) {
             interconnection->updatePosition();
         }
 
@@ -363,7 +366,7 @@ void DiagramAdHocInterface::mousePressEvent(QGraphicsSceneMouseEvent *event)
     }
 
     // Begin the position update of the connections.
-    foreach (DiagramInterconnection* conn, getInterconnections())
+    foreach (GraphicsConnection* conn, getConnections())
     {
         conn->beginUpdatePosition();
     }
@@ -411,7 +414,7 @@ void DiagramAdHocInterface::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         }
 
         // End the position update of the connections.
-        foreach (DiagramInterconnection* conn, getInterconnections())
+        foreach (GraphicsConnection* conn, getConnections())
         {
             conn->endUpdatePosition(cmd.data());
         }
@@ -475,7 +478,7 @@ void DiagramAdHocInterface::setDescription(QString const& description)
 //-----------------------------------------------------------------------------
 // Function: getOffPageConnector()
 //-----------------------------------------------------------------------------
-DiagramConnectionEndpoint* DiagramAdHocInterface::getOffPageConnector()
+ConnectionEndpoint* DiagramAdHocInterface::getOffPageConnector()
 {
     return offPageConnector_;
 }

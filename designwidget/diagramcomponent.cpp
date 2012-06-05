@@ -127,7 +127,7 @@ DiagramComponent::~DiagramComponent()
             continue;
 
         DiagramPort *diagramPort = qgraphicsitem_cast<DiagramPort *>(item);
-        foreach (DiagramInterconnection *interconn, diagramPort->getInterconnections()) {
+        foreach (GraphicsConnection *interconn, diagramPort->getConnections()) {
             delete interconn;
         }
     }
@@ -193,12 +193,12 @@ void DiagramComponent::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 
         DiagramPort *diagramPort = qgraphicsitem_cast<DiagramPort *>(item);
 
-        foreach (DiagramInterconnection *interconn, diagramPort->getInterconnections())
+        foreach (GraphicsConnection *interconn, diagramPort->getConnections())
         {
             interconn->updatePosition();
         }
 
-        foreach (DiagramInterconnection *interconn, diagramPort->getOffPageConnector()->getInterconnections())
+        foreach (GraphicsConnection *interconn, diagramPort->getOffPageConnector()->getConnections())
         {
             interconn->updatePosition();
         }
@@ -239,7 +239,7 @@ void DiagramComponent::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
                 continue;
 
             DiagramPort *diagramPort = qgraphicsitem_cast<DiagramPort *>(item);
-            foreach (DiagramInterconnection *conn, diagramPort->getInterconnections())
+            foreach (GraphicsConnection *conn, diagramPort->getConnections())
             {
                 conn->endUpdatePosition(cmd.data());
             }
@@ -271,7 +271,7 @@ void DiagramComponent::mousePressEvent(QGraphicsSceneMouseEvent *event)
             continue;
 
         DiagramPort *diagramPort = qgraphicsitem_cast<DiagramPort *>(item);
-        foreach (DiagramInterconnection *conn, diagramPort->getInterconnections())
+        foreach (GraphicsConnection *conn, diagramPort->getConnections())
         {
             conn->beginUpdatePosition();
         }

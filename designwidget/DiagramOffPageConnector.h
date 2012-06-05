@@ -21,7 +21,6 @@
 #include <QPolygonF>
 
 class BusInterface;
-class DiagramInterconnection;
 class DiagramComponent;
 class DiagramConnectionEndpoint;
 class LibraryInterface;
@@ -42,7 +41,7 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parent The parent diagram connection end point.
+     *      @param [in] parent The parent diagram connection endpoint.
      */
     DiagramOffPageConnector(DiagramConnectionEndpoint* parent);
 
@@ -52,7 +51,7 @@ public:
 	virtual ~DiagramOffPageConnector();
 
     /*!
-     *  Sets the bus and abstraction types and the interface mode for the end point.
+     *  Sets the bus and abstraction types and the interface mode for the endpoint.
      *
      *      @param [in] busType  The bus type (bus definition VLNV).
      *      @param [in] absType  The abstraction type (abstraction definition VLNV).
@@ -104,44 +103,44 @@ public:
 	virtual void setDescription(const QString& description);
 
     /*!
-     *  Attaches the end point to a connection.
+     *  Attaches the endpoint to a connection.
      *
      *      @param [in] connection The connection.
      */
-    virtual void addInterconnection(DiagramInterconnection* connection);
+    virtual void addConnection(GraphicsConnection* connection);
 
     /*!
-     *  Unattaches the end point from a connection.
+     *  Unattaches the endpoint from a connection.
      *
      *      @param [in] connection The connection.
      */
-    virtual void removeInterconnection(DiagramInterconnection* connection);
+    virtual void removeConnection(GraphicsConnection* connection);
 
     /*!
-     *  Called when a connection between this and another end point is done.
+     *  Called when a connection between this and another endpoint is done.
      *
-     *      @param [in] other The other end point of the connection.
+     *      @param [in] other The other endpoint of the connection.
      *
      *      @return False if there was an error in the connection. Otherwise true.
      */
-    virtual bool onConnect(DiagramConnectionEndpoint const* other);
+    virtual bool onConnect(ConnectionEndpoint const* other);
 
     /*!
-     *  Called when a connection has been removed from between this and another end point.
+     *  Called when a connection has been removed from between this and another endpoint.
      *
-     *      @param [in] other The other end point of the connection.
+     *      @param [in] other The other endpoint of the connection.
      */
-    virtual void onDisconnect(DiagramConnectionEndpoint const* other);
+    virtual void onDisconnect(ConnectionEndpoint const* other);
 
     /*! 
-     *  Returns true if the connector can be connected to the given end point.
+     *  Returns true if the connector can be connected to the given endpoint.
      *
-     *      @param [in] other The end point to which to connect.
+     *      @param [in] other The endpoint to which to connect.
      */
-    virtual bool canConnect(DiagramConnectionEndpoint const* other) const;
+    virtual bool canConnect(ConnectionEndpoint const* other) const;
 
     /*!
-     *  Sets the draw direction of the end point.
+     *  Sets the draw direction of the endpoint.
      *
      *      @param [in] dir The draw direction to set.
      *
@@ -150,7 +149,7 @@ public:
     virtual void setDirection(QVector2D const& dir);
 
     /*!
-	 *	Returns the draw direction of the end point.
+	 *	Returns the draw direction of the endpoint.
 	 */
 	virtual QVector2D const& getDirection() const;
 
@@ -167,14 +166,14 @@ public:
 	virtual QSharedPointer<Component> getOwnerComponent() const;
 
     /*! 
-     *  Returns the IP-XACT bus interface model of the parent diagram connection end point.
+     *  Returns the IP-XACT bus interface model of the parent diagram connection endpoint.
      */
     virtual QSharedPointer<BusInterface> getBusInterface() const;
 
     /*!
-     *  Returns the ad-hoc port of the end point.
+     *  Returns the ad-hoc port of the endpoint.
      *
-     *      @remarks The function returns a null pointer if the end point is a bus interface.
+     *      @remarks The function returns a null pointer if the endpoint is a bus interface.
      *               Use isBus() function to check for ad-hoc support (isBus() == false).
      */
     virtual Port* getPort() const;
@@ -185,12 +184,12 @@ public:
     virtual bool isHierarchical() const;
 
     /*!
-     *  Returns true if the end point is a bus interface end point.
+     *  Returns true if the endpoint is a bus interface endpoint.
      */
     virtual bool isBus() const;
 
 	/*! 
-	 *  Sets the interface mode for the end point.
+	 *  Sets the interface mode for the endpoint.
 	 *
      *      @param [in] The interface mode to set.
 	 *
@@ -212,7 +211,7 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The parent diagram connection end point.
+    //! The parent diagram connection endpoint.
     DiagramConnectionEndpoint* parent_;
 };
 

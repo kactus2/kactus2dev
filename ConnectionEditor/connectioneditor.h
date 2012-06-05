@@ -24,7 +24,7 @@
 #include <QString>
 #include <QSharedPointer>
 
-class DiagramInterconnection;
+class GraphicsConnection;
 class LibraryInterface;
 
 /*! \brief Editor to display/edit details of a connection.
@@ -53,7 +53,7 @@ public slots:
 	 * \param connection Pointer to the connection to edit.
 	 *
 	*/
-	void setConnection(DiagramInterconnection* connection);
+	void setConnection(GraphicsConnection* connection);
 
 	/*! \brief Clear the editor so no connection details are shown
 	 *
@@ -141,7 +141,7 @@ private:
 	QTableWidget portWidget_;
 
 	//! \brief Pointer to the connection being edited.
-	DiagramInterconnection* connection_;
+	GraphicsConnection* connection_;
 
 	//! \brief Pointer to the instance that manages the library
 	LibraryInterface* handler_;

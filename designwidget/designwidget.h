@@ -224,7 +224,7 @@ signals:
 	 * \param connection Pointer to the connection that is selected.
 	 *
 	*/
-	void connectionSelected(DiagramInterconnection* connection);
+	void connectionSelected(GraphicsConnection* connection);
 
     /*! \brief Emitted when user de-selects all items.
 	 *

@@ -417,10 +417,10 @@ void AddressSpaceVisualizer::drawSegments( QPainter& painter, const QRect& bound
 		painter.drawText(startPoint, startStr);
 
 		// draw the end address to the end of the segment
-		QPoint endPoint = QPoint(segmentRect.bottomLeft().x() + fontWidth, segmentRect.bottomLeft().y());
+		QPoint endpoint = QPoint(segmentRect.bottomLeft().x() + fontWidth, segmentRect.bottomLeft().y());
 		QString endStr = QString::number(segment.offSet_ + segment.range_ - 1, 16).toUpper();
 		endStr.prepend("0x");
-		painter.drawText(endPoint, endStr);
+		painter.drawText(endpoint, endStr);
 
 		// if the segment goes further than the limit of the address space
 		if (previousLimit > byteCount_ - 1) {

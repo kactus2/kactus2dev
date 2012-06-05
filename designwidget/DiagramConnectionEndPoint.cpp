@@ -18,8 +18,7 @@
 //-----------------------------------------------------------------------------
 DiagramConnectionEndpoint::DiagramConnectionEndpoint(QGraphicsItem* parent,
                                                      QVector2D const& dir)
-    : ConnectionEndpoint(parent),
-      connections_()
+    : ConnectionEndpoint(parent)
 {
     setDirection(dir);
 }
@@ -29,52 +28,4 @@ DiagramConnectionEndpoint::DiagramConnectionEndpoint(QGraphicsItem* parent,
 //-----------------------------------------------------------------------------
 DiagramConnectionEndpoint::~DiagramConnectionEndpoint()
 {
-}
-
-//-----------------------------------------------------------------------------
-// Function: addInterconnection()
-//-----------------------------------------------------------------------------
-void DiagramConnectionEndpoint::addInterconnection(DiagramInterconnection* connection)
-{
-    connections_.append(connection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: removeInterconnection()
-//-----------------------------------------------------------------------------
-void DiagramConnectionEndpoint::removeInterconnection(DiagramInterconnection* connection)
-{
-    connections_.removeAll(connection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: getInterconnections()
-//-----------------------------------------------------------------------------
-QList<DiagramInterconnection*> const& DiagramConnectionEndpoint::getInterconnections() const
-{
-    return connections_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: isConnected()
-//-----------------------------------------------------------------------------
-bool DiagramConnectionEndpoint::isConnected() const
-{
-    return (!connections_.empty());
-}
-
-//-----------------------------------------------------------------------------
-// Function: getOffPageConnector()
-//-----------------------------------------------------------------------------
-DiagramConnectionEndpoint* DiagramConnectionEndpoint::getOffPageConnector()
-{
-    return 0;
-}
-
-//-----------------------------------------------------------------------------
-// Function: DiagramConnectionEndpoint::isAdHoc()
-//-----------------------------------------------------------------------------
-bool DiagramConnectionEndpoint::isAdHoc() const
-{
-    return (!isBus());
 }

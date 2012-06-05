@@ -1070,8 +1070,8 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
         {
             SWConnection const* conn = static_cast<SWConnection const*>(item);
 
-            SWConnectionEndpoint* endpoint1 = conn->endpoint1();
-            SWConnectionEndpoint* endpoint2 = conn->endpoint2();
+            ConnectionEndpoint* endpoint1 = conn->endpoint1();
+            ConnectionEndpoint* endpoint2 = conn->endpoint2();
 
             if (conn->getConnectionType() == SWConnectionEndpoint::ENDPOINT_TYPE_API)
             {
@@ -1093,8 +1093,8 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
                 }
                 else
                 {
-                    SWConnectionEndpoint* compPort = endpoint1;
-                    SWConnectionEndpoint* hierPort = endpoint2;
+                    ConnectionEndpoint* compPort = endpoint1;
+                    ConnectionEndpoint* hierPort = endpoint2;
 
                     if (compPort->encompassingComp() == 0)
                     {
@@ -1131,8 +1131,8 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
                 }
                 else
                 {
-                    SWConnectionEndpoint* compPort = endpoint1;
-                    SWConnectionEndpoint* hierPort = endpoint2;
+                    ConnectionEndpoint* compPort = endpoint1;
+                    ConnectionEndpoint* hierPort = endpoint2;
 
                     if (compPort->encompassingComp() == 0)
                     {

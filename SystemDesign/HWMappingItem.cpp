@@ -16,10 +16,10 @@
 #include "SystemDesignDiagram.h"
 #include "SWCompItem.h"
 #include "SWPortItem.h"
-#include "SWConnection.h"
 
 #include <LibraryManager/libraryinterface.h>
 
+#include <common/graphicsItems/GraphicsConnection.h>
 #include <common/GenericEditProvider.h>
 #include <common/layouts/VStackedLayout.h>
 
@@ -81,7 +81,7 @@ void HWMappingItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
         {
             SWPortItem* port = qgraphicsitem_cast<SWPortItem*>(item);
 
-            foreach (SWConnection* conn, port->getConnections())
+            foreach (GraphicsConnection* conn, port->getConnections())
             {
                 conn->beginUpdatePosition();
             }
@@ -148,7 +148,7 @@ void HWMappingItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
             {
                 SWPortItem* port = qgraphicsitem_cast<SWPortItem*>(item);
 
-                foreach (SWConnection* conn, port->getConnections())
+                foreach (GraphicsConnection* conn, port->getConnections())
                 {
                     conn->endUpdatePosition(cmd.data());
                 }

@@ -60,89 +60,17 @@ public:
     virtual void setTypes(VLNV const& busType, VLNV const& absType,
                           General::InterfaceMode mode) = 0;
 
-    /*!
-     *  Attaches the endpoint to a connection.
-     *
-     *      @param [in] connection The connection.
-     */
-    virtual void addInterconnection(DiagramInterconnection* connection);
-
-    /*!
-     *  Unattaches the endpoint from a connection.
-     *
-     *      @param [in] connection The connection.
-     */
-    virtual void removeInterconnection(DiagramInterconnection* connection);
-
-    /*!
-     *  Returns the list of connections that are connected to this endpoint.
-     */
-    virtual QList<DiagramInterconnection*> const& getInterconnections() const;
-
-    /*!
-     *  Returns true if the endpoint has at least one connection.
-     */
-    bool isConnected() const;
-
-    /*!
-     *  Called when a connection between this and another endpoint is done.
-     *
-     *      @param [in] other The other endpoint of the connection.
-     *
-     *      @return False if there was an error in the connection. Otherwise true.
-     */
-    virtual bool onConnect(DiagramConnectionEndpoint const* other) = 0;
-
-    /*!
-     *  Called when a connection has been removed from between this and another endpoint.
-     *
-     *      @param [in] other The other endpoint of the connection.
-     */
-    virtual void onDisconnect(DiagramConnectionEndpoint const* other) = 0;
-
-    /*! 
-     *  Returns true if this endpoint can be connected to the given endpoint.
-     *
-     *      @param [in] other The endpoint to which to connect.
-     */
-    virtual bool canConnect(DiagramConnectionEndpoint const* other) const = 0;
-
-    /*!
-     *  Returns the ad-hoc port of the endpoint.
-     *
-     *      @remarks The function returns a null pointer if the endpoint is a bus interface.
-     *               Use isBus() function to check for ad-hoc support (isBus() == false).
-     */
-    virtual Port* getPort() const = 0;
-
-    /*!
-     *  Returns true if the endpoint is an ad-hoc port.
-     */
-    bool isAdHoc() const;
-
-	/*! \brief Set the interface mode for the endpoint.
+    /*! \brief Set the interface mode for the endpoint.
 	 *
 	 * \param mode The interface mode to set.
 	 *
 	*/
 	virtual void setInterfaceMode(General::InterfaceMode mode) = 0;
 
-    /*!
-     *  Returns the corresponding off-page connector or a null pointer if the endpoint does not have one.
-     */
-    virtual DiagramConnectionEndpoint* getOffPageConnector();
-
 private:
     // Disable copying.
     DiagramConnectionEndpoint(DiagramConnectionEndpoint const& rhs);
     DiagramConnectionEndpoint& operator=(DiagramConnectionEndpoint const& rhs);
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-    //! The connections to this endpoint.
-    QList<DiagramInterconnection*> connections_;
 };
 
 //-----------------------------------------------------------------------------

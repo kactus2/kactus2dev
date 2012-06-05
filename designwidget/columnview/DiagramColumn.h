@@ -22,7 +22,7 @@
 #include <QSet>
 #include <QCursor>
 
-class DiagramInterconnection;
+class GraphicsConnection;
 class DiagramConnectionEndpoint;
 class Component;
 class GenericEditProvider;
@@ -90,7 +90,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The connections that need to be also stored for undo.
-    QSet<DiagramInterconnection*> conns_;
+    QSet<GraphicsConnection*> conns_;
 };
 
 //-----------------------------------------------------------------------------

@@ -73,56 +73,6 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-//! ConnectionMoveCommand class.
-//-----------------------------------------------------------------------------
-class ConnectionMoveCommand : public QUndoCommand
-{
-public:
-    /*!
-     *  Constructor.
-     *
-     *      @param [in] conn      The interconnection.
-     *      @param [in] oldRoute  The old route of the interconnection.
-     *      @param [in] parent    The parent command.
-     */
-    ConnectionMoveCommand(DiagramInterconnection* conn, QList<QPointF> const& oldRoute,
-                          QUndoCommand* parent = 0);
-
-    /*!
-     *  Destructor.
-     */
-    ~ConnectionMoveCommand();
-
-    /*!
-     *  Undoes the command.
-     */
-    virtual void undo();
-
-    /*!
-     *  Redoes the command.
-     */
-    virtual void redo();
-
-private:
-    // Disable copying.
-    ConnectionMoveCommand(ConnectionMoveCommand const& rhs);
-    ConnectionMoveCommand& operator=(ConnectionMoveCommand const& rhs);
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-    //! The interconnection.
-    DiagramInterconnection* conn_;
-
-    //! The old route of the interconnection.
-    QList<QPointF> oldRoute_;
-
-    //! The new route of the interconnection.
-    QList<QPointF> newRoute_;
-};
-
-//-----------------------------------------------------------------------------
 //! PortMoveCommand class.
 //-----------------------------------------------------------------------------
 class PortMoveCommand : public QUndoCommand

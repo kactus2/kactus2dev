@@ -68,40 +68,6 @@ void ItemMoveCommand::redo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ConnectionMoveCommand()
-//-----------------------------------------------------------------------------
-ConnectionMoveCommand::ConnectionMoveCommand(DiagramInterconnection* conn,
-                                             QList<QPointF> const& oldRoute,
-                                             QUndoCommand* parent) : QUndoCommand(parent),
-                                                                     conn_(conn), oldRoute_(oldRoute),
-                                                                     newRoute_(conn->route())
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: ~ConnectionMoveCommand()
-//-----------------------------------------------------------------------------
-ConnectionMoveCommand::~ConnectionMoveCommand()
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: undo()
-//-----------------------------------------------------------------------------
-void ConnectionMoveCommand::undo()
-{
-    conn_->setRoute(oldRoute_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: redo()
-//-----------------------------------------------------------------------------
-void ConnectionMoveCommand::redo()
-{
-    conn_->setRoute(newRoute_);
-}
-
-//-----------------------------------------------------------------------------
 // Function: ItemMoveCommand()
 //-----------------------------------------------------------------------------
 PortMoveCommand::PortMoveCommand(DiagramConnectionEndpoint* port, QPointF const& oldPos,

@@ -11,9 +11,8 @@
 
 #include "DiagramOffPageConnector.h"
 
-#include "diagramcomponent.h"
-#include "diagraminterconnection.h"
-
+#include <common/graphicsItems/ComponentItem.h>
+#include <common/graphicsItems/GraphicsConnection.h>
 #include <common/diagramgrid.h>
 
 #include <models/businterface.h>
@@ -29,6 +28,8 @@ DiagramOffPageConnector::DiagramOffPageConnector(DiagramConnectionEndpoint* pare
       parent_(parent)        
 {
     Q_ASSERT(parent != 0);
+
+    setType(parent->getType());
 
     int squareSize = GridSize;
     /*  /\
@@ -139,7 +140,7 @@ bool DiagramOffPageConnector::isHierarchical() const
 //-----------------------------------------------------------------------------
 // Function: onConnect()
 //-----------------------------------------------------------------------------
-bool DiagramOffPageConnector::onConnect(DiagramConnectionEndpoint const* other)
+bool DiagramOffPageConnector::onConnect(ConnectionEndpoint const* other)
 {
     return parent_->onConnect(other);
 }
@@ -147,7 +148,7 @@ bool DiagramOffPageConnector::onConnect(DiagramConnectionEndpoint const* other)
 //-----------------------------------------------------------------------------
 // Function: onDisonnect()
 //-----------------------------------------------------------------------------
-void DiagramOffPageConnector::onDisconnect(DiagramConnectionEndpoint const* other)
+void DiagramOffPageConnector::onDisconnect(ConnectionEndpoint const* other)
 {
     parent_->onDisconnect(other);
 }
@@ -155,7 +156,7 @@ void DiagramOffPageConnector::onDisconnect(DiagramConnectionEndpoint const* othe
 //-----------------------------------------------------------------------------
 // Function: canConnect()
 //-----------------------------------------------------------------------------
-bool DiagramOffPageConnector::canConnect(DiagramConnectionEndpoint const* other) const
+bool DiagramOffPageConnector::canConnect(ConnectionEndpoint const* other) const
 {
     return parent_->canConnect(other);
 }
@@ -190,7 +191,7 @@ QVariant DiagramOffPageConnector::itemChange(GraphicsItemChange change,
             if (encompassingComp() == 0 || !encompassingComp()->isConnectionUpdateDisabled())
             {
                 // Update the connections.
-                foreach (DiagramInterconnection* interconnection, getInterconnections())
+                foreach (GraphicsConnection* interconnection, getConnections())
                 {
                     interconnection->updatePosition();
                 }
@@ -213,7 +214,7 @@ QVariant DiagramOffPageConnector::itemChange(GraphicsItemChange change,
 //-----------------------------------------------------------------------------
 bool DiagramOffPageConnector::isDirectionFixed() const
 {
-    if (getInterconnections().size() > 0)
+    if (getConnections().size() > 0)
     {
         return true;
     }
@@ -261,24 +262,24 @@ void DiagramOffPageConnector::setDescription(QString const& description)
 }
 
 //-----------------------------------------------------------------------------
-// Function: addInterconnection()
+// Function: addConnection()
 //-----------------------------------------------------------------------------
-void DiagramOffPageConnector::addInterconnection(DiagramInterconnection* connection)
+void DiagramOffPageConnector::addConnection(GraphicsConnection* connection)
 {
-    DiagramConnectionEndpoint::addInterconnection(connection);
-    connection->setRoutingMode(DiagramInterconnection::ROUTING_MODE_OFFPAGE);
+    DiagramConnectionEndpoint::addConnection(connection);
+    connection->setRoutingMode(GraphicsConnection::ROUTING_MODE_OFFPAGE);
 
     setVisible(true);
 }
 
 //-----------------------------------------------------------------------------
-// Function: removeInterconnection()
+// Function: removeConnection()
 //-----------------------------------------------------------------------------
-void DiagramOffPageConnector::removeInterconnection(DiagramInterconnection* connection)
+void DiagramOffPageConnector::removeConnection(GraphicsConnection* connection)
 {
-    DiagramConnectionEndpoint::removeInterconnection(connection);
+    DiagramConnectionEndpoint::removeConnection(connection);
 
-    if (getInterconnections().size() == 0)
+    if (getConnections().size() == 0)
     {
         setVisible(false);
     }

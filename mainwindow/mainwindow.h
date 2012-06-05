@@ -42,6 +42,7 @@ class DiagramInterconnection;
 class TabWidgetEx;
 class TabDocument;
 class ConnectionEndpoint;
+class GraphicsConnection;
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -160,7 +161,7 @@ public slots:
 	 * \param connection Pointer to the connection that was selected.
 	 *
 	*/
-	void onConnectionSelected(DiagramInterconnection* connection);
+	void onConnectionSelected(GraphicsConnection* connection);
 
     //! Called when the menu strip needs to be updated.
     void updateMenuStrip();

@@ -26,6 +26,7 @@
 #include <models/component.h>
 #include <models/port.h>
 
+#include <common/graphicsItems/GraphicsConnection.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/GenericEditProvider.h>
 #include <common/diagramgrid.h>
@@ -54,6 +55,7 @@ DiagramInterface::DiagramInterface(LibraryInterface* lh, QSharedPointer<Componen
       temp_(busIf == 0), oldPos_(), oldInterfacePositions_(),
       offPageConnector_(0)
 {
+    setType(ENDPOINT_TYPE_BUS);
     busInterface_ = busIf;
     int squareSize = GridSize;
 
@@ -179,7 +181,7 @@ bool DiagramInterface::isHierarchical() const
 //-----------------------------------------------------------------------------
 // Function: onConnect()
 //-----------------------------------------------------------------------------
-bool DiagramInterface::onConnect(DiagramConnectionEndpoint const* other)
+bool DiagramInterface::onConnect(ConnectionEndpoint const* other)
 {
     // Update the name if the bus interface is defined but its name is empty.
     if (busInterface_->getInterfaceMode() != General::MODE_UNDEFINED && busInterface_->getName() == "")
@@ -311,11 +313,11 @@ bool DiagramInterface::onConnect(DiagramConnectionEndpoint const* other)
 //-----------------------------------------------------------------------------
 // Function: onDisonnect()
 //-----------------------------------------------------------------------------
-void DiagramInterface::onDisconnect(DiagramConnectionEndpoint const*)
+void DiagramInterface::onDisconnect(ConnectionEndpoint const*)
 {
     // Check if there is still some connections left, the bus interface is not defined
     // or the interface is not temporary.
-    if (!getInterconnections().empty() ||
+    if (!getConnections().empty() ||
         busInterface_->getInterfaceMode() == General::MODE_UNDEFINED || !temp_)
     {
         // Don't do anything.
@@ -332,7 +334,7 @@ void DiagramInterface::onDisconnect(DiagramConnectionEndpoint const*)
 //-----------------------------------------------------------------------------
 // Function: canConnect()
 //-----------------------------------------------------------------------------
-bool DiagramInterface::canConnect(DiagramConnectionEndpoint const* other) const
+bool DiagramInterface::canConnect(ConnectionEndpoint const* other) const
 {
     // This end point requires a bus interface connection.
     if (!other->isBus())
@@ -393,7 +395,7 @@ QVariant DiagramInterface::itemChange(GraphicsItemChange change,
 
     case ItemScenePositionHasChanged:
         
-        foreach (DiagramInterconnection *interconnection, getInterconnections()) {
+        foreach (GraphicsConnection *interconnection, getConnections()) {
             interconnection->updatePosition();
         }
 
@@ -470,7 +472,7 @@ void DiagramInterface::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         oldInterfacePositions_.clear();
 
         // End the position update of the connections.
-        foreach (DiagramInterconnection* conn, getInterconnections())
+        foreach (GraphicsConnection* conn, getConnections())
         {
             conn->endUpdatePosition(cmd.data());
         }
@@ -512,7 +514,7 @@ void DiagramInterface::mousePressEvent(QGraphicsSceneMouseEvent *event)
     }
 
     // Begin the position update of the connections.
-    foreach (DiagramInterconnection* conn, getInterconnections())
+    foreach (GraphicsConnection* conn, getConnections())
     {
         conn->beginUpdatePosition();
     }
@@ -557,7 +559,7 @@ void DiagramInterface::setTypes(VLNV const& busType, VLNV const& absType, Genera
     if (busInterface_->getInterfaceMode() != General::MODE_UNDEFINED)
     {
         // Disconnect the connections.
-        foreach(DiagramInterconnection* conn, getInterconnections())
+        foreach(GraphicsConnection* conn, getConnections())
         {
             if (conn->endpoint1() != this)
             {
@@ -584,7 +586,7 @@ void DiagramInterface::setTypes(VLNV const& busType, VLNV const& absType, Genera
         updateInterface();
 
         // Undefined end points of the connections can now be defined.
-        foreach(DiagramInterconnection* conn, getInterconnections())
+        foreach(GraphicsConnection* conn, getConnections())
         {
             if (conn->endpoint1() != this)
             {
@@ -691,7 +693,7 @@ void DiagramInterface::setDescription( const QString& description ) {
 //-----------------------------------------------------------------------------
 // Function: getOffPageConnector()
 //-----------------------------------------------------------------------------
-DiagramConnectionEndpoint* DiagramInterface::getOffPageConnector()
+ConnectionEndpoint* DiagramInterface::getOffPageConnector()
 {
     return offPageConnector_;
 }

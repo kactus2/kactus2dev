@@ -25,6 +25,7 @@ class ComponentItem;
 class ApiInterface;
 class ComInterface;
 class BusInterface;
+class GraphicsConnection;
 
 //-----------------------------------------------------------------------------
 //! Base class for connection endpoints (both SW and HW).
@@ -42,6 +43,18 @@ public:
         HIGHLIGHT_OFF = 0,
         HIGHLIGHT_ALLOWED,
         HIGHLIGHT_HOVER,
+    };
+
+    //-----------------------------------------------------------------------------
+    //! Endpoint type enumeration.
+    //-----------------------------------------------------------------------------
+    enum EndpointType
+    {
+        ENDPOINT_TYPE_UNDEFINED = 0,    //!< The endpoint type is not set.
+        ENDPOINT_TYPE_API,              //!< The endpoint is an API interface.
+        ENDPOINT_TYPE_COM,              //!< The endpoint is a COM interface.
+        ENDPOINT_TYPE_BUS,              //!< The endpoint is a bus interface.
+        ENDPOINT_TYPE_ADHOC             //!< The endpoint is an ad-hoc port.
     };
 
     /*!
@@ -62,6 +75,60 @@ public:
      *      @param [in] mode The highlight mode.
      */
     void setHighlight(HighlightMode mode);
+
+    /*!
+     *  Sets the selection highlight on/off.
+     *
+     *      @param [in] on If true, the selection highlight is turned on. Otherwise it is turned off.
+     */
+    virtual void setSelectionHighlight(bool on);
+
+    /*!
+     *  Attaches the endpoint to a connection.
+     *
+     *      @param [in] connection The connection.
+     */
+    virtual void addConnection(GraphicsConnection* connection);
+
+    /*!
+     *  Unattaches the endpoint from a connection.
+     *
+     *      @param [in] connection The connection.
+     */
+    virtual void removeConnection(GraphicsConnection* connection);
+
+    /*!
+     *  Returns the list of connections that are connected to this endpoint.
+     */
+    virtual QList<GraphicsConnection*> const& getConnections() const;
+
+    /*!
+     *  Returns true if the endpoint has at least one connection.
+     */
+    bool isConnected() const;
+
+    /*!
+     *  Called when a connection between this and another endpoint is done.
+     *
+     *      @param [in] other The other endpoint of the connection.
+     *
+     *      @return False if there was an error in the connection. Otherwise true.
+     */
+    virtual bool onConnect(ConnectionEndpoint const* other) = 0;
+
+    /*!
+     *  Called when a connection has been removed from between this and another endpoint.
+     *
+     *      @param [in] other The other endpoint of the connection.
+     */
+    virtual void onDisconnect(ConnectionEndpoint const* other) = 0;
+
+    /*! 
+     *  Returns true if this endpoint can be connected to the given endpoint.
+     *
+     *      @param [in] other The endpoint to which to connect.
+     */
+    virtual bool canConnect(ConnectionEndpoint const* other) const;
 
     /*!
      *  Sets the draw direction of the endpoint.
@@ -148,6 +215,19 @@ public:
     virtual QSharedPointer<ApiInterface> getApiInterface() const;
 
     /*!
+     *  Returns the ad-hoc port of the endpoint.
+     *
+     *      @remarks The function returns a null pointer if the endpoint is a bus interface.
+     *               Use isAdHoc() function to check for ad-hoc support.
+     */
+    virtual Port* getPort() const;
+
+    /*!
+     *  Returns the corresponding off-page connector or a null pointer if the endpoint does not have one.
+     */
+    virtual ConnectionEndpoint* getOffPageConnector();
+
+    /*!
      *  Returns true if the endpoint represents a hierarchical connection.
      */
     virtual bool isHierarchical() const = 0;
@@ -165,12 +245,24 @@ public:
     /*!
      *  Returns true if the endpoint is a COM interface endpoint.
      */
-    virtual bool isCom() const;
+    bool isCom() const;
 
     /*!
      *  Returns true if the endpoint is an API interface endpoint.
      */
-    virtual bool isApi() const;
+    bool isApi() const;
+
+    /*!
+     *  Sets the endpoint type.
+     *
+     *      @param [in] type The endpoint type to set.
+     */
+    void setType(EndpointType type);
+
+    /*!
+     *  Returns the type of the endpoint (API/COM/bus/ad-hoc/undefined).
+     */
+    EndpointType getType() const;
 
 signals:
     //! Signals that the contents of the interface have been changed.
@@ -190,6 +282,12 @@ private:
 
     //! The endpoint's direction.
     QVector2D dir_;
+
+    //! The endpoint's type.
+    EndpointType type_;
+
+    //! The connections to this endpoint.
+    QList<GraphicsConnection*> connections_;
 };
 
 //-----------------------------------------------------------------------------

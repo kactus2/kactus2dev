@@ -20,7 +20,7 @@
 #include <QCursor>
 
 class GraphicsColumnLayout;
-class SWConnection;
+class GraphicsConnection;
 
 //-----------------------------------------------------------------------------
 //! SystemColumn class.
@@ -79,7 +79,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The connections that need to be also stored for undo.
-    QSet<SWConnection*> conns_;
+    QSet<GraphicsConnection*> conns_;
 };
 
 //-----------------------------------------------------------------------------

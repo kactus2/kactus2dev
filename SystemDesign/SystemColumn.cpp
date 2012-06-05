@@ -13,9 +13,9 @@
 
 #include "SWCompItem.h"
 #include "HWMappingItem.h"
-#include "SWConnection.h"
 #include "SWInterfaceItem.h"
 
+#include <common/graphicsItems/GraphicsConnection.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 
 #include <models/component.h>
@@ -77,7 +77,7 @@ void SystemColumn::prepareColumnMove()
                     {
                         SWConnectionEndpoint* endpoint = static_cast<SWConnectionEndpoint*>(childItem2);
 
-                        foreach (SWConnection* conn, endpoint->getConnections())
+                        foreach (GraphicsConnection* conn, endpoint->getConnections())
                         {
                             if (!conns_.contains(conn))
                             {
@@ -92,7 +92,7 @@ void SystemColumn::prepareColumnMove()
             {
                 SWConnectionEndpoint* endpoint = static_cast<SWConnectionEndpoint*>(childItem);
 
-                foreach (SWConnection* conn, endpoint->getConnections())
+                foreach (GraphicsConnection* conn, endpoint->getConnections())
                 {
                     if (!conns_.contains(conn))
                     {
@@ -113,7 +113,7 @@ QSharedPointer<QUndoCommand> SystemColumn::createMoveUndoCommand()
     QSharedPointer<QUndoCommand> cmd = GraphicsColumn::createMoveUndoCommand();
 
     // End position update for the connections.
-    foreach (SWConnection* conn, conns_)
+    foreach (GraphicsConnection* conn, conns_)
     {
         conn->endUpdatePosition(cmd.data());
     }

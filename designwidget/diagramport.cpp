@@ -11,6 +11,7 @@
 #include "blockdiagram.h"
 #include "DiagramOffPageConnector.h"
 
+#include <common/graphicsItems/GraphicsConnection.h>
 #include <common/GenericEditProvider.h>
 #include <common/diagramgrid.h>
 
@@ -38,10 +39,10 @@ lh_(lh),
                                                   oldPos_(), oldPortPositions_(),
                                                   offPageConnector_(0)
 {
-
     Q_ASSERT_X(busIf, "DiagramPort constructor",
         "Null BusInterface pointer given as parameter");
 
+    setType(ENDPOINT_TYPE_BUS);
     busInterface_ = busIf;
 
     int squareSize = GridSize;
@@ -176,7 +177,7 @@ bool DiagramPort::isHierarchical() const
 //-----------------------------------------------------------------------------
 // Function: onConnect()
 //-----------------------------------------------------------------------------
-bool DiagramPort::onConnect(DiagramConnectionEndpoint const* other)
+bool DiagramPort::onConnect(ConnectionEndpoint const* other)
 {
     QSharedPointer<BusInterface> otherBusIf = other->getBusInterface();
 
@@ -213,7 +214,7 @@ bool DiagramPort::onConnect(DiagramConnectionEndpoint const* other)
 //-----------------------------------------------------------------------------
 // Function: onDisonnect()
 //-----------------------------------------------------------------------------
-void DiagramPort::onDisconnect(DiagramConnectionEndpoint const*)
+void DiagramPort::onDisconnect(ConnectionEndpoint const*)
 {
     // If the port is a temporary one, set the bus and abstraction definitions undefined.
     if (temp_)
@@ -227,7 +228,7 @@ void DiagramPort::onDisconnect(DiagramConnectionEndpoint const*)
 //-----------------------------------------------------------------------------
 // Function: canConnect()
 //-----------------------------------------------------------------------------
-bool DiagramPort::canConnect(DiagramConnectionEndpoint const* other) const
+bool DiagramPort::canConnect(ConnectionEndpoint const* other) const
 {
     // This end point requires a bus interface connection.
     if (!other->isBus())
@@ -350,7 +351,7 @@ QVariant DiagramPort::itemChange(GraphicsItemChange change,
         if (!static_cast<DiagramComponent*>(parentItem())->isConnectionUpdateDisabled())
         {
             // Update the connections.
-            foreach (DiagramInterconnection *interconnection, getInterconnections())
+            foreach (GraphicsConnection* interconnection, getConnections())
             {
                 interconnection->updatePosition();
             }
@@ -398,19 +399,19 @@ void DiagramPort::setTypes(VLNV const& busType, VLNV const& absType, General::In
     // If the bus interface was already defined, disconnect the connections before making any updates.
     if (busInterface_->getBusType().isValid())
     {
-        foreach(DiagramInterconnection* conn, getInterconnections())
+        foreach(GraphicsConnection* conn, getConnections())
         {
             if (conn->endpoint1() != this)
             {
-                conn->endpoint1()->removeInterconnection(conn);
+                conn->endpoint1()->removeConnection(conn);
                 conn->endpoint1()->onDisconnect(this);
-                conn->endpoint1()->addInterconnection(conn);
+                conn->endpoint1()->addConnection(conn);
             }
             else
             {
-                conn->endpoint2()->removeInterconnection(conn);
+                conn->endpoint2()->removeConnection(conn);
                 conn->endpoint2()->onDisconnect(this);
-                conn->endpoint2()->addInterconnection(conn);
+                conn->endpoint2()->addConnection(conn);
             }
         }
     }
@@ -427,7 +428,7 @@ void DiagramPort::setTypes(VLNV const& busType, VLNV const& absType, General::In
     if (busType.isValid())
     {
         // Undefined end points of the connections can now be defined.
-        foreach(DiagramInterconnection* conn, getInterconnections())
+        foreach(GraphicsConnection* conn, getConnections())
         {
             if (conn->endpoint1() != this)
             {
@@ -454,15 +455,15 @@ void DiagramPort::mousePressEvent(QGraphicsSceneMouseEvent *event)
     // Save old port positions for all ports in the parent component.
     foreach (QGraphicsItem* item, parentItem()->childItems())
     {
-        if (dynamic_cast<DiagramConnectionEndpoint*>(item) != 0 && item != this)
+        if (dynamic_cast<ConnectionEndpoint*>(item) != 0 && item != this)
         {
-            DiagramConnectionEndpoint* port = static_cast<DiagramConnectionEndpoint*>(item);
+            ConnectionEndpoint* port = static_cast<ConnectionEndpoint*>(item);
             oldPortPositions_.insert(port, port->pos());
         }
     }
 
     // Begin the position update for the connections.
-    foreach (DiagramInterconnection* conn, getInterconnections())
+    foreach (GraphicsConnection* conn, getConnections())
     {
         conn->beginUpdatePosition();
     }
@@ -488,13 +489,14 @@ void DiagramPort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     }
 
     // Determine if the other ports changed their position and create undo commands for them.
-    QMap<DiagramConnectionEndpoint*, QPointF>::iterator cur = oldPortPositions_.begin();
+    QMap<ConnectionEndpoint*, QPointF>::iterator cur = oldPortPositions_.begin();
 
     while (cur != oldPortPositions_.end())
     {
         if (cur.key()->pos() != cur.value())
         {
-            QUndoCommand* childCmd = new PortMoveCommand(cur.key(), cur.value(), cmd.data());
+            QUndoCommand* childCmd =
+                new PortMoveCommand(static_cast<DiagramConnectionEndpoint*>(cur.key()), cur.value(), cmd.data());
         }
 
         ++cur;
@@ -503,7 +505,7 @@ void DiagramPort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     oldPortPositions_.clear();
     
     // End the position update of the connections.
-    foreach (DiagramInterconnection* conn, getInterconnections())
+    foreach (GraphicsConnection* conn, getConnections())
     {
         conn->endUpdatePosition(cmd.data());
     }
@@ -654,7 +656,7 @@ void DiagramPort::setDescription( const QString& description ) {
 //-----------------------------------------------------------------------------
 // Function: getOffPageConnector()
 //-----------------------------------------------------------------------------
-DiagramConnectionEndpoint* DiagramPort::getOffPageConnector()
+ConnectionEndpoint* DiagramPort::getOffPageConnector()
 {
     return offPageConnector_;
 }

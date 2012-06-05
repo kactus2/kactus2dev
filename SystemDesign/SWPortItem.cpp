@@ -17,6 +17,7 @@
 
 #include "SystemMoveCommands.h"
 
+#include <common/graphicsItems/GraphicsConnection.h>
 #include <common/GenericEditProvider.h>
 #include <common/diagramgrid.h>
 #include <common/DesignDiagram.h>
@@ -289,7 +290,7 @@ bool SWPortItem::isHierarchical() const
 //-----------------------------------------------------------------------------
 // Function: SWPortItem::onConnect()
 //-----------------------------------------------------------------------------
-bool SWPortItem::onConnect(SWConnectionEndpoint const* other)
+bool SWPortItem::onConnect(ConnectionEndpoint const* other)
 {
     // If the port is undefined, try to copy the configuration from the other end point.
     if (getType() == ENDPOINT_TYPE_UNDEFINED)
@@ -352,7 +353,7 @@ bool SWPortItem::onConnect(SWConnectionEndpoint const* other)
 //-----------------------------------------------------------------------------
 // Function: SWPortItem::onDisconnect()
 //-----------------------------------------------------------------------------
-void SWPortItem::onDisconnect(SWConnectionEndpoint const*)
+void SWPortItem::onDisconnect(ConnectionEndpoint const*)
 {
     // Undefine the interface if it is temporary.
     if (temp_ && !isConnected())
@@ -365,7 +366,7 @@ void SWPortItem::onDisconnect(SWConnectionEndpoint const*)
 //-----------------------------------------------------------------------------
 // Function: SWPortItem::canConnect()
 //-----------------------------------------------------------------------------
-bool SWPortItem::canConnect(SWConnectionEndpoint const* other) const
+bool SWPortItem::canConnect(ConnectionEndpoint const* other) const
 {
     if (!SWConnectionEndpoint::canConnect(other))
     {
@@ -466,7 +467,7 @@ QSharedPointer<Component> SWPortItem::getOwnerComponent() const
 //-----------------------------------------------------------------------------
 // Function: addConnection()
 //-----------------------------------------------------------------------------
-void SWPortItem::addConnection(SWConnection* connection)
+void SWPortItem::addConnection(GraphicsConnection* connection)
 {
     SWConnectionEndpoint::addConnection(connection);
     stubLine_.setVisible(true);
@@ -475,7 +476,7 @@ void SWPortItem::addConnection(SWConnection* connection)
 //-----------------------------------------------------------------------------
 // Function: removeInterconnection()
 //-----------------------------------------------------------------------------
-void SWPortItem::removeConnection(SWConnection* connection)
+void SWPortItem::removeConnection(GraphicsConnection* connection)
 {
     SWConnectionEndpoint::removeConnection(connection);
 
@@ -557,7 +558,7 @@ QVariant SWPortItem::itemChange(GraphicsItemChange change, QVariant const& value
         if (!static_cast<SWComponentItem*>(parentItem())->isConnectionUpdateDisabled())
         {
             // Update the connections.
-            foreach (SWConnection* connection, getConnections())
+            foreach (GraphicsConnection* connection, getConnections())
             {
                 connection->updatePosition();
             }
@@ -633,7 +634,7 @@ void SWPortItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
     }
 
     // Begin the position update for the connections.
-    foreach (SWConnection* conn, getConnections())
+    foreach (GraphicsConnection* conn, getConnections())
     {
         conn->beginUpdatePosition();
     }
@@ -674,7 +675,7 @@ void SWPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
     oldPortPositions_.clear();
     
     // End the position update of the connections.
-    foreach (SWConnection* conn, getConnections())
+    foreach (GraphicsConnection* conn, getConnections())
     {
         conn->endUpdatePosition(cmd.data());
     }
@@ -799,7 +800,7 @@ void SWPortItem::setSelectionHighlight(bool on)
 void SWPortItem::setTypeDefinition(VLNV const& type)
 {
     // Disconnect existing connections before setting the type.
-    foreach(SWConnection* conn, getConnections())
+    foreach(GraphicsConnection* conn, getConnections())
     {
         if (conn->endpoint1() != this)
         {
@@ -862,7 +863,7 @@ void SWPortItem::setTypeDefinition(VLNV const& type)
     if (getType() != ENDPOINT_TYPE_UNDEFINED)
     {
         // Undefined endpoints of the connections can now be defined.
-        foreach(SWConnection* conn, getConnections())
+        foreach(GraphicsConnection* conn, getConnections())
         {
             if (conn->endpoint1() != this)
             {

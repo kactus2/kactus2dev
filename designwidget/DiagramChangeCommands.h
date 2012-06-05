@@ -14,6 +14,7 @@
 
 #include <models/ColumnDesc.h>
 #include <models/generaldeclarations.h>
+#include <models/ApiInterface.h>
 
 #include <common/ColumnTypes.h>
 
@@ -495,6 +496,207 @@ private:
 };
 
 //-----------------------------------------------------------------------------
+//! EndpointDependencyDirectionChangeCommand class.
+//-----------------------------------------------------------------------------
+class EndpointDependencyDirectionChangeCommand : public QUndoCommand
+{
+public:
+    /*!
+     *  Constructor.
+     *
+     *      @param [in] endpoint  The connection endpoint.
+     *      @param [in] newDir    The endpoint's new dependency direction.
+     *      @param [in] parent    The parent command.
+     */
+	EndpointDependencyDirectionChangeCommand(ConnectionEndpoint* endpoint, DependencyDirection newDir,
+                                             QUndoCommand* parent = 0);
+
+    /*!
+     *  Destructor.
+     */
+    ~EndpointDependencyDirectionChangeCommand();
+
+    /*!
+     *  Undoes the command.
+     */
+    virtual void undo();
+
+    /*!
+     *  Redoes the command.
+     */
+    virtual void redo();
+
+private:
+    // Disable copying.
+    EndpointDependencyDirectionChangeCommand(EndpointDependencyDirectionChangeCommand const& rhs);
+    EndpointDependencyDirectionChangeCommand& operator=(EndpointDependencyDirectionChangeCommand const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The connection endpoint.
+    ConnectionEndpoint* endpoint_;
+
+    //! The endpoint's old dependency direction.
+    DependencyDirection oldDir_;
+
+    //! The endpoint's new dependency direction.
+    DependencyDirection newDir_;
+};
+
+//-----------------------------------------------------------------------------
+//! EndpointComDirectionChangeCommand class.
+//-----------------------------------------------------------------------------
+class EndpointComDirectionChangeCommand : public QUndoCommand
+{
+public:
+    /*!
+     *  Constructor.
+     *
+     *      @param [in] endpoint  The connection endpoint.
+     *      @param [in] newDir    The endpoint's new COM direction.
+     *      @param [in] parent    The parent command.
+     */
+    EndpointComDirectionChangeCommand(ConnectionEndpoint* endpoint, General::Direction newDir,
+                                      QUndoCommand* parent = 0);
+
+    /*!
+     *  Destructor.
+     */
+    ~EndpointComDirectionChangeCommand();
+
+    /*!
+     *  Undoes the command.
+     */
+    virtual void undo();
+
+    /*!
+     *  Redoes the command.
+     */
+    virtual void redo();
+
+private:
+    // Disable copying.
+    EndpointComDirectionChangeCommand(EndpointComDirectionChangeCommand const& rhs);
+    EndpointComDirectionChangeCommand& operator=(EndpointComDirectionChangeCommand const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The connection endpoint.
+    ConnectionEndpoint* endpoint_;
+
+    //! The endpoint's old COM direction.
+    General::Direction oldDir_;
+
+    //! The endpoint's new COM direction.
+    General::Direction newDir_;
+};
+
+//-----------------------------------------------------------------------------
+//! EndpointDataTypeChangeCommand class.
+//-----------------------------------------------------------------------------
+class EndpointDataTypeChangeCommand : public QUndoCommand
+{
+public:
+    /*!
+     *  Constructor.
+     *
+     *      @param [in] endpoint  The connection endpoint.
+     *      @param [in] newDir    The endpoint's new COM data type.
+     *      @param [in] parent    The parent command.
+     */
+    EndpointDataTypeChangeCommand(ConnectionEndpoint* endpoint, QString const& newDataType,
+                                  QUndoCommand* parent = 0);
+
+    /*!
+     *  Destructor.
+     */
+    ~EndpointDataTypeChangeCommand();
+
+    /*!
+     *  Undoes the command.
+     */
+    virtual void undo();
+
+    /*!
+     *  Redoes the command.
+     */
+    virtual void redo();
+
+private:
+    // Disable copying.
+    EndpointDataTypeChangeCommand(EndpointDataTypeChangeCommand const& rhs);
+    EndpointDataTypeChangeCommand& operator=(EndpointDataTypeChangeCommand const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The connection endpoint.
+    ConnectionEndpoint* endpoint_;
+
+    //! The endpoint's old COM data type.
+    QString oldDataType_;
+
+    //! The endpoint's new COM direction.
+    QString newDataType_;
+};
+
+//-----------------------------------------------------------------------------
+//! EndpointPropertyValuesChangeCommand class.
+//-----------------------------------------------------------------------------
+class EndpointPropertyValuesChangeCommand : public QUndoCommand
+{
+public:
+    /*!
+     *  Constructor.
+     *
+     *      @param [in] endpoint   The connection endpoint.
+     *      @param [in] newValues  The endpoint's new property values.
+     *      @param [in] parent     The parent command.
+     */
+    EndpointPropertyValuesChangeCommand(ConnectionEndpoint* endpoint,
+                                        QMap<QString, QString> const& newValues,
+                                        QUndoCommand* parent = 0);
+
+    /*!
+     *  Destructor.
+     */
+    ~EndpointPropertyValuesChangeCommand();
+
+    /*!
+     *  Undoes the command.
+     */
+    virtual void undo();
+
+    /*!
+     *  Redoes the command.
+     */
+    virtual void redo();
+
+private:
+    // Disable copying.
+    EndpointPropertyValuesChangeCommand(EndpointPropertyValuesChangeCommand const& rhs);
+    EndpointPropertyValuesChangeCommand& operator=(EndpointPropertyValuesChangeCommand const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The connection endpoint.
+    ConnectionEndpoint* endpoint_;
+
+    //! The endpoint's old property values.
+    QMap<QString, QString> oldValues_;
+
+    //! The endpoint's new property values.
+    QMap<QString, QString> newValues_;
+};
+
+//-----------------------------------------------------------------------------
 //! EndPointTypesCommand class.
 //-----------------------------------------------------------------------------
 class EndPointTypesCommand : public QUndoCommand
@@ -566,7 +768,7 @@ private:
     QString newName_;
 
     //! The interface modes for the other end points of the connections.
-    QMap<DiagramConnectionEndpoint*, General::InterfaceMode> connModes_;
+    QMap<ConnectionEndpoint*, General::InterfaceMode> connModes_;
 };
 
 //-----------------------------------------------------------------------------
@@ -672,63 +874,6 @@ private:
 
     //! The new ad-hoc visibility for the port.
     bool newVisibility_;
-};
-
-//-----------------------------------------------------------------------------
-//! Undo command for changes made to a DiagramInterConnection.
-//-----------------------------------------------------------------------------
-class ConnectionChangeCommand : public QUndoCommand {
-
-public:
-
-	/*! \brief The constructor
-	 *
-	 * \param connection Pointer to the connection that was changed.
-	 * \param newName The new name of the connection.
-	 * \param newDescription The new description of the connection.
-	 * \param parent Pointer to the parent of this undo command.
-	 *
-	*/
-	ConnectionChangeCommand(DiagramInterconnection* connection,
-		const QString& newName,
-		const QString& newDescription,
-		QUndoCommand* parent = 0);
-
-	//! \brief The destructor
-	virtual ~ConnectionChangeCommand();
-
-	/*! \brief Undoes the command.
-	 *
-	*/
-	virtual void undo();
-
-	/*! \brief Redoes the command.
-	 *
-	 * Redo is automatically executed when this command is added to the undo stack.
-	*/
-	virtual void redo();
-
-private:
-	//! \brief No copying
-	ConnectionChangeCommand(const ConnectionChangeCommand& other);
-
-	//! \brief No assignment
-	ConnectionChangeCommand& operator=(const ConnectionChangeCommand& other);
-
-	//! \brief Pointer to the connection to change.
-	DiagramInterconnection* connection_;
-
-	//! \brief The new name for the connection.
-	QString newName_;
-
-	//! \brief The new description for the connection.
-	QString newDescription_;
-
-	//! \brief The old name of the connection.
-	QString oldName_;
-
-	//! \brief The old description of the connection.
-	QString oldDescription_;
 };
 
 //-----------------------------------------------------------------------------

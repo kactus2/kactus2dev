@@ -10,6 +10,8 @@
 
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
 
+#include <IPXactWrapper/ComponentEditor/software/PropertyValueEditor.h>
+
 #include <LibraryManager/libraryinterface.h>
 
 #include <QWidget>
@@ -20,6 +22,7 @@
 #include <QPlainTextEdit>
 
 class ConnectionEndpoint;
+class ComDefinition;
 
 /*! \brief Editor to display/edit the details of a bus interface.
  *
@@ -84,6 +87,18 @@ private slots:
 	*/
 	void onDescriptionChanged();
 
+    //! Handler for changes in dependency direction.
+    void onDependencyDirectionChanged(QString const& newDir);
+
+    //! Handler for changes in COM direction.
+    void onComDirectionChanged(QString const& newDir);
+
+    //! Handler for changes in COM data type.
+    void onComDataTypeChanged(QString const& newDataType);
+
+    //! Handler for changes in COM property values.
+    void onComPropertyValuesChanged();
+
 private:
 	//! \brief No copying
 	InterfaceEditor(const InterfaceEditor& other);
@@ -114,8 +129,29 @@ private:
 	//! \brief The label for the mode editor
 	QLabel modeLabel_;
 
+    //! The label for dependency direction.
+    QLabel dependencyDirLabel_;
+
+    //! The editor for dependency direction.
+    QComboBox dependencyDirCombo_;
+
+    //! The label for direction editor.
+    QLabel comDirectionLabel_;
+
+    //! The editor for direction.
+    QComboBox comDirectionCombo_;
+
+    //! Label for data type editor.
+    QLabel dataTypeLabel_;
+
+    //! Data type editor.
+    QComboBox dataTypeCombo_;
+
 	//! \brief Pointer to the interface being edited.
 	ConnectionEndpoint* interface_;
+
+    //! COM definition related to the interface (if COM).
+    QSharedPointer<ComDefinition const> comDef_;
 
 	//! \brief Label for the mappings of logical and physical ports
 	QLabel mappingsLabel_;
@@ -128,6 +164,15 @@ private:
 
 	//! \brief Editor for the description of the interface.
 	QPlainTextEdit descriptionEdit_;
+
+    //! Label for the property value editor.
+    QLabel propertyValueLabel_;
+
+    //! Property value editor for SW properties.
+    PropertyValueEditor propertyValueEditor_;
+
+    //! Empty dummy widget for adding stretch for API interface view.
+    QWidget dummyWidget_;
 
 	//! \brief Pointer to the instance that manages the library.
 	LibraryInterface* handler_;

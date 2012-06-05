@@ -36,6 +36,7 @@ class VLNV;
 class GenericEditProvider;
 class DesignWidget;
 class ConnectionEndpoint;
+class GraphicsConnection;
 
 /*! \brief BlockDiagram is a graphical view to a design
  *
@@ -156,7 +157,7 @@ signals:
 	 * \param connection Pointer to the selected connection.
 	 *
 	*/
-	void connectionSelected(DiagramInterconnection* connection);
+	void connectionSelected(GraphicsConnection* connection);
 
 public slots:
     /*! \brief Bring the selected item to front
@@ -225,7 +226,7 @@ private:
      *      @param [in] conn      The connection.
      *      @param [in] parentCmd The parent undo command.
      */
-    void toggleConnectionStyle(DiagramInterconnection* conn, QUndoCommand* parentCmd);
+    void toggleConnectionStyle(GraphicsConnection* conn, QUndoCommand* parentCmd);
 
     /*!
      *  Hides all visible off-page connections.
@@ -255,10 +256,10 @@ private:
     DiagramInterconnection *tempConnection_;
 
     //! The starting end point of a connection that is being drawn.
-    DiagramConnectionEndpoint* tempConnEndPoint_;
+    ConnectionEndpoint* tempConnEndPoint_;
 
     //! The potential end points that can be connected to the starting end point.
-    QVector<DiagramConnectionEndpoint*> tempPotentialEndingEndPoints_;
+    QVector<ConnectionEndpoint*> tempPotentialEndingEndPoints_;
 
     //! The highlighted end point to which the connection could be snapped automatically.
     DiagramConnectionEndpoint* highlightedEndPoint_;

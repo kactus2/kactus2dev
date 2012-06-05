@@ -14,6 +14,8 @@
 #include "DiagramDeleteCommands.h"
 
 #include <models/component.h>
+#include <models/ComInterface.h>
+
 #include <common/graphicsItems/ComponentItem.h>
 
 #include <ConfigurationEditor/activeviewmodel.h>
@@ -281,6 +283,159 @@ void EndpointDescChangeCommand::redo()
     endpoint_->setDescription(newDescription_);
 }
 
+
+//-----------------------------------------------------------------------------
+// Function: EndpointDependencyDirectionChangeCommand()
+//-----------------------------------------------------------------------------
+EndpointDependencyDirectionChangeCommand::EndpointDependencyDirectionChangeCommand(ConnectionEndpoint* endpoint, 
+                                                                                   DependencyDirection newDir,
+                                                                                   QUndoCommand* parent)
+    : QUndoCommand(parent), 
+      endpoint_(endpoint),
+      oldDir_(endpoint->getApiInterface()->getDependencyDirection()), 
+      newDir_(newDir)
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: ~EndpointDependencyDirectionChangeCommand()
+//-----------------------------------------------------------------------------
+EndpointDependencyDirectionChangeCommand::~EndpointDependencyDirectionChangeCommand()
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: undo()
+//-----------------------------------------------------------------------------
+void EndpointDependencyDirectionChangeCommand::undo()
+{
+    endpoint_->getApiInterface()->setDependencyDirection(oldDir_);
+    endpoint_->updateInterface();
+}
+
+//-----------------------------------------------------------------------------
+// Function: redo()
+//-----------------------------------------------------------------------------
+void EndpointDependencyDirectionChangeCommand::redo()
+{
+    endpoint_->getApiInterface()->setDependencyDirection(newDir_);
+    endpoint_->updateInterface();
+}
+
+//-----------------------------------------------------------------------------
+// Function: EndpointComDirectionChangeCommand()
+//-----------------------------------------------------------------------------
+EndpointComDirectionChangeCommand::EndpointComDirectionChangeCommand(ConnectionEndpoint* endpoint, 
+                                                                     General::Direction newDir,
+                                                                     QUndoCommand* parent)
+    : QUndoCommand(parent), 
+      endpoint_(endpoint),
+      oldDir_(endpoint->getComInterface()->getDirection()), 
+      newDir_(newDir)
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: ~EndpointComDirectionChangeCommand()
+//-----------------------------------------------------------------------------
+EndpointComDirectionChangeCommand::~EndpointComDirectionChangeCommand()
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: undo()
+//-----------------------------------------------------------------------------
+void EndpointComDirectionChangeCommand::undo()
+{
+    endpoint_->getComInterface()->setDirection(oldDir_);
+    endpoint_->updateInterface();
+}
+
+//-----------------------------------------------------------------------------
+// Function: redo()
+//-----------------------------------------------------------------------------
+void EndpointComDirectionChangeCommand::redo()
+{
+    endpoint_->getComInterface()->setDirection(newDir_);
+    endpoint_->updateInterface();
+}
+
+//-----------------------------------------------------------------------------
+// Function: EndpointDataTypeChangeCommand()
+//-----------------------------------------------------------------------------
+EndpointDataTypeChangeCommand::EndpointDataTypeChangeCommand(ConnectionEndpoint* endpoint,
+                                                             QString const& newDataType,
+                                                             QUndoCommand* parent)
+    : QUndoCommand(parent), 
+      endpoint_(endpoint),
+      oldDataType_(endpoint->getComInterface()->getDataType()),
+      newDataType_(newDataType)
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: ~EndpointDataTypeChangeCommand()
+//-----------------------------------------------------------------------------
+EndpointDataTypeChangeCommand::~EndpointDataTypeChangeCommand()
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: undo()
+//-----------------------------------------------------------------------------
+void EndpointDataTypeChangeCommand::undo()
+{
+    endpoint_->getComInterface()->setDataType(oldDataType_);
+    endpoint_->updateInterface();
+}
+
+//-----------------------------------------------------------------------------
+// Function: redo()
+//-----------------------------------------------------------------------------
+void EndpointDataTypeChangeCommand::redo()
+{
+    endpoint_->getComInterface()->setDataType(newDataType_);
+    endpoint_->updateInterface();
+}
+
+//-----------------------------------------------------------------------------
+// Function: EndpointPropertyValuesChangeCommand()
+//-----------------------------------------------------------------------------
+EndpointPropertyValuesChangeCommand::EndpointPropertyValuesChangeCommand(ConnectionEndpoint* endpoint,
+                                                                         QMap<QString, QString> const & newValues,
+                                                                         QUndoCommand* parent)
+    : QUndoCommand(parent), 
+      endpoint_(endpoint),
+      oldValues_(endpoint->getComInterface()->getPropertyValues()),
+      newValues_(newValues)
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: ~EndpointPropertyValuesChangeCommand()
+//-----------------------------------------------------------------------------
+EndpointPropertyValuesChangeCommand::~EndpointPropertyValuesChangeCommand()
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: undo()
+//-----------------------------------------------------------------------------
+void EndpointPropertyValuesChangeCommand::undo()
+{
+    endpoint_->getComInterface()->setPropertyValues(oldValues_);
+    endpoint_->updateInterface();
+}
+
+//-----------------------------------------------------------------------------
+// Function: redo()
+//-----------------------------------------------------------------------------
+void EndpointPropertyValuesChangeCommand::redo()
+{
+    endpoint_->getComInterface()->setPropertyValues(newValues_);
+    endpoint_->updateInterface();
+}
+
 //-----------------------------------------------------------------------------
 // Function: EndPointTypesCommand()
 //-----------------------------------------------------------------------------
@@ -301,9 +456,9 @@ EndPointTypesCommand::EndPointTypesCommand(DiagramConnectionEndpoint* endpoint,
     }
 
     // Save the interface modes for each connection.
-    foreach (DiagramInterconnection* conn, endpoint_->getInterconnections())
+    foreach (GraphicsConnection* conn, endpoint_->getConnections())
     {
-        DiagramConnectionEndpoint* endpoint = conn->endpoint1();
+        ConnectionEndpoint* endpoint = conn->endpoint1();
 
         if (conn->endpoint1() == endpoint_)
         {
@@ -356,7 +511,7 @@ void EndPointTypesCommand::redo()
     endpoint_->updateInterface();
 
     // Set interface modes for the other end points.
-    QMap<DiagramConnectionEndpoint*, General::InterfaceMode>::iterator cur = connModes_.begin();
+    QMap<ConnectionEndpoint*, General::InterfaceMode>::iterator cur = connModes_.begin();
 
     while (cur != connModes_.end())
     {
@@ -430,32 +585,6 @@ void ComponentConfElementChangeCommand::redo() {
 	component_->setConfigurableElements(newConfElements_);
 }
 
-// ConnectionChangeCommand methods
-ConnectionChangeCommand::ConnectionChangeCommand(DiagramInterconnection* connection, 
-												 const QString& newName, 
-												 const QString& newDescription,
-												 QUndoCommand* parent /*= 0*/ ):
-QUndoCommand(parent),
-connection_(connection),
-newName_(newName),
-newDescription_(newDescription),
-oldName_(connection->name()),
-oldDescription_(connection->description()) {
-}
-
-ConnectionChangeCommand::~ConnectionChangeCommand() {
-}
-
-void ConnectionChangeCommand::undo() {
-	connection_->setName(oldName_);
-	connection_->setDescription(oldDescription_);
-}
-
-void ConnectionChangeCommand::redo() {
-	connection_->setName(newName_);
-	connection_->setDescription(newDescription_);
-}
-
 //-----------------------------------------------------------------------------
 // Function: AdHocVisibilityChangeCommand::AdHocVisibilityChangeCommand()
 //-----------------------------------------------------------------------------
@@ -475,14 +604,16 @@ AdHocVisibilityChangeCommand::AdHocVisibilityChangeCommand(AdHocEnabled* dataSou
 
         pos_ = port->scenePos();
 
-        foreach (DiagramInterconnection* conn, port->getInterconnections())
+        foreach (GraphicsConnection* conn, port->getConnections())
         {
-            QUndoCommand* cmd = new ConnectionDeleteCommand(conn, this);
+            QUndoCommand* cmd =
+                new ConnectionDeleteCommand(static_cast<DiagramInterconnection*>(conn), this);
         }
 
-        foreach (DiagramInterconnection* conn, port->getOffPageConnector()->getInterconnections())
+        foreach (GraphicsConnection* conn, port->getOffPageConnector()->getConnections())
         {
-            QUndoCommand* cmd = new ConnectionDeleteCommand(conn, this);
+            QUndoCommand* cmd =
+                new ConnectionDeleteCommand(static_cast<DiagramInterconnection*>(conn), this);
         }
     }
 }

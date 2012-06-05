@@ -22,7 +22,6 @@
 
 class Port;
 class BusInterface;
-class DiagramInterconnection;
 class DiagramOffPageConnector;
 class DiagramComponent;
 class DiagramColumn;
@@ -129,21 +128,21 @@ public:
      *
      *      @return False if there was an error in the connection. Otherwise true.
      */
-    virtual bool onConnect(DiagramConnectionEndpoint const* other);
+    virtual bool onConnect(ConnectionEndpoint const* other);
 
     /*!
      *  Called when a connection has been removed from between this and another end point.
      *
      *      @param [in] other The other end point of the connection.
      */
-    virtual void onDisconnect(DiagramConnectionEndpoint const* other);
+    virtual void onDisconnect(ConnectionEndpoint const* other);
 
     /*! 
      *  Returns true if this port can be connected to the given end point.
      *
      *      @param [in] other The end point to which to connect.
      */
-    virtual bool canConnect(DiagramConnectionEndpoint const* other) const;
+    virtual bool canConnect(ConnectionEndpoint const* other) const;
 
     /*! 
      *  Returns the encompassing component. if this port represents
@@ -194,7 +193,7 @@ public:
     /*!
      *  Returns the corresponding off-page connector or a null pointer if the end point does not have one.
      */
-    virtual DiagramConnectionEndpoint* getOffPageConnector();
+    virtual ConnectionEndpoint* getOffPageConnector();
 
 signals:
     //! \brief Send an error message to the user.

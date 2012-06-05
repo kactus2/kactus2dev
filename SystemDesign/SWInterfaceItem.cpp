@@ -13,10 +13,10 @@
 
 #include "SystemColumn.h"
 #include "SWComponentItem.h"
-#include "SWConnection.h"
 #include "HWMappingItem.h"
 #include "SystemMoveCommands.h"
 
+#include <common/graphicsItems/GraphicsConnection.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/GenericEditProvider.h>
 #include <common/diagramgrid.h>
@@ -295,7 +295,7 @@ bool SWInterfaceItem::isHierarchical() const
 //-----------------------------------------------------------------------------
 // Function: SWInterfaceItem::onConnect()
 //-----------------------------------------------------------------------------
-bool SWInterfaceItem::onConnect(SWConnectionEndpoint const* other)
+bool SWInterfaceItem::onConnect(ConnectionEndpoint const* other)
 {
     // If the port is undefined, try to copy the configuration from the other end point.
     if (getType() == ENDPOINT_TYPE_UNDEFINED)
@@ -350,7 +350,7 @@ bool SWInterfaceItem::onConnect(SWConnectionEndpoint const* other)
 //-----------------------------------------------------------------------------
 // Function: SWInterfaceItem::onDisconnect()
 //-----------------------------------------------------------------------------
-void SWInterfaceItem::onDisconnect(SWConnectionEndpoint const*)
+void SWInterfaceItem::onDisconnect(ConnectionEndpoint const*)
 {
     // Undefine the interface if it is temporary.
     if (temp_ && !isConnected())
@@ -363,7 +363,7 @@ void SWInterfaceItem::onDisconnect(SWConnectionEndpoint const*)
 //-----------------------------------------------------------------------------
 // Function: SWInterfaceItem::canConnect()
 //-----------------------------------------------------------------------------
-bool SWInterfaceItem::canConnect(SWConnectionEndpoint const* other) const
+bool SWInterfaceItem::canConnect(ConnectionEndpoint const* other) const
 {
     if (!SWConnectionEndpoint::canConnect(other))
     {
@@ -471,7 +471,7 @@ QVariant SWInterfaceItem::itemChange(GraphicsItemChange change, QVariant const& 
 
     case ItemScenePositionHasChanged:
         {
-            foreach (SWConnection* conn, getConnections())
+            foreach (GraphicsConnection* conn, getConnections())
             {
                 conn->updatePosition();
             }
@@ -539,7 +539,7 @@ void SWInterfaceItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
     }
 
     // Begin the position update for the connections.
-    foreach (SWConnection* conn, getConnections())
+    foreach (GraphicsConnection* conn, getConnections())
     {
         conn->beginUpdatePosition();
     }
@@ -588,7 +588,7 @@ void SWInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         oldInterfacePositions_.clear();
 
         // End the position update of the connections.
-        foreach (SWConnection* conn, getConnections())
+        foreach (GraphicsConnection* conn, getConnections())
         {
             conn->endUpdatePosition(cmd.data());
         }
@@ -684,7 +684,7 @@ void SWInterfaceItem::onEndConnect()
 void SWInterfaceItem::setTypeDefinition(VLNV const& type)
 {
     // Disconnect existing connections before setting the type.
-    foreach (SWConnection* conn, getConnections())
+    foreach (GraphicsConnection* conn, getConnections())
     {
         if (conn->endpoint1() != this)
         {
@@ -748,7 +748,7 @@ void SWInterfaceItem::setTypeDefinition(VLNV const& type)
     if (getType() != ENDPOINT_TYPE_UNDEFINED)
     {
         // Undefined endpoints of the connections can now be defined.
-        foreach (SWConnection* conn, getConnections())
+        foreach (GraphicsConnection* conn, getConnections())
         {
             if (conn->endpoint1() != this)
             {

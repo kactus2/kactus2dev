@@ -23,6 +23,7 @@
 #include <models/abstractiondefinition.h>
 #include <models/generaldeclarations.h>
 
+#include <common/graphicsItems/ConnectionUndoCommands.h>
 #include <common/GenericEditProvider.h>
 #include <common/validators/vhdlNameValidator/vhdlnamevalidator.h>
 
@@ -124,7 +125,7 @@ ConnectionEditor::~ConnectionEditor() {
 
 void ConnectionEditor::clear() {
 	if (connection_) {
-		disconnect(connection_, SIGNAL(destroyed(DiagramInterconnection*)),
+		disconnect(connection_, SIGNAL(destroyed(GraphicsConnection*)),
 			this, SLOT(clear()));
 		disconnect(connection_, SIGNAL(contentChanged()),
 			this, SLOT(refresh()));
@@ -167,14 +168,14 @@ void ConnectionEditor::refresh() {
 	setConnection(connection_);
 }
 
-void ConnectionEditor::setConnection( DiagramInterconnection* connection ) {
+void ConnectionEditor::setConnection( GraphicsConnection* connection ) {
 	Q_ASSERT(connection);
 
 	parentWidget()->raise();
 
 	// disconnect the previous connection
 	if (connection_) {
-		disconnect(connection_, SIGNAL(destroyed(DiagramInterconnection*)),
+		disconnect(connection_, SIGNAL(destroyed(GraphicsConnection*)),
 			this, SLOT(clear()));
 		disconnect(connection_, SIGNAL(contentChanged()),
 			this, SLOT(refresh()));
@@ -182,7 +183,7 @@ void ConnectionEditor::setConnection( DiagramInterconnection* connection ) {
 
 	connection_ = connection;
 
-	DiagramConnectionEndpoint* endpoint1 = connection->endpoint1();
+	ConnectionEndpoint* endpoint1 = connection->endpoint1();
 	Q_ASSERT(endpoint1);
 
     if (endpoint1->isBus())
@@ -192,7 +193,7 @@ void ConnectionEditor::setConnection( DiagramInterconnection* connection ) {
     }
     else
     {
-        adHocBoundsModel_.setConnection(connection_);
+        adHocBoundsModel_.setConnection(static_cast<DiagramInterconnection*>(connection_));
         adHocBoundsTable_.resizeRowsToContents();
     }
 
@@ -217,7 +218,7 @@ void ConnectionEditor::setConnection( DiagramInterconnection* connection ) {
 	connect(&descriptionEdit_, SIGNAL(textChanged()),
 		this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
 
-	connect(connection, SIGNAL(destroyed(DiagramInterconnection*)),
+	connect(connection, SIGNAL(destroyed(GraphicsConnection*)),
 		this, SLOT(clear()), Qt::UniqueConnection);
 	connect(connection, SIGNAL(contentChanged()), 
 		this, SLOT(refresh()), Qt::UniqueConnection);
@@ -227,10 +228,10 @@ void ConnectionEditor::setConnection( DiagramInterconnection* connection ) {
 	    setPortMaps();
     }
 
-    bool locked = static_cast<BlockDiagram*>(connection->scene())->isProtected();
+    bool locked = static_cast<DesignDiagram*>(connection->scene())->isProtected();
 	
 	// if either end point is hierarchical then there is no description to set
-	if (connection_->isBus() &&
+    if (connection_->getConnectionType() == ConnectionEndpoint::ENDPOINT_TYPE_BUS &&
         (endpoint1->isHierarchical() || connection->endpoint2()->isHierarchical()))
     {		
 		// description exists only for normal interconnections
@@ -262,10 +263,10 @@ void ConnectionEditor::setConnection( DiagramInterconnection* connection ) {
     separator_.show();
     portsLabel_.show();
 
-    busType_.setVisible(connection_->isBus());
-    absType_.setVisible(connection_->isBus());
-    portWidget_.setVisible(connection_->isBus());
-    adHocBoundsTable_.setVisible(!connection_->isBus());
+    busType_.setVisible(connection_->getConnectionType() == ConnectionEndpoint::ENDPOINT_TYPE_BUS);
+    absType_.setVisible(connection_->getConnectionType() == ConnectionEndpoint::ENDPOINT_TYPE_BUS);
+    portWidget_.setVisible(connection_->getConnectionType() == ConnectionEndpoint::ENDPOINT_TYPE_BUS);
+    adHocBoundsTable_.setVisible(connection_->getConnectionType() == ConnectionEndpoint::ENDPOINT_TYPE_ADHOC);
 
 	parentWidget()->setMaximumHeight(QWIDGETSIZE_MAX);
 }
@@ -278,7 +279,7 @@ void ConnectionEditor::onNameChanged( const QString& name ) {
 
 	QSharedPointer<QUndoCommand> cmd(new ConnectionChangeCommand(
 		connection_, name, descriptionEdit_.toPlainText()));
-	static_cast<BlockDiagram*>(connection_->scene())->getEditProvider().addCommand(cmd);
+	static_cast<DesignDiagram*>(connection_->scene())->getEditProvider().addCommand(cmd);
 
 	connect(connection_, SIGNAL(contentChanged()), 
 		this, SLOT(refresh()), Qt::UniqueConnection);
@@ -293,7 +294,7 @@ void ConnectionEditor::onDescriptionChanged() {
 
 	QSharedPointer<QUndoCommand> cmd(new ConnectionChangeCommand(
 		connection_, nameEdit_.text(), descriptionEdit_.toPlainText()));
-	static_cast<BlockDiagram*>(connection_->scene())->getEditProvider().addCommand(cmd);
+	static_cast<DesignDiagram*>(connection_->scene())->getEditProvider().addCommand(cmd);
 
 	connect(connection_, SIGNAL(contentChanged()), 
 		this, SLOT(refresh()), Qt::UniqueConnection);

@@ -18,6 +18,7 @@
 #include "../DiagramAdHocInterface.h"
 #include "../diagramport.h"
 
+#include <common/graphicsItems/GraphicsConnection.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/GenericEditProvider.h>
 #include <common/layouts/VStackedLayout.h>
@@ -114,7 +115,7 @@ QSharedPointer<QUndoCommand> DiagramColumn::createMoveUndoCommand()
     QSharedPointer<QUndoCommand> cmd = GraphicsColumn::createMoveUndoCommand();
 
     // End position update for the interconnections.
-    foreach (DiagramInterconnection* conn, conns_)
+    foreach (GraphicsConnection* conn, conns_)
     {
         conn->endUpdatePosition(cmd.data());
     }
@@ -129,7 +130,7 @@ QSharedPointer<QUndoCommand> DiagramColumn::createMoveUndoCommand()
 //-----------------------------------------------------------------------------
 void DiagramColumn::beginUpdateConnPositions(DiagramConnectionEndpoint* endpoint)
 {
-    foreach (DiagramInterconnection* conn, endpoint->getInterconnections())
+    foreach (GraphicsConnection* conn, endpoint->getConnections())
     {
         if (!conns_.contains(conn))
         {

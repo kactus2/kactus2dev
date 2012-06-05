@@ -89,8 +89,8 @@ editProvider_() {
         this, SIGNAL(interfaceSelected(ConnectionEndpoint*)), Qt::UniqueConnection);
 	connect(diagram_, SIGNAL(componentSelected(ComponentItem*)),
 		this, SIGNAL(componentSelected(ComponentItem*)), Qt::UniqueConnection);
-	connect(diagram_, SIGNAL(connectionSelected(DiagramInterconnection*)),
-		this, SIGNAL(connectionSelected(DiagramInterconnection*)), Qt::UniqueConnection);
+	connect(diagram_, SIGNAL(connectionSelected(GraphicsConnection*)),
+		this, SIGNAL(connectionSelected(GraphicsConnection*)), Qt::UniqueConnection);
     connect(diagram_, SIGNAL(clearItemSelection()),
 		this, SIGNAL(clearItemSelection()), Qt::UniqueConnection);
 	connect(diagram_, SIGNAL(componentInstantiated(ComponentItem*)),

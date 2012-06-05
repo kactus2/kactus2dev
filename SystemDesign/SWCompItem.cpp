@@ -12,7 +12,6 @@
 #include "SWCompItem.h"
 
 #include "SWPortItem.h"
-#include "SWConnection.h"
 
 #include "SystemMoveCommands.h"
 
@@ -23,6 +22,7 @@
 
 #include <LibraryManager/libraryinterface.h>
 
+#include <common/graphicsItems/GraphicsConnection.h>
 #include <common/graphicsItems/IGraphicsItemStack.h>
 #include <common/GenericEditProvider.h>
 
@@ -86,7 +86,7 @@ void SWCompItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
         {
             SWPortItem* port = qgraphicsitem_cast<SWPortItem*>(item);
 
-            foreach (SWConnection* conn, port->getConnections())
+            foreach (GraphicsConnection* conn, port->getConnections())
             {
                 conn->beginUpdatePosition();
             }
@@ -130,7 +130,7 @@ void SWCompItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 
         SWPortItem* port = static_cast<SWPortItem*>(item);
 
-        foreach (SWConnection* conn, port->getConnections())
+        foreach (GraphicsConnection* conn, port->getConnections())
         {
             conn->updatePosition();
         }
@@ -169,7 +169,7 @@ void SWCompItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
             {
                 SWPortItem* port = qgraphicsitem_cast<SWPortItem*>(item);
 
-                foreach (SWConnection* conn, port->getConnections())
+                foreach (GraphicsConnection* conn, port->getConnections())
                 {
                     conn->endUpdatePosition(cmd.data());
                 }

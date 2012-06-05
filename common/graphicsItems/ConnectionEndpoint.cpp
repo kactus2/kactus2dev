@@ -21,7 +21,10 @@
 // Function: ConnectionEndpoint::ConnectionEndpoint()
 //-----------------------------------------------------------------------------
 ConnectionEndpoint::ConnectionEndpoint(QGraphicsItem* parent)
-    : QGraphicsPolygonItem(parent)
+    : QGraphicsPolygonItem(parent),
+       dir_(),
+       type_(ENDPOINT_TYPE_UNDEFINED),
+       connections_()
 {
 }
 
@@ -58,6 +61,67 @@ void ConnectionEndpoint::setHighlight(HighlightMode mode)
             break;
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::setHighlight()
+//-----------------------------------------------------------------------------
+void ConnectionEndpoint::setSelectionHighlight(bool on)
+{
+    if (on)
+    {
+        setHighlight(HIGHLIGHT_HOVER);
+    }
+    else
+    {
+        setHighlight(HIGHLIGHT_OFF);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::addConnection()
+//-----------------------------------------------------------------------------
+void ConnectionEndpoint::addConnection(GraphicsConnection* connection)
+{
+     connections_.append(connection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::removeConnection()
+//-----------------------------------------------------------------------------
+void ConnectionEndpoint::removeConnection(GraphicsConnection* connection)
+{
+    connections_.removeAll(connection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::getConnections()
+//-----------------------------------------------------------------------------
+QList<GraphicsConnection*> const& ConnectionEndpoint::getConnections() const
+{
+    return connections_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::isConnected()
+//-----------------------------------------------------------------------------
+bool ConnectionEndpoint::isConnected() const
+{
+    return (!connections_.empty());
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::canConnect()
+//-----------------------------------------------------------------------------
+bool ConnectionEndpoint::canConnect(ConnectionEndpoint const* other) const
+{
+    // Two hierarchical endpoints cannot be connected.
+    if (isHierarchical() && other->isHierarchical())
+    {
+        return false;
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -136,11 +200,19 @@ QSharedPointer<ApiInterface> ConnectionEndpoint::getApiInterface() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::getPort()
+//-----------------------------------------------------------------------------
+Port* ConnectionEndpoint::getPort() const
+{
+    return 0;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ConnectionEndpoint::isBus()
 //-----------------------------------------------------------------------------
 bool ConnectionEndpoint::isBus() const
 {
-    return false;
+    return (type_ == ENDPOINT_TYPE_BUS);
 }
 
 //-----------------------------------------------------------------------------
@@ -148,7 +220,7 @@ bool ConnectionEndpoint::isBus() const
 //-----------------------------------------------------------------------------
 bool ConnectionEndpoint::isAdHoc() const
 {
-    return false;
+    return (type_ == ENDPOINT_TYPE_ADHOC);
 }
 
 //-----------------------------------------------------------------------------
@@ -156,7 +228,7 @@ bool ConnectionEndpoint::isAdHoc() const
 //-----------------------------------------------------------------------------
 bool ConnectionEndpoint::isCom() const
 {
-    return false;
+    return (type_ == ENDPOINT_TYPE_COM);
 }
 
 //-----------------------------------------------------------------------------
@@ -164,5 +236,29 @@ bool ConnectionEndpoint::isCom() const
 //-----------------------------------------------------------------------------
 bool ConnectionEndpoint::isApi() const
 {
-    return false;
+    return (type_ == ENDPOINT_TYPE_API);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::setType()
+//-----------------------------------------------------------------------------
+void ConnectionEndpoint::setType(EndpointType type)
+{
+    type_ = type;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::getType()
+//-----------------------------------------------------------------------------
+ConnectionEndpoint::EndpointType ConnectionEndpoint::getType() const
+{
+    return type_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::getOffPageConnector()
+//-----------------------------------------------------------------------------
+ConnectionEndpoint* ConnectionEndpoint::getOffPageConnector()
+{
+    return 0;
 }

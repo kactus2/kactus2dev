@@ -98,14 +98,14 @@ public:
      *
      *      @param [in] connection The connection.
      */
-    virtual void addConnection(SWConnection* connection);
+    virtual void addConnection(GraphicsConnection* connection);
 
     /*!
      *  Unattaches the endpoint from a connection.
      *
      *      @param [in] connection The connection.
      */
-    virtual void removeConnection(SWConnection* connection);
+    virtual void removeConnection(GraphicsConnection* connection);
 
     /*!
      *  Updates the endpoint interface.
@@ -148,21 +148,21 @@ public:
      *
      *      @return False if there was an error in the connection. Otherwise true.
      */
-    virtual bool onConnect(SWConnectionEndpoint const* other);
+    virtual bool onConnect(ConnectionEndpoint const* other);
 
     /*!
      *  Called when a connection has been removed from between this and another end point.
      *
      *      @param [in] other The other end point of the connection.
      */
-    virtual void onDisconnect(SWConnectionEndpoint const* other);
+    virtual void onDisconnect(ConnectionEndpoint const* other);
 
     /*! 
      *  Returns true if this port can be connected to the given end point.
      *
      *      @param [in] other The end point to which to connect.
      */
-    virtual bool canConnect(SWConnectionEndpoint const* other) const;
+    virtual bool canConnect(ConnectionEndpoint const* other) const;
 
     /*! 
      *  Returns the encompassing component.

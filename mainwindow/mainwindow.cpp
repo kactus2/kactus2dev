@@ -317,8 +317,8 @@ void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forc
 		this, SLOT(onComponentSelected(ComponentItem*)), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(interfaceSelected(ConnectionEndpoint*)),
 		this, SLOT(onInterfaceSelected(ConnectionEndpoint*)), Qt::UniqueConnection);
-	connect(designWidget, SIGNAL(connectionSelected(DiagramInterconnection*)),
-		this, SLOT(onConnectionSelected(DiagramInterconnection*)), Qt::UniqueConnection);
+	connect(designWidget, SIGNAL(connectionSelected(GraphicsConnection*)),
+		this, SLOT(onConnectionSelected(GraphicsConnection*)), Qt::UniqueConnection);
 
 	connect(designWidget, SIGNAL(clearItemSelection()),
 		this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
@@ -1200,7 +1200,7 @@ void MainWindow::onInterfaceSelected( ConnectionEndpoint* interface ) {
     }
 }
 
-void MainWindow::onConnectionSelected( DiagramInterconnection* connection ) {
+void MainWindow::onConnectionSelected( GraphicsConnection* connection ) {
 	Q_ASSERT(connection);
     adHocEditor_->clear();
 	instanceEditor_->clear();
