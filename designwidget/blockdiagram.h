@@ -152,13 +152,6 @@ signals:
     //! Signaled when the bus with the given vlnv should be opened for editing.
     void openBus(VLNV const& vlnv, VLNV const& absDefVLNV, bool disableBusDef);
 
-	/*! \brief Emitted when user selects a connection on the draw board.
-	 *
-	 * \param connection Pointer to the selected connection.
-	 *
-	*/
-	void connectionSelected(GraphicsConnection* connection);
-
 public slots:
     /*! \brief Bring the selected item to front
      *

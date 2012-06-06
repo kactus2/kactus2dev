@@ -12,15 +12,15 @@
 #include "SystemAddCommands.h"
 
 #include "SystemColumn.h"
-#include "SWConnection.h"
 #include "SWComponentItem.h"
 
 #include <common/graphicsItems/ComponentItem.h>
+#include <common/graphicsItems/GraphicsConnection.h>
 
 //-----------------------------------------------------------------------------
 // Function: SWConnectionAddCommand()
 //-----------------------------------------------------------------------------
-SWConnectionAddCommand::SWConnectionAddCommand(QGraphicsScene* scene, SWConnection* conn,
+SWConnectionAddCommand::SWConnectionAddCommand(QGraphicsScene* scene, GraphicsConnection* conn,
                                                QUndoCommand* parent)
     : QUndoCommand(parent),
       conn_(conn),

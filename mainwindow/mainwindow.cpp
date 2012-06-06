@@ -407,6 +407,8 @@ void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName, bool fo
         this, SLOT(onComponentSelected(ComponentItem*)), Qt::UniqueConnection);
     connect(designWidget, SIGNAL(interfaceSelected(ConnectionEndpoint*)),
         this, SLOT(onInterfaceSelected(ConnectionEndpoint*)), Qt::UniqueConnection);
+    connect(designWidget, SIGNAL(connectionSelected(GraphicsConnection*)),
+        this, SLOT(onConnectionSelected(GraphicsConnection*)), Qt::UniqueConnection);
     connect(designWidget, SIGNAL(destroyed(QObject*)),
         this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
     connect(designWidget, SIGNAL(clearItemSelection()),
@@ -2576,6 +2578,8 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName, boo
 		this, SLOT(onComponentSelected(ComponentItem*)), Qt::UniqueConnection);
     connect(designWidget, SIGNAL(interfaceSelected(ConnectionEndpoint*)),
         this, SLOT(onInterfaceSelected(ConnectionEndpoint*)), Qt::UniqueConnection);
+    connect(designWidget, SIGNAL(connectionSelected(GraphicsConnection*)),
+        this, SLOT(onConnectionSelected(GraphicsConnection*)), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(destroyed(QObject*)),
 		this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(clearItemSelection()),

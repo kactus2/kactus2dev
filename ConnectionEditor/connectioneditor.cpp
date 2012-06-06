@@ -22,6 +22,8 @@
 #include <models/component.h>
 #include <models/abstractiondefinition.h>
 #include <models/generaldeclarations.h>
+#include <models/ApiInterface.h>
+#include <models/ComInterface.h>
 
 #include <common/graphicsItems/ConnectionUndoCommands.h>
 #include <common/GenericEditProvider.h>
@@ -43,7 +45,7 @@ static const int MAX_DESC_HEIGHT = 50;
 
 ConnectionEditor::ConnectionEditor(QWidget *parent, LibraryInterface* handler):
 QWidget(parent),
-busType_(this),
+type_(this),
 absType_(this),
 instanceLabel_(tr("Connected interfaces:"), this),
 connectedInstances_(this),
@@ -54,6 +56,7 @@ descriptionLabel_(tr("Description:"), this),
 descriptionEdit_(this),
 portsLabel_(tr("Connected physical ports:"), this),
 portWidget_(this),
+dummyWidget_(this),
 connection_(NULL),
 handler_(handler),
 adHocBoundsTable_(this),
@@ -64,8 +67,8 @@ adHocBoundsModel_(this)
 
 	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 
-	busType_.setTitle(tr("Bus type VLNV"));
-	busType_.setFlat(false);
+	type_.setTitle(tr("Bus type VLNV"));
+	type_.setFlat(false);
 	absType_.setTitle(tr("Abstraction type VLNV"));
 	absType_.setFlat(false);
 
@@ -104,7 +107,7 @@ adHocBoundsModel_(this)
 
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
-	layout->addWidget(&busType_);
+	layout->addWidget(&type_);
 	layout->addWidget(&absType_);
 	layout->addWidget(&instanceLabel_);
 	layout->addWidget(&connectedInstances_);
@@ -116,6 +119,7 @@ adHocBoundsModel_(this)
 	layout->addWidget(&portsLabel_);
 	layout->addWidget(&portWidget_, 1);
     layout->addWidget(&adHocBoundsTable_, 1);
+    layout->addWidget(&dummyWidget_, 1);
 
 	clear();
 }
@@ -138,7 +142,7 @@ void ConnectionEditor::clear() {
 		this, SLOT(onDescriptionChanged()));
 
 	// clear the contents of the editors
-	busType_.setVLNV(VLNV(), true);
+	type_.setVLNV(VLNV(), true);
 	absType_.setVLNV(VLNV(), true);
 	connectedInstances_.clear();
 	nameEdit_.clear();
@@ -147,7 +151,7 @@ void ConnectionEditor::clear() {
     adHocBoundsModel_.setConnection(0);
 
 	// set objects as hidden
-	busType_.hide();
+	type_.hide();
 	absType_.hide();
 	instanceLabel_.hide();
 	connectedInstances_.hide();
@@ -184,14 +188,42 @@ void ConnectionEditor::setConnection( GraphicsConnection* connection ) {
 	connection_ = connection;
 
 	ConnectionEndpoint* endpoint1 = connection->endpoint1();
+    ConnectionEndpoint* endpoint2 = connection->endpoint2();
 	Q_ASSERT(endpoint1);
 
-    if (endpoint1->isBus())
+    if (endpoint1->isCom())
     {
-	    busType_.setVLNV(endpoint1->getBusInterface()->getBusType(), true);
+        type_.setTitle(tr("COM type VLNV"));
+
+        if (endpoint2->isCom())
+        {
+            type_.setVLNV(endpoint1->getComInterface()->getComType(), true);
+        }
+        else
+        {
+            type_.setVLNV(VLNV(), true);
+        }
+    }
+    else if (endpoint1->isApi())
+    {
+        type_.setTitle(tr("API type VLNV"));
+
+        if (endpoint2->isApi())
+        {
+            type_.setVLNV(endpoint1->getApiInterface()->getApiType(), true);
+        }
+        else
+        {
+            type_.setVLNV(VLNV(), true);
+        }
+    }
+    else if (endpoint1->isBus())
+    {
+        type_.setTitle(tr("Bus type VLNV"));
+	    type_.setVLNV(endpoint1->getBusInterface()->getBusType(), true);
 	    absType_.setVLNV(endpoint1->getBusInterface()->getAbstractionType(), true);
     }
-    else
+    else if (endpoint1->isAdHoc())
     {
         adHocBoundsModel_.setConnection(static_cast<DiagramInterconnection*>(connection_));
         adHocBoundsTable_.resizeRowsToContents();
@@ -231,7 +263,7 @@ void ConnectionEditor::setConnection( GraphicsConnection* connection ) {
     bool locked = static_cast<DesignDiagram*>(connection->scene())->isProtected();
 	
 	// if either end point is hierarchical then there is no description to set
-    if (connection_->getConnectionType() == ConnectionEndpoint::ENDPOINT_TYPE_BUS &&
+    if (connection_->getConnectionType() != ConnectionEndpoint::ENDPOINT_TYPE_ADHOC &&
         (endpoint1->isHierarchical() || connection->endpoint2()->isHierarchical()))
     {		
 		// description exists only for normal interconnections
@@ -261,12 +293,17 @@ void ConnectionEditor::setConnection( GraphicsConnection* connection ) {
     instanceLabel_.show();
 	connectedInstances_.show();
     separator_.show();
-    portsLabel_.show();
 
-    busType_.setVisible(connection_->getConnectionType() == ConnectionEndpoint::ENDPOINT_TYPE_BUS);
+    type_.setVisible(endpoint1->getType() != ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED &&
+                     endpoint2->getType() != ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED &&
+                     !endpoint1->isAdHoc());
     absType_.setVisible(connection_->getConnectionType() == ConnectionEndpoint::ENDPOINT_TYPE_BUS);
+
+    portsLabel_.setVisible(connection_->getConnectionType() == ConnectionEndpoint::ENDPOINT_TYPE_BUS);
     portWidget_.setVisible(connection_->getConnectionType() == ConnectionEndpoint::ENDPOINT_TYPE_BUS);
     adHocBoundsTable_.setVisible(connection_->getConnectionType() == ConnectionEndpoint::ENDPOINT_TYPE_ADHOC);
+    dummyWidget_.setVisible(connection_->getConnectionType() == ConnectionEndpoint::ENDPOINT_TYPE_API ||
+                            connection_->getConnectionType() == ConnectionEndpoint::ENDPOINT_TYPE_COM);
 
 	parentWidget()->setMaximumHeight(QWIDGETSIZE_MAX);
 }

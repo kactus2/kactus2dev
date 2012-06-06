@@ -26,7 +26,6 @@
 class ComponentItem;
 class ApiInterface;
 class ComInterface;
-class SWConnection;
 class VLNV;
 
 //-----------------------------------------------------------------------------

@@ -16,7 +16,8 @@
 #include "SystemColumn.h"
 #include "SystemDesignDiagram.h"
 #include "SWCompItem.h"
-#include "SWConnection.h"
+
+#include <common/graphicsItems/GraphicsConnection.h>
 
 #include <designwidget/columnview/ColumnEditDialog.h>
 
@@ -46,7 +47,7 @@ SystemDesignWidget::SystemDesignWidget(bool onlySW, LibraryInterface* lh, MainWi
       diagram_(0),
       editProvider_()
 {
-    supportedWindows_ = (supportedWindows_ | INSTANCEWINDOW | INTERFACEWINDOW);
+    supportedWindows_ = (supportedWindows_ | INSTANCEWINDOW | INTERFACEWINDOW | CONNECTIONWINDOW);
 
     editProvider_ = QSharedPointer<GenericEditProvider>(new GenericEditProvider(EDIT_HISTORY_SIZE));
     diagram_ = new SystemDesignDiagram(onlySW, lh_, mainWnd, *editProvider_, this);
@@ -61,6 +62,8 @@ SystemDesignWidget::SystemDesignWidget(bool onlySW, LibraryInterface* lh, MainWi
         this, SIGNAL(componentSelected(ComponentItem*)), Qt::UniqueConnection);
     connect(diagram_, SIGNAL(interfaceSelected(ConnectionEndpoint*)),
         this, SIGNAL(interfaceSelected(ConnectionEndpoint*)), Qt::UniqueConnection);
+    connect(diagram_, SIGNAL(connectionSelected(GraphicsConnection*)),
+        this, SIGNAL(connectionSelected(GraphicsConnection*)), Qt::UniqueConnection);
     connect(diagram_, SIGNAL(clearItemSelection()),
         this, SIGNAL(clearItemSelection()), Qt::UniqueConnection);
     
@@ -385,13 +388,13 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
 
             emit clearItemSelection();
         }
-        else if (selected->type() == SWConnection::Type)
+        else if (selected->type() == GraphicsConnection::Type)
         {
-            // Delete the connection.
-            QSharedPointer<QUndoCommand> cmd(new SWConnectionDeleteCommand(static_cast<SWConnection*>(selected)));
-            editProvider_->addCommand(cmd);
-
             emit clearItemSelection();
+
+            // Delete the connection.
+            QSharedPointer<QUndoCommand> cmd(new SWConnectionDeleteCommand(static_cast<GraphicsConnection*>(selected)));
+            editProvider_->addCommand(cmd);
         }
     }
 }

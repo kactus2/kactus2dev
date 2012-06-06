@@ -17,13 +17,13 @@
 #include <QGraphicsScene>
 #include <QObject>
 
+class GraphicsConnection;
 class GraphicsColumnLayout;
 class SystemColumn;
 class ComponentItem;
 class ApplicationItem;
 class ProgramEntityItem;
 class IGraphicsItemStack;
-class SWConnection;
 
 //-----------------------------------------------------------------------------
 //! SystemColumnDeleteCommand class.
@@ -86,7 +86,7 @@ public:
      *      @param [in] conn    The connection to delete.
      *      @param [in] parent  The parent undo command.
      */
-    SWConnectionDeleteCommand(SWConnection* conn, QUndoCommand* parent = 0);
+    SWConnectionDeleteCommand(GraphicsConnection* conn, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -113,7 +113,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The interconnection.
-    SWConnection* conn_;
+    GraphicsConnection* conn_;
 
     //! The graphics scene.
     QGraphicsScene* scene_;

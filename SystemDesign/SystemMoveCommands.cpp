@@ -13,12 +13,13 @@
 
 #include "SystemColumn.h"
 #include "SWComponentItem.h"
-#include "SWConnection.h"
+
+#include <common/graphicsItems/GraphicsConnection.h>
 
 //-----------------------------------------------------------------------------
 // Function: SWConnectionMoveCommand()
 //-----------------------------------------------------------------------------
-SWConnectionMoveCommand::SWConnectionMoveCommand(SWConnection* conn,
+SWConnectionMoveCommand::SWConnectionMoveCommand(GraphicsConnection* conn,
                                                  QList<QPointF> const& oldRoute,
                                                  QUndoCommand* parent) : QUndoCommand(parent),
                                                  conn_(conn),

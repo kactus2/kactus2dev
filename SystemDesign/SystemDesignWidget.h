@@ -25,6 +25,7 @@ class DesignConfiguration;
 class ProgramEntityItem;
 class ComponentItem;
 class ConnectionEndpoint;
+class GraphicsConnection;
 
 //-----------------------------------------------------------------------------
 //! SystemDesignWidget class.
@@ -152,6 +153,9 @@ signals:
 
     //! Signaled when the user selects an interface on the draw board.
     void interfaceSelected(ConnectionEndpoint* endpoint);
+
+    //! Signaled when the user selects a connection on the draw board.
+    void connectionSelected(GraphicsConnection* connection);
 
     //! Signaled when all items are deselected.
     void clearItemSelection();

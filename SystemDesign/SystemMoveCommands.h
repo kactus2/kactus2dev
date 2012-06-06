@@ -16,12 +16,11 @@
 #include <QGraphicsScene>
 #include <QString>
 
-class SystemColumnLayout;
 class SystemColumn;
 class ComponentItem;
 class IGraphicsItemStack;
 class SWPortItem;
-class SWConnection;
+class GraphicsConnection;
 
 //-----------------------------------------------------------------------------
 //! SWConnectionMoveCommand class.
@@ -36,7 +35,7 @@ public:
      *      @param [in] oldRoute  The old route of the connection.
      *      @param [in] parent    The parent command.
      */
-    SWConnectionMoveCommand(SWConnection* conn, QList<QPointF> const& oldRoute,
+    SWConnectionMoveCommand(GraphicsConnection* conn, QList<QPointF> const& oldRoute,
                             QUndoCommand* parent = 0);
 
     /*!
@@ -64,7 +63,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The SW connection.
-    SWConnection* conn_;
+    GraphicsConnection* conn_;
 
     //! The old route of the connection.
     QList<QPointF> oldRoute_;

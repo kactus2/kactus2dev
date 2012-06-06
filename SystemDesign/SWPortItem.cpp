@@ -12,7 +12,6 @@
 #include "SWPortItem.h"
 
 #include "SWComponentItem.h"
-#include "SWConnection.h"
 #include "HWMappingItem.h"
 
 #include "SystemMoveCommands.h"

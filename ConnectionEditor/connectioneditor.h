@@ -107,8 +107,8 @@ private:
 		QSharedPointer<General::PortMap> portMap2,
 		QSharedPointer<Component> component2);
 
-	//! \brief Widget to display the bus type.
-	VLNVDisplayer busType_;
+	//! \brief Widget to display the connection type (COM/API/bus type).
+	VLNVDisplayer type_;
 
 	//! \brief Widget to display the abstraction type.
 	VLNVDisplayer absType_;
@@ -139,6 +139,9 @@ private:
 
 	//! \brief Widget to display the port connections.
 	QTableWidget portWidget_;
+
+    //! Dummy widget to be used when there is no ports or ad-hoc bounds to show.
+    QWidget dummyWidget_;
 
 	//! \brief Pointer to the connection being edited.
 	GraphicsConnection* connection_;

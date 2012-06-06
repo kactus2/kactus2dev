@@ -29,8 +29,8 @@ class GenericEditProvider;
 class SystemDesignWidget;
 class HWMappingItem;
 class SWComponentItem;
-class SWConnection;
 class SWConnectionEndpoint;
+class GraphicsConnection;
 
 //-----------------------------------------------------------------------------
 //! SystemDesignDiagram class.
@@ -223,7 +223,7 @@ private:
     bool dragDefinition_;
 
     //! The connection that is being drawn.
-    SWConnection* tempConnection_;
+    GraphicsConnection* tempConnection_;
 
     //! The starting endpoint of a connection that is being drawn.
     SWConnectionEndpoint* tempConnEndpoint_;

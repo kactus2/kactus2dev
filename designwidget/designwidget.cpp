@@ -577,12 +577,12 @@ void DesignWidget::keyPressEvent(QKeyEvent *event)
         }
         else if (selected->type() == DiagramInterconnection::Type)
         {
+            emit clearItemSelection();
+
             // Delete the interconnection.
             QSharedPointer<QUndoCommand> cmd(new ConnectionDeleteCommand(
                 static_cast<DiagramInterconnection*>(selected)));
             editProvider_->addCommand(cmd);
-
-            emit clearItemSelection();
         }
         else if (selected->type() == DiagramColumn::Type)
         {

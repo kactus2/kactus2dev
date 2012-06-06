@@ -866,9 +866,9 @@ void GraphicsConnection::disconnectEnds()
         endpoint2_->setSelectionHighlight(false);
     }
 
-    emit contentChanged();
     endpoint1_ = 0;
     endpoint2_ = 0;
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -893,8 +893,15 @@ QVariant GraphicsConnection::itemChange(GraphicsItemChange change, const QVarian
                 setDefaultColor();
             }
 
-            endpoint1_->setSelectionHighlight(selected);
-            endpoint2_->setSelectionHighlight(selected);
+            if (endpoint1_ != 0)
+            {
+                endpoint1_->setSelectionHighlight(selected);
+            }
+
+            if (endpoint2_ != 0)
+            {
+                endpoint2_->setSelectionHighlight(selected);
+            }
 
             return value;
         }

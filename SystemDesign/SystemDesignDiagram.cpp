@@ -22,7 +22,6 @@
 #include "HWMappingItem.h"
 #include "SWCompItem.h"
 #include "SystemDesignWidget.h"
-#include "SWConnection.h"
 #include "SWConnectionEndpoint.h"
 #include "SWPortItem.h"
 #include "SWInterfaceItem.h"
@@ -42,6 +41,7 @@
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsColumnUndoCommands.h>
+#include <common/graphicsItems/GraphicsConnection.h>
 
 #include <models/SWInstance.h>
 #include <models/component.h>
@@ -623,7 +623,7 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
             tempConnEndpoint_->onBeginConnect();
             
             // Create the connection.
-            tempConnection_ = new SWConnection(tempConnEndpoint_->scenePos(),
+            tempConnection_ = new GraphicsConnection(tempConnEndpoint_->scenePos(),
                                                tempConnEndpoint_->getDirection(),
                                                event->scenePos(),
                                                QVector2D(0.0f, 0.0f), QString(), QString(), this);
@@ -838,6 +838,10 @@ void SystemDesignDiagram::onSelected(QGraphicsItem* newSelection)
         {
             emit interfaceSelected(static_cast<ConnectionEndpoint*>(newSelection));
         }
+        else if (dynamic_cast<GraphicsConnection*>(newSelection) != 0)
+        {
+            emit connectionSelected(static_cast<GraphicsConnection*>(newSelection));
+        }
         else
         {
             // Otherwise inform others that nothing is currently selected.
@@ -884,16 +888,16 @@ void SystemDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
             // Update the connection.
             Q_ASSERT(tempConnection_->route().size() != 0);
 
-            SWConnection* newTempConnection_ = 0;
+            GraphicsConnection* newTempConnection_ = 0;
 
             if (highlightedEndpoint_ != 0)
             {
-                newTempConnection_ = new SWConnection(tempConnEndpoint_, highlightedEndpoint_, false,
+                newTempConnection_ = new GraphicsConnection(tempConnEndpoint_, highlightedEndpoint_, false,
                                                       QString(), QString(), QString(), this);
             }
             else
             {
-                newTempConnection_ = new SWConnection(tempConnEndpoint_->scenePos(),
+                newTempConnection_ = new GraphicsConnection(tempConnEndpoint_->scenePos(),
                                                       tempConnEndpoint_->getDirection(),
                                                       snapPointToGrid(event->scenePos()),
                                                       QVector2D(0.0f, 0.0f), QString(), QString(), this);
@@ -1066,9 +1070,9 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
 
             swInstances.append(instance);
         }
-        else if (item->type() == SWConnection::Type)
+        else if (item->type() == GraphicsConnection::Type)
         {
-            SWConnection const* conn = static_cast<SWConnection const*>(item);
+            GraphicsConnection const* conn = static_cast<GraphicsConnection const*>(item);
 
             ConnectionEndpoint* endpoint1 = conn->endpoint1();
             ConnectionEndpoint* endpoint2 = conn->endpoint2();
@@ -1457,7 +1461,7 @@ void SystemDesignDiagram::destroyConnections()
     // Search all SW connections.
     foreach (QGraphicsItem* item, items())
     {
-        if (item->type() == SWConnection::Type)
+        if (item->type() == GraphicsConnection::Type)
         {
             conns.append(item);
         }
@@ -1577,7 +1581,7 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
         }
 
 
-        SWConnection* connection = new SWConnection(port1, port2, true,
+        GraphicsConnection* connection = new GraphicsConnection(port1, port2, true,
             dependency.getName(),
             dependency.getDisplayName(),
             dependency.getDescription(), this);
@@ -1658,7 +1662,7 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
         // If both the component and it's port are found the connection can be made.
         else
         {
-            SWConnection* connection = new SWConnection(port, interface, true,
+            GraphicsConnection* connection = new GraphicsConnection(port, interface, true,
                                                         dependency.getName(),
                                                         dependency.getDisplayName(),
                                                         dependency.getDescription(), this);
@@ -1722,7 +1726,7 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
         }
 
 
-        SWConnection* connection = new SWConnection(port1, port2, true,
+        GraphicsConnection* connection = new GraphicsConnection(port1, port2, true,
             conn.getName(),
             conn.getDisplayName(),
             conn.getDescription(), this);
@@ -1803,7 +1807,7 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
         // If both the component and it's port are found the connection can be made.
         else
         {
-            SWConnection* connection = new SWConnection(port, interface, true,
+            GraphicsConnection* connection = new GraphicsConnection(port, interface, true,
                 hierConn.getName(),
                 hierConn.getDisplayName(),
                 hierConn.getDescription(), this);

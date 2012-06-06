@@ -12,10 +12,10 @@
 #include "SystemDeleteCommands.h"
 
 #include "SystemColumn.h"
-#include "SWConnection.h"
 
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/graphicsItems/ComponentItem.h>
+#include <common/graphicsItems/GraphicsConnection.h>
 
 //-----------------------------------------------------------------------------
 // Function: SystemColumnDeleteCommand()
@@ -94,7 +94,7 @@ void SystemColumnDeleteCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: SWConnectionDeleteCommand()
 //-----------------------------------------------------------------------------
-SWConnectionDeleteCommand::SWConnectionDeleteCommand(SWConnection* conn, QUndoCommand* parent)
+SWConnectionDeleteCommand::SWConnectionDeleteCommand(GraphicsConnection* conn, QUndoCommand* parent)
     : QUndoCommand(parent),
       conn_(conn),
       scene_(conn->scene()),
@@ -123,6 +123,9 @@ void SWConnectionDeleteCommand::undo()
 
     // Connect the ends.
     conn_->connectEnds();
+
+    scene_->clearSelection();
+    conn_->setSelected(true);
     del_ = false;
 }
 
@@ -132,6 +135,7 @@ void SWConnectionDeleteCommand::undo()
 void SWConnectionDeleteCommand::redo()
 {
     // Remove the item from the scene.
+    conn_->setSelected(false);
     scene_->removeItem(conn_);
 
     // Disconnect the ends.
