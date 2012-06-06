@@ -23,6 +23,8 @@ enum PortDirection
     PORT_BOTTOM
 };
 
+class HWMappingItem;
+
 //-----------------------------------------------------------------------------
 //! SWComponentItem class.
 //-----------------------------------------------------------------------------
@@ -143,6 +145,11 @@ public:
      *      @return The corresponding port item, or null if no match was found.
      */
     SWPortItem* getSWPort(QString const& name, SWConnectionEndpoint::EndpointType type) const;
+
+    /*!
+     *  Returns the underlying HW linked with this component.
+     */
+    virtual HWMappingItem const* getLinkedHW() const = 0;
 
 signals:
     //! Occurs when the property values have been changed.

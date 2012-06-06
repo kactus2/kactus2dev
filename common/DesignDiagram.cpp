@@ -75,6 +75,9 @@ bool DesignDiagram::setDesign(QSharedPointer<Component> component, QSharedPointe
     // clear the previous design configuration
     designConf_.clear();
 
+    // Deselect items.
+    emit clearItemSelection();
+
     // Clear the scene.
     clearScene();
 

@@ -257,9 +257,6 @@ private:
 
     //! If true, the mouse hovers near the resize area.
     bool mouseNearResizeArea_;
-
-    //! Old cursor for restoring purposes.
-    QCursor oldCursor_;
 };
 
 //-----------------------------------------------------------------------------

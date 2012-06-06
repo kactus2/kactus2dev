@@ -538,6 +538,8 @@ void LibraryData::checkLibraryIntegrity( bool showProgress /*= true*/ ) {
 		progBar.setWindowTitle(tr("Checking integrity..."));
 		progBar.show();
 	}
+
+    emit noticeMessage(tr("------ Library Integrity Check ------"));
 	
 	QMap<VLNV, QString>::iterator i = libraryItems_.begin();
 	while (i != libraryItems_.end()) {
@@ -560,22 +562,12 @@ void LibraryData::checkLibraryIntegrity( bool showProgress /*= true*/ ) {
 		VLNV* vlnvP = const_cast<VLNV*>(&i.key());
 
 		// inform the user of the object being processed
-		emit noticeMessage(tr("Processing item: \n"
-			"\tVendor: %1\n"
-			"\tLibrary: %2\n"
-			"\tName: %3\n"
-			"\tVersion: %4").arg(
-			vlnvP->getVendor()).arg(
-			vlnvP->getLibrary()).arg(
-			vlnvP->getName()).arg(
-			vlnvP->getVersion()));
-	
+
 		// make sure the file exists
 		QFileInfo topFile(i.value());
 		if (!topFile.exists()) {
-			emit errorMessage(
-				tr("The file %1 for the document was not found.").arg(
-				i.value()));
+            emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnvP->toString(":")));
+			emit errorMessage(tr("The file %1 for the document was not found.").arg(i.value()));
 			++errors;
 			++failedObjects;
 			wasValid = false;
@@ -583,10 +575,16 @@ void LibraryData::checkLibraryIntegrity( bool showProgress /*= true*/ ) {
 
 		// check if the component is valid and if not then print errors of the component
 		QStringList errorList;
-		if (!libComp->isValid(errorList)) {
+
+		if (!libComp->isValid(errorList))
+        {
+            if (wasValid)
+            {
+                emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnvP->toString(":")));
+            }
 
 			foreach (QString error, errorList) {
-				emit errorMessage(QString("\t") + error);
+				emit errorMessage(error);
 			}
 			errors += errorList.size();
 			syntaxErrors += errorList.size();
@@ -600,19 +598,19 @@ void LibraryData::checkLibraryIntegrity( bool showProgress /*= true*/ ) {
 
 		// check that all VLNVs needed by this model are found in the library
 		QList<VLNV> vlnvList = libComp->getDependentVLNVs();
-		for (int j = 0; j < vlnvList.size(); ++j) {
 
+		for (int j = 0; j < vlnvList.size(); ++j)
+        {
 			// if the document referenced by this model is not found
-			if (!libraryItems_.contains(vlnvList.at(j))) {
+			if (!libraryItems_.contains(vlnvList.at(j)))
+            {
+                if (wasValid)
+                {
+                    emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnvP->toString(":")));
+                }
+
 				emit errorMessage(
-					tr("\tThe following vlnv was not found in the library: \n"
-					"\tVendor: %1\n"
-					"\tLibrary: %2\n"
-					"\tName: %3\n"
-					"\tVersion: %4").arg(vlnvList.at(j).getVendor()).arg(
-					vlnvList.at(j).getLibrary()).arg(
-					vlnvList.at(j).getName()).arg(
-					vlnvList.at(j).getVersion()));
+                    tr("The following dependent VLNV was not found in the library: %1").arg(vlnvList.at(j).toString()));
 				
 				++errors;
 				++vlnvErrors;
@@ -672,14 +670,14 @@ void LibraryData::checkLibraryIntegrity( bool showProgress /*= true*/ ) {
 	}
 
 	emit noticeMessage(
-		tr("Library integrity check complete, found %1 errors within %2 item(s).").arg(
+        tr("========== Library integrity check complete: found %1 errors within %2 item(s) ==========").arg(
 		errors).arg(failedObjects));
 	
 	// if errors were found then print the summary of error types
 	if (errors > 0) {
 		emit noticeMessage(tr("Structural errors within item(s): %1").arg(syntaxErrors));
 		emit noticeMessage(tr("Invalid VLNV references: %1").arg(vlnvErrors));
-		emit noticeMessage(tr("Invalid file references: %1").arg(fileErrors));
+		emit noticeMessage(tr("Invalid file references: %1\n").arg(fileErrors));
 	}
 
 	// inform tree model that it needs to reset model also

@@ -30,6 +30,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QDebug>
 #include <QCursor>
+#include <QApplication>
 
 //-----------------------------------------------------------------------------
 // Function: GraphicsColumn()
@@ -40,8 +41,7 @@ GraphicsColumn::GraphicsColumn(ColumnDesc const& desc, GraphicsColumnLayout* lay
       desc_(),
       nameLabel_(0),
       oldPos_(),
-      mouseNearResizeArea_(false),
-      oldCursor_()
+      mouseNearResizeArea_(false)
 {
     setFlag(ItemIsMovable);
     setFlag(ItemIsSelectable);
@@ -506,7 +506,16 @@ void GraphicsColumn::hoverMoveEvent(QGraphicsSceneHoverEvent* event)
 void GraphicsColumn::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 {
     QGraphicsRectItem::hoverEnterEvent(event);
-    updateCursor(event);
+
+    if (!static_cast<DesignDiagram*>(scene())->isProtected() &&
+        std::abs(event->pos().x() - boundingRect().right()) <= 10)
+    {
+        if (!mouseNearResizeArea_)
+        {
+            QApplication::setOverrideCursor(Qt::SplitHCursor);
+            mouseNearResizeArea_ = true;
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -515,7 +524,13 @@ void GraphicsColumn::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 void GraphicsColumn::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     QGraphicsRectItem::hoverLeaveEvent(event);
-    updateCursor(event);
+
+    if (mouseNearResizeArea_)
+    {
+        // Restore the old cursor.
+        QApplication::restoreOverrideCursor();
+        mouseNearResizeArea_ = false;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -526,10 +541,9 @@ void GraphicsColumn::updateCursor(QGraphicsSceneHoverEvent* event)
     if (!static_cast<DesignDiagram*>(scene())->isProtected() &&
         std::abs(event->pos().x() - boundingRect().right()) <= 10)
     {
-        if (!mouseNearResizeArea_ )
+        if (!mouseNearResizeArea_)
         {
-            oldCursor_ = cursor();
-            setCursor(QCursor(Qt::SplitHCursor));
+            QApplication::setOverrideCursor(Qt::SplitHCursor);
             mouseNearResizeArea_ = true;
         }
     }
@@ -538,7 +552,7 @@ void GraphicsColumn::updateCursor(QGraphicsSceneHoverEvent* event)
         if (mouseNearResizeArea_)
         {
             // Restore the old cursor.
-            setCursor(oldCursor_);
+            QApplication::restoreOverrideCursor();
             mouseNearResizeArea_ = false;
         }
     }

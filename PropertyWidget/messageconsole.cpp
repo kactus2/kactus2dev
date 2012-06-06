@@ -22,6 +22,11 @@ copyAvailable_(false) {
 
 	setReadOnly(true);
 
+//     QFont fnt = font();
+//     fnt.setFamily("Courier New");
+//     fnt.setPointSize(10);
+//     setFont(fnt);
+
 	copyAction_.setDisabled(true);
 
 	connect(&copyAction_, SIGNAL(triggered()),

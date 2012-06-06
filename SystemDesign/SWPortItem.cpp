@@ -372,6 +372,15 @@ bool SWPortItem::canConnect(ConnectionEndpoint const* other) const
         return false;
     }
 
+    // Disallow normal API connections across different HW.
+    if ((getType() == ENDPOINT_TYPE_API || other->getType() == ENDPOINT_TYPE_API) &&
+        !other->isHierarchical() &&
+        static_cast<SWComponentItem*>(encompassingComp())->getLinkedHW() !=
+        static_cast<SWComponentItem*>(other->encompassingComp())->getLinkedHW())
+    {
+        return false;
+    }
+
     // Check compatibility of the interfaces based on the connection type.
     bool fullyDefined = getType() != ENDPOINT_TYPE_UNDEFINED && other->getType() != ENDPOINT_TYPE_UNDEFINED;
 

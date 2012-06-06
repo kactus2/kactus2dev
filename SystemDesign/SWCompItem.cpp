@@ -11,10 +11,9 @@
 
 #include "SWCompItem.h"
 
+#include "HWMappingItem.h"
 #include "SWPortItem.h"
-
 #include "SystemMoveCommands.h"
-
 #include "SystemDesignDiagram.h"
 
 #include <models/component.h>
@@ -287,4 +286,12 @@ void SWCompItem::setFileSetRef(QString const& fileSetName)
 QString const& SWCompItem::getFileSetRef() const
 {
     return fileSetRef_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWCompItem::getParentHW()
+//-----------------------------------------------------------------------------
+HWMappingItem const* SWCompItem::getLinkedHW() const
+{
+    return dynamic_cast<HWMappingItem*>(parentItem());
 }

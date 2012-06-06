@@ -19,6 +19,7 @@
 
 class SystemColumn;
 class IGraphicsItemStack;
+class HWMappingItem;
 
 //-----------------------------------------------------------------------------
 //! Graphics item for visualizing SW components.
@@ -56,6 +57,11 @@ public:
      *  Returns the file set reference (i.e. the name of the referenced file set).
      */
     QString const& getFileSetRef() const;
+
+    /*!
+     *  Returns the underlying HW linked with this component.
+     */
+    virtual HWMappingItem const* getLinkedHW() const;
 
     /*!
      *  Returns the graphics item type.

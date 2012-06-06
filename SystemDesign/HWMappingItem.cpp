@@ -341,3 +341,11 @@ ColumnContentType HWMappingItem::getContentType() const
 {
     return COLUMN_CONTENT_COMPONENTS;
 }
+
+//-----------------------------------------------------------------------------
+// Function: HWMappingItem::getLinkedHW()
+//-----------------------------------------------------------------------------
+HWMappingItem const* HWMappingItem::getLinkedHW() const
+{
+    return this;
+}

@@ -44,6 +44,11 @@ public:
     ~HWMappingItem();
 
     /*!
+     *  Returns the underlying HW linked with this component.
+     */
+    virtual HWMappingItem const* getLinkedHW() const;
+
+    /*!
      *  Returns the graphics item type.
      */
     int type() const { return Type; }
