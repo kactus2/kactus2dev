@@ -20,6 +20,7 @@
 #include <common/GenericEditProvider.h>
 #include <common/diagramgrid.h>
 #include <common/DesignDiagram.h>
+#include <common/KactusColors.h>
 
 #include <models/ApiInterface.h>
 #include <models/ComInterface.h>
@@ -792,7 +793,7 @@ void SWPortItem::setSelectionHighlight(bool on)
     
     if (on)
     {
-        curPen.setColor(Qt::red);
+        curPen.setColor(KactusColors::DIAGRAM_SELECTION);
     }
     else
     {

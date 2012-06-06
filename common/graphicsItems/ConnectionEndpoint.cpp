@@ -15,6 +15,8 @@
 #include <models/ApiInterface.h>
 #include <models/ComInterface.h>
 
+#include <common/KactusColors.h>
+
 #include <QPen>
 
 //-----------------------------------------------------------------------------
@@ -51,13 +53,13 @@ void ConnectionEndpoint::setHighlight(HighlightMode mode)
 
     case HIGHLIGHT_ALLOWED:
         {
-            setPen(QPen(Qt::blue, 2));
+            setPen(QPen(KactusColors::DIAGRAM_ALLOWED_INTERFACE, 2));
             break;
         }
 
     case HIGHLIGHT_HOVER:
         {
-            setPen(QPen(Qt::red, 2));
+            setPen(QPen(KactusColors::DIAGRAM_SELECTION, 2));
             break;
         }
     }

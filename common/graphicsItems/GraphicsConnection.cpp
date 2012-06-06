@@ -17,6 +17,7 @@
 #include <common/GenericEditProvider.h>
 #include <common/DesignDiagram.h>
 #include <common/DiagramUtil.h>
+#include <common/KactusColors.h>
 
 #include <QPen>
 #include <QStyleOptionGraphicsItem>
@@ -885,7 +886,7 @@ QVariant GraphicsConnection::itemChange(GraphicsItemChange change, const QVarian
             if (selected)
             {
                 QPen curPen = pen();
-                curPen.setColor(Qt::red);
+                curPen.setColor(KactusColors::DIAGRAM_SELECTION);
                 setPen(curPen);
             }
             else

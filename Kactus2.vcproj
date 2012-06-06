@@ -2490,6 +2490,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\common\KactusColors.h"
+					>
+				</File>
+				<File
 					RelativePath=".\common\TextEditProvider.h"
 					>
 				</File>
