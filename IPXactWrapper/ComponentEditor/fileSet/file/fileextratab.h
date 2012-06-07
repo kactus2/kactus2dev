@@ -17,6 +17,7 @@
 #include <models/file.h>
 
 #include <QWidget>
+#include <QSharedPointer>
 
 /*! \brief FileExtraTab is a widget to edit File's settings.
  * 
@@ -34,7 +35,7 @@ public:
 	 *
 	*/
 	FileExtraTab(const QFileInfo& baseLocation, 
-		File* file,
+		QSharedPointer<File> file,
 		QWidget *parent);
 
 	//! \brief The destructor
@@ -86,7 +87,7 @@ private:
 	FileDefineModel defineModel_;
 
 	//! \brief Pointer to the file model that is being edited.
-	File* file_;
+	QSharedPointer<File> file_;
 
 };
 

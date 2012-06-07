@@ -6,9 +6,6 @@
  */
 
 #include "fileeditor.h"
-#include "filegeneraltab.h"
-#include "fileextratab.h"
-#include "filebuildcommand.h"
 
 #include <models/component.h>
 #include <models/file.h>
@@ -21,61 +18,46 @@ FileEditor::FileEditor( const QString& baseLocation,
 					   QWidget *parent ):
 ItemEditor(component, parent),
 tabs_(this), 
-generalTab_(NULL),
-extraTab_(NULL),
-file_(file.data()),
+generalTab_(baseLocation_, file_, &tabs_),
+extraTab_(baseLocation_, file_, &tabs_),
+file_(file),
 baseLocation_(baseLocation) {
 
 	Q_ASSERT(component);
 	Q_ASSERT(file);
 
-	initialize();
-}
-
-FileEditor::~FileEditor() {
-}
-
-void FileEditor::initialize() {
 	QHBoxLayout* layout = new QHBoxLayout(this);
 	layout->addWidget(&tabs_);
 
-	generalTab_ = new FileGeneralTab(baseLocation_, file_, &tabs_);
-	tabs_.addTab(generalTab_, tr("General settings"));
-
-	extraTab_ = new FileExtraTab(baseLocation_, file_, &tabs_);
-	tabs_.addTab(extraTab_, tr("External dependencies and defines"));
+	tabs_.addTab(&generalTab_, tr("General settings"));
+	tabs_.addTab(&extraTab_, tr("External dependencies and defines"));
 
 	// connect the signals informing that widgets have changed their status
-	connect(generalTab_, SIGNAL(contentChanged()),
+	connect(&generalTab_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(generalTab_, SIGNAL(nameChanged(const QString&)),
+	connect(&generalTab_, SIGNAL(nameChanged(const QString&)),
 		this, SIGNAL(nameChanged(const QString&)), Qt::UniqueConnection);
-	connect(extraTab_, SIGNAL(contentChanged()),
+	connect(&extraTab_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
 	refresh();
 }
 
+FileEditor::~FileEditor() {
+}
+
 bool FileEditor::isValid() const {
 
 	// general tab contains the only mandatory fields.
-	return generalTab_->isValid();
-}
-
-void FileEditor::removeModel() {
-	file_->remove();
-	file_ = 0;
+	return generalTab_.isValid();
 }
 
 void FileEditor::makeChanges() {
-	if (file_) {
-		generalTab_->apply();
-		extraTab_->apply();
-	}
+	// TODO remove this in final
 }
 
 void FileEditor::refresh() {
 	// fetch the data from the model
-	generalTab_->restore();
-	extraTab_->restore();
+	generalTab_.restore();
+	extraTab_.restore();
 }

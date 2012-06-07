@@ -8,21 +8,16 @@
 #ifndef FILEEDITOR_H
 #define FILEEDITOR_H
 
-#include "filenameeditor.h"
 #include "../itemeditor.h"
-#include "filegeneraleditor.h"
-
-#include <common/widgets/attributeBox/attributebox.h>
+#include "filegeneraltab.h"
+#include "fileextratab.h"
+#include <models/component.h>
+#include <models/file.h>
 
 #include <QWidget>
 #include <QFileInfo>
 #include <QTabWidget>
 #include <QSharedPointer>
-
-class Component;
-class File;
-class FileGeneralTab;
-class FileExtraTab;
 
 /*! \brief FileEditor is a widget to edit the details of a File
  * 
@@ -54,14 +49,6 @@ public:
 	*/
 	virtual bool isValid() const;
 
-	/*! \brief Remove the File from the file set.
-	 *
-	 * This function should be used when user wants to remove a file from 
-	 * the containing file set.
-	 *
-	*/
-	virtual void removeModel();
-
 	/*! \brief Make the changes from the widgets editors to the IPXact model.
 	 *
 	 * The base class implementation does nothing.
@@ -80,20 +67,17 @@ private:
 	//! No assignment
 	FileEditor& operator=(const FileEditor& other);
 
-	//! \brief Set up the file editor.
-	 void initialize();
-
 	//! \brief The tab widget that contains the other widgets.
 	QTabWidget tabs_;
 
 	//! \brief Pointer to the widget that is used for general settings of file.
-	FileGeneralTab* generalTab_;
+	FileGeneralTab generalTab_;
 
 	//! \brief Pointer to the widget that is used to edit i.e external dependencies.
-	FileExtraTab* extraTab_;
+	FileExtraTab extraTab_;
 
 	//! \brief Pointer to the file that is edited in this editor.
-	File* file_;
+	QSharedPointer<File> file_;
 
 	//! \brief The path to the containing component's xml-file.
 	QFileInfo baseLocation_;

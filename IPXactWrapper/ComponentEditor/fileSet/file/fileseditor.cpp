@@ -6,6 +6,7 @@
  */
 
 #include "fileseditor.h"
+#include "filesdelegate.h"
 #include <LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
@@ -44,7 +45,7 @@ addFilesButton_(QIcon(":/icons/graphics/add.png"), tr("Add Files"), this) {
 	view_.setItemsDraggable(true);
 
 	// set the delegate to provide editors
-	//view_.setItemDelegate(new FileBuildersDelegate(this));
+	view_.setItemDelegate(new FilesDelegate(this));
 
 	connect(&addFilesButton_, SIGNAL(clicked(bool)),
 		this, SLOT(onAddFiles()), Qt::UniqueConnection);

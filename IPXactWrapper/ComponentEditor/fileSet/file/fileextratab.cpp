@@ -14,14 +14,14 @@
 #include <QSortFilterProxyModel>
 
 FileExtraTab::FileExtraTab(const QFileInfo& baseLocation, 
-						   File* file, 
+						   QSharedPointer<File> file, 
 						   QWidget *parent ):
 QWidget(parent), 
 dependencies_(tr("Dependencies"), baseLocation, this),
 exportedNames_(tr("Exported names"), this),
 imageTypes_(tr("Image types"), this),
 defineView_(this),
-defineModel_(this, file),
+defineModel_(this, file.data()),
 file_(file) {
 
 	dependencies_.initialize();

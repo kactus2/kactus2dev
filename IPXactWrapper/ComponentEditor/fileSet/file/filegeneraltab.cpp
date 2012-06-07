@@ -12,13 +12,14 @@
 #include <QGroupBox>
 
 FileGeneralTab::FileGeneralTab(const QFileInfo& baseLocation,  
-							   File* file, 
+							   QSharedPointer<File> file, 
 							   QWidget *parent ):
-QWidget(parent), file_(file),
+QWidget(parent), 
+file_(file),
 nameEditor_(this, baseLocation),
-generalEditor_(this, file),
-fileTypeEditor_(this, file),
-buildCommand_(this, file_, baseLocation) {
+generalEditor_(this, file.data()),
+fileTypeEditor_(this, file.data()),
+buildCommand_(this, file.data(), baseLocation) {
 
 	fileTypeEditor_.initialize();
 

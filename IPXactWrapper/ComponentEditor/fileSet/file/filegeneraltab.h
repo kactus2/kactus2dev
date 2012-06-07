@@ -18,6 +18,7 @@
 
 #include <QWidget>
 #include <QFileInfo>
+#include <QSharedPointer>
 
 /*! \brief FileGeneralTab is a widget to edit File's general settings.
  *
@@ -36,7 +37,7 @@ public:
 	 *
 	*/
 	FileGeneralTab(const QFileInfo& baseLocation, 
-		File* file,
+		QSharedPointer<File> file,
 		QWidget *parent);
 
 	//! \brief The destructor
@@ -76,7 +77,7 @@ private:
 	FileGeneralTab& operator=(const FileGeneralTab& other);
 
 	//! \brief Pointer to the file-model being edited.
-	File* file_;
+	QSharedPointer<File> file_;
 
 	//! \brief The widget to edit file's name and name-attributes.
 	FileNameEditor nameEditor_;

@@ -26,6 +26,12 @@ class FilesModel : public QAbstractTableModel {
 
 public:
 
+	//! \brief The role that uses QStringList to display file types.
+	static const int USER_DISPLAY_ROLE = Qt::UserRole;
+	
+	//! \brief The role the uses QStringList to edit file types.
+	static const int USER_EDIT_ROLE = Qt::UserRole + 1;
+
 	/*! \brief The constructor
 	 * 
 	 * \param handler Pointer to the instance that manages the library.
