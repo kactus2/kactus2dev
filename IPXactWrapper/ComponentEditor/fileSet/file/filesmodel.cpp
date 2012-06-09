@@ -154,12 +154,18 @@ bool FilesModel::setData( const QModelIndex& index, const QVariant& value, int r
 		switch (index.column()) {
 			// file name can not be set directly
 			case 0: {
-				Q_ASSERT(false);
 				return false;
 					}
 			// file name is set through file path
 			case 1: {
-				files_[index.row()]->setName(value.toString());
+				const QString filePath = value.toString();
+
+				// if the path is empty then the file should be removed
+				if (filePath.isEmpty()) {
+					onRemoveItem(index);
+					return true;
+				}
+				files_[index.row()]->setName(filePath);
 				break;
 					}
 			case 2: {

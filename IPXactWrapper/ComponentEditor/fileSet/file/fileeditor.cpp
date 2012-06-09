@@ -29,6 +29,7 @@ file_(file) {
 
 	QHBoxLayout* layout = new QHBoxLayout(this);
 	layout->addWidget(&tabs_);
+	layout->setContentsMargins(0, 0, 0, 0);
 
 	tabs_.addTab(&generalTab_, tr("General settings"));
 	tabs_.addTab(&extraTab_, tr("External dependencies and defines"));

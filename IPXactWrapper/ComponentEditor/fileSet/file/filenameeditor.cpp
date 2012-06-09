@@ -14,10 +14,10 @@
 FileNameEditor::FileNameEditor(QWidget *parent,
 							   LibraryInterface* handler,
 							   QSharedPointer<Component> component,
-							   const QString fileName,
-							   const QMap<QString, QString>& ): 
+							   QSharedPointer<File> file): 
 QGroupBox(tr("File name and path"), parent), 
-nameEdit_(this, handler, component, fileName) {
+nameEdit_(this, handler, component, file),
+file_(file) {
 
 	// the layout for the name label and name line edit
 	QHBoxLayout* nameLayout = new QHBoxLayout();
@@ -28,47 +28,27 @@ nameEdit_(this, handler, component, fileName) {
 		"path to a file name or directory"));
 	nameLayout->addWidget(nameLabel, 0);
 	nameLayout->addWidget(&nameEdit_, 1);
+	nameLayout->setContentsMargins(0, 0, 0, 0);
 
 	// the top layout for the whole widget
 	QVBoxLayout* topLayout = new QVBoxLayout(this);
 
 	topLayout->addLayout(nameLayout);
-	//topLayout->addWidget(&attributes_);
-
-	// set the attributes for the attribute widget
-	//attributes_.setAttributes(attributes);
 
 	nameEdit_.setProperty("mandatoryField", true);
 
 	// connect the signals informing of content changes.
-	connect(&nameEdit_, SIGNAL(textChanged(const QString&)),
+	connect(&nameEdit_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&nameEdit_, SIGNAL(textChanged(const QString&)),
-		this, SIGNAL(nameChanged(const QString&)), Qt::UniqueConnection);
-// 	connect(&attributes_, SIGNAL(contentChanged()),
-// 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
 FileNameEditor::~FileNameEditor() {
 }
 
-QString FileNameEditor::getFileName() const {
-	return nameEdit_.text();
-}
-
-// const QMap<QString, QString> FileNameEditor::getAttributes() const {
-// 	return attributes_.getAttributes();
-// }
-
-void FileNameEditor::setFileName( const QString& fileName ) {
-	nameEdit_.setText(fileName);
-}
-
-// void FileNameEditor::setAttributes( const QMap<QString, QString>& attributes ) {
-// 	attributes_.setAttributes(attributes);
-// }
-
 bool FileNameEditor::isValid() const {
-	// both editor widgets must be in valid state
-	return (nameEdit_.isValid() /*&& attributes_.isValid()*/);
+	return nameEdit_.isValid();
+}
+
+void FileNameEditor::refresh() {
+	nameEdit_.refresh();
 }

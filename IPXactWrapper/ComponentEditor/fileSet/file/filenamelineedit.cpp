@@ -7,6 +7,7 @@
 
 #include "filenamelineedit.h"
 #include <LibraryManager/libraryinterface.h>
+#include <models/generaldeclarations.h>
 
 #include <QFileDialog>
 #include <QDir>
@@ -14,12 +15,15 @@
 FileNameLineEdit::FileNameLineEdit(QWidget *parent, 
 								   LibraryInterface* handler,
 								   QSharedPointer<Component> component,
-								   const QString& contents ):
-QLineEdit(contents, parent), 
+								   QSharedPointer<File> file):
+QLineEdit(parent), 
 handler_(handler),
-component_(component) {
+component_(component),
+file_(file) {
 
 	setToolTip(tr("Click here to select a file to add"));
+
+	setText(file_->getName());
 }
 
 FileNameLineEdit::~FileNameLineEdit() {
@@ -48,17 +52,22 @@ void FileNameLineEdit::mousePressEvent( QMouseEvent * e ) {
 		return;
 	}
 
-	// create QDir instance to match the base location
-	QDir baseDir(baseLocation);
-
-	// create the relative path
-	QString relPath = QDir::cleanPath(baseDir.relativeFilePath(file));
+	// get the relative path from xml file to the selected file
+	QString relPath = General::getRelativePath(baseLocation, file);
 
 	// set the relative path to the lineEdit
 	setText(relPath);
+
+	file_->setName(relPath);
+
+	emit contentChanged();
 }
 
 bool FileNameLineEdit::isValid() const {
 	// the name can't be empty, it must contain a path to a file.
 	return !text().isEmpty();
+}
+
+void FileNameLineEdit::refresh() {
+	setText(file_->getName());
 }

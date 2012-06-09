@@ -17,7 +17,7 @@ FileGeneralTab::FileGeneralTab(LibraryInterface* handler,
 							   QWidget *parent ):
 QWidget(parent), 
 file_(file),
-nameEditor_(this, handler, component),
+nameEditor_(this, handler, component, file),
 generalEditor_(this, file),
 fileTypeEditor_(this, file),
 buildCommand_(this, handler, component, file) {
@@ -28,6 +28,7 @@ buildCommand_(this, handler, component, file) {
 	QGroupBox* buildBox = new QGroupBox(tr("Build command"), this);
 	QVBoxLayout* buildLayout = new QVBoxLayout(buildBox);
 	buildLayout->addWidget(&buildCommand_);
+	buildLayout->setContentsMargins(0, 0, 0, 0);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&nameEditor_);
@@ -42,7 +43,7 @@ buildCommand_(this, handler, component, file) {
 	connect(&generalEditor_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&fileTypeEditor_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+		this, SLOT(onFileTypesChanged()), Qt::UniqueConnection);
 	connect(&buildCommand_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
@@ -57,21 +58,27 @@ bool FileGeneralTab::isValid() const {
 	
 	// at least one file type has to be defined and the file name must be 
 	// specified.
-	return (fileTypeEditor_.isValid() && !nameEditor_.getFileName().isEmpty());
+	return (fileTypeEditor_.isValid() && nameEditor_.isValid());
 }
 
 void FileGeneralTab::apply() {
-	file_->setName(nameEditor_.getFileName());
 
 	generalEditor_.apply();
-	fileTypeEditor_.apply();
+	//fileTypeEditor_.apply();
 	buildCommand_.apply();
 }
 
 void FileGeneralTab::restore() {
-	nameEditor_.setFileName(file_->getName());
+	nameEditor_.refresh();
 
 	generalEditor_.restore();
 	fileTypeEditor_.restore();
 	buildCommand_.restore();
+}
+
+void FileGeneralTab::onFileTypesChanged() {
+	// get the file types from the editor to file model
+	QStringList fileTypes = fileTypeEditor_.items();
+	file_->setAllFileTypes(fileTypes);
+	emit contentChanged();
 }

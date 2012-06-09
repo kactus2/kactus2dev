@@ -9,6 +9,7 @@
 #define FILENAMELINEEDIT_H
 
 #include <models/component.h>
+#include <models/file.h>
 
 #include <QLineEdit>
 #include <QFileInfo>
@@ -32,13 +33,13 @@ public:
 	 * \param parent Pointer to the owner of this widget.
 	 * \param handler Pointer to the instance that manages the library.
 	 * \param component Pointer to the component being edited.
-	 * \param contents Contains the contents to set in the line edit.
+	 * \param file Pointer to the file being edited.
 	 *
 	*/
 	FileNameLineEdit(QWidget *parent, 
 		LibraryInterface* handler,
 		QSharedPointer<Component> component,
-		const QString& contents = QString());
+		QSharedPointer<File> file);
 
 	//! \brief The destructor
 	virtual ~FileNameLineEdit();
@@ -50,8 +51,15 @@ public:
 	*/
 	bool isValid() const;
 
-protected:
+	//! \brief Refresh the name editor.
+	void refresh();
 
+signals:
+
+	//! \brief Emitted when the file name is changed.
+	void contentChanged();
+
+protected:
 	
 	/*! \brief Event handler for mouse press events.
 	 * 
@@ -75,6 +83,9 @@ private:
 
 	//! \brief Pointer to the component being edited.
 	QSharedPointer<Component> component_;
+
+	//! \brief Pointer to the file being edited.
+	QSharedPointer<File> file_;
 
 };
 
