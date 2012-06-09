@@ -21,7 +21,7 @@ ComponentEditorFileItem::ComponentEditorFileItem(QSharedPointer<File> file,
 												 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 file_(file),
-editor_(libHandler->getPath(*component->getVlnv()), component, file) {
+editor_(libHandler, component, file) {
 	editor_.hide();
 	connect(&editor_, SIGNAL(contentChanged()),
 		this, SLOT(onEditorChanged()), Qt::UniqueConnection);

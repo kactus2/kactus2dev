@@ -11,6 +11,7 @@
 #include <common/widgets/listManager/listmanager.h>
 #include <models/file.h>
 
+#include <QSharedPointer>
 
 /*! \brief FileTypeEditor is used to specify a file type for a file.
  * 
@@ -27,7 +28,8 @@ public:
 	 * \param file Pointer to the file being edited
 	 *
 	*/
-	FileTypeEditor(QWidget *parent,	File* file);
+	FileTypeEditor(QWidget *parent,
+		QSharedPointer<File> file);
 
 	//! \brief The destructor
 	virtual ~FileTypeEditor();
@@ -68,7 +70,7 @@ private:
 	FileTypeEditor& operator=(const FileTypeEditor& other);
 
 	//! \brief Pointer to the file-model being edited.
-	File* file_;
+	QSharedPointer<File> file_;
 	
 };
 

@@ -6,15 +6,19 @@
  */
 
 #include "targetnameedit.h"
+#include <LibraryManager/libraryinterface.h>
 
 #include <QFileDialog>
 #include <QDir>
 #include <QMouseEvent>
 
 TargetNameEdit::TargetNameEdit(QWidget *parent,
-							   const QFileInfo& baseLocation,
+							   LibraryInterface* handler,
+							   QSharedPointer<Component> component,
 							   const QString contents): 
-QLineEdit(contents, parent), baseLocation_(baseLocation) {
+QLineEdit(contents, parent), 
+handler_(handler),
+component_(component) {
 
 }
 
@@ -32,8 +36,10 @@ void TargetNameEdit::mousePressEvent( QMouseEvent * e ) {
 	// accept the event so it wont be passed to parent
 	e->accept();
 
+	const QString baseLocation = handler_->getPath(*component_->getVlnv());
+
 	QString file = QFileDialog::getSaveFileName(this, 
-		tr("Set a target file"), baseLocation_.absolutePath());
+		tr("Set a target file"), baseLocation);
 
 	// if no file was selected
 	if (file.isEmpty()) {
@@ -41,7 +47,7 @@ void TargetNameEdit::mousePressEvent( QMouseEvent * e ) {
 	}
 
 	// create QDir instance to match the base location
-	QDir baseDir(baseLocation_.absoluteDir());
+	QDir baseDir(baseLocation);
 
 	// create the relative path
 	QString relPath = QDir::cleanPath(baseDir.relativeFilePath(file));

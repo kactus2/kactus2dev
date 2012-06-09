@@ -13,12 +13,16 @@
 #include <common/widgets/attributeBox/attributebox.h>
 #include <models/buildcommand.h>
 #include <models/file.h>
+#include <models/component.h>
 
 #include <QWidget>
 #include <QLineEdit>
 #include <QCheckBox>
 #include <QGridLayout>
 #include <QFileInfo>
+#include <QSharedPointer>
+
+class LibraryInterface;
 
 /*! \brief FileBuildCommand is a widget to edit File's buildCommand
  * 
@@ -31,14 +35,15 @@ public:
 	/*! \brief The constructor
 	 *
 	 * \param parent Pointer to the owner of this widget.
+	 * \param handler Pointer to the instance that manages the library.
+	 * \param component Pointer to the component being edited.
 	 * \param file Pointer to the file that is being edited.
-	 * \param baseLocation Location in the file system that is used as base for
-	 * relative file paths.
 	 *
 	*/
 	FileBuildCommand(QWidget *parent, 
-		File* file,
-		const QFileInfo& baseLocation);
+		LibraryInterface* handler,
+		QSharedPointer<Component> component,
+		QSharedPointer<File> file);
 
 	//! \brief The destructor
 	virtual ~FileBuildCommand();

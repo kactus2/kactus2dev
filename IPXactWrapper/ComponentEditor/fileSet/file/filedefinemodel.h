@@ -13,6 +13,7 @@
 #include <QAbstractTableModel>
 #include <QString>
 #include <QList>
+#include <QSharedPointer>
 
 class File;
 
@@ -71,7 +72,8 @@ public:
 	 *
 	 * \return 
 	*/
-	FileDefineModel(QObject *parent, File* file);
+	FileDefineModel(QObject *parent, 
+		QSharedPointer<File> file);
 
 	//! \brief The destructor
 	virtual ~FileDefineModel();
@@ -190,7 +192,7 @@ private:
 	QList<Define> defines_;
 
 	//! \brief Pointer to the file being modified.
-	File* file_;
+	QSharedPointer<File> file_;
 };
 
 #endif // FILEDEFINEMODEL_H

@@ -12,7 +12,7 @@
 #include "filetypeeditordelegate.h"
 
 FileTypeEditor::FileTypeEditor(QWidget *parent,
-							   File* file):
+							  QSharedPointer<File> file):
 ListManager(tr("Specified file types"), parent), 
 file_(file) {
 

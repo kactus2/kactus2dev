@@ -12,13 +12,12 @@
 #include <QLabel>
 
 FileNameEditor::FileNameEditor(QWidget *parent,
-							   const QFileInfo& baseLocation,
+							   LibraryInterface* handler,
+							   QSharedPointer<Component> component,
 							   const QString fileName,
 							   const QMap<QString, QString>& ): 
 QGroupBox(tr("File name and path"), parent), 
-nameEdit_(this, baseLocation, fileName) 
-//attributes_(this)
-{
+nameEdit_(this, handler, component, fileName) {
 
 	// the layout for the name label and name line edit
 	QHBoxLayout* nameLayout = new QHBoxLayout();

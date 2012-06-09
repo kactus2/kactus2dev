@@ -14,6 +14,7 @@
 #include <QLineEdit>
 #include <QCheckBox>
 #include <QPlainTextEdit>
+#include <QSharedPointer>
 
 /*! \brief FileGeneralEditor is a widget to edit File's general settings.
  *
@@ -29,7 +30,8 @@ public:
 	 * \param file Pointer to the file that is being edited.
 	 *
 	*/
-	FileGeneralEditor(QWidget *parent, File* file);
+	FileGeneralEditor(QWidget *parent, 
+		QSharedPointer<File> file);
 
 	//! \brief The destructor
 	virtual ~FileGeneralEditor();
@@ -58,18 +60,18 @@ private:
 	FileGeneralEditor& operator=(const FileGeneralEditor& other);
 	
 	//! \brief Pointer to the file instance that is modified.
-	File* file_;
+	QSharedPointer<File> file_;
 
 	//! \brief The editor to set the logical name for the file.
 	QLineEdit logicalName_;
 
-	//! \brief The checkbox to set the logical name as default or not.
+	//! \brief The check box to set the logical name as default or not.
 	QCheckBox logicalDefault_;
 
-	//! \brief The checkbox to set the file as include file or not.
+	//! \brief The check box to set the file as include file or not.
 	QCheckBox includeFile_;
 
-	//! \brief The checkbox to inform that file contains external declarations.
+	//! \brief The check box to inform that file contains external declarations.
 	QCheckBox externalDec_;
 
 	//! \brief Plain text editor to set the description of the file.

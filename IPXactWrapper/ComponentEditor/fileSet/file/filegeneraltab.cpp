@@ -11,15 +11,16 @@
 #include <QStringList>
 #include <QGroupBox>
 
-FileGeneralTab::FileGeneralTab(const QFileInfo& baseLocation,  
+FileGeneralTab::FileGeneralTab(LibraryInterface* handler,
+							   QSharedPointer<Component> component,
 							   QSharedPointer<File> file, 
 							   QWidget *parent ):
 QWidget(parent), 
 file_(file),
-nameEditor_(this, baseLocation),
-generalEditor_(this, file.data()),
-fileTypeEditor_(this, file.data()),
-buildCommand_(this, file.data(), baseLocation) {
+nameEditor_(this, handler, component),
+generalEditor_(this, file),
+fileTypeEditor_(this, file),
+buildCommand_(this, handler, component, file) {
 
 	fileTypeEditor_.initialize();
 

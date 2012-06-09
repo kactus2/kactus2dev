@@ -8,9 +8,14 @@
 #ifndef FILENAMELINEEDIT_H
 #define FILENAMELINEEDIT_H
 
+#include <models/component.h>
+
 #include <QLineEdit>
 #include <QFileInfo>
 #include <QMouseEvent>
+#include <QSharedPointer>
+
+class LibraryInterface;
 
 /*! \brief FileNameLineEdit is used to select a file to QString format.
  *
@@ -25,12 +30,14 @@ public:
 	/*! \brief The constructor.
 	 *
 	 * \param parent Pointer to the owner of this widget.
-	 * \param baseLocation Refers to the location in the file system that is 
-	 * used as a base to create relative file paths.
+	 * \param handler Pointer to the instance that manages the library.
+	 * \param component Pointer to the component being edited.
 	 * \param contents Contains the contents to set in the line edit.
 	 *
 	*/
-	FileNameLineEdit(QWidget *parent, const QFileInfo& baseLocation, 
+	FileNameLineEdit(QWidget *parent, 
+		LibraryInterface* handler,
+		QSharedPointer<Component> component,
 		const QString& contents = QString());
 
 	//! \brief The destructor
@@ -63,9 +70,12 @@ private:
 	//! No assignment
 	FileNameLineEdit& operator=(const FileNameLineEdit& other);
 
-	//! \brief Contains the location that is used as base to relative paths.
-	QFileInfo baseLocation_;
-	
+	//! \brief Pointer to the instance that manages the library.
+	LibraryInterface* handler_;
+
+	//! \brief Pointer to the component being edited.
+	QSharedPointer<Component> component_;
+
 };
 
 #endif // FILENAMELINEEDIT_H

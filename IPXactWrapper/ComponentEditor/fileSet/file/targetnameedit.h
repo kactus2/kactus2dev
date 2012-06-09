@@ -8,9 +8,13 @@
 #ifndef TARGETNAMEEDIT_H
 #define TARGETNAMEEDIT_H
 
+#include <models/component.h>
+
 #include <QLineEdit>
 #include <QFileInfo>
 #include <QWidget>
+
+class LibraryInterface;
 
 /*! \brief TargetNameEdit is a line-edit to select a file path for target file.
  * 
@@ -25,13 +29,15 @@ public:
 	/*! \brief The constructor
 	 *
 	 * \param parent Pointer to the owner of this widget
-	 * \param baseLocation Refers to the containing component's xml-file location.
+	 * \param handler Pointer to the instance that manages the library.
+	 * \param component Pointer to the component being edited.
 	 * \param contents The optional parameter to specify the contents for the
 	 * line edit.
 	 *
 	*/
 	TargetNameEdit(QWidget *parent, 
-		const QFileInfo& baseLocation,
+		LibraryInterface* handler,
+		QSharedPointer<Component> component,
 		const QString contents = QString());
 
 	//! \brief The destructor
@@ -55,9 +61,12 @@ private:
 
 	//! No assignment
 	TargetNameEdit& operator=(const TargetNameEdit& other);
-	
-	//! \brief Refers to the location in file system used as base for relative paths
-	QFileInfo baseLocation_;
+
+	//! \brief Pointer to the instance that manages the library.
+	LibraryInterface* handler_;
+
+	//! \brief Pointer to the component being edited.
+	QSharedPointer<Component> component_;
 };
 
 #endif // TARGETNAMEEDIT_H

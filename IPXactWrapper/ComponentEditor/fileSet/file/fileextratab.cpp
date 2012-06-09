@@ -13,15 +13,16 @@
 #include <QVBoxLayout>
 #include <QSortFilterProxyModel>
 
-FileExtraTab::FileExtraTab(const QFileInfo& baseLocation, 
+FileExtraTab::FileExtraTab(LibraryInterface* handler,
+						   QSharedPointer<Component> component,
 						   QSharedPointer<File> file, 
 						   QWidget *parent ):
 QWidget(parent), 
-dependencies_(tr("Dependencies"), baseLocation, this),
+dependencies_(tr("Dependencies"), handler, component, this),
 exportedNames_(tr("Exported names"), this),
 imageTypes_(tr("Image types"), this),
 defineView_(this),
-defineModel_(this, file.data()),
+defineModel_(this, file),
 file_(file) {
 
 	dependencies_.initialize();

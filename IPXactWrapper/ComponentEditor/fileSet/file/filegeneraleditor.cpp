@@ -12,9 +12,8 @@
 #include <QLabel>
 #include <QGridLayout>
 
-#include <QDebug>
-
-FileGeneralEditor::FileGeneralEditor(QWidget *parent, File* file): 
+FileGeneralEditor::FileGeneralEditor(QWidget *parent, 
+									 QSharedPointer<File> file): 
 QGroupBox(tr("General options"), parent), 
 file_(file),
 logicalName_(this), 

@@ -25,7 +25,7 @@ nameEditor_(fileSet->getNameGroup(), this),
 groups_(tr("Group identifiers"), this),
 fileBuilders_(fileSet->getDefaultFileBuilders(), this),
 files_(component, fileSet, handler, this),
-dependencies_(tr("Dependent directories"), handler->getPath(*component->getVlnv()), this) {
+dependencies_(tr("Dependent directories"), handler, component, this) {
 
 	initialize();
 }

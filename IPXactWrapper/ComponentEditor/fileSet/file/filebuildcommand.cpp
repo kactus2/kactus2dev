@@ -15,13 +15,15 @@
 #include <QHBoxLayout>
 
 FileBuildCommand::FileBuildCommand( QWidget *parent, 
-								   File* file,
-								   const QFileInfo& baseLocation):
-QWidget(parent), buildCommand_(NULL), 
+								   LibraryInterface* handler,
+								   QSharedPointer<Component> component,
+								   QSharedPointer<File> file):
+QWidget(parent),
+buildCommand_(NULL), 
 command_(this),
 flags_(this),
 replaceDefault_(tr("Replace default flags"),this),
-target_(this, baseLocation),
+target_(this, handler, component),
 layout_(this) {
 
 	Q_ASSERT_X(file, "FileBuildCommand constructor",

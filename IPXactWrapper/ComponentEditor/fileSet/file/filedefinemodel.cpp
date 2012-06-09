@@ -9,8 +9,10 @@
 
 #include <models/file.h>
 
-FileDefineModel::FileDefineModel(QObject *parent, File* file): 
-QAbstractTableModel(parent), file_(file) {
+FileDefineModel::FileDefineModel(QObject *parent, 
+								 QSharedPointer<File> file): 
+QAbstractTableModel(parent), 
+file_(file) {
 
 	// get the defines from the file
 	restore();

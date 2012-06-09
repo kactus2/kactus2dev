@@ -19,6 +19,8 @@
 #include <QTabWidget>
 #include <QSharedPointer>
 
+class LibraryInterface;
+
 /*! \brief FileEditor is a widget to edit the details of a File
  * 
  */
@@ -29,13 +31,13 @@ public:
 
 	/*! \brief The constructor
 	 *
-	 * \param baseLocation Path to the containing component's xml-file location
+	 * \param handler Pointer to the instance that manages the library.
 	 * \param component Pointer to the component being edited.
 	 * \param file Pointer to the file that is edited.
 	 * \param parent Pointer to the owner of this widget.
 	 *
 	*/
-	FileEditor(const QString& baseLocation, 
+	FileEditor(LibraryInterface* handler,
 		QSharedPointer<Component> component, 
 		QSharedPointer<File> file,
 		QWidget *parent = 0);
@@ -78,9 +80,6 @@ private:
 
 	//! \brief Pointer to the file that is edited in this editor.
 	QSharedPointer<File> file_;
-
-	//! \brief The path to the containing component's xml-file.
-	QFileInfo baseLocation_;
 };
 
 #endif // FILEEDITOR_H

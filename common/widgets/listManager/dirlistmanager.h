@@ -9,11 +9,15 @@
 #define DIRLISTMANAGER_H
 
 #include "listmanager.h"
+#include <models/component.h>
 
 #include <QString>
 #include <QFileInfo>
 #include <QWidget>
 #include <QStringList>
+#include <QSharedPointer>
+
+class LibraryInterface;
 
 /*! \brief DirListManager can be used to manage a list of relative directory paths.
  *
@@ -27,13 +31,15 @@ public:
 	/*! \brief The constructor
 	 *
 	 * \param title Title to be set for the QGroupBox
-	 * \param baseLocation Refers to the location used as base for relative 
-	 * directory paths.
+	 * \param handler Pointer to the instance that manages the library.
+	 * \param component Pointer to the component being edited.
 	 * \param parent Pointer to the owner of this widget.
 	 *
 	*/
 	DirListManager(const QString title, 
-		const QFileInfo& baseLocation, QWidget *parent = 0);
+		LibraryInterface* handler,
+		QSharedPointer<Component> component,
+		QWidget *parent = 0);
 
 	//! \brief The destructor.
 	virtual ~DirListManager();
@@ -56,8 +62,11 @@ private:
 	//! No assignment
 	DirListManager& operator=(const DirListManager& other);
 
-	//! \brief Refers to the base directory that for relative paths.
-	QFileInfo baseDir_;
+	//! \brief Pointer to the instance that manages the library.
+	LibraryInterface* handler_;
+
+	//! \brief Pointer to the component being edited.
+	QSharedPointer<Component> component_;
 };
 
 #endif // DIRLISTMANAGER_H

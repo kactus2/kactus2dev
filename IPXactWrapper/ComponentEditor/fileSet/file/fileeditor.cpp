@@ -9,20 +9,21 @@
 
 #include <models/component.h>
 #include <models/file.h>
+#include <LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
 
-FileEditor::FileEditor( const QString& baseLocation,
+FileEditor::FileEditor( LibraryInterface* handler,
 					   QSharedPointer<Component> component, 
 					   QSharedPointer<File> file, 
 					   QWidget *parent ):
 ItemEditor(component, parent),
 tabs_(this), 
-generalTab_(baseLocation_, file_, &tabs_),
-extraTab_(baseLocation_, file_, &tabs_),
-file_(file),
-baseLocation_(baseLocation) {
+generalTab_(handler, component, file, &tabs_),
+extraTab_(handler, component, file, &tabs_),
+file_(file) {
 
+	Q_ASSERT(handler);
 	Q_ASSERT(component);
 	Q_ASSERT(file);
 

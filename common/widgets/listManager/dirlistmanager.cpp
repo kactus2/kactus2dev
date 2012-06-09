@@ -12,10 +12,12 @@
 #include <QDir>
 
 DirListManager::DirListManager( const QString title, 
-							   const QFileInfo& baseLocation, 
+							   LibraryInterface* handler,
+							   QSharedPointer<Component> component,
 							   QWidget *parent /*= 0*/):
 ListManager(title, parent), 
-baseDir_(baseLocation) {
+handler_(handler), 
+component_(component) {
 }
 
 DirListManager::~DirListManager() {

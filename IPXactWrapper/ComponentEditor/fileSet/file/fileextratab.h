@@ -13,11 +13,13 @@
 
 #include <common/widgets/listManager/dirlistmanager.h>
 #include <common/widgets/listManager/listmanager.h>
-
+#include <models/component.h>
 #include <models/file.h>
 
 #include <QWidget>
 #include <QSharedPointer>
+
+class LibraryInterface;
 
 /*! \brief FileExtraTab is a widget to edit File's settings.
  * 
@@ -29,12 +31,14 @@ public:
 
 	/*! \brief The constructor
 	 *
-	 * \param baseLocation Refers to the containing component's xml-file location.
+	 * \param handler Pointer to the instance that manages the library.
+	 * \param component Pointer to the component being edited.
 	 * \param file Pointer to the file being edited.
 	 * \param parent Pointer to the owner of this widget.
 	 *
 	*/
-	FileExtraTab(const QFileInfo& baseLocation, 
+	FileExtraTab(LibraryInterface* handler,
+		QSharedPointer<Component> component,
 		QSharedPointer<File> file,
 		QWidget *parent);
 
