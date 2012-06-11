@@ -13,13 +13,21 @@ ComponentEditorAddrSpacesItem::ComponentEditorAddrSpacesItem(ComponentEditorTree
 															 QSharedPointer<Component> component,
 															 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-addrSpaces_(component->getAddressSpaces()) {
+addrSpaces_(component->getAddressSpaces()), 
+editor_(component) {
 
 	foreach (QSharedPointer<AddressSpace> addrSpace, addrSpaces_) {
 		QSharedPointer<ComponentEditorAddrSpaceItem> addrItem(
 			new ComponentEditorAddrSpaceItem(addrSpace, model, libHandler, component, this));	
 		childItems_.append(addrItem);
 	}
+
+	connect(&editor_, SIGNAL(contentChanged()), 
+		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+	connect(&editor_, SIGNAL(childAdded(int)),
+		this, SLOT(onAddChild(int)), Qt::UniqueConnection);
+	connect(&editor_, SIGNAL(childRemoved(int)),
+		this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
 }
 
 ComponentEditorAddrSpacesItem::~ComponentEditorAddrSpacesItem() {
@@ -30,7 +38,7 @@ QString ComponentEditorAddrSpacesItem::text() const {
 }
 
 ItemEditor* ComponentEditorAddrSpacesItem::editor() {
-	return NULL;
+	return &editor_;
 }
 
 QString ComponentEditorAddrSpacesItem::getTooltip() const {

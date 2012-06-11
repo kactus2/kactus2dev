@@ -30,7 +30,7 @@ range_(this) {
 	width_.setProperty("mandatoryField", true);
 	range_.setProperty("mandatoryField", true);
 
-        QLabel* unitLabel = new QLabel(tr("Addressable unit size"), this);
+	QLabel* unitLabel = new QLabel(tr("Addressable unit size"), this);
 	QLabel* widthLabel = new QLabel(tr("Width of address block"), this);
 	QLabel* rangeLabel = new QLabel(tr("Range of address block"), this);
 

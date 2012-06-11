@@ -9,6 +9,7 @@
 #define COMPONENTEDITORADDRSPACESITEM_H
 
 #include "componenteditoritem.h"
+#include <IPXactWrapper/ComponentEditor/addressSpaces/addressspaceseditor.h>
 #include <models/addressspace.h>
 
 #include <QList>
@@ -65,6 +66,8 @@ private:
 	//! \brief The address spaces being edited.
 	QList<QSharedPointer<AddressSpace> >& addrSpaces_;
 
+	//! \brief The editor to edit the address spaces.
+	AddressSpacesEditor editor_;
 };
 
 #endif // COMPONENTEDITORADDRSPACESITEM_H
