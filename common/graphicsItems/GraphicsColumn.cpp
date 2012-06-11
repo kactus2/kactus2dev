@@ -131,7 +131,7 @@ void GraphicsColumn::addItem(QGraphicsItem* item, bool load)
         }
     }
 
-    // TODO: emit contentChanged() necessary?
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -147,7 +147,7 @@ void GraphicsColumn::removeItem(QGraphicsItem* item)
         VStackedLayout::updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
     }
 
-    // TODO: emit contentChanged() necessary?
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------

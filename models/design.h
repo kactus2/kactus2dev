@@ -662,7 +662,7 @@ public:
 	*
 	* \return QList containing the component instances
 	*/
-	const QList<ComponentInstance> &getComponentInstances();
+	QList<ComponentInstance> const& getComponentInstances() const;
 
     /*!
      *  Returns a list of SW instances in the design.

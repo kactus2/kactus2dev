@@ -20449,10 +20449,6 @@
 			ParseFiles="false"
 			>
 		</Filter>
-		<Filter
-			Name="SWDesign"
-			>
-		</Filter>
 		<File
 			RelativePath=".\appicon.ico"
 			>

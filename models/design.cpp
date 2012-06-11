@@ -739,7 +739,7 @@ bool Design::isValid() const {
 	return true;
 }
 
-const QList<Design::ComponentInstance> &Design::getComponentInstances()
+QList<Design::ComponentInstance> const& Design::getComponentInstances() const
 {
 	return componentInstances_;
 }

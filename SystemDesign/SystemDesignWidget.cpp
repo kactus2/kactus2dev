@@ -66,6 +66,10 @@ SystemDesignWidget::SystemDesignWidget(bool onlySW, LibraryInterface* lh, MainWi
         this, SIGNAL(connectionSelected(GraphicsConnection*)), Qt::UniqueConnection);
     connect(diagram_, SIGNAL(clearItemSelection()),
         this, SIGNAL(clearItemSelection()), Qt::UniqueConnection);
+    connect(diagram_, SIGNAL(componentInstantiated(ComponentItem*)),
+        this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+    connect(diagram_, SIGNAL(componentInstanceRemoved(ComponentItem*)),
+        this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
     
     connect(diagram_, SIGNAL(errorMessage(const QString&)),
         this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
@@ -207,15 +211,14 @@ bool SystemDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
         {
             emit errorMessage(tr("Component %1 did not contain a view").arg(
                 comp->getVlnv()->getName()));
-            return false;;
+            return false;
         }
     }
 
     if (!onlySW_)
     {
         // Update the design.
-        updateSystemDesignV2(lh_, QFileInfo(lh_->getPath(*design->getVlnv())).path(),
-                             comp->getHierRef(""), *design);
+        updateSystemDesignV2(lh_, comp->getHierRef(""), *design, designConf);
     }
 
     if (!diagram_->setDesign(comp, design, designConf))
@@ -363,13 +366,15 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
             }
 
             // Delete the column if requested.
-            if (del)
+            if (!del)
             {
-                QSharedPointer<QUndoCommand> cmd(new SystemColumnDeleteCommand(diagram_->getColumnLayout(),
-                                                                               column));
-                editProvider_->addCommand(cmd);
-                emit clearItemSelection();
+                return;
             }
+
+            QSharedPointer<QUndoCommand> cmd(new SystemColumnDeleteCommand(diagram_->getColumnLayout(),
+                                                                               column));
+            editProvider_->addCommand(cmd);
+            emit clearItemSelection();
         }
         else if (selected->type() == SWCompItem::Type)
         {
@@ -380,9 +385,9 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
             QSharedPointer<SystemItemDeleteCommand> cmd(new SystemItemDeleteCommand(component));
 
             connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
-                this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+                    this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
             connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
-                this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+                    this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
 
             editProvider_->addCommand(cmd);
 
@@ -396,6 +401,8 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
             QSharedPointer<QUndoCommand> cmd(new SWConnectionDeleteCommand(static_cast<GraphicsConnection*>(selected)));
             editProvider_->addCommand(cmd);
         }
+
+        emit contentChanged();
     }
 }
 

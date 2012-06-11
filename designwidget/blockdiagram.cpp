@@ -912,9 +912,9 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
                 mouseEvent->scenePos(),
                 QVector2D(0.0f, 0.0f), QString(), QString(), this);
 
-            if (tempConnEndPoint_->isBus())
+            if (tempConnEndPoint_->isAdHoc())
             {
-                tempConnection_->setLineWidth(2);
+                tempConnection_->setLineWidth(1);
             }
 
             addItem(tempConnection_);
@@ -1148,9 +1148,9 @@ void BlockDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
                     QVector2D(0.0f, 0.0f), QString(), QString(), this);
             }
 
-            if (tempConnEndPoint_->isBus())
+            if (tempConnEndPoint_->isAdHoc())
             {
-                newTempConnection_->setLineWidth(2);
+                newTempConnection_->setLineWidth(1);
             }
 
             removeItem(tempConnection_);

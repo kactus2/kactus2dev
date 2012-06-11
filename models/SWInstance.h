@@ -119,6 +119,20 @@ public:
     void setPosition(QPointF const& pos);
 
     /*!
+     *  Sets the flag whether the instance is an imported one and should be auto-synced.
+     *
+     *      @param [in] imported If true, the instance is set as imported.
+     */
+    void setImported(bool imported);
+
+    /*!
+     *  Sets the name of the import source instance.
+     *
+     *      @param [in] nameRef The name of the import source instance.
+     */
+    void setImportRef(QString const& nameRef);
+
+    /*!
      *  Sets the property values.
      *
      *      @param [in] values The property values.
@@ -175,6 +189,16 @@ public:
      *  Returns the global position of the SW instance in the design.
      */
     QPointF const& getPosition() const;
+
+    /*!
+     *  Returns true if the instance is an imported one.
+     */
+    bool isImported() const;
+
+    /*!
+     *  Returns the name of the import source instance.
+     */
+    QString const& getImportRef() const;
 
     /*!
      *  Returns the property values.
@@ -235,6 +259,12 @@ private:
 
     //! The global position of the SW instance in the design.
     QPointF pos_;
+
+    //! If true, the instance is an imported one.
+    bool imported_;
+
+    //! The name of the import source instance.
+    QString importRef_;
 
     //! The "ad-hoc" communication interfaces.
     QList< QSharedPointer<ComInterface> > comInterfaces_;

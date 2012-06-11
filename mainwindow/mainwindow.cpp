@@ -2215,7 +2215,7 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName,
     columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, 319));
     sysDesign->setColumns(columns);
     
-	generateSystemDesignV2(libraryHandler_, directory, component->getHierRef(viewName), *sysDesign);
+	generateSystemDesignV2(libraryHandler_, component->getHierRef(viewName), *sysDesign);
 
 	// Create the design configuration.
 	QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV));
@@ -2290,7 +2290,7 @@ void MainWindow::createSystemDesign(VLNV const& vlnv)
     QFileInfo xmlInfo(xmlPath);
     QString dirPath = xmlInfo.absolutePath();
 
-    generateSystemDesignV2(libraryHandler_, dirPath, component->getHierRef(), *newDesign);
+    generateSystemDesignV2(libraryHandler_, component->getHierRef(), *newDesign);
 
     libraryHandler_->writeModelToFile(dirPath, newDesign);
     libraryHandler_->writeModelToFile(dirPath, designConf);

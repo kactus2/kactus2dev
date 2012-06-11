@@ -160,6 +160,12 @@ signals:
     //! Signaled when all items are deselected.
     void clearItemSelection();
 
+    //! \brief Emitted when a new component is instantiated to the design.
+    void componentInstantiated(ComponentItem* comp);
+
+    //! \brief Emitted when a component instance is removed from the design.
+    void componentInstanceRemoved(ComponentItem* comp);
+
 protected:
     void keyPressEvent(QKeyEvent* event);
 

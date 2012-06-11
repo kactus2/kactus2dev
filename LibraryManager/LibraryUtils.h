@@ -13,10 +13,12 @@
 #define LIBRARYUTILS_H
 
 #include <QString>
+#include <QSharedPointer>
 
 class VLNV;
 class Component;
 class Design;
+class DesignConfiguration;
 class LibraryInterface;
 
 //-----------------------------------------------------------------------------
@@ -50,12 +52,10 @@ void updateSystemDesign(LibraryInterface* lh, QString const& directory,
  *  generates a system design.
  *
  *      @param [in]  lh         The library interface.
- *      @param [in]  directory  The directory for the files.
  *      @param [in]  component  The component.
  *      @param [out] sysDesign  The resulted system design.
  */
-void generateSystemDesignV2(LibraryInterface* lh, QString const& directory,
-                            VLNV const& designVLNV, Design& sysDesign);
+void generateSystemDesignV2(LibraryInterface* lh, VLNV const& designVLNV, Design& sysDesign);
 
 /*!
  *  Updates the system design based on the given component. This function reflects
@@ -64,8 +64,8 @@ void generateSystemDesignV2(LibraryInterface* lh, QString const& directory,
  *      @param [in]    lh         The library interface.
  *      @param [in,out] sysDesign  The system design to update.
  */
-void updateSystemDesignV2(LibraryInterface* lh, QString const& directory,
-                          VLNV const& designVLNV, Design& sysDesign);
+void updateSystemDesignV2(LibraryInterface* lh, VLNV const& designVLNV, Design& sysDesign,
+                          QSharedPointer<DesignConfiguration> designConf);
 
 //-----------------------------------------------------------------------------
 

@@ -615,7 +615,7 @@ void DesignWidget::keyPressEvent(QKeyEvent *event)
             editProvider_->addCommand(cmd);
         }
 
-        // if something was removed then save button must be enabled again
+        // If something was removed then save button must be enabled again.
         emit contentChanged();
     }
     else

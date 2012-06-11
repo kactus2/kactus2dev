@@ -242,7 +242,7 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
 
         SWCompItem* item = new SWCompItem(getLibraryInterface(), component, instance.getInstanceName(),
                                           instance.getDisplayName(), instance.getDescription());
-        item->setImported(false); // TODO:
+        item->setImported(instance.isImported());
         item->setPos(instance.getPosition());
         item->setPropertyValues(instance.getPropertyValues());
         item->setFileSetRef(instance.getFileSetRef());
@@ -627,12 +627,6 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
                                                tempConnEndpoint_->getDirection(),
                                                event->scenePos(),
                                                QVector2D(0.0f, 0.0f), QString(), QString(), this);
-
-//             if (tempConnEndpoint_->isApi())
-//             {
-//                 tempConnection_->setLineWidth(2);
-//             }
-
             addItem(tempConnection_);
 
             // Determine all potential endpoints to which the starting endpoint could be connected
@@ -812,7 +806,6 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
             newSelection = selectedItems().front();
         }
 
-        // TODO:
         onSelected(newSelection);
 
 //         if (oldSelection && oldSelection->type() == EndpointConnection::Type)
@@ -902,11 +895,6 @@ void SystemDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
                                                       snapPointToGrid(event->scenePos()),
                                                       QVector2D(0.0f, 0.0f), QString(), QString(), this);
             }
-
-//             if (tempConnEndpoint_->isApi())
-//             {
-//                 newTempConnection_->setLineWidth(2);
-//             }
 
             discardConnection();
             
@@ -1035,6 +1023,7 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
             instance.setComponentRef(*swCompItem->componentModel()->getVlnv());
             instance.setPropertyValues(swCompItem->getPropertyValues());
             instance.setFileSetRef(swCompItem->getFileSetRef());
+            instance.setImported(swCompItem->isImported());
                         
             if (swCompItem->parentItem()->type() == HWMappingItem::Type)
             {

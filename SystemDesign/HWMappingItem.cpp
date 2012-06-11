@@ -222,7 +222,9 @@ void HWMappingItem::onMoveItem(QGraphicsItem* item)
     // Check if the item is not overlapping the HW mapping item enough.
     QRectF intersection = sceneBoundingRect().intersected(item->sceneBoundingRect());
 
-    if (compItem->rect().height() - intersection.height() >= 3 * GridSize)
+    // Only non-imported SW components can be moved out of the HW mapping item.
+    if (!static_cast<SWComponentItem*>(compItem)->isImported() &&
+        compItem->rect().height() - intersection.height() >= 3 * GridSize)
     {
         swComponents_.removeAll(compItem);
 

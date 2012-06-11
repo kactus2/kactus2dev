@@ -19,6 +19,7 @@
 //-----------------------------------------------------------------------------
 SWInstance::SWInstance() : instanceName_(), displayName_(), desc_(),
                            componentRef_(), fileSetRef_(), hwRef_(), pos_(),
+                           imported_(false), importRef_(),
                            comInterfaces_(), propertyValues_(),
                            apiInterfacePositions_(), comInterfacePositions_()
 {
@@ -35,6 +36,8 @@ SWInstance::SWInstance(SWInstance const& rhs)
       fileSetRef_(rhs.fileSetRef_),
       hwRef_(rhs.hwRef_),
       pos_(rhs.pos_),
+      imported_(rhs.imported_),
+      importRef_(rhs.importRef_),
       comInterfaces_(),
       propertyValues_(rhs.propertyValues_),
       apiInterfacePositions_(rhs.apiInterfacePositions_),
@@ -49,10 +52,20 @@ SWInstance::SWInstance(SWInstance const& rhs)
 //-----------------------------------------------------------------------------
 // Function: SWInstance::SWInstance()
 //-----------------------------------------------------------------------------
-SWInstance::SWInstance(QDomNode& node) : instanceName_(), displayName_(), desc_(),
-                                         componentRef_(), fileSetRef_(), hwRef_(), pos_(),
-                                         comInterfaces_(), propertyValues_(),
-                                         apiInterfacePositions_(), comInterfacePositions_()
+SWInstance::SWInstance(QDomNode& node)
+    : instanceName_(),
+      displayName_(),
+      desc_(),
+      componentRef_(),
+      fileSetRef_(),
+      hwRef_(),
+      pos_(),
+      imported_(false),
+      importRef_(),
+      comInterfaces_(),
+      propertyValues_(),
+      apiInterfacePositions_(),
+      comInterfacePositions_()
 {
     for (int i = 0; i < node.childNodes().count(); ++i)
     {
@@ -91,6 +104,11 @@ SWInstance::SWInstance(QDomNode& node) : instanceName_(), displayName_(), desc_(
         {
             pos_.setX(childNode.attributes().namedItem("x").nodeValue().toInt());
             pos_.setY(childNode.attributes().namedItem("y").nodeValue().toInt());
+        }
+        else if (childNode.nodeName() == "kactus2:imported")
+        {
+            imported_ = true;
+            importRef_ = childNode.attributes().namedItem("kactus2:importRef").nodeValue();
         }
         else if (childNode.nodeName() == "kactus2:comInterfaces")
         {
@@ -149,6 +167,12 @@ void SWInstance::write(QXmlStreamWriter& writer) const
     writer.writeEmptyElement("kactus2:position");
     writer.writeAttribute("x", QString::number(int(pos_.x())));
     writer.writeAttribute("y", QString::number(int(pos_.y())));
+
+    if (imported_)
+    {
+        writer.writeEmptyElement("kactus2:imported");
+        writer.writeAttribute("kactus2:importRef", importRef_);
+    }
 
     // Write communication interfaces.
     if (!comInterfaces_.empty())
@@ -305,6 +329,22 @@ void SWInstance::setPosition(QPointF const& pos)
 }
 
 //-----------------------------------------------------------------------------
+// Function: SWInstance::setImported()
+//-----------------------------------------------------------------------------
+void SWInstance::setImported(bool imported)
+{
+    imported_ = imported;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWInstance::setImportRef()
+//-----------------------------------------------------------------------------
+void SWInstance::setImportRef(QString const& nameRef)
+{
+    importRef_ = nameRef;
+}
+
+//-----------------------------------------------------------------------------
 // Function: SWInstance::updateApiInterfacePosition()
 //-----------------------------------------------------------------------------
 void SWInstance::updateApiInterfacePosition(QString const& name, QPointF const& pos)
@@ -374,6 +414,22 @@ QString const& SWInstance::getMapping() const
 QPointF const& SWInstance::getPosition() const
 {
     return pos_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWInstance::isImported()
+//-----------------------------------------------------------------------------
+bool SWInstance::isImported() const
+{
+    return imported_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWInstance::getImportRef()
+//-----------------------------------------------------------------------------
+QString const& SWInstance::getImportRef() const
+{
+    return importRef_;
 }
 
 //-----------------------------------------------------------------------------
@@ -473,3 +529,4 @@ QMap<QString, QString> const& SWInstance::getPropertyValues() const
 {
     return propertyValues_;
 }
+

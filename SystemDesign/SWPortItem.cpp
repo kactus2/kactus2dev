@@ -392,8 +392,8 @@ bool SWPortItem::canConnect(ConnectionEndpoint const* other) const
             QSharedPointer<ApiInterface> apiIf1 = getApiInterface();
             QSharedPointer<ApiInterface> apiIf2 = other->getApiInterface();
 
-            // Provider can have only one connection.
-            if (isConnected() && apiIf1->getDependencyDirection() == DEPENDENCY_PROVIDER)
+            // Requester can have only one connection.
+            if (isConnected() && apiIf1->getDependencyDirection() == DEPENDENCY_REQUESTER)
             {
                 return false;
             }

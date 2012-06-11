@@ -23,7 +23,7 @@ namespace KactusColors
     QColor const BROKEN_CONNECTION = Qt::red;
 
     //! Color used for allowed visualization in design diagrams.
-    QColor const DIAGRAM_ALLOWED_INTERFACE = Qt::magenta;
+    QColor const DIAGRAM_ALLOWED_INTERFACE = QColor(0, 220, 0);
 }
 
 //-----------------------------------------------------------------------------

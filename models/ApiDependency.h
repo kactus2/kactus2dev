@@ -61,10 +61,11 @@ public:
      *      @param [in] ref1         The first interface reference.
      *      @param [in] ref2         The second interface reference.
      *      @param [in] route        The connection route.
+     *      @param [in] imported     If true, the connection is an imported one.
      */
     ApiDependency(QString const& name, QString const& displayName, QString const& description,
                   ApiInterfaceRef const& ref1, ApiInterfaceRef const& ref2,
-                  QList<QPointF> const& route);
+                  QList<QPointF> const& route, bool imported = false);
 
     /*!
      *  Copy constructor.
@@ -124,6 +125,20 @@ public:
     void setInterface2(ApiInterfaceRef const& ref);
 
     /*!
+     *  Sets the connection route.
+     *
+     *      @param [in] route The route to set.
+     */
+    void setRoute(QList<QPointF> const& route);
+
+    /*!
+     *  Sets the flag whether the connection is an imported one and should be auto-synced.
+     *
+     *      @param [in] imported If true, the connection is set as imported.
+     */
+    void setImported(bool imported);
+
+    /*!
      *  Returns the name of the dependency.
      */
     QString const& getName() const;
@@ -154,6 +169,11 @@ public:
     QList<QPointF> const& getRoute() const;
 
     /*!
+     *  Returns true if the connection is an imported one.
+     */
+    bool isImported() const;
+
+    /*!
      *  Assignment operator.
      */
     ApiDependency& operator=(ApiDependency const& rhs);
@@ -180,6 +200,9 @@ private:
 
     //! The connection route.
     QList<QPointF> route_;
+
+    //! If true, the connection is an imported one.
+    bool imported_;
 };
 
 //-----------------------------------------------------------------------------

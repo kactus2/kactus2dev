@@ -48,9 +48,9 @@ GraphicsConnection::GraphicsConnection(ConnectionEndpoint* endpoint1, Connection
     setItemSettings();
     createRoute(endpoint1, endpoint2);
 
-    if (endpoint1->isBus())
+    if (endpoint1->isAdHoc())
     {
-        setLineWidth(2);
+        setLineWidth(1);
     }
 
     if (autoConnect)
@@ -644,7 +644,7 @@ void GraphicsConnection::paint(QPainter* painter, QStyleOptionGraphicsItem const
 void GraphicsConnection::setItemSettings()
 {
     setZValue(-1000);
-    setLineWidth(2); // TODO: Set back to one if multiple line widths
+    setLineWidth(2);
     setFlag(ItemIsSelectable);
 }
 
@@ -1090,29 +1090,55 @@ void GraphicsConnection::drawOverlapGraphics(QPainter* painter)
             {
                 QLineF line1(route1[i], route1[i + 1]);
 
-                // Check if the line segment intersects both parallel lines (either vertical or horizontal).
+                // Check for intersections with the component rectangle's edges.
                 QPointF pt, pt2;
                 QLineF::IntersectType type1 = line1.intersect(leftEdge, &pt);
                 QLineF::IntersectType type2 = line1.intersect(rightEdge, &pt2);
 
+                painter->setPen(QPen(QColor(160, 160, 160), pen().width() + 1));
+
+                // Left intersection.
+                // TODO: Requires checking whether the segment is first or last and the endpoint is inside the component.
+//                 if (type1 == QLineF::BoundedIntersection)
+//                 {
+//                     drawLineGap(painter, line1, pt);
+//                 }
+// 
+//                 // Right intersection.
+//                 if (type2 == QLineF::BoundedIntersection)
+//                 {
+//                     drawLineGap(painter, line1, pt2);
+//                 }
+
+                // Fill in the whole line segment under the component if the segment goes across the component
+                // horizontally.
                 if (type1 == QLineF::BoundedIntersection && type2 == QLineF::BoundedIntersection)
                 {
-                    painter->setPen(QPen(QColor(160, 160, 160), pen().width() + 1));
-                    painter->drawLine(pt, pt2);
                     drawLineGap(painter, line1, pt);
                     drawLineGap(painter, line1, pt2);
-                    continue;
+                    painter->drawLine(pt, pt2);
                 }
 
                 type1 = line1.intersect(topEdge, &pt);
                 type2 = line1.intersect(bottomEdge, &pt2);
 
+                // Top intersection.
+                if (type1 == QLineF::BoundedIntersection)
+                {
+                    drawLineGap(painter, line1, pt);
+                }
+
+                // Bottom intersection.
+                if (type2 == QLineF::BoundedIntersection)
+                {
+                    drawLineGap(painter, line1, pt2);
+                }
+
+                // Fill in the whole line segment under the component if the segment goes across the component
+                // vertically.
                 if (type1 == QLineF::BoundedIntersection && type2 == QLineF::BoundedIntersection)
                 {
-                    painter->setPen(QPen(QColor(160, 160, 160), pen().width() + 1));
                     painter->drawLine(pt, pt2);
-                    drawLineGap(painter, line1, pt);
-                    drawLineGap(painter, line1, pt2);
                 }
             }
         }

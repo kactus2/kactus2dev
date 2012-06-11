@@ -16,7 +16,7 @@
 //-----------------------------------------------------------------------------
 ApiDependency::ApiDependency() : name_(), displayName_(), desc_(),
                                  interface1_(), interface2_(),
-                                 route_()
+                                 route_(), imported_(false)
 {
 }
 
@@ -25,13 +25,15 @@ ApiDependency::ApiDependency() : name_(), displayName_(), desc_(),
 //-----------------------------------------------------------------------------
 ApiDependency::ApiDependency(QString const& name, QString const& displayName,
                              QString const& description, ApiInterfaceRef const& ref1,
-                             ApiInterfaceRef const& ref2, QList<QPointF> const& route)
+                             ApiInterfaceRef const& ref2, QList<QPointF> const& route,
+                             bool imported)
     : name_(name),
       displayName_(displayName),
       desc_(description),
       interface1_(ref1),
       interface2_(ref2),
-      route_(route)
+      route_(route),
+      imported_(imported)
 {
 
 }
@@ -44,7 +46,8 @@ ApiDependency::ApiDependency(ApiDependency const& rhs) : name_(rhs.name_),
                                                          desc_(rhs.desc_),
                                                          interface1_(rhs.interface1_),
                                                          interface2_(rhs.interface2_),
-                                                         route_(rhs.route_)
+                                                         route_(rhs.route_),
+                                                         imported_(rhs.imported_)
 {
 }
 
@@ -53,7 +56,7 @@ ApiDependency::ApiDependency(ApiDependency const& rhs) : name_(rhs.name_),
 //-----------------------------------------------------------------------------
 ApiDependency::ApiDependency(QDomNode& node) : name_(), displayName_(), desc_(),
                                                interface1_(), interface2_(),
-                                               route_()
+                                               route_(), imported_(false)
 {
     for (int i = 0; i < node.childNodes().count(); ++i)
     {
@@ -104,6 +107,10 @@ ApiDependency::ApiDependency(QDomNode& node) : name_(), displayName_(), desc_(),
                 }
             }
         }
+        else if (childNode.nodeName() == "kactus2:imported")
+        {
+            imported_ = true;
+        }
     }
 }
 
@@ -147,6 +154,11 @@ void ApiDependency::write(QXmlStreamWriter& writer) const
         writer.writeEndElement();
     }
 
+    if (imported_)
+    {
+        writer.writeEmptyElement("kactus2:imported");
+    }
+
     writer.writeEndElement(); // kactus2:apiDependency
 }
 
@@ -188,6 +200,22 @@ void ApiDependency::setInterface1(ApiInterfaceRef const& ref)
 void ApiDependency::setInterface2(ApiInterfaceRef const& ref)
 {
     interface2_ = ref;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiDependency::setRoute()
+//-----------------------------------------------------------------------------
+void ApiDependency::setRoute(QList<QPointF> const& route)
+{
+    route_ = route;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiDependency::setImported()
+//-----------------------------------------------------------------------------
+void ApiDependency::setImported(bool imported)
+{
+    imported_ = imported;
 }
 
 //-----------------------------------------------------------------------------
@@ -239,6 +267,14 @@ QList<QPointF> const& ApiDependency::getRoute() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ApiDependency::isImported()
+//-----------------------------------------------------------------------------
+bool ApiDependency::isImported() const
+{
+    return imported_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ApiDependency::operator=()
 //-----------------------------------------------------------------------------
 ApiDependency& ApiDependency::operator=(ApiDependency const& rhs)
@@ -251,6 +287,7 @@ ApiDependency& ApiDependency::operator=(ApiDependency const& rhs)
         interface1_ = rhs.interface1_;
         interface2_ = rhs.interface2_;
         route_ = rhs.route_;
+        imported_ = rhs.imported_;
     }
 
     return *this;
