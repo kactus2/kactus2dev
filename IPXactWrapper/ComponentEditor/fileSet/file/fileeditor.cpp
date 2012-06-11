@@ -60,6 +60,6 @@ void FileEditor::makeChanges() {
 
 void FileEditor::refresh() {
 	// fetch the data from the model
-	generalTab_.restore();
-	extraTab_.restore();
+	generalTab_.refresh();
+	extraTab_.refresh();
 }

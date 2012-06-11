@@ -1269,6 +1269,37 @@ QString General::getRelativePath(const QString from, const QString to) {
 	return ipXactDir.relativeFilePath(toInfo.absoluteFilePath());
 }
 
+QString General::getRelativeSavePath( const QString& from, const QString& to ) {
+	if (from.isEmpty() || to.isEmpty()) {
+		return QString();
+	}
+
+	// create file info instance to make sure that only the directory of the
+	// from parameter is used
+	QFileInfo fromInfo(from);
+
+	QString fromPath = fromInfo.absolutePath();
+
+	if (fromInfo.isDir())
+	{
+		fromPath = fromInfo.absoluteFilePath();
+	}
+
+	// if the directory does not exist
+	QDir ipXactDir(fromPath);
+
+	if (!ipXactDir.exists()) {
+		return QString();
+	}
+
+	// create file info instance to make sure the target file exists and to
+	// use an absolute file path to calculate the relative path.
+	QFileInfo toInfo(to);
+
+	// calculate the relative path and return it.
+	return ipXactDir.relativeFilePath(toInfo.absoluteFilePath());
+}
+
 QString General::getAbsolutePath(const QString originalPath,
 		const QString relativePath) {
 

@@ -56,6 +56,12 @@ BuildCommand::~BuildCommand() {
 }
 
 void BuildCommand::write(QXmlStreamWriter& writer) {
+	// only write if there is something to write
+	if (targetName_.isEmpty() && command_.isEmpty() && 
+		flags_.isEmpty()) {
+			return;
+	}
+	
 	writer.writeStartElement("spirit:buildCommand");
 
 	// call base class write() to write base class information

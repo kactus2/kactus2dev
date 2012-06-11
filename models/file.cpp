@@ -19,6 +19,8 @@
 #include <QXmlStreamWriter>
 #include <QFileInfo>
 
+#include <QDebug>
+
 File::Define::Define( const QString name, const QString value ):
 nameGroup_(name), value_(value) {
 }
@@ -77,11 +79,24 @@ bool File::Define::isValid() const {
 }
 
 // the constructor
-File::File(QDomNode &fileNode, FileSet* parent): name_(), fileId_(),
-attributes_(), nameAttributes_(), fileTypes_(), userFileTypes_(),
-includeFile_(false), externalDeclarations_(false), logicalName_(),
-logicalNameDefault_(false), exportedNames_(), dependencies_(), imageTypes_(),
-description_(), buildcommand_(), defines_(), parent_(parent) {
+File::File(QDomNode &fileNode, FileSet* parent): 
+name_(),
+fileId_(),
+attributes_(),
+nameAttributes_(),
+fileTypes_(), 
+userFileTypes_(),
+includeFile_(false), 
+externalDeclarations_(false),
+logicalName_(),
+logicalNameDefault_(false),
+exportedNames_(), 
+dependencies_(), 
+imageTypes_(),
+description_(),
+buildcommand_(),
+defines_(), 
+parent_(parent) {
 
 	// get the attributes for the file element
 	QDomNamedNodeMap attributeMap = fileNode.attributes();
@@ -218,11 +233,24 @@ parent_(parent)  {
 	}
 }
 
-File::File( FileSet* parent ): name_(), fileId_(),
-attributes_(), nameAttributes_(), fileTypes_(), userFileTypes_(),
-includeFile_(false), externalDeclarations_(false), logicalName_(),
-logicalNameDefault_(false), exportedNames_(), dependencies_(), imageTypes_(),
-description_(), buildcommand_(), defines_(), parent_(parent)  {
+File::File( FileSet* parent ):
+name_(), 
+fileId_(),
+attributes_(),
+nameAttributes_(), 
+fileTypes_(),
+userFileTypes_(),
+includeFile_(false),
+externalDeclarations_(false),
+logicalName_(),
+logicalNameDefault_(false), 
+exportedNames_(),
+dependencies_(), 
+imageTypes_(),
+description_(),
+buildcommand_(), 
+defines_(), 
+parent_(parent)  {
 }
 
 File::File( const File &other, FileSet* parent ):
@@ -526,11 +554,14 @@ void File::setLogicalNameDefault(bool logicalNameDefault) {
 	logicalNameDefault_ = logicalNameDefault;
 }
 
-const QList<QString>& File::getUserFileTypes() {
+const QStringList& File::getUserFileTypes() {
 	return userFileTypes_;
 }
 
-BuildCommand *File::getBuildcommand() const {
+BuildCommand *File::getBuildcommand() {
+	if (!buildcommand_) {
+		buildcommand_ = QSharedPointer<BuildCommand>(new BuildCommand());
+	}
 	return buildcommand_.data();
 }
 
@@ -566,7 +597,7 @@ void File::setLogicalName(const QString &logicalName) {
 	logicalName_ = logicalName;
 }
 
-void File::setUserFileTypes(QList<QString> &userFileTypes) {
+void File::setUserFileTypes( const QStringList& userFileTypes ) {
 	userFileTypes_.clear();
 	userFileTypes_ = userFileTypes;
 }
@@ -584,11 +615,11 @@ bool File::getLogicalNameDefault() const {
 	return logicalNameDefault_;
 }
 
-const QList<QString>& File::getFileTypes() const {
+const QStringList& File::getFileTypes() const {
 	return fileTypes_;
 }
 
-void File::setFileTypes(const QList<QString> &fileTypes) {
+void File::setFileTypes( const QStringList& fileTypes ) {
 	fileTypes_.clear();
 	fileTypes_ = fileTypes;
 }
@@ -767,7 +798,7 @@ void File::setAllFileTypes( const QStringList& fileTypes ) {
 
 		// if the file type is one of the specified ones
 		if (General::isSpecifiedFileType(fileType)) {
-			fileTypes_.append(fileTypes);
+			fileTypes_.append(fileType);
 		}
 		// if the file type is user defined
 		else {

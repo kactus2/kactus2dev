@@ -154,6 +154,13 @@ bool FilesModel::setData( const QModelIndex& index, const QVariant& value, int r
 		switch (index.column()) {
 			// file name can not be set directly
 			case 0: {
+				// if user clears the column then the file is removed
+				const QString filePath = value.toString();
+				if (filePath.isEmpty()) {
+					onRemoveItem(index);
+					return true;
+				}
+				// otherwise user can not edit the file name, it must be done through file path
 				return false;
 					}
 			// file name is set through file path

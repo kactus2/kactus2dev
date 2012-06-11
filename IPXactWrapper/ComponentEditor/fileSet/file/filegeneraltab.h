@@ -48,15 +48,10 @@ public:
 	//! \brief The destructor
 	virtual ~FileGeneralTab();
 
-	/*! \brief Apply the changes from the editor to the model.
-	 *
-	*/
-	void apply();
-
 	/*! \brief Restore the changes from the model to the editor.
 	 *
 	*/
-	void restore();
+	void refresh();
 
 	/*! \brief Check that the editor is in a valid state.
 	 *

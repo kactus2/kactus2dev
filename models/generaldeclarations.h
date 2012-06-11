@@ -1078,6 +1078,21 @@ void writeVLNVAttributes(QXmlStreamWriter& writer, const VLNV* vlnv);
  */
 QString getRelativePath(const QString from, const QString to);
 
+/*! \brief Get a relative file path from one location to another.
+ *
+ * This function can be used to create a QString that contains the relative
+ * file path from a directory to a single file. This function can be used to get
+ * relative path to a file that does not exist. The source file must exist.
+ *
+ * \param from Path to the directory that is the base where the path is
+ * generated to.
+ * \param to The path to a file which is the target of the generated relative
+ * path.
+ *
+ * \return QString containing the relative path.
+ */
+QString getRelativeSavePath(const QString& from, const QString& to);
+
 /*! \brief Get an absolute path of a file.
  *
  * This function takes original path and uses it as base. Then the relative

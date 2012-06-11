@@ -7,6 +7,7 @@
 
 #include "targetnameedit.h"
 #include <LibraryManager/libraryinterface.h>
+#include <models/generaldeclarations.h>
 
 #include <QFileDialog>
 #include <QDir>
@@ -46,12 +47,10 @@ void TargetNameEdit::mousePressEvent( QMouseEvent * e ) {
 		return;
 	}
 
-	// create QDir instance to match the base location
-	QDir baseDir(baseLocation);
-
 	// create the relative path
-	QString relPath = QDir::cleanPath(baseDir.relativeFilePath(file));
+	QString relPath = General::getRelativeSavePath(baseLocation, file);
 
 	// set the relative path to the lineEdit
 	setText(relPath);
+	emit contentChanged();
 }

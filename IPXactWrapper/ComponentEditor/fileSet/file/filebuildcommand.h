@@ -48,20 +48,26 @@ public:
 	//! \brief The destructor
 	virtual ~FileBuildCommand();
 
-	/*! \brief Apply the changes from editor to model.
-	 *
-	*/
-	void apply();
-
 	/*! \brief Restore the changes from the model to the editor.
 	 *
 	*/
-	void restore();
+	void refresh();
 
 signals:
 
 	//! \brief Emitted when contents of the widget change
 	void contentChanged();
+
+private slots:
+
+	//! \brief Handler for command changes.
+	void onCommandChanged();
+
+	//! \brief Handler for flag changes.
+	void onFlagsChanged();
+
+	//! \brief Handler for target changes.
+	void onTargetChanged();
 
 private:
 

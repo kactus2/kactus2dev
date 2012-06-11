@@ -19,7 +19,7 @@ FileBuildCommand::FileBuildCommand( QWidget *parent,
 								   QSharedPointer<Component> component,
 								   QSharedPointer<File> file):
 QWidget(parent),
-buildCommand_(NULL), 
+buildCommand_(file->getBuildcommand()), 
 command_(this),
 flags_(this),
 replaceDefault_(tr("Replace default flags"),this),
@@ -28,17 +28,8 @@ layout_(this) {
 
 	Q_ASSERT_X(file, "FileBuildCommand constructor",
 		"Null File-pointer given to the constructor");
+	Q_ASSERT(buildCommand_);
 	
-	buildCommand_ = file->getBuildcommand();
-
-	// if buildCommand was not defined
-	if (!buildCommand_) {
-
-		// create an empty build command and add it to the file
-		buildCommand_ = new BuildCommand();
-		file->setBuildcommand(buildCommand_);
-	}
-
 	setLayout(&layout_);
 
 	// setup the GUI items to the buildCommand editor
@@ -47,7 +38,7 @@ layout_(this) {
 	setupTarget();
 
 	// get the data from the buildCommand to the editor
-	restore();
+	refresh();
 }
 
 FileBuildCommand::~FileBuildCommand() {
@@ -65,8 +56,8 @@ void FileBuildCommand::setupCommand() {
 	layout_.addWidget(commandLabel, 0, 0, 1, 1);
 	layout_.addWidget(&command_, 0, 1, 1, 2);
 
-	connect(&command_, SIGNAL(textChanged(const QString&)),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&command_, SIGNAL(textEdited(const QString&)),
+		this, SLOT(onCommandChanged()), Qt::UniqueConnection);
 }
 
 void FileBuildCommand::setupFlags() {
@@ -86,10 +77,9 @@ void FileBuildCommand::setupFlags() {
 		"flags from the build script, when false the flags are appended"));
 
 	connect(&replaceDefault_, SIGNAL(clicked(bool)),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-
-	connect(&flags_, SIGNAL(textChanged(const QString&)),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+		this, SLOT(onFlagsChanged()), Qt::UniqueConnection);
+	connect(&flags_, SIGNAL(textEdited(const QString&)),
+		this, SLOT(onFlagsChanged()), Qt::UniqueConnection);
 }
 
 void FileBuildCommand::setupTarget() {
@@ -104,27 +94,29 @@ void FileBuildCommand::setupTarget() {
 	layout_.addWidget(targetLabel, 2, 0, 1, 1);
 	layout_.addWidget(&target_, 2, 1, 1, 2);
 
-	connect(&target_, SIGNAL(textChanged(const QString&)),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&target_, SIGNAL(contentChanged()),
+		this, SLOT(onTargetChanged()), Qt::UniqueConnection);
 }
 
-void FileBuildCommand::apply() {
-
-	buildCommand_->setCommand(command_.text());
-
-	buildCommand_->setFlags(flags_.text());
-	
-	buildCommand_->setReplaceDefaultFlags(replaceDefault_.isChecked());
-
-	buildCommand_->setTargetName(target_.text());
-}
-
-void FileBuildCommand::restore() {
+void FileBuildCommand::refresh() {
 	command_.setText(buildCommand_->getCommand());
-
 	flags_.setText(buildCommand_->getFlags());
-
 	replaceDefault_.setChecked(buildCommand_->getReplaceDefaultFlags());
-
 	target_.setText(buildCommand_->getTargetName());
+}
+
+void FileBuildCommand::onCommandChanged() {
+	buildCommand_->setCommand(command_.text());
+	emit contentChanged();
+}
+
+void FileBuildCommand::onFlagsChanged() {
+	buildCommand_->setFlags(flags_.text());
+	buildCommand_->setReplaceDefaultFlags(replaceDefault_.isChecked());
+	emit contentChanged();
+}
+
+void FileBuildCommand::onTargetChanged() {
+	buildCommand_->setTargetName(target_.text());
+	emit contentChanged();
 }

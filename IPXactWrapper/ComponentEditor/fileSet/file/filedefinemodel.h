@@ -112,7 +112,7 @@ public:
 	 * \param orientation Only Qt::Horizontal is supported
 	 * \param role Specified the type of data that is wanted.
 	 *
-	 * \return QT_NAMESPACE::QVariant
+	 * \return The string to display as header.
 	*/
 	virtual QVariant headerData(int section, Qt::Orientation orientation, 
 		int role = Qt::DisplayRole ) const;

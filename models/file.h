@@ -15,6 +15,7 @@
 #include <QSharedPointer>
 #include <QMap>
 #include <QXmlStreamWriter>
+#include <QStringList>
 
 class BuildCommand;
 class FileSet;
@@ -180,13 +181,13 @@ public:
 	*
 	* \return QList containing the file types.
 	*/
-	const QList<QString>& getFileTypes() const;
+	const QStringList& getFileTypes() const;
 
 	/*! \brief Get the userFileTypes for the file
 	*
 	* \return QList containing the userFileTypes for the file.
 	*/
-	const QList<QString>& getUserFileTypes();
+	const QStringList& getUserFileTypes();
 
 	/*! \brief Set the file types for this file
 	*
@@ -194,7 +195,7 @@ public:
 	*
 	* \param fileTypes QList containing the file types.
 	*/
-	void setFileTypes(const QList<QString> &fileTypes);
+	void setFileTypes(const QStringList& fileTypes);
 
 	/*! \brief Add a new file type definition.
 	*
@@ -242,7 +243,7 @@ public:
 	 *
 	 * \return A pointer to the BuildCommand containing the flags and commands.
 	 */
-	BuildCommand *getBuildcommand() const;
+	BuildCommand *getBuildcommand();
 
 	/*! \brief Get the dependencies for this file
 	 *
@@ -409,7 +410,7 @@ public:
 	 *
 	 * \param userFileTypes QList containing the new userFileTypes.
 	 */
-	void setUserFileTypes(QList<QString> &userFileTypes);
+	void setUserFileTypes(const QStringList& userFileTypes);
 
 	/*! \brief Get the defines of the file
 	 *
@@ -531,12 +532,12 @@ private:
 	/*! \brief Either fileType or userFileType is mandatory
 	 * MANDATORY spirit:fileType
 	 */
-	QList<QString> fileTypes_;
+	QStringList fileTypes_;
 
 	/*! \brief Either FileType or userFileType is mandatory
 	 * MANDATORY spirit:userFileType
 	 */
-	QList<QString> userFileTypes_;
+	QStringList userFileTypes_;
 
 	/*! \brief Declares if the file is an include file or not.
 	 * OPTIONAL spirit:inludeFile

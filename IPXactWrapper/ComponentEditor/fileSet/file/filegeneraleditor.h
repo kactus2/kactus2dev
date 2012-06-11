@@ -39,17 +39,26 @@ public:
 	/*! \brief Restore the settings from the model.
 	 *
 	*/
-	void restore();
-
-	/*! \brief Apply the changes from the editor to the model.
-	 *
-	*/
-	void apply();
+	void refresh();
 
 signals:
 
 	//! \brief Emitted when the contents on one of the elements change.
 	void contentChanged();
+
+private slots:
+
+	//! \brief Handler for changes in logical name.
+	void onLogicalNameChanged();
+
+	//! \brief Handler for changes in include file setting.
+	void onIncludeFileChanged();
+
+	//! \brief Handler for external declarations changes.
+	void onExternalDecChanged();
+
+	//! \brief Handler for description changes.
+	void onDescriptionChanged();
 
 private:
 

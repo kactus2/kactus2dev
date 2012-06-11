@@ -43,6 +43,11 @@ public:
 	//! \brief The destructor
 	virtual ~TargetNameEdit();
 
+signals:
+
+	//! \brief Emitted when the target name changes.
+	void contentChanged();
+
 protected:
 	
 	/*! \brief Event handler for mouse press events.

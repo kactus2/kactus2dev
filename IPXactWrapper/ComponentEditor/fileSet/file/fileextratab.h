@@ -45,15 +45,10 @@ public:
 	//! \brief The destructor
 	virtual ~FileExtraTab();
 
-	/*! \brief Apply the changes from the editor to the model.
-	 *
-	*/
-	void apply();
-
 	/*! \brief Restore the changes from the model to the editor.
 	 *
 	*/
-	void restore();
+	void refresh();
 
 	/*! \brief Check that the editor is in a valid state.
 	 *
@@ -66,6 +61,20 @@ signals:
 
 	//! \brief Emitted when contents of one widget change.
 	void contentChanged();
+
+private slots:
+
+	//! \brief Handler for changes in dependencies.
+	void onDependenciesChange();
+
+	//! \brief Handler for export names change.
+	void onExportsChange();
+
+	//! \brief Handler for image types change.
+	void onImageTypesChange();
+
+	//! \brief Handler for define changes.
+	void onDefineChange();
 
 private:
 
@@ -85,10 +94,10 @@ private:
 	ListManager imageTypes_;
 
 	//! \brief The view to display the file defines
-	FileDefineView defineView_;
+	//FileDefineView defineView_;
 
 	//! \brief The model that contains the file defines
-	FileDefineModel defineModel_;
+	//FileDefineModel defineModel_;
 
 	//! \brief Pointer to the file model that is being edited.
 	QSharedPointer<File> file_;

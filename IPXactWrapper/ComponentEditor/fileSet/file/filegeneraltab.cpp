@@ -38,8 +38,6 @@ buildCommand_(this, handler, component, file) {
 
 	connect(&nameEditor_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&nameEditor_, SIGNAL(nameChanged(const QString&)),
-		this, SIGNAL(nameChanged(const QString&)), Qt::UniqueConnection);
 	connect(&generalEditor_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&fileTypeEditor_, SIGNAL(contentChanged()),
@@ -61,19 +59,12 @@ bool FileGeneralTab::isValid() const {
 	return (fileTypeEditor_.isValid() && nameEditor_.isValid());
 }
 
-void FileGeneralTab::apply() {
-
-	generalEditor_.apply();
-	//fileTypeEditor_.apply();
-	buildCommand_.apply();
-}
-
-void FileGeneralTab::restore() {
+void FileGeneralTab::refresh() {
 	nameEditor_.refresh();
 
-	generalEditor_.restore();
+	generalEditor_.refresh();
 	fileTypeEditor_.restore();
-	buildCommand_.restore();
+	buildCommand_.refresh();
 }
 
 void FileGeneralTab::onFileTypesChanged() {
