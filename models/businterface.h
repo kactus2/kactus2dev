@@ -201,6 +201,12 @@ public:
 	 */
 	QList<QSharedPointer<Parameter> >& getParameters();
 
+	/*! \brief Get the parameters of the bus interface
+	 *
+	 * \return A QList holding the parameters for this interface.
+	 */
+	const QList<QSharedPointer<Parameter> >& getParameters() const;
+
 	/*! \brief Get the port maps for this interface
 	 *
 	 * \return A QList holding the port maps for this interface.

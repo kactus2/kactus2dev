@@ -17,7 +17,8 @@ ComponentEditorAddrSpaceItem::ComponentEditorAddrSpaceItem(QSharedPointer<Addres
 														   ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 addrSpace_(addrSpace),
-editor_(component, addrSpace.data()) {
+editor_(component, addrSpace) {
+
 	editor_.hide();
 
 	connect(&editor_, SIGNAL(contentChanged()),

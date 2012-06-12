@@ -203,6 +203,10 @@ QList<QSharedPointer<Parameter> >& Cpu::getParameters() {
 	return parameters_;
 }
 
+const QList<QSharedPointer<Parameter> >& Cpu::getParameters() const {
+	return parameters_;
+}
+
 void Cpu::setParameters(QList<QSharedPointer<Parameter> > &parameters) {
 	// delete the old parameters
 	parameters_.clear();

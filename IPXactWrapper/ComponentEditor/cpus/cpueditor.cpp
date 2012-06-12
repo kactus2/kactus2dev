@@ -16,7 +16,7 @@ ItemEditor(component, parent),
 cpu_(static_cast<Cpu*>(dataPointer)),
 nameGroup_(this, tr("Name and description")), 
 addrSpaceRefs_(component, tr("Address space references"), this), 
-parameters_(&cpu_->getParameters(), this) {
+parameters_(cpu_->getParameters(), this) {
 
 	Q_ASSERT(component);
 	Q_ASSERT(dataPointer);
@@ -30,7 +30,7 @@ ItemEditor(component, parent),
 cpu_(cpu.data()),
 nameGroup_(this, tr("Name and description")), 
 addrSpaceRefs_(component, tr("Address space references"), this), 
-parameters_(&cpu_->getParameters(), this) {
+parameters_(cpu_->getParameters(), this) {
 
 	Q_ASSERT(component);
 	Q_ASSERT(cpu_);
@@ -89,7 +89,6 @@ void CpuEditor::makeChanges() {
 
 	cpu_->setAddressSpaceRefs(addrSpaceRefs_.items());
 
-	parameters_.apply();
 }
 
 void CpuEditor::restore() {
@@ -99,7 +98,7 @@ void CpuEditor::restore() {
 
 	addrSpaceRefs_.initialize(cpu_->getAddressSpaceRefs());
 
-	parameters_.restore();
+	parameters_.refresh();
 }
 
 void CpuEditor::refresh() {
@@ -107,5 +106,5 @@ void CpuEditor::refresh() {
 	nameGroup_.setDisplayName(cpu_->getDisplayName());
 	nameGroup_.setDescription(cpu_->getDescription());
 	addrSpaceRefs_.initialize(cpu_->getAddressSpaceRefs());
-	parameters_.restore();
+	parameters_.refresh();
 }

@@ -28,11 +28,11 @@ public:
 
 	/*! \brief The constructor
 	 *
-	 * \param parameters Pointer to the list that contains the parameters to edit.
+	 * \param parameters The list that contains the parameters to edit.
 	 * \param parent Pointer to the owner of this editor.
 	 *
 	*/
-	ParameterEditor(QList<QSharedPointer<Parameter> >* parameters,
+	ParameterEditor(QList<QSharedPointer<Parameter> >& parameters,
 		QWidget *parent);
 	
 	//! \brief The destructor
@@ -47,16 +47,12 @@ public:
 	/*! \brief Restore the changes made in the editor back to ones in parameter models.
 	*
 	*/
-	virtual void restore();
+	virtual void refresh();
 
-	/*! \brief Applies the changes made with the editor to the parameter models.
-	*
-	* After calling this function it is no longer possible to automatically 
-	* restore the previous state of the models.
-	* 
-	* Note: if the editor is not in valid state nothing is changed.
+	/*! \brief Make the changes from the widgets editors to the IPXact model.
+	 *
 	*/
-	virtual void apply();
+	virtual void makeChanges();
 
 signals:
 

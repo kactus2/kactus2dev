@@ -1460,6 +1460,10 @@ QList<QSharedPointer<Parameter> >& Component::getParameters() {
 	return parameters_;
 }
 
+const QList<QSharedPointer<Parameter> >& Component::getParameters() const {
+	return parameters_;
+}
+
 const QList<QSharedPointer<MemoryMap> >& Component::getMemoryMaps() const {
 	return memoryMaps_;
 }

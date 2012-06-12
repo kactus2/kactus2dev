@@ -32,7 +32,8 @@ public:
 	 * \param parent Pointer to the owner of this editor.
 	 *
 	*/
-	SegmentEditor(AddressSpace* addrSpace, QWidget *parent);
+	SegmentEditor(QSharedPointer<AddressSpace> addrSpace, 
+		QWidget *parent);
 	
 	//! \brief The destructor
 	virtual ~SegmentEditor();
@@ -46,12 +47,7 @@ public:
 	/*! \brief Read the settings from the address space to the editor.
 	 *
 	*/
-	void restore();
-
-	/*! \brief Write the settings from the editor to the address space.
-	 *
-	*/
-	void makeChanges();
+	void refresh();
 
 signals:
 
@@ -75,15 +71,6 @@ signals:
 
 	//! \brief Emitted when the range or offset of a segment has changed.
 	void segmentChanged(QSharedPointer<Segment> segment);
-
-private slots:
-
-	/*! \brief Remove the indexed item from the model.
-	 *
-	 * \param index The model index of the item to remove. The index is proxy index.
-	 *
-	*/
-	void onRemoveItem(const QModelIndex& index);
 
 private:
 	//! \brief No copying

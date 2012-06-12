@@ -28,11 +28,11 @@ public:
 
 	/*! \brief The constructor
 	 *
-	 * \param parameters Pointer to the list containing the parameters.
+	 * \param parameters The list containing the parameters.
 	 * \param parent Pointer to the owner of this editor.
 	 *
 	*/
-	ParameterGroupBox(QList<QSharedPointer<Parameter> >* parameters,
+	ParameterGroupBox(QList<QSharedPointer<Parameter> >& parameters,
 		QWidget *parent);
 	
 	//! \brief The destructor
@@ -47,16 +47,7 @@ public:
 	/*! \brief Restore the changes made in the editor back to ones in parameter models.
 	*
 	*/
-	virtual void restore();
-
-	/*! \brief Applies the changes made with the editor to the parameter models.
-	*
-	* After calling this function it is no longer possible to automatically 
-	* restore the previous state of the models.
-	* 
-	* Note: if the editor is not in valid state nothing is changed.
-	*/
-	virtual void apply();
+	virtual void refresh();
 
 signals:
 
@@ -68,14 +59,6 @@ signals:
 
 	//! \brief Prints a notification to user.
 	void noticeMessage(const QString& msg) const;
-
-private slots:
-
-	//! \brief Handler for adding parameters.
-	void onAddItem(const QModelIndex& index);
-
-	//! \brief Handler for parameter removes.
-	void onRemoveItem(const QModelIndex& index);
 
 private:
 	//! \brief No copying

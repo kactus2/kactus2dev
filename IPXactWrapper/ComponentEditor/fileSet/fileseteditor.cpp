@@ -84,12 +84,6 @@ bool FileSetEditor::isValid() const {
 	}
 }
 
-void FileSetEditor::removeModel() {
-	QSharedPointer<Component> component = ItemEditor::component();
-	component->removeFileSet(fileSet_->getName());
-	fileSet_.clear();
-}
-
 void FileSetEditor::makeChanges() {
 	// this is empty because all changes are applied to model immediately 
 }

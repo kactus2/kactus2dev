@@ -12,15 +12,15 @@
 #include <QScrollArea>
 #include <QWidget>
 
-AddressSpaceEditor::AddressSpaceEditor( QSharedPointer<Component> component,
-									   void* dataPointer, 
-									   QWidget *parent ):
+AddressSpaceEditor::AddressSpaceEditor( QSharedPointer<Component> component, 
+									   QSharedPointer<AddressSpace> addrSpace,
+									   QWidget* parent /*= 0*/ ):
 ItemEditor(component, parent),
-addrSpace_(static_cast<AddressSpace*>(dataPointer)),
-nameBox_(this, tr("Name and description")),
-general_(addrSpace_, this),
-segments_(addrSpace_, this),
-parameterEditor_(&addrSpace_->getParameters(), this),
+addrSpace_(addrSpace),
+nameEditor_(addrSpace->getNameGroup(), this),
+general_(addrSpace, this),
+segments_(addrSpace, this),
+parameterEditor_(addrSpace_->getParameters(), this),
 visualizer_(this) {
 
 	Q_ASSERT(addrSpace_);
@@ -31,6 +31,7 @@ visualizer_(this) {
 
 	QVBoxLayout* scrollLayout = new QVBoxLayout(this);
 	scrollLayout->addWidget(scrollArea);
+	scrollLayout->setContentsMargins(0, 0, 0, 0);
 
 	// create the top widget and set it under the scroll area
 	QWidget* topWidget = new QWidget(scrollArea);
@@ -38,11 +39,9 @@ visualizer_(this) {
 
 	QVBoxLayout* layout = new QVBoxLayout();
 
-	layout->addWidget(&nameBox_);
-	connect(&nameBox_, SIGNAL(contentChanged()),
+	layout->addWidget(&nameEditor_);
+	connect(&nameEditor_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&nameBox_, SIGNAL(nameChanged(const QString&)),
-		this, SIGNAL(nameChanged(const QString&)), Qt::UniqueConnection);
 
 	layout->addWidget(&general_);
 	connect(&general_, SIGNAL(contentChanged()), 
@@ -86,14 +85,14 @@ visualizer_(this) {
 
 	scrollArea->setWidget(topWidget);
 
-	restoreChanges();
+	refresh();
 }
 
 AddressSpaceEditor::~AddressSpaceEditor() {
 }
 
 bool AddressSpaceEditor::isValid() const {
-	if (!nameBox_.isValid()) {
+	if (!nameEditor_.isValid()) {
 		return false;
 	}
 	else if (!general_.isValid()) {
@@ -111,42 +110,15 @@ bool AddressSpaceEditor::isValid() const {
 }
 
 void AddressSpaceEditor::makeChanges() {
-
-	addrSpace_->setName(nameBox_.getName());
-	addrSpace_->setDisplayName(nameBox_.getDisplayName());
-	addrSpace_->setDescription(nameBox_.getDescription());
-	general_.makeChanges();
-	parameterEditor_.apply();
-	segments_.makeChanges();
-}
-
-void AddressSpaceEditor::removeModel() {
-	QSharedPointer<Component> component = ItemEditor::component();
-	component->removeAddressSpace(addrSpace_->getName());
-	addrSpace_ = 0;
-}
-
-void AddressSpaceEditor::restoreChanges() {
-	nameBox_.setName(addrSpace_->getName());
-	nameBox_.setDisplayName(addrSpace_->getDisplayName());
-	nameBox_.setDescription(addrSpace_->getDescription());
-	general_.restoreChanges();
-	parameterEditor_.restore();
-	segments_.restore();
-
-	visualizer_.setByteSize(addrSpace_->getAddressUnitBits());
-	visualizer_.setRowWidth(addrSpace_->getWidth());
-	visualizer_.setRange(addrSpace_->getRange());
-	visualizer_.setSegments(addrSpace_);
+	// TODO remove this in final
 }
 
 void AddressSpaceEditor::refresh() {
-	nameBox_.setName(addrSpace_->getName());
-	nameBox_.setDisplayName(addrSpace_->getDisplayName());
-	nameBox_.setDescription(addrSpace_->getDescription());
-	general_.restoreChanges();
-	parameterEditor_.restore();
-	segments_.restore();
+	nameEditor_.refresh();
+
+	general_.refresh();
+	parameterEditor_.refresh();
+	segments_.refresh();
 
 	visualizer_.setByteSize(addrSpace_->getAddressUnitBits());
 	visualizer_.setRowWidth(addrSpace_->getWidth());

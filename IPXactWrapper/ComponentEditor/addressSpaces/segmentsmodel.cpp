@@ -9,14 +9,12 @@
 
 #include <QColor>
 
-SegmentsModel::SegmentsModel(AddressSpace* addrSpace, QObject *parent):
+SegmentsModel::SegmentsModel(QSharedPointer<AddressSpace> addrSpace, 
+							 QObject *parent):
 QAbstractTableModel(parent),
-segments_(&addrSpace->getSegments()),
-table_() {
+segments_(addrSpace->getSegments()) {
 
 	Q_ASSERT(addrSpace);
-
-	restore();
 }
 
 SegmentsModel::~SegmentsModel() {
@@ -26,7 +24,7 @@ int SegmentsModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ ) con
 	if (parent.isValid()) {
 		return 0;
 	}
-	return table_.size();
+	return segments_.size();
 }
 
 int SegmentsModel::columnCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
@@ -41,23 +39,23 @@ QVariant SegmentsModel::data( const QModelIndex& index, int role /*= Qt::Display
 		return QVariant();
 
 	// if row is invalid
-	else if (index.row() < 0 || index.row() >= table_.size())
+	else if (index.row() < 0 || index.row() >= segments_.size())
 		return QVariant();
 
 	if (role == Qt::DisplayRole) {
 
 		switch (index.column()) {
 			case 0: {
-				return table_.at(index.row())->getName();
+				return segments_.at(index.row())->getName();
 					}
 			case 1: {
-				return table_.at(index.row())->getAddressOffset();
+				return segments_.at(index.row())->getAddressOffset();
 					}
 			case 2: {
-				return table_.at(index.row())->getRange();
+				return segments_.at(index.row())->getRange();
 					}
 			case 3: {
-				return table_.at(index.row())->getDescription();
+				return segments_.at(index.row())->getDescription();
 					}
 			default: {
 				return QVariant();
@@ -76,7 +74,7 @@ QVariant SegmentsModel::data( const QModelIndex& index, int role /*= Qt::Display
 		}
 	}
 	else if (Qt::ForegroundRole == role) {
-		if (table_.at(index.row())->isValid()) {
+		if (segments_.at(index.row())->isValid()) {
 			return QColor("black");
 		}
 		else {
@@ -125,31 +123,31 @@ bool SegmentsModel::setData( const QModelIndex& index,
 		return false;
 
 	// if row is invalid
-	else if (index.row() < 0 || index.row() >= table_.size())
+	else if (index.row() < 0 || index.row() >= segments_.size())
 		return false;
 
 	if (role == Qt::EditRole) {
 
 		switch (index.column()) {
 			case 0: {
-				const QString oldName = table_.at(index.row())->getName();
+				const QString oldName = segments_.at(index.row())->getName();
 				emit segmentRenamed(oldName, value.toString());
 
-				table_.at(index.row())->setName(value.toString());
+				segments_.at(index.row())->setName(value.toString());
 				break;
 					}
 			case 1: {
-				table_.at(index.row())->setOffset(value.toString());
-				emit segmentChanged(table_.at(index.row()));
+				segments_.at(index.row())->setOffset(value.toString());
+				emit segmentChanged(segments_.at(index.row()));
 				break;
 					}
 			case 2: {
-				table_.at(index.row())->setRange(value.toString());
-				emit segmentChanged(table_.at(index.row()));
+				segments_.at(index.row())->setRange(value.toString());
+				emit segmentChanged(segments_.at(index.row()));
 				break;
 					}
 			case 3: {
-				table_.at(index.row())->setDescription(value.toString());
+				segments_.at(index.row())->setDescription(value.toString());
 				break;
 					}
 			default: 
@@ -175,7 +173,7 @@ Qt::ItemFlags SegmentsModel::flags( const QModelIndex& index ) const {
 bool SegmentsModel::isValid() const {
 	
 	// check all segments
-	foreach (QSharedPointer<Segment> segment, table_) {
+	foreach (QSharedPointer<Segment> segment, segments_) {
 		if (!segment->isValid()) {
 			return false;
 		}
@@ -183,19 +181,8 @@ bool SegmentsModel::isValid() const {
 	return true;
 }
 
-void SegmentsModel::apply() {
-	*segments_ = table_;
-}
-
-void SegmentsModel::restore() {
-	beginResetModel();
-	table_.clear();
-	table_ = *segments_;
-	endResetModel();
-}
-
 void SegmentsModel::onAddItem( const QModelIndex& index ) {
-	int row = table_.size();
+	int row = segments_.size();
 
 	// if the index is valid then add the item to the correct position
 	if (index.isValid()) {
@@ -205,7 +192,7 @@ void SegmentsModel::onAddItem( const QModelIndex& index ) {
 	QSharedPointer<Segment> segment(new Segment());
 
 	beginInsertRows(QModelIndex(), row, row);
-	table_.insert(row, segment);
+	segments_.insert(row, segment);
 	endInsertRows();
 
 	// tell also parent widget that contents have been changed
@@ -220,15 +207,15 @@ void SegmentsModel::onRemoveItem( const QModelIndex& index ) {
 		return;
 	}
 	// make sure the row number if valid
-	else if (index.row() < 0 || index.row() >= table_.size()) {
+	else if (index.row() < 0 || index.row() >= segments_.size()) {
 		return;
 	}
 
-	emit segmentRemoved(table_.at(index.row())->getName());
+	emit segmentRemoved(segments_.at(index.row())->getName());
 
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
-	table_.removeAt(index.row());
+	segments_.removeAt(index.row());
 	endRemoveRows();
 
 	// tell also parent widget that contents have been changed

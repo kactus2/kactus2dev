@@ -29,7 +29,8 @@ public:
 	 * \param parent Pointer to the owner of this model.
 	 *
 	*/
-	SegmentsModel(AddressSpace* addrSpace, QObject *parent);
+	SegmentsModel(QSharedPointer<AddressSpace> addrSpace,
+		QObject *parent);
 	
 	//! \brief The destructor
 	virtual ~SegmentsModel();
@@ -95,16 +96,6 @@ public:
 	*/
 	bool isValid() const;
 
-	/*! \brief Write the changes to the address space.
-	 *
-	*/
-	void apply();
-
-	/*! \brief Restore the settings from the address space.
-	 *
-	*/
-	void restore();
-
 public slots:
 
 	/*! \brief A new item should be added to given index.
@@ -152,10 +143,7 @@ private:
 	SegmentsModel& operator=(const SegmentsModel& other);
 
 	//! \brief Pointer to the data structure that contains the real segments.
-	QList<QSharedPointer<Segment> >* segments_;
-
-	//! \brief The list that is displayed to the user.
-	QList<QSharedPointer<Segment> > table_;
+	QList<QSharedPointer<Segment> >& segments_;
 };
 
 #endif // SEGMENTSMODEL_H

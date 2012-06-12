@@ -35,7 +35,7 @@ segments_() {
 AddressSpaceVisualizer::~AddressSpaceVisualizer() {
 }
 
-void AddressSpaceVisualizer::setSegments( AddressSpace* addrSpace ) {
+void AddressSpaceVisualizer::setSegments(QSharedPointer<AddressSpace> addrSpace ) {
 	QList<QSharedPointer<Segment> > segmentList =  addrSpace->getSegments();
 
 	foreach (QSharedPointer<Segment> segment, segmentList) {

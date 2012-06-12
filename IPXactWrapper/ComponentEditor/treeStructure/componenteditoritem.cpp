@@ -173,12 +173,6 @@ void ComponentEditorItem::moveChild( const int sourceIndex, int targetIndex ) {
 	// Take the item from the list
 	QSharedPointer<ComponentEditorItem> itemToMove = childItems_.takeAt(sourceIndex);
 
-	// if item is moved down then the target must be decremented because on item is
-	// removed before adding to the list
-// 	if (targetIndex > sourceIndex) {
-// 		--targetIndex;
-// 	}
-
 	childItems_.insert(targetIndex, itemToMove);
 }
 

@@ -56,6 +56,22 @@ public:
 	*/
 	virtual ItemEditor* editor();
 
+	/*! \brief Add a new child to the item.
+	 *
+	 * The base class implementation does nothing.
+	 * 
+	 * \param index The index to add the child into.
+	 *
+	*/
+	virtual void createChild(int index);
+
+protected slots:
+
+	/*! \brief Handler for editor's contentChanged signal.
+	 *
+	*/
+	virtual void onEditorChanged();
+
 private:
 	//! \brief No copying
 	ComponentEditorAddrSpacesItem(const ComponentEditorAddrSpacesItem& other);

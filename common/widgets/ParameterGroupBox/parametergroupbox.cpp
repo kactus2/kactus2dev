@@ -11,14 +11,12 @@
 
 #include <QVBoxLayout>
 
-ParameterGroupBox::ParameterGroupBox(QList<QSharedPointer<Parameter> >* parameters,
+ParameterGroupBox::ParameterGroupBox(QList<QSharedPointer<Parameter> >& parameters,
 									 QWidget *parent):
 QGroupBox(tr("Parameters"), parent),
 view_(this), 
 model_(parameters, this),
 proxy_(this) {
-
-	Q_ASSERT(parameters);
 
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -30,9 +28,9 @@ proxy_(this) {
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
 	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
-		this, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
+		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
-		this, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 
 	// set view to be sortable
 	view_.setSortingEnabled(true);
@@ -52,8 +50,6 @@ proxy_(this) {
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&view_);
-
-	restore();
 }
 
 ParameterGroupBox::~ParameterGroupBox() {
@@ -63,18 +59,6 @@ bool ParameterGroupBox::isValid() const {
 	return model_.isValid();
 }
 
-void ParameterGroupBox::restore() {
-	model_.restore();
-}
-
-void ParameterGroupBox::apply() {
-	model_.apply();
-}
-
-void ParameterGroupBox::onAddItem( const QModelIndex& index ) {
-	model_.onAddItem(proxy_.mapToSource(index));
-}
-
-void ParameterGroupBox::onRemoveItem( const QModelIndex& index ) {
-	model_.onRemoveItem(proxy_.mapToSource(index));
+void ParameterGroupBox::refresh() {
+	view_.update();
 }

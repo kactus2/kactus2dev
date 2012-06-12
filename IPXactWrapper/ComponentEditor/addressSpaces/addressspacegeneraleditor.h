@@ -13,6 +13,7 @@
 
 #include <QSpinBox>
 #include <QGroupBox>
+#include <QSharedPointer>
 
 /*! \brief Editor to set the general settings of an address space.
  * 
@@ -32,7 +33,8 @@ public:
 	 * \param parent Pointer to the owner of the editor.
 	 *
 	*/
-	AddressSpaceGeneralEditor(AddressSpace* addrSpace, QWidget *parent);
+	AddressSpaceGeneralEditor(QSharedPointer<AddressSpace> addrSpace, 
+		QWidget *parent);
 	
 	//! \brief The destructor
 	virtual ~AddressSpaceGeneralEditor();
@@ -43,15 +45,10 @@ public:
 	*/
 	bool isValid() const;
 
-	/*! \brief Save the settings from the editor fields to the address space model
-	 *
-	*/
-	void makeChanges();
-
 	/*! \brief Read the settings from the address space model to the editor fields.
 	 *
 	*/
-	void restoreChanges();
+	void refresh();
 
 signals:
 
@@ -79,6 +76,17 @@ signals:
 	*/
 	void rangeChanged(const QString& range);
 
+private slots:
+
+	//! \brief Handler for changes in addressable unit.
+	void onAddrUnitChanged(int newValue);
+
+	//! \brief Handler for changes in width.
+	void onWidthChanged(int newWidth);
+
+	//! \brief Handler for changes in range.
+	void onRangeChanged(const QString& newRange);
+
 private:
 	//! \brief No copying
 	AddressSpaceGeneralEditor(const AddressSpaceGeneralEditor& other);
@@ -87,7 +95,7 @@ private:
 	AddressSpaceGeneralEditor& operator=(const AddressSpaceGeneralEditor& other);
 
 	//! \brief Pointer to the address space being edited.
-	AddressSpace* addrSpace_;
+	QSharedPointer<AddressSpace> addrSpace_;
 
 	//! \brief Editor to set the size of an addressable unit.
 	QSpinBox addrUnit_;

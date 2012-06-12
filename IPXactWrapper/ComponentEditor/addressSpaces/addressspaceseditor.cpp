@@ -6,6 +6,7 @@
  */
 
 #include "addressspaceseditor.h"
+#include "addressspacesdelegate.h"
 #include <common/widgets/summaryLabel/summarylabel.h>
 
 #include <QVBoxLayout>
@@ -27,8 +28,11 @@ proxy_(this) {
 	proxy_.setSourceModel(&model_);
 
 	view_.setModel(&proxy_);
+
+	// items can not be dragged
+	view_.setItemsDraggable(false);
 	
-// 	view_.setItemDelegate(new FileSetsDelegate(this));
+ 	view_.setItemDelegate(new AddressSpacesDelegate(this));
 // 	view_.setColumnWidth(0, FileSetsEditor::NAME_COLUMN_WIDTH);
 // 	view_.setColumnWidth(1, FileSetsEditor::DESC_COLUMN_WIDTH);
 

@@ -431,7 +431,10 @@ const QList<QString>& View::getEnvIdentifiers() {
 }
 
 QList<QSharedPointer<Parameter> >& View::getParameters() {
-	//Q_ASSERT(!hierarchyRef_.isValid());
+	return parameters_;
+}
+
+const QList<QSharedPointer<Parameter> >& View::getParameters() const {
 	return parameters_;
 }
 

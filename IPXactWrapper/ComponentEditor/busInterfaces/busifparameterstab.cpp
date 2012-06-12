@@ -16,7 +16,7 @@ BusIfParametersTab::BusIfParametersTab(void* dataPointer, QWidget *parent):
 QWidget(parent), 
 busif_(static_cast<BusInterface*>(dataPointer)),
 view_(this), 
-model_(&static_cast<BusInterface*>(dataPointer)->getParameters(), this),
+model_(static_cast<BusInterface*>(dataPointer)->getParameters(), this),
 proxy_(NULL) {
 
 	Q_ASSERT_X(dataPointer, "BusIfParametersTab constructor",
@@ -67,11 +67,7 @@ bool BusIfParametersTab::isValid() const {
 	return model_.isValid();
 }
 
-void BusIfParametersTab::restoreChanges() {
-	model_.restore();
-}
-
-void BusIfParametersTab::applyChanges() {
-	model_.apply();
+void BusIfParametersTab::refresh() {
+	view_.update();
 }
 

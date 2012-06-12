@@ -112,6 +112,12 @@ public:
 	 */
 	QList<QSharedPointer<Parameter> >& getParameters();
 
+	/*! \brief Get the parameters of the cpu
+	 *
+	 * \return QList containing pointers to the parameters for the cpu.
+	 */
+	const QList<QSharedPointer<Parameter> >& getParameters() const;
+
 	/*! \brief Set the addressSpaceRefs for the cpu
 	 *
 	 * Calling this function will delete the old address space refs

@@ -260,6 +260,12 @@ public:
 	 */
 	QList<QSharedPointer<Parameter> >& getParameters();
 
+	/*! \brief Get this component's parameters
+	 *
+	 * \return QList containing component's parameters
+	 */
+	const QList<QSharedPointer<Parameter> >& getParameters() const;
+
 	/*! \brief Get this component's remap states
 	 *
 	 * \return QList containing component's remap states

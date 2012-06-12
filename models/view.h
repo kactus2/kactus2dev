@@ -188,11 +188,15 @@ public:
 
 	/*! \brief Get list of the parameters for this view
 	 *
-	 * Calling this function will delete the old parameters.
-	 *
 	 * \return QList containing the parameters for this view.
 	 */
 	QList<QSharedPointer<Parameter> >& getParameters();
+
+	/*! \brief Get list of the parameters for this view
+	 *
+	 * \return QList containing the parameters for this view.
+	 */
+	const QList<QSharedPointer<Parameter> >& getParameters() const;
 
 	/*! \brief Set the envIdentifiers for this view
 	 *

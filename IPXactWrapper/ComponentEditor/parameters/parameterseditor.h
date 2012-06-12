@@ -45,14 +45,14 @@ public:
 	*/
 	virtual bool isValid() const;
 
+	/*! \brief Reload the information from the model to the editor.
+	*/
+	virtual void refresh();
+
 	/*! \brief Make the changes from the widgets editors to the IPXact model.
 	 *
 	*/
 	virtual void makeChanges();
-
-	/*! \brief Reload the information from the model to the editor.
-	*/
-	virtual void refresh();
 
 private:
 

@@ -27,11 +27,11 @@ public:
 
 	/*! \brief The constructor
 	 *
-	 * \param parameters Pointer to the QList containing pointers to the parameters.
+	 * \param parameters The QList containing pointers to the parameters.
 	 * \param parent Pointer to the owner of this model.
 	 *
 	*/
-	ParametersModel(QList<QSharedPointer<Parameter> >* parameters, 
+	ParametersModel(QList<QSharedPointer<Parameter> >& parameters, 
 		QObject *parent);
 	
 	//! \brief The destructor
@@ -102,28 +102,7 @@ public:
 	*/
 	bool isValid() const;
 
-	/*! \brief Write the changes to the original model.
-	 *
-	*/
-	void apply();
-
-	/*! \brief Restore the settings from the original model.
-	 *
-	*/
-	void restore();
-
 public slots:
-
-	/*! \brief Remove a row from the model
-	 *
-	 * \param row Specifies the row to remove
-	*/
-	void onRemoveRow(int row);
-
-	/*! \brief Add a new empty row to the model
-	 *
-	*/
-	void onAddRow();
 
 	/*! \brief A new item should be added to given index.
 	 *
@@ -159,10 +138,7 @@ private:
 	ParametersModel& operator=(const ParametersModel& other);
 	
 	//! \brief Pointer to the component that's parameters are edited.
-	QList<QSharedPointer<Parameter> >* parameters_;
-
-	//! \brief Contains the current parameters of the editor.
-	QList<QSharedPointer<Parameter> > table_;
+	QList<QSharedPointer<Parameter> >& parameters_;
 };
 
 #endif // PARAMETERSMODEL_H

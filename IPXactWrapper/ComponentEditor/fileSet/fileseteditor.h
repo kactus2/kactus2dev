@@ -55,14 +55,6 @@ public:
 	*/
 	virtual bool isValid() const;
 
-	/*! \brief Remove the FileSet from the component
-	 *
-	 * This function should be used when user wants to remove a file set from 
-	 * the component.
-	 *
-	*/
-	virtual void removeModel();
-
 	/*! \brief Make the changes from the widgets editors to the IPXact model.
 	 *
 	*/

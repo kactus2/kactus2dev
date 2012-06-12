@@ -11,7 +11,8 @@
 
 #include <QVBoxLayout>
 
-SegmentEditor::SegmentEditor( AddressSpace* addrSpace, QWidget *parent ):
+SegmentEditor::SegmentEditor(QSharedPointer<AddressSpace> addrSpace, 
+							 QWidget *parent ):
 QGroupBox(tr("Segments"), parent),
 view_(this),
 proxy_(this),
@@ -38,7 +39,7 @@ model_(addrSpace, this) {
 	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
 		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
-		this, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 
 	// set view to be sortable
 	view_.setSortingEnabled(true);
@@ -58,8 +59,6 @@ model_(addrSpace, this) {
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&view_);
-
-	model_.restore();
 }
 
 SegmentEditor::~SegmentEditor() {
@@ -69,16 +68,7 @@ bool SegmentEditor::isValid() const {
 	return model_.isValid();
 }
 
-void SegmentEditor::restore() {
-	model_.restore();
-
+void SegmentEditor::refresh() {
+	view_.update();
 	view_.sortByColumn(1, Qt::AscendingOrder);
-}
-
-void SegmentEditor::makeChanges() {
-	model_.apply();
-}
-
-void SegmentEditor::onRemoveItem( const QModelIndex& index ) {
-	model_.onRemoveItem(proxy_.mapToSource(index));
 }

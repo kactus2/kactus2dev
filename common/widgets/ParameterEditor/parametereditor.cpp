@@ -11,14 +11,12 @@
 
 #include <QVBoxLayout>
 
-ParameterEditor::ParameterEditor( QList<QSharedPointer<Parameter> >* parameters, 
+ParameterEditor::ParameterEditor( QList<QSharedPointer<Parameter> >& parameters, 
 								 QWidget *parent):
 QWidget(parent),
 view_(this), 
 model_(parameters, this),
 proxy_(this) {
-
-	Q_ASSERT(parameters);
 
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -53,7 +51,7 @@ proxy_(this) {
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&view_);
 	
-	restore();
+	refresh();
 }
 
 ParameterEditor::~ParameterEditor() {
@@ -63,12 +61,8 @@ bool ParameterEditor::isValid() const {
 	return model_.isValid();
 }
 
-void ParameterEditor::restore() {
-	model_.restore();
-}
-
-void ParameterEditor::apply() {
-	model_.apply();
+void ParameterEditor::refresh() {
+	view_.update();
 }
 
 void ParameterEditor::onAddItem( const QModelIndex& index ) {
@@ -77,4 +71,8 @@ void ParameterEditor::onAddItem( const QModelIndex& index ) {
 
 void ParameterEditor::onRemoveItem( const QModelIndex& index ) {
 	model_.onRemoveItem(proxy_.mapToSource(index));
+}
+
+void ParameterEditor::makeChanges() {
+	// TODO remove this in final
 }

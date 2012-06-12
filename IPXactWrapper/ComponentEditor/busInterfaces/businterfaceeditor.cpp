@@ -132,7 +132,6 @@ void BusInterfaceEditor::makeChanges() {
 	general_.applyChanges();
 	portmaps_.applyChanges();
 	interfaceMode_.applyChanges();
-	parameters_.applyChanges();
 
 	component()->updateBusInterface(busif_);
 }
@@ -141,5 +140,5 @@ void BusInterfaceEditor::refresh() {
 	general_.restoreChanges();
 	portmaps_.restoreChanges();
 	interfaceMode_.restoreChanges();
-	parameters_.restoreChanges();
+	parameters_.refresh();
 }

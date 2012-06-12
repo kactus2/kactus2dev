@@ -11,7 +11,7 @@
 #include <QLabel>
 #include <QVariant>
 
-AddressSpaceGeneralEditor::AddressSpaceGeneralEditor(AddressSpace* addrSpace, 
+AddressSpaceGeneralEditor::AddressSpaceGeneralEditor(QSharedPointer<AddressSpace> addrSpace, 
 													 QWidget *parent):
 QGroupBox(tr("General"), parent),
 addrSpace_(addrSpace),
@@ -42,22 +42,16 @@ range_(this) {
 	layout->addWidget(rangeLabel, 2, 0, 1, 1);
 	layout->addWidget(&range_, 2, 1, 1, 1);
 
-	restoreChanges();
+	refresh();
 
 	connect(&addrUnit_, SIGNAL(valueChanged(int)),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&addrUnit_, SIGNAL(valueChanged(int)),
-		this, SIGNAL(addressableUnitsChanged(int)), Qt::UniqueConnection);
+		this, SLOT(onAddrUnitChanged(int)), Qt::UniqueConnection);
 
 	connect(&width_, SIGNAL(valueChanged(int)),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&width_, SIGNAL(valueChanged(int)),
-		this, SIGNAL(widthChanged(int)), Qt::UniqueConnection);
+		this, SLOT(onWidthChanged(int)), Qt::UniqueConnection);
 
 	connect(&range_, SIGNAL(textEdited(const QString&)),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&range_, SIGNAL(textEdited(const QString&)),
-		this, SIGNAL(rangeChanged(const QString&)), Qt::UniqueConnection);
+		this, SLOT(onRangeChanged(const QString&)), Qt::UniqueConnection);
 }
 
 AddressSpaceGeneralEditor::~AddressSpaceGeneralEditor() {
@@ -68,14 +62,26 @@ bool AddressSpaceGeneralEditor::isValid() const {
 	return !range_.text().isEmpty();
 }
 
-void AddressSpaceGeneralEditor::makeChanges() {
-	addrSpace_->setAddressUnitBits(addrUnit_.value());
-	addrSpace_->setWidth(width_.value());
-	addrSpace_->setRange(range_.text());
-}
-
-void AddressSpaceGeneralEditor::restoreChanges() {
+void AddressSpaceGeneralEditor::refresh() {
 	addrUnit_.setValue(addrSpace_->getAddressUnitBits());
 	width_.setValue(addrSpace_->getWidth());
 	range_.setText(addrSpace_->getRange());
+}
+
+void AddressSpaceGeneralEditor::onAddrUnitChanged( int newValue ) {
+	addrSpace_->setAddressUnitBits(newValue);
+	emit addressableUnitsChanged(newValue);
+	emit contentChanged();
+}
+
+void AddressSpaceGeneralEditor::onWidthChanged( int newWidth ) {
+	addrSpace_->setWidth(newWidth);
+	emit widthChanged(newWidth);
+	emit contentChanged();
+}
+
+void AddressSpaceGeneralEditor::onRangeChanged( const QString& newRange ) {
+	addrSpace_->setRange(newRange);
+	emit rangeChanged(newRange);
+	emit contentChanged();
 }

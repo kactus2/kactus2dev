@@ -122,6 +122,12 @@ public:
 	*/
 	QList<QSharedPointer<Segment> >& getSegments();
 
+	/*! \brief Get the segments contained in this address space.
+	 *
+	 * \return QList containing pointers to the segments.
+	*/
+	const QList<QSharedPointer<Segment> >& getSegments() const;
+
 	/*! \brief Set the address unit bits
 	 *
 	 * \param addressUnitBits The wanted setting
@@ -210,10 +216,27 @@ public:
 
 	/*! \brief Get the parameters of the address space.
 	 *
-	 *
 	 * \return QList containing pointers to the parameters.
 	*/
 	QList<QSharedPointer<Parameter> >& getParameters();
+
+	/*! \brief Get the parameters of the address space.
+	 *
+	 * \return QList containing pointers to the parameters.
+	*/
+	const QList<QSharedPointer<Parameter> >& getParameters() const;
+
+	/*! \brief Get the name group that contains the name, display name and description.
+	 *
+	 * \return Reference to the group.
+	*/
+	General::NameGroup& getNameGroup();
+
+	/*! \brief Get the name group that contains the name, display name and description.
+	 *
+	 * \return Reference to the group.
+	*/
+	const General::NameGroup& getNameGroup() const;
 
 private:
 

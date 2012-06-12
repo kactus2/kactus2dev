@@ -14,7 +14,8 @@
 
 ParametersEditor::ParametersEditor(QSharedPointer<Component> component, QWidget *parent): 
 ItemEditor(component, parent),
-view_(this), model_(&(component->getParameters()), this), 
+view_(this), 
+model_(component->getParameters(), this), 
 proxy_(NULL) {
 
 	connect(&model_, SIGNAL(contentChanged()),
@@ -64,10 +65,10 @@ bool ParametersEditor::isValid() const {
 	return model_.isValid();
 }
 
-void ParametersEditor::makeChanges() {
-	model_.apply();
+void ParametersEditor::refresh() {
+	view_.update();
 }
 
-void ParametersEditor::refresh() {
-	model_.restore();
+void ParametersEditor::makeChanges() {
+	// TODO remove this in final
 }

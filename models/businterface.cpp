@@ -759,6 +759,10 @@ QList<QSharedPointer<Parameter> >& BusInterface::getParameters() {
 	return parameters_;
 }
 
+const QList<QSharedPointer<Parameter> >& BusInterface::getParameters() const {
+	return parameters_;
+}
+
 void BusInterface::setAbstractionType(const VLNV& abstractionType) {
 	abstractionType_ = abstractionType;
 }

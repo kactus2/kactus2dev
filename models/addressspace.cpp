@@ -379,6 +379,10 @@ QList<QSharedPointer<Segment> >& AddressSpace::getSegments() {
 	return segments_;
 }
 
+const QList<QSharedPointer<Segment> >& AddressSpace::getSegments() const {
+	return segments_;
+}
+
 void AddressSpace::setSegments( const QList<QSharedPointer<Segment> >& segments ) {
 	segments_ = segments;
 }
@@ -401,4 +405,16 @@ QString AddressSpace::getDescription() const {
 
 QList<QSharedPointer<Parameter> >& AddressSpace::getParameters() {
 	return parameters_;
+}
+
+const QList<QSharedPointer<Parameter> >& AddressSpace::getParameters() const {
+	return parameters_;
+}
+
+General::NameGroup& AddressSpace::getNameGroup() {
+	return nameGroup_;
+}
+
+const General::NameGroup& AddressSpace::getNameGroup() const {
+	return nameGroup_;
 }

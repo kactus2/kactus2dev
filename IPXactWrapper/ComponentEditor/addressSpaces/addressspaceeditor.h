@@ -9,14 +9,13 @@
 #define ADDRESSSPACEEDITOR_H
 
 #include "addressspacegeneraleditor.h"
-#include "addressspaceparameterseditor.h"
 #include "segmenteditor.h"
 #include "addressspacevisualizer.h"
 
 #include <models/component.h>
 #include <models/addressspace.h>
 
-#include <common/widgets/nameGroupBox/namegroupbox.h>
+#include <common/widgets/nameGroupEditor/namegroupeditor.h>
 #include <common/widgets/ParameterGroupBox/parametergroupbox.h>
 
 #include <IPXactWrapper/ComponentEditor/itemeditor.h>
@@ -33,13 +32,13 @@ public:
 	/*! \brief The constructor
 	 *
 	 * \param component Pointer to the component being edited.
-	 * \param dataPointer Pointer to the address space being edited.
-	 * \param parent Pointer to the parent of the editor.
+	 * \param addrSpace Pointer to the address space being edited.
+	 * \param parent Pointer to the owner of this editor.
 	 *
 	*/
 	AddressSpaceEditor(QSharedPointer<Component> component,
-		void* dataPointer,
-		QWidget *parent = 0);
+		QSharedPointer<AddressSpace> addrSpace,
+		QWidget* parent = 0);
 	
 	//! \brief The destructor
 	virtual ~AddressSpaceEditor();
@@ -56,19 +55,6 @@ public:
 	*/
 	virtual void makeChanges();
 
-	/*! \brief Remove the edited address space from the component.
-	 *
-	 * This function should be used when user wants to remove an address space from 
-	 * the component.
-	 *
-	*/
-	virtual void removeModel();
-
-	/*! \brief Restore the settings from the address space to the editor fields.
-	 *
-	*/
-	void restoreChanges();
-
 	/*! \brief Reload the information from the model to the editor.
 	*/
 	virtual void refresh();
@@ -82,10 +68,10 @@ private:
 	AddressSpaceEditor& operator=(const AddressSpaceEditor& other);
 
 	//! \brief Pointer to the address space being edited.
-	AddressSpace* addrSpace_;
+	QSharedPointer<AddressSpace> addrSpace_;
 
 	//! \brief The editor to set the name, display name and description.
-	NameGroupBox nameBox_;
+	NameGroupEditor nameEditor_;
 
 	//! \brief The editor to set the general settings of address space.
 	AddressSpaceGeneralEditor general_;

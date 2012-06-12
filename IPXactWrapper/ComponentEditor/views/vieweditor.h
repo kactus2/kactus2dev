@@ -11,9 +11,9 @@
 #include <IPXactWrapper/ComponentEditor/itemeditor.h>
 
 #include <common/widgets/nameGroupBox/namegroupbox.h>
+#include <common/widgets/ParameterGroupBox/parametergroupbox.h>
 #include "envidentifiereditor.h"
 #include "flatviewgeneraltab.h"
-#include "flatviewparameterstab.h"
 #include <IPXactWrapper/ComponentEditor/fileBuilders/filebuilderseditor.h>
 #include "hierarchyrefwidget.h"
 #include <models/view.h>
@@ -120,7 +120,7 @@ private:
 	FlatViewGeneralTab generalTab_;
 
 	//! \brief Editor to set the parameters of flat view.
-	FlatViewParametersTab parametersTab_;
+	ParameterGroupBox parameters_;
 
 	//! \brief Editor to set the default file builders of flat view.
 	FileBuildersEditor fileBuildersTab_;

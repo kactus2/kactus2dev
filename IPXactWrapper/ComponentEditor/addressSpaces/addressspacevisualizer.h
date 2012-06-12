@@ -41,7 +41,7 @@ public:
 	 * \param addrSpace Pointer to the address space that contains the segments.
 	 *
 	*/
-	void setSegments(AddressSpace* addrSpace);
+	void setSegments(QSharedPointer<AddressSpace> addrSpace);
 
 public slots:
 

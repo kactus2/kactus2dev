@@ -35,7 +35,7 @@ envIdentifier_(view_, this),
 stack_(this),
 flatElements_(&stack_),
 generalTab_(component, view_, &flatElements_),
-parametersTab_(view_, this),
+parameters_(view_->getParameters(), this),
 fileBuildersTab_(view_->getDefaultFileBuilders(), this),
 hierarchyRef_(view_, component_, libHandler, &stack_) {
 
@@ -56,7 +56,7 @@ void ViewEditor::initialize() {
 	QVBoxLayout* flatLayout = new QVBoxLayout(&flatElements_);
 	flatLayout->addWidget(&generalTab_);
 	flatLayout->addWidget(&fileBuildersTab_);
-	flatLayout->addWidget(&parametersTab_);
+	flatLayout->addWidget(&parameters_);
 	flatLayout->setContentsMargins(0, 0, 0, 0);
 
 	setupLayout();
@@ -75,7 +75,7 @@ void ViewEditor::initialize() {
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&fileBuildersTab_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&parametersTab_, SIGNAL(contentChanged()),
+	connect(&parameters_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
 	// when user changes the view type the correct editor is displayed
@@ -103,9 +103,10 @@ bool ViewEditor::isValid() const {
 		return hierarchyRef_.isValid();
 
 	// if view is not hierarchical make sure all it's elements are valid
-	else 
-		return generalTab_.isValid() && parametersTab_.isValid() &&
+	else {
+		return generalTab_.isValid() && parameters_.isValid() &&
 		fileBuildersTab_.isValid();
+	}
 }
 
 void ViewEditor::setupLayout() {
@@ -155,7 +156,6 @@ void ViewEditor::makeChanges() {
 	// if view is not hierarchical
 	else {
 		generalTab_.applyChanges();
-		parametersTab_.applyChanges();
 	}
 }
 
@@ -173,7 +173,7 @@ void ViewEditor::refresh() {
 	nameGroup_.setDisplayName(view_->getDisplayName());
 	nameGroup_.setDescription(view_->getDescription());
 
-	envIdentifier_.restoreChanges();	
+	envIdentifier_.restoreChanges();
 
 	// if view is hierarchical then set it to be selected
 	if (view_->isHierarchical()) {
@@ -183,6 +183,6 @@ void ViewEditor::refresh() {
 	else {
 		viewTypeSelector_.setCurrentIndex(1);
 		generalTab_.restoreChanges();
-		parametersTab_.restoreChanges();
+		parameters_.refresh();
 	}
 }
