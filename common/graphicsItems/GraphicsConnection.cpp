@@ -43,7 +43,8 @@ GraphicsConnection::GraphicsConnection(ConnectionEndpoint* endpoint1, Connection
       pathPoints_(), 
       selected_(-1), 
       selectionType_(NONE),
-      routingMode_(ROUTING_MODE_NORMAL)
+      routingMode_(ROUTING_MODE_NORMAL),
+      imported_(false)
 {
     setItemSettings();
     createRoute(endpoint1, endpoint2);
@@ -88,7 +89,8 @@ GraphicsConnection::GraphicsConnection(QPointF const& p1, QVector2D const& dir1,
       pathPoints_(),
       selected_(-1),
       selectionType_(NONE),
-      routingMode_(ROUTING_MODE_NORMAL)
+      routingMode_(ROUTING_MODE_NORMAL),
+      imported_(false)
 {
     setItemSettings();
     createRoute(p1, p2, dir1, dir2);
@@ -1177,4 +1179,20 @@ DesignDiagram* GraphicsConnection::getDiagram()
 GraphicsConnection::RoutingMode GraphicsConnection::getRoutingMode() const
 {
     return routingMode_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::setImported()
+//-----------------------------------------------------------------------------
+void GraphicsConnection::setImported(bool imported)
+{
+    imported_ = imported;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::isImported()
+//-----------------------------------------------------------------------------
+bool GraphicsConnection::isImported() const
+{
+    return imported_;
 }

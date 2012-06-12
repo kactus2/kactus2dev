@@ -118,23 +118,13 @@ public:
     QUndoCommand* endUpdatePosition(QUndoCommand* parent);
 
     /*!
-     *  Returns the name of this connection
-     */
-    QString const& name() const;
-
-	/*!
      *  Set the name for the connection.
 	 *
 	 *      @param [in] name The name to set for the connection.
 	 */
 	void setName(QString const& name);
 
-	/*!
-     *  Returns the description of the connection.
-	 */
-	QString const& description() const;
-
-	/*!
+    /*!
      *  Sets the description for the connection.
 	 *
      *      @param [in] description The description to set.
@@ -142,6 +132,28 @@ public:
 	void setDescription(const QString& description);
 
     /*!
+     *  Sets the imported state.
+     *
+     *      @param [in] imported If true, the connection is an imported one.
+     */
+    void setImported(bool imported);
+
+    /*!
+     *  Returns the name of this connection
+     */
+    QString const& name() const;
+
+	/*!
+     *  Returns the description of the connection.
+	 */
+	QString const& description() const;
+
+    /*!
+     *  Returns true if the connection is an imported one.
+     */
+    bool isImported() const;
+
+	/*!
      *  Returns the first endpoint connected.
      */
     ConnectionEndpoint* endpoint1() const;
@@ -278,6 +290,9 @@ private:
 
     //! The routing mode.
     RoutingMode routingMode_;
+
+    //! If true, the connection is an imported one.
+    bool imported_;
 };
 
 //-----------------------------------------------------------------------------

@@ -188,10 +188,34 @@ void HWMappingItem::addItem(QGraphicsItem* item, bool load)
 
     ComponentItem* compItem = static_cast<ComponentItem*>(item);
 
-    swComponents_.append(compItem);
-    VStackedLayout::updateItemMove(swComponents_, compItem, TOP_MARGIN, SPACING);
-    VStackedLayout::setItemPos(swComponents_, compItem, 0.0, TOP_MARGIN, SPACING);
-    updateItemPositions();
+    if (load)
+    {
+        // Place the item at the correct index in the items list.
+        for (int i = 0; i < swComponents_.size(); ++i)
+        {
+            if (item->y() < swComponents_.at(i)->y())
+            {
+                swComponents_.insert(i, compItem);
+
+                offsetPortPositions(getComponentStackHeight() + SPACING);
+                updateSize();
+                return;
+            }
+        }
+
+        // If we got here, the item must be placed at the end of the list.
+        swComponents_.append(compItem);
+
+        offsetPortPositions(getComponentStackHeight() + SPACING);
+        updateSize();
+    }
+    else
+    {
+        swComponents_.append(compItem);
+        VStackedLayout::updateItemMove(swComponents_, compItem, TOP_MARGIN, SPACING);
+        VStackedLayout::setItemPos(swComponents_, compItem, 0.0, TOP_MARGIN, SPACING);
+        updateItemPositions();
+    }
 
     emit contentChanged();
 }

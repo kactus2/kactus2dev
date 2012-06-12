@@ -379,19 +379,23 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
         else if (selected->type() == SWCompItem::Type)
         {
             SWCompItem* component = static_cast<SWCompItem*>(selected);
-            diagram_->removeInstanceName(component->name());
-            diagram_->clearSelection();
 
-            QSharedPointer<SystemItemDeleteCommand> cmd(new SystemItemDeleteCommand(component));
+            // Only non-imported SW component instances can be deleted.
+            if (!component->isImported())
+            {
+                diagram_->removeInstanceName(component->name());
+                diagram_->clearSelection();
 
-            connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
-                    this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
-            connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
-                    this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+                QSharedPointer<SystemItemDeleteCommand> cmd(new SystemItemDeleteCommand(component));
 
-            editProvider_->addCommand(cmd);
+                connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+                        this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+                connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+                        this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
 
-            emit clearItemSelection();
+                editProvider_->addCommand(cmd);
+                emit clearItemSelection();
+            }
         }
         else if (selected->type() == GraphicsConnection::Type)
         {

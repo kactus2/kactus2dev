@@ -626,9 +626,9 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
             
             // Create the connection.
             tempConnection_ = new GraphicsConnection(tempConnEndpoint_->scenePos(),
-                                               tempConnEndpoint_->getDirection(),
-                                               event->scenePos(),
-                                               QVector2D(0.0f, 0.0f), QString(), QString(), this);
+                                                     tempConnEndpoint_->getDirection(),
+                                                     event->scenePos(),
+                                                     QVector2D(0.0f, 0.0f), QString(), QString(), this);
             addItem(tempConnection_);
 
             // Determine all potential endpoints to which the starting endpoint could be connected
@@ -1086,6 +1086,7 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
 
                     ApiDependency dependency(conn->name(), QString(), conn->description(),
                                              providerRef, requesterRef, conn->route());
+                    dependency.setImported(conn->isImported());
                     apiDependencies.append(dependency);
                 }
                 else
@@ -1575,10 +1576,11 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
 
 
         GraphicsConnection* connection = new GraphicsConnection(port1, port2, true,
-            dependency.getName(),
-            dependency.getDisplayName(),
-            dependency.getDescription(), this);
+                                                                dependency.getName(),
+                                                                dependency.getDisplayName(),
+                                                                dependency.getDescription(), this);
         connection->setRoute(dependency.getRoute());
+        connection->setImported(dependency.isImported());
 
         connect(connection, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
         connect(connection, SIGNAL(errorMessage(QString const&)),
@@ -1656,9 +1658,9 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
         else
         {
             GraphicsConnection* connection = new GraphicsConnection(port, interface, true,
-                                                        dependency.getName(),
-                                                        dependency.getDisplayName(),
-                                                        dependency.getDescription(), this);
+                                                                    dependency.getName(),
+                                                                    dependency.getDisplayName(),
+                                                                    dependency.getDescription(), this);
             connection->setRoute(dependency.getRoute());
 
             connect(connection, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
