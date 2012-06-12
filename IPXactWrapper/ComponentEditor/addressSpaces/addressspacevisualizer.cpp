@@ -36,6 +36,9 @@ AddressSpaceVisualizer::~AddressSpaceVisualizer() {
 }
 
 void AddressSpaceVisualizer::setSegments(QSharedPointer<AddressSpace> addrSpace ) {
+	// clear the previous segments
+	segments_.clear();
+	
 	QList<QSharedPointer<Segment> > segmentList =  addrSpace->getSegments();
 
 	foreach (QSharedPointer<Segment> segment, segmentList) {
@@ -263,21 +266,6 @@ void AddressSpaceVisualizer::drawGrid( QPainter& painter, const QRect& bounds) {
 			painter.drawText(top, QString::number(byteSize_ * bitLimiter));
 		}
 	}
-
-// 
-// 	delta = (bottomBound - topBound) / double(rowCount);
-// 	currentPos = topBound;
-// 
-// 	// draw the right amount of rows
-// 	for (int currentRow = 0; currentRow < rowCount - 1; ++currentRow) {
-// 
-// 		currentPos += delta;
-// 
-// 		// draw the horizontal line from left to right
-// 		QPointF left(leftBound, currentPos);
-// 		QPointF right(rightBound, currentPos);
-// 		painter.drawLine(left, right);
-// 	}
 }
 
 void AddressSpaceVisualizer::drawSegments( QPainter& painter, const QRect& bounds, 
