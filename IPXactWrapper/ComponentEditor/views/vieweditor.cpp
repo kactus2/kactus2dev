@@ -28,16 +28,16 @@ ViewEditor::ViewEditor( QSharedPointer<Component> component,
 ItemEditor(component, parent), 
 libHandler_(libHandler),
 component_(component),
-view_(view.data()),
-nameGroup_(this, tr("View name and description")),
+view_(view),
+nameEditor_(view->getNameGroup(), this, tr("View name and description")),
 viewTypeSelector_(),
-envIdentifier_(view_, this),
+envIdentifier_(view, this),
 stack_(this),
 flatElements_(&stack_),
-generalTab_(component, view_, &flatElements_),
-parameters_(view_->getParameters(), this),
-fileBuildersTab_(view_->getDefaultFileBuilders(), this),
-hierarchyRef_(view_, component_, libHandler, &stack_) {
+generalTab_(component, view, &flatElements_),
+parameters_(view->getParameters(), this),
+fileBuildersTab_(view->getDefaultFileBuilders(), this),
+hierarchyRef_(view, component_, libHandler, &stack_) {
 
 	initialize();
 }
@@ -61,9 +61,7 @@ void ViewEditor::initialize() {
 
 	setupLayout();
 
-	connect(&nameGroup_, SIGNAL(nameChanged(const QString&)),
-		this, SIGNAL(nameChanged(const QString&)), Qt::UniqueConnection);
-	connect(&nameGroup_, SIGNAL(contentChanged()),
+	connect(&nameEditor_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&envIdentifier_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -91,7 +89,7 @@ ViewEditor::~ViewEditor() {
 bool ViewEditor::isValid() const {
 	
 	// if name group is not valid
-	if (!nameGroup_.isValid())
+	if (!nameEditor_.isValid())
 		return false;
 
 	// if environment identifiers have not been defined
@@ -128,7 +126,7 @@ void ViewEditor::setupLayout() {
 
 	// create the layout for the top widget
 	QVBoxLayout* topLayout = new QVBoxLayout(topWidget);
-	topLayout->addWidget(&nameGroup_);
+	topLayout->addWidget(&nameEditor_);
 	topLayout->addWidget(&envIdentifier_, 1);
 	topLayout->addLayout(viewTypeLayout);
 	topLayout->addWidget(&stack_);
@@ -136,17 +134,7 @@ void ViewEditor::setupLayout() {
 	scrollArea->setWidget(topWidget);
 }
 
-void ViewEditor::removeModel() {
-	component_->removeView(view_->getName());
-	view_ = 0;
-}
-
 void ViewEditor::makeChanges() {
-	view_->setName(nameGroup_.getName());
-	view_->setDisplayName(nameGroup_.getDisplayName());
-	view_->setDescription(nameGroup_.getDescription());
-
-	envIdentifier_.applyChanges();
 
 	// if hierarchical view is selected
 	if (viewTypeSelector_.currentIndex() == 0) {
@@ -169,11 +157,8 @@ void ViewEditor::onStackChange( int index ) {
 }
 
 void ViewEditor::refresh() {
-	nameGroup_.setName(view_->getName());
-	nameGroup_.setDisplayName(view_->getDisplayName());
-	nameGroup_.setDescription(view_->getDescription());
-
-	envIdentifier_.restoreChanges();
+	nameEditor_.refresh();
+	envIdentifier_.refresh();
 
 	// if view is hierarchical then set it to be selected
 	if (view_->isHierarchical()) {

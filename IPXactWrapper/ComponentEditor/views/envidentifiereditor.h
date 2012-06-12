@@ -11,13 +11,13 @@
 #include "envidentifiersmodel.h"
 
 #include <common/views/EditableTableView/editabletableview.h>
+#include <models/view.h>
 
 #include <QGroupBox>
 #include <QString>
 #include <QSortFilterProxyModel>
 #include <QPushButton>
-
-class View;
+#include <QSharedPointer>
 
 /*! \brief Widget to edit the spirit:envIdentifiers element within view.
  *
@@ -34,7 +34,8 @@ public:
 	 * \param title The title to set for the group box
 	 *
 	*/
-	EnvIdentifierEditor(View* view, QWidget *parent, 
+	EnvIdentifierEditor(QSharedPointer<View> view, 
+		QWidget *parent, 
 		const QString title = QString("Environment identifiers"));
 	
 	//! \brief The destructor
@@ -43,16 +44,7 @@ public:
 	/*! \brief Restore the changes made in the editor back to ones in the model.
 	*
 	*/
-	virtual void restoreChanges();
-
-	/*! \brief Applies the changes made with the editor to the model.
-	*
-	* After calling this function it is no longer possible to automatically 
-	* restore the previous state of the model.
-	* 
-	* Note: if the editor is not in valid state nothing is changed.
-	*/
-	virtual void applyChanges();
+	virtual void refresh();
 
 	/*! \brief Check for the validity of the edited parameters.
 	*

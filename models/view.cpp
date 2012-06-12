@@ -416,7 +416,7 @@ void View::setHierarchyRef(const VLNV& hierarchyRef) {
 	parameters_.clear();
 }
 
-void View::setEnvIdentifiers(const QList<QString> &envIdentifiers) {
+void View::setEnvIdentifiers( const QStringList& envIdentifiers ) {
 	envIdentifiers_.clear();
 	envIdentifiers_ = envIdentifiers;
 
@@ -426,7 +426,11 @@ bool View::getLanguageStrict() const {
 	return languageStrict_;
 }
 
-const QList<QString>& View::getEnvIdentifiers() {
+const QStringList& View::getEnvIdentifiers() const {
+	return envIdentifiers_;
+}
+
+QStringList& View::getEnvIdentifiers() {
 	return envIdentifiers_;
 }
 
@@ -521,4 +525,12 @@ void View::setTopLevelView( const QString& viewName ) {
 	fileSetRefs_.clear();
 	constraintSetRefs_.clear();
 	parameters_.clear();
+}
+
+General::NameGroup& View::getNameGroup() {
+	return nameGroup_;
+}
+
+const General::NameGroup& View::getNameGroup() const {
+	return nameGroup_;
 }

@@ -98,9 +98,15 @@ public:
 
 	/*! \brief Get list of the envIdentifiers for this view
 	 *
-	 * \return QList containing the envIdentifiers
+	 * \return QStringList containing the envIdentifiers
 	 */
-	const QList<QString>& getEnvIdentifiers();
+	const QStringList& getEnvIdentifiers() const;
+
+	/*! \brief Get list of the envIdentifiers for this view
+	 *
+	 * \return QStringList containing the envIdentifiers
+	 */
+	QStringList& getEnvIdentifiers();
 
 	/*! \brief Get list of the fileSetRefs for this view
 	 *
@@ -204,7 +210,7 @@ public:
 	 *
 	 * \param envIdentifiers QList containing the envIdentifiers
 	 */
-	void setEnvIdentifiers(const QList<QString> &envIdentifiers);
+	void setEnvIdentifiers(const QStringList& envIdentifiers);
 
 	/*! \brief Set the fileSetRefs for this view
 	 *
@@ -285,6 +291,18 @@ public:
 	*/
 	void setTopLevelView(const QString& viewName);
 
+	/*! \brief Get the name group struct of this view.
+	 *
+	 * \return Reference to the struct containing the name group.
+	*/
+	General::NameGroup& getNameGroup();
+
+	/*! \brief Get the name group struct of this view.
+	 *
+	 * \return Reference to the struct containing the name group.
+	*/
+	const General::NameGroup& getNameGroup() const;
+
 private:
 
 	//! \brief Contains the name, display name and description of view.
@@ -295,7 +313,7 @@ private:
 	 * Designates and qualifies information about how this model view is
 	 * deployed in a particular tool environment.
 	 */
-	QList<QString> envIdentifiers_;
+	QStringList envIdentifiers_;
 
 	/*!
 	 * OPTIONAL spirit:language

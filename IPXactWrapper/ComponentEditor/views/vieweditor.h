@@ -10,7 +10,7 @@
 
 #include <IPXactWrapper/ComponentEditor/itemeditor.h>
 
-#include <common/widgets/nameGroupBox/namegroupbox.h>
+#include <common/widgets/nameGroupEditor/namegroupeditor.h>
 #include <common/widgets/ParameterGroupBox/parametergroupbox.h>
 #include "envidentifiereditor.h"
 #include "flatviewgeneraltab.h"
@@ -56,14 +56,6 @@ public:
 	*/
 	virtual bool isValid() const;
 
-	/*! \brief Remove the edited view from the model.
-	 *
-	 * This function should be used when user wants to remove a view from 
-	 * the component.
-	 *
-	*/
-	virtual void removeModel();
-
 	/*! \brief Make the changes from the widgets editors to the IPXact model.
 	 *
 	*/
@@ -99,10 +91,10 @@ private:
 	QSharedPointer<Component> component_;
 
 	//! \brief Pointer to the view being edited.
-	View* view_;
+	QSharedPointer<View> view_;
 	
 	//! \brief Editor to set the name, display name and description of the view.
-	NameGroupBox nameGroup_;
+	NameGroupEditor nameEditor_;
 
 	//! \brief Combo box to select between hierarchical/flat views.
 	QComboBox viewTypeSelector_;

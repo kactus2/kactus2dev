@@ -57,8 +57,6 @@ public:
 	virtual ItemEditor* editor();
 
 	/*! \brief Add a new child to the item.
-	 *
-	 * The base class implementation does nothing.
 	 * 
 	 * \param index The index to add the child into.
 	 *

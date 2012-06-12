@@ -14,7 +14,7 @@
 #include <QStringList>
 #include <QFormLayout>
 
-HierarchyRefWidget::HierarchyRefWidget(View* view, 
+HierarchyRefWidget::HierarchyRefWidget(QSharedPointer<View> view, 
 									   QSharedPointer<Component> component,
 										LibraryInterface* libHandler,
 									   QWidget *parent): 

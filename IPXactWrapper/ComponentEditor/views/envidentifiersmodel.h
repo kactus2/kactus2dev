@@ -8,10 +8,11 @@
 #ifndef ENVIDENTIFIERSMODEL_H
 #define ENVIDENTIFIERSMODEL_H
 
+#include <models/view.h>
+
 #include <QAbstractTableModel>
 #include <QStringList>
-
-class View;
+#include <QSharedPointer>
 
 /*! \brief Model that contains the environment identifiers to be displayed to user.
  *
@@ -27,7 +28,7 @@ public:
 	 * \param parent Pointer to the owner of this model
 	 *
 	*/
-	EnvIdentifiersModel(View* view,
+	EnvIdentifiersModel(QSharedPointer<View> view,
 		QObject *parent);
 	
 	//! \brief The destructor
@@ -98,28 +99,7 @@ public:
 	*/
 	bool isValid() const;
 
-	/*! \brief Write the changes to the original model.
-	 *
-	*/
-	void apply();
-
-	/*! \brief Restore the settings from the original model.
-	 *
-	*/
-	void restore();
-
 public slots:
-
-	/*! \brief Remove a row from the model
-	 *
-	 * \param row Specifies the row to remove
-	*/
-	void onRemoveRow(int row);
-
-	/*! \brief Add a new empty row to the model
-	 *
-	*/
-	void onAddRow();
 
 	/*! \brief A new item should be added to given index.
 	 *
@@ -155,10 +135,10 @@ private:
 	EnvIdentifiersModel& operator=(const EnvIdentifiersModel& other);
 
 	//! \brief Pointer to the view being edited.
-	View* view_;
+	QSharedPointer<View> view_;
 
 	//! \brief Contains the environment identifiers being edited.
-	QStringList table_;
+	QStringList& table_;
 };
 
 #endif // ENVIDENTIFIERSMODEL_H

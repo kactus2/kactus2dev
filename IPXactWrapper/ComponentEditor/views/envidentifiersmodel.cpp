@@ -9,16 +9,14 @@
 
 #include <models/view.h>
 
-EnvIdentifiersModel::EnvIdentifiersModel(View* view, 
+EnvIdentifiersModel::EnvIdentifiersModel(QSharedPointer<View> view, 
 										 QObject *parent ):
 QAbstractTableModel(parent), 
 view_(view),
-table_() {
+table_(view->getEnvIdentifiers()) {
 
 	Q_ASSERT_X(view_, "EnvIdentifiersModel constructor",
 		"Null view pointer given as parameter");
-
-	restore();
 }
 
 EnvIdentifiersModel::~EnvIdentifiersModel() {
@@ -33,8 +31,9 @@ int EnvIdentifiersModel::rowCount(const QModelIndex& parent /*= QModelIndex() */
 
 int EnvIdentifiersModel::columnCount( const QModelIndex& parent /*= QModelIndex() */ ) const {
 
-	if (parent.isValid())
+	if (parent.isValid()) {
 		return 0;
+	}
 	return 3;
 }
 
@@ -111,6 +110,7 @@ bool EnvIdentifiersModel::setData( const QModelIndex& index,
 		result += identifier.value(2);
 		table_.replace(index.row(), result);
 		
+		emit dataChanged(index, index);
 		emit contentChanged();
 		return true;
 	}
@@ -121,8 +121,9 @@ bool EnvIdentifiersModel::setData( const QModelIndex& index,
 
 Qt::ItemFlags EnvIdentifiersModel::flags( const QModelIndex& index ) const {
 
-	if (!index.isValid())
+	if (!index.isValid()) {
 		return Qt::NoItemFlags;
+	}
 
 	return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
@@ -131,34 +132,6 @@ bool EnvIdentifiersModel::isValid() const {
 
 	// at least one has to be specified.
 	return !table_.isEmpty();
-}
-
-void EnvIdentifiersModel::apply() {
-	view_->setEnvIdentifiers(table_);
-}
-
-void EnvIdentifiersModel::restore() {
-
-	beginResetModel();
-	table_.clear();
-	table_ = view_->getEnvIdentifiers();
-	endResetModel();
-}
-
-void EnvIdentifiersModel::onRemoveRow( int row ) {
-	// if row is invalid
-	if (row < 0 || row >= table_.size())
-		return;
-
-	beginRemoveRows(QModelIndex(), row, row);
-
-	// remove the object from the map
-	table_.removeAt(row);
-
-	endRemoveRows();
-
-	// tell also parent widget that contents have been changed
-	emit contentChanged();
 }
 
 void EnvIdentifiersModel::onRemoveItem( const QModelIndex& index ) {
@@ -175,17 +148,6 @@ void EnvIdentifiersModel::onRemoveItem( const QModelIndex& index ) {
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
 	table_.removeAt(index.row());
 	endRemoveRows();
-
-	// tell also parent widget that contents have been changed
-	emit contentChanged();
-}
-
-void EnvIdentifiersModel::onAddRow() {
-	beginInsertRows(QModelIndex(), table_.size(), table_.size());
-
-	table_.append(QString("::"));
-
-	endInsertRows();
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();

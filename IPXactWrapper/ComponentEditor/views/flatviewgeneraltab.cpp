@@ -15,7 +15,7 @@
 #include <QStringList>
 
 FlatViewGeneralTab::FlatViewGeneralTab(QSharedPointer<Component> component, 
-									   View* view, 
+									   QSharedPointer<View> view, 
 									   QWidget *parent): 
 QWidget(parent),
 component_(component),

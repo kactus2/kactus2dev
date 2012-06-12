@@ -9,13 +9,13 @@
 #define FLATVIEWGENERALTAB_H
 
 #include "filesetrefeditor.h"
+#include <models/view.h>
 
 #include <QWidget>
 #include <QLineEdit>
 #include <QSharedPointer>
 #include <QCheckBox>
 
-class View;
 class Component;
 
 /*! \brief Contains the GUI items to edit the general settings of non-hierarchical view.
@@ -34,7 +34,7 @@ public:
 	 *
 	*/
 	FlatViewGeneralTab(QSharedPointer<Component> component, 
-		View* view, 
+		QSharedPointer<View> view, 
 		QWidget *parent);
 	
 	//! \brief The destructor
@@ -82,7 +82,7 @@ private:
 	QSharedPointer<Component> component_;
 
 	//! \brief Pointer to the view being edited.
-	View* view_;
+	QSharedPointer<View> view_;
 
 	//! \brief Editor to set the hardware description language.
 	QLineEdit language_;

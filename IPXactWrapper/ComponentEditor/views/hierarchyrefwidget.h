@@ -9,12 +9,13 @@
 #define HIERARCHYREFWIDGET_H
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
+#include <models/view.h>
 
 #include <QWidget>
 #include <QSharedPointer>
 #include <QComboBox>
+#include <QSharedPointer>
 
-class View;
 class Component;
 class LibraryInterface;
 
@@ -34,7 +35,7 @@ public:
 	 * \param parent Pointer to the owner of this editor.
 	 *
 	*/
-	HierarchyRefWidget(View* view, 
+	HierarchyRefWidget(QSharedPointer<View> view, 
 		QSharedPointer<Component> component,
 		LibraryInterface* libHandler,
 		QWidget *parent);
@@ -81,7 +82,7 @@ private:
 	HierarchyRefWidget& operator=(const HierarchyRefWidget& other);
 	
 	//! \brief Pointer to the view being edited.
-	View* view_;
+	QSharedPointer<View> view_;
 
 	//! \brief Pointer to the component being edited.
 	QSharedPointer<Component> component_;

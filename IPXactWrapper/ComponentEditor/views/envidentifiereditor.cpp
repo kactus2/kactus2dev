@@ -14,11 +14,12 @@
 #include <QIcon>
 #include <QVBoxLayout>
 
-EnvIdentifierEditor::EnvIdentifierEditor(View* view, 
+EnvIdentifierEditor::EnvIdentifierEditor(QSharedPointer<View> view, 
 										 QWidget *parent, 
 										 const QString title): 
 QGroupBox(title, parent),
-view_(this), model_(view, this), 
+view_(this),
+model_(view, this), 
 proxy_(this) {
 
 	// set view to be sortable
@@ -43,8 +44,6 @@ proxy_(this) {
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&view_);
 
-	restoreChanges();
-
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
@@ -63,12 +62,8 @@ proxy_(this) {
 EnvIdentifierEditor::~EnvIdentifierEditor() {
 }
 
-void EnvIdentifierEditor::restoreChanges() {
-	model_.restore();
-}
-
-void EnvIdentifierEditor::applyChanges() {
-	model_.apply();
+void EnvIdentifierEditor::refresh() {
+	view_.update();
 }
 
 bool EnvIdentifierEditor::isValid() const {

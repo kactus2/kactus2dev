@@ -8,6 +8,8 @@
 #ifndef COMPONENTEDITORVIEWSITEM_H
 #define COMPONENTEDITORVIEWSITEM_H
 
+#include <IPXactWrapper/ComponentEditor/views/viewseditor.h>
+
 #include "componenteditoritem.h"
 
 /*! \brief The Views-item in the component editor's navigation tree.
@@ -53,6 +55,20 @@ public:
 	*/
 	virtual ItemEditor* editor();
 
+	/*! \brief Add a new child to the item.
+	 * 
+	 * \param index The index to add the child into.
+	 *
+	*/
+	virtual void createChild(int index);
+
+protected slots:
+
+	/*! \brief Handler for editor's contentChanged signal.
+	 *
+	*/
+	virtual void onEditorChanged();
+
 private:
 	//! \brief No copying
 	ComponentEditorViewsItem(const ComponentEditorViewsItem& other);
@@ -62,6 +78,9 @@ private:
 
 	//! \brief The views being edited.
 	QList<QSharedPointer<View> >& views_;
+
+	//! \brief The editor to edit views.
+	ViewsEditor editor_;
 };
 
 #endif // COMPONENTEDITORVIEWSITEM_H
