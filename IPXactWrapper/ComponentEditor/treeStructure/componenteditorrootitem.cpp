@@ -19,7 +19,6 @@
 #include "componenteditorchannelsitem.h"
 #include "componenteditorcpusitem.h"
 #include "componenteditorotherclocksitem.h"
-#include "componenteditorsoftmapsitem.h"
 #include "componenteditorcominterfacesitem.h"
 #include "componenteditorswviewsitem.h"
 #include "componenteditorapiinterfacesitem.h"
@@ -68,9 +67,6 @@ ComponentEditorItem(libHandler, component, parent) {
 	
 	childItems_.append(QSharedPointer<ComponentEditorOtherClocksItem>(
 		new ComponentEditorOtherClocksItem(parent, libHandler, component, this)));
-	
-	childItems_.append(QSharedPointer<ComponentEditorSoftMapsItem>(
-		new ComponentEditorSoftMapsItem(parent, libHandler, component, this)));
 	
 	childItems_.append(QSharedPointer<ComponentEditorComInterfacesItem>(
 		new ComponentEditorComInterfacesItem(parent, libHandler, component, this)));

@@ -7,6 +7,7 @@
 #include "ComConnection.h"
 #include "HierComConnection.h"
 #include "ColumnDesc.h"
+#include "ComponentInstance.h"
 
 #include "librarycomponent.h"
 #include <LibraryManager/vlnv.h>
@@ -30,140 +31,7 @@
 class Design: public LibraryComponent {
 
 public:
-    /*! \brief Describes the spirit:componentInstance element in an
-	* IP-XACT document
-	*
-	* ComponentInstance holds component instance's configuration
-	*/
-	struct ComponentInstance {
-
-		/*! \brief MANDATORY spirit:instanceName
-		*
-		* A unique name for this instance of a component.
-		*/
-		QString instanceName;
-
-		/*! \brief OPTIONAL spirit:displayName
-		*
-		* Allows a short descriptive text to be associated with the
-		* instance.
-		*/
-		QString displayName;
-
-		/*! \brief OPTIONAL spirit:description
-		*
-		* Allows a textual description of the instance
-		*/
-		QString description;
-
-		/*! \brief MANDATORY spirit:componentRef
-		*
-		* A reference to a component description.
-		*/
-		VLNV componentRef;
-
-		/*! \brief OPTIONAL spirit:configurableElementValues
-		*
-		* Specifies the configuration for a specific component
-		* instance by providing the value of a specific component
-		* parameter. Key of the map is a reference to the id
-		* attribute of an element in the component instance and the
-		* value is the value assigned.
-		*/
-		QMap<QString, QString> configurableElementValues;
-
-        /*! \brief VENDOREXT kactus2:position
-         *
-         *  Specifies the component instance's global position in the block diagram.
-         */
-        QPointF position;
-
-        /*! \brief VENDOREXT kactus2:portPositions
-         *
-         *  Specifies the port positioning for the component instance's bus interfaces.
-         */
-        QMap<QString, QPointF> portPositions;
-
-        /*!
-         *  Specifies the positioning for the visible ad-hoc ports.
-         */
-        QMap<QString, QPointF> adHocPortPositions;
-
-        //! API interface positions.
-        QMap<QString, QPointF> apiInterfacePositions;
-
-        //! COM interface positions.
-        QMap<QString, QPointF> comInterfacePositions;
-
-        /*! \brief VENDOREXT kactus2:adHocVisibilities
-         *
-         *  Specifies ad-hoc visibility of each port.
-         */
-        QMap<QString, bool> portAdHocVisibilities;
-
-        /*! \brief VENDOREXT kactus2:mcapiNodeId
-         *
-         *  Specifies the MCAPI node id.
-         */
-        int mcapiNodeID;
-
-        /*! \brief VENDOREXT kactus2:endpointsExpanded
-         *
-         *  Specifies whether the endpoints in an endpoint component are expanded.
-         */
-        bool endpointsExpanded;
-
-        /*! \brief VENDOREXT kactus2:imported
-         *
-         *  Specifies whether the component is imported from a software mapping design.
-         */
-        bool imported;
-
-        //! SW property values for this instance.
-        QMap<QString, QString> swPropertyValues;
-        
-        /*! \brief The constructor
-		*
-		* \param componentInstanceNode A reference to a QDomNode
-		* where the information should be parsed from.
-		*/
-		ComponentInstance(QDomNode &componentInstanceNode);
-
-		/*! \brief Convenience constructor for initializing fields
-		*/
-		ComponentInstance(QString instanceName, QString displayName,
-			              QString description, VLNV const& componentRef,
-                          QPointF const& position);
-
-		//! \brief Copy constructor
-		ComponentInstance(const ComponentInstance& other);
-
-		//! \brief Assignment operator
-		ComponentInstance& operator=(const ComponentInstance& other);
-
-        /*! \brief Check if the component instance is in a valid state.
-		*
-		* \param errorList The list to add the possible error messages to.
-		* \param parentIdentifier String from parent to help to identify the location of the error.
-		*
-		* \return bool True if the state is valid and writing is possible.
-		*/
-		bool isValid(QStringList& errorList, 
-			const QString& parentIdentifier) const;
-
-		/*! \brief Check if the component instance is in a valid state.
-		*
-		* \return bool True if the state is valid and writing is possible.
-		*/
-		bool isValid() const;
-        
-        /*!
-         *  Parses the property values from the given XML node.
-         */
-        void parsePropertyValues(QDomNode& node);
-    };
-
-	/*! \brief Describes the spirit:interface type in an IP-XACT
+    /*! \brief Describes the spirit:interface type in an IP-XACT
 	* document
 	*
 	* Specifies the bus interface of a design component instance that

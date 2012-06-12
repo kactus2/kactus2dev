@@ -123,31 +123,33 @@ void BlockDiagram::openDesign(QSharedPointer<Design> design)
     }
 
     /* component instances */
-    foreach (Design::ComponentInstance instance,
+    foreach (ComponentInstance const& instance,
              design->getComponentInstances()) {
         
-		QSharedPointer<LibraryComponent> libComponent = getLibraryInterface()->getModel(instance.componentRef);
+		QSharedPointer<LibraryComponent> libComponent = getLibraryInterface()->getModel(instance.getComponentRef());
         QSharedPointer<Component> component = libComponent.staticCast<Component>();
 
 		if (!component) {
 			emit errorMessage(tr("The component %1 instantiated within design "
 				                 "%2 was not found in the library").arg(
-				              instance.componentRef.getName()).arg(design->getVlnv()->getName()));
+				              instance.getComponentRef().getName()).arg(design->getVlnv()->getName()));
 			
             // Create an unpackaged component so that we can still visualize the component instance.
-            component = QSharedPointer<Component>(new Component(instance.componentRef));
+            component = QSharedPointer<Component>(new Component(instance.getComponentRef()));
             component->setComponentImplementation(getEditedComponent()->getComponentImplementation());
 		}
 
-        DiagramComponent* diagComp = new DiagramComponent(getLibraryInterface(), component, instance.instanceName,
-                                                          instance.displayName, instance.description,
-                                                          instance.configurableElementValues,
-                                                          instance.portAdHocVisibilities);
+        DiagramComponent* diagComp = new DiagramComponent(getLibraryInterface(), component,
+                                                          instance.getInstanceName(),
+                                                          instance.getDisplayName(),
+                                                          instance.getDescription(),
+                                                          instance.getConfigurableElementValues(),
+                                                          instance.getPortAdHocVisibilities());
 
         connect(diagComp, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
         // Setup the custom port positions.
-        QMapIterator<QString, QPointF> itrPortPos(instance.portPositions);
+        QMapIterator<QString, QPointF> itrPortPos(instance.getBusInterfacePositions());
 
         while (itrPortPos.hasNext())
         {
@@ -162,7 +164,7 @@ void BlockDiagram::openDesign(QSharedPointer<Design> design)
         }
 
         // Setup the custom ad-hoc port positions for the component.
-        itrPortPos = QMapIterator<QString, QPointF>(instance.adHocPortPositions);
+        itrPortPos = QMapIterator<QString, QPointF>(instance.getAdHocPortPositions());
 
         while (itrPortPos.hasNext())
         {
@@ -177,16 +179,16 @@ void BlockDiagram::openDesign(QSharedPointer<Design> design)
         }
 
         // Check if the position is not found.
-        if (instance.position.isNull())
+        if (instance.getPosition().isNull())
         {
             // Migrate from the old layout to the column based layout.
             layout_->addItem(diagComp);
         }
         else
         {
-            diagComp->setPos(instance.position);
+            diagComp->setPos(instance.getPosition());
 
-            GraphicsColumn* column = layout_->findColumnAt(instance.position);
+            GraphicsColumn* column = layout_->findColumnAt(instance.getPosition());
             
             if (column != 0)
             {
@@ -200,7 +202,7 @@ void BlockDiagram::openDesign(QSharedPointer<Design> design)
 
 		// add the name to the list of instance names so no items with same 
 		// names are added
-		addInstanceName(instance.instanceName);
+		addInstanceName(instance.getInstanceName());
     }
 
     /* interconnections */
@@ -602,7 +604,7 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv) const
 {
 	QSharedPointer<Design> design(new Design(vlnv));
 
-	QList<Design::ComponentInstance> instances;
+	QList<ComponentInstance> instances;
 	QList<Design::Interconnection> interconnections;
 	QList<Design::HierConnection> hierConnections;
     QList<Design::AdHocConnection> adHocConnections;
@@ -624,12 +626,13 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv) const
                 continue;
             }
 
-			Design::ComponentInstance instance(comp->name(), comp->displayName(),
-				comp->description(), *comp->componentModel()->getVlnv(), comp->scenePos());
+			ComponentInstance instance(comp->name(), comp->displayName(),
+				                       comp->description(), *comp->componentModel()->getVlnv(),
+                                       comp->scenePos());
 
 			// save the configurable element values to the design
-			instance.configurableElementValues = comp->getConfigurableElements();
-            instance.portAdHocVisibilities = comp->getPortAdHocVisibilities();
+			instance.setConfigurableElementValues(comp->getConfigurableElements());
+            instance.setPortAdHocVisibilities(comp->getPortAdHocVisibilities());
 
             // Save the port positions.
             QMapIterator< QString, QSharedPointer<BusInterface> >
@@ -638,7 +641,7 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv) const
             while (itrBusIf.hasNext())
             {
                 itrBusIf.next();
-                instance.portPositions[itrBusIf.key()] = comp->getBusPort(itrBusIf.key())->pos();
+                instance.updateBusInterfacePosition(itrBusIf.key(), comp->getBusPort(itrBusIf.key())->pos());
             }
 
             QMapIterator<QString, bool> itrAdHoc(comp->getPortAdHocVisibilities());
@@ -649,7 +652,7 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv) const
 
                 if (itrAdHoc.value())
                 {
-                    instance.adHocPortPositions[itrAdHoc.key()] = comp->getAdHocPort(itrAdHoc.key())->pos();
+                    instance.updateAdHocPortPosition(itrAdHoc.key(), comp->getAdHocPort(itrAdHoc.key())->pos());
                 }
             }
 

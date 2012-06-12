@@ -129,34 +129,35 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
     unsigned int colIndex = 0;
 
     // Create (HW) component instances.
-    foreach (Design::ComponentInstance const& instance, design->getComponentInstances())
+    foreach (ComponentInstance const& instance, design->getComponentInstances())
     {
-        QSharedPointer<LibraryComponent> libComponent = getLibraryInterface()->getModel(instance.componentRef);
+        QSharedPointer<LibraryComponent> libComponent = getLibraryInterface()->getModel(instance.getComponentRef());
         QSharedPointer<Component> component = libComponent.staticCast<Component>();
 
         if (!component)
         {
             emit errorMessage(tr("The component '%1' instantiated in the design '%2' "
                                  "was not found in the library").arg(
-                instance.componentRef.getName()).arg(design->getVlnv()->getName()));
+                instance.getComponentRef().getName()).arg(design->getVlnv()->getName()));
 
             // Create an unpackaged component so that we can still visualize the component instance.
-            component = QSharedPointer<Component>(new Component(instance.componentRef));
+            component = QSharedPointer<Component>(new Component(instance.getComponentRef()));
             component->setComponentImplementation(KactusAttribute::KTS_HW);
         }
 
-        HWMappingItem* item = new HWMappingItem(getLibraryInterface(), component, instance.instanceName,
-                                                instance.displayName, instance.description,
-                                                instance.configurableElementValues);
-        item->setImported(instance.imported);
-        item->setPropertyValues(instance.swPropertyValues);
+        HWMappingItem* item = new HWMappingItem(getLibraryInterface(), component, instance.getInstanceName(),
+                                                instance.getDisplayName(), instance.getDescription(),
+                                                instance.getConfigurableElementValues());
+        item->setImported(instance.isImported());
+        item->setImportRef(instance.getImportRef());
+        item->setPropertyValues(instance.getPropertyValues());
 
         connect(item, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
         connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
         // Setup custom port positions.
         {
-            QMapIterator<QString, QPointF> itrPortPos(instance.apiInterfacePositions);
+            QMapIterator<QString, QPointF> itrPortPos(instance.getApiInterfacePositions());
 
             while (itrPortPos.hasNext())
             {
@@ -177,7 +178,7 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
         }
 
         {
-            QMapIterator<QString, QPointF> itrPortPos(instance.comInterfacePositions);
+            QMapIterator<QString, QPointF> itrPortPos(instance.getComInterfacePositions());
 
             while (itrPortPos.hasNext())
             {
@@ -198,16 +199,16 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
         }
 
         // Check if the position is not found.
-        if (instance.position.isNull())
+        if (instance.getPosition().isNull())
         {
             layout_->getColumns().at(colIndex)->addItem(item);
             colIndex = 1 - colIndex;
         }
         else
         {
-            item->setPos(instance.position);
+            item->setPos(instance.getPosition());
 
-            GraphicsColumn* column = layout_->findColumnAt(instance.position);
+            GraphicsColumn* column = layout_->findColumnAt(instance.getPosition());
 
             if (column != 0)
             {
@@ -220,7 +221,7 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
             }
         }
 
-        addInstanceName(instance.instanceName);
+        addInstanceName(instance.getInstanceName());
     }
     
     // Create SW instances.
@@ -243,6 +244,7 @@ void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
         SWCompItem* item = new SWCompItem(getLibraryInterface(), component, instance.getInstanceName(),
                                           instance.getDisplayName(), instance.getDescription());
         item->setImported(instance.isImported());
+        item->setImportRef(instance.getImportRef());
         item->setPos(instance.getPosition());
         item->setPropertyValues(instance.getPropertyValues());
         item->setFileSetRef(instance.getFileSetRef());
@@ -967,7 +969,7 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
 {
     QSharedPointer<Design> design(new Design(vlnv));
 
-    QList<Design::ComponentInstance> instances;
+    QList<ComponentInstance> instances;
     QList<SWInstance> swInstances;
     QList<ApiDependency> apiDependencies;
     QList<HierApiDependency> hierApiDependencies;
@@ -981,13 +983,14 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
         {
             HWMappingItem const* mappingItem = static_cast<HWMappingItem const*>(item);
 
-            Design::ComponentInstance instance(mappingItem->name(), mappingItem->displayName(),
-                                               mappingItem->description(),
-                                               *mappingItem->componentModel()->getVlnv(),
-                                               mappingItem->scenePos());
-            instance.configurableElementValues = mappingItem->getConfigurableElements();
-            instance.imported = mappingItem->isImported();
-            instance.swPropertyValues = mappingItem->getPropertyValues();
+            ComponentInstance instance(mappingItem->name(), mappingItem->displayName(),
+                                       mappingItem->description(),
+                                       *mappingItem->componentModel()->getVlnv(),
+                                       mappingItem->scenePos());
+            instance.setConfigurableElementValues(mappingItem->getConfigurableElements());
+            instance.setImported(mappingItem->isImported());
+            instance.setImportRef(mappingItem->getImportRef());
+            instance.setPropertyValues(mappingItem->getPropertyValues());
 
             // Save API and COM interface positions.
             QMapIterator< QString, QSharedPointer<ApiInterface> >
@@ -996,8 +999,8 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
             while (itrApiIf.hasNext())
             {
                 itrApiIf.next();
-                instance.apiInterfacePositions[itrApiIf.key()] =
-                    mappingItem->getSWPort(itrApiIf.key(), SWConnectionEndpoint::ENDPOINT_TYPE_API)->pos();
+                instance.updateApiInterfacePosition(itrApiIf.key(),
+                    mappingItem->getSWPort(itrApiIf.key(), SWConnectionEndpoint::ENDPOINT_TYPE_API)->pos());
             }
 
             QMapIterator< QString, QSharedPointer<ComInterface> >
@@ -1006,8 +1009,8 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
             while (itrComIf.hasNext())
             {
                 itrComIf.next();
-                instance.apiInterfacePositions[itrComIf.key()] =
-                    mappingItem->getSWPort(itrComIf.key(), SWConnectionEndpoint::ENDPOINT_TYPE_COM)->pos();
+                instance.updateComInterfacePosition(itrComIf.key(),
+                    mappingItem->getSWPort(itrComIf.key(), SWConnectionEndpoint::ENDPOINT_TYPE_COM)->pos());
             }
 
             instances.append(instance);
@@ -1024,6 +1027,7 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
             instance.setPropertyValues(swCompItem->getPropertyValues());
             instance.setFileSetRef(swCompItem->getFileSetRef());
             instance.setImported(swCompItem->isImported());
+            instance.setImportRef(swCompItem->getImportRef());
                         
             if (swCompItem->parentItem()->type() == HWMappingItem::Type)
             {

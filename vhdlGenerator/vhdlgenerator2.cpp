@@ -493,24 +493,23 @@ void VhdlGenerator2::parseTopPorts() {
 void VhdlGenerator2::parseInstances() {
 	Q_ASSERT(design_);
 
-	QList<Design::ComponentInstance> instances =
-		design_->getComponentInstances();
+	QList<ComponentInstance> const& instances = design_->getComponentInstances();
 
-	foreach (Design::ComponentInstance instance, instances) {
-		VLNV::IPXactType instanceType = handler_->getDocumentType(instance.componentRef);
+	foreach (ComponentInstance const& instance, instances) {
+		VLNV::IPXactType instanceType = handler_->getDocumentType(instance.getComponentRef());
 
 		// if vlnv is not found in library
 		if (instanceType == VLNV::INVALID) {
-			emit errorMessage(tr("Component %1 referenced in desgin %2 was not"
+			emit errorMessage(tr("Component %1 referenced in design %2 was not"
 				" found in library.").arg(
-				instance.componentRef.toString()).arg(
+				instance.getComponentRef().toString()).arg(
 				component_->getVlnv()->toString()));
 			continue;
 		}
 		// if vlnv does not reference a component
 		else if (instanceType != VLNV::COMPONENT) {
 			emit errorMessage(tr("VLNV %1 does not belong to a component.").arg(
-				instance.componentRef.toString()));
+				instance.getComponentRef().toString()));
 			continue;
 		}
 
@@ -518,46 +517,46 @@ void VhdlGenerator2::parseInstances() {
 		QSharedPointer<VhdlComponentDeclaration> compDeclaration;
 		
 		// if component declaration is already created
-		if (components_.contains(instance.componentRef)) {
-			compDeclaration = components_.value(instance.componentRef);
+		if (components_.contains(instance.getComponentRef())) {
+			compDeclaration = components_.value(instance.getComponentRef());
 		}
 
 		// if component declaration is not yet created then create it
 		else {
-			QSharedPointer<LibraryComponent> libComp = handler_->getModel(instance.componentRef);
+			QSharedPointer<LibraryComponent> libComp = handler_->getModel(instance.getComponentRef());
 			QSharedPointer<Component> component = libComp.staticCast<Component>();
 			Q_ASSERT(component);
 			compDeclaration = QSharedPointer<VhdlComponentDeclaration>(
 				new VhdlComponentDeclaration(component, this));
 
-			components_.insert(instance.componentRef, compDeclaration);
+			components_.insert(instance.getComponentRef(), compDeclaration);
 		}
 		Q_ASSERT(compDeclaration);
 
 		QString instanceActiveView;
 		// if configuration is used then get the active view for the instance
 		if (desConf_) {
-			instanceActiveView = desConf_->getActiveView(instance.instanceName);
+			instanceActiveView = desConf_->getActiveView(instance.getInstanceName());
 		}
 
 		// create the instance
 		QSharedPointer<VhdlComponentInstance> compInstance(new VhdlComponentInstance(
-			this, compDeclaration.data(), instance.instanceName, instanceActiveView,
-			instance.description));
+			this, compDeclaration.data(), instance.getInstanceName(), instanceActiveView,
+			instance.getDescription()));
 
 		// add the libraries of the instantiated component to the library list.
 		libraries_.append(compInstance->componentModel()->getVhdlLibraries(instanceActiveView));
 
 		// add each generic value to instances generic map
-		for (QMap<QString, QString>::iterator i = instance.configurableElementValues.begin();
-			i != instance.configurableElementValues.end(); ++i) {
+		for (QMap<QString, QString>::iterator i = instance.getConfigurableElementValues().begin();
+			i != instance.getConfigurableElementValues().end(); ++i) {
 			compInstance->addGenericMap(i.key(), i.value());
 		}
 
 		// register the instance to the component declaration
 		compDeclaration->addInstantiation(compInstance);
 
-		instances_.insert(instance.instanceName, compInstance);
+		instances_.insert(instance.getInstanceName(), compInstance);
 	}
 }
 

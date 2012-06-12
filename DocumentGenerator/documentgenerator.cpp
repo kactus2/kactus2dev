@@ -135,26 +135,26 @@ void DocumentGenerator::parseChildItems( QList<VLNV>& objects ) {
 		if (!design)
 			continue;
 
-		QList<Design::ComponentInstance> instances = design->getComponentInstances();
-		foreach (Design::ComponentInstance const& instance, instances) {
+		QList<ComponentInstance> instances = design->getComponentInstances();
+		foreach (ComponentInstance const& instance, instances) {
 
 			// if the component has already been processed
-			if (objects.contains(instance.componentRef)) {
+			if (objects.contains(instance.getComponentRef())) {
 				continue;
 			}
 			// if the referenced component is not found.
-			else if (!handler_->contains(instance.componentRef)) {
+			else if (!handler_->contains(instance.getComponentRef())) {
 				continue;
 			}
 			// if instance reference is not for a component
-			else if (handler_->getDocumentType(instance.componentRef) != VLNV::COMPONENT) {
+			else if (handler_->getDocumentType(instance.getComponentRef()) != VLNV::COMPONENT) {
 				continue;
 			}
 
 			// create a new instance of document generator and add it to child list
-			objects.append(instance.componentRef);
+			objects.append(instance.getComponentRef());
 			QSharedPointer<DocumentGenerator> docGenerator(new DocumentGenerator(
-				handler_, instance.componentRef, objects, this));
+				handler_, instance.getComponentRef(), objects, this));
 			childInstances_.append(docGenerator);
 		}
 	}
@@ -864,7 +864,7 @@ void DocumentGenerator::writeView( QSharedPointer<View> view,
 
 	stream << "\t\t\t</p>" << endl;
 
-	const QList<Design::ComponentInstance> instances = design->getComponentInstances();
+	const QList<ComponentInstance> instances = design->getComponentInstances();
 	
 	// if design does not contain instances
 	if (instances.isEmpty()) {
@@ -879,15 +879,15 @@ void DocumentGenerator::writeView( QSharedPointer<View> view,
 	instanceHeaders.append("Description");
 	writeTableElement(instanceHeaders, "Component instantiations within this design", stream);
 
-	foreach (Design::ComponentInstance const& instance, instances) {
+	foreach (ComponentInstance const& instance, instances) {
 		stream << "\t\t\t\t<tr>" << endl;
 
-		stream << "\t\t\t\t\t<td>" << instance.instanceName << "</td>" << endl;
-		stream << "\t\t\t\t\t<td><a href=\"#" << instance.componentRef.toString(":") 
-			<< "\">" << instance.componentRef.toString(" - ") << "</a></td>" << endl;
+		stream << "\t\t\t\t\t<td>" << instance.getInstanceName() << "</td>" << endl;
+		stream << "\t\t\t\t\t<td><a href=\"#" << instance.getComponentRef().toString(":") 
+			<< "\">" << instance.getComponentRef().toString(" - ") << "</a></td>" << endl;
 		
 		// write the configurable element values of the instance
-		QMap<QString, QString> confElements = instance.configurableElementValues;
+		QMap<QString, QString> confElements = instance.getConfigurableElementValues();
 		stream << "\t\t\t\t\t<td>" << endl;
 		for (QMap<QString, QString>::iterator i = confElements.begin();
 			i != confElements.end(); ++i) {
@@ -903,11 +903,11 @@ void DocumentGenerator::writeView( QSharedPointer<View> view,
 
 		stream << "\t\t\t\t\t<td>";
 		if (desConf) {
-			stream << desConf->getActiveView(instance.instanceName);
+			stream << desConf->getActiveView(instance.getInstanceName());
 		}
 		stream << "</td>" << endl;
 
-		stream << "\t\t\t\t\t<td>" << instance.description << "</td>" << endl;
+		stream << "\t\t\t\t\t<td>" << instance.getDescription() << "</td>" << endl;
 
 		stream << "\t\t\t\t</tr>" << endl;
 	}

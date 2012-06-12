@@ -107,9 +107,21 @@ public:
     void setImported(bool imported);
 
     /*!
+     *  Sets the name of the import source instance.
+     *
+     *      @param [in] nameRef The name of the import source instance.
+     */
+    void setImportRef(QString const& nameRef);
+
+    /*!
      *  Returns true if the component has been marked as imported.
      */
     bool isImported() const;
+
+    /*!
+     *  Returns the name of the import source instance.
+     */
+    QString const& getImportRef() const;
 
     /*!
      *  Called when a port is being moved.
@@ -192,6 +204,9 @@ private:
 
     //! The boolean flag for imported property.
     bool imported_;
+
+    //! The name of the import source instance, if this component is an imported one.
+    QString importRef_;
 
     //! The left, right and bottom port stacks.
     QList<SWPortItem*> leftPorts_;

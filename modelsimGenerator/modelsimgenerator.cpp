@@ -443,10 +443,10 @@ void ModelsimGenerator::readDesign( const QSharedPointer<Design> design,
 		"Null Design-pointer given as parameter");
 
 	// read each component
-	QList<Design::ComponentInstance> instances = design->getComponentInstances();
-	foreach (Design::ComponentInstance const& instance, instances) {
+	QList<ComponentInstance> instances = design->getComponentInstances();
+	foreach (ComponentInstance const& instance, instances) {
 
-		VLNV vlnv = instance.componentRef;
+		VLNV vlnv = instance.getComponentRef();
 
 		// if component can't be found within library
 		if (!handler_->contains(vlnv)) {
@@ -479,8 +479,8 @@ void ModelsimGenerator::readDesign( const QSharedPointer<Design> design,
 		QString viewName;
 		
 		// if design configuration is used
-		if (desConf && desConf->hasActiveView(instance.instanceName)) {
-			viewName = desConf->getActiveView(instance.instanceName);
+		if (desConf && desConf->hasActiveView(instance.getInstanceName())) {
+			viewName = desConf->getActiveView(instance.getInstanceName());
 		}
 		// if design configuration is not used or view was not found
 		else {

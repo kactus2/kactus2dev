@@ -201,83 +201,9 @@ void Design::write(QFile& file)
 	if (!componentInstances_.isEmpty()) {
 		writer.writeStartElement("spirit:componentInstances");
 
-		foreach (ComponentInstance inst, componentInstances_) {
-			writer.writeStartElement("spirit:componentInstance");
-
-			writer.writeTextElement("spirit:instanceName",
-				inst.instanceName);
-			writer.writeTextElement("spirit:displayName",
-				inst.displayName);
-			writer.writeTextElement("spirit:description",
-				inst.description);
-			writer.writeEmptyElement("spirit:componentRef");
-			General::writeVLNVAttributes(writer,
-				&inst.componentRef);
-
-			QMapIterator<QString, QString> i(inst.configurableElementValues);
-			writer.writeStartElement("spirit:configurableElementValues");
-			while (i.hasNext()) {
-				i.next();
-
-				writer.writeStartElement("spirit:configurableElementValue");
-				writer.writeAttribute("spirit:referenceId", i.key());
-				writer.writeCharacters(i.value());
-				writer.writeEndElement();
-			}
-
-			writer.writeEndElement();
-
-			// Write custom data to vendor extensions.
-			writer.writeStartElement("spirit:vendorExtensions");
-
-			// Write the component position.
-            XmlUtils::writePosition(writer, inst.position);
-
-			// Write the bus, API and COM interface positions.
-            XmlUtils::writePositionsMap(writer, inst.portPositions, "kactus2:portPosition", "kactus2:busRef");
-            XmlUtils::writePositionsMap(writer, inst.apiInterfacePositions, "kactus2:apiInterfacePosition", "kactus2:apiRef");
-            XmlUtils::writePositionsMap(writer, inst.apiInterfacePositions, "kactus2:comInterfacePosition", "kactus2:comRef");            
-
-            // Write the port ad-hoc visibilities.
-            QMap<QString, bool> const& adHocVisibilities = inst.portAdHocVisibilities;
-            QMap<QString, QPointF> const& adHocPortPositions = inst.adHocPortPositions;
-            XmlUtils::writeAdHocVisibilities(writer, adHocVisibilities, adHocPortPositions);
-
-			// Write the MCAPI node ID if specified.
-			if (inst.mcapiNodeID != -1)
-			{
-				writer.writeEmptyElement("kactus2:mcapiNodeId");
-				writer.writeAttribute("value", QString::number(inst.mcapiNodeID));
-			}
-
-			if (inst.endpointsExpanded)
-			{
-				writer.writeEmptyElement("kactus2:endpointsExpanded");
-			}
-
-			if (inst.imported)
-			{
-				writer.writeEmptyElement("kactus2:imported");
-			}
-
-            writer.writeStartElement("kactus2:propertyValues");
-
-            // Write property values.
-            QMapIterator<QString, QString> iter(inst.swPropertyValues);
-
-            while (iter.hasNext())
-            {
-                iter.next();
-
-                writer.writeEmptyElement("kactus2:propertyValue");
-                writer.writeAttribute("kactus2:name", iter.key());
-                writer.writeAttribute("kactus2:value", iter.value());
-            }
-
-            writer.writeEndElement(); // kactus2:propertyValues
-
-			writer.writeEndElement(); // spirit:vendorExtensions
-			writer.writeEndElement(); // spirit:componentInstance
+		foreach (ComponentInstance const& inst, componentInstances_)
+        {
+            inst.write(writer);
 		}
 
 		writer.writeEndElement();
@@ -573,16 +499,16 @@ bool Design::isValid( QStringList& errorList ) const {
 	}
 
 	QStringList instanceNames;
-	foreach (Design::ComponentInstance instance, componentInstances_) {
+	foreach (ComponentInstance const& instance, componentInstances_) {
 		
 		// if there are several instances with same name
-		if (instanceNames.contains(instance.instanceName)) {
+		if (instanceNames.contains(instance.getInstanceName())) {
 			errorList.append(QObject::tr("Design contains several instances with"
-				" name %1").arg(instance.instanceName));
+				" name %1").arg(instance.getInstanceName()));
 			valid = false;
 		}
 		else {
-			instanceNames.append(instance.instanceName);
+			instanceNames.append(instance.getInstanceName());
 		}
 
 		if (!instance.isValid(errorList, thisIdentifier)) {
@@ -685,14 +611,14 @@ bool Design::isValid() const {
 	}
 
 	QStringList instanceNames;
-	foreach (Design::ComponentInstance instance, componentInstances_) {
+	foreach (ComponentInstance const& instance, componentInstances_) {
 
 		// if there are several instances with same name
-		if (instanceNames.contains(instance.instanceName)) {
+		if (instanceNames.contains(instance.getInstanceName())) {
 			return false;
 		}
 		else {
-			instanceNames.append(instance.instanceName);
+			instanceNames.append(instance.getInstanceName());
 		}
 
 		if (!instance.isValid()) {
@@ -739,7 +665,7 @@ bool Design::isValid() const {
 	return true;
 }
 
-QList<Design::ComponentInstance> const& Design::getComponentInstances() const
+QList<ComponentInstance> const& Design::getComponentInstances() const
 {
 	return componentInstances_;
 }
@@ -759,7 +685,7 @@ const QList<Design::AdHocConnection> &Design::getAdHocConnections()
 	return adHocConnections_;
 }
 
-void Design::setComponentInstances(QList<Design::ComponentInstance> const& componentInstances)
+void Design::setComponentInstances(QList<ComponentInstance> const& componentInstances)
 {
 	componentInstances_ = componentInstances;
 }
@@ -795,11 +721,11 @@ const QList<VLNV> Design::getDependentVLNVs() const
 		// if the pointer is valid and it is not already added to the list of
 		// component instances (two instances of same component are not added
 		// twice)
-		if ((this->componentInstances_.at(i).componentRef.isValid()) &&
-			(!instanceList.contains(componentInstances_.at(i).componentRef))) {
+		if ((this->componentInstances_.at(i).getComponentRef().isValid()) &&
+			(!instanceList.contains(componentInstances_.at(i).getComponentRef()))) {
 
 				// add the component VLNV to the list
-				instanceList.append(componentInstances_.at(i).componentRef);
+				instanceList.append(componentInstances_.at(i).getComponentRef());
 		}
 	}
 	return instanceList;
@@ -1022,9 +948,9 @@ QList<VLNV> Design::getComponents() const {
 
 	QList<VLNV> list;
 
-	foreach (Design::ComponentInstance const& instance, componentInstances_) {
-		if (instance.componentRef.isValid())
-			list.append(instance.componentRef);
+	foreach (ComponentInstance const& instance, componentInstances_) {
+		if (instance.getComponentRef().isValid())
+			list.append(instance.getComponentRef());
 	}
 	return list;
 }
@@ -1112,222 +1038,6 @@ QList<ComConnection> const& Design::getComConnections() const
 QList<HierComConnection> const& Design::getHierComConnections() const
 {
     return hierComConnections_;
-}
-
-Design::ComponentInstance::ComponentInstance(
-    QDomNode& componentInstanceNode)
-    : instanceName(), displayName(), description(), componentRef(),
-      configurableElementValues(), portPositions(), portAdHocVisibilities(),
-      adHocPortPositions(), mcapiNodeID(-1), endpointsExpanded(false), imported(false),
-      swPropertyValues()
-{
-    QDomNodeList nodes = componentInstanceNode.childNodes();
-    for (int i = 0; i < nodes.size(); i++) {
-        QDomNode node = nodes.at(i);
-
-        if (node.nodeName() == "spirit:instanceName") {
-            instanceName = node.firstChild().nodeValue();
-        } else if (node.nodeName() == "spirit:displayName") {
-            displayName = node.firstChild().nodeValue();
-        } else if (node.nodeName() == "spirit:description") {
-            description = node.firstChild().nodeValue();
-        } else if (node.nodeName() == "spirit:componentRef") {
-            componentRef = General::createVLNV(node, VLNV::COMPONENT);
-        } else if (node.nodeName() == "spirit:configurableElementValues") {
-            for (int i = 0; i < node.childNodes().size(); i++) {
-                QDomNode confNode = node.childNodes().at(i);
-
-                QString value = confNode.firstChild().nodeValue();
-
-                QDomNamedNodeMap attributes = confNode.attributes();
-                QString reference = 
-                    attributes.namedItem("spirit:referenceId").nodeValue();
-                configurableElementValues.insert(reference, value);
-            }
-        } else if (node.nodeName() == "spirit:vendorExtensions")
-        {
-            for (int i = 0; i < node.childNodes().size(); ++i)
-            {
-                QDomNode childNode = node.childNodes().at(i);
-
-                if (childNode.nodeName() == "kactus2:position")
-                {
-                    QDomNamedNodeMap attributeMap = childNode.attributes();
-                    position.setX(attributeMap.namedItem("x").nodeValue().toInt());
-                    position.setY(attributeMap.namedItem("y").nodeValue().toInt());
-                }
-                else if (childNode.nodeName() == "kactus2:portPositions")
-                {
-                    XmlUtils::parsePositionsMap(childNode, "kactus2:portPosition",
-                                                "kactus2:busRef", portPositions);
-                }
-                else if (childNode.nodeName() == "kactus2:apiInterfacePositions")
-                {
-                    XmlUtils::parsePositionsMap(childNode, "kactus2:apiInterfacePosition",
-                                                "kactus2:apiRef", apiInterfacePositions);
-                }
-                else if (childNode.nodeName() == "kactus2:comInterfacePositions")
-                {
-                    XmlUtils::parsePositionsMap(childNode, "kactus2:comInterfacePosition",
-                                                "kactus2:comRef", comInterfacePositions);
-                }
-                else if (childNode.nodeName() == "kactus2:adHocVisibilities")
-                {
-                    XmlUtils::parseAdHocVisibilities(childNode, portAdHocVisibilities, adHocPortPositions);
-                }
-                else if (childNode.nodeName() == "kactus2:mcapiNodeId")
-                {
-                    mcapiNodeID = childNode.attributes().namedItem("value").nodeValue().toInt();
-                }
-                else if (childNode.nodeName() == "kactus2:endpointsExpanded")
-                {
-                    endpointsExpanded = true;
-                }
-                else if (childNode.nodeName() == "kactus2:imported")
-                {
-                    imported = true;
-                }
-                else if (childNode.nodeName() == "kactus2:propertyValues")
-                {
-                    parsePropertyValues(childNode);
-                }
-            }
-        }
-    }
-}
-
-Design::ComponentInstance::ComponentInstance(
-    QString instanceName, QString displayName, QString description,
-    VLNV const& componentRef, QPointF const& position)
-    : instanceName(instanceName), displayName(displayName),
-      description(description), componentRef(componentRef),
-      configurableElementValues(), position(position), portAdHocVisibilities(),
-      adHocPortPositions(), mcapiNodeID(-1), endpointsExpanded(false), imported(false)
-{
-}
-
-Design::ComponentInstance::ComponentInstance( const ComponentInstance& other ):
-instanceName(other.instanceName),
-displayName(other.displayName),
-description(other.description),
-componentRef(other.componentRef),
-configurableElementValues(other.configurableElementValues),
-position(other.position),
-portPositions(other.portPositions),
-portAdHocVisibilities(other.portAdHocVisibilities),
-adHocPortPositions(other.adHocPortPositions),
-mcapiNodeID(other.mcapiNodeID), endpointsExpanded(other.endpointsExpanded), imported(other.imported) {
-}
-
-Design::ComponentInstance& Design::ComponentInstance::operator=( const ComponentInstance& other ) {
-	if (this != &other) {
-		instanceName = other.instanceName;
-		displayName = other.displayName;
-		description = other.description;
-		componentRef = other.componentRef;
-		configurableElementValues = other.configurableElementValues;
-		position = other.position;
-		portPositions = other.portPositions;
-        portAdHocVisibilities = other.portAdHocVisibilities;
-        adHocPortPositions = other.adHocPortPositions;
-        mcapiNodeID = other.mcapiNodeID;
-        endpointsExpanded = other.endpointsExpanded;
-        imported = other.imported;
-	}
-	return *this;
-}
-
-bool Design::ComponentInstance::isValid( QStringList& errorList, 
-										const QString& parentIdentifier ) const {
-	bool valid = true;
-	const QString thisIdentifier(QObject::tr("component instance %1").arg(instanceName));
-
-	if (instanceName.isEmpty()) {
-		errorList.append(QObject::tr("No name specified for component instance "
-			"within %1").arg(parentIdentifier));
-		valid = false;
-	}
-
-	// if the instance name contains characters that are not allowed in vhdl
-	VhdlNameValidator nameValidator;
-	int pos = 0;
-	QString instName(instanceName);
-	if (nameValidator.validate(instName, pos) != QValidator::Acceptable) {
-		errorList.append(QObject::tr("The instance name %1 contains illegal "
-			"characters.").arg(instName));
-		valid = false;
-	}
-
-	if (!componentRef.isValid(errorList, thisIdentifier)) {
-		valid = false;
-	}
-
-	for (QMap<QString, QString>::const_iterator i = configurableElementValues.begin();
-		i != configurableElementValues.end(); ++i) {
-
-			if (i.key().isEmpty()) {
-				errorList.append(QObject::tr("No reference id set for configurable"
-					" element value in %1 within %2").arg(thisIdentifier).arg(
-					parentIdentifier));
-				valid = false;
-			}
-			if (i.value().isEmpty()) {
-				errorList.append(QObject::tr("No configurable element value set"
-					" for %1 within %2").arg(thisIdentifier).arg(parentIdentifier));
-				valid = false;
-			}
-	}
-
-	return valid;
-}
-
-bool Design::ComponentInstance::isValid() const {
-	if (instanceName.isEmpty()) {
-		return false;
-	}
-
-	// if the instance name contains characters that are not allowed in vhdl
-	VhdlNameValidator nameValidator;
-	int pos = 0;
-	QString instName(instanceName);
-	if (nameValidator.validate(instName, pos) != QValidator::Acceptable) {
-		return false;
-	}
-
-	if (!componentRef.isValid()) {
-		return false;
-	}
-
-	for (QMap<QString, QString>::const_iterator i = configurableElementValues.begin();
-		i != configurableElementValues.end(); ++i) {
-
-			if (i.key().isEmpty()) {
-				return false;
-			}
-			if (i.value().isEmpty()) {
-				return false;
-			}
-	}
-	return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Design::ComponentInstance::parsePropertyValues()
-//-----------------------------------------------------------------------------
-void Design::ComponentInstance::parsePropertyValues(QDomNode& node)
-{
-    for (int i = 0; i < node.childNodes().count(); ++i)
-    {
-        QDomNode propNode = node.childNodes().at(i);
-
-        if (propNode.nodeName() == "kactus2:propertyValue")
-        {
-            QString name = propNode.attributes().namedItem("kactus2:name").nodeValue();
-            QString value = propNode.attributes().namedItem("kactus2:value").nodeValue();
-
-            swPropertyValues.insert(name, value);
-        }
-    }
 }
 
 Design::Interface::Interface(QDomNode &interfaceNode):

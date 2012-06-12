@@ -34,6 +34,7 @@ SWComponentItem::SWComponentItem(QRectF const& size,
                                  QGraphicsItem *parent)
     : ComponentItem(size, libInterface, component, instanceName, displayName, description, configurableElementValues, parent),
       imported_(false),
+      importRef_(),
       connUpdateDisabled_(false)
 {
     int portSpacing = 3 * GridSize;
@@ -412,4 +413,20 @@ void SWComponentItem::setPropertyValues(QMap<QString, QString> const& values)
 QMap<QString, QString> const& SWComponentItem::getPropertyValues() const
 {
     return propertyValues_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWComponentItem::setImportRef()
+//-----------------------------------------------------------------------------
+void SWComponentItem::setImportRef(QString const& nameRef)
+{
+    importRef_ = nameRef;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWComponentItem::getImportRef()
+//-----------------------------------------------------------------------------
+QString const& SWComponentItem::getImportRef() const
+{
+    return importRef_;
 }
