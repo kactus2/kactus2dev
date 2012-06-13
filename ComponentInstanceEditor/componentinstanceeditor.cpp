@@ -17,7 +17,7 @@
 
 #include <LibraryManager/vlnv.h>
 #include <designwidget/blockdiagram.h>
-#include <designwidget/designwidget.h>
+#include <designwidget/HWDesignWidget.h>
 #include <designwidget/DiagramChangeCommands.h>
 
 #include <common/validators/vhdlNameValidator/vhdlnamevalidator.h>
@@ -71,6 +71,8 @@ editProvider_(0) {
 		    this, SLOT(onDescriptionChanged(const QString&)), Qt::UniqueConnection);
     connect(&propertyValueEditor_, SIGNAL(contentChanged()),
             this, SLOT(onPropertyValuesChanged()), Qt::UniqueConnection);            
+
+    clear();
 }
 
 ComponentInstanceEditor::~ComponentInstanceEditor() {

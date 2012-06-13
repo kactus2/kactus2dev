@@ -23,7 +23,7 @@
 #include <QShowEvent>
 #include <QHideEvent>
 
-class DesignWidget;
+class HWDesignWidget;
 class LibraryHandler;
 class ComponentItem;
 class DiagramPort;
@@ -95,7 +95,7 @@ public slots:
      */
     void openSystemDesign(VLNV const &vlnv, QString const& viewName = QString(), bool forceUnlocked = false);
 
-	/*! \brief Open bus to be edited
+    /*! \brief Open bus to be edited
 	 *
 	 *      @param [in] vlnv           Identifies the bus definition
      *      @param [in] forceUnlocked  Forces the bus to be opened in unlocked mode.
@@ -417,12 +417,16 @@ private slots:
     void onDeleteWorkspace();
 
 private:
+	// Disable copying.
+	MainWindow(MainWindow const& rhs);
+	MainWindow& operator=(MainWindow const& rhs);
 
-	//! \brief No copying
-	MainWindow(const MainWindow& other);
-
-	//! No assignment
-	MainWindow& operator=(const MainWindow& other);
+    /*!
+     *  Returns true if a design with the given vlnv is already open.
+     *
+     *      @remarks If the design is already open, it is displayed.
+     */
+    bool isDesignOpen(VLNV const& vlnv);
 
 	/*!
      *  Restores the program's settings.

@@ -114,11 +114,31 @@ void SystemDesignDiagram::setMode(DrawMode mode)
 //-----------------------------------------------------------------------------
 // Function: setDesign()
 //-----------------------------------------------------------------------------
-void SystemDesignDiagram::openDesign(QSharedPointer<Design> design)
+void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
 {
     // Create the column layout.
     layout_ = QSharedPointer<GraphicsColumnLayout>(new GraphicsColumnLayout(this));
     connect(layout_.data(), SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+
+    if (design->getColumns().isEmpty())
+    {
+        QList<ColumnDesc> columns;
+
+        if (onlySW_)
+        {
+            columns.append(ColumnDesc("Low-level", COLUMN_CONTENT_COMPONENTS, 0, 259));
+            columns.append(ColumnDesc("Middle-level", COLUMN_CONTENT_COMPONENTS, 0, 259));
+            columns.append(ColumnDesc("High-level", COLUMN_CONTENT_COMPONENTS, 0, 259));
+            columns.append(ColumnDesc("Out", COLUMN_CONTENT_IO, 0, 119));
+        }
+        else
+        {
+            columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, 319));
+            columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, 319));
+        }
+
+        design->setColumns(columns);
+    }
 
     foreach(ColumnDesc const& desc, design->getColumns())
     {

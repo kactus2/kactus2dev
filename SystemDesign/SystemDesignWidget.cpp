@@ -18,6 +18,7 @@
 #include "SWCompItem.h"
 
 #include <common/graphicsItems/GraphicsConnection.h>
+#include <common/GenericEditProvider.h>
 
 #include <designwidget/columnview/ColumnEditDialog.h>
 
@@ -40,53 +41,12 @@
 // Function: SystemDesignWidget()
 //-----------------------------------------------------------------------------
 SystemDesignWidget::SystemDesignWidget(bool onlySW, LibraryInterface* lh, MainWindow* mainWnd, QWidget* parent)
-    : TabDocument(parent, DOC_ZOOM_SUPPORT | DOC_DRAW_MODE_SUPPORT | DOC_PROTECTION_SUPPORT | DOC_EDIT_SUPPORT, 30, 300),
-      onlySW_(onlySW),
-      lh_(lh),
-      view_(0),
-      diagram_(0),
-      editProvider_()
+    : DesignWidget(lh, parent),
+      onlySW_(onlySW)
 {
-    supportedWindows_ = (supportedWindows_ | INSTANCEWINDOW | INTERFACEWINDOW | CONNECTIONWINDOW);
+    supportedWindows_ = (supportedWindows_ | INSTANCEWINDOW | INTERFACEWINDOW | CONNECTIONWINDOW | CONFIGURATIONWINDOW);
 
-    editProvider_ = QSharedPointer<GenericEditProvider>(new GenericEditProvider(EDIT_HISTORY_SIZE));
-    diagram_ = new SystemDesignDiagram(onlySW, lh_, mainWnd, *editProvider_, this);
-
-    connect(diagram_, SIGNAL(openComponent(const VLNV&)),
-        this, SIGNAL(openComponent(const VLNV&)), Qt::UniqueConnection);
-    connect(diagram_, SIGNAL(openSWDesign(const VLNV&, QString const&)),
-        this, SIGNAL(openSWDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
-    connect(diagram_, SIGNAL(openCSource(ComponentItem*)),
-        this, SIGNAL(openCSource(ComponentItem*)), Qt::UniqueConnection);
-    connect(diagram_, SIGNAL(componentSelected(ComponentItem*)),
-        this, SIGNAL(componentSelected(ComponentItem*)), Qt::UniqueConnection);
-    connect(diagram_, SIGNAL(interfaceSelected(ConnectionEndpoint*)),
-        this, SIGNAL(interfaceSelected(ConnectionEndpoint*)), Qt::UniqueConnection);
-    connect(diagram_, SIGNAL(connectionSelected(GraphicsConnection*)),
-        this, SIGNAL(connectionSelected(GraphicsConnection*)), Qt::UniqueConnection);
-    connect(diagram_, SIGNAL(clearItemSelection()),
-        this, SIGNAL(clearItemSelection()), Qt::UniqueConnection);
-    connect(diagram_, SIGNAL(componentInstantiated(ComponentItem*)),
-        this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-    connect(diagram_, SIGNAL(componentInstanceRemoved(ComponentItem*)),
-        this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
-    
-    connect(diagram_, SIGNAL(errorMessage(const QString&)),
-        this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-    connect(diagram_, SIGNAL(noticeMessage(const QString&)),
-        this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-
-    view_ = new QGraphicsView(this);
-    view_->setScene(diagram_);
-    view_->centerOn(0, 0);
-    view_->setMouseTracking(true);
-    view_->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-
-    QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(view_);
-
-    view_->verticalScrollBar()->setTracking(true);
-    connect(view_->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(onVerticalScroll(int)));
+    setDiagram(new SystemDesignDiagram(onlySW, lh, mainWnd, *getGenericEditProvider(), this));
 }
 
 //-----------------------------------------------------------------------------
@@ -101,6 +61,8 @@ SystemDesignWidget::~SystemDesignWidget()
 //-----------------------------------------------------------------------------
 bool SystemDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
 {
+    disconnect(getDiagram(), SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
+
     // Check if the vlnv is not valid.
     if (!vlnv.isValid() || vlnv.getType() != VLNV::COMPONENT)
     {
@@ -108,7 +70,7 @@ bool SystemDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
     }
 
     // Retrieve the model.
-    QSharedPointer<Component> system = lh_->getModel(vlnv).staticCast<Component>();
+    QSharedPointer<Component> system = getLibraryInterface()->getModel(vlnv).staticCast<Component>();
 
     if (system == 0)
     {
@@ -121,13 +83,12 @@ bool SystemDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
         return false;
     }
 
-    connect(diagram_, SIGNAL(contentChanged()),
+    connect(getDiagram(), SIGNAL(contentChanged()),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(diagram_, SIGNAL(modeChanged(DrawMode)),
+    connect(getDiagram(), SIGNAL(modeChanged(DrawMode)),
         this, SIGNAL(modeChanged(DrawMode)), Qt::UniqueConnection);
 
-    setDocumentName(system_->getVlnv()->getName() + 
-        " (" + system_->getVlnv()->getVersion() + ")");
+    setDocumentName(system->getVlnv()->getName() + " (" + system->getVlnv()->getVersion() + ")");
 
     if (onlySW_)
     {
@@ -175,7 +136,7 @@ bool SystemDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
     }
 
     // Check for a valid VLNV type.
-    designVLNV.setType(lh_->getDocumentType(designVLNV));
+    designVLNV.setType(getLibraryInterface()->getDocumentType(designVLNV));
 
     if (!designVLNV.isValid())
     {
@@ -189,20 +150,20 @@ bool SystemDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
     // if the component contains a direct reference to a design
     if (designVLNV.getType() == VLNV::DESIGN)
     {
-        QSharedPointer<LibraryComponent> libComp = lh_->getModel(designVLNV);	
+        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(designVLNV);	
         design = libComp.staticCast<Design>();
     }
     // if component had reference to a design configuration
     else if (designVLNV.getType() == VLNV::DESIGNCONFIGURATION)
     {
-        QSharedPointer<LibraryComponent> libComp = lh_->getModel(designVLNV);
+        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(designVLNV);
         designConf = libComp.staticCast<DesignConfiguration>();
 
         designVLNV = designConf->getDesignRef();
 
         if (designVLNV.isValid())
         {
-            QSharedPointer<LibraryComponent> libComp = lh_->getModel(designVLNV);	
+            QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(designVLNV);	
             design = libComp.staticCast<Design>();
         }
 
@@ -218,57 +179,15 @@ bool SystemDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
     if (!onlySW_)
     {
         // Update the design.
-        updateSystemDesignV2(lh_, comp->getHierRef(""), *design, designConf);
+        updateSystemDesignV2(getLibraryInterface(), comp->getHierRef(""), *design, designConf);
     }
 
-    if (!diagram_->setDesign(comp, design, designConf))
+    if (!getDiagram()->setDesign(comp, design, designConf))
     {
         return false;
     }
 
-    system_ = comp;
-    designConf_ = designConf;
-    viewName_ = viewName;
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: setZoomLevel()
-//-----------------------------------------------------------------------------
-void SystemDesignWidget::setZoomLevel(int level)
-{
-    TabDocument::setZoomLevel(level);
-
-    double newScale = getZoomLevel() / 100.0;
-    QMatrix oldMatrix = view_->matrix();
-    view_->resetMatrix();
-    view_->translate(oldMatrix.dx(), oldMatrix.dy());
-    view_->scale(newScale, newScale);
-
-    emit zoomChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function: fitInView()
-//-----------------------------------------------------------------------------
-void SystemDesignWidget::fitInView()
-{
-    QRectF itemRect = diagram_->itemsBoundingRect();
-    float scaleX = std::max(0, view_->width() - 10 - view_->verticalScrollBar()->width()) / itemRect.width();
-    float scaleY = std::max(0, view_->height() - 10 - view_->horizontalScrollBar()->height()) / itemRect.height();
-
-    int scaleLevel = int(std::min(scaleX, scaleY) * 10) * 10;
-    setZoomLevel(scaleLevel);
-
-    view_->centerOn(itemRect.center());
-}
-
-//-----------------------------------------------------------------------------
-// Function: setMode()
-//-----------------------------------------------------------------------------
-void SystemDesignWidget::setMode(DrawMode mode)
-{
-    diagram_->setMode(mode);
+    return DesignWidget::setDesign(comp, viewName);
 }
 
 //-----------------------------------------------------------------------------
@@ -276,7 +195,7 @@ void SystemDesignWidget::setMode(DrawMode mode)
 //-----------------------------------------------------------------------------
 unsigned int SystemDesignWidget::getSupportedDrawModes() const
 {
-    if (view_->isInteractive())
+    if (getView()->isInteractive())
     {
         return (MODE_SELECT | MODE_CONNECT | MODE_DRAFT);
     }
@@ -284,45 +203,6 @@ unsigned int SystemDesignWidget::getSupportedDrawModes() const
     {
         return MODE_SELECT;
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: save()
-//-----------------------------------------------------------------------------
-bool SystemDesignWidget::save()
-{
-    lh_->beginSave();
-    
-    // Create the design.
-    QSharedPointer<Design> design;
-
-    if (designConf_)
-    {
-        design = diagram_->createDesign(designConf_->getDesignRef());
-    }
-    else
-    {
-        design = diagram_->createDesign(system_->getHierRef());
-    }
-
-    if (design == 0)
-    {
-        lh_->endSave();
-        return false;
-    }
-
-    // Write the files.
-    if (designConf_)
-    {
-        lh_->writeModelToFile(designConf_);
-    }
-
-    lh_->writeModelToFile(design);
-    lh_->writeModelToFile(system_);
-
-    lh_->endSave();
-
-    return TabDocument::save();
 }
 
 //-----------------------------------------------------------------------------
@@ -338,12 +218,12 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
 
     if (event->key() == Qt::Key_Delete)
     {
-        if (diagram_->selectedItems().empty())
+        if (getDiagram()->selectedItems().empty())
         {
             return;
         }
 
-        QGraphicsItem* selected = diagram_->selectedItems().first();
+        QGraphicsItem* selected = getDiagram()->selectedItems().first();
 
         if (selected->type() == SystemColumn::Type)
         {
@@ -371,9 +251,9 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
                 return;
             }
 
-            QSharedPointer<QUndoCommand> cmd(new SystemColumnDeleteCommand(diagram_->getColumnLayout(),
-                                                                               column));
-            editProvider_->addCommand(cmd);
+            QSharedPointer<QUndoCommand> cmd(new SystemColumnDeleteCommand(getDiagram()->getColumnLayout(),
+                                                                           column));
+            getGenericEditProvider()->addCommand(cmd);
             emit clearItemSelection();
         }
         else if (selected->type() == SWCompItem::Type)
@@ -383,8 +263,8 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
             // Only non-imported SW component instances can be deleted.
             if (!component->isImported())
             {
-                diagram_->removeInstanceName(component->name());
-                diagram_->clearSelection();
+                getDiagram()->removeInstanceName(component->name());
+                getDiagram()->clearSelection();
 
                 QSharedPointer<SystemItemDeleteCommand> cmd(new SystemItemDeleteCommand(component));
 
@@ -393,7 +273,7 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
                 connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
                         this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
 
-                editProvider_->addCommand(cmd);
+                getGenericEditProvider()->addCommand(cmd);
                 emit clearItemSelection();
             }
         }
@@ -403,60 +283,11 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
 
             // Delete the connection.
             QSharedPointer<QUndoCommand> cmd(new SWConnectionDeleteCommand(static_cast<GraphicsConnection*>(selected)));
-            editProvider_->addCommand(cmd);
+            getGenericEditProvider()->addCommand(cmd);
         }
 
         emit contentChanged();
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: onVerticalScroll()
-//-----------------------------------------------------------------------------
-void SystemDesignWidget::onVerticalScroll(int y)
-{
-    QPointF pt(0.0, y);
-    QMatrix mat = view_->matrix().inverted();
-    diagram_->onVerticalScroll(mat.map(pt).y());
-}
-
-//-----------------------------------------------------------------------------
-// Function: String()
-//-----------------------------------------------------------------------------
-QGraphicsView* SystemDesignWidget::getView()
-{
-    return view_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: getOpenDocument()
-//-----------------------------------------------------------------------------
-VLNV const* SystemDesignWidget::getOpenDocument() const
-{
-    if (system_ == 0)
-    {
-        return 0;
-    }
-
-    return system_->getVlnv();
-}
-
-//-----------------------------------------------------------------------------
-// Function: setProtection()
-//-----------------------------------------------------------------------------
-void SystemDesignWidget::setProtection(bool locked)
-{
-    TabDocument::setProtection(locked);
-    diagram_->setProtection(locked);
-    diagram_->setMode(MODE_SELECT);
-}
-
-//-----------------------------------------------------------------------------
-// Function: getComponentVLNV()
-//-----------------------------------------------------------------------------
-VLNV SystemDesignWidget::getComponentVLNV() const
-{
-    return *system_->getVlnv();
 }
 
 //-----------------------------------------------------------------------------
@@ -467,54 +298,38 @@ void SystemDesignWidget::addColumn()
     if (onlySW_)
     {
         ColumnEditDialog dlg(this, true);
-        // TODO: Enable only part of the options in the column edit dialog.
 
         if (dlg.exec() == QDialog::Accepted)
         {
             if (dlg.getContentType() == COLUMN_CONTENT_IO)
             {
                 ColumnDesc desc(dlg.getName(), dlg.getContentType(), 0, IO_COLUMN_WIDTH);
-                diagram_->addColumn(desc);
+                getDiagram()->addColumn(desc);
             }
             else
             {
                 ColumnDesc desc(dlg.getName(), dlg.getContentType(), 0, SW_COLUMN_WIDTH);
-                diagram_->addColumn(desc);
+                getDiagram()->addColumn(desc);
             }
         }
     }
     else
     {
-        diagram_->addColumn(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, SYSTEM_COLUMN_WIDTH));
+        getDiagram()->addColumn(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, SYSTEM_COLUMN_WIDTH));
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: getEditProvider()
+// Function: SystemDesignWidget::getImplementation()
 //-----------------------------------------------------------------------------
-IEditProvider* SystemDesignWidget::getEditProvider()
+KactusAttribute::Implementation SystemDesignWidget::getImplementation() const
 {
-    return editProvider_.data();
-}
-
-//-----------------------------------------------------------------------------
-// Function: refresh()
-//-----------------------------------------------------------------------------
-void SystemDesignWidget::refresh()
-{
-    QSharedPointer<LibraryComponent> libComp = lh_->getModel(*system_->getVlnv());
-    QSharedPointer<Component> comp = libComp.staticCast<Component>();
-
-    setDesign(system_, viewName_);
-    setModified(false);
-
-    TabDocument::refresh();
-}
-
-//-----------------------------------------------------------------------------
-// Function: getGenericEditProvider()
-//-----------------------------------------------------------------------------
-QSharedPointer<GenericEditProvider> SystemDesignWidget::getGenericEditProvider() const
-{
-    return editProvider_;
+    if (onlySW_)
+    {
+        return KactusAttribute::KTS_SW;
+    }
+    else
+    {
+        return KactusAttribute::KTS_SYS;
+    }
 }

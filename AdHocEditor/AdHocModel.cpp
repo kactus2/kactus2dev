@@ -18,7 +18,6 @@
 
 #include <designwidget/diagramcomponent.h>
 #include <designwidget/blockdiagram.h>
-#include <designwidget/designwidget.h>
 #include <designwidget/DiagramChangeCommands.h>
 #include <designwidget/AdHocEnabled.h>
 

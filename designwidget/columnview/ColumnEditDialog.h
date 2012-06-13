@@ -61,7 +61,7 @@ public:
 
 private slots:
     //! Called when the content type has changed.
-    void onTypeChange(int index);
+    void onTypeChange(QString const& type);
 
     virtual void accept();
 

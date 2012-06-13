@@ -26,7 +26,7 @@
 #include <common/KactusAttribute.h>
 #include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
 
-#include <designwidget/designwidget.h>
+#include <designwidget/HWDesignWidget.h>
 
 #include <QFileDialog>
 #include <QString>
@@ -1025,9 +1025,9 @@ void DocumentGenerator::createComponentPicture(QStringList& pictureList) {
 void DocumentGenerator::createDesignPicture( QStringList& pictureList, 
 											const QString& viewName ) {
 
-	DesignWidget designWidget(handler_);
+	HWDesignWidget designWidget(handler_);
 	designWidget.hide();
-	designWidget.setDesign(component_->getVlnv(), viewName);
+	designWidget.setDesign(*component_->getVlnv(), viewName);
 
 	QFileInfo htmlInfo(targetPath_);
 	QString designPicPath = htmlInfo.absolutePath(); 
@@ -1045,7 +1045,7 @@ void DocumentGenerator::createDesignPicture( QStringList& pictureList,
 	}
 
 	// get the rect that bounds all items on box
-	QRectF boundingRect = designWidget.itemsBoundingRect();
+	QRectF boundingRect = designWidget.getDiagram()->itemsBoundingRect();
 	boundingRect.setHeight(boundingRect.height() + 2);
 	boundingRect.setWidth(boundingRect.width() + 2);
 
@@ -1055,7 +1055,7 @@ void DocumentGenerator::createDesignPicture( QStringList& pictureList,
 	// create the picture for the component
 	QPainter painter(&designPic);
 	painter.fillRect(designPic.rect(), QBrush(Qt::white));
-	designWidget.scene()->render(&painter, designPic.rect(), boundingRect.toRect());
+	designWidget.getDiagram()->render(&painter, designPic.rect(), boundingRect.toRect());
 	if (!designPic.save(&designPicFile, "PNG")) {
 		emit errorMessage(tr("Could not save picture %1").arg(designPicPath));
 	}

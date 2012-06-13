@@ -16,7 +16,6 @@
 #include <designwidget/diagraminterconnection.h>
 #include <designwidget/DiagramConnectionEndpoint.h>
 #include <designwidget/blockdiagram.h>
-#include <designwidget/designwidget.h>
 #include <designwidget/DiagramChangeCommands.h>
 
 #include <common/GenericEditProvider.h>

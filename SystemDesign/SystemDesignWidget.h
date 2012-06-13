@@ -12,25 +12,15 @@
 #ifndef SYSTEMDESIGNWIDGET_H
 #define SYSTEMDESIGNWIDGET_H
 
-#include <common/widgets/tabDocument/TabDocument.h>
-#include <common/GenericEditProvider.h>
-
-#include <QGraphicsView>
+#include <common/DesignWidget.h>
 
 class SystemDesignDiagram;
 class MainWindow;
-class LibraryInterface;
-class Component;
-class DesignConfiguration;
-class ProgramEntityItem;
-class ComponentItem;
-class ConnectionEndpoint;
-class GraphicsConnection;
 
 //-----------------------------------------------------------------------------
 //! SystemDesignWidget class.
 //-----------------------------------------------------------------------------
-class SystemDesignWidget : public TabDocument
+class SystemDesignWidget : public DesignWidget
 {
     Q_OBJECT
 
@@ -53,121 +43,22 @@ public:
     bool setDesign(VLNV const& vlnv, QString const& viewName);
     
     /*!
-     *  Sets the zoom level of the design.
-     *
-     *      @param [in] level The zoom level in percents.
-     */
-    virtual void setZoomLevel(int level);
-
-    /*!
-     *  Fits the whole design in view.
-     */
-    virtual void fitInView();
-
-    /*!
-     *  Sets the draw mode of the design.
-     *
-     *      @param [in] mode The draw mode.
-     */
-    virtual void setMode(DrawMode mode);
-
-    /*!
-     *  Sets the protection state of the document.
-     *
-     *      @param [in] locked True for locked state; false for unlocked.
-     */
-    virtual void setProtection(bool locked);
-
-    /*!
      *  Returns the supported draw modes.
      */
     virtual unsigned int getSupportedDrawModes() const;
 
     /*!
-     *  Returns the graphics view.
+     *  Returns the implementation attribute.
      */
-    QGraphicsView* getView();
-
-    /*!
-     *  Refreshes the document view.
-     */
-    virtual void refresh();
-
-    /*!
-     *  Returns the VLNV of the currently open system.
-     */
-    VLNV const* getOpenDocument() const;
-
-    /*! \brief Get the vlnv of the current component
-	 *
-	 * \return Base class returns invalid vlnv.
-	*/
-	virtual VLNV getComponentVLNV() const;
-
-    /*!
-     *  Returns the edit provider.
-     *
-     *      @return Base class implementation returns null.
-     *
-     *      @remarks Edit support should be queried with getFlags().
-     */
-    IEditProvider* getEditProvider();
-
-    /*!
-     *  Returns the generic edit provider that manages the undo stack.
-     */
-    QSharedPointer<GenericEditProvider> getGenericEditProvider() const;
+    virtual KactusAttribute::Implementation getImplementation() const;
 
 public slots:
-    /*! 
-     *  Saves the design to disk.
-     */
-    virtual bool save();
-
-    /*!
-     *  Adds a new column to the diagram.
-     */
-    void addColumn();
-
-    //! Called when the vertical scrollbar is scrolled.
-    void onVerticalScroll(int y);
-
-signals:
-    //! \brief Emitted when the user double-clicks a hierarchical component.
-    void openSWDesign(const VLNV& vlnv, const QString& viewName);
-
-    //! \brief Emitted when component with given vlnv should be opened in editor.
-    void openComponent(const VLNV& vlnv);
-
-    //! Emitted when a C source file should be opened for editing.
-    void openCSource(ComponentItem* compItem);
-
-    //! Signaled when the draw mode of the diagram has changed.
-    void modeChanged(DrawMode mode);
-
-    //! Signaled when the zoom level has changed.
-    void zoomChanged();
-
-    //! Signaled when the user selects a component on the draw board.
-    void componentSelected(ComponentItem* component);
-
-    //! Signaled when the user selects an interface on the draw board.
-    void interfaceSelected(ConnectionEndpoint* endpoint);
-
-    //! Signaled when the user selects a connection on the draw board.
-    void connectionSelected(GraphicsConnection* connection);
-
-    //! Signaled when all items are deselected.
-    void clearItemSelection();
-
-    //! \brief Emitted when a new component is instantiated to the design.
-    void componentInstantiated(ComponentItem* comp);
-
-    //! \brief Emitted when a component instance is removed from the design.
-    void componentInstanceRemoved(ComponentItem* comp);
+    //! Adds a new column to the diagram.
+    virtual void addColumn();
 
 protected:
-    void keyPressEvent(QKeyEvent* event);
+    virtual void keyPressEvent(QKeyEvent* event);
+    virtual bool setDesign(QSharedPointer<Component> comp, const QString& viewName);
 
 private:
     // Disable copying.
@@ -178,11 +69,8 @@ private:
     {
         SYSTEM_COLUMN_WIDTH = 319,
         SW_COLUMN_WIDTH = 259,
-        IO_COLUMN_WIDTH = 119,
-        EDIT_HISTORY_SIZE = 50
+        IO_COLUMN_WIDTH = 119
     };
-
-    bool setDesign(QSharedPointer<Component> comp, const QString& viewName);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -190,27 +78,6 @@ private:
 
     //! If true, the widget is used for editing SW designs.
     bool onlySW_;
-
-    //! The library interface.
-    LibraryInterface* lh_;
-
-    //! The graphics view.
-    QGraphicsView* view_;
-
-    //! The system design diagram.
-    SystemDesignDiagram* diagram_;
-
-    //! The system that is being edited.
-    QSharedPointer<Component> system_;
-
-    //! The name of the view being edited.
-    QString viewName_;
-
-    //! The attached design configuration.
-    QSharedPointer<DesignConfiguration> designConf_;
-
-    //! The edit provider
-    QSharedPointer<GenericEditProvider> editProvider_;
 };
 
 //-----------------------------------------------------------------------------

@@ -12,7 +12,7 @@
 #include "diagraminterface.h"
 #include "DiagramOffPageConnector.h"
 #include "SelectItemTypeDialog.h"
-#include "designwidget.h"
+#include "HWDesignWidget.h"
 #include "DiagramAddCommands.h"
 #include "DiagramDeleteCommands.h"
 #include "DiagramMoveCommands.h"
@@ -63,7 +63,7 @@
 //-----------------------------------------------------------------------------
 // Function: BlockDiagram()
 //-----------------------------------------------------------------------------
-BlockDiagram::BlockDiagram(LibraryInterface *lh, GenericEditProvider& editProvider, DesignWidget *parent)
+BlockDiagram::BlockDiagram(LibraryInterface *lh, GenericEditProvider& editProvider, HWDesignWidget *parent)
     : DesignDiagram(lh, NULL, editProvider, parent),
       parent_(parent),
       tempConnection_(0),
@@ -88,9 +88,9 @@ void BlockDiagram::clearScene()
 }
 
 //-----------------------------------------------------------------------------
-// Function: BlockDiagram::openDesign()
+// Function: BlockDiagram::loadDesign()
 //-----------------------------------------------------------------------------
-void BlockDiagram::openDesign(QSharedPointer<Design> design)
+void BlockDiagram::loadDesign(QSharedPointer<Design> design)
 {
     // Create the column layout.
     layout_ = QSharedPointer<GraphicsColumnLayout>(new GraphicsColumnLayout(this));
@@ -760,7 +760,7 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv) const
             detailMessage += "\n * " + name;
         }
 
-        DesignWidget* designWidget = static_cast<DesignWidget*>(parent());
+        HWDesignWidget* designWidget = static_cast<HWDesignWidget*>(parent());
 
         QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
                            tr("Design ") + designWidget->getDocumentName() + 
@@ -1819,7 +1819,7 @@ void BlockDiagram::wheelEvent(QGraphicsSceneWheelEvent *event)
 {
     if (event->modifiers() == Qt::CTRL)
     {
-        DesignWidget* doc = static_cast<DesignWidget*>(parent());
+        HWDesignWidget* doc = static_cast<HWDesignWidget*>(parent());
         QGraphicsView* view = doc->getView();
 
         // Retrieve the center point in scene coordinates.
@@ -1891,22 +1891,6 @@ void BlockDiagram::onSelected(QGraphicsItem* newSelection)
 }
 
 //-----------------------------------------------------------------------------
-// Function: onShow()
-//-----------------------------------------------------------------------------
-void BlockDiagram::onShow()
-{
-    // Retrieve the new selection.
-    QGraphicsItem *newSelection = 0;
-
-    if (!selectedItems().isEmpty())
-    {
-        newSelection = selectedItems().front();
-    }
-
-    onSelected(newSelection);
-}
-
-//-----------------------------------------------------------------------------
 // Function: getColumnLayout()
 //-----------------------------------------------------------------------------
 GraphicsColumnLayout* BlockDiagram::getColumnLayout()
@@ -1963,25 +1947,7 @@ void BlockDiagram::addInterface(GraphicsColumn* column, QPointF const& pos)
     getEditProvider().addCommand(cmd, false);
 }
 
-QList<ComponentItem*> BlockDiagram::getInstances() const {
-
-	// the list to store the diagram components to
-	QList<ComponentItem*> instances;
-
-	// ask for all graphics items.
-	QList<QGraphicsItem*> graphItems = items();
-	foreach (QGraphicsItem* graphItem, graphItems) {
-
-		// make dynamic type conversion
-		ComponentItem* diagComp = dynamic_cast<ComponentItem*>(graphItem);
-		// if the item was a diagram component then add it to the list.
-		if (diagComp) 
-			instances.append(diagComp);
-	}
-	return instances;
-}
-
-DesignWidget* BlockDiagram::parent() const {
+HWDesignWidget* BlockDiagram::parent() const {
 	return parent_;
 }
 
@@ -2239,22 +2205,6 @@ void BlockDiagram::hideOffPageConnections()
 }
 
 //-----------------------------------------------------------------------------
-// Function: setBusWidthsVisible()
-//-----------------------------------------------------------------------------
-void BlockDiagram::setBusWidthsVisible(bool visible)
-{
-    foreach (QGraphicsItem* item, items())
-    {
-        DiagramInterconnection* conn = dynamic_cast<DiagramInterconnection*>(item);
-
-        if (conn != 0)
-        {
-            conn->setBusWidthVisible(visible);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: destroyConnections()
 //-----------------------------------------------------------------------------
 void BlockDiagram::destroyConnections()
@@ -2321,3 +2271,23 @@ DiagramConnectionEndpoint* BlockDiagram::getDiagramAdHocPort(QString const& port
 
     return 0;
 }
+
+//-----------------------------------------------------------------------------
+// Function: BlockDiagram::setVisibilityControlState()
+//-----------------------------------------------------------------------------
+void BlockDiagram::setVisibilityControlState(QString const& name, bool state)
+{
+    if (name == "Bus Widths")
+    {
+        foreach (QGraphicsItem* item, items())
+        {
+            DiagramInterconnection* conn = dynamic_cast<DiagramInterconnection*>(item);
+
+            if (conn != 0)
+            {
+                conn->setBusWidthVisible(state);
+            }
+        }
+    }
+}
+

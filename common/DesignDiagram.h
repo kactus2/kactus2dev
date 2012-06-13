@@ -17,6 +17,7 @@
 #include <designwidget/AdHocEnabled.h>
 
 #include <models/designconfiguration.h>
+#include <models/ColumnDesc.h>
 
 #include <common/DrawMode.h>
 
@@ -26,6 +27,7 @@ class GenericEditProvider;
 class Component;
 class ConnectionEndpoint;
 class GraphicsConnection;
+class GraphicsColumnLayout;
 class ComponentItem;
 class Design;
 class VLNV;
@@ -115,6 +117,14 @@ public:
 	void updateInstanceName(const QString& oldName, const QString& newName);
 
     /*!
+     *  Changes the state of a visibility control.
+     *
+     *      @param [in] name   The name of the visibility control.
+     *      @param [in] state  The new state for the visibility control.
+     */
+    virtual void setVisibilityControlState(QString const& name, bool state);
+
+    /*!
      *  Sets the draw mode of the diagram.
      *
      *      @param [in] mode The draw mode.
@@ -127,6 +137,18 @@ public:
      *      @param [in] locked If true, the diagram is locked. Otherwise it is unlocked.
      */
     void setProtection(bool locked);
+
+    /*!
+     *  Adds a column to the diagram's layout.
+     *
+     *      @param [in] desc The column description.
+     */
+    virtual void addColumn(ColumnDesc const& desc) = 0;
+
+    /*!
+     *  Returns the diagram column layout.
+     */
+    virtual GraphicsColumnLayout* getColumnLayout() = 0;
 
     /*!
      *  Returns the current draw mode.
@@ -163,7 +185,18 @@ public:
      */
     QSharedPointer<DesignConfiguration> getDesignConfiguration() const;
 
+    /*!
+     *  Returns a list of instances currently in the design.
+     */
+    QList<ComponentItem*> getInstances() const;
+
 public slots:
+    //! Called when the diagram is shown.
+    void onShow();
+
+    //! Called when the view has been scrolled vertically.
+    virtual void onVerticalScroll(qreal y) = 0;
+
     //! Called when a component instance is added to the diagram.
     virtual void onComponentInstanceAdded(ComponentItem* item);
 
@@ -171,6 +204,21 @@ public slots:
     virtual void onComponentInstanceRemoved(ComponentItem* item);
 
 signals:
+    //! Emitted when component with given vlnv should be opened in editor.
+    void openComponent(const VLNV& vlnv);
+
+    //! \brief Emitted when the user double-clicks a hierarchical SW component.
+    void openSWDesign(const VLNV& vlnv, const QString& viewName);
+
+    //! Emitted when a C source file should be opened for editing.
+    void openCSource(ComponentItem* compItem);
+
+    //! Emitted when user double clicks on a hierarchical component.
+    void openDesign(const VLNV& vlnv, const QString& viewName);
+
+    //! Signaled when the bus with the given vlnv should be opened for editing.
+    void openBus(VLNV const& vlnv, VLNV const& absDefVLNV, bool disableBusDef);
+
     //! Signaled when the draw mode has changed.
     void modeChanged(DrawMode mode);
 
@@ -223,6 +271,13 @@ protected:
      */
      virtual void drawBackground(QPainter* painter, QRectF const& rect);
 
+     /*!
+     *  Called when an item has been selected in the diagram.
+     *
+     *      @param [in] newSelection The selected item.
+     */
+    virtual void onSelected(QGraphicsItem* newSelection) = 0;
+
 private:
     // Disable copying.
     DesignDiagram(DesignDiagram const& rhs);
@@ -233,7 +288,7 @@ private:
      *
      *      @param [in] design The design to open.
      */
-    virtual void openDesign(QSharedPointer<Design> design) = 0;
+    virtual void loadDesign(QSharedPointer<Design> design) = 0;
     
     //-----------------------------------------------------------------------------
     // Data.

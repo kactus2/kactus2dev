@@ -147,7 +147,7 @@ void parseProgrammableElementsV2(LibraryInterface* lh, VLNV designVLNV,
     }
 
     // Go through all component instances and search for programmable elements.
-    foreach (ComponentInstance instance, compDesign->getComponentInstances())
+    foreach (ComponentInstance const& instance, compDesign->getComponentInstances())
     {
         QSharedPointer<LibraryComponent> libComp = lh->getModel(instance.getComponentRef());
         QSharedPointer<Component> childComp = libComp.staticCast<Component>();
@@ -159,8 +159,9 @@ void parseProgrammableElementsV2(LibraryInterface* lh, VLNV designVLNV,
             if ((!childComp->isHierarchical() && childComp->isCpu()) || !childComp->getComInterfaces().isEmpty())
             {
                 // Make sure the name is unique by prefixing it with the design's name.
-                instance.setInstanceName(designVLNV.getName().remove(".design") + "_" + instance.getInstanceName());
-                elements.append(instance);
+                ComponentInstance copy = instance;
+                copy.setInstanceName(designVLNV.getName().remove(".design") + "_" + instance.getInstanceName());
+                elements.append(copy);
             }
             else
             {

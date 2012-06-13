@@ -19,7 +19,6 @@
 #include <LibraryManager/vlnv.h>
 
 #include <designwidget/blockdiagram.h>
-#include <designwidget/designwidget.h>
 #include <designwidget/diagramcomponent.h>
 
 #include <designwidget/DiagramChangeCommands.h>
@@ -88,7 +87,7 @@ void AdHocEditor::setDataSource(AdHocEnabled* dataSource)
 
 	dataSource_ = dataSource;
 
-    if (dynamic_cast<BlockDiagram*>(dataSource_) != 0)
+    if (dynamic_cast<DesignDiagram*>(dataSource_) != 0)
     {
         nameLabel_.setText(tr("Component: top-level"));
     }

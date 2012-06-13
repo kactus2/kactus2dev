@@ -7,7 +7,7 @@
 #include "diagramcomponent.h"
 #include "DiagramMoveCommands.h"
 #include "blockdiagram.h"
-#include "designwidget.h"
+#include "HWDesignWidget.h"
 
 #include <models/generaldeclarations.h>
 
@@ -137,7 +137,7 @@ void DiagramInterconnection::updateWidthLabel()
         font.setBold(true);
         widthLabel_->setFont(font);
 
-        DesignWidget* designWidget = static_cast<DesignWidget*>(getDiagram()->parent());
+        HWDesignWidget* designWidget = static_cast<HWDesignWidget*>(getDiagram()->parent());
         widthLabel_->setVisible(designWidget->getVisibilityControls().value("Bus Widths"));
     }
     else

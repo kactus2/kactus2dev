@@ -101,16 +101,6 @@ public slots:
     //! Called when a component instance is remove from the diagram.
     virtual void onComponentInstanceRemoved(ComponentItem* item);
 
-signals:
-    //! \brief Emitted when the user double-clicks a hierarchical SW component.
-    void openSWDesign(const VLNV& vlnv, const QString& viewName);
-
-    //! \brief Emitted when component with given vlnv should be opened in editor.
-    void openComponent(const VLNV& vlnv);
-
-    //! Emitted when a C source file should be opened for editing.
-    void openCSource(ComponentItem* compItem);
-     
 protected:
     //! Called when the user presses a mouse button.
     void mousePressEvent(QGraphicsSceneMouseEvent* event);
@@ -144,12 +134,17 @@ private:
     SystemDesignDiagram(SystemDesignDiagram const& rhs);
     SystemDesignDiagram& operator=(SystemDesignDiagram const& rhs);
 
-    void onSelected(QGraphicsItem* newSelection);
+    /*!
+     *  Called when an item has been selected in the diagram.
+     *
+     *      @param [in] newSelection The selected item.
+     */
+    virtual void onSelected(QGraphicsItem* newSelection);
 
     /*!
      *  Opens the system design for editing.
      */
-    void openDesign(QSharedPointer<Design> design);
+    void loadDesign(QSharedPointer<Design> design);
 
     /*!
      *  Loads the COM connections from the given design.

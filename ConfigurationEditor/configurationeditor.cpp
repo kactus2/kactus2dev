@@ -7,7 +7,7 @@
 
 #include "configurationeditor.h"
 
-#include <designwidget/designwidget.h>
+#include <designwidget/HWDesignWidget.h>
 
 #include <common/dialogs/createConfigurationDialog/createconfigurationdialog.h>
 
@@ -17,6 +17,8 @@
 #include <models/designconfiguration.h>
 #include <models/design.h>
 #include <models/view.h>
+#include <models/SWView.h>
+#include <models/SystemView.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -99,7 +101,7 @@ void ConfigurationEditor::onAdd() {
 		// if user wanted to use the existing design
 		case CreateConfigurationDialog::USE_EXISTING: {
 			// set the configuration to reference the same design.
-			desConf->setDesignRef(designWidget_->getConfiguration()->getDesignRef());
+			desConf->setDesignRef(designWidget_->getDiagram()->getDesignConfiguration()->getDesignRef());
 			break;
 													  }
 		// if user wanted to create a new design
@@ -116,7 +118,7 @@ void ConfigurationEditor::onAdd() {
 			VLNV designVLNV = dialog.getDesignVLNV();
 			desConf->setDesignRef(designVLNV);
 
-			QSharedPointer<Design> design = designWidget_->createDesign(designVLNV);
+			QSharedPointer<Design> design = designWidget_->getDiagram()->createDesign(designVLNV);
 			handler_->writeModelToFile(dirPath, design);
 			break;
 				 }
@@ -124,20 +126,42 @@ void ConfigurationEditor::onAdd() {
 
 	handler_->writeModelToFile(dirPath, desConf);
 
-	// create new view for the component and set it to reference to the configuration
-	View* view = component_->createView();
-	view->setName(viewName);
-	// if user specified an implementation reference
-	if (!implementationRef.isEmpty()) {
-		view->setTopLevelView(implementationRef);
-	}
-	view->setHierarchyRef(configVLNV);
-	view->addEnvIdentifier(QString(""));
+    // create new view for the component and set it to reference to the configuration
+    switch (designWidget_->getImplementation())
+    {
+    case KactusAttribute::KTS_HW:
+        {
+	        View* view = component_->createView();
+	        view->setName(viewName);
+	        // if user specified an implementation reference
+	        if (!implementationRef.isEmpty()) {
+		        view->setTopLevelView(implementationRef);
+	        }
+	        view->setHierarchyRef(configVLNV);
+	        view->addEnvIdentifier(QString(""));
+            break;
+        }
+
+    case KactusAttribute::KTS_SW:
+        {
+            SWView* view = component_->createSWView();
+            view->setName(viewName);
+            view->setHierarchyRef(configVLNV);
+            break;
+        }
+
+    case KactusAttribute::KTS_SYS:
+        {
+            SystemView* view = component_->createSystemView();
+            view->setName(viewName);
+            view->setHierarchyRef(configVLNV);
+        }
+    }
 
 	handler_->writeModelToFile(component_);
 
 	// now that files have been saved tell design widget to open the new configuration.
-	designWidget_->setDesign(component_->getVlnv(), viewName);
+	designWidget_->setDesign(*component_->getVlnv(), viewName);
 
 	// set the configuration to be editable
 	designWidget_->setProtection(false);
@@ -227,7 +251,7 @@ void ConfigurationEditor::onRemove() {
 	// save the component 
 	handler_->writeModelToFile(component_);
 
-	designWidget_->setDesign(component_->getVlnv(), newView);
+	designWidget_->setDesign(*component_->getVlnv(), newView);
 	designWidget_->setProtection(false);
 	setConfiguration(designWidget_, false);
 }
@@ -250,10 +274,30 @@ void ConfigurationEditor::setConfiguration( DesignWidget* designWidget, bool loc
 	configurationSelector_.setEnabled(true);
 
 	// get the component being edited
-	component_ = designWidget->getHierComponent();
+	component_ = designWidget->getEditedComponent();
 
 	// get the names of the hierarchical views.
-	QStringList hierViewNames = component_->getHierViews();
+	QStringList hierViewNames;
+    
+    switch (designWidget->getImplementation())
+    {
+    case KactusAttribute::KTS_HW:
+        {
+            hierViewNames = component_->getHierViews();
+            break;
+        }
+
+    case KactusAttribute::KTS_SW:
+        {
+            hierViewNames = component_->getSWViewNames();
+            break;
+        }
+
+    case KactusAttribute::KTS_SYS:
+        {
+            hierViewNames = component_->getSystemViewNames();
+        }
+    }
 	
 	// if theres only one configuration then it can't be removed.
 	if (hierViewNames.size() < 2)
@@ -310,7 +354,7 @@ void ConfigurationEditor::onConfigurationChanged( const QString& newConfigName )
 		// ask if previous configuration was locked
 		bool wasLocked = designWidget_->isProtected();
 
-		designWidget_->setDesign(component_->getVlnv(), newConfigName);
+		designWidget_->setDesign(*component_->getVlnv(), newConfigName);
 
 		// keep the locked/unlocked state from the previous configuration to this configuration.
 		designWidget_->setProtection(wasLocked);

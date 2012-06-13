@@ -80,7 +80,7 @@ ColumnEditDialog::ColumnEditDialog(QWidget* parent, bool sw, GraphicsColumn cons
     // Connect the button signals to accept() and reject().
     QObject::connect(btnOK, SIGNAL(clicked()), this, SLOT(accept()));
     QObject::connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
-    QObject::connect(typeCombo_, SIGNAL(currentIndexChanged(int)), this, SLOT(onTypeChange(int)));
+    QObject::connect(typeCombo_, SIGNAL(currentIndexChanged(QString const&)), this, SLOT(onTypeChange(QString const&)));
 
     // Fill the fields with the data from the column, if given.
     if (column_ != 0)
@@ -142,13 +142,24 @@ ColumnEditDialog::~ColumnEditDialog()
 //-----------------------------------------------------------------------------
 // Function: onTypeChange()
 //-----------------------------------------------------------------------------
-void ColumnEditDialog::onTypeChange(int index)
+void ColumnEditDialog::onTypeChange(QString const& type)
 {
-    Q_ASSERT(index >= 0);
-
     // Convert the index to a column content type.
-    ColumnContentType contentType = static_cast<ColumnContentType>(index);
+    ColumnContentType contentType = COLUMN_CONTENT_CUSTOM;
 
+    if (type == "Components")
+    {
+        contentType = COLUMN_CONTENT_COMPONENTS;
+    }
+    else if (type == "Buses")
+    {
+        contentType = COLUMN_CONTENT_BUSES;
+    }
+    else if (type == "IO")
+    {
+        contentType = COLUMN_CONTENT_IO;
+    }
+    
     // Set enabled/disabled based on the content type.
     for (int i = 0; i < CIT_COUNT; ++i)
     {

@@ -7,9 +7,9 @@
 
 #include "componentinstancemodel.h"
 
+#include <common/DesignDiagram.h>
+
 #include <designwidget/diagramcomponent.h>
-#include <designwidget/blockdiagram.h>
-#include <designwidget/designwidget.h>
 #include <designwidget/DiagramChangeCommands.h>
 
 ComponentInstanceModel::ComponentInstanceModel(QObject *parent):

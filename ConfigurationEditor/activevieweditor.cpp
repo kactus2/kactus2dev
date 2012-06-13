@@ -9,7 +9,7 @@
 
 #include "activeviewdelegate.h"
 
-#include <designwidget/designwidget.h>
+#include <designwidget/HWDesignWidget.h>
 
 #include <models/designconfiguration.h>
 
@@ -57,7 +57,7 @@ void ActiveViewEditor::clear() {
 void ActiveViewEditor::setDesign( DesignWidget* designWidget, bool locked) {
 
 	if (designWidget) {
-		QSharedPointer<DesignConfiguration> desConf = designWidget->getConfiguration();
+		QSharedPointer<DesignConfiguration> desConf = designWidget->getDiagram()->getDesignConfiguration();
 
 		// if configuration is not used then view is always disabled
 		if (!desConf)
@@ -68,6 +68,7 @@ void ActiveViewEditor::setDesign( DesignWidget* designWidget, bool locked) {
 			view_.setDisabled(locked);
 
 		model_.setDesign(designWidget, desConf);
+        view_.resizeRowsToContents();
 	}
 	else {
 		clear();

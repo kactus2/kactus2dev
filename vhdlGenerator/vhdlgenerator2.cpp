@@ -20,7 +20,7 @@
 #include <models/fileset.h>
 #include <models/file.h>
 
-#include <designwidget/designwidget.h>
+#include <designwidget/HWDesignWidget.h>
 #include <IPXactWrapper/ComponentEditor/treeStructure/componenteditor.h>
 
 #include <QFile>
@@ -36,7 +36,7 @@ static const QString BLACK_BOX_DECL_END = "-- ##KACTUS2_BLACK_BOX_DECLARATIONS_E
 static const QString BLACK_BOX_ASSIGN_START = "-- ##KACTUS2_BLACK_BOX_ASSIGNMENTS_BEGIN##";
 static const QString BLACK_BOX_ASSIGN_END = "-- ##KACTUS2_BLACK_BOX_ASSIGNMENTS_END##";
 
-VhdlGenerator2::VhdlGenerator2(LibraryInterface* handler, DesignWidget* parent):
+VhdlGenerator2::VhdlGenerator2(LibraryInterface* handler, HWDesignWidget* parent):
 QObject(parent),
 handler_(handler),
 component_(),

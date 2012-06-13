@@ -85,7 +85,7 @@ bool DesignDiagram::setDesign(QSharedPointer<Component> component, QSharedPointe
     component_ = component;
     designConf_ = designConf;
 
-    openDesign(design);
+    loadDesign(design);
     return true;
 }
 
@@ -277,3 +277,47 @@ void DesignDiagram::drawBackground(QPainter* painter, QRectF const& rect)
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::onShow()
+//-----------------------------------------------------------------------------
+void DesignDiagram::onShow()
+{
+    // Retrieve the new selection.
+    QGraphicsItem *newSelection = 0;
+
+    if (!selectedItems().isEmpty())
+    {
+        newSelection = selectedItems().front();
+    }
+
+    onSelected(newSelection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::setVisibilityControlState()
+//-----------------------------------------------------------------------------
+void DesignDiagram::setVisibilityControlState(QString const& name, bool state)
+{
+    // Empty default implementation.
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::getInstances()
+//-----------------------------------------------------------------------------
+QList<ComponentItem*> DesignDiagram::getInstances() const
+{
+    // the list to store the diagram components to
+    QList<ComponentItem*> instances;
+
+    // ask for all graphics items.
+    QList<QGraphicsItem*> graphItems = items();
+    foreach (QGraphicsItem* graphItem, graphItems) {
+
+        // make dynamic type conversion
+        ComponentItem* diagComp = dynamic_cast<ComponentItem*>(graphItem);
+        // if the item was a diagram component then add it to the list.
+        if (diagComp) 
+            instances.append(diagComp);
+    }
+    return instances;
+}

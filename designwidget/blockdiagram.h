@@ -34,7 +34,7 @@ class GraphicsColumnLayout;
 class AbstractionDefinition;
 class VLNV;
 class GenericEditProvider;
-class DesignWidget;
+class HWDesignWidget;
 class ConnectionEndpoint;
 class GraphicsConnection;
 
@@ -49,7 +49,7 @@ public:
     /*! \brief The constructor
      *
      */
-    BlockDiagram(LibraryInterface *lh, GenericEditProvider& editProvider, DesignWidget *parent = 0);
+    BlockDiagram(LibraryInterface *lh, GenericEditProvider& editProvider, HWDesignWidget *parent = 0);
 
 	//! \brief The destructor
 	virtual ~BlockDiagram();
@@ -77,7 +77,7 @@ public:
     /*! \brief Set the IP-XACT document that is viewed in BlockDiagram
      *
      */
-    void openDesign(QSharedPointer<Design> design);
+    void loadDesign(QSharedPointer<Design> design);
 
     /*! \brief Get DiagramComponent that has the given instance name
      *
@@ -91,11 +91,12 @@ public:
 	QList<ComponentItem*> getInstances() const;
 
     /*!
-     *  Sets the bus widths visible/invisible.
+     *  Changes the state of a visibility control.
      *
-     *      @param [in] visible If true, the bus widths are set visible. Otherwise false.
+     *      @param [in] name   The name of the visibility control.
+     *      @param [in] state  The new state for the visibility control.
      */
-    void setBusWidthsVisible(bool visible);
+    virtual void setVisibilityControlState(QString const& name, bool state);
 
 	/*! \brief Update the given hierarchical component to match this BlockDiagram
      *
@@ -125,7 +126,7 @@ public:
 	 *
 	 * \return Pointer to the design widget that owns this scene.
 	*/
-	virtual DesignWidget* parent() const;
+	virtual HWDesignWidget* parent() const;
 
     /*!
      *  Called when a port's ad-hoc visibility has been changed.
@@ -140,18 +141,6 @@ public:
      */
     virtual DiagramConnectionEndpoint* getDiagramAdHocPort(QString const& portName);
 
-signals:
-    /*! \brief Signal openDesign is emitted when user double clicks on a hierarchical component
-     *
-     */
-    void openDesign(const VLNV& vlnv, const QString& viewName);
-
-	//! \brief Signal is emitted when component with given vlnv should be opened in editor.
-	void openComponent(const VLNV& vlnv);
-
-    //! Signaled when the bus with the given vlnv should be opened for editing.
-    void openBus(VLNV const& vlnv, VLNV const& absDefVLNV, bool disableBusDef);
-
 public slots:
     /*! \brief Bring the selected item to front
      *
@@ -161,12 +150,7 @@ public slots:
     /*!
      *  Called when the view has been scrolled vertically.
      */
-    void onVerticalScroll(qreal y);
-
-    /*!
-     *  Called when the diagram is shown.
-     */
-    void onShow();
+    virtual void onVerticalScroll(qreal y);
 
     /*!
      *  Called when the selection changes in the diagram.
@@ -202,7 +186,7 @@ private:
      *
      *      @param [in] newSelection The selected item.
      */
-    void onSelected(QGraphicsItem* newSelection);
+    virtual void onSelected(QGraphicsItem* newSelection);
 
     /*!
      *  Adds a new interface to the given diagram column.
@@ -243,7 +227,7 @@ private:
     //-----------------------------------------------------------------------------
 
 	//! \brief Pointer to the parent of this scene.
-	DesignWidget* parent_;
+	HWDesignWidget* parent_;
 
     //! The connection that is being drawn.
     DiagramInterconnection *tempConnection_;

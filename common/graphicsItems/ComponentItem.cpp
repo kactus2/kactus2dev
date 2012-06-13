@@ -50,12 +50,20 @@ ComponentItem::ComponentItem(QRectF const& size,
 
     // Create the name label.
     nameLabel_ = new QGraphicsTextItem(instanceName, this);
-    nameLabel_->setHtml("<center>"+instanceName+"</center>");
     QFont font = nameLabel_->font();
     font.setWeight(QFont::Bold);
     nameLabel_->setFont(font);
     nameLabel_->setTextWidth(rect().width());
     nameLabel_->setPos(-nameLabel_->boundingRect().width()/2, GridSize);
+
+    if (!displayName_.isEmpty())
+    {
+        updateNameLabel(displayName_);
+    }
+    else
+    {
+        updateNameLabel(name_);
+    }
 
     connect(nameLabel_->document(), SIGNAL(contentsChanged()), this, SIGNAL(contentChanged()));
 }
@@ -100,7 +108,11 @@ void ComponentItem::setName(QString const& name)
     diagram->updateInstanceName(oldName, name);
 
     name_ = name;
-    updateNameLabel(name);
+
+    if (displayName_.isEmpty())
+    {
+        updateNameLabel(name);
+    }
 
     emit contentChanged();
     emit nameChanged(name, oldName);
@@ -112,6 +124,16 @@ void ComponentItem::setName(QString const& name)
 void ComponentItem::setDisplayName(QString const& displayName)
 {
     displayName_ = displayName;
+
+    if (!displayName_.isEmpty())
+    {
+        updateNameLabel(displayName_);
+    }
+    else
+    {
+        updateNameLabel(name_);
+    }
+
     emit contentChanged();
     emit displayNameChanged(displayName_);
 }

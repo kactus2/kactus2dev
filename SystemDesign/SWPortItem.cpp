@@ -563,13 +563,15 @@ QVariant SWPortItem::itemChange(GraphicsItemChange change, QVariant const& value
         }
 
     case ItemScenePositionHasChanged:
-        // Check if the updates are not disabled.
-        if (!static_cast<SWComponentItem*>(parentItem())->isConnectionUpdateDisabled())
         {
-            // Update the connections.
-            foreach (GraphicsConnection* connection, getConnections())
+            // Check if the updates are not disabled.
+            if (!static_cast<SWComponentItem*>(parentItem())->isConnectionUpdateDisabled())
             {
-                connection->updatePosition();
+                // Update the connections.
+                foreach (GraphicsConnection* connection, getConnections())
+                {
+                    connection->updatePosition();
+                }
             }
 
             // Update the stub length if the parent's parent is a HW mapping item.
@@ -590,9 +592,9 @@ QVariant SWPortItem::itemChange(GraphicsItemChange change, QVariant const& value
             {
                 stubLine_.setLine(0, 0, 0, -GridSize);
             }
-        }
 
-        break;
+            break;
+        }
 
     default:
         break;

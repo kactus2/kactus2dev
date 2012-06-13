@@ -54,7 +54,7 @@
 #include <models/SWView.h>
 #include <models/SystemView.h>
 
-#include <designwidget/designwidget.h>
+#include <designwidget/HWDesignWidget.h>
 #include <designwidget/diagramcomponent.h>
 #include <designwidget/diagramport.h>
 #include <designwidget/diagraminterface.h>
@@ -211,21 +211,13 @@ MainWindow::~MainWindow() {
 //-----------------------------------------------------------------------------
 void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forceUnlocked)
 {
-
 	// the vlnv must always be for a component
 	Q_ASSERT(libraryHandler_->getDocumentType(vlnv) == VLNV::COMPONENT);
 
-	// Check if the design is already open and activate it.
-	if (vlnv.isValid()) {
-		for (int i = 0; i < designTabs_->count(); i++) {
-			DesignWidget *designWidget = dynamic_cast<DesignWidget*>(designTabs_->widget(i));
-
-			if (designWidget != 0 && *designWidget->getOpenDocument() == vlnv) {
-				designTabs_->setCurrentIndex(i);
-				return;
-			}
-		}
-	}
+    if (isDesignOpen(vlnv))
+    {
+        return;
+    }
 
 	// parse the referenced component
 	QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(vlnv);
@@ -289,7 +281,7 @@ void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forc
 		return;
 	}
 
-	DesignWidget *designWidget = new DesignWidget(libraryHandler_, this);
+	HWDesignWidget *designWidget = new HWDesignWidget(libraryHandler_, this);
 
 	connect(designWidget->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));
 	connect(designWidget, SIGNAL(zoomChanged()), this, SLOT(updateZoomTools()), Qt::UniqueConnection);
@@ -327,7 +319,7 @@ void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forc
 		actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
 
 	// open the design in the designWidget
-	designWidget->setDesign(&vlnv, viewName);
+	designWidget->setDesign(vlnv, viewName);
 
 	// if the design could not be opened
 	if (!designWidget->getOpenDocument()) {
@@ -358,21 +350,10 @@ void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forc
 //-----------------------------------------------------------------------------
 void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName, bool forceUnlocked)
 {
-	// Check if the SW design editor is already open and activate it.
-	if (vlnv.isValid())
-	{
-		for (int i = 0; i < designTabs_->count(); i++)
-		{
-			SystemDesignWidget* editor = dynamic_cast<SystemDesignWidget*>(designTabs_->widget(i));
-
-			if (editor && editor->getComponentVLNV() == vlnv)
-			{
-                // TODO: Check that the view name matches.
-				designTabs_->setCurrentIndex(i);
-				return;
-			}
-		}
-	}
+    if (isDesignOpen(vlnv))
+    {
+        return;
+    }
 
     SystemDesignWidget* designWidget = new SystemDesignWidget(true, libraryHandler_, this, this);
 
@@ -1116,7 +1097,7 @@ void MainWindow::onDesignChanged() {
 
 	// if editor was found
 	if (widget) {
-		DesignWidget* editor = qobject_cast<DesignWidget*>(widget);
+		HWDesignWidget* editor = qobject_cast<HWDesignWidget*>(widget);
 
 		// if editor is design widget then set it to be modified.
 		if (editor) {
@@ -1128,11 +1109,11 @@ void MainWindow::onDesignChanged() {
 
 void MainWindow::onClearItemSelection()
 {
-    DesignWidget* designWidget = dynamic_cast<DesignWidget*>(designTabs_->currentWidget());
+    HWDesignWidget* designWidget = dynamic_cast<HWDesignWidget*>(designTabs_->currentWidget());
 
     if (designWidget != 0)
     {
-        adHocEditor_->setDataSource(designWidget->scene());
+        adHocEditor_->setDataSource(designWidget->getDiagram());
     }
     else
     {
@@ -1226,7 +1207,7 @@ void MainWindow::updateMenuStrip()
 	}
 
 	bool isHWDesign = false;
-	DesignWidget* designWidget = dynamic_cast<DesignWidget*>(doc);
+	HWDesignWidget* designWidget = dynamic_cast<HWDesignWidget*>(doc);
 	if (designWidget) {
 		isHWDesign = designWidget->isHWImplementation();
 	}
@@ -1418,15 +1399,10 @@ void MainWindow::addColumn()
 {
 	QWidget* curWidget = designTabs_->currentWidget();
 	DesignWidget* designWidget = dynamic_cast<DesignWidget*>(curWidget);
-	SystemDesignWidget* endpointWidget = dynamic_cast<SystemDesignWidget*>(curWidget);
 
 	if (designWidget != 0)
 	{
 		designWidget->addColumn();
-	}
-	else if (endpointWidget != 0)
-	{
-		endpointWidget->addColumn();
 	}
 }
 
@@ -1435,7 +1411,7 @@ void MainWindow::addColumn()
 //-----------------------------------------------------------------------------
 void MainWindow::generateVHDL()
 {
-	DesignWidget* designWidget = dynamic_cast<DesignWidget*>(designTabs_->currentWidget());
+	HWDesignWidget* designWidget = dynamic_cast<HWDesignWidget*>(designTabs_->currentWidget());
 	ComponentEditor* compEditor = dynamic_cast<ComponentEditor*>(designTabs_->currentWidget());
 
 	if (designWidget != 0)
@@ -1462,7 +1438,7 @@ void MainWindow::generateVHDL()
 // Function: generateModelSim()
 //-----------------------------------------------------------------------------
 void MainWindow::generateModelSim() {
-	DesignWidget* designWidget = dynamic_cast<DesignWidget*>(designTabs_->currentWidget());
+	HWDesignWidget* designWidget = dynamic_cast<HWDesignWidget*>(designTabs_->currentWidget());
 	ComponentEditor* compEditor = dynamic_cast<ComponentEditor*>(designTabs_->currentWidget());
 
 	if (designWidget != 0) {
@@ -1483,7 +1459,7 @@ void MainWindow::generateModelSim() {
 //-----------------------------------------------------------------------------
 void MainWindow::generateQuartus()
 {
-	DesignWidget* designWidget = dynamic_cast<DesignWidget*>(designTabs_->currentWidget());
+	HWDesignWidget* designWidget = dynamic_cast<HWDesignWidget*>(designTabs_->currentWidget());
 
 	if (designWidget != 0)
 	{
@@ -1721,12 +1697,9 @@ void MainWindow::onTabChanged(int index)
 	// if the new tab is designWidget
 	DesignWidget* designwidget = dynamic_cast<DesignWidget*>(doc);
 	// set the configuration manager to edit the active design
-	if (designwidget && designwidget->getHierComponent()->getComponentImplementation() == KactusAttribute::KTS_HW) {
+	if (designwidget)
+    {
 		configurationEditor_->setConfiguration(designwidget, designwidget->isProtected());
-	}
-
-	else if (designwidget) {
-		configurationEditor_->setConfiguration(designwidget, true);
 	}
 	// active tab is not design widget so clear the editors associated with design widget
 	else {
@@ -2533,17 +2506,10 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName, boo
 {
 	libraryHandler_->beginSave();
 
-	// Check if the system is already open and activate it.
-	if (vlnv.isValid()) {
-		for (int i = 0; i < designTabs_->count(); i++) {
-			SystemDesignWidget *designWidget = dynamic_cast<SystemDesignWidget*>(designTabs_->widget(i));
-
-			if (designWidget != 0 && *designWidget->getOpenDocument() == vlnv) {
-				designTabs_->setCurrentIndex(i);
-				return;
-			}
-		}
-	}
+    if (isDesignOpen(vlnv))
+    {
+        return;
+    }
 
 	SystemDesignWidget* designWidget = new SystemDesignWidget(false, libraryHandler_, this, this);
 
@@ -2919,11 +2885,15 @@ void MainWindow::changeProtection(bool locked)
 
 	// if the tab is designWidget
 	DesignWidget* designwidget = dynamic_cast<DesignWidget*>(doc);
-	if (designwidget && designwidget->getHierComponent()->getComponentImplementation() == KactusAttribute::KTS_HW)
+	if (designwidget)
+    {
 		// update the editors to match the locked state
 		configurationEditor_->setLocked(locked);
+    }
 	else
+    {
 		configurationEditor_->setLocked(true);
+    }
 
 	// Clear the item selection since the current instance is no longer valid.
     onClearItemSelection();
@@ -3456,6 +3426,28 @@ void MainWindow::refresh()
     }
 
     doc->refresh();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::isDesignOpen()
+//-----------------------------------------------------------------------------
+bool MainWindow::isDesignOpen(VLNV const& vlnv)
+{
+    if (vlnv.isValid())
+    {
+        for (int i = 0; i < designTabs_->count(); i++)
+        {
+            DesignWidget* designWidget = dynamic_cast<DesignWidget*>(designTabs_->widget(i));
+
+            if (designWidget != 0 && *designWidget->getOpenDocument() == vlnv)
+            {
+                designTabs_->setCurrentIndex(i);
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 MainWindow::WindowVisibility::WindowVisibility():

@@ -8,7 +8,9 @@
 #include "activeviewmodel.h"
 
 #include <designwidget/diagramcomponent.h>
-#include <designwidget/designwidget.h>
+#include <SystemDesign/HWMappingItem.h>
+#include <SystemDesign/SWCompItem.h>
+#include <designwidget/HWDesignWidget.h>
 #include <designwidget/DiagramChangeCommands.h>
 
 #include <models/component.h>
@@ -143,7 +145,26 @@ QVariant ActiveViewModel::data(const QModelIndex& index, int role /*= Qt::Displa
 			Q_ASSERT(searched);
 
 			// return the views the component model contains.
-			return searched->componentModel()->getViewNames();
+            if (searched->type() == DiagramComponent::Type)
+            {
+			    return searched->componentModel()->getViewNames();
+            }
+            else
+            {
+                QStringList viewNames;
+
+                // Add non-hierarchical standard views and SW views.
+                foreach (QSharedPointer<View const> view, searched->componentModel()->getViews())
+                {
+                    if (!view->isHierarchical())
+                    {
+                        viewNames.append(view->getName());
+                    }
+                }
+                
+                viewNames += searched->componentModel()->getSWViewNames();
+                return viewNames;
+            }
 		}
 		else
 			return QVariant();

@@ -31,7 +31,7 @@
 
 class LibraryInterface;
 class VhdlConnectionEndPoint;
-class DesignWidget;
+class HWDesignWidget;
 class ComponentEditor;
 
 /*! \brief Vhdl Generator generates top-level vhdl for hierarchical component.
@@ -50,7 +50,7 @@ public:
 	 * \param parent Pointer to the owner of this generator.
 	 *
 	*/
-	VhdlGenerator2(LibraryInterface* handler, DesignWidget* parent);
+	VhdlGenerator2(LibraryInterface* handler, HWDesignWidget* parent);
 
 	/*! \brief The constructor
 	 *
