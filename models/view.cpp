@@ -16,10 +16,17 @@
 
 #include <QDebug>
 
-View::View(QDomNode &viewNode): nameGroup_(viewNode), envIdentifiers_(),
-language_(), languageStrict_(false), modelName_(),
-fileSetRefs_(), constraintSetRefs_(),
-parameters_(), hierarchyRef_(), defaultFileBuilders_(),
+View::View(QDomNode &viewNode): 
+nameGroup_(viewNode),
+envIdentifiers_(),
+language_(),
+languageStrict_(false),
+modelName_(),
+fileSetRefs_(), 
+constraintSetRefs_(),
+parameters_(),
+hierarchyRef_(), 
+defaultFileBuilders_(),
 topLevelViewRef_() {
 
 	for (int i = 0; i < viewNode.childNodes().count(); ++i) {
@@ -98,17 +105,30 @@ topLevelViewRef_() {
 }
 
 View::View(const QString name): 
-nameGroup_(name), envIdentifiers_(),
-language_(), languageStrict_(false), modelName_(),
-fileSetRefs_(), constraintSetRefs_(),
-parameters_(), hierarchyRef_(), defaultFileBuilders_(),
+nameGroup_(name), 
+envIdentifiers_(),
+language_(),
+languageStrict_(false),
+modelName_(),
+fileSetRefs_(), 
+constraintSetRefs_(),
+parameters_(),
+hierarchyRef_(), 
+defaultFileBuilders_(),
 topLevelViewRef_() {
 }
 
-View::View(): nameGroup_(), envIdentifiers_(),
-language_(), languageStrict_(false), modelName_(),
-fileSetRefs_(), constraintSetRefs_(),
-parameters_(), hierarchyRef_(), defaultFileBuilders_(),
+View::View(): 
+nameGroup_(),
+envIdentifiers_(),
+language_(),
+languageStrict_(false),
+modelName_(),
+fileSetRefs_(), 
+constraintSetRefs_(),
+parameters_(), 
+hierarchyRef_(), 
+defaultFileBuilders_(),
 topLevelViewRef_() {
 }
 
@@ -533,4 +553,9 @@ General::NameGroup& View::getNameGroup() {
 
 const General::NameGroup& View::getNameGroup() const {
 	return nameGroup_;
+}
+
+void View::clearHierarchy() {
+	hierarchyRef_.clear();
+	topLevelViewRef_.clear();
 }

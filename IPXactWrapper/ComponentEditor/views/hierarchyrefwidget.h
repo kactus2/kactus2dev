@@ -49,29 +49,26 @@ public:
 	*/
 	bool isValid() const;
 
-	/*! \brief Restore the changes made in the editor back to ones in the model.
-	*
-	*/
-	void restoreChanges();
-
-	/*! \brief Applies the changes made with the editor to the model.
-	*
-	* After calling this function it is no longer possible to automatically 
-	* restore the previous state of the model.
-	* 
-	* Note: if the editor is not in valid state nothing is changed.
-	*/
-	void applyChanges();
-
 public slots:
 
 	//! \brief Refresh the list of available views.
 	void refresh();
 
+	//! \brief Clear the hierarchy reference and top level ref
+	void clear();
+
 signals:
 
 	//! \brief Emitted when contents of the editor change.
 	void contentChanged();
+
+private slots:
+
+	//! \brief Handler for changes in hierarchy reference.
+	void onVLNVChanged();
+
+	//! \brief Handler for changes in top level reference.
+	void onTopRefChanged(const QString& newRef);
 
 private:
 

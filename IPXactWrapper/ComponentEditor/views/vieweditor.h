@@ -81,9 +81,6 @@ private:
 	//! \brief Set up the layout for the editor.
 	void setupLayout();
 
-	//! \brief Set up the editor.
-	void initialize();
-
 	//! \brief Pointer to the instance that manages the library.
 	LibraryInterface* libHandler_;
 
@@ -115,7 +112,7 @@ private:
 	ParameterGroupBox parameters_;
 
 	//! \brief Editor to set the default file builders of flat view.
-	FileBuildersEditor fileBuildersTab_;
+	FileBuildersEditor fileBuilders_;
 
 	//! \brief The widget to edit the hierarchical reference
 	HierarchyRefWidget hierarchyRef_;

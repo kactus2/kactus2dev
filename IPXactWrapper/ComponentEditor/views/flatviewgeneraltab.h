@@ -49,15 +49,7 @@ public:
 	/*! \brief Restore the settings from the model to this editor.
 	 *
 	*/
-	void restoreChanges();
-
-	/*! \brief Save the settings from editor to the model
-	 * 
-	 * After calling this function the settings can not be restored back to 
-	 * previous ones.
-	 *
-	*/
-	void applyChanges();
+	void refresh();
 
 signals:
 
@@ -69,6 +61,17 @@ signals:
 
 	//! \brief Emitted when contents of the editor change
 	void contentChanged();
+
+private slots:
+
+	//! \brief Handler for changes in language setting.
+	void onLanguageChange();
+
+	//! \brief Handler for changes in model name.
+	void onModelNameChange(const QString& newName);
+
+	//! \brief Handler for changes in file set references.
+	void onFileSetRefChange();
 
 private:
 	

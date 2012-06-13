@@ -34,20 +34,23 @@
 //-----------------------------------------------------------------------------
 // Function: VLNVEditor()
 //-----------------------------------------------------------------------------
-VLNVEditor::VLNVEditor(VLNV::IPXactType type, LibraryInterface* libHandler, QWidget* parentWnd,
-					   QWidget* parent, bool compact)
-    : QGroupBox(parent),
-      type_(type),
-      dataTree_(),
-      vendorEdit_(0),
-      vendorMatcher_(),
-      libraryEdit_(0),
-      libraryMatcher_(),
-      nameEdit_(0),
-      nameMatcher_(),
-      versionEdit_(0),
-      versionMatcher_(),
-      handler_(libHandler)
+VLNVEditor::VLNVEditor(VLNV::IPXactType type, 
+					   LibraryInterface* libHandler, 
+					   QWidget* parentWnd,
+					   QWidget* parent,
+					   bool compact):
+QGroupBox(parent),
+type_(type),
+dataTree_(),
+vendorEdit_(0),
+vendorMatcher_(),
+libraryEdit_(0),
+libraryMatcher_(),
+nameEdit_(0),
+nameMatcher_(),
+versionEdit_(0),
+versionMatcher_(),
+handler_(libHandler)
 {
     Q_ASSERT(libHandler != 0);
     Q_ASSERT(type_ != VLNV::INVALID);

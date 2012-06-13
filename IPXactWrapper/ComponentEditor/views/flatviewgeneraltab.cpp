@@ -14,6 +14,8 @@
 #include <QGridLayout>
 #include <QStringList>
 
+#include <QDebug>
+
 FlatViewGeneralTab::FlatViewGeneralTab(QSharedPointer<Component> component, 
 									   QSharedPointer<View> view, 
 									   QWidget *parent): 
@@ -43,16 +45,14 @@ fileSetRefs_(component, tr("File set references"), this) {
 	topLayout->addWidget(&fileSetRefs_, 1);
 	topLayout->setContentsMargins(0, 0, 0, 0);
 
-	restoreChanges();
-
 	connect(&language_, SIGNAL(textEdited(const QString&)),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+		this, SLOT(onLanguageChange()), Qt::UniqueConnection);
 	connect(&languageStrict_, SIGNAL(toggled(bool)),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+		this, SLOT(onLanguageChange()), Qt::UniqueConnection);
 	connect(&modelName_, SIGNAL(textEdited(const QString&)),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+		this, SLOT(onModelNameChange(const QString&)), Qt::UniqueConnection);
 	connect(&fileSetRefs_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+		this, SLOT(onFileSetRefChange()), Qt::UniqueConnection);
 }
 
 FlatViewGeneralTab::~FlatViewGeneralTab() {
@@ -76,7 +76,7 @@ bool FlatViewGeneralTab::isValid() const {
 	return true;
 }
 
-void FlatViewGeneralTab::restoreChanges() {
+void FlatViewGeneralTab::refresh() {
 
 	language_.setText(view_->getLanguage());
 	languageStrict_.setChecked(view_->getLanguageStrict());
@@ -84,10 +84,18 @@ void FlatViewGeneralTab::restoreChanges() {
 	fileSetRefs_.setItems(view_->getFileSetRefs());
 }
 
-void FlatViewGeneralTab::applyChanges() {
-
+void FlatViewGeneralTab::onLanguageChange() {
 	view_->setLanguage(language_.text());
 	view_->setLanguageStrict(languageStrict_.isChecked());
-	view_->setModelName(modelName_.text());
+	emit contentChanged();
+}
+
+void FlatViewGeneralTab::onModelNameChange( const QString& newName ) {
+	view_->setModelName(newName);
+	emit contentChanged();
+}
+
+void FlatViewGeneralTab::onFileSetRefChange() {
 	view_->setFileSetRefs(fileSetRefs_.items());
+	emit contentChanged();
 }

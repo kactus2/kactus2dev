@@ -36,13 +36,9 @@ stack_(this),
 flatElements_(&stack_),
 generalTab_(component, view, &flatElements_),
 parameters_(view->getParameters(), this),
-fileBuildersTab_(view->getDefaultFileBuilders(), this),
+fileBuilders_(view->getDefaultFileBuilders(), this),
 hierarchyRef_(view, component_, libHandler, &stack_) {
 
-	initialize();
-}
-
-void ViewEditor::initialize() {
 	// set the possible options to the view type selector.
 	viewTypeSelector_.addItem(tr("hierarchical"));
 	viewTypeSelector_.addItem(tr("non-hierarchical"));
@@ -55,7 +51,7 @@ void ViewEditor::initialize() {
 	// create a layout for the flat elements and add the editors
 	QVBoxLayout* flatLayout = new QVBoxLayout(&flatElements_);
 	flatLayout->addWidget(&generalTab_);
-	flatLayout->addWidget(&fileBuildersTab_);
+	flatLayout->addWidget(&fileBuilders_);
 	flatLayout->addWidget(&parameters_);
 	flatLayout->setContentsMargins(0, 0, 0, 0);
 
@@ -71,7 +67,7 @@ void ViewEditor::initialize() {
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&generalTab_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&fileBuildersTab_, SIGNAL(contentChanged()),
+	connect(&fileBuilders_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&parameters_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -103,7 +99,7 @@ bool ViewEditor::isValid() const {
 	// if view is not hierarchical make sure all it's elements are valid
 	else {
 		return generalTab_.isValid() && parameters_.isValid() &&
-		fileBuildersTab_.isValid();
+		fileBuilders_.isValid();
 	}
 }
 
@@ -134,25 +130,18 @@ void ViewEditor::setupLayout() {
 	scrollArea->setWidget(topWidget);
 }
 
-void ViewEditor::makeChanges() {
-
-	// if hierarchical view is selected
-	if (viewTypeSelector_.currentIndex() == 0) {
-		hierarchyRef_.applyChanges();
-		return;
-	}
-	// if view is not hierarchical
-	else {
-		generalTab_.applyChanges();
-	}
-}
-
 void ViewEditor::onStackChange( int index ) {
 	stack_.setCurrentIndex(index);
 
 	// if the new index is for hierarchical view then refresh the hierarchical editor
 	if (index == 0) {
 		hierarchyRef_.refresh();
+	}
+	// if the flat view is selected then clear the hierarchy ref
+	else {
+		hierarchyRef_.clear();
+		generalTab_.refresh();
+		parameters_.refresh();
 	}
 }
 
@@ -163,11 +152,15 @@ void ViewEditor::refresh() {
 	// if view is hierarchical then set it to be selected
 	if (view_->isHierarchical()) {
 		viewTypeSelector_.setCurrentIndex(0);
-		hierarchyRef_.restoreChanges();
+		hierarchyRef_.refresh();
 	}
 	else {
 		viewTypeSelector_.setCurrentIndex(1);
-		generalTab_.restoreChanges();
+		generalTab_.refresh();
 		parameters_.refresh();
 	}
+}
+
+void ViewEditor::makeChanges() {
+	// TODO remove this in final
 }

@@ -303,6 +303,11 @@ public:
 	*/
 	const General::NameGroup& getNameGroup() const;
 
+	/*! \brief Clear the hierarchical reference and the top level reference.
+	 *
+	*/
+	void clearHierarchy();
+
 private:
 
 	//! \brief Contains the name, display name and description of view.
