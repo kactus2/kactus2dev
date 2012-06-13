@@ -215,6 +215,7 @@ void addNewInstancesV2(QList<ComponentInstance> elements,
 
             foreach (SWInstance instance, swDesign->getSWInstances())
             {
+                instance.setPosition(QPointF());
                 instance.setImported(true);
                 instance.setMapping(element.getInstanceName());
                 swInstances.append(instance);
@@ -388,6 +389,7 @@ void updateSystemDesignV2(LibraryInterface* lh,
                 {
                     // Otherwise add the SW instance as a fresh new one.
                     swInstance.setImported(true);
+                    swInstance.setPosition(QPointF());
                     swInstance.setImportRef(swInstance.getInstanceName());
                     swInstance.setMapping(hwInstance.getInstanceName());
                     swInstance.setDisplayName(swInstance.getInstanceName());

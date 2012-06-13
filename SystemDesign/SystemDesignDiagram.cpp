@@ -375,6 +375,16 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
     loadApiDependencies(design);
     loadComConnections(design);
 
+    // Refresh the layout of all HW mapping items.
+    foreach (QGraphicsItem* item, items())
+    {
+        if (item->type() == HWMappingItem::Type)
+        {
+            HWMappingItem* mappingItem = static_cast<HWMappingItem*>(item);
+            mappingItem->updateItemPositions();
+        }
+    }
+
     // Refresh the layout so that all components are placed in correct positions according to the stacking.
     layout_->updatePositions();
 }
