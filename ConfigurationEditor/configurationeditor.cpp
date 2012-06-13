@@ -198,7 +198,29 @@ void ConfigurationEditor::onRemove() {
 	QString newView = configurationSelector_.currentText();
 
 	// find the vlnvs of the objects to remove
-	VLNV configVLNV = component_->findView(viewToRemove)->getHierarchyRef();
+	VLNV configVLNV;
+
+    switch (designWidget_->getImplementation())
+    {
+    case KactusAttribute::KTS_HW:
+        {
+            configVLNV = component_->findView(viewToRemove)->getHierarchyRef();
+            break;
+        }
+
+    case KactusAttribute::KTS_SW:
+        {
+            configVLNV = component_->findSWView(viewToRemove)->getHierarchyRef();
+            break;
+        }
+
+    case KactusAttribute::KTS_SYS:
+        {
+            configVLNV = component_->findSystemView(viewToRemove)->getHierarchyRef();
+            break;
+        }
+    }
+
 	VLNV designVLNV;
 	QSharedPointer<LibraryComponent> libComp = handler_->getModel(configVLNV);
 	if (handler_->getDocumentType(configVLNV) == VLNV::DESIGNCONFIGURATION) {
@@ -211,11 +233,32 @@ void ConfigurationEditor::onRemove() {
 	}
 	libComp.clear();
 
-	// remove the view from the component
-	component_->removeView(viewToRemove);
+	// remove the view from the component and retrieve the remaining references.
+    QList<VLNV> hierRefs;
 
-	// ask component's remaining hierarchy refs
-	QList<VLNV> hierRefs = component_->getHierRefs();
+    switch (designWidget_->getImplementation())
+    {
+    case KactusAttribute::KTS_HW:
+        {
+            component_->removeView(viewToRemove);
+            hierRefs = component_->getHierRefs();
+            break;
+        }
+
+    case KactusAttribute::KTS_SW:
+        {
+            component_->removeSWView(viewToRemove);
+            hierRefs = component_->getHierSWRefs();
+            break;
+        }
+
+    case KactusAttribute::KTS_SYS:
+        {
+            component_->removeSystemView(viewToRemove);
+            hierRefs = component_->getHierSystemRefs();
+            break;
+        }
+    }
 	
 	// if config vlnv is still valid then it can be removed 
 	bool removeConfig = configVLNV.isValid();
