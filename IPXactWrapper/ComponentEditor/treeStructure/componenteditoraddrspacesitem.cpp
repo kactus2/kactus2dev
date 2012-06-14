@@ -43,6 +43,10 @@ ItemEditor* ComponentEditorAddrSpacesItem::editor() {
 	return &editor_;
 }
 
+const ItemEditor* ComponentEditorAddrSpacesItem::editor() const {
+	return &editor_;
+}
+
 QString ComponentEditorAddrSpacesItem::getTooltip() const {
 	return tr("Contains the address spaces specified for the component");
 }

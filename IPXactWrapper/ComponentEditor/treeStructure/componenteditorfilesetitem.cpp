@@ -59,6 +59,10 @@ ItemEditor* ComponentEditorFileSetItem::editor() {
 	return &editor_;
 }
 
+const ItemEditor* ComponentEditorFileSetItem::editor() const {
+	return &editor_;
+}
+
 QFont ComponentEditorFileSetItem::getFont() const {
 	return QApplication::font();
 }

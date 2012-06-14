@@ -41,6 +41,10 @@ ItemEditor* ComponentEditorPortsItem::editor() {
 	return &editor_;
 }
 
+const ItemEditor* ComponentEditorPortsItem::editor() const {
+	return &editor_;
+}
+
 QString ComponentEditorPortsItem::getTooltip() const {
 	return tr("Contains the external ports of the component");
 }

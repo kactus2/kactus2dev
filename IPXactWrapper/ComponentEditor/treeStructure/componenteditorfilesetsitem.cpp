@@ -41,6 +41,10 @@ ItemEditor* ComponentEditorFileSetsItem::editor() {
 	return &editor_;
 }
 
+const ItemEditor* ComponentEditorFileSetsItem::editor() const {
+	return &editor_;
+}
+
 QString ComponentEditorFileSetsItem::getTooltip() const {
 	return tr("Contains the file sets of the component");
 }

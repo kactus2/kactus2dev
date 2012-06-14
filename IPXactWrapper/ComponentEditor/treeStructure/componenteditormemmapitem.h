@@ -67,6 +67,12 @@ public:
 	*/
 	virtual ItemEditor* editor();
 
+	/*! \brief Get pointer to the editor of this item.
+	 *
+	 * \return Pointer to the editor to use for this item.
+	*/
+	virtual const ItemEditor* editor() const;
+
 private:
 	//! \brief No copying
 	ComponentEditorMemMapItem(const ComponentEditorMemMapItem& other);

@@ -68,6 +68,12 @@ public:
 	*/
 	virtual ItemEditor* editor();
 
+	/*! \brief Get pointer to the editor of this item.
+	 *
+	 * \return Pointer to the editor to use for this item.
+	*/
+	virtual const ItemEditor* editor() const;
+
 	/*! \brief Tells if the item can be opened or not.
 	 * 
 	 * The base class implementation always returns false.

@@ -94,6 +94,10 @@ ItemEditor* ComponentEditorRootItem::editor() {
 	return NULL;
 }
 
+const ItemEditor* ComponentEditorRootItem::editor() const {
+	return NULL;
+}
+
 QString ComponentEditorRootItem::getTooltip() const {
 	return tr("The root item of the navigation tree");
 }

@@ -44,3 +44,7 @@ bool ComponentEditorAPIInterfaceItem::isValid() const {
 ItemEditor* ComponentEditorAPIInterfaceItem::editor() {
 	return &editor_;
 }
+
+const ItemEditor* ComponentEditorAPIInterfaceItem::editor() const {
+	return &editor_;
+}

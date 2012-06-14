@@ -38,3 +38,7 @@ QString ComponentEditorSWViewsItem::text() const {
 ItemEditor* ComponentEditorSWViewsItem::editor() {
 	return NULL;
 }
+
+const ItemEditor* ComponentEditorSWViewsItem::editor() const {
+	return NULL;
+}

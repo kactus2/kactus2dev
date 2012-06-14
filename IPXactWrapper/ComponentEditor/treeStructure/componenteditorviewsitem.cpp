@@ -46,6 +46,10 @@ ItemEditor* ComponentEditorViewsItem::editor() {
 	return &editor_;
 }
 
+const ItemEditor* ComponentEditorViewsItem::editor() const {
+	return &editor_;
+}
+
 QString ComponentEditorViewsItem::getTooltip() const {
 	return tr("Contains the views of the component");
 }

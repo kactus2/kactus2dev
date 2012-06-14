@@ -39,6 +39,10 @@ ItemEditor* ComponentEditorParametersItem::editor() {
 	return &editor_;
 }
 
+const ItemEditor* ComponentEditorParametersItem::editor() const {
+	return &editor_;
+}
+
 QString ComponentEditorParametersItem::getTooltip() const {
 	return tr("Contains the configurable elements of the component");
 }

@@ -14,6 +14,9 @@
 
 #include <QSharedPointer>
 
+/*! \brief The delegate to provide editor to edit a list of channel interfaces.
+ *
+ */
 class ChannelInterfaceManagerDelegate : public ComboDelegate {
 	Q_OBJECT
 
@@ -25,7 +28,8 @@ public:
 	 * \param component Pointer to the component that's interfaces are being selected.
 	 *
 	*/
-	ChannelInterfaceManagerDelegate(QObject *parent, QSharedPointer<Component> component);
+	ChannelInterfaceManagerDelegate(QObject *parent, 
+		QSharedPointer<Component> component);
 	
 	//! \brief The destructor
 	virtual ~ChannelInterfaceManagerDelegate();

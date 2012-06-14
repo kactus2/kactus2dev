@@ -47,6 +47,10 @@ ItemEditor* ComponentEditorSWViewItem::editor() {
 	return &editor_;
 }
 
+const ItemEditor* ComponentEditorSWViewItem::editor() const {
+	return &editor_;
+}
+
 QFont ComponentEditorSWViewItem::getFont() const {
 	return QApplication::font();
 }

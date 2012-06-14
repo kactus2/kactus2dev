@@ -166,6 +166,12 @@ public:
 	*/
 	virtual ItemEditor* editor() = 0;
 
+	/*! \brief Get pointer to the editor of this item.
+	 *
+	 * \return Pointer to the editor to use for this item.
+	*/
+	virtual const ItemEditor* editor() const = 0;
+
 	/*! \brief Get pointer to the visualizer of this item.
 	 * 
 	 * The default implementation returns a null pointer.

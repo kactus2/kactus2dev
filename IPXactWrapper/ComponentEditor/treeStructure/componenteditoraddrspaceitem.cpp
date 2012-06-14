@@ -43,6 +43,10 @@ ItemEditor* ComponentEditorAddrSpaceItem::editor() {
 	return &editor_;
 }
 
+const ItemEditor* ComponentEditorAddrSpaceItem::editor() const {
+	return &editor_;
+}
+
 QFont ComponentEditorAddrSpaceItem::getFont() const {
 	return QApplication::font();
 }

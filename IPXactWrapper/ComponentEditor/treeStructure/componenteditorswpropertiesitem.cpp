@@ -43,3 +43,7 @@ bool ComponentEditorSWPropertiesItem::isValid() const {
 ItemEditor* ComponentEditorSWPropertiesItem::editor() {
 	return &editor_;
 }
+
+const ItemEditor* ComponentEditorSWPropertiesItem::editor() const {
+	return &editor_;
+}

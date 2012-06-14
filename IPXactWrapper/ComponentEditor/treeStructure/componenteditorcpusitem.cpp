@@ -33,6 +33,10 @@ ItemEditor* ComponentEditorCpusItem::editor() {
 	return NULL;
 }
 
+const ItemEditor* ComponentEditorCpusItem::editor() const {
+	return NULL;
+}
+
 QString ComponentEditorCpusItem::getTooltip() const {
 	return tr("Contains the programmable cores of the component");
 }

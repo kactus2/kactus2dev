@@ -41,6 +41,10 @@ ItemEditor* ComponentEditorComInterfaceItem::editor() {
 	return &editor_;
 }
 
+const ItemEditor* ComponentEditorComInterfaceItem::editor() const {
+	return &editor_;
+}
+
 QFont ComponentEditorComInterfaceItem::getFont() const {
 	return QApplication::font();
 }

@@ -6,20 +6,19 @@
  */
 
 #include "componenteditorchannelsitem.h"
-#include "componenteditorchannelitem.h"
 
 ComponentEditorChannelsItem::ComponentEditorChannelsItem(ComponentEditorTreeModel* model,
 														 LibraryInterface* libHandler,
 														 QSharedPointer<Component> component,
 														 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-channels_(component->getChannels()) {
+channels_(component->getChannels()),
+editor_(component) {
 
-	foreach (QSharedPointer<Channel> channel, channels_) {
-		QSharedPointer<ComponentEditorChannelItem> channelItem(new ComponentEditorChannelItem(
-			channel, model, libHandler, component, this));
-		childItems_.append(channelItem);
-	}
+	editor_.hide();
+
+	connect(&editor_, SIGNAL(contentChanged()), 
+		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 }
 
 ComponentEditorChannelsItem::~ComponentEditorChannelsItem() {
@@ -30,7 +29,11 @@ QString ComponentEditorChannelsItem::text() const {
 }
 
 ItemEditor* ComponentEditorChannelsItem::editor() {
-	return NULL;
+	return &editor_;
+}
+
+const ItemEditor* ComponentEditorChannelsItem::editor() const {
+	return &editor_;
 }
 
 QString ComponentEditorChannelsItem::getTooltip() const {

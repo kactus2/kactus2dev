@@ -33,6 +33,10 @@ ItemEditor* ComponentEditorGeneralItem::editor() {
 	return &editor_;
 }
 
+const ItemEditor* ComponentEditorGeneralItem::editor() const {
+	return &editor_;
+}
+
 QString ComponentEditorGeneralItem::getTooltip() const {
 	return tr("Contains the general settings of a component");
 }

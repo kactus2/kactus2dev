@@ -41,6 +41,10 @@ ItemEditor* ComponentEditorCpuItem::editor() {
 	return &editor_;
 }
 
+const ItemEditor* ComponentEditorCpuItem::editor() const {
+	return &editor_;
+}
+
 QFont ComponentEditorCpuItem::getFont() const {
 	return QApplication::font();
 }

@@ -42,6 +42,10 @@ ItemEditor* ComponentEditorBusInterfaceItem::editor() {
 	return &editor_;
 }
 
+const ItemEditor* ComponentEditorBusInterfaceItem::editor() const {
+	return &editor_;
+}
+
 QFont ComponentEditorBusInterfaceItem::getFont() const {
 	return QApplication::font();
 }

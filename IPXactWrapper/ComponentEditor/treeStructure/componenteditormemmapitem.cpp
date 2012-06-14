@@ -36,6 +36,10 @@ ItemEditor* ComponentEditorMemMapItem::editor() {
 	return NULL;
 }
 
+const ItemEditor* ComponentEditorMemMapItem::editor() const {
+	return NULL;
+}
+
 QFont ComponentEditorMemMapItem::getFont() const {
 	return QApplication::font();
 }

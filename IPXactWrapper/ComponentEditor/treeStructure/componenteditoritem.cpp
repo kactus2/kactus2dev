@@ -104,6 +104,11 @@ bool ComponentEditorItem::isValid() const {
 		}
 	}
 
+	// if all children were valid then check the editor
+	if (editor()) {
+		return editor()->isValid();
+	}
+
 	// all children were valid
 	return true;
 }

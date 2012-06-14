@@ -39,6 +39,10 @@ ItemEditor* ComponentEditorOtherClocksItem::editor() {
 	return &editor_;
 }
 
+const ItemEditor* ComponentEditorOtherClocksItem::editor() const {
+	return &editor_;
+}
+
 QString ComponentEditorOtherClocksItem::getTooltip() const {
 	return tr("Contains the details that define clock waveforms");
 }

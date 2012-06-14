@@ -33,6 +33,10 @@ ItemEditor* ComponentEditorComInterfacesItem::editor() {
 	return NULL;
 }
 
+const ItemEditor* ComponentEditorComInterfacesItem::editor() const {
+	return NULL;
+}
+
 QString ComponentEditorComInterfacesItem::getTooltip() const {
 	return tr("Contains the COM interfaces of a component");
 }

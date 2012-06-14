@@ -161,8 +161,6 @@ public:
 	 */
 	bool isHierarchical() const;
 
-	//QMap<QString, QSharedPointer<BusInterface> >* getBusIfPointers();
-
 	/*! \brief Get this component's channels
 	 *
 	 * \return QList containing component's channels

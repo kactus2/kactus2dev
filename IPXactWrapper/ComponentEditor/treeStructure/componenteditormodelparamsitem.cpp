@@ -43,6 +43,10 @@ ItemEditor* ComponentEditorModelParamsItem::editor() {
 	return &editor_;
 }
 
+const ItemEditor* ComponentEditorModelParamsItem::editor() const {
+	return &editor_;
+}
+
 QString ComponentEditorModelParamsItem::getTooltip() const {
 	return tr("Contains the implementation parameters");
 }

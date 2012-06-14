@@ -33,6 +33,10 @@ ItemEditor* ComponentEditorBusInterfacesItem::editor() {
 	return NULL;
 }
 
+const ItemEditor* ComponentEditorBusInterfacesItem::editor() const {
+	return NULL;
+}
+
 QString ComponentEditorBusInterfacesItem::getTooltip() const {
 	return tr("Contains the bus interfaces specified for a component");
 }

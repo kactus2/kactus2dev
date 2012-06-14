@@ -33,6 +33,10 @@ ItemEditor* ComponentEditorMemMapsItem::editor() {
 	return NULL;
 }
 
+const ItemEditor* ComponentEditorMemMapsItem::editor() const {
+	return NULL;
+}
+
 QString ComponentEditorMemMapsItem::getTooltip() const {
 	return tr("Contains the memory maps of the component");
 }

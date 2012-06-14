@@ -37,3 +37,7 @@ QString ComponentEditorAPIInterfacesItem::text() const {
 ItemEditor* ComponentEditorAPIInterfacesItem::editor() {
 	return NULL;
 }
+
+const ItemEditor* ComponentEditorAPIInterfacesItem::editor() const {
+	return NULL;
+}
