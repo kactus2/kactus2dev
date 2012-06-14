@@ -1,24 +1,21 @@
 /* 
  *  	Created on: 14.6.2012
  *      Author: Antti Kamppi
- * 		filename: channelsmodel.h
+ * 		filename: cpusmodel.h
  *		Project: Kactus 2
  */
 
-#ifndef CHANNELSMODEL_H
-#define CHANNELSMODEL_H
+#ifndef CPUSMODEL_H
+#define CPUSMODEL_H
 
 #include <models/component.h>
-#include <models/channel.h>
+#include <models/cpu.h>
 
 #include <QAbstractTableModel>
-#include <QList>
 #include <QSharedPointer>
+#include <QList>
 
-/*! \brief The model class to manage the objects for channels editor.
- *
- */
-class ChannelsModel : public QAbstractTableModel {
+class CpusModel : public QAbstractTableModel {
 	Q_OBJECT
 
 public:
@@ -27,13 +24,12 @@ public:
 	 *
 	 * \param component Pointer to the component being edited.
 	 * \param parent Pointer to the owner of this model.
-	 *
 	*/
-	ChannelsModel(QSharedPointer<Component> component,
+	CpusModel(QSharedPointer<Component> component,
 		QObject *parent);
 	
-	//! \brief The destructor.
-	virtual ~ChannelsModel();
+	//! \brief The destructor
+	virtual ~CpusModel();
 
 	/*! \brief Get the number of rows an item contains.
 	 *
@@ -90,7 +86,7 @@ public:
 	bool setData(const QModelIndex& index, const QVariant& value, 
 		int role = Qt::EditRole);
 
-	/*! \brief Check if the channels model is in a valid state.
+	/*! \brief Check if the cpus model is in a valid state.
 	 *
 	 * \return bool True if the state is valid and writing is possible.
 	*/
@@ -117,33 +113,32 @@ signals:
 	//! \brief Emitted when the contents of the model change.
 	void contentChanged();
 
-	/*! \brief Emitted when a new channel is added to the model.
+	/*! \brief Emitted when a new cpu is added to the model.
 	 *
-	 * \param index The index of the added channel.
+	 * \param index The index of the added cpu.
 	 *
 	*/
-	void channelAdded(int index);
+	void cpuAdded(int index);
 
-	/*! \brief Emitted when a channel is removed from the model.
+	/*! \brief Emitted when a cpu is removed from the model.
 	 *
-	 * \param index The index of the channel to remove.
+	 * \param index The index of the removed cpu.
 	 *
 	*/
-	void channelRemoved(int index);
+	void cpuRemoved(int index);
 
 private:
-	
 	//! \brief No copying
-	ChannelsModel(const ChannelsModel& other);
+	CpusModel(const CpusModel& other);
 
 	//! \brief No assignment
-	ChannelsModel& operator=(const ChannelsModel& other);
+	CpusModel& operator=(const CpusModel& other);
 
 	//! \brief Pointer to the component being edited.
 	QSharedPointer<Component> component_;
 
-	//! \brief The channels being edited.
-	QList<QSharedPointer<Channel> >& channels_;
+	//! \brief Contains the cpus being edited.
+	QList<QSharedPointer<Cpu> >& cpus_;
 };
 
-#endif // CHANNELSMODEL_H
+#endif // CPUSMODEL_H

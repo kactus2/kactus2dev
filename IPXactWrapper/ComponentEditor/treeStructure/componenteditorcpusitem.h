@@ -9,6 +9,7 @@
 #define COMPONENTEDITORCPUSITEM_H
 
 #include "componenteditoritem.h"
+#include <IPXactWrapper/ComponentEditor/cpus/cpuseditor.h>
 
 #include <QList>
 
@@ -69,6 +70,9 @@ private:
 
 	//! \brief The cpus being edited
 	QList<QSharedPointer<Cpu> >& cpus_;
+
+	//! \brief The editor to edit the cpus of the component.
+	CpusEditor editor_;
 };
 
 #endif // COMPONENTEDITORCPUSITEM_H

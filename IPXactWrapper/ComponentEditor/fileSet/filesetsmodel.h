@@ -135,7 +135,7 @@ signals:
 
 	/*! \brief Emitted when a file set is removed from the model.
 	 *
-	 * \param index The index of the remove file set.
+	 * \param index The index of the removed file set.
 	 *
 	*/
 	void fileSetRemoved(int index);

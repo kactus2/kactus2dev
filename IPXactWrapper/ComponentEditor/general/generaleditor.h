@@ -66,6 +66,14 @@ public:
 	*/
 	virtual void refresh();
 
+private slots:
+
+	//! \brief Handler for changes in attribute editor.
+	void onAttributesChange();
+
+	//! \brief Handler for changes in description.
+	void onDescriptionChange();
+
 private:
     // Disable copying.
     GeneralEditor(const GeneralEditor& other);

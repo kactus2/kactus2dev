@@ -178,6 +178,7 @@ bool ChannelsModel::setData( const QModelIndex& index, const QVariant& value, in
 		channels_[index.row()]->setInterfaces(value.toStringList());
 		emit dataChanged(index, index);
 		emit contentChanged();
+		return true;
 	}
 	else {
 		return false;

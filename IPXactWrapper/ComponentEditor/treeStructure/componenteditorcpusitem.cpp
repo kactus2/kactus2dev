@@ -6,20 +6,19 @@
  */
 
 #include "componenteditorcpusitem.h"
-#include "componenteditorcpuitem.h"
 
 ComponentEditorCpusItem::ComponentEditorCpusItem(ComponentEditorTreeModel* model, 
 												 LibraryInterface* libHandler,
 												 QSharedPointer<Component> component,
 												 ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
-cpus_(component->getCpus()) {
+cpus_(component->getCpus()),
+editor_(component) {
 
-	foreach (QSharedPointer<Cpu> cpu, cpus_) {
-		QSharedPointer<ComponentEditorCpuItem> cpuItem(new ComponentEditorCpuItem(
-			cpu, model, libHandler, component, this));
-		childItems_.append(cpuItem);
-	}
+	editor_.hide();
+
+	connect(&editor_, SIGNAL(contentChanged()), 
+		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 }
 
 ComponentEditorCpusItem::~ComponentEditorCpusItem() {
@@ -30,11 +29,11 @@ QString ComponentEditorCpusItem::text() const {
 }
 
 ItemEditor* ComponentEditorCpusItem::editor() {
-	return NULL;
+	return &editor_;
 }
 
 const ItemEditor* ComponentEditorCpusItem::editor() const {
-	return NULL;
+	return &editor_;
 }
 
 QString ComponentEditorCpusItem::getTooltip() const {

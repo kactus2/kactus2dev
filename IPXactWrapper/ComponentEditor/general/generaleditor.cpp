@@ -62,9 +62,9 @@ component_()
 
     // Connect the contentChanged() signals.
     connect(attributeEditor_, SIGNAL(contentChanged()),
-            this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+            this, SLOT(onAttributesChange()), Qt::UniqueConnection);
     connect(descEditor_, SIGNAL(contentChanged()),
-            this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+            this, SLOT(onDescriptionChange()), Qt::UniqueConnection);
 
     refresh();
 }
@@ -89,13 +89,7 @@ bool GeneralEditor::isValid() const
 //-----------------------------------------------------------------------------
 void GeneralEditor::makeChanges()
 {
-    if (component_->getComponentImplementation() != KactusAttribute::KTS_SW)
-    {
-        component_->setComponentHierarchy(attributeEditor_->getProductHierarchy());
-        component_->setComponentFirmness(attributeEditor_->getFirmness());
-    }
-
-    component_->setDescription(descEditor_->getDescription());
+	// TODO remove this in final    
 }
 
 void GeneralEditor::refresh() {
@@ -114,4 +108,18 @@ void GeneralEditor::refresh() {
 
 
 	descEditor_->setDescription(component_->getDescription());
+}
+
+void GeneralEditor::onAttributesChange() {
+	if (component_->getComponentImplementation() != KactusAttribute::KTS_SW)
+	{
+		component_->setComponentHierarchy(attributeEditor_->getProductHierarchy());
+		component_->setComponentFirmness(attributeEditor_->getFirmness());
+	}
+	emit contentChanged();
+}
+
+void GeneralEditor::onDescriptionChange() {
+	component_->setDescription(descEditor_->getDescription());
+	emit contentChanged();
 }
