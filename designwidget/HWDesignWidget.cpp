@@ -202,106 +202,6 @@ bool HWDesignWidget::setDesign(QSharedPointer<Component> comp, const QString& vi
     return DesignWidget::setDesign(comp, viewName);
 }
 
-// bool HWDesignWidget::save()
-// {
-// 	QSharedPointer<Design> design;
-// 
-// 	QSharedPointer<DesignConfiguration> designConf = getDiagram()->getDesignConfiguration();
-// 
-// 	// create the design
-// 
-// 	// if design configuration is used
-// 	if (designConf) {
-// 		design = getDiagram()->createDesign(designConf->getDesignRef());
-// 	}
-// 	// if component 
-// 	else {
-// 		design = getDiagram()->createDesign(getEditedComponent()->getHierRef(getOpenViewName()));
-// 	}
-// 
-//     if (design == 0)
-//     {
-//         return false;
-//     }
-//     
-// 	// update the hierarchical bus interfaces of the top-component
-// 	getDiagram()->updateHierComponent(getEditedComponent());
-// 
-// 	bool writePossible = true;
-// 	QStringList errorList;
-// 
-// 	// if design config is used then check that it can be written
-// 	if (designConf && !designConf->isValid(errorList)) {
-// 
-// 		emit noticeMessage(tr("The configuration contained the following errors:"));
-// 		foreach (QString error, errorList) {
-// 			emit errorMessage(error);
-// 		}
-// 		errorList.clear();
-// 		writePossible = false;
-// 	}
-// 
-// 	// check that the design is in valid state and can be written
-// 
-// 	Q_ASSERT(design);
-// 	if (!design->isValid(errorList)) {
-// 
-// 		emit noticeMessage(tr("The design contained the following errors:"));
-// 		foreach (QString error, errorList) {
-// 			emit errorMessage(error);
-// 		}
-// 		errorList.clear();
-// 		writePossible = false;
-// 	}
-// 
-// 	// check the component validity
-// 
-// 	Q_ASSERT(getEditedComponent());
-// 	if (!getEditedComponent()->isValid(errorList)) {
-// 
-// 		emit noticeMessage(tr("The component contained the following errors:"));
-// 		foreach (QString error, errorList) {
-// 			emit errorMessage(error);
-// 		}
-// 		errorList.clear();
-// 		writePossible = false;
-// 	}
-// 
-// 	// if there were errors then don't write anything
-// 	if (!writePossible) {
-// 		emit noticeMessage(tr("Nothing was written. Fix the errors and try saving again."));
-// 		return false;
-// 	}
-// 
-// 	getLibraryInterface()->beginSave();
-// 
-// 	bool writeSucceeded = true;
-// 
-// 	// if design configuration is used then write it.
-// 	if (designConf) {
-// 		if (!getLibraryInterface()->writeModelToFile(designConf)) {
-// 			writeSucceeded = false;
-// 		}
-// 	}
-// 
-// 	if (!getLibraryInterface()->writeModelToFile(design)) {
-// 		writeSucceeded = false;
-// 	}
-// 	if (!getLibraryInterface()->writeModelToFile(getEditedComponent())) {
-// 		writeSucceeded = false;
-// 	}
-// 
-// 	getLibraryInterface()->endSave();
-// 
-// 	if (writeSucceeded) {
-// 	    return TabDocument::save();
-// 	}
-// 	else {
-// 		emit errorMessage(tr("Design was not saved to disk."));
-// 		return false;
-// 	}
-// }
-
 bool HWDesignWidget::saveAs() {
 
 	VLNV oldVLNV = *getEditedComponent()->getVlnv();
@@ -331,7 +231,7 @@ bool HWDesignWidget::saveAs() {
 	QSharedPointer<Component> oldComponent = getEditedComponent();
 
 	// make a copy of the hierarchical component
-	getEditedComponent() = QSharedPointer<Component>(new Component(*getEditedComponent()));
+	setEditedComponent(QSharedPointer<Component>(new Component(*getEditedComponent())));
 
 	// set the new vlnv for the component
 	getEditedComponent()->setVlnv(vlnv);
@@ -370,7 +270,7 @@ bool HWDesignWidget::saveAs() {
 	}
 
 	// update the hierarchical bus interfaces of the top-component
-	static_cast<BlockDiagram*>(getDiagram())->updateHierComponent(getEditedComponent());
+	getDiagram()->updateHierComponent();
 
 	// get the paths to the original xml file
 	QFileInfo sourceInfo(getLibraryInterface()->getPath(*oldComponent->getVlnv()));
@@ -380,52 +280,6 @@ bool HWDesignWidget::saveAs() {
 	getEditedComponent()->updateFiles(*oldComponent, sourcePath, directory);
 
 	// create the files for the documents
-
-	bool writePossible = true;
-	QStringList errorList;
-
-	// if design config is used then check that it can be written
-	if (designConf && !designConf->isValid(errorList)) {
-		
-		emit noticeMessage(tr("The configuration contained the following errors:"));
-		foreach (QString error, errorList) {
-			emit errorMessage(error);
-		}
-		errorList.clear();
-		writePossible = false;
-	}
-
-	// check that the design is in valid state and can be written
-
-	Q_ASSERT(design);
-	if (!design->isValid(errorList)) {
-		
-		emit noticeMessage(tr("The design contained the following errors:"));
-		foreach (QString error, errorList) {
-			emit errorMessage(error);
-		}
-		errorList.clear();
-		writePossible = false;
-	}
-
-	// check the component validity
-
-	Q_ASSERT(getEditedComponent());
-	if (!getEditedComponent()->isValid(errorList)) {
-
-		emit noticeMessage(tr("The component contained the following errors:"));
-		foreach (QString error, errorList) {
-			emit errorMessage(error);
-		}
-		errorList.clear();
-		writePossible = false;
-	}
-
-	// if there were errors then don't write anything
-	if (!writePossible) {
-		emit noticeMessage(tr("Nothing was written. Fix the errors and try saving again."));
-		return false;
-	}
 
 	bool writeSucceeded = true;
 
@@ -447,16 +301,17 @@ bool HWDesignWidget::saveAs() {
 
 	getLibraryInterface()->endSave();
 
-	if (writeSucceeded) {
+	if (writeSucceeded)
+    {
 		setDocumentName(getEditedComponent()->getVlnv()->getName() + " (" + 
 			getEditedComponent()->getVlnv()->getVersion() + ")");
 		return TabDocument::saveAs();
 	}
-	else {
-		emit errorMessage(tr("Design was not saved to disk."));
+	else
+    {
+		emit errorMessage(tr("Error saving design to disk."));
 		return false;
 	}
-
 }
 
 void HWDesignWidget::keyPressEvent(QKeyEvent *event)

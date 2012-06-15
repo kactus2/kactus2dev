@@ -105,6 +105,13 @@ public:
     virtual void setProtection(bool locked);
 
     /*!
+     *  Sets the edited component.
+     *
+     *      @param [in] component The component to set as the edited one.
+     */
+    void setEditedComponent(QSharedPointer<Component> component);
+
+    /*!
      *  Returns the graphics view.
      */
     QGraphicsView* getView();

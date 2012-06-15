@@ -71,6 +71,11 @@ public:
     virtual QSharedPointer<Design> createDesign(VLNV const& vlnv) const;
 
     /*!
+     *  Reflects the changes in the design to the top-level component.
+     */
+    virtual void updateHierComponent();
+
+    /*!
      *  Sets the draw mode.
      */
     virtual void setMode(DrawMode mode);

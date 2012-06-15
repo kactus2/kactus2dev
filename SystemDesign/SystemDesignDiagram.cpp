@@ -222,7 +222,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
         if (instance.getPosition().isNull())
         {
             layout_->getColumns().at(colIndex)->addItem(item);
-            colIndex = 1 - colIndex;
+            colIndex = (colIndex + 1) % layout_->getColumns().size();
         }
         else
         {
@@ -237,7 +237,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
             else
             {
                 layout_->getColumns().at(colIndex)->addItem(item);
-                colIndex = 1 - colIndex;
+                colIndex = (colIndex + 1) % layout_->getColumns().size();
             }
         }
 
@@ -322,7 +322,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
             if (instance.getPosition().isNull())
             {
                 layout_->getColumns().at(colIndex)->addItem(item);
-                colIndex = 1 - colIndex;
+                colIndex = (colIndex + 1) % layout_->getColumns().size();
             }
             else
             {
@@ -335,7 +335,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
                 else
                 {
                     layout_->getColumns().at(colIndex)->addItem(item);
-                    colIndex = 1 - colIndex;
+                    colIndex = (colIndex + 1) % layout_->getColumns().size();
                 }
             }
         }
@@ -347,6 +347,11 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
             if (mappingItem != 0)
             {
                 mappingItem->addItem(item, true);
+            }
+            else
+            {
+                layout_->getColumns().at(colIndex)->addItem(item);
+                colIndex = (colIndex + 1) % layout_->getColumns().size();
             }
         }
 
@@ -1846,4 +1851,12 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
             connection->updatePosition();
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::updateHierComponent()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::updateHierComponent()
+{
+    // TODO:
 }

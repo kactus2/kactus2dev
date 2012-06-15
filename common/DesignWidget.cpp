@@ -177,6 +177,8 @@ QSharedPointer<GenericEditProvider> DesignWidget::getGenericEditProvider() const
 //-----------------------------------------------------------------------------
 bool DesignWidget::save()
 {
+    getDiagram()->updateHierComponent();
+
     // Create the design.
     QSharedPointer<Design> design;
     QSharedPointer<DesignConfiguration> designConf = diagram_->getDesignConfiguration();
@@ -197,18 +199,38 @@ bool DesignWidget::save()
 
     lh_->beginSave();
 
+    bool writeSucceeded = true;
+
     // Write the files.
     if (designConf)
     {
-        lh_->writeModelToFile(designConf);
+        if (!lh_->writeModelToFile(designConf))
+        {
+            writeSucceeded = false;
+        }
     }
 
-    lh_->writeModelToFile(design);
-    lh_->writeModelToFile(editedComponent_);
+    if (!lh_->writeModelToFile(design))
+    {
+        writeSucceeded = false;
+    }
+
+    if (!lh_->writeModelToFile(editedComponent_))
+    {
+        writeSucceeded = false;
+    }
 
     lh_->endSave();
 
-    return TabDocument::save();
+    if (writeSucceeded)
+    {
+        return TabDocument::save();
+    }
+    else
+    {
+        emit errorMessage(tr("Error saving design to disk."));
+        return false;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -378,4 +400,12 @@ void DesignWidget::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
     diagram_->onShow();
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignWidget::setEditedComponent()
+//-----------------------------------------------------------------------------
+void DesignWidget::setEditedComponent(QSharedPointer<Component> component)
+{
+    editedComponent_ = component;
 }

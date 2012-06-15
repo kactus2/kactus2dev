@@ -19,6 +19,7 @@
 
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/GenericEditProvider.h>
+#include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
 #include <designwidget/columnview/ColumnEditDialog.h>
 
@@ -331,5 +332,107 @@ KactusAttribute::Implementation SystemDesignWidget::getImplementation() const
     else
     {
         return KactusAttribute::KTS_SYS;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignWidget::saveAs()
+//-----------------------------------------------------------------------------
+bool SystemDesignWidget::saveAs()
+{
+    VLNV oldVLNV = *getEditedComponent()->getVlnv();
+
+    // Ask the user for a new VLNV and directory.
+
+    VLNV vlnv;
+    QString directory;
+
+    if (!NewObjectDialog::saveAsDialog(this, getLibraryInterface(), oldVLNV, vlnv, directory))
+    {
+        return false;
+    }
+
+    // create the vlnv for design and design configuration
+    VLNV designVLNV(VLNV::DESIGN, vlnv.getVendor(), vlnv.getLibrary(),
+                    vlnv.getName().remove(".comp") + ".design", vlnv.getVersion());
+    VLNV desConfVLNV(VLNV::DESIGNCONFIGURATION, vlnv.getVendor(), vlnv.getLibrary(),
+                     vlnv.getName().remove(".comp") + ".designcfg", vlnv.getVersion());
+
+    // Make a copy of the hierarchical component.
+    QSharedPointer<Component> oldComponent = getEditedComponent();
+
+    setEditedComponent(QSharedPointer<Component>(new Component(*getEditedComponent())));
+    getEditedComponent()->setVlnv(vlnv);
+
+    QSharedPointer<Design> design;
+    QSharedPointer<DesignConfiguration> designConf = getDiagram()->getDesignConfiguration();
+
+    // If design configuration is used.
+    if (designConf)
+    {
+        // Make a copy of the design configuration with the new VLNVs.
+        designConf = QSharedPointer<DesignConfiguration>(new DesignConfiguration(*designConf));
+        designConf->setVlnv(desConfVLNV);
+        designConf->setDesignRef(designVLNV);
+
+        getEditedComponent()->setHierRef(desConfVLNV, getOpenViewName());
+
+        // Create design with new design vlnv.
+        design = getDiagram()->createDesign(designVLNV);
+    }
+    // If component does not use design configuration then it references directly to design.
+    else
+    {
+        // Set component to reference new design.
+        getEditedComponent()->setHierRef(designVLNV, getOpenViewName());
+        design = getDiagram()->createDesign(designVLNV);
+    }
+
+    if (design == 0)
+    {
+        return false;
+    }
+
+    getDiagram()->updateHierComponent();
+
+    // get the paths to the original xml file
+    QFileInfo sourceInfo(getLibraryInterface()->getPath(*oldComponent->getVlnv()));
+    QString sourcePath = sourceInfo.absolutePath();
+
+    // update the file paths and copy necessary files
+    getEditedComponent()->updateFiles(*oldComponent, sourcePath, directory);
+
+    // create the files for the documents
+
+    bool writeSucceeded = true;
+
+    getLibraryInterface()->beginSave();
+
+    // if design configuration is used then write it.
+    if (designConf) {
+        if (!getLibraryInterface()->writeModelToFile(directory, designConf, false)) {
+            writeSucceeded = false;
+        }
+    }
+
+    if (!getLibraryInterface()->writeModelToFile(directory, design, false)) {
+        writeSucceeded = false;
+    }
+    if (!getLibraryInterface()->writeModelToFile(directory, getEditedComponent(), false)) {
+        writeSucceeded = false;
+    }
+
+    getLibraryInterface()->endSave();
+
+    if (writeSucceeded)
+    {
+        setDocumentName(getEditedComponent()->getVlnv()->getName() + " (" + 
+            getEditedComponent()->getVlnv()->getVersion() + ")");
+        return TabDocument::saveAs();
+    }
+    else
+    {
+        emit errorMessage(tr("Error saving design to disk."));
+        return false;
     }
 }

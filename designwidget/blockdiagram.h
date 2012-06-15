@@ -98,10 +98,10 @@ public:
      */
     virtual void setVisibilityControlState(QString const& name, bool state);
 
-	/*! \brief Update the given hierarchical component to match this BlockDiagram
-     *
+	/*!
+     *  Reflects the changes in the design to the top-level component.
      */
-    void updateHierComponent(QSharedPointer<Component> comp);
+    virtual void updateHierComponent();
 
     /*!
      *  Adds a column to the diagram's layout.

@@ -809,17 +809,17 @@ void BlockDiagram::setMode(DrawMode mode)
 }
 
 //-----------------------------------------------------------------------------
-// Function: updateHierComponent()
+// Function: BlockDiagram::updateHierComponent()
 //-----------------------------------------------------------------------------
-void BlockDiagram::updateHierComponent(QSharedPointer<Component> comp) {
-
-	// store all the bus interfaces to a map
+void BlockDiagram::updateHierComponent()
+{
+    // store all the bus interfaces to a map
     QMap<QString, QSharedPointer<BusInterface> > busIfs;
 
-	// Search all graphics items in the scene.
+    // Search all graphics items in the scene.
     foreach (QGraphicsItem *item, items())
     {
-		// Check if the item is a diagram interface and its bus interface is defined.
+        // Check if the item is a diagram interface and its bus interface is defined.
         DiagramInterface* diagIf = dynamic_cast<DiagramInterface*>(item);
 
         if (diagIf != 0 && diagIf->getBusInterface() != 0)
@@ -831,7 +831,7 @@ void BlockDiagram::updateHierComponent(QSharedPointer<Component> comp) {
         }
     }
 
-    comp->setBusInterfaces(busIfs);
+    getEditedComponent()->setBusInterfaces(busIfs);
 }
 
 //-----------------------------------------------------------------------------

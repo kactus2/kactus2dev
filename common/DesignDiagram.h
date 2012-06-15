@@ -81,6 +81,11 @@ public:
     virtual QSharedPointer<Design> createDesign(VLNV const& vlnv) const = 0;
 
     /*!
+     *  Reflects the changes in the design to the top-level component.
+     */
+    virtual void updateHierComponent() = 0;
+
+    /*!
      *  Attaches the data source to an ad-hoc editor.
      */
     virtual void attach(AdHocEditor* editor);

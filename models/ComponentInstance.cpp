@@ -148,7 +148,7 @@ ComponentInstance::ComponentInstance(QDomNode& node)
                 else if (childNode.nodeName() == "kactus2:imported")
                 {
                     imported_ = true;
-                    importRef_ = childNode.attributes().namedItem("kactus:importRef").nodeValue();
+                    importRef_ = childNode.attributes().namedItem("kactus2:importRef").nodeValue();
                 }
                 else if (childNode.nodeName() == "kactus2:propertyValues")
                 {

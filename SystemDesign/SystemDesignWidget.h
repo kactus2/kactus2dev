@@ -56,6 +56,9 @@ public slots:
     //! Adds a new column to the diagram.
     virtual void addColumn();
 
+    //! \brief Saves the design as new object
+    virtual bool saveAs();
+
 protected:
     virtual void keyPressEvent(QKeyEvent* event);
     virtual bool setDesign(QSharedPointer<Component> comp, const QString& viewName);
