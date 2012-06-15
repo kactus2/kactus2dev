@@ -1005,65 +1005,23 @@ void General::writeAttributes(QXmlStreamWriter& writer,
 	return;
 }
 
-General::InterfaceMode General::str2Interfacemode(const QString& str,
-		InterfaceMode defaultValue) {
-	// select the right enum type
-	if (str == QString("master")) {
-		return General::MASTER;
+General::InterfaceMode General::str2Interfacemode(const QString& str, InterfaceMode defaultValue) {
+	
+	// check all known interface mode names
+	for (unsigned int i = 0; i < General::INTERFACE_MODE_COUNT; ++i) {
+		
+		// if match is found
+		if (str.compare(General::INTERFACE_MODE_NAMES[i], Qt::CaseInsensitive) == 0) {
+			return static_cast<General::InterfaceMode>(i);
+		}
 	}
-	else if (str == QString("slave")) {
-		return General::SLAVE;
-	}
-	else if (str == QString("system")) {
-		return General::SYSTEM;
-	}
-	else if (str == QString("mirroredMaster")) {
-		return General::MIRROREDMASTER;
-	}
-	else if (str == QString("mirroredSlave")) {
-		return General::MIRROREDSLAVE;
-	}
-	else if (str == QString("mirroredSystem")) {
-		return General::MIRROREDSYSTEM;
-	}
-	else if (str == QString("monitor")) {
-		return General::MONITOR;
-	}
-	else if (str == QString("undefined")) {
-		return General::MODE_UNDEFINED;
-	}
-	else {
-		return defaultValue;
-	}
+
+	// if there was no match
+	return defaultValue;
 }
 
 QString General::interfaceMode2Str(const General::InterfaceMode mode) {
-	switch (mode) {
-	case General::MASTER: {
-		return QString("master");
-	}
-	case General::SLAVE: {
-		return QString("slave");
-	}
-	case General::SYSTEM: {
-		return QString("system");
-	}
-	case General::MIRROREDMASTER: {
-		return QString("mirroredMaster");
-	}
-	case General::MIRROREDSLAVE: {
-		return QString("mirroredSlave");
-	}
-	case General::MIRROREDSYSTEM: {
-		return QString("mirroredSystem");
-	}
-	case General::MONITOR: {
-		return QString("monitor");
-	}
-	default: { 
-		return QString("undefined");
-	}
-	}
+	return General::INTERFACE_MODE_NAMES[mode];
 }
 
 //-----------------------------------------------------------------------------

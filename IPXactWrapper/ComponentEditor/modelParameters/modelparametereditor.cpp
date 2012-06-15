@@ -9,6 +9,7 @@
 
 #include "usagedelegate.h"
 #include <models/component.h>
+#include <common/widgets/summaryLabel/summarylabel.h>
 
 #include <QVBoxLayout>
 
@@ -52,8 +53,12 @@ model_(dataPointer, this) {
 	// sort the view
 	view_.sortByColumn(0, Qt::AscendingOrder);;
 
+	// display a label on top the table
+	SummaryLabel* summaryLabel = new SummaryLabel(tr("Model parameters"), this);
+
 	// create the layout, add widgets to it
 	QVBoxLayout* layout = new QVBoxLayout(this);
+	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
 	layout->addWidget(&view_);
 
 	refresh();

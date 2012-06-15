@@ -340,7 +340,7 @@ DiagramPort* DiagramComponent::addPort(QPointF const& pos)
     // Create an empty bus interface and add it to the component model.
     QSharedPointer<BusInterface> busIf(new BusInterface());
     busIf->setName(name);
-    busIf->setInterfaceMode(General::MODE_UNDEFINED);
+    busIf->setInterfaceMode(General::INTERFACE_MODE_COUNT);
     componentModel()->addBusInterface(busIf);
 
     // Create the visualization for the bus interface.

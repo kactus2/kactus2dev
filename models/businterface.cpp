@@ -56,7 +56,7 @@ BusInterface::BusInterface(QDomNode &busInterface):
 						nameGroup_(busInterface),
 						attributes_(),
 						busType_(), abstractionType_(),
-						interfaceMode_(General::MODE_UNDEFINED),
+						interfaceMode_(General::INTERFACE_MODE_COUNT),
 						connectionRequired_(false), portMaps_(),
 						bitsInLau_(DEFAULT_BITS_IN_LAU),
 						bitSteering_(General::BITSTEERING_UNSPECIFIED),
@@ -254,7 +254,7 @@ BusInterface::BusInterface(QDomNode &busInterface):
 BusInterface::BusInterface(): nameGroup_(),
 		attributes_(),
 		busType_(), abstractionType_(),
-        interfaceMode_(General::MODE_UNDEFINED),
+        interfaceMode_(General::INTERFACE_MODE_COUNT),
 		connectionRequired_(false), portMaps_(),
 		bitsInLau_(DEFAULT_BITS_IN_LAU),
 		bitSteering_(General::BITSTEERING_UNSPECIFIED),
@@ -614,7 +614,7 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts,
 			break;
 									  }
 		case General::MONITOR: {
-			if (monitor_->interfaceMode_ == General::MODE_UNDEFINED) {
+			if (monitor_->interfaceMode_ == General::INTERFACE_MODE_COUNT) {
 				errorList.append(QObject::tr("No interface mode set for monitor"
 					" within %1").arg(thisIdentifier));
 				valid = false;
@@ -683,7 +683,7 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts ) co
 			break;
 									  }
 		case General::MONITOR: {
-			if (monitor_->interfaceMode_ == General::MODE_UNDEFINED) {
+			if (monitor_->interfaceMode_ == General::INTERFACE_MODE_COUNT) {
 				return false;
 			}
 			break;

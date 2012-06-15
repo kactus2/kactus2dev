@@ -7,7 +7,7 @@
 
 #include "parameterseditor.h"
 #include <common/delegates/LineEditDelegate/lineeditdelegate.h>
-
+#include <common/widgets/summaryLabel/summarylabel.h>
 #include <models/component.h>
 
 #include <QVBoxLayout>
@@ -51,8 +51,12 @@ proxy_(NULL) {
 	// sort the view
 	view_.sortByColumn(0, Qt::AscendingOrder);
 
+	// display a label on top the table
+	SummaryLabel* summaryLabel = new SummaryLabel(tr("Parameters"), this);
+
 	// create the layout, add widgets to it
 	QVBoxLayout* layout = new QVBoxLayout(this);
+	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
 	layout->addWidget(&view_);
 
 	refresh();

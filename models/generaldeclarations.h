@@ -145,16 +145,29 @@ QString bitSteering2Str(const General::BitSteering bitSteering);
  * \return General::Presence that matches the str or default value.
  */
 General::Presence str2Presence(QString str, General::Presence defaultValue);
+
 //! \brief Describes the mode for an interface.
 enum InterfaceMode {
-	MASTER,
+	MASTER = 0,
 	SLAVE,
+	SYSTEM,
 	MIRROREDMASTER,
 	MIRROREDSLAVE,
-	SYSTEM,
 	MIRROREDSYSTEM,
 	MONITOR,
-	MODE_UNDEFINED
+	INTERFACE_MODE_COUNT
+};
+
+//! \brief The names to display that match the enum InterfaceMode
+const QString INTERFACE_MODE_NAMES[] = {
+	"master",
+	"slave",
+	"system",
+	"mirrored master",
+	"mirrored slave",
+	"mirrored system",
+	"monitor",
+	"undefined"
 };
 
 /*! \brief Convert QString into boolean value

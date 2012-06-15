@@ -8,7 +8,7 @@
 #include "portseditor.h"
 
 #include "portsdelegate.h"
-
+#include <common/widgets/summaryLabel/summarylabel.h>
 #include <LibraryManager/libraryinterface.h>
 #include <models/component.h>
 
@@ -90,8 +90,12 @@ handler_(handler) {
 	buttonLayout->addWidget(&exportButton_, 0, Qt::AlignLeft);
 	buttonLayout->addStretch();
 
+	// display a label on top the table
+	SummaryLabel* summaryLabel = new SummaryLabel(tr("Ports"), this);
+
 	// create the layout, add widgets to it
 	QVBoxLayout* layout = new QVBoxLayout(this);
+	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
 	layout->addWidget(&view_, 1);
 	layout->addLayout(buttonLayout);
 }

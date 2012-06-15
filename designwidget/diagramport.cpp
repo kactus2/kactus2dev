@@ -242,7 +242,7 @@ bool DiagramPort::canConnect(ConnectionEndpoint const* other) const
     // is the same or either of the end point is undefined.
     if (other->isHierarchical())
     {
-        return (other->getBusInterface()->getInterfaceMode() == General::MODE_UNDEFINED ||
+        return (other->getBusInterface()->getInterfaceMode() == General::INTERFACE_MODE_COUNT ||
                 !busInterface_->getBusType().isValid() ||
                 other->getBusInterface()->getInterfaceMode() == busInterface_->getInterfaceMode());
     }

@@ -6,7 +6,7 @@
  */
 
 #include "otherclockdriverseditor.h"
-
+#include <common/widgets/summaryLabel/summarylabel.h>
 #include "clockdriversdelegate.h"
 
 #include <QVBoxLayout>
@@ -49,8 +49,12 @@ model_(component, this) {
 	// sort the view
 	view_.sortByColumn(0, Qt::AscendingOrder);
 
+	// display a label on top the table
+	SummaryLabel* summaryLabel = new SummaryLabel(tr("Other clock drivers"), this);
+
 	// create the layout, add widgets to it
 	QVBoxLayout* layout = new QVBoxLayout(this);
+	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
 	layout->addWidget(&view_);
 
 	refresh();

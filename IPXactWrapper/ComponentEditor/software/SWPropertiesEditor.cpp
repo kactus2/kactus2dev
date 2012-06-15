@@ -10,20 +10,21 @@
 //-----------------------------------------------------------------------------
 
 #include "SWPropertiesEditor.h"
-
+#include <common/widgets/summaryLabel/summarylabel.h>
 #include <IPXactWrapper/ComDefinitionEditor/ComPropertyDelegate.h>
 #include <models/ComProperty.h>
 
-#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: SWPropertiesEditor::SWPropertiesEditor()
 //-----------------------------------------------------------------------------
-SWPropertiesEditor::SWPropertiesEditor(QSharedPointer<Component> component, QWidget *parent)
-    : ItemEditor(component, parent),
-      view_(this),
-      filter_(this),
-      model_(this)
+SWPropertiesEditor::SWPropertiesEditor(QSharedPointer<Component> component, 
+									   QWidget *parent): 
+ItemEditor(component, parent),
+view_(this),
+filter_(this),
+model_(this)
 {
     // Set the model source and other options for the view.
     filter_.setSourceModel(&model_);
@@ -33,7 +34,11 @@ SWPropertiesEditor::SWPropertiesEditor(QSharedPointer<Component> component, QWid
     view_.setItemsDraggable(false);
     view_.setItemDelegate(new ComPropertyDelegate(this));
 
-    QHBoxLayout* layout = new QHBoxLayout(this);
+	// display a label on top the table
+	SummaryLabel* summaryLabel = new SummaryLabel(tr("Software properties"), this);
+
+    QVBoxLayout* layout = new QVBoxLayout(this);
+	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
     layout->addWidget(&view_);
 
     refresh();

@@ -184,7 +184,7 @@ bool DiagramInterface::isHierarchical() const
 bool DiagramInterface::onConnect(ConnectionEndpoint const* other)
 {
     // Update the name if the bus interface is defined but its name is empty.
-    if (busInterface_->getInterfaceMode() != General::MODE_UNDEFINED && busInterface_->getName() == "")
+    if (busInterface_->getInterfaceMode() != General::INTERFACE_MODE_COUNT && busInterface_->getName() == "")
     {
         busInterface_->setName(other->getBusInterface()->getName());
         updateInterface();
@@ -192,7 +192,7 @@ bool DiagramInterface::onConnect(ConnectionEndpoint const* other)
 
     // If the bus interface is already defined or the other endpoint
     // does not have a valid bus interface (unpackaged), we don't have to do anything.
-    if (busInterface_->getInterfaceMode() != General::MODE_UNDEFINED ||
+    if (busInterface_->getInterfaceMode() != General::INTERFACE_MODE_COUNT ||
         !other->getBusInterface()->getBusType().isValid())
     {
         return true;
@@ -318,7 +318,7 @@ void DiagramInterface::onDisconnect(ConnectionEndpoint const*)
     // Check if there is still some connections left, the bus interface is not defined
     // or the interface is not temporary.
     if (!getConnections().empty() ||
-        busInterface_->getInterfaceMode() == General::MODE_UNDEFINED || !temp_)
+        busInterface_->getInterfaceMode() == General::INTERFACE_MODE_COUNT || !temp_)
     {
         // Don't do anything.
         return;
@@ -358,7 +358,7 @@ bool DiagramInterface::canConnect(ConnectionEndpoint const* other) const
     // Connection is allowed if this interface's bus interface is not defined,
     // the other end point is unpackaged, or the abstraction definitions of the bus interfaces
     // in each end point are equal.
-    return (busInterface_->getInterfaceMode() == General::MODE_UNDEFINED ||
+    return (busInterface_->getInterfaceMode() == General::INTERFACE_MODE_COUNT ||
             !otherBusIf->getBusType().isValid() ||
             (otherBusIf->getAbstractionType() == busInterface_->getAbstractionType() &&
              otherBusIf->getBusType() == busInterface_->getBusType()));
@@ -556,7 +556,7 @@ void DiagramInterface::setTemporary(bool temp)
 void DiagramInterface::setTypes(VLNV const& busType, VLNV const& absType, General::InterfaceMode mode)
 {
     // Destroy the old bus interface if it exists.
-    if (busInterface_->getInterfaceMode() != General::MODE_UNDEFINED)
+    if (busInterface_->getInterfaceMode() != General::INTERFACE_MODE_COUNT)
     {
         // Disconnect the connections.
         foreach(GraphicsConnection* conn, getConnections())
@@ -571,7 +571,7 @@ void DiagramInterface::setTypes(VLNV const& busType, VLNV const& absType, Genera
             }
         }
 
-        busInterface_->setInterfaceMode(General::MODE_UNDEFINED);
+        busInterface_->setInterfaceMode(General::INTERFACE_MODE_COUNT);
     }
 
     if (busType.isValid())
