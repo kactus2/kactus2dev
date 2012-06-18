@@ -1443,21 +1443,7 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
             getEditProvider().addCommand(cmd, false);
 
             emit interfaceSelected(endpoint);
-
-            QMessageBox msgBox(QMessageBox::Question, QCoreApplication::applicationName(),
-                               "Do you want to continue defining the bus?",
-                               QMessageBox::NoButton, (QWidget*)parent());
-            msgBox.setInformativeText("Pressing Continue opens up the bus editor.");
-            QPushButton* btnContinue = msgBox.addButton(tr("Continue"), QMessageBox::ActionRole);
-            msgBox.addButton(tr("Skip"), QMessageBox::RejectRole);
-
-            msgBox.exec();
-
-            // Open the user clicked continue, open up the bus editor.
-            if (msgBox.clickedButton() == btnContinue)
-            {
-                emit openBus(busVLNV, absVLNV, false);
-            }
+            emit openBus(busVLNV, absVLNV, true);
         }
     }
 }
