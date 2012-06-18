@@ -11,7 +11,7 @@
 
 #include "ComponentPreviewBox.h"
 
-#include <SystemDesign/SWCompItem.h>
+#include <SystemDesign/SWComponentItem.h>
 
 #include <designwidget/diagramcomponent.h>
 #include <models/component.h>
@@ -116,7 +116,7 @@ void ComponentPreviewBox::updatePreview()
 
         case KactusAttribute::KTS_SW:
             {
-                item = new SWCompItem(lh_, component_, component_->getVlnv()->getName());
+                item = new SWComponentItem(lh_, component_, component_->getVlnv()->getName());
                 break;
             }
         }

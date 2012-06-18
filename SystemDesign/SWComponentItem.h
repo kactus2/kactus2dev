@@ -3,221 +3,124 @@
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
-// Date: 24.11.2011
+// Date: 30.4.2012
 //
 // Description:
-// Base class for all SW components visualized in a system design.
+// Graphics item for visualizing SW components.
 //-----------------------------------------------------------------------------
 
 #ifndef SWCOMPONENTITEM_H
 #define SWCOMPONENTITEM_H
 
-#include "SWPortItem.h"
+#include "SystemComponentItem.h"
 
 #include <common/graphicsItems/ComponentItem.h>
+#include <common/graphicsItems/GraphicsItemTypes.h>
 
-enum PortDirection
-{
-    PORT_LEFT = 0,
-    PORT_RIGHT,
-    PORT_BOTTOM
-};
-
+class SystemColumn;
+class IGraphicsItemStack;
 class HWMappingItem;
 
 //-----------------------------------------------------------------------------
-//! SWComponentItem class.
+//! Graphics item for visualizing SW components.
 //-----------------------------------------------------------------------------
-class SWComponentItem : public ComponentItem
+class SWComponentItem : public SystemComponentItem
 {
     Q_OBJECT
 
 public:
+    enum { Type = GFX_TYPE_SW_COMPONENT_ITEM };
+
     /*!
      *  Constructor.
-     *
-     *      @param [in] size                      The initial rectangle size.
-     *      @param [in] libInterface              The library interface.
-     *      @param [in] component                 The component model.
-     *      @param [in] instanceName              The name of the component instance.
-     *      @param [in] displayName               The component instance's display name.
-     *      @param [in] description               The component instance's description.
-     *      @param [in] configurableElementValue  The component instance's configurable element values.
-     *      @param [in] parent                    The parent graphics item.
      */
-    SWComponentItem(QRectF const& size,
-                    LibraryInterface* libInterface,
-                    QSharedPointer<Component> component,
-                    QString const& instanceName = QString("unnamed"),
-                    QString const& displayName = QString(),
-                    QString const& description = QString(),
-                    QMap<QString, QString> const& configurableElementValues = QMap<QString, QString>(),
-                    QGraphicsItem *parent = 0);
+    SWComponentItem(LibraryInterface* libInterface,
+               QSharedPointer<Component> component,
+               QString const& instanceName,
+               QString const& displayName = QString(),
+               QString const& description = QString(),
+               QMap<QString, QString> const& configurableElementValues = QMap<QString, QString>());
 
     /*!
      *  Destructor.
      */
-    virtual ~SWComponentItem();
+    ~SWComponentItem();
 
     /*!
-     *  Sets the property values.
+     *  Sets the file set reference.
      *
-     *      @param [in] values The property values.
+     *      @param [in] fileSetName The name of the referenced file set in the top-level component.
      */
-    void setPropertyValues(QMap<QString, QString> const& values);
+    void setFileSetRef(QString const& fileSetName);
 
     /*!
-     *  Returns the property values.
+     *  Returns the file set reference (i.e. the name of the referenced file set).
      */
-    QMap<QString, QString> const& getPropertyValues() const;
-
-    /*!
-     *  Adds a new, empty port to the component.
-     *
-     *      @param [in] pos The position hint for the port.
-     *
-     *      @return The newly created port.
-     */
-    SWPortItem* addPort(QPointF const& pos);
-
-    /*!
-     *  Adds an already created port to the component.
-     *
-     *      @param [in] port The port to add. Must not be used in any other component.
-     */
-    void addPort(SWPortItem* port);
-
-    /*!
-     *  Removes the given port from the component.
-     *
-     *      @param [in] port The port to remove.
-     */
-    void removePort(SWPortItem* port);
-
-    /*!
-     *  Updates the diagram component to reflect the current state of the component model.
-     */
-    virtual void updateComponent();
-
-    /*!
-     *  Sets the flag whether the component has been imported or not.
-     *
-     *      @param [in] imported If true, the component is marked as imported.
-     */
-    void setImported(bool imported);
-
-    /*!
-     *  Sets the name of the import source instance.
-     *
-     *      @param [in] nameRef The name of the import source instance.
-     */
-    void setImportRef(QString const& nameRef);
-
-    /*!
-     *  Returns true if the component has been marked as imported.
-     */
-    bool isImported() const;
-
-    /*!
-     *  Returns the name of the import source instance.
-     */
-    QString const& getImportRef() const;
-
-    /*!
-     *  Called when a port is being moved.
-     *
-     *      @param [in] port The port that is being moved.
-     */
-    void onMovePort(SWPortItem* port);
-
-    /*!
-     *  Updates the size of the component box.
-     */
-    void updateSize();
-
-    /*!
-     *  Returns true if the connections should not be updated automatically in
-     *  the port's itemChange() function. Otherwise false.
-     */
-    bool isConnectionUpdateDisabled() const;
-
-    /*!
-     *  Sets the connection update disabled/enabled.
-     *
-     *      @param [in] disabled If true, the connection update is set disabled, otherwise it is enabled.
-     */
-    void setConnectionUpdateDisabled(bool disabled);
-
-    /*!
-     *  Retrieves the port with the given name and type (API/COM).
-     *
-     *      @param [in] name  The name of the port.
-     *      @param [in] type  The endpoint type.
-     *
-     *      @return The corresponding port item, or null if no match was found.
-     */
-    SWPortItem* getSWPort(QString const& name, SWConnectionEndpoint::EndpointType type) const;
+    QString const& getFileSetRef() const;
 
     /*!
      *  Returns the underlying HW linked with this component.
      */
-    virtual HWMappingItem const* getLinkedHW() const = 0;
+    virtual HWMappingItem const* getLinkedHW() const;
+
+    /*!
+     *  Returns the graphics item type.
+     */
+    int type() const { return Type; }
+
+    virtual void updateComponent();
+
+public slots:
+    void openCSource();
 
 signals:
-    //! Occurs when the property values have been changed.
-    void propertyValuesChanged(QMap<QString, QString> const& propertyValues);
+    //! Requests to open the C source for this component.
+    void openCSource(ComponentItem* compItem);
+
+    //! Occurs when the file set reference has been changed.
+    void fileSetRefChanged(QString const& fileSetRef);
 
 protected:
-    /*!
-     *  Returns the height for the component box.
-     */
-    virtual qreal getHeight() const;
+    // Called when the user presses the mouse button.
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
-    /*!
-     *  Updates the port positions so that they have at minimum the given Y coordinate value.
-     */
-    void offsetPortPositions(qreal minY);
+    //! Called when the user moves the column with the mouse.
+    void mouseMoveEvent(QGraphicsSceneMouseEvent* event);
+
+    //! Called when the user release the mouse.
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
+
+    //! Opens up the context menu when right mouse button is pressed.
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent* event);
 
 private:
     // Disable copying.
     SWComponentItem(SWComponentItem const& rhs);
     SWComponentItem& operator=(SWComponentItem const& rhs);
-
-    /*!
-     *  Adds the given port to the component.
-     *
-     *      @param [in] port  The port to add.
-     *      @param [in] dir   The port direction which determines to which side to port will be placed.
-     */
-    void onAddPort(SWPortItem* port, PortDirection dir);
     
-    enum
-    {
-        SPACING = 8,
-        MIN_Y_PLACEMENT = 3 * GridSize,
-        BOTTOM_MARGIN = 3 * GridSize
-    };
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The boolean flag for imported property.
-    bool imported_;
+    // Constants.
+    enum
+    {
+        WIDTH = 160,
+        MIN_HEIGHT = 60
+    };
 
-    //! The name of the import source instance, if this component is an imported one.
-    QString importRef_;
+    //! The old stack from where the mouse drag event began.
+    IGraphicsItemStack* oldStack_;
 
-    //! The left, right and bottom port stacks.
-    QList<SWPortItem*> leftPorts_;
-    QList<SWPortItem*> rightPorts_;
-    QList<SWPortItem*> bottomPorts_;
+    //! The mapping component's old position before mouse move.
+    QPointF oldPos_;
+    QPointF oldStackPos_;
 
-    //! If true, connection updates coming from ports are disabled.
-    bool connUpdateDisabled_;
+    QGraphicsPixmapItem* hierIcon_;
+    QGraphicsPixmapItem* importedIcon_;
 
-    //! The set property values.
-    QMap<QString, QString> propertyValues_;
+    //! The file set reference. Empty string if no reference.
+    QString fileSetRef_;
 };
 
 //-----------------------------------------------------------------------------

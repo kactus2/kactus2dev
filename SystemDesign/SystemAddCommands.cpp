@@ -12,7 +12,7 @@
 #include "SystemAddCommands.h"
 
 #include "SystemColumn.h"
-#include "SWComponentItem.h"
+#include "SystemComponentItem.h"
 
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsConnection.h>
@@ -126,7 +126,7 @@ void SystemItemAddCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: SWPortAddCommand()
 //-----------------------------------------------------------------------------
-SWPortAddCommand::SWPortAddCommand(SWComponentItem* component, QPointF const& pos,
+SWPortAddCommand::SWPortAddCommand(SystemComponentItem* component, QPointF const& pos,
                                            QUndoCommand* parent)
     : QUndoCommand(parent),
       component_(component),

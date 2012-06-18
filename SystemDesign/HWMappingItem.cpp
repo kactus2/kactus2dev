@@ -14,7 +14,7 @@
 #include "SystemMoveCommands.h"
 
 #include "SystemDesignDiagram.h"
-#include "SWCompItem.h"
+#include "SWComponentItem.h"
 #include "SWPortItem.h"
 
 #include <LibraryManager/libraryinterface.h>
@@ -37,7 +37,7 @@ HWMappingItem::HWMappingItem(LibraryInterface* libInterface,
                              QString const& displayName,
                              QString const& description,
                              QMap<QString, QString> const& configurableElementValues)
-    : SWComponentItem(QRectF(-WIDTH / 2, 0, WIDTH, 0), libInterface, component, instanceName,
+    : SystemComponentItem(QRectF(-WIDTH / 2, 0, WIDTH, 0), libInterface, component, instanceName,
                       displayName, description, configurableElementValues, 0),
       oldStack_(0),
       swComponents_(),
@@ -175,7 +175,7 @@ qreal HWMappingItem::getHeight() const
 
     // Determine the largest one from the stack height, minimum height (empty) and the height
     // calculated by the base class.
-    return std::max<qreal>(std::max<qreal>(stackHeight, MIN_HEIGHT), SWComponentItem::getHeight());
+    return std::max<qreal>(std::max<qreal>(stackHeight, MIN_HEIGHT), SystemComponentItem::getHeight());
 }
 
 //-----------------------------------------------------------------------------
@@ -247,7 +247,7 @@ void HWMappingItem::onMoveItem(QGraphicsItem* item)
     QRectF intersection = sceneBoundingRect().intersected(item->sceneBoundingRect());
 
     // Only non-imported SW components can be moved out of the HW mapping item.
-    if (!static_cast<SWComponentItem*>(compItem)->isImported() &&
+    if (!static_cast<SystemComponentItem*>(compItem)->isImported() &&
         compItem->rect().height() - intersection.height() >= 3 * GridSize)
     {
         swComponents_.removeAll(compItem);
@@ -313,7 +313,7 @@ QPointF HWMappingItem::mapStackFromScene(QPointF const& pos) const
 //-----------------------------------------------------------------------------
 bool HWMappingItem::isItemAllowed(QGraphicsItem* item) const
 {
-    return (item->type() == SWCompItem::Type);
+    return (item->type() == SWComponentItem::Type);
 }
 
 //-----------------------------------------------------------------------------
@@ -336,6 +336,9 @@ qreal HWMappingItem::getComponentStackHeight() const
     return stackHeight;
 }
 
+//-----------------------------------------------------------------------------
+// Function: HWMappingItem::updateComponent()
+//-----------------------------------------------------------------------------
 void HWMappingItem::updateComponent()
 {
     ComponentItem::updateComponent();

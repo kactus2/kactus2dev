@@ -23,7 +23,7 @@ class GraphicsConnection;
 class SystemColumn;
 class ComponentItem;
 class IGraphicsItemStack;
-class SWComponentItem;
+class SystemComponentItem;
 class SWPortItem;
 
 //-----------------------------------------------------------------------------
@@ -148,7 +148,7 @@ public:
      *      @param [in] pos        The position where to add the port.
      *      @param [in] parent     The parent command.
      */
-    SWPortAddCommand(SWComponentItem* component, QPointF const& pos, QUndoCommand* parent = 0);
+    SWPortAddCommand(SystemComponentItem* component, QPointF const& pos, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -175,7 +175,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The parent component.
-    SWComponentItem* component_;
+    SystemComponentItem* component_;
 
     //! The port position.
     QPointF pos_;

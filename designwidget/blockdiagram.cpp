@@ -1251,21 +1251,21 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
         else if (!isProtected())
         {
             // Otherwise this is an unpackaged component. Check if the bus interfaces are valid.
-            foreach (QSharedPointer<BusInterface> busIf, comp->componentModel()->getBusInterfaces())
-            {
-                if (!busIf->getBusType().isValid())
-                {
-                    QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                                       tr("Component '%1' cannot be packetized because all bus interfaces "
-                                          "have not been defined.").arg(comp->name()),
-                                       QMessageBox::Ok, (QWidget*)parent());
-                    msgBox.setInformativeText(tr("Define first the buses by dragging from the library "
-                                                 "or double clicking the bus interface."));
-                    
-                    msgBox.exec();
-                    return;
-                }
-            }
+//             foreach (QSharedPointer<BusInterface> busIf, comp->componentModel()->getBusInterfaces())
+//             {
+//                 if (!busIf->getBusType().isValid())
+//                 {
+//                     QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+//                                        tr("Component '%1' cannot be packetized because all bus interfaces "
+//                                           "have not been defined.").arg(comp->name()),
+//                                        QMessageBox::Ok, (QWidget*)parent());
+//                     msgBox.setInformativeText(tr("Define first the buses by dragging from the library "
+//                                                  "or double clicking the bus interface."));
+//                     
+//                     msgBox.exec();
+//                     return;
+//                 }
+//             }
             
             // Request the user to set the vlnv.
             NewObjectDialog dialog(getLibraryInterface(), VLNV::COMPONENT, true, (QWidget*)parent());

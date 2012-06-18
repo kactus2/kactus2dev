@@ -156,7 +156,6 @@ void ComponentPacketizeCommand::undo()
     // Set an empty VLNV.
     component_->componentModel()->setVlnv(VLNV());
     component_->updateComponent();
-    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -166,7 +165,6 @@ void ComponentPacketizeCommand::redo()
 {
     component_->componentModel()->setVlnv(vlnv_);
     component_->updateComponent();
-    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------

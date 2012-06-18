@@ -95,6 +95,8 @@ void ComponentItem::updateComponent()
     {
         setToolTip("Unpackaged component. No VLNV assigned!");
     }
+
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------

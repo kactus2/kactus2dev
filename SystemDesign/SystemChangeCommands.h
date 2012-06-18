@@ -18,56 +18,10 @@
 #include <QUndoCommand>
 
 class ComponentItem;
+class SystemComponentItem;
 class SWComponentItem;
-class SWCompItem;
 class SWConnectionEndpoint;
 class VLNV;
-
-//-----------------------------------------------------------------------------
-//! SWComponentPacketizeCommand class.
-//-----------------------------------------------------------------------------
-class SWComponentPacketizeCommand : public QUndoCommand
-{
-public:
-    /*!
-     *  Constructor.
-     *
-     *      @param [in] component  The component item.
-     *      @param [in] vlnv       The VLNV of the packetized component.
-     *      @param [in] parent     The parent command.
-     */
-    SWComponentPacketizeCommand(ComponentItem* component, VLNV const& vlnv, QUndoCommand* parent = 0);
-
-    /*!
-     *  Destructor.
-     */
-    ~SWComponentPacketizeCommand();
-
-    /*!
-     *  Undoes the command.
-     */
-    virtual void undo();
-
-    /*!
-     *  Redoes the command.
-     */
-    virtual void redo();
-
-private:
-    // Disable copying.
-    SWComponentPacketizeCommand(SWComponentPacketizeCommand const& rhs);
-    SWComponentPacketizeCommand& operator=(SWComponentPacketizeCommand const& rhs);
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-    //! The software component.
-    ComponentItem* component_;
-
-    //! The component VLNV.
-    VLNV vlnv_;
-};
 
 //-----------------------------------------------------------------------------
 //! TypeDefinitionChangeCommand class.
@@ -134,7 +88,7 @@ public:
 	 *      @param [in] parent           Pointer to the owner of this command.
 	 *
 	*/
-	PropertyValuesChangeCommand(SWComponentItem* component,
+	PropertyValuesChangeCommand(SystemComponentItem* component,
 		                        QMap<QString, QString> const& newPropertyValues, 
 		                        QUndoCommand* parent = 0);
 
@@ -163,7 +117,7 @@ private:
     //-----------------------------------------------------------------------------
 
 	//! Pointer to the component instance.
-	SWComponentItem* component_;
+	SystemComponentItem* component_;
 
 	//! The old property values.
 	QMap<QString, QString> oldPropertyValues_;
@@ -187,7 +141,7 @@ public:
 	 *      @param [in] parent           Pointer to the owner of this command.
 	 *
 	*/
-	FileSetRefChangeCommand(SWCompItem* component, QString const& newFileSetRef, 
+	FileSetRefChangeCommand(SWComponentItem* component, QString const& newFileSetRef, 
 		                    QUndoCommand* parent = 0);
 
 	/*!
@@ -215,7 +169,7 @@ private:
     //-----------------------------------------------------------------------------
 
 	//! Pointer to the component instance.
-	SWCompItem* component_;
+	SWComponentItem* component_;
 
 	//! The old file set reference.
     QString oldFileSetRef_;

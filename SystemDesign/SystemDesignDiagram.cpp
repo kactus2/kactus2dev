@@ -20,7 +20,7 @@
 
 #include "SystemColumn.h"
 #include "HWMappingItem.h"
-#include "SWCompItem.h"
+#include "SWComponentItem.h"
 #include "SystemDesignWidget.h"
 #include "SWConnectionEndpoint.h"
 #include "SWPortItem.h"
@@ -261,7 +261,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
             component->setComponentImplementation(KactusAttribute::KTS_SW);
         }
 
-        SWCompItem* item = new SWCompItem(getLibraryInterface(), component, instance.getInstanceName(),
+        SWComponentItem* item = new SWComponentItem(getLibraryInterface(), component, instance.getInstanceName(),
                                           instance.getDisplayName(), instance.getDescription());
         item->setImported(instance.isImported());
         item->setImportRef(instance.getImportRef());
@@ -575,7 +575,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         if (stack != 0)
         {
             // Create the SW component item.
-            SWCompItem* item = new SWCompItem(getLibraryInterface(), comp, instanceName, QString(), QString(),
+            SWComponentItem* item = new SWComponentItem(getLibraryInterface(), comp, instanceName, QString(), QString(),
                                               QMap<QString, QString>());
             
             item->setPos(stack->mapStackFromScene(snapPointToGrid(event->scenePos())));
@@ -699,9 +699,9 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
         }
 
         // If the item was a SW component, add an undefined interface port to it.
-        if (item != 0 && item->type() == SWCompItem::Type)
+        if (item != 0 && item->type() == SWComponentItem::Type)
         {
-            SWCompItem* comp = static_cast<SWCompItem*>(item);
+            SWComponentItem* comp = static_cast<SWComponentItem*>(item);
 
             // The component is unpackaged if it has an invalid vlnv.
             if (!comp->componentModel()->getVlnv()->isValid())
@@ -764,7 +764,7 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
                     comp->setComponentImplementation(KactusAttribute::KTS_SW);
 
                     // Create the corresponding SW component item.
-                    SWCompItem* swCompItem = new SWCompItem(getLibraryInterface(), comp, name);
+                    SWComponentItem* swCompItem = new SWComponentItem(getLibraryInterface(), comp, name);
                     swCompItem->setPos(snapPointToGrid(event->scenePos()));
 
                     connect(swCompItem, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
@@ -1050,9 +1050,9 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
 
             instances.append(instance);
         }
-        else if (item->type() == SWCompItem::Type)
+        else if (item->type() == SWComponentItem::Type)
         {
-            SWCompItem const* swCompItem = static_cast<SWCompItem const*>(item);
+            SWComponentItem const* swCompItem = static_cast<SWComponentItem const*>(item);
 
             SWInstance instance;
             instance.setInstanceName(swCompItem->name());
@@ -1244,10 +1244,10 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
         item = item->parentItem();
     }
 
-    if (dynamic_cast<SWComponentItem*>(item) != 0)
+    if (dynamic_cast<SystemComponentItem*>(item) != 0)
     {
         item->setSelected(true);
-        SWComponentItem* comp = static_cast<SWComponentItem*>(item);
+        SystemComponentItem* comp = static_cast<SystemComponentItem*>(item);
 
         if (getLibraryInterface()->contains(*comp->componentModel()->getVlnv()))
         {
@@ -1320,11 +1320,9 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 
             // Update the diagram component.
             comp->updateComponent();
-            emit contentChanged();
 
             // Create an undo command.
             QSharedPointer<ComponentPacketizeCommand> cmd(new ComponentPacketizeCommand(comp, vlnv));
-            connect(cmd.data(), SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
             getEditProvider().addCommand(cmd, false);
 
             // Ask the user if he wants to complete the component.
@@ -1405,11 +1403,11 @@ SystemDesignWidget* SystemDesignDiagram::parent() const
 //-----------------------------------------------------------------------------
 // Function: getHWComponent()
 //-----------------------------------------------------------------------------
-SWComponentItem* SystemDesignDiagram::getComponent(QString const& instanceName)
+SystemComponentItem* SystemDesignDiagram::getComponent(QString const& instanceName)
 {
     foreach (QGraphicsItem *item, items())
     {
-        SWComponentItem* comp = dynamic_cast<SWComponentItem*>(item);
+        SystemComponentItem* comp = dynamic_cast<SystemComponentItem*>(item);
 
         if (comp != 0 && comp->name() == instanceName)
         {
@@ -1570,7 +1568,7 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
     foreach (ApiDependency const& dependency, design->getApiDependencies())
     {
         // Find the referenced components.
-        SWComponentItem* comp1 = getComponent(dependency.getInterface1().componentRef);
+        SystemComponentItem* comp1 = getComponent(dependency.getInterface1().componentRef);
 
         if (comp1 == 0)
         {
@@ -1579,7 +1577,7 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
             continue;
         }
 
-        SWComponentItem* comp2 = getComponent(dependency.getInterface2().componentRef);
+        SystemComponentItem* comp2 = getComponent(dependency.getInterface2().componentRef);
 
         if (comp2 == 0)
         {
@@ -1672,7 +1670,7 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
         }
 
         // Find the component where the hierarchical dependency is connected to.
-        SWComponentItem* componentItem = getComponent(dependency.getInterface().componentRef);
+        SystemComponentItem* componentItem = getComponent(dependency.getInterface().componentRef);
 
         if (componentItem == 0)
         {
@@ -1716,7 +1714,7 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
     foreach (ComConnection const& conn, design->getComConnections())
     {
         // Find the referenced components.
-        SWComponentItem* comp1 = getComponent(conn.getInterface1().componentRef);
+        SystemComponentItem* comp1 = getComponent(conn.getInterface1().componentRef);
 
         if (comp1 == 0)
         {
@@ -1725,7 +1723,7 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
             continue;
         }
 
-        SWComponentItem* comp2 = getComponent(conn.getInterface2().componentRef);
+        SystemComponentItem* comp2 = getComponent(conn.getInterface2().componentRef);
 
         if (comp2 == 0)
         {
@@ -1817,7 +1815,7 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
         }
 
         // Find the component where the hierarchical hierConn is connected to.
-        SWComponentItem* componentItem = getComponent(hierConn.getInterface().componentRef);
+        SystemComponentItem* componentItem = getComponent(hierConn.getInterface().componentRef);
 
         if (componentItem == 0)
         {

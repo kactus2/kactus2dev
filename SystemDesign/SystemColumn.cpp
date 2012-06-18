@@ -11,7 +11,7 @@
 
 #include "SystemColumn.h"
 
-#include "SWCompItem.h"
+#include "SWComponentItem.h"
 #include "HWMappingItem.h"
 #include "SWInterfaceItem.h"
 
@@ -44,7 +44,7 @@ bool SystemColumn::isItemAllowed(QGraphicsItem* item, unsigned int allowedItems)
     switch (item->type())
     {
     case HWMappingItem::Type:
-    case SWCompItem::Type:
+    case SWComponentItem::Type:
         {
             return (allowedItems & CIT_COMPONENT);
         }
@@ -69,7 +69,7 @@ void SystemColumn::prepareColumnMove()
     {
         foreach (QGraphicsItem* childItem, item->childItems())
         {
-            if (childItem->type() == SWCompItem::Type)
+            if (childItem->type() == SWComponentItem::Type)
             {
                 foreach (QGraphicsItem* childItem2, childItem->childItems())
                 {

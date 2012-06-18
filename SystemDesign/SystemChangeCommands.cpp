@@ -12,49 +12,12 @@
 #include "SystemChangeCommands.h"
 
 #include "SWConnectionEndpoint.h"
+#include "SystemComponentItem.h"
 #include "SWComponentItem.h"
-#include "SWCompItem.h"
 
 #include <common/graphicsItems/ComponentItem.h>
 
 #include <models/component.h>
-
-//-----------------------------------------------------------------------------
-// Function: SWComponentPacketizeCommand()
-//-----------------------------------------------------------------------------
-SWComponentPacketizeCommand::SWComponentPacketizeCommand(ComponentItem* component,
-                                                         VLNV const& vlnv,
-                                                         QUndoCommand* parent) : QUndoCommand(parent),
-                                                                                 component_(component),
-                                                                                 vlnv_(vlnv)
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: ~SWComponentPacketizeCommand()
-//-----------------------------------------------------------------------------
-SWComponentPacketizeCommand::~SWComponentPacketizeCommand()
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: undo()
-//-----------------------------------------------------------------------------
-void SWComponentPacketizeCommand::undo()
-{
-    // Set an empty VLNV.
-    component_->componentModel()->setVlnv(VLNV());
-    component_->updateComponent();
-}
-
-//-----------------------------------------------------------------------------
-// Function: redo()
-//-----------------------------------------------------------------------------
-void SWComponentPacketizeCommand::redo()
-{
-    component_->componentModel()->setVlnv(vlnv_);
-    component_->updateComponent();
-}
 
 //-----------------------------------------------------------------------------
 // Function: TypeDefinitionChangeCommand()
@@ -95,7 +58,7 @@ void TypeDefinitionChangeCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: PropertyValuesChangeCommand()
 //-----------------------------------------------------------------------------
-PropertyValuesChangeCommand::PropertyValuesChangeCommand(SWComponentItem* component, 
+PropertyValuesChangeCommand::PropertyValuesChangeCommand(SystemComponentItem* component, 
                                                          QMap<QString, QString> const& newPropertyValues, 
                                                          QUndoCommand* parent)
     : QUndoCommand(parent),
@@ -131,7 +94,7 @@ void PropertyValuesChangeCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: FileSetRefChangeCommand()
 //-----------------------------------------------------------------------------
-FileSetRefChangeCommand::FileSetRefChangeCommand(SWCompItem* component, QString const& newFileSetRef,
+FileSetRefChangeCommand::FileSetRefChangeCommand(SWComponentItem* component, QString const& newFileSetRef,
                                                  QUndoCommand* parent)
     : QUndoCommand(parent),
       component_(component),

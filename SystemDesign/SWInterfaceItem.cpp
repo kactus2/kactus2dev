@@ -12,7 +12,7 @@
 #include "SWInterfaceItem.h"
 
 #include "SystemColumn.h"
-#include "SWComponentItem.h"
+#include "SystemComponentItem.h"
 #include "HWMappingItem.h"
 #include "SystemMoveCommands.h"
 

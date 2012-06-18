@@ -12,7 +12,7 @@
 #include "SystemMoveCommands.h"
 
 #include "SystemColumn.h"
-#include "SWComponentItem.h"
+#include "SystemComponentItem.h"
 
 #include <common/graphicsItems/GraphicsConnection.h>
 
@@ -125,7 +125,7 @@ SWPortMoveCommand::~SWPortMoveCommand()
 //-----------------------------------------------------------------------------
 void SWPortMoveCommand::undo()
 {
-    SWComponentItem* comp = static_cast<SWComponentItem*>(port_->parentItem());
+    SystemComponentItem* comp = static_cast<SystemComponentItem*>(port_->parentItem());
 
     port_->setPos(oldPos_);
     comp->onMovePort(port_);
@@ -139,7 +139,7 @@ void SWPortMoveCommand::undo()
 //-----------------------------------------------------------------------------
 void SWPortMoveCommand::redo()
 {
-    SWComponentItem* comp = static_cast<SWComponentItem*>(port_->parentItem());
+    SystemComponentItem* comp = static_cast<SystemComponentItem*>(port_->parentItem());
 
     port_->setPos(newPos_);
     comp->onMovePort(port_);

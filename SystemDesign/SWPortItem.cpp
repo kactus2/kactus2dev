@@ -11,7 +11,7 @@
 
 #include "SWPortItem.h"
 
-#include "SWComponentItem.h"
+#include "SystemComponentItem.h"
 #include "HWMappingItem.h"
 
 #include "SystemMoveCommands.h"
@@ -376,8 +376,8 @@ bool SWPortItem::canConnect(ConnectionEndpoint const* other) const
     // Disallow normal API connections across different HW.
     if ((getType() == ENDPOINT_TYPE_API || other->getType() == ENDPOINT_TYPE_API) &&
         !other->isHierarchical() &&
-        static_cast<SWComponentItem*>(encompassingComp())->getLinkedHW() !=
-        static_cast<SWComponentItem*>(other->encompassingComp())->getLinkedHW())
+        static_cast<SystemComponentItem*>(encompassingComp())->getLinkedHW() !=
+        static_cast<SystemComponentItem*>(other->encompassingComp())->getLinkedHW())
     {
         return false;
     }
@@ -510,7 +510,7 @@ QVariant SWPortItem::itemChange(GraphicsItemChange change, QVariant const& value
             }
 
             QPointF pos = value.toPointF();
-            QRectF parentRect = static_cast<SWComponentItem*>(parentItem())->rect();
+            QRectF parentRect = static_cast<SystemComponentItem*>(parentItem())->rect();
 
             /*if (pos.y() - parentRect.bottom() >= -35.0 && std::abs(pos.x()) < 50.0)
             {
@@ -537,7 +537,7 @@ QVariant SWPortItem::itemChange(GraphicsItemChange change, QVariant const& value
             qreal nameHeight = nameLabel_.boundingRect().height();
             QPointF newPos = pos();
 
-            QRectF parentRect = static_cast<SWComponentItem*>(parentItem())->rect();
+            QRectF parentRect = static_cast<SystemComponentItem*>(parentItem())->rect();
 
             // Check if the port is directed to the bottom.
             /*if (pos().y() - parentRect.bottom() >= -35.0 && std::abs(pos().x()) < 50.0)
@@ -565,7 +565,7 @@ QVariant SWPortItem::itemChange(GraphicsItemChange change, QVariant const& value
     case ItemScenePositionHasChanged:
         {
             // Check if the updates are not disabled.
-            if (!static_cast<SWComponentItem*>(parentItem())->isConnectionUpdateDisabled())
+            if (!static_cast<SystemComponentItem*>(parentItem())->isConnectionUpdateDisabled())
             {
                 // Update the connections.
                 foreach (GraphicsConnection* connection, getConnections())
@@ -623,7 +623,7 @@ void SWPortItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     }
 
     SWConnectionEndpoint::mouseMoveEvent(event);
-    static_cast<SWComponentItem*>(parentItem())->onMovePort(this);
+    static_cast<SystemComponentItem*>(parentItem())->onMovePort(this);
 }
 
 //-----------------------------------------------------------------------------

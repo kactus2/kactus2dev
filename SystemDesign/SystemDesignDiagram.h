@@ -28,7 +28,7 @@ class VLNV;
 class GenericEditProvider;
 class SystemDesignWidget;
 class HWMappingItem;
-class SWComponentItem;
+class SystemComponentItem;
 class SWConnectionEndpoint;
 class GraphicsConnection;
 
@@ -173,7 +173,7 @@ private:
      *
      *      @return The corresponding component, or null if not found.
      */
-    SWComponentItem* getComponent(QString const& instanceName);
+    SystemComponentItem* getComponent(QString const& instanceName);
 
     /*!
      *  Creates the currently drawn connection.

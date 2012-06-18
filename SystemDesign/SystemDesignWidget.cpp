@@ -15,7 +15,7 @@
 
 #include "SystemColumn.h"
 #include "SystemDesignDiagram.h"
-#include "SWCompItem.h"
+#include "SWComponentItem.h"
 
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/GenericEditProvider.h>
@@ -257,9 +257,9 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
             getGenericEditProvider()->addCommand(cmd);
             emit clearItemSelection();
         }
-        else if (selected->type() == SWCompItem::Type)
+        else if (selected->type() == SWComponentItem::Type)
         {
-            SWCompItem* component = static_cast<SWCompItem*>(selected);
+            SWComponentItem* component = static_cast<SWComponentItem*>(selected);
 
             // Only non-imported SW component instances can be deleted.
             if (!component->isImported())

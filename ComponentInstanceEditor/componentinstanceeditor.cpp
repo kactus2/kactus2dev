@@ -9,8 +9,8 @@
 
 #include <SystemDesign/SystemChangeCommands.h>
 #include <designwidget/diagramcomponent.h>
+#include <SystemDesign/SystemComponentItem.h>
 #include <SystemDesign/SWComponentItem.h>
-#include <SystemDesign/SWCompItem.h>
 
 #include <models/component.h>
 #include <models/designconfiguration.h>
@@ -114,9 +114,9 @@ void ComponentInstanceEditor::setComponent( ComponentItem* component ) {
 	nameGroup_.show();
 
     // Show the file set reference if the component is software.
-    if (dynamic_cast<SWCompItem*>(component) != 0)
+    if (dynamic_cast<SWComponentItem*>(component) != 0)
     {
-        SWCompItem* swComponent = static_cast<SWCompItem*>(component);
+        SWComponentItem* swComponent = static_cast<SWComponentItem*>(component);
 
         fileSetRefCombo_.clear();
         fileSetRefCombo_.addItem("");
@@ -141,9 +141,9 @@ void ComponentInstanceEditor::setComponent( ComponentItem* component ) {
     }
 
     // Show the component's property values in case of SW/HW mapping.
-	if (dynamic_cast<SWComponentItem*>(component) != 0)
+	if (dynamic_cast<SystemComponentItem*>(component) != 0)
     {
-        SWComponentItem* swComponent = static_cast<SWComponentItem*>(component);
+        SystemComponentItem* swComponent = static_cast<SystemComponentItem*>(component);
 
         propertyValueEditor_.setData(swComponent->getPropertyValues());
         propertyValueEditor_.setAllowedProperties(&swComponent->componentModel()->getSWProperties());
@@ -246,7 +246,7 @@ void ComponentInstanceEditor::onPropertyValuesChanged()
     disconnect(component_, SIGNAL(propertyValuesChanged(QMap<QString, QString> const&)),
                &propertyValueEditor_, SLOT(setData(QMap<QString, QString> const&)));
 
-    SWComponentItem* swComp = static_cast<SWComponentItem*>(component_);
+    SystemComponentItem* swComp = static_cast<SystemComponentItem*>(component_);
     QSharedPointer<PropertyValuesChangeCommand> cmd(new PropertyValuesChangeCommand(swComp, propertyValueEditor_.getData()));
     editProvider_->addCommand(cmd);
 
@@ -262,7 +262,7 @@ void ComponentInstanceEditor::onFileSetRefChanged(QString const& fileSetRef)
     disconnect(component_, SIGNAL(fileSetRefChanged(QString const&)),
                this, SLOT(updateFileSetRef(QString const&)));
 
-    SWCompItem* swComp = static_cast<SWCompItem*>(component_);
+    SWComponentItem* swComp = static_cast<SWComponentItem*>(component_);
     QSharedPointer<FileSetRefChangeCommand> cmd(new FileSetRefChangeCommand(swComp, fileSetRef));
     editProvider_->addCommand(cmd);
 

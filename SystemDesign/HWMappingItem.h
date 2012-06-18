@@ -12,18 +12,18 @@
 #ifndef HWMAPPINGITEM_H
 #define HWMAPPINGITEM_H
 
-#include "SWComponentItem.h"
+#include "SystemComponentItem.h"
 
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsItemTypes.h>
 #include <common/graphicsItems/IGraphicsItemStack.h>
 
-class SWCompItem;
+class SWComponentItem;
 
 //-----------------------------------------------------------------------------
 //! Graphics item for visualizing the underlying HW in system designs.
 //-----------------------------------------------------------------------------
-class HWMappingItem : public SWComponentItem, public IGraphicsItemStack
+class HWMappingItem : public SystemComponentItem, public IGraphicsItemStack
 {
 public:
     enum { Type = GFX_TYPE_HW_MAPPING_ITEM };
