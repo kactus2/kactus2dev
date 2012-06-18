@@ -9,6 +9,7 @@
 #define COMPONENTEDITORBUSINTERFACESITEM_H
 
 #include "componenteditoritem.h"
+#include <IPXactWrapper/ComponentEditor/busInterfaces/businterfaceseditor.h>
 
 /*! \brief The Bus interfaces-item in the component editor's navigation tree.
  *
@@ -58,6 +59,20 @@ public:
 	*/
 	virtual const ItemEditor* editor() const;
 
+	/*! \brief Add a new child to the item.
+	 *
+	 * \param index The index to add the child into.
+	 *
+	*/
+	virtual void createChild(int index);
+
+protected slots:
+
+	/*! \brief Handler for editor's contentChanged signal.
+	 *
+	*/
+	virtual void onEditorChanged();
+
 private:
 	//! \brief No copying
 	ComponentEditorBusInterfacesItem(const ComponentEditorBusInterfacesItem& other);
@@ -67,6 +82,9 @@ private:
 
 	//! \brief Contains the bus interfaces to edit.
 	QMap<QString, QSharedPointer<BusInterface> >& busifs_;
+
+	//! \brief The editor to add/remove/edit bus interfaces
+	BusInterfacesEditor editor_;
 };
 
 #endif // COMPONENTEDITORBUSINTERFACESITEM_H

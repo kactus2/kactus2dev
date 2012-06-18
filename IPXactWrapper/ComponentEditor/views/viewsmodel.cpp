@@ -117,6 +117,16 @@ QVariant ViewsModel::data( const QModelIndex& index, int role /*= Qt::DisplayRol
 			return QColor("red");
 		}
 	}
+	else if (Qt::BackgroundRole == role) {
+		switch (index.column()) {
+			case ViewsModel::NAME_COLUMN:
+			case ViewsModel::TYPE_COLUMN: {
+				return QColor("LemonChiffon");
+													 }
+			default:
+				return QColor("white");
+		}
+	}
 	else {
 		return QVariant();
 	}

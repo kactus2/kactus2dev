@@ -131,6 +131,16 @@ QVariant CpusModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole
 			return QColor("red");
 		}
 	}
+	else if (Qt::BackgroundRole == role) {
+		switch (index.column()) {
+			case CpusDelegate::NAME_COLUMN:
+			case CpusDelegate::ADDRSPACE_COLUMN: {
+				return QColor("LemonChiffon");
+														}
+			default:
+				return QColor("white");
+		}
+	}
 	else {
 		return QVariant();
 	}

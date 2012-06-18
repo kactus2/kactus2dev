@@ -8,14 +8,14 @@
 #ifndef BUSIFGENERALTAB_H
 #define BUSIFGENERALTAB_H
 
-#include <common/widgets/nameGroupBox/namegroupbox.h>
-#include <common/widgets/attributeBox/attributebox.h>
+#include <common/widgets/nameGroupEditor/namegroupeditor.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
+#include <common/widgets/ParameterGroupBox/parametergroupbox.h>
 #include "busifgeneraldetails.h"
 
 #include <QWidget>
+#include <QSharedPointer>
 
-class BusInterface;
 class LibraryInterface;
 
 /*! \brief Container for editor on the general tab of a bus interface editor.
@@ -28,14 +28,14 @@ public:
 
 	/*! \brief The constructor
 	 *
-	 * \param libHandler Pointer to the library handler instance.
-	 * \param dataPointer Pointer to the bus interface being edited.
-	 * \param parent Pointer to the parent of this widget.
+	 * \param libHandler Pointer to the instance that manages the library.
+	 * \param busif Pointer to the bus interface being edited.
+	 * \param parent Pointer to the owner of this editor.
 	 *
 	*/
 	BusIfGeneralTab(LibraryInterface* libHandler,
-		void* dataPointer, 
-		QWidget *parent);
+		QSharedPointer<BusInterface> busif,
+		QWidget* parent);
 	
 	//! \brief The destructor
 	virtual ~BusIfGeneralTab();
@@ -49,7 +49,7 @@ public:
 	/*! \brief Restore the changes made in the editor back to ones in the model.
 	*
 	*/
-	virtual void restoreChanges();
+	virtual void refresh();
 
 	/*! \brief Applies the changes made with the editor to the model.
 	*
@@ -99,10 +99,10 @@ private:
 	BusIfGeneralTab& operator=(const BusIfGeneralTab& other);
 	
 	//! \brief Pointer to the bus interface being edited.
-	BusInterface* busif_;
+	QSharedPointer<BusInterface> busif_;
 
 	//! \brief Contains the name, display name and description of bus interface
-	NameGroupBox nameGroup_;
+	NameGroupEditor nameEditor_;
 
 	//! \brief Contains the vlnv of the bus type for this bus interface
 	VLNVEditor busType_;
@@ -112,6 +112,9 @@ private:
 
 	//! \brief Contains the details of this bus interface
 	BusIfGeneralDetails details_;
+
+	//! \brief Contains the parameters of bus interface.
+	ParameterGroupBox parameters_;
 
 	//! \brief Pointer to the instance that manages the library
 	LibraryInterface* libHandler_;

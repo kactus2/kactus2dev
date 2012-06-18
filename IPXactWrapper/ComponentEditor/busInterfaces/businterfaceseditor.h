@@ -26,6 +26,18 @@ class BusInterfacesEditor : public ItemEditor {
 
 public:
 
+	//! \brief The width of the name column
+	static const int NAME_COLUMN_WIDTH = 100;
+
+	//! \brief The width of the bus definition column.
+	static const int BUS_COLUMN_WIDTH = 200;
+
+	//! \brief The width of the abs def column.
+	static const int ABS_COLUMN_WIDTH = 200;
+
+	//! \brief The width of the interface mode column.
+	static const int IF_MODE_COLUMN_WIDTH = 100;
+
 	/*! \brief The constructor
 	 *
 	 * \param handler Pointer to the instance that manages the library.
@@ -54,6 +66,14 @@ public:
 	/*! \brief Reload the information from the model to the editor.
 	*/
 	virtual void refresh();
+
+	/*! \brief Get pointer to the bus interface in the specified index.
+	 *
+	 * \param index The index of the bus interface.
+	 *
+	 * \return Pointer to the bus interface.
+	*/
+	QSharedPointer<BusInterface> getBusInterface(int index) const;
 
 private:
 

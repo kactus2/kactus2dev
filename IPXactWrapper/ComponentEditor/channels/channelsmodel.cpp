@@ -129,6 +129,16 @@ QVariant ChannelsModel::data( const QModelIndex& index, int role /*= Qt::Display
 			return QColor("red");
 		}
 	}
+	else if (Qt::BackgroundRole == role) {
+		switch (index.column()) {
+			case ChannelsDelegate::NAME_COLUMN:
+			case ChannelsDelegate::INTERFACE_COLUMN: {
+				return QColor("LemonChiffon");
+												 }
+			default:
+				return QColor("white");
+		}
+	}
 	else {
 		return QVariant();
 	}

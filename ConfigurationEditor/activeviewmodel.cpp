@@ -9,7 +9,7 @@
 
 #include <designwidget/diagramcomponent.h>
 #include <SystemDesign/HWMappingItem.h>
-#include <SystemDesign/SWCompItem.h>
+#include <SystemDesign/SWComponentItem.h>
 #include <designwidget/HWDesignWidget.h>
 #include <designwidget/DiagramChangeCommands.h>
 

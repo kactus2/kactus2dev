@@ -462,6 +462,18 @@ public:
      */
     int getMCAPIPortID() const;
 
+	/*! \brief Get the struct that contains name, display name and description.
+	 *
+	 * \return Reference to the struct.
+	*/
+	General::NameGroup& getNameGroup();
+
+	/*! \brief Get the struct that contains name, display name and description.
+	 *
+	 * \return Reference to the struct.
+	*/
+	const General::NameGroup& getNameGroup() const;
+
 private:
 
 	//! \brief Contains the name, display name and description of bus interface.

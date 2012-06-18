@@ -13,13 +13,23 @@ ComponentEditorBusInterfacesItem::ComponentEditorBusInterfacesItem(ComponentEdit
 																   QSharedPointer<Component> component,
 																   ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-busifs_(component->getBusInterfaces()) {
+busifs_(component->getBusInterfaces()),
+editor_(libHandler, component) {
 
 	foreach (QSharedPointer<BusInterface> busif, busifs_) {
 		QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(
 			new ComponentEditorBusInterfaceItem(busif, model, libHandler, component, this));
 		childItems_.append(busifItem);
 	}
+
+	editor_.hide();
+
+	connect(&editor_, SIGNAL(contentChanged()), 
+		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+	connect(&editor_, SIGNAL(childAdded(int)),
+		this, SLOT(onAddChild(int)), Qt::UniqueConnection);
+	connect(&editor_, SIGNAL(childRemoved(int)),
+		this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
 }
 
 ComponentEditorBusInterfacesItem::~ComponentEditorBusInterfacesItem() {
@@ -30,13 +40,35 @@ QString ComponentEditorBusInterfacesItem::text() const {
 }
 
 ItemEditor* ComponentEditorBusInterfacesItem::editor() {
-	return NULL;
+	return &editor_;
 }
 
 const ItemEditor* ComponentEditorBusInterfacesItem::editor() const {
-	return NULL;
+	return &editor_;
 }
 
 QString ComponentEditorBusInterfacesItem::getTooltip() const {
 	return tr("Contains the bus interfaces specified for a component");
+}
+
+void ComponentEditorBusInterfacesItem::createChild( int index ) {
+	QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(
+		new ComponentEditorBusInterfaceItem(editor_.getBusInterface(index),
+		model_, libHandler_, component_, this));
+
+	childItems_.insert(index, busifItem);
+}
+
+void ComponentEditorBusInterfacesItem::onEditorChanged() {
+	// call the base class implementation
+	ComponentEditorItem::onEditorChanged();
+
+	// also inform of child changes
+	foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_) {
+		// tell the model that data has changed for the child
+		emit contentChanged(childItem.data());
+
+		// tell the child to update it's editor contents
+		childItem->refreshEditor();
+	}
 }

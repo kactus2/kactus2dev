@@ -100,6 +100,14 @@ public:
 	*/
 	bool isValid() const;
 
+	/*! \brief Get pointer to the bus interface in the specified index.
+	 *
+	 * \param index The index of the bus interface.
+	 *
+	 * \return Pointer to the bus interface.
+	*/
+	QSharedPointer<BusInterface> getBusInterface(int index) const;
+
 public slots:
 
 	/*! \brief Add a new item to the given index.
@@ -115,6 +123,25 @@ public slots:
 	 *
 	*/
 	virtual void onRemoveItem(const QModelIndex& index);
+
+signals:
+
+	//! \brief Emitted when the contents of the model change.
+	void contentChanged();
+
+	/*! \brief Emitted when a new bus interface is added to the model.
+	 *
+	 * \param index The index of the added bus interface.
+	 *
+	*/
+	void busifAdded(int index);
+
+	/*! \brief Emitted when a bus interface is removed from the model.
+	 *
+	 * \param index The index of the bus interface to remove.
+	 *
+	*/
+	void busifRemoved(int index);
 
 private:
 

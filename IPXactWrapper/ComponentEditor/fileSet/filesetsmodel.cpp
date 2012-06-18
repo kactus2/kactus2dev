@@ -121,6 +121,15 @@ QVariant FileSetsModel::data( const QModelIndex& index,
 			return QColor("red");
 		}
 	}
+	else if (Qt::BackgroundRole == role) {
+		switch (index.column()) {
+			case 0: {
+				return QColor("LemonChiffon");
+					}
+			default:
+				return QColor("white");
+		}
+	}
 	else {
 		return QVariant();
 	}

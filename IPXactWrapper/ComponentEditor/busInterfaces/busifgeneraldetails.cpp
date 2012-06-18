@@ -18,15 +18,17 @@
 
 static const int MAX_BITS_IN_LAU = 2048;
 
-BusIfGeneralDetails::BusIfGeneralDetails(void* dataPointer, 
-										 QWidget *parent): 
+BusIfGeneralDetails::BusIfGeneralDetails( QSharedPointer<BusInterface> busif, 
+										 QWidget* parent ):
 QGroupBox(tr("General") ,parent),
-busif_(static_cast<BusInterface*>(dataPointer)),
+busif_(busif),
 connRequired_(tr("Connection required"), this),
 bitsInLau_(this),
 endianness_(this),
 bitSteering_(this),
 bitSteeringEnabled_(tr("Enable"), this) {
+
+	Q_ASSERT(busif_);
 
 	bitsInLau_.setRange(0, MAX_BITS_IN_LAU);
 	bitsInLau_.setSingleStep(1);
@@ -48,7 +50,7 @@ bitSteeringEnabled_(tr("Enable"), this) {
 
 	QFormLayout* lauLayout = new QFormLayout();
 	lauLayout->addRow(tr("Number of bits in least addressable unit"), &bitsInLau_);
-	
+
 	QFormLayout* endiannessLayout = new QFormLayout();
 	endiannessLayout->addRow(tr("Endianness"), &endianness_);
 

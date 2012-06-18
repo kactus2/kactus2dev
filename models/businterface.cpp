@@ -1108,3 +1108,11 @@ int BusInterface::getMCAPIPortID() const
 
     return -1;
 }
+
+General::NameGroup& BusInterface::getNameGroup() {
+	return nameGroup_;
+}
+
+const General::NameGroup& BusInterface::getNameGroup() const {
+	return nameGroup_;
+}

@@ -8,10 +8,13 @@
 #ifndef BUSIFGENERALDETAILS_H
 #define BUSIFGENERALDETAILS_H
 
+#include <models/businterface.h>
+
 #include <QGroupBox>
 #include <QCheckBox>
 #include <QSpinBox>
 #include <QComboBox>
+#include <QSharedPointer>
 
 class BusInterface;
 
@@ -30,6 +33,15 @@ public:
 	 *
 	*/
 	BusIfGeneralDetails(void* dataPointer, QWidget *parent);
+
+	/*! \brief The constructor
+	 *
+	 * \param busif Pointer to the bus interface being edited.
+	 * \param parent Pointer to the owner of this editor.
+	 *
+	*/
+	BusIfGeneralDetails(QSharedPointer<BusInterface> busif,
+		QWidget* parent);
 	
 	//! \brief The destructor
 	virtual ~BusIfGeneralDetails();
@@ -83,7 +95,7 @@ private:
 	BusIfGeneralDetails& operator=(const BusIfGeneralDetails& other);
 
 	//! \brief Pointer to the bus interface being edited.
-	BusInterface* busif_;
+	QSharedPointer<BusInterface> busif_;
 
 	//! \brief Set the connection required to true or false
 	QCheckBox connRequired_;

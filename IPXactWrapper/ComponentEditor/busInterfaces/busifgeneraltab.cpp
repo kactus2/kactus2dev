@@ -15,33 +15,33 @@
 #include <QHBoxLayout>
 #include <QScrollArea>
 
-#include <QDebug>
-
-BusIfGeneralTab::BusIfGeneralTab(LibraryInterface* libHandler, 
-								 void* dataPointer, 
-								 QWidget *parent): 
-QWidget(parent), busif_(static_cast<BusInterface*>(dataPointer)),
-nameGroup_(this, tr("Name and description")),
-//attributes_(this),
+BusIfGeneralTab::BusIfGeneralTab( LibraryInterface* libHandler,
+								 QSharedPointer<BusInterface> busif, 
+								 QWidget* parent ):
+QWidget(parent),
+busif_(busif),
+nameEditor_(busif->getNameGroup(), this, tr("Name and description")),
 busType_(VLNV::BUSDEFINITION, libHandler, this, this),
 absType_(VLNV::ABSTRACTIONDEFINITION, libHandler, this, this),
-details_(dataPointer, this),
+details_(busif, this),
+parameters_(busif->getParameters(), this),
 libHandler_(libHandler) {
 
-	Q_ASSERT_X(dataPointer, "BusIfGeneralTab constructor",
-		"Null dataPointer given as parameter");
 	Q_ASSERT_X(libHandler, "BusIfGeneralTab constructor",
 		"Null LibraryInterface-pointer given as parameter");
+	Q_ASSERT(busif_);
 
-	connect(&nameGroup_, SIGNAL(contentChanged()),
+	connect(&nameEditor_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&nameGroup_, SIGNAL(nameChanged(const QString&)),
+	connect(&nameEditor_, SIGNAL(nameChanged(const QString&)),
 		this, SIGNAL(nameChanged(const QString&)), Qt::UniqueConnection);
 	connect(&busType_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&absType_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&details_, SIGNAL(contentChanged()),
+		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&parameters_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
 	connect(&busType_, SIGNAL(setAbsDef(const VLNV&)),
@@ -67,15 +67,16 @@ libHandler_(libHandler) {
 
 	// create the layout of the general tab
 	QVBoxLayout* layout = new QVBoxLayout(topWidget);
-	layout->addWidget(&nameGroup_);
+	layout->addWidget(&nameEditor_);
 	layout->addWidget(&busType_);
 	layout->addWidget(&absType_);
 	layout->addWidget(&details_);
+	layout->addWidget(&parameters_);
 	layout->addStretch();
 
 	scrollArea->setWidget(topWidget);
 
-	restoreChanges();
+	refresh();
 }
 
 BusIfGeneralTab::~BusIfGeneralTab() {
@@ -83,7 +84,7 @@ BusIfGeneralTab::~BusIfGeneralTab() {
 
 bool BusIfGeneralTab::isValid() const {
 	
-	if (!nameGroup_.isValid())
+	if (!nameEditor_.isValid())
 		return false;
 	else if (!busType_.isValid())
 		return false;
@@ -103,30 +104,24 @@ bool BusIfGeneralTab::isValid() const {
 	else if (!details_.isValid())
 		return false;
 
+	else if (!parameters_.isValid()) {
+		return false;
+	}
+
 	return true;
 }
 
-void BusIfGeneralTab::restoreChanges() {
-
-	nameGroup_.setName(busif_->getName());
-	nameGroup_.setDisplayName(busif_->getDisplayName());
-	nameGroup_.setDescription(busif_->getDescription());
-
-	//attributes_.setAttributes(busif_->getAttributes());
+void BusIfGeneralTab::refresh() {
 
 	busType_.setVLNV(busif_->getBusType());
 	absType_.setVLNV(busif_->getAbstractionType());
 
 	details_.restoreChanges();
+
+	parameters_.refresh();
 }
 
-void BusIfGeneralTab::applyChanges()
-{
-	busif_->setName(nameGroup_.getName());
-	busif_->setDisplayName(nameGroup_.getDisplayName());
-	busif_->setDescription(nameGroup_.getDescription());
-
-	//busif_->setAttributes(attributes_.getAttributes());
+void BusIfGeneralTab::applyChanges() {
 
 	busif_->setBusType(busType_.getVLNV());
 	busif_->setAbstractionType(absType_.getVLNV());

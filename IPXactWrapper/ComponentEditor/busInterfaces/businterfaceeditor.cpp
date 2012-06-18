@@ -14,39 +14,18 @@
 
 BusInterfaceEditor::BusInterfaceEditor(LibraryInterface* libHandler,
 									   QSharedPointer<Component> component, 
-									   void* dataPointer, 
-									   QWidget *parent): 
-ItemEditor(component, parent),
-busif_(static_cast<BusInterface*>(dataPointer)),
-tabs_(this), 
-general_(libHandler, dataPointer, &tabs_), 
-portmaps_(libHandler, component, dataPointer, &tabs_), 
-interfaceMode_(libHandler, &general_, component, dataPointer, &tabs_), 
-parameters_(dataPointer, &tabs_) {
-
-	Q_ASSERT_X(component, "BusInterfaceEditor constructor",
-		"Null Component-pointer given as parameter");
-	Q_ASSERT_X(dataPointer, "BusInterfaceEditor constructor",
-		"Null dataPointer given as parameter");
-
-	initialize();
-}
-
-BusInterfaceEditor::BusInterfaceEditor(LibraryInterface* libHandler,
-									   QSharedPointer<Component> component, 
 									   QSharedPointer<BusInterface> busif,
 									   QWidget *parent): 
 ItemEditor(component, parent),
-busif_(busif.data()),
+busif_(busif),
 tabs_(this), 
-general_(libHandler, busif_, &tabs_), 
-portmaps_(libHandler, component, busif_, &tabs_), 
-interfaceMode_(libHandler, &general_, component, busif_, &tabs_), 
-parameters_(busif_, &tabs_) {
+general_(libHandler, busif, &tabs_), 
+portmaps_(libHandler, component, busif.data(), &tabs_), 
+interfaceMode_(libHandler, &general_, component, busif.data(), &tabs_) {
 
 	Q_ASSERT(component);
 	Q_ASSERT(libHandler);
-	Q_ASSERT(busif);
+	Q_ASSERT(busif_);
 
 	initialize();
 }
@@ -62,7 +41,6 @@ void BusInterfaceEditor::initialize() {
 	tabs_.addTab(&general_, tr("General"));
 	tabs_.addTab(&interfaceMode_, tr("Interface mode"));
 	tabs_.addTab(&portmaps_, tr("Port maps"));
-	tabs_.addTab(&parameters_, tr("Parameters"));
 
 	connect(&portmaps_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -87,13 +65,6 @@ void BusInterfaceEditor::initialize() {
 	connect(&interfaceMode_, SIGNAL(noticeMessage(const QString&)),
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
-	connect(&parameters_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&parameters_, SIGNAL(errorMessage(const QString&)),
-		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-	connect(&parameters_, SIGNAL(noticeMessage(const QString&)),
-		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-
 	connect(&tabs_, SIGNAL(currentChanged(int)),
 		this, SLOT(onTabChange(int)), Qt::UniqueConnection);
 
@@ -108,15 +79,9 @@ bool BusInterfaceEditor::isValid() const {
 		return false;
 	else if (!interfaceMode_.isValid())
 		return false;
-	else if (!parameters_.isValid())
-		return false;
 
 	// all was fine
 	return true;
-}
-
-void BusInterfaceEditor::removeModel() {
-	component()->removeBusInterface(busif_);
 }
 
 void BusInterfaceEditor::onTabChange( int index ) {
@@ -133,12 +98,11 @@ void BusInterfaceEditor::makeChanges() {
 	portmaps_.applyChanges();
 	interfaceMode_.applyChanges();
 
-	component()->updateBusInterface(busif_);
+	component()->updateBusInterface(busif_.data());
 }
 
 void BusInterfaceEditor::refresh() {
-	general_.restoreChanges();
+	general_.refresh();
 	portmaps_.restoreChanges();
 	interfaceMode_.restoreChanges();
-	parameters_.refresh();
 }

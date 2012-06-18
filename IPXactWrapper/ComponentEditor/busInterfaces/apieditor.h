@@ -13,8 +13,9 @@
 #define APIEDITOR_H
 
 #include <IPXactWrapper/ComponentEditor/itemeditor.h>
-
+#include <common/widgets/nameGroupBox/namegroupbox.h>
 #include "busifgeneraltab.h"
+#include <common/widgets/attributeBox/attributebox.h>
 
 #include <QSharedPointer>
 #include <QRadioButton>

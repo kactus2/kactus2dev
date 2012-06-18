@@ -113,6 +113,18 @@ QVariant AddressSpacesModel::data( const QModelIndex& index, int role /*= Qt::Di
 			return QColor("red");
 		}
 	}
+	else if (Qt::BackgroundRole == role) {
+		switch (index.column()) {
+			case AddressSpacesDelegate::NAME_COLUMN:
+			case AddressSpacesDelegate::ADDR_UNIT_COLUMN:
+			case AddressSpacesDelegate::WIDTH_COLUMN: 
+			case AddressSpacesDelegate::RANGE_COLUMN: {
+				return QColor("LemonChiffon");
+										  }
+			default:
+				return QColor("white");
+		}
+	}
 	else {
 		return QVariant();
 	}
