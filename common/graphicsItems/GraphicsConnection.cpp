@@ -996,7 +996,7 @@ void GraphicsConnection::drawOverlapGraphics(QPainter* painter)
         QList<QPointF> const& route1 = pathPoints_;
 
         // Paint junction marks to those parts that go vertically and cross another connection.
-        if (item->type() == GraphicsConnection::Type)
+        if (dynamic_cast<GraphicsConnection*>(item) != 0)
         {
             GraphicsConnection* conn = static_cast<GraphicsConnection*>(item);
             QList<QPointF> const& route2 = conn->route();

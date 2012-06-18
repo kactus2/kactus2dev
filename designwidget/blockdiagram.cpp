@@ -98,10 +98,10 @@ void BlockDiagram::loadDesign(QSharedPointer<Design> design)
 
     if (design->getColumns().isEmpty())
     {
-//         addColumn(ColumnDesc("IO", COLUMN_CONTENT_IO));
-//         addColumn(ColumnDesc("Buses", COLUMN_CONTENT_BUSES));
-//         addColumn(ColumnDesc("Components", COLUMN_CONTENT_COMPONENTS));
-//         addColumn(ColumnDesc("IO", COLUMN_CONTENT_IO));
+        addColumn(ColumnDesc("IO", COLUMN_CONTENT_IO));
+        addColumn(ColumnDesc("Buses", COLUMN_CONTENT_BUSES));
+        addColumn(ColumnDesc("Components", COLUMN_CONTENT_COMPONENTS));
+        addColumn(ColumnDesc("IO", COLUMN_CONTENT_IO));
     }
     else
     {
@@ -129,7 +129,8 @@ void BlockDiagram::loadDesign(QSharedPointer<Design> design)
 		QSharedPointer<LibraryComponent> libComponent = getLibraryInterface()->getModel(instance.getComponentRef());
         QSharedPointer<Component> component = libComponent.staticCast<Component>();
 
-		if (!component) {
+		if (!component)
+        {
 			emit errorMessage(tr("The component %1 instantiated within design "
 				                 "%2 was not found in the library").arg(
 				              instance.getComponentRef().getName()).arg(design->getVlnv()->getName()));
@@ -156,11 +157,15 @@ void BlockDiagram::loadDesign(QSharedPointer<Design> design)
             itrPortPos.next();
             DiagramPort* port = diagComp->getBusPort(itrPortPos.key());
 
-            if (port != 0)
+            if (port == 0)
             {
-                port->setPos(itrPortPos.value());
-                diagComp->onMovePort(port);
+                port = diagComp->addPort(itrPortPos.value());
+                port->setName(itrPortPos.key());
+                connect(port, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
             }
+
+            port->setPos(itrPortPos.value());
+            diagComp->onMovePort(port);
         }
 
         // Setup the custom ad-hoc port positions for the component.
@@ -619,14 +624,7 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv) const
         {
             DiagramComponent *comp = qgraphicsitem_cast<DiagramComponent *>(item);
 
-            // Check for unpackaged components.
-            if (!comp->componentModel()->getVlnv()->isValid())
-            {
-                unpackagedNames.append(comp->name());
-                continue;
-            }
-
-			ComponentInstance instance(comp->name(), comp->displayName(),
+            ComponentInstance instance(comp->name(), comp->displayName(),
 				                       comp->description(), *comp->componentModel()->getVlnv(),
                                        comp->scenePos());
 
@@ -749,27 +747,6 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv) const
             adHocPortPositions[adHocIf->name()] = adHocIf->scenePos();
         }
 	}
-
-    // If there were unpacked components, show a message box and do not save.
-    if (!unpackagedNames.empty())
-    {
-        QString detailMessage = tr("The following components must be packaged before the design can be saved:");
-
-        foreach (QString const& name, unpackagedNames)
-        {
-            detailMessage += "\n * " + name;
-        }
-
-        HWDesignWidget* designWidget = static_cast<HWDesignWidget*>(parent());
-
-        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                           tr("Design ") + designWidget->getDocumentName() + 
-                           tr(" cannot be saved because some component(s) are unpackaged."),
-                           QMessageBox::Ok, (QWidget*)parent());
-        msgBox.setDetailedText(detailMessage);
-        msgBox.exec();
-        return QSharedPointer<Design>();
-    }
 
     foreach(GraphicsColumn* column, layout_->getColumns())
     {
