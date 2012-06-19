@@ -45,18 +45,6 @@ lh_(lh),
     setType(ENDPOINT_TYPE_BUS);
     busInterface_ = busIf;
 
-    int squareSize = GridSize;
-    /*  /\
-     *  ||
-     */
-    QPolygonF shape;
-    shape << QPointF(-squareSize/2, squareSize/2)
-          << QPointF(-squareSize/2, .0)
-          << QPointF(0, -squareSize/2)
-          << QPointF(squareSize/2, 0)
-          << QPointF(squareSize/2, squareSize/2);
-    setPolygon(shape);
-
     nameLabel_ = new QGraphicsTextItem("", this);
     QFont font = nameLabel_->font();
     font.setPointSize(8);
@@ -151,6 +139,84 @@ void BusPortItem::updateInterface()
         }
     }
 
+    // Determine the bus direction.
+    General::Direction dir = General::DIRECTION_INVALID;
+
+    if (busInterface_->getPhysicalPortNames().size() > 0)
+    {
+        foreach (QString const& portName, busInterface_->getPhysicalPortNames())
+        {
+            Port* port = getOwnerComponent()->getPort(portName);
+
+            if (port != 0)
+            {
+                if (dir == General::DIRECTION_INVALID)
+                {
+                    dir = port->getDirection();
+                }
+                else if (dir != port->getDirection())
+                {
+                    dir = General::INOUT;
+                    break;
+                }
+            }
+        }
+    }
+    else
+    {
+        dir = General::INOUT;
+    }
+
+    // Update the polygon shape based on the direction.
+    int squareSize = GridSize;
+    QPolygonF shape;
+
+    switch (dir)
+    {
+    case General::IN:
+        {
+            /*  ||
+            *  \/
+            */
+            shape << QPointF(-squareSize/2, 0)
+                << QPointF(-squareSize/2, -squareSize/2)
+                << QPointF(squareSize/2, -squareSize/2)
+                << QPointF(squareSize/2, 0)
+                << QPointF(0, squareSize/2);
+            break;
+        }
+
+    case General::OUT:
+        {
+            /*  /\
+            *  ||
+            */
+            shape << QPointF(-squareSize/2, squareSize/2)
+                << QPointF(-squareSize/2, 0)
+                << QPointF(0, -squareSize/2)
+                << QPointF(squareSize/2, 0)
+                << QPointF(squareSize/2, squareSize/2);
+            break;
+        }
+
+    case General::INOUT:
+        {
+            /*  /\
+            *  ||
+            *  \/
+            */
+            shape << QPointF(-squareSize/2, squareSize/2)
+                << QPointF(-squareSize/2, 0)
+                << QPointF(0, -squareSize/2)
+                << QPointF(squareSize/2, 0)
+                << QPointF(squareSize/2, squareSize/2)
+                << QPointF(0, squareSize);
+            break;
+        }
+    }
+
+    setPolygon(shape);
+
     nameLabel_->setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">"
                         + busInterface_->getName() + "</div>");
 
@@ -159,11 +225,11 @@ void BusPortItem::updateInterface()
 
     if (pos().x() < 0)
     {
-        nameLabel_->setPos(nameHeight / 2, GridSize / 2);
+        nameLabel_->setPos(nameHeight / 2, GridSize);
     }
     else
     {
-        nameLabel_->setPos(-nameHeight / 2, GridSize / 2 + nameWidth);
+        nameLabel_->setPos(-nameHeight / 2, GridSize + nameWidth);
     }
 
     offPageConnector_->updateInterface();
@@ -333,13 +399,13 @@ QVariant BusPortItem::itemChange(GraphicsItemChange change,
             if (pos().x() < 0)
             {
                 setDirection(QVector2D(-1.0f, 0.0f));
-                nameLabel_->setPos(nameHeight/2, GridSize/2);
+                nameLabel_->setPos(nameHeight/2, GridSize);
             }
             // Otherwise the port is directed to the right.
             else
             {
                 setDirection(QVector2D(1.0f, 0.0f));
-                nameLabel_->setPos(-nameHeight/2, GridSize/2 + nameWidth);
+                nameLabel_->setPos(-nameHeight/2, GridSize + nameWidth);
             }
 
             break;
@@ -441,6 +507,8 @@ void BusPortItem::setTypes(VLNV const& busType, VLNV const& absType, General::In
             }
         }
     }
+
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------

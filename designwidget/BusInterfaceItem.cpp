@@ -154,6 +154,84 @@ void BusInterfaceItem::updateInterface()
 		break;
     }
 
+    // Determine the bus direction.
+    General::Direction dir = General::DIRECTION_INVALID;
+
+    if (busInterface_->getPhysicalPortNames().size() > 0)
+    {
+        foreach (QString const& portName, busInterface_->getPhysicalPortNames())
+        {
+            Port* port = getOwnerComponent()->getPort(portName);
+
+            if (port != 0)
+            {
+                if (dir == General::DIRECTION_INVALID)
+                {
+                    dir = port->getDirection();
+                }
+                else if (dir != port->getDirection())
+                {
+                    dir = General::INOUT;
+                    break;
+                }
+            }
+        }
+    }
+    else
+    {
+        dir = General::INOUT;
+    }
+
+    // Update the polygon shape based on the direction.
+    int squareSize = GridSize;
+    QPolygonF shape;
+
+    switch (dir)
+    {
+    case General::IN:
+        {
+            /*  /\
+             *  ||
+             */
+            shape << QPointF(-squareSize/2, squareSize)
+                << QPointF(-squareSize/2, -squareSize / 2)
+                << QPointF(0, -squareSize)
+                << QPointF(squareSize/2, -squareSize / 2)
+                << QPointF(squareSize/2, squareSize);
+            break;
+        }
+
+    case General::OUT:
+        {
+            /*  ||
+             *  \/
+             */
+            shape << QPointF(-squareSize/2, squareSize / 2)
+                << QPointF(-squareSize/2, -squareSize)
+                << QPointF(squareSize/2, -squareSize)
+                << QPointF(squareSize/2, squareSize / 2)
+                << QPointF(0, squareSize);
+            break;
+        }
+
+    case General::INOUT:
+        {
+            /*  /\
+             *  ||
+             *  \/
+             */
+            shape << QPointF(-squareSize/2, squareSize / 2)
+                << QPointF(-squareSize/2, -squareSize / 2)
+                << QPointF(0, -squareSize)
+                << QPointF(squareSize/2, -squareSize / 2)
+                << QPointF(squareSize/2, squareSize / 2)
+                << QPointF(0, squareSize);
+            break;
+        }
+    }
+
+    setPolygon(shape);
+
     nameLabel_->setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">"
                         + busInterface_->getName() + "</div>");
 

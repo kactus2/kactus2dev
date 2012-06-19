@@ -807,6 +807,11 @@ void HWDesignDiagram::updateHierComponent()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::selectionToFront()
 {
+    /*if (oldSelection_ != 0 && oldSelection_->type() == HWConnection::Type)
+    {
+        oldSelection_->setZValue(-900);
+    }*/
+
     if (selectedItems().isEmpty())
         return;
 

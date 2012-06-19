@@ -600,11 +600,6 @@ void GraphicsConnection::paint(QPainter* painter, QStyleOptionGraphicsItem const
 {
     bool selected = option->state & QStyle::State_Selected;
 
-    if (selected)
-    {
-        drawOverlapGraphics(painter);
-    }
-
     QStyleOptionGraphicsItem myoption = (*option);
     myoption.state &= !QStyle::State_Selected;
 
