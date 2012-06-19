@@ -1,39 +1,47 @@
-/* 
- *
- * 		filename: diagramport.h
- */
+//-----------------------------------------------------------------------------
+// File: AdHocPortItem.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Joni-Matti M‰‰tt‰
+// Date: 9.2.2012
+//
+// Description:
+// Diagram graphics item for ad-hoc ports.
+//-----------------------------------------------------------------------------
 
-#ifndef DIAGRAMPORT_H
-#define DIAGRAMPORT_H
+#ifndef ADHOCPORTITEM_H
+#define ADHOCPORTITEM_H
 
 #include <QSharedPointer>
 #include <QVector2D>
-#include <QPolygonF>
 
-#include "DiagramConnectionEndpoint.h"
+#include "HWConnectionEndpoint.h"
 
 #include <common/graphicsItems/GraphicsItemTypes.h>
 
-class BusInterface;
-class DiagramComponent;
-class DiagramOffPageConnector;
+class OffPageConnectorItem;
 class LibraryInterface;
+class Port;
 
-/*! \brief DiagramInterconnection represents graphically an IP-XACT port
- *
- */
-class DiagramPort : public DiagramConnectionEndpoint
+//-----------------------------------------------------------------------------
+//! AdHocPortItem class.
+//-----------------------------------------------------------------------------
+class AdHocPortItem : public HWConnectionEndpoint
 {
     Q_OBJECT
 
 public:
-    enum { Type = GFX_TYPE_DIAGRAM_PORT };
+    enum { Type = GFX_TYPE_DIAGRAM_ADHOC_PORT };
 
-    DiagramPort(QSharedPointer<BusInterface> busIf, LibraryInterface* lh,
-                QGraphicsItem *parent = 0);
+    /*!
+     *  Constructor.
+     */
+    AdHocPortItem(Port* port, LibraryInterface* lh, QGraphicsItem* parent = 0);
 
-	//! \brief The destructor
-	virtual ~DiagramPort();
+	/*!
+     *  Destructor.
+     */
+	virtual ~AdHocPortItem();
 
     /*!
      *  Sets the port temporary or not temporary. Temporary port set its bus interface undefined
@@ -52,15 +60,15 @@ public:
      */
     void setTypes(VLNV const& busType, VLNV const& absType, General::InterfaceMode mode);
 
-    /*! \brief Update the graphics to match the IP-XACT bus interface
-     *
+    /*!
+     *  Updates the graphics to match the IP-XACT port.
      */
     void updateInterface();
 
 	int type() const { return Type; }
 
-//-----------------------------------------------------------------------------
-    // DiagramConnectionEndpoint implementation.
+    //-----------------------------------------------------------------------------
+    // HWConnectionEndpoint implementation.
     //-----------------------------------------------------------------------------
 
     /*!
@@ -68,30 +76,28 @@ public:
      */
     virtual bool isDirectionFixed() const;
 
-    /*! \brief Returns the name of this port
-     *
+    /*!
+     *  Returns the name of the ad-hoc port.
      */
     virtual QString name() const;
 
-	/*! \brief Set the name for the port.
-	 *
-	 * \param name The name to set for the port.
-	 *
-	*/
+	/*!
+     *  Sets the name of the ad-hoc port.
+     *
+     *      @param [in] name The name to set.
+     */
 	virtual void setName(const QString& name);
 
-	/*! \brief Get the description of the port.
-	 *
-	 *
-	 * \return QString contains the description.
-	*/
+	/*!
+     *  Returns the description of the port.
+     */
 	virtual QString description() const;
 
-	/*! \brief Set the description for the port.
-	 *
-	 * \param description Contains the description to set.
-	 *
-	*/
+	/*!
+     *  Sets the description of the port.
+     *
+     *      @param [in] description The description to set.
+     */
 	virtual void setDescription(const QString& description);
 
     /*!
@@ -103,7 +109,6 @@ public:
      */
     virtual bool onConnect(ConnectionEndpoint const* other);
 
-    bool askCompatibleMode(QSharedPointer<BusInterface> otherBusIf, General::InterfaceMode &mode);
 
     /*!
      *  Called when a connection has been removed from between this and another end point.
@@ -120,17 +125,14 @@ public:
     virtual bool canConnect(ConnectionEndpoint const* other) const;
 
     /*! 
-     *  Returns the encompassing component. if this port represents
-     *  a bus interface on a component.
+    *  Returns the encompassing component. if this port represents
+    *  a bus interface on a component.
      */
     virtual ComponentItem* encompassingComp() const;
 
-	/*! \brief Returns pointer to the top component that owns this interface.
-	 *
-	 *
-	 * \return QSharedPointer<Component> Pointer to the component to which this 
-	 * interface belongs to.
-	*/
+	/*!
+     *  Returns a pointer to the top component that owns this interface
+	 */
 	virtual QSharedPointer<Component> getOwnerComponent() const;
 
     /*! 
@@ -146,8 +148,8 @@ public:
      */
     virtual Port* getPort() const;
 
-    /*! \brief Returns true if the port represents a hierarchical connection
-     *
+    /*! 
+     *  Returns true if the port represents a hierarchical connection.
      */
     virtual bool isHierarchical() const;
 
@@ -156,11 +158,11 @@ public:
      */
     virtual bool isBus() const;
 
-	/*! \brief Set the interface mode for the end point.
-	 *
-	 * \param mode The interface mode to set.
-	 *
-	*/
+	/*!
+     *  Sets the interface mode for the port.
+     *
+     *      @param [in] mode The mode to set.
+     */
 	virtual void setInterfaceMode(General::InterfaceMode mode);
 
     /*!
@@ -178,7 +180,7 @@ protected:
 
 private:
     QGraphicsTextItem *nameLabel_;
-    QSharedPointer<BusInterface> busInterface_;
+    Port* port_;
     LibraryInterface* lh_;
 
     //! Boolean flag for determining if the port is temporary or not.
@@ -191,7 +193,9 @@ private:
     QMap<ConnectionEndpoint*, QPointF> oldPortPositions_;
 
     //! The off-page connector.
-    DiagramOffPageConnector* offPageConnector_;
+    OffPageConnectorItem* offPageConnector_;
 };
 
-#endif // DIAGRAMPORT_H
+//-----------------------------------------------------------------------------
+
+#endif // ADHOCPORTITEM_H

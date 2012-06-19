@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: DiagramChangeCommands.cpp
+// File: HWChangeCommands.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
@@ -9,9 +9,9 @@
 // Undo change commands for the block diagram.
 //-----------------------------------------------------------------------------
 
-#include "DiagramChangeCommands.h"
+#include "HWChangeCommands.h"
 
-#include "DiagramDeleteCommands.h"
+#include "HWDeleteCommands.h"
 
 #include <models/component.h>
 #include <models/ComInterface.h>
@@ -20,13 +20,13 @@
 
 #include <ConfigurationEditor/activeviewmodel.h>
 
-#include "diagraminterconnection.h"
-#include "diagramport.h"
-#include "DiagramAdHocPort.h"
-#include "DiagramAdHocInterface.h"
-#include "diagramcomponent.h"
-#include "diagraminterface.h"
-#include "columnview/DiagramColumn.h"
+#include "HWConnection.h"
+#include "BusPortItem.h"
+#include "AdHocPortItem.h"
+#include "AdHocInterfaceItem.h"
+#include "HWComponentItem.h"
+#include "BusInterfaceItem.h"
+#include "columnview/HWColumn.h"
 
 #include <models/businterface.h>
 
@@ -170,7 +170,7 @@ void ComponentPacketizeCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: EndpointChangeCommand()
 //-----------------------------------------------------------------------------
-EndpointChangeCommand::EndpointChangeCommand(DiagramConnectionEndpoint* endpoint, 
+EndpointChangeCommand::EndpointChangeCommand(HWConnectionEndpoint* endpoint, 
 											 QString const& newName,
                                              General::InterfaceMode newMode,
 											 QString const& newDescription,
@@ -437,7 +437,7 @@ void EndpointPropertyValuesChangeCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: EndPointTypesCommand()
 //-----------------------------------------------------------------------------
-EndPointTypesCommand::EndPointTypesCommand(DiagramConnectionEndpoint* endpoint,
+EndPointTypesCommand::EndPointTypesCommand(HWConnectionEndpoint* endpoint,
                                            VLNV const& oldBusType, VLNV const& oldAbsType,
                                            General::InterfaceMode oldMode,
                                            QString const& oldName, QUndoCommand* parent)
@@ -522,7 +522,7 @@ void EndPointTypesCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: EndPointPortMapCommand()
 //-----------------------------------------------------------------------------
-EndPointPortMapCommand::EndPointPortMapCommand(DiagramConnectionEndpoint* endpoint,
+EndPointPortMapCommand::EndPointPortMapCommand(HWConnectionEndpoint* endpoint,
                                                QList< QSharedPointer<General::PortMap> > newPortMaps,
                                                QUndoCommand* parent)
     : QUndoCommand(parent), endpoint_(endpoint),
@@ -597,7 +597,7 @@ AdHocVisibilityChangeCommand::AdHocVisibilityChangeCommand(AdHocEnabled* dataSou
     if (!newVisibility_)
     {
         // Create child commands for removing interconnections.
-        DiagramConnectionEndpoint* port = dataSource->getDiagramAdHocPort(portName);
+        HWConnectionEndpoint* port = dataSource->getDiagramAdHocPort(portName);
         Q_ASSERT(port != 0);
 
         pos_ = port->scenePos();
@@ -605,13 +605,13 @@ AdHocVisibilityChangeCommand::AdHocVisibilityChangeCommand(AdHocEnabled* dataSou
         foreach (GraphicsConnection* conn, port->getConnections())
         {
             QUndoCommand* cmd =
-                new ConnectionDeleteCommand(static_cast<DiagramInterconnection*>(conn), this);
+                new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
         }
 
         foreach (GraphicsConnection* conn, port->getOffPageConnector()->getConnections())
         {
             QUndoCommand* cmd =
-                new ConnectionDeleteCommand(static_cast<DiagramInterconnection*>(conn), this);
+                new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
         }
     }
 }
@@ -633,11 +633,11 @@ void AdHocVisibilityChangeCommand::undo()
 
     if (!newVisibility_)
     {
-        DiagramConnectionEndpoint* port = dataSource_->getDiagramAdHocPort(portName_);
+        HWConnectionEndpoint* port = dataSource_->getDiagramAdHocPort(portName_);
         port->setPos(port->parentItem()->mapFromScene(pos_));
 
         // 
-        DiagramAdHocInterface* adHocIf = dynamic_cast<DiagramAdHocInterface*>(port);
+        AdHocInterfaceItem* adHocIf = dynamic_cast<AdHocInterfaceItem*>(port);
 
         if (adHocIf != 0)
         {
@@ -645,11 +645,11 @@ void AdHocVisibilityChangeCommand::undo()
             column->onMoveItem(adHocIf);
         }
 
-        DiagramAdHocPort* adHocPort = dynamic_cast<DiagramAdHocPort*>(port);
+        AdHocPortItem* adHocPort = dynamic_cast<AdHocPortItem*>(port);
 
         if (adHocPort != 0)
         {
-            DiagramComponent* comp = static_cast<DiagramComponent*>(adHocPort->parentItem());
+            HWComponentItem* comp = static_cast<HWComponentItem*>(adHocPort->parentItem());
             comp->onMovePort(adHocPort);
         }
     }
@@ -672,7 +672,7 @@ void AdHocVisibilityChangeCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: AdHocBoundsChangeCommand::AdHocBoundsChangeCommand()
 //-----------------------------------------------------------------------------
-AdHocBoundsChangeCommand::AdHocBoundsChangeCommand(DiagramInterconnection* connection,
+AdHocBoundsChangeCommand::AdHocBoundsChangeCommand(HWConnection* connection,
                                                    bool right, int endpointIndex,
                                                    int oldValue, int newValue, QUndoCommand* parent)
     : QUndoCommand(parent),

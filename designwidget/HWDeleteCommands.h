@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: DiagramDeleteCommands.h
+// File: HWDeleteCommands.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
@@ -9,8 +9,8 @@
 // Undo delete commands for the design widget.
 //-----------------------------------------------------------------------------
 
-#ifndef DIAGRAMDELETECOMMANDS_H
-#define DIAGRAMDELETECOMMANDS_H
+#ifndef HWDELETECOMMANDS_H
+#define HWDELETECOMMANDS_H
 
 #include <models/generaldeclarations.h>
 
@@ -21,11 +21,11 @@
 
 class BusInterface;
 class Port;
-class DiagramInterconnection;
-class DiagramConnectionEndpoint;
-class DiagramPort;
-class DiagramComponent;
-class DiagramInterface;
+class HWConnection;
+class HWConnectionEndpoint;
+class BusPortItem;
+class HWComponentItem;
+class BusInterfaceItem;
 class GraphicsColumn;
 class GraphicsColumnLayout;
 class ComponentItem;
@@ -91,7 +91,7 @@ public:
      *
      *      @param [in] component    The component to delete.
      */
-    ComponentDeleteCommand(DiagramComponent* component, QUndoCommand* parent = 0);
+    ComponentDeleteCommand(HWComponentItem* component, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -126,7 +126,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The diagram component.
-    DiagramComponent* component_;
+    HWComponentItem* component_;
 
     //! The component's parent column.
     GraphicsColumn* parent_;
@@ -149,7 +149,7 @@ public:
      *
      *      @param [in] conn    The interconnection to delete.
      */
-    ConnectionDeleteCommand(DiagramInterconnection* conn, QUndoCommand* parent = 0);
+    ConnectionDeleteCommand(HWConnection* conn, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -176,7 +176,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The interconnection.
-    DiagramInterconnection* conn_;
+    HWConnection* conn_;
 
     //! The interface modes for the endpoints.
     General::InterfaceMode mode1_;
@@ -203,7 +203,7 @@ public:
      *
      *      @param [in] port The port to delete.
      */
-    PortDeleteCommand(DiagramConnectionEndpoint* port, QUndoCommand* parent = 0);
+    PortDeleteCommand(HWConnectionEndpoint* port, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -230,10 +230,10 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The diagram port.
-    DiagramConnectionEndpoint* port_;
+    HWConnectionEndpoint* port_;
 
     //! The port's parent.
-    DiagramComponent* parent_;
+    HWComponentItem* parent_;
 
     //! The graphics scene.
     QGraphicsScene* scene_;
@@ -254,7 +254,7 @@ public:
      *      @param [in] interface    The interface to delete.
      *      @param [in] removePorts  If true, the ports that are part of the interface are also removed.
      */
-    InterfaceDeleteCommand(DiagramInterface* interface, bool removePorts, QUndoCommand* parent = 0);
+    InterfaceDeleteCommand(BusInterfaceItem* interface, bool removePorts, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -281,7 +281,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The diagram interface.
-    DiagramInterface* interface_;
+    BusInterfaceItem* interface_;
 
     //! The bus interface.
     QSharedPointer<BusInterface> busIf_;
@@ -304,4 +304,4 @@ private:
 
 //-----------------------------------------------------------------------------
 
-#endif // DIAGRAMDELETECOMMANDS_H
+#endif // HWDELETECOMMANDS_H

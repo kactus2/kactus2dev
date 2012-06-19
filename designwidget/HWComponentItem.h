@@ -1,10 +1,10 @@
 /* 
  *
- * 		filename: diagramcomponent.h
+ * 		filename: HWComponentItem.h
  */
 
-#ifndef DIAGRAMCOMPONENT_H
-#define DIAGRAMCOMPONENT_H
+#ifndef HWCOMPONENTITEM_H
+#define HWCOMPONENTITEM_H
 
 #include "AdHocEnabled.h"
 #include <common/graphicsItems/ComponentItem.h>
@@ -12,23 +12,23 @@
 
 #include <QSharedPointer>
 
-class DiagramPort;
-class DiagramAdHocPort;
-class DiagramConnectionEndpoint;
-class DiagramColumn;
+class BusPortItem;
+class AdHocPortItem;
+class HWConnectionEndpoint;
+class HWColumn;
 class LibraryInterface;
 
-/*! \brief DiagramComponent represents graphically an IP-XACT component instance
+/*! \brief HWComponentItem represents graphically an IP-XACT component instance
  *
  */
-class DiagramComponent : public ComponentItem, public AdHocEnabled
+class HWComponentItem : public ComponentItem, public AdHocEnabled
 {
     Q_OBJECT 
 
 public:
     enum { Type = GFX_TYPE_DIAGRAM_COMPONENT };
 
-    DiagramComponent(LibraryInterface* lh,
+    HWComponentItem(LibraryInterface* lh,
                      QSharedPointer<Component> component,
                      const QString &instanceName = QString("unnamed"),
                      const QString &displayName = QString(),
@@ -38,7 +38,7 @@ public:
                      QGraphicsItem *parent = 0);
 
 	//! \brief The destructor
-	virtual ~DiagramComponent();
+	virtual ~HWComponentItem();
 
     /*!
      *  Adds a new, empty port to the component. This function creates automatically an empty
@@ -48,31 +48,31 @@ public:
      *
      *      @return The newly created port.
      */
-    DiagramPort* addPort(QPointF const& pos);
+    BusPortItem* addPort(QPointF const& pos);
 
     /*!
      *  Adds an already created port to the component.
      *
      *      @param [in] port The port to add. Must not be used in any other component.
      */
-    void addPort(DiagramConnectionEndpoint* port);
+    void addPort(HWConnectionEndpoint* port);
 
     /*!
      *  Removes the given port from the component.
      *
      *      @param [in] port The port to remove.
      */
-    void removePort(DiagramConnectionEndpoint* port);
+    void removePort(HWConnectionEndpoint* port);
 
-    /*! \brief Get the DiagramPort that corresponds to the given bus interface name
+    /*! \brief Get the BusPortItem that corresponds to the given bus interface name
      *
      */
-    DiagramPort *getBusPort(const QString &name);
+    BusPortItem *getBusPort(const QString &name);
 
     /*
      *  Returns the ad-hoc port with the given name, or null if not found.
      */
-    DiagramAdHocPort* getAdHocPort(QString const& portName);
+    AdHocPortItem* getAdHocPort(QString const& portName);
 
     int type() const { return Type; }
 
@@ -80,7 +80,7 @@ public:
      *
      *      @param [in] port The port that is being moved.
      */
-    void onMovePort(DiagramConnectionEndpoint* port);
+    void onMovePort(HWConnectionEndpoint* port);
 
     /*!
      *  Updates the diagram component to reflect the current state of the component model.
@@ -124,11 +124,14 @@ public:
     /*!
      *  Returns the ad-hoc port with the given name or null if not found.
      */
-    virtual DiagramConnectionEndpoint* getDiagramAdHocPort(QString const& portName);
+    virtual HWConnectionEndpoint* getDiagramAdHocPort(QString const& portName);
 
 signals:
+    //! Emitted when the ad-hoc visibilities have been changed.
+    void adHocVisibilitiesChanged();
+
     //! \brief Emitted right before this diagram component is destroyed.
-	void destroyed(DiagramComponent* diaComp);
+	void destroyed(HWComponentItem* diaComp);
 
 protected:
     // Called when the user presses the mouse button.
@@ -143,10 +146,10 @@ protected:
 private:
 	
 	//! \brief No copying
-	DiagramComponent(const DiagramComponent& other);
+	HWComponentItem(const HWComponentItem& other);
 
 	//! No assignment
-	DiagramComponent& operator=(const DiagramComponent& other);
+	HWComponentItem& operator=(const HWComponentItem& other);
 
     /*!
      *  Adds a port to the correct port stack.
@@ -155,7 +158,7 @@ private:
      *      @param [in] right  If true, the port is added to the right port stack. If false, it is
      *                         added to the left port stack.
      */
-    void onAddPort(DiagramConnectionEndpoint* port, bool right);
+    void onAddPort(HWConnectionEndpoint* port, bool right);
 
     /*!
      *  Updates the size of the component based on the port positions.
@@ -175,13 +178,13 @@ private:
     QGraphicsPixmapItem* hierIcon_;
 
     //! The old column from where the mouse drag event began.
-    DiagramColumn* oldColumn_;
+    HWColumn* oldColumn_;
 
     //! The left and right port stacks.
-    QList<DiagramConnectionEndpoint*> leftPorts_;
-    QList<DiagramConnectionEndpoint*> rightPorts_;
+    QList<HWConnectionEndpoint*> leftPorts_;
+    QList<HWConnectionEndpoint*> rightPorts_;
     bool connUpdateDisabled_;
     QPointF oldPos_;
 };
 
-#endif // DIAGRAMCOMPONENT_H
+#endif // HWCOMPONENTITEM_H

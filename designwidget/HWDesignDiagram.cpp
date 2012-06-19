@@ -3,20 +3,20 @@
  * 		filename: blockdiagram.cpp
  */
 
-#include "blockdiagram.h"
-#include "diagramcomponent.h"
-#include "diagraminterconnection.h"
-#include "diagramport.h"
-#include "DiagramAdHocPort.h"
-#include "DiagramAdHocInterface.h"
-#include "diagraminterface.h"
-#include "DiagramOffPageConnector.h"
+#include "HWDesignDiagram.h"
+#include "HWComponentItem.h"
+#include "HWConnection.h"
+#include "BusPortItem.h"
+#include "AdHocPortItem.h"
+#include "AdHocInterfaceItem.h"
+#include "BusInterfaceItem.h"
+#include "OffPageConnectorItem.h"
 #include "SelectItemTypeDialog.h"
 #include "HWDesignWidget.h"
-#include "DiagramAddCommands.h"
-#include "DiagramDeleteCommands.h"
-#include "DiagramMoveCommands.h"
-#include "DiagramChangeCommands.h"
+#include "HWAddCommands.h"
+#include "HWDeleteCommands.h"
+#include "HWMoveCommands.h"
+#include "HWChangeCommands.h"
 #include "BusInterfaceDialog.h"
 
 #include <common/graphicsItems/GraphicsColumnUndoCommands.h>
@@ -27,7 +27,7 @@
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/GenericEditProvider.h>
 
-#include "columnview/DiagramColumn.h"
+#include "columnview/HWColumn.h"
 
 #include <LibraryManager/libraryhandler.h>
 
@@ -61,9 +61,9 @@
 #include "columnview/ColumnEditDialog.h"
 
 //-----------------------------------------------------------------------------
-// Function: BlockDiagram()
+// Function: HWDesignDiagram()
 //-----------------------------------------------------------------------------
-BlockDiagram::BlockDiagram(LibraryInterface *lh, GenericEditProvider& editProvider, HWDesignWidget *parent)
+HWDesignDiagram::HWDesignDiagram(LibraryInterface *lh, GenericEditProvider& editProvider, HWDesignWidget *parent)
     : DesignDiagram(lh, NULL, editProvider, parent),
       parent_(parent),
       tempConnection_(0),
@@ -79,9 +79,9 @@ BlockDiagram::BlockDiagram(LibraryInterface *lh, GenericEditProvider& editProvid
 }
 
 //-----------------------------------------------------------------------------
-// Function: BlockDiagram::clearScene()
+// Function: HWDesignDiagram::clearScene()
 //-----------------------------------------------------------------------------
-void BlockDiagram::clearScene()
+void HWDesignDiagram::clearScene()
 {
     destroyConnections();
     layout_.clear();
@@ -89,9 +89,9 @@ void BlockDiagram::clearScene()
 }
 
 //-----------------------------------------------------------------------------
-// Function: BlockDiagram::loadDesign()
+// Function: HWDesignDiagram::loadDesign()
 //-----------------------------------------------------------------------------
-void BlockDiagram::loadDesign(QSharedPointer<Design> design)
+void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
 {
     // Create the column layout.
     layout_ = QSharedPointer<GraphicsColumnLayout>(new GraphicsColumnLayout(this));
@@ -107,7 +107,7 @@ void BlockDiagram::loadDesign(QSharedPointer<Design> design)
     {
         foreach (ColumnDesc const& desc, design->getColumns())
         {
-            DiagramColumn* column = new DiagramColumn(desc, layout_.data(), this);
+            HWColumn* column = new HWColumn(desc, layout_.data(), this);
             layout_->addColumn(column, true);
         }
     }
@@ -115,7 +115,7 @@ void BlockDiagram::loadDesign(QSharedPointer<Design> design)
     // Create diagram interfaces for the top-level bus interfaces.
     foreach (QSharedPointer<BusInterface> busIf, getEditedComponent()->getBusInterfaces())
     {
-        DiagramInterface* diagIf = new DiagramInterface(getLibraryInterface(), getEditedComponent(), busIf, 0);
+        BusInterfaceItem* diagIf = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), busIf, 0);
 
         // Add the diagram interface to the first column where it is allowed to be placed.
         layout_->addItem(diagIf);
@@ -139,7 +139,7 @@ void BlockDiagram::loadDesign(QSharedPointer<Design> design)
             component->setComponentImplementation(getEditedComponent()->getComponentImplementation());
 		}
 
-        DiagramComponent* diagComp = new DiagramComponent(getLibraryInterface(), component,
+        HWComponentItem* diagComp = new HWComponentItem(getLibraryInterface(), component,
                                                           instance.getInstanceName(),
                                                           instance.getDisplayName(),
                                                           instance.getDescription(),
@@ -152,7 +152,7 @@ void BlockDiagram::loadDesign(QSharedPointer<Design> design)
         while (itrPortPos.hasNext())
         {
             itrPortPos.next();
-            DiagramPort* port = diagComp->getBusPort(itrPortPos.key());
+            BusPortItem* port = diagComp->getBusPort(itrPortPos.key());
 
             if (port == 0)
             {
@@ -170,7 +170,7 @@ void BlockDiagram::loadDesign(QSharedPointer<Design> design)
         while (itrPortPos.hasNext())
         {
             itrPortPos.next();
-            DiagramAdHocPort* port = diagComp->getAdHocPort(itrPortPos.key());
+            AdHocPortItem* port = diagComp->getAdHocPort(itrPortPos.key());
 
             if (port != 0)
             {
@@ -210,7 +210,7 @@ void BlockDiagram::loadDesign(QSharedPointer<Design> design)
     foreach(Design::Interconnection interconnection, design->getInterconnections())
     {
 		// find the first referenced component
-        DiagramComponent *comp1 = getComponent(interconnection.interface1.componentRef);
+        HWComponentItem *comp1 = getComponent(interconnection.interface1.componentRef);
 
 		if (!comp1) {
 			emit errorMessage(tr("Component %1 was not found in the design").arg(
@@ -219,7 +219,7 @@ void BlockDiagram::loadDesign(QSharedPointer<Design> design)
 		}
 		
 		// find the second referenced component
-        DiagramComponent *comp2 = getComponent(interconnection.interface2.componentRef);
+        HWComponentItem *comp2 = getComponent(interconnection.interface2.componentRef);
 
 		if (!comp2) {
 			emit errorMessage(tr("Component %1 was not found in the design").arg(
@@ -255,8 +255,8 @@ void BlockDiagram::loadDesign(QSharedPointer<Design> design)
 		// created
 		if (comp1 && comp2 && port1 && port2)
         {
-			DiagramInterconnection *diagramInterconnection =
-				new DiagramInterconnection(port1, port2, true, QString(), interconnection.displayName,
+			HWConnection *diagramInterconnection =
+				new HWConnection(port1, port2, true, QString(), interconnection.displayName,
                                            interconnection.description, this);
             diagramInterconnection->setRoute(interconnection.route);
 			diagramInterconnection->setName(interconnection.name);
@@ -295,10 +295,10 @@ void BlockDiagram::loadDesign(QSharedPointer<Design> design)
 
         foreach (QGraphicsItem* item, items())
         {
-            if (item->type() == DiagramInterface::Type &&
-                static_cast<DiagramInterface*>(item)->getBusInterface() == busIf)
+            if (item->type() == BusInterfaceItem::Type &&
+                static_cast<BusInterfaceItem*>(item)->getBusInterface() == busIf)
             {
-                diagIf = static_cast<DiagramInterface*>(item);
+                diagIf = static_cast<BusInterfaceItem*>(item);
                 break;
             }
         }
@@ -324,7 +324,7 @@ void BlockDiagram::loadDesign(QSharedPointer<Design> design)
         }
 
 		// find the component where the hierarchical connection is connected to
-        DiagramComponent *comp = getComponent(hierConn.interface_.componentRef);
+        HWComponentItem *comp = getComponent(hierConn.interface_.componentRef);
 		if (!comp) {
 			emit errorMessage(tr("Component %1 was not found in the top-design").arg(
 				hierConn.interface_.componentRef));
@@ -347,7 +347,7 @@ void BlockDiagram::loadDesign(QSharedPointer<Design> design)
                 diagIf = diagIf->getOffPageConnector();
             }
 
-            DiagramInterconnection* diagConn = new DiagramInterconnection(compPort, diagIf, true, QString(),
+            HWConnection* diagConn = new HWConnection(compPort, diagIf, true, QString(),
                                                                           QString(), QString(), this);
             diagConn->setRoute(hierConn.route);
 
@@ -379,7 +379,7 @@ void BlockDiagram::loadDesign(QSharedPointer<Design> design)
         if (itrCurPort.value())
         {
             QString const& name = itrCurPort.key();
-            DiagramAdHocInterface* adHocIf = new DiagramAdHocInterface(getEditedComponent(),
+            AdHocInterfaceItem* adHocIf = new AdHocInterfaceItem(getEditedComponent(),
                                                                        getEditedComponent()->getPort(name),
                                                                        getLibraryInterface(), 0);
             if (adHocPortPositions.contains(name))
@@ -413,7 +413,7 @@ void BlockDiagram::loadDesign(QSharedPointer<Design> design)
         if (adHocConn.externalPortReferences.empty() && !adHocConn.internalPortReferences.empty())
         {
             // Find the first referenced component.
-            DiagramComponent* comp1 = getComponent(adHocConn.internalPortReferences.at(0).componentRef);
+            HWComponentItem* comp1 = getComponent(adHocConn.internalPortReferences.at(0).componentRef);
 
             if (comp1 == 0)
             {
@@ -440,7 +440,7 @@ void BlockDiagram::loadDesign(QSharedPointer<Design> design)
             for (int i = 1; i < adHocConn.internalPortReferences.size(); ++i)
             {
                 // Find the second referenced component.
-                DiagramComponent* comp2 = getComponent(adHocConn.internalPortReferences.at(i).componentRef);
+                HWComponentItem* comp2 = getComponent(adHocConn.internalPortReferences.at(i).componentRef);
 
                 if (comp2 == 0)
                 {
@@ -464,7 +464,7 @@ void BlockDiagram::loadDesign(QSharedPointer<Design> design)
                 }
 
                 // Create the ad-hoc connection graphics item.
-                DiagramInterconnection* conn = new DiagramInterconnection(port1, port2, true, adHocConn.name,
+                HWConnection* conn = new HWConnection(port1, port2, true, adHocConn.name,
                                                                           adHocConn.displayName,
                                                                           adHocConn.description, this);
                 conn->setRoute(adHocConn.route);
@@ -507,7 +507,7 @@ void BlockDiagram::loadDesign(QSharedPointer<Design> design)
             for (int i = 0; i < adHocConn.internalPortReferences.size(); ++i)
             {
                 // Find the referenced component.
-                DiagramComponent* comp = getComponent(adHocConn.internalPortReferences.at(i).componentRef);
+                HWComponentItem* comp = getComponent(adHocConn.internalPortReferences.at(i).componentRef);
 
                 if (comp == 0)
                 {
@@ -531,7 +531,7 @@ void BlockDiagram::loadDesign(QSharedPointer<Design> design)
                 }
 
                 // Create the ad-hoc connection graphics item.
-                DiagramInterconnection* conn = new DiagramInterconnection(port, adHocIf, true,
+                HWConnection* conn = new HWConnection(port, adHocIf, true,
                                                                           adHocConn.name,
                                                                           adHocConn.displayName,
                                                                           adHocConn.description, this);
@@ -563,9 +563,9 @@ void BlockDiagram::loadDesign(QSharedPointer<Design> design)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~BlockDiagram()
+// Function: ~HWDesignDiagram()
 //-----------------------------------------------------------------------------
-BlockDiagram::~BlockDiagram()
+HWDesignDiagram::~HWDesignDiagram()
 {
     destroyConnections();
 }
@@ -573,14 +573,14 @@ BlockDiagram::~BlockDiagram()
 //-----------------------------------------------------------------------------
 // Function: getComponent()
 //-----------------------------------------------------------------------------
-DiagramComponent *BlockDiagram::getComponent(const QString &instanceName)
+HWComponentItem *HWDesignDiagram::getComponent(const QString &instanceName)
 {
 	// search all graphicsitems in the scene
 	foreach (QGraphicsItem *item, items()) {
 
 		// if the item is a component
-        if (item->type() == DiagramComponent::Type) {
-            DiagramComponent *comp = qgraphicsitem_cast<DiagramComponent *>(item);
+        if (item->type() == HWComponentItem::Type) {
+            HWComponentItem *comp = qgraphicsitem_cast<HWComponentItem *>(item);
 
 			// if component's name matches
             if (comp->name() == instanceName)
@@ -596,7 +596,7 @@ DiagramComponent *BlockDiagram::getComponent(const QString &instanceName)
 //-----------------------------------------------------------------------------
 // Function: createDesign()
 //-----------------------------------------------------------------------------
-QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv) const
+QSharedPointer<Design> HWDesignDiagram::createDesign(const VLNV &vlnv) const
 {
 	QSharedPointer<Design> design(new Design(vlnv));
 
@@ -611,9 +611,9 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv) const
 
 	foreach (QGraphicsItem *item, items())
     {
-		if (item->type() == DiagramComponent::Type)
+		if (item->type() == HWComponentItem::Type)
         {
-            DiagramComponent *comp = qgraphicsitem_cast<DiagramComponent *>(item);
+            HWComponentItem *comp = qgraphicsitem_cast<HWComponentItem *>(item);
 
             ComponentInstance instance(comp->name(), comp->displayName(),
 				                       comp->description(), *comp->componentModel()->getVlnv(),
@@ -647,9 +647,9 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv) const
 
 			instances.append(instance);
 		}
-        else if (item->type() == DiagramInterconnection::Type)
+        else if (item->type() == HWConnection::Type)
         {
-            DiagramInterconnection *conn = qgraphicsitem_cast<DiagramInterconnection *>(item);
+            HWConnection *conn = qgraphicsitem_cast<HWConnection *>(item);
 
             // Save data based on the connection type.
             if (conn->isBus())
@@ -662,7 +662,7 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv) const
 					    conn->endpoint2()->name());
 				    interconnections.append(Design::Interconnection(conn->name(), iface1, iface2,
                                                                     conn->route(),
-                                                                    conn->endpoint1()->type() == DiagramOffPageConnector::Type,
+                                                                    conn->endpoint1()->type() == OffPageConnectorItem::Type,
                                                                     QString(),
 																    conn->description()));
 			    }
@@ -687,7 +687,7 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv) const
 					                                                 compPort->name()),
                                                    hierPort->scenePos(), hierPort->getDirection(),
                                                    conn->route(),
-                                                   conn->endpoint1()->type() == DiagramOffPageConnector::Type));
+                                                   conn->endpoint1()->type() == OffPageConnectorItem::Type));
                     }
 			    }
             }
@@ -729,12 +729,12 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv) const
                                                                 conn->description(), 0 /*TODO*/,
                                                                 internalPortRefs, externalPortRefs,
                                                                 conn->route(),
-                                                                conn->endpoint1()->type() == DiagramOffPageConnector::Type));
+                                                                conn->endpoint1()->type() == OffPageConnectorItem::Type));
             }
 		}
-        else if (item->type() == DiagramAdHocInterface::Type)
+        else if (item->type() == AdHocInterfaceItem::Type)
         {
-            DiagramAdHocInterface* adHocIf = static_cast<DiagramAdHocInterface*>(item);
+            AdHocInterfaceItem* adHocIf = static_cast<AdHocInterfaceItem*>(item);
             adHocPortPositions[adHocIf->name()] = adHocIf->scenePos();
         }
 	}
@@ -758,7 +758,7 @@ QSharedPointer<Design> BlockDiagram::createDesign(const VLNV &vlnv) const
 //-----------------------------------------------------------------------------
 // Function: setMode()
 //-----------------------------------------------------------------------------
-void BlockDiagram::setMode(DrawMode mode)
+void HWDesignDiagram::setMode(DrawMode mode)
 {
     if (getMode() != mode)
     {
@@ -777,9 +777,9 @@ void BlockDiagram::setMode(DrawMode mode)
 }
 
 //-----------------------------------------------------------------------------
-// Function: BlockDiagram::updateHierComponent()
+// Function: HWDesignDiagram::updateHierComponent()
 //-----------------------------------------------------------------------------
-void BlockDiagram::updateHierComponent()
+void HWDesignDiagram::updateHierComponent()
 {
     // store all the bus interfaces to a map
     QMap<QString, QSharedPointer<BusInterface> > busIfs;
@@ -788,7 +788,7 @@ void BlockDiagram::updateHierComponent()
     foreach (QGraphicsItem *item, items())
     {
         // Check if the item is a diagram interface and its bus interface is defined.
-        DiagramInterface* diagIf = dynamic_cast<DiagramInterface*>(item);
+        BusInterfaceItem* diagIf = dynamic_cast<BusInterfaceItem*>(item);
 
         if (diagIf != 0 && diagIf->getBusInterface() != 0)
         {
@@ -805,14 +805,14 @@ void BlockDiagram::updateHierComponent()
 //-----------------------------------------------------------------------------
 // Function: selectionToFront()
 //-----------------------------------------------------------------------------
-void BlockDiagram::selectionToFront()
+void HWDesignDiagram::selectionToFront()
 {
     if (selectedItems().isEmpty())
         return;
 
     QGraphicsItem* selectedItem = selectedItems().first();
 
-    if (selectedItem->type() == DiagramInterconnection::Type)
+    if (selectedItem->type() == HWConnection::Type)
     {
         selectedItem->setZValue(-900);
     }
@@ -821,7 +821,7 @@ void BlockDiagram::selectionToFront()
 //-----------------------------------------------------------------------------
 // Function: mousePressEvent()
 //-----------------------------------------------------------------------------
-void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
+void HWDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     // if other than left button was pressed return the mode back to select
 	if (mouseEvent->button() != Qt::LeftButton)
@@ -864,7 +864,7 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
                     highlightedEndPoint_ = 0;
                 }
 
-                if (endpoint->type() != DiagramOffPageConnector::Type)
+                if (endpoint->type() != OffPageConnectorItem::Type)
                 {
                     endpoint = endpoint->getOffPageConnector();
                     endpoint->setVisible(true);
@@ -878,7 +878,7 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         if (offPageMode_ || !creating)
         {
             // Create the connection.
-            tempConnection_ = new DiagramInterconnection(tempConnEndPoint_->scenePos(),
+            tempConnection_ = new HWConnection(tempConnEndPoint_->scenePos(),
                 tempConnEndPoint_->getDirection(),
                 mouseEvent->scenePos(),
                 QVector2D(0.0f, 0.0f), QString(), QString(), this);
@@ -969,7 +969,7 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
                     comp->setComponentImplementation(getEditedComponent()->getComponentImplementation());
 
                     // Create the corresponding diagram component.
-                    DiagramComponent* diagComp = new DiagramComponent(getLibraryInterface(), comp, name);
+                    HWComponentItem* diagComp = new HWComponentItem(getLibraryInterface(), comp, name);
                     diagComp->setPos(snapPointToGrid(mouseEvent->scenePos()));
 
                     QSharedPointer<ItemAddCommand> cmd(new ItemAddCommand(column, diagComp));
@@ -985,21 +985,21 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         }
         // Otherwise check if the item is an unpackaged component in which case
         // we can add a new port (bus interface) to it.
-        else if (item->type() == DiagramComponent::Type)
+        else if (item->type() == HWComponentItem::Type)
         {
-            DiagramComponent* comp = static_cast<DiagramComponent*>(item);
+            HWComponentItem* comp = static_cast<HWComponentItem*>(item);
 
             // The component is unpackaged if it has an invalid vlnv.
             if (!comp->componentModel()->getVlnv()->isValid())
             {
-                QMap<DiagramPort*, QPointF> oldPositions;
+                QMap<BusPortItem*, QPointF> oldPositions;
 
                 // Save old port positions.
                 foreach (QGraphicsItem* item, comp->childItems())
                 {
-                    if (item->type() == DiagramPort::Type)
+                    if (item->type() == BusPortItem::Type)
                     {
-                        DiagramPort* port = static_cast<DiagramPort*>(item);
+                        BusPortItem* port = static_cast<BusPortItem*>(item);
                         oldPositions.insert(port, port->pos());
                     }
                 }
@@ -1008,7 +1008,7 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
                 cmd->redo();
                 
                 // Create child undo commands for the changed ports.
-                QMap<DiagramPort*, QPointF>::iterator cur = oldPositions.begin();
+                QMap<BusPortItem*, QPointF>::iterator cur = oldPositions.begin();
 
                 while (cur != oldPositions.end())
                 {
@@ -1051,9 +1051,9 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         {
             QGraphicsItem* item = itemAt(mouseEvent->scenePos());
 
-            if (item != 0 && item->type() == DiagramInterconnection::Type)
+            if (item != 0 && item->type() == HWConnection::Type)
             {
-                toggleConnectionStyle(static_cast<DiagramInterconnection*>(item), cmd.data());
+                toggleConnectionStyle(static_cast<HWConnection*>(item), cmd.data());
             }
         }
 
@@ -1072,14 +1072,14 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 //-----------------------------------------------------------------------------
 // Function: mouseMoveEvent()
 //-----------------------------------------------------------------------------
-void BlockDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
+void HWDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     // Check if the connect mode is active.
     if (getMode() == MODE_CONNECT || getMode() == MODE_TOGGLE_OFFPAGE)
     {
         // Find out if there is an end point currently under the cursor.
-        DiagramConnectionEndpoint* endpoint =
-            DiagramUtil::snapToItem<DiagramConnectionEndpoint>(mouseEvent->scenePos(), this, GridSize);
+        HWConnectionEndpoint* endpoint =
+            DiagramUtil::snapToItem<HWConnectionEndpoint>(mouseEvent->scenePos(), this, GridSize);
 
         if (tempConnection_)
         {
@@ -1101,17 +1101,17 @@ void BlockDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
             // Update the connection.
             Q_ASSERT(tempConnection_->route().size() != 0);
 
-            DiagramInterconnection* newTempConnection_ = 0;
+            HWConnection* newTempConnection_ = 0;
 
             if (highlightedEndPoint_ != 0)
             {
-                 newTempConnection_ = new DiagramInterconnection(tempConnEndPoint_,
+                 newTempConnection_ = new HWConnection(tempConnEndPoint_,
                                                                  highlightedEndPoint_, false,
                                                                  QString(), QString(), QString(), this);
             }
             else
             {
-                newTempConnection_ = new DiagramInterconnection(tempConnEndPoint_->scenePos(),
+                newTempConnection_ = new HWConnection(tempConnEndPoint_->scenePos(),
                     tempConnEndPoint_->getDirection(), snapPointToGrid(mouseEvent->scenePos()),
                     QVector2D(0.0f, 0.0f), QString(), QString(), this);
             }
@@ -1141,7 +1141,7 @@ void BlockDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
                 highlightedEndPoint_ = endpoint;
                 highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_HOVER);
 
-                if (highlightedEndPoint_->type() == DiagramOffPageConnector::Type)
+                if (highlightedEndPoint_->type() == OffPageConnectorItem::Type)
                 {
                     hideOffPageConnections();
 
@@ -1157,13 +1157,13 @@ void BlockDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
     QGraphicsScene::mouseMoveEvent(mouseEvent);
 }
 
-void BlockDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
+void HWDesignDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
 	// process the normal mouse release event
     QGraphicsScene::mouseReleaseEvent(mouseEvent);
 }
 
-void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
+void HWDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     // Allow double click only when the mode is select.
     if (getMode() != MODE_SELECT)
@@ -1183,17 +1183,17 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
     // This fixes the problem when the user click above a text label or a pixmap but
     // actually wants to select the parent item (such as the actual component, not its label).
-    if (item->parentItem() != 0 && item->type() != DiagramComponent::Type &&
-        item->type() != DiagramPort::Type && item->type() != DiagramInterface::Type &&
-        item->type() != DiagramColumn::Type)
+    if (item->parentItem() != 0 && item->type() != HWComponentItem::Type &&
+        item->type() != BusPortItem::Type && item->type() != BusInterfaceItem::Type &&
+        item->type() != HWColumn::Type)
     {
         item = item->parentItem();
     }
 
-    if (item->type() == DiagramComponent::Type)
+    if (item->type() == HWComponentItem::Type)
     {
         item->setSelected(true);
-        DiagramComponent *comp = qgraphicsitem_cast<DiagramComponent *>(item);
+        HWComponentItem *comp = qgraphicsitem_cast<HWComponentItem *>(item);
 
         if (getLibraryInterface()->contains(*comp->componentModel()->getVlnv()))
         {
@@ -1298,12 +1298,12 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
             }
         }
     }
-    else if (item->type() == DiagramColumn::Type)
+    else if (item->type() == HWColumn::Type)
     {
         if (!isProtected())
         {
             item->setSelected(true);
-            DiagramColumn* column = qgraphicsitem_cast<DiagramColumn*>(item);
+            HWColumn* column = qgraphicsitem_cast<HWColumn*>(item);
 
             ColumnEditDialog dialog((QWidget*)parent(), false, column);
 
@@ -1322,9 +1322,9 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
             }
         }
     }
-    else if (item->type() == DiagramPort::Type || item->type() == DiagramInterface::Type)
+    else if (item->type() == BusPortItem::Type || item->type() == BusInterfaceItem::Type)
     {
-        DiagramConnectionEndpoint* endpoint = static_cast<DiagramConnectionEndpoint*>(item);
+        HWConnectionEndpoint* endpoint = static_cast<HWConnectionEndpoint*>(item);
 
         // Check if the bus is unpackaged.
         if (endpoint->isBus() &&
@@ -1383,7 +1383,7 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
             // Ask the user for the interface mode.
             endpoint->setHighlight(ConnectionEndpoint::HIGHLIGHT_HOVER);
 
-            bool editName = endpoint->type() == DiagramInterface::Type &&
+            bool editName = endpoint->type() == BusInterfaceItem::Type &&
                             endpoint->getConnections().empty();
 
             BusInterfaceDialog modeDialog(editName, (QWidget*)parent());
@@ -1439,7 +1439,7 @@ void BlockDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent)
 //-----------------------------------------------------------------------------
 // Function: dragEnterEvent()
 //-----------------------------------------------------------------------------
-void BlockDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
+void HWDesignDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
 {
     dragCompType_ = CIT_NONE;
     dragBus_ = false;
@@ -1509,7 +1509,7 @@ void BlockDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
 //-----------------------------------------------------------------------------
 // Function: dragMoveEvent()
 //-----------------------------------------------------------------------------
-void BlockDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
+void HWDesignDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 {
     if (dragCompType_ != CIT_NONE)
     {
@@ -1529,8 +1529,8 @@ void BlockDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
     else if (dragBus_)
     {
         // Check if there is a connection endpoint close enough the cursor.
-        DiagramConnectionEndpoint* endpoint =
-            DiagramUtil::snapToItem<DiagramConnectionEndpoint>(event->scenePos(), this, GridSize);
+        HWConnectionEndpoint* endpoint =
+            DiagramUtil::snapToItem<HWConnectionEndpoint>(event->scenePos(), this, GridSize);
 
         if (highlightedEndPoint_ != 0)
         {
@@ -1565,7 +1565,7 @@ void BlockDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 //-----------------------------------------------------------------------------
 // Function: dragLeaveEvent()
 //-----------------------------------------------------------------------------
-void BlockDiagram::dragLeaveEvent(QGraphicsSceneDragDropEvent*)
+void HWDesignDiagram::dragLeaveEvent(QGraphicsSceneDragDropEvent*)
 {
     dragCompType_ = CIT_NONE;
     dragBus_ = false;
@@ -1580,7 +1580,7 @@ void BlockDiagram::dragLeaveEvent(QGraphicsSceneDragDropEvent*)
 //-----------------------------------------------------------------------------
 // Function: dropEvent()
 //-----------------------------------------------------------------------------
-void BlockDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
+void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 {
     // Check if the dragged item was a valid one.
     if (dragCompType_ != CIT_NONE)
@@ -1609,7 +1609,7 @@ void BlockDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 		QString instanceName = createInstanceName(comp);
 
         // Create the diagram component.
-        DiagramComponent *newItem = new DiagramComponent(getLibraryInterface(), comp, instanceName);
+        HWComponentItem *newItem = new HWComponentItem(getLibraryInterface(), comp, instanceName);
         newItem->setPos(snapPointToGrid(event->scenePos()));
 
         if (column != 0)
@@ -1657,7 +1657,7 @@ void BlockDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 			}
 			Q_ASSERT(vlnv.getType() == VLNV::BUSDEFINITION);
 
-            bool editName = highlightedEndPoint_->type() == DiagramInterface::Type &&
+            bool editName = highlightedEndPoint_->type() == BusInterfaceItem::Type &&
                             highlightedEndPoint_->getBusInterface() == 0 &&
                             highlightedEndPoint_->getConnections().empty();
 
@@ -1716,7 +1716,7 @@ void BlockDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 //-----------------------------------------------------------------------------
 // Function: onVerticalScroll()
 //-----------------------------------------------------------------------------
-void BlockDiagram::onVerticalScroll(qreal y)
+void HWDesignDiagram::onVerticalScroll(qreal y)
 {
 	Q_ASSERT(layout_);
     layout_->setOffsetY(y);
@@ -1725,7 +1725,7 @@ void BlockDiagram::onVerticalScroll(qreal y)
 //-----------------------------------------------------------------------------
 // Function: disableHighlight()
 //-----------------------------------------------------------------------------
-void BlockDiagram::disableHighlight()
+void HWDesignDiagram::disableHighlight()
 {
     if (highlightedEndPoint_ != 0)
     {
@@ -1745,9 +1745,9 @@ void BlockDiagram::disableHighlight()
 //-----------------------------------------------------------------------------
 // Function: addColumn()
 //-----------------------------------------------------------------------------
-void BlockDiagram::addColumn(ColumnDesc const& desc)
+void HWDesignDiagram::addColumn(ColumnDesc const& desc)
 {
-    DiagramColumn* column = new DiagramColumn(desc, layout_.data(), this);
+    HWColumn* column = new HWColumn(desc, layout_.data(), this);
 
     QSharedPointer<QUndoCommand> cmd(new GraphicsColumnAddCommand(layout_.data(), column));
     getEditProvider().addCommand(cmd);
@@ -1756,7 +1756,7 @@ void BlockDiagram::addColumn(ColumnDesc const& desc)
 //-----------------------------------------------------------------------------
 // Function: removeColumn()
 //-----------------------------------------------------------------------------
-void BlockDiagram::removeColumn(GraphicsColumn* column)
+void HWDesignDiagram::removeColumn(GraphicsColumn* column)
 {
     QSharedPointer<QUndoCommand> cmd(new ColumnDeleteCommand(layout_.data(), column));
     getEditProvider().addCommand(cmd);
@@ -1765,7 +1765,7 @@ void BlockDiagram::removeColumn(GraphicsColumn* column)
 //-----------------------------------------------------------------------------
 // Function: wheelEvent()
 //-----------------------------------------------------------------------------
-void BlockDiagram::wheelEvent(QGraphicsSceneWheelEvent *event)
+void HWDesignDiagram::wheelEvent(QGraphicsSceneWheelEvent *event)
 {
     if (event->modifiers() == Qt::CTRL)
     {
@@ -1787,44 +1787,44 @@ void BlockDiagram::wheelEvent(QGraphicsSceneWheelEvent *event)
 //-----------------------------------------------------------------------------
 // Function: onSelected()
 //-----------------------------------------------------------------------------
-void BlockDiagram::onSelected(QGraphicsItem* newSelection)
+void HWDesignDiagram::onSelected(QGraphicsItem* newSelection)
 {
     // Activate the correct views when something has been selected.
     if (newSelection)
     { 
         // Check if the selected item was a component.
-        if (newSelection->type() == DiagramComponent::Type)
+        if (newSelection->type() == HWComponentItem::Type)
         {
-            DiagramComponent* comp = qgraphicsitem_cast<DiagramComponent *>(newSelection);
+            HWComponentItem* comp = qgraphicsitem_cast<HWComponentItem *>(newSelection);
             emit componentSelected(comp);
         }
         // Check if the selected item was a port.
-        else if (newSelection->type() == DiagramPort::Type)
+        else if (newSelection->type() == BusPortItem::Type)
         {
-            DiagramPort* port = qgraphicsitem_cast<DiagramPort*>(newSelection);
+            BusPortItem* port = qgraphicsitem_cast<BusPortItem*>(newSelection);
             emit interfaceSelected(port);
         }
         // Check if the selected item was an interface.
-        else if (newSelection->type() == DiagramInterface::Type)
+        else if (newSelection->type() == BusInterfaceItem::Type)
         {
-            DiagramInterface* interface = qgraphicsitem_cast<DiagramInterface*>(newSelection);
+            BusInterfaceItem* interface = qgraphicsitem_cast<BusInterfaceItem*>(newSelection);
             emit interfaceSelected(interface);
         }
         // Check if the selected item was an ad-hoc port.
-        else if (newSelection->type() == DiagramAdHocPort::Type)
+        else if (newSelection->type() == AdHocPortItem::Type)
         {
-            DiagramAdHocPort* adHocPort = static_cast<DiagramAdHocPort*>(newSelection);
+            AdHocPortItem* adHocPort = static_cast<AdHocPortItem*>(newSelection);
             emit interfaceSelected(adHocPort);
         }
         // Check if the selected item was an ad-hoc interface.
-        else if (newSelection->type() == DiagramAdHocInterface::Type)
+        else if (newSelection->type() == AdHocInterfaceItem::Type)
         {
-            DiagramAdHocInterface* adHocIf = static_cast<DiagramAdHocInterface*>(newSelection);
+            AdHocInterfaceItem* adHocIf = static_cast<AdHocInterfaceItem*>(newSelection);
             emit interfaceSelected(adHocIf);
         }
 		// check if the selected item was a connection
-		else if (newSelection->type() == DiagramInterconnection::Type) {
-			DiagramInterconnection* connection = qgraphicsitem_cast<DiagramInterconnection*>(newSelection);
+		else if (newSelection->type() == HWConnection::Type) {
+			HWConnection* connection = qgraphicsitem_cast<HWConnection*>(newSelection);
 			emit connectionSelected(connection);
 		}
         else
@@ -1843,7 +1843,7 @@ void BlockDiagram::onSelected(QGraphicsItem* newSelection)
 //-----------------------------------------------------------------------------
 // Function: getColumnLayout()
 //-----------------------------------------------------------------------------
-GraphicsColumnLayout* BlockDiagram::getColumnLayout()
+GraphicsColumnLayout* HWDesignDiagram::getColumnLayout()
 {
     return layout_.data();
 }
@@ -1851,24 +1851,24 @@ GraphicsColumnLayout* BlockDiagram::getColumnLayout()
 //-----------------------------------------------------------------------------
 // Function: addInterface()
 //-----------------------------------------------------------------------------
-void BlockDiagram::addInterface(GraphicsColumn* column, QPointF const& pos)
+void HWDesignDiagram::addInterface(GraphicsColumn* column, QPointF const& pos)
 {
 	QSharedPointer<BusInterface> busif(new BusInterface());
-    DiagramInterface *newItem = new DiagramInterface(getLibraryInterface(), getEditedComponent(), busif, 0);
+    BusInterfaceItem *newItem = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), busif, 0);
     newItem->setPos(snapPointToGrid(pos));
 
     connect(newItem, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
     // Save the positions of the other diagram interfaces.
-    QMap<DiagramInterface*, QPointF> oldPositions;
+    QMap<BusInterfaceItem*, QPointF> oldPositions;
 
     if (column->getContentType() == COLUMN_CONTENT_IO)
     {
         foreach (QGraphicsItem* item, column->childItems())
         {
-            if (item->type() == DiagramInterface::Type)
+            if (item->type() == BusInterfaceItem::Type)
             {
-                DiagramInterface* interface = static_cast<DiagramInterface*>(item);
+                BusInterfaceItem* interface = static_cast<BusInterfaceItem*>(item);
                 oldPositions.insert(interface, interface->scenePos());
             }
         }
@@ -1880,7 +1880,7 @@ void BlockDiagram::addInterface(GraphicsColumn* column, QPointF const& pos)
     // Determine if the other interfaces changed their position and create undo commands for them.
     if (column->getContentType() == COLUMN_CONTENT_IO)
     {
-        QMap<DiagramInterface*, QPointF>::iterator cur = oldPositions.begin();
+        QMap<BusInterfaceItem*, QPointF>::iterator cur = oldPositions.begin();
 
         while (cur != oldPositions.end())
         {
@@ -1896,14 +1896,14 @@ void BlockDiagram::addInterface(GraphicsColumn* column, QPointF const& pos)
     getEditProvider().addCommand(cmd, false);
 }
 
-HWDesignWidget* BlockDiagram::parent() const {
+HWDesignWidget* HWDesignDiagram::parent() const {
 	return parent_;
 }
 
 //-----------------------------------------------------------------------------
 // Function: createConnection()
 //-----------------------------------------------------------------------------
-void BlockDiagram::createConnection(QGraphicsSceneMouseEvent * mouseEvent)
+void HWDesignDiagram::createConnection(QGraphicsSceneMouseEvent * mouseEvent)
 {
     // Disable highlights from all potential end points.
     for (int i = 0 ; i < tempPotentialEndingEndPoints_.size(); ++i)
@@ -1931,8 +1931,8 @@ void BlockDiagram::createConnection(QGraphicsSceneMouseEvent * mouseEvent)
     else 
     {
         // Check if the connection should be converted to an off-page connection.
-        bool firstOffPage = tempConnEndPoint_->type() == DiagramOffPageConnector::Type;
-        bool secondOffPage = endpoint->type() == DiagramOffPageConnector::Type;
+        bool firstOffPage = tempConnEndPoint_->type() == OffPageConnectorItem::Type;
+        bool secondOffPage = endpoint->type() == OffPageConnectorItem::Type;
 
         if (offPageMode_ ||
             ((firstOffPage || secondOffPage) && tempConnEndPoint_->type() != endpoint->type()))
@@ -1949,7 +1949,7 @@ void BlockDiagram::createConnection(QGraphicsSceneMouseEvent * mouseEvent)
                 endpoint = endpoint->getOffPageConnector();
             }
 
-            tempConnection_ = new DiagramInterconnection(tempConnEndPoint_, endpoint, false,
+            tempConnection_ = new HWConnection(tempConnEndPoint_, endpoint, false,
                                                          QString(), QString(), QString(), this);
             addItem(tempConnection_);
         }
@@ -1978,7 +1978,7 @@ void BlockDiagram::createConnection(QGraphicsSceneMouseEvent * mouseEvent)
 //-----------------------------------------------------------------------------
 // Function: keyReleaseEvent()
 //-----------------------------------------------------------------------------
-void BlockDiagram::keyReleaseEvent(QKeyEvent *event)
+void HWDesignDiagram::keyReleaseEvent(QKeyEvent *event)
 {
     // Check if the user ended the off-page connection mode.
     if ((event->key() == Qt::Key_Shift) && offPageMode_)
@@ -1998,7 +1998,7 @@ void BlockDiagram::keyReleaseEvent(QKeyEvent *event)
 //-----------------------------------------------------------------------------
 // Function: endConnect()
 //-----------------------------------------------------------------------------
-void BlockDiagram::endConnect()
+void HWDesignDiagram::endConnect()
 {
     // Destroy the connection that was being drawn.
     if (tempConnection_) {
@@ -2025,7 +2025,7 @@ void BlockDiagram::endConnect()
 //-----------------------------------------------------------------------------
 // Function: onSelectionChanged()
 //-----------------------------------------------------------------------------
-void BlockDiagram::onSelectionChanged()
+void HWDesignDiagram::onSelectionChanged()
 {
     selectionToFront();
 
@@ -2041,9 +2041,9 @@ void BlockDiagram::onSelectionChanged()
     // Also hide the previously selected connection if it was an off-page connection.
     if (oldSelection_ != 0)
     {
-        if (oldSelection_->type() == DiagramOffPageConnector::Type)
+        if (oldSelection_->type() == OffPageConnectorItem::Type)
         {
-            DiagramOffPageConnector* connector = static_cast<DiagramOffPageConnector*>(oldSelection_);
+            OffPageConnectorItem* connector = static_cast<OffPageConnectorItem*>(oldSelection_);
 
             foreach (GraphicsConnection* conn, connector->getConnections())
             {
@@ -2053,13 +2053,13 @@ void BlockDiagram::onSelectionChanged()
                 }
             }
         }
-        else if (oldSelection_->type() == DiagramInterconnection::Type && oldSelection_ != newSelection)
+        else if (oldSelection_->type() == HWConnection::Type && oldSelection_ != newSelection)
         {
-            DiagramInterconnection* conn = static_cast<DiagramInterconnection*>(oldSelection_);
+            HWConnection* conn = static_cast<HWConnection*>(oldSelection_);
 
             if (conn->endpoint1() != 0)
             {
-                if (conn->endpoint1()->type() == DiagramOffPageConnector::Type)
+                if (conn->endpoint1()->type() == OffPageConnectorItem::Type)
                 {
                     oldSelection_->setVisible(false);
                 }
@@ -2072,9 +2072,9 @@ void BlockDiagram::onSelectionChanged()
     }
 
     // If the new selection is an off-page connector, show its connections.
-    if (newSelection != 0 && newSelection->type() == DiagramOffPageConnector::Type)
+    if (newSelection != 0 && newSelection->type() == OffPageConnectorItem::Type)
     {
-        DiagramOffPageConnector* connector = static_cast<DiagramOffPageConnector*>(newSelection);
+        OffPageConnectorItem* connector = static_cast<OffPageConnectorItem*>(newSelection);
 
         foreach (GraphicsConnection* conn, connector->getConnections())
         {
@@ -2091,7 +2091,7 @@ void BlockDiagram::onSelectionChanged()
 //-----------------------------------------------------------------------------
 // Function: toggleConnectionStyle()
 //-----------------------------------------------------------------------------
-void BlockDiagram::toggleConnectionStyle(GraphicsConnection* conn, QUndoCommand* parentCmd)
+void HWDesignDiagram::toggleConnectionStyle(GraphicsConnection* conn, QUndoCommand* parentCmd)
 {
     Q_ASSERT(parentCmd != 0);
     emit clearItemSelection();
@@ -2100,7 +2100,7 @@ void BlockDiagram::toggleConnectionStyle(GraphicsConnection* conn, QUndoCommand*
     ConnectionEndpoint* endpoint1 = conn->endpoint1();
     ConnectionEndpoint* endpoint2 = conn->endpoint2();
 
-    if (endpoint1->type() == DiagramOffPageConnector::Type)
+    if (endpoint1->type() == OffPageConnectorItem::Type)
     {
         endpoint1 = static_cast<ConnectionEndpoint*>(endpoint1->parentItem());
         endpoint2 = static_cast<ConnectionEndpoint*>(endpoint2->parentItem());
@@ -2112,10 +2112,10 @@ void BlockDiagram::toggleConnectionStyle(GraphicsConnection* conn, QUndoCommand*
     }
 
     // Recreate the connection by first deleting the old and then creating a new one.
-    QUndoCommand* cmd = new ConnectionDeleteCommand(static_cast<DiagramInterconnection*>(conn));
+    QUndoCommand* cmd = new ConnectionDeleteCommand(static_cast<HWConnection*>(conn));
     cmd->redo();
     
-    DiagramInterconnection* newConn = new DiagramInterconnection(endpoint1, endpoint2, false,
+    HWConnection* newConn = new HWConnection(endpoint1, endpoint2, false,
                                                                  QString(), QString(), QString(), this);
     addItem(newConn);
 
@@ -2135,13 +2135,13 @@ void BlockDiagram::toggleConnectionStyle(GraphicsConnection* conn, QUndoCommand*
 //-----------------------------------------------------------------------------
 // Function: hideOffPageConnections()
 //-----------------------------------------------------------------------------
-void BlockDiagram::hideOffPageConnections()
+void HWDesignDiagram::hideOffPageConnections()
 {
     foreach (QGraphicsItem* item, items())
     {
         GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
 
-        if (conn != 0 && conn->endpoint1()->type() == DiagramOffPageConnector::Type)
+        if (conn != 0 && conn->endpoint1()->type() == OffPageConnectorItem::Type)
         {
             conn->setVisible(false);
         }
@@ -2151,14 +2151,14 @@ void BlockDiagram::hideOffPageConnections()
 //-----------------------------------------------------------------------------
 // Function: destroyConnections()
 //-----------------------------------------------------------------------------
-void BlockDiagram::destroyConnections()
+void HWDesignDiagram::destroyConnections()
 {
     QList<QGraphicsItem*> conns;
 
     foreach (QGraphicsItem* item, items()) {
 
         // if the item is an interconnection
-        if (item->type() == DiagramInterconnection::Type) {
+        if (item->type() == HWConnection::Type) {
             conns.append(item);
         }
     }
@@ -2171,13 +2171,13 @@ void BlockDiagram::destroyConnections()
 }
 
 //-----------------------------------------------------------------------------
-// Function: BlockDiagram::onAdHocVisibilityChanged()
+// Function: HWDesignDiagram::onAdHocVisibilityChanged()
 //-----------------------------------------------------------------------------
-void BlockDiagram::onAdHocVisibilityChanged(QString const& portName, bool visible)
+void HWDesignDiagram::onAdHocVisibilityChanged(QString const& portName, bool visible)
 {
     if (visible)
     {
-        DiagramAdHocInterface* adHocIf = new DiagramAdHocInterface(getEditedComponent(),
+        AdHocInterfaceItem* adHocIf = new AdHocInterfaceItem(getEditedComponent(),
                                                                    getEditedComponent()->getPort(portName),
                                                                    getLibraryInterface(), 0);
 
@@ -2197,16 +2197,16 @@ void BlockDiagram::onAdHocVisibilityChanged(QString const& portName, bool visibl
 }
 
 //-----------------------------------------------------------------------------
-// Function: BlockDiagram::getDiagramAdHocPort()
+// Function: HWDesignDiagram::getDiagramAdHocPort()
 //-----------------------------------------------------------------------------
-DiagramConnectionEndpoint* BlockDiagram::getDiagramAdHocPort(QString const& portName)
+HWConnectionEndpoint* HWDesignDiagram::getDiagramAdHocPort(QString const& portName)
 {
     foreach (QGraphicsItem* item, items())
     {
-        if (item->type() == DiagramAdHocInterface::Type &&
-            static_cast<DiagramAdHocInterface*>(item)->name() == portName)
+        if (item->type() == AdHocInterfaceItem::Type &&
+            static_cast<AdHocInterfaceItem*>(item)->name() == portName)
         {
-            return static_cast<DiagramConnectionEndpoint*>(item);
+            return static_cast<HWConnectionEndpoint*>(item);
         }
     }
 
@@ -2214,15 +2214,15 @@ DiagramConnectionEndpoint* BlockDiagram::getDiagramAdHocPort(QString const& port
 }
 
 //-----------------------------------------------------------------------------
-// Function: BlockDiagram::setVisibilityControlState()
+// Function: HWDesignDiagram::setVisibilityControlState()
 //-----------------------------------------------------------------------------
-void BlockDiagram::setVisibilityControlState(QString const& name, bool state)
+void HWDesignDiagram::setVisibilityControlState(QString const& name, bool state)
 {
     if (name == "Bus Widths")
     {
         foreach (QGraphicsItem* item, items())
         {
-            DiagramInterconnection* conn = dynamic_cast<DiagramInterconnection*>(item);
+            HWConnection* conn = dynamic_cast<HWConnection*>(item);
 
             if (conn != 0)
             {

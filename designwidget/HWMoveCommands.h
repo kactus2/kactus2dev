@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: DiagramMoveCommands.h
+// File: HWMoveCommands.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
@@ -9,19 +9,19 @@
 // Undo move commands for the design diagram.
 //-----------------------------------------------------------------------------
 
-#ifndef DIAGRAMMOVECOMMANDS_H
-#define DIAGRAMMOVECOMMANDS_H
+#ifndef HWMOVECOMMANDS_H
+#define HWMOVECOMMANDS_H
 
 #include <QUndoCommand>
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 #include <QString>
 
-class DiagramInterconnection;
-class DiagramPort;
-class DiagramComponent;
-class DiagramInterface;
-class DiagramConnectionEndpoint;
+class HWConnection;
+class BusPortItem;
+class HWComponentItem;
+class BusInterfaceItem;
+class HWConnectionEndpoint;
 
 //-----------------------------------------------------------------------------
 //! ItemMoveCommand class.
@@ -85,7 +85,7 @@ public:
      *      @param [in] oldPos  The port's old position.
      *      @param [in] parent  The parent command.
      */
-    PortMoveCommand(DiagramConnectionEndpoint* port, QPointF const& oldPos, QUndoCommand* parent = 0);
+    PortMoveCommand(HWConnectionEndpoint* port, QPointF const& oldPos, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -112,7 +112,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The graphics port.
-    DiagramConnectionEndpoint* port_;
+    HWConnectionEndpoint* port_;
 
     //! The old position of the port.
     QPointF oldPos_;
@@ -123,4 +123,4 @@ private:
 
 //-----------------------------------------------------------------------------
 
-#endif // DIAGRAMMOVECOMMANDS_H
+#endif // HWMOVECOMMANDS_H

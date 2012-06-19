@@ -1,10 +1,10 @@
 /* 
  *
- * 		filename: diagraminterconnection.h
+ * 		filename: HWConnection.h
  */
 
-#ifndef DIAGRAMINTERCONNECTION_H
-#define DIAGRAMINTERCONNECTION_H
+#ifndef HWCONNECTION_H
+#define HWCONNECTION_H
 
 #include <QGraphicsPathItem>
 #include <QGraphicsTextItem>
@@ -13,10 +13,10 @@
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/graphicsItems/GraphicsItemTypes.h>
 
-/*! \brief DiagramInterconnection represents graphically an IP-XACT interconnection
+/*! \brief HWConnection represents graphically an IP-XACT interconnection
  *
  */
-class DiagramInterconnection : public GraphicsConnection
+class HWConnection : public GraphicsConnection
 {
     Q_OBJECT
 
@@ -26,20 +26,20 @@ public:
     /*!
      *  Constructor.
      */
-    DiagramInterconnection(ConnectionEndpoint *endpoint1, ConnectionEndpoint *endpoint2,
+    HWConnection(ConnectionEndpoint *endpoint1, ConnectionEndpoint *endpoint2,
                            bool autoConnect, QString const& name, QString const& displayName,
                            QString const& description, DesignDiagram* parent);
 
     /*!
      *  Constructor which creates an open-ended diagram interconnection.
      */
-    DiagramInterconnection(QPointF const& p1, QVector2D const& dir1,
+    HWConnection(QPointF const& p1, QVector2D const& dir1,
                            QPointF const& p2, QVector2D const& dir2,
                            QString const& displayName,
                            QString const& description,
                            DesignDiagram* parent);
 
-    virtual ~DiagramInterconnection();
+    virtual ~HWConnection();
 
     /*!
      *  Sets the bus width label visible/invisible.
@@ -149,4 +149,4 @@ private:
     AdHocPortBound portBounds_[2];
 };
 
-#endif // DIAGRAMINTERCONNECTION_H
+#endif // HWCONNECTION_H

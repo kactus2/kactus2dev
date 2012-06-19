@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: DiagramColumn.h
+// File: HWColumn.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
@@ -9,8 +9,8 @@
 // Diagram column class.
 //-----------------------------------------------------------------------------
 
-#ifndef DIAGRAMCOLUMN_H
-#define DIAGRAMCOLUMN_H
+#ifndef HWCOLUMN_H
+#define HWCOLUMN_H
 
 #include <common/ColumnTypes.h>
 #include <common/graphicsItems/GraphicsItemTypes.h>
@@ -23,14 +23,14 @@
 #include <QCursor>
 
 class GraphicsConnection;
-class DiagramConnectionEndpoint;
+class HWConnectionEndpoint;
 class Component;
 class GenericEditProvider;
 
 //-----------------------------------------------------------------------------
-//! DiagramColumn class.
+//! HWColumn class.
 //-----------------------------------------------------------------------------
-class DiagramColumn : public GraphicsColumn
+class HWColumn : public GraphicsColumn
 {
     Q_OBJECT
 
@@ -43,12 +43,12 @@ public:
      *      @param [in] desc    The column description.
      *      @param [in] layout  The parent column layout.
      */
-    DiagramColumn(ColumnDesc const& desc, GraphicsColumnLayout* layout, QGraphicsScene* scene);
+    HWColumn(ColumnDesc const& desc, GraphicsColumnLayout* layout, QGraphicsScene* scene);
 
     /*!
      *  Destructor.
      */
-    virtual ~DiagramColumn();
+    virtual ~HWColumn();
 
     int type() const { return Type; }
 
@@ -75,15 +75,15 @@ protected:
 
 private:
     // Disable copying.
-    DiagramColumn(DiagramColumn const& rhs);
-    DiagramColumn& operator=(DiagramColumn const& rhs);
+    HWColumn(HWColumn const& rhs);
+    HWColumn& operator=(HWColumn const& rhs);
 
     /*!
      *  Begins the position updates for the connections that start from the given end point.
      *
      *      @param [in] endpoint The end point.
      */
-    void beginUpdateConnPositions(DiagramConnectionEndpoint* endpoint);
+    void beginUpdateConnPositions(HWConnectionEndpoint* endpoint);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -95,4 +95,4 @@ private:
 
 //-----------------------------------------------------------------------------
 
-#endif // DIAGRAMCOLUMN_H
+#endif // HWCOLUMN_H

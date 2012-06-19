@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: DiagramMoveCommands.cpp
+// File: HWMoveCommands.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
@@ -9,13 +9,13 @@
 // Undo move commands for the design diagram.
 //-----------------------------------------------------------------------------
 
-#include "DiagramMoveCommands.h"
+#include "HWMoveCommands.h"
 
-#include "diagraminterconnection.h"
-#include "diagramport.h"
-#include "diagramcomponent.h"
-#include "diagraminterface.h"
-#include "columnview/DiagramColumn.h"
+#include "HWConnection.h"
+#include "BusPortItem.h"
+#include "HWComponentItem.h"
+#include "BusInterfaceItem.h"
+#include "columnview/HWColumn.h"
 
 //-----------------------------------------------------------------------------
 // Function: ItemMoveCommand()
@@ -38,12 +38,12 @@ ItemMoveCommand::~ItemMoveCommand()
 //-----------------------------------------------------------------------------
 void ItemMoveCommand::undo()
 {
-    DiagramColumn* oldColumn = static_cast<DiagramColumn*>(item_->parentItem());
+    HWColumn* oldColumn = static_cast<HWColumn*>(item_->parentItem());
 
     item_->setPos(oldColumn->mapFromScene(oldPos_));
     oldColumn->onMoveItem(item_);
 
-    DiagramColumn* newColumn = static_cast<DiagramColumn*>(item_->parentItem());
+    HWColumn* newColumn = static_cast<HWColumn*>(item_->parentItem());
     newColumn->onReleaseItem(item_);
 
     // Execute child commands.
@@ -55,12 +55,12 @@ void ItemMoveCommand::undo()
 //-----------------------------------------------------------------------------
 void ItemMoveCommand::redo()
 {
-    DiagramColumn* oldColumn = static_cast<DiagramColumn*>(item_->parentItem());
+    HWColumn* oldColumn = static_cast<HWColumn*>(item_->parentItem());
 
     item_->setPos(oldColumn->mapFromScene(newPos_));
     oldColumn->onMoveItem(item_);
 
-    DiagramColumn* newColumn = static_cast<DiagramColumn*>(item_->parentItem());
+    HWColumn* newColumn = static_cast<HWColumn*>(item_->parentItem());
     newColumn->onReleaseItem(item_);
 
     // Execute child commands.
@@ -70,7 +70,7 @@ void ItemMoveCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: ItemMoveCommand()
 //-----------------------------------------------------------------------------
-PortMoveCommand::PortMoveCommand(DiagramConnectionEndpoint* port, QPointF const& oldPos,
+PortMoveCommand::PortMoveCommand(HWConnectionEndpoint* port, QPointF const& oldPos,
                                  QUndoCommand* parent) : QUndoCommand(parent), port_(port),
                                  oldPos_(oldPos), newPos_(port->pos())
 {
@@ -88,7 +88,7 @@ PortMoveCommand::~PortMoveCommand()
 //-----------------------------------------------------------------------------
 void PortMoveCommand::undo()
 {
-    DiagramComponent* comp = static_cast<DiagramComponent*>(port_->parentItem());
+    HWComponentItem* comp = static_cast<HWComponentItem*>(port_->parentItem());
 
     port_->setPos(oldPos_);
     comp->onMovePort(port_);
@@ -102,7 +102,7 @@ void PortMoveCommand::undo()
 //-----------------------------------------------------------------------------
 void PortMoveCommand::redo()
 {
-    DiagramComponent* comp = static_cast<DiagramComponent*>(port_->parentItem());
+    HWComponentItem* comp = static_cast<HWComponentItem*>(port_->parentItem());
 
     port_->setPos(newPos_);
     comp->onMovePort(port_);

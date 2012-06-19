@@ -7,7 +7,7 @@
 
 #include "../LibraryManager/vlnv.h"
 
-#include "blockdiagram.h"
+#include "HWDesignDiagram.h"
 
 #include <common/DesignWidget.h>
 #include <common/GenericEditProvider.h>
@@ -26,8 +26,8 @@
 class LibraryInterface;
 class VLNV;
 class Component;
-class DiagramComponent;
-class DiagramPort;
+class HWComponentItem;
+class BusPortItem;
 class DesignConfiguration;
 
 /*! \brief HWDesignWidget is used to edit and view one design

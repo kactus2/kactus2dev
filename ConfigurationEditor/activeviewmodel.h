@@ -10,7 +10,7 @@
 
 #include <models/designconfiguration.h>
 
-#include <designwidget/diagramcomponent.h>
+#include <designwidget/HWComponentItem.h>
 
 #include <common/GenericEditProvider.h>
 
@@ -20,7 +20,7 @@
 #include <QSharedPointer>
 
 class DesignWidget;
-class DiagramComponent;
+class HWComponentItem;
 
 /*! \brief Model that contains the items to set the active views for component instances.
  * 

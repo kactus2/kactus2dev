@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: DiagramChangeCommands.h
+// File: HWChangeCommands.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
@@ -9,8 +9,8 @@
 // Undo change commands for the block diagram.
 //-----------------------------------------------------------------------------
 
-#ifndef DIAGRAMCHANGECOMMANDS_H
-#define DIAGRAMCHANGECOMMANDS_H
+#ifndef HWCHANGECOMMANDS_H
+#define HWCHANGECOMMANDS_H
 
 #include <models/ColumnDesc.h>
 #include <models/generaldeclarations.h>
@@ -24,16 +24,16 @@
 #include <QString>
 #include <QMap>
 
-class DiagramInterconnection;
-class DiagramPort;
-class DiagramComponent;
+class HWConnection;
+class BusPortItem;
+class HWComponentItem;
 class ComponentItem;
-class DiagramInterface;
+class BusInterfaceItem;
 class GraphicsColumn;
 class GraphicsColumnLayout;
-class DiagramConnectionEndpoint;
+class HWConnectionEndpoint;
 class ActiveViewModel;
-class DiagramAdHocPort;
+class AdHocPortItem;
 class AdHocEnabled;
 class ConnectionEndpoint;
 
@@ -344,7 +344,7 @@ public:
      *      @param [in] newDescription	  The end point's new description.
      *      @param [in] parent            The parent command.
      */
-	EndpointChangeCommand(DiagramConnectionEndpoint* endpoint,
+	EndpointChangeCommand(HWConnectionEndpoint* endpoint,
 		QString const& newName,
 		General::InterfaceMode newMode,
 		QString const& newDescription,
@@ -375,7 +375,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The diagram connection end point.
-    DiagramConnectionEndpoint* endpoint_;
+    HWConnectionEndpoint* endpoint_;
 
     //! The end point's old name.
     QString oldName_;
@@ -712,7 +712,7 @@ public:
      *      @param [in] oldName           The end point's old name.
      *      @param [in] parent            The parent command.
      */
-    EndPointTypesCommand(DiagramConnectionEndpoint* endpoint, VLNV const& oldBusType,
+    EndPointTypesCommand(HWConnectionEndpoint* endpoint, VLNV const& oldBusType,
                          VLNV const& oldAbsType, General::InterfaceMode oldMode,
                          QString const& oldName, QUndoCommand* parent = 0);
 
@@ -741,7 +741,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The diagram connection end point.
-    DiagramConnectionEndpoint* endpoint_;
+    HWConnectionEndpoint* endpoint_;
 
     //! The end point's old bus type.
     VLNV oldBusType_;
@@ -784,7 +784,7 @@ public:
      *      @param [in] newPortMaps       The new port maps for the end point.
      *      @param [in] parent            The parent command.
      */
-    EndPointPortMapCommand(DiagramConnectionEndpoint* endpoint,
+    EndPointPortMapCommand(HWConnectionEndpoint* endpoint,
                            QList< QSharedPointer<General::PortMap> > newPortMaps,
                            QUndoCommand* parent = 0);
 
@@ -813,7 +813,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The diagram connection end point.
-    DiagramConnectionEndpoint* endpoint_;
+    HWConnectionEndpoint* endpoint_;
 
     //! The end point's old port maps.
     QList< QSharedPointer<General::PortMap> > oldPortMaps_;
@@ -886,7 +886,7 @@ public:
 	/*!
      *  Constructor.
 	 */
-	AdHocBoundsChangeCommand(DiagramInterconnection* connection, bool right, int endpointIndex,
+	AdHocBoundsChangeCommand(HWConnection* connection, bool right, int endpointIndex,
                              int oldValue, int newValue, QUndoCommand* parent = 0);
 
 	/*!
@@ -914,7 +914,7 @@ private:
     //-----------------------------------------------------------------------------
 
 	//! Pointer to the connection to change.
-	DiagramInterconnection* connection_;
+	HWConnection* connection_;
 
     //! If true, the change concerns the right bound. Otherwise it concerns the left bound.
     bool right_;
@@ -931,4 +931,4 @@ private:
 
 //-----------------------------------------------------------------------------
 
-#endif // DIAGRAMCHANGECOMMANDS_H
+#endif // HWCHANGECOMMANDS_H

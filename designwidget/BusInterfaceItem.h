@@ -1,58 +1,48 @@
 //-----------------------------------------------------------------------------
-// File: DiagramAdHocInterface.h
+// File: BusInterfaceItem.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
-// Date: 9.2.2012
+// Date: 17.3.2011
 //
 // Description:
-// Diagram graphics item for ad-hoc ports.
+// Diagram interface graphics item.
 //-----------------------------------------------------------------------------
 
-#ifndef DIAGRAMADHOCINTERFACE_H
-#define DIAGRAMADHOCINTERFACE_H
+#ifndef BUSINTERFACEITEM_H
+#define BUSINTERFACEITEM_H
 
+#include <QGraphicsPolygonItem>
 #include <QSharedPointer>
 #include <QVector2D>
 
-#include "DiagramConnectionEndpoint.h"
+#include "HWConnectionEndpoint.h"
 
 #include <common/graphicsItems/GraphicsItemTypes.h>
 
-class DiagramComponent;
-class GraphicsColumn;
-class DiagramOffPageConnector;
-class LibraryInterface;
 class Port;
+class BusInterface;
+class OffPageConnectorItem;
+class HWComponentItem;
+class HWColumn;
+class Component;
+class LibraryInterface;
 
 //-----------------------------------------------------------------------------
-//! DiagramAdHocInterface class.
+//! BusInterfaceItem class.
 //-----------------------------------------------------------------------------
-class DiagramAdHocInterface : public DiagramConnectionEndpoint
+class BusInterfaceItem : public HWConnectionEndpoint
 {
     Q_OBJECT
 
 public:
-    enum { Type = GFX_TYPE_DIAGRAM_ADHOC_INTERFACE };
+    enum { Type = GFX_TYPE_DIAGRAM_INTERFACE };
 
-    /*!
-     *  Constructor.
-     */
-    DiagramAdHocInterface(QSharedPointer<Component> component, Port* port,
-                          LibraryInterface* lh, QGraphicsItem* parent = 0);
+    BusInterfaceItem(LibraryInterface* lh, QSharedPointer<Component> component,
+                     QSharedPointer<BusInterface> busIf, QGraphicsItem *parent = 0);
 
-	/*!
-     *  Destructor.
-     */
-	virtual ~DiagramAdHocInterface();
-
-    /*!
-     *  Sets the port temporary or not temporary. Temporary port set its bus interface undefined
-     *  automatically if the connections are removed.
-     *
-     *      @param [in] temp True if temporary; false if not temporary.
-     */
-    void setTemporary(bool temp);
+	//! \brief The destructor
+	virtual ~BusInterfaceItem();
 
     /*!
      *  Sets the bus and abstraction types and the interface mode for the end point.
@@ -63,44 +53,72 @@ public:
      */
     void setTypes(VLNV const& busType, VLNV const& absType, General::InterfaceMode mode);
 
-    /*!
-     *  Updates the graphics to match the IP-XACT port.
+    /*! \brief Update the graphics to match the IP-XACT bus interface
+     *
      */
     void updateInterface();
+
+    /*!
+     *  Defines the interface.
+     *
+     *      @param [in] busIf     The bus interface.
+     *      @param [in] addPorts  If true, the given ports are added to the parent component.
+     *      @param [in] ports     The related ports.
+     */
+    void define(QSharedPointer<BusInterface> busIf, bool addPorts,
+                QList< QSharedPointer<Port> > ports = QList< QSharedPointer<Port> >());
+
+    /*!
+     *  Sets the interface undefined.
+     *
+     *      @param [in] removePorts If true, the ports that are part of the bus interface are
+     *                  removed from the parent component.
+     */
+    void undefine(bool removePorts);
+
+    /*!
+     *  Returns the ports in the top-level component that are related to the bus interface.
+     */
+    QList<Port*> getPorts() const;
+
+    /*!
+     *  Sets the interface temporary or not temporary. Temporary interface destroys
+     *  its bus interface automatically if the connections are removed.
+     *
+     *      @param [in] temp True if temporary; false if not temporary.
+     */
+    void setTemporary(bool temp);
 
 	int type() const { return Type; }
 
     //-----------------------------------------------------------------------------
-    // DiagramConnectionEndpoint implementation.
+    // HWConnectionEndpoint implementation.
     //-----------------------------------------------------------------------------
 
-    /*!
-     *  Returns true if the draw direction is fixed and thus, cannot be changed.
-     */
-    virtual bool isDirectionFixed() const;
-
-    /*!
-     *  Returns the name of the ad-hoc port.
+    /*! \brief Returns the name of this port
+     *
      */
     virtual QString name() const;
 
-	/*!
-     *  Sets the name of the ad-hoc port.
-     *
-     *      @param [in] name The name to set.
-     */
+	/*! \brief Set the name for the interface.
+	 *
+	 * \param name The name to set for the interface.
+	 *
+	*/
 	virtual void setName(const QString& name);
 
-	/*!
-     *  Returns the description of the port.
-     */
+	/*! \brief Get the description of the interface.
+	 *
+	 *
+	 * \return QString contains the description.
+	*/
 	virtual QString description() const;
 
-	/*!
-     *  Sets the description of the port.
-     *
-     *      @param [in] description The description to set.
-     */
+	/*! \brief Set the description for the interface.
+	 *
+	 * \param description Contains the description to set.
+	 *
+	*/
 	virtual void setDescription(const QString& description);
 
     /*!
@@ -111,7 +129,6 @@ public:
      *      @return False if there was an error in the connection. Otherwise true.
      */
     virtual bool onConnect(ConnectionEndpoint const* other);
-
 
     /*!
      *  Called when a connection has been removed from between this and another end point.
@@ -133,9 +150,12 @@ public:
      */
     virtual ComponentItem* encompassingComp() const;
 
-	/*!
-     *  Returns a pointer to the top component that owns this interface
-	 */
+	/*! \brief Returns pointer to the top component that owns this interface.
+	 *
+	 *
+	 * \return QSharedPointer<Component> Pointer to the component to which this 
+	 * interface belongs to.
+	*/
 	virtual QSharedPointer<Component> getOwnerComponent() const;
 
     /*! 
@@ -151,8 +171,8 @@ public:
      */
     virtual Port* getPort() const;
 
-    /*! 
-     *  Returns true if the port represents a hierarchical connection.
+    /*! \brief Returns true if the port represents a hierarchical connection
+     *
      */
     virtual bool isHierarchical() const;
 
@@ -163,11 +183,11 @@ public:
 
     void setDirection(QVector2D const& dir);
 
-	/*!
-     *  Sets the interface mode for the port.
-     *
-     *      @param [in] mode The mode to set.
-     */
+	/*! \brief Set the interface mode for the end point.
+	 *
+	 * \param mode The interface mode to set.
+	 *
+	*/
 	virtual void setInterfaceMode(General::InterfaceMode mode);
 
     /*!
@@ -175,13 +195,17 @@ public:
      */
     virtual ConnectionEndpoint* getOffPageConnector();
 
+signals:
+    //! \brief Send an error message to the user.
+    void errorMessage(const QString& errorMessage);
+
 protected:
     virtual QVariant itemChange(GraphicsItemChange change,
                                 const QVariant &value);
 
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
-    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+    void mouseMoveEvent(QGraphicsSceneMouseEvent* event);
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
 private:
     //! The library interface.
@@ -190,28 +214,26 @@ private:
     //! The name label.
     QGraphicsTextItem *nameLabel_;
 
-    //! The port.
-    Port* port_;
+    //! The bus interface.
+    QSharedPointer<BusInterface> busInterface_;
 
     //! The top-level component.
     QSharedPointer<Component> component_;
 
     //! The old column from where the mouse drag event began.
-    GraphicsColumn* oldColumn_;
+    HWColumn* oldColumn_;
 
-    //! Boolean flag for determining if the port is temporary or not.
+    //! Boolean flag for determining if this interface is temporary or not.
     bool temp_;
 
-    //! The position of the port before mouse move.
+    //! The position of the interface before a mouse move.
     QPointF oldPos_;
 
     //! The old positions of the other interfaces before mouse move.
     QMap<QGraphicsItem*, QPointF> oldInterfacePositions_;
 
     //! The off-page connector.
-    DiagramOffPageConnector* offPageConnector_;
+    OffPageConnectorItem* offPageConnector_;
 };
 
-//-----------------------------------------------------------------------------
-
-#endif // DIAGRAMADHOCINTERFACE_H
+#endif // BUSINTERFACEITEM_H

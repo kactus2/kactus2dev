@@ -92,7 +92,7 @@ QList< QSharedPointer<Port> > AdHocEnabled::getPorts() const
 //-----------------------------------------------------------------------------
 // Function: AdHocEnabled::getDiagramAdHocPort()
 //-----------------------------------------------------------------------------
-DiagramConnectionEndpoint* AdHocEnabled::getDiagramAdHocPort(QString const&)
+HWConnectionEndpoint* AdHocEnabled::getDiagramAdHocPort(QString const&)
 {
     return 0;
 }

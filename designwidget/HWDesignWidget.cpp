@@ -4,13 +4,13 @@
 
 #include "HWDesignWidget.h"
 
-#include "blockdiagram.h"
-#include "diagramcomponent.h"
-#include "diagraminterconnection.h"
-#include "diagramport.h"
-#include "diagraminterface.h"
+#include "HWDesignDiagram.h"
+#include "HWComponentItem.h"
+#include "HWConnection.h"
+#include "BusPortItem.h"
+#include "BusInterfaceItem.h"
 
-#include "DiagramDeleteCommands.h"
+#include "HWDeleteCommands.h"
 
 #include <common/DiagramUtil.h>
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
@@ -20,7 +20,7 @@
 #include "LibraryManager/libraryinterface.h"
 
 #include "columnview/ColumnEditDialog.h"
-#include "columnview/DiagramColumn.h"
+#include "columnview/HWColumn.h"
 
 #include <models/librarycomponent.h>
 #include <models/component.h>
@@ -62,7 +62,7 @@ HWDesignWidget::HWDesignWidget(LibraryInterface *lh, QWidget* parent)
 	supportedWindows_ = (supportedWindows_ | CONFIGURATIONWINDOW |
 		CONNECTIONWINDOW | INTERFACEWINDOW |INSTANCEWINDOW | ADHOC_WINDOW);
 
-    setDiagram(new BlockDiagram(lh, *getGenericEditProvider(), this));
+    setDiagram(new HWDesignDiagram(lh, *getGenericEditProvider(), this));
     getDiagram()->setProtection(false);
     getDiagram()->setMode(MODE_SELECT);
     
@@ -323,9 +323,9 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
         }
         QGraphicsItem *selected = getDiagram()->selectedItems().first();
 
-        if (selected->type() == DiagramComponent::Type)
+        if (selected->type() == HWComponentItem::Type)
         {
-			DiagramComponent* component = static_cast<DiagramComponent*>(selected);
+			HWComponentItem* component = static_cast<HWComponentItem*>(selected);
 			getDiagram()->removeInstanceName(component->name());
             getDiagram()->clearSelection();
             
@@ -340,9 +340,9 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
 
             emit clearItemSelection();
         }
-        else if (selected->type() == DiagramInterface::Type)
+        else if (selected->type() == BusInterfaceItem::Type)
         {
-            DiagramInterface* diagIf = static_cast<DiagramInterface*>(selected);
+            BusInterfaceItem* diagIf = static_cast<BusInterfaceItem*>(selected);
 
             // Ask the user if he/she wants to delete the ports too.
             QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
@@ -357,10 +357,10 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
             QSharedPointer<QUndoCommand> cmd(new InterfaceDeleteCommand(diagIf, removePorts));
             getGenericEditProvider()->addCommand(cmd);
         }
-        else if (selected->type() == DiagramPort::Type)
+        else if (selected->type() == BusPortItem::Type)
         {
-            DiagramPort* port = static_cast<DiagramPort*>(selected);
-            DiagramComponent* comp = static_cast<DiagramComponent*>(port->parentItem());
+            BusPortItem* port = static_cast<BusPortItem*>(selected);
+            HWComponentItem* comp = static_cast<HWComponentItem*>(port->parentItem());
 
             // Ports can be removed only if the parent component is not
             // yet packaged (i.e. has an invalid VLNV).
@@ -374,20 +374,20 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
                 emit clearItemSelection();
             }
         }
-        else if (selected->type() == DiagramInterconnection::Type)
+        else if (selected->type() == HWConnection::Type)
         {
             emit clearItemSelection();
 
             // Delete the interconnection.
             QSharedPointer<QUndoCommand> cmd(new ConnectionDeleteCommand(
-                static_cast<DiagramInterconnection*>(selected)));
+                static_cast<HWConnection*>(selected)));
             getGenericEditProvider()->addCommand(cmd);
         }
-        else if (selected->type() == DiagramColumn::Type)
+        else if (selected->type() == HWColumn::Type)
         {
             // Ask a confirmation if the user really wants to delete the entire column
             // if it is not empty.
-            DiagramColumn* column = static_cast<DiagramColumn*>(selected);
+            HWColumn* column = static_cast<HWColumn*>(selected);
 
             bool del = true;
 

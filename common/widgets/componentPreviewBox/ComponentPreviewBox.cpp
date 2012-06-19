@@ -13,7 +13,7 @@
 
 #include <SystemDesign/SWComponentItem.h>
 
-#include <designwidget/diagramcomponent.h>
+#include <designwidget/HWComponentItem.h>
 #include <models/component.h>
 #include <models/librarycomponent.h>
 #include <common/diagramgrid.h>
@@ -110,7 +110,7 @@ void ComponentPreviewBox::updatePreview()
         {
         case KactusAttribute::KTS_HW:
             {
-                item = new DiagramComponent(lh_, component_, component_->getVlnv()->getName());
+                item = new HWComponentItem(lh_, component_, component_->getVlnv()->getName());
                 break;
             }
 

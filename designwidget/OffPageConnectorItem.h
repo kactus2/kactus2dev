@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: DiagramOffPageConnector.h
+// File: OffPageConnectorItem.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
@@ -9,10 +9,10 @@
 // Off-page connector for the block diagram.
 //-----------------------------------------------------------------------------
 
-#ifndef DIAGRAMOFFPAGECONNECTOR_H
-#define DIAGRAMOFFPAGECONNECTOR_H
+#ifndef OFFPAGECONNECTORITEM_H
+#define OFFPAGECONNECTORITEM_H
 
-#include "DiagramConnectionEndpoint.h"
+#include "HWConnectionEndpoint.h"
 
 #include <common/graphicsItems/GraphicsItemTypes.h>
 
@@ -21,14 +21,14 @@
 #include <QPolygonF>
 
 class BusInterface;
-class DiagramComponent;
-class DiagramConnectionEndpoint;
+class HWComponentItem;
+class HWConnectionEndpoint;
 class LibraryInterface;
 
 //-----------------------------------------------------------------------------
-//! DiagramOffPageConnector class.
+//! OffPageConnectorItem class.
 //-----------------------------------------------------------------------------
-class DiagramOffPageConnector : public DiagramConnectionEndpoint
+class OffPageConnectorItem : public HWConnectionEndpoint
 {
     Q_OBJECT
 
@@ -43,12 +43,12 @@ public:
      *
      *      @param [in] parent The parent diagram connection endpoint.
      */
-    DiagramOffPageConnector(DiagramConnectionEndpoint* parent);
+    OffPageConnectorItem(HWConnectionEndpoint* parent);
 
 	/*!
      *  Destructor.
      */
-	virtual ~DiagramOffPageConnector();
+	virtual ~OffPageConnectorItem();
 
     /*!
      *  Sets the bus and abstraction types and the interface mode for the endpoint.
@@ -67,7 +67,7 @@ public:
 	int type() const { return Type; }
 
     //-----------------------------------------------------------------------------
-    // DiagramConnectionEndpoint implementation.
+    // HWConnectionEndpoint implementation.
     //-----------------------------------------------------------------------------
 
     /*!
@@ -204,17 +204,17 @@ protected:
 
 private:
     // Disable copying.
-    DiagramOffPageConnector(DiagramOffPageConnector const& rhs);
-    DiagramOffPageConnector& operator=(DiagramOffPageConnector const& rhs);
+    OffPageConnectorItem(OffPageConnectorItem const& rhs);
+    OffPageConnectorItem& operator=(OffPageConnectorItem const& rhs);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! The parent diagram connection endpoint.
-    DiagramConnectionEndpoint* parent_;
+    HWConnectionEndpoint* parent_;
 };
 
 //-----------------------------------------------------------------------------
 
-#endif // DIAGRAMOFFPAGECONNECTOR_H
+#endif // OFFPAGECONNECTORITEM_H

@@ -9,11 +9,11 @@
 
 #include "AdHocBoundsDelegate.h"
 
-#include <designwidget/diagraminterconnection.h>
-#include <designwidget/DiagramConnectionEndpoint.h>
-#include <designwidget/blockdiagram.h>
-#include <designwidget/DiagramChangeCommands.h>
-#include <designwidget/diagramcomponent.h>
+#include <designwidget/HWConnection.h>
+#include <designwidget/HWConnectionEndpoint.h>
+#include <designwidget/HWDesignDiagram.h>
+#include <designwidget/HWChangeCommands.h>
+#include <designwidget/HWComponentItem.h>
 
 #include <LibraryManager/libraryinterface.h>
 #include <LibraryManager/vlnv.h>
@@ -225,7 +225,7 @@ void ConnectionEditor::setConnection( GraphicsConnection* connection ) {
     }
     else if (endpoint1->isAdHoc())
     {
-        adHocBoundsModel_.setConnection(static_cast<DiagramInterconnection*>(connection_));
+        adHocBoundsModel_.setConnection(static_cast<HWConnection*>(connection_));
         adHocBoundsTable_.resizeRowsToContents();
     }
 

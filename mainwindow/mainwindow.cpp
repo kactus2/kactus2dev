@@ -55,9 +55,9 @@
 #include <models/SystemView.h>
 
 #include <designwidget/HWDesignWidget.h>
-#include <designwidget/diagramcomponent.h>
-#include <designwidget/diagramport.h>
-#include <designwidget/diagraminterface.h>
+#include <designwidget/HWComponentItem.h>
+#include <designwidget/BusPortItem.h>
+#include <designwidget/BusInterfaceItem.h>
 
 #include <IPXactWrapper/ComponentEditor/treeStructure/componenteditor.h>
 #include <IPXactWrapper/ComDefinitionEditor/ComDefinitionEditor.h>
@@ -1134,9 +1134,9 @@ void MainWindow::onComponentSelected( ComponentItem* component ) {
 	// Update the instance and ad-hoc visibility editors.
 	instanceEditor_->setComponent(component);
 
-    if (dynamic_cast<DiagramComponent*>(component) != 0)
+    if (dynamic_cast<HWComponentItem*>(component) != 0)
     {
-        adHocEditor_->setDataSource(dynamic_cast<DiagramComponent*>(component));
+        adHocEditor_->setDataSource(dynamic_cast<HWComponentItem*>(component));
     }
     else
     {

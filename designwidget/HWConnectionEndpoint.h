@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: DiagramConnectionEndpoint.h
+// File: HWConnectionEndpoint.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
@@ -9,8 +9,8 @@
 // Interface class for the diagram connection end points.
 //-----------------------------------------------------------------------------
 
-#ifndef DIAGRAMCONNECTIONENDPOINT_H
-#define DIAGRAMCONNECTIONENDPOINT_H
+#ifndef HWCONNECTIONENDPOINT_H
+#define HWCONNECTIONENDPOINT_H
 
 #include <models/generaldeclarations.h>
 #include <models/component.h>
@@ -23,15 +23,15 @@
 #include <QSharedPointer>
 #include <QGraphicsPolygonItem>
 
-class DiagramInterconnection;
+class HWConnection;
 class ComponentItem;
 class BusInterface;
 class VLNV;
 
 //-----------------------------------------------------------------------------
-//! DiagramConnectionEndpoint interface.
+//! HWConnectionEndpoint interface.
 //-----------------------------------------------------------------------------
-class DiagramConnectionEndpoint : public ConnectionEndpoint
+class HWConnectionEndpoint : public ConnectionEndpoint
 {
     Q_OBJECT
 
@@ -42,13 +42,13 @@ public:
      *      @param [in] parent The parent graphics item.
      *      @param [in] dir    The initial direction for the endpoint.
      */
-    DiagramConnectionEndpoint(QGraphicsItem* parent = 0,
+    HWConnectionEndpoint(QGraphicsItem* parent = 0,
                               QVector2D const& dir = QVector2D(0.0f, -1.0f));
 
     /*!
      *  Destructor.
      */
-    virtual ~DiagramConnectionEndpoint();
+    virtual ~HWConnectionEndpoint();
 
     /*!
      *  Sets the bus and abstraction types and the interface mode for the endpoint.
@@ -69,10 +69,10 @@ public:
 
 private:
     // Disable copying.
-    DiagramConnectionEndpoint(DiagramConnectionEndpoint const& rhs);
-    DiagramConnectionEndpoint& operator=(DiagramConnectionEndpoint const& rhs);
+    HWConnectionEndpoint(HWConnectionEndpoint const& rhs);
+    HWConnectionEndpoint& operator=(HWConnectionEndpoint const& rhs);
 };
 
 //-----------------------------------------------------------------------------
 
-#endif // DIAGRAMCONNECTIONENDPOINT_H
+#endif // HWCONNECTIONENDPOINT_H

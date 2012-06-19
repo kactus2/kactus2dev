@@ -7,11 +7,11 @@
 
 #include "activeviewmodel.h"
 
-#include <designwidget/diagramcomponent.h>
+#include <designwidget/HWComponentItem.h>
 #include <SystemDesign/HWMappingItem.h>
 #include <SystemDesign/SWComponentItem.h>
 #include <designwidget/HWDesignWidget.h>
-#include <designwidget/DiagramChangeCommands.h>
+#include <designwidget/HWChangeCommands.h>
 
 #include <models/component.h>
 
@@ -145,7 +145,7 @@ QVariant ActiveViewModel::data(const QModelIndex& index, int role /*= Qt::Displa
 			Q_ASSERT(searched);
 
 			// return the views the component model contains.
-            if (searched->type() == DiagramComponent::Type)
+            if (searched->type() == HWComponentItem::Type)
             {
 			    return searched->componentModel()->getViewNames();
             }

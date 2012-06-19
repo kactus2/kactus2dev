@@ -15,7 +15,7 @@
 #include <QAbstractTableModel>
 #include <QSharedPointer>
 
-class DiagramInterconnection;
+class HWConnection;
 
 //-----------------------------------------------------------------------------
 //! Table model for visualizing ad-hoc visibility for component ports.
@@ -45,7 +45,7 @@ public:
      *
      *      @param [in] connection The connection.
      */
-    void setConnection(DiagramInterconnection* connection);
+    void setConnection(HWConnection* connection);
 
 	/*!
      *  Returns the number of rows in the model.
@@ -123,7 +123,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The ad-hoc connection.
-    DiagramInterconnection* connection_;
+    HWConnection* connection_;
 };
 
 //-----------------------------------------------------------------------------

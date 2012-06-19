@@ -8,7 +8,7 @@
 #include "componentinstanceeditor.h"
 
 #include <SystemDesign/SystemChangeCommands.h>
-#include <designwidget/diagramcomponent.h>
+#include <designwidget/HWComponentItem.h>
 #include <SystemDesign/SystemComponentItem.h>
 #include <SystemDesign/SWComponentItem.h>
 
@@ -16,9 +16,9 @@
 #include <models/designconfiguration.h>
 
 #include <LibraryManager/vlnv.h>
-#include <designwidget/blockdiagram.h>
+#include <designwidget/HWDesignDiagram.h>
 #include <designwidget/HWDesignWidget.h>
-#include <designwidget/DiagramChangeCommands.h>
+#include <designwidget/HWChangeCommands.h>
 
 #include <common/validators/vhdlNameValidator/vhdlnamevalidator.h>
 

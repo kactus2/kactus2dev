@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: DiagramOffPageConnector.cpp
+// File: OffPageConnectorItem.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
@@ -9,7 +9,7 @@
 // Off-page connector for the block diagram.
 //-----------------------------------------------------------------------------
 
-#include "DiagramOffPageConnector.h"
+#include "OffPageConnectorItem.h"
 
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsConnection.h>
@@ -21,10 +21,10 @@
 #include <QPen>
 
 //-----------------------------------------------------------------------------
-// Function: DiagramOffPageConnector()
+// Function: OffPageConnectorItem()
 //-----------------------------------------------------------------------------
-DiagramOffPageConnector::DiagramOffPageConnector(DiagramConnectionEndpoint* parent)
-    : DiagramConnectionEndpoint(parent),
+OffPageConnectorItem::OffPageConnectorItem(HWConnectionEndpoint* parent)
+    : HWConnectionEndpoint(parent),
       parent_(parent)        
 {
     Q_ASSERT(parent != 0);
@@ -60,16 +60,16 @@ DiagramOffPageConnector::DiagramOffPageConnector(DiagramConnectionEndpoint* pare
 }
 
 //-----------------------------------------------------------------------------
-// Function: DiagramOffPageConnector()
+// Function: OffPageConnectorItem()
 //-----------------------------------------------------------------------------
-DiagramOffPageConnector::~DiagramOffPageConnector()
+OffPageConnectorItem::~OffPageConnectorItem()
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: name()
 //-----------------------------------------------------------------------------
-QString DiagramOffPageConnector::name() const
+QString OffPageConnectorItem::name() const
 {
     return parent_->name();
 }
@@ -77,7 +77,7 @@ QString DiagramOffPageConnector::name() const
 //-----------------------------------------------------------------------------
 // Function: setName()
 //-----------------------------------------------------------------------------
-void DiagramOffPageConnector::setName(QString const& name)
+void OffPageConnectorItem::setName(QString const& name)
 {
 	parent_->setName(name);
 }
@@ -85,7 +85,7 @@ void DiagramOffPageConnector::setName(QString const& name)
 //-----------------------------------------------------------------------------
 // Function: getBusInterface()
 //-----------------------------------------------------------------------------
-QSharedPointer<BusInterface> DiagramOffPageConnector::getBusInterface() const
+QSharedPointer<BusInterface> OffPageConnectorItem::getBusInterface() const
 {
     return parent_->getBusInterface();
 }
@@ -93,7 +93,7 @@ QSharedPointer<BusInterface> DiagramOffPageConnector::getBusInterface() const
 //-----------------------------------------------------------------------------
 // Function: updateInterface()
 //-----------------------------------------------------------------------------
-void DiagramOffPageConnector::updateInterface()
+void OffPageConnectorItem::updateInterface()
 {
     // Retrieve the correct brush from the parent diagram port.
     // Set the port black if it is temporary.
@@ -130,7 +130,7 @@ void DiagramOffPageConnector::updateInterface()
     }
 }
 
-bool DiagramOffPageConnector::isHierarchical() const
+bool OffPageConnectorItem::isHierarchical() const
 {
     return parent_->isHierarchical();
 }
@@ -138,7 +138,7 @@ bool DiagramOffPageConnector::isHierarchical() const
 //-----------------------------------------------------------------------------
 // Function: onConnect()
 //-----------------------------------------------------------------------------
-bool DiagramOffPageConnector::onConnect(ConnectionEndpoint const* other)
+bool OffPageConnectorItem::onConnect(ConnectionEndpoint const* other)
 {
     return parent_->onConnect(other);
 }
@@ -146,7 +146,7 @@ bool DiagramOffPageConnector::onConnect(ConnectionEndpoint const* other)
 //-----------------------------------------------------------------------------
 // Function: onDisonnect()
 //-----------------------------------------------------------------------------
-void DiagramOffPageConnector::onDisconnect(ConnectionEndpoint const* other)
+void OffPageConnectorItem::onDisconnect(ConnectionEndpoint const* other)
 {
     parent_->onDisconnect(other);
 }
@@ -154,7 +154,7 @@ void DiagramOffPageConnector::onDisconnect(ConnectionEndpoint const* other)
 //-----------------------------------------------------------------------------
 // Function: canConnect()
 //-----------------------------------------------------------------------------
-bool DiagramOffPageConnector::canConnect(ConnectionEndpoint const* other) const
+bool OffPageConnectorItem::canConnect(ConnectionEndpoint const* other) const
 {
     return parent_->canConnect(other);
 }
@@ -162,7 +162,7 @@ bool DiagramOffPageConnector::canConnect(ConnectionEndpoint const* other) const
 //-----------------------------------------------------------------------------
 // Function: encompassingComp()
 //-----------------------------------------------------------------------------
-ComponentItem* DiagramOffPageConnector::encompassingComp() const
+ComponentItem* OffPageConnectorItem::encompassingComp() const
 {
     return parent_->encompassingComp();
 }
@@ -170,7 +170,7 @@ ComponentItem* DiagramOffPageConnector::encompassingComp() const
 //-----------------------------------------------------------------------------
 // Function: getOwnerComponent()
 //-----------------------------------------------------------------------------
-QSharedPointer<Component> DiagramOffPageConnector::getOwnerComponent() const
+QSharedPointer<Component> OffPageConnectorItem::getOwnerComponent() const
 {
     return parent_->getOwnerComponent();
 }
@@ -178,7 +178,7 @@ QSharedPointer<Component> DiagramOffPageConnector::getOwnerComponent() const
 //-----------------------------------------------------------------------------
 // Function: itemChange()
 //-----------------------------------------------------------------------------
-QVariant DiagramOffPageConnector::itemChange(GraphicsItemChange change,
+QVariant OffPageConnectorItem::itemChange(GraphicsItemChange change,
                                              const QVariant &value)
 {
     switch (change)
@@ -210,7 +210,7 @@ QVariant DiagramOffPageConnector::itemChange(GraphicsItemChange change,
 //-----------------------------------------------------------------------------
 // Function: isDirectionFixed()
 //-----------------------------------------------------------------------------
-bool DiagramOffPageConnector::isDirectionFixed() const
+bool OffPageConnectorItem::isDirectionFixed() const
 {
     if (getConnections().size() > 0)
     {
@@ -225,7 +225,7 @@ bool DiagramOffPageConnector::isDirectionFixed() const
 //-----------------------------------------------------------------------------
 // Function: setTypes()
 //-----------------------------------------------------------------------------
-void DiagramOffPageConnector::setTypes(VLNV const& busType, VLNV const& absType, General::InterfaceMode mode)
+void OffPageConnectorItem::setTypes(VLNV const& busType, VLNV const& absType, General::InterfaceMode mode)
 {
     parent_->setTypes(busType, absType, mode);
 }
@@ -233,15 +233,15 @@ void DiagramOffPageConnector::setTypes(VLNV const& busType, VLNV const& absType,
 //-----------------------------------------------------------------------------
 // Function: mousePressEvent()
 //-----------------------------------------------------------------------------
-void DiagramOffPageConnector::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void OffPageConnectorItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    DiagramConnectionEndpoint::mousePressEvent(event);
+    HWConnectionEndpoint::mousePressEvent(event);
 }
 
 //-----------------------------------------------------------------------------
 // Function: setInterfaceMode()
 //-----------------------------------------------------------------------------
-void DiagramOffPageConnector::setInterfaceMode(General::InterfaceMode mode)
+void OffPageConnectorItem::setInterfaceMode(General::InterfaceMode mode)
 {
     parent_->setInterfaceMode(mode);
 }
@@ -249,12 +249,12 @@ void DiagramOffPageConnector::setInterfaceMode(General::InterfaceMode mode)
 //-----------------------------------------------------------------------------
 // Function: description()
 //-----------------------------------------------------------------------------
-QString DiagramOffPageConnector::description() const
+QString OffPageConnectorItem::description() const
 {
 	return parent_->description();
 }
 
-void DiagramOffPageConnector::setDescription(QString const& description)
+void OffPageConnectorItem::setDescription(QString const& description)
 {
 	parent_->setDescription(description);
 }
@@ -262,9 +262,9 @@ void DiagramOffPageConnector::setDescription(QString const& description)
 //-----------------------------------------------------------------------------
 // Function: addConnection()
 //-----------------------------------------------------------------------------
-void DiagramOffPageConnector::addConnection(GraphicsConnection* connection)
+void OffPageConnectorItem::addConnection(GraphicsConnection* connection)
 {
-    DiagramConnectionEndpoint::addConnection(connection);
+    HWConnectionEndpoint::addConnection(connection);
     connection->setRoutingMode(GraphicsConnection::ROUTING_MODE_OFFPAGE);
 
     setVisible(true);
@@ -273,9 +273,9 @@ void DiagramOffPageConnector::addConnection(GraphicsConnection* connection)
 //-----------------------------------------------------------------------------
 // Function: removeConnection()
 //-----------------------------------------------------------------------------
-void DiagramOffPageConnector::removeConnection(GraphicsConnection* connection)
+void OffPageConnectorItem::removeConnection(GraphicsConnection* connection)
 {
-    DiagramConnectionEndpoint::removeConnection(connection);
+    HWConnectionEndpoint::removeConnection(connection);
 
     if (getConnections().size() == 0)
     {
@@ -286,7 +286,7 @@ void DiagramOffPageConnector::removeConnection(GraphicsConnection* connection)
 //-----------------------------------------------------------------------------
 // Function: setDirection()
 //-----------------------------------------------------------------------------
-void DiagramOffPageConnector::setDirection(QVector2D const& dir)
+void OffPageConnectorItem::setDirection(QVector2D const& dir)
 {
     // Translate the direction to a valid one.
     if (dir.x() < 0.0)
@@ -302,23 +302,23 @@ void DiagramOffPageConnector::setDirection(QVector2D const& dir)
 //-----------------------------------------------------------------------------
 // Function: getDirection()
 //-----------------------------------------------------------------------------
-QVector2D const& DiagramOffPageConnector::getDirection() const
+QVector2D const& OffPageConnectorItem::getDirection() const
 {
     return parent_->getDirection();
 }
 
 //-----------------------------------------------------------------------------
-// Function: DiagramOffPageConnector::isBus()
+// Function: OffPageConnectorItem::isBus()
 //-----------------------------------------------------------------------------
-bool DiagramOffPageConnector::isBus() const
+bool OffPageConnectorItem::isBus() const
 {
     return parent_->isBus();
 }
 
 //-----------------------------------------------------------------------------
-// Function: DiagramOffPageConnector::getPort()
+// Function: OffPageConnectorItem::getPort()
 //-----------------------------------------------------------------------------
-Port* DiagramOffPageConnector::getPort() const
+Port* OffPageConnectorItem::getPort() const
 {
     return parent_->getPort();
 }

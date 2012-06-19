@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: DiagramAddCommands.h
+// File: HWAddCommands.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
@@ -9,8 +9,8 @@
 // Undo add commands for the design diagram.
 //-----------------------------------------------------------------------------
 
-#ifndef DIAGRAMADDCOMMANDS_H
-#define DIAGRAMADDCOMMANDS_H
+#ifndef HWADDCOMMANDS_H
+#define HWADDCOMMANDS_H
 
 #include <common/ColumnTypes.h>
 #include <models/generaldeclarations.h>
@@ -22,10 +22,10 @@
 #include <QString>
 #include <QObject>
 
-class DiagramInterconnection;
-class DiagramPort;
-class DiagramComponent;
-class DiagramInterface;
+class HWConnection;
+class BusPortItem;
+class HWComponentItem;
+class BusInterfaceItem;
 class GraphicsColumn;
 class GraphicsColumnLayout;
 class ComponentItem;
@@ -103,7 +103,7 @@ public:
      *      @param [in] pos        The position where to add the port.
      *      @param [in] parent     The parent command.
      */
-    PortAddCommand(DiagramComponent* component, QPointF const& pos, QUndoCommand* parent = 0);
+    PortAddCommand(HWComponentItem* component, QPointF const& pos, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -130,13 +130,13 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The item.
-    DiagramComponent* component_;
+    HWComponentItem* component_;
 
     //! The port position.
     QPointF pos_;
 
     //! The diagram port.
-    DiagramPort* port_;
+    BusPortItem* port_;
 
     //! The graphics scene.
     QGraphicsScene* scene_;
@@ -158,7 +158,7 @@ public:
      *      @param [in] conn   The interconnection to add.
      *      @param [in] parent The parent command.
      */
-    ConnectionAddCommand(QGraphicsScene* scene, DiagramInterconnection* conn,
+    ConnectionAddCommand(QGraphicsScene* scene, HWConnection* conn,
                          QUndoCommand* parent = 0);
 
     /*!
@@ -186,7 +186,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The interconnection.
-    DiagramInterconnection* conn_;
+    HWConnection* conn_;
 
     //! The interface modes for the endpoints.
     General::InterfaceMode mode1_;
@@ -204,4 +204,4 @@ private:
 
 //-----------------------------------------------------------------------------
 
-#endif // DIAGRAMADDCOMMANDS_H
+#endif // HWADDCOMMANDS_H

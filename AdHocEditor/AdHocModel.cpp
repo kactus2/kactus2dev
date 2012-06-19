@@ -16,9 +16,9 @@
 #include <models/port.h>
 #include <models/component.h>
 
-#include <designwidget/diagramcomponent.h>
-#include <designwidget/blockdiagram.h>
-#include <designwidget/DiagramChangeCommands.h>
+#include <designwidget/HWComponentItem.h>
+#include <designwidget/HWDesignDiagram.h>
+#include <designwidget/HWChangeCommands.h>
 #include <designwidget/AdHocEnabled.h>
 
 #include <common/GenericEditProvider.h>

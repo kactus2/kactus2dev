@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: DiagramAdHocPort.h
+// File: AdHocInterfaceItem.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
@@ -9,39 +9,42 @@
 // Diagram graphics item for ad-hoc ports.
 //-----------------------------------------------------------------------------
 
-#ifndef DIAGRAMADHOCPORT_H
-#define DIAGRAMADHOCPORT_H
+#ifndef ADHOCINTERFACEITEM_H
+#define ADHOCINTERFACEITEM_H
 
 #include <QSharedPointer>
 #include <QVector2D>
 
-#include "DiagramConnectionEndpoint.h"
+#include "HWConnectionEndpoint.h"
 
 #include <common/graphicsItems/GraphicsItemTypes.h>
 
-class DiagramOffPageConnector;
+class HWComponentItem;
+class GraphicsColumn;
+class OffPageConnectorItem;
 class LibraryInterface;
 class Port;
 
 //-----------------------------------------------------------------------------
-//! DiagramAdHocPort class.
+//! AdHocInterfaceItem class.
 //-----------------------------------------------------------------------------
-class DiagramAdHocPort : public DiagramConnectionEndpoint
+class AdHocInterfaceItem : public HWConnectionEndpoint
 {
     Q_OBJECT
 
 public:
-    enum { Type = GFX_TYPE_DIAGRAM_ADHOC_PORT };
+    enum { Type = GFX_TYPE_DIAGRAM_ADHOC_INTERFACE };
 
     /*!
      *  Constructor.
      */
-    DiagramAdHocPort(Port* port, LibraryInterface* lh, QGraphicsItem* parent = 0);
+    AdHocInterfaceItem(QSharedPointer<Component> component, Port* port,
+                          LibraryInterface* lh, QGraphicsItem* parent = 0);
 
 	/*!
      *  Destructor.
      */
-	virtual ~DiagramAdHocPort();
+	virtual ~AdHocInterfaceItem();
 
     /*!
      *  Sets the port temporary or not temporary. Temporary port set its bus interface undefined
@@ -68,7 +71,7 @@ public:
 	int type() const { return Type; }
 
     //-----------------------------------------------------------------------------
-    // DiagramConnectionEndpoint implementation.
+    // HWConnectionEndpoint implementation.
     //-----------------------------------------------------------------------------
 
     /*!
@@ -125,8 +128,8 @@ public:
     virtual bool canConnect(ConnectionEndpoint const* other) const;
 
     /*! 
-    *  Returns the encompassing component. if this port represents
-    *  a bus interface on a component.
+     *  Returns the encompassing component. if this port represents
+     *  a bus interface on a component.
      */
     virtual ComponentItem* encompassingComp() const;
 
@@ -158,6 +161,8 @@ public:
      */
     virtual bool isBus() const;
 
+    void setDirection(QVector2D const& dir);
+
 	/*!
      *  Sets the interface mode for the port.
      *
@@ -179,9 +184,20 @@ protected:
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 private:
-    QGraphicsTextItem *nameLabel_;
-    Port* port_;
+    //! The library interface.
     LibraryInterface* lh_;
+
+    //! The name label.
+    QGraphicsTextItem *nameLabel_;
+
+    //! The port.
+    Port* port_;
+
+    //! The top-level component.
+    QSharedPointer<Component> component_;
+
+    //! The old column from where the mouse drag event began.
+    GraphicsColumn* oldColumn_;
 
     //! Boolean flag for determining if the port is temporary or not.
     bool temp_;
@@ -189,13 +205,13 @@ private:
     //! The position of the port before mouse move.
     QPointF oldPos_;
 
-    //! The old positions of the other component ports before mouse move.
-    QMap<ConnectionEndpoint*, QPointF> oldPortPositions_;
+    //! The old positions of the other interfaces before mouse move.
+    QMap<QGraphicsItem*, QPointF> oldInterfacePositions_;
 
     //! The off-page connector.
-    DiagramOffPageConnector* offPageConnector_;
+    OffPageConnectorItem* offPageConnector_;
 };
 
 //-----------------------------------------------------------------------------
 
-#endif // DIAGRAMADHOCPORT_H
+#endif // ADHOCINTERFACEITEM_H

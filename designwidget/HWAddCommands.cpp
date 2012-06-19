@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: DiagramAddCommands.cpp
+// File: HWAddCommands.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
@@ -9,12 +9,12 @@
 // Undo add commands for the design diagram.
 //-----------------------------------------------------------------------------
 
-#include "DiagramAddCommands.h"
+#include "HWAddCommands.h"
 
-#include "diagraminterconnection.h"
-#include "diagramport.h"
-#include "diagramcomponent.h"
-#include "diagraminterface.h"
+#include "HWConnection.h"
+#include "BusPortItem.h"
+#include "HWComponentItem.h"
+#include "BusInterfaceItem.h"
 
 #include <common/graphicsItems/GraphicsColumn.h>
 
@@ -50,8 +50,8 @@ void ItemAddCommand::undo()
     column_->scene()->removeItem(item_);
     del_ = true;
 
-	if (item_->type() == DiagramComponent::Type)
-		emit componentInstanceRemoved(static_cast<DiagramComponent*>(item_));
+	if (item_->type() == HWComponentItem::Type)
+		emit componentInstanceRemoved(static_cast<HWComponentItem*>(item_));
 
     // Execute child commands.
     QUndoCommand::undo();
@@ -66,8 +66,8 @@ void ItemAddCommand::redo()
     column_->addItem(item_);
     del_ = false;
 
-	if (item_->type() == DiagramComponent::Type)
-		emit componentInstantiated(static_cast<DiagramComponent*>(item_));
+	if (item_->type() == HWComponentItem::Type)
+		emit componentInstantiated(static_cast<HWComponentItem*>(item_));
 
     // Child commands need not be executed because the other items change their position
     // in a deterministic way.
@@ -77,7 +77,7 @@ void ItemAddCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: PortAddCommand()
 //-----------------------------------------------------------------------------
-PortAddCommand::PortAddCommand(DiagramComponent* component, QPointF const& pos,
+PortAddCommand::PortAddCommand(HWComponentItem* component, QPointF const& pos,
                                QUndoCommand* parent) : QUndoCommand(parent),
                                                        component_(component), pos_(pos),
                                                        port_(0), scene_(component->scene()),
@@ -137,7 +137,7 @@ void PortAddCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: ConnectionAddCommand()
 //-----------------------------------------------------------------------------
-ConnectionAddCommand::ConnectionAddCommand(QGraphicsScene* scene, DiagramInterconnection* conn,
+ConnectionAddCommand::ConnectionAddCommand(QGraphicsScene* scene, HWConnection* conn,
                                            QUndoCommand* parent) : QUndoCommand(parent),
                                                                    conn_(conn), mode1_(General::MASTER),
                                                                    mode2_(General::MASTER),

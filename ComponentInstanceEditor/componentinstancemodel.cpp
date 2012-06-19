@@ -9,8 +9,8 @@
 
 #include <common/DesignDiagram.h>
 
-#include <designwidget/diagramcomponent.h>
-#include <designwidget/DiagramChangeCommands.h>
+#include <designwidget/HWComponentItem.h>
+#include <designwidget/HWChangeCommands.h>
 
 ComponentInstanceModel::ComponentInstanceModel(QObject *parent):
 QAbstractTableModel(parent),

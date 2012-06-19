@@ -16,7 +16,7 @@
 #include "SystemAddCommands.h"
 
 #include <designwidget/columnview/ColumnEditDialog.h>
-#include <designwidget/DiagramChangeCommands.h>
+#include <designwidget/HWChangeCommands.h>
 
 #include "SystemColumn.h"
 #include "HWMappingItem.h"

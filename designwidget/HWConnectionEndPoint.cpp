@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: DiagramConnectionEndpoint.cpp
+// File: HWConnectionEndpoint.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
@@ -9,14 +9,14 @@
 // Interface class for the diagram connection end points.
 //-----------------------------------------------------------------------------
 
-#include "DiagramConnectionEndpoint.h"
+#include "HWConnectionEndpoint.h"
 
 #include <QPen>
 
 //-----------------------------------------------------------------------------
-// Function: DiagramConnectionEndpoint()
+// Function: HWConnectionEndpoint()
 //-----------------------------------------------------------------------------
-DiagramConnectionEndpoint::DiagramConnectionEndpoint(QGraphicsItem* parent,
+HWConnectionEndpoint::HWConnectionEndpoint(QGraphicsItem* parent,
                                                      QVector2D const& dir)
     : ConnectionEndpoint(parent)
 {
@@ -24,8 +24,8 @@ DiagramConnectionEndpoint::DiagramConnectionEndpoint(QGraphicsItem* parent,
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~DiagramConnectionEndpoint()
+// Function: ~HWConnectionEndpoint()
 //-----------------------------------------------------------------------------
-DiagramConnectionEndpoint::~DiagramConnectionEndpoint()
+HWConnectionEndpoint::~HWConnectionEndpoint()
 {
 }

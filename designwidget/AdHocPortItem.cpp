@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: DiagramAdHocInterface.cpp
+// File: AdHocPortItem.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
@@ -9,19 +9,16 @@
 // Diagram graphics item for ad-hoc ports.
 //-----------------------------------------------------------------------------
 
-#include "DiagramAdHocInterface.h"
+#include "AdHocPortItem.h"
 
-#include "diagramcomponent.h"
-#include "diagraminterconnection.h"
-#include "diagraminterface.h"
+#include "HWComponentItem.h"
+#include "HWConnection.h"
 #include "BusInterfaceDialog.h"
-#include "DiagramMoveCommands.h"
-#include "blockdiagram.h"
-#include "DiagramOffPageConnector.h"
+#include "HWMoveCommands.h"
+#include "HWDesignDiagram.h"
+#include "OffPageConnectorItem.h"
 
 #include <common/graphicsItems/GraphicsConnection.h>
-#include <common/graphicsItems/GraphicsColumn.h>
-#include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/GenericEditProvider.h>
 #include <common/diagramgrid.h>
 
@@ -43,23 +40,19 @@
 #include <QGraphicsScene>
 
 //-----------------------------------------------------------------------------
-// Function: DiagramAdHocInterface()
+// Function: AdHocPortItem()
 //-----------------------------------------------------------------------------
-DiagramAdHocInterface::DiagramAdHocInterface(QSharedPointer<Component> component,
-                                             Port* port, LibraryInterface* lh,
-                                             QGraphicsItem *parent) : DiagramConnectionEndpoint(parent, QVector2D(1.0f, 0.0f)),
-                                                                      lh_(lh),
-                                                                      nameLabel_(0),
-                                                                      port_(port),
-                                                                      component_(component),
-                                                                      oldColumn_(0),
-                                                                      temp_(false), 
-                                                                      oldPos_(),
-                                                                      oldInterfacePositions_(),
-                                                                      offPageConnector_(0)
+AdHocPortItem::AdHocPortItem(Port* port, LibraryInterface* lh,
+                                   QGraphicsItem *parent) : HWConnectionEndpoint(parent),
+                                                            port_(port),
+                                                            lh_(lh),
+                                                            temp_(false),
+                                                            oldPos_(), oldPortPositions_(),
+                                                            offPageConnector_(0)
 {
-    Q_ASSERT_X(port, "DiagramAdHocInterface constructor",
-               "Null port pointer given as parameter");
+
+    Q_ASSERT_X(port, "AdHocPortItem constructor",
+        "Null BusInterface pointer given as parameter");
 
     setType(ENDPOINT_TYPE_ADHOC);
 
@@ -76,20 +69,20 @@ DiagramAdHocInterface::DiagramAdHocInterface(QSharedPointer<Component> component
     case General::IN:
         {
             shape << QPointF(-halfSquareSize, halfSquareSize)
-                << QPointF(-halfSquareSize, -halfSquareSize)
-                << QPointF(0, -squareSize)
-                << QPointF(halfSquareSize, -halfSquareSize)
-                << QPointF(halfSquareSize, halfSquareSize);
+                  << QPointF(-halfSquareSize, -halfSquareSize)
+                  << QPointF(halfSquareSize, -halfSquareSize)
+                  << QPointF(halfSquareSize, halfSquareSize)
+                  << QPointF(0, squareSize);
             break;
         }
 
     case General::OUT:
         {
             shape << QPointF(-halfSquareSize, halfSquareSize)
-                << QPointF(-halfSquareSize, -halfSquareSize)
-                << QPointF(halfSquareSize, -halfSquareSize)
-                << QPointF(halfSquareSize, halfSquareSize)
-                << QPointF(0, squareSize);
+                  << QPointF(-halfSquareSize, -halfSquareSize)
+                  << QPointF(0, -squareSize)
+                  << QPointF(halfSquareSize, -halfSquareSize)
+                  << QPointF(halfSquareSize, halfSquareSize);
             break;
         }
 
@@ -125,7 +118,7 @@ DiagramAdHocInterface::DiagramAdHocInterface(QSharedPointer<Component> component
     setFlag(ItemSendsScenePositionChanges);
 
     // Create the off-page connector.
-    offPageConnector_ = new DiagramOffPageConnector(this);
+    offPageConnector_ = new OffPageConnectorItem(this);
     offPageConnector_->setPos(0.0, -GridSize * 3);
     offPageConnector_->setFlag(ItemStacksBehindParent);
     offPageConnector_->setVisible(false);
@@ -134,22 +127,16 @@ DiagramAdHocInterface::DiagramAdHocInterface(QSharedPointer<Component> component
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~DiagramAdHocInterface()
+// Function: ~AdHocPortItem()
 //-----------------------------------------------------------------------------
-DiagramAdHocInterface::~DiagramAdHocInterface()
+AdHocPortItem::~AdHocPortItem()
 {
-    GraphicsColumn* column = dynamic_cast<GraphicsColumn*>(parentItem());
-
-    if (column != 0)
-    {
-        column->removeItem(this);
-    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: setTemporary()
 //-----------------------------------------------------------------------------
-void DiagramAdHocInterface::setTemporary(bool temp)
+void AdHocPortItem::setTemporary(bool temp)
 {
     temp_ = temp;
 }
@@ -157,7 +144,7 @@ void DiagramAdHocInterface::setTemporary(bool temp)
 //-----------------------------------------------------------------------------
 // Function: name()
 //-----------------------------------------------------------------------------
-QString DiagramAdHocInterface::name() const
+QString AdHocPortItem::name() const
 {
     return port_->getName();
 }
@@ -165,7 +152,7 @@ QString DiagramAdHocInterface::name() const
 //-----------------------------------------------------------------------------
 // Function: setName()
 //-----------------------------------------------------------------------------
-void DiagramAdHocInterface::setName(QString const& name)
+void AdHocPortItem::setName(QString const& name)
 {
 	port_->setName(name);
 	updateInterface();
@@ -175,7 +162,7 @@ void DiagramAdHocInterface::setName(QString const& name)
 //-----------------------------------------------------------------------------
 // Function: getBusInterface()
 //-----------------------------------------------------------------------------
-QSharedPointer<BusInterface> DiagramAdHocInterface::getBusInterface() const
+QSharedPointer<BusInterface> AdHocPortItem::getBusInterface() const
 {
     return QSharedPointer<BusInterface>();
 }
@@ -183,7 +170,7 @@ QSharedPointer<BusInterface> DiagramAdHocInterface::getBusInterface() const
 //-----------------------------------------------------------------------------
 // Function: updateInterface()
 //-----------------------------------------------------------------------------
-void DiagramAdHocInterface::updateInterface()
+void AdHocPortItem::updateInterface()
 {
     setBrush(QBrush(Qt::black));
 
@@ -191,16 +178,15 @@ void DiagramAdHocInterface::updateInterface()
                         port_->getName() + "</div>");
 
     qreal nameWidth = nameLabel_->boundingRect().width();
+    qreal nameHeight = nameLabel_->boundingRect().height();
 
-    // Check if the port is directed to the left.
-    if (getDirection().x() < 0)
+    if (pos().x() < 0)
     {
-        nameLabel_->setPos(0, GridSize * 3.0 / 4.0 - nameWidth / 2.0);
+        nameLabel_->setPos(nameHeight/2, GridSize/2);
     }
-    // Otherwise the port is directed to the right.
     else
     {
-        nameLabel_->setPos(0, GridSize * 3.0 / 4.0 + nameWidth / 2.0);
+        nameLabel_->setPos(-nameHeight/2, GridSize/2 + nameWidth);
     }
 
     offPageConnector_->updateInterface();
@@ -209,15 +195,15 @@ void DiagramAdHocInterface::updateInterface()
 //-----------------------------------------------------------------------------
 // Function: isHierarchical()
 //-----------------------------------------------------------------------------
-bool DiagramAdHocInterface::isHierarchical() const
+bool AdHocPortItem::isHierarchical() const
 {
-    return true;
+    return false;
 }
 
 //-----------------------------------------------------------------------------
 // Function: onConnect()
 //-----------------------------------------------------------------------------
-bool DiagramAdHocInterface::onConnect(ConnectionEndpoint const*)
+bool AdHocPortItem::onConnect(ConnectionEndpoint const*)
 {
     return true;
 }
@@ -225,57 +211,85 @@ bool DiagramAdHocInterface::onConnect(ConnectionEndpoint const*)
 //-----------------------------------------------------------------------------
 // Function: onDisonnect()
 //-----------------------------------------------------------------------------
-void DiagramAdHocInterface::onDisconnect(ConnectionEndpoint const*)
+void AdHocPortItem::onDisconnect(ConnectionEndpoint const*)
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: canConnect()
 //-----------------------------------------------------------------------------
-bool DiagramAdHocInterface::canConnect(ConnectionEndpoint const* other) const
+bool AdHocPortItem::canConnect(ConnectionEndpoint const* other) const
 {
-    // Ad-hoc connection is not possible to a bus end point.
-    if (other->isBus())
+    // Ad-hoc connection is not possible to other type of endpoint.
+    if (!other->isAdHoc())
     {
         return false;
     }
 
-    // Two hierarchical end points cannot be connected together.
     if (other->isHierarchical())
     {
-        return false;
-    }
+        return (port_->getDirection() == General::INOUT ||
+                other->getPort()->getDirection() == General::INOUT ||
+                port_->getDirection() == other->getPort()->getDirection());
 
-    return true;
+    }
+    else
+    {
+        return (port_->getDirection() == General::INOUT ||
+                other->getPort()->getDirection() == General::INOUT ||
+                port_->getDirection() == General::IN && other->getPort()->getDirection() == General::OUT ||
+                port_->getDirection() == General::OUT && other->getPort()->getDirection() == General::IN);
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: encompassingComp()
 //-----------------------------------------------------------------------------
-ComponentItem* DiagramAdHocInterface::encompassingComp() const
+ComponentItem* AdHocPortItem::encompassingComp() const
 {
-    return 0;
+    return static_cast<ComponentItem*>(parentItem());
 }
 
 //-----------------------------------------------------------------------------
 // Function: getOwnerComponent()
 //-----------------------------------------------------------------------------
-QSharedPointer<Component> DiagramAdHocInterface::getOwnerComponent() const
+QSharedPointer<Component> AdHocPortItem::getOwnerComponent() const
 {
-    return component_;
+	ComponentItem* comp = encompassingComp();
+	Q_ASSERT(comp);
+	QSharedPointer<Component> compModel = comp->componentModel();
+	Q_ASSERT(compModel);
+	return compModel;
 }
 
 //-----------------------------------------------------------------------------
 // Function: itemChange()
 //-----------------------------------------------------------------------------
-QVariant DiagramAdHocInterface::itemChange(GraphicsItemChange change,
+QVariant AdHocPortItem::itemChange(GraphicsItemChange change,
                                  const QVariant &value)
 {
     switch (change) {
 
     case ItemPositionChange:
         {
-            return snapPointToGrid(value.toPointF());
+            if (!parentItem())
+            {
+                return snapPointToGrid(value.toPointF());
+            }
+
+            QPointF pos = value.toPointF();
+            QRectF parentRect = qgraphicsitem_cast<HWComponentItem *>(parentItem())->rect();
+
+            if (pos.x() < 0)
+            {
+                pos.setX(parentRect.left());
+            }
+            else
+            {
+                pos.setX(parentRect.right());
+            }
+
+            return snapPointToGrid(pos);
         }
 
     case ItemPositionHasChanged:
@@ -283,13 +297,36 @@ QVariant DiagramAdHocInterface::itemChange(GraphicsItemChange change,
             if (!parentItem())
                 break;
 
+            qreal nameWidth = nameLabel_->boundingRect().width();
+            qreal nameHeight = nameLabel_->boundingRect().height();
+
+            QRectF parentRect = qgraphicsitem_cast<HWComponentItem*>(parentItem())->rect();
+
+            // Check if the port is directed to the left.
+            if (pos().x() < 0)
+            {
+                setDirection(QVector2D(-1.0f, 0.0f));
+                nameLabel_->setPos(nameHeight/2, GridSize/2);
+            }
+            // Otherwise the port is directed to the right.
+            else
+            {
+                setDirection(QVector2D(1.0f, 0.0f));
+                nameLabel_->setPos(-nameHeight/2, GridSize/2 + nameWidth);
+            }
+
             break;
         }
 
     case ItemScenePositionHasChanged:
-
-        foreach (GraphicsConnection *interconnection, getConnections()) {
-            interconnection->updatePosition();
+        // Check if the updates are not disabled.
+        if (!static_cast<HWComponentItem*>(parentItem())->isConnectionUpdateDisabled())
+        {
+            // Update the connections.
+            foreach (GraphicsConnection *interconnection, getConnections())
+            {
+                interconnection->updatePosition();
+            }
         }
 
         break;
@@ -304,67 +341,52 @@ QVariant DiagramAdHocInterface::itemChange(GraphicsItemChange change,
 //-----------------------------------------------------------------------------
 // Function: isDirectionFixed()
 //-----------------------------------------------------------------------------
-bool DiagramAdHocInterface::isDirectionFixed() const
+bool AdHocPortItem::isDirectionFixed() const
 {
-    return false;
+    return true;
 }
 
 //-----------------------------------------------------------------------------
 // Function: mouseMoveEvent()
 //-----------------------------------------------------------------------------
-void DiagramAdHocInterface::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+void AdHocPortItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     // Discard mouse move if the diagram is protected.
-    if (static_cast<BlockDiagram*>(scene())->isProtected())
+    if (static_cast<HWDesignDiagram*>(scene())->isProtected())
     {
         return;
     }
 
-    DiagramConnectionEndpoint::mouseMoveEvent(event);
-
-    setPos(parentItem()->mapFromScene(oldColumn_->mapToScene(pos())));
-
-    GraphicsColumn* column = dynamic_cast<GraphicsColumn*>(parentItem());
-    Q_ASSERT(column != 0);
-    column->onMoveItem(this);
+    HWConnectionEndpoint::mouseMoveEvent(event);
+    static_cast<HWComponentItem*>(parentItem())->onMovePort(this);
 }
 
 //-----------------------------------------------------------------------------
 // Function: setTypes()
 //-----------------------------------------------------------------------------
-void DiagramAdHocInterface::setTypes(VLNV const&, VLNV const&, General::InterfaceMode)
+void AdHocPortItem::setTypes(VLNV const&, VLNV const&, General::InterfaceMode)
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: mousePressEvent()
 //-----------------------------------------------------------------------------
-void DiagramAdHocInterface::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void AdHocPortItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    DiagramConnectionEndpoint::mousePressEvent(event);
-    setZValue(1001.0);
+    HWConnectionEndpoint::mousePressEvent(event);    
+    oldPos_ = pos();
 
-    oldColumn_ = dynamic_cast<GraphicsColumn*>(parentItem());
-    oldPos_ = scenePos();
-    Q_ASSERT(oldColumn_ != 0);
-
-    // Save the positions of the other diagram/ad-hoc interfaces.
-    foreach (GraphicsColumn* column, oldColumn_->getLayout().getColumns())
+    // Save old port positions for all ports in the parent component.
+    foreach (QGraphicsItem* item, parentItem()->childItems())
     {
-        if (column->getContentType() == COLUMN_CONTENT_IO)
+        if (dynamic_cast<ConnectionEndpoint*>(item) != 0 && item != this)
         {
-            foreach (QGraphicsItem* item, column->childItems())
-            {
-                if (item->type() == DiagramInterface::Type ||
-                    item->type() == DiagramAdHocInterface::Type)
-                {
-                    oldInterfacePositions_.insert(item, item->scenePos());
-                }
-            }
+            ConnectionEndpoint* port = static_cast<ConnectionEndpoint*>(item);
+            oldPortPositions_.insert(port, port->pos());
         }
     }
 
-    // Begin the position update of the connections.
+    // Begin the position update for the connections.
     foreach (GraphicsConnection* conn, getConnections())
     {
         conn->beginUpdatePosition();
@@ -374,91 +396,62 @@ void DiagramAdHocInterface::mousePressEvent(QGraphicsSceneMouseEvent *event)
 //-----------------------------------------------------------------------------
 // Function: mouseReleaseEvent()
 //-----------------------------------------------------------------------------
-void DiagramAdHocInterface::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void AdHocPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    DiagramConnectionEndpoint::mouseReleaseEvent(event);
-    setZValue(0.0);
+    HWConnectionEndpoint::mouseReleaseEvent(event);
 
-    if (oldColumn_ != 0)
+    QSharedPointer<QUndoCommand> cmd;
+
+    // Check if the port position was really changed.
+    if (oldPos_ != pos())
     {
-        GraphicsColumn* column = dynamic_cast<GraphicsColumn*>(parentItem());
-        Q_ASSERT(column != 0);
-        column->onReleaseItem(this);
-
-        oldColumn_ = 0;
-
-        QSharedPointer<QUndoCommand> cmd;
-
-        // Check if the interface position was really changed.
-        if (oldPos_ != scenePos())
-        {
-            cmd = QSharedPointer<QUndoCommand>(new ItemMoveCommand(this, oldPos_));
-        }
-        else
-        {
-            cmd = QSharedPointer<QUndoCommand>(new QUndoCommand());
-        }
-
-        // Determine if the other interfaces changed their position and create undo commands for them.
-        QMap<QGraphicsItem*, QPointF>::iterator cur = oldInterfacePositions_.begin();
-
-        while (cur != oldInterfacePositions_.end())
-        {
-            if (cur.key()->scenePos() != cur.value())
-            {
-                QUndoCommand* childCmd = new ItemMoveCommand(cur.key(), cur.value(), cmd.data());
-            }
-
-            ++cur;
-        }
-
-        // End the position update of the connections.
-        foreach (GraphicsConnection* conn, getConnections())
-        {
-            conn->endUpdatePosition(cmd.data());
-        }
-
-        // Add the undo command to the edit stack only if it has changes.
-        if (cmd->childCount() > 0 || oldPos_ != scenePos())
-        {
-            static_cast<DesignDiagram*>(scene())->getEditProvider().addCommand(cmd, false);
-        }
+        cmd = QSharedPointer<QUndoCommand>(new PortMoveCommand(this, oldPos_));
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: setDirection()
-//-----------------------------------------------------------------------------
-void DiagramAdHocInterface::setDirection(QVector2D const& dir)
-{
-    DiagramConnectionEndpoint::setDirection(dir);
-
-    // Update the position of the name label based on the direction.
-    qreal nameWidth = nameLabel_->boundingRect().width();
-
-    // Check if the interface is directed to the left.
-    if (dir.x() < 0)
-    {
-        nameLabel_->setPos(0, GridSize * 3.0 / 4.0 - nameWidth / 2.0);
-    }
-    // Otherwise the interface is directed to the right.
     else
     {
-        nameLabel_->setPos(0, GridSize * 3.0 / 4.0 + nameWidth / 2.0);
+        cmd = QSharedPointer<QUndoCommand>(new QUndoCommand());
+    }
+
+    // Determine if the other ports changed their position and create undo commands for them.
+    QMap<ConnectionEndpoint*, QPointF>::iterator cur = oldPortPositions_.begin();
+
+    while (cur != oldPortPositions_.end())
+    {
+        if (cur.key()->pos() != cur.value())
+        {
+            QUndoCommand* childCmd =
+                new PortMoveCommand(static_cast<HWConnectionEndpoint*>(cur.key()), cur.value(), cmd.data());
+        }
+
+        ++cur;
+    }
+
+    oldPortPositions_.clear();
+    
+    // End the position update of the connections.
+    foreach (GraphicsConnection* conn, getConnections())
+    {
+        conn->endUpdatePosition(cmd.data());
+    }
+
+    // Add the undo command to the edit stack only if it has changes.
+    if (cmd->childCount() > 0 || oldPos_ != pos())
+    {
+        static_cast<HWDesignDiagram*>(scene())->getEditProvider().addCommand(cmd, false);
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: setInterfaceMode()
 //-----------------------------------------------------------------------------
-void DiagramAdHocInterface::setInterfaceMode(General::InterfaceMode)
+void AdHocPortItem::setInterfaceMode(General::InterfaceMode)
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: description()
 //-----------------------------------------------------------------------------
-QString DiagramAdHocInterface::description() const
+QString AdHocPortItem::description() const
 {
 	Q_ASSERT(port_);
     return port_->getDescription();
@@ -467,7 +460,7 @@ QString DiagramAdHocInterface::description() const
 //-----------------------------------------------------------------------------
 // Function: setDescription()
 //-----------------------------------------------------------------------------
-void DiagramAdHocInterface::setDescription(QString const& description)
+void AdHocPortItem::setDescription(QString const& description)
 {
 	Q_ASSERT(port_);
 	port_->setDescription(description);
@@ -477,23 +470,23 @@ void DiagramAdHocInterface::setDescription(QString const& description)
 //-----------------------------------------------------------------------------
 // Function: getOffPageConnector()
 //-----------------------------------------------------------------------------
-ConnectionEndpoint* DiagramAdHocInterface::getOffPageConnector()
+ConnectionEndpoint* AdHocPortItem::getOffPageConnector()
 {
     return offPageConnector_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: DiagramAdHocInterface::isBus()
+// Function: AdHocPortItem::isBus()
 //-----------------------------------------------------------------------------
-bool DiagramAdHocInterface::isBus() const
+bool AdHocPortItem::isBus() const
 {
     return false;
 }
 
 //-----------------------------------------------------------------------------
-// Function: DiagramAdHocInterface::getPort()
+// Function: AdHocPortItem::getPort()
 //-----------------------------------------------------------------------------
-Port* DiagramAdHocInterface::getPort() const
+Port* AdHocPortItem::getPort() const
 {
     return port_;
 }

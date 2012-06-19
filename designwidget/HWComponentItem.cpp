@@ -3,14 +3,14 @@
  * 		filename: diagramcomponent.cpp
  */
 
-#include "diagramcomponent.h"
-#include "diagramport.h"
-#include "DiagramAdHocPort.h"
-#include "diagraminterconnection.h"
-#include "blockdiagram.h"
-#include "DiagramMoveCommands.h"
+#include "HWComponentItem.h"
+#include "BusPortItem.h"
+#include "AdHocPortItem.h"
+#include "HWConnection.h"
+#include "HWDesignDiagram.h"
+#include "HWMoveCommands.h"
 
-#include "columnview/DiagramColumn.h"
+#include "columnview/HWColumn.h"
 
 #include <LibraryManager/libraryinterface.h>
 
@@ -32,7 +32,7 @@
 
 #include <QDebug>
 
-DiagramComponent::DiagramComponent(LibraryInterface* lh_, 
+HWComponentItem::HWComponentItem(LibraryInterface* lh_, 
 								   QSharedPointer<Component> component,
                                    const QString &instanceName,
 								   const QString &displayName,
@@ -71,7 +71,7 @@ DiagramComponent::DiagramComponent(LibraryInterface* lh_,
 
     foreach (QSharedPointer<BusInterface> busif, busInterfaces)
     {
-        DiagramPort *port = new DiagramPort(busif, getLibraryInterface(), this);
+        BusPortItem *port = new BusPortItem(busif, getLibraryInterface(), this);
 
         if (right) {
             port->setPos(QPointF(rect().width(), rightY) + rect().topLeft());
@@ -93,7 +93,7 @@ DiagramComponent::DiagramComponent(LibraryInterface* lh_,
             continue;
         }
 
-        DiagramAdHocPort* port = new DiagramAdHocPort(adhocPort.data(), getLibraryInterface(), this);
+        AdHocPortItem* port = new AdHocPortItem(adhocPort.data(), getLibraryInterface(), this);
 
         if (right)
         {
@@ -115,23 +115,23 @@ DiagramComponent::DiagramComponent(LibraryInterface* lh_,
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~DiagramComponent()
+// Function: ~HWComponentItem()
 //-----------------------------------------------------------------------------
-DiagramComponent::~DiagramComponent()
+HWComponentItem::~HWComponentItem()
 {
     // Remove all interconnections.
     foreach (QGraphicsItem *item, childItems()) {
-        if (item->type() != DiagramPort::Type)
+        if (item->type() != BusPortItem::Type)
             continue;
 
-        DiagramPort *diagramPort = qgraphicsitem_cast<DiagramPort *>(item);
+        BusPortItem *diagramPort = qgraphicsitem_cast<BusPortItem *>(item);
         foreach (GraphicsConnection *interconn, diagramPort->getConnections()) {
             delete interconn;
         }
     }
 
     // Remove this item from the column where it resides.
-    DiagramColumn* column = dynamic_cast<DiagramColumn*>(parentItem());
+    HWColumn* column = dynamic_cast<HWColumn*>(parentItem());
 
     if (column != 0)
     {
@@ -142,11 +142,11 @@ DiagramComponent::~DiagramComponent()
 //-----------------------------------------------------------------------------
 // Function: getBusPort()
 //-----------------------------------------------------------------------------
-DiagramPort *DiagramComponent::getBusPort(const QString &name)
+BusPortItem *HWComponentItem::getBusPort(const QString &name)
 {
     foreach (QGraphicsItem *item, QGraphicsRectItem::children()) {
-        if (item->type() == DiagramPort::Type) {
-            DiagramPort *busPort = qgraphicsitem_cast<DiagramPort *>(item);
+        if (item->type() == BusPortItem::Type) {
+            BusPortItem *busPort = qgraphicsitem_cast<BusPortItem *>(item);
             if (busPort->name() == name)
                 return busPort;
         }
@@ -158,7 +158,7 @@ DiagramPort *DiagramComponent::getBusPort(const QString &name)
 //-----------------------------------------------------------------------------
 // Function: mouseMoveEvent()
 //-----------------------------------------------------------------------------
-void DiagramComponent::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
+void HWComponentItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
     // Discard movement if the diagram is protected.
     if (static_cast<DesignDiagram*>(scene())->isProtected())
@@ -176,7 +176,7 @@ void DiagramComponent::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
     {
         setPos(parentItem()->mapFromScene(oldColumn_->mapToScene(pos())));
 
-        DiagramColumn* column = dynamic_cast<DiagramColumn*>(parentItem());
+        HWColumn* column = dynamic_cast<HWColumn*>(parentItem());
         Q_ASSERT(column != 0);
         column->onMoveItem(this);
     }
@@ -186,10 +186,10 @@ void DiagramComponent::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
     // Update the port connections manually.
     foreach (QGraphicsItem *item, childItems())
     {
-        if (item->type() != DiagramPort::Type)
+        if (item->type() != BusPortItem::Type)
             continue;
 
-        DiagramPort *diagramPort = qgraphicsitem_cast<DiagramPort *>(item);
+        BusPortItem *diagramPort = qgraphicsitem_cast<BusPortItem *>(item);
 
         foreach (GraphicsConnection *interconn, diagramPort->getConnections())
         {
@@ -206,14 +206,14 @@ void DiagramComponent::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 //-----------------------------------------------------------------------------
 // Function: mouseReleaseEvent()
 //-----------------------------------------------------------------------------
-void DiagramComponent::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
+void HWComponentItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
     ComponentItem::mouseReleaseEvent(event);
     setZValue(0.0);
 
     if (oldColumn_ != 0)
     {
-        DiagramColumn* column = dynamic_cast<DiagramColumn*>(parentItem());
+        HWColumn* column = dynamic_cast<HWColumn*>(parentItem());
         Q_ASSERT(column != 0);
         column->onReleaseItem(this);
 
@@ -233,10 +233,10 @@ void DiagramComponent::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         // End the position update for the interconnections.
         foreach (QGraphicsItem *item, childItems())
         {
-            if (item->type() != DiagramPort::Type)
+            if (item->type() != BusPortItem::Type)
                 continue;
 
-            DiagramPort *diagramPort = qgraphicsitem_cast<DiagramPort *>(item);
+            BusPortItem *diagramPort = qgraphicsitem_cast<BusPortItem *>(item);
             foreach (GraphicsConnection *conn, diagramPort->getConnections())
             {
                 conn->endUpdatePosition(cmd.data());
@@ -254,21 +254,21 @@ void DiagramComponent::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 //-----------------------------------------------------------------------------
 // Function: mousePressEvent()
 //-----------------------------------------------------------------------------
-void DiagramComponent::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void HWComponentItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     ComponentItem::mousePressEvent(event);
     setZValue(1001.0);
 
     oldPos_ = scenePos();
-    oldColumn_ = dynamic_cast<DiagramColumn*>(parentItem());
+    oldColumn_ = dynamic_cast<HWColumn*>(parentItem());
 
     // Begin the position update for the interconnections.
     foreach (QGraphicsItem *item, childItems())
     {
-        if (item->type() != DiagramPort::Type)
+        if (item->type() != BusPortItem::Type)
             continue;
 
-        DiagramPort *diagramPort = qgraphicsitem_cast<DiagramPort *>(item);
+        BusPortItem *diagramPort = qgraphicsitem_cast<BusPortItem *>(item);
         foreach (GraphicsConnection *conn, diagramPort->getConnections())
         {
             conn->beginUpdatePosition();
@@ -279,7 +279,7 @@ void DiagramComponent::mousePressEvent(QGraphicsSceneMouseEvent *event)
 //-----------------------------------------------------------------------------
 // Function: onAddPort()
 //-----------------------------------------------------------------------------
-void DiagramComponent::onAddPort(DiagramConnectionEndpoint* port, bool right)
+void HWComponentItem::onAddPort(HWConnectionEndpoint* port, bool right)
 {
     if (right)
     {
@@ -298,7 +298,7 @@ void DiagramComponent::onAddPort(DiagramConnectionEndpoint* port, bool right)
 //-----------------------------------------------------------------------------
 // Function: onMovePort()
 //-----------------------------------------------------------------------------
-void DiagramComponent::onMovePort(DiagramConnectionEndpoint* port)
+void HWComponentItem::onMovePort(HWConnectionEndpoint* port)
 {
     // Remove the port from the stacks (this simplifies code).
     leftPorts_.removeAll(port);
@@ -323,7 +323,7 @@ void DiagramComponent::onMovePort(DiagramConnectionEndpoint* port)
 //-----------------------------------------------------------------------------
 // Function: addPort()
 //-----------------------------------------------------------------------------
-DiagramPort* DiagramComponent::addPort(QPointF const& pos)
+BusPortItem* HWComponentItem::addPort(QPointF const& pos)
 {
     // Determine a unique name for the bus interface.
     QString name = "bus";
@@ -342,7 +342,7 @@ DiagramPort* DiagramComponent::addPort(QPointF const& pos)
     componentModel()->addBusInterface(busIf);
 
     // Create the visualization for the bus interface.
-    DiagramPort* port = new DiagramPort(busIf, getLibraryInterface(), this);
+    BusPortItem* port = new BusPortItem(busIf, getLibraryInterface(), this);
 
     port->setPos(mapFromScene(pos));
     onAddPort(port, mapFromScene(pos).x() >= 0);
@@ -355,11 +355,11 @@ DiagramPort* DiagramComponent::addPort(QPointF const& pos)
 //-----------------------------------------------------------------------------
 // Function: addPort()
 //-----------------------------------------------------------------------------
-void DiagramComponent::addPort(DiagramConnectionEndpoint* port)
+void HWComponentItem::addPort(HWConnectionEndpoint* port)
 {
     port->setParentItem(this);
 
-    if (port->type() == DiagramPort::Type)
+    if (port->type() == BusPortItem::Type)
     {
         // Add the bus interface to the component.
         componentModel()->addBusInterface(port->getBusInterface());
@@ -375,7 +375,7 @@ void DiagramComponent::addPort(DiagramConnectionEndpoint* port)
 //-----------------------------------------------------------------------------
 // Function: updateSize()
 //-----------------------------------------------------------------------------
-void DiagramComponent::updateSize()
+void HWComponentItem::updateSize()
 {
     // Update the component's size based on the port that is positioned at
     // the lowest level of them all.
@@ -393,7 +393,7 @@ void DiagramComponent::updateSize()
 
     setRect(-GridSize * 8, 0, GridSize * 8 * 2, maxY + 2 * GridSize);
 
-    DiagramColumn* column = dynamic_cast<DiagramColumn*>(parentItem());
+    HWColumn* column = dynamic_cast<HWColumn*>(parentItem());
 
     if (column != 0)
     {
@@ -404,7 +404,7 @@ void DiagramComponent::updateSize()
 //-----------------------------------------------------------------------------
 // Function: updateComponent()
 //-----------------------------------------------------------------------------
-void DiagramComponent::updateComponent()
+void HWComponentItem::updateComponent()
 {
     ComponentItem::updateComponent();
 
@@ -450,13 +450,13 @@ void DiagramComponent::updateComponent()
 //-----------------------------------------------------------------------------
 // Function: removePort()
 //-----------------------------------------------------------------------------
-void DiagramComponent::removePort(DiagramConnectionEndpoint* port)
+void HWComponentItem::removePort(HWConnectionEndpoint* port)
 {
     leftPorts_.removeAll(port);
     rightPorts_.removeAll(port);
     updateSize();
     
-    if (port->type() == DiagramPort::Type)
+    if (port->type() == BusPortItem::Type)
     {
         componentModel()->removeBusInterface(port->getBusInterface().data());
     }
@@ -465,15 +465,15 @@ void DiagramComponent::removePort(DiagramConnectionEndpoint* port)
 //-----------------------------------------------------------------------------
 // Function: isConnectionUpdateDisabled()
 //-----------------------------------------------------------------------------
-bool DiagramComponent::isConnectionUpdateDisabled() const
+bool HWComponentItem::isConnectionUpdateDisabled() const
 {
     return connUpdateDisabled_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: DiagramComponent::setPortAdHocVisible()
+// Function: HWComponentItem::setPortAdHocVisible()
 //-----------------------------------------------------------------------------
-void DiagramComponent::onAdHocVisibilityChanged(QString const& portName, bool visible)
+void HWComponentItem::onAdHocVisibilityChanged(QString const& portName, bool visible)
 {
     // Create/destroy the ad-hoc port graphics item.
     if (visible)
@@ -481,7 +481,7 @@ void DiagramComponent::onAdHocVisibilityChanged(QString const& portName, bool vi
         Port* adhocPort = componentModel()->getPort(portName);
         Q_ASSERT(adhocPort != 0);
 
-        DiagramAdHocPort* port = new DiagramAdHocPort(adhocPort, getLibraryInterface(), this);
+        AdHocPortItem* port = new AdHocPortItem(adhocPort, getLibraryInterface(), this);
 
         // Place the port at the bottom of the side that contains fewer ports.
         if (leftPorts_.size() < rightPorts_.size())
@@ -517,7 +517,7 @@ void DiagramComponent::onAdHocVisibilityChanged(QString const& portName, bool vi
     else
     {
         // Search for the ad-hoc port from both sides.
-        DiagramConnectionEndpoint* found = getAdHocPort(portName);
+        HWConnectionEndpoint* found = getAdHocPort(portName);
         Q_ASSERT(found != 0);
 
         // Remove the port and delete it.
@@ -525,26 +525,28 @@ void DiagramComponent::onAdHocVisibilityChanged(QString const& portName, bool vi
         delete found;
         found = 0;
     }
+
+    emit adHocVisibilitiesChanged();
 }
 
 //-----------------------------------------------------------------------------
-// Function: DiagramComponent::getAdHocPort()
+// Function: HWComponentItem::getAdHocPort()
 //-----------------------------------------------------------------------------
-DiagramAdHocPort* DiagramComponent::getAdHocPort(QString const& portName)
+AdHocPortItem* HWComponentItem::getAdHocPort(QString const& portName)
 {
-    foreach (DiagramConnectionEndpoint* endpoint, leftPorts_)
+    foreach (HWConnectionEndpoint* endpoint, leftPorts_)
     {
-        if (dynamic_cast<DiagramAdHocPort*>(endpoint) != 0 && endpoint->name() == portName)
+        if (dynamic_cast<AdHocPortItem*>(endpoint) != 0 && endpoint->name() == portName)
         {
-            return static_cast<DiagramAdHocPort*>(endpoint);
+            return static_cast<AdHocPortItem*>(endpoint);
         }
     }
     
-    foreach (DiagramConnectionEndpoint* endpoint, rightPorts_)
+    foreach (HWConnectionEndpoint* endpoint, rightPorts_)
     {
-        if (dynamic_cast<DiagramAdHocPort*>(endpoint) != 0 && endpoint->name() == portName)
+        if (dynamic_cast<AdHocPortItem*>(endpoint) != 0 && endpoint->name() == portName)
         {
-            return static_cast<DiagramAdHocPort*>(endpoint);
+            return static_cast<AdHocPortItem*>(endpoint);
         }
     }
 
@@ -552,42 +554,42 @@ DiagramAdHocPort* DiagramComponent::getAdHocPort(QString const& portName)
 }
 
 //-----------------------------------------------------------------------------
-// Function: DiagramComponent::attach()
+// Function: HWComponentItem::attach()
 //-----------------------------------------------------------------------------
-void DiagramComponent::attach(AdHocEditor* editor)
+void HWComponentItem::attach(AdHocEditor* editor)
 {
-    connect(this, SIGNAL(contentChanged()), editor, SLOT(onContentChanged()), Qt::UniqueConnection);
+    connect(this, SIGNAL(adHocVisibilitiesChanged()), editor, SLOT(onContentChanged()), Qt::UniqueConnection);
     connect(this, SIGNAL(destroyed(ComponentItem*)), editor, SLOT(clear()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
-// Function: DiagramComponent::detach()
+// Function: HWComponentItem::detach()
 //-----------------------------------------------------------------------------
-void DiagramComponent::detach(AdHocEditor* editor)
+void HWComponentItem::detach(AdHocEditor* editor)
 {
     disconnect(editor);
 }
 
 //-----------------------------------------------------------------------------
-// Function: DiagramComponent::isProtected()
+// Function: HWComponentItem::isProtected()
 //-----------------------------------------------------------------------------
-bool DiagramComponent::isProtected() const
+bool HWComponentItem::isProtected() const
 {
-    return static_cast<BlockDiagram*>(scene())->isProtected();
+    return static_cast<HWDesignDiagram*>(scene())->isProtected();
 }
 
 //-----------------------------------------------------------------------------
-// Function: DiagramComponent::getGenericEditProvider()
+// Function: HWComponentItem::getGenericEditProvider()
 //-----------------------------------------------------------------------------
-GenericEditProvider& DiagramComponent::getEditProvider()
+GenericEditProvider& HWComponentItem::getEditProvider()
 {
-    return static_cast<BlockDiagram*>(scene())->getEditProvider();
+    return static_cast<HWDesignDiagram*>(scene())->getEditProvider();
 }
 
 //-----------------------------------------------------------------------------
-// Function: DiagramComponent::getDiagramAdHocPort()
+// Function: HWComponentItem::getDiagramAdHocPort()
 //-----------------------------------------------------------------------------
-DiagramConnectionEndpoint* DiagramComponent::getDiagramAdHocPort(QString const& portName)
+HWConnectionEndpoint* HWComponentItem::getDiagramAdHocPort(QString const& portName)
 {
     return getAdHocPort(portName);
 }

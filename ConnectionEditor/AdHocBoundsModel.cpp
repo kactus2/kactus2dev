@@ -13,10 +13,10 @@
 
 #include "AdHocBoundsDelegate.h"
 
-#include <designwidget/diagraminterconnection.h>
-#include <designwidget/DiagramConnectionEndpoint.h>
-#include <designwidget/blockdiagram.h>
-#include <designwidget/DiagramChangeCommands.h>
+#include <designwidget/HWConnection.h>
+#include <designwidget/HWConnectionEndpoint.h>
+#include <designwidget/HWDesignDiagram.h>
+#include <designwidget/HWChangeCommands.h>
 
 #include <common/GenericEditProvider.h>
 
@@ -38,7 +38,7 @@ AdHocBoundsModel::~AdHocBoundsModel()
 //-----------------------------------------------------------------------------
 // Function: AdHocBoundsModel::setConnection()
 //-----------------------------------------------------------------------------
-void AdHocBoundsModel::setConnection(DiagramInterconnection* connection)
+void AdHocBoundsModel::setConnection(HWConnection* connection)
 {
     connection_ = connection;
     beginResetModel();
@@ -230,7 +230,7 @@ bool AdHocBoundsModel::setData(const QModelIndex& index, const QVariant& value, 
     if (role == Qt::EditRole)
     {
         GenericEditProvider& editProvider =
-            static_cast<BlockDiagram*>(connection_->scene())->getEditProvider();
+            static_cast<HWDesignDiagram*>(connection_->scene())->getEditProvider();
 
         switch (index.column())
         {

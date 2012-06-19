@@ -13,15 +13,15 @@
 
 #include "AdHocDelegate.h"
 
-#include <designwidget/diagramcomponent.h>
+#include <designwidget/HWComponentItem.h>
 #include <models/component.h>
 
 #include <LibraryManager/vlnv.h>
 
-#include <designwidget/blockdiagram.h>
-#include <designwidget/diagramcomponent.h>
+#include <designwidget/HWDesignDiagram.h>
+#include <designwidget/HWComponentItem.h>
 
-#include <designwidget/DiagramChangeCommands.h>
+#include <designwidget/HWChangeCommands.h>
 
 #include <QVBoxLayout>
 #include <QDockWidget>
@@ -93,7 +93,7 @@ void AdHocEditor::setDataSource(AdHocEnabled* dataSource)
     }
     else
     {
-        DiagramComponent* compItem = dynamic_cast<DiagramComponent*>(dataSource_);
+        HWComponentItem* compItem = dynamic_cast<HWComponentItem*>(dataSource_);
         Q_ASSERT(compItem != 0);
         nameLabel_.setText(tr("Component: %1").arg(compItem->name()));
     }

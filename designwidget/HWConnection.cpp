@@ -3,10 +3,10 @@
  * 		filename: diagraminterconnection.cpp
  */
 
-#include "diagraminterconnection.h"
-#include "diagramcomponent.h"
-#include "DiagramMoveCommands.h"
-#include "blockdiagram.h"
+#include "HWConnection.h"
+#include "HWComponentItem.h"
+#include "HWMoveCommands.h"
+#include "HWDesignDiagram.h"
 #include "HWDesignWidget.h"
 
 #include <models/generaldeclarations.h>
@@ -20,9 +20,9 @@
 #include <cmath>
 
 //-----------------------------------------------------------------------------
-// Function: DiagramInterconnection()
+// Function: HWConnection()
 //-----------------------------------------------------------------------------
-DiagramInterconnection::DiagramInterconnection(ConnectionEndpoint* endpoint1,
+HWConnection::HWConnection(ConnectionEndpoint* endpoint1,
                                                ConnectionEndpoint* endpoint2,
                                                bool autoConnect,
                                                QString const& name, 
@@ -39,9 +39,9 @@ DiagramInterconnection::DiagramInterconnection(ConnectionEndpoint* endpoint1,
 }
 
 //-----------------------------------------------------------------------------
-// Function: DiagramInterconnection()
+// Function: HWConnection()
 //-----------------------------------------------------------------------------
-DiagramInterconnection::DiagramInterconnection(QPointF const& p1, QVector2D const& dir1,
+HWConnection::HWConnection(QPointF const& p1, QVector2D const& dir1,
                                                QPointF const& p2, QVector2D const& dir2,
                                                QString const& displayName,
 											   QString const& description,
@@ -52,16 +52,16 @@ DiagramInterconnection::DiagramInterconnection(QPointF const& p1, QVector2D cons
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~DiagramInterconnection()
+// Function: ~HWConnection()
 //-----------------------------------------------------------------------------
-DiagramInterconnection::~DiagramInterconnection()
+HWConnection::~HWConnection()
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: connectEnds()
 //-----------------------------------------------------------------------------
-bool DiagramInterconnection::connectEnds()
+bool HWConnection::connectEnds()
 {
     if (!GraphicsConnection::connectEnds())
     {
@@ -95,13 +95,13 @@ bool DiagramInterconnection::connectEnds()
     return true;
 }
 
-void DiagramInterconnection::setRoute(QList<QPointF> path)
+void HWConnection::setRoute(QList<QPointF> path)
 {
     GraphicsConnection::setRoute(path);
     updateWidthLabel();
 }
 
-void DiagramInterconnection::updatePosition()
+void HWConnection::updatePosition()
 {
     GraphicsConnection::updatePosition();
     updateWidthLabel();
@@ -110,7 +110,7 @@ void DiagramInterconnection::updatePosition()
 //-----------------------------------------------------------------------------
 // Function: updateWidthLabel()
 //-----------------------------------------------------------------------------
-void DiagramInterconnection::updateWidthLabel()
+void HWConnection::updateWidthLabel()
 {
     //simplifyPath();
 
@@ -240,15 +240,15 @@ void DiagramInterconnection::updateWidthLabel()
 //-----------------------------------------------------------------------------
 // Function: setBusWidthVisible()
 //-----------------------------------------------------------------------------
-void DiagramInterconnection::setBusWidthVisible(bool visible)
+void HWConnection::setBusWidthVisible(bool visible)
 {
     widthLabel_->setVisible(visible);
 }
 
 //-----------------------------------------------------------------------------
-// Function: DiagramInterconnection::calculateBusWidth()
+// Function: HWConnection::calculateBusWidth()
 //-----------------------------------------------------------------------------
-int DiagramInterconnection::calculateBusWidth() const
+int HWConnection::calculateBusWidth() const
 {
     int totalWidth = 0;
 
@@ -301,42 +301,42 @@ int DiagramInterconnection::calculateBusWidth() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: DiagramInterconnection::isBus()
+// Function: HWConnection::isBus()
 //-----------------------------------------------------------------------------
-bool DiagramInterconnection::isBus() const
+bool HWConnection::isBus() const
 {
     return endpoint1()->isBus();
 }
 
 //-----------------------------------------------------------------------------
-// Function: DiagramInterconnection::getAdHocLeftBound()
+// Function: HWConnection::getAdHocLeftBound()
 //-----------------------------------------------------------------------------
-int DiagramInterconnection::getAdHocLeftBound(int endpointIndex) const
+int HWConnection::getAdHocLeftBound(int endpointIndex) const
 {
     return portBounds_[endpointIndex].left_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: DiagramInterconnection::getAdHocRightBound()
+// Function: HWConnection::getAdHocRightBound()
 //-----------------------------------------------------------------------------
-int DiagramInterconnection::getAdHocRightBound(int endpointIndex) const
+int HWConnection::getAdHocRightBound(int endpointIndex) const
 {
     return portBounds_[endpointIndex].right_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: DiagramInterconnection::setAdHocLeftBound()
+// Function: HWConnection::setAdHocLeftBound()
 //-----------------------------------------------------------------------------
-void DiagramInterconnection::setAdHocLeftBound(int endpointIndex, int leftBound)
+void HWConnection::setAdHocLeftBound(int endpointIndex, int leftBound)
 {
     portBounds_[endpointIndex].left_ = leftBound;
     emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
-// Function: DiagramInterconnection::setAdHocRightBound()
+// Function: HWConnection::setAdHocRightBound()
 //-----------------------------------------------------------------------------
-void DiagramInterconnection::setAdHocRightBound(int endpointIndex, int rightBound)
+void HWConnection::setAdHocRightBound(int endpointIndex, int rightBound)
 {
     portBounds_[endpointIndex].right_ = rightBound;
     emit contentChanged();

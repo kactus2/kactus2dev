@@ -17,12 +17,12 @@
 
 #include <common/GenericEditProvider.h>
 
-#include <designwidget/DiagramConnectionEndpoint.h>
-#include <designwidget/diagramport.h>
-#include <designwidget/diagraminterface.h>
-#include <designwidget/DiagramChangeCommands.h>
-#include <designwidget/blockdiagram.h>
-#include <designwidget/diagramcomponent.h>
+#include <designwidget/HWConnectionEndpoint.h>
+#include <designwidget/BusPortItem.h>
+#include <designwidget/BusInterfaceItem.h>
+#include <designwidget/HWChangeCommands.h>
+#include <designwidget/HWDesignDiagram.h>
+#include <designwidget/HWComponentItem.h>
 
 #include <common/validators/vhdlNameValidator/vhdlnamevalidator.h>
 
@@ -401,7 +401,7 @@ void InterfaceEditor::onInterfaceModeChanged( const QString& newMode ) {
 		this, SLOT(refresh()));
 
 	QSharedPointer<QUndoCommand> cmd(new EndpointChangeCommand(
-		static_cast<DiagramConnectionEndpoint*>(interface_), nameEdit_.text(),
+		static_cast<HWConnectionEndpoint*>(interface_), nameEdit_.text(),
         General::str2Interfacemode(newMode, General::MONITOR),
 		descriptionEdit_.toPlainText()));
 	static_cast<DesignDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
@@ -459,7 +459,7 @@ void InterfaceEditor::onPortMapChanged() {
 		portMaps.append(portMap);
 	}
 
-	QSharedPointer<QUndoCommand> cmd(new EndPointPortMapCommand(static_cast<DiagramConnectionEndpoint*>(interface_), portMaps));
+	QSharedPointer<QUndoCommand> cmd(new EndPointPortMapCommand(static_cast<HWConnectionEndpoint*>(interface_), portMaps));
 	static_cast<DesignDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
 	connect(interface_, SIGNAL(contentChanged()), 
 		this, SLOT(refresh()), Qt::UniqueConnection);

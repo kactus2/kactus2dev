@@ -1,10 +1,10 @@
 /* 
  *
- * 		filename: blockdiagram.h
+ * 		filename: HWDesignDiagram.h
  */
 
-#ifndef BLOCKDIAGRAM_H
-#define BLOCKDIAGRAM_H
+#ifndef HWDESIGNDIAGRAM_H
+#define HWDESIGNDIAGRAM_H
 
 #include "AdHocEnabled.h"
 
@@ -21,14 +21,14 @@ class LibraryInterface;
 class Component;
 class Design;
 class DesignConfiguration;
-class DiagramComponent;
+class HWComponentItem;
 class ComponentItem;
-class DiagramPort;
-class DiagramInterface;
-class DiagramAdHocPort;
-class DiagramAdHocInterface;
-class DiagramInterconnection;
-class DiagramConnectionEndpoint;
+class BusPortItem;
+class BusInterfaceItem;
+class AdHocPortItem;
+class AdHocInterfaceItem;
+class HWConnection;
+class HWConnectionEndpoint;
 class GraphicsColumn;
 class GraphicsColumnLayout;
 class AbstractionDefinition;
@@ -38,10 +38,10 @@ class HWDesignWidget;
 class ConnectionEndpoint;
 class GraphicsConnection;
 
-/*! \brief BlockDiagram is a graphical view to a design
+/*! \brief HWDesignDiagram is a graphical view to a design
  *
  */
-class BlockDiagram : public DesignDiagram
+class HWDesignDiagram : public DesignDiagram
 {
     Q_OBJECT
 
@@ -49,10 +49,10 @@ public:
     /*! \brief The constructor
      *
      */
-    BlockDiagram(LibraryInterface *lh, GenericEditProvider& editProvider, HWDesignWidget *parent = 0);
+    HWDesignDiagram(LibraryInterface *lh, GenericEditProvider& editProvider, HWDesignWidget *parent = 0);
 
 	//! \brief The destructor
-	virtual ~BlockDiagram();
+	virtual ~HWDesignDiagram();
 
     /*!
      *  Clears the scene.
@@ -74,15 +74,15 @@ public:
     virtual void setMode(DrawMode mode);
 
 
-    /*! \brief Set the IP-XACT document that is viewed in BlockDiagram
+    /*! \brief Set the IP-XACT document that is viewed in HWDesignDiagram
      *
      */
     void loadDesign(QSharedPointer<Design> design);
 
-    /*! \brief Get DiagramComponent that has the given instance name
+    /*! \brief Get HWComponentItem that has the given instance name
      *
      */
-    DiagramComponent *getComponent(const QString &instanceName);
+    HWComponentItem *getComponent(const QString &instanceName);
 
 	/*! \brief Get the component instances contained in this scene.
 	 *
@@ -139,7 +139,7 @@ public:
     /*!
      *  Returns the ad-hoc port with the given name or null if not found.
      */
-    virtual DiagramConnectionEndpoint* getDiagramAdHocPort(QString const& portName);
+    virtual HWConnectionEndpoint* getDiagramAdHocPort(QString const& portName);
 
 public slots:
     /*! \brief Bring the selected item to front
@@ -178,8 +178,8 @@ protected:
 
 private:
     // Disable copying.
-    BlockDiagram(BlockDiagram const& rhs);
-    BlockDiagram& operator=(BlockDiagram const& rhs);
+    HWDesignDiagram(HWDesignDiagram const& rhs);
+    HWDesignDiagram& operator=(HWDesignDiagram const& rhs);
 
     /*!
      *  Called when an item has been selected in the diagram.
@@ -230,7 +230,7 @@ private:
 	HWDesignWidget* parent_;
 
     //! The connection that is being drawn.
-    DiagramInterconnection *tempConnection_;
+    HWConnection *tempConnection_;
 
     //! The starting end point of a connection that is being drawn.
     ConnectionEndpoint* tempConnEndPoint_;
@@ -239,7 +239,7 @@ private:
     QVector<ConnectionEndpoint*> tempPotentialEndingEndPoints_;
 
     //! The highlighted end point to which the connection could be snapped automatically.
-    DiagramConnectionEndpoint* highlightedEndPoint_;
+    HWConnectionEndpoint* highlightedEndPoint_;
 
     //! The column layout.
     QSharedPointer<GraphicsColumnLayout> layout_;
@@ -254,4 +254,4 @@ private:
     QGraphicsItem* oldSelection_;
 };
 
-#endif // BLOCKDIAGRAM_H
+#endif // HWDESIGNDIAGRAM_H

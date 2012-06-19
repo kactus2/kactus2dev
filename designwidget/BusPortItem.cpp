@@ -3,13 +3,13 @@
  *         filename: diagramport.cpp
  */
 
-#include "diagramport.h"
-#include "diagramcomponent.h"
-#include "diagraminterconnection.h"
+#include "BusPortItem.h"
+#include "HWComponentItem.h"
+#include "HWConnection.h"
 #include "BusInterfaceDialog.h"
-#include "DiagramMoveCommands.h"
-#include "blockdiagram.h"
-#include "DiagramOffPageConnector.h"
+#include "HWMoveCommands.h"
+#include "HWDesignDiagram.h"
+#include "OffPageConnectorItem.h"
 
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/GenericEditProvider.h>
@@ -32,14 +32,14 @@
 #include <QVector2D>
 #include <QGraphicsScene>
 
-DiagramPort::DiagramPort(QSharedPointer<BusInterface> busIf, LibraryInterface* lh,
-                         QGraphicsItem *parent) : DiagramConnectionEndpoint(parent),
+BusPortItem::BusPortItem(QSharedPointer<BusInterface> busIf, LibraryInterface* lh,
+                         QGraphicsItem *parent) : HWConnectionEndpoint(parent),
 lh_(lh),
                                                   temp_(!busIf->getBusType().isValid()),
                                                   oldPos_(), oldPortPositions_(),
                                                   offPageConnector_(0)
 {
-    Q_ASSERT_X(busIf, "DiagramPort constructor",
+    Q_ASSERT_X(busIf, "BusPortItem constructor",
         "Null BusInterface pointer given as parameter");
 
     setType(ENDPOINT_TYPE_BUS);
@@ -75,7 +75,7 @@ lh_(lh),
     setFlag(ItemSendsScenePositionChanges);
 
     // Create the off-page connector.
-    offPageConnector_ = new DiagramOffPageConnector(this);
+    offPageConnector_ = new OffPageConnectorItem(this);
     offPageConnector_->setPos(0.0, -GridSize * 3);
     offPageConnector_->setFlag(ItemStacksBehindParent);
     offPageConnector_->setVisible(false);
@@ -83,18 +83,18 @@ lh_(lh),
     updateInterface();
 }
 
-DiagramPort::~DiagramPort() {
+BusPortItem::~BusPortItem() {
 }
 
 //-----------------------------------------------------------------------------
 // Function: setTemporary()
 //-----------------------------------------------------------------------------
-void DiagramPort::setTemporary(bool temp)
+void BusPortItem::setTemporary(bool temp)
 {
     temp_ = temp;
 }
 
-QString DiagramPort::name() const
+QString BusPortItem::name() const
 {
     return busInterface_->getName();
 }
@@ -102,7 +102,7 @@ QString DiagramPort::name() const
 //-----------------------------------------------------------------------------
 // Function: setName()
 //-----------------------------------------------------------------------------
-void DiagramPort::setName( const QString& name )
+void BusPortItem::setName( const QString& name )
 {
     busInterface_->setName(name);
     encompassingComp()->componentModel()->updateBusInterface(busInterface_.data());
@@ -111,12 +111,12 @@ void DiagramPort::setName( const QString& name )
     emit contentChanged();
 }
 
-QSharedPointer<BusInterface> DiagramPort::getBusInterface() const
+QSharedPointer<BusInterface> BusPortItem::getBusInterface() const
 {
     return busInterface_;
 }
 
-void DiagramPort::updateInterface()
+void BusPortItem::updateInterface()
 {
     // Set the port black if it is temporary.
     if (!busInterface_->getBusType().isValid())
@@ -169,7 +169,7 @@ void DiagramPort::updateInterface()
     offPageConnector_->updateInterface();
 }
 
-bool DiagramPort::isHierarchical() const
+bool BusPortItem::isHierarchical() const
 {
     return false;
 }
@@ -177,14 +177,14 @@ bool DiagramPort::isHierarchical() const
 //-----------------------------------------------------------------------------
 // Function: onConnect()
 //-----------------------------------------------------------------------------
-bool DiagramPort::onConnect(ConnectionEndpoint const* other)
+bool BusPortItem::onConnect(ConnectionEndpoint const* other)
 {
     QSharedPointer<BusInterface> otherBusIf = other->getBusInterface();
 
     // If the port is a temporary one, try to copy the configuration from the other end point.
     if (temp_ && otherBusIf != 0 && otherBusIf->getBusType().isValid())
     {
-        if (!static_cast<BlockDiagram*>(scene())->getEditProvider().isPerformingUndoRedo())
+        if (!static_cast<HWDesignDiagram*>(scene())->getEditProvider().isPerformingUndoRedo())
         {
             // Set a compatible interface mode. If the other end point is a hierarchical one,
             // the same interface mode injects automatically. Otherwise the proper interface mode must
@@ -214,7 +214,7 @@ bool DiagramPort::onConnect(ConnectionEndpoint const* other)
 //-----------------------------------------------------------------------------
 // Function: onDisonnect()
 //-----------------------------------------------------------------------------
-void DiagramPort::onDisconnect(ConnectionEndpoint const*)
+void BusPortItem::onDisconnect(ConnectionEndpoint const*)
 {
     // If the port is a temporary one, set the bus and abstraction definitions undefined.
     if (temp_)
@@ -228,7 +228,7 @@ void DiagramPort::onDisconnect(ConnectionEndpoint const*)
 //-----------------------------------------------------------------------------
 // Function: canConnect()
 //-----------------------------------------------------------------------------
-bool DiagramPort::canConnect(ConnectionEndpoint const* other) const
+bool BusPortItem::canConnect(ConnectionEndpoint const* other) const
 {
     // This end point requires a bus interface connection.
     if (!other->isBus())
@@ -279,12 +279,12 @@ bool DiagramPort::canConnect(ConnectionEndpoint const* other) const
     return false;
 }
 
-ComponentItem* DiagramPort::encompassingComp() const
+ComponentItem* BusPortItem::encompassingComp() const
 {
     return static_cast<ComponentItem*>(parentItem());
 }
 
-QSharedPointer<Component> DiagramPort::getOwnerComponent() const {
+QSharedPointer<Component> BusPortItem::getOwnerComponent() const {
 	ComponentItem* comp = encompassingComp();
 	Q_ASSERT(comp);
 	QSharedPointer<Component> compModel = comp->componentModel();
@@ -292,7 +292,7 @@ QSharedPointer<Component> DiagramPort::getOwnerComponent() const {
 	return compModel;
 }
 
-QVariant DiagramPort::itemChange(GraphicsItemChange change,
+QVariant BusPortItem::itemChange(GraphicsItemChange change,
                                  const QVariant &value)
 {
     switch (change) {
@@ -305,7 +305,7 @@ QVariant DiagramPort::itemChange(GraphicsItemChange change,
             }
 
             QPointF pos = value.toPointF();
-            QRectF parentRect = qgraphicsitem_cast<DiagramComponent *>(parentItem())->rect();
+            QRectF parentRect = qgraphicsitem_cast<HWComponentItem *>(parentItem())->rect();
 
             if (pos.x() < 0)
             {
@@ -327,7 +327,7 @@ QVariant DiagramPort::itemChange(GraphicsItemChange change,
             qreal nameWidth = nameLabel_->boundingRect().width();
             qreal nameHeight = nameLabel_->boundingRect().height();
 
-            QRectF parentRect = qgraphicsitem_cast<DiagramComponent *>(parentItem())->rect();
+            QRectF parentRect = qgraphicsitem_cast<HWComponentItem *>(parentItem())->rect();
 
             // Check if the port is directed to the left.
             if (pos().x() < 0)
@@ -347,7 +347,7 @@ QVariant DiagramPort::itemChange(GraphicsItemChange change,
 
     case ItemScenePositionHasChanged:
         // Check if the updates are not disabled.
-        if (!static_cast<DiagramComponent*>(parentItem())->isConnectionUpdateDisabled())
+        if (!static_cast<HWComponentItem*>(parentItem())->isConnectionUpdateDisabled())
         {
             // Update the connections.
             foreach (GraphicsConnection* interconnection, getConnections())
@@ -368,7 +368,7 @@ QVariant DiagramPort::itemChange(GraphicsItemChange change,
 //-----------------------------------------------------------------------------
 // Function: isDirectionFixed()
 //-----------------------------------------------------------------------------
-bool DiagramPort::isDirectionFixed() const
+bool BusPortItem::isDirectionFixed() const
 {
     return true;
 }
@@ -376,22 +376,22 @@ bool DiagramPort::isDirectionFixed() const
 //-----------------------------------------------------------------------------
 // Function: mouseMoveEvent()
 //-----------------------------------------------------------------------------
-void DiagramPort::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+void BusPortItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     // Discard mouse move if the diagram is protected.
-    if (static_cast<BlockDiagram*>(scene())->isProtected())
+    if (static_cast<HWDesignDiagram*>(scene())->isProtected())
     {
         return;
     }
 
-    DiagramConnectionEndpoint::mouseMoveEvent(event);
-    static_cast<DiagramComponent*>(parentItem())->onMovePort(this);
+    HWConnectionEndpoint::mouseMoveEvent(event);
+    static_cast<HWComponentItem*>(parentItem())->onMovePort(this);
 }
 
 //-----------------------------------------------------------------------------
 // Function: setTypes()
 //-----------------------------------------------------------------------------
-void DiagramPort::setTypes(VLNV const& busType, VLNV const& absType, General::InterfaceMode mode)
+void BusPortItem::setTypes(VLNV const& busType, VLNV const& absType, General::InterfaceMode mode)
 {
     Q_ASSERT(busInterface_ != 0);
 
@@ -446,9 +446,9 @@ void DiagramPort::setTypes(VLNV const& busType, VLNV const& absType, General::In
 //-----------------------------------------------------------------------------
 // Function: mousePressEvent()
 //-----------------------------------------------------------------------------
-void DiagramPort::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void BusPortItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    DiagramConnectionEndpoint::mousePressEvent(event);    
+    HWConnectionEndpoint::mousePressEvent(event);    
     oldPos_ = pos();
 
     // Save old port positions for all ports in the parent component.
@@ -471,9 +471,9 @@ void DiagramPort::mousePressEvent(QGraphicsSceneMouseEvent *event)
 //-----------------------------------------------------------------------------
 // Function: mouseReleaseEvent()
 //-----------------------------------------------------------------------------
-void DiagramPort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void BusPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    DiagramConnectionEndpoint::mouseReleaseEvent(event);
+    HWConnectionEndpoint::mouseReleaseEvent(event);
 
     QSharedPointer<QUndoCommand> cmd;
 
@@ -495,7 +495,7 @@ void DiagramPort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         if (cur.key()->pos() != cur.value())
         {
             QUndoCommand* childCmd =
-                new PortMoveCommand(static_cast<DiagramConnectionEndpoint*>(cur.key()), cur.value(), cmd.data());
+                new PortMoveCommand(static_cast<HWConnectionEndpoint*>(cur.key()), cur.value(), cmd.data());
         }
 
         ++cur;
@@ -512,14 +512,14 @@ void DiagramPort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     // Add the undo command to the edit stack only if it has changes.
     if (cmd->childCount() > 0 || oldPos_ != pos())
     {
-        static_cast<BlockDiagram*>(scene())->getEditProvider().addCommand(cmd, false);
+        static_cast<HWDesignDiagram*>(scene())->getEditProvider().addCommand(cmd, false);
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: askCompatibleMode()
 //-----------------------------------------------------------------------------
-bool DiagramPort::askCompatibleMode(QSharedPointer<BusInterface> otherBusIf,
+bool BusPortItem::askCompatibleMode(QSharedPointer<BusInterface> otherBusIf,
                                     General::InterfaceMode& mode)
 {
     switch (otherBusIf->getInterfaceMode())
@@ -635,18 +635,18 @@ bool DiagramPort::askCompatibleMode(QSharedPointer<BusInterface> otherBusIf,
     return true;
 }
 
-void DiagramPort::setInterfaceMode( General::InterfaceMode mode ) {
+void BusPortItem::setInterfaceMode( General::InterfaceMode mode ) {
 	Q_ASSERT(busInterface_);
 	busInterface_->setInterfaceMode(mode);
 	updateInterface();
 }
 
-QString DiagramPort::description() const {
+QString BusPortItem::description() const {
 	Q_ASSERT(busInterface_);
 	return busInterface_->getDescription();
 }
 
-void DiagramPort::setDescription( const QString& description ) {
+void BusPortItem::setDescription( const QString& description ) {
 	Q_ASSERT(busInterface_);
 	busInterface_->setDescription(description);
 	emit contentChanged();
@@ -655,23 +655,23 @@ void DiagramPort::setDescription( const QString& description ) {
 //-----------------------------------------------------------------------------
 // Function: getOffPageConnector()
 //-----------------------------------------------------------------------------
-ConnectionEndpoint* DiagramPort::getOffPageConnector()
+ConnectionEndpoint* BusPortItem::getOffPageConnector()
 {
     return offPageConnector_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: DiagramPort::isBus()
+// Function: BusPortItem::isBus()
 //-----------------------------------------------------------------------------
-bool DiagramPort::isBus() const
+bool BusPortItem::isBus() const
 {
     return true;
 }
 
 //-----------------------------------------------------------------------------
-// Function: DiagramPort::getPort()
+// Function: BusPortItem::getPort()
 //-----------------------------------------------------------------------------
-Port* DiagramPort::getPort() const
+Port* BusPortItem::getPort() const
 {
     return 0;
 }
