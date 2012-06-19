@@ -246,8 +246,24 @@ QVariant HierarchyModel::data(const QModelIndex& index,
 		else
 			return QColor("red");
 	}
-	else if (role == Qt::ToolTipRole) {
-		return QString("File path: %1").arg(dataModel_->getPath(item->getVLNV()));
+	else if (role == Qt::ToolTipRole)
+    {
+        VLNV vlnv = item->getVLNV();
+
+        QString text = QString("<b>Vendor:</b> ") + vlnv.getVendor() + "<br>" +
+                       QString("<b>Library:</b> ") + vlnv.getLibrary() + "<br>" +
+                       QString("<b>Name:</b> ") + vlnv.getName() + "<br>" +
+                       QString("<b>Version:</b> ") + vlnv.getVersion() + "<br>";
+
+        QSharedPointer<Component> component = item->component();
+
+        if (component != 0 && !component->getDescription().isEmpty())
+        {
+            text += QString("<br><b>Description:</b><br>") + component->getDescription();
+        }
+
+        text += QString("<br><b>File Path:</b><br>%1").arg(dataModel_->getPath(vlnv));
+        return text;
 	}
 	else if (role == Qt::DecorationRole) {
 		// if item is component

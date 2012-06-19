@@ -189,15 +189,25 @@ QVariant LibraryTreeModel::data(const QModelIndex& index, int role) const {
 	else if (role == Qt::ToolTipRole) {
 		
 		VLNV* vlnv = item->getVLNV();
-		
-		// if item can identify a single library object
-		if (vlnv) {
-			QString tip = tr("Vendor: %1\n").arg(vlnv->getVendor());
-			tip += tr("Library: %1\n").arg(vlnv->getLibrary());
-			tip += tr("Name: %1\n").arg(vlnv->getName());
-			tip += tr("Version: %1\n").arg(vlnv->getVersion());
-			tip += tr("File path: %1").arg(dataSource_->getPath(*vlnv));
-			return tip;
+
+        // if item can identify a single library object
+		if (vlnv)
+        {
+            QString text = QString("<b>Vendor:</b> ") + vlnv->getVendor() + "<br>" +
+                           QString("<b>Library:</b> ") + vlnv->getLibrary() + "<br>" +
+                           QString("<b>Name:</b> ") + vlnv->getName() + "<br>" +
+                           QString("<b>Version:</b> ") + vlnv->getVersion() + "<br>";
+
+            QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(*vlnv);
+            QSharedPointer<Component const> component = libComp.dynamicCast<Component const>();
+
+            if (component != 0 && !component->getDescription().isEmpty())
+            {
+                text += QString("<br><b>Description:</b><br>") + component->getDescription();
+            }
+
+            text += QString("<br><b>File Path:</b><br>%1").arg(dataSource_->getPath(*vlnv));
+            return text;
 		}
 
 		// if item did not represent a single vlnv item
