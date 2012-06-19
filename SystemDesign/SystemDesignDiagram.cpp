@@ -74,6 +74,7 @@ SystemDesignDiagram::SystemDesignDiagram(bool onlySW, LibraryInterface* lh, Main
       tempPotentialEndingEndpoints_(),
       highlightedEndpoint_(0)
 {
+    connect(this, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
     connect(&editProvider, SIGNAL(modified()), this, SIGNAL(contentChanged()));
 }
 
@@ -810,31 +811,8 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
     }
     else if (getMode() == MODE_SELECT)
     {
-        // Save the old selection.
-        QGraphicsItem *oldSelection = 0;
-
-        if (!selectedItems().isEmpty())
-        {
-            oldSelection = selectedItems().front();
-        }
-
-        // Handle the mouse press and bring the new selection to front.
+        // Handle the mouse press.
         QGraphicsScene::mousePressEvent(event);
-        //selectionToFront();
-
-        // Retrieve the new selection.
-        QGraphicsItem *newSelection = 0;
-
-        if (!selectedItems().isEmpty())
-        {
-            newSelection = selectedItems().front();
-        }
-
-        onSelected(newSelection);
-
-//         if (oldSelection && oldSelection->type() == EndpointConnection::Type)
-//             if (!selectedItems().size() || selectedItems().first() != oldSelection)
-//                 oldSelection->setZValue(-1000);
     }
 }
 
@@ -1837,4 +1815,20 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
 void SystemDesignDiagram::updateHierComponent()
 {
     // TODO:
+}
+
+//-----------------------------------------------------------------------------
+// Function: onSelectionChanged()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::onSelectionChanged()
+{
+    // Retrieve the new selection.
+    QGraphicsItem* newSelection = 0;
+
+    if (!selectedItems().isEmpty())
+    {
+        newSelection = selectedItems().front();
+    }
+
+    onSelected(newSelection);
 }

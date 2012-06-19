@@ -25,6 +25,7 @@ class ApplicationItem;
 class ProgramEntityItem;
 class IGraphicsItemStack;
 class SWPortItem;
+class SWInterfaceItem;
 class SystemComponentItem;
 
 //-----------------------------------------------------------------------------
@@ -125,9 +126,9 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-//! SystemItemDeleteCommand class.
+//! SystemComponentDeleteCommand class.
 //-----------------------------------------------------------------------------
-class SystemItemDeleteCommand : public QObject, public QUndoCommand
+class SystemComponentDeleteCommand : public QObject, public QUndoCommand
 {
 	Q_OBJECT
 
@@ -137,12 +138,12 @@ public:
      *
      *      @param [in] item The component item to delete.
      */
-    SystemItemDeleteCommand(ComponentItem* item, QUndoCommand* parent = 0);
+    SystemComponentDeleteCommand(ComponentItem* item, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
      */
-    ~SystemItemDeleteCommand();
+    ~SystemComponentDeleteCommand();
 
     /*!
      *  Undoes the command.
@@ -163,8 +164,8 @@ signals:
 
 private:
     // Disable copying.
-    SystemItemDeleteCommand(SystemItemDeleteCommand const& rhs);
-    SystemItemDeleteCommand& operator=(SystemItemDeleteCommand const& rhs);
+    SystemComponentDeleteCommand(SystemComponentDeleteCommand const& rhs);
+    SystemComponentDeleteCommand& operator=(SystemComponentDeleteCommand const& rhs);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -230,6 +231,56 @@ private:
     QGraphicsScene* scene_;
 
     //! Boolean flag for indicating if the port should be deleted in the destructor.
+    bool del_;
+};
+
+//-----------------------------------------------------------------------------
+//! SWInterfaceDeleteCommand class.
+//-----------------------------------------------------------------------------
+class SWInterfaceDeleteCommand : public QUndoCommand
+{
+public:
+    /*!
+     *  Constructor.
+     *
+     *      @param [in] interface    The interface to delete.
+     */
+    SWInterfaceDeleteCommand(SWInterfaceItem* interface, QUndoCommand* parent = 0);
+
+    /*!
+     *  Destructor.
+     */
+    ~SWInterfaceDeleteCommand();
+
+    /*!
+     *  Undoes the command.
+     */
+    virtual void undo();
+
+    /*!
+     *  Redoes the command.
+     */
+    virtual void redo();
+
+private:
+    // Disable copying.
+    SWInterfaceDeleteCommand(SWInterfaceDeleteCommand const& rhs);
+    SWInterfaceDeleteCommand& operator=(SWInterfaceDeleteCommand const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The interface item.
+    SWInterfaceItem* interface_;
+
+    //! The parent stack.
+    IGraphicsItemStack* parent_;
+
+    //! The graphics scene.
+    QGraphicsScene* scene_;
+
+    //! Boolean flag for indicating if the connection should be deleted in the destructor.
     bool del_;
 };
 

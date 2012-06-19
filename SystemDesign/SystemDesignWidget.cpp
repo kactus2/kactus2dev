@@ -16,6 +16,8 @@
 #include "SystemColumn.h"
 #include "SystemDesignDiagram.h"
 #include "SWComponentItem.h"
+#include "SWInterfaceItem.h"
+#include "HWMappingItem.h"
 
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/GenericEditProvider.h>
@@ -235,6 +237,20 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
 
             if (!column->isEmpty())
             {
+                // Column cannot be deleted if it contains HW mapping items.
+                foreach (QGraphicsItem* childItem, column->getItems())
+                {
+                    if (childItem->type() == HWMappingItem::Type)
+                    {
+                        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+                                           tr("The column cannot be removed because it contains underlying HW. "
+                                              "Move underlying HW components to another column before deletion."),
+                                           QMessageBox::Ok, this);
+                        msgBox.exec();
+                        return;
+                    }
+                }
+
                 QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
                                    tr("The column is not empty. Do you want to "
                                       "delete the column and all of its contents?"),
@@ -267,7 +283,7 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
                 getDiagram()->removeInstanceName(component->name());
                 getDiagram()->clearSelection();
 
-                QSharedPointer<SystemItemDeleteCommand> cmd(new SystemItemDeleteCommand(component));
+                QSharedPointer<SystemComponentDeleteCommand> cmd(new SystemComponentDeleteCommand(component));
 
                 connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
                         this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
@@ -293,6 +309,15 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
                 // Clear the item selection.
                 emit clearItemSelection();
             }
+        }
+        else if (selected->type() == SWInterfaceItem::Type)
+        {
+            SWInterfaceItem* interface = static_cast<SWInterfaceItem*>(selected);
+            getDiagram()->clearSelection();
+            emit clearItemSelection();
+
+            QSharedPointer<QUndoCommand> cmd(new SWInterfaceDeleteCommand(interface));
+            getGenericEditProvider()->addCommand(cmd);
         }
         else if (selected->type() == GraphicsConnection::Type)
         {

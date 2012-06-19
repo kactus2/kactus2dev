@@ -19,8 +19,6 @@
 #include <QPointF>
 #include <QVector2D>
 
-// TODO: Complete commentation.
-
 //-----------------------------------------------------------------------------
 
 namespace XmlUtils

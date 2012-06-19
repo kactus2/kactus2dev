@@ -106,6 +106,11 @@ public slots:
     //! Called when a component instance is remove from the diagram.
     virtual void onComponentInstanceRemoved(ComponentItem* item);
 
+    /*!
+     *  Called when the selection changes in the diagram.
+     */
+    void onSelectionChanged();
+
 protected:
     //! Called when the user presses a mouse button.
     void mousePressEvent(QGraphicsSceneMouseEvent* event);

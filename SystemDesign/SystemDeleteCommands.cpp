@@ -14,6 +14,8 @@
 #include "SystemColumn.h"
 #include "SystemComponentItem.h"
 #include "SWPortItem.h"
+#include "SWInterfaceItem.h"
+#include "SWComponentItem.h"
 
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/graphicsItems/ComponentItem.h>
@@ -30,29 +32,34 @@ SystemColumnDeleteCommand::SystemColumnDeleteCommand(GraphicsColumnLayout* layou
     // Create child commands for removing connections.
     foreach (QGraphicsItem* item, column->childItems())
     {
-        //TODO:
-//         if (item->type() == MappingComponentItem::Type)
-//         {
-//             MappingComponentItem* comp = static_cast<MappingComponentItem*>(item);
-// 
-//             foreach (QGraphicsItem* childItem, comp->childItems())
-//             {
-//                 if (childItem->type() != ProgramEntityItem::Type)
-//                 {
-//                     continue;
-//                 }
-// 
-//                 ProgramEntityItem* progEntity = static_cast<ProgramEntityItem*>(childItem);
-// 
-//                 foreach (EndpointItem* endpoint, progEntity->getEndpoints())
-//                 {
-//                     foreach (EndpointConnection* conn, endpoint->getConnections())
-//                     {
-//                         QUndoCommand* cmd = new EndpointConnectionDeleteCommand(conn, this);
-//                     }
-//                 }
-//             }
-//         }
+        if (item->type() == SWComponentItem::Type)
+        {
+            SWComponentItem* compItem = static_cast<SWComponentItem*>(item);
+
+            foreach (QGraphicsItem* childItem, compItem->childItems())
+            {
+                if (childItem->type() != SWPortItem::Type)
+                {
+                    continue;
+                }
+
+                SWPortItem* port = static_cast<SWPortItem*>(childItem);
+
+                foreach (GraphicsConnection* conn, port->getConnections())
+                {
+                    QUndoCommand* cmd = new SWConnectionDeleteCommand(conn, this);
+                }
+            }
+        }
+        else if (item->type() == SWInterfaceItem::Type)
+        {
+            SWInterfaceItem* interface = static_cast<SWInterfaceItem*>(item);
+
+            foreach (GraphicsConnection* conn, interface->getConnections())
+            {
+                QUndoCommand* cmd = new SWConnectionDeleteCommand(conn, this);
+            }
+        }
     }
 }
 
@@ -146,39 +153,36 @@ void SWConnectionDeleteCommand::redo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: SystemItemDeleteCommand()
+// Function: SystemComponentDeleteCommand()
 //-----------------------------------------------------------------------------
-SystemItemDeleteCommand::SystemItemDeleteCommand(ComponentItem* item, QUndoCommand* parent)
+SystemComponentDeleteCommand::SystemComponentDeleteCommand(ComponentItem* item, QUndoCommand* parent)
     : QUndoCommand(parent),
       item_(item),
       stack_(dynamic_cast<IGraphicsItemStack*>(item->parentItem())),
       scene_(item->scene()),
       del_(true)
 {
-    // Create child commands for removing connections. TODO: Update when the old system design has been removed.
+    // Create child commands for removing connections.
     foreach (QGraphicsItem* childItem, item->childItems())
     {
-//         if (childItem->type() != ProgramEntityItem::Type)
-//         {
-//             continue;
-//         }
-// 
-//         ProgramEntityItem* progEntity = static_cast<ProgramEntityItem*>(childItem);
-// 
-//         foreach (EndpointItem* endpoint, progEntity->getEndpoints())
-//         {
-//             foreach (EndpointConnection* conn, endpoint->getConnections())
-//             {
-//                 QUndoCommand* cmd = new EndpointConnectionDeleteCommand(conn, this);
-//             }
-//         }
+        if (childItem->type() != SWPortItem::Type)
+        {
+            continue;
+        }
+
+        SWPortItem* port = static_cast<SWPortItem*>(childItem);
+
+        foreach (GraphicsConnection* conn, port->getConnections())
+        {
+            QUndoCommand* cmd = new SWConnectionDeleteCommand(conn, this);
+        }
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~SystemItemDeleteCommand()
+// Function: ~SystemComponentDeleteCommand()
 //-----------------------------------------------------------------------------
-SystemItemDeleteCommand::~SystemItemDeleteCommand()
+SystemComponentDeleteCommand::~SystemComponentDeleteCommand()
 {
     if (del_)
     {
@@ -189,7 +193,7 @@ SystemItemDeleteCommand::~SystemItemDeleteCommand()
 //-----------------------------------------------------------------------------
 // Function: undo()
 //-----------------------------------------------------------------------------
-void SystemItemDeleteCommand::undo()
+void SystemComponentDeleteCommand::undo()
 {
     // Add the item back to the scene.
     stack_->addItem(item_);
@@ -204,7 +208,7 @@ void SystemItemDeleteCommand::undo()
 //-----------------------------------------------------------------------------
 // Function: redo()
 //-----------------------------------------------------------------------------
-void SystemItemDeleteCommand::redo()
+void SystemComponentDeleteCommand::redo()
 {
     // Execute child commands.
     QUndoCommand::redo();
@@ -274,5 +278,61 @@ void SWPortDeleteCommand::redo()
 
     // Remove the port from the scene.
     scene_->removeItem(port_);
+    del_ = true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWInterfaceDeleteCommand()
+//-----------------------------------------------------------------------------
+SWInterfaceDeleteCommand::SWInterfaceDeleteCommand(SWInterfaceItem* interface,
+                                                   QUndoCommand* parent)
+    : QUndoCommand(parent),
+      interface_(interface),
+      parent_(dynamic_cast<IGraphicsItemStack*>(interface->parentItem())),
+      scene_(interface->scene()),
+      del_(true)
+{
+    // Create child commands for removing interconnections.
+    foreach (GraphicsConnection* conn, interface_->getConnections())
+    {
+        QUndoCommand* cmd = new SWConnectionDeleteCommand(conn, this);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ~SWInterfaceDeleteCommand()
+//-----------------------------------------------------------------------------
+SWInterfaceDeleteCommand::~SWInterfaceDeleteCommand()
+{
+    if (del_)
+    {
+        delete interface_;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: undo()
+//-----------------------------------------------------------------------------
+void SWInterfaceDeleteCommand::undo()
+{
+    // Add the interface back to the scene.
+    parent_->addItem(interface_);
+    del_ = false;
+
+    // Execute child commands.
+    QUndoCommand::undo();
+}
+
+//-----------------------------------------------------------------------------
+// Function: redo()
+//-----------------------------------------------------------------------------
+void SWInterfaceDeleteCommand::redo()
+{
+    // Execute child commands.
+    QUndoCommand::redo();
+
+    // Remove the interface from the scene.
+    parent_->removeItem(interface_);
+    scene_->removeItem(interface_);
     del_ = true;
 }

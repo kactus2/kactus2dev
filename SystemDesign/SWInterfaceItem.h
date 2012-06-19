@@ -31,7 +31,7 @@ class SWInterfaceItem : public SWConnectionEndpoint
     Q_OBJECT
 
 public:
-    enum { Type = GFX_TYPE_SW_PORT_ITEM };
+    enum { Type = GFX_TYPE_SW_INTERFACE_ITEM };
 
     /*!
      *  Constructor which creates a graphics item for an undefined interface.
