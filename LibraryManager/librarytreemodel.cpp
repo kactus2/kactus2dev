@@ -199,11 +199,10 @@ QVariant LibraryTreeModel::data(const QModelIndex& index, int role) const {
                            QString("<b>Version:</b> ") + vlnv->getVersion() + "<br>";
 
             QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(*vlnv);
-            QSharedPointer<Component const> component = libComp.dynamicCast<Component const>();
 
-            if (component != 0 && !component->getDescription().isEmpty())
+            if (libComp != 0 && !libComp->getDescription().isEmpty())
             {
-                text += QString("<br><b>Description:</b><br>") + component->getDescription();
+                text += QString("<br><b>Description:</b><br>") + libComp->getDescription();
             }
 
             text += QString("<br><b>File Path:</b><br>%1").arg(dataSource_->getPath(*vlnv));

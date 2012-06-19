@@ -78,7 +78,7 @@ BusEditor::~BusEditor() {
 //-----------------------------------------------------------------------------
 bool BusEditor::validate(QStringList& errorList)
 {
-    bool valid = false;
+    bool valid = true;
 
     // if abstraction definition is being edited
     if (absDefGroup_.isEnabled())
