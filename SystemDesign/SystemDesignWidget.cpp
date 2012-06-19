@@ -278,6 +278,22 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
                 emit clearItemSelection();
             }
         }
+        else if (selected->type() == SWPortItem::Type)
+        {
+            SWPortItem* port = static_cast<SWPortItem*>(selected);
+            ComponentItem* comp = port->encompassingComp();
+
+            // Ports can be removed only if the parent component is not yet packaged (has an invalid VLNV).
+            if (!comp->componentModel()->getVlnv()->isValid())
+            {
+                // Delete the port.
+                QSharedPointer<QUndoCommand> cmd(new SWPortDeleteCommand(port));
+                getGenericEditProvider()->addCommand(cmd);
+
+                // Clear the item selection.
+                emit clearItemSelection();
+            }
+        }
         else if (selected->type() == GraphicsConnection::Type)
         {
             emit clearItemSelection();

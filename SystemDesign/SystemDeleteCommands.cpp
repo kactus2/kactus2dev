@@ -12,6 +12,8 @@
 #include "SystemDeleteCommands.h"
 
 #include "SystemColumn.h"
+#include "SystemComponentItem.h"
+#include "SWPortItem.h"
 
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/graphicsItems/ComponentItem.h>
@@ -213,4 +215,64 @@ void SystemItemDeleteCommand::redo()
     del_ = true;
 
     emit componentInstanceRemoved(item_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWPortDeleteCommand()
+//-----------------------------------------------------------------------------
+SWPortDeleteCommand::SWPortDeleteCommand(SWPortItem* port, QUndoCommand* parent) :
+    QUndoCommand(parent),
+    port_(port),
+    parent_(static_cast<SystemComponentItem*>(port->parentItem())),
+    scene_(port->scene()),
+    del_(true)
+{
+    // Create child commands for removing connection.
+    foreach (GraphicsConnection* conn, port_->getConnections())
+    {
+        QUndoCommand* cmd = new SWConnectionDeleteCommand(conn, this);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ~SWPortDeleteCommand()
+//-----------------------------------------------------------------------------
+SWPortDeleteCommand::~SWPortDeleteCommand()
+{
+    if (del_)
+    {
+        delete port_;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: undo()
+//-----------------------------------------------------------------------------
+void SWPortDeleteCommand::undo()
+{
+    // Add the port back to the scene.
+    scene_->addItem(port_);
+
+    // Add the port to the parent component.
+    parent_->addPort(port_);
+    del_ = false;
+
+    // Execute child commands.
+    QUndoCommand::undo();
+}
+
+//-----------------------------------------------------------------------------
+// Function: redo()
+//-----------------------------------------------------------------------------
+void SWPortDeleteCommand::redo()
+{
+    // Execute child commands.
+    QUndoCommand::redo();
+
+    // Remove the port from the parent component.
+    parent_->removePort(port_);
+
+    // Remove the port from the scene.
+    scene_->removeItem(port_);
+    del_ = true;
 }

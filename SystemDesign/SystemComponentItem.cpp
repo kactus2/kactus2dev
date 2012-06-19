@@ -158,11 +158,14 @@ void SystemComponentItem::addPort(SWPortItem* port)
 {
     port->setParentItem(this);
 
-//     if (port->type() == DiagramPort::Type)
-//     {
-//         // Add the bus interface to the component.
-//         componentModel()->add(port->getBusInterface());
-//     }
+    if (port->getType() == SWPortItem::ENDPOINT_TYPE_API)
+    {
+        componentModel()->addApiInterface(port->getApiInterface());
+    }
+    else if (port->getType() == SWPortItem::ENDPOINT_TYPE_COM)
+    {
+        componentModel()->addComInterface(port->getComInterface());
+    }
 
     // Make preparations.
     if (port->x() >= 0)
@@ -188,11 +191,14 @@ void SystemComponentItem::removePort(SWPortItem* port)
     bottomPorts_.removeAll(port);
     updateSize();
 
-    // TODO: Test.
-//     if (port->type() == DiagramPort::Type)
-//     {
-//         componentModel()->removeBusInterface(port->getBusInterface().data());
-//     }
+    if (port->getType() == SWPortItem::ENDPOINT_TYPE_API)
+    {
+        componentModel()->removeApiInterface(port->getApiInterface().data());
+    }
+    else if (port->getType() == SWPortItem::ENDPOINT_TYPE_COM)
+    {
+        componentModel()->removeComInterface(port->getComInterface().data());
+    }
 }
 
 //-----------------------------------------------------------------------------

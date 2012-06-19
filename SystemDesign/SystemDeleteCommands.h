@@ -24,6 +24,8 @@ class ComponentItem;
 class ApplicationItem;
 class ProgramEntityItem;
 class IGraphicsItemStack;
+class SWPortItem;
+class SystemComponentItem;
 
 //-----------------------------------------------------------------------------
 //! SystemColumnDeleteCommand class.
@@ -178,6 +180,56 @@ private:
     QGraphicsScene* scene_;
 
     //! Boolean flag for indicating if the component should be deleted in the destructor.
+    bool del_;
+};
+
+//-----------------------------------------------------------------------------
+//! SWPortDeleteCommand class.
+//-----------------------------------------------------------------------------
+class SWPortDeleteCommand : public QUndoCommand
+{
+public:
+    /*!
+     *  Constructor.
+     *
+     *      @param [in] port The port to delete.
+     */
+    SWPortDeleteCommand(SWPortItem* port, QUndoCommand* parent = 0);
+
+    /*!
+     *  Destructor.
+     */
+    ~SWPortDeleteCommand();
+
+    /*!
+     *  Undoes the command.
+     */
+    virtual void undo();
+
+    /*!
+     *  Redoes the command.
+     */
+    virtual void redo();
+
+private:
+    // Disable copying.
+    SWPortDeleteCommand(SWPortDeleteCommand const& rhs);
+    SWPortDeleteCommand& operator=(SWPortDeleteCommand const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The diagram port.
+    SWPortItem* port_;
+
+    //! The port's parent.
+    SystemComponentItem* parent_;
+
+    //! The graphics scene.
+    QGraphicsScene* scene_;
+
+    //! Boolean flag for indicating if the port should be deleted in the destructor.
     bool del_;
 };
 
