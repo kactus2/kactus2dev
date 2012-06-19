@@ -114,6 +114,7 @@ void DiagramInterface::setName( const QString& name ) {
 	busInterface_->setName(name);
 
     updateInterface();
+    emit contentChanged();
 }
 
 QSharedPointer<BusInterface> DiagramInterface::getBusInterface() const
@@ -170,7 +171,6 @@ void DiagramInterface::updateInterface()
     }
 
     offPageConnector_->updateInterface();
-    emit contentChanged();
 }
 
 bool DiagramInterface::isHierarchical() const
@@ -389,7 +389,6 @@ QVariant DiagramInterface::itemChange(GraphicsItemChange change,
             if (!parentItem())
                 break;
 
-        emit contentChanged();
         break;
     }
 

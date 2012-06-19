@@ -302,8 +302,6 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
             QSharedPointer<QUndoCommand> cmd(new SWConnectionDeleteCommand(static_cast<GraphicsConnection*>(selected)));
             getGenericEditProvider()->addCommand(cmd);
         }
-
-        emit contentChanged();
     }
 }
 

@@ -156,6 +156,7 @@ void DiagramAdHocPort::setName(QString const& name)
 {
 	port_->setName(name);
 	updateInterface();
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -189,7 +190,6 @@ void DiagramAdHocPort::updateInterface()
     }
 
     offPageConnector_->updateInterface();
-    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -315,7 +315,6 @@ QVariant DiagramAdHocPort::itemChange(GraphicsItemChange change,
                 nameLabel_->setPos(-nameHeight/2, GridSize/2 + nameWidth);
             }
 
-            emit contentChanged();
             break;
         }
 

@@ -74,6 +74,7 @@ SystemDesignDiagram::SystemDesignDiagram(bool onlySW, LibraryInterface* lh, Main
       tempPotentialEndingEndpoints_(),
       highlightedEndpoint_(0)
 {
+    connect(&editProvider, SIGNAL(modified()), this, SIGNAL(contentChanged()));
 }
 
 //-----------------------------------------------------------------------------
@@ -118,7 +119,6 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
 {
     // Create the column layout.
     layout_ = QSharedPointer<GraphicsColumnLayout>(new GraphicsColumnLayout(this));
-    connect(layout_.data(), SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
     if (design->getColumns().isEmpty())
     {
@@ -172,7 +172,6 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
         item->setImportRef(instance.getImportRef());
         item->setPropertyValues(instance.getPropertyValues());
 
-        connect(item, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
         connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
         // Setup custom port positions.
@@ -188,7 +187,6 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
                 if (port == 0)
                 {
                     port = new SWPortItem(itrPortPos.key(), item);
-                    connect(port, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
                     item->addPort(port);
                 }
 
@@ -209,7 +207,6 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
                 if (port == 0)
                 {
                     port = new SWPortItem(itrPortPos.key(), item);
-                    connect(port, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
                     item->addPort(port);
                 }
 
@@ -269,7 +266,6 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
         item->setPropertyValues(instance.getPropertyValues());
         item->setFileSetRef(instance.getFileSetRef());
 
-        connect(item, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
         connect(item, SIGNAL(openCSource(ComponentItem*)), this, SIGNAL(openCSource(ComponentItem*)));
         connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
@@ -286,7 +282,6 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
                 if (port == 0)
                 {
                     port = new SWPortItem(itrPortPos.key(), item);
-                    connect(port, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
                     item->addPort(port);
                 }
 
@@ -307,7 +302,6 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
                 if (port == 0)
                 {
                     port = new SWPortItem(itrPortPos.key(), item);
-                    connect(port, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
                     item->addPort(port);
                 }
 
@@ -362,7 +356,6 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
     foreach (QSharedPointer<ApiInterface> apiIf, getEditedComponent()->getApiInterfaces())
     {
         SWInterfaceItem* item = new SWInterfaceItem(getEditedComponent(), apiIf);
-        connect(item, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
         // Add the interface to the first column where it is allowed to be placed.
         layout_->addItem(item);
@@ -371,7 +364,6 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
     foreach (QSharedPointer<ComInterface> comIf, getEditedComponent()->getComInterfaces())
     {
         SWInterfaceItem* item = new SWInterfaceItem(getEditedComponent(), comIf);
-        connect(item, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
         // Add the interface to the first column where it is allowed to be placed.
         layout_->addItem(item);
@@ -579,7 +571,6 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
                                               QMap<QString, QString>());
             
             item->setPos(stack->mapStackFromScene(snapPointToGrid(event->scenePos())));
-            connect(item, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
             connect(item, SIGNAL(openCSource(ComponentItem*)), this, SIGNAL(openCSource(ComponentItem*)));
             connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
@@ -767,7 +758,6 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
                     SWComponentItem* swCompItem = new SWComponentItem(getLibraryInterface(), comp, name);
                     swCompItem->setPos(snapPointToGrid(event->scenePos()));
 
-                    connect(swCompItem, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
                     connect(swCompItem, SIGNAL(openCSource(ComponentItem*)), this, SIGNAL(openCSource(ComponentItem*)));
                     connect(swCompItem, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
@@ -779,14 +769,11 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
                         this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
                     getEditProvider().addCommand(cmd);
-                    emit contentChanged();
                 }
                 else if (stack->getContentType() == COLUMN_CONTENT_IO)
                 {
                     SWInterfaceItem* newItem = new SWInterfaceItem(getEditedComponent(), "", 0);
                     newItem->setPos(snapPointToGrid(event->scenePos()));
-
-                    connect(newItem, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
                     // Save the positions of the other diagram interfaces.
 //                     QMap<DiagramInterface*, QPointF> oldPositions;
@@ -1458,8 +1445,6 @@ void SystemDesignDiagram::createConnection(QGraphicsSceneMouseEvent* event)
     else 
     {
         // Otherwise make the temporary connection a permanent one by connecting the ends.
-        connect(tempConnection_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
-
         if (tempConnection_->connectEnds())
         {
             QSharedPointer<QUndoCommand> cmd(new SWConnectionAddCommand(this, tempConnection_));
@@ -1467,7 +1452,6 @@ void SystemDesignDiagram::createConnection(QGraphicsSceneMouseEvent* event)
 
             tempConnection_ = 0;
             tempConnEndpoint_ = 0;
-            emit contentChanged();
         }
         else
         {
@@ -1615,7 +1599,6 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
         connection->setRoute(dependency.getRoute());
         connection->setImported(dependency.isImported());
 
-        connect(connection, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
         connect(connection, SIGNAL(errorMessage(QString const&)),
             this, SIGNAL(errorMessage(QString const&)));
 
@@ -1696,7 +1679,6 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
                                                                     dependency.getDescription(), this);
             connection->setRoute(dependency.getRoute());
 
-            connect(connection, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
             connect(connection, SIGNAL(errorMessage(QString const&)),
                 this, SIGNAL(errorMessage(QString const&)));
 
@@ -1760,7 +1742,6 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
             conn.getDescription(), this);
         connection->setRoute(conn.getRoute());
 
-        connect(connection, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
         connect(connection, SIGNAL(errorMessage(QString const&)),
             this, SIGNAL(errorMessage(QString const&)));
 
@@ -1841,7 +1822,6 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
                 hierConn.getDescription(), this);
             connection->setRoute(hierConn.getRoute());
 
-            connect(connection, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
             connect(connection, SIGNAL(errorMessage(QString const&)),
                 this, SIGNAL(errorMessage(QString const&)));
 

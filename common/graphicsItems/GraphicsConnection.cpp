@@ -208,11 +208,7 @@ void GraphicsConnection::setRoute(QList<QPointF> path)
     QPainterPathStroker stroker;
     setPath(stroker.createStroke(painterPath));
 
-    if (path != pathPoints_)
-    {
-        pathPoints_ = path;
-        emit contentChanged();
-    }
+    pathPoints_ = path;
 }
 
 //-----------------------------------------------------------------------------
@@ -385,8 +381,6 @@ void GraphicsConnection::updatePosition()
 
         setRoute(route);
     }
-
-    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -517,8 +511,6 @@ void GraphicsConnection::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
             else
                 setRoute(pathPoints_);
         }
-
-        emit contentChanged();
     }
     else if (selectionType_ == SEGMENT)
     {
@@ -565,7 +557,6 @@ void GraphicsConnection::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
         }
 
         setRoute(pathPoints_);
-        emit contentChanged();
     }
 
     QGraphicsPathItem::mouseMoveEvent(mouseEvent);
@@ -871,7 +862,6 @@ void GraphicsConnection::disconnectEnds()
 
     endpoint1_ = 0;
     endpoint2_ = 0;
-    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------

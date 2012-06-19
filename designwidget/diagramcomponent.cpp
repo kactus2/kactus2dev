@@ -72,7 +72,6 @@ DiagramComponent::DiagramComponent(LibraryInterface* lh_,
     foreach (QSharedPointer<BusInterface> busif, busInterfaces)
     {
         DiagramPort *port = new DiagramPort(busif, getLibraryInterface(), this);
-        connect(port, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
         if (right) {
             port->setPos(QPointF(rect().width(), rightY) + rect().topLeft());
@@ -95,7 +94,6 @@ DiagramComponent::DiagramComponent(LibraryInterface* lh_,
         }
 
         DiagramAdHocPort* port = new DiagramAdHocPort(adhocPort.data(), getLibraryInterface(), this);
-        connect(port, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
         if (right)
         {
@@ -345,7 +343,6 @@ DiagramPort* DiagramComponent::addPort(QPointF const& pos)
 
     // Create the visualization for the bus interface.
     DiagramPort* port = new DiagramPort(busIf, getLibraryInterface(), this);
-    connect(port, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
     port->setPos(mapFromScene(pos));
     onAddPort(port, mapFromScene(pos).x() >= 0);
@@ -478,8 +475,6 @@ bool DiagramComponent::isConnectionUpdateDisabled() const
 //-----------------------------------------------------------------------------
 void DiagramComponent::onAdHocVisibilityChanged(QString const& portName, bool visible)
 {
-    emit contentChanged();
-
     // Create/destroy the ad-hoc port graphics item.
     if (visible)
     {

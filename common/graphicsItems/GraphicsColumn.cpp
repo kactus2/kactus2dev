@@ -74,8 +74,6 @@ void GraphicsColumn::setName(QString const& name)
 {
     desc_.setName(name);
     updateNameLabel();
-
-    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -130,8 +128,6 @@ void GraphicsColumn::addItem(QGraphicsItem* item, bool load)
             VStackedLayout::setItemPos(items_, item, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
         }
     }
-
-    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -146,8 +142,6 @@ void GraphicsColumn::removeItem(QGraphicsItem* item)
     {
         VStackedLayout::updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
     }
-
-    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -204,7 +198,6 @@ void GraphicsColumn::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
     if (cmd->childCount() > 0 || pos() != oldPos_)
     {
         static_cast<DesignDiagram*>(scene())->getEditProvider().addCommand(cmd);
-        emit contentChanged();
     }
 }
 
@@ -459,8 +452,6 @@ void GraphicsColumn::setColumnDesc(ColumnDesc const& desc)
     }
 
     updateNameLabel();
-
-    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------

@@ -108,6 +108,7 @@ void DiagramPort::setName( const QString& name )
     encompassingComp()->componentModel()->updateBusInterface(busInterface_.data());
 
 	updateInterface();
+    emit contentChanged();
 }
 
 QSharedPointer<BusInterface> DiagramPort::getBusInterface() const
@@ -166,7 +167,6 @@ void DiagramPort::updateInterface()
     }
 
     offPageConnector_->updateInterface();
-    emit contentChanged();
 }
 
 bool DiagramPort::isHierarchical() const
@@ -342,7 +342,6 @@ QVariant DiagramPort::itemChange(GraphicsItemChange change,
                 nameLabel_->setPos(-nameHeight/2, GridSize/2 + nameWidth);
             }
 
-            emit contentChanged();
             break;
         }
 

@@ -413,9 +413,6 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
             QSharedPointer<QUndoCommand> cmd(new ColumnDeleteCommand(getDiagram()->getColumnLayout(), column));
             getGenericEditProvider()->addCommand(cmd);
         }
-
-        // If something was removed then save button must be enabled again.
-        emit contentChanged();
     }
     else
     {

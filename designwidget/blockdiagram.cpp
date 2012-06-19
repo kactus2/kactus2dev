@@ -75,6 +75,7 @@ BlockDiagram::BlockDiagram(LibraryInterface *lh, GenericEditProvider& editProvid
       oldSelection_(0)
 {
     connect(this, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
+    connect(&editProvider, SIGNAL(modified()), this, SIGNAL(contentChanged()));
 }
 
 //-----------------------------------------------------------------------------
@@ -94,7 +95,6 @@ void BlockDiagram::loadDesign(QSharedPointer<Design> design)
 {
     // Create the column layout.
     layout_ = QSharedPointer<GraphicsColumnLayout>(new GraphicsColumnLayout(this));
-    connect(layout_.data(), SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
     if (design->getColumns().isEmpty())
     {
@@ -116,7 +116,6 @@ void BlockDiagram::loadDesign(QSharedPointer<Design> design)
     foreach (QSharedPointer<BusInterface> busIf, getEditedComponent()->getBusInterfaces())
     {
         DiagramInterface* diagIf = new DiagramInterface(getLibraryInterface(), getEditedComponent(), busIf, 0);
-        connect(diagIf, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
         // Add the diagram interface to the first column where it is allowed to be placed.
         layout_->addItem(diagIf);
@@ -147,8 +146,6 @@ void BlockDiagram::loadDesign(QSharedPointer<Design> design)
                                                           instance.getConfigurableElementValues(),
                                                           instance.getPortAdHocVisibilities());
 
-        connect(diagComp, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
-
         // Setup the custom port positions.
         QMapIterator<QString, QPointF> itrPortPos(instance.getBusInterfacePositions());
 
@@ -161,7 +158,6 @@ void BlockDiagram::loadDesign(QSharedPointer<Design> design)
             {
                 port = diagComp->addPort(itrPortPos.value());
                 port->setName(itrPortPos.key());
-                connect(port, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
             }
 
             port->setPos(itrPortPos.value());
@@ -270,7 +266,6 @@ void BlockDiagram::loadDesign(QSharedPointer<Design> design)
                 diagramInterconnection->setVisible(false);
             }
 
-            connect(diagramInterconnection, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
             connect(diagramInterconnection, SIGNAL(errorMessage(QString const&)), this,
                     SIGNAL(errorMessage(QString const&)));
 
@@ -361,7 +356,6 @@ void BlockDiagram::loadDesign(QSharedPointer<Design> design)
                 diagConn->setVisible(false);
             }
 
-            connect(diagConn, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
             connect(diagConn, SIGNAL(errorMessage(QString const&)), this,
                     SIGNAL(errorMessage(QString const&)));
 			connectedHier.append(hierConn.interfaceRef);
@@ -394,7 +388,6 @@ void BlockDiagram::loadDesign(QSharedPointer<Design> design)
                 adHocIf->setPos(pos);
             }
 
-            connect(adHocIf, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
             //layout_->addItem(adHocIf);
 
             // Add the ad-hoc interface to the first column where it is allowed to be placed.
@@ -487,7 +480,6 @@ void BlockDiagram::loadDesign(QSharedPointer<Design> design)
                     conn->setVisible(false);
                 }
 
-                connect(conn, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
                 connect(conn, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
                 addItem(conn);
@@ -556,7 +548,6 @@ void BlockDiagram::loadDesign(QSharedPointer<Design> design)
                     conn->setVisible(false);
                 }
 
-                connect(conn, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
                 connect(conn, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
                 addItem(conn);
                 conn->updatePosition();
@@ -980,7 +971,6 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
                     // Create the corresponding diagram component.
                     DiagramComponent* diagComp = new DiagramComponent(getLibraryInterface(), comp, name);
                     diagComp->setPos(snapPointToGrid(mouseEvent->scenePos()));
-                    connect(diagComp, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
                     QSharedPointer<ItemAddCommand> cmd(new ItemAddCommand(column, diagComp));
 
@@ -991,8 +981,6 @@ void BlockDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
                     getEditProvider().addCommand(cmd);
                 }
-
-                emit contentChanged();
             }
         }
         // Otherwise check if the item is an unpackaged component in which case
@@ -1623,7 +1611,6 @@ void BlockDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         // Create the diagram component.
         DiagramComponent *newItem = new DiagramComponent(getLibraryInterface(), comp, instanceName);
         newItem->setPos(snapPointToGrid(event->scenePos()));
-        connect(newItem, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
         if (column != 0)
         {
@@ -1871,7 +1858,6 @@ void BlockDiagram::addInterface(GraphicsColumn* column, QPointF const& pos)
     newItem->setPos(snapPointToGrid(pos));
 
     connect(newItem, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
-    connect(newItem, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
     // Save the positions of the other diagram interfaces.
     QMap<DiagramInterface*, QPointF> oldPositions;
@@ -1968,8 +1954,6 @@ void BlockDiagram::createConnection(QGraphicsSceneMouseEvent * mouseEvent)
             addItem(tempConnection_);
         }
 
-        connect(tempConnection_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
-
         if (tempConnection_->connectEnds())
         {
             QSharedPointer<QUndoCommand> cmd(new ConnectionAddCommand(this, tempConnection_));
@@ -1981,8 +1965,6 @@ void BlockDiagram::createConnection(QGraphicsSceneMouseEvent * mouseEvent)
             {
                 tempConnEndPoint_ = 0;
             }
-
-            emit contentChanged();
         }
         else
         {
@@ -2137,7 +2119,6 @@ void BlockDiagram::toggleConnectionStyle(GraphicsConnection* conn, QUndoCommand*
                                                                  QString(), QString(), QString(), this);
     addItem(newConn);
 
-    connect(newConn, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
     connect(newConn, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
     if (newConn->connectEnds())
@@ -2194,14 +2175,11 @@ void BlockDiagram::destroyConnections()
 //-----------------------------------------------------------------------------
 void BlockDiagram::onAdHocVisibilityChanged(QString const& portName, bool visible)
 {
-    emit contentChanged();
-    
     if (visible)
     {
         DiagramAdHocInterface* adHocIf = new DiagramAdHocInterface(getEditedComponent(),
                                                                    getEditedComponent()->getPort(portName),
                                                                    getLibraryInterface(), 0);
-        connect(adHocIf, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
         // Add the ad-hoc interface to the first column where it is allowed to be placed.
         layout_->addItem(adHocIf);

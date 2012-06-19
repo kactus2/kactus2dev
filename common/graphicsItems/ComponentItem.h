@@ -140,13 +140,10 @@ public:
     virtual bool isConnectionUpdateDisabled() const = 0;
 
 signals:
-    //! Signals that the contents of the component have been changed.
-    void contentChanged();
-
     //! Sends an error message to the user.
     void errorMessage(const QString& errorMessage) const;
 
-	//! \brief Emitted when the name of the diagramComponent changes.
+	//! \brief Emitted when the name of the component item changes.
 	void nameChanged(QString const& newName, QString const& oldName);
 
 	//! \brief Emitted when the display name changes.

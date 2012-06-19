@@ -128,8 +128,6 @@ void DiagramOffPageConnector::updateInterface()
             break;
         }
     }
-
-    emit contentChanged();
 }
 
 bool DiagramOffPageConnector::isHierarchical() const

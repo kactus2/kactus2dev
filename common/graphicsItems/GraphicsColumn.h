@@ -167,10 +167,6 @@ public:
      */
     bool isItemAllowed(QGraphicsItem* item) const;
 
-signals:
-    //! Signals that the contents of the column have changed.
-    void contentChanged();
-
 protected:
     //! Called when the user presses the mouse over the column.
     void mousePressEvent(QGraphicsSceneMouseEvent* event);

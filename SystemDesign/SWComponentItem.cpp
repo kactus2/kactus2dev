@@ -276,7 +276,6 @@ void SWComponentItem::setFileSetRef(QString const& fileSetName)
     {
         fileSetRef_ = fileSetName;
         emit fileSetRefChanged(fileSetRef_);
-        emit contentChanged();
     }
 }
 

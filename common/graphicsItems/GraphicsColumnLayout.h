@@ -105,10 +105,6 @@ public:
      */
     QList<GraphicsColumn*> const& getColumns() const;
 
-signals:
-    //! Signals that the contents of the column layout have changed.
-    void contentChanged();
-
 private:
     // Disable copying.
     GraphicsColumnLayout(GraphicsColumnLayout const& rhs);

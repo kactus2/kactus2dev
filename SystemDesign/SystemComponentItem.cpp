@@ -46,7 +46,6 @@ SystemComponentItem::SystemComponentItem(QRectF const& size,
     foreach (QSharedPointer<ApiInterface> apiIf, component->getApiInterfaces())
     {
         SWPortItem* port = new SWPortItem(apiIf, this);
-        connect(port, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
         if (right)
         {
@@ -75,7 +74,6 @@ SystemComponentItem::SystemComponentItem(QRectF const& size,
     foreach (QSharedPointer<ComInterface> comIf, component->getComInterfaces())
     {
         SWPortItem* port = new SWPortItem(comIf, this);
-        connect(port, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
         if (right)
         {
@@ -132,7 +130,6 @@ SWPortItem* SystemComponentItem::addPort(QPointF const& pos)
 
     // Create the visualization for the bus interface.
     SWPortItem* port = new SWPortItem(name, this);
-    connect(port, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
 
     port->setName(name);
     port->setPos(mapFromScene(pos));
@@ -411,7 +408,6 @@ void SystemComponentItem::setPropertyValues(QMap<QString, QString> const& values
     }
 
     emit propertyValuesChanged(propertyValues_);
-    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------

@@ -465,7 +465,6 @@ QVariant SWInterfaceItem::itemChange(GraphicsItemChange change, QVariant const& 
             if (!parentItem())
                 break;
 
-            emit contentChanged();
             break;
         }
 

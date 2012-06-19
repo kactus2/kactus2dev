@@ -73,8 +73,6 @@ void GraphicsColumnLayout::addColumn(GraphicsColumn* column, bool append)
 
     column->setOffsetY(offsetY_);
 
-    connect(column, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
-
     // Add the column to the list of columns and update the layout width.
     columns_.append(column);
     layoutWidth_ += column->boundingRect().width();
@@ -82,8 +80,6 @@ void GraphicsColumnLayout::addColumn(GraphicsColumn* column, bool append)
     // Update the position in the layout.
     HStackedLayout::updateItemMove(columns_, column);
     HStackedLayout::setItemPos(columns_, column, 0.0);
-
-    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -96,8 +92,6 @@ void GraphicsColumnLayout::removeColumn(GraphicsColumn* column)
         layoutWidth_ -= column->boundingRect().width();
         HStackedLayout::updateItemPositions(columns_, 0.0, 0.0, 0.0);
         scene_->removeItem(column);
-
-        emit contentChanged();
     }
 }
 
@@ -132,7 +126,6 @@ void GraphicsColumnLayout::onMoveColumn(GraphicsColumn* column)
     column->update();
 
     HStackedLayout::updateItemMove(columns_, column);
-    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------

@@ -64,8 +64,6 @@ ComponentItem::ComponentItem(QRectF const& size,
     {
         updateNameLabel(name_);
     }
-
-    connect(nameLabel_->document(), SIGNAL(contentsChanged()), this, SIGNAL(contentChanged()));
 }
 
 //-----------------------------------------------------------------------------
@@ -95,8 +93,6 @@ void ComponentItem::updateComponent()
     {
         setToolTip("Unpackaged component. No VLNV assigned!");
     }
-
-    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -116,7 +112,6 @@ void ComponentItem::setName(QString const& name)
         updateNameLabel(name);
     }
 
-    emit contentChanged();
     emit nameChanged(name, oldName);
 }
 
@@ -136,7 +131,6 @@ void ComponentItem::setDisplayName(QString const& displayName)
         updateNameLabel(name_);
     }
 
-    emit contentChanged();
     emit displayNameChanged(displayName_);
 }
 
@@ -146,7 +140,6 @@ void ComponentItem::setDisplayName(QString const& displayName)
 void ComponentItem::setDescription(const QString& description)
 {
     description_ = description;
-    emit contentChanged();
     emit descriptionChanged(description_);
 }
 
@@ -156,7 +149,6 @@ void ComponentItem::setDescription(const QString& description)
 void ComponentItem::setConfigurableElements(const QMap<QString, QString>& confElements)
 {
     configurableValues_ = confElements;
-    emit contentChanged();
     emit confElementsChanged(configurableValues_);
 }
 
@@ -233,10 +225,6 @@ QVariant ComponentItem::itemChange(GraphicsItemChange change, const QVariant &va
     {
         QPointF newPos = value.toPointF();
         return snapPointToGrid(newPos);
-    }
-    else if (change == ItemPositionHasChanged)
-    {
-        emit contentChanged();
     }
 
     return QGraphicsItem::itemChange(change, value);

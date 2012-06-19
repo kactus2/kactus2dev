@@ -59,6 +59,7 @@ void GenericEditProvider::addCommand(QSharedPointer<QUndoCommand> command, bool 
 
         // Inform others.
         emit editStateChanged();
+        emit modified();
     }
 
     Q_ASSERT(undoStack_.size() <= historySize_);
@@ -88,6 +89,7 @@ void GenericEditProvider::undo()
 
     undoing_ = false;
     emit editStateChanged();
+    emit modified();
 }
 
 //-----------------------------------------------------------------------------
@@ -112,6 +114,7 @@ void GenericEditProvider::redo()
 
     redoing_ = false;
     emit editStateChanged();
+    emit modified();
 }
 
 //-----------------------------------------------------------------------------

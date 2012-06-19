@@ -216,8 +216,6 @@ void HWMappingItem::addItem(QGraphicsItem* item, bool load)
         VStackedLayout::setItemPos(swComponents_, compItem, 0.0, TOP_MARGIN, SPACING);
         updateItemPositions();
     }
-
-    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -228,8 +226,6 @@ void HWMappingItem::removeItem(QGraphicsItem* item)
     swComponents_.removeAll(static_cast<ComponentItem*>(item));
     item->setParentItem(0);
     updateItemPositions();
-
-    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------

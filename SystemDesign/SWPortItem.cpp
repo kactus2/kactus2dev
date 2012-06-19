@@ -558,7 +558,6 @@ QVariant SWPortItem::itemChange(GraphicsItemChange change, QVariant const& value
                 nameLabel_.setPos(-nameHeight/2, GridSize + nameWidth);
             }
 
-            emit contentChanged();
             break;
         }
 

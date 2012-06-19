@@ -77,6 +77,10 @@ public:
      *  Returns true if the an undo/redo is currently being performed.
      */
     bool isPerformingUndoRedo() const;
+    
+signals:
+    //! Emitted when the stack is modified.
+    void modified();
 
 private:
     // Disable copying.
