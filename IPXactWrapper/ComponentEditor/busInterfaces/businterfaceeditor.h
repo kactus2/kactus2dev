@@ -13,7 +13,6 @@
 #include <models/component.h>
 #include "busifgeneraltab.h"
 #include "busifportmaptab.h"
-#include "busifinterfacemodetab.h"
 
 #include <QSharedPointer>
 #include <QTabWidget>
@@ -73,9 +72,6 @@ private:
 	//! No assignment
 	BusInterfaceEditor& operator=(const BusInterfaceEditor& other);
 
-	//! \brief Set up the the editor.
-	void initialize();
-
 	//! \brief Pointer to the bus interface being edited.
 	QSharedPointer<BusInterface> busif_;
 
@@ -87,9 +83,6 @@ private:
 
 	//! \brief The tab for port maps of bus interface
 	BusIfPortmapTab portmaps_;
-
-	//! \brief The tab for interface mode of bus interface
-	BusIfInterfaceModeTab interfaceMode_;
 };
 
 #endif // BUSINTERFACEEDITOR_H

@@ -26,19 +26,23 @@ public:
 	 *
 	 * \param parent Pointer to the owner of this editor,
 	 * \param busif Pointer to the bus interface that sets the selected interface at start.
+	 * \param showMonitor If this is true then also "monitor" option is shown.
 	 *
 	*/
 	InterfaceModeSelector(QWidget *parent, 
-		QSharedPointer<BusInterface> busif = QSharedPointer<BusInterface>());
+		QSharedPointer<BusInterface> busif = QSharedPointer<BusInterface>(),
+		bool showMonitor = true);
 
 	/*! \brief The constructor
 	 *
 	 * \param mode The interface mode that is selected at start.
 	 * \param parent Pointer to the owner of the editor.
+	 * \param showMonitor If this is true then also "monitor" option is shown.
 	 *
 	*/
 	InterfaceModeSelector(General::InterfaceMode mode, 
-		QWidget* parent);
+		QWidget* parent, 
+		bool showMonitor = true);
 
 	//! \brief The destructor
 	virtual ~InterfaceModeSelector();
@@ -84,6 +88,9 @@ private:
 
 	//! \brief Set up the editor.
 	void initialize();
+
+	//! \brief If this is true then the "monitor" option is shown in drop down list.
+	bool showMonitor_;
 };
 
 #endif // INTERFACEMODESELECTOR_H

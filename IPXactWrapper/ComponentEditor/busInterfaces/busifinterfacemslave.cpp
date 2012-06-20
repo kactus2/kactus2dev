@@ -10,10 +10,12 @@
 #include <models/businterface.h>
 #include <models/generaldeclarations.h>
 
+BusIfInterfaceMSlave::BusIfInterfaceMSlave(QSharedPointer<BusInterface> busif, 
+										   QSharedPointer<Component> component,
+										   QWidget *parent):
+BusIfInterfaceModeEditor(busif, component, tr("Mirrored slave"), parent),
+mirroredSlave_(busif->getMirroredSlave()) {
 
-BusIfInterfaceMSlave::BusIfInterfaceMSlave(BusInterface* busif, 
-										   QWidget *parent): 
-BusIfInterfaceModeEditor(busif, parent) {
 }
 
 BusIfInterfaceMSlave::~BusIfInterfaceMSlave() {
@@ -23,15 +25,14 @@ bool BusIfInterfaceMSlave::isValid() const {
 	return true;
 }
 
-void BusIfInterfaceMSlave::restoreChanges() {
+void BusIfInterfaceMSlave::refresh() {
 
-}
-
-void BusIfInterfaceMSlave::applyChanges() {
-
-	busIf()->setInterfaceMode(General::MIRROREDSLAVE);
 }
 
 General::InterfaceMode BusIfInterfaceMSlave::getInterfaceMode() const {
 	return General::MIRROREDSLAVE;
+}
+
+void BusIfInterfaceMSlave::saveModeSpecific() {
+
 }

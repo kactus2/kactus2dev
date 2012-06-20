@@ -11,10 +11,15 @@
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <common/widgets/ParameterGroupBox/parametergroupbox.h>
+#include <common/widgets/interfaceModeSelector/interfacemodeselector.h>
 #include "busifgeneraldetails.h"
+#include <models/component.h>
+#include <models/businterface.h>
+#include "interfacemodestack.h"
 
 #include <QWidget>
 #include <QSharedPointer>
+#include <QStackedWidget>
 
 class LibraryInterface;
 
@@ -30,11 +35,13 @@ public:
 	 *
 	 * \param libHandler Pointer to the instance that manages the library.
 	 * \param busif Pointer to the bus interface being edited.
+	 * \param component Pointer to the component being edited.
 	 * \param parent Pointer to the owner of this editor.
 	 *
 	*/
 	BusIfGeneralTab(LibraryInterface* libHandler,
 		QSharedPointer<BusInterface> busif,
+		QSharedPointer<Component> component,
 		QWidget* parent);
 	
 	//! \brief The destructor
@@ -50,15 +57,6 @@ public:
 	*
 	*/
 	virtual void refresh();
-
-	/*! \brief Applies the changes made with the editor to the model.
-	*
-	* After calling this function it is no longer possible to automatically 
-	* restore the previous state of the model.
-	* 
-	* Note: if the editor is not in valid state nothing is changed.
-	*/
-	virtual void applyChanges();
 
 	/*! \brief Get the currently set bus type.
 	 *
@@ -77,18 +75,22 @@ signals:
 	//! \brief Emitted when contents of the model change
 	void contentChanged();
 
-	/*! \brief Emitted when name of the bus interface changes
-	 *
-	 * \param msg QString containing the new name
-	 *
-	*/
-	void nameChanged(const QString& msg);
-
 	//! \brief Prints an error message to the user.
 	void errorMessage(const QString& msg) const;
 
 	//! \brief Prints a notification to user.
 	void noticeMessage(const QString& msg) const;
+
+private slots:
+
+	//! \brief Handler for changes in the bus type.
+	void onBusTypeChanged();
+
+	//! \brief Handler for changes in the abstraction type.
+	void onAbsTypeChanged();
+
+	//! \brief Handler for changes in interface mode.
+	void onModeChanged(General::InterfaceMode mode);
 
 private:
 
@@ -109,6 +111,12 @@ private:
 
 	//! \brief Contains the vlnv of the abstraction type for this interface
 	VLNVEditor absType_;
+
+	//! \brief The selector to select the interface mode.
+	InterfaceModeSelector modeSelector_;
+
+	//! \brief Contains the mode-specific editors
+	InterfaceModeStack modeStack_;
 
 	//! \brief Contains the details of this bus interface
 	BusIfGeneralDetails details_;

@@ -82,8 +82,9 @@ void PortmapDialog::accept()
         return;
     }
 
+	// this has changed, now port map tab makes the changes immediately
     // Apply the changes to the bus interface.
-    portmapWidget_->applyChanges();
+    //portmapWidget_->applyChanges();
 
     // Check if all required logical ports are not mapped.
     QList<QString> missingMappings;

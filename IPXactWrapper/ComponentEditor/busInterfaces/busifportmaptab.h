@@ -14,8 +14,9 @@
 #include "portmaps/portmapsmodel.h"
 #include "portmaps/logicallistmodel.h"
 #include "portmaps/portmapsview.h"
-
+#include <models/businterface.h>
 #include <models/generaldeclarations.h>
+#include <models/component.h>
 
 #include <QWidget>
 #include <QPushButton>
@@ -25,8 +26,6 @@
 #include <QKeyEvent>
 #include <QSharedPointer>
 
-class BusInterface;
-class Component;
 class LibraryInterface;
 class PortMap;
 class PortMapsPhysModel;
@@ -46,17 +45,16 @@ public:
 
 	/*! \brief The constructor
 	 *
-	 * \param libHandler Pointer to the library handler instance.
-	 * \param generalTab Pointer to the general tab of bus interface editor.
+	 * \param libHandler Pointer to the instance that manages the library.
 	 * \param component Pointer to the component being edited.
-	 * \param dataPointer Pointer to the bus interface being edited.
-	 * \param parent Pointer to the owner of this editor.
+	 * \param busif Pointer to the bus interface being edited.
+	 * \param parent Pointer to the owner of the editor.
 	 *
 	*/
 	BusIfPortmapTab(LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
-		void* dataPointer, 
-		QWidget *parent);
+		BusInterface* busif,
+		QWidget* parent);
 	
 	//! \brief The destructor
 	virtual ~BusIfPortmapTab();
@@ -70,16 +68,7 @@ public:
 	/*! \brief Restore the changes made in the editor back to ones in the model.
 	*
 	*/
-	virtual void restoreChanges();
-
-	/*! \brief Applies the changes made with the editor to the model.
-	*
-	* After calling this function it is no longer possible to automatically 
-	* restore the previous state of the model.
-	* 
-	* Note: if the editor is not in valid state nothing is changed.
-	*/
-	virtual void applyChanges();
+	virtual void refresh();
 
 	/*! \brief Set the abstraction type that defines the logical signals to use.
 	 *

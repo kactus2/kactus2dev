@@ -134,7 +134,7 @@ public:
 	 *
 	 * \return QList containing names of systemGroups
 	 */
-	const QList<QString>& getSystemGroupNames();
+	const QStringList& getSystemGroupNames();
 
 	/*! \brief Get the attributes of the busDefinition
 	 *
@@ -187,7 +187,7 @@ public:
 	 *
 	 * \systemGroupNames The QList containing the names of the systemGroups
 	 */
-	void setSystemGroupNames(QList<QString> &systemGroupNames);
+	void setSystemGroupNames(const QStringList& systemGroupNames);
 
 	/*! \brief Get the file dependecies of this busDefinition
 	 *
@@ -253,7 +253,7 @@ private:
 	 * spirit:systemGroupNames
 	 * OPTIONAL
 	 */
-	QList<QString> systemGroupNames_;
+	QStringList systemGroupNames_;
 
 	/*! \brief specifies if this definition is an extension from another bus.
 	 * spirit:extends

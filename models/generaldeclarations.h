@@ -163,9 +163,9 @@ const QString INTERFACE_MODE_NAMES[] = {
 	"master",
 	"slave",
 	"system",
-	"mirrored master",
-	"mirrored slave",
-	"mirrored system",
+	"mirroredMaster",
+	"mirroredSlave",
+	"mirroredSystem",
 	"monitor",
 	"undefined"
 };

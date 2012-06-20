@@ -7,7 +7,6 @@
 
 #include "busifportmaptab.h"
 
-#include <models/businterface.h>
 #include <models/component.h>
 #include <models/abstractiondefinition.h>
 #include <LibraryManager/vlnv.h>
@@ -19,20 +18,18 @@
 #include <QIcon>
 #include <QLabel>
 
-#include <QDebug>
-
-BusIfPortmapTab::BusIfPortmapTab(LibraryInterface* libHandler,
+BusIfPortmapTab::BusIfPortmapTab( LibraryInterface* libHandler,
 								 QSharedPointer<Component> component,
-								 void* dataPointer, 
-								 QWidget *parent): 
+								 BusInterface* busif, 
+								 QWidget* parent ):
 QWidget(parent), 
 mode_(BusIfPortmapTab::ONE2ONE),
 portMap_(),
-busif_(static_cast<BusInterface*>(dataPointer)),
+busif_(busif),
 component_(component), 
 libHandler_(libHandler), 
 mapProxy_(this),
-model_(&mapProxy_, component, libHandler, this),
+model_(&mapProxy_, busif, component, libHandler, this),
 view_(&mapProxy_, this),
 logicalView_(this),
 logicalModel_(libHandler, &model_, this),
@@ -43,9 +40,6 @@ connectButton_(QIcon(":/icons/graphics/connect.png"), tr("Connect"), this),
 one2OneButton_(tr("1 to 1"), this),
 one2ManyButton_(tr("1 to many"), this) {
 
-	Q_ASSERT_X(dataPointer, "BusIfPortmapTab constructor",
-		"Null dataPointer given as parameter");
-
 	// mode buttons are checkable and mutually exclusive
 	one2OneButton_.setCheckable(true);
 	one2OneButton_.setChecked(true);
@@ -53,7 +47,6 @@ one2ManyButton_(tr("1 to many"), this) {
 	one2ManyButton_.setCheckable(true);
 	one2ManyButton_.setAutoExclusive(true);
 
-	model_.setPortMaps(&busif_->getPortMaps());
 	mapProxy_.setSourceModel(&model_);
 	view_.setModel(&mapProxy_);
 
@@ -93,7 +86,7 @@ one2ManyButton_(tr("1 to many"), this) {
 		&logicalModel_, SLOT(removeItems(const QModelIndexList&)), Qt::UniqueConnection);
 	connect(&logicalView_, SIGNAL(makeConnection(const QStringList&, const QStringList&)),
 		this, SLOT(onMakeConnections(const QStringList&, const QStringList&)), Qt::UniqueConnection);
-	
+
 	connect(&logicalView_, SIGNAL(moveItems(const QStringList&, const QModelIndex&)),
 		&logicalModel_, SLOT(onMoveItems(const QStringList&, const QModelIndex&)), Qt::UniqueConnection);
 
@@ -134,16 +127,11 @@ bool BusIfPortmapTab::isValid() const {
 	return model_.isValid();
 }
 
-void BusIfPortmapTab::restoreChanges() {
-	// port map model reads the port maps from the component
-	model_.restore();
+void BusIfPortmapTab::refresh() {
+	view_.update();
 
 	// the lists are refreshed
 	onRefresh();
-}
-
-void BusIfPortmapTab::applyChanges() {
-	model_.apply();
 }
 
 void BusIfPortmapTab::setupLayout() {

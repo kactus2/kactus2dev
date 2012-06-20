@@ -9,15 +9,14 @@
 #define BUSIFINTERFACEMASTER_H
 
 #include "busifinterfacemodeeditor.h"
-
+#include <common/widgets/addressSpaceSelector/addressspaceselector.h>
 #include <models/generaldeclarations.h>
-#include <common/widgets/attributeBox/attributebox.h>
 #include <models/component.h>
 #include <models/businterface.h>
 
-#include <QComboBox>
-#include <QLineEdit>
 #include <QString>
+#include <QSharedPointer>
+#include <QLineEdit>
 
 /*! \brief Editor to edit master or mirrored master settings of a bus interface.
  *
@@ -36,7 +35,7 @@ public:
 	 *
 	*/
 	BusIfInterfaceMaster(General::InterfaceMode mode, 
-		BusInterface* busif,
+		QSharedPointer<BusInterface> busif,
 		QSharedPointer<Component> component,
 		QWidget *parent);
 	
@@ -52,22 +51,7 @@ public:
 	/*! \brief Restore the changes made in the editor back to ones in the model.
 	*
 	*/
-	virtual void restoreChanges();
-
-	/*! \brief Applies the changes made with the editor to the model.
-	*
-	* After calling this function it is no longer possible to automatically 
-	* restore the previous state of the model.
-	* 
-	* Note: if the editor is not in valid state nothing is changed.
-	*/
-	virtual void applyChanges();
-
-	/*! \brief Update the display for the editor
-	 *
-	 * This function should be called when the editor is displayed to the user.
-	*/
-	virtual void updateDisplay();
+	virtual void refresh();
 
 	/*! \brief Get the interface mode of the editor
 	 * 
@@ -75,10 +59,16 @@ public:
 	*/
 	virtual General::InterfaceMode getInterfaceMode() const;
 
+	//! \brief Save the interface mode-specific details to the bus interface.
+	virtual void saveModeSpecific();
+
 private slots:
 
-	//! \brief When user changes the selected value in combo box
-	void onIndexChanged();
+	//! \brief Handler for changes in address space reference.
+	void onAddressSpaceChange(const QString& addrSpaceName);
+
+	//! \brief Handler for changes in base address.
+	void onBaseAddressChange(const QString& newBase);
 
 private:
 
@@ -87,24 +77,18 @@ private:
 
 	//! No assignment
 	BusIfInterfaceMaster& operator=(const BusIfInterfaceMaster& other);
+
+	//! \brief Pointer to the master element being edited.
+	QSharedPointer<MasterInterface> master_;
 	
 	//! \brief Specifies if the edited mode is master or mirrored master
 	General::InterfaceMode mode_;
 
 	//! \brief Combo box to select an address space within component
-	QComboBox addressSpaceRef_;
+	AddressSpaceSelector addressSpaceRef_;
 
 	//! \brief Line edit to set the base address of master's address space.
 	QLineEdit baseAddress_;
-
-	//! \brief Editor to set the string for the configuration.
-	QLineEdit prompt_;
-
-	//! \brief Editor to set the attributes for the base address.
-	AttributeBox attributes_;
-
-	//! \brief Pointer to the containing component.
-	QSharedPointer<Component> component_;
 };
 
 #endif // BUSIFINTERFACEMASTER_H

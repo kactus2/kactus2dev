@@ -269,7 +269,7 @@ bool BusDefinition::getIsAddressable() const {
 	return isAddressable_;
 }
 
-void BusDefinition::setSystemGroupNames(QList<QString> &systemGroupNames) {
+void BusDefinition::setSystemGroupNames( const QStringList& systemGroupNames ) {
 	systemGroupNames_ = systemGroupNames;
 }
 
@@ -290,7 +290,7 @@ void BusDefinition::setExtends(const VLNV& extends) {
 	extends_ = extends;
 }
 
-const QList<QString>& BusDefinition::getSystemGroupNames() {
+const QStringList& BusDefinition::getSystemGroupNames() {
 	return systemGroupNames_;
 }
 

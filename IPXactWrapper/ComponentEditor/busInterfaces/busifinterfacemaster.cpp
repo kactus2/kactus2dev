@@ -13,117 +13,127 @@
 #include <models/masterinterface.h>
 
 #include <QLabel>
-#include <QVBoxLayout>
-#include <QFormLayout>
+#include <QGridLayout>
 #include <QString>
 
 BusIfInterfaceMaster::BusIfInterfaceMaster(General::InterfaceMode mode,
-										   BusInterface* busif,
+										   QSharedPointer<BusInterface> busif,
 										   QSharedPointer<Component> component,
 										   QWidget *parent):
-BusIfInterfaceModeEditor(busif, parent), mode_(mode),
-addressSpaceRef_(this), 
-baseAddress_(this), 
-prompt_(this), 
-attributes_(this, tr("Base address attributes")),
-component_(component) {
+BusIfInterfaceModeEditor(busif, component, tr("Master"), parent), 
+master_(QSharedPointer<MasterInterface>(new MasterInterface())),
+mode_(mode),
+addressSpaceRef_(component, this), 
+baseAddress_(this) {
 
-	connect(&addressSpaceRef_, SIGNAL(currentIndexChanged(int)),
-		this, SLOT(onIndexChanged()), Qt::UniqueConnection);
-	
-	QFormLayout* addressLayout = new QFormLayout();
-	addressLayout->addRow(tr("Address space:"), &addressSpaceRef_);
+	// set the title depending on the mode
+	switch (mode) {
+		case General::MASTER: {
+			setTitle(tr("Master"));
+			break;
+							  }
+		case General::MIRROREDMASTER: {
+			setTitle(tr("Mirrored master"));
+			break;
+									  }
+		// this editor should only be used for masters and mirrored masters
+		default: {
+			Q_ASSERT(false);
+				 }
+	}
 
-	QFormLayout* baseAddressLayout = new QFormLayout();
-	baseAddressLayout->addRow(tr("Base address:"), &baseAddress_);
+	QLabel* addrSpaceLabel = new QLabel(tr("Address space"), this);
+	QLabel* baseAddrLabel = new QLabel(tr("Base address"), this);
 
-	QFormLayout* promptLayout = new QFormLayout();
-	promptLayout->addRow(tr("Prompt:"), &prompt_);
+	QGridLayout* topLayout = new QGridLayout(this);
+	topLayout->addWidget(addrSpaceLabel, 0, 0, Qt::AlignLeft);
+	topLayout->addWidget(&addressSpaceRef_, 0, 1, Qt::AlignLeft);
+	topLayout->addWidget(baseAddrLabel, 1, 0, Qt::AlignLeft);
+	topLayout->addWidget(&baseAddress_, 1, 1, Qt::AlignLeft);
+	topLayout->setColumnStretch(2, 1);
 
-	QVBoxLayout* topLayout = new QVBoxLayout(this);
-	topLayout->addWidget(&attributes_);
-	topLayout->addLayout(addressLayout);
-	topLayout->addLayout(baseAddressLayout);
-	topLayout->addLayout(promptLayout);
-	
-	restoreChanges();
+	connect(&addressSpaceRef_, SIGNAL(addressSpaceSelected(const QString&)),
+		this, SLOT(onAddressSpaceChange(const QString&)), Qt::UniqueConnection);
+	connect(&baseAddress_, SIGNAL(textEdited(const QString&)),
+		this, SLOT(onBaseAddressChange(const QString&)), Qt::UniqueConnection);
 }
 
 BusIfInterfaceMaster::~BusIfInterfaceMaster() {
 }
 
 bool BusIfInterfaceMaster::isValid() const {
-	
-	// if address space ref is not defined but some other element is
-	if (addressSpaceRef_.currentText().isEmpty() &&
-		(!baseAddress_.text().isEmpty() || 
-		!prompt_.text().isEmpty() ||
-		!attributes_.isEmpty()))
-		return false;
 
+	QString selectedAddrSpace = addressSpaceRef_.currentText();
+
+	// address space ref is not mandatory
+	if (selectedAddrSpace.isEmpty()) {
+		return true;
+	}
+	
+	// if the selected address space does not belong to component
+	QStringList addrSpaceNames = component_->getAddressSpaceNames();
+	if (!addrSpaceNames.contains(selectedAddrSpace)) {
+		return false;
+	}
+	
 	return true;
 }
 
-void BusIfInterfaceMaster::restoreChanges() {
+void BusIfInterfaceMaster::refresh() {
 
-	updateDisplay();
-
-	int index = -1;
-	QString baseAddress;
-	QString prompt;
-	attributes_.clear();
-
-	if (busIf()->getMaster()) {
-		index = addressSpaceRef_.findText(busIf()->getMaster()->getAddressSpaceRef());
-		baseAddress = busIf()->getMaster()->getBaseAddress();
-		prompt = busIf()->getMaster()->getPrompt();
-		attributes_.setAttributes(busIf()->getMaster()->getBaseAttributes());
+	// if the model contains master-element
+	if (busif_->getMaster()) {
+		master_ = busif_->getMaster();
 	}
-	addressSpaceRef_.setCurrentIndex(index);
-	baseAddress_.setText(baseAddress);
-	prompt_.setText(prompt);
-
-	onIndexChanged();
-}
-
-void BusIfInterfaceMaster::applyChanges()
-{
-	busIf()->setInterfaceMode(mode_);
-
-	// if address space ref is defined
-	if (!addressSpaceRef_.currentText().isEmpty()) {
-		busIf()->getMaster()->setAddressSpaceRef(addressSpaceRef_.currentText());
-		busIf()->getMaster()->setBaseAddress(baseAddress_.text());
-		busIf()->getMaster()->setPrompt(prompt_.text());
-		busIf()->getMaster()->setBaseAttributes(attributes_.getAttributes());
+	else {
+		master_ = QSharedPointer<MasterInterface>(new MasterInterface());
 	}
 
-	// if address space ref was not defined then other elements must be empty
+	// update the selectable items
+	addressSpaceRef_.refresh();
 
-}
+	QString addrSpaceRef = master_->getAddressSpaceRef();
 
-void BusIfInterfaceMaster::updateDisplay() {
-
-	addressSpaceRef_.clear();
-
-	addressSpaceRef_.addItems(component_->getAddressSpaceNames());
-}
-
-void BusIfInterfaceMaster::onIndexChanged() {
-
-	// if address space is not referenced then other elements cant exist either
-	if (addressSpaceRef_.currentText().isEmpty()) {
+	// if address space ref is empty then there can be no base address
+	if (addrSpaceRef.isEmpty()) {
 		baseAddress_.setDisabled(true);
-		prompt_.setDisabled(true);
-		attributes_.setDisabled(true);
 	}
 	else {
 		baseAddress_.setEnabled(true);
-		prompt_.setEnabled(true);
-		attributes_.setEnabled(true);
+		baseAddress_.setText(master_->getBaseAddress());
 	}
+
+	// select the address space ref and base address
+	addressSpaceRef_.selectAddressSpace(addrSpaceRef);
 }
+
+
 
 General::InterfaceMode BusIfInterfaceMaster::getInterfaceMode() const {
 	return mode_;
+}
+
+void BusIfInterfaceMaster::onAddressSpaceChange(const QString& addrSpaceName) {
+	master_->setAddressSpaceRef(addrSpaceName);
+
+	// if address space reference is empty then there can be no base address
+	if (addrSpaceName.isEmpty()) {
+		baseAddress_.clear();
+		baseAddress_.setDisabled(true);
+		master_->setBaseAddress("");
+	}
+	else {
+		baseAddress_.setEnabled(true);
+	}
+
+	emit contentChanged();
+}
+
+void BusIfInterfaceMaster::onBaseAddressChange(const QString& newBase) {
+	master_->setBaseAddress(newBase);
+	emit contentChanged();
+}	
+
+void BusIfInterfaceMaster::saveModeSpecific() {
+	busif_->setMaster(master_);
 }

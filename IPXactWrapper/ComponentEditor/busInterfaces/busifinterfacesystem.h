@@ -9,12 +9,12 @@
 #define BUSIFINTERFACESYSTEM_H
 
 #include "busifinterfacemodeeditor.h"
-
+#include <models/businterface.h>
 #include <models/generaldeclarations.h>
 
 #include <QComboBox>
+#include <QSharedPointer>
 
-class BusInterface;
 class BusIfGeneralTab;
 class LibraryInterface;
 
@@ -32,13 +32,15 @@ public:
 	 * \param generalTab Pointer to the general tab of bus interface editor.
 	 * \param libHandler Pointer to the library handler instance.
 	 * \param busif Pointer to the bus interface being edited.
+	 * \param component Pointer to the component being edited.
 	 * \param parent Pointer to the owner of this editor.
 	 *
 	*/
 	BusIfInterfaceSystem(General::InterfaceMode mode,
 		BusIfGeneralTab* generalTab,
 		LibraryInterface* libHandler,
-		BusInterface* busif, 
+		QSharedPointer<BusInterface> busif,
+		QSharedPointer<Component> component,
 		QWidget *parent);
 	
 	//! \brief The destructor
@@ -53,30 +55,21 @@ public:
 	/*! \brief Restore the changes made in the editor back to ones in the model.
 	*
 	*/
-	virtual void restoreChanges();
-
-	/*! \brief Applies the changes made with the editor to the model.
-	*
-	* After calling this function it is no longer possible to automatically 
-	* restore the previous state of the model.
-	* 
-	* Note: if the editor is not in valid state nothing is changed.
-	*/
-	virtual void applyChanges();
-
-	/*! \brief Update the display for the editor
-	 *
-	 * This function should be called when the editor is displayed to the user.
-	 * This function updates the possible system group names in the combobox
-	 * to match the selected busDefinition.
-	*/
-	virtual void updateDisplay();
+	virtual void refresh();
 
 	/*! \brief Get the interface mode of the editor
 	 * 
 	 * \return General::InterfaceMode Specifies the interface mode.
 	*/
 	virtual General::InterfaceMode getInterfaceMode() const;
+
+	//! \brief Save the interface mode-specific details to the bus interface.
+	virtual void saveModeSpecific();
+
+private slots:
+
+	//! \brief Handler for changes in group selector.
+	void onGroupChange(const QString& newGroup);
 
 private:
 
@@ -88,6 +81,9 @@ private:
 
 	//! \brief Specifies if the edited mode is system or mirrored system
 	General::InterfaceMode mode_;
+
+	//! \brief Pointer to the monitor interface mode being edited.
+	QSharedPointer<BusInterface::MonitorInterface> monitor_;
 
 	//! \brief Pointer to the general tab to ask for bus type.
 	BusIfGeneralTab* generalTab_;

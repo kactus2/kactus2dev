@@ -8,10 +8,14 @@
 #include "busifinterfaceslave.h"
 
 #include <models/generaldeclarations.h>
-#include <models/businterface.h>
 
-BusIfInterfaceSlave::BusIfInterfaceSlave(BusInterface* busif, QWidget *parent): 
-BusIfInterfaceModeEditor(busif, parent) {
+BusIfInterfaceSlave::BusIfInterfaceSlave(QSharedPointer<BusInterface> busif,
+										 QSharedPointer<Component> component,
+										 QWidget *parent):
+BusIfInterfaceModeEditor(busif, component, tr("Slave"), parent),
+slave_(QSharedPointer<SlaveInterface>(new SlaveInterface())) {
+
+	Q_ASSERT(slave_);
 }
 
 BusIfInterfaceSlave::~BusIfInterfaceSlave() {
@@ -21,14 +25,20 @@ bool BusIfInterfaceSlave::isValid() const {
 	return true;
 }
 
-void BusIfInterfaceSlave::restoreChanges() {
+void BusIfInterfaceSlave::refresh() {
 
-}
-
-void BusIfInterfaceSlave::applyChanges() {
-	busIf()->setInterfaceMode(General::SLAVE);
 }
 
 General::InterfaceMode BusIfInterfaceSlave::getInterfaceMode() const {
 	return General::SLAVE;
+}
+
+void BusIfInterfaceSlave::onMemoryMapChange( const QString& newMemoryMapName ) {
+
+	busif_->setInterfaceMode(General::SLAVE);
+	emit contentChanged();
+}
+
+void BusIfInterfaceSlave::saveModeSpecific() {
+	busif_->setSlave(slave_);
 }

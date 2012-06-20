@@ -9,8 +9,11 @@
 #define BUSIFINTERFACEMSLAVE_H
 
 #include "busifinterfacemodeeditor.h"
+#include <models/businterface.h>
+#include <models/component.h>
+#include <models/mirroredslaveinterface.h>
 
-class BusInterface;
+#include <QSharedPointer>
 
 /*! \brief Editor to edit mirrored slave details of a bus interface.
  *
@@ -23,10 +26,13 @@ public:
 	/*! \brief The constructor
 	 *
 	 * \param busif Pointer to the bus interface being edited.
+	 * \param component Pointer to the component being edited.
 	 * \param parent Pointer to the owner of this editor.
 	 *
 	*/
-	BusIfInterfaceMSlave(BusInterface* busif, QWidget *parent);
+	BusIfInterfaceMSlave(QSharedPointer<BusInterface> busif,
+		QSharedPointer<Component> component,
+		QWidget *parent);
 	
 	//! \brief The destructor
 	virtual ~BusIfInterfaceMSlave();
@@ -40,22 +46,16 @@ public:
 	/*! \brief Restore the changes made in the editor back to ones in the model.
 	*
 	*/
-	virtual void restoreChanges();
-
-	/*! \brief Applies the changes made with the editor to the model.
-	*
-	* After calling this function it is no longer possible to automatically 
-	* restore the previous state of the model.
-	* 
-	* Note: if the editor is not in valid state nothing is changed.
-	*/
-	virtual void applyChanges();
+	virtual void refresh();
 
 	/*! \brief Get the interface mode of the editor
 	 * 
 	 * \return General::InterfaceMode Specifies the interface mode.
 	*/
 	virtual General::InterfaceMode getInterfaceMode() const;
+
+	//! \brief Save the interface mode-specific details to the bus interface.
+	virtual void saveModeSpecific();
 
 private:
 	
@@ -64,6 +64,9 @@ private:
 
 	//! No assignment
 	BusIfInterfaceMSlave& operator=(const BusIfInterfaceMSlave& other);
+
+	//! \brief Pointer to the mirrored slave interface mode being edited.
+	QSharedPointer<MirroredSlaveInterface> mirroredSlave_;
 };
 
 #endif // BUSIFINTERFACEMSLAVE_H

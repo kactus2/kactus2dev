@@ -59,20 +59,17 @@ bitSteeringEnabled_(tr("Enable"), this) {
 	topLayout->addLayout(endiannessLayout);
 	topLayout->addLayout(bitSteeringLayout);
 	topLayout->addWidget(&connRequired_);
-	topLayout->addStretch();
 
 	connect(&connRequired_, SIGNAL(stateChanged(int)),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+		this, SLOT(onConnectionRequiredChanged()), Qt::UniqueConnection);
 	connect(&bitsInLau_, SIGNAL(valueChanged(int)),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+		this, SLOT(onAddressableUnitChanged(int)), Qt::UniqueConnection);
 	connect(&endianness_, SIGNAL(currentIndexChanged(int)),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+		this, SLOT(onEndiannessChanged()), Qt::UniqueConnection);
 	connect(&bitSteering_, SIGNAL(currentIndexChanged(int)),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+		this, SLOT(onBitSteeringChanged()), Qt::UniqueConnection);
 	connect(&bitSteeringEnabled_, SIGNAL(toggled(bool)),
-		this, SLOT(onBitSteeringState(bool)), Qt::UniqueConnection);
-
-	restoreChanges();
+		this, SLOT(onBitSteeringChanged()), Qt::UniqueConnection);
 }
 
 BusIfGeneralDetails::~BusIfGeneralDetails() {
@@ -82,7 +79,7 @@ bool BusIfGeneralDetails::isValid() const {
 	return true;
 }
 
-void BusIfGeneralDetails::restoreChanges() {
+void BusIfGeneralDetails::refresh() {
 
 	connRequired_.setChecked(busif_->getConnectionRequired());
 	bitsInLau_.setValue(busif_->getBitsInLau());
@@ -96,23 +93,48 @@ void BusIfGeneralDetails::restoreChanges() {
 		bitSteering_.setCurrentIndex(-1);
 		bitSteeringEnabled_.setChecked(false);
 	}
-	// if bitsteering is specified then set it to correct value
+	// if bit steering is specified then set it to correct value
 	else {
+
+		disconnect(&bitSteering_, SIGNAL(currentIndexChanged(int)),
+			this, SLOT(onBitSteeringChanged()));
+		disconnect(&bitSteeringEnabled_, SIGNAL(toggled(bool)),
+			this, SLOT(onBitSteeringChanged()));
+
 		bitSteeringEnabled_.setChecked(true);
 		bitSteering_.setEnabled(true);
 		int bitSteeringIndex = bitSteering_.findText(
 			General::bitSteering2Str(busif_->getBitSteering()));
 		bitSteering_.setCurrentIndex(bitSteeringIndex);
+
+		connect(&bitSteering_, SIGNAL(currentIndexChanged(int)),
+			this, SLOT(onBitSteeringChanged()), Qt::UniqueConnection);
+		connect(&bitSteeringEnabled_, SIGNAL(toggled(bool)),
+			this, SLOT(onBitSteeringChanged()), Qt::UniqueConnection);
 	}
 
 }
 
-void BusIfGeneralDetails::applyChanges() {
+void BusIfGeneralDetails::onAddressableUnitChanged( int newValue ) {
+	busif_->setBitsInLau(newValue);
+	emit contentChanged();
+}
 
-	busif_->setConnectionRequired(connRequired_.isChecked());
-	busif_->setBitsInLau(bitsInLau_.value());
+void BusIfGeneralDetails::onEndiannessChanged() {
 	busif_->setEndianness(General::str2Endianness(endianness_.currentText(),
 		General::LITTLE));
+	emit contentChanged();
+}
+
+void BusIfGeneralDetails::onBitSteeringChanged() {
+
+	disconnect(&bitSteering_, SIGNAL(currentIndexChanged(int)),
+		this, SLOT(onBitSteeringChanged()));
+	disconnect(&bitSteeringEnabled_, SIGNAL(toggled(bool)),
+		this, SLOT(onBitSteeringChanged()));
+	
+	// if bit steering is checked then enable the combo box
+	bitSteering_.setEnabled(bitSteeringEnabled_.isChecked());
 
 	// if bit steering is enabled
 	if (bitSteeringEnabled_.isChecked()) {
@@ -122,9 +144,16 @@ void BusIfGeneralDetails::applyChanges() {
 	else {
 		busif_->setBitSteering(General::BITSTEERING_UNSPECIFIED);
 	}
+
+	connect(&bitSteering_, SIGNAL(currentIndexChanged(int)),
+		this, SLOT(onBitSteeringChanged()), Qt::UniqueConnection);
+	connect(&bitSteeringEnabled_, SIGNAL(toggled(bool)),
+		this, SLOT(onBitSteeringChanged()), Qt::UniqueConnection);
+
+	emit contentChanged();
 }
 
-void BusIfGeneralDetails::onBitSteeringState( bool checked ) {
-	bitSteering_.setEnabled(checked);
+void BusIfGeneralDetails::onConnectionRequiredChanged() {
+	busif_->setConnectionRequired(connRequired_.isChecked());
 	emit contentChanged();
 }

@@ -9,10 +9,14 @@
 #define BUSIFINTERFACEMONITOR_H
 
 #include "busifinterfacemodeeditor.h"
+#include <models/businterface.h>
+#include <models/component.h>
+#include <models/generaldeclarations.h>
+#include <common/widgets/interfaceModeSelector/interfacemodeselector.h>
 
+#include <QSharedPointer>
 #include <QComboBox>
 
-class BusInterface;
 class BusIfGeneralTab;
 class LibraryInterface;
 
@@ -27,12 +31,14 @@ public:
 	/*! \brief The constructor
 	 *
 	 * \param busif Pointer to the bus interface being edited.
+	 * \param component Pointer to the component being edited.
 	 * \param generalTab Pointer to the general tab.
 	 * \param libHandler Pointer to the library handler instance.
 	 * \param parent Pointer to the owner of this editor.
 	 *
 	*/
-	BusIfInterfaceMonitor(BusInterface* busif, 
+	BusIfInterfaceMonitor(QSharedPointer<BusInterface> busif, 
+		QSharedPointer<Component> component,
 		BusIfGeneralTab* generalTab,
 		LibraryInterface* libHandler,
 		QWidget *parent);
@@ -49,22 +55,7 @@ public:
 	/*! \brief Restore the changes made in the editor back to ones in the model.
 	*
 	*/
-	virtual void restoreChanges();
-
-	/*! \brief Applies the changes made with the editor to the model.
-	*
-	* After calling this function it is no longer possible to automatically 
-	* restore the previous state of the model.
-	* 
-	* Note: if the editor is not in valid state nothing is changed.
-	*/
-	virtual void applyChanges();
-
-	/*! \brief Update the display for the editor
-	 *
-	 * This function should be called when the editor is displayed to the user.
-	*/
-	virtual void updateDisplay();
+	virtual void refresh();
 
 	/*! \brief Get the interface mode of the editor
 	 * 
@@ -72,10 +63,16 @@ public:
 	*/
 	virtual General::InterfaceMode getInterfaceMode() const;
 
+	//! \brief Save the interface mode-specific details to the bus interface.
+	virtual void saveModeSpecific();
+
 private slots:
 
 	//! \brief When user changes the interface mode of the monitor.
-	void onInterfaceModeChange(int index);
+	void onInterfaceModeChange(General::InterfaceMode mode);
+
+	//! \brief Handler for system group changes.
+	void onSystemGroupChange(const QString& groupName);
 
 private:
 	
@@ -91,8 +88,11 @@ private:
 	//! \brief Pointer to the instance that manages the library.
 	LibraryInterface* libHandler_;
 
+	//! \brief Pointer to the monitor element being edited.
+	QSharedPointer<BusInterface::MonitorInterface> monitor_;
+
 	//! \brief Combo box to select the interface type for monitor.
-	QComboBox interfaceMode_;
+	InterfaceModeSelector interfaceMode_;
 
 	//! \brief Combo box to select the group for system interface types.
 	QComboBox systemGroup_;

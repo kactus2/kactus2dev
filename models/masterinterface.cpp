@@ -17,8 +17,11 @@
 #include <QXmlStreamWriter>
 
 // the constructor
-MasterInterface::MasterInterface(QDomNode& masterNode): addressSpaceRef_(),
-baseAddress_(), prompt_(QString("Base Address:")), baseAttributes_() {
+MasterInterface::MasterInterface(QDomNode& masterNode): 
+addressSpaceRef_(),
+baseAddress_(),
+prompt_(QString("Base Address:")),
+baseAttributes_() {
 
 	// go through all child items
 	for (int i = 0; i < masterNode.childNodes().count(); ++i) {
@@ -62,10 +65,11 @@ baseAddress_(), prompt_(QString("Base Address:")), baseAttributes_() {
 	return;
 }
 
-MasterInterface::MasterInterface()
-    : addressSpaceRef_(), baseAddress_(), prompt_(QString("Base Address:")),
-    baseAttributes_()
-{
+MasterInterface::MasterInterface():
+addressSpaceRef_(), 
+baseAddress_(),
+prompt_(QString("Base Address:")),
+baseAttributes_() {
 }
 
 MasterInterface::MasterInterface( const MasterInterface& other ):
@@ -97,9 +101,9 @@ void MasterInterface::write(QXmlStreamWriter& writer) {
 
 	// if nothing is to be written just return and dont write the opening
 	// tag
-	if (addressSpaceRef_.isEmpty())
+	if (addressSpaceRef_.isEmpty()) {
 		return;
-	
+	}
 
 	writer.writeStartElement("spirit:addressSpaceRef");
 	writer.writeAttribute("spirit:addressSpaceRef", addressSpaceRef_);

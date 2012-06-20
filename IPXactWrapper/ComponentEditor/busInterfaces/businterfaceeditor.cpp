@@ -19,27 +19,18 @@ BusInterfaceEditor::BusInterfaceEditor(LibraryInterface* libHandler,
 ItemEditor(component, parent),
 busif_(busif),
 tabs_(this), 
-general_(libHandler, busif, &tabs_), 
-portmaps_(libHandler, component, busif.data(), &tabs_), 
-interfaceMode_(libHandler, &general_, component, busif.data(), &tabs_) {
+general_(libHandler, busif, component, &tabs_), 
+portmaps_(libHandler, component, busif.data(), &tabs_) {
 
 	Q_ASSERT(component);
 	Q_ASSERT(libHandler);
 	Q_ASSERT(busif_);
 
-	initialize();
-}
-
-BusInterfaceEditor::~BusInterfaceEditor() {
-	tabs_.disconnect();
-}
-
-void BusInterfaceEditor::initialize() {
 	QHBoxLayout* layout = new QHBoxLayout(this);
 	layout->addWidget(&tabs_);
+	layout->setContentsMargins(0, 0, 0, 0);
 
 	tabs_.addTab(&general_, tr("General"));
-	tabs_.addTab(&interfaceMode_, tr("Interface mode"));
 	tabs_.addTab(&portmaps_, tr("Port maps"));
 
 	connect(&portmaps_, SIGNAL(contentChanged()),
@@ -51,18 +42,9 @@ void BusInterfaceEditor::initialize() {
 
 	connect(&general_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&general_, SIGNAL(nameChanged(const QString&)),
-		this, SIGNAL(nameChanged(const QString&)), Qt::UniqueConnection);
 	connect(&general_, SIGNAL(errorMessage(const QString&)),
 		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 	connect(&general_, SIGNAL(noticeMessage(const QString&)),
-		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-
-	connect(&interfaceMode_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&interfaceMode_, SIGNAL(errorMessage(const QString&)),
-		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-	connect(&interfaceMode_, SIGNAL(noticeMessage(const QString&)),
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
 	connect(&tabs_, SIGNAL(currentChanged(int)),
@@ -71,13 +53,15 @@ void BusInterfaceEditor::initialize() {
 	refresh();
 }
 
+BusInterfaceEditor::~BusInterfaceEditor() {
+	tabs_.disconnect();
+}
+
 bool BusInterfaceEditor::isValid() const {
 	
 	if (!general_.isValid())
 		return false;
 	else if (!portmaps_.isValid())
-		return false;
-	else if (!interfaceMode_.isValid())
 		return false;
 
 	// all was fine
@@ -89,20 +73,15 @@ void BusInterfaceEditor::onTabChange( int index ) {
 	// if port maps tab is selected
 	if (index == 2) {
 		// update the abstraction type
-		portmaps_.setAbsType(general_.getAbsType(), interfaceMode_.getInterfaceMode());
+		portmaps_.setAbsType(general_.getAbsType(), busif_->getInterfaceMode());
 	}
 }
 
 void BusInterfaceEditor::makeChanges() {
-	general_.applyChanges();
-	portmaps_.applyChanges();
-	interfaceMode_.applyChanges();
-
 	component()->updateBusInterface(busif_.data());
 }
 
 void BusInterfaceEditor::refresh() {
 	general_.refresh();
-	portmaps_.restoreChanges();
-	interfaceMode_.restoreChanges();
+	portmaps_.refresh();
 }

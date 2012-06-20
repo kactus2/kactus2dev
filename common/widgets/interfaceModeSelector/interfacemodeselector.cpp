@@ -8,8 +8,10 @@
 #include "interfacemodeselector.h"
 
 InterfaceModeSelector::InterfaceModeSelector( QWidget *parent,
-											 QSharedPointer<BusInterface> busif):
-QComboBox(parent) {
+											 QSharedPointer<BusInterface> busif,
+											 bool showMonitor):
+QComboBox(parent),
+showMonitor_(showMonitor) {
 
 	initialize();	
 
@@ -24,8 +26,10 @@ QComboBox(parent) {
 }
 
 InterfaceModeSelector::InterfaceModeSelector( General::InterfaceMode mode,
-											 QWidget* parent ):
-QComboBox(parent) {
+											 QWidget* parent,
+											 bool showMonitor):
+QComboBox(parent),
+showMonitor_(showMonitor) {
 
 	initialize();
 
@@ -41,6 +45,12 @@ void InterfaceModeSelector::initialize() {
 
 	// add all options to the combo box
 	for (unsigned int i = 0; i < General::INTERFACE_MODE_COUNT; ++i) {
+
+		// if monitor should not be displayed then don't add it
+		if (!showMonitor_ && i == General::MONITOR) {
+			continue;
+		}
+
 		addItem(General::INTERFACE_MODE_NAMES[i]);
 	}
 
@@ -52,6 +62,11 @@ void InterfaceModeSelector::initialize() {
 }
 
 void InterfaceModeSelector::setMode( const General::InterfaceMode mode ) {
+
+	// if the mode the set is monitor and it is not shown
+	if (!showMonitor_ && mode == General::MONITOR) {
+		return;
+	}
 
 	disconnect(this, SIGNAL(currentIndexChanged(const QString&)),
 		this, SLOT(setMode(const QString&)));

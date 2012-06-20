@@ -24,8 +24,8 @@ const int DEFAULT_BITS_IN_LAU = 8;
 
 // struct constructor
 BusInterface::MonitorInterface::MonitorInterface(QDomNode& monitorNode):
-    								interfaceMode_(General::MONITOR),
-    								group_() {
+interfaceMode_(General::MONITOR),
+group_() {
 	// get the interfaceMode attribute
 	QDomNamedNodeMap attributeMap = monitorNode.attributes();
 	QString interfaceMode = attributeMap.namedItem(QString(
@@ -53,17 +53,17 @@ group_() {
 
 // class constructor
 BusInterface::BusInterface(QDomNode &busInterface):
-						nameGroup_(busInterface),
-						attributes_(),
-						busType_(), abstractionType_(),
-						interfaceMode_(General::INTERFACE_MODE_COUNT),
-						connectionRequired_(false), portMaps_(),
-						bitsInLau_(DEFAULT_BITS_IN_LAU),
-						bitSteering_(General::BITSTEERING_UNSPECIFIED),
-						bitSteeringAttributes_(),
-						endianness_(General::LITTLE),
-						parameters_(), master_(), slave_(), system_(),
-						monitor_() {
+nameGroup_(busInterface),
+attributes_(),
+busType_(), abstractionType_(),
+interfaceMode_(General::INTERFACE_MODE_COUNT),
+connectionRequired_(false), portMaps_(),
+bitsInLau_(DEFAULT_BITS_IN_LAU),
+bitSteering_(General::BITSTEERING_UNSPECIFIED),
+bitSteeringAttributes_(),
+endianness_(General::LITTLE),
+parameters_(), master_(), slave_(), system_(),
+monitor_() {
 
 	// get the attributes for the bus interface
 	QDomNamedNodeMap attributeMap = busInterface.attributes();
@@ -889,21 +889,15 @@ void BusInterface::setBitSteering(General::BitSteering bitSteering) {
 	bitSteering_ = bitSteering;
 }
 
-void BusInterface::setMonitor(MonitorInterface* monitor) {
-	// remove all old interfaceTypes
-	monitor_.clear();
-	slave_.clear();
-	master_.clear();
-	system_.clear();
-	mirroredSlave_.clear();
-
-	// change interface type and save new instance
-	interfaceMode_ = General::MONITOR;
-	monitor_ = QSharedPointer<MonitorInterface>(monitor);
-	return;
+const QSharedPointer<MasterInterface> BusInterface::getMaster() const {
+	return master_;
 }
 
-void BusInterface::setMaster(MasterInterface *master) {
+QSharedPointer<MasterInterface> BusInterface::getMaster() {
+	return master_;
+}
+
+void BusInterface::setMaster( QSharedPointer<MasterInterface> master ) {
 	// remove all old interfaceTypes
 	monitor_.clear();
 	slave_.clear();
@@ -912,8 +906,34 @@ void BusInterface::setMaster(MasterInterface *master) {
 	mirroredSlave_.clear();
 
 	//  save new instance
-	master_ = QSharedPointer<MasterInterface>(master);
+	master_ = master;
 	return;
+}
+
+const QSharedPointer<SlaveInterface> BusInterface::getSlave() const {
+	return slave_;
+}
+
+QSharedPointer<SlaveInterface> BusInterface::getSlave() {
+	return slave_;
+}
+
+void BusInterface::setSlave( QSharedPointer<SlaveInterface> slave ) {
+	// remove all old interfaceTypes
+	monitor_.clear();
+	slave_.clear();
+	master_.clear();
+	system_.clear();
+	mirroredSlave_.clear();
+
+	// change interface type and save new instance
+	interfaceMode_ = General::SLAVE;
+	slave_ = slave;
+	return;
+}
+
+QString BusInterface::getSystem() const {
+	return system_;
 }
 
 void BusInterface::setSystem(const QString& system) {
@@ -929,11 +949,15 @@ void BusInterface::setSystem(const QString& system) {
 	return;
 }
 
-MasterInterface *BusInterface::getMaster() const {
-	return master_.data();
+const QSharedPointer<BusInterface::MonitorInterface> BusInterface::getMonitor() const {
+	return monitor_;
 }
 
-void BusInterface::setSlave(SlaveInterface *slave) {
+QSharedPointer<BusInterface::MonitorInterface> BusInterface::getMonitor() {
+	return monitor_;
+}
+
+void BusInterface::setMonitor( QSharedPointer<BusInterface::MonitorInterface> monitor ) {
 	// remove all old interfaceTypes
 	monitor_.clear();
 	slave_.clear();
@@ -942,24 +966,20 @@ void BusInterface::setSlave(SlaveInterface *slave) {
 	mirroredSlave_.clear();
 
 	// change interface type and save new instance
-	interfaceMode_ = General::SLAVE;
-	slave_ = QSharedPointer<SlaveInterface>(slave);
+	interfaceMode_ = General::MONITOR;
+	monitor_ = monitor;
 	return;
 }
 
-SlaveInterface *BusInterface::getSlave() const {
-	return slave_.data();
+const QSharedPointer<MirroredSlaveInterface> BusInterface::getMirroredSlave() const {
+	return mirroredSlave_;
 }
 
-QString BusInterface::getSystem() const {
-	return system_;
+QSharedPointer<MirroredSlaveInterface> BusInterface::getMirroredSlave() {
+	return mirroredSlave_;
 }
 
-BusInterface::MonitorInterface *BusInterface::getMonitor() const {
-	return monitor_.data();
-}
-
-void BusInterface::setMirroredSlave(MirroredSlaveInterface *mirroredSlave) {
+void BusInterface::setMirroredSlave( QSharedPointer<MirroredSlaveInterface> mirroredSlave ) {
 	// remove all old interfaceTypes
 	monitor_.clear();
 	slave_.clear();
@@ -969,12 +989,8 @@ void BusInterface::setMirroredSlave(MirroredSlaveInterface *mirroredSlave) {
 
 	// change interface type and save new instance
 	interfaceMode_ = General::MIRROREDSLAVE;
-	mirroredSlave_ = QSharedPointer<MirroredSlaveInterface>(mirroredSlave);
+	mirroredSlave_ = mirroredSlave;
 	return;
-}
-
-MirroredSlaveInterface *BusInterface::getMirroredSlave() const {
-	return mirroredSlave_.data();
 }
 
 bool BusInterface::hasBridge() const {

@@ -69,12 +69,18 @@ QString General::bitSteering2Str(const General::BitSteering bitSteering) {
 	}
 }
 
-General::PortMap::PortMap(): logicalPort_(),
-		logicalVector_(), physicalPort_(), physicalVector_() {
+General::PortMap::PortMap(): 
+logicalPort_(),
+logicalVector_(QSharedPointer<Vector>(new Vector())), 
+physicalPort_(), 
+physicalVector_(QSharedPointer<Vector>(new Vector())) {
 }
 
-General::PortMap::PortMap(QDomNode &portMap): logicalPort_(),
-		logicalVector_(), physicalPort_(), physicalVector_() {
+General::PortMap::PortMap(QDomNode &portMap): 
+logicalPort_(),
+logicalVector_(),
+physicalPort_(), 
+physicalVector_() {
 
 	for (int i = 0; i < portMap.childNodes().count(); ++i) {
 

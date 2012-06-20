@@ -28,14 +28,6 @@ public:
 
 	/*! \brief The constructor
 	 *
-	 * \param dataPointer Pointer to the bus interface being edited.
-	 * \param parent Pointer to the owner of this editor.
-	 *
-	*/
-	BusIfGeneralDetails(void* dataPointer, QWidget *parent);
-
-	/*! \brief The constructor
-	 *
 	 * \param busif Pointer to the bus interface being edited.
 	 * \param parent Pointer to the owner of this editor.
 	 *
@@ -55,25 +47,7 @@ public:
 	/*! \brief Restore the changes made in the editor back to ones in the model.
 	*
 	*/
-	virtual void restoreChanges();
-
-	/*! \brief Applies the changes made with the editor to the model.
-	*
-	* After calling this function it is no longer possible to automatically 
-	* restore the previous state of the model.
-	* 
-	* Note: if the editor is not in valid state nothing is changed.
-	*/
-	virtual void applyChanges();
-
-public slots:
-
-	/*! \brief Enable/disable the bitSteering element.
-	 *
-	 * \param checked If true then bitSteering checkbox is enabled.
-	 *
-	*/
-	void onBitSteeringState(bool checked);
+	virtual void refresh();
 
 signals:
 
@@ -85,6 +59,20 @@ signals:
 
 	//! \brief Prints a notification to user.
 	void noticeMessage(const QString& msg) const;
+
+private slots:
+
+	//! \brief Handler for changes in least addressable unit (bits in lau)
+	void onAddressableUnitChanged(int newValue);
+
+	//! \brief Handler for changes in the endianness.
+	void onEndiannessChanged();
+
+	//! \brief Handler for changes in bit steering.
+	void onBitSteeringChanged();
+
+	//! \brief Handler for changes in connection required check box
+	void onConnectionRequiredChanged();
 
 private:
 	

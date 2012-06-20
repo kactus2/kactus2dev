@@ -313,19 +313,68 @@ public:
 	 *
 	 * \return A pointer to the master-instance of the interface.
 	 */
-	MasterInterface* getMaster() const;
+	const QSharedPointer<MasterInterface> getMaster() const;
+
+	/*! \brief Get the pointer to the master-element
+	 *
+	 * \return A pointer to the master-instance of the interface.
+	 */
+	QSharedPointer<MasterInterface> getMaster();
+
+	/*! \brief Set the master element for this interface
+	*
+	* Calling this function will delete old master, slave, mirroredSlave,
+	* system and monitor instances.
+	* setInterfaceMode must be called after this function to define the
+	* type of the businterface as master or mirroredMaster.
+	*
+	* \param master A pointer to the new master instance
+	*/
+	void setMaster(QSharedPointer<MasterInterface> master);
 
 	/*! \brief Get the pointer to the monitor instance
 	 *
 	 * \return A pointer to the monitor instance of the interface.
 	 */
-	MonitorInterface* getMonitor() const;
+	const QSharedPointer<MonitorInterface> getMonitor() const;
+
+	/*! \brief Get the pointer to the monitor instance
+	 *
+	 * \return A pointer to the monitor instance of the interface.
+	 */
+	QSharedPointer<MonitorInterface> getMonitor();
+
+	/*! \brief Set the monitor element for this interface
+	*
+	* Calling this function will delete old master, slave, mirroredSlave,
+	* system and monitor instances.
+	* This function changes the interfaceMode as GENERAL::MONITOR
+	*
+	* \param monitor A pointer to the new monitor instance.
+	*/
+	void setMonitor(QSharedPointer<MonitorInterface> monitor);
 
 	/*! \brief Get the pointer to the slave instance of the interface.
 	 *
 	 * \return A pointer to the slave instance of the interface.
 	 */
-	SlaveInterface* getSlave() const;
+	const QSharedPointer<SlaveInterface> getSlave() const;
+
+	/*! \brief Get the pointer to the slave instance of the interface.
+	 *
+	 * \return A pointer to the slave instance of the interface.
+	 */
+	QSharedPointer<SlaveInterface> getSlave();
+
+	/*! \brief Set the slave element for this interface.
+	*
+	* Calling this function will delete old master, slave, mirroredSlave,
+	* system and monitor instances.
+	* This function changes the interfaceMode as GENERAL::SLAVE
+	*
+	* \param slave A pointer to the new slave instance.
+	*/
+	void setSlave(QSharedPointer<SlaveInterface> slave);
 
 	/*! \brief Get the system group
 	 *
@@ -333,63 +382,38 @@ public:
 	 */
 	QString getSystem() const;
 
-	/*! \brief Set the master element for this interface
-	 *
-	 * Calling this function will delete old master, slave, mirroredSlave,
-	 * system and monitor instances.
-	 * setInterfaceMode must be called after this function to define the
-	 * type of the businterface as master or mirroredMaster.
-	 *
-	 * \param master A pointer to the new master instance
-	 */
-	void setMaster(MasterInterface* master);
-
-	/*! \brief Set the monitor element for this interface
-	 *
-	 * Calling this function will delete old master, slave, mirroredSlave,
-	 * system and monitor instances.
-	 * This function changes the interfaceMode as GENERAL::MONITOR
-	 *
-	 * \param monitor A pointer to the new monitor instance.
-	 */
-	void setMonitor(MonitorInterface* monitor);
-
-	/*! \brief Set the slave element for this interface.
-	 *
-	 * Calling this function will delete old master, slave, mirroredSlave,
-	 * system and monitor instances.
-	 * This function changes the interfaceMode as GENERAL::SLAVE
-	 *
-	 * \param slave A pointer to the new slave instance.
-	 */
-	void setSlave(SlaveInterface* slave);
-
 	/*! \brief Set the system element for this interface.
-	 *
-	 * Calling this function will delete old master, slave, mirroredSlave,
-	 * system and monitor instances.
-	 * setInterfaceMode must be called after this function to define the
-	 * type of the businterface as system or mirroredSystem.
-	 *
-	 * \param system A pointer to the new system instance.
-	 */
+	*
+	* Calling this function will delete old master, slave, mirroredSlave,
+	* system and monitor instances.
+	* setInterfaceMode must be called after this function to define the
+	* type of the businterface as system or mirroredSystem.
+	*
+	* \param system A pointer to the new system instance.
+	*/
 	void setSystem(const QString& system);
 
 	/*! \brief Get the pointer to the mirroredSlace element
-	 *
-	 * \return A pointer to the mirroredSlave element of this interface.
-	 */
-	MirroredSlaveInterface* getMirroredSlave() const;
+	*
+	* \return A pointer to the mirroredSlave element of this interface.
+	*/
+	const QSharedPointer<MirroredSlaveInterface> getMirroredSlave() const;
+
+	/*! \brief Get the pointer to the mirroredSlace element
+	*
+	* \return A pointer to the mirroredSlave element of this interface.
+	*/
+	QSharedPointer<MirroredSlaveInterface> getMirroredSlave();
 
 	/*! \brief Set the mirroredSlave element for this interface.
-	 *
-	 * Calling this function will delete old master, slave, mirroredSlave,
-	 * system and monitor instances.
-	 * This function changes the interfaceMode to GENERAL::MIRROREDSLAVE.
-	 *
-	 * \param mirroredSlave A pointer to the new mirroredSlave instance.
-	 */
-	void setMirroredSlave(MirroredSlaveInterface* mirroredSlave);
+	*
+	* Calling this function will delete old master, slave, mirroredSlave,
+	* system and monitor instances.
+	* This function changes the interfaceMode to GENERAL::MIRROREDSLAVE.
+	*
+	* \param mirroredSlave A pointer to the new mirroredSlave instance.
+	*/
+	void setMirroredSlave(QSharedPointer<MirroredSlaveInterface> mirroredSlave);
 
 	/*! \brief Does this bus interface have a bridge element defined
 	 *

@@ -15,22 +15,14 @@
 #include <QSize>
 #include <QColor>
 
-#include <QDebug>
-
-// the struct constructor
-PortMapsModel::Mapping::Mapping( const QString& logicalPort,
-								const QString& physicalPort ):
-physPort_(physicalPort), physLeft_(-1), physRight_(-1),
-logicalPort_(logicalPort), logicalLeft_(-1), logicalRight_(-1) {
-}
-
 PortMapsModel::PortMapsModel(QSortFilterProxyModel* proxy, 
+							 BusInterface* busif,
 							 QSharedPointer<Component> component,
 							 LibraryInterface* handler,
 							 QObject *parent): 
 QAbstractTableModel(parent),
-portMaps_(NULL), 
-table_(),
+busif_(busif),
+portMaps_(busif->getPortMaps()), 
 proxy_(proxy),
 component_(component),
 handler_(handler),
@@ -43,20 +35,10 @@ interfaceMode_(General::MASTER) {
 		"Null component pointer given as parameter");
 	Q_ASSERT_X(handler, "PortMapsModel constructor",
 		"Null LibraryInterface pointer given as parameter");
+	Q_ASSERT(busif);
 }
 
 PortMapsModel::~PortMapsModel() {
-}
-
-void PortMapsModel::setPortMaps( QList<QSharedPointer<General::PortMap> >* portMaps ) {
-
-	// if pointer is null then nothing is done
-	if (!portMaps)
-		return;
-
-	portMaps_ = portMaps;
-
-	restore();
 }
 
 int PortMapsModel::rowCount( const QModelIndex& parent /*= QModelIndex() */ ) const {
@@ -64,7 +46,7 @@ int PortMapsModel::rowCount( const QModelIndex& parent /*= QModelIndex() */ ) co
 	if (parent.isValid())
 		return 0;
 
-	return table_.size();
+	return portMaps_.size();
 }
 
 int PortMapsModel::columnCount( const QModelIndex& parent /*= QModelIndex() */ ) const {
@@ -79,7 +61,7 @@ QVariant PortMapsModel::data(const QModelIndex& index,
 
 	if (!index.isValid())
 		return QVariant();
-	else if (index.row() < 0 || index.row() >= table_.size())
+	else if (index.row() < 0 || index.row() >= portMaps_.size())
 		return QVariant();
 
 	if (Qt::DisplayRole == role) {
@@ -87,30 +69,34 @@ QVariant PortMapsModel::data(const QModelIndex& index,
 		switch (index.column()) {
 			
 			case 0: 
-				if (table_.at(index.row()).logicalLeft_ >= 0)
-					return table_.at(index.row()).logicalLeft_;
+				if (portMaps_.at(index.row())->logicalVector_) {
+					return portMaps_.at(index.row())->logicalVector_->getLeft();
+				}
 				return QString();
 
 			case 1:
-				if (table_.at(index.row()).logicalRight_ >= 0)
-					return table_.at(index.row()).logicalRight_;
+				if (portMaps_.at(index.row())->logicalVector_) {
+					return portMaps_.at(index.row())->logicalVector_->getRight();
+				}
 				return QString();
 
 			case 2: 
-				return table_.at(index.row()).logicalPort_;
+				return portMaps_.at(index.row())->logicalPort_;
 
 			case 3: 
 
-				return table_.at(index.row()).physPort_;
+				return portMaps_.at(index.row())->physicalPort_;
 
 			case 4:
-				if (table_.at(index.row()).physLeft_ >= 0)
-					return table_.at(index.row()).physLeft_;
+				if (portMaps_.at(index.row())->physicalVector_) {
+					return portMaps_.at(index.row())->physicalVector_->getLeft();
+				}
 				return QString();
 
 			case 5:
-				if (table_.at(index.row()).physRight_ >= 0)
-					return table_.at(index.row()).physRight_;
+				if (portMaps_.at(index.row())->physicalVector_) {
+					return portMaps_.at(index.row())->physicalVector_->getRight();
+				}
 				return QString();
 
 			default:
@@ -128,11 +114,29 @@ QVariant PortMapsModel::data(const QModelIndex& index,
 	}
 	else if (Qt::ForegroundRole == role) {
 
-		// if invalid item
-		if (!isValid(table_.at(index.row())))
+		// the physical port bounds are needed to 
+		QList<General::PortBounds> bounds = component_->getPortBounds();
+
+		// if the physical port's bounds don't match the actual port size
+		if (!portMaps_.at(index.row())->isValid(bounds)) {
 			return QColor("red");
-		else
+		}
+		// if abstraction def is set and logical port is illegal 
+		else if (absDef_ && absDef_->isIllegal(portMaps_.at(index.row())->logicalPort_, interfaceMode_)) {
+			return QColor("red");
+		}
+
+		// if abstraction def is set but port is not defined as optional or
+		// required
+		else if (absDef_ && 
+			!absDef_->isRequired(portMaps_.at(index.row())->logicalPort_, interfaceMode_) &&
+			!absDef_->isOptional(portMaps_.at(index.row())->logicalPort_, interfaceMode_)) {
+			return QColor("red");
+		}
+		// everything was fine
+		else {
 			return QColor("black");
+		}
 	}
 	else if (Qt::BackgroundRole == role) {
 		switch (index.column()) {
@@ -190,58 +194,87 @@ bool PortMapsModel::setData( const QModelIndex& index,
 							const QVariant& value, 
 							int role /*= Qt::EditRole */ ) {
 	
-	if (!index.isValid())
+	if (!index.isValid()) {
 		return false;
-	
+	}
 
-	if (index.row() < 0 || index.row() >= table_.size() )
+	if (index.row() < 0 || index.row() >= portMaps_.size() ) {
 		return false;
+	}
 	
 	if (Qt::EditRole == role) {
 
 		switch (index.column()) {
 			case 0: {
+				
+				// if there is no logical vector then add it
+				if (!portMaps_[index.row()]->logicalVector_) {
+					portMaps_[index.row()]->logicalVector_ = QSharedPointer<Vector>(new Vector());
+				}
+
 				// if the value is defined
-				if (!value.toString().isEmpty())
-					table_[index.row()].logicalLeft_ = value.toInt();
+				if (!value.toString().isEmpty()) {
+					portMaps_[index.row()]->logicalVector_->setLeft(value.toInt());
+				}
 				// if value was empty
-				else
-					table_[index.row()].logicalLeft_ = -1;
+				else {
+					portMaps_[index.row()]->logicalVector_->setLeft(-1);
+				}
 				break;
 					}
 			case 1: {
+
+				// if there is no logical vector then add it
+				if (!portMaps_[index.row()]->logicalVector_) {
+					portMaps_[index.row()]->logicalVector_ = QSharedPointer<Vector>(new Vector());
+				}
+
 				// if the value is defined
-				if (!value.toString().isEmpty())
-					table_[index.row()].logicalRight_ = value.toInt();
+				if (!value.toString().isEmpty()) {
+					portMaps_[index.row()]->logicalVector_->setRight(value.toInt());
+				}
 				// if value was empty
-				else
-					table_[index.row()].logicalRight_ = -1;
+				else {
+					portMaps_[index.row()]->logicalVector_->setRight(-1);
+				}
 				break;
 					}
 			case 2: {
-				table_[index.row()].logicalPort_ = value.toString();
+				portMaps_[index.row()]->logicalPort_ = value.toString();
 				break;
 					}
 			case 3: {
-				table_[index.row()].physPort_ = value.toString();
+				portMaps_[index.row()]->physicalPort_ = value.toString();
 				break;
 					}
 			case 4: {
+
+				// if there is no physical vector then add it
+				if (!portMaps_[index.row()]->physicalVector_) {
+					portMaps_[index.row()]->physicalVector_ = QSharedPointer<Vector>(new Vector());
+				}
+
 				// if the value is defined
 				if (!value.toString().isEmpty())
-					table_[index.row()].physLeft_ = value.toInt();
+					portMaps_[index.row()]->physicalVector_->setLeft(value.toInt());
 				// if value was empty
 				else
-					table_[index.row()].physLeft_ = -1;
+					portMaps_[index.row()]->physicalVector_->setLeft(-1);
 				break;
 					}
 			case 5: {
+
+				// if there is no physical vector then add it
+				if (!portMaps_[index.row()]->physicalVector_) {
+					portMaps_[index.row()]->physicalVector_ = QSharedPointer<Vector>(new Vector());
+				}
+
 				// if the value is defined
 				if (!value.toString().isEmpty())
-					table_[index.row()].physRight_ = value.toInt();
+					portMaps_[index.row()]->physicalVector_->setRight(value.toInt());
 				// if value was empty
 				else
-					table_[index.row()].physRight_ = -1;
+					portMaps_[index.row()]->physicalVector_->setRight(-1);
 				break;
 					}
 		}
@@ -269,157 +302,66 @@ Qt::ItemFlags PortMapsModel::flags( const QModelIndex& index ) const {
 
 bool PortMapsModel::isValid() const {
 
-	foreach (PortMapsModel::Mapping map, table_) {
-		if (!isValid(map))
+	// physical bounds are needed to check that port bounds match the physical port bounds
+	QList<General::PortBounds> bounds = component_->getPortBounds();
+
+	foreach (QSharedPointer<General::PortMap> portMap, portMaps_) {
+		if (!portMap->isValid(bounds)) {
 			return false;
+		}
+		// if abstraction def is set and logical port is illegal 
+		else if (absDef_ && absDef_->isIllegal(portMap->logicalPort_, interfaceMode_)) {
+			return false;
+		}
+
+		// if abstraction def is set but port is not defined as optional or
+		// required
+		else if (absDef_ && 
+			!absDef_->isRequired(portMap->logicalPort_, interfaceMode_) &&
+			!absDef_->isOptional(portMap->logicalPort_, interfaceMode_)) {
+				return false;
+		}
 	}
 
 	// all ports were valid
 	return true;
 }
 
-bool PortMapsModel::isValid( const Mapping& map ) const {
-	// if either port name is empty
-	if (map.logicalPort_.isEmpty() || map.physPort_.isEmpty())
-		return false;
-
-	// if abstraction def is set and logical port is illegal 
-	else if (absDef_ && absDef_->isIllegal(map.logicalPort_, interfaceMode_))
-		return false;
-
-	// if abstraction def is set but port is not defined as optional or
-	// required
-	else if (absDef_ && 
-		!absDef_->isRequired(map.logicalPort_, interfaceMode_) &&
-		!absDef_->isOptional(map.logicalPort_, interfaceMode_))
-		return false;
-
-	// if port is not found in component
-	else if (!component_->hasPort(map.physPort_))
-		return false;
-
-	// if one bound for logical port is defined but not the other
-	else if (map.logicalLeft_ < 0 && map.logicalRight_ >= 0)
-		return false;
-	else if (map.logicalLeft_ >= 0 && map.logicalRight_ < 0)
-		return false;
-
-	// if one bound for physical port is defined but not the other
-	else if (map.physLeft_ < 0 && map.physRight_ >= 0)
-		return false;
-	else if (map.physLeft_ >= 0 && map.physRight_ < 0)
-		return false;
-
-	// if port sizes don't match
-	else if ((map.logicalLeft_ - map.logicalRight_) != (map.physLeft_- map.physRight_))
-		return false;
-
-	// everything was ok
-	else
-		return true;
-}
-
-void PortMapsModel::apply() {
-
-	if (!portMaps_)
-		return;
-
-	// remove the previous portmaps
-	portMaps_->clear();
-
-	foreach (PortMapsModel::Mapping mapping, table_) {
-
-		// create the port map
-		QSharedPointer<General::PortMap> map = QSharedPointer<General::PortMap>(new General::PortMap);
-		map->logicalPort_ = mapping.logicalPort_;
-		map->physicalPort_ = mapping.physPort_;
-
-		// if logical port should be vectored
-		if (mapping.logicalLeft_ >= 0 && mapping.logicalRight_ >= 0) {
-			map->logicalVector_ = QSharedPointer<Vector>(new Vector(
-				mapping.logicalLeft_, mapping.logicalRight_));
-		}
-
-		// if physical port should be vectored
-		if (mapping.physLeft_ >= 0 && mapping.physRight_ >= 0) {
-			map->physicalVector_ = QSharedPointer<Vector>(new Vector(
-				mapping.physLeft_, mapping.physRight_));
-		}
-
-		// save the map to port maps
-		portMaps_->append(map);
-	}
-
-}
-
-void PortMapsModel::restore() {
-	
-	if (!portMaps_)
-		return;
-
-	beginResetModel();
-
-	// remove the previous items
-	table_.clear();
-
-	for (int i = 0; i < portMaps_->size(); ++i) {
-		
-		// create the mapping
-		PortMapsModel::Mapping mapping(portMaps_->at(i)->logicalPort_,
-			portMaps_->at(i)->physicalPort_);
-
-		// if logical port is vectored
-		if (portMaps_->at(i)->logicalVector_) {
-			mapping.logicalLeft_ = portMaps_->at(i)->logicalVector_->getLeft();
-			mapping.logicalRight_ = portMaps_->at(i)->logicalVector_->getRight();
-		}
-
-		// if physical port is vectored
-		if (portMaps_->at(i)->physicalVector_) {
-			mapping.physLeft_ = portMaps_->at(i)->physicalVector_->getLeft();
-			mapping.physRight_ = portMaps_->at(i)->physicalVector_->getRight();
-		}
-
-		// append the mapping to the table
-		table_.append(mapping);
-
-	}
-
-	endResetModel();
-	emit contentChanged();
-}
-
 void PortMapsModel::onRemoveItems( const QModelIndex& index ) {
 
 	if (!index.isValid())
 		return;
-	else if (index.row() < 0 || index.row() >= table_.size())
+	else if (index.row() < 0 || index.row() >= portMaps_.size())
 		return;
 
-	QString physical = table_.at(index.row()).physPort_;
+	QString physical = portMaps_.at(index.row())->physicalPort_;
 	bool physicalFound = false;
-	QString logical = table_.at(index.row()).logicalPort_;
+	QString logical = portMaps_.at(index.row())->logicalPort_;
 	bool logicalFound = false;
 
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
 	
 	// remove port map
-	table_.removeAt(index.row());
+	portMaps_.removeAt(index.row());
 	endRemoveRows();
 
 	// check if either port is still found in another port map
-	foreach (PortMapsModel::Mapping map, table_) {
-		if (map.logicalPort_ == logical)
+	foreach (QSharedPointer<General::PortMap> portMap, portMaps_) {
+		if (portMap->logicalPort_ == logical) {
 			logicalFound = true;
-		if (map.physPort_ == physical)
+		}
+		if (portMap->physicalPort_ == physical) {
 			physicalFound = true;
+		}
 	}
 
-	// inform other models that ports that dont have mappings can be removed
-	if (!logicalFound)
+	// inform other models that ports that don't have mappings can be removed
+	if (!logicalFound) {
 		emit logicalRemoved(logical);
-	if (!physicalFound)
+	}
+	if (!physicalFound) {
 		emit physicalRemoved(physical);
+	}
 	
 	emit contentChanged();
 }
@@ -430,8 +372,11 @@ void PortMapsModel::createMap( const QString& physicalPort, const QString& logic
 	if (physicalPort.isEmpty() || logicalPort.isEmpty())
 		return;	
 
-	beginInsertRows(QModelIndex(), table_.size(), table_.size());
-	PortMapsModel::Mapping map(logicalPort, physicalPort);
+	beginInsertRows(QModelIndex(), portMaps_.size(), portMaps_.size());
+
+	QSharedPointer<General::PortMap> portMap(new General::PortMap());
+	portMap->logicalPort_ = logicalPort;
+	portMap->physicalPort_ = physicalPort;
 
 	// if abs def is used
 	if (absDef_) {
@@ -439,8 +384,8 @@ void PortMapsModel::createMap( const QString& physicalPort, const QString& logic
 
 		// if size was specified
 		if (size >= 0) {
-			map.logicalLeft_ = size - 1;
-			map.logicalRight_ = 0;
+			portMap->logicalVector_->setLeft(size - 1);
+			portMap->logicalVector_->setRight(0);
 		}
 	}
 	// if the port is found on the component
@@ -448,12 +393,12 @@ void PortMapsModel::createMap( const QString& physicalPort, const QString& logic
 		int size = component_->getPortWidth(physicalPort);
 
 		if (size >= 0) {
-			map.physLeft_ = size - 1;
-			map.physRight_ = 0;
+			portMap->physicalVector_->setLeft(size - 1);
+			portMap->physicalVector_->setRight(0);
 		}
 	}
 
-	table_.append(map);
+	portMaps_.append(portMap);
 	endInsertRows();
 	emit contentChanged();
 }
@@ -461,8 +406,8 @@ void PortMapsModel::createMap( const QString& physicalPort, const QString& logic
 QStringList PortMapsModel::logicalPorts() const {
 
 	QStringList list;
-	foreach (PortMapsModel::Mapping map, table_) {
-		list.append(map.logicalPort_);
+	foreach (QSharedPointer<General::PortMap> portMap, portMaps_) {
+		list.append(portMap->logicalPort_);
 	}
 	return list;
 }
@@ -470,8 +415,8 @@ QStringList PortMapsModel::logicalPorts() const {
 QStringList PortMapsModel::physicalPorts() const {
 
 	QStringList list;
-	foreach (PortMapsModel::Mapping map, table_) {
-		list.append(map.physPort_);
+	foreach (QSharedPointer<General::PortMap> portMap, portMaps_) {
+		list.append(portMap->physicalPort_);
 	}
 	return list;
 }
@@ -482,10 +427,10 @@ void PortMapsModel::onRestoreItem( const QModelIndex& index ) {
 		return;
 
 	if (index.column() == 2) {
-		emit logicalRemoved(table_.at(index.row()).logicalPort_);
+		emit logicalRemoved(portMaps_.at(index.row())->logicalPort_);
 	}
 	else if (index.column() == 3) {
-		emit physicalRemoved(table_.at(index.row()).physPort_);
+		emit physicalRemoved(portMaps_.at(index.row())->physicalPort_);
 	}
 }
 

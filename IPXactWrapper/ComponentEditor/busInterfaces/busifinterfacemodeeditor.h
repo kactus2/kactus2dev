@@ -9,15 +9,16 @@
 #define BUSIFINTERFACEMODEEDITOR_H
 
 #include <models/generaldeclarations.h>
+#include <models/businterface.h>
+#include <models/component.h>
 
-#include <QWidget>
-
-class BusInterface;
+#include <QGroupBox>
+#include <QSharedPointer>
 
 /*! \brief Base class for different interface mode editors of a bus interface.
  *
  */
-class BusIfInterfaceModeEditor : public QWidget {
+class BusIfInterfaceModeEditor : public QGroupBox {
 	Q_OBJECT
 
 public:
@@ -25,16 +26,20 @@ public:
 	/*! \brief The constructor
 	 *
 	 * \param busif Pointer to the bus interface being edited.
+	 * \param component Pointer to the component being edited.
+	 * \param title The title for the group box
 	 * \param parent Pointer to the owner of this editor.
 	 *
 	*/
-	BusIfInterfaceModeEditor(BusInterface* busif, 
+	BusIfInterfaceModeEditor(QSharedPointer<BusInterface> busif,
+		QSharedPointer<Component> component,
+		const QString& title,
 		QWidget *parent);
 	
 	//! \brief The destructor
 	virtual ~BusIfInterfaceModeEditor();
 
-	/*! \brief Check for the validity of the edited item.
+	/*! \brief Check for the validity of the mode specific items.
 	*
 	* \return True if item is valid.
 	*/
@@ -43,29 +48,16 @@ public:
 	/*! \brief Restore the changes made in the editor back to ones in the model.
 	*
 	*/
-	virtual void restoreChanges() = 0;
-
-	/*! \brief Applies the changes made with the editor to the model.
-	*
-	* After calling this function it is no longer possible to automatically 
-	* restore the previous state of the model.
-	* 
-	* Note: if the editor is not in valid state nothing is changed.
-	*/
-	virtual void applyChanges() = 0;
-
-	/*! \brief Update the display for the editor
-	 *
-	 * This function should be called when the editor is displayed to the user.
-	 * Base class implementation does nothing
-	*/
-	virtual void updateDisplay();
+	virtual void refresh() = 0;
 
 	/*! \brief Get the interface mode of the editor
 	 * 
 	 * \return General::InterfaceMode Specifies the interface mode.
 	*/
 	virtual General::InterfaceMode getInterfaceMode() const = 0;
+
+	//! \brief Save the interface mode-specific details to the bus interface.
+	virtual void saveModeSpecific() = 0;
 
 signals:
 
@@ -80,8 +72,11 @@ signals:
 
 protected:
 
-	//! \brief Get pointer to the bus interface being edited.
-	BusInterface* busIf();
+	//! \brief Pointer to the bus interface being edited.
+	QSharedPointer<BusInterface> busif_;
+
+	//! \brief Pointer to the component being edited.
+	QSharedPointer<Component> component_;
 
 private:
 
@@ -90,9 +85,6 @@ private:
 
 	//! No assignment
 	BusIfInterfaceModeEditor& operator=(const BusIfInterfaceModeEditor& other);
-
-	//! \brief Pointer to the bus interface being edited
-	BusInterface* busif_;
 };
 
 #endif // BUSIFINTERFACEMODEEDITOR_H

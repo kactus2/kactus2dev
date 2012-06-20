@@ -39,7 +39,7 @@ protected:
 	 *
 	 * \return QValidator::State The result of the validation.
 	*/
-	QValidator::State validate(QString& text, int& pos) const;
+	virtual QValidator::State validate(QString& text, int& pos) const;
 
 	/*! \brief Get the value from the textual input.
 	 *
@@ -47,7 +47,7 @@ protected:
 	 *
 	 * \return The number that was given as text.
 	*/
-	int valueFromText(const QString &text) const;
+	virtual int valueFromText(const QString &text) const;
 
 	/*! \brief Convert the number into text
 	 *
@@ -55,7 +55,7 @@ protected:
 	 *
 	 * \return QString containing the number in a textual expression.
 	*/
-	QString textFromValue(int value) const;
+	virtual QString textFromValue(int value) const;
 
 private:
 

@@ -11,6 +11,7 @@
 #include <models/generaldeclarations.h>
 #include <models/component.h>
 #include <models/abstractiondefinition.h>
+#include <models/businterface.h>
 #include <common/utils.h>
 
 #include <LibraryManager/libraryinterface.h>
@@ -33,58 +34,23 @@ class PortMapsModel : public QAbstractTableModel {
 
 public:
 
-	//! \brief Contains the information for a signle port map.
-	struct Mapping {
-		
-		//! \brief the name of the physical port
-		QString physPort_;
-
-		//! \brief The left bound of physical port
-		int physLeft_;
-
-		//! \brief The right bound of the physical port
-		int physRight_;
-
-		//! \brief The name of the logical port
-		QString logicalPort_;
-
-		//! \brief The left bound of the logical port
-		int logicalLeft_;
-
-		//! \brief The right bound of the logical port
-		int logicalRight_;
-
-		/*! \brief The struct constructor
-		 *
-		 * \param logicalPort Name of the logical port
-		 * \param physicalPort Name of the physical port
-		 *
-		*/
-		Mapping(const QString& logicalPort, const QString& physicalPort);
-	};
-
 	/*! \brief The constructor
 	 *
 	 * \param proxy Pointer to the proxy model that does the sorting of the items.
+	 * \param busif Pointer to the bus interface being edited.
 	 * \param component Pointer to the component that is being edited.
 	 * \param handler Pointer to the instance that manages the library.
 	 * \param parent Pointer to the owner of this model
 	 *
 	*/
 	PortMapsModel(QSortFilterProxyModel* proxy, 
+		BusInterface* busif,
 		QSharedPointer<Component> component,
 		LibraryInterface* handler,
 		QObject *parent);
 	
 	//! \brief The destructor
 	virtual ~PortMapsModel();
-
-	/*! \brief Set the port maps for this model.
-	 *
-	 * \param portMaps Pointer to the QList containing the port maps to set.
-	 *
-	*/
-	void setPortMaps(QList<QSharedPointer<General::PortMap> >* portMaps);
 
 	/*! \brief Get the number of rows in the model.
 	 *
@@ -150,16 +116,6 @@ public:
 	 * \return True if all items in model are valid.
 	*/
 	bool isValid() const;
-
-	/*! \brief Write the changes to the original model.
-	 *
-	*/
-	void apply();
-
-	/*! \brief Restore the settings from the original model.
-	 *
-	*/
-	void restore();
 
 	/*! \brief Get list of logical ports in this model.
 	 *
@@ -234,19 +190,11 @@ private:
 	//! No assignment
 	PortMapsModel& operator=(const PortMapsModel& other);
 
-	/*! \brief Check if the port map is in valid state.
-	 *
-	 * \param map Reference to the map that is checked.
-	 *
-	 * \return bool True if map is in valid state.
-	*/
-	bool isValid(const Mapping& map) const;
+	//! \brief Pointer to the bus interface being edited.
+	BusInterface* busif_;
 
 	//! \brief Pointer to the data structure within the model containing the port maps.
-	QList<QSharedPointer<General::PortMap> >* portMaps_;
-
-	//! \brief The list that contains the table to be displayed.
-	QList<Mapping> table_;
+	QList<QSharedPointer<General::PortMap> >& portMaps_;
 
 	//! \brief Pointer to the proxy that does the sorting for views.
 	QSortFilterProxyModel* proxy_;
