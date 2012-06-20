@@ -819,7 +819,7 @@ void HWDesignDiagram::selectionToFront()
 
     if (selectedItem->type() == HWConnection::Type)
     {
-        selectedItem->setZValue(-900);
+        selectedItem->setZValue(900);
     }
 }
 
@@ -2116,14 +2116,14 @@ void HWDesignDiagram::toggleConnectionStyle(GraphicsConnection* conn, QUndoComma
         endpoint2 = endpoint2->getOffPageConnector();
     }
 
+    HWConnection* newConn = new HWConnection(endpoint1, endpoint2, false,
+                                             conn->name(), QString(), conn->description(), this);
+
     // Recreate the connection by first deleting the old and then creating a new one.
-    QUndoCommand* cmd = new ConnectionDeleteCommand(static_cast<HWConnection*>(conn));
+    QUndoCommand* cmd = new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), parentCmd);
     cmd->redo();
     
-    HWConnection* newConn = new HWConnection(endpoint1, endpoint2, false,
-                                                                 QString(), QString(), QString(), this);
     addItem(newConn);
-
     connect(newConn, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
     if (newConn->connectEnds())

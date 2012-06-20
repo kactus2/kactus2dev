@@ -293,6 +293,9 @@ private:
 
     //! If true, the connection is an imported one.
     bool imported_;
+
+    //! The default color.
+    bool invalid_;
 };
 
 //-----------------------------------------------------------------------------

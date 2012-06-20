@@ -44,7 +44,8 @@ GraphicsConnection::GraphicsConnection(ConnectionEndpoint* endpoint1, Connection
       selected_(-1), 
       selectionType_(NONE),
       routingMode_(ROUTING_MODE_NORMAL),
-      imported_(false)
+      imported_(false),
+      invalid_(false)
 {
     setItemSettings();
     createRoute(endpoint1, endpoint2);
@@ -59,6 +60,8 @@ GraphicsConnection::GraphicsConnection(ConnectionEndpoint* endpoint1, Connection
         endpoint1_ = endpoint1;
         endpoint2_ = endpoint2;
 
+        invalid_ = !endpoint1_->canConnect(endpoint2_) || !endpoint2_->canConnect(endpoint1_);
+
         endpoint1->addConnection(this);
         endpoint2->addConnection(this);
 
@@ -70,6 +73,8 @@ GraphicsConnection::GraphicsConnection(ConnectionEndpoint* endpoint1, Connection
             updateName();
         }
     }
+
+    setDefaultColor();
 }
 
 //-----------------------------------------------------------------------------
@@ -90,7 +95,8 @@ GraphicsConnection::GraphicsConnection(QPointF const& p1, QVector2D const& dir1,
       selected_(-1),
       selectionType_(NONE),
       routingMode_(ROUTING_MODE_NORMAL),
-      imported_(false)
+      imported_(false),
+      invalid_(false)
 {
     setItemSettings();
     createRoute(p1, p2, dir1, dir2);
@@ -137,6 +143,8 @@ bool GraphicsConnection::connectEnds()
         }
     }
 
+    invalid_ = !endpoint1_->canConnect(endpoint2_) || !endpoint2_->canConnect(endpoint1_);
+
     // Make the connections and check for errors.
     if (!endpoint1_->onConnect(endpoint2_))
     {
@@ -161,6 +169,7 @@ bool GraphicsConnection::connectEnds()
         simplifyPath();
         setRoute(pathPoints_);
         updateName();
+        setDefaultColor();
         return true;
     }
 
@@ -605,11 +614,10 @@ void GraphicsConnection::paint(QPainter* painter, QStyleOptionGraphicsItem const
 
     QGraphicsPathItem::paint(painter, &myoption, widget);
 
-    if (!selected)
+    if (!selected && routingMode_ == ROUTING_MODE_NORMAL)
     {
         drawOverlapGraphics(painter);
     }
-
 
     if (!endpoint1_)
     {
@@ -942,7 +950,11 @@ void GraphicsConnection::setDefaultColor()
 {
     QPen newPen = pen();
 
-    if (routingMode_ == ROUTING_MODE_NORMAL)
+    if (invalid_)
+    {
+        newPen.setColor(KactusColors::BROKEN_CONNECTION);
+    }
+    else if (routingMode_ == ROUTING_MODE_NORMAL)
     {
         newPen.setColor(Qt::black);
     }
