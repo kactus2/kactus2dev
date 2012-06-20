@@ -18,7 +18,7 @@
 // Function: ComDefinition::ComDefinition()
 //-----------------------------------------------------------------------------
 ComDefinition::ComDefinition(VLNV const& vlnv) : LibraryComponent(vlnv),
-                                                 dataTypes_(),
+                                                 transferTypes_(),
                                                  properties_()
 {
 }
@@ -27,7 +27,7 @@ ComDefinition::ComDefinition(VLNV const& vlnv) : LibraryComponent(vlnv),
 // Function: ComDefinition::ComDefinition()
 //-----------------------------------------------------------------------------
 ComDefinition::ComDefinition(ComDefinition const& rhs) : LibraryComponent(rhs),
-                                                         dataTypes_(rhs.dataTypes_),
+                                                         transferTypes_(rhs.transferTypes_),
                                                          properties_()
 {
     // Make deep copies of the properties.
@@ -41,7 +41,7 @@ ComDefinition::ComDefinition(ComDefinition const& rhs) : LibraryComponent(rhs),
 // Function: ComDefinition::ComDefinition()
 //-----------------------------------------------------------------------------
 ComDefinition::ComDefinition(QDomDocument& doc) : LibraryComponent(doc),
-                                                  dataTypes_(),
+                                                  transferTypes_(),
                                                   properties_()
 {
     LibraryComponent::vlnv_->setType(VLNV::COMDEFINITION);
@@ -68,9 +68,9 @@ ComDefinition::ComDefinition(QDomDocument& doc) : LibraryComponent(doc),
             continue;
         }
 
-        if (childNode.nodeName() == "kactus2:dataTypes")
+        if (childNode.nodeName() == "kactus2:transferTypes")
         {
-            parseDataTypes(childNode);
+            parseTransferTypes(childNode);
         }
         else if (childNode.nodeName() == "kactus2:properties")
         {
@@ -115,15 +115,15 @@ void ComDefinition::write(QFile& file)
     }
 
     // Write data types.
-    writer.writeStartElement("kactus2:dataTypes");
+    writer.writeStartElement("kactus2:transferTypes");
 
-    foreach (QString const& type, dataTypes_)
+    foreach (QString const& type, transferTypes_)
     {
-        writer.writeEmptyElement("kactus2:dataType");
+        writer.writeEmptyElement("kactus2:transferType");
         writer.writeAttribute("kactus2:name", type);
     }
 
-    writer.writeEndElement(); // kactus2:dataTypes
+    writer.writeEndElement(); // kactus2:transferTypes
 
     // Write properties.
     writer.writeStartElement("kactus2:properties");
@@ -164,7 +164,7 @@ bool ComDefinition::isValid(QStringList& errorList) const
     // Check for multiple definitions of same data type.
     QStringList dataTypeNames;
 
-    foreach (QString const& dataType, dataTypes_)
+    foreach (QString const& dataType, transferTypes_)
     {
         if (dataTypeNames.contains(dataType))
         {
@@ -213,18 +213,18 @@ bool ComDefinition::isValid() const
         return false;
     }
     
-    // Check for multiple definitions of same data type.
-    QStringList dataTypeNames;
+    // Check for multiple definitions of same transfer type.
+    QStringList transferTypeNames;
 
-    foreach (QString const& dataType, dataTypes_)
+    foreach (QString const& transferType, transferTypes_)
     {
-        if (dataTypeNames.contains(dataType))
+        if (transferTypeNames.contains(transferType))
         {
             return false;
         }
         else
         {
-            dataTypeNames.push_back(dataType);
+            transferTypeNames.push_back(transferType);
         }
     }
 
@@ -268,31 +268,31 @@ QList<VLNV> const ComDefinition::getDependentVLNVs() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComDefinition::addDataType()
+// Function: ComDefinition::addTransferType()
 //-----------------------------------------------------------------------------
-void ComDefinition::addDataType(QString const& type)
+void ComDefinition::addTransferType(QString const& type)
 {
-    // Check for duplicates
-    if (!dataTypes_.contains(type))
+    // Check for duplicates.
+    if (!transferTypes_.contains(type))
     {
-        dataTypes_.append(type);
+        transferTypes_.append(type);
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComDefinition::removeDataType()
+// Function: ComDefinition::removeTransferType()
 //-----------------------------------------------------------------------------
-void ComDefinition::removeDataType(QString const& type)
+void ComDefinition::removeTransferType(QString const& type)
 {
-    dataTypes_.removeAll(type);
+    transferTypes_.removeAll(type);
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComDefinition::setDataTypes()
+// Function: ComDefinition::setTransferTypes()
 //-----------------------------------------------------------------------------
-void ComDefinition::setDataTypes(QStringList const& types)
+void ComDefinition::setTransferTypes(QStringList const& types)
 {
-    dataTypes_ = types;
+    transferTypes_ = types;
 }
 
 //-----------------------------------------------------------------------------
@@ -327,11 +327,11 @@ void ComDefinition::setProperties(QList< QSharedPointer<ComProperty> > const& pr
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComDefinition::getDataTypes()
+// Function: ComDefinition::getTransferTypes()
 //-----------------------------------------------------------------------------
-QStringList const& ComDefinition::getDataTypes() const
+QStringList const& ComDefinition::getTransferTypes() const
 {
-    return dataTypes_;
+    return transferTypes_;
 }
 
 //-----------------------------------------------------------------------------
@@ -343,18 +343,18 @@ QList< QSharedPointer<ComProperty> > const& ComDefinition::getProperties() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComDefinition::parseDataTypes()
+// Function: ComDefinition::parseTransferTypes()
 //-----------------------------------------------------------------------------
-void ComDefinition::parseDataTypes(QDomNode& node)
+void ComDefinition::parseTransferTypes(QDomNode& node)
 {
     for (int i = 0; i < node.childNodes().count(); ++i)
     {
         QDomNode typeNode = node.childNodes().at(i);
 
-        if (typeNode.nodeName() == "kactus2:dataType")
+        if (typeNode.nodeName() == "kactus2:transferType")
         {
             QString name = typeNode.attributes().namedItem("kactus2:name").nodeValue();
-            dataTypes_.append(name);
+            transferTypes_.append(name);
         }
     }
 }

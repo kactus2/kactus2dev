@@ -317,10 +317,6 @@ void TabDocument::refresh() {
 	emit refreshed();
 }
 
-bool TabDocument::isHWImplementation() const {
-	return false;
-}
-
 unsigned int TabDocument::getSupportedWindows() const {
 	return supportedWindows_;
 }

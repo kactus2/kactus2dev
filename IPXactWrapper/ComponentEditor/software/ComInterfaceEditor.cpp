@@ -220,9 +220,9 @@ void ComInterfaceEditor::onComDefinitionChanged()
 
         dataTypeCombo_.clear();
         dataTypeCombo_.addItem("");
-        dataTypeCombo_.addItems(comDef->getDataTypes());
+        dataTypeCombo_.addItems(comDef->getTransferTypes());
 
-        if (comDef->getDataTypes().contains(type))
+        if (comDef->getTransferTypes().contains(type))
         {
             dataTypeCombo_.setCurrentIndex(dataTypeCombo_.findText(type));
         }

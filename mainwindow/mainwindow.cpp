@@ -1206,11 +1206,7 @@ void MainWindow::updateMenuStrip()
 		isHWComp = ipEditor->isHWImplementation();
 	}
 
-	bool isHWDesign = false;
-	HWDesignWidget* designWidget = dynamic_cast<HWDesignWidget*>(doc);
-	if (designWidget) {
-		isHWDesign = designWidget->isHWImplementation();
-	}
+	bool isHWDesign = dynamic_cast<HWDesignWidget*>(doc) != 0;
 
 	actSave_->setEnabled(doc != 0 && doc->isModified());
 	actSaveAs_->setEnabled(doc != 0);
@@ -1471,7 +1467,6 @@ void MainWindow::generateDoc() {
 	// get the vlnv of the current component
 	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
 	Q_ASSERT(doc);
-	Q_ASSERT(doc->isHWImplementation());
 	VLNV vlnv = doc->getComponentVLNV();
 	Q_ASSERT(vlnv.isValid());
 

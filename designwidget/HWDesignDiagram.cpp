@@ -819,7 +819,7 @@ void HWDesignDiagram::selectionToFront()
 
     if (selectedItem->type() == HWConnection::Type)
     {
-        selectedItem->setZValue(900);
+        selectedItem->setZValue(-900);
     }
 }
 

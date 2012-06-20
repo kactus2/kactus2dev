@@ -226,12 +226,12 @@ void InterfaceEditor::setInterface( ConnectionEndpoint* interface ) {
 
         if (comDef_ != 0)
         {
-            dataTypeCombo_.addItems(comDef_->getDataTypes());
+            dataTypeCombo_.addItems(comDef_->getTransferTypes());
 
             // Set selection for the data type.
             QString const& dataType = interface->getComInterface()->getDataType();
 
-            if (comDef_->getDataTypes().contains(dataType))
+            if (comDef_->getTransferTypes().contains(dataType))
             {
                 dataTypeCombo_.setCurrentIndex(dataTypeCombo_.findText(dataType));
             }

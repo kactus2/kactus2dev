@@ -191,12 +191,6 @@ public:
      */
     virtual IEditProvider* getEditProvider();
 
-	/*! \brief Check if the editor is editing a hardware implementation or not.
-	 *
-	 * \return True if the edited object is hardware implementation.
-	*/
-	virtual bool isHWImplementation() const;
-
 	/*! \brief Get the bit fields that define which windows are supported by this tab.
 	 *
 	 * \return unsigned int which contains the bit fields specifying supported windows.

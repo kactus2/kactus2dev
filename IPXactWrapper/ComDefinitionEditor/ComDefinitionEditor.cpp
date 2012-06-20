@@ -29,11 +29,11 @@ ComDefinitionEditor::ComDefinitionEditor(QWidget *parent,
     : TabDocument(parent, DOC_PROTECTION_SUPPORT),
       libHandler_(libHandler),
       comDef_(comDef),
-      dataTypeList_(tr("Data types"), this),
+      dataTypeList_(tr("Transfer types"), this),
       propertyEditor_(this)
 {
     // Initialize the editors.
-    dataTypeList_.initialize(comDef_->getDataTypes());
+    dataTypeList_.initialize(comDef_->getTransferTypes());
     propertyEditor_.setProperties(comDef_->getProperties());
 
     connect(&dataTypeList_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -80,7 +80,7 @@ void ComDefinitionEditor::refresh()
     comDef_ = libComp.staticCast<ComDefinition>();
 
     // Initialize the editors.
-    dataTypeList_.initialize(comDef_->getDataTypes());
+    dataTypeList_.initialize(comDef_->getTransferTypes());
     propertyEditor_.setProperties(comDef_->getProperties());
 
     setModified(false);
@@ -162,6 +162,6 @@ void ComDefinitionEditor::applyChanges()
     }
 
     comDef_->setProperties(properties);
-    comDef_->setDataTypes(dataTypeList_.items());
+    comDef_->setTransferTypes(dataTypeList_.items());
 }
 

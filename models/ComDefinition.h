@@ -91,25 +91,25 @@ public:
     virtual QList<VLNV> const getDependentVLNVs() const;
 
     /*!
-     *  Adds a new data type to the communication definition.
+     *  Adds a new transfer type to the communication definition.
      *
-     *      @param [in] type The name of the data type to add.
+     *      @param [in] type The name of the transfer type to add.
      */
-    void addDataType(QString const& type);
+    void addTransferType(QString const& type);
 
     /*!
-     *  Removes a data type from the communication definition.
+     *  Removes a transfer type from the communication definition.
      *
-     *      @param [in] type The name of the data type to remove.
+     *      @param [in] type The name of the transfer type to remove.
      */
-    void removeDataType(QString const& type);
+    void removeTransferType(QString const& type);
 
     /*!
-     *  Sets the supported data types.
+     *  Sets the supported transfer types.
      *
-     *      @param [in] types A list of data type names.
+     *      @param [in] types A list of transfer type names.
      */
-    void setDataTypes(QStringList const& types);
+    void setTransferTypes(QStringList const& types);
 
     /*!
      *  Adds a property to the definition.
@@ -133,9 +133,9 @@ public:
     void setProperties(QList< QSharedPointer<ComProperty> > const& properties);
 
     /*!
-     *  Returns the supported data types.
+     *  Returns the supported transfer types.
      */
-    QStringList const& getDataTypes() const;
+    QStringList const& getTransferTypes() const;
 
     /*!
      *  Returns the list of properties.
@@ -144,11 +144,11 @@ public:
 
 private:
     /*!
-     *  Parses all found data types from the given XML node.
+     *  Parses all found transfer types from the given XML node.
      *
      *      @param [in] node The source XML node.
      */
-    void parseDataTypes(QDomNode& node);
+    void parseTransferTypes(QDomNode& node);
 
     /*!
      *  Parses all found properties from the given XML node.
@@ -161,8 +161,8 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The list of data types.
-    QStringList dataTypes_;
+    //! The list of transfer types.
+    QStringList transferTypes_;
 
     //! The list of properties.
     QList< QSharedPointer<ComProperty> > properties_;
