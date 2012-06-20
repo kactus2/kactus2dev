@@ -18,6 +18,7 @@
 //-----------------------------------------------------------------------------
 ApiDefinition::ApiDefinition(VLNV const& vlnv) : LibraryComponent(vlnv),
                                                  language_(),
+                                                 comDefRef_(),
                                                  dataTypes_(),
                                                  functions_()
 {
@@ -29,6 +30,7 @@ ApiDefinition::ApiDefinition(VLNV const& vlnv) : LibraryComponent(vlnv),
 //-----------------------------------------------------------------------------
 ApiDefinition::ApiDefinition(ApiDefinition const& rhs) : LibraryComponent(rhs),
                                                          language_(rhs.language_),
+                                                         comDefRef_(rhs.comDefRef_),
                                                          dataTypes_(rhs.dataTypes_),
                                                          functions_()
 {
@@ -44,6 +46,7 @@ ApiDefinition::ApiDefinition(ApiDefinition const& rhs) : LibraryComponent(rhs),
 ApiDefinition::ApiDefinition(QDomDocument& doc)
     : LibraryComponent(doc),
       language_(),
+      comDefRef_(),
       dataTypes_(),
       functions_()
 {
@@ -74,6 +77,10 @@ ApiDefinition::ApiDefinition(QDomDocument& doc)
         if (childNode.nodeName() == "kactus2:language")
         {
             language_ = childNode.childNodes().at(0).nodeValue();
+        }
+        else if (childNode.nodeName() == "kactus2:comDefinitionRef")
+        {
+            comDefRef_ = General::createVLNV(childNode, VLNV::COMDEFINITION);
         }
         else if (childNode.nodeName() == "kactus2:dataTypes")
         {
@@ -122,6 +129,10 @@ void ApiDefinition::write(QFile& file)
         writer.writeTextElement("spirit:description", description_);
     }
 
+    // Write COM definition reference.
+    writer.writeEmptyElement("kactus2:comDefinitionRef");
+    General::writeVLNVAttributes(writer, &comDefRef_);
+
     // Write data types.
     writer.writeStartElement("kactus2:dataTypes");
 
@@ -167,6 +178,12 @@ bool ApiDefinition::isValid(QStringList& errorList) const
     else
     {
         thisIdentifier = QObject::tr("API definition '%1'").arg(vlnv_->toString());
+    }
+
+    // Check that the COM definition reference is valid.
+    if (!comDefRef_.isEmpty() && !comDefRef_.isValid(errorList, thisIdentifier))
+    {
+        valid = false;
     }
 
     // Check for multiple definitions of same data type.
@@ -217,6 +234,12 @@ bool ApiDefinition::isValid(QStringList& errorList) const
 bool ApiDefinition::isValid() const
 {
     if (!vlnv_ || !vlnv_->isValid())
+    {
+        return false;
+    }
+
+    // Check that the COM definition reference is valid.
+    if (!comDefRef_.isEmpty() && !comDefRef_.isValid())
     {
         return false;
     }
@@ -409,4 +432,20 @@ QSharedPointer<ApiFunction const> ApiDefinition::getFunction(int index) const
 int ApiDefinition::getFunctionCount() const
 {
     return functions_.count();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiDefinition::setComDefinitionRef()
+//-----------------------------------------------------------------------------
+void ApiDefinition::setComDefinitionRef(VLNV const& vlnv)
+{
+    comDefRef_ = vlnv;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiDefinition::getComDefinitionRef()
+//-----------------------------------------------------------------------------
+VLNV const& ApiDefinition::getComDefinitionRef() const
+{
+    return comDefRef_;
 }

@@ -25,7 +25,7 @@
 #include <QFrame>
 #include <QCheckBox>
 
-#include "../MCAPI/MCAPIHighlighter.h"
+#include "../MCAPI/CSourceHighlighter.h"
 
 //-----------------------------------------------------------------------------
 //! CodeEditorSettingsPage class.
@@ -133,7 +133,7 @@ private:
     ColorBox* sampleBox_;
 
     //! The current (non-saved) highlight styles.
-    HighlightStyleDesc styles_[MCAPIHighlighter::STYLE_COUNT];
+    HighlightStyleDesc styles_[CSourceHighlighter::STYLE_COUNT];
 };
 
 //-----------------------------------------------------------------------------

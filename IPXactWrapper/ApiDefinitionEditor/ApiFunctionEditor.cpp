@@ -13,6 +13,7 @@
 
 #include <models/ApiFunction.h>
 #include <models/ApiDefinition.h>
+#include <models/ComDefinition.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -200,4 +201,12 @@ void ApiFunctionEditor::returnValueDescriptionEdited(QString const& text)
         emit contentChanged();
         curFunc_->setReturnValueDescription(text);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiFunctionEditor::setComDefinition()
+//-----------------------------------------------------------------------------
+void ApiFunctionEditor::setComDefinition(QSharedPointer<ComDefinition const> comDefinition)
+{
+    paramDelegate_.setComDefinition(comDefinition);
 }

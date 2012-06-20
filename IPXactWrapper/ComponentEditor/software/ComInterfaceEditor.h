@@ -127,7 +127,7 @@ private:
     QGroupBox detailsGroup_;
 
     //! Data type combo box.
-    QComboBox dataTypeCombo_;
+    QComboBox transferTypeCombo_;
 
     //! Direction combo box.
     QComboBox directionCombo_;

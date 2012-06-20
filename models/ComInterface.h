@@ -96,11 +96,11 @@ public:
     void setComType(VLNV const& vlnv);
 
     /*!
-     *  Sets the data type.
+     *  Sets the transfer type.
      *
-     *      @param [in] dataType The data type to set.
+     *      @param [in] transferType The transfer type to set.
      */
-    void setDataType(QString const& dataType);
+    void setTransferType(QString const& transferType);
 
     /*!
      *  Sets the direction.
@@ -137,9 +137,9 @@ public:
     VLNV const& getComType() const;
 
     /*!
-     *  Returns the data type.
+     *  Returns the transfer type.
      */
-    QString const& getDataType() const;
+    QString const& getTransferType() const;
 
     /*!
      *  Returns the direction.
@@ -180,8 +180,8 @@ private:
     //! The COM type (i.e. a VLNV reference to a COM definition).
     VLNV comType_;
 
-    //! The data type that is transmitted through the interface.
-    QString dataType_;
+    //! The transfer type that is transmitted through the interface.
+    QString transferType_;
 
     //! Dependency direction.
     General::Direction dir_;    

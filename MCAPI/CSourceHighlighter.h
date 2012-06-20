@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: MCAPIHighlighter.h
+// File: CSourceHighlighter.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
@@ -9,8 +9,8 @@
 // MCAPI/C syntax highlighter.
 //-----------------------------------------------------------------------------
 
-#ifndef CPPHIGHLIGHTER_H
-#define CPPHIGHLIGHTER_H
+#ifndef CSOURCEHIGHLIGHTER_H
+#define CSOURCEHIGHLIGHTER_H
 
 #include <common/widgets/assistedTextEdit/HighlightStyleDesc.h>
 
@@ -20,10 +20,12 @@
 #include <QVector>
 #include <QTextCharFormat>
 
+class ApiDefinition;
+
 //-----------------------------------------------------------------------------
-//! MCAPIHighlighter class.
+//! CSourceHighlighter class.
 //-----------------------------------------------------------------------------
-class MCAPIHighlighter : public QSyntaxHighlighter
+class CSourceHighlighter : public QSyntaxHighlighter
 {
     Q_OBJECT
 
@@ -38,8 +40,8 @@ public:
         STYLE_STRING,
         STYLE_SINGLE_LINE_COMMENT,
         STYLE_MULTI_LINE_COMMENT,
-        STYLE_MCAPI_TYPES,
-        STYLE_MCAPI_FUNCTIONS,
+        STYLE_API_DATA_TYPES,
+        STYLE_API_FUNCTIONS,
         STYLE_COUNT
     };
 
@@ -54,12 +56,19 @@ public:
      *
      *      @param [in] parent The parent text document.
      */
-    MCAPIHighlighter(QTextDocument* parent);
+    CSourceHighlighter(QTextDocument* parent);
 
     /*!
      *  Destructor.
      */
-    ~MCAPIHighlighter();
+    ~CSourceHighlighter();
+
+    /*!
+     *  Registers data types and functions from the given API definition for syntax highlight.
+     *
+     *      @param [in] apiDef The API definition.
+     */
+    void registerAPI(QSharedPointer<ApiDefinition const> apiDef);
 
     /*!
      *  Sets the highlight style as a global style for all MCAPI highlighters.
@@ -71,11 +80,6 @@ public:
      */
     void setStyle(StyleType type, HighlightStyleDesc const& styleDesc);
 
-    /*!
-     *  Applies new syntax highlighting styles to the document.
-     */
-    void applyStyles();
-
 protected:
     /*!
      *  Highlights a block of text.
@@ -86,7 +90,7 @@ private:
     /*!
      *  Applies C++ style to the highlighter.
      */
-    void applyCStyle();
+    void addBuiltinRules();
 
     /*!
      *  Applies MCAPI style to the highlighter.
@@ -99,17 +103,17 @@ private:
     struct HighlightRule
     {
         QRegExp pattern;            //!< The pattern to which the rule is applied.
-        QTextCharFormat format;     //!< The formatting for the rule.
+        QTextCharFormat* format;    //!< The formatting for the rule.
     };
 
     //! The rules for highlighting.
-    QVector<HighlightRule> m_highlightRules;
+    QVector<HighlightRule> highlightRules_;
 
     //! Comment start expression.
-    QRegExp m_commentStartExp;
+    QRegExp commentStartExp_;
 
     //! Comment end expression.
-    QRegExp m_commentEndExp;
+    QRegExp commentEndExp_;
 
     //! Style formats.
     QTextCharFormat m_styleFormats[STYLE_COUNT];
@@ -117,4 +121,4 @@ private:
 
 //-----------------------------------------------------------------------------
 
-#endif // CPPHIGHLIGHTER_H
+#endif // CSOURCEHIGHLIGHTER_H

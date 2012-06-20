@@ -40,8 +40,8 @@ namespace
         "Strings",
         "Single-line Comments",
         "Multi-line Comments",
-        "MCAPI Types",
-        "MCAPI Functions",
+        "API Data Types",
+        "API Functions",
     };
 }
 
@@ -111,7 +111,7 @@ CodeEditorSettingsPage::CodeEditorSettingsPage(QSettings& settings) : settings_(
     connect(highlightTypeList_, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
             this, SLOT(onSelectStyle(QListWidgetItem*, QListWidgetItem*)));
 
-    for (int i = 0; i < MCAPIHighlighter::STYLE_COUNT; ++i)
+    for (int i = 0; i < CSourceHighlighter::STYLE_COUNT; ++i)
     {
         highlightTypeList_->addItem(STYLE_NAMES[i]);
     }
@@ -216,9 +216,9 @@ void CodeEditorSettingsPage::apply()
     font.setPointSize(fontSizeCombo_->currentText().toInt());
     settings_.setValue("editor/font", QVariant::fromValue(font));
 
-    for (int i = 0; i < MCAPIHighlighter::STYLE_COUNT; ++i)
+    for (int i = 0; i < CSourceHighlighter::STYLE_COUNT; ++i)
     {
-        settings_.setValue("editor/highlight/" + MCAPIHighlighter::STYLE_IDS[i],
+        settings_.setValue("editor/highlight/" + CSourceHighlighter::STYLE_IDS[i],
                            QVariant::fromValue(styles_[i]));
     }
 }
@@ -260,10 +260,10 @@ void CodeEditorSettingsPage::loadSettings()
 
     qRegisterMetaTypeStreamOperators<HighlightStyleDesc>("HighlightStyleDesc");
 
-    for (int i = 0; i < MCAPIHighlighter::STYLE_COUNT; ++i)
+    for (int i = 0; i < CSourceHighlighter::STYLE_COUNT; ++i)
     {
-        styles_[i] = settings_.value("editor/highlight/" + MCAPIHighlighter::STYLE_IDS[i],
-            QVariant::fromValue(MCAPIHighlighter::DEFAULT_STYLES[i])).value<HighlightStyleDesc>();
+        styles_[i] = settings_.value("editor/highlight/" + CSourceHighlighter::STYLE_IDS[i],
+            QVariant::fromValue(CSourceHighlighter::DEFAULT_STYLES[i])).value<HighlightStyleDesc>();
     }
 }
 

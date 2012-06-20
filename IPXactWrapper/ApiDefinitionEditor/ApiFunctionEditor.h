@@ -49,6 +49,13 @@ public:
     ~ApiFunctionEditor();
 
     /*!
+     *  Sets the linked COM definition.
+     *
+     *      @param [in] comDefinition The COM definition to set.
+     */
+    void setComDefinition(QSharedPointer<ComDefinition const> comDefinition);
+
+    /*!
      *  Updates the data types suggestions list.
      *
      *      @param [in] dataTypes The list of custom data types.

@@ -292,12 +292,15 @@ Qt::ItemFlags PropertyValueModel::flags(QModelIndex const& index) const
 
     if (index.column() == 0)
     {
-        foreach (QSharedPointer<ComProperty const> prop, *allowedProperties_)
+        if (allowedProperties_ != 0)
         {
-            // Check if we found a match.
-            if (prop->getName() == table_.at(index.row()).first && prop->isRequired())
+            foreach (QSharedPointer<ComProperty const> prop, *allowedProperties_)
             {
-                return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+                // Check if we found a match.
+                if (prop->getName() == table_.at(index.row()).first && prop->isRequired())
+                {
+                    return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+                }
             }
         }
     }

@@ -12,6 +12,8 @@
 #ifndef APIFUNCTIONPARAMETER_H
 #define APIFUNCTIONPARAMETER_H
 
+#include "generaldeclarations.h"
+
 #include <QString>
 #include <QDomNode>
 #include <QXmlStreamWriter>
@@ -79,6 +81,35 @@ public:
     void setType(QString const& type);
 
     /*!
+     *  Sets the allowed COM transfer type.
+     *
+     *      @param [in] comTransferType The COM transfer type to set.
+     */
+    void setComTransferType(QString const& comTransferType);
+
+    /*!
+     *  Sets the allowed COM direction.
+     *
+     *      @param [in] comDirection The COM direction to set.
+     */
+    void setComDirection(General::Direction comDirection);
+
+    /*!
+     *  Sets the COM content source.
+     *
+     *      @param [in] contentSource The name of the content source.
+     *                                "name" = name of a COM interface, otherwise any name of a COM property
+     */
+    void setContentSource(QString const& contentSource);
+
+    /*!
+     *  Sets the dependent parameter index.
+     *
+     *      @param [in] index The dependent parameter index. -1 if not set.
+     */
+    void setDependentParameterIndex(int index);
+
+    /*!
      *  Sets the parameter description.
      *
      *      @param [in] desc The description.
@@ -94,6 +125,26 @@ public:
      *  Returns the type of the parameter.
      */
     QString const& getType() const;
+
+    /*!
+     *  Returns the allowed COM transfer type.
+     */
+    QString const& getComTransferType() const;
+
+    /*!
+     *  Returns the allowed COM direction.
+     */
+    General::Direction getComDirection() const;
+
+    /*!
+     *  Returns the name of the COM content source.
+     */
+    QString const& getContentSource() const;
+
+    /*!
+     *  Returns the index of the dependent parameter, or -1 if not used.
+     */
+    int getDependentParameterIndex() const;
 
     /*!
      *  Returns the parameter description.
@@ -115,6 +166,18 @@ private:
 
     //! The type of the parameter.
     QString type_;
+
+    //! COM transfer type.
+    QString comTransferType_;
+
+    //! COM direction.
+    General::Direction comDirection_;
+
+    //! The name of the source for content assist.
+    QString contentSource_;
+
+    //! Dependent parameter index.
+    int dependentParamIndex_;
 
     //! The parameter description.
     QString desc_;

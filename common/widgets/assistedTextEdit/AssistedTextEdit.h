@@ -72,6 +72,11 @@ public:
     unsigned int getIndentWidth() const;
 
     /*!
+     *  Returns the content matcher.
+     */
+    ITextContentMatcher& getMatcher();
+
+    /*!
      *  Filters events.
      *
      *      @param [in] obj  The event owner.
@@ -150,6 +155,9 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    //! The content matcher.
+    QSharedPointer<ITextContentMatcher> matcher_;
 
     //! Content assist list widget.
     TextContentAssistWidget* contentAssist_;

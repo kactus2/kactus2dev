@@ -16,7 +16,7 @@
 // Function: ComInterface::ComInterface()
 //-----------------------------------------------------------------------------
 ComInterface::ComInterface() : name_(), displayName_(), desc_(),
-                               comType_(), dataType_(), dir_(General::INOUT),
+                               comType_(), transferType_(), dir_(General::INOUT),
                                propertyValues_()
 {
 }
@@ -28,7 +28,7 @@ ComInterface::ComInterface(ComInterface const& rhs) : name_(rhs.name_),
                                                       displayName_(rhs.displayName_),
                                                       desc_(rhs.desc_),
                                                       comType_(rhs.comType_),
-                                                      dataType_(rhs.dataType_),
+                                                      transferType_(rhs.transferType_),
                                                       dir_(rhs.dir_),
                                                       propertyValues_(rhs.propertyValues_)
 {
@@ -38,7 +38,7 @@ ComInterface::ComInterface(ComInterface const& rhs) : name_(rhs.name_),
 // Function: ComInterface::ComInterface()
 //-----------------------------------------------------------------------------
 ComInterface::ComInterface(QDomNode& node) : name_(), displayName_(), desc_(), comType_(),
-                                             dataType_(), dir_(General::INOUT),
+                                             transferType_(), dir_(General::INOUT),
                                              propertyValues_()
 {
     for (int i = 0; i < node.childNodes().count(); ++i)
@@ -66,9 +66,9 @@ ComInterface::ComInterface(QDomNode& node) : name_(), displayName_(), desc_(), c
         {
             comType_ = General::createVLNV(childNode, VLNV::COMDEFINITION);
         }
-        else if (childNode.nodeName() == "kactus2:dataType")
+        else if (childNode.nodeName() == "kactus2:transferType")
         {
-            dataType_ = childNode.childNodes().at(0).nodeValue();
+            transferType_ = childNode.childNodes().at(0).nodeValue();
         }
         else if (childNode.nodeName() == "kactus2:comDirection")
         {
@@ -105,7 +105,7 @@ void ComInterface::write(QXmlStreamWriter& writer) const
     writer.writeEmptyElement("kactus2:comType");
     General::writeVLNVAttributes(writer, &comType_);
 
-    writer.writeTextElement("kactus2:dataType", dataType_);
+    writer.writeTextElement("kactus2:transferType", transferType_);
     writer.writeTextElement("kactus2:comDirection", General::direction2Str(dir_));
 
     writer.writeStartElement("kactus2:propertyValues");
@@ -228,11 +228,11 @@ void ComInterface::setComType(VLNV const& vlnv)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComInterface::setDataType()
+// Function: ComInterface::setTransferType()
 //-----------------------------------------------------------------------------
-void ComInterface::setDataType(QString const& dataType)
+void ComInterface::setTransferType(QString const& transferType)
 {
-    dataType_ = dataType;
+    transferType_ = transferType;
 }
 
 //-----------------------------------------------------------------------------
@@ -284,11 +284,11 @@ VLNV const& ComInterface::getComType() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComInterface::getDataType()
+// Function: ComInterface::getTransferType()
 //-----------------------------------------------------------------------------
-QString const& ComInterface::getDataType() const
+QString const& ComInterface::getTransferType() const
 {
-    return dataType_;
+    return transferType_;
 }
 
 //-----------------------------------------------------------------------------

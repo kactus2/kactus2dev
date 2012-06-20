@@ -11,6 +11,8 @@
 
 #include "ApiDefinitionEditor.h"
 
+#include <models/ComDefinition.h>
+
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
 #include <QVBoxLayout>
@@ -26,6 +28,7 @@ ApiDefinitionEditor::ApiDefinitionEditor(QWidget *parent, LibraryInterface* libH
     : TabDocument(parent, DOC_PROTECTION_SUPPORT),
       libHandler_(libHandler),
       apiDef_(apiDef),
+      comDefVLNVEdit_(VLNV::COMDEFINITION, libHandler, parent, this),
       dataTypeList_(tr("Data types"), this),
       functionEditor_(this)
 {
@@ -35,13 +38,20 @@ ApiDefinitionEditor::ApiDefinitionEditor(QWidget *parent, LibraryInterface* libH
     functionEditor_.updateDataTypes(apiDef->getDataTypes());
     functionEditor_.restore(*apiDef);
 
+    comDefVLNVEdit_.setTitle(tr("COM definition reference (optional)"));
+    comDefVLNVEdit_.setVLNV(apiDef->getComDefinitionRef());
+    updateComDefinition();
+
     connect(&dataTypeList_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&dataTypeList_, SIGNAL(contentChanged()), this, SLOT(updateDataTypeLists()), Qt::UniqueConnection);
+    connect(&comDefVLNVEdit_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&comDefVLNVEdit_, SIGNAL(contentChanged()), this, SLOT(updateComDefinition()), Qt::UniqueConnection);
     connect(&functionEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     // Setup the layout.
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(&dataTypeList_);
+    layout->addWidget(&comDefVLNVEdit_);
     layout->addWidget(&functionEditor_, 1);
 
     setModified(false);
@@ -80,6 +90,7 @@ void ApiDefinitionEditor::refresh()
     apiDef_ = libComp.staticCast<ApiDefinition>();
 
     // Update the editors.
+    comDefVLNVEdit_.setVLNV(apiDef_->getComDefinitionRef());
     dataTypeList_.initialize(apiDef_->getDataTypes());
     functionEditor_.restore(*apiDef_);
 
@@ -162,7 +173,28 @@ void ApiDefinitionEditor::updateDataTypeLists()
 //-----------------------------------------------------------------------------
 void ApiDefinitionEditor::applyChanges()
 {
+    apiDef_->setComDefinitionRef(comDefVLNVEdit_.getVLNV());
     apiDef_->setDataTypes(dataTypeList_.items());
     functionEditor_.save(*apiDef_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiDefinitionEditor::updateComDefinition()
+//-----------------------------------------------------------------------------
+void ApiDefinitionEditor::updateComDefinition()
+{
+    VLNV vlnv = comDefVLNVEdit_.getVLNV();
+
+    // Retrieve the new COM definition if the VLNV is valid.
+    if (vlnv.isValid())
+    {
+        QSharedPointer<LibraryComponent const> libComp = libHandler_->getModelReadOnly(vlnv);
+        QSharedPointer<ComDefinition const> comDef = libComp.dynamicCast<ComDefinition const>();
+        functionEditor_.setComDefinition(comDef);
+    }
+    else
+    {
+        functionEditor_.setComDefinition(QSharedPointer<ComDefinition const>());
+    }
 }
 

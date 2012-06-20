@@ -317,7 +317,7 @@ bool SWPortItem::onConnect(ConnectionEndpoint const* other)
             comInterface_ = QSharedPointer<ComInterface>(new ComInterface());
             comInterface_->setName(nameLabel_.toPlainText());
             comInterface_->setComType(other->getComInterface()->getComType());
-            comInterface_->setDataType(other->getComInterface()->getDataType());
+            comInterface_->setTransferType(other->getComInterface()->getTransferType());
 
             switch (other->getComInterface()->getDirection())
             {
@@ -429,8 +429,8 @@ bool SWPortItem::canConnect(ConnectionEndpoint const* other) const
             }
 
             // Check if the data types are not compatible.
-            if (!comIf1->getDataType().isEmpty() && !comIf2->getDataType().isEmpty() &&
-                comIf1->getDataType() != comIf2->getDataType())
+            if (!comIf1->getTransferType().isEmpty() && !comIf2->getTransferType().isEmpty() &&
+                comIf1->getTransferType() != comIf2->getTransferType())
             {
                 return false;
             }

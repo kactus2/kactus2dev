@@ -45,8 +45,8 @@ InterfaceEditor::InterfaceEditor(QWidget *parent, LibraryInterface* handler)
       modeLabel_(tr("Interface mode"), this),
       dependencyDirLabel_(tr("Dependency direction"), this),
       dependencyDirCombo_(this),
-      dataTypeLabel_(tr("Data type"), this),
-      dataTypeCombo_(this),
+      transferTypeLabel_(tr("Transfer type"), this),
+      transferTypeCombo_(this),
       comDirectionLabel_(tr("Direction"), this),
       comDirectionCombo_(this),
       interface_(NULL),
@@ -114,8 +114,8 @@ InterfaceEditor::InterfaceEditor(QWidget *parent, LibraryInterface* handler)
 	layout->addWidget(&modeEdit_);
     layout->addWidget(&dependencyDirLabel_);
     layout->addWidget(&dependencyDirCombo_);
-    layout->addWidget(&dataTypeLabel_);
-    layout->addWidget(&dataTypeCombo_);
+    layout->addWidget(&transferTypeLabel_);
+    layout->addWidget(&transferTypeCombo_);
     layout->addWidget(&comDirectionLabel_);
     layout->addWidget(&comDirectionCombo_);
 	layout->addWidget(&descriptionLabel_);
@@ -218,27 +218,27 @@ void InterfaceEditor::setInterface( ConnectionEndpoint* interface ) {
         }
 
         // Fill in the possible values of the data type.
-        disconnect(&dataTypeCombo_, SIGNAL(currentIndexChanged(const QString&)),
-            this, SLOT(onComDataTypeChanged(QString const&)));
+        disconnect(&transferTypeCombo_, SIGNAL(currentIndexChanged(const QString&)),
+            this, SLOT(onComTransferTypeChanged(QString const&)));
 
-        dataTypeCombo_.clear();
-        dataTypeCombo_.addItem("");
+        transferTypeCombo_.clear();
+        transferTypeCombo_.addItem("");
 
         if (comDef_ != 0)
         {
-            dataTypeCombo_.addItems(comDef_->getTransferTypes());
+            transferTypeCombo_.addItems(comDef_->getTransferTypes());
 
             // Set selection for the data type.
-            QString const& dataType = interface->getComInterface()->getDataType();
+            QString const& transferType = interface->getComInterface()->getTransferType();
 
-            if (comDef_->getTransferTypes().contains(dataType))
+            if (comDef_->getTransferTypes().contains(transferType))
             {
-                dataTypeCombo_.setCurrentIndex(dataTypeCombo_.findText(dataType));
+                transferTypeCombo_.setCurrentIndex(transferTypeCombo_.findText(transferType));
             }
         }
 
-        connect(&dataTypeCombo_, SIGNAL(currentIndexChanged(const QString&)),
-                this, SLOT(onComDataTypeChanged(QString const&)), Qt::UniqueConnection);
+        connect(&transferTypeCombo_, SIGNAL(currentIndexChanged(const QString&)),
+                this, SLOT(onComTransferTypeChanged(QString const&)), Qt::UniqueConnection);
 
         // Set selection for COM direction.
         disconnect(&comDirectionCombo_, SIGNAL(currentIndexChanged(const QString&)),
@@ -287,7 +287,7 @@ void InterfaceEditor::setInterface( ConnectionEndpoint* interface ) {
 		mappings_.setEditTriggers(QAbstractItemView::NoEditTriggers);
 		descriptionEdit_.setEnabled(true);
         propertyValueEditor_.setEnabled(true);
-        dataTypeCombo_.setEnabled(true);
+        transferTypeCombo_.setEnabled(true);
 	}
 	else {
 		nameEdit_.setDisabled(true);
@@ -296,7 +296,7 @@ void InterfaceEditor::setInterface( ConnectionEndpoint* interface ) {
         comDirectionCombo_.setDisabled(true);
 		descriptionEdit_.setDisabled(true);
         propertyValueEditor_.setDisabled(true);
-        dataTypeCombo_.setDisabled(true);
+        transferTypeCombo_.setDisabled(true);
 
 		mappings_.setEditTriggers(QAbstractItemView::NoEditTriggers);
 	}
@@ -318,8 +318,8 @@ void InterfaceEditor::setInterface( ConnectionEndpoint* interface ) {
     dependencyDirLabel_.setVisible(interface->isApi());
     dummyWidget_.setVisible(!interface->isCom() && !interface->isBus());
 
-    dataTypeCombo_.setVisible(interface->isCom());
-    dataTypeLabel_.setVisible(interface->isCom());
+    transferTypeCombo_.setVisible(interface->isCom());
+    transferTypeLabel_.setVisible(interface->isCom());
     comDirectionCombo_.setVisible(interface->isCom());
     comDirectionLabel_.setVisible(interface->isCom());
     propertyValueLabel_.setVisible(interface->isCom());
@@ -347,8 +347,8 @@ void InterfaceEditor::clear() {
         this, SLOT(onDependencyDirectionChanged(QString const&)));
     disconnect(&comDirectionCombo_, SIGNAL(currentIndexChanged(const QString&)),
         this, SLOT(onComDirectionChanged(QString const&)));
-    disconnect(&dataTypeCombo_, SIGNAL(currentIndexChanged(const QString&)),
-        this, SLOT(onComDataTypeChanged(QString const&)));
+    disconnect(&transferTypeCombo_, SIGNAL(currentIndexChanged(const QString&)),
+        this, SLOT(onComTransferTypeChanged(QString const&)));
     disconnect(&propertyValueEditor_, SIGNAL(contentChanged()),
         this, SLOT(onComPropertyValuesChanged()));
 	disconnect(&descriptionEdit_, SIGNAL(textChanged()),
@@ -383,9 +383,9 @@ void InterfaceEditor::clear() {
     propertyValueEditor_.hide();
     dummyWidget_.hide();
 
-    dataTypeCombo_.clear();
-    dataTypeCombo_.hide();
-    dataTypeLabel_.hide();
+    transferTypeCombo_.clear();
+    transferTypeCombo_.hide();
+    transferTypeLabel_.hide();
 
 	mappings_.clearContents();
 	mappings_.hide();
@@ -606,14 +606,14 @@ void InterfaceEditor::onComDirectionChanged(QString const& newDir)
 }
 
 //-----------------------------------------------------------------------------
-// Function: InterfaceEditor::onComDataTypeChanged()
+// Function: InterfaceEditor::onComTransferTypeChanged()
 //-----------------------------------------------------------------------------
-void InterfaceEditor::onComDataTypeChanged(QString const& newDataType)
+void InterfaceEditor::onComTransferTypeChanged(QString const& newTransferType)
 {
     disconnect(interface_, SIGNAL(contentChanged()),
                this, SLOT(refresh()));
 
-    QSharedPointer<QUndoCommand> cmd(new EndpointDataTypeChangeCommand(interface_, newDataType));
+    QSharedPointer<QUndoCommand> cmd(new EndpointTransferTypeChangeCommand(interface_, newTransferType));
     static_cast<DesignDiagram*>(interface_->scene())->getEditProvider().addCommand(cmd);
 
     connect(interface_, SIGNAL(contentChanged()), 

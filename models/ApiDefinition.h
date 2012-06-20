@@ -96,6 +96,13 @@ public:
     void setLanguage(QString const& language);
 
     /*!
+     *  Sets the COM definition reference.
+     *
+     *      @param [in] vlnv The VLNV of the COM definition to reference.
+     */
+    void setComDefinitionRef(VLNV const& vlnv);
+
+    /*!
      *  Adds a new data type to the API definition.
      *
      *      @param [in] type The name of the data type to add.
@@ -139,6 +146,11 @@ public:
     QString const& getLanguage() const;
 
     /*!
+     *  Returns the COM definition reference.
+     */
+    VLNV const& getComDefinitionRef() const;
+
+    /*!
      *  Returns the supported data types.
      */
     QStringList const& getDataTypes() const;
@@ -179,6 +191,9 @@ private:
 
     //! The name of the programming language for documentation purposes.
     QString language_;
+
+    //! The COM definition reference.
+    VLNV comDefRef_;
 
     //! The API data types.
     QStringList dataTypes_;

@@ -17,6 +17,7 @@
 #include <common/widgets/tabDocument/TabDocument.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <common/widgets/listManager/listmanager.h>
+#include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <models/ApiDefinition.h>
 
 #include <LibraryManager/libraryinterface.h>
@@ -90,6 +91,9 @@ public slots:
     //! Updates the data types suggestion lists for return value and function parameter editors.
     void updateDataTypeLists();
 
+    //! Updates the COM definition.
+    void updateComDefinition();
+
 private:
     // Disable copying.
     ApiDefinitionEditor(ApiDefinitionEditor const& rhs);
@@ -109,6 +113,9 @@ private:
 
 	//! The API definition being edited.
 	QSharedPointer<ApiDefinition> apiDef_;
+
+    //! VLNV editor for the linked COM definition.
+    VLNVEditor comDefVLNVEdit_;
 
     //! The data type list manager.
     ListManager dataTypeList_;

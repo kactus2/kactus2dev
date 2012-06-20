@@ -596,9 +596,9 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-//! EndpointDataTypeChangeCommand class.
+//! EndpointTransferTypeChangeCommand class.
 //-----------------------------------------------------------------------------
-class EndpointDataTypeChangeCommand : public QUndoCommand
+class EndpointTransferTypeChangeCommand : public QUndoCommand
 {
 public:
     /*!
@@ -608,13 +608,13 @@ public:
      *      @param [in] newDir    The endpoint's new COM data type.
      *      @param [in] parent    The parent command.
      */
-    EndpointDataTypeChangeCommand(ConnectionEndpoint* endpoint, QString const& newDataType,
+    EndpointTransferTypeChangeCommand(ConnectionEndpoint* endpoint, QString const& newTransferType,
                                   QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
      */
-    ~EndpointDataTypeChangeCommand();
+    ~EndpointTransferTypeChangeCommand();
 
     /*!
      *  Undoes the command.
@@ -628,8 +628,8 @@ public:
 
 private:
     // Disable copying.
-    EndpointDataTypeChangeCommand(EndpointDataTypeChangeCommand const& rhs);
-    EndpointDataTypeChangeCommand& operator=(EndpointDataTypeChangeCommand const& rhs);
+    EndpointTransferTypeChangeCommand(EndpointTransferTypeChangeCommand const& rhs);
+    EndpointTransferTypeChangeCommand& operator=(EndpointTransferTypeChangeCommand const& rhs);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -639,10 +639,10 @@ private:
     ConnectionEndpoint* endpoint_;
 
     //! The endpoint's old COM data type.
-    QString oldDataType_;
+    QString oldTransferType_;
 
     //! The endpoint's new COM direction.
-    QString newDataType_;
+    QString newTransferType_;
 };
 
 //-----------------------------------------------------------------------------

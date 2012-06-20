@@ -11,17 +11,16 @@
 
 #include "CSourceTextEdit.h"
 
-#include "MCAPIHighlighter.h"
-#include "MCAPIContentMatcher.h"
+#include "CSourceHighlighter.h"
+#include "CSourceContentMatcher.h"
 
 //-----------------------------------------------------------------------------
 // Function: CSourceTextEdit()
 //-----------------------------------------------------------------------------
-CSourceTextEdit::CSourceTextEdit(QSharedPointer<MCAPIContentMatcher> matcher,
-                                 QWidget* mainWnd, QWidget* parent /* = 0 */) :
-    AssistedTextEdit(matcher, mainWnd, parent), m_highlighter(0), m_matcher(matcher)
+CSourceTextEdit::CSourceTextEdit(QWidget* mainWnd, QWidget* parent /* = 0 */)
+    : AssistedTextEdit(QSharedPointer<CSourceContentMatcher>(new CSourceContentMatcher()), mainWnd, parent),
+      m_highlighter(new CSourceHighlighter(document()))
 {
-    m_highlighter = new MCAPIHighlighter(document());
 }
 
 //-----------------------------------------------------------------------------
@@ -34,15 +33,15 @@ CSourceTextEdit::~CSourceTextEdit()
 //-----------------------------------------------------------------------------
 // Function: getMatcher()
 //-----------------------------------------------------------------------------
-MCAPIContentMatcher& CSourceTextEdit::getMatcher()
+CSourceContentMatcher& CSourceTextEdit::getMatcher()
 {
-    return *m_matcher;
+    return static_cast<CSourceContentMatcher&>(AssistedTextEdit::getMatcher());
 }
 
 //-----------------------------------------------------------------------------
 // Function: getHighlighter()
 //-----------------------------------------------------------------------------
-MCAPIHighlighter& CSourceTextEdit::getHighlighter()
+CSourceHighlighter& CSourceTextEdit::getHighlighter()
 {
     return *m_highlighter;
 }

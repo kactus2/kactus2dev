@@ -32,7 +32,7 @@ ComInterfaceEditor::ComInterfaceEditor(LibraryInterface* libHandler,
       nameGroup_(this),
       comType_(VLNV::COMDEFINITION, libHandler, this, this),
       detailsGroup_(tr("Details"), this),
-      dataTypeCombo_(this),
+      transferTypeCombo_(this),
       directionCombo_(this),
       propertyValueEditor_(this)
 {
@@ -52,7 +52,7 @@ comIf_(comInterface.data()),
 nameGroup_(this),
 comType_(VLNV::COMDEFINITION, libHandler, this, this),
 detailsGroup_(tr("Details"), this),
-dataTypeCombo_(this),
+transferTypeCombo_(this),
 directionCombo_(this),
 propertyValueEditor_(this) {
 
@@ -73,9 +73,9 @@ void ComInterfaceEditor::initialize() {
 		this, SIGNAL(nameChanged(const QString&)), Qt::UniqueConnection);
 	connect(&comType_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&dataTypeCombo_, SIGNAL(currentIndexChanged(int)),
+	connect(&transferTypeCombo_, SIGNAL(currentIndexChanged(int)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&dataTypeCombo_, SIGNAL(editTextChanged(QString const&)),
+	connect(&transferTypeCombo_, SIGNAL(editTextChanged(QString const&)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&directionCombo_, SIGNAL(currentIndexChanged(int)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -91,9 +91,9 @@ void ComInterfaceEditor::initialize() {
 	comType_.setMandatory(false);
 
 	// Initialize the details group.
-	QLabel* dataTypeLabel = new QLabel(tr("Data type:"), &detailsGroup_);
-	dataTypeCombo_.addItem("");
-	dataTypeCombo_.setInsertPolicy(QComboBox::InsertAlphabetically);
+	QLabel* transferTypeLabel = new QLabel(tr("Data type:"), &detailsGroup_);
+	transferTypeCombo_.addItem("");
+	transferTypeCombo_.setInsertPolicy(QComboBox::InsertAlphabetically);
 
 	QLabel* directionLabel = new QLabel(tr("Direction:"), &detailsGroup_);
 	directionCombo_.addItem(tr("in"));
@@ -102,8 +102,8 @@ void ComInterfaceEditor::initialize() {
 	directionCombo_.setCurrentIndex(0);
 
 	QGridLayout* detailsLayout = new QGridLayout(&detailsGroup_);
-	detailsLayout->addWidget(dataTypeLabel, 0, 0, 1, 1);
-	detailsLayout->addWidget(&dataTypeCombo_, 0, 1, 1, 1);
+	detailsLayout->addWidget(transferTypeLabel, 0, 0, 1, 1);
+	detailsLayout->addWidget(&transferTypeCombo_, 0, 1, 1, 1);
 	detailsLayout->addWidget(directionLabel, 1, 0, 1, 1);
 	detailsLayout->addWidget(&directionCombo_, 1, 1, 1, 1);
 
@@ -160,7 +160,7 @@ void ComInterfaceEditor::makeChanges()
     comIf_->setDisplayName(nameGroup_.getDisplayName());
     comIf_->setDescription(nameGroup_.getDescription());
     comIf_->setComType(comType_.getVLNV());
-    comIf_->setDataType(dataTypeCombo_.currentText());
+    comIf_->setTransferType(transferTypeCombo_.currentText());
     comIf_->setDirection(static_cast<General::Direction>(directionCombo_.currentIndex()));
 
     QMap<QString, QString> propertyValues = propertyValueEditor_.getData();
@@ -183,17 +183,17 @@ void ComInterfaceEditor::restoreChanges()
     comType_.setVLNV(comIf_->getComType());
     directionCombo_.setCurrentIndex(comIf_->getDirection());
 
-    if (!comIf_->getDataType().isEmpty())
+    if (!comIf_->getTransferType().isEmpty())
     {
-        int index = dataTypeCombo_.findText(comIf_->getDataType());
+        int index = transferTypeCombo_.findText(comIf_->getTransferType());
 
         if (index == -1)
         {
-            dataTypeCombo_.addItem(comIf_->getDataType());
-            index = dataTypeCombo_.findText(comIf_->getDataType());
+            transferTypeCombo_.addItem(comIf_->getTransferType());
+            index = transferTypeCombo_.findText(comIf_->getTransferType());
         }
 
-        dataTypeCombo_.setCurrentIndex(index);
+        transferTypeCombo_.setCurrentIndex(index);
     }
 }
 
@@ -216,15 +216,15 @@ void ComInterfaceEditor::onComDefinitionChanged()
 
         propertyValueEditor_.setAllowedProperties(&comDef->getProperties());
 
-        QString type = dataTypeCombo_.currentText();
+        QString type = transferTypeCombo_.currentText();
 
-        dataTypeCombo_.clear();
-        dataTypeCombo_.addItem("");
-        dataTypeCombo_.addItems(comDef->getTransferTypes());
+        transferTypeCombo_.clear();
+        transferTypeCombo_.addItem("");
+        transferTypeCombo_.addItems(comDef->getTransferTypes());
 
         if (comDef->getTransferTypes().contains(type))
         {
-            dataTypeCombo_.setCurrentIndex(dataTypeCombo_.findText(type));
+            transferTypeCombo_.setCurrentIndex(transferTypeCombo_.findText(type));
         }
     }
     else if (comType_.getVLNV().isEmpty())
@@ -233,8 +233,8 @@ void ComInterfaceEditor::onComDefinitionChanged()
         propertyValueEditor_.setAllowedProperties(0);
 
         // Clear the data type combo.
-        dataTypeCombo_.clear();
-        dataTypeCombo_.addItem("");
+        transferTypeCombo_.clear();
+        transferTypeCombo_.addItem("");
     }
 }
 
@@ -248,16 +248,16 @@ void ComInterfaceEditor::refresh() {
 	comType_.setVLNV(comIf_->getComType());
 	directionCombo_.setCurrentIndex(comIf_->getDirection());
 
-	if (!comIf_->getDataType().isEmpty())
+	if (!comIf_->getTransferType().isEmpty())
 	{
-		int index = dataTypeCombo_.findText(comIf_->getDataType());
+		int index = transferTypeCombo_.findText(comIf_->getTransferType());
 
 		if (index == -1)
 		{
-			dataTypeCombo_.addItem(comIf_->getDataType());
-			index = dataTypeCombo_.findText(comIf_->getDataType());
+			transferTypeCombo_.addItem(comIf_->getTransferType());
+			index = transferTypeCombo_.findText(comIf_->getTransferType());
 		}
 
-		dataTypeCombo_.setCurrentIndex(index);
+		transferTypeCombo_.setCurrentIndex(index);
 	}
 }

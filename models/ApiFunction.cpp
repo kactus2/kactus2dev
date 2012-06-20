@@ -285,6 +285,15 @@ QSharedPointer<ApiFunctionParameter> ApiFunction::getParam(int index)
 }
 
 //-----------------------------------------------------------------------------
+// Function: ApiFunction::getParam()
+//-----------------------------------------------------------------------------
+QSharedPointer<ApiFunctionParameter const> ApiFunction::getParam(int index) const
+{
+    Q_ASSERT(index >= 0 && index < params_.count());
+    return params_.at(index);
+}
+
+//-----------------------------------------------------------------------------
 // Function: ApiFunction::getParamCount()
 //-----------------------------------------------------------------------------
 int ApiFunction::getParamCount() const

@@ -359,40 +359,40 @@ void EndpointComDirectionChangeCommand::redo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: EndpointDataTypeChangeCommand()
+// Function: EndpointTransferTypeChangeCommand()
 //-----------------------------------------------------------------------------
-EndpointDataTypeChangeCommand::EndpointDataTypeChangeCommand(ConnectionEndpoint* endpoint,
-                                                             QString const& newDataType,
-                                                             QUndoCommand* parent)
+EndpointTransferTypeChangeCommand::EndpointTransferTypeChangeCommand(ConnectionEndpoint* endpoint,
+                                                                     QString const& newTransferType,
+                                                                     QUndoCommand* parent)
     : QUndoCommand(parent), 
       endpoint_(endpoint),
-      oldDataType_(endpoint->getComInterface()->getDataType()),
-      newDataType_(newDataType)
+      oldTransferType_(endpoint->getComInterface()->getTransferType()),
+      newTransferType_(newTransferType)
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~EndpointDataTypeChangeCommand()
+// Function: ~EndpointTransferTypeChangeCommand()
 //-----------------------------------------------------------------------------
-EndpointDataTypeChangeCommand::~EndpointDataTypeChangeCommand()
+EndpointTransferTypeChangeCommand::~EndpointTransferTypeChangeCommand()
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: undo()
 //-----------------------------------------------------------------------------
-void EndpointDataTypeChangeCommand::undo()
+void EndpointTransferTypeChangeCommand::undo()
 {
-    endpoint_->getComInterface()->setDataType(oldDataType_);
+    endpoint_->getComInterface()->setTransferType(oldTransferType_);
     endpoint_->updateInterface();
 }
 
 //-----------------------------------------------------------------------------
 // Function: redo()
 //-----------------------------------------------------------------------------
-void EndpointDataTypeChangeCommand::redo()
+void EndpointTransferTypeChangeCommand::redo()
 {
-    endpoint_->getComInterface()->setDataType(newDataType_);
+    endpoint_->getComInterface()->setTransferType(newTransferType_);
     endpoint_->updateInterface();
 }
 

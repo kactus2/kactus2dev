@@ -13,8 +13,8 @@
 
 #include <common/widgets/assistedTextEdit/AssistedTextEdit.h>
 
-class MCAPIContentMatcher;
-class MCAPIHighlighter;
+class CSourceContentMatcher;
+class CSourceHighlighter;
 
 //-----------------------------------------------------------------------------
 //! CSourceTextEdit class.
@@ -27,11 +27,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] mainWnd       The program main window. Must not be null.
-     *      @param [in] parent        The parent widget. Can be null.
+     *      @param [in] mainWnd         The program main window. Must not be null.
+     *      @param [in] parent          The parent widget. Can be null.
      */
-    CSourceTextEdit(QSharedPointer<MCAPIContentMatcher> mcapiMatcher,
-                  QWidget* mainWnd, QWidget* parent = 0);
+    CSourceTextEdit(QWidget* mainWnd, QWidget* parent = 0);
 
     /*!
      *  Destructor.
@@ -41,12 +40,12 @@ public:
     /*!
      *  Returns the content matcher.
      */
-    MCAPIContentMatcher& getMatcher();
+    CSourceContentMatcher& getMatcher();
 
     /*!
      *  Returns the highlighter.
      */
-    MCAPIHighlighter& getHighlighter();
+    CSourceHighlighter& getHighlighter();
 
 private:
     // Disable copying.
@@ -58,8 +57,8 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The MCAPI highlighter.
-    MCAPIHighlighter* m_highlighter;
+    CSourceHighlighter* m_highlighter;
 
     //! The used content matcher.
-    QSharedPointer<MCAPIContentMatcher> m_matcher;
+    QSharedPointer<CSourceContentMatcher> m_matcher;
 };

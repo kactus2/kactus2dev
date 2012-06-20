@@ -24,10 +24,12 @@
 // Function: AssistedTextEdit()
 //-----------------------------------------------------------------------------
 AssistedTextEdit::AssistedTextEdit(QSharedPointer<ITextContentMatcher> contentMatcher,
-                                   QWidget* mainWnd, QWidget* parent) : QPlainTextEdit(parent),
-                                                                        contentAssist_(0),
-                                                                        indentStyle_(INDENT_STYLE_TAB),
-                                                                        indentWidth_(DEFAULT_INDENT_WIDTH)
+                                   QWidget* mainWnd, QWidget* parent)
+    : QPlainTextEdit(parent),
+      contentAssist_(0),
+      indentStyle_(INDENT_STYLE_TAB),
+      indentWidth_(DEFAULT_INDENT_WIDTH),
+      matcher_(contentMatcher)
 {
     setFont(QFont("Courier", 10));
     setLineWrapMode(NoWrap);
@@ -345,4 +347,12 @@ void AssistedTextEdit::onReturnKeyPress(QKeyEvent* e)
                               indentDepth);
         QPlainTextEdit::keyPressEvent(&indentEvent);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AssistedTextEdit::getMatcher()
+//-----------------------------------------------------------------------------
+ITextContentMatcher& AssistedTextEdit::getMatcher()
+{
+    return *matcher_;
 }

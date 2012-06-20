@@ -92,6 +92,18 @@ QVariant ApiFunctionParameterModel::data(QModelIndex const& index, int role /*= 
         case API_FUNC_PARAM_COL_TYPE:
             return func_->getParam(index.row())->getType();
 
+        case API_FUNC_PARAM_COM_TRANSFER_TYPE:
+            return func_->getParam(index.row())->getComTransferType();
+
+        case API_FUNC_PARAM_COM_DIRECTION:
+            return General::direction2Str(func_->getParam(index.row())->getComDirection());
+
+        case API_FUNC_PARAM_CONTENT_SOURCE:
+            return func_->getParam(index.row())->getContentSource();
+
+        case API_FUNC_PARAM_DEPENDENT_PARAM:
+            return func_->getParam(index.row())->getDependentParameterIndex();
+
         case API_FUNC_PARAM_COL_DESC:
             return func_->getParam(index.row())->getDescription();
 
@@ -121,6 +133,18 @@ QVariant ApiFunctionParameterModel::headerData(int section, Qt::Orientation orie
 
             case API_FUNC_PARAM_COL_TYPE:
                 return tr("Type");
+
+            case API_FUNC_PARAM_COM_TRANSFER_TYPE:
+                return tr("COM transfer type");
+                
+            case API_FUNC_PARAM_COM_DIRECTION:
+                return tr("COM direction");
+
+            case API_FUNC_PARAM_CONTENT_SOURCE:
+                return tr("Source");
+
+            case API_FUNC_PARAM_DEPENDENT_PARAM:
+                return tr("Dependent parameter");
 
             case API_FUNC_PARAM_COL_DESC:
                 return tr("Description");
@@ -180,6 +204,30 @@ bool ApiFunctionParameterModel::setData(QModelIndex const& index, QVariant const
         case API_FUNC_PARAM_COL_TYPE:
             {
                 func_->getParam(index.row())->setType(value.toString());
+                break;
+            }
+
+        case API_FUNC_PARAM_COM_TRANSFER_TYPE:
+            {
+                func_->getParam(index.row())->setComTransferType(value.toString());
+                break;
+            }
+
+        case API_FUNC_PARAM_COM_DIRECTION:
+            {
+                func_->getParam(index.row())->setComDirection(General::str2Direction(value.toString(), General::DIRECTION_INVALID));
+                break;
+            }
+
+        case API_FUNC_PARAM_CONTENT_SOURCE:
+            {
+                func_->getParam(index.row())->setContentSource(value.toString());
+                break;
+            }
+
+        case API_FUNC_PARAM_DEPENDENT_PARAM:
+            {
+                func_->getParam(index.row())->setDependentParameterIndex(value.toInt());
                 break;
             }
 

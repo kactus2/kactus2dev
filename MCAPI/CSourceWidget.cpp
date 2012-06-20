@@ -12,8 +12,15 @@
 #include "CSourceWidget.h"
 
 #include "CSourceTextEdit.h"
-#include "MCAPIContentMatcher.h"
-#include "MCAPIHighlighter.h"
+#include "CSourceContentMatcher.h"
+#include "CSourceHighlighter.h"
+
+#include <LibraryManager/libraryinterface.h>
+
+#include <models/component.h>
+#include <models/ApiDefinition.h>
+#include <models/ApiInterface.h>
+#include <models/ComDefinition.h>
 
 #include <common/TextEditProvider.h>
 
@@ -31,18 +38,47 @@
 // Function: CSourceWidget()
 //-----------------------------------------------------------------------------
 CSourceWidget::CSourceWidget(QString const& sourceFile,
-                             QSharedPointer<MCAPIContentMatcher> mcapiMatcher,
+                             QSharedPointer<Component> ownerComponent,
+                             LibraryInterface* libInterface,
                              QWidget* mainWnd, QWidget* parent)
     : TabDocument(parent, DOC_PRINT_SUPPORT | DOC_EDIT_SUPPORT),
       sourceFile_(sourceFile),
       editProvider_()
 {
-    textEdit_ = new CSourceTextEdit(mcapiMatcher, mainWnd, this);
+    textEdit_ = new CSourceTextEdit(mainWnd, this);
     editProvider_ = QSharedPointer<TextEditProvider>(new TextEditProvider(*textEdit_));
 
+    // Initialize content matcher and highlighter for the text editor.
+    textEdit_->getMatcher().setOwner(ownerComponent);
+
+    foreach (QSharedPointer<ApiInterface const> apiIf, ownerComponent->getApiInterfaces().values())
+    {
+        QSharedPointer<LibraryComponent const> libComp = libInterface->getModelReadOnly(apiIf->getApiType());
+        QSharedPointer<ApiDefinition const> apiDef = libComp.dynamicCast<ApiDefinition const>();
+
+        if (apiDef != 0)
+        {
+            textEdit_->getMatcher().addSourceApiDefinition(apiDef);
+            textEdit_->getHighlighter().registerAPI(apiDef);
+
+            if (apiDef->getComDefinitionRef().isValid())
+            {
+                libComp = libInterface->getModelReadOnly(apiDef->getComDefinitionRef());
+                QSharedPointer<ComDefinition const> comDef = libComp.dynamicCast<ComDefinition const>();
+
+                if (comDef != 0)
+                {
+                    textEdit_->getMatcher().addSourceComDefinition(comDef);
+                }
+            }
+        }
+    }
+
+    // Create the layout.
 	QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(textEdit_);
 
+    // Read and apply code editor settings.
     QSettings settings;
     applySettings(settings);
     
@@ -90,15 +126,15 @@ void CSourceWidget::applySettings(QSettings const& settings)
     // Read highlight style settings.
     qRegisterMetaTypeStreamOperators<HighlightStyleDesc>("HighlightStyleDesc");
 
-    for (int i = 0; i < MCAPIHighlighter::STYLE_COUNT; ++i)
+    for (int i = 0; i < CSourceHighlighter::STYLE_COUNT; ++i)
     {
-        HighlightStyleDesc styleDesc = settings.value("editor/highlight/" + MCAPIHighlighter::STYLE_IDS[i],
-            QVariant::fromValue(MCAPIHighlighter::DEFAULT_STYLES[i])).value<HighlightStyleDesc>();
+        HighlightStyleDesc styleDesc = settings.value("editor/highlight/" + CSourceHighlighter::STYLE_IDS[i],
+            QVariant::fromValue(CSourceHighlighter::DEFAULT_STYLES[i])).value<HighlightStyleDesc>();
 
-        textEdit_->getHighlighter().setStyle(static_cast<MCAPIHighlighter::StyleType>(i), styleDesc);
+        textEdit_->getHighlighter().setStyle(static_cast<CSourceHighlighter::StyleType>(i), styleDesc);
     }
 
-    textEdit_->getHighlighter().applyStyles();
+    textEdit_->getHighlighter().rehighlight();
 }
 
 //-----------------------------------------------------------------------------

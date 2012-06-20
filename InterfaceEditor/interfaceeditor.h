@@ -93,8 +93,8 @@ private slots:
     //! Handler for changes in COM direction.
     void onComDirectionChanged(QString const& newDir);
 
-    //! Handler for changes in COM data type.
-    void onComDataTypeChanged(QString const& newDataType);
+    //! Handler for changes in COM transfer type.
+    void onComTransferTypeChanged(QString const& newTransferType);
 
     //! Handler for changes in COM property values.
     void onComPropertyValuesChanged();
@@ -141,11 +141,11 @@ private:
     //! The editor for direction.
     QComboBox comDirectionCombo_;
 
-    //! Label for data type editor.
-    QLabel dataTypeLabel_;
+    //! Label for transfer type editor.
+    QLabel transferTypeLabel_;
 
     //! Data type editor.
-    QComboBox dataTypeCombo_;
+    QComboBox transferTypeCombo_;
 
 	//! \brief Pointer to the interface being edited.
 	ConnectionEndpoint* interface_;

@@ -11,8 +11,12 @@
 
 #include "ApiFunctionParameterDelegate.h"
 
+#include <models/ComDefinition.h>
+#include <models/ComProperty.h>
+
 #include <QComboBox>
 #include <QLineEdit>
+#include <QSpinBox>
 
 //-----------------------------------------------------------------------------
 // Function: ApiFunctionParameterDelegate::ApiFunctionParameterDelegate()
@@ -78,6 +82,59 @@ QWidget* ApiFunctionParameterDelegate::createEditor(QWidget* parent, QStyleOptio
             return box;
         }
 
+    case API_FUNC_PARAM_COM_DIRECTION:
+        {
+            QComboBox* box = new QComboBox(parent);
+            box->addItem("");
+            box->addItem(tr("in"));
+            box->addItem(tr("out"));
+            box->addItem(tr("inout"));
+
+            return box;
+        }
+
+    case API_FUNC_PARAM_COM_TRANSFER_TYPE:
+        {
+            QComboBox* box = new QComboBox(parent);
+
+            box->addItem("");
+
+            // Fetch allowed transfer types from the linked COM definition.
+            if (comDefinition_ != 0)
+            {
+                box->addItem(tr("any"));
+                box->addItems(comDefinition_->getTransferTypes());
+            }
+
+            return box;
+        }
+
+    case API_FUNC_PARAM_CONTENT_SOURCE:
+        {
+            QComboBox* box = new QComboBox(parent);
+
+            // TODO: Fetch content sources from a COM definition properties.
+            box->addItem("");
+            box->addItem("Name");
+
+            if (comDefinition_ != 0)
+            {
+                foreach (QSharedPointer<ComProperty const> property, comDefinition_->getProperties())
+                {
+                    box->addItem(property->getName());
+                }
+            }
+
+            return box;
+        }
+
+    case API_FUNC_PARAM_DEPENDENT_PARAM:
+        {
+            QSpinBox* box = new QSpinBox(parent);
+            box->setMinimum(-1);
+            return box;
+        }
+
     default:
         {
             return QStyledItemDelegate::createEditor(parent, option, index);
@@ -93,6 +150,9 @@ void ApiFunctionParameterDelegate::setEditorData(QWidget* editor, QModelIndex co
     switch (index.column())
     {
     case API_FUNC_PARAM_COL_TYPE:
+    case API_FUNC_PARAM_COM_DIRECTION:
+    case API_FUNC_PARAM_COM_TRANSFER_TYPE:
+    case API_FUNC_PARAM_CONTENT_SOURCE:
         {
             QComboBox* box = qobject_cast<QComboBox*>(editor);
             Q_ASSERT_X(box, "ApiFunctionParameterDelegate::setEditorData", "Type conversion failed for QComboBox");
@@ -113,6 +173,16 @@ void ApiFunctionParameterDelegate::setEditorData(QWidget* editor, QModelIndex co
             return;
         }
 
+    case API_FUNC_PARAM_DEPENDENT_PARAM:
+        {
+            QSpinBox* box = qobject_cast<QSpinBox*>(editor);
+            Q_ASSERT(box != 0);
+
+            int value = index.model()->data(index, Qt::DisplayRole).toInt();
+            box->setValue(value);
+            return;
+        }
+
     default:
         {
             QStyledItemDelegate::setEditorData(editor, index);
@@ -129,6 +199,9 @@ void ApiFunctionParameterDelegate::setModelData(QWidget* editor, QAbstractItemMo
     switch (index.column())
     {
     case API_FUNC_PARAM_COL_TYPE:
+    case API_FUNC_PARAM_COM_DIRECTION:
+    case API_FUNC_PARAM_COM_TRANSFER_TYPE:
+    case API_FUNC_PARAM_CONTENT_SOURCE:
         {
             QComboBox* box = qobject_cast<QComboBox*>(editor);
             Q_ASSERT_X(box, "ApiFunctionParameterDelegate::setEditorData", "Type conversion failed for QComboBox");
@@ -148,6 +221,16 @@ void ApiFunctionParameterDelegate::setModelData(QWidget* editor, QAbstractItemMo
             model->setData(index, text, Qt::EditRole);
             return;
         }
+
+    case API_FUNC_PARAM_DEPENDENT_PARAM:
+        {
+            QSpinBox* box = qobject_cast<QSpinBox*>(editor);
+            Q_ASSERT(box != 0);
+
+            model->setData(index, box->value(), Qt::EditRole);
+            return;
+        }
+
     default:
         {
             QStyledItemDelegate::setModelData(editor, model, index);
@@ -179,4 +262,12 @@ QStringList ApiFunctionParameterDelegate::getDataTypesList() const
     list.sort();
     list.removeDuplicates();
     return list;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiFunctionParameterDelegate::setComDefinition()
+//-----------------------------------------------------------------------------
+void ApiFunctionParameterDelegate::setComDefinition(QSharedPointer<ComDefinition const> comDefinition)
+{
+    comDefinition_ = comDefinition;
 }

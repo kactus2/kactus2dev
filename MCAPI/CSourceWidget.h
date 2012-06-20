@@ -12,7 +12,7 @@
 #ifndef MCAPISOURCEWIDGET_H
 #define MCAPISOURCEWIDGET_H
 
-#include "MCAPIHighlighter.h"
+#include "CSourceHighlighter.h"
 
 #include <common/widgets/tabDocument/TabDocument.h>
 
@@ -20,8 +20,10 @@
 #include <QList>
 
 class CSourceTextEdit;
-class MCAPIContentMatcher;
+class CSourceContentMatcher;
 class TextEditProvider;
+class Component;
+class LibraryInterface;
 
 //-----------------------------------------------------------------------------
 //! CSourceWidget class.
@@ -34,16 +36,18 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] sourceFile    The name of the source file in the file system.
-     *      @param [in] mcapiMatcher  The content matcher.
-     *      @param [in] mainWnd       The main window.
-     *      @param [in] parent        The parent widget.
+     *      @param [in] sourceFile      The name of the source file in the file system.
+     *      @param [in] ownerComponent  The component who "owns" the source file that will be edited.
+     *      @param [in] libInterface    The library interface.
+     *      @param [in] mainWnd         The main window.
+     *      @param [in] parent          The parent widget.
      *
      *      @remarks The file is assumed to exist in the file system.
      */
     CSourceWidget(QString const& sourceFile,
-                      QSharedPointer<MCAPIContentMatcher> mcapiMatcher,
-                      QWidget* mainWnd, QWidget* parent = 0);
+                  QSharedPointer<Component> ownerComponent,
+                  LibraryInterface* libInterface,
+                  QWidget* mainWnd, QWidget* parent = 0);
 
     /*!
      *  Destructor.

@@ -25,7 +25,7 @@
 #include <SystemDesign/SystemDesignWidget.h>
 
 #include <MCAPI/CSourceWidget.h>
-#include <MCAPI/MCAPIContentMatcher.h>
+#include <MCAPI/CSourceContentMatcher.h>
 
 #include <DocumentGenerator/documentgenerator.h>
 
@@ -1872,22 +1872,9 @@ void MainWindow::openCSource(ComponentItem* compItem)
         return;
     }
 
-    // Create a content matcher for the component.
-    QSharedPointer<MCAPIContentMatcher> contentMatcher(new MCAPIContentMatcher());
-    
-    foreach (QSharedPointer<ApiInterface const> apiIf, compItem->componentModel()->getApiInterfaces().values())
-    {
-        QSharedPointer<LibraryComponent const> libComp = libraryHandler_->getModelReadOnly(apiIf->getApiType());
-        QSharedPointer<ApiDefinition const> apiDef = libComp.dynamicCast<ApiDefinition const>();
-
-        if (apiDef != 0)
-        {
-            contentMatcher->addSourceApiDefinition(apiDef);
-        }
-    }
-
-    // And open the source to a view.
-    CSourceWidget* sourceWidget = new CSourceWidget(filename, contentMatcher, this, this);
+    // Open the source to a view.
+    CSourceWidget* sourceWidget = new CSourceWidget(filename, compItem->componentModel(),
+                                                    libraryHandler_, this, this);
 
     connect(sourceWidget, SIGNAL(contentChanged()), this, SLOT(updateMenuStrip()));
     connect(sourceWidget->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));

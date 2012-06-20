@@ -138,6 +138,13 @@ public:
     QSharedPointer<ApiFunctionParameter> getParam(int index);
 
     /*!
+     *  Returns the parameter at the given index.
+     *
+     *      @param [in] index The parameter index.
+     */
+    QSharedPointer<ApiFunctionParameter const> getParam(int index) const;
+
+    /*!
      *  Returns the number of parameters in the function.
      */
     int getParamCount() const;
