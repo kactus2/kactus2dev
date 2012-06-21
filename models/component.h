@@ -228,11 +228,11 @@ public:
 	*/
 	QList<QSharedPointer<MemoryMap> >& getMemoryMaps();
 
-	/*! \brief Get pointer to the list containing the memory maps of the component.
+	/*! \brief Get the names of the memory maps contained within this component.
 	 *
-	 * \return Pointer to the QList containing pointers to the memory maps.
+	 * \return QStringList containing the memory map names.
 	*/
-	QList<QSharedPointer<MemoryMap> >* getMemoryMapsPointer();
+	QStringList getMemoryMapNames() const;
 
 	/*! \brief Get this component's model information
 	 *

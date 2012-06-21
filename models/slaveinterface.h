@@ -9,6 +9,7 @@
 
 #include <QString>
 #include <QList>
+#include <QStringList>
 #include <QSharedPointer>
 #include <QDomNode>
 #include <QXmlStreamWriter>
@@ -47,6 +48,11 @@ public:
 		 * this class or one of it's member classes.
 		 */
 		Bridge(QDomNode& bridgeNode);
+
+		/*! \brief The default constructor.
+		 *
+		*/
+		Bridge();
 	};
 
 	/*! \brief Equals the spirit:fileSetRefGroup in IP-Xact specifitation.
@@ -64,7 +70,7 @@ public:
 		/*! \brief OPTIONAL spirit:fileSetRef
 		 * An unbounded list of references to a fileSet by name.
 		 */
-		QList<QString> fileSetRefs_;
+		QStringList fileSetRefs_;
 
 		/*! \brief The constructor
 		 *
@@ -136,7 +142,14 @@ public:
 	 * \return A reference to a QList containing pointers to the bridge
 	 * instances.
 	 */
-	const QList<QSharedPointer<Bridge> >& getBridges();
+	const QList<QSharedPointer<Bridge> >& getBridges() const;
+
+	/*! \brief Get list of the bridges for this component
+	 *
+	 * \return A reference to a QList containing pointers to the bridge
+	 * instances.
+	 */
+	QList<QSharedPointer<Bridge> >& getBridges();
 
 	/*! \brief Get list of the fileSetRefGroups for this component
 	 *

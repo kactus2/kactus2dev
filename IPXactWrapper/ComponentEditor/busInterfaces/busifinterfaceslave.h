@@ -12,6 +12,7 @@
 #include <models/businterface.h>
 #include <models/component.h>
 #include <models/slaveinterface.h>
+#include <common/widgets/memoryMapSelector/memorymapselector.h>
 
 #include <QSharedPointer>
 
@@ -70,8 +71,11 @@ private:
 	//! No assignment
 	BusIfInterfaceSlave& operator=(const BusIfInterfaceSlave& other);
 
-	//! \brief Pointer to the slace interface mode being edited.
+	//! \brief Pointer to the slave interface mode being edited.
 	QSharedPointer<SlaveInterface> slave_;
+
+	//! \brief The editor to select a memory map from the component.
+	MemoryMapSelector memSelector_;
 };
 
 #endif // BUSIFINTERFACESLAVE_H

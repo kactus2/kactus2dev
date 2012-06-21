@@ -16,7 +16,8 @@
 #include <QXmlStreamWriter>
 
 // struct constructor
-SlaveInterface::Bridge::Bridge(QDomNode& bridgeNode): masterRef_(),
+SlaveInterface::Bridge::Bridge(QDomNode& bridgeNode):
+masterRef_(),
 opaque_(false) {
 
 	QDomNamedNodeMap attributeMap = bridgeNode.attributes();
@@ -30,6 +31,11 @@ opaque_(false) {
 
 	opaque_ = General::str2Bool(opaque, false);
 	return;
+}
+
+SlaveInterface::Bridge::Bridge():
+masterRef_(),
+opaque_(false) {
 }
 
 // struct constructor
@@ -204,8 +210,11 @@ bool SlaveInterface::isValid() const {
 	return true;
 }
 
-const QList<QSharedPointer<SlaveInterface::Bridge> >&
-SlaveInterface::getBridges() {
+const QList<QSharedPointer<SlaveInterface::Bridge> >& SlaveInterface::getBridges() const {
+	return bridges_;
+}
+
+QList<QSharedPointer<SlaveInterface::Bridge> >& SlaveInterface::getBridges() {
 	return bridges_;
 }
 

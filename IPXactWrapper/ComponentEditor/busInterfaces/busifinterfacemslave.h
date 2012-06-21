@@ -14,6 +14,7 @@
 #include <models/mirroredslaveinterface.h>
 
 #include <QSharedPointer>
+#include <QLineEdit>
 
 /*! \brief Editor to edit mirrored slave details of a bus interface.
  *
@@ -57,6 +58,14 @@ public:
 	//! \brief Save the interface mode-specific details to the bus interface.
 	virtual void saveModeSpecific();
 
+private slots:
+
+	//! \brief Handler for changes in remap address.
+	void onRemapChange(const QString& newRemapAddress);
+
+	//! \brief Handler for changes in range.
+	void onRangeChange(const QString& newRange);
+
 private:
 	
 	//! \brief No copying
@@ -67,6 +76,12 @@ private:
 
 	//! \brief Pointer to the mirrored slave interface mode being edited.
 	QSharedPointer<MirroredSlaveInterface> mirroredSlave_;
+
+	//! \brief Editor to set the remap address.
+	QLineEdit remapEdit_;
+
+	//! \brief Editor to set the range.
+	QLineEdit rangeEdit_;
 };
 
 #endif // BUSIFINTERFACEMSLAVE_H

@@ -16,7 +16,9 @@
 
 // struct constructor
 MirroredSlaveInterface::RemapAddress::RemapAddress(QDomNode& remapNode):
-remapAddress_(), prompt_(QString("Base Address:")), state_(),
+remapAddress_(),
+prompt_(QString("Base Address:")),
+state_(),
 remapAttributes_() {
 	remapAddress_ = remapNode.childNodes().at(0).nodeValue();
 
@@ -42,6 +44,14 @@ remapAttributes_() {
 		remapAttributes_.erase(i);
 	}
 	return;
+}
+
+MirroredSlaveInterface::RemapAddress::RemapAddress(const QString& remapAddress):
+remapAddress_(remapAddress),
+prompt_(QString("Base Address:")),
+state_(),
+remapAttributes_() {
+
 }
 
 // the constructor
@@ -203,4 +213,28 @@ void MirroredSlaveInterface::setRemapAddresses(const
 const QList<QSharedPointer<MirroredSlaveInterface::RemapAddress> >&
 MirroredSlaveInterface::getRemapAddresses() {
 	return remapAddresses_;
+}
+
+void MirroredSlaveInterface::setRemapAddress( const QString& remapAddress ) {
+	// remove previous remap addresses
+	remapAddresses_.clear();
+
+	// if the remap address is empty then don't add it
+	if (remapAddress.isEmpty()) {
+		return;
+	}
+
+	// create new remap address for the given address
+	QSharedPointer<MirroredSlaveInterface::RemapAddress> remap(new MirroredSlaveInterface::RemapAddress(remapAddress));
+	remapAddresses_.append(remap);
+}
+
+QString MirroredSlaveInterface::getRemapAddress() const {
+
+	if (remapAddresses_.isEmpty()) {
+		return QString();
+	}
+	else {
+		return remapAddresses_.first()->remapAddress_;
+	}
 }

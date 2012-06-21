@@ -1472,6 +1472,15 @@ QList<QSharedPointer<MemoryMap> >& Component::getMemoryMaps() {
 	return memoryMaps_;
 }
 
+QStringList Component::getMemoryMapNames() const {
+	QStringList memoryMapNames;
+	foreach (QSharedPointer<MemoryMap> memMap, memoryMaps_) {
+		Q_ASSERT(memMap);
+		memoryMapNames.append(memMap->getName());
+	}
+	return memoryMapNames;
+}
+
 QList<QSharedPointer<Cpu> >& Component::getCpus() {
 	return cpus_;
 }
@@ -2910,9 +2919,6 @@ Cpu* Component::createCpu() {
 	return cpu.data();
 }
 
-QList<QSharedPointer<MemoryMap> >* Component::getMemoryMapsPointer() {
-	return &memoryMaps_;
-}
 //-----------------------------------------------------------------------------
 // Function: Component::parseComInterfaces()
 //-----------------------------------------------------------------------------

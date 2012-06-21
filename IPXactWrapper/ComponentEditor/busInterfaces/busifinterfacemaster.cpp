@@ -86,6 +86,7 @@ void BusIfInterfaceMaster::refresh() {
 		master_ = busif_->getMaster();
 	}
 	else {
+		master_.clear();
 		master_ = QSharedPointer<MasterInterface>(new MasterInterface());
 	}
 

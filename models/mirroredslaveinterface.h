@@ -40,7 +40,7 @@ public:
 		QString prompt_;
 
 		/*! \brief OPTIONAL attribute spirit:state
-		 * Identifies remapstate for which the remapAddress and range apply.
+		 * Identifies remap state for which the remapAddress and range apply.
 		 */
 		QString state_;
 
@@ -60,6 +60,13 @@ public:
 		 * this class or one of it's member classes.
 		 */
 		RemapAddress(QDomNode& remapNode);
+
+		/*! \brief The constructor.
+		 *
+		 * \param remapAddress The remap address to set.
+		 *
+		*/
+		RemapAddress(const QString& remapAddress);
 	};
 
 	/*! \brief The constructor
@@ -131,6 +138,14 @@ public:
 	 */
     const QList<QSharedPointer<RemapAddress> >& getRemapAddresses();
 
+	/*! \brief Get the remap address of this mirrored slave interface.
+	 * 
+	 * If there are several remap addresses then the first is returned.
+	 *
+	 * \return QString containing the remap address.
+	*/
+	QString getRemapAddress() const;
+
     /*! \brief Set the remapAddresses for the interface.
      *
      * \param remapAddresses A reference to QList containing pointers to the
@@ -138,6 +153,15 @@ public:
      */
     void setRemapAddresses(const
     		QList<QSharedPointer<RemapAddress> >& remapAddresses);
+
+	/*! \brief Set a remap address for this mirrored slave interface.
+	 * 
+	 * Setting this will remove any previous remap addresses.
+	 * 
+	 * \param remapAddress The remap address to set.
+	 *
+	*/
+	void setRemapAddress(const QString& remapAddress);
 
 private:
 
