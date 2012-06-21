@@ -370,9 +370,10 @@ void EditableTableView::onPasteAction() {
 		QStringList columnsToAdd = row.split("\t");
 		foreach (QString column, columnsToAdd) {
 
-			if (column.isEmpty()) {
-				continue;
-			}
+            // Commenting this fixed the problem with empty columns.
+// 			if (column.isEmpty()) {
+// 				continue;
+// 			}
 
 			QModelIndex itemToSet = model()->index(startRow, columnCounter, QModelIndex());
 			// if the index is not valid then the data is written to last item

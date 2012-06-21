@@ -93,16 +93,43 @@ QVariant ApiFunctionParameterModel::data(QModelIndex const& index, int role /*= 
             return func_->getParam(index.row())->getType();
 
         case API_FUNC_PARAM_COM_TRANSFER_TYPE:
-            return func_->getParam(index.row())->getComTransferType();
+            {
+                QString transferType = func_->getParam(index.row())->getComTransferType();
+                
+                if (transferType == "")
+                {
+                    return tr("any");
+                }
+                
+                return transferType;
+            }
 
         case API_FUNC_PARAM_COM_DIRECTION:
-            return General::direction2Str(func_->getParam(index.row())->getComDirection());
+            {
+                General::Direction direction = func_->getParam(index.row())->getComDirection();
+
+                if (direction == General::DIRECTION_INVALID)
+                {
+                    return tr("any");
+                }
+
+                return General::direction2Str(direction);
+            }
 
         case API_FUNC_PARAM_CONTENT_SOURCE:
             return func_->getParam(index.row())->getContentSource();
 
         case API_FUNC_PARAM_DEPENDENT_PARAM:
-            return func_->getParam(index.row())->getDependentParameterIndex();
+            {
+                int paramIndex = func_->getParam(index.row())->getDependentParameterIndex();
+
+                if (paramIndex < 0)
+                {
+                    return "no";
+                }
+                
+                return func_->getParam(index.row())->getDependentParameterIndex();
+            }
 
         case API_FUNC_PARAM_COL_DESC:
             return func_->getParam(index.row())->getDescription();
@@ -174,7 +201,25 @@ Qt::ItemFlags ApiFunctionParameterModel::flags(QModelIndex const& index) const
         return Qt::NoItemFlags;
     }
 
-    return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
+    switch (index.column())
+    {
+    case API_FUNC_PARAM_COM_TRANSFER_TYPE:
+    case API_FUNC_PARAM_COM_DIRECTION:
+    case API_FUNC_PARAM_DEPENDENT_PARAM:
+        {
+            if (func_->getParam(index.row())->getContentSource().isEmpty())
+            {
+                return Qt::ItemIsSelectable;
+            }
+            else
+            {
+                return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
+            }
+        }
+
+    default:
+        return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -209,7 +254,15 @@ bool ApiFunctionParameterModel::setData(QModelIndex const& index, QVariant const
 
         case API_FUNC_PARAM_COM_TRANSFER_TYPE:
             {
-                func_->getParam(index.row())->setComTransferType(value.toString());
+                if (value.toString() == tr("any"))
+                {
+                    func_->getParam(index.row())->setComTransferType("");
+                }
+                else
+                {
+                    func_->getParam(index.row())->setComTransferType(value.toString());
+                }
+
                 break;
             }
 
@@ -221,13 +274,31 @@ bool ApiFunctionParameterModel::setData(QModelIndex const& index, QVariant const
 
         case API_FUNC_PARAM_CONTENT_SOURCE:
             {
+                if (value.toString().isEmpty())
+                {
+                    func_->getParam(index.row())->setComDirection(General::DIRECTION_INVALID);
+                    func_->getParam(index.row())->setComTransferType("");
+                    func_->getParam(index.row())->setDependentParameterIndex(-1);
+                }
+
                 func_->getParam(index.row())->setContentSource(value.toString());
+
+                emit dataChanged(index, this->index(index.row(), index.column() + 3));
                 break;
             }
 
         case API_FUNC_PARAM_DEPENDENT_PARAM:
             {
-                func_->getParam(index.row())->setDependentParameterIndex(value.toInt());
+                QString text = value.toString();
+
+                if (text == "no")
+                {
+                    func_->getParam(index.row())->setDependentParameterIndex(-1);
+                }
+                else
+                {
+                    func_->getParam(index.row())->setDependentParameterIndex(value.toInt());
+                }
                 break;
             }
 

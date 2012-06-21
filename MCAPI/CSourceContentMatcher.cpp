@@ -291,8 +291,10 @@ void CSourceContentMatcher::tryMatchParam(ApiFunction const* apiFuncDesc, QStrin
                 }
 
                 if (value == params.at(index) &&
-                    comIf->getDirection() == dependentParam->getComDirection() &&
+                    (comIf->getDirection() == dependentParam->getComDirection() ||
+                     dependentParam->getComDirection() == General::DIRECTION_INVALID) &&
                     (comIf->getTransferType() == dependentParam->getComTransferType() ||
+                     dependentParam->getComTransferType() == "" ||
                      dependentParam->getComTransferType() == "any"))
                 {
                     QString identifier  = "";
@@ -322,8 +324,10 @@ void CSourceContentMatcher::tryMatchParam(ApiFunction const* apiFuncDesc, QStrin
         // Otherwise enumerate all COM interfaces that match with the requirements.
         foreach (QSharedPointer<ComInterface> comIf, ownerComponent_->getComInterfaces().values())
         {
-            if (comIf->getDirection() == apiParam->getComDirection() &&
+            if ((comIf->getDirection() == apiParam->getComDirection() ||
+                apiParam->getComDirection() == General::DIRECTION_INVALID) &&
                 (comIf->getTransferType() == apiParam->getComTransferType() ||
+                 apiParam->getComTransferType() == "" ||
                  apiParam->getComTransferType() == "any"))
             {
                 QString identifier = "";

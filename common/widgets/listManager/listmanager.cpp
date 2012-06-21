@@ -7,6 +7,8 @@
 
 #include "listmanager.h"
 
+#include <common/delegates/LineEditDelegate/lineeditdelegate.h>
+
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -94,4 +96,5 @@ void ListManager::initialize( const QStringList& items /*= QStringList()*/ ) {
 
 	// connect the model to the view
 	view_->setModel(model_);
+    view_->setItemDelegate(new LineEditDelegate(this));
 }

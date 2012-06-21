@@ -11,6 +11,8 @@
 
 #include "ApiFunctionEditor.h"
 
+#include <common/delegates/LineEditDelegate/lineeditdelegate.h>
+
 #include <models/ApiFunction.h>
 #include <models/ApiDefinition.h>
 #include <models/ComDefinition.h>
@@ -45,6 +47,7 @@ ApiFunctionEditor::ApiFunctionEditor(QWidget* parent)
     returnTypeCombo_.setEditText("");
 
     functionList_.setModel(&functionModel_);
+    functionList_.setItemDelegate(new LineEditDelegate(this));
 
     paramView_.setModel(&paramModel_);
     paramView_.setSortingEnabled(false);

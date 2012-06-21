@@ -295,7 +295,14 @@ QStringList const ApiDefinition::getDependentFiles() const
 //-----------------------------------------------------------------------------
 QList<VLNV> const ApiDefinition::getDependentVLNVs() const
 {
-    return QList<VLNV>();
+    QList<VLNV> vlnvs;
+
+    if (comDefRef_.isValid())
+    {
+        vlnvs.append(comDefRef_);
+    }
+
+    return vlnvs;
 }
 
 //-----------------------------------------------------------------------------

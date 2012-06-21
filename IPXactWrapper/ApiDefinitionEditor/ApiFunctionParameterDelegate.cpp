@@ -85,7 +85,7 @@ QWidget* ApiFunctionParameterDelegate::createEditor(QWidget* parent, QStyleOptio
     case API_FUNC_PARAM_COM_DIRECTION:
         {
             QComboBox* box = new QComboBox(parent);
-            box->addItem("");
+            box->addItem(tr("any"));
             box->addItem(tr("in"));
             box->addItem(tr("out"));
             box->addItem(tr("inout"));
@@ -97,12 +97,11 @@ QWidget* ApiFunctionParameterDelegate::createEditor(QWidget* parent, QStyleOptio
         {
             QComboBox* box = new QComboBox(parent);
 
-            box->addItem("");
+            box->addItem("any");
 
             // Fetch allowed transfer types from the linked COM definition.
             if (comDefinition_ != 0)
             {
-                box->addItem(tr("any"));
                 box->addItems(comDefinition_->getTransferTypes());
             }
 
@@ -113,7 +112,7 @@ QWidget* ApiFunctionParameterDelegate::createEditor(QWidget* parent, QStyleOptio
         {
             QComboBox* box = new QComboBox(parent);
 
-            // TODO: Fetch content sources from a COM definition properties.
+            // Fetch content sources from a COM definition properties.
             box->addItem("");
             box->addItem("Name");
 
@@ -130,8 +129,14 @@ QWidget* ApiFunctionParameterDelegate::createEditor(QWidget* parent, QStyleOptio
 
     case API_FUNC_PARAM_DEPENDENT_PARAM:
         {
-            QSpinBox* box = new QSpinBox(parent);
-            box->setMinimum(-1);
+            QComboBox* box = new QComboBox(parent);
+            box->addItem("no");
+            
+            for (int i = 0; i < index.row(); ++i)
+            {
+                box->addItem(QString::number(i + 1));
+            }
+
             return box;
         }
 
@@ -153,6 +158,7 @@ void ApiFunctionParameterDelegate::setEditorData(QWidget* editor, QModelIndex co
     case API_FUNC_PARAM_COM_DIRECTION:
     case API_FUNC_PARAM_COM_TRANSFER_TYPE:
     case API_FUNC_PARAM_CONTENT_SOURCE:
+    case API_FUNC_PARAM_DEPENDENT_PARAM:   
         {
             QComboBox* box = qobject_cast<QComboBox*>(editor);
             Q_ASSERT_X(box, "ApiFunctionParameterDelegate::setEditorData", "Type conversion failed for QComboBox");
@@ -170,16 +176,6 @@ void ApiFunctionParameterDelegate::setEditorData(QWidget* editor, QModelIndex co
 
             QString text = index.model()->data(index, Qt::DisplayRole).toString();
             line->setText(text);
-            return;
-        }
-
-    case API_FUNC_PARAM_DEPENDENT_PARAM:
-        {
-            QSpinBox* box = qobject_cast<QSpinBox*>(editor);
-            Q_ASSERT(box != 0);
-
-            int value = index.model()->data(index, Qt::DisplayRole).toInt();
-            box->setValue(value);
             return;
         }
 
@@ -202,6 +198,7 @@ void ApiFunctionParameterDelegate::setModelData(QWidget* editor, QAbstractItemMo
     case API_FUNC_PARAM_COM_DIRECTION:
     case API_FUNC_PARAM_COM_TRANSFER_TYPE:
     case API_FUNC_PARAM_CONTENT_SOURCE:
+    case API_FUNC_PARAM_DEPENDENT_PARAM:
         {
             QComboBox* box = qobject_cast<QComboBox*>(editor);
             Q_ASSERT_X(box, "ApiFunctionParameterDelegate::setEditorData", "Type conversion failed for QComboBox");
@@ -219,15 +216,6 @@ void ApiFunctionParameterDelegate::setModelData(QWidget* editor, QAbstractItemMo
 
             QString text = line->text();
             model->setData(index, text, Qt::EditRole);
-            return;
-        }
-
-    case API_FUNC_PARAM_DEPENDENT_PARAM:
-        {
-            QSpinBox* box = qobject_cast<QSpinBox*>(editor);
-            Q_ASSERT(box != 0);
-
-            model->setData(index, box->value(), Qt::EditRole);
             return;
         }
 

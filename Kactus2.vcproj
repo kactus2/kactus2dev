@@ -15132,6 +15132,14 @@
 				<File
 					RelativePath=".\debug\moc_listmanager.cpp"
 					>
+					<FileConfiguration
+						Name="Release|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath=".\debug\moc_listmanagermodel.cpp"
