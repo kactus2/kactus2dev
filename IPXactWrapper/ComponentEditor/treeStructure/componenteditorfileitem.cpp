@@ -7,6 +7,7 @@
 
 #include "componenteditorfileitem.h"
 
+#include <models/component.h>
 #include <models/generaldeclarations.h>
 
 #include <QFont>
@@ -61,13 +62,30 @@ bool ComponentEditorFileItem::canBeOpened() const {
 	return true;
 }
 
-void ComponentEditorFileItem::openItem() {
+void ComponentEditorFileItem::openItem(bool builtinEditor) {
 
 	// create the necessary paths
 	const QString relPath = file_->getName();
 	const QString xmlPath = libHandler_->getPath(*component_->getVlnv());
 	const QString absolutePath = General::getAbsolutePath(xmlPath, relPath);
 
-	// open the file
-	QDesktopServices::openUrl(QUrl::fromLocalFile(absolutePath));
+    if (builtinEditor && QFileInfo(absolutePath).completeSuffix().toLower() == "c")
+    {
+        emit openCSource(absolutePath, component_);
+    }
+    else
+    {
+        QDesktopServices::openUrl(QUrl::fromLocalFile(absolutePath));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileItem::hasBuiltinEditor()
+//-----------------------------------------------------------------------------
+bool ComponentEditorFileItem::hasBuiltinEditor() const
+{
+    const QString relPath = file_->getName();
+    const QString xmlPath = libHandler_->getPath(*component_->getVlnv());
+    const QString absolutePath = General::getAbsolutePath(xmlPath, relPath);
+    return QFileInfo(absolutePath).completeSuffix().toLower() == "c";
 }

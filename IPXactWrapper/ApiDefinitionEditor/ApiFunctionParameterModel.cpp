@@ -355,8 +355,7 @@ void ApiFunctionParameterModel::onAddItem(QModelIndex const& index)
     }
 
     beginInsertRows(QModelIndex(), row, row);
-    // TODO: Insert into middle.
-    func_->addParam(QSharedPointer<ApiFunctionParameter>(new ApiFunctionParameter()));
+    func_->addParam(QSharedPointer<ApiFunctionParameter>(new ApiFunctionParameter()), row);
     endInsertRows();
 
     // tell also parent widget that contents have been changed
@@ -366,7 +365,7 @@ void ApiFunctionParameterModel::onAddItem(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 // Function: ApiFunctionParameterModel::onRemove()
 //-----------------------------------------------------------------------------
-void ApiFunctionParameterModel::onRemove(QModelIndex const& index )
+void ApiFunctionParameterModel::onRemove(QModelIndex const& index)
 {
     if (!index.isValid() || func_ == 0)
     {
@@ -384,7 +383,7 @@ void ApiFunctionParameterModel::onRemove(QModelIndex const& index )
 //-----------------------------------------------------------------------------
 // Function: ApiFunctionParameterModel::onRemoveItem()
 //-----------------------------------------------------------------------------
-void ApiFunctionParameterModel::onRemoveItem(QModelIndex const& index )
+void ApiFunctionParameterModel::onRemoveItem(QModelIndex const& index)
 {
     // don't remove anything if index is invalid
     if (!index.isValid())
@@ -401,6 +400,51 @@ void ApiFunctionParameterModel::onRemoveItem(QModelIndex const& index )
     beginRemoveRows(QModelIndex(), index.row(), index.row());
     func_->removeParam(index.row());
     endRemoveRows();
+
+    emit contentChanged();
+}
+
+void ApiFunctionParameterModel::onMoveItem( const QModelIndex& originalPos, const QModelIndex& newPos ) {
+
+    // if there was no item in the starting point
+    if (!originalPos.isValid())
+    {
+        return;
+    }
+    // if the indexes are the same
+    else if (originalPos == newPos)
+    {
+        return;
+    }
+    else if (originalPos.row() < 0 || originalPos.row() >= func_->getParamCount())
+    {
+        return;
+    }
+
+    int source = originalPos.row();
+    
+    // if the new position is invalid index then put the item last in the table
+    if (!newPos.isValid() || newPos.row() < 0 || newPos.row() >= func_->getParamCount())
+    {
+
+        beginResetModel();
+
+        QSharedPointer<ApiFunctionParameter> param = func_->getParam(originalPos.row());
+        func_->removeParam(originalPos.row());
+        func_->addParam(param);
+
+        endResetModel();
+    }
+    // if both indexes were valid
+    else {
+        beginResetModel();
+        
+        QSharedPointer<ApiFunctionParameter> param = func_->getParam(originalPos.row());
+        func_->removeParam(originalPos.row());
+        func_->addParam(param, newPos.row());
+
+        endResetModel();
+    }
 
     emit contentChanged();
 }

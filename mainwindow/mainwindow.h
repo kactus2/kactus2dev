@@ -43,6 +43,7 @@ class TabWidgetEx;
 class TabDocument;
 class ConnectionEndpoint;
 class GraphicsConnection;
+class Component;
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -62,9 +63,17 @@ public slots:
     /*!
      *  Opens the source file of the given component.
      *
-     *      @param [in] node The node.
+     *      @param [in] compItem The component item.
      */
     void openCSource(ComponentItem* compItem);
+
+    /*!
+     *  Opens the specific C source file of the given component.
+     *
+     *      @param [in] filename   The name of the file to open.
+     *      @param [in] component  The component containing the file.
+     */
+    void openCSource(QString const& filename, QSharedPointer<Component> component);
 
     /*!
      *  Opens a HW design.

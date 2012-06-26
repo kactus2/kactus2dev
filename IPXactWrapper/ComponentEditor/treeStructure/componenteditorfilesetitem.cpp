@@ -7,6 +7,7 @@
 
 #include "componenteditorfilesetitem.h"
 #include "componenteditorfileitem.h"
+#include "componenteditortreemodel.h"
 
 #include <QFont>
 #include <QApplication>
@@ -25,7 +26,11 @@ editor_(libHandler, component, fileSet, NULL) {
 
 	foreach (QSharedPointer<File> file, files_) {
 		QSharedPointer<ComponentEditorFileItem> fileItem(new ComponentEditorFileItem(
-			file, model, libHandler, component, this));
+			                                             file, model, libHandler, component, this));
+
+        connect(fileItem.data(), SIGNAL(openCSource(QString const&, QSharedPointer<Component>)),
+                model, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)), Qt::UniqueConnection);
+
 		childItems_.append(fileItem);
 	}
 

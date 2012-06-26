@@ -79,6 +79,9 @@ visualizerSlot_(&editorVisualizerSplitter_) {
 	connect(&navigationModel_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
 		this, SLOT(onItemChanged()), Qt::UniqueConnection);
 
+    connect(&navigationModel_, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)),
+            this, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)), Qt::UniqueConnection);
+
 	// Open in unlocked mode by default only if the version is draft.
 	setProtection(component_->getVlnv()->getVersion() != "draft");
 

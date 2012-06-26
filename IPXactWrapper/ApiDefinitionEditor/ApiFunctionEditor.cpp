@@ -54,6 +54,7 @@ ApiFunctionEditor::ApiFunctionEditor(QWidget* parent)
     paramView_.setItemsDraggable(false);
     paramView_.setItemDelegate(&paramDelegate_);
     paramView_.verticalHeader()->show();
+    paramView_.setItemsDraggable(true);
 
     // Create the layouts.
     QVBoxLayout* funcLayout = new QVBoxLayout();
@@ -82,6 +83,8 @@ ApiFunctionEditor::ApiFunctionEditor(QWidget* parent)
             &paramModel_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
     connect(&paramView_, SIGNAL(removeItem(const QModelIndex&)),
             &paramModel_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+    connect(&paramView_, SIGNAL(moveItem(const QModelIndex&, const QModelIndex&)),
+            &paramModel_, SLOT(onMoveItem(const QModelIndex&, const QModelIndex&)), Qt::UniqueConnection);
 
     connect(&functionList_, SIGNAL(removeItem(const QModelIndex&)),
             &functionModel_, SLOT(remove(const QModelIndex&)), Qt::UniqueConnection);

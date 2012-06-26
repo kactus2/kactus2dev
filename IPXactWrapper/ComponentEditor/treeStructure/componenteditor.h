@@ -105,6 +105,15 @@ private slots:
 	*/
 	void onItemChanged();
 
+signals:
+    /*!
+     *  Opens the specific C source file of the given component.
+     *
+     *      @param [in] filename   The name of the file to open.
+     *      @param [in] component  The component containing the file.
+     */
+    void openCSource(QString const& filename, QSharedPointer<Component> component);
+
 private:
 	//! \brief No copying
 	ComponentEditor(const ComponentEditor& other);

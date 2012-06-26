@@ -159,6 +159,15 @@ public slots:
 	*/
 	void setLocked(bool locked);
 
+signals:
+    /*!
+     *  Opens the specific C source file of the given component.
+     *
+     *      @param [in] filename   The name of the file to open.
+     *      @param [in] component  The component containing the file.
+     */
+    void openCSource(QString const& filename, QSharedPointer<Component> component);
+
 private:
 	//! \brief No copying
 	ComponentEditorTreeModel(const ComponentEditorTreeModel& other);

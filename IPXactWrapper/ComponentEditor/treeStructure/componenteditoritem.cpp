@@ -196,8 +196,16 @@ bool ComponentEditorItem::canBeOpened() const {
 	return false;
 }
 
-void ComponentEditorItem::openItem() {
+void ComponentEditorItem::openItem(bool builtinEditor) {
 
 	// Normally items can't be opened
 	return;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorItem::hasBuiltinEditor()
+//-----------------------------------------------------------------------------
+bool ComponentEditorItem::hasBuiltinEditor() const
+{
+    return false;
 }

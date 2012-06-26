@@ -23,6 +23,7 @@ QTreeView(parent),
 pressedPoint_(),
 locked_(true),
 fileOpenAction_(tr("Open"), this),
+fileOpenDefaultAction_(tr("Open in Default Editor"), this),
 handler_(handler),
 componentVLNV_(compVLNV) {
 
@@ -41,8 +42,14 @@ componentVLNV_(compVLNV) {
 
 	connect(&fileOpenAction_, SIGNAL(triggered()),
 		this, SLOT(onFileOpen()), Qt::UniqueConnection);
-	fileOpenAction_.setToolTip(tr("Open the file in operating system's default editor."));
-	fileOpenAction_.setStatusTip(tr("Open the file in operating system's default editor."));
+    connect(&fileOpenDefaultAction_, SIGNAL(triggered()),
+        this, SLOT(onFileOpenDefault()), Qt::UniqueConnection);
+
+    fileOpenAction_.setToolTip(tr("Open the file for editing."));
+    fileOpenAction_.setStatusTip(tr("Open the file for editing."));
+
+	fileOpenDefaultAction_.setToolTip(tr("Open the file in operating system's default editor."));
+	fileOpenDefaultAction_.setStatusTip(tr("Open the file in operating system's default editor."));
 }
 
 ComponentTreeView::~ComponentTreeView() {
@@ -159,6 +166,12 @@ void ComponentTreeView::contextMenuEvent( QContextMenuEvent* event ) {
 	if (item->canBeOpened()) {
 		QMenu menu(this);
 		menu.addAction(&fileOpenAction_);
+        
+        if (item->hasBuiltinEditor())
+        {
+            menu.addAction(&fileOpenDefaultAction_);
+        }
+
 		menu.exec(event->globalPos());
 	}
 
@@ -189,7 +202,16 @@ void ComponentTreeView::onFileOpen() {
 	ComponentEditorItem* item = static_cast<ComponentEditorItem*>(index.internalPointer());
 	Q_ASSERT(item->canBeOpened());
 
-	item->openItem();
+	item->openItem(true);
 }
 
+void ComponentTreeView::onFileOpenDefault() {
+    const QString xmlPath = handler_->getPath(componentVLNV_);
 
+    QModelIndex index = indexAt(pressedPoint_);
+
+    ComponentEditorItem* item = static_cast<ComponentEditorItem*>(index.internalPointer());
+    Q_ASSERT(item->canBeOpened());
+
+    item->openItem(false);
+}

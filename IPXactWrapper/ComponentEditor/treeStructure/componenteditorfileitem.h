@@ -84,6 +84,11 @@ public:
 	*/
 	virtual bool canBeOpened() const;
 
+    /*!
+     *  Returns true if the item has a built-in editor available.
+     */
+    virtual bool hasBuiltinEditor() const;
+
 public slots:
 	
 	/*! \brief Open the item in an editor.
@@ -93,7 +98,7 @@ public slots:
 	 * 
 	 * Note: If item can be opened then also reimplement canBeOpened() to return true.
 	*/
-	virtual void openItem();
+	virtual void openItem(bool builtinEditor = false);
 
 private:
 	//! \brief No copying

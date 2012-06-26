@@ -1851,6 +1851,14 @@ void MainWindow::openCSource(ComponentItem* compItem)
                                                                      filename);
     }
 
+    openCSource(filename, compItem->componentModel());
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::openCSource()
+//-----------------------------------------------------------------------------
+void MainWindow::openCSource(QString const& filename, QSharedPointer<Component> component)
+{
     // Check if the source is already open and activate it.
     for (int i = 0; i < designTabs_->count(); i++)
     {
@@ -1873,9 +1881,7 @@ void MainWindow::openCSource(ComponentItem* compItem)
     }
 
     // Open the source to a view.
-    CSourceWidget* sourceWidget = new CSourceWidget(filename, compItem->componentModel(),
-                                                    libraryHandler_, this, this);
-
+    CSourceWidget* sourceWidget = new CSourceWidget(filename, component, libraryHandler_, this, this);
     connect(sourceWidget, SIGNAL(contentChanged()), this, SLOT(updateMenuStrip()));
     connect(sourceWidget->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));
     sourceWidget->setTabWidget(designTabs_);
@@ -2600,6 +2606,8 @@ void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
 		this, SLOT(updateMenuStrip()), Qt::UniqueConnection);
 	connect(editor, SIGNAL(modifiedChanged(bool)),
 		actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
+    connect(editor, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)),
+            this , SLOT(openCSource(QString const&, QSharedPointer<Component>)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

@@ -121,8 +121,9 @@ public:
 public slots:
     void onAdd();
     void onAddItem(QModelIndex const& index);
-    void onRemove(QModelIndex const& index );
-    void onRemoveItem(QModelIndex const& index );
+    void onRemove(QModelIndex const& index);
+    void onRemoveItem(QModelIndex const& index);
+    void onMoveItem( const QModelIndex& originalPos, const QModelIndex& newPos );
 
 signals:
 	//! Emitted when contents of the model change.

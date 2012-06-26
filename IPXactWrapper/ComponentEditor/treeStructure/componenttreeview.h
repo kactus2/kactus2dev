@@ -97,6 +97,9 @@ private slots:
 	//! \brief Open an item at position pressedPoint_
 	void onFileOpen();
 
+    //! \brief Open an item at position pressedPoint_
+    void onFileOpenDefault();
+
 private:
 
 	//! No copying
@@ -111,8 +114,11 @@ private:
 	//! \brief The current locked state (enables/disables dragging)
 	bool locked_;
 
-	//! \brief The action to open files from the component editor.
+	//! \brief The action to open files from the component editor to the built-in editor (if available).
 	QAction fileOpenAction_;
+
+    //! The action to open files to the default editor.
+    QAction fileOpenDefaultAction_;
 
 	//! \brief Pointer to the instance that manages the library.
 	LibraryInterface* handler_;
