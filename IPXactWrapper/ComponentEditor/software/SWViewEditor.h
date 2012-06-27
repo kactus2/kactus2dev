@@ -14,7 +14,7 @@
 
 #include <IPXactWrapper/ComponentEditor/itemeditor.h>
 
-#include <common/widgets/nameGroupBox/namegroupbox.h>
+#include <common/widgets/nameGroupEditor/namegroupeditor.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 
 class SWView;
@@ -52,13 +52,6 @@ public:
 	 */
 	bool isValid() const;
 
-    /*!
-     *  Removes the edited SW view from the model.
-	 *
-	 *      @remarks This function should be used when user wants to remove an element from the component.
-	 */
-	virtual void removeModel();
-
 	/*!
      *  Applies the changes from the widgets editors to the IP-Xact model.
      */
@@ -67,6 +60,11 @@ public:
 	/*! \brief Reload the information from the model to the editor.
 	*/
 	virtual void refresh();
+
+private slots:
+
+	//! \brief Handler for changes in hierarchy reference.
+	void onHierRefChange();
 
 private:
     // Disable copying.
@@ -89,7 +87,7 @@ private:
     SWView* view_;
 
     //! \brief Editor to set the name, display name and description of the view.
-    NameGroupBox nameGroup_;
+    NameGroupEditor nameEditor_;
 
     //! VLNV editor for the hierarchy reference.
     VLNVEditor hierRefEditor_;

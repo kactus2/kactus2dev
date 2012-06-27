@@ -193,3 +193,11 @@ void SWView::setDescription( const QString& description )
 {
     nameGroup_.description_ = description;
 }
+
+General::NameGroup& SWView::getNameGroup() {
+	return nameGroup_;
+}
+
+const General::NameGroup& SWView::getNameGroup() const {
+	return nameGroup_;
+}

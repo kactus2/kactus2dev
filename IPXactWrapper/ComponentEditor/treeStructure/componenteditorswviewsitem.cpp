@@ -14,7 +14,8 @@ ComponentEditorSWViewsItem::ComponentEditorSWViewsItem(
 	QSharedPointer<Component> component,
 	ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-swViews_(component->getSWViews()) {
+swViews_(component->getSWViews()),
+editor_(component) {
 
 	foreach (QSharedPointer<SWView> swView, swViews_) {
 
@@ -22,6 +23,15 @@ swViews_(component->getSWViews()) {
 			new ComponentEditorSWViewItem(swView, model, libHandler, component, this)); 
 		childItems_.append(swViewItem);
 	}
+
+	editor_.hide();
+
+	connect(&editor_, SIGNAL(contentChanged()), 
+		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+	connect(&editor_, SIGNAL(childAdded(int)),
+		this, SLOT(onAddChild(int)), Qt::UniqueConnection);
+	connect(&editor_, SIGNAL(childRemoved(int)),
+		this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
 }
 
 ComponentEditorSWViewsItem::~ComponentEditorSWViewsItem() {
@@ -36,9 +46,29 @@ QString ComponentEditorSWViewsItem::text() const {
 }
 
 ItemEditor* ComponentEditorSWViewsItem::editor() {
-	return NULL;
+	return &editor_;
 }
 
 const ItemEditor* ComponentEditorSWViewsItem::editor() const {
-	return NULL;
+	return &editor_;
+}
+
+void ComponentEditorSWViewsItem::createChild( int index ) {
+	QSharedPointer<ComponentEditorSWViewItem> swViewItem(
+		new ComponentEditorSWViewItem(swViews_.at(index), model_, libHandler_, component_, this)); 
+	childItems_.insert(index, swViewItem);
+}
+
+void ComponentEditorSWViewsItem::onEditorChanged() {
+	// call the base class implementation
+	ComponentEditorItem::onEditorChanged();
+
+	// also inform of child changes
+	foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_) {
+		// tell the model that data has changed for the child
+		emit contentChanged(childItem.data());
+
+		// tell the child to update it's editor contents
+		childItem->refreshEditor();
+	}
 }

@@ -23,23 +23,22 @@ SWViewEditor::SWViewEditor(QSharedPointer<Component> component,
 ItemEditor(component, parent), 
 libHandler_(libHandler),
 view_(swView.data()),
-nameGroup_(this),
+nameEditor_(swView->getNameGroup(), this, tr("Name and description")),
 hierRefEditor_(VLNV::DESIGNCONFIGURATION, libHandler, this, this)
 {
-    connect(&nameGroup_, SIGNAL(nameChanged(const QString&)),
+    connect(&nameEditor_, SIGNAL(nameChanged(const QString&)),
             this, SIGNAL(nameChanged(const QString&)), Qt::UniqueConnection);
-    connect(&nameGroup_, SIGNAL(contentChanged()),
+    connect(&nameEditor_, SIGNAL(contentChanged()),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&hierRefEditor_, SIGNAL(contentChanged()),
-        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+        this, SLOT(onHierRefChange()), Qt::UniqueConnection);
 
-    nameGroup_.setTitle(tr("Name and description"));
     hierRefEditor_.setTitle(tr("Hierarchy reference"));
 
     refresh();
 
     QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(&nameGroup_);
+    layout->addWidget(&nameEditor_);
     layout->addWidget(&hierRefEditor_);
     layout->addStretch();
 }
@@ -58,35 +57,25 @@ SWViewEditor::~SWViewEditor()
 bool SWViewEditor::isValid() const
 {
     // if name group is not valid
-    if (!nameGroup_.isValid() || !hierRefEditor_.isValid())
+    if (!nameEditor_.isValid() || !hierRefEditor_.isValid())
         return false;
 
     return true;
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWViewEditor::removeModel()
-//-----------------------------------------------------------------------------
-void SWViewEditor::removeModel()
-{
-    component()->removeSWView(view_->getName());
-    view_ = 0;
-}
-
-//-----------------------------------------------------------------------------
 // Function: SWViewEditor::makeChanges()
 //-----------------------------------------------------------------------------
-void SWViewEditor::makeChanges()
-{
-    view_->setName(nameGroup_.getName());
-    view_->setDisplayName(nameGroup_.getDisplayName());
-    view_->setDescription(nameGroup_.getDescription());
-    view_->setHierarchyRef(hierRefEditor_.getVLNV());
+void SWViewEditor::makeChanges() {
+	// TODO remove this in final
 }
 
 void SWViewEditor::refresh() {
-	nameGroup_.setName(view_->getName());
-	nameGroup_.setDisplayName(view_->getDisplayName());
-	nameGroup_.setDescription(view_->getDescription());
+	nameEditor_.refresh();
 	hierRefEditor_.setVLNV(view_->getHierarchyRef());
+}
+
+void SWViewEditor::onHierRefChange() {
+	view_->setHierarchyRef(hierRefEditor_.getVLNV());
+	emit contentChanged();
 }
