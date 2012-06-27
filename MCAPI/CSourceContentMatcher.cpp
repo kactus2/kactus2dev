@@ -281,7 +281,7 @@ void CSourceContentMatcher::tryMatchParam(ApiFunction const* apiFuncDesc, QStrin
                 apiFuncDesc->getParam(apiParam->getDependentParameterIndex());
 
             // Find the matching COM interface.
-            foreach (QSharedPointer<ComInterface> comIf, ownerComponent_->getComInterfaces().values())
+            foreach (QSharedPointer<ComInterface> comIf, ownerComponent_->getComInterfaces())
             {
                 QString value = comIf->getName();
 
@@ -322,7 +322,7 @@ void CSourceContentMatcher::tryMatchParam(ApiFunction const* apiFuncDesc, QStrin
     else if (!apiParam->getContentSource().isEmpty())
     {
         // Otherwise enumerate all COM interfaces that match with the requirements.
-        foreach (QSharedPointer<ComInterface> comIf, ownerComponent_->getComInterfaces().values())
+        foreach (QSharedPointer<ComInterface> comIf, ownerComponent_->getComInterfaces())
         {
             if ((comIf->getDirection() == apiParam->getComDirection() ||
                 apiParam->getComDirection() == General::DIRECTION_INVALID) &&

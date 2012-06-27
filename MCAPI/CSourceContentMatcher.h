@@ -15,14 +15,15 @@
 #include <QIcon>
 #include <QList>
 #include <QStringList>
+#include <QSharedPointer>
 
 #include "MCAPIDesignerTypes.h"
 #include "common/widgets/assistedTextEdit/ITextContentMatcher.h"
+#include <models/component.h>
 
 class ApiDefinition;
 class ApiFunction;
 class ComDefinition;
-class Component;
 
 //-----------------------------------------------------------------------------
 //! CSourceContentMatcher class.

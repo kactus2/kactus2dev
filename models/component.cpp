@@ -45,26 +45,26 @@
 //-----------------------------------------------------------------------------
 // Function: Component::Component()
 //-----------------------------------------------------------------------------
-Component::Component(QDomDocument &doc)
-    : LibraryComponent(doc),
-      busInterfaces_(), 
-      comInterfaces_(),
-      apiInterfaces_(),
-      channels_(), 
-      remapStates_(), 
-      addressSpaces_(),
-      memoryMaps_(),
-      model_(), 
-      compGenerators_(), 
-      choices_(), 
-      fileSets_(),
-      cpus_(),
-      otherClockDrivers_(),
-      parameters_(), 
-      attributes_(),
-      swViews_(),
-      systemViews_()
-{
+Component::Component(QDomDocument &doc):
+LibraryComponent(doc),
+busInterfaces_(), 
+comInterfaces_(),
+apiInterfaces_(),
+channels_(), 
+remapStates_(), 
+addressSpaces_(),
+memoryMaps_(),
+model_(), 
+compGenerators_(), 
+choices_(), 
+fileSets_(),
+cpus_(),
+otherClockDrivers_(),
+parameters_(), 
+attributes_(),
+swViews_(),
+systemViews_() {
+
 	LibraryComponent::vlnv_->setType(VLNV::COMPONENT);
 
 	// find the IP-Xact root element (spirit:component or spirit:design ...)
@@ -331,24 +331,24 @@ Component::Component(QDomDocument &doc)
 //-----------------------------------------------------------------------------
 // Function: Component::Component()
 //-----------------------------------------------------------------------------
-Component::Component(const VLNV &vlnv)
-    : LibraryComponent(vlnv),
-      busInterfaces_(),
-      comInterfaces_(),
-      apiInterfaces_(),
-      channels_(),
-      remapStates_(),
-      addressSpaces_(),
-      memoryMaps_(),
-      model_(),
-      compGenerators_(),
-      choices_(),
-      fileSets_(),
-      cpus_(),
-      otherClockDrivers_(),
-      parameters_(), 
-      attributes_()
-{
+Component::Component(const VLNV &vlnv):
+LibraryComponent(vlnv),
+busInterfaces_(),
+comInterfaces_(),
+apiInterfaces_(),
+channels_(),
+remapStates_(),
+addressSpaces_(),
+memoryMaps_(),
+model_(),
+compGenerators_(),
+choices_(),
+fileSets_(),
+cpus_(),
+otherClockDrivers_(),
+parameters_(), 
+attributes_() {
+
 	LibraryComponent::vlnv_->setType(VLNV::COMPONENT);
 
 	model_ = QSharedPointer<Model>(new Model());
@@ -357,24 +357,24 @@ Component::Component(const VLNV &vlnv)
 //-----------------------------------------------------------------------------
 // Function: Component::Component()
 //-----------------------------------------------------------------------------
-Component::Component()
-    : LibraryComponent(),
-      busInterfaces_(), 
-      comInterfaces_(),
-      apiInterfaces_(),
-      channels_(),
-      remapStates_(),
-      addressSpaces_(),
-      memoryMaps_(),
-      model_(),
-      compGenerators_(), 
-      choices_(),
-      fileSets_(), 
-      cpus_(), 
-      otherClockDrivers_(), 
-      parameters_(),
-      attributes_()
-{
+Component::Component():
+LibraryComponent(),
+busInterfaces_(), 
+comInterfaces_(),
+apiInterfaces_(),
+channels_(),
+remapStates_(),
+addressSpaces_(),
+memoryMaps_(),
+model_(),
+compGenerators_(), 
+choices_(),
+fileSets_(), 
+cpus_(), 
+otherClockDrivers_(), 
+parameters_(),
+attributes_() {
+
 	model_ = QSharedPointer<Model>(new Model());
 }
 
@@ -407,29 +407,21 @@ attributes_(other.attributes_) {
 		}
 	}
 
-    for (QMap<QString, QSharedPointer<ComInterface> >::const_iterator i = other.comInterfaces_.begin();
-		 i != other.comInterfaces_.end(); ++i)
-    {
-			if (i.value())
-            {
-				QSharedPointer<ComInterface> copy =
-                    QSharedPointer<ComInterface>(new ComInterface(*i.value().data()));
-
-				comInterfaces_.insert(copy->getName(), copy);
-			}
+	foreach (QSharedPointer<ComInterface> comIf, other.comInterfaces_) {
+		if (comIf) {
+			QSharedPointer<ComInterface> copy =
+				QSharedPointer<ComInterface>(new ComInterface(*comIf.data()));
+			comInterfaces_.append(copy);
+		}
 	}
 
-    for (QMap<QString, QSharedPointer<ApiInterface> >::const_iterator i = other.apiInterfaces_.begin();
-         i != other.apiInterfaces_.end(); ++i)
-    {
-        if (i.value())
-        {
-            QSharedPointer<ApiInterface> copy =
-                QSharedPointer<ApiInterface>(new ApiInterface(*i.value().data()));
-
-            apiInterfaces_.insert(copy->getName(), copy);
-        }
-    }
+	foreach (QSharedPointer<ApiInterface> apiIf, other.apiInterfaces_) {
+		if (apiIf) {
+			QSharedPointer<ApiInterface> copy =
+				QSharedPointer<ApiInterface>(new ApiInterface(*apiIf.data()));
+			apiInterfaces_.append(copy);
+		}
+	}
 
 	foreach (QSharedPointer<Channel> channel, other.channels_) {
 		if (channel) {
@@ -550,30 +542,22 @@ Component & Component::operator=( const Component &other ) {
 		}
 		
         comInterfaces_.clear();
-        for (QMap<QString, QSharedPointer<ComInterface> >::const_iterator i = other.comInterfaces_.begin();
-            i != other.comInterfaces_.end(); ++i)
-        {
-            if (i.value())
-            {
-                QSharedPointer<ComInterface> copy =
-                    QSharedPointer<ComInterface>(new ComInterface(*i.value().data()));
-
-                comInterfaces_.insert(copy->getName(), copy);
-            }
-        }
+		foreach (QSharedPointer<ComInterface> comIf, other.comInterfaces_) {
+			if (comIf) {
+				QSharedPointer<ComInterface> copy =
+					QSharedPointer<ComInterface>(new ComInterface(*comIf.data()));
+				comInterfaces_.append(copy);
+			}
+		}
 
         apiInterfaces_.clear();
-        for (QMap<QString, QSharedPointer<ApiInterface> >::const_iterator i = other.apiInterfaces_.begin();
-            i != other.apiInterfaces_.end(); ++i)
-        {
-            if (i.value())
-            {
-                QSharedPointer<ApiInterface> copy =
-                    QSharedPointer<ApiInterface>(new ApiInterface(*i.value().data()));
-
-                apiInterfaces_.insert(copy->getName(), copy);
-            }
-        }
+		foreach (QSharedPointer<ApiInterface> apiIf, other.apiInterfaces_) {
+			if (apiIf) {
+				QSharedPointer<ApiInterface> copy =
+					QSharedPointer<ApiInterface>(new ApiInterface(*apiIf.data()));
+				apiInterfaces_.append(copy);
+			}
+		}
 
 		channels_.clear();
 		foreach (QSharedPointer<Channel> channel, other.channels_) {
@@ -2782,7 +2766,7 @@ void Component::parseComInterfaces(QDomNode& node)
         if (comNode.nodeName() == "kactus2:comInterface")
         {
             QSharedPointer<ComInterface> comIf(new ComInterface(comNode));
-            comInterfaces_.insert(comIf->getName(), comIf);
+            comInterfaces_.append(comIf);
         }
     }
 }
@@ -2799,7 +2783,7 @@ void Component::parseApiInterfaces(QDomNode& node)
         if (apiNode.nodeName() == "kactus2:apiInterface")
         {
             QSharedPointer<ApiInterface> apiIf(new ApiInterface(apiNode));
-            apiInterfaces_.insert(apiIf->getName(), apiIf);
+            apiInterfaces_.append(apiIf);
         }
     }
 }
@@ -2807,12 +2791,12 @@ void Component::parseApiInterfaces(QDomNode& node)
 //-----------------------------------------------------------------------------
 // Function: Component::getComInterfaces()
 //-----------------------------------------------------------------------------
-QMap< QString, QSharedPointer<ComInterface> > const& Component::getComInterfaces() const
+QList<QSharedPointer<ComInterface> > const& Component::getComInterfaces() const
 {
     return comInterfaces_;
 }
 
-QMap<QString, QSharedPointer<ComInterface> >& Component::getComInterfaces() {
+QList<QSharedPointer<ComInterface> >& Component::getComInterfaces() {
 	return comInterfaces_;
 }
 
@@ -2821,29 +2805,32 @@ QMap<QString, QSharedPointer<ComInterface> >& Component::getComInterfaces() {
 //-----------------------------------------------------------------------------
 QStringList Component::getComInterfaceNames() const
 {
-    return comInterfaces_.keys();
+    QStringList comNames;
+	foreach (QSharedPointer<ComInterface> comIf, comInterfaces_) {
+		comNames.append(comIf->getName());
+	}
+	return comNames;
 }
 
 //-----------------------------------------------------------------------------
 // Function: Component::getComInterface()
 //-----------------------------------------------------------------------------
-ComInterface* Component::getComInterface(QString const& name)
-{
-    if (comInterfaces_.contains(name))
-    {
-        return comInterfaces_.value(name).data();
-    }
+QSharedPointer<ComInterface> Component::getComInterface( QString const& name ) {
+	foreach (QSharedPointer<ComInterface> comIf, comInterfaces_) {
+		if (comIf->getName() == name) {
+			return comIf;
+		}
+	}
 
-    return 0;
+	return QSharedPointer<ComInterface>();
 }
 
 //-----------------------------------------------------------------------------
 // Function: Component::createComInterface()
 //-----------------------------------------------------------------------------
-ComInterface* Component::createComInterface()
-{
-    ComInterface* comIf = new ComInterface();
-    comInterfaces_.insertMulti(comIf->getName(), QSharedPointer<ComInterface>(comIf));
+QSharedPointer<ComInterface> Component::createComInterface() {
+    QSharedPointer<ComInterface> comIf(new ComInterface());
+    comInterfaces_.append(comIf);
     return comIf;
 }
 
@@ -2852,44 +2839,14 @@ ComInterface* Component::createComInterface()
 //-----------------------------------------------------------------------------
 bool Component::addComInterface(QSharedPointer<ComInterface> comInterface)
 {
-    if (comInterfaces_.contains(comInterface->getName()))
-    {
-        return false;
-    }
 
-    comInterfaces_.insert(comInterface->getName(), comInterface);
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Component::updateComInterface()
-//-----------------------------------------------------------------------------
-void Component::updateComInterface(ComInterface* comInterface)
-{
-    // get all com interface pointers
-    QList<QSharedPointer<ComInterface> > list = comInterfaces_.values();
-    // and check if any matches with given com interface
-    foreach (QSharedPointer<ComInterface> comIf, list) {
-
-        // if they match
-        if (comIf.data() == comInterface) {
-
-            // remove the old item in the map
-            comInterfaces_.take(comInterfaces_.key(comIf)/*comIf->getName()*/);
-
-            // update the name
-            comIf->setName(comInterface->getName());
-
-            // add new item to the map 
-            comInterfaces_.insert(comIf->getName(), comIf);
-
-            return;
-        }
-    }
-
-    // if no match was found, add the com interface to the map
-    comInterfaces_.insert(comInterface->getName(), 
-        QSharedPointer<ComInterface>(comInterface));
+	foreach (QSharedPointer<ComInterface> comIf, comInterfaces_) {
+		if (comIf == comInterface) {
+			return false;
+		}
+	}
+	comInterfaces_.append(comInterface);
+	return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -2897,7 +2854,12 @@ void Component::updateComInterface(ComInterface* comInterface)
 //-----------------------------------------------------------------------------
 void Component::removeComInterface(QString const& name)
 {
-    comInterfaces_.remove(name);
+	for (int i = 0; i < comInterfaces_.size(); ++i) {
+		if (comInterfaces_.at(i)->getName() == name) {
+			comInterfaces_.removeAt(i);
+			--i;
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -2905,114 +2867,87 @@ void Component::removeComInterface(QString const& name)
 //-----------------------------------------------------------------------------
 void Component::removeComInterface(ComInterface* comInterface)
 {
-    // Retrieve all COM interface pointers.
-    QList<QSharedPointer<ComInterface> > list = comInterfaces_.values();
-
-    // Check for a match with the one that is being removed.
-    foreach (QSharedPointer<ComInterface> comIf, list)
-    {
-        if (comIf.data() == comInterface)
-        {
-            // remove the old item in the map
-            comInterfaces_.remove(comIf->getName());
-            continue;
-        }
-    }
+	for (int i = 0; i < comInterfaces_.size(); ++i) {
+		if (comInterfaces_.at(i) == comInterface) {
+			comInterfaces_.removeAt(i);
+			--i;
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------
 // Function: Component::getApiInterfaces()
 //-----------------------------------------------------------------------------
-QMap< QString, QSharedPointer<ApiInterface> > const& Component::getApiInterfaces() const {
+QList<QSharedPointer<ApiInterface> > const& Component::getApiInterfaces() const {
     return apiInterfaces_;
 }
 
-QMap<QString, QSharedPointer<ApiInterface> >& Component::getApiInterfaces() {
+QList<QSharedPointer<ApiInterface> >& Component::getApiInterfaces() {
 	return apiInterfaces_;
 }
 
 //-----------------------------------------------------------------------------
 // Function: Component::getApiInterfaceNames()
 //-----------------------------------------------------------------------------
-QStringList Component::getApiInterfaceNames() const
-{
-    return apiInterfaces_.keys();
+QStringList Component::getApiInterfaceNames() const {
+    QStringList apiNames;
+	foreach (QSharedPointer<ApiInterface> apiIf, apiInterfaces_) {
+		apiNames.append(apiIf->getName());
+	}
+	return apiNames;
 }
 
 //-----------------------------------------------------------------------------
 // Function: Component::getApiInterface()
 //-----------------------------------------------------------------------------
-ApiInterface* Component::getApiInterface(QString const& name)
-{
-    if (apiInterfaces_.contains(name))
-    {
-        return apiInterfaces_.value(name).data();
-    }
+QSharedPointer<ApiInterface> Component::getApiInterface( QString const& name ) {
 
-    return 0;
+	foreach (QSharedPointer<ApiInterface> apiIf, apiInterfaces_) {
+		if (apiIf->getName() == name) {
+			return apiIf;
+		}
+	}
+
+	// none of the API interfaces matched the name
+	return QSharedPointer<ApiInterface>();
 }
 
 //-----------------------------------------------------------------------------
 // Function: Component::createApiInterface()
 //-----------------------------------------------------------------------------
-ApiInterface* Component::createApiInterface()
-{
-    ApiInterface* apiIf = new ApiInterface();
-    apiInterfaces_.insertMulti(apiIf->getName(), QSharedPointer<ApiInterface>(apiIf));
+QSharedPointer<ApiInterface> Component::createApiInterface() {
+    QSharedPointer<ApiInterface> apiIf(new ApiInterface());
+    apiInterfaces_.append(apiIf);
     return apiIf;
 }
 
 //-----------------------------------------------------------------------------
 // Function: Component::addApiInterface()
 //-----------------------------------------------------------------------------
-bool Component::addApiInterface(QSharedPointer<ApiInterface> apiInterface)
-{
-    if (apiInterfaces_.contains(apiInterface->getName()))
-    {
-        return false;
-    }
+bool Component::addApiInterface(QSharedPointer<ApiInterface> apiInterface) {
+	
+	// Check if the API interface already exists within the component
+	foreach (QSharedPointer<ApiInterface> apiIf, apiInterfaces_) {
+		if (apiIf == apiInterface) {
+			return false;
+		}
+	}
 
-    apiInterfaces_.insert(apiInterface->getName(), apiInterface);
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Component::updateApiInteface()
-//-----------------------------------------------------------------------------
-void Component::updateApiInteface(ApiInterface* apiInterface)
-{
-    // get all api interface pointers
-    QList<QSharedPointer<ApiInterface> > list = apiInterfaces_.values();
-    // and check if any matches with given api interface
-    foreach (QSharedPointer<ApiInterface> apiIf, list) {
-
-        // if they match
-        if (apiIf.data() == apiInterface) {
-
-            // remove the old item in the map
-            apiInterfaces_.take(apiInterfaces_.key(apiIf)/*apiIf->getName()*/);
-
-            // update the name
-            apiIf->setName(apiInterface->getName());
-
-            // add new item to the map 
-            apiInterfaces_.insert(apiIf->getName(), apiIf);
-
-            return;
-        }
-    }
-
-    // if no match was found, add the api interface to the map
-    apiInterfaces_.insert(apiInterface->getName(), 
-        QSharedPointer<ApiInterface>(apiInterface));
+	// the API interface was not yet contained so add it
+	apiInterfaces_.append(apiInterface);
+	return true;
 }
 
 //-----------------------------------------------------------------------------
 // Function: Component::removeApiInterface()
 //-----------------------------------------------------------------------------
-void Component::removeApiInterface(QString const& name)
-{
-    comInterfaces_.remove(name);
+void Component::removeApiInterface(QString const& name) {
+    for (int i = 0; i < apiInterfaces_.size(); ++i) {
+		if (apiInterfaces_.at(i)->getName() == name) {
+			apiInterfaces_.removeAt(i);
+			--i;
+		}
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -3020,19 +2955,12 @@ void Component::removeApiInterface(QString const& name)
 //-----------------------------------------------------------------------------
 void Component::removeApiInterface(ApiInterface* apiInterface)
 {
-    // Retrieve all COM interface pointers.
-    QList<QSharedPointer<ApiInterface> > list = apiInterfaces_.values();
-
-    // Check for a match with the one that is being removed.
-    foreach (QSharedPointer<ApiInterface> apiIf, list)
-    {
-        if (apiIf.data() == apiInterface)
-        {
-            // remove the old item in the map
-            apiInterfaces_.remove(apiIf->getName());
-            continue;
-        }
-    }
+	for (int i = 0; i < apiInterfaces_.size(); ++i) {
+		if (apiInterfaces_.at(i).data() == apiInterface) {
+			apiInterfaces_.removeAt(i);
+			--i;
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -3163,6 +3091,7 @@ void Component::removeBusInterface( const QString& busifName ) {
 	for (int i = 0; i < busInterfaces_.size(); ++i) {
 		if (busInterfaces_.at(i)->getName() == busifName) {
 			busInterfaces_.removeAt(i);
+			--i;
 		}
 	}
 }
@@ -3172,6 +3101,7 @@ void Component::removeBusInterface( const BusInterface* busInterface ) {
 	for (int i = 0; i < busInterfaces_.size(); ++i) {
 		if (busInterfaces_[i].data() == busInterface) {
 			busInterfaces_.removeAt(i);
+			--i;
 		}
 	}
 }

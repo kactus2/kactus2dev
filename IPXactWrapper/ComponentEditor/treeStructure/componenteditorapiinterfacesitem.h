@@ -69,7 +69,7 @@ private:
 	ComponentEditorAPIInterfacesItem& operator=(const ComponentEditorAPIInterfacesItem& other);
 
 	//! \brief Contains the api interfaces to edit.
-	QMap<QString, QSharedPointer<ApiInterface> >& apiInterfaces_;
+	QList<QSharedPointer<ApiInterface> >& apiInterfaces_;
 };
 
 #endif // COMPONENTEDITORAPIINTERFACESITEM_H

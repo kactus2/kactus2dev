@@ -993,24 +993,24 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
             instance.setPropertyValues(mappingItem->getPropertyValues());
 
             // Save API and COM interface positions.
-            QMapIterator< QString, QSharedPointer<ApiInterface> >
+            QListIterator<QSharedPointer<ApiInterface> >
                 itrApiIf(mappingItem->componentModel()->getApiInterfaces());
 
             while (itrApiIf.hasNext())
             {
-                itrApiIf.next();
-                instance.updateApiInterfacePosition(itrApiIf.key(),
-                    mappingItem->getSWPort(itrApiIf.key(), SWConnectionEndpoint::ENDPOINT_TYPE_API)->pos());
+                QSharedPointer<ApiInterface> apiIf = itrApiIf.next();
+                instance.updateApiInterfacePosition(apiIf->getName(),
+                    mappingItem->getSWPort(apiIf->getName(), SWConnectionEndpoint::ENDPOINT_TYPE_API)->pos());
             }
 
-            QMapIterator< QString, QSharedPointer<ComInterface> >
+            QListIterator<QSharedPointer<ComInterface> >
                 itrComIf(mappingItem->componentModel()->getComInterfaces());
 
             while (itrComIf.hasNext())
             {
-                itrComIf.next();
-                instance.updateComInterfacePosition(itrComIf.key(),
-                    mappingItem->getSWPort(itrComIf.key(), SWConnectionEndpoint::ENDPOINT_TYPE_COM)->pos());
+                QSharedPointer<ComInterface> comIf = itrComIf.next();
+                instance.updateComInterfacePosition(comIf->getName(),
+                    mappingItem->getSWPort(comIf->getName(), SWConnectionEndpoint::ENDPOINT_TYPE_COM)->pos());
             }
 
             instances.append(instance);
@@ -1041,24 +1041,24 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
             }
 
             // Save API and COM interface positions.
-            QMapIterator< QString, QSharedPointer<ApiInterface> >
+            QListIterator<QSharedPointer<ApiInterface> >
                 itrApiIf(swCompItem->componentModel()->getApiInterfaces());
 
             while (itrApiIf.hasNext())
             {
-                itrApiIf.next();
-                instance.updateApiInterfacePosition(itrApiIf.key(),
-                    swCompItem->getSWPort(itrApiIf.key(), SWConnectionEndpoint::ENDPOINT_TYPE_API)->pos());
+                QSharedPointer<ApiInterface> apiIf = itrApiIf.next();
+                instance.updateApiInterfacePosition(apiIf->getName(),
+                    swCompItem->getSWPort(apiIf->getName(), SWConnectionEndpoint::ENDPOINT_TYPE_API)->pos());
             }
 
-            QMapIterator< QString, QSharedPointer<ComInterface> >
+            QListIterator<QSharedPointer<ComInterface> >
                 itrComIf(swCompItem->componentModel()->getComInterfaces());
 
             while (itrComIf.hasNext())
             {
-                itrComIf.next();
-                instance.updateComInterfacePosition(itrComIf.key(),
-                    swCompItem->getSWPort(itrComIf.key(), SWConnectionEndpoint::ENDPOINT_TYPE_COM)->pos());
+                QSharedPointer<ComInterface> comIf = itrComIf.next();
+                instance.updateComInterfacePosition(comIf->getName(),
+                    swCompItem->getSWPort(comIf->getName(), SWConnectionEndpoint::ENDPOINT_TYPE_COM)->pos());
             }
 
             swInstances.append(instance);
@@ -1588,7 +1588,7 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
     foreach (HierApiDependency const& dependency, design->getHierApiDependencies())
     {
         QSharedPointer<ApiInterface> apiIf =
-            getEditedComponent()->getApiInterfaces().value(dependency.getInterfaceRef());
+            getEditedComponent()->getApiInterface(dependency.getInterfaceRef());
 
         if (apiIf == 0)
         {
@@ -1731,7 +1731,7 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
     foreach (HierComConnection const& hierConn, design->getHierComConnections())
     {
         QSharedPointer<ComInterface> comIf =
-            getEditedComponent()->getComInterfaces().value(hierConn.getInterfaceRef());
+            getEditedComponent()->getComInterface(hierConn.getInterfaceRef());
 
         if (comIf == 0)
         {

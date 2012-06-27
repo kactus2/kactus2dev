@@ -33,6 +33,7 @@
 #include <QCoreApplication>
 #include <QSettings>
 #include <QVBoxLayout>
+#include <QSharedPointer>
 
 //-----------------------------------------------------------------------------
 // Function: CSourceWidget()
@@ -51,7 +52,7 @@ CSourceWidget::CSourceWidget(QString const& sourceFile,
     // Initialize content matcher and highlighter for the text editor.
     textEdit_->getMatcher().setOwner(ownerComponent);
 
-    foreach (QSharedPointer<ApiInterface const> apiIf, ownerComponent->getApiInterfaces().values())
+    foreach (QSharedPointer<ApiInterface const> apiIf, ownerComponent->getApiInterfaces())
     {
         QSharedPointer<LibraryComponent const> libComp = libInterface->getModelReadOnly(apiIf->getApiType());
         QSharedPointer<ApiDefinition const> apiDef = libComp.dynamicCast<ApiDefinition const>();

@@ -121,8 +121,6 @@ void ApiInterfaceEditor::makeChanges()
     apiIf_->setDescription(nameGroup_.getDescription());
     apiIf_->setApiType(apiType_.getVLNV());
     apiIf_->setDependencyDirection(static_cast<DependencyDirection>(dependencyCombo_.currentIndex()));
-
-    component()->updateApiInteface(apiIf_);
 }
 
 //-----------------------------------------------------------------------------

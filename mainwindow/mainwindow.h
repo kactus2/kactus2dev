@@ -14,7 +14,7 @@
 
 #include <common/DrawMode.h>
 #include <common/KactusAttribute.h>
-
+#include <models/component.h>
 #include <LibraryManager/vlnv.h>
 #include <LibraryManager/VLNVDialer/vlnvdialer.h>
 #include <GCF/MenuStrip.h>
@@ -45,7 +45,6 @@ class TabWidgetEx;
 class TabDocument;
 class ConnectionEndpoint;
 class GraphicsConnection;
-class Component;
 
 class MainWindow : public QMainWindow {
     Q_OBJECT

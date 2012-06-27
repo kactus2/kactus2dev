@@ -26,8 +26,6 @@ view_(swView.data()),
 nameEditor_(swView->getNameGroup(), this, tr("Name and description")),
 hierRefEditor_(VLNV::DESIGNCONFIGURATION, libHandler, this, this)
 {
-    connect(&nameEditor_, SIGNAL(nameChanged(const QString&)),
-            this, SIGNAL(nameChanged(const QString&)), Qt::UniqueConnection);
     connect(&nameEditor_, SIGNAL(contentChanged()),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&hierRefEditor_, SIGNAL(contentChanged()),

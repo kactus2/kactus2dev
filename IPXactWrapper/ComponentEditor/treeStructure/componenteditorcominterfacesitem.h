@@ -66,7 +66,7 @@ private:
 	ComponentEditorComInterfacesItem& operator=(const ComponentEditorComInterfacesItem& other);
 
 	//! \brief The interfaces being edited.
-	QMap<QString, QSharedPointer<ComInterface> >& interfaces_;
+	QList<QSharedPointer<ComInterface> >& interfaces_;
 };
 
 #endif // COMPONENTEDITORCOMINTERFACESITEM_H

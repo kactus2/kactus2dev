@@ -1043,13 +1043,13 @@ public:
     /*!
      *  Returns the COM interfaces.
      */
-    QMap< QString, QSharedPointer<ComInterface> > const& getComInterfaces() const;
+    QList<QSharedPointer<ComInterface> > const& getComInterfaces() const;
 
 	/*! \brief Get the COM interfaces of the component.
 	 *
 	 * \return QMap containing the pointers to COM interfaces.
 	*/
-	QMap<QString, QSharedPointer<ComInterface> >& getComInterfaces();
+	QList<QSharedPointer<ComInterface> >& getComInterfaces();
 
     /*!
      *  Returns the names of the COM interfaces.
@@ -1063,14 +1063,14 @@ public:
      *
      *      @return The COM interface, or 0 if there is no COM interface with the given name.
      */
-    ComInterface* getComInterface(QString const& name);
+	QSharedPointer<ComInterface> getComInterface(QString const& name);
 
     /*!
      *  Creates a new empty COM interface to the component.
      *
      *      @return The created COM interface.
      */
-    ComInterface* createComInterface();
+	QSharedPointer<ComInterface> createComInterface();
 
     /*!
      *  Adds a new COM interface to the component.
@@ -1081,13 +1081,6 @@ public:
      *              with the same name already exists.
      */
     bool addComInterface(QSharedPointer<ComInterface> comInterface);
-
-    /*!
-     *  Updates an existing COM interface.
-     *
-     *      @param [in] comInterface The COM interface to update.
-     */
-    void updateComInterface(ComInterface* comInterface);
 
     /*!
      *  Removes a COM interface from the component.
@@ -1106,13 +1099,13 @@ public:
     /*!
      *  Returns the API interfaces.
      */
-    QMap< QString, QSharedPointer<ApiInterface> > const& getApiInterfaces() const;
+    QList<QSharedPointer<ApiInterface> > const& getApiInterfaces() const;
 
 	/*! \brief Get the API interfaces of the component.
 	 *
 	 * \return QMap containing pointers to the API interfaces.
 	*/
-	QMap<QString, QSharedPointer<ApiInterface> >& getApiInterfaces();
+	QList<QSharedPointer<ApiInterface> >& getApiInterfaces();
 
     /*!
      *  Returns the names of the API interfaces.
@@ -1126,14 +1119,14 @@ public:
      *
      *      @return The API interface, or 0 if there is no API interface with the given name.
      */
-    ApiInterface* getApiInterface(QString const& name);
+	QSharedPointer<ApiInterface> getApiInterface(QString const& name);
 
     /*!
      *  Creates a new empty API interface to the component.
      *
      *      @return The created API interface.
      */
-    ApiInterface* createApiInterface();
+	QSharedPointer<ApiInterface> createApiInterface();
 
     /*!
      *  Adds a new API interface to the component.
@@ -1144,13 +1137,6 @@ public:
      *              with the same name already exists.
      */
     bool addApiInterface(QSharedPointer<ApiInterface> apiInterface);
-
-    /*!
-     *  Updates an existing API interface.
-     *
-     *      @param [in] apiInterface The API interface to update.
-     */
-    void updateApiInteface(ApiInterface* apiInterface);
 
     /*!
      *  Removes a API interface from the component.
@@ -1468,10 +1454,10 @@ private:
 	QList<QSharedPointer<BusInterface> > busInterfaces_;
 
     //! The communication interfaces (extension).
-    QMap< QString, QSharedPointer<ComInterface> > comInterfaces_;
+    QList<QSharedPointer<ComInterface> > comInterfaces_;
 
     //! The API interfaces (extension).
-    QMap< QString, QSharedPointer<ApiInterface> > apiInterfaces_;
+    QList<QSharedPointer<ApiInterface> > apiInterfaces_;
 
 	/*! \brief specifies the interconnection between interfaces within component
 	 * OPTIONAL spirit:channels
