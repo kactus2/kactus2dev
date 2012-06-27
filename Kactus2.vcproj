@@ -2410,6 +2410,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="PluginSystem"
+				>
+				<File
+					RelativePath=".\PluginSystem\PluginListDialog.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\PluginSystem\PluginManager.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -12873,6 +12885,26 @@
 						</FileConfiguration>
 					</File>
 				</Filter>
+			</Filter>
+			<Filter
+				Name="PluginSystem"
+				>
+				<File
+					RelativePath=".\PluginSystem\IComponentGeneratorPlugin.h"
+					>
+				</File>
+				<File
+					RelativePath=".\PluginSystem\IPluginInformation.h"
+					>
+				</File>
+				<File
+					RelativePath=".\PluginSystem\PluginListDialog.h"
+					>
+				</File>
+				<File
+					RelativePath=".\PluginSystem\PluginManager.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter

@@ -218,7 +218,24 @@ QString ColumnEditDialog::getName() const
 //-----------------------------------------------------------------------------
 ColumnContentType ColumnEditDialog::getContentType() const
 {
-    return static_cast<ColumnContentType>(typeCombo_->currentIndex());
+    // Convert the index to a column content type.
+    ColumnContentType contentType = COLUMN_CONTENT_CUSTOM;
+    QString type = typeCombo_->currentText();
+
+    if (type == "Components")
+    {
+        contentType = COLUMN_CONTENT_COMPONENTS;
+    }
+    else if (type == "Buses")
+    {
+        contentType = COLUMN_CONTENT_BUSES;
+    }
+    else if (type == "IO")
+    {
+        contentType = COLUMN_CONTENT_IO;
+    }
+
+    return contentType;
 }
 
 //-----------------------------------------------------------------------------

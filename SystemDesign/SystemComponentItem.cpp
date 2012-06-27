@@ -17,6 +17,7 @@
 #include <common/layouts/HCollisionLayout.h>
 #include <common/layouts/VCollisionLayout.h>
 
+
 #include <models/component.h>
 #include <models/ComInterface.h>
 #include <models/ApiInterface.h>
@@ -116,17 +117,12 @@ SWPortItem* SystemComponentItem::addPort(QPointF const& pos)
     QString name = "interface";
     unsigned int count = 0;
 
-    while (componentModel()->getBusInterface(name) != 0)
+    while (getSWPort(name, SWConnectionEndpoint::ENDPOINT_TYPE_COM) != 0 ||
+           getSWPort(name, SWConnectionEndpoint::ENDPOINT_TYPE_API) != 0)
     {
         ++count;
         name = "interface_" + QString::number(count);
     }
-
-    // Create an empty bus interface and add it to the component model.
-//     QSharedPointer<BusInterface> busIf(new BusInterface());
-//     busIf->setName(name);
-//     busIf->setInterfaceMode(General::MODE_UNDEFINED);
-//     componentModel()->addBusInterface(busIf);
 
     // Create the visualization for the bus interface.
     SWPortItem* port = new SWPortItem(name, this);

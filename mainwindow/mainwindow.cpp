@@ -54,6 +54,8 @@
 #include <models/SWView.h>
 #include <models/SystemView.h>
 
+#include <PluginSystem/PluginListDialog.h>
+
 #include <designwidget/HWDesignWidget.h>
 #include <designwidget/HWComponentItem.h>
 #include <designwidget/BusPortItem.h>
@@ -157,6 +159,7 @@ MainWindow::MainWindow(QWidget *parent)
       visibilityMenu_(this),
       workspaceMenu_(this),
       curWorkspaceName_("Default"),
+      pluginMgr_(QCoreApplication::applicationDirPath() + "/Plugins"),
       visibilities_()
 {
 	// set the identification tags for the application
@@ -2967,7 +2970,7 @@ void MainWindow::showAbout()
 	splash->move(this->mapToGlobal(this->rect().center() - splash->rect().center()));
 	splash->setWindowModality(Qt::ApplicationModal);
 	splash->show();
-	splash->showMessage(""); 
+	splash->showMessage("");
 }
 
 void MainWindow::selectVisibleDocks() {

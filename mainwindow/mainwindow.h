@@ -10,6 +10,8 @@
 
 #include "NewSWComponentPage.h"
 
+#include <PluginSystem/PluginManager.h>
+
 #include <common/DrawMode.h>
 #include <common/KactusAttribute.h>
 
@@ -702,6 +704,9 @@ private:
 
     //! The name of the currently active workspace.
     QString curWorkspaceName_;
+
+    //! The plugin manager.
+    PluginManager pluginMgr_;
 
 	/*! \brief Update the windows menu to contain the supported windows.
 	 *
