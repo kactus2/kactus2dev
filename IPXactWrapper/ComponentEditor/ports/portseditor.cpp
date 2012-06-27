@@ -98,6 +98,7 @@ handler_(handler) {
 	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
 	layout->addWidget(&view_, 1);
 	layout->addLayout(buttonLayout);
+	layout->setContentsMargins(0, 0, 0, 0);
 }
 
 PortsEditor::~PortsEditor() {

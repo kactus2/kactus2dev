@@ -56,6 +56,7 @@ model_(component, this) {
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
 	layout->addWidget(&view_);
+	layout->setContentsMargins(0, 0, 0, 0);
 
 	refresh();
 }
