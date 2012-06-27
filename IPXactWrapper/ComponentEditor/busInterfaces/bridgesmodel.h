@@ -131,7 +131,7 @@ private:
 	BridgesModel& operator=(const BridgesModel& other);
 
 	//! \brief Contains the bridges to edit.
-	QList<QSharedPointer<SlaveInterface::Bridge> >& bridges_;
+	QList<QSharedPointer<SlaveInterface::Bridge> >* bridges_;
 };
 
 #endif // BRIDGESMODEL_H

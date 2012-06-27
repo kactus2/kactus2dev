@@ -8,10 +8,12 @@
 #include "bridgesmodel.h"
 #include "bridgesdelegate.h"
 
+#include <QColor>
+
 BridgesModel::BridgesModel(QSharedPointer<SlaveInterface> slave, 
 						   QObject *parent):
 QAbstractTableModel(parent),
-bridges_(slave->getBridges()) {
+bridges_(&slave->getBridges()) {
 
 }
 
@@ -22,7 +24,7 @@ int BridgesModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ ) cons
 	if (parent.isValid()) {
 		return 0;
 	}
-	return bridges_.size();
+	return bridges_->size();
 }
 
 int BridgesModel::columnCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
@@ -36,6 +38,12 @@ Qt::ItemFlags BridgesModel::flags( const QModelIndex& index ) const {
 	if (!index.isValid()) {
 		return Qt::NoItemFlags;
 	}
+	
+	// for opaque column checking is possible
+	else if (index.column() == BridgesDelegate::OPAQUE_COLUMN) {
+		return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
+	}
+
 	return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
 }
 
@@ -66,7 +74,7 @@ QVariant BridgesModel::data( const QModelIndex& index, int role /*= Qt::DisplayR
 	if (!index.isValid()) {
 		return QVariant();
 	}
-	else if (index.row() < 0 || index.row() >= bridges_.size()) {
+	else if (index.row() < 0 || index.row() >= bridges_->size()) {
 		return QVariant();
 	}
 
@@ -74,14 +82,41 @@ QVariant BridgesModel::data( const QModelIndex& index, int role /*= Qt::DisplayR
 
 		switch (index.column()) {
 			case BridgesDelegate::MASTER_COLUMN: {
-				return bridges_.at(index.row())->masterRef_;
+				return bridges_->at(index.row())->masterRef_;
 												}
 			case BridgesDelegate::OPAQUE_COLUMN: {
-				return bridges_.at(index.row())->opaque_;
+				return bridges_->at(index.row())->opaque_;
 														}
 			default: {
 				return QVariant();
 					 }
+		}
+	}
+	else if (Qt::ForegroundRole == role) {
+		if (bridges_->at(index.row())->masterRef_.isEmpty()) {
+			return QColor("red");
+		}
+		else {
+			return QColor("black");
+		}
+	}
+	else if (Qt::BackgroundRole == role) {
+		switch (index.column()) {
+			case BridgesDelegate::MASTER_COLUMN: {
+				return QColor("LemonChiffon");
+								 }
+			default:
+				return QColor("white");
+		}
+	}
+	// the opaque column is shown on checked or not checked
+	else if (Qt::CheckStateRole == role && index.column() == BridgesDelegate::OPAQUE_COLUMN) {
+		
+		if (bridges_->at(index.row())->opaque_) {
+			return Qt::Checked;
+		}
+		else {
+			return Qt::Unchecked;
 		}
 	}
 	else {
@@ -90,60 +125,46 @@ QVariant BridgesModel::data( const QModelIndex& index, int role /*= Qt::DisplayR
 }
 
 bool BridgesModel::setData( const QModelIndex& index, const QVariant& value, int role /*= Qt::EditRole*/ ) {
-// 	if (!index.isValid()) {
-// 		return false;
-// 	}
-// 	else if (index.row() < 0 || index.row() >= channels_.size()) {
-// 		return false;
-// 	}
-// 
-// 	if (Qt::EditRole == role) {
-// 
-// 		switch (index.column()) {
-// 			case ChannelsDelegate::NAME_COLUMN: {
-// 				channels_[index.row()]->setName(value.toString());
-// 				break;
-// 												}
-// 			case ChannelsDelegate::DISPLAY_NAME_COLUMN: {
-// 				channels_[index.row()]->setDisplayName(value.toString());
-// 				break;
-// 														}
-// 			case ChannelsDelegate::INTERFACE_COLUMN: {
-// 				QString str = value.toString();
-// 				QStringList interfaceNames = str.split(' ', QString::SkipEmptyParts);
-// 				channels_[index.row()]->setInterfaces(interfaceNames);
-// 				break;
-// 													 }
-// 			case ChannelsDelegate::DESCRIPTION_COLUMN: {
-// 				channels_[index.row()]->setDescription(value.toString());
-// 				break;
-// 													   }
-// 			default: {
-// 				return false;
-// 					 }
-// 		}
-// 
-// 		emit dataChanged(index, index);
-// 		emit contentChanged();
-// 		return true;
-// 	}
-// 	// user edit role for interface column operates on QStringList
-// 	else if (ChannelsDelegate::USER_EDIT_ROLE == role &&
-// 		ChannelsDelegate::INTERFACE_COLUMN == index.column()) {
-// 			channels_[index.row()]->setInterfaces(value.toStringList());
-// 			emit dataChanged(index, index);
-// 			emit contentChanged();
-// 			return true;
-// 	}
-// 	else {
-// 		return false;
-// 	}
-// 	
-	return false;
+	if (!index.isValid()) {
+		return false;
+	}
+	else if (index.row() < 0 || index.row() >= bridges_->size()) {
+		return false;
+	}
+
+	if (Qt::EditRole == role) {
+
+		switch (index.column()) {
+			case BridgesDelegate::MASTER_COLUMN: {
+				(*bridges_)[index.row()]->masterRef_ = value.toString();
+				break;
+												}
+			case BridgesDelegate::OPAQUE_COLUMN: {
+				(*bridges_)[index.row()]->opaque_ = value.toBool();
+				break;
+														}
+			default: {
+				return false;
+					 }
+		}
+
+		emit dataChanged(index, index);
+		emit contentChanged();
+		return true;
+	}
+	else if (role == Qt::CheckStateRole) {
+		bridges_->at(index.row())->opaque_ = (value == Qt::Checked);
+		emit dataChanged(index, index);
+		emit contentChanged();
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 void BridgesModel::onAddItem( const QModelIndex& index ) {
-	int row = bridges_.size();
+	int row = bridges_->size();
 
 	// if the index is valid then add the item to the correct position
 	if (index.isValid()) {
@@ -151,7 +172,7 @@ void BridgesModel::onAddItem( const QModelIndex& index ) {
 	}
 
 	beginInsertRows(QModelIndex(), row, row);
-	bridges_.insert(row, QSharedPointer<SlaveInterface::Bridge>(new SlaveInterface::Bridge()));
+	bridges_->insert(row, QSharedPointer<SlaveInterface::Bridge>(new SlaveInterface::Bridge()));
 	endInsertRows();
 
 	// tell also parent widget that contents have been changed
@@ -164,13 +185,13 @@ void BridgesModel::onRemoveItem( const QModelIndex& index ) {
 		return;
 	}
 	// make sure the row number if valid
-	else if (index.row() < 0 || index.row() >= bridges_.size()) {
+	else if (index.row() < 0 || index.row() >= bridges_->size()) {
 		return;
 	}
 
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
-	bridges_.removeAt(index.row());
+	bridges_->removeAt(index.row());
 	endRemoveRows();
 
 	// tell also parent widget that contents have been changed
@@ -178,21 +199,19 @@ void BridgesModel::onRemoveItem( const QModelIndex& index ) {
 }
 
 void BridgesModel::refresh( QSharedPointer<SlaveInterface> slave ) {
+	Q_ASSERT(slave);
 	beginResetModel();
-	bridges_ = slave->getBridges();
+	bridges_ = &slave->getBridges();
 	endResetModel();
 }
 
 bool BridgesModel::isValid() const {
-	// interface names are needed to check that references to bus interfaces are valid
-// 	QStringList interfaceNames = component_->getBusInterfaceNames();
-// 
-// 	// if at least one address space is invalid
-// 	foreach (QSharedPointer<Channel> channel, channels_) {
-// 		if (!channel->isValid(interfaceNames)) {
-// 			return false;
-// 		}
-// 	}
-	// all address spaces were valid
+
+	// on each bridge the master ref must be non-empty
+	foreach (QSharedPointer<SlaveInterface::Bridge> bridge, *bridges_) {
+		if (bridge->masterRef_.isEmpty()) {
+			return false;
+		}
+	}
 	return true;
 }

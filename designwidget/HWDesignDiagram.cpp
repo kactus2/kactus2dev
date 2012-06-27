@@ -56,6 +56,7 @@
 #include <QMessageBox>
 #include <QCoreApplication>
 #include <QPrinter>
+#include <QListIterator>
 
 #include <QDebug>
 #include "columnview/ColumnEditDialog.h"
@@ -281,7 +282,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
         Design::HierConnection hierConn = hierConnections.at(i);
 
-		QSharedPointer<BusInterface> busIf = getEditedComponent()->getBusInterfaces().value(hierConn.interfaceRef);
+		QSharedPointer<BusInterface> busIf = getEditedComponent()->getBusInterface(hierConn.interfaceRef);
 
 		// if the bus interface was not found
 		if (!busIf) {
@@ -624,13 +625,13 @@ QSharedPointer<Design> HWDesignDiagram::createDesign(const VLNV &vlnv) const
             instance.setPortAdHocVisibilities(comp->getPortAdHocVisibilities());
 
             // Save the port positions.
-            QMapIterator< QString, QSharedPointer<BusInterface> >
+            QListIterator<QSharedPointer<BusInterface> >
                 itrBusIf(comp->componentModel()->getBusInterfaces());
 
             while (itrBusIf.hasNext())
             {
-                itrBusIf.next();
-                instance.updateBusInterfacePosition(itrBusIf.key(), comp->getBusPort(itrBusIf.key())->pos());
+                QSharedPointer<BusInterface> busif = itrBusIf.next();
+                instance.updateBusInterfacePosition(busif->getName(), comp->getBusPort(busif->getName())->pos());
             }
 
             QMapIterator<QString, bool> itrAdHoc(comp->getPortAdHocVisibilities());
@@ -782,7 +783,7 @@ void HWDesignDiagram::setMode(DrawMode mode)
 void HWDesignDiagram::updateHierComponent()
 {
     // store all the bus interfaces to a map
-    QMap<QString, QSharedPointer<BusInterface> > busIfs;
+    QList<QSharedPointer<BusInterface> > busIfs;
 
     // Search all graphics items in the scene.
     foreach (QGraphicsItem *item, items())
@@ -792,7 +793,7 @@ void HWDesignDiagram::updateHierComponent()
 
         if (diagIf != 0 && diagIf->getBusInterface() != 0)
         {
-            busIfs[diagIf->name()] = diagIf->getBusInterface();
+			busIfs.append(diagIf->getBusInterface());
 
             // Set the bus interface non-temporary.
             //diagIf->setTemporary(false);

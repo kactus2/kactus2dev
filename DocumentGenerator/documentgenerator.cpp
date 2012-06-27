@@ -508,7 +508,7 @@ void DocumentGenerator::writeInterfaces(QTextStream& stream, int& subHeaderNumbe
 		
 		writeSubHeader(subHeaderNumber, stream, "Bus interfaces", "interfaces");
 
-		const QMap<QString, QSharedPointer<BusInterface> > interfaces = component_->getBusInterfaces();
+		const QList<QSharedPointer<BusInterface> > interfaces = component_->getBusInterfaces();
 		int interfaceNumber = 1;
 		foreach (QSharedPointer<BusInterface> interface, interfaces) {
 			stream << "\t\t\t" << "<h3>" << myNumber_ << "." << subHeaderNumber << "." << interfaceNumber++ <<
@@ -529,16 +529,7 @@ void DocumentGenerator::writeInterfaces(QTextStream& stream, int& subHeaderNumbe
 			stream << "\t\t\t" << INDENT << "<strong>Ports used in this interface:</strong>" << endl;
 
 			stream << "\t\t\t</p>" << endl;
-
-// 			stream << "\t\t\t<ul>" << endl;
-// 			QStringList physPortList = interface->getPhysicalPortNames();
-// 			foreach (QString physPort, physPortList) {
-// 				stream << "\t\t\t\t<li><a href=\"#" << component_->getVlnv()->toString() 
-// 					<< ".port." << physPort << "\">" << physPort << "</a></li>" << endl;
-// 			}
-// 
-// 			stream << "\t\t\t</ul>" << endl;
-// 			
+			
 			QStringList portHeaders;
 			portHeaders.append("Name");
 			portHeaders.append("Direction");

@@ -57,8 +57,7 @@ HWComponentItem::HWComponentItem(LibraryInterface* lh_,
     setFlag(ItemIsMovable);
     setAdHocData(component, portAdHocVisibilities);
     
-	QList<QSharedPointer<BusInterface> > busInterfaces
-            = component->getBusInterfaces().values();
+	QList<QSharedPointer<BusInterface> > busInterfaces = component->getBusInterfaces();
 
     int portSpacing = 3*GridSize;
     int portCountLeft = busInterfaces.size() / 2.0 + .5;

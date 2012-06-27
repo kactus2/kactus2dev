@@ -77,6 +77,8 @@ public:
 	virtual void setModelData(QWidget* editor, QAbstractItemModel* model, 
 		const QModelIndex& index) const;
 
+	virtual void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+
 private slots:
 
 	/*! \brief Commit the data from the sending editor and close the editor.
@@ -85,8 +87,8 @@ private slots:
 	void commitAndCloseEditor();
 
 protected:
-    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-    bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index);
+    
+    virtual bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index);
 
 private:
     // Disable copying.

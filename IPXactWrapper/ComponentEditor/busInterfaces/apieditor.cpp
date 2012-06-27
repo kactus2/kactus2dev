@@ -135,8 +135,6 @@ void APIEditor::makeChanges()
     {
         api_->setInterfaceMode(General::SLAVE);
     }
-
-    component()->updateBusInterface(api_);
 }
 
 //-----------------------------------------------------------------------------

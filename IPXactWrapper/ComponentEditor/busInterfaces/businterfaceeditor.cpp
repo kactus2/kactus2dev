@@ -71,14 +71,14 @@ bool BusInterfaceEditor::isValid() const {
 void BusInterfaceEditor::onTabChange( int index ) {
 
 	// if port maps tab is selected
-	if (index == 2) {
+	if (index == 1) {
 		// update the abstraction type
 		portmaps_.setAbsType(general_.getAbsType(), busif_->getInterfaceMode());
 	}
 }
 
 void BusInterfaceEditor::makeChanges() {
-	component()->updateBusInterface(busif_.data());
+	
 }
 
 void BusInterfaceEditor::refresh() {

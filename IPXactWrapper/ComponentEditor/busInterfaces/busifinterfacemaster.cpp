@@ -51,6 +51,7 @@ baseAddress_(this) {
 	topLayout->addWidget(baseAddrLabel, 1, 0, Qt::AlignLeft);
 	topLayout->addWidget(&baseAddress_, 1, 1, Qt::AlignLeft);
 	topLayout->setColumnStretch(2, 1);
+	topLayout->setRowStretch(2, 1);
 
 	connect(&addressSpaceRef_, SIGNAL(addressSpaceSelected(const QString&)),
 		this, SLOT(onAddressSpaceChange(const QString&)), Qt::UniqueConnection);

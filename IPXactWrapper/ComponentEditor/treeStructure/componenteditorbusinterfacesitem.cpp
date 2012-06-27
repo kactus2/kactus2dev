@@ -53,7 +53,7 @@ QString ComponentEditorBusInterfacesItem::getTooltip() const {
 
 void ComponentEditorBusInterfacesItem::createChild( int index ) {
 	QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(
-		new ComponentEditorBusInterfaceItem(editor_.getBusInterface(index),
+		new ComponentEditorBusInterfaceItem(busifs_.at(index),
 		model_, libHandler_, component_, this));
 
 	childItems_.insert(index, busifItem);

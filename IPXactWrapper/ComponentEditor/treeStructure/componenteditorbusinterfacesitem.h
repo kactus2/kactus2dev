@@ -81,7 +81,7 @@ private:
 	ComponentEditorBusInterfacesItem& operator=(const ComponentEditorBusInterfacesItem& other);
 
 	//! \brief Contains the bus interfaces to edit.
-	QMap<QString, QSharedPointer<BusInterface> >& busifs_;
+	QList<QSharedPointer<BusInterface> >& busifs_;
 
 	//! \brief The editor to add/remove/edit bus interfaces
 	BusInterfacesEditor editor_;

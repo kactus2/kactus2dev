@@ -13,6 +13,7 @@
 #include <models/component.h>
 #include <models/slaveinterface.h>
 #include <common/widgets/memoryMapSelector/memorymapselector.h>
+#include "bridgeseditor.h"
 
 #include <QSharedPointer>
 
@@ -76,6 +77,9 @@ private:
 
 	//! \brief The editor to select a memory map from the component.
 	MemoryMapSelector memSelector_;
+
+	//! \brief The editor to edit the bridges of a slave interface.
+	BridgesEditor bridges_;
 };
 
 #endif // BUSIFINTERFACESLAVE_H

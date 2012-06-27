@@ -952,30 +952,30 @@ public:
 	*/
 	bool hasFile(const QString& fileName) const;
 
-	/*! \brief Get this component's bus interfaces
-	*
-	* \return QMap containing component's bus interfaces
-	*/
-	const QMap<QString, QSharedPointer<BusInterface> >& getBusInterfaces() const;
-
-	/*! \brief Get the bus interfaces of this component.
+	/*! \brief Get list of the bus interfaces of a component.
 	 *
-	 * \return QMap containing pointers to the component's bus interfaces.
+	 * \return QList containing pointers to the bus interfaces.
 	*/
-	QMap<QString, QSharedPointer<BusInterface> >& getBusInterfaces();
+	QList<QSharedPointer<BusInterface> >& getBusInterfaces();
+
+	/*! \brief Get list of the bus interfaces of a component.
+	 *
+	 * \return QList containing pointers to the bus interfaces.
+	*/
+	const QList<QSharedPointer<BusInterface> >& getBusInterfaces() const;
+
+	/*! \brief Set the bus interfaces for the component.
+	 *
+	 * \param busif QList containing the pointers to the bus interfaces.
+	 *
+	*/
+	void setBusInterfaces(QList<QSharedPointer<BusInterface> >& busInterfaces);
 
 	/*! \brief Get list of names of all the bus interfaces in this component.
 	*
 	* \return QStringList containing the names of the bus interfaces.
 	*/
 	QStringList getBusInterfaceNames() const;
-
-	/*! \brief Set this component's bus interfaces
-	*
-	* \param busInterfaces QMap containing the bus interfaces to be set
-	*/
-	void setBusInterfaces(const QMap<QString, QSharedPointer<BusInterface> >
-		&busInterfaces);
 
 	/*! \brief Get a pointer to a bus interface.
 	*
@@ -985,7 +985,7 @@ public:
 	*
 	* \return A pointer to the busInterface instance or null pointer.
 	*/
-	BusInterface* getBusInterface(const QString& name);
+	QSharedPointer<BusInterface> getBusInterface(const QString& name);
 
 	/*! \brief Add a new bus interface to the component.
 	*
@@ -995,19 +995,6 @@ public:
 	* bus interface with same name already existed.
 	*/
 	bool addBusInterface(QSharedPointer<BusInterface> busInterface);
-
-	/*! \brief Update the given busInterface to the component.
-	* 
-	* If the bus interface already exists in the component then this function
-	* updates the key of the map so it stays valid with bus interface's name.
-	* 
-	* If the bus interface does not belong to the component then it is added
-	* to the map containing bus interfaces.
-	* 
-	* \param busInterface Pointer to the bus interface to update.
-	*
-	*/
-	void updateBusInterface(BusInterface* busInterface);
 
 	/*! \brief Remove the specified bus interface from the component.
 	*
@@ -1042,6 +1029,16 @@ public:
 	 * \return bool True if the interface was found.
 	*/
 	bool hasInterface(const QString& interfaceName) const;
+
+	/*! \brief Get the interface mode of the specified interface.
+	 *
+	 * \param interfaceName The name of the interface to check.
+	 *
+	 * If the specified interface does not exist then General::INTERFACE_MODE_COUNT is returned.
+	 *
+	 * \return General::InterfaceMode The interface mode of the specified interface.
+	*/
+	General::InterfaceMode getInterfaceMode(const QString& interfaceName) const;
 
     /*!
      *  Returns the COM interfaces.
@@ -1467,10 +1464,8 @@ private:
 	/*! \brief Specifies all the interfaces for this component.
 	 * OPTIONAL spirit:busInterfaces
 	 *
-	 * Key = name of the interface.
-	 * Value = Pointer to the bus interface instance.
 	 */
-	QMap<QString, QSharedPointer<BusInterface> > busInterfaces_;
+	QList<QSharedPointer<BusInterface> > busInterfaces_;
 
     //! The communication interfaces (extension).
     QMap< QString, QSharedPointer<ComInterface> > comInterfaces_;

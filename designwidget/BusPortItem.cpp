@@ -93,7 +93,6 @@ QString BusPortItem::name() const
 void BusPortItem::setName( const QString& name )
 {
     busInterface_->setName(name);
-    encompassingComp()->componentModel()->updateBusInterface(busInterface_.data());
 
 	updateInterface();
     emit contentChanged();

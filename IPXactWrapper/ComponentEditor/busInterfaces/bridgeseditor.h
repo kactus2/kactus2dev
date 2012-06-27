@@ -11,9 +11,11 @@
 #include <common/views/EditableTableView/editabletableview.h>
 #include <models/slaveinterface.h>
 #include "bridgesmodel.h"
+#include <models/component.h>
 
 #include <QGroupBox>
 #include <QSortFilterProxyModel>
+#include <QSharedPointer>
 
 /*! \brief Editor to edit the bridge-elements within a slave interface mode.
  *
@@ -26,10 +28,12 @@ public:
 	/*! \brief The constructor
 	 *
 	 * \param slave Pointer to the slave element being edited.
+	 * \param component Pointer to the component that owns the slave interface.
 	 * \param parent Pointer to the owner of this editor.
 	 *
 	*/
 	BridgesEditor(QSharedPointer<SlaveInterface> slave,
+		QSharedPointer<Component> component,
 		QWidget *parent);
 	
 	//! \brief The destructor.
@@ -45,6 +49,11 @@ public:
 	*/
 	void refresh(QSharedPointer<SlaveInterface> slave);
 
+signals:
+
+	//! \brief Emitted when the contents of the bridges change.
+	void contentChanged();
+
 private:
 	
 	//! \brief No copying
@@ -52,6 +61,9 @@ private:
 
 	//! \brief No assignment
 	BridgesEditor& operator=(const BridgesEditor& other);
+
+	//! \brief Pointer to the component being edited.
+	QSharedPointer<Component> component_;
 
 	//! \brief The view to display the bridges.
 	EditableTableView view_;

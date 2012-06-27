@@ -40,7 +40,8 @@ opaque_(false) {
 
 // struct constructor
 SlaveInterface::FileSetRefGroup::FileSetRefGroup(QDomNode& fileSetNode):
-							group_(), fileSetRefs_() {
+group_(), 
+fileSetRefs_() {
 
 	// go through child nodes
 	for (int i = 0; i < fileSetNode.childNodes().count(); ++i) {
@@ -67,7 +68,9 @@ SlaveInterface::FileSetRefGroup::FileSetRefGroup(QDomNode& fileSetNode):
 
 // class constructor
 SlaveInterface::SlaveInterface(QDomNode& slaveNode):
-							memoryMapRef_(), bridges_(), fileSetRefGroup_() {
+memoryMapRef_(),
+bridges_(),
+fileSetRefGroup_() {
 
 	// go through all child elements
 	for (int i = 0; i < slaveNode.childNodes().count(); ++i) {

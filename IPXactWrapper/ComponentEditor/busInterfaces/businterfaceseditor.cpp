@@ -66,7 +66,3 @@ void BusInterfacesEditor::makeChanges() {
 void BusInterfacesEditor::refresh() {
 	view_.update();
 }
-
-QSharedPointer<BusInterface> BusInterfacesEditor::getBusInterface( int index ) const {
-	return model_.getBusInterface(index);
-}

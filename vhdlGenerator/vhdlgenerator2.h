@@ -204,12 +204,7 @@ private:
 	 * \param interface2 Pointer to the bus interface of instance 2.
 	 *
 	*/
-	void connectInterfaces(const QString& connectionName, 
-		const QString& description,
-		QSharedPointer<VhdlComponentInstance> instance1, 
-		BusInterface* interface1, 
-		QSharedPointer<VhdlComponentInstance> instance2, 
-		BusInterface* interface2);
+	void connectInterfaces(const QString& connectionName, const QString& description, QSharedPointer<VhdlComponentInstance> instance1, QSharedPointer<BusInterface> interface1, QSharedPointer<VhdlComponentInstance> instance2, QSharedPointer<BusInterface> interface2);
 
 	/*! \brief Connect the specified ports together.
 	 *
@@ -251,9 +246,7 @@ private:
 	 * \param topInterface Pointer to the interface of the top component.
 	 *
 	*/
-	void connectHierInterface( QSharedPointer<VhdlComponentInstance> instance, 
-		BusInterface* instanceInterface,
-		BusInterface* topInterface );
+	void connectHierInterface( QSharedPointer<VhdlComponentInstance> instance, QSharedPointer<BusInterface> instanceInterface, QSharedPointer<BusInterface> topInterface );
 
 	/*! \brief Map ports of component instances to signals.
 	 *

@@ -129,7 +129,7 @@ public:
 	 *
 	 * \return BusInterface* Pointer to the bus interface.
 	*/
-	BusInterface* interface(const QString& interfaceName) const;
+	QSharedPointer<BusInterface> interface(const QString& interfaceName) const;
 
 	/*! \brief Get the vlnv of the instance's IP-Xact model.
 	 *

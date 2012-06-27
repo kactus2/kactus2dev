@@ -100,14 +100,6 @@ public:
 	*/
 	bool isValid() const;
 
-	/*! \brief Get pointer to the bus interface in the specified index.
-	 *
-	 * \param index The index of the bus interface.
-	 *
-	 * \return Pointer to the bus interface.
-	*/
-	QSharedPointer<BusInterface> getBusInterface(int index) const;
-
 public slots:
 
 	/*! \brief Add a new item to the given index.
@@ -158,7 +150,7 @@ private:
 	QSharedPointer<Component> component_;
 
 	//! \brief The bus interfaces being edited.
-	QList<QSharedPointer<BusInterface> > busifs_;
+	QList<QSharedPointer<BusInterface> >& busifs_;
 };
 
 #endif // BUSINTERFACESMODEL_H

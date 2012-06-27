@@ -571,9 +571,9 @@ void VhdlGenerator2::parseInterconnections() {
 
 		bool invalidInterconnection = false;
 		QSharedPointer<VhdlComponentInstance> instance1;
-		BusInterface* interface1 = 0;
+		QSharedPointer<BusInterface> interface1;
 		QSharedPointer<VhdlComponentInstance> instance2;
-		BusInterface* interface2 = 0;
+		QSharedPointer<BusInterface> interface2;
 		
 		// if there are several interconnections with same name
 		if (connectionNames.contains(interconnection.name)) {
@@ -636,11 +636,11 @@ void VhdlGenerator2::parseInterconnections() {
 }
 
 void VhdlGenerator2::connectInterfaces( const QString& connectionName, 
-									   const QString& description, 
+									   const QString& description,
 									   QSharedPointer<VhdlComponentInstance> instance1,
-									   BusInterface* interface1,
-									   QSharedPointer<VhdlComponentInstance> instance2,
-									   BusInterface* interface2 ) {
+									   QSharedPointer<BusInterface> interface1, 
+									   QSharedPointer<VhdlComponentInstance> instance2, 
+									   QSharedPointer<BusInterface> interface2 ) {
 	Q_ASSERT(instance1);
 	Q_ASSERT(interface1);
 	Q_ASSERT(instance2);
@@ -969,7 +969,7 @@ void VhdlGenerator2::parseHierConnections() {
 	foreach (Design::HierConnection hierConnection, hierConnections) {
 	
 		// find the top-level bus interface
-		BusInterface* topInterface =
+		QSharedPointer<BusInterface> topInterface =
 			component_->getBusInterface(hierConnection.interfaceRef);
 
 		// if the top level interface couldn't be found
@@ -991,7 +991,7 @@ void VhdlGenerator2::parseHierConnections() {
 		}
 
 		// find the bus interface
-		BusInterface* instanceInterface = instance->interface(hierConnection.interface_.busRef);
+		QSharedPointer<BusInterface> instanceInterface = instance->interface(hierConnection.interface_.busRef);
 		// if bus interface couldn't be found
 		if (!instanceInterface) {
 			emit errorMessage(tr("Interface %1 was not found in instance %2 of type %3").arg(
@@ -1005,9 +1005,7 @@ void VhdlGenerator2::parseHierConnections() {
 	}
 }
 
-void VhdlGenerator2::connectHierInterface( QSharedPointer<VhdlComponentInstance> instance, 
-										  BusInterface* instanceInterface,
-										  BusInterface* topInterface ) {
+void VhdlGenerator2::connectHierInterface( QSharedPointer<VhdlComponentInstance> instance, QSharedPointer<BusInterface> instanceInterface, QSharedPointer<BusInterface> topInterface ) {
 	Q_ASSERT(instance);
 	Q_ASSERT(instanceInterface);
 	Q_ASSERT(topInterface);

@@ -36,6 +36,7 @@ systemGroup_(this) {
 	topLayout->addWidget(groupLabel, 1, 0, Qt::AlignLeft);
 	topLayout->addWidget(&systemGroup_, 1, 1, Qt::AlignLeft);
 	topLayout->setColumnStretch(2, 1);
+	topLayout->setRowStretch(2, 1);
 
 	connect(&interfaceMode_, SIGNAL(modeSelected(General::InterfaceMode)),
 		this, SLOT(onInterfaceModeChange(General::InterfaceMode)), Qt::UniqueConnection);

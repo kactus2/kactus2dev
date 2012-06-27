@@ -287,7 +287,7 @@ void VhdlComponentInstance::useDefaultsForOtherPorts() {
 	}
 }
 
-BusInterface* VhdlComponentInstance::interface( const QString& interfaceName ) const {
+QSharedPointer<BusInterface> VhdlComponentInstance::interface( const QString& interfaceName ) const {
 	return compDeclaration_->componentModel()->getBusInterface(interfaceName);
 }
 

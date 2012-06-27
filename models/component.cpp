@@ -96,16 +96,14 @@ Component::Component(QDomDocument &doc)
 				// single choice as parameter
 				QDomNode tempNode = children.at(i).childNodes().at(j);
 
-				// dont parse comments
+				// don't parse comments
 				if (!tempNode.isComment()) {
 
 					// create the bus interface from the node.
-					BusInterface* interface =
-							new BusInterface(tempNode);
+					QSharedPointer<BusInterface> interface(new BusInterface(tempNode));
 
 					// add the pointer to the map
-					busInterfaces_.insert(interface->getName(),
-							QSharedPointer<BusInterface>(interface));
+					busInterfaces_.append(interface);
 				}
 			}
 		}
@@ -383,32 +381,30 @@ Component::Component()
 //-----------------------------------------------------------------------------
 // Function: Component::Component()
 //-----------------------------------------------------------------------------
-Component::Component(const Component &other)
-    : LibraryComponent(other),
-      busInterfaces_(),
-      comInterfaces_(),
-      apiInterfaces_(),
-      channels_(),
-      remapStates_(),
-      addressSpaces_(),
-      memoryMaps_(),
-      model_(),
-      compGenerators_(),
-      choices_(),
-      fileSets_(),
-      cpus_(),
-      otherClockDrivers_(),
-      parameters_(),
-      attributes_(other.attributes_)
-{
+Component::Component(const Component &other):
+LibraryComponent(other),
+busInterfaces_(),
+comInterfaces_(),
+apiInterfaces_(),
+channels_(),
+remapStates_(),
+addressSpaces_(),
+memoryMaps_(),
+model_(),
+compGenerators_(),
+choices_(),
+fileSets_(),
+cpus_(),
+otherClockDrivers_(),
+parameters_(),
+attributes_(other.attributes_) {
 
-	for (QMap<QString, QSharedPointer<BusInterface> >::const_iterator i = other.busInterfaces_.begin();
-		i != other.busInterfaces_.end(); ++i) {
-			if (i.value()) {
-				QSharedPointer<BusInterface> copy = QSharedPointer<BusInterface>(
-					new BusInterface(*i.value().data()));
-				busInterfaces_.insert(copy->getName(), copy);
-			}
+	foreach (QSharedPointer<BusInterface> busif, other.busInterfaces_) {
+		if (busif) {
+			QSharedPointer<BusInterface> copy = QSharedPointer<BusInterface>(
+				new BusInterface(*busif.data()));
+			busInterfaces_.append(copy);
+		}
 	}
 
     for (QMap<QString, QSharedPointer<ComInterface> >::const_iterator i = other.comInterfaces_.begin();
@@ -545,15 +541,14 @@ Component & Component::operator=( const Component &other ) {
         attributes_ = other.attributes_;
 
 		busInterfaces_.clear();
-		for (QMap<QString, QSharedPointer<BusInterface> >::const_iterator i = other.busInterfaces_.begin();
-			i != other.busInterfaces_.end(); ++i) {
-				if (i.value()) {
-					QSharedPointer<BusInterface> copy = QSharedPointer<BusInterface>(
-						new BusInterface(*i.value().data()));
-					busInterfaces_.insert(copy->getName(), copy);
-				}
+		foreach (QSharedPointer<BusInterface> busif, other.busInterfaces_) {
+			if (busif) {
+				QSharedPointer<BusInterface> copy = QSharedPointer<BusInterface>(
+					new BusInterface(*busif.data()));
+				busInterfaces_.append(copy);
+			}
 		}
-
+		
         comInterfaces_.clear();
         for (QMap<QString, QSharedPointer<ComInterface> >::const_iterator i = other.comInterfaces_.begin();
             i != other.comInterfaces_.end(); ++i)
@@ -749,11 +744,8 @@ void Component::write(QFile& file) {
 	if (busInterfaces_.size() != 0) {
 		writer.writeStartElement("spirit:busInterfaces");
 
-		// write each busInterface
-		for (QMap<QString, QSharedPointer<BusInterface> >::iterator i =
-				busInterfaces_.begin(); i != busInterfaces_.end(); ++i) {
-
-			i.value()->write(writer);
+		foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {
+			busif->write(writer);
 		}
 
 		writer.writeEndElement(); // spirit:busInterfaces
@@ -1554,15 +1546,6 @@ void Component::setChoices(const QList<QSharedPointer<Choice> > &choices) {
 	choices_ = choices;
 }
 
-void Component::setBusInterfaces(const
-QMap<QString, QSharedPointer<BusInterface> > &busInterfaces) {
-	// delete old bus interfaces
-	busInterfaces_.clear();
-
-	// save new bus interfaces
-	busInterfaces_ = busInterfaces;
-}
-
 void Component::setFileSets(const QList<QSharedPointer<FileSet> > &fileSets) {
 	// delete old file sets
 	fileSets_.clear();
@@ -1606,13 +1589,22 @@ QList<QSharedPointer<RemapState> > &remapStates) {
 	remapStates_ = remapStates;
 }
 
-const QMap<QString, QSharedPointer<BusInterface> >& Component::getBusInterfaces() const {
-	return busInterfaces_;
-}
-
-QMap<QString, QSharedPointer<BusInterface> >& Component::getBusInterfaces() {
-	return busInterfaces_;
-}
+// const QMap<QString, QSharedPointer<BusInterface> >& Component::getBusInterfaces() const {
+// 	return busInterfaces_;
+// }
+// 
+// QMap<QString, QSharedPointer<BusInterface> >& Component::getBusInterfaces() {
+// 	return busInterfaces_;
+// }
+// 
+// void Component::setBusInterfaces(const
+// 								 QMap<QString, QSharedPointer<BusInterface> > &busInterfaces) {
+// 									 // delete old bus interfaces
+// 									 busInterfaces_.clear();
+// 
+// 									 // save new bus interfaces
+// 									 busInterfaces_ = busInterfaces;
+// }
 
 QList<QSharedPointer<AddressSpace> >& Component::getAddressSpaces() {
 	return addressSpaces_;
@@ -1642,22 +1634,19 @@ const QList<VLNV> Component::getDependentVLNVs() const {
 	QList<VLNV> vlnvList;
 
 	// search all bus interfaces
-	for (QMap<QString, QSharedPointer<BusInterface> >::const_iterator i =
-			busInterfaces_.begin(); i != busInterfaces_.end(); ++i) {
-
-		// if abstraction type is defined
-		if (i.value()->getAbstractionType().isValid()) {
-			vlnvList.append(i.value()->getAbstractionType());
+	foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {
+		if (busif->getBusType().isValid()) {
+			vlnvList.append(busif->getBusType());
 		}
-		// if bus type is defined
-		if (i.value()->getBusType().isValid()) {
-			vlnvList.append(i.value()->getBusType());
+		if (busif->getAbstractionType().isValid()) {
+			vlnvList.append(busif->getAbstractionType());
 		}
 	}
 
-	// ask model for all hierarchyrefs
-	if (model_)
+	// ask model for all hierarchy refs
+	if (model_) {
 		vlnvList += model_->getHierarchyRefs();
+	}
 
 	return vlnvList;
 }
@@ -1675,17 +1664,6 @@ const QStringList Component::getDependentFiles() const {
 		files += compGenerators_.at(i)->getGeneratorExe();
 	}
 	return files;
-}
-
-BusInterface* Component::getBusInterface(const QString& name) {
-
-	// if bus interface is found
-	if (busInterfaces_.contains(name)) {
-		return busInterfaces_.value(name).data();
-	}
-
-	// if named bus interface couldn't be found
-	return 0;
 }
 
 QList<General::LibraryFilePair> Component::getVhdlLibraries() const {
@@ -1786,11 +1764,8 @@ bool Component::isBus() const {
 	}
 
 	// if bridge is found in one of the bus interfaces this is bus component
-	for (QMap<QString, QSharedPointer<BusInterface> >::const_iterator i =
-			busInterfaces_.begin(); i != busInterfaces_.end(); ++i) {
-
-		// if one of the bus interfaces has a bridge, this is bus component
-		if (i.value()->hasBridge()) {
+	foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {
+		if (busif->hasBridge()) {
 			return true;
 		}
 	}
@@ -1935,87 +1910,11 @@ bool Component::renamePort( const QString& oldName, const QString& newName ) {
 	return model_->renamePort(oldName, newName);
 }
 
-bool Component::addBusInterface(QSharedPointer<BusInterface> busInterface ) {
-
-	if (busInterfaces_.contains(busInterface->getName()))
-		return false;
-
-	busInterfaces_.insert(busInterface->getName(), busInterface);
-	return true;
-}
-
-void Component::removeBusInterface( const QString& busifName ) {
-
-	busInterfaces_.remove(busifName);
-}
-
-void Component::removeBusInterface( const BusInterface* busInterface ) {
-	// get all bus interface pointers
-	QList<QSharedPointer<BusInterface> > list = busInterfaces_.values();
-	// and check if any matches with given bus interface
-	foreach (QSharedPointer<BusInterface> busif, list) {
-
-		// if they match
-		if (busif.data() == busInterface) {
-
-			// remove the old item in the map
-			busInterfaces_.remove(busif->getName());
-			continue;
-		}
-	}
-}
-
 Channel* Component::createChannel() {
 
 	QSharedPointer<Channel> chan = QSharedPointer<Channel>(new Channel());
 	channels_.append(chan);
 	return chan.data();
-}
-
-QStringList Component::getBusInterfaceNames() const {
-
-	QStringList list;
-	foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {
-		list.append(busif->getName());
-	}
-	return list;
-}
-
-void Component::updateBusInterface(BusInterface* busInterface ) {
-
-	// get all bus interface pointers
-	QList<QSharedPointer<BusInterface> > list = busInterfaces_.values();
-	// and check if any matches with given bus interface
-	foreach (QSharedPointer<BusInterface> busif, list) {
-
-		// if they match
-		if (busif.data() == busInterface) {
-
-			// remove the old item in the map
-			busInterfaces_.take(busInterfaces_.key(busif)/*busif->getName()*/);
-
-			// update the name
-			busif->setName(busInterface->getName());
-
-			// add new item to the map 
-			busInterfaces_.insert(busif->getName(), busif);
-
-			return;
-		}
-	}
-
-	// if no match was found, add the bus interface to the map
-	busInterfaces_.insert(busInterface->getName(), 
-		QSharedPointer<BusInterface>(busInterface));
-}
-
-BusInterface* Component::createBusInterface() {
-
-	BusInterface* busif = new BusInterface();
-
-	// there might another bus interface with no name so must use insertMulti
-	busInterfaces_.insertMulti(busif->getName(), QSharedPointer<BusInterface>(busif));
-	return busif;
 }
 
 const QStringList Component::getAddressSpaceNames() const {
@@ -2253,14 +2152,6 @@ bool Component::isPhysicalPort( const QString& portName ) const {
 	}
 }
 
-bool Component::hasInterfaces() const {
-	return !busInterfaces_.isEmpty();
-}
-
-bool Component::hasInterface( const QString& interfaceName ) const {
-	return busInterfaces_.contains(interfaceName);
-}
-
 bool Component::hasFileSets() const {
 	return !fileSets_.isEmpty();
 }
@@ -2288,13 +2179,22 @@ const QMap<QString, QSharedPointer<Port> > Component::getPorts( const QString& i
 
 	QMap<QString, QSharedPointer<Port> > ports;
 	
-	// if interface is not found
-	if (!busInterfaces_.contains(interfaceName)) {
-		return ports;
+	QStringList portNames;
+
+	// search the named interface
+	bool found = false;
+	foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {
+		if (busif->getName() == interfaceName) {
+			found = true;
+			portNames = busif->getPhysicalPortNames();
+			break;
+		}
 	}
 
-	// get list of ports in the interface
-	QStringList portNames = busInterfaces_.value(interfaceName)->getPhysicalPortNames();
+	// if interface was not found
+	if (!found) {
+		return ports;
+	}
 
 	// get all the ports on the component
 	ports = getPorts();
@@ -2751,55 +2651,6 @@ QStringList Component::getPortTypeDefinitions() const {
 	}
 }
 
-QMultiMap<QString, VLNV> Component::getInterfaceAbsDefForPort( const QString& physicalPortName ) const {
-	QMultiMap<QString, VLNV> absDefList;
-	foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {
-		// if the interface contains the physical port
-		if (busif->hasPhysicalPort(physicalPortName)) {
-			
-			QString logicalPort = busif->getLogicalPortName(physicalPortName);
-
-			if (!logicalPort.isEmpty()) {
-				absDefList.insert(logicalPort, busif->getAbstractionType());
-			}
-		}
-	}
-	return absDefList;
-}
-
-QString Component::getInterfaceNameForPort( const QString& portName ) const {
-	bool found = false;
-	QString interfaceName = "none";
-
-	// search all ports
-	foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {
-		
-		// if the interface contains the port
-		if (busif->hasPhysicalPort(portName)) {
-
-			// if the port was found before then there are many interfaces for this port
-			if (found) {
-				interfaceName = "several";
-			}
-			// mark port as found and set the interface name
-			else {
-				found = true;
-				interfaceName = busif->getName();
-			}
-		}
-	}
-	return interfaceName;
-}
-
-QString Component::getInterfaceDescription( const QString& interfaceName ) const {
-	if (busInterfaces_.contains(interfaceName)) {
-		return busInterfaces_.value(interfaceName)->getDescription();
-	}
-	else {
-		return QString();
-	}
-}
-
 void Component::createEmptyFlatView() {
 	// create new view
 	View* newView = new View();
@@ -3252,4 +3103,144 @@ void Component::parseSystemViews(QDomNode& node)
             systemViews_.append(view);
         }
     }
+}
+
+General::InterfaceMode Component::getInterfaceMode( const QString& interfaceName ) const {
+	
+	foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {
+		if (busif->getName() == interfaceName) {
+			return busif->getInterfaceMode();
+		}
+	}
+	return General::INTERFACE_MODE_COUNT;
+}
+
+QList<QSharedPointer<BusInterface> >& Component::getBusInterfaces() {
+	return busInterfaces_;
+}
+
+const QList<QSharedPointer<BusInterface> >& Component::getBusInterfaces() const {
+	return busInterfaces_;
+}
+
+QSharedPointer<BusInterface> Component::getBusInterface( const QString& name ) {
+
+	foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {
+		if (busif->getName() == name) {
+			return busif;
+		}
+	}
+
+	return QSharedPointer<BusInterface>();
+}
+
+bool Component::hasInterfaces() const {
+	return !busInterfaces_.isEmpty();
+}
+
+bool Component::hasInterface( const QString& interfaceName ) const {
+	foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {
+		if (busif->getName() == interfaceName) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Component::addBusInterface(QSharedPointer<BusInterface> busInterface ) {
+
+	// if bus interface with given name already exists
+	if (hasInterface(busInterface->getName())) {
+		return false;
+	}
+
+	busInterfaces_.append(busInterface);
+	return true;
+}
+
+void Component::removeBusInterface( const QString& busifName ) {
+
+	for (int i = 0; i < busInterfaces_.size(); ++i) {
+		if (busInterfaces_.at(i)->getName() == busifName) {
+			busInterfaces_.removeAt(i);
+		}
+	}
+}
+
+void Component::removeBusInterface( const BusInterface* busInterface ) {
+	
+	for (int i = 0; i < busInterfaces_.size(); ++i) {
+		if (busInterfaces_[i].data() == busInterface) {
+			busInterfaces_.removeAt(i);
+		}
+	}
+}
+
+QStringList Component::getBusInterfaceNames() const {
+
+	QStringList list;
+	foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {
+		list.append(busif->getName());
+	}
+	return list;
+}
+
+BusInterface* Component::createBusInterface() {
+	QSharedPointer<BusInterface> busif = QSharedPointer<BusInterface>(new BusInterface());
+	busInterfaces_.append(busif);
+	return busif.data();
+}
+
+QMultiMap<QString, VLNV> Component::getInterfaceAbsDefForPort( const QString& physicalPortName ) const {
+	QMultiMap<QString, VLNV> absDefList;
+	foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {
+		// if the interface contains the physical port
+		if (busif->hasPhysicalPort(physicalPortName)) {
+
+			QString logicalPort = busif->getLogicalPortName(physicalPortName);
+
+			if (!logicalPort.isEmpty()) {
+				absDefList.insert(logicalPort, busif->getAbstractionType());
+			}
+		}
+	}
+	return absDefList;
+}
+
+QString Component::getInterfaceNameForPort( const QString& portName ) const {
+	bool found = false;
+	QString interfaceName = "none";
+
+	// search all ports
+	foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {
+
+		// if the interface contains the port
+		if (busif->hasPhysicalPort(portName)) {
+
+			// if the port was found before then there are many interfaces for this port
+			if (found) {
+				interfaceName = "several";
+			}
+			// mark port as found and set the interface name
+			else {
+				found = true;
+				interfaceName = busif->getName();
+			}
+		}
+	}
+	return interfaceName;
+}
+
+QString Component::getInterfaceDescription( const QString& interfaceName ) const {
+
+	foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {
+		if (busif->getName() == interfaceName) {
+			return busif->getDescription();
+		}
+	}
+	return QString();
+}
+
+void Component::setBusInterfaces(QList<QSharedPointer<BusInterface> >& busInterfaces ) {
+	busInterfaces_ = busInterfaces;
 }

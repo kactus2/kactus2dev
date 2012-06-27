@@ -111,7 +111,9 @@ void InterfaceModeStack::refresh() {
 			break;
 							   }
 		default: {
-			Q_ASSERT(false);
+			setCurrentIndex(General::MASTER);
+			master_.refresh();
+			master_.saveModeSpecific();
 				 }
 	}
 }

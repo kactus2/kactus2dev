@@ -20,18 +20,10 @@ BusInterfacesModel::BusInterfacesModel( LibraryInterface* libHandler,
 QAbstractTableModel(parent),
 libHandler_(libHandler),
 component_(component),
-busifs_() {
+busifs_(component->getBusInterfaces()) {
 
 	Q_ASSERT(libHandler_);
 	Q_ASSERT(component_);
-
-	// add each bus interface to the map
-	QMap<QString, QSharedPointer<BusInterface> >& busInterfaces = component_->getBusInterfaces();
-	foreach (QSharedPointer<BusInterface> busif, busInterfaces) {
-		Q_ASSERT(busif);
-
-		busifs_.append(busif);
-	}
 }
 
 BusInterfacesModel::~BusInterfacesModel() {
@@ -255,10 +247,4 @@ bool BusInterfacesModel::isValid() const {
 	}
 	// all address spaces were valid
 	return true;
-}
-
-QSharedPointer<BusInterface> BusInterfacesModel::getBusInterface( int index ) const {
-	Q_ASSERT(index >= 0);
-	Q_ASSERT(index < busifs_.size());
-	return busifs_.at(index);
 }

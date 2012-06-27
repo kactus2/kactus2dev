@@ -29,6 +29,7 @@ rangeEdit_(this) {
 	topLayout->addWidget(rangeLabel, 1, 0, Qt::AlignLeft);
 	topLayout->addWidget(&rangeEdit_, 1, 1, Qt::AlignLeft);
 	topLayout->setColumnStretch(2, 1);
+	topLayout->setRowStretch(2, 1);
 
 	connect(&remapEdit_, SIGNAL(textEdited(const QString&)),
 		this, SLOT(onRemapChange(const QString&)), Qt::UniqueConnection);

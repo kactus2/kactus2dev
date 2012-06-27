@@ -67,12 +67,11 @@ public:
 	virtual void setModelData(QWidget* editor, QAbstractItemModel* model, 
 		const QModelIndex& index) const;
 
-private slots:
+	virtual void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
-	/*! \brief Commit the data from the sending editor and close the editor.
-	 *
-	*/
-	void commitAndCloseEditor();
+protected:
+
+	virtual bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index);
 
 private:
 	
@@ -84,6 +83,12 @@ private:
 
 	//! \brief Pointer to the component being edited.
 	QSharedPointer<Component> component_;
+
+	//! Boolean for ad-hoc group modify.
+	bool opaqueGroupModify_;
+
+	//! The new state for the group modify.
+	Qt::CheckState opaque;
 };
 
 #endif // BRIDGESDELEGATE_H

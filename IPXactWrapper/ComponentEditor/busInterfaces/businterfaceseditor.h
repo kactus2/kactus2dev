@@ -67,14 +67,6 @@ public:
 	*/
 	virtual void refresh();
 
-	/*! \brief Get pointer to the bus interface in the specified index.
-	 *
-	 * \param index The index of the bus interface.
-	 *
-	 * \return Pointer to the bus interface.
-	*/
-	QSharedPointer<BusInterface> getBusInterface(int index) const;
-
 private:
 
 	//! \brief No copying

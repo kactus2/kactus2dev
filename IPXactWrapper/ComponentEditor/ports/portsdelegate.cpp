@@ -7,8 +7,6 @@
 
 #include "portsdelegate.h"
 
-#include <common/widgets/booleanComboBox/booleancombobox.h>
-
 #include <vhdlGenerator/vhdlgeneral.h>
 
 #include <QComboBox>
