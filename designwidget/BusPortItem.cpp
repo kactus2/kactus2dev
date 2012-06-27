@@ -324,20 +324,36 @@ bool BusPortItem::canConnect(ConnectionEndpoint const* other) const
         General::InterfaceMode myMode = busInterface_->getInterfaceMode();
         General::InterfaceMode otherMode = otherBusIf->getInterfaceMode();
 
-        if (myMode == General::MASTER) {
-            if (otherMode == General::SLAVE || otherMode == General::MIRROREDMASTER) {
-                return true;
-            }
-        } else if (myMode == General::SLAVE) {
+        // Retrieve the bus definition to get access to the direct connection flag.
+        QSharedPointer<LibraryComponent const> libComp = lh_->getModelReadOnly(busInterface_->getBusType());
+        QSharedPointer<BusDefinition const> busDef = libComp.dynamicCast<BusDefinition const>();
 
-            if (otherMode == General::MASTER || otherMode == General::MIRROREDSLAVE) {
+        bool directConnection = busDef == 0 || busDef->getDirectConnection();
+
+        if (myMode == General::MASTER)
+        {
+            if ((directConnection && otherMode == General::SLAVE) || otherMode == General::MIRROREDMASTER)
+            {
                 return true;
             }
-        } else if (myMode == General::MIRROREDMASTER && otherMode == General::MASTER) {
+        }
+        else if (myMode == General::SLAVE)
+        {
+            if ((directConnection && otherMode == General::MASTER) || otherMode == General::MIRROREDSLAVE)
+            {
+                return true;
+            }
+        }
+        else if (myMode == General::MIRROREDMASTER && otherMode == General::MASTER)
+        {
             return true;
-        } else if (myMode == General::MIRROREDSLAVE && otherMode == General::SLAVE) {
+        }
+        else if (myMode == General::MIRROREDSLAVE && otherMode == General::SLAVE)
+        {
             return true;
-        } else if (myMode == General::SYSTEM || otherMode == General::SYSTEM) {
+        }
+        else if (myMode == General::SYSTEM || otherMode == General::SYSTEM)
+        {
             return true;
         }
     }

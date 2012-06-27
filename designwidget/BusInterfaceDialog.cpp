@@ -21,9 +21,9 @@ namespace
     {
         "Master",
         "Slave",
+        "System",
         "Mirrored Master",
         "Mirrored Slave",
-        "System",
         "Mirrored System",
         "Monitor"
     }; 
