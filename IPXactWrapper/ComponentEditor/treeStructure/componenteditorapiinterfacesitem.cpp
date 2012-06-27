@@ -14,13 +14,22 @@ ComponentEditorAPIInterfacesItem::ComponentEditorAPIInterfacesItem(
 	QSharedPointer<Component> component,
 	ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-apiInterfaces_(component->getApiInterfaces()) {
+apiInterfaces_(component->getApiInterfaces()),
+editor_(component) {
 
 	foreach (QSharedPointer<ApiInterface> apiInterface, apiInterfaces_) {
 		QSharedPointer<ComponentEditorAPIInterfaceItem> apiItem(
 			new ComponentEditorAPIInterfaceItem(apiInterface, model, libHandler, component, this));
 		childItems_.append(apiItem);
 	}
+	editor_.hide();
+
+	connect(&editor_, SIGNAL(contentChanged()), 
+		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+	connect(&editor_, SIGNAL(childAdded(int)),
+		this, SLOT(onAddChild(int)), Qt::UniqueConnection);
+	connect(&editor_, SIGNAL(childRemoved(int)),
+		this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
 }
 
 ComponentEditorAPIInterfacesItem::~ComponentEditorAPIInterfacesItem() {
@@ -35,9 +44,29 @@ QString ComponentEditorAPIInterfacesItem::text() const {
 }
 
 ItemEditor* ComponentEditorAPIInterfacesItem::editor() {
-	return NULL;
+	return &editor_;
 }
 
 const ItemEditor* ComponentEditorAPIInterfacesItem::editor() const {
-	return NULL;
+	return &editor_;
+}
+
+void ComponentEditorAPIInterfacesItem::createChild( int index ) {
+	QSharedPointer<ComponentEditorAPIInterfaceItem> apiItem(
+		new ComponentEditorAPIInterfaceItem(apiInterfaces_.at(index), model_, libHandler_, component_, this));
+	childItems_.insert(index, apiItem);
+}
+
+void ComponentEditorAPIInterfacesItem::onEditorChanged() {
+	// call the base class implementation
+	ComponentEditorItem::onEditorChanged();
+
+	// also inform of child changes
+	foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_) {
+		// tell the model that data has changed for the child
+		emit contentChanged(childItem.data());
+
+		// tell the child to update it's editor contents
+		childItem->refreshEditor();
+	}
 }

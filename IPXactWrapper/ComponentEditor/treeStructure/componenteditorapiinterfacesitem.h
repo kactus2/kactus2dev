@@ -10,8 +10,9 @@
 
 #include "componenteditoritem.h"
 #include <models/ApiInterface.h>
+#include <IPXactWrapper/ComponentEditor/software/apiinterfaceseditor.h>
 
-#include <QMap>
+#include <QList>
 
 /*! The API interfaces-item in the component editor's navigation tree.
  *
@@ -61,6 +62,20 @@ public:
 	*/
 	virtual const ItemEditor* editor() const;
 
+	/*! \brief Add a new child to the item.
+	 *
+	 * \param index The index to add the child into.
+	 *
+	*/
+	virtual void createChild(int index);
+
+protected slots:
+
+	/*! \brief Handler for editor's contentChanged signal.
+	 *
+	*/
+	virtual void onEditorChanged();
+
 private:
 	//! \brief No copying
 	ComponentEditorAPIInterfacesItem(const ComponentEditorAPIInterfacesItem& other);
@@ -70,6 +85,9 @@ private:
 
 	//! \brief Contains the api interfaces to edit.
 	QList<QSharedPointer<ApiInterface> >& apiInterfaces_;
+
+	//! \brief The editor to add/remove/edit the API interfaces.
+	ApiInterfacesEditor editor_;
 };
 
 #endif // COMPONENTEDITORAPIINTERFACESITEM_H

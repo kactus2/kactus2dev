@@ -7,6 +7,8 @@
 
 #include "componenteditorapiinterfaceitem.h"
 
+#include <QApplication>
+
 ComponentEditorAPIInterfaceItem::ComponentEditorAPIInterfaceItem(
 	QSharedPointer<ApiInterface> APIInterface,
 	ComponentEditorTreeModel* model,
@@ -47,4 +49,8 @@ ItemEditor* ComponentEditorAPIInterfaceItem::editor() {
 
 const ItemEditor* ComponentEditorAPIInterfaceItem::editor() const {
 	return &editor_;
+}
+
+QFont ComponentEditorAPIInterfaceItem::getFont() const {
+	return QApplication::font();
 }
