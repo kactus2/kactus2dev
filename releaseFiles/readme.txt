@@ -83,3 +83,6 @@ http://www.vistaico.com/ (CC Attribution 3.0 Unported)
 
 Nuvola by David Vignoni
 http://www.icon-king.com/ (LGPL)
+
+Crystal Project by Everaldo Coelho
+http://www.everaldo.com/
