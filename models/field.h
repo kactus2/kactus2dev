@@ -7,6 +7,8 @@
 #ifndef FIELD_H_
 #define FIELD_H_
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QXmlStreamWriter>
 #include <QMap>
@@ -21,7 +23,7 @@ class EnumeratedValue;
  *
  * Describes a smaller bit field of a register.
  */
-class Field {
+class KACTUS2_API Field {
 
 public:
 

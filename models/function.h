@@ -9,6 +9,8 @@
 
 #include "generaldeclarations.h"
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QList>
 #include <QDomNode>
@@ -21,7 +23,7 @@
  *
  * Specifies information about a software function.
  */
-class Function {
+class KACTUS2_API Function {
 
 public:
 

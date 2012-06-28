@@ -15,6 +15,8 @@
 
 #include <LibraryManager/vlnv.h>
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QDomNode>
 #include <QXmlStreamWriter>
@@ -46,7 +48,7 @@ QString dependencyDirection2Str(DependencyDirection dir);
 //! API interface class for defining properties of a specific API interface
 //! in a SW component.
 //-----------------------------------------------------------------------------
-class ApiInterface
+class KACTUS2_API ApiInterface
 {
 public:
     /*!

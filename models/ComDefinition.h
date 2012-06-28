@@ -14,18 +14,20 @@
 #define COMDEFINITION_H
 
 #include "librarycomponent.h"
+#include "ComProperty.h"
+
+#include <common/Global.h>
 
 #include <QStringList>
 #include <QList>
 #include <QDomDocument>
 
 class VLNV;
-class ComProperty;
 
 //-----------------------------------------------------------------------------
 //! Communication definition class.
 //-----------------------------------------------------------------------------
-class ComDefinition : public LibraryComponent
+class KACTUS2_API ComDefinition : public LibraryComponent
 {
 public:
     /*!

@@ -14,6 +14,8 @@
 
 #include <LibraryManager/vlnv.h>
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QPointF>
 #include <QMap>
@@ -23,7 +25,7 @@
 //-----------------------------------------------------------------------------
 //! IP-XACT component instance class.
 //-----------------------------------------------------------------------------
-struct ComponentInstance
+struct KACTUS2_API ComponentInstance
 {
 public:
     /*!

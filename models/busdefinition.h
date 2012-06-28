@@ -12,6 +12,8 @@
 #include <common/KactusAttribute.h>
 
 #include <LibraryManager/vlnv.h>
+
+#include <common/Global.h>
  
 #include <QDomDocument>
 #include <QSharedPointer>
@@ -25,7 +27,7 @@
  * BusDefinition is one of the top-level elements in IP-Xact and is used to
  * describe high-level aspects of a bus.
  */
-class BusDefinition: public LibraryComponent {
+class KACTUS2_API BusDefinition: public LibraryComponent {
 
 public:
 

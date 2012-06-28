@@ -9,6 +9,8 @@
 
 #include "registermodel.h"
 
+#include <common/Global.h>
+
 #include <QXmlStreamWriter>
 #include <QDomNode>
 #include <QString>
@@ -22,7 +24,7 @@ class RegisterDefinition;
  * This is a subclass of RegisterModel that holds the base class information for
  * alternateRegister, Register and RegisterFile classes.
  */
-class AlternateRegister: public RegisterModel {
+class KACTUS2_API AlternateRegister : public RegisterModel {
 
 public:
 

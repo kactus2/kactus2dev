@@ -12,6 +12,8 @@
 #ifndef APIDEPENDENCY_H
 #define APIDEPENDENCY_H
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QDomNode>
 #include <QXmlStreamWriter>
@@ -44,7 +46,7 @@ struct ApiInterfaceRef
 //-----------------------------------------------------------------------------
 //! Class encapsulating API dependency connection data.
 //-----------------------------------------------------------------------------
-class ApiDependency
+class KACTUS2_API ApiDependency
 {
 public:
     /*!

@@ -9,6 +9,8 @@
 
 #include "registermodel.h"
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QDomNode>
 #include <QXmlStreamWriter>
@@ -19,7 +21,7 @@
  *
  * This class is inherited from RegisterModel base class.
  */
-class RegisterFile: public RegisterModel {
+class KACTUS2_API RegisterFile: public RegisterModel {
 
 public:
 

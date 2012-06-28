@@ -10,6 +10,8 @@
 #include "librarycomponent.h"
 #include "designconfabstractor.h"
 
+#include <common/Global.h>
+
 #include <QSharedPointer>
 #include <QList>
 #include <QString>
@@ -28,7 +30,7 @@ class VLNV;
  *
  * Details the configuration for a design or generator chain description.
  */
-class DesignConfiguration: public LibraryComponent {
+class KACTUS2_API DesignConfiguration : public LibraryComponent {
 
 public:
 

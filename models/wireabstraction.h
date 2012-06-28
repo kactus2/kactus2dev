@@ -9,6 +9,8 @@
 
 #include "generaldeclarations.h"
 
+#include <common/Global.h>
+
 #include <QSharedPointer>
 #include <QDomNode>
 
@@ -19,7 +21,7 @@ struct Qualifier;
  *
  * Represents a port that carries logic values or an array of logic values.
  */
-class WireAbstraction {
+class KACTUS2_API WireAbstraction {
 
 public:
 

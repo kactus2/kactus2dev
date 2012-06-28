@@ -11,6 +11,8 @@
 #include "memorymap.h"
 #include "segment.h"
 
+#include <common/Global.h>
+
 #include <QSharedPointer>
 #include <QDomNode>
 #include <QString>
@@ -25,7 +27,7 @@ class parameter;
  * Each AddressSpace defines a logical address space seen by a master bus
  * interface.
  */
-class AddressSpace {
+class KACTUS2_API AddressSpace {
 
 public:
 

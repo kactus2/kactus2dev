@@ -7,6 +7,8 @@
 #ifndef MASTERINTERFACE_H_
 #define MASTERINTERFACE_H_
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QMap>
 #include <QDomNode>
@@ -17,7 +19,7 @@
  *	This class also equals the spirit:mirroredMaster element.
  * Contains the elements that define the master interface.
  */
-class MasterInterface {
+class KACTUS2_API MasterInterface {
 
 public:
 

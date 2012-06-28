@@ -10,6 +10,8 @@
 #include <LibraryManager/vlnv.h>
 #include "generaldeclarations.h"
 #include "parameter.h"
+
+#include <common/Global.h>
  
 #include <QDomNode>
 #include <QString>
@@ -28,7 +30,7 @@ class MirroredSlaveInterface;
  *
  * BusInterface defines properties of the specific interface in a component.
  */
-class BusInterface {
+class KACTUS2_API BusInterface {
 
 public:
 

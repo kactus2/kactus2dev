@@ -9,6 +9,8 @@
 
 #include "buildmodel.h"
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QMap>
 #include <QDomNode>
@@ -21,7 +23,7 @@ struct AttributePair;
  * BuildCommand contains flags or commands for building the containing source
  * file.
  */
-class BuildCommand: public BuildModel {
+class KACTUS2_API BuildCommand : public BuildModel {
 
 public:
 

@@ -7,6 +7,8 @@
 #ifndef VECTOR_H_
 #define VECTOR_H_
 
+#include <common/Global.h>
+
 #include <QDomNode>
 #include <QXmlStreamWriter>
 #include <QString>
@@ -16,7 +18,7 @@
  *
  * Determines the left and right vector bounds and attributes for them
  */
-class Vector {
+class KACTUS2_API Vector {
 
 public:
 

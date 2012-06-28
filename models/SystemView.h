@@ -16,6 +16,8 @@
 
 #include <models/generaldeclarations.h>
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QDomNode>
 #include <QXmlStreamWriter>
@@ -23,7 +25,7 @@
 //-----------------------------------------------------------------------------
 //! System view class for making VLNV references to system designs.
 //-----------------------------------------------------------------------------
-class SystemView
+class KACTUS2_API SystemView
 {
 public:
     /*!

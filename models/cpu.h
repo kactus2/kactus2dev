@@ -9,6 +9,8 @@
 
 #include <models/generaldeclarations.h>
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QStringList>
 #include <QDomNode>
@@ -22,7 +24,7 @@ class Parameter;
  * Describes a containing component with a programmable core that has some
  * sized address space.
  */
-class Cpu {
+class KACTUS2_API Cpu {
 
 public:
     /*!

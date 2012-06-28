@@ -9,6 +9,8 @@
 
 #include "generaldeclarations.h"
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QList>
 #include <QStringList>
@@ -26,7 +28,7 @@ class File;
  *
  * Contains a list of files and directories associated with a component.
  */
-class FileSet {
+class KACTUS2_API FileSet {
 
 public:
 

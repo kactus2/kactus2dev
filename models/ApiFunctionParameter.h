@@ -14,6 +14,8 @@
 
 #include "generaldeclarations.h"
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QDomNode>
 #include <QXmlStreamWriter>
@@ -21,7 +23,7 @@
 //-----------------------------------------------------------------------------
 //! API function parameter class for API definitions.
 //-----------------------------------------------------------------------------
-class ApiFunctionParameter
+class KACTUS2_API ApiFunctionParameter
 {
 public:
     /*!

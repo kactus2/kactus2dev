@@ -9,6 +9,8 @@
 
 #include "memorymapitem.h"
 
+#include <common/Global.h>
+
 #include <QList>
 #include <QString>
 #include <QSharedPointer>
@@ -19,7 +21,7 @@
  *
  * MemoryMap contains an unbounded list of memoryMap elements
  */
-class MemoryMap {
+class KACTUS2_API MemoryMap {
 
 public:
 

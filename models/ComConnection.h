@@ -12,6 +12,8 @@
 #ifndef COMCONNECTION_H
 #define COMCONNECTION_H
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QDomNode>
 #include <QXmlStreamWriter>
@@ -44,7 +46,7 @@ struct ComInterfaceRef
 //-----------------------------------------------------------------------------
 //! Class encapsulating API connection connection data.
 //-----------------------------------------------------------------------------
-class ComConnection
+class KACTUS2_API ComConnection
 {
 public:
     /*!

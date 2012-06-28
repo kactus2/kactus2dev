@@ -9,6 +9,8 @@
 
 #include "generaldeclarations.h"
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QList>
 #include <QDomNode>
@@ -21,7 +23,7 @@ class VLNV;
  * GeneratorChainSelector defines which generator(s) to invoke based on a
  * selection criteria.
  */
-class GeneratorChainSelector {
+class KACTUS2_API GeneratorChainSelector {
 
 public:
 

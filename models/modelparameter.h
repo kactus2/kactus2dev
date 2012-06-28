@@ -9,6 +9,8 @@
 
 #include "generaldeclarations.h"
 
+#include <common/Global.h>
+
 #include <QDomNode>
 #include <QString>
 #include <QMap>
@@ -20,7 +22,7 @@
  * ModelParameter desribes the properties for a single parameter that is
  * applied to all the models specified under the model/views element.
  */
-class ModelParameter {
+class KACTUS2_API ModelParameter {
 
 public:
 

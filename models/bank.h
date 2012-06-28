@@ -11,6 +11,8 @@
 #include "memorymapitem.h"
 #include "memoryblockdata.h"
 
+#include <common/Global.h>
+
 #include <QList>
 #include <QString>
 #include <QDomNode>
@@ -23,7 +25,7 @@
  * Bank is a generalization of a class MemoryMapItem which is the base class
  * also for classes AddressBlock and SubspaceMap.
  */
-class Bank: public MemoryMapItem {
+class KACTUS2_API Bank : public MemoryMapItem {
 
 public:
 

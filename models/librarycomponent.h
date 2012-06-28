@@ -10,6 +10,8 @@
 #include <LibraryManager/vlnv.h>
 #include "generaldeclarations.h"
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QList>
 #include <QDomDocument>
@@ -24,7 +26,7 @@
  * of the components, designs, busdefinitions, etc.
  *
  */
-class LibraryComponent {
+class KACTUS2_API LibraryComponent {
 
 public:
 

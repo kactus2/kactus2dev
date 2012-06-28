@@ -7,6 +7,8 @@
 #ifndef PARAMETER_H_
 #define PARAMETER_H_
 
+#include <common/Global.h>
+
 #include <QDomNode>
 #include <QString>
 #include <QMap>
@@ -17,7 +19,7 @@
  *
  * Parameter defines a configurable element related to the containing element.
  */
-class Parameter {
+class KACTUS2_API Parameter {
 
 public:
 

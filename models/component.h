@@ -15,6 +15,8 @@
 #include "port.h"
 #include "modelparameter.h"
 
+#include <common/Global.h>
+
 #include <QList>
 #include <QDomDocument>
 #include <QString>
@@ -51,7 +53,7 @@ class ComProperty;
  * Class component is a generalization from base class LibraryComponent.
  * Component can be used to describe cores, peripherals and buses.
  */
-class Component: public LibraryComponent {
+class KACTUS2_API Component: public LibraryComponent {
 
 public:
 

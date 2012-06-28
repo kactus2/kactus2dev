@@ -7,6 +7,8 @@
 #ifndef SERVICETYPEDEF_H_
 #define SERVICETYPEDEF_H_
 
+#include <common/Global.h>
+
 #include <QDomNode>
 #include <QString>
 #include <QList>
@@ -19,7 +21,7 @@ class Parameter;
  *
  * Defines a single service type definition.
  */
-class ServiceTypeDef {
+class KACTUS2_API ServiceTypeDef {
 
 public:
 

@@ -7,6 +7,8 @@
 #ifndef CHANNEL_H_
 #define CHANNEL_H_
 
+#include <common/Global.h>
+
 #include <QXmlStreamWriter>
 #include <QString>
 #include <QDomNode>
@@ -17,7 +19,7 @@
  * This struct contains a list of all the mirrored bus interfaces in the
  * containing component that belong to the same channel
  */
-class Channel {
+class KACTUS2_API Channel {
 
 public:
 

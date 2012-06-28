@@ -9,6 +9,8 @@
 
 #include "generaldeclarations.h"
 
+#include <common/Global.h>
+
 #include <QSharedPointer>
 #include <QList>
 #include <QXmlStreamWriter>
@@ -17,7 +19,7 @@
  *
  * MemoryBlockData is an optional part of AddressBlock and Bank.
  */
-class MemoryBlockData {
+class KACTUS2_API MemoryBlockData {
 
 public:
 

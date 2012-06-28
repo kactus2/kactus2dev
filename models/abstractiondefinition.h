@@ -8,8 +8,9 @@
 #define ABSTRACTIONDEFINITION_H_
 
 #include "librarycomponent.h"
-
 #include "generaldeclarations.h"
+
+#include <common/Global.h>
   
 #include <QList>
 #include <QDomDocument>
@@ -28,7 +29,7 @@ class PortAbstraction;
  * AbstractionDefinitions describes the low-level aspects of a bus or
  * interconnect.
  */
-class AbstractionDefinition: public LibraryComponent {
+class KACTUS2_API AbstractionDefinition: public LibraryComponent {
 
 public:
 

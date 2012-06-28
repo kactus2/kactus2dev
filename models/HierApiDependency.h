@@ -14,6 +14,8 @@
 
 #include "ApiDependency.h"
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QDomNode>
 #include <QXmlStreamWriter>
@@ -23,7 +25,7 @@
 //-----------------------------------------------------------------------------
 //! Class encapsulating API dependency connection data.
 //-----------------------------------------------------------------------------
-class HierApiDependency
+class KACTUS2_API HierApiDependency
 {
 public:
     /*!

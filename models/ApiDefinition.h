@@ -13,17 +13,19 @@
 #define APIDEFINITION_H
 
 #include "librarycomponent.h"
+#include "ApiFunction.h"
+
+#include <common/Global.h>
 
 #include <QStringList>
 #include <QDomDocument>
 
 class VLNV;
-class ApiFunction;
 
 //-----------------------------------------------------------------------------
 //! Communication definition class.
 //-----------------------------------------------------------------------------
-class ApiDefinition : public LibraryComponent
+class KACTUS2_API ApiDefinition : public LibraryComponent
 {
 public:
     /*!

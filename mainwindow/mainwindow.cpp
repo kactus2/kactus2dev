@@ -39,6 +39,8 @@
 #include <common/dialogs/propertyPageDialog/PropertyPageDialog.h>
 #include <common/widgets/tabWidgetEx/TabWidgetEx.h>
 
+#include <PluginSystem/IGeneratorPlugin.h>
+
 #include <models/view.h>
 #include <models/component.h>
 #include <models/model.h>
@@ -129,6 +131,7 @@ MainWindow::MainWindow(QWidget *parent)
       actGenModelSim_(0),
       actGenQuartus_(0), 
       actGenDocumentation_(0),
+      actRunPluginGenerator_(0),
       diagramToolsGroup_(0), 
       actToolSelect_(0), 
       actToolConnect_(0),
@@ -495,9 +498,13 @@ void MainWindow::setupActions() {
 
 	// initialize the action to generate documentation for the component/design
 	actGenDocumentation_ = new QAction(QIcon(":icons/graphics/documentation.png"),
-		tr("Generate documentation"), this);
+		tr("Generate Documentation"), this);
 	connect(actGenDocumentation_, SIGNAL(triggered()),
 		this, SLOT(generateDoc()), Qt::UniqueConnection);
+
+    actRunPluginGenerator_ = new QAction(QIcon(":icons/graphics/generator_plugin.png"),
+                                         tr("Run Generator Plugin"), this);
+    connect(actRunPluginGenerator_, SIGNAL(triggered()), this, SLOT(runGeneratorPlugin()), Qt::UniqueConnection);
 
 	// Initialize the action to add a new column.
 	actAddColumn_ = new QAction(QIcon(":/icons/graphics/diagram-add-column.png"), tr("Add Column"), this);
@@ -876,6 +883,7 @@ void MainWindow::setupMenus()
 	hwDesignGroup_->addAction(actGenDocumentation_);
 	hwDesignGroup_->addAction(actGenModelSim_);
 	hwDesignGroup_->addAction(actGenQuartus_);
+    hwDesignGroup_->addAction(actRunPluginGenerator_);
 	hwDesignGroup_->setVisible(false);
 	hwDesignGroup_->setEnabled(false);
 
@@ -1466,6 +1474,41 @@ void MainWindow::generateQuartus()
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: runGeneratorPlugin()
+//-----------------------------------------------------------------------------
+void MainWindow::runGeneratorPlugin()
+{
+    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+    QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(doc->getComponentVLNV());
+
+    PluginListDialog dialog(this);
+
+    // Fill in the dialog with supported plugins.
+    foreach (QObject* plugin, pluginMgr_.getPlugins())
+    {
+        IGeneratorPlugin* genPlugin = qobject_cast<IGeneratorPlugin*>(plugin);
+
+        if (genPlugin != 0 && genPlugin->checkGeneratorSupport(libComp))
+        {
+            dialog.addPlugin(plugin);
+        }
+    }
+
+    // Show the dialog and if the user pressed OK, run the selected plugin.
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        QObject* plugin = dialog.getSelectedPlugin();
+        IGeneratorPlugin* genPlugin = qobject_cast<IGeneratorPlugin*>(plugin);
+        Q_ASSERT(genPlugin != 0);
+
+        genPlugin->runGenerator(libComp, libraryHandler_);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: generateDoc()
+//-----------------------------------------------------------------------------
 void MainWindow::generateDoc() {
 	// get the vlnv of the current component
 	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());

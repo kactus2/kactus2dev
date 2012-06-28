@@ -9,6 +9,8 @@
 
 #include "remapport.h"
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QList>
 #include <QXmlStreamWriter>
@@ -18,7 +20,7 @@
  * Defines a conditional remap state where each state is conditioned by a remap
  * port specified with a remapPort instance.
  */
-class RemapState {
+class KACTUS2_API RemapState {
 
 public:
 

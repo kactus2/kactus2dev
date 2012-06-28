@@ -15,6 +15,7 @@
 #include <QListWidget>
 #include <QDialog>
 #include <QPlainTextEdit>
+#include <QDialogButtonBox>
 
 class PluginManager;
 
@@ -23,6 +24,8 @@ class PluginManager;
 //-----------------------------------------------------------------------------
 class PluginListDialog : public QDialog
 {
+    Q_OBJECT
+
 public:
     /*!
      *  Constructor.
@@ -30,12 +33,28 @@ public:
      *      @param [in] pluginMgr  The plugin manager.
      *      @param [in] parent     The parent widget.
      */
-    PluginListDialog(PluginManager* pluginMgr, QWidget* parent);
+    PluginListDialog(QWidget* parent);
 
     /*!
      *  Destructor.
      */
     ~PluginListDialog();
+
+    /*!
+     *  Adds a plugin to the plugin list.
+     *
+     *      @param [in] plugin The plugin to add.
+     */
+    void addPlugin(QObject* plugin);
+
+    /*!
+     *  Returns the selected plugin.
+     */
+    QObject* getSelectedPlugin() const;
+
+private slots:
+    //! Called when the plugin selection has changed.
+    void selectionChanged();
 
 private:
     // Disable copying.
@@ -46,11 +65,17 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
+    //! The plugin manager.
+    PluginManager* pluginMgr_;
+
     //! Plugins list widget.
     QListWidget pluginsList_;
 
     //! Read-only text edit for plugin information.
     QPlainTextEdit detailBox_;
+
+    //! Button box.
+    QDialogButtonBox buttonBox_;
 };
 
 //-----------------------------------------------------------------------------

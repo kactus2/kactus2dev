@@ -7,6 +7,8 @@
 #ifndef ENUMERATEDVALUE_H_
 #define ENUMERATEDVALUE_H_
 
+#include <common/Global.h>
+
 #include <QDomNode>
 #include <QString>
 #include <QXmlStreamWriter>
@@ -15,7 +17,7 @@
  *
  * Descrives a name and value pair for the fiven field.
  */
-class EnumeratedValue {
+class KACTUS2_API EnumeratedValue {
 
 public:
 

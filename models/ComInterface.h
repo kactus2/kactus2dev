@@ -15,6 +15,8 @@
 
 #include "generaldeclarations.h"
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QDomNode>
 #include <QXmlStreamWriter>
@@ -24,7 +26,7 @@
 //! COM interface class for defining properties of a specific COM interface
 //! in a SW component.
 //-----------------------------------------------------------------------------
-class ComInterface
+class KACTUS2_API ComInterface
 {
 public:
     /*!

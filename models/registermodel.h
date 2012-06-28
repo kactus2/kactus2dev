@@ -7,6 +7,8 @@
 #ifndef REGISTERMODEL_H_
 #define REGISTERMODEL_H_
 
+#include <common/Global.h>
+
 #include <QList>
 #include <QDomNode>
 #include <QString>
@@ -27,7 +29,7 @@ class Parameter;
  * AlternateRegister = 	spirit:alternateRegister
  * RegisterFile = 		spirit:registerFile
  */
-class RegisterModel {
+class KACTUS2_API RegisterModel {
 
 public:
 

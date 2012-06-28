@@ -9,6 +9,8 @@
 
 #include "generaldeclarations.h"
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QList>
 #include <QDomNode>
@@ -19,7 +21,7 @@
  * Specifies when the remap state gets effective. A collection of remapPort
  * instances make up the condition for the containing remap state.
  */
-class RemapPort {
+class KACTUS2_API RemapPort {
 
 public:
 

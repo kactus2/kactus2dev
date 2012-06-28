@@ -67,15 +67,15 @@ CodeEditorSettingsPage::CodeEditorSettingsPage(QSettings& settings) : settings_(
     widthLayout->addWidget(indentWidthEdit_);
     widthLayout->addStretch(1);
 
-    indentStyleRadioButtons_[AssistedTextEdit::INDENT_STYLE_TAB] =
+    indentStyleRadioButtons_[INDENT_STYLE_TAB] =
         new QRadioButton(tr("Use tabs"), indentGroup);
-    indentStyleRadioButtons_[AssistedTextEdit::INDENT_STYLE_SPACES] =
+    indentStyleRadioButtons_[INDENT_STYLE_SPACES] =
         new QRadioButton(tr("Use spaces"), indentGroup);
 
     QVBoxLayout* indentLayout = new QVBoxLayout(indentGroup);
     indentLayout->addLayout(widthLayout);
-    indentLayout->addWidget(indentStyleRadioButtons_[AssistedTextEdit::INDENT_STYLE_TAB]);
-    indentLayout->addWidget(indentStyleRadioButtons_[AssistedTextEdit::INDENT_STYLE_SPACES]);
+    indentLayout->addWidget(indentStyleRadioButtons_[INDENT_STYLE_TAB]);
+    indentLayout->addWidget(indentStyleRadioButtons_[INDENT_STYLE_SPACES]);
 
     // Create the font & colors group and all of its widgets.
     QGroupBox* fontColorGroup = new QGroupBox(tr("Font and Colors"), this);
@@ -203,13 +203,13 @@ void CodeEditorSettingsPage::apply()
     // Save the settings.
     settings_.setValue("editor/indentWidth", indentWidthEdit_->text().toInt());
     
-    if (indentStyleRadioButtons_[AssistedTextEdit::INDENT_STYLE_SPACES]->isChecked())
+    if (indentStyleRadioButtons_[INDENT_STYLE_SPACES]->isChecked())
     {
-        settings_.setValue("editor/indentStyle", AssistedTextEdit::INDENT_STYLE_SPACES);
+        settings_.setValue("editor/indentStyle", INDENT_STYLE_SPACES);
     }
     else
     {
-        settings_.setValue("editor/indentStyle", AssistedTextEdit::INDENT_STYLE_TAB);
+        settings_.setValue("editor/indentStyle", INDENT_STYLE_TAB);
     }
 
     QFont font = fontCombo_->currentFont();
@@ -246,9 +246,8 @@ void CodeEditorSettingsPage::loadSettings()
     unsigned int width = settings_.value("editor/indentWidth", 4).toInt();
     indentWidthEdit_->setText(QString::number(width));
 
-    AssistedTextEdit::IndentStyle style =
-        static_cast<AssistedTextEdit::IndentStyle>(settings_.value("editor/indentStyle",
-                                                   AssistedTextEdit::INDENT_STYLE_SPACES).toInt());
+    IndentStyle style = static_cast<IndentStyle>(settings_.value("editor/indentStyle",
+                                                                 INDENT_STYLE_SPACES).toInt());
 
     indentStyleRadioButtons_[style]->setChecked(true);
     indentStyleRadioButtons_[1 - style]->setChecked(false);

@@ -9,6 +9,8 @@
 
 #include <models/wireabstraction.h>
 
+#include <common/Global.h>
+
 #include <QDomNode>
 #include <QSharedPointer>
 #include <QString>
@@ -20,7 +22,7 @@ class TransactionalAbstraction;
  * Defines the logical port information for the containing abstraction
  * definition.
  */
-class PortAbstraction {
+class KACTUS2_API PortAbstraction {
 
 public:
 

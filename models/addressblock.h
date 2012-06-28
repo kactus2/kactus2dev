@@ -11,6 +11,8 @@
 #include "memorymapitem.h"
 #include "parameter.h"
 
+#include <common/Global.h>
+
 #include <QDomNode>
 #include <QString>
 #include <QMap>
@@ -27,7 +29,7 @@ class MemoryBlockData;
  * AddressBlock is a generalization of a class MemoryMapItem which is also the
  * base class for classes Bank and SubspaceMap.
  */
-class AddressBlock: public MemoryMapItem {
+class KACTUS2_API AddressBlock: public MemoryMapItem {
 
 public:
 

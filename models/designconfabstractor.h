@@ -9,6 +9,8 @@
 
 #include <LibraryManager/vlnv.h>
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QMap>
 #include <QSharedPointer>
@@ -22,7 +24,7 @@ class VLNV;
  * This element is used inside DesignConfiguration's
  * interconectionConfiguration element.
  */
-class DesignConfAbstractor {
+class KACTUS2_API DesignConfAbstractor {
 
 public:
 

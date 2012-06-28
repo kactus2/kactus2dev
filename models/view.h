@@ -12,6 +12,8 @@
 #include <models/generaldeclarations.h>
 #include <models/filebuilder.h>
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QList>
 #include <QDomNode>
@@ -26,7 +28,7 @@ class Parameter;
  *
  * Specifies a representation level of a component.
  */
-class View {
+class KACTUS2_API View {
 
 public:
 

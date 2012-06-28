@@ -7,6 +7,8 @@
 #ifndef MIRROREDSLAVEINTERFACE_H_
 #define MIRROREDSLAVEINTERFACE_H_
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QMap>
 #include <QList>
@@ -19,7 +21,7 @@
  * MirroredSlave can provide addition address offsets connected to the
  * slave interface.
  */
-class MirroredSlaveInterface {
+class KACTUS2_API MirroredSlaveInterface {
 
 public:
 

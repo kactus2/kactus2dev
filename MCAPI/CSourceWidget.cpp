@@ -114,9 +114,8 @@ CSourceWidget::~CSourceWidget()
 void CSourceWidget::applySettings(QSettings const& settings)
 {
     // Read indentation settings.
-    CSourceTextEdit::IndentStyle style =
-        static_cast<CSourceTextEdit::IndentStyle>(settings.value("editor/indentStyle",
-                                                               CSourceTextEdit::INDENT_STYLE_SPACES).toInt());
+    IndentStyle style = static_cast<IndentStyle>(settings.value("editor/indentStyle",
+                                                                INDENT_STYLE_SPACES).toInt());
     unsigned int width = settings.value("editor/indentWidth", 4).toInt();    
     textEdit_->setIndentStyle(style, width);
 

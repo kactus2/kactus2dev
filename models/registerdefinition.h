@@ -9,6 +9,8 @@
 
 #include "generaldeclarations.h"
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QXmlStreamWriter>
 #include <QList>
@@ -23,7 +25,7 @@ class Field;
  *
  * Contains additional elements for the register.
  */
-class RegisterDefinition {
+class KACTUS2_API RegisterDefinition {
 
 public:
 

@@ -11,7 +11,10 @@
 
 #include "librarycomponent.h"
 #include <LibraryManager/vlnv.h>
+
 #include <common/ColumnTypes.h>
+#include <common/Global.h>
+
 #include <QSharedPointer>
 #include <QList>
 #include <QString>
@@ -28,7 +31,7 @@
  *
  * Describes the spirit:design element in an IP-XACT document
  */
-class Design: public LibraryComponent {
+class KACTUS2_API Design: public LibraryComponent {
 
 public:
     /*! \brief Describes the spirit:interface type in an IP-XACT

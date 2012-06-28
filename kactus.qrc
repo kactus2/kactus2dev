@@ -68,6 +68,7 @@
         <file>graphics/workspace.png</file>
         <file>graphics/visibility.png</file>
         <file>graphics/library-refresh.png</file>
+        <file>graphics/generator_plugin.png</file>
     </qresource>
     <qresource prefix="/">
         <file>graphics/splash.png</file>

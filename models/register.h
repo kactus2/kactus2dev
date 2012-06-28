@@ -10,6 +10,8 @@
 #include "registermodel.h"
 #include "field.h"
 
+#include <common/Global.h>
+
 #include <QDomNode>
 #include <QXmlStreamWriter>
 #include <QString>
@@ -23,7 +25,7 @@ class RegisterDefinition;
  *
  * This class is inherited from RegisterModel base class.
  */
-class Register: public RegisterModel {
+class KACTUS2_API Register: public RegisterModel {
 
 public:
 

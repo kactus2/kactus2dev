@@ -12,6 +12,8 @@
 #ifndef CSOURCEWRITER_H
 #define CSOURCEWRITER_H
 
+#include <common/Global.h>
+
 #include <QTextStream>
 #include <QFile>
 #include <QString>
@@ -19,7 +21,7 @@
 //-----------------------------------------------------------------------------
 //! CSourceWriter class.
 //-----------------------------------------------------------------------------
-class CSourceWriter
+class KACTUS2_API CSourceWriter
 {
 public:
     /*!

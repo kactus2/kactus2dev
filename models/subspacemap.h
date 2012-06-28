@@ -11,6 +11,8 @@
 #include "generaldeclarations.h"
 #include "parameter.h"
 
+#include <common/Global.h>
+
 #include <QDomNode>
 #include <QList>
 #include <QSharedPointer>
@@ -23,7 +25,7 @@ class parameter;
  * SubspaceMap maps the address space of a master interface from an opaque bus
  * bridge into the memory map.
  */
-class SubspaceMap: public MemoryMapItem {
+class KACTUS2_API SubspaceMap: public MemoryMapItem {
 
 public:
 

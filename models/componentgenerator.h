@@ -9,6 +9,8 @@
 
 #include "generator.h"
 
+#include <common/Global.h>
+
 #include <QList>
 #include <QString>
 #include <QDomNode>
@@ -19,7 +21,7 @@
  * Defines a generator that is assigned and may be run on this component.
  * This class is a generalization of class Generator and uses it's services.
  */
-class ComponentGenerator: public Generator {
+class KACTUS2_API ComponentGenerator: public Generator {
 
 public:
 

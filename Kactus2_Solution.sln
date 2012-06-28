@@ -3,6 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Kactus2", "Kactus2.vcproj", "{09486B51-70A7-3073-B15B-6D4BAF3EC8C6}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MCAPICodeGenerator", "Plugins\MCAPICodeGenerator\MCAPICodeGenerator.vcproj", "{AA63BE2D-A701-4C68-9760-C71655FFE66D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{09486B51-70A7-3073-B15B-6D4BAF3EC8C6} = {09486B51-70A7-3073-B15B-6D4BAF3EC8C6}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -13,12 +18,16 @@ Global
 		{09486B51-70A7-3073-B15B-6D4BAF3EC8C6}.Debug|Win32.Build.0 = Debug|Win32
 		{09486B51-70A7-3073-B15B-6D4BAF3EC8C6}.Release|Win32.ActiveCfg = Release|Win32
 		{09486B51-70A7-3073-B15B-6D4BAF3EC8C6}.Release|Win32.Build.0 = Release|Win32
+		{AA63BE2D-A701-4C68-9760-C71655FFE66D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{AA63BE2D-A701-4C68-9760-C71655FFE66D}.Debug|Win32.Build.0 = Debug|Win32
+		{AA63BE2D-A701-4C68-9760-C71655FFE66D}.Release|Win32.ActiveCfg = Release|Win32
+		{AA63BE2D-A701-4C68-9760-C71655FFE66D}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		BuildVersion_UpdateFileVersion = True
 		BuildVersion_UpdateAssemblyVersion = True
+		BuildVersion_UpdateFileVersion = True
 	EndGlobalSection
 EndGlobal

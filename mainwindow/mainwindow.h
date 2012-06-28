@@ -206,6 +206,9 @@ public slots:
 	//! \brief Generates the documentation for the current component/design.
 	void generateDoc();
 
+    //! Prompts the user to select a generator plugin and runs it.
+    void runGeneratorPlugin();
+
     //! Zooms in the current document.
     void zoomIn();
 
@@ -606,6 +609,9 @@ private:
 	//! \brief Action to generate the documentation for a component.
 	QAction* actGenDocumentation_;
 
+    //! Action to run a generator plugin.
+    QAction* actRunPluginGenerator_;
+
     //! The SW Design group.
     GCF::MenuStripGroup* swDesignGroup_;
 
@@ -713,7 +719,7 @@ private:
 	 *
 	*/
 	void updateWindows(unsigned int supportedWindows);
-    
+
     //-----------------------------------------------------------------------------
     //! Structure which contains the show/hidden status for the windows.
     //-----------------------------------------------------------------------------

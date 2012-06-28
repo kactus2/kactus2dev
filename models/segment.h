@@ -11,6 +11,8 @@
 
 #include "generaldeclarations.h"
 
+#include <common/Global.h>
+
 #include <QXmlStreamWriter>
 #include <QDomNode>
 #include <QString>
@@ -19,7 +21,7 @@
 /*! \brief Segment describes the location and size of an area in containing address space.
  *
  */
-class Segment {
+class KACTUS2_API Segment {
 
 public:
 

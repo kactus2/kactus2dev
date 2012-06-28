@@ -9,6 +9,8 @@
 
 #include "buildmodel.h"
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QList>
 #include <QDomNode>
@@ -19,7 +21,7 @@
  *
  * Contains flags or commands for building the containing source file types.
  */
-class FileBuilder: public BuildModel {
+class KACTUS2_API FileBuilder: public BuildModel {
 
 public:
 

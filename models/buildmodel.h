@@ -9,6 +9,8 @@
 
 #include "generaldeclarations.h"
 
+#include <common/Global.h>
+
 #include <QMap>
 #include <QString>
 #include <QDomNode>
@@ -19,7 +21,7 @@
  * There is no use for BuildModel instances, this class is meant to be
  * purely a base class for generalization.
  */
-class BuildModel {
+class KACTUS2_API BuildModel {
 
 public:
 

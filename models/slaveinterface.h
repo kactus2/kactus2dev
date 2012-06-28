@@ -7,6 +7,8 @@
 #ifndef SLAVEINTERFACE_H_
 #define SLAVEINTERFACE_H_
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QList>
 #include <QStringList>
@@ -18,7 +20,7 @@
  *
  * Slave interface is one that responds to transactions.
  */
-class SlaveInterface {
+class KACTUS2_API SlaveInterface {
 
 public:
 

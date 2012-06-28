@@ -6,6 +6,8 @@
 #ifndef VLNV_H_
 #define VLNV_H_
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QStringList>
 #include <QMetaType>
@@ -15,7 +17,7 @@
  * This class provides services to store, read and write VLNV information
  * easily in classes that handle IP-XACT data.
  */
-class VLNV {
+class KACTUS2_API VLNV {
 
 public:
 

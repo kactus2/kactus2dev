@@ -9,6 +9,8 @@
 
 #include "generaldeclarations.h"
 
+#include <common/Global.h>
+
 #include <QSharedPointer>
 #include <QList>
 #include <QDomNode>
@@ -21,7 +23,7 @@ class TransactionalPort;
  *
  * Defines a logical transactional port of the abstraction definition.
  */
-class TransactionalAbstraction {
+class KACTUS2_API TransactionalAbstraction {
 
 public:
 

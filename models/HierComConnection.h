@@ -14,6 +14,8 @@
 
 #include "ComConnection.h"
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QDomNode>
 #include <QXmlStreamWriter>
@@ -23,7 +25,7 @@
 //-----------------------------------------------------------------------------
 //! Class encapsulating COM dependency connection data.
 //-----------------------------------------------------------------------------
-class HierComConnection
+class KACTUS2_API HierComConnection
 {
 public:
     /*!

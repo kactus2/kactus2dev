@@ -14,6 +14,8 @@
 
 #include <LibraryManager/vlnv.h>
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QPointF>
 #include <QList>
@@ -27,7 +29,7 @@ class ComInterface;
 //-----------------------------------------------------------------------------
 //! SW instance class for extending IP-XACT designs.
 //-----------------------------------------------------------------------------
-class SWInstance
+class KACTUS2_API SWInstance
 {
 public:
     /*!

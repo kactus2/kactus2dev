@@ -275,15 +275,15 @@ int HWConnection::calculateBusWidth() const
 
         if (port1 == 0)
         {
-            emit errorMessage(tr("Port '%1' not found in the component '%1'.").arg(portMap1->physicalPort_,
-                endpoint1()->getOwnerComponent()->getVlnv()->getName()));
+//             emit errorMessage(tr("Port '%1' not found in the component '%1'.").arg(portMap1->physicalPort_,
+//                 endpoint1()->getOwnerComponent()->getVlnv()->getName()));
             continue;
         }
         
         if (port2 == 0)
         {
-            emit errorMessage(tr("Port '%1' not found in the component '%1'.").arg(portMap2->physicalPort_,
-                endpoint2()->getOwnerComponent()->getVlnv()->getName()));
+//             emit errorMessage(tr("Port '%1' not found in the component '%1'.").arg(portMap2->physicalPort_,
+//                 endpoint2()->getOwnerComponent()->getVlnv()->getName()));
             continue;
         }
 

@@ -16,6 +16,8 @@
 
 #include <models/generaldeclarations.h>
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QDomNode>
 #include <QXmlStreamWriter>
@@ -23,7 +25,7 @@
 //-----------------------------------------------------------------------------
 //! SW view class for making VLNV references to SW designs.
 //-----------------------------------------------------------------------------
-class SWView
+class KACTUS2_API SWView
 {
 public:
     /*!

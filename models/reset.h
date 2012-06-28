@@ -7,6 +7,8 @@
 #ifndef RESET_H_
 #define RESET_H_
 
+#include <common/Global.h>
+
 #include <QDomNode>
 #include <QList>
 #include <QMap>
@@ -17,7 +19,7 @@
  *
  * This class describes the value of a register at reset.
  */
-class Reset {
+class KACTUS2_API Reset {
 
 public:
 

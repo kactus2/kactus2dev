@@ -9,6 +9,8 @@
 
 #include "generaldeclarations.h"
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QDomNode>
 #include <QList>
@@ -23,7 +25,7 @@ class Transactional;
  *
  * Port describes a single external port on the component
  */
-class Port {
+class KACTUS2_API Port {
 
 public:
 

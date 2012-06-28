@@ -11,6 +11,8 @@
 #include "view.h"
 #include "modelparameter.h"
 
+#include <common/Global.h>
+
 #include <QList>
 #include <QMap>
 #include <QDomNode>
@@ -25,7 +27,7 @@ class VLNV;
  * The Model describes the views, ports and model-related parameters of a
  * component.
  */
-class Model {
+class KACTUS2_API Model {
 
 public:
 

@@ -12,6 +12,8 @@
 #ifndef APIFUNCTION_H
 #define APIFUNCTION_H
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QDomNode>
 #include <QSharedPointer>
@@ -22,7 +24,7 @@ class ApiFunctionParameter;
 //-----------------------------------------------------------------------------
 //! API function class.
 //-----------------------------------------------------------------------------
-class ApiFunction
+class KACTUS2_API ApiFunction
 {
 public:
     /*!

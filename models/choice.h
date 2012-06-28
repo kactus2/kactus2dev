@@ -9,6 +9,8 @@
 
 #include "generaldeclarations.h"
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QList>
 #include <QXmlStreamWriter>
@@ -17,7 +19,7 @@
  *
  * Contains the name of the choice and the enumerations defined in it.
  */
-class Choice {
+class KACTUS2_API Choice {
 
 public:
 

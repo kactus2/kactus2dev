@@ -11,6 +11,8 @@
 #include "librarycomponent.h"
 #include "choice.h"
 
+#include <common/Global.h>
+
 #include <QList>
 #include <QString>
 #include <QDomDocument>
@@ -27,7 +29,7 @@ class GeneratorChainSelector;
  * Class GeneratorChain is a generalization of from base class LibraryComponent.
  * GeneratorChain describes a single generator chain.
  */
-class GeneratorChain: public LibraryComponent {
+class KACTUS2_API GeneratorChain: public LibraryComponent {
 
 public:
 

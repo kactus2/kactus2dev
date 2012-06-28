@@ -9,6 +9,8 @@
 
 #include "generaldeclarations.h"
 
+#include <common/Global.h>
+
 #include <QDomNode>
 #include <QList>
 #include <QString>
@@ -20,7 +22,7 @@
  * Consists of a number of sub-elements which define the format of the clock
  * waveform.
  */
-class OtherClockDriver {
+class KACTUS2_API OtherClockDriver {
 
 public:
 

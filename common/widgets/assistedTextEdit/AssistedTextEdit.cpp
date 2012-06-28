@@ -63,7 +63,7 @@ void AssistedTextEdit::setIndentStyle(IndentStyle style, unsigned int width)
 //-----------------------------------------------------------------------------
 // Function: getIndentStyle()
 //-----------------------------------------------------------------------------
-AssistedTextEdit::IndentStyle AssistedTextEdit::getIndentStyle() const
+IndentStyle AssistedTextEdit::getIndentStyle() const
 {
     return indentStyle_;
 }

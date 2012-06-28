@@ -9,6 +9,8 @@
 
 #include "generaldeclarations.h"
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QList>
 #include <QDomNode>
@@ -24,7 +26,7 @@ class FileSet;
  *
  * The File is a reference to a file or directory.
  */
-class File {
+class KACTUS2_API File {
 
 public:
 

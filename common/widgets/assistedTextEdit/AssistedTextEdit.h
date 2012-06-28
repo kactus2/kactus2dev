@@ -22,6 +22,15 @@ class ITextContentMatcher;
 class TextContentAssistWidget;
 
 //-----------------------------------------------------------------------------
+//! IndentStyle enumeration.
+//-----------------------------------------------------------------------------
+enum IndentStyle
+{
+    INDENT_STYLE_TAB = 0,
+    INDENT_STYLE_SPACES
+};
+
+//-----------------------------------------------------------------------------
 //! AssistedTextEdit class.
 //-----------------------------------------------------------------------------
 class AssistedTextEdit : public QPlainTextEdit
@@ -29,15 +38,6 @@ class AssistedTextEdit : public QPlainTextEdit
     Q_OBJECT
 
 public:
-    //-----------------------------------------------------------------------------
-    //! IndentStyle enumeration.
-    //-----------------------------------------------------------------------------
-    enum IndentStyle
-    {
-        INDENT_STYLE_TAB = 0,
-        INDENT_STYLE_SPACES
-    };
-
     /*!
      *  Constructor.
      *

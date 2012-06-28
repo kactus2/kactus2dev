@@ -26,6 +26,7 @@
 #include <models/ComInterface.h>
 #include <models/component.h>
 #include <models/ApiDefinition.h>
+#include <models/ApiFunction.h>
 #include <models/ComDefinition.h>
 
 #include <QBrush>

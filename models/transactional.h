@@ -9,6 +9,8 @@
 
 #include "generaldeclarations.h"
 
+#include <common/Global.h>
+
 #include <QDomNode>
 #include <QList>
 #include <QString>
@@ -22,7 +24,7 @@ class ServiceTypeDef;
  * Defines a physical transactional port of the component, which implements or
  * uses a service. A service can be implemented with functions or methods.
  */
-class Transactional {
+class KACTUS2_API Transactional {
 
 public:
 

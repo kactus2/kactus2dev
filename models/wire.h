@@ -9,6 +9,8 @@
 
 #include "generaldeclarations.h"
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QList>
 #include <QDomNode>
@@ -26,7 +28,7 @@ class Vector;
  *
  * Describes the properties for ports that are of wire style.
  */
-class Wire {
+class KACTUS2_API Wire {
 
 public:
 

@@ -14,6 +14,7 @@
 #include <models/view.h>
 #include <models/librarycomponent.h>
 #include <models/abstractiondefinition.h>
+#include <models/businterface.h>
 
 #include <LibraryManager/libraryinterface.h>
 

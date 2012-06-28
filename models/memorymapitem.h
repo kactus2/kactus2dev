@@ -9,6 +9,8 @@
 
 #include "generaldeclarations.h"
 
+#include <common/Global.h>
+
 #include <QDomNode>
 #include <QMap>
 #include <QString>
@@ -20,7 +22,7 @@
  * MemoryMapItem instances don't represent any element in IP-Xact specification
  * so only it is meant to be purely a base class.
  */
-class MemoryMapItem {
+class KACTUS2_API MemoryMapItem {
 
 public:
 
