@@ -15,31 +15,36 @@
 //-----------------------------------------------------------------------------
 // Function: ComInterface::ComInterface()
 //-----------------------------------------------------------------------------
-ComInterface::ComInterface() : name_(), displayName_(), desc_(),
-                               comType_(), transferType_(), dir_(General::INOUT),
-                               propertyValues_()
+ComInterface::ComInterface():
+nameGroup_(),
+comType_(), 
+transferType_(), 
+dir_(General::INOUT),
+propertyValues_()
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComInterface::ComInterface()
 //-----------------------------------------------------------------------------
-ComInterface::ComInterface(ComInterface const& rhs) : name_(rhs.name_),
-                                                      displayName_(rhs.displayName_),
-                                                      desc_(rhs.desc_),
-                                                      comType_(rhs.comType_),
-                                                      transferType_(rhs.transferType_),
-                                                      dir_(rhs.dir_),
-                                                      propertyValues_(rhs.propertyValues_)
+ComInterface::ComInterface(ComInterface const& rhs):
+nameGroup_(rhs.nameGroup_),
+comType_(rhs.comType_),
+transferType_(rhs.transferType_),
+dir_(rhs.dir_),
+propertyValues_(rhs.propertyValues_)
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComInterface::ComInterface()
 //-----------------------------------------------------------------------------
-ComInterface::ComInterface(QDomNode& node) : name_(), displayName_(), desc_(), comType_(),
-                                             transferType_(), dir_(General::INOUT),
-                                             propertyValues_()
+ComInterface::ComInterface(QDomNode& node): 
+nameGroup_(node), 
+comType_(),
+transferType_(), 
+dir_(General::INOUT),
+propertyValues_()
 {
     for (int i = 0; i < node.childNodes().count(); ++i)
     {
@@ -50,19 +55,7 @@ ComInterface::ComInterface(QDomNode& node) : name_(), displayName_(), desc_(), c
             continue;
         }
 
-        if (childNode.nodeName() == "spirit:name")
-        {
-            name_ = General::removeWhiteSpace(childNode.childNodes().at(0).nodeValue());
-        }
-        else if (childNode.nodeName() == "spirit:displayName")
-        {
-            displayName_ = childNode.childNodes().at(0).nodeValue();
-        }
-        else if (childNode.nodeName() == "spirit:description")
-        {
-            desc_ = childNode.childNodes().at(0).nodeValue();
-        }
-        else if (childNode.nodeName() == "kactus2:comType")
+        if (childNode.nodeName() == "kactus2:comType")
         {
             comType_ = General::createVLNV(childNode, VLNV::COMDEFINITION);
         }
@@ -97,9 +90,9 @@ void ComInterface::write(QXmlStreamWriter& writer) const
     writer.writeStartElement("kactus2:comInterface");
 
     // Write basic name info.
-    writer.writeTextElement("spirit:name", name_);
-    writer.writeTextElement("spirit:displayName", displayName_);
-    writer.writeTextElement("spirit:description", desc_);
+    writer.writeTextElement("spirit:name", nameGroup_.name_);
+    writer.writeTextElement("spirit:displayName", nameGroup_.displayName_);
+    writer.writeTextElement("spirit:description", nameGroup_.description_);
 
     // Write communication type, data type and communication direction.
     writer.writeEmptyElement("kactus2:comType");
@@ -132,10 +125,10 @@ void ComInterface::write(QXmlStreamWriter& writer) const
 //-----------------------------------------------------------------------------
 bool ComInterface::isValid(QStringList& errorList, QString const& parentId) const
 {
-    QString const thisId = QObject::tr("COM interface '%1'").arg(name_);
+    QString const thisId = QObject::tr("COM interface '%1'").arg(nameGroup_.name_);
     bool valid = true;
 
-    if (name_.isEmpty())
+    if (nameGroup_.name_.isEmpty())
     {
         errorList.append(QObject::tr("No name specified for a COM interface in %1").arg(parentId));
         valid = false;
@@ -169,7 +162,7 @@ bool ComInterface::isValid(QStringList& errorList, QString const& parentId) cons
 //-----------------------------------------------------------------------------
 bool ComInterface::isValid() const
 {
-    if (name_.isEmpty())
+    if (nameGroup_.name_.isEmpty())
     {
         return false;
     }
@@ -200,7 +193,7 @@ bool ComInterface::isValid() const
 //-----------------------------------------------------------------------------
 void ComInterface::setName(QString const& name)
 {
-    name_ = name;
+    nameGroup_.name_ = name;
 }
 
 //-----------------------------------------------------------------------------
@@ -208,7 +201,7 @@ void ComInterface::setName(QString const& name)
 //-----------------------------------------------------------------------------
 void ComInterface::setDisplayName(QString const& displayName)
 {
-    displayName_ = displayName;
+    nameGroup_.displayName_ = displayName;
 }
 
 //-----------------------------------------------------------------------------
@@ -216,7 +209,7 @@ void ComInterface::setDisplayName(QString const& displayName)
 //-----------------------------------------------------------------------------
 void ComInterface::setDescription(QString const& desc)
 {
-    desc_ = desc;
+    nameGroup_.description_ = desc;
 }
 
 //-----------------------------------------------------------------------------
@@ -256,7 +249,7 @@ void ComInterface::setPropertyValues(QMap<QString, QString> const& values)
 //-----------------------------------------------------------------------------
 QString const& ComInterface::getName() const
 {
-    return name_;
+    return nameGroup_.name_;
 }
 
 //-----------------------------------------------------------------------------
@@ -264,7 +257,7 @@ QString const& ComInterface::getName() const
 //-----------------------------------------------------------------------------
 QString const& ComInterface::getDisplayName() const
 {
-    return displayName_;
+    return nameGroup_.displayName_;
 }
 
 //-----------------------------------------------------------------------------
@@ -272,7 +265,7 @@ QString const& ComInterface::getDisplayName() const
 //-----------------------------------------------------------------------------
 QString const& ComInterface::getDescription() const
 {
-    return desc_;
+    return nameGroup_.description_;
 }
 
 //-----------------------------------------------------------------------------
@@ -314,9 +307,9 @@ ComInterface& ComInterface::operator=(ComInterface const& rhs)
 {
     if (&rhs != this)
     {
-        name_ = rhs.name_;
-        displayName_ = rhs.displayName_;
-        desc_ = rhs.desc_;
+        nameGroup_.name_ = rhs.nameGroup_.name_;
+        nameGroup_.displayName_ = rhs.nameGroup_.displayName_;
+        nameGroup_.description_ = rhs.nameGroup_.description_;
         comType_ = rhs.comType_;
         dir_ = rhs.dir_;
     }
@@ -341,4 +334,12 @@ void ComInterface::parsePropertyValues(QDomNode& node)
             propertyValues_.insert(name, value);
         }
     }
+}
+
+General::NameGroup& ComInterface::getNameGroup() {
+	return nameGroup_;
+}
+
+const General::NameGroup& ComInterface::getNameGroup() const {
+	return nameGroup_;
 }

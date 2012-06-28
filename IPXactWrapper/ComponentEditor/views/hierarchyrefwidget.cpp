@@ -37,7 +37,7 @@ topLevelRef_(this) {
 	layout->addStretch();
 	layout->setContentsMargins(0, 0, 0, 0);
 
-	connect(&hierarchyRef_, SIGNAL(contentChanged()),
+	connect(&hierarchyRef_, SIGNAL(vlnvEdited()),
 		this, SLOT(onVLNVChanged()), Qt::UniqueConnection);
 	connect(&topLevelRef_, SIGNAL(currentIndexChanged(const QString&)),
 		this, SLOT(onTopRefChanged(const QString&)), Qt::UniqueConnection);

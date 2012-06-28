@@ -37,9 +37,9 @@ libHandler_(libHandler) {
 
 	connect(&nameEditor_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&busType_, SIGNAL(contentChanged()),
+	connect(&busType_, SIGNAL(vlnvEdited()),
 		this, SLOT(onBusTypeChanged()), Qt::UniqueConnection);
-	connect(&absType_, SIGNAL(contentChanged()),
+	connect(&absType_, SIGNAL(vlnvEdited()),
 		this, SLOT(onAbsTypeChanged()), Qt::UniqueConnection);
 	connect(&modeSelector_, SIGNAL(modeSelected(General::InterfaceMode)),
 		this, SLOT(onModeChanged(General::InterfaceMode)), Qt::UniqueConnection);

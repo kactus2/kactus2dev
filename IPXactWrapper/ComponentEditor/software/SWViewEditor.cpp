@@ -28,7 +28,7 @@ hierRefEditor_(VLNV::DESIGNCONFIGURATION, libHandler, this, this)
 {
     connect(&nameEditor_, SIGNAL(contentChanged()),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(&hierRefEditor_, SIGNAL(contentChanged()),
+    connect(&hierRefEditor_, SIGNAL(vlnvEdited()),
         this, SLOT(onHierRefChange()), Qt::UniqueConnection);
 
     hierRefEditor_.setTitle(tr("Hierarchy reference"));

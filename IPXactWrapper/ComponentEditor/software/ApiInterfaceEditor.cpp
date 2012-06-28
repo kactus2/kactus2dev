@@ -25,29 +25,19 @@
 ApiInterfaceEditor::ApiInterfaceEditor(LibraryInterface* libHandler,
                                        QSharedPointer<Component> component,
                                        QSharedPointer<ApiInterface> APIInterface,
-									   QWidget *parent)
-    : ItemEditor(component, parent),
-      libInterface_(libHandler),
-      apiIf_(APIInterface.data()),
-      nameGroup_(this),
-      apiType_(VLNV::APIDEFINITION, libHandler, this, this),
-      detailsGroup_(tr("Details"), this),
-      dependencyCombo_(this)
+									   QWidget *parent):
+ItemEditor(component, parent),
+libInterface_(libHandler),
+apiIf_(APIInterface.data()),
+nameEditor_(APIInterface->getNameGroup(), this, tr("Name and description")),
+apiType_(VLNV::APIDEFINITION, libHandler, this, this),
+detailsGroup_(tr("Details"), this),
+dependencyCombo_(this)
 {
     Q_ASSERT(APIInterface != 0);
     Q_ASSERT(libHandler != 0);
-
-    connect(&nameGroup_, SIGNAL(contentChanged()),
-        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(&nameGroup_, SIGNAL(nameChanged(const QString&)),
-        this, SIGNAL(nameChanged(const QString&)), Qt::UniqueConnection);
-    connect(&apiType_, SIGNAL(contentChanged()),
-        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(&dependencyCombo_, SIGNAL(currentIndexChanged(int)),
-        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     
-    // Set name group and VLNV editor settings.
-    nameGroup_.setTitle(tr("Name and description"));
+    // Set VLNV editor settings.
     apiType_.setTitle(tr("API definition"));
     apiType_.setMandatory(false);
 
@@ -77,12 +67,19 @@ ApiInterfaceEditor::ApiInterfaceEditor(LibraryInterface* libHandler,
 
     // Create the layout for the actual editor.
     QVBoxLayout* layout = new QVBoxLayout(topWidget);
-    layout->addWidget(&nameGroup_);
+    layout->addWidget(&nameEditor_);
     layout->addWidget(&apiType_);
     layout->addWidget(&detailsGroup_);
     layout->addStretch();
 
     scrollArea->setWidget(topWidget);
+
+	connect(&nameEditor_, SIGNAL(contentChanged()),
+		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&apiType_, SIGNAL(vlnvEdited()),
+		this, SLOT(onAPITypeChange()), Qt::UniqueConnection);
+	connect(&dependencyCombo_, SIGNAL(currentIndexChanged(int)),
+		this, SLOT(onDependencyChange(int)), Qt::UniqueConnection);
 
     refresh();
 }
@@ -99,16 +96,8 @@ ApiInterfaceEditor::~ApiInterfaceEditor()
 //-----------------------------------------------------------------------------
 bool ApiInterfaceEditor::isValid() const
 {
-    return (nameGroup_.isValid() &&
+    return (nameEditor_.isValid() &&
             (apiType_.isEmpty() || (apiType_.isValid() && libInterface_->contains(apiType_.getVLNV()))));
-}
-
-//-----------------------------------------------------------------------------
-// Function: ApiInterfaceEditor::removeModel()
-//-----------------------------------------------------------------------------
-void ApiInterfaceEditor::removeModel()
-{
-    component()->removeApiInterface(apiIf_);
 }
 
 //-----------------------------------------------------------------------------
@@ -116,29 +105,28 @@ void ApiInterfaceEditor::removeModel()
 //-----------------------------------------------------------------------------
 void ApiInterfaceEditor::makeChanges()
 {
-    apiIf_->setName(nameGroup_.getName());
-    apiIf_->setDisplayName(nameGroup_.getDisplayName());
-    apiIf_->setDescription(nameGroup_.getDescription());
-    apiIf_->setApiType(apiType_.getVLNV());
-    apiIf_->setDependencyDirection(static_cast<DependencyDirection>(dependencyCombo_.currentIndex()));
-}
-
-//-----------------------------------------------------------------------------
-// Function: ApiInterfaceEditor::restoreChanges()
-//-----------------------------------------------------------------------------
-void ApiInterfaceEditor::restoreChanges()
-{
-    nameGroup_.setName(apiIf_->getName());
-    nameGroup_.setDisplayName(apiIf_->getDisplayName());
-    nameGroup_.setDescription(apiIf_->getDescription());
-    apiType_.setVLNV(apiIf_->getApiType());
-    dependencyCombo_.setCurrentIndex(apiIf_->getDependencyDirection());
+    // TODO remove this in final
 }
 
 void ApiInterfaceEditor::refresh() {
-	nameGroup_.setName(apiIf_->getName());
-	nameGroup_.setDisplayName(apiIf_->getDisplayName());
-	nameGroup_.setDescription(apiIf_->getDescription());
+	nameEditor_.refresh();
+
 	apiType_.setVLNV(apiIf_->getApiType());
+
+	// the signal must be disconnected for the duration of changing the selected index
+	disconnect(&dependencyCombo_, SIGNAL(currentIndexChanged(int)),
+		this, SLOT(onDependencyChange(int)));
 	dependencyCombo_.setCurrentIndex(apiIf_->getDependencyDirection());
+	connect(&dependencyCombo_, SIGNAL(currentIndexChanged(int)),
+		this, SLOT(onDependencyChange(int)), Qt::UniqueConnection);
+}
+
+void ApiInterfaceEditor::onAPITypeChange() {
+	apiIf_->setApiType(apiType_.getVLNV());
+	emit contentChanged();
+}
+
+void ApiInterfaceEditor::onDependencyChange( int index ) {
+	apiIf_->setDependencyDirection(static_cast<DependencyDirection>(dependencyCombo_.currentIndex()));
+	emit contentChanged();
 }

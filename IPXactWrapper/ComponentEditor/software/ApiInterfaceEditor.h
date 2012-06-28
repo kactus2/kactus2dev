@@ -15,7 +15,7 @@
 #include "../itemeditor.h"
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
-#include <common/widgets/nameGroupBox/namegroupbox.h>
+#include <common/widgets/nameGroupEditor/namegroupeditor.h>
 
 #include <QComboBox>
 #include <QGroupBox>
@@ -57,13 +57,6 @@ public:
 	 */
 	bool isValid() const;
 
-    /*!
-     *  Removes the edited API interface from the model.
-	 *
-	 *      @remarks This function should be used when user wants to remove an element from the component.
-	 */
-	virtual void removeModel();
-
 	/*!
      *  Applies the changes from the widgets editors to the IP-Xact model.
      */
@@ -72,6 +65,14 @@ public:
 	/*! \brief Reload the information from the model to the editor.
 	*/
 	virtual void refresh();
+
+private slots:
+
+	//! \brief Handler for changes in api type.
+	void onAPITypeChange();
+
+	//! \brief Handler for changes in dependency editor.
+	void onDependencyChange(int index);
 
 private:
     // Disable copying.
@@ -94,7 +95,7 @@ private:
     ApiInterface* apiIf_;
 
     //! Contains the name, display name and description of the API interface.
-    NameGroupBox nameGroup_;
+    NameGroupEditor nameEditor_;
 
     //! Editor for setting the API definition.
     VLNVEditor apiType_;

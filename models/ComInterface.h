@@ -158,6 +158,18 @@ public:
      */
     ComInterface& operator=(ComInterface const& rhs);
 
+	/*! \brief Get the name group of the com interface.
+	 *
+	 * \return Reference to the name group.
+	*/
+	General::NameGroup& getNameGroup();
+
+	/*! \brief Get the name group of the com interface.
+	 *
+	 * \return Reference to the name group.
+	*/
+	const General::NameGroup& getNameGroup() const;
+
 private:
     /*!
      *  Parses the property values from the given XML node.
@@ -170,14 +182,8 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The name of the COM interface.
-    QString name_;
-
-    //! The display name for the COM interface.
-    QString displayName_;
-
-    //! The COM interface description.
-    QString desc_;
+	//! \brief Contains the name, display name and description.
+	General::NameGroup nameGroup_;
 
     //! The COM type (i.e. a VLNV reference to a COM definition).
     VLNV comType_;

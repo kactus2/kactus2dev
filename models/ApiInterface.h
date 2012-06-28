@@ -14,6 +14,7 @@
 #define APIINTERFACE_H
 
 #include <LibraryManager/vlnv.h>
+#include "generaldeclarations.h"
 
 #include <common/Global.h>
 
@@ -151,6 +152,18 @@ public:
      */
     DependencyDirection getDependencyDirection() const;
 
+	/*! \brief Get the name group of the api interface.
+	 *
+	 * \return Reference to the name group.
+	*/
+	General::NameGroup& getNameGroup();
+
+	/*! \brief Get the name group of the api interface.
+	 *
+	 * \return Reference to the name group.
+	*/
+	const General::NameGroup& getNameGroup() const;
+
     /*!
      *  Assignment operator.
      */
@@ -161,14 +174,8 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The name of the API interface.
-    QString name_;
-
-    //! The display name for the API interface.
-    QString displayName_;
-
-    //! The API interface description.
-    QString desc_;
+	//! \brief Contains the name, display name and description.
+	General::NameGroup nameGroup_;
 
     //! The API type (i.e. a VLNV reference to an API definition).
     VLNV apiType_;

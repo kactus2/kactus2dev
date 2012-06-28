@@ -52,17 +52,16 @@ QString dependencyDirection2Str(DependencyDirection dir)
 //-----------------------------------------------------------------------------
 // Function: ApiInterface::ApiInterface()
 //-----------------------------------------------------------------------------
-ApiInterface::ApiInterface() : name_(), displayName_(), desc_(), apiType_(),
-                               dependencyDir_(DEPENDENCY_PROVIDER)
-{
+ApiInterface::ApiInterface():
+nameGroup_(),
+apiType_(),
+dependencyDir_(DEPENDENCY_PROVIDER) {
 }
 
 //-----------------------------------------------------------------------------
 // Function: ApiInterface::ApiInterface()
 //-----------------------------------------------------------------------------
-ApiInterface::ApiInterface(ApiInterface const& rhs) : name_(rhs.name_),
-                                                      displayName_(rhs.displayName_),
-                                                      desc_(rhs.desc_),
+ApiInterface::ApiInterface(ApiInterface const& rhs) : nameGroup_(rhs.nameGroup_),
                                                       apiType_(rhs.apiType_),
                                                       dependencyDir_(rhs.dependencyDir_)
 {
@@ -71,7 +70,7 @@ ApiInterface::ApiInterface(ApiInterface const& rhs) : name_(rhs.name_),
 //-----------------------------------------------------------------------------
 // Function: ApiInterface::ApiInterface()
 //-----------------------------------------------------------------------------
-ApiInterface::ApiInterface(QDomNode& node) : name_(), displayName_(), desc_(), apiType_(),
+ApiInterface::ApiInterface(QDomNode& node) : nameGroup_(node), apiType_(),
                                              dependencyDir_(DEPENDENCY_PROVIDER)
 {
     for (int i = 0; i < node.childNodes().count(); ++i)
@@ -83,19 +82,7 @@ ApiInterface::ApiInterface(QDomNode& node) : name_(), displayName_(), desc_(), a
             continue;
         }
 
-        if (childNode.nodeName() == "kactus2:name")
-        {
-            name_ = General::removeWhiteSpace(childNode.childNodes().at(0).nodeValue());
-        }
-        else if (childNode.nodeName() == "kactus2:displayName")
-        {
-            displayName_ = childNode.childNodes().at(0).nodeValue();
-        }
-        else if (childNode.nodeName() == "kactus2:description")
-        {
-            desc_ = childNode.childNodes().at(0).nodeValue();
-        }
-        else if (childNode.nodeName() == "kactus2:apiType")
+        if (childNode.nodeName() == "kactus2:apiType")
         {
             apiType_ = General::createVLNV(childNode, VLNV::APIDEFINITION);
         }
@@ -121,9 +108,9 @@ void ApiInterface::write(QXmlStreamWriter& writer) const
 {
     writer.writeStartElement("kactus2:apiInterface");
 
-    writer.writeTextElement("kactus2:name", name_);
-    writer.writeTextElement("kactus2:displayName", displayName_);
-    writer.writeTextElement("kactus2:description", desc_);
+    writer.writeTextElement("spirit:name", nameGroup_.name_);
+    writer.writeTextElement("spirit:displayName", nameGroup_.displayName_);
+    writer.writeTextElement("spirit:description", nameGroup_.description_);
 
     writer.writeEmptyElement("kactus2:apiType");
     General::writeVLNVAttributes(writer, &apiType_);
@@ -138,10 +125,10 @@ void ApiInterface::write(QXmlStreamWriter& writer) const
 //-----------------------------------------------------------------------------
 bool ApiInterface::isValid(QStringList& errorList, QString const& parentId) const
 {
-    QString const thisId = QObject::tr("COM interface '%1'").arg(name_);
+    QString const thisId = QObject::tr("API interface '%1'").arg(nameGroup_.name_);
     bool valid = true;
 
-    if (name_.isEmpty())
+    if (nameGroup_.name_.isEmpty())
     {
         errorList.append(QObject::tr("No name specified for an API interface in %1").arg(parentId));
         valid = false;
@@ -161,7 +148,7 @@ bool ApiInterface::isValid(QStringList& errorList, QString const& parentId) cons
 //-----------------------------------------------------------------------------
 bool ApiInterface::isValid() const
 {
-    return (!name_.isEmpty() && (apiType_.isEmpty() || apiType_.isValid()));
+    return (!nameGroup_.name_.isEmpty() && (apiType_.isEmpty() || apiType_.isValid()));
 }
 
 //-----------------------------------------------------------------------------
@@ -169,7 +156,7 @@ bool ApiInterface::isValid() const
 //-----------------------------------------------------------------------------
 void ApiInterface::setName(QString const& name)
 {
-    name_ = name;
+    nameGroup_.name_ = name;
 }
 
 //-----------------------------------------------------------------------------
@@ -177,7 +164,7 @@ void ApiInterface::setName(QString const& name)
 //-----------------------------------------------------------------------------
 void ApiInterface::setDisplayName(QString const& displayName)
 {
-    displayName_ = displayName;
+    nameGroup_.displayName_ = displayName;
 }
 
 //-----------------------------------------------------------------------------
@@ -185,7 +172,7 @@ void ApiInterface::setDisplayName(QString const& displayName)
 //-----------------------------------------------------------------------------
 void ApiInterface::setDescription(QString const& desc)
 {
-    desc_ = desc;
+    nameGroup_.description_ = desc;
 }
 
 //-----------------------------------------------------------------------------
@@ -209,7 +196,7 @@ void ApiInterface::setDependencyDirection(DependencyDirection dir)
 //-----------------------------------------------------------------------------
 QString const& ApiInterface::getName() const
 {
-    return name_;
+    return nameGroup_.name_;
 }
 
 //-----------------------------------------------------------------------------
@@ -217,7 +204,7 @@ QString const& ApiInterface::getName() const
 //-----------------------------------------------------------------------------
 QString const& ApiInterface::getDisplayName() const
 {
-    return displayName_;
+    return nameGroup_.displayName_;
 }
 
 //-----------------------------------------------------------------------------
@@ -225,7 +212,7 @@ QString const& ApiInterface::getDisplayName() const
 //-----------------------------------------------------------------------------
 QString const& ApiInterface::getDescription() const
 {
-    return desc_;
+    return nameGroup_.description_;
 }
 
 //-----------------------------------------------------------------------------
@@ -251,12 +238,20 @@ ApiInterface& ApiInterface::operator=(ApiInterface const& rhs)
 {
     if (&rhs != this)
     {
-        name_ = rhs.name_;
-        displayName_ = rhs.displayName_;
-        desc_ = rhs.desc_;
+        nameGroup_.name_ = rhs.nameGroup_.name_;
+        nameGroup_.displayName_ = rhs.nameGroup_.displayName_;
+        nameGroup_.description_ = rhs.nameGroup_.description_;
         apiType_ = rhs.apiType_;
         dependencyDir_ = rhs.dependencyDir_;
     }
 
     return *this;
+}
+
+General::NameGroup& ApiInterface::getNameGroup() {
+	return nameGroup_;
+}
+
+const General::NameGroup& ApiInterface::getNameGroup() const {
+	return nameGroup_;
 }
