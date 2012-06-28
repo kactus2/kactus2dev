@@ -16,7 +16,7 @@
 #include "../itemeditor.h"
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
-#include <common/widgets/nameGroupBox/namegroupbox.h>
+#include <common/widgets/nameGroupEditor/namegroupeditor.h>
 #include <models/ComInterface.h>
 #include <models/component.h>
 
@@ -34,18 +34,6 @@ class ComInterfaceEditor : public ItemEditor
     Q_OBJECT
 
 public:
-    /*!
-     *  Constructor.
-     *
-     *      @param [in] libHandler   The library handler.
-     *      @param [in] component    The component being edited.
-     *      @param [in] dataPointer  The COM interface being edited.
-     *      @param [in] parent       The parent widget.
-	 */
-	ComInterfaceEditor(LibraryInterface* libHandler, 
-		QSharedPointer<Component> component, 
-		void* dataPointer,
-		QWidget *parent = 0);
 
 	/*! \brief The constructor
 	 *
@@ -72,13 +60,6 @@ public:
 	 */
 	bool isValid() const;
 
-    /*!
-     *  Removes the edited COM interface from the model.
-	 *
-	 *      @remarks This function should be used when user wants to remove an element from the component.
-	 */
-	virtual void removeModel();
-
 	/*!
      *  Applies the changes from the widgets editors to the IP-Xact model.
      */
@@ -99,14 +80,6 @@ private:
     ComInterfaceEditor(ComInterfaceEditor const& rhs);
     ComInterfaceEditor& operator=(ComInterfaceEditor const& rhs);
 
-    /*!
-     *  Restores changes made to the contents.
-     */
-    void restoreChanges();
-
-	//! \brief Set up the editor.
-	void initialize();
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -118,7 +91,7 @@ private:
     ComInterface* comIf_;
 
     //! Contains the name, display name and description of the COM interface.
-    NameGroupBox nameGroup_;
+    NameGroupEditor nameEditor_;
 
     //! Editor for setting the COM definition.
     VLNVEditor comType_;

@@ -20,28 +20,6 @@
 #include <QLabel>
 #include <QGridLayout>
 
-//-----------------------------------------------------------------------------
-// Function: ComInterfaceEditor::ComInterfaceEditor()
-//-----------------------------------------------------------------------------
-ComInterfaceEditor::ComInterfaceEditor(LibraryInterface* libHandler,
-                                       QSharedPointer<Component> component,
-                                       void* dataPointer, QWidget *parent)
-    : ItemEditor(component, parent),
-      libInterface_(libHandler),
-      comIf_(static_cast<ComInterface*>(dataPointer)),
-      nameGroup_(this),
-      comType_(VLNV::COMDEFINITION, libHandler, this, this),
-      detailsGroup_(tr("Details"), this),
-      transferTypeCombo_(this),
-      directionCombo_(this),
-      propertyValueEditor_(this)
-{
-    Q_ASSERT(dataPointer != 0);
-    Q_ASSERT(libHandler != 0);
-
-    initialize();
-}
-
 ComInterfaceEditor::ComInterfaceEditor(LibraryInterface* libHandler,
 									   QSharedPointer<Component> component,
 									   QSharedPointer<ComInterface> comInterface,
@@ -49,49 +27,19 @@ ComInterfaceEditor::ComInterfaceEditor(LibraryInterface* libHandler,
 ItemEditor(component, parent),
 libInterface_(libHandler),
 comIf_(comInterface.data()),
-nameGroup_(this),
+nameEditor_(comInterface->getNameGroup(), this, tr("Name and description")),
 comType_(VLNV::COMDEFINITION, libHandler, this, this),
 detailsGroup_(tr("Details"), this),
 transferTypeCombo_(this),
 directionCombo_(this),
 propertyValueEditor_(this) {
 
-	initialize();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComInterfaceEditor::~ComInterfaceEditor()
-//-----------------------------------------------------------------------------
-ComInterfaceEditor::~ComInterfaceEditor()
-{
-}
-
-void ComInterfaceEditor::initialize() {
-	connect(&nameGroup_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&nameGroup_, SIGNAL(nameChanged(const QString&)),
-		this, SIGNAL(nameChanged(const QString&)), Qt::UniqueConnection);
-	connect(&comType_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&transferTypeCombo_, SIGNAL(currentIndexChanged(int)),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&transferTypeCombo_, SIGNAL(editTextChanged(QString const&)),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&directionCombo_, SIGNAL(currentIndexChanged(int)),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&propertyValueEditor_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-
-	connect(&comType_, SIGNAL(contentChanged()),
-		this, SLOT(onComDefinitionChanged()), Qt::UniqueConnection);
-
-	// Set name group and VLNV editor settings.
-	nameGroup_.setTitle(tr("Name and description"));
+	// Set VLNV editor settings.
 	comType_.setTitle(tr("COM definition"));
 	comType_.setMandatory(false);
 
 	// Initialize the details group.
-	QLabel* transferTypeLabel = new QLabel(tr("Data type:"), &detailsGroup_);
+	QLabel* transferTypeLabel = new QLabel(tr("Transfer type:"), &detailsGroup_);
 	transferTypeCombo_.addItem("");
 	transferTypeCombo_.setInsertPolicy(QComboBox::InsertAlphabetically);
 
@@ -123,7 +71,7 @@ void ComInterfaceEditor::initialize() {
 
 	// Create the layout for the actual editor.
 	QVBoxLayout* layout = new QVBoxLayout(topWidget);
-	layout->addWidget(&nameGroup_);
+	layout->addWidget(&nameEditor_);
 	layout->addWidget(&comType_);
 	layout->addWidget(&detailsGroup_);
 	layout->addWidget(&propertyValueEditor_);
@@ -131,7 +79,31 @@ void ComInterfaceEditor::initialize() {
 
 	scrollArea->setWidget(topWidget);
 
+	connect(&nameEditor_, SIGNAL(contentChanged()),
+		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&nameEditor_, SIGNAL(nameChanged(const QString&)),
+		this, SIGNAL(nameChanged(const QString&)), Qt::UniqueConnection);
+	connect(&comType_, SIGNAL(contentChanged()),
+		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&transferTypeCombo_, SIGNAL(currentIndexChanged(int)),
+		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&transferTypeCombo_, SIGNAL(editTextChanged(QString const&)),
+		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&directionCombo_, SIGNAL(currentIndexChanged(int)),
+		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&propertyValueEditor_, SIGNAL(contentChanged()),
+		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
+	connect(&comType_, SIGNAL(contentChanged()),
+		this, SLOT(onComDefinitionChanged()), Qt::UniqueConnection);
+
 	refresh();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComInterfaceEditor::~ComInterfaceEditor()
+//-----------------------------------------------------------------------------
+ComInterfaceEditor::~ComInterfaceEditor() {
 }
 
 //-----------------------------------------------------------------------------
@@ -139,16 +111,8 @@ void ComInterfaceEditor::initialize() {
 //-----------------------------------------------------------------------------
 bool ComInterfaceEditor::isValid() const
 {
-    return (nameGroup_.isValid() &&
+    return (nameEditor_.isValid() &&
             (comType_.isEmpty() || (comType_.isValid() && libInterface_->contains(comType_.getVLNV()))));
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComInterfaceEditor::removeModel()
-//-----------------------------------------------------------------------------
-void ComInterfaceEditor::removeModel()
-{
-    component()->removeComInterface(comIf_);
 }
 
 //-----------------------------------------------------------------------------
@@ -156,43 +120,12 @@ void ComInterfaceEditor::removeModel()
 //-----------------------------------------------------------------------------
 void ComInterfaceEditor::makeChanges()
 {
-    comIf_->setName(nameGroup_.getName());
-    comIf_->setDisplayName(nameGroup_.getDisplayName());
-    comIf_->setDescription(nameGroup_.getDescription());
     comIf_->setComType(comType_.getVLNV());
     comIf_->setTransferType(transferTypeCombo_.currentText());
     comIf_->setDirection(static_cast<General::Direction>(directionCombo_.currentIndex()));
 
     QMap<QString, QString> propertyValues = propertyValueEditor_.getData();
     comIf_->setPropertyValues(propertyValues);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComInterfaceEditor::restoreChanges()
-//-----------------------------------------------------------------------------
-void ComInterfaceEditor::restoreChanges()
-{
-    nameGroup_.setName(comIf_->getName());
-    nameGroup_.setDisplayName(comIf_->getDisplayName());
-    nameGroup_.setDescription(comIf_->getDescription());
-
-    propertyValueEditor_.setData(comIf_->getPropertyValues());
-
-    comType_.setVLNV(comIf_->getComType());
-    directionCombo_.setCurrentIndex(comIf_->getDirection());
-
-    if (!comIf_->getTransferType().isEmpty())
-    {
-        int index = transferTypeCombo_.findText(comIf_->getTransferType());
-
-        if (index == -1)
-        {
-            transferTypeCombo_.addItem(comIf_->getTransferType());
-            index = transferTypeCombo_.findText(comIf_->getTransferType());
-        }
-
-        transferTypeCombo_.setCurrentIndex(index);
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -237,9 +170,7 @@ void ComInterfaceEditor::onComDefinitionChanged()
 }
 
 void ComInterfaceEditor::refresh() {
-	nameGroup_.setName(comIf_->getName());
-	nameGroup_.setDisplayName(comIf_->getDisplayName());
-	nameGroup_.setDescription(comIf_->getDescription());
+	nameEditor_.refresh();
 
 	propertyValueEditor_.setData(comIf_->getPropertyValues());
 

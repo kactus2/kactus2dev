@@ -8,7 +8,7 @@
 #define FILE_H_
 
 #include "generaldeclarations.h"
-
+#include "buildcommand.h"
 #include <common/Global.h>
 
 #include <QString>
@@ -19,7 +19,6 @@
 #include <QXmlStreamWriter>
 #include <QStringList>
 
-class BuildCommand;
 class FileSet;
 
 /*! \brief Equals the spirit:file element in IP-Xact specification.
