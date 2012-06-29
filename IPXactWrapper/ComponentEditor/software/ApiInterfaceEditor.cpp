@@ -60,6 +60,7 @@ dependencyCombo_(this)
 
     QHBoxLayout* scrollLayout = new QHBoxLayout(this);
     scrollLayout->addWidget(scrollArea);
+	scrollLayout->setContentsMargins(0, 0, 0, 0);
 
     // Create the top widget and set it under the scroll area.
     QWidget* topWidget = new QWidget(scrollArea);

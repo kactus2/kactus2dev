@@ -8,15 +8,21 @@
 #include "cominterfacesmodel.h"
 #include "cominterfacesdelegate.h"
 #include <models/generaldeclarations.h>
+#include <LibraryManager/libraryinterface.h>
+#include <LibraryManager/vlnv.h>
+#include <models/ComDefinition.h>
 
 #include <QColor>
 
-ComInterfacesModel::ComInterfacesModel(QSharedPointer<Component> component,
+ComInterfacesModel::ComInterfacesModel(LibraryInterface* libHandler,
+									   QSharedPointer<Component> component,
 									   QObject *parent):
 QAbstractTableModel(parent),
+libHandler_(libHandler),
 comIfs_(component->getComInterfaces()) {
 
 	Q_ASSERT(component);
+	Q_ASSERT(libHandler_);
 }
 
 ComInterfacesModel::~ComInterfacesModel() {
@@ -111,6 +117,30 @@ QVariant ComInterfacesModel::data( const QModelIndex& index, int role /*= Qt::Di
 				return QVariant();
 					 }
 		}
+	}
+	else if (ComInterfacesDelegate::TRANSFER_TYPE_OPTIONS == role) {
+		// find the vlnv of the com interface
+		VLNV comDefVLNV = comIfs_.at(index.row())->getComType();
+		
+		// if the com def is not defined
+		if (!comDefVLNV.isValid()) {
+			return QStringList();
+		}
+		// if the com def does not exist in the library.
+		else if (!libHandler_->contains(comDefVLNV)) {
+			return QStringList();
+		}
+		// if the object is not a com definition
+		else if (libHandler_->getDocumentType(comDefVLNV) != VLNV::COMDEFINITION) {
+			return QStringList();
+		}
+
+		// parse the com definition
+		QSharedPointer<LibraryComponent const> libComp = libHandler_->getModelReadOnly(comDefVLNV);
+		const QSharedPointer<ComDefinition const> comDef = libComp.staticCast<ComDefinition const>();
+		
+		// and return the transfer types specified in the com definition
+		return comDef->getTransferTypes();
 	}
 	else if (Qt::ForegroundRole == role) {
 

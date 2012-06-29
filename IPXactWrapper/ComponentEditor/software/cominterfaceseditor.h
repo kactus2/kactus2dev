@@ -16,6 +16,8 @@
 #include <QSharedPointer>
 #include <QSortFilterProxyModel>
 
+class LibraryInterface;
+
 /*! \brief The editor to add/remove/edit the COM interfaces of a component.
  *
  */
@@ -24,13 +26,27 @@ class ComInterfacesEditor : public ItemEditor {
 
 public:
 
+	//! \brief The width of the name column.
+	static const int NAME_COLUMN_WIDTH = 100;
+
+	//! \brief The width of the com definition column.
+	static const int COM_DEF_COLUMN_WIDTH = 200;
+
+	//! \brief The width of the transfer type column.
+	static const int TRANSFER_COLUMN_WIDTH = 100;
+
+	//! \brief The width of the direction column.
+	static const int DIRECTION_COLUMN_WIDTH = 100;
+
 	/*! \brief The constructor
 	 *
+	 * \param libHandler Pointer to the instance that manages the library.
 	 * \param component Pointer to the component being edited.
 	 * \param parent Pointer to the parent of this editor.
 	 *
 	*/
-	ComInterfacesEditor(QSharedPointer<Component> component,
+	ComInterfacesEditor(LibraryInterface* libHandler,
+		QSharedPointer<Component> component,
 				QWidget* parent = 0);
 	
 	//! \brief The destructor

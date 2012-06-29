@@ -69,11 +69,21 @@ public:
 	*/
 	virtual void refresh();
     
-public slots:
+private slots:
+
     /*!
      *  Called when the COM definition has been changed.
      */
     void onComDefinitionChanged();
+
+	//! \brief Handler for changes in transfer type.
+	void onTransferTypeChange();
+
+	//! \brief Handler for changes in direction.
+	void onDirectionChange(int index);
+
+	//! \brief Handler for changes in properties editor.
+	void onPropertiesChange();
 
 private:
     // Disable copying.

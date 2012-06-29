@@ -53,7 +53,7 @@ QWidget* PropertyValueDelegate::createEditor(QWidget* parent, QStyleOptionViewIt
             {
                 QComboBox* box = new QComboBox(parent);
                 // set box to be editable
-                box->setEditable(true);
+                //box->setEditable(true);
 
                 if (m_allowedProperties != 0)
                 {

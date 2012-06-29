@@ -48,6 +48,7 @@ propertyValueEditor_(this) {
 	directionCombo_.addItem(tr("out"));
 	directionCombo_.addItem(tr("inout"));
 	directionCombo_.setCurrentIndex(0);
+	directionCombo_.setProperty("mandatoryField", true);
 
 	QGridLayout* detailsLayout = new QGridLayout(&detailsGroup_);
 	detailsLayout->addWidget(transferTypeLabel, 0, 0, 1, 1);
@@ -64,6 +65,7 @@ propertyValueEditor_(this) {
 
 	QHBoxLayout* scrollLayout = new QHBoxLayout(this);
 	scrollLayout->addWidget(scrollArea);
+	scrollLayout->setContentsMargins(0, 0, 0, 0);
 
 	// Create the top widget and set it under the scroll area.
 	QWidget* topWidget = new QWidget(scrollArea);
@@ -81,20 +83,15 @@ propertyValueEditor_(this) {
 
 	connect(&nameEditor_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&nameEditor_, SIGNAL(nameChanged(const QString&)),
-		this, SIGNAL(nameChanged(const QString&)), Qt::UniqueConnection);
-	connect(&comType_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	
 	connect(&transferTypeCombo_, SIGNAL(currentIndexChanged(int)),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&transferTypeCombo_, SIGNAL(editTextChanged(QString const&)),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+		this, SLOT(onTransferTypeChange()), Qt::UniqueConnection);
 	connect(&directionCombo_, SIGNAL(currentIndexChanged(int)),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+		this, SLOT(onDirectionChange(int)), Qt::UniqueConnection);
 	connect(&propertyValueEditor_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+		this, SLOT(onPropertiesChange()), Qt::UniqueConnection);
 
-	connect(&comType_, SIGNAL(contentChanged()),
+	connect(&comType_, SIGNAL(vlnvEdited()),
 		this, SLOT(onComDefinitionChanged()), Qt::UniqueConnection);
 
 	refresh();
@@ -120,12 +117,7 @@ bool ComInterfaceEditor::isValid() const
 //-----------------------------------------------------------------------------
 void ComInterfaceEditor::makeChanges()
 {
-    comIf_->setComType(comType_.getVLNV());
-    comIf_->setTransferType(transferTypeCombo_.currentText());
-    comIf_->setDirection(static_cast<General::Direction>(directionCombo_.currentIndex()));
-
-    QMap<QString, QString> propertyValues = propertyValueEditor_.getData();
-    comIf_->setPropertyValues(propertyValues);
+    // TODO remove this in final
 }
 
 //-----------------------------------------------------------------------------
@@ -133,6 +125,10 @@ void ComInterfaceEditor::makeChanges()
 //-----------------------------------------------------------------------------
 void ComInterfaceEditor::onComDefinitionChanged()
 {
+	comIf_->setComType(comType_.getVLNV());
+
+	disconnect(&transferTypeCombo_, SIGNAL(currentIndexChanged(int)),
+		this, SLOT(onTransferTypeChange()));
     if (comType_.getVLNV().isValid())
     {
         // Retrieve the COM definition from the library.
@@ -167,26 +163,77 @@ void ComInterfaceEditor::onComDefinitionChanged()
         transferTypeCombo_.clear();
         transferTypeCombo_.addItem("");
     }
+	connect(&transferTypeCombo_, SIGNAL(currentIndexChanged(int)),
+		this, SLOT(onTransferTypeChange()), Qt::UniqueConnection);
+	emit contentChanged();
 }
 
 void ComInterfaceEditor::refresh() {
 	nameEditor_.refresh();
 
+	VLNV comVLNV = comIf_->getComType();
+	
+	comType_.setVLNV(comVLNV);
 	propertyValueEditor_.setData(comIf_->getPropertyValues());
 
-	comType_.setVLNV(comIf_->getComType());
+	disconnect(&directionCombo_, SIGNAL(currentIndexChanged(int)),
+				this, SLOT(onDirectionChange(int)));
 	directionCombo_.setCurrentIndex(comIf_->getDirection());
+	connect(&directionCombo_, SIGNAL(currentIndexChanged(int)),
+			this, SLOT(onDirectionChange(int)), Qt::UniqueConnection);
 
-	if (!comIf_->getTransferType().isEmpty())
+	disconnect(&transferTypeCombo_, SIGNAL(currentIndexChanged(int)),
+		this, SLOT(onTransferTypeChange()));
+	if (comVLNV.isValid())
 	{
-		int index = transferTypeCombo_.findText(comIf_->getTransferType());
+		// Retrieve the COM definition from the library.
+		QSharedPointer<LibraryComponent const> libComp = libInterface_->getModelReadOnly(comVLNV);
+		QSharedPointer<ComDefinition const> comDef = libComp.dynamicCast<ComDefinition const>();
 
-		if (index == -1)
+		if (comDef == 0)
 		{
-			transferTypeCombo_.addItem(comIf_->getTransferType());
-			index = transferTypeCombo_.findText(comIf_->getTransferType());
+			emit errorMessage("COM definition with the given VLNV does not exist");
+			return;
 		}
 
-		transferTypeCombo_.setCurrentIndex(index);
+		propertyValueEditor_.setAllowedProperties(&comDef->getProperties());
+
+		QString type = comIf_->getTransferType();
+
+		transferTypeCombo_.clear();
+		transferTypeCombo_.addItem("");
+		transferTypeCombo_.addItems(comDef->getTransferTypes());
+
+		if (comDef->getTransferTypes().contains(type))
+		{
+			transferTypeCombo_.setCurrentIndex(transferTypeCombo_.findText(type));
+		}
 	}
+	else if (comVLNV.isEmpty())
+	{
+		// Clear the allowed properties.
+		propertyValueEditor_.setAllowedProperties(0);
+
+		// Clear the data type combo.
+		transferTypeCombo_.clear();
+		transferTypeCombo_.addItem("");
+	}
+	connect(&transferTypeCombo_, SIGNAL(currentIndexChanged(int)),
+		this, SLOT(onTransferTypeChange()), Qt::UniqueConnection);
+}
+
+void ComInterfaceEditor::onTransferTypeChange() {
+	comIf_->setTransferType(transferTypeCombo_.currentText());
+	emit contentChanged();
+}
+
+void ComInterfaceEditor::onDirectionChange( int index ) {
+	 comIf_->setDirection(static_cast<General::Direction>(index));
+	 emit contentChanged();
+}
+
+void ComInterfaceEditor::onPropertiesChange() {
+	QMap<QString, QString> propertyValues = propertyValueEditor_.getData();
+	comIf_->setPropertyValues(propertyValues);
+	emit contentChanged();
 }

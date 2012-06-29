@@ -8,6 +8,8 @@
 #include "cominterfacesdelegate.h"
 
 #include <QLineEdit>
+#include <QComboBox>
+#include <QStringList>
 
 ComInterfacesDelegate::ComInterfacesDelegate(QObject *parent):
 QStyledItemDelegate(parent) {
@@ -30,10 +32,16 @@ QWidget* ComInterfacesDelegate::createEditor( QWidget* parent, const QStyleOptio
 			return NULL;
 							 }
 		case TRANSFER_TYPE_COLUMN: {
-
+			QComboBox* combo = new QComboBox(parent);
+			return combo;
 								   }
 		case DIRECTION_COLUMN: {
-
+			QComboBox* combo = new QComboBox(parent);
+			combo->addItem(tr("in"));
+			combo->addItem(tr("out"));
+			combo->addItem(tr("inout"));
+			combo->setCurrentIndex(0);
+			return combo;
 							   }
 		default: {
 			return QStyledItemDelegate::createEditor(parent, option, index);
@@ -57,9 +65,30 @@ void ComInterfacesDelegate::setEditorData( QWidget* editor, const QModelIndex& i
 			break;
 							 }
 		case TRANSFER_TYPE_COLUMN: {
+			QComboBox* combo = qobject_cast<QComboBox*>(editor);
+			Q_ASSERT(combo);
+
+			// remove the previous items
+			combo->clear();
+
+			// add the possible options for transfer types.
+			QStringList types = index.model()->data(index, TRANSFER_TYPE_OPTIONS).toStringList();
+			combo->addItem("");
+			combo->addItems(types);
+
+			// select the right option
+			QString selected = index.model()->data(index, Qt::DisplayRole).toString();
+			int comboIndex = combo->findText(selected);
+			combo->setCurrentIndex(comboIndex);
 			break;
 								   }
 		case DIRECTION_COLUMN: {
+			QComboBox* combo = qobject_cast<QComboBox*>(editor);
+			Q_ASSERT(combo);
+
+			QString dir = index.model()->data(index, Qt::DisplayRole).toString();
+			int comboIndex = combo->findText(dir);
+			combo->setCurrentIndex(comboIndex);
 			break;
 							   }
 		default: {
@@ -85,9 +114,19 @@ void ComInterfacesDelegate::setModelData( QWidget* editor, QAbstractItemModel* m
 			break;
 							 }
 		case TRANSFER_TYPE_COLUMN: {
+			QComboBox* combo = qobject_cast<QComboBox*>(editor);
+			Q_ASSERT(combo);
+
+			QString type = combo->currentText();
+			model->setData(index, type, Qt::EditRole);
 			break;
 								   }
 		case DIRECTION_COLUMN: {
+			QComboBox* combo = qobject_cast<QComboBox*>(editor);
+			Q_ASSERT(combo);
+
+			QString dir = combo->currentText();
+			model->setData(index, dir, Qt::EditRole);
 			break;
 							   }
 		default: {

@@ -15,6 +15,8 @@
 #include <QSharedPointer>
 #include <QList>
 
+class LibraryInterface;
+
 /*! \brief The model that manages the COM interfaces.
  *
  */
@@ -25,11 +27,13 @@ public:
 
 	/*! \brief The constructor.
 	 *
+	 * \param libHandler Pointer to the instance that manages the library.
 	 * \param component Pointer to the component being edited.
 	 * \param parent Pointer to the owner of this model.
 	 *
 	*/
-	ComInterfacesModel(QSharedPointer<Component> component,
+	ComInterfacesModel(LibraryInterface* libHandler,
+		QSharedPointer<Component> component,
 		QObject *parent);
 	
 	//! \brief The destructor
@@ -138,6 +142,9 @@ private:
 
 	//! \brief No assignment
 	ComInterfacesModel& operator=(const ComInterfacesModel& other);
+
+	//! \brief Pointer to the instance that manages the library.
+	LibraryInterface* libHandler_;
 
 	//! \brief Contains the COM interfaces to edit.
 	QList<QSharedPointer<ComInterface> >& comIfs_;

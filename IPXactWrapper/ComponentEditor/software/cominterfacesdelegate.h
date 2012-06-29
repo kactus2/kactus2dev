@@ -15,6 +15,11 @@ class ComInterfacesDelegate : public QStyledItemDelegate {
 
 public:
 
+	//! \brief The user roles that can be used.
+	enum UserRole {
+		TRANSFER_TYPE_OPTIONS = Qt::UserRole	// Returns QStringList that contains the possible transfer types.
+	};
+
 	//! \brief The column numbers for columns.
 	enum Column {
 		NAME_COLUMN = 0,
