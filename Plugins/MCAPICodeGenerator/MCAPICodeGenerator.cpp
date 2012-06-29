@@ -15,19 +15,23 @@
 #include <QMessageBox>
 #include <QFileInfo>
 #include <QSettings>
+#include <QCoreApplication>
 
 #include <common/CSourceWriter.h>
 #include <MCAPI/CSourceTextEdit.h>
 
 #include <models/component.h>
 #include <models/ComInterface.h>
+#include <models/fileset.h>
 
 #include <LibraryManager/libraryinterface.h>
+
+#include <PluginSystem/IPluginUtility.h>
 
 //-----------------------------------------------------------------------------
 // Function: MCAPICodeGenerator::MCAPICodeGenerator()
 //-----------------------------------------------------------------------------
-MCAPICodeGenerator::MCAPICodeGenerator()
+MCAPICodeGenerator::MCAPICodeGenerator() : utility_(0)
 {
 }
 
@@ -77,21 +81,92 @@ bool MCAPICodeGenerator::checkGeneratorSupport(QSharedPointer<LibraryComponent> 
 //-----------------------------------------------------------------------------
 // Function: MCAPICodeGenerator::runGenerator()
 //-----------------------------------------------------------------------------
-void MCAPICodeGenerator::runGenerator(QSharedPointer<LibraryComponent> libComp,
-                                      LibraryInterface const* libInterface)
+void MCAPICodeGenerator::runGenerator(IPluginUtility* utility,
+                                      QSharedPointer<LibraryComponent> libComp)
 {
-    QString dir = QFileInfo(libInterface->getPath(*libComp->getVlnv())).absolutePath();
-    QSharedPointer<Component> comp = libComp.dynamicCast<Component>();
-    
-    // Generated code should be updated only if the code files already exist.
+    utility_ = utility;
+
+    QString dir = QFileInfo(utility->getLibraryInterface()->getPath(*libComp->getVlnv())).absolutePath();
+    QSharedPointer<Component> component = libComp.dynamicCast<Component>();
+
+    // Validate MCAPI COM interfaces.
+    QStringList errorList;
+
+    foreach (QSharedPointer<ComInterface> comIf, component->getComInterfaces())
+    {
+        if (comIf->getComType().getName().toLower() != "mcapi" ||
+            comIf->getComType().getVersion() != "v1.063")
+        {
+            continue;
+        }
+
+        if (comIf->getPropertyValues().value("handle_name").isEmpty())
+        {
+            errorList.append(tr("Property handle_name of COM interface '%1' is not set").arg(comIf->getName()));
+        }
+
+        if (comIf->getPropertyValues().value("remote_endpoint_name").isEmpty())
+        {
+            errorList.append(tr("Property remote_endpoint_name of COM interface '%1' is not set").arg(comIf->getName()));
+        }
+
+        if (comIf->getPropertyValues().value("port_id").isEmpty())
+        {
+            errorList.append(tr("Property port_id of COM interface '%1' is not set").arg(comIf->getName()));
+        }
+    }
+
+    if (!errorList.isEmpty())
+    {
+        foreach (QString const& msg, errorList)
+        {
+            utility_->printError(msg);
+        }
+
+        QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
+                           tr("The component contained %1 error(s). MCAPI code was not generated.").arg(errorList.size()),
+                           QMessageBox::Ok, utility_->getParentWidget());
+        msgBox.setDetailedText(tr("The following error(s) were found: \n* ") + errorList.join("\n* "));
+
+        msgBox.exec();
+        return;
+    }
+
+    // Create the template only if it does not exist.
     if (!QFileInfo(dir + "/ktsmcapicode.h").exists())
     {
-        generateMainTemplate(dir + "/main.c", comp);
+        generateMainTemplate(dir + "/main.c", component);
     }
-    
-    // Generate the ktsmcapicode module always.
-    generateHeader(dir + "/ktsmcapicode.h", comp);
-    generateSource(dir + "/ktsmcapicode.c", comp);
+
+    // Update the ktsmcapicode module.
+    generateHeader(dir + "/ktsmcapicode.h", component);
+    generateSource(dir + "/ktsmcapicode.c", component);
+
+    // Add the files to the component metadata.
+    FileSet* fileSet = component->getFileSet("cSources");
+
+    if (fileSet == 0)
+    {
+        fileSet = new FileSet("cSources", "sourceFiles");
+        component->addFileSet(fileSet);
+    }
+
+    if (!fileSet->contains("ktsmcapicode.h"))
+    {
+        fileSet->addFile("ktsmcapicode.h");
+    }
+
+    if (!fileSet->contains("ktsmcapicode.c"))
+    {
+        fileSet->addFile("ktsmcapicode.c");
+    }
+
+    if (!fileSet->contains("main.c"))
+    {
+        fileSet->addFile("main.c");
+    }
+
+    utility_->getLibraryInterface()->writeModelToFile(component);
 }
 
 //-----------------------------------------------------------------------------

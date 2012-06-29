@@ -199,10 +199,6 @@
 					/>
 				</FileConfiguration>
 			</File>
-			<File
-				RelativePath=".\mcapicodegenerator_global.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Form Files"

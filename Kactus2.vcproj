@@ -13079,6 +13079,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\PluginSystem\IPluginUtility.h"
+					>
+				</File>
+				<File
 					RelativePath=".\PluginSystem\PluginListDialog.h"
 					>
 					<FileConfiguration

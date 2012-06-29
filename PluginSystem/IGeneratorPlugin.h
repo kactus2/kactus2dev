@@ -14,9 +14,11 @@
 #define IGENERATORPLUGIN_H
 
 #include <QSharedPointer>
+#include <QWidget>
 
 class LibraryInterface;
 class LibraryComponent;
+class IPluginUtility;
 
 //-----------------------------------------------------------------------------
 //! Interface for plugins that are used to generate content for different
@@ -42,11 +44,11 @@ public:
     /*!
      *  Runs the generator.
      *
+     *      @param [in]     utility       The plugin utility interface.
      *      @param [in,out] libComp       The library component for which the generator is run.
-     *      @param [in]     libInterface  The library interface to get access to the library.
      */
-    virtual void runGenerator(QSharedPointer<LibraryComponent> libComp,
-                              LibraryInterface const* libInterface) = 0;
+    virtual void runGenerator(IPluginUtility* utility,
+                              QSharedPointer<LibraryComponent> libComp) = 0;
 };
 
 Q_DECLARE_INTERFACE(IGeneratorPlugin, "com.tut.Kactus2.IGeneratorPlugin/1.0")

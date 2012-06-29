@@ -12,8 +12,6 @@
 #ifndef MCAPICODEGENERATOR_H
 #define MCAPICODEGENERATOR_H
 
-#include "mcapicodegenerator_global.h"
-
 #include <PluginSystem/IPluginInformation.h>
 #include <PluginSystem/IGeneratorPlugin.h>
 
@@ -21,6 +19,7 @@
 
 class Component;
 class CSourceWriter;
+class IPluginUtility;
 
 //-----------------------------------------------------------------------------
 //! MCAPI code generator.
@@ -62,22 +61,88 @@ public:
     /*!
      *  Runs the generator.
      *
+     *
+     *      @param [in]     utility       The plugin utility interface.
      *      @param [in,out] libComp       The component for which the generator is run.
-     *      @param [in]     libInterface  The library interface to get access to the library.
      */
-    virtual void runGenerator(QSharedPointer<LibraryComponent> libComp,
-                              LibraryInterface const* libInterface);
+    virtual void runGenerator(IPluginUtility* utility,
+                              QSharedPointer<LibraryComponent> libComp);
 private:
+    /*!
+     *  Generates the MCAPI code header file.
+     *
+     *      @param [in] filename   The name of the header file to write.
+     *      @param [in] component  The owner component.
+     */
     void generateHeader(QString const& filename, QSharedPointer<Component> component);
 
-    void generateMainTemplate(QString const& filename, QSharedPointer<Component> component);
+    /*!
+     *  Generates the MCAPI code source file.
+     *
+     *      @param [in] filename   The name of the source file to write.
+     *      @param [in] component  The owner component.
+     */
     void generateSource(QString const& filename, QSharedPointer<Component> component);
+
+    /*!
+     *  Generates the template source containing the program main().
+     *
+     *      @param [in] filename   The name of the file to write.
+     *      @param [in] component  The owner component.
+     */
+    void generateMainTemplate(QString const& filename, QSharedPointer<Component> component);
+
+    /*!
+     *  Creates the indent string based on the application settings.
+     */
     QString createIndentString();
+
+    /*!
+     *  Writes an MCAPI wait call to the source.
+     *
+     *      @param [in] writer       The source writer.
+     *      @param [in] requestName  The name of the request variable.
+     *      @param [in] sizeName     The name of the size variable.
+     */
     void writeWaitCall(CSourceWriter& writer, QString const& requestName, QString const& sizeName);
+
+    /*!
+     *  Writes an MCAPI status check.
+     *
+     *      @param [in] writer The source writer.
+     */
     void writeStatusCheck(CSourceWriter &writer);
+
+    /*!
+     *  Generates the initializeMCAPI() function based on the component.
+     *
+     *      @param [in] writer     The source writer.
+     *      @param [in] component  The owner component.
+     */
     void generateInitializeMCAPIFunc(CSourceWriter& writer, QSharedPointer<Component> component);
+
+    /*!
+     *  Generates the closeConnections() function based on the component.
+     *
+     *      @param [in] writer     The source writer.
+     *      @param [in] component  The owner component.
+     */
     void generateCloseConnectionsFunc(CSourceWriter& writer, QSharedPointer<Component> component);
+
+    /*!
+     *  Generates the createConnections() function based on the component.
+     *
+     *      @param [in] writer     The source writer.
+     *      @param [in] component  The owner component.
+     */
     void generateCreateConnectionsFunc(CSourceWriter& writer, QSharedPointer<Component> component);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The plugin utility.
+    IPluginUtility* utility_;
 };
 
 #endif // MCAPICODEGENERATOR_H

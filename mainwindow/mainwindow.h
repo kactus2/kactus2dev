@@ -11,6 +11,7 @@
 #include "NewSWComponentPage.h"
 
 #include <PluginSystem/PluginManager.h>
+#include <PluginSystem/IPluginUtility.h>
 
 #include <common/DrawMode.h>
 #include <common/KactusAttribute.h>
@@ -46,7 +47,7 @@ class TabDocument;
 class ConnectionEndpoint;
 class GraphicsConnection;
 
-class MainWindow : public QMainWindow {
+class MainWindow : public QMainWindow, public IPluginUtility {
     Q_OBJECT
 
 public:
@@ -349,6 +350,30 @@ public slots:
      */
     void showAbout();
 
+    /*!
+     *  Prints an error message to the console window.
+     *
+     *      @param [in] message The error message to print.
+     */
+    virtual void printError(QString const& message);
+
+    /*!
+     *  Prints an info message to the console window.
+     *
+     *      @param [in] message The info message to print.
+     */
+    virtual void printInfo(QString const& message);
+
+    /*!
+     *  Returns the library interface.
+     */
+    virtual LibraryInterface* getLibraryInterface();
+
+    /*!
+     *  Returns the parent widget to be used for e.g. dialogs.
+     */
+    virtual QWidget* getParentWidget();
+
 signals:
 
 	//! \brief Print a notice message to the user
@@ -595,7 +620,7 @@ private:
 	QAction* actCheckIntegrity_;
 
     //! The HW Design group.
-    GCF::MenuStripGroup* hwDesignGroup_;
+    GCF::MenuStripGroup* generationGroup_;
 
     //! Action to generate VHDL from a design.
     QAction* actGenVHDL_;

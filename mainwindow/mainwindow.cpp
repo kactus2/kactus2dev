@@ -125,7 +125,7 @@ MainWindow::MainWindow(QWidget *parent)
       actRedo_(0),
       actLibrarySearch_(0), 
       actCheckIntegrity_(0),
-      hwDesignGroup_(0),
+      generationGroup_(0),
       actAddColumn_(0), 
       actGenVHDL_(0), 
       actGenModelSim_(0),
@@ -877,15 +877,15 @@ void MainWindow::setupMenus()
 	libGroup->addAction(actLibrarySearch_);
 	libGroup->addAction(actCheckIntegrity_);
 
-	//! The "HW Design" group.
-	hwDesignGroup_ = menuStrip_->addGroup(tr("HW Design"));
-	hwDesignGroup_->addAction(actGenVHDL_);
-	hwDesignGroup_->addAction(actGenDocumentation_);
-	hwDesignGroup_->addAction(actGenModelSim_);
-	hwDesignGroup_->addAction(actGenQuartus_);
-    hwDesignGroup_->addAction(actRunPluginGenerator_);
-	hwDesignGroup_->setVisible(false);
-	hwDesignGroup_->setEnabled(false);
+	//! The "Generation" group.
+	generationGroup_ = menuStrip_->addGroup(tr("Generation"));
+	generationGroup_->addAction(actGenVHDL_);
+	generationGroup_->addAction(actGenDocumentation_);
+	generationGroup_->addAction(actGenModelSim_);
+	generationGroup_->addAction(actGenQuartus_);
+    generationGroup_->addAction(actRunPluginGenerator_);
+	generationGroup_->setVisible(false);
+	generationGroup_->setEnabled(false);
 
 	//! The "Diagram Tools" group.
 	diagramToolsGroup_ = menuStrip_->addGroup(tr("           Diagram Tools           "));
@@ -1225,8 +1225,8 @@ void MainWindow::updateMenuStrip()
 
 	// if is hardware design then set all actions enabled
 	if (isHWDesign) {
-		hwDesignGroup_->setVisible(true);
-		hwDesignGroup_->setEnabled(unlocked);
+		generationGroup_->setVisible(true);
+		generationGroup_->setEnabled(unlocked);
 		actGenVHDL_->setEnabled(unlocked);
 		actGenDocumentation_->setEnabled(unlocked);
 		actGenModelSim_->setEnabled(unlocked);
@@ -1234,15 +1234,15 @@ void MainWindow::updateMenuStrip()
 	}
 	// if is hardware component then set only documentation, modelsim and vhdl enabled
 	else if (isHWComp) {
-		hwDesignGroup_->setVisible(true);
-		hwDesignGroup_->setEnabled(unlocked);
+		generationGroup_->setVisible(true);
+		generationGroup_->setEnabled(unlocked);
 		actGenVHDL_->setEnabled(unlocked);
 		actGenDocumentation_->setEnabled(unlocked);
 		actGenModelSim_->setEnabled(unlocked);
 		actGenQuartus_->setDisabled(true);
 	}
 	else {
-		hwDesignGroup_->setVisible(false);
+		generationGroup_->setVisible(false);
 	}
 
 	editGroup_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_EDIT_SUPPORT));
@@ -1480,11 +1480,25 @@ void MainWindow::generateQuartus()
 void MainWindow::runGeneratorPlugin()
 {
     TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
-    QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(doc->getComponentVLNV());
 
-    PluginListDialog dialog(this);
+    // Inform user that unsaved changes must be saved before continuing.
+    if (doc->isModified())
+    {
+        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+                           "The document " + doc->getDocumentName() + " has unsaved changes and needs to be "
+                           "saved before generators can be run. Continue?",
+                           QMessageBox::Yes | QMessageBox::No, this);
+
+        if (msgBox.exec() == QMessageBox::No || !doc->save())
+        {
+            return;
+        }
+    }
 
     // Fill in the dialog with supported plugins.
+    QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(doc->getComponentVLNV());
+    PluginListDialog dialog(this);
+
     foreach (QObject* plugin, pluginMgr_.getPlugins())
     {
         IGeneratorPlugin* genPlugin = qobject_cast<IGeneratorPlugin*>(plugin);
@@ -1502,7 +1516,8 @@ void MainWindow::runGeneratorPlugin()
         IGeneratorPlugin* genPlugin = qobject_cast<IGeneratorPlugin*>(plugin);
         Q_ASSERT(genPlugin != 0);
 
-        genPlugin->runGenerator(libComp, libraryHandler_);
+        genPlugin->runGenerator(this, libComp);
+        doc->refresh();
     }
 }
 
@@ -3484,6 +3499,38 @@ bool MainWindow::isDesignOpen(VLNV const& vlnv)
     }
 
     return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::printError()
+//-----------------------------------------------------------------------------
+void MainWindow::printError(QString const& message)
+{
+    emit errorMessage(message);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::printInfo()
+//-----------------------------------------------------------------------------
+void MainWindow::printInfo(QString const& message)
+{
+    emit noticeMessage(message);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::getLibraryInterface()
+//-----------------------------------------------------------------------------
+LibraryInterface* MainWindow::getLibraryInterface()
+{
+    return libraryHandler_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::getParentWidget()
+//-----------------------------------------------------------------------------
+QWidget* MainWindow::getParentWidget()
+{
+    return this;
 }
 
 MainWindow::WindowVisibility::WindowVisibility():

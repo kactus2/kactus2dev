@@ -9,6 +9,7 @@
 
 #include "generaldeclarations.h"
 #include "buildcommand.h"
+
 #include <common/Global.h>
 
 #include <QString>
