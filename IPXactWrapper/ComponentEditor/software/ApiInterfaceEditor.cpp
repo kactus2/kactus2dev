@@ -57,6 +57,7 @@ dependencyCombo_(this)
     // Create the scroll area.
     QScrollArea* scrollArea = new QScrollArea(this);
     scrollArea->setWidgetResizable(true);
+	scrollArea->setFrameShape(QFrame::NoFrame);
 
     QHBoxLayout* scrollLayout = new QHBoxLayout(this);
     scrollLayout->addWidget(scrollArea);
@@ -72,6 +73,7 @@ dependencyCombo_(this)
     layout->addWidget(&apiType_);
     layout->addWidget(&detailsGroup_);
     layout->addStretch();
+	layout->setContentsMargins(0, 0, 0, 0);
 
     scrollArea->setWidget(topWidget);
 

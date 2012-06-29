@@ -28,6 +28,7 @@ visualizer_(this) {
 	// create the scroll area
 	QScrollArea* scrollArea = new QScrollArea(this);
 	scrollArea->setWidgetResizable(true);
+	scrollArea->setFrameShape(QFrame::NoFrame);
 
 	QVBoxLayout* scrollLayout = new QVBoxLayout(this);
 	scrollLayout->addWidget(scrollArea);
@@ -82,6 +83,7 @@ visualizer_(this) {
 	QHBoxLayout* topLayout = new QHBoxLayout(topWidget);
 	topLayout->addLayout(layout);
 	topLayout->addWidget(&visualizer_);
+	topLayout->setContentsMargins(0, 0, 0, 0);
 
 	scrollArea->setWidget(topWidget);
 

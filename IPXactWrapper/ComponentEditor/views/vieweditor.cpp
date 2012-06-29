@@ -108,6 +108,7 @@ void ViewEditor::setupLayout() {
 	// create the scroll area
 	QScrollArea* scrollArea = new QScrollArea(this);
 	scrollArea->setWidgetResizable(true);
+	scrollArea->setFrameShape(QFrame::NoFrame);
 
 	QHBoxLayout* scrollLayout = new QHBoxLayout(this);
 	scrollLayout->addWidget(scrollArea);
@@ -126,6 +127,7 @@ void ViewEditor::setupLayout() {
 	topLayout->addWidget(&envIdentifier_, 1);
 	topLayout->addLayout(viewTypeLayout);
 	topLayout->addWidget(&stack_);
+	topLayout->setContentsMargins(0, 0, 0, 0);
 
 	scrollArea->setWidget(topWidget);
 }

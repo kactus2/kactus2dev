@@ -39,6 +39,7 @@ hierRefEditor_(VLNV::DESIGNCONFIGURATION, libHandler, this, this)
     layout->addWidget(&nameEditor_);
     layout->addWidget(&hierRefEditor_);
     layout->addStretch();
+	layout->setContentsMargins(0, 0, 0, 0);
 }
 
 //-----------------------------------------------------------------------------
