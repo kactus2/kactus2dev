@@ -14,7 +14,7 @@
 #include <models/modelparameter.h>
 
 #include <QString>
-#include <QMap>
+#include <QList>
 #include <QSharedPointer>
 
 /*! \brief The Model parameters-item in the component editor navigation tree.
@@ -79,7 +79,7 @@ private:
 	ComponentEditorModelParamsItem& operator=(const ComponentEditorModelParamsItem& other);
 
 	//! \brief The map that contains the model parameters.
-	QMap<QString, QSharedPointer<ModelParameter> >& modelParams_;
+	QList<QSharedPointer<ModelParameter> >& modelParams_;
 
 	//! \brief The editor to edit the model parameters of the component.
 	ModelParameterEditor editor_;

@@ -36,8 +36,7 @@ QWidget* ConfigurableElementDelegate::createEditor(QWidget* parent,
 			box->setEditable(true);
 
 			if (component_) {
-				QMap<QString, QSharedPointer<ModelParameter> > params = component_->getModelParameters();
-				QStringList paramNames = params.keys();
+				QStringList paramNames = component_->getModelParameterNames();
 				box->addItems(paramNames);
 			}
 			return box;

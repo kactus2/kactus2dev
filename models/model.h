@@ -88,21 +88,6 @@ public:
 	*/
 	bool isValid(const QStringList& fileSetNames) const;
 
-	/*! \brief Get the model parameters of this model
-	 *
-	 * \return QMap containing pointers to the model parameters.
-	 * 		Key = name of the model parameter.
-	 * 		Value = Pointer to the model parameter.
-	 */
-	const QMap<QString, QSharedPointer<ModelParameter> >& getModelParameters() const;
-
-	/*! \brief Get the model parameters of this model.
-	 *
-	 *
-	 * \return QMap containing the model parameters. Key is the name of the model parameter.
-	*/
-	QMap<QString, QSharedPointer<ModelParameter> >& getModelParameters();
-
 	/*! \brief Get the ports of this model
 	 *
 	 * \return QMap containing pointers to the ports of this model
@@ -131,17 +116,6 @@ public:
 	 * \return QList containing pointers to the views of this model.
 	*/
 	QList<QSharedPointer<View> >& getViews();
-
-	/*! \brief Set the model parameters for this model
-	 *
-	 * Calling this function will delete the old model parameters.
-	 *
-	 * \param modelParameters A QMap containing pointers to the parameters.
-	 * 		Key = name of the model parameter.
-	 * 		Value = pointer to the model parameter.
-	 */
-	void setModelParameters(const
-			QMap<QString, QSharedPointer<ModelParameter> > &modelParameters);
 
 	/*! \brief Set the ports for this model
 	 *
@@ -220,17 +194,6 @@ public:
 	*/
 	int getPortWidth(const QString& port) const;
 
-	/*! \brief Get the specific model paramter.
-	 *
-	 * This function can be used to find a specific model parameter within a
-	 * model. If named model parameter is not found a null pointer is returned.
-	 *
-	 * \param name Name of the parameter
-	 *
-	 * \return A pointer to the named model parameter.
-	 */
-	ModelParameter* getParameter(const QString& name) const;
-
 	/*! \brief Find a specified name within the model.
 	 *
 	 * \param name Name of the view to find.
@@ -256,29 +219,6 @@ public:
 	 * \param name Name of the view to be removed.
 	 */
 	void removeView(const QString& name);
-
-    /*! \brief Add a new model parameter to the model.
-	 *
-	 * \param param Pointer to the model parameter to add
-	 *
-	 * \return True if model parameter was successfully added. False if a model parameter with the same 
-	 * name already existed in the model. If the model parameter exists in the model then 
-	 * nothing is added.
-	*/
-	bool addModelParameter(QSharedPointer<ModelParameter> param);
-
-	/*! \brief Remove a model parameter from the model.
-	 *
-	 * \param paramName The name of the model parameter to remove.
-	 *
-	*/
-	void removeModelParameter(const QString& paramName);
-
-	/*! \brief Get pointer to the QMap containing the model parameters.
-	 *
-	 * \return Pointer to the QMap containing the model parameters.
-	*/
-	QMap<QString, QSharedPointer<ModelParameter> >* getModelParametersPointer();
 
 	/*! \brief Add a new port to the model.
 	 *
@@ -361,12 +301,6 @@ public:
 	*/
 	QStringList getFileSetRefs(const QString& viewName) const;
 
-	/*! \brief Checks if the model has model parameters.
-	 *
-	 * \return bool True if model parameters exist.
-	*/
-	bool hasModelParameters() const;
-
 	/*! \brief Checks if the model has ports.
 	 *
 	 * \return bool True if ports exist.
@@ -438,6 +372,66 @@ public:
 	*/
 	QList<General::PortBounds> getPortBounds() const;
 
+	/*! \brief Get the model parameters of this model
+	*
+	* \return QList containing the model parameters.
+	*/
+	const QList<QSharedPointer<ModelParameter> >& getModelParameters() const;
+
+	/*! \brief Get the model parameters of this model.
+	*
+	* \return QList containing the model parameters.
+	*/
+	QList<QSharedPointer<ModelParameter> >& getModelParameters();
+
+	/*! \brief Get the names of the model parameters of the model.
+	 *
+	 * \return QStringList containing the names of the model parameters.
+	*/
+	QStringList getModelParameterNames() const;
+
+	/*! \brief Set the model parameters for this model
+	*
+	* Calling this function will delete the old model parameters.
+	*
+	* \param modelParameters QList containing the new model parameters.
+	*/
+	void setModelParameters(const QList<QSharedPointer<ModelParameter> >& modelParameters);
+
+	/*! \brief Get the specific model parameter.
+	*
+	* This function can be used to find a specific model parameter within a
+	* model. If named model parameter is not found a null pointer is returned.
+	*
+	* \param name Name of the model parameter.
+	*
+	* \return A pointer to the named model parameter.
+	*/
+	QSharedPointer<ModelParameter> getModelParameter(const QString& name) const;
+
+	/*! \brief Add a new model parameter to the model.
+	*
+	* \param param Pointer to the model parameter to add
+	*
+	* \return True if model parameter was successfully added. False if a model parameter with the same 
+	* name already existed in the model. If the model parameter exists in the model then 
+	* nothing is added.
+	*/
+	bool addModelParameter(QSharedPointer<ModelParameter> param);
+
+	/*! \brief Remove a model parameter from the model.
+	*
+	* \param paramName The name of the model parameter to remove.
+	*
+	*/
+	void removeModelParameter(const QString& paramName);
+
+	/*! \brief Checks if the model has model parameters.
+	*
+	* \return bool True if model parameters exist.
+	*/
+	bool hasModelParameters() const;
+
 private:
 
 	/*!
@@ -458,11 +452,8 @@ private:
 	/*!
 	 * OPTIONAL
 	 * Contains the model parameters for this model.
-	 *
-	 * Key = name of the modelParameter
-	 * Value = Pointer to the modelParameter
 	 */
-	QMap<QString, QSharedPointer<ModelParameter> > modelParameters_;
+	QList<QSharedPointer<ModelParameter> > modelParameters_;
 
 };
 

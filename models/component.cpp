@@ -1956,7 +1956,7 @@ QList<QSharedPointer<File> > Component::getRTLFiles() const {
 	return list;
 }
 
-QMap<QString, QSharedPointer<ModelParameter> >& Component::getModelParameters() {
+QList<QSharedPointer<ModelParameter> >& Component::getModelParameters() {
 	if (model_) {
 		return model_->getModelParameters();
 	}
@@ -1964,6 +1964,11 @@ QMap<QString, QSharedPointer<ModelParameter> >& Component::getModelParameters() 
 		model_ = QSharedPointer<Model>(new Model());
 		return model_->getModelParameters();
 	}
+}
+
+const QList<QSharedPointer<ModelParameter> >& Component::getModelParameters() const {
+	Q_ASSERT(model_);
+	return model_->getModelParameters();
 }
 
 General::Direction Component::getPortDirection( const QString& portName ) const {
@@ -3173,4 +3178,9 @@ QString Component::getInterfaceDescription( const QString& interfaceName ) const
 
 void Component::setBusInterfaces(QList<QSharedPointer<BusInterface> >& busInterfaces ) {
 	busInterfaces_ = busInterfaces;
+}
+
+QStringList Component::getModelParameterNames() const {
+	Q_ASSERT(model_);
+	return model_->getModelParameterNames();
 }

@@ -394,9 +394,21 @@ public:
 
 	/*! \brief Get the model parameters of the component.
 	 *
-	 * \return QMap containing the model parameters. Key is the name of the model parameter.
+	 * \return QList containing the model parameters.
 	*/
-	QMap<QString, QSharedPointer<ModelParameter> >& getModelParameters();
+	QList<QSharedPointer<ModelParameter> >& getModelParameters();
+
+	/*! \brief Get the model parameters of the component.
+	 *
+	 * \return QList containing the model parameters.
+	*/
+	const QList<QSharedPointer<ModelParameter> >& getModelParameters() const;
+
+	/*! \brief Get the names of the model parameters of the component.
+	 *
+	 * \return QStringList containing the model parameter names.
+	*/
+	QStringList getModelParameterNames() const;
 
 	/*! \brief Remove a channel from the component
 	 *

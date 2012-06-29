@@ -15,6 +15,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./common/ColumnTypes.h \
     ./common/CSourceWriter.h \
     ./common/DesignDiagram.h \
+    ./common/DesignWidget.h \
     ./common/diagramgrid.h \
     ./common/DiagramUtil.h \
     ./common/DrawMode.h \
@@ -22,24 +23,15 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./common/IDFactory.h \
     ./common/IEditProvider.h \
     ./common/KactusAttribute.h \
+    ./common/KactusColors.h \
     ./common/TextEditProvider.h \
     ./common/utils.h \
-    ./common/dialogs/createVLNVDialog/createvlnvdialog.h \
-    ./common/dialogs/createConfigurationDialog/createconfigurationdialog.h \
-    ./common/dialogs/renameDialog/renamedialog.h \
-    ./common/dialogs/attributeDialog/attributedialog.h \
-    ./common/dialogs/comboSelector/comboselector.h \
-    ./common/dialogs/propertyPageDialog/PropertyPageDialog.h \
-    ./common/dialogs/propertyPageDialog/PropertyPageView.h \
-    ./common/dialogs/newObjectDialog/newobjectdialog.h \
-    ./common/dialogs/ObjectRemoveDialog/objectremovedialog.h \
-    ./common/dialogs/ObjectRemoveDialog/objectremovemodel.h \
-    ./common/dialogs/listSelectDialog/ListSelectDialog.h \
     ./common/widgets/attributeBox/attributebox.h \
     ./common/widgets/attributeBox/attributemodel.h \
     ./common/widgets/libraryRefGenerator/libraryrefgenerator.h \
     ./common/widgets/listManager/dirlistmanager.h \
     ./common/widgets/listManager/filelistmanager.h \
+    ./common/widgets/listManager/listeditor.h \
     ./common/widgets/listManager/listmanager.h \
     ./common/widgets/listManager/listmanagermodel.h \
     ./common/widgets/nameGroupBox/namegroupbox.h \
@@ -48,7 +40,6 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./common/widgets/assistedLineEdit/ILineContentMatcher.h \
     ./common/widgets/assistedLineEdit/LineContentAssistWidget.h \
     ./common/widgets/vlnvDisplayer/vlnvdisplayer.h \
-    ./common/widgets/hexSpinBox/hexspinbox.h \
     ./common/widgets/booleanComboBox/booleancombobox.h \
     ./common/widgets/vectorEditor/vectoreditor.h \
     ./common/widgets/tabDocument/TabDocument.h \
@@ -71,6 +62,12 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./common/widgets/ParameterGroupBox/parametergroupbox.h \
     ./common/widgets/NumberLineEdit/numberlineedit.h \
     ./common/widgets/tabWidgetEx/TabWidgetEx.h \
+    ./common/widgets/nameGroupEditor/namegroupeditor.h \
+    ./common/widgets/summaryLabel/summarylabel.h \
+    ./common/widgets/interfaceModeSelector/interfacemodeselector.h \
+    ./common/widgets/addressSpaceSelector/addressspaceselector.h \
+    ./common/widgets/memoryMapSelector/memorymapselector.h \
+    ./common/widgets/interfaceSelector/interfaceselector.h \
     ./common/validators/nameValidator/namevalidator.h \
     ./common/validators/vhdlNameValidator/vhdlnamevalidator.h \
     ./common/validators/LibraryPathValidator/librarypathvalidator.h \
@@ -79,37 +76,55 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./common/layouts/VCollisionLayout.h \
     ./common/layouts/VStackedLayout.h \
     ./common/graphicsItems/ComponentItem.h \
+    ./common/graphicsItems/ConnectionEndpoint.h \
+    ./common/graphicsItems/ConnectionUndoCommands.h \
+    ./common/graphicsItems/GraphicsColumn.h \
+    ./common/graphicsItems/GraphicsColumnLayout.h \
+    ./common/graphicsItems/GraphicsColumnUndoCommands.h \
+    ./common/graphicsItems/GraphicsConnection.h \
     ./common/graphicsItems/GraphicsItemTypes.h \
     ./common/graphicsItems/GraphicsRectButton.h \
+    ./common/graphicsItems/IGraphicsItemStack.h \
     ./common/delegates/ComboDelegate/combodelegate.h \
     ./common/delegates/LineEditDelegate/lineeditdelegate.h \
     ./common/views/EditableTableView/editabletableview.h \
     ./common/views/EditableListView/editablelistview.h \
     ./common/models/ParameterModel/parametersmodel.h \
+    ./common/dialogs/createVLNVDialog/createvlnvdialog.h \
+    ./common/dialogs/createConfigurationDialog/createconfigurationdialog.h \
+    ./common/dialogs/renameDialog/renamedialog.h \
+    ./common/dialogs/attributeDialog/attributedialog.h \
+    ./common/dialogs/comboSelector/comboselector.h \
+    ./common/dialogs/propertyPageDialog/PropertyPageDialog.h \
+    ./common/dialogs/propertyPageDialog/PropertyPageView.h \
+    ./common/dialogs/newObjectDialog/newobjectdialog.h \
+    ./common/dialogs/ObjectRemoveDialog/objectremovedialog.h \
+    ./common/dialogs/ObjectRemoveDialog/objectremovemodel.h \
+    ./common/dialogs/listSelectDialog/ListSelectDialog.h \
+    ./common/dialogs/selectDirectoryDialog/selectdirectorydialog.h \
     ./designwidget/AdHocEnabled.h \
-    ./designwidget/blockdiagram.h \
-    ./designwidget/designwidget.h \
-    ./designwidget/DiagramAddCommands.h \
-    ./designwidget/DiagramAdHocInterface.h \
-    ./designwidget/DiagramAdHocPort.h \
-    ./designwidget/DiagramChangeCommands.h \
-    ./designwidget/diagramcomponent.h \
-    ./designwidget/DiagramConnectionEndpoint.h \
-    ./designwidget/DiagramDeleteCommands.h \
-    ./designwidget/diagraminterconnection.h \
-    ./designwidget/diagraminterface.h \
-    ./designwidget/DiagramMoveCommands.h \
-    ./designwidget/DiagramOffPageConnector.h \
-    ./designwidget/diagramport.h \
+    ./designwidget/AdHocInterfaceItem.h \
+    ./designwidget/AdHocPortItem.h \
+    ./designwidget/BusInterfaceItem.h \
+    ./designwidget/BusPortItem.h \
+    ./designwidget/HWAddCommands.h \
+    ./designwidget/HWChangeCommands.h \
+    ./designwidget/HWComponentItem.h \
+    ./designwidget/HWConnection.h \
+    ./designwidget/HWConnectionEndpoint.h \
+    ./designwidget/HWDeleteCommands.h \
+    ./designwidget/HWDesignDiagram.h \
+    ./designwidget/HWDesignWidget.h \
+    ./designwidget/HWMoveCommands.h \
+    ./designwidget/OffPageConnectorItem.h \
     ./designwidget/PortmapDialog.h \
     ./designwidget/SelectItemTypeDialog.h \
     ./designwidget/columnview/ColumnEditDialog.h \
-    ./designwidget/columnview/DiagramColumn.h \
-    ./designwidget/columnview/DiagramColumnLayout.h \
+    ./designwidget/columnview/HWColumn.h \
     ./exceptions/invalid_file.h \
     ./exceptions/vhdl_error.h \
-    ./IPXactWrapper/ComponentEditor/componenttreeitem.h \
     ./IPXactWrapper/ComponentEditor/itemeditor.h \
+    ./IPXactWrapper/ComponentEditor/itemvisualizer.h \
     ./IPXactWrapper/ComponentEditor/general/desceditor.h \
     ./IPXactWrapper/ComponentEditor/general/generaleditor.h \
     ./IPXactWrapper/ComponentEditor/modelParameters/modelparametereditor.h \
@@ -122,24 +137,29 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/otherClockDrivers/clockdriversdelegate.h \
     ./IPXactWrapper/ComponentEditor/otherClockDrivers/otherclockdriverseditor.h \
     ./IPXactWrapper/ComponentEditor/otherClockDrivers/otherclockdriversmodel.h \
-    ./IPXactWrapper/ComponentEditor/channels/channeleditor.h \
-    ./IPXactWrapper/ComponentEditor/channels/channelinterfacemanager.h \
     ./IPXactWrapper/ComponentEditor/channels/channelinterfacemanagerdelegate.h \
-    ./IPXactWrapper/ComponentEditor/channels/channelinterfacemodel.h \
+    ./IPXactWrapper/ComponentEditor/channels/channelsdelegate.h \
+    ./IPXactWrapper/ComponentEditor/channels/channelseditor.h \
+    ./IPXactWrapper/ComponentEditor/channels/channelsmodel.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/ApiCreateDialog.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/apieditor.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/bridgesdelegate.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/bridgeseditor.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/bridgesmodel.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/busifgeneraldetails.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/busifgeneraltab.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/busifinterfacemaster.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/busifinterfacemodeeditor.h \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/busifinterfacemodetab.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/busifinterfacemonitor.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/busifinterfacemslave.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/busifinterfaceslave.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/busifinterfacesystem.h \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/busifparameterstab.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/busifportmaptab.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/businterfaceeditor.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/businterfacesdelegate.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/businterfaceseditor.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/businterfacesmodel.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/interfacemodestack.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/logicallistmodel.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/logicallistview.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/physlistmodel.h \
@@ -153,24 +173,34 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/fileBuilders/filebuilderseditor.h \
     ./IPXactWrapper/ComponentEditor/fileBuilders/filebuildersmodel.h \
     ./IPXactWrapper/ComponentEditor/software/ApiInterfaceEditor.h \
+    ./IPXactWrapper/ComponentEditor/software/apiinterfacesdelegate.h \
+    ./IPXactWrapper/ComponentEditor/software/apiinterfaceseditor.h \
+    ./IPXactWrapper/ComponentEditor/software/apiinterfacesmodel.h \
     ./IPXactWrapper/ComponentEditor/software/ComInterfaceEditor.h \
+    ./IPXactWrapper/ComponentEditor/software/cominterfacesdelegate.h \
+    ./IPXactWrapper/ComponentEditor/software/cominterfaceseditor.h \
+    ./IPXactWrapper/ComponentEditor/software/cominterfacesmodel.h \
     ./IPXactWrapper/ComponentEditor/software/PropertyValueDelegate.h \
     ./IPXactWrapper/ComponentEditor/software/PropertyValueEditor.h \
     ./IPXactWrapper/ComponentEditor/software/PropertyValueModel.h \
-    ./IPXactWrapper/ComponentEditor/software/SoftwareMappingsEditor.h \
     ./IPXactWrapper/ComponentEditor/software/SWPropertiesEditor.h \
     ./IPXactWrapper/ComponentEditor/software/SWViewEditor.h \
+    ./IPXactWrapper/ComponentEditor/software/swviewsdelegate.h \
+    ./IPXactWrapper/ComponentEditor/software/swviewseditor.h \
+    ./IPXactWrapper/ComponentEditor/software/swviewsmodel.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspaceeditor.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacegeneraleditor.h \
-    ./IPXactWrapper/ComponentEditor/addressSpaces/addressspaceparameterseditor.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacesdelegate.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressspaceseditor.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacesmodel.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacevisualizer.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmenteditor.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmentproxy.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmentsmodel.h \
     ./IPXactWrapper/ComponentEditor/cpus/addressspacerefdelegate.h \
-    ./IPXactWrapper/ComponentEditor/cpus/addressspacerefeditor.h \
-    ./IPXactWrapper/ComponentEditor/cpus/addressspacerefmodel.h \
-    ./IPXactWrapper/ComponentEditor/cpus/cpueditor.h \
+    ./IPXactWrapper/ComponentEditor/cpus/cpusdelegate.h \
+    ./IPXactWrapper/ComponentEditor/cpus/cpuseditor.h \
+    ./IPXactWrapper/ComponentEditor/cpus/cpusmodel.h \
     ./IPXactWrapper/ComponentEditor/views/envidentifiereditor.h \
     ./IPXactWrapper/ComponentEditor/views/envidentifiersdelegate.h \
     ./IPXactWrapper/ComponentEditor/views/envidentifiersmodel.h \
@@ -178,27 +208,32 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/views/filesetrefeditordelegate.h \
     ./IPXactWrapper/ComponentEditor/views/filesetrefmodel.h \
     ./IPXactWrapper/ComponentEditor/views/flatviewgeneraltab.h \
-    ./IPXactWrapper/ComponentEditor/views/flatviewparameterstab.h \
     ./IPXactWrapper/ComponentEditor/views/hierarchyrefwidget.h \
     ./IPXactWrapper/ComponentEditor/views/vieweditor.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/filebuildcommand.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/filebuildereditor.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/filedefinemodel.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/filedefineview.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/fileeditor.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/fileextratab.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/filegeneraleditor.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/filegeneraltab.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/filenameeditor.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/filenamelineedit.h \
+    ./IPXactWrapper/ComponentEditor/views/viewseditor.h \
+    ./IPXactWrapper/ComponentEditor/views/viewsmodel.h \
     ./IPXactWrapper/ComponentEditor/fileSet/fileseteditor.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/filesetsdelegate.h \
     ./IPXactWrapper/ComponentEditor/fileSet/filesetseditor.h \
     ./IPXactWrapper/ComponentEditor/fileSet/filesetsmodel.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/filetypeeditor.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/filetypeeditordelegate.h \
     ./IPXactWrapper/ComponentEditor/fileSet/groupmanager.h \
     ./IPXactWrapper/ComponentEditor/fileSet/groupmanagerdelegate.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/targetnameedit.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filebuildcommand.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filedefinemodel.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filedefineview.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/fileeditor.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/fileextratab.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filegeneraleditor.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filegeneraltab.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filenameeditor.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filenamelineedit.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filesdelegate.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/fileseditor.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filesmodel.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filesview.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filetypeeditor.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filetypeeditordelegate.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/targetnameedit.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/fieldtablemodel.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapseditor.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.h \
@@ -216,17 +251,13 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorapiinterfacesitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorbusinterfaceitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorbusinterfacesitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorchannelitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorchannelsitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorcominterfaceitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorcominterfacesitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorcpuitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorcpusitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditordeffilebuildersitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorfileitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorfilesetitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorfilesetsitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorfilesitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorgeneralitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorgroupslot.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditoritem.h \
@@ -237,7 +268,6 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorparametersitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorportsitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorrootitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorsoftmapsitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorswpropertiesitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorswviewitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorswviewsitem.h \
@@ -263,36 +293,6 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ApiDefinitionEditor/ApiFunctionModel.h \
     ./IPXactWrapper/ApiDefinitionEditor/ApiFunctionParameterDelegate.h \
     ./IPXactWrapper/ApiDefinitionEditor/ApiFunctionParameterModel.h \
-    ./LibraryManager/ipxactitem.h \
-    ./LibraryManager/ipxactmodel.h \
-    ./LibraryManager/ipxactwidget.h \
-    ./LibraryManager/librarydata.h \
-    ./LibraryManager/libraryhandler.h \
-    ./LibraryManager/libraryinterface.h \
-    ./LibraryManager/libraryitem.h \
-    ./LibraryManager/librarysearchfilter.h \
-    ./LibraryManager/librarysearchwidget.h \
-    ./LibraryManager/librarytableview.h \
-    ./LibraryManager/librarytreefilter.h \
-    ./LibraryManager/librarytreemodel.h \
-    ./LibraryManager/librarytreeview.h \
-    ./LibraryManager/librarytreewidget.h \
-    ./LibraryManager/LibraryUtils.h \
-    ./LibraryManager/typebox.h \
-    ./LibraryManager/vlnv.h \
-    ./LibraryManager/vlnvbox.h \
-    ./LibraryManager/HierarchyView/hierarchyfilter.h \
-    ./LibraryManager/HierarchyView/hierarchyitem.h \
-    ./LibraryManager/HierarchyView/hierarchymodel.h \
-    ./LibraryManager/HierarchyView/hierarchyview.h \
-    ./LibraryManager/HierarchyView/hierarchywidget.h \
-    ./LibraryManager/VLNVDialer/dialerwidget.h \
-    ./LibraryManager/VLNVDialer/filterwidget.h \
-    ./LibraryManager/VLNVDialer/firmnessgroup.h \
-    ./LibraryManager/VLNVDialer/hierarchygroup.h \
-    ./LibraryManager/VLNVDialer/implementationgroup.h \
-    ./LibraryManager/VLNVDialer/typegroup.h \
-    ./LibraryManager/VLNVDialer/vlnvdialer.h \
     ./models/abstractiondefinition.h \
     ./models/addressblock.h \
     ./models/addressspace.h \
@@ -315,6 +315,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./models/ComInterface.h \
     ./models/component.h \
     ./models/componentgenerator.h \
+    ./models/ComponentInstance.h \
     ./models/ComProperty.h \
     ./models/cpu.h \
     ./models/design.h \
@@ -388,13 +389,11 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./vhdlGenerator/vhdlportsorter.h \
     ./vhdlGenerator/vhdlsignal.h \
     ./PropertyWidget/messageconsole.h \
+    ./MCAPI/CSourceContentMatcher.h \
+    ./MCAPI/CSourceHighlighter.h \
     ./MCAPI/CSourceTextEdit.h \
     ./MCAPI/CSourceWidget.h \
-    ./MCAPI/MCAPIContentMatcher.h \
     ./MCAPI/MCAPIDesignerTypes.h \
-    ./MCAPI/MCAPIFunctionDesc.h \
-    ./MCAPI/MCAPIFunctionSet.h \
-    ./MCAPI/MCAPIHighlighter.h \
     ./settings/CodeEditorSettingsPage.h \
     ./settings/GeneralSettingsPage.h \
     ./settings/LibrarySettingsPage.h \
@@ -418,23 +417,51 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./AdHocEditor/AdHocEditor.h \
     ./AdHocEditor/AdHocModel.h \
     ./SystemDesign/HWMappingItem.h \
-    ./SystemDesign/IGraphicsItemStack.h \
-    ./SystemDesign/SWCompItem.h \
     ./SystemDesign/SWComponentItem.h \
-    ./SystemDesign/SWConnection.h \
     ./SystemDesign/SWConnectionEndpoint.h \
     ./SystemDesign/SWInterfaceItem.h \
     ./SystemDesign/SWPortItem.h \
     ./SystemDesign/SystemAddCommands.h \
     ./SystemDesign/SystemChangeCommands.h \
     ./SystemDesign/SystemColumn.h \
-    ./SystemDesign/SystemColumnLayout.h \
+    ./SystemDesign/SystemComponentItem.h \
     ./SystemDesign/SystemDeleteCommands.h \
     ./SystemDesign/SystemDesignDiagram.h \
     ./SystemDesign/SystemDesignWidget.h \
-    ./SystemDesign/SystemMoveCommands.h
+    ./SystemDesign/SystemMoveCommands.h \
+    ./LibraryManager/ipxactitem.h \
+    ./LibraryManager/ipxactmodel.h \
+    ./LibraryManager/ipxactwidget.h \
+    ./LibraryManager/librarydata.h \
+    ./LibraryManager/libraryhandler.h \
+    ./LibraryManager/libraryinterface.h \
+    ./LibraryManager/libraryitem.h \
+    ./LibraryManager/librarytreefilter.h \
+    ./LibraryManager/librarytreemodel.h \
+    ./LibraryManager/librarytreeview.h \
+    ./LibraryManager/librarytreewidget.h \
+    ./LibraryManager/LibraryUtils.h \
+    ./LibraryManager/vlnv.h \
+    ./LibraryManager/VLNVDialer/dialerwidget.h \
+    ./LibraryManager/VLNVDialer/filterwidget.h \
+    ./LibraryManager/VLNVDialer/firmnessgroup.h \
+    ./LibraryManager/VLNVDialer/hierarchygroup.h \
+    ./LibraryManager/VLNVDialer/implementationgroup.h \
+    ./LibraryManager/VLNVDialer/typegroup.h \
+    ./LibraryManager/VLNVDialer/vlnvdialer.h \
+    ./LibraryManager/HierarchyView/hierarchyfilter.h \
+    ./LibraryManager/HierarchyView/hierarchyitem.h \
+    ./LibraryManager/HierarchyView/hierarchymodel.h \
+    ./LibraryManager/HierarchyView/hierarchyview.h \
+    ./LibraryManager/HierarchyView/hierarchywidget.h \
+    ./PluginSystem/IGeneratorPlugin.h \
+    ./PluginSystem/IPluginInformation.h \
+    ./PluginSystem/IPluginUtility.h \
+    ./PluginSystem/PluginListDialog.h \
+    ./PluginSystem/PluginManager.h
 SOURCES += ./common/CSourceWriter.cpp \
     ./common/DesignDiagram.cpp \
+    ./common/DesignWidget.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/IDFactory.cpp \
     ./common/KactusAttribute.cpp \
@@ -451,6 +478,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/dialogs/ObjectRemoveDialog/objectremovemodel.cpp \
     ./common/dialogs/createConfigurationDialog/createconfigurationdialog.cpp \
     ./common/dialogs/listSelectDialog/ListSelectDialog.cpp \
+    ./common/dialogs/selectDirectoryDialog/selectdirectorydialog.cpp \
     ./common/validators/nameValidator/namevalidator.cpp \
     ./common/validators/vhdlNameValidator/vhdlnamevalidator.cpp \
     ./common/validators/LibraryPathValidator/librarypathvalidator.cpp \
@@ -458,10 +486,10 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/widgets/assistedLineEdit/LineContentAssistWidget.cpp \
     ./common/widgets/attributeBox/attributebox.cpp \
     ./common/widgets/attributeBox/attributemodel.cpp \
-    ./common/widgets/hexSpinBox/hexspinbox.cpp \
     ./common/widgets/libraryRefGenerator/libraryrefgenerator.cpp \
     ./common/widgets/listManager/dirlistmanager.cpp \
     ./common/widgets/listManager/filelistmanager.cpp \
+    ./common/widgets/listManager/listeditor.cpp \
     ./common/widgets/listManager/listmanager.cpp \
     ./common/widgets/listManager/listmanagermodel.cpp \
     ./common/widgets/nameGroupBox/namegroupbox.cpp \
@@ -487,7 +515,19 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/widgets/ParameterGroupBox/parametergroupbox.cpp \
     ./common/widgets/NumberLineEdit/numberlineedit.cpp \
     ./common/widgets/tabWidgetEx/TabWidgetEx.cpp \
+    ./common/widgets/nameGroupEditor/namegroupeditor.cpp \
+    ./common/widgets/summaryLabel/summarylabel.cpp \
+    ./common/widgets/interfaceModeSelector/interfacemodeselector.cpp \
+    ./common/widgets/addressSpaceSelector/addressspaceselector.cpp \
+    ./common/widgets/memoryMapSelector/memorymapselector.cpp \
+    ./common/widgets/interfaceSelector/interfaceselector.cpp \
     ./common/graphicsItems/ComponentItem.cpp \
+    ./common/graphicsItems/ConnectionEndpoint.cpp \
+    ./common/graphicsItems/ConnectionUndoCommands.cpp \
+    ./common/graphicsItems/GraphicsColumn.cpp \
+    ./common/graphicsItems/GraphicsColumnLayout.cpp \
+    ./common/graphicsItems/GraphicsColumnUndoCommands.cpp \
+    ./common/graphicsItems/GraphicsConnection.cpp \
     ./common/graphicsItems/GraphicsRectButton.cpp \
     ./common/delegates/ComboDelegate/combodelegate.cpp \
     ./common/delegates/LineEditDelegate/lineeditdelegate.cpp \
@@ -495,76 +535,86 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/views/EditableListView/editablelistview.cpp \
     ./common/models/ParameterModel/parametersmodel.cpp \
     ./designwidget/AdHocEnabled.cpp \
-    ./designwidget/blockdiagram.cpp \
+    ./designwidget/AdHocInterfaceItem.cpp \
+    ./designwidget/AdHocPortItem.cpp \
     ./designwidget/BusInterfaceDialog.cpp \
-    ./designwidget/designwidget.cpp \
-    ./designwidget/DiagramAddCommands.cpp \
-    ./designwidget/DiagramAdHocInterface.cpp \
-    ./designwidget/DiagramAdHocPort.cpp \
-    ./designwidget/DiagramChangeCommands.cpp \
-    ./designwidget/diagramcomponent.cpp \
-    ./designwidget/DiagramConnectionEndPoint.cpp \
-    ./designwidget/DiagramDeleteCommands.cpp \
-    ./designwidget/diagraminterconnection.cpp \
-    ./designwidget/diagraminterface.cpp \
-    ./designwidget/DiagramMoveCommands.cpp \
-    ./designwidget/DiagramOffPageConnector.cpp \
-    ./designwidget/diagramport.cpp \
+    ./designwidget/BusInterfaceItem.cpp \
+    ./designwidget/BusPortItem.cpp \
+    ./designwidget/HWAddCommands.cpp \
+    ./designwidget/HWChangeCommands.cpp \
+    ./designwidget/HWComponentItem.cpp \
+    ./designwidget/HWConnection.cpp \
+    ./designwidget/HWConnectionEndPoint.cpp \
+    ./designwidget/HWDeleteCommands.cpp \
+    ./designwidget/HWDesignDiagram.cpp \
+    ./designwidget/HWDesignWidget.cpp \
+    ./designwidget/HWMoveCommands.cpp \
+    ./designwidget/OffPageConnectorItem.cpp \
     ./designwidget/PortmapDialog.cpp \
     ./designwidget/SelectItemTypeDialog.cpp \
     ./designwidget/columnview/ColumnEditDialog.cpp \
-    ./designwidget/columnview/DiagramColumn.cpp \
-    ./designwidget/columnview/DiagramColumnLayout.cpp \
+    ./designwidget/columnview/HWColumn.cpp \
     ./exceptions/invalid_file.cpp \
     ./exceptions/vhdl_error.cpp \
-    ./IPXactWrapper/ComponentEditor/componenttreeitem.cpp \
     ./IPXactWrapper/ComponentEditor/itemeditor.cpp \
+    ./IPXactWrapper/ComponentEditor/itemvisualizer.cpp \
     ./IPXactWrapper/ComponentEditor/busInterfaces/ApiCreateDialog.cpp \
     ./IPXactWrapper/ComponentEditor/busInterfaces/apieditor.cpp \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/bridgesdelegate.cpp \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/bridgeseditor.cpp \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/bridgesmodel.cpp \
     ./IPXactWrapper/ComponentEditor/busInterfaces/busifgeneraldetails.cpp \
     ./IPXactWrapper/ComponentEditor/busInterfaces/busifgeneraltab.cpp \
     ./IPXactWrapper/ComponentEditor/busInterfaces/busifinterfacemaster.cpp \
     ./IPXactWrapper/ComponentEditor/busInterfaces/busifinterfacemodeeditor.cpp \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/busifinterfacemodetab.cpp \
     ./IPXactWrapper/ComponentEditor/busInterfaces/busifinterfacemonitor.cpp \
     ./IPXactWrapper/ComponentEditor/busInterfaces/busifinterfacemslave.cpp \
     ./IPXactWrapper/ComponentEditor/busInterfaces/busifinterfaceslave.cpp \
     ./IPXactWrapper/ComponentEditor/busInterfaces/busifinterfacesystem.cpp \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/busifparameterstab.cpp \
     ./IPXactWrapper/ComponentEditor/busInterfaces/busifportmaptab.cpp \
     ./IPXactWrapper/ComponentEditor/busInterfaces/businterfaceeditor.cpp \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/businterfacesdelegate.cpp \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/businterfaceseditor.cpp \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/businterfacesmodel.cpp \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/interfacemodestack.cpp \
     ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/logicallistmodel.cpp \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/logicallistview.cpp \
     ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/physlistmodel.cpp \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/physlistview.cpp \
     ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/portlistmodel.cpp \
     ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/portlistview.cpp \
     ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/portmapsdelegate.cpp \
     ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/portmapsmodel.cpp \
     ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/portmapsview.cpp \
-    ./IPXactWrapper/ComponentEditor/channels/channeleditor.cpp \
-    ./IPXactWrapper/ComponentEditor/channels/channelinterfacemanager.cpp \
     ./IPXactWrapper/ComponentEditor/channels/channelinterfacemanagerdelegate.cpp \
-    ./IPXactWrapper/ComponentEditor/channels/channelinterfacemodel.cpp \
+    ./IPXactWrapper/ComponentEditor/channels/channelsdelegate.cpp \
+    ./IPXactWrapper/ComponentEditor/channels/channelseditor.cpp \
+    ./IPXactWrapper/ComponentEditor/channels/channelsmodel.cpp \
     ./IPXactWrapper/ComponentEditor/fileBuilders/filebuildersdelegate.cpp \
     ./IPXactWrapper/ComponentEditor/fileBuilders/filebuilderseditor.cpp \
     ./IPXactWrapper/ComponentEditor/fileBuilders/filebuildersmodel.cpp \
-    ./IPXactWrapper/ComponentEditor/fileSet/filebuildcommand.cpp \
-    ./IPXactWrapper/ComponentEditor/fileSet/filebuildereditor.cpp \
-    ./IPXactWrapper/ComponentEditor/fileSet/filedefinemodel.cpp \
-    ./IPXactWrapper/ComponentEditor/fileSet/filedefineview.cpp \
-    ./IPXactWrapper/ComponentEditor/fileSet/fileeditor.cpp \
-    ./IPXactWrapper/ComponentEditor/fileSet/fileextratab.cpp \
-    ./IPXactWrapper/ComponentEditor/fileSet/filegeneraleditor.cpp \
-    ./IPXactWrapper/ComponentEditor/fileSet/filegeneraltab.cpp \
-    ./IPXactWrapper/ComponentEditor/fileSet/filenameeditor.cpp \
-    ./IPXactWrapper/ComponentEditor/fileSet/filenamelineedit.cpp \
     ./IPXactWrapper/ComponentEditor/fileSet/fileseteditor.cpp \
+    ./IPXactWrapper/ComponentEditor/fileSet/filesetsdelegate.cpp \
     ./IPXactWrapper/ComponentEditor/fileSet/filesetseditor.cpp \
     ./IPXactWrapper/ComponentEditor/fileSet/filesetsmodel.cpp \
-    ./IPXactWrapper/ComponentEditor/fileSet/filetypeeditor.cpp \
-    ./IPXactWrapper/ComponentEditor/fileSet/filetypeeditordelegate.cpp \
     ./IPXactWrapper/ComponentEditor/fileSet/groupmanager.cpp \
     ./IPXactWrapper/ComponentEditor/fileSet/groupmanagerdelegate.cpp \
-    ./IPXactWrapper/ComponentEditor/fileSet/targetnameedit.cpp \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filebuildcommand.cpp \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filedefinemodel.cpp \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filedefineview.cpp \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/fileeditor.cpp \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/fileextratab.cpp \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filegeneraleditor.cpp \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filegeneraltab.cpp \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filenameeditor.cpp \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filenamelineedit.cpp \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filesdelegate.cpp \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/fileseditor.cpp \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filesmodel.cpp \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filesview.cpp \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filetypeeditor.cpp \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filetypeeditordelegate.cpp \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/targetnameedit.cpp \
     ./IPXactWrapper/ComponentEditor/general/desceditor.cpp \
     ./IPXactWrapper/ComponentEditor/general/generaleditor.cpp \
     ./IPXactWrapper/ComponentEditor/modelParameters/modelparametereditor.cpp \
@@ -584,28 +634,39 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/views/filesetrefeditordelegate.cpp \
     ./IPXactWrapper/ComponentEditor/views/filesetrefmodel.cpp \
     ./IPXactWrapper/ComponentEditor/views/flatviewgeneraltab.cpp \
-    ./IPXactWrapper/ComponentEditor/views/flatviewparameterstab.cpp \
     ./IPXactWrapper/ComponentEditor/views/hierarchyrefwidget.cpp \
     ./IPXactWrapper/ComponentEditor/views/vieweditor.cpp \
+    ./IPXactWrapper/ComponentEditor/views/viewseditor.cpp \
+    ./IPXactWrapper/ComponentEditor/views/viewsmodel.cpp \
     ./IPXactWrapper/ComponentEditor/software/ApiInterfaceEditor.cpp \
+    ./IPXactWrapper/ComponentEditor/software/apiinterfacesdelegate.cpp \
+    ./IPXactWrapper/ComponentEditor/software/apiinterfaceseditor.cpp \
+    ./IPXactWrapper/ComponentEditor/software/apiinterfacesmodel.cpp \
     ./IPXactWrapper/ComponentEditor/software/ComInterfaceEditor.cpp \
+    ./IPXactWrapper/ComponentEditor/software/cominterfacesdelegate.cpp \
+    ./IPXactWrapper/ComponentEditor/software/cominterfaceseditor.cpp \
+    ./IPXactWrapper/ComponentEditor/software/cominterfacesmodel.cpp \
     ./IPXactWrapper/ComponentEditor/software/PropertyValueDelegate.cpp \
     ./IPXactWrapper/ComponentEditor/software/PropertyValueEditor.cpp \
     ./IPXactWrapper/ComponentEditor/software/PropertyValueModel.cpp \
-    ./IPXactWrapper/ComponentEditor/software/SoftwareMappingsEditor.cpp \
     ./IPXactWrapper/ComponentEditor/software/SWPropertiesEditor.cpp \
     ./IPXactWrapper/ComponentEditor/software/SWViewEditor.cpp \
+    ./IPXactWrapper/ComponentEditor/software/swviewsdelegate.cpp \
+    ./IPXactWrapper/ComponentEditor/software/swviewseditor.cpp \
+    ./IPXactWrapper/ComponentEditor/software/swviewsmodel.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspaceeditor.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacegeneraleditor.cpp \
-    ./IPXactWrapper/ComponentEditor/addressSpaces/addressspaceparameterseditor.cpp \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacesdelegate.cpp \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressspaceseditor.cpp \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacesmodel.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacevisualizer.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmenteditor.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmentproxy.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmentsmodel.cpp \
     ./IPXactWrapper/ComponentEditor/cpus/addressspacerefdelegate.cpp \
-    ./IPXactWrapper/ComponentEditor/cpus/addressspacerefeditor.cpp \
-    ./IPXactWrapper/ComponentEditor/cpus/addressspacerefmodel.cpp \
-    ./IPXactWrapper/ComponentEditor/cpus/cpueditor.cpp \
+    ./IPXactWrapper/ComponentEditor/cpus/cpusdelegate.cpp \
+    ./IPXactWrapper/ComponentEditor/cpus/cpuseditor.cpp \
+    ./IPXactWrapper/ComponentEditor/cpus/cpusmodel.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/fieldtablemodel.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapseditor.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.cpp \
@@ -623,17 +684,13 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorapiinterfacesitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorbusinterfaceitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorbusinterfacesitem.cpp \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorchannelitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorchannelsitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorcominterfaceitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorcominterfacesitem.cpp \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorcpuitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorcpusitem.cpp \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditordeffilebuildersitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorfileitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorfilesetitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorfilesetsitem.cpp \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorfilesitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorgeneralitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorgroupslot.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditoritem.cpp \
@@ -644,7 +701,6 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorparametersitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorportsitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorrootitem.cpp \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorsoftmapsitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorswpropertiesitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorswviewitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorswviewsitem.cpp \
@@ -676,24 +732,12 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./LibraryManager/librarydata.cpp \
     ./LibraryManager/libraryhandler.cpp \
     ./LibraryManager/libraryitem.cpp \
-    ./LibraryManager/librarysearchfilter.cpp \
-    ./LibraryManager/librarysearchwidget.cpp \
-    ./LibraryManager/librarytableview.cpp \
     ./LibraryManager/librarytreefilter.cpp \
     ./LibraryManager/librarytreemodel.cpp \
     ./LibraryManager/librarytreeview.cpp \
     ./LibraryManager/librarytreewidget.cpp \
     ./LibraryManager/LibraryUtils.cpp \
-    ./LibraryManager/typebox.cpp \
     ./LibraryManager/vlnv.cpp \
-    ./LibraryManager/vlnvbox.cpp \
-    ./LibraryManager/HierarchyView/hierarchyfilter.cpp \
-    ./LibraryManager/HierarchyView/hierarchyitem.cpp \
-    ./LibraryManager/HierarchyView/hierarchymodel.cpp \
-    ./LibraryManager/HierarchyView/hierarchyview.cpp \
-    ./LibraryManager/HierarchyView/hierarchywidget.cpp \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/logicallistview.cpp \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/physlistview.cpp \
     ./LibraryManager/VLNVDialer/dialerwidget.cpp \
     ./LibraryManager/VLNVDialer/filterwidget.cpp \
     ./LibraryManager/VLNVDialer/firmnessgroup.cpp \
@@ -701,6 +745,11 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./LibraryManager/VLNVDialer/implementationgroup.cpp \
     ./LibraryManager/VLNVDialer/typegroup.cpp \
     ./LibraryManager/VLNVDialer/vlnvdialer.cpp \
+    ./LibraryManager/HierarchyView/hierarchyfilter.cpp \
+    ./LibraryManager/HierarchyView/hierarchyitem.cpp \
+    ./LibraryManager/HierarchyView/hierarchymodel.cpp \
+    ./LibraryManager/HierarchyView/hierarchyview.cpp \
+    ./LibraryManager/HierarchyView/hierarchywidget.cpp \
     ./mainwindow/DeleteWorkspaceDialog.cpp \
     ./mainwindow/main.cpp \
     ./mainwindow/mainwindow.cpp \
@@ -736,6 +785,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./models/ComInterface.cpp \
     ./models/component.cpp \
     ./models/componentgenerator.cpp \
+    ./models/ComponentInstance.cpp \
     ./models/ComProperty.cpp \
     ./models/cpu.cpp \
     ./models/design.cpp \
@@ -800,13 +850,10 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./vhdlGenerator/vhdlportmap.cpp \
     ./vhdlGenerator/vhdlportsorter.cpp \
     ./vhdlGenerator/vhdlsignal.cpp \
+    ./MCAPI/CSourceContentMatcher.cpp \
+    ./MCAPI/CSourceHighlighter.cpp \
     ./MCAPI/CSourceTextEdit.cpp \
     ./MCAPI/CSourceWidget.cpp \
-    ./MCAPI/MCAPIContentMatcher.cpp \
-    ./MCAPI/MCAPIDesignerTypes.cpp \
-    ./MCAPI/MCAPIFunctionDesc.cpp \
-    ./MCAPI/MCAPIFunctionSet.cpp \
-    ./MCAPI/MCAPIHighlighter.cpp \
     ./settings/CodeEditorSettingsPage.cpp \
     ./settings/GeneralSettingsPage.cpp \
     ./settings/LibrarySettingsPage.cpp \
@@ -829,18 +876,18 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./AdHocEditor/AdHocEditor.cpp \
     ./AdHocEditor/AdHocModel.cpp \
     ./SystemDesign/HWMappingItem.cpp \
-    ./SystemDesign/SWCompItem.cpp \
     ./SystemDesign/SWComponentItem.cpp \
-    ./SystemDesign/SWConnection.cpp \
     ./SystemDesign/SWConnectionEndpoint.cpp \
     ./SystemDesign/SWInterfaceItem.cpp \
     ./SystemDesign/SWPortItem.cpp \
     ./SystemDesign/SystemAddCommands.cpp \
     ./SystemDesign/SystemChangeCommands.cpp \
     ./SystemDesign/SystemColumn.cpp \
-    ./SystemDesign/SystemColumnLayout.cpp \
+    ./SystemDesign/SystemComponentItem.cpp \
     ./SystemDesign/SystemDeleteCommands.cpp \
     ./SystemDesign/SystemDesignDiagram.cpp \
     ./SystemDesign/SystemDesignWidget.cpp \
-    ./SystemDesign/SystemMoveCommands.cpp
+    ./SystemDesign/SystemMoveCommands.cpp \
+    ./PluginSystem/PluginListDialog.cpp \
+    ./PluginSystem/PluginManager.cpp
 RESOURCES += kactus.qrc

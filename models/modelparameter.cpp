@@ -33,12 +33,6 @@ valueAttributes_() {
 			General::parseAttributes(tempNode, valueAttributes_);
 		}
 	}
-
-	// if mandatory elements are missing
-// 	if (nameGroup_.name_.isNull()) {
-// 		throw Parse_error(QObject::tr("Mandatory element name missing in "
-// 				"spirit:modelParameter"));
-// 	}
 	return;
 }
 

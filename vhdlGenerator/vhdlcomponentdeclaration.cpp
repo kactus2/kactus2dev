@@ -31,7 +31,7 @@ instantations_() {
 		parent, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 
 	// parse the generics for the component declaration
-	QMap<QString, QSharedPointer<ModelParameter> > modelParams = component_->getModelParameters();
+	QList<QSharedPointer<ModelParameter> > modelParams = component_->getModelParameters();
 	foreach (QSharedPointer<ModelParameter> modelParam, modelParams) {
 		QSharedPointer<VhdlGeneric> generic(new VhdlGeneric(this, modelParam.data()));
 		generics_.insert(generic->name(), generic);

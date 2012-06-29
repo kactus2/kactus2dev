@@ -405,7 +405,7 @@ void DocumentGenerator::writeModelParameters(QTextStream& stream, int& subHeader
 		writeTableElement(paramHeaders, 
 			"List of model parameters defined for the component",
 			stream);
-		const QMap<QString, QSharedPointer<ModelParameter> > modelParams = component_->getModelParameters();
+		const QList<QSharedPointer<ModelParameter> > modelParams = component_->getModelParameters();
 		foreach (QSharedPointer<ModelParameter> param, modelParams) {
 			stream << "\t\t\t\t<tr>" << endl;
 			stream << "\t\t\t\t\t<td>" << param->getName() << "</td>" << endl;
