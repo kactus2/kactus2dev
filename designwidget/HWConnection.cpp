@@ -270,17 +270,17 @@ int HWConnection::calculateBusWidth() const
             continue;
         }
 
-        Port* port1 = endpoint1()->getOwnerComponent()->getPort(portMap1->physicalPort_);
-        Port* port2 = endpoint2()->getOwnerComponent()->getPort(portMap2->physicalPort_);
+        QSharedPointer<Port> port1 = endpoint1()->getOwnerComponent()->getPort(portMap1->physicalPort_);
+        QSharedPointer<Port> port2 = endpoint2()->getOwnerComponent()->getPort(portMap2->physicalPort_);
 
-        if (port1 == 0)
+        if (!port1)
         {
 //             emit errorMessage(tr("Port '%1' not found in the component '%1'.").arg(portMap1->physicalPort_,
 //                 endpoint1()->getOwnerComponent()->getVlnv()->getName()));
             continue;
         }
         
-        if (port2 == 0)
+        if (!port2)
         {
 //             emit errorMessage(tr("Port '%1' not found in the component '%1'.").arg(portMap2->physicalPort_,
 //                 endpoint2()->getOwnerComponent()->getVlnv()->getName()));

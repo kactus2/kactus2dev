@@ -85,7 +85,7 @@ HWComponentItem::HWComponentItem(LibraryInterface* lh_,
     }
 
     // Parse port ad-hoc visibilities.
-    foreach (QSharedPointer<Port> adhocPort, componentModel()->getPorts().values())
+    foreach (QSharedPointer<Port> adhocPort, componentModel()->getPorts())
     {
         if (!isPortAdHocVisible(adhocPort->getName()))
         {
@@ -477,10 +477,10 @@ void HWComponentItem::onAdHocVisibilityChanged(QString const& portName, bool vis
     // Create/destroy the ad-hoc port graphics item.
     if (visible)
     {
-        Port* adhocPort = componentModel()->getPort(portName);
+        QSharedPointer<Port> adhocPort = componentModel()->getPort(portName);
         Q_ASSERT(adhocPort != 0);
 
-        AdHocPortItem* port = new AdHocPortItem(adhocPort, getLibraryInterface(), this);
+        AdHocPortItem* port = new AdHocPortItem(adhocPort.data(), getLibraryInterface(), this);
 
         // Place the port at the bottom of the side that contains fewer ports.
         if (leftPorts_.size() < rightPorts_.size())

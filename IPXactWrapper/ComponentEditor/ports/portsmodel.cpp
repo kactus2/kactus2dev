@@ -25,8 +25,6 @@ table_(),
 component_(component) {
 
 	Q_ASSERT(component_);
-
-	restore();
 }
 
 PortsModel::~PortsModel() {
@@ -386,35 +384,6 @@ bool PortsModel::isValid() const {
 	}
 
 	return true;
-}
-
-void PortsModel::apply() {
-	// remove old ports
-	ports_->clear();
-
-	// add each port from the table
-	for (int i = 0; i < table_.size(); ++i) {
-		ports_->insert(table_.value(i)->getName(), table_.value(i));
-	}
-}
-
-void PortsModel::restore() {
-
-	beginResetModel();
-
-	foreach (QSharedPointer<Port> port, *ports_) {
-
-		QSharedPointer<Port> tablePort(new Port(*port.data()));
-
-		// the default port types are not used anymore
-		// if theres no specified type for the port
-// 		if (!tablePort->hasType()) {
-// 			tablePort->useDefaultVhdlTypes();
-// 		}
-		table_.append(tablePort);
-	}
-
-	endResetModel();
 }
 
 void PortsModel::onRemoveRow( int row ) {

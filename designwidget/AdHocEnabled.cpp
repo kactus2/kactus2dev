@@ -29,7 +29,7 @@ void AdHocEnabled::setAdHocData(QSharedPointer<Component> component, QMap<QStrin
     portAdHocVisibilities_.clear();
 
     // Parse port ad-hoc visibilities.
-    foreach (QSharedPointer<Port> adhocPort, component->getPorts().values())
+    foreach (QSharedPointer<Port> adhocPort, component->getPorts())
     {
         bool visible = adhocPort->isAdHocVisible();
 
@@ -86,7 +86,7 @@ QMap<QString, bool> const& AdHocEnabled::getPortAdHocVisibilities() const
 QList< QSharedPointer<Port> > AdHocEnabled::getPorts() const
 {
     Q_ASSERT(component_ != 0);
-    return component_->getPorts().values();
+    return component_->getPorts();
 }
 
 //-----------------------------------------------------------------------------

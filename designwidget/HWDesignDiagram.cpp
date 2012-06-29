@@ -381,7 +381,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
         {
             QString const& name = itrCurPort.key();
             AdHocInterfaceItem* adHocIf = new AdHocInterfaceItem(getEditedComponent(),
-                                                                       getEditedComponent()->getPort(name),
+                                                                       getEditedComponent()->getPort(name).data(),
                                                                        getLibraryInterface(), 0);
             if (adHocPortPositions.contains(name))
             {
@@ -2184,7 +2184,7 @@ void HWDesignDiagram::onAdHocVisibilityChanged(QString const& portName, bool vis
     if (visible)
     {
         AdHocInterfaceItem* adHocIf = new AdHocInterfaceItem(getEditedComponent(),
-                                                                   getEditedComponent()->getPort(portName),
+                                                                   getEditedComponent()->getPort(portName).data(),
                                                                    getLibraryInterface(), 0);
 
         // Add the ad-hoc interface to the first column where it is allowed to be placed.

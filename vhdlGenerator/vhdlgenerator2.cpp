@@ -467,7 +467,7 @@ void VhdlGenerator2::parseTopGenerics() {
 
 void VhdlGenerator2::parseTopPorts() {
 	
-	QMap<QString, QSharedPointer<Port> > ports = component_->getPorts();
+	QList<QSharedPointer<Port> > ports = component_->getPorts();
 	foreach (QSharedPointer<Port> port, ports) {
 
 		// do not add ports with invalid direction or phantom direction

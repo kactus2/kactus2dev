@@ -145,7 +145,7 @@ void BusPortItem::updateInterface()
     {
         foreach (QString const& portName, busInterface_->getPhysicalPortNames())
         {
-            Port* port = getOwnerComponent()->getPort(portName);
+            QSharedPointer<Port> port = getOwnerComponent()->getPort(portName);
 
             if (port != 0)
             {

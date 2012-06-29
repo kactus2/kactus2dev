@@ -12,6 +12,8 @@
 #include <IPXactWrapper/ComponentEditor/ports/portseditor.h>
 #include <models/port.h>
 
+#include <QList>
+
 /*! \brief The Ports-item in the component editor's navigation tree.
  *
  */
@@ -74,7 +76,7 @@ private:
 	ComponentEditorPortsItem& operator=(const ComponentEditorPortsItem& other);
 
 	//! \brief Contains the ports to edit
-	QMap<QString, QSharedPointer<Port> >& ports_;
+	QList<QSharedPointer<Port> >& ports_;
 
 	//! \brief The editor to edit the ports
 	PortsEditor editor_;

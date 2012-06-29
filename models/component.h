@@ -1205,33 +1205,27 @@ public:
 	*
 	* \return Pointer to the port instance
 	*/
-	Port* getPort(const QString& name) const;
+	QSharedPointer<Port> getPort(const QString& name) const;
 
 	/*! \brief Get the ports contained in this component
 	 *
-	 * \return QMap containing pointers to the ports.
-	 *		Key = name of the port
-	 *		Value = Pointer to the port
+	 * \return QList containing pointers to the ports.
 	*/
-	QMap<QString, QSharedPointer<Port> > getPorts() const;
+	const QList<QSharedPointer<Port> >& getPorts() const;
 
 	/*! \brief Get the ports contained in this component.
 	*
-	* \return QMap containing pointers to the ports.
-	*		Key = name of the port
-	*		Value = Pointer to the port
+	* \return QList containing pointers to the ports.
 	*/
-	QMap<QString, QSharedPointer<Port> >& getPorts();
+	QList<QSharedPointer<Port> >& getPorts();
 
 	/*! \brief Get the ports that are found in specified interface.
 	 *
 	 * \param interfaceName The name of interface that's ports are requested.
 	 *
-	 * \return QMap containing the pointers to the ports.
-	 *  Key = The name of the port.
-	 *  Value = Pointer to the port.
+	 * \return List containing pointers to the ports.
 	*/
-	const QMap<QString, QSharedPointer<Port> > getPorts(const QString& interfaceName) const;
+	const QList<QSharedPointer<Port> > getPorts(const QString& interfaceName) const;
 
 	/*! \brief Get the direction of the given port.
 	* 

@@ -104,16 +104,6 @@ public:
 	*/
 	bool isValid() const;
 
-	/*! \brief Write the changes to the original model.
-	 *
-	*/
-	void apply();
-
-	/*! \brief Restore the settings from the original model.
-	 *
-	*/
-	void restore();
-
 public slots:
 
 	/*! \brief Remove a row from the model
@@ -161,7 +151,7 @@ private:
 	PortsModel& operator=(const PortsModel& other);
 
 	//! \brief Pointer to the map that contains the actual ports.
-	QMap<QString, QSharedPointer<Port> >* ports_;
+	QList<QSharedPointer<Port> >* ports_;
 
 	//! \brief The table that is displayed to the user.
 	QList<QSharedPointer<Port> > table_;

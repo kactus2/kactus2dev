@@ -17,7 +17,11 @@
 
 #include <QDebug>
 
-Model::Model(QDomNode &modelNode): views_(), ports_(), modelParameters_() {
+Model::Model(QDomNode &modelNode):
+views_(),
+ports_(),
+modelParameters_() {
+
 	for (int i = 0; i < modelNode.childNodes().count(); ++i) {
 		QDomNode tempNode = modelNode.childNodes().at(i);
 
@@ -39,8 +43,7 @@ Model::Model(QDomNode &modelNode): views_(), ports_(), modelParameters_() {
 			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
 				QDomNode portNode = tempNode.childNodes().at(j);
 				if (!portNode.isComment()) {
-					Port* port = new Port(portNode);
-					ports_.insert(port->getName(), QSharedPointer<Port>(port));
+					ports_.append(QSharedPointer<Port>(new Port(portNode)));
 				}
 			}
 		}
@@ -76,13 +79,12 @@ modelParameters_() {
 		}
 	}
 
-	for (QMap<QString, QSharedPointer<Port> >::const_iterator i = other.ports_.begin();
-		i != other.ports_.end(); ++i) {
-			if (i.value()) {
-				QSharedPointer<Port> copy = QSharedPointer<Port>(
-					new Port(*i.value().data()));
-				ports_.insert(copy->getName(), copy);
-			}
+	foreach (QSharedPointer<Port> port, other.ports_) {
+		if (port) {
+			QSharedPointer<Port> copy = QSharedPointer<Port>(
+				new Port(*port.data()));
+			ports_.append(copy);
+		}
 	}
 
 	foreach (QSharedPointer<ModelParameter> modelParam, other.modelParameters_) {
@@ -107,14 +109,12 @@ Model& Model::operator=( const Model &other ) {
 		}
 
 		ports_.clear();
-		for (QMap<QString, QSharedPointer<Port> >::const_iterator i = 
-                 other.ports_.begin();
-			i != other.ports_.end(); ++i) {
-				if (i.value()) {
-					QSharedPointer<Port> copy = QSharedPointer<Port>(
-						new Port(*i.value().data()));
-					ports_.insert(copy->getName(), copy);
-				}
+		foreach (QSharedPointer<Port> port, other.ports_) {
+			if (port) {
+				QSharedPointer<Port> copy = QSharedPointer<Port>(
+					new Port(*port.data()));
+				ports_.append(copy);
+			}
 		}
 
 		modelParameters_.clear();
@@ -157,11 +157,8 @@ void Model::write(QXmlStreamWriter& writer) {
 
 		const QStringList viewNames = getViewNames();
 
-		// go through each port
-		for (QMap<QString, QSharedPointer<Port> >::iterator i = ports_.begin();
-				i != ports_.end(); ++i) {
-
-			i.value()->write(writer, viewNames);
+		foreach (QSharedPointer<Port> port, ports_) {
+			port->write(writer, viewNames);
 		}
 
 		writer.writeEndElement(); // spirit:ports
@@ -301,22 +298,6 @@ void Model::setViews(const QList<QSharedPointer<View> > &views) {
 	views_ = views;
 }
 
-const QMap<QString, QSharedPointer<Port> >& Model::getPorts() const {
-	return ports_;
-}
-
-QMap<QString, QSharedPointer<Port> >& Model::getPorts() {
-	return ports_;
-}
-
-void Model::setPorts(const QMap<QString, QSharedPointer<Port> > &ports) {
-	// delete the old ports
-	ports_.clear();
-
-	// save the new ports
-	ports_ = ports;
-}
-
 const QList<QSharedPointer<View> >& Model::getViews() const {
 	return views_;
 }
@@ -367,25 +348,6 @@ void Model::setHierRef(const VLNV& vlnv, const QString& viewName /*= QString()*/
 			(viewName.isEmpty() && view->getHierarchyRef().isValid())) {
 			view->setHierarchyRef(vlnv);
 		}
-	}
-}
-
-Port* Model::getPort(const QString& name) const {
-
-	// if port doesn't exist
-	if (!ports_.contains(name)) {
-		return 0;
-	}
-	else {
-		return ports_.value(name).data();
-	}
-}
-
-int Model::getPortWidth( const QString& port ) const {
-	if (!ports_.contains(port)) 
-		return -1;
-	else {
-		return ports_.value(port)->getPortSize();
 	}
 }
 
@@ -442,41 +404,6 @@ void Model::removeView(const QString& name) {
 	}
 }
 
-bool Model::addPort( QSharedPointer<Port> port ) {
-	
-	// if port with same name already exists
-	if (ports_.contains(port->getName()))
-		return false;
-
-	ports_.insert(port->getName(), port);
-	return true;
-}
-
-void Model::removePort( const QString& portName ) {
-	ports_.remove(portName);
-}
-
-bool Model::renamePort( const QString& oldName, const QString& newName ) {
-	
-	// if port with old name does not exist
-	if (!ports_.contains(oldName))
-		return false;
-
-	QSharedPointer<Port> portP(ports_.value(oldName));
-	ports_.remove(oldName);
-	ports_.insert(newName, portP);
-	return true;
-}
-
-QMap<QString, QSharedPointer<Port> >* Model::getPortsPointer() {
-	return &ports_;
-}
-
-QStringList Model::getPortNames() const {
-	QStringList portNames = ports_.keys();
-	return portNames;
-}
-
 View* Model::createView() {
 
 	QSharedPointer<View> viewP = QSharedPointer<View>(new View());
@@ -495,31 +422,6 @@ QStringList Model::getViewNames() const {
 
 int Model::viewCount() const {
 	return views_.count();
-}
-
-General::Direction Model::getPortDirection( const QString& portName ) const {
-
-	// if port is not found
-	if (!ports_.contains(portName))
-		return General::DIRECTION_INVALID;
-
-	return ports_.value(portName)->getDirection();
-}
-
-bool Model::isPhysicalPort( const QString& portName ) const {
-	// if port is not found
-	if (!ports_.contains(portName)) {
-		return false;
-	}
-	// if port direction is unspecified or phantom
-	else if (ports_.value(portName)->getDirection() == General::DIRECTION_INVALID ||
-		ports_.value(portName)->getDirection() == General::DIRECTION_PHANTOM) {
-			return false;
-	}
-	// if port direction is valid
-	else {
-		return true;
-	}
 }
 
 QStringList Model::getHierViews() const {
@@ -553,64 +455,8 @@ QStringList Model::getFileSetRefs( const QString& viewName ) const {
 	return fileSets;
 }
 
-bool Model::hasPorts() const {
-	return !ports_.isEmpty();
-}
-
 bool Model::hasViews() const {
 	return !views_.isEmpty();
-}
-
-QMap<QString, QString> Model::getPortDefaultValues() const {
-
-	QMap<QString, QString> defaultValues;
-
-	foreach (QSharedPointer<Port> port, ports_) {
-		
-		// only the in and inout ports can have default values
-		if (port->getDirection() == General::IN ||
-			port->getDirection() == General::INOUT) {
-
-				// if port has a default value specified
-				if (!port->getDefaultValue().isEmpty()) {
-					defaultValues.insert(port->getName(), port->getDefaultValue());
-				}
-		}
-	}
-
-	return defaultValues;
-}
-
-QStringList Model::getPortTypeDefinitions() const {
-
-	QStringList typeDefs;
-	foreach (QSharedPointer<Port> port, ports_) {
-
-		// get all the type defs that the port uses
-		QStringList portTypeDefs = port->getTypeDefinitions();
-		foreach (QString portType, portTypeDefs) {
-
-			// if the type def is not yet in the list and it is not empty
-			if (!typeDefs.contains(portType) && !portType.isEmpty()) {
-				typeDefs.append(portType);
-			}
-		}
-	}
-	return typeDefs;
-}
-
-bool Model::hasPortTypes() const {
-
-	// check each port
-	foreach (QSharedPointer<Port> port, ports_) {
-
-		// if port has a type defined
-		if (port->hasTypeDefinitions()) {
-			return true;
-		}
-	}
-	// none of the port had a type defined
-	return false;
 }
 
 QString Model::getEntityName( const QString& viewName ) const {
@@ -673,16 +519,6 @@ QString Model::getArchitectureName( const QString& viewName ) const {
 		}
 	}
 	return QString();
-}
-
-QList<General::PortBounds> Model::getPortBounds() const {
-	QList<General::PortBounds> portBounds;
-	foreach (QSharedPointer<Port> port, ports_) {
-		General::PortBounds tempBound(port->getName(), port->getLeftBound(), 
-			port->getRightBound());
-		portBounds.append(tempBound);
-	}
-	return portBounds;
 }
 
 const QList<QSharedPointer<ModelParameter> >& Model::getModelParameters() const {
@@ -750,4 +586,179 @@ QStringList Model::getModelParameterNames() const {
 
 bool Model::hasModelParameters() const {
 	return !modelParameters_.isEmpty();
+}
+
+const QList<QSharedPointer<Port> >& Model::getPorts() const {
+	return ports_;
+}
+
+QList<QSharedPointer<Port> >& Model::getPorts() {
+	return ports_;
+}
+
+void Model::setPorts(const QList<QSharedPointer<Port> > &ports) {
+	// delete the old ports
+	ports_.clear();
+
+	// save the new ports
+	ports_ = ports;
+}
+
+QSharedPointer<Port> Model::getPort( const QString& name ) const {
+
+	foreach (QSharedPointer<Port> port, ports_) {
+		if (port->getName() == name) {
+			return port;
+		}
+	}
+	return QSharedPointer<Port>();
+}
+
+int Model::getPortWidth( const QString& portName ) const {
+	
+	QSharedPointer<Port> port = getPort(portName);
+	if (port) {
+		return port->getPortSize();
+	}
+	else {
+		return -1;
+	}
+}
+
+bool Model::addPort( QSharedPointer<Port> newPort ) {
+
+	foreach (QSharedPointer<Port> port, ports_) {
+		if (newPort == port) {
+			return false;
+		}
+	}
+	ports_.append(newPort);
+	return true;
+}
+
+void Model::removePort( const QString& portName ) {
+	for (int i = 0; i < ports_.size(); ++i) {
+		if (ports_.at(i)->getName() == portName) {
+			ports_.removeAt(i);
+			--i;
+		}
+	}
+}
+
+bool Model::renamePort( const QString& oldName, const QString& newName ) {
+
+	bool found = false;
+	foreach (QSharedPointer<Port> port, ports_) {
+		if (port->getName() == oldName) {
+			port->setName(newName);
+			found = true;
+		}
+	}
+	return found;
+}
+
+QStringList Model::getPortNames() const {
+	QStringList portNames;
+	foreach (QSharedPointer<Port> port, ports_) {
+		portNames.append(port->getName());
+	}
+	return portNames;
+}
+
+General::Direction Model::getPortDirection( const QString& portName ) const {
+
+	foreach (QSharedPointer<Port> port, ports_) {
+		if (port->getName() == portName) {
+			return port->getDirection();
+		}
+	}
+	return General::DIRECTION_INVALID;
+}
+
+bool Model::hasPorts() const {
+	return !ports_.isEmpty();
+}
+
+bool Model::isPhysicalPort( const QString& portName ) const {
+	
+	QSharedPointer<Port> port = getPort(portName);
+
+	// if port does not exits
+	if (!port) {
+		return false;
+	}
+
+	// unspecified or phantom ports are not real
+	switch (port->getDirection()) {
+		case General::DIRECTION_INVALID:
+		case General::DIRECTION_PHANTOM: {
+			return false;
+										 }
+		default: {
+			return true;
+				 }
+	}
+}
+
+QMap<QString, QString> Model::getPortDefaultValues() const {
+
+	QMap<QString, QString> defaultValues;
+
+	foreach (QSharedPointer<Port> port, ports_) {
+
+		// only the in and inout ports can have default values
+		if (port->getDirection() == General::IN ||
+			port->getDirection() == General::INOUT) {
+
+				// if port has a default value specified
+				if (!port->getDefaultValue().isEmpty()) {
+					defaultValues.insert(port->getName(), port->getDefaultValue());
+				}
+		}
+	}
+
+	return defaultValues;
+}
+
+QStringList Model::getPortTypeDefinitions() const {
+
+	QStringList typeDefs;
+	foreach (QSharedPointer<Port> port, ports_) {
+
+		// get all the type defs that the port uses
+		QStringList portTypeDefs = port->getTypeDefinitions();
+		foreach (QString portType, portTypeDefs) {
+
+			// if the type def is not yet in the list and it is not empty
+			if (!typeDefs.contains(portType) && !portType.isEmpty()) {
+				typeDefs.append(portType);
+			}
+		}
+	}
+	return typeDefs;
+}
+
+bool Model::hasPortTypes() const {
+
+	// check each port
+	foreach (QSharedPointer<Port> port, ports_) {
+
+		// if port has a type defined
+		if (port->hasTypeDefinitions()) {
+			return true;
+		}
+	}
+	// none of the port had a type defined
+	return false;
+}
+
+QList<General::PortBounds> Model::getPortBounds() const {
+	QList<General::PortBounds> portBounds;
+	
+	foreach (QSharedPointer<Port> port, ports_) {
+		General::PortBounds tempBound(port->getName(), port->getLeftBound(), 
+			port->getRightBound());
+		portBounds.append(tempBound);
+	}
+	return portBounds;
 }

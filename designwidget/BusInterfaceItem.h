@@ -79,7 +79,7 @@ public:
     /*!
      *  Returns the ports in the top-level component that are related to the bus interface.
      */
-    QList<Port*> getPorts() const;
+	QList<QSharedPointer<Port> > getPorts() const;
 
     /*!
      *  Sets the interface temporary or not temporary. Temporary interface destroys

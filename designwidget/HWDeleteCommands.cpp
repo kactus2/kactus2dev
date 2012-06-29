@@ -351,11 +351,11 @@ InterfaceDeleteCommand::InterfaceDeleteCommand(BusInterfaceItem* interface,
     if (removePorts_)
     {
         // Create copies of the related ports.
-        QList<Port*> ports = interface_->getPorts();
+        QList<QSharedPointer<Port> > ports = interface_->getPorts();
 
-        foreach (Port* port, ports)
+        foreach (QSharedPointer<Port> port, ports)
         {
-            ports_.append(QSharedPointer<Port>(new Port(*port)));
+            ports_.append(QSharedPointer<Port>(new Port(*port.data())));
         }
     }
 

@@ -161,7 +161,7 @@ void BusInterfaceItem::updateInterface()
     {
         foreach (QString const& portName, busInterface_->getPhysicalPortNames())
         {
-            Port* port = getOwnerComponent()->getPort(portName);
+            QSharedPointer<Port> port = getOwnerComponent()->getPort(portName);
 
             if (port != 0)
             {
@@ -327,10 +327,10 @@ bool BusInterfaceItem::onConnect(ConnectionEndpoint const* other)
                 if (!nameMappings.contains(portMap->physicalPort_))
                 {
                     // Retrieve the port from the model.
-                    Port* port = otherComp->getPort(portMap->physicalPort_);
+                    QSharedPointer<Port> port = otherComp->getPort(portMap->physicalPort_);
 
                     // Check if the port was not found.
-                    if (port == 0)
+                    if (!port)
                     {
                         emit errorMessage(tr("Port %1 was not found in component %2 while "
                                              "copying the bus interface.").arg(portMap->physicalPort_,
@@ -730,18 +730,17 @@ void BusInterfaceItem::undefine(bool removePorts)
 //-----------------------------------------------------------------------------
 // Function: getPorts()
 //-----------------------------------------------------------------------------
-QList<Port*> BusInterfaceItem::getPorts() const
-{
+QList<QSharedPointer<Port> > BusInterfaceItem::getPorts() const {
     Q_ASSERT(busInterface_ != 0);
-    QList<Port*> ports;
+    QList<QSharedPointer<Port> > ports;
 
     QList< QSharedPointer<General::PortMap> > const& portMaps = busInterface_->getPortMaps();
 
     foreach (QSharedPointer<General::PortMap> portMap, portMaps)
     {
-        Port* port = component_->getPort(portMap->physicalPort_);
+        QSharedPointer<Port> port = component_->getPort(portMap->physicalPort_);
 
-        if (port != 0)
+        if (port)
         {
             ports.append(port);
         }

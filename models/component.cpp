@@ -1786,12 +1786,13 @@ bool Component::isHierarchical() const {
 	return model_->hasHierView();
 }
 
-Port* Component::getPort(const QString& name) const {
-	if (model_)
+QSharedPointer<Port> Component::getPort( const QString& name ) const {
+	if (model_) {
 		// ask model for the port
 		return model_->getPort(name);
+	}
 
-	return 0;
+	return QSharedPointer<Port>();
 }
 
 int Component::getPortWidth( const QString& port ) const {
@@ -2145,7 +2146,7 @@ bool Component::hasFileSets() const {
 	return !fileSets_.isEmpty();
 }
 
-QMap<QString, QSharedPointer<Port> >& Component::getPorts() {
+QList<QSharedPointer<Port> >& Component::getPorts() {
 	if (model_) {
 		return model_->getPorts();
 	}
@@ -2155,18 +2156,14 @@ QMap<QString, QSharedPointer<Port> >& Component::getPorts() {
 	}
 }
 
-QMap<QString, QSharedPointer<Port> > Component::getPorts() const {
-	if (model_) {
-		return model_->getPorts();
-	}
-	else {
-		return QMap<QString, QSharedPointer<Port> >();
-	}
+const QList<QSharedPointer<Port> >& Component::getPorts() const {
+	Q_ASSERT(model_);
+	return model_->getPorts();
 }
 
-const QMap<QString, QSharedPointer<Port> > Component::getPorts( const QString& interfaceName ) const {
+const QList<QSharedPointer<Port> > Component::getPorts( const QString& interfaceName ) const {
 
-	QMap<QString, QSharedPointer<Port> > ports;
+	QList<QSharedPointer<Port> > ports;
 	
 	QStringList portNames;
 
@@ -2188,19 +2185,16 @@ const QMap<QString, QSharedPointer<Port> > Component::getPorts( const QString& i
 	// get all the ports on the component
 	ports = getPorts();
 
-	QMap<QString, QSharedPointer<Port> > portsToReturn;
+	QList<QSharedPointer<Port> > portsToReturn;
 
 	// check each port
-	for (QMap<QString, QSharedPointer<Port> >::iterator i = ports.begin();
-		i != ports.end(); ++i) {
+	foreach (QSharedPointer<Port> port, ports) {
+		if (portNames.contains(port->getName())) {
 
-			// if the port is on this interface
-			if (portNames.contains(i.key())) {
-				
-				// copy the port to the list to be returned
-				portsToReturn.insert(i.key(), i.value());
-			}
+			portsToReturn.append(port);
+		}
 	}
+
 	return portsToReturn;
 }
 

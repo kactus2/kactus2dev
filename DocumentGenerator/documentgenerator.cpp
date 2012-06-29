@@ -480,7 +480,7 @@ void DocumentGenerator::writePorts(QTextStream& stream, int& subHeaderNumber) {
 		portHeaders.append("Description");
 		writeTableElement(portHeaders, 
 			"List of all ports the component has.", stream);
-		const QMap<QString, QSharedPointer<Port> > ports = component_->getPorts();
+		const QList<QSharedPointer<Port> > ports = component_->getPorts();
 		foreach (QSharedPointer<Port> port, ports) {
 			stream << "\t\t\t\t<tr>" << endl;
 			stream << "\t\t\t\t\t<td><a id=\"" << 
@@ -542,7 +542,7 @@ void DocumentGenerator::writeInterfaces(QTextStream& stream, int& subHeaderNumbe
 			portHeaders.append("Description");
 			writeTableElement(portHeaders, 
 				QString("List of ports contained in interface %1.").arg(interface->getName()), stream);
-			const QMap<QString, QSharedPointer<Port> > ports = component_->getPorts(interface->getName());
+			const QList<QSharedPointer<Port> > ports = component_->getPorts(interface->getName());
 			foreach (QSharedPointer<Port> port, ports) {
 				stream << "\t\t\t\t<tr>" << endl;
 				stream << "\t\t\t\t\t<td><a id=\"" << 

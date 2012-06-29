@@ -14,7 +14,6 @@
 #include <common/Global.h>
 
 #include <QList>
-#include <QMap>
 #include <QDomNode>
 #include <QSharedPointer>
 #include <QXmlStreamWriter>
@@ -88,23 +87,6 @@ public:
 	*/
 	bool isValid(const QStringList& fileSetNames) const;
 
-	/*! \brief Get the ports of this model
-	 *
-	 * \return QMap containing pointers to the ports of this model
-	 * 		Key = name of a port
-	 * 		Value = pointer to the port
-	 */
-	const QMap<QString, QSharedPointer<Port> >& getPorts() const;
-
-	/*! \brief Get the ports of this model
-	 *
-	 *
-	 * \return QMap containing pointers to the ports of this model
-	 *		Key = name of a port
-	 *		Value = Pointer to the port
-	*/
-	QMap<QString, QSharedPointer<Port> >& getPorts();
-
 	/*! \brief Get the views of this model
 	 *
 	 * \return QList containing pointers to the views of this model.
@@ -116,16 +98,6 @@ public:
 	 * \return QList containing pointers to the views of this model.
 	*/
 	QList<QSharedPointer<View> >& getViews();
-
-	/*! \brief Set the ports for this model
-	 *
-	 * Calling this function will delete the old ports of this model
-	 *
-	 * \param ports A QMap containing pointers to the ports
-	 * 		Key = name of a port
-	 * 		value = Pointer to the port
-	 */
-	void setPorts(const QMap<QString, QSharedPointer<Port> > &ports);
 
 	/*! \brief Set the views for this model
 	 *
@@ -174,26 +146,6 @@ public:
 	*/
 	void setHierRef(const VLNV& vlnv, const QString& viewName = QString());
 
-	/*! \brief Get the specific port of the model.
-	 *
-	 * This function can be used to find a specific port within a model. If
-	 * named port is not found a null pointer is returned.
-	 *
-	 * \param name Name of the port.
-	 *
-	 * \return Pointer to the specified port.
-	 */
-	Port* getPort(const QString& name) const;
-
-	/*! \brief Get the width of the given port.
-	 *
-	 * \param port Identifies the port in the component.
-	 *
-	 * \return int The number of bits in the port. -1 if unspecified or port is
-	 * not found.
-	*/
-	int getPortWidth(const QString& port) const;
-
 	/*! \brief Find a specified name within the model.
 	 *
 	 * \param name Name of the view to find.
@@ -220,45 +172,6 @@ public:
 	 */
 	void removeView(const QString& name);
 
-	/*! \brief Add a new port to the model.
-	 *
-	 * \param port Pointer to the port to add
-	 *
-	 * \return True if port was successfully added. False if a port with same 
-	 * name already existed in the model. If port exists in the model then 
-	 * nothing is added.
-	*/
-	bool addPort(QSharedPointer<Port> port);
-
-	/*! \brief Remove a port from the model.
-	 *
-	 * \param portName The name of the port to remove.
-	 *
-	*/
-	void removePort(const QString& portName);
-
-	/*! \brief Rename a port in the model
-	 *
-	 * \param oldName The old name of the port.
-	 * \param newName The new name to be set for the port.
-	 *
-	 * \return True if renaming was successful. False if port with old name was
-	 * not found.
-	*/
-	bool renamePort(const QString& oldName, const QString& newName);
-
-	/*! \brief Get pointer to the QMap containing the ports
-	 *
-	 * \return Pointer to the QMap containing the ports.
-	*/
-	QMap<QString, QSharedPointer<Port> >* getPortsPointer();
-
-	/*! \brief Get names of the ports in this model.
-	 *
-	 * \return QStringList containing the port names.
-	*/
-	QStringList getPortNames() const;
-
 	/*! \brief Create a new empty view to model.
 	 *
 	 * \return Pointer to the created view.
@@ -277,16 +190,6 @@ public:
 	*/
 	int viewCount() const;
 
-	/*! \brief Get the direction of the given port.
-	 * 
-	 * If port is not found then invalid direction is returned.
-	 * 
-	 * \param portName Name of the port.
-	 *
-	 * \return General::Direction specifies the direction of the port.
-	*/
-	General::Direction getPortDirection(const QString& portName) const;
-
 	/*! \brief Get the hierarchical views of the model.
 	 *
 	 * \return QStringList containing the names of the hierarchical views.
@@ -301,54 +204,11 @@ public:
 	*/
 	QStringList getFileSetRefs(const QString& viewName) const;
 
-	/*! \brief Checks if the model has ports.
-	 *
-	 * \return bool True if ports exist.
-	*/
-	bool hasPorts() const;
-
-	/*! \brief Check if the specified port exists on the implementation of the component.
-	 *
-	 * This function checks the direction of a wired port and returns true for
-	 * directions: in, out and inout.
-	 * 
-	 * If port is not found then false is returned.
-	 * 
-	 * \param portName The name of the port to check.
-	 *
-	 * \return bool True if port's direction is in, out or inout.
-	*/
-	bool isPhysicalPort(const QString& portName) const;
-
 	/*! \brief Checks if the model has views.
 	 *
 	 * \return bool True if views exist.
 	*/
 	bool hasViews() const;
-
-	/*! \brief Get the default values of in and inout ports.
-	 *
-	 * \return QMap<QString, QString> contains the port names and default values.
-	 * Key: Name of the port.
-	 * Value: The default value for the specified port.
-	*/
-	QMap<QString, QString> getPortDefaultValues() const;
-
-	/*! \brief Get the type definitions of the wired ports.
-	 *
-	 *
-	 * \return QStringList contains the type definitions set for ports of component.
-	*/
-	QStringList getPortTypeDefinitions() const;
-
-	/*! \brief Checks if the component has at least one port that's type is defined.
-	 * 
-	 * This function can be used to check if component needs to have at least one
-	 * view because if port type is defined then there has to be view reference.
-	 *
-	 * \return bool True if at least one port with defined port type exists.
-	*/
-	bool hasPortTypes() const;
 
 	/*! \brief Get the entity name of the component.
 	 *
@@ -365,12 +225,6 @@ public:
 	 * \return QString contains the architecture name.
 	*/
 	QString getArchitectureName(const QString& viewName) const;
-
-	/*! \brief Get list of the physical port names and their bounds.
-	 *
-	 * \return QList containing the port names and bounds.
-	*/
-	QList<General::PortBounds> getPortBounds() const;
 
 	/*! \brief Get the model parameters of this model
 	*
@@ -432,6 +286,139 @@ public:
 	*/
 	bool hasModelParameters() const;
 
+	/*! \brief Get the ports of this model
+	*
+	* \return QList containing the ports.
+	*/
+	const QList<QSharedPointer<Port> >& getPorts() const;
+
+	/*! \brief Get the ports of this model
+	*
+	*
+	* \return QList containing the ports.
+	*/
+	QList<QSharedPointer<Port> >& getPorts();
+
+	/*! \brief Set the ports for this model
+	*
+	* Calling this function will delete the old ports of this model
+	*
+	* \param ports QList containing pointers to the ports.
+	*/
+	void setPorts(const QList<QSharedPointer<Port> > &ports);
+
+	/*! \brief Get the specific port of the model.
+	*
+	* This function can be used to find a specific port within a model. If
+	* named port is not found a null pointer is returned.
+	*
+	* \param name Name of the port.
+	*
+	* \return Pointer to the specified port.
+	*/
+	QSharedPointer<Port> getPort(const QString& name) const;
+
+	/*! \brief Get the width of the given port.
+	*
+	* \param port Identifies the port in the component.
+	*
+	* \return int The number of bits in the port. -1 if unspecified or port is
+	* not found.
+	*/
+	int getPortWidth(const QString& portName) const;
+
+	/*! \brief Add a new port to the model.
+	*
+	* \param newPort Pointer to the port to add
+	*
+	* \return True if port was successfully added. False if a port with same 
+	* name already existed in the model. If port exists in the model then 
+	* nothing is added.
+	*/
+	bool addPort(QSharedPointer<Port> newPort);
+
+	/*! \brief Remove a port from the model.
+	*
+	* \param portName The name of the port to remove.
+	*
+	*/
+	void removePort(const QString& portName);
+
+	/*! \brief Rename a port in the model
+	*
+	* \param oldName The old name of the port.
+	* \param newName The new name to be set for the port.
+	*
+	* \return True if renaming was successful. False if port with old name was
+	* not found.
+	*/
+	bool renamePort(const QString& oldName, const QString& newName);
+
+	/*! \brief Get names of the ports in this model.
+	*
+	* \return QStringList containing the port names.
+	*/
+	QStringList getPortNames() const;
+
+	/*! \brief Get the direction of the given port.
+	* 
+	* If port is not found then invalid direction is returned.
+	* 
+	* \param portName Name of the port.
+	*
+	* \return General::Direction specifies the direction of the port.
+	*/
+	General::Direction getPortDirection(const QString& portName) const;
+
+	/*! \brief Checks if the model has ports.
+	*
+	* \return bool True if ports exist.
+	*/
+	bool hasPorts() const;
+
+	/*! \brief Check if the specified port exists on the implementation of the component.
+	*
+	* This function checks the direction of a wired port and returns true for
+	* directions: in, out and inout.
+	* 
+	* If port is not found then false is returned.
+	* 
+	* \param portName The name of the port to check.
+	*
+	* \return bool True if port's direction is in, out or inout.
+	*/
+	bool isPhysicalPort(const QString& portName) const;
+
+	/*! \brief Get the default values of in and inout ports.
+	*
+	* \return QMap<QString, QString> contains the port names and default values.
+	* Key: Name of the port.
+	* Value: The default value for the specified port.
+	*/
+	QMap<QString, QString> getPortDefaultValues() const;
+
+	/*! \brief Get the type definitions of the wired ports.
+	*
+	*
+	* \return QStringList contains the type definitions set for ports of component.
+	*/
+	QStringList getPortTypeDefinitions() const;
+
+	/*! \brief Checks if the component has at least one port that's type is defined.
+	* 
+	* This function can be used to check if component needs to have at least one
+	* view because if port type is defined then there has to be view reference.
+	*
+	* \return bool True if at least one port with defined port type exists.
+	*/
+	bool hasPortTypes() const;
+
+	/*! \brief Get list of the physical port names and their bounds.
+	*
+	* \return QList containing the port names and bounds.
+	*/
+	QList<General::PortBounds> getPortBounds() const;
+
 private:
 
 	/*!
@@ -444,10 +431,8 @@ private:
 	 * OPTIONAL
 	 * Contains the ports for this model.
 	 *
-	 * Key = name of the port
-	 * Value = pointer to the port
 	 */
-	QMap<QString, QSharedPointer<Port> > ports_;
+	QList<QSharedPointer<Port> > ports_;
 
 	/*!
 	 * OPTIONAL

@@ -38,7 +38,7 @@ instantations_() {
 	}
 
 	// parse the ports for the component declaration
-	QMap<QString, QSharedPointer<Port> > ports = component_->getPorts();
+	QList<QSharedPointer<Port> > ports = component_->getPorts();
 	foreach (QSharedPointer<Port> port, ports) {
 		
 		// do not add ports with invalid direction or phantom direction
