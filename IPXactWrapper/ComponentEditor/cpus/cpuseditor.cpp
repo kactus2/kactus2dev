@@ -30,10 +30,7 @@ model_(component, this) {
 	// items can not be dragged
 	view_.setItemsDraggable(false);
 
-	view_.setItemDelegate(new CpusDelegate(component, this));
-	// 	view_.setColumnWidth(0, FileSetsEditor::NAME_COLUMN_WIDTH);
-	// 	view_.setColumnWidth(1, FileSetsEditor::DESC_COLUMN_WIDTH);
-	// 	
+	view_.setItemDelegate(new CpusDelegate(component, this));	
 
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -53,10 +50,6 @@ CpusEditor::~CpusEditor() {
 
 bool CpusEditor::isValid() const {
 	return model_.isValid();
-}
-
-void CpusEditor::makeChanges() {
-	// TODO remove this in final
 }
 
 void CpusEditor::refresh() {

@@ -103,14 +103,6 @@ bool ApiInterfaceEditor::isValid() const
             (apiType_.isEmpty() || (apiType_.isValid() && libInterface_->contains(apiType_.getVLNV()))));
 }
 
-//-----------------------------------------------------------------------------
-// Function: ApiInterfaceEditor::makeChanges()
-//-----------------------------------------------------------------------------
-void ApiInterfaceEditor::makeChanges()
-{
-    // TODO remove this in final
-}
-
 void ApiInterfaceEditor::refresh() {
 	nameEditor_.refresh();
 

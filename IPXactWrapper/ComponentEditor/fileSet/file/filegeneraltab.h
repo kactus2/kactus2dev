@@ -65,9 +65,6 @@ signals:
 	//! \brief Emitted when contents of one widget change.
 	void contentChanged();
 
-	//! \brief Emitted when the name of the file changes.
-	void nameChanged(const QString& newName);
-
 private slots:
 
 	//! \brief Handler for file type editor's changes.

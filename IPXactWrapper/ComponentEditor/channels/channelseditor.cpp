@@ -32,10 +32,7 @@ model_(component, this) {
 	// items can not be dragged
 	view_.setItemsDraggable(false);
 
-	view_.setItemDelegate(new ChannelsDelegate(component, this));
-	// 	view_.setColumnWidth(0, FileSetsEditor::NAME_COLUMN_WIDTH);
-	// 	view_.setColumnWidth(1, FileSetsEditor::DESC_COLUMN_WIDTH);
-	// 	
+	view_.setItemDelegate(new ChannelsDelegate(component, this));	
 
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -55,10 +52,6 @@ ChannelsEditor::~ChannelsEditor() {
 
 bool ChannelsEditor::isValid() const {
 	return model_.isValid();
-}
-
-void ChannelsEditor::makeChanges() {
-	// TODO remove this in final
 }
 
 void ChannelsEditor::refresh() {

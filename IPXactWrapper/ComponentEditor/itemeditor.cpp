@@ -20,10 +20,6 @@ QSharedPointer<Component> ItemEditor::component() const {
 	return component_;
 }
 
-void ItemEditor::removeModel() {
-	return;
-}
-
 //-----------------------------------------------------------------------------
 // Function: confirmEditorChange()
 //-----------------------------------------------------------------------------

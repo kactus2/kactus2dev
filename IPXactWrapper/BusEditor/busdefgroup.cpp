@@ -16,7 +16,7 @@
 BusDefGroup::BusDefGroup(QWidget *parent): 
 QGroupBox(tr("General (Bus Definition)"), parent),
 busDef_(),
-directConnection_(tr("Used only between regular and bus components"), this),
+directConnection_(tr("Used only between regular and bus components (spirit:directConnection)"), this),
 isAddressable_(tr("Does not include addressing"), this),
 maxMasters_(this),
 maxSlaves_(this) {
@@ -26,10 +26,6 @@ maxSlaves_(this) {
 
 	QFormLayout* slaveLayout = new QFormLayout();
 	slaveLayout->addRow(tr("Max slaves:"), &maxSlaves_);
-
-// 	QFormLayout* lineLayout = new QFormLayout();
-// 	lineLayout->addRow(tr("Max masters"), &maxMasters_);
-// 	lineLayout->addRow(tr("Max slaves"), &maxSlaves_);
 
 	QHBoxLayout* topLayout = new QHBoxLayout(this);
 	topLayout->addWidget(&directConnection_);

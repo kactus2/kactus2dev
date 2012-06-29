@@ -147,11 +147,6 @@ public slots:
 	*/
 	void moveItem(ComponentEditorItem* parentItem, int childSource, int childtarget);
 
-	/*! \brief Apply the changes from the editors to the component model.
-	 *
-	*/
-	void makeEditorChanges();
-
 	/*! \brief Set the locked state of the editors and visualizers.
 	 *
 	 * \param locked True to set the editor's to view only mode.

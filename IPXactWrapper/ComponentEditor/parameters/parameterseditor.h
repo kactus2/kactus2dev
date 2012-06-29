@@ -49,11 +49,6 @@ public:
 	*/
 	virtual void refresh();
 
-	/*! \brief Make the changes from the widgets editors to the IPXact model.
-	 *
-	*/
-	virtual void makeChanges();
-
 private:
 
 	//! \brief No copying

@@ -52,11 +52,6 @@ public:
 	 */
 	bool isValid() const;
 
-	/*!
-     *  Applies the changes from the widgets editors to the IP-Xact model.
-     */
-	void makeChanges();
-
 	/*! \brief Reload the information from the model to the editor.
 	*/
 	virtual void refresh();
@@ -70,11 +65,6 @@ private:
     // Disable copying.
     SWViewEditor(SWViewEditor const& rhs);
     SWViewEditor& operator=(SWViewEditor const& rhs);
-
-    /*!
-     *  Restores changes made to the contents.
-     */
-    void restoreChanges();
 
     //-----------------------------------------------------------------------------
     // Data.

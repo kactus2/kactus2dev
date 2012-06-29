@@ -77,10 +77,6 @@ void BusInterfaceEditor::onTabChange( int index ) {
 	}
 }
 
-void BusInterfaceEditor::makeChanges() {
-	
-}
-
 void BusInterfaceEditor::refresh() {
 	general_.refresh();
 	portmaps_.refresh();

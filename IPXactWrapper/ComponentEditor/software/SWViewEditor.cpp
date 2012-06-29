@@ -62,13 +62,6 @@ bool SWViewEditor::isValid() const
     return true;
 }
 
-//-----------------------------------------------------------------------------
-// Function: SWViewEditor::makeChanges()
-//-----------------------------------------------------------------------------
-void SWViewEditor::makeChanges() {
-	// TODO remove this in final
-}
-
 void SWViewEditor::refresh() {
 	nameEditor_.refresh();
 	hierRefEditor_.setVLNV(view_->getHierarchyRef());

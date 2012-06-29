@@ -162,7 +162,3 @@ void ViewEditor::refresh() {
 		parameters_.refresh();
 	}
 }
-
-void ViewEditor::makeChanges() {
-	// TODO remove this in final
-}

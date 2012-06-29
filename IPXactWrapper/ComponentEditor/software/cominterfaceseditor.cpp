@@ -58,10 +58,6 @@ bool ComInterfacesEditor::isValid() const {
 	return model_.isValid();
 }
 
-void ComInterfacesEditor::makeChanges() {
-	// TODO remove this in final
-}
-
 void ComInterfacesEditor::refresh() {
 	view_.update();
 }

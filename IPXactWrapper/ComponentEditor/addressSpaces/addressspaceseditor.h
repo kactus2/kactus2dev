@@ -38,11 +38,6 @@ public:
 	*/
 	virtual bool isValid() const;
 
-	/*! \brief Make the changes from the editor to the IPXact model.
-	 *
-	*/
-	virtual void makeChanges();
-
 	/*! \brief Reload the information from the model to the editor.
 	*/
 	virtual void refresh();

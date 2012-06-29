@@ -73,7 +73,3 @@ bool ParametersEditor::isValid() const {
 void ParametersEditor::refresh() {
 	view_.update();
 }
-
-void ParametersEditor::makeChanges() {
-	// TODO remove this in final
-}

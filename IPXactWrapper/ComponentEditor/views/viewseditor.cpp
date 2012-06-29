@@ -34,8 +34,6 @@ model_(component, this) {
 	view_.setItemsDraggable(false);
 
 	view_.setItemDelegate(new LineEditDelegate(this));
-	// 	view_.setColumnWidth(0, FileSetsEditor::NAME_COLUMN_WIDTH);
-	// 	view_.setColumnWidth(1, FileSetsEditor::DESC_COLUMN_WIDTH);
 
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -55,10 +53,6 @@ ViewsEditor::~ViewsEditor() {
 
 bool ViewsEditor::isValid() const {
 	return model_.isValid();
-}
-
-void ViewsEditor::makeChanges() {
-	// TODO remove this in final.
 }
 
 void ViewsEditor::refresh() {

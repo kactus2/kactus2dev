@@ -33,8 +33,6 @@ proxy_(this) {
 	view_.setItemsDraggable(false);
 	
  	view_.setItemDelegate(new AddressSpacesDelegate(this));
-// 	view_.setColumnWidth(0, FileSetsEditor::NAME_COLUMN_WIDTH);
-// 	view_.setColumnWidth(1, FileSetsEditor::DESC_COLUMN_WIDTH);
 
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -55,10 +53,6 @@ AddressSpacesEditor::~AddressSpacesEditor() {
 
 bool AddressSpacesEditor::isValid() const {
 	return model_.isValid();
-}
-
-void AddressSpacesEditor::makeChanges() {
-	// TODO remove this in final
 }
 
 void AddressSpacesEditor::refresh() {

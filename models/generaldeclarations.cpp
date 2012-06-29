@@ -780,10 +780,10 @@ General::GroupSelectorOperator General::str2GroupSelector(QString str,
 General::TimeUnit General::str2TimeUnit(QString str,
 		General::TimeUnit defaultValue) {
 
-	if (str == QString("ps")) {
+	if (str.compare(QString("ps"), Qt::CaseInsensitive) == 0) {
 		return General::PS;
 	}
-	else if (str == QString("ns")) {
+	else if (str.compare(QString("ns"), Qt::CaseInsensitive) == 0) {
 		return General::NS;
 	}
 	else {
@@ -897,19 +897,15 @@ QString General::booleanValue2Str(const General::BooleanValue value) {
 	}
 }
 
-General::ClockStruct::ClockStruct(QDomNode &clockNode): value_(0),
-		timeUnit_(General::NS), attributes_() {
+General::ClockStruct::ClockStruct(QDomNode &clockNode):
+value_(0),
+timeUnit_(General::NS),
+attributes_() {
 
 	QString value = clockNode.childNodes().at(0).nodeValue();
 	value = General::removeWhiteSpace(value);
 	bool ok = false;
 	value_ = value.toDouble(&ok);
-
-	// if value could not be successfully parsed
-// 	if (value.isNull() || !ok) {
-// 		throw Parse_error(QString("Mandatory value missing in ClockStruct"));
-// 		return;
-// 	}
 
 
 	// get the attributes
@@ -932,8 +928,10 @@ General::ClockStruct::ClockStruct(QDomNode &clockNode): value_(0),
 	}
 }
 
-General::ClockStruct::ClockStruct( double value ): value_(value),
-timeUnit_(General::NS), attributes_() {
+General::ClockStruct::ClockStruct( double value ):
+value_(value),
+timeUnit_(General::NS),
+attributes_() {
 }
 
 General::ClockStruct::ClockStruct( const ClockStruct& other ):
@@ -951,26 +949,21 @@ General::ClockStruct& General::ClockStruct::operator=( const ClockStruct& other 
 	return *this;
 }
 
-General::ClockPulseValue::ClockPulseValue(QDomNode &clockNode): value_(2),
-		attributes_() {
+General::ClockPulseValue::ClockPulseValue(QDomNode &clockNode): 
+value_(2),
+attributes_() {
 
 	QString value = clockNode.childNodes().at(0).nodeValue();
 	bool ok = false;
 	value_ = value.toInt(&ok);
-
-	// if value could not be successfully parsed
-// 	if (value.isNull() || !ok) {
-// 		throw Parse_error(QString("Mandatory value missing in "
-// 				"spirit:clockPulseValue"));
-// 		return;
-// 	}
 
 	// get the attributes
 	General::parseAttributes(clockNode, attributes_);
 }
 
 General::ClockPulseValue::ClockPulseValue( unsigned int value ):
-value_(value), attributes_() {
+value_(value), 
+attributes_() {
 
 }
 

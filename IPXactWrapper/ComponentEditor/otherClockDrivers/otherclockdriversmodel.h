@@ -101,16 +101,6 @@ public:
 	*/
 	bool isValid() const;
 
-	/*! \brief Write the changes to the original model.
-	 *
-	*/
-	void apply();
-
-	/*! \brief Restore the settings from the original model.
-	 *
-	*/
-	void restore();
-
 public slots:
 
 	/*! \brief Remove a row from the model
@@ -161,7 +151,7 @@ private:
 	QSharedPointer<Component> component_;
 
 	//! \brief Contains the current items in the editor.
-	QList<QSharedPointer<OtherClockDriver> > table_;
+	QList<QSharedPointer<OtherClockDriver> >& table_;
 };
 
 #endif // OTHERCLOCKDRIVERSMODEL_H

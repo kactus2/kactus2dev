@@ -57,11 +57,6 @@ public:
      */
     virtual bool isValid() const;
 
-	/*! \brief save the description from the editor to the model
-	 *
-	 */
-	virtual void makeChanges();
-
 	/*! \brief Reload the information from the model to the editor.
 	*/
 	virtual void refresh();

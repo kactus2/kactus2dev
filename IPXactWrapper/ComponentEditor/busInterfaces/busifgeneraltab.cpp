@@ -132,6 +132,7 @@ bool BusIfGeneralTab::isValid() const {
 }
 
 void BusIfGeneralTab::refresh() {
+	nameEditor_.refresh();
 	busType_.setVLNV(busif_->getBusType());
 	absType_.setVLNV(busif_->getAbstractionType());
 	modeSelector_.setMode(busif_->getInterfaceMode());

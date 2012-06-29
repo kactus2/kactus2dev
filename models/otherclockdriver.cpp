@@ -16,9 +16,13 @@
 #include <QXmlStreamWriter>
 
 // the constructor
-OtherClockDriver::OtherClockDriver(QDomNode &clockNode): clockName_(QString()),
-clockSource_(QString()), clockPeriod_(0), clockPulseOffset_(0),
-clockPulseValue_(0), clockPulseDuration_(0) {
+OtherClockDriver::OtherClockDriver(QDomNode &clockNode):
+clockName_(QString()),
+clockSource_(QString()),
+clockPeriod_(0),
+clockPulseOffset_(0),
+clockPulseValue_(0),
+clockPulseDuration_(0) {
 
 	// get the attribute spirit:clockName & spirit:clockSource
 	QDomNamedNodeMap attributeMap = clockNode.attributes();
@@ -49,39 +53,16 @@ clockPulseValue_(0), clockPulseDuration_(0) {
 					new General::ClockStruct(tempNode));
 		}
 	}
-
-	// if mandatory elements are missing
-// 	if (clockName_.isNull()) {
-// 		throw Parse_error(QObject::tr("Mandatory element name missing in "
-// 				"spirit:otherClockDriver"));
-// 	}
-// 
-// 	if (!clockPeriod_) {
-// 		throw Parse_error(QObject::tr("Mandatory element spirit:clockPeriod"
-// 				" missing in spirit:otherClockDriver"));
-// 	}
-// 
-// 	if (!clockPulseOffset_) {
-// 		throw Parse_error(QObject::tr("Mandatory element spirit:"
-// 				"clockPulseOffset missing in spirit:otherClockDriver"));
-// 	}
-// 
-// 	if (!clockPulseValue_) {
-// 		throw Parse_error(QObject::tr("Mandatory element "
-// 				"spirit:clockPulseValue missing in spirit:otherClockDriver"));
-// 	}
-// 
-// 	if (!clockPulseDuration_) {
-// 		throw Parse_error(QObject::tr(
-// 				"Mandatory element spirit:clockPulseDuration missing in "
-// 				"spirit:otherClockDriver"));
-// 	}
 	return;
 }
 
-OtherClockDriver::OtherClockDriver(): clockName_(),
-clockSource_(QString()), clockPeriod_(0), clockPulseOffset_(0),
-clockPulseValue_(0), clockPulseDuration_(0) {
+OtherClockDriver::OtherClockDriver(): 
+clockName_(),
+clockSource_(QString()),
+clockPeriod_(0),
+clockPulseOffset_(0),
+clockPulseValue_(0), 
+clockPulseDuration_(0) {
 
 }
 
@@ -170,9 +151,8 @@ void OtherClockDriver::write(QXmlStreamWriter& writer) {
 		writer.writeStartElement("spirit:clockPeriod");
 
 		// write the attributes for the element
-		writer.writeAttribute("spirit:delayValueUnitType",
+		writer.writeAttribute("spirit:units",
 				General::timeUnit2Str(clockPeriod_->timeUnit_));
-		General::writeAttributes(writer, clockPeriod_->attributes_);
 
 		// write the value of the element and close the tag
                 writer.writeCharacters(QString::number(clockPeriod_->value_));
@@ -184,9 +164,8 @@ void OtherClockDriver::write(QXmlStreamWriter& writer) {
 		writer.writeStartElement("spirit:clockPulseOffset");
 
 		// write the attributes for the element
-		writer.writeAttribute("spirit:delayValueUnitType",
+		writer.writeAttribute("spirit:units",
 						General::timeUnit2Str(clockPeriod_->timeUnit_));
-		General::writeAttributes(writer, clockPulseOffset_->attributes_);
 
 		// write the value of the element and close the tag
                 writer.writeCharacters(QString::number(clockPulseOffset_->value_));
@@ -210,9 +189,8 @@ void OtherClockDriver::write(QXmlStreamWriter& writer) {
 		writer.writeStartElement("spirit:clockPulseDuration");
 
 		// write the attributes for the element
-		writer.writeAttribute("spirit:delayValueUnitType",
+		writer.writeAttribute("spirit:units",
 						General::timeUnit2Str(clockPeriod_->timeUnit_));
-		General::writeAttributes(writer, clockPulseDuration_->attributes_);
 
 		// write the value of the element and close the tag
                 writer.writeCharacters(QString::number(clockPulseDuration_->value_));

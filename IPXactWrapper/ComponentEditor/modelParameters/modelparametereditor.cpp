@@ -72,10 +72,6 @@ bool ModelParameterEditor::isValid() const {
 	return model_.isValid();
 }
 
-void ModelParameterEditor::makeChanges() {
-	model_.apply();
-}
-
 void ModelParameterEditor::refresh() {
-	model_.restore();
+	view_.update();
 }

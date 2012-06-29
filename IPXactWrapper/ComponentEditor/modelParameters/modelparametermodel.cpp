@@ -14,7 +14,8 @@
 ModelParameterModel::ModelParameterModel(void* dataPointer, 
 										 QObject *parent): 
 QAbstractTableModel(parent),
-modelParameters_(), table_() {
+modelParameters_(), 
+table_() {
 
 	Q_ASSERT_X(dataPointer, "ModelParameterModel constructor",
 		"Null dataPointer given as parameter");

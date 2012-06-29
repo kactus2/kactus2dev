@@ -111,10 +111,6 @@ bool AddressSpaceEditor::isValid() const {
 	}
 }
 
-void AddressSpaceEditor::makeChanges() {
-	// TODO remove this in final
-}
-
 void AddressSpaceEditor::refresh() {
 	nameEditor_.refresh();
 

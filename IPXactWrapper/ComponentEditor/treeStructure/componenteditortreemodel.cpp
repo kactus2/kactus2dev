@@ -200,10 +200,6 @@ QModelIndex ComponentEditorTreeModel::parent( const QModelIndex& index ) const {
 	return createIndex(row, 0, parent);
 }
 
-void ComponentEditorTreeModel::makeEditorChanges() {
-	rootItem_->makeEditorChanges();
-}
-
 void ComponentEditorTreeModel::setLocked( bool locked ) {
 	rootItem_->setLocked(locked);
 }

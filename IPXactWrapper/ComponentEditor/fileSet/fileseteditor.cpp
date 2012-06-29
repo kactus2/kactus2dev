@@ -84,10 +84,6 @@ bool FileSetEditor::isValid() const {
 	}
 }
 
-void FileSetEditor::makeChanges() {
-	// this is empty because all changes are applied to model immediately 
-}
-
 void FileSetEditor::refresh() {
 	// set the values for the nameGroupBox
 	nameEditor_.refresh();

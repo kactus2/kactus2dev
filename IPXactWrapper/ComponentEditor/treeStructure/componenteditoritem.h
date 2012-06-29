@@ -114,11 +114,6 @@ public:
 	*/
 	virtual QFont getFont() const;
 
-	/*! \brief Tell the editor and child items to make the changes to the component model.
-	 * 
-	*/
-	virtual void makeEditorChanges();
-
 	/*! \brief Set the locked state of the editor and possible visualizer.
 	 *
 	 * \param locked True to set the editor and visualizer in read only mode.

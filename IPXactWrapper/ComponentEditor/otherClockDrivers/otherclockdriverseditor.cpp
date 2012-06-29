@@ -68,10 +68,6 @@ bool OtherClockDriversEditor::isValid() const {
 	return model_.isValid();
 }
 
-void OtherClockDriversEditor::makeChanges() {
-	model_.apply();
-}
-
 void OtherClockDriversEditor::refresh() {
-	model_.restore();
+	view_.update();
 }

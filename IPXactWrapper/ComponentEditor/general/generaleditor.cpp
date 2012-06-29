@@ -84,14 +84,6 @@ bool GeneralEditor::isValid() const
     return true;
 }
 
-//-----------------------------------------------------------------------------
-// Function: makeChanges()
-//-----------------------------------------------------------------------------
-void GeneralEditor::makeChanges()
-{
-	// TODO remove this in final    
-}
-
 void GeneralEditor::refresh() {
 	if (component_->getComponentImplementation() != KactusAttribute::KTS_SW)
 	{

@@ -121,19 +121,6 @@ void ComponentEditorItem::onEditorChanged() {
 	emit contentChanged(this);
 }
 
-void ComponentEditorItem::makeEditorChanges() {
-
-	// tell all children to make the changes
-	foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_) {
-		childItem->makeEditorChanges();
-	}
-
-	// if there is an editor then tell it to make the changes to the model
-	if (editor()) {
-		editor()->makeChanges();
-	}
-}
-
 void ComponentEditorItem::setLocked( bool locked ) {
 	// if this item contains an editor
 	if (editor()) {

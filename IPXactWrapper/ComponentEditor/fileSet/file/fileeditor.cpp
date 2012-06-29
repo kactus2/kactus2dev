@@ -37,8 +37,6 @@ file_(file) {
 	// connect the signals informing that widgets have changed their status
 	connect(&generalTab_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&generalTab_, SIGNAL(nameChanged(const QString&)),
-		this, SIGNAL(nameChanged(const QString&)), Qt::UniqueConnection);
 	connect(&extraTab_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
@@ -52,10 +50,6 @@ bool FileEditor::isValid() const {
 
 	// general tab contains the only mandatory fields.
 	return generalTab_.isValid();
-}
-
-void FileEditor::makeChanges() {
-	// TODO remove this in final
 }
 
 void FileEditor::refresh() {

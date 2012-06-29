@@ -57,11 +57,6 @@ public:
 	 */
 	bool isValid() const;
 
-	/*!
-     *  Applies the changes from the widgets editors to the IP-Xact model.
-     */
-	void makeChanges();
-
 	/*! \brief Reload the information from the model to the editor.
 	*/
 	virtual void refresh();

@@ -108,7 +108,6 @@ bool ComponentEditor::isHWImplementation() const {
 }
 
 void ComponentEditor::refresh() {
-	Q_ASSERT(!isModified());
 
 	// remember the locked state
 	bool locked = isProtected();
@@ -117,8 +116,18 @@ void ComponentEditor::refresh() {
 	editorSlot_.setWidget(NULL);
 	visualizerSlot_.setWidget(NULL);
 
+	// get the VLNV of the component
+	VLNV compVLNV = *component_->getVlnv();
+
+	// get the original model of the component
+	QSharedPointer<LibraryComponent> libComp = libHandler_->getModel(compVLNV);
+	Q_ASSERT(libHandler_->getDocumentType(compVLNV) == VLNV::COMPONENT);
+	QSharedPointer<Component> comp = libComp.staticCast<Component>();
+
 	// rebuild the navigation tree
-	navigationModel_.setComponent(component_);
+	navigationModel_.setComponent(comp);
+	component_.clear();
+	component_ = comp;
 
 	// the document is no longer modified
 	setModified(false);
@@ -136,8 +145,6 @@ bool ComponentEditor::validate( QStringList& errorList ) {
 }
 
 bool ComponentEditor::save() {
-	// tell the editors to apply the changes to the model
-	navigationModel_.makeEditorChanges();
 
 	if (libHandler_->writeModelToFile(component_, false)) {
 		return TabDocument::save();
@@ -149,8 +156,6 @@ bool ComponentEditor::save() {
 }
 
 bool ComponentEditor::saveAs() {
-	// tell the editors to apply the changes to the model
-	navigationModel_.makeEditorChanges();
 
 	// Ask the user for a new VLNV along with attributes and directory.
 	KactusAttribute::ProductHierarchy prodHier = component_->getComponentHierarchy();

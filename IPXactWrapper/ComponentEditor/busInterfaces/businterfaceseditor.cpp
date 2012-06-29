@@ -59,10 +59,6 @@ bool BusInterfacesEditor::isValid() const {
 	return model_.isValid();
 }
 
-void BusInterfacesEditor::makeChanges() {
-	// TODO remove this in final
-}
-
 void BusInterfacesEditor::refresh() {
 	view_.update();
 }

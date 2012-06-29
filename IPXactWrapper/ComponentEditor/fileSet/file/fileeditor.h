@@ -51,12 +51,6 @@ public:
 	*/
 	virtual bool isValid() const;
 
-	/*! \brief Make the changes from the widgets editors to the IPXact model.
-	 *
-	 * The base class implementation does nothing.
-	*/
-	virtual void makeChanges();
-
 	/*! \brief Reload the information from the model to the editor.
 	*/
 	virtual void refresh();

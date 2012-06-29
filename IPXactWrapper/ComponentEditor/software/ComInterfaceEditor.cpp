@@ -115,14 +115,6 @@ bool ComInterfaceEditor::isValid() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComInterfaceEditor::makeChanges()
-//-----------------------------------------------------------------------------
-void ComInterfaceEditor::makeChanges()
-{
-    // TODO remove this in final
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComInterfaceEditor::onComDefinitionChanged()
 //-----------------------------------------------------------------------------
 void ComInterfaceEditor::onComDefinitionChanged()

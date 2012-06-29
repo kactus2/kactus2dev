@@ -108,10 +108,6 @@ bool PortsEditor::isValid() const {
 	return model_.isValid();
 }
 
-void PortsEditor::makeChanges() {
-	model_.apply();
-}
-
 void PortsEditor::refresh() {
-	model_.restore();
+	view_.update();
 }

@@ -56,10 +56,6 @@ bool ApiInterfacesEditor::isValid() const {
 	return model_.isValid();
 }
 
-void ApiInterfacesEditor::makeChanges() {
-	// TODO remove this in final
-}
-
 void ApiInterfacesEditor::refresh() {
 	view_.update();
 }

@@ -43,19 +43,6 @@ public:
 	*/
 	virtual bool isValid() const = 0;
 
-	/*! \brief Remove the edited element from the model.
-	 *
-	 * This function should be used when user wants to remove an element from 
-	 * the component. Base class implementation does nothing.
-	 *
-	*/
-	virtual void removeModel();
-
-	/*! \brief Make the changes from the widgets editors to the IPXact model.
-	 *
-	*/
-	virtual void makeChanges() = 0;
-
     /*!
      *  Allows/disallows the editor change.
      *
@@ -68,12 +55,6 @@ public:
 	virtual void refresh() = 0;
 
 signals:
-
-	/*! \brief Emitted when a field used as a text tag in navigator changes.
-	 * 
-	 * \param newName The new name for the object.
-	*/
-	void nameChanged(const QString& newName);
 
 	/*! \brief Emitted when the contents of the widget change
 	*
