@@ -39,11 +39,12 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parent The parent graphics item.
-     *      @param [in] dir    The initial direction for the endpoint.
+     *      @param [in] parent     The parent graphics item.
+     *      @param [in] temporary  If true, the endpoint is marked as a temporary one.
+     *      @param [in] dir        The initial direction for the endpoint.
      */
     SWConnectionEndpoint(QGraphicsItem* parent = 0,
-                         QVector2D const& rhs = QVector2D(0.0f, -1.0f));
+                         bool temporary = false, QVector2D const& rhs = QVector2D(0.0f, -1.0f));
 
     /*!
      *  Destructor.

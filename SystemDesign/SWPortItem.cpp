@@ -30,7 +30,6 @@
 #include <models/ComDefinition.h>
 
 #include <QBrush>
-#include <QPen>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QColor>
@@ -44,16 +43,16 @@
 // Function: SWPortItem::SWPortItem()
 //-----------------------------------------------------------------------------
 SWPortItem::SWPortItem(QString const& name, QGraphicsItem *parent)
-    : SWConnectionEndpoint(parent),
+    : SWConnectionEndpoint(parent, true),
       nameLabel_(name, this),
       apiInterface_(),
       comInterface_(),
-      temp_(true),
       oldPos_(),
       oldPortPositions_(),
       stubLine_(0, 0, 0, -GridSize, this)
 {
     setType(ENDPOINT_TYPE_UNDEFINED);
+    setTypeLocked(false);
     initialize();
 }
 
@@ -61,17 +60,17 @@ SWPortItem::SWPortItem(QString const& name, QGraphicsItem *parent)
 // Function: SWPortItem::SWPortItem()
 //-----------------------------------------------------------------------------
 SWPortItem::SWPortItem(QSharedPointer<ApiInterface> apiIf, QGraphicsItem *parent)
-    : SWConnectionEndpoint(parent),
+    : SWConnectionEndpoint(parent, false),
       nameLabel_(this),
       apiInterface_(apiIf),
       comInterface_(),
-      temp_(false),
       oldPos_(),
       oldPortPositions_(),
       stubLine_(0, 0, 0, -GridSize, this)
 {
     Q_ASSERT(apiIf != 0);
     setType(ENDPOINT_TYPE_API);
+    setTypeLocked(true);
     initialize();
 }
 
@@ -79,17 +78,17 @@ SWPortItem::SWPortItem(QSharedPointer<ApiInterface> apiIf, QGraphicsItem *parent
 // Function: SWPortItem::SWPortItem()
 //-----------------------------------------------------------------------------
 SWPortItem::SWPortItem(QSharedPointer<ComInterface> comIf, QGraphicsItem *parent)
-    : SWConnectionEndpoint(parent),
+    : SWConnectionEndpoint(parent, false),
       nameLabel_(this),
       apiInterface_(),
       comInterface_(comIf),
-      temp_(false),
       oldPos_(),
       oldPortPositions_(),
       stubLine_(0, 0, 0, -GridSize, this)
 {
     Q_ASSERT(comIf != 0);
     setType(ENDPOINT_TYPE_COM);
+    setTypeLocked(true);
     initialize();
 }
 
@@ -98,14 +97,6 @@ SWPortItem::SWPortItem(QSharedPointer<ComInterface> comIf, QGraphicsItem *parent
 //-----------------------------------------------------------------------------
 SWPortItem::~SWPortItem()
 {
-}
-
-//-----------------------------------------------------------------------------
-// Function: setTemporary()
-//-----------------------------------------------------------------------------
-void SWPortItem::setTemporary(bool temp)
-{
-    temp_ = temp;
 }
 
 //-----------------------------------------------------------------------------
@@ -170,6 +161,17 @@ QSharedPointer<ApiInterface> SWPortItem::getApiInterface() const
 void SWPortItem::updateInterface()
 {
     SWConnectionEndpoint::updateInterface();
+
+    if (isInvalid())
+    {
+        stubLineDefaultPen_.setColor(Qt::red);
+    }
+    else
+    {
+        stubLineDefaultPen_.setColor(Qt::black);
+    }
+
+    stubLine_.setPen(stubLineDefaultPen_);
 
     // Update the polygon shape based on the direction.
     int squareSize = GridSize;
@@ -309,7 +311,10 @@ bool SWPortItem::onConnect(ConnectionEndpoint const* other)
                 apiInterface_->setDependencyDirection(DEPENDENCY_PROVIDER);
             }
 
-            getOwnerComponent()->addApiInterface(apiInterface_);
+            if (!isInvalid())
+            {
+                getOwnerComponent()->addApiInterface(apiInterface_);
+            }
         }
         else if (other->getType() == ENDPOINT_TYPE_COM)
         {
@@ -339,7 +344,10 @@ bool SWPortItem::onConnect(ConnectionEndpoint const* other)
                 }
             }
 
-            getOwnerComponent()->addComInterface(comInterface_);
+            if (!isInvalid())
+            {
+                getOwnerComponent()->addComInterface(comInterface_);
+            }
         }
 
         setType(other->getType());
@@ -355,7 +363,7 @@ bool SWPortItem::onConnect(ConnectionEndpoint const* other)
 void SWPortItem::onDisconnect(ConnectionEndpoint const*)
 {
     // Undefine the interface if it is temporary.
-    if (temp_ && !isConnected())
+    if (!isTypeLocked() && !isConnected())
     {
         setTypeDefinition(VLNV());
         updateInterface();
@@ -446,6 +454,11 @@ bool SWPortItem::canConnect(ConnectionEndpoint const* other) const
             Q_ASSERT(false);
             return false;
         }
+    }
+    // COM interfaces can only have one connection.
+    else if (getType() == ENDPOINT_TYPE_COM && isConnected())
+    {
+        return false;
     }
 
     return true;
@@ -740,9 +753,9 @@ void SWPortItem::initialize()
     stubLine_.setFlag(ItemStacksBehindParent);
     stubLine_.setVisible(false);
 
-    QPen newPen = stubLine_.pen();
-    newPen.setWidth(3);
-    stubLine_.setPen(newPen);
+    stubLineDefaultPen_ = stubLine_.pen();
+    stubLineDefaultPen_.setWidth(3);
+    stubLine_.setPen(stubLineDefaultPen_);
 
     QFont font = nameLabel_.font();
     font.setPointSize(8);
@@ -790,14 +803,14 @@ void SWPortItem::setSelectionHighlight(bool on)
     SWConnectionEndpoint::setSelectionHighlight(on);
 
     QPen curPen = stubLine_.pen();
-    
+
     if (on)
     {
         curPen.setColor(KactusColors::DIAGRAM_SELECTION);
     }
     else
     {
-        curPen.setColor(Qt::black);
+        curPen = stubLineDefaultPen_;
     }
 
     stubLine_.setPen(curPen);
@@ -833,10 +846,11 @@ void SWPortItem::setTypeDefinition(VLNV const& type)
             apiInterface_ = QSharedPointer<ApiInterface>(new ApiInterface());
             apiInterface_->setName(nameLabel_.toPlainText());
             apiInterface_->setApiType(type);
+
             getOwnerComponent()->addApiInterface(apiInterface_);
 
             setType(ENDPOINT_TYPE_API);
-            setTemporary(false);
+            setTypeLocked(true);
         }
         else if (type.getType() == VLNV::COMDEFINITION)
         {
@@ -846,25 +860,33 @@ void SWPortItem::setTypeDefinition(VLNV const& type)
             getOwnerComponent()->addComInterface(comInterface_);
 
             setType(ENDPOINT_TYPE_COM);
-            setTemporary(false);
+            setTypeLocked(true);
         }
     }
     else
     {
         if (apiInterface_ != 0)
         {
-            getOwnerComponent()->removeApiInterface(apiInterface_.data());
+            if (!isInvalid())
+            {
+                getOwnerComponent()->removeApiInterface(apiInterface_.data());
+            }
+
             apiInterface_.clear();
         }
 
         if (comInterface_ != 0)
         {
-            getOwnerComponent()->removeComInterface(comInterface_.data());
+            if (!isInvalid())
+            {
+                getOwnerComponent()->removeComInterface(comInterface_.data());
+            }
+
             comInterface_.clear();
         }
 
         setType(ENDPOINT_TYPE_UNDEFINED);
-        setTemporary(true);
+        setTypeLocked(false);
     }
 
     updateInterface();

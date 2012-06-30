@@ -299,8 +299,8 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
             SWPortItem* port = static_cast<SWPortItem*>(selected);
             ComponentItem* comp = port->encompassingComp();
 
-            // Ports can be removed only if the parent component is not yet packaged (has an invalid VLNV).
-            if (!comp->componentModel()->getVlnv()->isValid())
+            // Ports can be removed only if they are temporary.
+            if (port->isTemporary())
             {
                 // Delete the port.
                 QSharedPointer<QUndoCommand> cmd(new SWPortDeleteCommand(port));
@@ -337,18 +337,18 @@ void SystemDesignWidget::addColumn()
 {
     if (onlySW_)
     {
-        ColumnEditDialog dlg(this, true);
+        ColumnEditDialog dialog(this, true);
 
-        if (dlg.exec() == QDialog::Accepted)
+        if (dialog.exec() == QDialog::Accepted)
         {
-            if (dlg.getContentType() == COLUMN_CONTENT_IO)
+            if (dialog.getContentType() == COLUMN_CONTENT_IO)
             {
-                ColumnDesc desc(dlg.getName(), dlg.getContentType(), 0, IO_COLUMN_WIDTH);
+                ColumnDesc desc(dialog.getName(), dialog.getContentType(), 0, IO_COLUMN_WIDTH);
                 getDiagram()->addColumn(desc);
             }
             else
             {
-                ColumnDesc desc(dlg.getName(), dlg.getContentType(), 0, SW_COLUMN_WIDTH);
+                ColumnDesc desc(dialog.getName(), dialog.getContentType(), 0, SW_COLUMN_WIDTH);
                 getDiagram()->addColumn(desc);
             }
         }

@@ -81,15 +81,7 @@ public:
      */
 	QList<QSharedPointer<Port> > getPorts() const;
 
-    /*!
-     *  Sets the interface temporary or not temporary. Temporary interface destroys
-     *  its bus interface automatically if the connections are removed.
-     *
-     *      @param [in] temp True if temporary; false if not temporary.
-     */
-    void setTemporary(bool temp);
-
-	int type() const { return Type; }
+    int type() const { return Type; }
 
     //-----------------------------------------------------------------------------
     // HWConnectionEndpoint implementation.
@@ -222,9 +214,6 @@ private:
 
     //! The old column from where the mouse drag event began.
     HWColumn* oldColumn_;
-
-    //! Boolean flag for determining if this interface is temporary or not.
-    bool temp_;
 
     //! The position of the interface before a mouse move.
     QPointF oldPos_;

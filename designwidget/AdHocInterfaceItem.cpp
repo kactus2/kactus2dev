@@ -47,16 +47,16 @@
 //-----------------------------------------------------------------------------
 AdHocInterfaceItem::AdHocInterfaceItem(QSharedPointer<Component> component,
                                              Port* port, LibraryInterface* lh,
-                                             QGraphicsItem *parent) : HWConnectionEndpoint(parent, QVector2D(1.0f, 0.0f)),
-                                                                      lh_(lh),
-                                                                      nameLabel_(0),
-                                                                      port_(port),
-                                                                      component_(component),
-                                                                      oldColumn_(0),
-                                                                      temp_(false), 
-                                                                      oldPos_(),
-                                                                      oldInterfacePositions_(),
-                                                                      offPageConnector_(0)
+                                             QGraphicsItem *parent)
+    : HWConnectionEndpoint(parent, false, QVector2D(1.0f, 0.0f)),
+      lh_(lh),
+      nameLabel_(0),
+      port_(port),
+      component_(component),
+      oldColumn_(0),
+      oldPos_(),
+      oldInterfacePositions_(),
+      offPageConnector_(0)
 {
     Q_ASSERT_X(port, "AdHocInterfaceItem constructor",
                "Null port pointer given as parameter");
@@ -147,14 +147,6 @@ AdHocInterfaceItem::~AdHocInterfaceItem()
 }
 
 //-----------------------------------------------------------------------------
-// Function: setTemporary()
-//-----------------------------------------------------------------------------
-void AdHocInterfaceItem::setTemporary(bool temp)
-{
-    temp_ = temp;
-}
-
-//-----------------------------------------------------------------------------
 // Function: name()
 //-----------------------------------------------------------------------------
 QString AdHocInterfaceItem::name() const
@@ -185,6 +177,8 @@ QSharedPointer<BusInterface> AdHocInterfaceItem::getBusInterface() const
 //-----------------------------------------------------------------------------
 void AdHocInterfaceItem::updateInterface()
 {
+    HWConnectionEndpoint::updateInterface();
+
     setBrush(QBrush(Qt::black));
 
     nameLabel_->setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">" +

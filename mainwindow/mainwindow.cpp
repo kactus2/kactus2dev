@@ -1231,6 +1231,7 @@ void MainWindow::updateMenuStrip()
 		actGenDocumentation_->setEnabled(unlocked);
 		actGenModelSim_->setEnabled(unlocked);
 		actGenQuartus_->setEnabled(unlocked);
+        actRunPluginGenerator_->setEnabled(unlocked);
 	}
 	// if is hardware component then set only documentation, modelsim and vhdl enabled
 	else if (isHWComp) {
@@ -1239,6 +1240,7 @@ void MainWindow::updateMenuStrip()
 		actGenVHDL_->setEnabled(unlocked);
 		actGenDocumentation_->setEnabled(unlocked);
 		actGenModelSim_->setEnabled(unlocked);
+        actRunPluginGenerator_->setEnabled(unlocked);
 		actGenQuartus_->setDisabled(true);
 	}
 	else {
@@ -1486,7 +1488,7 @@ void MainWindow::runGeneratorPlugin()
     {
         QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
                            "The document " + doc->getDocumentName() + " has unsaved changes and needs to be "
-                           "saved before generators can be run. Continue?",
+                           "saved before generators can be run. Save and continue?",
                            QMessageBox::Yes | QMessageBox::No, this);
 
         if (msgBox.exec() == QMessageBox::No || !doc->save())
@@ -1884,21 +1886,21 @@ void MainWindow::openCSource(ComponentItem* compItem)
     if (fileSet->getFiles().count() > 1)
     {
         // Show a dialog for selecting what source file to open.
-        ListSelectDialog dlg(this);
-        dlg.setWindowTitle(tr("Open Source"));
-        dlg.setDescription(tr("Select C source file to open:"));
+        ListSelectDialog dialog(this);
+        dialog.setWindowTitle(tr("Open Source"));
+        dialog.setDescription(tr("Select C source file to open:"));
 
         foreach (QSharedPointer<File> file, fileSet->getFiles())
         {
-            dlg.addItem(new QListWidgetItem(file->getName()));
+            dialog.addItem(new QListWidgetItem(file->getName()));
         }
 
-        if (dlg.exec() == QDialog::Rejected)
+        if (dialog.exec() == QDialog::Rejected)
         {
             return;
         }
 
-        filename = dlg.getSelectedItem()->text();
+        filename = dialog.getSelectedItem()->text();
     }
     else
     {

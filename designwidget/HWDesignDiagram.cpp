@@ -1280,12 +1280,9 @@ void HWDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent
             // Write the model to file.
             getLibraryInterface()->writeModelToFile(dialog.getPath(), comp->componentModel());
 
-            // Update the diagram component.
-            comp->updateComponent();
-
             // Create an undo command.
             QSharedPointer<QUndoCommand> cmd(new ComponentPacketizeCommand(comp, vlnv));
-            getEditProvider().addCommand(cmd, false);
+            getEditProvider().addCommand(cmd);
 
             // Ask the user if he wants to complete the component.
             QMessageBox msgBox(QMessageBox::Question, QCoreApplication::applicationName(),

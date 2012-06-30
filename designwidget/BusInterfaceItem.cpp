@@ -50,12 +50,19 @@
 BusInterfaceItem::BusInterfaceItem(LibraryInterface* lh, QSharedPointer<Component> component,
                                    QSharedPointer<BusInterface> busIf,
                                    QGraphicsItem *parent)
-    : HWConnectionEndpoint(parent, QVector2D(1.0f, 0.0f)),
-      lh_(lh), nameLabel_(0), busInterface_(), component_(component), oldColumn_(0),
-      temp_(busIf == 0), oldPos_(), oldInterfacePositions_(),
+    : HWConnectionEndpoint(parent, busIf == 0, QVector2D(1.0f, 0.0f)),
+      lh_(lh),
+      nameLabel_(0),
+      busInterface_(),
+      component_(component),
+      oldColumn_(0),
+      oldPos_(),
+      oldInterfacePositions_(),
       offPageConnector_(0)
 {
     setType(ENDPOINT_TYPE_BUS);
+    setTypeLocked(busIf != 0);
+
     busInterface_ = busIf;
     int squareSize = GridSize;
 
@@ -124,6 +131,8 @@ QSharedPointer<BusInterface> BusInterfaceItem::getBusInterface() const
 
 void BusInterfaceItem::updateInterface()
 {
+    HWConnectionEndpoint::updateInterface();
+
 	Q_ASSERT(busInterface_);
 
     switch (busInterface_->getInterfaceMode()) {
@@ -394,9 +403,9 @@ bool BusInterfaceItem::onConnect(ConnectionEndpoint const* other)
 void BusInterfaceItem::onDisconnect(ConnectionEndpoint const*)
 {
     // Check if there is still some connections left, the bus interface is not defined
-    // or the interface is not temporary.
+    // or the interface is typed.
     if (!getConnections().empty() ||
-        busInterface_->getInterfaceMode() == General::INTERFACE_MODE_COUNT || !temp_)
+        busInterface_->getInterfaceMode() == General::INTERFACE_MODE_COUNT || isTypeLocked())
     {
         // Don't do anything.
         return;
@@ -620,14 +629,6 @@ void BusInterfaceItem::setDirection(QVector2D const& dir)
 }
 
 //-----------------------------------------------------------------------------
-// Function: setTemporary()
-//-----------------------------------------------------------------------------
-void BusInterfaceItem::setTemporary(bool temp)
-{
-    temp_ = temp;
-}
-
-//-----------------------------------------------------------------------------
 // Function: setTypes()
 //-----------------------------------------------------------------------------
 void BusInterfaceItem::setTypes(VLNV const& busType, VLNV const& absType, General::InterfaceMode mode)
@@ -656,8 +657,7 @@ void BusInterfaceItem::setTypes(VLNV const& busType, VLNV const& absType, Genera
         busInterface_->setBusType(busType);
         busInterface_->setAbstractionType(absType);
         busInterface_->setInterfaceMode(mode);
-
-        setTemporary(false);
+        setTypeLocked(true);
 
         // Update the interface visuals.
         updateInterface();
@@ -679,7 +679,7 @@ void BusInterfaceItem::setTypes(VLNV const& busType, VLNV const& absType, Genera
     }
     else
     {
-        setTemporary(true);
+        setTypeLocked(false);
 
         // Update the interface visuals.
         updateInterface();

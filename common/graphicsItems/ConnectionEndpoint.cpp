@@ -22,11 +22,13 @@
 //-----------------------------------------------------------------------------
 // Function: ConnectionEndpoint::ConnectionEndpoint()
 //-----------------------------------------------------------------------------
-ConnectionEndpoint::ConnectionEndpoint(QGraphicsItem* parent)
+ConnectionEndpoint::ConnectionEndpoint(QGraphicsItem* parent, bool temporary)
     : QGraphicsPolygonItem(parent),
        dir_(),
        type_(ENDPOINT_TYPE_UNDEFINED),
-       connections_()
+       connections_(),
+       temporary_(temporary),
+       typeLocked_(true)
 {
 }
 
@@ -47,7 +49,14 @@ void ConnectionEndpoint::setHighlight(HighlightMode mode)
     {
     case HIGHLIGHT_OFF:
         {
-            setPen(QPen(Qt::black, 1));
+            if (isInvalid())
+            {
+                setPen(QPen(Qt::red, 1));
+            }
+            else
+            {
+                setPen(QPen(Qt::black, 1));
+            }
             break;
         }
 
@@ -165,7 +174,14 @@ QVector2D const& ConnectionEndpoint::getDirection() const
 //-----------------------------------------------------------------------------
 void ConnectionEndpoint::updateInterface()
 {
-
+    if (isInvalid())
+    {
+        setPen(QPen(Qt::red, 1));
+    }
+    else
+    {
+        setPen(QPen(Qt::black, 1));
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -263,4 +279,44 @@ ConnectionEndpoint::EndpointType ConnectionEndpoint::getType() const
 ConnectionEndpoint* ConnectionEndpoint::getOffPageConnector()
 {
     return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::setTemporary()
+//-----------------------------------------------------------------------------
+void ConnectionEndpoint::setTemporary(bool temp)
+{
+    temporary_ = temp;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::isTemporary()
+//-----------------------------------------------------------------------------
+bool ConnectionEndpoint::isTemporary() const
+{
+    return temporary_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::isInvalid()
+//-----------------------------------------------------------------------------
+bool ConnectionEndpoint::isInvalid() const
+{
+    return (temporary_ && getOwnerComponent()->getVlnv()->isValid());
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::setTypeLocked()
+//-----------------------------------------------------------------------------
+void ConnectionEndpoint::setTypeLocked(bool locked)
+{
+    typeLocked_ = locked;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::isTypeLocked()
+//-----------------------------------------------------------------------------
+bool ConnectionEndpoint::isTypeLocked() const
+{
+    return typeLocked_;
 }

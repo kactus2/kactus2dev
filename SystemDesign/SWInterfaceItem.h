@@ -86,14 +86,6 @@ public:
      */
     virtual void setDirection(QVector2D const& dir);
 
-    /*!
-     *  Sets the interface temporary or not temporary. Temporary interface set its model interfaces undefined
-     *  automatically if the connections are removed.
-     *
-     *      @param [in] temp True if temporary; false if not temporary.
-     */
-    void setTemporary(bool temp);
-
     int type() const { return Type; }
 
     //-----------------------------------------------------------------------------
@@ -215,9 +207,6 @@ private:
 
     //! The API interface, or null if not set.
     QSharedPointer<ApiInterface> apiInterface_;
-
-    //! Boolean flag for determining if the port is temporary or not.
-    bool temp_;
 
     //! The position of the port before mouse move.
     QPointF oldPos_;

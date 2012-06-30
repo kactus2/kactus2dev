@@ -670,11 +670,18 @@ void HWDesignWidget::onModelsimGenerate() {
 //-----------------------------------------------------------------------------
 void HWDesignWidget::addColumn()
 {
-    ColumnEditDialog dlg(this, false);
+    ColumnEditDialog dialog(this, false);
 
-    if (dlg.exec() == QDialog::Accepted)
+    if (dialog.exec() == QDialog::Accepted)
     {
-        ColumnDesc desc(dlg.getName(), dlg.getContentType(), dlg.getAllowedItems());
+        int columnWidth = 259;
+
+        if (dialog.getContentType() == COLUMN_CONTENT_IO)
+        {
+            columnWidth = 119;
+        }
+
+        ColumnDesc desc(dialog.getName(), dialog.getContentType(), dialog.getAllowedItems(), columnWidth);
         getDiagram()->addColumn(desc);
     }
 }

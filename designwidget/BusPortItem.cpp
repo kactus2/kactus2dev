@@ -33,16 +33,17 @@
 #include <QGraphicsScene>
 
 BusPortItem::BusPortItem(QSharedPointer<BusInterface> busIf, LibraryInterface* lh,
-                         QGraphicsItem *parent) : HWConnectionEndpoint(parent),
-lh_(lh),
-                                                  temp_(!busIf->getBusType().isValid()),
-                                                  oldPos_(), oldPortPositions_(),
-                                                  offPageConnector_(0)
+                         QGraphicsItem *parent)
+    : HWConnectionEndpoint(parent, !busIf->getBusType().isValid()),
+      lh_(lh),
+      oldPos_(), oldPortPositions_(),
+      offPageConnector_(0)
 {
     Q_ASSERT_X(busIf, "BusPortItem constructor",
         "Null BusInterface pointer given as parameter");
 
     setType(ENDPOINT_TYPE_BUS);
+    setTypeLocked(busIf->getBusType().isValid());
     busInterface_ = busIf;
 
     nameLabel_ = new QGraphicsTextItem("", this);
@@ -74,14 +75,6 @@ lh_(lh),
 BusPortItem::~BusPortItem() {
 }
 
-//-----------------------------------------------------------------------------
-// Function: setTemporary()
-//-----------------------------------------------------------------------------
-void BusPortItem::setTemporary(bool temp)
-{
-    temp_ = temp;
-}
-
 QString BusPortItem::name() const
 {
     return busInterface_->getName();
@@ -105,7 +98,12 @@ QSharedPointer<BusInterface> BusPortItem::getBusInterface() const
 
 void BusPortItem::updateInterface()
 {
-    // Set the port black if it is temporary.
+    HWConnectionEndpoint::updateInterface();
+
+    if (isInvalid())
+    {
+        setBrush(QBrush(Qt::red));
+    }
     if (!busInterface_->getBusType().isValid())
     {
         setBrush(QBrush(Qt::black));
@@ -246,8 +244,8 @@ bool BusPortItem::onConnect(ConnectionEndpoint const* other)
 {
     QSharedPointer<BusInterface> otherBusIf = other->getBusInterface();
 
-    // If the port is a temporary one, try to copy the configuration from the other end point.
-    if (temp_ && otherBusIf != 0 && otherBusIf->getBusType().isValid())
+    // If the port is a non-typed one, try to copy the configuration from the other end point.
+    if (!isTypeLocked() && otherBusIf != 0 && otherBusIf->getBusType().isValid())
     {
         if (!static_cast<HWDesignDiagram*>(scene())->getEditProvider().isPerformingUndoRedo())
         {
@@ -281,8 +279,8 @@ bool BusPortItem::onConnect(ConnectionEndpoint const* other)
 //-----------------------------------------------------------------------------
 void BusPortItem::onDisconnect(ConnectionEndpoint const*)
 {
-    // If the port is a temporary one, set the bus and abstraction definitions undefined.
-    if (temp_)
+    // If the port is a non-typed one, set the bus and abstraction definitions undefined.
+    if (!isTypeLocked())
     {
         busInterface_->setBusType(VLNV());
         busInterface_->setAbstractionType(VLNV());
@@ -502,7 +500,7 @@ void BusPortItem::setTypes(VLNV const& busType, VLNV const& absType, General::In
     busInterface_->setInterfaceMode(mode);
 
     // Update the interface visuals.
-    setTemporary(!busType.isValid());
+    setTypeLocked(busType.isValid());
     updateInterface();
 
     if (busType.isValid())

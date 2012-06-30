@@ -47,14 +47,6 @@ public:
 	virtual ~AdHocInterfaceItem();
 
     /*!
-     *  Sets the port temporary or not temporary. Temporary port set its bus interface undefined
-     *  automatically if the connections are removed.
-     *
-     *      @param [in] temp True if temporary; false if not temporary.
-     */
-    void setTemporary(bool temp);
-
-    /*!
      *  Sets the bus and abstraction types and the interface mode for the end point.
      *
      *      @param [in] busType  The bus type (bus definition VLNV).
@@ -198,9 +190,6 @@ private:
 
     //! The old column from where the mouse drag event began.
     GraphicsColumn* oldColumn_;
-
-    //! Boolean flag for determining if the port is temporary or not.
-    bool temp_;
 
     //! The position of the port before mouse move.
     QPointF oldPos_;

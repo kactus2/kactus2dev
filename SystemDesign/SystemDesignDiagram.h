@@ -12,6 +12,8 @@
 #ifndef SYSTEMDESIGNDIAGRAM_H
 #define SYSTEMDESIGNDIAGRAM_H
 
+#include "SWConnectionEndpoint.h"
+
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/IDFactory.h>
 #include <common/KactusAttribute.h>
@@ -29,8 +31,9 @@ class GenericEditProvider;
 class SystemDesignWidget;
 class HWMappingItem;
 class SystemComponentItem;
-class SWConnectionEndpoint;
 class GraphicsConnection;
+class SystemComponentItem;
+class SWPortItem;
 
 //-----------------------------------------------------------------------------
 //! SystemDesignDiagram class.
@@ -207,6 +210,17 @@ private:
      *  set to allowed state.
      */
     void disableCurrentHighlight();
+
+    /*!
+     *  Creates a missing port to the given component item.
+     *
+     *      @param [in] portName   The name of the port to create.
+     *      @param [in] type       The port endpoint type.
+     *      @param [in] component  The parent component.
+     *      @param [in] design     The design containing related information.
+     */
+    SWPortItem* createMissingPort(QString const& portName, ConnectionEndpoint::EndpointType type,
+                                  SystemComponentItem* component, QSharedPointer<Design> design);
     
     //-----------------------------------------------------------------------------
     // Data.

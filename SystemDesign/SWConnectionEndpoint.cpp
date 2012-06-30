@@ -16,9 +16,9 @@
 //-----------------------------------------------------------------------------
 // Function: SWConnectionEndpoint()
 //-----------------------------------------------------------------------------
-SWConnectionEndpoint::SWConnectionEndpoint(QGraphicsItem* parent,
+SWConnectionEndpoint::SWConnectionEndpoint(QGraphicsItem* parent, bool temporary,
                                            QVector2D const& dir)
-    : ConnectionEndpoint(parent)
+    : ConnectionEndpoint(parent, temporary)
 {
     setDirection(dir);
 }
@@ -35,6 +35,14 @@ SWConnectionEndpoint::~SWConnectionEndpoint()
 //-----------------------------------------------------------------------------
 void SWConnectionEndpoint::updateInterface()
 {
+    ConnectionEndpoint::updateInterface();
+
+    if (isInvalid())
+    {
+        setBrush(QBrush(Qt::red));
+        return;
+    }
+
     switch (getType())
     {
     case ENDPOINT_TYPE_UNDEFINED:
@@ -68,6 +76,12 @@ void SWConnectionEndpoint::updateInterface()
 bool SWConnectionEndpoint::canConnect(ConnectionEndpoint const* other) const
 {
     if (!ConnectionEndpoint::canConnect(other))
+    {
+        return false;
+    }
+
+    // Disallow connections to invalid endpoints.
+    if (isInvalid())
     {
         return false;
     }

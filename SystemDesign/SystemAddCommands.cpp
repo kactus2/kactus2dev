@@ -47,6 +47,7 @@ void SWConnectionAddCommand::undo()
 {
     // Remove the interconnection from the scene.
     scene_->removeItem(conn_);
+    conn_->setSelected(false);
 
     // Disconnect the ends.
     conn_->disconnectEnds();

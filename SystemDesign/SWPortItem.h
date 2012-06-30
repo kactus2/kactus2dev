@@ -17,6 +17,7 @@
 #include <QSharedPointer>
 #include <QVector2D>
 #include <QPolygonF>
+#include <QPen>
 
 #include "SWConnectionEndpoint.h"
 
@@ -78,14 +79,6 @@ public:
      *  Returns the currently set COM/API definition.
      */
     virtual VLNV getTypeDefinition() const;
-
-    /*!
-     *  Sets the port temporary or not temporary. Temporary port set its interfaces undefined
-     *  automatically if the connections are removed.
-     *
-     *      @param [in] temp True if temporary; false if not temporary.
-     */
-    void setTemporary(bool temp);
 
     int type() const { return Type; }
 
@@ -217,9 +210,6 @@ private:
     //! The API interface, or null if not set.
     QSharedPointer<ApiInterface> apiInterface_;
 
-    //! Boolean flag for determining if the port is temporary or not.
-    bool temp_;
-
     //! The position of the port before mouse move.
     QPointF oldPos_;
 
@@ -228,6 +218,9 @@ private:
 
     //! Stub line for fixing the overdraw issue.
     QGraphicsLineItem stubLine_;
+
+    //! Default pen for the stub line.
+    QPen stubLineDefaultPen_;
 };
 
 //-----------------------------------------------------------------------------

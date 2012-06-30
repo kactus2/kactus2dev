@@ -60,9 +60,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parent The parent graphics item.
+     *      @param [in] parent     The parent graphics item.
+     *      @param [in] temporary  If true, the endpoint is set temporary.
      */
-    ConnectionEndpoint(QGraphicsItem* parent = 0);
+    ConnectionEndpoint(QGraphicsItem* parent = 0, bool temporary = false);
 
     /*!
      *  Destructor.
@@ -264,6 +265,36 @@ public:
      */
     EndpointType getType() const;
 
+    /*!
+     *  Sets the endpoint temporary or not temporary. Temporary endpoints can be deleted.
+     *
+     *      @param [in] temp True if temporary; false if not temporary.
+     */
+    void setTemporary(bool temp);
+
+    /*!
+     *  Returns true if the endpoint is temporary.
+     */
+    bool isTemporary() const;
+
+    /*!
+     *  Returns true if the endpoint is invalid (i.e. a removed one).
+     */
+    bool isInvalid() const;
+
+    /*!
+     *  Sets the endpoint type locked or not. A locked endpoint has a strict type, while a non-locked
+     *  endpoint automatically adjusts its type when connections are added/removed.
+     *
+     *      @param [in] typed If true, the endpoint is set as typed.
+     */
+    void setTypeLocked(bool typed);
+
+    /*!
+     *  Returns true if the endpoint's type is locked.
+     */
+    bool isTypeLocked() const;
+
 signals:
     //! Signals that the contents of the interface have been changed.
     void contentChanged();
@@ -288,6 +319,12 @@ private:
 
     //! The connections to this endpoint.
     QList<GraphicsConnection*> connections_;
+
+    //! Boolean flag for determining if the endpoint is temporary or not.
+    bool temporary_;
+
+    //! Boolean flag for determining if the endpoint is typed or not (non-typed).
+    bool typeLocked_;
 };
 
 //-----------------------------------------------------------------------------

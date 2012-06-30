@@ -327,6 +327,9 @@ private:
 
     //! The component VLNV.
     VLNV vlnv_;
+
+    //! Saved endpoint locked states.
+    QMap<ConnectionEndpoint*, bool> endpointLockedStates_;
 };
 
 //-----------------------------------------------------------------------------

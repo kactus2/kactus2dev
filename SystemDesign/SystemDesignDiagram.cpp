@@ -184,9 +184,14 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
                 itrPortPos.next();
                 SWPortItem* port = item->getSWPort(itrPortPos.key(), SWConnectionEndpoint::ENDPOINT_TYPE_API);
 
-                // If the port was not found, create it.
+                // If the port was not found, create it if the component is not packetized.
                 if (port == 0)
                 {
+                    if (instance.getComponentRef().isValid())
+                    {
+                        continue;
+                    }
+
                     port = new SWPortItem(itrPortPos.key(), item);
                     item->addPort(port);
                 }
@@ -207,6 +212,11 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
                 // If the port was not found, create it.
                 if (port == 0)
                 {
+                    if (instance.getComponentRef().isValid())
+                    {
+                        continue;
+                    }
+
                     port = new SWPortItem(itrPortPos.key(), item);
                     item->addPort(port);
                 }
@@ -282,6 +292,11 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
                 // If the port was not found, create it.
                 if (port == 0)
                 {
+                    if (instance.getComponentRef().isValid())
+                    {
+                        continue;
+                    }
+
                     port = new SWPortItem(itrPortPos.key(), item);
                     item->addPort(port);
                 }
@@ -302,6 +317,11 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
                 // If the port was not found, create it.
                 if (port == 0)
                 {
+                    if (instance.getComponentRef().isValid())
+                    {
+                        continue;
+                    }
+
                     port = new SWPortItem(itrPortPos.key(), item);
                     item->addPort(port);
                 }
@@ -486,9 +506,13 @@ void SystemDesignDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
         if (highlightedEndpoint_ != 0)
         {
             highlightedEndpoint_->setHighlight(SWConnectionEndpoint::HIGHLIGHT_OFF);
+            highlightedEndpoint_ = 0;
         }
 
-        highlightedEndpoint_ = endpoint;
+        if (endpoint != 0 && !endpoint->isInvalid())
+        {
+            highlightedEndpoint_ = endpoint;
+        }
 
         // Allow the drop event if the end point is undefined or there are no connections
         // and the encompassing component is unpackaged.
@@ -865,7 +889,7 @@ void SystemDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
         if (tempConnection_)
         {
             // Check if there was a valid endpoint close enough.
-            if (endpoint != 0 && tempPotentialEndingEndpoints_.contains(endpoint))
+            if (endpoint != 0 && !endpoint->isInvalid() && tempPotentialEndingEndpoints_.contains(endpoint))
             {
                 // Highlight the endpoint.
                 disableCurrentHighlight();                
@@ -912,7 +936,7 @@ void SystemDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
                 highlightedEndpoint_ = 0;
             }
 
-            if (endpoint != 0 && endpoint->isVisible())
+            if (endpoint != 0 && !endpoint->isInvalid() && endpoint->isVisible())
             {
                 highlightedEndpoint_ = endpoint;
                 highlightedEndpoint_->setHighlight(SWConnectionEndpoint::HIGHLIGHT_HOVER);
@@ -1283,12 +1307,9 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
             // Write the model to file.
             getLibraryInterface()->writeModelToFile(dialog.getPath(), comp->componentModel());
 
-            // Update the diagram component.
-            comp->updateComponent();
-
             // Create an undo command.
             QSharedPointer<ComponentPacketizeCommand> cmd(new ComponentPacketizeCommand(comp, vlnv));
-            getEditProvider().addCommand(cmd, false);
+            getEditProvider().addCommand(cmd);
 
             // Ask the user if he wants to complete the component.
             QMessageBox msgBox(QMessageBox::Question, QCoreApplication::applicationName(),
@@ -1549,24 +1570,28 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
         }
 
         // Find the connected ports in the components.
-        SWConnectionEndpoint* port1 = comp1->getSWPort(dependency.getInterface1().apiRef,
-                                                       SWConnectionEndpoint::ENDPOINT_TYPE_API);
+        SWPortItem* port1 = static_cast<SWPortItem*>(comp1->getSWPort(dependency.getInterface1().apiRef,
+                                                                      SWConnectionEndpoint::ENDPOINT_TYPE_API));
 
         if (port1 == 0)
         {
             emit errorMessage(tr("API interface '%1' was not found in the component '%2'").arg(
                 dependency.getInterface1().apiRef).arg(dependency.getInterface1().componentRef));
-            continue;
+            
+            port1 = createMissingPort(dependency.getInterface1().apiRef,
+                                      SWConnectionEndpoint::ENDPOINT_TYPE_API, comp1, design);
         }
 
-        SWConnectionEndpoint* port2 = comp2->getSWPort(dependency.getInterface2().apiRef,
-                                                       SWConnectionEndpoint::ENDPOINT_TYPE_API);
+        SWPortItem* port2 = static_cast<SWPortItem*>(comp2->getSWPort(dependency.getInterface2().apiRef,
+                                                                      SWConnectionEndpoint::ENDPOINT_TYPE_API));
 
         if (port2 == 0)
         {
             emit errorMessage(tr("API interface '%1' was not found in the component '%2'").arg(
                 dependency.getInterface2().apiRef).arg(dependency.getInterface2().componentRef));
-            continue;
+            
+            port2 = createMissingPort(dependency.getInterface2().apiRef,
+                                      SWConnectionEndpoint::ENDPOINT_TYPE_API, comp2, design);
         }
 
 
@@ -1647,22 +1672,22 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
         {
             emit errorMessage(tr("Port '%1' was not found in the component '%2'").arg(
                 dependency.getInterface().apiRef, dependency.getInterface().componentRef));
-        }
-        // If both the component and it's port are found the connection can be made.
-        else
-        {
-            GraphicsConnection* connection = new GraphicsConnection(port, interface, true,
-                                                                    dependency.getName(),
-                                                                    dependency.getDisplayName(),
-                                                                    dependency.getDescription(), this);
-            connection->setRoute(dependency.getRoute());
 
-            connect(connection, SIGNAL(errorMessage(QString const&)),
-                this, SIGNAL(errorMessage(QString const&)));
-
-            addItem(connection);
-            connection->updatePosition();
+            port = createMissingPort(dependency.getInterface().apiRef,
+                                     SWConnectionEndpoint::ENDPOINT_TYPE_API, componentItem, design);
         }
+        
+        GraphicsConnection* connection = new GraphicsConnection(port, interface, true,
+            dependency.getName(),
+            dependency.getDisplayName(),
+            dependency.getDescription(), this);
+        connection->setRoute(dependency.getRoute());
+
+        connect(connection, SIGNAL(errorMessage(QString const&)),
+            this, SIGNAL(errorMessage(QString const&)));
+
+        addItem(connection);
+        connection->updatePosition();
     }
 }
 
@@ -1831,4 +1856,53 @@ void SystemDesignDiagram::onSelectionChanged()
     }
 
     onSelected(newSelection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::createMissingPort()
+//-----------------------------------------------------------------------------
+SWPortItem* SystemDesignDiagram::createMissingPort(QString const& portName, ConnectionEndpoint::EndpointType type,
+                                                   SystemComponentItem* component,
+                                                   QSharedPointer<Design> design)
+{
+    SWPortItem* port = new SWPortItem(portName, component);
+    component->addPort(port);
+
+    foreach (ComponentInstance const& instance, design->getComponentInstances())
+    {
+        if (instance.getInstanceName() == component->name())
+        {
+            if (type == ConnectionEndpoint::ENDPOINT_TYPE_API)
+            {
+                port->setPos(instance.getApiInterfacePositions().value(portName));
+            }
+            else if (type == ConnectionEndpoint::ENDPOINT_TYPE_COM)
+            {
+                port->setPos(instance.getComInterfacePositions().value(portName));
+            }
+
+            component->onMovePort(port);
+            return port;
+        }
+    }
+
+    foreach (SWInstance const& instance, design->getSWInstances())
+    {
+        if (instance.getInstanceName() == component->name())
+        {
+            if (type == ConnectionEndpoint::ENDPOINT_TYPE_API)
+            {
+                port->setPos(instance.getApiInterfacePositions().value(portName));
+            }
+            else if (type == ConnectionEndpoint::ENDPOINT_TYPE_COM)
+            {
+                port->setPos(instance.getComInterfacePositions().value(portName));
+            }
+
+            component->onMovePort(port);
+            return port;
+        }
+    }
+
+    return port;
 }

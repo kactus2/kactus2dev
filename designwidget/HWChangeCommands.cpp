@@ -137,8 +137,19 @@ ComponentPacketizeCommand::ComponentPacketizeCommand(ComponentItem* component,
                                                      VLNV const& vlnv,
                                                      QUndoCommand* parent) : QUndoCommand(parent),
                                                      component_(component),
-                                                     vlnv_(vlnv)
+                                                     vlnv_(vlnv),
+                                                     endpointLockedStates_()
 {
+    // Save the locked states of each endpoint.
+    foreach (QGraphicsItem* item, component_->childItems())
+    {
+        ConnectionEndpoint* endpoint = dynamic_cast<ConnectionEndpoint*>(item);
+
+        if (endpoint != 0)
+        {
+            endpointLockedStates_.insert(endpoint, endpoint->isTypeLocked());
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -155,6 +166,19 @@ void ComponentPacketizeCommand::undo()
 {
     // Set an empty VLNV.
     component_->componentModel()->setVlnv(VLNV());
+
+    // Mark all endpoints as temporary.
+    foreach (QGraphicsItem* item, component_->childItems())
+    {
+        ConnectionEndpoint* endpoint = dynamic_cast<ConnectionEndpoint*>(item);
+
+        if (endpoint != 0)
+        {
+            endpoint->setTemporary(true);
+            endpoint->setTypeLocked(endpointLockedStates_.value(endpoint));
+        }
+    }
+
     component_->updateComponent();
 }
 
@@ -164,6 +188,19 @@ void ComponentPacketizeCommand::undo()
 void ComponentPacketizeCommand::redo()
 {
     component_->componentModel()->setVlnv(vlnv_);
+
+    // Mark all endpoints as non-temporary.
+    foreach (QGraphicsItem* item, component_->childItems())
+    {
+        ConnectionEndpoint* endpoint = dynamic_cast<ConnectionEndpoint*>(item);
+
+        if (endpoint != 0)
+        {
+            endpoint->setTemporary(false);
+            endpoint->setTypeLocked(true);
+        }
+    }
+
     component_->updateComponent();
 }
 

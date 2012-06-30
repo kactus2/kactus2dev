@@ -43,10 +43,9 @@
 // Function: AdHocPortItem()
 //-----------------------------------------------------------------------------
 AdHocPortItem::AdHocPortItem(Port* port, LibraryInterface* lh,
-                                   QGraphicsItem *parent) : HWConnectionEndpoint(parent),
+                                   QGraphicsItem *parent) : HWConnectionEndpoint(parent, false),
                                                             port_(port),
                                                             lh_(lh),
-                                                            temp_(false),
                                                             oldPos_(), oldPortPositions_(),
                                                             offPageConnector_(0)
 {
@@ -134,14 +133,6 @@ AdHocPortItem::~AdHocPortItem()
 }
 
 //-----------------------------------------------------------------------------
-// Function: setTemporary()
-//-----------------------------------------------------------------------------
-void AdHocPortItem::setTemporary(bool temp)
-{
-    temp_ = temp;
-}
-
-//-----------------------------------------------------------------------------
 // Function: name()
 //-----------------------------------------------------------------------------
 QString AdHocPortItem::name() const
@@ -172,6 +163,8 @@ QSharedPointer<BusInterface> AdHocPortItem::getBusInterface() const
 //-----------------------------------------------------------------------------
 void AdHocPortItem::updateInterface()
 {
+    HWConnectionEndpoint::updateInterface();
+
     setBrush(QBrush(Qt::black));
 
     nameLabel_->setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">" +

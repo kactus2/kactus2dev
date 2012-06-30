@@ -45,17 +45,17 @@
 //-----------------------------------------------------------------------------
 SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component,
                                  QString const& name, QGraphicsItem *parent)
-    : SWConnectionEndpoint(parent, QVector2D(-1.0f, 0.0f)),
+    : SWConnectionEndpoint(parent, true, QVector2D(-1.0f, 0.0f)),
       nameLabel_(name, this),
       component_(component),
       apiInterface_(),
       comInterface_(),
-      temp_(true),
       oldPos_(),
       oldStack_(0),
       oldInterfacePositions_()
 {
     setType(ENDPOINT_TYPE_UNDEFINED);
+    setTypeLocked(false);
     initialize();
 }
 
@@ -64,17 +64,17 @@ SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component,
 //-----------------------------------------------------------------------------
 SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component,
                                  QSharedPointer<ApiInterface> apiIf, QGraphicsItem *parent)
-    : SWConnectionEndpoint(parent, QVector2D(-1.0f, 0.0f)),
+    : SWConnectionEndpoint(parent, false, QVector2D(-1.0f, 0.0f)),
       nameLabel_(this),
       component_(component),
       apiInterface_(apiIf),
       comInterface_(),
-      temp_(false),
       oldPos_(),
       oldInterfacePositions_()
 {
     Q_ASSERT(apiIf != 0);
     setType(ENDPOINT_TYPE_API);
+    setTypeLocked(true);
     initialize();
 }
 
@@ -83,17 +83,17 @@ SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component,
 //-----------------------------------------------------------------------------
 SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component, 
                                  QSharedPointer<ComInterface> comIf, QGraphicsItem *parent)
-    : SWConnectionEndpoint(parent, QVector2D(-1.0f, 0.0f)),
+    : SWConnectionEndpoint(parent, false, QVector2D(-1.0f, 0.0f)),
       nameLabel_(this),
       component_(component),
       apiInterface_(),
       comInterface_(comIf),
-      temp_(false),
       oldPos_(),
       oldInterfacePositions_()
 {
     Q_ASSERT(comIf != 0);
     setType(ENDPOINT_TYPE_COM);
+    setTypeLocked(true);
     initialize();
 }
 
@@ -102,14 +102,6 @@ SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component,
 //-----------------------------------------------------------------------------
 SWInterfaceItem::~SWInterfaceItem()
 {
-}
-
-//-----------------------------------------------------------------------------
-// Function: setTemporary()
-//-----------------------------------------------------------------------------
-void SWInterfaceItem::setTemporary(bool temp)
-{
-    temp_ = temp;
 }
 
 //-----------------------------------------------------------------------------
@@ -351,8 +343,8 @@ bool SWInterfaceItem::onConnect(ConnectionEndpoint const* other)
 //-----------------------------------------------------------------------------
 void SWInterfaceItem::onDisconnect(ConnectionEndpoint const*)
 {
-    // Undefine the interface if it is temporary.
-    if (temp_ && !isConnected())
+    // Undefine the interface if it not typed.
+    if (!isTypeLocked() && !isConnected())
     {
         setTypeDefinition(VLNV());
         updateInterface();
@@ -709,7 +701,7 @@ void SWInterfaceItem::setTypeDefinition(VLNV const& type)
             getOwnerComponent()->addApiInterface(apiInterface_);
 
             setType(ENDPOINT_TYPE_API);
-            setTemporary(false);
+            setTypeLocked(true);
         }
         else if (type.getType() == VLNV::COMDEFINITION)
         {
@@ -719,7 +711,7 @@ void SWInterfaceItem::setTypeDefinition(VLNV const& type)
             getOwnerComponent()->addComInterface(comInterface_);
 
             setType(ENDPOINT_TYPE_COM);
-            setTemporary(false);
+            setTypeLocked(true);
         }
     }
     else
@@ -737,7 +729,7 @@ void SWInterfaceItem::setTypeDefinition(VLNV const& type)
         }
 
         setType(ENDPOINT_TYPE_UNDEFINED);
-        setTemporary(true);
+        setTypeLocked(false);
         nameLabel_.setPlainText("");
     }
 
