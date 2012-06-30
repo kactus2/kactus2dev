@@ -157,7 +157,7 @@ private:
 	ModelParameterModel& operator=(const ModelParameterModel& other);
 	
 	//! \brief Pointer to the data structure that contains the actual model parameters.
-	QMap<QString, QSharedPointer<ModelParameter> >* modelParameters_;
+	QList< QSharedPointer<ModelParameter> >* modelParameters_;
 
 	//! \brief The table that is displayed to the user.
 	QList<QSharedPointer<ModelParameter> > table_;

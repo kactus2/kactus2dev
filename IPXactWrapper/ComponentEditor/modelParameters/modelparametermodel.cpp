@@ -22,8 +22,7 @@ table_() {
 
 	// set the pointer to the actual data structure containing the 
 	// model parameters
-	modelParameters_ = static_cast<
-		QMap<QString, QSharedPointer<ModelParameter> > *>(dataPointer);
+	modelParameters_ = static_cast< QList< QSharedPointer<ModelParameter> > *>(dataPointer);
 
 	restore();
 }
@@ -278,7 +277,7 @@ void ModelParameterModel::apply() {
 	modelParameters_->clear();
 
 	for (int i = 0; i < table_.size(); ++i) {
-		modelParameters_->insert(table_.value(i)->getName(), table_.value(i));
+		modelParameters_->append(table_.at(i));
 	}
 }
 
