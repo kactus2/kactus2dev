@@ -362,9 +362,8 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
             BusPortItem* port = static_cast<BusPortItem*>(selected);
             HWComponentItem* comp = static_cast<HWComponentItem*>(port->parentItem());
 
-            // Ports can be removed only if the parent component is not
-            // yet packaged (i.e. has an invalid VLNV).
-            if (!comp->componentModel()->getVlnv()->isValid())
+            // Ports can be removed only if they are temporary.
+            if (port->isTemporary())
             {
                 // Delete the port.
                 QSharedPointer<QUndoCommand> cmd(new PortDeleteCommand(port));
