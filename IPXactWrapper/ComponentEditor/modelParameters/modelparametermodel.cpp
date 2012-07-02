@@ -9,22 +9,12 @@
 
 #include <QColor>
 
-#include <QDebug>
-
-ModelParameterModel::ModelParameterModel(void* dataPointer, 
+ModelParameterModel::ModelParameterModel(QSharedPointer<Component> component, 
 										 QObject *parent): 
 QAbstractTableModel(parent),
-modelParameters_(), 
-table_() {
+table_(component->getModelParameters()) {
 
-	Q_ASSERT_X(dataPointer, "ModelParameterModel constructor",
-		"Null dataPointer given as parameter");
-
-	// set the pointer to the actual data structure containing the 
-	// model parameters
-	modelParameters_ = static_cast< QList< QSharedPointer<ModelParameter> > *>(dataPointer);
-
-	restore();
+	Q_ASSERT(component);
 }
 
 ModelParameterModel::~ModelParameterModel() {
@@ -148,14 +138,6 @@ bool ModelParameterModel::setData( const QModelIndex& index,
 		
 		switch (index.column()) {
 			case 0: {
-
-				// if name changes then the map has to change the indexing also
-				QString oldKey = table_.value(index.row())->getName();
-
-				// remove the item with old key and insert the value with new key
-				//QSharedPointer<ModelParameter> modParam = modelParameters_->take(oldKey);
-				//modelParameters_->insert(value.toString(), modParam);
-
 				table_[index.row()]->setName(value.toString());
 				break;				
 					}
@@ -270,31 +252,4 @@ bool ModelParameterModel::isValid() const {
 		}
 	}
 	return true;
-}
-
-void ModelParameterModel::apply() {
-	// remove old model parameters from original model
-	modelParameters_->clear();
-
-	for (int i = 0; i < table_.size(); ++i) {
-		modelParameters_->append(table_.at(i));
-	}
-}
-
-void ModelParameterModel::restore() {
-
-	beginResetModel();
-
-	// remove old model parameters
-	table_.clear();
-
-	// add all model parameters to the table
-	foreach (QSharedPointer<ModelParameter> modelParameter, *modelParameters_) {
-
-		// create a copy of the model parameter
-		table_.append(QSharedPointer<ModelParameter>(
-			new ModelParameter(*modelParameter.data())));
-	}
-
-	endResetModel();
 }

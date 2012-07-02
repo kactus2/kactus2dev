@@ -14,11 +14,11 @@
 #include <QVBoxLayout>
 
 ModelParameterEditor::ModelParameterEditor(QSharedPointer<Component> component,
-										   void* dataPointer,
 										   QWidget *parent): 
 ItemEditor(component, parent), 
 view_(this),
-model_(dataPointer, this) {
+model_(component, this),
+proxy_(this) {
 
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -42,13 +42,10 @@ model_(dataPointer, this) {
 	// items can not be dragged
 	view_.setItemsDraggable(false);
 
-	// set proxy to do the sorting automatically
-	proxy_ = new QSortFilterProxyModel(this);
-
 	// set source model for proxy
-	proxy_->setSourceModel(&model_);
+	proxy_.setSourceModel(&model_);
 	// set proxy to be the source for the view
-	view_.setModel(proxy_);
+	view_.setModel(&proxy_);
 
 	// sort the view
 	view_.sortByColumn(0, Qt::AscendingOrder);;

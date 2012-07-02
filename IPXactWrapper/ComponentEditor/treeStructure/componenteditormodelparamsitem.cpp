@@ -13,7 +13,8 @@ ComponentEditorModelParamsItem::ComponentEditorModelParamsItem( ComponentEditorT
 															   ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
 modelParams_(component->getModelParameters()), 
-editor_(component, &modelParams_) {
+editor_(component) {
+	
 	editor_.hide();
 	connect(&editor_, SIGNAL(contentChanged()),
 		this, SLOT(onEditorChanged()), Qt::UniqueConnection);

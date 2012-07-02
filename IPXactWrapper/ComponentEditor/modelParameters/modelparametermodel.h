@@ -9,6 +9,7 @@
 #define MODELPARAMETERMODEL_H
 
 #include <models/modelparameter.h>
+#include <models/component.h>
 
 #include <QAbstractTableModel>
 #include <QMap>
@@ -26,11 +27,12 @@ public:
 
 	/*! \brief The constructor
 	 *
-	 * \param dataPointer Pointer to the QMap containing the model parameters.
+	 * \param component Pointer to the component being edited.
 	 * \param parent Pointer to the owner of this model.
 	 *
 	*/
-	ModelParameterModel(void* dataPointer, QObject *parent);
+	ModelParameterModel(QSharedPointer<Component> component,
+		QObject *parent);
 
 	//! \brief The destructor
 	virtual ~ModelParameterModel();
@@ -100,16 +102,6 @@ public:
 	*/
 	bool isValid() const;
 
-	/*! \brief Write the changes to the original model.
-	 *
-	*/
-	void apply();
-
-	/*! \brief Restore the settings from the original model.
-	 *
-	*/
-	void restore();
-
 public slots:
 
 	/*! \brief Remove a row from the model
@@ -155,12 +147,9 @@ private:
 
 	//! No assignment
 	ModelParameterModel& operator=(const ModelParameterModel& other);
-	
-	//! \brief Pointer to the data structure that contains the actual model parameters.
-	QList< QSharedPointer<ModelParameter> >* modelParameters_;
 
 	//! \brief The table that is displayed to the user.
-	QList<QSharedPointer<ModelParameter> > table_;
+	QList<QSharedPointer<ModelParameter> >& table_;
 
 };
 

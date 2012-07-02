@@ -9,10 +9,8 @@
 #define MODELPARAMETEREDITOR_H
 
 #include <IPXactWrapper/ComponentEditor/itemeditor.h>
-
-#include <models/modelparameter.h>
+#include <models/component.h>
 #include "modelparametermodel.h"
-
 #include <common/views/EditableTableView/editabletableview.h>
 
 #include <QString>
@@ -20,8 +18,6 @@
 #include <QList>
 #include <QSharedPointer>
 #include <QSortFilterProxyModel>
-
-class Component;
 
 /*! \brief Widget to edit component's model parameters.
  *
@@ -34,12 +30,10 @@ public:
 	/*! \brief The constructor
 	 *
 	 * \param component Pointer to the component being edited.
-	 * \param dataPointer Pointer to the QMap containing the model parameters.
 	 * \param parent Pointer to the owner of this widget.
 	 * 
 	*/
-	ModelParameterEditor(QSharedPointer<Component> component, 
-		void* dataPointer,
+	ModelParameterEditor(QSharedPointer<Component> component,
 		QWidget *parent = 0);
 
 	//! \brief The destructor
@@ -70,7 +64,7 @@ private:
 	ModelParameterModel model_;
 
 	//! \brief Pointer to the proxy that is used to sort the view
-	QSortFilterProxyModel* proxy_;
+	QSortFilterProxyModel proxy_;
 };
 
 #endif // MODELPARAMETEREDITOR_H
