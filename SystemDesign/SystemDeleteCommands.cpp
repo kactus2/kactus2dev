@@ -127,6 +127,9 @@ SWConnectionDeleteCommand::~SWConnectionDeleteCommand()
 //-----------------------------------------------------------------------------
 void SWConnectionDeleteCommand::undo()
 {
+    // Execute child commands.
+    QUndoCommand::undo();
+
     // Add the item back to the scene.
     scene_->addItem(conn_);
 
@@ -150,6 +153,9 @@ void SWConnectionDeleteCommand::redo()
     // Disconnect the ends.
     conn_->disconnectEnds();
     del_ = true;
+
+    // Execute child commands.
+    QUndoCommand::redo();
 }
 
 //-----------------------------------------------------------------------------

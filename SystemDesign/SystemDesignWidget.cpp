@@ -324,8 +324,45 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
             emit clearItemSelection();
 
             // Delete the connection.
-            QSharedPointer<QUndoCommand> cmd(new SWConnectionDeleteCommand(static_cast<GraphicsConnection*>(selected)));
+            GraphicsConnection* conn = static_cast<GraphicsConnection*>(selected);
+            SWConnectionEndpoint* endpoint1 = static_cast<SWConnectionEndpoint*>(conn->endpoint1());
+            SWConnectionEndpoint* endpoint2 = static_cast<SWConnectionEndpoint*>(conn->endpoint2());
+
+            QSharedPointer<QUndoCommand> cmd(new SWConnectionDeleteCommand(conn));
             getGenericEditProvider()->addCommand(cmd);
+
+            // If the bus ports are invalid, delete them too.
+            if (endpoint1->isInvalid())
+            {
+                QUndoCommand* childCmd = 0;
+
+                if (endpoint1->type() == SWPortItem::Type)
+                {
+                    childCmd = new SWPortDeleteCommand(static_cast<SWPortItem*>(endpoint1), cmd.data());
+                }
+                else
+                {
+                    childCmd = new SWInterfaceDeleteCommand(static_cast<SWInterfaceItem*>(endpoint1), cmd.data());
+                }
+
+                childCmd->redo();
+            }
+
+            if (endpoint2->isInvalid())
+            {
+                QUndoCommand* childCmd = 0;
+
+                if (endpoint1->type() == SWPortItem::Type)
+                {
+                    childCmd = new SWPortDeleteCommand(static_cast<SWPortItem*>(endpoint2), cmd.data());
+                }
+                else
+                {
+                    childCmd = new SWInterfaceDeleteCommand(static_cast<SWInterfaceItem*>(endpoint2), cmd.data());
+                }
+
+                childCmd->redo();
+            }
         }
     }
 }
