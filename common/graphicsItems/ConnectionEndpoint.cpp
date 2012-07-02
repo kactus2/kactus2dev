@@ -126,6 +126,12 @@ bool ConnectionEndpoint::isConnected() const
 //-----------------------------------------------------------------------------
 bool ConnectionEndpoint::canConnect(ConnectionEndpoint const* other) const
 {
+    // Invalid endpoints cannot be connected to.
+    if (isInvalid())
+    {
+        return false;
+    }
+
     // Two hierarchical endpoints cannot be connected.
     if (isHierarchical() && other->isHierarchical())
     {

@@ -33,8 +33,8 @@
 #include <QGraphicsScene>
 
 BusPortItem::BusPortItem(QSharedPointer<BusInterface> busIf, LibraryInterface* lh,
-                         QGraphicsItem *parent)
-    : HWConnectionEndpoint(parent, !busIf->getBusType().isValid()),
+                         bool packetized, QGraphicsItem *parent)
+    : HWConnectionEndpoint(parent, !packetized),
       lh_(lh),
       oldPos_(), oldPortPositions_(),
       offPageConnector_(0)
@@ -43,7 +43,7 @@ BusPortItem::BusPortItem(QSharedPointer<BusInterface> busIf, LibraryInterface* l
         "Null BusInterface pointer given as parameter");
 
     setType(ENDPOINT_TYPE_BUS);
-    setTypeLocked(busIf->getBusType().isValid());
+    setTypeLocked(packetized);
     busInterface_ = busIf;
 
     nameLabel_ = new QGraphicsTextItem("", this);
@@ -104,7 +104,7 @@ void BusPortItem::updateInterface()
     {
         setBrush(QBrush(Qt::red));
     }
-    if (!busInterface_->getBusType().isValid())
+    else if (!busInterface_->getBusType().isValid())
     {
         setBrush(QBrush(Qt::black));
     }
@@ -293,6 +293,11 @@ void BusPortItem::onDisconnect(ConnectionEndpoint const*)
 //-----------------------------------------------------------------------------
 bool BusPortItem::canConnect(ConnectionEndpoint const* other) const
 {
+    if (!HWConnectionEndpoint::canConnect(other))
+    {
+        return false;
+    }
+
     // This end point requires a bus interface connection.
     if (!other->isBus())
     {

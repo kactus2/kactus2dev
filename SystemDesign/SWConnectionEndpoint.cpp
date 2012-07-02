@@ -80,12 +80,6 @@ bool SWConnectionEndpoint::canConnect(ConnectionEndpoint const* other) const
         return false;
     }
 
-    // Disallow connections to invalid endpoints.
-    if (isInvalid())
-    {
-        return false;
-    }
-
     bool fullyDefined = getType() != ENDPOINT_TYPE_UNDEFINED && other->getType() != ENDPOINT_TYPE_UNDEFINED;
 
     // Check if the types do not match.

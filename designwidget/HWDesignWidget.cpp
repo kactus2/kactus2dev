@@ -379,9 +379,25 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
             emit clearItemSelection();
 
             // Delete the interconnection.
-            QSharedPointer<QUndoCommand> cmd(new ConnectionDeleteCommand(
-                static_cast<HWConnection*>(selected)));
+            HWConnection* conn = static_cast<HWConnection*>(selected);
+            HWConnectionEndpoint* endpoint1 = static_cast<HWConnectionEndpoint*>(conn->endpoint1());
+            HWConnectionEndpoint* endpoint2 = static_cast<HWConnectionEndpoint*>(conn->endpoint2());
+
+            QSharedPointer<QUndoCommand> cmd(new ConnectionDeleteCommand(conn));
             getGenericEditProvider()->addCommand(cmd);
+
+            // If the bus ports are invalid, delete them too.
+            if (endpoint1->isInvalid())
+            {
+                QUndoCommand* childCmd = new PortDeleteCommand(endpoint1, cmd.data());
+                childCmd->redo();
+            }
+
+            if (endpoint2->isInvalid())
+            {
+                QUndoCommand* childCmd = new PortDeleteCommand(endpoint2, cmd.data());
+                childCmd->redo();
+            }
         }
         else if (selected->type() == HWColumn::Type)
         {

@@ -70,7 +70,7 @@ HWComponentItem::HWComponentItem(LibraryInterface* lh_,
 
     foreach (QSharedPointer<BusInterface> busif, busInterfaces)
     {
-        BusPortItem *port = new BusPortItem(busif, getLibraryInterface(), this);
+        BusPortItem *port = new BusPortItem(busif, getLibraryInterface(), true, this);
 
         if (right) {
             port->setPos(QPointF(rect().width(), rightY) + rect().topLeft());
@@ -341,7 +341,7 @@ BusPortItem* HWComponentItem::addPort(QPointF const& pos)
     componentModel()->addBusInterface(busIf);
 
     // Create the visualization for the bus interface.
-    BusPortItem* port = new BusPortItem(busIf, getLibraryInterface(), this);
+    BusPortItem* port = new BusPortItem(busIf, getLibraryInterface(), false, this);
 
     port->setPos(mapFromScene(pos));
     onAddPort(port, mapFromScene(pos).x() >= 0);

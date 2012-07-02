@@ -217,6 +217,9 @@ ConnectionDeleteCommand::~ConnectionDeleteCommand()
 //-----------------------------------------------------------------------------
 void ConnectionDeleteCommand::undo()
 {
+    // Execute child commands.
+    QUndoCommand::undo();
+
     // Add the item back to the scene.
     scene_->addItem(conn_);
     
@@ -267,8 +270,10 @@ void ConnectionDeleteCommand::redo()
 
     // Remove the item from the scene.
     scene_->removeItem(conn_);
-
     del_ = true;
+
+    // Execute child commands.
+    QUndoCommand::redo();
 }
 
 //-----------------------------------------------------------------------------

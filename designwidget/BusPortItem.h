@@ -30,7 +30,7 @@ public:
     enum { Type = GFX_TYPE_DIAGRAM_PORT };
 
     BusPortItem(QSharedPointer<BusInterface> busIf, LibraryInterface* lh,
-                QGraphicsItem *parent = 0);
+                bool packetized, QGraphicsItem *parent = 0);
 
 	//! \brief The destructor
 	virtual ~BusPortItem();
