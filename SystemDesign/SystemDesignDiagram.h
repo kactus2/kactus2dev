@@ -221,7 +221,7 @@ private:
      */
     SWPortItem* createMissingPort(QString const& portName, ConnectionEndpoint::EndpointType type,
                                   SystemComponentItem* component, QSharedPointer<Design> design);
-    
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

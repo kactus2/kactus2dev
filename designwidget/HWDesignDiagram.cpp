@@ -157,6 +157,11 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
             if (port == 0)
             {
+                if (instance.getComponentRef().isValid())
+                {
+                    continue;
+                }
+
                 port = diagComp->addPort(itrPortPos.value());
                 port->setName(itrPortPos.key());
             }
@@ -231,19 +236,23 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
 		// find the port of the first referenced component
         ConnectionEndpoint* port1 = comp1->getBusPort(interconnection.interface1.busRef);
 
-		if (!port1) {
+		if (!port1)
+        {
 			emit errorMessage(tr("Port %1 was not found in the component %2").arg(
 			interconnection.interface1.busRef).arg(interconnection.interface1.componentRef));
-			continue;
+
+			port1 = createMissingPort(interconnection.interface1.busRef, comp1, design);
 		}
 		
 		// find the port of the second referenced component
         ConnectionEndpoint* port2 = comp2->getBusPort(interconnection.interface2.busRef);
 
-		if (!port2) {
+		if (!port2)
+        {
 			emit errorMessage(tr("Port %1 was not found in the component %2").arg(
 			interconnection.interface2.busRef).arg(interconnection.interface2.componentRef));
-			continue;
+			
+            port2 = createMissingPort(interconnection.interface2.busRef, comp2, design);
 		}
 
         if (interconnection.offPage)
@@ -430,7 +439,6 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
             {
                 emit errorMessage(tr("Port %1 was not found in the component %2").arg(
                     adHocConn.internalPortReferences.at(0).portRef).arg(adHocConn.internalPortReferences.at(0).componentRef));
-                continue;
             }
 
             if (adHocConn.offPage)
@@ -2235,3 +2243,27 @@ void HWDesignDiagram::setVisibilityControlState(QString const& name, bool state)
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: createMissingPort()
+//-----------------------------------------------------------------------------
+BusPortItem* HWDesignDiagram::createMissingPort(QString const& portName, HWComponentItem* component,
+                                                QSharedPointer<Design> design)
+{
+    QSharedPointer<BusInterface> busIf(new BusInterface());
+    busIf->setName(portName);
+
+    BusPortItem* port = new BusPortItem(busIf, getLibraryInterface(), false, component);
+    component->addPort(port);
+
+    foreach (ComponentInstance const& instance, design->getComponentInstances())
+    {
+        if (instance.getInstanceName() == component->name())
+        {
+            port->setPos(instance.getBusInterfacePositions().value(portName));
+            component->onMovePort(port);
+            return port;
+        }
+    }
+
+    return port;
+}

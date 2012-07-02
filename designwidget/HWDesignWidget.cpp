@@ -360,8 +360,7 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
         else if (selected->type() == BusPortItem::Type)
         {
             BusPortItem* port = static_cast<BusPortItem*>(selected);
-            HWComponentItem* comp = static_cast<HWComponentItem*>(port->parentItem());
-
+            
             // Ports can be removed only if they are temporary.
             if (port->isTemporary())
             {

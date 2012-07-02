@@ -222,6 +222,15 @@ private:
      */
     void createConnection(QGraphicsSceneMouseEvent* event);
 
+    /*!
+     *  Creates a missing port to the given component item.
+     *
+     *      @param [in] portName   The name of the port to create.
+     *      @param [in] component  The parent component.
+     *      @param [in] design     The design containing related information.
+     */
+    BusPortItem* createMissingPort(QString const& portName, HWComponentItem* component, QSharedPointer<Design> design);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
