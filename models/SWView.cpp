@@ -114,6 +114,10 @@ bool SWView::isValid(QStringList& errorList, const QString& parentIdentifier) co
             parentIdentifier));
         valid = false;
     }
+	else if (!hierarchyRef_.isValid()) {
+		errorList.append(QObject::tr("No valid VLNV specified for %1").arg(thisIdentifier));
+		valid = false;
+	}
 
     return valid;
 }
@@ -123,10 +127,12 @@ bool SWView::isValid(QStringList& errorList, const QString& parentIdentifier) co
 //-----------------------------------------------------------------------------
 bool SWView::isValid() const
 {
-    if (nameGroup_.name_.isEmpty())
-    {
+    if (nameGroup_.name_.isEmpty()) {
         return false;
     }
+	else if (!hierarchyRef_.isValid()) {
+		return false;
+	}
 
     return true;
 }

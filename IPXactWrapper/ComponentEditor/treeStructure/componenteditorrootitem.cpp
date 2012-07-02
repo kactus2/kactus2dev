@@ -41,8 +41,9 @@ ComponentEditorItem(libHandler, component, parent) {
 	childItems_.append(QSharedPointer<ComponentEditorParametersItem>(
 		new ComponentEditorParametersItem(parent, libHandler, component, this)));
 	
-	childItems_.append(QSharedPointer<ComponentEditorMemMapsItem>(
-		new ComponentEditorMemMapsItem(parent, libHandler, component, this)));
+	// TODO this must be uncommented when the memory maps editor is implemented
+// 	childItems_.append(QSharedPointer<ComponentEditorMemMapsItem>(
+// 		new ComponentEditorMemMapsItem(parent, libHandler, component, this)));
 	
 	childItems_.append(QSharedPointer<ComponentEditorAddrSpacesItem>(
 		new ComponentEditorAddrSpacesItem(parent, libHandler, component, this)));

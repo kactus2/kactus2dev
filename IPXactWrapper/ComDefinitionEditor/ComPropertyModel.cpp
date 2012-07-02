@@ -15,6 +15,7 @@
 
 #include <models/ComProperty.h>
 
+#include <QColor>
 #include <QRegExp>
 
 QString const ComPropertyModel::IP_ADDRESS_REGEX("^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$");
@@ -157,6 +158,18 @@ QVariant ComPropertyModel::data(QModelIndex const& index, int role /*= Qt::Displ
             return Qt::black;
         }
     }
+	else if (Qt::BackgroundRole == role) {
+		switch (index.column()) {
+			case PROPERTY_COL_NAME:
+			case PROPERTY_COL_REQUIRED:
+			case PROPERTY_COL_TYPE: {
+				return QColor("LemonChiffon");
+									}
+			default: {
+				return QColor("white");
+					 }
+		}
+	}
     else
     {
         return QVariant();

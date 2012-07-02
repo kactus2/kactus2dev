@@ -1632,6 +1632,34 @@ const QList<VLNV> Component::getDependentVLNVs() const {
 		vlnvList += model_->getHierarchyRefs();
 	}
 
+	// add all SW view references
+	foreach (QSharedPointer<SWView> swView, swViews_) {
+		if (swView->getHierarchyRef().isValid()) {
+			vlnvList.append(swView->getHierarchyRef());
+		}
+	}
+
+	// add all System view references
+	foreach (QSharedPointer<SystemView> systemView, systemViews_) {
+		if (systemView->getHierarchyRef().isValid()) {
+			vlnvList.append(systemView->getHierarchyRef());
+		}
+	}
+
+	// add all COM definitions
+	foreach (QSharedPointer<ComInterface> comIf, comInterfaces_) {
+		if (comIf->getComType().isValid()) {
+			vlnvList.append(comIf->getComType());
+		}
+	}
+
+	// add all API definitions
+	foreach (QSharedPointer<ApiInterface> apiIf, apiInterfaces_) {
+		if (apiIf->getApiType().isValid()) {
+			vlnvList.append(apiIf->getApiType());
+		}
+	}
+
 	return vlnvList;
 }
 
@@ -2237,10 +2265,22 @@ VLNV Component::getHierRef(const QString viewName) const {
 
 
 QList<VLNV> Component::getHierRefs() const {
-	if (!model_)
-		return QList<VLNV>();
+	QList<VLNV> list;
 
-	return model_->getHierarchyRefs();
+	if (model_) {
+		list.append(model_->getHierarchyRefs());
+	}
+	foreach (QSharedPointer<SWView> swView, swViews_) {
+		if (swView->getHierarchyRef().isValid()) {
+			list.append(swView->getHierarchyRef());
+		}
+	}
+	foreach (QSharedPointer<SystemView> sysView, systemViews_) {
+		if (sysView->getHierarchyRef().isValid()) {
+			list.append(sysView->getHierarchyRef());
+		}
+	}
+	return list;
 }
 
 
