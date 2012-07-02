@@ -10,6 +10,7 @@
 
 #include <IPXactWrapper/ComponentEditor/itemeditor.h>
 #include <common/views/EditableTableView/editabletableview.h>
+#include <models/component.h>
 
 #include "portsmodel.h"
 
@@ -72,7 +73,7 @@ private:
 	PortsModel model_;
 
 	//! \brief Pointer to the proxy that is used to sort the view
-	QSortFilterProxyModel* proxy_;
+	QSortFilterProxyModel proxy_;
 
 	//! \brief Pointer to the instance that manages the library.
 	LibraryInterface* handler_;

@@ -20,8 +20,7 @@
 PortsModel::PortsModel(QSharedPointer<Component> component,
 					   QObject *parent ):
 QAbstractTableModel(parent),
-ports_(&component->getPorts()), 
-table_(),
+table_(component->getPorts()),
 component_(component) {
 
 	Q_ASSERT(component_);

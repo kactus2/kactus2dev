@@ -30,6 +30,7 @@ importButton_(QIcon(":/icons/graphics/import.png"), tr("Import CSV-file"), this)
 exportButton_(QIcon(":/icons/graphics/export.png"), tr("Export CSV-file"), this),
 view_(this), 
 model_(component, this),
+proxy_(this),
 handler_(handler) {
 
 	view_.setDefaultImportExportPath(handler_->getPath(*ItemEditor::component()->getVlnv()));
@@ -63,13 +64,10 @@ handler_(handler) {
 
 	view_.verticalHeader()->show();
 
-	// set proxy to do the sorting automatically
-	proxy_ = new QSortFilterProxyModel(this);
-
 	// set source model for proxy
-	proxy_->setSourceModel(&model_);
+	proxy_.setSourceModel(&model_);
 	// set proxy to be the source for the view
-	view_.setModel(proxy_);
+	view_.setModel(&proxy_);
 
 	// sort the view
 	view_.sortByColumn(0, Qt::AscendingOrder);

@@ -150,11 +150,8 @@ private:
 	//! No assignment
 	PortsModel& operator=(const PortsModel& other);
 
-	//! \brief Pointer to the map that contains the actual ports.
-	QList<QSharedPointer<Port> >* ports_;
-
 	//! \brief The table that is displayed to the user.
-	QList<QSharedPointer<Port> > table_;
+	QList<QSharedPointer<Port> >& table_;
 
 	//! \brief Pointer to the component being edited.
 	QSharedPointer<Component> component_;
