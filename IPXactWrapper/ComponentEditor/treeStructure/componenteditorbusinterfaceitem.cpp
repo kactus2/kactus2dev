@@ -32,7 +32,24 @@ QString ComponentEditorBusInterfaceItem::text() const {
 }
 
 bool ComponentEditorBusInterfaceItem::isValid() const {
-	return busif_->isValid(component_->getPortBounds());
+	// check that the bus interface is valid
+	if (!busif_->isValid(component_->getPortBounds())) {
+		return false;
+	}
+
+	// check that the bus definition is found
+	else if (!libHandler_->contains(busif_->getBusType())) {
+		return false;
+	}
+
+	// if there is an abstraction definition then check that it is found
+	else if (busif_->getAbstractionType().isValid()) {
+		if (!libHandler_->contains(busif_->getAbstractionType())) {
+			return false;
+		}
+	}
+
+	return true;
 }
 
 ItemEditor* ComponentEditorBusInterfaceItem::editor() {

@@ -14,6 +14,7 @@
 #include <QApplication>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QFileInfo>
 
 ComponentEditorFileItem::ComponentEditorFileItem(QSharedPointer<File> file,
 												 ComponentEditorTreeModel* model,
@@ -36,7 +37,29 @@ QString ComponentEditorFileItem::text() const {
 }
 
 bool ComponentEditorFileItem::isValid() const {
-	return file_->isValid(true);
+	// if the file is not valid
+	if (!file_->isValid(true)) {
+		return false;
+	}
+	
+	// check that the file exists in the file system
+	
+	// get the path to the xml file
+	QString basePath = libHandler_->getPath(*component_->getVlnv());
+	// get the file's relative path
+	QString relPath = file_->getName();
+
+	// create the absolute file path to the file
+	QString absolutePath = General::getAbsolutePath(basePath, relPath);
+
+	// if the file does not exist then this is false item
+	QFileInfo fileInfo(absolutePath);
+	if (!fileInfo.exists()) {
+		return false;
+	}
+
+	// file was valid and existed
+	return true;
 }
 
 ItemEditor* ComponentEditorFileItem::editor() {

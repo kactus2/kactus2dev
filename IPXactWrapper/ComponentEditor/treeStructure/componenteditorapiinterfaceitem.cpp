@@ -37,7 +37,19 @@ QString ComponentEditorAPIInterfaceItem::text() const {
 }
 
 bool ComponentEditorAPIInterfaceItem::isValid() const {
-	return apiIf_->isValid();
+	// check that the API interface is valid
+	if (!apiIf_->isValid()) {
+		return false;
+	}
+
+	// check that if API definition is specified it must exist
+	if (apiIf_->getApiType().isValid()) {
+		if (!libHandler_->contains(apiIf_->getApiType())) {
+			return false;
+		}
+	}
+
+	return true;
 }
 
 ItemEditor* ComponentEditorAPIInterfaceItem::editor() {

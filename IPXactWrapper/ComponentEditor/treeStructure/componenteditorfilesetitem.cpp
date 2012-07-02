@@ -54,7 +54,19 @@ QString ComponentEditorFileSetItem::text() const {
 }
 
 bool ComponentEditorFileSetItem::isValid() const {
-	return fileSet_->isValid(true);
+	// check that the file set is valid
+	if (!fileSet_->isValid(true)) {
+		return false;
+	}
+
+	// check that all files are valid
+	foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_) {
+		if (!childItem->isValid()) {
+			return false;
+		}
+	}
+
+	return true;
 }
 
 ItemEditor* ComponentEditorFileSetItem::editor() {

@@ -37,7 +37,17 @@ QString ComponentEditorViewItem::text() const {
 }
 
 bool ComponentEditorViewItem::isValid() const {
-	return view_->isValid(component_->getFileSetNames());
+	// check that view is valid
+	if (!view_->isValid(component_->getFileSetNames())) {
+		return false;
+	}
+	// check that the reference can be found
+	if (view_->isHierarchical() && !libHandler_->contains(view_->getHierarchyRef())) {
+		return false;
+	}
+
+	// view was valid and the reference was found
+	return true;
 }
 
 ItemEditor* ComponentEditorViewItem::editor() {

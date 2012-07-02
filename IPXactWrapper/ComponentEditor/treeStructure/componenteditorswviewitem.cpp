@@ -37,7 +37,18 @@ QString ComponentEditorSWViewItem::text() const {
 }
 
 bool ComponentEditorSWViewItem::isValid() const {
-	return swView_->isValid();
+	// if sw view is not valid
+	if (!swView_->isValid()) {
+		return false;
+	}
+
+	// check that the reference is found
+	if (!libHandler_->contains(swView_->getHierarchyRef())) {
+		return false;
+	}
+
+	// sw view was valid and reference was found
+	return true;
 }
 
 ItemEditor* ComponentEditorSWViewItem::editor() {

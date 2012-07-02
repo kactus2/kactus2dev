@@ -31,7 +31,19 @@ QString ComponentEditorComInterfaceItem::text() const {
 }
 
 bool ComponentEditorComInterfaceItem::isValid() const {
-	return interface_->isValid();
+	// check that the COM interface is valid
+	if (!interface_->isValid()) {
+		return false;
+	}
+
+	// check that if there is a COM definition it is found
+	else if (interface_->getComType().isValid()) {
+		if (!libHandler_->contains(interface_->getComType())) {
+			return false;
+		}
+	}
+
+	return true;
 }
 
 ItemEditor* ComponentEditorComInterfaceItem::editor() {
