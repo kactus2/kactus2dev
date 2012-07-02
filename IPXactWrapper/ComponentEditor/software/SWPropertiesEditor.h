@@ -47,14 +47,14 @@ public:
 	 */
 	virtual bool isValid() const;
 
-	/*!
-     *  Makes the changes from the widgets editors to the IPXact model.
-	 */
-	virtual void makeChanges();
-
 	/*! \brief Reload the information from the model to the editor.
 	*/
 	virtual void refresh();
+
+private slots:
+
+	//! \brief Handler for changes in properties.
+	void onPropertyChange();
 
 private:
 	// Disable copying.

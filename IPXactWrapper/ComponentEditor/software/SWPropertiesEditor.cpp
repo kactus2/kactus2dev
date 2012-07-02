@@ -45,7 +45,7 @@ model_(this)
     refresh();
 
     connect(&model_, SIGNAL(contentChanged()),
-            this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+            this, SLOT(onPropertyChange()), Qt::UniqueConnection);
     connect(&view_, SIGNAL(addItem(const QModelIndex&)),
             &model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
     connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
@@ -67,21 +67,18 @@ bool SWPropertiesEditor::isValid() const
     return model_.isValid();
 }
 
-//-----------------------------------------------------------------------------
-// Function: SWPropertiesEditor::makeChanges()
-//-----------------------------------------------------------------------------
-void SWPropertiesEditor::makeChanges()
-{
-    QList< QSharedPointer<ComProperty> > properties;
-
-    foreach (QSharedPointer<ComProperty> prop, model_.getProperties())
-    {
-        properties.append(QSharedPointer<ComProperty>(new ComProperty(*prop.data())));
-    }
-
-    component()->setSWProperties(properties);
-}
-
 void SWPropertiesEditor::refresh() {
 	 model_.setProperties(component()->getSWProperties());
+}
+
+void SWPropertiesEditor::onPropertyChange() {
+	QList< QSharedPointer<ComProperty> > properties;
+
+	foreach (QSharedPointer<ComProperty> prop, model_.getProperties())
+	{
+		properties.append(QSharedPointer<ComProperty>(new ComProperty(*prop.data())));
+	}
+
+	component()->setSWProperties(properties);
+	emit contentChanged();
 }
