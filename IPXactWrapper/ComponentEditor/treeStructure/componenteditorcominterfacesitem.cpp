@@ -55,18 +55,3 @@ void ComponentEditorComInterfacesItem::createChild( int index ) {
 		interfaces_.at(index), model_, libHandler_, component_, this));
 	childItems_.insert(index, interfaceItem);
 }
-
-void ComponentEditorComInterfacesItem::onEditorChanged() {
-	
-	// call the base class implementation
-	ComponentEditorItem::onEditorChanged();
-
-	// also inform of child changes
-	foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_) {
-		// tell the model that data has changed for the child
-		emit contentChanged(childItem.data());
-
-		// tell the child to update it's editor contents
-		childItem->refreshEditor();
-	}
-}

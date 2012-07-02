@@ -37,10 +37,7 @@ QString ComponentEditorSWViewItem::text() const {
 }
 
 bool ComponentEditorSWViewItem::isValid() const {
-	if (!swView_->isValid()) {
-		return false;
-	}
-	return editor_.isValid();
+	return swView_->isValid();
 }
 
 ItemEditor* ComponentEditorSWViewItem::editor() {

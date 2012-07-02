@@ -33,10 +33,7 @@ QString ComponentEditorAddrSpaceItem::text() const {
 }
 
 bool ComponentEditorAddrSpaceItem::isValid() const {
-	if (!addrSpace_->isValid()) {
-		return false;
-	}
-	return editor_.isValid();
+	return addrSpace_->isValid();
 }
 
 ItemEditor* ComponentEditorAddrSpaceItem::editor() {

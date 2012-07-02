@@ -31,10 +31,7 @@ QString ComponentEditorComInterfaceItem::text() const {
 }
 
 bool ComponentEditorComInterfaceItem::isValid() const {
-	if (!interface_->isValid()) {
-		return false;
-	}
-	return editor_.isValid();
+	return interface_->isValid();
 }
 
 ItemEditor* ComponentEditorComInterfaceItem::editor() {

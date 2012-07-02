@@ -39,3 +39,17 @@ const ItemEditor* ComponentEditorChannelsItem::editor() const {
 QString ComponentEditorChannelsItem::getTooltip() const {
 	return tr("Contains the channels specified for the component");
 }
+
+bool ComponentEditorChannelsItem::isValid() const {
+	QStringList interfaceNames = component_->getBusInterfaceNames();
+
+	// check each channel
+	foreach (QSharedPointer<Channel> channel, channels_) {
+		if (!channel->isValid(interfaceNames)) {
+			return false;
+		}
+	}
+
+	// all channels were valid
+	return true;
+}

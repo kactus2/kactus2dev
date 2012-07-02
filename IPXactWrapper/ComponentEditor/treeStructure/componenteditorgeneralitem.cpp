@@ -26,7 +26,8 @@ QString ComponentEditorGeneralItem::text() const {
 }
 
 bool ComponentEditorGeneralItem::isValid() const {
-	return editor_.isValid();
+	// general editor is always valid because it contains no mandatory elements
+	return true;
 }
 
 ItemEditor* ComponentEditorGeneralItem::editor() {

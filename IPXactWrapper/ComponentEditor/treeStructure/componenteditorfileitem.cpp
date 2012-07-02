@@ -36,10 +36,7 @@ QString ComponentEditorFileItem::text() const {
 }
 
 bool ComponentEditorFileItem::isValid() const {
-	if (!file_->isValid(true)) {
-		return false;
-	}
-	return editor_.isValid();
+	return file_->isValid(true);
 }
 
 ItemEditor* ComponentEditorFileItem::editor() {
@@ -88,4 +85,15 @@ bool ComponentEditorFileItem::hasBuiltinEditor() const
     const QString xmlPath = libHandler_->getPath(*component_->getVlnv());
     const QString absolutePath = General::getAbsolutePath(xmlPath, relPath);
     return QFileInfo(absolutePath).completeSuffix().toLower() == "c";
+}
+
+void ComponentEditorFileItem::onEditorChanged() {
+	
+	// on file also the grand parent must be updated
+	if (parent() && parent()->parent()) {
+		emit contentChanged(parent()->parent());
+	}
+
+	// call the base class to update this and parent
+	ComponentEditorItem::onEditorChanged();
 }

@@ -36,8 +36,7 @@ bool ComponentEditorModelParamsItem::isValid() const {
 		}
 	}
 
-	// if model parameters were valid then the editor decides the validity
-	return editor_.isValid();
+	return true;
 }
 
 ItemEditor* ComponentEditorModelParamsItem::editor() {

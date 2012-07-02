@@ -54,10 +54,7 @@ QString ComponentEditorFileSetItem::text() const {
 }
 
 bool ComponentEditorFileSetItem::isValid() const {
-	if (!fileSet_->isValid(true)) {
-		return false;
-	}
-	return editor_.isValid();
+	return fileSet_->isValid(true);
 }
 
 ItemEditor* ComponentEditorFileSetItem::editor() {
@@ -81,18 +78,4 @@ void ComponentEditorFileSetItem::createChild( int index ) {
 	QSharedPointer<ComponentEditorFileItem> fileItem(new ComponentEditorFileItem(
 		files_.at(index), model_, libHandler_, component_, this));
 	childItems_.insert(index, fileItem);
-}
-
-void ComponentEditorFileSetItem::onEditorChanged() {
-	// call the base class implementation
-	ComponentEditorItem::onEditorChanged();
-
-	// also inform of child changes
-	foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_) {
-		// tell the model that data has changed for the child
-		emit contentChanged(childItem.data());
-
-		// tell the child to update it's editor contents
-		childItem->refreshEditor();
-	}
 }

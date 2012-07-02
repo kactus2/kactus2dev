@@ -100,6 +100,13 @@ public slots:
 	*/
 	virtual void openItem(bool builtinEditor = false);
 
+protected slots:
+
+	/*! \brief Handler for editor's contentChanged signal.
+	 *
+	*/
+	virtual void onEditorChanged();
+
 private:
 	//! \brief No copying
 	ComponentEditorFileItem(const ComponentEditorFileItem& other);

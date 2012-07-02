@@ -61,6 +61,12 @@ public:
 	*/
 	virtual const ItemEditor* editor() const;
 
+	/*! \brief Check the validity of this item and sub items.
+	 *
+	 * \return bool True if item is in valid state.
+	*/
+	virtual bool isValid() const;
+
 private:
 	//! \brief No copying
 	ComponentEditorCpusItem(const ComponentEditorCpusItem& other);

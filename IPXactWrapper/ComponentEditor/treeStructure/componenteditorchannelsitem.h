@@ -60,6 +60,12 @@ public:
 	*/
 	virtual const ItemEditor* editor() const;
 
+	/*! \brief Check the validity of this item.
+	 *
+	 * \return bool True if item is in valid state.
+	*/
+	virtual bool isValid() const;
+
 private:
 	//! \brief No copying
 	ComponentEditorChannelsItem(const ComponentEditorChannelsItem& other);

@@ -76,9 +76,6 @@ private:
 	//! No assignment
 	FileSetEditor& operator=(const FileSetEditor& other);
 
-	//! \brief Initialize the editor
-	void initialize();
-
 	//! \brief Refers to the location of the base xml-file.
 	QFileInfo baseLocation_;
 

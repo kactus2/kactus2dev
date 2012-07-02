@@ -37,10 +37,7 @@ QString ComponentEditorAPIInterfaceItem::text() const {
 }
 
 bool ComponentEditorAPIInterfaceItem::isValid() const {
-	if (!apiIf_->isValid()) {
-		return false;
-	}
-	return editor_.isValid();
+	return apiIf_->isValid();
 }
 
 ItemEditor* ComponentEditorAPIInterfaceItem::editor() {

@@ -51,20 +51,6 @@ QString ComponentEditorAddrSpacesItem::getTooltip() const {
 	return tr("Contains the address spaces specified for the component");
 }
 
-void ComponentEditorAddrSpacesItem::onEditorChanged() {
-	// call the base class implementation
-	ComponentEditorItem::onEditorChanged();
-
-	// also inform of child changes
-	foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_) {
-		// tell the model that data has changed for the child
-		emit contentChanged(childItem.data());
-
-		// tell the child to update it's editor contents
-		childItem->refreshEditor();
-	}
-}
-
 void ComponentEditorAddrSpacesItem::createChild( int index ) {
 	QSharedPointer<ComponentEditorAddrSpaceItem> addrItem(
 		new ComponentEditorAddrSpaceItem(addrSpaces_.at(index), model_, libHandler_, component_, this));	

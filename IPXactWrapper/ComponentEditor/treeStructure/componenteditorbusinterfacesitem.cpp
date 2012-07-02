@@ -58,17 +58,3 @@ void ComponentEditorBusInterfacesItem::createChild( int index ) {
 
 	childItems_.insert(index, busifItem);
 }
-
-void ComponentEditorBusInterfacesItem::onEditorChanged() {
-	// call the base class implementation
-	ComponentEditorItem::onEditorChanged();
-
-	// also inform of child changes
-	foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_) {
-		// tell the model that data has changed for the child
-		emit contentChanged(childItem.data());
-
-		// tell the child to update it's editor contents
-		childItem->refreshEditor();
-	}
-}

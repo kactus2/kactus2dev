@@ -39,3 +39,16 @@ const ItemEditor* ComponentEditorCpusItem::editor() const {
 QString ComponentEditorCpusItem::getTooltip() const {
 	return tr("Contains the programmable cores of the component");
 }
+
+bool ComponentEditorCpusItem::isValid() const {
+	QStringList addrSpaceNames = component_->getAddressSpaceNames();
+
+	foreach (QSharedPointer<Cpu> cpu, cpus_) {
+		if (!cpu->isValid(addrSpaceNames)) {
+			return false;
+		}
+	}
+
+	// all cpus were valid
+	return true;
+}

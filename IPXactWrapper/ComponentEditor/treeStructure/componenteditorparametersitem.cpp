@@ -32,7 +32,7 @@ bool ComponentEditorParametersItem::isValid() const {
 			return false;
 		}
 	}
-	return editor_.isValid();
+	return true;
 }
 
 ItemEditor* ComponentEditorParametersItem::editor() {

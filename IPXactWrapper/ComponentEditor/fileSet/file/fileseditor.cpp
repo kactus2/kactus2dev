@@ -41,7 +41,6 @@ addFilesButton_(QIcon(":/icons/graphics/add.png"), tr("Add Files"), this) {
 	// the order of files must be maintained
 	view_.setSortingEnabled(false);
 
-	// TODO change this
 	view_.setItemsDraggable(true);
 
 	// set the delegate to provide editors

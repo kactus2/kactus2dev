@@ -104,11 +104,6 @@ bool ComponentEditorItem::isValid() const {
 		}
 	}
 
-	// if all children were valid then check the editor
-	if (editor()) {
-		return editor()->isValid();
-	}
-
 	// all children were valid
 	return true;
 }
@@ -118,7 +113,23 @@ ItemVisualizer* ComponentEditorItem::visualizer() {
 }
 
 void ComponentEditorItem::onEditorChanged() {
+	
+	// if there is a valid parent then update it also
+	if (parent_) {
+		emit contentChanged(parent_);
+	}
+	
+	// update this item
 	emit contentChanged(this);
+
+	// also inform of child changes
+	foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_) {
+		// tell the model that data has changed for the child
+		emit contentChanged(childItem.data());
+
+		// tell the child to update it's editor contents
+		childItem->refreshEditor();
+	}
 }
 
 void ComponentEditorItem::setLocked( bool locked ) {

@@ -32,7 +32,7 @@ bool ComponentEditorOtherClocksItem::isValid() const {
 			return false;
 		}
 	}
-	return editor_.isValid();
+	return true;
 }
 
 ItemEditor* ComponentEditorOtherClocksItem::editor() {

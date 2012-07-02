@@ -37,10 +37,7 @@ QString ComponentEditorViewItem::text() const {
 }
 
 bool ComponentEditorViewItem::isValid() const {
-	if (!view_->isValid(component_->getFileSetNames())) {
-		return false;
-	}
-	return editor_.isValid();
+	return view_->isValid(component_->getFileSetNames());
 }
 
 ItemEditor* ComponentEditorViewItem::editor() {

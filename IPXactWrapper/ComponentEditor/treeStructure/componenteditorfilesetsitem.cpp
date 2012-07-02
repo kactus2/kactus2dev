@@ -49,20 +49,6 @@ QString ComponentEditorFileSetsItem::getTooltip() const {
 	return tr("Contains the file sets of the component");
 }
 
-void ComponentEditorFileSetsItem::onEditorChanged() {
-	// call the base class implementation
-	ComponentEditorItem::onEditorChanged();
-
-	// also inform of child changes
-	foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_) {
-		// tell the model that data has changed for the child
-		emit contentChanged(childItem.data());
-
-		// tell the child to update it's editor contents
-		childItem->refreshEditor();
-	}
-}
-
 void ComponentEditorFileSetsItem::createChild( int index ) {
 	QSharedPointer<ComponentEditorFileSetItem> fileSetItem(
 		new ComponentEditorFileSetItem(fileSets_.at(index), model_, libHandler_, component_, this));

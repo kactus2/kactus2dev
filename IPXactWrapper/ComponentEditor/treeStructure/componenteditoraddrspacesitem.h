@@ -69,13 +69,6 @@ public:
 	*/
 	virtual void createChild(int index);
 
-protected slots:
-
-	/*! \brief Handler for editor's contentChanged signal.
-	 *
-	*/
-	virtual void onEditorChanged();
-
 private:
 	//! \brief No copying
 	ComponentEditorAddrSpacesItem(const ComponentEditorAddrSpacesItem& other);

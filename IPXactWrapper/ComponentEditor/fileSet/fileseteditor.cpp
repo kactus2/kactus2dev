@@ -11,8 +11,8 @@
 
 #include <QStringList>
 #include <QVBoxLayout>
-
-#include <QDebug>
+#include <QHBoxLayout>
+#include <QSizePolicy>
 
 FileSetEditor::FileSetEditor(LibraryInterface* handler,
 							 QSharedPointer<Component> component,
@@ -27,11 +27,12 @@ fileBuilders_(fileSet->getDefaultFileBuilders(), this),
 files_(component, fileSet, handler, this),
 dependencies_(tr("Dependent directories"), handler, component, this) {
 
-	initialize();
-}
-
-void FileSetEditor::initialize() {
 	Q_ASSERT(fileSet_);
+
+	// set the maximum heights to give more space for files editor
+	fileBuilders_.setMaximumHeight(150);
+	groups_.setMaximumHeight(100);
+	dependencies_.setMaximumHeight(100);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->setContentsMargins(0, 0, 0, 0);
@@ -39,14 +40,6 @@ void FileSetEditor::initialize() {
 	// connect the signals informing of data changes
 	layout->addWidget(&nameEditor_);
 	connect(&nameEditor_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-
-	layout->addWidget(&groups_);
-	connect(&groups_, SIGNAL(contentChanged()),
-		this, SLOT(onGroupsChange()), Qt::UniqueConnection);
-
-	layout->addWidget(&fileBuilders_);
-	connect(&fileBuilders_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
 	layout->addWidget(&files_);
@@ -59,7 +52,20 @@ void FileSetEditor::initialize() {
 	connect(&files_, SIGNAL(fileMoved(int, int)),
 		this, SIGNAL(childMoved(int, int)), Qt::UniqueConnection);
 
-	layout->addWidget(&dependencies_);
+	layout->addWidget(&fileBuilders_);
+	connect(&fileBuilders_, SIGNAL(contentChanged()),
+		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
+	// set the groups and dependencies side by side
+	QHBoxLayout* horizontalLayout = new QHBoxLayout();
+	horizontalLayout->addWidget(&groups_);
+	horizontalLayout->addWidget(&dependencies_);
+
+	layout->addLayout(horizontalLayout);
+	
+	connect(&groups_, SIGNAL(contentChanged()),
+		this, SLOT(onGroupsChange()), Qt::UniqueConnection);
+	
 	connect(&dependencies_, SIGNAL(contentChanged()),
 		this, SLOT(onDependenciesChange()), Qt::UniqueConnection);
 

@@ -32,10 +32,7 @@ QString ComponentEditorBusInterfaceItem::text() const {
 }
 
 bool ComponentEditorBusInterfaceItem::isValid() const {
-	if (!busif_->isValid(component_->getPortBounds())) {
-		return false;
-	}
-	return editor_.isValid();
+	return busif_->isValid(component_->getPortBounds());
 }
 
 ItemEditor* ComponentEditorBusInterfaceItem::editor() {
