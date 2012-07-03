@@ -100,9 +100,9 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
     if (design->getColumns().isEmpty())
     {
         addColumn(ColumnDesc("IO", COLUMN_CONTENT_IO, 0, 119));
-        addColumn(ColumnDesc("Buses", COLUMN_CONTENT_BUSES, 259));
-        addColumn(ColumnDesc("Components", COLUMN_CONTENT_COMPONENTS, 259));
-        addColumn(ColumnDesc("IO", COLUMN_CONTENT_IO, 119));
+        addColumn(ColumnDesc("Buses", COLUMN_CONTENT_BUSES, 0, 259));
+        addColumn(ColumnDesc("Components", COLUMN_CONTENT_COMPONENTS, 0, 259));
+        addColumn(ColumnDesc("IO", COLUMN_CONTENT_IO, 0, 119));
     }
     else
     {
