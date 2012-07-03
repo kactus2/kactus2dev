@@ -2451,12 +2451,15 @@ void MainWindow::createApiDefinition(VLNV const& vlnv, QString const& directory)
     Q_ASSERT(vlnv.isValid());
     Q_ASSERT(!directory.isEmpty());
 
+    VLNV apiDefVLNV = vlnv;
+    //apiDefVLNV.setName(vlnv.getName() + ".apiDef");
+
     // Create an empty API definition and save it.
-    QSharedPointer<ApiDefinition> apiDef(new ApiDefinition(vlnv));
+    QSharedPointer<ApiDefinition> apiDef(new ApiDefinition(apiDefVLNV));
     libraryHandler_->writeModelToFile(directory, apiDef);
 
     // Open the API definition.
-    openApiDefinition(vlnv, true);
+    openApiDefinition(apiDefVLNV, true);
 }
 
 void MainWindow::openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool disableBusDef, bool forceUnlocked ) {
