@@ -46,8 +46,18 @@ void ActiveViewModel::setDesign( DesignWidget* designWidget,
 
 	beginResetModel();
 
-	// get the instances
-	instances_ = designWidget->getInstances();
+	// Retrieve only those instances that should be shown, depending on the implementation attribute.
+    foreach (ComponentItem* compItem, designWidget->getInstances())
+    {
+        if ((designWidget->getImplementation() == KactusAttribute::KTS_HW &&
+             compItem->componentModel()->getComponentImplementation() == KactusAttribute::KTS_HW) ||
+             (designWidget->getImplementation() != KactusAttribute::KTS_HW &&
+              compItem->componentModel()->getComponentImplementation() == KactusAttribute::KTS_SW))
+        {
+            instances_.append(compItem);
+        }
+    }
+
 	for (int i = 0; i < instances_.size(); ++i) {
 		
 		const QString instanceName = instances_.at(i)->name();
