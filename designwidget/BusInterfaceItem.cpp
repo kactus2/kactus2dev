@@ -270,11 +270,6 @@ bool BusInterfaceItem::isHierarchical() const
 //-----------------------------------------------------------------------------
 bool BusInterfaceItem::onConnect(ConnectionEndpoint const* other)
 {
-    if (isInvalid())
-    {
-        return true;
-    }
-
     // Update the name if the bus interface is defined but its name is empty.
     if (busInterface_->getInterfaceMode() != General::INTERFACE_MODE_COUNT && busInterface_->getName() == "")
     {

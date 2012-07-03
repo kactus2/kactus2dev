@@ -245,9 +245,10 @@ bool BusPortItem::onConnect(ConnectionEndpoint const* other)
     QSharedPointer<BusInterface> otherBusIf = other->getBusInterface();
 
     // If the port is a non-typed one, try to copy the configuration from the other end point.
-    if (!isInvalid() && !isTypeLocked() && otherBusIf != 0 && otherBusIf->getBusType().isValid())
+    if (!isTypeLocked() && otherBusIf != 0 && otherBusIf->getBusType().isValid())
     {
-        if (!static_cast<HWDesignDiagram*>(scene())->getEditProvider().isPerformingUndoRedo())
+        if (!static_cast<HWDesignDiagram*>(scene())->getEditProvider().isPerformingUndoRedo() &&
+            !static_cast<HWDesignDiagram*>(scene())->isLoading())
         {
             // Set a compatible interface mode. If the other end point is a hierarchical one,
             // the same interface mode injects automatically. Otherwise the proper interface mode must

@@ -38,6 +38,7 @@ DesignDiagram::DesignDiagram(LibraryInterface* lh, MainWindow* mainWnd,
       designConf_(),
       mode_(MODE_SELECT),
       instanceNames_(),
+      loading_(false),
       locked_(false)
 {
     setSceneRect(0, 0, 100000, 100000);
@@ -85,7 +86,10 @@ bool DesignDiagram::setDesign(QSharedPointer<Component> component, QSharedPointe
     component_ = component;
     designConf_ = designConf;
 
+    loading_ = true;
     loadDesign(design);
+    loading_ = false;
+
     return true;
 }
 
@@ -320,4 +324,12 @@ QList<ComponentItem*> DesignDiagram::getInstances() const
             instances.append(diagComp);
     }
     return instances;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::isLoading()
+//-----------------------------------------------------------------------------
+bool DesignDiagram::isLoading() const
+{
+    return loading_;
 }

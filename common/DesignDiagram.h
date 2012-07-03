@@ -161,6 +161,11 @@ public:
     DrawMode getMode() const;
 
     /*!
+     *  Returns true if the diagram is being loaded.
+     */
+    bool isLoading() const;
+
+    /*!
      *  Returns true if the diagram is in locked state.
      */
     bool isProtected() const;
@@ -319,6 +324,9 @@ private:
 
     //! The list of used instance names.
     QStringList instanceNames_;
+
+    //! If true, the diagram is being loaded.
+    bool loading_;
 
     //! If true, the diagram is locked and cannot be modified.
     bool locked_;

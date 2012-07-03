@@ -387,13 +387,33 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
             // If the bus ports are invalid, delete them too.
             if (endpoint1->isInvalid())
             {
-                QUndoCommand* childCmd = new PortDeleteCommand(endpoint1, cmd.data());
+                QUndoCommand* childCmd = 0;
+
+                if (endpoint1->type() == BusPortItem::Type)
+                {
+                    childCmd = new PortDeleteCommand(endpoint1, cmd.data());
+                }
+                else
+                {
+                    childCmd = new InterfaceDeleteCommand(static_cast<BusInterfaceItem*>(endpoint1), cmd.data());
+                }
+
                 childCmd->redo();
             }
 
             if (endpoint2->isInvalid())
             {
-                QUndoCommand* childCmd = new PortDeleteCommand(endpoint2, cmd.data());
+                QUndoCommand* childCmd = 0;
+
+                if (endpoint2->type() == BusPortItem::Type)
+                {
+                    childCmd = new PortDeleteCommand(endpoint2, cmd.data());
+                }
+                else
+                {
+                    childCmd = new InterfaceDeleteCommand(static_cast<BusInterfaceItem*>(endpoint2), cmd.data());
+                }
+
                 childCmd->redo();
             }
         }
