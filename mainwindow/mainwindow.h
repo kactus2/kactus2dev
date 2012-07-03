@@ -464,7 +464,7 @@ private:
      *
      *      @remarks If the design is already open, it is displayed.
      */
-    bool isDesignOpen(VLNV const& vlnv);
+    bool isDesignOpen(VLNV const& vlnv, KactusAttribute::Implementation implementation);
 
 	/*!
      *  Restores the program's settings.

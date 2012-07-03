@@ -220,7 +220,7 @@ void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forc
 	// the vlnv must always be for a component
 	Q_ASSERT(libraryHandler_->getDocumentType(vlnv) == VLNV::COMPONENT);
 
-    if (isDesignOpen(vlnv))
+    if (isDesignOpen(vlnv, KactusAttribute::KTS_HW))
     {
         return;
     }
@@ -356,7 +356,7 @@ void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forc
 //-----------------------------------------------------------------------------
 void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName, bool forceUnlocked)
 {
-    if (isDesignOpen(vlnv))
+    if (isDesignOpen(vlnv, KactusAttribute::KTS_SW))
     {
         return;
     }
@@ -2557,7 +2557,7 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName, boo
 {
 	libraryHandler_->beginSave();
 
-    if (isDesignOpen(vlnv))
+    if (isDesignOpen(vlnv, KactusAttribute::KTS_SYS))
     {
         return;
     }
@@ -3484,7 +3484,7 @@ void MainWindow::refresh()
 //-----------------------------------------------------------------------------
 // Function: MainWindow::isDesignOpen()
 //-----------------------------------------------------------------------------
-bool MainWindow::isDesignOpen(VLNV const& vlnv)
+bool MainWindow::isDesignOpen(VLNV const& vlnv, KactusAttribute::Implementation implementation)
 {
     if (vlnv.isValid())
     {
@@ -3492,7 +3492,8 @@ bool MainWindow::isDesignOpen(VLNV const& vlnv)
         {
             DesignWidget* designWidget = dynamic_cast<DesignWidget*>(designTabs_->widget(i));
 
-            if (designWidget != 0 && *designWidget->getOpenDocument() == vlnv)
+            if (designWidget != 0 && *designWidget->getOpenDocument() == vlnv &&
+                designWidget->getImplementation() == implementation)
             {
                 designTabs_->setCurrentIndex(i);
                 return true;

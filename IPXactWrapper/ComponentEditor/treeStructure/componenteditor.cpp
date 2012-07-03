@@ -164,10 +164,21 @@ bool ComponentEditor::saveAs() {
 	VLNV vlnv;
 	QString directory;
 
-	if (!NewObjectDialog::saveAsDialog(parentWidget(), libHandler_, *component_->getVlnv(),
-		prodHier, firmness, vlnv, directory)) {
-		return false;
-	}
+    if (component_->getComponentImplementation() == KactusAttribute::KTS_HW)
+    {
+	    if (!NewObjectDialog::saveAsDialog(parentWidget(), libHandler_, *component_->getVlnv(),
+		                                   prodHier, firmness, vlnv, directory))
+        {
+		    return false;
+	    }
+    }
+    else
+    {
+        if (!NewObjectDialog::saveAsDialog(parentWidget(), libHandler_, *component_->getVlnv(), vlnv, directory))
+        {
+                return false;
+        }
+    }
 
 	// save pointer to the old component
 	QSharedPointer<Component> oldComponent = component_;
@@ -181,6 +192,8 @@ bool ComponentEditor::saveAs() {
 
 	// update the vlnv
 	component_->setVlnv(vlnv);
+    component_->setComponentHierarchy(prodHier);
+    component_->setComponentFirmness(firmness);
 
 	// get the paths to the original xml file
 	QFileInfo sourceInfo(libHandler_->getPath(*oldComponent->getVlnv()));
