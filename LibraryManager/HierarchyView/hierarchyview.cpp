@@ -169,7 +169,7 @@ void HierarchyView::setupActions() {
 	connect(openSystemAction_, SIGNAL(triggered()),
 		this, SLOT(onOpenSystemDesign()), Qt::UniqueConnection);
 
-	openXmlAction_ = new QAction(tr("Open the xml-file"), this);
+	openXmlAction_ = new QAction(tr("Open XML File"), this);
 	connect(openXmlAction_, SIGNAL(triggered()),
 		this, SLOT(onOpenXml()), Qt::UniqueConnection);
 }

@@ -123,9 +123,8 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
     }
 
     /* component instances */
-    foreach (ComponentInstance const& instance,
-             design->getComponentInstances()) {
-        
+    foreach (ComponentInstance const& instance, design->getComponentInstances())
+    {        
 		QSharedPointer<LibraryComponent> libComponent = getLibraryInterface()->getModel(instance.getComponentRef());
         QSharedPointer<Component> component = libComponent.staticCast<Component>();
 
@@ -292,28 +291,36 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
         Design::HierConnection hierConn = hierConnections.at(i);
 
 		QSharedPointer<BusInterface> busIf = getEditedComponent()->getBusInterface(hierConn.interfaceRef);
-
-		// if the bus interface was not found
-		if (!busIf) {
-			emit errorMessage(tr("Bus interface %1 was not found in the top-component").arg(
-				hierConn.interfaceRef));
-			continue;
-		}
-
-        // Find the corresponding diagram interface.
         ConnectionEndpoint* diagIf = 0;
 
-        foreach (QGraphicsItem* item, items())
+		// if the bus interface was not found
+		if (busIf == 0)
         {
-            if (item->type() == BusInterfaceItem::Type &&
-                static_cast<BusInterfaceItem*>(item)->getBusInterface() == busIf)
-            {
-                diagIf = static_cast<BusInterfaceItem*>(item);
-                break;
-            }
-        }
+			emit errorMessage(tr("Bus interface %1 was not found in the top-component").arg(hierConn.interfaceRef));
 
-        Q_ASSERT(diagIf != 0);
+            // Create a dummy interface which is marked as invalid.
+            busIf = QSharedPointer<BusInterface>(new BusInterface());
+            busIf->setName(hierConn.interfaceRef);
+
+            diagIf = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), busIf, 0);
+            diagIf->setTemporary(true);
+            diagIf->updateInterface();
+        }
+        else
+        {			
+            // Find the corresponding diagram interface.
+            foreach (QGraphicsItem* item, items())
+            {
+                if (item->type() == BusInterfaceItem::Type &&
+                    static_cast<BusInterfaceItem*>(item)->getBusInterface() == busIf)
+                {
+                    diagIf = static_cast<BusInterfaceItem*>(item);
+                    break;
+                }
+            }
+
+            Q_ASSERT(diagIf != 0);
+		}
 
 		// Check if the position is found.
         if (!hierConn.position.isNull())
@@ -799,12 +806,9 @@ void HWDesignDiagram::updateHierComponent()
         // Check if the item is a diagram interface and its bus interface is defined.
         BusInterfaceItem* diagIf = dynamic_cast<BusInterfaceItem*>(item);
 
-        if (diagIf != 0 && diagIf->getBusInterface() != 0)
+        if (diagIf != 0 && diagIf->getBusInterface() != 0 && !diagIf->isInvalid())
         {
 			busIfs.append(diagIf->getBusInterface());
-
-            // Set the bus interface non-temporary.
-            //diagIf->setTemporary(false);
         }
     }
 

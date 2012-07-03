@@ -623,6 +623,7 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts,
 							   }
 		// if the interface mode is invalid
 		default: {
+            errorList.append(QObject::tr("The interface mode of %1 is not specified.").arg(thisIdentifier));
 			valid = false;
 			break;
 				 }

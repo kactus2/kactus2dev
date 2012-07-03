@@ -395,7 +395,7 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
                 }
                 else
                 {
-                    childCmd = new InterfaceDeleteCommand(static_cast<BusInterfaceItem*>(endpoint1), cmd.data());
+                    childCmd = new InterfaceDeleteCommand(static_cast<BusInterfaceItem*>(endpoint1), false, cmd.data());
                 }
 
                 childCmd->redo();
@@ -411,7 +411,7 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
                 }
                 else
                 {
-                    childCmd = new InterfaceDeleteCommand(static_cast<BusInterfaceItem*>(endpoint2), cmd.data());
+                    childCmd = new InterfaceDeleteCommand(static_cast<BusInterfaceItem*>(endpoint2), false, cmd.data());
                 }
 
                 childCmd->redo();

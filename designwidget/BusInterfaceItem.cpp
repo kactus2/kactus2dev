@@ -135,32 +135,39 @@ void BusInterfaceItem::updateInterface()
 
 	Q_ASSERT(busInterface_);
 
-    switch (busInterface_->getInterfaceMode()) {
-    case General::MASTER:
-        setBrush(QBrush(QColor(0x32,0xcb,0xcb)));
-        break;
-    case General::SLAVE:
-        setBrush(QBrush(QColor(0x32,0x99,0x64)));
-        break;
-    case General::MIRROREDMASTER:
-        setBrush(QBrush(QColor(0xcb,0xfd,0xfd)));
-        break;
-    case General::MIRROREDSLAVE:
-        setBrush(QBrush(QColor(0x00,0xfd,00)));
-        break;
-    case General::SYSTEM:
-        setBrush(QBrush(QColor(0xf9,0x11,0x11)));
-        break;
-    case General::MIRROREDSYSTEM:
-        setBrush(QBrush(QColor(0xf9,0x9d,0xcb)));
-        break;
-    case General::MONITOR:
-        setBrush(QBrush(QColor(0xfd,0xfd,0xfd)));
-        break;
-	// if undefined
-	default:
-		setBrush(QBrush(Qt::black));
-		break;
+    if (isInvalid())
+    {
+        setBrush(QBrush(Qt::red));
+    }
+    else
+    {
+        switch (busInterface_->getInterfaceMode()) {
+        case General::MASTER:
+            setBrush(QBrush(QColor(0x32,0xcb,0xcb)));
+            break;
+        case General::SLAVE:
+            setBrush(QBrush(QColor(0x32,0x99,0x64)));
+            break;
+        case General::MIRROREDMASTER:
+            setBrush(QBrush(QColor(0xcb,0xfd,0xfd)));
+            break;
+        case General::MIRROREDSLAVE:
+            setBrush(QBrush(QColor(0x00,0xfd,00)));
+            break;
+        case General::SYSTEM:
+            setBrush(QBrush(QColor(0xf9,0x11,0x11)));
+            break;
+        case General::MIRROREDSYSTEM:
+            setBrush(QBrush(QColor(0xf9,0x9d,0xcb)));
+            break;
+        case General::MONITOR:
+            setBrush(QBrush(QColor(0xfd,0xfd,0xfd)));
+            break;
+	    // if undefined
+	    default:
+		    setBrush(QBrush(Qt::black));
+		    break;
+        }
     }
 
     // Determine the bus direction.
@@ -423,14 +430,13 @@ void BusInterfaceItem::onDisconnect(ConnectionEndpoint const*)
 //-----------------------------------------------------------------------------
 bool BusInterfaceItem::canConnect(ConnectionEndpoint const* other) const
 {
-    // This end point requires a bus interface connection.
-    if (!other->isBus())
+    if (!HWConnectionEndpoint::canConnect(other))
     {
         return false;
     }
 
-    // Two hierarchical end points cannot be connected together.
-    if (other->isHierarchical())
+    // This end point requires a bus interface connection.
+    if (!other->isBus())
     {
         return false;
     }
