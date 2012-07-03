@@ -128,7 +128,7 @@ QVariant ApiFunctionParameterModel::data(QModelIndex const& index, int role /*= 
                     return "no";
                 }
                 
-                return func_->getParam(index.row())->getDependentParameterIndex();
+                return (func_->getParam(index.row())->getDependentParameterIndex() + 1);
             }
 
         case API_FUNC_PARAM_COL_DESC:
@@ -297,7 +297,7 @@ bool ApiFunctionParameterModel::setData(QModelIndex const& index, QVariant const
                 }
                 else
                 {
-                    func_->getParam(index.row())->setDependentParameterIndex(value.toInt());
+                    func_->getParam(index.row())->setDependentParameterIndex(value.toInt() - 1);
                 }
                 break;
             }

@@ -35,8 +35,11 @@ ComponentEditorItem(libHandler, component, parent) {
 	childItems_.append(QSharedPointer<ComponentEditorFileSetsItem>(
 		new ComponentEditorFileSetsItem(parent, libHandler, component, this)));
 	
-	childItems_.append(QSharedPointer<ComponentEditorModelParamsItem>(
-		new ComponentEditorModelParamsItem(parent, libHandler, component, this)));
+    if (component->getComponentImplementation() == KactusAttribute::KTS_HW)
+    {
+	    childItems_.append(QSharedPointer<ComponentEditorModelParamsItem>(
+		    new ComponentEditorModelParamsItem(parent, libHandler, component, this)));
+    }
 	
 	childItems_.append(QSharedPointer<ComponentEditorParametersItem>(
 		new ComponentEditorParametersItem(parent, libHandler, component, this)));
@@ -45,35 +48,44 @@ ComponentEditorItem(libHandler, component, parent) {
 // 	childItems_.append(QSharedPointer<ComponentEditorMemMapsItem>(
 // 		new ComponentEditorMemMapsItem(parent, libHandler, component, this)));
 	
-	childItems_.append(QSharedPointer<ComponentEditorAddrSpacesItem>(
-		new ComponentEditorAddrSpacesItem(parent, libHandler, component, this)));
-	
-	childItems_.append(QSharedPointer<ComponentEditorViewsItem>(
-		new ComponentEditorViewsItem(parent, libHandler, component, this)));
+    if (component->getComponentImplementation() == KactusAttribute::KTS_HW)
+    {
+	    childItems_.append(QSharedPointer<ComponentEditorAddrSpacesItem>(
+		    new ComponentEditorAddrSpacesItem(parent, libHandler, component, this)));
+    	
+	    childItems_.append(QSharedPointer<ComponentEditorViewsItem>(
+		    new ComponentEditorViewsItem(parent, libHandler, component, this)));
+    }
 
 	childItems_.append(QSharedPointer<ComponentEditorSWViewsItem>(
 		new ComponentEditorSWViewsItem(parent, libHandler, component, this)));
 	
-	childItems_.append(QSharedPointer<ComponentEditorPortsItem>(
-		new ComponentEditorPortsItem(parent, libHandler, component, this)));
+    if (component->getComponentImplementation() == KactusAttribute::KTS_HW)
+    {
+	    childItems_.append(QSharedPointer<ComponentEditorPortsItem>(
+		    new ComponentEditorPortsItem(parent, libHandler, component, this)));
+    	
+	    childItems_.append(QSharedPointer<ComponentEditorBusInterfacesItem>(
+		    new ComponentEditorBusInterfacesItem(parent, libHandler, component, this)));
 	
-	childItems_.append(QSharedPointer<ComponentEditorBusInterfacesItem>(
-		new ComponentEditorBusInterfacesItem(parent, libHandler, component, this)));
+	    childItems_.append(QSharedPointer<ComponentEditorChannelsItem>(
+		    new ComponentEditorChannelsItem(parent, libHandler, component, this)));
 	
-	childItems_.append(QSharedPointer<ComponentEditorChannelsItem>(
-		new ComponentEditorChannelsItem(parent, libHandler, component, this)));
+	    childItems_.append(QSharedPointer<ComponentEditorCpusItem>(
+		    new ComponentEditorCpusItem(parent, libHandler, component, this)));
 	
-	childItems_.append(QSharedPointer<ComponentEditorCpusItem>(
-		new ComponentEditorCpusItem(parent, libHandler, component, this)));
-	
-	childItems_.append(QSharedPointer<ComponentEditorOtherClocksItem>(
-		new ComponentEditorOtherClocksItem(parent, libHandler, component, this)));
+	    childItems_.append(QSharedPointer<ComponentEditorOtherClocksItem>(
+		    new ComponentEditorOtherClocksItem(parent, libHandler, component, this)));
+    }
 	
 	childItems_.append(QSharedPointer<ComponentEditorComInterfacesItem>(
 		new ComponentEditorComInterfacesItem(parent, libHandler, component, this)));
 
-	childItems_.append(QSharedPointer<ComponentEditorAPIInterfacesItem>(
-		new ComponentEditorAPIInterfacesItem(parent, libHandler, component, this)));
+    if (component->getComponentImplementation() == KactusAttribute::KTS_SW)
+    {
+	    childItems_.append(QSharedPointer<ComponentEditorAPIInterfacesItem>(
+		    new ComponentEditorAPIInterfacesItem(parent, libHandler, component, this)));
+    }
 
 	childItems_.append(QSharedPointer<ComponentEditorSWPropertiesItem>(
 		new ComponentEditorSWPropertiesItem(parent, libHandler, component, this)));
