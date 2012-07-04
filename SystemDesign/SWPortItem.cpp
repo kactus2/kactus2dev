@@ -294,7 +294,7 @@ bool SWPortItem::isHierarchical() const
 bool SWPortItem::onConnect(ConnectionEndpoint const* other)
 {
     // If the port is undefined, try to copy the configuration from the other end point.
-    if (getType() == ENDPOINT_TYPE_UNDEFINED)
+    if (!isInvalid() && getType() == ENDPOINT_TYPE_UNDEFINED)
     {
         if (other->getType() == ENDPOINT_TYPE_API)
         {

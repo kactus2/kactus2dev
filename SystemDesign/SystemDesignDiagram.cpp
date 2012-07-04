@@ -1123,19 +1123,16 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
                         std::swap(compPort, hierPort);
                     }
 
-                    if (endpoint2->getApiInterface() != 0)
-                    {
-                        ApiInterfaceRef ref(compPort->encompassingComp()->name(), compPort->name());
+                    ApiInterfaceRef ref(compPort->encompassingComp()->name(), compPort->name());
 
-                        HierApiDependency hierDependency(conn->name(), QString(),
-                                                         conn->description(),
-                                                         hierPort->name(), ref,
-                                                         hierPort->scenePos(), hierPort->getDirection(),
-                                                         conn->route());
-                                                         
+                    HierApiDependency hierDependency(conn->name(), QString(),
+                        conn->description(),
+                        hierPort->name(), ref,
+                        hierPort->scenePos(), hierPort->getDirection(),
+                        conn->route());
 
-                        hierApiDependencies.append(hierDependency);
-                    }
+
+                    hierApiDependencies.append(hierDependency);
                 }
             }
             else if (conn->getConnectionType() == SWConnectionEndpoint::ENDPOINT_TYPE_COM)
@@ -1614,24 +1611,29 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
     {
         QSharedPointer<ApiInterface> apiIf =
             getEditedComponent()->getApiInterface(dependency.getInterfaceRef());
+        SWInterfaceItem* interface = 0;
 
         if (apiIf == 0)
         {
             emit errorMessage(tr("API interface '%1' was not found in the top-component").arg(
                 dependency.getInterfaceRef()));
-            continue;
+            
+            // Create a dummy interface which is marked as invalid.
+            interface = new SWInterfaceItem(getEditedComponent(), dependency.getInterfaceRef(), 0);
+            interface->setTemporary(true);
+            interface->updateInterface();
         }
-
-        // Find the corresponding SW interface item.
-        SWInterfaceItem* interface = 0;
-
-        foreach (QGraphicsItem* item, items())
+        else
         {
-            if (item->type() == SWInterfaceItem::Type &&
-                static_cast<SWInterfaceItem*>(item)->getApiInterface() == apiIf)
+            // Find the corresponding SW interface item.
+            foreach (QGraphicsItem* item, items())
             {
-                interface = static_cast<SWInterfaceItem*>(item);
-                break;
+                if (item->type() == SWInterfaceItem::Type &&
+                    static_cast<SWInterfaceItem*>(item)->getApiInterface() == apiIf)
+                {
+                    interface = static_cast<SWInterfaceItem*>(item);
+                    break;
+                }
             }
         }
 
@@ -1757,24 +1759,29 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
     {
         QSharedPointer<ComInterface> comIf =
             getEditedComponent()->getComInterface(hierConn.getInterfaceRef());
+        SWInterfaceItem* interface = 0;
 
         if (comIf == 0)
         {
             emit errorMessage(tr("COM interface '%1' was not found in the top-component").arg(
                 hierConn.getInterfaceRef()));
-            continue;
+
+            // Create a dummy interface which is marked as invalid.
+            interface = new SWInterfaceItem(getEditedComponent(), hierConn.getInterfaceRef(), 0);
+            interface->setTemporary(true);
+            interface->updateInterface();
         }
-
-        // Find the corresponding SW interface item.
-        SWInterfaceItem* interface = 0;
-
-        foreach (QGraphicsItem* item, items())
+        else
         {
-            if (item->type() == SWInterfaceItem::Type &&
-                static_cast<SWInterfaceItem*>(item)->getComInterface() == comIf)
+            // Find the corresponding SW interface item.
+            foreach (QGraphicsItem* item, items())
             {
-                interface = static_cast<SWInterfaceItem*>(item);
-                break;
+                if (item->type() == SWInterfaceItem::Type &&
+                    static_cast<SWInterfaceItem*>(item)->getComInterface() == comIf)
+                {
+                    interface = static_cast<SWInterfaceItem*>(item);
+                    break;
+                }
             }
         }
 
@@ -1815,22 +1822,22 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
         {
             emit errorMessage(tr("Port '%1' was not found in the component '%2'").arg(
                 hierConn.getInterface().comRef, hierConn.getInterface().componentRef));
-        }
-        // If both the component and it's port are found the connection can be made.
-        else
-        {
-            GraphicsConnection* connection = new GraphicsConnection(port, interface, true,
-                hierConn.getName(),
-                hierConn.getDisplayName(),
-                hierConn.getDescription(), this);
-            connection->setRoute(hierConn.getRoute());
 
-            connect(connection, SIGNAL(errorMessage(QString const&)),
-                this, SIGNAL(errorMessage(QString const&)));
-
-            addItem(connection);
-            connection->updatePosition();
+            port = createMissingPort(hierConn.getInterface().comRef, ConnectionEndpoint::ENDPOINT_TYPE_COM,
+                                     componentItem, design);
         }
+        
+        GraphicsConnection* connection = new GraphicsConnection(port, interface, true,
+                                                                hierConn.getName(),
+                                                                hierConn.getDisplayName(),
+                                                                hierConn.getDescription(), this);
+        connection->setRoute(hierConn.getRoute());
+
+        connect(connection, SIGNAL(errorMessage(QString const&)),
+            this, SIGNAL(errorMessage(QString const&)));
+
+        addItem(connection);
+        connection->updatePosition();
     }
 }
 

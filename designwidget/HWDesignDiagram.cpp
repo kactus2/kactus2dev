@@ -286,8 +286,9 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
 	// Create hierarchical connections.
     QList<QString> connectedHier;
     QList<Design::HierConnection> hierConnections = design->getHierarchicalConnections();
-    for (int i = 0; i < hierConnections.size(); ++i) {
 
+    for (int i = 0; i < hierConnections.size(); ++i)
+    {
         Design::HierConnection hierConn = hierConnections.at(i);
 
 		QSharedPointer<BusInterface> busIf = getEditedComponent()->getBusInterface(hierConn.interfaceRef);
@@ -318,9 +319,9 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
                     break;
                 }
             }
-
-            Q_ASSERT(diagIf != 0);
 		}
+
+        Q_ASSERT(diagIf != 0);
 
 		// Check if the position is found.
         if (!hierConn.position.isNull())
@@ -354,32 +355,31 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
         {
 			emit errorMessage(tr("Port %1 was not found in the component %2").arg(
 				hierConn.interface_.busRef).arg(hierConn.interface_.componentRef));
-		}
-        // if both the component and it's port are found the connection can be made
-		else
+
+            compPort = createMissingPort(hierConn.interface_.busRef, comp, design);
+		}        
+
+        if (hierConn.offPage)
         {
-            if (hierConn.offPage)
-            {
-                compPort = compPort->getOffPageConnector();
-                diagIf = diagIf->getOffPageConnector();
-            }
+            compPort = compPort->getOffPageConnector();
+            diagIf = diagIf->getOffPageConnector();
+        }
 
-            HWConnection* diagConn = new HWConnection(compPort, diagIf, true, QString(),
-                                                                          QString(), QString(), this);
-            diagConn->setRoute(hierConn.route);
+        HWConnection* diagConn = new HWConnection(compPort, diagIf, true, QString(),
+            QString(), QString(), this);
+        diagConn->setRoute(hierConn.route);
 
-            if (hierConn.offPage)
-            {
-                diagConn->setVisible(false);
-            }
+        if (hierConn.offPage)
+        {
+            diagConn->setVisible(false);
+        }
 
-            connect(diagConn, SIGNAL(errorMessage(QString const&)), this,
-                    SIGNAL(errorMessage(QString const&)));
-			connectedHier.append(hierConn.interfaceRef);
+        connect(diagConn, SIGNAL(errorMessage(QString const&)), this,
+            SIGNAL(errorMessage(QString const&)));
+        connectedHier.append(hierConn.interfaceRef);
 
-            addItem(diagConn);
-            diagConn->updatePosition();
-		}
+        addItem(diagConn);
+        diagConn->updatePosition();
     }
 
     // Set the ad-hoc data for the diagram.

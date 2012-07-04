@@ -265,6 +265,10 @@ void InterfaceEditor::setInterface( ConnectionEndpoint* interface ) {
         connect(&propertyValueEditor_, SIGNAL(contentChanged()),
                 this, SLOT(onComPropertyValuesChanged()), Qt::UniqueConnection);
     }
+    else
+    {
+        type_.setTitle(tr("Type VLNV"));
+    }
 
 	connect(interface, SIGNAL(destroyed(ConnectionEndpoint*)),
 		this, SLOT(clear()), Qt::UniqueConnection);

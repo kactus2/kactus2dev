@@ -1159,7 +1159,14 @@ void GraphicsConnection::setLineWidth(int width)
 //-----------------------------------------------------------------------------
 ConnectionEndpoint::EndpointType GraphicsConnection::getConnectionType() const
 {
-    return endpoint1()->getType();
+    if (endpoint1()->getType() != ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED)
+    {
+        return endpoint1()->getType();
+    }
+    else
+    {
+        return endpoint2()->getType();
+    }
 }
 
 //-----------------------------------------------------------------------------

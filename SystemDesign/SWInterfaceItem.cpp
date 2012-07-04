@@ -45,7 +45,7 @@
 //-----------------------------------------------------------------------------
 SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component,
                                  QString const& name, QGraphicsItem *parent)
-    : SWConnectionEndpoint(parent, true, QVector2D(-1.0f, 0.0f)),
+    : SWConnectionEndpoint(parent, false, QVector2D(-1.0f, 0.0f)),
       nameLabel_(name, this),
       component_(component),
       apiInterface_(),
@@ -289,7 +289,7 @@ bool SWInterfaceItem::isHierarchical() const
 bool SWInterfaceItem::onConnect(ConnectionEndpoint const* other)
 {
     // If the port is undefined, try to copy the configuration from the other end point.
-    if (getType() == ENDPOINT_TYPE_UNDEFINED)
+    if (!isInvalid() && getType() == ENDPOINT_TYPE_UNDEFINED)
     {
         if (other->getType() == ENDPOINT_TYPE_API)
         {
