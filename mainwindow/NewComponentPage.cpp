@@ -36,14 +36,14 @@ attributeEditor_(0),
 directoryEdit_(0) {
 
     // Create the title and description labels labels.
-    QLabel* titleLabel = new QLabel(tr("New Component"), this);
+    QLabel* titleLabel = new QLabel(tr("New HW Component"), this);
     
     QFont font = titleLabel->font();
     font.setPointSize(12);
     font.setBold(true);
     titleLabel->setFont(font);
 
-    QLabel* descLabel = new QLabel(tr("Creates a flat (non-hierarchical) component"), this);
+    QLabel* descLabel = new QLabel(tr("Creates a flat (non-hierarchical) HW component"), this);
 
     // Create the attribute editor.
     attributeEditor_ = new KactusAttributeEditor(this);

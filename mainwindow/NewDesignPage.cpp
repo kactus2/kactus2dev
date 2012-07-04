@@ -35,14 +35,14 @@ vlnvEditor_(0),
 directoryEdit_(0)
 {
     // Create the title and description labels labels.
-    QLabel* titleLabel = new QLabel(tr("New Design"), this);
+    QLabel* titleLabel = new QLabel(tr("New HW Design"), this);
 
     QFont font = titleLabel->font();
     font.setPointSize(12);
     font.setBold(true);
     titleLabel->setFont(font);
 
-    QLabel* descLabel = new QLabel(tr("Creates a hierarchical design"), this);
+    QLabel* descLabel = new QLabel(tr("Creates a hierarchical HW design"), this);
 
     // Create the attribute editor.
     attributeEditor_ = new KactusAttributeEditor(this);

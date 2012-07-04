@@ -1983,7 +1983,7 @@ void MainWindow::createNew()
 		this, SLOT(createComponent(KactusAttribute::ProductHierarchy,
 		KactusAttribute::Firmness,
 		VLNV const&, QString const&)));
-	dialog.addPage(QIcon(":icons/graphics/new-component.png"), tr("Component"), compPage);
+	dialog.addPage(QIcon(":icons/graphics/new-component.png"), tr("HW Component"), compPage);
 
 	NewDesignPage* designPage = new NewDesignPage(libraryHandler_, &dialog);
 	connect(designPage, SIGNAL(createDesign(KactusAttribute::ProductHierarchy,
@@ -1992,7 +1992,7 @@ void MainWindow::createNew()
 		this, SLOT(createDesign(KactusAttribute::ProductHierarchy,
 		KactusAttribute::Firmness,
 		VLNV const&, QString const&)));
-	dialog.addPage(QIcon(":icons/graphics/new-design.png"), tr("Design"), designPage);
+	dialog.addPage(QIcon(":icons/graphics/new-design.png"), tr("HW Design"), designPage);
 
 	NewSWComponentPage* swCompPage = new NewSWComponentPage(libraryHandler_, &dialog);
 	connect(swCompPage, SIGNAL(createSWComponent(VLNV const&, QString const&)),

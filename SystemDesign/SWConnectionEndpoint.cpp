@@ -11,6 +11,8 @@
 
 #include "SWConnectionEndpoint.h"
 
+#include <models/ComInterface.h>
+
 #include <QPen>
 
 //-----------------------------------------------------------------------------
@@ -59,7 +61,15 @@ void SWConnectionEndpoint::updateInterface()
 
     case ENDPOINT_TYPE_COM:
         {
-            setBrush(QBrush(QColor(0x32,0x99,0x64)));
+            // Generate a random hexadecimal color.
+            unsigned int color = qHash(getComInterface()->getTransferType()) & 0x00FFFFFF;
+
+            // Extract the color components.
+            unsigned char r = (color - 0xDEADC0DE) >> 16;
+            unsigned char g = 255 - ((color & 0x0000FF00) >> 8);
+            unsigned char b = (color & 0x000000FF);
+
+            setBrush(QBrush(QColor(r, g, b)));
             break;
         }
 
