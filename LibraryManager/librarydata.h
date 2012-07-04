@@ -342,7 +342,7 @@ private:
 	 * The list contains pointers to LibraryItems that hold info of item's
 	 * visibility status and also contain pointer to the item's vlnv element.
 	 */
-	QList<VLNV*> table_;
+	QList< QSharedPointer<VLNV> > table_;
 
 	//! \brief Pointer to the LibraryHandler instance that owns this dataModel.
 	LibraryHandler *handler_;

@@ -91,7 +91,7 @@ QModelIndex LibraryData::index(int row, int column,
 		return QModelIndex();
 	}
 
-	return createIndex(row, column, table_.value(row));
+	return createIndex(row, column, table_.value(row).data());
 }
 
 QModelIndex LibraryData::parent(const QModelIndex&) const {
@@ -241,7 +241,14 @@ QVariant LibraryData::headerData(int section, Qt::Orientation orientation,
 }
 
 QList<VLNV*> LibraryData::getItems() const {
-	return table_;
+    QList<VLNV*> vlnvs;
+
+    foreach (QSharedPointer<VLNV> vlnv, table_)
+    {
+        vlnvs.append(vlnv.data());
+    }
+
+	return vlnvs;
 }
 
 void LibraryData::onExportItem(const QModelIndex& index) {
@@ -331,8 +338,10 @@ bool LibraryData::addVLNV( const VLNV& vlnv, const QString& path) {
 	beginInsertRows(QModelIndex(), table_.size(), table_.size());
 
 	// add the component to the library
-	VLNV* vlnvP = const_cast<VLNV*>(&libraryItems_.insert(vlnv, path).key());
-	table_.append(vlnvP);
+	libraryItems_.insert(vlnv, path).key();
+	table_.append(QSharedPointer<VLNV>(new VLNV(vlnv)));
+
+    VLNV* vlnvP = table_.back().data();
 
 	emit addVLNV(vlnvP);
 	endInsertRows();
@@ -351,14 +360,24 @@ void LibraryData::onRemoveVLNV( VLNV* vlnv ) {
 	if (!libraryItems_.contains(*vlnv))
 		return;
 
-	int row = table_.indexOf(const_cast<VLNV*>(vlnv));
+	int row = 0;
+
+    foreach (QSharedPointer<VLNV> vlnvP, table_)
+    {
+        if (vlnv == vlnvP.data())
+        {
+            break;
+        }
+
+        ++row;
+    }
 
 	beginRemoveRows(QModelIndex(), row, row);
 
 	// remove the vlnv, no delete operation is needed because VLNVs are statically
 	// created
+    libraryItems_.remove(*vlnv);
 	table_.removeAt(row);
-	libraryItems_.remove(*vlnv);
 
 	endRemoveRows();
 
@@ -559,14 +578,14 @@ void LibraryData::checkLibraryIntegrity( bool showProgress /*= true*/ ) {
 		}
 
 		// get pointer to the vlnv
-		VLNV* vlnvP = const_cast<VLNV*>(&i.key());
+		VLNV vlnv = i.key();
 
 		// inform the user of the object being processed
 
 		// make sure the file exists
 		QFileInfo topFile(i.value());
 		if (!topFile.exists()) {
-            emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnvP->toString(":")));
+            emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
 			emit errorMessage(tr("The file %1 for the document was not found.").arg(i.value()));
 			++errors;
 			++failedObjects;
@@ -580,7 +599,7 @@ void LibraryData::checkLibraryIntegrity( bool showProgress /*= true*/ ) {
         {
             if (wasValid)
             {
-                emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnvP->toString(":")));
+                emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
             }
 
 			foreach (QString error, errorList) {
@@ -606,7 +625,7 @@ void LibraryData::checkLibraryIntegrity( bool showProgress /*= true*/ ) {
             {
                 if (wasValid)
                 {
-                    emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnvP->toString(":")));
+                    emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
                 }
 
 				emit errorMessage(
@@ -653,9 +672,9 @@ void LibraryData::checkLibraryIntegrity( bool showProgress /*= true*/ ) {
 		}
 
 		// set the validity of the object
-		vlnvP->setDocumentValid(wasValid);
+		vlnv.setDocumentValid(wasValid);
 
-		table_.append(vlnvP);
+		table_.append(QSharedPointer<VLNV>(new VLNV(vlnv)));
 
 		// update the progress bar
 		++current;
