@@ -81,6 +81,11 @@ public:
      */
     virtual bool connectEnds();
 
+    /*!
+     *  Validates the connection and draws it in red if it is not valid.
+     */
+    void validate();
+
     /*! 
      *  Disconnects the ends of the connection.
      */

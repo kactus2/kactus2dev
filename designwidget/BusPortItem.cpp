@@ -290,11 +290,11 @@ void BusPortItem::onDisconnect(ConnectionEndpoint const*)
 }
 
 //-----------------------------------------------------------------------------
-// Function: canConnect()
+// Function: isConnectionValid()
 //-----------------------------------------------------------------------------
-bool BusPortItem::canConnect(ConnectionEndpoint const* other) const
+bool BusPortItem::isConnectionValid(ConnectionEndpoint const* other) const
 {
-    if (!HWConnectionEndpoint::canConnect(other))
+    if (!HWConnectionEndpoint::isConnectionValid(other))
     {
         return false;
     }
@@ -761,4 +761,12 @@ bool BusPortItem::isBus() const
 Port* BusPortItem::getPort() const
 {
     return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusPortItem::isExclusive()
+//-----------------------------------------------------------------------------
+bool BusPortItem::isExclusive() const
+{
+    return false;
 }

@@ -73,12 +73,16 @@ public:
      */
     virtual void onEndConnect() = 0;
 
-    /*! 
-     *  Returns true if this endpoint can be connected to the given endpoint.
+    /*!
+     *  Returns true if a connection is valid between the two endpoints.
      *
-     *      @param [in] other The endpoint to which to connect.
+     *      @param [in] other The other endpoint.
+     *
+     *      @remarks Does not take existing connections into account but simply
+     *               validates whether a connection between the endpoints would be valid
+     *               in a general case.
      */
-    virtual bool canConnect(ConnectionEndpoint const* other) const;
+    virtual bool isConnectionValid(ConnectionEndpoint const* other) const;
 
     /*!
      *  Updates the endpoint interface.

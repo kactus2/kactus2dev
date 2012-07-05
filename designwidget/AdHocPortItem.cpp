@@ -209,10 +209,15 @@ void AdHocPortItem::onDisconnect(ConnectionEndpoint const*)
 }
 
 //-----------------------------------------------------------------------------
-// Function: canConnect()
+// Function: isConnectionValid()
 //-----------------------------------------------------------------------------
-bool AdHocPortItem::canConnect(ConnectionEndpoint const* other) const
+bool AdHocPortItem::isConnectionValid(ConnectionEndpoint const* other) const
 {
+    if (!HWConnectionEndpoint::isConnectionValid(other))
+    {
+        return false;
+    }
+
     // Ad-hoc connection is not possible to other type of endpoint.
     if (!other->isAdHoc())
     {
@@ -482,4 +487,13 @@ bool AdHocPortItem::isBus() const
 Port* AdHocPortItem::getPort() const
 {
     return port_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocPortItem::isExclusive()
+//-----------------------------------------------------------------------------
+bool AdHocPortItem::isExclusive() const
+{
+    // Ad-hoc ports are always non-exclusive.
+    return false;
 }

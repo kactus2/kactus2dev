@@ -60,8 +60,6 @@ GraphicsConnection::GraphicsConnection(ConnectionEndpoint* endpoint1, Connection
         endpoint1_ = endpoint1;
         endpoint2_ = endpoint2;
 
-        invalid_ = !endpoint1_->canConnect(endpoint2_) || !endpoint2_->canConnect(endpoint1_);
-
         endpoint1->addConnection(this);
         endpoint2->addConnection(this);
 
@@ -72,6 +70,8 @@ GraphicsConnection::GraphicsConnection(ConnectionEndpoint* endpoint1, Connection
         {
             updateName();
         }
+
+        validate();
     }
 
     setDefaultColor();
@@ -143,8 +143,6 @@ bool GraphicsConnection::connectEnds()
         }
     }
 
-    invalid_ = !endpoint1_->canConnect(endpoint2_) || !endpoint2_->canConnect(endpoint1_);
-
     // Make the connections and check for errors.
     if (!endpoint1_->onConnect(endpoint2_))
     {
@@ -163,17 +161,11 @@ bool GraphicsConnection::connectEnds()
     endpoint1_->addConnection(this);
     endpoint2_->addConnection(this);
 
-    // Check if both end points were found.
-    if (endpoint1_ && endpoint2_)
-    {
-        simplifyPath();
-        setRoute(pathPoints_);
-        updateName();
-        setDefaultColor();
-        return true;
-    }
-
-    return false;
+    simplifyPath();
+    setRoute(pathPoints_);
+    updateName();
+    validate();    
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -1199,4 +1191,13 @@ void GraphicsConnection::setImported(bool imported)
 bool GraphicsConnection::isImported() const
 {
     return imported_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::validate()
+//-----------------------------------------------------------------------------
+void GraphicsConnection::validate()
+{
+    invalid_ = !endpoint1_->isConnectionValid(endpoint2_) || !endpoint2_->isConnectionValid(endpoint1_);
+    setDefaultColor();
 }

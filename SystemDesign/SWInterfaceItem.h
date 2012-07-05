@@ -142,12 +142,21 @@ public:
      */
     virtual void onDisconnect(ConnectionEndpoint const* other);
 
-    /*! 
-     *  Returns true if this interface can be connected to the given end point.
+    /*!
+     *  Returns true if a connection is valid between the two endpoints.
      *
-     *      @param [in] other The end point to which to connect.
+     *      @param [in] other The other endpoint.
+     *
+     *      @remarks Does not take existing connections into account but simply
+     *               validates whether a connection between the endpoints would be valid
+     *               in a general case.
      */
-    virtual bool canConnect(ConnectionEndpoint const* other) const;
+    virtual bool isConnectionValid(ConnectionEndpoint const* other) const;
+
+    /*!
+     *  Returns true if the endpoint is exclusive, i.e. can only have one connection.
+     */
+    virtual bool isExclusive() const;
 
     /*! 
      *  Returns the encompassing component.

@@ -64,7 +64,7 @@ void SWConnectionEndpoint::updateInterface()
             // Generate a random hexadecimal color.
             unsigned int color = qHash(getComInterface()->getTransferType()) & 0x00FFFFFF;
 
-            // Extract the color components.
+            // Extract the color components and make small modifications.
             unsigned char r = (color - 0xDEADC0DE) >> 16;
             unsigned char g = 255 - ((color & 0x0000FF00) >> 8);
             unsigned char b = (color & 0x000000FF);
@@ -81,11 +81,11 @@ void SWConnectionEndpoint::updateInterface()
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWConnectionEndpoint::canConnect()
+// Function: SWConnectionEndpoint::isConnectionValid()
 //-----------------------------------------------------------------------------
-bool SWConnectionEndpoint::canConnect(ConnectionEndpoint const* other) const
+bool SWConnectionEndpoint::isConnectionValid(ConnectionEndpoint const* other) const
 {
-    if (!ConnectionEndpoint::canConnect(other))
+    if (!ConnectionEndpoint::isConnectionValid(other))
     {
         return false;
     }

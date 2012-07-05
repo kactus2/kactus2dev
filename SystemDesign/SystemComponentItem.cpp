@@ -14,9 +14,9 @@
 #include "SWPortItem.h"
 
 #include <common/graphicsItems/IGraphicsItemStack.h>
+#include <common/graphicsItems/GraphicsConnection.h>
 #include <common/layouts/HCollisionLayout.h>
 #include <common/layouts/VCollisionLayout.h>
-
 
 #include <models/component.h>
 #include <models/ComInterface.h>
@@ -428,4 +428,23 @@ void SystemComponentItem::setImportRef(QString const& nameRef)
 QString const& SystemComponentItem::getImportRef() const
 {
     return importRef_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemComponentItem::revalidateConnections()
+//-----------------------------------------------------------------------------
+void SystemComponentItem::revalidateConnections()
+{
+    foreach (QGraphicsItem *item, QGraphicsRectItem::children())
+    {
+        if (item->type() == SWPortItem::Type)
+        {
+            SWPortItem* port = static_cast<SWPortItem*>(item);
+
+            foreach (GraphicsConnection* conn, port->getConnections())
+            {
+                conn->validate();
+            }
+        }
+    }
 }

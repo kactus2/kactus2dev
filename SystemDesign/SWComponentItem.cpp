@@ -182,6 +182,7 @@ void SWComponentItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         }
 
         oldStack_ = 0;
+        revalidateConnections();
     }
 }
 

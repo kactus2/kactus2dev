@@ -126,19 +126,12 @@ bool ConnectionEndpoint::isConnected() const
 //-----------------------------------------------------------------------------
 bool ConnectionEndpoint::canConnect(ConnectionEndpoint const* other) const
 {
-    // Invalid endpoints cannot be connected to.
-    if (isInvalid())
+    if (isConnected() && isExclusive())
     {
         return false;
     }
 
-    // Two hierarchical endpoints cannot be connected.
-    if (isHierarchical() && other->isHierarchical())
-    {
-        return false;
-    }
-
-    return true;
+    return isConnectionValid(other);
 }
 
 //-----------------------------------------------------------------------------
@@ -325,4 +318,24 @@ void ConnectionEndpoint::setTypeLocked(bool locked)
 bool ConnectionEndpoint::isTypeLocked() const
 {
     return typeLocked_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::isConnectionValid()
+//-----------------------------------------------------------------------------
+bool ConnectionEndpoint::isConnectionValid(ConnectionEndpoint const* other) const
+{
+    // Invalid endpoints cannot be connected to.
+    if (isInvalid())
+    {
+        return false;
+    }
+
+    // Two hierarchical endpoints cannot be connected.
+    if (isHierarchical() && other->isHierarchical())
+    {
+        return false;
+    }
+
+    return true;
 }

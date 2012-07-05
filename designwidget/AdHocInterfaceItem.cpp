@@ -224,18 +224,17 @@ void AdHocInterfaceItem::onDisconnect(ConnectionEndpoint const*)
 }
 
 //-----------------------------------------------------------------------------
-// Function: canConnect()
+// Function: isConnectionValid()
 //-----------------------------------------------------------------------------
-bool AdHocInterfaceItem::canConnect(ConnectionEndpoint const* other) const
+bool AdHocInterfaceItem::isConnectionValid(ConnectionEndpoint const* other) const
 {
-    // Ad-hoc connection is not possible to a bus end point.
-    if (other->isBus())
+    if (!HWConnectionEndpoint::isConnectionValid(other))
     {
         return false;
     }
 
-    // Two hierarchical end points cannot be connected together.
-    if (other->isHierarchical())
+    // Ad-hoc connection is not possible to a bus end point.
+    if (other->isBus())
     {
         return false;
     }
@@ -490,4 +489,13 @@ bool AdHocInterfaceItem::isBus() const
 Port* AdHocInterfaceItem::getPort() const
 {
     return port_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocInterfaceItem::isExclusive()
+//-----------------------------------------------------------------------------
+bool AdHocInterfaceItem::isExclusive() const
+{
+    // Ad-hoc interfaces are always non-exclusive.
+    return false;
 }

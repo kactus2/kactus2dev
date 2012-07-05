@@ -371,11 +371,11 @@ void SWPortItem::onDisconnect(ConnectionEndpoint const*)
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWPortItem::canConnect()
+// Function: SWPortItem::isConnectionValid()
 //-----------------------------------------------------------------------------
-bool SWPortItem::canConnect(ConnectionEndpoint const* other) const
+bool SWPortItem::isConnectionValid(ConnectionEndpoint const* other) const
 {
-    if (!SWConnectionEndpoint::canConnect(other))
+    if (!SWConnectionEndpoint::isConnectionValid(other))
     {
         return false;
     }
@@ -399,12 +399,6 @@ bool SWPortItem::canConnect(ConnectionEndpoint const* other) const
             QSharedPointer<ApiInterface> apiIf1 = getApiInterface();
             QSharedPointer<ApiInterface> apiIf2 = other->getApiInterface();
 
-            // Requester can have only one connection.
-            if (isConnected() && apiIf1->getDependencyDirection() == DEPENDENCY_REQUESTER)
-            {
-                return false;
-            }
-
             // Check if the API types are not compatible.
             if (!apiIf1->getApiType().isEmpty() && !apiIf2->getApiType().isEmpty() &&
                 apiIf1->getApiType() != apiIf2->getApiType())
@@ -421,12 +415,6 @@ bool SWPortItem::canConnect(ConnectionEndpoint const* other) const
         {
             QSharedPointer<ComInterface> comIf1 = getComInterface();
             QSharedPointer<ComInterface> comIf2 = other->getComInterface();
-
-            // Allow only one connection per endpoint.
-            if (isConnected())
-            {
-                return false;
-            }
 
             // Check if the COM types are not compatible.
             if (!comIf1->getComType().isEmpty() && !comIf2->getComType().isEmpty() &&
@@ -454,11 +442,6 @@ bool SWPortItem::canConnect(ConnectionEndpoint const* other) const
             Q_ASSERT(false);
             return false;
         }
-    }
-    // COM interfaces can only have one connection.
-    else if (getType() == ENDPOINT_TYPE_COM && isConnected())
-    {
-        return false;
     }
 
     return true;
@@ -927,4 +910,13 @@ VLNV SWPortItem::getTypeDefinition() const
     {
         return VLNV();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWPortItem::isExclusive()
+//-----------------------------------------------------------------------------
+bool SWPortItem::isExclusive() const
+{
+    // COM interfaces are always exclusive.
+    return (getType() == ENDPOINT_TYPE_COM);
 }

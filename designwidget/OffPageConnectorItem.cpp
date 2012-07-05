@@ -152,11 +152,11 @@ void OffPageConnectorItem::onDisconnect(ConnectionEndpoint const* other)
 }
 
 //-----------------------------------------------------------------------------
-// Function: canConnect()
+// Function: isConnectionValid()
 //-----------------------------------------------------------------------------
-bool OffPageConnectorItem::canConnect(ConnectionEndpoint const* other) const
+bool OffPageConnectorItem::isConnectionValid(ConnectionEndpoint const* other) const
 {
-    return parent_->canConnect(other);
+    return parent_->isConnectionValid(other);
 }
 
 //-----------------------------------------------------------------------------
@@ -321,4 +321,12 @@ bool OffPageConnectorItem::isBus() const
 Port* OffPageConnectorItem::getPort() const
 {
     return parent_->getPort();
+}
+
+//-----------------------------------------------------------------------------
+// Function: OffPageConnectorItem::isExclusive()
+//-----------------------------------------------------------------------------
+bool OffPageConnectorItem::isExclusive() const
+{
+    return parent_->isExclusive();
 }

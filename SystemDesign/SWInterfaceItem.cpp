@@ -352,11 +352,11 @@ void SWInterfaceItem::onDisconnect(ConnectionEndpoint const*)
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWInterfaceItem::canConnect()
+// Function: SWInterfaceItem::isConnectionValid()
 //-----------------------------------------------------------------------------
-bool SWInterfaceItem::canConnect(ConnectionEndpoint const* other) const
+bool SWInterfaceItem::isConnectionValid(ConnectionEndpoint const* other) const
 {
-    if (!SWConnectionEndpoint::canConnect(other))
+    if (!SWConnectionEndpoint::isConnectionValid(other))
     {
         return false;
     }
@@ -371,12 +371,6 @@ bool SWInterfaceItem::canConnect(ConnectionEndpoint const* other) const
             QSharedPointer<ApiInterface> apiIf1 = getApiInterface();
             QSharedPointer<ApiInterface> apiIf2 = other->getApiInterface();
 
-            // Provider can have only one connection.
-            if (isConnected() && apiIf1->getDependencyDirection() == DEPENDENCY_PROVIDER)
-            {
-                return false;
-            }
-
             // Check if the API types are not compatible.
             if (!apiIf1->getApiType().isEmpty() && !apiIf2->getApiType().isEmpty() &&
                 apiIf1->getApiType() != apiIf2->getApiType())
@@ -390,12 +384,6 @@ bool SWInterfaceItem::canConnect(ConnectionEndpoint const* other) const
         {
             QSharedPointer<ComInterface> comIf1 = getComInterface();
             QSharedPointer<ComInterface> comIf2 = other->getComInterface();
-
-            // Allow only one connection per endpoint.
-            if (isConnected())
-            {
-                return false;
-            }
 
             // Check if the COM types are not compatible.
             if (!comIf1->getComType().isEmpty() && !comIf2->getComType().isEmpty() &&
@@ -793,4 +781,23 @@ void SWInterfaceItem::setDirection(QVector2D const& dir)
     {
         nameLabel_.setPos(0, GridSize * 3.0 / 4.0 + nameWidth / 2.0);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWInterfaceItem::isExclusive()
+//-----------------------------------------------------------------------------
+bool SWInterfaceItem::isExclusive() const
+{
+    if (getType() == ENDPOINT_TYPE_COM)
+    {
+        // All COM interfaces are exclusive.
+        return true;
+    }
+    else if (getType() == ENDPOINT_TYPE_API)
+    {
+        // Provider is exclusive.
+        return (getApiInterface()->getDependencyDirection() == DEPENDENCY_PROVIDER);
+    }
+
+    return false;
 }

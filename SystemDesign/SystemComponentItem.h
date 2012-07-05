@@ -178,6 +178,11 @@ protected:
      */
     void offsetPortPositions(qreal minY);
 
+    /*!
+     *  Re-validates existing connections.
+     */
+    void revalidateConnections();
+
 private:
     // Disable copying.
     SystemComponentItem(SystemComponentItem const& rhs);
