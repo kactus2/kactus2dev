@@ -110,7 +110,7 @@ public:
 	 *
 	 * \return The width
 	 */
-	unsigned int getWidth() const;
+	int getWidth() const;
 
 	/*! \brief Get the width attributes
 	 *
@@ -161,7 +161,7 @@ public:
 	 *
 	 * \param width The wanted width
 	 */
-	void setWidth(unsigned int width);
+	void setWidth(int width);
 
 	/*! \brief Set the attributes for the width
 	 *

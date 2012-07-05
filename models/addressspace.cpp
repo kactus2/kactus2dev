@@ -339,7 +339,7 @@ void AddressSpace::setName(const QString &name) {
 	nameGroup_.name_ = name;
 }
 
-unsigned int AddressSpace::getWidth() const {
+int AddressSpace::getWidth() const {
 	return width_;
 }
 
@@ -360,7 +360,7 @@ QString AddressSpace::getName() const {
 	return nameGroup_.name_;
 }
 
-void AddressSpace::setWidth(unsigned int width) {
+void AddressSpace::setWidth(int width) {
 	width_ = width;
 }
 
