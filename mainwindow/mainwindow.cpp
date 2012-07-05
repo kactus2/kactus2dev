@@ -2145,12 +2145,21 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
     designConf->setDesignRef(designVLNV);
 
     QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(designVLNV));
-
     QList<ColumnDesc> columns;
-    columns.append(ColumnDesc("Low-level", COLUMN_CONTENT_COMPONENTS, 0, 259));
-    columns.append(ColumnDesc("Middle-level", COLUMN_CONTENT_COMPONENTS, 0, 259));
-    columns.append(ColumnDesc("High-level", COLUMN_CONTENT_COMPONENTS, 0, 259));
-    columns.append(ColumnDesc("Out", COLUMN_CONTENT_IO, 0, 119));
+
+    if (component->getComponentImplementation() == KactusAttribute::KTS_SW)
+    {
+        columns.append(ColumnDesc("Low-level", COLUMN_CONTENT_COMPONENTS, 0, 259));
+        columns.append(ColumnDesc("Middle-level", COLUMN_CONTENT_COMPONENTS, 0, 259));
+        columns.append(ColumnDesc("High-level", COLUMN_CONTENT_COMPONENTS, 0, 259));
+        columns.append(ColumnDesc("Out", COLUMN_CONTENT_IO, 0, 119));
+    }
+    else
+    {
+        columns.append(ColumnDesc("Pre-mapped SW", COLUMN_CONTENT_COMPONENTS, 0, 259));
+        columns.append(ColumnDesc("Pre-mapped SW", COLUMN_CONTENT_COMPONENTS, 0, 259));
+    }
+
     newDesign->setColumns(columns);
 
     QString xmlPath = libraryHandler_->getPath(vlnv);

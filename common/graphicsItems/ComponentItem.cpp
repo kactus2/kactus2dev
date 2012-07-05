@@ -81,18 +81,29 @@ void ComponentItem::updateComponent()
 {
     VLNV* vlnv = component_->getVlnv();
 
+    QString toolTipText = "";
+
     // Set the tooltip.
     if (vlnv->isValid())
     {
-        setToolTip("Vendor : " + vlnv->getVendor() + "\n" +
-            "Library : " + vlnv->getLibrary() + "\n" +
-            "Name : " + vlnv->getName() + "\n" +
-            "Version : " + vlnv->getVersion());
+        toolTipText += "<b>Vendor:</b> " + vlnv->getVendor() + "<br>" +
+                       "<b>Library:</b> " + vlnv->getLibrary() + "<br>" +
+                       "<b>Name:</b> " + vlnv->getName() + "<br>" +
+                       "<b>Version:</b> " + vlnv->getVersion();
     }
     else
     {
-        setToolTip("Unpackaged component. No VLNV assigned!");
+        toolTipText += "Unpackaged component. No VLNV assigned!";
     }
+
+    toolTipText += "<br><br><b>Instance name:</b> " + name();
+
+    if (!description().isEmpty())
+    {
+        toolTipText += "<br><br><b>Description:</b><br>" + description();
+    }
+
+    setToolTip(toolTipText);
 }
 
 //-----------------------------------------------------------------------------
@@ -111,6 +122,8 @@ void ComponentItem::setName(QString const& name)
     {
         updateNameLabel(name);
     }
+
+    updateComponent();
 
     emit nameChanged(name, oldName);
 }
@@ -140,6 +153,7 @@ void ComponentItem::setDisplayName(QString const& displayName)
 void ComponentItem::setDescription(const QString& description)
 {
     description_ = description;
+    updateComponent();
     emit descriptionChanged(description_);
 }
 

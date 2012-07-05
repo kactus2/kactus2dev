@@ -104,7 +104,8 @@ void BusPortItem::updateInterface()
     {
         setBrush(QBrush(Qt::red));
     }
-    else if (!busInterface_->getBusType().isValid())
+    else if (!busInterface_->getBusType().isValid() ||
+             busInterface_->getInterfaceMode() == General::INTERFACE_MODE_COUNT)
     {
         setBrush(QBrush(Qt::black));
     }
