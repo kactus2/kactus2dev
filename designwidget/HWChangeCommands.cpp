@@ -795,6 +795,12 @@ ReplaceComponentCommand::ReplaceComponentCommand(HWComponentItem* oldComp, HWCom
             {
                 QUndoCommand* exchangeCmd = new ConnectionExchangeCommand(conn, oldEndpoint, newEndpoint, this);
             }
+
+            foreach (GraphicsConnection* conn, oldEndpoint->getOffPageConnector()->getConnections())
+            {
+                QUndoCommand* exchangeCmd = new ConnectionExchangeCommand(conn, oldEndpoint->getOffPageConnector(),
+                                                                          newEndpoint->getOffPageConnector(), this);
+            }
         }
     }
 
