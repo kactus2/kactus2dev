@@ -1261,20 +1261,23 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 //                         "instance %2").arg(viewName).arg(comp->name()));
 //                 }
             }
-            // if component does not contain any hierarchical views or contains
-            // more than one hierarchical view then it is not known which view to open
-            else if (hierViews.size() != 1) {
+            // If the component does not contain any hierarchical views, open the component editor.
+            else if (hierViews.size() == 0)
+            {
+                if (comp->componentModel()->hasViews())
+                {
+                    emit noticeMessage(tr("No active view was selected for instance %1, "
+                        "opening component editor.").arg(comp->name()));
+                }
 
-                emit noticeMessage(tr("No active view was selected for instance %1, "
-                    "opening component editor.").arg(comp->name()));
-                // just open the component because view is ambiguous
                 emit openComponent(*comp->componentModel()->getVlnv());
             }
-            // if there is exactly one hierarchical view then open it
-            else {
+            // Open the first design if there is one or multiple hierarchical view.
+            else
+            {
                 emit noticeMessage(tr("No active view was selected for instance %1, "
                     "opening the only hierarhical view of the component.").arg(comp->name()));
-                emit openSWDesign(*comp->componentModel()->getVlnv(), hierViews.first());
+                emit openDesign(*comp->componentModel()->getVlnv(), hierViews.first());
             }
         }
         else if (!isProtected())

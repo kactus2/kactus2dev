@@ -382,7 +382,11 @@ void updateSystemDesignV2(LibraryInterface* lh,
 
                 if (index != -1 && oldSWInstances[index].isImported())
                 {
-                    swInstances.append(oldSWInstances[index]);
+                    VLNV componentRef = swInstance.getComponentRef();
+                    swInstance = oldSWInstances[index];
+                    swInstance.setComponentRef(componentRef);
+
+                    swInstances.append(swInstance);
                     oldSWInstances.removeAt(index);
                 }
                 else
