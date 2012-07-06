@@ -260,6 +260,10 @@ private:
     //! If true, the off-page connection mode is active.
     bool offPageMode_;
 
+    //! If true, we're in replace component mode.
+    bool replaceMode_;
+    HWComponentItem* sourceComp_;
+
     QGraphicsItem* oldSelection_;
 };
 

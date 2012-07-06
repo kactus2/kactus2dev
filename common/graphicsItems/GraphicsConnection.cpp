@@ -1223,6 +1223,7 @@ void GraphicsConnection::setEndpoint1(ConnectionEndpoint* endpoint1)
         endpoint1_ = endpoint1;
     }
 
+    updatePosition();
     updateName();
     validate();
     // TODO: Child class additions?

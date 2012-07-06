@@ -57,6 +57,7 @@
 #include <QCoreApplication>
 #include <QPrinter>
 #include <QListIterator>
+#include <QApplication>
 
 #include <QDebug>
 #include "columnview/ColumnEditDialog.h"
@@ -73,7 +74,9 @@ HWDesignDiagram::HWDesignDiagram(LibraryInterface *lh, GenericEditProvider& edit
       dragCompType_(CIT_NONE),
       dragBus_(false),
       offPageMode_(false),
-      oldSelection_(0)
+      oldSelection_(0),
+      replaceMode_(false),
+      sourceComp_(0)
 {
     connect(this, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
     connect(&editProvider, SIGNAL(modified()), this, SIGNAL(contentChanged()));
@@ -1082,8 +1085,29 @@ void HWDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     }
     else if (getMode() == MODE_SELECT)
     {
-        // Handle the mouse press and bring the new selection to front.
-        QGraphicsScene::mousePressEvent(mouseEvent);
+        // Check if the use pressed Alt over a component => replace component mode.
+        if (mouseEvent->modifiers() & Qt::AltModifier)
+        {
+            HWComponentItem* sourceComp = 0;
+            QList<QGraphicsItem*> itemList = items(mouseEvent->scenePos());
+
+            if (!itemList.empty())
+            {
+                sourceComp = dynamic_cast<HWComponentItem*>(itemList.back());
+            }
+
+            if (sourceComp != 0)
+            {
+                sourceComp_ = sourceComp;
+                QApplication::setOverrideCursor(Qt::ForbiddenCursor);
+                replaceMode_ = true;
+            }
+        }
+        else
+        {
+            // Handle the mouse press and bring the new selection to front.
+            QGraphicsScene::mousePressEvent(mouseEvent);
+        }
     }
 }
 
@@ -1172,11 +1196,70 @@ void HWDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
         }
     }
 
+    if (replaceMode_)
+    {
+        HWComponentItem* destComp = 0;
+        QList<QGraphicsItem*> itemList = items(mouseEvent->scenePos());
+
+        if (!itemList.empty())
+        {
+            destComp = dynamic_cast<HWComponentItem*>(itemList.back());
+        }
+
+        if (destComp != 0 && destComp != sourceComp_)
+        {
+            QApplication::setOverrideCursor(Qt::ClosedHandCursor);
+        }
+        else
+        {
+            QApplication::setOverrideCursor(Qt::ForbiddenCursor);
+        }
+    }
+
     QGraphicsScene::mouseMoveEvent(mouseEvent);
 }
 
 void HWDesignDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
+    // Check if we're replacing a component.
+    if (replaceMode_)
+    {
+        replaceMode_ = false;
+        QApplication::setOverrideCursor(Qt::ArrowCursor);
+
+        HWComponentItem* destComp = 0;
+        QList<QGraphicsItem*> itemList = items(mouseEvent->scenePos());
+
+        if (!itemList.empty())
+        {
+            destComp = dynamic_cast<HWComponentItem*>(itemList.back());
+        }
+
+        if (destComp == 0 || destComp == sourceComp_)
+        {
+            return;
+        }
+
+        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+                           tr("Component instance '%1' is about to be switched in place "
+                           "with '%2'. Continue and replace?").arg(destComp->name(), sourceComp_->name()),
+                           QMessageBox::Yes | QMessageBox::No, (QWidget*)parent());
+
+        if (msgBox.exec() == QMessageBox::No)
+        {
+            return;
+        }
+
+        // Perform the replacement.
+        QSharedPointer<ReplaceComponentCommand> cmd(new ReplaceComponentCommand(destComp, sourceComp_, true, true));
+        connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+            this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+        connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+            this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+
+        getEditProvider().addCommand(cmd);
+    }
+
 	// process the normal mouse release event
     QGraphicsScene::mouseReleaseEvent(mouseEvent);
 }
