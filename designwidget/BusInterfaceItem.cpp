@@ -534,14 +534,12 @@ void BusInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         Q_ASSERT(column != 0);
         column->onReleaseItem(this);
 
-        oldColumn_ = 0;
-
         QSharedPointer<QUndoCommand> cmd;
 
         // Check if the interface position was really changed.
         if (oldPos_ != scenePos())
         {
-            cmd = QSharedPointer<QUndoCommand>(new ItemMoveCommand(this, oldPos_));
+            cmd = QSharedPointer<QUndoCommand>(new ItemMoveCommand(this, oldPos_, oldColumn_));
         }
         else
         {
@@ -555,7 +553,7 @@ void BusInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         {
             if (cur.key()->scenePos() != cur.value())
             {
-                QUndoCommand* childCmd = new ItemMoveCommand(cur.key(), cur.value(), cmd.data());
+                QUndoCommand* childCmd = new ItemMoveCommand(cur.key(), cur.value(), oldColumn_, cmd.data());
             }
 
             ++cur;
@@ -574,6 +572,8 @@ void BusInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         {
             static_cast<DesignDiagram*>(scene())->getEditProvider().addCommand(cmd, false);
         }
+
+        oldColumn_ = 0;
     }
 }
 

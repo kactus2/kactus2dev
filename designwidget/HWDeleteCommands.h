@@ -136,6 +136,9 @@ private:
 
     //! Boolean flag for indicating if the component should be deleted in the destructor.
     bool del_;
+
+    //! If true, the command has not been run previously.
+    bool firstRun_;
 };
 
 //-----------------------------------------------------------------------------

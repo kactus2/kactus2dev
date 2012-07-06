@@ -12,11 +12,14 @@
 #include "HWChangeCommands.h"
 
 #include "HWDeleteCommands.h"
+#include "HWMoveCommands.h"
+#include "HWAddCommands.h"
 
 #include <models/component.h>
 #include <models/ComInterface.h>
 
 #include <common/graphicsItems/ComponentItem.h>
+#include <common/graphicsItems/ConnectionUndoCommands.h>
 
 #include <ConfigurationEditor/activeviewmodel.h>
 
@@ -757,4 +760,96 @@ void AdHocBoundsChangeCommand::redo()
     {
         connection_->setAdHocLeftBound(endpointIndex_, newValue_);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ReplaceComponentCommand::ReplaceComponentCommand()
+//-----------------------------------------------------------------------------
+ReplaceComponentCommand::ReplaceComponentCommand(HWComponentItem* oldComp, HWComponentItem* newComp,
+                                                 bool existing, bool keepOld, QUndoCommand* parent)
+    : QUndoCommand(parent),
+      oldComp_(oldComp),
+      newComp_(newComp),
+      existing_(existing)
+{
+    foreach (ConnectionEndpoint* oldEndpoint, oldComp_->getEndpoints())
+    {
+        HWConnectionEndpoint* newEndpoint = 0;
+
+        if (oldEndpoint->type() == BusPortItem::Type)
+        {
+            newEndpoint = newComp_->getBusPort(oldEndpoint->name());
+        }
+        else if (oldEndpoint->type() == AdHocPortItem::Type)
+        {
+            newEndpoint = newComp_->getAdHocPort(oldEndpoint->name());
+        }
+
+        if (newEndpoint != 0)
+        {
+            // Create a move command to move the port to the same place where it is in the old component.
+            QUndoCommand* moveCmd = new PortMoveCommand(newEndpoint, newEndpoint->pos(), oldEndpoint->pos(), this);
+
+            // Exchange connections between the endpoints.
+            foreach (GraphicsConnection* conn, oldEndpoint->getConnections())
+            {
+                QUndoCommand* exchangeCmd = new ConnectionExchangeCommand(conn, oldEndpoint, newEndpoint, this);
+            }
+        }
+    }
+
+    // Create a delete command for the old component if it should not be kept.
+    if (!keepOld)
+    {
+        ComponentDeleteCommand* deleteCmd = new ComponentDeleteCommand(oldComp_, this);
+
+        connect(deleteCmd, SIGNAL(componentInstantiated(ComponentItem*)),
+            this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+        connect(deleteCmd, SIGNAL(componentInstanceRemoved(ComponentItem*)),
+            this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+    }
+
+    // Create a move/add command for the new component.
+    if (existing)
+    {
+        QUndoCommand* moveCmd = new ItemMoveCommand(newComp_, newComp_->scenePos(), newComp_->getParentStack(),
+                                                    oldComp_->scenePos(), oldComp_->getParentStack(), this);
+    }
+    else
+    {
+        ItemAddCommand* addCmd = new ItemAddCommand(oldComp_->getParentStack(), newComp_, this);
+
+        connect(addCmd, SIGNAL(componentInstantiated(ComponentItem*)),
+            this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+        connect(addCmd, SIGNAL(componentInstanceRemoved(ComponentItem*)),
+            this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ReplaceComponentCommand::~ReplaceComponentCommand()
+//-----------------------------------------------------------------------------
+ReplaceComponentCommand::~ReplaceComponentCommand()
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: ReplaceComponentCommand::undo()
+//-----------------------------------------------------------------------------
+void ReplaceComponentCommand::undo()
+{
+    // Execute child commands.
+    QUndoCommand::undo();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ReplaceComponentCommand::redo()
+//-----------------------------------------------------------------------------
+void ReplaceComponentCommand::redo()
+{
+    // Place the new component to the exact same location as the old one.
+    newComp_->setPos(oldComp_->scenePos());
+
+    // Execute child commands.
+    QUndoCommand::redo();
 }

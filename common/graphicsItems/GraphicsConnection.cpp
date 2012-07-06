@@ -1201,3 +1201,56 @@ void GraphicsConnection::validate()
     invalid_ = !endpoint1_->isConnectionValid(endpoint2_) || !endpoint2_->isConnectionValid(endpoint1_);
     setDefaultColor();
 }
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::setEndpoint1()
+//-----------------------------------------------------------------------------
+void GraphicsConnection::setEndpoint1(ConnectionEndpoint* endpoint1)
+{
+    if (endpoint1_ != 0)
+    {
+        // Disconnect from the previous endpoint.
+        endpoint1_->removeConnection(this);
+        endpoint1_->onDisconnect(endpoint2_);
+
+        // Connect to the new endpoint.
+        endpoint1_ = endpoint1;
+        endpoint1_->onConnect(endpoint2_);
+        endpoint1->addConnection(this);
+    }
+    else
+    {
+        endpoint1_ = endpoint1;
+    }
+
+    updateName();
+    validate();
+    // TODO: Child class additions?
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::setEndpoint2()
+//-----------------------------------------------------------------------------
+void GraphicsConnection::setEndpoint2(ConnectionEndpoint* endpoint2)
+{
+    if (endpoint2_ != 0)
+    {
+        // Disconnect from the previous endpoint.
+        endpoint2_->removeConnection(this);
+        endpoint2_->onDisconnect(endpoint1_);
+
+        // Connect to the new endpoint.
+        endpoint2_ = endpoint2;
+        endpoint2_->onConnect(endpoint1_);
+        endpoint2->addConnection(this);
+    }
+    else
+    {
+        endpoint2_ = endpoint2;
+    }
+
+    updatePosition();
+    updateName();
+    validate();
+    // TODO: Child class additions?
+}

@@ -98,33 +98,10 @@ void ColumnDeleteCommand::redo()
 //-----------------------------------------------------------------------------
 ComponentDeleteCommand::ComponentDeleteCommand(HWComponentItem* component, QUndoCommand* parent) :
     QUndoCommand(parent), component_(component), parent_(static_cast<GraphicsColumn*>(component->parentItem())),
-    scene_(component->scene()), del_(true)
+    scene_(component->scene()),
+    del_(true),
+    firstRun_(true)
 {
-    // Create child commands for removing interconnections.
-    foreach (QGraphicsItem *item, component_->childItems())
-    {
-        HWConnectionEndpoint* endpoint = dynamic_cast<HWConnectionEndpoint*>(item);
-
-        if (endpoint == 0)
-        {
-            continue;
-        }
-
-        foreach (GraphicsConnection* conn, endpoint->getConnections())
-        {
-            QUndoCommand* cmd =
-                new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
-        }
-
-        if (endpoint->getOffPageConnector() != 0)
-        {
-            foreach (GraphicsConnection* conn, endpoint->getOffPageConnector()->getConnections())
-            {
-                QUndoCommand* cmd =
-                    new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
-            }
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -158,6 +135,37 @@ void ComponentDeleteCommand::undo()
 //-----------------------------------------------------------------------------
 void ComponentDeleteCommand::redo()
 {
+    if (firstRun_)
+    {
+        // Create child commands for removing interconnections.
+        foreach (QGraphicsItem *item, component_->childItems())
+        {
+            HWConnectionEndpoint* endpoint = dynamic_cast<HWConnectionEndpoint*>(item);
+
+            if (endpoint == 0)
+            {
+                continue;
+            }
+
+            foreach (GraphicsConnection* conn, endpoint->getConnections())
+            {
+                QUndoCommand* cmd =
+                    new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
+            }
+
+            if (endpoint->getOffPageConnector() != 0)
+            {
+                foreach (GraphicsConnection* conn, endpoint->getOffPageConnector()->getConnections())
+                {
+                    QUndoCommand* cmd =
+                        new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
+                }
+            }
+        }
+
+        firstRun_ = false;
+    }
+
     // Execute child commands.
     QUndoCommand::redo();
 

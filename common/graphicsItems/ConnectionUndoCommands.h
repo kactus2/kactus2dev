@@ -16,6 +16,7 @@
 #include <QPointF>
 
 class GraphicsConnection;
+class ConnectionEndpoint;
 
 //-----------------------------------------------------------------------------
 //! ConnectionMoveCommand class.
@@ -122,6 +123,57 @@ private:
 
 	//! \brief The old description of the connection.
 	QString oldDescription_;
+};
+
+//-----------------------------------------------------------------------------
+//! ConnectionExchangeCommand class.
+//-----------------------------------------------------------------------------
+class ConnectionExchangeCommand : public QUndoCommand
+{
+public:
+    /*!
+     *  Constructor.
+     *
+     *      @param [in] conn         The connection.
+     *      @param [in] oldEndpoint  The old endpoint from which to disconnect the connection.
+     *      @param [in] newEndpoint  The new endpoint to which to connect the connection.
+     *      @param [in] parent       The parent command.
+     */
+    ConnectionExchangeCommand(GraphicsConnection* connection, ConnectionEndpoint* oldEndpoint,
+                              ConnectionEndpoint* newEndpoint, QUndoCommand* parent = 0);
+
+    /*!
+     *  Destructor.
+     */
+    ~ConnectionExchangeCommand();
+
+    /*!
+     *  Undoes the command.
+     */
+    virtual void undo();
+
+    /*!
+     *  Redoes the command.
+     */
+    virtual void redo();
+
+private:
+    // Disable copying.
+    ConnectionExchangeCommand(ConnectionExchangeCommand const& rhs);
+    ConnectionExchangeCommand& operator=(ConnectionExchangeCommand const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The connection.
+    GraphicsConnection* conn_;
+
+    //! The old endpoint.
+    ConnectionEndpoint* oldEndpoint_;
+
+    //! The new endpoint.
+    ConnectionEndpoint* newEndpoint_;
 };
 
 //-----------------------------------------------------------------------------

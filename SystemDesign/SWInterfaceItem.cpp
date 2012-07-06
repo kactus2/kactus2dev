@@ -16,6 +16,8 @@
 #include "HWMappingItem.h"
 #include "SystemMoveCommands.h"
 
+#include <designwidget/HWMoveCommands.h>
+
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/GenericEditProvider.h>
@@ -541,7 +543,7 @@ void SWInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         // Check if the interface position was really changed.
         if (oldPos_ != scenePos())
         {
-            cmd = QSharedPointer<QUndoCommand>(new SystemItemMoveCommand(this, oldPos_, oldStack_));
+            cmd = QSharedPointer<QUndoCommand>(new ItemMoveCommand(this, oldPos_, oldStack_));
         }
         else
         {
@@ -555,9 +557,9 @@ void SWInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         {
             if (cur.key()->scenePos() != cur.value())
             {
-                QUndoCommand* childCmd = new SystemItemMoveCommand(cur.key(), cur.value(),
-                                                                   dynamic_cast<IGraphicsItemStack*>(cur.key()->parentItem()),
-                                                                   cmd.data());
+                QUndoCommand* childCmd = new ItemMoveCommand(cur.key(), cur.value(),
+                                                             dynamic_cast<IGraphicsItemStack*>(cur.key()->parentItem()),
+                                                             cmd.data());
             }
 
             ++cur;

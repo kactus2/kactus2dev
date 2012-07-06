@@ -11,6 +11,9 @@
 
 #include "ComponentItem.h"
 
+#include "ConnectionEndpoint.h"
+#include "IGraphicsItemStack.h"
+
 #include <LibraryManager/vlnv.h>
 
 #include <common/DesignDiagram.h>
@@ -258,4 +261,32 @@ void ComponentItem::updateNameLabel(QString const& text)
 LibraryInterface* ComponentItem::getLibraryInterface()
 {
     return libInterface_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentItem::getEndpoints()
+//-----------------------------------------------------------------------------
+QList<ConnectionEndpoint*> ComponentItem::getEndpoints() const
+{
+    QList<ConnectionEndpoint*> endpoints;
+
+    foreach (QGraphicsItem* item, QGraphicsRectItem::children())
+    {
+        ConnectionEndpoint* endpoint = dynamic_cast<ConnectionEndpoint*>(item);
+
+        if (endpoint != 0)
+        {
+            endpoints.append(endpoint);
+        }
+    }
+
+    return endpoints;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentItem::getParentStack()
+//-----------------------------------------------------------------------------
+IGraphicsItemStack* ComponentItem::getParentStack()
+{
+    return dynamic_cast<IGraphicsItemStack*>(parentItem());
 }

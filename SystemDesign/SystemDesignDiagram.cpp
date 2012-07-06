@@ -822,7 +822,7 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
 //                     {
 //                         if (cur.key()->scenePos() != cur.value())
 //                         {
-//                             QUndoCommand* childCmd = new SystemItemMoveCommand(cur.key(), cur.value(), cmd.data());
+//                             QUndoCommand* childCmd = new ItemMoveCommand(cur.key(), cur.value(), cmd.data());
 //                         }
 // 
 //                         ++cur;

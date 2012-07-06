@@ -435,16 +435,11 @@ QString const& SystemComponentItem::getImportRef() const
 //-----------------------------------------------------------------------------
 void SystemComponentItem::revalidateConnections()
 {
-    foreach (QGraphicsItem *item, QGraphicsRectItem::children())
+    foreach (ConnectionEndpoint* endpoint, getEndpoints())
     {
-        if (item->type() == SWPortItem::Type)
+        foreach (GraphicsConnection* conn, endpoint->getConnections())
         {
-            SWPortItem* port = static_cast<SWPortItem*>(item);
-
-            foreach (GraphicsConnection* conn, port->getConnections())
-            {
-                conn->validate();
-            }
+            conn->validate();
         }
     }
 }

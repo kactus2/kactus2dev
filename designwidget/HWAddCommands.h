@@ -29,6 +29,7 @@ class BusInterfaceItem;
 class GraphicsColumn;
 class GraphicsColumnLayout;
 class ComponentItem;
+class IGraphicsItemStack;
 
 //-----------------------------------------------------------------------------
 //! ItemAddCommand class.
@@ -42,11 +43,11 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] column     The column to which to add the item.
-     *      @param [in] item       The item to add.
-     *      @param [in] parent     The parent command.
+     *      @param [in] stack   The stack to which to add the item.
+     *      @param [in] item    The item to add.
+     *      @param [in] parent  The parent command.
      */
-    ItemAddCommand(GraphicsColumn* column, QGraphicsItem* item, QUndoCommand* parent = 0);
+    ItemAddCommand(IGraphicsItemStack* stack, QGraphicsItem* item, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -84,7 +85,7 @@ private:
     QGraphicsItem* item_;
 
     //! The item's parent column.
-    GraphicsColumn* column_;
+    IGraphicsItemStack* stack_;
 
     //! Boolean flag for indicating if the component should be deleted in the destructor.
     bool del_;

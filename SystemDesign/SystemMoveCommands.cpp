@@ -52,56 +52,6 @@ void SWConnectionMoveCommand::redo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: SystemItemMoveCommand()
-//-----------------------------------------------------------------------------
-SystemItemMoveCommand::SystemItemMoveCommand(QGraphicsItem* item, QPointF const& oldPos,
-                                             IGraphicsItemStack* oldStack, QUndoCommand* parent)
-    : QUndoCommand(parent),
-      item_(item),
-      oldPos_(oldPos),
-      oldStack_(oldStack),
-      newPos_(item->scenePos()),
-      newStack_(dynamic_cast<IGraphicsItemStack*>(item->parentItem()))
-{
-    Q_ASSERT(oldStack != 0);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ~SystemItemMoveCommand()
-//-----------------------------------------------------------------------------
-SystemItemMoveCommand::~SystemItemMoveCommand()
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: undo()
-//-----------------------------------------------------------------------------
-void SystemItemMoveCommand::undo()
-{
-    newStack_->removeItem(item_);
-
-    item_->setPos(oldStack_->mapStackFromScene(oldPos_));
-    oldStack_->addItem(item_);
-
-    // Execute child commands.
-    QUndoCommand::undo();
-}
-
-//-----------------------------------------------------------------------------
-// Function: redo()
-//-----------------------------------------------------------------------------
-void SystemItemMoveCommand::redo()
-{
-    oldStack_->removeItem(item_);
-    
-    item_->setPos(newStack_->mapStackFromScene(newPos_));
-    newStack_->addItem(item_);
-
-    // Execute child commands.
-    QUndoCommand::redo();
-}
-
-//-----------------------------------------------------------------------------
 // Function: ItemMoveCommand()
 //-----------------------------------------------------------------------------
 SWPortMoveCommand::SWPortMoveCommand(SWPortItem* port, QPointF const& oldPos,

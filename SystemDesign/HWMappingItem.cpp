@@ -17,6 +17,8 @@
 #include "SWComponentItem.h"
 #include "SWPortItem.h"
 
+#include <designwidget/HWMoveCommands.h>
+
 #include <LibraryManager/libraryinterface.h>
 
 #include <common/graphicsItems/GraphicsConnection.h>
@@ -134,7 +136,7 @@ void HWMappingItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 
         if (scenePos() != oldPos_)
         {
-            cmd = QSharedPointer<QUndoCommand>(new SystemItemMoveCommand(this, oldPos_, oldStack_));
+            cmd = QSharedPointer<QUndoCommand>(new ItemMoveCommand(this, oldPos_, oldStack_));
         }
         else
         {

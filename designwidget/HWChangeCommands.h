@@ -933,5 +933,62 @@ private:
 };
 
 //-----------------------------------------------------------------------------
+//! Undo command for replacing a HW component instance with another one.
+//-----------------------------------------------------------------------------
+class ReplaceComponentCommand : public QObject, public QUndoCommand
+{
+    Q_OBJECT
+
+public:
+
+	/*!
+     *  Constructor.
+	 */
+	ReplaceComponentCommand(HWComponentItem* oldComp, HWComponentItem* newComp,
+                            bool existing, bool keepOld, QUndoCommand* parent = 0);
+
+	/*!
+     *  Destructor.
+     */
+	virtual ~ReplaceComponentCommand();
+
+	/*!
+	 *  Undoes the command.
+	 */
+	virtual void undo();
+
+	/*! 
+	 *  Redoes the command.
+	 */
+	virtual void redo();
+
+signals:
+    //! \brief Emitted when a new component is instantiated to the design.
+    void componentInstantiated(ComponentItem*);
+
+    //! \brief Emitted when a component instance is removed from the design.
+    void componentInstanceRemoved(ComponentItem*);
+
+private:
+    // Disable copying.
+    ReplaceComponentCommand(ReplaceComponentCommand const& rhs);
+    ReplaceComponentCommand& operator=(ReplaceComponentCommand const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+	//! The old component to replace.
+    HWComponentItem* oldComp_;
+
+    //! The new component that replaces the old one.
+    HWComponentItem* newComp_;
+
+    //! If true, the new component is an existing one and should not be deleted
+    //! when undoing the command.
+    bool existing_;
+};
+
+//-----------------------------------------------------------------------------
 
 #endif // HWCHANGECOMMANDS_H

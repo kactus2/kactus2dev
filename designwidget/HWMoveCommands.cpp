@@ -21,9 +21,32 @@
 // Function: ItemMoveCommand()
 //-----------------------------------------------------------------------------
 ItemMoveCommand::ItemMoveCommand(QGraphicsItem* item, QPointF const& oldPos,
-                                 QUndoCommand* parent) : QUndoCommand(parent), item_(item),
-                                                         oldPos_(oldPos), newPos_(item->scenePos())
+                                 IGraphicsItemStack* oldStack, QUndoCommand* parent)
+    : QUndoCommand(parent),
+      item_(item),
+      oldPos_(oldPos),
+      oldStack_(oldStack),
+      newPos_(item->scenePos()),
+      newStack_(dynamic_cast<IGraphicsItemStack*>(item->parentItem()))
 {
+    Q_ASSERT(oldStack != 0);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ItemMoveCommand::ItemMoveCommand()
+//-----------------------------------------------------------------------------
+ItemMoveCommand::ItemMoveCommand(QGraphicsItem* item, QPointF const& oldPos, IGraphicsItemStack* oldStack,
+                                 QPointF const& newPos, IGraphicsItemStack* newStack,
+                                 QUndoCommand* parent /*= 0*/)
+    : QUndoCommand(parent),
+      item_(item),
+      oldPos_(oldPos),
+      oldStack_(oldStack),
+      newPos_(newPos),
+      newStack_(newStack)
+{
+    Q_ASSERT(oldStack != 0);
+    Q_ASSERT(newStack != 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -38,13 +61,10 @@ ItemMoveCommand::~ItemMoveCommand()
 //-----------------------------------------------------------------------------
 void ItemMoveCommand::undo()
 {
-    HWColumn* oldColumn = static_cast<HWColumn*>(item_->parentItem());
+    newStack_->removeItem(item_);
 
-    item_->setPos(oldColumn->mapFromScene(oldPos_));
-    oldColumn->onMoveItem(item_);
-
-    HWColumn* newColumn = static_cast<HWColumn*>(item_->parentItem());
-    newColumn->onReleaseItem(item_);
+    item_->setPos(oldStack_->mapStackFromScene(oldPos_));
+    oldStack_->addItem(item_);
 
     // Execute child commands.
     QUndoCommand::undo();
@@ -55,13 +75,10 @@ void ItemMoveCommand::undo()
 //-----------------------------------------------------------------------------
 void ItemMoveCommand::redo()
 {
-    HWColumn* oldColumn = static_cast<HWColumn*>(item_->parentItem());
+    oldStack_->removeItem(item_);
 
-    item_->setPos(oldColumn->mapFromScene(newPos_));
-    oldColumn->onMoveItem(item_);
-
-    HWColumn* newColumn = static_cast<HWColumn*>(item_->parentItem());
-    newColumn->onReleaseItem(item_);
+    item_->setPos(newStack_->mapStackFromScene(newPos_));
+    newStack_->addItem(item_);
 
     // Execute child commands.
     QUndoCommand::redo();
@@ -74,6 +91,19 @@ PortMoveCommand::PortMoveCommand(HWConnectionEndpoint* port, QPointF const& oldP
                                  QUndoCommand* parent) : QUndoCommand(parent), port_(port),
                                  oldPos_(oldPos), newPos_(port->pos())
 {
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMoveCommand::PortMoveCommand()
+//-----------------------------------------------------------------------------
+PortMoveCommand::PortMoveCommand(HWConnectionEndpoint* port, QPointF const& oldPos,
+                                 QPointF const& newPos, QUndoCommand* parent /*= 0*/)
+    : QUndoCommand(parent),
+      port_(port),
+      oldPos_(oldPos),
+      newPos_(newPos)
+{
+
 }
 
 //-----------------------------------------------------------------------------

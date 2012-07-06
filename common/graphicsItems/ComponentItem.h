@@ -18,7 +18,9 @@
 #include "common/diagramgrid.h"
 
 class Component;
+class ConnectionEndpoint;
 class LibraryInterface;
+class IGraphicsItemStack;
 
 //-----------------------------------------------------------------------------
 //! ComponentItem class.
@@ -132,6 +134,16 @@ public:
 	 * \return QStringList containing the names of the views for the component.
 	*/
 	QStringList getViews() const;
+
+    /*!
+     *  Returns the list of endpoints in the component.
+     */
+    QList<ConnectionEndpoint*> getEndpoints() const;
+
+    /*!
+     *  Returns the parent graphics item stack.
+     */
+    IGraphicsItemStack* getParentStack();
 
     /*!
      *  Returns true if the connections should not be updated automatically in

@@ -22,6 +22,7 @@ class BusPortItem;
 class HWComponentItem;
 class BusInterfaceItem;
 class HWConnectionEndpoint;
+class IGraphicsItemStack;
 
 //-----------------------------------------------------------------------------
 //! ItemMoveCommand class.
@@ -32,11 +33,26 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] item    The item to move.
-     *      @param [in] oldPos  The item's old position.
-     *      @param [in] parent  The parent command.
+     *      @param [in] item      The item to move.
+     *      @param [in] oldPos    The item's old position.
+     *      @param [in] oldStack  The item's old stack.
+     *      @param [in] parent    The parent command.
      */
-    ItemMoveCommand(QGraphicsItem* item, QPointF const& oldPos, QUndoCommand* parent = 0);
+    ItemMoveCommand(QGraphicsItem* item, QPointF const& oldPos,
+                    IGraphicsItemStack* oldStack, QUndoCommand* parent = 0);
+
+    /*!
+     *  Constructor.
+     *
+     *      @param [in] item      The item to move.
+     *      @param [in] oldPos    The item's old position.
+     *      @param [in] oldStack  The item's old stack.
+     *      @param [in] oldPos    The item's new position.
+     *      @param [in] oldStack  The item's new stack.
+     *      @param [in] parent    The parent command.
+     */
+    ItemMoveCommand(QGraphicsItem* item, QPointF const& oldPos, IGraphicsItemStack* oldStack,
+                    QPointF const& newPos, IGraphicsItemStack* newStack, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -68,8 +84,14 @@ private:
     //! The old position of the item.
     QPointF oldPos_;
 
+    //! The old parent stack.
+    IGraphicsItemStack* oldStack_;
+
     //! The new position of the item.
     QPointF newPos_;
+
+    //! The new parent stack.
+    IGraphicsItemStack* newStack_;
 };
 
 //-----------------------------------------------------------------------------
@@ -79,13 +101,24 @@ class PortMoveCommand : public QUndoCommand
 {
 public:
     /*!
-     *  Constructor.
+     *  Constructor which assumes that the port has already been moved to its new position.
      *
      *      @param [in] port    The port to move.
      *      @param [in] oldPos  The port's old position.
      *      @param [in] parent  The parent command.
      */
     PortMoveCommand(HWConnectionEndpoint* port, QPointF const& oldPos, QUndoCommand* parent = 0);
+
+    /*!
+     *  Constructor.
+     *
+     *      @param [in] port    The port to move.
+     *      @param [in] oldPos  The port's old position.
+     *      @param [in] newPos  The port's new position.
+     *      @param [in] parent  The parent command.
+     */
+    PortMoveCommand(HWConnectionEndpoint* port, QPointF const& oldPos,
+                    QPointF const& newPos, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.

@@ -222,7 +222,7 @@ void HWComponentItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 
         if (scenePos() != oldPos_)
         {
-            cmd = QSharedPointer<QUndoCommand>(new ItemMoveCommand(this, oldPos_));
+            cmd = QSharedPointer<QUndoCommand>(new ItemMoveCommand(this, oldPos_, oldColumn_));
         }
         else
         {

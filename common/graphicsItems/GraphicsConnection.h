@@ -82,6 +82,24 @@ public:
     virtual bool connectEnds();
 
     /*!
+     *  Sets the first endpoint. If the connection is already connected, the connection
+     *  is disconnected from the old endpoint and connected to the new given endpoint, updating the
+     *  route too.
+     *
+     *      @param [in] endpoint1 The first endpoint to set.
+     */
+    void setEndpoint1(ConnectionEndpoint* endpoint1);
+
+    /*!
+     *  Sets the first endpoint. If the connection is already connected, the connection
+     *  is disconnected from the old endpoint and connected to the new given endpoint, updating the
+     *  route too.
+     *
+     *      @param [in] endpoint2 The second endpoint to set.
+     */
+    void setEndpoint2(ConnectionEndpoint* endpoint2);
+
+    /*!
      *  Validates the connection and draws it in red if it is not valid.
      */
     void validate();

@@ -88,3 +88,55 @@ void ConnectionChangeCommand::redo()
     connection_->setName(newName_);
     connection_->setDescription(newDescription_);
 }
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionExchangeCommand::ConnectionExchangeCommand()
+//-----------------------------------------------------------------------------
+ConnectionExchangeCommand::ConnectionExchangeCommand(GraphicsConnection* connection,
+                                                     ConnectionEndpoint* oldEndpoint,
+                                                     ConnectionEndpoint* newEndpoint,
+                                                     QUndoCommand* parent)
+    : QUndoCommand(parent),
+      conn_(connection),
+      oldEndpoint_(oldEndpoint),
+      newEndpoint_(newEndpoint)
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionExchangeCommand::~ConnectionExchangeCommand()
+//-----------------------------------------------------------------------------
+ConnectionExchangeCommand::~ConnectionExchangeCommand()
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionExchangeCommand::undo()
+//-----------------------------------------------------------------------------
+void ConnectionExchangeCommand::undo()
+{
+    if (conn_->endpoint1() == newEndpoint_)
+    {
+        conn_->setEndpoint1(oldEndpoint_);
+    }
+    else
+    {
+        conn_->setEndpoint2(oldEndpoint_);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionExchangeCommand::redo()
+//-----------------------------------------------------------------------------
+void ConnectionExchangeCommand::redo()
+{
+    if (conn_->endpoint1() == oldEndpoint_)
+    {
+        conn_->setEndpoint1(newEndpoint_);
+    }
+    else
+    {
+        conn_->setEndpoint2(newEndpoint_);
+    }
+}

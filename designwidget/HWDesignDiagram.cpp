@@ -1528,15 +1528,33 @@ void HWDesignDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 {
     if (dragCompType_ != CIT_NONE)
     {
-        GraphicsColumn* column = layout_->findColumnAt(snapPointToGrid(event->scenePos()));
+        // Find the item under the cursor.
+        QGraphicsItem* item = 0;
+        QList<QGraphicsItem*> itemList = items(event->scenePos());
 
-        if (column != 0 && column->getColumnDesc().getAllowedItems() & dragCompType_)
+        if (!itemList.empty())
         {
-            event->setDropAction(Qt::CopyAction);
+            item = itemList.back();
+        }
+
+        // If the item is a HW component, determine whether the component can be replaced with the dragged one.
+        if (item != 0 && item->type() == HWComponentItem::Type)
+        {
+            event->setDropAction(Qt::MoveAction);
         }
         else
         {
-            event->setDropAction(Qt::IgnoreAction);
+            // Otherwise check whether the component can be placed to the underlying column.
+            GraphicsColumn* column = layout_->findColumnAt(snapPointToGrid(event->scenePos()));
+
+            if (column != 0 && column->getColumnDesc().getAllowedItems() & dragCompType_)
+            {
+                event->setDropAction(Qt::CopyAction);
+            }
+            else
+            {
+                event->setDropAction(Qt::IgnoreAction);
+            }
         }
 
         event->accept();
@@ -1600,8 +1618,6 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
     // Check if the dragged item was a valid one.
     if (dragCompType_ != CIT_NONE)
     {
-        GraphicsColumn* column = layout_->findColumnAt(snapPointToGrid(event->scenePos()));
-
         // Retrieve the vlnv.
         VLNV *vlnv;
         memcpy(&vlnv, event->mimeData()->data("data/vlnvptr").data(), sizeof(vlnv));
@@ -1610,31 +1626,89 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         if (*vlnv == *getEditedComponent()->getVlnv())
         {
             QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                               tr("Component cannot be instantiated to its own design."),
-                               QMessageBox::Ok, (QWidget*)parent());
+                tr("Component cannot be instantiated to its own design."),
+                QMessageBox::Ok, (QWidget*)parent());
             msgBox.exec();
             return;
         }
 
         // Create the component model.
-		QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(*vlnv);
+        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(*vlnv);
         QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
-		// Set the instance name for the new component instance.
-		QString instanceName = createInstanceName(comp);
+        // Set the instance name for the new component instance.
+        QString instanceName = createInstanceName(comp);
 
-        // Create the diagram component.
-        HWComponentItem *newItem = new HWComponentItem(getLibraryInterface(), comp, instanceName);
-        newItem->setPos(snapPointToGrid(event->scenePos()));
-
-        if (column != 0)
+        // Act based on the selected drop action.
+        if (event->dropAction() == Qt::CopyAction)
         {
-            QSharedPointer<ItemAddCommand> cmd(new ItemAddCommand(column, newItem));
+            // Create the diagram component.
+            HWComponentItem *newItem = new HWComponentItem(getLibraryInterface(), comp, instanceName);
+            newItem->setPos(snapPointToGrid(event->scenePos()));
 
-			connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
-				this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-			connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
-				this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+            GraphicsColumn* column = layout_->findColumnAt(snapPointToGrid(event->scenePos()));
+
+            if (column != 0)
+            {
+                QSharedPointer<ItemAddCommand> cmd(new ItemAddCommand(column, newItem));
+
+			    connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+				    this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+			    connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+				    this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+
+                getEditProvider().addCommand(cmd);
+            }
+        }
+        else if (event->dropAction() == Qt::MoveAction)
+        {
+            // Replace the underlying component with the new one.
+
+            // Retrieve the old component (under the cursor).
+            HWComponentItem* oldCompItem = 0;
+
+            QList<QGraphicsItem*> itemList = items(event->scenePos());
+
+            if (!itemList.empty())
+            {
+                oldCompItem = dynamic_cast<HWComponentItem*>(itemList.back());
+            }
+
+            Q_ASSERT(oldCompItem != 0);
+
+            // TODO: Determine connectivity issues and ask confirmation from the user.
+//             QStringList detailList;
+// 
+//             foreach (ConnectionEndpoint* endpoint, oldCompItem->getEndpoints())
+//             {
+//                 if (endpoint->isConnected())
+//                 {
+//                     // Check if the endpoint is not found in the new component.
+//                     if (endpoint->getType() == ConnectionEndpoint::ENDPOINT_TYPE_BUS)
+//                     {
+//                     }
+//                 }
+//             }
+
+            QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+                               tr("Component instance '%1' is about to be replaced "
+                                  "with an instance of %2. Continue and replace?").arg(oldCompItem->name(), vlnv->toString()),
+                               QMessageBox::Yes | QMessageBox::No, (QWidget*)parent());
+            
+            if (msgBox.exec() == QMessageBox::No)
+            {
+                return;
+            }
+
+            // Create the component item.
+            HWComponentItem *newCompItem = new HWComponentItem(getLibraryInterface(), comp, instanceName);
+
+            // Perform the replacement.
+            QSharedPointer<ReplaceComponentCommand> cmd(new ReplaceComponentCommand(oldCompItem, newCompItem, false, false));
+            connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+                this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+            connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+                this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
             getEditProvider().addCommand(cmd);
         }
@@ -1901,7 +1975,7 @@ void HWDesignDiagram::addInterface(GraphicsColumn* column, QPointF const& pos)
         {
             if (cur.key()->scenePos() != cur.value())
             {
-                QUndoCommand* childCmd = new ItemMoveCommand(cur.key(), cur.value(), cmd.data());
+                QUndoCommand* childCmd = new ItemMoveCommand(cur.key(), cur.value(), column, cmd.data());
             }
 
             ++cur;

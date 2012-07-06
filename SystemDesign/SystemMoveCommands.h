@@ -73,63 +73,6 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-//! SystemItemMoveCommand class.
-//-----------------------------------------------------------------------------
-class SystemItemMoveCommand : public QUndoCommand
-{
-public:
-    /*!
-     *  Constructor.
-     *
-     *      @param [in] item      The item to move.
-     *      @param [in] oldPos    The item's old position.
-     *      @param [in] oldStack  The item's old stack.
-     *      @param [in] parent    The parent command.
-     */
-    SystemItemMoveCommand(QGraphicsItem* item, QPointF const& oldPos,
-                          IGraphicsItemStack* oldStack, QUndoCommand* parent = 0);
-
-    /*!
-     *  Destructor.
-     */
-    ~SystemItemMoveCommand();
-
-    /*!
-     *  Undoes the command.
-     */
-    virtual void undo();
-
-    /*!
-     *  Redoes the command.
-     */
-    virtual void redo();
-
-private:
-    // Disable copying.
-    SystemItemMoveCommand(SystemItemMoveCommand const& rhs);
-    SystemItemMoveCommand& operator=(SystemItemMoveCommand const& rhs);
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-    //! The graphics item.
-    QGraphicsItem* item_;
-
-    //! The old position of the item.
-    QPointF oldPos_;
-
-    //! The old parent stack.
-    IGraphicsItemStack* oldStack_;
-
-    //! The new position of the item.
-    QPointF newPos_;
-
-    //! The new parent stack.
-    IGraphicsItemStack* newStack_;
-};
-
-//-----------------------------------------------------------------------------
 //! SWPortMoveCommand class.
 //-----------------------------------------------------------------------------
 class SWPortMoveCommand : public QUndoCommand

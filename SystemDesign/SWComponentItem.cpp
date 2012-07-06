@@ -16,6 +16,8 @@
 #include "SystemMoveCommands.h"
 #include "SystemDesignDiagram.h"
 
+#include <designwidget/HWMoveCommands.h>
+
 #include <models/component.h>
 #include <models/model.h>
 
@@ -154,7 +156,7 @@ void SWComponentItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 
         if (scenePos() != oldPos_)
         {
-            cmd = QSharedPointer<QUndoCommand>(new SystemItemMoveCommand(this, oldPos_, oldStack_));
+            cmd = QSharedPointer<QUndoCommand>(new ItemMoveCommand(this, oldPos_, oldStack_));
         }
         else
         {
