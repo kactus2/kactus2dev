@@ -26,6 +26,8 @@
 #include <models/modelparameter.h>
 #include <models/view.h>
 
+#include <common/graphicsItems/CommonGraphicsUndoCommands.h>
+
 #include <QGraphicsDropShadowEffect>
 #include <QFont>
 #include <QTextDocument>

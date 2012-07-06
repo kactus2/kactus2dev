@@ -20,6 +20,7 @@
 
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/ConnectionUndoCommands.h>
+#include <common/graphicsItems/CommonGraphicsUndoCommands.h>
 
 #include <ConfigurationEditor/activeviewmodel.h>
 
@@ -769,8 +770,7 @@ ReplaceComponentCommand::ReplaceComponentCommand(HWComponentItem* oldComp, HWCom
                                                  bool existing, bool keepOld, QUndoCommand* parent)
     : QUndoCommand(parent),
       oldComp_(oldComp),
-      newComp_(newComp),
-      existing_(existing)
+      newComp_(newComp)
 {
     foreach (ConnectionEndpoint* oldEndpoint, oldComp_->getEndpoints())
     {

@@ -11,10 +11,14 @@
 
 #include "SystemChangeCommands.h"
 
+#include "SystemMoveCommands.h"
+#include "SystemDeleteCommands.h"
 #include "SWConnectionEndpoint.h"
 #include "SystemComponentItem.h"
 #include "SWComponentItem.h"
 
+#include <common/graphicsItems/CommonGraphicsUndoCommands.h>
+#include <common/graphicsItems/ConnectionUndoCommands.h>
 #include <common/graphicsItems/ComponentItem.h>
 
 #include <models/component.h>
@@ -124,4 +128,102 @@ void FileSetRefChangeCommand::undo()
 void FileSetRefChangeCommand::redo()
 {
     component_->setFileSetRef(newFileSetRef_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ReplaceSystemComponentCommand::ReplaceSystemComponentCommand()
+//-----------------------------------------------------------------------------
+ReplaceSystemComponentCommand::ReplaceSystemComponentCommand(SystemComponentItem* oldComp,
+                                                             SystemComponentItem* newComp,
+                                                             bool existing, bool keepOld,
+                                                             QUndoCommand* parent)
+    : QUndoCommand(parent),
+      oldComp_(oldComp),
+      newComp_(newComp)
+{
+    foreach (ConnectionEndpoint* oldEndpoint, oldComp_->getEndpoints())
+    {
+        SWPortItem* newEndpoint = newComp_->getSWPort(oldEndpoint->name(), oldEndpoint->getType());
+        
+        if (newEndpoint != 0)
+        {
+            // Create a move command to move the port to the same place where it is in the old component.
+            QUndoCommand* moveCmd = new SWPortMoveCommand(newEndpoint, newEndpoint->pos(), oldEndpoint->pos(), this);
+
+            // Exchange connections between the endpoints.
+            foreach (GraphicsConnection* conn, oldEndpoint->getConnections())
+            {
+                QUndoCommand* exchangeCmd = new ConnectionExchangeCommand(conn, oldEndpoint, newEndpoint, this);
+            }
+
+            // TODO: Enable when off-page connectors are used in system designs.
+//             foreach (GraphicsConnection* conn, oldEndpoint->getOffPageConnector()->getConnections())
+//             {
+//                 QUndoCommand* exchangeCmd = new ConnectionExchangeCommand(conn, oldEndpoint->getOffPageConnector(),
+//                     newEndpoint->getOffPageConnector(), this);
+//             }
+        }
+    }
+
+    // Create a delete command for the old component if it should not be kept.
+    if (!keepOld)
+    {
+        SystemComponentDeleteCommand* deleteCmd = new SystemComponentDeleteCommand(oldComp_, this);
+
+        connect(deleteCmd, SIGNAL(componentInstantiated(ComponentItem*)),
+            this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+        connect(deleteCmd, SIGNAL(componentInstanceRemoved(ComponentItem*)),
+            this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+    }
+
+    // Create a move/add command for the new component.
+    if (existing)
+    {
+        if (oldComp_->type() == newComp_->type())
+        {
+            QUndoCommand* moveCmd = new ItemMoveCommand(newComp_, newComp_->scenePos(),
+                                                        newComp_->getParentStack(), oldComp_->scenePos(),
+                                                        oldComp_->getParentStack(), this);
+        }
+    }
+    else
+    {
+        ItemAddCommand* addCmd = new ItemAddCommand(oldComp_->getParentStack(), newComp_, this);
+
+        connect(addCmd, SIGNAL(componentInstantiated(ComponentItem*)),
+            this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+        connect(addCmd, SIGNAL(componentInstanceRemoved(ComponentItem*)),
+            this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ReplaceSystemComponentCommand::~ReplaceSystemComponentCommand()
+//-----------------------------------------------------------------------------
+ReplaceSystemComponentCommand::~ReplaceSystemComponentCommand()
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: ReplaceSystemComponentCommand::undo()
+//-----------------------------------------------------------------------------
+void ReplaceSystemComponentCommand::undo()
+{
+    // Execute child commands.
+    QUndoCommand::undo();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ReplaceSystemComponentCommand::redo()
+//-----------------------------------------------------------------------------
+void ReplaceSystemComponentCommand::redo()
+{
+    if (newComp_->type() == oldComp_->type())
+    {
+        // Place the new component to the exact same location as the old one.
+        newComp_->setPos(oldComp_->scenePos());
+    }
+
+    // Execute child commands.
+    QUndoCommand::redo();
 }

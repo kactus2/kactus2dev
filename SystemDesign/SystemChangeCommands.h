@@ -179,5 +179,58 @@ private:
 };
 
 //-----------------------------------------------------------------------------
+//! Undo command for replacing a system component instance with another one.
+//-----------------------------------------------------------------------------
+class ReplaceSystemComponentCommand : public QObject, public QUndoCommand
+{
+    Q_OBJECT
+
+public:
+
+	/*!
+     *  Constructor.
+	 */
+	ReplaceSystemComponentCommand(SystemComponentItem* oldComp, SystemComponentItem* newComp,
+                                  bool existing, bool keepOld, QUndoCommand* parent = 0);
+
+	/*!
+     *  Destructor.
+     */
+	virtual ~ReplaceSystemComponentCommand();
+
+	/*!
+	 *  Undoes the command.
+	 */
+	virtual void undo();
+
+	/*! 
+	 *  Redoes the command.
+	 */
+	virtual void redo();
+
+signals:
+    //! \brief Emitted when a new component is instantiated to the design.
+    void componentInstantiated(ComponentItem*);
+
+    //! \brief Emitted when a component instance is removed from the design.
+    void componentInstanceRemoved(ComponentItem*);
+
+private:
+    // Disable copying.
+    ReplaceSystemComponentCommand(ReplaceSystemComponentCommand const& rhs);
+    ReplaceSystemComponentCommand& operator=(ReplaceSystemComponentCommand const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+	//! The old component to replace.
+    SystemComponentItem* oldComp_;
+
+    //! The new component that replaces the old one.
+    SystemComponentItem* newComp_;
+};
+
+//-----------------------------------------------------------------------------
 
 #endif // SYSTEMCHANGECOMMANDS_H

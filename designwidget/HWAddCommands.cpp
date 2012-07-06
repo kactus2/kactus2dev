@@ -21,64 +21,6 @@
 #include <models/businterface.h>
 
 //-----------------------------------------------------------------------------
-// Function: ItemAddCommand()
-//-----------------------------------------------------------------------------
-ItemAddCommand::ItemAddCommand(IGraphicsItemStack* stack, QGraphicsItem* item,
-                               QUndoCommand* parent) : QUndoCommand(parent), item_(item),
-                                                       stack_(stack), del_(false)
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: ~ItemAddCommand()
-//-----------------------------------------------------------------------------
-ItemAddCommand::~ItemAddCommand()
-{
-    if (del_)
-    {
-        delete item_;
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: undo()
-//-----------------------------------------------------------------------------
-void ItemAddCommand::undo()
-{
-    // Remove the item from the stack and the scene.
-    stack_->removeItem(item_);
-    item_->scene()->removeItem(item_);
-    del_ = true;
-
-	if (item_->type() == HWComponentItem::Type)
-    {
-		emit componentInstanceRemoved(static_cast<HWComponentItem*>(item_));
-    }
-
-    // Execute child commands.
-    QUndoCommand::undo();
-}
-
-//-----------------------------------------------------------------------------
-// Function: redo()
-//-----------------------------------------------------------------------------
-void ItemAddCommand::redo()
-{
-    // Add the item to the stack.
-    stack_->addItem(item_);
-    del_ = false;
-
-	if (item_->type() == HWComponentItem::Type)
-    {
-		emit componentInstantiated(static_cast<HWComponentItem*>(item_));
-    }
-
-    // Child commands need not be executed because the other items change their position
-    // in a deterministic way.
-    //QUndoCommand::redo();
-}
-
-//-----------------------------------------------------------------------------
 // Function: PortAddCommand()
 //-----------------------------------------------------------------------------
 PortAddCommand::PortAddCommand(HWComponentItem* component, QPointF const& pos,

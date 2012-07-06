@@ -88,6 +88,16 @@ public:
     SWPortMoveCommand(SWPortItem* port, QPointF const& oldPos, QUndoCommand* parent = 0);
 
     /*!
+     *  Constructor.
+     *
+     *      @param [in] port    The port to move.
+     *      @param [in] oldPos  The port's old position.
+     *      @param [in] newPos  The port's new position.
+     *      @param [in] parent  The parent command.
+     */
+    SWPortMoveCommand(SWPortItem* port, QPointF const& oldPos, QPointF const& newPos, QUndoCommand* parent = 0);
+
+    /*!
      *  Destructor.
      */
     ~SWPortMoveCommand();

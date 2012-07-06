@@ -446,6 +446,8 @@ SWInstance& SWInstance::operator=(SWInstance const& rhs)
         fileSetRef_ = rhs.fileSetRef_;
         hwRef_ = rhs.hwRef_;
         pos_ = rhs.pos_;
+        imported_ = rhs.imported_;
+        importRef_ = rhs.importRef_;
 
         comInterfaces_.clear();
 

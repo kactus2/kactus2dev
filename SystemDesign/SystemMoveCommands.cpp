@@ -64,6 +64,19 @@ SWPortMoveCommand::SWPortMoveCommand(SWPortItem* port, QPointF const& oldPos,
 }
 
 //-----------------------------------------------------------------------------
+// Function: SWPortMoveCommand::SWPortMoveCommand()
+//-----------------------------------------------------------------------------
+SWPortMoveCommand::SWPortMoveCommand(SWPortItem* port, QPointF const& oldPos,
+                                     QPointF const& newPos, QUndoCommand* parent /*= 0*/)
+    : QUndoCommand(parent),
+      port_(port),
+      oldPos_(oldPos),
+      newPos_(newPos)
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: ~SWPortMoveCommand()
 //-----------------------------------------------------------------------------
 SWPortMoveCommand::~SWPortMoveCommand()

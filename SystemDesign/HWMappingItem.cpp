@@ -22,6 +22,7 @@
 #include <LibraryManager/libraryinterface.h>
 
 #include <common/graphicsItems/GraphicsConnection.h>
+#include <common/graphicsItems/CommonGraphicsUndoCommands.h>
 #include <common/GenericEditProvider.h>
 #include <common/layouts/VStackedLayout.h>
 

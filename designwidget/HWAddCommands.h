@@ -12,9 +12,7 @@
 #ifndef HWADDCOMMANDS_H
 #define HWADDCOMMANDS_H
 
-#include <common/ColumnTypes.h>
 #include <models/generaldeclarations.h>
-#include <models/ColumnDesc.h>
 
 #include <QUndoCommand>
 #include <QGraphicsItem>
@@ -30,66 +28,6 @@ class GraphicsColumn;
 class GraphicsColumnLayout;
 class ComponentItem;
 class IGraphicsItemStack;
-
-//-----------------------------------------------------------------------------
-//! ItemAddCommand class.
-//-----------------------------------------------------------------------------
-class ItemAddCommand : public QObject, public QUndoCommand
-{
-
-	Q_OBJECT
-
-public:
-    /*!
-     *  Constructor.
-     *
-     *      @param [in] stack   The stack to which to add the item.
-     *      @param [in] item    The item to add.
-     *      @param [in] parent  The parent command.
-     */
-    ItemAddCommand(IGraphicsItemStack* stack, QGraphicsItem* item, QUndoCommand* parent = 0);
-
-    /*!
-     *  Destructor.
-     */
-    ~ItemAddCommand();
-
-    /*!
-     *  Undoes the command.
-     */
-    virtual void undo();
-
-    /*!
-     *  Redoes the command.
-     */
-    virtual void redo();
-
-signals:
-
-	//! \brief Emitted when a new component is instantiated to the design.
-	void componentInstantiated(ComponentItem*);
-
-	//! \brief Emitted when a component instance is removed from the design.
-	void componentInstanceRemoved(ComponentItem*);
-
-private:
-    // Disable copying.
-    ItemAddCommand(ItemAddCommand const& rhs);
-    ItemAddCommand& operator=(ItemAddCommand const& rhs);
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-    //! The graphics item.
-    QGraphicsItem* item_;
-
-    //! The item's parent column.
-    IGraphicsItemStack* stack_;
-
-    //! Boolean flag for indicating if the component should be deleted in the destructor.
-    bool del_;
-};
 
 //-----------------------------------------------------------------------------
 //! PortAddCommand class.

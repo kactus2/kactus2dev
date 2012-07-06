@@ -21,6 +21,8 @@
 
 #include <common/graphicsItems/GraphicsColumnUndoCommands.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
+#include <common/graphicsItems/CommonGraphicsUndoCommands.h>
+
 #include <common/DiagramUtil.h>
 #include <common/diagramgrid.h>
 #include <common/dialogs/comboSelector/comboselector.h>

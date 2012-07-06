@@ -20,6 +20,7 @@
 
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
+#include <common/graphicsItems/CommonGraphicsUndoCommands.h>
 #include <common/GenericEditProvider.h>
 #include <common/diagramgrid.h>
 #include <common/DesignDiagram.h>

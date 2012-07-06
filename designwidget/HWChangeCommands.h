@@ -983,10 +983,6 @@ private:
 
     //! The new component that replaces the old one.
     HWComponentItem* newComp_;
-
-    //! If true, the new component is an existing one and should not be deleted
-    //! when undoing the command.
-    bool existing_;
 };
 
 //-----------------------------------------------------------------------------
