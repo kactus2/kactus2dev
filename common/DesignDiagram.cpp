@@ -333,3 +333,23 @@ bool DesignDiagram::isLoading() const
 {
     return loading_;
 }
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::getTopmostComponent()
+//-----------------------------------------------------------------------------
+ComponentItem* DesignDiagram::getTopmostComponent(QPointF const& pos)
+{
+    QList<QGraphicsItem*> itemList = items(pos);
+
+    foreach (QGraphicsItem* item, itemList)
+    {
+        ComponentItem* compItem = dynamic_cast<ComponentItem*>(item);
+
+        if (compItem != 0)
+        {
+            return compItem;
+        }
+    }
+
+    return 0;
+}

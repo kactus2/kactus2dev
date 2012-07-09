@@ -156,6 +156,15 @@ public:
     virtual GraphicsColumnLayout* getColumnLayout() = 0;
 
     /*!
+     *  Picks the top-most component at the given position.
+     *
+     *      @param [in] pos The picking positions.
+     *
+     *      @return The top-most component at the given positions, or 0 if there is no component.
+     */
+    ComponentItem* getTopmostComponent(QPointF const& pos);
+
+    /*!
      *  Returns the current draw mode.
      */
     DrawMode getMode() const;

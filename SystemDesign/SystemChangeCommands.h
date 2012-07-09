@@ -229,6 +229,8 @@ private:
 
     //! The new component that replaces the old one.
     SystemComponentItem* newComp_;
+
+    bool existing_;
 };
 
 //-----------------------------------------------------------------------------

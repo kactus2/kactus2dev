@@ -1087,17 +1087,12 @@ void HWDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     }
     else if (getMode() == MODE_SELECT)
     {
-        // Check if the use pressed Alt over a component => replace component mode.
-        if (mouseEvent->modifiers() & Qt::AltModifier)
+        // Check if the user pressed Alt over a component => replace component mode.
+        if (!isProtected() && mouseEvent->modifiers() & Qt::AltModifier)
         {
-            HWComponentItem* sourceComp = 0;
-            QList<QGraphicsItem*> itemList = items(mouseEvent->scenePos());
-
-            if (!itemList.empty())
-            {
-                sourceComp = dynamic_cast<HWComponentItem*>(itemList.back());
-            }
-
+            HWComponentItem* sourceComp =
+                static_cast<HWComponentItem*>(getTopmostComponent(mouseEvent->scenePos()));
+            
             if (sourceComp != 0)
             {
                 sourceComp_ = sourceComp;

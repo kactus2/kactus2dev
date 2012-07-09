@@ -252,6 +252,12 @@ private:
     
     //! The highlighted endpoint to which the connection could be snapped automatically.
     SWConnectionEndpoint* highlightedEndpoint_;
+
+    //! If true, we're in replace component mode.
+    bool replaceMode_;
+
+    //! The component that is used to replace another component in replace mode.
+    SystemComponentItem* sourceComp_;
 };
 
 //-----------------------------------------------------------------------------

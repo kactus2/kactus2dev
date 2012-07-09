@@ -72,7 +72,9 @@ SystemDesignDiagram::SystemDesignDiagram(bool onlySW, LibraryInterface* lh, Main
       tempConnection_(0),
       tempConnEndpoint_(0),
       tempPotentialEndingEndpoints_(),
-      highlightedEndpoint_(0)
+      highlightedEndpoint_(0),
+      replaceMode_(false),
+      sourceComp_(0)
 {
     connect(this, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
     connect(&editProvider, SIGNAL(modified()), this, SIGNAL(contentChanged()));
@@ -476,9 +478,32 @@ void SystemDesignDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
         }
 
         // If the underlying object is a HW mapping item, accept the drag here.
+        // TODO: Alt modifier for MoveAction?
         if (item != 0 && item->type() == HWMappingItem::Type)
         {
-            event->setDropAction(Qt::CopyAction);
+            HWMappingItem* mappingItem = static_cast<HWMappingItem*>(item);
+
+            if (mappingItem->componentModel()->isCpu())
+            {
+                event->setDropAction(Qt::CopyAction);
+            }
+            else
+            {
+                event->setDropAction(Qt::MoveAction);
+            }
+        }
+        else if (item != 0 && item->type() == SWComponentItem::Type)
+        {
+            SWComponentItem* swCompItem = static_cast<SWComponentItem*>(item);
+
+            if (!swCompItem->isImported())
+            {
+                event->setDropAction(Qt::MoveAction);
+            }
+            else
+            {
+                event->setDropAction(Qt::IgnoreAction);
+            }
         }
         else
         {
@@ -558,26 +583,6 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
     // Check if the dragged item was a valid one.
     if (dragSW_)
     {
-        // Determine the component stack who gets the component (either HW mapping item or a system column).
-        IGraphicsItemStack* stack = 0;
-
-        QList<QGraphicsItem*> itemList = items(event->scenePos());
-        
-        if (!itemList.empty())
-        {
-            QGraphicsItem* item = itemList.back();
-
-            if (item != 0 && item->type() == HWMappingItem::Type)
-            {
-                stack = static_cast<HWMappingItem*>(item);
-            }
-        }
-
-        if (stack == 0)
-        {
-            stack = layout_->findColumnAt(snapPointToGrid(event->scenePos()));
-        }
-
         // Retrieve the vlnv.
         VLNV *vlnv;
         memcpy(&vlnv, event->mimeData()->data("data/vlnvptr").data(), sizeof(vlnv));
@@ -589,18 +594,94 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         // Set the instance name for the new component instance.
         QString instanceName = createInstanceName(comp);
 
-        if (stack != 0)
+        // Act based on the selected drop action.
+        if (event->dropAction() == Qt::CopyAction)
         {
-            // Create the SW component item.
-            SWComponentItem* item = new SWComponentItem(getLibraryInterface(), comp, instanceName, QString(), QString(),
-                                              QMap<QString, QString>());
-            
-            item->setPos(stack->mapStackFromScene(snapPointToGrid(event->scenePos())));
-            connect(item, SIGNAL(openCSource(ComponentItem*)), this, SIGNAL(openCSource(ComponentItem*)));
-            connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
+            // Determine the component stack who gets the component (either HW mapping item or a system column).
+            IGraphicsItemStack* stack = 0;
 
-            // Create the undo command and execute it.
-            QSharedPointer<SystemItemAddCommand> cmd(new SystemItemAddCommand(stack, item));
+            QList<QGraphicsItem*> itemList = items(event->scenePos());
+
+            if (!itemList.empty())
+            {
+                QGraphicsItem* item = itemList.back();
+
+                if (item != 0 && item->type() == HWMappingItem::Type)
+                {
+                    stack = static_cast<HWMappingItem*>(item);
+                }
+            }
+
+            if (stack == 0)
+            {
+                stack = layout_->findColumnAt(snapPointToGrid(event->scenePos()));
+            }
+            
+            if (stack != 0)
+            {
+                // Create the SW component item.
+                SWComponentItem* item = new SWComponentItem(getLibraryInterface(), comp,
+                                                            instanceName, QString(), QString(),
+                                                            QMap<QString, QString>());
+                
+                item->setPos(stack->mapStackFromScene(snapPointToGrid(event->scenePos())));
+                connect(item, SIGNAL(openCSource(ComponentItem*)), this, SIGNAL(openCSource(ComponentItem*)));
+                connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
+
+                // Create the undo command and execute it.
+                QSharedPointer<SystemItemAddCommand> cmd(new SystemItemAddCommand(stack, item));
+                connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+                    this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+                connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+                    this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+
+                getEditProvider().addCommand(cmd);
+            }
+        }
+        else if (event->dropAction() == Qt::MoveAction)
+        {
+            // Replace the underlying component with the new one.
+
+            // Retrieve the old component (top-most component under the cursor).
+            SystemComponentItem* oldCompItem =
+                dynamic_cast<SystemComponentItem*>(getTopmostComponent(event->scenePos()));
+
+            Q_ASSERT(oldCompItem != 0);
+
+            // TODO: Determine connectivity issues and ask confirmation from the user.
+            //             QStringList detailList;
+            // 
+            //             foreach (ConnectionEndpoint* endpoint, oldCompItem->getEndpoints())
+            //             {
+            //                 if (endpoint->isConnected())
+            //                 {
+            //                     // Check if the endpoint is not found in the new component.
+            //                     if (endpoint->getType() == ConnectionEndpoint::ENDPOINT_TYPE_BUS)
+            //                     {
+            //                     }
+            //                 }
+            //             }
+
+            QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+                tr("Component instance '%1' is about to be replaced "
+                "with an instance of %2. Continue and replace?").arg(oldCompItem->name(), vlnv->toString()),
+                QMessageBox::Yes | QMessageBox::No, (QWidget*)parent());
+
+            if (msgBox.exec() == QMessageBox::No)
+            {
+                return;
+            }
+
+            // Create the SW component item.
+            SWComponentItem* newCompItem = new SWComponentItem(getLibraryInterface(), comp,
+                                                               instanceName, QString(), QString(),
+                                                               QMap<QString, QString>());
+
+            // Perform the replacement.
+            QSharedPointer<ReplaceSystemComponentCommand>
+                cmd(new ReplaceSystemComponentCommand(oldCompItem, newCompItem, false,
+                                                      oldCompItem->type() == HWMappingItem::Type));
+
             connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
                 this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
             connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
@@ -835,8 +916,25 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
     }
     else if (getMode() == MODE_SELECT)
     {
-        // Handle the mouse press.
-        QGraphicsScene::mousePressEvent(event);
+        // Check if the user pressed Alt over a component => replace component mode.
+        if (!isProtected() && event->modifiers() & Qt::AltModifier)
+        {
+            // Find the top-most component at the cursor position.
+            SystemComponentItem* sourceComp =
+                dynamic_cast<SystemComponentItem*>(getTopmostComponent(event->scenePos()));
+
+            if (sourceComp != 0)
+            {
+                sourceComp_ = sourceComp;
+                QApplication::setOverrideCursor(Qt::ForbiddenCursor);
+                replaceMode_ = true;
+            }
+        }
+        else
+        {
+            // Handle the mouse press.
+            QGraphicsScene::mousePressEvent(event);
+        }
     }
 }
 
@@ -944,6 +1042,21 @@ void SystemDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
         }
     }
 
+    if (replaceMode_)
+    {
+        SystemComponentItem* destComp =
+            dynamic_cast<SystemComponentItem*>(getTopmostComponent(event->scenePos()));
+
+        if (destComp != 0 && destComp != sourceComp_)
+        {
+            QApplication::setOverrideCursor(Qt::ClosedHandCursor);
+        }
+        else
+        {
+            QApplication::setOverrideCursor(Qt::ForbiddenCursor);
+        }
+    }
+
     QGraphicsScene::mouseMoveEvent(event);
 }
 
@@ -952,6 +1065,42 @@ void SystemDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
+    // Check if we're replacing a component.
+    if (replaceMode_)
+    {
+        replaceMode_ = false;
+        QApplication::setOverrideCursor(Qt::ArrowCursor);
+
+        SystemComponentItem* destComp =
+            dynamic_cast<SystemComponentItem*>(getTopmostComponent(event->scenePos()));
+
+        if (destComp == 0 || destComp == sourceComp_)
+        {
+            return;
+        }
+
+        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+                           tr("Component instance '%1' is about to be switched in place "
+                              "with '%2'. Continue and replace?").arg(destComp->name(), sourceComp_->name()),
+                           QMessageBox::Yes | QMessageBox::No, (QWidget*)parent());
+
+        if (msgBox.exec() == QMessageBox::No)
+        {
+            return;
+        }
+
+        // Perform the replacement.
+        QSharedPointer<ReplaceSystemComponentCommand>
+            cmd(new ReplaceSystemComponentCommand(destComp, sourceComp_, true, true));
+
+        connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+            this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+        connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+            this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+
+        getEditProvider().addCommand(cmd);
+    }
+
     // Process the normal mouse release event.
     QGraphicsScene::mouseReleaseEvent(event);
 }
@@ -1916,3 +2065,4 @@ SWPortItem* SystemDesignDiagram::createMissingPort(QString const& portName, Conn
 
     return port;
 }
+

@@ -45,9 +45,9 @@ void ItemAddCommand::undo()
     item_->scene()->removeItem(item_);
     del_ = true;
 
-    if (item_->type() == HWComponentItem::Type)
+    if (dynamic_cast<ComponentItem*>(item_) != 0)
     {
-        emit componentInstanceRemoved(static_cast<HWComponentItem*>(item_));
+        emit componentInstanceRemoved(static_cast<ComponentItem*>(item_));
     }
 
     // Execute child commands.
@@ -63,9 +63,9 @@ void ItemAddCommand::redo()
     stack_->addItem(item_);
     del_ = false;
 
-    if (item_->type() == HWComponentItem::Type)
+    if (dynamic_cast<ComponentItem*>(item_) != 0)
     {
-        emit componentInstantiated(static_cast<HWComponentItem*>(item_));
+        emit componentInstantiated(static_cast<ComponentItem*>(item_));
     }
 
     // Child commands need not be executed because the other items change their position

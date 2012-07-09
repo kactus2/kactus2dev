@@ -139,7 +139,8 @@ ReplaceSystemComponentCommand::ReplaceSystemComponentCommand(SystemComponentItem
                                                              QUndoCommand* parent)
     : QUndoCommand(parent),
       oldComp_(oldComp),
-      newComp_(newComp)
+      newComp_(newComp),
+      existing_(existing)
 {
     foreach (ConnectionEndpoint* oldEndpoint, oldComp_->getEndpoints())
     {
@@ -218,10 +219,10 @@ void ReplaceSystemComponentCommand::undo()
 //-----------------------------------------------------------------------------
 void ReplaceSystemComponentCommand::redo()
 {
-    if (newComp_->type() == oldComp_->type())
+    if (newComp_->type() == oldComp_->type() || !existing_)
     {
         // Place the new component to the exact same location as the old one.
-        newComp_->setPos(oldComp_->scenePos());
+        newComp_->setPos(oldComp_->pos());
     }
 
     // Execute child commands.

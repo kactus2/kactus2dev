@@ -262,6 +262,8 @@ private:
 
     //! If true, we're in replace component mode.
     bool replaceMode_;
+
+    //! The component that is used to replace another component in replace mode.
     HWComponentItem* sourceComp_;
 
     QGraphicsItem* oldSelection_;
