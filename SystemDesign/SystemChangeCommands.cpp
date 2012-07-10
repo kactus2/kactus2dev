@@ -157,12 +157,11 @@ ReplaceSystemComponentCommand::ReplaceSystemComponentCommand(SystemComponentItem
                 QUndoCommand* exchangeCmd = new ConnectionExchangeCommand(conn, oldEndpoint, newEndpoint, this);
             }
 
-            // TODO: Enable when off-page connectors are used in system designs.
-//             foreach (GraphicsConnection* conn, oldEndpoint->getOffPageConnector()->getConnections())
-//             {
-//                 QUndoCommand* exchangeCmd = new ConnectionExchangeCommand(conn, oldEndpoint->getOffPageConnector(),
-//                     newEndpoint->getOffPageConnector(), this);
-//             }
+            foreach (GraphicsConnection* conn, oldEndpoint->getOffPageConnector()->getConnections())
+            {
+                QUndoCommand* exchangeCmd = new ConnectionExchangeCommand(conn, oldEndpoint->getOffPageConnector(),
+                    newEndpoint->getOffPageConnector(), this);
+            }
         }
     }
 

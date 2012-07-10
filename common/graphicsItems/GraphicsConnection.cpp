@@ -60,18 +60,18 @@ GraphicsConnection::GraphicsConnection(ConnectionEndpoint* endpoint1, Connection
         endpoint1_ = endpoint1;
         endpoint2_ = endpoint2;
 
-        endpoint1->addConnection(this);
-        endpoint2->addConnection(this);
-
         endpoint1->onConnect(endpoint2);
         endpoint2->onConnect(endpoint1);
+
+        validate();
+
+        endpoint1->addConnection(this);
+        endpoint2->addConnection(this);
 
         if (name_.isEmpty())
         {
             updateName();
         }
-
-        validate();
     }
 
     setDefaultColor();
@@ -158,13 +158,14 @@ bool GraphicsConnection::connectEnds()
         return false;
     }
 
+    validate();
+
     endpoint1_->addConnection(this);
     endpoint2_->addConnection(this);
 
     simplifyPath();
     setRoute(pathPoints_);
     updateName();
-    validate();    
     return true;
 }
 
@@ -1212,20 +1213,18 @@ void GraphicsConnection::setEndpoint1(ConnectionEndpoint* endpoint1)
         // Disconnect from the previous endpoint.
         endpoint1_->removeConnection(this);
         endpoint1_->onDisconnect(endpoint2_);
+    }
 
-        // Connect to the new endpoint.
-        endpoint1_ = endpoint1;
-        endpoint1_->onConnect(endpoint2_);
-        endpoint1->addConnection(this);
-    }
-    else
-    {
-        endpoint1_ = endpoint1;
-    }
+    // Connect to the new endpoint.
+    endpoint1_ = endpoint1;
+    endpoint1_->onConnect(endpoint2_);
+
+    validate();
+
+    endpoint1->addConnection(this);
 
     updatePosition();
     updateName();
-    validate();
     // TODO: Child class additions?
 }
 
@@ -1239,19 +1238,26 @@ void GraphicsConnection::setEndpoint2(ConnectionEndpoint* endpoint2)
         // Disconnect from the previous endpoint.
         endpoint2_->removeConnection(this);
         endpoint2_->onDisconnect(endpoint1_);
+    }
 
-        // Connect to the new endpoint.
-        endpoint2_ = endpoint2;
-        endpoint2_->onConnect(endpoint1_);
-        endpoint2->addConnection(this);
-    }
-    else
-    {
-        endpoint2_ = endpoint2;
-    }
+    // Connect to the new endpoint.
+    endpoint2_ = endpoint2;
+    endpoint2_->onConnect(endpoint1_);
+
+    validate();
+
+    endpoint2->addConnection(this);
 
     updatePosition();
     updateName();
     validate();
     // TODO: Child class additions?
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::isInvalid()
+//-----------------------------------------------------------------------------
+bool GraphicsConnection::isInvalid() const
+{
+    return invalid_;
 }

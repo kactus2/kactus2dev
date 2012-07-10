@@ -280,7 +280,7 @@ public:
     /*!
      *  Returns the type of the endpoint (API/COM/bus/ad-hoc/undefined).
      */
-    EndpointType getType() const;
+    virtual EndpointType getType() const;
 
     /*!
      *  Sets the endpoint temporary or not temporary. Temporary endpoints can be deleted.

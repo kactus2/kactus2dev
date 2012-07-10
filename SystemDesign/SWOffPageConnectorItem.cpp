@@ -181,7 +181,6 @@ bool SWOffPageConnectorItem::isDirectionFixed() const
 void SWOffPageConnectorItem::setTypeDefinition(VLNV const& type)
 {
     parent_->setTypeDefinition(type);
-    setType(parent_->getType());
 }
 
 //-----------------------------------------------------------------------------
@@ -299,4 +298,12 @@ QSharedPointer<ComInterface> SWOffPageConnectorItem::getComInterface() const
 QSharedPointer<ApiInterface> SWOffPageConnectorItem::getApiInterface() const
 {
     return parent_->getApiInterface();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWOffPageConnectorItem::getType()
+//-----------------------------------------------------------------------------
+ConnectionEndpoint::EndpointType SWOffPageConnectorItem::getType() const
+{
+    return parent_->getType();
 }

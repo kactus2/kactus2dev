@@ -1310,11 +1310,6 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
 
             if (conn->getConnectionType() == SWConnectionEndpoint::ENDPOINT_TYPE_API)
             {
-//                 if (endpoint1->getApiInterface()->getDependencyDirection() == DEPENDENCY_REQUESTER)
-//                 {
-//                     std::swap(endpoint1, endpoint2);
-//                 }
-
                 if (endpoint1->encompassingComp() != 0 && endpoint2->encompassingComp() != 0)
                 {
                     ApiInterfaceRef providerRef(endpoint1->encompassingComp()->name(),
@@ -1377,7 +1372,7 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
                         std::swap(compPort, hierPort);
                     }
 
-                    if (endpoint2->getApiInterface() != 0)
+                    if (endpoint2->getComInterface() != 0)
                     {
                         ComInterfaceRef ref(compPort->encompassingComp()->name(), compPort->name());
 
@@ -2150,7 +2145,6 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::updateHierComponent()
 {
-    // TODO:
 }
 
 //-----------------------------------------------------------------------------

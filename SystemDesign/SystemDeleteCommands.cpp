@@ -242,6 +242,12 @@ SWPortDeleteCommand::SWPortDeleteCommand(SWPortItem* port, QUndoCommand* parent)
     {
         QUndoCommand* cmd = new SWConnectionDeleteCommand(conn, this);
     }
+
+    foreach (GraphicsConnection* conn, port_->getOffPageConnector()->getConnections())
+    {
+        QUndoCommand* cmd =
+            new SWConnectionDeleteCommand(conn, this);
+    }
 }
 
 //-----------------------------------------------------------------------------

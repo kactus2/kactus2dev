@@ -198,6 +198,11 @@ public:
      */
     virtual bool isHierarchical() const;
 
+    /*!
+     *  Returns the type of the endpoint (API/COM/bus/ad-hoc/undefined).
+     */
+    virtual EndpointType getType() const;
+
 protected:
     virtual QVariant itemChange(GraphicsItemChange change,
                                 const QVariant &value);

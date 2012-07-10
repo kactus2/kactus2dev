@@ -307,7 +307,11 @@ bool SWPortItem::onConnect(ConnectionEndpoint const* other)
             apiInterface_->setName(nameLabel_.toPlainText());
             apiInterface_->setApiType(other->getApiInterface()->getApiType());
             
-            if (other->getApiInterface()->getDependencyDirection() == DEPENDENCY_PROVIDER)
+            if (other->isHierarchical())
+            {
+                apiInterface_->setDependencyDirection(other->getApiInterface()->getDependencyDirection());
+            }
+            else if (other->getApiInterface()->getDependencyDirection() == DEPENDENCY_PROVIDER)
             {
                 apiInterface_->setDependencyDirection(DEPENDENCY_REQUESTER);
             }
@@ -328,24 +332,31 @@ bool SWPortItem::onConnect(ConnectionEndpoint const* other)
             comInterface_->setComType(other->getComInterface()->getComType());
             comInterface_->setTransferType(other->getComInterface()->getTransferType());
 
-            switch (other->getComInterface()->getDirection())
+            if (other->isHierarchical())
             {
-            case General::IN:
+                comInterface_->setDirection(other->getComInterface()->getDirection());
+            }
+            else
+            {
+                switch (other->getComInterface()->getDirection())
                 {
-                    comInterface_->setDirection(General::OUT);
-                    break;
-                }
-                
-            case General::OUT:
-                {
-                    comInterface_->setDirection(General::IN);
-                    break;
-                }
+                case General::IN:
+                    {
+                        comInterface_->setDirection(General::OUT);
+                        break;
+                    }
+                    
+                case General::OUT:
+                    {
+                        comInterface_->setDirection(General::IN);
+                        break;
+                    }
 
-            case General::INOUT:
-                {
-                    comInterface_->setDirection(General::INOUT);
-                    break;
+                case General::INOUT:
+                    {
+                        comInterface_->setDirection(General::INOUT);
+                        break;
+                    }
                 }
             }
 
@@ -480,6 +491,12 @@ void SWPortItem::addConnection(GraphicsConnection* connection)
 {
     SWConnectionEndpoint::addConnection(connection);
     stubLine_.setVisible(true);
+    
+    if (connection->isInvalid())
+    {
+        stubLineDefaultPen_.setColor(Qt::red);
+        stubLine_.setPen(stubLineDefaultPen_);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -488,6 +505,27 @@ void SWPortItem::addConnection(GraphicsConnection* connection)
 void SWPortItem::removeConnection(GraphicsConnection* connection)
 {
     SWConnectionEndpoint::removeConnection(connection);
+
+    if (connection->isInvalid())
+    {
+        // Check if there are no other invalid connections.
+        bool valid = true;
+
+        foreach (GraphicsConnection* otherConn, getConnections())
+        {
+            if (otherConn->isInvalid())
+            {
+                valid = false;
+                break;
+            }
+        }
+
+        if (valid)
+        {
+            stubLineDefaultPen_.setColor(Qt::black);
+            stubLine_.setPen(stubLineDefaultPen_);
+        }
+    }
 
     if (getConnections().size() == 0)
     {

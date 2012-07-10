@@ -103,7 +103,7 @@ HierComConnection::HierComConnection(QDomNode& node)
         else if (childNode.nodeName() == "kactus2:activeComInterface")
         {
             interface_.componentRef = childNode.attributes().namedItem("kactus2:componentRef").nodeValue();
-            interface_.comRef = childNode.attributes().namedItem("kactus2:apiRef").nodeValue();
+            interface_.comRef = childNode.attributes().namedItem("kactus2:comRef").nodeValue();
         }
         else if (childNode.nodeName() == "kactus2:position")
         {

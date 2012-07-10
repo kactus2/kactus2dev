@@ -201,6 +201,11 @@ public:
      */
     RoutingMode getRoutingMode() const;
 
+    /*!
+     *  Returns true if the connection is invalid.
+     */
+    bool isInvalid() const;
+
 signals:
     //! Signals that the connection has changed.
     void contentChanged();

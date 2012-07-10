@@ -352,7 +352,7 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
             {
                 QUndoCommand* childCmd = 0;
 
-                if (endpoint1->type() == SWPortItem::Type)
+                if (endpoint2->type() == SWPortItem::Type)
                 {
                     childCmd = new SWPortDeleteCommand(static_cast<SWPortItem*>(endpoint2), cmd.data());
                 }
