@@ -168,7 +168,7 @@ protected:
     void wheelEvent(QGraphicsSceneWheelEvent *event);
 
     void keyReleaseEvent(QKeyEvent *event);
-    
+
     void dropEvent(QGraphicsSceneDragDropEvent *event);
     void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
     void dragMoveEvent(QGraphicsSceneDragDropEvent *event);

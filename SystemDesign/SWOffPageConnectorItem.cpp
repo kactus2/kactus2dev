@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: OffPageConnectorItem.cpp
+// File: SWOffPageConnectorItem.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
@@ -9,22 +9,23 @@
 // Off-page connector for the block diagram.
 //-----------------------------------------------------------------------------
 
-#include "OffPageConnectorItem.h"
+#include "SWOffPageConnectorItem.h"
+
+#include <models/ComInterface.h>
+#include <models/ApiInterface.h>
 
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/diagramgrid.h>
 
-#include <models/businterface.h>
-
 #include <QBrush>
 #include <QPen>
 
 //-----------------------------------------------------------------------------
-// Function: OffPageConnectorItem()
+// Function: SWOffPageConnectorItem()
 //-----------------------------------------------------------------------------
-OffPageConnectorItem::OffPageConnectorItem(HWConnectionEndpoint* parent)
-    : HWConnectionEndpoint(parent),
+SWOffPageConnectorItem::SWOffPageConnectorItem(SWConnectionEndpoint* parent)
+    : SWConnectionEndpoint(parent),
       parent_(parent)        
 {
     Q_ASSERT(parent != 0);
@@ -60,16 +61,16 @@ OffPageConnectorItem::OffPageConnectorItem(HWConnectionEndpoint* parent)
 }
 
 //-----------------------------------------------------------------------------
-// Function: OffPageConnectorItem()
+// Function: SWOffPageConnectorItem()
 //-----------------------------------------------------------------------------
-OffPageConnectorItem::~OffPageConnectorItem()
+SWOffPageConnectorItem::~SWOffPageConnectorItem()
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: name()
 //-----------------------------------------------------------------------------
-QString OffPageConnectorItem::name() const
+QString SWOffPageConnectorItem::name() const
 {
     return parent_->name();
 }
@@ -77,60 +78,12 @@ QString OffPageConnectorItem::name() const
 //-----------------------------------------------------------------------------
 // Function: setName()
 //-----------------------------------------------------------------------------
-void OffPageConnectorItem::setName(QString const& name)
+void SWOffPageConnectorItem::setName(QString const& name)
 {
 	parent_->setName(name);
 }
 
-//-----------------------------------------------------------------------------
-// Function: getBusInterface()
-//-----------------------------------------------------------------------------
-QSharedPointer<BusInterface> OffPageConnectorItem::getBusInterface() const
-{
-    return parent_->getBusInterface();
-}
-
-//-----------------------------------------------------------------------------
-// Function: updateInterface()
-//-----------------------------------------------------------------------------
-void OffPageConnectorItem::updateInterface()
-{
-    // Retrieve the correct brush from the parent diagram port.
-    // Set the port black if it is temporary.
-    if (getBusInterface() == 0 || !getBusInterface()->getBusType().isValid())
-    {
-        setBrush(QBrush(Qt::black));
-    }
-    else
-    {
-        // Otherwise set the color based on the interface mode.
-        switch (getBusInterface()->getInterfaceMode()) {
-        case General::MASTER:
-            setBrush(QBrush(QColor(0x32,0xcb,0xcb)));
-            break;
-        case General::SLAVE:
-            setBrush(QBrush(QColor(0x32,0x99,0x64)));
-            break;
-        case General::MIRROREDMASTER:
-            setBrush(QBrush(QColor(0xcb,0xfd,0xfd)));
-            break;
-        case General::MIRROREDSLAVE:
-            setBrush(QBrush(QColor(0x00,0xfd,00)));
-            break;
-        case General::SYSTEM:
-            setBrush(QBrush(QColor(0xf9,0x11,0x11)));
-            break;
-        case General::MIRROREDSYSTEM:
-            setBrush(QBrush(QColor(0xf9,0x9d,0xcb)));
-            break;
-        case General::MONITOR:
-            setBrush(QBrush(QColor(0xfd,0xfd,0xfd)));
-            break;
-        }
-    }
-}
-
-bool OffPageConnectorItem::isHierarchical() const
+bool SWOffPageConnectorItem::isHierarchical() const
 {
     return parent_->isHierarchical();
 }
@@ -138,7 +91,7 @@ bool OffPageConnectorItem::isHierarchical() const
 //-----------------------------------------------------------------------------
 // Function: onConnect()
 //-----------------------------------------------------------------------------
-bool OffPageConnectorItem::onConnect(ConnectionEndpoint const* other)
+bool SWOffPageConnectorItem::onConnect(ConnectionEndpoint const* other)
 {
     return parent_->onConnect(other);
 }
@@ -146,7 +99,7 @@ bool OffPageConnectorItem::onConnect(ConnectionEndpoint const* other)
 //-----------------------------------------------------------------------------
 // Function: onDisonnect()
 //-----------------------------------------------------------------------------
-void OffPageConnectorItem::onDisconnect(ConnectionEndpoint const* other)
+void SWOffPageConnectorItem::onDisconnect(ConnectionEndpoint const* other)
 {
     parent_->onDisconnect(other);
 }
@@ -154,7 +107,7 @@ void OffPageConnectorItem::onDisconnect(ConnectionEndpoint const* other)
 //-----------------------------------------------------------------------------
 // Function: isConnectionValid()
 //-----------------------------------------------------------------------------
-bool OffPageConnectorItem::isConnectionValid(ConnectionEndpoint const* other) const
+bool SWOffPageConnectorItem::isConnectionValid(ConnectionEndpoint const* other) const
 {
     return parent_->isConnectionValid(other);
 }
@@ -162,7 +115,7 @@ bool OffPageConnectorItem::isConnectionValid(ConnectionEndpoint const* other) co
 //-----------------------------------------------------------------------------
 // Function: encompassingComp()
 //-----------------------------------------------------------------------------
-ComponentItem* OffPageConnectorItem::encompassingComp() const
+ComponentItem* SWOffPageConnectorItem::encompassingComp() const
 {
     return parent_->encompassingComp();
 }
@@ -170,7 +123,7 @@ ComponentItem* OffPageConnectorItem::encompassingComp() const
 //-----------------------------------------------------------------------------
 // Function: getOwnerComponent()
 //-----------------------------------------------------------------------------
-QSharedPointer<Component> OffPageConnectorItem::getOwnerComponent() const
+QSharedPointer<Component> SWOffPageConnectorItem::getOwnerComponent() const
 {
     return parent_->getOwnerComponent();
 }
@@ -178,7 +131,7 @@ QSharedPointer<Component> OffPageConnectorItem::getOwnerComponent() const
 //-----------------------------------------------------------------------------
 // Function: itemChange()
 //-----------------------------------------------------------------------------
-QVariant OffPageConnectorItem::itemChange(GraphicsItemChange change,
+QVariant SWOffPageConnectorItem::itemChange(GraphicsItemChange change,
                                              const QVariant &value)
 {
     switch (change)
@@ -210,7 +163,7 @@ QVariant OffPageConnectorItem::itemChange(GraphicsItemChange change,
 //-----------------------------------------------------------------------------
 // Function: isDirectionFixed()
 //-----------------------------------------------------------------------------
-bool OffPageConnectorItem::isDirectionFixed() const
+bool SWOffPageConnectorItem::isDirectionFixed() const
 {
     if (getConnections().size() > 0)
     {
@@ -225,36 +178,29 @@ bool OffPageConnectorItem::isDirectionFixed() const
 //-----------------------------------------------------------------------------
 // Function: setTypes()
 //-----------------------------------------------------------------------------
-void OffPageConnectorItem::setTypes(VLNV const& busType, VLNV const& absType, General::InterfaceMode mode)
+void SWOffPageConnectorItem::setTypeDefinition(VLNV const& type)
 {
-    parent_->setTypes(busType, absType, mode);
+    parent_->setTypeDefinition(type);
+    setType(parent_->getType());
 }
 
 //-----------------------------------------------------------------------------
 // Function: mousePressEvent()
 //-----------------------------------------------------------------------------
-void OffPageConnectorItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void SWOffPageConnectorItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    HWConnectionEndpoint::mousePressEvent(event);
-}
-
-//-----------------------------------------------------------------------------
-// Function: setInterfaceMode()
-//-----------------------------------------------------------------------------
-void OffPageConnectorItem::setInterfaceMode(General::InterfaceMode mode)
-{
-    parent_->setInterfaceMode(mode);
+    SWConnectionEndpoint::mousePressEvent(event);
 }
 
 //-----------------------------------------------------------------------------
 // Function: description()
 //-----------------------------------------------------------------------------
-QString OffPageConnectorItem::description() const
+QString SWOffPageConnectorItem::description() const
 {
 	return parent_->description();
 }
 
-void OffPageConnectorItem::setDescription(QString const& description)
+void SWOffPageConnectorItem::setDescription(QString const& description)
 {
 	parent_->setDescription(description);
 }
@@ -262,9 +208,9 @@ void OffPageConnectorItem::setDescription(QString const& description)
 //-----------------------------------------------------------------------------
 // Function: addConnection()
 //-----------------------------------------------------------------------------
-void OffPageConnectorItem::addConnection(GraphicsConnection* connection)
+void SWOffPageConnectorItem::addConnection(GraphicsConnection* connection)
 {
-    HWConnectionEndpoint::addConnection(connection);
+    SWConnectionEndpoint::addConnection(connection);
     connection->setRoutingMode(GraphicsConnection::ROUTING_MODE_OFFPAGE);
 
     setVisible(true);
@@ -273,9 +219,9 @@ void OffPageConnectorItem::addConnection(GraphicsConnection* connection)
 //-----------------------------------------------------------------------------
 // Function: removeConnection()
 //-----------------------------------------------------------------------------
-void OffPageConnectorItem::removeConnection(GraphicsConnection* connection)
+void SWOffPageConnectorItem::removeConnection(GraphicsConnection* connection)
 {
-    HWConnectionEndpoint::removeConnection(connection);
+    SWConnectionEndpoint::removeConnection(connection);
 
     if (getConnections().size() == 0)
     {
@@ -286,7 +232,7 @@ void OffPageConnectorItem::removeConnection(GraphicsConnection* connection)
 //-----------------------------------------------------------------------------
 // Function: setDirection()
 //-----------------------------------------------------------------------------
-void OffPageConnectorItem::setDirection(QVector2D const& dir)
+void SWOffPageConnectorItem::setDirection(QVector2D const& dir)
 {
     // Translate the direction to a valid one.
     if (dir.x() < 0.0)
@@ -302,23 +248,55 @@ void OffPageConnectorItem::setDirection(QVector2D const& dir)
 //-----------------------------------------------------------------------------
 // Function: getDirection()
 //-----------------------------------------------------------------------------
-QVector2D const& OffPageConnectorItem::getDirection() const
+QVector2D const& SWOffPageConnectorItem::getDirection() const
 {
     return parent_->getDirection();
 }
 
 //-----------------------------------------------------------------------------
-// Function: OffPageConnectorItem::getPort()
+// Function: SWOffPageConnectorItem::isExclusive()
 //-----------------------------------------------------------------------------
-Port* OffPageConnectorItem::getPort() const
+bool SWOffPageConnectorItem::isExclusive() const
 {
-    return parent_->getPort();
+    return parent_->isExclusive();
 }
 
 //-----------------------------------------------------------------------------
-// Function: OffPageConnectorItem::isExclusive()
+// Function: SWOffPageConnectorItem::getTypeDefinition()
 //-----------------------------------------------------------------------------
-bool OffPageConnectorItem::isExclusive() const
+VLNV SWOffPageConnectorItem::getTypeDefinition() const
 {
-    return parent_->isExclusive();
+    return parent_->getTypeDefinition();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWOffPageConnectorItem::onBeginConnect()
+//-----------------------------------------------------------------------------
+void SWOffPageConnectorItem::onBeginConnect()
+{
+    return parent_->onBeginConnect();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWOffPageConnectorItem::onEndConnect()
+//-----------------------------------------------------------------------------
+void SWOffPageConnectorItem::onEndConnect()
+{
+    return parent_->onEndConnect();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWOffPageConnectorItem::getComInterface()
+//-----------------------------------------------------------------------------
+QSharedPointer<ComInterface> SWOffPageConnectorItem::getComInterface() const
+{
+    return parent_->getComInterface();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWOffPageConnectorItem::getApiInterface()
+//-----------------------------------------------------------------------------
+QSharedPointer<ApiInterface> SWOffPageConnectorItem::getApiInterface() const
+{
+    return parent_->getApiInterface();
 }

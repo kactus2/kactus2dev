@@ -108,6 +108,13 @@ public:
     void setInterface(ApiInterfaceRef const& ref);
 
     /*!
+     *  Sets the flag whether the connection is off-page or not.
+     *
+     *      @param [in] offPage If true, the connection is set off-page.
+     */
+    void setOffPage(bool offPage);
+
+    /*!
      *  Returns the name of the dependency.
      */
     QString const& getName() const;
@@ -148,6 +155,11 @@ public:
     QList<QPointF> const& getRoute() const;
 
     /*!
+     *  Returns true if the connection is off-page.
+     */
+    bool isOffPage() const;
+
+    /*!
      *  Assignment operator.
      */
     HierApiDependency& operator=(HierApiDependency const& rhs);
@@ -180,6 +192,9 @@ private:
 
     //! The connection route.
     QList<QPointF> route_;
+
+    //! If true, the connection is off-page.
+    bool offPage_;
 };
 
 //-----------------------------------------------------------------------------

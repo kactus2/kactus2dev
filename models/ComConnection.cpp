@@ -17,7 +17,7 @@
 // Function: ComConnection::ComConnection()
 //-----------------------------------------------------------------------------
 ComConnection::ComConnection() : name_(), displayName_(), desc_(),
-                                 interface1_(), interface2_()
+                                 interface1_(), interface2_(), offPage_(false)
 {
 }
 
@@ -32,7 +32,8 @@ ComConnection::ComConnection(QString const& name, QString const& displayName,
       desc_(description),
       interface1_(ref1),
       interface2_(ref2),
-      route_(route)
+      route_(route),
+      offPage_(false)
 {
 }
 
@@ -45,7 +46,8 @@ ComConnection::ComConnection(ComConnection const& rhs) : name_(rhs.name_),
                                                          desc_(rhs.desc_),
                                                          interface1_(rhs.interface1_),
                                                          interface2_(rhs.interface2_),
-                                                         route_(rhs.route_)
+                                                         route_(rhs.route_),
+                                                         offPage_(rhs.offPage_)
 {
 }
 
@@ -54,7 +56,7 @@ ComConnection::ComConnection(ComConnection const& rhs) : name_(rhs.name_),
 //-----------------------------------------------------------------------------
 ComConnection::ComConnection(QDomNode& node) : name_(), displayName_(), desc_(),
                                                interface1_(), interface2_(),
-                                               route_()
+                                               route_(), offPage_(false)
 {
     for (int i = 0; i < node.childNodes().count(); ++i)
     {
@@ -92,6 +94,8 @@ ComConnection::ComConnection(QDomNode& node) : name_(), displayName_(), desc_(),
         }
         else if (childNode.nodeName() == "kactus2:route")
         {
+            offPage_ = childNode.attributes().namedItem("kactus2:offPage").nodeValue() == "true";
+
             for (int i = 0; i < childNode.childNodes().size(); ++i)
             {
                 QDomNode posNode = childNode.childNodes().at(i);
@@ -137,6 +141,15 @@ void ComConnection::write(QXmlStreamWriter& writer) const
     if (!route_.isEmpty())
     {
         writer.writeStartElement("kactus2:route");
+
+        if (offPage_)
+        {
+            writer.writeAttribute("kactus2:offPage", "true");
+        }
+        else
+        {
+            writer.writeAttribute("kactus2:offPage", "false");
+        }
 
         foreach (QPointF const& point, route_)
         {
@@ -249,6 +262,14 @@ void ComConnection::setInterface2(ComInterfaceRef const& ref)
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComConnection::setOffPage()
+//-----------------------------------------------------------------------------
+void ComConnection::setOffPage(bool offPage)
+{
+    offPage_ = offPage;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComConnection::getName()
 //-----------------------------------------------------------------------------
 QString const& ComConnection::getName() const
@@ -297,6 +318,14 @@ QList<QPointF> const& ComConnection::getRoute() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComConnection::isOffPage()
+//-----------------------------------------------------------------------------
+bool ComConnection::isOffPage() const
+{
+    return offPage_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComConnection::operator=()
 //-----------------------------------------------------------------------------
 ComConnection& ComConnection::operator=(ComConnection const& rhs)
@@ -308,9 +337,8 @@ ComConnection& ComConnection::operator=(ComConnection const& rhs)
         desc_ = rhs.desc_;
         interface1_ = rhs.interface1_;
         interface2_ = rhs.interface2_;
+        offPage_ = rhs.offPage_;
     }
 
     return *this;
 }
-
-

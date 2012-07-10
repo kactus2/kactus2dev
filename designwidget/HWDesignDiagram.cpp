@@ -900,6 +900,8 @@ void HWDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         // Start drawing a new connection if in off page mode or we were not creating anything yet.
         if (offPageMode_ || !creating)
         {
+            Q_ASSERT(tempConnEndPoint_ != 0);
+
             // Create the connection.
             tempConnection_ = new HWConnection(tempConnEndPoint_->scenePos(),
                 tempConnEndPoint_->getDirection(),
@@ -1901,7 +1903,8 @@ void HWDesignDiagram::disableHighlight()
 {
     if (highlightedEndPoint_ != 0)
     {
-        if (tempConnEndPoint_ != 0 && highlightedEndPoint_ != tempConnEndPoint_)
+        if (tempConnEndPoint_ != 0 && highlightedEndPoint_ != tempConnEndPoint_ &&
+            tempPotentialEndingEndPoints_.contains(highlightedEndPoint_))
         {
             highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_ALLOWED);
         }
@@ -2091,14 +2094,15 @@ void HWDesignDiagram::createConnection(QGraphicsSceneMouseEvent * mouseEvent)
     // end points cannot be connected together.
     if (endpoint == 0 || endpoint == tempConnEndPoint_ || !endpoint->isVisible() ||
         !endpoint->canConnect(tempConnEndPoint_) ||
-        !tempConnEndPoint_->canConnect(endpoint)) {
-
-            // if tempConnection has been created then delete it
-            if (tempConnection_) {
-                removeItem(tempConnection_);
-                delete tempConnection_;
-                tempConnection_ = 0;
-            }
+        !tempConnEndPoint_->canConnect(endpoint))
+    {
+        // Delete the temporary connection.
+        if (tempConnection_)
+        {
+            removeItem(tempConnection_);
+            delete tempConnection_;
+            tempConnection_ = 0;
+        }
     }
     else 
     {
@@ -2350,8 +2354,8 @@ void HWDesignDiagram::onAdHocVisibilityChanged(QString const& portName, bool vis
     if (visible)
     {
         AdHocInterfaceItem* adHocIf = new AdHocInterfaceItem(getEditedComponent(),
-                                                                   getEditedComponent()->getPort(portName).data(),
-                                                                   getLibraryInterface(), 0);
+                                                             getEditedComponent()->getPort(portName).data(),
+                                                             getLibraryInterface(), 0);
 
         // Add the ad-hoc interface to the first column where it is allowed to be placed.
         layout_->addItem(adHocIf);

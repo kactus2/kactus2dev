@@ -14,10 +14,8 @@
 #include "SystemChangeCommands.h"
 #include "SystemMoveCommands.h"
 #include "SystemAddCommands.h"
-
-#include <designwidget/columnview/ColumnEditDialog.h>
-#include <designwidget/HWChangeCommands.h>
-
+#include "SystemDeleteCommands.h"
+#include "SWOffPageConnectorItem.h"
 #include "SystemColumn.h"
 #include "HWMappingItem.h"
 #include "SWComponentItem.h"
@@ -34,6 +32,9 @@
 #include <QFileDialog>
 
 #include <LibraryManager/libraryinterface.h>
+
+#include <designwidget/columnview/ColumnEditDialog.h>
+#include <designwidget/HWChangeCommands.h>
 
 #include <common/diagramgrid.h>
 #include <common/DiagramUtil.h>
@@ -73,8 +74,10 @@ SystemDesignDiagram::SystemDesignDiagram(bool onlySW, LibraryInterface* lh, Main
       tempConnEndpoint_(0),
       tempPotentialEndingEndpoints_(),
       highlightedEndpoint_(0),
+      offPageMode_(false),
       replaceMode_(false),
-      sourceComp_(0)
+      sourceComp_(0),
+      oldSelection_(0)
 {
     connect(this, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
     connect(&editProvider, SIGNAL(modified()), this, SIGNAL(contentChanged()));
@@ -107,8 +110,12 @@ void SystemDesignDiagram::setMode(DrawMode mode)
     {
         if (getMode() == MODE_CONNECT)
         {
-            discardConnection();
-            disableHighlights();
+            endConnect();
+        }
+
+        if (mode == MODE_SELECT)
+        {
+            hideOffPageConnections();
         }
     }
 
@@ -736,16 +743,17 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
         if (creating)
         {
             createConnection(event);
-            disableHighlights();
         }
-        // Otherwise choose a new start endpoint.
-        else
+        // Otherwise choose a new start end point if in normal connection mode.
+        else if (!offPageMode_)
         {
+            offPageMode_ = (event->modifiers() & Qt::ShiftModifier);
+
             // Deselect all items.
             clearSelection();
 
             // Try to snap to a connection endpoint.
-            SWConnectionEndpoint* endpoint =
+            SWConnectionEndpoint* endpoint = 
                 DiagramUtil::snapToItem<SWConnectionEndpoint>(event->scenePos(), this, GridSize);
 
             if (endpoint == 0)
@@ -753,7 +761,26 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
                 return;
             }
 
+            if (offPageMode_)
+            {
+                if (highlightedEndpoint_ != 0)
+                {
+                    highlightedEndpoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
+                    highlightedEndpoint_ = 0;
+                }
+
+                if (endpoint->type() != SWOffPageConnectorItem::Type)
+                {
+                    endpoint = static_cast<SWConnectionEndpoint*>(endpoint->getOffPageConnector());
+                    endpoint->setVisible(true);
+                }
+            }
+
             tempConnEndpoint_ = endpoint;
+        }
+
+        if (offPageMode_ || !creating)
+        {
             tempConnEndpoint_->onBeginConnect();
             
             // Create the connection.
@@ -771,6 +798,7 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
 
                 if (endpoint != 0 && endpoint->isVisible() &&
                     endpoint != tempConnEndpoint_ &&
+                    endpoint->getOffPageConnector() != tempConnEndpoint_ &&
                     endpoint->canConnect(tempConnEndpoint_) && tempConnEndpoint_->canConnect(endpoint))
                 {
                     tempPotentialEndingEndpoints_.append(endpoint);
@@ -914,6 +942,43 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
             }
         }
     }
+    else if (getMode() == MODE_TOGGLE_OFFPAGE)
+    {
+        // Try to snap to a connection end point.
+        ConnectionEndpoint* endpoint =
+            DiagramUtil::snapToItem<ConnectionEndpoint>(event->scenePos(), this, GridSize);
+
+        QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
+
+        if (endpoint != 0 && endpoint->isVisible())
+        {
+            if (endpoint->getConnections().size() > 0)
+            {
+                hideOffPageConnections();
+
+                QList<GraphicsConnection*> connections = endpoint->getConnections();
+
+                foreach (GraphicsConnection* conn, connections)
+                {
+                    toggleConnectionStyle(conn, cmd.data());
+                }
+            }
+        }
+        else
+        {
+            QGraphicsItem* item = itemAt(event->scenePos());
+
+            if (item != 0 && item->type() == GraphicsConnection::Type)
+            {
+                toggleConnectionStyle(static_cast<GraphicsConnection*>(item), cmd.data());
+            }
+        }
+
+        if (cmd->childCount() > 0)
+        {
+            getEditProvider().addCommand(cmd, false);
+        }
+    }
     else if (getMode() == MODE_SELECT)
     {
         // Check if the user pressed Alt over a component => replace component mode.
@@ -978,7 +1043,7 @@ void SystemDesignDiagram::onSelected(QGraphicsItem* newSelection)
 void SystemDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
     // Check if the connect mode is active.
-    if (getMode() == MODE_CONNECT)
+    if (getMode() == MODE_CONNECT || getMode() == MODE_TOGGLE_OFFPAGE)
     {
         // Find out if there is an endpoint currently under the cursor.
         SWConnectionEndpoint* endpoint =
@@ -1034,7 +1099,7 @@ void SystemDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
                 highlightedEndpoint_ = 0;
             }
 
-            if (endpoint != 0 && !endpoint->isInvalid() && endpoint->isVisible())
+            if (endpoint != 0 && endpoint->isVisible())
             {
                 highlightedEndpoint_ = endpoint;
                 highlightedEndpoint_->setHighlight(SWConnectionEndpoint::HIGHLIGHT_HOVER);
@@ -1260,6 +1325,8 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
                     ApiDependency dependency(conn->name(), QString(), conn->description(),
                                              providerRef, requesterRef, conn->route());
                     dependency.setImported(conn->isImported());
+                    dependency.setOffPage(conn->endpoint1()->type() == SWOffPageConnectorItem::Type);
+
                     apiDependencies.append(dependency);
                 }
                 else
@@ -1275,10 +1342,11 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
                     ApiInterfaceRef ref(compPort->encompassingComp()->name(), compPort->name());
 
                     HierApiDependency hierDependency(conn->name(), QString(),
-                        conn->description(),
-                        hierPort->name(), ref,
-                        hierPort->scenePos(), hierPort->getDirection(),
-                        conn->route());
+                                                     conn->description(),
+                                                     hierPort->name(), ref,
+                                                     hierPort->scenePos(), hierPort->getDirection(),
+                                                     conn->route());
+                    hierDependency.setOffPage(conn->endpoint1()->type() == SWOffPageConnectorItem::Type);
 
 
                     hierApiDependencies.append(hierDependency);
@@ -1295,6 +1363,8 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
 
                     ComConnection comConnection(conn->name(), QString(), conn->description(),
                                                 ref1, ref2, conn->route());
+                    comConnection.setOffPage(conn->endpoint1()->type() == SWOffPageConnectorItem::Type);
+
                     comConnections.append(comConnection);
                 }
                 else
@@ -1316,7 +1386,7 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
                                                             hierPort->name(), ref,
                                                             hierPort->scenePos(), hierPort->getDirection(),
                                                             conn->route());
-
+                        hierComConnection.setOffPage(conn->endpoint1()->type() == SWOffPageConnectorItem::Type);
 
                         hierComConnections.append(hierComConnection);
                     }
@@ -1581,6 +1651,15 @@ HWMappingItem* SystemDesignDiagram::getHWComponent(QString const& instanceName)
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::createConnection(QGraphicsSceneMouseEvent* event)
 {
+    // Disable highlights from all potential endpoints.
+    for (int i = 0 ; i < tempPotentialEndingEndpoints_.size(); ++i)
+    {
+        tempPotentialEndingEndpoints_.at(i)->setHighlight(SWConnectionEndpoint::HIGHLIGHT_OFF);
+        tempPotentialEndingEndpoints_.at(i)->onEndConnect();
+    }
+
+    tempPotentialEndingEndpoints_.clear();
+
     // Check if there is no endpoint close enough to the cursor or the endpoints cannot be connected together.
     SWConnectionEndpoint* endpoint =
         DiagramUtil::snapToItem<SWConnectionEndpoint>(event->scenePos(), this, GridSize);
@@ -1592,14 +1671,42 @@ void SystemDesignDiagram::createConnection(QGraphicsSceneMouseEvent* event)
     }
     else 
     {
-        // Otherwise make the temporary connection a permanent one by connecting the ends.
+        // Check if the connection should be converted to an off-page connection.
+        bool firstOffPage = tempConnEndpoint_->type() == SWOffPageConnectorItem::Type;
+        bool secondOffPage = endpoint->type() == SWOffPageConnectorItem::Type;
+
+        if (offPageMode_ ||
+            ((firstOffPage || secondOffPage) && tempConnEndpoint_->type() != endpoint->type()))
+        {
+            delete tempConnection_;
+
+            if (!firstOffPage)
+            {
+                tempConnEndpoint_ = static_cast<SWConnectionEndpoint*>(tempConnEndpoint_->getOffPageConnector());
+            }
+
+            if (!secondOffPage)
+            {
+                endpoint = static_cast<SWConnectionEndpoint*>(endpoint->getOffPageConnector());
+            }
+
+            tempConnection_ = new GraphicsConnection(tempConnEndpoint_, endpoint, false,
+                                                     QString(), QString(), QString(), this);
+            addItem(tempConnection_);
+        }
+
+        // Make the temporary connection a permanent one by connecting the ends.
         if (tempConnection_->connectEnds())
         {
             QSharedPointer<QUndoCommand> cmd(new SWConnectionAddCommand(this, tempConnection_));
             getEditProvider().addCommand(cmd, false);
 
             tempConnection_ = 0;
-            tempConnEndpoint_ = 0;
+            
+            if (!offPageMode_)
+            {
+                tempConnEndpoint_ = 0;
+            }
         }
         else
         {
@@ -1678,7 +1785,8 @@ void SystemDesignDiagram::disableCurrentHighlight()
 {
     if (highlightedEndpoint_ != 0)
     {
-        if (tempConnEndpoint_ != 0 && highlightedEndpoint_ != tempConnEndpoint_)
+        if (tempConnEndpoint_ != 0 && highlightedEndpoint_ != tempConnEndpoint_ &&
+            tempPotentialEndingEndpoints_.contains(highlightedEndpoint_))
         {
             highlightedEndpoint_->setHighlight(SWConnectionEndpoint::HIGHLIGHT_ALLOWED);
             highlightedEndpoint_->onEndConnect();
@@ -1719,8 +1827,8 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
         }
 
         // Find the connected ports in the components.
-        SWPortItem* port1 = static_cast<SWPortItem*>(comp1->getSWPort(dependency.getInterface1().apiRef,
-                                                                      SWConnectionEndpoint::ENDPOINT_TYPE_API));
+        ConnectionEndpoint* port1 = static_cast<SWPortItem*>(comp1->getSWPort(dependency.getInterface1().apiRef,
+                                                                              SWConnectionEndpoint::ENDPOINT_TYPE_API));
 
         if (port1 == 0)
         {
@@ -1731,8 +1839,8 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
                                       SWConnectionEndpoint::ENDPOINT_TYPE_API, comp1, design);
         }
 
-        SWPortItem* port2 = static_cast<SWPortItem*>(comp2->getSWPort(dependency.getInterface2().apiRef,
-                                                                      SWConnectionEndpoint::ENDPOINT_TYPE_API));
+        ConnectionEndpoint* port2 = static_cast<SWPortItem*>(comp2->getSWPort(dependency.getInterface2().apiRef,
+                                                                              SWConnectionEndpoint::ENDPOINT_TYPE_API));
 
         if (port2 == 0)
         {
@@ -1743,6 +1851,11 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
                                       SWConnectionEndpoint::ENDPOINT_TYPE_API, comp2, design);
         }
 
+        if (dependency.isOffPage())
+        {
+            port1 = port1->getOffPageConnector();
+            port2 = port2->getOffPageConnector();
+        }
 
         GraphicsConnection* connection = new GraphicsConnection(port1, port2, true,
                                                                 dependency.getName(),
@@ -1750,6 +1863,11 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
                                                                 dependency.getDescription(), this);
         connection->setRoute(dependency.getRoute());
         connection->setImported(dependency.isImported());
+
+        if (dependency.isOffPage())
+        {
+            connection->setVisible(false);
+        }
 
         connect(connection, SIGNAL(errorMessage(QString const&)),
             this, SIGNAL(errorMessage(QString const&)));
@@ -1763,7 +1881,7 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
     {
         QSharedPointer<ApiInterface> apiIf =
             getEditedComponent()->getApiInterface(dependency.getInterfaceRef());
-        SWInterfaceItem* interface = 0;
+        ConnectionEndpoint* interface = 0;
 
         if (apiIf == 0)
         {
@@ -1820,7 +1938,8 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
         }
 
         // Find the port of the component.
-        SWPortItem* port = componentItem->getSWPort(dependency.getInterface().apiRef, SWConnectionEndpoint::ENDPOINT_TYPE_API);
+        ConnectionEndpoint* port =
+            componentItem->getSWPort(dependency.getInterface().apiRef, SWConnectionEndpoint::ENDPOINT_TYPE_API);
 
         if (port == 0)
         {
@@ -1830,12 +1949,23 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
             port = createMissingPort(dependency.getInterface().apiRef,
                                      SWConnectionEndpoint::ENDPOINT_TYPE_API, componentItem, design);
         }
+
+        if (dependency.isOffPage())
+        {
+            port = port->getOffPageConnector();
+            interface = interface->getOffPageConnector();
+        }
         
         GraphicsConnection* connection = new GraphicsConnection(port, interface, true,
-            dependency.getName(),
-            dependency.getDisplayName(),
-            dependency.getDescription(), this);
+                                                                dependency.getName(),
+                                                                dependency.getDisplayName(),
+                                                                dependency.getDescription(), this);
         connection->setRoute(dependency.getRoute());
+
+        if (dependency.isOffPage())
+        {
+            connection->setVisible(false);
+        }
 
         connect(connection, SIGNAL(errorMessage(QString const&)),
             this, SIGNAL(errorMessage(QString const&)));
@@ -1872,8 +2002,8 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
         }
 
         // Find the connected ports in the components.
-        SWConnectionEndpoint* port1 = comp1->getSWPort(conn.getInterface1().comRef,
-                                                       SWConnectionEndpoint::ENDPOINT_TYPE_COM);
+        ConnectionEndpoint* port1 = comp1->getSWPort(conn.getInterface1().comRef,
+                                                     SWConnectionEndpoint::ENDPOINT_TYPE_COM);
 
         if (port1 == 0)
         {
@@ -1882,8 +2012,8 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
             continue;
         }
 
-        SWConnectionEndpoint* port2 = comp2->getSWPort(conn.getInterface2().comRef,
-                                                       SWConnectionEndpoint::ENDPOINT_TYPE_COM);
+        ConnectionEndpoint* port2 = comp2->getSWPort(conn.getInterface2().comRef,
+                                                     SWConnectionEndpoint::ENDPOINT_TYPE_COM);
 
         if (port2 == 0)
         {
@@ -1891,13 +2021,23 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
                 conn.getInterface2().comRef).arg(conn.getInterface2().componentRef));
             continue;
         }
-
+        
+        if (conn.isOffPage())
+        {
+            port1 = port1->getOffPageConnector();
+            port2 = port2->getOffPageConnector();
+        }
 
         GraphicsConnection* connection = new GraphicsConnection(port1, port2, true,
-            conn.getName(),
-            conn.getDisplayName(),
-            conn.getDescription(), this);
+                                                                conn.getName(),
+                                                                conn.getDisplayName(),
+                                                                conn.getDescription(), this);
         connection->setRoute(conn.getRoute());
+
+        if (conn.isOffPage())
+        {
+            connection->setVisible(false);
+        }
 
         connect(connection, SIGNAL(errorMessage(QString const&)),
             this, SIGNAL(errorMessage(QString const&)));
@@ -1911,7 +2051,7 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
     {
         QSharedPointer<ComInterface> comIf =
             getEditedComponent()->getComInterface(hierConn.getInterfaceRef());
-        SWInterfaceItem* interface = 0;
+        ConnectionEndpoint* interface = 0;
 
         if (comIf == 0)
         {
@@ -1968,7 +2108,8 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
         }
 
         // Find the port of the component.
-        SWPortItem* port = componentItem->getSWPort(hierConn.getInterface().comRef, SWConnectionEndpoint::ENDPOINT_TYPE_COM);
+        ConnectionEndpoint* port =
+            componentItem->getSWPort(hierConn.getInterface().comRef, SWConnectionEndpoint::ENDPOINT_TYPE_COM);
 
         if (port == 0)
         {
@@ -1978,12 +2119,23 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
             port = createMissingPort(hierConn.getInterface().comRef, ConnectionEndpoint::ENDPOINT_TYPE_COM,
                                      componentItem, design);
         }
+
+        if (hierConn.isOffPage())
+        {
+            port = port->getOffPageConnector();
+            interface = interface->getOffPageConnector();
+        }
         
         GraphicsConnection* connection = new GraphicsConnection(port, interface, true,
                                                                 hierConn.getName(),
                                                                 hierConn.getDisplayName(),
                                                                 hierConn.getDescription(), this);
         connection->setRoute(hierConn.getRoute());
+
+        if (hierConn.isOffPage())
+        {
+            connection->setVisible(false);
+        }
 
         connect(connection, SIGNAL(errorMessage(QString const&)),
             this, SIGNAL(errorMessage(QString const&)));
@@ -2014,7 +2166,55 @@ void SystemDesignDiagram::onSelectionChanged()
         newSelection = selectedItems().front();
     }
 
+    // If the old selection was an off-page connector, hide its connections.
+    // Also hide the previously selected connection if it was an off-page connection.
+    if (oldSelection_ != 0)
+    {
+        if (oldSelection_->type() == SWOffPageConnectorItem::Type)
+        {
+            SWOffPageConnectorItem* connector = static_cast<SWOffPageConnectorItem*>(oldSelection_);
+
+            foreach (GraphicsConnection* conn, connector->getConnections())
+            {
+                if (conn != newSelection)
+                {
+                    conn->setVisible(false);
+                }
+            }
+        }
+        else if (oldSelection_->type() == GraphicsConnection::Type && oldSelection_ != newSelection)
+        {
+            GraphicsConnection* conn = static_cast<GraphicsConnection*>(oldSelection_);
+
+            if (conn->endpoint1() != 0)
+            {
+                if (conn->endpoint1()->type() == SWOffPageConnectorItem::Type)
+                {
+                    oldSelection_->setVisible(false);
+                }
+                else
+                {
+                    oldSelection_->setZValue(-1000);
+                }
+            }
+        }
+    }
+
+    // If the new selection is an off-page connector, show its connections.
+    if (newSelection != 0 && newSelection->type() == SWOffPageConnectorItem::Type)
+    {
+        SWOffPageConnectorItem* connector = static_cast<SWOffPageConnectorItem*>(newSelection);
+
+        foreach (GraphicsConnection* conn, connector->getConnections())
+        {
+            conn->setVisible(true);
+        }
+    }
+
     onSelected(newSelection);
+
+    // Save the current selection as the old selection.
+    oldSelection_ = newSelection;
 }
 
 //-----------------------------------------------------------------------------
@@ -2066,3 +2266,97 @@ SWPortItem* SystemDesignDiagram::createMissingPort(QString const& portName, Conn
     return port;
 }
 
+//-----------------------------------------------------------------------------
+// Function: hideOffPageConnections()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::hideOffPageConnections()
+{
+    foreach (QGraphicsItem* item, items())
+    {
+        GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
+
+        if (conn != 0 && conn->endpoint1()->type() == SWOffPageConnectorItem::Type)
+        {
+            conn->setVisible(false);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: keyReleaseEvent()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::keyReleaseEvent(QKeyEvent *event)
+{
+    // Check if the user ended the off-page connection mode.
+    if ((event->key() == Qt::Key_Shift) && offPageMode_)
+    {
+        if (tempConnEndpoint_ != 0)
+        {
+            if (tempConnEndpoint_->getConnections().size() == 0)
+            {
+                tempConnEndpoint_->setVisible(false);
+            }
+        }
+
+        endConnect();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: endConnect()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::endConnect()
+{
+    // Discard the connection that was being drawn.
+    discardConnection();
+
+    // Disable highlights from all end points.
+    disableHighlights();
+    
+    // Disable off-page mode.
+    offPageMode_ = false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: toggleConnectionStyle()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::toggleConnectionStyle(GraphicsConnection* conn, QUndoCommand* parentCmd)
+{
+    Q_ASSERT(parentCmd != 0);
+    emit clearItemSelection();
+
+    // Determine the new end points for the connection.
+    ConnectionEndpoint* endpoint1 = conn->endpoint1();
+    ConnectionEndpoint* endpoint2 = conn->endpoint2();
+
+    if (endpoint1->type() == SWOffPageConnectorItem::Type)
+    {
+        endpoint1 = static_cast<ConnectionEndpoint*>(endpoint1->parentItem());
+        endpoint2 = static_cast<ConnectionEndpoint*>(endpoint2->parentItem());
+    }
+    else
+    {
+        endpoint1 = endpoint1->getOffPageConnector();
+        endpoint2 = endpoint2->getOffPageConnector();
+    }
+
+    GraphicsConnection* newConn = new GraphicsConnection(endpoint1, endpoint2, false,
+                                                         conn->name(), QString(), conn->description(), this);
+
+    // Recreate the connection by first deleting the old and then creating a new one.
+    QUndoCommand* cmd = new SWConnectionDeleteCommand(conn, parentCmd);
+    cmd->redo();
+
+    addItem(newConn);
+    connect(newConn, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
+
+    if (newConn->connectEnds())
+    {
+        QUndoCommand* cmd = new SWConnectionAddCommand(this, newConn, parentCmd);
+    }
+    else
+    {
+        delete newConn;
+        newConn = 0;
+    }
+}

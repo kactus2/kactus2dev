@@ -32,7 +32,9 @@ const QStringList& ListManager::items() const {
 	if (model_) {
 		return model_->items();
 	}
-	return QStringList();
+
+    static QStringList emptyList;
+	return emptyList;
 }
 
 void ListManager::setItems( const QStringList& items ) {

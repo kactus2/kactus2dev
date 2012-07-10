@@ -21,6 +21,8 @@
 
 #include "SWConnectionEndpoint.h"
 
+class SWOffPageConnectorItem;
+
 //-----------------------------------------------------------------------------
 //! Graphics item for visualizing API/COM interfaces as ports of a component.
 //-----------------------------------------------------------------------------
@@ -197,6 +199,11 @@ public:
      */
     virtual bool isHierarchical() const;
 
+    /*!
+     *  Returns the corresponding off-page connector or a null pointer if the end point does not have one.
+     */
+    virtual ConnectionEndpoint* getOffPageConnector();
+
 protected:
     virtual QVariant itemChange(GraphicsItemChange change, QVariant const& value);
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
@@ -230,6 +237,9 @@ private:
 
     //! Default pen for the stub line.
     QPen stubLineDefaultPen_;
+
+    //! The off-page connector.
+    SWOffPageConnectorItem* offPageConnector_;
 };
 
 //-----------------------------------------------------------------------------

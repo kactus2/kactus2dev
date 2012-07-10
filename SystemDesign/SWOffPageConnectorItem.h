@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: OffPageConnectorItem.h
+// File: SWOffPageConnectorItem.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
@@ -9,10 +9,10 @@
 // Off-page connector for the block diagram.
 //-----------------------------------------------------------------------------
 
-#ifndef OFFPAGECONNECTORITEM_H
-#define OFFPAGECONNECTORITEM_H
+#ifndef SWOFFPAGECONNECTORITEM_H
+#define SWOFFPAGECONNECTORITEM_H
 
-#include "HWConnectionEndpoint.h"
+#include "SWConnectionEndpoint.h"
 
 #include <common/graphicsItems/GraphicsItemTypes.h>
 
@@ -20,15 +20,10 @@
 #include <QVector2D>
 #include <QPolygonF>
 
-class BusInterface;
-class HWComponentItem;
-class HWConnectionEndpoint;
-class LibraryInterface;
-
 //-----------------------------------------------------------------------------
-//! OffPageConnectorItem class.
+//! SWOffPageConnectorItem class.
 //-----------------------------------------------------------------------------
-class OffPageConnectorItem : public HWConnectionEndpoint
+class SWOffPageConnectorItem : public SWConnectionEndpoint
 {
     Q_OBJECT
 
@@ -43,28 +38,36 @@ public:
      *
      *      @param [in] parent The parent diagram connection endpoint.
      */
-    OffPageConnectorItem(HWConnectionEndpoint* parent);
+    SWOffPageConnectorItem(SWConnectionEndpoint* parent);
 
 	/*!
      *  Destructor.
      */
-	virtual ~OffPageConnectorItem();
+	virtual ~SWOffPageConnectorItem();
 
     /*!
-     *  Sets the bus and abstraction types and the interface mode for the endpoint.
+     *  Sets the COM/API type. The type of the VLNV determines the type of the endpoint.
      *
-     *      @param [in] busType  The bus type (bus definition VLNV).
-     *      @param [in] absType  The abstraction type (abstraction definition VLNV).
-     *      @param [in] mode     The interface mode.
+     *      @param [in] type The VLNV of the COM/API definition.
      */
-    void setTypes(VLNV const& busType, VLNV const& absType, General::InterfaceMode mode);
+    virtual void setTypeDefinition(VLNV const& type);
 
-    /*! 
-     *  Updates the graphics to match the IP-XACT bus interface.
+    /*!
+     *  Returns the currently set COM/API definition.
      */
-    void updateInterface();
+    virtual VLNV getTypeDefinition() const;
 
-	int type() const { return Type; }
+    /*!
+     *  Called when creating of a connection for this port has begun.
+     */
+    virtual void onBeginConnect();
+
+    /*!
+     *  Called when creating of a connection has ended.
+     */
+    virtual void onEndConnect();
+
+    int type() const { return Type; }
 
     //-----------------------------------------------------------------------------
     // HWConnectionEndpoint implementation.
@@ -175,30 +178,25 @@ public:
 	virtual QSharedPointer<Component> getOwnerComponent() const;
 
     /*! 
-     *  Returns the IP-XACT bus interface model of the parent diagram connection endpoint.
-     */
-    virtual QSharedPointer<BusInterface> getBusInterface() const;
-
-    /*!
-     *  Returns the ad-hoc port of the endpoint.
+     *  Returns the COM interface model of the endpoint.
      *
-     *      @remarks The function returns a null pointer if the endpoint is a bus interface.
-     *               Use isBus() function to check for ad-hoc support (isBus() == false).
+     *      @remarks The function returns a null pointer if the endpoint is not a COM interface.
+     *               Use isCom() function to check for COM interface support.
      */
-    virtual Port* getPort() const;
+    virtual QSharedPointer<ComInterface> getComInterface() const;
+
+    /*! 
+     *  Returns the API interface model of the endpoint.
+     *
+     *      @remarks The function returns a null pointer if the endpoint is not a API interface.
+     *               Use isApi() function to check for API interface support.
+     */
+    virtual QSharedPointer<ApiInterface> getApiInterface() const;
 
     /*!
      *  Returns true if the port represents a hierarchical connection.
      */
     virtual bool isHierarchical() const;
-
-    /*! 
-	 *  Sets the interface mode for the endpoint.
-	 *
-     *      @param [in] The interface mode to set.
-	 *
-	*/
-	virtual void setInterfaceMode(General::InterfaceMode mode);
 
 protected:
     virtual QVariant itemChange(GraphicsItemChange change,
@@ -208,17 +206,17 @@ protected:
 
 private:
     // Disable copying.
-    OffPageConnectorItem(OffPageConnectorItem const& rhs);
-    OffPageConnectorItem& operator=(OffPageConnectorItem const& rhs);
+    SWOffPageConnectorItem(SWOffPageConnectorItem const& rhs);
+    SWOffPageConnectorItem& operator=(SWOffPageConnectorItem const& rhs);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! The parent diagram connection endpoint.
-    HWConnectionEndpoint* parent_;
+    SWConnectionEndpoint* parent_;
 };
 
 //-----------------------------------------------------------------------------
 
-#endif // OFFPAGECONNECTORITEM_H
+#endif // SWOFFPAGECONNECTORITEM_H

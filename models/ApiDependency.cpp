@@ -16,7 +16,7 @@
 //-----------------------------------------------------------------------------
 ApiDependency::ApiDependency() : name_(), displayName_(), desc_(),
                                  interface1_(), interface2_(),
-                                 route_(), imported_(false)
+                                 route_(), imported_(false), offPage_(false)
 {
 }
 
@@ -33,7 +33,8 @@ ApiDependency::ApiDependency(QString const& name, QString const& displayName,
       interface1_(ref1),
       interface2_(ref2),
       route_(route),
-      imported_(imported)
+      imported_(imported),
+      offPage_(false)
 {
 
 }
@@ -47,7 +48,8 @@ ApiDependency::ApiDependency(ApiDependency const& rhs) : name_(rhs.name_),
                                                          interface1_(rhs.interface1_),
                                                          interface2_(rhs.interface2_),
                                                          route_(rhs.route_),
-                                                         imported_(rhs.imported_)
+                                                         imported_(rhs.imported_),
+                                                         offPage_(rhs.offPage_)
 {
 }
 
@@ -56,7 +58,7 @@ ApiDependency::ApiDependency(ApiDependency const& rhs) : name_(rhs.name_),
 //-----------------------------------------------------------------------------
 ApiDependency::ApiDependency(QDomNode& node) : name_(), displayName_(), desc_(),
                                                interface1_(), interface2_(),
-                                               route_(), imported_(false)
+                                               route_(), imported_(false), offPage_(false)
 {
     for (int i = 0; i < node.childNodes().count(); ++i)
     {
@@ -94,6 +96,8 @@ ApiDependency::ApiDependency(QDomNode& node) : name_(), displayName_(), desc_(),
         }
         else if (childNode.nodeName() == "kactus2:route")
         {
+            offPage_ = childNode.attributes().namedItem("kactus2:offPage").nodeValue() == "true";
+
             for (int i = 0; i < childNode.childNodes().size(); ++i)
             {
                 QDomNode posNode = childNode.childNodes().at(i);
@@ -143,6 +147,15 @@ void ApiDependency::write(QXmlStreamWriter& writer) const
     if (!route_.isEmpty())
     {
         writer.writeStartElement("kactus2:route");
+
+        if (offPage_)
+        {
+            writer.writeAttribute("kactus2:offPage", "true");
+        }
+        else
+        {
+            writer.writeAttribute("kactus2:offPage", "false");
+        }
 
         foreach (QPointF const& point, route_)
         {
@@ -219,6 +232,14 @@ void ApiDependency::setImported(bool imported)
 }
 
 //-----------------------------------------------------------------------------
+// Function: ApiDependency::setOffPage()
+//-----------------------------------------------------------------------------
+void ApiDependency::setOffPage(bool offPage)
+{
+    offPage_ = offPage;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ApiDependency::getName()
 //-----------------------------------------------------------------------------
 QString const& ApiDependency::getName() const
@@ -275,6 +296,14 @@ bool ApiDependency::isImported() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ApiDependency::isOffPage()
+//-----------------------------------------------------------------------------
+bool ApiDependency::isOffPage() const
+{
+    return offPage_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ApiDependency::operator=()
 //-----------------------------------------------------------------------------
 ApiDependency& ApiDependency::operator=(ApiDependency const& rhs)
@@ -288,6 +317,7 @@ ApiDependency& ApiDependency::operator=(ApiDependency const& rhs)
         interface2_ = rhs.interface2_;
         route_ = rhs.route_;
         imported_ = rhs.imported_;
+        offPage_ = rhs.offPage_;
     }
 
     return *this;

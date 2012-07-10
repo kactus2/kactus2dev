@@ -142,6 +142,9 @@ protected:
     //! Called when an object is dropped to the diagram.
     void dropEvent(QGraphicsSceneDragDropEvent *event);
 
+    //! Called when a key has been released.
+    void keyReleaseEvent(QKeyEvent *event);
+
 private:
     // Disable copying.
     SystemDesignDiagram(SystemDesignDiagram const& rhs);
@@ -222,6 +225,24 @@ private:
     SWPortItem* createMissingPort(QString const& portName, ConnectionEndpoint::EndpointType type,
                                   SystemComponentItem* component, QSharedPointer<Design> design);
 
+    /*!
+     *  Hides all off-page connections.
+     */
+    void hideOffPageConnections();
+
+    /*!
+     *  Ends connection mode.
+     */
+    void endConnect();
+
+    /*!
+     *  Toggles the connection style of the given connection between normal and off-page style.
+     *
+     *      @param [in] conn      The connection.
+     *      @param [in] parentCmd The parent undo command.
+     */
+    void toggleConnectionStyle(GraphicsConnection* conn, QUndoCommand* parentCmd);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -253,11 +274,17 @@ private:
     //! The highlighted endpoint to which the connection could be snapped automatically.
     SWConnectionEndpoint* highlightedEndpoint_;
 
+    //! If true, the off-page connection mode is active.
+    bool offPageMode_;
+
     //! If true, we're in replace component mode.
     bool replaceMode_;
 
     //! The component that is used to replace another component in replace mode.
     SystemComponentItem* sourceComp_;
+
+    //! The old item selection.
+    QGraphicsItem* oldSelection_;
 };
 
 //-----------------------------------------------------------------------------

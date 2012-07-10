@@ -22,7 +22,8 @@ HierApiDependency::HierApiDependency()
       desc_(),
       interfaceRef_(),
       interface_(),
-      route_()
+      route_(),
+      offPage_(false)
 {
 }
 
@@ -40,9 +41,9 @@ HierApiDependency::HierApiDependency(QString const& name, QString const& display
       interface_(ref),
       position_(position),
       direction_(direction),
-      route_(route)
+      route_(route),
+      offPage_(false)
 {
-
 }
 
 //-----------------------------------------------------------------------------
@@ -56,7 +57,8 @@ HierApiDependency::HierApiDependency(HierApiDependency const& rhs)
       interface_(rhs.interface_),
       position_(rhs.position_),
       direction_(rhs.direction_),
-      route_(rhs.route_)
+      route_(rhs.route_),
+      offPage_(rhs.offPage_)
 {
 }
 
@@ -71,7 +73,8 @@ HierApiDependency::HierApiDependency(QDomNode& node)
       interface_(),
       position_(),
       direction_(1.0, 0.0),
-      route_()
+      route_(),
+      offPage_(false)
 {
     interfaceRef_ = node.attributes().namedItem("kactus2:interfaceRef").nodeValue();
 
@@ -115,6 +118,8 @@ HierApiDependency::HierApiDependency(QDomNode& node)
         }
         else if (childNode.nodeName() == "kactus2:route")
         {
+            offPage_ = childNode.attributes().namedItem("kactus2:offPage").nodeValue() == "true";
+
             for (int i = 0; i < childNode.childNodes().size(); ++i)
             {
                 QDomNode posNode = childNode.childNodes().at(i);
@@ -160,6 +165,15 @@ void HierApiDependency::write(QXmlStreamWriter& writer) const
     if (!route_.isEmpty())
     {
         writer.writeStartElement("kactus2:route");
+
+        if (offPage_)
+        {
+            writer.writeAttribute("kactus2:offPage", "true");
+        }
+        else
+        {
+            writer.writeAttribute("kactus2:offPage", "false");
+        }
 
         foreach (QPointF const& point, route_)
         {
@@ -212,6 +226,14 @@ void HierApiDependency::setInterfaceRef(QString const& interfaceRef)
 void HierApiDependency::setInterface(ApiInterfaceRef const& ref)
 {
     interface_ = ref;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HierApiDependency::setOffPage()
+//-----------------------------------------------------------------------------
+void HierApiDependency::setOffPage(bool offPage)
+{
+    offPage_ = offPage;
 }
 
 //-----------------------------------------------------------------------------
@@ -279,6 +301,14 @@ QList<QPointF> const& HierApiDependency::getRoute() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: HierApiDependency::isOffPage()
+//-----------------------------------------------------------------------------
+bool HierApiDependency::isOffPage() const
+{
+    return offPage_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: HierApiDependency::operator=()
 //-----------------------------------------------------------------------------
 HierApiDependency& HierApiDependency::operator=(HierApiDependency const& rhs)
@@ -293,6 +323,7 @@ HierApiDependency& HierApiDependency::operator=(HierApiDependency const& rhs)
         position_ = rhs.position_;
         direction_ = rhs.direction_;
         route_ = rhs.route_;
+        offPage_ = rhs.offPage_;
     }
 
     return *this;

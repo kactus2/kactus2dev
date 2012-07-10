@@ -21,6 +21,7 @@
 #include "SWConnectionEndpoint.h"
 
 class IGraphicsItemStack;
+class SWOffPageConnectorItem;
 
 //-----------------------------------------------------------------------------
 //! Graphics item for visualizing API/COM interfaces for the top-level
@@ -189,6 +190,11 @@ public:
      */
     virtual bool isHierarchical() const;
 
+    /*!
+     *  Returns the corresponding off-page connector or a null pointer if the end point does not have one.
+     */
+    virtual ConnectionEndpoint* getOffPageConnector();
+
 protected:
     virtual QVariant itemChange(GraphicsItemChange change, QVariant const& value);
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
@@ -226,6 +232,8 @@ private:
     //! The old positions of the other interfaces before mouse move.
     QMap<SWInterfaceItem*, QPointF> oldInterfacePositions_;
 
+    //! The off-page connector.
+    SWOffPageConnectorItem* offPageConnector_;
 };
 
 //-----------------------------------------------------------------------------

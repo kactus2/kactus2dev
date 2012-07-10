@@ -13,6 +13,7 @@
 
 #include "SystemComponentItem.h"
 #include "HWMappingItem.h"
+#include "SWOffPageConnectorItem.h"
 
 #include "SystemMoveCommands.h"
 
@@ -49,7 +50,8 @@ SWPortItem::SWPortItem(QString const& name, QGraphicsItem *parent)
       comInterface_(),
       oldPos_(),
       oldPortPositions_(),
-      stubLine_(0, 0, 0, -GridSize, this)
+      stubLine_(0, 0, 0, -GridSize, this),
+      offPageConnector_(0)
 {
     setType(ENDPOINT_TYPE_UNDEFINED);
     setTypeLocked(false);
@@ -66,7 +68,8 @@ SWPortItem::SWPortItem(QSharedPointer<ApiInterface> apiIf, QGraphicsItem *parent
       comInterface_(),
       oldPos_(),
       oldPortPositions_(),
-      stubLine_(0, 0, 0, -GridSize, this)
+      stubLine_(0, 0, 0, -GridSize, this),
+      offPageConnector_(0)
 {
     Q_ASSERT(apiIf != 0);
     setType(ENDPOINT_TYPE_API);
@@ -84,7 +87,8 @@ SWPortItem::SWPortItem(QSharedPointer<ComInterface> comIf, QGraphicsItem *parent
       comInterface_(comIf),
       oldPos_(),
       oldPortPositions_(),
-      stubLine_(0, 0, 0, -GridSize, this)
+      stubLine_(0, 0, 0, -GridSize, this),
+      offPageConnector_(0)
 {
     Q_ASSERT(comIf != 0);
     setType(ENDPOINT_TYPE_COM);
@@ -277,6 +281,7 @@ void SWPortItem::updateInterface()
         nameLabel_.setPos(-nameHeight / 2, GridSize + nameWidth);
     }
 
+    offPageConnector_->updateInterface();
     emit contentChanged();
 }
 
@@ -756,6 +761,12 @@ void SWPortItem::initialize()
     setFlag(ItemSendsGeometryChanges);
     setFlag(ItemSendsScenePositionChanges);
 
+    // Create the off-page connector.
+    offPageConnector_ = new SWOffPageConnectorItem(this);
+    offPageConnector_->setPos(0.0, -GridSize * 3);
+    offPageConnector_->setFlag(ItemStacksBehindParent);
+    offPageConnector_->setVisible(false);
+
     updateInterface();
 }
 
@@ -919,4 +930,12 @@ bool SWPortItem::isExclusive() const
 {
     // COM interfaces are always exclusive.
     return (getType() == ENDPOINT_TYPE_COM);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWPortItem::getOffPageConnector()
+//-----------------------------------------------------------------------------
+ConnectionEndpoint* SWPortItem::getOffPageConnector()
+{
+    return offPageConnector_;
 }

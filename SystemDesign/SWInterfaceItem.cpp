@@ -15,6 +15,7 @@
 #include "SystemComponentItem.h"
 #include "HWMappingItem.h"
 #include "SystemMoveCommands.h"
+#include "SWOffPageConnectorItem.h"
 
 #include <designwidget/HWMoveCommands.h>
 
@@ -55,7 +56,8 @@ SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component,
       comInterface_(),
       oldPos_(),
       oldStack_(0),
-      oldInterfacePositions_()
+      oldInterfacePositions_(),
+      offPageConnector_(0)
 {
     setType(ENDPOINT_TYPE_UNDEFINED);
     setTypeLocked(false);
@@ -73,7 +75,8 @@ SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component,
       apiInterface_(apiIf),
       comInterface_(),
       oldPos_(),
-      oldInterfacePositions_()
+      oldInterfacePositions_(),
+      offPageConnector_(0)
 {
     Q_ASSERT(apiIf != 0);
     setType(ENDPOINT_TYPE_API);
@@ -92,7 +95,8 @@ SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component,
       apiInterface_(),
       comInterface_(comIf),
       oldPos_(),
-      oldInterfacePositions_()
+      oldInterfacePositions_(),
+      offPageConnector_(0)
 {
     Q_ASSERT(comIf != 0);
     setType(ENDPOINT_TYPE_COM);
@@ -249,12 +253,14 @@ void SWInterfaceItem::updateInterface()
     {
         /*  /\
          *  ||
+         *  \/
          */
         shape << QPointF(-squareSize/2, squareSize / 2)
-              << QPointF(-squareSize/2, -squareSize)
-              << QPointF(squareSize/2, -squareSize)
-              << QPointF(squareSize/2, squareSize / 2)
-              << QPointF(0, squareSize);
+            << QPointF(-squareSize/2, -squareSize / 2)
+            << QPointF(0, -squareSize)
+            << QPointF(squareSize/2, -squareSize / 2)
+            << QPointF(squareSize/2, squareSize / 2)
+            << QPointF(0, squareSize);
     }
 
     setPolygon(shape);
@@ -275,6 +281,7 @@ void SWInterfaceItem::updateInterface()
         nameLabel_.setPos(0, GridSize * 3.0 / 4.0 + nameWidth / 2.0);
     }
 
+    offPageConnector_->updateInterface();
     emit contentChanged();
 }
 
@@ -642,6 +649,12 @@ void SWInterfaceItem::initialize()
     setFlag(ItemSendsGeometryChanges);
     setFlag(ItemSendsScenePositionChanges);
 
+    // Create the off-page connector.
+    offPageConnector_ = new SWOffPageConnectorItem(this);
+    offPageConnector_->setPos(0.0, -GridSize * 3);
+    offPageConnector_->setFlag(ItemStacksBehindParent);
+    offPageConnector_->setVisible(false);
+
     updateInterface();
 }
 
@@ -803,4 +816,12 @@ bool SWInterfaceItem::isExclusive() const
     }
 
     return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWInterfaceItem::getOffPageConnector()
+//-----------------------------------------------------------------------------
+ConnectionEndpoint* SWInterfaceItem::getOffPageConnector()
+{
+    return offPageConnector_;
 }

@@ -200,7 +200,7 @@ unsigned int SystemDesignWidget::getSupportedDrawModes() const
 {
     if (getView()->isInteractive())
     {
-        return (MODE_SELECT | MODE_CONNECT | MODE_DRAFT);
+        return (MODE_SELECT | MODE_CONNECT | MODE_DRAFT | MODE_TOGGLE_OFFPAGE);
     }
     else
     {

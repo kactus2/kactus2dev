@@ -22,7 +22,8 @@ HierComConnection::HierComConnection()
       desc_(),
       interfaceRef_(),
       interface_(),
-      route_()
+      route_(),
+      offPage_(false)
 {
 }
 
@@ -40,7 +41,8 @@ HierComConnection::HierComConnection(QString const& name, QString const& display
       interface_(ref),
       position_(position),
       direction_(direction),
-      route_(route)
+      route_(route),
+      offPage_(false)
 {
 
 }
@@ -56,7 +58,8 @@ HierComConnection::HierComConnection(HierComConnection const& rhs)
       interface_(rhs.interface_),
       position_(rhs.position_),
       direction_(rhs.direction_),
-      route_(rhs.route_)
+      route_(rhs.route_),
+      offPage_(rhs.offPage_)
 {
 }
 
@@ -71,7 +74,8 @@ HierComConnection::HierComConnection(QDomNode& node)
       interface_(),
       position_(),
       direction_(1.0, 0.0),
-      route_()
+      route_(),
+      offPage_(false)
 {
     interfaceRef_ = node.attributes().namedItem("kactus2:interfaceRef").nodeValue();
 
@@ -115,6 +119,8 @@ HierComConnection::HierComConnection(QDomNode& node)
         }
         else if (childNode.nodeName() == "kactus2:route")
         {
+            offPage_ = childNode.attributes().namedItem("kactus2:offPage").nodeValue() == "true";
+
             for (int i = 0; i < childNode.childNodes().size(); ++i)
             {
                 QDomNode posNode = childNode.childNodes().at(i);
@@ -160,6 +166,15 @@ void HierComConnection::write(QXmlStreamWriter& writer) const
     if (!route_.isEmpty())
     {
         writer.writeStartElement("kactus2:route");
+
+        if (offPage_)
+        {
+            writer.writeAttribute("kactus2:offPage", "true");
+        }
+        else
+        {
+            writer.writeAttribute("kactus2:offPage", "false");
+        }
 
         foreach (QPointF const& point, route_)
         {
@@ -212,6 +227,14 @@ void HierComConnection::setInterfaceRef(QString const& interfaceRef)
 void HierComConnection::setInterface(ComInterfaceRef const& ref)
 {
     interface_ = ref;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HierComConnection::setOffPage()
+//-----------------------------------------------------------------------------
+void HierComConnection::setOffPage(bool offPage)
+{
+    offPage_ = offPage;
 }
 
 //-----------------------------------------------------------------------------
@@ -279,6 +302,14 @@ QList<QPointF> const& HierComConnection::getRoute() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: HierComConnection::isOffPage()
+//-----------------------------------------------------------------------------
+bool HierComConnection::isOffPage() const
+{
+    return offPage_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: HierComConnection::operator=()
 //-----------------------------------------------------------------------------
 HierComConnection& HierComConnection::operator=(HierComConnection const& rhs)
@@ -293,7 +324,9 @@ HierComConnection& HierComConnection::operator=(HierComConnection const& rhs)
         position_ = rhs.position_;
         direction_ = rhs.direction_;
         route_ = rhs.route_;
+        offPage_ = rhs.offPage_;
     }
 
     return *this;
 }
+
