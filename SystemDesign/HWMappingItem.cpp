@@ -312,7 +312,7 @@ QPointF HWMappingItem::mapStackFromScene(QPointF const& pos) const
 //-----------------------------------------------------------------------------
 bool HWMappingItem::isItemAllowed(QGraphicsItem* item) const
 {
-    return (item->type() == SWComponentItem::Type);
+    return (componentModel()->isCpu() && item->type() == SWComponentItem::Type);
 }
 
 //-----------------------------------------------------------------------------
