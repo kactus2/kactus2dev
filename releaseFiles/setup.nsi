@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Kactus2"
-!define PRODUCT_VERSION "1.0"
+!define PRODUCT_VERSION "2.0 RC"
 !define PRODUCT_PUBLISHER "TUT"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Kactus2.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
@@ -50,7 +50,7 @@ ShowUnInstDetails show
 
 Section "MainSection" SEC01
   SetOutPath "$INSTDIR"
-  SetOverwrite ifnewer
+  SetOverwrite on
   File "..\executable\QtXml4.dll"
   File "..\executable\QtNetwork4.dll"
   File "..\executable\QtGui4.dll"
@@ -61,19 +61,10 @@ Section "MainSection" SEC01
   File "release_notes.txt"
   File "readme.txt"
   
-  SetOutPath "$INSTDIR\Kactus\internal\app_link\1.0"
-  SetOverwrite try
-  File "Kactus\internal\app_link\1.0\app_link.1.0.xml"
-  SetOutPath "$INSTDIR\Kactus\internal\mcapi_message\1.0"
-  SetOverwrite try
-  File "Kactus\internal\mcapi_message\1.0\mcapi_message.1.0.xml"
-  SetOutPath "$INSTDIR\Kactus\internal\mcapi_packet\1.0"
-  SetOverwrite try
-  File "Kactus\internal\mcapi_packet\1.0\mcapi_packet.1.0.xml"
-  SetOutPath "$INSTDIR\Kactus\internal\mcapi_scalar\1.0"
-  SetOverwrite try
-  File "Kactus\internal\mcapi_scalar\1.0\mcapi_scalar.1.0.xml"
-  
+  SetOutPath "$INSTDIR\Plugins"
+  SetOverwrite on
+  File "..\executable\Plugins\MCAPICodeGenerator.dll"
+
   CreateDirectory "$SMPROGRAMS\Kactus2"
   CreateShortCut "$SMPROGRAMS\Kactus2\Kactus2.lnk" "$INSTDIR\Kactus2.exe"
   CreateShortCut "$SMPROGRAMS\Kactus2\License.lnk" "$INSTDIR\license.txt"
@@ -118,10 +109,7 @@ FunctionEnd
 
 Section Uninstall
   Delete "$INSTDIR\uninst.exe"
-  Delete "$INSTDIR\Kactus\internal\app_link\1.0\app_link.1.0.xml"
-  Delete "$INSTDIR\Kactus\internal\mcapi_message\1.0\mcapi_message.1.0.xml"
-  Delete "$INSTDIR\Kactus\internal\mcapi_packet\1.0\mcapi_packet.1.0.xml"
-  Delete "$INSTDIR\Kactus\internal\mcapi_scalar\1.0\mcapi_scalar.1.0.xml"
+  Delete "$INSTDIR\Kactus\Plugins\MCAPICodeGenerator.dll"
   Delete "$INSTDIR\readme.txt"
   Delete "$INSTDIR\release_notes.txt"
   Delete "$INSTDIR\license.txt"
@@ -140,15 +128,7 @@ Section Uninstall
   Delete "$SMPROGRAMS\Kactus2\Kactus2.lnk"
 
   RMDir "$SMPROGRAMS\Kactus2"
-  RMDir "$INSTDIR\Kactus\internal\mcapi_message\1.0"
-  RMDir "$INSTDIR\Kactus\internal\mcapi_message"
-  RMDir "$INSTDIR\Kactus\internal\mcapi_packet\1.0"
-  RMDir "$INSTDIR\Kactus\internal\mcapi_packet"
-  RMDir "$INSTDIR\Kactus\internal\mcapi_scalar\1.0"
-  RMDir "$INSTDIR\Kactus\internal\mcapi_scalar"
-  RMDir "$INSTDIR\Kactus\internal\app_link\1.0"
-  RMDir "$INSTDIR\Kactus\internal\app_link"
-  RMDir "$INSTDIR\Kactus\internal"
+  RMDir "$INSTDIR\Kactus\Plugins"
   RMDir "$INSTDIR\Kactus"
   RMDir "$INSTDIR"
 
