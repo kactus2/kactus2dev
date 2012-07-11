@@ -8,7 +8,7 @@
 
 #include "AdHocEnabled.h"
 #include <common/graphicsItems/ComponentItem.h>
-#include <common/graphicsItems/GraphicsItemtypes.h>
+#include <common/graphicsItems/GraphicsItemTypes.h>
 
 #include <QSharedPointer>
 

@@ -24,7 +24,7 @@ PluginManager::PluginManager(QString const& pluginPath)
     {
         QPluginLoader loader(dir.absoluteFilePath(filename));
         QObject* plugin = loader.instance();
-        
+
         if (plugin != 0)
         {
             plugins_.append(plugin);

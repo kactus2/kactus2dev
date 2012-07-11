@@ -7,7 +7,7 @@ TARGET = Kactus2
 DESTDIR = ./executable
 QT += core gui xml xmlpatterns
 CONFIG += release
-DEFINES += _WINDOWS QT_DLL QT_XMLPATTERNS_LIB QT_XML_LIB QT_HAVE_MMX QT_HAVE_3DNOW QT_HAVE_SSE QT_HAVE_MMXEXT QT_HAVE_SSE2
+DEFINES += _WINDOWS QT_DLL QT_XMLPATTERNS_LIB QT_XML_LIB QT_HAVE_MMX QT_HAVE_3DNOW QT_HAVE_SSE QT_HAVE_MMXEXT QT_HAVE_SSE2 KACTUS2_EXPORTS
 INCLUDEPATH += . \
     ./release \
     ./GeneratedFiles \
@@ -34,6 +34,7 @@ INCLUDEPATH += . \
     ./common/widgets/NumberLineEdit
 LIBS += -L"."
 DEPENDPATH += .
+QMAKE_LFLAGS += -pie -rdynamic
 MOC_DIR += release
 OBJECTS_DIR += release
 UI_DIR += ./GeneratedFiles

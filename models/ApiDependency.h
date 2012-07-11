@@ -17,6 +17,7 @@
 #include <QString>
 #include <QDomNode>
 #include <QXmlStreamWriter>
+#include <QPointF>
 
 //-----------------------------------------------------------------------------
 //! ApiInterfaceRef structure.

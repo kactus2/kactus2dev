@@ -8,7 +8,7 @@
 #include "bridgeseditor.h"
 #include "bridgesdelegate.h"
 
-#include <QVboxLayout>
+#include <QVBoxLayout>
 
 BridgesEditor::BridgesEditor(QSharedPointer<SlaveInterface> slave, 
 							 QSharedPointer<Component> component,

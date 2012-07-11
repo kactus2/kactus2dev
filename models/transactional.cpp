@@ -15,6 +15,8 @@
 #include <QSharedPointer>
 #include <QXmlStreamWriter>
 
+#include <stdexcept>
+
 const unsigned int DEFAULT_MAX_CONNECTIONS = 0;
 const unsigned int DEFAULT_MIN_CONNECTIONS = 1;
 

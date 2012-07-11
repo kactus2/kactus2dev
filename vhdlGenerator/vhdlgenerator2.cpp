@@ -548,7 +548,7 @@ void VhdlGenerator2::parseInstances() {
 		libraries_.append(compInstance->componentModel()->getVhdlLibraries(instanceActiveView));
 
 		// add each generic value to instances generic map
-		for (QMap<QString, QString>::iterator i = instance.getConfigurableElementValues().begin();
+        for (QMap<QString, QString>::const_iterator i = instance.getConfigurableElementValues().begin();
 			i != instance.getConfigurableElementValues().end(); ++i) {
 			compInstance->addGenericMap(i.key(), i.value());
 		}

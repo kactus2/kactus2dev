@@ -208,7 +208,8 @@ void addNewInstancesV2(QList<ComponentInstance> elements,
             QSharedPointer<Design const> swDesign;
             QSharedPointer<DesignConfiguration const> swDesignConf;
 
-            if (!getDesign(lh, component->getHierSWRef(), swDesign, swDesignConf))
+            VLNV designVLNV = component->getHierSWRef();
+            if (!getDesign(lh, designVLNV, swDesign, swDesignConf))
             {
                 continue;
             }
@@ -370,7 +371,9 @@ void updateSystemDesignV2(LibraryInterface* lh,
             QSharedPointer<Design const> swDesign;
             QSharedPointer<DesignConfiguration const> swDesignConf;
 
-            if (!getDesign(lh, component->getHierSWRef(viewName), swDesign, swDesignConf))
+            VLNV designVLNV = component->getHierSWRef(viewName);
+
+            if (!getDesign(lh, designVLNV, swDesign, swDesignConf))
             {
                 continue;
             }

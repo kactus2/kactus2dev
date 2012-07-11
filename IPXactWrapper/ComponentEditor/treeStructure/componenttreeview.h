@@ -29,7 +29,10 @@ class ComponentTreeView : public QTreeView {
 public:
 
 	//! \brief The default width of the navigation tree.
-	static const int DEFAULT_WIDTH = 150;
+    enum
+    {
+        DEFAULT_WIDTH = 150
+    };
 
     /*! \brief The constructor
      *
