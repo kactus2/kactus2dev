@@ -17,7 +17,7 @@
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)\executable\Plugins"
 			IntermediateDirectory="$(SolutionDir)$(ConfigurationName)"
 			ConfigurationType="2"
 			>
@@ -81,12 +81,12 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy /Y $(OutDir)\$(ProjectName).dll ..\..\executable\Plugins"
+				CommandLine=""
 			/>
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)\executable\Plugins"
 			IntermediateDirectory="$(SolutionDir)$(ConfigurationName)"
 			ConfigurationType="2"
 			>

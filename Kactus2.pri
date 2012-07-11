@@ -12,6 +12,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./mainwindow/NewWorkspaceDialog.h \
     ./mainwindow/SplashScreen.h \
     ./resource.h \
+    ./version.h \
     ./common/ColumnTypes.h \
     ./common/CSourceWriter.h \
     ./common/DesignDiagram.h \
@@ -75,6 +76,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./common/layouts/HStackedLayout.h \
     ./common/layouts/VCollisionLayout.h \
     ./common/layouts/VStackedLayout.h \
+    ./common/graphicsItems/CommonGraphicsUndoCommands.h \
     ./common/graphicsItems/ComponentItem.h \
     ./common/graphicsItems/ConnectionEndpoint.h \
     ./common/graphicsItems/ConnectionUndoCommands.h \
@@ -420,6 +422,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./SystemDesign/SWComponentItem.h \
     ./SystemDesign/SWConnectionEndpoint.h \
     ./SystemDesign/SWInterfaceItem.h \
+    ./SystemDesign/SWOffPageConnectorItem.h \
     ./SystemDesign/SWPortItem.h \
     ./SystemDesign/SystemAddCommands.h \
     ./SystemDesign/SystemChangeCommands.h \
@@ -521,6 +524,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/widgets/addressSpaceSelector/addressspaceselector.cpp \
     ./common/widgets/memoryMapSelector/memorymapselector.cpp \
     ./common/widgets/interfaceSelector/interfaceselector.cpp \
+    ./common/graphicsItems/CommonGraphicsUndoCommands.cpp \
     ./common/graphicsItems/ComponentItem.cpp \
     ./common/graphicsItems/ConnectionEndpoint.cpp \
     ./common/graphicsItems/ConnectionUndoCommands.cpp \
@@ -879,6 +883,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./SystemDesign/SWComponentItem.cpp \
     ./SystemDesign/SWConnectionEndpoint.cpp \
     ./SystemDesign/SWInterfaceItem.cpp \
+    ./SystemDesign/SWOffPageConnectorItem.cpp \
     ./SystemDesign/SWPortItem.cpp \
     ./SystemDesign/SystemAddCommands.cpp \
     ./SystemDesign/SystemChangeCommands.cpp \
