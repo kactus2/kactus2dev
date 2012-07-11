@@ -7,7 +7,7 @@ TARGET = MCAPICodeGenerator
 DESTDIR = ../../release
 QT += core gui xml xmlpatterns
 CONFIG += release
-DEFINES += QT_LARGEFILE_SUPPORT MCAPICODEGENERATOR_LIB QT_XML_LIB QT_XMLPATTERNS_LIB
+DEFINES += MCAPICODEGENERATOR_LIB QT_XML_LIB QT_XMLPATTERNS_LIB
 INCLUDEPATH += ./GeneratedFiles \
     ./GeneratedFiles/Release \
     . \
