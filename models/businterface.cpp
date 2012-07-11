@@ -692,7 +692,6 @@ bool BusInterface::isValid( const QList<General::PortBounds>& physicalPorts ) co
 		 // if the interface mode is invalid
 		default: {
 			return false;
-			break;
 				 }
 	}
 

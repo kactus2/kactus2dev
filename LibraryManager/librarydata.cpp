@@ -709,6 +709,8 @@ void LibraryData::parseLibrary( bool showProgress /*= true*/ ) {
 	
 	QApplication::setOverrideCursor(Qt::WaitCursor);
 
+    Q_ASSERT(_CrtCheckMemory());
+
 	beginResetModel();
 
 	// clear the previous items in the library
@@ -721,9 +723,6 @@ void LibraryData::parseLibrary( bool showProgress /*= true*/ ) {
 
 	// Load the library locations.
 	QStringList locations = settings.value("library/locations", QStringList()).toStringList();
-
-	// add the default location for kactus internal objects
-	locations.append(QCoreApplication::applicationDirPath() + "/Kactus/");
 
 	// create the progress bar that displays the progress of the scan
 	ScanProgressWidget progWidget;

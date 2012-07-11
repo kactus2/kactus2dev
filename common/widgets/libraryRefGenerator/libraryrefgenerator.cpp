@@ -140,7 +140,6 @@ bool LibraryRefGenerator::isValid() {
 		QMessageBox::critical(this, tr("Invalid field"), tr("Version-field in "
 				"%1 element can not be empty").arg(title()));
 		return false;
-		return false;
 	}
 	else {
 		return true;

@@ -2816,13 +2816,13 @@ void MainWindow::openApiDefinition(VLNV const& vlnv, bool forceUnlocked /*= fals
 void MainWindow::changeProtection(bool locked)
 {
 	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
-	Q_ASSERT(doc != 0);
-	Q_ASSERT(doc->getComponentVLNV().isValid());
-
+		
 	if (doc == 0)
 	{
 		return;
 	}
+
+    Q_ASSERT(doc->getComponentVLNV().isValid());
 
 	if (locked)
 	{
@@ -3555,5 +3555,7 @@ showLibrary_(true),
 showConfiguration_(true),
 showConnection_(true),
 showInterface_(true),
-showInstance_(true) {
+showInstance_(true),
+showAdHocVisibility(true)
+{
 }

@@ -163,9 +163,6 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The column layout.
-    GraphicsColumnLayout* layout_;
-
     //! The diagram column.
     GraphicsColumn* column_;
 

@@ -421,8 +421,6 @@ void ApiFunctionParameterModel::onMoveItem( const QModelIndex& originalPos, cons
         return;
     }
 
-    int source = originalPos.row();
-    
     // if the new position is invalid index then put the item last in the table
     if (!newPos.isValid() || newPos.row() < 0 || newPos.row() >= func_->getParamCount())
     {

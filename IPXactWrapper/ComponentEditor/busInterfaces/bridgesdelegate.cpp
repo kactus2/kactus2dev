@@ -16,8 +16,9 @@
 BridgesDelegate::BridgesDelegate(QSharedPointer<Component> component, 
 								 QObject *parent):
 QStyledItemDelegate(parent),
-component_(component) {
-
+component_(component),
+opaqueGroupModify_(false)
+{
 }
 
 BridgesDelegate::~BridgesDelegate() {

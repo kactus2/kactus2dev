@@ -34,8 +34,9 @@ QuartusGenerator::QuartusGenerator(LibraryInterface *handler, QWidget *parent):
 QObject(parent), 
 files_(), 
 assignments_(),  
-handler_(handler) {
-
+handler_(handler),
+parent_(parent)
+{
 	Q_ASSERT_X(handler, "QuartusGenerator constructor",
 			"Null LibraryHandler pointer given for generator");
 }
