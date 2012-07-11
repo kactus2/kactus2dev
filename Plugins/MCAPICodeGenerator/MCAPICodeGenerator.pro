@@ -4,7 +4,7 @@
 
 TEMPLATE = lib
 TARGET = MCAPICodeGenerator
-DESTDIR = ../../release
+DESTDIR = ../../executable/Plugins
 QT += core gui xml xmlpatterns
 CONFIG += release
 DEFINES += MCAPICODEGENERATOR_LIB QT_XML_LIB QT_XMLPATTERNS_LIB
@@ -13,7 +13,7 @@ INCLUDEPATH += ./GeneratedFiles \
     . \
     ./../..
 LIBS += -L"./../../executable" \
-    -lKactus2_d
+    -lKactus2
 DEPENDPATH += .
 MOC_DIR += ./GeneratedFiles/release
 OBJECTS_DIR += release
