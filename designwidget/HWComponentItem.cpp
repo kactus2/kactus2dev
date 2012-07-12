@@ -218,8 +218,6 @@ void HWComponentItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         Q_ASSERT(column != 0);
         column->onReleaseItem(this);
 
-        oldColumn_ = 0;
-
         QSharedPointer<QUndoCommand> cmd;
 
         if (scenePos() != oldPos_)
@@ -238,7 +236,13 @@ void HWComponentItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
                 continue;
 
             BusPortItem *diagramPort = qgraphicsitem_cast<BusPortItem *>(item);
-            foreach (GraphicsConnection *conn, diagramPort->getConnections())
+
+            foreach (GraphicsConnection* conn, diagramPort->getConnections())
+            {
+                conn->endUpdatePosition(cmd.data());
+            }
+
+            foreach (GraphicsConnection* conn, diagramPort->getOffPageConnector()->getConnections())
             {
                 conn->endUpdatePosition(cmd.data());
             }
@@ -249,6 +253,8 @@ void HWComponentItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         {
             static_cast<DesignDiagram*>(scene())->getEditProvider().addCommand(cmd, false);
         }
+
+        oldColumn_ = 0;
     }
 }
 
@@ -270,7 +276,13 @@ void HWComponentItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
             continue;
 
         BusPortItem *diagramPort = qgraphicsitem_cast<BusPortItem *>(item);
+
         foreach (GraphicsConnection *conn, diagramPort->getConnections())
+        {
+            conn->beginUpdatePosition();
+        }
+
+        foreach (GraphicsConnection *conn, diagramPort->getOffPageConnector()->getConnections())
         {
             conn->beginUpdatePosition();
         }

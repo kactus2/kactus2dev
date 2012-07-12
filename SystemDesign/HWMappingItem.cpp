@@ -88,6 +88,11 @@ void HWMappingItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
             {
                 conn->beginUpdatePosition();
             }
+
+            foreach (GraphicsConnection* conn, port->getOffPageConnector()->getConnections())
+            {
+                conn->beginUpdatePosition();
+            }
         }
     }
 }
@@ -117,6 +122,27 @@ void HWMappingItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
     }
 
     setConnectionUpdateDisabled(false);
+
+    // Update the port connections manually.
+    foreach (QGraphicsItem *item, childItems())
+    {
+        if (item->type() != SWPortItem::Type)
+        {
+            continue;
+        }
+
+        SWPortItem* port = static_cast<SWPortItem*>(item);
+
+        foreach (GraphicsConnection* conn, port->getConnections())
+        {
+            conn->updatePosition();
+        }
+
+        foreach (GraphicsConnection* conn, port->getOffPageConnector()->getConnections())
+        {
+            conn->updatePosition();
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -152,6 +178,11 @@ void HWMappingItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
                 SWPortItem* port = qgraphicsitem_cast<SWPortItem*>(item);
 
                 foreach (GraphicsConnection* conn, port->getConnections())
+                {
+                    conn->endUpdatePosition(cmd.data());
+                }
+
+                foreach (GraphicsConnection* conn, port->getOffPageConnector()->getConnections())
                 {
                     conn->endUpdatePosition(cmd.data());
                 }

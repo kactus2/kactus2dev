@@ -756,7 +756,7 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
             SWConnectionEndpoint* endpoint = 
                 DiagramUtil::snapToItem<SWConnectionEndpoint>(event->scenePos(), this, GridSize);
 
-            if (endpoint == 0)
+            if (endpoint == 0 || !endpoint->isVisible())
             {
                 return;
             }
@@ -1491,7 +1491,7 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
             {
                 emit noticeMessage(tr("No active view was selected for instance %1, "
                     "opening the only hierarhical view of the component.").arg(comp->name()));
-                emit openDesign(*comp->componentModel()->getVlnv(), hierViews.first());
+                emit openSWDesign(*comp->componentModel()->getVlnv(), hierViews.first());
             }
         }
         else if (!isProtected())
@@ -1499,7 +1499,7 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
             // Otherwise this is an unpackaged component.
 
             // Request the user to set the vlnv.
-            NewObjectDialog dialog(getLibraryInterface(), VLNV::COMPONENT, true, (QWidget*)parent());
+            NewObjectDialog dialog(getLibraryInterface(), VLNV::COMPONENT, false, (QWidget*)parent());
             dialog.setVLNV(*comp->componentModel()->getVlnv());
             dialog.setWindowTitle(tr("Add Component to Library"));
 

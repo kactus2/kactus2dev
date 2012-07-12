@@ -92,6 +92,11 @@ void SWComponentItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
             {
                 conn->beginUpdatePosition();
             }
+
+            foreach (GraphicsConnection* conn, port->getOffPageConnector()->getConnections())
+            {
+                conn->beginUpdatePosition();
+            }
         }
     }
 }
@@ -136,6 +141,11 @@ void SWComponentItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
         {
             conn->updatePosition();
         }
+
+        foreach (GraphicsConnection* conn, port->getOffPageConnector()->getConnections())
+        {
+            conn->updatePosition();
+        }
     }
 }
 
@@ -172,6 +182,11 @@ void SWComponentItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
                 SWPortItem* port = qgraphicsitem_cast<SWPortItem*>(item);
 
                 foreach (GraphicsConnection* conn, port->getConnections())
+                {
+                    conn->endUpdatePosition(cmd.data());
+                }
+
+                foreach (GraphicsConnection* conn, port->getOffPageConnector()->getConnections())
                 {
                     conn->endUpdatePosition(cmd.data());
                 }

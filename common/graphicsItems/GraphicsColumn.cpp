@@ -136,7 +136,7 @@ void GraphicsColumn::addItem(QGraphicsItem* item, bool load)
 void GraphicsColumn::removeItem(QGraphicsItem* item)
 {
     items_.removeAll(item);
-    setParentItem(0);
+    item->setParentItem(0);
 
     if (desc_.getContentType() != COLUMN_CONTENT_IO)
     {

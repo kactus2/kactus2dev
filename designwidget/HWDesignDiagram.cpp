@@ -874,7 +874,7 @@ void HWDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             ConnectionEndpoint* endpoint =
                 DiagramUtil::snapToItem<ConnectionEndpoint>(mouseEvent->scenePos(), this, GridSize);
 
-            if (endpoint == 0)
+            if (endpoint == 0 || !endpoint->isVisible())
             {
                 return;
             }
