@@ -149,6 +149,11 @@ public:
     void setConnectionUpdateDisabled(bool disabled);
 
     /*!
+     *  Re-validates existing connections.
+     */
+    void revalidateConnections();
+
+    /*!
      *  Retrieves the port with the given name and type (API/COM).
      *
      *      @param [in] name  The name of the port.
@@ -168,6 +173,8 @@ signals:
     void propertyValuesChanged(QMap<QString, QString> const& propertyValues);
 
 protected:
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+
     /*!
      *  Returns the height for the component box.
      */
@@ -177,11 +184,6 @@ protected:
      *  Updates the port positions so that they have at minimum the given Y coordinate value.
      */
     void offsetPortPositions(qreal minY);
-
-    /*!
-     *  Re-validates existing connections.
-     */
-    void revalidateConnections();
 
 private:
     // Disable copying.

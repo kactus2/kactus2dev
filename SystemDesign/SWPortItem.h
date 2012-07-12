@@ -211,7 +211,15 @@ protected:
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 private:
+    /*!
+     *  Initializes the port graphics.
+     */
     void initialize();
+
+    /*!
+     *  Returns true if the port has invalid connections.
+     */
+    bool hasInvalidConnections();
 
     //-----------------------------------------------------------------------------
     // Data.

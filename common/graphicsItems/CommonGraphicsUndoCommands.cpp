@@ -119,7 +119,7 @@ void ItemMoveCommand::undo()
 {
     newStack_->removeItem(item_);
 
-    item_->setPos(oldStack_->mapStackFromScene(oldPos_));
+    item_->setPos(oldPos_);
     oldStack_->addItem(item_);
 
     // Execute child commands.
@@ -133,7 +133,7 @@ void ItemMoveCommand::redo()
 {
     oldStack_->removeItem(item_);
 
-    item_->setPos(newStack_->mapStackFromScene(newPos_));
+    item_->setPos(newPos_);
     newStack_->addItem(item_);
 
     // Execute child commands.

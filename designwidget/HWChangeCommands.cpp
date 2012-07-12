@@ -854,6 +854,7 @@ void ReplaceComponentCommand::undo()
 void ReplaceComponentCommand::redo()
 {
     // Place the new component to the exact same location as the old one.
+    newComp_->setParentItem(0);
     newComp_->setPos(oldComp_->scenePos());
 
     // Execute child commands.

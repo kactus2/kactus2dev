@@ -441,5 +441,23 @@ void SystemComponentItem::revalidateConnections()
         {
             conn->validate();
         }
+
+        foreach (GraphicsConnection* conn, endpoint->getOffPageConnector()->getConnections())
+        {
+            conn->validate();
+        }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemComponentItem::itemChange()
+//-----------------------------------------------------------------------------
+QVariant SystemComponentItem::itemChange(GraphicsItemChange change, const QVariant &value)
+{
+    if (change == ItemParentHasChanged)
+    {
+        revalidateConnections();
+    }
+
+    return ComponentItem::itemChange(change, value);
 }

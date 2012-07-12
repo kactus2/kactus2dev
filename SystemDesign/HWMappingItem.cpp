@@ -217,7 +217,14 @@ qreal HWMappingItem::getHeight() const
 //-----------------------------------------------------------------------------
 void HWMappingItem::addItem(QGraphicsItem* item, bool load)
 {
+    // Map the position to the column's local coordinate system
+    // and constrain the item to the horizontal center of the column.
+    QPointF pos = mapFromScene(item->scenePos());
+    pos.setX(0.0);
+
     item->setParentItem(this);
+    item->setPos(pos);
+
     item->setFlag(ItemStacksBehindParent, false);
 
     ComponentItem* compItem = static_cast<ComponentItem*>(item);

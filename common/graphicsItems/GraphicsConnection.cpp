@@ -1201,6 +1201,8 @@ void GraphicsConnection::validate()
 {
     invalid_ = !endpoint1_->isConnectionValid(endpoint2_) || !endpoint2_->isConnectionValid(endpoint1_);
     setDefaultColor();
+    endpoint1_->updateInterface();
+    endpoint2_->updateInterface();
 }
 
 //-----------------------------------------------------------------------------
@@ -1250,7 +1252,6 @@ void GraphicsConnection::setEndpoint2(ConnectionEndpoint* endpoint2)
 
     updatePosition();
     updateName();
-    validate();
     // TODO: Child class additions?
 }
 

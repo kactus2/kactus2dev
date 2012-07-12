@@ -20,6 +20,7 @@
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
 #include <common/graphicsItems/ConnectionUndoCommands.h>
 #include <common/graphicsItems/ComponentItem.h>
+#include <common/graphicsItems/GraphicsConnection.h>
 
 #include <models/component.h>
 
@@ -221,7 +222,8 @@ void ReplaceSystemComponentCommand::redo()
     if (newComp_->type() == oldComp_->type() || !existing_)
     {
         // Place the new component to the exact same location as the old one.
-        newComp_->setPos(oldComp_->pos());
+        newComp_->setParentItem(0);
+        newComp_->setPos(oldComp_->scenePos());
     }
 
     // Execute child commands.

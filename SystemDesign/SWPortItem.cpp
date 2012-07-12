@@ -166,7 +166,7 @@ void SWPortItem::updateInterface()
 {
     SWConnectionEndpoint::updateInterface();
 
-    if (isInvalid())
+    if (isInvalid() || hasInvalidConnections())
     {
         stubLineDefaultPen_.setColor(Qt::red);
     }
@@ -508,19 +508,8 @@ void SWPortItem::removeConnection(GraphicsConnection* connection)
 
     if (connection->isInvalid())
     {
-        // Check if there are no other invalid connections.
-        bool valid = true;
-
-        foreach (GraphicsConnection* otherConn, getConnections())
-        {
-            if (otherConn->isInvalid())
-            {
-                valid = false;
-                break;
-            }
-        }
-
-        if (valid)
+        // Check if there no other invalid connections.
+        if (!hasInvalidConnections())
         {
             stubLineDefaultPen_.setColor(Qt::black);
             stubLine_.setPen(stubLineDefaultPen_);
@@ -976,4 +965,21 @@ bool SWPortItem::isExclusive() const
 ConnectionEndpoint* SWPortItem::getOffPageConnector()
 {
     return offPageConnector_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SWPortItem::hasInvalidConnections()
+//-----------------------------------------------------------------------------
+bool SWPortItem::hasInvalidConnections()
+{
+    // Check if there are no other invalid connections.
+    foreach (GraphicsConnection* otherConn, getConnections())
+    {
+        if (otherConn->isInvalid())
+        {
+            return true;
+        }
+    }
+
+    return false;
 }

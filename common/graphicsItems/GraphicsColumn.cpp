@@ -92,11 +92,11 @@ void GraphicsColumn::addItem(QGraphicsItem* item, bool load)
     QPointF pos = mapFromScene(item->scenePos());
     pos.setX(desc_.getWidth() / 2.0);
 
-    item->setPos(pos);
-    item->setFlag(ItemStacksBehindParent);
-
     // Set the column as the parent of the item.
     item->setParentItem(this);
+
+    item->setPos(pos);
+    item->setFlag(ItemStacksBehindParent);
 
     if (load)
     {

@@ -166,23 +166,9 @@ SystemComponentDeleteCommand::SystemComponentDeleteCommand(ComponentItem* item, 
       item_(item),
       stack_(dynamic_cast<IGraphicsItemStack*>(item->parentItem())),
       scene_(item->scene()),
-      del_(true)
+      del_(true),
+      firstRun_(true)
 {
-    // Create child commands for removing connections.
-    foreach (QGraphicsItem* childItem, item->childItems())
-    {
-        if (childItem->type() != SWPortItem::Type)
-        {
-            continue;
-        }
-
-        SWPortItem* port = static_cast<SWPortItem*>(childItem);
-
-        foreach (GraphicsConnection* conn, port->getConnections())
-        {
-            QUndoCommand* cmd = new SWConnectionDeleteCommand(conn, this);
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -216,6 +202,35 @@ void SystemComponentDeleteCommand::undo()
 //-----------------------------------------------------------------------------
 void SystemComponentDeleteCommand::redo()
 {
+    if (firstRun_)
+    {
+        // Create child commands for removing connections.
+        foreach (QGraphicsItem* childItem, item_->childItems())
+        {
+            if (childItem->type() != SWPortItem::Type)
+            {
+                continue;
+            }
+
+            SWPortItem* endpoint = static_cast<SWPortItem*>(childItem);
+
+            foreach (GraphicsConnection* conn, endpoint->getConnections())
+            {
+                QUndoCommand* cmd = new SWConnectionDeleteCommand(conn, this);
+            }
+
+            if (endpoint->getOffPageConnector() != 0)
+            {
+                foreach (GraphicsConnection* conn, endpoint->getOffPageConnector()->getConnections())
+                {
+                    QUndoCommand* cmd = new SWConnectionDeleteCommand(conn, this);
+                }
+            }
+        }
+
+        firstRun_ = false;
+    }
+
     // Execute child commands.
     QUndoCommand::redo();
 
@@ -266,10 +281,10 @@ SWPortDeleteCommand::~SWPortDeleteCommand()
 //-----------------------------------------------------------------------------
 void SWPortDeleteCommand::undo()
 {
-    // Add the port back to the scene.
+    // Add the endpoint back to the scene.
     scene_->addItem(port_);
 
-    // Add the port to the parent component.
+    // Add the endpoint to the parent component.
     parent_->addPort(port_);
     del_ = false;
 
@@ -285,10 +300,10 @@ void SWPortDeleteCommand::redo()
     // Execute child commands.
     QUndoCommand::redo();
 
-    // Remove the port from the parent component.
+    // Remove the endpoint from the parent component.
     parent_->removePort(port_);
 
-    // Remove the port from the scene.
+    // Remove the endpoint from the scene.
     scene_->removeItem(port_);
     del_ = true;
 }
