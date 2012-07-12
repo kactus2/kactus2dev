@@ -470,19 +470,8 @@ void SystemDesignDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 {
     if (dragSW_)
     {
-        // Find the top-most item under the cursor.
-        QGraphicsItem* item = 0;
-        QList<QGraphicsItem*> itemList = items(event->scenePos());
-
-        if (!itemList.empty())
-        {
-            item = itemList.front();
-
-            if (item->type() == QGraphicsTextItem::Type)
-            {
-                item = item->parentItem();
-            }
-        }
+        // Find the top-most component under the cursor.
+        ComponentItem* item = getTopmostComponent(event->scenePos());
 
         // If the underlying object is a HW mapping item, accept the drag here.
         // TODO: Alt modifier for MoveAction?
@@ -1114,11 +1103,11 @@ void SystemDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 
         if (destComp != 0 && destComp != sourceComp_)
         {
-            QApplication::setOverrideCursor(Qt::ClosedHandCursor);
+            QApplication::changeOverrideCursor(Qt::ClosedHandCursor);
         }
         else
         {
-            QApplication::setOverrideCursor(Qt::ForbiddenCursor);
+            QApplication::changeOverrideCursor(Qt::ForbiddenCursor);
         }
     }
 
@@ -1134,7 +1123,7 @@ void SystemDesignDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
     if (replaceMode_)
     {
         replaceMode_ = false;
-        QApplication::setOverrideCursor(Qt::ArrowCursor);
+        QApplication::restoreOverrideCursor();
 
         SystemComponentItem* destComp =
             dynamic_cast<SystemComponentItem*>(getTopmostComponent(event->scenePos()));

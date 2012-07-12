@@ -1613,14 +1613,8 @@ void HWDesignDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 {
     if (dragCompType_ != CIT_NONE)
     {
-        // Find the item under the cursor.
-        QGraphicsItem* item = 0;
-        QList<QGraphicsItem*> itemList = items(event->scenePos());
-
-        if (!itemList.empty())
-        {
-            item = itemList.back();
-        }
+        // Find the topmost component under the cursor.
+        ComponentItem* item = getTopmostComponent(event->scenePos());
 
         // If the item is a HW component, determine whether the component can be replaced with the dragged one.
         if (item != 0 && item->type() == HWComponentItem::Type)
@@ -1748,17 +1742,7 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         else if (event->dropAction() == Qt::MoveAction)
         {
             // Replace the underlying component with the new one.
-
-            // Retrieve the old component (under the cursor).
-            HWComponentItem* oldCompItem = 0;
-
-            QList<QGraphicsItem*> itemList = items(event->scenePos());
-
-            if (!itemList.empty())
-            {
-                oldCompItem = dynamic_cast<HWComponentItem*>(itemList.back());
-            }
-
+            HWComponentItem* oldCompItem = static_cast<HWComponentItem*>(getTopmostComponent(event->scenePos()));
             Q_ASSERT(oldCompItem != 0);
 
             // TODO: Determine connectivity issues and ask confirmation from the user.

@@ -342,7 +342,8 @@ SWPortItem* SystemComponentItem::getSWPort(QString const& name, SWConnectionEndp
             SWPortItem* port = static_cast<SWPortItem*>(item);
 
             if (port->name() == name &&
-                (port->getType() == type || port->getType() == SWConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED))
+                (port->getType() == type || port->getType() == SWConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED ||
+                 type == SWConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED))
             {
                 return port;
             }

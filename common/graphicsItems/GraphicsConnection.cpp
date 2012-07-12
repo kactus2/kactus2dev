@@ -1227,7 +1227,6 @@ void GraphicsConnection::setEndpoint1(ConnectionEndpoint* endpoint1)
 
     updatePosition();
     updateName();
-    // TODO: Child class additions?
 }
 
 //-----------------------------------------------------------------------------
@@ -1252,7 +1251,6 @@ void GraphicsConnection::setEndpoint2(ConnectionEndpoint* endpoint2)
 
     updatePosition();
     updateName();
-    // TODO: Child class additions?
 }
 
 //-----------------------------------------------------------------------------
