@@ -23,6 +23,7 @@
 #include "componenteditorswviewsitem.h"
 #include "componenteditorapiinterfacesitem.h"
 #include "componenteditorswpropertiesitem.h"
+#include "ComponentEditorSystemViewsItem.h"
 
 ComponentEditorRootItem::ComponentEditorRootItem( LibraryInterface* libHandler,
 												 QSharedPointer<Component> component,
@@ -59,6 +60,12 @@ ComponentEditorItem(libHandler, component, parent) {
 
 	childItems_.append(QSharedPointer<ComponentEditorSWViewsItem>(
 		new ComponentEditorSWViewsItem(parent, libHandler, component, this)));
+
+    if (component->getComponentImplementation() != KactusAttribute::KTS_SW)
+    {
+        childItems_.append(QSharedPointer<ComponentEditorSystemViewsItem>(
+            new ComponentEditorSystemViewsItem(parent, libHandler, component, this)));
+    }
 	
     if (component->getComponentImplementation() == KactusAttribute::KTS_HW)
     {

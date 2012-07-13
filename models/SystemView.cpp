@@ -193,3 +193,12 @@ void SystemView::setDescription( const QString& description )
 {
     nameGroup_.description_ = description;
 }
+
+
+General::NameGroup& SystemView::getNameGroup() {
+    return nameGroup_;
+}
+
+const General::NameGroup& SystemView::getNameGroup() const {
+    return nameGroup_;
+}

@@ -140,6 +140,18 @@ public:
 	 */
 	void setName(const QString &name);
 
+    /*! \brief Get the name group of the software view.
+	 *
+	 * \return Reference to the name group.
+	*/
+	General::NameGroup& getNameGroup();
+
+	/*! \brief Get the name group of the software view.
+	 *
+	 * \return Reference to the name group.
+	*/
+	const General::NameGroup& getNameGroup() const;
+
 private:
 	//! \brief Contains the name, display name and description of view.
 	General::NameGroup nameGroup_;

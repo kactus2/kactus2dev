@@ -12,7 +12,6 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./mainwindow/NewWorkspaceDialog.h \
     ./mainwindow/SplashScreen.h \
     ./resource.h \
-    ./version.h \
     ./common/ColumnTypes.h \
     ./common/CSourceWriter.h \
     ./common/DesignDiagram.h \
@@ -461,7 +460,13 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./PluginSystem/IPluginInformation.h \
     ./PluginSystem/IPluginUtility.h \
     ./PluginSystem/PluginListDialog.h \
-    ./PluginSystem/PluginManager.h
+    ./PluginSystem/PluginManager.h \
+    ./IPXactWrapper/ComponentEditor/software/SystemViewEditor.h \
+    ./IPXactWrapper/ComponentEditor/software/SystemViewsEditor.h \
+    ./IPXactWrapper/ComponentEditor/software/SystemViewsModel.h \
+    ./IPXactWrapper/ComponentEditor/software/SystemViewsDelegate.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/ComponentEditorSystemViewItem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/ComponentEditorSystemViewsItem.h
 SOURCES += ./common/CSourceWriter.cpp \
     ./common/DesignDiagram.cpp \
     ./common/DesignWidget.cpp \
@@ -894,5 +899,11 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./SystemDesign/SystemDesignWidget.cpp \
     ./SystemDesign/SystemMoveCommands.cpp \
     ./PluginSystem/PluginListDialog.cpp \
-    ./PluginSystem/PluginManager.cpp
+    ./PluginSystem/PluginManager.cpp \
+    ./IPXactWrapper/ComponentEditor/software/SystemViewEditor.cpp \
+    ./IPXactWrapper/ComponentEditor/software/SystemViewsEditor.cpp \
+    ./IPXactWrapper/ComponentEditor/software/SystemViewsModel.cpp \
+    ./IPXactWrapper/ComponentEditor/software/SystemViewsDelegate.cpp \
+    ./IPXactWrapper/ComponentEditor/treeStructure/ComponentEditorSystemViewItem.cpp \
+    ./IPXactWrapper/ComponentEditor/treeStructure/ComponentEditorSystemViewsItem.cpp
 RESOURCES += kactus.qrc
