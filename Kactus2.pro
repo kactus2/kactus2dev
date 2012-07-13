@@ -42,3 +42,4 @@ UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
 include(Kactus2.pri)
 win32:RC_FILE = Kactus2.rc
+unix:QMAKE_POST_LINK = ./CreateSymLink.sh
