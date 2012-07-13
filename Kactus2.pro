@@ -34,7 +34,8 @@ INCLUDEPATH += . \
     ./common/widgets/NumberLineEdit
 LIBS += -L"."
 DEPENDPATH += .
-QMAKE_LFLAGS += -pie -rdynamic
+linux-g++:LIBS += -pie -rdynamic
+win32-g++:LIBS += -Wl,--export-all-symbols,--out-implib,executable/libKactus2.a
 MOC_DIR += release
 OBJECTS_DIR += release
 UI_DIR += ./GeneratedFiles

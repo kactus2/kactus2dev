@@ -10,7 +10,10 @@
 #include <QObject>
 #include <QtPlugin>
 
-AttributeBoxPlugin::AttributeBoxPlugin(QObject* parent): QObject(parent) {
+AttributeBoxPlugin::AttributeBoxPlugin(QObject* parent)
+    : QObject(parent),
+      initialized(false)
+{
 }
 
 AttributeBoxPlugin::~AttributeBoxPlugin() {
