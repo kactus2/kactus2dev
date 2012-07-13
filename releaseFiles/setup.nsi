@@ -109,7 +109,7 @@ FunctionEnd
 
 Section Uninstall
   Delete "$INSTDIR\uninst.exe"
-  Delete "$INSTDIR\Kactus\Plugins\MCAPICodeGenerator.dll"
+  Delete "$INSTDIR\Plugins\MCAPICodeGenerator.dll"
   Delete "$INSTDIR\readme.txt"
   Delete "$INSTDIR\release_notes.txt"
   Delete "$INSTDIR\license.txt"
@@ -128,8 +128,7 @@ Section Uninstall
   Delete "$SMPROGRAMS\Kactus2\Kactus2.lnk"
 
   RMDir "$SMPROGRAMS\Kactus2"
-  RMDir "$INSTDIR\Kactus\Plugins"
-  RMDir "$INSTDIR\Kactus"
+  RMDir "$INSTDIR\Plugins"
   RMDir "$INSTDIR"
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
