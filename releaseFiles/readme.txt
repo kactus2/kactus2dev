@@ -50,7 +50,7 @@ Juho Järvinen
 Kactus2 uses parts of the Generic Component Framework (GCF), copyright
 VCreate Logic (P) Ltd, Bangalore, India. (GPL2)
 
-Kactus2 is linked with Qt 4.7, copyright Nokia Corporation. (LGPL)
+Kactus2 is linked with Qt 4.8.2, copyright Nokia Corporation. (LGPL)
 
 
 Icons used in Kactus2
