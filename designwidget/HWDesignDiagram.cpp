@@ -1207,11 +1207,11 @@ void HWDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
         if (destComp != 0 && destComp != sourceComp_)
         {
-            QApplication::setOverrideCursor(Qt::ClosedHandCursor);
+            QApplication::changeOverrideCursor(Qt::ClosedHandCursor);
         }
         else
         {
-            QApplication::setOverrideCursor(Qt::ForbiddenCursor);
+            QApplication::changeOverrideCursor(Qt::ForbiddenCursor);
         }
     }
 
@@ -1224,7 +1224,7 @@ void HWDesignDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
     if (replaceMode_)
     {
         replaceMode_ = false;
-        QApplication::setOverrideCursor(Qt::ArrowCursor);
+        QApplication::restoreOverrideCursor();
 
         HWComponentItem* destComp = 0;
         QList<QGraphicsItem*> itemList = items(mouseEvent->scenePos());

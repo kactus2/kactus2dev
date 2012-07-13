@@ -1651,6 +1651,11 @@ void SystemDesignDiagram::createConnection(QGraphicsSceneMouseEvent* event)
     if (endpoint == 0 || endpoint == tempConnEndpoint_ || !endpoint->isVisible() ||
         !endpoint->canConnect(tempConnEndpoint_) || !tempConnEndpoint_->canConnect(endpoint))
     {
+        if (!offPageMode_)
+        {
+            tempConnEndpoint_->onEndConnect();
+        }
+
         discardConnection();
     }
     else 

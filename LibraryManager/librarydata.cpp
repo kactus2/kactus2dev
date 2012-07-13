@@ -57,8 +57,9 @@
 static const QString KACTUS_LIBRARY_DIRNAME(".kactus2");
 static const QString KACTUS_LIBRARY_FILENAME(".librarySettings.ini");
 
-LibraryData::LibraryData(LibraryHandler* parent): 
+LibraryData::LibraryData(LibraryHandler* parent, QMainWindow* mainWnd): 
 QAbstractItemModel(parent),
+mainWnd_(mainWnd),
 libraryItems_(),
 table_(),
 handler_(parent) {
@@ -725,12 +726,12 @@ void LibraryData::parseLibrary( bool showProgress /*= true*/ ) {
 	QStringList locations = settings.value("library/locations", QStringList()).toStringList();
 
 	// create the progress bar that displays the progress of the scan
-	ScanProgressWidget progWidget;
+	ScanProgressWidget progWidget(mainWnd_);
 	int current = 1;
 
 	if (showProgress) {
 		progWidget.setRange(0, locations.size());
-		progWidget.move(handler_->mapToGlobal(handler_->geometry().topRight()));
+		//progWidget.move(handler_->mapToGlobal(handler_->geometry().topRight()));
 		progWidget.show();
 	}
 

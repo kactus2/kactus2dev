@@ -11,6 +11,8 @@
 
 #include "ConnectionEndpoint.h"
 
+#include "GraphicsConnection.h"
+
 #include <models/businterface.h>
 #include <models/ApiInterface.h>
 #include <models/ComInterface.h>
@@ -338,4 +340,23 @@ bool ConnectionEndpoint::isConnectionValid(ConnectionEndpoint const* other) cons
     }
 
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::revalidateConnections()
+//-----------------------------------------------------------------------------
+void ConnectionEndpoint::revalidateConnections()
+{
+    foreach (GraphicsConnection* conn, getConnections())
+    {
+        conn->validate();
+    }
+
+    if (getOffPageConnector() != 0)
+    {
+        foreach (GraphicsConnection* conn, getOffPageConnector()->getConnections())
+        {
+            conn->validate();
+        }
+    }
 }

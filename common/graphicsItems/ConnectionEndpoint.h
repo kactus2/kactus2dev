@@ -104,6 +104,11 @@ public:
     virtual QList<GraphicsConnection*> const& getConnections() const;
 
     /*!
+     *  Revalidates all connections.
+     */
+    void revalidateConnections();
+
+    /*!
      *  Returns true if the endpoint has at least one connection.
      */
     bool isConnected() const;

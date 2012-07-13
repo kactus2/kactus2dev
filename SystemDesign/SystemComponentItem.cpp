@@ -438,15 +438,7 @@ void SystemComponentItem::revalidateConnections()
 {
     foreach (ConnectionEndpoint* endpoint, getEndpoints())
     {
-        foreach (GraphicsConnection* conn, endpoint->getConnections())
-        {
-            conn->validate();
-        }
-
-        foreach (GraphicsConnection* conn, endpoint->getOffPageConnector()->getConnections())
-        {
-            conn->validate();
-        }
+        endpoint->revalidateConnections();
     }
 }
 

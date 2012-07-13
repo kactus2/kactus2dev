@@ -18,6 +18,7 @@
 #include <QXmlSchema>
 #include <QMap>
 #include <QSharedPointer>
+#include <QMainWindow>
 
 class LibraryHandler;
 
@@ -39,7 +40,7 @@ public:
 	 * \param parent Pointer to the owner of this widget.
 	 *
 	*/
-	LibraryData(LibraryHandler *parent);
+	LibraryData(LibraryHandler *parent, QMainWindow* mainWnd);
 
 	//! \brief The destructor
 	virtual ~LibraryData();
@@ -329,6 +330,9 @@ private:
 	 *
 	*/
 	void parseFile(const QString& filePath);
+
+    //! The main window.
+    QMainWindow* mainWnd_;
 
 	/*! \brief Map containing all the VLNVs that are in the library.
 	 *

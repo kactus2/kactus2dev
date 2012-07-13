@@ -239,6 +239,7 @@ void EndpointChangeCommand::undo() {
     endpoint_->getBusInterface()->setInterfaceMode(oldMode_);
     endpoint_->setDescription(oldDescription_);
     endpoint_->setName(oldName_);
+    endpoint_->revalidateConnections();
     //endpoint_->updateInterface();
 }
 
@@ -249,6 +250,7 @@ void EndpointChangeCommand::redo() {
     endpoint_->getBusInterface()->setInterfaceMode(newMode_);
     endpoint_->setDescription(newDescription_);
     endpoint_->setName(newName_);
+    endpoint_->revalidateConnections();
     //endpoint_->updateInterface();
 }
 
@@ -350,6 +352,7 @@ void EndpointDependencyDirectionChangeCommand::undo()
 {
     endpoint_->getApiInterface()->setDependencyDirection(oldDir_);
     endpoint_->updateInterface();
+    endpoint_->revalidateConnections();
 }
 
 //-----------------------------------------------------------------------------
@@ -359,6 +362,7 @@ void EndpointDependencyDirectionChangeCommand::redo()
 {
     endpoint_->getApiInterface()->setDependencyDirection(newDir_);
     endpoint_->updateInterface();
+    endpoint_->revalidateConnections();
 }
 
 //-----------------------------------------------------------------------------
@@ -388,6 +392,7 @@ void EndpointComDirectionChangeCommand::undo()
 {
     endpoint_->getComInterface()->setDirection(oldDir_);
     endpoint_->updateInterface();
+    endpoint_->revalidateConnections();
 }
 
 //-----------------------------------------------------------------------------
@@ -397,6 +402,7 @@ void EndpointComDirectionChangeCommand::redo()
 {
     endpoint_->getComInterface()->setDirection(newDir_);
     endpoint_->updateInterface();
+    endpoint_->revalidateConnections();
 }
 
 //-----------------------------------------------------------------------------
@@ -426,6 +432,7 @@ void EndpointTransferTypeChangeCommand::undo()
 {
     endpoint_->getComInterface()->setTransferType(oldTransferType_);
     endpoint_->updateInterface();
+    endpoint_->revalidateConnections();
 }
 
 //-----------------------------------------------------------------------------
@@ -435,6 +442,7 @@ void EndpointTransferTypeChangeCommand::redo()
 {
     endpoint_->getComInterface()->setTransferType(newTransferType_);
     endpoint_->updateInterface();
+    endpoint_->revalidateConnections();
 }
 
 //-----------------------------------------------------------------------------

@@ -142,7 +142,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="-Zm200 -w34100 -w34189 /MP2"
 				Optimization="2"
-				WholeProgramOptimization="false"
+				WholeProgramOptimization="true"
 				AdditionalIncludeDirectories="&quot;$(QTDIR)\include\QtCore&quot;;&quot;$(QTDIR)\include\QtGui&quot;;&quot;$(QTDIR)\include\QtXml&quot;;&quot;$(QTDIR)\include\QtXmlPatterns&quot;;&quot;$(QTDIR)\include&quot;;&quot;.&quot;;&quot;release&quot;;&quot;.\GeneratedFiles&quot;;&quot;.\vhdlGenerator&quot;;&quot;.\common\widgets\listManager&quot;;&quot;.\common\widgets\dirLineEdit&quot;;&quot;.\IPXactWrapper\ComponentEditor\fileSet&quot;;&quot;.\IPXactWrapper\ComponentEditor\channels&quot;;&quot;.\IPXactWrapper\ComponentEditor\views&quot;;&quot;.\common\delegates&quot;;&quot;.\common\widgets\attributeBox&quot;;&quot;.\common\views\EditableTableView&quot;;&quot;.\common\views\EditableListView&quot;;&quot;.\common\widgets\LibraryPathSelector&quot;;&quot;.\common\widgets\LibraryPathEditor&quot;;&quot;.\common\validators\LibraryPathValidator&quot;;&quot;.\common\widgets\EditorDockWidget&quot;;&quot;.\common\widgets\EditorScrollArea&quot;;&quot;.\common\widgets\ScanProgressWidget&quot;;&quot;.\IPXactWrapper\ComponentEditor\addressSpaces&quot;;&quot;.\common\widgets\ParameterEditor&quot;;&quot;.\common\widgets\ParameterGroupBox&quot;;&quot;.\IPXactWrapper\ComponentEditor\cpus&quot;;&quot;.\common\widgets\NumberLineEdit&quot;;&quot;.\IPXactWrapper\ComponentEditor\memoryMaps&quot;;&quot;.\IPXactWrapper\ComponentEditor&quot;;&quot;.\IPXactWrapper\ComponentEditor\treeStructure&quot;;&quot;.\common\widgets\nameGroupEditor&quot;;&quot;.\common\dialogs\selectDirectoryDialog&quot;;&quot;.\common\widgets\summaryLabel&quot;;&quot;.\IPXactWrapper\ComponentEditor\fileSet\file&quot;;&quot;.\IPXactWrapper\ComponentEditor\busInterfaces&quot;;&quot;.\common\widgets\interfaceModeSelector&quot;;&quot;.\common\widgets\addressSpaceSelector&quot;;&quot;.\common\widgets\memoryMapSelector&quot;;&quot;.\common\widgets\interfaceSelector&quot;;&quot;.\IPXactWrapper\ComponentEditor\software&quot;"
 				PreprocessorDefinitions="QT_NO_DEBUG;NDEBUG;_WINDOWS;UNICODE;WIN32;QT_DLL;QT_XMLPATTERNS_LIB;QT_XML_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_HAVE_MMX;QT_HAVE_3DNOW;QT_HAVE_SSE;QT_HAVE_MMXEXT;QT_HAVE_SSE2;QT_THREAD_SUPPORT;KACTUS2_EXPORTS"
 				GeneratePreprocessedFile="0"
@@ -180,7 +180,7 @@
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile=""
 				SubSystem="2"
-				LinkTimeCodeGeneration="0"
+				LinkTimeCodeGeneration="1"
 			/>
 			<Tool
 				Name="VCALinkTool"

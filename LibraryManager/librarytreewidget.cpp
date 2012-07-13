@@ -126,7 +126,7 @@ void LibraryTreeWidget::prepareDrag( const QModelIndex& index ) {
 
 		mimeData->setData("data/vlnvptr", QByteArray((const char*)&vlnv, sizeof(vlnv)));
 		drag->setMimeData(mimeData);
-		drag->exec();
+		drag->exec(Qt::MoveAction | Qt::CopyAction);
 	}
 
 	return;
