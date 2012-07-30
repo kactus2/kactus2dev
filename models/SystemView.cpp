@@ -25,6 +25,10 @@ SystemView::SystemView(QDomNode& viewNode)
         if (tempNode.nodeName() == QString("spirit:hierarchyRef")) {
             hierarchyRef_ = General::createVLNV(tempNode, VLNV::DESIGN);
         }
+        else if (tempNode.nodeName() == "kactus2:hwViewRef")
+        {
+            hwViewRef_ = tempNode.childNodes().at(0).nodeValue();
+        }
     }
 }
 
@@ -33,7 +37,8 @@ SystemView::SystemView(QDomNode& viewNode)
 //-----------------------------------------------------------------------------
 SystemView::SystemView(const QString name)
     : nameGroup_(name),
-      hierarchyRef_()
+      hierarchyRef_(),
+      hwViewRef_()
 {
 }
 
@@ -42,7 +47,8 @@ SystemView::SystemView(const QString name)
 //-----------------------------------------------------------------------------
 SystemView::SystemView()
     : nameGroup_(),
-      hierarchyRef_()
+      hierarchyRef_(),
+      hwViewRef_()
 {
 }
 
@@ -51,19 +57,21 @@ SystemView::SystemView()
 //-----------------------------------------------------------------------------
 SystemView::SystemView(const SystemView &other)
     : nameGroup_(other.nameGroup_),
-      hierarchyRef_(other.hierarchyRef_)
+      hierarchyRef_(other.hierarchyRef_),
+      hwViewRef_(other.hwViewRef_)
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: SystemView::operator=()
 //-----------------------------------------------------------------------------
-SystemView & SystemView::operator=(const SystemView &other)
+SystemView& SystemView::operator=(const SystemView &other)
 {
     if (this != &other)
     {
         nameGroup_ = other.nameGroup_;
         hierarchyRef_ = other.hierarchyRef_;
+        hwViewRef_ = other.hwViewRef_;
     }
 
     return *this;
@@ -96,6 +104,9 @@ void SystemView::write(QXmlStreamWriter& writer)
     // write spirit:hierarchyRef if one exists
     writer.writeEmptyElement("spirit:hierarchyRef");
     General::writeVLNVAttributes(writer, &hierarchyRef_);
+
+    // Write HW view reference.
+    writer.writeTextElement("kactus2:hwViewRef", hwViewRef_);
 
     writer.writeEndElement(); // kactus2:systemView
 }

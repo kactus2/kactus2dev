@@ -159,4 +159,5 @@ void SystemDetailsEditor::onViewRefChanged(QString const& viewRef)
 {
     systemView_->setHWViewRef(viewRef);
     designWidget_->refresh();
+    emit contentChanged();
 }

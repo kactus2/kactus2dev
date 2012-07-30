@@ -1145,7 +1145,7 @@ void MainWindow::onDesignChanged() {
 
 	// if editor was found
 	if (widget) {
-		HWDesignWidget* editor = qobject_cast<HWDesignWidget*>(widget);
+		DesignWidget* editor = dynamic_cast<DesignWidget*>(widget);
 
 		// if editor is design widget then set it to be modified.
 		if (editor) {
