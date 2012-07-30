@@ -86,47 +86,7 @@ public:
 	*/
 	bool isValid() const;
 
-	/*! \brief Get pointer to the hierarchical design for this view
-	 *
-	 * \return A pointer to the vlnv of a hierarchical design if the view is
-	 * used to reference a hierarchical design. If not a null pointer is
-	 * returned.
-	 */
-	VLNV getHierarchyRef() const;
-
-	/*! \brief Get the name of the view
-	 *
-	 * \return QString containing the name
-	 */
-	QString getName() const;
-
-	/*! \brief Get the display name of the view
-	 *
-	 * \return QString containing the display name.
-	*/
-	QString getDisplayName() const;
-
-	/*! \brief Get the description of the view.
-	 *
-	 * \return QString containing the description.
-	*/
-	QString getDescription() const;
-
-	/*! \brief Set the display name for the view.
-	 *
-	 * \param displayName Contains the display name to set.
-	 *
-	*/
-	void setDisplayName(const QString& displayName);
-
-	/*! \brief Set the description for the view.
-	 *
-	 * \param description Contains the description of the view.
-	 *
-	*/
-	void setDescription(const QString& description);
-
-	/*! \brief Set the hierarchyRef for this view
+    /*! \brief Set the hierarchyRef for this view
 	 *
 	 * Calling this function will delete the old hierarchyRef
 	 *
@@ -140,7 +100,59 @@ public:
 	 */
 	void setName(const QString &name);
 
-    /*! \brief Get the name group of the software view.
+    /*! \brief Set the display name for the view.
+	 *
+	 * \param displayName Contains the display name to set.
+	 *
+	*/
+	void setDisplayName(const QString& displayName);
+
+	/*! \brief Set the description for the view.
+	 *
+	 * \param description Contains the description of the view.
+	 *
+	*/
+	void setDescription(const QString& description);
+
+    /*!
+     *  Sets the reference to HW view to which the system is mapped.
+     *
+     *      @param [in] viewName The name of the HW view.
+     */
+    void setHWViewRef(QString const& viewName);
+
+	/*! \brief Get pointer to the hierarchical design for this view
+	 *
+	 * \return A pointer to the vlnv of a hierarchical design if the view is
+	 * used to reference a hierarchical design. If not a null pointer is
+	 * returned.
+	 */
+	VLNV getHierarchyRef() const;
+
+	/*! \brief Get the name of the view
+	 *
+	 * \return QString containing the name
+	 */
+	QString const& getName() const;
+
+	/*! \brief Get the display name of the view
+	 *
+	 * \return QString containing the display name.
+	*/
+	QString const& getDisplayName() const;
+
+	/*! \brief Get the description of the view.
+	 *
+	 * \return QString containing the description.
+	*/
+	QString const& getDescription() const;
+
+    /*!
+     *  Returns the reference to HW view to which the system is mapped.
+     */
+    QString const& getHWViewRef() const;
+
+	/*! \brief Get the name group of the software view.
 	 *
 	 * \return Reference to the name group.
 	*/
@@ -162,6 +174,9 @@ private:
 	 * reference a hierarchical design.
 	 */
 	VLNV hierarchyRef_;
+
+    //! The name of the HW view to which the system references.
+    QString hwViewRef_;
 };
 
 //-----------------------------------------------------------------------------

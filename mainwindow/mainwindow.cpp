@@ -73,6 +73,7 @@
 
 #include <ComponentInstanceEditor/componentinstanceeditor.h>
 #include <ConfigurationEditor/configurationeditor.h>
+#include <SystemDetailsEditor/SystemDetailsEditor.h>
 #include <InterfaceEditor/interfaceeditor.h>
 #include <ConnectionEditor/connectioneditor.h>
 #include <AdHocEditor/AdHocEditor.h>
@@ -110,6 +111,8 @@ MainWindow::MainWindow(QWidget *parent)
       instanceDock_(0),
       configurationEditor_(0),
       configurationDock_(0),
+      systemDetailsEditor_(0),
+      systemDetailsDock_(0),
       interfaceEditor_(0),
       interfaceDock_(0),
       adHocEditor_(0),
@@ -154,6 +157,7 @@ MainWindow::MainWindow(QWidget *parent)
       showPreviewAction_(0),
       showLibraryAction_(0),
       showConfigurationAction_(0),
+      showSystemDetailsAction_(0),
       showConnectionAction_(0),
       showInterfaceAction_(0),
       showInstanceAction_(0),
@@ -188,6 +192,7 @@ MainWindow::MainWindow(QWidget *parent)
 	setupInstanceEditor();
     setupAdHocVisibilityEditor();
 	setupConfigurationEditor();
+    setupSystemDetailsEditor();
 	setupInterfaceEditor();
 	setupConnectionEditor();
 
@@ -619,7 +624,7 @@ void MainWindow::setupActions() {
 	// the actions that select which windows to display
 
 	// Action to show/hide the output window.
-	showOutputAction_ = new QAction(tr("Output window"), this);
+	showOutputAction_ = new QAction(tr("Output Window"), this);
 	showOutputAction_->setCheckable(true);
 	showOutputAction_->setChecked(true);
 	connect(showOutputAction_, SIGNAL(toggled(bool)),
@@ -628,7 +633,7 @@ void MainWindow::setupActions() {
 		showOutputAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 
 	// Action to show/hide the preview box.
-	showPreviewAction_ = new QAction(tr("Preview box"), this);
+	showPreviewAction_ = new QAction(tr("Preview Box"), this);
 	showPreviewAction_->setCheckable(true);
 	showPreviewAction_->setChecked(true);
 	connect(showPreviewAction_, SIGNAL(toggled(bool)),
@@ -637,7 +642,7 @@ void MainWindow::setupActions() {
 		showPreviewAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 
 	// Action to show/hide the library window.
-	showLibraryAction_ = new QAction(tr("Library window"), this);
+	showLibraryAction_ = new QAction(tr("Library Window"), this);
 	showLibraryAction_->setCheckable(true);
 	showLibraryAction_->setChecked(true);
 	connect(showLibraryAction_, SIGNAL(toggled(bool)),
@@ -647,7 +652,7 @@ void MainWindow::setupActions() {
 	
 
 	// Action to show/hide the configuration window.
-	showConfigurationAction_ = new QAction(tr("Configuration window"), this);
+	showConfigurationAction_ = new QAction(tr("Configuration Window"), this);
 	showConfigurationAction_->setCheckable(true);
 	showConfigurationAction_->setChecked(true);
 	connect(showConfigurationAction_, SIGNAL(toggled(bool)),
@@ -655,8 +660,17 @@ void MainWindow::setupActions() {
 	connect(configurationDock_->toggleViewAction(), SIGNAL(toggled(bool)),
 		showConfigurationAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 
+    // Action to show/hide the system details window.
+    showSystemDetailsAction_ = new QAction(tr("System Details Window"), this);
+    showSystemDetailsAction_->setCheckable(true);
+    showSystemDetailsAction_->setChecked(true);
+    connect(showSystemDetailsAction_, SIGNAL(toggled(bool)),
+        this, SLOT(onSystemDetailsAction(bool)), Qt::UniqueConnection);
+    connect(configurationDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+            showSystemDetailsAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
 	// Action to show/hide the connection editor.
-	showConnectionAction_ = new QAction(tr("Connection editor"), this);
+	showConnectionAction_ = new QAction(tr("Connection Editor"), this);
 	showConnectionAction_->setCheckable(true);
 	showConnectionAction_->setChecked(true);
 	connect(showConnectionAction_, SIGNAL(toggled(bool)),
@@ -665,7 +679,7 @@ void MainWindow::setupActions() {
 		showConnectionAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 
 	// Action to show/hide the interface editor.
-	showInterfaceAction_ = new QAction(tr("Interface editor"), this);
+	showInterfaceAction_ = new QAction(tr("Interface Editor"), this);
 	showInterfaceAction_->setCheckable(true);
 	showInterfaceAction_->setChecked(true);
 	connect(showInterfaceAction_, SIGNAL(toggled(bool)),
@@ -674,7 +688,7 @@ void MainWindow::setupActions() {
 		showInterfaceAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 
 	// Action to show/hide the instance editor.
-	showInstanceAction_ = new QAction(tr("Instance editor"), this);
+	showInstanceAction_ = new QAction(tr("Instance Editor"), this);
 	showInstanceAction_->setCheckable(true);
 	showInstanceAction_->setChecked(true);
 	connect(showInstanceAction_, SIGNAL(toggled(bool)),
@@ -772,6 +786,10 @@ void MainWindow::loadWorkspace(QString const& workspaceName)
     visibilities_.showConfiguration_ = configurationVisible;
     showConfigurationAction_->setChecked(configurationVisible);
 
+    const bool systemDetailsVisible = settings.value("SystemDetailsVisibility", true).toBool();
+    visibilities_.showSystemDetails_ = systemDetailsVisible;
+    showSystemDetailsAction_->setChecked(systemDetailsVisible);
+
     const bool connectionVisible = settings.value("ConnectionVisibility", true).toBool();
     visibilities_.showConnection_ = connectionVisible;
     showConnectionAction_->setChecked(connectionVisible);
@@ -830,6 +848,7 @@ void MainWindow::saveWorkspace(QString const& workspaceName)
     settings.setValue("Geometry", saveGeometry());
     settings.setValue("WindowPosition", pos());
     settings.setValue("ConfigurationVisibility", visibilities_.showConfiguration_);
+    settings.setValue("SystemDetailsVisibility", visibilities_.showSystemDetails_);
     settings.setValue("ConnectionVisibility", visibilities_.showConnection_);
     settings.setValue("InstanceVisibility", visibilities_.showInstance_);
     settings.setValue("InterfaceVisibility", visibilities_.showInterface_);
@@ -1048,6 +1067,24 @@ void MainWindow::setupConfigurationEditor() {
 
 	connect(configurationEditor_, SIGNAL(contentChanged()),
 		this, SLOT(onDesignChanged()), Qt::UniqueConnection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: setupSystemDetailsEditor()
+//-----------------------------------------------------------------------------
+void MainWindow::setupSystemDetailsEditor()
+{
+    systemDetailsDock_ = new QDockWidget(tr("System Details"), this);
+    systemDetailsDock_->setObjectName(tr("System Details Editor"));
+    systemDetailsDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    systemDetailsDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
+
+    systemDetailsEditor_ = new SystemDetailsEditor(libraryHandler_, systemDetailsDock_);
+    systemDetailsDock_->setWidget(systemDetailsEditor_);
+    addDockWidget(Qt::RightDockWidgetArea, systemDetailsDock_);
+
+    connect(systemDetailsEditor_, SIGNAL(contentChanged()),
+            this, SLOT(onDesignChanged()), Qt::UniqueConnection);
 }
 
 void MainWindow::setupInstanceEditor() {
@@ -1758,10 +1795,16 @@ void MainWindow::onTabChanged(int index)
 	if (designwidget)
     {
 		configurationEditor_->setConfiguration(designwidget, designwidget->isProtected());
+
+        if (doc->getSupportedWindows() & TabDocument::SYSTEM_DETAILS_WINDOW)
+        {
+            systemDetailsEditor_->setSystem(designwidget, designwidget->isProtected());
+        }
 	}
 	// active tab is not design widget so clear the editors associated with design widget
 	else {
 		configurationEditor_->clear();
+        systemDetailsEditor_->clear();
 		instanceEditor_->clear();
         adHocEditor_->clear();
 		interfaceEditor_->clear();
@@ -2225,11 +2268,11 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName,
 	sysComp->setComponentFirmness(KactusAttribute::KTS_FIXED);
 	sysComp->setComponentImplementation(KactusAttribute::KTS_SYS);
 
-	// Create the systemView to the system design.
+	// Create the system view to the system design.
 	SystemView* systemView = new SystemView("kts_sys_ref");
 	systemView->setHierarchyRef(desConfVLNV);
 
-	// Create the systemView to the HW design.
+	// Create the system view to the HW design.
 	View* hwView = new View("kts_hw_ref");
 	hwView->setHierarchyRef(component->getHierRef(viewName));
 	hwView->addEnvIdentifier("");
@@ -2954,10 +2997,20 @@ void MainWindow::changeProtection(bool locked)
     {
 		// update the editors to match the locked state
 		configurationEditor_->setLocked(locked);
+
+        if (designwidget->getSupportedWindows() & TabDocument::SYSTEM_DETAILS_WINDOW)
+        {
+            systemDetailsEditor_->setLocked(locked);
+        }
     }
 	else
     {
 		configurationEditor_->setLocked(true);
+
+        if (designwidget->getSupportedWindows() & TabDocument::SYSTEM_DETAILS_WINDOW)
+        {
+            systemDetailsEditor_->setLocked(true);
+        }
     }
 
 	// Clear the item selection since the current instance is no longer valid.
@@ -3092,6 +3145,19 @@ void MainWindow::onConfigurationAction( bool show ) {
 	}
 }
 
+void MainWindow::onSystemDetailsAction( bool show )
+{
+    systemDetailsDock_->setVisible(show);
+
+    // if the configuration window is supported in the current window
+    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+
+    if (doc && doc->getSupportedWindows() & TabDocument::SYSTEM_DETAILS_WINDOW)
+    {
+        visibilities_.showSystemDetails_ = show;
+    }
+}
+
 void MainWindow::onConnectionAction( bool show ) {
 	connectionDock_->setVisible(show);
 
@@ -3174,6 +3240,15 @@ void MainWindow::updateWindows( unsigned int supportedWindows ) {
 		configurationDock_->hide();
 	}
 
+    if (supportedWindows & TabDocument::SYSTEM_DETAILS_WINDOW) {
+        windowsMenu_.addAction(showSystemDetailsAction_);
+        systemDetailsDock_->setVisible(visibilities_.showSystemDetails_);
+    }
+    else {
+        windowsMenu_.removeAction(showSystemDetailsAction_);
+        systemDetailsDock_->hide();
+    }
+
 	if (supportedWindows & TabDocument::CONNECTIONWINDOW) {
 		windowsMenu_.addAction(showConnectionAction_);
 		connectionDock_->setVisible(visibilities_.showConnection_);
@@ -3236,6 +3311,12 @@ void MainWindow::hideEvent( QHideEvent* event ) {
 	disconnect(configurationDock_->toggleViewAction(), SIGNAL(toggled(bool)),
 		showConfigurationAction_, SLOT(setChecked(bool)));
 
+    // Action to show/hide the system details window.
+    disconnect(showSystemDetailsAction_, SIGNAL(toggled(bool)),
+        this, SLOT(onSystemDetailsAction(bool)));
+    disconnect(systemDetailsDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+               showSystemDetailsAction_, SLOT(setChecked(bool)));
+
 	// Action to show/hide the connection editor.
 	disconnect(showConnectionAction_, SIGNAL(toggled(bool)),
 		this, SLOT(onConnectionAction(bool)));
@@ -3286,6 +3367,12 @@ void MainWindow::showEvent( QShowEvent* event ) {
 		this, SLOT(onConfigurationAction(bool)), Qt::UniqueConnection);
 	connect(configurationDock_->toggleViewAction(), SIGNAL(toggled(bool)),
 		showConfigurationAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+    // Action to show/hide the system detail window.
+    connect(showSystemDetailsAction_, SIGNAL(toggled(bool)),
+        this, SLOT(onSystemDetailsAction(bool)), Qt::UniqueConnection);
+    connect(systemDetailsDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+            showSystemDetailsAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 
 	// Action to show/hide the connection editor.
 	connect(showConnectionAction_, SIGNAL(toggled(bool)),

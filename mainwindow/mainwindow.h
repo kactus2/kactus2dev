@@ -38,6 +38,7 @@ class AdHocPortItem;
 class AdHocInterfaceItem;
 class ComponentInstanceEditor;
 class ConfigurationEditor;
+class SystemDetailsEditor;
 class InterfaceEditor;
 class ConnectionEditor;
 class AdHocEditor;
@@ -422,6 +423,9 @@ private slots:
 	//! \brief Handler for configuration action's trigger.
 	void onConfigurationAction(bool show);
 
+    //! \brief Handler for system details action's trigger.
+    void onSystemDetailsAction(bool show);
+
 	//! \brief Handler for connection action's trigger.
 	void onConnectionAction(bool show);
 
@@ -526,6 +530,11 @@ private:
 	//! \brief Set up the configuration editor.
 	void setupConfigurationEditor();
 
+    /*!
+     *  Sets up the system details editor.
+     */
+    void setupSystemDetailsEditor();
+
 	//! \brief Set up the interface editor.
 	void setupInterfaceEditor();
 
@@ -569,8 +578,14 @@ private:
 	//! \brief The widget to edit the configuration of designs.
 	ConfigurationEditor* configurationEditor_;
 
-	//! \brief The dock widget that contains the configuration editor.
-	QDockWidget* configurationDock_;
+    //! \brief The dock widget that contains the configuration editor.
+    QDockWidget* configurationDock_;
+
+    //! The widget to edit system details.
+    SystemDetailsEditor* systemDetailsEditor_;
+
+    //! The dock widget for the system details editor.
+    QDockWidget* systemDetailsDock_;
 
 	//! \brief The widget to edit the interfaces
 	InterfaceEditor* interfaceEditor_;
@@ -711,6 +726,9 @@ private:
 	//! \brief Action to show/hide the configuration window.
 	QAction* showConfigurationAction_;
 
+    //! Action to show/hide the system details window.
+    QAction* showSystemDetailsAction_;
+
 	//! \brief Action to show/hide the connection editor.
 	QAction* showConnectionAction_;
 
@@ -761,6 +779,9 @@ private:
 
 		//! \brief Show the configuration window
 		bool showConfiguration_;
+
+        //! If true, the system details window is visible.
+        bool showSystemDetails_;
 
 		//! \brief Show the connection editor
 		bool showConnection_;

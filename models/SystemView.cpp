@@ -132,22 +132,6 @@ bool SystemView::isValid() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: SystemView::getName()
-//-----------------------------------------------------------------------------
-QString SystemView::getName() const
-{
-    return nameGroup_.name_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: SystemView::getHierarchyRef()
-//-----------------------------------------------------------------------------
-VLNV SystemView::getHierarchyRef() const
-{
-    return hierarchyRef_;
-}
-
-//-----------------------------------------------------------------------------
 // Function: SystemView::setHierarchyRef()
 //-----------------------------------------------------------------------------
 void SystemView::setHierarchyRef(const VLNV& hierarchyRef)
@@ -161,21 +145,6 @@ void SystemView::setHierarchyRef(const VLNV& hierarchyRef)
 void SystemView::setName(const QString &name)
 {
     nameGroup_.name_ = name;
-}
-
-//-----------------------------------------------------------------------------
-// Function: SystemView::getDisplayName()
-//-----------------------------------------------------------------------------
-QString SystemView::getDisplayName() const
-{
-    return nameGroup_.displayName_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: SystemView::getDescription()
-//-----------------------------------------------------------------------------
-QString SystemView::getDescription() const {
-    return nameGroup_.description_;
 }
 
 //-----------------------------------------------------------------------------
@@ -194,6 +163,53 @@ void SystemView::setDescription( const QString& description )
     nameGroup_.description_ = description;
 }
 
+//-----------------------------------------------------------------------------
+// Function: SystemView::setHWViewRef()
+//-----------------------------------------------------------------------------
+void SystemView::setHWViewRef(QString const& viewName)
+{
+    hwViewRef_ = viewName;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemView::getHierarchyRef()
+//-----------------------------------------------------------------------------
+VLNV SystemView::getHierarchyRef() const
+{
+    return hierarchyRef_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemView::getName()
+//-----------------------------------------------------------------------------
+QString const& SystemView::getName() const
+{
+    return nameGroup_.name_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemView::getDisplayName()
+//-----------------------------------------------------------------------------
+QString const& SystemView::getDisplayName() const
+{
+    return nameGroup_.displayName_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemView::getDescription()
+//-----------------------------------------------------------------------------
+QString const& SystemView::getDescription() const {
+    return nameGroup_.description_;
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: SystemView::getHWViewRef()
+//-----------------------------------------------------------------------------
+QString const& SystemView::getHWViewRef() const
+{
+    return hwViewRef_;
+}
 
 General::NameGroup& SystemView::getNameGroup() {
     return nameGroup_;

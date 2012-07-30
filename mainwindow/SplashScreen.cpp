@@ -39,7 +39,7 @@ void SplashScreen::drawContents(QPainter *painter)
 {
     // Draw the version text.
     painter->setPen(QPen(Qt::white, 1));
-    painter->drawText(300, 125, tr("Version 2.0 RC"));
+    painter->drawText(300, 125, tr("Version 2.0 RC (Build ") + QString::number(VERSION_BUILDNO) + ")");
 //     painter->drawText(300, 125, tr("Version ") + QString::number(VERSION_MAJOR) + "." +
 //         QString::number(VERSION_MINOR) + tr(" (Build ") + QString::number(VERSION_BUILDNO) + ")");
 

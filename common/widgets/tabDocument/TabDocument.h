@@ -44,14 +44,15 @@ public:
     };
 
 	enum SupportedWindows {
-		OUTPUTWINDOW = 0x01,
-		PREVIEWWINDOW = 0x02,
-		LIBRARYWINDOW = 0x04,
-		CONFIGURATIONWINDOW = 0x08,
-		CONNECTIONWINDOW = 0x10,
-		INTERFACEWINDOW = 0x20,
-		INSTANCEWINDOW = 0x40,
-        ADHOC_WINDOW = 0x80
+		OUTPUTWINDOW            = 0x001,
+		PREVIEWWINDOW           = 0x002,
+		LIBRARYWINDOW           = 0x004,
+		CONFIGURATIONWINDOW     = 0x008,
+		CONNECTIONWINDOW        = 0x010,
+		INTERFACEWINDOW         = 0x020,
+		INSTANCEWINDOW          = 0x040,
+        ADHOC_WINDOW            = 0x080,
+        SYSTEM_DETAILS_WINDOW   = 0x100,
 	};
 
     /*!

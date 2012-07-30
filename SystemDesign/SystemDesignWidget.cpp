@@ -31,6 +31,7 @@
 #include <models/component.h>
 #include <models/design.h>
 #include <models/designconfiguration.h>
+#include <models/SystemView.h>
 
 #include <mainwindow/mainwindow.h>
 
@@ -47,7 +48,12 @@ SystemDesignWidget::SystemDesignWidget(bool onlySW, LibraryInterface* lh, MainWi
     : DesignWidget(lh, parent),
       onlySW_(onlySW)
 {
-    supportedWindows_ = (supportedWindows_ | INSTANCEWINDOW | INTERFACEWINDOW | CONNECTIONWINDOW | CONFIGURATIONWINDOW);
+    supportedWindows_ |= INSTANCEWINDOW | INTERFACEWINDOW | CONNECTIONWINDOW | CONFIGURATIONWINDOW;
+
+    if (!onlySW_)
+    {
+        supportedWindows_ |= SYSTEM_DETAILS_WINDOW;
+    }
 
     setDiagram(new SystemDesignDiagram(onlySW, lh, mainWnd, *getGenericEditProvider(), this));
 }
@@ -114,6 +120,7 @@ bool SystemDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
 bool SystemDesignWidget::setDesign(QSharedPointer<Component> comp, const QString& viewName)
 {
     VLNV designVLNV;
+    QString hwViewRef = "";
 
     if (onlySW_)
     {
@@ -136,6 +143,7 @@ bool SystemDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
         }
 
         designVLNV = comp->getHierSystemRef(viewName);
+        hwViewRef = view->getHWViewRef();
     }
 
     // Check for a valid VLNV type.
@@ -182,7 +190,7 @@ bool SystemDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
     if (!onlySW_)
     {
         // Update the design.
-        updateSystemDesignV2(getLibraryInterface(), comp->getHierRef(""), *design, designConf);
+        updateSystemDesignV2(getLibraryInterface(), comp->getHierRef(hwViewRef), *design, designConf);
     }
 
     if (!getDiagram()->setDesign(comp, design, designConf))
