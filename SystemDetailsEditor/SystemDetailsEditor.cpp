@@ -11,10 +11,16 @@
 
 #include "SystemDetailsEditor.h"
 
+#include "SwitchHWDialog.h"
+
 #include <SystemDesign/SystemDesignWidget.h>
+
 #include <models/SystemView.h>
 
+#include <LibraryManager/libraryinterface.h>
+
 #include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QFormLayout>
 
 //-----------------------------------------------------------------------------
@@ -25,12 +31,14 @@ SystemDetailsEditor::SystemDetailsEditor(LibraryInterface* handler, QWidget *par
       handler_(handler),
       hwRefEditor_(VLNV::COMPONENT, handler, parent, parent),
       viewSelector_(this),
+      applyButton_(tr("Apply"), this),
+      revertButton_(tr("Revert"), this),
       removeMappingButton_(tr("Remove HW"), this),
       component_(),
       designWidget_(NULL),
       systemView_(0)
 {
-    hwRefEditor_.setTitle(tr("HW reference"));
+    hwRefEditor_.setTitle(tr("HW component reference"));
 
     setupLayout();
     setupConnections();
@@ -74,6 +82,7 @@ void SystemDetailsEditor::setSystem(DesignWidget* designWidget, bool locked)
     
     viewSelector_.clear();
     viewSelector_.addItems(component_->getHierViews());
+    
     systemView_ = component_->findSystemView(designWidget->getOpenViewName());
 
     if (systemView_ != 0)
@@ -109,6 +118,8 @@ void SystemDetailsEditor::clear()
     viewSelector_.clear();
     viewSelector_.setDisabled(true);
 
+    applyButton_.setDisabled(true);
+    revertButton_.setDefault(true);
     removeMappingButton_.setDisabled(true);
 }
 
@@ -135,12 +146,17 @@ void SystemDetailsEditor::setLocked(bool locked)
 //-----------------------------------------------------------------------------
 void SystemDetailsEditor::setupLayout()
 {
+    QHBoxLayout* buttonLayout = new QHBoxLayout();
+    buttonLayout->addWidget(&applyButton_);
+    buttonLayout->addWidget(&revertButton_);
+
     QFormLayout* selectorLayout = new QFormLayout();
     selectorLayout->addRow(tr("Selected HW view:"), &viewSelector_);
 
     QVBoxLayout* topLayout = new QVBoxLayout(this);
     topLayout->addWidget(&hwRefEditor_);
     topLayout->addLayout(selectorLayout);
+    topLayout->addLayout(buttonLayout);
     topLayout->addWidget(&removeMappingButton_);
     topLayout->addStretch(1);
 }
@@ -150,6 +166,38 @@ void SystemDetailsEditor::setupLayout()
 //-----------------------------------------------------------------------------
 void SystemDetailsEditor::setupConnections()
 {
+    connect(&hwRefEditor_, SIGNAL(vlnvEdited()), this, SLOT(onHWRefChanged()), Qt::UniqueConnection);
+    connect(&applyButton_, SIGNAL(clicked()), this, SLOT(applyHW()), Qt::UniqueConnection);
+    connect(&revertButton_, SIGNAL(clicked()), this, SLOT(revert()), Qt::UniqueConnection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDetailsEditor::onHWRefChanged()
+//-----------------------------------------------------------------------------
+void SystemDetailsEditor::onHWRefChanged()
+{
+    bool modified = hwRefEditor_.getVLNV() != *component_->getVlnv() ||
+                    viewSelector_.currentText() != systemView_->getHWViewRef();
+    applyButton_.setEnabled(modified);
+    revertButton_.setEnabled(modified);
+
+    if (hwRefEditor_.isValid())
+    {
+        QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(hwRefEditor_.getVLNV());
+        QSharedPointer<Component const> component = libComp.dynamicCast<Component const>();
+
+        if (component != 0)
+        {
+            disconnect(&viewSelector_, SIGNAL(currentIndexChanged(const QString&)),
+                       this, SLOT(onViewRefChanged(const QString&)));
+
+            viewSelector_.clear();
+            viewSelector_.addItems(component->getHierViews());
+
+            connect(&viewSelector_, SIGNAL(currentIndexChanged(const QString&)),
+                this, SLOT(onViewRefChanged(const QString&)), Qt::UniqueConnection);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -157,7 +205,51 @@ void SystemDetailsEditor::setupConnections()
 //-----------------------------------------------------------------------------
 void SystemDetailsEditor::onViewRefChanged(QString const& viewRef)
 {
-    systemView_->setHWViewRef(viewRef);
+    bool modified = hwRefEditor_.getVLNV() != *component_->getVlnv() ||
+                    viewSelector_.currentText() != systemView_->getHWViewRef();
+
+    applyButton_.setEnabled(modified);
+    revertButton_.setEnabled(modified);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDetailsEditor::applyHW()
+//-----------------------------------------------------------------------------
+void SystemDetailsEditor::applyHW()
+{
+    // Check if the component is being switched.
+    if (hwRefEditor_.getVLNV() != *component_->getVlnv())
+    {
+        // Ask the user whether to move or copy the design under the given HW.
+        SwitchHWDialog dialog(handler_, this);
+
+        if (dialog.exec() == QDialog::Rejected)
+        {
+            return;
+        }
+    }
+
+    systemView_->setHWViewRef(viewSelector_.currentText());
     designWidget_->refresh();
+
+    applyButton_.setDisabled(true);
+    revertButton_.setDisabled(true);
+
     emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDetailsEditor::revert()
+//-----------------------------------------------------------------------------
+void SystemDetailsEditor::revert()
+{
+    hwRefEditor_.setVLNV(component_->getVlnv());
+
+    if (systemView_ != 0)
+    {
+        viewSelector_.setCurrentIndex(component_->getHierViews().indexOf(systemView_->getHWViewRef()));
+    }
+
+    applyButton_.setDisabled(true);
+    revertButton_.setDisabled(true);
 }

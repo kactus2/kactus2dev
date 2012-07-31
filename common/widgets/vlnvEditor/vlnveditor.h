@@ -93,7 +93,6 @@ public:
 	bool isEmpty() const;
 
 signals:
-
     //! Emitted when the contents of the editor have changed.
     void contentChanged();
 
@@ -117,7 +116,6 @@ signals:
 	void setAbsDef(const VLNV& absDefVLNV);
 
 public slots:
-
 	/*! \brief Set the widget to be mandatory or not.
 	 * 
 	 * The default setting is mandatory on.
@@ -169,7 +167,6 @@ public slots:
 	void setVersion(const QString& version);
 
 protected:
-
 	/*! \brief Handler for drop events on drag & drop
 	 *
 	 * \param event Pointer to the drop event.

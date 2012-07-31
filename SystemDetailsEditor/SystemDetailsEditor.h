@@ -72,8 +72,17 @@ signals:
 	void contentChanged();
 
 private slots:
+    //! Called when the HW component reference has been changed.
+    void onHWRefChanged();
+
     //! Called when the view reference has been changed from the combo box.
     void onViewRefChanged(QString const& viewRef);
+
+    //! Applies the selected HW to the system.
+    void applyHW();
+
+    //! Reverts the changes.
+    void revert();
 
 private:
     // Disable copying.
@@ -102,6 +111,12 @@ private:
 
 	//! Combo box to select the used configuration.
 	QComboBox viewSelector_;
+
+    //! Button to apply new HW mapping.
+    QPushButton applyButton_;
+
+    //! Button to revert to the previously applied HW mapping.
+    QPushButton revertButton_;
 
     //! Button to remove mappings.
     QPushButton removeMappingButton_;
