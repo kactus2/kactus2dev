@@ -81,7 +81,7 @@ void SystemDetailsEditor::setSystem(DesignWidget* designWidget, bool locked)
     viewSelector_.setEnabled(!locked);
     removeMappingButton_.setEnabled(!locked);
 
-    // get the component being edited
+    // Update the HW reference VLNV and view combo box based on the component whose design is being edited.
     component_ = designWidget->getEditedComponent();
 
     hwRefEditor_.setVLNV(component_->getVlnv());

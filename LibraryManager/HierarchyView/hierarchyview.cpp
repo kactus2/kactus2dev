@@ -91,25 +91,25 @@ void HierarchyView::setupActions() {
 	connect(openCompAction_, SIGNAL(triggered()),
 		this, SLOT(onOpenComponent()), Qt::UniqueConnection);
 
-	createNewComponentAction_ = new QAction(tr("Create New Component"), this);
+	createNewComponentAction_ = new QAction(tr("Component"), this);
 	createNewComponentAction_->setStatusTip(tr("Create new component"));
 	createNewComponentAction_->setToolTip(tr("Create new component"));
 	connect(createNewComponentAction_, SIGNAL(triggered()),
 		this, SLOT(onCreateComponent()), Qt::UniqueConnection);
 
-	createNewDesignAction_ = new QAction(tr("Create New Design"), this);
+	createNewDesignAction_ = new QAction(tr("Design"), this);
 	createNewDesignAction_->setStatusTip(tr("Create new design"));
 	createNewDesignAction_->setToolTip(tr("Create new design"));
 	connect(createNewDesignAction_, SIGNAL(triggered()),
 		this, SLOT(onCreateDesign()), Qt::UniqueConnection);
 
-    createNewSWDesignAction_ = new QAction(tr("Create New SW Design"), this);
+    createNewSWDesignAction_ = new QAction(tr("SW Design"), this);
     createNewSWDesignAction_->setStatusTip(tr("Create new SW design"));
     createNewSWDesignAction_->setToolTip(tr("Create new SW design"));
     connect(createNewSWDesignAction_, SIGNAL(triggered()),
         this, SLOT(onCreateSWDesign()), Qt::UniqueConnection);
 
-    createNewSystemDesignAction_ = new QAction(tr("Create New System Design"), this);
+    createNewSystemDesignAction_ = new QAction(tr("System Design"), this);
     createNewSystemDesignAction_->setStatusTip(tr("Create new System design"));
     createNewSystemDesignAction_->setToolTip(tr("Create new System design"));
     connect(createNewSystemDesignAction_, SIGNAL(triggered()),
@@ -133,7 +133,7 @@ void HierarchyView::setupActions() {
 	connect(addSignalsAction_, SIGNAL(triggered()),
 		this, SLOT(onAddSignals()), Qt::UniqueConnection);
 
-	createBusAction_ = new QAction(tr("Create New Bus"), this);
+	createBusAction_ = new QAction(tr("Bus"), this);
 	createBusAction_->setStatusTip(tr("Create new bus"));
 	createBusAction_->setToolTip(tr("Create new bus"));
 	connect(createBusAction_, SIGNAL(triggered()),
@@ -145,7 +145,7 @@ void HierarchyView::setupActions() {
     connect(openComDefAction_, SIGNAL(triggered()),
         this, SLOT(onOpenComDef()), Qt::UniqueConnection);
 
-    createComDefAction_ = new QAction(tr("Create New COM Definition"), this);
+    createComDefAction_ = new QAction(tr("COM Definition"), this);
     createComDefAction_->setStatusTip(tr("Create new COM definition"));
     createComDefAction_->setToolTip(tr("Create new COM definition"));
     connect(createComDefAction_, SIGNAL(triggered()),
@@ -157,7 +157,7 @@ void HierarchyView::setupActions() {
     connect(openApiDefAction_, SIGNAL(triggered()),
         this, SLOT(onOpenApiDef()), Qt::UniqueConnection);
 
-    createApiDefAction_ = new QAction(tr("Create New API Definition"), this);
+    createApiDefAction_ = new QAction(tr("API Definition"), this);
     createApiDefAction_->setStatusTip(tr("Create new API definition"));
     createApiDefAction_->setToolTip(tr("Create new API definition"));
     connect(createApiDefAction_, SIGNAL(triggered()),
@@ -306,6 +306,8 @@ void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
 		Q_ASSERT_X(libComp, "HierarchyView::contextMenuEvent()",
 			"Object was not found in library.");
 
+        QMenu* menuNew = 0;
+
 		// if component
 		if (item->type() == HierarchyItem::COMPONENT)
         {
@@ -338,7 +340,8 @@ void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
 
                     if (!component->hasSWViews() && indexes.size() == 1)
                     {
-                        menu.addAction(createNewSWDesignAction_);
+                        menuNew = menu.addMenu(tr("New"));
+                        menuNew->addAction(createNewSWDesignAction_);
                     }
 
                     break;
@@ -363,30 +366,30 @@ void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
                     }
 
                     menu.addAction(openCompAction_);
-
                     menu.addSeparator();
-
-                    // only if just one object is selected
+                 
+                    // Add create actions if only one object is selected.
                     if (indexes.size() == 1)
                     {
-                        menu.addAction(createNewComponentAction_);
+                        menuNew = menu.addMenu(tr("New"));
+                        menuNew->addAction(createNewComponentAction_);
+
+                        if (!hierarchical)
+                        {
+                            menuNew->addAction(createNewDesignAction_);
+                        }
+
+                        if (!component->hasSWViews())
+                        {
+                            menuNew->addAction(createNewSWDesignAction_);
+                        }
+
+                        if (!component->hasSystemViews())
+                        {
+                            menuNew->addAction(createNewSystemDesignAction_);
+                        }
                     }
 
-                    // if component was not hierarchical then design can be created for it.
-                    if (!hierarchical && indexes.size() == 1)
-                    {
-                        menu.addAction(createNewDesignAction_);
-                    }
-
-                    if (!component->hasSWViews() && indexes.size() == 1)
-                    {
-                        menu.addAction(createNewSWDesignAction_);
-                    }
-
-                    if (!component->hasSystemViews() && indexes.size() == 1)
-                    {
-                        menu.addAction(createNewSystemDesignAction_);
-                    }
                     break;
                 }
             }
@@ -399,25 +402,40 @@ void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
 			if (busDef->getType() == KactusAttribute::KTS_BUSDEF_HW) {
 				menu.addAction(openBusAction_);
 				menu.addAction(addSignalsAction_);
-				menu.addAction(createBusAction_);
+
+                menuNew = menu.addMenu(tr("New"));
+                menuNew->addAction(createBusAction_);
 			}
 		}
 		else if (item->type() == HierarchyItem::ABSDEFINITION) {
 			menu.addAction(openBusAction_);
-			menu.addAction(createBusAction_);
+
+            menuNew = menu.addMenu(tr("New"));
+            menuNew->addAction(createBusAction_);
 		}
         else if (item->type() == HierarchyItem::COMDEFINITION) {
             menu.addAction(openComDefAction_);
-            menu.addAction(createComDefAction_);
+
+            menuNew = menu.addMenu(tr("New"));
+            menuNew->addAction(createComDefAction_);
         }
         else if (item->type() == HierarchyItem::APIDEFINITION) {
             menu.addAction(openApiDefAction_);
-            menu.addAction(createApiDefAction_);
-        }
-	}
-	
-	menu.addAction(exportAction_);
 
+            menuNew = menu.addMenu(tr("New"));
+            menuNew->addAction(createApiDefAction_);
+        }
+
+        // Insert the New menu to the popup menu if it was created.
+        if (menuNew != 0)
+        {
+            menu.addSeparator();
+            menu.addMenu(menuNew);
+        }
+
+        menu.addSeparator();
+	}
+	menu.addAction(exportAction_);
 	menu.addAction(openXmlAction_);
 
 	menu.exec(event->globalPos());

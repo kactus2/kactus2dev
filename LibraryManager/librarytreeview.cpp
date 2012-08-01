@@ -114,6 +114,8 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
 			return;
 		}
 
+        QMenu* menuNew = 0;
+
 		// if component
 		if (libComp->getVlnv()->getType() == VLNV::COMPONENT) {
 			QSharedPointer<Component const> component = libComp.staticCast<Component const>();
@@ -137,7 +139,8 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
 
                     if (!component->hasSWViews())
                     {
-                        menu.addAction(createNewSWDesignAction_);
+                        menuNew = menu.addMenu(tr("New"));
+                        menuNew->addAction(createNewSWDesignAction_);
                     }
 
 					break;
@@ -162,23 +165,27 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
 					menu.addAction(openCompAction_);
                     menu.addSeparator();
 
-					menu.addAction(createNewComponentAction_);
+                    menuNew = menu.addMenu(tr("New"));
+					menuNew->addAction(createNewComponentAction_);
+
 					// if component was not hierarchical then design can be created for it.
 					if (!hierarchical)
-						menu.addAction(createNewDesignAction_);
+                    {
+						menuNew->addAction(createNewDesignAction_);
+                    }
 
                     if (!component->hasSWViews())
                     {
-                        menu.addAction(createNewSWDesignAction_);
+                        menuNew->addAction(createNewSWDesignAction_);
                     }
 
                     if (!component->hasSystemViews())
                     {
-                        menu.addAction(createNewSystemDesignAction_);
+                        menuNew->addAction(createNewSystemDesignAction_);
                     }
 
 					break;
-						 }
+                         }
 			}		
 		}
 		else if (libComp->getVlnv()->getType() == VLNV::BUSDEFINITION) {
@@ -189,22 +196,38 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
 			if (busDef->getType() == KactusAttribute::KTS_BUSDEF_HW) {
 				menu.addAction(openBusAction_);
 				menu.addAction(addSignalsAction_);
-				menu.addAction(createBusAction_);
+
+                menuNew = menu.addMenu(tr("New"));
+				menuNew->addAction(createBusAction_);
 			}
 		}
 		else if (libComp->getVlnv()->getType() == VLNV::ABSTRACTIONDEFINITION) {
 			menu.addAction(openBusAction_);
-			menu.addAction(createBusAction_);
+
+            menuNew = menu.addMenu(tr("New"));
+			menuNew->addAction(createBusAction_);
 		}
         else if (libComp->getVlnv()->getType() == VLNV::COMDEFINITION) {
             menu.addAction(openComDefAction_);
-            menu.addAction(createComDefAction_);
+
+            menuNew = menu.addMenu(tr("New"));
+            menuNew->addAction(createComDefAction_);
         }
         else if (libComp->getVlnv()->getType() == VLNV::APIDEFINITION) {
             menu.addAction(openApiDefAction_);
-            menu.addAction(createApiDefAction_);
+
+            menuNew = menu.addMenu(tr("New"));
+            menuNew->addAction(createApiDefAction_);
         }
 
+        // Insert the New menu to the popup menu if it was created.
+        if (menuNew != 0)
+        {
+            menu.addSeparator();
+            menu.addMenu(menuNew);
+        }
+
+        menu.addSeparator();
 		menu.addAction(openXmlAction_);
 	}
 
@@ -234,25 +257,25 @@ void LibraryTreeView::setupActions() {
 	connect(openCompAction_, SIGNAL(triggered()),
 		this, SLOT(onOpenComponent()), Qt::UniqueConnection);
 
-	createNewComponentAction_ = new QAction(tr("Create New Component Here"), this);
+	createNewComponentAction_ = new QAction(tr("Component"), this);
 	createNewComponentAction_->setStatusTip(tr("Create new component"));
 	createNewComponentAction_->setToolTip(tr("Create new component"));
 	connect(createNewComponentAction_, SIGNAL(triggered()),
 		this, SLOT(onCreateComponent()), Qt::UniqueConnection);
 
-	createNewDesignAction_ = new QAction(tr("Create New Design"), this);
+	createNewDesignAction_ = new QAction(tr("Design"), this);
 	createNewDesignAction_->setStatusTip(tr("Create new design"));
 	createNewDesignAction_->setToolTip(tr("Create new design"));
 	connect(createNewDesignAction_, SIGNAL(triggered()),
 		this, SLOT(onCreateDesign()), Qt::UniqueConnection);
 
-    createNewSWDesignAction_ = new QAction(tr("Create New SW Design"), this);
+    createNewSWDesignAction_ = new QAction(tr("SW Design"), this);
     createNewSWDesignAction_->setStatusTip(tr("Create new SW design"));
     createNewSWDesignAction_->setToolTip(tr("Create new SW design"));
     connect(createNewSWDesignAction_, SIGNAL(triggered()),
             this, SLOT(onCreateSWDesign()), Qt::UniqueConnection);
 
-    createNewSystemDesignAction_ = new QAction(tr("Create New System Design"), this);
+    createNewSystemDesignAction_ = new QAction(tr("System Design"), this);
     createNewSystemDesignAction_->setStatusTip(tr("Create new system design"));
     createNewSystemDesignAction_->setToolTip(tr("Create new system design"));
     connect(createNewSystemDesignAction_, SIGNAL(triggered()),
@@ -276,9 +299,9 @@ void LibraryTreeView::setupActions() {
 	connect(openBusAction_, SIGNAL(triggered()),
 		this, SLOT(onOpenBus()), Qt::UniqueConnection);
 
-	createBusAction_ = new QAction(tr("Create New"), this);
-	createBusAction_->setStatusTip(tr("Create new"));
-	createBusAction_->setToolTip(tr("Create new"));
+	createBusAction_ = new QAction(tr("Bus"), this);
+	createBusAction_->setStatusTip(tr("Create new bus"));
+	createBusAction_->setToolTip(tr("Create new bus"));
 	connect(createBusAction_, SIGNAL(triggered()),
 		this, SLOT(onCreateBus()), Qt::UniqueConnection);
 
@@ -294,9 +317,9 @@ void LibraryTreeView::setupActions() {
     connect(openComDefAction_, SIGNAL(triggered()),
         this, SLOT(onOpenComDef()), Qt::UniqueConnection);
 
-    createComDefAction_ = new QAction(tr("Create New"), this);
-    createComDefAction_->setStatusTip(tr("Create new"));
-    createComDefAction_->setToolTip(tr("Create new"));
+    createComDefAction_ = new QAction(tr("COM Definition"), this);
+    createComDefAction_->setStatusTip(tr("Create new COM definition"));
+    createComDefAction_->setToolTip(tr("Create new COM definition"));
     connect(createComDefAction_, SIGNAL(triggered()),
         this, SLOT(onCreateComDef()), Qt::UniqueConnection);
 
@@ -306,9 +329,9 @@ void LibraryTreeView::setupActions() {
     connect(openApiDefAction_, SIGNAL(triggered()),
         this, SLOT(onOpenApiDef()), Qt::UniqueConnection);
 
-    createApiDefAction_ = new QAction(tr("Create New"), this);
-    createApiDefAction_->setStatusTip(tr("Create new"));
-    createApiDefAction_->setToolTip(tr("Create new"));
+    createApiDefAction_ = new QAction(tr("API Definition"), this);
+    createApiDefAction_->setStatusTip(tr("Create new API definition"));
+    createApiDefAction_->setToolTip(tr("Create new API definition"));
     connect(createApiDefAction_, SIGNAL(triggered()),
         this, SLOT(onCreateApiDef()), Qt::UniqueConnection);
 
