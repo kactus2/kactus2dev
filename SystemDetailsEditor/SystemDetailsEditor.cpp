@@ -15,13 +15,19 @@
 
 #include <SystemDesign/SystemDesignWidget.h>
 
+#include <common/DesignDiagram.h>
+
 #include <models/SystemView.h>
+#include <models/designconfiguration.h>
+#include <models/design.h>
 
 #include <LibraryManager/libraryinterface.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QFormLayout>
+#include <QMessageBox>
+#include <QCoreApplication>
 
 //-----------------------------------------------------------------------------
 // Function: SystemDetailsEditor::SystemDetailsEditor()
@@ -176,28 +182,29 @@ void SystemDetailsEditor::setupConnections()
 //-----------------------------------------------------------------------------
 void SystemDetailsEditor::onHWRefChanged()
 {
-    bool modified = hwRefEditor_.getVLNV() != *component_->getVlnv() ||
-                    viewSelector_.currentText() != systemView_->getHWViewRef();
-    applyButton_.setEnabled(modified);
-    revertButton_.setEnabled(modified);
-
     if (hwRefEditor_.isValid())
     {
         QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(hwRefEditor_.getVLNV());
         QSharedPointer<Component const> component = libComp.dynamicCast<Component const>();
 
+        disconnect(&viewSelector_, SIGNAL(currentIndexChanged(const QString&)),
+            this, SLOT(onViewRefChanged(const QString&)));
+
+        viewSelector_.clear();
+
         if (component != 0)
         {
-            disconnect(&viewSelector_, SIGNAL(currentIndexChanged(const QString&)),
-                       this, SLOT(onViewRefChanged(const QString&)));
-
-            viewSelector_.clear();
             viewSelector_.addItems(component->getHierViews());
-
-            connect(&viewSelector_, SIGNAL(currentIndexChanged(const QString&)),
-                this, SLOT(onViewRefChanged(const QString&)), Qt::UniqueConnection);
         }
+        
+        connect(&viewSelector_, SIGNAL(currentIndexChanged(const QString&)),
+            this, SLOT(onViewRefChanged(const QString&)), Qt::UniqueConnection);
     }
+
+    bool modified = hwRefEditor_.getVLNV() != *component_->getVlnv() ||
+                    viewSelector_.currentText() != systemView_->getHWViewRef();
+    applyButton_.setEnabled(modified && viewSelector_.count() > 0);
+    revertButton_.setEnabled(modified);
 }
 
 //-----------------------------------------------------------------------------
@@ -208,7 +215,7 @@ void SystemDetailsEditor::onViewRefChanged(QString const& viewRef)
     bool modified = hwRefEditor_.getVLNV() != *component_->getVlnv() ||
                     viewSelector_.currentText() != systemView_->getHWViewRef();
 
-    applyButton_.setEnabled(modified);
+    applyButton_.setEnabled(modified && viewSelector_.count() > 0);
     revertButton_.setEnabled(modified);
 }
 
@@ -217,20 +224,87 @@ void SystemDetailsEditor::onViewRefChanged(QString const& viewRef)
 //-----------------------------------------------------------------------------
 void SystemDetailsEditor::applyHW()
 {
+    VLNV componentVLNV = hwRefEditor_.getVLNV();
+
     // Check if the component is being switched.
-    if (hwRefEditor_.getVLNV() != *component_->getVlnv())
+    if (componentVLNV != *component_->getVlnv())
     {
+        // Verify that the component is found.
+        QSharedPointer<LibraryComponent> libComp = handler_->getModel(componentVLNV);
+        QSharedPointer<Component> newComponent = libComp.dynamicCast<Component>();
+
+        if (newComponent == 0)
+        {
+            QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+                               tr("No HW component found with the given VLNV."),
+                               QMessageBox::Ok, (QWidget*)parent());
+            msgBox.exec();
+            return;
+        }
+
         // Ask the user whether to move or copy the design under the given HW.
-        SwitchHWDialog dialog(handler_, this);
+        SwitchHWDialog dialog(newComponent, designWidget_->getOpenViewName(), handler_, this);
 
         if (dialog.exec() == QDialog::Rejected)
         {
             return;
         }
-    }
 
-    systemView_->setHWViewRef(viewSelector_.currentText());
-    designWidget_->refresh();
+        // Based on the action, either perform copy or move.
+        SystemView* newView = new SystemView();
+        newView->setName(dialog.getViewName());
+        newView->setHWViewRef(viewSelector_.currentText());
+
+        if (dialog.isCopyActionSelected())
+        {
+            // Save copies of the design and design configuration.
+            VLNV vlnv = dialog.getVLNV();
+
+            VLNV designVLNV(VLNV::DESIGN, vlnv.getVendor(), vlnv.getLibrary(),
+                            vlnv.getName() + ".sysdesign", vlnv.getVersion());
+            VLNV desConfVLNV(VLNV::DESIGNCONFIGURATION, vlnv.getVendor(), vlnv.getLibrary(),
+                             vlnv.getName() + ".sysdesigncfg", vlnv.getVersion());
+
+            QSharedPointer<DesignConfiguration>
+                desConf(new DesignConfiguration(*designWidget_->getDiagram()->getDesignConfiguration()));
+            desConf->setVlnv(desConfVLNV);
+            desConf->setDesignRef(designVLNV);
+
+            QSharedPointer<Design> design = designWidget_->getDiagram()->createDesign(designVLNV);
+
+            handler_->writeModelToFile(dialog.getPath(), design);
+            handler_->writeModelToFile(dialog.getPath(), desConf);
+
+            // Set the new system view to point to the newly-saved design configuration.
+            newView->setHierarchyRef(desConfVLNV);
+        }
+        else
+        {
+            // Move is performed by removing the system view from the previous HW component and using
+            // the existing VLNV for the hierarchy reference.
+            newView->setHierarchyRef(systemView_->getHierarchyRef());
+            
+            systemView_ = 0;
+            component_->removeSystemView(designWidget_->getOpenViewName());
+            handler_->writeModelToFile(component_);
+        }
+
+        // Add the system view to the new HW component and save.
+        newComponent->addSystemView(newView);
+        handler_->writeModelToFile(newComponent);
+
+        // Refresh the design widget.
+        designWidget_->setDesign(componentVLNV, dialog.getViewName());
+        designWidget_->refresh();
+
+        component_ = designWidget_->getEditedComponent();
+        systemView_ = component_->findSystemView(dialog.getViewName());
+    }
+    else
+    {
+        systemView_->setHWViewRef(viewSelector_.currentText());
+        designWidget_->refresh();
+    }
 
     applyButton_.setDisabled(true);
     revertButton_.setDisabled(true);

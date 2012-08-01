@@ -3006,11 +3006,7 @@ void MainWindow::changeProtection(bool locked)
 	else
     {
 		configurationEditor_->setLocked(true);
-
-        if (designwidget->getSupportedWindows() & TabDocument::SYSTEM_DETAILS_WINDOW)
-        {
-            systemDetailsEditor_->setLocked(true);
-        }
+        systemDetailsEditor_->setLocked(true);
     }
 
 	// Clear the item selection since the current instance is no longer valid.

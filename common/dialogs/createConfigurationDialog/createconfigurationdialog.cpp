@@ -54,7 +54,7 @@ cancelButton_(QIcon(":/icons/graphics/cancel.png"), tr("Cancel"), this) {
 	vlnvEdit_.setLibrary(compVLNV.getLibrary());
 	vlnvEdit_.setVersion(compVLNV.getVersion());
 
-	setWindowTitle(tr("Create new configuration"));
+	setWindowTitle(tr("Create New Configuration"));
 }
 
 CreateConfigurationDialog::~CreateConfigurationDialog() {

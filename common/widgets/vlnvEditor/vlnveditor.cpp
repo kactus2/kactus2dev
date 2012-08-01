@@ -47,6 +47,7 @@ vendorMatcher_(),
 libraryEdit_(0),
 libraryMatcher_(),
 nameEdit_(0),
+nameExtensionLabel_(tr(".design"), this),
 nameMatcher_(),
 versionEdit_(0),
 versionMatcher_(),
@@ -54,6 +55,8 @@ handler_(libHandler)
 {
     Q_ASSERT(libHandler != 0);
     Q_ASSERT(type_ != VLNV::INVALID);
+
+    nameExtensionLabel_.setVisible(false);
 
     // Set group box settings.
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
@@ -202,6 +205,10 @@ void VLNVEditor::initWidgets(QWidget* parentWnd, bool compact)
     versionEdit_ = new AssistedLineEdit(versionMatcher_, parentWnd, this);
 	versionEdit_->setValidator(new NameValidator(this, true));
 	versionEdit_->setProperty("mandatoryField", true);
+
+    QHBoxLayout* nameLayout = new QHBoxLayout();
+    nameLayout->addWidget(nameEdit_, 1);
+    nameLayout->addWidget(&nameExtensionLabel_);
     
     // Create the layout and add the widgets to it.
     if (compact)
@@ -212,7 +219,7 @@ void VLNVEditor::initWidgets(QWidget* parentWnd, bool compact)
         layout->addWidget(libraryLabel, 1, 0, 1, 1);
         layout->addWidget(libraryEdit_, 1, 1, 1, 1);
         layout->addWidget(nameLabel, 2, 0, 1, 1);
-        layout->addWidget(nameEdit_, 2, 1, 1, 1);
+        layout->addLayout(nameLayout, 2, 1, 1, 1);
         layout->addWidget(versionLabel, 3, 0, 1, 1);
         layout->addWidget(versionEdit_, 3, 1, 1, 1);
     }
@@ -224,7 +231,7 @@ void VLNVEditor::initWidgets(QWidget* parentWnd, bool compact)
         layout->addWidget(libraryLabel);
         layout->addWidget(libraryEdit_);
         layout->addWidget(nameLabel);
-        layout->addWidget(nameEdit_);
+        layout->addLayout(nameLayout);
         layout->addWidget(versionLabel);
         layout->addWidget(versionEdit_);
     }
@@ -388,4 +395,13 @@ void VLNVEditor::setMandatory( bool mandatory ) {
 	libraryEdit_->setProperty("mandatoryField", mandatory);
 	nameEdit_->setProperty("mandatoryField", mandatory);
 	versionEdit_->setProperty("mandatoryField", mandatory);
+}
+
+//-----------------------------------------------------------------------------
+// Function: VLNVEditor::setNameExtension()
+//-----------------------------------------------------------------------------
+void VLNVEditor::setNameExtension(QString const& extension)
+{
+    nameExtensionLabel_.setText(extension);
+    nameExtensionLabel_.setVisible(!extension.isEmpty());
 }

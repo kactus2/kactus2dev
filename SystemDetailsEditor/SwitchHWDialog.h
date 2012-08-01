@@ -13,6 +13,7 @@
 #define SWITCHHWDIALOG_H
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
+#include <common/widgets/LibraryPathSelector/librarypathselector.h>
 
 #include <QPushButton>
 #include <QLineEdit>
@@ -21,6 +22,9 @@
 #include <QVBoxLayout>
 #include <QDialog>
 #include <QButtonGroup>
+#include <QDialogButtonBox>
+
+class Component;
 
 //-----------------------------------------------------------------------------
 // Dialog for configuring settings how to switch HW for a system design.
@@ -33,14 +37,38 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parent The parent widget.
+     *      @param [in] component  The new HW component to which to switch.
+     *      @param [in] viewName   The initial name suggestion for the system view.
+     *      @param [in] lh         The library interface.
+     *      @param [in] parent     The parent widget.
      */
-    SwitchHWDialog(LibraryInterface* lh, QWidget* parent);
+    SwitchHWDialog(QSharedPointer<Component> component, QString const& viewName,
+                   LibraryInterface* lh, QWidget* parent);
 
     /*!
      *  Destructor.
      */
     ~SwitchHWDialog();
+
+    /*!
+     *  Returns the system view name.
+     */
+    QString getViewName() const;
+
+    /*!
+     *  Returns the base VLNV for sysdesign and sysdesigncfg.
+     */
+    VLNV getVLNV() const;
+
+    /*!
+     *  Returns the selected path for new IP-XACT objects.
+     */
+    QString getPath() const;
+
+    /*!
+     *  If true, the design should be copied instead of moving.
+     */
+    bool isCopyActionSelected() const;
 
 private slots:
     /*!
@@ -55,14 +83,30 @@ private slots:
      */
     void actionChanged(QAbstractButton* button);
 
+    /*!
+     *  Updates the directory based on the current VLNV.
+     */
+    void updateDirectory();
+
+    /*!
+     *  Validates the contents of the dialog and enables/disables the OK button based on the validation result.
+     */
+    void validate();
+
 private:
     // Disable copying.
     SwitchHWDialog(SwitchHWDialog const& rhs);
     SwitchHWDialog& operator=(SwitchHWDialog const& rhs);
-
+    
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    //! The library interface.
+    LibraryInterface* lh_;
+
+    //! The new HW component.
+    QSharedPointer<Component> component_;
 
     //! Label for information text.
     QLabel infoLabel_;
@@ -85,8 +129,17 @@ private:
     //! Radio button for copy action.
     QRadioButton copyRadioButton_;
 
-    //! VLNV editor for design VLNV (shown in case of copy action).
-    VLNVEditor designVlnvEdit_;
+    //! VLNV editor for design/designcfg VLNV (shown in case of copy action).
+    VLNVEditor vlnvEdit_;
+
+    //! Label for the directory selector.
+    QLabel directoryLabel_;
+
+    //! The editor to select the directory to save to. 
+    LibraryPathSelector directoryEdit_;
+
+    //! Button box for OK and Cancel buttons.
+    QDialogButtonBox buttonBox_;
 
     //! The layout for the UI widgets.
     QVBoxLayout layout_;

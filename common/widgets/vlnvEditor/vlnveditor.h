@@ -20,6 +20,7 @@
 #include <QLineEdit>
 #include <QDropEvent>
 #include <QDragEnterEvent>
+#include <QLabel>
 
 class LibraryInterface;
 class LibraryItem;
@@ -75,6 +76,13 @@ public:
      *      @param [in] implementation  The allowed implementation.
      */
     void setImplementationFilter(bool on, KactusAttribute::Implementation implementation = KactusAttribute::KTS_HW);
+
+    /*!
+     *  Sets the name extension that will be shown in the dialog.
+     *
+     *      @param [in] extension The extension to show. Empty if no extension is used.
+     */
+    void setNameExtension(QString const& extension);
 
     /*!
      *  Generates a VLNV that matches the contents of the editor.
@@ -223,6 +231,9 @@ private:
 
     //! Line edit for the name element.
     AssistedLineEdit* nameEdit_;
+
+    //! Name extension label.
+    QLabel nameExtensionLabel_;
 
     //! Content matcher for the name field.
     QSharedPointer<VLNVContentMatcher> nameMatcher_;
