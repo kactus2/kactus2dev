@@ -715,6 +715,16 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(*droppedVLNV);
         QSharedPointer<Component> newComponent = libComp.staticCast<Component>();
 
+        // Check if the component does not have any hierarchical views.
+        if (newComponent->getHierViews().isEmpty())
+        {
+            QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+                               tr("HW component '%1' does not contain any hierarchical views.").arg(droppedVLNV->toString()),
+                               QMessageBox::Ok, parent());
+            msgBox.exec();
+            return;
+        }
+
         // Ask the user whether to move or copy the design under the given HW.
         SwitchHWDialog dialog(newComponent, parent()->getOpenViewName(), getLibraryInterface(), parent());
         dialog.showHWViewSelector();

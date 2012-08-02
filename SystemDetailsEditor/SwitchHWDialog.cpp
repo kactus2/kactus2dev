@@ -49,6 +49,7 @@ SwitchHWDialog::SwitchHWDialog(QSharedPointer<Component> component, QString cons
     // Set widget settings.
     hwViewRefLabel_.setVisible(false);
     hwViewRefCombo_.setVisible(false);
+    hwViewRefCombo_.setEnabled(false);
 
     viewNameEdit_.setText(viewName);
     moveRadioButton_.setChecked(true);
@@ -115,9 +116,11 @@ void SwitchHWDialog::showHWViewSelector()
     hwViewRefCombo_.addItems(component_->getHierViews());
     hwViewRefLabel_.setVisible(true);
     hwViewRefCombo_.setVisible(true);
+    hwViewRefCombo_.setEnabled(true);
 
     layout_.activate();
     setFixedHeight(sizeHint().height());
+    validate();
 }
 
 //-----------------------------------------------------------------------------
@@ -258,6 +261,8 @@ void SwitchHWDialog::updateDirectory()
 //-----------------------------------------------------------------------------
 void SwitchHWDialog::validate()
 {
-    buttonBox_.button(QDialogButtonBox::Ok)->setEnabled(!viewNameEdit_.text().isEmpty() &&
-                                                        (moveRadioButton_.isChecked() || vlnvEdit_.isValid()));
+    QAbstractButton* btnOK = buttonBox_.button(QDialogButtonBox::Ok);
+    btnOK->setEnabled(!viewNameEdit_.text().isEmpty() &&
+                      (moveRadioButton_.isChecked() || vlnvEdit_.isValid()) &&
+                      (!hwViewRefCombo_.isEnabled() || hwViewRefCombo_.count() > 0));
 }
