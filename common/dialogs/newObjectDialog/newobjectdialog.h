@@ -85,7 +85,6 @@ public:
 							 const QString& windowTitle = QString("Save As"));
 
 private slots:
-
     /*!
      *  Updates the directory based on the VLNV.
      */

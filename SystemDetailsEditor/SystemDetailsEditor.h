@@ -84,6 +84,9 @@ private slots:
     //! Reverts the changes.
     void revert();
 
+    //! Removes the HW mapping altogether.
+    void removeMapping();
+
 private:
     // Disable copying.
     SystemDetailsEditor(SystemDetailsEditor const& rhs);
