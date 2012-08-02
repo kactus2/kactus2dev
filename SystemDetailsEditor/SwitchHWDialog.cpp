@@ -28,13 +28,13 @@ SwitchHWDialog::SwitchHWDialog(QSharedPointer<Component> component, QString cons
       component_(component),
       infoLabel_(tr("System design needs to be either moved or copied under the selected HW. "
                     "Choose how to proceed."), this),
-      hwViewRefLabel_(tr("HW view to reference:"), this),
+      hwViewRefLabel_(tr("Configuration to map:"), this),
       hwViewRefCombo_(this),
       viewNameLabel_(tr("Name of the system view to create:"), this),
       viewNameEdit_(this),
       actionGroupBox_(tr("Action"), this),
       actionGroup_(this),
-      moveRadioButton_(tr("Move existing design\nRemoves the system view completely "
+      moveRadioButton_(tr("Move existing design\nRemoves the system view "
                           "from the previously mapped HW and moves it to the new one."), this),
       copyRadioButton_(tr("Copy as a new design\nCreates an identical copy of the "
                           "system design with a new VLNV."), this),
