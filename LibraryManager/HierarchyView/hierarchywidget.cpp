@@ -117,7 +117,7 @@ void HierarchyWidget::prepareDrag( const QModelIndex& index ) {
 
 		mimeData->setData("data/vlnvptr", QByteArray((const char*)&vlnv, sizeof(vlnv)));
 		drag->setMimeData(mimeData);
-        drag->exec(Qt::MoveAction | Qt::CopyAction);
+        drag->exec(Qt::MoveAction | Qt::CopyAction | Qt::LinkAction);
 	}
 
 	return;

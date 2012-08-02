@@ -259,7 +259,7 @@ void SystemDetailsEditor::applyHW()
         }
 
         // Based on the action, either perform copy or move.
-        SystemView* newView = new SystemView(dialog.getViewName());
+        SystemView* newView = new SystemView(dialog.getSystemViewName());
         newView->setHWViewRef(viewSelector_.currentText());
 
         if (dialog.isCopyActionSelected())
@@ -301,12 +301,12 @@ void SystemDetailsEditor::applyHW()
         handler_->writeModelToFile(newComponent);
 
         // Refresh the design widget.
-        designWidget_->setDesign(componentVLNV, dialog.getViewName());
+        designWidget_->setDesign(componentVLNV, dialog.getSystemViewName());
         designWidget_->setProtection(false);
         designWidget_->refresh();
 
         component_ = designWidget_->getEditedComponent();
-        systemView_ = component_->findSystemView(dialog.getViewName());
+        systemView_ = component_->findSystemView(dialog.getSystemViewName());
     }
     else
     {

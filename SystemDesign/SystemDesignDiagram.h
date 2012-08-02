@@ -244,6 +244,17 @@ private:
     void toggleConnectionStyle(GraphicsConnection* conn, QUndoCommand* parentCmd);
 
     //-----------------------------------------------------------------------------
+    //! Drag type enumeration.
+    //-----------------------------------------------------------------------------
+    enum DragType
+    {
+        DRAG_TYPE_NONE = 0,
+        DRAG_TYPE_SW,
+        DRAG_TYPE_HW,
+        DRAG_TYPE_DEFINITION
+    };
+
+    //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
@@ -256,11 +267,8 @@ private:
     // Graphics column layout.
     QSharedPointer<GraphicsColumnLayout> layout_;
 
-    //! Boolean flag for indicating that an SW component is being dragged to the diagram.
-    bool dragSW_;
-
-    //! Boolean flag for indicating that a API/COM definition is being dragged to the diagram.
-    bool dragDefinition_;
+    //! Indicates what type of object is being dragged into the diagram.
+    DragType dragType_;
 
     //! The connection that is being drawn.
     GraphicsConnection* tempConnection_;

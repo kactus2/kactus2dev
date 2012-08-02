@@ -31,6 +31,8 @@
 #include <QMessageBox>
 #include <QFileDialog>
 
+#include <SystemDetailsEditor/SwitchHWDialog.h>
+
 #include <LibraryManager/libraryinterface.h>
 
 #include <designwidget/columnview/ColumnEditDialog.h>
@@ -55,6 +57,7 @@
 #include <models/file.h>
 #include <models/ApiInterface.h>
 #include <models/ComInterface.h>
+#include <models/SystemView.h>
 
 #include <mainwindow/mainwindow.h>
 
@@ -68,8 +71,7 @@ SystemDesignDiagram::SystemDesignDiagram(bool onlySW, LibraryInterface* lh, Main
       onlySW_(onlySW),
       parent_(parent),
       layout_(),
-      dragSW_(false),
-      dragDefinition_(false),
+      dragType_(DRAG_TYPE_NONE),
       tempConnection_(0),
       tempConnEndpoint_(0),
       tempPotentialEndingEndpoints_(),
@@ -421,8 +423,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
 {
-    dragSW_ = false;
-    dragDefinition_ = false;
+    dragType_ = DRAG_TYPE_NONE;
 
     if (!isProtected() && event->mimeData()->hasFormat("data/vlnvptr"))
     {
@@ -447,18 +448,20 @@ void SystemDesignDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
                 return;
             }
 
-            // Check if the firmness does not match with the edited component.
-            if (comp->getComponentImplementation() != KactusAttribute::KTS_SW)
+            // Only SW and HW is allowed.
+            if (comp->getComponentImplementation() == KactusAttribute::KTS_SW)
             {
-                return;
+                dragType_ = DRAG_TYPE_SW;
+            }
+            else if (comp->getComponentImplementation() == KactusAttribute::KTS_HW)
+            {
+                dragType_ = DRAG_TYPE_HW;
             }
 
-            dragSW_ = true;
-            comp.clear();
         }
         else if (vlnv->getType() == VLNV::COMDEFINITION || vlnv->getType() == VLNV::APIDEFINITION)
         {
-            dragDefinition_ = true;
+            dragType_ = DRAG_TYPE_DEFINITION;
         }
     }
 }
@@ -468,7 +471,7 @@ void SystemDesignDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 {
-    if (dragSW_)
+    if (dragType_ == DRAG_TYPE_SW)
     {
         // Find the top-most component under the cursor.
         ComponentItem* item = getTopmostComponent(event->scenePos());
@@ -518,7 +521,23 @@ void SystemDesignDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 
         event->accept();
     }
-    else if (dragDefinition_)
+    else if (dragType_ == DRAG_TYPE_HW)
+    {
+        VLNV *vlnv;
+        memcpy(&vlnv, event->mimeData()->data("data/vlnvptr").data(), sizeof(vlnv));
+
+        if (*vlnv != *getEditedComponent()->getVlnv())
+        {
+            event->setDropAction(Qt::LinkAction);
+        }
+        else
+        {
+            event->setDropAction(Qt::IgnoreAction);
+        }
+
+        event->accept();
+    }
+    else if (dragType_ == DRAG_TYPE_DEFINITION)
     {
         // Check if there is an endpoint close enough the cursor.
         SWConnectionEndpoint* endpoint =
@@ -561,8 +580,7 @@ void SystemDesignDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::dragLeaveEvent(QGraphicsSceneDragDropEvent*)
 {
-    dragSW_ = false;
-    dragDefinition_ = false;
+    dragType_ = DRAG_TYPE_NONE;
 
     if (highlightedEndpoint_ != 0)
     {
@@ -576,15 +594,20 @@ void SystemDesignDiagram::dragLeaveEvent(QGraphicsSceneDragDropEvent*)
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 {
-    // Check if the dragged item was a valid one.
-    if (dragSW_)
+    if (dragType_ == DRAG_TYPE_NONE)
     {
-        // Retrieve the vlnv.
-        VLNV *vlnv;
-        memcpy(&vlnv, event->mimeData()->data("data/vlnvptr").data(), sizeof(vlnv));
+        return;
+    }
 
-        // Create the component model.
-        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(*vlnv);
+    // Retrieve the droppedVLNV.
+    VLNV* droppedVLNV;
+    memcpy(&droppedVLNV, event->mimeData()->data("data/vlnvptr").data(), sizeof(droppedVLNV));
+
+    // Check if the dragged item was a valid one.
+    if (dragType_ == DRAG_TYPE_SW)
+    {
+        // Retrieve the component model.
+        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(*droppedVLNV);
         QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
         // Set the instance name for the new component instance.
@@ -660,7 +683,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 
             QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
                 tr("Component instance '%1' is about to be replaced "
-                "with an instance of %2. Continue and replace?").arg(oldCompItem->name(), vlnv->toString()),
+                "with an instance of %2. Continue and replace?").arg(oldCompItem->name(), droppedVLNV->toString()),
                 QMessageBox::Yes | QMessageBox::No, (QWidget*)parent());
 
             if (msgBox.exec() == QMessageBox::No)
@@ -686,17 +709,74 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
             getEditProvider().addCommand(cmd);
         }
     }
-    else if (dragDefinition_)
+    else if (dragType_ == DRAG_TYPE_HW)
+    {
+        // Retrieve the component.
+        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(*droppedVLNV);
+        QSharedPointer<Component> newComponent = libComp.staticCast<Component>();
+
+        // Ask the user whether to move or copy the design under the given HW.
+        SwitchHWDialog dialog(newComponent, parent()->getOpenViewName(), getLibraryInterface(), parent());
+        dialog.showHWViewSelector();
+
+        if (dialog.exec() == QDialog::Rejected)
+        {
+            return;
+        }
+
+        // Based on the action, either perform copy or move.
+        SystemView* newView = new SystemView(dialog.getSystemViewName());
+        newView->setHWViewRef(dialog.getHWViewRef());
+
+        if (dialog.isCopyActionSelected())
+        {
+            // Save copies of the design and design configuration.
+            VLNV vlnv = dialog.getVLNV();
+
+            VLNV designVLNV(VLNV::DESIGN, vlnv.getVendor(), vlnv.getLibrary(),
+                vlnv.getName() + ".sysdesign", vlnv.getVersion());
+            VLNV desConfVLNV(VLNV::DESIGNCONFIGURATION, vlnv.getVendor(), vlnv.getLibrary(),
+                vlnv.getName() + ".sysdesigncfg", vlnv.getVersion());
+
+            QSharedPointer<DesignConfiguration> desConf(new DesignConfiguration(*getDesignConfiguration()));
+            desConf->setVlnv(desConfVLNV);
+            desConf->setDesignRef(designVLNV);
+
+            QSharedPointer<Design> design = createDesign(designVLNV);
+
+            getLibraryInterface()->writeModelToFile(dialog.getPath(), design);
+            getLibraryInterface()->writeModelToFile(dialog.getPath(), desConf);
+
+            // Set the new system view to point to the newly-saved design configuration.
+            newView->setHierarchyRef(desConfVLNV);
+        }
+        else
+        {
+            // Move is performed by removing the system view from the previous HW component and using
+            // the existing VLNV for the hierarchy reference.
+            newView->setHierarchyRef(getEditedComponent()->findSystemView(parent()->getOpenViewName())->getHierarchyRef());
+
+            getEditedComponent()->removeSystemView(parent()->getOpenViewName());
+            getLibraryInterface()->writeModelToFile(getEditedComponent());
+        }
+
+        // Add the system view to the new HW component and save.
+        newComponent->addSystemView(newView);
+        getLibraryInterface()->writeModelToFile(newComponent);
+
+        // Refresh the design widget.
+        parent()->setDesign(*droppedVLNV, dialog.getSystemViewName());
+        parent()->setProtection(false);
+        parent()->refresh();
+    }
+    else if (dragType_ == DRAG_TYPE_DEFINITION)
     {
         if (highlightedEndpoint_ != 0)
         {
-            VLNV *droppedVlnv;
-            memcpy(&droppedVlnv, event->mimeData()->data("data/vlnvptr").data(), sizeof(droppedVlnv));
+            Q_ASSERT(getLibraryInterface()->contains(*droppedVLNV));
 
-            Q_ASSERT(getLibraryInterface()->contains(*droppedVlnv));
-
-            VLNV vlnv = *droppedVlnv;
-            vlnv.setType(getLibraryInterface()->getDocumentType(*droppedVlnv));
+            VLNV vlnv = *droppedVLNV;
+            vlnv.setType(getLibraryInterface()->getDocumentType(*droppedVLNV));
 
             // Save old type and set the new one.
             VLNV oldType = highlightedEndpoint_->getTypeDefinition();

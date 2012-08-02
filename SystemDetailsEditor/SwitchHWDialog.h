@@ -51,9 +51,19 @@ public:
     ~SwitchHWDialog();
 
     /*!
+     *  Shows a combo box selection for choosing a HW view reference.
+     */
+    void showHWViewSelector();
+
+    /*!
+     *  Returns the selected HW view reference.
+     */
+    QString getHWViewRef() const;
+
+    /*!
      *  Returns the system view name.
      */
-    QString getViewName() const;
+    QString getSystemViewName() const;
 
     /*!
      *  Returns the base VLNV for sysdesign and sysdesigncfg.
@@ -110,6 +120,12 @@ private:
 
     //! Label for information text.
     QLabel infoLabel_;
+
+    //! Label for HW view reference.
+    QLabel hwViewRefLabel_;
+
+    //! Combo box for HW view reference.
+    QComboBox hwViewRefCombo_;
 
     //! Label for system view name.
     QLabel viewNameLabel_;

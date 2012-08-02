@@ -28,7 +28,9 @@ SwitchHWDialog::SwitchHWDialog(QSharedPointer<Component> component, QString cons
       component_(component),
       infoLabel_(tr("System design needs to be either moved or copied under the selected HW. "
                     "Choose how to proceed."), this),
-      viewNameLabel_(tr("System view name:"), this),
+      hwViewRefLabel_(tr("HW view to reference:"), this),
+      hwViewRefCombo_(this),
+      viewNameLabel_(tr("Name of the system view to create:"), this),
       viewNameEdit_(this),
       actionGroupBox_(tr("Action"), this),
       actionGroup_(this),
@@ -45,6 +47,9 @@ SwitchHWDialog::SwitchHWDialog(QSharedPointer<Component> component, QString cons
     setWindowTitle(tr("Switch HW"));
 
     // Set widget settings.
+    hwViewRefLabel_.setVisible(false);
+    hwViewRefCombo_.setVisible(false);
+
     viewNameEdit_.setText(viewName);
     moveRadioButton_.setChecked(true);
 
@@ -69,6 +74,8 @@ SwitchHWDialog::SwitchHWDialog(QSharedPointer<Component> component, QString cons
 
     layout_.addWidget(&infoLabel_);
     layout_.addSpacing(12);
+    layout_.addWidget(&hwViewRefLabel_);
+    layout_.addWidget(&hwViewRefCombo_);
     layout_.addWidget(&viewNameLabel_);
     layout_.addWidget(&viewNameEdit_);
     layout_.addWidget(&actionGroupBox_);
@@ -89,6 +96,7 @@ SwitchHWDialog::SwitchHWDialog(QSharedPointer<Component> component, QString cons
     connect(&viewNameEdit_, SIGNAL(textEdited(QString const&)), this, SLOT(validate()), Qt::UniqueConnection);
 
     setFixedHeight(sizeHint().height());
+    validate();
 }
 
 //-----------------------------------------------------------------------------
@@ -97,6 +105,19 @@ SwitchHWDialog::SwitchHWDialog(QSharedPointer<Component> component, QString cons
 SwitchHWDialog::~SwitchHWDialog()
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: SwitchHWDialog::showHWViewSelector()
+//-----------------------------------------------------------------------------
+void SwitchHWDialog::showHWViewSelector()
+{
+    hwViewRefCombo_.addItems(component_->getHierViews());
+    hwViewRefLabel_.setVisible(true);
+    hwViewRefCombo_.setVisible(true);
+
+    layout_.activate();
+    setFixedHeight(sizeHint().height());
 }
 
 //-----------------------------------------------------------------------------
@@ -161,9 +182,17 @@ void SwitchHWDialog::actionChanged(QAbstractButton* button)
 }
 
 //-----------------------------------------------------------------------------
-// Function: SwitchHWDialog::getViewName()
+// Function: SwitchHWDialog::getHWViewRef()
 //-----------------------------------------------------------------------------
-QString SwitchHWDialog::getViewName() const
+QString SwitchHWDialog::getHWViewRef() const
+{
+    return hwViewRefCombo_.currentText();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SwitchHWDialog::getSystemViewName()
+//-----------------------------------------------------------------------------
+QString SwitchHWDialog::getSystemViewName() const
 {
     return viewNameEdit_.text();
 }

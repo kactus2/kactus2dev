@@ -85,7 +85,7 @@ bool GeneralEditor::isValid() const
 }
 
 void GeneralEditor::refresh() {
-	if (component_->getComponentImplementation() != KactusAttribute::KTS_SW)
+	if (component_->getComponentImplementation() == KactusAttribute::KTS_HW)
 	{
 		KactusAttribute::ProductHierarchy prodHier = component_->getComponentHierarchy();
 		KactusAttribute::Firmness firmness = component_->getComponentFirmness();
@@ -103,7 +103,7 @@ void GeneralEditor::refresh() {
 }
 
 void GeneralEditor::onAttributesChange() {
-	if (component_->getComponentImplementation() != KactusAttribute::KTS_SW)
+	if (component_->getComponentImplementation() == KactusAttribute::KTS_HW)
 	{
 		component_->setComponentHierarchy(attributeEditor_->getProductHierarchy());
 		component_->setComponentFirmness(attributeEditor_->getFirmness());
