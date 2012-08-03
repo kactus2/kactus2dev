@@ -44,6 +44,12 @@ public:
      */
     virtual ~ColumnEditDialog();
 
+
+    /*!
+     *  Hides the column content settings.
+     */
+    void hideContentSettings();
+
     /*!
      *  Returns the column name from the dialog.
      */

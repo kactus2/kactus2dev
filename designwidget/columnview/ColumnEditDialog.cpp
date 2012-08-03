@@ -140,6 +140,19 @@ ColumnEditDialog::~ColumnEditDialog()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ColumnEditDialog::hideContentSettings()
+//-----------------------------------------------------------------------------
+void ColumnEditDialog::hideContentSettings()
+{
+    typeLabel_->setVisible(false);
+    typeCombo_->setVisible(false);
+    allowedItemsGroup_->setVisible(false);
+
+    layout_->activate();
+    setFixedSize(sizeHint());
+}
+
+//-----------------------------------------------------------------------------
 // Function: onTypeChange()
 //-----------------------------------------------------------------------------
 void ColumnEditDialog::onTypeChange(QString const& type)

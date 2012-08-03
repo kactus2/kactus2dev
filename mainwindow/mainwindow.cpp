@@ -2207,6 +2207,7 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
 
     // Ask the user the VLNV, target path and view name.
     NewDesignDialog dialog(libraryHandler_, component, KactusAttribute::KTS_SW, this);
+    dialog.setWindowTitle(tr("New SW Design"));
 
     if (dialog.exec() == QDialog::Rejected)
     {
@@ -2355,6 +2356,7 @@ void MainWindow::createSystemDesign(VLNV const& vlnv)
 
     // Ask the user the VLNV, target path and view name.
     NewDesignDialog dialog(libraryHandler_, component, KactusAttribute::KTS_SYS, this);
+    dialog.setWindowTitle(tr("New System Design"));
     
     if (dialog.exec() == QDialog::Rejected)
     {

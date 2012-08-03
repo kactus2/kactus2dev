@@ -1623,23 +1623,40 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
     }
     else if (item->type() == SystemColumn::Type)
     {
-        if (!isProtected() && onlySW_)
+        if (!isProtected())
         {
             item->setSelected(true);
             SystemColumn* column = qgraphicsitem_cast<SystemColumn*>(item);
 
-            ColumnEditDialog dialog((QWidget*)parent(), true, column);
+            ColumnEditDialog dialog((QWidget*)parent(), onlySW_, column);
+
+            if (!onlySW_)
+            {
+                dialog.hideContentSettings();
+            }
 
             if (dialog.exec() == QDialog::Accepted)
             {
-                int columnWidth = 259;
+                int columnWidth = 319;
 
-                if (dialog.getContentType() == COLUMN_CONTENT_IO)
+                if (onlySW_)
                 {
-                    columnWidth = 119;
+                    columnWidth = 259;
+
+                    if (dialog.getContentType() == COLUMN_CONTENT_IO)
+                    {
+                        columnWidth = 119;
+                    }
                 }
 
                 ColumnDesc desc(dialog.getName(), dialog.getContentType(), dialog.getAllowedItems(), columnWidth);
+
+                // Keep the previous width if the content type did not change.
+                if (dialog.getContentType() == column->getColumnDesc().getContentType())
+                {
+                    desc.setWidth(column->getColumnDesc().getWidth());
+                }
+
                 QSharedPointer<QUndoCommand> cmd(new GraphicsColumnChangeCommand(column, desc));
                 getEditProvider().addCommand(cmd);
             }

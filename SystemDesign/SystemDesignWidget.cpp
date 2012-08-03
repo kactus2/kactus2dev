@@ -400,7 +400,13 @@ void SystemDesignWidget::addColumn()
     }
     else
     {
-        getDiagram()->addColumn(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, SYSTEM_COLUMN_WIDTH));
+        ColumnEditDialog dialog(this, true);
+        dialog.hideContentSettings();
+
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            getDiagram()->addColumn(ColumnDesc(dialog.getName(), COLUMN_CONTENT_COMPONENTS, 0, SYSTEM_COLUMN_WIDTH));
+        }
     }
 }
 
