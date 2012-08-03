@@ -43,6 +43,14 @@ class SystemDesignDiagram : public DesignDiagram
     Q_OBJECT
 
 public:
+    // Column widths.
+    enum
+    {
+        SYSTEM_COLUMN_WIDTH = 319,
+        SW_COLUMN_WIDTH = 259,
+        IO_COLUMN_WIDTH = 119
+    };
+
     /*!
      *  Constructor.
      *

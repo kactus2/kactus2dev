@@ -104,10 +104,10 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
     if (design->getColumns().isEmpty())
     {
-        addColumn(ColumnDesc("IO", COLUMN_CONTENT_IO, 0, 119));
-        addColumn(ColumnDesc("Buses", COLUMN_CONTENT_BUSES, 0, 259));
-        addColumn(ColumnDesc("Components", COLUMN_CONTENT_COMPONENTS, 0, 259));
-        addColumn(ColumnDesc("IO", COLUMN_CONTENT_IO, 0, 119));
+        addColumn(ColumnDesc("IO", COLUMN_CONTENT_IO, 0, IO_COLUMN_WIDTH));
+        addColumn(ColumnDesc("Buses", COLUMN_CONTENT_BUSES, 0, COMPONENT_COLUMN_WIDTH));
+        addColumn(ColumnDesc("Components", COLUMN_CONTENT_COMPONENTS, 0, COMPONENT_COLUMN_WIDTH));
+        addColumn(ColumnDesc("IO", COLUMN_CONTENT_IO, 0, IO_COLUMN_WIDTH));
     }
     else
     {
@@ -1409,11 +1409,11 @@ void HWDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent
 
             if (dialog.exec() == QDialog::Accepted)
             {
-                int columnWidth = 259;
+                int columnWidth = COMPONENT_COLUMN_WIDTH;
 
                 if (dialog.getContentType() == COLUMN_CONTENT_IO)
                 {
-                    columnWidth = 119;
+                    columnWidth = IO_COLUMN_WIDTH;
                 }
 
                 ColumnDesc desc(dialog.getName(), dialog.getContentType(), dialog.getAllowedItems(), columnWidth);

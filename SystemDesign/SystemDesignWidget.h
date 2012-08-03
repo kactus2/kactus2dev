@@ -68,13 +68,6 @@ private:
     SystemDesignWidget(SystemDesignWidget const& rhs);
     SystemDesignWidget& operator=(SystemDesignWidget const& rhs);
 
-    enum
-    {
-        SYSTEM_COLUMN_WIDTH = 319,
-        SW_COLUMN_WIDTH = 259,
-        IO_COLUMN_WIDTH = 119
-    };
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

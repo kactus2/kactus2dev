@@ -23,6 +23,7 @@
 #include <settings/SettingsDialog.h>
 
 #include <SystemDesign/SystemDesignWidget.h>
+#include <SystemDesign/SystemDesignDiagram.h>
 
 #include <MCAPI/CSourceWidget.h>
 #include <MCAPI/CSourceContentMatcher.h>
@@ -60,6 +61,7 @@
 #include <PluginSystem/PluginListDialog.h>
 
 #include <designwidget/HWDesignWidget.h>
+#include <designwidget/HWDesignDiagram.h>
 #include <designwidget/HWComponentItem.h>
 #include <designwidget/BusPortItem.h>
 #include <designwidget/BusInterfaceItem.h>
@@ -2176,10 +2178,10 @@ void MainWindow::createDesignForExistingComponent(VLNV const& vlnv)
     QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(dialog.getDesignVLNV()));
     QList<ColumnDesc> columns;
 
-    columns.append(ColumnDesc("IO", COLUMN_CONTENT_IO, 0, 119));
-    columns.append(ColumnDesc("Buses", COLUMN_CONTENT_BUSES, 0, 259));
-    columns.append(ColumnDesc("Components", COLUMN_CONTENT_COMPONENTS, 0, 259));
-    columns.append(ColumnDesc("IO", COLUMN_CONTENT_IO, 0, 119));
+    columns.append(ColumnDesc("IO", COLUMN_CONTENT_IO, 0, HWDesignDiagram::IO_COLUMN_WIDTH));
+    columns.append(ColumnDesc("Buses", COLUMN_CONTENT_BUSES, 0, HWDesignDiagram::COMPONENT_COLUMN_WIDTH));
+    columns.append(ColumnDesc("Components", COLUMN_CONTENT_COMPONENTS, 0, HWDesignDiagram::COMPONENT_COLUMN_WIDTH));
+    columns.append(ColumnDesc("IO", COLUMN_CONTENT_IO, 0, HWDesignDiagram::IO_COLUMN_WIDTH));
 
     newDesign->setColumns(columns);
 
@@ -2228,15 +2230,15 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
 
     if (component->getComponentImplementation() == KactusAttribute::KTS_SW)
     {
-        columns.append(ColumnDesc("Low-level", COLUMN_CONTENT_COMPONENTS, 0, 259));
-        columns.append(ColumnDesc("Middle-level", COLUMN_CONTENT_COMPONENTS, 0, 259));
-        columns.append(ColumnDesc("High-level", COLUMN_CONTENT_COMPONENTS, 0, 259));
-        columns.append(ColumnDesc("Out", COLUMN_CONTENT_IO, 0, 119));
+        columns.append(ColumnDesc("Low-level", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH));
+        columns.append(ColumnDesc("Middle-level", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH));
+        columns.append(ColumnDesc("High-level", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH));
+        columns.append(ColumnDesc("Out", COLUMN_CONTENT_IO, 0, SystemDesignDiagram::IO_COLUMN_WIDTH));
     }
     else
     {
-        columns.append(ColumnDesc("Pre-mapped SW", COLUMN_CONTENT_COMPONENTS, 0, 259));
-        columns.append(ColumnDesc("Pre-mapped SW", COLUMN_CONTENT_COMPONENTS, 0, 259));
+        columns.append(ColumnDesc("Pre-mapped SW", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH));
+        columns.append(ColumnDesc("Pre-mapped SW", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH));
     }
 
     newDesign->setColumns(columns);
@@ -2321,8 +2323,8 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName,
 	QSharedPointer<Design> sysDesign(new Design(designVLNV));
 
     QList<ColumnDesc> columns;
-    columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, 319));
-    columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, 319));
+    columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SYSTEM_COLUMN_WIDTH));
+    columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SYSTEM_COLUMN_WIDTH));
     sysDesign->setColumns(columns);
     
 	generateSystemDesignV2(libraryHandler_, component->getHierRef(viewName), *sysDesign);
@@ -2376,8 +2378,8 @@ void MainWindow::createSystemDesign(VLNV const& vlnv)
     QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(dialog.getDesignVLNV()));
 
     QList<ColumnDesc> columns;
-    columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, 319));
-    columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, 319));
+    columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SYSTEM_COLUMN_WIDTH));
+    columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SYSTEM_COLUMN_WIDTH));
     newDesign->setColumns(columns);
 
     generateSystemDesignV2(libraryHandler_, component->getHierRef(), *newDesign);

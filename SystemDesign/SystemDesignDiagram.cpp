@@ -138,15 +138,15 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
         if (onlySW_)
         {
-            columns.append(ColumnDesc("Low-level", COLUMN_CONTENT_COMPONENTS, 0, 259));
-            columns.append(ColumnDesc("Middle-level", COLUMN_CONTENT_COMPONENTS, 0, 259));
-            columns.append(ColumnDesc("High-level", COLUMN_CONTENT_COMPONENTS, 0, 259));
-            columns.append(ColumnDesc("Out", COLUMN_CONTENT_IO, 0, 119));
+            columns.append(ColumnDesc("Low-level", COLUMN_CONTENT_COMPONENTS, 0, SW_COLUMN_WIDTH));
+            columns.append(ColumnDesc("Middle-level", COLUMN_CONTENT_COMPONENTS, 0, SW_COLUMN_WIDTH));
+            columns.append(ColumnDesc("High-level", COLUMN_CONTENT_COMPONENTS, 0, SW_COLUMN_WIDTH));
+            columns.append(ColumnDesc("Out", COLUMN_CONTENT_IO, 0, IO_COLUMN_WIDTH));
         }
         else
         {
-            columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, 319));
-            columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, 319));
+            columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, SYSTEM_COLUMN_WIDTH));
+            columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, SYSTEM_COLUMN_WIDTH));
         }
 
         design->setColumns(columns);
@@ -1630,6 +1630,7 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 
             ColumnEditDialog dialog((QWidget*)parent(), onlySW_, column);
 
+            // System design columns don't have adjustable content settings.
             if (!onlySW_)
             {
                 dialog.hideContentSettings();
@@ -1637,15 +1638,15 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 
             if (dialog.exec() == QDialog::Accepted)
             {
-                int columnWidth = 319;
+                int columnWidth = SYSTEM_COLUMN_WIDTH;
 
                 if (onlySW_)
                 {
-                    columnWidth = 259;
+                    columnWidth = SW_COLUMN_WIDTH;
 
                     if (dialog.getContentType() == COLUMN_CONTENT_IO)
                     {
-                        columnWidth = 119;
+                        columnWidth = IO_COLUMN_WIDTH;
                     }
                 }
 

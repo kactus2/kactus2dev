@@ -388,12 +388,12 @@ void SystemDesignWidget::addColumn()
         {
             if (dialog.getContentType() == COLUMN_CONTENT_IO)
             {
-                ColumnDesc desc(dialog.getName(), dialog.getContentType(), 0, IO_COLUMN_WIDTH);
+                ColumnDesc desc(dialog.getName(), dialog.getContentType(), 0, SystemDesignDiagram::IO_COLUMN_WIDTH);
                 getDiagram()->addColumn(desc);
             }
             else
             {
-                ColumnDesc desc(dialog.getName(), dialog.getContentType(), 0, SW_COLUMN_WIDTH);
+                ColumnDesc desc(dialog.getName(), dialog.getContentType(), 0, SystemDesignDiagram::SW_COLUMN_WIDTH);
                 getDiagram()->addColumn(desc);
             }
         }
@@ -405,7 +405,8 @@ void SystemDesignWidget::addColumn()
 
         if (dialog.exec() == QDialog::Accepted)
         {
-            getDiagram()->addColumn(ColumnDesc(dialog.getName(), COLUMN_CONTENT_COMPONENTS, 0, SYSTEM_COLUMN_WIDTH));
+            getDiagram()->addColumn(ColumnDesc(dialog.getName(), COLUMN_CONTENT_COMPONENTS, 0,
+                                               SystemDesignDiagram::SYSTEM_COLUMN_WIDTH));
         }
     }
 }

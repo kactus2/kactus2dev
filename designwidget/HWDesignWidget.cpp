@@ -708,11 +708,11 @@ void HWDesignWidget::addColumn()
 
     if (dialog.exec() == QDialog::Accepted)
     {
-        int columnWidth = 259;
+        int columnWidth = HWDesignDiagram::COMPONENT_COLUMN_WIDTH;
 
         if (dialog.getContentType() == COLUMN_CONTENT_IO)
         {
-            columnWidth = 119;
+            columnWidth = HWDesignDiagram::IO_COLUMN_WIDTH;
         }
 
         ColumnDesc desc(dialog.getName(), dialog.getContentType(), dialog.getAllowedItems(), columnWidth);

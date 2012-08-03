@@ -46,8 +46,15 @@ class HWDesignDiagram : public DesignDiagram
     Q_OBJECT
 
 public:
-    /*! \brief The constructor
-     *
+    // Column widths.
+    enum
+    {
+        COMPONENT_COLUMN_WIDTH = 259,
+        IO_COLUMN_WIDTH = 119
+    };
+
+    /*!
+     *  Constructor.
      */
     HWDesignDiagram(LibraryInterface *lh, GenericEditProvider& editProvider, HWDesignWidget *parent = 0);
 
