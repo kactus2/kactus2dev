@@ -435,6 +435,9 @@ signals:
                          KactusAttribute::Firmness,
                          const VLNV& vlnv, const QString& directory);
 
+    //! \brief Signal that user wants to create a new design for the given component.
+    void createDesignForExistingComponent(VLNV const& vlnv);
+
     //! \brief Signal that user wants to create a new SW design for the given component.
     void createSWDesign(VLNV const& vlnv);
 

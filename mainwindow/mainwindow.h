@@ -274,11 +274,19 @@ public slots:
      *      @param [in] vlnv        The component's VLNV.
      *      @param [in] directory   The directory where to save the component.
      *
-     *      @remarks The design widget is opened automatically after successful creation.
+     *      @remarks The HW design editor is opened automatically after successful creation.
      */
     void createDesign(KactusAttribute::ProductHierarchy prodHier,
                       KactusAttribute::Firmness firmness,
                       VLNV const& vlnv, QString const& directory);
+    /*!
+     *  Creates a new design for an existing component.
+     *
+     *      @param [in] vlnv        The component's VLNV.
+     *
+     *      @remarks The HW design editor is opened automatically after successful creation.
+     */
+    void createDesignForExistingComponent(VLNV const& vlnv);
 
     /*!
      *  Creates a SW design for an existing component.
@@ -762,7 +770,7 @@ private:
 	 *
 	*/
 	void updateWindows(unsigned int supportedWindows);
-
+    
     //-----------------------------------------------------------------------------
     //! Structure which contains the show/hidden status for the windows.
     //-----------------------------------------------------------------------------

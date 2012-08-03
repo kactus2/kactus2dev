@@ -141,7 +141,7 @@ void LibraryHandler::syncronizeModels() {
 	connect(data_.data(), SIGNAL(createComponent(const VLNV&)),
 		this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
 	connect(data_.data(), SIGNAL(createDesign(const VLNV&)),
-		this, SLOT(onCreateDesign(const VLNV&)), Qt::UniqueConnection);
+		this, SIGNAL(createDesignForExistingComponent(VLNV const&)), Qt::UniqueConnection);
     connect(data_.data(), SIGNAL(createSWDesign(const VLNV&)),
         this, SIGNAL(createSWDesign(const VLNV&)), Qt::UniqueConnection);
 
@@ -1111,7 +1111,8 @@ void LibraryHandler::onCreateAbsDef( const VLNV& busDefVLNV ) {
 }
 
 void LibraryHandler::onCreateDesign( const VLNV& vlnv ) {
-	emit openDesign(vlnv, QString());
+    emit createDesignForExistingComponent(vlnv);
+	//emit openDesign(vlnv, QString());
 }
 
 VLNV* LibraryHandler::getOriginalPointer( const VLNV& vlnv ) const {

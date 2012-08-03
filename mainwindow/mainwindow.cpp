@@ -33,6 +33,7 @@
 #include <LibraryManager/vlnv.h>
 #include <LibraryManager/LibraryUtils.h>
 
+#include <common/dialogs/NewDesignDialog/NewDesignDialog.h>
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/dialogs/listSelectDialog/ListSelectDialog.h>
 #include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
@@ -1012,6 +1013,8 @@ void MainWindow::setupLibraryDock() {
         this, SLOT(createSWDesign(const VLNV&)), Qt::UniqueConnection);
     connect(libraryHandler_, SIGNAL(createSystemDesign(const VLNV&)),
         this, SLOT(createSystemDesign(const VLNV&)), Qt::UniqueConnection);
+    connect(libraryHandler_, SIGNAL(createDesignForExistingComponent(const VLNV&)),
+        this, SLOT(createDesignForExistingComponent(const VLNV&)), Qt::UniqueConnection);
 	connect(libraryHandler_, SIGNAL(openComponent(const VLNV&)),
 		this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
 	connect(libraryHandler_, SIGNAL(openSWDesign(const VLNV&, QString const&)),
@@ -2143,6 +2146,56 @@ void MainWindow::createDesign(KactusAttribute::ProductHierarchy prodHier,
 //-----------------------------------------------------------------------------
 // Function: MainWindow::createSWDesign()
 //-----------------------------------------------------------------------------
+void MainWindow::createDesignForExistingComponent(VLNV const& vlnv)
+{
+    Q_ASSERT(libraryHandler_->contains(vlnv));
+    Q_ASSERT(libraryHandler_->getDocumentType(vlnv) == VLNV::COMPONENT);
+
+    // Retrieve the component to which the design will be created.
+    QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(vlnv);
+    QSharedPointer<Component> component = libComp.staticCast<Component>();
+
+    // Ask the user the VLNV, target path and view name.
+    NewDesignDialog dialog(libraryHandler_, component, KactusAttribute::KTS_HW, this);
+
+    if (dialog.exec() == QDialog::Rejected)
+    {
+        return;
+    }
+
+    // Create the view.
+    View* view = new View(dialog.getViewName());
+    view->setHierarchyRef(dialog.getDesignConfVLNV());
+    view->addEnvIdentifier("::");
+    component->addView(view);
+
+    // Create the design and design configuration objects.
+    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(dialog.getDesignConfVLNV()));
+    designConf->setDesignRef(dialog.getDesignVLNV());
+
+    QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(dialog.getDesignVLNV()));
+    QList<ColumnDesc> columns;
+
+    columns.append(ColumnDesc("IO", COLUMN_CONTENT_IO, 0, 119));
+    columns.append(ColumnDesc("Buses", COLUMN_CONTENT_BUSES, 0, 259));
+    columns.append(ColumnDesc("Components", COLUMN_CONTENT_COMPONENTS, 0, 259));
+    columns.append(ColumnDesc("IO", COLUMN_CONTENT_IO, 0, 119));
+
+    newDesign->setColumns(columns);
+
+    libraryHandler_->beginSave();
+    libraryHandler_->writeModelToFile(dialog.getPath(), newDesign);
+    libraryHandler_->writeModelToFile(dialog.getPath(), designConf);
+    libraryHandler_->writeModelToFile(component);
+    libraryHandler_->endSave();
+
+    // Open the design.
+    openSWDesign(vlnv, view->getName(), true);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::createSWDesign()
+//-----------------------------------------------------------------------------
 void MainWindow::createSWDesign(VLNV const& vlnv)
 {
     Q_ASSERT(libraryHandler_->contains(vlnv));
@@ -2152,42 +2205,24 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
     QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(vlnv);
     QSharedPointer<Component> component = libComp.staticCast<Component>();
 
-    // Create a unique vlnv for the design.
-    VLNV designVLNV(VLNV::DESIGN, vlnv.getVendor(), vlnv.getLibrary(),
-                    vlnv.getName().remove(".comp") + ".swdesign", vlnv.getVersion());
+    // Ask the user the VLNV, target path and view name.
+    NewDesignDialog dialog(libraryHandler_, component, KactusAttribute::KTS_SW, this);
 
-    int runningNumber = 1;
-    QString version = designVLNV.getVersion();
-
-    while (libraryHandler_->contains(designVLNV))
+    if (dialog.exec() == QDialog::Rejected)
     {
-        ++runningNumber;
-        designVLNV.setVersion(version + "(" + QString::number(runningNumber) + ")");
-    }
-
-    // Create a unique vlnv for the design configuration.
-    VLNV desConfVLNV(VLNV::DESIGNCONFIGURATION, vlnv.getVendor(), vlnv.getLibrary(),
-                     vlnv.getName().remove(".comp") + ".swdesigncfg", vlnv.getVersion());
-
-    runningNumber = 1;
-    version = desConfVLNV.getVersion();
-
-    while (libraryHandler_->contains(desConfVLNV))
-    {
-        ++runningNumber;
-        desConfVLNV.setVersion(version + "(" + QString::number(runningNumber) + ")");
+        return;
     }
 
     // Create the view.
-    SWView* view = new SWView(tr("software"));
-    view->setHierarchyRef(desConfVLNV);   
+    SWView* view = new SWView(dialog.getViewName());
+    view->setHierarchyRef(dialog.getDesignConfVLNV());   
     component->addSWView(view);
 
-    // Create the design and design configuration objects to the same folder as the component.
-    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV));
-    designConf->setDesignRef(designVLNV);
+    // Create the design and design configuration objects.
+    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(dialog.getDesignConfVLNV()));
+    designConf->setDesignRef(dialog.getDesignVLNV());
 
-    QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(designVLNV));
+    QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(dialog.getDesignVLNV()));
     QList<ColumnDesc> columns;
 
     if (component->getComponentImplementation() == KactusAttribute::KTS_SW)
@@ -2205,13 +2240,11 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
 
     newDesign->setColumns(columns);
 
-    QString xmlPath = libraryHandler_->getPath(vlnv);
-    QFileInfo xmlInfo(xmlPath);
-    QString dirPath = xmlInfo.absolutePath();
-
-    libraryHandler_->writeModelToFile(dirPath, newDesign);
-    libraryHandler_->writeModelToFile(dirPath, designConf);
+    libraryHandler_->beginSave();
+    libraryHandler_->writeModelToFile(dialog.getPath(), newDesign);
+    libraryHandler_->writeModelToFile(dialog.getPath(), designConf);
     libraryHandler_->writeModelToFile(component);
+    libraryHandler_->endSave();
 
     // Open the design.
     openSWDesign(vlnv, view->getName(), true);
@@ -2269,7 +2302,7 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName,
 	sysComp->setComponentImplementation(KactusAttribute::KTS_SYS);
 
 	// Create the system view to the system design.
-	SystemView* systemView = new SystemView("kts_sys_ref");
+	SystemView* systemView = new SystemView("system");
 	systemView->setHierarchyRef(desConfVLNV);
 
 	// Create the system view to the HW design.
@@ -2320,60 +2353,40 @@ void MainWindow::createSystemDesign(VLNV const& vlnv)
     QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(vlnv);
     QSharedPointer<Component> component = libComp.staticCast<Component>();
 
-    // Create a unique vlnv for the design.
-    VLNV designVLNV(VLNV::DESIGN, vlnv.getVendor(), vlnv.getLibrary(),
-        vlnv.getName().remove(".comp") + ".sysdesign", vlnv.getVersion());
-
-    int runningNumber = 1;
-    QString version = designVLNV.getVersion();
-
-    while (libraryHandler_->contains(designVLNV))
+    // Ask the user the VLNV, target path and view name.
+    NewDesignDialog dialog(libraryHandler_, component, KactusAttribute::KTS_SYS, this);
+    
+    if (dialog.exec() == QDialog::Rejected)
     {
-        ++runningNumber;
-        designVLNV.setVersion(version + "(" + QString::number(runningNumber) + ")");
-    }
-
-    // Create a unique vlnv for the design configuration.
-    VLNV desConfVLNV(VLNV::DESIGNCONFIGURATION, vlnv.getVendor(), vlnv.getLibrary(),
-        vlnv.getName().remove(".comp") + ".sysdesigncfg", vlnv.getVersion());
-
-    runningNumber = 1;
-    version = desConfVLNV.getVersion();
-
-    while (libraryHandler_->contains(desConfVLNV))
-    {
-        ++runningNumber;
-        desConfVLNV.setVersion(version + "(" + QString::number(runningNumber) + ")");
+        return;
     }
 
     // Create the view.
-    SystemView* view = new SystemView(tr("system"));
-    view->setHierarchyRef(desConfVLNV);   
+    SystemView* view = new SystemView(dialog.getViewName());
+    view->setHierarchyRef(dialog.getDesignConfVLNV());   
+    view->setHWViewRef(component->getHierViews().first());
     component->addSystemView(view);
 
     // Create the design and design configuration objects to the same folder as the component.
-    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV));
-    designConf->setDesignRef(designVLNV);
+    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(dialog.getDesignConfVLNV()));
+    designConf->setDesignRef(dialog.getDesignVLNV());
 
-    QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(designVLNV));
+    QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(dialog.getDesignVLNV()));
 
     QList<ColumnDesc> columns;
     columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, 319));
     columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, 319));
     newDesign->setColumns(columns);
 
-    QString xmlPath = libraryHandler_->getPath(vlnv);
-    QFileInfo xmlInfo(xmlPath);
-    QString dirPath = xmlInfo.absolutePath();
-
     generateSystemDesignV2(libraryHandler_, component->getHierRef(), *newDesign);
 
-    libraryHandler_->writeModelToFile(dirPath, newDesign);
-    libraryHandler_->writeModelToFile(dirPath, designConf);
+    libraryHandler_->writeModelToFile(dialog.getPath(), newDesign);
+    libraryHandler_->writeModelToFile(dialog.getPath(), designConf);
     libraryHandler_->writeModelToFile(component);
 
-    // Open the design.
     libraryHandler_->endSave();
+
+    // Open the design.
     openSystemDesign(vlnv, view->getName(), true);
 }
 

@@ -338,7 +338,7 @@ void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
 
                     menu.addSeparator();
 
-                    if (!component->hasSWViews() && indexes.size() == 1)
+                    if (indexes.size() == 1)
                     {
                         menuNew = menu.addMenu(tr("New"));
                         menuNew->addAction(createNewSWDesignAction_);
@@ -373,18 +373,10 @@ void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
                     {
                         menuNew = menu.addMenu(tr("New"));
                         menuNew->addAction(createNewComponentAction_);
+                        menuNew->addAction(createNewDesignAction_);
+                        menuNew->addAction(createNewSWDesignAction_);
 
-                        if (!hierarchical)
-                        {
-                            menuNew->addAction(createNewDesignAction_);
-                        }
-
-                        if (!component->hasSWViews())
-                        {
-                            menuNew->addAction(createNewSWDesignAction_);
-                        }
-
-                        if (!component->hasSystemViews())
+                        if (hierarchical)
                         {
                             menuNew->addAction(createNewSystemDesignAction_);
                         }

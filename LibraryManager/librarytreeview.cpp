@@ -137,12 +137,8 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
 
                     menu.addAction(openCompAction_);
 
-                    if (!component->hasSWViews())
-                    {
-                        menuNew = menu.addMenu(tr("New"));
-                        menuNew->addAction(createNewSWDesignAction_);
-                    }
-
+                    menuNew = menu.addMenu(tr("New"));
+                    menuNew->addAction(createNewSWDesignAction_);
 					break;
 											  }
 				default: {
@@ -154,7 +150,6 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
                     if (component->hasSWViews())
                     {
                         menu.addAction(openSWDesignAction_);
-                        hierarchical = true;
                     }
 
                     if (component->hasSystemViews())
@@ -167,19 +162,10 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
 
                     menuNew = menu.addMenu(tr("New"));
 					menuNew->addAction(createNewComponentAction_);
+					menuNew->addAction(createNewDesignAction_);
+                    menuNew->addAction(createNewSWDesignAction_);
 
-					// if component was not hierarchical then design can be created for it.
-					if (!hierarchical)
-                    {
-						menuNew->addAction(createNewDesignAction_);
-                    }
-
-                    if (!component->hasSWViews())
-                    {
-                        menuNew->addAction(createNewSWDesignAction_);
-                    }
-
-                    if (!component->hasSystemViews())
+                    if (hierarchical)
                     {
                         menuNew->addAction(createNewSystemDesignAction_);
                     }

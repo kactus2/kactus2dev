@@ -226,6 +226,12 @@ void VLNVDataTree::parseSubtree(LibraryInterface* lh, LibraryItem const* libItem
             VLNV const* vlnv = item->getVLNV();
             Q_ASSERT(vlnv != 0);
 
+            // Check if the tree already contains an node with the same name.
+            if (node.findChild(item->getName()))
+            {
+                continue;
+            }
+
             // If filtering is off, just accept the item.
             if (!firmnessFilterEnabled_ && !hierarchyFilterEnabled_ && !implementationFilterEnabled_)
             {
@@ -250,19 +256,32 @@ void VLNVDataTree::parseSubtree(LibraryInterface* lh, LibraryItem const* libItem
         }
         else
         {
+            QString name = item->getName();
+
+            if (item->getLevel() == LibraryItem::NAME)
+            {
+                // TODO: This should be done conditionally.
+                name = name.remove(".sysdesigncfg");
+                name = name.remove(".sysdesign");
+                name = name.remove(".swdesigncfg");
+                name = name.remove(".swdesign");
+                name = name.remove(".designcfg");
+                name = name.remove(".design");
+            }
+
             // Otherwise parse the subtree recursively.
-            VLNVDataNode* childNode = node.findChild(item->getName());
+            VLNVDataNode* childNode = node.findChild(name);
 
             if (childNode == 0)
             {
-                childNode = node.addChild(item->getName());
+                childNode = node.addChild(name);
             }
 
             parseSubtree(lh, item, *childNode);
 
             if (childNode->getChildren().size() == 0)
             {
-                node.removeChild(item->getName());
+                node.removeChild(name);
             }
         }
     }
