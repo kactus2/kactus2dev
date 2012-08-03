@@ -69,6 +69,9 @@ handler_(libHandler)
 	// accept drops from drag & drop
 	setAcceptDrops(true);
 
+    // By default, add the VLNV type to edit to the content types.
+    contentTypes_.append(type_);
+
     updateFiltering();
 }
 
@@ -77,6 +80,14 @@ handler_(libHandler)
 //-----------------------------------------------------------------------------
 VLNVEditor::~VLNVEditor()
 {
+}
+
+//-----------------------------------------------------------------------------
+// Function: VLNVEditor::addContentType()
+//-----------------------------------------------------------------------------
+void VLNVEditor::addContentType(VLNV::IPXactType type)
+{
+    contentTypes_.append(type);
 }
 
 //-----------------------------------------------------------------------------
@@ -387,7 +398,11 @@ void VLNVEditor::setImplementationFilter(bool on, KactusAttribute::Implementatio
 void VLNVEditor::updateFiltering()
 {
     dataTree_.clear();
-    dataTree_.parse(handler_, type_);
+
+    foreach (VLNV::IPXactType type, contentTypes_)
+    {
+        dataTree_.parse(handler_, type);
+    }
 }
 
 void VLNVEditor::setMandatory( bool mandatory ) {

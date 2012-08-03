@@ -54,6 +54,11 @@ public:
     virtual ~VLNVEditor();
 
     /*!
+     *  Adds a new VLNV object type to show in content assist.
+     */
+    void addContentType(VLNV::IPXactType type);
+
+    /*!
      *  Sets the firmness filter on/off.
      *
      *      @param [in] on        If true, the filter is turned on; otherwise it is turned off.
@@ -213,6 +218,9 @@ private:
 
     //! The VLNV type which to edit.
     VLNV::IPXactType type_;
+
+    //! The VLNV types which to show in content assist.
+    QList<VLNV::IPXactType> contentTypes_;
 
     //! The VLNV data tree.
     VLNVDataTree dataTree_;

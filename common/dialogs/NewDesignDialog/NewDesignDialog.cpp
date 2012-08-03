@@ -76,6 +76,8 @@ NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface,
     connect(viewNameEdit_, SIGNAL(textEdited(QString const&)), this, SLOT(onContentChanged()));
 
     vlnvEditor_->setNameExtension(designExt_ + "/" + designConfExt_);
+    vlnvEditor_->addContentType(VLNV::DESIGNCONFIGURATION);
+    vlnvEditor_->updateFiltering();
 
     connect(vlnvEditor_, SIGNAL(contentChanged()), this, SLOT(onContentChanged()));
     connect(vlnvEditor_, SIGNAL(contentChanged()), this, SLOT(updateDirectory()));
