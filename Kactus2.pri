@@ -189,6 +189,10 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/software/swviewsdelegate.h \
     ./IPXactWrapper/ComponentEditor/software/swviewseditor.h \
     ./IPXactWrapper/ComponentEditor/software/swviewsmodel.h \
+    ./IPXactWrapper/ComponentEditor/software/SystemViewEditor.h \
+    ./IPXactWrapper/ComponentEditor/software/SystemViewsDelegate.h \
+    ./IPXactWrapper/ComponentEditor/software/SystemViewsEditor.h \
+    ./IPXactWrapper/ComponentEditor/software/SystemViewsModel.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspaceeditor.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacegeneraleditor.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacesdelegate.h \
@@ -272,6 +276,8 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorswpropertiesitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorswviewitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorswviewsitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/ComponentEditorSystemViewItem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/ComponentEditorSystemViewsItem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditortreemodel.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorviewitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorviewsitem.h \
@@ -461,12 +467,9 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./PluginSystem/IPluginUtility.h \
     ./PluginSystem/PluginListDialog.h \
     ./PluginSystem/PluginManager.h \
-    ./IPXactWrapper/ComponentEditor/software/SystemViewEditor.h \
-    ./IPXactWrapper/ComponentEditor/software/SystemViewsEditor.h \
-    ./IPXactWrapper/ComponentEditor/software/SystemViewsModel.h \
-    ./IPXactWrapper/ComponentEditor/software/SystemViewsDelegate.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/ComponentEditorSystemViewItem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/ComponentEditorSystemViewsItem.h
+    ./SystemDetailsEditor/SystemDetailsEditor.h \
+    ./SystemDetailsEditor/SwitchHWDialog.h \
+    ./common/dialogs/NewDesignDialog/NewDesignDialog.h
 SOURCES += ./common/CSourceWriter.cpp \
     ./common/DesignDiagram.cpp \
     ./common/DesignWidget.cpp \
@@ -663,6 +666,10 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/software/swviewsdelegate.cpp \
     ./IPXactWrapper/ComponentEditor/software/swviewseditor.cpp \
     ./IPXactWrapper/ComponentEditor/software/swviewsmodel.cpp \
+    ./IPXactWrapper/ComponentEditor/software/SystemViewEditor.cpp \
+    ./IPXactWrapper/ComponentEditor/software/SystemViewsDelegate.cpp \
+    ./IPXactWrapper/ComponentEditor/software/SystemViewsEditor.cpp \
+    ./IPXactWrapper/ComponentEditor/software/SystemViewsModel.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspaceeditor.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacegeneraleditor.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacesdelegate.cpp \
@@ -713,6 +720,8 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorswpropertiesitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorswviewitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorswviewsitem.cpp \
+    ./IPXactWrapper/ComponentEditor/treeStructure/ComponentEditorSystemViewItem.cpp \
+    ./IPXactWrapper/ComponentEditor/treeStructure/ComponentEditorSystemViewsItem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditortreemodel.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorviewitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorviewsitem.cpp \
@@ -900,10 +909,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./SystemDesign/SystemMoveCommands.cpp \
     ./PluginSystem/PluginListDialog.cpp \
     ./PluginSystem/PluginManager.cpp \
-    ./IPXactWrapper/ComponentEditor/software/SystemViewEditor.cpp \
-    ./IPXactWrapper/ComponentEditor/software/SystemViewsEditor.cpp \
-    ./IPXactWrapper/ComponentEditor/software/SystemViewsModel.cpp \
-    ./IPXactWrapper/ComponentEditor/software/SystemViewsDelegate.cpp \
-    ./IPXactWrapper/ComponentEditor/treeStructure/ComponentEditorSystemViewItem.cpp \
-    ./IPXactWrapper/ComponentEditor/treeStructure/ComponentEditorSystemViewsItem.cpp
+    ./SystemDetailsEditor/SystemDetailsEditor.cpp \
+    ./SystemDetailsEditor/SwitchHWDialog.cpp \
+    ./common/dialogs/NewDesignDialog/NewDesignDialog.cpp
 RESOURCES += kactus.qrc

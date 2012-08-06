@@ -1805,6 +1805,10 @@ void MainWindow::onTabChanged(int index)
         {
             systemDetailsEditor_->setSystem(designwidget, designwidget->isProtected());
         }
+        else
+        {
+            systemDetailsEditor_->clear();
+        }
 	}
 	// active tab is not design widget so clear the editors associated with design widget
 	else {
