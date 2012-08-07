@@ -47,6 +47,7 @@ class TabWidgetEx;
 class TabDocument;
 class ConnectionEndpoint;
 class GraphicsConnection;
+class ContextHelpBrowser;
 
 class MainWindow : public QMainWindow, public IPluginUtility {
     Q_OBJECT
@@ -391,6 +392,9 @@ signals:
 	//! \brief Print an error message to the user
 	void errorMessage(const QString& msg);
 
+    //! Emitted when a help page should be changed in the context help window.
+    void helpUrlRequested(QString const& url);
+
 protected:
 
 	//! \brief Called when the user requests to close the program.
@@ -421,6 +425,9 @@ private slots:
 
 	//! \brief Handler for output action's trigger.
 	void onOutputAction(bool show);
+
+    //! Handler for context help action's trigger.
+    void onContextHelpAction(bool show);
 
 	//! \brief Handler for preview box action's trigger.
 	void onPreviewAction(bool show);
@@ -470,6 +477,13 @@ private:
 	// Disable copying.
 	MainWindow(MainWindow const& rhs);
 	MainWindow& operator=(MainWindow const& rhs);
+
+    /*!
+     *  Registers a tab document (connects common signals etc.).
+     *
+     *      @param [in] doc The document to register.
+     */
+    void registerDocument(TabDocument* doc);
 
     /*!
      *  Returns true if a design with the given vlnv is already open.
@@ -529,6 +543,11 @@ private:
 	//! \brief Set up the message console.
 	void setupMessageConsole();
 
+    /*!
+     *  Sets up the context help system.
+     */
+    void setupContextHelp();
+
 	//! \brief Set up the component instance editor.
 	void setupInstanceEditor();
 
@@ -572,6 +591,12 @@ private:
 
 	//! \brief The dock widget that contains the console.
 	QDockWidget* consoleDock_;
+
+    //! Context help browser.
+    ContextHelpBrowser* contextHelpBrowser_;
+
+    //! The dock widget for the context help browser.
+    QDockWidget* contextHelpDock_;
 
 	//! \brief The widget to edit the settings of a component instance.
 	ComponentInstanceEditor* instanceEditor_;
@@ -725,6 +750,9 @@ private:
 	//! \brief Action to show/hide the output window.
 	QAction* showOutputAction_;
 
+    //! Action to show/hide context help.
+    QAction* showContextHelpAction_;
+
 	//! \brief Action to show/hide the preview box.
 	QAction* showPreviewAction_;
 
@@ -770,7 +798,7 @@ private:
 	 *
 	*/
 	void updateWindows(unsigned int supportedWindows);
-    
+
     //-----------------------------------------------------------------------------
     //! Structure which contains the show/hidden status for the windows.
     //-----------------------------------------------------------------------------
@@ -778,6 +806,9 @@ private:
     {
 		//! \brief Show the output window
 		bool showOutput_;
+
+        //! If true, the context help is shown.
+        bool showContextHelp_;
 
 		//! \brief Show the preview window
 		bool showPreview_;

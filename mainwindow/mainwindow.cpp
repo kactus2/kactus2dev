@@ -30,6 +30,8 @@
 
 #include <DocumentGenerator/documentgenerator.h>
 
+#include <HelpSystem/ContextHelpBrowser.h>
+
 #include <LibraryManager/libraryhandler.h>
 #include <LibraryManager/vlnv.h>
 #include <LibraryManager/LibraryUtils.h>
@@ -110,6 +112,8 @@ MainWindow::MainWindow(QWidget *parent)
       previewDock_(0),
       console_(0),
       consoleDock_(0),
+      contextHelpBrowser_(0),
+      contextHelpDock_(0),
       instanceEditor_(0),
       instanceDock_(0),
       configurationEditor_(0),
@@ -157,6 +161,7 @@ MainWindow::MainWindow(QWidget *parent)
       actAbout_(0), 
       actExit_(0),
       showOutputAction_(0),
+      showContextHelpAction_(0),
       showPreviewAction_(0),
       showLibraryAction_(0),
       showConfigurationAction_(0),
@@ -190,6 +195,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 	// set up the widgets
 	setupMessageConsole();
+    setupContextHelp();
 	setupDrawBoard();
 	setupLibraryDock();
 	setupInstanceEditor();
@@ -207,7 +213,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 	// don't display empty editors
 	updateWindows(TabDocument::OUTPUTWINDOW | TabDocument::LIBRARYWINDOW | 
-		          TabDocument::PREVIEWWINDOW);
+		          TabDocument::PREVIEWWINDOW | TabDocument::CONTEXT_HELP_WINDOW);
 
 	setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
 }
@@ -295,29 +301,25 @@ void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forc
 		return;
 	}
 
-	HWDesignWidget *designWidget = new HWDesignWidget(libraryHandler_, this);
+	HWDesignWidget* designWidget = new HWDesignWidget(libraryHandler_, this);
+    registerDocument(designWidget);
 
-	connect(designWidget->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));
 	connect(designWidget, SIGNAL(zoomChanged()), this, SLOT(updateZoomTools()), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(modeChanged(DrawMode)),
-		this, SLOT(onDrawModeChanged(DrawMode)), Qt::UniqueConnection);
+		    this, SLOT(onDrawModeChanged(DrawMode)), Qt::UniqueConnection);
 
 	connect(designWidget, SIGNAL(destroyed(QObject*)),
-		this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
+		    this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
 
 	connect(designWidget, SIGNAL(openDesign(const VLNV&, const QString&)),
-		this, SLOT(openDesign(const VLNV&, const QString&)));
+		    this, SLOT(openDesign(const VLNV&, const QString&)));
 	connect(designWidget, SIGNAL(openComponent(const VLNV&)),
-		this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
+		    this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(openBus(VLNV const&, VLNV const&, bool)),
-		this, SLOT(openBus(VLNV const&, VLNV const&, bool)), Qt::UniqueConnection);
-	connect(designWidget, SIGNAL(errorMessage(const QString&)),
-		console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
-	connect(designWidget, SIGNAL(noticeMessage(const QString&)),
-		console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
+		    this, SLOT(openBus(VLNV const&, VLNV const&, bool)), Qt::UniqueConnection);
 
 	connect(designWidget, SIGNAL(clearItemSelection()),
-		libraryHandler_, SLOT(onClearSelection()), Qt::UniqueConnection);
+		    libraryHandler_, SLOT(onClearSelection()), Qt::UniqueConnection);
 
 	connect(designWidget, SIGNAL(componentSelected(ComponentItem*)),
 		this, SLOT(onComponentSelected(ComponentItem*)), Qt::UniqueConnection);
@@ -328,9 +330,6 @@ void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forc
 
 	connect(designWidget, SIGNAL(clearItemSelection()),
 		this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
-
-	connect(designWidget, SIGNAL(modifiedChanged(bool)),
-		actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
 
 	// open the design in the designWidget
 	designWidget->setDesign(vlnv, viewName);
@@ -352,10 +351,6 @@ void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forc
 	}
 
 	designWidget->setTabWidget(designTabs_);
-
-	// A small hack to center the view correctly.
-	//     designWidget->fitInView();
-	//     designWidget->setZoomLevel(100);
 }
 
 
@@ -371,11 +366,6 @@ void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName, bool fo
 
     SystemDesignWidget* designWidget = new SystemDesignWidget(true, libraryHandler_, this, this);
 
-    connect(designWidget, SIGNAL(errorMessage(const QString&)),
-        console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
-    connect(designWidget, SIGNAL(noticeMessage(const QString&)),
-        console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
-
     if (!designWidget->setDesign(vlnv, viewName))
     {
         delete designWidget;
@@ -388,9 +378,8 @@ void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName, bool fo
     }
 
     designWidget->setTabWidget(designTabs_);
+    registerDocument(designWidget);
 
-    connect(designWidget->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));
-    connect(designWidget, SIGNAL(contentChanged()), this, SLOT(updateMenuStrip()), Qt::UniqueConnection);
     connect(designWidget, SIGNAL(openComponent(const VLNV&)),
         this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
     connect(designWidget, SIGNAL(openSWDesign(const VLNV&, const QString&)),
@@ -411,7 +400,6 @@ void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName, bool fo
     connect(designWidget, SIGNAL(clearItemSelection()),
         this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
 
-    //connect(designWidget->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));
     connect(designWidget, SIGNAL(zoomChanged()), this, SLOT(updateZoomTools()), Qt::UniqueConnection);
     connect(designWidget, SIGNAL(modeChanged(DrawMode)),
         this, SLOT(onDrawModeChanged(DrawMode)), Qt::UniqueConnection);
@@ -635,6 +623,15 @@ void MainWindow::setupActions() {
 	connect(consoleDock_->toggleViewAction(), SIGNAL(toggled(bool)),
 		showOutputAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 
+    // Action to show/hide the context help window.
+    showContextHelpAction_ = new QAction(tr("Context Help"), this);
+    showContextHelpAction_->setCheckable(true);
+    showContextHelpAction_->setChecked(true);
+    connect(showContextHelpAction_, SIGNAL(toggled(bool)),
+            this, SLOT(onContextHelpAction(bool)), Qt::UniqueConnection);
+    connect(contextHelpDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+            showContextHelpAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
 	// Action to show/hide the preview box.
 	showPreviewAction_ = new QAction(tr("Preview Box"), this);
 	showPreviewAction_->setCheckable(true);
@@ -817,6 +814,10 @@ void MainWindow::loadWorkspace(QString const& workspaceName)
     visibilities_.showOutput_ = outputVisible;
     showOutputAction_->setChecked(outputVisible);
 
+    const bool contextHelpVisible = settings.value("ContextHelpVisibility", false).toBool();
+    visibilities_.showContextHelp_ = contextHelpVisible;
+    showContextHelpAction_->setChecked(contextHelpVisible);
+
     const bool previewVisible = settings.value("PreviewVisibility", true).toBool();
     visibilities_.showPreview_ = previewVisible;
     showPreviewAction_->setChecked(previewVisible);
@@ -824,7 +825,7 @@ void MainWindow::loadWorkspace(QString const& workspaceName)
     if (designTabs_->count() == 0)
     {
         updateWindows(TabDocument::OUTPUTWINDOW | TabDocument::LIBRARYWINDOW | 
-                      TabDocument::PREVIEWWINDOW);
+                      TabDocument::PREVIEWWINDOW | TabDocument::CONTEXT_HELP_WINDOW);
     }
     else
     {
@@ -857,6 +858,7 @@ void MainWindow::saveWorkspace(QString const& workspaceName)
     settings.setValue("InterfaceVisibility", visibilities_.showInterface_);
     settings.setValue("LibraryVisibility", visibilities_.showLibrary_);
     settings.setValue("OutputVisibility", visibilities_.showOutput_);
+    settings.setValue("ContextHelpVisibility", visibilities_.showContextHelp_);
     settings.setValue("PreviewVisibility", visibilities_.showPreview_);
 
     settings.endGroup();
@@ -943,8 +945,9 @@ void MainWindow::setupMenus()
 
 	// the menu to display the dock widgets
 	windowsMenu_.addAction(showOutputAction_);
-	windowsMenu_.addAction(showPreviewAction_);
+    windowsMenu_.addAction(showPreviewAction_);
 	windowsMenu_.addAction(showLibraryAction_);
+    windowsMenu_.addAction(showContextHelpAction_);
 }
 
 void MainWindow::setupDrawBoard() {
@@ -1059,6 +1062,39 @@ void MainWindow::setupMessageConsole() {
 		console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
 }
 
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::setupContextHelp()
+//-----------------------------------------------------------------------------
+void MainWindow::setupContextHelp()
+{
+    // Create the dock widget for the context help.
+    contextHelpDock_ = new QDockWidget(tr("Context Help"), this);
+    contextHelpDock_->setObjectName(tr("Context Help"));
+    contextHelpDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
+    contextHelpDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
+
+    // Initialize the hep engine.
+    QHelpEngine* helpEngine = new QHelpEngine("Help/Kactus2Help.qhc", this);
+    helpEngine->setupData();
+
+    // Create the context help browser.
+    contextHelpBrowser_ = new ContextHelpBrowser(helpEngine, "qthelp://com.tut.kactus2.2.0/doc",
+                                                 contextHelpDock_);
+
+    QColor bgColor = QApplication::palette().color(QPalette::Window);
+    QString style = QString("QTextBrowser { border: 5px solid transparent; "
+                            "background-color: #%1}").arg(bgColor.rgb() & 0x00FFFFFF, 0, 16);
+    contextHelpBrowser_->setStyleSheet(style);
+
+    contextHelpDock_->setWidget(contextHelpBrowser_);
+    addDockWidget(Qt::BottomDockWidgetArea, contextHelpDock_);
+
+    connect(this, SIGNAL(helpUrlRequested(QString const&)),
+            contextHelpBrowser_, SLOT(onHelpRequested(QString const&)), Qt::UniqueConnection);
+    contextHelpBrowser_->onHelpRequested("index.html");
+}
+
 void MainWindow::setupConfigurationEditor() {
 
 	configurationDock_ = new QDockWidget(tr("Configuration Details"), this);
@@ -1071,7 +1107,7 @@ void MainWindow::setupConfigurationEditor() {
 	addDockWidget(Qt::RightDockWidgetArea, configurationDock_);
 
 	connect(configurationEditor_, SIGNAL(contentChanged()),
-		this, SLOT(onDesignChanged()), Qt::UniqueConnection);
+		    this, SLOT(onDesignChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -1606,6 +1642,7 @@ void MainWindow::generateDoc() {
 	// if the editor was component editor then it must be refreshed to make the
 	// changes to metadata visible
 	ComponentEditor* compEditor = dynamic_cast<ComponentEditor*>(doc);
+
 	if (compEditor) {
 
 		// close the editor
@@ -1778,7 +1815,7 @@ void MainWindow::onTabCloseRequested( int index )
 	if (designTabs_->count() == 0) {
 		// don't display empty editors
 		updateWindows(TabDocument::OUTPUTWINDOW | TabDocument::LIBRARYWINDOW | 
-			TabDocument::PREVIEWWINDOW);
+			          TabDocument::PREVIEWWINDOW | TabDocument::CONTEXT_HELP_WINDOW);
 	}
 }
 
@@ -1839,12 +1876,15 @@ void MainWindow::onTabChanged(int index)
 //-----------------------------------------------------------------------------
 void MainWindow::closeEvent(QCloseEvent* event)
 {
-	// disconnect the signals that would otherwise change the window states to 
-	// be saved
+	// disconnect the signals that would otherwise change the window states to be saved
 
 	// Action to show/hide the output window.
 	disconnect(showOutputAction_, SIGNAL(toggled(bool)),
 		this, SLOT(onOutputAction(bool)));
+
+    // Action to show/hide the context help window.
+    disconnect(showContextHelpAction_, SIGNAL(toggled(bool)),
+               this, SLOT(onContextHelpAction(bool)));
 
 	// Action to show/hide the preview box.
 	disconnect(showPreviewAction_, SIGNAL(toggled(bool)),
@@ -2609,21 +2649,14 @@ void MainWindow::openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool di
 		editor = new BusEditor(this, libraryHandler_, busDef);
 	}
 
+    registerDocument(editor);
+
 	if (forceUnlocked)
 	{
 		editor->setProtection(false);
 	}
 
 	editor->setTabWidget(designTabs_);
-
-	connect(editor, SIGNAL(errorMessage(const QString&)),
-		console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
-	connect(editor, SIGNAL(noticeMessage(const QString&)),
-		console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
-	connect(editor, SIGNAL(contentChanged()),
-		this, SLOT(updateMenuStrip()), Qt::UniqueConnection);
-	connect(editor, SIGNAL(modifiedChanged(bool)),
-		actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -2639,11 +2672,7 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName, boo
     }
 
 	SystemDesignWidget* designWidget = new SystemDesignWidget(false, libraryHandler_, this, this);
-
-    connect(designWidget, SIGNAL(errorMessage(const QString&)),
-        console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
-    connect(designWidget, SIGNAL(noticeMessage(const QString&)),
-        console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
+    registerDocument(designWidget);
 
 	if (!designWidget->setDesign(vlnv, viewName))
 	{
@@ -2658,8 +2687,6 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName, boo
 
 	designWidget->setTabWidget(designTabs_);
 
-	connect(designWidget->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));
-	connect(designWidget, SIGNAL(contentChanged()), this, SLOT(updateMenuStrip()), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(openComponent(const VLNV&)),
 		this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(openSWDesign(const VLNV&, const QString&)),
@@ -2680,7 +2707,6 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName, boo
 	connect(designWidget, SIGNAL(clearItemSelection()),
 		this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
 
-    //connect(designWidget->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));
 	connect(designWidget, SIGNAL(zoomChanged()), this, SLOT(updateZoomTools()), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(modeChanged(DrawMode)),
 		this, SLOT(onDrawModeChanged(DrawMode)), Qt::UniqueConnection);
@@ -2693,11 +2719,14 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName, boo
 void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
 
 	// Check if the component editor is already open and activate it.
-	if (vlnv.isValid()) {
-		for (int i = 0; i < designTabs_->count(); i++) {
+	if (vlnv.isValid())
+    {
+		for (int i = 0; i < designTabs_->count(); i++)
+        {
 			ComponentEditor* editor = dynamic_cast<ComponentEditor*>(designTabs_->widget(i));
 
-			if (editor && editor->getComponentVLNV() == vlnv) {
+			if (editor && editor->getComponentVLNV() == vlnv)
+            {
 				designTabs_->setCurrentIndex(i);
 				return;
 			}
@@ -2727,6 +2756,8 @@ void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
 	}
 
 	ComponentEditor* editor = new ComponentEditor(libraryHandler_, component, this);
+    registerDocument(editor);
+
 	QString styleSheet("*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
 	editor->setStyleSheet(styleSheet);
 
@@ -2737,14 +2768,6 @@ void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
 
 	editor->setTabWidget(designTabs_);
 
-	connect(editor, SIGNAL(errorMessage(const QString&)),
-		console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
-	connect(editor, SIGNAL(noticeMessage(const QString&)),
-		console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
-	connect(editor, SIGNAL(contentChanged()),
-		this, SLOT(updateMenuStrip()), Qt::UniqueConnection);
-	connect(editor, SIGNAL(modifiedChanged(bool)),
-		actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
     connect(editor, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)),
             this , SLOT(openCSource(QString const&, QSharedPointer<Component>)), Qt::UniqueConnection);
 }
@@ -2793,6 +2816,7 @@ void MainWindow::openComDefinition(VLNV const& vlnv, bool forceUnlocked /*= fals
     }
 
     ComDefinitionEditor* editor = new ComDefinitionEditor(this, libraryHandler_, comDef);
+    registerDocument(editor);
 
     if (forceUnlocked)
     {
@@ -2800,15 +2824,6 @@ void MainWindow::openComDefinition(VLNV const& vlnv, bool forceUnlocked /*= fals
     }
 
     editor->setTabWidget(designTabs_);
-
-    connect(editor, SIGNAL(errorMessage(const QString&)),
-            console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
-    connect(editor, SIGNAL(noticeMessage(const QString&)),
-            console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
-    connect(editor, SIGNAL(contentChanged()),
-            this, SLOT(updateMenuStrip()), Qt::UniqueConnection);
-    connect(editor, SIGNAL(modifiedChanged(bool)),
-            actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
 }
 
 
@@ -2856,6 +2871,7 @@ void MainWindow::openApiDefinition(VLNV const& vlnv, bool forceUnlocked /*= fals
     }
 
     ApiDefinitionEditor* editor = new ApiDefinitionEditor(this, libraryHandler_, apiDef);
+    registerDocument(editor);
 
     if (forceUnlocked)
     {
@@ -2863,15 +2879,6 @@ void MainWindow::openApiDefinition(VLNV const& vlnv, bool forceUnlocked /*= fals
     }
 
     editor->setTabWidget(designTabs_);
-
-    connect(editor, SIGNAL(errorMessage(const QString&)),
-            console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
-    connect(editor, SIGNAL(noticeMessage(const QString&)),
-            console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
-    connect(editor, SIGNAL(contentChanged()),
-            this, SLOT(updateMenuStrip()), Qt::UniqueConnection);
-    connect(editor, SIGNAL(modifiedChanged(bool)),
-            actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -2910,7 +2917,7 @@ void MainWindow::changeProtection(bool locked)
     {
         TabDocument* relatedDoc = NULL;
 
-        // Check if there is a document with the same VLNV being edited (i.e. not unlocked).
+        // Check if there is a document with the same VLNV being edited (i.e. unlocked).
         for (int i = 0; i < designTabs_->count(); i++)
         {
             TabDocument* otherDoc = static_cast<TabDocument*>(designTabs_->widget(i));
@@ -3130,6 +3137,12 @@ void MainWindow::onOutputAction( bool show ) {
 	}
 }
 
+void MainWindow::onContextHelpAction( bool show )
+{
+    contextHelpDock_->setVisible(show);
+    visibilities_.showContextHelp_ = show;
+}
+
 void MainWindow::onPreviewAction( bool show ) {
 	previewDock_->setVisible(show);
 
@@ -3239,6 +3252,15 @@ void MainWindow::updateWindows( unsigned int supportedWindows ) {
 		consoleDock_->hide();
 	}
 
+    if (supportedWindows & TabDocument::CONTEXT_HELP_WINDOW) {
+        windowsMenu_.addAction(showContextHelpAction_);
+        contextHelpDock_->setVisible(visibilities_.showContextHelp_);
+    }
+    else {
+        windowsMenu_.removeAction(showContextHelpAction_);
+        contextHelpDock_->hide();
+    }
+
 	if (supportedWindows & TabDocument::PREVIEWWINDOW) {
 		windowsMenu_.addAction(showPreviewAction_);
 		previewDock_->setVisible(visibilities_.showPreview_);
@@ -3310,6 +3332,12 @@ void MainWindow::hideEvent( QHideEvent* event ) {
 	disconnect(consoleDock_->toggleViewAction(), SIGNAL(toggled(bool)),
 		showOutputAction_, SLOT(setChecked(bool)));
 
+    // Action to show/hide the context help window.
+    disconnect(showContextHelpAction_, SIGNAL(toggled(bool)),
+               this, SLOT(onContextHelpAction(bool)));
+    disconnect(contextHelpDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+               showContextHelpAction_, SLOT(setChecked(bool)));
+
 	// Action to show/hide the preview box.
 	disconnect(showPreviewAction_, SIGNAL(toggled(bool)),
 		this, SLOT(onPreviewAction(bool)));
@@ -3366,6 +3394,12 @@ void MainWindow::showEvent( QShowEvent* event ) {
 		this, SLOT(onOutputAction(bool)), Qt::UniqueConnection);
 	connect(consoleDock_->toggleViewAction(), SIGNAL(toggled(bool)),
 		showOutputAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+    // Action to show/hide the context help window.
+    connect(showContextHelpAction_, SIGNAL(toggled(bool)),
+        this, SLOT(onContextHelpAction(bool)), Qt::UniqueConnection);
+    connect(contextHelpDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+            showContextHelpAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 
 	// Action to show/hide the preview box.
 	connect(showPreviewAction_, SIGNAL(toggled(bool)),
@@ -3652,8 +3686,26 @@ QWidget* MainWindow::getParentWidget()
     return this;
 }
 
+//-----------------------------------------------------------------------------
+// Function: MainWindow::registerDocument()
+//-----------------------------------------------------------------------------
+void MainWindow::registerDocument(TabDocument* doc)
+{
+    connect(doc, SIGNAL(errorMessage(const QString&)),
+        console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
+    connect(doc, SIGNAL(noticeMessage(const QString&)),
+        console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
+
+    connect(doc, SIGNAL(helpUrlRequested(QString const&)),
+            this, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
+    connect(doc->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));
+    connect(doc, SIGNAL(contentChanged()), this, SLOT(updateMenuStrip()), Qt::UniqueConnection);
+    connect(doc, SIGNAL(modifiedChanged(bool)), actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
+}
+
 MainWindow::WindowVisibility::WindowVisibility():
 showOutput_(true),
+showContextHelp_(false),
 showPreview_(true),
 showLibrary_(true),
 showConfiguration_(true),

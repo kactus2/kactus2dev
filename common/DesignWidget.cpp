@@ -303,6 +303,8 @@ void DesignWidget::setDiagram(DesignDiagram* diagram)
         this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
     connect(diagram_, SIGNAL(noticeMessage(const QString&)),
         this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+    connect(diagram_, SIGNAL(helpUrlRequested(QString const&)),
+            this, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
 
     view_->setScene(diagram_);
     view_->centerOn(0, 0);

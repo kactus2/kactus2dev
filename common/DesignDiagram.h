@@ -250,6 +250,9 @@ signals:
     //! Sends a notification to the user.
     void noticeMessage(const QString& noticeMessage);
 
+    //! Emitted when a help page should be changed in the context help window.
+    void helpUrlRequested(QString const& url);
+
     //! Signaled when a new component is instantiated to the design.
     void componentInstantiated(ComponentItem* item);
 

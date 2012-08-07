@@ -1963,46 +1963,54 @@ void HWDesignDiagram::onSelected(QGraphicsItem* newSelection)
         {
             HWComponentItem* comp = qgraphicsitem_cast<HWComponentItem *>(newSelection);
             emit componentSelected(comp);
+            emit helpUrlRequested("hwdesign/hwinstance.html");
         }
         // Check if the selected item was a port.
         else if (newSelection->type() == BusPortItem::Type)
         {
             BusPortItem* port = qgraphicsitem_cast<BusPortItem*>(newSelection);
             emit interfaceSelected(port);
+            emit helpUrlRequested("hwdesign/busport.html");
         }
         // Check if the selected item was an interface.
         else if (newSelection->type() == BusInterfaceItem::Type)
         {
             BusInterfaceItem* interface = qgraphicsitem_cast<BusInterfaceItem*>(newSelection);
             emit interfaceSelected(interface);
+            emit helpUrlRequested("hwdesign/businterface.html");
         }
         // Check if the selected item was an ad-hoc port.
         else if (newSelection->type() == AdHocPortItem::Type)
         {
             AdHocPortItem* adHocPort = static_cast<AdHocPortItem*>(newSelection);
             emit interfaceSelected(adHocPort);
+            emit helpUrlRequested("hwdesign/adhocport.html");
         }
         // Check if the selected item was an ad-hoc interface.
         else if (newSelection->type() == AdHocInterfaceItem::Type)
         {
             AdHocInterfaceItem* adHocIf = static_cast<AdHocInterfaceItem*>(newSelection);
             emit interfaceSelected(adHocIf);
+            emit helpUrlRequested("hwdesign/adhocinterface.html");
         }
 		// check if the selected item was a connection
 		else if (newSelection->type() == HWConnection::Type) {
 			HWConnection* connection = qgraphicsitem_cast<HWConnection*>(newSelection);
 			emit connectionSelected(connection);
+            emit helpUrlRequested("hwdesign/connection.html");
 		}
         else
         {
             // inform others that nothing is currently selected
             emit clearItemSelection();
+            emit helpUrlRequested("hwdesign/hwdesign.html");
         }
     }
     else
     {
         // Clear the selection.
         emit clearItemSelection();
+        emit helpUrlRequested("hwdesign/hwdesign.html");
     }
 }
 

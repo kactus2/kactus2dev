@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QtHelpProject version="1.0">
+    <namespace>com.tut.kactus2.2.0</namespace>
+    <virtualFolder>doc</virtualFolder>
+    <customFilter name="Kactus2 2.0">
+        <filterAttribute>kactus2</filterAttribute>
+        <filterAttribute>2.0</filterAttribute>
+    </customFilter>
+    <filterSection>
+        <filterAttribute>kactus2</filterAttribute>
+        <filterAttribute>2.0</filterAttribute>
+        <toc>
+            <section title="Kactus2 Manual" ref="index.html">
+                <section title="HW Design" ref="hwdesign/hwdesign.html">
+                    <section title="HW Component Instance" ref="hwdesign/hwinstance.html" />
+                    <section title="Bus Port" ref="hwdesign/busport.html" />
+                    <section title="Bus Interface" ref="hwdesign/businterface.html" />
+                    <section title="Ad-hoc Port" ref="hwdesign/adhocport.html" />
+                    <section title="Ad-hoc Interface" ref="hwdesign/adhocinterface.html" />
+                    <section title="HW Connection" ref="hwdesign/connection.html" />
+                </section>
+            </section>
+        </toc>
+        <keywords>
+        </keywords>
+        <files>
+            <file>style.css</file>
+            <file>*.html</file>
+            <file>hwdesign/*.html</file>
+        </files>
+    </filterSection>
+</QtHelpProject>

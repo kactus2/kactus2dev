@@ -53,6 +53,7 @@ public:
 		INSTANCEWINDOW          = 0x040,
         ADHOC_WINDOW            = 0x080,
         SYSTEM_DETAILS_WINDOW   = 0x100,
+        CONTEXT_HELP_WINDOW     = 0x200
 	};
 
     /*!
@@ -63,10 +64,8 @@ public:
      *      @param [in] minZoomLevel  The minimum zoom level.
 	 *      @param [in] maxZoomLevel  The maximum zoom level.
 	 */
-	TabDocument(QWidget* parent, 
-		unsigned int flags = 0,
-		int minZoomLevel = 100,
-		int maxZoomLevel = 100);
+	TabDocument(QWidget* parent, unsigned int flags = 0,
+		        int minZoomLevel = 100, int maxZoomLevel = 100);
 
 	/*!
      *  Destructor.
@@ -243,6 +242,9 @@ signals:
 
 	//! \brief Send a notification to be printed to user.
 	void noticeMessage(const QString& msg);
+
+    //! Emitted when a help page should be changed in the context help window.
+    void helpUrlRequested(QString const& url);
 
 	//! \brief Emitted when the tab document is refreshed.
 	void refreshed();
