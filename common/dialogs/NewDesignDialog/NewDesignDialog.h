@@ -44,6 +44,13 @@ public:
     NewDesignDialog(LibraryInterface* libInterface, QSharedPointer<Component> component,
                     KactusAttribute::Implementation designType, QWidget *parent = 0);
 
+    /*!
+     *  Sets the pre-filled view name.
+     *
+     *      @param [in] viewName The view name to set.
+     */
+    void setViewName(QString const& viewName);
+
 	/*!
      *  Sets the pre-filled VLNV.
      *

@@ -46,7 +46,19 @@ visualizerSlot_(&editorVisualizerSplitter_) {
 	// set the name and type for the tab
 	setDocumentName(QString("%1 (%2)").arg(component_->getVlnv()->getName()).arg(
 		component_->getVlnv()->getVersion()));
-	setDocumentType(tr("Component"));
+
+    if (component_->getComponentImplementation() == KactusAttribute::KTS_HW)
+    {
+	    setDocumentType(tr("HW Component"));
+    }
+    else if (component_->getComponentImplementation() == KactusAttribute::KTS_SW)
+    {
+        setDocumentType(tr("SW Component"));
+    }
+    else if (component_->getComponentImplementation() == KactusAttribute::KTS_SYS)
+    {
+        setDocumentType(tr("Unmapped System"));
+    }
 
 	// the top layout contains only the navigation splitter
 	QHBoxLayout* layout = new QHBoxLayout(this);

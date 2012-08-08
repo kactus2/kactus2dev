@@ -31,6 +31,7 @@
 #include <DocumentGenerator/documentgenerator.h>
 
 #include <HelpSystem/ContextHelpBrowser.h>
+#include <HelpSystem/HelpWindow.h>
 
 #include <LibraryManager/libraryhandler.h>
 #include <LibraryManager/vlnv.h>
@@ -159,6 +160,7 @@ MainWindow::MainWindow(QWidget *parent)
       actProtect_(0), 
       actSettings_(0),
       actAbout_(0), 
+      actHelp_(0),
       actExit_(0),
       showOutputAction_(0),
       showContextHelpAction_(0),
@@ -175,6 +177,7 @@ MainWindow::MainWindow(QWidget *parent)
       workspaceMenu_(this),
       curWorkspaceName_("Default"),
       pluginMgr_(QCoreApplication::applicationDirPath() + "/Plugins"),
+      helpWnd_(0),
       visibilities_()
 {
 	// set the identification tags for the application
@@ -602,15 +605,19 @@ void MainWindow::setupActions() {
 	actAbout_= new QAction(QIcon(":/icons/graphics/system-about.png"), tr("About"), this);
 	actAbout_->setProperty("rowSpan", 2);
 	actAbout_->setProperty("colSpan", 2);
-	connect(actAbout_, SIGNAL(triggered()), 
-		this, SLOT(showAbout()), Qt::UniqueConnection);
+	connect(actAbout_, SIGNAL(triggered()), this, SLOT(showAbout()), Qt::UniqueConnection);
+
+    // Initialize the action to open the help window.
+    actHelp_= new QAction(QIcon(":/icons/graphics/system-help.png"), tr("Help"), this);
+    actHelp_->setProperty("rowSpan", 2);
+    actHelp_->setProperty("colSpan", 2);
+    connect(actHelp_, SIGNAL(triggered()), this, SLOT(showHelp()), Qt::UniqueConnection);
 
 	// Initialize the action to exit the program.
 	actExit_ = new QAction(QIcon(":/icons/graphics/system-exit.png"), tr("Exit"), this);
 	actExit_->setProperty("rowSpan", 2);
 	actExit_->setProperty("colSpan", 2);
-	connect(actExit_, SIGNAL(triggered()),
-		this, SLOT(close()), Qt::UniqueConnection);
+	connect(actExit_, SIGNAL(triggered()), this, SLOT(close()), Qt::UniqueConnection);
 
 	// the actions that select which windows to display
 
@@ -941,6 +948,7 @@ void MainWindow::setupMenus()
 	GCF::MenuStripGroup* sysGroup = menuStrip_->addGroup(tr("System"));
 	sysGroup->addAction(actSettings_);
 	sysGroup->addAction(actAbout_);
+    sysGroup->addAction(actHelp_);
 	sysGroup->addAction(actExit_);
 
 	// the menu to display the dock widgets
@@ -1074,9 +1082,12 @@ void MainWindow::setupContextHelp()
     contextHelpDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
     contextHelpDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
 
-    // Initialize the hep engine.
+    // Initialize the help engine.
     QHelpEngine* helpEngine = new QHelpEngine("Help/Kactus2Help.qhc", this);
     helpEngine->setupData();
+
+    // Create the help window.
+    helpWnd_ = new HelpWindow(helpEngine, this);
 
     // Create the context help browser.
     contextHelpBrowser_ = new ContextHelpBrowser(helpEngine, "qthelp://com.tut.kactus2.2.0/doc",
@@ -2203,6 +2214,31 @@ void MainWindow::createDesignForExistingComponent(VLNV const& vlnv)
 
     // Ask the user the VLNV, target path and view name.
     NewDesignDialog dialog(libraryHandler_, component, KactusAttribute::KTS_HW, this);
+    dialog.setVLNV(VLNV(VLNV::DESIGN, component->getVlnv()->getVendor(), component->getVlnv()->getLibrary(), "", ""));
+
+    QString baseViewName = "";
+
+    switch (component->getComponentHierarchy())
+    {
+    case KactusAttribute::KTS_IP:
+    case KactusAttribute::KTS_SOC:
+        baseViewName = "structural";
+
+    default:
+        baseViewName = "hierarchical";
+
+    }
+
+    QString viewName = baseViewName;
+    unsigned int runningNumber = 1;
+
+    while (component->findView(viewName) != 0)
+    {
+        ++runningNumber;
+        viewName = baseViewName + QString::number(runningNumber);
+    }
+
+    dialog.setViewName(viewName);
 
     if (dialog.exec() == QDialog::Rejected)
     {
@@ -2254,6 +2290,18 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
     // Ask the user the VLNV, target path and view name.
     NewDesignDialog dialog(libraryHandler_, component, KactusAttribute::KTS_SW, this);
     dialog.setWindowTitle(tr("New SW Design"));
+    dialog.setVLNV(VLNV(VLNV::DESIGN, component->getVlnv()->getVendor(), component->getVlnv()->getLibrary(), "", ""));
+
+    QString viewName = "software";
+    unsigned int runningNumber = 1;
+
+    while (component->findSWView(viewName) != 0)
+    {
+        ++runningNumber;
+        viewName = "software" + QString::number(runningNumber);
+    }
+
+    dialog.setViewName(viewName);
 
     if (dialog.exec() == QDialog::Rejected)
     {
@@ -2403,6 +2451,18 @@ void MainWindow::createSystemDesign(VLNV const& vlnv)
     // Ask the user the VLNV, target path and view name.
     NewDesignDialog dialog(libraryHandler_, component, KactusAttribute::KTS_SYS, this);
     dialog.setWindowTitle(tr("New System Design"));
+    dialog.setVLNV(VLNV(VLNV::DESIGN, component->getVlnv()->getVendor(), component->getVlnv()->getLibrary(), "", ""));
+
+    QString viewName = "system";
+    unsigned int runningNumber = 1;
+
+    while (component->findSystemView(viewName) != 0)
+    {
+        ++runningNumber;
+        viewName = "system" + QString::number(runningNumber);
+    }
+
+    dialog.setViewName(viewName);
     
     if (dialog.exec() == QDialog::Rejected)
     {
@@ -3122,6 +3182,14 @@ void MainWindow::showAbout()
 	splash->showMessage("");
 }
 
+//-----------------------------------------------------------------------------
+// Function: showAbout()
+//-----------------------------------------------------------------------------
+void MainWindow::showHelp()
+{
+    helpWnd_->show();
+}
+
 void MainWindow::selectVisibleDocks() {
 	windowsMenu_.exec(QCursor::pos());
 }
@@ -3698,7 +3766,12 @@ void MainWindow::registerDocument(TabDocument* doc)
 
     connect(doc, SIGNAL(helpUrlRequested(QString const&)),
             this, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
-    connect(doc->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));
+
+    if (doc->getEditProvider() != 0)
+    {
+        connect(doc->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));
+    }
+
     connect(doc, SIGNAL(contentChanged()), this, SLOT(updateMenuStrip()), Qt::UniqueConnection);
     connect(doc, SIGNAL(modifiedChanged(bool)), actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
 }

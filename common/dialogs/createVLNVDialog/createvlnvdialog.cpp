@@ -175,12 +175,12 @@ void CreateVLNVDialog::setTypeBox(const VLNV* const vlnv) {
 	connect(busDefButton, SIGNAL(clicked()),
 			this, SLOT(onBusDefSelected()));
 
-	QRadioButton* componentButton = new QRadioButton(tr("Component"), typeBox);
+	QRadioButton* componentButton = new QRadioButton(tr("HW Component"), typeBox);
 	boxLayout->addWidget(componentButton, 0, Qt::AlignTop);
 	connect(componentButton, SIGNAL(clicked()),
 			this, SLOT(onComponentSelected()));
 
-	QRadioButton* designButton = new QRadioButton(tr("Design"), typeBox);
+	QRadioButton* designButton = new QRadioButton(tr("HW Design"), typeBox);
 	boxLayout->addWidget(designButton, 0, Qt::AlignTop);
 	connect(designButton, SIGNAL(clicked()),
 			this, SLOT(onDesignSelected()));

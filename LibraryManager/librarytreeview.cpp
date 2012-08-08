@@ -225,9 +225,9 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
 
 void LibraryTreeView::setupActions() {
 
-	openDesignAction_ = new QAction(tr("Open Design"), this);
-	openDesignAction_->setStatusTip(tr("Open a hierarchical design"));
-	openDesignAction_->setToolTip(tr("Open a hierarchical design"));
+	openDesignAction_ = new QAction(tr("Open HW Design"), this);
+	openDesignAction_->setStatusTip(tr("Open a HW design"));
+	openDesignAction_->setToolTip(tr("Open a HW design"));
 	connect(openDesignAction_, SIGNAL(triggered()),
 		this, SLOT(onOpenDesign()), Qt::UniqueConnection);
 
@@ -243,15 +243,15 @@ void LibraryTreeView::setupActions() {
 	connect(openCompAction_, SIGNAL(triggered()),
 		this, SLOT(onOpenComponent()), Qt::UniqueConnection);
 
-	createNewComponentAction_ = new QAction(tr("Component"), this);
-	createNewComponentAction_->setStatusTip(tr("Create new component"));
-	createNewComponentAction_->setToolTip(tr("Create new component"));
+	createNewComponentAction_ = new QAction(tr("HW Component"), this);
+	createNewComponentAction_->setStatusTip(tr("Create new HW component"));
+	createNewComponentAction_->setToolTip(tr("Create new HW component"));
 	connect(createNewComponentAction_, SIGNAL(triggered()),
 		this, SLOT(onCreateComponent()), Qt::UniqueConnection);
 
-	createNewDesignAction_ = new QAction(tr("Design"), this);
-	createNewDesignAction_->setStatusTip(tr("Create new design"));
-	createNewDesignAction_->setToolTip(tr("Create new design"));
+	createNewDesignAction_ = new QAction(tr("HW Design"), this);
+	createNewDesignAction_->setStatusTip(tr("Create new HW design"));
+	createNewDesignAction_->setToolTip(tr("Create new HW design"));
 	connect(createNewDesignAction_, SIGNAL(triggered()),
 		this, SLOT(onCreateDesign()), Qt::UniqueConnection);
 

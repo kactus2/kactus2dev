@@ -133,7 +133,7 @@ bool HWDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
 
     setDocumentName(getEditedComponent()->getVlnv()->getName() + 
 		            " (" + getEditedComponent()->getVlnv()->getVersion() + ")");
-    setDocumentType("Design");
+    setDocumentType("HW Design");
 
 	emit clearItemSelection();
 

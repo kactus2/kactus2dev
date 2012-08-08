@@ -22,6 +22,7 @@
             </section>
         </toc>
         <keywords>
+            <keyword name="HW Design" id="Kactus2::hwdesign" ref="hwdesign/hwdesign.html" />
         </keywords>
         <files>
             <file>style.css</file>

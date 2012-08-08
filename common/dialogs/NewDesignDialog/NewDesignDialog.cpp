@@ -49,6 +49,8 @@ NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface,
     {
     case KactusAttribute::KTS_HW:
         {
+            viewNameLabel_->setText(tr("Name for a new view to HW component:"));
+            vlnvEditor_->setTitle("VLNV for new HW design and design configuration");
             designExt_ = ".design";
             designConfExt_ = ".designcfg";
             usedViewNames_ = component->getHierViews();
@@ -57,6 +59,8 @@ NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface,
 
     case KactusAttribute::KTS_SW:
         {
+            viewNameLabel_->setText(tr("Name for a new SW view to component:"));
+            vlnvEditor_->setTitle("VLNV for new SW design and design configuration");
             designExt_ = ".swdesign";
             designConfExt_ = ".swdesigncfg";
             usedViewNames_ = component->getSWViewNames();
@@ -65,6 +69,8 @@ NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface,
 
     case KactusAttribute::KTS_SYS:
         {
+            viewNameLabel_->setText(tr("Name for a new system view to HW component:"));
+            vlnvEditor_->setTitle("VLNV for new system design and design configuration");
             designExt_ = ".sysdesign";
             designConfExt_ = ".sysdesigncfg";
             usedViewNames_ = component->getSystemViewNames();
@@ -72,8 +78,8 @@ NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface,
         }
     }
 
-    connect(viewNameEdit_, SIGNAL(textEdited(QString const&)), this, SLOT(updateVlnvName()));
-    connect(viewNameEdit_, SIGNAL(textEdited(QString const&)), this, SLOT(onContentChanged()));
+    connect(viewNameEdit_, SIGNAL(textChanged(QString const&)), this, SLOT(updateVlnvName()));
+    connect(viewNameEdit_, SIGNAL(textChanged(QString const&)), this, SLOT(onContentChanged()));
 
     vlnvEditor_->setNameExtension(designExt_ + "/" + designConfExt_);
     vlnvEditor_->addContentType(VLNV::DESIGNCONFIGURATION);
@@ -109,6 +115,14 @@ NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface,
     setFixedHeight(sizeHint().height());
     resize(400, sizeHint().height());
     okButton_->setDefault(true);
+}
+
+//-----------------------------------------------------------------------------
+// Function: NewDesignDialog::setViewName()
+//-----------------------------------------------------------------------------
+void NewDesignDialog::setViewName(QString const& viewName)
+{
+    viewNameEdit_->setText(viewName);
 }
 
 //-----------------------------------------------------------------------------

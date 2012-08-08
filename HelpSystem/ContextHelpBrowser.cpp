@@ -24,8 +24,6 @@ ContextHelpBrowser::ContextHelpBrowser(QHelpEngine* engine, QString const& urlPr
       engine_(engine),
       urlPrefix_(urlPrefix)
 {
-    connect(engine_->contentWidget(), SIGNAL(linkActivated(QUrl const&)),
-            this, SLOT(setSource(QUrl const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

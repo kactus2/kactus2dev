@@ -48,6 +48,7 @@ class TabDocument;
 class ConnectionEndpoint;
 class GraphicsConnection;
 class ContextHelpBrowser;
+class HelpWindow;
 
 class MainWindow : public QMainWindow, public IPluginUtility {
     Q_OBJECT
@@ -359,6 +360,11 @@ public slots:
      *  Shows the about box.
      */
     void showAbout();
+
+    /*!
+     *  Shows the help window.
+     */
+    void showHelp();
 
     /*!
      *  Prints an error message to the console window.
@@ -742,6 +748,9 @@ private:
     //! Action to show the about box.
     QAction* actAbout_;
 
+    //! Action to show the help window.
+    QAction* actHelp_;
+
     //! Action to exit the program.
     QAction* actExit_;
 
@@ -792,13 +801,16 @@ private:
     //! The plugin manager.
     PluginManager pluginMgr_;
 
+    //! The help window.
+    HelpWindow* helpWnd_;
+
 	/*! \brief Update the windows menu to contain the supported windows.
 	 *
 	 * \param supportedWindows Bit field that specifies which windows should be displayed.
 	 *
 	*/
 	void updateWindows(unsigned int supportedWindows);
-
+    
     //-----------------------------------------------------------------------------
     //! Structure which contains the show/hidden status for the windows.
     //-----------------------------------------------------------------------------
