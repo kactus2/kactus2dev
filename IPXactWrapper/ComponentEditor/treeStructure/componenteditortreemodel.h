@@ -163,6 +163,9 @@ signals:
      */
     void openCSource(QString const& filename, QSharedPointer<Component> component);
 
+    //! Emitted when a help page should be changed in the context help window.
+    void helpUrlRequested(QString const& url);
+
 private:
 	//! \brief No copying
 	ComponentEditorTreeModel(const ComponentEditorTreeModel& other);

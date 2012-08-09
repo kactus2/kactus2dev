@@ -207,6 +207,8 @@ public slots:
 	virtual void openItem(bool builtinEditor);
 
 signals:
+    //! Emitted when a help page should be changed in the context help window.
+    void helpUrlRequested(QString const& url);
 
 	//! \brief This signal is emitted when the item should be updated in view.
 	void contentChanged(ComponentEditorItem* item);

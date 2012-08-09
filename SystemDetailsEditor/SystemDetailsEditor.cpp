@@ -163,7 +163,7 @@ void SystemDetailsEditor::setupLayout()
     buttonLayout->addWidget(&revertButton_);
 
     QFormLayout* selectorLayout = new QFormLayout();
-    selectorLayout->addRow(tr("Selected configuration:"), &viewSelector_);
+    selectorLayout->addRow(tr("HW component view:"), &viewSelector_);
 
     QVBoxLayout* topLayout = new QVBoxLayout(this);
     topLayout->addWidget(&hwRefEditor_);

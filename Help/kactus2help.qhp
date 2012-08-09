@@ -19,6 +19,9 @@
                     <section title="Ad-hoc Interface" ref="hwdesign/adhocinterface.html" />
                     <section title="HW Connection" ref="hwdesign/connection.html" />
                 </section>
+                <section title="Component Editor" ref="componenteditor/componenteditor.html">
+                    <section title="Portmaps" ref="componenteditor/portmaps.html" />
+                </section>
             </section>
         </toc>
         <keywords>
@@ -28,6 +31,7 @@
             <file>style.css</file>
             <file>*.html</file>
             <file>hwdesign/*.html</file>
+            <file>componenteditor/*.html</file>
         </files>
     </filterSection>
 </QtHelpProject>

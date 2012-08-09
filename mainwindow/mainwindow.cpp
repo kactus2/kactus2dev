@@ -668,7 +668,7 @@ void MainWindow::setupActions() {
 		showConfigurationAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 
     // Action to show/hide the system details window.
-    showSystemDetailsAction_ = new QAction(tr("System Details Window"), this);
+    showSystemDetailsAction_ = new QAction(tr("HW Mapping Details Window"), this);
     showSystemDetailsAction_->setCheckable(true);
     showSystemDetailsAction_->setChecked(true);
     connect(showSystemDetailsAction_, SIGNAL(toggled(bool)),
@@ -1126,8 +1126,8 @@ void MainWindow::setupConfigurationEditor() {
 //-----------------------------------------------------------------------------
 void MainWindow::setupSystemDetailsEditor()
 {
-    systemDetailsDock_ = new QDockWidget(tr("System Details"), this);
-    systemDetailsDock_->setObjectName(tr("System Details Editor"));
+    systemDetailsDock_ = new QDockWidget(tr("HW Mapping Details"), this);
+    systemDetailsDock_->setObjectName(tr("HW Mapping Details Editor"));
     systemDetailsDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     systemDetailsDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
 

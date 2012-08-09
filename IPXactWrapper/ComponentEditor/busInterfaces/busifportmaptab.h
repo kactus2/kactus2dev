@@ -87,6 +87,8 @@ protected:
 
 	virtual void keyPressEvent(QKeyEvent* event);
 
+    virtual void showEvent(QShowEvent* event);
+
 signals:
 
 	//! \brief Emitted when contents of the model change
@@ -97,6 +99,9 @@ signals:
 
 	//! \brief Prints a notification to user.
 	void noticeMessage(const QString& msg) const;
+
+    //! Emitted when a help page should be changed in the context help window.
+    void helpUrlRequested(QString const& url);
 
 private slots:
 

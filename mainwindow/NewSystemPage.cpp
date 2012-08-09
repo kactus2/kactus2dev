@@ -47,7 +47,7 @@ viewComboBox_(0)
     font.setBold(true);
     titleLabel->setFont(font);
 
-    QLabel* descLabel = new QLabel(tr("Creates a system design for an existing component"), this);
+    QLabel* descLabel = new QLabel(tr("Creates SW architecture that can be mapped to HW"), this);
 
     // Retrieve the component sub-tree item.
     LibraryItem const* root = libInterface->getTreeRoot();
@@ -63,7 +63,7 @@ viewComboBox_(0)
     }
 
     // Tree widget label.
-    QLabel* treeLabel = new QLabel(tr("Select component:"), this);
+    QLabel* treeLabel = new QLabel(tr("Select top-level HW component:"), this);
 
     // Create the tree widget and fill it with VLNV data.
     compTreeWidget_ = new QTreeWidget(this);
@@ -99,13 +99,14 @@ viewComboBox_(0)
             this, SLOT(onTreeItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
 
     // Create the view selection combo box.
-    QLabel* viewLabel = new QLabel(tr("Select configuration:"), this);
+    QLabel* viewLabel = new QLabel(tr("Select view of top-level HW component:"), this);
     viewComboBox_ = new QComboBox(this);
 
     // Create the VLNV editor.
     vlnvEditor_ = new VLNVEditor(VLNV::COMPONENT, libInterface, parentDlg, this, true);
     vlnvEditor_->setImplementationFilter(true, KactusAttribute::KTS_SYS);
     vlnvEditor_->updateFiltering();
+    vlnvEditor_->setTitle(tr("VLNV of the new system design"));
 
     connect(vlnvEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
     connect(vlnvEditor_, SIGNAL(contentChanged()), this, SLOT(updateDirectory()));

@@ -28,6 +28,7 @@ void ComponentEditorTreeModel::setComponent( QSharedPointer<Component> component
 	rootItem_.clear();
 	rootItem_ = QSharedPointer<ComponentEditorRootItem>(
 		new ComponentEditorRootItem(libHandler_, component, this));
+
 	endResetModel();
 }
 

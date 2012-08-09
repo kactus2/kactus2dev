@@ -24,6 +24,7 @@
 #include <models/Component.h>
 
 #include <common/widgets/LibraryPathSelector/librarypathselector.h>
+#include <common/widgets/LineEditEx/LineEditEx.h>
 #include <LibraryManager/libraryinterface.h>
 
 //-----------------------------------------------------------------------------
@@ -36,9 +37,8 @@ NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface,
     : QDialog(parent), 
       lh_(libInterface),
       component_(component),
-      usedViewNames_(),
       viewNameLabel_(new QLabel(tr("View name:"), this)),
-      viewNameEdit_(new QLineEdit(this)),
+      viewNameEdit_(new LineEditEx(this)),
       vlnvEditor_(new VLNVEditor(VLNV::DESIGN, libInterface, this, this, true)),
       directoryEdit_(new LibraryPathSelector(this)), 
       okButton_(new QPushButton(tr("&OK"))),
@@ -50,33 +50,38 @@ NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface,
     case KactusAttribute::KTS_HW:
         {
             viewNameLabel_->setText(tr("Name for a new view to HW component:"));
+            viewNameEdit_->setDisallowedInputs(component->getViewNames());
+            viewNameEdit_->setMessageTemplate("View name '%1' is already in use!");
             vlnvEditor_->setTitle("VLNV for new HW design and design configuration");
             designExt_ = ".design";
             designConfExt_ = ".designcfg";
-            usedViewNames_ = component->getHierViews();
             break;
         }
 
     case KactusAttribute::KTS_SW:
         {
             viewNameLabel_->setText(tr("Name for a new SW view to component:"));
+            viewNameEdit_->setDisallowedInputs(component->getSWViewNames());
+            viewNameEdit_->setMessageTemplate("SW view name '%1' is already in use!");
             vlnvEditor_->setTitle("VLNV for new SW design and design configuration");
             designExt_ = ".swdesign";
             designConfExt_ = ".swdesigncfg";
-            usedViewNames_ = component->getSWViewNames();
             break;
         }
 
     case KactusAttribute::KTS_SYS:
         {
             viewNameLabel_->setText(tr("Name for a new system view to HW component:"));
+            viewNameEdit_->setDisallowedInputs(component->getSystemViewNames());
+            viewNameEdit_->setMessageTemplate("System view name '%1' is already in use!");
             vlnvEditor_->setTitle("VLNV for new system design and design configuration");
             designExt_ = ".sysdesign";
             designConfExt_ = ".sysdesigncfg";
-            usedViewNames_ = component->getSystemViewNames();
             break;
         }
     }
+
+    viewNameEdit_->setMessageIcon(QPixmap(":/icons/graphics/exclamation.png"));
 
     connect(viewNameEdit_, SIGNAL(textChanged(QString const&)), this, SLOT(updateVlnvName()));
     connect(viewNameEdit_, SIGNAL(textChanged(QString const&)), this, SLOT(onContentChanged()));
@@ -169,9 +174,8 @@ QString NewDesignDialog::getPath() const
 void NewDesignDialog::onContentChanged()
 {
     // Enable/disable the ok button if the contents are valid/invalid.
-    okButton_->setEnabled(!viewNameEdit_->text().isEmpty() &&
-                          !directoryEdit_->currentText().isEmpty() &&
-                          vlnvEditor_->isValid());
+    okButton_->setEnabled(!viewNameEdit_->text().isEmpty() && viewNameEdit_->isInputValid() &&
+                          !directoryEdit_->currentText().isEmpty() && vlnvEditor_->isValid());
 }
 
 //-----------------------------------------------------------------------------
@@ -179,17 +183,6 @@ void NewDesignDialog::onContentChanged()
 //-----------------------------------------------------------------------------
 void NewDesignDialog::accept()
 {
-    // Check that the view name is unused.
-    if (usedViewNames_.contains(getViewName()))
-    {
-        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                           tr("The component already contains a view with name '%1'.").arg(getViewName()),
-                           QMessageBox::Ok, this);
-
-        msgBox.exec();
-        return;
-    }
-
     // Make sure that the VLNVs are not already in use.
     if (lh_->contains(getDesignVLNV()))
     {

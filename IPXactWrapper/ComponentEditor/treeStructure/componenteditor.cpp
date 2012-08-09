@@ -90,6 +90,8 @@ visualizerSlot_(&editorVisualizerSplitter_) {
 		this, SLOT(onItemActivated(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&navigationModel_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
 		this, SLOT(onItemChanged()), Qt::UniqueConnection);
+    connect(&navigationModel_, SIGNAL(helpUrlRequested(QString const&)),
+            this, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
 
     connect(&navigationModel_, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)),
             this, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)), Qt::UniqueConnection);

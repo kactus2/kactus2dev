@@ -54,7 +54,6 @@ public:
 	virtual void refresh();
 
 private slots:
-
 	//! \brief When tab page changes
 	void onTabChange(int index);
 

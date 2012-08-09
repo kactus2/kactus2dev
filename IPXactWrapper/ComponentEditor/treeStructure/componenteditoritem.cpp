@@ -31,6 +31,9 @@ parent_(parent) {
 		model, SLOT(removeItem(ComponentEditorItem*, int)), Qt::UniqueConnection);
 	connect(this, SIGNAL(moveChild(ComponentEditorItem*, int, int)),
 		model, SLOT(moveItem(ComponentEditorItem*, int, int)), Qt::UniqueConnection);
+
+    connect(this, SIGNAL(helpUrlRequested(QString const&)),
+            model, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
 }
 
 ComponentEditorItem::ComponentEditorItem( LibraryInterface* libHandler, 

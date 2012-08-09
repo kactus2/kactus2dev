@@ -70,6 +70,9 @@ signals:
 	//! \brief Prints a notification to the user.
 	void noticeMessage(const QString& msg) const;
 
+    //! Emitted when a help page should be changed in the context help window.
+    void helpUrlRequested(QString const& url);
+
 	/*! \brief Emitted when the editor adds a new item that should be shown in navigation tree.
 	 *
 	 * \param index The index of the added item.

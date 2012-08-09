@@ -26,18 +26,17 @@ SwitchHWDialog::SwitchHWDialog(QSharedPointer<Component> component, QString cons
     : QDialog(parent),
       lh_(lh),
       component_(component),
-      infoLabel_(tr("System design needs to be either moved or copied under the selected HW. "
-                    "Choose how to proceed."), this),
+      infoLabel_(tr("Choose how the SW architecture specified in this system design is mapped to new HW."), this),
       hwViewRefLabel_(tr("Configuration to map:"), this),
       hwViewRefCombo_(this),
-      viewNameLabel_(tr("Name of the system view to create:"), this),
+      viewNameLabel_(tr("Name of the system view to be created for the mapped HW component:"), this),
       viewNameEdit_(this),
       actionGroupBox_(tr("Action"), this),
       actionGroup_(this),
-      moveRadioButton_(tr("Move existing design\nRemoves the system view "
+      moveRadioButton_(tr("Move system design\nRemoves the system view "
                           "from the previously mapped HW and moves it to the new one."), this),
-      copyRadioButton_(tr("Copy as a new design\nCreates an identical copy of the "
-                          "system design with a new VLNV."), this),
+      copyRadioButton_(tr("Copy as a new system design\nCreates an identical copy of the "
+                          "system design with a new VLNV and adds a new system\nview to the HW component."), this),
       vlnvEdit_(VLNV::DESIGN, lh, this, this),
       directoryLabel_(tr("Directory:"), this),
       directoryEdit_(this),
@@ -54,7 +53,7 @@ SwitchHWDialog::SwitchHWDialog(QSharedPointer<Component> component, QString cons
     viewNameEdit_.setText(viewName);
     moveRadioButton_.setChecked(true);
 
-    vlnvEdit_.setTitle(tr("Design VLNV"));
+    vlnvEdit_.setTitle(tr("VLNV for the new system design and design configuration"));
     vlnvEdit_.setVisible(false);
     vlnvEdit_.setNameExtension(".sysdesign/.sysdesigncfg");
 

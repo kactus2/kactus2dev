@@ -19,6 +19,7 @@ editor_(libHandler, component) {
 	foreach (QSharedPointer<BusInterface> busif, busifs_) {
 		QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(
 			new ComponentEditorBusInterfaceItem(busif, model, libHandler, component, this));
+
 		childItems_.append(busifItem);
 	}
 

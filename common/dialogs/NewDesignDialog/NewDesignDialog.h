@@ -24,6 +24,7 @@ class LibraryPathSelector;
 class LibraryInterface;
 class VLNVEditor;
 class Component;
+class LineEditEx;
 
 //-----------------------------------------------------------------------------
 //! New design dialog.
@@ -109,7 +110,7 @@ private:
     QLabel* viewNameLabel_;
 
     //! Edit box for the view name.
-    QLineEdit* viewNameEdit_;
+    LineEditEx* viewNameEdit_;
 
     //! The VLNV editor.
     VLNVEditor* vlnvEditor_;
