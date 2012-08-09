@@ -86,3 +86,9 @@ http://www.icon-king.com/ (LGPL)
 
 Crystal Project by Everaldo Coelho
 http://www.everaldo.com/
+
+Aha-soft Icons
+http://www.aha-soft.com/
+
+Fugue Icons
+http://p.yusukekamiyamane.com/ (CC Attribution 3.0 Unported)
