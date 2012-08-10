@@ -30,9 +30,9 @@ CreateConfigurationDialog::CreateConfigurationDialog(LibraryInterface* handler,
       handler_(handler),
       component_(component),
       configType_(configType),
-      useExistingRadio_(new QRadioButton(tr("Use current design"), this)),
-      createNewRadio_(new QRadioButton(tr("Create new design"), this)),
-      createCopyRadio_(new QRadioButton(tr("Copy old design to new configuration"), this)),
+      useExistingRadio_(new QRadioButton(tr("Use current design\nCreates only a new configuration for the current design."), this)),
+      createNewRadio_(new QRadioButton(tr("Create new design\nCreates a new empty design and a configuration for it."), this)),
+      createCopyRadio_(new QRadioButton(tr("Copy old design to new configuration\nDuplicates the current design with a new VLNV and creates a configuration for it."), this)),
       configNameEdit_(new LineEditEx(this)),
       vlnvEdit_(new VLNVEditor(VLNV::DESIGNCONFIGURATION, handler, this, this, true)),
       implementationCombo_(new QComboBox(this)),
@@ -91,6 +91,7 @@ CreateConfigurationDialog::CreateConfigurationDialog(LibraryInterface* handler,
 	vlnvEdit_->setVersion(compVLNV.getVersion());
 
 	setWindowTitle(tr("Create New Configuration"));
+    prevalidate();
 }
 
 CreateConfigurationDialog::~CreateConfigurationDialog() {
@@ -98,18 +99,16 @@ CreateConfigurationDialog::~CreateConfigurationDialog() {
 
 void CreateConfigurationDialog::setupLayout() {
 
-	QHBoxLayout* radioLayout = new QHBoxLayout();
+    QGroupBox* radioGroup = new QGroupBox(tr("Action"), this);
+
+	QVBoxLayout* radioLayout = new QVBoxLayout(radioGroup);
 	radioLayout->addWidget(useExistingRadio_);
 	radioLayout->addWidget(createNewRadio_);
 	radioLayout->addWidget(createCopyRadio_);
-	radioLayout->addStretch();
-
-	QFormLayout* nameLayout = new QFormLayout();
-	nameLayout->addRow(tr("Configuration name:"), configNameEdit_);
-
+	
 	QFormLayout* comboLayout = new QFormLayout();
-	comboLayout->addRow(tr("OPTIONAL reference to this component's\n"
-		"top-level implementation view"), implementationCombo_);
+	comboLayout->addRow(tr("Reference to this component's top-level\n"
+		                   "implementation view (optional)"), implementationCombo_);
 
 	QHBoxLayout* buttonLayout = new QHBoxLayout();
 	buttonLayout->addStretch();
@@ -117,8 +116,9 @@ void CreateConfigurationDialog::setupLayout() {
 	buttonLayout->addWidget(cancelButton_, 0, Qt::AlignRight);
 
 	QVBoxLayout* topLayout = new QVBoxLayout(this);
-	topLayout->addLayout(radioLayout);
-	topLayout->addLayout(nameLayout);
+	topLayout->addWidget(new QLabel(tr("Configuration name:"), this));
+    topLayout->addWidget(configNameEdit_);
+    topLayout->addWidget(radioGroup);
 	topLayout->addWidget(vlnvEdit_);
 	topLayout->addLayout(comboLayout);
 	topLayout->addLayout(buttonLayout);
