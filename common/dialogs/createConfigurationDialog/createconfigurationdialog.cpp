@@ -10,49 +10,85 @@
 #include <LibraryManager/libraryinterface.h>
 #include <LibraryManager/vlnv.h>
 
+#include <common/widgets/LineEditEx/LineEditEx.h>
+
 #include <QIcon>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QFormLayout>
 #include <QMessageBox>
+#include <QCoreApplication>
 
 #include <QDebug>
 
 CreateConfigurationDialog::CreateConfigurationDialog(LibraryInterface* handler,
 													 QSharedPointer<Component> component,
+                                                     KactusAttribute::Implementation configType,
 													 QWidget *parent,
-													 Qt::WindowFlags f):
-QDialog(parent, f),
-handler_(handler),
-component_(component),
-useExistingRadio_(tr("Use current design"), this),
-createNewRadio_(tr("Create new design"), this),
-createCopyRadio_(tr("Copy old design to new configuration"), this),
-configNameEdit_(this),
-vlnvEdit_(VLNV::DESIGNCONFIGURATION, handler, this, this, true),
-implementationCombo_(this),
-okButton_(QIcon(":/icons/graphics/ok.png"), tr("Ok"), this),
-cancelButton_(QIcon(":/icons/graphics/cancel.png"), tr("Cancel"), this) {
-
+													 Qt::WindowFlags f)
+    : QDialog(parent, f),
+      handler_(handler),
+      component_(component),
+      configType_(configType),
+      useExistingRadio_(new QRadioButton(tr("Use current design"), this)),
+      createNewRadio_(new QRadioButton(tr("Create new design"), this)),
+      createCopyRadio_(new QRadioButton(tr("Copy old design to new configuration"), this)),
+      configNameEdit_(new LineEditEx(this)),
+      vlnvEdit_(new VLNVEditor(VLNV::DESIGNCONFIGURATION, handler, this, this, true)),
+      implementationCombo_(new QComboBox(this)),
+      okButton_(new QPushButton(tr("OK"), this)),
+      cancelButton_(new QPushButton(tr("Cancel"), this))
+{
 	Q_ASSERT(component);
 	Q_ASSERT(handler);
 
 	setupLayout();
 	setupConnections();
 
+    configNameEdit_->setMessageIcon(QPixmap(":/icons/graphics/exclamation.png"));
+
+    switch (configType)
+    {
+    case KactusAttribute::KTS_HW:
+        {
+            configNameEdit_->setDisallowedInputs(component->getHierViews());
+            configNameEdit_->setMessageTemplate("View '%1' already exists!");
+            break;
+        }
+
+    case KactusAttribute::KTS_SW:
+        {
+            configNameEdit_->setDisallowedInputs(component->getSWViewNames());
+            configNameEdit_->setMessageTemplate("SW view '%1' already exists!");
+            break;
+        }
+
+    case KactusAttribute::KTS_SYS:
+        {
+            configNameEdit_->setDisallowedInputs(component->getSystemViewNames());
+            configNameEdit_->setMessageTemplate("System view '%1' already exists!");
+            break;
+        }
+
+    default:
+        {
+            Q_ASSERT(false);
+        }
+    }
+
 	// by default an existing design is used.
-	useExistingRadio_.toggle();
+	useExistingRadio_->toggle();
 
 	// set the views to the combo box
-	implementationCombo_.addItem(QString(""));
-	implementationCombo_.addItems(component->getViewNames());
+	implementationCombo_->addItem(QString(""));
+	implementationCombo_->addItems(component->getViewNames());
 
 	// set the title for vlnv editor
-	vlnvEdit_.setTitle(tr("Configuration VLNV"));
+	vlnvEdit_->setTitle(tr("Configuration VLNV"));
 	VLNV compVLNV = *component_->getVlnv();
-	vlnvEdit_.setVendor(compVLNV.getVendor());
-	vlnvEdit_.setLibrary(compVLNV.getLibrary());
-	vlnvEdit_.setVersion(compVLNV.getVersion());
+	vlnvEdit_->setVendor(compVLNV.getVendor());
+	vlnvEdit_->setLibrary(compVLNV.getLibrary());
+	vlnvEdit_->setVersion(compVLNV.getVersion());
 
 	setWindowTitle(tr("Create New Configuration"));
 }
@@ -63,109 +99,82 @@ CreateConfigurationDialog::~CreateConfigurationDialog() {
 void CreateConfigurationDialog::setupLayout() {
 
 	QHBoxLayout* radioLayout = new QHBoxLayout();
-	radioLayout->addWidget(&useExistingRadio_);
-	radioLayout->addWidget(&createNewRadio_);
-	radioLayout->addWidget(&createCopyRadio_);
+	radioLayout->addWidget(useExistingRadio_);
+	radioLayout->addWidget(createNewRadio_);
+	radioLayout->addWidget(createCopyRadio_);
 	radioLayout->addStretch();
 
 	QFormLayout* nameLayout = new QFormLayout();
-	nameLayout->addRow(tr("Configuration name:"), &configNameEdit_);
+	nameLayout->addRow(tr("Configuration name:"), configNameEdit_);
 
 	QFormLayout* comboLayout = new QFormLayout();
 	comboLayout->addRow(tr("OPTIONAL reference to this component's\n"
-		"top-level implementation view"), &implementationCombo_);
+		"top-level implementation view"), implementationCombo_);
 
 	QHBoxLayout* buttonLayout = new QHBoxLayout();
 	buttonLayout->addStretch();
-	buttonLayout->addWidget(&okButton_, 0, Qt::AlignRight);
-	buttonLayout->addWidget(&cancelButton_, 0, Qt::AlignRight);
+	buttonLayout->addWidget(okButton_, 0, Qt::AlignRight);
+	buttonLayout->addWidget(cancelButton_, 0, Qt::AlignRight);
 
 	QVBoxLayout* topLayout = new QVBoxLayout(this);
 	topLayout->addLayout(radioLayout);
 	topLayout->addLayout(nameLayout);
-	topLayout->addWidget(&vlnvEdit_);
+	topLayout->addWidget(vlnvEdit_);
 	topLayout->addLayout(comboLayout);
 	topLayout->addLayout(buttonLayout);
 }
 
 void CreateConfigurationDialog::setupConnections() {
 
-	connect(&okButton_, SIGNAL(clicked(bool)),
+	connect(okButton_, SIGNAL(clicked(bool)),
 		this, SLOT(onOk()), Qt::UniqueConnection);
-	connect(&cancelButton_, SIGNAL(clicked(bool)),
+	connect(cancelButton_, SIGNAL(clicked(bool)),
 		this, SLOT(reject()), Qt::UniqueConnection);
-	connect(&configNameEdit_, SIGNAL(textEdited(const QString&)),
+	connect(configNameEdit_, SIGNAL(textEdited(const QString&)),
 		this, SLOT(onConfNameChanged(const QString&)), Qt::UniqueConnection);
+
+    connect(configNameEdit_, SIGNAL(textChanged(QString const&)),
+            this, SLOT(prevalidate()), Qt::UniqueConnection);
+    connect(vlnvEdit_, SIGNAL(contentChanged()),
+            this, SLOT(prevalidate()), Qt::UniqueConnection);
 }
 
-void CreateConfigurationDialog::onOk() {
-	QStringList errorList = validate();
+void CreateConfigurationDialog::onOk()
+{
+    // Make sure that the VLNVs are not already in use.
+    if (handler_->contains(getConfigurationVLNV()))
+    {
+        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+                           tr("VLNV %1 already exists in the library.").arg(getConfigurationVLNV().toString()),
+                           QMessageBox::Ok, this);
+        msgBox.exec();
+        return;
+    }
 
-	// if errors were found
-	if (!errorList.isEmpty()) {
-		QString errorText(tr("The following errors were found in the dialog:\n"));
-		foreach (QString error, errorList) {
-			errorText += ("- " + error + "\n");
-		}
+    if (!useExistingRadio_->isChecked() && handler_->contains(getDesignVLNV()))
+    {
+        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+                           tr("VLNV %1 already exists in the library.").arg(getDesignVLNV().toString()),
+                           QMessageBox::Ok, this);
+        msgBox.exec();
+        return;
+    }
 
-		QMessageBox::critical(this, tr("Invalid dialog input"), errorText);
-	}
-	// if no errors were found
-	else 
-		accept();
+    accept();
 }
 
 VLNV CreateConfigurationDialog::getConfigurationVLNV() const {
-	VLNV configVLNV = vlnvEdit_.getVLNV();
+	VLNV configVLNV = vlnvEdit_->getVLNV();
 	configVLNV.setType(VLNV::DESIGNCONFIGURATION);
 	return configVLNV;
 }
 
 QString CreateConfigurationDialog::getConfigurationName() const {
-	return configNameEdit_.text();
+	return configNameEdit_->text();
 }
 
 QString CreateConfigurationDialog::getImplementationViewName() const {
-	return implementationCombo_.currentText();
-}
-
-QStringList CreateConfigurationDialog::validate() const {
-	QStringList errors;
-
-	if (configNameEdit_.text().isEmpty()) {
-		errors.append(tr("A name for the configuration has to be specified."));
-	}
-
-	// if component already has a view with given name
-	if (component_->findView(configNameEdit_.text())) {
-		errors.append(tr("Component already has a configuration named %1.").arg(
-			configNameEdit_.text()));
-	}
-
-	VLNV configVLNV = vlnvEdit_.getVLNV();
-	// if configuration vlnv is not valid
-	if (!configVLNV.isValid()) {
-		errors.append(tr("The vlnv given for the configuration is not valid."));
-	}
-	// if vlnv was valid
-	else {
-
-		// if given VLNV is reserved
-		if (handler_->contains(configVLNV)) {
-			errors.append(tr("The vlnv given for the configuration is reserved."));
-		}
-
-		// is user wants to create a new design.
-		if (!useExistingRadio_.isChecked()) {
-			
-			VLNV designVLNV = getDesignVLNV();
-			if (handler_->contains(designVLNV)) {
-				errors.append(tr("The vlnv for the new design is reserved."));
-			}
-		}
-
-	}
-	return errors;
+	return implementationCombo_->currentText();
 }
 
 VLNV CreateConfigurationDialog::getDesignVLNV() const {
@@ -182,14 +191,23 @@ VLNV CreateConfigurationDialog::getDesignVLNV() const {
 }
 
 void CreateConfigurationDialog::onConfNameChanged( const QString& newName ) {
-	vlnvEdit_.setName(component_->getVlnv()->getName() + "." + newName + ".designcfg");
+	vlnvEdit_->setName(component_->getVlnv()->getName() + "." + newName + ".designcfg");
 }
 
 CreateConfigurationDialog::DesignSelection CreateConfigurationDialog::designSelection() const {
-	if (useExistingRadio_.isChecked())
+	if (useExistingRadio_->isChecked())
 		return CreateConfigurationDialog::USE_EXISTING;
-	else if (createNewRadio_.isChecked())
+	else if (createNewRadio_->isChecked())
 		return CreateConfigurationDialog::CREATE_EMPTY;
 	else
 		return CreateConfigurationDialog::CREATE_COPY;
+}
+
+//-----------------------------------------------------------------------------
+// Function: CreateConfigurationDialog::prevalidate()
+//-----------------------------------------------------------------------------
+void CreateConfigurationDialog::prevalidate()
+{
+    okButton_->setEnabled(!configNameEdit_->text().isEmpty() && configNameEdit_->isInputValid() &&
+                          vlnvEdit_->isValid());
 }

@@ -78,7 +78,7 @@ void ConfigurationEditor::onAdd() {
 	askSave();
 	
 	// create dialog to input the settings for the new configuration
-	CreateConfigurationDialog dialog(handler_, component_, this);
+	CreateConfigurationDialog dialog(handler_, component_, designWidget_->getImplementation(), this);
 	// if user cancels the dialog
 	if (dialog.exec() == QDialog::Rejected) {
 		return;

@@ -51,7 +51,7 @@ NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface,
         {
             viewNameLabel_->setText(tr("Name for a new view to HW component:"));
             viewNameEdit_->setDisallowedInputs(component->getViewNames());
-            viewNameEdit_->setMessageTemplate("View name '%1' is already in use!");
+            viewNameEdit_->setMessageTemplate("View name '%1' already exists!");
             vlnvEditor_->setTitle("VLNV for new HW design and design configuration");
             designExt_ = ".design";
             designConfExt_ = ".designcfg";
@@ -62,7 +62,7 @@ NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface,
         {
             viewNameLabel_->setText(tr("Name for a new SW view to component:"));
             viewNameEdit_->setDisallowedInputs(component->getSWViewNames());
-            viewNameEdit_->setMessageTemplate("SW view name '%1' is already in use!");
+            viewNameEdit_->setMessageTemplate("SW view name '%1' already exists!");
             vlnvEditor_->setTitle("VLNV for new SW design and design configuration");
             designExt_ = ".swdesign";
             designConfExt_ = ".swdesigncfg";
@@ -73,7 +73,7 @@ NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface,
         {
             viewNameLabel_->setText(tr("Name for a new system view to HW component:"));
             viewNameEdit_->setDisallowedInputs(component->getSystemViewNames());
-            viewNameEdit_->setMessageTemplate("System view name '%1' is already in use!");
+            viewNameEdit_->setMessageTemplate("System view name '%1' already exists!");
             vlnvEditor_->setTitle("VLNV for new system design and design configuration");
             designExt_ = ".sysdesign";
             designConfExt_ = ".sysdesigncfg";

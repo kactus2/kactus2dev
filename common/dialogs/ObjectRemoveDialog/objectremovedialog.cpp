@@ -16,7 +16,7 @@
 
 ObjectRemoveDialog::ObjectRemoveDialog(QWidget *parent, Qt::WindowFlags f):
 QDialog(parent, f),
-okButton_(QIcon(":/icons/graphics/ok.png"), tr("Ok"), this),
+okButton_(QIcon(":/icons/graphics/ok.png"), tr("OK"), this),
 cancelButton_(QIcon(":/icons/graphics/cancel.png"), tr("Cancel"), this),
 selectionBox_(tr("Select/deselect all"), this),
 view_(this),

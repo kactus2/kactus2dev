@@ -50,7 +50,7 @@ vendorEdit_(0), libraryEdit_(0), nameEdit_(0), versionEdit_(0), layout_(0) {
 
 
 	// The ok and cancel buttons and their layout
-	QPushButton* okButton = new QPushButton(tr("Ok"), this);
+	QPushButton* okButton = new QPushButton(tr("OK"), this);
 	okButton->setDefault(true);
 	connect(okButton, SIGNAL(clicked(bool)),
 			this, SLOT(accept()));
