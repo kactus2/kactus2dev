@@ -31,13 +31,23 @@
 //-----------------------------------------------------------------------------
 // Function: NewSystemPage()
 //-----------------------------------------------------------------------------
-NewSystemPage::NewSystemPage(LibraryInterface* libInterface, QWidget* parentDlg):
-PropertyPageView(),
-libInterface_(libInterface),
-compTreeWidget_(0),
-vlnvEditor_(0),
-directoryEdit_(0),
-viewComboBox_(0)
+NewSystemPage::NewSystemPage(LibraryInterface* libInterface, QWidget* parentDlg)
+    : PropertyPageView(),
+      libInterface_(libInterface),
+      actionGroupBox_(new QGroupBox(tr("Mapping Options"), this)),
+      actionGroup_(new QButtonGroup(this)),
+      emptyRadioButton_(new QRadioButton(tr("Leave initially unmapped\nCreates an unmapped "
+                                            "SW architecture. A new system component will be created."), this)),
+      mapRadioButton_(new QRadioButton(tr("Map to specific HW now\nCreates a SW architecture "
+                                          "and maps it to selected top-level HW. A system view will\n"
+                                          "be created for the HW component to reference the new system design."), this)),
+      treeLabel_(new QLabel(tr("Select top-level HW component:"), this)),
+      compTreeWidget_(new QTreeWidget(this)),
+      vlnvEditor_(new VLNVEditor(VLNV::COMPONENT, libInterface, parentDlg, this, true)),
+      directoryEdit_(new LibraryPathSelector(this)),
+      viewLabel_(new QLabel(tr("Select view of top-level HW component:"), this)),
+      viewComboBox_(new QComboBox(this)),
+      layout_(new QVBoxLayout(this))
 {
     // Create the title and description labels labels.
     QLabel* titleLabel = new QLabel(tr("New System"), this);
@@ -62,11 +72,10 @@ viewComboBox_(0)
         }
     }
 
-    // Tree widget label.
-    QLabel* treeLabel = new QLabel(tr("Select top-level HW component:"), this);
+    actionGroup_->addButton(emptyRadioButton_);
+    actionGroup_->addButton(mapRadioButton_);
 
     // Create the tree widget and fill it with VLNV data.
-    compTreeWidget_ = new QTreeWidget(this);
     compTreeWidget_->setColumnCount(1);
     compTreeWidget_->setSelectionBehavior(QAbstractItemView::SelectItems);
     compTreeWidget_->header()->close();
@@ -98,13 +107,9 @@ viewComboBox_(0)
     connect(compTreeWidget_, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
             this, SLOT(onTreeItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
 
-    // Create the view selection combo box.
-    QLabel* viewLabel = new QLabel(tr("Select view of top-level HW component:"), this);
-    viewComboBox_ = new QComboBox(this);
-
     // Create the VLNV editor.
-    vlnvEditor_ = new VLNVEditor(VLNV::COMPONENT, libInterface, parentDlg, this, true);
     vlnvEditor_->setImplementationFilter(true, KactusAttribute::KTS_SYS);
+    vlnvEditor_->setNameExtension(".sysdesign/.sysdesigncfg");
     vlnvEditor_->updateFiltering();
     vlnvEditor_->setTitle(tr("VLNV of the new system design"));
 
@@ -113,27 +118,35 @@ viewComboBox_(0)
 
     // Create the directory line edit and label.
     QLabel *directoryLabel = new QLabel(tr("Directory:"), this);
- 
-	directoryEdit_ = new LibraryPathSelector(this);
-	connect(directoryEdit_, SIGNAL(editTextChanged(QString const&)), this, SIGNAL(contentChanged()));
+ 	connect(directoryEdit_, SIGNAL(editTextChanged(QString const&)), this, SIGNAL(contentChanged()));
 
     QHBoxLayout *pathLayout = new QHBoxLayout;
     pathLayout->addWidget(directoryLabel);
     pathLayout->addWidget(directoryEdit_, 1);
 
+    QVBoxLayout* groupLayout = new QVBoxLayout(actionGroupBox_);
+    groupLayout->addWidget(emptyRadioButton_);
+    groupLayout->addWidget(mapRadioButton_);
+
     // Setup the layout.
-    QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(titleLabel);
-    layout->addWidget(descLabel);
-    layout->addSpacing(12);
-    layout->addWidget(treeLabel);
-    layout->addWidget(compTreeWidget_);
-    layout->addWidget(viewLabel);
-    layout->addWidget(viewComboBox_);
-    layout->addWidget(vlnvEditor_);
-    layout->addSpacing(12);
-    layout->addLayout(pathLayout);
-    layout->addStretch(1);
+    layout_->addWidget(titleLabel);
+    layout_->addWidget(descLabel);
+    layout_->addSpacing(12);
+    layout_->addWidget(actionGroupBox_);
+    layout_->addWidget(treeLabel_);
+    layout_->addWidget(compTreeWidget_);
+    layout_->addWidget(viewLabel_);
+    layout_->addWidget(viewComboBox_);
+    layout_->addWidget(vlnvEditor_);
+    layout_->addSpacing(12);
+    layout_->addLayout(pathLayout);
+    layout_->addStretch(1);
+
+    connect(actionGroup_, SIGNAL(buttonClicked(QAbstractButton*)),
+            this, SLOT(actionChanged(QAbstractButton*)), Qt::UniqueConnection);
+
+    emptyRadioButton_->setChecked(true);
+    actionChanged(emptyRadioButton_);
 }
 
 //-----------------------------------------------------------------------------
@@ -149,15 +162,22 @@ NewSystemPage::~NewSystemPage()
 //-----------------------------------------------------------------------------
 bool NewSystemPage::prevalidate() const
 {
-    if (compTreeWidget_->currentItem() == 0)
+    if (mapRadioButton_->isChecked())
     {
-        return false;
+        if (compTreeWidget_->currentItem() == 0)
+        {
+            return false;
+        }
+
+        QVariant data = compTreeWidget_->currentItem()->data(0, Qt::UserRole);
+
+        return (!data.isNull() && data.value<VLNV>().isValid() &&
+                vlnvEditor_->isValid() && !directoryEdit_->currentText().isEmpty());
     }
-
-    QVariant data = compTreeWidget_->currentItem()->data(0, Qt::UserRole);
-
-    return (!data.isNull() && data.value<VLNV>().isValid() &&
-            vlnvEditor_->isValid() && !directoryEdit_->currentText().isEmpty());
+    else
+    {
+        return (vlnvEditor_->isValid() && !directoryEdit_->currentText().isEmpty());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -170,15 +190,15 @@ bool NewSystemPage::validate()
     VLNV vlnv = vlnvEditor_->getVLNV();
 
     VLNV designVLNV(VLNV::DESIGN, vlnv.getVendor(), vlnv.getLibrary(),
-        vlnv.getName().remove(".comp") + ".design", vlnv.getVersion());
+        vlnv.getName().remove(".comp") + ".sysdesign", vlnv.getVersion());
     VLNV desConfVLNV(VLNV::DESIGNCONFIGURATION, vlnv.getVendor(), vlnv.getLibrary(),
-        vlnv.getName().remove(".comp") + ".designcfg", vlnv.getVersion());
+        vlnv.getName().remove(".comp") + ".sysdesigncfg", vlnv.getVersion());
 
     // Check if any of the VLNVs already exists.
-    if (libInterface_->contains(vlnv))
+    if (emptyRadioButton_->isChecked() && libInterface_->contains(vlnv))
     {
         QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
-            tr("The system cannot be created because the VLNV %1 already exists in the library.").arg(vlnv.toString()),
+            tr("VLNV %1 already exists in the library.").arg(vlnv.toString()),
             QMessageBox::Ok, this);
         msgBox.exec();
         return false;
@@ -186,8 +206,8 @@ bool NewSystemPage::validate()
 
     if (libInterface_->contains(designVLNV))
     {
-        QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
-            tr("The system cannot be created because the VLNV %1 already exists in the library.").arg(designVLNV.toString()),
+        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+            tr("VLNV %1 already exists in the library.").arg(designVLNV.toString()),
             QMessageBox::Ok, this);
         msgBox.exec();
         return false;
@@ -195,8 +215,8 @@ bool NewSystemPage::validate()
 
     if (libInterface_->contains(desConfVLNV))
     {
-        QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
-            tr("The system cannot be created because the VLNV %1 already exists in the library.").arg(desConfVLNV.toString()),
+        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+            tr("VLNV %1 already exists in the library.").arg(desConfVLNV.toString()),
             QMessageBox::Ok, this);
         msgBox.exec();
         return false;
@@ -210,11 +230,19 @@ bool NewSystemPage::validate()
 //-----------------------------------------------------------------------------
 void NewSystemPage::apply()
 {
-    Q_ASSERT(compTreeWidget_->currentItem() != 0);
-    QVariant data = compTreeWidget_->currentItem()->data(0, Qt::UserRole);
+    // Create the system in a different way based on the mapping option selection.
+    if (mapRadioButton_->isChecked())
+    {
+        Q_ASSERT(compTreeWidget_->currentItem() != 0);
+        QVariant data = compTreeWidget_->currentItem()->data(0, Qt::UserRole);
 
-    emit createSystem(data.value<VLNV>(), viewComboBox_->currentText(),
-                      vlnvEditor_->getVLNV(), directoryEdit_->currentText());
+        emit createSystem(data.value<VLNV>(), viewComboBox_->currentText(),
+            vlnvEditor_->getVLNV(), directoryEdit_->currentText());
+    }
+    else
+    {
+        emit createSystem(VLNV(), "", vlnvEditor_->getVLNV(), directoryEdit_->currentText());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -345,4 +373,28 @@ void NewSystemPage::updateDirectory()
     }
 
     directoryEdit_->setEditText(dir);
+}
+
+//-----------------------------------------------------------------------------
+// Function: NewSystemPage::actionChanged()
+//-----------------------------------------------------------------------------
+void NewSystemPage::actionChanged(QAbstractButton* button)
+{
+    if (button == emptyRadioButton_)
+    {
+        compTreeWidget_->collapseAll();
+        compTreeWidget_->setCurrentItem(0);
+        viewComboBox_->clear();
+    }
+
+    //treeLabel_->setVisible(button == mapRadioButton_);
+    compTreeWidget_->setEnabled(button == mapRadioButton_);
+
+    //viewLabel_->setVisible(button == mapRadioButton_);
+    viewComboBox_->setEnabled(button == mapRadioButton_);
+    
+//     layout_->activate();
+//     setFixedHeight(sizeHint().height());
+
+    emit contentChanged();
 }

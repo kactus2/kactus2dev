@@ -2376,7 +2376,6 @@ void MainWindow::openSettings()
 void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName,
 							  VLNV const& sysVLNV, QString const& directory)
 {
-	Q_ASSERT(compVLNV.isValid());
 	Q_ASSERT(sysVLNV.isValid());
 
 	libraryHandler_->beginSave();
@@ -2386,30 +2385,38 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName,
 	VLNV desConfVLNV(VLNV::DESIGNCONFIGURATION, sysVLNV.getVendor(), sysVLNV.getLibrary(),
 		sysVLNV.getName().remove(".comp") + ".sysdesigncfg", sysVLNV.getVersion());
 
-	// Retrieve the component to which the system design will be based on.
-	QSharedPointer<Component> component = libraryHandler_->getModel(compVLNV).staticCast<Component>();
-	Q_ASSERT(component != 0);
+    QSharedPointer<Component> parentComp;
 
-	// Create a system component to encapsulate the system design.
-	QSharedPointer<Component> sysComp(new Component(sysVLNV));
-	sysComp->setComponentHierarchy(KactusAttribute::KTS_PRODUCT);
-	sysComp->setComponentFirmness(KactusAttribute::KTS_FIXED);
-	sysComp->setComponentImplementation(KactusAttribute::KTS_SYS);
+    // Check if mapping information was given.
+    if (compVLNV.isValid())
+    {
+        // Retrieve the component to which the system design will be based on.
+        parentComp = libraryHandler_->getModel(compVLNV).staticCast<Component>();
+        Q_ASSERT(parentComp != 0);
+    }
+    else
+    {
+        // Otherwise create a system component to encapsulate the system design.
+        parentComp = QSharedPointer<Component>(new Component(sysVLNV));
+        parentComp->setComponentHierarchy(KactusAttribute::KTS_PRODUCT);
+        parentComp->setComponentFirmness(KactusAttribute::KTS_FIXED);
+        parentComp->setComponentImplementation(KactusAttribute::KTS_SYS);
+    }
 
-	// Create the system view to the system design.
-	SystemView* systemView = new SystemView("system");
-	systemView->setHierarchyRef(desConfVLNV);
+    // Create the system view to the system design.
+    QString sysViewName = "system";
+    unsigned int runningNumber = 1;
 
-	// Create the system view to the HW design.
-	View* hwView = new View("kts_hw_ref");
-	hwView->setHierarchyRef(component->getHierRef(viewName));
-	hwView->addEnvIdentifier("");
+    while (parentComp->findSystemView(sysViewName) != 0)
+    {
+        ++runningNumber;
+        sysViewName = "system" + QString::number(runningNumber);
+    }
 
-	Model* model = new Model;
-	model->addView(hwView);
+    SystemView* systemView = new SystemView(sysViewName);
+    systemView->setHierarchyRef(desConfVLNV);
 
-    sysComp->addSystemView(systemView);
-	sysComp->setModel(model);
+	parentComp->addSystemView(systemView);
 
 	// Flat-out the hierarchy to form the system design.
 	QSharedPointer<Design> sysDesign(new Design(designVLNV));
@@ -2419,7 +2426,7 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName,
     columns.append(ColumnDesc("SW Components", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SYSTEM_COLUMN_WIDTH));
     sysDesign->setColumns(columns);
     
-	generateSystemDesignV2(libraryHandler_, component->getHierRef(viewName), *sysDesign);
+	generateSystemDesignV2(libraryHandler_, parentComp->getHierRef(viewName), *sysDesign);
 
 	// Create the design configuration.
 	QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV));
@@ -2428,10 +2435,18 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName,
 	// Create the files.
 	libraryHandler_->writeModelToFile(directory, designConf);
 	libraryHandler_->writeModelToFile(directory, sysDesign);
-	libraryHandler_->writeModelToFile(directory, sysComp);
+
+    if (compVLNV.isValid())
+    {
+	    libraryHandler_->writeModelToFile(parentComp);
+    }
+    else
+    {
+        libraryHandler_->writeModelToFile(directory, parentComp);
+    }
 
 	libraryHandler_->endSave();
-	openSystemDesign(sysVLNV, "kts_sys_ref", true);
+	openSystemDesign(*parentComp->getVlnv(), sysViewName, true);
 }
 
 //-----------------------------------------------------------------------------

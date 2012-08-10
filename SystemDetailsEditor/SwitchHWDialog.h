@@ -25,6 +25,7 @@
 #include <QDialogButtonBox>
 
 class Component;
+class LineEditEx;
 
 //-----------------------------------------------------------------------------
 // Dialog for configuring settings how to switch HW for a system design.
@@ -119,46 +120,46 @@ private:
     QSharedPointer<Component> component_;
 
     //! Label for information text.
-    QLabel infoLabel_;
+    QLabel* infoLabel_;
 
     //! Label for HW view reference.
-    QLabel hwViewRefLabel_;
+    QLabel* hwViewRefLabel_;
 
     //! Combo box for HW view reference.
-    QComboBox hwViewRefCombo_;
+    QComboBox* hwViewRefCombo_;
 
     //! Label for system view name.
-    QLabel viewNameLabel_;
+    QLabel* viewNameLabel_;
 
     //! Edit box for system view name.
-    QLineEdit viewNameEdit_;
+    LineEditEx* viewNameEdit_;
 
     //! Group box for radio buttons.
-    QGroupBox actionGroupBox_;
+    QGroupBox* actionGroupBox_;
 
     //! Radio button group.
-    QButtonGroup actionGroup_;
+    QButtonGroup* actionGroup_;
 
     //! Radio button for move action.
-    QRadioButton moveRadioButton_;
+    QRadioButton* moveRadioButton_;
 
     //! Radio button for copy action.
-    QRadioButton copyRadioButton_;
+    QRadioButton* copyRadioButton_;
 
     //! VLNV editor for design/designcfg VLNV (shown in case of copy action).
-    VLNVEditor vlnvEdit_;
+    VLNVEditor* vlnvEdit_;
 
     //! Label for the directory selector.
-    QLabel directoryLabel_;
+    QLabel* directoryLabel_;
 
     //! The editor to select the directory to save to. 
-    LibraryPathSelector directoryEdit_;
+    LibraryPathSelector* directoryEdit_;
 
     //! Button box for OK and Cancel buttons.
-    QDialogButtonBox buttonBox_;
+    QDialogButtonBox* buttonBox_;
 
     //! The layout for the UI widgets.
-    QVBoxLayout layout_;
+    QVBoxLayout* layout_;
 };
 
 //-----------------------------------------------------------------------------

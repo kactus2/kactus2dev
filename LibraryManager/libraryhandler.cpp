@@ -1017,23 +1017,23 @@ void LibraryHandler::onCreateNewItem( const VLNV& vlnv ) {
 	switch (vlnv.getType()) {
 		case VLNV::ABSTRACTIONDEFINITION:
 		case VLNV::BUSDEFINITION: {
-			newDesignDialog.setWindowTitle("Set New Bus VLNV");
+			newDesignDialog.setWindowTitle("New Bus");
 			break;
 								  }
 		case VLNV::COMPONENT: {
-			newDesignDialog.setWindowTitle("Set New Component VLNV");
+			newDesignDialog.setWindowTitle("New Component");
 			break;
 							  }
 
         case VLNV::COMDEFINITION:
             {
-                newDesignDialog.setWindowTitle(tr("Set New COM Definition VLNV"));
+                newDesignDialog.setWindowTitle(tr("New COM Definition"));
                 break;
             }
 
         case VLNV::APIDEFINITION:
             {
-                newDesignDialog.setWindowTitle(tr("Set New API Definition VLNV"));
+                newDesignDialog.setWindowTitle(tr("New API Definition"));
                 break;
             }
 	}

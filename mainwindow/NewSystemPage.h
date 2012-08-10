@@ -17,6 +17,11 @@
 
 #include <QTreeWidget>
 #include <QComboBox>
+#include <QGroupBox>
+#include <QRadioButton>
+#include <QButtonGroup>
+#include <QLabel>
+#include <QVBoxLayout>
 
 class LibraryInterface;
 class LibraryItem;
@@ -92,6 +97,9 @@ signals:
     void createSystem(VLNV const& compVLNV, QString const& viewName,
                       VLNV const& sysVLNV, QString const& directory);
 
+private slots:
+    void actionChanged(QAbstractButton* button);
+
 private:
     // Disable copying.
     NewSystemPage(NewSystemPage const& rhs);
@@ -112,8 +120,26 @@ private:
     //! The library interface.
     LibraryInterface* libInterface_;
 
+    //! Group box for radio buttons.
+    QGroupBox* actionGroupBox_;
+
+    //! Radio button group.
+    QButtonGroup* actionGroup_;
+
+    //! Radio button for empty SW architecture action.
+    QRadioButton* emptyRadioButton_;
+
+    //! Radio button for map HW action.
+    QRadioButton* mapRadioButton_;
+
+    //! Label for the component selection tree widget.
+    QLabel* treeLabel_;
+
     //! Component selection tree widget.
     QTreeWidget* compTreeWidget_;
+
+    //! Label for the view selection combo box.
+    QLabel* viewLabel_;
 
     //! View selection combo box.
     QComboBox* viewComboBox_;
@@ -123,6 +149,9 @@ private:
 
 	//! \brief The editor to select the directory to save to. 
 	LibraryPathSelector* directoryEdit_;
+
+    //! The layout for UI widgets.
+    QVBoxLayout* layout_;
 };
 
 //-----------------------------------------------------------------------------

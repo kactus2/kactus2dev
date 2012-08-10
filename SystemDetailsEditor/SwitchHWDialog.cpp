@@ -15,6 +15,8 @@
 
 #include <LibraryManager/libraryinterface.h>
 
+#include <common/widgets/LineEditEx/LineEditEx.h>
+
 #include <QMessageBox>
 #include <QCoreApplication>
 
@@ -26,74 +28,80 @@ SwitchHWDialog::SwitchHWDialog(QSharedPointer<Component> component, QString cons
     : QDialog(parent),
       lh_(lh),
       component_(component),
-      infoLabel_(tr("Choose how the SW architecture specified in this system design is mapped to new HW."), this),
-      hwViewRefLabel_(tr("Configuration to map:"), this),
-      hwViewRefCombo_(this),
-      viewNameLabel_(tr("Name of the system view to be created for the mapped HW component:"), this),
-      viewNameEdit_(this),
-      actionGroupBox_(tr("Action"), this),
-      actionGroup_(this),
-      moveRadioButton_(tr("Move system design\nRemoves the system view "
-                          "from the previously mapped HW and moves it to the new one."), this),
-      copyRadioButton_(tr("Copy as a new system design\nCreates an identical copy of the "
-                          "system design with a new VLNV and adds a new system\nview to the HW component."), this),
-      vlnvEdit_(VLNV::DESIGN, lh, this, this),
-      directoryLabel_(tr("Directory:"), this),
-      directoryEdit_(this),
-      buttonBox_(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this),
-      layout_(this)
+      infoLabel_(new QLabel(tr("Choose how the SW architecture specified in this "
+                               "system design is mapped to new HW."), this)),
+      hwViewRefLabel_(new QLabel(tr("Configuration to map:"), this)),
+      hwViewRefCombo_(new QComboBox(this)),
+      viewNameLabel_(new QLabel(tr("Name of the system view to be created for the mapped HW component:"), this)),
+      viewNameEdit_(new LineEditEx(this)),
+      actionGroupBox_(new QGroupBox(tr("Action"), this)),
+      actionGroup_(new QButtonGroup(this)),
+      moveRadioButton_(new QRadioButton(tr("Move system design\nRemoves the system view from the "
+                                           "previously mapped HW and moves it to the new one."), this)),
+      copyRadioButton_(new QRadioButton(tr("Copy as a new system design\nCreates an identical copy of the "
+                                           "system design with a new VLNV and adds a new system\nview to "
+                                           "the HW component."), this)),
+      vlnvEdit_(new VLNVEditor(VLNV::DESIGN, lh, this, this)),
+      directoryLabel_(new QLabel(tr("Directory:"), this)),
+      directoryEdit_(new LibraryPathSelector(this)),
+      buttonBox_(new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this)),
+      layout_(new QVBoxLayout(this))
 {
     setWindowTitle(tr("Switch HW"));
 
     // Set widget settings.
-    hwViewRefLabel_.setVisible(false);
-    hwViewRefCombo_.setVisible(false);
-    hwViewRefCombo_.setEnabled(false);
+    hwViewRefLabel_->setVisible(false);
+    hwViewRefCombo_->setVisible(false);
+    hwViewRefCombo_->setEnabled(false);
 
-    viewNameEdit_.setText(viewName);
-    moveRadioButton_.setChecked(true);
+    viewNameEdit_->setDisallowedInputs(component->getSystemViewNames());
+    viewNameEdit_->setMessageIcon(QPixmap(":/icons/graphics/exclamation.png"));
+    viewNameEdit_->setMessageTemplate("System view name '%1' is already in use!");
+    viewNameEdit_->setText(viewName);
 
-    vlnvEdit_.setTitle(tr("VLNV for the new system design and design configuration"));
-    vlnvEdit_.setVisible(false);
-    vlnvEdit_.setNameExtension(".sysdesign/.sysdesigncfg");
+    moveRadioButton_->setChecked(true);
 
-    directoryLabel_.setVisible(false);
-    directoryEdit_.setVisible(false);
+    vlnvEdit_->setTitle(tr("VLNV for the new system design and design configuration"));
+    vlnvEdit_->setVisible(false);
+    vlnvEdit_->setNameExtension(".sysdesign/.sysdesigncfg");
 
-    actionGroup_.addButton(&moveRadioButton_);
-    actionGroup_.addButton(&copyRadioButton_);
+    directoryLabel_->setVisible(false);
+    directoryEdit_->setVisible(false);
+
+    actionGroup_->addButton(moveRadioButton_);
+    actionGroup_->addButton(copyRadioButton_);
 
     // Create layouts.
-    QVBoxLayout* groupLayout = new QVBoxLayout(&actionGroupBox_);
-    groupLayout->addWidget(&moveRadioButton_);
-    groupLayout->addWidget(&copyRadioButton_);
+    QVBoxLayout* groupLayout = new QVBoxLayout(actionGroupBox_);
+    groupLayout->addWidget(moveRadioButton_);
+    groupLayout->addWidget(copyRadioButton_);
 
     QHBoxLayout* dirLayout = new QHBoxLayout();
-    dirLayout->addWidget(&directoryLabel_);
-    dirLayout->addWidget(&directoryEdit_, 1);
+    dirLayout->addWidget(directoryLabel_);
+    dirLayout->addWidget(directoryEdit_, 1);
 
-    layout_.addWidget(&infoLabel_);
-    layout_.addSpacing(12);
-    layout_.addWidget(&hwViewRefLabel_);
-    layout_.addWidget(&hwViewRefCombo_);
-    layout_.addWidget(&viewNameLabel_);
-    layout_.addWidget(&viewNameEdit_);
-    layout_.addWidget(&actionGroupBox_);
-    layout_.addWidget(&vlnvEdit_);
-    layout_.addLayout(dirLayout);
-    layout_.addWidget(&buttonBox_);
+    layout_->addWidget(infoLabel_);
+    layout_->addSpacing(12);
+    layout_->addWidget(hwViewRefLabel_);
+    layout_->addWidget(hwViewRefCombo_);
+    layout_->addWidget(viewNameLabel_);
+    layout_->addWidget(viewNameEdit_);
+    layout_->addWidget(actionGroupBox_);
+    layout_->addWidget(vlnvEdit_);
+    layout_->addLayout(dirLayout);
+    layout_->addWidget(buttonBox_);
 
     // Setup connections.
-    connect(&actionGroup_, SIGNAL(buttonClicked(QAbstractButton*)),
+    connect(actionGroup_, SIGNAL(buttonClicked(QAbstractButton*)),
             this, SLOT(actionChanged(QAbstractButton*)), Qt::UniqueConnection);
-    connect(buttonBox_.button(QDialogButtonBox::Ok), SIGNAL(clicked()),
+    connect(buttonBox_->button(QDialogButtonBox::Ok), SIGNAL(clicked()),
             this, SLOT(accept()), Qt::UniqueConnection);
-    connect(buttonBox_.button(QDialogButtonBox::Cancel), SIGNAL(clicked()),
+    connect(buttonBox_->button(QDialogButtonBox::Cancel), SIGNAL(clicked()),
             this, SLOT(reject()), Qt::UniqueConnection);
 
-    connect(&vlnvEdit_, SIGNAL(contentChanged()), this, SLOT(updateDirectory()), Qt::UniqueConnection);
-    connect(&vlnvEdit_, SIGNAL(contentChanged()), this, SLOT(validate()), Qt::UniqueConnection);
-    connect(&viewNameEdit_, SIGNAL(textEdited(QString const&)), this, SLOT(validate()), Qt::UniqueConnection);
+    connect(vlnvEdit_, SIGNAL(contentChanged()), this, SLOT(updateDirectory()), Qt::UniqueConnection);
+    connect(vlnvEdit_, SIGNAL(contentChanged()), this, SLOT(validate()), Qt::UniqueConnection);
+    connect(viewNameEdit_, SIGNAL(textChanged(QString const&)), this, SLOT(validate()), Qt::UniqueConnection);
 
     setFixedHeight(sizeHint().height());
     validate();
@@ -112,12 +120,12 @@ SwitchHWDialog::~SwitchHWDialog()
 //-----------------------------------------------------------------------------
 void SwitchHWDialog::showHWViewSelector()
 {
-    hwViewRefCombo_.addItems(component_->getHierViews());
-    hwViewRefLabel_.setVisible(true);
-    hwViewRefCombo_.setVisible(true);
-    hwViewRefCombo_.setEnabled(true);
+    hwViewRefCombo_->addItems(component_->getHierViews());
+    hwViewRefLabel_->setVisible(true);
+    hwViewRefCombo_->setVisible(true);
+    hwViewRefCombo_->setEnabled(true);
 
-    layout_.activate();
+    layout_->activate();
     setFixedHeight(sizeHint().height());
     validate();
 }
@@ -127,20 +135,10 @@ void SwitchHWDialog::showHWViewSelector()
 //-----------------------------------------------------------------------------
 void SwitchHWDialog::accept()
 {
-    // Check if the system view name is already in use.
-    if (component_->hasSystemView(viewNameEdit_.text()))
-    {
-        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                           tr("System view with name '%1' already exists.").arg(viewNameEdit_.text()),
-                           QMessageBox::Ok, (QWidget*)parent());
-        msgBox.exec();
-        return;
-    }
-
     // If copy action has been chosen, check if the sysdesign or sysdesigncfg VLNV is already in use.
-    if (copyRadioButton_.isChecked())
+    if (copyRadioButton_->isChecked())
     {
-        VLNV vlnv = vlnvEdit_.getVLNV();
+        VLNV vlnv = vlnvEdit_->getVLNV();
 
         VLNV designVLNV(VLNV::DESIGN, vlnv.getVendor(), vlnv.getLibrary(),
                         vlnv.getName() + ".sysdesign", vlnv.getVersion());
@@ -174,10 +172,10 @@ void SwitchHWDialog::accept()
 //-----------------------------------------------------------------------------
 void SwitchHWDialog::actionChanged(QAbstractButton* button)
 {
-    vlnvEdit_.setVisible(button == &copyRadioButton_);
-    directoryLabel_.setVisible(button == &copyRadioButton_);
-    directoryEdit_.setVisible(button == &copyRadioButton_);
-    layout_.activate();
+    vlnvEdit_->setVisible(button == copyRadioButton_);
+    directoryLabel_->setVisible(button == copyRadioButton_);
+    directoryEdit_->setVisible(button == copyRadioButton_);
+    layout_->activate();
     setFixedHeight(sizeHint().height());
 
     validate();
@@ -188,7 +186,7 @@ void SwitchHWDialog::actionChanged(QAbstractButton* button)
 //-----------------------------------------------------------------------------
 QString SwitchHWDialog::getHWViewRef() const
 {
-    return hwViewRefCombo_.currentText();
+    return hwViewRefCombo_->currentText();
 }
 
 //-----------------------------------------------------------------------------
@@ -196,7 +194,7 @@ QString SwitchHWDialog::getHWViewRef() const
 //-----------------------------------------------------------------------------
 QString SwitchHWDialog::getSystemViewName() const
 {
-    return viewNameEdit_.text();
+    return viewNameEdit_->text();
 }
 
 //-----------------------------------------------------------------------------
@@ -204,7 +202,7 @@ QString SwitchHWDialog::getSystemViewName() const
 //-----------------------------------------------------------------------------
 VLNV SwitchHWDialog::getVLNV() const
 {
-    return vlnvEdit_.getVLNV();
+    return vlnvEdit_->getVLNV();
 }
 
 //-----------------------------------------------------------------------------
@@ -212,7 +210,7 @@ VLNV SwitchHWDialog::getVLNV() const
 //-----------------------------------------------------------------------------
 bool SwitchHWDialog::isCopyActionSelected() const
 {
-    return copyRadioButton_.isChecked();
+    return copyRadioButton_->isChecked();
 }
 
 //-----------------------------------------------------------------------------
@@ -220,7 +218,7 @@ bool SwitchHWDialog::isCopyActionSelected() const
 //-----------------------------------------------------------------------------
 QString SwitchHWDialog::getPath() const
 {
-    return directoryEdit_.currentText();
+    return directoryEdit_->currentText();
 }
 
 //-----------------------------------------------------------------------------
@@ -228,9 +226,9 @@ QString SwitchHWDialog::getPath() const
 //-----------------------------------------------------------------------------
 void SwitchHWDialog::updateDirectory()
 {
-    QString dir = directoryEdit_.currentLocation();
+    QString dir = directoryEdit_->currentLocation();
 
-    VLNV vlnv = vlnvEdit_.getVLNV();
+    VLNV vlnv = vlnvEdit_->getVLNV();
 
     if (!vlnv.getVendor().isEmpty())
     {
@@ -252,7 +250,7 @@ void SwitchHWDialog::updateDirectory()
         }
     }
 
-    directoryEdit_.setEditText(dir);
+    directoryEdit_->setEditText(dir);
 }
 
 //-----------------------------------------------------------------------------
@@ -260,8 +258,8 @@ void SwitchHWDialog::updateDirectory()
 //-----------------------------------------------------------------------------
 void SwitchHWDialog::validate()
 {
-    QAbstractButton* btnOK = buttonBox_.button(QDialogButtonBox::Ok);
-    btnOK->setEnabled(!viewNameEdit_.text().isEmpty() &&
-                      (moveRadioButton_.isChecked() || vlnvEdit_.isValid()) &&
-                      (!hwViewRefCombo_.isEnabled() || hwViewRefCombo_.count() > 0));
+    QAbstractButton* btnOK = buttonBox_->button(QDialogButtonBox::Ok);
+    btnOK->setEnabled(!viewNameEdit_->text().isEmpty() && viewNameEdit_->isInputValid() &&
+                      (moveRadioButton_->isChecked() || vlnvEdit_->isValid()) &&
+                      (!hwViewRefCombo_->isEnabled() || hwViewRefCombo_->count() > 0));
 }

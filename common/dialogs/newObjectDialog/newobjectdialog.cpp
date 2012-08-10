@@ -32,7 +32,7 @@ okButton_(0)
     attributeEditor_->setVisible(showAttributes);
     connect(attributeEditor_, SIGNAL(productHierarchyChanged()), this, SLOT(onProductHierarchyChanged()));
 
-    vlnvEditor_ = new VLNVEditor(type, libInterface, this, this, false);
+    vlnvEditor_ = new VLNVEditor(type, libInterface, this, this, true);
     connect(vlnvEditor_, SIGNAL(contentChanged()), this, SLOT(onContentChanged()));
     connect(vlnvEditor_, SIGNAL(contentChanged()), this, SLOT(updateDirectory()));
 
@@ -62,7 +62,9 @@ okButton_(0)
     setLayout(mainLayout);
 
     setWindowTitle("New Design");
-    setFixedSize(250, sizeHint().height());
+    setFixedHeight(sizeHint().height());
+    resize(400, sizeHint().height());
+
     okButton_->setDefault(true);
 
     onProductHierarchyChanged();
