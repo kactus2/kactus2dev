@@ -75,6 +75,10 @@ public slots:
 	//! \brief Saves the document as new object and resets modifies state
 	virtual bool saveAs();
 
+protected:
+    //! Called when the editor is shown.
+    virtual void showEvent(QShowEvent* event);
+
 private:
 	//! \brief No copying
 	BusEditor(const BusEditor& other);

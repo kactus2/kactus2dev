@@ -198,3 +198,11 @@ void ApiDefinitionEditor::updateComDefinition()
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: ApiDefinitionEditor::showEvent()
+//-----------------------------------------------------------------------------
+void ApiDefinitionEditor::showEvent(QShowEvent* event)
+{
+    emit helpUrlRequested("definitions/apidefinition.html");
+}
+

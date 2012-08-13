@@ -250,3 +250,11 @@ void BusEditor::setProtection(bool locked)
     TabDocument::setProtection(locked);
     setEnabled(!locked);
 }
+
+//-----------------------------------------------------------------------------
+// Function: BusEditor::showEvent()
+//-----------------------------------------------------------------------------
+void BusEditor::showEvent(QShowEvent* event)
+{
+    emit helpUrlRequested("definitions/busdefinition.html");
+}

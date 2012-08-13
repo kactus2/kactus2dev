@@ -33,7 +33,9 @@ class HWMappingItem;
 class SystemComponentItem;
 class GraphicsConnection;
 class SystemComponentItem;
+class SWComponentItem;
 class SWPortItem;
+class SWInstance;
 
 //-----------------------------------------------------------------------------
 //! SystemDesignDiagram class.
@@ -251,6 +253,17 @@ private:
      */
     void toggleConnectionStyle(GraphicsConnection* conn, QUndoCommand* parentCmd);
 
+    /*!
+     *  Imports SW instances and related connections from the given design to the diagram.
+     *
+     *      @param [in] design    The design to import.
+     *      @param [in] stack     The stack where to place the imported elements.
+     *      @param [in] guidePos  Position used as a guide where to place the imported instances.
+     */
+    void importDesign(QSharedPointer<Design> design, IGraphicsItemStack* stack, QPointF const& guidePos);
+
+    void recallPortPositions(SWInstance const &instance, SWComponentItem* item);
+
     //-----------------------------------------------------------------------------
     //! Drag type enumeration.
     //-----------------------------------------------------------------------------
@@ -259,7 +272,8 @@ private:
         DRAG_TYPE_NONE = 0,
         DRAG_TYPE_SW,
         DRAG_TYPE_HW,
-        DRAG_TYPE_DEFINITION
+        DRAG_TYPE_DEFINITION,
+        DRAG_TYPE_DESIGN
     };
 
     //-----------------------------------------------------------------------------

@@ -282,65 +282,15 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
         SWComponentItem* item = new SWComponentItem(getLibraryInterface(), component, instance.getInstanceName(),
                                                     instance.getDisplayName(), instance.getDescription());
+        connect(item, SIGNAL(openCSource(ComponentItem*)), this, SIGNAL(openCSource(ComponentItem*)));
+        connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
+
         item->setImported(instance.isImported());
         item->setImportRef(instance.getImportRef());
         item->setPos(instance.getPosition());
         item->setPropertyValues(instance.getPropertyValues());
         item->setFileSetRef(instance.getFileSetRef());
-
-        connect(item, SIGNAL(openCSource(ComponentItem*)), this, SIGNAL(openCSource(ComponentItem*)));
-        connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
-
-        // Setup custom port positions.
-        {
-            QMapIterator<QString, QPointF> itrPortPos(instance.getApiInterfacePositions());
-
-            while (itrPortPos.hasNext())
-            {
-                itrPortPos.next();
-                SWPortItem* port = item->getSWPort(itrPortPos.key(), SWConnectionEndpoint::ENDPOINT_TYPE_API);
-
-                // If the port was not found, create it.
-                if (port == 0)
-                {
-                    if (instance.getComponentRef().isValid())
-                    {
-                        continue;
-                    }
-
-                    port = new SWPortItem(itrPortPos.key(), item);
-                    item->addPort(port);
-                }
-
-                port->setPos(itrPortPos.value());
-                item->onMovePort(port);
-            }
-        }
-
-        {
-            QMapIterator<QString, QPointF> itrPortPos(instance.getComInterfacePositions());
-
-            while (itrPortPos.hasNext())
-            {
-                itrPortPos.next();
-                SWPortItem* port = item->getSWPort(itrPortPos.key(), SWConnectionEndpoint::ENDPOINT_TYPE_COM);
-
-                // If the port was not found, create it.
-                if (port == 0)
-                {
-                    if (instance.getComponentRef().isValid())
-                    {
-                        continue;
-                    }
-
-                    port = new SWPortItem(itrPortPos.key(), item);
-                    item->addPort(port);
-                }
-
-                port->setPos(itrPortPos.value());
-                item->onMovePort(port);
-            }
-        }
+        recallPortPositions(instance, item);
 
         if (instance.getMapping().isEmpty())
         {
@@ -463,6 +413,10 @@ void SystemDesignDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
         {
             dragType_ = DRAG_TYPE_DEFINITION;
         }
+        else if (vlnv->getType() == VLNV::DESIGN)
+        {
+            dragType_ = DRAG_TYPE_DESIGN;
+        }
     }
 }
 
@@ -568,6 +522,10 @@ void SystemDesignDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
         {
             event->setDropAction(Qt::IgnoreAction);
         }
+    }
+    else if (dragType_ == DRAG_TYPE_DESIGN)
+    {
+        event->setDropAction(Qt::CopyAction);
     }
     else
     {
@@ -799,6 +757,16 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
             highlightedEndpoint_->setHighlight(SWConnectionEndpoint::HIGHLIGHT_OFF);
             highlightedEndpoint_ = 0;
         }
+    }
+    else if (dragType_ == DRAG_TYPE_DESIGN)
+    {
+        // Retrieve the design.
+        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(*droppedVLNV);
+        QSharedPointer<Design> design = libComp.dynamicCast<Design>();
+
+        // Import elements to the column under cursor.
+        IGraphicsItemStack* column = layout_->findColumnAt(snapPointToGrid(event->scenePos()));
+        importDesign(design, column, event->scenePos());
     }
 }
 
@@ -2496,5 +2464,254 @@ void SystemDesignDiagram::toggleConnectionStyle(GraphicsConnection* conn, QUndoC
     {
         delete newConn;
         newConn = 0;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::importDesign()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsItemStack* stack,
+                                       QPointF const& guidePos)
+{
+    // Map which hold name mappings for SW instances.
+    QMap<QString, QString> nameMappings;
+
+    // Import SW instances.
+    foreach (SWInstance const& instance, design->getSWInstances())
+    {
+        QSharedPointer<LibraryComponent> libComponent = getLibraryInterface()->getModel(instance.getComponentRef());
+        QSharedPointer<Component> component = libComponent.staticCast<Component>();
+
+        if (!component)
+        {
+            emit errorMessage(tr("SW component %1 instantiated in the imported design was not "
+                                 "found in the library").arg(instance.getComponentRef().toString()));
+
+            // Create an unpackaged component so that we can still visualize the component instance.
+            component = QSharedPointer<Component>(new Component(instance.getComponentRef()));
+            component->setComponentImplementation(KactusAttribute::KTS_SW);
+        }
+
+        // Determine a unique name for the instance.
+        QString instanceName = instance.getInstanceName();
+
+        if (getComponent(instanceName) != 0)
+        {
+            instanceName = createInstanceName(instanceName);
+        }
+
+        nameMappings.insert(instance.getInstanceName(), instanceName);
+
+        SWComponentItem* item = new SWComponentItem(getLibraryInterface(), component, instanceName,
+                                                    instance.getDisplayName(), instance.getDescription());
+        item->setImported(instance.isImported());
+        item->setImportRef(instance.getImportRef());
+        item->setPos(stack->mapStackFromScene(guidePos));
+        item->setPropertyValues(instance.getPropertyValues());
+        item->setFileSetRef(instance.getFileSetRef());
+
+        connect(item, SIGNAL(openCSource(ComponentItem*)), this, SIGNAL(openCSource(ComponentItem*)));
+        connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
+
+        recallPortPositions(instance, item);
+
+
+        // Add the instance to the specified stack.
+        stack->addItem(item);
+        addInstanceName(instance.getInstanceName());
+    }
+
+    // Import API dependencies.
+    foreach (ApiDependency const& dependency, design->getApiDependencies())
+    {
+        // Find the referenced components.
+        SystemComponentItem* comp1 = getComponent(nameMappings.value(dependency.getInterface1().componentRef));
+
+        if (comp1 == 0)
+        {
+            emit errorMessage(tr("Component '%1' was not found in the design").arg(
+                nameMappings.value(dependency.getInterface1().componentRef)));
+            continue;
+        }
+
+        SystemComponentItem* comp2 = getComponent(nameMappings.value(dependency.getInterface2().componentRef));
+
+        if (comp2 == 0)
+        {
+            emit errorMessage(tr("Component '%1' was not found in the design").arg(
+                nameMappings.value(dependency.getInterface2().componentRef)));
+            continue;
+        }
+
+        // Find the connected ports in the components.
+        ConnectionEndpoint* port1 = static_cast<SWPortItem*>(comp1->getSWPort(dependency.getInterface1().apiRef,
+            SWConnectionEndpoint::ENDPOINT_TYPE_API));
+
+        if (port1 == 0)
+        {
+            emit errorMessage(tr("API interface '%1' was not found in the component '%2'").arg(
+                dependency.getInterface1().apiRef).arg(dependency.getInterface1().componentRef));
+
+            port1 = createMissingPort(dependency.getInterface1().apiRef,
+                SWConnectionEndpoint::ENDPOINT_TYPE_API, comp1, design);
+        }
+
+        ConnectionEndpoint* port2 = static_cast<SWPortItem*>(comp2->getSWPort(dependency.getInterface2().apiRef,
+            SWConnectionEndpoint::ENDPOINT_TYPE_API));
+
+        if (port2 == 0)
+        {
+            emit errorMessage(tr("API interface '%1' was not found in the component '%2'").arg(
+                dependency.getInterface2().apiRef).arg(dependency.getInterface2().componentRef));
+
+            port2 = createMissingPort(dependency.getInterface2().apiRef,
+                SWConnectionEndpoint::ENDPOINT_TYPE_API, comp2, design);
+        }
+
+        if (dependency.isOffPage())
+        {
+            port1 = port1->getOffPageConnector();
+            port2 = port2->getOffPageConnector();
+        }
+
+        GraphicsConnection* connection = new GraphicsConnection(port1, port2, true,
+            dependency.getName(),
+            dependency.getDisplayName(),
+            dependency.getDescription(), this);
+        connection->setImported(dependency.isImported());
+
+        if (dependency.isOffPage())
+        {
+            connection->setVisible(false);
+        }
+
+        connect(connection, SIGNAL(errorMessage(QString const&)),
+            this, SIGNAL(errorMessage(QString const&)));
+
+        addItem(connection);
+        connection->updatePosition();
+    }
+
+    // Import COM connections.
+    foreach (ComConnection const& conn, design->getComConnections())
+    {
+        // Find the referenced components.
+        SystemComponentItem* comp1 = getComponent(nameMappings.value(conn.getInterface1().componentRef));
+
+        if (comp1 == 0)
+        {
+            emit errorMessage(tr("Component '%1' was not found in the design").arg(
+                nameMappings.value(conn.getInterface1().componentRef)));
+            continue;
+        }
+
+        SystemComponentItem* comp2 = getComponent(nameMappings.value(conn.getInterface2().componentRef));
+
+        if (comp2 == 0)
+        {
+            emit errorMessage(tr("Component '%1' was not found in the design").arg(
+                nameMappings.value(conn.getInterface2().componentRef)));
+            continue;
+        }
+
+        // Find the connected ports in the components.
+        ConnectionEndpoint* port1 = comp1->getSWPort(conn.getInterface1().comRef,
+            SWConnectionEndpoint::ENDPOINT_TYPE_COM);
+
+        if (port1 == 0)
+        {
+            emit errorMessage(tr("API interface '%1' was not found in the component '%2'").arg(
+                conn.getInterface1().comRef).arg(conn.getInterface1().componentRef));
+            continue;
+        }
+
+        ConnectionEndpoint* port2 = comp2->getSWPort(conn.getInterface2().comRef,
+            SWConnectionEndpoint::ENDPOINT_TYPE_COM);
+
+        if (port2 == 0)
+        {
+            emit errorMessage(tr("API interface '%1' was not found in the component '%2'").arg(
+                conn.getInterface2().comRef).arg(conn.getInterface2().componentRef));
+            continue;
+        }
+
+        if (conn.isOffPage())
+        {
+            port1 = port1->getOffPageConnector();
+            port2 = port2->getOffPageConnector();
+        }
+
+        GraphicsConnection* connection = new GraphicsConnection(port1, port2, true,
+                                                                conn.getName(),
+                                                                conn.getDisplayName(),
+                                                                conn.getDescription(), this);
+
+        if (conn.isOffPage())
+        {
+            connection->setVisible(false);
+        }
+
+        connect(connection, SIGNAL(errorMessage(QString const&)),
+            this, SIGNAL(errorMessage(QString const&)));
+
+        addItem(connection);
+        connection->updatePosition();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::recallPortPositions()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::recallPortPositions(SWInstance const &instance, SWComponentItem* item)
+{
+    // Setup custom port positions.
+    {
+        QMapIterator<QString, QPointF> itrPortPos(instance.getApiInterfacePositions());
+
+        while (itrPortPos.hasNext())
+        {
+            itrPortPos.next();
+            SWPortItem* port = item->getSWPort(itrPortPos.key(), SWConnectionEndpoint::ENDPOINT_TYPE_API);
+
+            // If the port was not found, create it.
+            if (port == 0)
+            {
+                if (instance.getComponentRef().isValid())
+                {
+                    continue;
+                }
+
+                port = new SWPortItem(itrPortPos.key(), item);
+                item->addPort(port);
+            }
+
+            port->setPos(itrPortPos.value());
+            item->onMovePort(port);
+        }
+    }
+
+    {
+        QMapIterator<QString, QPointF> itrPortPos(instance.getComInterfacePositions());
+
+        while (itrPortPos.hasNext())
+        {
+            itrPortPos.next();
+            SWPortItem* port = item->getSWPort(itrPortPos.key(), SWConnectionEndpoint::ENDPOINT_TYPE_COM);
+
+            // If the port was not found, create it.
+            if (port == 0)
+            {
+                if (instance.getComponentRef().isValid())
+                {
+                    continue;
+                }
+
+                port = new SWPortItem(itrPortPos.key(), item);
+                item->addPort(port);
+            }
+
+            port->setPos(itrPortPos.value());
+            item->onMovePort(port);
+        }
     }
 }

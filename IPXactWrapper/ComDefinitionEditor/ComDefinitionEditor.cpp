@@ -165,3 +165,11 @@ void ComDefinitionEditor::applyChanges()
     comDef_->setTransferTypes(dataTypeList_.items());
 }
 
+//-----------------------------------------------------------------------------
+// Function: ComDefinitionEditor::showEvent()
+//-----------------------------------------------------------------------------
+void ComDefinitionEditor::showEvent(QShowEvent* event)
+{
+    emit helpUrlRequested("definitions/comdefinition.html");
+}
+

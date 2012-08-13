@@ -93,6 +93,10 @@ public slots:
 
     //! Updates the COM definition.
     void updateComDefinition();
+    
+protected:
+    //! Called when the editor is shown.
+    virtual void showEvent(QShowEvent* event);
 
 private:
     // Disable copying.

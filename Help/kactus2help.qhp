@@ -14,6 +14,11 @@
                 <section title="Component Editor" ref="componenteditor/componenteditor.html">
                     <section title="Portmaps" ref="componenteditor/portmaps.html" />
                 </section>
+                <section title="Definitions">
+                    <section title="API Definition" ref="definitions/apidefinition.html" />
+                    <section title="Bus Definition" ref="definitions/busdefinition.html" />
+                    <section title="COM Definition" ref="definitions/comdefinition.html" />
+                </section>
                 <section title="HW Design" ref="hwdesign/hwdesign.html">
                     <section title="HW Component Instance" ref="hwdesign/hwinstance.html" />
                     <section title="Bus Port" ref="hwdesign/busport.html" />
@@ -42,9 +47,10 @@
         <files>
             <file>style.css</file>
             <file>*.html</file>
+            <file>componenteditor/*.html</file>
+            <file>definitions/*.html</file>
             <file>hwdesign/*.html</file>
             <file>swsysdesign/*.html</file>
-            <file>componenteditor/*.html</file>
         </files>
     </filterSection>
 </QtHelpProject>
