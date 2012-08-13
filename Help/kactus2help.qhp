@@ -11,6 +11,9 @@
         <filterAttribute>2.0</filterAttribute>
         <toc>
             <section title="Kactus2 Manual" ref="index.html">
+                <section title="Component Editor" ref="componenteditor/componenteditor.html">
+                    <section title="Portmaps" ref="componenteditor/portmaps.html" />
+                </section>
                 <section title="HW Design" ref="hwdesign/hwdesign.html">
                     <section title="HW Component Instance" ref="hwdesign/hwinstance.html" />
                     <section title="Bus Port" ref="hwdesign/busport.html" />
@@ -19,8 +22,17 @@
                     <section title="Ad-hoc Interface" ref="hwdesign/adhocinterface.html" />
                     <section title="HW Connection" ref="hwdesign/connection.html" />
                 </section>
-                <section title="Component Editor" ref="componenteditor/componenteditor.html">
-                    <section title="Portmaps" ref="componenteditor/portmaps.html" />
+                <section title="SW Design" ref="swsysdesign/swdesign.html">
+                    <section title="SW Component Instance" ref="swsysdesign/swinstance.html" />
+                    <section title="API Connection" ref="swsysdesign/apiconnection.html" />
+                    <section title="Undefined Connection" ref="swsysdesign/undefinedconnection.html" />
+                </section>
+                <section title="System Design" ref="swsysdesign/systemdesign.html">
+                    <section title="SW Component Instance" ref="swsysdesign/swinstance.html" />
+                    <section title="HW Mapping Instance" ref="swsysdesign/hwmappinginstance.html" />
+                    <section title="API Connection" ref="swsysdesign/apiconnection.html" />
+                    <section title="COM Connection" ref="swsysdesign/comconnection.html" />
+                    <section title="Undefined Connection" ref="swsysdesign/undefinedconnection.html" />
                 </section>
             </section>
         </toc>
@@ -31,6 +43,7 @@
             <file>style.css</file>
             <file>*.html</file>
             <file>hwdesign/*.html</file>
+            <file>swsysdesign/*.html</file>
             <file>componenteditor/*.html</file>
         </files>
     </filterSection>

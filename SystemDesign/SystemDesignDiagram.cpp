@@ -281,7 +281,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
         }
 
         SWComponentItem* item = new SWComponentItem(getLibraryInterface(), component, instance.getInstanceName(),
-                                          instance.getDisplayName(), instance.getDescription());
+                                                    instance.getDisplayName(), instance.getDescription());
         item->setImported(instance.isImported());
         item->setImportRef(instance.getImportRef());
         item->setPos(instance.getPosition());
@@ -1093,7 +1093,17 @@ void SystemDesignDiagram::onSelected(QGraphicsItem* newSelection)
         // Check if the selected item was a component.
         if (dynamic_cast<ComponentItem*>(newSelection) != 0)
         {
-            emit componentSelected(static_cast<ComponentItem*>(newSelection));
+            ComponentItem* item = static_cast<ComponentItem*>(newSelection);
+            emit componentSelected(item);
+
+            if (item->componentModel()->getComponentImplementation() == KactusAttribute::KTS_HW)
+            {
+                emit helpUrlRequested("swsysdesign/hwmappinginstance.html");
+            }
+            else
+            {
+                emit helpUrlRequested("swsysdesign/swinstance.html");
+            }
         }
         else if (dynamic_cast<ConnectionEndpoint*>(newSelection) != 0)
         {
@@ -1101,18 +1111,50 @@ void SystemDesignDiagram::onSelected(QGraphicsItem* newSelection)
         }
         else if (dynamic_cast<GraphicsConnection*>(newSelection) != 0)
         {
-            emit connectionSelected(static_cast<GraphicsConnection*>(newSelection));
+            GraphicsConnection* conn = static_cast<GraphicsConnection*>(newSelection);
+            emit connectionSelected(conn);
+
+            if (conn->getConnectionType() == ConnectionEndpoint::ENDPOINT_TYPE_API)
+            {
+                emit helpUrlRequested("swsysdesign/apiconnection.html");
+            }
+            else if (conn->getConnectionType() == ConnectionEndpoint::ENDPOINT_TYPE_COM)
+            {
+                emit helpUrlRequested("swsysdesign/comconnection.html");
+            }
+            else
+            {
+                emit helpUrlRequested("swsysdesign/undefinedconnection.html");
+            }
         }
         else
         {
             // Otherwise inform others that nothing is currently selected.
             emit clearItemSelection();
+
+            if (onlySW_)
+            {
+                emit helpUrlRequested("swsysdesign/swdesign.html");
+            }
+            else
+            {
+                emit helpUrlRequested("swsysdesign/systemdesign.html");
+            }
         }
     }
     else
     {
         // Clear the selection.
         emit clearItemSelection();
+
+        if (onlySW_)
+        {
+            emit helpUrlRequested("swsysdesign/swdesign.html");
+        }
+        else
+        {
+            emit helpUrlRequested("swsysdesign/systemdesign.html");
+        }
     }
 }
 

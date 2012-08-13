@@ -387,14 +387,12 @@ void NewSystemPage::actionChanged(QAbstractButton* button)
         viewComboBox_->clear();
     }
 
-    //treeLabel_->setVisible(button == mapRadioButton_);
+    treeLabel_->setEnabled(button == mapRadioButton_);
     compTreeWidget_->setEnabled(button == mapRadioButton_);
 
-    //viewLabel_->setVisible(button == mapRadioButton_);
+    viewLabel_->setEnabled(button == mapRadioButton_);
     viewComboBox_->setEnabled(button == mapRadioButton_);
     
 //     layout_->activate();
-//     setFixedHeight(sizeHint().height());
-
     emit contentChanged();
 }

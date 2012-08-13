@@ -947,8 +947,8 @@ void MainWindow::setupMenus()
 	//! The "System" group.
 	GCF::MenuStripGroup* sysGroup = menuStrip_->addGroup(tr("System"));
 	sysGroup->addAction(actSettings_);
-	sysGroup->addAction(actAbout_);
     sysGroup->addAction(actHelp_);
+	sysGroup->addAction(actAbout_);
 	sysGroup->addAction(actExit_);
 
 	// the menu to display the dock widgets
