@@ -260,7 +260,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
             }
         }
 
-        addInstanceName(instance.getInstanceName());
+        onComponentInstanceAdded(item);
     }
     
     // Create SW instances.
@@ -271,9 +271,12 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
         if (!component)
         {
-            emit errorMessage(tr("The SW component '%1' instantiated in the design '%2' "
-                                 "was not found in the library").arg(
-                instance.getComponentRef().getName()).arg(design->getVlnv()->getName()));
+            if (instance.getComponentRef().isValid())
+            {
+                emit errorMessage(tr("The SW component '%1' instantiated in the design '%2' "
+                                     "was not found in the library").arg(
+                                  instance.getComponentRef().getName()).arg(design->getVlnv()->getName()));
+            }
 
             // Create an unpackaged component so that we can still visualize the component instance.
             component = QSharedPointer<Component>(new Component(instance.getComponentRef()));
@@ -331,7 +334,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
             }
         }
 
-        addInstanceName(instance.getInstanceName());
+        onComponentInstanceAdded(item);
     }
 
     // Create SW interface items for the top-level API and COM interfaces.

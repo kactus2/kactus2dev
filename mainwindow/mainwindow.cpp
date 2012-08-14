@@ -1522,7 +1522,7 @@ void MainWindow::generateVHDL()
 		if (compEditor->onVhdlGenerate()) {
 
 			int index = designTabs_->currentIndex();
-			VLNV compVLNV = compEditor->getComponentVLNV();
+			VLNV compVLNV = compEditor->getDocumentVLNV();
 
 			designTabs_->removeTab(index);
 			delete compEditor;
@@ -1587,7 +1587,7 @@ void MainWindow::runGeneratorPlugin()
     }
 
     // Fill in the dialog with supported plugins.
-    QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(doc->getComponentVLNV());
+    QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(doc->getDocumentVLNV());
     PluginListDialog dialog(this);
 
     foreach (QObject* plugin, pluginMgr_.getPlugins())
@@ -1619,7 +1619,7 @@ void MainWindow::generateDoc() {
 	// get the vlnv of the current component
 	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
 	Q_ASSERT(doc);
-	VLNV vlnv = doc->getComponentVLNV();
+	VLNV vlnv = doc->getDocumentVLNV();
 	Q_ASSERT(vlnv.isValid());
 
 	// if changes have been made to the component
@@ -2658,13 +2658,13 @@ void MainWindow::openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool di
 			BusEditor* editor = dynamic_cast<BusEditor*>(designTabs_->widget(i));
 
 			// if the abstraction definition matches
-			if (editor && absDefVLNV.isValid() && editor->getComponentVLNV() == absDefVLNV) {
+			if (editor && absDefVLNV.isValid() && editor->getDocumentVLNV() == absDefVLNV) {
 				designTabs_->setCurrentIndex(i);
 				return;
 			}
 
 			// if bus definition matches
-			if (editor && editor->getComponentVLNV() == busDefVLNV) {
+			if (editor && editor->getDocumentVLNV() == busDefVLNV) {
 				designTabs_->setCurrentIndex(i);
 				return;
 			}
@@ -2800,7 +2800,7 @@ void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
         {
 			ComponentEditor* editor = dynamic_cast<ComponentEditor*>(designTabs_->widget(i));
 
-			if (editor && editor->getComponentVLNV() == vlnv)
+			if (editor && editor->getDocumentVLNV() == vlnv)
             {
 				designTabs_->setCurrentIndex(i);
 				return;
@@ -2859,7 +2859,7 @@ void MainWindow::openComDefinition(VLNV const& vlnv, bool forceUnlocked /*= fals
         {
             ComDefinitionEditor* editor = dynamic_cast<ComDefinitionEditor*>(designTabs_->widget(i));
 
-            if (editor && editor->getComponentVLNV() == vlnv)
+            if (editor && editor->getDocumentVLNV() == vlnv)
             {
                 designTabs_->setCurrentIndex(i);
                 return;
@@ -2914,7 +2914,7 @@ void MainWindow::openApiDefinition(VLNV const& vlnv, bool forceUnlocked /*= fals
         {
             ApiDefinitionEditor* editor = dynamic_cast<ApiDefinitionEditor*>(designTabs_->widget(i));
 
-            if (editor && editor->getComponentVLNV() == vlnv)
+            if (editor && editor->getDocumentVLNV() == vlnv)
             {
                 designTabs_->setCurrentIndex(i);
                 return;
@@ -2968,7 +2968,7 @@ void MainWindow::changeProtection(bool locked)
 		return;
 	}
 
-    Q_ASSERT(doc->getComponentVLNV().isValid());
+    Q_ASSERT(doc->getDocumentVLNV().isValid());
 
 	if (locked)
 	{
@@ -2998,7 +2998,7 @@ void MainWindow::changeProtection(bool locked)
             TabDocument* otherDoc = static_cast<TabDocument*>(designTabs_->widget(i));
             Q_ASSERT(otherDoc != 0);
 
-            if (otherDoc != doc && otherDoc->getComponentVLNV() == doc->getComponentVLNV())
+            if (otherDoc != doc && otherDoc->getDocumentVLNV() == doc->getDocumentVLNV())
             {
                 if (!otherDoc->isProtected())
                 {
@@ -3007,14 +3007,14 @@ void MainWindow::changeProtection(bool locked)
                     {
                         // Ask the user if he wants to save and switch locks.
                         QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                                           tr("The document is being edited in another systemView and "
+                                           tr("The document is being edited in another tab and "
                                               "has unsaved changes. Changes need to be saved "
-                                              "before this systemView can be unlocked. "
+                                              "before this tab can be unlocked. "
                                               "Save changes and switch locks?"),
-                                           QMessageBox::Yes | QMessageBox::Cancel, this);
+                                           QMessageBox::Yes | QMessageBox::No, this);
 
                         // Restore the lock if the user canceled.
-                        if (msgBox.exec() == QMessageBox::Cancel)
+                        if (msgBox.exec() == QMessageBox::No)
                         {
                             actProtect_->setChecked(true);
                             return;
@@ -3042,7 +3042,7 @@ void MainWindow::changeProtection(bool locked)
             QString detailMsg = "";
 
 		    // if edited document was component 
-		    VLNV vlnv = doc->getComponentVLNV();
+		    VLNV vlnv = doc->getDocumentVLNV();
 		    if (vlnv.isValid() && libraryHandler_->getDocumentType(vlnv) == VLNV::COMPONENT) {
 
 			    // if component has been instantiated in other components then print
@@ -3789,6 +3789,24 @@ void MainWindow::registerDocument(TabDocument* doc)
 
     connect(doc, SIGNAL(contentChanged()), this, SLOT(updateMenuStrip()), Qt::UniqueConnection);
     connect(doc, SIGNAL(modifiedChanged(bool)), actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
+    connect(doc, SIGNAL(documentSaved(TabDocument*)),
+            this, SLOT(onDocumentSaved(TabDocument*)), Qt::UniqueConnection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::onDocumentSaved()
+//-----------------------------------------------------------------------------
+void MainWindow::onDocumentSaved(TabDocument* doc)
+{
+    for (int i = 0; i < designTabs_->count(); i++)
+    {
+        TabDocument* otherDoc = static_cast<TabDocument*>(designTabs_->widget(i));
+
+        if (otherDoc != doc && otherDoc->getRelatedVLNVs().contains(doc->getDocumentVLNV()))
+        {
+            otherDoc->requestRefresh();
+        }
+    }
 }
 
 MainWindow::WindowVisibility::WindowVisibility():

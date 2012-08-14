@@ -88,9 +88,9 @@ void ComDefinitionEditor::refresh()
 }
 
 //-----------------------------------------------------------------------------
-// Function: getComponentVLNV()
+// Function: getDocumentVLNV()
 //-----------------------------------------------------------------------------
-VLNV ComDefinitionEditor::getComponentVLNV() const
+VLNV ComDefinitionEditor::getDocumentVLNV() const
 {
     return *comDef_->getVlnv();
 }
@@ -170,6 +170,7 @@ void ComDefinitionEditor::applyChanges()
 //-----------------------------------------------------------------------------
 void ComDefinitionEditor::showEvent(QShowEvent* event)
 {
+    TabDocument::showEvent(event);
     emit helpUrlRequested("definitions/comdefinition.html");
 }
 

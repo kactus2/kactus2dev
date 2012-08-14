@@ -113,7 +113,7 @@ void ComponentEditor::setProtection( bool locked ) {
 	navigationModel_.setLocked(locked);
 }
 
-VLNV ComponentEditor::getComponentVLNV() const {
+VLNV ComponentEditor::getDocumentVLNV() const {
 	return *component_->getVlnv();
 }
 

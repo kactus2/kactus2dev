@@ -87,6 +87,9 @@ private slots:
     //! Removes the HW mapping altogether.
     void removeMapping();
 
+    //! Exports SW to a new system component.
+    void exportSW();
+
 private:
     // Disable copying.
     SystemDetailsEditor(SystemDetailsEditor const& rhs);
@@ -101,7 +104,7 @@ private:
      *  Set up the signals between widgets.
      */
 	void setupConnections();
-
+    
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -110,19 +113,22 @@ private:
 	LibraryInterface* handler_;
 
     //! HW reference editor.
-    VLNVEditor hwRefEditor_;
+    VLNVEditor* hwRefEditor_;
 
 	//! Combo box to select the used configuration.
-	QComboBox viewSelector_;
+	QComboBox* viewSelector_;
 
     //! Button to apply new HW mapping.
-    QPushButton applyButton_;
+    QPushButton* applyButton_;
 
     //! Button to revert to the previously applied HW mapping.
-    QPushButton revertButton_;
+    QPushButton* revertButton_;
 
     //! Button to remove mappings.
-    QPushButton removeMappingButton_;
+    QPushButton* removeMappingButton_;
+
+    //! Button to export SW.
+    QPushButton* exportButton_;
 
 	//! Pointer to the top component being edited.
 	QSharedPointer<Component> component_;

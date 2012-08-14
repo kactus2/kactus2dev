@@ -148,9 +148,9 @@ VLNV const* DesignWidget::getOpenDocument() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: DesignWidget::getComponentVLNV()
+// Function: DesignWidget::getDocumentVLNV()
 //-----------------------------------------------------------------------------
-VLNV DesignWidget::getComponentVLNV() const
+VLNV DesignWidget::getDocumentVLNV() const
 {
     return *editedComponent_->getVlnv();
 }
@@ -399,7 +399,7 @@ QList<ComponentItem*> DesignWidget::getInstances() const
 //-----------------------------------------------------------------------------
 void DesignWidget::showEvent(QShowEvent* event)
 {
-    QWidget::showEvent(event);
+    TabDocument::showEvent(event);
     diagram_->onShow();
 }
 

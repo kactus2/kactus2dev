@@ -413,7 +413,6 @@ protected:
 	virtual void showEvent(QShowEvent* event);
 
 private slots:
-
 	//! \brief Handler for design widget's clearItemSelection signal.
 	void onClearItemSelection();
 
@@ -478,6 +477,9 @@ private slots:
      *  Deletes a workspace, asking the user which workspace to delete using a dialog.
      */
     void onDeleteWorkspace();
+
+    //! Called when a document has been saved.
+    void onDocumentSaved(TabDocument* doc);
 
 private:
 	// Disable copying.

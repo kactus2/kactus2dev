@@ -69,7 +69,7 @@ public:
 	/*!
      *  Returns the VLNV of the SW design component.
      */
-	virtual VLNV getComponentVLNV() const;
+	virtual VLNV getDocumentVLNV() const;
 
 public slots:
     /*!

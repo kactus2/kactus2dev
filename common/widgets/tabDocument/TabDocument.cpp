@@ -12,6 +12,8 @@
 #include "TabDocument.h"
 
 #include <QMessageBox>
+#include <QCoreApplication>
+#include <QTimer>
 
 //-----------------------------------------------------------------------------
 // Function: TabDocument()
@@ -29,7 +31,9 @@ minZoomLevel_(minZoomLevel),
 title_(""),
 docName_(""), 
 tabWidget_(0),
-previouslyUnlocked_(false)
+previouslyUnlocked_(false),
+relatedVLNVs_(),
+refreshRequested_(false)
 {
     connect(this, SIGNAL(contentChanged()), this, SLOT(setModified()));
 }
@@ -214,6 +218,7 @@ bool TabDocument::validate(QStringList&)
 bool TabDocument::save()
 {
     setModified(false);
+    emit documentSaved(this);
     return true;
 }
 
@@ -298,7 +303,7 @@ void TabDocument::setTabTitle(QString const& title)
     title_ = title;
 }
 
-VLNV TabDocument::getComponentVLNV() const {
+VLNV TabDocument::getDocumentVLNV() const {
 	return VLNV();
 }
 
@@ -362,4 +367,102 @@ void TabDocument::addVisibilityControl(QString const& name, bool state)
 QMap<QString, bool> const& TabDocument::getVisibilityControls() const
 {
     return visibilityControls_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: TabDocument::addRelatedVLNV()
+//-----------------------------------------------------------------------------
+void TabDocument::addRelatedVLNV(VLNV const& vlnv)
+{
+    unsigned int count = relatedVLNVs_.value(vlnv, 0);
+    relatedVLNVs_.insert(vlnv, count + 1);
+}
+
+//-----------------------------------------------------------------------------
+// Function: TabDocument::removeRelatedVLNV()
+//-----------------------------------------------------------------------------
+void TabDocument::removeRelatedVLNV(VLNV const& vlnv)
+{
+    unsigned int count = relatedVLNVs_.value(vlnv, 0);
+
+    if (count > 0)
+    {
+        if (count == 1)
+        {
+            relatedVLNVs_.remove(vlnv);
+        }
+        else
+        {
+            relatedVLNVs_.insert(vlnv, count - 1);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: TabDocument::getRelatedVLNVs()
+//-----------------------------------------------------------------------------
+QList<VLNV> TabDocument::getRelatedVLNVs() const
+{
+    return relatedVLNVs_.keys();
+}
+
+//-----------------------------------------------------------------------------
+// Function: TabDocument::requestRefresh()
+//-----------------------------------------------------------------------------
+void TabDocument::requestRefresh()
+{
+    refreshRequested_ = true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: TabDocument::showEvent()
+//-----------------------------------------------------------------------------
+void TabDocument::showEvent(QShowEvent* event)
+{
+    QWidget::showEvent(event);
+
+    if (refreshRequested_)
+    {
+        QTimer::singleShot(20, this, SLOT(handleRefreshRequest()));
+        refreshRequested_ = false;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: TabDocument::clearRelatedVLNVs()
+//-----------------------------------------------------------------------------
+void TabDocument::clearRelatedVLNVs()
+{
+    relatedVLNVs_.clear();
+}
+
+//-----------------------------------------------------------------------------
+// Function: TabDocument::handleRefreshRequest()
+//-----------------------------------------------------------------------------
+void TabDocument::handleRefreshRequest()
+{
+    if (isModified())
+    {
+        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+            tr("Related documents contain modifications that affect this document."
+            "Save changes and refresh?"),
+            QMessageBox::Yes | QMessageBox::No, this);
+
+        if (msgBox.exec() == QMessageBox::Yes)
+        {
+            save();
+            refresh();
+        }
+    }
+    else
+    {
+        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+            tr("Related documents contain modifications that affect this document."
+            "The document will be refreshed."),
+            QMessageBox::Ok, this);
+        msgBox.exec();
+
+        save();
+        refresh();
+    }
 }

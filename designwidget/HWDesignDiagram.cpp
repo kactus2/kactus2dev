@@ -144,7 +144,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
             component->setComponentImplementation(getEditedComponent()->getComponentImplementation());
 		}
 
-        HWComponentItem* diagComp = new HWComponentItem(getLibraryInterface(), component,
+        HWComponentItem* item = new HWComponentItem(getLibraryInterface(), component,
                                                           instance.getInstanceName(),
                                                           instance.getDisplayName(),
                                                           instance.getDescription(),
@@ -157,7 +157,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
         while (itrPortPos.hasNext())
         {
             itrPortPos.next();
-            BusPortItem* port = diagComp->getBusPort(itrPortPos.key());
+            BusPortItem* port = item->getBusPort(itrPortPos.key());
 
             if (port == 0)
             {
@@ -166,12 +166,12 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
                     continue;
                 }
 
-                port = diagComp->addPort(itrPortPos.value());
+                port = item->addPort(itrPortPos.value());
                 port->setName(itrPortPos.key());
             }
 
             port->setPos(itrPortPos.value());
-            diagComp->onMovePort(port);
+            item->onMovePort(port);
         }
 
         // Setup the custom ad-hoc port positions for the component.
@@ -180,12 +180,12 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
         while (itrPortPos.hasNext())
         {
             itrPortPos.next();
-            AdHocPortItem* port = diagComp->getAdHocPort(itrPortPos.key());
+            AdHocPortItem* port = item->getAdHocPort(itrPortPos.key());
 
             if (port != 0)
             {
                 port->setPos(itrPortPos.value());
-                diagComp->onMovePort(port);
+                item->onMovePort(port);
             }
         }
 
@@ -193,27 +193,25 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
         if (instance.getPosition().isNull())
         {
             // Migrate from the old layout to the column based layout.
-            layout_->addItem(diagComp);
+            layout_->addItem(item);
         }
         else
         {
-            diagComp->setPos(instance.getPosition());
+            item->setPos(instance.getPosition());
 
             GraphicsColumn* column = layout_->findColumnAt(instance.getPosition());
             
             if (column != 0)
             {
-                column->addItem(diagComp, true);
+                column->addItem(item, true);
             }
             else
             {
-                layout_->addItem(diagComp);
+                layout_->addItem(item);
             }
         }
 
-		// add the name to the list of instance names so no items with same 
-		// names are added
-		addInstanceName(instance.getInstanceName());
+		onComponentInstanceAdded(item);
     }
 
     /* interconnections */

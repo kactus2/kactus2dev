@@ -57,7 +57,7 @@ public:
 	 *
 	 * \return VLNV of the bus definition/abstraction definition being edited.
 	*/
-	virtual VLNV getComponentVLNV() const;
+	virtual VLNV getDocumentVLNV() const;
 
 public slots:
     /*!

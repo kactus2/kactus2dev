@@ -99,9 +99,9 @@ void ApiDefinitionEditor::refresh()
 }
 
 //-----------------------------------------------------------------------------
-// Function: getComponentVLNV()
+// Function: getDocumentVLNV()
 //-----------------------------------------------------------------------------
-VLNV ApiDefinitionEditor::getComponentVLNV() const
+VLNV ApiDefinitionEditor::getDocumentVLNV() const
 {
     return *apiDef_->getVlnv();
 }
@@ -203,6 +203,7 @@ void ApiDefinitionEditor::updateComDefinition()
 //-----------------------------------------------------------------------------
 void ApiDefinitionEditor::showEvent(QShowEvent* event)
 {
+    TabDocument::showEvent(event);
     emit helpUrlRequested("definitions/apidefinition.html");
 }
 

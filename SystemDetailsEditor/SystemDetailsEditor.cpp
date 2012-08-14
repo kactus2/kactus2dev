@@ -12,6 +12,7 @@
 #include "SystemDetailsEditor.h"
 
 #include "SwitchHWDialog.h"
+#include "ExportSWDialog.h"
 
 #include <SystemDesign/SystemDesignWidget.h>
 
@@ -26,6 +27,7 @@
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QGridLayout>
 #include <QFormLayout>
 #include <QMessageBox>
 #include <QCoreApplication>
@@ -36,16 +38,17 @@
 SystemDetailsEditor::SystemDetailsEditor(LibraryInterface* handler, QWidget *parent)
     : QWidget(parent),
       handler_(handler),
-      hwRefEditor_(VLNV::COMPONENT, handler, parent, parent),
-      viewSelector_(this),
-      applyButton_(tr("Apply"), this),
-      revertButton_(tr("Revert"), this),
-      removeMappingButton_(tr("Remove HW"), this),
+      hwRefEditor_(new VLNVEditor(VLNV::COMPONENT, handler, parent, parent)),
+      viewSelector_(new QComboBox(this)),
+      applyButton_(new QPushButton(tr("Apply"), this)),
+      revertButton_(new QPushButton(tr("Revert"), this)),
+      removeMappingButton_(new QPushButton(tr("Remove HW"), this)),
+      exportButton_(new QPushButton(tr("Export SW"), this)),
       component_(),
       designWidget_(NULL),
       systemView_(0)
 {
-    hwRefEditor_.setTitle(tr("HW component reference"));
+    hwRefEditor_->setTitle(tr("HW component reference"));
 
     setupLayout();
     setupConnections();
@@ -69,7 +72,7 @@ void SystemDetailsEditor::setSystem(DesignWidget* designWidget, bool locked)
     {
         designWidget_->disconnect(this);
 
-        disconnect(&viewSelector_, SIGNAL(currentIndexChanged(const QString&)),
+        disconnect(viewSelector_, SIGNAL(currentIndexChanged(const QString&)),
                    this, SLOT(onViewRefChanged(const QString&)));
     }
 
@@ -83,26 +86,28 @@ void SystemDetailsEditor::setSystem(DesignWidget* designWidget, bool locked)
     systemView_ = component_->findSystemView(designWidget->getOpenViewName());
 
     // Clear the editors initially.
-    hwRefEditor_.setVLNV(VLNV());
-    viewSelector_.clear();
+    hwRefEditor_->setVLNV(VLNV());
+    viewSelector_->clear();
 
     // Fill them only if the component is not a system component (system component is always unmapped).
     if (component_->getComponentImplementation() != KactusAttribute::KTS_SYS)
     {
-        hwRefEditor_.setVLNV(component_->getVlnv());
-        viewSelector_.addItems(component_->getHierViews());
+        hwRefEditor_->setVLNV(component_->getVlnv());
+        viewSelector_->addItems(component_->getHierViews());
 
         if (systemView_ != 0)
         {
-            viewSelector_.setCurrentIndex(component_->getHierViews().indexOf(systemView_->getHWViewRef()));
+            viewSelector_->setCurrentIndex(component_->getHierViews().indexOf(systemView_->getHWViewRef()));
         }
     }
 
-    hwRefEditor_.setEnabled(!locked);
-    viewSelector_.setEnabled(!locked);
-    removeMappingButton_.setEnabled(!locked && component_->getComponentImplementation() != KactusAttribute::KTS_SYS);
+    hwRefEditor_->setEnabled(!locked);
+    viewSelector_->setEnabled(!locked);
+    removeMappingButton_->setEnabled(!locked && component_->getComponentImplementation() != KactusAttribute::KTS_SYS);
+    exportButton_->setEnabled(component_->getComponentImplementation() != KactusAttribute::KTS_SYS);
+    revertButton_->setDisabled(true);
 
-    connect(&viewSelector_, SIGNAL(currentIndexChanged(const QString&)),
+    connect(viewSelector_, SIGNAL(currentIndexChanged(const QString&)),
             this, SLOT(onViewRefChanged(const QString&)), Qt::UniqueConnection);
 
     // display this widget
@@ -120,19 +125,20 @@ void SystemDetailsEditor::clear()
         designWidget_ = 0;
         systemView_ = 0;
 
-        disconnect(&viewSelector_, SIGNAL(currentIndexChanged(const QString&)),
+        disconnect(viewSelector_, SIGNAL(currentIndexChanged(const QString&)),
                    this, SLOT(onViewRefChanged(const QString&)));
     }
 
-    hwRefEditor_.setVLNV(VLNV());
-    hwRefEditor_.setDisabled(true);
+    hwRefEditor_->setVLNV(VLNV());
+    hwRefEditor_->setDisabled(true);
 
-    viewSelector_.clear();
-    viewSelector_.setDisabled(true);
+    viewSelector_->clear();
+    viewSelector_->setDisabled(true);
 
-    applyButton_.setDisabled(true);
-    revertButton_.setDefault(true);
-    removeMappingButton_.setDisabled(true);
+    applyButton_->setDisabled(true);
+    revertButton_->setDisabled(true);
+    removeMappingButton_->setDisabled(true);
+    exportButton_->setDisabled(true);
 }
 
 //-----------------------------------------------------------------------------
@@ -148,9 +154,9 @@ void SystemDetailsEditor::onRefresh()
 //-----------------------------------------------------------------------------
 void SystemDetailsEditor::setLocked(bool locked)
 {
-    hwRefEditor_.setEnabled(!locked);
-    viewSelector_.setEnabled(!locked);
-    removeMappingButton_.setEnabled(!locked && component_->getComponentImplementation() != KactusAttribute::KTS_SYS);
+    hwRefEditor_->setEnabled(!locked);
+    viewSelector_->setEnabled(!locked);
+    removeMappingButton_->setEnabled(!locked && component_->getComponentImplementation() != KactusAttribute::KTS_SYS);
 }
 
 //-----------------------------------------------------------------------------
@@ -158,18 +164,19 @@ void SystemDetailsEditor::setLocked(bool locked)
 //-----------------------------------------------------------------------------
 void SystemDetailsEditor::setupLayout()
 {
-    QHBoxLayout* buttonLayout = new QHBoxLayout();
-    buttonLayout->addWidget(&applyButton_);
-    buttonLayout->addWidget(&revertButton_);
+    QGridLayout* buttonLayout = new QGridLayout();
+    buttonLayout->addWidget(applyButton_, 0, 0);
+    buttonLayout->addWidget(revertButton_, 0, 1);
+    buttonLayout->addWidget(exportButton_, 1, 0);
+    buttonLayout->addWidget(removeMappingButton_, 1, 1);
 
     QFormLayout* selectorLayout = new QFormLayout();
-    selectorLayout->addRow(tr("HW component view:"), &viewSelector_);
+    selectorLayout->addRow(tr("HW component view:"), viewSelector_);
 
     QVBoxLayout* topLayout = new QVBoxLayout(this);
-    topLayout->addWidget(&hwRefEditor_);
+    topLayout->addWidget(hwRefEditor_);
     topLayout->addLayout(selectorLayout);
     topLayout->addLayout(buttonLayout);
-    topLayout->addWidget(&removeMappingButton_);
     topLayout->addStretch(1);
 }
 
@@ -178,10 +185,11 @@ void SystemDetailsEditor::setupLayout()
 //-----------------------------------------------------------------------------
 void SystemDetailsEditor::setupConnections()
 {
-    connect(&hwRefEditor_, SIGNAL(vlnvEdited()), this, SLOT(onHWRefChanged()), Qt::UniqueConnection);
-    connect(&applyButton_, SIGNAL(clicked()), this, SLOT(applyHW()), Qt::UniqueConnection);
-    connect(&revertButton_, SIGNAL(clicked()), this, SLOT(revert()), Qt::UniqueConnection);
-    connect(&removeMappingButton_, SIGNAL(clicked()), this, SLOT(removeMapping()), Qt::UniqueConnection);
+    connect(hwRefEditor_, SIGNAL(vlnvEdited()), this, SLOT(onHWRefChanged()), Qt::UniqueConnection);
+    connect(applyButton_, SIGNAL(clicked()), this, SLOT(applyHW()), Qt::UniqueConnection);
+    connect(revertButton_, SIGNAL(clicked()), this, SLOT(revert()), Qt::UniqueConnection);
+    connect(removeMappingButton_, SIGNAL(clicked()), this, SLOT(removeMapping()), Qt::UniqueConnection);
+    connect(exportButton_, SIGNAL(clicked()), this, SLOT(exportSW()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -189,29 +197,29 @@ void SystemDetailsEditor::setupConnections()
 //-----------------------------------------------------------------------------
 void SystemDetailsEditor::onHWRefChanged()
 {
-    disconnect(&viewSelector_, SIGNAL(currentIndexChanged(const QString&)),
+    disconnect(viewSelector_, SIGNAL(currentIndexChanged(const QString&)),
                this, SLOT(onViewRefChanged(const QString&)));
 
-    viewSelector_.clear();
+    viewSelector_->clear();
 
-    if (hwRefEditor_.isValid())
+    if (hwRefEditor_->isValid())
     {
-        QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(hwRefEditor_.getVLNV());
+        QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(hwRefEditor_->getVLNV());
         QSharedPointer<Component const> component = libComp.dynamicCast<Component const>();
 
         if (component != 0)
         {
-            viewSelector_.addItems(component->getHierViews());
+            viewSelector_->addItems(component->getHierViews());
         }
     }
 
-    connect(&viewSelector_, SIGNAL(currentIndexChanged(const QString&)),
+    connect(viewSelector_, SIGNAL(currentIndexChanged(const QString&)),
             this, SLOT(onViewRefChanged(const QString&)), Qt::UniqueConnection);
 
-    bool modified = hwRefEditor_.getVLNV() != *component_->getVlnv() ||
-                    viewSelector_.currentText() != systemView_->getHWViewRef();
-    applyButton_.setEnabled(modified && viewSelector_.count() > 0);
-    revertButton_.setEnabled(modified);
+    bool modified = hwRefEditor_->getVLNV() != *component_->getVlnv() ||
+                    viewSelector_->currentText() != systemView_->getHWViewRef();
+    applyButton_->setEnabled(modified && viewSelector_->count() > 0);
+    revertButton_->setEnabled(modified);
 }
 
 //-----------------------------------------------------------------------------
@@ -219,11 +227,11 @@ void SystemDetailsEditor::onHWRefChanged()
 //-----------------------------------------------------------------------------
 void SystemDetailsEditor::onViewRefChanged(QString const& viewRef)
 {
-    bool modified = hwRefEditor_.getVLNV() != *component_->getVlnv() ||
-                    viewSelector_.currentText() != systemView_->getHWViewRef();
+    bool modified = hwRefEditor_->getVLNV() != *component_->getVlnv() ||
+                    viewSelector_->currentText() != systemView_->getHWViewRef();
 
-    applyButton_.setEnabled(modified && viewSelector_.count() > 0);
-    revertButton_.setEnabled(modified);
+    applyButton_->setEnabled(modified && viewSelector_->count() > 0);
+    revertButton_->setEnabled(modified);
 }
 
 //-----------------------------------------------------------------------------
@@ -231,7 +239,7 @@ void SystemDetailsEditor::onViewRefChanged(QString const& viewRef)
 //-----------------------------------------------------------------------------
 void SystemDetailsEditor::applyHW()
 {
-    VLNV componentVLNV = hwRefEditor_.getVLNV();
+    VLNV componentVLNV = hwRefEditor_->getVLNV();
 
     // Check if the component is being switched.
     if (componentVLNV != *component_->getVlnv())
@@ -259,7 +267,7 @@ void SystemDetailsEditor::applyHW()
 
         // Based on the action, either perform copy or move.
         SystemView* newView = new SystemView(dialog.getSystemViewName());
-        newView->setHWViewRef(viewSelector_.currentText());
+        newView->setHWViewRef(viewSelector_->currentText());
 
         if (dialog.isCopyActionSelected())
         {
@@ -309,12 +317,12 @@ void SystemDetailsEditor::applyHW()
     }
     else
     {
-        systemView_->setHWViewRef(viewSelector_.currentText());
+        systemView_->setHWViewRef(viewSelector_->currentText());
         designWidget_->refresh();
     }
 
-    applyButton_.setDisabled(true);
-    revertButton_.setDisabled(true);
+    applyButton_->setDisabled(true);
+    revertButton_->setDisabled(true);
 
     emit contentChanged();
 }
@@ -326,22 +334,22 @@ void SystemDetailsEditor::revert()
 {
     if (component_->getComponentImplementation() != KactusAttribute::KTS_SYS)
     {
-        hwRefEditor_.setVLNV(component_->getVlnv());
+        hwRefEditor_->setVLNV(component_->getVlnv());
         onHWRefChanged();
 
         if (systemView_ != 0)
         {
-            viewSelector_.setCurrentIndex(component_->getHierViews().indexOf(systemView_->getHWViewRef()));
+            viewSelector_->setCurrentIndex(component_->getHierViews().indexOf(systemView_->getHWViewRef()));
         }
     }
     else
     {
-        hwRefEditor_.setVLNV(VLNV());
+        hwRefEditor_->setVLNV(VLNV());
         onHWRefChanged();
     }
 
-    applyButton_.setDisabled(true);
-    revertButton_.setDisabled(true);
+    applyButton_->setDisabled(true);
+    revertButton_->setDisabled(true);
 }
 
 //-----------------------------------------------------------------------------
@@ -383,4 +391,59 @@ void SystemDetailsEditor::removeMapping()
     systemView_ = component_->findSystemView(designWidget_->getOpenViewName());
 
     emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDetailsEditor::exportSW()
+//-----------------------------------------------------------------------------
+void SystemDetailsEditor::exportSW()
+{
+    // Ask the user a VLNV for a system component.
+    ExportSWDialog dialog(handler_, this);
+
+    if (dialog.exec() == QDialog::Rejected)
+    {
+        return;
+    }
+
+    handler_->beginSave();
+
+    // Save copies of the design and design configuration.
+    VLNV vlnv = dialog.getVLNV();
+
+    VLNV designVLNV(VLNV::DESIGN, vlnv.getVendor(), vlnv.getLibrary(),
+                    vlnv.getName() + ".sysdesign", vlnv.getVersion());
+    VLNV desConfVLNV(VLNV::DESIGNCONFIGURATION, vlnv.getVendor(), vlnv.getLibrary(),
+                     vlnv.getName() + ".sysdesigncfg", vlnv.getVersion());
+
+    QSharedPointer<DesignConfiguration>
+        desConf(new DesignConfiguration(*designWidget_->getDiagram()->getDesignConfiguration()));
+    desConf->setVlnv(desConfVLNV);
+    desConf->setDesignRef(designVLNV);
+
+    QSharedPointer<Design> design = designWidget_->getDiagram()->createDesign(designVLNV);
+
+    // Export only SW instances.
+    design->setComponentInstances(QList<ComponentInstance>());
+
+    handler_->writeModelToFile(dialog.getPath(), design);
+    handler_->writeModelToFile(dialog.getPath(), desConf);
+
+    // Create a new system view for the system design.
+    SystemView* newView = new SystemView("system");
+    newView->setHierarchyRef(desConfVLNV);
+
+    // Create a new system component and add the system view to it.
+    QSharedPointer<Component> newComponent(new Component(vlnv));
+    newComponent->setComponentImplementation(KactusAttribute::KTS_SYS);
+
+    newComponent->addSystemView(newView);
+    handler_->writeModelToFile(dialog.getPath(), newComponent);
+
+    // Refresh the design widget.
+//     designWidget_->setDesign(dialog.getVLNV(), designWidget_->getOpenViewName());
+//     designWidget_->setProtection(false);
+//     designWidget_->refresh();
+
+    handler_->endSave();
 }

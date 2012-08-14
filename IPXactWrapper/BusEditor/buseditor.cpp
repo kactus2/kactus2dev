@@ -231,7 +231,7 @@ void BusEditor::setupLayout() {
 	topLayout->addWidget(&absDefGroup_, 1);
 }
 
-VLNV BusEditor::getComponentVLNV() const {
+VLNV BusEditor::getDocumentVLNV() const {
 
 	// if abstraction definition is being edited then use it as the identifier.
 	if (absDef_)
@@ -256,5 +256,6 @@ void BusEditor::setProtection(bool locked)
 //-----------------------------------------------------------------------------
 void BusEditor::showEvent(QShowEvent* event)
 {
+    TabDocument::showEvent(event);
     emit helpUrlRequested("definitions/busdefinition.html");
 }

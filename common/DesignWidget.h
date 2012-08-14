@@ -129,7 +129,7 @@ public:
     /*! 
      *  Returns the vlnv of the edited component.
 	 */
-	virtual VLNV getComponentVLNV() const;
+	virtual VLNV getDocumentVLNV() const;
 
     /*!
      *  Returns the the top component being edited.

@@ -31,6 +31,7 @@ class GraphicsColumnLayout;
 class ComponentItem;
 class Design;
 class VLNV;
+class DesignWidget;
 
 //-----------------------------------------------------------------------------
 //! Base class for all design diagrams.
@@ -49,7 +50,7 @@ public:
      *      @param [in] parent        The parent widget.
      */
     DesignDiagram(LibraryInterface* lh, MainWindow* mainWnd,
-                  GenericEditProvider& editProvider, QWidget* parent = 0);
+                  GenericEditProvider& editProvider, DesignWidget* parent = 0);
 
     /*!
      *  Destructor.
@@ -190,6 +191,11 @@ public:
     MainWindow* getMainWindow() const;
 
     /*!
+     *  Returns the parent design widget.
+     */
+    DesignWidget* getParent();
+
+    /*!
      *  Returns the edit provider.
      */
     GenericEditProvider& getEditProvider();
@@ -315,6 +321,9 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    //! The parent design widget.
+    DesignWidget* parent_;
 
     //! Library interface.
     LibraryInterface* lh_;

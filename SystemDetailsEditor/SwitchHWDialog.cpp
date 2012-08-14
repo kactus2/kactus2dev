@@ -261,5 +261,6 @@ void SwitchHWDialog::validate()
     QAbstractButton* btnOK = buttonBox_->button(QDialogButtonBox::Ok);
     btnOK->setEnabled(!viewNameEdit_->text().isEmpty() && viewNameEdit_->isInputValid() &&
                       (moveRadioButton_->isChecked() || vlnvEdit_->isValid()) &&
-                      (!hwViewRefCombo_->isEnabled() || hwViewRefCombo_->count() > 0));
+                      (!hwViewRefCombo_->isEnabled() || hwViewRefCombo_->count() > 0) &&
+                      !directoryEdit_->currentText().isEmpty());
 }

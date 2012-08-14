@@ -21,6 +21,7 @@
 #include <QTabWidget>
 #include <QString>
 #include <QSettings>
+#include <QMap>
 
 //-----------------------------------------------------------------------------
 //! TabDocument class.
@@ -180,7 +181,33 @@ public:
 	 *
 	 * \return Base class returns invalid vlnv.
 	*/
-	virtual VLNV getComponentVLNV() const;
+	virtual VLNV getDocumentVLNV() const;
+
+    /*!
+     *  Adds a related VLNV.
+     *
+     *      @param [in] vlnv The VLNV to add.
+     *
+     *      @remarks The occurrences of each unique VLNV are calculated internally.
+     */
+    void addRelatedVLNV(VLNV const& vlnv);
+
+    /*!
+     *  Removes a related VLNV.
+     *
+     *      @param [in] vlnv The VLNV to remove.
+     */
+    void removeRelatedVLNV(VLNV const& vlnv);    
+
+    /*!
+     *  Clears the list of related VLNVs.
+     */
+    void clearRelatedVLNVs();
+
+    /*!
+     *  Returns the list of related VLNVs.
+     */
+    QList<VLNV> getRelatedVLNVs() const;
 
     /*!
      *  Returns the edit provider.
@@ -233,6 +260,11 @@ public slots:
      */
     void setModified(bool modified = true);
 
+    /*!
+     *  Requests the document to be refreshed when shown the next time.
+     */
+    void requestRefresh();
+
 signals:
 	//! \brief Emitted when contents of the widget change
 	void contentChanged();
@@ -251,6 +283,9 @@ signals:
 
 	//! \brief Emitted when the modified state changes.
 	void modifiedChanged(bool modified);
+
+    //! Emitted when the document has been saved.
+    void documentSaved(TabDocument* doc);
 
 protected:
     /*!
@@ -274,9 +309,18 @@ protected:
      *      @param [in] state  The initial state of the visibility control.
      */
     void addVisibilityControl(QString const& name, bool state);
+    
+    /*!
+     *  Shows the document and asks to refresh it if refresh was requested.
+     */
+    virtual void showEvent(QShowEvent* event);
 
 	//! \brief Contains the bit fields that define which windows are supported for this tab.
 	unsigned int supportedWindows_;
+
+private slots:
+    //! Handles the refresh request.
+    void handleRefreshRequest();
 
 private:
     // Disable copying.
@@ -334,6 +378,12 @@ private:
 
     //! Visibility control map.
     QMap<QString, bool> visibilityControls_;
+
+    //! Related VLNV registry.
+    QMap<VLNV, unsigned int> relatedVLNVs_;
+
+    //! If true, the document must be refreshed when shown the next time.
+    bool refreshRequested_;
 };
 
 //-----------------------------------------------------------------------------

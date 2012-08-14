@@ -11,6 +11,8 @@
 
 #include "DesignDiagram.h"
 
+#include "DesignWidget.h"
+
 #include <common/diagramgrid.h>
 #include <common/GenericEditProvider.h>
 #include <common/graphicsItems/ComponentItem.h>
@@ -29,8 +31,9 @@
 // Function: DesignDiagram::DesignDiagram()
 //-----------------------------------------------------------------------------
 DesignDiagram::DesignDiagram(LibraryInterface* lh, MainWindow* mainWnd,
-                             GenericEditProvider& editProvider, QWidget* parent)
+                             GenericEditProvider& editProvider, DesignWidget* parent)
     : QGraphicsScene(parent),
+      parent_(parent),
       lh_(lh),
       mainWnd_(mainWnd),
       editProvider_(editProvider),
@@ -81,6 +84,7 @@ bool DesignDiagram::setDesign(QSharedPointer<Component> component, QSharedPointe
 
     // Clear the scene.
     clearScene();
+    getParent()->clearRelatedVLNVs();
 
     // Set the new component and open the design.
     component_ = component;
@@ -225,6 +229,7 @@ QSharedPointer<DesignConfiguration> DesignDiagram::getDesignConfiguration() cons
 void DesignDiagram::onComponentInstanceAdded(ComponentItem* item)
 {
     instanceNames_.append(item->name());
+    getParent()->addRelatedVLNV(*item->componentModel()->getVlnv());
 }
 
 //-----------------------------------------------------------------------------
@@ -233,6 +238,7 @@ void DesignDiagram::onComponentInstanceAdded(ComponentItem* item)
 void DesignDiagram::onComponentInstanceRemoved(ComponentItem* item)
 {
     instanceNames_.removeAll(item->name());
+    getParent()->removeRelatedVLNV(*item->componentModel()->getVlnv());
 }
 
 //-----------------------------------------------------------------------------
@@ -352,4 +358,12 @@ ComponentItem* DesignDiagram::getTopmostComponent(QPointF const& pos)
     }
 
     return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::getParent()
+//-----------------------------------------------------------------------------
+DesignWidget* DesignDiagram::getParent()
+{
+    return parent_;
 }

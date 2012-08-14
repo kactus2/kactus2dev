@@ -45,7 +45,7 @@ public:
 	 *
 	 * \return VLNV of the component being edited.
 	*/
-	virtual VLNV getComponentVLNV() const;
+	virtual VLNV getDocumentVLNV() const;
 
 	/*! \brief Check if the editor is editing a hardware implementation or not.
 	 *
