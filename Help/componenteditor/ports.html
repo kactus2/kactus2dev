@@ -1,0 +1,24 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+
+<link href="../style.css" rel="Stylesheet" type="text/css"><title>Port map</title></head><body>
+<h2>Ports<br>
+</h2>
+<h3>Direction</h3>
+<span style="font-weight: bold;">Phantom</span> is a special case: the
+port does not have real (RTL,TLM,...) implementation but exists in
+IP-XACT. See IEEE 1685-2009&nbsp; 6.11.19<br>
+<h3>Type and Type definition</h3>
+Select from the drop-down list, or type a new custom type (not recommended).<br>
+<h3>Left (higher) and right (lower) bound<br>
+</h3>
+<p>For a scalar port leave these empty. For a vector port, the higher
+and lower bound tell the width of the port and alignment of the bits.
+Note that the LSB can be either on the left or right border depending
+on the type.<br>
+</p>
+<p>Width = max (left,right) &#8211; min (left,right) +1.</p>
+Example: for a VHDL std_logic_vector(29 downto 3) is given as&nbsp; left=29 and right=3<br>
+<h3>Ad-hoc<br>
+</h3>If checked, this port is visible in HW designs in all instances of this component (not recommended, instead use bus interfaces).<br>
+</body></html>
