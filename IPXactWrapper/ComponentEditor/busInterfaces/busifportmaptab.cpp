@@ -273,6 +273,6 @@ void BusIfPortmapTab::onMakeConnections( const QStringList& physicals,
 //-----------------------------------------------------------------------------
 void BusIfPortmapTab::showEvent(QShowEvent* event)
 {
-    emit helpUrlRequested("componenteditor/portmaps.html");
     QWidget::showEvent(event);
+    emit helpUrlRequested("componenteditor/portmaps.html");
 }

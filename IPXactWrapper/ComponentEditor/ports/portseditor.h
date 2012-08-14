@@ -52,6 +52,10 @@ public:
 	*/
 	virtual void refresh();
 
+protected:
+    //! Called when the editor is shown.
+    virtual void showEvent(QShowEvent* event);
+
 private:
 
 	//! \brief No copying

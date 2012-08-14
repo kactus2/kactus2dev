@@ -18,6 +18,8 @@ editor_(component, libHandler) {
 	editor_.hide();
 	connect(&editor_, SIGNAL(contentChanged()),
 		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+    connect(&editor_, SIGNAL(helpUrlRequested(QString const&)),
+            this, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
 }
 
 ComponentEditorPortsItem::~ComponentEditorPortsItem() {

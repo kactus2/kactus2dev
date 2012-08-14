@@ -109,3 +109,12 @@ bool PortsEditor::isValid() const {
 void PortsEditor::refresh() {
 	view_.update();
 }
+
+//-----------------------------------------------------------------------------
+// Function: PortsEditor::showEvent()
+//-----------------------------------------------------------------------------
+void PortsEditor::showEvent(QShowEvent* event)
+{
+    ItemEditor::showEvent(event);
+    emit helpUrlRequested("componenteditor/ports.html");
+}

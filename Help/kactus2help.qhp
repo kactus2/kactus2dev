@@ -13,6 +13,7 @@
             <section title="Kactus2 Manual" ref="index.html">
                 <section title="Component Editor" ref="componenteditor/componenteditor.html">
                     <section title="Portmaps" ref="componenteditor/portmaps.html" />
+                    <section title="Ports" ref="componenteditor/ports.html" />
                 </section>
                 <section title="Definitions">
                     <section title="API Definition" ref="definitions/apidefinition.html" />
