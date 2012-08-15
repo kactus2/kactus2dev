@@ -310,19 +310,23 @@ void VLNVEditor::setVersion( const QString& version ) {
 
 void VLNVEditor::dropEvent( QDropEvent* event ) {
 	// Retrieve the vlnv.
-	VLNV *vlnv;
-	memcpy(&vlnv, event->mimeData()->data("data/vlnvptr").data(), sizeof(vlnv));
+	QVariant data = event->mimeData()->imageData();
+	if (!data.canConvert<VLNV>()) {
+		return;
+	}
+
+	VLNV vlnv = data.value<VLNV>();
 	setVLNV(vlnv);
 	event->acceptProposedAction();
 
 	// for abs def and bus def there is additional option to set the paired vlnv editor
-	switch (handler_->getDocumentType(*vlnv)) 
+	switch (handler_->getDocumentType(vlnv)) 
 	{
 	case VLNV::BUSDEFINITION: {
 		
 		// if there is only one abs def for the dropped bus def
 		QList<VLNV> absDefVLNVs;
-		if (handler_->getChildren(absDefVLNVs, *vlnv) == 1) {
+		if (handler_->getChildren(absDefVLNVs, vlnv) == 1) {
 			emit setAbsDef(absDefVLNVs.first());
 		}
 
@@ -341,7 +345,7 @@ void VLNVEditor::dropEvent( QDropEvent* event ) {
 		break;
 							  }
 	case VLNV::ABSTRACTIONDEFINITION: {
-		QSharedPointer<LibraryComponent> libComp = handler_->getModel(*vlnv);
+		QSharedPointer<LibraryComponent> libComp = handler_->getModel(vlnv);
 		QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
 		Q_ASSERT(absDef);
 
@@ -356,15 +360,20 @@ void VLNVEditor::dropEvent( QDropEvent* event ) {
 }
 
 void VLNVEditor::dragEnterEvent( QDragEnterEvent* event ) {
-	if (event->mimeData()->hasFormat("data/vlnvptr")) {
+	if (event->mimeData()->hasImage()) {
 		
 		// Retrieve the vlnv.
-		VLNV *vlnv;
-		memcpy(&vlnv, event->mimeData()->data("data/vlnvptr").data(), sizeof(vlnv));
+		QVariant data = event->mimeData()->imageData();
+		if (!data.canConvert<VLNV>()) {
+			return;
+		}
+
+		VLNV vlnv = data.value<VLNV>();
 
 		// if the vlnv is of correct type
-		if (handler_->getDocumentType(*vlnv) == type_)
+		if (handler_->getDocumentType(vlnv) == type_) {
 			event->acceptProposedAction();
+		}
 	}
 }
 
