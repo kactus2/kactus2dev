@@ -378,26 +378,30 @@ void SystemDesignDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
 {
     dragType_ = DRAG_TYPE_NONE;
 
-    if (!isProtected() && event->mimeData()->hasFormat("data/vlnvptr"))
+    if (!isProtected() && event->mimeData()->hasImage())
     {
         event->acceptProposedAction();
 
-        VLNV *vlnv;
-        memcpy(&vlnv, event->mimeData()->data("data/vlnvptr").data(), sizeof(vlnv));
+		QVariant data = event->mimeData()->imageData();
+		if (!data.canConvert<VLNV>()) {
+			return;
+		}
 
-        if (vlnv->getType() == VLNV::COMPONENT)
+		VLNV vlnv = data.value<VLNV>();
+
+        if (vlnv.getType() == VLNV::COMPONENT)
         {
             // Determine the component type.
-            QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(*vlnv);
+            QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(vlnv);
             QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
             // component with given vlnv was not found
             if (!comp) {
                 emit errorMessage(tr("Component with the VLNV %1:%2:%3:%4 was not found in the library.").arg(
-                    vlnv->getVendor()).arg(
-                    vlnv->getLibrary()).arg(
-                    vlnv->getName()).arg(
-                    vlnv->getVersion()));
+                    vlnv.getVendor()).arg(
+                    vlnv.getLibrary()).arg(
+                    vlnv.getName()).arg(
+                    vlnv.getVersion()));
                 return;
             }
 
@@ -412,11 +416,11 @@ void SystemDesignDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
             }
 
         }
-        else if (vlnv->getType() == VLNV::COMDEFINITION || vlnv->getType() == VLNV::APIDEFINITION)
+        else if (vlnv.getType() == VLNV::COMDEFINITION || vlnv.getType() == VLNV::APIDEFINITION)
         {
             dragType_ = DRAG_TYPE_DEFINITION;
         }
-        else if (vlnv->getType() == VLNV::DESIGN)
+        else if (vlnv.getType() == VLNV::DESIGN)
         {
             dragType_ = DRAG_TYPE_DESIGN;
         }
@@ -560,15 +564,18 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         return;
     }
 
-    // Retrieve the droppedVLNV.
-    VLNV* droppedVLNV;
-    memcpy(&droppedVLNV, event->mimeData()->data("data/vlnvptr").data(), sizeof(droppedVLNV));
+	QVariant data = event->mimeData()->imageData();
+	if (!data.canConvert<VLNV>()) {
+		return;
+	}
+
+	VLNV droppedVLNV = data.value<VLNV>();
 
     // Check if the dragged item was a valid one.
     if (dragType_ == DRAG_TYPE_SW)
     {
         // Retrieve the component model.
-        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(*droppedVLNV);
+        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(droppedVLNV);
         QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
         // Set the instance name for the new component instance.
@@ -644,7 +651,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 
             QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
                 tr("Component instance '%1' is about to be replaced "
-                "with an instance of %2. Continue and replace?").arg(oldCompItem->name(), droppedVLNV->toString()),
+                "with an instance of %2. Continue and replace?").arg(oldCompItem->name(), droppedVLNV.toString()),
                 QMessageBox::Yes | QMessageBox::No, (QWidget*)parent());
 
             if (msgBox.exec() == QMessageBox::No)
@@ -673,14 +680,14 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
     else if (dragType_ == DRAG_TYPE_HW)
     {
         // Retrieve the component.
-        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(*droppedVLNV);
+        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(droppedVLNV);
         QSharedPointer<Component> newComponent = libComp.staticCast<Component>();
 
         // Check if the component does not have any hierarchical views.
         if (newComponent->getHierViews().isEmpty())
         {
             QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                               tr("HW component '%1' does not contain any hierarchical views.").arg(droppedVLNV->toString()),
+                               tr("HW component '%1' does not contain any hierarchical views.").arg(droppedVLNV.toString()),
                                QMessageBox::Ok, parent());
             msgBox.exec();
             return;
@@ -736,7 +743,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         getLibraryInterface()->writeModelToFile(newComponent);
 
         // Refresh the design widget.
-        parent()->setDesign(*droppedVLNV, dialog.getSystemViewName());
+        parent()->setDesign(droppedVLNV, dialog.getSystemViewName());
         parent()->setProtection(false);
         parent()->refresh();
     }
@@ -744,10 +751,10 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
     {
         if (highlightedEndpoint_ != 0)
         {
-            Q_ASSERT(getLibraryInterface()->contains(*droppedVLNV));
+            Q_ASSERT(getLibraryInterface()->contains(droppedVLNV));
 
-            VLNV vlnv = *droppedVLNV;
-            vlnv.setType(getLibraryInterface()->getDocumentType(*droppedVLNV));
+            VLNV vlnv = droppedVLNV;
+            vlnv.setType(getLibraryInterface()->getDocumentType(droppedVLNV));
 
             // Save old type and set the new one.
             VLNV oldType = highlightedEndpoint_->getTypeDefinition();
@@ -764,7 +771,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
     else if (dragType_ == DRAG_TYPE_DESIGN)
     {
         // Retrieve the design.
-        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(*droppedVLNV);
+        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(droppedVLNV);
         QSharedPointer<Design> design = libComp.dynamicCast<Design>();
 
         // Import elements to the column under cursor.

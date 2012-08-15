@@ -45,10 +45,9 @@ public:
 	 * \param library The name of the library
 	 * \param name The name of the block
 	 * \param version The version number of the block
-	 * \param hidden Is the item created a hidden or not
 	 */
 	VLNV(const QString &type, const QString &vendor, const QString &library,
-		const QString &name, const QString &version, const bool hidden = false);
+		const QString &name, const QString &version);
 
 	/*! \brief Constructor that takes type parameter as enum
 	 *
@@ -59,11 +58,9 @@ public:
 	 * \param library The name of the library
 	 * \param name The name of the block
 	 * \param version The version number of the block
-	 * \param hidden is the item to be created marked as hidden or not
 	 */
 	VLNV(const IPXactType &type, const QString &vendor, const QString &library,
-			const QString &name, const QString &version,
-			const bool hidden = false);
+			const QString &name, const QString &version);
 
 	/*! \brief The default constructor
 	 *
@@ -145,22 +142,6 @@ public:
 	 *
 	*/
 	void setVersion(const QString version);
-
-	/*! \brief Is the librarycomponent this VLNV represents a hidden or not
-	 *
-	 * \return True if the item is hidden. False if not hidden.
-	 */
-	bool isHidden() const;
-
-	/*! \brief Mark this item as not hidden
-	 *
-	 */
-	void show();
-
-	/*! \brief Mark this item as hidden
-	 *
-	 */
-	void hide();
 
 	/*! \brief Set the document type for the vlnv.
 	 *
@@ -290,19 +271,6 @@ public:
 
     static QString type2Show(const IPXactType &type);
 
-	/*! \brief Is the document identified by this vlnv valid or not.
-	 *
-	 * \return True if the document is valid
-	*/
-	bool documentIsValid() const;
-
-	/*! \brief Set the information on the validity of the document.
-	 *
-	 * \param isValid Defines if the document is valid or not.
-	 *
-	*/
-	void setDocumentValid(bool isValid);
-
 	/*! \brief Clear the vlnv (make all fields empty and type = INVALID)
 	 *
 	*/
@@ -324,12 +292,6 @@ private:
 
 	//! \brief The type of the document the VLNV-tag belongs to
 	IPXactType type_;
-
-	//! \brief Is this component marked as hidden in the library
-	bool isHidden_;
-
-	//! \brief Is the document identified by this vlnv a valid one or not.
-	bool documentIsValid_;
 };
 
 // With this declaration, VLNV can be used as a QVariant.

@@ -303,10 +303,10 @@ void NewSystemPage::addChildItems(LibraryItem const* libItem, QTreeWidgetItem* t
         QTreeWidgetItem* item = new QTreeWidgetItem();
         item->setText(0, libItem->child(i)->getName());
 
-        VLNV* vlnv = libItem->child(i)->getVLNV();
+        VLNV vlnv = libItem->child(i)->getVLNV();
 
         // Recursively add its children if this is not the leaf level.
-        if (vlnv == 0)
+        if (!vlnv.isValid())
         {
             addChildItems(libItem->child(i), item);
 
@@ -323,7 +323,7 @@ void NewSystemPage::addChildItems(LibraryItem const* libItem, QTreeWidgetItem* t
         else
         {
             // Only hierarchical HW components are added.
-            QSharedPointer<LibraryComponent> libComp = libInterface_->getModel(*vlnv);
+            QSharedPointer<LibraryComponent> libComp = libInterface_->getModel(vlnv);
             QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
             QStringList views = comp->getHierViews();
@@ -337,7 +337,7 @@ void NewSystemPage::addChildItems(LibraryItem const* libItem, QTreeWidgetItem* t
             }
 
             // Add the VLNV to the item's data.
-            item->setData(0, Qt::UserRole, QVariant::fromValue((*vlnv)));
+            item->setData(0, Qt::UserRole, QVariant::fromValue((vlnv)));
             treeItem->addChild(item);
         }
     }

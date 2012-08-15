@@ -49,33 +49,35 @@ void HierarchyModel::onResetModel() {
 			this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 	}
 	// if root exists then tell it to remove children
-	else
+	else {
 		rootItem_->clear();
+	}
 	
 	// get the items to be displayed from the data source
-	QList<VLNV*> items = dataModel_->getItems();
+	QList<VLNV> items = dataModel_->getItems();
 
-	QList<VLNV*> absDefs;
+	QList<VLNV> absDefs;
 
 	// add all items to this model
 	for (int i = 0; i < items.size(); ++i) {
 
 		// make sure the item can be parsed
-		QSharedPointer<LibraryComponent> libComp = handler_->getModel(*items.at(i));
-		if (!libComp)
+		QSharedPointer<LibraryComponent> libComp = handler_->getModel(items.at(i));
+		if (!libComp) {
 			continue;
+		}
 
 		// if item is component, bus definition, COM definition or API definition
-		if (items.at(i) && (handler_->getDocumentType(*items.at(i)) == VLNV::COMPONENT ||
-			                handler_->getDocumentType(*items.at(i)) == VLNV::BUSDEFINITION ||
-                            handler_->getDocumentType(*items.at(i)) == VLNV::COMDEFINITION ||
-                            handler_->getDocumentType(*items.at(i)) == VLNV::APIDEFINITION)) {
-			
-			rootItem_->createChild(items.at(i));
+		if (handler_->getDocumentType(items.at(i)) == VLNV::COMPONENT ||
+			handler_->getDocumentType(items.at(i)) == VLNV::BUSDEFINITION ||
+			handler_->getDocumentType(items.at(i)) == VLNV::COMDEFINITION ||
+			handler_->getDocumentType(items.at(i)) == VLNV::APIDEFINITION) {
+
+				rootItem_->createChild(items.at(i));
 		}
 
 		// if item is abstraction definition append the abstraction definition to the list
-		else if (handler_->getDocumentType(*items.at(i)) == VLNV::ABSTRACTIONDEFINITION) {
+		else if (handler_->getDocumentType(items.at(i)) == VLNV::ABSTRACTIONDEFINITION) {
 			absDefs.append(items.at(i));
 			rootItem_->createChild(items.at(i));
 		}
@@ -83,7 +85,7 @@ void HierarchyModel::onResetModel() {
 
 	// create the abstraction definitions
 	for (int i = 0; i < absDefs.size(); ++i) {
-		QSharedPointer<LibraryComponent> libComp = handler_->getModel(*absDefs.at(i));
+		QSharedPointer<LibraryComponent> libComp = handler_->getModel(absDefs.at(i));
 		QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
 
 		VLNV busDefVlnv = absDef->getBusType();
@@ -472,8 +474,9 @@ void HierarchyModel::onCreateNewApiDef( const QModelIndex& index ) {
 }
 
 void HierarchyModel::onExportItem( const QModelIndex& index ) {
-	if (!index.isValid())
+	if (!index.isValid()) {
 		return;
+	}
 
 	// get pointer to the item that was selected
 	HierarchyItem* item = static_cast<HierarchyItem*>(index.internalPointer());
@@ -483,14 +486,14 @@ void HierarchyModel::onExportItem( const QModelIndex& index ) {
 	emit exportItem(vlnv);
 }
 
-void HierarchyModel::onRemoveVLNV( VLNV* vlnv ) {
-	if (!vlnv)
+void HierarchyModel::onRemoveVLNV( const VLNV& vlnv ) {
+
+	if (!vlnv.isValid()) {
 		return;
-	else if (!vlnv->isValid())
-		return;
+	}
 
 	beginResetModel();
-	rootItem_->removeItems(*vlnv);
+	rootItem_->removeItems(vlnv);
 	endResetModel();
 }
 

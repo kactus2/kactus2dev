@@ -106,7 +106,7 @@ private:
 	 *
 	 * \return bool True if at least one match is found.
 	*/
-	bool checkVLNVs(const QList<VLNV*>& list) const;
+	bool checkVLNVs(const QList<VLNV>& list) const;
 
 	/*! \brief Check the bus type and the implementation.
 	 *

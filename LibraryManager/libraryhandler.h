@@ -195,14 +195,6 @@ public:
 	*/
 	virtual VLNV::IPXactType getDocumentType(const VLNV& vlnv);
 
-	/*! \brief Get pointer to the VLNV instance owned by the Library Data
-	 *
-	 * \param vlnv Reference to the vlnv that contains same fields as the searched vlnv.
-	 *
-	 * \return Pointer to the original vlnv instance.
-	*/
-	virtual VLNV* getOriginalPointer(const VLNV& vlnv) const;
-
 	/*! \brief Count how many times the given component is instantiated in the library.
 	 *
 	 * \param vlnv Identifies the component that's instances are searched.
@@ -290,7 +282,7 @@ public slots:
 	 * \param vlnv VLNV tag that identifies the top item to export.
 	 *
 	*/
-	virtual void onExportItem(const VLNV& vlnv);
+	virtual void onExportItem(const VLNV vlnv);
 
 	/*! \brief Export a group of items to a new location
 	 *
@@ -298,7 +290,7 @@ public slots:
 	 * \param targetPath Path to the location to export the objects to.
 	 *
 	*/
-	virtual void onExportItems(const QList<VLNV*>& vlnvs);
+	virtual void onExportItems(const QList<VLNV> vlnvs);
 
 	/*! \brief Selects the given vlnv item in the library
 	 *
@@ -469,7 +461,7 @@ private slots:
 	 * \param vlnv Identifies the library object to remove.
 	 *
 	*/
-	void onRemoveVLNV(QList<VLNV*> vlnvs);
+	void onRemoveVLNV(const QList<VLNV> vlnvs);
 
 	/*! \brief Create a new abstraction definition for given bus definition.
 	 *

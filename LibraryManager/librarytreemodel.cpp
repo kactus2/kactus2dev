@@ -173,39 +173,43 @@ QVariant LibraryTreeModel::data(const QModelIndex& index, int role) const {
 	else if (role == Qt::ForegroundRole) {
 		QColor textColor;
 
-		// if the item is valid it is displayed as black
-		if (item->isValid()) {
-			textColor = QColor("black");
+		// check all vlnvs that the item represents
+		QList<VLNV> vlnvs;
+		item->getVLNVs(vlnvs);
+		foreach (VLNV vlnv, vlnvs) {
+			
+			// if at least one vlnv is valid then the item is valid
+			if (handler_->isValid(vlnv)) {
+				textColor = QColor("black");
+				return QBrush(textColor);
+			}
 		}
 
 		// if the document is not valid then it is marked with red color
-		else {
-			textColor = QColor("red");
-		}
-
-		return QBrush(textColor);
+		textColor = QColor("red");
+		return QBrush(textColor);		
 	}
 
 	else if (role == Qt::ToolTipRole) {
 		
-		VLNV* vlnv = item->getVLNV();
+		VLNV vlnv = item->getVLNV();
 
         // if item can identify a single library object
-		if (vlnv)
+		if (vlnv.isValid())
         {
-            QString text = QString("<b>Vendor:</b> ") + vlnv->getVendor() + "<br>" +
-                           QString("<b>Library:</b> ") + vlnv->getLibrary() + "<br>" +
-                           QString("<b>Name:</b> ") + vlnv->getName() + "<br>" +
-                           QString("<b>Version:</b> ") + vlnv->getVersion() + "<br>";
+            QString text = QString("<b>Vendor:</b> ") + vlnv.getVendor() + "<br>" +
+                           QString("<b>Library:</b> ") + vlnv.getLibrary() + "<br>" +
+                           QString("<b>Name:</b> ") + vlnv.getName() + "<br>" +
+                           QString("<b>Version:</b> ") + vlnv.getVersion() + "<br>";
 
-            QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(*vlnv);
+            QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(vlnv);
 
             if (libComp != 0 && !libComp->getDescription().isEmpty())
             {
                 text += QString("<br><b>Description:</b><br>") + libComp->getDescription();
             }
 
-            text += QString("<br><b>File Path:</b><br>%1").arg(dataSource_->getPath(*vlnv));
+            text += QString("<br><b>File Path:</b><br>%1").arg(dataSource_->getPath(vlnv));
             return text;
 		}
 
@@ -214,14 +218,14 @@ QVariant LibraryTreeModel::data(const QModelIndex& index, int role) const {
 	}
 	else if (role == Qt::DecorationRole) {
 		
-		VLNV* vlnvP = item->getVLNV();
+		VLNV vlnv = item->getVLNV();
 		
 		// if item represents a single vlnv object
-		if (vlnvP) {
+		if (vlnv.isValid()) {
 
-			if (vlnvP->getType() == VLNV::COMPONENT) {
+			if (vlnv.getType() == VLNV::COMPONENT) {
 
-				QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(*vlnvP);
+				QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(vlnv);
 				QSharedPointer<Component const> component = libComp.staticCast<Component const>();
 
 				switch (component->getComponentImplementation()) {
@@ -242,28 +246,28 @@ QVariant LibraryTreeModel::data(const QModelIndex& index, int role) const {
 			}
 
 			// if item is for a bus
-			else if (vlnvP->getType() == VLNV::BUSDEFINITION ||
-				vlnvP->getType() == VLNV::ABSTRACTIONDEFINITION) {
+			else if (vlnv.getType() == VLNV::BUSDEFINITION ||
+				vlnv.getType() == VLNV::ABSTRACTIONDEFINITION) {
 				return QIcon(":/icons/graphics/new-bus.png");
 			}
 
             // if item is for a COM definition
-            else if (vlnvP->getType() == VLNV::COMDEFINITION) {
+            else if (vlnv.getType() == VLNV::COMDEFINITION) {
                     return QIcon(":/icons/graphics/new-com_definition.png");
             }
 
             // if item is for an API definition
-            else if (vlnvP->getType() == VLNV::APIDEFINITION) {
+            else if (vlnv.getType() == VLNV::APIDEFINITION) {
                 return QIcon(":/icons/graphics/new-api_definition.png");
             }
 
 			// if item is for a design
-			else if (vlnvP->getType() == VLNV::DESIGN) {
+			else if (vlnv.getType() == VLNV::DESIGN) {
 				return QIcon(":/icons/graphics/new-design.png");
 			}
 
 			// if item is for a design configuration
-			else if (vlnvP->getType() == VLNV::DESIGNCONFIGURATION) {
+			else if (vlnv.getType() == VLNV::DESIGNCONFIGURATION) {
 				return QIcon(":/icons/graphics/configuration.png");
 			}
 			// item has no icon
@@ -320,7 +324,7 @@ void LibraryTreeModel::onExportItem( const QModelIndex& index ) {
 	LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
 
 	// ask the item for all the VLNVs it represents
-	QList<VLNV*> vlnvList;
+	QList<VLNV> vlnvList;
 	item->getVLNVs(vlnvList);
 
 	emit exportItems(vlnvList);
@@ -335,30 +339,32 @@ void LibraryTreeModel::onDeleteItem( const QModelIndex& index ) {
 	LibraryItem* toRemove = child->findHighestUnique();
 
 	// ask the item for all the VLNVs it represents
-	QList<VLNV*> vlnvList;
+	QList<VLNV> vlnvList;
 	toRemove->getVLNVs(vlnvList);
 
 	// inform the library handler that these VLNVs should be removed
 	emit removeVLNV(vlnvList);
 }
 
-void LibraryTreeModel::onRemoveVLNV(VLNV* vlnv ) {
+void LibraryTreeModel::onRemoveVLNV( const VLNV& vlnv ) {
 
-	if (!vlnv)
+	if (!vlnv.isValid()) {
 		return;
+	}
 
 	LibraryItem* toRemove = rootItem_->findHighestUnique(vlnv);
 	
 	// remove the item and it's sub-items but no need to inform dataModel 
 	// because the removal action was started by the dataModel
-	if (toRemove)
+	if (toRemove) {
 		removeLibraryItem(toRemove, false);
+	}
 
 }
 
-void LibraryTreeModel::onAddVLNV( VLNV* vlnv ) {
+void LibraryTreeModel::onAddVLNV( const VLNV& vlnv ) {
 
-	if (!vlnv) {
+	if (!vlnv.isValid()) {
 		return;
 	}
 
@@ -389,7 +395,7 @@ void LibraryTreeModel::removeLibraryItem( LibraryItem* toRemove, bool emitSignal
 	int row = toRemove->parent()->getIndexOf(toRemove);
 
 	// ask the item for all the VLNVs it represents
-	QList<VLNV*> vlnvList;
+	QList<VLNV> vlnvList;
 	toRemove->getVLNVs(vlnvList);
 
 	QModelIndex removeIndex = createIndex(row, 0, toRemove);
@@ -425,7 +431,7 @@ void LibraryTreeModel::onResetModel() {
 	}
 
 	// get the items to be displayed from the data source
-	QList<VLNV*> items =
+	QList<VLNV> items =
 		dataSource_->getItems();
 
 	// add all items to this model
@@ -450,10 +456,11 @@ void LibraryTreeModel::onOpenBus( const QModelIndex& index ) {
 
 	LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
 
-	VLNV* vlnv = item->getVLNV();
+	VLNV vlnv = item->getVLNV();
 
-	if (vlnv && vlnv->isValid())
-		emit editItem(*vlnv);
+	if (vlnv.isValid()) {
+		emit editItem(vlnv);
+	}
 }
 
 void LibraryTreeModel::onOpenComDef( const QModelIndex& index ) {
@@ -463,10 +470,11 @@ void LibraryTreeModel::onOpenComDef( const QModelIndex& index ) {
 
     LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
 
-    VLNV* vlnv = item->getVLNV();
+    VLNV vlnv = item->getVLNV();
 
-    if (vlnv && vlnv->isValid())
-        emit editItem(*vlnv);
+	if (vlnv.isValid()) {
+        emit editItem(vlnv);
+	}
 }
 
 void LibraryTreeModel::onOpenApiDef( const QModelIndex& index ) {
@@ -476,10 +484,11 @@ void LibraryTreeModel::onOpenApiDef( const QModelIndex& index ) {
 
     LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
 
-    VLNV* vlnv = item->getVLNV();
+    VLNV vlnv = item->getVLNV();
 
-    if (vlnv && vlnv->isValid())
-        emit editItem(*vlnv);
+	if (vlnv.isValid()) {
+        emit editItem(vlnv);
+	}
 }
 
 void LibraryTreeModel::onCreateBus( const QModelIndex& index ) {
@@ -543,10 +552,11 @@ void LibraryTreeModel::onOpenComponent( const QModelIndex& index ) {
 
 	LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
 
-	VLNV* vlnv = item->getVLNV();
+	VLNV vlnv = item->getVLNV();
 
-	if (vlnv && vlnv->isValid())
-		emit editItem(*vlnv);
+	if (vlnv.isValid()) {
+		emit editItem(vlnv);
+	}
 }
 
 void LibraryTreeModel::onOpenDesign( const QModelIndex& index ) {
@@ -555,10 +565,11 @@ void LibraryTreeModel::onOpenDesign( const QModelIndex& index ) {
 		return;
 
 	LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
-	VLNV* vlnv = item->getVLNV();
+	VLNV vlnv = item->getVLNV();
 
-	if (vlnv && vlnv->isValid())
-		emit openDesign(*vlnv);
+	if (vlnv.isValid()) {
+		emit openDesign(vlnv);
+	}
 }
 
 void LibraryTreeModel::onOpenSWDesign( const QModelIndex& index ) {
@@ -567,10 +578,11 @@ void LibraryTreeModel::onOpenSWDesign( const QModelIndex& index ) {
         return;
 
     LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
-    VLNV* vlnv = item->getVLNV();
+    VLNV vlnv = item->getVLNV();
 
-    if (vlnv && vlnv->isValid())
-        emit openSWDesign(*vlnv);
+	if (vlnv.isValid()) {
+        emit openSWDesign(vlnv);
+	}
 }
 
 void LibraryTreeModel::onOpenSystemDesign( const QModelIndex& index ) {
@@ -579,10 +591,11 @@ void LibraryTreeModel::onOpenSystemDesign( const QModelIndex& index ) {
         return;
 
     LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
-    VLNV* vlnv = item->getVLNV();
+    VLNV vlnv = item->getVLNV();
 
-    if (vlnv && vlnv->isValid())
-        emit openSystemDesign(*vlnv);
+	if (vlnv.isValid()) {
+        emit openSystemDesign(vlnv);
+	}
 }
 
 void LibraryTreeModel::onCreateNewComponent( const QModelIndex& index ) {

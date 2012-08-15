@@ -66,15 +66,6 @@ signals:
 	//! \brief Emitted when an item identifying unique vlnv is selected.
 	void itemSelected(const VLNV& vlnv);
 
-private slots:
-
-	/*! \brief Prepare the drag object for drag & drop actions
-	 *
-	 * \param index Specifies the object to drag
-	 *
-	*/
-	void prepareDrag(const QModelIndex& index);
-
 private:
 
 	//! \brief No copying

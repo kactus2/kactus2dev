@@ -11,6 +11,8 @@
 
 #include <QHBoxLayout>
 
+#include <QDebug>
+
 HierarchyWidget::HierarchyWidget( VLNVDialer* dialer, 
 								 QWidget *parent, 
 								 LibraryInterface* handler,
@@ -96,31 +98,8 @@ void HierarchyWidget::setupConnections( HierarchyModel* dataModel ) {
 	connect(&view_, SIGNAL(componentSelected(const VLNV&)),
 		this, SIGNAL(componentSelected(const VLNV&)), Qt::UniqueConnection);
 
-	connect(&view_, SIGNAL(dragInitiated(const QModelIndex&)),
-		this, SLOT(prepareDrag(const QModelIndex&)), Qt::UniqueConnection);
-
 	connect(dataModel, SIGNAL(invalidateFilter()),
 		&filter_, SLOT(invalidate()), Qt::UniqueConnection);
-}
-
-void HierarchyWidget::prepareDrag( const QModelIndex& index ) {
-	if (!index.isValid())
-		return;
-
-	HierarchyItem* item = static_cast<HierarchyItem*>(index.internalPointer());
-	VLNV* vlnv = item->getVLNVPointer();
-
-	// if vlnv is valid
-	if (vlnv && vlnv->isValid()) {
-		QDrag *drag = new QDrag(this);
-		QMimeData *mimeData = new QMimeData;
-
-		mimeData->setData("data/vlnvptr", QByteArray((const char*)&vlnv, sizeof(vlnv)));
-		drag->setMimeData(mimeData);
-        drag->exec(Qt::MoveAction | Qt::CopyAction | Qt::LinkAction);
-	}
-
-	return;
 }
 
 void HierarchyWidget::selectItems( const VLNV& vlnv ) {

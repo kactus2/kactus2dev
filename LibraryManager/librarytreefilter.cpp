@@ -83,23 +83,24 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow,
 	LibraryItem* item = static_cast<LibraryItem*>(itemIndex.internalPointer());
 
 	// get all vlnvs for the item
-	QList<VLNV*> list;
+	QList<VLNV> list;
 	item->getVLNVs(list);
 
 	// if none of the vlnvs match the search rules
-	if (!checkVLNVs(list))
+	if (!checkVLNVs(list)) {
 		return false;
+	}
 	
-	foreach (VLNV* vlnv, list) {
+	foreach (VLNV vlnv, list) {
 
-		if (!handler_->contains(*vlnv)) {
+		if (!handler_->contains(vlnv)) {
 			continue;
 		}
 
-		QSharedPointer<LibraryComponent> libComb = handler_->getModel(*vlnv);
+		QSharedPointer<LibraryComponent> libComb = handler_->getModel(vlnv);
 
 		// check the type
-		switch (handler_->getDocumentType(*vlnv)) {
+		switch (handler_->getDocumentType(vlnv)) {
 			case VLNV::COMPONENT: {
 				// if components are not be displayed
 				if (!type_.components_)
@@ -287,16 +288,16 @@ bool LibraryTreeFilter::checkHierarchy( QSharedPointer<Component> component ) co
 	}
 }
 
-bool LibraryTreeFilter::checkVLNVs( const QList<VLNV*>& list ) const {
-	foreach (VLNV* vlnv, list) {
+bool LibraryTreeFilter::checkVLNVs( const QList<VLNV>& list ) const {
+	foreach (VLNV vlnv, list) {
 
 		int pos = 0;
 
                 // QT library Forced to use temp variables
-                QString vendor = vlnv->getVendor();
-                QString library =  vlnv->getLibrary();
-                QString name =  vlnv->getName();
-                QString version =  vlnv->getVersion();
+                QString vendor = vlnv.getVendor();
+                QString library =  vlnv.getLibrary();
+                QString name =  vlnv.getName();
+                QString version =  vlnv.getVersion();
 
 
                 // if the vlnv matches the search rules

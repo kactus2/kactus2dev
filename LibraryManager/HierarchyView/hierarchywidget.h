@@ -61,15 +61,6 @@ signals:
 	//! \brief The specified component has been selected in the view.
 	void componentSelected(const VLNV& vlnv);
 
-private slots:
-
-	/*! \brief Prepare the drag object for drag & drop actions
-	 *
-	 * \param index Specifies the object to drag
-	 *
-	*/
-	void prepareDrag(const QModelIndex& index);
-
 private:
 	//! \brief No copying
 	HierarchyWidget(const HierarchyWidget& other);

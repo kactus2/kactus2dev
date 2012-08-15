@@ -17,7 +17,7 @@
 
 HierarchyItem::HierarchyItem(LibraryInterface* handler,
 							 HierarchyItem* parent, 
-							 VLNV* vlnvP ):
+							 const VLNV& vlnv):
 QObject(parent),
 component_(),
 busDef_(),
@@ -33,12 +33,8 @@ type_(HierarchyItem::ROOT) {
 
 	Q_ASSERT_X(handler, "HierarchyItem constructor",
 		"Null LibraryInterface pointer given as parameter");
-	Q_ASSERT_X(vlnvP, "HierarchyItem constructor",
-		"Invalid VLNV given as parameter");
 	Q_ASSERT_X(parent, "HierarchyItem constructor",
 		"Null parent pointer given as parameter");
-
-	VLNV vlnv = *vlnvP;
 
 	connect(this, SIGNAL(errorMessage(const QString&)),
 		parent, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
@@ -205,13 +201,12 @@ void HierarchyItem::parseComponent( const VLNV& vlnv ) {
 			}
 
 			// if item already has a child with given VLNV then don't create duplicate.
-			if (hasChild(compVLNV))
+			if (hasChild(compVLNV)) {
 				continue;
-
-			VLNV* temp = handler_->getOriginalPointer(compVLNV);
+			}
 
 			// create a child item that matches the referenced component
-			HierarchyItem* item = new HierarchyItem(handler_, this, temp);
+			HierarchyItem* item = new HierarchyItem(handler_, this, compVLNV);
 			connect(item, SIGNAL(errorMessage(const QString&)),
 				this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 			connect(item, SIGNAL(noticeMessage(const QString&)),
@@ -265,14 +260,15 @@ void HierarchyItem::parseApiDefinition( const VLNV& vlnv ) {
     isValid_ = apiDef_->isValid(errors);
 }
 
-void HierarchyItem::createChild(VLNV* vlnv ) {
+void HierarchyItem::createChild( const VLNV& vlnv ) {
 
 	// if item already has a child for given vlnv
-	if (hasChild(*vlnv))
+	if (hasChild(vlnv)) {
 		return;
+	}
 	// if the child does not exist in library
-	else if (!handler_->contains(*vlnv)) {
-		emit errorMessage(tr("The vlnv %1 was not found in the library.").arg(vlnv->toString()));
+	else if (!handler_->contains(vlnv)) {
+		emit errorMessage(tr("The vlnv %1 was not found in the library.").arg(vlnv.toString()));
 		return;
 	}
 
@@ -404,10 +400,6 @@ QSharedPointer<Component> HierarchyItem::component() const {
 	return component_;
 }
 
-VLNV* HierarchyItem::getVLNVPointer() const {
-	return handler_->getOriginalPointer(getVLNV());
-}
-
 int HierarchyItem::referenceCount(const VLNV& vlnv) const {
 	int count = 0;
 
@@ -504,10 +496,8 @@ void HierarchyItem::updateItems( const VLNV& vlnv ) {
 	// if at least one child item was removed then create it again.
 	if (count > 0) {
 
-		VLNV* vlnvP = handler_->getOriginalPointer(vlnv);
-
 		// if a child was removed then create a new child for the component
-		HierarchyItem* item = new HierarchyItem(handler_, this, vlnvP);
+		HierarchyItem* item = new HierarchyItem(handler_, this, vlnv);
 		childItems_.append(item);
 	}
 }

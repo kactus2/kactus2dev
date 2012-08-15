@@ -9,22 +9,29 @@
 #include <QObject>
 
 // constructor
-VLNV::VLNV(const QString &type, const QString &vendor, const QString &library,
-		const QString &name, const QString &version, const bool hidden):
-vendor_(vendor.simplified()), library_(library.simplified()), 
-name_(name.simplified()), version_(version.simplified()), isHidden_(hidden), 
-documentIsValid_(true) {
+VLNV::VLNV(const QString &type, 
+		   const QString &vendor,
+		   const QString &library,
+		const QString &name, 
+		const QString &version):
+vendor_(vendor.simplified()), 
+library_(library.simplified()), 
+name_(name.simplified()),
+version_(version.simplified()) {
 
 	type_ = string2Type(type);
 }
 
-VLNV::VLNV(const IPXactType &type, const QString &vendor, const QString &library,
-		const QString &name, const QString &version,
-                const bool hidden): 
+VLNV::VLNV(const IPXactType &type,
+		   const QString &vendor,
+		   const QString &library,
+		const QString &name,
+		const QString &version): 
 vendor_(vendor.simplified()),
-library_(library.simplified()), name_(name.simplified()), 
-version_(version.simplified()), type_(type),
-isHidden_(hidden), documentIsValid_(true) {
+library_(library.simplified()), 
+name_(name.simplified()), 
+version_(version.simplified()), 
+type_(type) {
 }
 
 // the destructor
@@ -37,9 +44,7 @@ vendor_(other.vendor_.simplified()),
 library_(other.library_.simplified()),
 name_(other.name_.simplified()), 
 version_(other.version_.simplified()),
-type_(other.type_),
-isHidden_(other.isHidden_), 
-documentIsValid_(other.documentIsValid_) {
+type_(other.type_) {
 }
 
 VLNV::VLNV(): 
@@ -47,9 +52,7 @@ vendor_(),
 library_(), 
 name_(), 
 version_(), 
-type_(VLNV::INVALID),
-isHidden_(false),
-documentIsValid_(true) {
+type_(VLNV::INVALID) {
 }
 
 QString VLNV::getTypestr() const {
@@ -76,18 +79,6 @@ QString VLNV::getVersion() const {
 	return version_;
 }
 
-bool VLNV::isHidden() const {
-	return isHidden_;
-}
-
-void VLNV::show() {
-	isHidden_ = false;
-}
-
-void VLNV::hide() {
-	isHidden_ = true;
-}
-
 // the = operator
 VLNV &VLNV::operator=(const VLNV &other) {
 	// if we are not assigning to self
@@ -97,8 +88,6 @@ VLNV &VLNV::operator=(const VLNV &other) {
 		name_ = other.name_.simplified();
 		version_ = other.version_.simplified();
 		type_ = other.type_;
-		isHidden_ = other.isHidden_;
-		documentIsValid_ = other.documentIsValid_;
 	}
 	return *this;
 }
@@ -423,14 +412,6 @@ QString VLNV::getElement( int column ) const {
 		default:
 			return QString();
 	}
-}
-
-bool VLNV::documentIsValid() const {
-	return documentIsValid_;
-}
-
-void VLNV::setDocumentValid( bool isValid ) {
-	documentIsValid_ = isValid;
 }
 
 void VLNV::setVersion( const QString version ) {

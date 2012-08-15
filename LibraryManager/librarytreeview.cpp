@@ -97,7 +97,7 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
 	QModelIndex sourceIndex = filter_->mapToSource(current);
 
 	LibraryItem* item = static_cast<LibraryItem*>(sourceIndex.internalPointer());
-	VLNV* vlnv = item->getVLNV();
+	VLNV vlnv = item->getVLNV();
 
 	// create a menu to show contextMenu actions
 	QMenu menu(this);
@@ -105,10 +105,10 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
 	bool hierarchical = false;
 
 	// if item can be identified as single item
-	if (vlnv) {
+	if (vlnv.isValid()) {
 
 		// parse the model
-		QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(*vlnv);
+		QSharedPointer<LibraryComponent const> libComp = handler_->getModelReadOnly(vlnv);
 		if (!libComp) {
 			emit errorMessage(tr("Item not found in the library"));
 			return;
@@ -391,9 +391,10 @@ void LibraryTreeView::mouseReleaseEvent( QMouseEvent* event ) {
 		LibraryItem* item = static_cast<LibraryItem*>(sourceIndex.internalPointer());
 
 		// if item contains a single vlnv
-		VLNV* vlnv = item->getVLNV();
-		if (vlnv)
-			emit itemSelected(*vlnv);
+		VLNV vlnv = item->getVLNV();
+		if (vlnv.isValid()) {
+			emit itemSelected(vlnv);
+		}
 	}
 
 	QTreeView::mouseReleaseEvent(event);
@@ -408,7 +409,21 @@ void LibraryTreeView::mouseMoveEvent( QMouseEvent *event ) {
 
 		// make sure the drag distance is large enough to start the drag
 		if (distance >= QApplication::startDragDistance()) {
-			emit dragInitiated(dragIndex_);
+
+			LibraryItem* item = static_cast<LibraryItem*>(dragIndex_.internalPointer());
+			VLNV vlnv = item->getVLNV();
+			
+			// if vlnv is valid
+			if (vlnv.isValid()) {
+				QDrag *drag = new QDrag(this);
+				QMimeData *mimeData = new QMimeData;
+
+				QVariant data = QVariant::fromValue(vlnv);
+
+				mimeData->setImageData(data);
+				drag->setMimeData(mimeData);
+				drag->exec(Qt::MoveAction | Qt::CopyAction | Qt::LinkAction);
+			}
 		}
 	}
 	QTreeView::mouseMoveEvent(event);
@@ -490,10 +505,10 @@ void LibraryTreeView::onCreateApiDef() {
 void LibraryTreeView::onOpenXml() {
 	QModelIndex index = filter_->mapToSource(currentIndex());
 	LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
-	VLNV* vlnv = item->getVLNV();
+	VLNV vlnv = item->getVLNV();
 
-	if (vlnv) {
-		QString xmlPath = handler_->getPath(*vlnv);
+	if (vlnv.isValid()) {
+		QString xmlPath = handler_->getPath(vlnv);
 		// open the file in operating system's default editor
 		QDesktopServices::openUrl(QUrl::fromLocalFile(xmlPath));
 	}

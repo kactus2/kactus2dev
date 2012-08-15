@@ -20,6 +20,9 @@
 #include <QDesktopServices>
 #include <QUrl>
 #include <QItemSelectionModel>
+#include <QDrag>
+#include <QMimeData>
+#include <QVariant>
 
 #include <QDebug>
 
@@ -496,7 +499,22 @@ void HierarchyView::mouseMoveEvent( QMouseEvent *event ) {
 
 		// make sure the drag distance is large enough to start the drag
 		if (distance >= QApplication::startDragDistance()) {
-			emit dragInitiated(dragIndex_);
+			
+			// find the item that is being dragged
+			HierarchyItem* item = static_cast<HierarchyItem*>(dragIndex_.internalPointer());
+			VLNV vlnv = item->getVLNV();
+
+			// if vlnv is valid
+			if (vlnv.isValid()) {
+				QDrag *drag = new QDrag(this);
+				QMimeData *mimeData = new QMimeData;
+
+				QVariant data = QVariant::fromValue(vlnv);
+
+				mimeData->setImageData(data);
+				drag->setMimeData(mimeData);
+				drag->exec(Qt::MoveAction | Qt::CopyAction | Qt::LinkAction);
+			}
 		}
 	}
 	QTreeView::mouseMoveEvent(event);

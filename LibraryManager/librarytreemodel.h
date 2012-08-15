@@ -174,13 +174,10 @@ signals:
     void createApiDef(const VLNV& vlnv);
 
 	//! \brief Remove the specified VLNV from the library
-	void removeVLNV(QList<VLNV*> vlnvs);
+	void removeVLNV(QList<VLNV> vlnvs);
 
 	//! \brief Export a list of vlnv items to a new location.
-	void exportItems(const QList<VLNV*>& list);
-
-	//! \brief Refresh and check integrity of the library
-	//void refreshLibrary();
+	void exportItems(const QList<VLNV> list);
 
 	//! \brief Refresh the item filtering because changes have been made
 	void invalidateFilter();
@@ -242,10 +239,10 @@ public slots:
     void onCreateApiDef(const QModelIndex& index);
 
 	//! \brief Remove the specified vlnv branch from the tree.
-	void onRemoveVLNV(VLNV* vlnv);
+	void onRemoveVLNV(const VLNV& vlnv);
 
 	//! \brief Add the specified vlnv branch to the tree.
-	void onAddVLNV(VLNV* vlnv);
+	void onAddVLNV(const VLNV& vlnv);
 
 	//! \brief Reset the model.
 	void onResetModel();

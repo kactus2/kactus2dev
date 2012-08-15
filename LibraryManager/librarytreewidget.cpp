@@ -101,35 +101,11 @@ void LibraryTreeWidget::setupConnections(LibraryTreeModel* dataModel) {
 	connect(&view_, SIGNAL(exportItem(const QModelIndex&)),
 		dataModel, SLOT(onExportItem(const QModelIndex&)), Qt::UniqueConnection);
 
-	connect(&view_, SIGNAL(dragInitiated(const QModelIndex&)),
-		this, SLOT(prepareDrag(const QModelIndex&)), Qt::UniqueConnection);
-
 	connect(&view_, SIGNAL(itemSelected(const VLNV&)),
 		this, SIGNAL(itemSelected(const VLNV&)), Qt::UniqueConnection);
 
 	connect(dataModel, SIGNAL(invalidateFilter()),
 		&filter_, SLOT(invalidate()), Qt::UniqueConnection);
-}
-
-void LibraryTreeWidget::prepareDrag( const QModelIndex& index ) {
-
-	if (!index.isValid())
-		return;
-
-	LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
-	VLNV* vlnv = item->getVLNV();
-
-	// if pointer is valid
-	if (vlnv) {
-		QDrag *drag = new QDrag(this);
-		QMimeData *mimeData = new QMimeData;
-
-		mimeData->setData("data/vlnvptr", QByteArray((const char*)&vlnv, sizeof(vlnv)));
-		drag->setMimeData(mimeData);
-		drag->exec(Qt::MoveAction | Qt::CopyAction | Qt::LinkAction);
-	}
-
-	return;
 }
 
 void LibraryTreeWidget::selectItem( const VLNV& vlnv ) {

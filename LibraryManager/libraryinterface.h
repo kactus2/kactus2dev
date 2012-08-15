@@ -166,14 +166,6 @@ public:
 	*/
 	virtual VLNV::IPXactType getDocumentType(const VLNV& vlnv) = 0;
 
-	/*! \brief Get pointer to the VLNV instance owned by the Library Data
-	 *
-	 * \param vlnv Reference to the vlnv that contains same fields as the searched vlnv.
-	 *
-	 * \return Pointer to the original vlnv instance.
-	*/
-	virtual VLNV* getOriginalPointer(const VLNV& vlnv) const = 0;
-
 	/*! \brief Count how many times the given component is instantiated in the library.
 	 *
 	 * \param vlnv Identifies the component that's instances are searched.

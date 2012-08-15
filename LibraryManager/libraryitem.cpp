@@ -22,42 +22,40 @@ name_(name),
 level_(LibraryItem::ROOT),
 childItems_(),
 parentItem_(0),
-vlnv_(NULL),
-isValid_(true) {
+vlnv_() {
 }
 
 // The constructor
-LibraryItem::LibraryItem(VLNV* vlnv, Level level, LibraryItem *parent): 
+LibraryItem::LibraryItem(const VLNV& vlnv, Level level, LibraryItem *parent): 
 QObject(parent), 
 name_(), 
 level_(level),
 childItems_(), 
 parentItem_(parent),
-vlnv_(NULL),  
-isValid_(vlnv->documentIsValid()) {
+vlnv_() {
 
 	QString childName;
 
 	// choose name for the item in the tree
 	switch (level) {
 	case TYPE:
-		name_ = VLNV::type2Print(vlnv->getType());
-		childName = vlnv->getVendor();
+		name_ = VLNV::type2Print(vlnv.getType());
+		childName = vlnv.getVendor();
 		break;
 	case VENDOR:
-		name_ = vlnv->getVendor();
-		childName =vlnv->getLibrary();
+		name_ = vlnv.getVendor();
+		childName = vlnv.getLibrary();
 		break;
 	case LIBRARY:
-		name_ = vlnv->getLibrary();
-		childName = vlnv->getName();
+		name_ = vlnv.getLibrary();
+		childName = vlnv.getName();
 		break;
 	case NAME:
-		name_ = vlnv->getName();
-		childName = vlnv->getVersion();
+		name_ = vlnv.getName();
+		childName = vlnv.getVersion();
 		break;
 	case VERSION:
-		name_ = vlnv->getVersion();
+		name_ = vlnv.getVersion();
 		vlnv_ = vlnv;
 		break;
 		// invalid level
@@ -66,7 +64,7 @@ isValid_(vlnv->documentIsValid()) {
 	}
 
 	// if the vlnv_ is null then the item has child items
-	if (!vlnv_) {
+	if (!vlnv_.isValid()) {
 
 		// a new item can't yet have children so no need to search for
 		// one with a same name
@@ -83,35 +81,30 @@ LibraryItem::~LibraryItem() {
 	childItems_.clear();
 }
 
-void LibraryItem::createChild( VLNV* vlnv, Level level ) {
+void LibraryItem::createChild( const VLNV& vlnv, Level level ) {
 	QString childName;
 
 	// choose name for the item in the tree
 	switch (level) {
 	case ROOT:
-		childName = VLNV::type2Print(vlnv->getType());
+		childName = VLNV::type2Print(vlnv.getType());
 		break;
 	case TYPE:
-		childName = vlnv->getVendor();
+		childName = vlnv.getVendor();
 		break;
 	case VENDOR:
-		childName = vlnv->getLibrary();
+		childName = vlnv.getLibrary();
 		break;
 	case LIBRARY:
-		childName = vlnv->getName();
+		childName = vlnv.getName();
 		break;
 	case NAME:
-		childName = vlnv->getVersion();
+		childName = vlnv.getVersion();
 		break;
 		// invalid level
 	default:
 		return;
 	}
-
-	// if the child to be created is valid then this item must always be valid 
-	// too. Only if all children are invalid this can be invalid too
-	if (vlnv->documentIsValid())
-		isValid_ = true;
 
 	// find a child with a same name
 	for (int i = 0; i < childItems_.size(); ++i) {
@@ -164,10 +157,7 @@ int LibraryItem::getNumberOfChildren() const {
 	return childItems_.size();
 }
 
-VLNV* LibraryItem::getVLNV() const {
-	if (level_ != VERSION) {
-		return 0;
-	}
+VLNV LibraryItem::getVLNV() const {
 	return vlnv_;
 }
 
@@ -183,11 +173,12 @@ bool LibraryItem::hasChildren() const {
 	return (childItems_.size() != 0);
 }
 
-void LibraryItem::getVLNVs( QList<VLNV*>& vlnvList ) {
+void LibraryItem::getVLNVs( QList<VLNV>& vlnvList ) {
 	
 	// if this is a leaf-object
-	if (vlnv_)
+	if (vlnv_.isValid()) {
 		vlnvList.append(vlnv_);
+	}
 
 	// if this item has child-items but no vlnv itself
 	else {
@@ -230,7 +221,7 @@ LibraryItem* LibraryItem::findHighestUnique( LibraryItem* childItem ) {
 	return childItem;
 }
 
-LibraryItem* LibraryItem::findHighestUnique( const VLNV* vlnv ) {
+LibraryItem* LibraryItem::findHighestUnique( const VLNV& vlnv ) {
 
 	// search all children
 	for (int i = 0; i < childItems_.size(); ++i) {
@@ -238,31 +229,31 @@ LibraryItem* LibraryItem::findHighestUnique( const VLNV* vlnv ) {
 		switch (level_) {
 
 		case ROOT: {
-			if (childItems_.at(i)->getName() == VLNV::type2Print(vlnv->getType())) {
+			if (childItems_.at(i)->getName() == VLNV::type2Print(vlnv.getType())) {
 				return childItems_.at(i)->findHighestUnique(vlnv);
 			}
 			continue;
 				   }
 		case TYPE: {
-			if (childItems_.at(i)->getName() == vlnv->getVendor()) {
+			if (childItems_.at(i)->getName() == vlnv.getVendor()) {
 				return childItems_.at(i)->findHighestUnique(vlnv);
 			}
 			continue;
 				   }
 		case VENDOR: {
-			if (childItems_.at(i)->getName() == vlnv->getLibrary()) {
+			if (childItems_.at(i)->getName() == vlnv.getLibrary()) {
 				return childItems_.at(i)->findHighestUnique(vlnv);
 			}
 			continue;
 					 }
 		case LIBRARY: {
-			if (childItems_.at(i)->getName() == vlnv->getName()) {
+			if (childItems_.at(i)->getName() == vlnv.getName()) {
 				return childItems_.at(i)->findHighestUnique(vlnv);
 			}
 			continue;
 					  }
 		case NAME: {
-			if (childItems_.at(i)->getName() == vlnv->getVersion()) {
+			if (childItems_.at(i)->getName() == vlnv.getVersion()) {
 				return childItems_.at(i)->findHighestUnique(vlnv);
 			}
 			continue;
@@ -276,25 +267,6 @@ LibraryItem* LibraryItem::findHighestUnique( const VLNV* vlnv ) {
 	// if there was no child that matched the vlnv then this must be the highest 
 	// unique that can be used.
 	return this;
-}
-
-bool LibraryItem::isValid() {
-	
-	// if this item identifies the vlnv then it specifies the setting directly
-	if (vlnv_) {
-		isValid_ = vlnv_->documentIsValid();
-		return isValid_;
-	}
-
-	return isValid_;
-}
-
-void LibraryItem::setValidity( bool valid ) {
-	isValid_ = valid;
-
-	// if this item identifies the vlnv then set the setting for vlnv also
-	if (vlnv_)
-		vlnv_->setDocumentValid(valid);
 }
 
 LibraryItem* LibraryItem::findItem( const VLNV& vlnv ) {
@@ -320,8 +292,9 @@ LibraryItem* LibraryItem::findItem( const VLNV& vlnv ) {
 	case VERSION:
 
 		// if this item represents the specified vlnv
-		if (*vlnv_ == vlnv)
+		if (vlnv_ == vlnv) {
 			return this;
+		}
 		
 		// if vlnv was not found
 		return 0;

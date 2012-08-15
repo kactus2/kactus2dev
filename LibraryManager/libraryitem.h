@@ -47,11 +47,11 @@ public:
 	/*! \brief The constructor
 	*
 	* \exception runtime_error Occurs if an invalid level is specified.
-	* \param vlnv A pointer to the VLNV tag that is to be added to database
+	* \param vlnv A VLNV tag that is to be added to database
 	* \param level The level of the item in the hierarchy
 	* \param parent A pointer to the parent of this item
 	*/
-	LibraryItem(VLNV* vlnv, Level level, LibraryItem *parent);
+	LibraryItem(const VLNV& vlnv, Level level, LibraryItem *parent);
 
 	/*! \brief The destructor of the class LibraryItem
 	*
@@ -64,7 +64,7 @@ public:
 	* \param level The level of the item in the hierarchy
 	* 
 	*/
-	void createChild(VLNV* vlnv, Level level);
+	void createChild(const VLNV& vlnv, Level level);
 
 	/*! \brief Get the parent of the current node
 	 *
@@ -107,10 +107,11 @@ public:
 	 *
 	 * Valid VLNV pointer can only be returned if this item is low level
 	 * item that can identify a single VLNV tag. If level is other than
-	 * VERSION then a null pointer is returned.
-	 * \return A pointer to the VLNV instance that is represented by this item.
+	 * VERSION then a non valid vlnv is returned.
+	 * 
+	 * \return A VLNV instance that is represented by this item.
 	 */
-	VLNV* getVLNV() const;
+	VLNV getVLNV() const;
 
 	/*! \brief Get the index of the specified item
 	 *
@@ -134,10 +135,10 @@ public:
 
 	/*! \brief Get list of all VLNV tags that exist under this item
 	 *
-	 * \param vlnvList QList where all VLNV-pointers are to be saved
+	 * \param vlnvList QList where all VLNVs are to be saved
 	 *
 	*/
-	void getVLNVs(QList<VLNV*>& vlnvList);
+	void getVLNVs(QList<VLNV>& vlnvList);
 
 	/*! \brief Remove a child of this item
 	 *
@@ -161,26 +162,13 @@ public:
 
 	/*! \brief Find the highest level LibraryItem that still identifies a single item
 	 * 
-	 * This function finds the highest level possible to identify a signle item.
+	 * This function finds the highest level possible to identify a single item.
 	 *
-	 * \param vlnv Pointer to the vlnv element that must be matched.
+	 * \param vlnv The vlnv element that must be matched.
 	 *
 	 * \return LibraryItem* pointer to the item that is the highest level item.
 	*/
-	LibraryItem* findHighestUnique(const VLNV* vlnv);
-
-	/*! \brief Check if this item is valid or not.
-	 *
-	 * \return True if the library item represents atleast one valid document.
-	*/
-	bool isValid();
-
-	/*! \brief Set the validity information of this item
-	 *
-	 * \param valid Sets the validity of this item.
-	 *
-	*/
-	void setValidity(bool valid);
+	LibraryItem* findHighestUnique(const VLNV& vlnv);
 
 	/*! \brief Find the library item that uniquely represents the specified vlnv.
 	 *
@@ -280,10 +268,7 @@ private:
 	/*! \brief A VLNV tag that matches the version
 	 *
 	 */
-	VLNV* vlnv_;
-
-	//! \brief Specifies the validity of this item.
-	bool isValid_;
+	VLNV vlnv_;
 };
 
 #endif /* LIBRARYITEM_H_ */

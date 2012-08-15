@@ -1550,26 +1550,30 @@ void HWDesignDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
     dragBus_ = false;
 
     // Allow drag only if the diagram is not locked and the dragged object is a vlnv.
-    if (!isProtected() && event->mimeData()->hasFormat("data/vlnvptr"))
+    if (!isProtected() && event->mimeData()->hasImage())
     {
         event->acceptProposedAction();
 
-        VLNV *vlnv;
-        memcpy(&vlnv, event->mimeData()->data("data/vlnvptr").data(), sizeof(vlnv));
+		QVariant data = event->mimeData()->imageData();
+		if (!data.canConvert<VLNV>()) {
+			return;
+		}
 
-        if (vlnv->getType() == VLNV::COMPONENT)
+        VLNV vlnv = data.value<VLNV>();
+
+        if (vlnv.getType() == VLNV::COMPONENT)
         {
             // Determine the component type.
-			QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(*vlnv);
+			QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(vlnv);
             QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
             // component with given vlnv was not found
             if (!comp) {
 				emit errorMessage(tr("Component with the VLNV %1:%2:%3:%4 was not found in the library.").arg(
-					vlnv->getVendor()).arg(
-					vlnv->getLibrary()).arg(
-					vlnv->getName()).arg(
-					vlnv->getVersion()));
+					vlnv.getVendor()).arg(
+					vlnv.getLibrary()).arg(
+					vlnv.getName()).arg(
+					vlnv.getVersion()));
                 return;
             }
 
@@ -1593,11 +1597,11 @@ void HWDesignDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
             }
             comp.clear();
         }
-        else if (vlnv->getType() == VLNV::BUSDEFINITION || 
-			     vlnv->getType() == VLNV::ABSTRACTIONDEFINITION)
+        else if (vlnv.getType() == VLNV::BUSDEFINITION || 
+			     vlnv.getType() == VLNV::ABSTRACTIONDEFINITION)
         {
             // Check that the bus definition is compatible with the edited component.
-            QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(*vlnv);
+            QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(vlnv);
             QSharedPointer<BusDefinition> busDef = libComp.staticCast<BusDefinition>();
 
             if ((getEditedComponent()->getComponentImplementation() == KactusAttribute::KTS_HW &&
@@ -1703,11 +1707,15 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
     if (dragCompType_ != CIT_NONE)
     {
         // Retrieve the vlnv.
-        VLNV *vlnv;
-        memcpy(&vlnv, event->mimeData()->data("data/vlnvptr").data(), sizeof(vlnv));
+		QVariant data = event->mimeData()->imageData();
+		if (!data.canConvert<VLNV>()) {
+			return;
+		}
+
+		VLNV vlnv = data.value<VLNV>();
 
         // Disallow self-instantiation.
-        if (*vlnv == *getEditedComponent()->getVlnv())
+        if (vlnv == *getEditedComponent()->getVlnv())
         {
             QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
                 tr("Component cannot be instantiated to its own design."),
@@ -1717,7 +1725,7 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         }
 
         // Create the component model.
-        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(*vlnv);
+        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(vlnv);
         QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
         // Set the instance name for the new component instance.
@@ -1766,7 +1774,7 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 
             QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
                                tr("Component instance '%1' is about to be replaced "
-                                  "with an instance of %2. Continue and replace?").arg(oldCompItem->name(), vlnv->toString()),
+                                  "with an instance of %2. Continue and replace?").arg(oldCompItem->name(), vlnv.toString()),
                                QMessageBox::Yes | QMessageBox::No, (QWidget*)parent());
             
             if (msgBox.exec() == QMessageBox::No)
@@ -1792,13 +1800,13 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         if (highlightedEndPoint_ != 0)
         {
             // Retrieve the busdef VLNV and determine the absdef VLNV.
-            VLNV *droppedVlnv;
-            memcpy(&droppedVlnv, event->mimeData()->data("data/vlnvptr").data(), sizeof(droppedVlnv));
+            VLNV droppedVlnv;
+            memcpy(&droppedVlnv, event->mimeData()->data("kactus2/vlnv").data(), sizeof(droppedVlnv));
 
-			Q_ASSERT(getLibraryInterface()->contains(*droppedVlnv));
+			Q_ASSERT(getLibraryInterface()->contains(droppedVlnv));
 
-            VLNV vlnv = *droppedVlnv;
-			vlnv.setType(getLibraryInterface()->getDocumentType(*droppedVlnv));
+            VLNV vlnv = droppedVlnv;
+			vlnv.setType(getLibraryInterface()->getDocumentType(droppedVlnv));
 
 			VLNV absdefVLNV;
 

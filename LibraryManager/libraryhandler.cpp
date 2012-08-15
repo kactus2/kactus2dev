@@ -106,49 +106,29 @@ LibraryHandler::~LibraryHandler() {
 void LibraryHandler::syncronizeModels() {
 
 	// connect the signals from the data model
-	connect(data_.data(), SIGNAL(removeVLNV(VLNV*)),
-		treeModel_.data(), SLOT(onRemoveVLNV(VLNV*)), Qt::UniqueConnection);
-	connect(data_.data(), SIGNAL(removeVLNV(VLNV*)),
-		hierarchyModel_.data(), SLOT(onRemoveVLNV(VLNV*)), Qt::UniqueConnection);
+	connect(data_.data(), SIGNAL(removeVLNV(const VLNV&)),
+		treeModel_.data(), SLOT(onRemoveVLNV(const VLNV&)), Qt::UniqueConnection);
+	connect(data_.data(), SIGNAL(removeVLNV(const VLNV&)),
+		hierarchyModel_.data(), SLOT(onRemoveVLNV(const VLNV&)), Qt::UniqueConnection);
 
 	connect(data_.data(), SIGNAL(resetModel()),
 		hierarchyModel_.data(), SLOT(onResetModel()), Qt::UniqueConnection);
 	connect(data_.data(), SIGNAL(resetModel()),
 		treeModel_.data(), SLOT(onResetModel()), Qt::UniqueConnection);
 
-	connect(data_.data(), SIGNAL(addVLNV(VLNV*)),
-		treeModel_.data(), SLOT(onAddVLNV(VLNV*)), Qt::UniqueConnection);
+	connect(data_.data(), SIGNAL(addVLNV(const VLNV&)),
+		treeModel_.data(), SLOT(onAddVLNV(const VLNV&)), Qt::UniqueConnection);
 
 	// signals from data model to library handler
 	connect(data_.data(), SIGNAL(errorMessage(const QString&)),
 		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 	connect(data_.data(), SIGNAL(noticeMessage(const QString&)),
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-    connect(data_.data(), SIGNAL(openSWDesign(const VLNV&)),
-        this, SLOT(onOpenSWDesign(const VLNV&)), Qt::UniqueConnection);
-    connect(data_.data(), SIGNAL(openSystemDesign(const VLNV&)),
-        this, SLOT(onOpenSystemDesign(const VLNV&)), Qt::UniqueConnection);
-	connect(data_.data(), SIGNAL(openDesign(const VLNV&)),
-		this, SLOT(onOpenDesign(const VLNV&)), Qt::UniqueConnection);
-	connect(data_.data(), SIGNAL(editItem(const VLNV&)),
-		this, SLOT(onEditItem(const VLNV&)), Qt::UniqueConnection);
-	connect(data_.data(), SIGNAL(createBusDef(const VLNV&)),
-		this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
-    connect(data_.data(), SIGNAL(createComDef(const VLNV&)),
-        this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
-    connect(data_.data(), SIGNAL(createApiDef(const VLNV&)),
-        this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
-	connect(data_.data(), SIGNAL(createComponent(const VLNV&)),
-		this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
-	connect(data_.data(), SIGNAL(createDesign(const VLNV&)),
-		this, SIGNAL(createDesignForExistingComponent(VLNV const&)), Qt::UniqueConnection);
-    connect(data_.data(), SIGNAL(createSWDesign(const VLNV&)),
-        this, SIGNAL(createSWDesign(const VLNV&)), Qt::UniqueConnection);
 
 	/**************************************************************************/
 	// connect the signals from the tree model
-	connect(treeModel_.data(), SIGNAL(removeVLNV(QList<VLNV*>)),
-		this, SLOT(onRemoveVLNV(QList<VLNV*>)), Qt::UniqueConnection);
+	connect(treeModel_.data(), SIGNAL(removeVLNV(const QList<VLNV>)),
+		this, SLOT(onRemoveVLNV(const QList<VLNV>)), Qt::UniqueConnection);
 
 	// signals from tree model to library handler
 	connect(treeModel_.data(), SIGNAL(errorMessage(const QString&)),
@@ -179,8 +159,8 @@ void LibraryHandler::syncronizeModels() {
         this, SIGNAL(createSWDesign(const VLNV&)), Qt::UniqueConnection);
     connect(treeModel_.data(), SIGNAL(createSystemDesign(const VLNV&)),
         this, SIGNAL(createSystemDesign(const VLNV&)), Qt::UniqueConnection);
-	connect(treeModel_.data(), SIGNAL(exportItems(const QList<VLNV*>&)),
-		this, SLOT(onExportItems(const QList<VLNV*>&)), Qt::UniqueConnection);
+	connect(treeModel_.data(), SIGNAL(exportItems(const QList<VLNV>)),
+		this, SLOT(onExportItems(const QList<VLNV>)), Qt::UniqueConnection);
 	connect(treeModel_.data(), SIGNAL(refreshDialer()),
 		this, SIGNAL(refreshDialer()), Qt::UniqueConnection);
 
@@ -217,15 +197,16 @@ void LibraryHandler::syncronizeModels() {
     connect(hierarchyModel_.data(), SIGNAL(createSystemDesign(const VLNV&)),
             this, SIGNAL(createSystemDesign(const VLNV&)), Qt::UniqueConnection);
 
-	connect(hierarchyModel_.data(), SIGNAL(exportItem(const VLNV&)),
-		    this, SLOT(onExportItem(const VLNV&)), Qt::UniqueConnection);
+	connect(hierarchyModel_.data(), SIGNAL(exportItem(const VLNV)),
+		    this, SLOT(onExportItem(const VLNV)), Qt::UniqueConnection);
 }
 
-void LibraryHandler::onExportItem( const VLNV& vlnv ) {
+void LibraryHandler::onExportItem( const VLNV vlnv ) {
 	
 	// invalid vlnvs are not exported
-	if (!vlnv.isValid())
+	if (!vlnv.isValid()) {
 		return;
+	}
 
 	// get the current working directory and save it to be restored in the end
 	// of the function
@@ -257,11 +238,12 @@ void LibraryHandler::onExportItem( const VLNV& vlnv ) {
 	return;
 }
 
-void LibraryHandler::onExportItems(const QList<VLNV*>& vlnvs) {
+void LibraryHandler::onExportItems( const QList<VLNV> vlnvs ) {
 	
 	// if no VLNVs to export
-	if (vlnvs.isEmpty())
+	if (vlnvs.isEmpty()) {
 		return;
+	}
 
 	// get the current working directory and save it to be restored in the end
 	// of the function
@@ -289,14 +271,15 @@ void LibraryHandler::onExportItems(const QList<VLNV*>& vlnvs) {
 	// info of copied files is stored so same file is not copied multiple times
 	fileList handledFiles;
 
-	foreach (VLNV* vlnv, vlnvs) {
+	foreach (VLNV vlnv, vlnvs) {
 
 		// invalid vlnvs are not exported
-		if (!vlnv->isValid())
+		if (!vlnv.isValid()) {
 			continue;
+		}
 
 		// copy the files to the specified location from each vlnv
-		copyFiles(target, *vlnv, handledFiles, yesToAll, noToAll);
+		copyFiles(target, vlnv, handledFiles, yesToAll, noToAll);
 	}
 
 	QDir::setCurrent(savedWorkingDirectory.absolutePath());
@@ -1115,10 +1098,6 @@ void LibraryHandler::onCreateDesign( const VLNV& vlnv ) {
 	//emit openDesign(vlnv, QString());
 }
 
-VLNV* LibraryHandler::getOriginalPointer( const VLNV& vlnv ) const {
-	return data_->getOriginalPointer(vlnv);
-}
-
 int LibraryHandler::referenceCount( const VLNV& vlnv ) const {
 	QList<VLNV> list;
 	hierarchyModel_->getOwners(list, vlnv);
@@ -1153,10 +1132,9 @@ void LibraryHandler::removeObject( const VLNV& vlnv ) {
 	QString vlnvPath = data_->getPath(vlnv);
 
 	// tell each model to remove the object
-	VLNV* vlnvPointer = data_->getOriginalPointer(vlnv);
-	treeModel_->onRemoveVLNV(vlnvPointer);
-	hierarchyModel_->onRemoveVLNV(vlnvPointer);
-	data_->onRemoveVLNV(vlnvPointer);
+	treeModel_->onRemoveVLNV(vlnv);
+	hierarchyModel_->onRemoveVLNV(vlnv);
+	data_->onRemoveVLNV(vlnv);
 
 	QFile xmlFile(vlnvPath);
 	if (xmlFile.exists()) {
@@ -1171,48 +1149,40 @@ void LibraryHandler::removeObject( const VLNV& vlnv ) {
 }
 
 void LibraryHandler::removeObjects( const QList<VLNV>& vlnvList ) {
-
-	QList<VLNV*> originalPointers;
-	foreach (VLNV vlnv, vlnvList) {
-		VLNV* vlnvP = data_->getOriginalPointer(vlnv);
-		if (vlnvP)
-			originalPointers.append(vlnvP);
-	}
-
-	if (!originalPointers.isEmpty())
-		onRemoveVLNV(originalPointers);
+	onRemoveVLNV(vlnvList);
 }
 
-void LibraryHandler::onRemoveVLNV( QList<VLNV*> vlnvs ) {
+void LibraryHandler::onRemoveVLNV( const QList<VLNV> vlnvs ) {
 
 	// create the dialog to select which items to remove
 	ObjectRemoveDialog removeDialog(this);
 
 	QStringList vlnvPaths;
 
-	foreach (VLNV* vlnv, vlnvs) {
+	foreach (VLNV vlnv, vlnvs) {
 
-		if (!vlnv)
+		if (!vlnv.isValid()) {
 			continue;
+		}
 
 		// if the vlnv is not found in the library
-		if (!data_->contains(*vlnv)) {
-			objects_.remove(*vlnv);
+		if (!data_->contains(vlnv)) {
+			objects_.remove(vlnv);
 			continue;
 		}
 
 		// path to the given vlnv file
-		QFileInfo vlnvInfo(data_->getPath(*vlnv));
+		QFileInfo vlnvInfo(data_->getPath(vlnv));
 
 		// save the dir path of the xml file
 		vlnvPaths.append(vlnvInfo.absolutePath());
 
 		// the vlnv and it's file to the dialog
-		removeDialog.createItem(*vlnv, true);
+		removeDialog.createItem(vlnv, true);
 
-		switch (data_->getType(*vlnv)) {
+		switch (data_->getType(vlnv)) {
 		case VLNV::COMPONENT: {
-			QSharedPointer<LibraryComponent> libComp = getModel(*vlnv);
+			QSharedPointer<LibraryComponent> libComp = getModel(vlnv);
 			QSharedPointer<Component> component = libComp.staticCast<Component>();
 
 			// ask the component for all it's hierarchical references
@@ -1253,7 +1223,7 @@ void LibraryHandler::onRemoveVLNV( QList<VLNV*> vlnvs ) {
 
 			// ask the component for all it's file references
 			QStringList files = component->getFiles();
-			QString compPath = data_->getPath(*vlnv);
+			QString compPath = data_->getPath(vlnv);
 			foreach (QString relPath, files) {
 				QString absPath = General::getAbsolutePath(compPath, relPath);
 				if (!absPath.isEmpty())
@@ -1262,7 +1232,7 @@ void LibraryHandler::onRemoveVLNV( QList<VLNV*> vlnvs ) {
 			break;
 							  }
 		case VLNV::DESIGNCONFIGURATION: {
-			QSharedPointer<LibraryComponent> libComp = getModel(*vlnv);
+			QSharedPointer<LibraryComponent> libComp = getModel(vlnv);
 			QSharedPointer<DesignConfiguration> desConf = libComp.staticCast<DesignConfiguration>();
 
 			// if library contains the design reference then add it to the dialog list.
@@ -1276,7 +1246,7 @@ void LibraryHandler::onRemoveVLNV( QList<VLNV*> vlnvs ) {
 			
 			// find the child items of the bus definition
 			QList<VLNV> absDefVLNVs;
-			hierarchyModel_->getChildren(absDefVLNVs, *vlnv);
+			hierarchyModel_->getChildren(absDefVLNVs, vlnv);
 
 			// if bus definition is removed then ask to remove all it's 
 			// abstraction definitions also.
@@ -1294,7 +1264,7 @@ void LibraryHandler::onRemoveVLNV( QList<VLNV*> vlnvs ) {
 		case VLNV::ABSTRACTIONDEFINITION: {
 
 			// parse the abstraction definition
-			QSharedPointer<LibraryComponent> libComp = getModel(*vlnv);
+			QSharedPointer<LibraryComponent> libComp = getModel(vlnv);
 			QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
 
 			// find abs def's bus definition
@@ -1309,7 +1279,7 @@ void LibraryHandler::onRemoveVLNV( QList<VLNV*> vlnvs ) {
 			hierarchyModel_->getChildren(absDefVLNVs, busDefVLNV);
 
 			// if theres only this abs def for the bus def
-			if (absDefVLNVs.size() == 1 && absDefVLNVs.first() == *vlnv)
+			if (absDefVLNVs.size() == 1 && absDefVLNVs.first() == vlnv)
 				// also add the bus definition to the list of removable items
 				removeDialog.createItem(busDefVLNV);
 
@@ -1343,10 +1313,9 @@ void LibraryHandler::onRemoveVLNV( QList<VLNV*> vlnvs ) {
 			QString objectPath = data_->getPath(item.vlnv_);
 
 			// tell each model to remove the object
-			VLNV* vlnvPointer = data_->getOriginalPointer(item.vlnv_);
-			treeModel_->onRemoveVLNV(vlnvPointer);
-			hierarchyModel_->onRemoveVLNV(vlnvPointer);
-			data_->onRemoveVLNV(vlnvPointer);
+			treeModel_->onRemoveVLNV(item.vlnv_);
+			hierarchyModel_->onRemoveVLNV(item.vlnv_);
+			data_->onRemoveVLNV(item.vlnv_);
 
 			QFile xmlFile(objectPath);
 			if (!xmlFile.remove()) {
@@ -1510,20 +1479,52 @@ void LibraryHandler::endSave() {
 
 bool LibraryHandler::isValid( const VLNV& vlnv ) {
 	
+	QSharedPointer<LibraryComponent> libComp;
+
 	// if object has already been parsed before
 	if (objects_.contains(vlnv)) {
-		return objects_.value(vlnv)->isValid();
+		libComp = objects_.value(vlnv);
 	}
 	else {
-		QSharedPointer<LibraryComponent> libComp = getModel(vlnv);
+		libComp = getModel(vlnv);
 
 		// if the object was not found
 		if (!libComp) {
 			return false;
 		}
-
-		return libComp->isValid();
 	}
+
+	// if the item contains internal errors
+	if (!libComp->isValid()) {
+		return false;
+	}
+
+	// check that all VLNVs needed by this model are found in the library
+	QList<VLNV> vlnvList = libComp->getDependentVLNVs();
+	for (int j = 0; j < vlnvList.size(); ++j) {
+		// if the document referenced by this model is not found
+		if (!data_->contains(vlnvList.at(j))) {
+			return false;
+		}
+	}
+
+	// check all files referenced by this model
+	QStringList filelist = libComp->getDependentFiles();
+	QString xmlPath = data_->getPath(vlnv);
+	for (int j = 0; j < filelist.size(); ++j) {
+
+		// make sure that each file referenced by the model exists
+		// in the file system
+		QString path = General::getAbsolutePath(xmlPath, filelist.at(j));
+
+		// if the path did not exist
+		if (path.isEmpty()) {
+			return false;
+		}
+	}
+
+	// all checks were ok
+	return true;
 }
 
 void LibraryHandler::clearDirectoryStructure( const QString& dirPath,

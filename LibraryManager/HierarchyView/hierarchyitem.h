@@ -42,11 +42,13 @@ public:
 
 	/*! \brief The constructor
 	 *
+	 * \param handler Pointer to the instance that manages the library.
 	 * \param parent Pointer to the owner of this object.
+	 * \param vlnv The vlnv to construct the item for.
 	 *
 	*/
 	HierarchyItem(LibraryInterface* handler, 
-		HierarchyItem* parent, VLNV* vlnvP);
+		HierarchyItem* parent, const VLNV& vlnv);
 
 	/*! \brief The constructor for the root item.
 	 * 
@@ -67,7 +69,7 @@ public:
 	 * \param vlnv Identifies the component to represent.
 	 *
 	*/
-	void createChild(VLNV* vlnv);
+	void createChild(const VLNV& vlnv);
 	
 	//! \brief The destructor
 	virtual ~HierarchyItem();
@@ -154,12 +156,6 @@ public:
 	 * \return QSharedPointer<Component> Pointer to the component model.
 	*/
 	QSharedPointer<Component> component() const;
-
-	/*! \brief Get pointer to the original vlnv instance owned by LibraryData.
-	 *
-	 * \return Pointer to the vlnv instance
-	*/
-	VLNV* getVLNVPointer() const;
 
 	/*! \brief Count how many instances of given vlnv is found under this item.
 	 *

@@ -58,10 +58,9 @@ static const QString KACTUS_LIBRARY_DIRNAME(".kactus2");
 static const QString KACTUS_LIBRARY_FILENAME(".librarySettings.ini");
 
 LibraryData::LibraryData(LibraryHandler* parent, QMainWindow* mainWnd): 
-QAbstractItemModel(parent),
+QObject(parent),
 mainWnd_(mainWnd),
 libraryItems_(),
-table_(),
 handler_(parent) {
 
 	connect(this, SIGNAL(errorMessage(const QString&)),
@@ -76,192 +75,8 @@ LibraryData::~LibraryData() {
 	libraryItems_.clear();
 }
 
-QModelIndex LibraryData::index(int row, int column,
-		const QModelIndex& parent) const {
-
-	// if invalid row
-	if (row >= table_.size() || row < 0) {
-		return QModelIndex();
-	}
-	// if invalid column
-	else if (column < 0 || column > 4) {
-		return QModelIndex();
-	}
-	// this is not hierarchical model so parent can not be valid
-	else if (parent.isValid()) {
-		return QModelIndex();
-	}
-
-	return createIndex(row, column, table_.value(row).data());
-}
-
-QModelIndex LibraryData::parent(const QModelIndex&) const {
-
-	return QModelIndex();
-}
-
-int LibraryData::rowCount(const QModelIndex& parent) const {
-
-	if (parent.isValid()) {
-		return 0;
-	}
-
-	return table_.size();
-}
-
-int LibraryData::columnCount(const QModelIndex& parent) const {
-
-	if (parent.isValid()) {
-		return 0;
-	}
-	return 5;
-}
-
-QVariant LibraryData::data(const QModelIndex& index,
-		int role) const {
-
-	// if index is not valid
-	if (!index.isValid()) {
-		return QVariant();
-	}
-	// if row is invalid
-	else if (index.row() >= table_.size() || index.row() < 0) {
-		return QVariant();
-	}
-	// if column is invalid
-	else if (index.column() > 4 || index.column() < 0) {
-		return QVariant();
-	}
-
-	// if role is displayRole
-	else if (role == Qt::DisplayRole) {
-
-		// return the right value from vlnv identified by column
-		return table_.at(index.row())->getElement(index.column());
-	}
-
-	// if role is tooltipRole
-	else if (role == Qt::ToolTipRole) {
-		switch (index.column()) {
-
-		// VLNV type
-		case 0: {
-			return tr("The type of the IP-Xact document");
-		}
-		// VLNV vendor
-		case 1: {
-
-			return tr("The value of the vendor element in VLNV");
-		}
-		// VLNV Library
-		case 2: {
-			return tr("The value of the library element in VLNV");
-		}
-		// VLNV Name
-		case 3: {
-			return tr("The value of the name element in VLNV");
-		}
-		// VLNV Version
-		default: {
-			return tr("The value of the version element in VLNV");
-		}
-		}
-	}
-
-	// if role is foreground
-	else if (role == Qt::ForegroundRole) {
-		QColor textColor;
-
-		if (table_.value(index.row())->documentIsValid()) {
-			textColor = QColor("black");
-		}
-
-		// if the document is not valid then it is marked with red color
-		else {
-			textColor = QColor("red");
-		}
-
-		return QBrush(textColor);
-	}
-	// if unsupported role
-	else {
-		return QVariant();
-	}
-}
-
-Qt::ItemFlags LibraryData::flags(const QModelIndex& index) const {
-
-	if (!index.isValid()) {
-		return Qt::NoItemFlags;
-	}
-	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-}
-
-QVariant LibraryData::headerData(int section, Qt::Orientation orientation,
-		int role) const {
-
-	// if section is invalid
-	if (section < 0 || section > 4) {
-		return QVariant();
-	}
-	// only horizontal orientation is supported
-	else if (orientation != Qt::Horizontal) {
-		return QVariant();
-	}
-	// if role is display role
-	else if (role == Qt::DisplayRole) {
-
-		switch (section) {
-
-		// VLNV type
-		case 0: {
-			return tr("Type");
-		}
-		// VLNV vendor
-		case 1: {
-			return tr("Vendor");
-		}
-		// VLNV Library
-		case 2: {
-			return tr("Library");
-		}
-		// VLNV Name
-		case 3: {
-			return tr("Name");
-		}
-		// VLNV Version
-		default: {
-			return tr("Version");
-		}
-		}
-	}
-	// if unsupported role
-	else {
-		return QVariant();
-	}
-}
-
-QList<VLNV*> LibraryData::getItems() const {
-    QList<VLNV*> vlnvs;
-
-    foreach (QSharedPointer<VLNV> vlnv, table_)
-    {
-        vlnvs.append(vlnv.data());
-    }
-
-	return vlnvs;
-}
-
-void LibraryData::onExportItem(const QModelIndex& index) {
-	if (!index.isValid())
-		return;
-
-	VLNV* vlnv = static_cast<VLNV*>(index.internalPointer());
-
-	if (!vlnv->isValid())
-		return;
-
-	handler_->onExportItem(*vlnv);
+QList<VLNV> LibraryData::getItems() const {
+    return libraryItems_.keys();
 }
 
 void LibraryData::getDirectory(QStringList& list) {
@@ -291,20 +106,11 @@ void LibraryData::getDirectory(QStringList& list) {
 	return;
 }
 
-VLNV* LibraryData::getOriginalPointer( const VLNV& vlnv ) const {
-	if (libraryItems_.contains(vlnv)) {
-                QMap<VLNV, QString>::const_iterator i = libraryItems_.find(vlnv);
-		VLNV* vlnvP = const_cast<VLNV*>(&i.key());
-		return vlnvP;
-	}
-	else
-		return 0;
-}
-
 const QString LibraryData::getPath( const VLNV& vlnv ) {
 
-	if (libraryItems_.contains(vlnv))
+	if (libraryItems_.contains(vlnv)) {
 		return libraryItems_.value(vlnv);
+	}
 	else {
 		emit errorMessage(tr("The VLNV \n"
 			"Vendor: %1\n"
@@ -336,16 +142,10 @@ bool LibraryData::addVLNV( const VLNV& vlnv, const QString& path) {
 		return false;
 	}
 
-	beginInsertRows(QModelIndex(), table_.size(), table_.size());
-
 	// add the component to the library
-	libraryItems_.insert(vlnv, path).key();
-	table_.append(QSharedPointer<VLNV>(new VLNV(vlnv)));
+	libraryItems_.insert(vlnv, path);
 
-    VLNV* vlnvP = table_.back().data();
-
-	emit addVLNV(vlnvP);
-	endInsertRows();
+	emit addVLNV(vlnv);
 
 	return true;
 }
@@ -355,188 +155,35 @@ bool LibraryData::contains( const VLNV& vlnv ) {
 	return libraryItems_.contains(vlnv);
 }
 
-void LibraryData::onRemoveVLNV( VLNV* vlnv ) {
+void LibraryData::onRemoveVLNV( const VLNV& vlnv ) {
 	
 	// if vlnv does not belong to library
-	if (!libraryItems_.contains(*vlnv))
+	if (!libraryItems_.contains(vlnv)) {
 		return;
-
-	int row = 0;
-
-    foreach (QSharedPointer<VLNV> vlnvP, table_)
-    {
-        if (vlnv == vlnvP.data())
-        {
-            break;
-        }
-
-        ++row;
-    }
-
-	beginRemoveRows(QModelIndex(), row, row);
+	}
 
 	// remove the vlnv, no delete operation is needed because VLNVs are statically
 	// created
-    libraryItems_.remove(*vlnv);
-	table_.removeAt(row);
-
-	endRemoveRows();
+    libraryItems_.remove(vlnv);
 
 }
 
 VLNV::IPXactType LibraryData::getType( const VLNV& vlnv ) const {
 
-	if (!libraryItems_.contains(vlnv))
+	if (!libraryItems_.contains(vlnv)) {
 		return VLNV::INVALID;
+	}
 	else {
 		QMap<VLNV, QString>::const_iterator i = libraryItems_.find(vlnv);
 		return i.key().getType();
 	}
 }
 
-void LibraryData::onOpenComponent(const QModelIndex& index) {
-	if (!index.isValid())
-		return;
-
-	VLNV* vlnv = static_cast<VLNV*>(index.internalPointer());
-
-	if (!vlnv->isValid())
-		return;
-
-	if (vlnv->getType() == VLNV::COMPONENT)
-		emit editItem(*vlnv);
-}
-
-void LibraryData::onDeleteItem(const QModelIndex& index) {
-	if (!index.isValid())
-		return;
-
-	VLNV* vlnv = static_cast<VLNV*>(index.internalPointer());
-
-	// inform tree model that vlnv is to be removed
-	emit removeVLNV(vlnv);
-
-	onRemoveVLNV(vlnv);
-}
-
-void LibraryData::onOpenDesign( const QModelIndex& index ) {
-
-	if (!index.isValid())
-		return;
-
-	VLNV* vlnv = static_cast<VLNV*>(index.internalPointer());
-	emit openDesign(*vlnv);
-}
-
-void LibraryData::onOpenSWDesign( const QModelIndex& index ) {
-
-    if (!index.isValid())
-        return;
-
-    VLNV* vlnv = static_cast<VLNV*>(index.internalPointer());
-    emit openSWDesign(*vlnv);
-}
-
-void LibraryData::onOpenSystemDesign( const QModelIndex& index ) {
-
-    if (!index.isValid())
-        return;
-
-    VLNV* vlnv = static_cast<VLNV*>(index.internalPointer());
-    emit openSystemDesign(*vlnv);
-}
-
-void LibraryData::onCreateNewComponent( const QModelIndex& index ) {
-
-	if (!index.isValid())
-		return;
-
-	VLNV* vlnv = static_cast<VLNV*>(index.internalPointer());
-	emit createComponent(*vlnv);
-}
-
-void LibraryData::onCreateNewDesign( const QModelIndex& index ) {
-
-	if (!index.isValid())
-		return;
-
-	VLNV* vlnv = static_cast<VLNV*>(index.internalPointer());
-	emit createDesign(*vlnv);
-}
-
-void LibraryData::onCreateNewSWDesign( const QModelIndex& index ) {
-
-    if (!index.isValid())
-        return;
-
-    VLNV* vlnv = static_cast<VLNV*>(index.internalPointer());
-    emit createSWDesign(*vlnv);
-}
-
-void LibraryData::onOpenBusDef( const QModelIndex& index ) {
-
-	if (!index.isValid())
-		return;
-
-	VLNV* vlnv = static_cast<VLNV*>(index.internalPointer());
-	emit editItem(*vlnv);
-}
-
-void LibraryData::onCreateBusDef( const QModelIndex& index ) {
-
-	if (!index.isValid())
-		return;
-
-	VLNV* vlnv = static_cast<VLNV*>(index.internalPointer());
-	emit createBusDef(*vlnv);
-}
-
-void LibraryData::onOpenComDef( const QModelIndex& index ) {
-
-    if (!index.isValid())
-        return;
-
-    VLNV* vlnv = static_cast<VLNV*>(index.internalPointer());
-    emit editItem(*vlnv);
-}
-
-void LibraryData::onCreateComDef( const QModelIndex& index ) {
-
-    if (!index.isValid())
-        return;
-
-    VLNV* vlnv = static_cast<VLNV*>(index.internalPointer());
-    emit createComDef(*vlnv);
-}
-
-void LibraryData::onOpenApiDef( const QModelIndex& index ) {
-
-    if (!index.isValid())
-        return;
-
-    VLNV* vlnv = static_cast<VLNV*>(index.internalPointer());
-    emit editItem(*vlnv);
-}
-
-void LibraryData::onCreateApiDef( const QModelIndex& index ) {
-
-    if (!index.isValid())
-        return;
-
-    VLNV* vlnv = static_cast<VLNV*>(index.internalPointer());
-    emit createApiDef(*vlnv);
-}
-
 void LibraryData::resetLibrary() {
-	beginResetModel();
 	emit resetModel();
-	endResetModel();
 }
 
 void LibraryData::checkLibraryIntegrity( bool showProgress /*= true*/ ) {
-	beginResetModel();
-
-	table_.clear();
 
 	int max = libraryItems_.size();
 	int current = 0;
@@ -619,13 +266,10 @@ void LibraryData::checkLibraryIntegrity( bool showProgress /*= true*/ ) {
 		// check that all VLNVs needed by this model are found in the library
 		QList<VLNV> vlnvList = libComp->getDependentVLNVs();
 
-		for (int j = 0; j < vlnvList.size(); ++j)
-        {
+		for (int j = 0; j < vlnvList.size(); ++j) {
 			// if the document referenced by this model is not found
-			if (!libraryItems_.contains(vlnvList.at(j)))
-            {
-                if (wasValid)
-                {
+			if (!libraryItems_.contains(vlnvList.at(j))) {
+                if (wasValid) {
                     emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
                 }
 
@@ -672,11 +316,6 @@ void LibraryData::checkLibraryIntegrity( bool showProgress /*= true*/ ) {
 			}
 		}
 
-		// set the validity of the object
-		vlnv.setDocumentValid(wasValid);
-
-		table_.append(QSharedPointer<VLNV>(new VLNV(vlnv)));
-
 		// update the progress bar
 		++current;
 		progBar.setValue(current);
@@ -702,8 +341,6 @@ void LibraryData::checkLibraryIntegrity( bool showProgress /*= true*/ ) {
 
 	// inform tree model that it needs to reset model also
 	emit resetModel();
-
-	endResetModel();
 }
 
 void LibraryData::parseLibrary( bool showProgress /*= true*/ ) {
@@ -712,13 +349,8 @@ void LibraryData::parseLibrary( bool showProgress /*= true*/ ) {
 
     Q_ASSERT(_CrtCheckMemory());
 
-	beginResetModel();
-
 	// clear the previous items in the library
-	table_.clear();
 	libraryItems_.clear();
-
-	endResetModel();
 
 	QSettings settings(this);
 

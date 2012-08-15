@@ -204,7 +204,7 @@ public slots:
 	void onExportItem(const QModelIndex& index);
 
 	//! \brief Remove the specified vlnv from the tree.
-	void onRemoveVLNV(VLNV* vlnv);
+	void onRemoveVLNV(const VLNV& vlnv);
 	
 	/*! \brief This function should be called when a component has changed.
 	 * 
@@ -229,7 +229,6 @@ signals:
 
     //! \brief Open the SW design of a component.
     void openSWDesign(const VLNV& vlnv);
-
 
     //! \brief Open the system design of a component.
     void openSystemDesign(const VLNV& vlnv);
@@ -265,7 +264,7 @@ signals:
     void createApiDef(const VLNV& vlnv);
 
 	//! \brief Export an item to a new location.
-	void exportItem(const VLNV& vlnv);
+	void exportItem(const VLNV vlnv);
 
 	//! \brief Refresh the item filtering because changes have been made
 	void invalidateFilter();

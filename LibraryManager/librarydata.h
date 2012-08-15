@@ -10,7 +10,7 @@
 #include "vlnv.h"
 #include <models/librarycomponent.h>
 
-#include <QAbstractItemModel>
+#include <QObject>
 #include <QModelIndex>
 #include <QVariant>
 #include <QFileInfo>
@@ -29,7 +29,7 @@ class LibraryHandler;
  * view so contents of the library can be viewed.
  *
  */
-class LibraryData : public QAbstractItemModel {
+class LibraryData : public QObject {
 
 	Q_OBJECT
 
@@ -70,83 +70,11 @@ public:
 	*/
 	bool contains(const VLNV& vlnv);
 
-	/*! \brief create a model index for the item with given row, column and
-	 * parent
-	 *
-	 * \param row row of the item
-	 * \param column column of the item
-	 * \param parent item's parent's model index
-	 * \return model index of the item
-	 */
-	virtual QModelIndex index(int row, int column,
-			const QModelIndex & parent = QModelIndex()) const;
-
-	/*! \brief Fuction returns a model index of the items parent
-	 *
-	 * \param child model index of the child-item
-	 * \return Always returns an invalid model index because this is not 
-	 * hierarchical model.
-	 */
-	virtual QModelIndex parent(const QModelIndex& index) const;
-
-	/*! \brief Returns the number of rows in model
-	 *
-	 * \param parent model index of the item
-	 * \return number of rows in model
-	 */
-	virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
-
-	/*! \brief Returns the number of columns in the model
-	 *
-	 * \param parent model index of the item
-	 * \return number of columns in the model
-	 */
-	virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
-
-	/*! \brief Returns data saved in the node identified by index
-	 *
-	 * Data is returned in QVariant. The node is identified by model index.
-	 * The data is returned only for supported roles, for other an invalid
-	 * QVariant is returned.
-	 * \param index model index of the node
-	 * \param role Int-type parameter to identify the role the data is provided
-	 * for
-	 * \return QVariant type which holds the nodes data
-	 */
-	virtual QVariant data(const QModelIndex& index,
-			int role = Qt::DisplayRole) const;
-
-	/*! \brief Returns the flags that give information how the node can be used
-	 *
-	 * \param index the model index of the wanted node
-	 * \return the flags describing how the node can be handled
-	 */
-	virtual Qt::ItemFlags flags(const QModelIndex& index) const;
-
-	/*! \brief Provide the headerdata for views
-	 *
-	 * \param section Specifies the column of the header
-	 * \param orientation Only Qt::Horizontal is supported
-	 * \param role Specifies the type of data wanted
-	 *
-	 * \return QVariant containing the data
-	*/
-	virtual QVariant headerData(int section, Qt::Orientation orientation,
-			int role = Qt::DisplayRole) const;
-
 	/*! \brief Get the library items stored in the model.
 	 *
-	 * \return QList containing pointers to the items
+	 * \return QList containing the items.
 	 */
-	QList<VLNV*> getItems() const;
-
-	/*! \brief Checks if the specified VLNV is found in the library.
-	 *
-	 * \param vlnv The vlnv that is to be searched.
-	 *
-	 * \return True if vlnv is found, false if not.
-	*/
-	//bool exists(const VLNV& vlnv) const;
+	QList<VLNV> getItems() const;
 
 	/*! \brief Get the type of the given document.
 	 * 
@@ -157,14 +85,6 @@ public:
 	 * \return VLNV::IPXactType The type of the given document.
 	*/
 	VLNV::IPXactType getType(const VLNV& vlnv) const;
-
-	/*! \brief Get pointer to the VLNV instance owned by the Library Data
-	 *
-	 * \param vlnv Reference to the vlnv that contains same fields as the searched vlnv.
-	 *
-	 * \return Pointer to the original vlnv instance.
-	*/
-	VLNV* getOriginalPointer(const VLNV& vlnv) const;
 
 	/*! \brief Search all saved library paths for IP-Xact objects.
 	 * 
@@ -203,98 +123,19 @@ signals:
 	//! \brief Emit a notice message to be printed to user.
 	void noticeMessage(const QString& message);
 
-	//! \brief Emit a message that component is to be opened
-	void openComponent(const VLNV& vlnv);
-
 	//! \brief Inform tree model that a vlnv is to be removed from the tree.
-	void removeVLNV(VLNV* vlnv);
+	void removeVLNV(const VLNV& vlnv);
 
 	//! \brief Inform tree model that a vlnv is to be added to the tree.
-	void addVLNV(VLNV* vlnv);
+	void addVLNV(const VLNV& vlnv);
 
 	//! \brief Inform tree model that the model should be reset
 	void resetModel();
 
-	//! \brief Open the design of a component.
-	void openDesign(const VLNV& vlnv);
-
-    //! \brief Open the SW design of a component.
-    void openSWDesign(const VLNV& vlnv);
-
-    //! \brief Open the system design of a component.
-    void openSystemDesign(const VLNV& vlnv);
-
-	//! \brief Open the component in a component editor.
-	void editItem(const VLNV& vlnv);
-
-	//! \brief Create a new bus definition.
-	void createBusDef(const VLNV& vlnv);
-
-    //! \brief Create a new COM definition.
-    void createComDef(const VLNV& vlnv);
-
-    //! \brief Create a new API definition.
-    void createApiDef(const VLNV& vlnv);
-
-	//! \brief Create a new component with given vlnv.
-	void createComponent(const VLNV& vlnv);
-
-	//! \brief Create new design with given vlnv.
-	void createDesign(const VLNV& vlnv);
-
-    //! \brief Create new SW design with given vlnv.
-    void createSWDesign(const VLNV& vlnv);
-
 public slots:
 
-	//! \brief Open the selected hierarchical design
-	void onOpenDesign(const QModelIndex& index);
-
-    //! \brief Open the selected SW design
-    void onOpenSWDesign(const QModelIndex& index);
-
-    //! \brief Open the selected system design
-    void onOpenSystemDesign(const QModelIndex& index);
-
-	//! \brief When open is selected in search view
-	void onOpenComponent(const QModelIndex& index);
-
-	//! \brief Create new component
-	void onCreateNewComponent(const QModelIndex& index);
-
-	//! \brief Create new design
-	void onCreateNewDesign(const QModelIndex& index);
-
-
-    //! \brief Create new SW design
-    void onCreateNewSWDesign(const QModelIndex& index);
-
-	//! \brief Open bus definition in an editor
-	void onOpenBusDef(const QModelIndex& index);
-
-    //! \brief Open COM definition in an editor
-    void onOpenComDef(const QModelIndex& index);
-
-    //! \brief Open API definition in an editor
-    void onOpenApiDef(const QModelIndex& index);
-
-	//! \brief Create a new bus definition
-	void onCreateBusDef(const QModelIndex& index);
-
-    //! \brief Create a new COM definition
-    void onCreateComDef(const QModelIndex& index);
-
-    //! \brief Create a new API definition
-    void onCreateApiDef(const QModelIndex& index);
-
-	//! \brief When delete is selected in search view
-	void onDeleteItem(const QModelIndex& index);
-
-	//! \brief When export is selected in search view
-	void onExportItem(const QModelIndex& index);
-
 	//! \brief Remove the specified VLNV from the library
-	void onRemoveVLNV(VLNV* vlnv);
+	void onRemoveVLNV(const VLNV& vlnv);
 
 	//! \brief Reset the library
 	void resetLibrary();
@@ -341,14 +182,7 @@ private:
 	 */
 	QMap<VLNV, QString> libraryItems_;
 
-	/*! \brief The data structure that is used to create the model for the views
-	 *
-	 * The list contains pointers to LibraryItems that hold info of item's
-	 * visibility status and also contain pointer to the item's vlnv element.
-	 */
-	QList< QSharedPointer<VLNV> > table_;
-
-	//! \brief Pointer to the LibraryHandler instance that owns this dataModel.
+	//! \brief Pointer to the LibraryHandler instance that owns this class.
 	LibraryHandler *handler_;
 
 };
