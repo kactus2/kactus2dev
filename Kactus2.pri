@@ -68,6 +68,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./common/widgets/addressSpaceSelector/addressspaceselector.h \
     ./common/widgets/memoryMapSelector/memorymapselector.h \
     ./common/widgets/interfaceSelector/interfaceselector.h \
+    ./common/widgets/LineEditEx/LineEditEx.h \
     ./common/validators/nameValidator/namevalidator.h \
     ./common/validators/vhdlNameValidator/vhdlnamevalidator.h \
     ./common/validators/LibraryPathValidator/librarypathvalidator.h \
@@ -103,6 +104,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./common/dialogs/ObjectRemoveDialog/objectremovemodel.h \
     ./common/dialogs/listSelectDialog/ListSelectDialog.h \
     ./common/dialogs/selectDirectoryDialog/selectdirectorydialog.h \
+    ./common/dialogs/NewDesignDialog/NewDesignDialog.h \
     ./designwidget/AdHocEnabled.h \
     ./designwidget/AdHocInterfaceItem.h \
     ./designwidget/AdHocPortItem.h \
@@ -467,9 +469,13 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./PluginSystem/IPluginUtility.h \
     ./PluginSystem/PluginListDialog.h \
     ./PluginSystem/PluginManager.h \
-    ./SystemDetailsEditor/SystemDetailsEditor.h \
     ./SystemDetailsEditor/SwitchHWDialog.h \
-    ./common/dialogs/NewDesignDialog/NewDesignDialog.h
+    ./SystemDetailsEditor/SystemDetailsEditor.h \
+    ./HelpSystem/ContextHelpBrowser.h \
+    ./HelpSystem/HelpSearchWidget.h \
+    ./HelpSystem/HelpWindow.h \
+    ./SystemDetailsEditor/ExportSWDialog.h \
+    ./settings/NamingPolicySettingsPage.h
 SOURCES += ./common/CSourceWriter.cpp \
     ./common/DesignDiagram.cpp \
     ./common/DesignWidget.cpp \
@@ -490,6 +496,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/dialogs/createConfigurationDialog/createconfigurationdialog.cpp \
     ./common/dialogs/listSelectDialog/ListSelectDialog.cpp \
     ./common/dialogs/selectDirectoryDialog/selectdirectorydialog.cpp \
+    ./common/dialogs/NewDesignDialog/NewDesignDialog.cpp \
     ./common/validators/nameValidator/namevalidator.cpp \
     ./common/validators/vhdlNameValidator/vhdlnamevalidator.cpp \
     ./common/validators/LibraryPathValidator/librarypathvalidator.cpp \
@@ -532,6 +539,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/widgets/addressSpaceSelector/addressspaceselector.cpp \
     ./common/widgets/memoryMapSelector/memorymapselector.cpp \
     ./common/widgets/interfaceSelector/interfaceselector.cpp \
+    ./common/widgets/LineEditEx/LineEditEx.cpp \
     ./common/graphicsItems/CommonGraphicsUndoCommands.cpp \
     ./common/graphicsItems/ComponentItem.cpp \
     ./common/graphicsItems/ConnectionEndpoint.cpp \
@@ -909,7 +917,11 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./SystemDesign/SystemMoveCommands.cpp \
     ./PluginSystem/PluginListDialog.cpp \
     ./PluginSystem/PluginManager.cpp \
-    ./SystemDetailsEditor/SystemDetailsEditor.cpp \
     ./SystemDetailsEditor/SwitchHWDialog.cpp \
-    ./common/dialogs/NewDesignDialog/NewDesignDialog.cpp
+    ./SystemDetailsEditor/SystemDetailsEditor.cpp \
+    ./HelpSystem/ContextHelpBrowser.cpp \
+    ./HelpSystem/HelpSearchWidget.cpp \
+    ./HelpSystem/HelpWindow.cpp \
+    ./SystemDetailsEditor/ExportSWDialog.cpp \
+    ./settings/NamingPolicySettingsPage.cpp
 RESOURCES += kactus.qrc
