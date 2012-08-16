@@ -221,6 +221,38 @@ bool ComConnection::isValid(QStringList& errorList, QStringList const& instanceN
     return valid;
 }
 
+bool ComConnection::isValid( const QStringList& instanceNames ) const {
+	
+	if (name_.isEmpty()) {
+		return false;
+	}
+
+	// Validate the interface references.
+	if (interface1_.componentRef.isEmpty()) {
+		return false;
+	}
+	else if (!instanceNames.contains(interface1_.componentRef)) {
+		return false;
+	}
+
+	if (interface1_.comRef.isEmpty()) {
+		return false;
+	}
+
+	if (interface2_.componentRef.isEmpty()) {
+		return false;
+	}
+	else if (!instanceNames.contains(interface2_.componentRef)) {
+		return false;
+	}
+
+	if (interface2_.comRef.isEmpty()) {
+		return false;
+	}
+
+	return true;
+}
+
 //-----------------------------------------------------------------------------
 // Function: ComConnection::setName()
 //-----------------------------------------------------------------------------

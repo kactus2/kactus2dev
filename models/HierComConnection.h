@@ -21,6 +21,7 @@
 #include <QXmlStreamWriter>
 #include <QPointF>
 #include <QVector2D>
+#include <QStringList>
 
 //-----------------------------------------------------------------------------
 //! Class encapsulating COM dependency connection data.
@@ -71,6 +72,25 @@ public:
      *  Writes the contents to an XML stream.
      */
     void write(QXmlStreamWriter& writer) const;
+
+	/*! \brief Check if the hierarchical COM connection is in valid state.
+	 *
+	 * \param errorList The string list to contain the possible error messages.
+	 * \param instanceNames The names of the HW/SW instances in the parent design.
+	 * \param parentId The identifier of the containing design.
+	 *
+	 * \return True if the hierarchical COM connection is in valid state.
+	*/
+	bool isValid(QStringList& errorList, QStringList const& instanceNames,
+                 QString const& parentId) const;
+
+	/*! \brief Check if the hierarchical COM connection is in valid state.
+	 *
+	 * \param instanceNames The names of the HW/SW instances in the parent design.
+	 *
+	 * \return True if the hierarchical COM connection is in valid state.
+	*/
+	bool isValid(const QStringList& instanceNames) const;
 
     /*!
      *  Sets the name of the dependency.

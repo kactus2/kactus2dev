@@ -175,6 +175,95 @@ void ApiDependency::write(QXmlStreamWriter& writer) const
     writer.writeEndElement(); // kactus2:apiDependency
 }
 
+bool ApiDependency::isValid( QStringList& errorList, QStringList const& instanceNames, QString const& parentId ) const {
+
+	bool valid = true;
+	QString const thisId(QObject::tr("API dependency in %1").arg(parentId));
+
+	if (name_.isEmpty()) {
+		errorList.append(QObject::tr("No name specified for API dependency in %1").arg(parentId));
+		valid = false;
+	}
+	// interface 1:
+
+	// if the component instance name is empty
+	if (interface1_.componentRef.isEmpty()) {
+		errorList.append(QObject::tr("No component instance reference set for %1.").arg(thisId));
+		valid = false;
+	}
+	// if the component instance does not exist.
+	else if (!instanceNames.contains(interface1_.componentRef)) {
+		errorList.append(QObject::tr("%1 contains reference to component instance %2 that does not exist.").arg(
+			thisId).arg(interface1_.componentRef));
+		valid = false;
+	}
+	// if the API reference is empty
+	if (interface1_.apiRef.isEmpty()) {
+		errorList.append(QObject::tr("No API reference set for API dependency in %1").arg(thisId));
+		valid = false;
+	}
+
+	// interface 2:
+
+	// if the component instance name is empty
+	if (interface2_.componentRef.isEmpty()) {
+		errorList.append(QObject::tr("No component instance reference set for %1.").arg(thisId));
+		valid = false;
+	}
+	// if the component instance does not exist.
+	else if (!instanceNames.contains(interface2_.componentRef)) {
+		errorList.append(QObject::tr("%1 contains reference to component instance %2 that does not exist.").arg(
+			thisId).arg(interface2_.componentRef));
+		valid = false;
+	}
+	// if the API reference is empty
+	if (interface2_.apiRef.isEmpty()) {
+		errorList.append(QObject::tr("No API reference set for API dependency in %1").arg(thisId));
+		valid = false;
+	}	
+
+	return valid;
+}
+
+bool ApiDependency::isValid( const QStringList& instanceNames ) const {
+	
+	if (name_.isEmpty()) {
+		return false;
+	}
+	// interface 1:
+	
+	// if the component instance name is empty
+	if (interface1_.componentRef.isEmpty()) {
+		return false;
+	}
+	// if the component instance does not exist.
+	else if (!instanceNames.contains(interface1_.componentRef)) {
+		return false;
+	}
+	// if the API reference is empty
+	if (interface1_.apiRef.isEmpty()) {
+		return false;
+	}
+
+	// interface 2:
+
+	// if the component instance name is empty
+	if (interface2_.componentRef.isEmpty()) {
+		return false;
+	}
+	// if the component instance does not exist.
+	else if (!instanceNames.contains(interface2_.componentRef)) {
+		return false;
+	}
+	// if the API reference is empty
+	if (interface2_.apiRef.isEmpty()) {
+		return false;
+	}	
+
+	// all ok
+	return true;
+}
+
 //-----------------------------------------------------------------------------
 // Function: ApiDependency::setName()
 //-----------------------------------------------------------------------------

@@ -577,6 +577,54 @@ bool Design::isValid( QStringList& errorList ) const {
         }
     }
 
+	QStringList hierComNames;
+	foreach (const HierComConnection& hierComm, hierComConnections_) {
+		if (hierComNames.contains(hierComm.getName())) {
+			errorList.append(QObject::tr("Design contains several hierarchical COM "
+				"connections with name %1").arg(hierComm.getName()));
+			valid = false;
+		}
+		else {
+			hierComNames.append(hierComm.getName());
+		}
+
+		if (!hierComm.isValid(errorList, allInstanceNames, thisIdentifier)) {
+			valid = false;
+		}
+	}
+
+	QStringList apiDepNames;
+	foreach (const ApiDependency& apiDep, apiDependencies_) {
+		if (apiDepNames.contains(apiDep.getName())) {
+			errorList.append(QObject::tr("Design contains several API dependencies"
+				" with name %1").arg(apiDep.getName()));
+			valid = false;
+		}
+		else {
+			apiDepNames.append(apiDep.getName());
+		}
+
+		if (!apiDep.isValid(errorList, allInstanceNames, thisIdentifier)) {
+			valid = false;
+		}
+	}
+
+	QStringList hierAPINames;
+	foreach (const HierApiDependency& hierAPI, hierApiDependencies_) {
+		if (hierAPINames.contains(hierAPI.getName())) {
+			errorList.append(QObject::tr("Design contains several hierarchical "
+				"API dependencies with name %1").arg(hierAPI.getName()));
+			valid = false;
+		}
+		else {
+			hierAPINames.append(hierAPI.getName());
+		}
+
+		if (!hierAPI.isValid(errorList, allInstanceNames, thisIdentifier)) {
+			valid = false;
+		}
+	}
+
 	QStringList adHocNames;
 	foreach (Design::AdHocConnection adHoc, adHocConnections_) {
 		if (adHocNames.contains(adHoc.name)) {
@@ -626,6 +674,22 @@ bool Design::isValid() const {
 		}
 	}
 
+	// check the SW instances
+	QStringList swInstanceNames;
+	foreach (const SWInstance& swInstance, swInstances_) {
+		
+		if (swInstanceNames.contains(swInstance.getInstanceName())) {
+			return false;
+		}
+		else {
+			swInstanceNames.append(swInstance.getInstanceName());
+		}
+
+		if (!swInstance.isValid(instanceNames)) {
+			return false;
+		}
+	}
+
 	QStringList interconnectionNames;
 	foreach (Design::Interconnection interconnection, interconnections_) {
 
@@ -658,6 +722,65 @@ bool Design::isValid() const {
 
 	foreach (Design::HierConnection hierConn, hierConnections_) {
 		if (!hierConn.isValid(instanceNames)) {
+			return false;
+		}
+	}
+
+	QStringList comConnectionNames;
+	QStringList allInstanceNames = instanceNames + swInstanceNames;
+
+	foreach (ComConnection const& conn, comConnections_)
+	{
+		if (comConnectionNames.contains(conn.getName())) {
+			return false;
+		}
+		else {
+			comConnectionNames.append(conn.getName());
+		}
+
+		if (!conn.isValid(allInstanceNames)) {
+			return false;
+		}
+	}
+
+	QStringList hierComNames;
+	foreach (const HierComConnection& hierComm, hierComConnections_) {
+		if (hierComNames.contains(hierComm.getName())) {
+			return false;
+		}
+		else {
+			hierComNames.append(hierComm.getName());
+		}
+
+		if (!hierComm.isValid(allInstanceNames)) {
+			return false;
+		}
+	}
+
+	QStringList apiDepNames;
+	foreach (const ApiDependency& apiDep, apiDependencies_) {
+		if (apiDepNames.contains(apiDep.getName())) {
+			return false;
+		}
+		else {
+			apiDepNames.append(apiDep.getName());
+		}
+
+		if (!apiDep.isValid(allInstanceNames)) {
+			return false;
+		}
+	}
+
+	QStringList hierAPINames;
+	foreach (const HierApiDependency& hierAPI, hierApiDependencies_) {
+		if (hierAPINames.contains(hierAPI.getName())) {
+			return false;
+		}
+		else {
+			hierAPINames.append(hierAPI.getName());
+		}
+
+		if (!hierAPI.isValid(allInstanceNames)) {
 			return false;
 		}
 	}

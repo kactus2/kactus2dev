@@ -189,6 +189,64 @@ void HierComConnection::write(QXmlStreamWriter& writer) const
     writer.writeEndElement(); // kactus2:hierComConnection
 }
 
+bool HierComConnection::isValid( QStringList& errorList, QStringList const& instanceNames, QString const& parentId ) const {
+	bool valid = true;
+	QString const thisId(QObject::tr("Hierarchical COM connection in %1").arg(parentId));
+
+	if (name_.isEmpty()) {
+		errorList.append(QObject::tr("No name specified for Hierarchical COM connection in %1").arg(parentId));
+		valid = false;
+	}
+
+	// Validate the interface references.
+	if (interface_.componentRef.isEmpty()) {
+		errorList.append(QObject::tr("No component reference set for hierarchical COM interface in %1").arg(thisId));
+		valid = false;
+	}
+	else if (!instanceNames.contains(interface_.componentRef)) {
+		errorList.append(QObject::tr("Hierarchical COM interface in %1 contains a reference "
+			"to component instance '%2' that does not exist.").arg(
+			thisId).arg(interface_.componentRef));
+		valid = false;
+	}
+
+	if (interface_.comRef.isEmpty()) {
+		errorList.append(QObject::tr("No COM reference set for hierarchical COM interface in %1").arg(thisId));
+		valid = false;
+	}
+
+	if (interfaceRef_.isEmpty()) {
+		errorList.append(QObject::tr("No COM reference set for top COM connection in %1.").arg(thisId));
+		valid = false;
+	}
+
+	return valid;
+}
+
+bool HierComConnection::isValid( const QStringList& instanceNames ) const {
+	if (name_.isEmpty()) {
+		return false;
+	}
+
+	// Validate the interface references.
+	if (interface_.componentRef.isEmpty()) {
+		return false;
+	}
+	else if (!instanceNames.contains(interface_.componentRef)) {
+		return false;
+	}
+
+	if (interface_.comRef.isEmpty()) {
+		return false;
+	}
+
+	if (interfaceRef_.isEmpty()) {
+		return false;
+	}
+	return true;
+}
+
+
 //-----------------------------------------------------------------------------
 // Function: HierComConnection::setName()
 //-----------------------------------------------------------------------------
@@ -329,4 +387,3 @@ HierComConnection& HierComConnection::operator=(HierComConnection const& rhs)
 
     return *this;
 }
-

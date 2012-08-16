@@ -101,6 +101,14 @@ public:
     bool isValid(QStringList& errorList, QStringList const& instanceNames,
                  QString const& parentId) const;
 
+	/*! \brief Check if the COM connection is in valid state.
+	 *
+	 * \param instanceNames The names of the HW/SW instances in the parent design.
+	 *
+	 * \return bool True if the COM connection is in valid state.
+	*/
+	bool isValid(const QStringList& instanceNames) const;
+
     /*!
      *  Sets the name of the connection.
      *

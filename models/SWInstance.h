@@ -71,6 +71,14 @@ public:
     bool isValid(QStringList& errorList, QStringList const& instanceNames,
                  QString const& parentId) const;
 
+	/*! \brief Check if the software instance is in valid state.
+	 *
+	 * \param instanceNames The list of HW instance names in the containing design.
+	 *
+	 * \return bool True if the SW instance is in valid state.
+	*/
+	bool isValid(const QStringList& instanceNames) const;
+
     /*!
      *  Sets the name of the SW instance.
      *

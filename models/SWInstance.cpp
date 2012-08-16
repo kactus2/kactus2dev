@@ -271,6 +271,41 @@ bool SWInstance::isValid(QStringList& errorList, QStringList const& instanceName
     return valid;
 }
 
+bool SWInstance::isValid( const QStringList& instanceNames ) const {
+
+	if (instanceName_.isEmpty()) {
+		return false;
+	}
+
+	if (!componentRef_.isValid() && fileSetRef_.isEmpty()) {
+		return false;
+	}
+
+	// Check whether the mapping is valid or not.
+	if (!hwRef_.isEmpty() && !instanceNames.contains(hwRef_)) {
+		return false;
+	}
+
+	// Validate COM interfaces.
+	QStringList interfaceNames;
+
+	foreach (QSharedPointer<ComInterface> comIf, comInterfaces_)
+	{
+		if (interfaceNames.contains(comIf->getName())) {
+			return false;
+		}
+		else {
+			interfaceNames.append(comIf->getName());
+		}
+
+		if (!comIf->isValid()) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
 //-----------------------------------------------------------------------------
 // Function: SWInstance::setInstanceName()
 //-----------------------------------------------------------------------------

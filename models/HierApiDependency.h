@@ -21,6 +21,7 @@
 #include <QXmlStreamWriter>
 #include <QPointF>
 #include <QVector2D>
+#include <QStringList>
 
 //-----------------------------------------------------------------------------
 //! Class encapsulating API dependency connection data.
@@ -71,6 +72,25 @@ public:
      *  Writes the contents to an XML stream.
      */
     void write(QXmlStreamWriter& writer) const;
+
+	/*! \brief Check if the hierarchical API dependency is in valid state.
+	 *
+	 * \param errorList The string list to add the possible error messages to.
+	 * \param instanceNames The HW/SW instance names contained in the containing design.
+	 * \param parentId The identifier for the design containing the dependencies.
+	 *
+	 * \return True if the API dependency is in valid state.
+	*/
+	bool isValid(QStringList& errorList, QStringList const& instanceNames,
+		QString const& parentId) const;
+
+	/*! \brief Check if the hierarchical API dependency is in valid state.
+	 *
+	 * \param instanceNames The HW/SW instance names contained in the containing design.
+	 *
+	 * \return True if the API dependency is in valid state.
+	*/
+	bool isValid(const QStringList& instanceNames) const;
 
     /*!
      *  Sets the name of the dependency.
