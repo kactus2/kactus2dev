@@ -112,7 +112,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="CreateHelp&#x0D;&#x0A;verbuild version.h *.*.+.* -xFp -b0.0.0.0  -e10.10.9999.0 -s"
+				CommandLine="verbuild version.h *.*.+.* -xFp -b0.0.0.0  -e10.10.9999.0 -s&#x0D;&#x0A;CreateHelp&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -156,9 +156,9 @@
 				DisableLanguageExtensions="false"
 				TreatWChar_tAsBuiltInType="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation="debug\"
-				ObjectFile="debug\"
-				ProgramDataBaseFileName=".\"
+				AssemblerListingLocation="x64\debug\"
+				ObjectFile="x64\debug\"
+				ProgramDataBaseFileName=".\x64\"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="false"
@@ -210,7 +210,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="CreateHelp&#x0D;&#x0A;verbuild version.h *.*.+.* -xFp -b0.0.0.0  -e10.10.9999.0 -s"
+				CommandLine="verbuild version.h *.*.+.* -xFp -b0.0.0.0  -e10.10.9999.0 -s&#x0D;&#x0A;CreateHelp&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -346,9 +346,9 @@
 				BufferSecurityCheck="false"
 				TreatWChar_tAsBuiltInType="false"
 				RuntimeTypeInfo="true"
-				AssemblerListingLocation="release\"
-				ObjectFile="release\"
-				ProgramDataBaseFileName=".\"
+				AssemblerListingLocation="x64\release\"
+				ObjectFile="x64\release\"
+				ProgramDataBaseFileName=".\x64\"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="0"
