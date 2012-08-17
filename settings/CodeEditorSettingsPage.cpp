@@ -152,7 +152,7 @@ CodeEditorSettingsPage::CodeEditorSettingsPage(QSettings& settings) : settings_(
     fontColorLayout->addLayout(fontLayout);
     fontColorLayout->addSpacing(12);
     fontColorLayout->addLayout(colorLayout);
-
+    
     // Setup the layout.
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(indentGroup);

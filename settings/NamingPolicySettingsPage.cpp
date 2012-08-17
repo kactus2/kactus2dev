@@ -11,7 +11,7 @@
 
 #include "NamingPolicySettingsPage.h"
 
-#include <common/views/EditableListView/editablelistview.h>
+#include <common/widgets/listManager/listeditor.h>
 
 #include <QVBoxLayout>
 #include <QDir>
@@ -26,18 +26,37 @@
 //-----------------------------------------------------------------------------
 NamingPolicySettingsPage::NamingPolicySettingsPage(QSettings& settings)
     : settings_(settings),
-      elementLabel_(new QLabel(tr("Element:"), this)),
-      elementCombo_(new QComboBox(this)),
-      namesLabel_(new QLabel(tr("Name suggestions:"), this)),
-      namesListView_(new EditableListView(this))
+      categories_(),
+      curCategoryIndex_(-1),
+      categoryLabel_(new QLabel(tr("Show naming policy for:"), this)),
+      categoryCombo_(new QComboBox(this)),
+      valuesLabel_(new QLabel(tr("Values:"), this)),
+      valuesList_(new ListEditor(this))
 {
+    // Add categories.
+    categories_.append(PolicyCategory("policies/hwviewname", "HW View Name", POLICY_ENUMERATION));
+    categories_.append(PolicyCategory("policies/swviewname", "SW View Name", POLICY_ENUMERATION));
+    categories_.append(PolicyCategory("policies/sysviewname", "System View Name", POLICY_ENUMERATION));
+
     // Setup the layout.
     QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(elementLabel_);
-    layout->addWidget(elementCombo_);
-    layout->addWidget(namesLabel_);
-    layout->addWidget(namesListView_);
+    layout->addWidget(categoryLabel_);
+    layout->addWidget(categoryCombo_);
+    layout->addWidget(valuesLabel_);
+    layout->addWidget(valuesList_);
     layout->addStretch(1);
+
+    // Setup connections.
+    connect(categoryCombo_, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(onCategoryChanged(int)), Qt::UniqueConnection);
+
+    // Read current values from settings and fill in the combo box.
+    for (int i = 0; i < categories_.size(); ++i)
+    {
+        PolicyCategory& category = categories_[i];
+        category.values = settings.value(category.key).toStringList();
+        categoryCombo_->addItem(category.name);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -53,8 +72,6 @@ NamingPolicySettingsPage::~NamingPolicySettingsPage()
 bool NamingPolicySettingsPage::validate()
 {
     Q_ASSERT(prevalidate());
-
-    // TODO:
     return true;
 }
 
@@ -63,8 +80,15 @@ bool NamingPolicySettingsPage::validate()
 //-----------------------------------------------------------------------------
 void NamingPolicySettingsPage::apply()
 {
-    // TODO: Save the settings.
+    if (curCategoryIndex_ != -1)
+    {
+        categories_[curCategoryIndex_].values = valuesList_->items();
+    }
 
+    foreach (PolicyCategory const& category, categories_)
+    {
+        settings_.setValue(category.key, category.values);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -78,7 +102,21 @@ bool NamingPolicySettingsPage::onPageChange()
         return false;
     }
 
-    // If they are valid, save them and allow the page to be changed.
-    apply();
+    // Allow the page to be changed.
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: NamingPolicySettingsPage::onCategoryChanged()
+//-----------------------------------------------------------------------------
+void NamingPolicySettingsPage::onCategoryChanged(int index)
+{
+    // Save the values of the previously selected category.
+    if (curCategoryIndex_ != -1)
+    {
+        categories_[curCategoryIndex_].values = valuesList_->items();
+    }
+
+    valuesList_->setItems(categories_.at(index).values);
+    curCategoryIndex_ = index;
 }

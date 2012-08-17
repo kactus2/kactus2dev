@@ -24,7 +24,7 @@ class LibraryPathSelector;
 class LibraryInterface;
 class VLNVEditor;
 class Component;
-class LineEditEx;
+class ComboBoxEx;
 
 //-----------------------------------------------------------------------------
 //! New design dialog.
@@ -51,6 +51,11 @@ public:
      *      @param [in] viewName The view name to set.
      */
     void setViewName(QString const& viewName);
+
+    /*!
+     *  Sets the view name suggestions.
+     */
+    void setViewNameSuggestions(QStringList const& suggestions);
 
 	/*!
      *  Sets the pre-filled VLNV.
@@ -110,7 +115,7 @@ private:
     QLabel* viewNameLabel_;
 
     //! Edit box for the view name.
-    LineEditEx* viewNameEdit_;
+    ComboBoxEx* viewNameEdit_;
 
     //! The VLNV editor.
     VLNVEditor* vlnvEditor_;

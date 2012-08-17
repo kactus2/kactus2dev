@@ -2224,6 +2224,9 @@ void MainWindow::createDesignForExistingComponent(VLNV const& vlnv)
     NewDesignDialog dialog(libraryHandler_, component, KactusAttribute::KTS_HW, this);
     dialog.setVLNV(VLNV(VLNV::DESIGN, component->getVlnv()->getVendor(), component->getVlnv()->getLibrary(), "", ""));
 
+    QSettings settings;
+    dialog.setViewNameSuggestions(settings.value("policies/hwviewname").toStringList());
+
     QString baseViewName = "";
 
     switch (component->getComponentHierarchy())

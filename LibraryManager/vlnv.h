@@ -295,6 +295,6 @@ private:
 };
 
 // With this declaration, VLNV can be used as a QVariant.
-Q_DECLARE_METATYPE(VLNV)
+Q_DECLARE_METATYPE(VLNV);
 
 #endif /* VLNV_H_ */

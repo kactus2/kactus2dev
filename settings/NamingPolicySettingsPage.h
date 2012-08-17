@@ -18,7 +18,7 @@
 #include <QLabel>
 #include <QSettings>
 
-class EditableListView;
+class ListEditor;
 
 //-----------------------------------------------------------------------------
 //! NamingPolicySettingsPage class.
@@ -61,10 +61,45 @@ public:
      */
     bool onPageChange();
 
+private slots:
+    //
+    void onCategoryChanged( int index );
+
 private:
     // Disable copying.
     NamingPolicySettingsPage(NamingPolicySettingsPage const& rhs);
     NamingPolicySettingsPage& operator=(NamingPolicySettingsPage const& rhs);
+
+    //-----------------------------------------------------------------------------
+    //! Policy type enumeration.
+    //-----------------------------------------------------------------------------
+    enum PolicyType
+    {
+        POLICY_ENUMERATION = 0,
+        POLICY_FORMAT
+    };
+
+    //-----------------------------------------------------------------------------
+    //! Policy category structure.
+    //-----------------------------------------------------------------------------
+    struct PolicyCategory
+    {
+        QString key;            //!< The name of the settings key.
+        QString name;           //!< The name of the policy category.
+        PolicyType type;        //!< The policy type for the category.
+        QStringList values;     //!< The allowed value(s) for the policy.
+
+        /*!
+         *  Constructor.
+         */
+        PolicyCategory(QString const& key, QString const& name, PolicyType type)
+            : key(key),
+              name(name),
+              type(type),
+              values()
+        {
+        }
+    };
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -73,17 +108,23 @@ private:
     //! The settings store.
     QSettings& settings_;
 
+    //! Policy categories data.
+    QList<PolicyCategory> categories_;
+
+    //! The index of the currently selected category.
+    int curCategoryIndex_;
+
     //! Label for element selection.
-    QLabel* elementLabel_;
+    QLabel* categoryLabel_;
 
     //! Element selection combo box.
-    QComboBox* elementCombo_;
+    QComboBox* categoryCombo_;
 
     //! Label for suggested names.
-    QLabel* namesLabel_;
+    QLabel* valuesLabel_;
 
     //! Suggested names list edit.
-    EditableListView* namesListView_;
+    ListEditor* valuesList_;
 };
 
 //-----------------------------------------------------------------------------

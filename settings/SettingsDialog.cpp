@@ -21,7 +21,7 @@
 SettingsDialog::SettingsDialog(QWidget* parent) : PropertyPageDialog(QSize(48, 48), APPLY_ALL, parent),
                                                   settings_()
 {
-    setFixedSize(600, 440);
+    //setFixedSize(600, 440);
     setWindowTitle(tr("Settings"));
 
     addPage(QIcon(":icons/graphics/settings-general.png"), tr("General"),
@@ -34,6 +34,8 @@ SettingsDialog::SettingsDialog(QWidget* parent) : PropertyPageDialog(QSize(48, 4
             new CodeEditorSettingsPage(settings_));
 
     finalizePages();
+
+    setFixedSize(sizeHint().width(), minimumSizeHint().height());
 }
 
 //-----------------------------------------------------------------------------
