@@ -168,8 +168,8 @@ void LibraryHandler::syncronizeModels() {
 	// connect the signals from the hierarchy model
 
 	// signals from hierarchy model to library handler
-	connect(hierarchyModel_.data(), SIGNAL(openDesign(const VLNV&)),
-		this, SLOT(onOpenDesign(const VLNV&)), Qt::UniqueConnection);
+	connect(hierarchyModel_.data(), SIGNAL(openDesign(const VLNV&, const QString&)),
+		this, SIGNAL(openDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
     connect(hierarchyModel_.data(), SIGNAL(openSWDesign(const VLNV&)),
         this, SLOT(onOpenSWDesign(const VLNV&)), Qt::UniqueConnection);
     connect(hierarchyModel_.data(), SIGNAL(openSystemDesign(const VLNV&)),

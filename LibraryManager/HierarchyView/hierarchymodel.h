@@ -54,7 +54,7 @@ public:
      * \param parent Model index identifying the item that's column count is 
      * wanted.
      *
-     * \return Number of columns (always 1)
+     * \return Number of columns (always 2)
     */
     virtual int columnCount(const QModelIndex & parent = QModelIndex() ) const;
 
@@ -225,7 +225,7 @@ signals:
 	void noticeMessage(const QString& msg);
 
 	//! \brief Open the design of a component.
-	void openDesign(const VLNV& vlnv);
+	void openDesign(const VLNV& vlnv, const QString& viewName);
 
     //! \brief Open the SW design of a component.
     void openSWDesign(const VLNV& vlnv);

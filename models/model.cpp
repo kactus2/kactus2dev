@@ -367,6 +367,16 @@ const QList<VLNV> Model::getHierarchyRefs() const {
 	return refs;
 }
 
+QMap<QString, VLNV> Model::getHierRefNames() const {
+	QMap<QString, VLNV> map;
+	foreach (QSharedPointer<View> view, views_) {
+		if (view->isHierarchical()) {
+			map.insert(view->getName(), view->getHierarchyRef());
+		}
+	}
+	return map;
+}
+
 View* Model::findView(const QString name) const {
 	// search all views
 	for (int i = 0; i < views_.size(); ++i) {

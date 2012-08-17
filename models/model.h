@@ -135,6 +135,14 @@ public:
 	 */
 	const QList<VLNV> getHierarchyRefs() const;
 
+	/*! \brief Get the hierarchical references this model contains.
+	 *
+	 * \return QMap containing the hierarchical references with the matching view names.
+	 *		Key = The name of the view.
+	 *		Value = The hierarchical reference of the view.
+	*/
+	QMap<QString, VLNV> getHierRefNames() const;
+
 	/*! \brief Set the hierarchical for given view.
 	 *
 	 * If view name is not specified then the hierarchical reference is set for

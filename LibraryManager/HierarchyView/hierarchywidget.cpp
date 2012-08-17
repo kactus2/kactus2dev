@@ -34,9 +34,10 @@ model_(dataModel) {
 	filter_.setSourceModel(dataModel);
 	view_.setModel(&filter_);
 
-	setupConnections(dataModel);
-
 	view_.sortByColumn(0, Qt::AscendingOrder);
+	view_.setColumnWidth(0, 200);
+
+	setupConnections(dataModel);
 }
 
 HierarchyWidget::~HierarchyWidget() {

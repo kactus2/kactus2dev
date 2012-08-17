@@ -2283,6 +2283,23 @@ QList<VLNV> Component::getHierRefs() const {
 	return list;
 }
 
+QMap<QString, VLNV> Component::getHierRefNames() const {
+	QMap<QString, VLNV> map;
+	if (model_) {
+		map.unite(model_->getHierRefNames());
+	}
+	foreach (QSharedPointer<SWView> swView, swViews_) {
+		if (swView->getHierarchyRef().isValid()) {
+			map.insert(swView->getName(), swView->getHierarchyRef());
+		}
+	}
+	foreach (QSharedPointer<SystemView> sysView, systemViews_) {
+		if (sysView->getHierarchyRef().isValid()) {
+			map.insert(sysView->getName(), sysView->getHierarchyRef());
+		}
+	}
+	return map;
+}
 
 void Component::setHierRef(const VLNV& vlnv, const QString& viewName /*= QString()*/ ) {
 	if (!model_)

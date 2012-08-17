@@ -13,12 +13,14 @@
 #include <models/abstractiondefinition.h>
 #include <models/ApiDefinition.h>
 #include <models/ComDefinition.h>
+#include <models/design.h>
 
 #include <common/KactusAttribute.h>
 
 #include <QObject>
 #include <QSharedPointer>
 #include <QList>
+#include <QMap>
 
 class LibraryInterface;
 
@@ -37,7 +39,8 @@ public:
 		BUSDEFINITION,
 		ABSDEFINITION,
         COMDEFINITION,
-        APIDEFINITION
+        APIDEFINITION,
+		DESIGN
 	};
 
 	/*! \brief The constructor
@@ -48,7 +51,8 @@ public:
 	 *
 	*/
 	HierarchyItem(LibraryInterface* handler, 
-		HierarchyItem* parent, const VLNV& vlnv);
+		HierarchyItem* parent, 
+		const VLNV& vlnv);
 
 	/*! \brief The constructor for the root item.
 	 * 
@@ -118,7 +122,7 @@ public:
 
 	/*! \brief Check if this item has children or not.
 	 *
-	 * \return True if atleast one child item exists.
+	 * \return True if at least one child item exists.
 	*/
 	bool hasChildren() const;
 
@@ -228,7 +232,7 @@ public:
 	*/
 	bool isRoot() const;
 
-	/*! \brief Check if this item is instantated in some item or not.
+	/*! \brief Check if this item is instantiated in some item or not.
 	 *
 	 * \return bool true if item is contained as some item's child.
 	*/
@@ -296,6 +300,14 @@ public:
 	*/
 	void getChildItems(QList<VLNV>& itemList);
 
+	/*! \brief Count how many times this component has been instantiated in a containing design.
+	 * 
+	 * For items that are not components this function returns -1
+	 *
+	 * \return The instance count in the containing design.
+	*/
+	int instanceCount() const;
+
 signals:
 
 	//! \brief Send a notification to be printed to user.
@@ -303,6 +315,16 @@ signals:
 
 	//! \brief Send an error message to be printed to user.
 	void errorMessage(const QString& msg);
+
+protected:
+
+	/*! \brief Count the number of instances for the given vlnv.
+	 *
+	 * \param componentVLNV The vlnv of the component that's instance count is counted.
+	 *
+	 * \return The number of instantiation times.
+	*/
+	int countInstances(const VLNV& componentVLNV);
 
 private:
 	//! \brief No copying
@@ -354,6 +376,13 @@ private:
 	*/
 	void parseApiDefinition(const VLNV& vlnv);
 
+	/*! \brief Parse this hierarchy item to match a design.
+	 *
+	 * \param vlnv The vlnv of the design.
+	 *
+	*/
+	void parseDesign(const VLNV& vlnv);
+
 	//! \brief Pointer to the component that this hierarhcyItem represents.
 	QSharedPointer<Component> component_;
 
@@ -368,6 +397,9 @@ private:
 
     //! \brief Pointer to the API definition that this hierarchyItem represents.
     QSharedPointer<ApiDefinition> apiDef_;
+
+	//! \brief Pointer to the design that this hierarchyItem represents.
+	QSharedPointer<Design> design_;
 
 	//! \brief Pointer to the object that manages the library.
 	LibraryInterface* handler_;
@@ -386,6 +418,9 @@ private:
 
 	//! \brief Defines the type of this hierarchy item.
 	ObjectType type_;
+
+	//! \brief Contains the instance count for the sub items.
+	QMap<VLNV, int> instanceCount_;
 };
 
 #endif // HIERARCHYITEM_H

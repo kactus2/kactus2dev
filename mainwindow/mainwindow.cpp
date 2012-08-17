@@ -1116,8 +1116,8 @@ void MainWindow::setupContextHelp()
 
 void MainWindow::setupConfigurationEditor() {
 
-	configurationDock_ = new QDockWidget(tr("Configuration Details"), this);
-	configurationDock_->setObjectName(tr("Configuration Editor"));
+	configurationDock_ = new QDockWidget(tr("Design configuration details"), this);
+	configurationDock_->setObjectName(tr("Configuration editor"));
 	configurationDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 	configurationDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
 

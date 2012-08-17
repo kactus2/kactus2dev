@@ -28,30 +28,29 @@
 
 HierarchyView::HierarchyView(QWidget *parent, 
 							 LibraryInterface* handler,
-							 HierarchyFilter* filter)
-    : QTreeView(parent),
-      handler_(handler),
-      filter_(filter),
-      startPos_(),
-      dragIndex_(),
-      openDesignAction_(NULL),
-      openSWDesignAction_(NULL),
-      openCompAction_(NULL),
-      createNewComponentAction_(NULL),
-      createNewDesignAction_(NULL),
-      createNewSWDesignAction_(NULL),
-      createNewSystemDesignAction_(NULL),
-      exportAction_(NULL),
-      openBusAction_(NULL),
-      addSignalsAction_(NULL),
-      createBusAction_(NULL),
-      openComDefAction_(NULL),
-      createComDefAction_(NULL),
-      openApiDefAction_(NULL),
-      createApiDefAction_(NULL),
-      openSystemAction_(NULL),
-      openXmlAction_(NULL)
-{
+							 HierarchyFilter* filter):
+QTreeView(parent),
+handler_(handler),
+filter_(filter),
+startPos_(),
+dragIndex_(),
+openDesignAction_(NULL),
+openSWDesignAction_(NULL),
+openCompAction_(NULL),
+createNewComponentAction_(NULL),
+createNewDesignAction_(NULL),
+createNewSWDesignAction_(NULL),
+createNewSystemDesignAction_(NULL),
+exportAction_(NULL),
+openBusAction_(NULL),
+addSignalsAction_(NULL),
+createBusAction_(NULL),
+openComDefAction_(NULL),
+createComDefAction_(NULL),
+openApiDefAction_(NULL),
+createApiDefAction_(NULL),
+openSystemAction_(NULL),
+openXmlAction_(NULL) {
 
 	// the view can be sorted
 	setSortingEnabled(true);
@@ -352,11 +351,11 @@ void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
 
             default:
                 {
-                    if (component->isHierarchical())
-                    {
-                        menu.addAction(openDesignAction_);
-                        hierarchical = true;
-                    }
+//                     if (component->isHierarchical())
+//                     {
+//                         menu.addAction(openDesignAction_);
+//                         hierarchical = true;
+//                     }
 
                     if (component->hasSWViews())
                     {
@@ -420,6 +419,9 @@ void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
             menuNew = menu.addMenu(tr("New"));
             menuNew->addAction(createApiDefAction_);
         }
+		else if (item->type() == HierarchyItem::DESIGN) {
+			menu.addAction(openDesignAction_);
+		}
 
         // Insert the New menu to the popup menu if it was created.
         if (menuNew != 0)
@@ -443,14 +445,25 @@ void HierarchyView::mouseDoubleClickEvent( QMouseEvent * event ) {
 	// accept the event so it is not passed forwards
 	event->accept();
 
-	QModelIndex current = currentIndex();
+// 	QModelIndex current = currentIndex();
+// 
+// 	// if nothing was chosen
+// 	if (!current.isValid()) {
+// 		return;
+// 	}
 
-	// if nothing was chosen
-	if (!current.isValid()) {
-		return;
+	// get original model index so internalPointer can be used
+	QModelIndex sourceIndex = filter_->mapToSource(indexAt(event->pos()));
+
+	HierarchyItem* item = static_cast<HierarchyItem*>(sourceIndex.internalPointer());
+	if (item->type() == HierarchyItem::DESIGN) {
+		emit openDesign(sourceIndex);
+	}
+	else {
+		emit openComponent(sourceIndex);
 	}
 
-	emit openComponent(filter_->mapToSource(current));
+	//emit openComponent(filter_->mapToSource(current));
 
 	// let the default handler process the event
 	QTreeView::mouseDoubleClickEvent(event);
