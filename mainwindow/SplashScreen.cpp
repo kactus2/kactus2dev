@@ -38,7 +38,7 @@ SplashScreen::~SplashScreen()
 void SplashScreen::drawContents(QPainter *painter)
 {
     // Draw the version text.
-    painter->setPen(QPen(Qt::white, 1));
+	painter->setPen(QPen(Qt::white, 1));
 
 #if defined (_WIN64) || (__LP64__) || (_LP64)
 	int bits = 64;

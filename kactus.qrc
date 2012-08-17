@@ -70,6 +70,7 @@
       <file>graphics/workspace.png</file>
       <file>graphics/visibility.png</file>
       <file>graphics/library-refresh.png</file>
+      <file>graphics/library-config.png</file>
       <file>graphics/generator_plugin.png</file>
       <file>graphics/naming-policy.png</file>
   </qresource>

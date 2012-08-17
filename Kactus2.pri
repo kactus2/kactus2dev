@@ -406,6 +406,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./settings/CodeEditorSettingsPage.h \
     ./settings/GeneralSettingsPage.h \
     ./settings/LibrarySettingsPage.h \
+    ./settings/NamingPolicySettingsPage.h \
     ./settings/SettingsDialog.h \
     ./ComponentInstanceEditor/componentinstanceeditor.h \
     ./ComponentInstanceEditor/componentinstancemodel.h \
@@ -469,13 +470,12 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./PluginSystem/IPluginUtility.h \
     ./PluginSystem/PluginListDialog.h \
     ./PluginSystem/PluginManager.h \
+    ./SystemDetailsEditor/ExportSWDialog.h \
     ./SystemDetailsEditor/SwitchHWDialog.h \
     ./SystemDetailsEditor/SystemDetailsEditor.h \
     ./HelpSystem/ContextHelpBrowser.h \
     ./HelpSystem/HelpSearchWidget.h \
-    ./HelpSystem/HelpWindow.h \
-    ./SystemDetailsEditor/ExportSWDialog.h \
-    ./settings/NamingPolicySettingsPage.h
+    ./HelpSystem/HelpWindow.h
 SOURCES += ./common/CSourceWriter.cpp \
     ./common/DesignDiagram.cpp \
     ./common/DesignWidget.cpp \
@@ -883,6 +883,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./settings/CodeEditorSettingsPage.cpp \
     ./settings/GeneralSettingsPage.cpp \
     ./settings/LibrarySettingsPage.cpp \
+    ./settings/NamingPolicySettingsPage.cpp \
     ./settings/SettingsDialog.cpp \
     ./ComponentInstanceEditor/componentinstanceeditor.cpp \
     ./ComponentInstanceEditor/componentinstancemodel.cpp \
@@ -917,11 +918,10 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./SystemDesign/SystemMoveCommands.cpp \
     ./PluginSystem/PluginListDialog.cpp \
     ./PluginSystem/PluginManager.cpp \
+    ./SystemDetailsEditor/ExportSWDialog.cpp \
     ./SystemDetailsEditor/SwitchHWDialog.cpp \
     ./SystemDetailsEditor/SystemDetailsEditor.cpp \
     ./HelpSystem/ContextHelpBrowser.cpp \
     ./HelpSystem/HelpSearchWidget.cpp \
-    ./HelpSystem/HelpWindow.cpp \
-    ./SystemDetailsEditor/ExportSWDialog.cpp \
-    ./settings/NamingPolicySettingsPage.cpp
+    ./HelpSystem/HelpWindow.cpp
 RESOURCES += kactus.qrc

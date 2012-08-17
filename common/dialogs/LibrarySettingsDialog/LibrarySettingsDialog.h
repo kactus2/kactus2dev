@@ -1,27 +1,26 @@
 //-----------------------------------------------------------------------------
-// File: LibrarySettingsPage.h
+// File: LibrarySettingsDialog.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
-// Date: 31.8.2011
+// Date: 17.08.2012
 //
 // Description:
-// Library settings page for the settings dialog.
+// Dialog for configuring library locations.
 //-----------------------------------------------------------------------------
 
-#ifndef LIBRARYSETTINGSPAGE_H
-#define LIBRARYSETTINGSPAGE_H
+#ifndef LIBRARYSETTINGSDIALOG_H
+#define LIBRARYSETTINGSDIALOG_H
 
-#include <common/dialogs/propertyPageDialog/PropertyPageView.h>
-
-#include <QListWidget>
-#include <QPushButton>
+#include <QDialog>
 #include <QSettings>
+#include <QListWidgetItem>
+#include <QPushButton>
 
 //-----------------------------------------------------------------------------
-//! LibrarySettingsPage class.
+//! Library locations dialog.
 //-----------------------------------------------------------------------------
-class LibrarySettingsPage : public PropertyPageView
+class LibrarySettingsDialog : public QDialog
 {
     Q_OBJECT
 
@@ -29,21 +28,20 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in/out] settings The settings store.
+     *      @param [in/out] settings  The settings store.
+     *      @param [in]     parent    The parent widget.
      */
-    LibrarySettingsPage(QSettings& settings);
+    LibrarySettingsDialog(QSettings& settings, QWidget* parent = 0);
 
     /*!
      *  Destructor.
      */
-    ~LibrarySettingsPage();
+    ~LibrarySettingsDialog();
 
     /*!
      *  Validates the contents of the page thoroughly.
      *
      *      @return True, if the contents are valid. False, if they are invalid.
-     *
-     *      @remarks Showing message boxes for errors is allowed.
      */
     bool validate();
 
@@ -51,13 +49,6 @@ public:
      *  Applies the changes that were done in the page.
      */
     void apply();
-
-    /*!
-     *  Called when the page is to be changed and this page would be hidden.
-     *
-     *      @return False, if the page change should be rejected. Otherwise true.
-     */
-    bool onPageChange();
 
 public slots:
     //! Adds a new directory to the library locations.
@@ -70,7 +61,6 @@ public slots:
     void onSelectLocation(QListWidgetItem* cur, QListWidgetItem* prev);
 
 signals:
-
 	//! \brief Emitted when the library settings has changed and a scan should be performed.
 	void scanLibrary();
 
@@ -83,10 +73,15 @@ private slots:
 	*/
 	void onItemClicked(QListWidgetItem* item);
 
+    /*!
+     *  Called when the user presses OK.
+     */
+    virtual void accept();
+
 private:
     // Disable copying.
-    LibrarySettingsPage(LibrarySettingsPage const& rhs);
-    LibrarySettingsPage& operator=(LibrarySettingsPage const& rhs);
+    LibrarySettingsDialog(LibrarySettingsDialog const& rhs);
+    LibrarySettingsDialog& operator=(LibrarySettingsDialog const& rhs);
 
     /*!
      *  Loads the settings from the settings store.
@@ -109,10 +104,13 @@ private:
     //! Remove location button.
     QPushButton* removeLocationButton_;
 
+    //! OK button.
+    QPushButton* okButton_;
+
 	//! \brief Holds the info on if the user has changed the library or not.
 	bool changed_;
 };
 
 //-----------------------------------------------------------------------------
 
-#endif // LIBRARYSETTINGSPAGE_H
+#endif // LIBRARYSETTINGSDIALOG_H

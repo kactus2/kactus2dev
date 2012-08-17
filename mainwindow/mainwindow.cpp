@@ -37,6 +37,7 @@
 #include <LibraryManager/vlnv.h>
 #include <LibraryManager/LibraryUtils.h>
 
+#include <common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h>
 #include <common/dialogs/NewDesignDialog/NewDesignDialog.h>
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/dialogs/listSelectDialog/ListSelectDialog.h>
@@ -134,6 +135,7 @@ MainWindow::MainWindow(QWidget *parent)
       editGroup_(0),
       actUndo_(0), 
       actRedo_(0),
+      actLibraryLocations_(0),
       actLibrarySearch_(0), 
       actCheckIntegrity_(0),
       generationGroup_(0),
@@ -464,6 +466,11 @@ void MainWindow::setupActions() {
 	actRedo_->setProperty("rowSpan", 2);
 	actRedo_->setProperty("colSpan", 2);
 	connect(actRedo_, SIGNAL(triggered()), this, SLOT(redo()));
+
+    actLibraryLocations_ = new QAction(QIcon(":/icons/graphics/library-config.png"),
+                                       tr("Configure Library"), this);
+    connect(actLibraryLocations_, SIGNAL(triggered()),
+            this, SLOT(setLibraryLocations()), Qt::UniqueConnection);
 
 	// the action to search for IP-Xact documents in file system
 	actLibrarySearch_ = new QAction(QIcon(":/icons/graphics/library-refresh.png"),
@@ -905,6 +912,7 @@ void MainWindow::setupMenus()
 
 	//! The "Library" group.
 	GCF::MenuStripGroup* libGroup = menuStrip_->addGroup(tr("Library"));
+    libGroup->addAction(actLibraryLocations_);
 	libGroup->addAction(actLibrarySearch_);
 	libGroup->addAction(actCheckIntegrity_);
 
@@ -3807,6 +3815,18 @@ void MainWindow::onDocumentSaved(TabDocument* doc)
             otherDoc->requestRefresh();
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::setLibraryLocations()
+//-----------------------------------------------------------------------------
+void MainWindow::setLibraryLocations()
+{
+    QSettings settings;
+    LibrarySettingsDialog dialog(settings, this);
+    connect(&dialog, SIGNAL(scanLibrary()), this, SLOT(onLibrarySearch()), Qt::UniqueConnection);
+
+    dialog.exec();
 }
 
 MainWindow::WindowVisibility::WindowVisibility():

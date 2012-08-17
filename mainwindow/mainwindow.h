@@ -481,6 +481,9 @@ private slots:
     //! Called when a document has been saved.
     void onDocumentSaved(TabDocument* doc);
 
+    //! Opens a dialog for setting library locations.
+    void setLibraryLocations();
+
 private:
 	// Disable copying.
 	MainWindow(MainWindow const& rhs);
@@ -669,6 +672,9 @@ private:
     //! Action to redo an operation.
     QAction* actRedo_;
 
+    //! Action to set library locations.
+    QAction* actLibraryLocations_;
+
 	//! \brief Search for IP-Xact files in the file system
 	QAction* actLibrarySearch_;
 
@@ -812,7 +818,7 @@ private:
 	 *
 	*/
 	void updateWindows(unsigned int supportedWindows);
-    
+
     //-----------------------------------------------------------------------------
     //! Structure which contains the show/hidden status for the windows.
     //-----------------------------------------------------------------------------

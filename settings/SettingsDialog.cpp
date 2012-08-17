@@ -12,7 +12,6 @@
 #include "SettingsDialog.h"
 
 #include "GeneralSettingsPage.h"
-#include "LibrarySettingsPage.h"
 #include "CodeEditorSettingsPage.h"
 #include "NamingPolicySettingsPage.h"
 
@@ -27,12 +26,6 @@ SettingsDialog::SettingsDialog(QWidget* parent) : PropertyPageDialog(QSize(48, 4
 
     addPage(QIcon(":icons/graphics/settings-general.png"), tr("General"),
             new GeneralSettingsPage(settings_));
-    
-	LibrarySettingsPage* libraryPage = new LibrarySettingsPage(settings_);
-	connect(libraryPage, SIGNAL(scanLibrary()),
-		this, SIGNAL(scanLibrary()), Qt::UniqueConnection);
-	addPage(QIcon(":icons/graphics/settings-library.png"), tr("Library"),
-            libraryPage);
 
     addPage(QIcon(":icons/graphics/naming-policy.png"), tr("Naming Policies"),
         new NamingPolicySettingsPage(settings_));

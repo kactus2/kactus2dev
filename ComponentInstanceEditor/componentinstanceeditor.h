@@ -90,22 +90,22 @@ private:
 	ComponentItem* component_;
 
 	//! \brief The widget to display the vlnv of the component instance
-	VLNVDisplayer vlnvDisplayer_;
+	VLNVDisplayer* vlnvDisplayer_;
 
 	//! \brief The widget to set the instance name, display name and description.
-	NameGroupBox nameGroup_;
+	NameGroupBox* nameGroup_;
 
 	//! \brief The widget to set the configurable elements of a component instance.
-	ConfigurableElementEditor configurableElements_;
+	ConfigurableElementEditor* configurableElements_;
 
     //! SW group.
-    QGroupBox swGroup_;
+    QGroupBox* swGroup_;
 
     //! File set reference combo box.
-    QComboBox fileSetRefCombo_;
+    QComboBox* fileSetRefCombo_;
 
     //! Property value editor for SW properties.
-    PropertyValueEditor propertyValueEditor_;
+    PropertyValueEditor* propertyValueEditor_;
 
 	//! \brief Pointer to the generic edit provider that manages the undo/redo stack.
 	GenericEditProvider* editProvider_;

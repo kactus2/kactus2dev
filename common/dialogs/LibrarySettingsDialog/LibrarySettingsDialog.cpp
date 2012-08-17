@@ -1,15 +1,15 @@
 //-----------------------------------------------------------------------------
-// File: LibrarySettingsPage.cpp
+// File: LibrarySettingsDialog.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
-// Date: 31.8.2011
+// Date: 17.08.2012
 //
 // Description:
-// Library settings page for the settings dialog.
+// Dialog for configuring library locations.
 //-----------------------------------------------------------------------------
 
-#include "LibrarySettingsPage.h"
+#include "LibrarySettingsDialog.h"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -22,145 +22,114 @@
 #include <QDialogButtonBox>
 
 //-----------------------------------------------------------------------------
-// Function: LibrarySettingsPage()
+// Function: LibrarySettingsDialog()
 //-----------------------------------------------------------------------------
-LibrarySettingsPage::LibrarySettingsPage(QSettings& settings):
-settings_(settings),
-libLocationsList_(0),
-addLocationButton_(0),
-removeLocationButton_(0),
-changed_(false)
+LibrarySettingsDialog::LibrarySettingsDialog(QSettings& settings, QWidget* parent)
+    : QDialog(parent),
+      settings_(settings),
+      libLocationsList_(0),
+      addLocationButton_(0),
+      removeLocationButton_(0),
+      changed_(false)
 {
+    setWindowTitle(tr("Configure Library"));
+
     // Create the library location group box.
     QGroupBox* locationGroup = new QGroupBox(tr("Library locations (check the default directory)"), this);
 
     libLocationsList_ = new QListWidget(locationGroup);
     libLocationsList_->setFixedHeight(120);
-	connect(libLocationsList_, SIGNAL(itemClicked(QListWidgetItem*)),
-		this, SLOT(onItemClicked(QListWidgetItem*)), Qt::UniqueConnection);
+    connect(libLocationsList_, SIGNAL(itemClicked(QListWidgetItem*)),
+        this, SLOT(onItemClicked(QListWidgetItem*)), Qt::UniqueConnection);
 
     addLocationButton_ = new QPushButton(QIcon(":/icons/graphics/add.png"), QString(), this);
     removeLocationButton_ = new QPushButton(QIcon(":/icons/graphics/remove.png"), QString(), this);
     removeLocationButton_->setEnabled(false);
 
-    QDialogButtonBox* buttonBox = new QDialogButtonBox(Qt::Vertical);
-    buttonBox->addButton(addLocationButton_, QDialogButtonBox::ActionRole);
-    buttonBox->addButton(removeLocationButton_, QDialogButtonBox::ActionRole);
+    QDialogButtonBox* listButtonBox = new QDialogButtonBox(Qt::Vertical);
+    listButtonBox->addButton(addLocationButton_, QDialogButtonBox::ActionRole);
+    listButtonBox->addButton(removeLocationButton_, QDialogButtonBox::ActionRole);
 
     QHBoxLayout* locationLayout = new QHBoxLayout(locationGroup);
     locationLayout->addWidget(libLocationsList_);
-    locationLayout->addWidget(buttonBox);
+    locationLayout->addWidget(listButtonBox);
+
+    QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
+                                                       Qt::Horizontal, this);
 
     // Setup the layout.
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(locationGroup);
     layout->addStretch(1);
+    layout->addWidget(buttonBox);
 
     // Connect the signals.
     connect(addLocationButton_, SIGNAL(clicked()), this, SLOT(addLocation()));
     connect(removeLocationButton_, SIGNAL(clicked()), this, SLOT(removeLocation()));
     connect(libLocationsList_, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
             this, SLOT(onSelectLocation(QListWidgetItem*, QListWidgetItem*)));
-    
+    connect(buttonBox->button(QDialogButtonBox::Ok), SIGNAL(clicked()), this, SLOT(accept()), Qt::UniqueConnection);
+    connect(buttonBox->button(QDialogButtonBox::Cancel), SIGNAL(clicked()), this, SLOT(reject()), Qt::UniqueConnection);
+
+    setFixedHeight(sizeHint().height());
+    resize(500, sizeHint().height());
+
     loadSettings();
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~LibrarySettingsPage()
+// Function: ~LibrarySettingsDialog()
 //-----------------------------------------------------------------------------
-LibrarySettingsPage::~LibrarySettingsPage()
+LibrarySettingsDialog::~LibrarySettingsDialog()
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: validate()
 //-----------------------------------------------------------------------------
-bool LibrarySettingsPage::validate()
+bool LibrarySettingsDialog::validate()
 {
-    Q_ASSERT(prevalidate());
-
     return true;
 }
 
 //-----------------------------------------------------------------------------
 // Function: apply()
 //-----------------------------------------------------------------------------
-void LibrarySettingsPage::apply()
+void LibrarySettingsDialog::apply()
 {
-    // Create a string list containing all the location and save it to the settings.
-    QStringList locations;
-
-	// the checked item in the list is the default location
-	QString defaultLocation;
-
-    for (int i = 0; i < libLocationsList_->count(); ++i)
-    {
-		QListWidgetItem* item = libLocationsList_->item(i);
-		
-		if (item->checkState() == Qt::Checked) {
-			defaultLocation = item->text();
-		}
-
-        locations.append(item->text());
-    }
-
-    settings_.setValue("library/locations", locations);
-
-	// save the default location is one was set
-	settings_.setValue("library/defaultLocation", defaultLocation);
-
-	if (changed_) {
-		emit scanLibrary();
-	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: onPageChange()
-//-----------------------------------------------------------------------------
-bool LibrarySettingsPage::onPageChange()
-{
-    // Do not change the page if the settings are invalid.
-    if (!validate())
-    {
-        return false;
-    }
-
-    // If they are valid, save them and allow the page to be changed.
-    apply();
-    return true;
 }
 
 //-----------------------------------------------------------------------------
 // Function: addLocation()
 //-----------------------------------------------------------------------------
-void LibrarySettingsPage::addLocation()
+void LibrarySettingsDialog::addLocation()
 {
     QString dir = QFileDialog::getExistingDirectory(this, tr("Select library location:"));
 
     if (!dir.isEmpty())
     {
         QListWidgetItem* item = new QListWidgetItem(dir);
-		
-		// if this is the only item on the list
-		if (libLocationsList_->count() == 0) {
-			item->setCheckState(Qt::Checked);
-		}	
-		// if there are others
-		else {
-			item->setCheckState(Qt::Unchecked);
-		}
+
+        // if this is the only item on the list
+        if (libLocationsList_->count() == 0) {
+            item->setCheckState(Qt::Checked);
+        }	
+        // if there are others
+        else {
+            item->setCheckState(Qt::Unchecked);
+        }
 
         libLocationsList_->addItem(item);
         libLocationsList_->setCurrentItem(item);
     }
 
-	changed_ = true;
+    changed_ = true;
 }
 
 //-----------------------------------------------------------------------------
 // Function: removeLocation()
 //-----------------------------------------------------------------------------
-void LibrarySettingsPage::removeLocation()
+void LibrarySettingsDialog::removeLocation()
 {
     if (libLocationsList_->currentRow() >= 0)
     {
@@ -168,15 +137,15 @@ void LibrarySettingsPage::removeLocation()
         delete item;
     }
 
-	changed_ = true;
+    changed_ = true;
 }
 
 //-----------------------------------------------------------------------------
 // Function: loadSettings()
 //-----------------------------------------------------------------------------
-void LibrarySettingsPage::loadSettings()
+void LibrarySettingsDialog::loadSettings()
 {
-	QString defaultLocation = settings_.value("library/defaultLocation", QString()).toString();
+    QString defaultLocation = settings_.value("library/defaultLocation", QString()).toString();
 
     // Load the library locations.
     QStringList locations = settings_.value("library/locations", QStringList()).toStringList();
@@ -185,12 +154,12 @@ void LibrarySettingsPage::loadSettings()
     {
         QListWidgetItem* item = new QListWidgetItem(location);
 
-		if (location == defaultLocation) {
-			item->setCheckState(Qt::Checked);
-		}
-		else {
-			item->setCheckState(Qt::Unchecked);
-		}
+        if (location == defaultLocation) {
+            item->setCheckState(Qt::Checked);
+        }
+        else {
+            item->setCheckState(Qt::Unchecked);
+        }
 
         libLocationsList_->addItem(item);
     }
@@ -199,26 +168,59 @@ void LibrarySettingsPage::loadSettings()
 //-----------------------------------------------------------------------------
 // Function: onSelectLocation()
 //-----------------------------------------------------------------------------
-void LibrarySettingsPage::onSelectLocation(QListWidgetItem* cur, QListWidgetItem*)
+void LibrarySettingsDialog::onSelectLocation(QListWidgetItem* cur, QListWidgetItem*)
 {
     removeLocationButton_->setEnabled(cur != 0);
 }
 
-void LibrarySettingsPage::onItemClicked( QListWidgetItem* item ) {
-	
-	// if the item was checked then remove the checks of other items
-	if (item->checkState() == Qt::Checked) {
+void LibrarySettingsDialog::onItemClicked( QListWidgetItem* item ) {
 
-		for (int i = 0; i < libLocationsList_->count(); ++i) {
-			QListWidgetItem* tempItem = libLocationsList_->item(i);
+    // if the item was checked then remove the checks of other items
+    if (item->checkState() == Qt::Checked) {
 
-			// if not the clicked item
-			if (tempItem != item) {
+        for (int i = 0; i < libLocationsList_->count(); ++i) {
+            QListWidgetItem* tempItem = libLocationsList_->item(i);
 
-				// uncheck other items
-				tempItem->setCheckState(Qt::Unchecked);
-			}
-		}
-	}
+            // if not the clicked item
+            if (tempItem != item) {
+
+                // uncheck other items
+                tempItem->setCheckState(Qt::Unchecked);
+            }
+        }
+    }
 }
 
+//-----------------------------------------------------------------------------
+// Function: LibrarySettingsDialog::accept()
+//-----------------------------------------------------------------------------
+void LibrarySettingsDialog::accept()
+{
+    // Create a string list containing all the location and save it to the settings.
+    QStringList locations;
+
+    // the checked item in the list is the default location
+    QString defaultLocation;
+
+    for (int i = 0; i < libLocationsList_->count(); ++i)
+    {
+        QListWidgetItem* item = libLocationsList_->item(i);
+
+        if (item->checkState() == Qt::Checked) {
+            defaultLocation = item->text();
+        }
+
+        locations.append(item->text());
+    }
+
+    settings_.setValue("library/locations", locations);
+
+    // save the default location is one was set
+    settings_.setValue("library/defaultLocation", defaultLocation);
+
+    if (changed_) {
+        emit scanLibrary();
+    }
+
+    QDialog::accept();
+}

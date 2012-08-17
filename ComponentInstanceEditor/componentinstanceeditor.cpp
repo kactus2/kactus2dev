@@ -25,51 +25,51 @@
 #include <QVBoxLayout>
 #include <QDockWidget>
 
-ComponentInstanceEditor::ComponentInstanceEditor(QWidget *parent):
-QWidget(parent),
-component_(0),
-vlnvDisplayer_(this),
-nameGroup_(this, tr("Instance name")),
-swGroup_("SW", this),
-fileSetRefCombo_(this),
-configurableElements_(this),
-propertyValueEditor_(this),
-editProvider_(0) {
-
+ComponentInstanceEditor::ComponentInstanceEditor(QWidget *parent)
+    : QWidget(parent),
+      component_(0),
+      vlnvDisplayer_(new VLNVDisplayer(this)),
+      nameGroup_(new NameGroupBox(this, tr("Instance name"))),
+      swGroup_(new QGroupBox(tr("SW"), this)),
+      fileSetRefCombo_(new QComboBox(this)),
+      configurableElements_(new ConfigurableElementEditor(this)),
+      propertyValueEditor_(new PropertyValueEditor(this)),
+      editProvider_(0)
+{
 	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 
-	vlnvDisplayer_.hide();
-	nameGroup_.hide();
-    swGroup_.hide();
-	configurableElements_.hide();
-    propertyValueEditor_.hide();
+	vlnvDisplayer_->hide();
+	nameGroup_->hide();
+    swGroup_->hide();
+	configurableElements_->hide();
+    propertyValueEditor_->hide();
 
-	vlnvDisplayer_.setTitle(tr("Instance model VLNV"));
-	vlnvDisplayer_.setFlat(false);
+	vlnvDisplayer_->setTitle(tr("Instance model VLNV"));
+	vlnvDisplayer_->setFlat(false);
 
 	// set validator for the instance name
 	VhdlNameValidator* vhdlNameValidator = new VhdlNameValidator(NULL);
-	nameGroup_.setNameValidator(vhdlNameValidator);
+	nameGroup_->setNameValidator(vhdlNameValidator);
 
-    QVBoxLayout* swGroupLayout = new QVBoxLayout(&swGroup_);
+    QVBoxLayout* swGroupLayout = new QVBoxLayout(swGroup_);
     swGroupLayout->addWidget(new QLabel(tr("File set reference:"), this));
-    swGroupLayout->addWidget(&fileSetRefCombo_);
+    swGroupLayout->addWidget(fileSetRefCombo_);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
-	layout->addWidget(&vlnvDisplayer_);
-	layout->addWidget(&nameGroup_);
-	layout->addWidget(&configurableElements_);
-    layout->addWidget(&swGroup_);
-    layout->addWidget(&propertyValueEditor_);
+	layout->addWidget(vlnvDisplayer_);
+	layout->addWidget(nameGroup_);
+	layout->addWidget(configurableElements_);
+    layout->addWidget(swGroup_);
+    layout->addWidget(propertyValueEditor_);
 	layout->addStretch();
 
-	connect(&nameGroup_, SIGNAL(nameChanged(const QString&)),
+	connect(nameGroup_, SIGNAL(nameChanged(const QString&)),
 		    this, SLOT(onNameChanged(const QString&)), Qt::UniqueConnection);
-	connect(&nameGroup_, SIGNAL(displayNameChanged(const QString)),
+	connect(nameGroup_, SIGNAL(displayNameChanged(const QString)),
 		    this, SLOT(onDisplayNameChanged(const QString)), Qt::UniqueConnection);
-	connect(&nameGroup_, SIGNAL(descriptionChanged(const QString)),
+	connect(nameGroup_, SIGNAL(descriptionChanged(const QString)),
 		    this, SLOT(onDescriptionChanged(const QString&)), Qt::UniqueConnection);
-    connect(&propertyValueEditor_, SIGNAL(contentChanged()),
+    connect(propertyValueEditor_, SIGNAL(contentChanged()),
             this, SLOT(onPropertyValuesChanged()), Qt::UniqueConnection);            
 
     clear();
@@ -86,11 +86,11 @@ void ComponentInstanceEditor::setComponent( ComponentItem* component ) {
 	// if previous component has been specified, then disconnect signals to this editor.
 	if (component_) {
 		component_->disconnect(this);
-        component_->disconnect(&propertyValueEditor_);
-		component_->disconnect(&nameGroup_);
-        component_->disconnect(&fileSetRefCombo_);
+        component_->disconnect(propertyValueEditor_);
+		component_->disconnect(nameGroup_);
+        component_->disconnect(fileSetRefCombo_);
 
-        disconnect(&fileSetRefCombo_, SIGNAL(currentIndexChanged(QString const&)),
+        disconnect(fileSetRefCombo_, SIGNAL(currentIndexChanged(QString const&)),
                    this, SLOT(onFileSetRefChanged(QString const&)));
 	}
 
@@ -104,40 +104,40 @@ void ComponentInstanceEditor::setComponent( ComponentItem* component ) {
     locked = diagram->isProtected();
     
 	// set the vlnv of the component to be displayed
-	vlnvDisplayer_.setVLNV(*component->componentModel()->getVlnv(), true);
-	vlnvDisplayer_.show();
+	vlnvDisplayer_->setVLNV(*component->componentModel()->getVlnv(), true);
+	vlnvDisplayer_->show();
 
-	nameGroup_.setName(component->name());
-	nameGroup_.setDisplayName(component->displayName());
-	nameGroup_.setDescription(component->description());
-    nameGroup_.setEnabled(!locked);
-	nameGroup_.show();
+	nameGroup_->setName(component->name());
+	nameGroup_->setDisplayName(component->displayName());
+	nameGroup_->setDescription(component->description());
+    nameGroup_->setEnabled(!locked);
+	nameGroup_->show();
 
     // Show the file set reference if the component is software.
     if (dynamic_cast<SWComponentItem*>(component) != 0)
     {
         SWComponentItem* swComponent = static_cast<SWComponentItem*>(component);
 
-        fileSetRefCombo_.clear();
-        fileSetRefCombo_.addItem("");
-        fileSetRefCombo_.addItems(diagram->getEditedComponent()->getFileSetNames());
-        fileSetRefCombo_.setEnabled(!locked);
+        fileSetRefCombo_->clear();
+        fileSetRefCombo_->addItem("");
+        fileSetRefCombo_->addItems(diagram->getEditedComponent()->getFileSetNames());
+        fileSetRefCombo_->setEnabled(!locked);
 
-        int index = fileSetRefCombo_.findText(swComponent->getFileSetRef());
+        int index = fileSetRefCombo_->findText(swComponent->getFileSetRef());
 
         if (index != -1)
         {
-            fileSetRefCombo_.setCurrentIndex(index);
+            fileSetRefCombo_->setCurrentIndex(index);
         }
 
-        swGroup_.show();
+        swGroup_->show();
 
         connect(swComponent, SIGNAL(fileSetRefChanged(QString const&)),
                 this, SLOT(updateFileSetRef(QString const&)), Qt::UniqueConnection);
     }
     else
     {
-        swGroup_.hide();
+        swGroup_->hide();
     }
 
     // Show the component's property values in case of SW/HW mapping.
@@ -145,34 +145,34 @@ void ComponentInstanceEditor::setComponent( ComponentItem* component ) {
     {
         SystemComponentItem* swComponent = static_cast<SystemComponentItem*>(component);
 
-        propertyValueEditor_.setData(swComponent->getPropertyValues());
-        propertyValueEditor_.setAllowedProperties(&swComponent->componentModel()->getSWProperties());
-        propertyValueEditor_.setEnabled(!locked);
-        propertyValueEditor_.show();
+        propertyValueEditor_->setData(swComponent->getPropertyValues());
+        propertyValueEditor_->setAllowedProperties(&swComponent->componentModel()->getSWProperties());
+        propertyValueEditor_->setEnabled(!locked);
+        propertyValueEditor_->show();
 
-        configurableElements_.hide();
+        configurableElements_->hide();
 
         connect(swComponent, SIGNAL(propertyValuesChanged(QMap<QString, QString> const&)),
-                &propertyValueEditor_, SLOT(setData(QMap<QString, QString> const&)), Qt::UniqueConnection);
+                propertyValueEditor_, SLOT(setData(QMap<QString, QString> const&)), Qt::UniqueConnection);
     }
     else
     {
-        propertyValueEditor_.hide();
+        propertyValueEditor_->hide();
 
         // Show the component's configurable elements in case of HW.
-	    configurableElements_.setComponent(component);
-        configurableElements_.setEnabled(!locked);
-	    configurableElements_.show();
+	    configurableElements_->setComponent(component);
+        configurableElements_->setEnabled(!locked);
+	    configurableElements_->show();
     }
 
 	connect(component_, SIGNAL(nameChanged(const QString&, const QString&)),
-		    &nameGroup_, SLOT(setName(const QString&)), Qt::UniqueConnection);
+		    nameGroup_, SLOT(setName(const QString&)), Qt::UniqueConnection);
 	connect(component_, SIGNAL(displayNameChanged(const QString&)),
-		    &nameGroup_, SLOT(setDisplayName(const QString&)), Qt::UniqueConnection);
+		    nameGroup_, SLOT(setDisplayName(const QString&)), Qt::UniqueConnection);
 	connect(component_, SIGNAL(descriptionChanged(const QString&)),
-		    &nameGroup_, SLOT(setDescription(const QString&)), Qt::UniqueConnection);
+		    nameGroup_, SLOT(setDescription(const QString&)), Qt::UniqueConnection);
 
-    connect(&fileSetRefCombo_, SIGNAL(currentIndexChanged(QString const&)),
+    connect(fileSetRefCombo_, SIGNAL(currentIndexChanged(QString const&)),
         this, SLOT(onFileSetRefChanged(QString const&)), Qt::UniqueConnection);
 
 	// if the connected component is destroyed then clear this editor
@@ -187,22 +187,22 @@ void ComponentInstanceEditor::clear() {
 	// if previous component has been specified, then disconnect signals to this editor.
 	if (component_) {
         component_->disconnect(this);
-        component_->disconnect(&propertyValueEditor_);
-        component_->disconnect(&nameGroup_);
-        component_->disconnect(&fileSetRefCombo_);
+        component_->disconnect(propertyValueEditor_);
+        component_->disconnect(nameGroup_);
+        component_->disconnect(fileSetRefCombo_);
 
-        disconnect(&fileSetRefCombo_, SIGNAL(currentIndexChanged(QString const&)),
+        disconnect(fileSetRefCombo_, SIGNAL(currentIndexChanged(QString const&)),
                    this, SLOT(onFileSetRefChanged(QString const&)));
 	}
 
 	component_ = 0;
-	vlnvDisplayer_.hide();
-	nameGroup_.hide();
-    swGroup_.hide();
-    fileSetRefCombo_.clear();
-    propertyValueEditor_.hide();
-	configurableElements_.hide();
-	configurableElements_.clear();
+	vlnvDisplayer_->hide();
+	nameGroup_->hide();
+    swGroup_->hide();
+    fileSetRefCombo_->clear();
+    propertyValueEditor_->hide();
+	configurableElements_->hide();
+	configurableElements_->clear();
 	editProvider_ = 0;
 
 	parentWidget()->setMaximumHeight(20);
@@ -213,10 +213,12 @@ void ComponentInstanceEditor::onNameChanged( const QString& newName ) {
 	QSharedPointer<ComponentChangeNameCommand> cmd(new ComponentChangeNameCommand(component_, newName));
 
 	disconnect(component_, SIGNAL(nameChanged(const QString&, const QString&)),
-		&nameGroup_, SLOT(setName(const QString&)));
+		       nameGroup_, SLOT(setName(const QString&)));
+
 	editProvider_->addCommand(cmd);
+
 	connect(component_, SIGNAL(nameChanged(const QString&, const QString&)),
-		&nameGroup_, SLOT(setName(const QString&)), Qt::UniqueConnection);
+		    nameGroup_, SLOT(setName(const QString&)), Qt::UniqueConnection);
 }
 
 void ComponentInstanceEditor::onDisplayNameChanged( const QString& newDisplayName ) {
@@ -224,10 +226,12 @@ void ComponentInstanceEditor::onDisplayNameChanged( const QString& newDisplayNam
 	QSharedPointer<ComponentChangeDisplayNameCommand> cmd(new ComponentChangeDisplayNameCommand(component_, newDisplayName));
 
 	disconnect(component_, SIGNAL(displayNameChanged(const QString&)),
-		&nameGroup_, SLOT(setDisplayName(const QString&)));
+		       nameGroup_, SLOT(setDisplayName(const QString&)));
+
 	editProvider_->addCommand(cmd);
+
 	connect(component_, SIGNAL(displayNameChanged(const QString&)),
-		&nameGroup_, SLOT(setDisplayName(const QString&)), Qt::UniqueConnection);
+		    nameGroup_, SLOT(setDisplayName(const QString&)), Qt::UniqueConnection);
 }
 
 void ComponentInstanceEditor::onDescriptionChanged( const QString& newDescription ) {
@@ -235,23 +239,23 @@ void ComponentInstanceEditor::onDescriptionChanged( const QString& newDescriptio
 	QSharedPointer<ComponentChangeDescriptionNameCommand> cmd(new ComponentChangeDescriptionNameCommand(component_, newDescription));
 
 	disconnect(component_, SIGNAL(descriptionChanged(const QString&)),
-		&nameGroup_, SLOT(setDescription(const QString&)));
+		nameGroup_, SLOT(setDescription(const QString&)));
 	editProvider_->addCommand(cmd);
 	connect(component_, SIGNAL(descriptionChanged(const QString&)),
-		&nameGroup_, SLOT(setDescription(const QString&)), Qt::UniqueConnection);
+		nameGroup_, SLOT(setDescription(const QString&)), Qt::UniqueConnection);
 }
 
 void ComponentInstanceEditor::onPropertyValuesChanged()
 {
     disconnect(component_, SIGNAL(propertyValuesChanged(QMap<QString, QString> const&)),
-               &propertyValueEditor_, SLOT(setData(QMap<QString, QString> const&)));
+               propertyValueEditor_, SLOT(setData(QMap<QString, QString> const&)));
 
     SystemComponentItem* swComp = static_cast<SystemComponentItem*>(component_);
-    QSharedPointer<PropertyValuesChangeCommand> cmd(new PropertyValuesChangeCommand(swComp, propertyValueEditor_.getData()));
+    QSharedPointer<PropertyValuesChangeCommand> cmd(new PropertyValuesChangeCommand(swComp, propertyValueEditor_->getData()));
     editProvider_->addCommand(cmd);
 
     connect(component_, SIGNAL(propertyValuesChanged(QMap<QString, QString> const&)),
-            &propertyValueEditor_, SLOT(setData(QMap<QString, QString> const&)), Qt::UniqueConnection);
+            propertyValueEditor_, SLOT(setData(QMap<QString, QString> const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -275,14 +279,14 @@ void ComponentInstanceEditor::onFileSetRefChanged(QString const& fileSetRef)
 //-----------------------------------------------------------------------------
 void ComponentInstanceEditor::updateFileSetRef(QString const& fileSetRef)
 {
-    int index = fileSetRefCombo_.findText(fileSetRef);
+    int index = fileSetRefCombo_->findText(fileSetRef);
 
     if (index != -1)
     {
-        fileSetRefCombo_.setCurrentIndex(index);
+        fileSetRefCombo_->setCurrentIndex(index);
     }
     else
     {
-        fileSetRefCombo_.setCurrentIndex(0);
+        fileSetRefCombo_->setCurrentIndex(0);
     }
 }
