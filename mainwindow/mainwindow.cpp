@@ -2209,7 +2209,7 @@ void MainWindow::createDesign(KactusAttribute::ProductHierarchy prodHier,
 }
 
 //-----------------------------------------------------------------------------
-// Function: MainWindow::createSWDesign()
+// Function: MainWindow::createDesignForExistingComponent()
 //-----------------------------------------------------------------------------
 void MainWindow::createDesignForExistingComponent(VLNV const& vlnv)
 {
@@ -2225,29 +2225,36 @@ void MainWindow::createDesignForExistingComponent(VLNV const& vlnv)
     dialog.setVLNV(VLNV(VLNV::DESIGN, component->getVlnv()->getVendor(), component->getVlnv()->getLibrary(), "", ""));
 
     QSettings settings;
-    dialog.setViewNameSuggestions(settings.value("policies/hwviewname").toStringList());
+    QStringList suggestions = settings.value("policies/hwviewname").toStringList();
+    dialog.setViewNameSuggestions(suggestions);
 
     QString baseViewName = "";
+    QString viewName = "";
 
-    switch (component->getComponentHierarchy())
+    if (!suggestions.isEmpty())
     {
-    case KactusAttribute::KTS_IP:
-    case KactusAttribute::KTS_SOC:
-        baseViewName = "structural";
+        baseViewName = suggestions.first();
 
-    default:
-        baseViewName = "hierarchical";
+        viewName = baseViewName;
+        unsigned int runningNumber = 1;
 
+        while (component->findView(viewName) != 0)
+        {
+            ++runningNumber;
+            viewName = baseViewName + QString::number(runningNumber);
+        }
     }
 
-    QString viewName = baseViewName;
-    unsigned int runningNumber = 1;
-
-    while (component->findView(viewName) != 0)
-    {
-        ++runningNumber;
-        viewName = baseViewName + QString::number(runningNumber);
-    }
+//     switch (component->getComponentHierarchy())
+//     {
+//     case KactusAttribute::KTS_IP:
+//     case KactusAttribute::KTS_SOC:
+//         baseViewName = "structural";
+// 
+//     default:
+//         baseViewName = "hierarchical";
+// 
+//     }
 
     dialog.setViewName(viewName);
 
@@ -2303,13 +2310,25 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
     dialog.setWindowTitle(tr("New SW Design"));
     dialog.setVLNV(VLNV(VLNV::DESIGN, component->getVlnv()->getVendor(), component->getVlnv()->getLibrary(), "", ""));
 
-    QString viewName = "software";
-    unsigned int runningNumber = 1;
+    QSettings settings;
+    QStringList suggestions = settings.value("policies/swviewname").toStringList();
+    dialog.setViewNameSuggestions(suggestions);
 
-    while (component->findSWView(viewName) != 0)
+    QString baseViewName = "";
+    QString viewName = "";
+
+    if (!suggestions.isEmpty())
     {
-        ++runningNumber;
-        viewName = "software" + QString::number(runningNumber);
+        baseViewName = suggestions.first();
+
+        viewName = baseViewName;
+        unsigned int runningNumber = 1;
+
+        while (component->findSWView(viewName) != 0)
+        {
+            ++runningNumber;
+            viewName = baseViewName + QString::number(runningNumber);
+        }
     }
 
     dialog.setViewName(viewName);
@@ -2479,13 +2498,25 @@ void MainWindow::createSystemDesign(VLNV const& vlnv)
     dialog.setWindowTitle(tr("New System Design"));
     dialog.setVLNV(VLNV(VLNV::DESIGN, component->getVlnv()->getVendor(), component->getVlnv()->getLibrary(), "", ""));
 
-    QString viewName = "system";
-    unsigned int runningNumber = 1;
+    QSettings settings;
+    QStringList suggestions = settings.value("policies/sysviewname").toStringList();
+    dialog.setViewNameSuggestions(suggestions);
 
-    while (component->findSystemView(viewName) != 0)
+    QString baseViewName = "";
+    QString viewName = "";
+
+    if (!suggestions.isEmpty())
     {
-        ++runningNumber;
-        viewName = "system" + QString::number(runningNumber);
+        baseViewName = suggestions.first();
+
+        viewName = baseViewName;
+        unsigned int runningNumber = 1;
+
+        while (component->findSystemView(viewName) != 0)
+        {
+            ++runningNumber;
+            viewName = baseViewName + QString::number(runningNumber);
+        }
     }
 
     dialog.setViewName(viewName);

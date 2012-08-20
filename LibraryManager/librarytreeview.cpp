@@ -165,7 +165,7 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
 					menuNew->addAction(createNewDesignAction_);
                     menuNew->addAction(createNewSWDesignAction_);
 
-                    if (hierarchical)
+                    if (component->isHierarchical())
                     {
                         menuNew->addAction(createNewSystemDesignAction_);
                     }
