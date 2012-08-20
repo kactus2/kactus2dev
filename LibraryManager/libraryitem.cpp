@@ -26,7 +26,9 @@ vlnv_() {
 }
 
 // The constructor
-LibraryItem::LibraryItem(const VLNV& vlnv, Level level, LibraryItem *parent): 
+LibraryItem::LibraryItem(const VLNV& vlnv,
+						 Level level, 
+						 LibraryItem *parent): 
 QObject(parent), 
 name_(), 
 level_(level),
@@ -38,10 +40,6 @@ vlnv_() {
 
 	// choose name for the item in the tree
 	switch (level) {
-	case TYPE:
-		name_ = VLNV::type2Print(vlnv.getType());
-		childName = vlnv.getVendor();
-		break;
 	case VENDOR:
 		name_ = vlnv.getVendor();
 		childName = vlnv.getLibrary();
@@ -87,9 +85,6 @@ void LibraryItem::createChild( const VLNV& vlnv, Level level ) {
 	// choose name for the item in the tree
 	switch (level) {
 	case ROOT:
-		childName = VLNV::type2Print(vlnv.getType());
-		break;
-	case TYPE:
 		childName = vlnv.getVendor();
 		break;
 	case VENDOR:
@@ -229,12 +224,6 @@ LibraryItem* LibraryItem::findHighestUnique( const VLNV& vlnv ) {
 		switch (level_) {
 
 		case ROOT: {
-			if (childItems_.at(i)->getName() == VLNV::type2Print(vlnv.getType())) {
-				return childItems_.at(i)->findHighestUnique(vlnv);
-			}
-			continue;
-				   }
-		case TYPE: {
 			if (childItems_.at(i)->getName() == vlnv.getVendor()) {
 				return childItems_.at(i)->findHighestUnique(vlnv);
 			}
@@ -275,9 +264,6 @@ LibraryItem* LibraryItem::findItem( const VLNV& vlnv ) {
 	// choose name for the item in the tree
 	switch (level_) {
 	case ROOT:
-		searchedChildName = VLNV::type2Print(vlnv.getType());
-		break;
-	case TYPE:
 		searchedChildName = vlnv.getVendor();
 		break;
 	case VENDOR:
@@ -316,29 +302,25 @@ LibraryItem* LibraryItem::findItem( const VLNV& vlnv ) {
 	return 0;
 }
 
-QString LibraryItem::getTypeStr() const {
-
-	// if this is hierarchy that contains the type
-	if (level_ == LibraryItem::TYPE)
-		return name_;
-	
-	// if root is asked for the type it can't tell it
-	else if (level_ == LibraryItem::ROOT)
-		return QString();
-
-	// ask parent to tell the type
-	else
-		return parentItem_->getTypeStr();
-}
+// QString LibraryItem::getTypeStr() const {
+// 
+// 	// if this is hierarchy that contains the type
+// 	if (level_ == LibraryItem::TYPE)
+// 		return name_;
+// 	
+// 	// if root is asked for the type it can't tell it
+// 	else if (level_ == LibraryItem::ROOT)
+// 		return QString();
+// 
+// 	// ask parent to tell the type
+// 	else
+// 		return parentItem_->getTypeStr();
+// }
 
 void LibraryItem::setVlnv( VLNV& vlnv ) {
 
 	switch (level_) {
 		case LibraryItem::ROOT: {
-			return;
-								}
-		case LibraryItem::TYPE: {
-			vlnv.setType(name_);
 			return;
 								}
 		case LibraryItem::VENDOR: {
@@ -358,6 +340,7 @@ void LibraryItem::setVlnv( VLNV& vlnv ) {
 								}
 		case LibraryItem::VERSION: {
 			vlnv.setVersion(name_);
+			vlnv.setType(vlnv_.getType());
 			parentItem_->setVlnv(vlnv);
 			return;
 								   }
@@ -377,17 +360,11 @@ QList<LibraryItem*> LibraryItem::getVendors( const QRegExpValidator& validator )
 	switch (level_) {
 		case LibraryItem::ROOT: {
 			foreach (LibraryItem* item, childItems_) {
-				list += item->getVendors(validator);
-			}
-			break;
-								}
-		case LibraryItem::TYPE: {
-			foreach (LibraryItem* item, childItems_) {
 
-                                QString name = item->getName();
+				QString name = item->getName();
 
-                                // if the child's name passes the validation
-                                if (QValidator::Acceptable == validator.validate(name, pos))
+				// if the child's name passes the validation
+				if (QValidator::Acceptable == validator.validate(name, pos))
 					list.append(item);
 			}
 			break;
@@ -407,12 +384,6 @@ QList<LibraryItem*> LibraryItem::getVendors() const {
 
 	switch (level_) {
 		case LibraryItem::ROOT: {
-			foreach (LibraryItem* item, childItems_) {
-				list += item->getVendors();
-			}
-			return list;
-								}
-		case LibraryItem::TYPE: {
 			return childItems_;
 								}
 		default:
@@ -427,8 +398,7 @@ QList<LibraryItem*> LibraryItem::getLibraries( const QRegExpValidator& validator
 	int pos = 0;
 
 	switch (level_) {
-		case LibraryItem::ROOT:
-		case LibraryItem::TYPE: {
+		case LibraryItem::ROOT: {
 			foreach (LibraryItem* item, childItems_) {
 				list += item->getLibraries(validator);
 			}
@@ -437,10 +407,10 @@ QList<LibraryItem*> LibraryItem::getLibraries( const QRegExpValidator& validator
 		case LibraryItem::VENDOR: {
 			foreach (LibraryItem* item, childItems_) {
 
-                            QString name = item->getName();
+				QString name = item->getName();
 
-                            // if the child's name passes the validation
-                                if (QValidator::Acceptable == validator.validate(name, pos))
+				// if the child's name passes the validation
+				if (QValidator::Acceptable == validator.validate(name, pos))
 					list.append(item);
 			}
 			break;
@@ -458,8 +428,7 @@ QList<LibraryItem*> LibraryItem::getLibraries() const {
 	QList<LibraryItem*> list;
 
 	switch (level_) {
-		case LibraryItem::ROOT:
-		case LibraryItem::TYPE: {
+		case LibraryItem::ROOT: {
 			foreach (LibraryItem* item, childItems_) {
 				list += item->getLibraries();
 			}
@@ -480,7 +449,6 @@ QList<LibraryItem*> LibraryItem::getNames() const {
 
 	switch (level_) {
 		case LibraryItem::ROOT:
-		case LibraryItem::TYPE: 
 		case LibraryItem::VENDOR: {
 			foreach (LibraryItem* item, childItems_) {
 				list += item->getNames();
@@ -502,7 +470,6 @@ QList<LibraryItem*> LibraryItem::getVersions() const {
 
 	switch (level_) {
 		case LibraryItem::ROOT:
-		case LibraryItem::TYPE: 
 		case LibraryItem::VENDOR:
 		case LibraryItem::LIBRARY: {
 			foreach (LibraryItem* item, childItems_) {

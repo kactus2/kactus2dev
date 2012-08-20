@@ -34,8 +34,11 @@ public:
 	 * Level is used to give tell what information to use from VLNV tag in
 	 * creating new component in hierarchy
 	 */
-	enum Level {ROOT = 0, TYPE = 1, VENDOR = 2, LIBRARY = 3, NAME = 4,
-		VERSION = 5};
+	enum Level {ROOT = 0, 
+		VENDOR, 
+		LIBRARY,
+		NAME,
+		VERSION};
 
 	/*! \brief The default constructor
 	*
@@ -183,7 +186,7 @@ public:
 	 *
 	 * \return QString containing the name of the type (component, busDefinition, jne)
 	*/
-	QString getTypeStr() const;
+	//QString getTypeStr() const;
 
 	/*! \brief Set the vlnv to match the tree structure of this item
 	 *
