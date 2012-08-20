@@ -177,15 +177,12 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
 		else if (libComp->getVlnv()->getType() == VLNV::BUSDEFINITION) {
 
 			QSharedPointer<BusDefinition const> busDef = libComp.staticCast<BusDefinition const>();
+			
+            menu.addAction(openBusAction_);
+            menu.addAction(addSignalsAction_);
 
-			// make sure the bus is for hardware
-			if (busDef->getType() == KactusAttribute::KTS_BUSDEF_HW) {
-				menu.addAction(openBusAction_);
-				menu.addAction(addSignalsAction_);
-
-                menuNew = menu.addMenu(tr("New"));
-				menuNew->addAction(createBusAction_);
-			}
+            menuNew = menu.addMenu(tr("New"));
+            menuNew->addAction(createBusAction_);
 		}
 		else if (libComp->getVlnv()->getType() == VLNV::ABSTRACTIONDEFINITION) {
 			menu.addAction(openBusAction_);

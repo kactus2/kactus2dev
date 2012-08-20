@@ -44,7 +44,7 @@ versions_() {
 	versionBox_.setMinimumWidth(80);
 
 	// set validator to accept only valid names and special characters '?' and '*'
-	QRegExp regExp(QString("[a-zA-Z0-9:_-\.\*\?]*"), Qt::CaseInsensitive, QRegExp::W3CXmlSchema11);
+	QRegExp regExp(QString("[a-zA-Z0-9:_\\-\\.\\*\\?]*"), Qt::CaseInsensitive, QRegExp::W3CXmlSchema11);
 	QRegExpValidator* validator = new QRegExpValidator(regExp, this);
 	vendorBox_.setValidator(validator);
 	libraryBox_.setValidator(validator);

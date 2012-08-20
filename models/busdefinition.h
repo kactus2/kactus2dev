@@ -210,19 +210,6 @@ public:
 	 */
 	virtual const QList<VLNV> getDependentVLNVs() const;
 
-    /*!
-     *  Sets the Kactus-specific bus definition type.
-     *
-     *      @param [in] type The bus definition type to set.
-     */
-    void setType(KactusAttribute::BusDefType type);
-
-    /*!
-     *  Returns the Kactus-specific bus definition type.
-     */
-    KactusAttribute::BusDefType getType() const;
-
-
 private:
 
 	/*! \brief Direct connection specifies what connections are allowed.

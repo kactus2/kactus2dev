@@ -392,14 +392,11 @@ void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
 
 			QSharedPointer<BusDefinition> busDef = libComp.staticCast<BusDefinition>();
 
-			// make sure the bus is for hardware
-			if (busDef->getType() == KactusAttribute::KTS_BUSDEF_HW) {
-				menu.addAction(openBusAction_);
-				menu.addAction(addSignalsAction_);
+            menu.addAction(openBusAction_);
+            menu.addAction(addSignalsAction_);
 
-                menuNew = menu.addMenu(tr("New"));
-                menuNew->addAction(createBusAction_);
-			}
+            menuNew = menu.addMenu(tr("New"));
+            menuNew->addAction(createBusAction_);
 		}
 		else if (item->type() == HierarchyItem::ABSDEFINITION) {
 			menu.addAction(openBusAction_);

@@ -329,22 +329,3 @@ void BusDefinition::setVlnv( const VLNV& vlnv ) {
 	LibraryComponent::vlnv_->setType(VLNV::BUSDEFINITION);
 }
 
-//-----------------------------------------------------------------------------
-// Function: setType()
-//-----------------------------------------------------------------------------
-void BusDefinition::setType(KactusAttribute::BusDefType type) {
-    kactus2Attributes_.insert("kts_busdef_type", KactusAttribute::valueToString(type));
-}
-
-//-----------------------------------------------------------------------------
-// Function: getType()
-//-----------------------------------------------------------------------------
-KactusAttribute::BusDefType BusDefinition::getType() const {
-    KactusAttribute::BusDefType type = KactusAttribute::KTS_BUSDEF_HW;
-
-    if (kactus2Attributes_.contains(QString("kts_busdef_type"))) {
-        KactusAttribute::stringToValue(kactus2Attributes_.value(QString("kts_busdef_type")), type);
-    }
-
-    return type;
-}

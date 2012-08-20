@@ -39,13 +39,6 @@ namespace KactusAttribute
             "SW",
             "SYS"
         };
-
-        QString const BUSDEF_TYPE_NAMES[KTS_BUSDEF_TYPE_COUNT] =
-        {
-            "BusHW",
-            "BusAPI",
-            "BusMCAPI"
-        };
     }
 
     //-----------------------------------------------------------------------------
@@ -122,33 +115,6 @@ namespace KactusAttribute
             if (lowStr == IMPLEMENTATION_NAMES[i].toLower())
             {
                 val = static_cast<Implementation>(i);
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    //-----------------------------------------------------------------------------
-    // Function: valueToString()
-    //-----------------------------------------------------------------------------
-    QString valueToString(BusDefType busDefType)
-    {
-        return BUSDEF_TYPE_NAMES[busDefType];
-    }
-
-    //-----------------------------------------------------------------------------
-    // Function: stringToValue()
-    //-----------------------------------------------------------------------------
-    bool stringToValue(QString const& str, BusDefType& val)
-    {
-        QString lowStr = str.toLower();
-
-        for (unsigned int i = 0; i < KTS_BUSDEF_TYPE_COUNT; ++i)
-        {
-            if (lowStr == BUSDEF_TYPE_NAMES[i].toLower())
-            {
-                val = static_cast<BusDefType>(i);
                 return true;
             }
         }

@@ -1600,17 +1600,7 @@ void HWDesignDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
         else if (vlnv.getType() == VLNV::BUSDEFINITION || 
 			     vlnv.getType() == VLNV::ABSTRACTIONDEFINITION)
         {
-            // Check that the bus definition is compatible with the edited component.
-            QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(vlnv);
-            QSharedPointer<BusDefinition> busDef = libComp.staticCast<BusDefinition>();
-
-            if ((getEditedComponent()->getComponentImplementation() == KactusAttribute::KTS_HW &&
-                 busDef->getType() == KactusAttribute::KTS_BUSDEF_HW) ||
-                (getEditedComponent()->getComponentImplementation() == KactusAttribute::KTS_SW &&
-                 busDef->getType() == KactusAttribute::KTS_BUSDEF_API))
-            {
-                dragBus_ = true;
-            }
+            dragBus_ = true;
         }
     }
 }
@@ -1703,17 +1693,17 @@ void HWDesignDiagram::dragLeaveEvent(QGraphicsSceneDragDropEvent*)
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 {
+    // Retrieve the vlnv.
+    QVariant data = event->mimeData()->imageData();
+    if (!data.canConvert<VLNV>()) {
+        return;
+    }
+
+    VLNV vlnv = data.value<VLNV>();
+
     // Check if the dragged item was a valid one.
     if (dragCompType_ != CIT_NONE)
     {
-        // Retrieve the vlnv.
-		QVariant data = event->mimeData()->imageData();
-		if (!data.canConvert<VLNV>()) {
-			return;
-		}
-
-		VLNV vlnv = data.value<VLNV>();
-
         // Disallow self-instantiation.
         if (vlnv == *getEditedComponent()->getVlnv())
         {
@@ -1799,14 +1789,8 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
     {
         if (highlightedEndPoint_ != 0)
         {
-            // Retrieve the busdef VLNV and determine the absdef VLNV.
-            VLNV droppedVlnv;
-            memcpy(&droppedVlnv, event->mimeData()->data("kactus2/vlnv").data(), sizeof(droppedVlnv));
-
-			Q_ASSERT(getLibraryInterface()->contains(droppedVlnv));
-
-            VLNV vlnv = droppedVlnv;
-			vlnv.setType(getLibraryInterface()->getDocumentType(droppedVlnv));
+            Q_ASSERT(getLibraryInterface()->contains(vlnv));
+			vlnv.setType(getLibraryInterface()->getDocumentType(vlnv));
 
 			VLNV absdefVLNV;
 

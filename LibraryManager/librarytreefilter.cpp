@@ -130,8 +130,9 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow,
 					continue;
 				}
 				QSharedPointer<BusDefinition> busDef = libComb.staticCast<BusDefinition>();
+
 				// if this was not supposed to show then check next one
-				if  (!checkBusType(busDef->getType()))
+				if  (!implementation_.hw_)
 					continue;
 				else
 					return true;
@@ -318,19 +319,4 @@ bool LibraryTreeFilter::checkVLNVs( const QList<VLNV>& list ) const {
 
 	// if none of the vlnvs matched
 	return false;
-}
-
-bool LibraryTreeFilter::checkBusType( KactusAttribute::BusDefType busType ) const {
-
-	switch (busType) {
-		case KactusAttribute::KTS_BUSDEF_HW: {
-			return implementation_.hw_;
-											 }
-		case KactusAttribute::KTS_BUSDEF_API:
-		case  KactusAttribute::KTS_BUSDEF_MCAPI: {
-			return implementation_.sw_;
-												 }
-		default: 
-			return false;
-	}
 }

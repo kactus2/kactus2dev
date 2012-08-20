@@ -641,42 +641,6 @@ KactusAttribute::Implementation HierarchyItem::getImplementation() const {
 	return component_->getComponentImplementation();
 }
 
-KactusAttribute::BusDefType HierarchyItem::getBusDefType() {
-	// make sure item is for bus def or abs def
-	Q_ASSERT(busDef_ || absDef_);
-
-	if (busDef_) {
-		return busDef_->getType();
-	}
-	else if (absDef_) {
-		VLNV busVLNV = absDef_->getBusType();
-		
-		// if the vlnv is not found
-		if (!handler_->contains(busVLNV)) {
-			emit errorMessage(tr("VLNV %1 referenced in abstraction definition %2"
-				" was not found in library.").arg(busVLNV.toString()).arg(getVLNV().toString()));
-			return KactusAttribute::KTS_BUSDEF_HW;
-		}
-
-		// make sure the vlnv is for bus definition
-		if (handler_->getDocumentType(busVLNV) == VLNV::BUSDEFINITION) {
-			QSharedPointer<LibraryComponent> libComp = handler_->getModel(busVLNV);
-			QSharedPointer<BusDefinition> busDef = libComp.staticCast<BusDefinition>();
-
-			return busDef->getType();
-		}
-		// if vlnv was not for bus definition
-		else {
-			emit errorMessage(tr("VLNV %1 referenced in abstraction definition %2"
-				" was not for bus definition").arg(busVLNV.toString()).arg(getVLNV().toString()));
-			return KactusAttribute::KTS_BUSDEF_HW;
-		}
-	}
-
-	Q_ASSERT(false);
-	return KactusAttribute::KTS_BUSDEF_HW;
-}
-
 int HierarchyItem::instanceCount() const {
 	if (type_ == HierarchyItem::COMPONENT) {
 		return parentItem_->countInstances(getVLNV());

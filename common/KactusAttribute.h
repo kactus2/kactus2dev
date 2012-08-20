@@ -113,36 +113,6 @@ namespace KactusAttribute
      *      @return False if the string does not match any value; otherwise true.
      */
     bool stringToValue(QString const& str, Implementation& val);
-
-    //-----------------------------------------------------------------------------
-    //! BusDefType enumeration.
-    //-----------------------------------------------------------------------------
-    enum BusDefType
-    {
-        KTS_BUSDEF_HW = 0,
-        KTS_BUSDEF_API,
-        KTS_BUSDEF_MCAPI,
-        KTS_BUSDEF_TYPE_COUNT
-    };
-
-    /*!
-     *  Converts the given busdef type enum value to a string.
-     *
-     *      @param [i] busDefType The bus definition type.
-     *
-     *      @return The equivalent string.
-     */
-    QString valueToString(BusDefType busDefType);
-
-    /*!
-     *  Converts the given string to a busdef type enum value.
-     *
-     *      @param [in]  str  The bus definition type string.
-     *      @param [out] val  The equivalent enum value.
-     *
-     *      @return False if the string does not match any value; otherwise true.
-     */
-    bool stringToValue(QString const& str, BusDefType& val);
 }
 
 //-----------------------------------------------------------------------------

@@ -108,14 +108,6 @@ private:
 	*/
 	bool checkVLNVs(const QList<VLNV>& list) const;
 
-	/*! \brief Check the bus type and the implementation.
-	 *
-	 * \param busType The type of the bus to check.
-	 *
-	 * \return bool True if the given type should be displayed.
-	*/
-	bool checkBusType(KactusAttribute::BusDefType busType) const;
-	 
 	//! \brief Pointer to the instance that manages the library.
 	LibraryInterface* handler_;
 
