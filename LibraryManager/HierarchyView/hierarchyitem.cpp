@@ -102,6 +102,22 @@ void HierarchyItem::parseComponent( const VLNV& vlnv ) {
 
 	isValid_ = component_->isValid();
 
+	// check all files referenced by this component
+	QStringList filelist = component_->getDependentFiles();
+	QString xmlPath = handler_->getPath(vlnv);
+	for (int j = 0; j < filelist.size(); ++j) {
+
+		// make sure that each file referenced by the model exists
+		// in the file system
+		QString path = General::getAbsolutePath(xmlPath, filelist.at(j));
+
+		// if the file did not exist
+		if (path.isEmpty()) {
+			isValid_ = false;
+			break;
+		}
+	}
+
 	// ask the hierarchical references from the component
 	QList<VLNV> refs = component_->getHierRefs();
 	foreach (VLNV ref, refs) {
