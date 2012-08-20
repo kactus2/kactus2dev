@@ -230,17 +230,24 @@ QVariant LibraryTreeModel::data(const QModelIndex& index, int role) const {
 
 				switch (component->getComponentImplementation()) {
 				case KactusAttribute::KTS_SYS: {
-					return QIcon(":/icons/graphics/new-system.png");
+					return QIcon(":/icons/graphics/system-component.png");
 											   }
 				case KactusAttribute::KTS_SW: {
-					return QIcon(":/icons/graphics/new-sw_component.png");
+                    if (component->hasSWViews())
+                    {
+					    return QIcon(":/icons/graphics/hier-sw-component.png");
+                    }
+                    else
+                    {
+                        return QIcon(":/icons/graphics/sw-component.png");
+                    }
 											  }
 				default: {
 					if (component->isHierarchical()) {
-						return QIcon(":/icons/graphics/hierarchy.png");
+						return QIcon(":/icons/graphics/hier-hw-component.png");
 					}
 					else
-						return QIcon(":/icons/graphics/component.png");
+						return QIcon(":/icons/graphics/hw-component.png");
 						 }
 				}
 			}
@@ -263,7 +270,7 @@ QVariant LibraryTreeModel::data(const QModelIndex& index, int role) const {
 
 			// if item is for a design
 			else if (vlnv.getType() == VLNV::DESIGN) {
-				return QIcon(":/icons/graphics/new-design.png");
+				return QIcon(":/icons/graphics/hw-design.png");
 			}
 
 			// if item is for a design configuration

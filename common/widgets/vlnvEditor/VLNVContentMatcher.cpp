@@ -105,13 +105,20 @@ bool VLNVContentMatcher::enumerateMatches(QString const& text, LineContentAssist
                             {
                             case KactusAttribute::KTS_SYS:
                                 {
-                                    item->setIcon(QIcon(":/icons/graphics/new-system.png"));
+                                    item->setIcon(QIcon(":/icons/graphics/system-component.png"));
                                     break;
                                 }
 
                             case KactusAttribute::KTS_SW:
                                 {
-                                    item->setIcon(QIcon(":/icons/graphics/new-sw_component.png"));
+                                    if (component->hasSWViews())
+                                    {
+                                        item->setIcon(QIcon(":/icons/graphics/hier-sw-component.png"));
+                                    }
+                                    else
+                                    {
+                                        item->setIcon(QIcon(":/icons/graphics/sw-component.png"));
+                                    }
                                     break;
                                 }
 
@@ -119,11 +126,11 @@ bool VLNVContentMatcher::enumerateMatches(QString const& text, LineContentAssist
                                 {
                                     if (component->isHierarchical())
                                     {
-                                        item->setIcon(QIcon(":/icons/graphics/hierarchy.png"));
+                                        item->setIcon(QIcon(":/icons/graphics/hier-hw-component.png"));
                                     }
                                     else
                                     {
-                                        item->setIcon(QIcon(":/icons/graphics/component.png"));
+                                        item->setIcon(QIcon(":/icons/graphics/hw-component.png"));
                                     }
 
                                     break;

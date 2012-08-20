@@ -245,7 +245,7 @@ QVariant HierarchyModel::data(const QModelIndex& index,
 	if (role == Qt::DisplayRole) {
 		VLNV vlnv = item->getVLNV();
 		if (vlnv.isValid()) {
-			return QString("\n%1:%2\n"
+			return QString("%1:%2\n"
 				"%3:%4").arg(
 				vlnv.getVendor()).arg(
 				vlnv.getLibrary()).arg(
@@ -292,17 +292,24 @@ QVariant HierarchyModel::data(const QModelIndex& index,
 			
 			switch (item->getImplementation()) {
 				case KactusAttribute::KTS_SYS: {
-					return QIcon(":/icons/graphics/new-system.png");
+					return QIcon(":/icons/graphics/system-component.png");
 											   }
 				case KactusAttribute::KTS_SW: {
-					return QIcon(":/icons/graphics/new-sw_component.png");
+                    if (item->isHierarchical())
+                    {
+					    return QIcon(":/icons/graphics/hier-sw-component.png");
+                    }
+                    else
+                    {
+                        return QIcon(":/icons/graphics/sw-component.png");
+                    }
 											  }
 				default: {
 					if (item->isHierarchical()) {
-						return QIcon(":/icons/graphics/hierarchy.png");
+						return QIcon(":/icons/graphics/hier-hw-component.png");
 					}
 					else
-						return QIcon(":/icons/graphics/component.png");
+						return QIcon(":/icons/graphics/hw-component.png");
 						 }
 			}
 			
@@ -315,7 +322,7 @@ QVariant HierarchyModel::data(const QModelIndex& index,
             return QIcon(":/icons/graphics/new-api_definition.png");
         }
 		else if (item->type() == HierarchyItem::DESIGN) {
-			return QIcon(":/icons/graphics/new-design.png");
+			return QIcon(":/icons/graphics/hw-design.png");
 		}
         else {
 			return QIcon(":/icons/graphics/new-bus.png");

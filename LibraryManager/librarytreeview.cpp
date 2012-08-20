@@ -142,7 +142,8 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
 					break;
 											  }
 				default: {
-					if (component->isHierarchical()) {
+
+					if (!component->getHierViews().isEmpty()) {
 						menu.addAction(openDesignAction_);
 						hierarchical = true;
 					}
@@ -165,7 +166,8 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
 					menuNew->addAction(createNewDesignAction_);
                     menuNew->addAction(createNewSWDesignAction_);
 
-                    if (component->isHierarchical())
+                    // Add New System Design action only if the component contains hierarchical HW views.
+                    if (!component->getHierViews().isEmpty())
                     {
                         menuNew->addAction(createNewSystemDesignAction_);
                     }
@@ -408,19 +410,23 @@ void LibraryTreeView::mouseMoveEvent( QMouseEvent *event ) {
 		if (distance >= QApplication::startDragDistance()) {
 
 			LibraryItem* item = static_cast<LibraryItem*>(dragIndex_.internalPointer());
-			VLNV vlnv = item->getVLNV();
-			
-			// if vlnv is valid
-			if (vlnv.isValid()) {
-				QDrag *drag = new QDrag(this);
-				QMimeData *mimeData = new QMimeData;
 
-				QVariant data = QVariant::fromValue(vlnv);
+            if (item != 0)
+            {
+			    VLNV vlnv = item->getVLNV();
+    			
+			    // if vlnv is valid
+			    if (vlnv.isValid()) {
+				    QDrag *drag = new QDrag(this);
+				    QMimeData *mimeData = new QMimeData;
 
-				mimeData->setImageData(data);
-				drag->setMimeData(mimeData);
-				drag->exec(Qt::MoveAction | Qt::CopyAction | Qt::LinkAction);
-			}
+				    QVariant data = QVariant::fromValue(vlnv);
+
+				    mimeData->setImageData(data);
+				    drag->setMimeData(mimeData);
+				    drag->exec(Qt::MoveAction | Qt::CopyAction | Qt::LinkAction);
+			    }
+            }
 		}
 	}
 	QTreeView::mouseMoveEvent(event);

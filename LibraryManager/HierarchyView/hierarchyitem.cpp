@@ -596,7 +596,15 @@ void HierarchyItem::clear() {
 
 bool HierarchyItem::isHierarchical() const {
 	Q_ASSERT(component_);
-	return component_->isHierarchical();
+
+    if (component_->getComponentImplementation() == KactusAttribute::KTS_SW)
+    {
+        return component_->hasSWViews();
+    }
+    else
+    {
+	    return component_->isHierarchical();
+    }
 }
 
 HierarchyItem::ObjectType HierarchyItem::type() const {

@@ -2094,7 +2094,7 @@ void MainWindow::createNew()
 		this, SLOT(createComponent(KactusAttribute::ProductHierarchy,
 		KactusAttribute::Firmness,
 		VLNV const&, QString const&)));
-	dialog.addPage(QIcon(":icons/graphics/new-component.png"), tr("HW Component"), compPage);
+	dialog.addPage(QIcon(":icons/graphics/hw-component.png"), tr("HW Component"), compPage);
 
 	NewDesignPage* designPage = new NewDesignPage(libraryHandler_, &dialog);
 	connect(designPage, SIGNAL(createDesign(KactusAttribute::ProductHierarchy,
@@ -2103,22 +2103,22 @@ void MainWindow::createNew()
 		this, SLOT(createDesign(KactusAttribute::ProductHierarchy,
 		KactusAttribute::Firmness,
 		VLNV const&, QString const&)));
-	dialog.addPage(QIcon(":icons/graphics/new-design.png"), tr("HW Design"), designPage);
+	dialog.addPage(QIcon(":icons/graphics/hw-design.png"), tr("HW Design"), designPage);
 
 	NewSWComponentPage* swCompPage = new NewSWComponentPage(libraryHandler_, &dialog);
 	connect(swCompPage, SIGNAL(createSWComponent(VLNV const&, QString const&)),
 		this, SLOT(createSWComponent(VLNV const&, QString const&)));
-	dialog.addPage(QIcon(":icons/graphics/new-sw_component.png"), tr("SW Component"), swCompPage);
+	dialog.addPage(QIcon(":icons/graphics/sw-component.png"), tr("SW Component"), swCompPage);
 
 // 	NewSWDesignPage* swDesignPage = new NewSWDesignPage(libraryHandler_, &dialog);
 // 	connect(swDesignPage, SIGNAL(createSWDesign(VLNV const&, QString const&)),
 // 		this, SLOT(createSWDesign(VLNV const&, QString const&)), Qt::UniqueConnection);
-// 	dialog.addPage(QIcon(":icons/graphics/new-sw_design.png"), tr("SW Design"), swDesignPage);
+// 	dialog.addPage(QIcon(":icons/graphics/sw-design.png"), tr("SW Design"), swDesignPage);
 
 	NewSystemPage* sysPage = new NewSystemPage(libraryHandler_, &dialog);
 	connect(sysPage, SIGNAL(createSystem(VLNV const&, QString const&, VLNV const&, QString const&)),
 		this, SLOT(createSystem(VLNV const&, QString const&, VLNV const&, QString const&)));
-	dialog.addPage(QIcon(":icons/graphics/new-system.png"), tr("System"), sysPage);
+	dialog.addPage(QIcon(":icons/graphics/system-component.png"), tr("System"), sysPage);
 
 	NewBusPage* busPage = new NewBusPage(libraryHandler_, &dialog);
 	connect(busPage, SIGNAL(createBus(VLNV const&, QString const&)),

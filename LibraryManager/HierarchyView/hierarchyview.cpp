@@ -23,8 +23,23 @@
 #include <QDrag>
 #include <QMimeData>
 #include <QVariant>
+#include <QItemDelegate>
 
 #include <QDebug>
+
+//-----------------------------------------------------------------------------
+//! Custom item delegate to handle spacing of items.
+//-----------------------------------------------------------------------------
+class HierarchyItemDelegate : public QItemDelegate
+{
+public:
+    HierarchyItemDelegate() {}
+
+    virtual QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
+    {
+        return QItemDelegate::sizeHint(option, index) + QSize(0, 10);
+    }
+};
 
 HierarchyView::HierarchyView(QWidget *parent, 
 							 LibraryInterface* handler,
@@ -51,6 +66,9 @@ openApiDefAction_(NULL),
 createApiDefAction_(NULL),
 openSystemAction_(NULL),
 openXmlAction_(NULL) {
+
+    setIconSize(QSize(24, 24));
+    setItemDelegate(new HierarchyItemDelegate());
 
 	// the view can be sorted
 	setSortingEnabled(true);
@@ -378,7 +396,8 @@ void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
                         menuNew->addAction(createNewDesignAction_);
                         menuNew->addAction(createNewSWDesignAction_);
 
-                        if (component->isHierarchical())
+                        // Add New System Design action only if the component contains hierarchical HW views.
+                        if (!component->getHierViews().isEmpty())
                         {
                             menuNew->addAction(createNewSystemDesignAction_);
                         }
@@ -512,19 +531,23 @@ void HierarchyView::mouseMoveEvent( QMouseEvent *event ) {
 			
 			// find the item that is being dragged
 			HierarchyItem* item = static_cast<HierarchyItem*>(dragIndex_.internalPointer());
-			VLNV vlnv = item->getVLNV();
 
-			// if vlnv is valid
-			if (vlnv.isValid()) {
-				QDrag *drag = new QDrag(this);
-				QMimeData *mimeData = new QMimeData;
+            if (item != 0)
+            {
+			    VLNV vlnv = item->getVLNV();
 
-				QVariant data = QVariant::fromValue(vlnv);
+			    // if vlnv is valid
+			    if (vlnv.isValid()) {
+				    QDrag *drag = new QDrag(this);
+				    QMimeData *mimeData = new QMimeData;
 
-				mimeData->setImageData(data);
-				drag->setMimeData(mimeData);
-				drag->exec(Qt::MoveAction | Qt::CopyAction | Qt::LinkAction);
-			}
+				    QVariant data = QVariant::fromValue(vlnv);
+
+				    mimeData->setImageData(data);
+				    drag->setMimeData(mimeData);
+				    drag->exec(Qt::MoveAction | Qt::CopyAction | Qt::LinkAction);
+			    }
+            }
 		}
 	}
 	QTreeView::mouseMoveEvent(event);

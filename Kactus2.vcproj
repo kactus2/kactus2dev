@@ -36646,7 +36646,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\graphics\hier-hw-component.png"
+				>
+			</File>
+			<File
+				RelativePath=".\graphics\hier-sw-component.png"
+				>
+			</File>
+			<File
 				RelativePath=".\graphics\hierarchy.png"
+				>
+			</File>
+			<File
+				RelativePath=".\graphics\hw-component.png"
+				>
+			</File>
+			<File
+				RelativePath=".\graphics\hw-design.png"
 				>
 			</File>
 			<File
@@ -36758,26 +36774,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\graphics\new-component.png"
-				>
-			</File>
-			<File
-				RelativePath=".\graphics\new-design.png"
-				>
-			</File>
-			<File
-				RelativePath=".\graphics\new-sw_component.png"
-				>
-			</File>
-			<File
-				RelativePath=".\graphics\new-sw_design.png"
-				>
-			</File>
-			<File
-				RelativePath=".\graphics\new-system.png"
-				>
-			</File>
-			<File
 				RelativePath=".\graphics\ok.png"
 				>
 			</File>
@@ -36827,6 +36823,14 @@
 			</File>
 			<File
 				RelativePath=".\graphics\system-about.png"
+				>
+			</File>
+			<File
+				RelativePath=".\graphics\system-component.png"
+				>
+			</File>
+			<File
+				RelativePath=".\graphics\system-design.png"
 				>
 			</File>
 			<File
