@@ -23,19 +23,17 @@
 //-----------------------------------------------------------------------------
 // Function: AssistedTextEdit()
 //-----------------------------------------------------------------------------
-AssistedLineEdit::AssistedLineEdit(QSharedPointer<ILineContentMatcher> contentMatcher,
-                                   QWidget* mainWnd, QWidget* parent) : QLineEdit(parent),
-                                                                        m_mainWnd(mainWnd),
-                                                                        m_contentAssist()
+AssistedLineEdit::AssistedLineEdit(QWidget* mainWnd, QWidget* parent) : QLineEdit(parent),
+                                                                        mainWnd_(mainWnd),
+                                                                        matcher_(0),
+                                                                        contentAssist_()
 {
-    Q_ASSERT(contentMatcher != 0);
-
-    m_contentAssist = new LineContentAssistWidget(this, contentMatcher);
+    contentAssist_ = new LineContentAssistWidget(this);
 
     // Install this as an event filter so that we can track events from the main window.
-    if (m_mainWnd != 0)
+    if (mainWnd_ != 0)
     {
-        m_mainWnd->installEventFilter(this);
+        mainWnd_->installEventFilter(this);
         installEventFilter(this);
     }
 }
@@ -46,10 +44,10 @@ AssistedLineEdit::AssistedLineEdit(QSharedPointer<ILineContentMatcher> contentMa
 AssistedLineEdit::~AssistedLineEdit()
 {
     // Remove the event filter.
-    if (m_mainWnd != 0)
+    if (mainWnd_ != 0)
     {
         removeEventFilter(this);
-        m_mainWnd->removeEventFilter(this);
+        mainWnd_->removeEventFilter(this);
     }
 }
 
@@ -59,11 +57,11 @@ AssistedLineEdit::~AssistedLineEdit()
 bool AssistedLineEdit::eventFilter(QObject* /*obj*/, QEvent* e)
 {
     // Cancel the assist if the main window is moved or resized.
-    if (m_contentAssist->isContentShown())
+    if (contentAssist_->isContentShown())
     {
         if (e->type() == QEvent::Move || e->type() == QEvent::Resize)
         {
-            m_contentAssist->cancel();
+            contentAssist_->cancel();
         }
         else if (e->type() == QEvent::KeyPress)
         {
@@ -85,13 +83,13 @@ bool AssistedLineEdit::eventFilter(QObject* /*obj*/, QEvent* e)
 void AssistedLineEdit::keyPressEvent(QKeyEvent* e)
 {
     // First try to handle the key fully by the content assist.
-    if (!m_contentAssist->tryHandleKey(e))
+    if (!contentAssist_->tryHandleKey(e))
     {
         // Otherwise process the key event as usual.
         QLineEdit::keyPressEvent(e);
         
         // Update the content assist.
-        m_contentAssist->updateAssist(e);
+        contentAssist_->updateAssist(e);
     }
 }
 
@@ -103,7 +101,7 @@ void AssistedLineEdit::mousePressEvent(QMouseEvent* e)
     QLineEdit::mousePressEvent(e);
 
     // Cancel the content assist if content is shown.
-    if (m_contentAssist->isContentShown())
+    if (contentAssist_->isContentShown())
     {
         //m_contentAssist->cancel();
     }
@@ -119,7 +117,7 @@ void AssistedLineEdit::focusInEvent(QFocusEvent* e)
     if (e->reason() != Qt::ActiveWindowFocusReason)
     {
         // Update the assist.
-        m_contentAssist->updateAssist(0);
+        contentAssist_->updateAssist(0);
     }
 }
 
@@ -131,8 +129,25 @@ void AssistedLineEdit::focusOutEvent(QFocusEvent* e)
     QLineEdit::focusOutEvent(e);
 
     // Cancel the content assist if content is shown.
-    if (m_contentAssist->isContentShown())
+    if (contentAssist_->isContentShown())
     {
-        m_contentAssist->cancel();
+        contentAssist_->cancel();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AssistedLineEdit::getMatcher()
+//-----------------------------------------------------------------------------
+ILineContentMatcher* AssistedLineEdit::getContentMatcher()
+{
+    return matcher_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AssistedLineEdit::setContentMatcher()
+//-----------------------------------------------------------------------------
+void AssistedLineEdit::setContentMatcher(ILineContentMatcher* matcher)
+{
+    matcher_ = matcher;
+    contentAssist_->setContentMatcher(matcher);
 }

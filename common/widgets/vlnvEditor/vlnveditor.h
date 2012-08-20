@@ -13,6 +13,7 @@
 #define VLNVEDITOR_H
 
 #include "VLNVDataTree.h"
+#include "VLNVContentMatcher.h"
 
 #include <LibraryManager/vlnv.h>
 
@@ -25,7 +26,6 @@
 class LibraryInterface;
 class LibraryItem;
 class AssistedLineEdit;
-class VLNVContentMatcher;
 
 //-----------------------------------------------------------------------------
 //! VLNVEditor class.
@@ -229,13 +229,13 @@ private:
     AssistedLineEdit* vendorEdit_;
 
     //! Content matcher for the vendor field.
-    QSharedPointer<VLNVContentMatcher> vendorMatcher_;
+    VLNVContentMatcher vendorMatcher_;
 
     //! Line edit for the library element.
     AssistedLineEdit* libraryEdit_;
 
     //! Content matcher for the library field.
-    QSharedPointer<VLNVContentMatcher> libraryMatcher_;
+    VLNVContentMatcher libraryMatcher_;
 
     //! Line edit for the name element.
     AssistedLineEdit* nameEdit_;
@@ -244,13 +244,13 @@ private:
     QLabel nameExtensionLabel_;
 
     //! Content matcher for the name field.
-    QSharedPointer<VLNVContentMatcher> nameMatcher_;
+    VLNVContentMatcher nameMatcher_;
 
     //! Line edit for the version element.
     AssistedLineEdit* versionEdit_;
 
     //! Content matcher for the version field.
-    QSharedPointer<VLNVContentMatcher> versionMatcher_;
+    VLNVContentMatcher versionMatcher_;
 
 	//! \brief Pointer to the instance that manages the library
 	LibraryInterface* handler_;

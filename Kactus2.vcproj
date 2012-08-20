@@ -596,6 +596,10 @@
 							>
 						</File>
 						<File
+							RelativePath=".\common\widgets\assistedLineEdit\BasicLineContentMatcher.cpp"
+							>
+						</File>
+						<File
 							RelativePath=".\common\widgets\assistedLineEdit\LineContentAssistWidget.cpp"
 							>
 						</File>
@@ -3624,6 +3628,10 @@
 									Outputs="&quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;"
 								/>
 							</FileConfiguration>
+						</File>
+						<File
+							RelativePath=".\common\widgets\assistedLineEdit\BasicLineContentMatcher.h"
+							>
 						</File>
 						<File
 							RelativePath=".\common\widgets\assistedLineEdit\ILineContentMatcher.h"

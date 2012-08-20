@@ -21,8 +21,6 @@
 #include <models/abstractiondefinition.h>
 #include <models/busdefinition.h>
 
-#include "VLNVContentMatcher.h"
-
 #include <QGridLayout>
 #include <QVBoxLayout>
 #include <QLabel>
@@ -38,20 +36,20 @@ VLNVEditor::VLNVEditor(VLNV::IPXactType type,
 					   LibraryInterface* libHandler, 
 					   QWidget* parentWnd,
 					   QWidget* parent,
-					   bool compact):
-QGroupBox(parent),
-type_(type),
-dataTree_(),
-vendorEdit_(0),
-vendorMatcher_(),
-libraryEdit_(0),
-libraryMatcher_(),
-nameEdit_(0),
-nameExtensionLabel_(tr(".design"), this),
-nameMatcher_(),
-versionEdit_(0),
-versionMatcher_(),
-handler_(libHandler)
+					   bool compact)
+    : QGroupBox(parent),
+      type_(type),
+      dataTree_(),
+      vendorEdit_(0),
+      vendorMatcher_(libHandler),
+      libraryEdit_(0),
+      libraryMatcher_(libHandler),
+      nameEdit_(0),
+      nameExtensionLabel_(tr(".design"), this),
+      nameMatcher_(libHandler),
+      versionEdit_(0),
+      versionMatcher_(libHandler),
+      handler_(libHandler)
 {
     Q_ASSERT(libHandler != 0);
     Q_ASSERT(type_ != VLNV::INVALID);
@@ -132,7 +130,7 @@ bool VLNVEditor::isValid() const
 //-----------------------------------------------------------------------------
 void VLNVEditor::updateMatcherItems()
 {
-    vendorMatcher_->setDataNode(&dataTree_);
+    vendorMatcher_.setDataNode(&dataTree_);
     updateLibraryMatcherItem();
 }
 
@@ -142,7 +140,7 @@ void VLNVEditor::updateMatcherItems()
 void VLNVEditor::updateLibraryMatcherItem()
 {
     VLNVDataNode const* foundItem = dataTree_.findChild(vendorEdit_->text());
-    libraryMatcher_->setDataNode(foundItem);
+    libraryMatcher_.setDataNode(foundItem);
 
     // Update "recursively" also the name matcher item.
     updateNameMatcherItem();
@@ -153,7 +151,7 @@ void VLNVEditor::updateLibraryMatcherItem()
 //-----------------------------------------------------------------------------
 void VLNVEditor::updateNameMatcherItem()
 {
-    VLNVDataNode const* libItem = libraryMatcher_->getDataNode();
+    VLNVDataNode const* libItem = libraryMatcher_.getDataNode();
     VLNVDataNode const* foundItem = 0;
 
     if (libItem != 0)
@@ -161,7 +159,7 @@ void VLNVEditor::updateNameMatcherItem()
         foundItem = libItem->findChild(libraryEdit_->text());
     }
 
-    nameMatcher_->setDataNode(foundItem);
+    nameMatcher_.setDataNode(foundItem);
 
     // Update "recursively" also the version matcher item.
     updateVersionMatcherItem();
@@ -172,7 +170,7 @@ void VLNVEditor::updateNameMatcherItem()
 //-----------------------------------------------------------------------------
 void VLNVEditor::updateVersionMatcherItem()
 {
-    VLNVDataNode const* nameItem = nameMatcher_->getDataNode();
+    VLNVDataNode const* nameItem = nameMatcher_.getDataNode();
     VLNVDataNode const* foundItem = 0;
 
     if (nameItem != 0)
@@ -180,7 +178,7 @@ void VLNVEditor::updateVersionMatcherItem()
         foundItem = nameItem->findChild(nameEdit_->text());
     }
 
-    versionMatcher_->setDataNode(foundItem);
+    versionMatcher_.setDataNode(foundItem);
 }
 
 //-----------------------------------------------------------------------------
@@ -194,26 +192,24 @@ void VLNVEditor::initWidgets(QWidget* parentWnd, bool compact)
     QLabel* nameLabel = new QLabel(tr("Name:"), this);
     QLabel* versionLabel = new QLabel(tr("Version:"), this);
 
-    // Create the matchers.
-    vendorMatcher_ = QSharedPointer<VLNVContentMatcher>(new VLNVContentMatcher(handler_));
-    libraryMatcher_ = QSharedPointer<VLNVContentMatcher>(new VLNVContentMatcher(handler_));
-    nameMatcher_ = QSharedPointer<VLNVContentMatcher>(new VLNVContentMatcher(handler_));
-    versionMatcher_ = QSharedPointer<VLNVContentMatcher>(new VLNVContentMatcher(handler_));
-    
     // Create the line edits.
-    vendorEdit_ = new AssistedLineEdit(vendorMatcher_, parentWnd, this);
+    vendorEdit_ = new AssistedLineEdit(parentWnd, this);
+    vendorEdit_->setContentMatcher(&vendorMatcher_);
     vendorEdit_->setValidator(new NameValidator(this));
 	vendorEdit_->setProperty("mandatoryField", true);
 
-    libraryEdit_ = new AssistedLineEdit(libraryMatcher_, parentWnd, this);
+    libraryEdit_ = new AssistedLineEdit(parentWnd, this);
+    libraryEdit_->setContentMatcher(&libraryMatcher_);
     libraryEdit_->setValidator(new NameValidator(this));
 	libraryEdit_->setProperty("mandatoryField", true);
 
-    nameEdit_ = new AssistedLineEdit(nameMatcher_, parentWnd, this);
+    nameEdit_ = new AssistedLineEdit(parentWnd, this);
+    nameEdit_->setContentMatcher(&nameMatcher_);
 	nameEdit_->setValidator(new NameValidator(this, true));
 	nameEdit_->setProperty("mandatoryField", true);
 
-    versionEdit_ = new AssistedLineEdit(versionMatcher_, parentWnd, this);
+    versionEdit_ = new AssistedLineEdit(parentWnd, this);
+    versionEdit_->setContentMatcher(&versionMatcher_);
 	versionEdit_->setValidator(new NameValidator(this, true));
 	versionEdit_->setProperty("mandatoryField", true);
 

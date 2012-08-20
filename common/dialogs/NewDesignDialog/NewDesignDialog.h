@@ -15,6 +15,7 @@
 #include <LibraryManager/vlnv.h>
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
+#include <common/widgets/assistedLineEdit/BasicLineContentMatcher.h>
 #include <common/KactusAttribute.h>
 
 #include <QDialog>
@@ -24,7 +25,7 @@ class LibraryPathSelector;
 class LibraryInterface;
 class VLNVEditor;
 class Component;
-class ComboBoxEx;
+class LineEditEx;
 
 //-----------------------------------------------------------------------------
 //! New design dialog.
@@ -114,8 +115,11 @@ private:
     //! Label for the view name.
     QLabel* viewNameLabel_;
 
+    //! View name content matcher.
+    BasicLineContentMatcher viewNameMatcher_;
+
     //! Edit box for the view name.
-    ComboBoxEx* viewNameEdit_;
+    LineEditEx* viewNameEdit_;
 
     //! The VLNV editor.
     VLNVEditor* vlnvEditor_;

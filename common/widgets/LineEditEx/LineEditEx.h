@@ -12,14 +12,16 @@
 #ifndef LINEEDITEX_H
 #define LINEEDITEX_H
 
-#include <QLineEdit>
+#include <common/widgets/assistedLineEdit/BasicLineContentMatcher.h>
+#include <common/widgets/assistedLineEdit/AssistedLineEdit.h>
+
 #include <QIcon>
 #include <QLabel>
 
 //-----------------------------------------------------------------------------
 //! Line edit with extended functionality.
 //-----------------------------------------------------------------------------
-class LineEditEx : public QLineEdit
+class LineEditEx : public AssistedLineEdit
 {
     Q_OBJECT
 

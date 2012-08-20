@@ -31,17 +31,27 @@ class AssistedLineEdit : public QLineEdit
 public:
     /*!  Constructor.
      *
-     *      @param [in] contentMatcher  The content matcher for the content assist.
      *      @param [in] mainWnd         The program main window. Must not be null.
      *      @param [in] parent          The parent widget. Can be null.
      */
-    AssistedLineEdit(QSharedPointer<ILineContentMatcher> contentMatcher, QWidget* mainWnd,
-                     QWidget* parent = 0);
+    AssistedLineEdit(QWidget* mainWnd, QWidget* parent = 0);
 
     /*!
      *  Destructor.
      */
     ~AssistedLineEdit();
+
+    /*!
+     *  Sets the content matcher.
+     *
+     *      @param [in] matcher The matcher to set.
+     */
+    void setContentMatcher(ILineContentMatcher* matcher);
+
+    /*!
+     *  Returns the content matcher.
+     */
+    ILineContentMatcher* getContentMatcher();
 
     /*!
      *  Filters events.
@@ -86,10 +96,13 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The main window.
-    QWidget* m_mainWnd;
+    QWidget* mainWnd_;
+
+    //! The content matcher.
+    ILineContentMatcher* matcher_;
 
     //! Content assist list widget.
-    LineContentAssistWidget* m_contentAssist;
+    LineContentAssistWidget* contentAssist_;
 };
 
 //-----------------------------------------------------------------------------

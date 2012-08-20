@@ -28,14 +28,20 @@ public:
      *  Constructor.
      *
      *      @param [in] parent   The parent line edit. Must not be null.
-     *      @param [in] matcher  The content matcher to use. Must not be null.
      */
-    LineContentAssistWidget(QLineEdit* parent, QSharedPointer<ILineContentMatcher> matcher);
+    LineContentAssistWidget(QLineEdit* parent);
 
     /*!
      *  Destructor.
      */
     ~LineContentAssistWidget();
+
+    /*!
+     *  Sets the content matcher.
+     *
+     *      @param [in] matcher The matcher to set.
+     */
+    void setContentMatcher(ILineContentMatcher* matcher);
 
     /*!
      *  Tries to handle the given key press fully, committing the selection if possible.
@@ -137,7 +143,7 @@ private:
     QLineEdit* m_parent;
 
     //! The content matcher.
-    QSharedPointer<ILineContentMatcher> m_matcher;
+    ILineContentMatcher* m_matcher;
 
     //! Maximum number of visible items at once.
     int m_maxVisibleItems;

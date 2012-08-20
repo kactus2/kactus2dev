@@ -83,7 +83,7 @@ void ComboBoxEx::updateIconPos()
         int frameWidth = style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
 
         iconWidget_->move(rect().right() - frameWidth - iconWidget_->size().width(),
-            rect().bottom() - 1 - iconWidget_->size().height());
+                          rect().bottom() - 1 - iconWidget_->size().height());
     }
 }
 

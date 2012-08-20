@@ -18,7 +18,7 @@
 // Function: LineEditEx::LineEditEx()
 //-----------------------------------------------------------------------------
 LineEditEx::LineEditEx(QWidget* parent /*= 0*/)
-    : QLineEdit(parent),
+    : AssistedLineEdit(parent, parent), // TODO: Main window!!
       disallowedInputs_(),
       messageTemplate_(tr("'%1' is already in use")),
       messageIcon_(),

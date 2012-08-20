@@ -23,15 +23,15 @@
 //-----------------------------------------------------------------------------
 // Function: LineContentAssistWidget()
 //-----------------------------------------------------------------------------
-LineContentAssistWidget::LineContentAssistWidget(QLineEdit* parent,
-                                         QSharedPointer<ILineContentMatcher> matcher) :
-    QListWidget(parent), m_maxVisibleItems(DEFAULT_MAX_VISIBLE_ITEMS),
-    m_lastAssistStartPos(-1), m_contentFound(false)
+LineContentAssistWidget::LineContentAssistWidget(QLineEdit* parent)
+    : QListWidget(parent),
+      m_parent(parent),
+      m_matcher(0),
+      m_maxVisibleItems(DEFAULT_MAX_VISIBLE_ITEMS),
+      m_lastAssistStartPos(-1),
+      m_contentFound(false)
 {
     Q_ASSERT(parent != 0);
-    Q_ASSERT(matcher != 0);
-    m_parent = parent;
-    m_matcher = matcher;
 
     // Set widget settings.
     setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
@@ -60,6 +60,11 @@ LineContentAssistWidget::~LineContentAssistWidget()
 //-----------------------------------------------------------------------------
 bool LineContentAssistWidget::tryHandleKey(QKeyEvent* e)
 {
+    if (m_matcher == 0)
+    {
+        return false;
+    }
+
     if (e->key() == Qt::Key_Space && e->modifiers() == Qt::CTRL)
     {
         updateAssist(0);
@@ -136,6 +141,11 @@ bool LineContentAssistWidget::tryHandleKey(QKeyEvent* e)
 //-----------------------------------------------------------------------------
 void LineContentAssistWidget::updateAssist(QKeyEvent* e)
 {
+    if (m_matcher == 0)
+    {
+        return;
+    }
+
     // Invoke the content assist for certain keys.
     if (e == 0 || (e->text().contains(QRegExp("^[a-z|A-z|0-9|_|Ä|ä|Ö|ö|Å|å|(|)|,|&]$")) ||
         e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Return ||
@@ -302,4 +312,12 @@ void LineContentAssistWidget::hideAssist()
     hide();
     clear();
     m_contentFound = false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: LineContentAssistWidget::setContentMatcher()
+//-----------------------------------------------------------------------------
+void LineContentAssistWidget::setContentMatcher(ILineContentMatcher* matcher)
+{
+    m_matcher = matcher;
 }

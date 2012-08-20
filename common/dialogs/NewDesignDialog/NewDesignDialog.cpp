@@ -24,7 +24,7 @@
 #include <models/Component.h>
 
 #include <common/widgets/LibraryPathSelector/librarypathselector.h>
-#include <common/widgets/ComboBoxEx/ComboBoxEx.h>
+#include <common/widgets/LineEditEx/LineEditEx.h>
 #include <LibraryManager/libraryinterface.h>
 
 //-----------------------------------------------------------------------------
@@ -38,7 +38,8 @@ NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface,
       lh_(libInterface),
       component_(component),
       viewNameLabel_(new QLabel(tr("View name:"), this)),
-      viewNameEdit_(new ComboBoxEx(this)),
+      viewNameMatcher_(),
+      viewNameEdit_(new LineEditEx(this)),
       vlnvEditor_(new VLNVEditor(VLNV::DESIGN, libInterface, this, this, true)),
       directoryEdit_(new LibraryPathSelector(this)), 
       okButton_(new QPushButton(tr("&OK"))),
@@ -82,7 +83,7 @@ NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface,
     }
 
     viewNameEdit_->setMessageIcon(QPixmap(":/icons/graphics/exclamation.png"));
-    viewNameEdit_->setEditable(true);
+    viewNameEdit_->setContentMatcher(&viewNameMatcher_);
 
     connect(viewNameEdit_, SIGNAL(textChanged(QString const&)), this, SLOT(updateVlnvName()));
     connect(viewNameEdit_, SIGNAL(textChanged(QString const&)), this, SLOT(onContentChanged()));
@@ -128,7 +129,7 @@ NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface,
 //-----------------------------------------------------------------------------
 void NewDesignDialog::setViewName(QString const& viewName)
 {
-    viewNameEdit_->setEditText(viewName);
+    viewNameEdit_->setText(viewName);
 }
 
 //-----------------------------------------------------------------------------
@@ -136,7 +137,7 @@ void NewDesignDialog::setViewName(QString const& viewName)
 //-----------------------------------------------------------------------------
 QString NewDesignDialog::getViewName() const
 {
-    return viewNameEdit_->currentText();
+    return viewNameEdit_->text();
 }
 
 //-----------------------------------------------------------------------------
@@ -175,7 +176,7 @@ QString NewDesignDialog::getPath() const
 void NewDesignDialog::onContentChanged()
 {
     // Enable/disable the ok button if the contents are valid/invalid.
-    okButton_->setEnabled(!viewNameEdit_->currentText().isEmpty() && viewNameEdit_->isInputValid() &&
+    okButton_->setEnabled(!viewNameEdit_->text().isEmpty() && viewNameEdit_->isInputValid() &&
                           !directoryEdit_->currentText().isEmpty() && vlnvEditor_->isValid());
 }
 
@@ -258,5 +259,5 @@ void NewDesignDialog::updateVlnvName()
 //-----------------------------------------------------------------------------
 void NewDesignDialog::setViewNameSuggestions(QStringList const& suggestions)
 {
-    viewNameEdit_->addItems(suggestions);
+    viewNameMatcher_.setItems(suggestions);
 }
