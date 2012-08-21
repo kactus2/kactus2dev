@@ -116,6 +116,14 @@ public:
 	 */
 	bool hasHierView() const;
 
+	/*! \brief Check if the model contains a hierarchical view that refers to given vlnv.
+	 *
+	 * \param vlnv The vlnv that is searched among the views.
+	 *
+	 * \return True if a view is found.
+	*/
+	bool hasHierView(const VLNV& vlnv) const;
+
 	/*! \brief Get the VLNV of a design in model's view.
 	 *
 	 * This function searches the views of the model for a named view.
@@ -191,6 +199,16 @@ public:
 	 * \return QStringList containing the view names.
 	*/
 	QStringList getViewNames() const;
+
+	/*! \brief Get the name of the view that refers to given vlnv.
+	 * 
+	 * If the view that refers to given vlnv is not found then empty string is returned.
+	 * 
+	 * \param vlnv The vlnv that is searched.
+	 *
+	 * \return The name of the view that refers to given vlnv.
+	*/
+	QString getViewName(const VLNV& vlnv) const;
 
 	/*! \brief Get the number of views listed in the model.
 	 *

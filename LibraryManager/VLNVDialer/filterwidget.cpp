@@ -17,10 +17,10 @@ type_(this),
 hierarchy_(this) {
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
-	layout->addWidget(&firmness_);
-	layout->addWidget(&implementation_);
 	layout->addWidget(&type_);
+	layout->addWidget(&implementation_);
 	layout->addWidget(&hierarchy_);
+	layout->addWidget(&firmness_);
 	layout->addStretch();
 	layout->setSpacing(0);
 	layout->setContentsMargins(0, 0, 0, 0);

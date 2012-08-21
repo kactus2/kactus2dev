@@ -321,6 +321,19 @@ bool Model::hasHierView() const {
 	return false;
 }
 
+bool Model::hasHierView( const VLNV& vlnv ) const {
+	foreach (QSharedPointer<View> view, views_) {
+		
+		// if a view with given vlnv is found
+		if (view->getHierarchyRef() == vlnv) {
+			return true;
+		}
+	}
+
+	// no view matched the vlnv
+	return false;
+}
+
 VLNV Model::getHierRef(const QString viewName) const {
 
 	// search all views
@@ -428,6 +441,15 @@ QStringList Model::getViewNames() const {
 		list.append(view->getName());
 	}
 	return list;
+}
+
+QString Model::getViewName( const VLNV& vlnv ) const {
+	foreach (QSharedPointer<View> view, views_) {
+		if (view->getHierarchyRef() == vlnv) {
+			return view->getName();
+		}
+	}
+	return QString();
 }
 
 int Model::viewCount() const {

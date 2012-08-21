@@ -33,7 +33,7 @@ namespace KactusAttribute
             "Fixed"
         };
 
-        QString const IMPLEMENTATION_NAMES[KTS_FIRMNESS_COUNT] =
+        QString const IMPLEMENTATION_NAMES[KTS_IMPLEMENTATION_COUNT] =
         {
             "HW",
             "SW",
@@ -110,7 +110,7 @@ namespace KactusAttribute
     {
         QString lowStr = str.toLower();
 
-        for (unsigned int i = 0; i < KTS_FIRMNESS_COUNT; ++i)
+        for (unsigned int i = 0; i < KTS_IMPLEMENTATION_COUNT; ++i)
         {
             if (lowStr == IMPLEMENTATION_NAMES[i].toLower())
             {

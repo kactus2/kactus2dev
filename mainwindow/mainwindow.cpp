@@ -231,187 +231,6 @@ MainWindow::~MainWindow() {
 	saveSettings();
 }
 
-//-----------------------------------------------------------------------------
-// Function: openDesign()
-//-----------------------------------------------------------------------------
-void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forceUnlocked)
-{
-	// the vlnv must always be for a component
-	Q_ASSERT(libraryHandler_->getDocumentType(vlnv) == VLNV::COMPONENT);
-
-    if (isDesignOpen(vlnv, KactusAttribute::KTS_HW))
-    {
-        return;
-    }
-
-	// parse the referenced component
-	QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(vlnv);
-	QSharedPointer<Component> comp = libComp.staticCast<Component>();
-	QList<VLNV> hierRefs = comp->getHierRefs();
-
-	// component must have at least one hierarchical reference
-	//Q_ASSERT(!hierRefs.isEmpty());
-
-	// make sure that all component's hierarchy refs are valid
-	bool hadInvalidRefs = false;
-	foreach (VLNV ref, hierRefs) {
-
-		// if the hierarchy referenced object is not found in library
-		if (!libraryHandler_->contains(ref)) {
-			emit errorMessage(tr("Component %1 has hierarchical reference to object %2,"
-				" which is not found in library. Component is not valid and can not "
-				"be opened in design view. Edit component with component editor to "
-				"remove invalid references.").arg(vlnv.toString(":")).arg(ref.toString(":")));
-			hadInvalidRefs = true;
-			continue;
-		}
-
-		// if the reference is to a wrong object type
-		else if (libraryHandler_->getDocumentType(ref) != VLNV::DESIGN &&
-			libraryHandler_->getDocumentType(ref) != VLNV::DESIGNCONFIGURATION) {
-				emit errorMessage(tr("Component %1 has hierarchical reference to object %2,"
-					" which is not design or design configuration. Component is not valid and"
-					" can not be opened in design view. Edit component with component editor to"
-					" remove invalid references.").arg(vlnv.toString(":")).arg(ref.toString(":")));
-				hadInvalidRefs = true;
-				continue;
-		}
-
-		// if the reference is for a design configuration then check that also
-		// the design is found
-		else if (libraryHandler_->getDocumentType(ref) == VLNV::DESIGNCONFIGURATION) {
-			VLNV designVLNV = libraryHandler_->getDesignVLNV(ref);
-
-			QSharedPointer<LibraryComponent> libComp2 = libraryHandler_->getModel(ref);
-			QSharedPointer<DesignConfiguration> desConf = libComp2.staticCast<DesignConfiguration>();
-			VLNV refToDesign = desConf->getDesignRef();
-
-			// if the referenced design was not found in the library
-			if (!designVLNV.isValid()) {
-				emit errorMessage(tr("Component %1 has hierarchical reference to object %2,"
-					" which is design configuration and references to design %3. This "
-					"design is not found in library so component can not be opened in "
-					"design view. Edit component with component editor to remove "
-					"invalid references").arg(
-					vlnv.toString(":")).arg(
-					ref.toString(":")).arg(
-					refToDesign.toString(":")));
-				hadInvalidRefs = true;
-				continue;
-			}
-		}
-	}
-	// if there was at least one invalid reference then do not open the design
-	if (hadInvalidRefs) {
-		return;
-	}
-
-	HWDesignWidget* designWidget = new HWDesignWidget(libraryHandler_, this);
-    registerDocument(designWidget);
-
-	connect(designWidget, SIGNAL(zoomChanged()), this, SLOT(updateZoomTools()), Qt::UniqueConnection);
-	connect(designWidget, SIGNAL(modeChanged(DrawMode)),
-		    this, SLOT(onDrawModeChanged(DrawMode)), Qt::UniqueConnection);
-
-	connect(designWidget, SIGNAL(destroyed(QObject*)),
-		    this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
-
-	connect(designWidget, SIGNAL(openDesign(const VLNV&, const QString&)),
-		    this, SLOT(openDesign(const VLNV&, const QString&)));
-	connect(designWidget, SIGNAL(openComponent(const VLNV&)),
-		    this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
-	connect(designWidget, SIGNAL(openBus(VLNV const&, VLNV const&, bool)),
-		    this, SLOT(openBus(VLNV const&, VLNV const&, bool)), Qt::UniqueConnection);
-
-	connect(designWidget, SIGNAL(clearItemSelection()),
-		    libraryHandler_, SLOT(onClearSelection()), Qt::UniqueConnection);
-
-	connect(designWidget, SIGNAL(componentSelected(ComponentItem*)),
-		this, SLOT(onComponentSelected(ComponentItem*)), Qt::UniqueConnection);
-	connect(designWidget, SIGNAL(interfaceSelected(ConnectionEndpoint*)),
-		this, SLOT(onInterfaceSelected(ConnectionEndpoint*)), Qt::UniqueConnection);
-	connect(designWidget, SIGNAL(connectionSelected(GraphicsConnection*)),
-		this, SLOT(onConnectionSelected(GraphicsConnection*)), Qt::UniqueConnection);
-
-	connect(designWidget, SIGNAL(clearItemSelection()),
-		this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
-
-	// open the design in the designWidget
-	designWidget->setDesign(vlnv, viewName);
-
-	// if the design could not be opened
-	if (!designWidget->getOpenDocument()) {
-		delete designWidget;
-		return;
-	}
-
-	if (forceUnlocked)
-	{
-		designWidget->setProtection(false);
-	}
-	else 
-	{
-		// Open in unlocked mode by default only if the version is draft.
-		designWidget->setProtection(vlnv.getVersion() != "draft");
-	}
-
-	designWidget->setTabWidget(designTabs_);
-}
-
-
-//-----------------------------------------------------------------------------
-// Function: openSWDesign()
-//-----------------------------------------------------------------------------
-void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName, bool forceUnlocked)
-{
-    if (isDesignOpen(vlnv, KactusAttribute::KTS_SW))
-    {
-        return;
-    }
-
-    SystemDesignWidget* designWidget = new SystemDesignWidget(true, libraryHandler_, this, this);
-
-    if (!designWidget->setDesign(vlnv, viewName))
-    {
-        delete designWidget;
-        return;
-    }
-
-    if (forceUnlocked)
-    {
-        designWidget->setProtection(false);
-    }
-
-    designWidget->setTabWidget(designTabs_);
-    registerDocument(designWidget);
-
-    connect(designWidget, SIGNAL(openComponent(const VLNV&)),
-        this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
-    connect(designWidget, SIGNAL(openSWDesign(const VLNV&, const QString&)),
-        this, SLOT(openSWDesign(const VLNV&, const QString&)));
-    connect(designWidget, SIGNAL(openCSource(ComponentItem*)),
-        this, SLOT(openCSource(ComponentItem*)), Qt::UniqueConnection);
-
-    connect(designWidget, SIGNAL(componentSelected(ComponentItem*)),
-        this, SLOT(onComponentSelected(ComponentItem*)), Qt::UniqueConnection);
-    connect(designWidget, SIGNAL(interfaceSelected(ConnectionEndpoint*)),
-        this, SLOT(onInterfaceSelected(ConnectionEndpoint*)), Qt::UniqueConnection);
-    connect(designWidget, SIGNAL(connectionSelected(GraphicsConnection*)),
-        this, SLOT(onConnectionSelected(GraphicsConnection*)), Qt::UniqueConnection);
-    connect(designWidget, SIGNAL(destroyed(QObject*)),
-        this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
-    connect(designWidget, SIGNAL(clearItemSelection()),
-        libraryHandler_, SLOT(onClearSelection()), Qt::UniqueConnection);
-    connect(designWidget, SIGNAL(clearItemSelection()),
-        this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
-
-    connect(designWidget, SIGNAL(zoomChanged()), this, SLOT(updateZoomTools()), Qt::UniqueConnection);
-    connect(designWidget, SIGNAL(modeChanged(DrawMode)),
-        this, SLOT(onDrawModeChanged(DrawMode)), Qt::UniqueConnection);
-    connect(designWidget, SIGNAL(modifiedChanged(bool)),
-        actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
-}
-
 void MainWindow::onLibrarySearch() {
 
 	if (libraryHandler_) {
@@ -2821,6 +2640,187 @@ void MainWindow::openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool di
 	}
 
 	editor->setTabWidget(designTabs_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: openDesign()
+//-----------------------------------------------------------------------------
+void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forceUnlocked)
+{
+	// the vlnv must always be for a component
+	Q_ASSERT(libraryHandler_->getDocumentType(vlnv) == VLNV::COMPONENT);
+
+	if (isDesignOpen(vlnv, KactusAttribute::KTS_HW))
+	{
+		return;
+	}
+
+	// parse the referenced component
+	QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(vlnv);
+	QSharedPointer<Component> comp = libComp.staticCast<Component>();
+	QList<VLNV> hierRefs = comp->getHierRefs();
+
+	// component must have at least one hierarchical reference
+	//Q_ASSERT(!hierRefs.isEmpty());
+
+	// make sure that all component's hierarchy refs are valid
+	bool hadInvalidRefs = false;
+	foreach (VLNV ref, hierRefs) {
+
+		// if the hierarchy referenced object is not found in library
+		if (!libraryHandler_->contains(ref)) {
+			emit errorMessage(tr("Component %1 has hierarchical reference to object %2,"
+				" which is not found in library. Component is not valid and can not "
+				"be opened in design view. Edit component with component editor to "
+				"remove invalid references.").arg(vlnv.toString(":")).arg(ref.toString(":")));
+			hadInvalidRefs = true;
+			continue;
+		}
+
+		// if the reference is to a wrong object type
+		else if (libraryHandler_->getDocumentType(ref) != VLNV::DESIGN &&
+			libraryHandler_->getDocumentType(ref) != VLNV::DESIGNCONFIGURATION) {
+				emit errorMessage(tr("Component %1 has hierarchical reference to object %2,"
+					" which is not design or design configuration. Component is not valid and"
+					" can not be opened in design view. Edit component with component editor to"
+					" remove invalid references.").arg(vlnv.toString(":")).arg(ref.toString(":")));
+				hadInvalidRefs = true;
+				continue;
+		}
+
+		// if the reference is for a design configuration then check that also
+		// the design is found
+		else if (libraryHandler_->getDocumentType(ref) == VLNV::DESIGNCONFIGURATION) {
+			VLNV designVLNV = libraryHandler_->getDesignVLNV(ref);
+
+			QSharedPointer<LibraryComponent> libComp2 = libraryHandler_->getModel(ref);
+			QSharedPointer<DesignConfiguration> desConf = libComp2.staticCast<DesignConfiguration>();
+			VLNV refToDesign = desConf->getDesignRef();
+
+			// if the referenced design was not found in the library
+			if (!designVLNV.isValid()) {
+				emit errorMessage(tr("Component %1 has hierarchical reference to object %2,"
+					" which is design configuration and references to design %3. This "
+					"design is not found in library so component can not be opened in "
+					"design view. Edit component with component editor to remove "
+					"invalid references").arg(
+					vlnv.toString(":")).arg(
+					ref.toString(":")).arg(
+					refToDesign.toString(":")));
+				hadInvalidRefs = true;
+				continue;
+			}
+		}
+	}
+	// if there was at least one invalid reference then do not open the design
+	if (hadInvalidRefs) {
+		return;
+	}
+
+	HWDesignWidget* designWidget = new HWDesignWidget(libraryHandler_, this);
+	registerDocument(designWidget);
+
+	connect(designWidget, SIGNAL(zoomChanged()), this, SLOT(updateZoomTools()), Qt::UniqueConnection);
+	connect(designWidget, SIGNAL(modeChanged(DrawMode)),
+		this, SLOT(onDrawModeChanged(DrawMode)), Qt::UniqueConnection);
+
+	connect(designWidget, SIGNAL(destroyed(QObject*)),
+		this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
+
+	connect(designWidget, SIGNAL(openDesign(const VLNV&, const QString&)),
+		this, SLOT(openDesign(const VLNV&, const QString&)));
+	connect(designWidget, SIGNAL(openComponent(const VLNV&)),
+		this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
+	connect(designWidget, SIGNAL(openBus(VLNV const&, VLNV const&, bool)),
+		this, SLOT(openBus(VLNV const&, VLNV const&, bool)), Qt::UniqueConnection);
+
+	connect(designWidget, SIGNAL(clearItemSelection()),
+		libraryHandler_, SLOT(onClearSelection()), Qt::UniqueConnection);
+
+	connect(designWidget, SIGNAL(componentSelected(ComponentItem*)),
+		this, SLOT(onComponentSelected(ComponentItem*)), Qt::UniqueConnection);
+	connect(designWidget, SIGNAL(interfaceSelected(ConnectionEndpoint*)),
+		this, SLOT(onInterfaceSelected(ConnectionEndpoint*)), Qt::UniqueConnection);
+	connect(designWidget, SIGNAL(connectionSelected(GraphicsConnection*)),
+		this, SLOT(onConnectionSelected(GraphicsConnection*)), Qt::UniqueConnection);
+
+	connect(designWidget, SIGNAL(clearItemSelection()),
+		this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
+
+	// open the design in the designWidget
+	designWidget->setDesign(vlnv, viewName);
+
+	// if the design could not be opened
+	if (!designWidget->getOpenDocument()) {
+		delete designWidget;
+		return;
+	}
+
+	if (forceUnlocked)
+	{
+		designWidget->setProtection(false);
+	}
+	else 
+	{
+		// Open in unlocked mode by default only if the version is draft.
+		designWidget->setProtection(vlnv.getVersion() != "draft");
+	}
+
+	designWidget->setTabWidget(designTabs_);
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: openSWDesign()
+//-----------------------------------------------------------------------------
+void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName, bool forceUnlocked)
+{
+	if (isDesignOpen(vlnv, KactusAttribute::KTS_SW))
+	{
+		return;
+	}
+
+	SystemDesignWidget* designWidget = new SystemDesignWidget(true, libraryHandler_, this, this);
+
+	if (!designWidget->setDesign(vlnv, viewName))
+	{
+		delete designWidget;
+		return;
+	}
+
+	if (forceUnlocked)
+	{
+		designWidget->setProtection(false);
+	}
+
+	designWidget->setTabWidget(designTabs_);
+	registerDocument(designWidget);
+
+	connect(designWidget, SIGNAL(openComponent(const VLNV&)),
+		this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
+	connect(designWidget, SIGNAL(openSWDesign(const VLNV&, const QString&)),
+		this, SLOT(openSWDesign(const VLNV&, const QString&)));
+	connect(designWidget, SIGNAL(openCSource(ComponentItem*)),
+		this, SLOT(openCSource(ComponentItem*)), Qt::UniqueConnection);
+
+	connect(designWidget, SIGNAL(componentSelected(ComponentItem*)),
+		this, SLOT(onComponentSelected(ComponentItem*)), Qt::UniqueConnection);
+	connect(designWidget, SIGNAL(interfaceSelected(ConnectionEndpoint*)),
+		this, SLOT(onInterfaceSelected(ConnectionEndpoint*)), Qt::UniqueConnection);
+	connect(designWidget, SIGNAL(connectionSelected(GraphicsConnection*)),
+		this, SLOT(onConnectionSelected(GraphicsConnection*)), Qt::UniqueConnection);
+	connect(designWidget, SIGNAL(destroyed(QObject*)),
+		this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
+	connect(designWidget, SIGNAL(clearItemSelection()),
+		libraryHandler_, SLOT(onClearSelection()), Qt::UniqueConnection);
+	connect(designWidget, SIGNAL(clearItemSelection()),
+		this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
+
+	connect(designWidget, SIGNAL(zoomChanged()), this, SLOT(updateZoomTools()), Qt::UniqueConnection);
+	connect(designWidget, SIGNAL(modeChanged(DrawMode)),
+		this, SLOT(onDrawModeChanged(DrawMode)), Qt::UniqueConnection);
+	connect(designWidget, SIGNAL(modifiedChanged(bool)),
+		actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

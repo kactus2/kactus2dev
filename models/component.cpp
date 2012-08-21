@@ -2283,6 +2283,56 @@ QList<VLNV> Component::getHierRefs() const {
 	return list;
 }
 
+KactusAttribute::Implementation Component::getViewType( const VLNV& vlnv ) const {
+	// if hw view refers to vlnv
+	if (model_ && model_->hasHierView(vlnv)) {
+		return KactusAttribute::KTS_HW;
+	}
+
+	// if sw view refers to vlnv
+	foreach (QSharedPointer<SWView> swView, swViews_) {
+		if (swView->getHierarchyRef() == vlnv) {
+			return KactusAttribute::KTS_SW;
+		}
+	}
+
+	// if system view refers to vlnv
+	foreach (QSharedPointer<SystemView> sysView, systemViews_) {
+		if (sysView->getHierarchyRef() == vlnv) {
+			return KactusAttribute::KTS_SYS;
+		}
+	}
+
+	// no view that uses the vlnv was found
+	return KactusAttribute::KTS_IMPLEMENTATION_COUNT;
+}
+
+QString Component::getViewName( const VLNV& vlnv ) const {
+
+	if (model_) {
+		QString viewName = model_->getViewName(vlnv);
+		
+		// if model contained a view with the vlnv then return the view name
+		if (!viewName.isEmpty()) {
+			return viewName;
+		}
+	}
+
+	foreach (QSharedPointer<SWView> swView, swViews_) {
+		if (swView->getHierarchyRef() == vlnv) {
+			return swView->getName();
+		}
+	}
+
+	foreach (QSharedPointer<SystemView> sysView, systemViews_) {
+		if (sysView->getHierarchyRef() == vlnv) {
+			return sysView->getName();
+		}
+	}
+
+	return QString();
+}
+
 QMap<QString, VLNV> Component::getHierRefNames() const {
 	QMap<QString, VLNV> map;
 	if (model_) {

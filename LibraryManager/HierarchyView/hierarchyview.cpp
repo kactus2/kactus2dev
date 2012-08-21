@@ -316,8 +316,6 @@ void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
 	// create a menu to show contextMenu actions
 	QMenu menu(this);
 
-	bool hierarchical = false;
-
 	// if item can be identified as single item
 	if (vlnv.isValid()) {
 
@@ -329,37 +327,23 @@ void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
         QMenu* menuNew = 0;
 
 		// if component
-		if (item->type() == HierarchyItem::COMPONENT)
-        {
+		if (item->type() == HierarchyItem::COMPONENT) {
 			QSharedPointer<Component> component = libComp.staticCast<Component>();
 
 			// depending on the type of the component
-			switch (component->getComponentImplementation())
-            {
-            case KactusAttribute::KTS_SYS:
-                {
-                    if (component->hasSystemViews())
-                    {
-                        menu.addAction(openSystemAction_);
-                    }
-
+			switch (component->getComponentImplementation()) {
+            case KactusAttribute::KTS_SYS: {
                     menu.addAction(openCompAction_);
                     break;
                 }
 
-            case KactusAttribute::KTS_SW:
-                {
-                    if (component->hasSWViews())
-                    {
-                        menu.addAction(openSWDesignAction_);
-                    }
+            case KactusAttribute::KTS_SW: {
 
                     menu.addAction(openCompAction_);
 
                     menu.addSeparator();
 
-                    if (indexes.size() == 1)
-                    {
+                    if (indexes.size() == 1) {
                         menuNew = menu.addMenu(tr("New"));
                         menuNew->addAction(createNewSWDesignAction_);
                     }
@@ -367,23 +351,7 @@ void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
                     break;
                 }
 
-            default:
-                {
-//                     if (component->isHierarchical())
-//                     {
-//                         menu.addAction(openDesignAction_);
-//                         hierarchical = true;
-//                     }
-
-                    if (component->hasSWViews())
-                    {
-                        menu.addAction(openSWDesignAction_);
-                    }
-
-                    if (component->hasSystemViews())
-                    {
-                        menu.addAction(openSystemAction_);
-                    }
+            default: {
 
                     menu.addAction(openCompAction_);
                     menu.addSeparator();
@@ -435,8 +403,14 @@ void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
             menuNew = menu.addMenu(tr("New"));
             menuNew->addAction(createApiDefAction_);
         }
-		else if (item->type() == HierarchyItem::DESIGN) {
+		else if (item->type() == HierarchyItem::HW_DESIGN) {
 			menu.addAction(openDesignAction_);
+		}
+		else if (item->type() == HierarchyItem::SW_DESIGN) {
+			menu.addAction(openSWDesignAction_);
+		}
+		else if (item->type() == HierarchyItem::SYS_DESIGN) {
+			menu.addAction(openSystemAction_);
 		}
 
         // Insert the New menu to the popup menu if it was created.
@@ -461,25 +435,24 @@ void HierarchyView::mouseDoubleClickEvent( QMouseEvent * event ) {
 	// accept the event so it is not passed forwards
 	event->accept();
 
-// 	QModelIndex current = currentIndex();
-// 
-// 	// if nothing was chosen
-// 	if (!current.isValid()) {
-// 		return;
-// 	}
-
 	// get original model index so internalPointer can be used
 	QModelIndex sourceIndex = filter_->mapToSource(indexAt(event->pos()));
 
 	HierarchyItem* item = static_cast<HierarchyItem*>(sourceIndex.internalPointer());
-	if (item->type() == HierarchyItem::DESIGN) {
-		emit openDesign(sourceIndex);
+	switch (item->type()) {
+		case HierarchyItem::HW_DESIGN:
+			emit openDesign(sourceIndex);
+			break;
+		case HierarchyItem::SW_DESIGN:
+			emit openSWDesign(sourceIndex);
+			break;
+		case HierarchyItem::SYS_DESIGN:
+			emit openSystemDesign(sourceIndex);
+			break;
+		default:
+			emit openComponent(sourceIndex);
+			break;
 	}
-	else {
-		emit openComponent(sourceIndex);
-	}
-
-	//emit openComponent(filter_->mapToSource(current));
 
 	// let the default handler process the event
 	QTreeView::mouseDoubleClickEvent(event);

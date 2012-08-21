@@ -228,10 +228,10 @@ signals:
 	void openDesign(const VLNV& vlnv, const QString& viewName);
 
     //! \brief Open the SW design of a component.
-    void openSWDesign(const VLNV& vlnv);
+    void openSWDesign(const VLNV& vlnv, const QString& viewName);
 
     //! \brief Open the system design of a component.
-    void openSystemDesign(const VLNV& vlnv);
+    void openSystemDesign(const VLNV& vlnv, const QString& viewName);
 
 	//! \brief Open the component in a component editor.
 	void editItem(const VLNV& vlnv);

@@ -16,7 +16,9 @@
 
 HierarchyItem::HierarchyItem(LibraryInterface* handler,
 							 HierarchyItem* parent, 
-							 const VLNV& vlnv):
+							 const VLNV& vlnv,
+							 KactusAttribute::Implementation implementation,
+							 const QString& viewName):
 QObject(parent),
 component_(),
 busDef_(),
@@ -30,7 +32,8 @@ parentItem_(parent),
 isValid_(true),
 isDuplicate_(false),
 type_(HierarchyItem::ROOT),
-instanceCount_() {
+instanceCount_(),
+viewName_() {
 
 	Q_ASSERT_X(handler, "HierarchyItem constructor",
 		"Null LibraryInterface pointer given as parameter");
@@ -60,7 +63,7 @@ instanceCount_() {
         parseApiDefinition(vlnv);
     }
 	else if (handler_->getDocumentType(vlnv) == VLNV::DESIGN) {
-		parseDesign(vlnv);
+		parseDesign(vlnv, implementation, viewName);
 	}
 	else {
 		emit errorMessage(tr("VLNV %1:%2:%3:%4 was not for supported item").arg(
@@ -87,7 +90,8 @@ parentItem_(NULL),
 isValid_(true),
 isDuplicate_(false),
 type_(HierarchyItem::ROOT),
-instanceCount_() {
+instanceCount_(),
+viewName_() {
 }
 
 void HierarchyItem::parseComponent( const VLNV& vlnv ) {
@@ -127,11 +131,7 @@ void HierarchyItem::parseComponent( const VLNV& vlnv ) {
 
 		// make sure the library contains the vlnv
 		if (!handler_->contains(reference)) {
-			emit errorMessage(tr("VLNV %1:%2:%3:%4 was not found in the library").arg(
-				reference.getVendor()).arg(
-				reference.getLibrary()).arg(
-				reference.getName()).arg(
-				reference.getVersion()));
+			emit errorMessage(tr("VLNV %1 was not found in the library").arg(reference.toString()));
 			isValid_ = false;
 			continue;
 		}
@@ -172,8 +172,11 @@ void HierarchyItem::parseComponent( const VLNV& vlnv ) {
 				continue;
 		}
 
+		KactusAttribute::Implementation implementation = component_->getViewType(reference);
+		QString viewName = component_->getViewName(reference);
+
 		// create a child item that matches the referenced design
-		HierarchyItem* item = new HierarchyItem(handler_, this, designVLNV);
+		HierarchyItem* item = new HierarchyItem(handler_, this, designVLNV, implementation, viewName);
 		connect(item, SIGNAL(errorMessage(const QString&)),
 			this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 		connect(item, SIGNAL(noticeMessage(const QString&)),
@@ -183,9 +186,23 @@ void HierarchyItem::parseComponent( const VLNV& vlnv ) {
 	}
 }
 
-void HierarchyItem::parseDesign( const VLNV& vlnv ) {
+void HierarchyItem::parseDesign( const VLNV& vlnv, KactusAttribute::Implementation implementation, const QString& viewName ) {
 
-	type_ = HierarchyItem::DESIGN;
+	viewName_ = viewName;
+
+	switch (implementation) {
+		case KactusAttribute::KTS_HW:
+			type_ = HierarchyItem::HW_DESIGN;
+			break;
+		case KactusAttribute::KTS_SW:
+			type_ = HierarchyItem::SW_DESIGN;
+			break;
+		case KactusAttribute::KTS_SYS:
+			type_ = HierarchyItem::SYS_DESIGN;
+			break;
+		default:
+			Q_ASSERT(false);
+	}
 
 	// parse the design
 	QSharedPointer<LibraryComponent> libComp = handler_->getModel(vlnv);
@@ -310,18 +327,27 @@ HierarchyItem::~HierarchyItem() {
 }
 
 VLNV HierarchyItem::getVLNV() const {
-	if (type_ == HierarchyItem::COMPONENT && component_)
+	if (type_ == HierarchyItem::COMPONENT && component_) {
 		return *component_->getVlnv();
-	else if (type_ == HierarchyItem::BUSDEFINITION && busDef_)
+	}
+	else if (type_ == HierarchyItem::BUSDEFINITION && busDef_) {
 		return *busDef_->getVlnv();
-	else if (type_ == HierarchyItem::ABSDEFINITION && absDef_)
+	}
+	else if (type_ == HierarchyItem::ABSDEFINITION && absDef_) {
 		return *absDef_->getVlnv();
-    else if (type_ == HierarchyItem::COMDEFINITION && comDef_)
+	}
+	else if (type_ == HierarchyItem::COMDEFINITION && comDef_) {
         return *comDef_->getVlnv();
-    else if (type_ == HierarchyItem::APIDEFINITION && apiDef_)
+	}
+	else if (type_ == HierarchyItem::APIDEFINITION && apiDef_) {
         return *apiDef_->getVlnv();
-	else if (type_ == HierarchyItem::DESIGN && design_)
+	}
+	else if ((type_ == HierarchyItem::HW_DESIGN ||
+		type_ == HierarchyItem::SW_DESIGN ||
+		type_ == HierarchyItem::SYS_DESIGN) && design_) {
 		return *design_->getVlnv();
+	}
+
 	return VLNV();
 }
 
@@ -529,7 +555,7 @@ void HierarchyItem::updateItems( const VLNV& vlnv ) {
 	if (count > 0) {
 
 		// if a child was removed then create a new child for the component
-		HierarchyItem* item = new HierarchyItem(handler_, this, vlnv);
+		HierarchyItem* item = new HierarchyItem(handler_, this, vlnv, KactusAttribute::KTS_HW);
 		childItems_.append(item);
 	}
 }
@@ -665,4 +691,8 @@ int HierarchyItem::countInstances( const VLNV& componentVLNV ) {
 	else {
 		return instanceCount_.value(componentVLNV);
 	}
+}
+
+QString HierarchyItem::getViewName() const {
+	return viewName_;
 }

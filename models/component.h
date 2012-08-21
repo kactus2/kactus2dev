@@ -543,6 +543,27 @@ public:
 	*/
 	QStringList getViewNames() const;
 
+	/*! \brief Get the type of the view that uses the given VLNV.
+	 * 
+	 * If a view that uses the given vlnv is not found then KTS_IMPLEMENTATION_COUNT
+	 * is returned.
+	 *
+	 * \param vlnv The vlnv that is searched among the views.
+	 *
+	 * \return KactusAttribute::Implementation specifies the type of the view.
+	*/
+	KactusAttribute::Implementation getViewType(const VLNV& vlnv) const;
+
+	/*! \brief Get the name of the view that uses the given VLNV.
+	 * 
+	 * If a view that uses the given vlnv is not found then empty string is returned.
+	 *
+	 * \param vlnv The vlnv that is searched among the views.
+	 *
+	 * \return The name of the view that refers to the vlnv.
+	*/
+	QString getViewName(const VLNV& vlnv) const;
+
 	/*! \brief Find a named view within a component.
 	*
 	* \param name The name of the view to search for.

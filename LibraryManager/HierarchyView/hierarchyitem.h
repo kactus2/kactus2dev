@@ -40,7 +40,9 @@ public:
 		ABSDEFINITION,
         COMDEFINITION,
         APIDEFINITION,
-		DESIGN
+		HW_DESIGN,
+		SW_DESIGN,
+		SYS_DESIGN
 	};
 
 	/*! \brief The constructor
@@ -48,11 +50,15 @@ public:
 	 * \param handler Pointer to the instance that manages the library.
 	 * \param parent Pointer to the owner of this object.
 	 * \param vlnv The vlnv to construct the item for.
+	 * \param implementation The implementation attribute needed by designs.
+	 * \param viewName The name of the view the design belongs to.
 	 *
 	*/
 	HierarchyItem(LibraryInterface* handler, 
 		HierarchyItem* parent, 
-		const VLNV& vlnv);
+		const VLNV& vlnv,
+		KactusAttribute::Implementation implementation = KactusAttribute::KTS_IMPLEMENTATION_COUNT,
+		const QString& viewName = QString());
 
 	/*! \brief The constructor for the root item.
 	 * 
@@ -301,6 +307,14 @@ public:
 	*/
 	int instanceCount() const;
 
+	/*! \brief Get the name of the view the design belongs to.
+	 * 
+	 * If type() is other than design an empty string is returned.
+	 *
+	 * \return QString containing the view name.
+	*/
+	QString getViewName() const;
+
 signals:
 
 	//! \brief Send a notification to be printed to user.
@@ -374,7 +388,7 @@ private:
 	 * \param vlnv The vlnv of the design.
 	 *
 	*/
-	void parseDesign(const VLNV& vlnv);
+	void parseDesign(const VLNV& vlnv, KactusAttribute::Implementation implementation, const QString& viewName);
 
 	//! \brief Pointer to the component that this hierarhcyItem represents.
 	QSharedPointer<Component> component_;
@@ -414,6 +428,9 @@ private:
 
 	//! \brief Contains the instance count for the sub items.
 	QMap<VLNV, int> instanceCount_;
+
+	//! \brief The name of the view a design belongs to.
+	QString viewName_;
 };
 
 #endif // HIERARCHYITEM_H

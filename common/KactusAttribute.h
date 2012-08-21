@@ -84,15 +84,15 @@ namespace KactusAttribute
      */
     bool stringToValue(QString const& str, Firmness& val);
 
-    //-----------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     //! Firmness enumeration.
-    //-----------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     enum Implementation
     {
         KTS_HW = 0,
         KTS_SW,
         KTS_SYS,
-        KTS_FIRMNESS_COUNT
+        KTS_IMPLEMENTATION_COUNT
     };
 
     /*!
