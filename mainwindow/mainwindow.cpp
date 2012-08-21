@@ -2828,7 +2828,6 @@ void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName, bool fo
 //-----------------------------------------------------------------------------
 void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName, bool forceUnlocked)
 {
-	libraryHandler_->beginSave();
 
     if (isDesignOpen(vlnv, KactusAttribute::KTS_SYS))
     {
@@ -2876,8 +2875,6 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName, boo
 		this, SLOT(onDrawModeChanged(DrawMode)), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(modifiedChanged(bool)),
 		actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
-
-	libraryHandler_->endSave();
 }
 
 void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
