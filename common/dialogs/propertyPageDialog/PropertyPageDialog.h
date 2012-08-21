@@ -45,7 +45,8 @@ public:
      *                                the user presses OK.
      *      @param [in] parent        The parent widget. Can be null.
      */
-    PropertyPageDialog(QSize const& listIconSize, ApplyMode mode, QWidget* parent = 0);
+    PropertyPageDialog(QSize const& listIconSize, int iconColumnCount,
+                       ApplyMode mode, QWidget* parent = 0);
 
     /*!
      *  Destructor.
@@ -99,6 +100,9 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    //! The icon column count.
+    int iconColumnCount_;
 
     //! The contents list widget.
     QListWidget* contentsList_;

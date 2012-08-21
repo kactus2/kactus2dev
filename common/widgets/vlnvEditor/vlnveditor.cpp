@@ -69,8 +69,6 @@ VLNVEditor::VLNVEditor(VLNV::IPXactType type,
 
     // By default, add the VLNV type to edit to the content types.
     contentTypes_.append(type_);
-
-    updateFiltering();
 }
 
 //-----------------------------------------------------------------------------
@@ -86,6 +84,7 @@ VLNVEditor::~VLNVEditor()
 void VLNVEditor::addContentType(VLNV::IPXactType type)
 {
     contentTypes_.append(type);
+    dirty_ = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -379,6 +378,7 @@ void VLNVEditor::dragEnterEvent( QDragEnterEvent* event ) {
 void VLNVEditor::setFirmnessFilter(bool on, KactusAttribute::Firmness firmness /*= KTS_TEMPLATE*/)
 {
     dataTree_.setFirmnessFilter(on, firmness);
+    dirty_ = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -387,6 +387,7 @@ void VLNVEditor::setFirmnessFilter(bool on, KactusAttribute::Firmness firmness /
 void VLNVEditor::setHierarchyFilter(bool on, KactusAttribute::ProductHierarchy productHier /*= KactusAttribute::KTS_IP*/)
 {
     dataTree_.setHierarchyFilter(on, productHier);
+    dirty_ = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -395,6 +396,7 @@ void VLNVEditor::setHierarchyFilter(bool on, KactusAttribute::ProductHierarchy p
 void VLNVEditor::setImplementationFilter(bool on, KactusAttribute::Implementation implementation /*= KTS_HW*/)
 {
     dataTree_.setImplementationFilter(on, implementation);
+    dirty_ = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -404,6 +406,7 @@ void VLNVEditor::updateFiltering()
 {
     dataTree_.clear();
     dataTree_.parse(handler_, contentTypes_);
+    dirty_ = false;
 }
 
 void VLNVEditor::setMandatory( bool mandatory ) {
@@ -420,4 +423,17 @@ void VLNVEditor::setNameExtension(QString const& extension)
 {
     nameExtensionLabel_.setText(extension);
     nameExtensionLabel_.setVisible(!extension.isEmpty());
+}
+
+//-----------------------------------------------------------------------------
+// Function: VLNVEditor::showEvent()
+//-----------------------------------------------------------------------------
+void VLNVEditor::showEvent(QShowEvent* event)
+{
+    if (dirty_)
+    {
+        updateFiltering();
+    }
+
+    QGroupBox::showEvent(event);
 }

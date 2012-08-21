@@ -291,6 +291,16 @@ public slots:
     void createDesignForExistingComponent(VLNV const& vlnv);
 
     /*!
+     *  Creates a new hierarchical SW component with an SW design.
+     *
+     *      @param [in] vlnv        The component's VLNV.
+     *      @param [in] directory   The directory where to save the component.
+     *
+     *      @remarks The SW design editor is opened automatically after successful creation.
+     */
+    void createSWDesign(VLNV const& vlnv, QString const& directory);
+
+    /*!
      *  Creates a SW design for an existing component.
      *
      *      @param [in] vlnv        The component's VLNV.

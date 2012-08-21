@@ -110,7 +110,6 @@ NewSystemPage::NewSystemPage(LibraryInterface* libInterface, QWidget* parentDlg)
     // Create the VLNV editor.
     vlnvEditor_->setImplementationFilter(true, KactusAttribute::KTS_SYS);
     vlnvEditor_->setNameExtension(".sysdesign/.sysdesigncfg");
-    vlnvEditor_->updateFiltering();
     vlnvEditor_->setTitle(tr("VLNV of the new system design"));
 
     connect(vlnvEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));

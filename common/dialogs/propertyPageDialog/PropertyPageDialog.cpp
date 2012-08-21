@@ -20,17 +20,26 @@
 //-----------------------------------------------------------------------------
 // Function: PropertyPageDialog()
 //-----------------------------------------------------------------------------
-PropertyPageDialog::PropertyPageDialog(QSize const& listIconSize,
-                                       ApplyMode mode, QWidget* parent) : QDialog(parent), contentsList_(0),
-                                                                          pages_(0), btnOk_(0),
-                                                                          mode_(mode)
+PropertyPageDialog::PropertyPageDialog(QSize const& listIconSize, int iconColumnCount,
+                                       ApplyMode mode, QWidget* parent)
+    : QDialog(parent),
+      iconColumnCount_(iconColumnCount),
+      contentsList_(0),
+      pages_(0),
+      btnOk_(0),
+      mode_(mode)
 {
     // Create the contents list.
     contentsList_ = new QListWidget(this);
     contentsList_->setViewMode(QListView::IconMode);
     contentsList_->setIconSize(listIconSize);
     contentsList_->setMovement(QListView::Static);
-    contentsList_->setWrapping(false);
+
+    if (iconColumnCount == 1)
+    {
+        contentsList_->setWrapping(false);
+    }
+
     contentsList_->setSpacing(ICON_SPACING);
     contentsList_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     contentsList_->setFlow(QListView::TopToBottom);
@@ -202,6 +211,5 @@ void PropertyPageDialog::finalizePages()
     }
 
     // Update the width of the list with some margin.
-    contentsList_->setFixedWidth(optimalWidth + 30);
-
+    contentsList_->setFixedWidth(optimalWidth * iconColumnCount_ + 30);
 }

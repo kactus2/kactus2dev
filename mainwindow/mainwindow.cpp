@@ -2080,10 +2080,10 @@ void MainWindow::updateZoomTools()
 //-----------------------------------------------------------------------------
 void MainWindow::createNew()
 {
-	// Create a property page dialog to work as a "New" dialog.
-	PropertyPageDialog dialog(QSize(48, 48), PropertyPageDialog::APPLY_CURRENT, this);
+    // Create a property page dialog to work as a "New" dialog.
+	PropertyPageDialog dialog(QSize(48, 48), 1, PropertyPageDialog::APPLY_CURRENT, this);
 	dialog.setFixedWidth(620);
-	dialog.resize(620, 640);
+	dialog.resize(620, 690);
 	dialog.setWindowTitle(tr("New"));
 
     // Add pages to the dialog.
@@ -2110,10 +2110,10 @@ void MainWindow::createNew()
 		this, SLOT(createSWComponent(VLNV const&, QString const&)));
 	dialog.addPage(QIcon(":icons/graphics/sw-component.png"), tr("SW Component"), swCompPage);
 
-// 	NewSWDesignPage* swDesignPage = new NewSWDesignPage(libraryHandler_, &dialog);
-// 	connect(swDesignPage, SIGNAL(createSWDesign(VLNV const&, QString const&)),
-// 		this, SLOT(createSWDesign(VLNV const&, QString const&)), Qt::UniqueConnection);
-// 	dialog.addPage(QIcon(":icons/graphics/sw-design.png"), tr("SW Design"), swDesignPage);
+	NewSWDesignPage* swDesignPage = new NewSWDesignPage(libraryHandler_, &dialog);
+	connect(swDesignPage, SIGNAL(createSWDesign(VLNV const&, QString const&)),
+		    this, SLOT(createSWDesign(VLNV const&, QString const&)), Qt::UniqueConnection);
+	dialog.addPage(QIcon(":icons/graphics/sw-design.png"), tr("SW Design"), swDesignPage);
 
 	NewSystemPage* sysPage = new NewSystemPage(libraryHandler_, &dialog);
 	connect(sysPage, SIGNAL(createSystem(VLNV const&, QString const&, VLNV const&, QString const&)),
@@ -2290,7 +2290,54 @@ void MainWindow::createDesignForExistingComponent(VLNV const& vlnv)
     libraryHandler_->endSave();
 
     // Open the design.
-    openSWDesign(vlnv, view->getName(), true);
+    openDesign(vlnv, view->getName(), true);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::createSWDesign()
+//-----------------------------------------------------------------------------
+void MainWindow::createSWDesign(VLNV const& vlnv, QString const& directory)
+{
+    Q_ASSERT(vlnv.isValid());
+
+    VLNV designVLNV(VLNV::DESIGN, vlnv.getVendor(), vlnv.getLibrary(),
+        vlnv.getName().remove(".comp") + ".swdesign", vlnv.getVersion());
+    VLNV desConfVLNV(VLNV::DESIGNCONFIGURATION, vlnv.getVendor(), vlnv.getLibrary(),
+        vlnv.getName().remove(".comp") + ".swdesigncfg", vlnv.getVersion());
+
+    // Create a component and a hierarchical view .
+    QSharedPointer<Component> component(new Component(vlnv));
+
+    // Set Kactus attributes.
+    component->setComponentImplementation(KactusAttribute::KTS_SW);
+
+    // Create the view.
+    SWView* view = new SWView("software");
+    view->setHierarchyRef(desConfVLNV);
+    component->addSWView(view);
+
+    // Create the design and design configuration.
+    QSharedPointer<Design> design(new Design(designVLNV));
+    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV));
+    designConf->setDesignRef(designVLNV);
+
+    QList<ColumnDesc> columns;
+
+    columns.append(ColumnDesc("Low-level", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH));
+    columns.append(ColumnDesc("Middle-level", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH));
+    columns.append(ColumnDesc("High-level", COLUMN_CONTENT_COMPONENTS, 0, SystemDesignDiagram::SW_COLUMN_WIDTH));
+    columns.append(ColumnDesc("Out", COLUMN_CONTENT_IO, 0, SystemDesignDiagram::IO_COLUMN_WIDTH));
+    design->setColumns(columns);
+
+    // Create the files.
+    libraryHandler_->beginSave();
+    libraryHandler_->writeModelToFile(directory, designConf);
+    libraryHandler_->writeModelToFile(directory, design);
+    libraryHandler_->writeModelToFile(directory, component);
+    libraryHandler_->endSave();
+
+    // Open the design.
+    openSWDesign(vlnv, component->getSWViewNames().first(), true);
 }
 
 //-----------------------------------------------------------------------------
@@ -2347,7 +2394,7 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
     QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(dialog.getDesignConfVLNV()));
     designConf->setDesignRef(dialog.getDesignVLNV());
 
-    QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(dialog.getDesignVLNV()));
+    QSharedPointer<Design> newDesign(new Design(dialog.getDesignVLNV()));
     QList<ColumnDesc> columns;
 
     if (component->getComponentImplementation() == KactusAttribute::KTS_SW)

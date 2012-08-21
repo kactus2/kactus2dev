@@ -18,7 +18,7 @@
 //-----------------------------------------------------------------------------
 // Function: SettingsDialog()
 //-----------------------------------------------------------------------------
-SettingsDialog::SettingsDialog(QWidget* parent) : PropertyPageDialog(QSize(48, 48), APPLY_ALL, parent),
+SettingsDialog::SettingsDialog(QWidget* parent) : PropertyPageDialog(QSize(48, 48), 1, APPLY_ALL, parent),
                                                   settings_()
 {
     //setFixedSize(600, 440);

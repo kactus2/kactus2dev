@@ -193,6 +193,8 @@ protected:
 	 *
 	*/
 	virtual void dragEnterEvent(QDragEnterEvent* event);
+    
+    virtual void showEvent(QShowEvent* event);
 
 private:
     // Disable copying.
@@ -221,6 +223,9 @@ private:
 
     //! The VLNV types which to show in content assist.
     QList<VLNV::IPXactType> contentTypes_;
+
+    //! True if the filtering is "dirty" and needs to be updated.
+    bool dirty_;
 
     //! The VLNV data tree.
     VLNVDataTree dataTree_;

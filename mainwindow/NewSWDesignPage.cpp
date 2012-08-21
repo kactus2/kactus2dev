@@ -40,12 +40,11 @@ directoryEdit_(0)
     font.setBold(true);
     titleLabel->setFont(font);
 
-    QLabel* descLabel = new QLabel(tr("Creates a software mapping design"), this);
+    QLabel* descLabel = new QLabel(tr("Creates a hierarchical SW design"), this);
 
     // Create the VLNV editor.
     vlnvEditor_ = new VLNVEditor(VLNV::COMPONENT, libInterface, parentDlg, this, true);
     vlnvEditor_->setImplementationFilter(true, KactusAttribute::KTS_SW);
-    vlnvEditor_->updateFiltering();
 
     connect(vlnvEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
     connect(vlnvEditor_, SIGNAL(contentChanged()), this, SLOT(updateDirectory()));
