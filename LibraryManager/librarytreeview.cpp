@@ -55,6 +55,8 @@ openXmlAction_(NULL)
 	Q_ASSERT_X(filter, "LibraryTreeView constructor",
 		"Null filter pointer given");
 
+    setIconSize(QSize(20, 20));
+
 	// the view can be sorted
 	setSortingEnabled(true);
 

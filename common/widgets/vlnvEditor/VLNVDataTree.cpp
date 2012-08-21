@@ -154,26 +154,10 @@ VLNVDataTree::~VLNVDataTree()
 //-----------------------------------------------------------------------------
 // Function: parse()
 //-----------------------------------------------------------------------------
-void VLNVDataTree::parse(LibraryInterface* lh, VLNV::IPXactType type)
+void VLNVDataTree::parse(LibraryInterface* lh, QList<VLNV::IPXactType> const& types)
 {
-    // Retrieve the type root library item.
-    LibraryItem const* root = lh->getTreeRoot();
-    LibraryItem const* typeRoot = 0;
-
-    for (int i = 0; i < root->getNumberOfChildren(); ++i)
-    {
-        if (root->child(i)->getName() == VLNV::type2Print(type))
-        {
-            typeRoot = root->child(i);
-            break;
-        }
-    }
-
     // Parse all library objects.
-    if (typeRoot != 0)
-    {
-        parseSubtree(lh, typeRoot, *this);
-    }
+    parseSubtree(lh, lh->getTreeRoot(), *this, types);
 }
 
 //-----------------------------------------------------------------------------
@@ -214,7 +198,8 @@ void VLNVDataTree::setImplementationFilter(bool on, KactusAttribute::Implementat
 //-----------------------------------------------------------------------------
 // Function: parseVendor()
 //-----------------------------------------------------------------------------
-void VLNVDataTree::parseSubtree(LibraryInterface* lh, LibraryItem const* libItem, VLNVDataNode& node)
+void VLNVDataTree::parseSubtree(LibraryInterface* lh, LibraryItem const* libItem, VLNVDataNode& node,
+                                QList<VLNV::IPXactType> const& types)
 {
     for (int i = 0; i < libItem->getNumberOfChildren(); ++i)
     {
@@ -227,6 +212,12 @@ void VLNVDataTree::parseSubtree(LibraryInterface* lh, LibraryItem const* libItem
 
             // Check if the tree already contains an node with the same name.
             if (node.findChild(item->getName()))
+            {
+                continue;
+            }
+
+            // Check that the type is valid.
+            if (!types.contains(item->getVLNV().getType()))
             {
                 continue;
             }
@@ -276,7 +267,7 @@ void VLNVDataTree::parseSubtree(LibraryInterface* lh, LibraryItem const* libItem
                 childNode = node.addChild(name);
             }
 
-            parseSubtree(lh, item, *childNode);
+            parseSubtree(lh, item, *childNode, types);
 
             if (childNode->getChildren().size() == 0)
             {

@@ -36474,11 +36474,19 @@
 			ParseFiles="false"
 			>
 			<File
+				RelativePath=".\graphics\abs-def.png"
+				>
+			</File>
+			<File
 				RelativePath=".\graphics\add.png"
 				>
 			</File>
 			<File
 				RelativePath=".\graphics\appicon.png"
+				>
+			</File>
+			<File
+				RelativePath=".\graphics\bus-def.png"
 				>
 			</File>
 			<File
@@ -36818,7 +36826,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\graphics\sw-component.png"
+				>
+			</File>
+			<File
 				RelativePath=".\graphics\sw-design-add_node.png"
+				>
+			</File>
+			<File
+				RelativePath=".\graphics\sw-design.png"
 				>
 			</File>
 			<File

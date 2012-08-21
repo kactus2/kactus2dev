@@ -151,10 +151,10 @@ public:
     /*!
      *  Updates the tree based on the filters and the given library interface.
      *
-     *      @param [in] lh    The library interface.
-     *      @param [in] type  The allowed document type.
+     *      @param [in] lh     The library interface.
+     *      @param [in] type   The allowed document types.
      */
-    void parse(LibraryInterface* lh, VLNV::IPXactType type);
+    void parse(LibraryInterface* lh, QList<VLNV::IPXactType> const& types);
 
     /*!
      *  Clears the tree so that it contains only the root node.
@@ -197,7 +197,8 @@ private:
      *      @param [in] libItem  The library item containing the subtree.
      *      @param [in] node     The target data node.
      */
-    void parseSubtree(LibraryInterface* lh, LibraryItem const* libItem, VLNVDataNode& node);
+    void parseSubtree(LibraryInterface* lh, LibraryItem const* libItem, VLNVDataNode& node,
+                      QList<VLNV::IPXactType> const& types);
 
     //-----------------------------------------------------------------------------
     // Data.

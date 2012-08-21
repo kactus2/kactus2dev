@@ -324,6 +324,9 @@ QVariant HierarchyModel::data(const QModelIndex& index,
 		else if (item->type() == HierarchyItem::DESIGN) {
 			return QIcon(":/icons/graphics/hw-design.png");
 		}
+        else if (item->type() == HierarchyItem::ABSDEFINITION) {
+            return QIcon(":/icons/graphics/abs-def.png");
+        }
         else {
 			return QIcon(":/icons/graphics/new-bus.png");
         }

@@ -367,7 +367,7 @@ void VLNVEditor::dragEnterEvent( QDragEnterEvent* event ) {
 		VLNV vlnv = data.value<VLNV>();
 
 		// if the vlnv is of correct type
-		if (handler_->getDocumentType(vlnv) == type_) {
+		if (contentTypes_.contains(handler_->getDocumentType(vlnv))) {
 			event->acceptProposedAction();
 		}
 	}
@@ -403,11 +403,7 @@ void VLNVEditor::setImplementationFilter(bool on, KactusAttribute::Implementatio
 void VLNVEditor::updateFiltering()
 {
     dataTree_.clear();
-
-    foreach (VLNV::IPXactType type, contentTypes_)
-    {
-        dataTree_.parse(handler_, type);
-    }
+    dataTree_.parse(handler_, contentTypes_);
 }
 
 void VLNVEditor::setMandatory( bool mandatory ) {

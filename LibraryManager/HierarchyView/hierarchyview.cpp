@@ -23,21 +23,21 @@
 #include <QDrag>
 #include <QMimeData>
 #include <QVariant>
-#include <QItemDelegate>
+#include <QStyledItemDelegate>
 
 #include <QDebug>
 
 //-----------------------------------------------------------------------------
 //! Custom item delegate to handle spacing of items.
 //-----------------------------------------------------------------------------
-class HierarchyItemDelegate : public QItemDelegate
+class HierarchyItemDelegate : public QStyledItemDelegate
 {
 public:
-    HierarchyItemDelegate() {}
+    HierarchyItemDelegate(QObject* parent) : QStyledItemDelegate(parent) {}
 
     virtual QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
     {
-        return QItemDelegate::sizeHint(option, index) + QSize(0, 10);
+        return QStyledItemDelegate::sizeHint(option, index) + QSize(0, 10);
     }
 };
 
@@ -68,7 +68,7 @@ openSystemAction_(NULL),
 openXmlAction_(NULL) {
 
     setIconSize(QSize(24, 24));
-    setItemDelegate(new HierarchyItemDelegate());
+    setItemDelegate(new HierarchyItemDelegate(this));
 
 	// the view can be sorted
 	setSortingEnabled(true);
