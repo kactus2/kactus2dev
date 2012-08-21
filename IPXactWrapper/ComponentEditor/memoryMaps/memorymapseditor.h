@@ -8,17 +8,13 @@
 #ifndef MEMORYMAPSEDITOR_H
 #define MEMORYMAPSEDITOR_H
 
-#include "fieldtablemodel.h"
 #include <IPXactWrapper/ComponentEditor/itemeditor.h>
 #include <models/component.h>
 #include <models/memorymap.h>
-#include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 #include <common/views/EditableTableView/editabletableview.h>
 
 #include <QWidget>
 #include <QSharedPointer>
-#include <QList>
-#include <QSplitter>
 
 class LibraryInterface;
 
@@ -33,14 +29,10 @@ public:
 	/*! \brief The constructor
 	 *
 	 * \param component Pointer to the component being edited.
-	 * \param dataPointer Pointer to the list containing the memory maps.
-	 * \param handler Pointer to the instance that manages the library.
 	 * \param parent Pointer to the owner of this editor.
 	 *
 	*/
 	MemoryMapsEditor(QSharedPointer<Component> component,
-		void* dataPointer, 
-		LibraryInterface* handler,
 		QWidget *parent);
 	
 	//! \brief The destructor
@@ -64,22 +56,8 @@ private:
 	//! \brief No assignment
 	MemoryMapsEditor& operator=(const MemoryMapsEditor& other);
 
-	//! \brief Pointer to the instance that manages the library.
-	LibraryInterface* handler_;
-
-	//! \brief Contains pointers to the memory maps being edited.
-	QList<QSharedPointer<MemoryMap> >* memoryMaps_;
-
-	QSplitter splitter_;
-
-	//! \brief The widget to display the contents of memory maps.
-	MemoryMapsVisualizer visualizer_;
-
 	//! \brief The view to display the table
 	EditableTableView view_;
-
-	//! \brief The model to control the table
-	FieldTableModel model_;
 };
 
 #endif // MEMORYMAPSEDITOR_H

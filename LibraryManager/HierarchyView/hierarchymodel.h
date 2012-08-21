@@ -24,6 +24,13 @@ class HierarchyModel : public QAbstractItemModel {
 
 public:
 
+	//! \brief Defines the columns for the model.
+	enum Column {
+		OBJECT_COLUMN = 0,
+		INSTANCE_COLUMN,
+		COLUMN_COUNT
+	};
+
 	/*! \brief The constructor
 	 * 
 	 * \param sourceModel Pointer to the data model to use as base model.

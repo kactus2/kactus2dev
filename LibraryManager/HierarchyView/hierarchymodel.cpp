@@ -116,9 +116,9 @@ QVariant HierarchyModel::headerData(int section,
 	// for displayRole
 	else if (role == Qt::DisplayRole) {
 		switch (section) {
-			case 0:
+			case HierarchyModel::OBJECT_COLUMN:
 				return tr("Library components");
-			case 1:
+			case HierarchyModel::INSTANCE_COLUMN:
 				return tr("Instance count");
 			default:
 				return QVariant();
@@ -132,7 +132,7 @@ QVariant HierarchyModel::headerData(int section,
 }
 
 int HierarchyModel::columnCount(const QModelIndex&) const {
-	return 2;
+	return HierarchyModel::COLUMN_COUNT;
 }
 
 int HierarchyModel::rowCount(const QModelIndex& parent /*= QModelIndex()*/ ) const {
@@ -232,7 +232,7 @@ QVariant HierarchyModel::data(const QModelIndex& index,
 	HierarchyItem* item = static_cast<HierarchyItem*>(index.internalPointer());
 
 	// for instance count column
-	if (index.column() == 1) {
+	if (index.column() == HierarchyModel::INSTANCE_COLUMN) {
 		int count = item->instanceCount();
 		if (Qt::DisplayRole == role && count > 0) {
 			return count;
@@ -362,8 +362,12 @@ bool HierarchyModel::hasChildren(const QModelIndex& parent /*= QModelIndex()*/ )
 }
 
 Qt::ItemFlags HierarchyModel::flags(const QModelIndex& index) const {
-	if (!index.isValid())
+	if (!index.isValid()) {
 		return Qt::NoItemFlags;
+	}
+	if (index.column() == HierarchyModel::INSTANCE_COLUMN) {
+		return Qt::NoItemFlags;
+	}
 	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 

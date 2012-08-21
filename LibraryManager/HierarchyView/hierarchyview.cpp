@@ -435,23 +435,31 @@ void HierarchyView::mouseDoubleClickEvent( QMouseEvent * event ) {
 	// accept the event so it is not passed forwards
 	event->accept();
 
-	// get original model index so internalPointer can be used
-	QModelIndex sourceIndex = filter_->mapToSource(indexAt(event->pos()));
+	QModelIndex origIndex = indexAt(event->pos());
 
-	HierarchyItem* item = static_cast<HierarchyItem*>(sourceIndex.internalPointer());
-	switch (item->type()) {
-		case HierarchyItem::HW_DESIGN:
-			emit openDesign(sourceIndex);
-			break;
-		case HierarchyItem::SW_DESIGN:
-			emit openSWDesign(sourceIndex);
-			break;
-		case HierarchyItem::SYS_DESIGN:
-			emit openSystemDesign(sourceIndex);
-			break;
-		default:
-			emit openComponent(sourceIndex);
-			break;
+	// get original model index so internalPointer can be used
+	QModelIndex sourceIndex = filter_->mapToSource(origIndex);
+
+	if (sourceIndex.isValid()) {
+		HierarchyItem* item = static_cast<HierarchyItem*>(sourceIndex.internalPointer());
+		switch (item->type()) {
+			case HierarchyItem::HW_DESIGN:
+				emit openDesign(sourceIndex);
+				break;
+			case HierarchyItem::SW_DESIGN:
+				emit openSWDesign(sourceIndex);
+				break;
+			case HierarchyItem::SYS_DESIGN:
+				emit openSystemDesign(sourceIndex);
+				break;
+			default:
+				emit openComponent(sourceIndex);
+				break;
+		}
+
+		// select the object even if the instance column was clicked
+		QModelIndex indexToSelect = model()->index(origIndex.row(), 0, origIndex.parent());
+		setCurrentIndex(indexToSelect);
 	}
 
 	// let the default handler process the event
@@ -463,26 +471,29 @@ void HierarchyView::mousePressEvent( QMouseEvent *event ) {
 		startPos_ = event->pos();
 		QModelIndex index = indexAt(startPos_);
 		dragIndex_ = filter_->mapToSource(index);
+
+		if (index.isValid()) {
+
+			bool expanded = isExpanded(index);
+
+			// select the object even if the instance column was clicked
+			QModelIndex indexToSelect = model()->index(index.row(), 0, index.parent());
+			setCurrentIndex(indexToSelect);
+
+			if (expanded) {
+				collapse(index);
+			}
+			else {
+				expand(index);
+			}
+		}
 	}
 	QTreeView::mousePressEvent(event);
 }
 
 void HierarchyView::mouseReleaseEvent( QMouseEvent * event ) {
 	QModelIndex index = indexAt(event->pos());
-	// if shift or control was not pressed and left mouse button was
-	if ((event->modifiers() & Qt::ShiftModifier) == 0 &&
-		(event->modifiers() & Qt::ControlModifier) == 0 &&
-		event->button() == Qt::LeftButton) {
-
-			// if the item is not yet expanded
-			if (!isExpanded(index))
-				expand(index);
-
-			// if item was expanded then close it
-			else
-				collapse(index);
-	}
-
+	
 	if (index.isValid()) {
 		QModelIndex sourceIndex = filter_->mapToSource(index);
 		HierarchyItem* item = static_cast<HierarchyItem*>(sourceIndex.internalPointer());
