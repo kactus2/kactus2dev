@@ -59,19 +59,6 @@ NewSystemPage::NewSystemPage(LibraryInterface* libInterface, QWidget* parentDlg)
 
     QLabel* descLabel = new QLabel(tr("Creates SW architecture that can be mapped to HW"), this);
 
-    // Retrieve the component sub-tree item.
-    LibraryItem const* root = libInterface->getTreeRoot();
-    LibraryItem const* compRoot = 0;
-
-    for (int i = 0; i < root->getNumberOfChildren(); ++i)
-    {
-        if (root->child(i)->getName() == VLNV::type2Print(VLNV::COMPONENT))
-        {
-            compRoot = root->child(i);
-            break;
-        }
-    }
-
     actionGroup_->addButton(emptyRadioButton_);
     actionGroup_->addButton(mapRadioButton_);
 
@@ -79,30 +66,28 @@ NewSystemPage::NewSystemPage(LibraryInterface* libInterface, QWidget* parentDlg)
     compTreeWidget_->setColumnCount(1);
     compTreeWidget_->setSelectionBehavior(QAbstractItemView::SelectItems);
     compTreeWidget_->header()->close();
+    compTreeWidget_->setIconSize(QSize(20, 20));
 
-    if (compRoot != 0)
+    for (int i = 0; i < libInterface->getTreeRoot()->getNumberOfChildren(); ++i)
     {
-        for (int i = 0; i < compRoot->getNumberOfChildren(); ++i)
+        QTreeWidgetItem* item = new QTreeWidgetItem();
+        item->setText(0, libInterface->getTreeRoot()->child(i)->getName());
+
+        // Add child items.
+        addChildItems(libInterface->getTreeRoot()->child(i), item);
+
+        // Add only items that have children.
+        if (item->childCount() == 0)
         {
-            QTreeWidgetItem* item = new QTreeWidgetItem();
-            item->setText(0, compRoot->child(i)->getName());
-
-            // Add child items.
-            addChildItems(compRoot->child(i), item);
-
-            // Add only items that have children.
-            if (item->childCount() == 0)
-            {
-                delete item;
-                continue;
-            }
-
-            // Add the item to the tree.
-            compTreeWidget_->addTopLevelItem(item);
+            delete item;
+            continue;
         }
 
-        compTreeWidget_->sortItems(0, Qt::AscendingOrder);
+        // Add the item to the tree.
+        compTreeWidget_->addTopLevelItem(item);
     }
+
+    compTreeWidget_->sortItems(0, Qt::AscendingOrder);
 
     connect(compTreeWidget_, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
             this, SLOT(onTreeItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
@@ -298,11 +283,16 @@ void NewSystemPage::addChildItems(LibraryItem const* libItem, QTreeWidgetItem* t
 {
     for (int i = 0; i < libItem->getNumberOfChildren(); ++i)
     {
+        VLNV vlnv = libItem->child(i)->getVLNV();
+
+        if (vlnv.isValid() && vlnv.getType() != VLNV::COMPONENT)
+        {
+            continue;
+        }
+
         // Create a child tree widget item.
         QTreeWidgetItem* item = new QTreeWidgetItem();
         item->setText(0, libItem->child(i)->getName());
-
-        VLNV vlnv = libItem->child(i)->getVLNV();
 
         // Recursively add its children if this is not the leaf level.
         if (!vlnv.isValid())
@@ -337,6 +327,7 @@ void NewSystemPage::addChildItems(LibraryItem const* libItem, QTreeWidgetItem* t
 
             // Add the VLNV to the item's data.
             item->setData(0, Qt::UserRole, QVariant::fromValue((vlnv)));
+            item->setIcon(0, QIcon(":icons/graphics/hier-hw-component.png"));
             treeItem->addChild(item);
         }
     }
