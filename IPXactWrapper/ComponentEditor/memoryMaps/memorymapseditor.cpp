@@ -6,44 +6,58 @@
  */
 
 #include "memorymapseditor.h"
+#include <common/views/EditableTableView/editabletableview.h>
+#include "memorymapsmodel.h"
+#include "memorymapsdelegate.h"
+#include <common/widgets/summaryLabel/summarylabel.h>
 
-#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 MemoryMapsEditor::MemoryMapsEditor( QSharedPointer<Component> component,
 								   QWidget *parent ):
 ItemEditor(component, parent),
-view_(this) {
+view_(new EditableTableView(this)),
+proxy_(new QSortFilterProxyModel(this)),
+model_(new MemoryMapsModel(component, this)) {
 
+	// display a label on top the table
+	SummaryLabel* summaryLabel = new SummaryLabel(tr("Views summary"), this);
 
-	//view_.setModel(&model_);
+	QVBoxLayout* layout = new QVBoxLayout(this);
+	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
+	layout->addWidget(view_);
+	layout->setContentsMargins(0, 0, 0, 0);
 
-	int colWidth = 70;
-	view_.setColumnWidth(0, colWidth);
-	view_.setColumnWidth(1, colWidth);
-	view_.setColumnWidth(2, colWidth);
-	view_.setColumnWidth(3, colWidth);
-	view_.setColumnWidth(4, colWidth);
-	view_.setColumnWidth(5, colWidth);
-	view_.setColumnWidth(6, colWidth);
-	view_.setColumnWidth(7, colWidth);
-	view_.setColumnWidth(8, colWidth);
-	view_.setColumnWidth(9, colWidth);
-	view_.setColumnWidth(10, colWidth);
-	view_.setColumnWidth(11, colWidth);
-	view_.setColumnWidth(12, colWidth);
-	view_.setColumnWidth(13, colWidth);
-	view_.setColumnWidth(14, colWidth);
-	view_.setSortingEnabled(true);
+	proxy_->setSourceModel(model_);
+	view_->setModel(proxy_);
 
+	// items can not be dragged
+	view_->setItemsDraggable(false);
+
+	view_->setSortingEnabled(false);
+
+	view_->setItemDelegate(new MemoryMapsDelegate(this));
+
+	connect(model_, SIGNAL(contentChanged()),
+		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(model_, SIGNAL(memoryMapAdded(int)),
+		this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
+	connect(model_, SIGNAL(memoryMapRemoved(int)),
+		this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
+
+	connect(view_, SIGNAL(addItem(const QModelIndex&)),
+		model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
+	connect(view_, SIGNAL(removeItem(const QModelIndex&)),
+		model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 }
 
 MemoryMapsEditor::~MemoryMapsEditor() {
 }
 
 bool MemoryMapsEditor::isValid() const {
-	return true;
+	return model_->isValid();
 }
 
 void MemoryMapsEditor::refresh() {
-
+	view_->update();
 }

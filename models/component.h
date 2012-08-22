@@ -236,6 +236,12 @@ public:
 	*/
 	QStringList getMemoryMapNames() const;
 
+	/*! \brief Set this components memory maps
+	*
+	* \param memoryMaps QList containing the memory maps to be set
+	*/
+	void setMemoryMaps(const QList<QSharedPointer<MemoryMap> > &memoryMaps);
+
 	/*! \brief Get this component's model information
 	 *
 	 * \return a Pointer to this component's model information.
@@ -308,12 +314,6 @@ public:
 	 * \param cpus QList containing the cpus to be set
 	 */
 	void setCpus(const QList<QSharedPointer<Cpu> > &cpus);
-
-	/*! \brief Set this components memory maps
-	 *
-	 * \param memoryMaps QList containing the memory maps to be set
-	 */
-	void setMemoryMaps(const QList<QSharedPointer<MemoryMap> > &memoryMaps);
 
 	/*! \brief Set this component's model information
 	 *

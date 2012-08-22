@@ -8,7 +8,7 @@
 #define MEMORYMAP_H_
 
 #include "memorymapitem.h"
-
+#include "generaldeclarations.h"
 #include <common/Global.h>
 
 #include <QList>
@@ -35,6 +35,11 @@ public:
 	 * this class or one of it's member classes.
 	 */
 	MemoryMap(QDomNode &memoryMapNode);
+
+	/*! \brief The default constructor.
+	 *
+	*/
+	MemoryMap();
 
 	//! \brief Copy constructor
 	MemoryMap(const MemoryMap &other);
@@ -95,12 +100,6 @@ public:
 	*/
 	QList<QSharedPointer<MemoryMapItem> >* getItemsPointer();
 
-	/*! \brief Get the name of the memoryMap
-	 *
-	 * \return QString containing the name of the memoryMap
-	 */
-	QString getName() const;
-
 	/*! \brief Set the address unit bits for this memory map
 	 *
 	 * \param addressUnitBit value to be set
@@ -117,19 +116,48 @@ public:
 	 */
 	void setItems(const QList<QSharedPointer<MemoryMapItem> > &items);
 
+	/*! \brief Get the name of the memoryMap
+	*
+	* \return QString containing the name of the memoryMap
+	*/
+	QString getName() const;
+
 	/*! \brief Set the name for the memory map
 	 *
 	 * \param name QString containing the name
 	 */
 	void setName(const QString &name);
 
+	/*! \brief Get the display name of the memory map.
+	 *
+	 * \return QString containing the display name.
+	*/
+	QString getDisplayName() const;
+
+	/*! \brief Set the display name for the memory map.
+	 *
+	 * \param displayName The display name to set.
+	 *
+	*/
+	void setDisplayName(const QString& displayName);
+
+	/*! \brief Get the description of the memory map.
+	 *
+	 * \return QString containing the description.
+	*/
+	QString getDescription() const;
+
+	/*! \brief Set the description for the memory map.
+	 *
+	 * \param description The description to set.
+	 *
+	*/
+	void setDescription(const QString& description);
+
 private:
 
-	/*!
-	 * MANDATORY
-	 * Identifies the element
-	 */
-	QString name_;
+	//! \brief Contains the name, display name and description of the memory map.
+	General::NameGroup nameGroup_;
 
 	/*!
 	 * OPTIONAL (spirit:id)

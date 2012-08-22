@@ -10,13 +10,14 @@
 
 #include <IPXactWrapper/ComponentEditor/itemeditor.h>
 #include <models/component.h>
-#include <models/memorymap.h>
-#include <common/views/EditableTableView/editabletableview.h>
 
 #include <QWidget>
 #include <QSharedPointer>
+#include <QSortFilterProxyModel>
 
 class LibraryInterface;
+class EditableTableView;
+class MemoryMapsModel;
 
 /*! \brief Editor to edit the memory maps of a component.
  *
@@ -33,7 +34,7 @@ public:
 	 *
 	*/
 	MemoryMapsEditor(QSharedPointer<Component> component,
-		QWidget *parent);
+		QWidget *parent = 0);
 	
 	//! \brief The destructor
 	virtual ~MemoryMapsEditor();
@@ -56,8 +57,14 @@ private:
 	//! \brief No assignment
 	MemoryMapsEditor& operator=(const MemoryMapsEditor& other);
 
-	//! \brief The view to display the table
-	EditableTableView view_;
+	//! \brief The view to display the table.
+	EditableTableView* view_;
+
+	//! \brief The proxy that does the sorting of items.
+	QSortFilterProxyModel* proxy_;
+
+	//! \brief The model that manages the memory maps.
+	MemoryMapsModel* model_;
 };
 
 #endif // MEMORYMAPSEDITOR_H
