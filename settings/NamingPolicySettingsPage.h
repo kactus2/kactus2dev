@@ -17,8 +17,10 @@
 #include <QComboBox>
 #include <QLabel>
 #include <QSettings>
+#include <QPlainTextEdit>
 
 class ListEditor;
+class SnippetTextEdit;
 
 //-----------------------------------------------------------------------------
 //! NamingPolicySettingsPage class.
@@ -62,8 +64,17 @@ public:
     bool onPageChange();
 
 private slots:
-    //
-    void onCategoryChanged( int index );
+    /*!
+     *  Updates the widget contents according to the new category selection.
+     *
+     *      @param [in] index The category index.
+     */
+    void onCategoryChanged(int index);
+
+    /*!
+     *  Saves the values of the currently selected category.
+     */
+    void saveCurrentValues();
 
 private:
     // Disable copying.
@@ -88,6 +99,7 @@ private:
         QString name;           //!< The name of the policy category.
         PolicyType type;        //!< The policy type for the category.
         QStringList values;     //!< The allowed value(s) for the policy.
+        QStringList magicWords; //!< Available magic words. Only relevant if policy type is POLICY_FORMAT.
 
         /*!
          *  Constructor.
@@ -125,6 +137,12 @@ private:
 
     //! Suggested names list edit.
     ListEditor* valuesList_;
+
+    //! Label for naming format edit.
+    QLabel* formatLabel_;
+
+    //! Text box for naming format.
+    SnippetTextEdit* formatEdit_;
 };
 
 //-----------------------------------------------------------------------------

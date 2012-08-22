@@ -186,7 +186,8 @@ MainWindow::MainWindow(QWidget *parent)
 	QCoreApplication::setOrganizationDomain(tr("tut.fi"));
 	QCoreApplication::setOrganizationName(tr("TUT"));
 	QCoreApplication::setApplicationName(tr("Kactus2"));
-	QCoreApplication::setApplicationVersion("1.0");
+	QCoreApplication::setApplicationVersion("2.0");
+    QSettings::setDefaultFormat(QSettings::IniFormat);
 
 	// set the top title for the application
 	setWindowTitle(QCoreApplication::applicationName());
