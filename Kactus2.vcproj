@@ -37177,11 +37177,23 @@
 				Name="Originals"
 				>
 				<File
+					RelativePath=".\graphics\Originals\AbsDef.psd"
+					>
+				</File>
+				<File
 					RelativePath=".\graphics\Originals\Appicon.psd"
 					>
 				</File>
 				<File
+					RelativePath=".\graphics\Originals\Design.psd"
+					>
+				</File>
+				<File
 					RelativePath=".\graphics\Originals\Expand.psd"
+					>
+				</File>
+				<File
+					RelativePath=".\graphics\Originals\Hierarchical.psd"
 					>
 				</File>
 				<File
@@ -37193,11 +37205,19 @@
 					>
 				</File>
 				<File
+					RelativePath=".\graphics\Originals\NewBusIcon2.psd"
+					>
+				</File>
+				<File
 					RelativePath=".\graphics\Originals\SplashScreen.psd"
 					>
 				</File>
 				<File
 					RelativePath=".\graphics\Originals\SWComponent.psd"
+					>
+				</File>
+				<File
+					RelativePath=".\graphics\Originals\SWDesign.psd"
 					>
 				</File>
 				<File
