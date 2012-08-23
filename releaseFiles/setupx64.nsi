@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Kactus2"
-!define PRODUCT_VERSION "2.0 RC"
+!define PRODUCT_VERSION "2.0 RC 64-bit"
 !define PRODUCT_PUBLISHER "TUT"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Kactus2.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
@@ -15,6 +15,7 @@ SetCompressor bzip2
 !define MULTIUSER_INSTALLMODE_COMMANDLINE
 !include "MultiUser.nsh"
 !include "MUI2.nsh"
+!include "x64.nsh"
 
 ; MUI Settings
 !define MUI_ABORTWARNING
@@ -47,8 +48,8 @@ SetCompressor bzip2
 ; MUI end ------
 
 Name "${PRODUCT_NAME}"
-OutFile "Kactus2SetupWin32bit.exe"
-InstallDir "$PROGRAMFILES\Kactus2"
+OutFile "Kactus2SetupWin64bit.exe"
+InstallDir "$PROGRAMFILES64\Kactus2"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show
@@ -56,22 +57,22 @@ ShowUnInstDetails show
 Section "MainSection" SEC01
   SetOutPath "$INSTDIR"
   SetOverwrite on
-  File "..\executable\QtCore4.dll"
-  File "..\executable\QtGui4.dll"
-  File "..\executable\QtHelp4.dll"
-  File "..\executable\QtNetwork4.dll"
-  File "..\executable\QtXml4.dll"
-  File "..\executable\QtXmlPatterns4.dll"
-  File "..\executable\QtCLucene4.dll"
-  File "..\executable\QtSql4.dll"
-  File "..\executable\Kactus2.exe"
+  File "..\x64\executable\QtCore4.dll"
+  File "..\x64\executable\QtGui4.dll"
+  File "..\x64\executable\QtHelp4.dll"
+  File "..\x64\executable\QtNetwork4.dll"
+  File "..\x64\executable\QtXml4.dll"
+  File "..\x64\executable\QtXmlPatterns4.dll"
+  File "..\x64\executable\QtCLucene4.dll"
+  File "..\x64\executable\QtSql4.dll"
+  File "..\x64\executable\Kactus2.exe"
   File "license.txt"
   File "release_notes.txt"
   File "readme.txt"
 
   SetOutPath "$INSTDIR\Plugins"
   SetOverwrite on
-  File "..\executable\Plugins\MCAPICodeGenerator.dll"
+  File "..\x64\executable\Plugins\MCAPICodeGenerator.dll"
 
   SetOutPath "$INSTDIR\Help"
   SetOverwrite on
@@ -89,8 +90,8 @@ SectionEnd
 Section "DependencySection" SEC02
   SetOutPath "$TEMP\Kactus2Installer"
   SetOverwrite ifnewer
-  File "vcredist_x86.exe"
-  ExecWait '"$OUTDIR\vcredist_x86.exe" /qb'
+  File "vcredist_x64.exe"
+  ExecWait '"$OUTDIR\vcredist_x64.exe" /qb'
   SetOutPath "$INSTDIR"
   RMDir /r "$TEMP\Kactus2Installer"
 SectionEnd
@@ -109,8 +110,15 @@ Section -Post
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
 SectionEnd
 
+
 Function .onInit
   !insertmacro MULTIUSER_INIT
+  ${IfNot} ${RunningX64}
+     MessageBox MB_OK "This program requires a 64-bit version of Windows. Setup will now exit."
+     Abort
+  ${EndIf}
+  ${DisableX64FSRedirection}
+  SetRegView 64
 FunctionEnd
 
 Function un.onUninstSuccess

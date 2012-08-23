@@ -92,3 +92,6 @@ http://www.aha-soft.com/
 
 Fugue Icons
 http://p.yusukekamiyamane.com/ (CC Attribution 3.0 Unported)
+
+Absque Icons
+http://macthemes.net/forum/viewtopic.php?id=16796237 (Free for commercial use, requires backlink)
