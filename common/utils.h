@@ -188,6 +188,11 @@ namespace Utils {
 	 * \return The result of the conversion.
 	*/
 	quint64 str2Int(const QString& str);
+
+    /*!
+     *  Replaces a magic word in a string with the given value.
+     */
+    void replaceMagicWord(QString& text, QString const& magicWord, QString const& value);
 }
 
 #endif // UTILS_H

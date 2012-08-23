@@ -30,7 +30,7 @@ public:
 
     HWComponentItem(LibraryInterface* lh,
                      QSharedPointer<Component> component,
-                     const QString &instanceName = QString("unnamed"),
+                     const QString &instanceName = QString("instance"),
                      const QString &displayName = QString(),
                      const QString &description = QString(),
                      const QMap<QString, QString> &configurableElementValues = QMap<QString, QString>(),

@@ -984,7 +984,7 @@ void HWDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
                 else
                 {
                     // Determine an unused name for the component instance.
-                    QString name = createInstanceName("unnamed");
+                    QString name = createInstanceName("instance");
 
                     // Create a component model without a valid vlnv.
                     QSharedPointer<Component> comp = QSharedPointer<Component>(new Component());

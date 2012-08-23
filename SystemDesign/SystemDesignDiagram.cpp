@@ -938,7 +938,7 @@ void SystemDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* event)
                 if (stack->getContentType() == COLUMN_CONTENT_COMPONENTS)
                 {
                     // Determine an unused name for the component instance.
-                    QString name = createInstanceName("unnamed_sw");
+                    QString name = createInstanceName("instance");
 
                     // Create a component model without a valid vlnv.
                     QSharedPointer<Component> comp = QSharedPointer<Component>(new Component());

@@ -11,6 +11,7 @@
 #include "utils.h"
 
 #include <qmath.h>
+#include <QRegExp>
 
 Qt::CheckState Utils::bool2CheckState(const bool state) {
 	if (state) 
@@ -95,6 +96,28 @@ quint64 Utils::str2Int( const QString& str ) {
 	else {
 		return number * multiplier;
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: Utils::replaceMagicWord()
+//-----------------------------------------------------------------------------
+void Utils::replaceMagicWord(QString& text, QString const& magicWord, QString const& value)
+{
+    // Replace the simple case first.
+    text.replace(QRegExp(QString("\\$") + magicWord + QString("\\$")), value);
+
+    // Check for cases with crop length.
+    QRegExp exp(QString("\\$") + magicWord + QString("_(\\d+)\\$"));
+
+    int index = exp.indexIn(text);
+
+    while (index != -1)
+    {
+        // Extract the captured number and use it to crop the value.
+        QString cap = exp.cap(1);
+        text.replace(QRegExp(QString("\\$") + magicWord + "_" + cap + "\\$"), value.left(cap.toUInt()));
+        index = exp.indexIn(text);
+    }
 }
 
 Utils::Mapping::Mapping(): portName_(QString("---")), left_(0), right_(0){

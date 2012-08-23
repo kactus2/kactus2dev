@@ -13,6 +13,7 @@
 
 #include "DesignWidget.h"
 
+#include <common/utils.h>
 #include <common/diagramgrid.h>
 #include <common/GenericEditProvider.h>
 #include <common/graphicsItems/ComponentItem.h>
@@ -256,14 +257,28 @@ QString DesignDiagram::createInstanceName(QSharedPointer<Component> component)
 //-----------------------------------------------------------------------------
 QString DesignDiagram::createInstanceName(QString const& baseName)
 {
+    QSettings settings;
+    QString format = settings.value("policies/instancenames", "").toString();
+
+    if (format == "")
+    {
+        format = "$ComponentName$_$InstanceNumber$";
+    }
+
     // Determine a unique name by using a running number.
     int runningNumber = 0;
-    QString name = baseName + "_" + QString::number(runningNumber);
+    
+    QString name = format;
+    Utils::replaceMagicWord(name, "ComponentName", baseName);
+    Utils::replaceMagicWord(name, "InstanceNumber", QString::number(runningNumber));
 
     while (instanceNames_.contains(name))
     {
         ++runningNumber;
-        name = baseName + "_" + QString::number(runningNumber);
+        
+        name = format;
+        Utils::replaceMagicWord(name, "ComponentName", baseName);
+        Utils::replaceMagicWord(name, "InstanceNumber", QString::number(runningNumber));
     }
 
     instanceNames_.append(name);

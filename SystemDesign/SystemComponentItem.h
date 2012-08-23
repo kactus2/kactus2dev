@@ -48,7 +48,7 @@ public:
     SystemComponentItem(QRectF const& size,
                     LibraryInterface* libInterface,
                     QSharedPointer<Component> component,
-                    QString const& instanceName = QString("unnamed"),
+                    QString const& instanceName = QString("instance"),
                     QString const& displayName = QString(),
                     QString const& description = QString(),
                     QMap<QString, QString> const& configurableElementValues = QMap<QString, QString>(),

@@ -2045,7 +2045,7 @@ void MainWindow::createDesignForExistingComponent(VLNV const& vlnv)
     dialog.setVLNV(VLNV(VLNV::DESIGN, component->getVlnv()->getVendor(), component->getVlnv()->getLibrary(), "", ""));
 
     QSettings settings;
-    QStringList suggestions = settings.value("policies/hwviewname").toStringList();
+    QStringList suggestions = settings.value("policies/hwviewnames").toStringList();
     dialog.setViewNameSuggestions(suggestions);
 
     QString baseViewName = "";
@@ -2178,7 +2178,7 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
     dialog.setVLNV(VLNV(VLNV::DESIGN, component->getVlnv()->getVendor(), component->getVlnv()->getLibrary(), "", ""));
 
     QSettings settings;
-    QStringList suggestions = settings.value("policies/swviewname").toStringList();
+    QStringList suggestions = settings.value("policies/swviewnames").toStringList();
     dialog.setViewNameSuggestions(suggestions);
 
     QString baseViewName = "";
@@ -2366,7 +2366,7 @@ void MainWindow::createSystemDesign(VLNV const& vlnv)
     dialog.setVLNV(VLNV(VLNV::DESIGN, component->getVlnv()->getVendor(), component->getVlnv()->getLibrary(), "", ""));
 
     QSettings settings;
-    QStringList suggestions = settings.value("policies/sysviewname").toStringList();
+    QStringList suggestions = settings.value("policies/sysviewnames").toStringList();
     dialog.setViewNameSuggestions(suggestions);
 
     QString baseViewName = "";

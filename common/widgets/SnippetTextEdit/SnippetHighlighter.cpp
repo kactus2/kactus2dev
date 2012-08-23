@@ -51,7 +51,7 @@ void SnippetHighlighter::highlightBlock(QString const& text)
 {
     foreach (QString const& word, magicWords_)
     {
-        QRegExp expression(QString("\\$") + word + QString("\\$"));
+        QRegExp expression(QString("\\$") + word + QString("(_\\d+)?\\$"));
         int index = expression.indexIn(text);
 
         while (index >= 0)

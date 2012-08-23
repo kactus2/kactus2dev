@@ -38,8 +38,7 @@ NamingPolicySettingsPage::NamingPolicySettingsPage(QSettings& settings)
 {
     // Add categories.
     categories_.append(PolicyCategory("policies/instancenames", "Component Instance Names", POLICY_FORMAT));
-    categories_.back().magicWords.append("FullName");
-    categories_.back().magicWords.append("Name03");
+    categories_.back().magicWords.append("ComponentName");
     categories_.back().magicWords.append("InstanceNumber");
 
     categories_.append(PolicyCategory("policies/hwviewnames", "HW View Names", POLICY_ENUMERATION));
