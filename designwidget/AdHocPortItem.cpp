@@ -145,9 +145,13 @@ QString AdHocPortItem::name() const
 //-----------------------------------------------------------------------------
 void AdHocPortItem::setName(QString const& name)
 {
+    beginUpdateConnectionNames();
+
 	port_->setName(name);
 	updateInterface();
     emit contentChanged();
+
+    endUpdateConnectionNames();
 }
 
 //-----------------------------------------------------------------------------

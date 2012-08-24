@@ -119,10 +119,14 @@ QString BusInterfaceItem::name() const
 }
 
 void BusInterfaceItem::setName( const QString& name ) {
+    beginUpdateConnectionNames();
+
 	busInterface_->setName(name);
 
     updateInterface();
     emit contentChanged();
+
+    endUpdateConnectionNames();
 }
 
 QSharedPointer<BusInterface> BusInterfaceItem::getBusInterface() const

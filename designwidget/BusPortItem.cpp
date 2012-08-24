@@ -85,10 +85,14 @@ QString BusPortItem::name() const
 //-----------------------------------------------------------------------------
 void BusPortItem::setName( const QString& name )
 {
+    beginUpdateConnectionNames();
+
     busInterface_->setName(name);
 
 	updateInterface();
     emit contentChanged();
+
+    endUpdateConnectionNames();
 }
 
 QSharedPointer<BusInterface> BusPortItem::getBusInterface() const

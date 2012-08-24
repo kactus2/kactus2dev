@@ -127,6 +127,11 @@ public:
     virtual void updatePosition();
 
     /*!
+     *  Updates the name of the connection according to the default formatting.
+     */
+    QString createDefaultName() const;
+
+    /*!
      *  Begins the position update of the connection.
      */
     void beginUpdatePosition();
@@ -206,6 +211,11 @@ public:
      */
     bool isInvalid() const;
 
+    /*!
+     *  Returns true if the connection uses the default name.
+     */
+    bool hasDefaultName() const;
+
 signals:
     //! Signals that the connection has changed.
     void contentChanged();
@@ -263,11 +273,6 @@ private:
      *  Sets the default color based on the routing mode.
      */
     void setDefaultColor();
-
-    /*!
-     *  Updates the name of the connection.
-     */
-    void updateName();
 
     /*!
      *  Draws specific helper graphics for overlapping graphics items.

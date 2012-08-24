@@ -324,6 +324,17 @@ signals:
     //! \brief Emitted when the endpoint is destroyed.
     void destroyed(ConnectionEndpoint* endpoint);
 
+protected:
+    /*!
+     *  Begins updating connection names.
+     */
+    void beginUpdateConnectionNames();
+
+    /*!
+     *  Ends updating connection names.
+     */
+    void endUpdateConnectionNames();
+
 private:
     // Disable copying.
     ConnectionEndpoint(ConnectionEndpoint const& rhs);
@@ -347,6 +358,9 @@ private:
 
     //! Boolean flag for determining if the endpoint is typed or not (non-typed).
     bool typeLocked_;
+
+    //! Connection update list.
+    QList<GraphicsConnection*> connUpdateList_;
 };
 
 //-----------------------------------------------------------------------------

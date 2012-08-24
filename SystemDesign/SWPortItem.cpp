@@ -127,6 +127,8 @@ QString SWPortItem::name() const
 //-----------------------------------------------------------------------------
 void SWPortItem::setName(const QString& name)
 {
+    beginUpdateConnectionNames();
+
     if (isCom())
     {
         comInterface_->setName(name);
@@ -141,6 +143,7 @@ void SWPortItem::setName(const QString& name)
     }
 
 	updateInterface();
+    endUpdateConnectionNames();
 }
 
 //-----------------------------------------------------------------------------

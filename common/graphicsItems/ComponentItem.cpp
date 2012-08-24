@@ -13,6 +13,7 @@
 
 #include "ConnectionEndpoint.h"
 #include "IGraphicsItemStack.h"
+#include "GraphicsConnection.h"
 
 #include <LibraryManager/vlnv.h>
 
@@ -119,6 +120,20 @@ void ComponentItem::setName(QString const& name)
     DesignDiagram* diagram = static_cast<DesignDiagram*>(scene());
     diagram->updateInstanceName(oldName, name);
 
+    // Find all connections that are using the default naming and should be simultaneously renamed.
+    QList<GraphicsConnection*> connections;
+
+    foreach (ConnectionEndpoint* endpoint, getEndpoints())
+    {
+        foreach (GraphicsConnection* conn, endpoint->getConnections())
+        {
+            if (conn->hasDefaultName())
+            {
+                connections.append(conn);
+            }
+        }
+    }
+
     name_ = name;
 
     if (displayName_.isEmpty())
@@ -127,6 +142,11 @@ void ComponentItem::setName(QString const& name)
     }
 
     updateComponent();
+
+    foreach (GraphicsConnection* conn, connections)
+    {
+        conn->setName(conn->createDefaultName());
+    }
 
     emit nameChanged(name, oldName);
 }

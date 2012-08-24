@@ -70,7 +70,7 @@ GraphicsConnection::GraphicsConnection(ConnectionEndpoint* endpoint1, Connection
 
         if (name_.isEmpty())
         {
-            updateName();
+            name_ = createDefaultName();
         }
     }
 
@@ -165,7 +165,7 @@ bool GraphicsConnection::connectEnds()
 
     simplifyPath();
     setRoute(pathPoints_);
-    updateName();
+    name_ = createDefaultName();
     return true;
 }
 
@@ -809,7 +809,7 @@ void GraphicsConnection::createRoute(QPointF p1, QPointF p2,
 //-----------------------------------------------------------------------------
 // Function: updateName()
 //-----------------------------------------------------------------------------
-void GraphicsConnection::updateName()
+QString GraphicsConnection::createDefaultName() const
 {
     Q_ASSERT(endpoint1_ != 0);
     Q_ASSERT(endpoint2_ != 0);
@@ -833,7 +833,7 @@ void GraphicsConnection::updateName()
         endCompName = end->encompassingComp()->name() + "_";
     }
 
-    name_ = start->encompassingComp()->name() + "_" + start->name() + "_to_" + endCompName + end->name();
+    return start->encompassingComp()->name() + "_" + start->name() + "_to_" + endCompName + end->name();
 }
 
 //-----------------------------------------------------------------------------
@@ -1226,7 +1226,7 @@ void GraphicsConnection::setEndpoint1(ConnectionEndpoint* endpoint1)
     endpoint1->addConnection(this);
 
     updatePosition();
-    updateName();
+    name_ = createDefaultName();
 }
 
 //-----------------------------------------------------------------------------
@@ -1250,7 +1250,7 @@ void GraphicsConnection::setEndpoint2(ConnectionEndpoint* endpoint2)
     endpoint2->addConnection(this);
 
     updatePosition();
-    updateName();
+    name_ = createDefaultName();
 }
 
 //-----------------------------------------------------------------------------
@@ -1259,4 +1259,12 @@ void GraphicsConnection::setEndpoint2(ConnectionEndpoint* endpoint2)
 bool GraphicsConnection::isInvalid() const
 {
     return invalid_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::hasDefaultName()
+//-----------------------------------------------------------------------------
+bool GraphicsConnection::hasDefaultName() const
+{
+    return (createDefaultName() == name_);
 }

@@ -30,7 +30,8 @@ ConnectionEndpoint::ConnectionEndpoint(QGraphicsItem* parent, bool temporary)
        type_(ENDPOINT_TYPE_UNDEFINED),
        connections_(),
        temporary_(temporary),
-       typeLocked_(true)
+       typeLocked_(true),
+       connUpdateList_()
 {
 }
 
@@ -359,4 +360,41 @@ void ConnectionEndpoint::revalidateConnections()
             conn->validate();
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::beginUpdateConnectionNames()
+//-----------------------------------------------------------------------------
+void ConnectionEndpoint::beginUpdateConnectionNames()
+{
+    Q_ASSERT(connUpdateList_.isEmpty());
+
+    foreach (GraphicsConnection* conn, getConnections())
+    {
+        if (conn->hasDefaultName())
+        {
+            connUpdateList_.append(conn);
+        }
+    }
+
+    if (getOffPageConnector() != 0)
+    {
+        foreach (GraphicsConnection* conn, getOffPageConnector()->getConnections())
+        {
+            connUpdateList_.append(conn);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::endUpdateConnectionNames()
+//-----------------------------------------------------------------------------
+void ConnectionEndpoint::endUpdateConnectionNames()
+{
+    foreach (GraphicsConnection* conn, connUpdateList_)
+    {
+        conn->setName(conn->createDefaultName());
+    }
+
+    connUpdateList_.clear();
 }
