@@ -1,48 +1,46 @@
 /* 
- *  	Created on: 23.8.2012
+ *  	Created on: 24.8.2012
  *      Author: Antti Kamppi
- * 		filename: componenteditoraddrblockitem.h
+ * 		filename: componenteditorregisteritem.h
  *		Project: Kactus 2
  */
 
-#ifndef COMPONENTEDITORADDRBLOCKITEM_H
-#define COMPONENTEDITORADDRBLOCKITEM_H
+#ifndef COMPONENTEDITORREGISTERITEM_H
+#define COMPONENTEDITORREGISTERITEM_H
 
-#include <IPXactWrapper/ComponentEditor/treeStructure/componenteditoritem.h>
-#include <models/addressblock.h>
-#include <models/registermodel.h>
+#include "componenteditoritem.h"
+#include <models/component.h>
+#include <models/register.h>
 
-#include <QFont>
 #include <QSharedPointer>
 
-class AddressBlockEditor;
+class RegisterEditor;
 
-/*! \brief The item for a single address block in component editor's navigation tree.
+/*! \brief The item for single register in component editor's navigation tree.
  *
  */
-class ComponentEditorAddrBlockItem : public ComponentEditorItem {
+class ComponentEditorRegisterItem : public ComponentEditorItem {
 	Q_OBJECT
 
 public:
 
-
 	/*! \brief The constructor
 	 *
-	 * \param addrBlock Pointer to the address block being edited.
+	 * \param reg Pointer to the register being edited.
 	 * \param model Pointer to the model that owns the items.
 	 * \param libHandler Pointer to the instance that manages the library.
 	 * \param component Pointer to the component being edited.
 	 * \param parent Pointer to the parent item.
 	 *
 	*/
-	ComponentEditorAddrBlockItem(QSharedPointer<AddressBlock> addrBlock,
+	ComponentEditorRegisterItem(QSharedPointer<Register> reg, 
 		ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
 		ComponentEditorItem* parent);
 
 	//! \brief The destructor
-	virtual ~ComponentEditorAddrBlockItem();
+	virtual ~ComponentEditorRegisterItem();
 
 	/*! \brief Get the font to be used for text of this item.
 	*
@@ -80,29 +78,19 @@ public:
 	*/
 	virtual const ItemEditor* editor() const;
 
-	/*! \brief Add a new child to the item.
-	 * 
-	 * \param index The index to add the child into.
-	 *
-	*/
-	virtual void createChild(int index);
-
 private:
 	
 	//! \brief No copying
-	ComponentEditorAddrBlockItem(const ComponentEditorAddrBlockItem& other);
+	ComponentEditorRegisterItem(const ComponentEditorRegisterItem& other);
 
 	//! \brief No assignment
-	ComponentEditorAddrBlockItem& operator=(const ComponentEditorAddrBlockItem& other);
+	ComponentEditorRegisterItem& operator=(const ComponentEditorRegisterItem& other);
 
-	//! \brief Pointer to the address block being edited.
-	QSharedPointer<AddressBlock> addrBlock_;
+	//! \brief Pointer to the register being edited.
+	QSharedPointer<Register> reg_;
 
-	//! \brief Contains the registers that belong to this address block
-	QList<QSharedPointer<RegisterModel> >& regItems_;
-
-	//! \brief Pointer to the editor to edit the address block.
-	AddressBlockEditor* editor_;
+	//! \brief Pointer to the editor to edit the register.
+	RegisterEditor* editor_;
 };
 
-#endif // COMPONENTEDITORADDRBLOCKITEM_H
+#endif // COMPONENTEDITORREGISTERITEM_H

@@ -7,6 +7,8 @@
 
 #include "componenteditoraddrblockitem.h"
 #include <IPXactWrapper/ComponentEditor/memoryMaps/addressblockeditor.h>
+#include <models/register.h>
+#include "componenteditorregisteritem.h"
 
 #include <QApplication>
 
@@ -17,20 +19,21 @@ ComponentEditorAddrBlockItem::ComponentEditorAddrBlockItem(QSharedPointer<Addres
 														   ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 addrBlock_(addrBlock),
+regItems_(addrBlock->getRegisterData()),
 editor_(new AddressBlockEditor(addrBlock, component)) {
 
 	setObjectName(tr("ComponentEditorAddrBlockItem"));
 
-// 	foreach (QSharedPointer<MemoryMapItem> memItem, items_) {
-// 
-// 		// if the item is for address block then create child for it
-// 		QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
-// 		if (addrBlock) {
-// 			QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(
-// 				new ComponentEditorAddrBlockItem(addrBlock, model, libHandler, component, this));
-// 			childItems_.append(addrBlockItem);
-// 		}
-// 	}
+	foreach (QSharedPointer<RegisterModel> regModel, regItems_) {
+		QSharedPointer<Register> reg = regModel.dynamicCast<Register>();
+		
+		// if the item was a register 
+		if (reg) {
+			QSharedPointer<ComponentEditorRegisterItem> regItem(new ComponentEditorRegisterItem(
+				reg, model, libHandler, component, this));
+			childItems_.append(regItem);
+		}
+	}
 
 	editor_->hide();
 
@@ -73,4 +76,14 @@ const ItemEditor* ComponentEditorAddrBlockItem::editor() const {
 
 QFont ComponentEditorAddrBlockItem::getFont() const {
 	return QApplication::font();
+}
+
+void ComponentEditorAddrBlockItem::createChild( int index ) {
+	QSharedPointer<RegisterModel> regmodel = regItems_[index];
+	QSharedPointer<Register> reg = regmodel.dynamicCast<Register>();
+	if (reg) {
+		QSharedPointer<ComponentEditorRegisterItem> regItem(
+			new ComponentEditorRegisterItem(reg, model_, libHandler_, component_, this));
+		childItems_.insert(index, regItem);
+	}
 }
