@@ -38,16 +38,16 @@ addressUnitBits_(0) {
 		}
 
 		// get SubSpaceMap
-		else if (tempNode.nodeName() == QString("spirit:subspaceMap")) {
-			SubspaceMap *temp = new SubspaceMap(tempNode);
-			items_.append(QSharedPointer<SubspaceMap>(temp));
-		}
+// 		else if (tempNode.nodeName() == QString("spirit:subspaceMap")) {
+// 			SubspaceMap *temp = new SubspaceMap(tempNode);
+// 			items_.append(QSharedPointer<SubspaceMap>(temp));
+// 		}
 
 		// get Bank
-		else if (tempNode.nodeName() == QString("spirit:bank")) {
-			Bank *temp = new Bank(tempNode);
-			items_.append(QSharedPointer<Bank>(temp));
-		}
+// 		else if (tempNode.nodeName() == QString("spirit:bank")) {
+// 			Bank *temp = new Bank(tempNode);
+// 			items_.append(QSharedPointer<Bank>(temp));
+// 		}
 
 		// get addressBlock
 		else if (tempNode.nodeName() == QString("spirit:addressBlock")) {
@@ -197,6 +197,10 @@ void MemoryMap::setAddressUnitBits(unsigned int addressUnitBits) {
 const QList<QSharedPointer<MemoryMapItem> >& MemoryMap::getItems() const {
 	return items_;
 }
+
+QList<QSharedPointer<MemoryMapItem> >& MemoryMap::getItems() {
+	return items_;
+}	
 
 QString MemoryMap::getName() const {
 	return nameGroup_.name_;

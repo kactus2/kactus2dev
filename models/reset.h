@@ -33,6 +33,9 @@ public:
 	 */
 	Reset(QDomNode& resetNode);
 
+	//! \brief The default constructor.
+	Reset();
+
 	//! \brief Copy constructor
 	Reset(const Reset& other);
 
@@ -74,71 +77,37 @@ public:
 	 *
 	 * \return The mask bits.
 	 */
-	int getMask() const;
-
-	/*! \brief Get the attributes for the mask-element.
-	 *
-	 * \return QMap containing the attributes.
-	 */
-	const QMap<QString,QString>& getMaskAttributes() const;
+	QString getMask() const;
 
 	/*! \brief Get the value of the register in reset.
 	 *
 	 * \return the value.
 	 */
-	int getValue() const;
-
-	/*! \brief Get the attributes for the value-element.
-	 *
-	 * \return QMap containing the attributes.
-	 */
-	const QMap<QString,QString>& getValueAttributes() const;
+	QString getValue() const;
 
 	/*! \brief Set the mask bits.
 	 *
 	 * \param mask The new mask bits.
 	 */
-	void setMask(int mask);
-
-	/*! \brief Set attributes for the mask element.
-	 *
-	 * \param maskAttributes QMap containing the attributes.
-	 */
-	void setMaskAttributes(const QMap<QString,QString>& maskAttributes);
+	void setMask(QString mask);
 
 	/*! \brief Set the value of the register in reset.
 	 *
 	 * \param value The value.
 	 */
-	void setValue(int value);
-
-	/*! \brief Set the attributes for the value-element.
-	 *
-	 * \param valueAttributes QMap containing the attributes.
-	 */
-	void setValueAttributes(const QMap<QString,QString>& valueAttributes);
+	void setValue(QString value);
 
 private:
 
 	/*! \brief The value that is assigned at reset.
 	 * MANDATORY spirit:value
 	 */
-	int value_;
-
-	/*! \brief The attributes for the value-element.
-	 * OPTIONAL
-	 */
-	QMap<QString, QString> valueAttributes_;
+	QString value_;
 
 	/*! \brief Mask that defines which bits have defined reset-value.
 	 * OPTIONAL spirit:mask
 	 */
-	int mask_;
-
-	/*! \brief The attributes for the mask-element.
-	 * OPTIONAL
-	 */
-	QMap<QString, QString> maskAttributes_;
+	QString mask_;
 };
 
 #endif /* RESET_H_ */

@@ -54,6 +54,13 @@ baseAddrAttributes_() {
 	return;
 }
 
+MemoryMapItem::MemoryMapItem():
+name_(),
+attributes_(),
+baseAddress_(), 
+baseAddrAttributes_() {
+}
+
 MemoryMapItem::MemoryMapItem( const MemoryMapItem &other ):
 name_(other.name_),
 displayName_(other.displayName_),

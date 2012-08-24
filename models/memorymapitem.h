@@ -37,6 +37,11 @@ public:
 	 */
 	MemoryMapItem(QDomNode &memoryMapNode);
 
+	/*! \brief The default constructor.
+	 *
+	*/
+	MemoryMapItem();
+
 	//! \brief Copy constructor
 	MemoryMapItem(const MemoryMapItem &other);
 

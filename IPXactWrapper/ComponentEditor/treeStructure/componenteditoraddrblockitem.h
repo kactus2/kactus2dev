@@ -1,46 +1,47 @@
 /* 
- *  	Created on: 16.5.2012
+ *  	Created on: 23.8.2012
  *      Author: Antti Kamppi
- * 		filename: componenteditormemmapitem.h
+ * 		filename: componenteditoraddrblockitem.h
  *		Project: Kactus 2
  */
 
-#ifndef COMPONENTEDITORMEMMAPITEM_H
-#define COMPONENTEDITORMEMMAPITEM_H
+#ifndef COMPONENTEDITORADDRBLOCKITEM_H
+#define COMPONENTEDITORADDRBLOCKITEM_H
 
-#include "componenteditoritem.h"
-#include <models/memorymap.h>
+#include <IPXactWrapper/ComponentEditor/treeStructure/componenteditoritem.h>
+#include <models/addressblock.h>
 
+#include <QFont>
 #include <QSharedPointer>
-#include <QList>
 
-class MemoryMapEditor;
+class AddressBlockEditor;
 
-/*! \brief The item for a single memory map in component editor's navigation tree.
+/*! \brief The item for a single address block in component editor's navigation tree.
  *
  */
-class ComponentEditorMemMapItem : public ComponentEditorItem {
+class ComponentEditorAddrBlockItem : public ComponentEditorItem {
 	Q_OBJECT
 
 public:
 
+
 	/*! \brief The constructor
 	 *
-	 * \param memoryMap Pointer to the memory map being edited.
+	 * \param addrBlock Pointer to the address block being edited.
 	 * \param model Pointer to the model that owns the items.
 	 * \param libHandler Pointer to the instance that manages the library.
 	 * \param component Pointer to the component being edited.
 	 * \param parent Pointer to the parent item.
 	 *
 	*/
-	ComponentEditorMemMapItem(QSharedPointer<MemoryMap> memoryMap,
+	ComponentEditorAddrBlockItem(QSharedPointer<AddressBlock> addrBlock,
 		ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
 		ComponentEditorItem* parent);
 
 	//! \brief The destructor
-	virtual ~ComponentEditorMemMapItem();
+	virtual ~ComponentEditorAddrBlockItem();
 
 	/*! \brief Get the font to be used for text of this item.
 	*
@@ -78,28 +79,19 @@ public:
 	*/
 	virtual const ItemEditor* editor() const;
 
-	/*! \brief Add a new child to the item.
-	 * 
-	 * \param index The index to add the child into.
-	 *
-	*/
-	virtual void createChild(int index);
-
 private:
+	
 	//! \brief No copying
-	ComponentEditorMemMapItem(const ComponentEditorMemMapItem& other);
+	ComponentEditorAddrBlockItem(const ComponentEditorAddrBlockItem& other);
 
 	//! \brief No assignment
-	ComponentEditorMemMapItem& operator=(const ComponentEditorMemMapItem& other);
+	ComponentEditorAddrBlockItem& operator=(const ComponentEditorAddrBlockItem& other);
 
-	//! \brief Pointer to the memory map being edited.
-	QSharedPointer<MemoryMap> memoryMap_;
+	//! \brief Pointer to the address block being edited.
+	QSharedPointer<AddressBlock> addrBlock_;
 
-	//! \brief Contains the address blocks that are children of this tree item.
-	QList<QSharedPointer<MemoryMapItem> >& items_;
-
-	//! \brief The editor to edit the details of a single memory map.
-	MemoryMapEditor* editor_;
+	//! \brief Pointer to the editor to edit the address block.
+	AddressBlockEditor* editor_;
 };
 
-#endif // COMPONENTEDITORMEMMAPITEM_H
+#endif // COMPONENTEDITORADDRBLOCKITEM_H

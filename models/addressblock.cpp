@@ -8,7 +8,6 @@
 #include "memorymapitem.h"
 #include "generaldeclarations.h"
 #include "parameter.h"
-#include "memoryblockdata.h"
 #include "registerfile.h"
 #include "register.h"
 
@@ -26,14 +25,8 @@ range_(),
 rangeAttributes_(),
 width_(-1),
 widthAttributes_(),
-memoryBlockData_(0),
+memoryBlockData_(),
 registerData_() {
-
-	// the temporary variables to store the parsed values for memoryBlockData_
-	General::Usage usage = General::RESERVED;
-	General::BooleanValue volatileValue = General::BOOL_UNSPECIFIED;
-	General::Access access = General::UNSPECIFIED_ACCESS;
-	QList<QSharedPointer<Parameter> > tempParameters;
 
 	for (int i = 0; i < memoryMapNode.childNodes().count(); ++i) {
 
@@ -57,20 +50,23 @@ registerData_() {
 
 		// get usage
 		else if (tempNode.nodeName() == QString("spirit:usage")) {
-			usage = General::str2Usage(tempNode.childNodes().at(0).nodeValue(),
-					General::UNSPECIFIED_USAGE);
+			General::Usage usage = General::str2Usage(tempNode.childNodes().at(0).nodeValue(),
+					General::USAGE_COUNT);
+			memoryBlockData_.setUsage(usage);
 		}
 
 		// get volatile
 		else if (tempNode.nodeName() == QString("spirit:volatile")) {
 			QString volatileStr = tempNode.childNodes().at(0).nodeValue();
-			volatileValue = General::str2BooleanValue(volatileStr);
+			General::BooleanValue volatileValue = General::str2BooleanValue(volatileStr);
+			memoryBlockData_.setVolatile(volatileValue);
 		}
 
 		// get access
 		else if (tempNode.nodeName() == QString("spirit:access")) {
-			access = General::str2Access(tempNode.childNodes().at(0).
-					nodeValue(), General::UNSPECIFIED_ACCESS);
+			General::Access access = General::str2Access(tempNode.childNodes().at(0).
+					nodeValue(), General::ACCESS_COUNT);
+			memoryBlockData_.setAccess(access);
 		}
 
 		// get parameters
@@ -80,31 +76,30 @@ registerData_() {
 			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
 
 				QDomNode parameterNode = tempNode.childNodes().at(j);
-				Parameter *temp = new Parameter(parameterNode);
-				tempParameters.append(QSharedPointer<Parameter>(temp));
+				QSharedPointer<Parameter> temp(new Parameter(parameterNode));
+				memoryBlockData_.addParameter(temp);
 			}
 		}
 		else if (tempNode.nodeName() == QString("spirit:register")) {
 			registerData_.append(QSharedPointer<Register>(
 					new Register(tempNode)));
 		}
-		else if (tempNode.nodeName() == QString("spirit:registerFile")) {
-			registerData_.append(QSharedPointer<RegisterFile>(
-					new RegisterFile(tempNode)));
-		}
+// 		else if (tempNode.nodeName() == QString("spirit:registerFile")) {
+// 			registerData_.append(QSharedPointer<RegisterFile>(
+// 					new RegisterFile(tempNode)));
+// 		}
 	}
+}
 
-	// parsing information is over so save the values to memoryBlockData
-	memoryBlockData_ = QSharedPointer<MemoryBlockData>(
-			new MemoryBlockData(usage, volatileValue, access, tempParameters));
-	tempParameters.clear();
+AddressBlock::AddressBlock():
+MemoryMapItem(),
+range_(), 
+rangeAttributes_(),
+width_(-1),
+widthAttributes_(),
+memoryBlockData_(),
+registerData_() {
 
-	// if the mandatory elements were not found
-// 	if (range_.isNull() || width_ < 1) {
-// 		throw Parse_error(QObject::tr(
-// 				"AddressBlock: invalid AddressBlock element found"));
-// 		return;
-// 	}
 }
 
 AddressBlock::AddressBlock( const AddressBlock &other ):
@@ -113,13 +108,8 @@ range_(other.range_),
 rangeAttributes_(other.rangeAttributes_),
 width_(other.width_),
 widthAttributes_(other.widthAttributes_),
-memoryBlockData_(),
+memoryBlockData_(other.memoryBlockData_),
 registerData_() {
-
-	if (other.memoryBlockData_) {
-		memoryBlockData_ = QSharedPointer<MemoryBlockData>(
-			new MemoryBlockData(*other.memoryBlockData_.data()));
-	}
 
 	foreach (QSharedPointer<RegisterModel> regModel, other.registerData_) {
 		if (regModel) {
@@ -136,13 +126,7 @@ AddressBlock & AddressBlock::operator=( const AddressBlock &other ) {
 		rangeAttributes_ = other.rangeAttributes_;
 		width_ = other.width_;
 		widthAttributes_ = other.widthAttributes_;
-
-		if (other.memoryBlockData_) {
-			memoryBlockData_ = QSharedPointer<MemoryBlockData>(
-				new MemoryBlockData(*other.memoryBlockData_.data()));
-		}
-		else 
-			memoryBlockData_ = QSharedPointer<MemoryBlockData>();
+		memoryBlockData_ = other.memoryBlockData_;
 
 		registerData_.clear();
 		foreach (QSharedPointer<RegisterModel> regModel, other.registerData_) {
@@ -156,7 +140,6 @@ AddressBlock & AddressBlock::operator=( const AddressBlock &other ) {
 }
 
 AddressBlock::~AddressBlock() {
-	memoryBlockData_.clear();
 }
 
 QSharedPointer<MemoryMapItem> AddressBlock::clone() const {
@@ -189,10 +172,7 @@ void AddressBlock::write(QXmlStreamWriter& writer) {
     writer.writeCharacters(QString::number(width_));
     writer.writeEndElement(); // spirit:width
 
-	// if optional memoryBlockData instance is found
-	if (memoryBlockData_) {
-		memoryBlockData_->write(writer);
-	}
+	memoryBlockData_.write(writer);
 
 	for (int i = 0; i < registerData_.size(); ++i) {
 		registerData_.at(i)->write(writer);
@@ -230,7 +210,7 @@ bool AddressBlock::isValid( QStringList& errorList,
 		valid = false;
 	}
 
-	if (memoryBlockData_ && !memoryBlockData_->isValid(errorList, thisIdentifier)) {
+	if (!memoryBlockData_.isValid(errorList, thisIdentifier)) {
 		valid = false;
 	}
 
@@ -261,7 +241,7 @@ bool AddressBlock::isValid() const {
 		return false;
 	}
 
-	if (memoryBlockData_ && !memoryBlockData_->isValid()) {
+	if (!memoryBlockData_.isValid()) {
 		return false;
 	}
 
@@ -275,15 +255,15 @@ bool AddressBlock::isValid() const {
 }
 
 void AddressBlock::setAccess(General::Access access) {
-	memoryBlockData_->setAccess(access);
+	memoryBlockData_.setAccess(access);
 }
 
 General::Usage AddressBlock::getUsage() const {
-	return memoryBlockData_->getUsage();
+	return memoryBlockData_.getUsage();
 }
 
 void AddressBlock::setUsage(General::Usage usage) {
-	memoryBlockData_->setUsage(usage);
+	memoryBlockData_.setUsage(usage);
 }
 
 void AddressBlock::setRangeAttributes(
@@ -309,11 +289,11 @@ void AddressBlock::setRange(const QString &range) {
 }
 
 void AddressBlock::setVolatile(const General::BooleanValue volatileSetting) {
-	memoryBlockData_->setVolatile(volatileSetting);
+	memoryBlockData_.setVolatile(volatileSetting);
 }
 
 General::BooleanValue AddressBlock::getVolatile() const {
-	return memoryBlockData_->getVolatile();
+	return memoryBlockData_.getVolatile();
 }
 
 int AddressBlock::getWidth() const {
@@ -321,7 +301,7 @@ int AddressBlock::getWidth() const {
 }
 
 General::Access AddressBlock::getAccess() const {
-	return memoryBlockData_->getAccess();
+	return memoryBlockData_.getAccess();
 }
 
 const QMap<QString, QString>& AddressBlock::getRangeAttributes(){
@@ -338,19 +318,19 @@ void AddressBlock::setWidthAttributes(
 	// first delete the old attributes
 	widthAttributes_.clear();
 
-	// sace the new attributes
+	// save the new attributes
 	widthAttributes_ = widthAttributes;
 }
 
 const QList<QSharedPointer<Parameter> >& AddressBlock::getParameters() {
-	return memoryBlockData_->getParameters();
+	return memoryBlockData_.getParameters();
 }
 
 void AddressBlock::setParameters(
 		QList<QSharedPointer<Parameter> > &parameters) {
 
 	// save the new parameters
-	memoryBlockData_->setParameters(parameters);
+	memoryBlockData_.setParameters(parameters);
 }
 
 QList<QSharedPointer<RegisterModel> >* AddressBlock::getRegisterPointer() {
@@ -358,5 +338,9 @@ QList<QSharedPointer<RegisterModel> >* AddressBlock::getRegisterPointer() {
 }
 
 QList<QSharedPointer<RegisterModel> >& AddressBlock::getRegisterData() {
+	return registerData_;
+}
+
+const QList<QSharedPointer<RegisterModel> >& AddressBlock::getRegisterData() const {
 	return registerData_;
 }

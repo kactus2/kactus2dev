@@ -20,9 +20,13 @@
 #include <QDebug>
 
 RegisterDefinition::RegisterDefinition(QDomNode& registerDefNode ):
-typeIdentifier_(), size_(0),
-sizeAttributes_(), volatile_(General::BOOL_UNSPECIFIED),
-access_(General::UNSPECIFIED_ACCESS), reset_(), fields_() {
+typeIdentifier_(), 
+size_(0),
+sizeAttributes_(),
+volatile_(General::BOOL_UNSPECIFIED),
+access_(General::ACCESS_COUNT),
+reset_(), 
+fields_() {
 
 	for (int i = 0; i < registerDefNode.childNodes().count(); ++i) {
 		QDomNode tempNode = registerDefNode.childNodes().at(i);
@@ -42,7 +46,7 @@ access_(General::UNSPECIFIED_ACCESS), reset_(), fields_() {
 		else if (tempNode.nodeName() == QString("spirit:access")) {
 			access_ = General::str2Access(
 					tempNode.childNodes().at(0).nodeValue(),
-					General::UNSPECIFIED_ACCESS);
+					General::ACCESS_COUNT);
 		}
 		else if (tempNode.nodeName() == QString("spirit:reset")) {
 			reset_ = QSharedPointer<Reset>(new Reset(tempNode));
@@ -52,12 +56,17 @@ access_(General::UNSPECIFIED_ACCESS), reset_(), fields_() {
 			fields_.append(QSharedPointer<Field>(new Field(tempNode)));
 		}
 	}
+}
 
-	// if size was not defined
-// 	if (size_ == 0) {
-// 		throw Parse_error(QObject::tr("Mandatory size not defined in"
-// 				" spirit:register"));
-// 	}
+RegisterDefinition::RegisterDefinition():
+typeIdentifier_(), 
+size_(0),
+sizeAttributes_(),
+volatile_(General::BOOL_UNSPECIFIED),
+access_(General::ACCESS_COUNT),
+reset_(), 
+fields_() {
+
 }
 
 RegisterDefinition::RegisterDefinition( const RegisterDefinition& other ):
@@ -133,13 +142,13 @@ void RegisterDefinition::write(QXmlStreamWriter& writer) {
 	}
 
 	// if optional access is specified
-	if (access_ != General::UNSPECIFIED_ACCESS) {
+	if (access_ != General::ACCESS_COUNT) {
 		writer.writeTextElement("spirit:access",
 				General::access2Str(access_));
 	}
 
 	// if optional reset exists
-	if (reset_) {
+	if (reset_ && !reset_->getValue().isEmpty()) {
 		reset_->write(writer);
 	}
 
@@ -252,4 +261,36 @@ void RegisterDefinition::setTypeIdentifier(const QString& typeIdentifier) {
 
 void RegisterDefinition::setVolatile(General::BooleanValue volatileValue) {
 	this->volatile_ = volatileValue;
+}
+
+QString RegisterDefinition::getRegisterValue() const {
+	if (!reset_) {
+		return QString();
+	}
+	else {
+		return reset_->getValue();
+	}
+}
+
+void RegisterDefinition::setRegisterValue( const QString& registerValue ) {
+	if (!reset_) {
+		reset_ = QSharedPointer<Reset>(new Reset());
+	}
+	reset_->setValue(registerValue);
+}
+
+QString RegisterDefinition::getRegisterMask() const {
+	if (!reset_) {
+		return QString();
+	}
+	else {
+		return reset_->getMask();
+	}
+}
+
+void RegisterDefinition::setRegisterMask( const QString& registerMask ) {
+	if (!reset_) {
+		reset_ = QSharedPointer<Reset>(new Reset());
+	}
+	reset_->setMask(registerMask);
 }

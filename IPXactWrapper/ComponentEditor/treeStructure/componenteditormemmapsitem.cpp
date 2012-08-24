@@ -15,9 +15,7 @@ ComponentEditorMemMapsItem::ComponentEditorMemMapsItem( ComponentEditorTreeModel
 													   ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
 memoryMaps_(component->getMemoryMaps()),
-editor_(new MemoryMapsEditor(component)),
-component_(component),
-handler_(libHandler) {
+editor_(new MemoryMapsEditor(component)) {
 
 	setObjectName(tr("ComponentEditorMemMapsItem"));
 
@@ -38,6 +36,10 @@ handler_(libHandler) {
 }
 
 ComponentEditorMemMapsItem::~ComponentEditorMemMapsItem() {
+	if (editor_) {
+		delete editor_;
+		editor_ = NULL;
+	}
 }
 
 QString ComponentEditorMemMapsItem::text() const {
@@ -58,6 +60,6 @@ QString ComponentEditorMemMapsItem::getTooltip() const {
 
 void ComponentEditorMemMapsItem::createChild( int index ) {
 	QSharedPointer<ComponentEditorMemMapItem> memoryMapItem(
-		new ComponentEditorMemMapItem(memoryMaps_.at(index), model_, handler_, component_, this));	
+		new ComponentEditorMemMapItem(memoryMaps_.at(index), model_, libHandler_, component_, this));	
 	childItems_.insert(index, memoryMapItem);
 }

@@ -382,10 +382,10 @@ QString direction2Str(const General::Direction direction);
  * belongs
  */
 enum Usage {
-	MEMORY,
+	MEMORY = 0,
 	REGISTER,
 	RESERVED,
-	UNSPECIFIED_USAGE
+	USAGE_COUNT
 };
 
 /*! \brief Convert the value of the QString into enum Usage
@@ -412,12 +412,12 @@ QString usage2Str(const General::Usage usage);
  * Access specifies the accessibility of the data in the address block.
  */
 enum Access {
-	READ_WRITE,
+	READ_WRITE = 0,
 	READ_ONLY,
 	WRITE_ONLY,
 	READ_WRITEONCE,
 	WRITEONCE,
-	UNSPECIFIED_ACCESS
+	ACCESS_COUNT
 };
 
 /*! \brief Convert the value of the QString into enum Access

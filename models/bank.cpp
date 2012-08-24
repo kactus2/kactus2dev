@@ -25,9 +25,9 @@ items_(),
 memoryBlockData_(0) {
 
 	// the temporary variables to store the parsed values for memoryBlockData_
-	General::Usage usage = General::UNSPECIFIED_USAGE;
+	General::Usage usage = General::USAGE_COUNT;
 	General::BooleanValue volatileValue = General::BOOL_UNSPECIFIED;
-	General::Access access = General::UNSPECIFIED_ACCESS;
+	General::Access access = General::ACCESS_COUNT;
 	QList<QSharedPointer<Parameter> > tempParameters;
 
 	for (int i = 0; i < memoryMapNode.childNodes().count(); ++i) {
@@ -55,7 +55,7 @@ memoryBlockData_(0) {
 		// get usage
 		else if (tempNode.nodeName() == QString("spirit:usage")) {
 			usage = General::str2Usage(tempNode.childNodes().at(0).nodeValue(),
-					General::UNSPECIFIED_USAGE);
+					General::USAGE_COUNT);
 		}
 
 		// get volatile
@@ -67,7 +67,7 @@ memoryBlockData_(0) {
 		// get access
 		else if (tempNode.nodeName() == QString("spirit:access")) {
 			access = General::str2Access(tempNode.childNodes().at(0).
-					nodeValue(), General::UNSPECIFIED_ACCESS);
+					nodeValue(), General::ACCESS_COUNT);
 		}
 
 		// get parameters

@@ -30,7 +30,7 @@ QWidget* MemoryMapsDelegate::createEditor( QWidget* parent, const QStyleOptionVi
 			QSpinBox* spinBox = new QSpinBox(parent);
 			connect(spinBox, SIGNAL(editingFinished()),
 				this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-			spinBox->setMinimum(1);
+			spinBox->setRange(1, 4096);
 			return spinBox;
 											 }
 		default: {

@@ -79,12 +79,6 @@ private:
 
 	//! \brief The editor to manage the memory maps.
 	MemoryMapsEditor* editor_;
-
-	//! \brief Pointer to the component being edited.
-	QSharedPointer<Component> component_;
-
-	//! \brief Pointer to the instance that manages the library.
-	LibraryInterface* handler_;
 };
 
 #endif // COMPONENTEDITORMEMMAPSITEM_H

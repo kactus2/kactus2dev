@@ -8,6 +8,7 @@
 #define REGISTERMODEL_H_
 
 #include <common/Global.h>
+#include <models/generaldeclarations.h>
 
 #include <QList>
 #include <QDomNode>
@@ -43,6 +44,9 @@ public:
 	 * this class or one of it's member classes.
 	 */
 	RegisterModel(QDomNode& registerNode);
+
+	//! \brief The default constructor.
+	RegisterModel();
 
 	//! The copy constructor
 	RegisterModel(const RegisterModel& other);
@@ -158,20 +162,8 @@ protected:
 	 */
 	QString id_;
 
-	/*! \brief Name of the register.
-	 * MANDATORY spirit:name
-	 */
-	QString name_;
-
-	/*! \brief Contains the display name.
-	 * OPTIONAL spirit:displayName
-	 */
-	QString displayName_;
-
-	/*! \brief Contains the description.
-	 * OPTIONAL spirit:description
-	 */
-	QString description_;
+	//! \brief Contains the name, display name and description of the register item.
+	General::NameGroup nameGroup_;
 
 	/*! \brief Contains the parameters.
 	 * OPTIONAL spirit:parameters

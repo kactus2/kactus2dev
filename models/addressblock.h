@@ -10,6 +10,7 @@
 #include "generaldeclarations.h"
 #include "memorymapitem.h"
 #include "parameter.h"
+#include "memoryblockdata.h"
 
 #include <common/Global.h>
 
@@ -43,6 +44,11 @@ public:
 	 * class or some member class.
 	 */
 	AddressBlock(QDomNode &memoryMapNode);
+
+	/*! \brief The default constructor.
+	 *
+	*/
+	AddressBlock();
 
 	//! \brief The copy constructor
 	AddressBlock(const AddressBlock &other);
@@ -212,6 +218,12 @@ public:
 	*/
 	QList<QSharedPointer<RegisterModel> >& getRegisterData();
 
+	/*! \brief Get the list containing the register elements of address block.
+	 *
+	 * \return QList containing the pointers to the register elements.
+	*/
+	const QList<QSharedPointer<RegisterModel> >& getRegisterData() const;
+
 private:
 
 	/*!
@@ -246,7 +258,7 @@ private:
 	 * OPTIONAL
 	 * Collection of elements that contain further specification of AddressBlock.
 	 */
-	QSharedPointer<MemoryBlockData> memoryBlockData_;
+	MemoryBlockData memoryBlockData_;
 
 	/*! \brief OPTIONAL spirit:registerData
 	 * Group contains information about the grouping of bits into registers and

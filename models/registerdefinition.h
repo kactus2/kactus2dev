@@ -40,6 +40,9 @@ public:
 	 */
 	RegisterDefinition(QDomNode& registerDefNode);
 
+	//! \brief The default constructor.
+	RegisterDefinition();
+
 	//! \brief Copy constructor
 	RegisterDefinition(const RegisterDefinition& other);
 
@@ -162,6 +165,32 @@ public:
      * \param volatileValue the new value.
      */
     void setVolatile(General::BooleanValue volatileValue);
+
+	/*! \brief Get the reset value of the register.
+	 *
+	 * \return QString containing the register reset value.
+	*/
+	QString getRegisterValue() const;
+
+	/*! \brief Set the reset value for the register.
+	 *
+	 * \param registerValue The reset value to set.
+	 *
+	*/
+	void setRegisterValue(const QString& registerValue);
+
+	/*! \brief Get the register's reset mask.
+	 *
+	 * \return QString containing the register's reset mask.
+	*/
+	QString getRegisterMask() const;
+
+	/*! \brief Set the register's reset mask.
+	 *
+	 * \param registerMask The register's reset mask to set.
+	 *
+	*/
+	void setRegisterMask(const QString& registerMask);
 
 private:
 

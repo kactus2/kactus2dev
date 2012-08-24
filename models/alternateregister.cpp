@@ -106,7 +106,7 @@ bool AlternateRegister::isValid( QStringList& errorList,
 
 	bool valid = true;
 
-	if (name_.isEmpty()) {
+	if (nameGroup_.name_.isEmpty()) {
 		errorList.append(QObject::tr("No name specified for alternate register"
 			" within %1").arg(parentIdentifier));
 		valid = false;
@@ -114,18 +114,18 @@ bool AlternateRegister::isValid( QStringList& errorList,
 
 	if (alternateGroups_.isEmpty()) {
 		errorList.append(QObject::tr("At least one alternate group must be "
-			"specified for alternate register %1 within %2").arg(name_).arg(
+			"specified for alternate register %1 within %2").arg(nameGroup_.name_).arg(
 			parentIdentifier));
 		valid = false;
 	}
 
 	if (alternateRegisterDef_ && !alternateRegisterDef_->isValid(errorList, QObject::tr(
-		"alternate register %1").arg(name_))) {
+		"alternate register %1").arg(nameGroup_.name_))) {
 		valid = false;
 	}
 
 	foreach (QSharedPointer<Parameter> param, parameters_) {
-		if (!param->isValid(errorList, QObject::tr("alternate register %1").arg(name_))) {
+		if (!param->isValid(errorList, QObject::tr("alternate register %1").arg(nameGroup_.name_))) {
 			valid = false;
 		}
 	}
@@ -135,7 +135,7 @@ bool AlternateRegister::isValid( QStringList& errorList,
 
 bool AlternateRegister::isValid() const {
 	
-	if (name_.isEmpty()) {
+	if (nameGroup_.name_.isEmpty()) {
 		return false;
 	}
 

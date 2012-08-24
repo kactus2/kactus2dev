@@ -33,9 +33,13 @@ public:
 	 * \exception Parse_error Occurs when a mandatory element is missing in
 	 * this class or one of it's member classes.
 	 */
-    MemoryBlockData(General::Usage usage, General::BooleanValue volatileValue,
+    MemoryBlockData(General::Usage usage,
+		General::BooleanValue volatileValue,
     		General::Access access,
 			const QList<QSharedPointer<Parameter> >& parameters);
+
+	//! \brief The default constructor
+	MemoryBlockData();
 
 	//! \brief Copy constructor
 	MemoryBlockData(const MemoryBlockData& other);
@@ -119,6 +123,13 @@ public:
 	 * \param parameters QList containing pointers to the parameters.
 	 */
 	void setParameters(QList<QSharedPointer<Parameter> >& parameters);
+
+	/*! \brief Add a new parameter.
+	 *
+	 * \param parameter Pointer to the parameter to add.
+	 *
+	*/
+	void addParameter(QSharedPointer<Parameter> parameter);
 
 private:
 

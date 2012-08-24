@@ -21,6 +21,13 @@ access_(access),
 parameters_(parameters) {
 }
 
+MemoryBlockData::MemoryBlockData():
+usage_(General::USAGE_COUNT), 
+volatile_(General::BOOL_UNSPECIFIED),
+access_(General::ACCESS_COUNT), 
+parameters_() {
+}
+
 MemoryBlockData::MemoryBlockData( const MemoryBlockData& other ):
 usage_(other.usage_),
 volatile_(other.volatile_),
@@ -60,7 +67,7 @@ MemoryBlockData::~MemoryBlockData() {
 
 void MemoryBlockData::write(QXmlStreamWriter& writer) {
 	// if usage is defined
-	if (usage_ != General::UNSPECIFIED_USAGE) {
+	if (usage_ != General::USAGE_COUNT) {
 		writer.writeTextElement("spirit:usage", General::usage2Str(usage_));
 	}
 
@@ -69,7 +76,7 @@ void MemoryBlockData::write(QXmlStreamWriter& writer) {
 				General::booleanValue2Str(volatile_));
 	}
 
-	if (access_ != General::UNSPECIFIED_ACCESS) {
+	if (access_ != General::ACCESS_COUNT) {
 		writer.writeTextElement("spirit:access", General::access2Str(access_));
 	}
 
@@ -144,4 +151,8 @@ void MemoryBlockData::setParameters(
 	parameters_.clear();
 
 	parameters_ = parameters;
+}
+
+void MemoryBlockData::addParameter( QSharedPointer<Parameter> parameter ) {
+	parameters_.append(parameter);
 }

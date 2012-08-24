@@ -9,6 +9,7 @@
 
 #include "registermodel.h"
 #include "field.h"
+#include "registerdefinition.h"
 
 #include <common/Global.h>
 
@@ -39,6 +40,9 @@ public:
 	 * this class or one of it's member classes.
 	 */
 	Register(QDomNode& registerNode);
+
+	//! \brief The default constructor.
+	Register();
 
 	//! \brief Copy constructor
 	Register(const Register& other);
@@ -102,12 +106,6 @@ public:
      */
     int getDim() const;
 
-    /*! \brief Get the registerDefinition element.
-     *
-     * \return pointer to the registerDefinition instance.
-     */
-    RegisterDefinition* getRegisterDefinition() const;
-
     /*! \brief Set the addressOffset for this register.
      *
      * \param addressOffset QString containing the addressOffset.
@@ -130,15 +128,6 @@ public:
      */
     void setDim(int dim);
 
-    /*! \brief Set the registerDefinition element for this register.
-     *
-     * Calling this function will erase the old registerDefinition.
-     *
-     * \param registerDefinition A pointer to the new registerDefinition
-     * element.
-     */
-    void setRegisterDefinition(RegisterDefinition* registerDefinition);
-
 	/*! \brief Get list of the fields.
      *
      * \return QList containing pointers to the fields.
@@ -150,6 +139,84 @@ public:
 	 * \return The number of bits this register contains.
 	*/
 	unsigned int getWidth() const;
+
+	/*! \brief Get the type identifier of the register.
+	 *
+	 * \return QString containing the type identifier.
+	*/
+	QString getTypeIdentifier() const;
+
+	/*! \brief Set the type identifier for the register.
+	 *
+	 * \param typeIdentifier The type identifier to set.
+	 *
+	*/
+	void setTypeIdentifier(const QString& typeIdentifier);
+
+	/*! \brief Get the width of the register.
+	 *
+	 * \return The width of the register in bits.
+	*/
+	unsigned int getSize() const;
+
+	/*! \brief Set the width of the register.
+	 *
+	 * \param size The width of the register in bits.
+	 *
+	*/
+	void setSize(unsigned int size);
+
+	/*! \brief Get the volatile state of the register.
+	 *
+	 * \return The volatile state.
+	*/
+	General::BooleanValue getVolatile() const;
+
+	/*! \brief Set the volatile state for the register.
+	 *
+	 * \param volatileValue The value to set.
+	 *
+	*/
+	void setVolatile(General::BooleanValue volatileValue);
+
+	/*! \brief Get the access type of the register.
+	 *
+	 * \return The access type.
+	*/
+	General::Access getAccess() const;
+
+	/*! \brief Set the access type for the register.
+	 *
+	 * \param access The access type to set.
+	 *
+	*/
+	void setAccess(General::Access access);
+
+	/*! \brief Get the reset value of the register.
+	 *
+	 * \return QString containing the register reset value.
+	*/
+	QString getRegisterValue() const;
+
+	/*! \brief Set the reset value for the register.
+	 *
+	 * \param registerValue The reset value to set.
+	 *
+	*/
+	void setRegisterValue(const QString& registerValue);
+
+	/*! \brief Get the register's reset mask.
+	 *
+	 * \return QString containing the register's reset mask.
+	*/
+	QString getRegisterMask() const;
+
+	/*! \brief Set the register's reset mask.
+	 *
+	 * \param registerMask The register's reset mask to set.
+	 *
+	*/
+	void setRegisterMask(const QString& registerMask);
 
 private:
 
@@ -171,7 +238,7 @@ private:
 	/*! \brief Contains the registerDefinitionGroup element.
 	 * MANDATORY spirit:registerDefinitionGroup
 	 */
-	QSharedPointer<RegisterDefinition> registerDefinition_;
+	RegisterDefinition registerDefinition_;
 };
 
 #endif /* REGISTER_H_ */

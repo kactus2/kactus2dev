@@ -6,7 +6,6 @@
 
 #include "register.h"
 #include "generaldeclarations.h"
-#include "registerdefinition.h"
 #include "alternateregister.h"
 #include "registermodel.h"
 
@@ -16,8 +15,12 @@
 #include <QList>
 #include <QSharedPointer>
 
-Register::Register(QDomNode& registerNode): RegisterModel(registerNode),
-dim_(-1), addressOffset_(), alternateRegisters_(), registerDefinition_() {
+Register::Register(QDomNode& registerNode):
+RegisterModel(registerNode),
+dim_(-1),
+addressOffset_(),
+alternateRegisters_(), 
+registerDefinition_(registerNode) {
 
 	for (int i = 0; i < registerNode.childNodes().count(); ++i) {
 		QDomNode tempNode = registerNode.childNodes().at(i);
@@ -39,26 +42,24 @@ dim_(-1), addressOffset_(), alternateRegisters_(), registerDefinition_() {
 						new AlternateRegister(alternateRegNode)));
 			}
 		}
-
 	}
-
-	registerDefinition_ = QSharedPointer<RegisterDefinition>(
-			new RegisterDefinition(registerNode));
-
-	// if mandatory addressOffset is missing
-// 	if (addressOffset_.isNull()) {
-// 		throw Parse_error(QObject::tr("Mandatory addressOffset missing in"
-// 				" spirit:register"));
-// 	}
-	return;
 }
+
+Register::Register():
+RegisterModel(),
+dim_(-1),
+addressOffset_(),
+alternateRegisters_(), 
+registerDefinition_() {
+}
+
 
 Register::Register( const Register& other ):
 RegisterModel(other),
 dim_(other.dim_),
 addressOffset_(other.addressOffset_),
 alternateRegisters_(),
-registerDefinition_() {
+registerDefinition_(other.registerDefinition_) {
 
 	foreach (QSharedPointer<AlternateRegister> altReg, other.alternateRegisters_) {
 		if (altReg) {
@@ -67,13 +68,7 @@ registerDefinition_() {
 			alternateRegisters_.append(copy);
 		}
 	}
-
-	if (other.registerDefinition_) {
-		registerDefinition_ = QSharedPointer<RegisterDefinition>(
-			new RegisterDefinition(*other.registerDefinition_));
-	}
 }
-
 
 Register& Register::operator=( const Register& other ) {
 	if (this != &other) {
@@ -81,6 +76,7 @@ Register& Register::operator=( const Register& other ) {
 
 		dim_ = other.dim_;
 		addressOffset_ = other.addressOffset_;
+		registerDefinition_ = other.registerDefinition_;
 
 		alternateRegisters_.clear();
 		foreach (QSharedPointer<AlternateRegister> altReg, other.alternateRegisters_) {
@@ -90,13 +86,6 @@ Register& Register::operator=( const Register& other ) {
 				alternateRegisters_.append(copy);
 			}
 		}
-
-		if (other.registerDefinition_) {
-			registerDefinition_ = QSharedPointer<RegisterDefinition>(
-				new RegisterDefinition(*other.registerDefinition_));
-		}
-		else
-			registerDefinition_ = QSharedPointer<RegisterDefinition>();
 	}
 	return *this;
 }
@@ -104,7 +93,6 @@ Register& Register::operator=( const Register& other ) {
 
 Register::~Register() {
 	alternateRegisters_.clear();
-	registerDefinition_.clear();
 }
 
 QSharedPointer<RegisterModel> Register::clone() {
@@ -125,9 +113,7 @@ void Register::write(QXmlStreamWriter& writer) {
 	writer.writeTextElement("spirit:addressOffset", addressOffset_);
 
 	// call registerDefinition to write itself
-	if (registerDefinition_) {
-		registerDefinition_->write(writer);
-	}
+	registerDefinition_.write(writer);
 
 	// if any alternate registers exist
 	if (alternateRegisters_.size() != 0) {
@@ -146,9 +132,9 @@ void Register::write(QXmlStreamWriter& writer) {
 bool Register::isValid( QStringList& errorList,
 					   const QString& parentIdentifier ) const {
 	bool valid = true;
-	const QString thisIdentifier(QObject::tr("register %1").arg(name_));
+	const QString thisIdentifier(QObject::tr("register %1").arg(nameGroup_.name_));
 
-	if (name_.isEmpty()) {
+	if (nameGroup_.name_.isEmpty()) {
 		errorList.append(QObject::tr("No name specified for register within %1").arg(
 			parentIdentifier));
 		valid = false;
@@ -156,12 +142,11 @@ bool Register::isValid( QStringList& errorList,
 
 	if (addressOffset_.isEmpty()) {
 		errorList.append(QObject::tr("No address offset set for register %1"
-			" within %2").arg(name_).arg(parentIdentifier));
+			" within %2").arg(nameGroup_.name_).arg(parentIdentifier));
 		valid = false;
 	}
 
-	if (registerDefinition_ && !registerDefinition_->isValid(errorList,
-		thisIdentifier)) {
+	if (!registerDefinition_.isValid(errorList, thisIdentifier)) {
 			valid = false;
 	}
 
@@ -182,7 +167,7 @@ bool Register::isValid( QStringList& errorList,
 
 bool Register::isValid() const {
 
-	if (name_.isEmpty()) {
+	if (nameGroup_.name_.isEmpty()) {
 		return false;
 	}
 
@@ -190,7 +175,7 @@ bool Register::isValid() const {
 		return false;
 	}
 
-	if (registerDefinition_ && !registerDefinition_->isValid()) {
+	if (!registerDefinition_.isValid()) {
 		return false;
 	}
 
@@ -221,10 +206,6 @@ int Register::getDim() const {
     return dim_;
 }
 
-RegisterDefinition* Register::getRegisterDefinition() const {
-    return registerDefinition_.data();
-}
-
 void Register::setAddressOffset(const QString& addressOffset) {
     this->addressOffset_ = addressOffset;
 }
@@ -239,22 +220,58 @@ void Register::setDim(int dim) {
     this->dim_ = dim;
 }
 
-void Register::setRegisterDefinition(RegisterDefinition* registerDefinition) {
-	registerDefinition_.clear();
-    registerDefinition_ = QSharedPointer<RegisterDefinition>(registerDefinition);
-}
-
 const QList<QSharedPointer<Field> >& Register::getFields() {
-	if (registerDefinition_) {
-		return registerDefinition_->getFields();
-	}
-	return QList<QSharedPointer<Field> >();
+	return registerDefinition_.getFields();
 }
 
 unsigned int Register::getWidth() const {
-	if (registerDefinition_) {
-		return registerDefinition_->getSize();
-	}
+	return registerDefinition_.getSize();
+}
 
-	return 0;
+QString Register::getTypeIdentifier() const {
+	return registerDefinition_.getTypeIdentifier();
+}
+
+void Register::setTypeIdentifier( const QString& typeIdentifier ) {
+	registerDefinition_.setTypeIdentifier(typeIdentifier);
+}
+
+unsigned int Register::getSize() const {
+	return registerDefinition_.getSize();
+}
+
+void Register::setSize( unsigned int size ) {
+	registerDefinition_.setSize(size);
+}
+
+General::BooleanValue Register::getVolatile() const {
+	return registerDefinition_.getVolatile();
+}
+
+void Register::setVolatile( General::BooleanValue volatileValue ) {
+	registerDefinition_.setVolatile(volatileValue);
+}
+
+General::Access Register::getAccess() const {
+	return registerDefinition_.getAccess();
+}
+
+void Register::setAccess( General::Access access ) {
+	registerDefinition_.setAccess(access);
+}
+
+QString Register::getRegisterValue() const {
+	return registerDefinition_.getRegisterValue();
+}
+
+void Register::setRegisterValue( const QString& registerValue ) {
+	registerDefinition_.setRegisterValue(registerValue);
+}
+
+QString Register::getRegisterMask() const {
+	return registerDefinition_.getRegisterMask();
+}
+
+void Register::setRegisterMask( const QString& registerMask ) {
+	registerDefinition_.setRegisterMask(registerMask);
 }

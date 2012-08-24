@@ -86,12 +86,18 @@ public:
 	 */
 	unsigned int getAddressUnitBits() const;
 
-	/*! \brief Get list of memorymap items
+	/*! \brief Get list of memory map items
 	 *
-	 * \return QList containing pointers to the memorymap items stored in
+	 * \return QList containing pointers to the memory map items stored in
 	 * this instance.
 	 */
 	const QList<QSharedPointer<MemoryMapItem> >& getItems() const;
+
+	/*! \brief Get list of memory map item.
+	 *
+	 * \return QList containing pointers to the memory map items.
+	*/
+	QList<QSharedPointer<MemoryMapItem> >& getItems();
 
 	/*! \brief Get pointer to the list containing the memory map items.
 	 *
