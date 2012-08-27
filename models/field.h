@@ -7,6 +7,7 @@
 #ifndef FIELD_H_
 #define FIELD_H_
 
+#include "generaldeclarations.h"
 #include <common/Global.h>
 
 #include <QString>
@@ -36,6 +37,9 @@ public:
 	 * this class or one of it's member classes.
 	 */
 	Field(QDomNode& fieldNode);
+
+	//! \brief The default constructor.
+	Field();
 
 	//! \brief Copy constructor
 	Field(const Field& other);
@@ -184,9 +188,97 @@ public:
      */
     void setTypeIdentifier(const QString& typeIdentifier);
 
+    /*! \brief Get the id of the field.
+     *
+     *
+     * \return QString containing the field's id.
+    */
     QString getId() const;
 
+    /*! \brief Set the id for the field.
+     *
+     * \param id The id to set for the field.
+     *
+    */
     void setId(const QString& id);
+
+	/*! \brief Get the volatile state of the field.
+	 *
+	 * \return The volatile state.
+	*/
+	bool getVolatile() const;
+
+	/*! \brief Set the volatile state for the field.
+	 *
+	 * \param volatileValue The volatile state to set.
+	 *
+	*/
+	void setVolatile(bool volatileValue);
+
+	/*! \brief Get the access type of the field.
+	 *
+	 * \return The access type of the field.
+	*/
+	General::Access getAccess() const;
+
+	/*! \brief Set the access type for the field.
+	 *
+	 * \param access The access type to set.
+	 *
+	*/
+	void setAccess(General::Access access);
+
+	/*! \brief Get the modified write value setting of the field.
+	 *
+	 * \return The modified write value setting.
+	*/
+	General::ModifiedWrite getModifiedWrite() const;
+
+	/*! \brief Set the modified write value setting for the field.
+	 *
+	 * \param modWriteValue The value to set.
+	 *
+	*/
+	void setModifiedWrite(const General::ModifiedWrite modWriteValue);
+
+	/*! \brief Get the read action setting of the field.
+	 *
+	 * \return The read action setting.
+	*/
+	General::ReadAction getReadAction() const;
+
+	/*! \brief Set the read action setting for the field.
+	 *
+	 * \param readAction The value to set.
+	 *
+	*/
+	void setReadAction(const General::ReadAction readAction);
+
+	/*! \brief Get the testable setting of the field.
+	 *
+	 * \return The testable setting.
+	*/
+	bool getTestable() const;
+
+	/*! \brief Set the testable setting for the field.
+	 *
+	 * \param testable The value to set.
+	 *
+	*/
+	void setTestable(bool testable);
+
+	/*! \brief Get the test constraint setting of the field.
+	 *
+	 * \return The test constraint of the field.
+	*/
+	General::TestConstraint getTestConstraint() const;
+
+	/*! \brief Set the test constraint for the field.
+	 *
+	 * \param testContraint The test constraint to set.
+	 *
+	*/
+	void setTestConstraint(const General::TestConstraint testContraint);
 
 private:
 
@@ -195,20 +287,8 @@ private:
 	 */
 	QString id_;
 
-	/*! \brief Unique name of the field.
-	 * MANDATORY spirit:name
-	 */
-	QString name_;
-
-	/*! \brief A short descriptive name of the field.
-	 * OPTIONAL spirit:displayName
-	 */
-	QString displayName_;
-
-	/*! \brief Description of the field.
-	 * OPTIONAL spirit:description
-	 */
-	QString description_;
+	//! \brief Contains the name, display name and description of field.
+	General::NameGroup nameGroup_;
 
 	/*! \brief Describes the offset where this bit field starts.
 	 * MANDATORY spirit:bitOffset
@@ -237,6 +317,24 @@ private:
 	 * OPTIONAL spirit:parameters
 	 */
 	QList<QSharedPointer<Parameter> > parameters_;
+
+	//! \brief Contains the volatile value for the field.
+	bool volatile_;
+
+	//! \brief Contains the access type of the field.
+	General::Access access_;
+
+	//! \brief Contains the modified write setting for the field.
+	General::ModifiedWrite modifiedWrite_;
+
+	//! \brief Contains the read action setting for the field.
+	General::ReadAction readAction_;
+
+	//! \brief Contains the testable setting for the field.
+	bool testable_;
+
+	//! \brief Contains the test constraint setting for the field.
+	General::TestConstraint testConstraint_;
 };
 
 #endif /* FIELD_H_ */

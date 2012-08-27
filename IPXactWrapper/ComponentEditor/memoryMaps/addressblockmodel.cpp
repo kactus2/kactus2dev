@@ -53,7 +53,7 @@ QVariant AddressBlockModel::headerData( int section, Qt::Orientation orientation
 
 		switch (section) {
 			case AddressBlockDelegate::NAME_COLUMN: {
-				return tr("Name");
+				return tr("Register\nname");
 												  }
 			case AddressBlockDelegate::OFFSET_COLUMN: {
 				return tr("Offset");

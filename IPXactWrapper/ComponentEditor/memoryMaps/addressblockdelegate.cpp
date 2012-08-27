@@ -74,14 +74,7 @@ void AddressBlockDelegate::setEditorData( QWidget* editor, const QModelIndex& in
 			edit->setText(text);
 			break;
 													  }
-		case AddressBlockDelegate::SIZE_COLUMN: {
-			QSpinBox* spinBox = qobject_cast<QSpinBox*>(editor);
-			Q_ASSERT(spinBox);
-
-			unsigned int value = index.model()->data(index, Qt::DisplayRole).toUInt();
-			spinBox->setValue(value);
-			break;
-												}
+		case AddressBlockDelegate::SIZE_COLUMN:
 		case AddressBlockDelegate::DIM_COLUMN: {
 			QSpinBox* spinBox = qobject_cast<QSpinBox*>(editor);
 			Q_ASSERT(spinBox);
@@ -128,14 +121,7 @@ void AddressBlockDelegate::setModelData( QWidget* editor, QAbstractItemModel* mo
 			model->setData(index, text, Qt::EditRole);
 			break;
 													  }
-		case AddressBlockDelegate::SIZE_COLUMN: {
-			QSpinBox* spinBox = qobject_cast<QSpinBox*>(editor);
-			Q_ASSERT(spinBox);
-
-			unsigned int value = spinBox->value();
-			model->setData(index, value, Qt::EditRole);
-			break;
-												}
+		case AddressBlockDelegate::SIZE_COLUMN:
 		case AddressBlockDelegate::DIM_COLUMN: {
 			QSpinBox* spinBox = qobject_cast<QSpinBox*>(editor);
 			Q_ASSERT(spinBox);

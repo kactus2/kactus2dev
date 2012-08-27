@@ -12,6 +12,9 @@
 
 #include <QComboBox>
 
+/*! \brief The combo box to select one of the defined access types.
+ *
+ */
 class AccessComboBox : public QComboBox {
 	Q_OBJECT
 

@@ -220,7 +220,11 @@ void Register::setDim(int dim) {
     this->dim_ = dim;
 }
 
-const QList<QSharedPointer<Field> >& Register::getFields() {
+const QList<QSharedPointer<Field> >& Register::getFields() const {
+	return registerDefinition_.getFields();
+}
+
+QList<QSharedPointer<Field> >& Register::getFields() {
 	return registerDefinition_.getFields();
 }
 

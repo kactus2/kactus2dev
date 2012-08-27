@@ -6,6 +6,7 @@
  */
 
 #include "componenteditorregisteritem.h"
+#include <IPXactWrapper/ComponentEditor/memoryMaps/registereditor.h>
 
 #include <QFont>
 #include <QApplication>
@@ -17,15 +18,38 @@ ComponentEditorRegisterItem::ComponentEditorRegisterItem(QSharedPointer<Register
 														 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 reg_(reg),
-editor_(NULL) {
+editor_(new RegisterEditor(reg, component)) {
 
+	setObjectName(tr("ComponentEditorRegisterItem"));
+
+// 	foreach (QSharedPointer<RegisterModel> regModel, regItems_) {
+// 		QSharedPointer<Register> reg = regModel.dynamicCast<Register>();
+// 
+// 		// if the item was a register 
+// 		if (reg) {
+// 			QSharedPointer<ComponentEditorRegisterItem> regItem(new ComponentEditorRegisterItem(
+// 				reg, model, libHandler, component, this));
+// 			childItems_.append(regItem);
+// 		}
+// 	}
+
+	editor_->hide();
+
+	connect(editor_, SIGNAL(contentChanged()), 
+		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+	connect(editor_, SIGNAL(childAdded(int)),
+		this, SLOT(onAddChild(int)), Qt::UniqueConnection);
+	connect(editor_, SIGNAL(childRemoved(int)),
+		this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
+
+	Q_ASSERT(reg_);
 }
 
 ComponentEditorRegisterItem::~ComponentEditorRegisterItem() {
-// 	if (editor_) {
-// 		delete editor_;
-// 		editor_ = NULL;
-// 	}
+	if (editor_) {
+		delete editor_;
+		editor_ = NULL;
+	}
 }
 
 QString ComponentEditorRegisterItem::getTooltip() const {
@@ -41,11 +65,11 @@ bool ComponentEditorRegisterItem::isValid() const {
 }
 
 ItemEditor* ComponentEditorRegisterItem::editor() {
-	return NULL;
+	return editor_;
 }
 
 const ItemEditor* ComponentEditorRegisterItem::editor() const {
-	return NULL;
+	return editor_;
 }
 
 QFont ComponentEditorRegisterItem::getFont() const {

@@ -132,7 +132,13 @@ public:
      *
      * \return QList containing pointers to the fields.
      */
-    const QList<QSharedPointer<Field> >& getFields();
+    const QList<QSharedPointer<Field> >& getFields() const;
+
+	/*! \brief Get list of the fields.
+	*
+	* \return QList containing pointers to the fields.
+	*/
+	QList<QSharedPointer<Field> >& getFields();
 
 	/*! \brief Get the width of the register.
 	 *

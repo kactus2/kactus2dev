@@ -9,6 +9,8 @@
 #include <common/views/EditableTableView/editabletableview.h>
 #include "addressblockmodel.h"
 #include "addressblockdelegate.h"
+#include <common/widgets/summaryLabel/summarylabel.h>
+
 
 #include <QVBoxLayout>
 
@@ -20,7 +22,11 @@ view_(new EditableTableView(this)),
 proxy_(new QSortFilterProxyModel(this)),
 model_(new AddressBlockModel(addressBlock, this)) {
 
+	// display a label on top the table
+	SummaryLabel* summaryLabel = new SummaryLabel(tr("Registers summary"), this);
+
 	QVBoxLayout* layout = new QVBoxLayout(this);
+	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
 	layout->addWidget(view_);
 	layout->setContentsMargins(0, 0, 0, 0);
 

@@ -439,6 +439,134 @@ General::Access str2Access(QString str, General::Access defaultValue);
  */
 QString access2Str(const General::Access access);
 
+/*! \brief Equals to spirit:modifiedWriteValue within spirit:fieldData.
+ * 
+ * ModifiedWrite describes the manipulation of data written to a field.
+ */
+enum ModifiedWrite {
+	ONE_TO_CLEAR = 0,
+	ONE_TO_SET,
+	ONE_TO_TOGGLE,
+	ZERO_TO_CLEAR,
+	ZERO_TO_SET,
+	ZERO_TO_TOGGLE,
+	CLEAR, 
+	SET,
+	MODIFY,
+	MODIFIED_WRITE_COUNT
+};
+
+//! \brief Contains the strings that match the enum ModifiedWrite values.
+const QString MODIFIED_WRITE_STRINGS[] = {
+	"oneToClear",
+	"oneToSet",
+	"oneToToggle",
+	"zeroToClear",
+	"zeroToSet",
+	"zeroToToggle",
+	"clear",
+	"set",
+	"modify",
+	""
+};
+
+/*! \brief Convert the value of the QString into enum ModifiedWrite.
+ *
+ * If the string does not match any of the enum values then General::MODIFIED_WRITE_COUNT
+ * is returned.
+ * 
+ * \param str contains the string to be converted.
+ *
+ * \return The enum value that matches the string.
+*/
+General::ModifiedWrite str2ModifiedWrite(const QString& str);
+
+/*! \brief Convert the enum value to a matching string.
+ *
+ * \param modWrite The enum value to be converted to a string.
+ *
+ * \return QString that matches the enum value.
+*/
+QString modifiedWrite2Str(const General::ModifiedWrite modWrite);
+
+/*! \brief Equals the spirit:readAction within spirit:fieldData.
+ * 
+ * ReadAction describes an action that happens to a field after a read operation.
+ */
+enum ReadAction {
+	READ_CLEAR = 0,
+	READ_SET,
+	READ_MODIFY,
+	READ_ACTION_COUNT
+};
+
+//! \brief Contains the strings that match the enum ReadAction values.
+const QString READ_ACTION_STRINGS[] = {
+	"clear",
+	"set",
+	"modify",
+	""
+};
+
+/*! \brief Convert the enum value to a matching string.
+ *
+ * \param readAction The enum value to be converted to a string.
+ *
+ * \return QString that matches the enum value.
+*/
+QString readAction2Str(const General::ReadAction readAction);
+
+/*! \brief Convert the string into matching enum ReadAction value.
+ * 
+ * If the string does not match any of the defined enum values then
+ * General::READ_ACTION_COUNT is returned.
+ * 
+ * \param str Contains the string to be converted.
+ *
+ * \return The enum value that matches the string.
+*/
+General::ReadAction str2ReadAction(const QString& str);
+
+/*! \brief Equals the spirit:testConstraint attribute within spirit:fieldData.
+ * 
+ * TestConstraint defines the constraint for the field during automated testing.
+ */
+enum TestConstraint {
+	TEST_UNCONSTRAINED = 0,
+	TEST_RESTORE,
+	TEST_WRITE_AS_READ,
+	TEST_READ_ONLY,
+	TESTCONSTRAINT_COUNT
+};
+
+//! \brief Contains the strings that match the enum TestConstraint values.
+const QString TEST_CONSTRAINT_STRINGS[] = {
+	"unConstrained",
+	"restore",
+	"writeAsRead",
+	"readOnly",
+	""
+};
+
+/*! \brief Convert the enum value to a matching string.
+ *
+ * \param testConstraint The enum value to be converted to a string.
+ *
+ * \return QString that matches the enum value.
+*/
+QString testConstraint2Str(const General::TestConstraint testConstraint);
+
+/*! \brief Convert the string into matching enum TestConstraint value.
+ * 
+ * If the string does not match any of the defined enum values then
+ * General::TESTCONSTRAINT_COUNT is returned.
+ *
+ * \param str Contains the string to be converted.
+ *
+ * \return The enum value that matches the string.
+*/
+General::TestConstraint str2TestConstraint(const QString& str);
+
 /*! \brief Used by the struct Choice to hold information
  *
  */

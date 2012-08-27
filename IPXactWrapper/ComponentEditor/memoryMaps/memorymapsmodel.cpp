@@ -51,7 +51,7 @@ QVariant MemoryMapsModel::headerData( int section, Qt::Orientation orientation, 
 
 		switch (section) {
 			case MemoryMapsDelegate::NAME_COLUMN: {
-				return tr("Name");
+				return tr("Memory map\nname");
 										  }
 			case MemoryMapsDelegate::AUB_COLUMN: {
 				return tr("Address unit\nbits");

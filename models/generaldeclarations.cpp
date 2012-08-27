@@ -1293,6 +1293,61 @@ bool General::isSpecifiedFileType( const QString& fileType ) {
 	return false;
 }
 
+General::ModifiedWrite General::str2ModifiedWrite( const QString& str ) {
+	
+	// check all defined strings
+	for (unsigned int i = 0; i < General::MODIFIED_WRITE_COUNT; ++i) {
+		
+		// if a match is found
+		if (str.compare(General::MODIFIED_WRITE_STRINGS[i], Qt::CaseInsensitive) == 0) {
+			return static_cast<General::ModifiedWrite>(i);
+		}
+	}
+
+	// if none of the defined strings matched 
+	return General::MODIFIED_WRITE_COUNT;
+}
+
+QString General::modifiedWrite2Str( const General::ModifiedWrite modWrite ) {
+	return General::MODIFIED_WRITE_STRINGS[modWrite];
+}
+
+QString General::readAction2Str( const General::ReadAction readAction ) {
+	return General::READ_ACTION_STRINGS[readAction];
+}
+
+General::ReadAction General::str2ReadAction( const QString& str ) {
+	// check all defined strings
+	for (unsigned int i = 0; i < General::READ_ACTION_COUNT; ++i) {
+		
+		// if a match is found
+		if (str.compare(General::READ_ACTION_STRINGS[i], Qt::CaseInsensitive) == 0) {
+			return static_cast<General::ReadAction>(i);
+		}
+	}
+
+	// if none of the defined strings matched
+	return General::READ_ACTION_COUNT;
+}
+
+QString General::testConstraint2Str( const General::TestConstraint testConstraint ) {
+	return General::TEST_CONSTRAINT_STRINGS[testConstraint];
+}
+
+General::TestConstraint General::str2TestConstraint( const QString& str ) {
+	// check all defined strings
+	for (unsigned int i = 0; i < General::TESTCONSTRAINT_COUNT; ++i) {
+
+		// if a match is found
+		if (str.compare(General::TEST_CONSTRAINT_STRINGS[i], Qt::CaseInsensitive) == 0) {
+			return static_cast<General::TestConstraint>(i);
+		}
+	}
+
+	// if none of the defined strings matched
+	return General::TESTCONSTRAINT_COUNT;
+}
+
 General::NameGroup::NameGroup(): 
 name_(),
 displayName_(),

@@ -54,7 +54,7 @@ QVariant MemoryMapModel::headerData( int section, Qt::Orientation orientation, i
 				return tr("Usage");
 											}
 			case MemoryMapDelegate::NAME_COLUMN: {
-				return tr("Name");
+				return tr("Address block\nname");
 													}
 			case MemoryMapDelegate::BASE_COLUMN: {
 				return tr("Base address");
