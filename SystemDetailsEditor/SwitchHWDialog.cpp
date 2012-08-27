@@ -34,13 +34,15 @@ SwitchHWDialog::SwitchHWDialog(QSharedPointer<Component> component, QString cons
       hwViewRefCombo_(new QComboBox(this)),
       viewNameLabel_(new QLabel(tr("Name of the system view to be created for the mapped HW component:"), this)),
       viewNameEdit_(new LineEditEx(this)),
+      viewNameMatcher_(),
       actionGroupBox_(new QGroupBox(tr("Action"), this)),
       actionGroup_(new QButtonGroup(this)),
-      moveRadioButton_(new QRadioButton(tr("Move system design\nRemoves the system view from the "
-                                           "previously mapped HW and moves it to the new one."), this)),
-      copyRadioButton_(new QRadioButton(tr("Copy as a new system design\nCreates an identical copy of the "
-                                           "system design with a new VLNV and adds a new system\nview to "
-                                           "the HW component."), this)),
+      moveRadioButton_(new QRadioButton(tr("Move system design"), this)),
+      moveDescLabel_(new QLabel(tr("Removes the system view from the "
+                                   "previously mapped HW and moves it to the new one."), this)),
+      copyRadioButton_(new QRadioButton(tr("Copy as a new system design"), this)),
+      copyDescLabel_(new QLabel(tr("Creates an identical copy of the system design with a new VLNV "
+                                   "and adds a new system view to the HW component."), this)),
       vlnvEdit_(new VLNVEditor(VLNV::DESIGN, lh, this, this)),
       directoryLabel_(new QLabel(tr("Directory:"), this)),
       directoryEdit_(new LibraryPathSelector(this)),
@@ -57,9 +59,22 @@ SwitchHWDialog::SwitchHWDialog(QSharedPointer<Component> component, QString cons
     viewNameEdit_->setDisallowedInputs(component->getSystemViewNames());
     viewNameEdit_->setMessageIcon(QPixmap(":/icons/graphics/exclamation.png"));
     viewNameEdit_->setMessageTemplate("System view name '%1' is already in use!");
+    viewNameEdit_->setContentMatcher(&viewNameMatcher_);
     viewNameEdit_->setText(viewName);
 
     moveRadioButton_->setChecked(true);
+    
+    QFont font = moveRadioButton_->font();
+    font.setBold(true);
+    moveRadioButton_->setFont(font);
+    moveRadioButton_->setStyleSheet("QRadioButton::indicator { width: 15px; height: 15px; }");
+    copyRadioButton_->setFont(font);
+    copyRadioButton_->setStyleSheet("QRadioButton::indicator { width: 15px; height: 15px; }");
+
+    moveDescLabel_->setStyleSheet("QLabel { padding-left: 19px; }");
+    moveDescLabel_->setWordWrap(true);
+    copyDescLabel_->setStyleSheet("QLabel { padding-left: 19px; }");
+    copyDescLabel_->setWordWrap(true);
 
     vlnvEdit_->setTitle(tr("VLNV for the new system design and design configuration"));
     vlnvEdit_->setVisible(false);
@@ -74,7 +89,9 @@ SwitchHWDialog::SwitchHWDialog(QSharedPointer<Component> component, QString cons
     // Create layouts.
     QVBoxLayout* groupLayout = new QVBoxLayout(actionGroupBox_);
     groupLayout->addWidget(moveRadioButton_);
+    groupLayout->addWidget(moveDescLabel_);
     groupLayout->addWidget(copyRadioButton_);
+    groupLayout->addWidget(copyDescLabel_);
 
     QHBoxLayout* dirLayout = new QHBoxLayout();
     dirLayout->addWidget(directoryLabel_);
@@ -263,4 +280,12 @@ void SwitchHWDialog::validate()
                       (moveRadioButton_->isChecked() || vlnvEdit_->isValid()) &&
                       (!hwViewRefCombo_->isEnabled() || hwViewRefCombo_->count() > 0) &&
                       !directoryEdit_->currentText().isEmpty());
+}
+
+//-----------------------------------------------------------------------------
+// Function: SwitchHWDialog::setViewNameSuggestions()
+//-----------------------------------------------------------------------------
+void SwitchHWDialog::setViewNameSuggestions(QStringList const& suggestions)
+{
+    viewNameMatcher_.setItems(suggestions);
 }

@@ -97,7 +97,7 @@ itemsToAdd_() {
 		this, SIGNAL(itemSelected(const VLNV&)), Qt::UniqueConnection);
 
 	addTab(hierarchyWidget_, tr("Hierarchy"));
-	addTab(treeWidget_, tr("Plain IP-Xact"));
+	addTab(treeWidget_, tr("VLNV Tree"));
 }
 
 LibraryHandler::~LibraryHandler() {

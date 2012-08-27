@@ -49,7 +49,7 @@ QVariant LibraryTreeModel::headerData(int section, Qt::Orientation orientation,
 	}
 	// for displayRole
 	else if (role == Qt::DisplayRole) {
-		return tr("Library components");
+		return tr("Library Items");
 	}
 	// not supported role
 	else {
@@ -239,7 +239,7 @@ QVariant LibraryTreeModel::data(const QModelIndex& index, int role) const {
                     }
                     else
                     {
-                        return QIcon(":/icons/graphics/sw-component.png");
+                        return QIcon(":/icons/graphics/sw-component24x24.png");
                     }
 											  }
 				default: {

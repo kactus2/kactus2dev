@@ -129,8 +129,14 @@ private:
     //! Radio button for empty SW architecture action.
     QRadioButton* emptyRadioButton_;
 
+    //! Description label for empty selection.
+    QLabel* emptyDescLabel_;
+
     //! Radio button for map HW action.
     QRadioButton* mapRadioButton_;
+
+    //! Description label fro mapping.
+    QLabel* mapDescLabel_;
 
     //! Label for the component selection tree widget.
     QLabel* treeLabel_;

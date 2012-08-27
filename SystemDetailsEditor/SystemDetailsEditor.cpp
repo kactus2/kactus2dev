@@ -257,8 +257,30 @@ void SystemDetailsEditor::applyHW()
             return;
         }
 
+        // Determine a default suggestion for the view name.
+        QSettings settings;
+        QStringList suggestions = settings.value("policies/sysviewnames").toStringList();
+
+        QString baseViewName = "";
+        QString viewName = "";
+
+        if (!suggestions.isEmpty())
+        {
+            baseViewName = suggestions.first();
+
+            viewName = baseViewName;
+            unsigned int runningNumber = 1;
+
+            while (newComponent->findSystemView(viewName) != 0)
+            {
+                ++runningNumber;
+                viewName = baseViewName + QString::number(runningNumber);
+            }
+        }
+
         // Ask the user whether to move or copy the design under the given HW.
-        SwitchHWDialog dialog(newComponent, designWidget_->getOpenViewName(), handler_, this);
+        SwitchHWDialog dialog(newComponent, viewName, handler_, this);
+        dialog.setViewNameSuggestions(suggestions);
 
         if (dialog.exec() == QDialog::Rejected)
         {

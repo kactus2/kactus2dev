@@ -14,6 +14,7 @@
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <common/widgets/LibraryPathSelector/librarypathselector.h>
+#include <common/widgets/assistedLineEdit/BasicLineContentMatcher.h>
 
 #include <QPushButton>
 #include <QLineEdit>
@@ -50,6 +51,13 @@ public:
      *  Destructor.
      */
     ~SwitchHWDialog();
+
+    /*!
+     *  Sets the system view name suggestions.
+     *
+     *      @param [in] suggestions The list of suggestions.
+     */
+    void setViewNameSuggestions(QStringList const& suggestions);
 
     /*!
      *  Shows a combo box selection for choosing a HW view reference.
@@ -108,7 +116,7 @@ private:
     // Disable copying.
     SwitchHWDialog(SwitchHWDialog const& rhs);
     SwitchHWDialog& operator=(SwitchHWDialog const& rhs);
-    
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -134,6 +142,9 @@ private:
     //! Edit box for system view name.
     LineEditEx* viewNameEdit_;
 
+    //! View name content matcher.
+    BasicLineContentMatcher viewNameMatcher_;
+
     //! Group box for radio buttons.
     QGroupBox* actionGroupBox_;
 
@@ -143,8 +154,14 @@ private:
     //! Radio button for move action.
     QRadioButton* moveRadioButton_;
 
+    //! Description label for move action.
+    QLabel* moveDescLabel_;
+
     //! Radio button for copy action.
     QRadioButton* copyRadioButton_;
+
+    //! Description label for copy action.
+    QLabel* copyDescLabel_;
 
     //! VLNV editor for design/designcfg VLNV (shown in case of copy action).
     VLNVEditor* vlnvEdit_;

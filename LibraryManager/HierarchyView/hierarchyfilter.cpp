@@ -158,6 +158,10 @@ bool HierarchyFilter::filterAcceptsRow( int source_row,
                 if (!type_.buses_)
                     return false;
 
+                // if SW should not be displayed then this is not shown
+                if (!implementation_.sw_)
+                    return false;
+
                 break;
             }
 

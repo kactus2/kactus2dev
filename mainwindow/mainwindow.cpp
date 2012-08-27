@@ -1903,7 +1903,7 @@ void MainWindow::createNew()
     // Create a property page dialog to work as a "New" dialog.
 	PropertyPageDialog dialog(QSize(48, 48), 1, PropertyPageDialog::APPLY_CURRENT, this);
 	dialog.setFixedWidth(620);
-	dialog.resize(620, 690);
+	//dialog.resize(620, 690);
 	dialog.setWindowTitle(tr("New"));
 
     // Add pages to the dialog.
@@ -1928,12 +1928,12 @@ void MainWindow::createNew()
 	NewSWComponentPage* swCompPage = new NewSWComponentPage(libraryHandler_, &dialog);
 	connect(swCompPage, SIGNAL(createSWComponent(VLNV const&, QString const&)),
 		this, SLOT(createSWComponent(VLNV const&, QString const&)));
-	dialog.addPage(QIcon(":icons/graphics/sw-component.png"), tr("SW Component"), swCompPage);
+	dialog.addPage(QIcon(":icons/graphics/sw-component48x48.png"), tr("SW Component"), swCompPage);
 
 	NewSWDesignPage* swDesignPage = new NewSWDesignPage(libraryHandler_, &dialog);
 	connect(swDesignPage, SIGNAL(createSWDesign(VLNV const&, QString const&)),
 		    this, SLOT(createSWDesign(VLNV const&, QString const&)), Qt::UniqueConnection);
-	dialog.addPage(QIcon(":icons/graphics/sw-design.png"), tr("SW Design"), swDesignPage);
+	dialog.addPage(QIcon(":icons/graphics/sw-design48x48.png"), tr("SW Design"), swDesignPage);
 
 	NewSystemPage* sysPage = new NewSystemPage(libraryHandler_, &dialog);
 	connect(sysPage, SIGNAL(createSystem(VLNV const&, QString const&, VLNV const&, QString const&)),

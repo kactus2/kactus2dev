@@ -37634,10 +37634,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\graphics\collapse.png"
-				>
-			</File>
-			<File
 				RelativePath=".\graphics\diagram-add-column.png"
 				>
 			</File>
@@ -37655,10 +37651,6 @@
 			</File>
 			<File
 				RelativePath=".\graphics\exclamation.png"
-				>
-			</File>
-			<File
-				RelativePath=".\graphics\expand.png"
 				>
 			</File>
 			<File
@@ -37962,15 +37954,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\graphics\sw-component.png"
-				>
-			</File>
-			<File
 				RelativePath=".\graphics\sw-design-add_node.png"
-				>
-			</File>
-			<File
-				RelativePath=".\graphics\sw-design.png"
 				>
 			</File>
 			<File

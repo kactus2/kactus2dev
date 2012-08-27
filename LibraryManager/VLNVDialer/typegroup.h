@@ -58,7 +58,7 @@ private:
 	QCheckBox componentBox_;
 
 	//! \brief Check box to select buses/APIs in/out of search results.
-	QCheckBox busApiBox_;
+	QCheckBox busApiComBox_;
 
 	//! \brief Check box to select other IP-Xact types in/out of search results.
 	QCheckBox advancedBox_;

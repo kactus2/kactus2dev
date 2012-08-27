@@ -10,26 +10,26 @@
 #include <QGridLayout>
 
 TypeGroup::TypeGroup(QWidget *parent):
-QGroupBox(tr("Type"), parent),
+QGroupBox(tr("Item Type"), parent),
 componentBox_(tr("Component"), this),
-busApiBox_(tr("Bus/API"), this),
+busApiComBox_(tr("Bus/API/COM"), this),
 advancedBox_(tr("Advanced"), this),
 options_() {
 
 	QGridLayout* layout = new QGridLayout(this);
 	layout->addWidget(&componentBox_, 0, 0, 1, 1);
-	layout->addWidget(&busApiBox_, 0, 1, 1, 1);
+	layout->addWidget(&busApiComBox_, 0, 1, 1, 1);
 	layout->addWidget(&advancedBox_, 0, 2, 1, 1);
 	layout->setSpacing(0);
 	layout->setContentsMargins(4, 4, 4, 4);
 
 	componentBox_.setChecked(true);
-	busApiBox_.setChecked(true);
+	busApiComBox_.setChecked(true);
 	advancedBox_.setChecked(false);
 
 	connect(&componentBox_, SIGNAL(stateChanged(int)),
 		this, SLOT(onComponentChange(int)), Qt::UniqueConnection);
-	connect(&busApiBox_, SIGNAL(stateChanged(int)),
+	connect(&busApiComBox_, SIGNAL(stateChanged(int)),
 		this, SLOT(onBusChange(int)), Qt::UniqueConnection);
 	connect(&advancedBox_, SIGNAL(stateChanged(int)),
 		this, SLOT(onAdvancedChange(int)), Qt::UniqueConnection);

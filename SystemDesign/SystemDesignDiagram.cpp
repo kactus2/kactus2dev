@@ -484,10 +484,16 @@ void SystemDesignDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
     }
     else if (dragType_ == DRAG_TYPE_HW)
     {
-        VLNV *vlnv;
-        memcpy(&vlnv, event->mimeData()->data("data/vlnvptr").data(), sizeof(vlnv));
+        QVariant data = event->mimeData()->imageData();
+        
+        if (!data.canConvert<VLNV>())
+        {
+            return;
+        }
 
-        if (*vlnv != *getEditedComponent()->getVlnv())
+        VLNV vlnv = data.value<VLNV>();
+
+        if (vlnv != *getEditedComponent()->getVlnv())
         {
             event->setDropAction(Qt::LinkAction);
         }
@@ -693,8 +699,30 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
             return;
         }
 
+        // Determine a default suggestion for the view name.
+        QSettings settings;
+        QStringList suggestions = settings.value("policies/sysviewnames").toStringList();
+        
+        QString baseViewName = "";
+        QString viewName = "";
+
+        if (!suggestions.isEmpty())
+        {
+            baseViewName = suggestions.first();
+
+            viewName = baseViewName;
+            unsigned int runningNumber = 1;
+
+            while (newComponent->findSystemView(viewName) != 0)
+            {
+                ++runningNumber;
+                viewName = baseViewName + QString::number(runningNumber);
+            }
+        }
+
         // Ask the user whether to move or copy the design under the given HW.
-        SwitchHWDialog dialog(newComponent, parent()->getOpenViewName(), getLibraryInterface(), parent());
+        SwitchHWDialog dialog(newComponent, viewName, getLibraryInterface(), parent());
+        dialog.setViewNameSuggestions(suggestions);
         dialog.showHWViewSelector();
 
         if (dialog.exec() == QDialog::Rejected)

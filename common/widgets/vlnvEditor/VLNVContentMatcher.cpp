@@ -93,51 +93,51 @@ bool VLNVContentMatcher::enumerateMatches(QString const& text, LineContentAssist
                     QListWidgetItem* item = new QListWidgetItem(child->getName());
 
                     // Add an icon if the child is at the leaf level.
-                    if (child->getLevel() == VLNVDataNode::LEVEL_VERSION)
-                    {
-                        // Retrieve the component for further examination.
-                        QSharedPointer<LibraryComponent const> libComp = lh_->getModelReadOnly(child->getVLNV());
-                        QSharedPointer<Component const> component = libComp.dynamicCast<Component const>();
-
-                        if (component != 0)
-                        {
-                            switch (component->getComponentImplementation())
-                            {
-                            case KactusAttribute::KTS_SYS:
-                                {
-                                    item->setIcon(QIcon(":/icons/graphics/system-component.png"));
-                                    break;
-                                }
-
-                            case KactusAttribute::KTS_SW:
-                                {
-                                    if (component->hasSWViews())
-                                    {
-                                        item->setIcon(QIcon(":/icons/graphics/hier-sw-component.png"));
-                                    }
-                                    else
-                                    {
-                                        item->setIcon(QIcon(":/icons/graphics/sw-component.png"));
-                                    }
-                                    break;
-                                }
-
-                            default:
-                                {
-                                    if (component->isHierarchical())
-                                    {
-                                        item->setIcon(QIcon(":/icons/graphics/hier-hw-component.png"));
-                                    }
-                                    else
-                                    {
-                                        item->setIcon(QIcon(":/icons/graphics/hw-component.png"));
-                                    }
-
-                                    break;
-                                }
-                            }
-                        }
-                    }
+//                     if (child->getLevel() == VLNVDataNode::LEVEL_VERSION)
+//                     {
+//                         // Retrieve the component for further examination.
+//                         QSharedPointer<LibraryComponent const> libComp = lh_->getModelReadOnly(child->getVLNV());
+//                         QSharedPointer<Component const> component = libComp.dynamicCast<Component const>();
+// 
+//                         if (component != 0)
+//                         {
+//                             switch (component->getComponentImplementation())
+//                             {
+//                             case KactusAttribute::KTS_SYS:
+//                                 {
+//                                     item->setIcon(QIcon(":/icons/graphics/system-component.png"));
+//                                     break;
+//                                 }
+// 
+//                             case KactusAttribute::KTS_SW:
+//                                 {
+//                                     if (component->hasSWViews())
+//                                     {
+//                                         item->setIcon(QIcon(":/icons/graphics/hier-sw-component.png"));
+//                                     }
+//                                     else
+//                                     {
+//                                         item->setIcon(QIcon(":/icons/graphics/sw-component.png"));
+//                                     }
+//                                     break;
+//                                 }
+// 
+//                             default:
+//                                 {
+//                                     if (component->isHierarchical())
+//                                     {
+//                                         item->setIcon(QIcon(":/icons/graphics/hier-hw-component.png"));
+//                                     }
+//                                     else
+//                                     {
+//                                         item->setIcon(QIcon(":/icons/graphics/hw-component.png"));
+//                                     }
+// 
+//                                     break;
+//                                 }
+//                             }
+//                         }
+//                     }
                     
                     assist->addItem(item);
                 }

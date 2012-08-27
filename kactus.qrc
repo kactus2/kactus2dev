@@ -4,8 +4,10 @@
       <file>graphics/hier-hw-component.png</file>
       <file>graphics/hw-design.png</file>
       <file>graphics/hier-sw-component.png</file>
-      <file>graphics/sw-component.png</file>
-      <file>graphics/sw-design.png</file>
+      <file>graphics/sw-component24x24.png</file>
+      <file>graphics/sw-design24x24.png</file>
+      <file>graphics/sw-component48x48.png</file>
+      <file>graphics/sw-design48x48.png</file>
       <file>graphics/system-component.png</file>
       <file>graphics/system-design.png</file>
       <file>graphics/abs-def.png</file>
@@ -22,8 +24,6 @@
       <file>graphics/exclamation.png</file>
       <file>graphics/remove.png</file>
       <file>graphics/add.png</file>
-      <file>graphics/cancel.png</file>
-      <file>graphics/ok.png</file>
       <file>graphics/quartus_generator.png</file>
       <file>graphics/vhdl_gen.png</file>
       <file>graphics/modelsim_generator.png</file>
@@ -52,8 +52,6 @@
       <file>graphics/sw-design-add_node.png</file>
       <file>graphics/hierarchy.png</file>
       <file>graphics/imported.png</file>
-      <file>graphics/expand.png</file>
-      <file>graphics/collapse.png</file>
       <file>graphics/cleanup.png</file>
       <file>graphics/new-com_definition.png</file>
       <file>graphics/new-api_definition.png</file>
@@ -64,7 +62,6 @@
       <file>graphics/settings-code_editor.png</file>
       <file>graphics/triangle_arrow_down.png</file>
       <file>graphics/triangle_arrow_up.png</file>
-      <file>graphics/component.png</file>
       <file>graphics/protection-locked.png</file>
       <file>graphics/protection-unlocked.png</file>
       <file>graphics/edit-undo.png</file>

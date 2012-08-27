@@ -117,9 +117,9 @@ QVariant HierarchyModel::headerData(int section,
 	else if (role == Qt::DisplayRole) {
 		switch (section) {
 			case HierarchyModel::OBJECT_COLUMN:
-				return tr("Library components");
+				return tr("Library Items");
 			case HierarchyModel::INSTANCE_COLUMN:
-				return tr("Instance count");
+				return tr("Instance Count");
 			default:
 				return QVariant();
 		}
@@ -301,7 +301,7 @@ QVariant HierarchyModel::data(const QModelIndex& index,
                     }
                     else
                     {
-                        return QIcon(":/icons/graphics/sw-component.png");
+                        return QIcon(":/icons/graphics/sw-component24x24.png");
                     }
 											  }
 				default: {
@@ -325,7 +325,7 @@ QVariant HierarchyModel::data(const QModelIndex& index,
 			return QIcon(":/icons/graphics/hw-design.png");
 		}
 		else if (item->type() == HierarchyItem::SW_DESIGN) {
-			return QIcon(":/icons/graphics/sw-design.png");
+			return QIcon(":/icons/graphics/sw-design24x24.png");
 		}
 		else if (item->type() == HierarchyItem::SYS_DESIGN) {
 			return QIcon(":/icons/graphics/system-design.png");
