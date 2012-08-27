@@ -37626,11 +37626,19 @@
 				>
 			</File>
 			<File
-				RelativePath=".\graphics\cancel.png"
+				RelativePath=".\graphics\checkIntegrity.png"
 				>
 			</File>
 			<File
-				RelativePath=".\graphics\checkIntegrity.png"
+				RelativePath=".\graphics\cleanup.png"
+				>
+			</File>
+			<File
+				RelativePath=".\graphics\configuration.png"
+				>
+			</File>
+			<File
+				RelativePath=".\graphics\connect.png"
 				>
 			</File>
 			<File
@@ -37639,6 +37647,10 @@
 			</File>
 			<File
 				RelativePath=".\graphics\dockSelect.png"
+				>
+			</File>
+			<File
+				RelativePath=".\graphics\documentation.png"
 				>
 			</File>
 			<File
@@ -37910,10 +37922,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\graphics\ok.png"
-				>
-			</File>
-			<File
 				RelativePath=".\graphics\protection-locked.png"
 				>
 			</File>
@@ -37954,7 +37962,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\graphics\sw-component24x24.png"
+				>
+			</File>
+			<File
+				RelativePath=".\graphics\sw-component48x48.png"
+				>
+			</File>
+			<File
 				RelativePath=".\graphics\sw-design-add_node.png"
+				>
+			</File>
+			<File
+				RelativePath=".\graphics\sw-design24x24.png"
+				>
+			</File>
+			<File
+				RelativePath=".\graphics\sw-design48x48.png"
 				>
 			</File>
 			<File
@@ -38063,6 +38087,14 @@
 			</File>
 			<File
 				RelativePath=".\graphics\tool-toggle_offpage.png"
+				>
+			</File>
+			<File
+				RelativePath=".\graphics\triangle_arrow_down.png"
+				>
+			</File>
+			<File
+				RelativePath=".\graphics\triangle_arrow_up.png"
 				>
 			</File>
 			<File
