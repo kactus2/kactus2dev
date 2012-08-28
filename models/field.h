@@ -112,6 +112,12 @@ public:
      */
     const QList<QSharedPointer<EnumeratedValue> >& getEnumeratedValues() const;
 
+	/*! \brief Get list of the enumeratedValues.
+     *
+     * \return QList containing pointers to the enumerated values.
+     */
+	QList<QSharedPointer<EnumeratedValue> >& getEnumeratedValues();
+
     /*! \brief Get the name of the field
      *
      * \return QString containing the name.

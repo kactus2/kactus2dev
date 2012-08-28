@@ -363,6 +363,10 @@ Field::getEnumeratedValues() const {
     return enumeratedValues_;
 }
 
+QList<QSharedPointer<EnumeratedValue> >& Field::getEnumeratedValues() {
+	return enumeratedValues_;
+}
+
 QString Field::getName() const {
     return nameGroup_.name_;
 }

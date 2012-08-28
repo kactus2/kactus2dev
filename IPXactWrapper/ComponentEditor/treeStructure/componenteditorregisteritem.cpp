@@ -7,6 +7,7 @@
 
 #include "componenteditorregisteritem.h"
 #include <IPXactWrapper/ComponentEditor/memoryMaps/registereditor.h>
+#include "componenteditorfielditem.h"
 
 #include <QFont>
 #include <QApplication>
@@ -18,20 +19,18 @@ ComponentEditorRegisterItem::ComponentEditorRegisterItem(QSharedPointer<Register
 														 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 reg_(reg),
+fields_(reg->getFields()),
 editor_(new RegisterEditor(reg, component)) {
 
 	setObjectName(tr("ComponentEditorRegisterItem"));
 
-// 	foreach (QSharedPointer<RegisterModel> regModel, regItems_) {
-// 		QSharedPointer<Register> reg = regModel.dynamicCast<Register>();
-// 
-// 		// if the item was a register 
-// 		if (reg) {
-// 			QSharedPointer<ComponentEditorRegisterItem> regItem(new ComponentEditorRegisterItem(
-// 				reg, model, libHandler, component, this));
-// 			childItems_.append(regItem);
-// 		}
-// 	}
+	foreach(QSharedPointer<Field> field, fields_) {
+		if (field) {
+			QSharedPointer<ComponentEditorFieldItem> fieldItem(new ComponentEditorFieldItem(
+				field, model, libHandler, component, this));
+			childItems_.append(fieldItem);
+		}
+	}
 
 	editor_->hide();
 
@@ -74,4 +73,10 @@ const ItemEditor* ComponentEditorRegisterItem::editor() const {
 
 QFont ComponentEditorRegisterItem::getFont() const {
 	return QApplication::font();
+}
+
+void ComponentEditorRegisterItem::createChild( int index ) {
+	QSharedPointer<ComponentEditorFieldItem> fieldItem(new ComponentEditorFieldItem(
+		fields_.at(index), model_, libHandler_, component_, this));
+	childItems_.insert(index, fieldItem);
 }

@@ -8,6 +8,7 @@
 #define ENUMERATEDVALUE_H_
 
 #include <common/Global.h>
+#include "generaldeclarations.h"
 
 #include <QDomNode>
 #include <QString>
@@ -162,20 +163,8 @@ private:
      */
     EnumeratedUsage usage_;
 
-    /*! \brief The name of the enumeratedValue.
-     * MANDATORY spirit:name
-     */
-    QString name_;
-
-    /*! \brief Short descriptive name of the enumeratedValue
-     * OPTIONAL spirit:displayName
-     */
-    QString displayName_;
-
-    /*! \brief Description of the enumeratedValue
-     * OPTIONAL spirit:description
-     */
-    QString description_;
+	//! \brief Contains the name, display name and description of the enumerated value.
+	General::NameGroup nameGroup_;
 
     /*! \brief The value of the enumeratedValue
      * MANDATORY spirit:value

@@ -11,8 +11,10 @@
 #include "componenteditoritem.h"
 #include <models/component.h>
 #include <models/register.h>
+#include <models/field.h>
 
 #include <QSharedPointer>
+#include <QList>
 
 class RegisterEditor;
 
@@ -78,6 +80,13 @@ public:
 	*/
 	virtual const ItemEditor* editor() const;
 
+	/*! \brief Add a new child to the item.
+	 * 
+	 * \param index The index to add the child into.
+	 *
+	*/
+	virtual void createChild(int index);
+
 private:
 	
 	//! \brief No copying
@@ -88,6 +97,9 @@ private:
 
 	//! \brief Pointer to the register being edited.
 	QSharedPointer<Register> reg_;
+
+	//! \brief Contains the fields that belong to this register.
+	QList<QSharedPointer<Field> >& fields_;
 
 	//! \brief Pointer to the editor to edit the register.
 	RegisterEditor* editor_;

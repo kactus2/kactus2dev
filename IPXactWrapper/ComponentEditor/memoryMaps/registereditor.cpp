@@ -42,10 +42,10 @@ model_(new RegisterTableModel(reg, this)) {
 
 	connect(model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-// 	connect(model_, SIGNAL(fieldAdded(int)),
-// 		this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
-// 	connect(model_, SIGNAL(fieldRemoved(int)),
-// 		this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
+	connect(model_, SIGNAL(fieldAdded(int)),
+		this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
+	connect(model_, SIGNAL(fieldRemoved(int)),
+		this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 
 	connect(view_, SIGNAL(addItem(const QModelIndex&)),
 		model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
