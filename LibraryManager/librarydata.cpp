@@ -10,8 +10,6 @@
 #include "ipxactmodel.h"
 #include "librarytreemodel.h"
 
-#include "exceptions/invalid_file.h"
-
 #include <common/widgets/ScanProgressWidget/scanprogresswidget.h>
 
 #include <models/librarycomponent.h>

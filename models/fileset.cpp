@@ -10,8 +10,6 @@
 #include "function.h"
 #include "generaldeclarations.h"
 
-#include "../exceptions/invalid_file.h"
-
 #include <QString>
 #include <QList>
 #include <QDomNode>
@@ -398,16 +396,6 @@ QList<General::LibraryFilePair> FileSet::getVerilogLibraries() const {
 	QList<General::LibraryFilePair> files;
 
 	for (int i = 0; i < files_.size(); ++i) {
-
-		// if the file type is vhdl source
-		// IP-Xact says that atleast one file type MUST be specified.
-		if (files_.at(i)->getFileTypes().size() == 0 &&
-			files_.at(i)->getUserFileTypes().size() == 0) {
-
-				throw Invalid_file(QObject::tr(
-					"FileType is not defined within spirit:file in file: ") +
-					files_.at(i)->getName());
-		}
 
 		// if fileType was defined and it is vhdlSource of some kind
 		if ((files_.at(i)->getFileTypes().size() != 0) &&

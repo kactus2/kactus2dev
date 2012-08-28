@@ -243,8 +243,6 @@ public:
 	 *	If the library name is not defined then the returned library name is set
 	 *	If to "work".
 	 *
-	 * Exception guarantee: basic
-	 * \exception Invalid_file Occurs if file type is not defined for a file.
 	 */
 	QList<General::LibraryFilePair> getVhdlLibraries() const;
 
@@ -259,8 +257,6 @@ public:
 	 *
 	 * \return QStringList containing the verilog files.
 	 * 
-	 * Exception guarantee: basic
-	 * \exception Invalid_file Occurs if file type is not defined for a file.
 	*/
 	QList<General::LibraryFilePair> getVerilogLibraries() const;
 

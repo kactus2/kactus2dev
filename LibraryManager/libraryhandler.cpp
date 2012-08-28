@@ -27,11 +27,6 @@
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
-// the exception files
-
-#include <exceptions/invalid_file.h>
-#include <exceptions/vhdl_error.h>
-
 #include <QLabel>
 #include <QString>
 #include <QStringList>

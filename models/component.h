@@ -355,9 +355,6 @@ public:
 	/*! \brief Get the vhdl files and their libraries used in this component.
 	 *
 	 * \return QList containing the file paths and library names
-	 *
-	 * Exception guarantee: basic
-	 * \exception Invalid_file Occurs if file type is not defined for a file.
 	 */
 	QList<General::LibraryFilePair> getVhdlLibraries() const;
 
@@ -381,8 +378,6 @@ public:
 	 *
 	 * \return QList<General::LibraryFilePair> containing the libraries and files.
 	 * 
-	 * Exception guarantee: basic
-	 * \exception Invalid_file Occurs if file type is not defined for a file.
 	*/
 	QList<General::LibraryFilePair> getVerilogLibraries() const;
 

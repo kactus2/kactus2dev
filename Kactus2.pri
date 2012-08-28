@@ -37,6 +37,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./common/widgets/nameGroupBox/namegroupbox.h \
     ./common/widgets/vlnvGenerator/vlnvgenerator.h \
     ./common/widgets/assistedLineEdit/AssistedLineEdit.h \
+    ./common/widgets/assistedLineEdit/BasicLineContentMatcher.h \
     ./common/widgets/assistedLineEdit/ILineContentMatcher.h \
     ./common/widgets/assistedLineEdit/LineContentAssistWidget.h \
     ./common/widgets/vlnvDisplayer/vlnvdisplayer.h \
@@ -69,6 +70,14 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./common/widgets/memoryMapSelector/memorymapselector.h \
     ./common/widgets/interfaceSelector/interfaceselector.h \
     ./common/widgets/LineEditEx/LineEditEx.h \
+    ./common/widgets/ComboBoxEx/ComboBoxEx.h \
+    ./common/widgets/SnippetTextEdit/SnippetHighlighter.h \
+    ./common/widgets/SnippetTextEdit/SnippetTextEdit.h \
+    ./common/widgets/usageComboBox/usagecombobox.h \
+    ./common/widgets/accessComboBox/accesscombobox.h \
+    ./common/widgets/modWriteComboBox/modwritecombobox.h \
+    ./common/widgets/readActionComboBox/readactioncombobox.h \
+    ./common/widgets/testConstraintComboBox/testconstraintcombobox.h \
     ./common/validators/nameValidator/namevalidator.h \
     ./common/validators/vhdlNameValidator/vhdlnamevalidator.h \
     ./common/validators/LibraryPathValidator/librarypathvalidator.h \
@@ -105,6 +114,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./common/dialogs/listSelectDialog/ListSelectDialog.h \
     ./common/dialogs/selectDirectoryDialog/selectdirectorydialog.h \
     ./common/dialogs/NewDesignDialog/NewDesignDialog.h \
+    ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h \
     ./designwidget/AdHocEnabled.h \
     ./designwidget/AdHocInterfaceItem.h \
     ./designwidget/AdHocPortItem.h \
@@ -124,8 +134,6 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./designwidget/SelectItemTypeDialog.h \
     ./designwidget/columnview/ColumnEditDialog.h \
     ./designwidget/columnview/HWColumn.h \
-    ./exceptions/invalid_file.h \
-    ./exceptions/vhdl_error.h \
     ./IPXactWrapper/ComponentEditor/itemeditor.h \
     ./IPXactWrapper/ComponentEditor/itemvisualizer.h \
     ./IPXactWrapper/ComponentEditor/general/desceditor.h \
@@ -145,7 +153,6 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/channels/channelseditor.h \
     ./IPXactWrapper/ComponentEditor/channels/channelsmodel.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/ApiCreateDialog.h \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/apieditor.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/bridgesdelegate.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/bridgeseditor.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/bridgesmodel.h \
@@ -241,8 +248,18 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/fileSet/file/filetypeeditor.h \
     ./IPXactWrapper/ComponentEditor/fileSet/file/filetypeeditordelegate.h \
     ./IPXactWrapper/ComponentEditor/fileSet/file/targetnameedit.h \
-    ./IPXactWrapper/ComponentEditor/memoryMaps/fieldtablemodel.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/addressblockdelegate.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/addressblockeditor.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/addressblockmodel.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapdelegate.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapeditor.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapmodel.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapsdelegate.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapseditor.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapsmodel.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/registerdelegate.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/registereditor.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/registertablemodel.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h \
@@ -252,6 +269,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memoryvisualizeritem.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditor.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditoraddrblockitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditoraddrspaceitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditoraddrspacesitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorapiinterfaceitem.h \
@@ -262,6 +280,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorcominterfaceitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorcominterfacesitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorcpusitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorfielditem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorfileitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorfilesetitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorfilesetsitem.h \
@@ -274,6 +293,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorotherclocksitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorparametersitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorportsitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorregisteritem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorrootitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorswpropertiesitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorswviewitem.h \
@@ -405,7 +425,6 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./MCAPI/MCAPIDesignerTypes.h \
     ./settings/CodeEditorSettingsPage.h \
     ./settings/GeneralSettingsPage.h \
-    ./settings/LibrarySettingsPage.h \
     ./settings/NamingPolicySettingsPage.h \
     ./settings/SettingsDialog.h \
     ./ComponentInstanceEditor/componentinstanceeditor.h \
@@ -497,10 +516,12 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/dialogs/listSelectDialog/ListSelectDialog.cpp \
     ./common/dialogs/selectDirectoryDialog/selectdirectorydialog.cpp \
     ./common/dialogs/NewDesignDialog/NewDesignDialog.cpp \
+    ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.cpp \
     ./common/validators/nameValidator/namevalidator.cpp \
     ./common/validators/vhdlNameValidator/vhdlnamevalidator.cpp \
     ./common/validators/LibraryPathValidator/librarypathvalidator.cpp \
     ./common/widgets/assistedLineEdit/AssistedLineEdit.cpp \
+    ./common/widgets/assistedLineEdit/BasicLineContentMatcher.cpp \
     ./common/widgets/assistedLineEdit/LineContentAssistWidget.cpp \
     ./common/widgets/attributeBox/attributebox.cpp \
     ./common/widgets/attributeBox/attributemodel.cpp \
@@ -540,6 +561,14 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/widgets/memoryMapSelector/memorymapselector.cpp \
     ./common/widgets/interfaceSelector/interfaceselector.cpp \
     ./common/widgets/LineEditEx/LineEditEx.cpp \
+    ./common/widgets/ComboBoxEx/ComboBoxEx.cpp \
+    ./common/widgets/SnippetTextEdit/SnippetHighlighter.cpp \
+    ./common/widgets/SnippetTextEdit/SnippetTextEdit.cpp \
+    ./common/widgets/usageComboBox/usagecombobox.cpp \
+    ./common/widgets/accessComboBox/accesscombobox.cpp \
+    ./common/widgets/modWriteComboBox/modwritecombobox.cpp \
+    ./common/widgets/readActionComboBox/readactioncombobox.cpp \
+    ./common/widgets/testConstraintComboBox/testconstraintcombobox.cpp \
     ./common/graphicsItems/CommonGraphicsUndoCommands.cpp \
     ./common/graphicsItems/ComponentItem.cpp \
     ./common/graphicsItems/ConnectionEndpoint.cpp \
@@ -574,12 +603,9 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./designwidget/SelectItemTypeDialog.cpp \
     ./designwidget/columnview/ColumnEditDialog.cpp \
     ./designwidget/columnview/HWColumn.cpp \
-    ./exceptions/invalid_file.cpp \
-    ./exceptions/vhdl_error.cpp \
     ./IPXactWrapper/ComponentEditor/itemeditor.cpp \
     ./IPXactWrapper/ComponentEditor/itemvisualizer.cpp \
     ./IPXactWrapper/ComponentEditor/busInterfaces/ApiCreateDialog.cpp \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/apieditor.cpp \
     ./IPXactWrapper/ComponentEditor/busInterfaces/bridgesdelegate.cpp \
     ./IPXactWrapper/ComponentEditor/busInterfaces/bridgeseditor.cpp \
     ./IPXactWrapper/ComponentEditor/busInterfaces/bridgesmodel.cpp \
@@ -691,8 +717,18 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/cpus/cpusdelegate.cpp \
     ./IPXactWrapper/ComponentEditor/cpus/cpuseditor.cpp \
     ./IPXactWrapper/ComponentEditor/cpus/cpusmodel.cpp \
-    ./IPXactWrapper/ComponentEditor/memoryMaps/fieldtablemodel.cpp \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/addressblockdelegate.cpp \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/addressblockeditor.cpp \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/addressblockmodel.cpp \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapdelegate.cpp \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapeditor.cpp \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapmodel.cpp \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapsdelegate.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapseditor.cpp \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapsmodel.cpp \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/registerdelegate.cpp \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/registereditor.cpp \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/registertablemodel.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.cpp \
@@ -702,6 +738,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memoryvisualizeritem.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditor.cpp \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditoraddrblockitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditoraddrspaceitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditoraddrspacesitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorapiinterfaceitem.cpp \
@@ -712,6 +749,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorcominterfaceitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorcominterfacesitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorcpusitem.cpp \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorfielditem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorfileitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorfilesetitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorfilesetsitem.cpp \
@@ -724,6 +762,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorotherclocksitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorparametersitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorportsitem.cpp \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorregisteritem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorrootitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorswpropertiesitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorswviewitem.cpp \
@@ -882,7 +921,6 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./MCAPI/CSourceWidget.cpp \
     ./settings/CodeEditorSettingsPage.cpp \
     ./settings/GeneralSettingsPage.cpp \
-    ./settings/LibrarySettingsPage.cpp \
     ./settings/NamingPolicySettingsPage.cpp \
     ./settings/SettingsDialog.cpp \
     ./ComponentInstanceEditor/componentinstanceeditor.cpp \
