@@ -32,6 +32,12 @@ value_() {
 	}
 }
 
+EnumeratedValue::EnumeratedValue():
+usage_(EnumeratedValue::READWRITE), 
+nameGroup_(),
+value_() {
+}
+
 EnumeratedValue::EnumeratedValue( const EnumeratedValue& other ):
 usage_(other.usage_),
 nameGroup_(other.nameGroup_),

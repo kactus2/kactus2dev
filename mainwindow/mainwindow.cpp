@@ -222,6 +222,7 @@ MainWindow::MainWindow(QWidget *parent)
 		          TabDocument::PREVIEWWINDOW | TabDocument::CONTEXT_HELP_WINDOW);
 
 	setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
+	setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 }
 
 //-----------------------------------------------------------------------------

@@ -6,6 +6,7 @@
  */
 
 #include "componenteditorfielditem.h"
+#include <IPXactWrapper/ComponentEditor/memoryMaps/fieldeditor.h>
 
 #include <QApplication>
 
@@ -16,16 +17,23 @@ ComponentEditorFieldItem::ComponentEditorFieldItem(QSharedPointer<Field> field,
 												   ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 field_(field),
-editor_(NULL) {
+editor_(new FieldEditor(field, component)) {
 
 	Q_ASSERT(field_);
+
+	setObjectName(tr("ComponentEditorFieldItem"));
+
+	editor_->hide();
+
+	connect(editor_, SIGNAL(contentChanged()), 
+		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 }
 
 ComponentEditorFieldItem::~ComponentEditorFieldItem() {
-// 	if (editor_) {
-// 		delete editor_;
-// 		editor_ = NULL;
-// 	}
+	if (editor_) {
+		delete editor_;
+		editor_ = NULL;
+	}
 }
 
 QFont ComponentEditorFieldItem::getFont() const {
@@ -45,9 +53,9 @@ bool ComponentEditorFieldItem::isValid() const {
 }
 
 ItemEditor* ComponentEditorFieldItem::editor() {
-	return NULL;
+	return editor_;
 }
 
 const ItemEditor* ComponentEditorFieldItem::editor() const {
-	return NULL;
+	return editor_;
 }

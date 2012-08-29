@@ -16,17 +16,17 @@
 
 /*! \brief Equals the spirit:enumeratedValue element in IP-Xact specification.
  *
- * Descrives a name and value pair for the fiven field.
+ * Describes a name and value pair for the given field.
  */
 class KACTUS2_API EnumeratedValue {
 
 public:
 
-	/*! \brief Matches the values of spirit:usage
+	/*! \brief Matches the values of spirit:usage within spirit:enumeratedValue
 	 *
 	 */
 	enum EnumeratedUsage {
-		READ,
+		READ = 0,
 		WRITE,
 		READWRITE	// default value
 	};
@@ -41,6 +41,9 @@ public:
 	 * this class or one of it's member classes.
 	 */
     EnumeratedValue(QDomNode& enumerationNode);
+
+	//! \brief The default constructor.
+	EnumeratedValue();
 
 	//! \brief Copy constructor
 	EnumeratedValue(const EnumeratedValue& other);

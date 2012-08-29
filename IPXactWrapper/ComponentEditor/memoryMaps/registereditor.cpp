@@ -11,7 +11,6 @@
 #include "registerdelegate.h"
 #include <common/widgets/summaryLabel/summarylabel.h>
 
-
 #include <QVBoxLayout>
 
 RegisterEditor::RegisterEditor(QSharedPointer<Register> reg, 

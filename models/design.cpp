@@ -834,21 +834,30 @@ const QStringList Design::getDependentFiles() const
 	return QStringList();
 }
 
-const QList<VLNV> Design::getDependentVLNVs() const
-{
+const QList<VLNV> Design::getDependentVLNVs() const {
 	QList<VLNV> instanceList;
 
 	// go through all component instances within the design
-	for (int i = 0; i < this->componentInstances_.size(); ++i) {
+	for (int i = 0; i < componentInstances_.size(); ++i) {
 
 		// if the pointer is valid and it is not already added to the list of
 		// component instances (two instances of same component are not added
 		// twice)
-		if ((this->componentInstances_.at(i).getComponentRef().isValid()) &&
+		if ((componentInstances_.at(i).getComponentRef().isValid()) &&
 			(!instanceList.contains(componentInstances_.at(i).getComponentRef()))) {
 
 				// add the component VLNV to the list
 				instanceList.append(componentInstances_.at(i).getComponentRef());
+		}
+	}
+
+	foreach (const SWInstance swInstance, swInstances_) {
+		
+		// if sw instance vlnv reference is valid and it is not yet on the list
+		// of vlnv references
+		if (swInstance.getComponentRef().isValid() && 
+			!instanceList.contains(swInstance.getComponentRef())) {
+			instanceList.append(swInstance.getComponentRef());
 		}
 	}
 	return instanceList;
