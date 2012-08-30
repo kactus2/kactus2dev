@@ -10,6 +10,7 @@
 #include <common/widgets/summaryLabel/summarylabel.h>
 #include "enumeratedvaluemodel.h"
 #include "enumeratedvaluedelegate.h"
+#include "writevalueconstrainteditor.h"
 
 FieldEditor::FieldEditor(QSharedPointer<Field> field, 
 						 QSharedPointer<Component> component, 
@@ -18,18 +19,15 @@ ItemEditor(component, parent),
 enumView_(new EditableTableView(this)),
 enumProxy_(new QSortFilterProxyModel(this)),
 enumModel_(new EnumeratedValueModel(field, this)),
-writeConstrView_(new EditableTableView(this)),
-writeProxy_(new QSortFilterProxyModel(this)) {
+writeConstr_(new WriteValueConstraintEditor(field->getWriteConstraint(), tr("Write value constraints"), this)) {
 
 	// display the labels on top the table
 	SummaryLabel* enumLabel = new SummaryLabel(tr("Enumerated values"), this);
-	SummaryLabel* writeLabel = new SummaryLabel(tr("Write value constraints"), this);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(enumLabel, 0, Qt::AlignCenter);
-	layout->addWidget(enumView_);
-	layout->addWidget(writeLabel, 0, Qt::AlignCenter);
-	layout->addWidget(writeConstrView_);
+	layout->addWidget(enumView_, 1);
+	layout->addWidget(writeConstr_, 0);
 	layout->setContentsMargins(0, 0, 0, 0);
 
 	enumProxy_->setSourceModel(enumModel_);
@@ -48,16 +46,15 @@ writeProxy_(new QSortFilterProxyModel(this)) {
 	connect(enumView_, SIGNAL(removeItem(const QModelIndex&)),
 		enumModel_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 
-	writeConstrView_->setModel(writeProxy_);
-	writeConstrView_->setItemsDraggable(false);
-	writeConstrView_->setSortingEnabled(false);
+	connect(writeConstr_, SIGNAL(contentChanged()),
+		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
 FieldEditor::~FieldEditor() {
 }
 
 bool FieldEditor::isValid() const {
-	return true;
+	return enumModel_->isValid();
 }
 
 void FieldEditor::refresh() {

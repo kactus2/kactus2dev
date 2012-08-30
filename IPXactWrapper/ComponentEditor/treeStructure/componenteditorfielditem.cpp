@@ -59,3 +59,23 @@ ItemEditor* ComponentEditorFieldItem::editor() {
 const ItemEditor* ComponentEditorFieldItem::editor() const {
 	return editor_;
 }
+
+void ComponentEditorFieldItem::onEditorChanged() {
+	// on field also the grand parent must be updated
+	if (parent() && parent()->parent()) {
+		emit contentChanged(parent()->parent());
+
+		// on field also the grand grand parent must be updated
+		if (parent()->parent()->parent()) {
+			emit contentChanged(parent()->parent()->parent());
+
+			// on field also the grand grand grand parent must be updated
+			if (parent()->parent()->parent()->parent()) {
+				emit contentChanged(parent()->parent()->parent()->parent());
+			}
+		}
+	}
+
+	// call the base class to update this and parent
+	ComponentEditorItem::onEditorChanged();
+}

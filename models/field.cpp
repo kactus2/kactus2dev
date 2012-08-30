@@ -33,7 +33,8 @@ access_(General::ACCESS_COUNT),
 modifiedWrite_(General::MODIFIED_WRITE_COUNT),
 readAction_(General::READ_ACTION_COUNT),
 testable_(true),
-testConstraint_(General::TEST_UNCONSTRAINED) {
+testConstraint_(General::TEST_UNCONSTRAINED),
+writeConstraint_() {
 
 	// parse the spirit:id attribute
 	QDomNamedNodeMap attributeMap = fieldNode.attributes();
@@ -84,6 +85,10 @@ testConstraint_(General::TEST_UNCONSTRAINED) {
 		else if (tempNode.nodeName() == QString("spirit:modifiedWriteValue")) {
 			modifiedWrite_ = General::str2ModifiedWrite(tempNode.childNodes().at(0).nodeValue());
 		}
+		else if (tempNode.nodeName() == QString("spirit:writeValueConstraint")) {
+			writeConstraint_ = QSharedPointer<WriteValueConstraint>(
+				new WriteValueConstraint(tempNode));
+		}
 		else if (tempNode.nodeName() == QString("spirit:readAction")) {
 			readAction_ = General::str2ReadAction(tempNode.childNodes().at(0).nodeValue());
 		}
@@ -110,7 +115,8 @@ access_(General::ACCESS_COUNT),
 modifiedWrite_(General::MODIFIED_WRITE_COUNT),
 readAction_(General::READ_ACTION_COUNT),
 testable_(true),
-testConstraint_(General::TEST_UNCONSTRAINED){
+testConstraint_(General::TEST_UNCONSTRAINED),
+writeConstraint_() {
 
 }
 
@@ -128,7 +134,8 @@ access_(other.access_),
 modifiedWrite_(other.modifiedWrite_),
 readAction_(other.readAction_),
 testable_(other.testable_),
-testConstraint_(other.testConstraint_) {
+testConstraint_(other.testConstraint_),
+writeConstraint_() {
 
 	foreach (QSharedPointer<EnumeratedValue> enumValue, other.enumeratedValues_) {
 		if (enumValue) {
@@ -144,6 +151,11 @@ testConstraint_(other.testConstraint_) {
 				new Parameter(*param.data()));
 			parameters_.append(copy);
 		}
+	}
+
+	if (other.writeConstraint_) {
+		writeConstraint_ = QSharedPointer<WriteValueConstraint>(new WriteValueConstraint(
+			*other.writeConstraint_.data()));
 	}
 }
 
@@ -179,6 +191,9 @@ Field& Field::operator=( const Field& other ) {
 				parameters_.append(copy);
 			}
 		}
+
+		writeConstraint_ = QSharedPointer<WriteValueConstraint>(
+			new WriteValueConstraint(*other.writeConstraint_.data()));
 	}
 	return *this;
 }
@@ -187,6 +202,7 @@ Field::~Field() {
 	enumeratedValues_.clear();
 	parameters_.clear();
 	bitWidthAttributes_.clear();
+	writeConstraint_.clear();
 }
 
 void Field::write(QXmlStreamWriter& writer) {
@@ -231,6 +247,10 @@ void Field::write(QXmlStreamWriter& writer) {
 
 	if (modifiedWrite_ != General::MODIFIED_WRITE_COUNT) {
 		writer.writeTextElement("spirit:modifiedWriteValue", General::modifiedWrite2Str(modifiedWrite_));
+	}
+
+	if (writeConstraint_) {
+		writeConstraint_->write(writer);
 	}
 
 	if (readAction_ != General::READ_ACTION_COUNT) {
@@ -472,4 +492,15 @@ General::TestConstraint Field::getTestConstraint() const {
 
 void Field::setTestConstraint( const General::TestConstraint testContraint ) {
 	testConstraint_ = testContraint;
+}
+
+const QSharedPointer<WriteValueConstraint> Field::getWriteConstraint() const {
+	return writeConstraint_;
+}
+
+QSharedPointer<WriteValueConstraint> Field::getWriteConstraint() {
+	if (!writeConstraint_) {
+		writeConstraint_ = QSharedPointer<WriteValueConstraint>(new WriteValueConstraint());
+	}
+	return writeConstraint_;
 }

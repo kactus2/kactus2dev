@@ -17,6 +17,7 @@
 
 class EditableTableView;
 class EnumeratedValueModel;
+class WriteValueConstraintEditor;
 
 /*! \brief The editor to edit the enumerated values of a field.
  *
@@ -67,11 +68,8 @@ private:
 	//! \brief The model that manages the enumerated values.
 	EnumeratedValueModel* enumModel_;
 
-	//! \brief The view to display the write value constraints.
-	EditableTableView* writeConstrView_;
-
-	//! \brief The proxy that does the sorting of write value constraints.
-	QSortFilterProxyModel* writeProxy_;
+	//! \brief The editor to set the write constraints of field.
+	WriteValueConstraintEditor* writeConstr_;
 };
 
 #endif // FIELDEDITOR_H

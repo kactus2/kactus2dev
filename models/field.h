@@ -9,6 +9,7 @@
 
 #include "generaldeclarations.h"
 #include <common/Global.h>
+#include "writevalueconstraint.h"
 
 #include <QString>
 #include <QXmlStreamWriter>
@@ -286,6 +287,18 @@ public:
 	*/
 	void setTestConstraint(const General::TestConstraint testContraint);
 
+	/*! \brief Get pointer to the write constraint of the field.
+	 *
+	 * \return Pointer to the write constraint.
+	*/
+	const QSharedPointer<WriteValueConstraint> getWriteConstraint() const;
+
+	/*! \brief Get pointer to the write constraint of the field.
+	 *
+	 * \return Pointer to the write constraint.
+	*/
+	QSharedPointer<WriteValueConstraint> getWriteConstraint();
+
 private:
 
 	/*! \brief Assigns a unique id to the containing element
@@ -341,6 +354,9 @@ private:
 
 	//! \brief Contains the test constraint setting for the field.
 	General::TestConstraint testConstraint_;
+
+	//! \brief Pointer to the write value constraint for the field.
+	QSharedPointer<WriteValueConstraint> writeConstraint_;
 };
 
 #endif /* FIELD_H_ */

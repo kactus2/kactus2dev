@@ -87,3 +87,14 @@ void ComponentEditorAddrBlockItem::createChild( int index ) {
 		childItems_.insert(index, regItem);
 	}
 }
+
+void ComponentEditorAddrBlockItem::onEditorChanged() {
+	
+	// on address block also the grand parent must be updated
+	if (parent() && parent()->parent()) {
+		emit contentChanged(parent()->parent());
+	}
+
+	// call the base class to update this and parent
+	ComponentEditorItem::onEditorChanged();
+}

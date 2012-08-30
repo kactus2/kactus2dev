@@ -80,3 +80,19 @@ void ComponentEditorRegisterItem::createChild( int index ) {
 		fields_.at(index), model_, libHandler_, component_, this));
 	childItems_.insert(index, fieldItem);
 }
+
+void ComponentEditorRegisterItem::onEditorChanged() {
+
+	// on register also the grand parent must be updated
+	if (parent() && parent()->parent()) {
+		emit contentChanged(parent()->parent());
+
+		// on register also the grand grand parent must be updated
+		if (parent()->parent()->parent()) {
+			emit contentChanged(parent()->parent()->parent());
+		}
+	}
+
+	// call the base class to update this and parent
+	ComponentEditorItem::onEditorChanged();
+}

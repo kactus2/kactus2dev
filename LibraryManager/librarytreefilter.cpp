@@ -103,8 +103,9 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow,
 		switch (handler_->getDocumentType(vlnv)) {
 			case VLNV::COMPONENT: {
 				// if components are not be displayed
-				if (!type_.components_)
+				if (!type_.components_) {
 					continue;
+				}
 				break;
 								  }
 			case VLNV::ABSTRACTIONDEFINITION: {
@@ -165,8 +166,9 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow,
 		QSharedPointer<Component> component = libComb.staticCast<Component>();
 
 		// if component does not match the filters
-		if (!checkImplementation(component) || !checkHierarchy(component) || !checkFirmness(component))
+		if (!checkImplementation(component) || !checkHierarchy(component) || !checkFirmness(component)) {
 			continue;
+		}
 
 		// if all tests passed
 		return true;

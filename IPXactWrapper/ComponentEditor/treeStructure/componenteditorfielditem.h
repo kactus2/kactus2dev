@@ -78,6 +78,13 @@ public:
 	*/
 	virtual const ItemEditor* editor() const;
 
+protected slots:
+
+	/*! \brief Handler for editor's contentChanged signal.
+	 *
+	*/
+	virtual void onEditorChanged();
+
 private:
 	
 	//! \brief No copying
