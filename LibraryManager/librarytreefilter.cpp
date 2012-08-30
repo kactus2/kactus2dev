@@ -148,9 +148,17 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow,
 
                 return true;
                                       }
-			// if other types should be displayed
+			// if type is one of the advanced
 			default:
-				return type_.advanced_;
+
+				// if other types should be displayed
+				if (type_.advanced_) {
+					return true;
+				}
+
+				// if other types are not to be displayed then check other possible
+				// vlnvs
+				continue;
 		}
 
 		// the vlnv is for component for sure
