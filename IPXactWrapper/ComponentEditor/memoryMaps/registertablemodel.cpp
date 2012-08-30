@@ -256,7 +256,7 @@ void RegisterTableModel::onAddItem( const QModelIndex& index ) {
 	}
 
 	beginInsertRows(QModelIndex(), row, row);
-	fields_.insert(row, QSharedPointer<Field>(new Field()));
+	fields_.insert(row, QSharedPointer<Field>(new Field(reg_->getVolatile(), reg_->getAccess())));
 	endInsertRows();
 
 	// inform navigation tree that file set is added

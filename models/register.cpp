@@ -54,6 +54,16 @@ registerDefinition_() {
 }
 
 
+Register::Register( General::BooleanValue volatileValue, General::Access access ):
+RegisterModel(),
+dim_(-1),
+addressOffset_(),
+alternateRegisters_(), 
+registerDefinition_() {
+	registerDefinition_.setVolatile(volatileValue);
+	registerDefinition_.setAccess(access);
+}
+
 Register::Register( const Register& other ):
 RegisterModel(other),
 dim_(other.dim_),

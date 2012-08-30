@@ -44,6 +44,14 @@ public:
 	//! \brief The default constructor.
 	Register();
 
+	/*! \brief The constructor.
+	 *
+	 * \param volatileValue The volatile value to set.
+	 * \param access The access type to set.
+	 *
+	*/
+	Register(General::BooleanValue volatileValue, General::Access access);
+
 	//! \brief Copy constructor
 	Register(const Register& other);
 

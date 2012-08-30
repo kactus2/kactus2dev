@@ -320,7 +320,8 @@ void AddressBlockModel::onAddItem( const QModelIndex& index ) {
 	}
 
 	beginInsertRows(QModelIndex(), row, row);
-	items_.insert(row, QSharedPointer<Register>(new Register()));
+	items_.insert(row, QSharedPointer<Register>(new Register(addressBlock_->getVolatile(),
+		addressBlock_->getAccess())));
 	endInsertRows();
 
 	// inform navigation tree that file set is added

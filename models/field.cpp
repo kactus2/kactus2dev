@@ -120,6 +120,25 @@ writeConstraint_() {
 
 }
 
+Field::Field( General::BooleanValue volatileValue, General::Access access ):
+id_(), 
+nameGroup_(),
+bitOffset_(-1), 
+typeIdentifier_(),
+bitWidth_(0),
+bitWidthAttributes_(),
+enumeratedValues_(), 
+parameters_(),
+volatile_(General::BooleanValue2Bool(volatileValue, false)),
+access_(access),
+modifiedWrite_(General::MODIFIED_WRITE_COUNT),
+readAction_(General::READ_ACTION_COUNT),
+testable_(true),
+testConstraint_(General::TEST_UNCONSTRAINED),
+writeConstraint_() {
+
+}
+
 Field::Field( const Field& other ):
 id_(other.id_),
 nameGroup_(other.nameGroup_),

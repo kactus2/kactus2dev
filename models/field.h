@@ -42,6 +42,14 @@ public:
 	//! \brief The default constructor.
 	Field();
 
+	/*! \brief The constructor
+	 *
+	 * \param volatileValue The volatile value to set.
+	 * \param access The access type to set.
+	 *
+	*/
+	Field(General::BooleanValue volatileValue, General::Access access);
+
 	//! \brief Copy constructor
 	Field(const Field& other);
 
