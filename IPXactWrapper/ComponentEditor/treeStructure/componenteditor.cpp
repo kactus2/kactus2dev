@@ -237,6 +237,7 @@ void ComponentEditor::onItemActivated( const QModelIndex& index ) {
 	ItemEditor* editor = item->editor();
 	if (editor) {
 		editorVisualizerSizes.append(1);
+		editor->refresh();
 	}
 	// if there is no editor then hide the editor slot
 	else {
@@ -393,4 +394,8 @@ void ComponentEditor::onItemChanged() {
 	// this document has now been modified
 	TabDocument::setModified(true);
 	emit contentChanged();
+}
+
+VLNV ComponentEditor::getIdentifyingVLNV() const {
+	return getDocumentVLNV();
 }

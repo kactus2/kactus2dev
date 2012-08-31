@@ -322,40 +322,56 @@ void ConfigurationEditor::setConfiguration( DesignWidget* designWidget, bool loc
 	// get the names of the hierarchical views.
 	QStringList hierViewNames;
     
-    switch (designWidget->getImplementation())
-    {
-    case KactusAttribute::KTS_HW:
-        {
+    switch (designWidget->getImplementation()) {
+    case KactusAttribute::KTS_HW: {
             hierViewNames = component_->getHierViews();
             break;
-        }
+								  }
 
-    case KactusAttribute::KTS_SW:
-        {
+    case KactusAttribute::KTS_SW: {
             hierViewNames = component_->getSWViewNames();
             break;
-        }
+								  }
 
-    case KactusAttribute::KTS_SYS:
-        {
+    case KactusAttribute::KTS_SYS: {
             hierViewNames = component_->getSystemViewNames();
-        }
+			break;
+								   }
     }
+
+	// the vlnv of the design used
+	VLNV designVLNV = designWidget_->getIdentifyingVLNV();
 	
+	// add the views that use the same design
+	QStringList viewsToAdd;
+	foreach (QString viewName, hierViewNames) {
+		// the vlnv that the component references
+		VLNV ref = component_->getHierRef(viewName);
+
+		// the VLNV for the design used by the view
+		VLNV referencedDesign = handler_->getDesignVLNV(ref);
+
+		if (referencedDesign == designVLNV) {
+			// add view name to the list of configurations for the same design
+			viewsToAdd.append(viewName);
+		}
+	}
+
 	// if theres only one configuration then it can't be removed.
-	if (hierViewNames.size() < 2)
+	if (viewsToAdd.size() < 2) {
 		removeButton_.setDisabled(true);
+	}
 
 	// ask the active view name.
 	QString activeView = designWidget->getOpenViewName();
 
 	// find the index of the active view and set it as selected
-	int activeIndex = hierViewNames.indexOf(activeView);
+	int activeIndex = viewsToAdd.indexOf(activeView);
 
 	// disconnect signals so the index can be changed
 	configurationSelector_.disconnect(this);
 	configurationSelector_.clear();
-	configurationSelector_.addItems(hierViewNames);
+	configurationSelector_.addItems(viewsToAdd);
 	configurationSelector_.setCurrentIndex(activeIndex);
 
 	// reconnect the signal

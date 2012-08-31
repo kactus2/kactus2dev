@@ -171,6 +171,10 @@ void HierarchyItem::parseComponent( const VLNV& vlnv ) {
 				isValid_ = false;
 				continue;
 		}
+		// if the component already has this the design under it
+		else if (hasChild(designVLNV)) {
+			continue;
+		}
 
 		KactusAttribute::Implementation implementation = component_->getViewType(reference);
 		QString viewName = component_->getViewName(reference);

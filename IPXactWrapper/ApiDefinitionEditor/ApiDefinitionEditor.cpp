@@ -207,3 +207,7 @@ void ApiDefinitionEditor::showEvent(QShowEvent* event)
     emit helpUrlRequested("definitions/apidefinition.html");
 }
 
+VLNV ApiDefinitionEditor::getIdentifyingVLNV() const {
+	return getDocumentVLNV();
+}
+

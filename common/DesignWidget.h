@@ -45,6 +45,14 @@ public:
      */
     virtual ~DesignWidget();
 
+	/*! \brief Get the VLNV that can be used to identify the document.
+	 * 
+	 * Design widget returns the VLNV of the design being edited. 
+	 *
+	 * \return The VLNV that identifies the document.
+	*/
+	virtual VLNV getIdentifyingVLNV() const;
+
     /*!
      *  Sets the diagram used to visualize the design.
      */

@@ -46,6 +46,12 @@ public:
 	//! \brief The destructor
 	virtual ~BusEditor();
 
+	/*! \brief Get the VLNV that can be used to identify the Bus.
+	 *
+	 * \return The VLNV that identifies the Bus.
+	*/
+	virtual VLNV getIdentifyingVLNV() const;
+
     /*!
      *  Sets the protection state of the document.
      *

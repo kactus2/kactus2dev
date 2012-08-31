@@ -54,6 +54,12 @@ public:
      */
 	virtual ~ComDefinitionEditor();
 
+	/*! \brief Get the VLNV that can be used to identify the COM definition.
+	 *
+	 * \return The VLNV of the COM definition
+	*/
+	virtual VLNV getIdentifyingVLNV() const;
+
     /*!
      *  Sets the protection state of the document.
      *

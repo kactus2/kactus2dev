@@ -208,3 +208,7 @@ IEditProvider* CSourceWidget::getEditProvider()
 {
     return editProvider_.data();
 }
+
+VLNV CSourceWidget::getIdentifyingVLNV() const {
+	return getDocumentVLNV();
+}

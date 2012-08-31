@@ -73,6 +73,12 @@ public:
      */
     virtual ~TabDocument();
 
+	/*! \brief Get the VLNV that can be used to identify the document.
+	 *
+	 * \return The VLNV that identifies the document.
+	*/
+	virtual VLNV getIdentifyingVLNV() const = 0;
+
     /*!
      *  Applies the current settings into use.
      */

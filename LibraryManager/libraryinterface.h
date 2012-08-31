@@ -196,7 +196,7 @@ public:
 	/*! \brief Get the VLNV of the design for a given hierarchy reference.
 	 *
 	 * This function can be used by calling it with a hierarchy reference found
-	 * if a component's hierarchical view. Function checks if the reference is
+	 * in a component's hierarchical view. Function checks if the reference is
 	 * directly for a design and returns the design vlnv. If reference is for a
 	 * configuration then the design vlnv is searched from the configuration and
 	 * design vlnv is returned. If design is not found then invalid vlnv is 

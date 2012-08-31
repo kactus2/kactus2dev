@@ -41,6 +41,12 @@ public:
 	//! \brief The destructor
 	~ComponentEditor();
 
+	/*! \brief Get the VLNV that can be used to identify the component.
+	 *
+	 * \return The VLNV of the component.
+	*/
+	virtual VLNV getIdentifyingVLNV() const;
+
 	/*! \brief Get the vlnv of the current component.
 	 *
 	 * \return VLNV of the component being edited.

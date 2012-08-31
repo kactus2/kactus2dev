@@ -2652,8 +2652,7 @@ void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forc
 	// the vlnv must always be for a component
 	Q_ASSERT(libraryHandler_->getDocumentType(vlnv) == VLNV::COMPONENT);
 
-	if (isDesignOpen(vlnv, KactusAttribute::KTS_HW))
-	{
+	if (isDesignOpen(vlnv, KactusAttribute::KTS_HW)) {
 		return;
 	}
 

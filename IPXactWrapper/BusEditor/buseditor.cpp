@@ -234,12 +234,14 @@ void BusEditor::setupLayout() {
 VLNV BusEditor::getDocumentVLNV() const {
 
 	// if abstraction definition is being edited then use it as the identifier.
-	if (absDef_)
+	if (absDef_) {
 		return *absDef_->getVlnv();
+	}
 
 	// if only bus definition is being edited then use it as identifier.
-	else
+	else {
 		return *busDef_->getVlnv();
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -258,4 +260,8 @@ void BusEditor::showEvent(QShowEvent* event)
 {
     TabDocument::showEvent(event);
     emit helpUrlRequested("definitions/busdefinition.html");
+}
+
+VLNV BusEditor::getIdentifyingVLNV() const {
+	return getDocumentVLNV();
 }

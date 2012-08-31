@@ -174,3 +174,7 @@ void ComDefinitionEditor::showEvent(QShowEvent* event)
     emit helpUrlRequested("definitions/comdefinition.html");
 }
 
+VLNV ComDefinitionEditor::getIdentifyingVLNV() const {
+	return getDocumentVLNV();
+}
+

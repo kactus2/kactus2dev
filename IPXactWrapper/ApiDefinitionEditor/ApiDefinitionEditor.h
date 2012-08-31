@@ -55,6 +55,12 @@ public:
      */
 	virtual ~ApiDefinitionEditor();
 
+	/*! \brief Get the VLNV that can be used to identify the API definition.
+	 *
+	 * \return The VLNV of the API definition.
+	*/
+	virtual VLNV getIdentifyingVLNV() const;
+
     /*!
      *  Sets the protection state of the document.
      *

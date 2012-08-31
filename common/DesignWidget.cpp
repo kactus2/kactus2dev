@@ -410,3 +410,14 @@ void DesignWidget::setEditedComponent(QSharedPointer<Component> component)
 {
     editedComponent_ = component;
 }
+
+VLNV DesignWidget::getIdentifyingVLNV() const {
+	 const QSharedPointer<DesignConfiguration> designConf = diagram_->getDesignConfiguration();
+	
+	if (designConf) {
+		return designConf->getDesignRef();
+	}
+	else {
+		editedComponent_->getHierRef(viewName_);
+	}
+}
