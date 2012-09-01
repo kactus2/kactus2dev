@@ -75,6 +75,8 @@
       <file>graphics/library-config.png</file>
       <file>graphics/generator_plugin.png</file>
       <file>graphics/naming-policy.png</file>
+      <file>graphics/lock-on.png</file>
+      <file>graphics/lock-off.png</file>
   </qresource>
     <qresource prefix="/">        
         <file>graphics/splash.png</file>

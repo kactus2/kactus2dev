@@ -79,6 +79,7 @@
 #include <PropertyWidget/messageconsole.h>
 
 #include <ComponentInstanceEditor/componentinstanceeditor.h>
+#include <AddressEditor/AddressEditor.h>
 #include <ConfigurationEditor/configurationeditor.h>
 #include <SystemDetailsEditor/SystemDetailsEditor.h>
 #include <InterfaceEditor/interfaceeditor.h>
@@ -118,6 +119,8 @@ MainWindow::MainWindow(QWidget *parent)
       contextHelpDock_(0),
       instanceEditor_(0),
       instanceDock_(0),
+      addressEditor_(0),
+      addressDock_(0),
       configurationEditor_(0),
       configurationDock_(0),
       systemDetailsEditor_(0),
@@ -206,6 +209,7 @@ MainWindow::MainWindow(QWidget *parent)
 	setupLibraryDock();
 	setupInstanceEditor();
     setupAdHocVisibilityEditor();
+    setupAddressEditor();
 	setupConfigurationEditor();
     setupSystemDetailsEditor();
 	setupInterfaceEditor();
@@ -222,7 +226,7 @@ MainWindow::MainWindow(QWidget *parent)
 		          TabDocument::PREVIEWWINDOW | TabDocument::CONTEXT_HELP_WINDOW);
 
 	setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
-	setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
+    setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 }
 
 //-----------------------------------------------------------------------------
@@ -538,6 +542,15 @@ void MainWindow::setupActions() {
     connect(showAdHocAction_, SIGNAL(toggled(bool)), this, SLOT(onAdHocAction(bool)), Qt::UniqueConnection);
     connect(adHocDock_->toggleViewAction(), SIGNAL(toggled(bool)),
             showAdHocAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+    // Action to show/hide the address editor.
+    showAddressAction_ = new QAction(tr("Address Editor"), this);
+    showAddressAction_->setCheckable(true);
+    showAddressAction_->setChecked(true);
+    connect(showAddressAction_, SIGNAL(toggled(bool)),
+            this, SLOT(onAddressAction(bool)), Qt::UniqueConnection);
+    connect(addressDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+            showAddressAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 	
 	setupMenus();
 }
@@ -637,6 +650,10 @@ void MainWindow::loadWorkspace(QString const& workspaceName)
     visibilities_.showAdHocVisibility = adHocVisible;
     showAdHocAction_->setChecked(adHocVisible);
 
+    const bool addressVisible = settings.value("AddressVisibility", false).toBool();
+    visibilities_.showAddress = addressVisible;
+    showAddressAction_->setChecked(addressVisible);
+
     const bool interfaceVisible = settings.value("InterfaceVisibility", true).toBool();
     visibilities_.showInterface_ = interfaceVisible;
     showInterfaceAction_->setChecked(interfaceVisible);
@@ -690,6 +707,8 @@ void MainWindow::saveWorkspace(QString const& workspaceName)
     settings.setValue("SystemDetailsVisibility", visibilities_.showSystemDetails_);
     settings.setValue("ConnectionVisibility", visibilities_.showConnection_);
     settings.setValue("InstanceVisibility", visibilities_.showInstance_);
+    settings.setValue("AdHocVisibility", visibilities_.showAdHocVisibility);
+    settings.setValue("AddressVisibility", visibilities_.showAddress);
     settings.setValue("InterfaceVisibility", visibilities_.showInterface_);
     settings.setValue("LibraryVisibility", visibilities_.showLibrary_);
     settings.setValue("OutputVisibility", visibilities_.showOutput_);
@@ -937,7 +956,7 @@ void MainWindow::setupContextHelp()
 
 void MainWindow::setupConfigurationEditor() {
 
-	configurationDock_ = new QDockWidget(tr("Design configuration details"), this);
+	configurationDock_ = new QDockWidget(tr("Design Configuration Details"), this);
 	configurationDock_->setObjectName(tr("Configuration editor"));
 	configurationDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 	configurationDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
@@ -968,8 +987,8 @@ void MainWindow::setupSystemDetailsEditor()
             this, SLOT(onDesignChanged()), Qt::UniqueConnection);
 }
 
-void MainWindow::setupInstanceEditor() {
-
+void MainWindow::setupInstanceEditor()
+{
 	instanceDock_ = new QDockWidget(tr("Component Instance Details"), this);
 	instanceDock_->setObjectName(tr("Instance Editor"));
 	instanceDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
@@ -993,6 +1012,20 @@ void MainWindow::setupAdHocVisibilityEditor()
     adHocEditor_ = new AdHocEditor(adHocDock_);
     adHocDock_->setWidget(adHocEditor_);
     addDockWidget(Qt::RightDockWidgetArea, adHocDock_);
+}
+
+void MainWindow::setupAddressEditor()
+{
+    addressDock_ = new QDockWidget(tr("Address Editor"), this);
+    addressDock_->setObjectName(tr("Address Editor"));
+    addressDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
+    addressDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
+
+    addressEditor_ = new AddressEditor(addressDock_);
+    addressDock_->setWidget(addressEditor_);
+    addDockWidget(Qt::BottomDockWidgetArea, addressDock_);
+
+    connect(addressEditor_, SIGNAL(contentChanged()), this, SLOT(onDesignChanged()), Qt::UniqueConnection);
 }
 
 void MainWindow::setupInterfaceEditor()
@@ -1049,6 +1082,7 @@ void MainWindow::onClearItemSelection()
         adHocEditor_->clear();
     }
 
+    addressEditor_->clear();
 	instanceEditor_->clear();
 	interfaceEditor_->clear();
 	connectionEditor_->clear();
@@ -1066,6 +1100,7 @@ void MainWindow::onComponentSelected( ComponentItem* component ) {
     if (dynamic_cast<HWComponentItem*>(component) != 0)
     {
         adHocEditor_->setDataSource(dynamic_cast<HWComponentItem*>(component));
+        addressEditor_->setComponent(component);
     }
     else
     {
@@ -1101,6 +1136,8 @@ void MainWindow::onInterfaceSelected( ConnectionEndpoint* interface ) {
     adHocEditor_->clear();
 	connectionEditor_->clear();
 	instanceEditor_->clear();
+    
+    // TODO: Address editor bus interface select.
 
     if (!interface->isAdHoc())
     {
@@ -1115,6 +1152,7 @@ void MainWindow::onInterfaceSelected( ConnectionEndpoint* interface ) {
 void MainWindow::onConnectionSelected( GraphicsConnection* connection ) {
 	Q_ASSERT(connection);
     adHocEditor_->clear();
+    addressEditor_->clear();
 	instanceEditor_->clear();
 	interfaceEditor_->clear();
 	connectionEditor_->setConnection(connection);
@@ -1691,6 +1729,7 @@ void MainWindow::onTabChanged(int index)
 	else {
 		configurationEditor_->clear();
         systemDetailsEditor_->clear();
+        addressEditor_->clear();
 		instanceEditor_->clear();
         adHocEditor_->clear();
 		interfaceEditor_->clear();
@@ -1752,6 +1791,9 @@ void MainWindow::closeEvent(QCloseEvent* event)
 
     // Disconnect the action to show/hide the ad-hoc visibility editor.
     disconnect(showAdHocAction_, SIGNAL(toggled(bool)), this, SLOT(onAdHocAction(bool)));
+
+    // Action to show/hide the instance editor.
+    disconnect(showAddressAction_, SIGNAL(toggled(bool)), this, SLOT(onAddressAction(bool)));
 
 	// Go through all tab documents and ask the user what to do if they are not saved.
 	while (designTabs_->count() > 0)
@@ -3403,6 +3445,22 @@ void MainWindow::onAdHocAction( bool show ) {
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: MainWindow::onAddressAction()
+//-----------------------------------------------------------------------------
+void MainWindow::onAddressAction(bool show)
+{
+    addressDock_->setVisible(show);
+
+    // if the instance window is supported in the current window
+    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+
+    if (doc && doc->getSupportedWindows() & TabDocument::ADDRESS_WINDOW) {
+        visibilities_.showAddress = show;
+    }
+}
+
+
 void MainWindow::onInstanceAction( bool show ) {
 	instanceDock_->setVisible(show);
 
@@ -3505,6 +3563,15 @@ void MainWindow::updateWindows( unsigned int supportedWindows ) {
         windowsMenu_.removeAction(showAdHocAction_);
         adHocDock_->hide();
     }
+
+    if (supportedWindows & TabDocument::ADDRESS_WINDOW) {
+        windowsMenu_.addAction(showAddressAction_);
+        addressDock_->setVisible(visibilities_.showAddress);
+    }
+    else {
+        windowsMenu_.removeAction(showAddressAction_);
+        addressDock_->hide();
+    }
 }
 
 void MainWindow::hideEvent( QHideEvent* event ) {
@@ -3565,6 +3632,10 @@ void MainWindow::hideEvent( QHideEvent* event ) {
     // Action to show/hide the instance editor.
     disconnect(showAdHocAction_, SIGNAL(toggled(bool)), this, SLOT(onAdHocAction(bool)));
     disconnect(adHocDock_->toggleViewAction(), SIGNAL(toggled(bool)), showAdHocAction_, SLOT(setChecked(bool)));
+
+    // Action to show/hide the address editor.
+    disconnect(showAddressAction_, SIGNAL(toggled(bool)), this, SLOT(onAddressAction(bool)));
+    disconnect(addressDock_->toggleViewAction(), SIGNAL(toggled(bool)), showAddressAction_, SLOT(setChecked(bool)));
 
 	QMainWindow::hideEvent(event);
 }
@@ -3629,6 +3700,11 @@ void MainWindow::showEvent( QShowEvent* event ) {
     connect(showAdHocAction_, SIGNAL(toggled(bool)), this, SLOT(onAdHocAction(bool)), Qt::UniqueConnection);
     connect(adHocDock_->toggleViewAction(), SIGNAL(toggled(bool)),
             showAdHocAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+    // Action to show/hide the address editor.
+    connect(showAddressAction_, SIGNAL(toggled(bool)), this, SLOT(onAddressAction(bool)), Qt::UniqueConnection);
+    connect(addressDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+            showAddressAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
 
 	QMainWindow::showEvent(event);
 }
@@ -3929,6 +4005,7 @@ showConfiguration_(true),
 showConnection_(true),
 showInterface_(true),
 showInstance_(true),
-showAdHocVisibility(true)
+showAdHocVisibility(true),
+showAddress(false)
 {
 }

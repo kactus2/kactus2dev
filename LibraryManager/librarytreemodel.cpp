@@ -49,7 +49,7 @@ QVariant LibraryTreeModel::headerData(int section, Qt::Orientation orientation,
 	}
 	// for displayRole
 	else if (role == Qt::DisplayRole) {
-		return tr("Library Items");
+		return tr("Library items");
 	}
 	// not supported role
 	else {

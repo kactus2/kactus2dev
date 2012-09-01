@@ -9,6 +9,7 @@
 #define CREATECONFIGURATIONDIALOG_H
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
+#include <common/widgets/assistedLineEdit/BasicLineContentMatcher.h>
 
 #include <models/component.h>
 
@@ -125,17 +126,29 @@ private:
     //! Specifies what kind of configuration is created.
     KactusAttribute::Implementation configType_;
 
+    //! \brief Line editor to set the name for the new view
+    LineEditEx* configNameEdit_;
+
+    //! Content matcher for the configuration name editor.
+    BasicLineContentMatcher configNameMatcher_;
+
 	//! \brief Radio button that selects that current design is to be used.
 	QRadioButton* useExistingRadio_;
+
+    //! Description label for use existing radio button.
+    QLabel* useExistingDescLabel_;
 
 	//! \brief Radio button that selects that a new design is to be created 
 	QRadioButton* createNewRadio_;
 
+    //! Description label for create new radio button.
+    QLabel* createNewDescLabel_;
+
 	//! \brief Radio button that selects a new design to be copied from the old one
 	QRadioButton* createCopyRadio_;
 
-	//! \brief Line editor to set the name for the new view
-	LineEditEx* configNameEdit_;
+    //! Description label for create copy radio button.
+    QLabel* createCopyDescLabel_;
 
 	//! \brief Editor to set the vlnv for the new configuration (and possibly design)
 	VLNVEditor* vlnvEdit_;

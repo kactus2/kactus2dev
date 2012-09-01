@@ -30,7 +30,7 @@ SwitchHWDialog::SwitchHWDialog(QSharedPointer<Component> component, QString cons
       component_(component),
       infoLabel_(new QLabel(tr("Choose how the SW architecture specified in this "
                                "system design is mapped to new HW."), this)),
-      hwViewRefLabel_(new QLabel(tr("Configuration to map:"), this)),
+      hwViewRefLabel_(new QLabel(tr("HW design configuration to map:"), this)),
       hwViewRefCombo_(new QComboBox(this)),
       viewNameLabel_(new QLabel(tr("Name of the system view to be created for the mapped HW component:"), this)),
       viewNameEdit_(new LineEditEx(this)),
@@ -106,6 +106,7 @@ SwitchHWDialog::SwitchHWDialog(QSharedPointer<Component> component, QString cons
     layout_->addWidget(actionGroupBox_);
     layout_->addWidget(vlnvEdit_);
     layout_->addLayout(dirLayout);
+    layout_->addStretch(1);
     layout_->addWidget(buttonBox_);
 
     // Setup connections.

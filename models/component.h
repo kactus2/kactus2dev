@@ -236,6 +236,15 @@ public:
 	*/
 	QStringList getMemoryMapNames() const;
 
+    /*!
+     *  Retrieves the memory map with the given name.
+     *
+     *      @param [in] name The name of the memory map to retrieve.
+     *
+     *      @return The corresponding memory map, or 0 if not found.
+     */
+    MemoryMap const* getMemoryMap(QString const& name) const;
+
 	/*! \brief Set this components memory maps
 	*
 	* \param memoryMaps QList containing the memory maps to be set

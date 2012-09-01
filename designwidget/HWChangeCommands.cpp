@@ -18,6 +18,8 @@
 #include <models/component.h>
 #include <models/ComInterface.h>
 
+#include <common/DesignDiagram.h>
+#include <common/DesignWidget.h>
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/ConnectionUndoCommands.h>
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
@@ -168,6 +170,9 @@ ComponentPacketizeCommand::~ComponentPacketizeCommand()
 //-----------------------------------------------------------------------------
 void ComponentPacketizeCommand::undo()
 {
+    // Unregister the VLNV.
+    static_cast<DesignDiagram*>(component_->scene())->getParent()->removeRelatedVLNV(vlnv_);
+
     // Set an empty VLNV.
     component_->componentModel()->setVlnv(VLNV());
 
@@ -192,6 +197,9 @@ void ComponentPacketizeCommand::undo()
 void ComponentPacketizeCommand::redo()
 {
     component_->componentModel()->setVlnv(vlnv_);
+
+    // Register the VLNV.
+    static_cast<DesignDiagram*>(component_->scene())->getParent()->addRelatedVLNV(vlnv_);
 
     // Mark all endpoints as non-temporary.
     foreach (QGraphicsItem* item, component_->childItems())

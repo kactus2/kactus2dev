@@ -117,9 +117,9 @@ QVariant HierarchyModel::headerData(int section,
 	else if (role == Qt::DisplayRole) {
 		switch (section) {
 			case HierarchyModel::OBJECT_COLUMN:
-				return tr("Library Items");
+				return tr("Library items");
 			case HierarchyModel::INSTANCE_COLUMN:
-				return tr("Instance Count");
+				return tr("Instance count");
 			default:
 				return QVariant();
 		}

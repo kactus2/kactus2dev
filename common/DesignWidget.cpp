@@ -418,6 +418,6 @@ VLNV DesignWidget::getIdentifyingVLNV() const {
 		return designConf->getDesignRef();
 	}
 	else {
-		editedComponent_->getHierRef(viewName_);
+		return editedComponent_->getHierRef(viewName_);
 	}
 }

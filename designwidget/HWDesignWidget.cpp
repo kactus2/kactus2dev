@@ -60,7 +60,7 @@ HWDesignWidget::HWDesignWidget(LibraryInterface *lh, QWidget* parent)
 {
 	// update the supported windows 
 	supportedWindows_ = (supportedWindows_ | CONFIGURATIONWINDOW |
-		CONNECTIONWINDOW | INTERFACEWINDOW |INSTANCEWINDOW | ADHOC_WINDOW);
+		CONNECTIONWINDOW | INTERFACEWINDOW |INSTANCEWINDOW | ADHOC_WINDOW | ADDRESS_WINDOW);
 
     setDiagram(new HWDesignDiagram(lh, *getGenericEditProvider(), this));
     getDiagram()->setProtection(false);

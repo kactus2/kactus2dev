@@ -54,7 +54,8 @@ public:
 		INSTANCEWINDOW          = 0x040,
         ADHOC_WINDOW            = 0x080,
         SYSTEM_DETAILS_WINDOW   = 0x100,
-        CONTEXT_HELP_WINDOW     = 0x200
+        CONTEXT_HELP_WINDOW     = 0x200,
+        ADDRESS_WINDOW          = 0x400,
 	};
 
     /*!

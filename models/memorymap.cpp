@@ -11,6 +11,8 @@
 #include "addressblock.h"
 #include "bank.h"
 
+#include <common/utils.h>
+
 #include <QString>
 #include <QDomNode>
 #include <QList>
@@ -236,4 +238,41 @@ QString MemoryMap::getDescription() const {
 
 void MemoryMap::setDescription( const QString& description ) {
 	nameGroup_.description_ = description;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMap::getLastAddress()
+//-----------------------------------------------------------------------------
+unsigned int MemoryMap::getLastAddress() const
+{
+    int index = -1;
+    unsigned int lastBaseAddress = 0;
+
+    for (int i = 0; i < items_.size(); ++i)
+    {
+        AddressBlock* block = dynamic_cast<AddressBlock*>(items_.at(i).data());
+
+        if (block != 0)
+        {
+            bool ok = true;
+            
+            unsigned int baseAddress = Utils::str2Int(block->getBaseAddress());
+
+            if (ok)
+            {
+                if (baseAddress > lastBaseAddress)
+                {
+                    lastBaseAddress = baseAddress;
+                    index = i;
+                }
+            }
+        }
+    }
+
+    if (index == -1)
+    {
+        return 0;
+    }
+    
+    return lastBaseAddress + Utils::str2Int(static_cast<AddressBlock*>(items_.at(index).data())->getRange());
 }

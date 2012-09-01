@@ -30,7 +30,6 @@ class HWDesignWidget;
 class LibraryHandler;
 class ComponentItem;
 class BusPortItem;
-class ProgramEntityItem;
 class ComponentPreviewBox;
 class MessageConsole;
 class BusInterfaceItem;
@@ -39,6 +38,7 @@ class AdHocInterfaceItem;
 class ComponentInstanceEditor;
 class ConfigurationEditor;
 class SystemDetailsEditor;
+class AddressEditor;
 class InterfaceEditor;
 class ConnectionEditor;
 class AdHocEditor;
@@ -468,6 +468,10 @@ private slots:
     // Handler for ad-hoc visibility action's trigger.
     void onAdHocAction(bool show);
 
+    //! \brief Handler for address action's trigger.
+    void onAddressAction(bool show);
+
+
     /*!
      *  Handles the situation when a workspace has been changed.
      */
@@ -569,11 +573,14 @@ private:
      */
     void setupContextHelp();
 
-	//! \brief Set up the component instance editor.
+	//! Sets up the component instance editor.
 	void setupInstanceEditor();
 
     //! Sets up the ad-hoc visibility editor.
     void setupAdHocVisibilityEditor();
+
+    //! Sets up the address editor.
+    void setupAddressEditor();
 
 	//! \brief Set up the configuration editor.
 	void setupConfigurationEditor();
@@ -638,6 +645,10 @@ private:
     //! The ad-hoc visibility editor and its dock widget.
     AdHocEditor* adHocEditor_;
     QDockWidget* adHocDock_;
+
+    //! Address editor for HW designs and its dock widget.
+    AddressEditor* addressEditor_;
+    QDockWidget* addressDock_;
 
 	//! \brief The widget to edit the configuration of designs.
 	ConfigurationEditor* configurationEditor_;
@@ -814,6 +825,9 @@ private:
     //! Action to show/hide the ad-hoc visibility editor.
     QAction* showAdHocAction_;
 
+    //! Action to show/hide the address editor.
+    QAction* showAddressAction_;
+
 	//! \brief The menu containing the actions to select which windows to display.
 	QMenu windowsMenu_;
 
@@ -873,6 +887,9 @@ private:
 
         //! If true, the ad-hoc visibility editor is shown.
         bool showAdHocVisibility;
+
+        //! If true, the address editor is shown.
+        bool showAddress;
 
 		/*! \brief The default constructor.
 		 *

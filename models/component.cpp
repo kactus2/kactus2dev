@@ -3285,3 +3285,19 @@ QStringList Component::getModelParameterNames() const {
 	Q_ASSERT(model_);
 	return model_->getModelParameterNames();
 }
+
+//-----------------------------------------------------------------------------
+// Function: Component::getMemoryMap()
+//-----------------------------------------------------------------------------
+MemoryMap const* Component::getMemoryMap(QString const& name) const
+{
+    for (int i = 0; i < memoryMaps_.size(); ++i)
+    {
+        if (memoryMaps_.at(i)->getName() == name)
+        {
+            return memoryMaps_.at(i).data();
+        }
+    }
+
+    return 0;
+}

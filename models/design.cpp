@@ -1084,6 +1084,12 @@ QList<VLNV> Design::getComponents() const {
 		if (instance.getComponentRef().isValid())
 			list.append(instance.getComponentRef());
 	}
+
+    foreach (SWInstance const& instance, swInstances_) {
+        if (instance.getComponentRef().isValid())
+            list.append(instance.getComponentRef());
+    }
+
 	return list;
 }
 

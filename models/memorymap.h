@@ -86,6 +86,11 @@ public:
 	 */
 	unsigned int getAddressUnitBits() const;
 
+    /*!
+     *  Returns the last address of the memory map.
+     */
+    unsigned int getLastAddress() const;
+
 	/*! \brief Get list of memory map items
 	 *
 	 * \return QList containing pointers to the memory map items stored in

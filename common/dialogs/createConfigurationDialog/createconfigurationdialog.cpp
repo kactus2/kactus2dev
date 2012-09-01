@@ -18,8 +18,7 @@
 #include <QFormLayout>
 #include <QMessageBox>
 #include <QCoreApplication>
-
-#include <QDebug>
+#include <QSettings>
 
 CreateConfigurationDialog::CreateConfigurationDialog(LibraryInterface* handler,
 													 QSharedPointer<Component> component,
@@ -30,10 +29,14 @@ CreateConfigurationDialog::CreateConfigurationDialog(LibraryInterface* handler,
       handler_(handler),
       component_(component),
       configType_(configType),
-      useExistingRadio_(new QRadioButton(tr("Use current design\nCreates only a new configuration for the current design."), this)),
-      createNewRadio_(new QRadioButton(tr("Create new design\nCreates a new empty design and a configuration for it."), this)),
-      createCopyRadio_(new QRadioButton(tr("Copy old design to new configuration\nDuplicates the current design with a new VLNV and creates a configuration for it."), this)),
       configNameEdit_(new LineEditEx(this)),
+      configNameMatcher_(),
+      useExistingRadio_(new QRadioButton(tr("Use current design"), this)),
+      useExistingDescLabel_(new QLabel(tr("Creates only a new configuration for the current design."), this)),
+      createNewRadio_(new QRadioButton(tr("Create new design"), this)),
+      createNewDescLabel_(new QLabel(tr("Creates a new empty design and a configuration for it."), this)),
+      createCopyRadio_(new QRadioButton(tr("Copy old design to new configuration"), this)),
+      createCopyDescLabel_(new QLabel(tr("Duplicates the current design with a new VLNV and creates a configuration for it."), this)),
       vlnvEdit_(new VLNVEditor(VLNV::DESIGNCONFIGURATION, handler, this, this, true)),
       implementationCombo_(new QComboBox(this)),
       okButton_(new QPushButton(tr("OK"), this)),
@@ -42,15 +45,18 @@ CreateConfigurationDialog::CreateConfigurationDialog(LibraryInterface* handler,
 	Q_ASSERT(component);
 	Q_ASSERT(handler);
 
-	setupLayout();
-	setupConnections();
+	configNameEdit_->setMessageIcon(QPixmap(":/icons/graphics/exclamation.png"));
+    configNameEdit_->setContentMatcher(&configNameMatcher_);
 
-    configNameEdit_->setMessageIcon(QPixmap(":/icons/graphics/exclamation.png"));
+    QSettings settings;
 
     switch (configType)
     {
     case KactusAttribute::KTS_HW:
         {
+            QStringList suggestions = settings.value("policies/hwviewnames").toStringList();
+            configNameMatcher_.setItems(suggestions);
+
             configNameEdit_->setDisallowedInputs(component->getHierViews());
             configNameEdit_->setMessageTemplate("View '%1' already exists!");
             break;
@@ -58,6 +64,9 @@ CreateConfigurationDialog::CreateConfigurationDialog(LibraryInterface* handler,
 
     case KactusAttribute::KTS_SW:
         {
+            QStringList suggestions = settings.value("policies/swviewnames").toStringList();
+            configNameMatcher_.setItems(suggestions);
+
             configNameEdit_->setDisallowedInputs(component->getSWViewNames());
             configNameEdit_->setMessageTemplate("SW view '%1' already exists!");
             break;
@@ -65,6 +74,9 @@ CreateConfigurationDialog::CreateConfigurationDialog(LibraryInterface* handler,
 
     case KactusAttribute::KTS_SYS:
         {
+            QStringList suggestions = settings.value("policies/sysviewnames").toStringList();
+            configNameMatcher_.setItems(suggestions);
+
             configNameEdit_->setDisallowedInputs(component->getSystemViewNames());
             configNameEdit_->setMessageTemplate("System view '%1' already exists!");
             break;
@@ -76,8 +88,24 @@ CreateConfigurationDialog::CreateConfigurationDialog(LibraryInterface* handler,
         }
     }
 
+    QFont font = useExistingRadio_->font();
+    font.setBold(true);
+    useExistingRadio_->setFont(font);
+    useExistingRadio_->setStyleSheet("QRadioButton::indicator { width: 15px; height: 15px; }");
+    createNewRadio_->setFont(font);
+    createNewRadio_->setStyleSheet("QRadioButton::indicator { width: 15px; height: 15px; }");
+    createCopyRadio_->setFont(font);
+    createCopyRadio_->setStyleSheet("QRadioButton::indicator { width: 15px; height: 15px; }");
+
 	// by default an existing design is used.
 	useExistingRadio_->toggle();
+
+    useExistingDescLabel_->setStyleSheet("QLabel { padding-left: 19px; }");
+    useExistingDescLabel_->setWordWrap(true);
+    createNewDescLabel_->setStyleSheet("QLabel { padding-left: 19px; }");
+    createNewDescLabel_->setWordWrap(true);
+    createCopyDescLabel_->setStyleSheet("QLabel { padding-left: 19px; }");
+    createCopyDescLabel_->setWordWrap(true);
 
 	// set the views to the combo box
 	implementationCombo_->addItem(QString(""));
@@ -90,7 +118,12 @@ CreateConfigurationDialog::CreateConfigurationDialog(LibraryInterface* handler,
 	vlnvEdit_->setLibrary(compVLNV.getLibrary());
 	vlnvEdit_->setVersion(compVLNV.getVersion());
 
+    setupLayout();
+    setupConnections();
+
 	setWindowTitle(tr("Create New Configuration"));
+    setFixedSize(470, heightForWidth(470));
+    
     prevalidate();
 }
 
@@ -103,8 +136,11 @@ void CreateConfigurationDialog::setupLayout() {
 
 	QVBoxLayout* radioLayout = new QVBoxLayout(radioGroup);
 	radioLayout->addWidget(useExistingRadio_);
+    radioLayout->addWidget(useExistingDescLabel_);
 	radioLayout->addWidget(createNewRadio_);
+    radioLayout->addWidget(createNewDescLabel_);
 	radioLayout->addWidget(createCopyRadio_);
+    radioLayout->addWidget(createCopyDescLabel_);
 	
 	QFormLayout* comboLayout = new QFormLayout();
 	comboLayout->addRow(tr("Reference to this component's top-level\n"
