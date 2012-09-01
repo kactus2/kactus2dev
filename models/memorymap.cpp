@@ -260,7 +260,7 @@ unsigned int MemoryMap::getLastAddress() const
 
             if (ok)
             {
-                if (baseAddress > lastBaseAddress)
+                if (baseAddress >= lastBaseAddress)
                 {
                     lastBaseAddress = baseAddress;
                     index = i;
@@ -274,5 +274,5 @@ unsigned int MemoryMap::getLastAddress() const
         return 0;
     }
     
-    return lastBaseAddress + Utils::str2Int(static_cast<AddressBlock*>(items_.at(index).data())->getRange());
+    return lastBaseAddress + Utils::str2Int(static_cast<AddressBlock*>(items_.at(index).data())->getRange()) - 1;
 }

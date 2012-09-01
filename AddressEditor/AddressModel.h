@@ -12,6 +12,8 @@
 #ifndef ADDRESSMODEL_H
 #define ADDRESSMODEL_H
 
+#include "AddressEntry.h"
+
 #include <common/GenericEditProvider.h>
 
 #include <QAbstractTableModel>
@@ -19,10 +21,6 @@
 #include <QList>
 #include <QString>
 #include <QSharedPointer>
-
-class ComponentItem;
-class BusPortItem;
-class ConnectionEndpoint;
 
 //-----------------------------------------------------------------------------
 //! Data model for the address editor.
@@ -114,6 +112,11 @@ public slots:
      */
     void clear();
 
+    /*!
+     *  Auto-assigns the addresses so that there are no address collisions.
+     */
+    void autoAssignAddresses();
+
 signals:
     //! \brief Emitted when contents of the model changes.
     void contentChanged();
@@ -123,29 +126,12 @@ private:
     AddressModel(AddressModel const& rhs);
     AddressModel& operator=(AddressModel const& rhs);
 
-    //-----------------------------------------------------------------------------
-    //! Internal structure for address entries.
-    //-----------------------------------------------------------------------------
-    struct AddressEntry
-    {
-        ComponentItem* component;           //!< The owner component.
-        BusPortItem* mirSlavePort;          //!< The mirrored slave bus interface.
-        ConnectionEndpoint* connectedPort;  //!< The connected port containing the memory map.
-        unsigned int range;                 //!< The data range.
-        unsigned int baseEndAddress;        //!< The base end address.
-
-        /*!
-         *  Constructor.
-         */
-        AddressEntry(ComponentItem* component, BusPortItem* mirSlavePort)
-            : component(component),
-              mirSlavePort(mirSlavePort),
-              connectedPort(0),
-              range(0),
-              baseEndAddress(0)
-        {
-        }
-    };
+    /*!
+     *  Returns true if the entry is valid (i.e. does not overlap with any other entry).
+     *
+     *      @param [in] index The index of the entry to validate.
+     */
+    bool checkRangeOverlaps(int index) const;
 
     //-----------------------------------------------------------------------------
     // Data.

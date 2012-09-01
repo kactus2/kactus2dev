@@ -60,37 +60,7 @@ void AddressModel::setComponent(ComponentItem* component)
             if (port != 0 && port->getBusInterface() != 0 &&
                 port->getBusInterface()->getInterfaceMode() == General::MIRROREDSLAVE)
             {
-                AddressEntry entry(component_, port);
-
-                if (port->isConnected())
-                {
-                    // Determine the connected port.
-                    GraphicsConnection const* conn = port->getConnections().first();
-
-                    if (conn->endpoint1() != port)
-                    {
-                        entry.connectedPort = conn->endpoint1();
-                    }
-                    else
-                    {
-                        entry.connectedPort = conn->endpoint2();
-                    }
-
-                    // Retrieve the size of the memory map.
-                    ComponentItem* connectedComp = entry.connectedPort->encompassingComp();
-
-                    if (connectedComp != 0)
-                    {
-                        QString mapName = entry.connectedPort->getBusInterface()->getSlave()->getMemoryMapRef();
-                        MemoryMap const* map = connectedComp->componentModel()->getMemoryMap(mapName);
-
-                        entry.baseEndAddress = map->getLastAddress();
-                        entry.range = entry.baseEndAddress * map->getAddressUnitBits() / 8;
-                    }
-                }
-
-
-                addressEntries_.append(entry);
+                addressEntries_.append(AddressEntry(component_, port));
             }
         }
     }
@@ -143,50 +113,32 @@ QVariant AddressModel::data(QModelIndex const& index, int role /*= Qt::DisplayRo
         {
         case ADDRESS_COL_INTERFACE_NAME:
             {
-                return entry.component->name() + "." + entry.mirSlavePort->name();
+                return entry.getInterfaceName();
             }
 
         case ADDRESS_COL_MAP_NAME:
             {
-                if (entry.connectedPort == 0)
-                {
-                    return tr("undefined");
-                }
-
-                return entry.connectedPort->encompassingComp()->name() + "." +
-                       entry.connectedPort->getBusInterface()->getSlave()->getMemoryMapRef();
+                return entry.getMemoryMapName();
             }
 
         case ADDRESS_COL_RANGE:
             {
-                if (entry.connectedPort == 0)
-                {
-                    return tr("unspecified");
-                }
-
-                return entry.range;
+                return entry.getRange();
             }
 
         case ADDRESS_COL_END_ADDRESS:
             {
-                if (entry.connectedPort == 0)
+                if (!entry.hasValidConnection())
                 {
                     return tr("unspecified");
                 }
 
-                // Retrieve the start address from the component parameters.
-                unsigned int startAddress = 
-                    entry.component->getConfigurableElements().value(entry.mirSlavePort->name() + "_start_addr", "0").toUInt();
-
-                return QString("0x") +
-                       QString("%1").arg(startAddress + entry.baseEndAddress, 8, 16, QChar('0')).toUpper();
+                return QString("0x") + QString("%1").arg(entry.getEndAddress(), 8, 16, QChar('0')).toUpper();
             }
 
         case ADDRESS_COL_START_ADDRESS:
             {
-                unsigned int startAddress = 
-                    entry.component->getConfigurableElements().value(entry.mirSlavePort->name() + "_start_addr", "0").toUInt();
-                return QString("0x") + QString("%1").arg(startAddress, 8, 16, QChar('0')).toUpper();
+                return QString("0x") + QString("%1").arg(entry.getStartAddress(), 8, 16, QChar('0')).toUpper();
             }
 
         case ADDRESS_COL_LOCKED:
@@ -206,10 +158,7 @@ QVariant AddressModel::data(QModelIndex const& index, int role /*= Qt::DisplayRo
         {
             AddressEntry const& entry = addressEntries_.at(index.row());
 
-            QMap<QString, QString> const& elements = entry.component->getConfigurableElements();
-            bool locked = elements.value(entry.mirSlavePort->name() + "_addr_locked", "false") == "true";
-
-            if (locked)
+            if (entry.isLocked())
             {
                 return QIcon(":icons/graphics/lock-on.png");
             }
@@ -217,6 +166,27 @@ QVariant AddressModel::data(QModelIndex const& index, int role /*= Qt::DisplayRo
             {
                 return QIcon(":icons/graphics/lock-off.png");
             }
+        }
+    }
+    else if (role == Qt::ForegroundRole)
+    {
+        switch (index.column())
+        {
+        case ADDRESS_COL_START_ADDRESS:
+        case ADDRESS_COL_END_ADDRESS:
+            {
+                if (!checkRangeOverlaps(index.row()))
+                {
+                    return Qt::red;
+                }
+                else
+                {
+                    return Qt::black;
+                }
+            }
+
+        default:
+            return QVariant();
         }
     }
     else if (role == Qt::SizeHintRole)
@@ -231,8 +201,7 @@ QVariant AddressModel::data(QModelIndex const& index, int role /*= Qt::DisplayRo
         if (index.column() == ADDRESS_COL_LOCKED)
         {
             AddressEntry const& entry = addressEntries_.at(index.row());
-            QMap<QString, QString> const& elements = entry.component->getConfigurableElements();
-            return elements.value(entry.mirSlavePort->name() + "_addr_locked", "false") == "true";
+            return entry.isLocked();
         }
     }
 
@@ -313,12 +282,9 @@ bool AddressModel::setData(const QModelIndex& index, const QVariant& value, int 
         {
         case ADDRESS_COL_START_ADDRESS:
             {
-                AddressEntry const& entry = addressEntries_.at(index.row());
+                AddressEntry& entry = addressEntries_[index.row()];
+                entry.setStartAddress(Utils::str2Int(value.toString()));
 
-                QMap<QString, QString> elements = entry.component->getConfigurableElements();
-                elements.insert(entry.mirSlavePort->name() + "_start_addr", QString::number(Utils::str2Int(value.toString())));
-                entry.component->setConfigurableElements(elements);
-                
                 QModelIndex endAddressIndex(this->index(index.row(), index.column() + 2));
                 emit dataChanged(endAddressIndex, endAddressIndex);
                 break;
@@ -338,11 +304,8 @@ bool AddressModel::setData(const QModelIndex& index, const QVariant& value, int 
     {
         if (index.column() == ADDRESS_COL_LOCKED)
         {
-            AddressEntry const& entry = addressEntries_.at(index.row());
-
-            QMap<QString, QString> elements = entry.component->getConfigurableElements();
-            elements.insert(entry.mirSlavePort->name() + "_addr_locked", value.toString().toLower());
-            entry.component->setConfigurableElements(elements);
+            AddressEntry& entry = addressEntries_[index.row()];
+            entry.setLocked(value.toBool());
 
             QModelIndex startAddressIndex(this->index(index.row(), index.column() - 1));
             emit dataChanged(startAddressIndex, index);
@@ -368,10 +331,8 @@ Qt::ItemFlags AddressModel::flags(const QModelIndex& index) const
     case ADDRESS_COL_START_ADDRESS:
         {
             AddressEntry const& entry = addressEntries_.at(index.row());
-            QMap<QString, QString> const& elements = entry.component->getConfigurableElements();
-            bool locked = elements.value(entry.mirSlavePort->name() + "_addr_locked", "false") == "true";
-
-            if (locked)
+            
+            if (entry.isLocked())
             {
                 return Qt::ItemIsEnabled;
             }
@@ -395,4 +356,44 @@ Qt::ItemFlags AddressModel::flags(const QModelIndex& index) const
 void AddressModel::clear()
 {
     setComponent(0);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressModel::isEntryValid()
+//-----------------------------------------------------------------------------
+bool AddressModel::checkRangeOverlaps(int index) const
+{
+    for (int i = 0; i < addressEntries_.size(); ++i)
+    {
+        if (i == index)
+        {
+            continue;
+        }
+
+        // Check if the address boundaries overlap.
+        if (addressEntries_.at(index).overlaps(addressEntries_.at(i)))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressModel::autoAssignAddresses()
+//-----------------------------------------------------------------------------
+void AddressModel::autoAssignAddresses()
+{
+    beginResetModel();
+
+    for (int i = 0; i < addressEntries_.size() - 1; ++i)
+    {
+        if (!addressEntries_[i + 1].isLocked())
+        {
+            addressEntries_[i + 1].setStartAddress(addressEntries_[i].getEndAddress() + 1);
+        }
+    }
+
+    endResetModel();
 }

@@ -38,8 +38,9 @@ AddressEditor::AddressEditor(QWidget* parent)
 
     filter_->setSourceModel(&model_);
 
-    view_->setModel(filter_);
-    view_->setSortingEnabled(true);
+    //view_->setModel(filter_);
+    view_->setModel(&model_);
+    //view_->setSortingEnabled(true);
     view_->setItemDelegate(new AddressDelegate(this));
     view_->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
     view_->horizontalHeader()->setStretchLastSection(true);
@@ -163,4 +164,5 @@ void AddressEditor::setupLayout()
 //-----------------------------------------------------------------------------
 void AddressEditor::setupConnections()
 {
+    connect(autoAssignButton_, SIGNAL(clicked()), &model_, SLOT(autoAssignAddresses()), Qt::UniqueConnection);
 }
