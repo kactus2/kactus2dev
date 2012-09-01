@@ -86,6 +86,9 @@ visualizerSlot_(&editorVisualizerSplitter_) {
 	navigationSize.append(4 * ComponentTreeView::DEFAULT_WIDTH);
 	navigationSplitter_.setSizes(navigationSize);
 
+	// when starting the component editor open the general editor
+	onItemActivated(navigationModel_.index(0, 0, QModelIndex()));
+
 	connect(&navigationView_, SIGNAL(activated(const QModelIndex&)),
 		this, SLOT(onItemActivated(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&navigationModel_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
@@ -98,9 +101,6 @@ visualizerSlot_(&editorVisualizerSplitter_) {
 
 	// Open in unlocked mode by default only if the version is draft.
 	setProtection(component_->getVlnv()->getVersion() != "draft");
-
-	// when starting the component editor open the general editor
-	onItemActivated(navigationModel_.index(0, 0, QModelIndex()));
 }
 
 ComponentEditor::~ComponentEditor() {
@@ -143,15 +143,15 @@ void ComponentEditor::refresh() {
 	component_.clear();
 	component_ = comp;
 
+	// open the general editor
+	onItemActivated(navigationModel_.index(0, 0, QModelIndex()));
+
 	// the document is no longer modified
 	setModified(false);
 	TabDocument::refresh();
 
 	// set the protection state to same as before refreshing
 	setProtection(locked);
-
-	// open the general editor
-	onItemActivated(navigationModel_.index(0, 0, QModelIndex()));
 }
 
 bool ComponentEditor::validate( QStringList& errorList ) {

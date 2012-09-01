@@ -147,8 +147,9 @@ bool HierarchyFilter::filterAcceptsRow( int source_row,
 	// check the type
 	switch (item->type()) {
 		case HierarchyItem::COMPONENT: {
-			if (!type_.components_)
+			if (!type_.components_) {
 				return false;
+			}
 			break;
 									   }
 

@@ -1800,89 +1800,6 @@ void MainWindow::closeEvent(QCloseEvent* event)
 }
 
 //-----------------------------------------------------------------------------
-// Function: openCSource()
-//-----------------------------------------------------------------------------
-void MainWindow::openCSource(ComponentItem* compItem)
-{
-    Q_ASSERT(compItem != 0);
-   
-    FileSet* fileSet = compItem->componentModel()->getFileSet("cSources");
-
-    if (fileSet == 0 || fileSet->getFiles().count() == 0)
-    {
-        return;
-    }
-
-    QString filename;
-
-    if (fileSet->getFiles().count() > 1)
-    {
-        // Show a dialog for selecting what source file to open.
-        ListSelectDialog dialog(this);
-        dialog.setWindowTitle(tr("Open Source"));
-        dialog.setDescription(tr("Select C source file to open:"));
-
-        foreach (QSharedPointer<File> file, fileSet->getFiles())
-        {
-            dialog.addItem(new QListWidgetItem(file->getName()));
-        }
-
-        if (dialog.exec() == QDialog::Rejected)
-        {
-            return;
-        }
-
-        filename = dialog.getSelectedItem()->text();
-    }
-    else
-    {
-        // Otherwise there is only one possibility.
-        filename = fileSet->getFiles().first()->getName();
-    }
-
-    if (compItem->componentModel()->getVlnv()->isValid())
-    {
-        filename = General::getAbsolutePath(libraryHandler_->getPath(*compItem->componentModel()->getVlnv()),
-                                                                     filename);
-    }
-
-    openCSource(filename, compItem->componentModel());
-}
-
-//-----------------------------------------------------------------------------
-// Function: MainWindow::openCSource()
-//-----------------------------------------------------------------------------
-void MainWindow::openCSource(QString const& filename, QSharedPointer<Component> component)
-{
-    // Check if the source is already open and activate it.
-    for (int i = 0; i < designTabs_->count(); i++)
-    {
-        CSourceWidget* sourceWidget = dynamic_cast<CSourceWidget*>(designTabs_->widget(i));
-
-        if (sourceWidget != 0 && sourceWidget->getSourceFile() == filename)
-        {
-            designTabs_->setCurrentIndex(i);
-            return;
-        }
-    }
-
-    // Otherwise make sure that the file exists.
-    if (!QFile::exists(filename))
-    {
-        QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
-                           "The source file " + filename + " is not found!", QMessageBox::Ok, this);
-        msgBox.exec();
-        return;
-    }
-
-    // Open the source to a view.
-    CSourceWidget* sourceWidget = new CSourceWidget(filename, component, libraryHandler_, this, this);
-    connect(sourceWidget, SIGNAL(contentChanged()), this, SLOT(updateMenuStrip()));
-    connect(sourceWidget->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));
-    sourceWidget->setTabWidget(designTabs_);
-}
-
-//-----------------------------------------------------------------------------
 // Function: updateZoomTools()
 //-----------------------------------------------------------------------------
 void MainWindow::updateZoomTools()
@@ -2562,6 +2479,13 @@ void MainWindow::createApiDefinition(VLNV const& vlnv, QString const& directory)
 
 void MainWindow::openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool disableBusDef, bool forceUnlocked ) {
 
+	if (isOpen(absDefVLNV)) {
+		return;
+	}
+	else if (isOpen(busDefVLNV)) {
+		return;
+	}
+
 	// Check if the bus editor is already open and activate it.
 	if (busDefVLNV.isValid()) {
 		for (int i = 0; i < designTabs_->count(); i++) {
@@ -2652,17 +2576,18 @@ void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forc
 	// the vlnv must always be for a component
 	Q_ASSERT(libraryHandler_->getDocumentType(vlnv) == VLNV::COMPONENT);
 
-	if (isDesignOpen(vlnv, KactusAttribute::KTS_HW)) {
-		return;
-	}
-
 	// parse the referenced component
 	QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(vlnv);
 	QSharedPointer<Component> comp = libComp.staticCast<Component>();
+	
+	// check if the design is already open
+	VLNV refVLNV = comp->getHierRef(viewName);
+	VLNV designVLNV = libraryHandler_->getDesignVLNV(refVLNV);
+	if (isOpen(designVLNV)) {
+		return;
+	}
+	
 	QList<VLNV> hierRefs = comp->getHierRefs();
-
-	// component must have at least one hierarchical reference
-	//Q_ASSERT(!hierRefs.isEmpty());
 
 	// make sure that all component's hierarchy refs are valid
 	bool hadInvalidRefs = false;
@@ -2776,8 +2701,17 @@ void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forc
 //-----------------------------------------------------------------------------
 void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName, bool forceUnlocked)
 {
-	if (isDesignOpen(vlnv, KactusAttribute::KTS_SW))
-	{
+	// the vlnv must always be for a component
+	Q_ASSERT(libraryHandler_->getDocumentType(vlnv) == VLNV::COMPONENT);
+
+	// parse the referenced component
+	QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(vlnv);
+	QSharedPointer<Component> comp = libComp.staticCast<Component>();
+
+	// check if the design is already open
+	VLNV refVLNV = comp->getHierSWRef(viewName);
+	VLNV designVLNV = libraryHandler_->getDesignVLNV(refVLNV);
+	if (isOpen(designVLNV)) {
 		return;
 	}
 
@@ -2829,11 +2763,19 @@ void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName, bool fo
 //-----------------------------------------------------------------------------
 void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName, bool forceUnlocked)
 {
+	// the vlnv must always be for a component
+	Q_ASSERT(libraryHandler_->getDocumentType(vlnv) == VLNV::COMPONENT);
 
-    if (isDesignOpen(vlnv, KactusAttribute::KTS_SYS))
-    {
-        return;
-    }
+	// parse the referenced component
+	QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(vlnv);
+	QSharedPointer<Component> comp = libComp.staticCast<Component>();
+
+	// check if the design is already open
+	VLNV refVLNV = comp->getHierSystemRef(viewName);
+	VLNV designVLNV = libraryHandler_->getDesignVLNV(refVLNV);
+	if (isOpen(designVLNV)) {
+		return;
+	}
 
 	SystemDesignWidget* designWidget = new SystemDesignWidget(false, libraryHandler_, this, this);
     registerDocument(designWidget);
@@ -2880,19 +2822,8 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName, boo
 
 void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
 
-	// Check if the component editor is already open and activate it.
-	if (vlnv.isValid())
-    {
-		for (int i = 0; i < designTabs_->count(); i++)
-        {
-			ComponentEditor* editor = dynamic_cast<ComponentEditor*>(designTabs_->widget(i));
-
-			if (editor && editor->getDocumentVLNV() == vlnv)
-            {
-				designTabs_->setCurrentIndex(i);
-				return;
-			}
-		}
+	if (isOpen(vlnv)) {
+		return;
 	}
 
 	// component editor was not yet open so create it
@@ -2939,20 +2870,10 @@ void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
 //-----------------------------------------------------------------------------
 void MainWindow::openComDefinition(VLNV const& vlnv, bool forceUnlocked /*= false*/)
 {
-    // Check if the COM definition is already open and activate it.
-    if (vlnv.isValid())
-    {
-        for (int i = 0; i < designTabs_->count(); i++)
-        {
-            ComDefinitionEditor* editor = dynamic_cast<ComDefinitionEditor*>(designTabs_->widget(i));
 
-            if (editor && editor->getDocumentVLNV() == vlnv)
-            {
-                designTabs_->setCurrentIndex(i);
-                return;
-            }
-        }
-    }
+	if (isOpen(vlnv)) {
+		return;
+	}
 
     // Editor was not yet open so create it.
     QSharedPointer<ComDefinition> comDef;
@@ -2994,22 +2915,12 @@ void MainWindow::openComDefinition(VLNV const& vlnv, bool forceUnlocked /*= fals
 //-----------------------------------------------------------------------------
 void MainWindow::openApiDefinition(VLNV const& vlnv, bool forceUnlocked /*= false*/)
 {
-    // Check if the API definition is already open and activate it.
-    if (vlnv.isValid())
-    {
-        for (int i = 0; i < designTabs_->count(); i++)
-        {
-            ApiDefinitionEditor* editor = dynamic_cast<ApiDefinitionEditor*>(designTabs_->widget(i));
 
-            if (editor && editor->getDocumentVLNV() == vlnv)
-            {
-                designTabs_->setCurrentIndex(i);
-                return;
-            }
-        }
-    }
+	if (isOpen(vlnv)) {
+		return;
+	}
 
-    // Editor was not yet open so create it.
+	// Editor was not yet open so create it.
     QSharedPointer<ApiDefinition> apiDef;
 
     if (libraryHandler_->contains(vlnv))
@@ -3041,6 +2952,107 @@ void MainWindow::openApiDefinition(VLNV const& vlnv, bool forceUnlocked /*= fals
     }
 
     editor->setTabWidget(designTabs_);
+}
+
+bool MainWindow::isOpen( const VLNV& vlnv ) {
+	if (!vlnv.isValid()) {
+		return false;
+	}
+
+	for (int i = 0; i < designTabs_->count(); i++) {
+		TabDocument* document = dynamic_cast<TabDocument*>(designTabs_->widget(i));
+
+		// if the document is already open is some tab
+		if (document && document->getIdentifyingVLNV() == vlnv) {
+			designTabs_->setCurrentIndex(i);
+			return true;
+		}
+	}
+	// document was not open
+	return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: openCSource()
+//-----------------------------------------------------------------------------
+void MainWindow::openCSource(ComponentItem* compItem)
+{
+	Q_ASSERT(compItem != 0);
+
+	FileSet* fileSet = compItem->componentModel()->getFileSet("cSources");
+
+	if (fileSet == 0 || fileSet->getFiles().count() == 0)
+	{
+		return;
+	}
+
+	QString filename;
+
+	if (fileSet->getFiles().count() > 1)
+	{
+		// Show a dialog for selecting what source file to open.
+		ListSelectDialog dialog(this);
+		dialog.setWindowTitle(tr("Open Source"));
+		dialog.setDescription(tr("Select C source file to open:"));
+
+		foreach (QSharedPointer<File> file, fileSet->getFiles())
+		{
+			dialog.addItem(new QListWidgetItem(file->getName()));
+		}
+
+		if (dialog.exec() == QDialog::Rejected)
+		{
+			return;
+		}
+
+		filename = dialog.getSelectedItem()->text();
+	}
+	else
+	{
+		// Otherwise there is only one possibility.
+		filename = fileSet->getFiles().first()->getName();
+	}
+
+	if (compItem->componentModel()->getVlnv()->isValid())
+	{
+		filename = General::getAbsolutePath(libraryHandler_->getPath(*compItem->componentModel()->getVlnv()),
+			filename);
+	}
+
+	openCSource(filename, compItem->componentModel());
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::openCSource()
+//-----------------------------------------------------------------------------
+void MainWindow::openCSource(QString const& filename, QSharedPointer<Component> component)
+{
+	// Check if the source is already open and activate it.
+	for (int i = 0; i < designTabs_->count(); i++)
+	{
+		CSourceWidget* sourceWidget = dynamic_cast<CSourceWidget*>(designTabs_->widget(i));
+
+		if (sourceWidget != 0 && sourceWidget->getSourceFile() == filename)
+		{
+			designTabs_->setCurrentIndex(i);
+			return;
+		}
+	}
+
+	// Otherwise make sure that the file exists.
+	if (!QFile::exists(filename))
+	{
+		QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
+			"The source file " + filename + " is not found!", QMessageBox::Ok, this);
+		msgBox.exec();
+		return;
+	}
+
+	// Open the source to a view.
+	CSourceWidget* sourceWidget = new CSourceWidget(filename, component, libraryHandler_, this, this);
+	connect(sourceWidget, SIGNAL(contentChanged()), this, SLOT(updateMenuStrip()));
+	connect(sourceWidget->getEditProvider(), SIGNAL(editStateChanged()), this, SLOT(updateMenuStrip()));
+	sourceWidget->setTabWidget(designTabs_);
 }
 
 //-----------------------------------------------------------------------------

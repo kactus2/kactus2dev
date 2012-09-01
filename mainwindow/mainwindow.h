@@ -589,6 +589,16 @@ private:
 	//! \brief Set up the connection editor.
 	void setupConnectionEditor();
 
+	/*! \brief Check if a document with the given vlnv is already open in some tab.
+	 *
+	 * \param vlnv The vlnv that identifies the document.
+	 * 
+	 * \remark If a document with given vlnv is open then the tab is selected.
+	 * 
+	 * \return True if the document was already open in some tab.
+	*/
+	bool isOpen(const VLNV& vlnv);
+
 	//! \brief The instance that manages the IP-Xact library
     LibraryHandler *libraryHandler_;
 
