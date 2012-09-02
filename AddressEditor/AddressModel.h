@@ -117,6 +117,21 @@ public slots:
      */
     void autoAssignAddresses();
 
+    /*!
+     *  Imports address entries from the given CSV file.
+     */
+    void importCSV(QString const& filename);
+
+    /*!
+     *  Exports address entries to the given CSV file.
+     */
+    void exportCSV(QString const& filename);
+
+    /*!
+     *  Refreshes the view.
+     */
+    void refresh();
+
 signals:
     //! \brief Emitted when contents of the model changes.
     void contentChanged();

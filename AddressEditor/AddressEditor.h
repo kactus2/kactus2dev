@@ -67,6 +67,12 @@ public slots:
 	//! Set the editor to locked/unlocked mode.
 	void setLocked(bool locked);
 
+    //! Handles CSV import.
+    void onImport();
+
+    //! Handles CSV export.
+    void onExport();
+
 signals:
 	//! Emitted when the editor changes some value.
 	void contentChanged();

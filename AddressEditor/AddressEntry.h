@@ -17,6 +17,7 @@
 class ComponentItem;
 class BusPortItem;
 class ConnectionEndpoint;
+class GenericEditProvider;
 
 //-----------------------------------------------------------------------------
 //! Address entry class.
@@ -105,6 +106,9 @@ private:
 
     //! The base end address.
     unsigned int baseEndAddress_;
+
+    //! The edit provider.
+    GenericEditProvider& editProvider_;
 };
 
 //-----------------------------------------------------------------------------

@@ -11,10 +11,13 @@
 
 #include "AddressEntry.h"
 
+#include <common/DesignDiagram.h>
+#include <common/GenericEditProvider.h>
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsConnection.h>
 
 #include <designwidget/BusPortItem.h>
+#include <designwidget/HWChangeCommands.h>
 
 #include <models/businterface.h>
 #include <models/slaveinterface.h>
@@ -28,7 +31,8 @@ AddressEntry::AddressEntry(ComponentItem* component, BusPortItem* port)
       port_(port),
       connectedPort_(0),
       range_(0),
-      baseEndAddress_(0)
+      baseEndAddress_(0),
+      editProvider_(static_cast<DesignDiagram*>(component->scene())->getEditProvider())
 {
     if (port_->isConnected())
     {
@@ -65,7 +69,9 @@ void AddressEntry::setStartAddress(unsigned int startAddress)
 {
     QMap<QString, QString> elements = component_->getConfigurableElements();
     elements.insert(port_->name() + "_start_addr", QString::number(startAddress));
-    component_->setConfigurableElements(elements);
+
+    QSharedPointer<QUndoCommand> cmd(new ComponentConfElementChangeCommand(component_, elements));
+    editProvider_.addCommand(cmd);
 }
 
 //-----------------------------------------------------------------------------
@@ -84,7 +90,8 @@ void AddressEntry::setLocked(bool locked)
         elements.insert(port_->name() + "_addr_locked", "false");
     }
 
-    component_->setConfigurableElements(elements);
+    QSharedPointer<QUndoCommand> cmd(new ComponentConfElementChangeCommand(component_, elements));
+    editProvider_.addCommand(cmd);
 }
 
 //-----------------------------------------------------------------------------
@@ -148,7 +155,8 @@ QString AddressEntry::getMemoryMapName() const
 //-----------------------------------------------------------------------------
 bool AddressEntry::hasValidConnection() const
 {
-    return (connectedPort_ != 0);
+    return (connectedPort_ != 0 && connectedPort_->getBusInterface() != 0 &&
+            connectedPort_->getBusInterface()->getInterfaceMode() == General::SLAVE);
 }
 
 //-----------------------------------------------------------------------------

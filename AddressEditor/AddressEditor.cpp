@@ -20,6 +20,9 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QHeaderView>
+#include <QSettings>
+#include <QCoreApplication>
+#include <QFileDialog>
 
 //-----------------------------------------------------------------------------
 // Function: AddressEditor::AddressEditor()
@@ -49,19 +52,6 @@ AddressEditor::AddressEditor(QWidget* parent)
     view_->setColumnWidth(ADDRESS_COL_MAP_NAME, 150);    
     view_->resizeColumnToContents(ADDRESS_COL_LOCKED);
     view_->horizontalHeader()->setResizeMode(ADDRESS_COL_LOCKED, QHeaderView::Fixed);
-
-    QHBoxLayout* buttonLayout = new QHBoxLayout();
-    buttonLayout->addWidget(autoAssignButton_);
-    buttonLayout->addWidget(csvImportButton_);
-    buttonLayout->addWidget(csvExportButton_);
-    buttonLayout->addStretch(1);
-
-    QVBoxLayout* topLayout = new QVBoxLayout(this);
-    topLayout->addLayout(buttonLayout);
-    topLayout->addWidget(view_);
-
-    connect(&model_, SIGNAL(contentChanged()),
-            this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     setupLayout();
     setupConnections();
@@ -157,6 +147,15 @@ void AddressEditor::setLocked(bool locked)
 //-----------------------------------------------------------------------------
 void AddressEditor::setupLayout()
 {
+    QHBoxLayout* buttonLayout = new QHBoxLayout();
+    buttonLayout->addWidget(autoAssignButton_);
+    buttonLayout->addWidget(csvImportButton_);
+    buttonLayout->addWidget(csvExportButton_);
+    buttonLayout->addStretch(1);
+
+    QVBoxLayout* topLayout = new QVBoxLayout(this);
+    topLayout->addLayout(buttonLayout);
+    topLayout->addWidget(view_);
 }
 
 //-----------------------------------------------------------------------------
@@ -164,5 +163,45 @@ void AddressEditor::setupLayout()
 //-----------------------------------------------------------------------------
 void AddressEditor::setupConnections()
 {
+    connect(&model_, SIGNAL(contentChanged()),
+        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
     connect(autoAssignButton_, SIGNAL(clicked()), &model_, SLOT(autoAssignAddresses()), Qt::UniqueConnection);
+    connect(csvImportButton_, SIGNAL(clicked()), this, SLOT(onImport()), Qt::UniqueConnection);
+    connect(csvExportButton_, SIGNAL(clicked()), this, SLOT(onExport()), Qt::UniqueConnection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressEditor::onImport()
+//-----------------------------------------------------------------------------
+void AddressEditor::onImport()
+{
+    QSettings settings;
+    QString homePath = settings.value(QString("library/defaultLocation"), 
+                                      QCoreApplication::applicationDirPath()).toString();
+
+    QString path = QFileDialog::getOpenFileName(this, tr("Select CSV file to import"), homePath);
+
+    if (!path.isEmpty())
+    {
+        model_.importCSV(path);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressEditor::onExport()
+//-----------------------------------------------------------------------------
+void AddressEditor::onExport()
+{
+    QSettings settings;
+    QString homePath = settings.value(QString("library/defaultLocation"), 
+        QCoreApplication::applicationDirPath()).toString();
+
+    QString path = QFileDialog::getSaveFileName(this, tr("Save a CSV file"), 
+                                                homePath, tr("CSV files (*.csv)"));
+
+    if (!path.isEmpty())
+    {
+        model_.exportCSV(path);
+    }
 }
