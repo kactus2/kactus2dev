@@ -193,6 +193,9 @@ private:
 
 	//! \brief The name of the view the modelsim generator is run for.
 	QString viewName_;
+
+	//! \brief The file path to the xml file used as the base.
+	QString sourceXml_;
 };
 
 #endif /* MODELSIMGENERATOR_H_ */

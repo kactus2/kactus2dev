@@ -27,8 +27,6 @@
 #include <QTextStream>
 #include <QSharedPointer>
 
-#include <QDebug>
-
 ModelsimGenerator::FileOptions::FileOptions():
 absFilePath_(),
 libraryName_(),
@@ -84,7 +82,8 @@ ModelsimGenerator::ModelsimGenerator(LibraryInterface *handler, QWidget *parent)
 QObject(parent),
 parent_(parent),
 handler_(handler),
-sourceFiles_() {
+sourceFiles_(),
+sourceXml_() {
 
 	Q_ASSERT_X(handler, "ModelsimGenerator constructor",
 			"Invalid LibraryHandler pointer given as parameter");
@@ -173,8 +172,9 @@ void ModelsimGenerator::writeMakefile(QTextStream& stream) {
 
 	stream << tr("# Script compiles all vhdl-files and generates a makefile for"
 			" them") << endl;
-	stream << tr("# This script is tested for Modelsim version 6.6a ") << endl
-			<< endl;
+	stream << tr("# This script is tested for Modelsim version 6.6a ") << endl;
+	stream << tr("# Based on file %1").arg(sourceXml_);
+	stream << tr(" and its view \"%1\"").arg(viewName_) << endl << endl;
 
 	stream << ".main clear" << endl << endl;
 
@@ -360,6 +360,7 @@ void ModelsimGenerator::parseFiles( QSharedPointer<Component> component, const Q
 		}
 	}
 	viewName_ = viewName;
+	sourceXml_ = handler_->getPath(*component->getVlnv());
 }
 
 void ModelsimGenerator::parseFileSets( QSharedPointer<Component> component, 
