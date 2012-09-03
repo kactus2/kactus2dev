@@ -345,8 +345,25 @@ void ConfigurationEditor::setConfiguration( DesignWidget* designWidget, bool loc
 	// add the views that use the same design
 	QStringList viewsToAdd;
 	foreach (QString viewName, hierViewNames) {
+
 		// the vlnv that the component references
-		VLNV ref = component_->getHierRef(viewName);
+		VLNV ref;
+		switch (designWidget->getImplementation()) {
+			case KactusAttribute::KTS_HW: {
+				ref = component_->getHierRef(viewName);
+				break;
+								  }
+
+			case KactusAttribute::KTS_SW: {
+				ref = component_->getHierSWRef(viewName);
+				break;
+								  }
+
+			case KactusAttribute::KTS_SYS: {
+				ref = component_->getHierSystemRef(viewName);
+				break;
+								   }
+		}
 
 		// the VLNV for the design used by the view
 		VLNV referencedDesign = handler_->getDesignVLNV(ref);
