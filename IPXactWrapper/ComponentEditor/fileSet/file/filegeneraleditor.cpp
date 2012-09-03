@@ -64,7 +64,12 @@ void FileGeneralEditor::refresh() {
 	logicalDefault_.setChecked(file_->getLogicalNameDefault());
 	includeFile_.setChecked(file_->getIncludeFile());
 	externalDec_.setChecked(file_->getExternalDeclarations());
+	
+	disconnect(&description_, SIGNAL(textChanged()),
+		this, SLOT(onDescriptionChanged()));
 	description_.setPlainText(file_->getDescription());
+	connect(&description_, SIGNAL(textChanged()),
+		this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
 }
 
 void FileGeneralEditor::onLogicalNameChanged() {

@@ -85,6 +85,8 @@ bool GeneralEditor::isValid() const
 }
 
 void GeneralEditor::refresh() {
+	disconnect(attributeEditor_, SIGNAL(contentChanged()),
+		this, SLOT(onAttributesChange()));
 	if (component_->getComponentImplementation() == KactusAttribute::KTS_HW)
 	{
 		KactusAttribute::ProductHierarchy prodHier = component_->getComponentHierarchy();
@@ -95,11 +97,16 @@ void GeneralEditor::refresh() {
 	{
 		attributeEditor_->hideAttributes();
 	}
+	connect(attributeEditor_, SIGNAL(contentChanged()),
+		this, SLOT(onAttributesChange()), Qt::UniqueConnection);
 
 	attributeEditor_->setImplementation(component_->getComponentImplementation());
 
-
+	disconnect(descEditor_, SIGNAL(contentChanged()),
+		this, SLOT(onDescriptionChange()));
 	descEditor_->setDescription(component_->getDescription());
+	connect(descEditor_, SIGNAL(contentChanged()),
+		this, SLOT(onDescriptionChange()), Qt::UniqueConnection);
 }
 
 void GeneralEditor::onAttributesChange() {

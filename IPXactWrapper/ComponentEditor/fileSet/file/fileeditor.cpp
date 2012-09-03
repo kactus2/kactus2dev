@@ -39,8 +39,6 @@ file_(file) {
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&extraTab_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-
-	refresh();
 }
 
 FileEditor::~FileEditor() {

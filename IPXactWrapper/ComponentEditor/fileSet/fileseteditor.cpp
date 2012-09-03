@@ -68,8 +68,6 @@ dependencies_(tr("Dependent directories"), handler, component, this) {
 	
 	connect(&dependencies_, SIGNAL(contentChanged()),
 		this, SLOT(onDependenciesChange()), Qt::UniqueConnection);
-
-	refresh();
 }
 
 FileSetEditor::~FileSetEditor() {
