@@ -130,7 +130,7 @@ void AddressDelegate::paint(QPainter *painter, QStyleOptionViewItem const& optio
 
     if (index.column() == ADDRESS_COL_LOCKED)
     {
-        painter->fillRect(option.rect, Qt::white);
+        //painter->fillRect(option.rect, Qt::white);
 
         const int textMargin = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameHMargin) + 1;
 

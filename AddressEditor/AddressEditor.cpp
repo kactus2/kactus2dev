@@ -12,6 +12,7 @@
 #include "AddressEditor.h"
 
 #include "AddressDelegate.h"
+#include "AddressTableView.h"
 
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/GenericEditProvider.h>
@@ -31,10 +32,10 @@ AddressEditor::AddressEditor(QWidget* parent)
     : QWidget(parent),
       component_(0),
       autoAssignButton_(new QPushButton(tr("Auto-assign Addresses"), this)),
-      csvImportButton_(new QPushButton(tr("CSV Import"), this)),
-      csvExportButton_(new QPushButton(tr("CSV Export"), this)),
+      csvImportButton_(new QPushButton(tr("Import CSV"), this)),
+      csvExportButton_(new QPushButton(tr("Export CSV"), this)),
       model_(this),
-      view_(new QTableView(this)),
+      view_(new AddressTableView(this)),
       filter_(new QSortFilterProxyModel(this))
 {
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
@@ -47,6 +48,7 @@ AddressEditor::AddressEditor(QWidget* parent)
     view_->setItemDelegate(new AddressDelegate(this));
     view_->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
     view_->horizontalHeader()->setStretchLastSection(true);
+    view_->verticalHeader()->hide();
 
     view_->setColumnWidth(ADDRESS_COL_INTERFACE_NAME, 150);
     view_->setColumnWidth(ADDRESS_COL_MAP_NAME, 150);    
@@ -169,6 +171,9 @@ void AddressEditor::setupConnections()
     connect(autoAssignButton_, SIGNAL(clicked()), &model_, SLOT(autoAssignAddresses()), Qt::UniqueConnection);
     connect(csvImportButton_, SIGNAL(clicked()), this, SLOT(onImport()), Qt::UniqueConnection);
     connect(csvExportButton_, SIGNAL(clicked()), this, SLOT(onExport()), Qt::UniqueConnection);
+
+    connect(view_, SIGNAL(moveItem(QModelIndex const&, QModelIndex const&)),
+            &model_, SLOT(onMoveItem(QModelIndex const&, QModelIndex const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

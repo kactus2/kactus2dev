@@ -132,6 +132,15 @@ public slots:
      */
     void refresh();
 
+    /*!
+     *  Moves an item to a new position.
+     *
+     *      @param [in] originalPos  The original position of the item.
+     *      @param [in] newPos       The new position for the item.
+     */
+    void onMoveItem(QModelIndex const& originalPos, QModelIndex const& newPos);
+
+
 signals:
     //! \brief Emitted when contents of the model changes.
     void contentChanged();
@@ -141,13 +150,14 @@ private:
     AddressModel(AddressModel const& rhs);
     AddressModel& operator=(AddressModel const& rhs);
 
+    static bool addressEntrySortOp(QSharedPointer<AddressEntry> lhs, QSharedPointer<AddressEntry> rhs);
+
     /*!
      *  Returns true if the entry is valid (i.e. does not overlap with any other entry).
      *
      *      @param [in] index The index of the entry to validate.
      */
     bool checkRangeOverlaps(int index) const;
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -159,7 +169,7 @@ private:
     GenericEditProvider* editProvider_;
 
     //! The model address entries.
-    QList<AddressEntry> addressEntries_;
+    QList< QSharedPointer<AddressEntry> > addressEntries_;
 };
 
 //-----------------------------------------------------------------------------

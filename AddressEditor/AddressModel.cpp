@@ -69,7 +69,7 @@ void AddressModel::setComponent(ComponentItem* component)
             if (port != 0 && port->getBusInterface() != 0 &&
                 port->getBusInterface()->getInterfaceMode() == General::MIRROREDSLAVE)
             {
-                addressEntries_.append(AddressEntry(component_, port));
+                addressEntries_.append(QSharedPointer<AddressEntry>(new AddressEntry(component_, port)));
             }
         }
 
@@ -79,6 +79,9 @@ void AddressModel::setComponent(ComponentItem* component)
         connect(component_, SIGNAL(destroyed(ComponentItem*)),
                 this, SLOT(clear()), Qt::UniqueConnection);
     }
+
+    // Sort the entries by start address.
+    qSort(addressEntries_.begin(), addressEntries_.end(), &addressEntrySortOp);
 
     endResetModel();
 }
@@ -122,38 +125,38 @@ QVariant AddressModel::data(QModelIndex const& index, int role /*= Qt::DisplayRo
 
     if (role == Qt::DisplayRole)
     {
-        AddressEntry const& entry = addressEntries_.at(index.row());
+        QSharedPointer<AddressEntry> entry = addressEntries_.at(index.row());
 
         switch (index.column())
         {
         case ADDRESS_COL_INTERFACE_NAME:
             {
-                return entry.getInterfaceName();
+                return entry->getInterfaceName();
             }
 
         case ADDRESS_COL_MAP_NAME:
             {
-                return entry.getMemoryMapName();
+                return entry->getMemoryMapName();
             }
 
         case ADDRESS_COL_RANGE:
             {
-                return entry.getRange();
+                return entry->getRange();
             }
 
         case ADDRESS_COL_END_ADDRESS:
             {
-                if (!entry.hasValidConnection())
+                if (!entry->hasValidConnection())
                 {
                     return tr("unspecified");
                 }
 
-                return QString("0x") + QString("%1").arg(entry.getEndAddress(), 8, 16, QChar('0')).toUpper();
+                return QString("0x") + QString("%1").arg(entry->getEndAddress(), 8, 16, QChar('0')).toUpper();
             }
 
         case ADDRESS_COL_START_ADDRESS:
             {
-                return QString("0x") + QString("%1").arg(entry.getStartAddress(), 8, 16, QChar('0')).toUpper();
+                return QString("0x") + QString("%1").arg(entry->getStartAddress(), 8, 16, QChar('0')).toUpper();
             }
 
         case ADDRESS_COL_LOCKED:
@@ -171,9 +174,9 @@ QVariant AddressModel::data(QModelIndex const& index, int role /*= Qt::DisplayRo
     {
         if (index.column() == ADDRESS_COL_LOCKED)
         {
-            AddressEntry const& entry = addressEntries_.at(index.row());
+            QSharedPointer<AddressEntry> entry = addressEntries_.at(index.row());
 
-            if (entry.isLocked())
+            if (entry->isLocked())
             {
                 return QIcon(":icons/graphics/lock-on.png");
             }
@@ -194,10 +197,8 @@ QVariant AddressModel::data(QModelIndex const& index, int role /*= Qt::DisplayRo
                 {
                     return Qt::red;
                 }
-                else
-                {
-                    return Qt::black;
-                }
+
+                return QVariant();
             }
 
         default:
@@ -215,8 +216,7 @@ QVariant AddressModel::data(QModelIndex const& index, int role /*= Qt::DisplayRo
     {
         if (index.column() == ADDRESS_COL_LOCKED)
         {
-            AddressEntry const& entry = addressEntries_.at(index.row());
-            return entry.isLocked();
+            return addressEntries_.at(index.row())->isLocked();
         }
     }
 
@@ -297,12 +297,12 @@ bool AddressModel::setData(const QModelIndex& index, const QVariant& value, int 
         {
         case ADDRESS_COL_START_ADDRESS:
             {
-                AddressEntry& entry = addressEntries_[index.row()];
+                QSharedPointer<AddressEntry> entry = addressEntries_[index.row()];
 
                 disconnect(component_, SIGNAL(confElementsChanged(const QMap<QString, QString>&)),
                            this, SLOT(refresh()));
 
-                entry.setStartAddress(Utils::str2Int(value.toString()));
+                entry->setStartAddress(Utils::str2Int(value.toString()));
 
                 connect(component_, SIGNAL(confElementsChanged(const QMap<QString, QString>&)),
                     this, SLOT(refresh()), Qt::UniqueConnection);
@@ -319,19 +319,18 @@ bool AddressModel::setData(const QModelIndex& index, const QVariant& value, int 
         }
 
         emit dataChanged(index, index);
-        emit contentChanged();
         return true;
     }
     else if (role == Qt::UserRole)
     {
         if (index.column() == ADDRESS_COL_LOCKED)
         {
-            AddressEntry& entry = addressEntries_[index.row()];
+            QSharedPointer<AddressEntry> entry = addressEntries_[index.row()];
 
             disconnect(component_, SIGNAL(confElementsChanged(const QMap<QString, QString>&)),
                        this, SLOT(refresh()));
 
-            entry.setLocked(value.toBool());
+            entry->setLocked(value.toBool());
 
             connect(component_, SIGNAL(confElementsChanged(const QMap<QString, QString>&)),
                     this, SLOT(refresh()), Qt::UniqueConnection);
@@ -359,9 +358,9 @@ Qt::ItemFlags AddressModel::flags(const QModelIndex& index) const
     {
     case ADDRESS_COL_START_ADDRESS:
         {
-            AddressEntry const& entry = addressEntries_.at(index.row());
+            QSharedPointer<AddressEntry> entry = addressEntries_[index.row()];
             
-            if (entry.isLocked())
+            if (entry->isLocked())
             {
                 return Qt::ItemIsEnabled;
             }
@@ -400,7 +399,7 @@ bool AddressModel::checkRangeOverlaps(int index) const
         }
 
         // Check if the address boundaries overlap.
-        if (addressEntries_.at(index).overlaps(addressEntries_.at(i)))
+        if (addressEntries_.at(index)->overlaps(*addressEntries_.at(i)))
         {
             return false;
         }
@@ -418,9 +417,9 @@ void AddressModel::autoAssignAddresses()
 
     for (int i = 0; i < addressEntries_.size() - 1; ++i)
     {
-        if (!addressEntries_[i + 1].isLocked())
+        if (!addressEntries_[i + 1]->isLocked())
         {
-            addressEntries_[i + 1].setStartAddress(addressEntries_[i].getEndAddress() + 1);
+            addressEntries_[i + 1]->setStartAddress(addressEntries_[i]->getEndAddress() + 1);
         }
     }
 
@@ -472,10 +471,8 @@ void AddressModel::importCSV(QString const& filename)
 
         beginResetModel();
 
-        int index = 0;
-
-        while (!stream.atEnd()) {
-
+        while (!stream.atEnd())
+        {
             QString line = stream.readLine(0);
             QStringList settings = line.split(";", QString::KeepEmptyParts);
 
@@ -486,11 +483,17 @@ void AddressModel::importCSV(QString const& filename)
                 continue;
             }
 
-            AddressEntry& entry = addressEntries_[index];
-            entry.setStartAddress(settings.at(2).toUInt());
-            entry.setLocked(settings.at(3) == "true");
-            
-            ++index;
+            // Find the address entry with the corresponding name.
+            for (int i = 0; i < addressEntries_.size(); ++i)
+            {
+                QSharedPointer<AddressEntry> entry = addressEntries_[i];
+
+                if (entry->getInterfaceName() == settings.at(0))
+                {
+                    entry->setStartAddress(settings.at(2).toUInt());
+                    entry->setLocked(settings.at(3) == "true");
+                }
+            }
         }
         endResetModel();
     }
@@ -518,17 +521,69 @@ void AddressModel::exportCSV(QString const& filename)
         stream << "Interface name;Memory map;Start address;Locked;Range;End address" << endl;
 
         // Write each entry
-        foreach (AddressEntry const& entry, addressEntries_)
+        foreach (QSharedPointer<AddressEntry> entry, addressEntries_)
         {
-            stream << entry.getInterfaceName() << ";";
-            stream << entry.getMemoryMapName() << ";";
-            stream << entry.getStartAddress() << ";";
-            stream << entry.isLocked() << ";";
-            stream << entry.getRange() << ";";
-            stream << entry.getEndAddress() << endl;
+            stream << entry->getInterfaceName() << ";";
+            stream << entry->getMemoryMapName() << ";";
+            stream << entry->getStartAddress() << ";";
+            stream << entry->isLocked() << ";";
+            stream << entry->getRange() << ";";
+            stream << entry->getEndAddress() << endl;
         }
 
         // close the file
         file.close();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressModel::addressEntrySortOp()
+//-----------------------------------------------------------------------------
+bool AddressModel::addressEntrySortOp(QSharedPointer<AddressEntry> lhs, QSharedPointer<AddressEntry> rhs)
+{
+    return lhs->getStartAddress() < rhs->getStartAddress();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressModel::onMoveItem()
+//-----------------------------------------------------------------------------
+void AddressModel::onMoveItem(QModelIndex const& originalPos, QModelIndex const& newPos)
+{
+    // If there was no item in the starting point.
+    if (!originalPos.isValid())
+    {
+        return;
+    }
+    // If the indexes are the same.
+    else if (originalPos == newPos)
+    {
+        return;
+    }
+    else if (originalPos.row() < 0 || originalPos.row() >= addressEntries_.size())
+    {
+        return;
+    }
+
+    // if the new position is invalid index then put the item last in the table
+    if (!newPos.isValid() || newPos.row() < 0 || newPos.row() >= addressEntries_.size())
+    {
+        beginResetModel();
+
+        QSharedPointer<AddressEntry> entry = addressEntries_.at(originalPos.row());
+        addressEntries_.removeAt(originalPos.row());
+        addressEntries_.append(entry);
+
+        endResetModel();
+    }
+    // if both indexes were valid
+    else
+    {
+        beginResetModel();
+
+        QSharedPointer<AddressEntry> entry = addressEntries_.at(originalPos.row());
+        addressEntries_.removeAt(originalPos.row());
+        addressEntries_.insert(newPos.row(), entry);
+
+        endResetModel();
     }
 }

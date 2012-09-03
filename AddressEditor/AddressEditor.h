@@ -26,6 +26,7 @@
 
 class ComponentItem;
 class GenericEditProvider;
+class AddressTableView;
 
 //-----------------------------------------------------------------------------
 //! Dockable address editor for HW designs.
@@ -115,7 +116,7 @@ private:
     AddressModel model_;
 
     //! \brief The widget to display the contents of the model.
-    QTableView* view_;
+    AddressTableView* view_;
 
     //! \brief The filter to do the sorting of items to display.
     QSortFilterProxyModel* filter_;
