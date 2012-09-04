@@ -31,13 +31,9 @@ GeneralEditor::GeneralEditor(LibraryInterface* libHandler,
 ItemEditor(component, parent),
 vlnvDisplayer_(0),
 attributeEditor_(0),
-previewBox_(0),
-component_()
-{
+previewBox_(0) {
     Q_ASSERT(libHandler != 0);
     Q_ASSERT(component != 0);
-
-    component_ = component;
 
     // Create the VLNV displayer and attribute & description editors.
     QVBoxLayout* layout = new QVBoxLayout(this);
@@ -53,7 +49,7 @@ component_()
     descEditor_ = new DescEditor();
 
     previewBox_ = new ComponentPreviewBox(libHandler);
-    previewBox_->setComponent(component_);
+    previewBox_->setComponent(component);
 
     layout->addWidget(vlnvDisplayer_);
     layout->addWidget(attributeEditor_);
@@ -87,10 +83,10 @@ bool GeneralEditor::isValid() const
 void GeneralEditor::refresh() {
 	disconnect(attributeEditor_, SIGNAL(contentChanged()),
 		this, SLOT(onAttributesChange()));
-	if (component_->getComponentImplementation() == KactusAttribute::KTS_HW)
+	if (component()->getComponentImplementation() == KactusAttribute::KTS_HW)
 	{
-		KactusAttribute::ProductHierarchy prodHier = component_->getComponentHierarchy();
-		KactusAttribute::Firmness firmness = component_->getComponentFirmness();
+		KactusAttribute::ProductHierarchy prodHier = component()->getComponentHierarchy();
+		KactusAttribute::Firmness firmness = component()->getComponentFirmness();
 		attributeEditor_->setAttributes(prodHier, firmness);
 	}
 	else
@@ -100,25 +96,25 @@ void GeneralEditor::refresh() {
 	connect(attributeEditor_, SIGNAL(contentChanged()),
 		this, SLOT(onAttributesChange()), Qt::UniqueConnection);
 
-	attributeEditor_->setImplementation(component_->getComponentImplementation());
+	attributeEditor_->setImplementation(component()->getComponentImplementation());
 
 	disconnect(descEditor_, SIGNAL(contentChanged()),
 		this, SLOT(onDescriptionChange()));
-	descEditor_->setDescription(component_->getDescription());
+	descEditor_->setDescription(component()->getDescription());
 	connect(descEditor_, SIGNAL(contentChanged()),
 		this, SLOT(onDescriptionChange()), Qt::UniqueConnection);
 }
 
 void GeneralEditor::onAttributesChange() {
-	if (component_->getComponentImplementation() == KactusAttribute::KTS_HW)
+	if (component()->getComponentImplementation() == KactusAttribute::KTS_HW)
 	{
-		component_->setComponentHierarchy(attributeEditor_->getProductHierarchy());
-		component_->setComponentFirmness(attributeEditor_->getFirmness());
+		component()->setComponentHierarchy(attributeEditor_->getProductHierarchy());
+		component()->setComponentFirmness(attributeEditor_->getFirmness());
 	}
 	emit contentChanged();
 }
 
 void GeneralEditor::onDescriptionChange() {
-	component_->setDescription(descEditor_->getDescription());
+	component()->setDescription(descEditor_->getDescription());
 	emit contentChanged();
 }

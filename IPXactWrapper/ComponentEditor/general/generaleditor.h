@@ -89,9 +89,6 @@ private:
 
     //! The preview box.
     ComponentPreviewBox* previewBox_;
-
-    //! The component.
-    QSharedPointer<Component> component_;
 };
 
 //-----------------------------------------------------------------------------
