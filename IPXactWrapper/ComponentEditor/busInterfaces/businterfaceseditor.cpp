@@ -32,9 +32,6 @@ model_(handler, component, this) {
 
 	// items can not be dragged
 	view_.setItemsDraggable(false);
-	view_.setDragDropMode(QAbstractItemView::DropOnly);
-	view_.setAcceptDrops(true);
-	view_.setDropIndicatorShown(true);
 
 	view_.setItemDelegate(new BusInterfacesDelegate(this));
 	view_.setColumnWidth(BusInterfacesDelegate::NAME_COLUMN, BusInterfacesEditor::NAME_COLUMN_WIDTH);
