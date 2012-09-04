@@ -668,3 +668,20 @@ void LibraryTreeModel::onCreateNewSystemDesign( const QModelIndex& index ) {
 
     emit createSystemDesign(vlnv);
 }
+
+//-----------------------------------------------------------------------------
+// Function: HierarchyModel::onShowErrors()
+//-----------------------------------------------------------------------------
+void LibraryTreeModel::onShowErrors(QModelIndex const& index)
+{
+    if (!index.isValid())
+    {
+        return;
+    }
+
+    // Retrieve a pointer to the item that was selected.
+    LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
+    VLNV vlnv = item->getVLNV();
+
+    emit showErrors(vlnv);
+}

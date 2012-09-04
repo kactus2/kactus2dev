@@ -284,6 +284,13 @@ public slots:
 	*/
 	virtual void onExportItem(const VLNV vlnv);
 
+    /*!
+     *  Shows errors about the library item with the given VLNV.
+     *
+     *      @param [in] vlnv The VLNV of the library item.
+     */
+    virtual void onShowErrors(VLNV const& vlnv);
+
 	/*! \brief Export a group of items to a new location
 	 *
 	 * \param vlnvs QList containing the VLNVs that are to be exported.

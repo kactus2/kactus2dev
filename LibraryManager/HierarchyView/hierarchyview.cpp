@@ -43,30 +43,31 @@ public:
 
 HierarchyView::HierarchyView(QWidget *parent, 
 							 LibraryInterface* handler,
-							 HierarchyFilter* filter):
-QTreeView(parent),
-handler_(handler),
-filter_(filter),
-startPos_(),
-dragIndex_(),
-openDesignAction_(NULL),
-openSWDesignAction_(NULL),
-openCompAction_(NULL),
-createNewComponentAction_(NULL),
-createNewDesignAction_(NULL),
-createNewSWDesignAction_(NULL),
-createNewSystemDesignAction_(NULL),
-exportAction_(NULL),
-openBusAction_(NULL),
-addSignalsAction_(NULL),
-createBusAction_(NULL),
-openComDefAction_(NULL),
-createComDefAction_(NULL),
-openApiDefAction_(NULL),
-createApiDefAction_(NULL),
-openSystemAction_(NULL),
-openXmlAction_(NULL) {
-
+							 HierarchyFilter* filter)
+    : QTreeView(parent),
+      handler_(handler),
+      filter_(filter),
+      startPos_(),
+      dragIndex_(),
+      openDesignAction_(NULL),
+      openSWDesignAction_(NULL),
+      openCompAction_(NULL),
+      createNewComponentAction_(NULL),
+      createNewDesignAction_(NULL),
+      createNewSWDesignAction_(NULL),
+      createNewSystemDesignAction_(NULL),
+      exportAction_(NULL),
+      showErrorsAction_(NULL),
+      openBusAction_(NULL),
+      addSignalsAction_(NULL),
+      createBusAction_(NULL),
+      openComDefAction_(NULL),
+      createComDefAction_(NULL),
+      openApiDefAction_(NULL),
+      createApiDefAction_(NULL),
+      openSystemAction_(NULL),
+      openXmlAction_(NULL)
+{
     setIconSize(QSize(24, 24));
     setItemDelegate(new HierarchyItemDelegate(this));
 
@@ -140,6 +141,12 @@ void HierarchyView::setupActions() {
 	exportAction_->setToolTip(tr("Export item and it's sub-items to another location"));
 	connect(exportAction_, SIGNAL(triggered()),
 		this, SLOT(onExportAction()), Qt::UniqueConnection);
+
+    showErrorsAction_ = new QAction(tr("Show Errors"), this);
+    showErrorsAction_->setStatusTip(tr("Show all errors of the item"));
+    showErrorsAction_->setToolTip(tr("Show all errors of the item"));
+    connect(showErrorsAction_, SIGNAL(triggered()),
+            this, SLOT(onShowErrors()), Qt::UniqueConnection);
 
 	openBusAction_ = new QAction(tr("Open Bus"), this);
 	openBusAction_->setStatusTip(tr("Open the bus in bus editor"));
@@ -282,6 +289,14 @@ void HierarchyView::onExportAction() {
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: HierarchyView::onShowErrors()
+//-----------------------------------------------------------------------------
+void HierarchyView::onShowErrors()
+{
+    emit showErrors(filter_->mapToSource(currentIndex()));
+}
+
 void HierarchyView::onOpenXml() {
 	QModelIndex index = filter_->mapToSource(currentIndex());
 	HierarchyItem* item = static_cast<HierarchyItem*>(index.internalPointer());
@@ -421,9 +436,16 @@ void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
         }
 
         menu.addSeparator();
+
+        if (!libComp->isValid())
+        {
+            menu.addAction(showErrorsAction_);
+        }
+
+        menu.addAction(openXmlAction_);
 	}
+
 	menu.addAction(exportAction_);
-	menu.addAction(openXmlAction_);
 
 	menu.exec(event->globalPos());
 }

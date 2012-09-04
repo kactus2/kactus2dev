@@ -108,8 +108,10 @@ public slots:
 	//! \brief Open the xml of the selected IP-Xact element.
 	void onOpenXml();
 
-signals:
+    //! Called when the user chooses Show Errors from the context menu.
+    void onShowErrors();
 
+signals:
 	//! \brief Open the selected hierarchical design
 	void openDesign(const QModelIndex& index);
 
@@ -148,6 +150,9 @@ signals:
 
 	//! \brief Export the selected item and it's sub-items.
 	void exportItem(const QModelIndex& index);
+
+    //! Shows errors about the selected item.
+    void showErrors(QModelIndex const& index);
 
 	//! \brief Signal is emitted when component is selected in the view.
 	void componentSelected(const VLNV& vlnv);
@@ -229,6 +234,9 @@ private:
 
 	//! \brief Export the item(s) to a new location in file system
 	QAction* exportAction_;
+
+    //! Show errors about the item.
+    QAction* showErrorsAction_;
 
 	//! \brief Open the bus editor
 	QAction* openBusAction_;

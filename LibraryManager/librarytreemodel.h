@@ -179,6 +179,9 @@ signals:
 	//! \brief Export a list of vlnv items to a new location.
 	void exportItems(const QList<VLNV> list);
 
+    //! Shows errors about the item at the given index.
+    void showErrors(VLNV const& vlnv);
+
 	//! \brief Refresh the item filtering because changes have been made
 	void invalidateFilter();
 
@@ -216,6 +219,9 @@ public slots:
 
 	//! \brief When export is selected in search view
 	void onExportItem(const QModelIndex& index);
+
+    //! Shows errors about the item at the given index.
+    void onShowErrors(QModelIndex const& index);
 
 	//! \brief Open bus definition in an editor
 	void onOpenBus(const QModelIndex& index);

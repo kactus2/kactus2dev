@@ -7,6 +7,8 @@
 #include "libraryhandler.h"
 #include "vlnv.h"
 
+#include "LibraryErrorModel.h"
+
 #include <mainwindow/mainwindow.h>
 
 // the dialog files
@@ -15,6 +17,7 @@
 #include <common/dialogs/comboSelector/comboselector.h>
 #include <common/dialogs/ObjectRemoveDialog/objectremovedialog.h>
 #include <common/dialogs/ObjectRemoveDialog/objectremovemodel.h>
+#include <common/dialogs/TableViewDialog/TableViewDialog.h>
 
 // the model files
 #include <models/busdefinition.h>
@@ -159,6 +162,9 @@ void LibraryHandler::syncronizeModels() {
 	connect(treeModel_.data(), SIGNAL(refreshDialer()),
 		this, SIGNAL(refreshDialer()), Qt::UniqueConnection);
 
+    connect(treeModel_.data(), SIGNAL(showErrors(const VLNV)),
+        this, SLOT(onShowErrors(const VLNV)), Qt::UniqueConnection);
+
 	/*************************************************************************/
 	// connect the signals from the hierarchy model
 
@@ -194,6 +200,9 @@ void LibraryHandler::syncronizeModels() {
 
 	connect(hierarchyModel_.data(), SIGNAL(exportItem(const VLNV)),
 		    this, SLOT(onExportItem(const VLNV)), Qt::UniqueConnection);
+
+    connect(hierarchyModel_.data(), SIGNAL(showErrors(const VLNV)),
+            this, SLOT(onShowErrors(const VLNV)), Qt::UniqueConnection);
 }
 
 void LibraryHandler::onExportItem( const VLNV vlnv ) {
@@ -1557,4 +1566,37 @@ bool LibraryHandler::containsPath( const QString& path, const QStringList& paths
 
 	// none of the paths to search were contained in the path
 	return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryHandler::onShowErrors()
+//-----------------------------------------------------------------------------
+void LibraryHandler::onShowErrors(VLNV const& vlnv)
+{
+    if (!vlnv.isValid())
+    {
+        return;
+    }
+
+    // Retrieve the model.
+    QSharedPointer<LibraryComponent const> libComp = getModelReadOnly(vlnv);
+
+    if (libComp != 0)
+    {
+        // Retrieve the list of errors.
+        QStringList errorList;
+        libComp->isValid(errorList);
+
+        LibraryErrorModel* model = new LibraryErrorModel(this);
+        model->addErrors(errorList);
+        
+        // Show error list in a dialog.
+        TableViewDialog dialog(this);
+        dialog.setWindowTitle(tr("Errors in %1").arg(vlnv.toString()));
+        dialog.setDescription(tr("The following errors were found:"));
+        dialog.setModel(model);
+        dialog.resize(700, 240);
+
+        dialog.exec();
+    }
 }

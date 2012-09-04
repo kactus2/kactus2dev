@@ -41,6 +41,7 @@ createNewSWDesignAction_(NULL),
 createNewSystemDesignAction_(NULL),
 deleteAction_(NULL), 
 exportAction_(NULL),  
+showErrorsAction_(NULL),
 openBusAction_(NULL),
 createBusAction_(NULL),
 addSignalsAction_(NULL),
@@ -215,6 +216,12 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event) {
         }
 
         menu.addSeparator();
+        
+        if (!libComp->isValid())
+        {
+            menu.addAction(showErrorsAction_);
+        }
+
 		menu.addAction(openXmlAction_);
 	}
 
@@ -279,6 +286,12 @@ void LibraryTreeView::setupActions() {
 	exportAction_->setToolTip(tr("Export item and it's sub-items to another location"));
 	connect(exportAction_, SIGNAL(triggered()),
 		this, SLOT(onExportAction()), Qt::UniqueConnection);
+
+    showErrorsAction_ = new QAction(tr("Show Errors"), this);
+    showErrorsAction_->setStatusTip(tr("Show all errors of the item"));
+    showErrorsAction_->setToolTip(tr("Show all errors of the item"));
+    connect(showErrorsAction_, SIGNAL(triggered()),
+            this, SLOT(onShowErrors()), Qt::UniqueConnection);
 
 	openBusAction_ = new QAction(tr("Open"), this);
 	openBusAction_->setStatusTip(tr("Open"));
@@ -505,6 +518,14 @@ void LibraryTreeView::onOpenApiDef() {
 
 void LibraryTreeView::onCreateApiDef() {
     emit createApiDef(filter_->mapToSource(currentIndex()));
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::onShowErrors()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::onShowErrors()
+{
+    emit showErrors(filter_->mapToSource(currentIndex()));
 }
 
 void LibraryTreeView::onOpenXml() {

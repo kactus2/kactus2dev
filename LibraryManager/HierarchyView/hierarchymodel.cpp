@@ -613,3 +613,20 @@ void HierarchyModel::getChildren( QList<VLNV>& childList, const VLNV& owner ) {
 	rootItem_->getChildren(childList, owner);
 }
 
+//-----------------------------------------------------------------------------
+// Function: HierarchyModel::onShowErrors()
+//-----------------------------------------------------------------------------
+void HierarchyModel::onShowErrors(QModelIndex const& index)
+{
+    if (!index.isValid())
+    {
+        return;
+    }
+
+    // Retrieve a pointer to the item that was selected.
+    HierarchyItem* item = static_cast<HierarchyItem*>(index.internalPointer());
+    VLNV vlnv = item->getVLNV();
+
+    emit showErrors(vlnv);
+}
+

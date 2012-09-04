@@ -96,6 +96,9 @@ void HierarchyWidget::setupConnections( HierarchyModel* dataModel ) {
 	connect(&view_, SIGNAL(exportItem(const QModelIndex&)),
 		dataModel, SLOT(onExportItem(const QModelIndex&)), Qt::UniqueConnection);
 
+    connect(&view_, SIGNAL(showErrors(const QModelIndex&)),
+            dataModel, SLOT(onShowErrors(const QModelIndex&)), Qt::UniqueConnection);
+
 	connect(&view_, SIGNAL(componentSelected(const VLNV&)),
 		this, SIGNAL(componentSelected(const VLNV&)), Qt::UniqueConnection);
 

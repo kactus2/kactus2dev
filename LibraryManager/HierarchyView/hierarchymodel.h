@@ -210,6 +210,9 @@ public slots:
 	//! \brief When export is selected in search view
 	void onExportItem(const QModelIndex& index);
 
+    //! Shows errors about the item at the given index.
+    void onShowErrors(QModelIndex const& index);
+
 	//! \brief Remove the specified vlnv from the tree.
 	void onRemoveVLNV(const VLNV& vlnv);
 	
@@ -272,6 +275,9 @@ signals:
 
 	//! \brief Export an item to a new location.
 	void exportItem(const VLNV vlnv);
+
+    //! Shows errors about the item at the given index.
+    void showErrors(VLNV const& vlnv);
 
 	//! \brief Refresh the item filtering because changes have been made
 	void invalidateFilter();

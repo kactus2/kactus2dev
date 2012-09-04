@@ -73,6 +73,9 @@ signals:
 	//! \brief Export the selected item and it's sub-items.
 	void exportItem(const QModelIndex& index);
 
+    //! Shows errors about the selected item.
+    void showErrors(QModelIndex const& index);
+
 	//! \brief Open bus definition in an editor
 	void openBus(const QModelIndex& index);
 
@@ -169,6 +172,9 @@ public slots:
 	//! \brief Open the xml of the selected IP-Xact element.
 	void onOpenXml();
 
+    //! Called when the user chooses Show Errors from the context menu.
+    void onShowErrors();
+
 protected:
 
 	//! \brief The event handler for mouse double clicks
@@ -241,6 +247,9 @@ private:
 
 	//! \brief Export the item(s) to a new location in file system
 	QAction* exportAction_;
+
+    //! Show errors about the item.
+    QAction* showErrorsAction_;
 
 	//! \brief Open a bus definition
 	QAction* openBusAction_;

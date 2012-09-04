@@ -101,6 +101,9 @@ void LibraryTreeWidget::setupConnections(LibraryTreeModel* dataModel) {
 	connect(&view_, SIGNAL(exportItem(const QModelIndex&)),
 		dataModel, SLOT(onExportItem(const QModelIndex&)), Qt::UniqueConnection);
 
+    connect(&view_, SIGNAL(showErrors(const QModelIndex&)),
+        dataModel, SLOT(onShowErrors(const QModelIndex&)), Qt::UniqueConnection);
+
 	connect(&view_, SIGNAL(itemSelected(const VLNV&)),
 		this, SIGNAL(itemSelected(const VLNV&)), Qt::UniqueConnection);
 
