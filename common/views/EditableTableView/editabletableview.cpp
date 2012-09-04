@@ -6,6 +6,7 @@
  */
 
 #include "editabletableview.h"
+#include <LibraryManager/vlnv.h>
 
 #include <QHeaderView>
 #include <QMenu>
@@ -18,6 +19,8 @@
 #include <QTextStream>
 #include <QFileDialog>
 #include <QSortFilterProxyModel>
+
+#include <QDebug>
 
 EditableTableView::EditableTableView(QWidget *parent):
 QTableView(parent),

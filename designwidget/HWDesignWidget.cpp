@@ -130,10 +130,9 @@ bool HWDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
 	connect(getDiagram(), SIGNAL(modeChanged(DrawMode)),
 		    this, SIGNAL(modeChanged(DrawMode)), Qt::UniqueConnection);
 	setModified(false);
-
-    setDocumentName(getEditedComponent()->getVlnv()->getName() + 
-		            " (" + getEditedComponent()->getVlnv()->getVersion() + ")");
-    setDocumentType("HW Design");
+	
+	setDocumentType("HW Design");
+	setDocumentName(QString("%1 (%2)").arg(getIdentifyingVLNV().getName()).arg(getIdentifyingVLNV().getVersion()));
 
 	emit clearItemSelection();
 
@@ -198,6 +197,7 @@ bool HWDesignWidget::setDesign(QSharedPointer<Component> comp, const QString& vi
     {
         return false;
     }
+	setDocumentName(QString("%1 (%2)").arg(getIdentifyingVLNV().getName()).arg(getIdentifyingVLNV().getVersion()));
 
     return DesignWidget::setDesign(comp, viewName);
 }

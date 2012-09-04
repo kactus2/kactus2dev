@@ -48,7 +48,7 @@ Qt::ItemFlags BusInterfacesModel::flags( const QModelIndex& index ) const {
 		return Qt::NoItemFlags;
 	}
 
-	// bus def and abs def can not be edited
+	// bus def and abs def can not be edited but can have data dropped on them
 	else if (BusInterfacesDelegate::BUSDEF_COLUMN == index.column() ||
 		BusInterfacesDelegate::ABSDEF_COLUMN == index.column()) {
 			return Qt::ItemIsSelectable | Qt::ItemIsEnabled;

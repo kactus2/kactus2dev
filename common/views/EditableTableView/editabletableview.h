@@ -14,6 +14,8 @@
 #include <QAction>
 #include <QKeyEvent>
 #include <QContextMenuEvent>
+#include <QDragEnterEvent>
+#include <QDropEvent>
 
 /*! \brief This view can be used to display contents of a table model.
  * 
