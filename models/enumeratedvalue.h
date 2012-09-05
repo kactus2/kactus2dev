@@ -156,7 +156,7 @@ public:
      *
      * \return EnumeratedValue that matches the string of defaultValue.
      */
-    static EnumeratedValue::EnumeratedUsage str2Usage(QString& usage,
+    static EnumeratedValue::EnumeratedUsage str2Usage(QString const& usage,
                 EnumeratedUsage defaultValue);
 
 private:

@@ -102,6 +102,7 @@
 #include <QCursor>
 #include <QDateTime>
 #include <QElapsedTimer>
+#include <QDebug>
 
 class LibraryItem;
 
@@ -586,13 +587,9 @@ void MainWindow::restoreSettings()
     updateWorkspaceMenu();
 
     // Retrieve the plugins path from settings.
-    QString pluginsPath = settings.value("Platform/PluginsPath", "").toString();
+    QString pluginsPath = settings.value("Platform/PluginsPath", QCoreApplication::applicationDirPath() + "/Plugins").toString();
 
-    if (pluginsPath.isEmpty())
-    {
-        pluginsPath = QCoreApplication::applicationDirPath() + "/Plugins";
-    }
-    else if (pluginsPath.at(0) != '/')
+    if (pluginsPath.at(0) != '/')
     {
         pluginsPath = QCoreApplication::applicationDirPath() + "/" + pluginsPath;
     }
@@ -947,7 +944,10 @@ void MainWindow::setupContextHelp()
     contextHelpDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
 
     // Initialize the help engine.
-    QHelpEngine* helpEngine = new QHelpEngine("Help/Kactus2Help.qhc", this);
+    QSettings settings;
+    QString helpPath = settings.value("Platform/HelpPath", "Help").toString();
+
+    QHelpEngine* helpEngine = new QHelpEngine(helpPath + "/Kactus2Help.qhc", this);
     helpEngine->setupData();
 
     // Create the help window.

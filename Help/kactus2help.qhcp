@@ -2,7 +2,7 @@
 <QHelpCollectionProject version="1.0">
     <docFiles>
         <register>
-            <file>kactus2help.qch</file>
+            <file>Kactus2Help.qch</file>
         </register>
     </docFiles>
 </QHelpCollectionProject>

@@ -1,6 +1,6 @@
 Steps to build Kactus2 on Linux.
 
-qmake Kactus2.pro
+qmake Kactus2_Solution.pro
 make
 
 To run Kactus2: 

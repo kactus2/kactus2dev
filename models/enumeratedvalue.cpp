@@ -171,7 +171,7 @@ QString EnumeratedValue::usage2Str(EnumeratedValue::EnumeratedUsage usage) {
 }
 
 EnumeratedValue::EnumeratedUsage EnumeratedValue::str2Usage(
-                QString& usage, EnumeratedUsage defaultValue) {
+                QString const& usage, EnumeratedUsage defaultValue) {
 	if (usage == QString("read")) {
 		return EnumeratedValue::READ;
 	}

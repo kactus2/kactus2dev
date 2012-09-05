@@ -6,7 +6,7 @@ TEMPLATE = app
 TARGET = Kactus2
 DESTDIR = ./executable
 QT += core gui xml xmlpatterns
-CONFIG += release
+CONFIG += help release help
 DEFINES += _WINDOWS QT_DLL QT_XMLPATTERNS_LIB QT_XML_LIB QT_HAVE_MMX QT_HAVE_3DNOW QT_HAVE_SSE QT_HAVE_MMXEXT QT_HAVE_SSE2 KACTUS2_EXPORTS
 INCLUDEPATH += . \
     ./release \
@@ -42,8 +42,5 @@ UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
 include(Kactus2.pri)
 win32:RC_FILE = Kactus2.rc
-unix:QMAKE_POST_LINK = ./CreateSymLink.sh
+unix:QMAKE_POST_LINK = ./PostBuild.sh
 
-plugins.path = /usr/share/kactus2/plugins
-plugins.files = ./executable/Plugins/*
-INSTALLS += plugins

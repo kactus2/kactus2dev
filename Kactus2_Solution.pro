@@ -4,9 +4,26 @@
 
 # This is a reminder that you are using a generated .pro file.
 # Remove it when you are finished editing this file.
-message("You are running qmake on a generated .pro file. This may not work!")
+# message("You are running qmake on a generated .pro file. This may not work!")
 
 
 TEMPLATE = subdirs
 SUBDIRS += Kactus2.pro \
     Plugins/MCAPICodeGenerator/MCAPICodeGenerator.pro
+
+unix:plugins.path = /usr/share/kactus2/plugins
+unix:plugins.files = ./executable/Plugins/*
+
+unix:executable.path = /usr/bin
+unix:executable.files = ./executable/Kactus2
+
+unix:doc.path = /usr/share/kactus2/doc
+unix:doc.files = ./releaseFiles/*.txt
+
+unix:help.path = /usr/share/kactus2/help
+unix:help.files = ./Help/Kactus2Help.qch ./Help/Kactus2Help.qhc
+
+unix:config.path = /etc/xdg/TUT
+unix:config.extra = cp ./releaseFiles/DefaultSettingsLinux.ini /etc/xdg/TUT/Kactus2.ini; ln -f -s /usr/bin/Kactus2 /usr/lib/libKactus2.so
+
+INSTALLS += executable plugins help doc config

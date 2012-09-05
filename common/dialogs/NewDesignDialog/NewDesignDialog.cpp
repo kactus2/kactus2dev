@@ -21,7 +21,7 @@
 #include <QMessageBox>
 #include <QCoreApplication>
 
-#include <models/Component.h>
+#include <models/component.h>
 
 #include <common/widgets/LibraryPathSelector/librarypathselector.h>
 #include <common/widgets/LineEditEx/LineEditEx.h>

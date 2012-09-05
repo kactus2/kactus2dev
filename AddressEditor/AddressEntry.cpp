@@ -49,15 +49,17 @@ AddressEntry::AddressEntry(ComponentItem* component, BusPortItem* port)
         }
 
         // Retrieve the size of the memory map.
-        ComponentItem* connectedComp = connectedPort_->encompassingComp();
-
-        if (connectedComp != 0)
+        if (hasValidConnection())
         {
+            ComponentItem* connectedComp = connectedPort_->encompassingComp();
             QString mapName = connectedPort_->getBusInterface()->getSlave()->getMemoryMapRef();
             MemoryMap const* map = connectedComp->componentModel()->getMemoryMap(mapName);
 
-            baseEndAddress_ = map->getLastAddress();
-            range_ = (baseEndAddress_ + 1) * map->getAddressUnitBits() / 8;
+            if (map != 0)
+            {
+                baseEndAddress_ = map->getLastAddress();
+                range_ = (baseEndAddress_ + 1) * map->getAddressUnitBits() / 8;
+            }
         }
     }
 }
@@ -156,7 +158,8 @@ QString AddressEntry::getMemoryMapName() const
 //-----------------------------------------------------------------------------
 bool AddressEntry::hasValidConnection() const
 {
-    return (connectedPort_ != 0 && connectedPort_->getBusInterface() != 0 &&
+    return (connectedPort_ != 0 && connectedPort_->encompassingComp() != 0 &&
+            connectedPort_->getBusInterface() != 0 &&
             connectedPort_->getBusInterface()->getInterfaceMode() == General::SLAVE);
 }
 
