@@ -115,6 +115,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./common/dialogs/selectDirectoryDialog/selectdirectorydialog.h \
     ./common/dialogs/NewDesignDialog/NewDesignDialog.h \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h \
+    ./common/dialogs/TableViewDialog/TableViewDialog.h \
     ./designwidget/AdHocEnabled.h \
     ./designwidget/AdHocInterfaceItem.h \
     ./designwidget/AdHocPortItem.h \
@@ -251,6 +252,9 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/addressblockdelegate.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/addressblockeditor.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/addressblockmodel.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/enumeratedvaluedelegate.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/enumeratedvaluemodel.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/fieldeditor.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapdelegate.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapeditor.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapmodel.h \
@@ -260,6 +264,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/registerdelegate.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/registereditor.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/registertablemodel.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/writevalueconstrainteditor.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h \
@@ -394,6 +399,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./models/view.h \
     ./models/wire.h \
     ./models/wireabstraction.h \
+    ./models/writevalueconstraint.h \
     ./models/XmlUtils.h \
     ./mainwindow/mainwindow.h \
     ./mainwindow/NewApiDefinitionPage.h \
@@ -463,6 +469,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./LibraryManager/ipxactmodel.h \
     ./LibraryManager/ipxactwidget.h \
     ./LibraryManager/librarydata.h \
+    ./LibraryManager/LibraryErrorModel.h \
     ./LibraryManager/libraryhandler.h \
     ./LibraryManager/libraryinterface.h \
     ./LibraryManager/libraryitem.h \
@@ -494,7 +501,12 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./SystemDetailsEditor/SystemDetailsEditor.h \
     ./HelpSystem/ContextHelpBrowser.h \
     ./HelpSystem/HelpSearchWidget.h \
-    ./HelpSystem/HelpWindow.h
+    ./HelpSystem/HelpWindow.h \
+    ./AddressEditor/AddressDelegate.h \
+    ./AddressEditor/AddressEditor.h \
+    ./AddressEditor/AddressEntry.h \
+    ./AddressEditor/AddressModel.h \
+    ./AddressEditor/AddressTableView.h
 SOURCES += ./common/CSourceWriter.cpp \
     ./common/DesignDiagram.cpp \
     ./common/DesignWidget.cpp \
@@ -517,6 +529,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/dialogs/selectDirectoryDialog/selectdirectorydialog.cpp \
     ./common/dialogs/NewDesignDialog/NewDesignDialog.cpp \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.cpp \
+    ./common/dialogs/TableViewDialog/TableViewDialog.cpp \
     ./common/validators/nameValidator/namevalidator.cpp \
     ./common/validators/vhdlNameValidator/vhdlnamevalidator.cpp \
     ./common/validators/LibraryPathValidator/librarypathvalidator.cpp \
@@ -720,6 +733,9 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/addressblockdelegate.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/addressblockeditor.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/addressblockmodel.cpp \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/enumeratedvaluedelegate.cpp \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/enumeratedvaluemodel.cpp \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/fieldeditor.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapdelegate.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapeditor.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapmodel.cpp \
@@ -729,6 +745,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/registerdelegate.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/registereditor.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/registertablemodel.cpp \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/writevalueconstrainteditor.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.cpp \
@@ -795,6 +812,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./LibraryManager/ipxactmodel.cpp \
     ./LibraryManager/ipxactwidget.cpp \
     ./LibraryManager/librarydata.cpp \
+    ./LibraryManager/LibraryErrorModel.cpp \
     ./LibraryManager/libraryhandler.cpp \
     ./LibraryManager/libraryitem.cpp \
     ./LibraryManager/librarytreefilter.cpp \
@@ -900,6 +918,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./models/view.cpp \
     ./models/wire.cpp \
     ./models/wireabstraction.cpp \
+    ./models/writevalueconstraint.cpp \
     ./models/XmlUtils.cpp \
     ./modelsimGenerator/modelsimgenerator.cpp \
     ./PropertyWidget/messageconsole.cpp \
@@ -961,5 +980,10 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./SystemDetailsEditor/SystemDetailsEditor.cpp \
     ./HelpSystem/ContextHelpBrowser.cpp \
     ./HelpSystem/HelpSearchWidget.cpp \
-    ./HelpSystem/HelpWindow.cpp
+    ./HelpSystem/HelpWindow.cpp \
+    ./AddressEditor/AddressDelegate.cpp \
+    ./AddressEditor/AddressEditor.cpp \
+    ./AddressEditor/AddressEntry.cpp \
+    ./AddressEditor/AddressModel.cpp \
+    ./AddressEditor/AddressTableView.cpp
 RESOURCES += kactus.qrc

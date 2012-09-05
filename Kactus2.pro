@@ -43,3 +43,7 @@ RCC_DIR += ./GeneratedFiles
 include(Kactus2.pri)
 win32:RC_FILE = Kactus2.rc
 unix:QMAKE_POST_LINK = ./CreateSymLink.sh
+
+plugins.path = /usr/share/kactus2/plugins
+plugins.files = ./executable/Plugins/*
+INSTALLS += plugins
