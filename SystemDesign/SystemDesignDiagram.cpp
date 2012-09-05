@@ -701,7 +701,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 
         // Determine a default suggestion for the view name.
         QSettings settings;
-        QStringList suggestions = settings.value("policies/sysviewnames").toStringList();
+        QStringList suggestions = settings.value("Policies/SysViewNames").toStringList();
         
         QString baseViewName = "";
         QString viewName = "";

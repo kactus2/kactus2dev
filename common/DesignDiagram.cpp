@@ -258,7 +258,7 @@ QString DesignDiagram::createInstanceName(QSharedPointer<Component> component)
 QString DesignDiagram::createInstanceName(QString const& baseName)
 {
     QSettings settings;
-    QString format = settings.value("policies/instancenames", "").toString();
+    QString format = settings.value("Policies/InstanceNames", "").toString();
 
     if (format == "")
     {

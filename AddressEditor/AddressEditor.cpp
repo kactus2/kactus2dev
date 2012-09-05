@@ -182,7 +182,7 @@ void AddressEditor::setupConnections()
 void AddressEditor::onImport()
 {
     QSettings settings;
-    QString homePath = settings.value(QString("library/defaultLocation"), 
+    QString homePath = settings.value(QString("Library/DefaultLocation"), 
                                       QCoreApplication::applicationDirPath()).toString();
 
     QString path = QFileDialog::getOpenFileName(this, tr("Select CSV file to import"), homePath);
@@ -199,7 +199,7 @@ void AddressEditor::onImport()
 void AddressEditor::onExport()
 {
     QSettings settings;
-    QString homePath = settings.value(QString("library/defaultLocation"), 
+    QString homePath = settings.value(QString("Library/DefaultLocation"), 
         QCoreApplication::applicationDirPath()).toString();
 
     QString path = QFileDialog::getSaveFileName(this, tr("Save a CSV file"), 

@@ -1124,7 +1124,7 @@ void VhdlGenerator2::writeVhdlHeader( QTextStream& vhdlStream, const QString& fi
 	VhdlGeneral::writeDescription(component_->getDescription(), vhdlStream, QString("") ,false);
 
 	QSettings settings;
-	QString userName = settings.value("general/username", getenv("USERNAME")).toString();
+	QString userName = settings.value("General/Username", getenv("USERNAME")).toString();
 	vhdlStream << "-- Created by: " << userName << endl; 
 	vhdlStream << "-- This file was generated with Kactus2 vhdl generator." << endl;
 	vhdlStream << "-- ***************************************************" << endl;

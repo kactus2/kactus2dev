@@ -114,13 +114,13 @@ CSourceWidget::~CSourceWidget()
 void CSourceWidget::applySettings(QSettings const& settings)
 {
     // Read indentation settings.
-    IndentStyle style = static_cast<IndentStyle>(settings.value("editor/indentStyle",
+    IndentStyle style = static_cast<IndentStyle>(settings.value("Editor/IndentStyle",
                                                                 INDENT_STYLE_SPACES).toInt());
-    unsigned int width = settings.value("editor/indentWidth", 4).toInt();    
+    unsigned int width = settings.value("Editor/IndentWidth", 4).toInt();    
     textEdit_->setIndentStyle(style, width);
 
     // Read font settings.
-    QFont font = settings.value("editor/font", QFont("Courier New", 10)).value<QFont>();
+    QFont font = settings.value("Editor/Font", QFont("Courier New", 10)).value<QFont>();
     textEdit_->setFont(font);
 
     // Read highlight style settings.
@@ -128,7 +128,7 @@ void CSourceWidget::applySettings(QSettings const& settings)
 
     for (int i = 0; i < CSourceHighlighter::STYLE_COUNT; ++i)
     {
-        HighlightStyleDesc styleDesc = settings.value("editor/highlight/" + CSourceHighlighter::STYLE_IDS[i],
+        HighlightStyleDesc styleDesc = settings.value("Editor/Highlight/" + CSourceHighlighter::STYLE_IDS[i],
             QVariant::fromValue(CSourceHighlighter::DEFAULT_STYLES[i])).value<HighlightStyleDesc>();
 
         textEdit_->getHighlighter().setStyle(static_cast<CSourceHighlighter::StyleType>(i), styleDesc);

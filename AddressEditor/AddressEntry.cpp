@@ -57,7 +57,7 @@ AddressEntry::AddressEntry(ComponentItem* component, BusPortItem* port)
             MemoryMap const* map = connectedComp->componentModel()->getMemoryMap(mapName);
 
             baseEndAddress_ = map->getLastAddress();
-            range_ = baseEndAddress_ * map->getAddressUnitBits() / 8;
+            range_ = (baseEndAddress_ + 1) * map->getAddressUnitBits() / 8;
         }
     }
 }
@@ -68,7 +68,8 @@ AddressEntry::AddressEntry(ComponentItem* component, BusPortItem* port)
 void AddressEntry::setStartAddress(unsigned int startAddress)
 {
     QMap<QString, QString> elements = component_->getConfigurableElements();
-    elements.insert(port_->name() + "_start_addr", QString::number(startAddress));
+    elements.insert(port_->name() + "_addr_start", QString::number(startAddress));
+    elements.insert(port_->name() + "_addr_end", QString::number(startAddress + baseEndAddress_));
 
     QSharedPointer<QUndoCommand> cmd(new ComponentConfElementChangeCommand(component_, elements));
     editProvider_.addCommand(cmd);
@@ -100,7 +101,7 @@ void AddressEntry::setLocked(bool locked)
 unsigned int AddressEntry::getStartAddress() const
 {
     QMap<QString, QString> const& elements = component_->getConfigurableElements();
-    return elements.value(port_->name() + "_start_addr", "0").toUInt();
+    return elements.value(port_->name() + "_addr_start", "0").toUInt();
 }
 
 //-----------------------------------------------------------------------------

@@ -181,11 +181,13 @@ MainWindow::MainWindow(QWidget *parent)
       visibilityMenu_(this),
       workspaceMenu_(this),
       curWorkspaceName_("Default"),
-      pluginMgr_(QCoreApplication::applicationDirPath() + "/Plugins"),
+      pluginMgr_(),
       helpWnd_(0),
       visibilities_()
 {
-	// set the identification tags for the application
+    qRegisterMetaTypeStreamOperators<HighlightStyleDesc>("HighlightStyleDesc");
+
+    // set the identification tags for the application
 	QCoreApplication::setOrganizationDomain(tr("tut.fi"));
 	QCoreApplication::setOrganizationName(tr("TUT"));
 	QCoreApplication::setApplicationName(tr("Kactus2"));
@@ -582,6 +584,20 @@ void MainWindow::restoreSettings()
 
     // Update the workspace menu.
     updateWorkspaceMenu();
+
+    // Retrieve the plugins path from settings.
+    QString pluginsPath = settings.value("Platform/PluginsPath", "").toString();
+
+    if (pluginsPath.isEmpty())
+    {
+        pluginsPath = QCoreApplication::applicationDirPath() + "/Plugins";
+    }
+    else if (pluginsPath.at(0) != '/')
+    {
+        pluginsPath = QCoreApplication::applicationDirPath() + "/" + pluginsPath;
+    }
+
+    pluginMgr_ = QSharedPointer<PluginManager>(new PluginManager(pluginsPath));
 }
 
 //-----------------------------------------------------------------------------
@@ -1457,7 +1473,7 @@ void MainWindow::runGeneratorPlugin()
     QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(doc->getDocumentVLNV());
     PluginListDialog dialog(this);
 
-    foreach (QObject* plugin, pluginMgr_.getPlugins())
+    foreach (QObject* plugin, pluginMgr_->getPlugins())
     {
         IGeneratorPlugin* genPlugin = qobject_cast<IGeneratorPlugin*>(plugin);
 
@@ -2005,7 +2021,7 @@ void MainWindow::createDesignForExistingComponent(VLNV const& vlnv)
     dialog.setVLNV(VLNV(VLNV::DESIGN, component->getVlnv()->getVendor(), component->getVlnv()->getLibrary(), "", ""));
 
     QSettings settings;
-    QStringList suggestions = settings.value("policies/hwviewnames").toStringList();
+    QStringList suggestions = settings.value("Policies/HWViewNames").toStringList();
     dialog.setViewNameSuggestions(suggestions);
 
     QString baseViewName = "";
@@ -2138,7 +2154,7 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
     dialog.setVLNV(VLNV(VLNV::DESIGN, component->getVlnv()->getVendor(), component->getVlnv()->getLibrary(), "", ""));
 
     QSettings settings;
-    QStringList suggestions = settings.value("policies/swviewnames").toStringList();
+    QStringList suggestions = settings.value("Policies/SWViewNames").toStringList();
     dialog.setViewNameSuggestions(suggestions);
 
     QString baseViewName = "";
@@ -2326,7 +2342,7 @@ void MainWindow::createSystemDesign(VLNV const& vlnv)
     dialog.setVLNV(VLNV(VLNV::DESIGN, component->getVlnv()->getVendor(), component->getVlnv()->getLibrary(), "", ""));
 
     QSettings settings;
-    QStringList suggestions = settings.value("policies/sysviewnames").toStringList();
+    QStringList suggestions = settings.value("Policies/SysViewNames").toStringList();
     dialog.setViewNameSuggestions(suggestions);
 
     QString baseViewName = "";

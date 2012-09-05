@@ -414,6 +414,7 @@ bool AddressModel::checkRangeOverlaps(int index) const
 void AddressModel::autoAssignAddresses()
 {
     beginResetModel();
+    addressEntries_[0]->setStartAddress(addressEntries_[0]->getStartAddress());
 
     for (int i = 0; i < addressEntries_.size() - 1; ++i)
     {

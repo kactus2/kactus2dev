@@ -841,7 +841,7 @@ private:
     QString curWorkspaceName_;
 
     //! The plugin manager.
-    PluginManager pluginMgr_;
+    QSharedPointer<PluginManager> pluginMgr_;
 
     //! The help window.
     HelpWindow* helpWnd_;

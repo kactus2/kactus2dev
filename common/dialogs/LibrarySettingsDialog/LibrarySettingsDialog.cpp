@@ -145,10 +145,10 @@ void LibrarySettingsDialog::removeLocation()
 //-----------------------------------------------------------------------------
 void LibrarySettingsDialog::loadSettings()
 {
-    QString defaultLocation = settings_.value("library/defaultLocation", QString()).toString();
+    QString defaultLocation = settings_.value("Library/DefaultLocation", QString()).toString();
 
     // Load the library locations.
-    QStringList locations = settings_.value("library/locations", QStringList()).toStringList();
+    QStringList locations = settings_.value("Library/Locations", QStringList()).toStringList();
 
     foreach (QString location, locations)
     {
@@ -213,10 +213,10 @@ void LibrarySettingsDialog::accept()
         locations.append(item->text());
     }
 
-    settings_.setValue("library/locations", locations);
+    settings_.setValue("Library/Locations", locations);
 
     // save the default location is one was set
-    settings_.setValue("library/defaultLocation", defaultLocation);
+    settings_.setValue("Library/DefaultLocation", defaultLocation);
 
     if (changed_) {
         emit scanLibrary();

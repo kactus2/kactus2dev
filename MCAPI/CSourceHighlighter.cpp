@@ -33,13 +33,13 @@ HighlightStyleDesc const CSourceHighlighter::DEFAULT_STYLES[STYLE_COUNT] =
 //! Style ids for storing the styles in the settings.
 QString const CSourceHighlighter::STYLE_IDS[STYLE_COUNT] =
 {
-    "keywords",
-    "preprocessor",
-    "strings",
-    "singleline_comments",
-    "multiline_comments",
-    "mcapi_types",
-    "mcapi_func"
+    "Keywords",
+    "Preprocessor",
+    "Strings",
+    "SinglelineComments",
+    "MultilineComments",
+    "APITypes",
+    "APIFunc"
 };
 
 //-----------------------------------------------------------------------------

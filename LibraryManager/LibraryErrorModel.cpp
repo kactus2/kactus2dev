@@ -83,7 +83,7 @@ QVariant LibraryErrorModel::data(const QModelIndex& index,
         case COLUMN_NUMBER:
             return index.row();
 
-        case COLUMN_MESSAGE:
+        case COLUMN_DESCRIPTION:
             return errors_.at(index.row());
         }
     }
@@ -108,9 +108,9 @@ QVariant LibraryErrorModel::headerData(int section, Qt::Orientation orientation,
                     return "#";
                 }
 
-            case COLUMN_MESSAGE:
+            case COLUMN_DESCRIPTION:
                 {
-                    return tr("Error message");
+                    return tr("Description");
                 }
             }
         }

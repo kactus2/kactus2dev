@@ -37,13 +37,13 @@ NamingPolicySettingsPage::NamingPolicySettingsPage(QSettings& settings)
       formatEdit_(new SnippetTextEdit(this))
 {
     // Add categories.
-    categories_.append(PolicyCategory("policies/instancenames", "Component Instance Names", POLICY_FORMAT));
+    categories_.append(PolicyCategory("Policies/InstanceNames", "Component Instance Names", POLICY_FORMAT));
     categories_.back().magicWords.append("ComponentName");
     categories_.back().magicWords.append("InstanceNumber");
 
-    categories_.append(PolicyCategory("policies/hwviewnames", "HW View Names", POLICY_ENUMERATION));
-    categories_.append(PolicyCategory("policies/swviewnames", "SW View Names", POLICY_ENUMERATION));
-    categories_.append(PolicyCategory("policies/sysviewnames", "System View Names", POLICY_ENUMERATION));
+    categories_.append(PolicyCategory("Policies/HWViewNames", "HW View Names", POLICY_ENUMERATION));
+    categories_.append(PolicyCategory("Policies/SWViewNames", "SW View Names", POLICY_ENUMERATION));
+    categories_.append(PolicyCategory("Policies/SysViewNames", "System View Names", POLICY_ENUMERATION));
 
     // Setup the layout.
     QVBoxLayout* layout = new QVBoxLayout(this);

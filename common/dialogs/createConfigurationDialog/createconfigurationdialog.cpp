@@ -54,7 +54,7 @@ CreateConfigurationDialog::CreateConfigurationDialog(LibraryInterface* handler,
     {
     case KactusAttribute::KTS_HW:
         {
-            QStringList suggestions = settings.value("policies/hwviewnames").toStringList();
+            QStringList suggestions = settings.value("Policies/HWViewNames").toStringList();
             configNameMatcher_.setItems(suggestions);
 
             configNameEdit_->setDisallowedInputs(component->getHierViews());
@@ -64,7 +64,7 @@ CreateConfigurationDialog::CreateConfigurationDialog(LibraryInterface* handler,
 
     case KactusAttribute::KTS_SW:
         {
-            QStringList suggestions = settings.value("policies/swviewnames").toStringList();
+            QStringList suggestions = settings.value("Policies/SWViewNames").toStringList();
             configNameMatcher_.setItems(suggestions);
 
             configNameEdit_->setDisallowedInputs(component->getSWViewNames());
@@ -74,7 +74,7 @@ CreateConfigurationDialog::CreateConfigurationDialog(LibraryInterface* handler,
 
     case KactusAttribute::KTS_SYS:
         {
-            QStringList suggestions = settings.value("policies/sysviewnames").toStringList();
+            QStringList suggestions = settings.value("Policies/SysViewNames").toStringList();
             configNameMatcher_.setItems(suggestions);
 
             configNameEdit_->setDisallowedInputs(component->getSystemViewNames());

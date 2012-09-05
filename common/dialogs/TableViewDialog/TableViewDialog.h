@@ -16,6 +16,7 @@
 #include <QTableView>
 #include <QLabel>
 #include <QAbstractTableModel>
+#include <QSortFilterProxyModel>
 
 //-----------------------------------------------------------------------------
 //! Generic table view dialog with OK button.
@@ -61,6 +62,9 @@ private:
 
     //! The table view.
     QTableView* view_;
+
+    //! Sort filter.
+    QSortFilterProxyModel* sortProxy_;
 };
 
 #endif // TABLEVIEWDIALOG_H

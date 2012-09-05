@@ -29,7 +29,7 @@ usernameEdit_(0)
     // Create the username line edit and label.
     QLabel* usernameLabel = new QLabel(tr("User name:"), this);
 
-    QString username = settings_.value("general/username", getenv("USERNAME")).toString();
+    QString username = settings_.value("General/Username", getenv("USERNAME")).toString();
     usernameEdit_ = new QLineEdit(username, this);
 
     // Setup the layout.

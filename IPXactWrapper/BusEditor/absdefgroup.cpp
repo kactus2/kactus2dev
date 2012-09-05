@@ -57,7 +57,7 @@ AbsDefGroup::~AbsDefGroup() {
 
 void AbsDefGroup::onImport() {
 	QSettings settings;
-	QString homePath = settings.value(QString("library/defaultLocation"), 
+	QString homePath = settings.value(QString("Library/DefaultLocation"), 
 		QCoreApplication::applicationDirPath()).toString();
 
 	QString path = QFileDialog::getOpenFileName(this, tr("Select csv-file to import"),
@@ -72,7 +72,7 @@ void AbsDefGroup::onImport() {
 
 void AbsDefGroup::onExport() {
 	QSettings settings;
-	QString homePath = settings.value(QString("library/defaultLocation"), 
+	QString homePath = settings.value(QString("Library/DefaultLocation"), 
 		QCoreApplication::applicationDirPath()).toString();
 
 	QString path = QFileDialog::getSaveFileName(this, tr("Save a csv-file"), 

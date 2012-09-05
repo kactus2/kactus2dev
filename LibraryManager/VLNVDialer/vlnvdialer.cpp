@@ -24,7 +24,7 @@ hidden_(false) {
 
 	// check if the filters were visible or not previously
 	QSettings settings;
-	hidden_ = !settings.value("filterWidget/hidden", false).toBool();
+	hidden_ = !settings.value("FilterWidget/Hidden", false).toBool();
 	onHideShowClick();
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
@@ -59,7 +59,7 @@ hidden_(false) {
 VLNVDialer::~VLNVDialer() {
 	// save the visibility of the filter widget
 	QSettings settings;
-	settings.setValue("filterWidget/hidden", hidden_);
+	settings.setValue("FilterWidget/Hidden", hidden_);
 }
 
 void VLNVDialer::onHideShowClick() {

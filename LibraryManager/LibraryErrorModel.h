@@ -93,10 +93,13 @@ private:
     LibraryErrorModel(LibraryErrorModel const& rhs);
     LibraryErrorModel& operator=(LibraryErrorModel const& rhs);
 
+    //-----------------------------------------------------------------------------
+    //! Column enumeration.
+    //-----------------------------------------------------------------------------
     enum Column
     {
         COLUMN_NUMBER = 0,
-        COLUMN_MESSAGE,
+        COLUMN_DESCRIPTION,
         COLUMN_COUNT
     };
 

@@ -22,8 +22,11 @@
 TableViewDialog::TableViewDialog(QWidget* parent)
     : QDialog(parent),
       label_(new QLabel("", this)),
-      view_(new QTableView(this))
+      view_(new QTableView(this)),
+      sortProxy_(new QSortFilterProxyModel(this))
 {
+    view_->setSortingEnabled(true);
+    view_->setModel(sortProxy_);
     view_->horizontalHeader()->setStretchLastSection(true);
     view_->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
     view_->verticalHeader()->hide();
@@ -58,7 +61,7 @@ void TableViewDialog::setDescription(QString const& desc)
 //-----------------------------------------------------------------------------
 void TableViewDialog::setModel(QAbstractTableModel* model)
 {
-    view_->setModel(model);
+    sortProxy_->setSourceModel(model);
     view_->resizeRowsToContents();
     view_->resizeColumnsToContents();
 }

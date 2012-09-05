@@ -218,7 +218,7 @@ void CodeEditorSettingsPage::apply()
 
     for (int i = 0; i < CSourceHighlighter::STYLE_COUNT; ++i)
     {
-        settings_.setValue("editor/highlight/" + CSourceHighlighter::STYLE_IDS[i],
+        settings_.setValue("Editor/Highlight/" + CSourceHighlighter::STYLE_IDS[i],
                            QVariant::fromValue(styles_[i]));
     }
 }
@@ -243,25 +243,23 @@ bool CodeEditorSettingsPage::onPageChange()
 void CodeEditorSettingsPage::loadSettings()
 {
     // Load indentation settings.
-    unsigned int width = settings_.value("editor/indentWidth", 4).toInt();
+    unsigned int width = settings_.value("Editor/IndentWidth", 4).toInt();
     indentWidthEdit_->setText(QString::number(width));
 
-    IndentStyle style = static_cast<IndentStyle>(settings_.value("editor/indentStyle",
+    IndentStyle style = static_cast<IndentStyle>(settings_.value("Editor/IndentStyle",
                                                                  INDENT_STYLE_SPACES).toInt());
 
     indentStyleRadioButtons_[style]->setChecked(true);
     indentStyleRadioButtons_[1 - style]->setChecked(false);
 
     // Load font and highlight settings.
-    QFont font = settings_.value("editor/font", QVariant::fromValue(QFont("Courier New", 10))).value<QFont>();
+    QFont font = settings_.value("Editor/Font", QVariant::fromValue(QFont("Courier New", 10))).value<QFont>();
     fontCombo_->setCurrentFont(font);
     fontSizeCombo_->setCurrentIndex(font.pointSize() - MIN_FONT_SIZE);
 
-    qRegisterMetaTypeStreamOperators<HighlightStyleDesc>("HighlightStyleDesc");
-
     for (int i = 0; i < CSourceHighlighter::STYLE_COUNT; ++i)
     {
-        styles_[i] = settings_.value("editor/highlight/" + CSourceHighlighter::STYLE_IDS[i],
+        styles_[i] = settings_.value("Editor/Highlight/" + CSourceHighlighter::STYLE_IDS[i],
             QVariant::fromValue(CSourceHighlighter::DEFAULT_STYLES[i])).value<HighlightStyleDesc>();
     }
 }

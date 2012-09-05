@@ -14,12 +14,12 @@ LibraryPathSelector::LibraryPathSelector(QWidget *parent):
 QComboBox(parent),
 settings_(this),
 validator_(new LibraryPathValidator(this)),
-libraryLocations_(settings_.value("library/locations", QStringList()).toStringList()),
+libraryLocations_(settings_.value("Library/Locations", QStringList()).toStringList()),
 pathEditor_(NULL) {
 
 	addItems(libraryLocations_);
 
-	QString defaultPath = settings_.value("library/defaultLocation", QString()).toString();
+	QString defaultPath = settings_.value("Library/DefaultLocation", QString()).toString();
 
 	// if the default directory is found then select it
 	int index = findText(defaultPath);

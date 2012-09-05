@@ -463,9 +463,9 @@ QString MCAPICodeGenerator::createIndentString()
     QSettings settings;
 
     // Read indentation settings.
-    IndentStyle style = static_cast<IndentStyle>(settings.value("editor/indentStyle",
+    IndentStyle style = static_cast<IndentStyle>(settings.value("Editor/IndentStyle",
                                                                 INDENT_STYLE_SPACES).toInt());
-    unsigned int width = settings.value("editor/indentWidth", 4).toInt();
+    unsigned int width = settings.value("Editor/IndentWidth", 4).toInt();
 
     QString indent;
 

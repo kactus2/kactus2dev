@@ -217,7 +217,7 @@ void LibraryHandler::onExportItem( const VLNV vlnv ) {
 	QDir savedWorkingDirectory = QDir::current();
 
 	QSettings settings;
-	QString defaultPath = settings.value("library/defaultLocation", QDir::homePath()).toString();
+	QString defaultPath = settings.value("Library/DefaultLocation", QDir::homePath()).toString();
 
 	// ask the target directory where the package is to be exported
 	QString targetPath = QFileDialog::getExistingDirectory(this, 
@@ -254,7 +254,7 @@ void LibraryHandler::onExportItems( const QList<VLNV> vlnvs ) {
 	QDir savedWorkingDirectory = QDir::current();
 
 	QSettings settings;
-	QString defaultPath = settings.value("library/defaultLocation", QDir::homePath()).toString();
+	QString defaultPath = settings.value("Library/DefaultLocation", QDir::homePath()).toString();
 
 	// ask the target directory where the package is to be exported
 	QString targetPath = QFileDialog::getExistingDirectory(this, 
@@ -1346,7 +1346,7 @@ void LibraryHandler::onRemoveVLNV( const QList<VLNV> vlnvs ) {
 	}
 
 	QSettings settings;
-	QStringList locations = settings.value("library/locations", QStringList()).toStringList();
+	QStringList locations = settings.value("Library/Locations", QStringList()).toStringList();
 
 	foreach (QString fileDir, fileDirs) {
 		clearDirectoryStructure(fileDir, locations);
