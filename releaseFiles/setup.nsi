@@ -68,6 +68,7 @@ Section "MainSection" SEC01
   File "license.txt"
   File "release_notes.txt"
   File "readme.txt"
+  File /oname=DefaultSettings.ini "DefaultSettingsWin.ini"
 
   SetOutPath "$INSTDIR\Plugins"
   SetOverwrite on
@@ -77,6 +78,10 @@ Section "MainSection" SEC01
   SetOverwrite on
   File "..\Help\Kactus2Help.qhc"
   File "..\Help\Kactus2Help.qch"
+  
+  SetOutPath "$APPDATA\TUT"
+  SetOverwrite off
+  File /oname=Kactus2.ini "DefaultSettingsWin.ini"
 
   CreateDirectory "$SMPROGRAMS\Kactus2"
   CreateShortCut "$SMPROGRAMS\Kactus2\Kactus2.lnk" "$INSTDIR\Kactus2.exe"
@@ -129,6 +134,7 @@ Section Uninstall
   Delete "$INSTDIR\Help\Kactus2Help.qch"
   Delete "$INSTDIR\Help\Kactus2Help.qhc"
   Delete "$INSTDIR\Plugins\MCAPICodeGenerator.dll"
+  Delete "$INSTDIR\DefaultSettings.ini"
   Delete "$INSTDIR\readme.txt"
   Delete "$INSTDIR\release_notes.txt"
   Delete "$INSTDIR\license.txt"

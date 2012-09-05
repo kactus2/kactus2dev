@@ -95,3 +95,9 @@ http://p.yusukekamiyamane.com/ (CC Attribution 3.0 Unported)
 
 Absque Icons
 http://macthemes.net/forum/viewtopic.php?id=16796237 (Free for commercial use, requires backlink)
+
+PixeloPhilia 2 by Omercetin
+http://omercetin.deviantart.com/ (CC Attribution 3.0 Unported)
+
+Dellipack by Dellustrations
+http://logoexpedite.com/ (Free for commercial use)
