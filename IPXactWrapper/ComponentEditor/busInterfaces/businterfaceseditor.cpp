@@ -62,3 +62,8 @@ bool BusInterfacesEditor::isValid() const {
 void BusInterfacesEditor::refresh() {
 	view_.update();
 }
+
+void BusInterfacesEditor::showEvent( QShowEvent* event ) {
+	QWidget::showEvent(event);
+	emit helpUrlRequested("componenteditor/businterfaces.html");
+}

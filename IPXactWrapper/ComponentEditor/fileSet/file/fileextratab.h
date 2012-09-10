@@ -57,10 +57,18 @@ public:
 	*/
 	bool isValid() const;
 
+protected:
+
+	//! \brief Handler for widget's show event
+	virtual void showEvent(QShowEvent* event);
+
 signals:
 
 	//! \brief Emitted when contents of one widget change.
 	void contentChanged();
+
+	//! Emitted when a help page should be changed in the context help window.
+	void helpUrlRequested(QString const& url);
 
 private slots:
 

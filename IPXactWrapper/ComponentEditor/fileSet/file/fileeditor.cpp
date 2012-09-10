@@ -37,8 +37,12 @@ file_(file) {
 	// connect the signals informing that widgets have changed their status
 	connect(&generalTab_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&generalTab_, SIGNAL(helpUrlRequested(const QString&)),
+		this, SIGNAL(helpUrlRequested(const QString&)), Qt::UniqueConnection);
 	connect(&extraTab_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&extraTab_, SIGNAL(helpUrlRequested(const QString&)),
+		this, SIGNAL(helpUrlRequested(const QString&)), Qt::UniqueConnection);
 }
 
 FileEditor::~FileEditor() {

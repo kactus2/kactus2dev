@@ -163,3 +163,8 @@ void BusIfGeneralTab::onModeChanged( General::InterfaceMode mode ) {
 	modeStack_.setMode(mode);
 	emit contentChanged();
 }
+
+void BusIfGeneralTab::showEvent( QShowEvent* event ) {
+	QWidget::showEvent(event);
+	emit helpUrlRequested("componenteditor/businterfacegeneral.html");
+}

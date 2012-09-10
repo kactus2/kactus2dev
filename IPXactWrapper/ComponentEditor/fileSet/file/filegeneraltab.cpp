@@ -73,3 +73,8 @@ void FileGeneralTab::onFileTypesChanged() {
 	file_->setAllFileTypes(fileTypes);
 	emit contentChanged();
 }
+
+void FileGeneralTab::showEvent( QShowEvent* event ) {
+	QWidget::showEvent(event);
+	emit helpUrlRequested("componenteditor/filegeneral.html");
+}

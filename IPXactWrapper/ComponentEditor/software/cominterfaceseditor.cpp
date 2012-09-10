@@ -61,3 +61,8 @@ bool ComInterfacesEditor::isValid() const {
 void ComInterfacesEditor::refresh() {
 	view_.update();
 }
+
+void ComInterfacesEditor::showEvent( QShowEvent* event ) {
+	QWidget::showEvent(event);
+	emit helpUrlRequested("componenteditor/cominterfaces.html");
+}

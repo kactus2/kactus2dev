@@ -162,3 +162,8 @@ void ViewEditor::refresh() {
 		parameters_.refresh();
 	}
 }
+
+void ViewEditor::showEvent( QShowEvent* event ) {
+	QWidget::showEvent(event);
+	emit helpUrlRequested("componenteditor/view.html");
+}

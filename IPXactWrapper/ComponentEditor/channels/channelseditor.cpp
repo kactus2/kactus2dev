@@ -57,3 +57,8 @@ bool ChannelsEditor::isValid() const {
 void ChannelsEditor::refresh() {
 	view_.update();
 }
+
+void ChannelsEditor::showEvent( QShowEvent* event ) {
+	QWidget::showEvent(event);
+	emit helpUrlRequested("componenteditor/channels.html");
+}

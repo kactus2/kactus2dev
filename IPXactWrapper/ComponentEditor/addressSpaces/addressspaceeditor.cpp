@@ -123,3 +123,8 @@ void AddressSpaceEditor::refresh() {
 	visualizer_.setRange(addrSpace_->getRange());
 	visualizer_.setSegments(addrSpace_);
 }
+
+void AddressSpaceEditor::showEvent( QShowEvent* event ) {
+	QWidget::showEvent(event);
+	emit helpUrlRequested("componenteditor/addressspace.html");
+}

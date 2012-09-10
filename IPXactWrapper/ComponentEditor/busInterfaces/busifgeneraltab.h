@@ -81,6 +81,14 @@ signals:
 	//! \brief Prints a notification to user.
 	void noticeMessage(const QString& msg) const;
 
+	//! Emitted when a help page should be changed in the context help window.
+	void helpUrlRequested(QString const& url);
+
+protected:
+
+	//! \brief Handler for widget's show event
+	virtual void showEvent(QShowEvent* event);
+
 private slots:
 
 	//! \brief Handler for changes in the bus type.

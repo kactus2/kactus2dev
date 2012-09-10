@@ -71,3 +71,8 @@ bool OtherClockDriversEditor::isValid() const {
 void OtherClockDriversEditor::refresh() {
 	view_.update();
 }
+
+void OtherClockDriversEditor::showEvent( QShowEvent* event ) {
+	QWidget::showEvent(event);
+	emit helpUrlRequested("componenteditor/otherclockdrivers.html");
+}

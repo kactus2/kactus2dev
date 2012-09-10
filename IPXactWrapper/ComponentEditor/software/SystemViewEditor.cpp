@@ -71,3 +71,8 @@ void SystemViewEditor::onHierRefChange() {
     view_->setHierarchyRef(hierRefEditor_.getVLNV());
     emit contentChanged();
 }
+
+void SystemViewEditor::showEvent( QShowEvent* event ) {
+	QWidget::showEvent(event);
+	emit helpUrlRequested("componenteditor/systemview.html");
+}

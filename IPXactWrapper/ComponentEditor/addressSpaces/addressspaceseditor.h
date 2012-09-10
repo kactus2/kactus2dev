@@ -42,6 +42,11 @@ public:
 	*/
 	virtual void refresh();
 
+protected:
+
+	//! \brief Handler for widget's show event
+	virtual void showEvent(QShowEvent* event);
+
 private:
 	
 	//! \brief No copying

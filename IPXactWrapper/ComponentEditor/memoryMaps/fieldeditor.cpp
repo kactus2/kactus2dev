@@ -60,3 +60,8 @@ bool FieldEditor::isValid() const {
 void FieldEditor::refresh() {
 	enumView_->update();
 }
+
+void FieldEditor::showEvent( QShowEvent* event ) {
+	QWidget::showEvent(event);
+	emit helpUrlRequested("componenteditor/field.html");
+}

@@ -58,3 +58,8 @@ bool ViewsEditor::isValid() const {
 void ViewsEditor::refresh() {
 	view_.update();
 }
+
+void ViewsEditor::showEvent( QShowEvent* event ) {
+	QWidget::showEvent(event);
+	emit helpUrlRequested("componenteditor/views.html");
+}

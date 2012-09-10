@@ -82,3 +82,8 @@ void SWPropertiesEditor::onPropertyChange() {
 	component()->setSWProperties(properties);
 	emit contentChanged();
 }
+
+void SWPropertiesEditor::showEvent( QShowEvent* event ) {
+	QWidget::showEvent(event);
+	emit helpUrlRequested("componenteditor/swproperties.html");
+}

@@ -63,3 +63,8 @@ void FileSetsEditor::makeChanges() {
 void FileSetsEditor::refresh() {
 	view_.update();
 }
+
+void FileSetsEditor::showEvent( QShowEvent* event ) {
+	QWidget::showEvent(event);
+	emit helpUrlRequested("componenteditor/filesets.html");
+}

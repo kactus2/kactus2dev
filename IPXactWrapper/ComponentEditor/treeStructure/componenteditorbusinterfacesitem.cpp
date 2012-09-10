@@ -31,6 +31,8 @@ editor_(libHandler, component) {
 		this, SLOT(onAddChild(int)), Qt::UniqueConnection);
 	connect(&editor_, SIGNAL(childRemoved(int)),
 		this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
+	connect(&editor_, SIGNAL(helpUrlRequested(QString const&)),
+		this, SIGNAL(helpUrlRequested(QString const&)));
 }
 
 ComponentEditorBusInterfacesItem::~ComponentEditorBusInterfacesItem() {

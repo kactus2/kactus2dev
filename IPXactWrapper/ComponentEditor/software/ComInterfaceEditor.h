@@ -63,6 +63,11 @@ public:
 	/*! \brief Reload the information from the model to the editor.
 	*/
 	virtual void refresh();
+
+protected:
+
+	//! \brief Handler for widget's show event
+	virtual void showEvent(QShowEvent* event);
     
 private slots:
 

@@ -90,3 +90,8 @@ void FileExtraTab::onDefineChange() {
 	//defineModel_.apply();
 	emit contentChanged();
 }
+
+void FileExtraTab::showEvent( QShowEvent* event ) {
+	QWidget::showEvent(event);
+	emit helpUrlRequested("componenteditor/fileextra.html");
+}

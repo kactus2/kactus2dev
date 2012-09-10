@@ -61,3 +61,8 @@ bool MemoryMapsEditor::isValid() const {
 void MemoryMapsEditor::refresh() {
 	view_->update();
 }
+
+void MemoryMapsEditor::showEvent( QShowEvent* event ) {
+	QWidget::showEvent(event);
+	emit helpUrlRequested("componenteditor/memorymaps.html");
+}

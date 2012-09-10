@@ -73,3 +73,8 @@ bool ParametersEditor::isValid() const {
 void ParametersEditor::refresh() {
 	view_.update();
 }
+
+void ParametersEditor::showEvent( QShowEvent* event ) {
+	QWidget::showEvent(event);
+	emit helpUrlRequested("componenteditor/params.html");
+}

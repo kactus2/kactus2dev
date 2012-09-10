@@ -71,3 +71,8 @@ void SWViewEditor::onHierRefChange() {
 	view_->setHierarchyRef(hierRefEditor_.getVLNV());
 	emit contentChanged();
 }
+
+void SWViewEditor::showEvent( QShowEvent* event ) {
+	QWidget::showEvent(event);
+	emit helpUrlRequested("componenteditor/swview.html");
+}

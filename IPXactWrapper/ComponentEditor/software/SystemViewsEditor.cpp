@@ -61,10 +61,11 @@ bool SystemViewsEditor::isValid() const {
 	return model_.isValid();
 }
 
-void SystemViewsEditor::makeChanges() {
-	// TODO remove this in final
-}
-
 void SystemViewsEditor::refresh() {
 	view_.update();
+}
+
+void SystemViewsEditor::showEvent( QShowEvent* event ) {
+	QWidget::showEvent(event);
+	emit helpUrlRequested("componenteditor/systemviews.html");
 }

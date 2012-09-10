@@ -231,3 +231,8 @@ void ComInterfaceEditor::onPropertiesChange() {
 	comIf_->setPropertyValues(propertyValues);
 	emit contentChanged();
 }
+
+void ComInterfaceEditor::showEvent( QShowEvent* event ) {
+	QWidget::showEvent(event);
+	emit helpUrlRequested("componenteditor/cominterface.html");
+}

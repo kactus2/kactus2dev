@@ -58,3 +58,8 @@ bool AddressSpacesEditor::isValid() const {
 void AddressSpacesEditor::refresh() {
 	view_.update();
 }
+
+void AddressSpacesEditor::showEvent( QShowEvent* event ) {
+	QWidget::showEvent(event);
+	emit helpUrlRequested("componenteditor/addressspaces.html");
+}

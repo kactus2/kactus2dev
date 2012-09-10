@@ -271,8 +271,7 @@ void BusIfPortmapTab::onMakeConnections( const QStringList& physicals,
 //-----------------------------------------------------------------------------
 // Function: BusIfPortmapTab::focusInEvent()
 //-----------------------------------------------------------------------------
-void BusIfPortmapTab::showEvent(QShowEvent* event)
-{
+void BusIfPortmapTab::showEvent(QShowEvent* event) {
     QWidget::showEvent(event);
     emit helpUrlRequested("componenteditor/portmaps.html");
 }

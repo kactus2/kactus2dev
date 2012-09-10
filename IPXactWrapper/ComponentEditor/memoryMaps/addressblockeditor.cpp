@@ -63,3 +63,8 @@ bool AddressBlockEditor::isValid() const {
 void AddressBlockEditor::refresh() {
 	view_->update();
 }
+
+void AddressBlockEditor::showEvent( QShowEvent* event ) {
+	QWidget::showEvent(event);
+	emit helpUrlRequested("componenteditor/addressblock.html");
+}

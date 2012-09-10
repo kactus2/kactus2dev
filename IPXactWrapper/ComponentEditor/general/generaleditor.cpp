@@ -118,3 +118,8 @@ void GeneralEditor::onDescriptionChange() {
 	component()->setDescription(descEditor_->getDescription());
 	emit contentChanged();
 }
+
+void GeneralEditor::showEvent( QShowEvent* event ) {
+	QWidget::showEvent(event);
+	emit helpUrlRequested("componenteditor/general.html");
+}

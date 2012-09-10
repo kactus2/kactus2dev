@@ -27,6 +27,8 @@ editor_(component, systemView, libHandler, NULL) {
 	Q_ASSERT(systemView_);
 	connect(&editor_, SIGNAL(contentChanged()),
 		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+	connect(&editor_, SIGNAL(helpUrlRequested(QString const&)),
+		this, SIGNAL(helpUrlRequested(QString const&)));
 }
 
 ComponentEditorSystemViewItem::~ComponentEditorSystemViewItem() {

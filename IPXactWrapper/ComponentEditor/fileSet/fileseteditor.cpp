@@ -112,3 +112,8 @@ void FileSetEditor::onDependenciesChange() {
 	fileSet_->setDependencies(dependencies_.items());
 	emit contentChanged();
 }
+
+void FileSetEditor::showEvent( QShowEvent* event ) {
+	QWidget::showEvent(event);
+	emit helpUrlRequested("componenteditor/fileset.html");
+}

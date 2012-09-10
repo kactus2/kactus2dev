@@ -55,3 +55,8 @@ bool CpusEditor::isValid() const {
 void CpusEditor::refresh() {
 	view_.update();
 }
+
+void CpusEditor::showEvent( QShowEvent* event ) {
+	QWidget::showEvent(event);
+	emit helpUrlRequested("componenteditor/cpus.html");
+}

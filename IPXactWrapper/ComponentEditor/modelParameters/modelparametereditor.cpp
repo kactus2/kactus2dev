@@ -72,3 +72,8 @@ bool ModelParameterEditor::isValid() const {
 void ModelParameterEditor::refresh() {
 	view_.update();
 }
+
+void ModelParameterEditor::showEvent( QShowEvent* event ) {
+	QWidget::showEvent(event);
+	emit helpUrlRequested("componenteditor/modelparams.html");
+}

@@ -21,6 +21,8 @@ editor_(libHandler, component, comInterface) {
 	editor_.hide();
 	connect(&editor_, SIGNAL(contentChanged()),
 		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+	connect(&editor_, SIGNAL(helpUrlRequested(QString const&)),
+		this, SIGNAL(helpUrlRequested(QString const&)));
 }
 
 ComponentEditorComInterfaceItem::~ComponentEditorComInterfaceItem() {

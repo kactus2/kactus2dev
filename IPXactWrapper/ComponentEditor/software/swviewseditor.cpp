@@ -56,10 +56,11 @@ bool SWViewsEditor::isValid() const {
 	return model_.isValid();
 }
 
-void SWViewsEditor::makeChanges() {
-	// TODO remove this in final
-}
-
 void SWViewsEditor::refresh() {
 	view_.update();
+}
+
+void SWViewsEditor::showEvent( QShowEvent* event ) {
+	QWidget::showEvent(event);
+	emit helpUrlRequested("componenteditor/swviews.html");
 }

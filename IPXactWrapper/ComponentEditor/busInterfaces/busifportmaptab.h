@@ -85,8 +85,10 @@ public slots:
 	
 protected:
 
+	//! \brief Handler for key press events.
 	virtual void keyPressEvent(QKeyEvent* event);
 
+	//! \brief Handler for widget's show event
     virtual void showEvent(QShowEvent* event);
 
 signals:

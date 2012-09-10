@@ -51,14 +51,14 @@ public:
 	*/
 	virtual bool isValid() const;
 
-	/*! \brief Make the changes from the editor to the IPXact model.
-	 *
-	*/
-	virtual void makeChanges();
-
 	/*! \brief Reload the information from the model to the editor.
 	*/
 	virtual void refresh();
+
+protected:
+
+	//! \brief Handler for widget's show event
+	virtual void showEvent(QShowEvent* event);
 
 private:
 	

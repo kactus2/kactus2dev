@@ -27,6 +27,8 @@ editor_(component, view, libHandler) {
 
 	connect(&editor_, SIGNAL(contentChanged()),
 		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+	connect(&editor_, SIGNAL(helpUrlRequested(QString const&)),
+		this, SIGNAL(helpUrlRequested(QString const&)));
 }
 
 ComponentEditorViewItem::~ComponentEditorViewItem() {

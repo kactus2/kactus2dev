@@ -62,3 +62,8 @@ bool RegisterEditor::isValid() const {
 void RegisterEditor::refresh() {
 	view_->update();
 }
+
+void RegisterEditor::showEvent( QShowEvent* event ) {
+	QWidget::showEvent(event);
+	emit helpUrlRequested("componenteditor/register.html");
+}

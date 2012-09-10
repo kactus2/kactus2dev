@@ -48,6 +48,8 @@ portmaps_(libHandler, component, busif.data(), &tabs_) {
 		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 	connect(&general_, SIGNAL(noticeMessage(const QString&)),
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+	connect(&general_, SIGNAL(helpUrlRequested(QString const&)),
+		this, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
 
 	connect(&tabs_, SIGNAL(currentChanged(int)),
 		this, SLOT(onTabChange(int)), Qt::UniqueConnection);
