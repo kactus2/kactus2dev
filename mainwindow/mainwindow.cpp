@@ -4035,7 +4035,7 @@ void MainWindow::setLibraryLocations()
 
 MainWindow::WindowVisibility::WindowVisibility():
 showOutput_(true),
-showContextHelp_(false),
+showContextHelp_(true),
 showPreview_(true),
 showLibrary_(true),
 showConfiguration_(true),

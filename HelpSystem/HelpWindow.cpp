@@ -28,9 +28,9 @@ HelpWindow::HelpWindow(QHelpEngine* engine, QWidget* parent /*= 0*/)
       engine_(engine),
       menu_(new QMenuBar(this)),
       tocDock_(new QDockWidget(tr("Contents"), this)),
-      indexDock_(new QDockWidget(tr("Index"), this)),
-      searchWidget_(new HelpSearchWidget(engine->searchEngine(), this)),
-      searchDock_(new QDockWidget(tr("Search"), this)),
+      //indexDock_(new QDockWidget(tr("Index"), this)),
+      //searchWidget_(new HelpSearchWidget(engine->searchEngine(), this)),
+      //searchDock_(new QDockWidget(tr("Search"), this)),
       browser_(new ContextHelpBrowser(engine, "qthelp://com.tut.kactus2.2.0/doc", this))
 {
     setWindowTitle(tr("Kactus2 Help"));
@@ -47,12 +47,12 @@ HelpWindow::HelpWindow(QHelpEngine* engine, QWidget* parent /*= 0*/)
     addDockWidget(Qt::LeftDockWidgetArea, tocDock_);
 
     // Add index dock.
-    indexDock_->setWidget(engine_->indexWidget());
-    addDockWidget(Qt::LeftDockWidgetArea, indexDock_);
+//     indexDock_->setWidget(engine_->indexWidget());
+//     addDockWidget(Qt::LeftDockWidgetArea, indexDock_);
 
     // Add search dock.
-    searchDock_->setWidget(searchWidget_);
-    addDockWidget(Qt::LeftDockWidgetArea, searchDock_);
+//     searchDock_->setWidget(searchWidget_);
+//     addDockWidget(Qt::LeftDockWidgetArea, searchDock_);
 
     setCentralWidget(browser_);
     setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);

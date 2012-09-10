@@ -63,13 +63,13 @@ private:
     QDockWidget* tocDock_;
 
     //! Dock widget for index.
-    QDockWidget* indexDock_;
+    //QDockWidget* indexDock_;
 
     //! The search widget.
-    HelpSearchWidget* searchWidget_;
+    //HelpSearchWidget* searchWidget_;
 
     //! Dock widget for search.
-    QDockWidget* searchDock_;
+    //QDockWidget* searchDock_;
 
     //! The help browser.
     ContextHelpBrowser* browser_;
