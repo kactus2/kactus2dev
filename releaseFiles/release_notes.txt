@@ -9,6 +9,25 @@
               * Changed or Information
 ===============================================================================
 
+10/09/2012 2.0
+----------------------------------------------------
+
++ Added address editor for setting memory addresses in HW designs.
++ Added context-sensitive help system (help pages are still work-in-progress).
++ Added support for memory maps and registers to the component editor.
++ Added Show Errors feature to the library in order to enumerate errors of a 
+  specific library item in a dialog.
++ Added naming policies to the settings dialog.
+
+- Fixed the crash after library refresh.
+
+* The hierarchical library view now shows also the designs.
+* Changed icons in the library view.
+* Kactus2 settings are now saved to an INI file in the user's AppData folder.
+* VLNV tree does not sort library items according to the item type anymore.
+
+
+
 13/07/2012 2.0 RC
 ----------------------------------------------------
 

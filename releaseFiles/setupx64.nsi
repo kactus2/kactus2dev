@@ -55,6 +55,22 @@ ShowInstDetails show
 ShowUnInstDetails show
 
 Section "MainSection" SEC01
+  SetOutPath "$INSTDIR"
+  SetOverwrite on
+  File "..\x64\executable\QtCore4.dll"
+  File "..\x64\executable\QtGui4.dll"
+  File "..\x64\executable\QtHelp4.dll"
+  File "..\x64\executable\QtNetwork4.dll"
+  File "..\x64\executable\QtXml4.dll"
+  File "..\x64\executable\QtXmlPatterns4.dll"
+  File "..\x64\executable\QtCLucene4.dll"
+  File "..\x64\executable\QtSql4.dll"
+  File "..\x64\executable\Kactus2.exe"
+  File "license.txt"
+  File "release_notes.txt"
+  File "readme.txt"
+  File /oname=DefaultSettings.ini "DefaultSettingsWin.ini"
+
   SetOutPath "$INSTDIR\Plugins"
   SetOverwrite on
   File "..\x64\executable\Plugins\MCAPICodeGenerator.dll"
@@ -75,23 +91,8 @@ Section "MainSection" SEC01
   SetOutPath "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef\1.063"
   SetOverwrite on
   File "Library\TUT\ip.swp.api\mcapi.apiDef\1.063\mcapi.apiDef.1.063.xml"
-  
-  SetOutPath "$INSTDIR"
-  SetOverwrite on
-  File "..\x64\executable\QtCore4.dll"
-  File "..\x64\executable\QtGui4.dll"
-  File "..\x64\executable\QtHelp4.dll"
-  File "..\x64\executable\QtNetwork4.dll"
-  File "..\x64\executable\QtXml4.dll"
-  File "..\x64\executable\QtXmlPatterns4.dll"
-  File "..\x64\executable\QtCLucene4.dll"
-  File "..\x64\executable\QtSql4.dll"
-  File "..\x64\executable\Kactus2.exe"
-  File "license.txt"
-  File "release_notes.txt"
-  File "readme.txt"
-  File /oname=DefaultSettings.ini "DefaultSettingsWin.ini"
 
+  SetOutPath "$INSTDIR"
   CreateDirectory "$SMPROGRAMS\Kactus2"
   CreateShortCut "$SMPROGRAMS\Kactus2\Kactus2.lnk" "$INSTDIR\Kactus2.exe"
   CreateShortCut "$SMPROGRAMS\Kactus2\License.lnk" "$INSTDIR\license.txt"
@@ -147,6 +148,8 @@ FunctionEnd
 
 Section Uninstall
   Delete "$INSTDIR\uninst.exe"
+  Delete "$INSTDIR\Library\TUT\global.communication\mcapi\1.0\mcapi.1.0.xml"
+  Delete "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef\1.063\mcapi.apiDef.1.063.xml"
   Delete "$INSTDIR\Help\Kactus2Help.qch"
   Delete "$INSTDIR\Help\Kactus2Help.qhc"
   Delete "$INSTDIR\Plugins\MCAPICodeGenerator.dll"
