@@ -55,6 +55,27 @@ ShowInstDetails show
 ShowUnInstDetails show
 
 Section "MainSection" SEC01
+  SetOutPath "$INSTDIR\Plugins"
+  SetOverwrite on
+  File "..\x64\executable\Plugins\MCAPICodeGenerator.dll"
+
+  SetOutPath "$INSTDIR\Help"
+  SetOverwrite on
+  File "..\Help\Kactus2Help.qhc"
+  File "..\Help\Kactus2Help.qch"
+
+  SetOutPath "$APPDATA\TUT"
+  SetOverwrite off
+  File /oname=Kactus2.ini "DefaultSettingsWin.ini"
+  
+  SetOutPath "$INSTDIR\Library\TUT\global.communication\mcapi\1.0"
+  SetOverwrite on
+  File "Library\TUT\global.communication\mcapi\1.0\mcapi.1.0.xml"
+
+  SetOutPath "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef\1.063"
+  SetOverwrite on
+  File "Library\TUT\ip.swp.api\mcapi.apiDef\1.063\mcapi.apiDef.1.063.xml"
+  
   SetOutPath "$INSTDIR"
   SetOverwrite on
   File "..\x64\executable\QtCore4.dll"
@@ -70,19 +91,6 @@ Section "MainSection" SEC01
   File "release_notes.txt"
   File "readme.txt"
   File /oname=DefaultSettings.ini "DefaultSettingsWin.ini"
-
-  SetOutPath "$INSTDIR\Plugins"
-  SetOverwrite on
-  File "..\x64\executable\Plugins\MCAPICodeGenerator.dll"
-
-  SetOutPath "$INSTDIR\Help"
-  SetOverwrite on
-  File "..\Help\Kactus2Help.qhc"
-  File "..\Help\Kactus2Help.qch"
-
-  SetOutPath "$APPDATA\TUT"
-  SetOverwrite off
-  File /oname=Kactus2.ini "DefaultSettingsWin.ini"
 
   CreateDirectory "$SMPROGRAMS\Kactus2"
   CreateShortCut "$SMPROGRAMS\Kactus2\Kactus2.lnk" "$INSTDIR\Kactus2.exe"
@@ -166,6 +174,14 @@ Section Uninstall
   RMDir "$SMPROGRAMS\Kactus2"
   RMDir "$INSTDIR\Help"
   RMDir "$INSTDIR\Plugins"
+  RMDir "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef\1.063"
+  RMDir "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef"
+  RMDir "$INSTDIR\Library\TUT\ip.swp.api"
+  RMDir "$INSTDIR\Library\TUT\global.communication\mcapi\1.0"
+  RMDir "$INSTDIR\Library\TUT\global.communication\mcapi"
+  RMDir "$INSTDIR\Library\TUT\global.communication"
+  RMDir "$INSTDIR\Library\TUT"
+  RMDir "$INSTDIR\Library"
   RMDir "$INSTDIR"
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"

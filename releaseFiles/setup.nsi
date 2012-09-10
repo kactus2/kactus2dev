@@ -82,7 +82,16 @@ Section "MainSection" SEC01
   SetOutPath "$APPDATA\TUT"
   SetOverwrite off
   File /oname=Kactus2.ini "DefaultSettingsWin.ini"
+  
+  SetOutPath "$INSTDIR\Library\TUT\global.communication\mcapi\1.0"
+  SetOverwrite on
+  File "Library\TUT\global.communication\mcapi\1.0\mcapi.1.0.xml"
+  
+  SetOutPath "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef\1.063"
+  SetOverwrite on
+  File "Library\TUT\ip.swp.api\mcapi.apiDef\1.063\mcapi.apiDef.1.063.xml"
 
+  SetOutPath "$INSTDIR"
   CreateDirectory "$SMPROGRAMS\Kactus2"
   CreateShortCut "$SMPROGRAMS\Kactus2\Kactus2.lnk" "$INSTDIR\Kactus2.exe"
   CreateShortCut "$SMPROGRAMS\Kactus2\License.lnk" "$INSTDIR\license.txt"
@@ -131,6 +140,10 @@ FunctionEnd
 
 Section Uninstall
   Delete "$INSTDIR\uninst.exe"
+  
+  Delete "$INSTDIR\Library\TUT\global.communication\mcapi\1.0\mcapi.1.0.xml"
+  Delete "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef\1.063\mcapi.apiDef.1.063.xml"
+
   Delete "$INSTDIR\Help\Kactus2Help.qch"
   Delete "$INSTDIR\Help\Kactus2Help.qhc"
   Delete "$INSTDIR\Plugins\MCAPICodeGenerator.dll"
@@ -158,6 +171,14 @@ Section Uninstall
   RMDir "$SMPROGRAMS\Kactus2"
   RMDir "$INSTDIR\Help"
   RMDir "$INSTDIR\Plugins"
+  RMDir "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef\1.063"
+  RMDir "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef"
+  RMDir "$INSTDIR\Library\TUT\ip.swp.api"
+  RMDir "$INSTDIR\Library\TUT\global.communication\mcapi\1.0"
+  RMDir "$INSTDIR\Library\TUT\global.communication\mcapi"
+  RMDir "$INSTDIR\Library\TUT\global.communication"
+  RMDir "$INSTDIR\Library\TUT"
+  RMDir "$INSTDIR\Library"
   RMDir "$INSTDIR"
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"

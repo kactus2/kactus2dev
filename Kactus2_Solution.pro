@@ -26,4 +26,7 @@ unix:help.files = ./Help/Kactus2Help.qch ./Help/Kactus2Help.qhc
 unix:config.path = /etc/xdg/TUT
 unix:config.extra = cp ./releaseFiles/DefaultSettingsLinux.ini /etc/xdg/TUT/Kactus2.ini; ln -f -s /usr/bin/Kactus2 /usr/lib/libKactus2.so
 
-INSTALLS += executable plugins help doc config
+unix:library.path = /usr/share/kactus2/library
+unix:library.files = ./releaseFiles/Library
+
+INSTALLS += executable plugins help doc config library

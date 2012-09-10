@@ -8,30 +8,7 @@ DESTDIR = ./executable
 QT += core gui xml xmlpatterns
 CONFIG += help release help
 DEFINES += _WINDOWS QT_DLL QT_XMLPATTERNS_LIB QT_XML_LIB QT_HAVE_MMX QT_HAVE_3DNOW QT_HAVE_SSE QT_HAVE_MMXEXT QT_HAVE_SSE2 KACTUS2_EXPORTS
-INCLUDEPATH += . \
-    ./release \
-    ./GeneratedFiles \
-    ./vhdlGenerator \
-    ./common/widgets/listManager \
-    ./common/widgets/dirLineEdit \
-    ./IPXactWrapper/ComponentEditor/fileSet \
-    ./IPXactWrapper/ComponentEditor/channels \
-    ./IPXactWrapper/ComponentEditor/views \
-    ./common/delegates \
-    ./common/widgets/attributeBox \
-    ./common/views/EditableTableView \
-    ./common/views/EditableListView \
-    ./common/widgets/LibraryPathSelector \
-    ./common/widgets/LibraryPathEditor \
-    ./common/validators/LibraryPathValidator \
-    ./common/widgets/EditorDockWidget \
-    ./common/widgets/EditorScrollArea \
-    ./common/widgets/ScanProgressWidget \
-    ./IPXactWrapper/ComponentEditor/addressSpaces \
-    ./common/widgets/ParameterEditor \
-    ./common/widgets/ParameterGroupBox \
-    ./IPXactWrapper/ComponentEditor/cpus \
-    ./common/widgets/NumberLineEdit
+INCLUDEPATH += .
 LIBS += -L"."
 DEPENDPATH += .
 linux-g++:LIBS += -pie -rdynamic
