@@ -8,7 +8,7 @@
 #ifndef FILEEDITOR_H
 #define FILEEDITOR_H
 
-#include "../itemeditor.h"
+#include "../../itemeditor.h"
 #include "filegeneraltab.h"
 #include "fileextratab.h"
 #include <models/component.h>
