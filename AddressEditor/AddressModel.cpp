@@ -139,7 +139,17 @@ QVariant AddressModel::data(QModelIndex const& index, int role /*= Qt::DisplayRo
                 return entry->getMemoryMapName();
             }
 
-        case ADDRESS_COL_RANGE:
+        case ADDRESS_COL_MAP_AUB:
+            {
+                return entry->getMemoryMapAUB();
+            }
+
+        case ADDRESS_COL_RANGE_BYTES:
+            {
+                return entry->getRangeInBytes();
+            }
+
+        case ADDRESS_COL_RANGE_AUB:
             {
                 return entry->getRange();
             }
@@ -253,10 +263,20 @@ QVariant AddressModel::headerData(int section, Qt::Orientation orientation, int 
                 {
                     return tr("Locked");
                 }
-
-            case ADDRESS_COL_RANGE:
+                
+            case ADDRESS_COL_MAP_AUB:
                 {
-                    return tr("Range");
+                    return tr("AUB");
+                }
+                
+            case ADDRESS_COL_RANGE_BYTES:
+                {
+                    return tr("Range (bytes)");
+                }
+
+            case ADDRESS_COL_RANGE_AUB:
+                {
+                    return tr("Range (AUB)");
                 }
 
             case ADDRESS_COL_END_ADDRESS:

@@ -11,11 +11,14 @@
 
 #include "LibrarySettingsDialog.h"
 
+#include <models/generaldeclarations.h>
+
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QDir>
 #include <QGroupBox>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QLabel>
 #include <QCoreApplication>
 #include <QMessageBox>
@@ -152,7 +155,14 @@ void LibrarySettingsDialog::loadSettings()
 
     foreach (QString location, locations)
     {
-        QListWidgetItem* item = new QListWidgetItem(location);
+        QString fullLocation = location;
+
+        if (!QFileInfo(location).isAbsolute())
+        {
+            fullLocation = QFileInfo(location).absoluteFilePath();
+        }
+
+        QListWidgetItem* item = new QListWidgetItem(fullLocation);
 
         if (location == defaultLocation) {
             item->setCheckState(Qt::Checked);

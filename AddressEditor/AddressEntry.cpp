@@ -32,6 +32,7 @@ AddressEntry::AddressEntry(ComponentItem* component, BusPortItem* port)
       connectedPort_(0),
       range_(0),
       baseEndAddress_(0),
+      aub_(0),
       editProvider_(static_cast<DesignDiagram*>(component->scene())->getEditProvider())
 {
     if (port_->isConnected())
@@ -57,8 +58,9 @@ AddressEntry::AddressEntry(ComponentItem* component, BusPortItem* port)
 
             if (map != 0)
             {
-                baseEndAddress_ = map->getLastAddress();
-                range_ = (baseEndAddress_ + 1) * map->getAddressUnitBits() / 8;
+                range_ = map->getLastAddress() + 1;
+                aub_ = map->getAddressUnitBits();
+                baseEndAddress_ = range_ * aub_ / 8 - 1;
             }
         }
     }
@@ -169,4 +171,20 @@ bool AddressEntry::hasValidConnection() const
 bool AddressEntry::overlaps(AddressEntry const& other) const
 {
     return !(getEndAddress() < other.getStartAddress() || getStartAddress() > other.getEndAddress());
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressEntry::getRangeInBytes()
+//-----------------------------------------------------------------------------
+unsigned int AddressEntry::getRangeInBytes()
+{
+    return range_ * aub_ / 8;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressEntry::getMemoryMapAUB()
+//-----------------------------------------------------------------------------
+unsigned int AddressEntry::getMemoryMapAUB()
+{
+    return aub_;
 }

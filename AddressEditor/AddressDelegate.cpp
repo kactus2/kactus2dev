@@ -47,13 +47,6 @@ QWidget* AddressDelegate::createEditor(QWidget* parent, QStyleOptionViewItem con
             return line;
         }
 
-//     case ADHOC_COL_NAME:
-//     case ADHOC_COL_DIRECTION:
-//         {
-//             QLabel* label = new QLabel(parent);
-//             return label;
-//         }
-
     default:
         {
             return QStyledItemDelegate::createEditor(parent, option, index);
@@ -77,15 +70,6 @@ void AddressDelegate::setEditorData(QWidget* editor, const QModelIndex& index) c
             line->setText(text);
             return;
         }
-
-//     case ADHOC_COL_NAME:
-//     case ADHOC_COL_DIRECTION:
-//         {
-//             QString text = index.model()->data(index, Qt::DisplayRole).toString();
-//             QLabel* label = qobject_cast<QLabel*>(editor);
-//             label->setText(text);
-//             break;
-//         }
 
     default:
         {

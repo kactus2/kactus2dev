@@ -62,9 +62,19 @@ public:
     unsigned int getEndAddress() const;
 
     /*!
-     *  Returns the range in bytes.
+     *  Returns the range in AUB.
      */
     unsigned int getRange() const;
+
+    /*!
+     *  Returns the range in bytes.
+     */
+    unsigned int getRangeInBytes();
+
+    /*!
+     *  Returns the number of memory map's addressable unit bits.
+     */
+    unsigned int getMemoryMapAUB();
 
     /*!
      *  Returns the name of the slave interface.
@@ -109,6 +119,7 @@ private:
 
     //! The edit provider.
     GenericEditProvider& editProvider_;
+    unsigned int aub_;
 };
 
 //-----------------------------------------------------------------------------

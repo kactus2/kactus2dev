@@ -51,8 +51,9 @@ AddressEditor::AddressEditor(QWidget* parent)
     view_->verticalHeader()->hide();
 
     view_->setColumnWidth(ADDRESS_COL_INTERFACE_NAME, 150);
-    view_->setColumnWidth(ADDRESS_COL_MAP_NAME, 150);    
+    view_->setColumnWidth(ADDRESS_COL_MAP_NAME, 150);
     view_->resizeColumnToContents(ADDRESS_COL_LOCKED);
+    view_->resizeColumnToContents(ADDRESS_COL_MAP_AUB);
     view_->horizontalHeader()->setResizeMode(ADDRESS_COL_LOCKED, QHeaderView::Fixed);
 
     setupLayout();
