@@ -27,7 +27,6 @@ ViewEditor::ViewEditor( QSharedPointer<Component> component,
 					   QWidget *parent ): 
 ItemEditor(component, parent), 
 libHandler_(libHandler),
-component_(component),
 view_(view),
 nameEditor_(view->getNameGroup(), this, tr("View name and description")),
 viewTypeSelector_(),
@@ -37,7 +36,7 @@ flatElements_(&stack_),
 generalTab_(component, view, &flatElements_),
 parameters_(view->getParameters(), this),
 fileBuilders_(view->getDefaultFileBuilders(), this),
-hierarchyRef_(view, component_, libHandler, &stack_) {
+hierarchyRef_(view, component, libHandler, &stack_) {
 
 	// set the possible options to the view type selector.
 	viewTypeSelector_.addItem(tr("hierarchical"));

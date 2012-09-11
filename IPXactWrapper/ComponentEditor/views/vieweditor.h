@@ -84,9 +84,6 @@ private:
 	//! \brief Pointer to the instance that manages the library.
 	LibraryInterface* libHandler_;
 
-	//! \brief Pointer to the component being edited.
-	QSharedPointer<Component> component_;
-
 	//! \brief Pointer to the view being edited.
 	QSharedPointer<View> view_;
 	
