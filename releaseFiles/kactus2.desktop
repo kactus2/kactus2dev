@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=2.0
+Type=Application
+Name=Kactus2
+Comment=The most user-friendly IP-XACT based EDA tool ever!
+TryExec=Kactus2
+Exec=Kactus2
+Icon=kactus2
