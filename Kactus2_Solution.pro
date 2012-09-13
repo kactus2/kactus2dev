@@ -29,4 +29,10 @@ unix:config.extra = cp ./releaseFiles/DefaultSettingsLinux.ini /etc/xdg/TUT/Kact
 unix:library.path = /usr/share/kactus2/library
 unix:library.files = ./releaseFiles/Library/*
 
-INSTALLS += executable plugins help doc config library
+unix:icons.path = /usr/share/pixmaps
+unix:icons.files = ./kactus2.xpm ./kactus2.png
+
+unix:desktop.path = /usr/share/applications
+unix:desktop.files = ./releaseFiles/kactus2.desktop
+
+INSTALLS += executable plugins help doc config library icons desktop
