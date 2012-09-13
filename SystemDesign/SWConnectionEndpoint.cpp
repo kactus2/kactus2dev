@@ -61,7 +61,7 @@ void SWConnectionEndpoint::updateInterface()
 
     case ENDPOINT_TYPE_COM:
         {
-            // Generate a random hexadecimal color.
+            // Generate a hexadecimal color based on the transfer type.
             unsigned int color = qHash(getComInterface()->getTransferType()) & 0x00FFFFFF;
 
             // Extract the color components and make small modifications.

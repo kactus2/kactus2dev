@@ -175,7 +175,14 @@ void SWPortItem::updateInterface()
     }
     else
     {
-        stubLineDefaultPen_.setColor(Qt::black);
+        if (getType() == ENDPOINT_TYPE_COM)
+        {
+            stubLineDefaultPen_.setColor(KactusColors::COM_CONNECTION);
+        }
+        else
+        {
+            stubLineDefaultPen_.setColor(Qt::black);
+        }
     }
 
     stubLine_.setPen(stubLineDefaultPen_);
@@ -514,7 +521,15 @@ void SWPortItem::removeConnection(GraphicsConnection* connection)
         // Check if there no other invalid connections.
         if (!hasInvalidConnections())
         {
-            stubLineDefaultPen_.setColor(Qt::black);
+            if (getType() == ENDPOINT_TYPE_COM)
+            {
+                stubLineDefaultPen_.setColor(KactusColors::COM_CONNECTION);
+            }
+            else
+            {
+                stubLineDefaultPen_.setColor(Qt::black);
+            }
+
             stubLine_.setPen(stubLineDefaultPen_);
         }
     }
@@ -931,6 +946,11 @@ void SWPortItem::setTypeDefinition(VLNV const& type)
                 conn->endpoint1()->onConnect(conn->endpoint2());
             }
         }
+    }
+
+    foreach(GraphicsConnection* conn, getConnections())
+    {
+        conn->validate();
     }
 }
 

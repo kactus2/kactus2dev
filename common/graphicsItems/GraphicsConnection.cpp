@@ -870,17 +870,7 @@ QVariant GraphicsConnection::itemChange(GraphicsItemChange change, const QVarian
     case ItemSelectedHasChanged:
         {
             bool selected = value.toBool();
-
-            if (selected)
-            {
-                QPen curPen = pen();
-                curPen.setColor(KactusColors::DIAGRAM_SELECTION);
-                setPen(curPen);
-            }
-            else
-            {
-                setDefaultColor();
-            }
+            setDefaultColor();
 
             if (endpoint1_ != 0)
             {
@@ -943,13 +933,24 @@ void GraphicsConnection::setDefaultColor()
 {
     QPen newPen = pen();
 
-    if (invalid_)
+    if (isSelected())
+    {
+        newPen.setColor(KactusColors::DIAGRAM_SELECTION);
+    }
+    else if (invalid_)
     {
         newPen.setColor(KactusColors::BROKEN_CONNECTION);
     }
     else if (routingMode_ == ROUTING_MODE_NORMAL)
     {
-        newPen.setColor(Qt::black);
+        if (getConnectionType() == ConnectionEndpoint::ENDPOINT_TYPE_COM)
+        {
+            newPen.setColor(KactusColors::COM_CONNECTION);
+        }
+        else
+        {
+            newPen.setColor(Qt::black);
+        }
     }
     else
     {
@@ -1152,6 +1153,11 @@ void GraphicsConnection::setLineWidth(int width)
 //-----------------------------------------------------------------------------
 ConnectionEndpoint::EndpointType GraphicsConnection::getConnectionType() const
 {
+    if (endpoint1() == 0 && endpoint2() == 0)
+    {
+        return ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED;
+    }
+
     if (endpoint1()->getType() != ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED)
     {
         return endpoint1()->getType();
