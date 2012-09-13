@@ -15,30 +15,8 @@
                     <section title="Portmaps" ref="componenteditor/portmaps.html" />
                     <section title="Ports" ref="componenteditor/ports.html" />
                 </section>
-                <section title="Definitions">
-                    <section title="API Definition" ref="definitions/apidefinition.html" />
-                    <section title="Bus Definition" ref="definitions/busdefinition.html" />
-                    <section title="COM Definition" ref="definitions/comdefinition.html" />
-                </section>
                 <section title="HW Design" ref="hwdesign/hwdesign.html">
                     <section title="HW Component Instance" ref="hwdesign/hwinstance.html" />
-                    <section title="Bus Port" ref="hwdesign/busport.html" />
-                    <section title="Bus Interface" ref="hwdesign/businterface.html" />
-                    <section title="Ad-hoc Port" ref="hwdesign/adhocport.html" />
-                    <section title="Ad-hoc Interface" ref="hwdesign/adhocinterface.html" />
-                    <section title="HW Connection" ref="hwdesign/connection.html" />
-                </section>
-                <section title="SW Design" ref="swsysdesign/swdesign.html">
-                    <section title="SW Component Instance" ref="swsysdesign/swinstance.html" />
-                    <section title="API Connection" ref="swsysdesign/apiconnection.html" />
-                    <section title="Undefined Connection" ref="swsysdesign/undefinedconnection.html" />
-                </section>
-                <section title="System Design" ref="swsysdesign/systemdesign.html">
-                    <section title="SW Component Instance" ref="swsysdesign/swinstance.html" />
-                    <section title="HW Mapping Instance" ref="swsysdesign/hwmappinginstance.html" />
-                    <section title="API Connection" ref="swsysdesign/apiconnection.html" />
-                    <section title="COM Connection" ref="swsysdesign/comconnection.html" />
-                    <section title="Undefined Connection" ref="swsysdesign/undefinedconnection.html" />
                 </section>
             </section>
         </toc>

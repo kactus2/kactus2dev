@@ -30,7 +30,7 @@ unix:library.path = /usr/share/kactus2/library
 unix:library.files = ./releaseFiles/Library/*
 
 unix:icons.path = /usr/share/pixmaps
-unix:icons.files = ./kactus2.xpm ./kactus2.png
+unix:icons.files = ./releaseFiles/kactus2.xpm ./releaseFiles/kactus2.png
 
 unix:desktop.path = /usr/share/applications
 unix:desktop.files = ./releaseFiles/kactus2.desktop
