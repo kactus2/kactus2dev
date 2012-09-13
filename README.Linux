@@ -1,11 +1,12 @@
-Steps to build Kactus2 on Linux.
+Steps to build and install Kactus2 on Linux.
 
 qmake Kactus2_Solution.pro
 make
+make install
 
 To run Kactus2: 
 
-executable/Kactus2
+/usr/bin/Kactus2
 
 success reports
 ---------------
