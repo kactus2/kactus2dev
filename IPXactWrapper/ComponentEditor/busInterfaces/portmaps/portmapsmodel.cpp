@@ -15,22 +15,18 @@
 #include <QSize>
 #include <QColor>
 
-PortMapsModel::PortMapsModel(QSortFilterProxyModel* proxy, 
-							 BusInterface* busif,
+PortMapsModel::PortMapsModel(BusInterface* busif,
 							 QSharedPointer<Component> component,
 							 LibraryInterface* handler,
 							 QObject *parent): 
 QAbstractTableModel(parent),
 busif_(busif),
-portMaps_(busif->getPortMaps()), 
-proxy_(proxy),
+portMaps_(busif->getPortMaps()),
 component_(component),
 handler_(handler),
 absDef_(),
 interfaceMode_(General::MASTER) {
 
-	Q_ASSERT_X(proxy, "PortMapsModel constructor",
-		"Null proxy pointer given as parameter");
 	Q_ASSERT_X(component, "PortMapsModel constructor",
 		"Null component pointer given as parameter");
 	Q_ASSERT_X(handler, "PortMapsModel constructor",

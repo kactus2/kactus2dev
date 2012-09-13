@@ -36,15 +36,13 @@ public:
 
 	/*! \brief The constructor
 	 *
-	 * \param proxy Pointer to the proxy model that does the sorting of the items.
 	 * \param busif Pointer to the bus interface being edited.
 	 * \param component Pointer to the component that is being edited.
 	 * \param handler Pointer to the instance that manages the library.
 	 * \param parent Pointer to the owner of this model
 	 *
 	*/
-	PortMapsModel(QSortFilterProxyModel* proxy, 
-		BusInterface* busif,
+	PortMapsModel(BusInterface* busif,
 		QSharedPointer<Component> component,
 		LibraryInterface* handler,
 		QObject *parent);
@@ -195,9 +193,6 @@ private:
 
 	//! \brief Pointer to the data structure within the model containing the port maps.
 	QList<QSharedPointer<General::PortMap> >& portMaps_;
-
-	//! \brief Pointer to the proxy that does the sorting for views.
-	QSortFilterProxyModel* proxy_;
 
 	//! \brief Pointer to the component being edited.
 	QSharedPointer<Component> component_;

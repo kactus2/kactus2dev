@@ -42,17 +42,6 @@ public:
 	*/
 	virtual void refresh();
 
-public slots:
-
-	//! \brief Create a mapping with dropped port and the drop target port.
-	//void onPortDropped(const QString& droppedPort, const QModelIndex& dropIndex);
-
-	//! \brief Create a mapping with ports and the drop index port.
-	//void onPortsDropped(const QStringList& ports, const QModelIndex& dropIndex);
-
-	//! \brief Create a mapping with ports and the indexed ports.
-	//void onPortsDropped(const QStringList& ports, const QModelIndexList& indexes);
-
 private:
 
 	//! \brief No copying

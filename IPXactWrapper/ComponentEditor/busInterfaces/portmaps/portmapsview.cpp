@@ -103,67 +103,6 @@ void PortMapsView::onRestoreItem() {
 		emit restoreItem(menuTarget_);
 }
 
-/*
-void PortMapsView::dragEnterEvent( QDragEnterEvent* event ) {
-	// make sure the source is not this model and that data is correct type
-	PortListView* source = qobject_cast<PortListView*>(event->source());
-	if (source && event->mimeData()->hasFormat("text/plain")) {
-
-		// the item can be removed from the original model
-		event->setDropAction(Qt::MoveAction);
-		event->accept();
-	}
-}
-*/
-/*
-void PortMapsView::dropEvent( QDropEvent* event ) {
-	// make sure the source is not this view
-	PortListView* source = qobject_cast<PortListView*>(event->source());
-	if (!source) {
-		return;
-	}
-
-	QModelIndex index = indexAt(event->pos());
-
-	// if no port name has been specified or drop index is invalid
-	QString mimeText = event->mimeData()->text();
-	if (mimeText.isEmpty() || !index.isValid()) {
-
-		// tell source that nothing is to be done to item
-		event->setDropAction(Qt::IgnoreAction);
-		event->accept();
-		return;
-	}
-
-	// get the ports that were selected
-	QStringList portNames = mimeText.split(QString(";"), QString::SkipEmptyParts);
-
-	// if the item to drop is from this port list view
-	if (source == this) {
-		emit moveItems(portNames, index);
-		event->setDropAction(Qt::IgnoreAction);
-		event->accept();
-		return;
-	}
-
-	// if the item to drop is from another port list view
-	else {
-		foreach (QString portName, portNames) {
-
-			// make connection for each port
-			if (!portName.isEmpty())
-				emit portDropped(portName, index);
-		}
-		// tell model that this index can also be removed
-		emit removeItem(index);
-
-		// accept the drop as move action so item can be removed from original model
-		event->setDropAction(Qt::MoveAction);
-		event->accept();
-	}
-}
-*/
-
 void PortMapsView::dragMoveEvent( QDragMoveEvent* e ) {
 	// make sure the source is not this model and that data is correct type
 	PortMapsView* source = qobject_cast<PortMapsView*>(e->source());
