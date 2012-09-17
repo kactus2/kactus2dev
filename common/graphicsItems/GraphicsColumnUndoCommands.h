@@ -137,7 +137,7 @@ public:
      *      @param [in] newDesc  The column's new description.
      */
     GraphicsColumnChangeCommand(GraphicsColumn* column, ColumnDesc const& newDesc,
-                        QUndoCommand* parent = 0);
+                                QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -171,6 +171,55 @@ private:
 
     //! The column's new description.
     ColumnDesc newDesc_;
+};
+
+//-----------------------------------------------------------------------------
+//! GraphicsColumnResizeCommand class.
+//-----------------------------------------------------------------------------
+class GraphicsColumnResizeCommand : public QUndoCommand
+{
+public:
+    /*!
+     *  Constructor.
+     *
+     *      @param [in] column    The column.
+     *      @param [in] oldWidth  The column's old width.
+     */
+    GraphicsColumnResizeCommand(GraphicsColumn* column, unsigned int oldWidth,
+                                QUndoCommand* parent = 0);
+
+    /*!
+     *  Destructor.
+     */
+    ~GraphicsColumnResizeCommand();
+
+    /*!
+     *  Undoes the command.
+     */
+    virtual void undo();
+
+    /*!
+     *  Redoes the command.
+     */
+    virtual void redo();
+
+private:
+    // Disable copying.
+    GraphicsColumnResizeCommand(GraphicsColumnResizeCommand const& rhs);
+    GraphicsColumnResizeCommand& operator=(GraphicsColumnResizeCommand const& rhs);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The diagram column.
+    GraphicsColumn* column_;
+
+    //! The old width.
+    unsigned int oldWidth_;
+
+    //! The new width.
+    unsigned int newWidth_;
 };
 
 //-----------------------------------------------------------------------------

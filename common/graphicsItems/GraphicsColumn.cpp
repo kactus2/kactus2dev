@@ -41,7 +41,8 @@ GraphicsColumn::GraphicsColumn(ColumnDesc const& desc, GraphicsColumnLayout* lay
       desc_(),
       nameLabel_(0),
       oldPos_(),
-      mouseNearResizeArea_(false)
+      mouseNearResizeArea_(false),
+      oldWidth_(0)
 {
     setFlag(ItemIsMovable);
     setFlag(ItemIsSelectable);
@@ -186,18 +187,29 @@ void GraphicsColumn::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 //-----------------------------------------------------------------------------
 void GraphicsColumn::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
-    QGraphicsRectItem::mouseReleaseEvent(event);
-
-    setZValue(0.0);
-    layout_->onReleaseColumn(this);
-
-    // Create an undo command.
-    QSharedPointer<QUndoCommand> cmd = createMoveUndoCommand();
-
-    // Add the undo command to the edit provider only if there were any actual changes.
-    if (cmd->childCount() > 0 || pos() != oldPos_)
+    if (mouseNearResizeArea_)
     {
-        static_cast<DesignDiagram*>(scene())->getEditProvider().addCommand(cmd);
+        if (desc_.getWidth() != oldWidth_)
+        {
+            QSharedPointer<QUndoCommand> cmd(new GraphicsColumnResizeCommand(this, oldWidth_));
+            static_cast<DesignDiagram*>(scene())->getEditProvider().addCommand(cmd, false);
+        }
+    }
+    else
+    {
+        QGraphicsRectItem::mouseReleaseEvent(event);
+
+        setZValue(0.0);
+        layout_->onReleaseColumn(this);
+
+        // Create an undo command.
+        QSharedPointer<QUndoCommand> cmd = createMoveUndoCommand();
+
+        // Add the undo command to the edit provider only if there were any actual changes.
+        if (cmd->childCount() > 0 || pos() != oldPos_)
+        {
+            static_cast<DesignDiagram*>(scene())->getEditProvider().addCommand(cmd, false);
+        }
     }
 }
 
@@ -348,10 +360,18 @@ QVariant GraphicsColumn::itemChange(GraphicsItemChange change, const QVariant &v
 //-----------------------------------------------------------------------------
 void GraphicsColumn::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
-    QGraphicsRectItem::mousePressEvent(event);
+    if (mouseNearResizeArea_)
+    {
+        // Save the old width before resize.
+        oldWidth_ = desc_.getWidth();
+    }
+    else
+    {
+        QGraphicsRectItem::mousePressEvent(event);
 
-    oldPos_ = pos();
-    prepareColumnMove();
+        oldPos_ = pos();
+        prepareColumnMove();
+    }
 }
 
 //-----------------------------------------------------------------------------

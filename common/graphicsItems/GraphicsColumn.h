@@ -253,6 +253,9 @@ private:
 
     //! If true, the mouse hovers near the resize area.
     bool mouseNearResizeArea_;
+
+    //! The old column width before resize.
+    unsigned int oldWidth_;
 };
 
 //-----------------------------------------------------------------------------

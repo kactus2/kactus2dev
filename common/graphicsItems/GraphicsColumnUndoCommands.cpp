@@ -141,3 +141,39 @@ void GraphicsColumnChangeCommand::redo()
 {
     column_->setColumnDesc(newDesc_);
 }
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsColumnResizeCommand::GraphicsColumnResizeCommand()
+//-----------------------------------------------------------------------------
+GraphicsColumnResizeCommand::GraphicsColumnResizeCommand(GraphicsColumn* column, unsigned int oldWidth,
+                                                         QUndoCommand* parent)
+    : QUndoCommand(parent),
+      column_(column),
+      oldWidth_(oldWidth),
+      newWidth_(column_->getColumnDesc().getWidth())
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsColumnResizeCommand::~GraphicsColumnResizeCommand()
+//-----------------------------------------------------------------------------
+GraphicsColumnResizeCommand::~GraphicsColumnResizeCommand()
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsColumnResizeCommand::undo()
+//-----------------------------------------------------------------------------
+void GraphicsColumnResizeCommand::undo()
+{
+    column_->setWidth(oldWidth_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsColumnResizeCommand::redo()
+//-----------------------------------------------------------------------------
+void GraphicsColumnResizeCommand::redo()
+{
+    column_->setWidth(newWidth_);
+}
