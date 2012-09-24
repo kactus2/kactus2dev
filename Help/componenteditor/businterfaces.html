@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+	<meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+		<link href="../style.css" rel="Stylesheet" type="text/css">
+		<title>Bus interfaces editor</title>
+	</head>
+	<body>
+		<h2>Bus interfaces editor</h2>
+		<p>
+			The bus interfaces editor displays a summary of the bus interfaces of a component. Bus interface is used to 
+			group ports together to form an interface that i.e. fulfills requirements for a bus protocol. 
+			This editor is used to add and remove bus interfaces in a component.
+		</p>
+		<p>
+			The name and description columns contain the name and textual description of the bus interface. 
+			The interface column is used to select the interface mode of a bus interface.
+			<dl> There are seven different interface modes:
+				<dt><strong>Master</strong></dt>
+				<dd>- indicates that the interface is the one that initiates transactions.</dd>
+				<dt><strong>Slave</strong></dt>
+				<dd>- is the one that responds to transactions.</dd>
+				<dt><strong>System</strong></dt>
+				<dd>- can be used for some interfaces that do not fit into the master or slave category.</dd>
+				<dt><strong>Mirrored slave</strong></dt>
+				<dd>- is the mirrored version of slave interface and may provide address offsets to the connected slave interfaces.</dd>	
+				<dt><strong>Mirrored master</strong></dt>
+				<dd>- is the mirrored version of master interface.</dd>
+				<dt><strong>Mirrored system</strong></dt>
+				<dd>- is the mirrored version of system interface.</dd>				
+				<dt><strong>Monitor</strong></dt>
+				<dd>- is an interface that can be used for verification process. This interface type gathers data from other interfaces.</dd>				
+			</dl>
+			The idea of mirrored interfaces is that they have the same ports as the normal interfaces but the directions of the ports are inverted.
+		</p>
+		<p>
+			The bus definition and abstraction definition columns are not editable and they display the VLNV-identifiers of the 
+			IP-Xact documents that define qualities of the hardware bus that the interface fulfills. These fields can be set in the
+			bus interface-specific editor.
+		</p>		
+	</body>
+</html>

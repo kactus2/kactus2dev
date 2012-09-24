@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+	<meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+		<link href="../style.css" rel="Stylesheet" type="text/css">
+		<title>Address block editor</title>
+	</head>
+	<body>
+		<h2>Address block editor</h2>
+		<p>
+			Address block editor is used to edit the details of an address block by defining registers to it. 
+			Each row in the editor specifies a single register within the containing address block.
+		</p>
+		<p>
+			Each register has a name and a textual description. Offset specifies the location of the 
+			register from the start of the containing address block expressed as number of addressing units.
+			Size defines the number of bits the register contains. Dimension assigns an unbounded dimension to
+			the register. Volatile value of true indicates that register value may change without a write 
+			operation to it, i.e. by an interrupt event.
+		</p>
+		<p>
+			Access column specifies the accessibility of the register, the possible values are:
+			<ul>
+				<li>Read-write</li>
+				<li>Read-only</li>
+				<li>Write-only</li>
+				<li>Read-writeOnce</li>
+				<li>writeOnce</li>
+			</ul>
+		</p>
+		<p>
+			The reset value column contains the register’s value on reset. Reset mask defines the bits of
+			the register that have a known reset value. Bit value of 1 means that the corresponding bit has a 
+			known reset value. 0 means that the value is unknown.
+		</p>
+	</body>
+</html>

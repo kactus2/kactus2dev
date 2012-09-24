@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+	<meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+		<link href="../style.css" rel="Stylesheet" type="text/css">
+		<title>File set editor</title>
+	</head>
+	<body>
+		<h2>File set editor</h2>
+		<p>
+			File set editor can be used to edit the details of a single file set and to add and 
+			remove files contained in the file set. File sets can be used to group files together 
+			to be referenced by other sections of a component.
+		</p>
+		<p>
+			On the top the name, display name and description of the file set are shown. 
+			Name is used to identify the file set within a component and the description contains 
+			a textual description of the file set.
+		</p>
+		<p>
+			The files group box lists the files contained in the file set. File name contains the 
+			name of the file and file path displays the relative file path from the component’s xml-file 
+			to the file. File types column displays the file types defined for the file and the description 
+			contains the textual description of a single file. The file types and description columns are 
+			editable but the file name and file path are not. The “Add Files” button opens a dialog that 
+			can be used to select files on the disk to add to the file set.
+		</p>
+		<p>
+			The files box also contains a context menu that has the following options:
+			<ul>
+				<li>Add new file to the file set (Add row)</li>
+				<li>Remove file from file set (Remove row)</li>
+				<li>Clear the selected cells</li>
+				<li>Copy the contents of the selected cells to clipboard</li>
+				<li>Paste the contents of the clipboard to the selected cells</li>
+				<li>Import a csv-file to the editor</li>
+				<li>Export the contents of the editor to a csv-file</li>
+			</ul>
+		</p>
+		<p>
+			If a file is in invalid state, i.e. missing a mandatory file type, then the file is 
+			displayed in red color. The order of files is maintained and can be changed by dragging rows. 
+			If the compilation order of files is important then the files should be listed in order needed 
+			by compilation.
+		</p>
+		<p>
+			The default build command can be used to define commands how to build files of the specified 
+			file types. The file type column displays a file type and the command and flags columns display 
+			the build command and the flags set for the associated file type. The replace default flags 
+			column defines if the flags are appended to the current flags or shall replace the existing 
+			flags of a build command. The build commands editor contains a similar context menu as the files editor.
+		</p>
+		<p>
+			Group identifiers can contain several identifiers and the possible words are not limited. 
+			However the editor suggests the following options for the group identifiers:
+			<ul>
+				<li>Diagnostics</li>
+				<li>Documentation</li>
+				<li>ProjectFiles</li>
+				<li>Simulation</li>
+				<li>sourceFiles</li>
+			</ul>
+			These identifiers can be used to describe the purpose of the file set.
+		</p>
+		<p>
+			Dependent directories can be used to describe a list of paths to directories containing 
+			files on which the file set depends.
+		</p>
+	</body>
+</html>

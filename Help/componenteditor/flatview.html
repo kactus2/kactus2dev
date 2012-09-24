@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+	<meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+		<link href="../style.css" rel="Stylesheet" type="text/css">
+		<title>Flat view editor</title>
+	</head>
+	<body>
+		<h2>Flat view editor</h2>
+		<p>
+			Flat view editor is used to edit the non-hierarchical views of a component. 
+			User may change the type of the view thus changing the editor type between this editor and the hierarchical view editor.
+		</p>
+		<p>
+			The name and description fields are used to edit the name and textual description of the view.
+			Environment identifiers specify information about the tool environment of the view. The view type is used to 
+			select between flat view editor and hierarchical view editor. These fields mentioned are common with flat
+			editor and hierarchical editor. The rest of the fields are specific for non-hierarchical views.
+		</p>
+		<p>
+			Language specifies the HDL for the view, i.e. this may be vhdl or verilog. Model name is a language-specific 
+			and therefore depends on the implementation language of the field. For VHDL this may be a configuration name or 
+			the entity(architecture) name.
+		</p>
+		<p>
+			File set references contain a list of file set names within the containing component that this view uses.
+			Default file build commands contains a list of build commands and flags for the files contained in the file sets 
+			referenced through the file sets.
+		</p>
+	</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+	<meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+		<link href="../style.css" rel="Stylesheet" type="text/css">
+		<title>Register editor</title>
+	</head>
+	<body>
+		<h2>Register editor</h2>
+		<p>
+			Register editor is used to edit the details of a single register by assigning bit fields to a 
+			containing register. A bit field may contain just one bit, the whole register or something in between.
+		</p>
+		<p>
+			Field contains a name and a textual description. Offset describes the starting bit of the field 
+			within the containing register. Width specifies how many bits are included in the field.
+			Volatile value of true indicates that there is no guarantee what a read operation will return 
+			because the register may change its value without write operations i.e. as a result of an interrupt.
+		</p>
+		<p>
+			Access column specifies the accessibility of the field, the possible values are:
+			<ul>
+				<li>Read-write</li>
+				<li>Read-only</li>
+				<li>Write-only</li>
+				<li>Read-writeOnce</li>
+				<li>writeOnce</li>
+			</ul>
+		</p>
+		<p>
+			<dl>The modified write value describes how the data in the field is manipulated on a write operation.
+			The possible values are:
+				<dt><strong>oneToClear</strong></dt>
+				<dd>- indicates that each data bit of one written to a field will set the corresponding bit to zero.</dd>
+				<dt><strong>oneToSet</strong></dt>
+				<dd>- indicates that each data bit of one written to a field will set the corresponding bit to one.</dd>
+				<dt><strong>oneToToggle</strong></dt>
+				<dd>- indicates that each data bit of one written to a field will toggle the corresponding bit.</dd>
+				<dt><strong>zeroToClear</strong></dt>
+				<dd>- indicates that each data bit of zero written to a field will set the corresponding bit to zero.</dd>
+				<dt><strong>zeroToSet</strong></dt>
+				<dd>- indicates that each data bit of zero written to a field will set the corresponding bit to one.</dd>
+				<dt><strong>zeroToToggle</strong></dt>
+				<dd>- indicates that each data bit of zero written will toggle the corresponding bit.</dd>
+				<dt><strong>Clear</strong></dt>
+				<dd>- indicates that each write operation will clear all bits in the field.</dd>
+				<dt><strong>Set</strong></dt>
+				<dd>- indicates that each write operation will set all bits in the field.</dd>
+				<dt><strong>Modify</strong></dt>
+				<dd>- indicates that after a write operation all bits in the field can be modified.</dd>
+				<dt><strong>Empty setting</strong></dt>
+				<dd>- indicates that the value written to a field is the value stored in the field</dd>
+			</dl>
+		</p>
+		<p>
+			<dl>Read action specifies the action that happens to the field after a read operation, the possible values are:
+				<dt><strong>Clear</strong></dt>
+				<dd>- indicates that all bits in the field are cleared after a read operation.</dd>
+				<dt><strong>Set</strong></dt>
+				<dd>- indicates that all bits in the field are set after a read operation.</dd>
+				<dt><strong>Modify</strong></dt>
+				<dd>- indicates that the bits in the field are modified in some way after a read operation.</dd>
+				<dt><strong>Empty setting</strong></dt>
+				<dd>- indicates that field is not modified after a read operation.</dd>				
+			</dl>
+		</p>
+		<p>
+			<dl>Testable specifies if the field is testable by an automated register test. 
+			Test constraint specifies the constraints for the automated tests for the field, the possible values are:
+				<dt><strong>unConstrained</strong></dt>
+				<dd>- indicates that there are no constraints for the written or read data. This is the default setting.</dd>
+				<dt><strong>Restore</strong></dt>
+				<dd>- indicates that the fields value must be restored to its original value before accessing another register.</dd>
+				<dt><strong>writeAsRead</strong></dt>
+				<dd>- indicates that the data written to a field must be same that was read previously from the field.</dd>
+				<dt><strong>readOnly</strong></dt>
+				<dd>- indicates that the field can only be read.</dd>				
+			</dl>
+		</p>
+	</body>
+</html>

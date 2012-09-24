@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+	<meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+		<link href="../style.css" rel="Stylesheet" type="text/css">
+		<title>General editor</title>
+	</head>
+	<body>
+		<h2>General editor</h2>
+		<p>
+			General editor contains the general information of a component, such as description.
+		</p>
+		<p>
+			On the top of the editor the VLNV-identifier and the file path to the xml-file are shown. 
+			These fields can’t be modified and if user wants to change the VLNV then the component must 
+			be saved as new component with new VLNV. Kactus attributes contain the hierarchy, firmness and 
+			implementation of which the implementation can’t be modified.  
+		</p>
+		<p>
+			Attributes are a Kactus2-specific extension to the IP-Xact standard and their purpose is explained below:
+			<table border="1">
+				<tr>
+					<th>Attribute name</th>
+					<th>Attribute value</th>
+					<th>Value description</th>
+				</tr>
+				<tr>
+					<td rowspan="6">Product hierarchy</td>
+					<td>Global</td>
+					<td>Component does not fit into any other category.</td>
+				</tr>
+				<tr>
+					<td>Product</td>
+					<td>Component represents a final product.</td>
+				</tr>
+				<tr>
+					<td>Board</td>
+					<td>Component represents develoment- or final hardware platform i.e. a circuit board.</td>
+				</tr>
+				<tr>
+					<td>Chip</td>
+					<td>Component represents a chip i.e. some specific FPGA-chip.</td>
+				</tr>
+				<tr>
+					<td>SoC</td>
+					<td>Component represents a system on chip.</td>
+				</tr>
+				<tr>
+					<td>IP</td>
+					<td>Component represents a single IP-block.</td>
+				</tr>
+				<tr>
+					<td rowspan="3">Implementation</td>
+					<td>HW</td>
+					<td>Component is hardware implementation.</td>
+				</tr>
+				<tr>
+					<td>SW</td>
+					<td>Component is a software implementation.</td>
+				</tr>
+				<tr>
+					<td>SYS</td>
+					<td>Component contains information about the software component mapping to the underlaying hardware platform.</td>
+				</tr>
+				<tr>
+					<td rowspan="4"> Firmness</td>
+					<td>Template</td>
+					<td>Component is a model that can be used as a base when creating new components to the library but must not be used as such.</td>
+				</tr>
+				<tr>
+					<td>Mutable</td>
+					<td>Component is fully modifiable.</td>
+				</tr>
+				<tr>
+					<td>Parametrizable</td>
+					<td>Component contains parameters that can be used to configure it but it can't be modified further.</td>
+				</tr>
+				<tr>
+					<td>Fixed</td>
+					<td>Component can’t be configured in any way and it is frozen to it's final state.</td>
+				</tr>
+			</table>
+		</p>
+		<p>
+			Description text box can be used to store a textual description of the component.
+		</p>
+		<p>
+			The component preview box on the bottom displays how the component will look like when 
+			instantiated in a design. The preview displays the bus interfaces of the component and 
+			also the ports that are marked to be seen as ad-Hoc-ports. 
+		</p>
+	</body>
+</html>

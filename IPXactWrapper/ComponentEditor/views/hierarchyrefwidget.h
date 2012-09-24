@@ -62,6 +62,14 @@ signals:
 	//! \brief Emitted when contents of the editor change.
 	void contentChanged();
 
+	//! Emitted when a help page should be changed in the context help window.
+	void helpUrlRequested(const QString& url);
+
+protected:
+
+	//! \brief Handler for widget's show event
+	virtual void showEvent(QShowEvent* event);
+
 private slots:
 
 	//! \brief Handler for changes in hierarchy reference.

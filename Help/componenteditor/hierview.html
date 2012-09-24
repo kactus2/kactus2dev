@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+	<meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+		<link href="../style.css" rel="Stylesheet" type="text/css">
+		<title>Hierarchical view editor</title>
+	</head>
+	<body>
+		<h2>Hierarchical view editor</h2>
+		<p>
+			Hierarchical view editor is used to edit the details of a hierarchical view of the component.
+			User may change the type of the view thus changing the editor type between this editor and the flat view editor.
+		</p>
+		<p>
+			The name and description fields are used to edit the name and textual description of the view. 
+			Environment identifiers specify information about the tool environment of the view. The view type is used to 
+			select between flat view editor and hierarchical view editor. These fields mentioned are common with flat editor 
+			and hierarchical editor. The rest of the fields are specific for hierarchical views.
+		</p>
+		<p>
+			The hierarchy reference contains a VLNV-reference to a design configuration or design document.
+			These documents list the sub-components instantiated in the hierarchical design and their configurations.
+		</p>
+		<p>
+			The reference to a top-level implementation view is a Kactus2-specific extension and is used to reference 
+			to a non-hierarchical view that contains the rtl-implementation of the component. Usually this means that component
+			contains a non-hierarchical view which contains the top-level structural vhdl where the sub-components are instantiated 
+			in code level. This extension refers to the view so the source codes of this component are also included i.e. when 
+			generating a compilation script for simulation or synthesis.
+		</p>
+	</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+	<meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+		<link href="../style.css" rel="Stylesheet" type="text/css">
+		<title>Memory map editor</title>
+	</head>
+	<body>
+		<h2>Memory map editor</h2>
+		<p>
+			Memory map editor can be used to edit the details of a memory map by defining address blocks
+			inside a single memory map. An address block specifies a single contiguous block of memory 
+			within containing memory map.
+		</p>
+		<p>
+			Usage column is used to specify the usage of the address block. The possible values are:
+			<ul>
+				<li>Memory specifies the address block as memory.</li>
+				<li>Register specifies the entire block to contain registers.</li>
+				<li>Reserved specifies the entire block as reserved for unknown usage.</li>
+			</ul>
+			The only type that may contain registers is the usage type of register.
+		</p>
+		<p>
+			Address block name contains the name and description the textual description of the address block. 
+			Base address specifies the starting address for the address block. It is expressed in addressing 
+			units from the containing memory map. Range of the address block is also expressed as addressing
+			units and specifies how many units the block contains. Width is the bit width of a row in the address block.
+		</p>
+		<p>
+			The access column is used to specify the accessibility of the block. The possible values are:
+			<ul>
+				<li>Read-write</li>
+				<li>Read-only</li>
+				<li>Write-only</li>
+				<li>Read-writeOnce</li>
+				<li>writeOnce</li>
+			</ul>
+		</p>
+		<p>
+			Value true in volatile column indicates that the stored value may change without assigning a 
+			write operation. For example a register may change its value in case of an interrupt.
+		</p>
+	</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+	<meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+		<link href="../style.css" rel="Stylesheet" type="text/css">
+		<title>File editor</title>
+	</head>
+	<body>
+		<h2>File editor</h2>
+		<p>
+			File editor can be used to edit the details of a single file within a file set.
+		</p>
+		<p>
+			The name field contains the relative file path from the containing component’s xml-file 
+			to the file. The file types list is used to specify the type of the file. File type can 
+			be used i.e. when specifying build commands for files. 
+		</p>
+		<p>
+			The logical name of a file can be used i.e. to specify a VHDL library for a VHDL-file. 
+			If the "only used as default"-check box is checked then the logical name is only used as 
+			default and can be overridden by another process.
+		</p>
+		<p>
+			The “is include file” and “contains external declarations” -check boxes can be used to 
+			specify the file is an include file and that the file contains external declarations and 
+			is needed by other files in this file set.
+		</p>
+		<p>
+			Description contains the textual description of the file and the build command can be used 
+			to define a specific build command or –flags for this file. If the “replace default flags”-check box 
+			is checked then the default flags of the build script are replaced, if not then the flags are
+			appended to the default flags. Target name is used to specify a path to the file that is derived
+			from this file when build process is run.
+		</p>
+	</body>
+</html>

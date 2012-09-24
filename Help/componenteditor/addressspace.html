@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+	<meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+		<link href="../style.css" rel="Stylesheet" type="text/css">
+		<title>Address space editor</title>
+	</head>
+	<body>
+		<h2>Address space editor</h2>
+		<p>
+			Address space editor can be used to edit the details of an address space within component.
+			Address space defines a logical address space seen by a master bus interface.
+		</p>
+		<p>
+			On the left side are the editor fields that can be used to set the details of an address space.
+			The right side has a visualization displaying the address space in its current state.
+			On top are the editors to set the name and description for the address space.
+		</p>
+		<p>
+			The general group contains the same settings that can be set through the address spaces summary.
+			Addressable unit size specifies the number of bits each address increment contains.
+			Width is the bit width of a row in the address space. Range is the address range of an address space 
+			expressed as addressable units.
+		</p>
+		<p>
+			Segments editor can be used to describe portions of the address space. User can specify the starting 
+			offset for the segment and range that defines how many addressable units the segment continues. 
+			The visualization on the right side reacts on the changes in both the general settings and segment
+			changes to display how the segments are situated in the address space.
+		</p>
+		<p>
+			The parameters editor can be used to define parameters for the address space. 
+			The editor is similar to the parameters editor with the exception that the scope 
+			of the parameters is limited to the containing address space.
+		</p>
+	</body>
+</html>

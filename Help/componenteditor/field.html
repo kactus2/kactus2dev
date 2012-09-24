@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+	<meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+		<link href="../style.css" rel="Stylesheet" type="text/css">
+		<title>Field editor</title>
+	</head>
+	<body>
+		<h2>Field editor</h2>
+		<p>
+			The field editor is used to edit the details of a field. For example user may define enumerated
+			values that define the legal bit patterns of a field.
+		</p>
+		<p>
+			The enumerated values table enables user the define bit patterns that can be identified by a name. 
+			This can be used to define the legal bit patterns for a field or to define some default settings 
+			to help configuration of the field.
+		</p>
+		<p>
+			<dl>The write value constraints are used to define what are the legal values user may write to a field, the options are:
+				<dt><strong>No constraints</strong></dt>
+				<dd>- indicating that there are no constraints to values to be written.</dd>
+				<dt><strong>Write as read</strong></dt>
+				<dd>- indicating that only legal values to be written are the same that were previously read from the field.</dd>
+				<dt><strong>Use enumerated values</strong></dt>
+				<dd>- indicating that the defined enumerated values are the only legal values that can be written.</dd>
+				<dt><strong>Set minimum and maximum limits</strong></dt>
+				<dd>- indicating that user may set the minimum and maximum limits for the values written to the field.</dd>				
+			</dl>
+		</p>
+	</body>
+</html>

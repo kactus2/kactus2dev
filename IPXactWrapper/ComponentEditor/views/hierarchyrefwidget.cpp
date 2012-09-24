@@ -112,3 +112,8 @@ void HierarchyRefWidget::clear() {
 
 	view_->clearHierarchy();
 }
+
+void HierarchyRefWidget::showEvent( QShowEvent* event ) {
+	QWidget::showEvent(event);
+	emit helpUrlRequested("componenteditor/hierview.html");
+}

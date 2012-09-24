@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+	<meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+		<link href="../style.css" rel="Stylesheet" type="text/css">
+		<title>Bus interface editor</title>
+	</head>
+	<body>
+		<h2>Bus interface editor</h2>
+		<p>
+			Bus interfaces editor is used to edit the details of a single bus interface. Bus interface is used to group 
+			ports together to form an interface that i.e. fulfills requirements for a bus protocol. 
+			The editor contains two tabs: the general tab which is used to set the general settings of the interface and 
+			the port maps tab which is used to group ports to the interface.
+		</p>
+		<p>
+			The name and description contain the name and textual description of the bus interface.
+			Bus definition and abstraction definition contain VLNV-references to the bus definition and abstraction 
+			definition IP-Xact documents that are associated with this interface. Those documents define the qualities 
+			that this bus interface must meet. For example the abstraction definition defines the logical signals that belong to the bus. 
+			These logical signals are used to define how the physical ports of the component are connected in the bus, 
+			this is explained in the help page of port maps editor.
+		</p>
+		<p>
+			Interface mode combo box selects the interface mode of the bus interface.
+			Below the combo box are the interface mode-specific fields that are used to edit options of the currently selected interface mode.
+		</p>
+		<p>
+			In the general group the addressable unit size defines how many bits are included in the least addressable unit of the bus.
+			The default setting is byte addressable (8 bits). The endianness indicates whether the interface is big-endian or little-endian.
+			The bit steering can be set to on or off. The bit steering on implies that the interface is able to align data on different
+			byte channels in case of addressable interfaces. The default setting when the bit steering is not set is off. 
+			When checked the connection required indicates that when instantiated in a design, this interface must be connected to
+			some other interface and can’t be left unconnected.
+		</p>
+	</body>
+</html>

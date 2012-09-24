@@ -62,10 +62,14 @@ hierarchyRef_(view, component, libHandler, &stack_) {
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&hierarchyRef_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&hierarchyRef_, SIGNAL(helpUrlRequested(const QString&)),
+		this, SIGNAL(helpUrlRequested(const QString&)), Qt::UniqueConnection);
 	connect(&viewTypeSelector_, SIGNAL(currentIndexChanged(int)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&generalTab_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&generalTab_, SIGNAL(helpUrlRequested(const QString&)),
+		this, SIGNAL(helpUrlRequested(const QString&)), Qt::UniqueConnection);
 	connect(&fileBuilders_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&parameters_, SIGNAL(contentChanged()),
@@ -160,9 +164,4 @@ void ViewEditor::refresh() {
 		generalTab_.refresh();
 		parameters_.refresh();
 	}
-}
-
-void ViewEditor::showEvent( QShowEvent* event ) {
-	QWidget::showEvent(event);
-	emit helpUrlRequested("componenteditor/view.html");
 }

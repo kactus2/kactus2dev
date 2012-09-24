@@ -60,11 +60,6 @@ public:
 	*/
 	virtual void refresh();
 
-protected:
-
-	//! \brief Handler for widget's show event
-	virtual void showEvent(QShowEvent* event);
-
 private slots:
 
 	//! \brief Handler for changes on the hierarchical/flat selector.

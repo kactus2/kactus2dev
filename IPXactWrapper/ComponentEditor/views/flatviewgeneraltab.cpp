@@ -99,3 +99,8 @@ void FlatViewGeneralTab::onFileSetRefChange() {
 	view_->setFileSetRefs(fileSetRefs_.items());
 	emit contentChanged();
 }
+
+void FlatViewGeneralTab::showEvent( QShowEvent* event ) {
+	QWidget::showEvent(event);
+	emit helpUrlRequested("componenteditor/flatview.html");
+}
