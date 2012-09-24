@@ -45,6 +45,10 @@ enum GraphicsItemTypes
     GFX_TYPE_SW_PORT_ITEM,
     GFX_TYPE_SW_INTERFACE_ITEM,
     GFX_TYPE_SW_CONNECTION,
+
+    GFX_TYPE_MEMORY_ITEM,
+    GFX_TYPE_ADDRESS_SPACE_ITEM,
+    GFX_TYPE_ADDRESS_SECTION_ITEM
 };
 
 //-----------------------------------------------------------------------------

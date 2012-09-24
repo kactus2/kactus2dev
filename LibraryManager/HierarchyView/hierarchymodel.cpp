@@ -403,6 +403,38 @@ void HierarchyModel::onOpenDesign( const QModelIndex& index ) {
 	emit openDesign(compVLNV, item->getViewName());
 }
 
+void HierarchyModel::onOpenMemoryDesign( const QModelIndex& index ) {
+    if (!index.isValid()) {
+        return;
+    }
+
+    HierarchyItem* item = static_cast<HierarchyItem*>(index.internalPointer());
+
+    // if item is not found
+    if (!item) {
+        return;
+    }
+
+    // item must always be design
+    Q_ASSERT(item->type() == HierarchyItem::HW_DESIGN);
+    VLNV designVLNV = item->getVLNV();
+
+    // find the containing component
+    HierarchyItem* parent = item->parent();
+    // if the design has no parent or the parent is the root item (which is not component)
+    if (!parent || parent == rootItem_.data()) {
+        emit errorMessage(tr("Design did not have containing component and could not be opened."));
+        return;
+    }
+    Q_ASSERT(parent->type() == HierarchyItem::COMPONENT);
+
+    // find the vlnv of the component
+    VLNV compVLNV = parent->getVLNV();
+    Q_ASSERT(compVLNV.getType() == handler_->getDocumentType(compVLNV));
+
+    emit openMemoryDesign(compVLNV, item->getViewName());
+}
+
 void HierarchyModel::onOpenSWDesign( const QModelIndex& index ) {
     if (!index.isValid())
         return;

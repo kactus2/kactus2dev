@@ -60,7 +60,7 @@ AddressEntry::AddressEntry(ComponentItem* component, BusPortItem* port)
             {
                 range_ = map->getLastAddress() + 1;
                 aub_ = map->getAddressUnitBits();
-                baseEndAddress_ = range_ * aub_ / 8 - 1;
+                baseEndAddress_ = range_ - 1;
             }
         }
     }

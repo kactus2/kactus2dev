@@ -198,7 +198,6 @@ bool SystemDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
         return false;
     }
 
-	setDocumentName(QString("%1 (%2)").arg(getIdentifyingVLNV().getName()).arg(getIdentifyingVLNV().getVersion()));
     return DesignWidget::setDesign(comp, viewName);
 }
 

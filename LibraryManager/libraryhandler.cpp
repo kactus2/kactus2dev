@@ -135,6 +135,8 @@ void LibraryHandler::syncronizeModels() {
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 	connect(treeModel_.data(), SIGNAL(openDesign(const VLNV&)),
 		this, SLOT(onOpenDesign(const VLNV&)), Qt::UniqueConnection);
+    connect(treeModel_.data(), SIGNAL(openMemoryDesign(const VLNV&)),
+        this, SLOT(onOpenMemoryDesign(const VLNV&)), Qt::UniqueConnection);
     connect(treeModel_.data(), SIGNAL(openSWDesign(const VLNV&)),
         this, SLOT(onOpenSWDesign(const VLNV&)), Qt::UniqueConnection);
     connect(treeModel_.data(), SIGNAL(openSystemDesign(const VLNV&)),
@@ -171,10 +173,14 @@ void LibraryHandler::syncronizeModels() {
 	// signals from hierarchy model to library handler
 	connect(hierarchyModel_.data(), SIGNAL(openDesign(const VLNV&, const QString&)),
 		this, SIGNAL(openDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
+    connect(hierarchyModel_.data(), SIGNAL(openMemoryDesign(const VLNV&, const QString&)),
+        this, SIGNAL(openMemoryDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
+
     connect(hierarchyModel_.data(), SIGNAL(openSWDesign(const VLNV&, const QString&)),
         this, SIGNAL(openSWDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
     connect(hierarchyModel_.data(), SIGNAL(openSystemDesign(const VLNV&, const QString&)),
         this, SIGNAL(openSystemDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
+
 	connect(hierarchyModel_.data(), SIGNAL(editItem(const VLNV&)),
 		this, SLOT(onEditItem(const VLNV&)), Qt::UniqueConnection);
 
@@ -935,6 +941,28 @@ void LibraryHandler::onOpenDesign( const VLNV& vlnv ) {
 		}
 		emit openDesign(vlnv, views.first());
 	}
+}
+
+void LibraryHandler::onOpenMemoryDesign( const VLNV& vlnv ) {
+    QSharedPointer<LibraryComponent> libComb = getModel(vlnv);
+    if (!libComb) {
+        emit errorMessage(tr("Component was not found"));
+        return;
+    }
+
+    // make type cast
+    QSharedPointer<Component> component;
+    if (libComb->getVlnv()->getType() == VLNV::COMPONENT) {
+        QSharedPointer<Component> component = libComb.staticCast<Component>();
+
+        QStringList views = component->getHierViews();
+
+        // if component does not have any views
+        if (views.size() == 0) {
+            return;
+        }
+        emit openMemoryDesign(vlnv, views.first());
+    }
 }
 
 void LibraryHandler::onOpenSWDesign( const VLNV& vlnv ) {

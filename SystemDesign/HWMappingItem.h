@@ -125,8 +125,14 @@ protected:
     //! Called when the user release the mouse.
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
 
+    /*!
+     *  Returns the height for the component box.
+     */
     qreal getHeight() const;
 
+    /*!
+     *  Returns the height of the component stack.
+     */
     qreal getComponentStackHeight() const;
 
 private:

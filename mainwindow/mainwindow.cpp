@@ -64,6 +64,8 @@
 
 #include <PluginSystem/PluginListDialog.h>
 
+#include <MemoryDesigner/MemoryDesignWidget.h>
+
 #include <designwidget/HWDesignWidget.h>
 #include <designwidget/HWDesignDiagram.h>
 #include <designwidget/HWComponentItem.h>
@@ -875,6 +877,9 @@ void MainWindow::setupLibraryDock() {
 
 	connect(libraryHandler_, SIGNAL(openDesign(const VLNV&, const QString&)),
 		this, SLOT(openDesign(const VLNV&, const QString&)));
+    connect(libraryHandler_, SIGNAL(openMemoryDesign(const VLNV&, const QString&)),
+        this, SLOT(openMemoryDesign(const VLNV&, const QString&)));
+
 	connect(libraryHandler_, SIGNAL(createBus(const VLNV&, const QString&)),
 		this, SLOT(createBus(const VLNV&, const QString&)), Qt::UniqueConnection);
 	connect(libraryHandler_, SIGNAL(createAbsDef(const VLNV&, const QString&, bool)),
@@ -2753,6 +2758,118 @@ void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forc
 	designWidget->setTabWidget(designTabs_);
 }
 
+//-----------------------------------------------------------------------------
+// Function: MainWindow::openMemoryDesign()
+//-----------------------------------------------------------------------------
+void MainWindow::openMemoryDesign(const VLNV& vlnv, const QString& viewName, bool forceUnlocked)
+{
+    // the vlnv must always be for a component
+    Q_ASSERT(libraryHandler_->getDocumentType(vlnv) == VLNV::COMPONENT);
+
+    // parse the referenced component
+    QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(vlnv);
+    QSharedPointer<Component> comp = libComp.staticCast<Component>();
+
+    // check if the design is already open
+    VLNV refVLNV = comp->getHierRef(viewName);
+    VLNV designVLNV = libraryHandler_->getDesignVLNV(refVLNV);
+    if (isOpen(designVLNV)) {
+        return;
+    }
+
+    QList<VLNV> hierRefs = comp->getHierRefs();
+
+    // make sure that all component's hierarchy refs are valid
+    bool hadInvalidRefs = false;
+    foreach (VLNV ref, hierRefs) {
+
+        // if the hierarchy referenced object is not found in library
+        if (!libraryHandler_->contains(ref)) {
+            emit errorMessage(tr("Component %1 has hierarchical reference to object %2,"
+                " which is not found in library. Component is not valid and can not "
+                "be opened in design view. Edit component with component editor to "
+                "remove invalid references.").arg(vlnv.toString(":")).arg(ref.toString(":")));
+            hadInvalidRefs = true;
+            continue;
+        }
+
+        // if the reference is to a wrong object type
+        else if (libraryHandler_->getDocumentType(ref) != VLNV::DESIGN &&
+            libraryHandler_->getDocumentType(ref) != VLNV::DESIGNCONFIGURATION) {
+                emit errorMessage(tr("Component %1 has hierarchical reference to object %2,"
+                    " which is not design or design configuration. Component is not valid and"
+                    " can not be opened in design view. Edit component with component editor to"
+                    " remove invalid references.").arg(vlnv.toString(":")).arg(ref.toString(":")));
+                hadInvalidRefs = true;
+                continue;
+        }
+
+        // if the reference is for a design configuration then check that also
+        // the design is found
+        else if (libraryHandler_->getDocumentType(ref) == VLNV::DESIGNCONFIGURATION) {
+            VLNV designVLNV = libraryHandler_->getDesignVLNV(ref);
+
+            QSharedPointer<LibraryComponent> libComp2 = libraryHandler_->getModel(ref);
+            QSharedPointer<DesignConfiguration> desConf = libComp2.staticCast<DesignConfiguration>();
+            VLNV refToDesign = desConf->getDesignRef();
+
+            // if the referenced design was not found in the library
+            if (!designVLNV.isValid()) {
+                emit errorMessage(tr("Component %1 has hierarchical reference to object %2,"
+                    " which is design configuration and references to design %3. This "
+                    "design is not found in library so component can not be opened in "
+                    "design view. Edit component with component editor to remove "
+                    "invalid references").arg(
+                    vlnv.toString(":")).arg(
+                    ref.toString(":")).arg(
+                    refToDesign.toString(":")));
+                hadInvalidRefs = true;
+                continue;
+            }
+        }
+    }
+    // if there was at least one invalid reference then do not open the design
+    if (hadInvalidRefs) {
+        return;
+    }
+
+    MemoryDesignWidget* designWidget = new MemoryDesignWidget(libraryHandler_, this);
+    registerDocument(designWidget);
+
+    connect(designWidget, SIGNAL(zoomChanged()), this, SLOT(updateZoomTools()), Qt::UniqueConnection);
+    connect(designWidget, SIGNAL(modeChanged(DrawMode)),
+        this, SLOT(onDrawModeChanged(DrawMode)), Qt::UniqueConnection);
+
+    connect(designWidget, SIGNAL(destroyed(QObject*)),
+        this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
+
+    connect(designWidget, SIGNAL(clearItemSelection()),
+        libraryHandler_, SLOT(onClearSelection()), Qt::UniqueConnection);
+
+    connect(designWidget, SIGNAL(clearItemSelection()),
+        this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
+
+    // open the design in the designWidget
+    designWidget->setDesign(vlnv, viewName);
+
+    // if the design could not be opened
+    if (!designWidget->getOpenDocument()) {
+        delete designWidget;
+        return;
+    }
+
+    if (forceUnlocked)
+    {
+        designWidget->setProtection(false);
+    }
+    else 
+    {
+        // Open in unlocked mode by default only if the version is draft.
+        designWidget->setProtection(vlnv.getVersion() != "draft");
+    }
+
+    designWidget->setTabWidget(designTabs_);
+}
 
 //-----------------------------------------------------------------------------
 // Function: openSWDesign()

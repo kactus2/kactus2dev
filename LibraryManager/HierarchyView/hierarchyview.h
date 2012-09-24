@@ -53,6 +53,9 @@ public slots:
 	//! \brief Open a hierarchical component
 	void onOpenDesign();
 
+    //! \brief Open a memory design of a hierarchical component
+    void onOpenMemoryDesign();
+
     //! \brief Open the SW design of a component
     void onOpenSWDesign();
 
@@ -114,6 +117,9 @@ public slots:
 signals:
 	//! \brief Open the selected hierarchical design
 	void openDesign(const QModelIndex& index);
+
+    //! \brief Open the memory design of a hierarchical component
+    void openMemoryDesign(const QModelIndex& index);
 
     //! \brief Open the selected SW design
     void openSWDesign(const QModelIndex& index);
@@ -213,6 +219,9 @@ private:
 
 	//! \brief Open the hierarchical design of a component
 	QAction* openDesignAction_;
+
+    //! \brief Open the memory design of a component
+    QAction* openMemoryDesignAction_;
 
     //! \brief Open the SW design of a component
     QAction* openSWDesignAction_;

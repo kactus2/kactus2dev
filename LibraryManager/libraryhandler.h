@@ -331,6 +331,13 @@ public slots:
 	*/
 	virtual void onOpenDesign(const VLNV& vlnv);
 
+    /*!
+     *  Opens the memory design of the given HW design.
+     *  
+     *      @param [in] vlnv    The vlnv of the HW design.
+     */
+    virtual void onOpenMemoryDesign(const VLNV& vlnv);
+
     /*! \brief Open the specified component SW design
 	 *
 	 * \param vlnv Identifies the component that's SW design is wanted
@@ -407,6 +414,9 @@ signals:
 
 	//! \brief Signal that user wants to open the specified component for editing.
 	void openDesign(const VLNV& vlnv, const QString& viewName);
+
+    //! \brief Signal that user wants to open the memory design of the specified component for editing.
+    void openMemoryDesign(const VLNV& vlnv, const QString& viewName);
 
     //! \brief Signal that user wants to open the specified software design for editing.
     void openSWDesign(const VLNV& vlnv, QString const& viewName);

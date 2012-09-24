@@ -174,6 +174,9 @@ public slots:
 	//! \brief Open the selected hierarchical design
 	void onOpenDesign(const QModelIndex& index);
 
+    //! \brief Open the memory design of the selected design.
+    void onOpenMemoryDesign(const QModelIndex& index);
+
     //! \brief Open the selected SW design
     void onOpenSWDesign(const QModelIndex& index);
 
@@ -236,6 +239,9 @@ signals:
 
 	//! \brief Open the design of a component.
 	void openDesign(const VLNV& vlnv, const QString& viewName);
+
+    //! \brief Open the memory design of a component.
+    void openMemoryDesign(const VLNV& vlnv, const QString& viewName);
 
     //! \brief Open the SW design of a component.
     void openSWDesign(const VLNV& vlnv, const QString& viewName);

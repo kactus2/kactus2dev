@@ -91,6 +91,16 @@ public slots:
                     bool forceUnlocked = false);
 
     /*!
+     *  Opens the memory design of the HW design specified by the component VLNV and view name.
+     *  
+     *      @param [in] vlnv            The VLNV of the top-level component.
+     *      @param [in] viewName        Name of the view to open.
+     *      @param [in] forceUnlocked   Forces the design to be opened in unlocked mode.
+     */
+    void openMemoryDesign(const VLNV& vlnv = VLNV(), const QString& viewName = QString(),
+                          bool forceUnlocked = false);
+
+    /*!
      *  Opens a SW design.
      *
      *      @param [in] vlnv           The VLNV of the top-level component.

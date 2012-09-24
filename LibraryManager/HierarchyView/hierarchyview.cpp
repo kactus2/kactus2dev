@@ -50,6 +50,7 @@ HierarchyView::HierarchyView(QWidget *parent,
       startPos_(),
       dragIndex_(),
       openDesignAction_(NULL),
+      openMemoryDesignAction_(NULL),
       openSWDesignAction_(NULL),
       openCompAction_(NULL),
       createNewComponentAction_(NULL),
@@ -99,6 +100,12 @@ void HierarchyView::setupActions() {
 	openDesignAction_->setToolTip(tr("Open a HW design"));
 	connect(openDesignAction_, SIGNAL(triggered()),
 		    this, SLOT(onOpenDesign()), Qt::UniqueConnection);
+
+    openMemoryDesignAction_ = new QAction(tr("Open Memory Design"), this);
+    openMemoryDesignAction_->setStatusTip(tr("Open a memory design"));
+    openMemoryDesignAction_->setToolTip(tr("Open a memory design"));
+    connect(openMemoryDesignAction_, SIGNAL(triggered()),
+        this, SLOT(onOpenMemoryDesign()), Qt::UniqueConnection);
 
     openSWDesignAction_ = new QAction(tr("Open SW Design"), this);
     openSWDesignAction_->setStatusTip(tr("Open a SW design"));
@@ -234,6 +241,13 @@ void HierarchyView::onOpenDesign() {
 	foreach (QModelIndex index, indexes) {
 		emit openDesign(filter_->mapToSource(index));
 	}
+}
+
+void HierarchyView::onOpenMemoryDesign() {
+    QModelIndexList indexes = selectedIndexes();
+    foreach (QModelIndex index, indexes) {
+        emit openMemoryDesign(filter_->mapToSource(index));
+    }
 }
 
 void HierarchyView::onOpenSWDesign() {
@@ -420,6 +434,7 @@ void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
         }
 		else if (item->type() == HierarchyItem::HW_DESIGN) {
 			menu.addAction(openDesignAction_);
+            menu.addAction(openMemoryDesignAction_);
 		}
 		else if (item->type() == HierarchyItem::SW_DESIGN) {
 			menu.addAction(openSWDesignAction_);
