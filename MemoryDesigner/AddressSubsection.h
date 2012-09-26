@@ -14,7 +14,9 @@
 
 #include <QGraphicsTextItem>
 
+class GraphicsLineEdit;
 class AddressSectionItem;
+class AddressValidator;
 
 //-----------------------------------------------------------------------------
 //! Address subsection.
@@ -42,6 +44,13 @@ public:
      *  Destructor.
      */
     ~AddressSubsection();
+
+    /*!
+     *  Sets the minimum start address.
+     *  
+     *      @param [in] minAddress  The minimum address.
+     */
+    void setMinStartAddress(unsigned int minAddress);
 
     /*!
      *  Sets the top y coordinate.
@@ -111,6 +120,11 @@ private slots:
     //! Called when the start address has been edited.
     void onStartAddressEdited();
 
+    /*!
+     *  Shows error dialog on invalid input.
+     */
+    void onInvalidInput();
+
 private:
     // Disable copying.
     AddressSubsection(AddressSubsection const& rhs);
@@ -142,7 +156,10 @@ private:
     unsigned int endAddress_;
 
     //! The label for start address.
-    QGraphicsTextItem* startAddressLabel_;
+    GraphicsLineEdit* startAddressLabel_;
+
+    //! The validator for the start address.
+    AddressValidator* startAddressValidator_;
 
     //! The label for end address.
     QGraphicsTextItem* endAddressLabel_;

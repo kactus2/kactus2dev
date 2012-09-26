@@ -318,6 +318,8 @@ void AddressSectionItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 
         QSharedPointer<AddressSubsection> newSubsection(new AddressSubsection(this, WIDTH / 2 - ADDR_COLUMN_WIDTH,
                                                                               top2, bottom2, startAddress2, endAddress2));
+        newSubsection->setMinStartAddress(subsection->getStartAddress() + 1);
+
         connect(newSubsection.data(), SIGNAL(startAddressEdited(AddressSubsection*)),
                 this, SLOT(onSubsectionStartAddressEdited(AddressSubsection*)), Qt::UniqueConnection);
 
@@ -379,6 +381,11 @@ void AddressSectionItem::onSubsectionStartAddressEdited(AddressSubsection* subse
         if (subsections_.at(i) == subsection)
         {
             subsections_.at(i - 1)->setEndAddress(subsection->getStartAddress() - 1);
+
+            if (i < subsections_.size() - 1)
+            {
+                subsections_.at(i + 1)->setMinStartAddress(subsection->getStartAddress() + 1);
+            }
             break;
         }
     }

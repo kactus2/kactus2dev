@@ -14,9 +14,15 @@
 #include "AddressSectionItem.h"
 
 #include <common/utils.h>
+#include <common/DesignDiagram.h>
+#include <common/DesignWidget.h>
+#include <common/graphicsItems/GraphicsLineEdit.h>
+#include <common/validators/AddressValidator.h>
 
 #include <QFont>
 #include <QTextDocument>
+#include <QMessageBox>
+#include <QCoreApplication>
 
 //-----------------------------------------------------------------------------
 // Function: AddressSubsection::AddressSubsection()
@@ -27,8 +33,9 @@ AddressSubsection::AddressSubsection(AddressSectionItem* parent, int offsetX,
       bottom_(bottom),
       startAddress_(startAddress),
       endAddress_(endAddress),
-      startAddressLabel_(new QGraphicsTextItem(toHexString(startAddress), parent)),
-      endAddressLabel_(new QGraphicsTextItem(toHexString(endAddress), parent))
+      startAddressLabel_(new GraphicsLineEdit(parent)),
+      startAddressValidator_(new AddressValidator(this)),
+      endAddressLabel_(new QGraphicsTextItem(parent))
 {
     QFont font = startAddressLabel_->font();
     font.setWeight(QFont::Bold);
@@ -37,15 +44,19 @@ AddressSubsection::AddressSubsection(AddressSectionItem* parent, int offsetX,
     startAddressLabel_->setAcceptHoverEvents(false);
     startAddressLabel_->setPos(QPointF(offsetX, top_));
     startAddressLabel_->setHtml(toHexString(startAddress_));
+    startAddressLabel_->setValidator(startAddressValidator_);
+
+    startAddressValidator_->setMaxAddress(endAddress);
 
     endAddressLabel_->setFont(font);
     endAddressLabel_->setAcceptHoverEvents(false);
     endAddressLabel_->setPos(QPointF(offsetX, bottom_ - 20));
-    endAddressLabel_->setHtml(toHexString(endAddress_));    
+    endAddressLabel_->setHtml(toHexString(endAddress_));
 
     setStartAddressFixed(false);
 
-    connect(startAddressLabel_->document(), SIGNAL(contentsChanged()), this, SLOT(onStartAddressEdited()));
+    connect(startAddressLabel_, SIGNAL(textEdited()), this, SLOT(onStartAddressEdited()));
+    connect(startAddressLabel_, SIGNAL(invalidInputEntered()), this, SLOT(onInvalidInput()));
 }
 
 //-----------------------------------------------------------------------------
@@ -90,6 +101,7 @@ void AddressSubsection::setEndAddress(unsigned int endAddress)
 {
     endAddress_ = endAddress;
     endAddressLabel_->setHtml(toHexString(endAddress));
+    startAddressValidator_->setMaxAddress(endAddress);
 }
 
 //-----------------------------------------------------------------------------
@@ -97,14 +109,7 @@ void AddressSubsection::setEndAddress(unsigned int endAddress)
 //-----------------------------------------------------------------------------
 void AddressSubsection::setStartAddressFixed(bool fixed)
 {
-    if (fixed)
-    {
-        startAddressLabel_->setTextInteractionFlags(Qt::NoTextInteraction);
-    }
-    else
-    {
-        startAddressLabel_->setTextInteractionFlags(Qt::TextEditable);
-    }
+    startAddressLabel_->setReadOnly(fixed);
 }
 
 //-----------------------------------------------------------------------------
@@ -162,4 +167,23 @@ void AddressSubsection::onStartAddressEdited()
 QString AddressSubsection::toHexString(unsigned int address)
 {
     return QString("0x") + QString("%1").arg(address, 8, 16, QChar('0')).toUpper();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSubsection::onInvalidInput()
+//-----------------------------------------------------------------------------
+void AddressSubsection::onInvalidInput()
+{
+    QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+                       tr("Invalid address."),
+                       QMessageBox::Ok, static_cast<DesignDiagram*>(startAddressLabel_->scene())->getParent());
+    msgBox.exec();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSubsection::setMinStartAddress()
+//-----------------------------------------------------------------------------
+void AddressSubsection::setMinStartAddress(unsigned int minAddress)
+{
+    startAddressValidator_->setMinAddress(minAddress);
 }
