@@ -217,21 +217,10 @@ void LibraryComponent::writeKactus2Attributes( QXmlStreamWriter& writer ) {
 		writer.writeTextElement("kactus2:kts_implementation", kactus2Attributes_.value("kts_implementation"));
 	}
 
-    if (kactus2Attributes_.contains("kts_sw_type"))
-    {
-    	writer.writeTextElement("kactus2:kts_sw_type", kactus2Attributes_.value("kts_sw_type"));
-    }
-
 	// if firmness is defined
 	if (kactus2Attributes_.contains("kts_firmness")) {
 		writer.writeTextElement("kactus2:kts_firmness",
 			kactus2Attributes_.value("kts_firmness"));
-	}
-
-	// if bus def type is defined
-	if (kactus2Attributes_.contains("kts_busdef_type")) {
-		writer.writeTextElement("kactus2:kts_busdef_type",
-			kactus2Attributes_.value("kts_busdef_type"));
 	}
 
 	writer.writeEndElement(); // kactus2:kts_attributes
@@ -254,14 +243,8 @@ void LibraryComponent::parseKactus2Attributes( QDomNode& attributeNode ) {
 			QString value = tempNode.childNodes().at(0).nodeValue();
 			kactus2Attributes_.insert("kts_implementation", value);
 		}
-		else if (tempNode.nodeName() == "kactus2:kts_sw_type") {
-			kactus2Attributes_.insert("kts_sw_type", tempNode.childNodes().at(0).nodeValue());
-		}
 		else if (tempNode.nodeName() == "kactus2:kts_firmness") {
 			kactus2Attributes_.insert("kts_firmness", tempNode.childNodes().at(0).nodeValue());
-		}
-		else if (tempNode.nodeName() == "kactus2:kts_busdef_type") {
-			kactus2Attributes_.insert("kts_busdef_type", tempNode.childNodes().at(0).nodeValue());
 		}
 	}
 	return;

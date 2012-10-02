@@ -86,13 +86,6 @@ attributes_()  {
 		extends_ = General::createVLNV(extendNode, VLNV::BUSDEFINITION);
 	}
 
-	// get vendor extensions
-	QDomNodeList temp7 = doc.elementsByTagName("kactus2:kts_busdef_type");
-	if (!temp7.isEmpty()) {
-		QDomNode typeNode = temp7.item(0);
-		kactus2Attributes_.insert("kts_busdef_type", typeNode.childNodes().at(0).nodeValue());
-	}
-
 	return;
 }
 
