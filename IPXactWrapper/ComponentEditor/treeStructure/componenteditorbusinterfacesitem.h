@@ -66,6 +66,14 @@ public:
 	*/
 	virtual void createChild(int index);
 
+	/*! \brief Get the tree item that holds the editor for given bus interface.
+	 *
+	 * \param interfaceName The name of the bus interface to get the item for.
+	 *
+	 * \return Pointer to the tree item.
+	*/
+	QSharedPointer<ComponentEditorItem> getBusInterfaceItem(const QString& interfaceName) const;
+
 private:
 	//! \brief No copying
 	ComponentEditorBusInterfacesItem(const ComponentEditorBusInterfacesItem& other);

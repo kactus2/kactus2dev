@@ -207,7 +207,8 @@ public slots:
 	virtual void openItem(bool builtinEditor);
 
 signals:
-    //! Emitted when a help page should be changed in the context help window.
+	
+	//! Emitted when a help page should be changed in the context help window.
     void helpUrlRequested(QString const& url);
 
 	//! \brief This signal is emitted when the item should be updated in view.
@@ -245,6 +246,13 @@ signals:
      *      @param [in] component  The component containing the file.
      */
     void openCSource(QString const& filename, QSharedPointer<Component> component);
+
+	/*! \brief Emitted when a tree item should be selected in component editor.
+	 *
+	 * \param item Pointer to the item to select.
+	 *
+	*/
+	void selectItem(const QSharedPointer<ComponentEditorItem> item);
 
 protected:
 

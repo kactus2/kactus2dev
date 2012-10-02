@@ -40,6 +40,10 @@ Qt::ItemFlags MemoryMapsModel::flags( const QModelIndex& index ) const {
 	if (!index.isValid()) {
 		return Qt::NoItemFlags;
 	}
+	// interface references are made in bus interface editor
+	if (index.column() == MemoryMapsDelegate::INTERFACE_COLUMN) {
+		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+	}
 	return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 }
 
@@ -56,6 +60,9 @@ QVariant MemoryMapsModel::headerData( int section, Qt::Orientation orientation, 
 			case MemoryMapsDelegate::AUB_COLUMN: {
 				return tr("Address unit\nbits");
 												 }
+			case MemoryMapsDelegate::INTERFACE_COLUMN: {
+				return tr("Interface\nbinding");
+													   }
 			case MemoryMapsDelegate::DESC_COLUMN: {
 				return tr("Description");
 											   }
@@ -86,6 +93,19 @@ QVariant MemoryMapsModel::data( const QModelIndex& index, int role /*= Qt::Displ
 			case MemoryMapsDelegate::AUB_COLUMN: {
 				return memMaps_.at(index.row())->getAddressUnitBits();
 										  }
+			case MemoryMapsDelegate::INTERFACE_COLUMN: {
+				QStringList interfaceNames = component_->getSlaveInterfaces(
+					memMaps_.at(index.row())->getName());
+				
+				// if no interface refers to the memory map
+				if (interfaceNames.isEmpty()) {
+					return tr("No binding");
+				}
+				// if there are then show them separated by space
+				else {
+					return interfaceNames.join(" ");
+				}
+													   }
 			case MemoryMapsDelegate::DESC_COLUMN: {
 				return memMaps_.at(index.row())->getDescription();
 												 }
@@ -93,6 +113,9 @@ QVariant MemoryMapsModel::data( const QModelIndex& index, int role /*= Qt::Displ
 				return QVariant();
 					 }
 		}
+	}
+	if (MemoryMapsDelegate::USER_DISPLAY_ROLE == role) {
+		return component_->getSlaveInterfaces(memMaps_.at(index.row())->getName());
 	}
 	else if (Qt::ForegroundRole == role) {
 

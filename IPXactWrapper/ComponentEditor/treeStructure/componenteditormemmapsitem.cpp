@@ -7,6 +7,7 @@
 
 #include "componenteditormemmapsitem.h"
 #include "componenteditormemmapitem.h"
+#include <IPXactWrapper/ComponentEditor/treeStructure/componenteditortreemodel.h>
 #include <IPXactWrapper/ComponentEditor/memoryMaps/memorymapseditor.h>
 
 ComponentEditorMemMapsItem::ComponentEditorMemMapsItem( ComponentEditorTreeModel* model,
@@ -35,6 +36,8 @@ editor_(new MemoryMapsEditor(component)) {
 		this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
 	connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
 		this, SIGNAL(helpUrlRequested(QString const&)));
+	connect(editor_, SIGNAL(selectBusInterface(const QString&)),
+		model, SLOT(onSelectBusInterface(const QString&)), Qt::UniqueConnection);
 }
 
 ComponentEditorMemMapsItem::~ComponentEditorMemMapsItem() {

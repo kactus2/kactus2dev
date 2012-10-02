@@ -49,6 +49,9 @@ model_(new MemoryMapsModel(component, this)) {
 		model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(view_, SIGNAL(removeItem(const QModelIndex&)),
 		model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+	
+	connect(view_, SIGNAL(doubleClicked(const QModelIndex&)),
+		this, SLOT(onDoubleClick(const QModelIndex&)), Qt::UniqueConnection);
 }
 
 MemoryMapsEditor::~MemoryMapsEditor() {
@@ -65,4 +68,29 @@ void MemoryMapsEditor::refresh() {
 void MemoryMapsEditor::showEvent( QShowEvent* event ) {
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/memorymaps.html");
+}
+
+void MemoryMapsEditor::onDoubleClick( const QModelIndex& index ) {
+
+	QModelIndex origIndex = proxy_->mapToSource(index);
+	
+	// index must be valid
+	if (!origIndex.isValid()) {
+		return;
+	}
+
+	// if the column is for interface references
+	if (origIndex.column() == MemoryMapsDelegate::INTERFACE_COLUMN) {
+		
+		// get the names of the interface that refer to selected memory map
+		QStringList busIfNames = model_->data(origIndex, MemoryMapsDelegate::USER_DISPLAY_ROLE).toStringList();
+
+		// if there are no bus interfaces or there are many
+		if (busIfNames.size() != 1) {
+			return;
+		}
+		
+		// inform component editor that bus interface editor should be selected
+		emit selectBusInterface(busIfNames.first());
+	}
 }

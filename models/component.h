@@ -1034,6 +1034,14 @@ public:
 	*/
 	QSharedPointer<BusInterface> getBusInterface(const QString& name);
 
+	/*! \brief Get list of the slave interfaces that refer to given memory map.
+	*
+	* \param memoryMap The name of the memory map to search for.
+	*
+	* \return QStringList containing names of the slave interfaces.
+	*/
+	QStringList getSlaveInterfaces(const QString& memoryMap) const;
+
 	/*! \brief Add a new bus interface to the component.
 	*
 	* \param busInterface Pointer to the new bus interface to be added.

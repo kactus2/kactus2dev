@@ -120,3 +120,20 @@ const ItemEditor* ComponentEditorRootItem::editor() const {
 QString ComponentEditorRootItem::getTooltip() const {
 	return tr("The root item of the navigation tree");
 }
+
+QSharedPointer<ComponentEditorItem> ComponentEditorRootItem::getBusInterfaceItem( const QString& interfaceName ) const {
+
+	// check all children
+	foreach (const QSharedPointer<ComponentEditorItem> item, childItems_) {
+		const QSharedPointer<ComponentEditorBusInterfacesItem> busIfsItem =
+			item.dynamicCast<ComponentEditorBusInterfacesItem>();
+
+		// if the child was for bus interfaces summary item
+		if (busIfsItem) {
+			return busIfsItem->getBusInterfaceItem(interfaceName);
+		}
+	}
+
+	// if there was no item for bus interfaces summary
+	return QSharedPointer<ComponentEditorItem>();
+}

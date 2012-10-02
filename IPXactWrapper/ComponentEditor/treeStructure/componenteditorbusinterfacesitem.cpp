@@ -61,3 +61,16 @@ void ComponentEditorBusInterfacesItem::createChild( int index ) {
 
 	childItems_.insert(index, busifItem);
 }
+
+QSharedPointer<ComponentEditorItem> ComponentEditorBusInterfacesItem::getBusInterfaceItem( const QString& interfaceName ) const {
+	foreach (const QSharedPointer<ComponentEditorItem> child, childItems_) {
+		
+		// if the bus interface name matches the searched interface name
+		if (child->text() == interfaceName) {
+			return child;
+		}
+	}
+
+	// if child was not found
+	return QSharedPointer<ComponentEditorItem>();
+}

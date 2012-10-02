@@ -166,6 +166,20 @@ signals:
     //! Emitted when a help page should be changed in the context help window.
     void helpUrlRequested(QString const& url);
 
+	//! \brief Emitted when a tree item with given index should be selected.
+	void selectItem(const QModelIndex& index);
+
+private slots:
+
+	/*! \brief Open bus interface editor for named bus interface.
+	 * 
+	 * If interface is not found then nothing is done.
+	 * 
+	 * \param interfaceName The name of the bus interface to open.
+	 *
+	*/
+	void onSelectBusInterface(const QString& interfaceName);
+
 private:
 	//! \brief No copying
 	ComponentEditorTreeModel(const ComponentEditorTreeModel& other);

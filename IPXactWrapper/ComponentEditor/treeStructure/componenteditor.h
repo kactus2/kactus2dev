@@ -106,6 +106,16 @@ private slots:
 	*/
 	void onItemActivated(const QModelIndex& index);
 
+	/*! \brief This slot is called when navigation tree sends a selectItem signal.
+	 * 
+	 * This function tells navigation view to select the index in the tree and then
+	 * calls ComponentEditor::onItemActivated() slot.
+	 * 
+	 * \param index Model index that identifies the item to select.
+	 *
+	*/
+	void onNavigationTreeSelection(const QModelIndex& index);
+
 	/*! \brief This slot is called when one of the component editors changes state.
 	 *
 	*/

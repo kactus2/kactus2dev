@@ -99,6 +99,9 @@ visualizerSlot_(&editorVisualizerSplitter_) {
     connect(&navigationModel_, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)),
             this, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)), Qt::UniqueConnection);
 
+	connect(&navigationModel_, SIGNAL(selectItem(const QModelIndex&)),
+		this, SLOT(onNavigationTreeSelection(const QModelIndex&)), Qt::UniqueConnection);
+
 	// Open in unlocked mode by default only if the version is draft.
 	setProtection(component_->getVlnv()->getVersion() != "draft");
 }
@@ -225,6 +228,11 @@ bool ComponentEditor::saveAs() {
 		emit errorMessage(tr("Component was not saved to disk."));
 		return false;
 	}
+}
+
+void ComponentEditor::onNavigationTreeSelection( const QModelIndex& index ) {
+	navigationView_.setCurrentIndex(index);
+	onItemActivated(index);
 }
 
 void ComponentEditor::onItemActivated( const QModelIndex& index ) {

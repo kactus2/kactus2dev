@@ -1132,3 +1132,19 @@ General::NameGroup& BusInterface::getNameGroup() {
 const General::NameGroup& BusInterface::getNameGroup() const {
 	return nameGroup_;
 }
+
+QString BusInterface::getMemoryMapRef() const {
+
+	// only slave interfaces refer to memory maps
+	if (interfaceMode_ != General::SLAVE) {
+		return QString();
+	}
+	// if there is no slave element defined
+	else if (!slave_) {
+		return QString();
+	}
+	// return the slave's memory map reference
+	else {
+		return slave_->getMemoryMapRef();
+	}
+}

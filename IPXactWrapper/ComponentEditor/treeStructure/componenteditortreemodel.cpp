@@ -9,6 +9,8 @@
 
 #include <QColor>
 
+#include <QDebug>
+
 ComponentEditorTreeModel::ComponentEditorTreeModel( LibraryInterface* libHandler,
 												   QObject* parent):
 QAbstractItemModel(parent),
@@ -255,4 +257,15 @@ void ComponentEditorTreeModel::moveItem( ComponentEditorItem* parentItem, int ch
 	beginMoveRows(parentIndex, childSource, childSource, parentIndex, childtarget);
 	parentItem->moveChild(childSource, targetIndex);
 	endMoveRows();
+}
+
+void ComponentEditorTreeModel::onSelectBusInterface( const QString& interfaceName ) {
+	const QSharedPointer<ComponentEditorItem> busIfItem = rootItem_->getBusInterfaceItem(interfaceName);
+	if (!busIfItem) {
+		return;
+	}
+
+	// inform component editor to select the item
+	QModelIndex busIfIndex = index(busIfItem.data());
+	emit selectItem(busIfIndex);
 }

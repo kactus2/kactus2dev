@@ -3168,6 +3168,25 @@ QSharedPointer<BusInterface> Component::getBusInterface( const QString& name ) {
 	return QSharedPointer<BusInterface>();
 }
 
+QStringList Component::getSlaveInterfaces( const QString& memoryMap ) const {
+	QStringList names;
+	
+	// check all bus interfaces for the given memory map
+	foreach (const QSharedPointer<BusInterface> busif, busInterfaces_) {
+
+		// only slave interfaces refer to memory maps
+		if (busif->getInterfaceMode() != General::SLAVE) {
+			continue;
+		}
+
+		// if interface refers to given memory map then add its name to list
+		if (busif->getMemoryMapRef() == memoryMap) {
+			names.append(busif->getName());
+		}
+	}
+	return names;
+}
+
 bool Component::hasInterfaces() const {
 	return !busInterfaces_.isEmpty();
 }

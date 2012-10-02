@@ -11,6 +11,7 @@
 #include "componenteditoritem.h"
 
 class MemoryMapsEditor;
+class ComponentEditorTreeModel;
 
 /*! \brief The Memory maps-item in the component navigation tree.
  *

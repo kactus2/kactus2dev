@@ -18,10 +18,16 @@ class MemoryMapsDelegate : public QStyledItemDelegate {
 
 public:
 
+	//! \brief The role to display interface column with QStringList.
+	enum Roles {
+		USER_DISPLAY_ROLE = Qt::UserRole
+	};
+
 	//! \brief Defines the columns used in the model.
 	enum Column {
 		NAME_COLUMN = 0,
 		AUB_COLUMN,
+		INTERFACE_COLUMN,
 		DESC_COLUMN,
 		COLUMN_COUNT
 	};

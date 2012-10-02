@@ -500,6 +500,14 @@ public:
 	*/
 	const General::NameGroup& getNameGroup() const;
 
+	/*! \brief Get the memory map reference of a slave interface.
+	 *
+	 * If the interface mode is other than General::SLAVE then empty QString is returned.
+	 *
+	 * \return QString containing the name of the memory map referenced by interface.
+	*/
+	QString getMemoryMapRef() const;
+
 private:
 
 	//! \brief Contains the name, display name and description of bus interface.
