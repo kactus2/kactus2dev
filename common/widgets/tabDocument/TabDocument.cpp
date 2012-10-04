@@ -106,7 +106,7 @@ void TabDocument::fitInView()
 //-----------------------------------------------------------------------------
 void TabDocument::setZoomLevel(int level)
 {
-    level = std::min(std::max(level, minZoomLevel_), maxZoomLevel_);
+    level = qMin(qMax(level, minZoomLevel_), maxZoomLevel_);
 
     if (flags_ & DOC_ZOOM_SUPPORT)
     {

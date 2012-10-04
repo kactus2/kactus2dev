@@ -209,7 +209,7 @@ qreal HWMappingItem::getHeight() const
 
     // Determine the largest one from the stack height, minimum height (empty) and the height
     // calculated by the base class.
-    return std::max<qreal>(std::max<qreal>(stackHeight, MIN_HEIGHT), SystemComponentItem::getHeight());
+    return qMax<qreal>(qMax<qreal>(stackHeight, MIN_HEIGHT), SystemComponentItem::getHeight());
 }
 
 //-----------------------------------------------------------------------------

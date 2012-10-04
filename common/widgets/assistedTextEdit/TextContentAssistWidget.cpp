@@ -249,7 +249,7 @@ void TextContentAssistWidget::moveCloseToCursor(int cursorPos)
     QPoint pos = parent_->mapToGlobal(parent_->cursorRect().bottomLeft()) + QPoint(-10, 10);
     
     // Restrict x coordinate by the screen width.
-    pos.setX(std::min(std::max(0, pos.x()), screenWidth - width()));
+    pos.setX(qMin(qMax(0, pos.x()), screenWidth - width()));
 
     // Check if the tool tip hint is visible.
     if (toolTipHintWidget_.isVisible())
@@ -320,7 +320,7 @@ void TextContentAssistWidget::fitToContents()
         return;
     }
 
-    int visibleRowCount = std::min(count(), maxVisibleItems_);
+    int visibleRowCount = qMin(count(), maxVisibleItems_);
     int height = visibleRowCount * sizeHintForRow(0) + frameWidth() * 2;
     int width = sizeHintForColumn(0) + frameWidth() * 2 + verticalScrollBar()->sizeHint().width();
     
@@ -356,7 +356,7 @@ void TextContentAssistWidget::showToolTipHint(QString const& text, int cursorPos
     pos.setX(parent_->mapToGlobal(parent_->cursorRect().bottomLeft()).x());
 
     // Restrict x coordinate by the screen width.
-    pos.setX(std::min(std::max(0, pos.x()), screenWidth - toolTipHintWidget_.width()));
+    pos.setX(qMin(qMax(0, pos.x()), screenWidth - toolTipHintWidget_.width()));
 
     // If the widget would be partially below the screen, lift it above the cursor.
     if (pos.y() + toolTipHintWidget_.height() > screenHeight)

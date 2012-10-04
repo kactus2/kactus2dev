@@ -249,7 +249,7 @@ void LineContentAssistWidget::moveClose(int /*cursorPos*/)
     QPoint pos = m_parent->mapToGlobal(QPoint(0, 0)) + QPoint(0,  m_parent->height());
     
     // Restrict x coordinate by the screen width.
-    pos.setX(std::min(std::max(0, pos.x()), screenWidth - width()));
+    pos.setX(qMin(qMax(0, pos.x()), screenWidth - width()));
 
     // Lift the widget above the line edit only if necessary to keep it fully in view.
     if (pos.y() + height() > screenHeight)
@@ -297,7 +297,7 @@ void LineContentAssistWidget::fitToContents()
         return;
     }
 
-    int visibleRowCount = std::min(count(), m_maxVisibleItems);
+    int visibleRowCount = qMin(count(), m_maxVisibleItems);
     int height = visibleRowCount * sizeHintForRow(0) + frameWidth() * 2;
     int width = sizeHintForColumn(0) + frameWidth() * 2 + verticalScrollBar()->sizeHint().width();
     

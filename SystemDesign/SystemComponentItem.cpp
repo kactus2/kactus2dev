@@ -255,10 +255,10 @@ void SystemComponentItem::onMovePort(SWPortItem* port)
     bottomPorts_.removeAll(port);
 
     // Restrict the position so that the port cannot be placed too high.
-    port->setPos(snapPointToGrid(port->x(), std::max(MIN_Y_PLACEMENT - port->boundingRect().top(), port->y())));
+    port->setPos(snapPointToGrid(port->x(), qMax(MIN_Y_PLACEMENT - port->boundingRect().top(), port->y())));
 
     // Check on which side the port is to determine the stack to which it should be placed.
-    /*if (port->y() - rect().bottom() >= -35.0 && std::abs(port->x()) <= 50.0)
+    /*if (port->y() - rect().bottom() >= -35.0 && qAbs(port->x()) <= 50.0)
     {
         HCollisionLayout::updateItemMove(bottomPorts_, port, 0.0, SPACING);
     }
@@ -308,7 +308,7 @@ qreal SystemComponentItem::getHeight() const
 
     if (!rightPorts_.empty())
     {
-        maxY = std::max(maxY, rightPorts_.back()->y());
+        maxY = qMax(maxY, rightPorts_.back()->y());
     }
 
     return (maxY + BOTTOM_MARGIN);

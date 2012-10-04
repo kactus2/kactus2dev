@@ -156,8 +156,8 @@ void HWConnection::updateWidthLabel()
     {
         // If the end points are move apart in horizontal direction, place the text above
         // the longest horizontal segment.
-        if (std::abs(endpoint1()->scenePos().x() - endpoint2()->scenePos().x()) >=
-            std::abs(endpoint1()->scenePos().y() - endpoint2()->scenePos().y()))
+        if (qAbs(endpoint1()->scenePos().x() - endpoint2()->scenePos().x()) >=
+            qAbs(endpoint1()->scenePos().y() - endpoint2()->scenePos().y()))
         {
             // Determine the longest horizontal segment.
             int longestIndex = 0;
@@ -292,8 +292,8 @@ int HWConnection::calculateBusWidth() const
             General::calculatePortAlignment(portMap1.data(), port1->getLeftBound(), port1->getRightBound(),
             portMap2.data(), port2->getLeftBound(), port2->getRightBound());
 
-        int width = std::min(align.port1Left_, align.port2Left_) -
-                    std::max(align.port1Right_, align.port2Right_) + 1;
+        int width = qMin(align.port1Left_, align.port2Left_) -
+                    qMax(align.port1Right_, align.port2Right_) + 1;
         totalWidth += width;
     }
 

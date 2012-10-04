@@ -526,20 +526,20 @@ void GraphicsConnection::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
             if (cur > next)
             {
-                delta = std::max(delta, MIN_START_LENGTH + next - cur);
+                delta = qMax(delta, MIN_START_LENGTH + next - cur);
             }
             else
             {
-                delta = std::min(delta, -MIN_START_LENGTH + next - cur);
+                delta = qMin(delta, -MIN_START_LENGTH + next - cur);
             }
 
             if (cur > prev)
             {
-                delta = std::max(delta, MIN_START_LENGTH + prev - cur);
+                delta = qMax(delta, MIN_START_LENGTH + prev - cur);
             }
             else
             {
-                delta = std::min(delta, -MIN_START_LENGTH + prev - cur);
+                delta = qMin(delta, -MIN_START_LENGTH + prev - cur);
             }
 
             pathPoints_[selected_].setX(pathPoints_[selected_].x() + delta);
@@ -726,7 +726,7 @@ void GraphicsConnection::createRoute(QPointF p1, QPointF p2,
                     {
                         // Draw the length of the projection to the current direction
                         // or at least the minimum length.
-                        curPos = curPos + curDir * std::max(MIN_START_LENGTH, proj.length());
+                        curPos = curPos + curDir * qMax(MIN_START_LENGTH, proj.length());
                     }
                     else
                     {
@@ -739,7 +739,7 @@ void GraphicsConnection::createRoute(QPointF p1, QPointF p2,
                 else if (dot < 0.0 && qFuzzyCompare(curPos, startPos + curDir * MIN_START_LENGTH))
                 {
                     // Draw to the perpendicular direction at least the minimum length.
-                    qreal length = std::max(perp.length(), MIN_LENGTH);
+                    qreal length = qMax(perp.length(), MIN_LENGTH);
                     QVector2D dir = perp.normalized();
 
                     // Special case when the perpendicular vector would be zero-length.
@@ -971,8 +971,8 @@ void GraphicsConnection::drawLineGap(QPainter* painter, QLineF const& line1, QPo
     qreal length1 = QVector2D(pt - line1.p1()).length();
     qreal length2 = QVector2D(pt - line1.p2()).length();
 
-    QPointF pt1 = (QVector2D(pt) + dir * std::min(length2, (qreal)GridSize / 2)).toPointF();
-    QPointF pt2 = (QVector2D(pt) - dir * std::min(length1, (qreal)GridSize) / 2).toPointF();
+    QPointF pt1 = (QVector2D(pt) + dir * qMin(length2, (qreal)GridSize / 2)).toPointF();
+    QPointF pt2 = (QVector2D(pt) - dir * qMin(length1, (qreal)GridSize) / 2).toPointF();
     painter->drawLine(pt1, pt2);
 }
 
@@ -1048,11 +1048,11 @@ void GraphicsConnection::drawOverlapGraphics(QPainter* painter)
                                 ++width;
                             }
 
-                            QPointF seg1Pt1 = (QVector2D(pt) + dir * std::min(length2, width)).toPointF();
-                            QPointF seg1Pt2 = (QVector2D(pt) + dir * std::min(length2, (qreal)GridSize)).toPointF();
+                            QPointF seg1Pt1 = (QVector2D(pt) + dir * qMin(length2, width)).toPointF();
+                            QPointF seg1Pt2 = (QVector2D(pt) + dir * qMin(length2, (qreal)GridSize)).toPointF();
 
-                            QPointF seg2Pt1 = (QVector2D(pt) - dir * std::min(length1, width)).toPointF();
-                            QPointF seg2Pt2 = (QVector2D(pt) - dir * std::min(length1, (qreal)GridSize)).toPointF();
+                            QPointF seg2Pt1 = (QVector2D(pt) - dir * qMin(length1, width)).toPointF();
+                            QPointF seg2Pt2 = (QVector2D(pt) - dir * qMin(length1, (qreal)GridSize)).toPointF();
 
                             painter->setPen(QPen(QColor(160, 160, 160), pen().width() + 1));
                             painter->drawLine(seg1Pt1, seg1Pt2);

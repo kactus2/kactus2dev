@@ -77,10 +77,10 @@ void DesignWidget::setZoomLevel(int level)
 void DesignWidget::fitInView()
 {
     QRectF itemRect = diagram_->itemsBoundingRect();
-    float scaleX = std::max(0, view_->width() - 10 - view_->verticalScrollBar()->width()) / itemRect.width();
-    float scaleY = std::max(0, view_->height() - 10 - view_->horizontalScrollBar()->height()) / itemRect.height();
+    float scaleX = qMax(0, view_->width() - 10 - view_->verticalScrollBar()->width()) / itemRect.width();
+    float scaleY = qMax(0, view_->height() - 10 - view_->horizontalScrollBar()->height()) / itemRect.height();
 
-    int scaleLevel = int(std::min(scaleX, scaleY) * 10) * 10;
+    int scaleLevel = int(qMin(scaleX, scaleY) * 10) * 10;
     setZoomLevel(scaleLevel);
 
     view_->centerOn(itemRect.center());

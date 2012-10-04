@@ -17,7 +17,7 @@ namespace VCollisionLayout
     template <class T>
     void updateItemMove(QList<T*>& items, T* item, qreal minY, qreal spacing)
     {
-        item->setY(std::max(minY - item->boundingRect().top(), item->y()));
+        item->setY(qMax(minY - item->boundingRect().top(), item->y()));
         QRectF itemRect = item->mapRectToParent(item->boundingRect());
 
         // Remove the moved item from the list.

@@ -245,7 +245,7 @@ int AssistedTextEdit::calculateIndentDepth(int pos)
         searchPos = braceExp.indexIn(text, searchPos + 1);
     }
 
-    return std::max(indentDepth, 0);
+    return qMax(indentDepth, 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -288,7 +288,7 @@ void AssistedTextEdit::indentColon()
     if (startIndex >= 0)
     {
         // Calculate the indentation depth.
-        int indentDepth = std::max(0, calculateIndentDepth(textCursor().block().position() +
+        int indentDepth = qMax(0, calculateIndentDepth(textCursor().block().position() +
                                                            wpStartExp.matchedLength()) - 1);
 
         int startIndex = textCursor().block().position();

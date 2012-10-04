@@ -170,7 +170,7 @@ void GraphicsColumn::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
     if (mouseNearResizeArea_)
     {
         qreal snappedRight = (static_cast<int>(event->pos().x() + 10.0) / 20) * 20;
-        setWidth(std::max<int>(0, snappedRight - 1));
+        setWidth(qMax<int>(0, snappedRight - 1));
     }
     else
     {
@@ -219,7 +219,7 @@ void GraphicsColumn::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 void GraphicsColumn::onMoveItem(QGraphicsItem* item)
 {
     // Restrict the position so that the item cannot be placed too high.
-    //item->setPos(snapPointToGrid(item->x(), std::max(MIN_Y_PLACEMENT - item->boundingRect().top(), item->y())));
+    //item->setPos(snapPointToGrid(item->x(), qMax(MIN_Y_PLACEMENT - item->boundingRect().top(), item->y())));
 
     // Update the item move based on the column content type.
     if (desc_.getContentType() == COLUMN_CONTENT_IO)
@@ -498,7 +498,7 @@ void GraphicsColumn::setWidth(unsigned int width)
 void GraphicsColumn::updateNameLabel()
 {
     nameLabel_->setHtml("<center>" + desc_.getName() + "</center>");
-    nameLabel_->setTextWidth(std::max<unsigned int>(140, desc_.getWidth()));
+    nameLabel_->setTextWidth(qMax<unsigned int>(140, desc_.getWidth()));
     nameLabel_->setPos((desc_.getWidth() - nameLabel_->textWidth()) / 2.0, 5.0);
 }
 
@@ -519,7 +519,7 @@ void GraphicsColumn::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
     QGraphicsRectItem::hoverEnterEvent(event);
 
     if (!static_cast<DesignDiagram*>(scene())->isProtected() &&
-        std::abs(event->pos().x() - boundingRect().right()) <= 10)
+        qAbs(event->pos().x() - boundingRect().right()) <= 10)
     {
         if (!mouseNearResizeArea_)
         {
@@ -550,7 +550,7 @@ void GraphicsColumn::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 void GraphicsColumn::updateCursor(QGraphicsSceneHoverEvent* event)
 {
     if (!static_cast<DesignDiagram*>(scene())->isProtected() &&
-        std::abs(event->pos().x() - boundingRect().right()) <= 10)
+        qAbs(event->pos().x() - boundingRect().right()) <= 10)
     {
         if (!mouseNearResizeArea_)
         {

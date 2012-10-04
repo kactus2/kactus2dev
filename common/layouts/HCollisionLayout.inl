@@ -17,7 +17,7 @@ namespace HCollisionLayout
     template <class T>
     void updateItemMove(QList<T*>& items, T* item, qreal minX, qreal spacing)
     {
-        item->setY(std::max(minX - item->boundingRect().left(), item->y()));
+        item->setY(qMax(minX - item->boundingRect().left(), item->y()));
 
         // Remove the moved item from the list.
         items.removeAt(items.indexOf(item));

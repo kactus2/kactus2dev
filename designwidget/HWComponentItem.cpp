@@ -64,7 +64,7 @@ HWComponentItem::HWComponentItem(LibraryInterface* lh_,
     int portSpacing = 3*GridSize;
     int portCountLeft = busInterfaces.size() / 2.0 + .5;
     setRect(-GridSize*8, 0, GridSize * 8 * 2, 
-            6 * GridSize + portSpacing * std::max(portCountLeft - 1, 0));
+            6 * GridSize + portSpacing * qMax(portCountLeft - 1, 0));
 
     bool right = false;
     int leftY = 4 * GridSize;
@@ -318,7 +318,7 @@ void HWComponentItem::onMovePort(HWConnectionEndpoint* port)
     rightPorts_.removeAll(port);
 
     // Restrict the position so that the port cannot be placed too high.
-    port->setPos(snapPointToGrid(port->x(), std::max(MIN_Y_PLACEMENT - port->boundingRect().top(), port->y())));
+    port->setPos(snapPointToGrid(port->x(), qMax(MIN_Y_PLACEMENT - port->boundingRect().top(), port->y())));
     
     // Check on which side the port is to determine the stack to which it should be placed.
     if (port->x() < 0.0)
@@ -401,7 +401,7 @@ void HWComponentItem::updateSize()
 
     if (!rightPorts_.empty())
     {
-        maxY = std::max(maxY, rightPorts_.back()->y());
+        maxY = qMax(maxY, rightPorts_.back()->y());
     }
 
     setRect(-GridSize * 8, 0, GridSize * 8 * 2, maxY + 2 * GridSize);

@@ -127,7 +127,7 @@ void AddressSectionItem::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
     {
         for (int i = 0; i < subsections_.size(); ++i)
         {
-            if (std::abs(event->pos().y() - (subsections_.at(i)->getBottom() + 5)) <= 10)
+            if (qAbs(event->pos().y() - (subsections_.at(i)->getBottom() + 5)) <= 10)
             {
                 if (resizeIndex_ == -1)
                 {
@@ -254,7 +254,7 @@ void AddressSectionItem::updateCursor(QGraphicsSceneHoverEvent* event)
     {
         for (int i = 0; i < subsections_.size(); ++i)
         {
-            if (std::abs(event->pos().y() - (subsections_.at(i)->getBottom() + 5)) <= 10)
+            if (qAbs(event->pos().y() - (subsections_.at(i)->getBottom() + 5)) <= 10)
             {
                 if (resizeIndex_ == -1)
                 {

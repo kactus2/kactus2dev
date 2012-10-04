@@ -144,7 +144,7 @@ void ColumnDesc::setAllowedItems(unsigned int allowedItems)
 //-----------------------------------------------------------------------------
 void ColumnDesc::setWidth(unsigned int width)
 {
-    width_ = std::max(minWidth_, width);
+    width_ = qMax(minWidth_, width);
 }
 
 //-----------------------------------------------------------------------------

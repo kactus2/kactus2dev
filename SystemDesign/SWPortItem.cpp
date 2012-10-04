@@ -557,7 +557,7 @@ QVariant SWPortItem::itemChange(GraphicsItemChange change, QVariant const& value
             QPointF pos = value.toPointF();
             QRectF parentRect = static_cast<SystemComponentItem*>(parentItem())->rect();
 
-            /*if (pos.y() - parentRect.bottom() >= -35.0 && std::abs(pos.x()) < 50.0)
+            /*if (pos.y() - parentRect.bottom() >= -35.0 && qAbs(pos.x()) < 50.0)
             {
                 pos.setY(parentRect.bottom());
             }
@@ -585,7 +585,7 @@ QVariant SWPortItem::itemChange(GraphicsItemChange change, QVariant const& value
             QRectF parentRect = static_cast<SystemComponentItem*>(parentItem())->rect();
 
             // Check if the port is directed to the bottom.
-            /*if (pos().y() - parentRect.bottom() >= -35.0 && std::abs(pos().x()) < 50.0)
+            /*if (pos().y() - parentRect.bottom() >= -35.0 && qAbs(pos().x()) < 50.0)
             {
                 setDirection(QVector2D(0.0f, 1.0f));
                 nameLabel_.setPos(nameWidth / 2, GridSize * 3);
@@ -625,11 +625,11 @@ QVariant SWPortItem::itemChange(GraphicsItemChange change, QVariant const& value
             {
                 if (pos().x() < 0)
                 {
-                    stubLine_.setLine(0, 0, 0, std::min(0.0, mappingItem->sceneBoundingRect().left() - scenePos().x()));
+                    stubLine_.setLine(0, 0, 0, qMin(0.0, mappingItem->sceneBoundingRect().left() - scenePos().x()));
                 }
                 else
                 {
-                    stubLine_.setLine(0, 0, 0, std::min(0.0, scenePos().x() - mappingItem->sceneBoundingRect().right()));
+                    stubLine_.setLine(0, 0, 0, qMin(0.0, scenePos().x() - mappingItem->sceneBoundingRect().right()));
                 }
             }
             else

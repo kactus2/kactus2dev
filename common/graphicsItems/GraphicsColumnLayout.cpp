@@ -121,7 +121,7 @@ void GraphicsColumnLayout::onMoveColumn(GraphicsColumn* column)
     // Clamp the coordinates.
     QPointF pos = column->pos();
     pos.setY(0.0);
-    pos.setX(std::max(std::min(pos.x(), layoutWidth_ - (column->boundingRect().width())), 0.0));
+    pos.setX(qMax(qMin(pos.x(), layoutWidth_ - (column->boundingRect().width())), 0.0));
     column->setPos(pos);
     column->update();
 

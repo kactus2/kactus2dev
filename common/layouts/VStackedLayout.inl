@@ -85,7 +85,7 @@ namespace VStackedLayout
         }
 
         item->setPos(x, y + clampCeil(-item->boundingRect().top(), GridSize));
-        //item->setPos(x, std::max(item->y(), minY - item->boundingRect().top()));
+        //item->setPos(x, qMax(item->y(), minY - item->boundingRect().top()));
     }
 
     //-----------------------------------------------------------------------------
