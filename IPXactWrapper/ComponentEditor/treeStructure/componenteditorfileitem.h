@@ -76,11 +76,7 @@ public:
 
 	/*! \brief Tells if the item can be opened or not.
 	 * 
-	 * The base class implementation always returns false.
-	 * Reimplement this if the item can be opened to some other editor.
-	 * 
-	 * Note: If item can be opened then also reimplement openItem() to perform the opening.
-	 *
+	 * Files can always be opened and this function returns true.
 	*/
 	virtual bool canBeOpened() const;
 
@@ -93,10 +89,6 @@ public slots:
 	
 	/*! \brief Open the item in an editor.
 	 * 
-	 * The base class implementation does nothing. 
-	 * Reimplement this in sub class to make it possible for item to be opened.
-	 * 
-	 * Note: If item can be opened then also reimplement canBeOpened() to return true.
 	*/
 	virtual void openItem(bool builtinEditor = false);
 

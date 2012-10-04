@@ -67,3 +67,33 @@ QFont ComponentEditorViewItem::getFont() const {
 QString ComponentEditorViewItem::getTooltip() const {
 	return tr("Specifies a representation level of the component");
 }
+
+bool ComponentEditorViewItem::canBeOpened() const {
+	// if view is not hierarchical then it can't be opened
+	if (!view_->isHierarchical()) {
+		return false;
+	}
+	// if the library does not contain the referenced object
+	else if (!libHandler_->contains(view_->getHierarchyRef())) {
+		return false;
+	}
+
+	// check that the reference has not been changed
+	// if it has then there is no way to open the design because the changes have not
+	// been made to the library
+	QSharedPointer<LibraryComponent const> libComp = libHandler_->getModelReadOnly(*component_->getVlnv());
+	QSharedPointer<Component const> comp = libComp.staticCast<Component const>();
+	VLNV originalRef = comp->getHierRef(view_->getName());
+	return originalRef == view_->getHierarchyRef();
+}
+
+void ComponentEditorViewItem::openItem( bool ) {
+	// if item can't be opened
+	if (!canBeOpened()) {
+		emit errorMessage(tr("The changes to component must be saved before view can be opened."));
+		return;
+	}
+	QString viewName = view_->getName();
+	VLNV compVLNV = *component_->getVlnv();
+	emit openDesign(compVLNV, viewName);
+}

@@ -69,3 +69,21 @@ QFont ComponentEditorBusInterfaceItem::getFont() const {
 QString ComponentEditorBusInterfaceItem::getTooltip() const {
 	return tr("Defines properties of a specific interface in a component");
 }
+
+bool ComponentEditorBusInterfaceItem::canBeOpened() const {
+	// if the bus type is valid vlnv
+	if (busif_->getBusType().isValid()) {
+
+		// if bus definition exists then it can be opened
+		return libHandler_->contains(busif_->getBusType());
+	}
+	else {
+		return false;
+	}
+}
+
+void ComponentEditorBusInterfaceItem::openItem( bool builtinEditor /*= false*/ ) {
+	VLNV busdefVLNV = busif_->getBusType();
+	VLNV absdefVLNV = busif_->getAbstractionType();
+	emit openBus(busdefVLNV, absdefVLNV);
+}

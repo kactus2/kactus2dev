@@ -76,6 +76,19 @@ public:
 	*/
 	virtual const ItemEditor* editor() const;
 
+	/*! \brief Tells if the item can be opened or not.
+	 * 
+	 * If the bus interface contains valid bus definition reference is can be opened.
+	*/
+	virtual bool canBeOpened() const;
+
+public slots:
+	
+	/*! \brief Open the bus definition/abstraction definition in a bus editor.
+	 * 
+	*/
+	virtual void openItem(bool builtinEditor = false);
+
 private:
 	//! \brief No copying
 	ComponentEditorBusInterfaceItem(const ComponentEditorBusInterfaceItem& other);

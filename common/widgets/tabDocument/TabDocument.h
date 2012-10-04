@@ -272,6 +272,13 @@ public slots:
      */
     void requestRefresh();
 
+	/*! \brief Display an error dialog to user with given text.
+	 *
+	 * \param message Contains the text to display in the error dialog.
+	 *
+	*/
+	void onErrorDialog(const QString& message);
+
 signals:
 	//! \brief Emitted when contents of the widget change
 	void contentChanged();
@@ -293,6 +300,21 @@ signals:
 
     //! Emitted when the document has been saved.
     void documentSaved(TabDocument* doc);
+
+	//! \brief Emitted when a design editor should be opened for given hierarchical view.
+	void openDesign(const VLNV& componentVLNV, const QString& viewName);
+
+	//! \brief Emitted when a bus editor should be opened for given bus.
+	void openBus(const VLNV& busdefVLNV, const VLNV& absdefVLNV);
+
+	//! \brief Emitted when a COM definition should be opened in an editor.
+	void openComDefinition(const VLNV& comdefVLNV);
+
+	//! \brief Emitted when a SW design should be opened in an editor.
+	void openSWDesign(const VLNV& componentVLNV, const QString& viewName);
+
+	//! \brief Emitted when a system design should be opened in an editor.
+	void openSystemDesign(const VLNV& componentVLNV, const QString& viewName);
 
 protected:
     /*!

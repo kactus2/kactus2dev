@@ -63,3 +63,17 @@ QFont ComponentEditorComInterfaceItem::getFont() const {
 QString ComponentEditorComInterfaceItem::getTooltip() const {
 	return tr("Specifies a virtual communication interface for the component");
 }
+
+bool ComponentEditorComInterfaceItem::canBeOpened() const {
+	if (interface_->getComType().isValid()) {
+		return libHandler_->contains(interface_->getComType());
+	}
+	else {
+		return false;
+	}
+}
+
+void ComponentEditorComInterfaceItem::openItem( bool builtinEditor /*= false*/ ) {
+	VLNV comdefVLNV = interface_->getComType();
+	emit openComDefinition(comdefVLNV);
+}

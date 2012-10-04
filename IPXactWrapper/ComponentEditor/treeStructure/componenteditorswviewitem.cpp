@@ -64,3 +64,29 @@ const ItemEditor* ComponentEditorSWViewItem::editor() const {
 QFont ComponentEditorSWViewItem::getFont() const {
 	return QApplication::font();
 }
+
+bool ComponentEditorSWViewItem::canBeOpened() const {
+	// if the library does not contain the referenced object
+	if (!libHandler_->contains(swView_->getHierarchyRef())) {
+		return false;
+	}
+
+	// check that the reference has not been changed
+	// if it has then there is no way to open the design because the changes have not
+	// been made to the library
+	QSharedPointer<LibraryComponent const> libComp = libHandler_->getModelReadOnly(*component_->getVlnv());
+	QSharedPointer<Component const> comp = libComp.staticCast<Component const>();
+	VLNV originalRef = comp->getHierSWRef(swView_->getName());
+	return originalRef == swView_->getHierarchyRef();
+}
+
+void ComponentEditorSWViewItem::openItem( bool builtinEditor /*= false*/ ) {
+	// if item can't be opened
+	if (!canBeOpened()) {
+		emit errorMessage(tr("The changes to component must be saved before view can be opened."));
+		return;
+	}
+	QString viewName = swView_->getName();
+	VLNV compVLNV = *component_->getVlnv();
+	emit openSWDesign(compVLNV, viewName);
+}

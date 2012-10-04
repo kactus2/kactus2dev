@@ -466,3 +466,7 @@ void TabDocument::handleRefreshRequest()
         refresh();
     }
 }
+
+void TabDocument::onErrorDialog( const QString& message ) {
+	QMessageBox::warning(this, tr("Component editor"), message);
+}

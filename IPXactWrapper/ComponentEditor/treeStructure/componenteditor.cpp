@@ -95,12 +95,24 @@ visualizerSlot_(&editorVisualizerSplitter_) {
 		this, SLOT(onItemChanged()), Qt::UniqueConnection);
     connect(&navigationModel_, SIGNAL(helpUrlRequested(QString const&)),
             this, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
+	connect(&navigationModel_, SIGNAL(errorMessage(const QString&)),
+		this, SLOT(onErrorDialog(const QString&)), Qt::UniqueConnection);
 
     connect(&navigationModel_, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)),
             this, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)), Qt::UniqueConnection);
 
 	connect(&navigationModel_, SIGNAL(selectItem(const QModelIndex&)),
 		this, SLOT(onNavigationTreeSelection(const QModelIndex&)), Qt::UniqueConnection);
+	connect(&navigationModel_, SIGNAL(openDesign(const VLNV&, const QString&)),
+		this, SIGNAL(openDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
+	connect(&navigationModel_, SIGNAL(openBus(const VLNV&, const VLNV&)),
+		this, SIGNAL(openBus(const VLNV&, const VLNV&)), Qt::UniqueConnection);
+	connect(&navigationModel_, SIGNAL(openComDefinition(const VLNV&)),
+		this, SIGNAL(openComDefinition(const VLNV&)), Qt::UniqueConnection);
+	connect(&navigationModel_, SIGNAL(openSWDesign(const VLNV&, const QString&)),
+		this, SIGNAL(openSWDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
+	connect(&navigationModel_, SIGNAL(openSystemDesign(const VLNV&, const QString&)),
+		this, SIGNAL(openSystemDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
 
 	// Open in unlocked mode by default only if the version is draft.
 	setProtection(component_->getVlnv()->getVersion() != "draft");

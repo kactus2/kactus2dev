@@ -185,10 +185,8 @@ void ComponentTreeView::mouseDoubleClickEvent( QMouseEvent* event ) {
 	pressedPoint_ = event->pos();
 
 	ComponentEditorItem* item = static_cast<ComponentEditorItem*>(index.internalPointer());
-
-	if (item->canBeOpened()) {
-		onFileOpen();
-	}
+	
+	onFileOpen();
 
 	event->accept();
 }
@@ -200,7 +198,6 @@ void ComponentTreeView::onFileOpen() {
 	QModelIndex index = indexAt(pressedPoint_);
 	
 	ComponentEditorItem* item = static_cast<ComponentEditorItem*>(index.internalPointer());
-	Q_ASSERT(item->canBeOpened());
 
 	item->openItem(true);
 }

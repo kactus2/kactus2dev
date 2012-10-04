@@ -78,6 +78,19 @@ public:
 	*/
 	virtual const ItemEditor* editor() const;
 
+	/*! \brief Tells if the item can be opened or not.
+	 * 
+	 * If the view hasn't changed then it can be opened.
+	*/
+	virtual bool canBeOpened() const;
+
+public slots:
+	
+	/*! \brief Open the view in a design editor.
+	 * 
+	*/
+	virtual void openItem(bool builtinEditor = false);
+
 private:
 	//! \brief No copying
 	ComponentEditorSystemViewItem(const ComponentEditorSystemViewItem& other);

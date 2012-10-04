@@ -214,6 +214,9 @@ signals:
 	//! \brief This signal is emitted when the item should be updated in view.
 	void contentChanged(ComponentEditorItem* item);
 
+	//! \brief Emitted when a error message should be shown to user.
+	void errorMessage(const QString& msg);
+
 	/*! \brief Emitted when a child should be added to this item.
 	 *
 	 * \param item Pointer to this item.
@@ -246,6 +249,21 @@ signals:
      *      @param [in] component  The component containing the file.
      */
     void openCSource(QString const& filename, QSharedPointer<Component> component);
+
+	//! \brief Emitted when a design editor should be opened for given hierarchical view.
+	void openDesign(const VLNV& componentVLNV, const QString& viewName);
+
+	//! \brief Emitted when a bus editor should be opened for given bus.
+	void openBus(const VLNV& busdefVLNV, const VLNV& absdefVLNV);
+
+	//! \brief Emitted when a COM definition should be opened in an editor.
+	void openComDefinition(const VLNV& comdefVLNV);
+
+	//! \brief Emitted when a SW design should be opened in an editor.
+	void openSWDesign(const VLNV& componentVLNV, const QString& viewName);
+
+	//! \brief Emitted when a system design should be opened in an editor.
+	void openSystemDesign(const VLNV& componentVLNV, const QString& viewName);
 
 	/*! \brief Emitted when a tree item should be selected in component editor.
 	 *

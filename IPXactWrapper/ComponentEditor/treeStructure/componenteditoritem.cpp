@@ -34,6 +34,19 @@ parent_(parent) {
 
     connect(this, SIGNAL(helpUrlRequested(QString const&)),
             model, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
+	connect(this, SIGNAL(errorMessage(const QString&)),
+		model, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
+
+	connect(this, SIGNAL(openDesign(const VLNV&, const QString&)),
+		model, SIGNAL(openDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
+	connect(this, SIGNAL(openSWDesign(const VLNV&, const QString&)),
+		model, SIGNAL(openSWDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
+	connect(this, SIGNAL(openSystemDesign(const VLNV&, const QString&)),
+		model, SIGNAL(openSystemDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
+	connect(this, SIGNAL(openBus(const VLNV&, const VLNV&)),
+		model, SIGNAL(openBus(const VLNV&, const VLNV&)), Qt::UniqueConnection);
+	connect(this, SIGNAL(openComDefinition(const VLNV&)),
+		model, SIGNAL(openComDefinition(const VLNV&)), Qt::UniqueConnection);
 }
 
 ComponentEditorItem::ComponentEditorItem( LibraryInterface* libHandler, 

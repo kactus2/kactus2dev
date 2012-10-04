@@ -3038,6 +3038,16 @@ void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
 
     connect(editor, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)),
             this , SLOT(openCSource(QString const&, QSharedPointer<Component>)), Qt::UniqueConnection);
+	connect(editor, SIGNAL(openDesign(const VLNV&, const QString&)),
+		this, SLOT(openDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
+	connect(editor, SIGNAL(openBus(const VLNV&, const VLNV&)),
+		this, SLOT(openBus(const VLNV&, const VLNV&)), Qt::UniqueConnection);
+	connect(editor, SIGNAL(openComDefinition(const VLNV&)),
+		this, SLOT(openComDefinition(const VLNV&)), Qt::UniqueConnection);
+	connect(editor, SIGNAL(openSWDesign(const VLNV&, const QString&)),
+		this, SLOT(openSWDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
+	connect(editor, SIGNAL(openSystemDesign(const VLNV&, const QString&)),
+		this, SLOT(openSystemDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

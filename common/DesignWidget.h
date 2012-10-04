@@ -198,11 +198,6 @@ public slots:
     void onVerticalScroll(int y);
 
 signals:
-    //! Emitted when the user double-clicks a hierarchical SW/mapping component.
-    void openSWDesign(const VLNV& vlnv, const QString& viewName);
-
-    //! Emitted when user double clicks a hierarchical HW component.
-    void openDesign(const VLNV& vlnv, const QString& viewName);
 
     //! Emitted when component with given vlnv should be opened in editor.
     void openComponent(const VLNV& vlnv);
