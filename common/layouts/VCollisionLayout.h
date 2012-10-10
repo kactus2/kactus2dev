@@ -15,7 +15,8 @@
 #include "IVGraphicsLayout.h"
 
 //-----------------------------------------------------------------------------
-
+//! Vertical collision layout.
+//-----------------------------------------------------------------------------
 template <class T>
 class VCollisionLayout : public IVGraphicsLayout<T>
 {

@@ -12,23 +12,36 @@
 #ifndef HCOLLISIONLAYOUT_H
 #define HCOLLISIONLAYOUT_H
 
+#include "IHGraphicsLayout.h"
+
 //-----------------------------------------------------------------------------
 
-namespace HCollisionLayout
+template <class T>
+class HCollisionLayout : public IHGraphicsLayout<T>
 {
+    /*!
+     *  Constructor.
+     *  
+     *      @param [in] spacing The spacing.
+     */
+    HCollisionLayout(qreal spacing);
+
+    /*!
+     *  Destructor.
+     */
+    ~HCollisionLayout();
+
     /*!
      *  Updates the positions of the items when one item is being moved.
      *
      *      @param [in] items    The list of items.
      *      @param [in] item     The item that is being moved.
      *      @param [in] minY     The minimum x coordinate.
-     *      @param [in] spacing  The spacing between the items.
      *
      *      @remarks The list of items is assumed to initially have correct top-bottom
      *               ordering and positioning.
      */
-    template <class T>
-    void updateItemMove(QList<T*>& items, T* item, qreal minX = 0.0, qreal spacing = 0.0);
+    void updateItemMove(QList<T*>& items, T* item, qreal minX = 0.0);
 
     /*!
      *  Sets the position of an item according to the collision-based layout.
@@ -37,11 +50,18 @@ namespace HCollisionLayout
      *      @param [in] item     The item to position.
      *      @param [in] x        The y coordinate for the item's position.
      *      @param [in] minY     The minimum x coordinate.
-     *      @param [in] spacing  The spacing between the items.
-    */
-    template <class T>
-    void setItemPos(QList<T*> const& items, T* item, qreal y, qreal minX = 0.0, qreal spacing = 0.0);
-}
+     */
+    void setItemPos(QList<T*> const& items, T* item, qreal y, qreal minX = 0.0);
+
+    /*!
+     *  Updates the positions of all items using horizontal stacking.
+     *
+     *      @param [in] items    The list of items.
+     *      @param [in] x        The y coordinate for the items.
+     *      @param [in] minX     The minimum x coordinate.
+     */
+    void updateItemPositions(QList<T*>& items, qreal y, qreal minX = 0.0);
+};
 
 //-----------------------------------------------------------------------------
 

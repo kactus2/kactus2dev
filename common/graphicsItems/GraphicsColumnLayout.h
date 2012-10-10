@@ -13,10 +13,12 @@
 #ifndef GRAPHICSCOLUMNLAYOUT_H
 #define GRAPHICSCOLUMNLAYOUT_H
 
+#include "GraphicsColumn.h"
+
+#include <common/layouts/IHGraphicsLayout.h>
+
 #include <QGraphicsScene>
 #include <QList>
-
-#include "GraphicsColumn.h"
 
 //-----------------------------------------------------------------------------
 //! GraphicsColumnLayout class.
@@ -116,6 +118,9 @@ private:
 
     //! The graphics scene.
     QGraphicsScene* scene_;
+
+    //! Layouter for columns.
+    QSharedPointer< IHGraphicsLayout<GraphicsColumn> > layout_;
 
     //! The columns.
     QList<GraphicsColumn*> columns_;

@@ -21,6 +21,7 @@
 //-----------------------------------------------------------------------------
 GraphicsColumnLayout::GraphicsColumnLayout(QGraphicsScene* scene)
     : scene_(scene),
+      layout_(new HStackedLayout<GraphicsColumn>(0.0)),
       columns_(),
       layoutWidth_(0.0),
       offsetY_(0)
@@ -78,8 +79,8 @@ void GraphicsColumnLayout::addColumn(GraphicsColumn* column, bool append)
     layoutWidth_ += column->boundingRect().width();
 
     // Update the position in the layout.
-    HStackedLayout::updateItemMove(columns_, column);
-    HStackedLayout::setItemPos(columns_, column, 0.0);
+    layout_->updateItemMove(columns_, column);
+    layout_->setItemPos(columns_, column, 0.0);
 }
 
 //-----------------------------------------------------------------------------
@@ -90,7 +91,7 @@ void GraphicsColumnLayout::removeColumn(GraphicsColumn* column)
     if (columns_.removeAll(column) > 0)
     {
         layoutWidth_ -= column->boundingRect().width();
-        HStackedLayout::updateItemPositions(columns_, 0.0, 0.0, 0.0);
+        layout_->updateItemPositions(columns_, 0.0, 0.0);
         scene_->removeItem(column);
     }
 }
@@ -125,7 +126,7 @@ void GraphicsColumnLayout::onMoveColumn(GraphicsColumn* column)
     column->setPos(pos);
     column->update();
 
-    HStackedLayout::updateItemMove(columns_, column);
+    layout_->updateItemMove(columns_, column);
 }
 
 //-----------------------------------------------------------------------------
@@ -133,7 +134,7 @@ void GraphicsColumnLayout::onMoveColumn(GraphicsColumn* column)
 //-----------------------------------------------------------------------------
 void GraphicsColumnLayout::onReleaseColumn(GraphicsColumn* column)
 {
-    HStackedLayout::setItemPos(columns_, column, 0.0);
+    layout_->setItemPos(columns_, column, 0.0);
 }
 
 //-----------------------------------------------------------------------------
@@ -141,7 +142,7 @@ void GraphicsColumnLayout::onReleaseColumn(GraphicsColumn* column)
 //-----------------------------------------------------------------------------
 void GraphicsColumnLayout::updateColumnPositions()
 {
-    HStackedLayout::updateItemPositions(columns_, 0.0, 0.0, 0.0);
+    layout_->updateItemPositions(columns_, 0.0, 0.0);
 
     layoutWidth_ = 0.0;
 

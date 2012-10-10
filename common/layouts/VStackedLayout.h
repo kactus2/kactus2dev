@@ -17,7 +17,8 @@
 #include <common/DiagramUtil.h>
 
 //-----------------------------------------------------------------------------
-
+//! Vertical stacked layout.
+//-----------------------------------------------------------------------------
 template <class T>
 class VStackedLayout : public IVGraphicsLayout<T>
 {

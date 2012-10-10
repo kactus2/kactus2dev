@@ -240,8 +240,8 @@ void SystemComponentItem::onAddPort(SWPortItem* port, PortDirection dir)
     else if (dir == PORT_BOTTOM)
     {
         bottomPorts_.append(port);
-        HCollisionLayout::updateItemMove(bottomPorts_, port, 0.0, SPACING);
-        HCollisionLayout::setItemPos(bottomPorts_, port, rect().bottom(), 0.0, SPACING);
+//         HCollisionLayout::updateItemMove(bottomPorts_, port, 0.0, SPACING);
+//         HCollisionLayout::setItemPos(bottomPorts_, port, rect().bottom(), 0.0, SPACING);
     }
 }
 
