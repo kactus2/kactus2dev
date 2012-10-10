@@ -14,6 +14,7 @@
 #define GRAPHICSCOLUMN_H
 
 #include "IGraphicsItemStack.h"
+#include "../layouts/IVGraphicsLayout.h"
 
 #include <common/ColumnTypes.h>
 
@@ -244,6 +245,9 @@ private:
 
     //! The column name label.
     QGraphicsTextItem* nameLabel_;
+
+    //! The layout used for contained items.
+    QSharedPointer< IVGraphicsLayout<QGraphicsItem> > itemLayout_;
 
     //! The node items ordered from top to bottom.
     QList<QGraphicsItem*> items_;

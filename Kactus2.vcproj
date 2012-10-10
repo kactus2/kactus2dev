@@ -5683,6 +5683,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\common\layouts\IVGraphicsLayout.h"
+						>
+					</File>
+					<File
 						RelativePath=".\common\layouts\VCollisionLayout.h"
 						>
 					</File>

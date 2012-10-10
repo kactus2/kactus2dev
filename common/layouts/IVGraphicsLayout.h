@@ -1,58 +1,52 @@
 //-----------------------------------------------------------------------------
-// File: VCollisionLayout.h
+// File: IVGraphicsLayout.h
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Joni-Matti M‰‰tt‰
-// Date: 22.4.2011
+// Date: 9.10.2012
 //
 // Description:
-// Vertical collision-based layout.
+// Declares the vertical graphics layout interface.
 //-----------------------------------------------------------------------------
 
-#ifndef VCOLLISIONLAYOUT_H
-#define VCOLLISIONLAYOUT_H
+#ifndef IVGRAPHICSLAYOUT_H
+#define IVGRAPHICSLAYOUT_H
 
-#include "IVGraphicsLayout.h"
+#include <QList>
 
 //-----------------------------------------------------------------------------
-
+//! Vertical graphics layout interface.
+//-----------------------------------------------------------------------------
 template <class T>
-class VCollisionLayout : public IVGraphicsLayout<T>
+class IVGraphicsLayout
 {
 public:
     /*!
-     *  Constructor.
-     *
-     *      @param [in] spacing The spacing between items.
-     */
-    VCollisionLayout(qreal spacing = 0.0);
-
-    /*!
      *  Destructor.
      */
-    ~VCollisionLayout();
+    virtual ~IVGraphicsLayout() {}
 
     /*!
-     *  Updates the positions of the items when one item is being moved.
+     *  Updates the vertical stacking of the items when one item is being moved.
      *
      *      @param [in] items    The list of items.
      *      @param [in] item     The item that is being moved.
      *      @param [in] minY     The minimum y coordinate.
      *
-     *      @remarks The list of items is assumed to initially have correct top-bottom
-     *               ordering and positioning.
+     *      @remarks The list of items is assumed to initially have correct left-right ordering and
+     *               positioning.
      */
-    void updateItemMove(QList<T*>& items, T* item, qreal minY = 0.0);
+    virtual void updateItemMove(QList<T*>& items, T* item, qreal minY = 0.0) = 0;
 
     /*!
-     *  Sets the position of an item according to the collision-based layout.
+     *  Sets the position of an item based on its index in the list using vertical stacking.
      *
      *      @param [in] items    The list of items. Assumed to be already in correct order.
      *      @param [in] item     The item to position.
      *      @param [in] x        The x coordinate for the item's position.
      *      @param [in] minY     The minimum y coordinate.
      */
-    void setItemPos(QList<T*> const& items, T* item, qreal x, qreal minY = 0.0);
+    virtual void setItemPos(QList<T*> const& items, T* item, qreal x, qreal minY = 0.0) = 0;
 
     /*!
      *  Updates the positions of all items using vertical stacking.
@@ -61,19 +55,9 @@ public:
      *      @param [in] x        The x coordinate for the items.
      *      @param [in] minY     The minimum y coordinate.
      */
-    void updateItemPositions(QList<T*>& items, qreal x, qreal minY = 0.0);
-
-private:
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-    //! The spacing between items.
-    qreal spacing_;
+    virtual void updateItemPositions(QList<T*>& items, qreal x, qreal minY = 0.0) = 0;
 };
 
 //-----------------------------------------------------------------------------
 
-#include "VCollisionLayout.inl"
-
-#endif // VCOLLISIONLAYOUT_H
+#endif // IVGRAPHICSLAYOUT_H

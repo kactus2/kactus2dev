@@ -9,6 +9,7 @@
 #include "AdHocEnabled.h"
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsItemTypes.h>
+#include <common/layouts/IVGraphicsLayout.h>
 
 #include <QSharedPointer>
 
@@ -179,6 +180,9 @@ private:
 
     //! The old column from where the mouse drag event began.
     HWColumn* oldColumn_;
+
+    //! The layout for ports.
+    QSharedPointer< IVGraphicsLayout<HWConnectionEndpoint> > portLayout_;
 
     //! The left and right port stacks.
     QList<HWConnectionEndpoint*> leftPorts_;

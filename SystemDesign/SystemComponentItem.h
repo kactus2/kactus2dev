@@ -15,6 +15,7 @@
 #include "SWPortItem.h"
 
 #include <common/graphicsItems/ComponentItem.h>
+#include <common/layouts/IVGraphicsLayout.h>
 
 enum PortDirection
 {
@@ -214,6 +215,9 @@ private:
 
     //! The name of the import source instance, if this component is an imported one.
     QString importRef_;
+
+    //! Layout for ports.
+    QSharedPointer< IVGraphicsLayout<SWPortItem> > portLayout_;
 
     //! The left, right and bottom port stacks.
     QList<SWPortItem*> leftPorts_;

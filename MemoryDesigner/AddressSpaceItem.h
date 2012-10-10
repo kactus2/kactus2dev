@@ -15,6 +15,7 @@
 #include <common/diagramgrid.h>
 #include <common/graphicsItems/GraphicsItemTypes.h>
 #include <common/graphicsItems/IGraphicsItemStack.h>
+#include <common/layouts/IVGraphicsLayout.h>
 
 #include <QGraphicsRectItem>
 #include <QSharedPointer>
@@ -200,6 +201,9 @@ private:
 
     //! AUB label.
     QGraphicsTextItem* aubLabel_;
+
+    //! The layout for the sections.
+    QSharedPointer< IVGraphicsLayout<AddressSectionItem> > sectionLayout_;
 
     //! The address sections for the address blocks.
     QList<AddressSectionItem*> sections_;

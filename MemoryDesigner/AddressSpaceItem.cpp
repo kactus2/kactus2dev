@@ -38,6 +38,7 @@ AddressSpaceItem::AddressSpaceItem(LibraryInterface* libInterface, QSharedPointe
       addressSpace_(addressSpace),
       nameLabel_(0),
       aubLabel_(),
+      sectionLayout_(new VStackedLayout<AddressSectionItem>(SPACING)),
       sections_()
 {
     Q_ASSERT_X(component, "AddressSpaceItem constructor",
@@ -200,8 +201,8 @@ void AddressSpaceItem::addItem(QGraphicsItem* item, bool load)
     //     else
     {
         sections_.append(section);
-        VStackedLayout::updateItemMove(sections_, section, 0.0, SPACING);
-        VStackedLayout::setItemPos(sections_, section, SECTION_X, 0.0, SPACING);
+        sectionLayout_->updateItemMove(sections_, section, 0.0);
+        sectionLayout_->setItemPos(sections_, section, SECTION_X, 0.0);
         updateItemPositions();
     }
 }
@@ -223,7 +224,7 @@ void AddressSpaceItem::onMoveItem(QGraphicsItem* item)
 {
     AddressSectionItem* section = static_cast<AddressSectionItem*>(item);
 
-    VStackedLayout::updateItemMove(sections_, section, 0.0, SPACING);
+    sectionLayout_->updateItemMove(sections_, section, 0.0);
     updateSize();
 
     // Check if the item is not overlapping the HW mapping item enough.
@@ -260,7 +261,7 @@ void AddressSpaceItem::onMoveItem(QGraphicsItem* item)
 void AddressSpaceItem::onReleaseItem(QGraphicsItem* item)
 {
     setZValue(0.0);
-    VStackedLayout::setItemPos(sections_, static_cast<AddressSectionItem*>(item), SECTION_X, 0.0, SPACING);
+    sectionLayout_->setItemPos(sections_, static_cast<AddressSectionItem*>(item), SECTION_X, 0.0);
 }
 
 //-----------------------------------------------------------------------------
@@ -269,7 +270,7 @@ void AddressSpaceItem::onReleaseItem(QGraphicsItem* item)
 void AddressSpaceItem::updateItemPositions()
 {
     // Just update the item positions.
-    VStackedLayout::updateItemPositions(sections_, SECTION_X, 0.0, SPACING);
+    sectionLayout_->updateItemPositions(sections_, SECTION_X, 0.0);
     updateSize();
 }
 

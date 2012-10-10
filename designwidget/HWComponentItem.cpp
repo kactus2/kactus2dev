@@ -52,6 +52,7 @@ HWComponentItem::HWComponentItem(LibraryInterface* lh_,
       AdHocEnabled(),
       hierIcon_(0),
       oldColumn_(0),
+      portLayout_(new VCollisionLayout<HWConnectionEndpoint>(SPACING)),
       leftPorts_(),
       rightPorts_(),
       connUpdateDisabled_(false)
@@ -297,14 +298,14 @@ void HWComponentItem::onAddPort(HWConnectionEndpoint* port, bool right)
     if (right)
     {
         rightPorts_.append(port);
-        VCollisionLayout::updateItemMove(rightPorts_, port, MIN_Y_PLACEMENT, SPACING);
-        VCollisionLayout::setItemPos(rightPorts_, port, rect().right(), MIN_Y_PLACEMENT, SPACING);
+        portLayout_->updateItemMove(rightPorts_, port, MIN_Y_PLACEMENT);
+        portLayout_->setItemPos(rightPorts_, port, rect().right(), MIN_Y_PLACEMENT);
     }
     else
     {
         leftPorts_.append(port);
-        VCollisionLayout::updateItemMove(leftPorts_, port, MIN_Y_PLACEMENT, SPACING);
-        VCollisionLayout::setItemPos(leftPorts_, port, rect().left(), MIN_Y_PLACEMENT, SPACING);
+        portLayout_->updateItemMove(leftPorts_, port, MIN_Y_PLACEMENT);
+        portLayout_->setItemPos(leftPorts_, port, rect().left(), MIN_Y_PLACEMENT);
     }
 }
 
@@ -323,11 +324,11 @@ void HWComponentItem::onMovePort(HWConnectionEndpoint* port)
     // Check on which side the port is to determine the stack to which it should be placed.
     if (port->x() < 0.0)
     {
-        VCollisionLayout::updateItemMove(leftPorts_, port, MIN_Y_PLACEMENT, SPACING);
+        portLayout_->updateItemMove(leftPorts_, port, MIN_Y_PLACEMENT);
     }
     else
     {
-        VCollisionLayout::updateItemMove(rightPorts_, port, MIN_Y_PLACEMENT, SPACING);
+        portLayout_->updateItemMove(rightPorts_, port, MIN_Y_PLACEMENT);
     }
 
     updateSize();

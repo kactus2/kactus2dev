@@ -40,6 +40,8 @@ GraphicsColumn::GraphicsColumn(ColumnDesc const& desc, GraphicsColumnLayout* lay
       layout_(layout),
       desc_(),
       nameLabel_(0),
+      itemLayout_(0),
+      items_(),
       oldPos_(),
       mouseNearResizeArea_(false),
       oldWidth_(0)
@@ -117,17 +119,8 @@ void GraphicsColumn::addItem(QGraphicsItem* item, bool load)
     else
     {
         items_.append(item);
-
-        if (desc_.getContentType() == COLUMN_CONTENT_IO)
-        {
-            VCollisionLayout::updateItemMove(items_, item, MIN_Y_PLACEMENT, IO_SPACING);
-            VCollisionLayout::setItemPos(items_, item, desc_.getWidth() / 2, MIN_Y_PLACEMENT, IO_SPACING);
-        }
-        else
-        {
-            VStackedLayout::updateItemMove(items_, item, MIN_Y_PLACEMENT, SPACING);
-            VStackedLayout::setItemPos(items_, item, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
-        }
+        itemLayout_->updateItemMove(items_, item, MIN_Y_PLACEMENT);
+        itemLayout_->setItemPos(items_, item, desc_.getWidth() / 2, MIN_Y_PLACEMENT);
     }
 }
 
@@ -138,11 +131,7 @@ void GraphicsColumn::removeItem(QGraphicsItem* item)
 {
     items_.removeAll(item);
     item->setParentItem(0);
-
-    if (desc_.getContentType() != COLUMN_CONTENT_IO)
-    {
-        VStackedLayout::updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
-    }
+    itemLayout_->updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT);
 }
 
 //-----------------------------------------------------------------------------
@@ -222,15 +211,8 @@ void GraphicsColumn::onMoveItem(QGraphicsItem* item)
     //item->setPos(snapPointToGrid(item->x(), qMax(MIN_Y_PLACEMENT - item->boundingRect().top(), item->y())));
 
     // Update the item move based on the column content type.
-    if (desc_.getContentType() == COLUMN_CONTENT_IO)
-    {
-        VCollisionLayout::updateItemMove(items_, item, MIN_Y_PLACEMENT, IO_SPACING);
-    }
-    else
-    {
-        VStackedLayout::updateItemMove(items_, item, MIN_Y_PLACEMENT, SPACING);
-    }
-
+    itemLayout_->updateItemMove(items_, item, MIN_Y_PLACEMENT);
+    
     // Check if any graphics item stack is under the item.
     foreach (QGraphicsItem* childItem, items_)
     {
@@ -244,11 +226,7 @@ void GraphicsColumn::onMoveItem(QGraphicsItem* item)
             {
                 // Switch the mapping item as the parent.
                 items_.removeAll(item);
-
-                if (desc_.getContentType() != COLUMN_CONTENT_IO)
-                {
-                    VStackedLayout::updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
-                }
+                itemLayout_->updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT);
 
                 setZValue(0.0);
 
@@ -279,11 +257,7 @@ void GraphicsColumn::onMoveItem(QGraphicsItem* item)
         item->setParentItem(column);
         item->setPos(newPos);
 
-        if (desc_.getContentType() != COLUMN_CONTENT_IO)
-        {
-            VStackedLayout::updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
-        }
-
+        itemLayout_->updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT);
         setZValue(0.0);
 
         // And call the new column's onMoveItem().
@@ -300,15 +274,7 @@ void GraphicsColumn::onMoveItem(QGraphicsItem* item)
 void GraphicsColumn::onReleaseItem(QGraphicsItem* item)
 {
     setZValue(0.0);
-
-    if (desc_.getContentType() == COLUMN_CONTENT_IO)
-    {
-        VCollisionLayout::setItemPos(items_, item, desc_.getWidth() / 2, MIN_Y_PLACEMENT, IO_SPACING);
-    }
-    else
-    {
-        VStackedLayout::setItemPos(items_, item, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
-    }
+    itemLayout_->setItemPos(items_, item, desc_.getWidth() / 2, MIN_Y_PLACEMENT);
 }
 
 //-----------------------------------------------------------------------------
@@ -317,10 +283,7 @@ void GraphicsColumn::onReleaseItem(QGraphicsItem* item)
 void GraphicsColumn::updateItemPositions()
 {
     // Just update the item positions.
-    if (desc_.getContentType() != COLUMN_CONTENT_IO)
-    {
-        VStackedLayout::updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT, SPACING);
-    }
+    itemLayout_->updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT);
 }
 
 //-----------------------------------------------------------------------------
@@ -461,6 +424,15 @@ void GraphicsColumn::setColumnDesc(ColumnDesc const& desc)
         {
             break;
         }
+    }
+
+    if (desc.getContentType() == COLUMN_CONTENT_IO)
+    {
+        itemLayout_ = QSharedPointer<IVGraphicsLayout<QGraphicsItem> >(new VCollisionLayout<QGraphicsItem>(IO_SPACING));
+    }
+    else
+    {
+        itemLayout_ = QSharedPointer<IVGraphicsLayout<QGraphicsItem> >(new VStackedLayout<QGraphicsItem>(SPACING));
     }
 
     setRect(0, 0, desc_.getWidth(), HEIGHT);

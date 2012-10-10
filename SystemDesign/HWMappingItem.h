@@ -17,6 +17,7 @@
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsItemTypes.h>
 #include <common/graphicsItems/IGraphicsItemStack.h>
+#include <common/layouts/IVGraphicsLayout.h>
 
 class SWComponentItem;
 
@@ -156,6 +157,9 @@ private:
 
     //! The old column from where the mouse drag event began.
     IGraphicsItemStack* oldStack_;
+
+    //! The layout for components.
+    QSharedPointer< IVGraphicsLayout<ComponentItem> > layout_;
 
     //! The mapped SW components.
     QList<ComponentItem*> swComponents_;

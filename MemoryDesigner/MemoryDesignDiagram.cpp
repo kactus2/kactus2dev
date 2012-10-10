@@ -53,7 +53,10 @@ MemoryDesignDiagram::MemoryDesignDiagram(LibraryInterface* lh, MainWindow* mainW
     : DesignDiagram(lh, mainWnd, editProvider, parent),
       parent_(parent),
       layout_(),
-      oldSelection_(0)
+      oldSelection_(0),
+      resizingSubsection_(false),
+      dualSubsectionResize_(false),
+      subsectionResizeBottom_(0.0)
 {
     connect(this, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
     connect(&editProvider, SIGNAL(modified()), this, SIGNAL(contentChanged()));
@@ -350,4 +353,53 @@ void MemoryDesignDiagram::onSelectionChanged()
 
     // Save the current selection as the old selection.
     oldSelection_ = newSelection;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignDiagram::beginResize()
+//-----------------------------------------------------------------------------
+void MemoryDesignDiagram::beginResizeSubsection(bool dual, qreal bottom)
+{
+    dualSubsectionResize_ = dual;
+    subsectionResizeBottom_ = bottom;
+    resizingSubsection_ = true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignDiagram::updateResize()
+//-----------------------------------------------------------------------------
+void MemoryDesignDiagram::updateResizeSubsection(qreal bottom)
+{
+    subsectionResizeBottom_ = bottom;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignDiagram::endResize()
+//-----------------------------------------------------------------------------
+void MemoryDesignDiagram::endResizeSubsection()
+{
+    resizingSubsection_ = false;
+    invalidate();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignDiagram::drawForeground()
+//-----------------------------------------------------------------------------
+void MemoryDesignDiagram::drawForeground(QPainter* painter, const QRectF& rect)
+{
+    painter->setWorldMatrixEnabled(true);
+
+    if (resizingSubsection_)
+    {
+        QPen pen(Qt::black, 0);
+        pen.setStyle(Qt::DashLine);
+        painter->setPen(pen);
+
+        painter->drawLine(rect.left(), subsectionResizeBottom_, rect.right(), subsectionResizeBottom_);
+
+        if (dualSubsectionResize_)
+        {
+            painter->drawLine(rect.left(), subsectionResizeBottom_ + 10, rect.right(), subsectionResizeBottom_ + 10);
+        }
+    }
 }

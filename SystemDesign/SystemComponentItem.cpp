@@ -36,6 +36,7 @@ SystemComponentItem::SystemComponentItem(QRectF const& size,
     : ComponentItem(size, libInterface, component, instanceName, displayName, description, configurableElementValues, parent),
       imported_(false),
       importRef_(),
+      portLayout_(new VCollisionLayout<SWPortItem>(SPACING)),
       connUpdateDisabled_(false)
 {
     int portSpacing = 3 * GridSize;
@@ -227,14 +228,14 @@ void SystemComponentItem::onAddPort(SWPortItem* port, PortDirection dir)
     if (dir == PORT_RIGHT)
     {
         rightPorts_.append(port);
-        VCollisionLayout::updateItemMove(rightPorts_, port, MIN_Y_PLACEMENT, SPACING);
-        VCollisionLayout::setItemPos(rightPorts_, port, rect().right(), MIN_Y_PLACEMENT, SPACING);
+        portLayout_->updateItemMove(rightPorts_, port, MIN_Y_PLACEMENT);
+        portLayout_->setItemPos(rightPorts_, port, rect().right(), MIN_Y_PLACEMENT);
     }
     else if (dir == PORT_LEFT)
     {
         leftPorts_.append(port);
-        VCollisionLayout::updateItemMove(leftPorts_, port, MIN_Y_PLACEMENT, SPACING);
-        VCollisionLayout::setItemPos(leftPorts_, port, rect().left(), MIN_Y_PLACEMENT, SPACING);
+        portLayout_->updateItemMove(leftPorts_, port, MIN_Y_PLACEMENT);
+        portLayout_->setItemPos(leftPorts_, port, rect().left(), MIN_Y_PLACEMENT);
     }
     else if (dir == PORT_BOTTOM)
     {
@@ -264,11 +265,11 @@ void SystemComponentItem::onMovePort(SWPortItem* port)
     }
     else*/ if (port->x() < 0.0)
     {
-        VCollisionLayout::updateItemMove(leftPorts_, port, MIN_Y_PLACEMENT, SPACING);
+        portLayout_->updateItemMove(leftPorts_, port, MIN_Y_PLACEMENT);
     }
     else
     {
-        VCollisionLayout::updateItemMove(rightPorts_, port, MIN_Y_PLACEMENT, SPACING);
+        portLayout_->updateItemMove(rightPorts_, port, MIN_Y_PLACEMENT);
     }
 
     updateSize();

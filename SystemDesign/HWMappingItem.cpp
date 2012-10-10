@@ -43,6 +43,7 @@ HWMappingItem::HWMappingItem(LibraryInterface* libInterface,
     : SystemComponentItem(QRectF(-WIDTH / 2, 0, WIDTH, 0), libInterface, component, instanceName,
                       displayName, description, configurableElementValues, 0),
       oldStack_(0),
+      layout_(new VStackedLayout<ComponentItem>(SPACING)),
       swComponents_(),
       oldPos_()
 {
@@ -253,8 +254,9 @@ void HWMappingItem::addItem(QGraphicsItem* item, bool load)
     else
     {
         swComponents_.append(compItem);
-        VStackedLayout::updateItemMove(swComponents_, compItem, TOP_MARGIN, SPACING);
-        VStackedLayout::setItemPos(swComponents_, compItem, 0.0, TOP_MARGIN, SPACING);
+        
+        layout_->updateItemMove(swComponents_, compItem, TOP_MARGIN);
+        layout_->setItemPos(swComponents_, compItem, 0.0, TOP_MARGIN);
         updateItemPositions();
     }
 }
@@ -276,7 +278,7 @@ void HWMappingItem::onMoveItem(QGraphicsItem* item)
 {
     ComponentItem* compItem = static_cast<ComponentItem*>(item);
 
-    VStackedLayout::updateItemMove(swComponents_, compItem, TOP_MARGIN, SPACING);
+    layout_->updateItemMove(swComponents_, compItem, TOP_MARGIN);
     offsetPortPositions(getComponentStackHeight() + SPACING);
     updateSize();
 
@@ -314,7 +316,7 @@ void HWMappingItem::onMoveItem(QGraphicsItem* item)
 void HWMappingItem::onReleaseItem(QGraphicsItem* item)
 {
     setZValue(0.0);
-    VStackedLayout::setItemPos(swComponents_, static_cast<ComponentItem*>(item), 0.0, TOP_MARGIN, SPACING);
+    layout_->setItemPos(swComponents_, static_cast<ComponentItem*>(item), 0.0, TOP_MARGIN);
     offsetPortPositions(getComponentStackHeight() + SPACING);
 }
 
@@ -324,7 +326,7 @@ void HWMappingItem::onReleaseItem(QGraphicsItem* item)
 void HWMappingItem::updateItemPositions()
 {
     // Just update the item positions.
-    VStackedLayout::updateItemPositions(swComponents_, 0.0, TOP_MARGIN, SPACING);
+    layout_->updateItemPositions(swComponents_, 0.0, TOP_MARGIN);
     offsetPortPositions(getComponentStackHeight() + SPACING);
     updateSize();
 }

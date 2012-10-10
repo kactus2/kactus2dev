@@ -106,8 +106,6 @@ bool GraphicsLineEdit::sceneEvent(QEvent* event)
         return true;
     }
 
-    qDebug() << event->type();
-
     return QGraphicsTextItem::sceneEvent(event);
 }
 

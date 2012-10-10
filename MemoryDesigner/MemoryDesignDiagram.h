@@ -95,6 +95,26 @@ public:
 
     void onVerticalScroll(qreal y);
 
+    /*!
+     *  Begins a resize of an address (sub)section.
+     *  
+     *      @param [in] dual    If true, two helper lines will be drawn.
+     *      @param [in] bottom  The bottom coordinate for the section being resized.
+     */
+    void beginResizeSubsection(bool dual, qreal bottom);
+
+    /*!
+     *  Updates the resize of an address (sub)section.
+     *  
+     *      @param [in] bottom The bottom coordinate for the section being resized.
+     */
+    void updateResizeSubsection(qreal bottom);
+
+    /*!
+     *  Ends the resize of an address (sub)section.
+     */
+    void endResizeSubsection();
+
 public slots:
     /*!
      *  Called when the selection changes in the diagram.
@@ -116,6 +136,9 @@ protected:
 
     //! Called when the mouse wheel has scrolled.
     void wheelEvent(QGraphicsSceneWheelEvent *event);
+
+    //! Draws the foreground.
+    void drawForeground(QPainter* painter, const QRectF& rect);
 
 private:
     // Disable copying.
@@ -146,6 +169,15 @@ private:
 
     //! The old item selection.
     QGraphicsItem* oldSelection_;
+
+    //! If true, an address (sub)section is being resized.
+    bool resizingSubsection_;
+
+    //! If true, the dual lines will be drawn for the subsection resize.
+    bool dualSubsectionResize_;
+
+    //! The current y coordinate for the subsection resize.
+    qreal subsectionResizeBottom_;
 };
 
 //-----------------------------------------------------------------------------

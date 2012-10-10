@@ -15,36 +15,36 @@
 //-----------------------------------------------------------------------------
 // Function: ComInterface::ComInterface()
 //-----------------------------------------------------------------------------
-ComInterface::ComInterface():
-nameGroup_(),
-comType_(), 
-transferType_(), 
-dir_(General::INOUT),
-propertyValues_()
+ComInterface::ComInterface()
+    : nameGroup_(),
+      comType_(), 
+      transferType_(), 
+      dir_(General::INOUT),
+      propertyValues_()
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComInterface::ComInterface()
 //-----------------------------------------------------------------------------
-ComInterface::ComInterface(ComInterface const& rhs):
-nameGroup_(rhs.nameGroup_),
-comType_(rhs.comType_),
-transferType_(rhs.transferType_),
-dir_(rhs.dir_),
-propertyValues_(rhs.propertyValues_)
+ComInterface::ComInterface(ComInterface const& rhs)
+    : nameGroup_(rhs.nameGroup_),
+      comType_(rhs.comType_),
+      transferType_(rhs.transferType_),
+      dir_(rhs.dir_),
+      propertyValues_(rhs.propertyValues_)
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComInterface::ComInterface()
 //-----------------------------------------------------------------------------
-ComInterface::ComInterface(QDomNode& node): 
-nameGroup_(node), 
-comType_(),
-transferType_(), 
-dir_(General::INOUT),
-propertyValues_()
+ComInterface::ComInterface(QDomNode& node)
+    : nameGroup_(node), 
+      comType_(),
+      transferType_(), 
+      dir_(General::INOUT),
+      propertyValues_()
 {
     for (int i = 0; i < node.childNodes().count(); ++i)
     {

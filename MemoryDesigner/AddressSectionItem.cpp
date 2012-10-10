@@ -13,6 +13,7 @@
 
 #include "MemoryItem.h"
 #include "AddressSubsection.h"
+#include "MemoryDesignDiagram.h"
 
 #include <common/utils.h>
 #include <common/diagramgrid.h>
@@ -127,7 +128,7 @@ void AddressSectionItem::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
     {
         for (int i = 0; i < subsections_.size(); ++i)
         {
-            if (qAbs(event->pos().y() - (subsections_.at(i)->getBottom() + 5)) <= 10)
+            if (qAbs(event->pos().y() - (subsections_.at(i)->getBottom() + 5)) <= 8)
             {
                 if (resizeIndex_ == -1)
                 {
@@ -164,6 +165,10 @@ void AddressSectionItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
     if (resizeIndex_ != -1)
     {
         // TODO: Save the old height before resize.
+
+        qreal sceneBottom = mapToScene(QPointF(0.0, subsections_.at(resizeIndex_)->getBottom())).y();
+
+        static_cast<MemoryDesignDiagram*>(scene())->beginResizeSubsection(resizeIndex_ < subsections_.size() - 1, sceneBottom);
     }
 }
 
@@ -202,6 +207,9 @@ void AddressSectionItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
         }
 
         setHeight(subsections_.last()->getBottom());
+
+        qreal sceneBottom = mapToScene(QPointF(0.0, bottom)).y();
+        static_cast<MemoryDesignDiagram*>(scene())->updateResizeSubsection(sceneBottom);
     }
     else
     {
@@ -220,6 +228,7 @@ void AddressSectionItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
     if (resizeIndex_ != -1)
     {
+        static_cast<MemoryDesignDiagram*>(scene())->endResizeSubsection();
 //         if (desc_.getWidth() != oldWidth_)
 //         {
 //             QSharedPointer<QUndoCommand> cmd(new AddressSectionItemResizeCommand(this, oldWidth_));
@@ -254,7 +263,7 @@ void AddressSectionItem::updateCursor(QGraphicsSceneHoverEvent* event)
     {
         for (int i = 0; i < subsections_.size(); ++i)
         {
-            if (qAbs(event->pos().y() - (subsections_.at(i)->getBottom() + 5)) <= 10)
+            if (qAbs(event->pos().y() - (subsections_.at(i)->getBottom() + 5)) <= 8)
             {
                 if (resizeIndex_ == -1)
                 {
