@@ -165,6 +165,18 @@ public:
 	*/
 	void setDescription(const QString& description);
 
+	/*! \brief Check if the memory map contains any sub items.
+	 *
+	 * \return True if at least one sub item is found.
+	*/
+	bool isEmpty() const;
+
+	/*! \brief Get reference to the name group-struct of the memory map.
+	 *
+	 * \return Reference to the name group.
+	*/
+	General::NameGroup& getNameGroup();
+
 private:
 
 	//! \brief Contains the name, display name and description of the memory map.

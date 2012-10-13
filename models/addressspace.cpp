@@ -211,7 +211,7 @@ void AddressSpace::write(QXmlStreamWriter& writer) {
 
 	writer.writeTextElement("spirit:addressUnitBits", QString::number(addressUnitBits_));
 
-	if (localMemoryMap_) {
+	if (localMemoryMap_ && !localMemoryMap_->isEmpty()) {
 		writer.writeStartElement("spirit:localMemoryMap");
 		localMemoryMap_->write(writer);
 		writer.writeEndElement(); // spirit:localMemoryMap
@@ -261,8 +261,12 @@ bool AddressSpace::isValid( QStringList& errorList,
 		}
 	}
 
-	if (localMemoryMap_ && !localMemoryMap_->isValid(errorList, thisIdentifier)) {
-		valid = false;
+	if (localMemoryMap_) {
+		
+		// if the local memory map contains definitions but is not valid
+		if (!localMemoryMap_->isEmpty() && !localMemoryMap_->isValid(errorList, thisIdentifier)) {
+			valid = false;
+		}
 	}
 
 	foreach (QSharedPointer<Parameter> param, parameters_) {
@@ -294,8 +298,12 @@ bool AddressSpace::isValid() const {
 		}
 	}
 
-	if (localMemoryMap_ && !localMemoryMap_->isValid()) {
-		return false;
+	if (localMemoryMap_) {
+
+		// if the memory map contains definitions but is not valid
+		if (!localMemoryMap_->isEmpty() && !localMemoryMap_->isValid()) {
+			return false;
+		}
 	}
 
 	foreach (QSharedPointer<Parameter> param, parameters_) {
@@ -364,15 +372,22 @@ void AddressSpace::setWidth(int width) {
 	width_ = width;
 }
 
-MemoryMap *AddressSpace::getLocalMemoryMap() const {
-	return localMemoryMap_.data();
+const QSharedPointer<MemoryMap> AddressSpace::getLocalMemoryMap() const {
+	return localMemoryMap_;
 }
 
-void AddressSpace::setLocalMemoryMap(MemoryMap *localMemoryMap) {
+QSharedPointer<MemoryMap> AddressSpace::getLocalMemoryMap() {
+	if (!localMemoryMap_) {
+		localMemoryMap_ = QSharedPointer<MemoryMap>(new MemoryMap());
+	}
+	return localMemoryMap_;
+}
+
+void AddressSpace::setLocalMemoryMap( QSharedPointer<MemoryMap> localMemoryMap ) {
 	if (localMemoryMap_) {
 		localMemoryMap_.clear();
 	}
-	localMemoryMap_ = QSharedPointer<MemoryMap>(localMemoryMap);
+	localMemoryMap_ = localMemoryMap;
 }
 
 QList<QSharedPointer<Segment> >& AddressSpace::getSegments() {

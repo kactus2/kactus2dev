@@ -276,3 +276,12 @@ unsigned int MemoryMap::getLastAddress() const
     
     return lastBaseAddress + Utils::str2Int(static_cast<AddressBlock*>(items_.at(index).data())->getRange()) - 1;
 }
+
+bool MemoryMap::isEmpty() const {
+	return items_.isEmpty() && nameGroup_.name_.isEmpty() &&
+		nameGroup_.displayName_.isEmpty() && nameGroup_.description_.isEmpty();
+}	
+
+General::NameGroup& MemoryMap::getNameGroup() {
+	return nameGroup_;
+}

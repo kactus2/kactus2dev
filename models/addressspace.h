@@ -176,13 +176,19 @@ public:
 	 *
 	 * \return A pointer to the local memory map
 	 */
-	MemoryMap* getLocalMemoryMap() const;
+	const QSharedPointer<MemoryMap> getLocalMemoryMap() const;
+
+	/*! \brief Get the pointer to the local memory map
+	 *
+	 * \return A pointer to the local memory map
+	 */
+	QSharedPointer<MemoryMap> getLocalMemoryMap();
 
 	/*! \brief Set the local memory map
 	 *
 	 * \param localMemoryMap a pointer to the new local memory map
 	 */
-	void setLocalMemoryMap(MemoryMap* localMemoryMap);
+	void setLocalMemoryMap(QSharedPointer<MemoryMap> localMemoryMap);
 
 	/*! \brief Set the segments for this address space.
 	 *

@@ -51,7 +51,7 @@ public:
 	*
 	* Base class implementation always returns true.
 	* 
-	* \return True is item is valid.
+	* \return True if item is valid.
 	*/
 	virtual bool isValid() const;
 

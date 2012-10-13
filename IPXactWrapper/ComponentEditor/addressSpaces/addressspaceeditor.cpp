@@ -20,7 +20,8 @@ addrSpace_(addrSpace),
 nameEditor_(addrSpace->getNameGroup(), this),
 general_(addrSpace, this),
 segments_(addrSpace, this),
-parameterEditor_(addrSpace_->getParameters(), this),
+localMemMap_(addrSpace->getLocalMemoryMap(), this),
+//parameterEditor_(addrSpace_->getParameters(), this),
 visualizer_(this) {
 
 	Q_ASSERT(addrSpace_);
@@ -71,13 +72,21 @@ visualizer_(this) {
 	connect(&segments_, SIGNAL(segmentChanged(QSharedPointer<Segment>)),
 		&visualizer_, SLOT(updateSegment(QSharedPointer<Segment>)), Qt::UniqueConnection);
 
-	layout->addWidget(&parameterEditor_);
-	connect(&parameterEditor_, SIGNAL(contentChanged()),
+	layout->addWidget(&localMemMap_);
+	connect(&localMemMap_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&parameterEditor_, SIGNAL(errorMessage(const QString&)),
-		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-	connect(&parameterEditor_, SIGNAL(noticeMessage(const QString&)),
-		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+	connect(&localMemMap_, SIGNAL(itemAdded(int)),
+		this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
+	connect(&localMemMap_, SIGNAL(itemRemoved(int)),
+		this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
+
+// 	layout->addWidget(&parameterEditor_);
+// 	connect(&parameterEditor_, SIGNAL(contentChanged()),
+// 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+// 	connect(&parameterEditor_, SIGNAL(errorMessage(const QString&)),
+// 		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
+// 	connect(&parameterEditor_, SIGNAL(noticeMessage(const QString&)),
+// 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
 	// the horizontal layout contains the visualizer and other widgets
 	QHBoxLayout* topLayout = new QHBoxLayout(topWidget);
@@ -100,10 +109,13 @@ bool AddressSpaceEditor::isValid() const {
 	else if (!general_.isValid()) {
 		return false;
 	}
-	else if (!parameterEditor_.isValid()) {
+// 	else if (!parameterEditor_.isValid()) {
+// 		return false;
+// 	}
+	else if (!segments_.isValid()) {
 		return false;
 	}
-	else if (!segments_.isValid()) {
+	else if (!localMemMap_.isValid()) {
 		return false;
 	}
 	else {
@@ -115,8 +127,9 @@ void AddressSpaceEditor::refresh() {
 	nameEditor_.refresh();
 
 	general_.refresh();
-	parameterEditor_.refresh();
+//	parameterEditor_.refresh();
 	segments_.refresh();
+	localMemMap_.refresh();
 
 	visualizer_.setByteSize(addrSpace_->getAddressUnitBits());
 	visualizer_.setRowWidth(addrSpace_->getWidth());

@@ -74,6 +74,13 @@ public:
 	*/
 	virtual const ItemEditor* editor() const;
 
+	/*! \brief Add a new child to the item.
+	 * 
+	 * \param index The index to add the child into.
+	 *
+	*/
+	virtual void createChild(int index);
+
 private:
 	//! \brief No copying
 	ComponentEditorAddrSpaceItem(const ComponentEditorAddrSpaceItem& other);
@@ -83,6 +90,9 @@ private:
 
 	//! \brief Pointer to the address space being edited.
 	QSharedPointer<AddressSpace> addrSpace_;
+
+	//! \brief Contains the address blocks that are children of this tree item.
+	QList<QSharedPointer<MemoryMapItem> >& items_;
 
 	//! \brief The editor used to edit the address space.
 	AddressSpaceEditor editor_;
