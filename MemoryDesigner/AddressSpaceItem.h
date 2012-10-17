@@ -26,6 +26,7 @@ class AddressSpace;
 class LibraryInterface;
 class IGraphicsItemStack;
 class AddressSectionItem;
+class MemoryColumn;
 
 //-----------------------------------------------------------------------------
 //! Graphics item for visualizing address spaces in the memory designer.
@@ -169,6 +170,16 @@ protected:
      */
     void updateSize();
 
+protected:
+    // Called when the user presses the mouse button.
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
+
+    //! Called when the user moves the column with the mouse.
+    void mouseMoveEvent(QGraphicsSceneMouseEvent* event);
+
+    //! Called when the user release the mouse.
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
+
 private:
     // Disable copying.
     AddressSpaceItem(AddressSpaceItem const& rhs);
@@ -207,6 +218,10 @@ private:
 
     //! The address sections for the address blocks.
     QList<AddressSectionItem*> sections_;
+
+    //! The old column from where the mouse drag event began.
+    MemoryColumn* oldColumn_;
+    QPointF oldPos_;
 };
 
 //-----------------------------------------------------------------------------

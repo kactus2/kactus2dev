@@ -119,8 +119,12 @@ void GraphicsColumn::addItem(QGraphicsItem* item, bool load)
     else
     {
         items_.append(item);
-        itemLayout_->updateItemMove(items_, item, MIN_Y_PLACEMENT);
-        itemLayout_->setItemPos(items_, item, desc_.getWidth() / 2, MIN_Y_PLACEMENT);
+
+        if (itemLayout_ != 0)
+        {
+            itemLayout_->updateItemMove(items_, item, MIN_Y_PLACEMENT);
+            itemLayout_->setItemPos(items_, item, desc_.getWidth() / 2, MIN_Y_PLACEMENT);
+        }
     }
 }
 
@@ -131,7 +135,11 @@ void GraphicsColumn::removeItem(QGraphicsItem* item)
 {
     items_.removeAll(item);
     item->setParentItem(0);
-    itemLayout_->updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT);
+
+    if (itemLayout_ != 0)
+    {
+        itemLayout_->updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -211,7 +219,10 @@ void GraphicsColumn::onMoveItem(QGraphicsItem* item)
     //item->setPos(snapPointToGrid(item->x(), qMax(MIN_Y_PLACEMENT - item->boundingRect().top(), item->y())));
 
     // Update the item move based on the column content type.
-    itemLayout_->updateItemMove(items_, item, MIN_Y_PLACEMENT);
+    if (itemLayout_ != 0)
+    {
+        itemLayout_->updateItemMove(items_, item, MIN_Y_PLACEMENT);
+    }
     
     // Check if any graphics item stack is under the item.
     foreach (QGraphicsItem* childItem, items_)
@@ -226,7 +237,11 @@ void GraphicsColumn::onMoveItem(QGraphicsItem* item)
             {
                 // Switch the mapping item as the parent.
                 items_.removeAll(item);
-                itemLayout_->updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT);
+
+                if (itemLayout_ != 0)
+                {
+                    itemLayout_->updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT);
+                }
 
                 setZValue(0.0);
 
@@ -249,20 +264,67 @@ void GraphicsColumn::onMoveItem(QGraphicsItem* item)
     // Check if the column is different than the current one.
     if (column != 0 && column != this && column->isItemAllowed(item))
     {
-        // We have to switch the column and update this column's item positions
-        // without the moving item.
-        items_.removeAll(item);
-
-        QPointF newPos = column->mapFromScene(item->scenePos());
-        item->setParentItem(column);
-        item->setPos(newPos);
-
-        itemLayout_->updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT);
-        setZValue(0.0);
-
-        // And call the new column's onMoveItem().
-        column->onMoveItem(item);
+        switchColumn(item, column);
         return;
+    }
+
+    // Check if auto-reorganize is enabled and the item needs to be moved somewhere else.
+    if (layout_->isAutoReorganized())
+    {
+        int index = layout_->getColumns().indexOf(this);
+        int newIndex = index;
+
+        // Check if the item cannot locate in this column.
+        if (!isItemAllowed(item))
+        {
+            // Find the next column on the right that can contain the item.
+            ++newIndex;
+
+            for (; newIndex < layout_->getColumns().size(); ++newIndex)
+            {
+                if (layout_->getColumns().at(newIndex)->isItemAllowed(item))
+                {
+                    break;
+                }
+            }
+
+            // If not found, create a new one with default properties.
+            if (newIndex == layout_->getColumns().size())
+            {
+                newIndex = layout_->autoCreateColumn();
+                return;
+            }
+        }
+//         else
+//         {
+//             // Otherwise check if the item can be placed to a column more on the left.
+//             for (newIndex = 0; newIndex < layout_->getColumns().size(); ++newIndex)
+//             {
+//                 if (layout_->getColumns().at(newIndex)->isItemAllowed(item))
+//                 {
+//                     break;
+//                 }
+//             }
+//         }
+
+        if (newIndex != index)
+        {
+            switchColumn(item, layout_->getColumns().at(newIndex));
+            return;
+        }
+
+        // Remove unused columns from the right.
+        for (int index = layout_->getColumns().indexOf(this) + 1; index < layout_->getColumns().size(); ++index)
+        {
+            if (layout_->getColumns().at(index)->isEmpty())
+            {
+                layout_->removeColumn(layout_->getColumns().at(index));
+            }
+            else
+            {
+                ++index;
+            }
+        }
     }
 
     setZValue(1001.0);
@@ -274,7 +336,11 @@ void GraphicsColumn::onMoveItem(QGraphicsItem* item)
 void GraphicsColumn::onReleaseItem(QGraphicsItem* item)
 {
     setZValue(0.0);
-    itemLayout_->setItemPos(items_, item, desc_.getWidth() / 2, MIN_Y_PLACEMENT);
+
+    if (itemLayout_ != 0)
+    {
+        itemLayout_->setItemPos(items_, item, desc_.getWidth() / 2, MIN_Y_PLACEMENT);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -283,7 +349,10 @@ void GraphicsColumn::onReleaseItem(QGraphicsItem* item)
 void GraphicsColumn::updateItemPositions()
 {
     // Just update the item positions.
-    itemLayout_->updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT);
+    if (itemLayout_ != 0)
+    {
+        itemLayout_->updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -585,4 +654,36 @@ bool GraphicsColumn::isAllowedItemsValid(unsigned int allowedItems) const
     }
 
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsColumn::switchColumn()
+//-----------------------------------------------------------------------------
+void GraphicsColumn::switchColumn(QGraphicsItem* item, GraphicsColumn* column)
+{
+    // We have to switch the column and update this column's item positions
+    // without the moving item.
+    items_.removeAll(item);
+
+    QPointF newPos = column->mapFromScene(item->scenePos());
+    item->setParentItem(column);
+    item->setPos(newPos);
+
+    if (itemLayout_ != 0)
+    {
+        itemLayout_->updateItemPositions(items_, desc_.getWidth() / 2, MIN_Y_PLACEMENT);
+    }
+
+    setZValue(0.0);
+
+    // And call the new column's onMoveItem().
+    column->onMoveItem(item);
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsColumn::setItemLayout()
+//-----------------------------------------------------------------------------
+void GraphicsColumn::setItemLayout(QSharedPointer< IVGraphicsLayout<QGraphicsItem> > itemLayout)
+{
+    itemLayout_ = itemLayout;
 }

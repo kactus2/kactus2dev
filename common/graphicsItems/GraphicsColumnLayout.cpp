@@ -24,7 +24,8 @@ GraphicsColumnLayout::GraphicsColumnLayout(QGraphicsScene* scene)
       layout_(new HStackedLayout<GraphicsColumn>(0.0)),
       columns_(),
       layoutWidth_(0.0),
-      offsetY_(0)
+      offsetY_(0),
+      autoCreateColumnFunc_(0)
 {
 }
 
@@ -182,4 +183,41 @@ void GraphicsColumnLayout::updatePositions()
     {
         columns_[i]->updateItemPositions();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsColumnLayout::setAutoReorganize()
+//-----------------------------------------------------------------------------
+void GraphicsColumnLayout::setAutoReorganized(bool autoReorganized)
+{
+    autoReorganized_ = autoReorganized;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsColumnLayout::isAutoReorganized()
+//-----------------------------------------------------------------------------
+bool GraphicsColumnLayout::isAutoReorganized() const
+{
+    return autoReorganized_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsColumnLayout::autoCreateColumn()
+//-----------------------------------------------------------------------------
+int GraphicsColumnLayout::autoCreateColumn()
+{
+    Q_ASSERT(autoCreateColumnFunc_ != 0);
+
+    GraphicsColumn* column = autoCreateColumnFunc_(this, scene_);
+    addColumn(column, true);
+
+    return columns_.size() - 1;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsColumnLayout::setAutoCreateColumnFunction()
+//-----------------------------------------------------------------------------
+void GraphicsColumnLayout::setAutoCreateColumnFunction(AutoCreateColumnFunc func)
+{
+    autoCreateColumnFunc_ = func;
 }

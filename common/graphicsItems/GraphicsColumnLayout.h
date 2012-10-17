@@ -28,6 +28,8 @@ class GraphicsColumnLayout : public QObject
     Q_OBJECT
 
 public:
+    typedef GraphicsColumn* (*AutoCreateColumnFunc)(GraphicsColumnLayout*, QGraphicsScene*);
+
     /*!
      *  Constructor.
      *
@@ -91,6 +93,23 @@ public:
     void updateColumnPositions();
 
     /*!
+     *  Sets auto-reorganize on/off.
+     *
+     *      @param [in] autoReorganized If true, auto-reorganize is set on.
+     */
+    void setAutoReorganized(bool autoReorganized);
+
+    /*!
+     *  Sets the column auto-creation function.
+     */
+    void setAutoCreateColumnFunction(AutoCreateColumnFunc func);
+
+    /*!
+     *  Creates a column with default properties by calling the auto-create function.
+     */
+    int autoCreateColumn();
+
+    /*!
      *  Sets the drawing offset for the title bars.
      *
      *      @param [in] y The y coordinate offset.
@@ -107,11 +126,16 @@ public:
      */
     QList<GraphicsColumn*> const& getColumns() const;
 
+    /*!
+     *  Returns true if the layout is auto-reorganized.
+     */
+    bool isAutoReorganized() const;
+
 private:
     // Disable copying.
     GraphicsColumnLayout(GraphicsColumnLayout const& rhs);
     GraphicsColumnLayout& operator=(GraphicsColumnLayout const& rhs);
-    
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -130,6 +154,12 @@ private:
 
     //! The y offset.
     unsigned int offsetY_;
+
+    //! If true, the column layout can auto-reorganize (incl. growing and shrinking).
+    bool autoReorganized_;
+
+    //! The function pointer to the column auto-creation function.
+    AutoCreateColumnFunc autoCreateColumnFunc_;
 };
 
 //-----------------------------------------------------------------------------

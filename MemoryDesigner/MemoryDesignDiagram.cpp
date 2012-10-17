@@ -14,6 +14,7 @@
 #include "MemoryDesignWidget.h"
 #include "MemoryItem.h"
 #include "AddressSpaceItem.h"
+#include "MemoryColumn.h"
 
 #include <QPainter>
 #include <QGraphicsSceneMouseEvent>
@@ -85,19 +86,20 @@ void MemoryDesignDiagram::loadDesign(QSharedPointer<Design> design)
 {
     // Create the column layout.
     layout_ = QSharedPointer<GraphicsColumnLayout>(new GraphicsColumnLayout(this));
+    layout_->setAutoReorganized(true);
+    layout_->setAutoCreateColumnFunction(&MemoryDesignDiagram::createDefaultColumn);
 
     if (!design->getColumns().isEmpty())
     {
         QList<ColumnDesc> columns;
-        columns.append(ColumnDesc("Available Memory", COLUMN_CONTENT_COMPONENTS, 0, COLUMN_WIDTH));
+        columns.append(ColumnDesc("Available Memory", COLUMN_CONTENT_BUSES, 0, COLUMN_WIDTH));
         columns.append(ColumnDesc("Required Address Spaces", COLUMN_CONTENT_COMPONENTS, 0, COLUMN_WIDTH));
-
         design->setColumns(columns);
     }
 
     foreach(ColumnDesc const& desc, design->getColumns())
     {
-        GraphicsColumn* column = new GraphicsColumn(desc, layout_.data(), this);
+        GraphicsColumn* column = new MemoryColumn(desc, layout_.data(), this);
         layout_->addColumn(column, true);
     }
 
@@ -261,7 +263,7 @@ QSharedPointer<Design> MemoryDesignDiagram::createDesign(VLNV const& vlnv) const
 //-----------------------------------------------------------------------------
 void MemoryDesignDiagram::addColumn(ColumnDesc const& desc)
 {
-    GraphicsColumn* column = new GraphicsColumn(desc, layout_.data(), this);
+    GraphicsColumn* column = new MemoryColumn(desc, layout_.data(), this);
 
     QSharedPointer<QUndoCommand> cmd(new GraphicsColumnAddCommand(layout_.data(), column));
     getEditProvider().addCommand(cmd);
@@ -402,4 +404,13 @@ void MemoryDesignDiagram::drawForeground(QPainter* painter, const QRectF& rect)
             painter->drawLine(rect.left(), subsectionResizeBottom_ + 10, rect.right(), subsectionResizeBottom_ + 10);
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignDiagram::createDefaultColumn()
+//-----------------------------------------------------------------------------
+GraphicsColumn* MemoryDesignDiagram::createDefaultColumn(GraphicsColumnLayout* layout, QGraphicsScene* scene)
+{
+    ColumnDesc desc("Required Address Spaces", COLUMN_CONTENT_COMPONENTS, 0, COLUMN_WIDTH);
+    return new MemoryColumn(desc, layout, scene);
 }

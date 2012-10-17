@@ -138,7 +138,7 @@ public:
      *      @param [in] item       The item that has been moved.
      */
     void onMoveItem(QGraphicsItem* item);
-
+    
     /*!
      *  Called when an item is released from being moved by mouse.
      *
@@ -209,6 +209,14 @@ protected:
      */
     virtual QSharedPointer<QUndoCommand> createMoveUndoCommand();
 
+protected:
+    /*!
+     *  Changes the item layout.
+     *
+     *      @param [in] itemLayout The item layout to set.
+     */
+    void setItemLayout(QSharedPointer< IVGraphicsLayout<QGraphicsItem> > itemLayout);
+
 private:
     // Disable copying.
     GraphicsColumn(GraphicsColumn const& rhs);
@@ -225,6 +233,14 @@ private:
      *  Updates the name label.
      */
     void updateNameLabel();
+
+    /*!
+     *  Switches the given item to another column.
+     *
+     *      @param [in] item    The item to move.
+     *      @param [in] column  The destination column.
+     */
+    void switchColumn(QGraphicsItem* item, GraphicsColumn* column);
     
     //-----------------------------------------------------------------------------
     // Data.

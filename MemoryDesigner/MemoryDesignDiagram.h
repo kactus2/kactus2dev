@@ -157,6 +157,11 @@ private:
      */
     void loadDesign(QSharedPointer<Design> design);
 
+    /*!
+     *  Creates a default column object.
+     */
+    static GraphicsColumn* createDefaultColumn(GraphicsColumnLayout* layout, QGraphicsScene* scene);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
