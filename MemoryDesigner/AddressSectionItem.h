@@ -29,7 +29,7 @@ class AddressSectionItem : public QObject, public QGraphicsRectItem
     Q_OBJECT
 
 public:
-    enum { Type = GFX_TYPE_MEMORY_ITEM };
+    enum { Type = GFX_TYPE_ADDRESS_SECTION_ITEM };
 
     /*!
      *  Constructor.

@@ -27,6 +27,13 @@ namespace KactusColors
 
     //! Color used for allowed visualization in design diagrams.
     QColor const DIAGRAM_ALLOWED_INTERFACE = Qt::magenta; //QColor(0, 220, 0);
+
+    //! Colors used for component in different scenarios.
+    QColor const MISSING_COMPONENT = QColor(0xe8, 0xc5, 0xc5);
+    QColor const DRAFT_COMPONENT = QColor(217, 217, 217);
+    QColor const HW_BUS_COMPONENT = QColor(0xce,0xdf,0xff);
+    QColor const HW_COMPONENT = QColor(0xa5,0xc3,0xef);
+    QColor const SW_COMPONENT = QColor(0xc5,0xff, 0xab);
 }
 
 //-----------------------------------------------------------------------------

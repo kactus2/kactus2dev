@@ -12,6 +12,7 @@
 #include "MemoryItem.h"
 
 #include "AddressSectionItem.h"
+#include "MemoryColumn.h"
 
 #include <LibraryManager/vlnv.h>
 
@@ -39,13 +40,16 @@ MemoryItem::MemoryItem(LibraryInterface* libInterface, QSharedPointer<Component>
       nameLabel_(0),
       aubLabel_(),
       sectionLayout_(new VStackedLayout<AddressSectionItem>(SPACING)),
-      sections_()
+      sections_(),
+      oldColumn_(0),
+      oldPos_()
 {
     Q_ASSERT_X(component, "MemoryItem constructor",
         "Null component-pointer given as parameter");
 
     setFlag(ItemSendsGeometryChanges);
     setFlag(ItemIsSelectable);
+    setFlag(ItemIsMovable);
     setRect(QRectF(-WIDTH / 2, 0, NAME_COLUMN_WIDTH, 80));
 
     // Create the name label.
@@ -348,4 +352,74 @@ void MemoryItem::updateSize()
 
     nameLabel_->setTextWidth(getHeight());
     nameLabel_->setPos(-WIDTH / 2 + GridSize / 2, getHeight());
+}
+
+//-----------------------------------------------------------------------------
+// Function: mouseMoveEvent()
+//-----------------------------------------------------------------------------
+void MemoryItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
+{
+    // Discard movement if the diagram is protected.
+    if (static_cast<DesignDiagram*>(scene())->isProtected())
+    {
+        return;
+    }
+
+    QGraphicsRectItem::mouseMoveEvent(event);
+
+    if (oldColumn_ != 0)
+    {
+        setPos(parentItem()->mapFromScene(oldColumn_->mapToScene(pos())));
+
+        MemoryColumn* column = dynamic_cast<MemoryColumn*>(parentItem());
+        Q_ASSERT(column != 0);
+        column->onMoveItem(this);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: mouseReleaseEvent()
+//-----------------------------------------------------------------------------
+void MemoryItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
+{
+    QGraphicsRectItem::mouseReleaseEvent(event);
+    setZValue(0.0);
+
+    if (oldColumn_ != 0)
+    {
+        MemoryColumn* column = dynamic_cast<MemoryColumn*>(parentItem());
+        Q_ASSERT(column != 0);
+        column->onReleaseItem(this);
+
+        //         QSharedPointer<QUndoCommand> cmd;
+        // 
+        //         if (scenePos() != oldPos_)
+        //         {
+        //             cmd = QSharedPointer<QUndoCommand>(new ItemMoveCommand(this, oldPos_, oldColumn_));
+        //         }
+        //         else
+        //         {
+        //             cmd = QSharedPointer<QUndoCommand>(new QUndoCommand());
+        //         }
+        // 
+        //         // Add the undo command to the edit stack only if it has at least some real changes.
+        //         if (scenePos() != oldPos_)
+        //         {
+        //             static_cast<DesignDiagram*>(scene())->getEditProvider().addCommand(cmd, false);
+        //         }
+
+        oldColumn_ = 0;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: mousePressEvent()
+//-----------------------------------------------------------------------------
+void MemoryItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    QGraphicsRectItem::mousePressEvent(event);
+    setZValue(1001.0);
+
+    oldPos_ = scenePos();
+    oldColumn_ = dynamic_cast<MemoryColumn*>(parentItem());
 }

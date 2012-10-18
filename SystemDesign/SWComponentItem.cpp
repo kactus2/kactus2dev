@@ -27,6 +27,7 @@
 #include <common/graphicsItems/IGraphicsItemStack.h>
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
 #include <common/GenericEditProvider.h>
+#include <common/KactusColors.h>
 
 #include <QBrush>
 #include <QUndoCommand>
@@ -217,16 +218,16 @@ void SWComponentItem::updateComponent()
     {
         if (!getLibraryInterface()->contains(*vlnv))
         {
-            setBrush(QBrush(QColor(0xe8, 0xc5, 0xc5)));
+            setBrush(QBrush(KactusColors::MISSING_COMPONENT));
         }
         else
         {
-            setBrush(QBrush(QColor(0xce,0xdf,0xff)));
+            setBrush(QBrush(KactusColors::SW_COMPONENT));
         }
     }
     else
     {
-        setBrush(QBrush(QColor(217, 217, 217)));
+        setBrush(QBrush(KactusColors::DRAFT_COMPONENT));
     }
 
     // Create a hierarchy icon if the component is a hierarchical one.

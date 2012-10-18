@@ -16,6 +16,7 @@
 
 #include <common/GenericEditProvider.h>
 #include <common/diagramgrid.h>
+#include <common/KactusColors.h>
 #include <common/layouts/VCollisionLayout.h>
 
 #include <AdHocEditor/AdHocEditor.h>
@@ -429,20 +430,20 @@ void HWComponentItem::updateComponent()
     {
         if (!getLibraryInterface()->contains(*vlnv))
         {
-            setBrush(QBrush(QColor(0xe8, 0xc5, 0xc5)));
+            setBrush(QBrush(KactusColors::MISSING_COMPONENT));
         }
         else if (componentModel()->isBus())
         {
-            setBrush(QBrush(QColor(0xce,0xdf,0xff))); 
+            setBrush(QBrush(KactusColors::HW_BUS_COMPONENT)); 
         }
         else
         {
-            setBrush(QBrush(QColor(0xa5,0xc3,0xef)));
+            setBrush(QBrush(KactusColors::HW_COMPONENT));
         }
     }
     else
     {
-        setBrush(QBrush(QColor(217, 217, 217)));
+        setBrush(QBrush(KactusColors::DRAFT_COMPONENT));
     }
 
     // Create a hierarchy icon if the component is a hierarchical one.

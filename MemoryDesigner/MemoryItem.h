@@ -26,6 +26,7 @@ class MemoryMap;
 class LibraryInterface;
 class IGraphicsItemStack;
 class AddressSectionItem;
+class MemoryColumn;
 
 //-----------------------------------------------------------------------------
 //! MemoryItem class.
@@ -150,6 +151,15 @@ signals:
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
+    // Called when the user presses the mouse button.
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
+
+    //! Called when the user moves the column with the mouse.
+    void mouseMoveEvent(QGraphicsSceneMouseEvent* event);
+
+    //! Called when the user release the mouse.
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
+
     /*!
      *  Updates the name label with the given text.
      *
@@ -207,6 +217,10 @@ private:
 
     //! The address sections for the address blocks.
     QList<AddressSectionItem*> sections_;
+
+    //! The old column from where the mouse drag event began.
+    MemoryColumn* oldColumn_;
+    QPointF oldPos_;
 };
 
 //-----------------------------------------------------------------------------

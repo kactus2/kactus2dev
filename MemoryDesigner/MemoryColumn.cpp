@@ -17,6 +17,7 @@
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/layouts/VStaticLayout.h>
+#include <common/layouts/VStackedLayout.h>
 
 #include <models/component.h>
 
@@ -26,7 +27,14 @@
 MemoryColumn::MemoryColumn(ColumnDesc const& desc, GraphicsColumnLayout* layout, QGraphicsScene* scene)
     : GraphicsColumn(desc, layout, scene)
 {
-    setItemLayout(QSharedPointer< IVGraphicsLayout<QGraphicsItem> >(new VStaticLayout<QGraphicsItem>(10.0)));
+    if (desc.getContentType() == COLUMN_CONTENT_BUSES)
+    {
+        setItemLayout(QSharedPointer< IVGraphicsLayout<QGraphicsItem> >(new VStackedLayout<QGraphicsItem>(10.0)));
+    }
+    else
+    {
+        setItemLayout(QSharedPointer< IVGraphicsLayout<QGraphicsItem> >(new VStaticLayout<QGraphicsItem>(10.0)));
+    }
 }
 
 //-----------------------------------------------------------------------------
