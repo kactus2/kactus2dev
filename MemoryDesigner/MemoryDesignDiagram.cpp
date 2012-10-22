@@ -404,6 +404,16 @@ void MemoryDesignDiagram::drawForeground(QPainter* painter, const QRectF& rect)
             painter->drawLine(rect.left(), subsectionResizeBottom_ + 10, rect.right(), subsectionResizeBottom_ + 10);
         }
     }
+
+    foreach (QGraphicsItem* item, selectedItems())
+    {
+        MemoryBaseItem* baseItem = dynamic_cast<MemoryBaseItem*>(item);
+
+        if (baseItem != 0)
+        {
+            baseItem->drawGuides(painter, rect);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

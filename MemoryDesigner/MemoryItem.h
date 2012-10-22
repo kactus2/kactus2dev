@@ -12,6 +12,8 @@
 #ifndef MEMORYITEM_H
 #define MEMORYITEM_H
 
+#include "MemoryBaseItem.h"
+
 #include <common/diagramgrid.h>
 #include <common/graphicsItems/GraphicsItemTypes.h>
 #include <common/graphicsItems/IGraphicsItemStack.h>
@@ -31,7 +33,7 @@ class MemoryColumn;
 //-----------------------------------------------------------------------------
 //! MemoryItem class.
 //-----------------------------------------------------------------------------
-class MemoryItem : public QObject, public QGraphicsRectItem, public IGraphicsItemStack
+class MemoryItem : public MemoryBaseItem, public IGraphicsItemStack
 {
     Q_OBJECT 
 
@@ -47,7 +49,7 @@ public:
      *      @param [in] parent          The parent graphics item.
      */
     MemoryItem(LibraryInterface* libInterface, QSharedPointer<Component> component,
-                  QSharedPointer<MemoryMap> memoryMap, QGraphicsItem *parent = 0);
+               QSharedPointer<MemoryMap> memoryMap, QGraphicsItem *parent = 0);
 
 	/*!
      *  Destructor.
@@ -58,6 +60,14 @@ public:
      *  Updates the component item to reflect the current state of the component model.
      */
     virtual void updateVisuals();
+
+    /*!
+     *  Draws address guide lines.
+     *
+     *      @param [in] painter  The painter for drawing.
+     *      @param [in] rect     The visible rectangle area where to draw the lines.
+     */
+    virtual void drawGuides(QPainter* painter, QRectF const& rect) const;
 
     /*!
      *  Returns the actual memory map.
@@ -140,13 +150,6 @@ public:
      *  Returns the content type.
      */
     ColumnContentType getContentType() const;
-
-signals:
-    //! Sends an error message to the user.
-    void errorMessage(const QString& errorMessage) const;
-
-	//! \brief Emitted right before this item is destroyed.
-	void destroyed(MemoryItem* comp);
 
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);

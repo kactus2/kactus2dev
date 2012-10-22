@@ -31,18 +31,17 @@
 //-----------------------------------------------------------------------------
 AddressSectionItem::AddressSectionItem(QString const& name, unsigned int startAddress,
                                        unsigned int range, QGraphicsItem* parent)
-    : QGraphicsRectItem(QRectF(-WIDTH / 2, 0, WIDTH, DEFAULT_SECTION_HEIGHT), parent),
+    : MemoryBaseItem(parent),
       name_(name),
       startAddress_(startAddress),
       range_(range),
       nameLabel_(new QGraphicsTextItem(this)),
       resizeIndex_(-1)
 {
+    setRect(-WIDTH / 2, 0, WIDTH, DEFAULT_SECTION_HEIGHT);
     setFlag(ItemSendsGeometryChanges);
     setFlag(ItemIsSelectable);
     setAcceptHoverEvents(true);
-
-    setBrush(QBrush(QColor(0xa5,0xc3,0xef)));
 
     QFont font = nameLabel_->font();
     font.setWeight(QFont::Bold);
@@ -395,7 +394,33 @@ void AddressSectionItem::onSubsectionStartAddressEdited(AddressSubsection* subse
             {
                 subsections_.at(i + 1)->setMinStartAddress(subsection->getStartAddress() + 1);
             }
+
             break;
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSectionItem::drawGuides()
+//-----------------------------------------------------------------------------
+void AddressSectionItem::drawGuides(QPainter* painter, QRectF const& rect) const
+{
+    QPen pen(Qt::black, 0);
+    pen.setStyle(Qt::DashLine);
+    painter->setPen(pen);
+
+    foreach (QSharedPointer<AddressSubsection const> subsection, subsections_)
+    {
+        painter->drawLine(rect.left(), scenePos().y() + subsection->getTop(),
+                          rect.right(), scenePos().y() + subsection->getTop());
+
+        painter->drawLine(rect.left(), scenePos().y() + subsection->getBottom(),
+                          rect.right(), scenePos().y() + subsection->getBottom());
+    }
+
+//     painter->drawLine(rect.left(), sceneBoundingRect().top(),
+//                       rect.right(), sceneBoundingRect().top());
+// 
+//     painter->drawLine(rect.left(), sceneBoundingRect().bottom(),
+//                       rect.right(), sceneBoundingRect().bottom());
 }

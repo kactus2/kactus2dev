@@ -36,13 +36,13 @@
 #include <QDebug>
 
 HWComponentItem::HWComponentItem(LibraryInterface* lh_, 
-								   QSharedPointer<Component> component,
-                                   const QString &instanceName,
-								   const QString &displayName,
-                                   const QString &description,
-                                   const QMap<QString, QString> &configurableElementValues,
-                                   QMap<QString, bool> const& portAdHocVisibilities,
-                                   QGraphicsItem *parent)
+								 QSharedPointer<Component> component,
+                                 const QString &instanceName,
+								 const QString &displayName,
+                                 const QString &description,
+                                 const QMap<QString, QString> &configurableElementValues,
+                                 QMap<QString, bool> const& portAdHocVisibilities,
+                                 QGraphicsItem *parent)
     : ComponentItem(QRectF(-GridSize * 8, 0, GridSize * 8 * 2, 40),
                     lh_,
                     component,

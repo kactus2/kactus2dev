@@ -18,6 +18,7 @@
 
 #include <common/utils.h>
 #include <common/DesignDiagram.h>
+#include <common/KactusColors.h>
 #include <common/layouts/VStackedLayout.h>
 
 #include <models/component.h>
@@ -33,7 +34,7 @@
 //-----------------------------------------------------------------------------
 MemoryItem::MemoryItem(LibraryInterface* libInterface, QSharedPointer<Component> component,
                              QSharedPointer<MemoryMap> memoryMap, QGraphicsItem *parent)
-    : QGraphicsRectItem(parent),
+    : MemoryBaseItem(parent),
       libInterface_(libInterface),
       component_(component),
       memoryMap_(memoryMap),
@@ -82,6 +83,7 @@ MemoryItem::MemoryItem(LibraryInterface* libInterface, QSharedPointer<Component>
             unsigned int range = Utils::str2Int(block->getRange());
 
             AddressSectionItem* section = new AddressSectionItem(block->getName(), startAddress, range, this);
+            section->setBrush(QBrush(KactusColors::MEMORY_BLOCK));
             section->setPos(0.0, getHeight());
             addItem(section);
         }
@@ -109,7 +111,7 @@ void MemoryItem::updateVisuals()
 //     QString toolTipText = "";
 //     setToolTip(toolTipText);
 
-    setBrush(QBrush(QColor(0xc5,0xff, 0xab)));
+    setBrush(QBrush(KactusColors::MEMORY_MAP));
 }
 
 //-----------------------------------------------------------------------------
@@ -422,4 +424,15 @@ void MemoryItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
     oldPos_ = scenePos();
     oldColumn_ = dynamic_cast<MemoryColumn*>(parentItem());
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::drawGuides()
+//-----------------------------------------------------------------------------
+void MemoryItem::drawGuides(QPainter* painter, QRectF const& rect) const
+{
+    foreach (AddressSectionItem* section, sections_)
+    {
+        section->drawGuides(painter, rect);
+    }
 }

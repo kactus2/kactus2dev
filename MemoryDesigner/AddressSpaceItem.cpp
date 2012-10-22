@@ -18,6 +18,7 @@
 
 #include <common/utils.h>
 #include <common/DesignDiagram.h>
+#include <common/KactusColors.h>
 #include <common/GenericEditProvider.h>
 #include <common/layouts/VStackedLayout.h>
 
@@ -29,12 +30,23 @@
 #include <QTextDocument>
 #include <QPainter>
 
+namespace
+{
+    /*!
+     *  Sorting operator for sorting segments to ascending address offset order.
+     */
+    bool segmentSortOp(QSharedPointer<Segment const> lhs, QSharedPointer<Segment const> rhs)
+    {
+        return Utils::str2Int(lhs->getAddressOffset()) < Utils::str2Int(rhs->getAddressOffset());
+    }
+}
+
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceItem()
 //-----------------------------------------------------------------------------
 AddressSpaceItem::AddressSpaceItem(LibraryInterface* libInterface, QSharedPointer<Component> component,
                                    QSharedPointer<AddressSpace> addressSpace, QGraphicsItem *parent)
-    : QGraphicsRectItem(parent),
+    : MemoryBaseItem(parent),
       libInterface_(libInterface),
       component_(component),
       addressSpace_(addressSpace),
@@ -71,17 +83,35 @@ AddressSpaceItem::AddressSpaceItem(LibraryInterface* libInterface, QSharedPointe
                        QString("</center>"));
 
     // Parse segments and add a section for each of them.
-    foreach (QSharedPointer<Segment> segment, addressSpace->getSegments())
-    {
-        if (segment != 0)
-        {
-            unsigned int startAddress = Utils::str2Int(segment->getAddressOffset());
-            unsigned int range = Utils::str2Int(segment->getRange());
+    // Unsegmented parts are also visualized.
+    unsigned int curAddress = 0;
 
-            AddressSectionItem* section = new AddressSectionItem(segment->getName(), startAddress, range, this);
+    // TODO: Sort address spaces based on their start address.
+    QList< QSharedPointer<Segment> > segments = addressSpace_->getSegments();
+    qSort(segments.begin(), segments.end(), &segmentSortOp);
+
+    foreach (QSharedPointer<Segment> segment, segments)
+    {
+        unsigned int startAddress = Utils::str2Int(segment->getAddressOffset());
+        unsigned int range = Utils::str2Int(segment->getRange());
+
+        // Check if there is unsegmented area before the segment.
+        if (startAddress > curAddress)
+        {
+            AddressSectionItem* section = new AddressSectionItem(tr("unsegmented"), curAddress, 
+                                                                 startAddress - curAddress, this);
+            section->setBrush(QBrush(KactusColors::ADDRESS_SEGMENT_UNSEGMENTED));
             section->setPos(0.0, getHeight());
             addItem(section);
         }
+
+        // Add the actual segment section.
+        AddressSectionItem* section = new AddressSectionItem(segment->getName(), startAddress, range, this);
+        section->setBrush(QBrush(KactusColors::ADDRESS_SEGMENT));
+        section->setPos(0.0, getHeight());
+        addItem(section);
+
+        curAddress = startAddress + range;
     }
 
     updateNameLabel(component->getVlnv()->getName() + "<br>" + addressSpace->getName());
@@ -106,7 +136,7 @@ void AddressSpaceItem::updateVisuals()
     //     QString toolTipText = "";
     //     setToolTip(toolTipText);
 
-    setBrush(QBrush(QColor(0xc5,0xff, 0xab)));
+    setBrush(QBrush(KactusColors::ADDRESS_SPACE));
 }
 
 //-----------------------------------------------------------------------------
@@ -419,4 +449,15 @@ void AddressSpaceItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
     oldPos_ = scenePos();
     oldColumn_ = dynamic_cast<MemoryColumn*>(parentItem());
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceItem::drawGuides()
+//-----------------------------------------------------------------------------
+void AddressSpaceItem::drawGuides(QPainter* painter, QRectF const& rect) const
+{
+    foreach (AddressSectionItem* section, sections_)
+    {
+        section->drawGuides(painter, rect);
+    }
 }

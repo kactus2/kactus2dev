@@ -12,6 +12,8 @@
 #ifndef ADDRESSSECTIONITEM_H
 #define ADDRESSSECTIONITEM_H
 
+#include "MemoryBaseItem.h"
+
 #include <common/graphicsItems/GraphicsItemTypes.h>
 
 #include <QGraphicsRectItem>
@@ -24,7 +26,7 @@ class AddressSubsection;
 //-----------------------------------------------------------------------------
 //! Address block section class.
 //-----------------------------------------------------------------------------
-class AddressSectionItem : public QObject, public QGraphicsRectItem
+class AddressSectionItem : public MemoryBaseItem
 {
     Q_OBJECT
 
@@ -46,6 +48,14 @@ public:
      *  Destructor.
      */
     ~AddressSectionItem();
+
+    /*!
+     *  Draws address guide lines.
+     *
+     *      @param [in] painter  The painter for drawing.
+     *      @param [in] rect     The visible rectangle area where to draw the lines.
+     */
+    virtual void drawGuides(QPainter* painter, QRectF const& rect) const;
 
     int type() const { return Type; }
 

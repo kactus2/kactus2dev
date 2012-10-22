@@ -7,6 +7,7 @@
 
 #include "segment.h"
 
+#include <common/utils.h>
 
 Segment::Segment( QDomNode &segmentNode ):
 nameGroup_(segmentNode),

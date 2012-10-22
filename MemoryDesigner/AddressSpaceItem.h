@@ -12,6 +12,8 @@
 #ifndef ADDRESSSPACEITEM_H
 #define ADDRESSSPACEITEM_H
 
+#include "MemoryBaseItem.h"
+
 #include <common/diagramgrid.h>
 #include <common/graphicsItems/GraphicsItemTypes.h>
 #include <common/graphicsItems/IGraphicsItemStack.h>
@@ -31,7 +33,7 @@ class MemoryColumn;
 //-----------------------------------------------------------------------------
 //! Graphics item for visualizing address spaces in the memory designer.
 //-----------------------------------------------------------------------------
-class AddressSpaceItem : public QObject, public QGraphicsRectItem, public IGraphicsItemStack
+class AddressSpaceItem : public MemoryBaseItem, public IGraphicsItemStack
 {
     Q_OBJECT 
 
@@ -58,6 +60,14 @@ public:
      *  Updates the component item to reflect the current state of the component model.
      */
     virtual void updateVisuals();
+
+    /*!
+     *  Draws address guide lines.
+     *
+     *      @param [in] painter  The painter for drawing.
+     *      @param [in] rect     The visible rectangle area where to draw the lines.
+     */
+    virtual void drawGuides(QPainter* painter, QRectF const& rect) const;
 
     /*!
      *  Returns the actual address space.
