@@ -12,6 +12,7 @@
 
 class MemoryMapsEditor;
 class ComponentEditorTreeModel;
+class MemoryMapsVisualizer;
 
 /*! \brief The Memory maps-item in the component navigation tree.
  *
@@ -68,6 +69,12 @@ public:
 	*/
 	virtual void createChild(int index);
 
+	/*! \brief Get pointer to the visualizer of memory maps.
+	 * 
+	 * \return Pointer to the visualizer to use for memory maps.
+	*/
+	virtual ItemVisualizer* visualizer();
+
 private:
 	//! \brief No copying
 	ComponentEditorMemMapsItem(const ComponentEditorMemMapsItem& other);
@@ -80,6 +87,9 @@ private:
 
 	//! \brief The editor to manage the memory maps.
 	MemoryMapsEditor* editor_;
+
+	//! \brief The visualizer to display the memory maps
+	MemoryMapsVisualizer* visualizer_;
 };
 
 #endif // COMPONENTEDITORMEMMAPSITEM_H

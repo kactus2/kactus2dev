@@ -27,7 +27,7 @@ public:
 	 * \param parent Pointer to the parent of the visualizer.
 	 * 
 	*/
-	ItemVisualizer(QWidget* parent = 0);
+	ItemVisualizer(QSharedPointer<Component> component, QWidget* parent = 0);
 	
 	//! \brief The destructor
 	virtual ~ItemVisualizer();

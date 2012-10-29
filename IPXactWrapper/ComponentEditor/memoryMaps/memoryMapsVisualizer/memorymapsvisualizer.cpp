@@ -6,23 +6,23 @@
  */
 
 #include "memorymapsvisualizer.h"
+#include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapview.h>
+#include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapscene.h>
 
 #include <QHBoxLayout>
 
-MemoryMapsVisualizer::MemoryMapsVisualizer(QWidget *parent):
-QWidget(parent),
-view_(this),
-scene_(this) {
+MemoryMapsVisualizer::MemoryMapsVisualizer(QSharedPointer<Component> component, QWidget *parent):
+ItemVisualizer(component, parent),
+view_(new MemoryMapView(this)),
+scene_(new MemoryMapScene(this)) {
 
 	QHBoxLayout* layout = new QHBoxLayout(this);
-	layout->addWidget(&view_);
+	layout->addWidget(view_);
+	layout->setContentsMargins(0, 0, 0, 0);
 
-	view_.setScene(&scene_);
+	scene_->setMemoryMaps(component_->getMemoryMaps());
+	view_->setScene(scene_);
 }
 
 MemoryMapsVisualizer::~MemoryMapsVisualizer() {
-}
-
-void MemoryMapsVisualizer::setMemoryMaps( QList<QSharedPointer<MemoryMap> >& memoryMaps ) {
-	scene_.setMemoryMaps(memoryMaps);
 }

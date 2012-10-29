@@ -10,8 +10,6 @@
 
 #include <QRectF>
 
-#include <QDebug>
-
 MemoryMapScene::MemoryMapScene(QObject *parent):
 QGraphicsScene(parent),
 memoryMaps_() {
@@ -28,10 +26,13 @@ void MemoryMapScene::setMemoryMaps( QList<QSharedPointer<MemoryMap> >& memoryMap
 	clear();
 
 	MemoryMapGraphItem* previous = 0;
-	foreach (QSharedPointer<MemoryMap> memMap, memoryMaps) {
+	foreach (QSharedPointer<MemoryMap> memMap, memoryMaps_) {
 
 		MemoryMapGraphItem* item = new MemoryMapGraphItem(memMap);
 		addItem(item);
+
+		// tell item to update itself and its children
+		item->refresh();
 
 		// if there is a previous then add the new after it
 		if (previous) {

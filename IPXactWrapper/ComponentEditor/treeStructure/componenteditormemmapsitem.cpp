@@ -9,6 +9,7 @@
 #include "componenteditormemmapitem.h"
 #include <IPXactWrapper/ComponentEditor/treeStructure/componenteditortreemodel.h>
 #include <IPXactWrapper/ComponentEditor/memoryMaps/memorymapseditor.h>
+#include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 
 ComponentEditorMemMapsItem::ComponentEditorMemMapsItem( ComponentEditorTreeModel* model,
 													   LibraryInterface* libHandler,
@@ -16,7 +17,8 @@ ComponentEditorMemMapsItem::ComponentEditorMemMapsItem( ComponentEditorTreeModel
 													   ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
 memoryMaps_(component->getMemoryMaps()),
-editor_(new MemoryMapsEditor(component)) {
+editor_(new MemoryMapsEditor(component)),
+visualizer_(new MemoryMapsVisualizer(component)) {
 
 	setObjectName(tr("ComponentEditorMemMapsItem"));
 
@@ -38,12 +40,19 @@ editor_(new MemoryMapsEditor(component)) {
 		this, SIGNAL(helpUrlRequested(QString const&)));
 	connect(editor_, SIGNAL(selectBusInterface(const QString&)),
 		model, SLOT(onSelectBusInterface(const QString&)), Qt::UniqueConnection);
+
+	connect(visualizer_, SIGNAL(contentChanged()),
+		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 }
 
 ComponentEditorMemMapsItem::~ComponentEditorMemMapsItem() {
 	if (editor_) {
 		delete editor_;
 		editor_ = NULL;
+	}
+	if (visualizer_) {
+		delete visualizer_;
+		visualizer_ = NULL;
 	}
 }
 
@@ -67,4 +76,8 @@ void ComponentEditorMemMapsItem::createChild( int index ) {
 	QSharedPointer<ComponentEditorMemMapItem> memoryMapItem(
 		new ComponentEditorMemMapItem(memoryMaps_.at(index), model_, libHandler_, component_, this));	
 	childItems_.insert(index, memoryMapItem);
+}
+
+ItemVisualizer* ComponentEditorMemMapsItem::visualizer() {
+	return visualizer_;
 }
