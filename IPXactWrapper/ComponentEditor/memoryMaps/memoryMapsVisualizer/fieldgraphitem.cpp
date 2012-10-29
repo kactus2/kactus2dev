@@ -11,55 +11,29 @@
 #include <QColor>
 
 FieldGraphItem::FieldGraphItem( QSharedPointer<Field> field,
-							   QGraphicsItem* parent,
-							   int maxWidth):
-MemoryVisualizerItem(parent, maxWidth),
+							   QGraphicsItem* parent):
+MemoryVisualizationItem(parent),
 field_(field) {
-
-	int fieldWidth = field->getBitWidth();
-	setRect(0, 0, MemoryVisualizerItem::MIN_BIT_WIDTH * fieldWidth, 
-		MemoryVisualizerItem::ITEM_HEIGHT);
-
 	Q_ASSERT(field_);
-	setName(field_->getName());
 	setBrush(QBrush(QColor(40, 140, 255)));
-
-	setRightCornerText(QString::number(field_->getBitOffset()));
-	setLeftCornerText(QString::number(field_->getBitOffset() + field_->getBitWidth() - 1));
-
-	reorganizeChildren();
-}
-
-FieldGraphItem::FieldGraphItem( unsigned int leftBound, 
-							   unsigned int rightBound,
-							   QGraphicsItem* parent ):
-MemoryVisualizerItem(parent, leftBound),
-field_() {
-
-	int fieldWidth = leftBound - rightBound + 1;
-	setRect(0, 0, MemoryVisualizerItem::MIN_BIT_WIDTH * fieldWidth,
-		MemoryVisualizerItem::ITEM_HEIGHT);
-
-	setName(tr("undefined"));
-	setBrush(QBrush(QColor("lightgrey")));
-
-	setRightCornerText(QString::number(rightBound));
-	setLeftCornerText(QString::number(leftBound));
-
-	reorganizeChildren();
 }
 
 FieldGraphItem::~FieldGraphItem() {
 }
 
-void FieldGraphItem::reorganizeChildren() {
-	MemoryVisualizerItem::reorganizeChildren();
+void FieldGraphItem::refresh() {
+	setName(field_->getName());
+	// the size depends on how many bits the field contains
+	int fieldWidth = field_->getBitWidth();
+	setRect(0, 0, VisualizerItem::MIN_WIDTH * fieldWidth, VisualizerItem::ITEM_HEIGHT);
+	reorganizeChildren();
 }
 
 int FieldGraphItem::getOffset() const {
 	return field_->getBitOffset();
 }
 
-int FieldGraphItem::getWidth() const {
+int FieldGraphItem::getBitWidth() const {
 	return field_->getBitWidth();
 }
+

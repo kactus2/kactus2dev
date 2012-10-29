@@ -8,7 +8,7 @@
 #ifndef FIELDGRAPHITEM_H
 #define FIELDGRAPHITEM_H
 
-#include "memoryvisualizeritem.h"
+#include <IPXactWrapper/ComponentEditor/visualization/memoryvisualizationitem.h>
 #include <models/field.h>
 
 #include <QSharedPointer>
@@ -16,7 +16,7 @@
 /*! \brief The graphical item that represents a bit field within a register.
  *
  */
-class FieldGraphItem : public MemoryVisualizerItem {
+class FieldGraphItem : public MemoryVisualizationItem {
 	Q_OBJECT
 
 public:
@@ -25,45 +25,28 @@ public:
 	 *
 	 * \param field Pointer to the field to visualize.
 	 * \param parent Pointer to the parent graph item.
-	 * \param maxWidth The maximum width of the field.
 	 *
 	*/
 	FieldGraphItem(QSharedPointer<Field> field, 
-		QGraphicsItem* parent,
-		int maxWidth);
-	
-	/*! \brief The constructor for an undefined bit field.
-	 *
-	 * \param leftBound Left bound of the undefined field.
-	 * \param rightBound Right bound of the undefined field.
-	 * \param parent The pointer to the register that owns this field.
-	 *
-	*/
-	FieldGraphItem(unsigned int leftBound, 
-		unsigned int rightBound, 
 		QGraphicsItem* parent);
 
 	//! \brief The destructor
 	virtual ~FieldGraphItem();
 
-	/*! \brief Get the offset of the field from the beginning of the register.
+	//! \brief Refresh the item and sub-items.
+	virtual void refresh();
+
+	/*! \brief Get the offset of the item. 
 	 *
-	 * \return The offset of the field.
+	 * \return int The offset of the item from the parent item's base address.
 	*/
 	virtual int getOffset() const;
 
-	/*! \brief Get the width of the field.
-	 *
-	 * \return The number of the bits this field contains.
+	/*! \brief Get the bit width of the item.
+	 * 
+	 * \return The bit width of the item.
 	*/
-	virtual int getWidth() const;
-
-protected:
-
-	/*! \brief Set new positions for child items.
-	 *
-	*/
-	virtual void reorganizeChildren();
+	virtual int getBitWidth() const;
 
 private:
 

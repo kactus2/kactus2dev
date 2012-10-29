@@ -6,68 +6,58 @@
  */
 
 #include "memorymapgraphitem.h"
+#include "addressblockgraphitem.h"
 
 #include <models/memorymapitem.h>
 #include <models/addressblock.h>
 
 #include <QBrush>
 #include <QColor>
-#include <QPointF>
-
-#include <QDebug>
 
 MemoryMapGraphItem::MemoryMapGraphItem(QSharedPointer<MemoryMap> memoryMap,
 									   QGraphicsItem* parent):
-MemoryVisualizerItem(parent),
-memoryMap_(memoryMap),
-adBlocks_() {
+MemoryVisualizationItem(parent),
+memoryMap_(memoryMap) {
 
 	Q_ASSERT(memoryMap_);
-
-	setName(memoryMap_->getName());
-
 	setBrush(QBrush(QColor(100, 200, 255)));
-
-	// find all sub-items of the memory map
-	QList<QSharedPointer<MemoryMapItem> >* memItems = memoryMap_->getItemsPointer();
-	foreach (QSharedPointer<MemoryMapItem> item, *memItems) {
-
-		// if the sub item is an address block then create a child graph item for it
-		QSharedPointer<AddressBlock> addrBlock = item.dynamicCast<AddressBlock>();
-		if (addrBlock) {
-
-			QSharedPointer<AddressBlockGraphItem> adBlock(new AddressBlockGraphItem(addrBlock, this));
-			adBlocks_.append(adBlock);
-		}
-	}
-
-	// set the positions for the sub items
-	reorganizeChildren();
 }
 
 MemoryMapGraphItem::~MemoryMapGraphItem() {
 }
 
-void MemoryMapGraphItem::reorganizeChildren() {
+void MemoryMapGraphItem::refresh() {
+	
+	setName(memoryMap_->getName());
 
-	qreal width = MemoryVisualizerItem::itemTotalWidth();
+	QList<QSharedPointer<MemoryMapItem> >& memItems = memoryMap_->getItems();
+	foreach (QSharedPointer<MemoryMapItem> item, memItems) {
 
-	QSharedPointer<AddressBlockGraphItem> previous;
-	foreach (QSharedPointer<AddressBlockGraphItem> addrBlock, adBlocks_) {
+		// if the sub item is an address block then create a child graph item for it
+		QSharedPointer<AddressBlock> addrBlock = item.dynamicCast<AddressBlock>();
+		if (addrBlock) {
+			// create the item
+			AddressBlockGraphItem* adGraphItem = new AddressBlockGraphItem(addrBlock, this);
+			
+			// get the offset of the item
+			int offset = adGraphItem->getOffset();
 
-		addrBlock->setWidth(width);
+			// make sure the items are in correct order for the offset
+			childItems_.insert(offset, adGraphItem);
 
-		if (previous) {
-			addrBlock->setPos(0, mapRectFromItem(previous.data(), previous->itemTotalRect()).bottom());
+			// tell child to check its children
+			adGraphItem->refresh();
 		}
-		else {
-			addrBlock->setPos(0, rect().bottom());
-		}
-
-		previous = addrBlock;
 	}
 
-	setRect(0, 0, width, MemoryVisualizerItem::ITEM_HEIGHT);
-	MemoryVisualizerItem::reorganizeChildren();
+	// set the positions for the children
+	MemoryVisualizationItem::reorganizeChildren();
 }
 
+int MemoryMapGraphItem::getOffset() const {
+	return 0;
+}
+
+int MemoryMapGraphItem::getBitWidth() const {
+	return 0;
+}

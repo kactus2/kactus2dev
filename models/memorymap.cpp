@@ -220,10 +220,6 @@ void MemoryMap::setItems(const QList<QSharedPointer<MemoryMapItem> > &items) {
 	items_ = items;
 }
 
-QList<QSharedPointer<MemoryMapItem> >* MemoryMap::getItemsPointer() {
-	return &items_;
-}
-
 QString MemoryMap::getDisplayName() const {
 	return nameGroup_.displayName_;
 }

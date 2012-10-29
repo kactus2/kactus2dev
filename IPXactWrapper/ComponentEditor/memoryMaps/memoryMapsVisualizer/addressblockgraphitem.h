@@ -8,19 +8,16 @@
 #ifndef ADDRESSBLOCKGRAPHITEM_H
 #define ADDRESSBLOCKGRAPHITEM_H
 
-#include "memoryvisualizeritem.h"
-#include "registergraphitem.h"
+#include <IPXactWrapper/ComponentEditor/visualization/memoryvisualizationitem.h>
 #include <models/addressblock.h>
 
 #include <QGraphicsItem>
 #include <QSharedPointer>
-#include <QList>
-#include <QRectF>
 
 /*! \brief The graphical item that represents one address block.
  *
  */
-class AddressBlockGraphItem : public MemoryVisualizerItem {
+class AddressBlockGraphItem : public MemoryVisualizationItem {
 	Q_OBJECT
 
 public:
@@ -37,29 +34,20 @@ public:
 	//! \brief The destructor
 	virtual ~AddressBlockGraphItem();
 
-	/*! \brief Set the width for the item.
-	 *
-	 * \param width The new width of the item.
-	 *
-	*/
-	virtual void setWidth(qreal width);
+	//! \brief Refresh the item and sub-items.
+	virtual void refresh();
 
-	/*! \brief Get the offset of the address block.
+	/*! \brief Get the offset of the item. 
 	 *
-	 * \return The offset from the base of the containing memory map.
+	 * \return int The offset of the item from the parent item's base address.
 	*/
 	virtual int getOffset() const;
 
-	/*! \brief Get the width of the address block.
-	 *
-	 * \return The width of a row in the address block.
+	/*! \brief Get the bit width of the item.
+	 * 
+	 * \return The bit width of the item.
 	*/
-	virtual int getWidth() const;
-
-protected:
-
-	//! \brief Set new positions for the register graph items
-	virtual void reorganizeChildren();
+	virtual int getBitWidth() const;
 
 private:
 	
@@ -71,9 +59,6 @@ private:
 
 	//! \brief Pointer to the address block being displayed.
 	QSharedPointer<AddressBlock> addrBlock_;
-
-	//! \brief Contains the registers of the address block.
-	QList<QSharedPointer<RegisterGraphItem> > registers_;
 };
 
 #endif // ADDRESSBLOCKGRAPHITEM_H

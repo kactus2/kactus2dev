@@ -8,18 +8,16 @@
 #ifndef MEMORYMAPGRAPHITEM_H
 #define MEMORYMAPGRAPHITEM_H
 
-#include "memoryvisualizeritem.h"
-#include "addressblockgraphitem.h"
+#include <IPXactWrapper/ComponentEditor/visualization/memoryvisualizationitem.h>
 #include <models/memorymap.h>
 
 #include <QSharedPointer>
-#include <QList>
-#include <QRectF>
+#include <QGraphicsItem>
 
 /*! \brief The graphical item that represents one memory map.
  *
  */
-class MemoryMapGraphItem : public MemoryVisualizerItem {
+class MemoryMapGraphItem : public MemoryVisualizationItem {
 	Q_OBJECT
 
 public:
@@ -35,10 +33,20 @@ public:
 	//! \brief The destructor
 	virtual ~MemoryMapGraphItem();
 
-protected:
+	//! \brief Refresh the item and sub-items.
+	virtual void refresh();
 
-	//! \brief Set new positions for the address block graph items.
-	virtual void reorganizeChildren();
+	/*! \brief Get the offset of the item. 
+	 *
+	 * \return int The offset of the item from the parent item's base address.
+	*/
+	virtual int getOffset() const;
+
+	/*! \brief Get the bit width of the item.
+	 * 
+	 * \return The bit width of the item.
+	*/
+	virtual int getBitWidth() const;
 
 private:
 	
@@ -50,9 +58,6 @@ private:
 
 	//! \brief Pointer to the memory map that is shown
 	QSharedPointer<MemoryMap> memoryMap_;
-
-	//! \brief Contains the graphical items for the address blocks.
-	QList<QSharedPointer<AddressBlockGraphItem> > adBlocks_;
 };
 
 #endif // MEMORYMAPGRAPHITEM_H
