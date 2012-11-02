@@ -25,6 +25,7 @@ visualizer_(new MemoryMapsVisualizer(component)) {
 	foreach (QSharedPointer<MemoryMap> memoryMap, memoryMaps_) {
 		QSharedPointer<ComponentEditorMemMapItem> memoryMapItem(new ComponentEditorMemMapItem(
 			memoryMap, model, libHandler, component, this));
+		memoryMapItem->setVisualizer(visualizer_);
 		childItems_.append(memoryMapItem);
 	}
 

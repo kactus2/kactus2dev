@@ -8,6 +8,8 @@
 #ifndef GRAPHICSEXPANDCOLLAPSEITEM_H
 #define GRAPHICSEXPANDCOLLAPSEITEM_H
 
+#include <common/graphicsItems/GraphicsItemTypes.h>
+
 #include <QGraphicsPixmapItem>
 #include <QObject>
 
@@ -19,10 +21,12 @@ class GraphicsExpandCollapseItem : public QObject, public QGraphicsPixmapItem {
 
 public:
 
-	//! \brief The length of one side of the rextangle.
+	//! \brief The length of one side of the rectangle.
 	enum Bounds {
 		SIDE = 10
 	};
+
+	enum { Type = GFX_TYPE_EXPAND_COLLAPSE_ITEM};
 
 	/*! \brief The constructor.
 	 *
@@ -52,6 +56,8 @@ public:
 	*/
 	virtual bool isCollapsed() const;
 
+	virtual int type() const;
+
 signals:
 
 	/*! \brief Emitted when the state of the item changes.
@@ -67,7 +73,7 @@ signals:
 protected:
 
 	//! Called when the user presses a mouse button.
-	void mousePressEvent(QGraphicsSceneMouseEvent *event);
+	 virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
 private:
 	

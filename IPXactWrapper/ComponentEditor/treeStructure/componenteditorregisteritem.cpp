@@ -7,6 +7,7 @@
 
 #include "componenteditorregisteritem.h"
 #include <IPXactWrapper/ComponentEditor/memoryMaps/registereditor.h>
+#include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 #include "componenteditorfielditem.h"
 
 #include <QFont>
@@ -20,7 +21,8 @@ ComponentEditorRegisterItem::ComponentEditorRegisterItem(QSharedPointer<Register
 ComponentEditorItem(model, libHandler, component, parent),
 reg_(reg),
 fields_(reg->getFields()),
-editor_(new RegisterEditor(reg, component)) {
+editor_(new RegisterEditor(reg, component)),
+visualizer_(NULL) {
 
 	setObjectName(tr("ComponentEditorRegisterItem"));
 
@@ -97,4 +99,12 @@ void ComponentEditorRegisterItem::onEditorChanged() {
 
 	// call the base class to update this and parent
 	ComponentEditorItem::onEditorChanged();
+}
+
+ItemVisualizer* ComponentEditorRegisterItem::visualizer() {
+	return visualizer_;
+}
+
+void ComponentEditorRegisterItem::setVisualizer( MemoryMapsVisualizer* visualizer ) {
+	visualizer_ = visualizer;
 }

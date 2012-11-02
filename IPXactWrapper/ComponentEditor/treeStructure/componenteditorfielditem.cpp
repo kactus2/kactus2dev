@@ -7,6 +7,7 @@
 
 #include "componenteditorfielditem.h"
 #include <IPXactWrapper/ComponentEditor/memoryMaps/fieldeditor.h>
+#include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 
 #include <QApplication>
 
@@ -17,7 +18,8 @@ ComponentEditorFieldItem::ComponentEditorFieldItem(QSharedPointer<Field> field,
 												   ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 field_(field),
-editor_(new FieldEditor(field, component)) {
+editor_(new FieldEditor(field, component)),
+visualizer_(NULL) {
 
 	Q_ASSERT(field_);
 
@@ -80,4 +82,12 @@ void ComponentEditorFieldItem::onEditorChanged() {
 
 	// call the base class to update this and parent
 	ComponentEditorItem::onEditorChanged();
+}
+
+ItemVisualizer* ComponentEditorFieldItem::visualizer() {
+	return visualizer_;
+}
+
+void ComponentEditorFieldItem::setVisualizer( MemoryMapsVisualizer* visualizer ) {
+	visualizer_ = visualizer;
 }

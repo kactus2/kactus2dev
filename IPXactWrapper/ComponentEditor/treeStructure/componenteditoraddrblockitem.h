@@ -16,6 +16,7 @@
 #include <QSharedPointer>
 
 class AddressBlockEditor;
+class MemoryMapsVisualizer;
 
 /*! \brief The item for a single address block in component editor's navigation tree.
  *
@@ -87,6 +88,20 @@ public:
 	*/
 	virtual void createChild(int index);
 
+	/*! \brief Get pointer to the visualizer of this item.
+	 * 
+	 * 
+	 * \return Pointer to the visualizer to use for this item.
+	*/
+	virtual ItemVisualizer* visualizer();
+
+	/*! \brief Set the visualizer for this item.
+	 *
+	 * \param visualizer Pointer to the visualizer.
+	 *
+	*/
+	virtual void setVisualizer(MemoryMapsVisualizer* visualizer);
+
 protected slots:
 
 	/*! \brief Handler for editor's contentChanged signal.
@@ -110,6 +125,9 @@ private:
 
 	//! \brief Pointer to the editor to edit the address block.
 	AddressBlockEditor* editor_;
+
+	//! \brief The visualizet for memory maps.
+	MemoryMapsVisualizer* visualizer_;
 };
 
 #endif // COMPONENTEDITORADDRBLOCKITEM_H

@@ -7,6 +7,10 @@
 
 #include "memoryvisualizationitem.h"
 
+#include <QRectF>
+
+#include <QDebug>
+
 MemoryVisualizationItem::MemoryVisualizationItem( QGraphicsItem* parent /*= 0*/ ):
 ExpandableItem(parent) {
 
@@ -19,6 +23,7 @@ void MemoryVisualizationItem::reorganizeChildren() {
 	// first find out the width for all items
 	qreal width = VisualizerItem::itemTotalWidth();
 
+	qreal yCoordinate = rect().bottom();
 	MemoryVisualizationItem* previous = NULL;
 	foreach (MemoryVisualizationItem* item, childItems_) {
 
@@ -29,14 +34,15 @@ void MemoryVisualizationItem::reorganizeChildren() {
 		if (previous) {
 
 			// set the next item to start after the previous
-			item->setPos(0, mapRectFromItem(previous, previous->itemTotalRect()).bottom());
-		}
-		// if this is the first item to draw
-		else {
-			// draw in straight under this item
-			item->setPos(0, rect().bottom());
+			QRectF previousRect = mapRectFromItem(previous, previous->itemTotalRect());
+			
+			// update the y coordinate to avoid setting items on top of each other
+			yCoordinate = previousRect.bottom();
 		}
 
+		qDebug() << "Adding:" << item->getName() << " to:" << yCoordinate;
+
+		item->setPos(0, yCoordinate);
 		previous = item;
 	}
 

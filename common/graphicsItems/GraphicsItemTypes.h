@@ -49,7 +49,9 @@ enum GraphicsItemTypes
     GFX_TYPE_MEMORY_ITEM,
     GFX_TYPE_ADDRESS_SPACE_ITEM,
     GFX_TYPE_ADDRESS_SECTION_ITEM,
-    GFX_TYPE_MEMORY_COLUMN
+    GFX_TYPE_MEMORY_COLUMN,
+
+	GFX_TYPE_EXPAND_COLLAPSE_ITEM
 };
 
 //-----------------------------------------------------------------------------

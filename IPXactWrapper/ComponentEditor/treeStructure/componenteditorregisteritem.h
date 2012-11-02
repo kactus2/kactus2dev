@@ -17,6 +17,7 @@
 #include <QList>
 
 class RegisterEditor;
+class MemoryMapsVisualizer;
 
 /*! \brief The item for single register in component editor's navigation tree.
  *
@@ -87,6 +88,20 @@ public:
 	*/
 	virtual void createChild(int index);
 
+	/*! \brief Get pointer to the visualizer of this item.
+	 * 
+	 * 
+	 * \return Pointer to the visualizer to use for this item.
+	*/
+	virtual ItemVisualizer* visualizer();
+
+	/*! \brief Set the visualizer for this item.
+	 *
+	 * \param visualizer Pointer to the visualizer.
+	 *
+	*/
+	virtual void setVisualizer(MemoryMapsVisualizer* visualizer);
+
 protected slots:
 
 	/*! \brief Handler for editor's contentChanged signal.
@@ -110,6 +125,9 @@ private:
 
 	//! \brief Pointer to the editor to edit the register.
 	RegisterEditor* editor_;
+
+	//! \brief Pointer to the visualizer of memory maps.
+	MemoryMapsVisualizer* visualizer_;
 };
 
 #endif // COMPONENTEDITORREGISTERITEM_H

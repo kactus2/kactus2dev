@@ -46,6 +46,11 @@ signals:
 	//! \brief This signal is emitted when the contents of the scene changes.
 	void contentChanged();
 
+public slots:
+
+	//! \brief Refresh the scene and update memory map positions.
+	void refresh();
+
 private:
 	
 	//! \brief No copying

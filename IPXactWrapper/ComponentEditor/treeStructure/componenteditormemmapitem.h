@@ -15,6 +15,7 @@
 #include <QList>
 
 class MemoryMapEditor;
+class MemoryMapsVisualizer;
 
 /*! \brief The item for a single memory map in component editor's navigation tree.
  *
@@ -85,6 +86,20 @@ public:
 	*/
 	virtual void createChild(int index);
 
+	/*! \brief Get pointer to the visualizer of this item.
+	 * 
+	 * 
+	 * \return Pointer to the visualizer to use for this item.
+	*/
+	virtual ItemVisualizer* visualizer();
+
+	/*! \brief Set the visualizer for this item.
+	 *
+	 * \param visualizer Pointer to the visualizer.
+	 *
+	*/
+	virtual void setVisualizer(MemoryMapsVisualizer* visualizer);
+
 private:
 	//! \brief No copying
 	ComponentEditorMemMapItem(const ComponentEditorMemMapItem& other);
@@ -100,6 +115,9 @@ private:
 
 	//! \brief The editor to edit the details of a single memory map.
 	MemoryMapEditor* editor_;
+
+	//! \brief The visualizer to display the memory maps
+	MemoryMapsVisualizer* visualizer_;
 };
 
 #endif // COMPONENTEDITORMEMMAPITEM_H

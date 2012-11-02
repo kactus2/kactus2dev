@@ -8,6 +8,7 @@
 #include "addressblockgraphitem.h"
 #include "registergraphitem.h"
 #include <models/register.h>
+#include <common/utils.h>
 
 #include <QBrush>
 #include <QColor>
@@ -27,32 +28,33 @@ AddressBlockGraphItem::~AddressBlockGraphItem() {
 void AddressBlockGraphItem::refresh() {
 	setName(addrBlock_->getName());
 
-	QList<QSharedPointer<RegisterModel> >& regItems = addrBlock_->getRegisterData();
-	foreach (QSharedPointer<RegisterModel> regItem, regItems) {
-
-		QSharedPointer<Register> reg = regItem.dynamicCast<Register>();
-		if (reg) {
-
-			// create the item
-			RegisterGraphItem* regGraph = new RegisterGraphItem(reg, this);
-
-			// get the offset of the item
-			int offset = regGraph->getOffset();
-
-			// make sure the items are in correct order for the offset
-			childItems_.insert(offset, regGraph);
-
-			// tell child to check its children
-			regGraph->refresh();
-		}
-	}
+// 	QList<QSharedPointer<RegisterModel> >& regItems = addrBlock_->getRegisterData();
+// 	foreach (QSharedPointer<RegisterModel> regItem, regItems) {
+// 
+// 		QSharedPointer<Register> reg = regItem.dynamicCast<Register>();
+// 		if (reg) {
+// 
+// 			// create the item
+// 			RegisterGraphItem* regGraph = new RegisterGraphItem(reg, this);
+// 
+// 			// get the offset of the item
+// 			int offset = regGraph->getOffset();
+// 
+// 			// make sure the items are in correct order for the offset
+// 			childItems_.insert(offset, regGraph);
+// 
+// 			// tell child to check its children
+// 			regGraph->refresh();
+// 		}
+// 	}
 
 	// set the positions for the children
 	MemoryVisualizationItem::reorganizeChildren();
 }
 
 int AddressBlockGraphItem::getOffset() const {
-	return 0;
+	QString offset = addrBlock_->getBaseAddress();
+	return Utils::str2Int(offset);
 }
 
 int AddressBlockGraphItem::getBitWidth() const {

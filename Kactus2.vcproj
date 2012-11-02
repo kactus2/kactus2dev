@@ -40314,6 +40314,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\graphics\collapse.png"
+				>
+			</File>
+			<File
 				RelativePath=".\graphics\configuration.png"
 				>
 			</File>
@@ -40343,6 +40347,10 @@
 			</File>
 			<File
 				RelativePath=".\graphics\exclamation.png"
+				>
+			</File>
+			<File
+				RelativePath=".\graphics\expand.png"
 				>
 			</File>
 			<File

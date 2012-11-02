@@ -7,6 +7,7 @@
 
 #include "componenteditormemmapitem.h"
 #include <IPXactWrapper/ComponentEditor/memoryMaps/memorymapeditor.h>
+#include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 #include "componenteditoraddrblockitem.h"
 #include <models/memorymapitem.h>
 #include <models/addressblock.h>
@@ -22,7 +23,8 @@ ComponentEditorMemMapItem::ComponentEditorMemMapItem(QSharedPointer<MemoryMap> m
 ComponentEditorItem(model, libHandler, component, parent),
 memoryMap_(memoryMap),
 items_(memoryMap->getItems()),
-editor_(new MemoryMapEditor(component, memoryMap)) {
+editor_(new MemoryMapEditor(component, memoryMap)),
+visualizer_(NULL) {
 
 	setObjectName(tr("ComponentEditorMemMapItem"));
 
@@ -92,4 +94,12 @@ void ComponentEditorMemMapItem::createChild( int index ) {
 			new ComponentEditorAddrBlockItem(addrBlock, model_, libHandler_, component_, this));
 		childItems_.insert(index, addrBlockItem);
 	}
+}
+
+ItemVisualizer* ComponentEditorMemMapItem::visualizer() {
+	return visualizer_;
+}	
+
+void ComponentEditorMemMapItem::setVisualizer( MemoryMapsVisualizer* visualizer ) {
+	visualizer_ = visualizer;
 }

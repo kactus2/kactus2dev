@@ -45,6 +45,11 @@ public:
 	*/
 	virtual int getBitWidth() const = 0;
 
+signals:
+
+	//! \brief Emitted when the item changes.
+	void contentChanged();
+
 protected:
 
 	/*! \brief Set new positions for child items.

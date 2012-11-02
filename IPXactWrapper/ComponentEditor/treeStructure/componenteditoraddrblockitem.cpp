@@ -7,6 +7,7 @@
 
 #include "componenteditoraddrblockitem.h"
 #include <IPXactWrapper/ComponentEditor/memoryMaps/addressblockeditor.h>
+#include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 #include <models/register.h>
 #include "componenteditorregisteritem.h"
 
@@ -20,7 +21,8 @@ ComponentEditorAddrBlockItem::ComponentEditorAddrBlockItem(QSharedPointer<Addres
 ComponentEditorItem(model, libHandler, component, parent),
 addrBlock_(addrBlock),
 regItems_(addrBlock->getRegisterData()),
-editor_(new AddressBlockEditor(addrBlock, component)) {
+editor_(new AddressBlockEditor(addrBlock, component)),
+visualizer_(NULL) {
 
 	setObjectName(tr("ComponentEditorAddrBlockItem"));
 
@@ -99,4 +101,12 @@ void ComponentEditorAddrBlockItem::onEditorChanged() {
 
 	// call the base class to update this and parent
 	ComponentEditorItem::onEditorChanged();
+}
+
+ItemVisualizer* ComponentEditorAddrBlockItem::visualizer() {
+	return visualizer_;
+}
+
+void ComponentEditorAddrBlockItem::setVisualizer( MemoryMapsVisualizer* visualizer ) {
+	visualizer_ = visualizer;
 }

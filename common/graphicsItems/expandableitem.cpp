@@ -12,7 +12,7 @@ ExpandableItem::ExpandableItem( QGraphicsItem* parent /*= 0*/ ):
 VisualizerItem(parent),
 expandCollapseItem_(new GraphicsExpandCollapseItem(this)) {
 
-	connect(expandCollapseItem_, SIGNAL(stateChaned(bool)),
+	connect(expandCollapseItem_, SIGNAL(stateChanged(bool)),
 		this, SLOT(onExpandStateChange(bool)), Qt::UniqueConnection);
 
 	// Set the position for the hide/show button

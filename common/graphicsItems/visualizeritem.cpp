@@ -151,3 +151,7 @@ void VisualizerItem::setWidth( qreal width ) {
 	setRect(0, 0, width, VisualizerItem::ITEM_HEIGHT);
 	VisualizerItem::reorganizeChildren();
 }
+
+QString VisualizerItem::getName() const {
+	return nameLabel_.toPlainText();
+}

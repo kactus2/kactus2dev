@@ -49,6 +49,12 @@ public:
 	*/
 	virtual QRectF itemTotalRect() const;
 
+	/*! \brief Get the displayed name of the object.
+	 *
+	 * \return QString containing the name
+	*/
+	virtual QString getName() const;
+
 protected:
 
 	/*! \brief Set the display name of the item.

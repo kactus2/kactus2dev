@@ -77,6 +77,8 @@
       <file>graphics/naming-policy.png</file>
       <file>graphics/lock-on.png</file>
       <file>graphics/lock-off.png</file>
+      <file>graphics/expand.png</file>
+      <file>graphics/collapse.png</file>
   </qresource>
     <qresource prefix="/">        
         <file>graphics/splash.png</file>

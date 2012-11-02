@@ -67,6 +67,20 @@ LANGUAGE LANG_FINNISH, SUBLANG_DEFAULT
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDI_ICON1               ICON                    "appicon.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// PNG
+//
+
+IDB_PNG5                PNG                     "graphics\\expand.png"
+IDB_PNG6                PNG                     "D:\\user\\kamppia\\SVNwork\\Kactus2 SourceForge\\graphics\\collapse.png"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
 #endif    // Finnish resources
 /////////////////////////////////////////////////////////////////////////////
 

@@ -8,6 +8,8 @@
 #include "memorymapscene.h"
 #include "memorymapgraphitem.h"
 
+#include <common/graphicsItems/graphicsexpandcollapseitem.h>
+
 #include <QRectF>
 
 MemoryMapScene::MemoryMapScene(QObject *parent):
@@ -21,10 +23,14 @@ MemoryMapScene::~MemoryMapScene() {
 
 void MemoryMapScene::setMemoryMaps( QList<QSharedPointer<MemoryMap> >& memoryMaps ) {
 	memoryMaps_ = memoryMaps;
+	refresh();
+}
 
+void MemoryMapScene::refresh() {
 	// remove all previous objects
 	clear();
 
+	qreal yCoordinate = 0;
 	MemoryMapGraphItem* previous = 0;
 	foreach (QSharedPointer<MemoryMap> memMap, memoryMaps_) {
 
@@ -38,12 +44,12 @@ void MemoryMapScene::setMemoryMaps( QList<QSharedPointer<MemoryMap> >& memoryMap
 		if (previous) {
 			QRectF previousRect = previous->childrenBoundingRect();
 			previousRect |= previous->boundingRect();
-			item->setPos(0, previousRect.bottom() + 10);
+
+			// update the y coordinate to avoid setting items on top of each other
+			yCoordinate += previousRect.bottom() + 10;
 		}
-		// if this is the first item to add
-		else {
-			item->setPos(0, 0);
-		}
+		
+		item->setPos(0, yCoordinate);
 
 		connect(item, SIGNAL(contentChanged()),
 			this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -52,6 +58,5 @@ void MemoryMapScene::setMemoryMaps( QList<QSharedPointer<MemoryMap> >& memoryMap
 	}
 
 	// tell view to draw the items
-	//invalidate(QRectF(), QGraphicsScene::ItemLayer);
 	invalidate();
 }
