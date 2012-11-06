@@ -92,6 +92,7 @@ void ComponentEditorMemMapItem::createChild( int index ) {
 	if (addrBlock) {
 		QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(
 			new ComponentEditorAddrBlockItem(addrBlock, model_, libHandler_, component_, this));
+		addrBlockItem->setVisualizer(visualizer_);
 		childItems_.insert(index, addrBlockItem);
 	}
 }
@@ -102,4 +103,10 @@ ItemVisualizer* ComponentEditorMemMapItem::visualizer() {
 
 void ComponentEditorMemMapItem::setVisualizer( MemoryMapsVisualizer* visualizer ) {
 	visualizer_ = visualizer;
+
+	// update the visualizers of address block items
+	foreach (QSharedPointer<ComponentEditorItem> item, childItems_) {
+		QSharedPointer<ComponentEditorAddrBlockItem> addrItem = item.staticCast<ComponentEditorAddrBlockItem>();
+		addrItem->setVisualizer(visualizer_);
+	}
 }

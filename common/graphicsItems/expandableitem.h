@@ -39,6 +39,13 @@ protected slots:
 	*/
 	void onExpandStateChange(bool expanded);
 
+	/*! \brief Set the expand collapse item to hidden/shown state.
+	 *
+	 * \param show If true then the item is shown.
+	 *
+	*/
+	void setShowExpandableItem(bool show);
+
 protected:
 
 	//! \brief The item to show/hide the child items

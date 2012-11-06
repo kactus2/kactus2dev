@@ -28,25 +28,26 @@ AddressBlockGraphItem::~AddressBlockGraphItem() {
 void AddressBlockGraphItem::refresh() {
 	setName(addrBlock_->getName());
 
-// 	QList<QSharedPointer<RegisterModel> >& regItems = addrBlock_->getRegisterData();
-// 	foreach (QSharedPointer<RegisterModel> regItem, regItems) {
-// 
-// 		QSharedPointer<Register> reg = regItem.dynamicCast<Register>();
-// 		if (reg) {
-// 
-// 			// create the item
-// 			RegisterGraphItem* regGraph = new RegisterGraphItem(reg, this);
-// 
-// 			// get the offset of the item
-// 			int offset = regGraph->getOffset();
-// 
-// 			// make sure the items are in correct order for the offset
-// 			childItems_.insert(offset, regGraph);
-// 
-// 			// tell child to check its children
-// 			regGraph->refresh();
-// 		}
-// 	}
+	QList<QSharedPointer<RegisterModel> >& regItems = addrBlock_->getRegisterData();
+	foreach (QSharedPointer<RegisterModel> regItem, regItems) {
+
+		QSharedPointer<Register> reg = regItem.dynamicCast<Register>();
+		if (reg) {
+
+			// create the item
+			RegisterGraphItem* regGraph = new RegisterGraphItem(reg, this);
+
+			// get the offset of the item
+			int offset = regGraph->getOffset();
+
+			// make sure the items are in correct order for the offset
+			childItems_.insert(offset, regGraph);
+
+			// tell child to check its children
+			regGraph->refresh();
+			regGraph->hide();
+		}
+	}
 
 	// set the positions for the children
 	MemoryVisualizationItem::reorganizeChildren();

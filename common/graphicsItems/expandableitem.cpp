@@ -46,3 +46,7 @@ void ExpandableItem::onExpandStateChange( bool expanded ) {
 	// when items are hidden/shown then the children must be reorganized
 	reorganizeChildren();
 }
+
+void ExpandableItem::setShowExpandableItem( bool show ) {
+	expandCollapseItem_->setVisible(show);
+}

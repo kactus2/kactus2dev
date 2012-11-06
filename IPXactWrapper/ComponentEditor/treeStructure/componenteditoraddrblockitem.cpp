@@ -88,6 +88,7 @@ void ComponentEditorAddrBlockItem::createChild( int index ) {
 	if (reg) {
 		QSharedPointer<ComponentEditorRegisterItem> regItem(
 			new ComponentEditorRegisterItem(reg, model_, libHandler_, component_, this));
+		regItem->setVisualizer(visualizer_);
 		childItems_.insert(index, regItem);
 	}
 }
@@ -109,4 +110,9 @@ ItemVisualizer* ComponentEditorAddrBlockItem::visualizer() {
 
 void ComponentEditorAddrBlockItem::setVisualizer( MemoryMapsVisualizer* visualizer ) {
 	visualizer_ = visualizer;
+	// update the visualizers for register items
+	foreach (QSharedPointer<ComponentEditorItem> item, childItems_) {
+		QSharedPointer<ComponentEditorRegisterItem> regItem = item.staticCast<ComponentEditorRegisterItem>();
+		regItem->setVisualizer(visualizer_);
+	}
 }

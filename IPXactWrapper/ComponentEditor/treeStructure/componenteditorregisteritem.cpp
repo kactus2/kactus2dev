@@ -82,6 +82,7 @@ QFont ComponentEditorRegisterItem::getFont() const {
 void ComponentEditorRegisterItem::createChild( int index ) {
 	QSharedPointer<ComponentEditorFieldItem> fieldItem(new ComponentEditorFieldItem(
 		fields_.at(index), model_, libHandler_, component_, this));
+	fieldItem->setVisualizer(visualizer_);
 	childItems_.insert(index, fieldItem);
 }
 
@@ -107,4 +108,9 @@ ItemVisualizer* ComponentEditorRegisterItem::visualizer() {
 
 void ComponentEditorRegisterItem::setVisualizer( MemoryMapsVisualizer* visualizer ) {
 	visualizer_ = visualizer;
+	// update the visualizers for field items
+	foreach (QSharedPointer<ComponentEditorItem> item, childItems_) {
+		QSharedPointer<ComponentEditorFieldItem> fieldItem = item.staticCast<ComponentEditorFieldItem>();
+		fieldItem->setVisualizer(visualizer_);
+	}
 }

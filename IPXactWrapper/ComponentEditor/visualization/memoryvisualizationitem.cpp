@@ -9,8 +9,6 @@
 
 #include <QRectF>
 
-#include <QDebug>
-
 MemoryVisualizationItem::MemoryVisualizationItem( QGraphicsItem* parent /*= 0*/ ):
 ExpandableItem(parent) {
 
@@ -22,6 +20,15 @@ MemoryVisualizationItem::~MemoryVisualizationItem() {
 void MemoryVisualizationItem::reorganizeChildren() {
 	// first find out the width for all items
 	qreal width = VisualizerItem::itemTotalWidth();
+
+	// if there are no children then this can not be expanded or collapsed
+	if (childItems_.isEmpty()) {
+		ExpandableItem::setShowExpandableItem(false);
+	}
+	// if there are children then display the expand/collapse item
+	else {
+		ExpandableItem::setShowExpandableItem(true);
+	}
 
 	qreal yCoordinate = rect().bottom();
 	MemoryVisualizationItem* previous = NULL;
@@ -39,8 +46,6 @@ void MemoryVisualizationItem::reorganizeChildren() {
 			// update the y coordinate to avoid setting items on top of each other
 			yCoordinate = previousRect.bottom();
 		}
-
-		qDebug() << "Adding:" << item->getName() << " to:" << yCoordinate;
 
 		item->setPos(0, yCoordinate);
 		previous = item;
