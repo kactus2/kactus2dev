@@ -1034,6 +1034,16 @@ public:
 	*/
 	QSharedPointer<BusInterface> getBusInterface(const QString& name);
 
+    /*! \brief Get a pointer to a bus interface.
+	*
+	* If named bus interface is not found then null pointer is returned.
+	*
+	* \param name Contains the name of the wanted bus interface.
+	*
+	* \return A pointer to the busInterface instance or null pointer.
+	*/
+	QSharedPointer<BusInterface const> getBusInterface(const QString& name) const;
+
 	/*! \brief Get list of the slave interfaces that refer to given memory map.
 	*
 	* \param memoryMap The name of the memory map to search for.

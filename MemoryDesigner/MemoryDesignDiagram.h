@@ -26,6 +26,9 @@ class LibraryInterface;
 class VLNV;
 class GenericEditProvider;
 class MemoryDesignWidget;
+class AddressSpaceItem;
+class MemoryItem;
+class BusInterface;
 
 //-----------------------------------------------------------------------------
 //! MemoryDesignDiagram class.
@@ -38,7 +41,7 @@ public:
     // Column width.
     enum
     {
-        COLUMN_WIDTH = 339,
+        COLUMN_WIDTH = 219,
     };
 
     /*!
@@ -115,6 +118,18 @@ public:
      */
     void endResizeSubsection();
 
+    /*!
+     *  Returns true if the given address space is connected to the given memory map.
+     *
+     *      @param [in]  addrSpaceItem  The address space item.
+     *      @param [in]  memoryItem     The memory item.
+     *      @param [out] baseAddress    If non-null, the retrieved base address for the connection.
+     *
+     *      @return True if a connection was found; otherwise false.
+     */
+    bool isConnected(AddressSpaceItem const* addrSpaceItem, MemoryItem const* memoryItem,
+                     unsigned int* baseAddress) const;
+
 public slots:
     /*!
      *  Called when the selection changes in the diagram.
@@ -140,6 +155,8 @@ protected:
     //! Draws the foreground.
     void drawForeground(QPainter* painter, const QRectF& rect);
 
+    void drawMemoryDividers(QPainter* painter, QRectF const& rect);
+
 private:
     // Disable copying.
     MemoryDesignDiagram(MemoryDesignDiagram const& rhs);
@@ -162,12 +179,20 @@ private:
      */
     static GraphicsColumn* createDefaultColumn(GraphicsColumnLayout* layout, QGraphicsScene* scene);
 
+    bool findRoute(QString const& instanceName, QSharedPointer<BusInterface const> busIf,
+                   MemoryItem const* memoryItem, unsigned int& addressOffset) const;
+
+    QSharedPointer<Component const> getComponentByInstanceName(QString const& componentRef) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! The parent widget.
     MemoryDesignWidget* parent_;
+
+    //! The design.
+    QSharedPointer<Design> design_;
 
     // Graphics column layout.
     QSharedPointer<GraphicsColumnLayout> layout_;

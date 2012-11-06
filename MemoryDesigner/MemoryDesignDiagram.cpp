@@ -14,6 +14,7 @@
 #include "MemoryDesignWidget.h"
 #include "MemoryItem.h"
 #include "AddressSpaceItem.h"
+#include "AddressSectionItem.h"
 #include "MemoryColumn.h"
 
 #include <QPainter>
@@ -42,6 +43,11 @@
 #include <models/model.h>
 #include <models/memorymap.h>
 #include <models/addressspace.h>
+#include <models/businterface.h>
+#include <models/masterinterface.h>
+#include <models/slaveinterface.h>
+#include <models/channel.h>
+#include <models/mirroredslaveinterface.h>
 
 #include <mainwindow/mainwindow.h>
 
@@ -122,19 +128,23 @@ void MemoryDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
         foreach (QSharedPointer<MemoryMap> map, component->getMemoryMaps())
         {
-            MemoryItem* item = new MemoryItem(getLibraryInterface(), component, map, 0);
+            MemoryItem* item = new MemoryItem(getLibraryInterface(), instance.getInstanceName(),
+                                              component, map, 0);
             layout_->addItem(item);
         }
 
         foreach (QSharedPointer<AddressSpace> addressSpace, component->getAddressSpaces())
         {
-            AddressSpaceItem* item = new AddressSpaceItem(getLibraryInterface(), component, addressSpace, 0);
+            AddressSpaceItem* item = new AddressSpaceItem(getLibraryInterface(), instance.getInstanceName(),
+                                                          component, addressSpace, 0);
             layout_->getColumns().at(1)->addItem(item);
         }
     }
 
     // Refresh the layout so that all components are placed in correct positions according to the stacking.
     layout_->updatePositions();
+
+    design_ = design;
 }
 
 //-----------------------------------------------------------------------------
@@ -405,6 +415,9 @@ void MemoryDesignDiagram::drawForeground(QPainter* painter, const QRectF& rect)
         }
     }
 
+    drawMemoryDividers(painter, rect);
+
+    // Draw guides for all selected items.
     foreach (QGraphicsItem* item, selectedItems())
     {
         MemoryBaseItem* baseItem = dynamic_cast<MemoryBaseItem*>(item);
@@ -423,4 +436,268 @@ GraphicsColumn* MemoryDesignDiagram::createDefaultColumn(GraphicsColumnLayout* l
 {
     ColumnDesc desc("Required Address Spaces", COLUMN_CONTENT_COMPONENTS, 0, COLUMN_WIDTH);
     return new MemoryColumn(desc, layout, scene);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignDiagram::drawMemoryDividers()
+//-----------------------------------------------------------------------------
+void MemoryDesignDiagram::drawMemoryDividers(QPainter* painter, QRectF const& rect)
+{
+    // Draw section dividers to the address spaces based on the memory map positions.
+    MemoryColumn* memoryColumn = 0;
+
+    foreach (GraphicsColumn* column, layout_->getColumns())
+    {
+        MemoryColumn* memColumn = static_cast<MemoryColumn*>(column);
+
+        if (memColumn->getContentType() == COLUMN_CONTENT_BUSES)
+        {
+            memoryColumn = memColumn;
+            break;
+        }
+    }
+
+    foreach (QGraphicsItem* item, memoryColumn->getItems())
+    {
+        MemoryItem* memItem = static_cast<MemoryItem*>(item);
+
+        foreach (AddressSectionItem* block, memItem->getSections())
+        {
+            int top = block->sceneBoundingRect().top();
+            int bottom = block->sceneBoundingRect().bottom();
+                
+            if (top >= rect.top() && top < rect.bottom())
+            {
+                foreach (GraphicsColumn* column, layout_->getColumns())
+                {
+                    MemoryBaseItem* addrSpaceItem = static_cast<MemoryColumn*>(column)->findItemAt(top);
+                    
+                    if (addrSpaceItem != 0)
+                    {
+                        unsigned int address = addrSpaceItem->convertAddress(block->getStartAddress(), memItem);
+                        addrSpaceItem->drawStartAddressDivider(painter, rect, top, address);
+                    }
+                }
+            }
+
+            if (bottom >= rect.top() && bottom < rect.bottom())
+            {
+                foreach (GraphicsColumn* column, layout_->getColumns())
+                {
+                    MemoryBaseItem* addrSpaceItem = static_cast<MemoryColumn*>(column)->findItemAt(bottom);
+
+                    if (addrSpaceItem != 0)
+                    {
+                        unsigned int address = addrSpaceItem->convertAddress(block->getEndAddress(), memItem);
+                        addrSpaceItem->drawEndAddressDivider(painter, rect, bottom, address);
+                    }
+                }
+            }
+        }
+    }
+
+    foreach (GraphicsColumn* column, layout_->getColumns())
+    {
+        // Check if this is an address space column.
+        if (column->getContentType() == COLUMN_CONTENT_COMPONENTS)
+        {
+            MemoryColumn* memColumn = static_cast<MemoryColumn*>(column);
+
+            foreach (QGraphicsItem* item, memColumn->getItems())
+            {
+                AddressSpaceItem* addrSpaceItem = static_cast<AddressSpaceItem*>(item);
+
+                foreach (AddressSectionItem* segment, addrSpaceItem->getSections())
+                {
+                    int top = segment->sceneBoundingRect().top();
+                    int bottom = segment->sceneBoundingRect().bottom();
+
+                    if (top >= rect.top() && top < rect.bottom())
+                    {
+                        MemoryBaseItem* memItem = memoryColumn->findItemAt(top);
+
+                        if (memItem != 0)
+                        {
+                            unsigned int address = memItem->convertAddress(segment->getStartAddress(), addrSpaceItem);
+                            memItem->drawStartAddressDivider(painter, rect, top, address);
+                        }
+                    }
+
+                    if (bottom >= rect.top() && bottom < rect.bottom())
+                    {
+                        MemoryBaseItem* memItem = memoryColumn->findItemAt(bottom);
+
+                        if (memItem != 0)
+                        {
+                            unsigned int address = memItem->convertAddress(segment->getEndAddress(), addrSpaceItem);
+                            memItem->drawEndAddressDivider(painter, rect, bottom, address);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignDiagram::isConnected()
+//-----------------------------------------------------------------------------
+bool MemoryDesignDiagram::isConnected(AddressSpaceItem const* addrSpaceItem, MemoryItem const* memoryItem,
+                                      unsigned int* addressOffset) const
+{
+    // Find the route from the component containing the given address space to a component
+    // containing the given memory map.
+    foreach (QSharedPointer<BusInterface> busIf, addrSpaceItem->getComponent()->getBusInterfaces())
+    {
+        // Check if the bus interface has the correct address space as a reference.
+        if (busIf->getInterfaceMode() == General::MASTER &&
+            busIf->getMaster()->getAddressSpaceRef() == addrSpaceItem->getAddressSpace()->getName())
+        {
+            unsigned int addressOffsetTemp = 0;
+
+            if (findRoute(addrSpaceItem->getInstanceName(), busIf, memoryItem, addressOffsetTemp))
+            {
+                *addressOffset = addressOffsetTemp;
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignDiagram::findRoute()
+//-----------------------------------------------------------------------------
+bool MemoryDesignDiagram::findRoute(QString const& instanceName, QSharedPointer<BusInterface const> busIf,
+                                    MemoryItem const* memoryItem, unsigned int& addressOffset) const
+{
+    // Check all connections that start from the bus interface.
+    foreach (Design::Interconnection const& conn, design_->getInterconnections())
+    {
+        Design::Interface const* interface = 0;
+
+        if (conn.interface1.componentRef == instanceName && conn.interface1.busRef == busIf->getName())
+        {
+            interface = &conn.interface2;
+        }
+
+        if (conn.interface2.componentRef == instanceName && conn.interface2.busRef == busIf->getName())
+        {
+            interface = &conn.interface1;
+        }
+
+        // Check if we found a matching connection.
+        if (interface != 0)
+        {
+            // Retrieve the component referenced by the connection.
+            QSharedPointer<Component const> component = getComponentByInstanceName(interface->componentRef);
+
+            if (component != 0)
+            {
+                // Retrieve the correct bus interface.
+                QSharedPointer<BusInterface const> otherBusIf = component->getBusInterface(interface->busRef);
+
+                if (otherBusIf != 0)
+                {
+                    // Master can connect to either slave or mirrored master.
+                    if (busIf->getInterfaceMode() == General::MASTER)
+                    {
+                        // If the other bus interface is slave, we either have a connection to the correct
+                        // component or then this was a wrong route.
+                        if (otherBusIf->getInterfaceMode() == General::SLAVE &&
+                            interface->componentRef == memoryItem->getInstanceName())
+                        {
+                            addressOffset = Utils::str2Int(busIf->getMaster()->getBaseAddress());
+                            return true;
+                        }
+                        // With mirrored master, the route continues through a channel.
+                        else if (otherBusIf->getInterfaceMode() == General::MIRROREDMASTER)
+                        {
+                            foreach (QSharedPointer<Channel> channel, component->getChannels())
+                            {
+                                // Check if the channel contains the bus interface in question.
+                                if (channel->getInterfaces().contains(interface->busRef))
+                                {
+                                    foreach (QString const& chIfName, channel->getInterfaces())
+                                    {
+                                        if (chIfName != interface->busRef)
+                                        {
+                                            // Retrieve the bus interface.
+                                            QSharedPointer<BusInterface const> nextBusIf = component->getBusInterface(chIfName);
+
+                                            if (nextBusIf != 0)
+                                            {
+                                                unsigned int addressOffsetTemp = 0;
+
+                                                if (findRoute(interface->componentRef, nextBusIf, memoryItem,
+                                                              addressOffsetTemp))
+                                                {
+                                                    addressOffset = addressOffsetTemp + Utils::str2Int(busIf->getMaster()->getBaseAddress());
+                                                    return true;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            return false;
+                        }
+                    }
+                    // Mirrored slave can only connect to a slave.
+                    else if (busIf->getInterfaceMode() == General::MIRROREDSLAVE &&
+                             otherBusIf->getInterfaceMode() == General::SLAVE)
+                    {
+                        // Check if we ended up in the correct component.
+                        if (interface->componentRef == memoryItem->getInstanceName())
+                        {
+                            addressOffset = Utils::str2Int(busIf->getMirroredSlave()->getRemapAddress());
+                            return true;
+                        }
+
+                        // Otherwise check if the route continues through bridges.
+                        foreach (QSharedPointer<SlaveInterface::Bridge const> bridge, otherBusIf->getSlave()->getBridges())
+                        {
+                            QSharedPointer<BusInterface const> nextBusIf = component->getBusInterface(bridge->masterRef_);
+
+                            if (nextBusIf != 0)
+                            {
+                                unsigned int addressOffsetTemp = 0;
+
+                                if (findRoute(interface->componentRef, nextBusIf, memoryItem,
+                                    addressOffsetTemp))
+                                {
+                                    addressOffset = addressOffsetTemp + Utils::str2Int(busIf->getMaster()->getBaseAddress());
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+
+                    break;
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignDiagram::getComponentByInstanceName()
+//-----------------------------------------------------------------------------
+QSharedPointer<Component const> MemoryDesignDiagram::getComponentByInstanceName(QString const& componentRef) const
+{
+    foreach (ComponentInstance const& instance, design_->getComponentInstances())
+    {
+        if (instance.getInstanceName() == componentRef)
+        {
+            QSharedPointer<LibraryComponent const> libComp =
+                getLibraryInterface()->getModelReadOnly(instance.getComponentRef());
+            return libComp.dynamicCast<Component const>();
+        }
+    }
+
+    return QSharedPointer<Component const>();
 }

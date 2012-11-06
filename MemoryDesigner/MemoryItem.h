@@ -44,11 +44,13 @@ public:
      *  Constructor.
      *  
      *      @param [in] libInterface    The library interface.
+     *      @param [in] instanceName    The name of the component instance containing the memory map.
      *      @param [in] component       The component.
      *      @param [in] memoryMap       The memory map.
      *      @param [in] parent          The parent graphics item.
      */
-    MemoryItem(LibraryInterface* libInterface, QSharedPointer<Component> component,
+    MemoryItem(LibraryInterface* libInterface, QString const& instanceName,
+               QSharedPointer<Component> component,
                QSharedPointer<MemoryMap> memoryMap, QGraphicsItem *parent = 0);
 
 	/*!
@@ -62,12 +64,22 @@ public:
     virtual void updateVisuals();
 
     /*!
-     *  Draws address guide lines.
+     *  Converts the given address to this address space.
      *
-     *      @param [in] painter  The painter for drawing.
-     *      @param [in] rect     The visible rectangle area where to draw the lines.
+     *      @param [in] address The original address to convert.
+     *      @param [in] source  The source for the original address.
      */
-    virtual void drawGuides(QPainter* painter, QRectF const& rect) const;
+    virtual unsigned int convertAddress(unsigned int address, MemoryBaseItem* source) const;
+
+    /*!
+     *  Returns the name of the component instance.
+     */
+    QString const& getInstanceName() const;
+
+    /*!
+     *  Returns the parent component.
+     */
+    QSharedPointer<Component const> getComponent() const;
 
     /*!
      *  Returns the actual memory map.
@@ -88,6 +100,11 @@ public:
      *  Returns the parent graphics item stack.
      */
     IGraphicsItemStack* getParentStack();
+
+    /*!
+     *  Returns the list of address block sections.
+     */
+    virtual QList<AddressSectionItem*> const& getSections() const;
 
     int type() const { return Type; }
 
@@ -189,8 +206,8 @@ private:
 
     enum
     {
-        WIDTH = 280,
-        NAME_COLUMN_WIDTH = 50,
+        WIDTH = 160,
+        NAME_COLUMN_WIDTH = 40,
         MIN_HEIGHT = 120,
         SPACING = 10,
         SECTION_X = NAME_COLUMN_WIDTH / 2
@@ -202,6 +219,9 @@ private:
 
     //! The library interface.
     LibraryInterface* libInterface_;
+
+    //! The name of the component instance containing the memory map.
+    QString instanceName_;
 
     //! The component which contains the memory map.
     QSharedPointer<Component> component_;

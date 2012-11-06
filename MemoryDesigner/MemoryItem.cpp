@@ -12,7 +12,10 @@
 #include "MemoryItem.h"
 
 #include "AddressSectionItem.h"
+#include "AddressBlockItem.h"
+#include "AddressSpaceItem.h"
 #include "MemoryColumn.h"
+#include "MemoryDesignDiagram.h"
 
 #include <LibraryManager/vlnv.h>
 
@@ -29,13 +32,26 @@
 #include <QTextDocument>
 #include <QPainter>
 
+namespace
+{
+    /*!
+     *  Sorting operator for sorting address blocks to ascending base address.
+     */
+    bool addressBlockSortOp(QSharedPointer<AddressBlock const> lhs, QSharedPointer<AddressBlock const> rhs)
+    {
+        return Utils::str2Int(lhs->getBaseAddress()) < Utils::str2Int(rhs->getBaseAddress());
+    }
+}
+
 //-----------------------------------------------------------------------------
 // Function: MemoryItem()
 //-----------------------------------------------------------------------------
-MemoryItem::MemoryItem(LibraryInterface* libInterface, QSharedPointer<Component> component,
-                             QSharedPointer<MemoryMap> memoryMap, QGraphicsItem *parent)
+MemoryItem::MemoryItem(LibraryInterface* libInterface, QString const& instanceName,
+                       QSharedPointer<Component> component,
+                       QSharedPointer<MemoryMap> memoryMap, QGraphicsItem *parent)
     : MemoryBaseItem(parent),
       libInterface_(libInterface),
+      instanceName_(instanceName),
       component_(component),
       memoryMap_(memoryMap),
       nameLabel_(0),
@@ -69,23 +85,88 @@ MemoryItem::MemoryItem(LibraryInterface* libInterface, QSharedPointer<Component>
     aubLabel_->setFont(font);
     aubLabel_->setTextWidth(NAME_COLUMN_WIDTH + 2);
     aubLabel_->setPos(-WIDTH / 2, 0.0);
-    aubLabel_->setHtml(QString("<center>AUB=") + QString::number(memoryMap->getAddressUnitBits()) +
+    aubLabel_->setHtml(QString("<center>AUB<br>") + QString::number(memoryMap->getAddressUnitBits()) +
                        QString("</center>"));
     
     // Parse address blocks and add a section for each of them.
+    // "Holes" are visualized as 'no memory'.
+
+    // First sort address blocks based on their base address.
+    QList< QSharedPointer<AddressBlock> > blocks;
+    
     foreach (QSharedPointer<MemoryMapItem> item, memoryMap->getItems())
     {
         QSharedPointer<AddressBlock> block = item.dynamicCast<AddressBlock>();
 
         if (block != 0)
         {
+            blocks.append(block);
+        }
+    }
+
+    if (!blocks.empty())
+    {
+        qSort(blocks.begin(), blocks.end(), &addressBlockSortOp);
+        unsigned int curAddress = Utils::str2Int(blocks.first()->getBaseAddress());
+
+        foreach (QSharedPointer<AddressBlock> block, blocks)
+        {
             unsigned int startAddress = Utils::str2Int(block->getBaseAddress());
             unsigned int range = Utils::str2Int(block->getRange());
 
-            AddressSectionItem* section = new AddressSectionItem(block->getName(), startAddress, range, this);
+            // Check if there is a hole in the memory before the next address block.
+            if (startAddress > curAddress)
+            {
+                AddressSectionItem* section = new AddressBlockItem(component_, memoryMap_,
+                                                                   tr("no memory"), curAddress, 
+                                                                   startAddress - curAddress, this);
+                section->setBrush(QBrush(KactusColors::ADDRESS_SEGMENT_UNSEGMENTED));
+                section->setPos(0.0, getHeight());
+                addItem(section);
+            }
+
+            AddressSectionItem* section = new AddressBlockItem(component_, memoryMap_,
+                                                               block->getName(), startAddress, range, this);
             section->setBrush(QBrush(KactusColors::MEMORY_BLOCK));
             section->setPos(0.0, getHeight());
+
+            if (block->getUsage() == General::MEMORY)
+            {
+                switch (block->getAccess())
+                {
+                case General::READ_ONLY:
+                    {
+                        section->setUsageType(AddressSectionItem::USAGE_READ_ONLY);
+                        break;
+                    }
+
+                case General::READ_WRITE:
+                    {
+                        section->setUsageType(AddressSectionItem::USAGE_READ_WRITE);
+                        break;
+                    }
+
+                case General::READ_WRITEONCE:
+                    {
+                        section->setUsageType(AddressSectionItem::USAGE_READ_WRITE_ONCE);
+                        break;
+                    }
+
+                default:
+                    {
+                        section->setUsageType(AddressSectionItem::USAGE_UNSPECIFIED);
+                        break;
+                    }
+                }
+            }
+            else if (block->getUsage() == General::REGISTER)
+            {
+                section->setUsageType(AddressSectionItem::USAGE_REGISTERS);
+            }
+
             addItem(section);
+
+            curAddress = startAddress + range;
         }
     }
 
@@ -111,7 +192,14 @@ void MemoryItem::updateVisuals()
 //     QString toolTipText = "";
 //     setToolTip(toolTipText);
 
-    setBrush(QBrush(KactusColors::MEMORY_MAP));
+    if (component_->isBus())
+    {
+        setBrush(QBrush(KactusColors::HW_BUS_COMPONENT)); 
+    }
+    else
+    {
+        setBrush(QBrush(KactusColors::HW_COMPONENT));
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -353,7 +441,7 @@ void MemoryItem::updateSize()
     }
 
     nameLabel_->setTextWidth(getHeight());
-    nameLabel_->setPos(-WIDTH / 2 + GridSize / 2, getHeight());
+    nameLabel_->setPos(-WIDTH / 2 + 3, getHeight());
 }
 
 //-----------------------------------------------------------------------------
@@ -427,12 +515,48 @@ void MemoryItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryItem::drawGuides()
+// Function: MemoryItem::getAddressBlockSections()
 //-----------------------------------------------------------------------------
-void MemoryItem::drawGuides(QPainter* painter, QRectF const& rect) const
+QList<AddressSectionItem*> const& MemoryItem::getSections() const
 {
-    foreach (AddressSectionItem* section, sections_)
+    return sections_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::convertAddress()
+//-----------------------------------------------------------------------------
+unsigned int MemoryItem::convertAddress(unsigned int address, MemoryBaseItem* source) const
+{
+    // Conversion is possible only if the source is an address base.
+    AddressSpaceItem* addrSpaceItem = dynamic_cast<AddressSpaceItem*>(source);
+
+    if (addrSpaceItem == 0)
     {
-        section->drawGuides(painter, rect);
+        return address;
     }
+
+    unsigned int addressOffset = 0;
+
+    if (!static_cast<MemoryDesignDiagram*>(scene())->isConnected(addrSpaceItem, this, &addressOffset))
+    {
+        return address;
+    }
+
+    return address - addressOffset;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::getComponent()
+//-----------------------------------------------------------------------------
+QSharedPointer<Component const> MemoryItem::getComponent() const
+{
+    return component_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::getInstanceName()
+//-----------------------------------------------------------------------------
+QString const& MemoryItem::getInstanceName() const
+{
+    return instanceName_;
 }

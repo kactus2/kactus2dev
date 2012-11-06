@@ -23,10 +23,10 @@ namespace KactusColors
     QColor const BROKEN_CONNECTION = Qt::red;
 
     //! Special color used for COM connections.
-    QColor const COM_CONNECTION = QColor(49, 132, 61);//QColor(136, 206, 134);
+    QColor const COM_CONNECTION = QColor(49, 132, 61);
 
     //! Color used for allowed visualization in design diagrams.
-    QColor const DIAGRAM_ALLOWED_INTERFACE = Qt::magenta; //QColor(0, 220, 0);
+    QColor const DIAGRAM_ALLOWED_INTERFACE = Qt::magenta;
 
     //! Colors used for component in different scenarios.
     QColor const MISSING_COMPONENT = QColor(0xe8, 0xc5, 0xc5);
@@ -36,11 +36,8 @@ namespace KactusColors
     QColor const SW_COMPONENT = QColor(0xc5,0xff, 0xab);
 
     //! Colors used for memory/address sections in the memory designer.
-    QColor const MEMORY_MAP = QColor(0xc5,0xff, 0xab);
-    QColor const MEMORY_BLOCK = QColor(0xa5,0xc3,0xef);
-
-    QColor const ADDRESS_SPACE = QColor(0xc5,0xff, 0xab);
-    QColor const ADDRESS_SEGMENT = QColor(0xce,0xdf,0xff);
+    QColor const MEMORY_BLOCK = QColor(0xd6, 0xba, 0xff); //QColor(0xe6,0xba,0xff);
+    QColor const ADDRESS_SEGMENT = QColor(0xc6,0xef,0xd7);
     QColor const ADDRESS_SEGMENT_UNSEGMENTED = QColor(217, 217, 217);
 }
 

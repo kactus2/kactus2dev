@@ -36,28 +36,51 @@ AddressSectionItem::AddressSectionItem(QString const& name, unsigned int startAd
       startAddress_(startAddress),
       range_(range),
       nameLabel_(new QGraphicsTextItem(this)),
-      resizeIndex_(-1)
+      usageType_(USAGE_UNSPECIFIED),
+      typeLabel_(new QGraphicsTextItem(this)),
+      mouseNearResizeArea_(false),
+      startAddressLabel_(new QGraphicsTextItem(this)),
+      endAddressLabel_(new QGraphicsTextItem(this))
 {
-    setRect(-WIDTH / 2, 0, WIDTH, DEFAULT_SECTION_HEIGHT);
+    setRect(-WIDTH / 2, 0, WIDTH, MIN_SECTION_HEIGHT);
     setFlag(ItemSendsGeometryChanges);
     setFlag(ItemIsSelectable);
     setAcceptHoverEvents(true);
 
     QFont font = nameLabel_->font();
     font.setWeight(QFont::Bold);
+    font.setStyleStrategy(QFont::NoAntialias);
 
     nameLabel_->setFont(font);
     nameLabel_->setAcceptHoverEvents(false);
     nameLabel_->setTextWidth(WIDTH - ADDR_COLUMN_WIDTH);
-    nameLabel_->setPos(QPointF(-WIDTH / 2, 0));
     nameLabel_->setHtml(QString("<center>") + name_ + "</center>");
+    nameLabel_->setRotation(-90.0);
 
-    // Add the initial subsection which occupies the whole section.
-    QSharedPointer<AddressSubsection> subsection(new AddressSubsection(this, WIDTH / 2 - ADDR_COLUMN_WIDTH,
-                                                                       0, DEFAULT_SECTION_HEIGHT,
-                                                                       startAddress_, startAddress_ + range_ - 1));
-    subsection->setStartAddressFixed(true);
-    subsections_.append(subsection);
+    // Create the usage type label.
+    font = typeLabel_->font();
+    font.setPixelSize(9);
+    font.setWeight(QFont::Bold);
+    typeLabel_->setFont(font);
+    typeLabel_->setTextWidth(WIDTH - ADDR_COLUMN_WIDTH + 2);
+    typeLabel_->setPos(-WIDTH / 2, 0.0);
+    typeLabel_->setHtml(QString("<center></center>"));
+
+    // Create labels for addresses.
+    font = startAddressLabel_->font();
+    font.setWeight(QFont::Bold);
+
+    startAddressLabel_->setFont(font);
+    startAddressLabel_->setAcceptHoverEvents(false);
+    startAddressLabel_->setPos(QPointF(WIDTH / 2 - ADDR_COLUMN_WIDTH, 0.0));
+    startAddressLabel_->setHtml(toHexString(startAddress_));
+
+    endAddressLabel_->setFont(font);
+    endAddressLabel_->setAcceptHoverEvents(false);
+    endAddressLabel_->setPos(QPointF(WIDTH / 2 - ADDR_COLUMN_WIDTH, MIN_SECTION_HEIGHT - 20.0));
+    endAddressLabel_->setHtml(toHexString(startAddress_ + range_ - 1));
+
+    setHeight(MIN_SECTION_HEIGHT);
 }
 
 //-----------------------------------------------------------------------------
@@ -78,32 +101,6 @@ void AddressSectionItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
     painter->setPen(QPen(Qt::black));
     painter->drawLine(QPointF(WIDTH / 2 - ADDR_COLUMN_WIDTH, rect().top()),
                       QPointF(WIDTH / 2 - ADDR_COLUMN_WIDTH, rect().bottom()));
-
-    // Draw separator lines for the subsections.
-    QPen pen(Qt::black);
-    pen.setStyle(Qt::DashLine);
-    painter->setPen(pen);
-
-    if (subsections_.size() > 1)
-    {
-        painter->drawLine(QPointF(WIDTH / 2 - ADDR_COLUMN_WIDTH, subsections_.first()->getBottom()),
-                          QPointF(WIDTH / 2, subsections_.first()->getBottom()));
-    }
-
-    for (int i = 1; i < subsections_.size() - 1; ++i)
-    {
-        painter->drawLine(QPointF(WIDTH / 2 - ADDR_COLUMN_WIDTH, subsections_.at(i)->getTop()),
-                          QPointF(WIDTH / 2, subsections_.at(i)->getTop()));
-
-        painter->drawLine(QPointF(WIDTH / 2 - ADDR_COLUMN_WIDTH, subsections_.at(i)->getBottom()),
-                          QPointF(WIDTH / 2, subsections_.at(i)->getBottom()));
-    }
-
-    if (subsections_.size() > 1)
-    {
-        painter->drawLine(QPointF(WIDTH / 2 - ADDR_COLUMN_WIDTH, subsections_.last()->getTop()),
-                          QPointF(WIDTH / 2, subsections_.last()->getTop()));
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -123,20 +120,13 @@ void AddressSectionItem::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
     QGraphicsRectItem::hoverEnterEvent(event);
 
     if (!static_cast<DesignDiagram*>(scene())->isProtected() &&
-        event->pos().x() >= WIDTH / 2 - ADDR_COLUMN_WIDTH)
+        event->pos().x() >= WIDTH / 2 - ADDR_COLUMN_WIDTH &&
+        qAbs(event->pos().y() - boundingRect().bottom()) < 10)
     {
-        for (int i = 0; i < subsections_.size(); ++i)
+        if (!mouseNearResizeArea_)
         {
-            if (qAbs(event->pos().y() - (subsections_.at(i)->getBottom() + 5)) <= 8)
-            {
-                if (resizeIndex_ == -1)
-                {
-                    QApplication::setOverrideCursor(Qt::SizeVerCursor);
-                    resizeIndex_ = i;
-                }
-
-                break;
-            }
+            QApplication::setOverrideCursor(Qt::SizeVerCursor);
+            mouseNearResizeArea_ = true;
         }
     }
 }
@@ -148,11 +138,11 @@ void AddressSectionItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     QGraphicsRectItem::hoverLeaveEvent(event);
 
-    if (resizeIndex_ != -1)
+    if (mouseNearResizeArea_)
     {
         // Restore the old cursor.
         QApplication::restoreOverrideCursor();
-        resizeIndex_ = -1;
+        mouseNearResizeArea_ = false;
     }
 }
 
@@ -161,13 +151,12 @@ void AddressSectionItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 //-----------------------------------------------------------------------------
 void AddressSectionItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
-    if (resizeIndex_ != -1)
+    if (mouseNearResizeArea_)
     {
         // TODO: Save the old height before resize.
 
-        qreal sceneBottom = mapToScene(QPointF(0.0, subsections_.at(resizeIndex_)->getBottom())).y();
-
-        static_cast<MemoryDesignDiagram*>(scene())->beginResizeSubsection(resizeIndex_ < subsections_.size() - 1, sceneBottom);
+//         qreal sceneBottom = mapToScene(QPointF(0.0, subsections_.at(resizeIndex_)->getBottom())).y();
+//         static_cast<MemoryDesignDiagram*>(scene())->beginResizeSubsection(resizeIndex_ < subsections_.size() - 1, sceneBottom);
     }
 }
 
@@ -183,32 +172,17 @@ void AddressSectionItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
     }
 
     // If the mouse is moved near the resize area, change the column's width accordingly.
-    if (resizeIndex_ != -1)
+    if (mouseNearResizeArea_)
     {
         // Calculate the new bottom value for the resized subsection.
         int bottom = (static_cast<int>(event->pos().y() - 5.0) / 10) * 10;
 
         // Restrict so that the subsection does not shrink too small...
-        bottom = qMax(bottom, subsections_.at(resizeIndex_)->getTop() + MIN_SUBSECTION_HEIGHT);
+        bottom = qMax<int>(bottom, MIN_SECTION_HEIGHT);
+        setHeight(bottom);
 
-        // ...or make the next one too small.
-        if (resizeIndex_ < subsections_.size() - 1)
-        {
-            bottom = qMin(bottom, subsections_.at(resizeIndex_ + 1)->getBottom() - MIN_SUBSECTION_HEIGHT - SPACING);
-        }
-
-        // Apply resize.
-        subsections_.at(resizeIndex_)->setBottom(bottom);
-
-        if (resizeIndex_ < subsections_.size() - 1)
-        {
-            subsections_.at(resizeIndex_ + 1)->setTop(bottom + SPACING);
-        }
-
-        setHeight(subsections_.last()->getBottom());
-
-        qreal sceneBottom = mapToScene(QPointF(0.0, bottom)).y();
-        static_cast<MemoryDesignDiagram*>(scene())->updateResizeSubsection(sceneBottom);
+        //qreal sceneBottom = mapToScene(QPointF(0.0, bottom)).y();
+        //static_cast<MemoryDesignDiagram*>(scene())->updateResizeSubsection(sceneBottom);
     }
     else
     {
@@ -225,9 +199,9 @@ void AddressSectionItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 //-----------------------------------------------------------------------------
 void AddressSectionItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
-    if (resizeIndex_ != -1)
+    if (mouseNearResizeArea_)
     {
-        static_cast<MemoryDesignDiagram*>(scene())->endResizeSubsection();
+        //static_cast<MemoryDesignDiagram*>(scene())->endResizeSubsection();
 //         if (desc_.getWidth() != oldWidth_)
 //         {
 //             QSharedPointer<QUndoCommand> cmd(new AddressSectionItemResizeCommand(this, oldWidth_));
@@ -258,28 +232,23 @@ void AddressSectionItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 void AddressSectionItem::updateCursor(QGraphicsSceneHoverEvent* event)
 {
     if (!static_cast<DesignDiagram*>(scene())->isProtected() &&
-        event->pos().x() >= WIDTH / 2 - ADDR_COLUMN_WIDTH)
+        event->pos().x() >= WIDTH / 2 - ADDR_COLUMN_WIDTH &&
+        qAbs(event->pos().y() - boundingRect().bottom()) < 10)
     {
-        for (int i = 0; i < subsections_.size(); ++i)
+        if (!mouseNearResizeArea_)
         {
-            if (qAbs(event->pos().y() - (subsections_.at(i)->getBottom() + 5)) <= 8)
-            {
-                if (resizeIndex_ == -1)
-                {
-                    QApplication::setOverrideCursor(Qt::SizeVerCursor);
-                    resizeIndex_ = i;
-                }
-
-                return;
-            }
+            QApplication::setOverrideCursor(Qt::SizeVerCursor);
+            mouseNearResizeArea_ = true;
         }
+
+        return;
     }
 
-    if (resizeIndex_ != -1)
+    if (mouseNearResizeArea_)
     {
         // Restore the old cursor.
         QApplication::restoreOverrideCursor();
-        resizeIndex_ = -1;
+        mouseNearResizeArea_ = false;
     }
 }
 
@@ -296,6 +265,12 @@ void AddressSectionItem::setHeight(int height)
     {
         stack->updateItemPositions();
     }
+
+    nameLabel_->setTextWidth(height);
+    nameLabel_->setPos(-WIDTH / 2 + GridSize / 2, height);
+
+    startAddressLabel_->setPos(QPointF(WIDTH / 2 - ADDR_COLUMN_WIDTH, 0.0));
+    endAddressLabel_->setPos(QPointF(WIDTH / 2 - ADDR_COLUMN_WIDTH, height - 20.0));
 }
 
 //-----------------------------------------------------------------------------
@@ -304,100 +279,36 @@ void AddressSectionItem::setHeight(int height)
 void AddressSectionItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
     // Check if the user double clicked in the address area and a new split should be performed.
-    if (!static_cast<DesignDiagram*>(scene())->isProtected() &&
-        event->pos().x() >= WIDTH / 2 - ADDR_COLUMN_WIDTH)
-    {
-        // Determine which subsection should be split.
-        int index = getSubsectionAt(event->pos());
-        AddressSubsection* subsection = subsections_.at(index).data();
-
-        // Determine the new bottom y coordinate for the original subsection.
-        int bottom1 = qMax(20, static_cast<int>(event->pos().y() - 5.0) / 10 * 10);
-        int bottom2 = subsection->getBottom();
-        int top2 = bottom1 + SPACING;
-
-        // Divide the address range in half by default.
-        unsigned int startAddress2 = subsection->getStartAddress() + subsection->getRange() / 2;
-        unsigned int endAddress2 = subsection->getEndAddress();
-
-        // Shrink the old subsection and create the new one.
-        subsection->setBottom(bottom1);
-        subsection->setEndAddress(startAddress2 - 1);
-
-        QSharedPointer<AddressSubsection> newSubsection(new AddressSubsection(this, WIDTH / 2 - ADDR_COLUMN_WIDTH,
-                                                                              top2, bottom2, startAddress2, endAddress2));
-        newSubsection->setMinStartAddress(subsection->getStartAddress() + 1);
-
-        connect(newSubsection.data(), SIGNAL(startAddressEdited(AddressSubsection*)),
-                this, SLOT(onSubsectionStartAddressEdited(AddressSubsection*)), Qt::UniqueConnection);
-
-        subsections_.insert(index + 1, newSubsection);
-        fixSubsectionHeights();
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressSectionItem::getSubsectionAt()
-//-----------------------------------------------------------------------------
-int AddressSectionItem::getSubsectionAt(QPointF const& pos) const
-{
-    int index = 0;
-
-    for (; index < subsections_.size(); ++index)
-    {
-        if (pos.y() >= subsections_.at(index)->getTop() &&
-            pos.y() < subsections_.at(index)->getBottom())
-        {
-            break;
-        }
-    }
-    
-    return index;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressSectionItem::fixSubsectionHeights()
-//-----------------------------------------------------------------------------
-void AddressSectionItem::fixSubsectionHeights()
-{
-    for (int i = 0; i < subsections_.size(); ++i)
-    {
-        AddressSubsection* subsection = subsections_.at(i).data();
-        
-        if (subsection->getBottom() - subsection->getTop() < MIN_SUBSECTION_HEIGHT)
-        {
-            subsection->setBottom(subsection->getTop() + MIN_SUBSECTION_HEIGHT);
-            
-            if (i < subsections_.size() - 1)
-            {
-                subsections_.at(i + 1)->setTop(subsection->getBottom() + SPACING);
-            }
-        }
-    }
-
-    setHeight(subsections_.last()->getBottom());
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressSectionItem::onSubsectionStartAddressEdited()
-//-----------------------------------------------------------------------------
-void AddressSectionItem::onSubsectionStartAddressEdited(AddressSubsection* subsection)
-{
-    // Find the index of the subsection.
-    for (int i = 0; i < subsections_.size(); ++i)
-    {
-        if (subsections_.at(i) == subsection)
-        {
-            subsections_.at(i - 1)->setEndAddress(subsection->getStartAddress() - 1);
-
-            if (i < subsections_.size() - 1)
-            {
-                subsections_.at(i + 1)->setMinStartAddress(subsection->getStartAddress() + 1);
-            }
-
-            break;
-        }
-    }
+//     if (!static_cast<DesignDiagram*>(scene())->isProtected() &&
+//         event->pos().x() >= WIDTH / 2 - ADDR_COLUMN_WIDTH)
+//     {
+//         // Determine which subsection should be split.
+//         int index = getSubsectionAt(event->pos());
+//         AddressSubsection* subsection = subsections_.at(index).data();
+// 
+//         // Determine the new bottom y coordinate for the original subsection.
+//         int bottom1 = qMax(20, static_cast<int>(event->pos().y() - 5.0) / 10 * 10);
+//         int bottom2 = subsection->getBottom();
+//         int top2 = bottom1 + SPACING;
+// 
+//         // Divide the address range in half by default.
+//         unsigned int startAddress2 = subsection->getStartAddress() + subsection->getRange() / 2;
+//         unsigned int endAddress2 = subsection->getEndAddress();
+// 
+//         // Shrink the old subsection and create the new one.
+//         subsection->setBottom(bottom1);
+//         subsection->setEndAddress(startAddress2 - 1);
+// 
+//         QSharedPointer<AddressSubsection> newSubsection(new AddressSubsection(this, WIDTH / 2 - ADDR_COLUMN_WIDTH,
+//                                                                               top2, bottom2, startAddress2, endAddress2));
+//         newSubsection->setMinStartAddress(subsection->getStartAddress() + 1);
+// 
+//         connect(newSubsection.data(), SIGNAL(startAddressEdited(AddressSubsection*)),
+//                 this, SLOT(onSubsectionStartAddressEdited(AddressSubsection*)), Qt::UniqueConnection);
+// 
+//         subsections_.insert(index + 1, newSubsection);
+//         fixSubsectionHeights();
+//     }
 }
 
 //-----------------------------------------------------------------------------
@@ -409,18 +320,127 @@ void AddressSectionItem::drawGuides(QPainter* painter, QRectF const& rect) const
     pen.setStyle(Qt::DashLine);
     painter->setPen(pen);
 
-    foreach (QSharedPointer<AddressSubsection const> subsection, subsections_)
-    {
-        painter->drawLine(rect.left(), scenePos().y() + subsection->getTop(),
-                          rect.right(), scenePos().y() + subsection->getTop());
+    painter->drawLine(rect.left(), sceneBoundingRect().top(),
+                      rect.right(), sceneBoundingRect().top());
 
-        painter->drawLine(rect.left(), scenePos().y() + subsection->getBottom(),
-                          rect.right(), scenePos().y() + subsection->getBottom());
+    painter->drawLine(rect.left(), sceneBoundingRect().bottom(),
+                      rect.right(), sceneBoundingRect().bottom());
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSectionItem::setUsageType()
+//-----------------------------------------------------------------------------
+void AddressSectionItem::setUsageType(UsageType usageType)
+{
+    switch (usageType)
+    {
+    case USAGE_READ_ONLY:
+        {
+            typeLabel_->setHtml(QString("<center>R</center>"));
+            typeLabel_->setToolTip(tr("Read-only"));
+            break;
+        }
+
+    case USAGE_READ_WRITE:
+        {
+            typeLabel_->setHtml(QString("<center>RW</center>"));
+            typeLabel_->setToolTip(tr("Read-write"));
+            break;
+        }
+
+    case USAGE_READ_WRITE_ONCE:
+        {
+            typeLabel_->setHtml(QString("<center>RWO</center>"));
+            typeLabel_->setToolTip(tr("Read-write-once"));
+            break;
+        }
+
+    case USAGE_REGISTERS:
+        {
+            typeLabel_->setHtml(QString("<center>REG</center>"));
+            typeLabel_->setToolTip(tr("Registers"));
+            break;
+        }
+
+    default:
+        {
+            typeLabel_->setHtml(QString("<center></center>"));
+            typeLabel_->setToolTip("");
+            break;
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSubsection::toHexString()
+//-----------------------------------------------------------------------------
+QString AddressSectionItem::toHexString(unsigned int address)
+{
+    return QString("0x") + QString("%1").arg(address, 8, 16, QChar('0')).toUpper();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSectionItem::getStartAddress()
+//-----------------------------------------------------------------------------
+unsigned int AddressSectionItem::getStartAddress() const
+{
+    return startAddress_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSectionItem::getEndAddress()
+//-----------------------------------------------------------------------------
+unsigned int AddressSectionItem::getEndAddress() const
+{
+    return (startAddress_ + range_ - 1);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSectionItem::drawStartAddressDivider()
+//-----------------------------------------------------------------------------
+void AddressSectionItem::drawStartAddressDivider(QPainter* painter, QRectF const& rect, int y, unsigned int address) const
+{
+    if (y == static_cast<int>(sceneBoundingRect().top()) || y == static_cast<int>(sceneBoundingRect().bottom()))
+    {
+        return;
     }
 
-//     painter->drawLine(rect.left(), sceneBoundingRect().top(),
-//                       rect.right(), sceneBoundingRect().top());
-// 
-//     painter->drawLine(rect.left(), sceneBoundingRect().bottom(),
-//                       rect.right(), sceneBoundingRect().bottom());
+    // Transform local left and right x coordinates to scene coordinates.
+    qreal left = mapToScene(WIDTH / 2 - ADDR_COLUMN_WIDTH, 0.0).x();
+    qreal right = mapToScene(WIDTH / 2, 0.0).x();
+
+    QPen pen(Qt::black, 0);
+    pen.setStyle(Qt::DashLine);
+    painter->setPen(pen);
+
+    // Draw the divider line.
+    painter->drawLine(left, y, right, y);
+
+    // Draw the address as text.
+    painter->drawText(left + 2, y + 12, toHexString(address));
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSectionItem::drawEndAddressDivider()
+//-----------------------------------------------------------------------------
+void AddressSectionItem::drawEndAddressDivider(QPainter* painter, QRectF const& rect, int y, unsigned int address) const
+{
+    if (y == static_cast<int>(sceneBoundingRect().top()) || y == static_cast<int>(sceneBoundingRect().bottom()))
+    {
+        return;
+    }
+
+    // Transform local left and right x coordinates to scene coordinates.
+    qreal left = mapToScene(WIDTH / 2 - ADDR_COLUMN_WIDTH, 0.0).x();
+    qreal right = mapToScene(WIDTH / 2, 0.0).x();
+
+    QPen pen(Qt::black, 0);
+    pen.setStyle(Qt::DashLine);
+    painter->setPen(pen);
+
+    // Draw the divider line.
+    painter->drawLine(left, y, right, y);
+
+    // Draw the address as text.
+    painter->drawText(left + 2, y - 2, toHexString(address));
 }

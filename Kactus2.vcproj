@@ -2994,6 +2994,14 @@
 				Name="MemoryDesigner"
 				>
 				<File
+					RelativePath=".\MemoryDesigner\AddressBlockItem.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\MemoryDesigner\AddressBlockItem.h"
+					>
+				</File>
+				<File
 					RelativePath=".\MemoryDesigner\AddressSectionItem.cpp"
 					>
 				</File>
@@ -3071,6 +3079,10 @@
 				</File>
 				<File
 					RelativePath=".\MemoryDesigner\MemoryItem.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\MemoryDesigner\SegmentItem.cpp"
 					>
 				</File>
 			</Filter>
@@ -24946,6 +24958,10 @@
 							Outputs="&quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\MemoryDesigner\SegmentItem.h"
+					>
 				</File>
 			</Filter>
 		</Filter>

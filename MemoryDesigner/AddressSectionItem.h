@@ -33,6 +33,18 @@ class AddressSectionItem : public MemoryBaseItem
 public:
     enum { Type = GFX_TYPE_ADDRESS_SECTION_ITEM };
 
+    //-----------------------------------------------------------------------------
+    //! Usage type enumeration.
+    //-----------------------------------------------------------------------------
+    enum UsageType
+    {
+        USAGE_UNSPECIFIED = 0,
+        USAGE_READ_ONLY,
+        USAGE_READ_WRITE,
+        USAGE_READ_WRITE_ONCE,
+        USAGE_REGISTERS
+    };
+
     /*!
      *  Constructor.
      *  
@@ -47,7 +59,14 @@ public:
     /*!
      *  Destructor.
      */
-    ~AddressSectionItem();
+    virtual ~AddressSectionItem();
+
+    /*!
+     *  Sets the usage type.
+     *
+     *      @param [in] usageType The usage type.
+     */
+    void setUsageType(UsageType usageType);
 
     /*!
      *  Draws address guide lines.
@@ -56,6 +75,36 @@ public:
      *      @param [in] rect     The visible rectangle area where to draw the lines.
      */
     virtual void drawGuides(QPainter* painter, QRectF const& rect) const;
+
+    /*!
+     *  Draws a divider for start address.
+     *
+     *      @param [in] painter The painter.
+     *      @param [in] rect    The rectangle for the visible drawing area.
+     *      @param [in] y       The divider y coordinate in scene coordinates.
+     *      @param [in] address The reference memory address.
+     */
+    virtual void drawStartAddressDivider(QPainter* painter, QRectF const& rect, int y, unsigned int address) const;
+
+    /*!
+     *  Draws a divider for end address.
+     *
+     *      @param [in] painter The painter.
+     *      @param [in] rect    The rectangle for the visible drawing area.
+     *      @param [in] y       The divider y coordinate in scene coordinates.
+     *      @param [in] address The reference memory address.
+     */
+    virtual void drawEndAddressDivider(QPainter* painter, QRectF const& rect, int y, unsigned int address) const;
+
+    /*!
+     *  Returns the start address.
+     */
+    unsigned int getStartAddress() const;
+
+    /*!
+     *  Returns the end address.
+     */
+    unsigned int getEndAddress() const;
 
     int type() const { return Type; }
 
@@ -84,10 +133,6 @@ protected:
     //! Draws the memory item.
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
-private slots:
-    //! Called when the start address of a subsection has been edited.
-    void onSubsectionStartAddressEdited(AddressSubsection* subsection);
-
 private:
     // Disable copying.
     AddressSectionItem(AddressSectionItem const& rhs);
@@ -108,25 +153,19 @@ private:
     void setHeight(int height);
 
     /*!
-     *  Retrieves subsection at the given position.
+     *  Converts the address to a hexadecimal string.
      *  
-     *      @param [in] pos The position.
+     *      @param [in] address The address.
      *  
-     *      @return The subsection.
+     *      @return Address as a string.
      */
-    int getSubsectionAt(QPointF const& pos) const;
-
-    /*!
-     *  Fixes subsection heights so that no subsection is smaller than the minimum subsection height.
-     */
-    void fixSubsectionHeights();
+    static QString toHexString(unsigned int address);
 
     enum
     {
-        WIDTH = 230,
-        ADDR_COLUMN_WIDTH = 80,
-        DEFAULT_SECTION_HEIGHT = 120,
-        MIN_SUBSECTION_HEIGHT = 40,
+        WIDTH = 120,
+        ADDR_COLUMN_WIDTH = 90,
+        MIN_SECTION_HEIGHT = 120,
         SPACING = 10,
     };
 
@@ -146,14 +185,20 @@ private:
     //! The name label.
     QGraphicsTextItem* nameLabel_;
 
+    //! The usage type.
+    UsageType usageType_;
+
+    //! Usage type label.
+    QGraphicsTextItem* typeLabel_;
+
     //! If true, the mouse hovers near the resize area.
     bool mouseNearResizeArea_;
 
-    //! The resize index.
-    int resizeIndex_;
+    //! The label for start address.
+    QGraphicsTextItem* startAddressLabel_;
 
-    //! The subsections. The list contains always at least one item.
-    QList< QSharedPointer<AddressSubsection> > subsections_;
+    //! The label for end address.
+    QGraphicsTextItem* endAddressLabel_;
 };
 
 #endif // ADDRESSSECTIONITEM_H

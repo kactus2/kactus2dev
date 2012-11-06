@@ -21,6 +21,7 @@
 
 class GraphicsColumnLayout;
 class GraphicsConnection;
+class MemoryBaseItem;
 
 //-----------------------------------------------------------------------------
 //! MemoryColumn class.
@@ -45,6 +46,15 @@ public:
      *  Destructor.
      */
     virtual ~MemoryColumn();
+
+    /*!
+     *  Searches the item which contains the given y coordinate.
+     *
+     *      @param [i] y The y coordinate.
+     *
+     *      @return The item which contains the given y coordinate.
+     */
+    MemoryBaseItem* findItemAt(int y) const;
 
     int type() const { return Type; }
 

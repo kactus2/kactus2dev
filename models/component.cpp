@@ -3168,6 +3168,17 @@ QSharedPointer<BusInterface> Component::getBusInterface( const QString& name ) {
 	return QSharedPointer<BusInterface>();
 }
 
+QSharedPointer<BusInterface const> Component::getBusInterface( const QString& name ) const {
+
+    foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {
+        if (busif->getName() == name) {
+            return busif;
+        }
+    }
+
+    return QSharedPointer<BusInterface>();
+}
+
 QStringList Component::getSlaveInterfaces( const QString& memoryMap ) const {
 	QStringList names;
 	

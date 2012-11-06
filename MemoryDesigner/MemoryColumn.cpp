@@ -85,3 +85,19 @@ bool MemoryColumn::isItemAllowed(QGraphicsItem* item, unsigned int allowedItems)
         return false;
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: MemoryColumn::findItemAt()
+//-----------------------------------------------------------------------------
+MemoryBaseItem* MemoryColumn::findItemAt(int y) const
+{
+    foreach (QGraphicsItem* item, getItems())
+    {
+        if (y >= item->sceneBoundingRect().top() && y < item->sceneBoundingRect().bottom())
+        {
+            return static_cast<MemoryBaseItem*>(item);
+        }
+    }
+
+    return 0;
+}
