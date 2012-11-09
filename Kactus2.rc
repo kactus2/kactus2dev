@@ -73,9 +73,6 @@ IDI_ICON1               ICON                    "appicon.ico"
 // PNG
 //
 
-IDB_PNG5                PNG                     "graphics\\expand.png"
-IDB_PNG6                PNG                     "D:\\user\\kamppia\\SVNwork\\Kactus2 SourceForge\\graphics\\collapse.png"
-
 /////////////////////////////////////////////////////////////////////////////
 //
 // Accelerator
