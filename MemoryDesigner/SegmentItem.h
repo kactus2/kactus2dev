@@ -16,6 +16,7 @@
 
 class Component;
 class AddressSpace;
+class AddressSubsection;
 
 //-----------------------------------------------------------------------------
 //! Segment graphics item.
@@ -43,6 +44,11 @@ public:
      */
     ~SegmentItem();
 
+    /*!
+     *  Draws the segment item.
+     */
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+
 private:
     // Disable copying.
     SegmentItem(SegmentItem const& rhs);
@@ -57,6 +63,10 @@ private:
 
     //! The parent address space.
     QSharedPointer<AddressSpace> addressSpace_;
+
+    //! The subsections.
+    QList< QSharedPointer<AddressSubsection> > subsections_;
+
 };
 
 //-----------------------------------------------------------------------------

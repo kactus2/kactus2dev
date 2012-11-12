@@ -45,6 +45,7 @@ AddressSubsection::AddressSubsection(AddressSectionItem* parent, int offsetX,
     startAddressLabel_->setPos(QPointF(offsetX, top_));
     startAddressLabel_->setHtml(toHexString(startAddress_));
     startAddressLabel_->setValidator(startAddressValidator_);
+    startAddressLabel_->setVisible(false);
 
     startAddressValidator_->setMaxAddress(endAddress);
 
@@ -52,6 +53,7 @@ AddressSubsection::AddressSubsection(AddressSectionItem* parent, int offsetX,
     endAddressLabel_->setAcceptHoverEvents(false);
     endAddressLabel_->setPos(QPointF(offsetX, bottom_ - 20));
     endAddressLabel_->setHtml(toHexString(endAddress_));
+    endAddressLabel_->setVisible(false);
 
     setStartAddressFixed(false);
 

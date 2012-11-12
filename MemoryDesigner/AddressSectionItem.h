@@ -133,6 +133,14 @@ protected:
     //! Draws the memory item.
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
+    enum
+    {
+        WIDTH = 120,
+        ADDR_COLUMN_WIDTH = 90,
+        MIN_SECTION_HEIGHT = 120,
+        SPACING = 10,
+    };
+
 private:
     // Disable copying.
     AddressSectionItem(AddressSectionItem const& rhs);
@@ -160,14 +168,6 @@ private:
      *      @return Address as a string.
      */
     static QString toHexString(unsigned int address);
-
-    enum
-    {
-        WIDTH = 120,
-        ADDR_COLUMN_WIDTH = 90,
-        MIN_SECTION_HEIGHT = 120,
-        SPACING = 10,
-    };
 
     //-----------------------------------------------------------------------------
     //! Data.
