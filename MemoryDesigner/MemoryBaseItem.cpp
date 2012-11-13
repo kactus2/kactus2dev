@@ -42,7 +42,7 @@ void MemoryBaseItem::drawGuides(QPainter* painter, QRectF const& rect) const
 // Function: MemoryBaseItem::drawStartAddressDivider()
 //-----------------------------------------------------------------------------
 void MemoryBaseItem::drawStartAddressDivider(QPainter* painter, QRectF const& rect, int y,
-                                             unsigned int address) const
+                                             quint64 address) const
 {
     foreach (AddressSectionItem* section, getSections())
     {
@@ -57,7 +57,7 @@ void MemoryBaseItem::drawStartAddressDivider(QPainter* painter, QRectF const& re
 // Function: MemoryBaseItem::drawEndAddressDivider()
 //-----------------------------------------------------------------------------
 void MemoryBaseItem::drawEndAddressDivider(QPainter* painter, QRectF const& rect, int y,
-                                           unsigned int address) const
+                                           quint64 address) const
 {
     foreach (AddressSectionItem* section, getSections())
     {
@@ -80,7 +80,7 @@ QList<AddressSectionItem*> const& MemoryBaseItem::getSections() const
 //-----------------------------------------------------------------------------
 // Function: MemoryBaseItem::convertAddress()
 //-----------------------------------------------------------------------------
-unsigned int MemoryBaseItem::convertAddress(unsigned int address, MemoryBaseItem* source) const
+quint64 MemoryBaseItem::convertAddress(quint64 address, MemoryBaseItem* source) const
 {
     return 0xDEADC0DE;
 }

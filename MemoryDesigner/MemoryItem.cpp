@@ -107,12 +107,12 @@ MemoryItem::MemoryItem(LibraryInterface* libInterface, QString const& instanceNa
     if (!blocks.empty())
     {
         qSort(blocks.begin(), blocks.end(), &addressBlockSortOp);
-        unsigned int curAddress = Utils::str2Int(blocks.first()->getBaseAddress());
+        quint64 curAddress = Utils::str2Int(blocks.first()->getBaseAddress());
 
         foreach (QSharedPointer<AddressBlock> block, blocks)
         {
-            unsigned int startAddress = Utils::str2Int(block->getBaseAddress());
-            unsigned int range = Utils::str2Int(block->getRange());
+            quint64 startAddress = Utils::str2Int(block->getBaseAddress());
+            quint64 range = Utils::str2Int(block->getRange());
 
             // Check if there is a hole in the memory before the next address block.
             if (startAddress > curAddress)
@@ -525,7 +525,7 @@ QList<AddressSectionItem*> const& MemoryItem::getSections() const
 //-----------------------------------------------------------------------------
 // Function: MemoryItem::convertAddress()
 //-----------------------------------------------------------------------------
-unsigned int MemoryItem::convertAddress(unsigned int address, MemoryBaseItem* source) const
+quint64 MemoryItem::convertAddress(quint64 address, MemoryBaseItem* source) const
 {
     // Conversion is possible only if the source is an address base.
     AddressSpaceItem* addrSpaceItem = dynamic_cast<AddressSpaceItem*>(source);
@@ -535,7 +535,7 @@ unsigned int MemoryItem::convertAddress(unsigned int address, MemoryBaseItem* so
         return address;
     }
 
-    unsigned int addressOffset = 0;
+    quint64 addressOffset = 0;
 
     if (!static_cast<MemoryDesignDiagram*>(scene())->isConnected(addrSpaceItem, this, &addressOffset))
     {

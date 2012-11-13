@@ -36,9 +36,9 @@ public:
      *      @param [in] startAddress    The start address.
      *      @param [in] endAddress      The end address.
      */
-    AddressSubsection(AddressSectionItem* parent, int offsetX,
-                      int top, int bottom,
-                      unsigned int startAddress, unsigned int endAddress);
+    AddressSubsection(AddressSectionItem* parent,
+                      int offsetX, int top, int bottom,
+                      quint64 startAddress, quint64 endAddress);
 
     /*!
      *  Destructor.
@@ -50,7 +50,7 @@ public:
      *  
      *      @param [in] minAddress  The minimum address.
      */
-    void setMinStartAddress(unsigned int minAddress);
+    void setMinStartAddress(quint64 minAddress);
 
     /*!
      *  Sets the top y coordinate.
@@ -71,14 +71,14 @@ public:
      *
      *      @param [in] startAddress The start address to set.
      */
-    void setStartAddress(unsigned int startAddress);
+    void setStartAddress(quint64 startAddress);
 
     /*!
      *  Sets the end address.
      *  
      *      @param [in] endAddress  The end address to set.
      */
-    void setEndAddress(unsigned int endAddress);
+    void setEndAddress(quint64 endAddress);
 
     /*!
      *  Sets the start address fixed (i.e. can no longer be changed).
@@ -100,17 +100,17 @@ public:
     /*!
      *  Returns the start address.
      */
-    unsigned int getStartAddress() const;
+    quint64 getStartAddress() const;
 
     /*!
      *  Returns the end address.
      */
-    unsigned int getEndAddress() const;
+    quint64 getEndAddress() const;
 
     /*!
      *  Returns the address range.
      */
-    unsigned int getRange() const;
+    quint64 getRange() const;
 
 signals:
     //! Signaled when the start address has been edited.
@@ -137,7 +137,7 @@ private:
      *  
      *      @return Address as a string.
      */
-    static QString toHexString(unsigned int address);
+    static QString toHexString(quint64 address);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -150,10 +150,10 @@ private:
     int bottom_;
 
     //! The start address.
-    unsigned int startAddress_;
+    quint64 startAddress_;
 
     //! The end address.
-    unsigned int endAddress_;
+    quint64 endAddress_;
 
     //! The label for start address.
     GraphicsLineEdit* startAddressLabel_;

@@ -29,8 +29,8 @@
 //-----------------------------------------------------------------------------
 // Function: AddressSectionItem::AddressSectionItem()
 //-----------------------------------------------------------------------------
-AddressSectionItem::AddressSectionItem(QString const& name, unsigned int startAddress,
-                                       unsigned int range, QGraphicsItem* parent)
+AddressSectionItem::AddressSectionItem(QString const& name, quint64 startAddress,
+                                       quint64 range, QGraphicsItem* parent)
     : MemoryBaseItem(parent),
       name_(name),
       startAddress_(startAddress),
@@ -292,8 +292,8 @@ void AddressSectionItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 //         int top2 = bottom1 + SPACING;
 // 
 //         // Divide the address range in half by default.
-//         unsigned int startAddress2 = subsection->getStartAddress() + subsection->getRange() / 2;
-//         unsigned int endAddress2 = subsection->getEndAddress();
+//         quint64 startAddress2 = subsection->getStartAddress() + subsection->getRange() / 2;
+//         quint64 endAddress2 = subsection->getEndAddress();
 // 
 //         // Shrink the old subsection and create the new one.
 //         subsection->setBottom(bottom1);
@@ -374,7 +374,7 @@ void AddressSectionItem::setUsageType(UsageType usageType)
 //-----------------------------------------------------------------------------
 // Function: AddressSubsection::toHexString()
 //-----------------------------------------------------------------------------
-QString AddressSectionItem::toHexString(unsigned int address)
+QString AddressSectionItem::toHexString(quint64 address)
 {
     return QString("0x") + QString("%1").arg(address, 8, 16, QChar('0')).toUpper();
 }
@@ -382,7 +382,7 @@ QString AddressSectionItem::toHexString(unsigned int address)
 //-----------------------------------------------------------------------------
 // Function: AddressSectionItem::getStartAddress()
 //-----------------------------------------------------------------------------
-unsigned int AddressSectionItem::getStartAddress() const
+quint64 AddressSectionItem::getStartAddress() const
 {
     return startAddress_;
 }
@@ -390,7 +390,7 @@ unsigned int AddressSectionItem::getStartAddress() const
 //-----------------------------------------------------------------------------
 // Function: AddressSectionItem::getEndAddress()
 //-----------------------------------------------------------------------------
-unsigned int AddressSectionItem::getEndAddress() const
+quint64 AddressSectionItem::getEndAddress() const
 {
     return (startAddress_ + range_ - 1);
 }
@@ -398,7 +398,7 @@ unsigned int AddressSectionItem::getEndAddress() const
 //-----------------------------------------------------------------------------
 // Function: AddressSectionItem::drawStartAddressDivider()
 //-----------------------------------------------------------------------------
-void AddressSectionItem::drawStartAddressDivider(QPainter* painter, QRectF const& rect, int y, unsigned int address) const
+void AddressSectionItem::drawStartAddressDivider(QPainter* painter, QRectF const& rect, int y, quint64 address) const
 {
     if (y == static_cast<int>(sceneBoundingRect().top()) || y == static_cast<int>(sceneBoundingRect().bottom()))
     {
@@ -423,7 +423,7 @@ void AddressSectionItem::drawStartAddressDivider(QPainter* painter, QRectF const
 //-----------------------------------------------------------------------------
 // Function: AddressSectionItem::drawEndAddressDivider()
 //-----------------------------------------------------------------------------
-void AddressSectionItem::drawEndAddressDivider(QPainter* painter, QRectF const& rect, int y, unsigned int address) const
+void AddressSectionItem::drawEndAddressDivider(QPainter* painter, QRectF const& rect, int y, quint64 address) const
 {
     if (y == static_cast<int>(sceneBoundingRect().top()) || y == static_cast<int>(sceneBoundingRect().bottom()))
     {

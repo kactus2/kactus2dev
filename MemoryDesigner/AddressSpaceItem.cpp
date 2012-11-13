@@ -87,51 +87,50 @@ AddressSpaceItem::AddressSpaceItem(LibraryInterface* libInterface, QString const
     aubLabel_->setHtml(QString("<center>AUB<br>") + QString::number(addressSpace->getAddressUnitBits()) +
                        QString("</center>"));
 
-    // Check if the address space is unsegmented.
-    if (addressSpace_->getSegments().empty())
+    // Parse segments and add a section for each of them.
+    // Unsegmented parts are also visualized.
+    quint64 curAddress = 0;
+
+    // Sort address spaces based on their start address.
+    QList< QSharedPointer<Segment> > segments = addressSpace_->getSegments();
+    qSort(segments.begin(), segments.end(), &segmentSortOp);
+
+    foreach (QSharedPointer<Segment> segment, segments)
     {
-        // Add only one unsegmented section which takes the whole address space.
-        AddressSectionItem* section = new SegmentItem(component_, addressSpace_, tr("unsegmented"), 0, 
-                                                      Utils::str2Int(addressSpace_->getRange()), this);
+        quint64 startAddress = Utils::str2Int(segment->getAddressOffset());
+        quint64 range = Utils::str2Int(segment->getRange());
+
+        // Check if there is unsegmented area before the segment.
+        if (startAddress > curAddress)
+        {
+            AddressSectionItem* section = new SegmentItem(component_, addressSpace_,
+                tr("unsegmented"), curAddress, 
+                startAddress - curAddress, this);
+            section->setBrush(QBrush(KactusColors::ADDRESS_SEGMENT_UNSEGMENTED));
+            section->setPos(0.0, getHeight());
+            addItem(section);
+        }
+
+        // Add the actual segment section.
+        AddressSectionItem* section = new SegmentItem(component_, addressSpace_,
+            segment->getName(), startAddress, range, this);
+        section->setBrush(QBrush(KactusColors::ADDRESS_SEGMENT));
+        section->setPos(0.0, getHeight());
+        addItem(section);
+
+        curAddress = startAddress + range;
+    }
+
+    quint64 range = Utils::str2Int(addressSpace_->getRange());
+
+    if (curAddress < range)
+    {
+        // Add unsegmented section which takes the rest of the address space.
+        AddressSectionItem* section = new SegmentItem(component_, addressSpace_, tr("unsegmented"),
+                                                      curAddress, range - curAddress, this);
         section->setBrush(QBrush(KactusColors::ADDRESS_SEGMENT_UNSEGMENTED));
         section->setPos(0.0, getHeight());
         addItem(section);
-    }
-    else
-    {
-        // Parse segments and add a section for each of them.
-        // Unsegmented parts are also visualized.
-        unsigned int curAddress = 0;
-
-        // Sort address spaces based on their start address.
-        QList< QSharedPointer<Segment> > segments = addressSpace_->getSegments();
-        qSort(segments.begin(), segments.end(), &segmentSortOp);
-
-        foreach (QSharedPointer<Segment> segment, segments)
-        {
-            unsigned int startAddress = Utils::str2Int(segment->getAddressOffset());
-            unsigned int range = Utils::str2Int(segment->getRange());
-
-            // Check if there is unsegmented area before the segment.
-            if (startAddress > curAddress)
-            {
-                AddressSectionItem* section = new SegmentItem(component_, addressSpace_,
-                                                              tr("unsegmented"), curAddress, 
-                                                              startAddress - curAddress, this);
-                section->setBrush(QBrush(KactusColors::ADDRESS_SEGMENT_UNSEGMENTED));
-                section->setPos(0.0, getHeight());
-                addItem(section);
-            }
-
-            // Add the actual segment section.
-            AddressSectionItem* section = new SegmentItem(component_, addressSpace_,
-                                                          segment->getName(), startAddress, range, this);
-            section->setBrush(QBrush(KactusColors::ADDRESS_SEGMENT));
-            section->setPos(0.0, getHeight());
-            addItem(section);
-
-            curAddress = startAddress + range;
-        }
     }
 
     updateNameLabel(instanceName + "<br>" + addressSpace->getName());
@@ -489,7 +488,7 @@ QList<AddressSectionItem*> const& AddressSpaceItem::getSections() const
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceItem::convertAddress()
 //-----------------------------------------------------------------------------
-unsigned int AddressSpaceItem::convertAddress(unsigned int address, MemoryBaseItem* source) const
+quint64 AddressSpaceItem::convertAddress(quint64 address, MemoryBaseItem* source) const
 {
     // Conversion is possible only if the source is a memory map.
     MemoryItem* memoryMapItem = dynamic_cast<MemoryItem*>(source);
@@ -499,7 +498,7 @@ unsigned int AddressSpaceItem::convertAddress(unsigned int address, MemoryBaseIt
         return address;
     }
 
-    unsigned int addressOffset = 0;
+    quint64 addressOffset = 0;
 
     if (!static_cast<MemoryDesignDiagram*>(scene())->isConnected(this, memoryMapItem, &addressOffset))
     {

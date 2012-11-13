@@ -128,7 +128,7 @@ public:
      *      @return True if a connection was found; otherwise false.
      */
     bool isConnected(AddressSpaceItem const* addrSpaceItem, MemoryItem const* memoryItem,
-                     unsigned int* baseAddress) const;
+                     quint64* baseAddress) const;
 
 public slots:
     /*!
@@ -180,7 +180,7 @@ private:
     static GraphicsColumn* createDefaultColumn(GraphicsColumnLayout* layout, QGraphicsScene* scene);
 
     bool findRoute(QString const& instanceName, QSharedPointer<BusInterface const> busIf,
-                   MemoryItem const* memoryItem, unsigned int& addressOffset) const;
+                   MemoryItem const* memoryItem, quint64& addressOffset) const;
 
     QSharedPointer<Component const> getComponentByInstanceName(QString const& componentRef) const;
 

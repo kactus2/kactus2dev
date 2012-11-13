@@ -35,8 +35,8 @@ public:
      */
     AddressBlockItem(QSharedPointer<Component> component,
                      QSharedPointer<MemoryMap> memoryMap,
-                     QString const& name, unsigned int startAddress,
-                     unsigned int range, QGraphicsItem* parent);
+                     QString const& name, quint64 startAddress,
+                     quint64 range, QGraphicsItem* parent);
 
     /*!
      *  Destructor.

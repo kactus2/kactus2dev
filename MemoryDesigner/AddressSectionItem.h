@@ -53,8 +53,8 @@ public:
      *      @param [in] range           The address range.
      *      @param [in] parent          The parent.
      */
-    AddressSectionItem(QString const& name, unsigned int startAddress,
-                       unsigned int range, QGraphicsItem* parent);
+    AddressSectionItem(QString const& name, quint64 startAddress,
+                       quint64 range, QGraphicsItem* parent);
 
     /*!
      *  Destructor.
@@ -84,7 +84,7 @@ public:
      *      @param [in] y       The divider y coordinate in scene coordinates.
      *      @param [in] address The reference memory address.
      */
-    virtual void drawStartAddressDivider(QPainter* painter, QRectF const& rect, int y, unsigned int address) const;
+    virtual void drawStartAddressDivider(QPainter* painter, QRectF const& rect, int y, quint64 address) const;
 
     /*!
      *  Draws a divider for end address.
@@ -94,17 +94,17 @@ public:
      *      @param [in] y       The divider y coordinate in scene coordinates.
      *      @param [in] address The reference memory address.
      */
-    virtual void drawEndAddressDivider(QPainter* painter, QRectF const& rect, int y, unsigned int address) const;
+    virtual void drawEndAddressDivider(QPainter* painter, QRectF const& rect, int y, quint64 address) const;
 
     /*!
      *  Returns the start address.
      */
-    unsigned int getStartAddress() const;
+    quint64 getStartAddress() const;
 
     /*!
      *  Returns the end address.
      */
-    unsigned int getEndAddress() const;
+    quint64 getEndAddress() const;
 
     int type() const { return Type; }
 
@@ -133,6 +133,13 @@ protected:
     //! Draws the memory item.
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
+    /*!
+     *  Sets the height of the section item.
+     *  
+     *      @param [in] height  The height to set.
+     */
+    virtual void setHeight(int height);
+
     enum
     {
         WIDTH = 120,
@@ -154,20 +161,13 @@ private:
     void updateCursor(QGraphicsSceneHoverEvent* event);
 
     /*!
-     *  Sets the height of the section item.
-     *  
-     *      @param [in] height  The height to set.
-     */
-    void setHeight(int height);
-
-    /*!
      *  Converts the address to a hexadecimal string.
      *  
      *      @param [in] address The address.
      *  
      *      @return Address as a string.
      */
-    static QString toHexString(unsigned int address);
+    static QString toHexString(quint64 address);
 
     //-----------------------------------------------------------------------------
     //! Data.
@@ -177,10 +177,10 @@ private:
     QString name_;
 
     //! The start address.
-    unsigned int startAddress_;
+    quint64 startAddress_;
 
     //! the address range.
-    unsigned int range_;
+    quint64 range_;
 
     //! The name label.
     QGraphicsTextItem* nameLabel_;

@@ -28,7 +28,7 @@
 // Function: AddressSubsection::AddressSubsection()
 //-----------------------------------------------------------------------------
 AddressSubsection::AddressSubsection(AddressSectionItem* parent, int offsetX,
-                                     int top, int bottom, unsigned int startAddress, unsigned int endAddress)
+                                     int top, int bottom, quint64 startAddress, quint64 endAddress)
     : top_(top),
       bottom_(bottom),
       startAddress_(startAddress),
@@ -90,7 +90,7 @@ void AddressSubsection::setBottom(int bottom)
 //-----------------------------------------------------------------------------
 // Function: AddressSubsection::setStartAddress()
 //-----------------------------------------------------------------------------
-void AddressSubsection::setStartAddress(unsigned int startAddress)
+void AddressSubsection::setStartAddress(quint64 startAddress)
 {
     startAddress_ = startAddress;
     startAddressLabel_->setHtml(toHexString(startAddress));
@@ -99,7 +99,7 @@ void AddressSubsection::setStartAddress(unsigned int startAddress)
 //-----------------------------------------------------------------------------
 // Function: AddressSubsection::setEndAddress()
 //-----------------------------------------------------------------------------
-void AddressSubsection::setEndAddress(unsigned int endAddress)
+void AddressSubsection::setEndAddress(quint64 endAddress)
 {
     endAddress_ = endAddress;
     endAddressLabel_->setHtml(toHexString(endAddress));
@@ -133,7 +133,7 @@ int AddressSubsection::getBottom() const
 //-----------------------------------------------------------------------------
 // Function: AddressSubsection::getStartAddress()
 //-----------------------------------------------------------------------------
-unsigned int AddressSubsection::getStartAddress() const
+quint64 AddressSubsection::getStartAddress() const
 {
     return startAddress_;
 }
@@ -141,7 +141,7 @@ unsigned int AddressSubsection::getStartAddress() const
 //-----------------------------------------------------------------------------
 // Function: AddressSubsection::getEndAddress()
 //-----------------------------------------------------------------------------
-unsigned int AddressSubsection::getEndAddress() const
+quint64 AddressSubsection::getEndAddress() const
 {
     return endAddress_;
 }
@@ -149,7 +149,7 @@ unsigned int AddressSubsection::getEndAddress() const
 //-----------------------------------------------------------------------------
 // Function: AddressSubsection::getRange()
 //-----------------------------------------------------------------------------
-unsigned int AddressSubsection::getRange() const
+quint64 AddressSubsection::getRange() const
 {
     return (endAddress_ - startAddress_ + 1);
 }
@@ -166,7 +166,7 @@ void AddressSubsection::onStartAddressEdited()
 //-----------------------------------------------------------------------------
 // Function: AddressSubsection::toHexString()
 //-----------------------------------------------------------------------------
-QString AddressSubsection::toHexString(unsigned int address)
+QString AddressSubsection::toHexString(quint64 address)
 {
     return QString("0x") + QString("%1").arg(address, 8, 16, QChar('0')).toUpper();
 }
@@ -185,7 +185,7 @@ void AddressSubsection::onInvalidInput()
 //-----------------------------------------------------------------------------
 // Function: AddressSubsection::setMinStartAddress()
 //-----------------------------------------------------------------------------
-void AddressSubsection::setMinStartAddress(unsigned int minAddress)
+void AddressSubsection::setMinStartAddress(quint64 minAddress)
 {
     startAddressValidator_->setMinAddress(minAddress);
 }

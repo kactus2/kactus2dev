@@ -474,7 +474,7 @@ void MemoryDesignDiagram::drawMemoryDividers(QPainter* painter, QRectF const& re
                     
                     if (addrSpaceItem != 0)
                     {
-                        unsigned int address = addrSpaceItem->convertAddress(block->getStartAddress(), memItem);
+                        quint64 address = addrSpaceItem->convertAddress(block->getStartAddress(), memItem);
                         addrSpaceItem->drawStartAddressDivider(painter, rect, top, address);
                     }
                 }
@@ -488,7 +488,7 @@ void MemoryDesignDiagram::drawMemoryDividers(QPainter* painter, QRectF const& re
 
                     if (addrSpaceItem != 0)
                     {
-                        unsigned int address = addrSpaceItem->convertAddress(block->getEndAddress(), memItem);
+                        quint64 address = addrSpaceItem->convertAddress(block->getEndAddress(), memItem);
                         addrSpaceItem->drawEndAddressDivider(painter, rect, bottom, address);
                     }
                 }
@@ -518,7 +518,7 @@ void MemoryDesignDiagram::drawMemoryDividers(QPainter* painter, QRectF const& re
 
                         if (memItem != 0)
                         {
-                            unsigned int address = memItem->convertAddress(segment->getStartAddress(), addrSpaceItem);
+                            quint64 address = memItem->convertAddress(segment->getStartAddress(), addrSpaceItem);
                             memItem->drawStartAddressDivider(painter, rect, top, address);
                         }
                     }
@@ -529,7 +529,7 @@ void MemoryDesignDiagram::drawMemoryDividers(QPainter* painter, QRectF const& re
 
                         if (memItem != 0)
                         {
-                            unsigned int address = memItem->convertAddress(segment->getEndAddress(), addrSpaceItem);
+                            quint64 address = memItem->convertAddress(segment->getEndAddress(), addrSpaceItem);
                             memItem->drawEndAddressDivider(painter, rect, bottom, address);
                         }
                     }
@@ -543,7 +543,7 @@ void MemoryDesignDiagram::drawMemoryDividers(QPainter* painter, QRectF const& re
 // Function: MemoryDesignDiagram::isConnected()
 //-----------------------------------------------------------------------------
 bool MemoryDesignDiagram::isConnected(AddressSpaceItem const* addrSpaceItem, MemoryItem const* memoryItem,
-                                      unsigned int* addressOffset) const
+                                      quint64* addressOffset) const
 {
     // Find the route from the component containing the given address space to a component
     // containing the given memory map.
@@ -553,7 +553,7 @@ bool MemoryDesignDiagram::isConnected(AddressSpaceItem const* addrSpaceItem, Mem
         if (busIf->getInterfaceMode() == General::MASTER &&
             busIf->getMaster()->getAddressSpaceRef() == addrSpaceItem->getAddressSpace()->getName())
         {
-            unsigned int addressOffsetTemp = 0;
+            quint64 addressOffsetTemp = 0;
 
             if (findRoute(addrSpaceItem->getInstanceName(), busIf, memoryItem, addressOffsetTemp))
             {
@@ -570,7 +570,7 @@ bool MemoryDesignDiagram::isConnected(AddressSpaceItem const* addrSpaceItem, Mem
 // Function: MemoryDesignDiagram::findRoute()
 //-----------------------------------------------------------------------------
 bool MemoryDesignDiagram::findRoute(QString const& instanceName, QSharedPointer<BusInterface const> busIf,
-                                    MemoryItem const* memoryItem, unsigned int& addressOffset) const
+                                    MemoryItem const* memoryItem, quint64& addressOffset) const
 {
     // Check all connections that start from the bus interface.
     foreach (Design::Interconnection const& conn, design_->getInterconnections())
@@ -628,7 +628,7 @@ bool MemoryDesignDiagram::findRoute(QString const& instanceName, QSharedPointer<
 
                                             if (nextBusIf != 0)
                                             {
-                                                unsigned int addressOffsetTemp = 0;
+                                                quint64 addressOffsetTemp = 0;
 
                                                 if (findRoute(interface->componentRef, nextBusIf, memoryItem,
                                                               addressOffsetTemp))
@@ -663,7 +663,7 @@ bool MemoryDesignDiagram::findRoute(QString const& instanceName, QSharedPointer<
 
                             if (nextBusIf != 0)
                             {
-                                unsigned int addressOffsetTemp = 0;
+                                quint64 addressOffsetTemp = 0;
 
                                 if (findRoute(interface->componentRef, nextBusIf, memoryItem,
                                     addressOffsetTemp))

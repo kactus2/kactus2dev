@@ -43,7 +43,7 @@ public:
      *      @param [in] address The original address to convert.
      *      @param [in] source  The source for the original address.
      */
-    virtual unsigned int convertAddress(unsigned int address, MemoryBaseItem* source) const;
+    virtual quint64 convertAddress(quint64 address, MemoryBaseItem* source) const;
 
     /*!
      *  Draws address guide lines.
@@ -61,7 +61,7 @@ public:
      *      @param [in] y       The divider y coordinate in scene coordinates.
      *      @param [in] address The reference memory address.
      */
-    virtual void drawStartAddressDivider(QPainter* painter, QRectF const& rect, int y, unsigned int address) const;
+    virtual void drawStartAddressDivider(QPainter* painter, QRectF const& rect, int y, quint64 address) const;
 
     /*!
      *  Draws a divider for end address.
@@ -71,7 +71,7 @@ public:
      *      @param [in] y       The divider y coordinate in scene coordinates.
      *      @param [in] address The reference memory address.
      */
-    virtual void drawEndAddressDivider(QPainter* painter, QRectF const& rect, int y, unsigned int address) const;
+    virtual void drawEndAddressDivider(QPainter* painter, QRectF const& rect, int y, quint64 address) const;
 
     /*!
      *  Returns the sections.

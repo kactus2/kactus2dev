@@ -69,7 +69,7 @@ public:
      *      @param [in] address The original address to convert.
      *      @param [in] source  The source for the original address.
      */
-    virtual unsigned int convertAddress(unsigned int address, MemoryBaseItem* source) const;
+    virtual quint64 convertAddress(quint64 address, MemoryBaseItem* source) const;
 
     /*!
      *  Returns the name of the component instance.

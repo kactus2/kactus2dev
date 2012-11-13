@@ -36,8 +36,8 @@ public:
      */
     SegmentItem(QSharedPointer<Component> component,
                 QSharedPointer<AddressSpace> addressSpace,
-                QString const& name, unsigned int startAddress,
-                unsigned int range, QGraphicsItem* parent);
+                QString const& name, quint64 startAddress,
+                quint64 range, QGraphicsItem* parent);
 
     /*!
      *  Destructor.
@@ -49,10 +49,24 @@ public:
      */
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
+protected:
+    /*!
+     *  Sets the height of the section item.
+     *  
+     *      @param [in] height  The height to set.
+     */
+    virtual void setHeight(int height);
+
 private:
     // Disable copying.
     SegmentItem(SegmentItem const& rhs);
     SegmentItem& operator=(SegmentItem const& rhs);
+
+    enum
+    {
+        SUBSECTION_HEIGHT = 40,
+        SUBSECTION_SPACING = 30,
+    };
 
     //-----------------------------------------------------------------------------
     // Data.
