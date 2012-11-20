@@ -48,6 +48,14 @@ public:
 	*/
 	virtual int getBitWidth() const;
 
+protected:
+
+	/*! \brief Set new positions for child field items.
+	 * 
+	 * The child items are organized in the order of their offset.
+	*/
+	virtual void reorganizeChildren();
+
 private:
 	
 	//! \brief No copying

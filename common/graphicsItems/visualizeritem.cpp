@@ -21,13 +21,14 @@ rightBottomText_(this) {
 	setRect(0, 0, VisualizerItem::MAX_WIDTH, VisualizerItem::ITEM_HEIGHT);
 
 	QFont font = nameLabel_.font();
-	font.setWeight(QFont::Bold);
+	//font.setWeight(QFont::Bold);
+	font.setPointSize(VisualizerItem::FONT_NAMESIZE);
 	nameLabel_.setFont(font);
 	nameLabel_.setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
 
 	// set the fonts for the corner labels
 	QFont cornerFont = leftTopText_.font();
-	cornerFont.setPointSize(cornerFont.pointSize() - 1);
+	cornerFont.setPointSize(VisualizerItem::FONT_CORNERSIZE);
 	leftTopText_.setFont(cornerFont);
 	leftBottomText_.setFont(cornerFont);
 	rightTopText_.setFont(cornerFont);
@@ -46,13 +47,13 @@ void VisualizerItem::setName( const QString& name ) {
 	QFontMetrics fontMetrics(nameLabel_.font());
 
 	// The maximum width for the text
-	int maxTextSize = rect().width() / 2;
+	int maxTextSize = (rect().width() / 2) - 5;
+
+	// calculate how many characters can be fitted to the available space
+	int charCount = (maxTextSize / fontMetrics.width("x"));
 
 	// if the text is too wide to be displayed fully
-	if (fontMetrics.boundingRect(name).width() > maxTextSize) {
-
-		// calculate how many characters can be fitted to the available space
-		int charCount = maxTextSize / fontMetrics.width("x");
+	if (name.size() > charCount) {
 
 		// create the name to be displayed.
 		QString choppedName(name);
@@ -123,7 +124,7 @@ QRectF VisualizerItem::itemTotalRect() const {
 
 		// the rectangle must contain this item and also the child item
 		VisualizerItem* childItem = dynamic_cast<VisualizerItem*>(child);
-		if (childItem) {
+		if (childItem && childItem->isVisible()) {
 			totalRect = totalRect.united(mapRectFromItem(child, childItem->itemTotalRect()));
 		}
 	}

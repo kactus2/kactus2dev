@@ -22,10 +22,12 @@ FieldGraphItem::~FieldGraphItem() {
 }
 
 void FieldGraphItem::refresh() {
-	setName(field_->getName());
 	// the size depends on how many bits the field contains
 	int fieldWidth = field_->getBitWidth();
 	setRect(0, 0, VisualizerItem::MIN_WIDTH * fieldWidth, VisualizerItem::ITEM_HEIGHT);
+
+	// the name depends on the size of the rectangle (if too small then name is chopped)
+	setName(field_->getName());
 	reorganizeChildren();
 }
 

@@ -91,6 +91,18 @@ public:
      */
     unsigned int getLastAddress() const;
 
+	/*! \brief Get the first address of the memory map.
+	 *
+	 * \return The first address of the memory map.
+	*/
+	unsigned int getFirstAddress() const;
+
+	/*! \brief Get the first address in a string.
+	 *
+	 * \return QString containing the first address of the memory map.
+	*/
+	QString getFirstAddressStr() const;
+
 	/*! \brief Get list of memory map items
 	 *
 	 * \return QList containing pointers to the memory map items stored in

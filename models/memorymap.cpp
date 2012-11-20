@@ -273,6 +273,55 @@ unsigned int MemoryMap::getLastAddress() const
     return lastBaseAddress + Utils::str2Int(static_cast<AddressBlock*>(items_.at(index).data())->getRange()) - 1;
 }
 
+unsigned int MemoryMap::getFirstAddress() const {
+	quint64 firstBase = 0;
+	for (int i = 0; i < items_.size(); ++i) {
+
+		QSharedPointer<AddressBlock> block = items_.at(i).staticCast<AddressBlock>();
+		Q_ASSERT(block);
+
+		// convert the base address to numerical format
+		QString addrStr = block->getBaseAddress();
+		quint64 addr = Utils::str2Int(addrStr);
+
+		// if this is the first block then it must be smallest so far
+		if (i == 0) {	
+			firstBase = addr;
+		}
+		// for others, check if the new base is smaller
+		else if (firstBase > addr) {
+			firstBase = addr;
+		}
+	}
+	return firstBase;
+}
+
+QString MemoryMap::getFirstAddressStr() const {
+	quint64 firstBase = 0;
+	QString base;
+	for (int i = 0; i < items_.size(); ++i) {
+
+		QSharedPointer<AddressBlock> block = items_.at(i).staticCast<AddressBlock>();
+		Q_ASSERT(block);
+
+		// convert the base address to numerical format
+		QString addrStr = block->getBaseAddress();
+		quint64 addr = Utils::str2Int(addrStr);
+
+		// if this is the first block then it must be smallest so far
+		if (i == 0) {	
+			firstBase = addr;
+			base = addrStr;
+		}
+		// for others, check if the new base is smaller
+		else if (firstBase > addr) {
+			firstBase = addr;
+			base = addrStr;
+		}
+	}
+	return base;
+}
+
 bool MemoryMap::isEmpty() const {
 	return items_.isEmpty() && nameGroup_.name_.isEmpty() &&
 		nameGroup_.displayName_.isEmpty() && nameGroup_.description_.isEmpty();

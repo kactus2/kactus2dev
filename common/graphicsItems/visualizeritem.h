@@ -29,6 +29,12 @@ public:
 		MAX_WIDTH = 200		//! The maximum width of an item
 	};
 
+	//! \brief The font size to display text.
+	enum FontSize {
+		FONT_NAMESIZE = 7,		//! The size for name field
+		FONT_CORNERSIZE = 6		//! The size for corner texts
+	};
+
 	/*! \brief The constructor.
 	 *
 	 * \param parent Pointer to the owner of this graphics item.
@@ -54,6 +60,13 @@ public:
 	 * \return QString containing the name
 	*/
 	virtual QString getName() const;
+
+	/*! \brief Set the width for the item.
+	 *
+	 * \param width The new width of the item.
+	 *
+	*/
+	virtual void setWidth(qreal width);
 
 protected:
 
@@ -112,13 +125,6 @@ protected:
 	 * \return The width of the item and it's sub-items.
 	*/
 	virtual qreal itemTotalWidth() const;
-
-	/*! \brief Set the width for the item.
-	 *
-	 * \param width The new width of the item.
-	 *
-	*/
-	virtual void setWidth(qreal width);
 
 private:
 	
