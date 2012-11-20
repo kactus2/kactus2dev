@@ -9,6 +9,7 @@
 #include "fieldgraphitem.h"
 #include <models/field.h>
 #include <common/utils.h>
+#include "addressblockgraphitem.h"
 
 #include <QBrush>
 #include <QColor>
@@ -27,6 +28,30 @@ RegisterGraphItem::~RegisterGraphItem() {
 
 void RegisterGraphItem::refresh() {
 	setName(register_->getName());
+	
+	// get the base of the parent address block
+	int base = 0;
+	MemoryVisualizationItem* addrBlock = dynamic_cast<MemoryVisualizationItem*>(parentItem());
+	if (addrBlock) {
+		base = addrBlock->getOffset();
+	}
+
+	// get the offset of the register
+	quint64 offset = Utils::str2Int(register_->getAddressOffset());
+	// calculate the start address of the register
+	quint64 startAddress = base + offset;
+
+	// show the start address of the register
+	QString startStr = QString::number(startAddress, 16);
+	startStr.prepend("0x");
+	setLeftTopCorner(startStr);
+
+	// show the end address of the register
+	unsigned int addrUnits = register_->getSize() / getAddressUnitSize();
+	quint64 endAddress = base + offset + addrUnits -1;
+	QString endStr = QString::number(endAddress, 16);
+	endStr.prepend("0x");
+	setLeftBottomCorner(endStr);
 
 	QList<QSharedPointer<Field> >& fields = register_->getFields();
 	foreach (QSharedPointer<Field> field, fields) {
@@ -97,4 +122,10 @@ void RegisterGraphItem::reorganizeChildren() {
 
 	// reorganize the text blocks of this item
 	VisualizerItem::reorganizeChildren();
+}
+
+unsigned int RegisterGraphItem::getAddressUnitSize() const {
+	AddressBlockGraphItem* addrBlock = static_cast<AddressBlockGraphItem*>(parentItem());
+	Q_ASSERT(addrBlock);
+	return addrBlock->getAddressUnitSize();
 }

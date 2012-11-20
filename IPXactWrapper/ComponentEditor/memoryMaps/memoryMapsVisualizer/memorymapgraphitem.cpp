@@ -14,8 +14,6 @@
 #include <QBrush>
 #include <QColor>
 
-#include <QDebug>
-
 MemoryMapGraphItem::MemoryMapGraphItem(QSharedPointer<MemoryMap> memoryMap,
 									   QGraphicsItem* parent):
 MemoryVisualizationItem(parent),
@@ -32,6 +30,7 @@ void MemoryMapGraphItem::refresh() {
 	
 	setName(memoryMap_->getName());
 	setLeftTopCorner(memoryMap_->getFirstAddressStr());
+	setLeftBottomCorner(memoryMap_->getLastAddressStr());
 
 	QList<QSharedPointer<MemoryMapItem> >& memItems = memoryMap_->getItems();
 	foreach (QSharedPointer<MemoryMapItem> item, memItems) {
@@ -64,4 +63,8 @@ int MemoryMapGraphItem::getOffset() const {
 
 int MemoryMapGraphItem::getBitWidth() const {
 	return 0;
+}
+
+unsigned int MemoryMapGraphItem::getAddressUnitSize() const {
+	return memoryMap_->getAddressUnitBits();
 }

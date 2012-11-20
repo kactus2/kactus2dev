@@ -47,10 +47,10 @@ void VisualizerItem::setName( const QString& name ) {
 	QFontMetrics fontMetrics(nameLabel_.font());
 
 	// The maximum width for the text
-	int maxTextSize = (rect().width() / 2) - 5;
+	int maxTextSize = (rect().width() / 2) - 15;
 
 	// calculate how many characters can be fitted to the available space
-	int charCount = (maxTextSize / fontMetrics.width("x"));
+	int charCount = (maxTextSize / fontMetrics.width("x")) + 1;
 
 	// if the text is too wide to be displayed fully
 	if (name.size() > charCount) {
@@ -58,7 +58,7 @@ void VisualizerItem::setName( const QString& name ) {
 		// create the name to be displayed.
 		QString choppedName(name);
 		// remove the characters that do not fit to screen
-		choppedName.resize(charCount);
+		choppedName.resize(charCount - 1);
 		// add "..." to the end to indicate the name has been partly hidden
 		choppedName.append("...");
 
@@ -82,7 +82,7 @@ void VisualizerItem::setLeftTopCorner( const QString& text ) {
 void VisualizerItem::setLeftBottomCorner( const QString& text ) {
 	leftBottomText_.setText(text);
 	// set the left bottom text position
-	leftBottomText_.setPos(2, rect().bottomLeft().y());
+	leftBottomText_.setPos(2, rect().bottomLeft().y() - VisualizerItem::FONT_CORNERSIZE - 3);
 }
 
 void VisualizerItem::setRightTopCorner( const QString& text ) {
@@ -95,7 +95,7 @@ void VisualizerItem::setRightBottomCorner( const QString& text ) {
 	rightBottomText_.setText(text);
 	// set the right bottom text position
 	rightBottomText_.setPos(rect().topRight().x() - rightBottomText_.boundingRect().width(),
-		rect().bottomRight().y());
+		rect().bottomRight().y() - VisualizerItem::FONT_CORNERSIZE - 3);
 }
 
 QRectF VisualizerItem::minimumRect() const {
@@ -108,10 +108,10 @@ void VisualizerItem::reorganizeChildren() {
 	nameLabel_.setPos(rect().center().x() - (nameLabel_.boundingRect().width() / 2), 0);
 
 	leftTopText_.setPos(2, 0);
-	leftBottomText_.setPos(2, rect().bottomLeft().y());
+	leftBottomText_.setPos(2, rect().bottomLeft().y() - VisualizerItem::FONT_CORNERSIZE - 3);
 	rightTopText_.setPos(rect().topRight().x() - rightTopText_.boundingRect().width(), 0);
 	rightBottomText_.setPos(rect().topRight().x() - rightBottomText_.boundingRect().width(),
-		rect().bottomRight().y());
+		rect().bottomRight().y() - VisualizerItem::FONT_CORNERSIZE - 3);
 }
 
 QRectF VisualizerItem::itemTotalRect() const {

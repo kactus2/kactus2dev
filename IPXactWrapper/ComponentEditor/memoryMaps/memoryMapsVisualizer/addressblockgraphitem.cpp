@@ -9,6 +9,7 @@
 #include "registergraphitem.h"
 #include <models/register.h>
 #include <common/utils.h>
+#include "memorymapgraphitem.h"
 
 #include <QBrush>
 #include <QColor>
@@ -27,6 +28,8 @@ AddressBlockGraphItem::~AddressBlockGraphItem() {
 
 void AddressBlockGraphItem::refresh() {
 	setName(addrBlock_->getName());
+	setLeftTopCorner(addrBlock_->getBaseAddress());
+	setLeftBottomCorner(addrBlock_->getLastAddressStr());
 
 	QList<QSharedPointer<RegisterModel> >& regItems = addrBlock_->getRegisterData();
 	foreach (QSharedPointer<RegisterModel> regItem, regItems) {
@@ -60,4 +63,10 @@ int AddressBlockGraphItem::getOffset() const {
 
 int AddressBlockGraphItem::getBitWidth() const {
 	return 0;
+}
+
+unsigned int AddressBlockGraphItem::getAddressUnitSize() const {
+	MemoryMapGraphItem* memMap = static_cast<MemoryMapGraphItem*>(parentItem());
+	Q_ASSERT(memMap);
+	return memMap->getAddressUnitSize();
 }

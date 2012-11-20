@@ -273,13 +273,52 @@ unsigned int MemoryMap::getLastAddress() const
     return lastBaseAddress + Utils::str2Int(static_cast<AddressBlock*>(items_.at(index).data())->getRange()) - 1;
 }
 
+QString MemoryMap::getLastAddressStr() const {
+	int index = -1;
+	quint64 lastBaseAddress = 0;
+
+	// check all blocks of the memory map
+	for (int i = 0; i < items_.size(); ++i) {
+		
+		QSharedPointer<AddressBlock> block = items_.at(i).dynamicCast<AddressBlock>();
+		
+		if (!block) {
+			continue;
+		}
+
+		// get the base of the current block
+		quint64 base = Utils::str2Int(block->getBaseAddress());
+
+		// find the last lastBlock in the memory map
+		if (base >= lastBaseAddress) {
+			lastBaseAddress = base;
+			index = i;
+		}
+	}
+
+	if (index == -1) {
+		return QString();
+	}
+
+	// calculate the last address contained in the block
+	QSharedPointer<AddressBlock> lastBlock = items_.at(index).staticCast<AddressBlock>();
+	Q_ASSERT(lastBlock);
+
+	quint64 range = Utils::str2Int(lastBlock->getRange());
+	quint64 lastAddress = range + lastBaseAddress;
+	QString str = QString::number(lastAddress, 16);
+	str.prepend("0x");
+	return str;
+}
+
 unsigned int MemoryMap::getFirstAddress() const {
 	quint64 firstBase = 0;
 	for (int i = 0; i < items_.size(); ++i) {
 
-		QSharedPointer<AddressBlock> block = items_.at(i).staticCast<AddressBlock>();
-		Q_ASSERT(block);
-
+		QSharedPointer<AddressBlock> block = items_.at(i).dynamicCast<AddressBlock>();
+		if (!block) {
+			continue;
+		}
 		// convert the base address to numerical format
 		QString addrStr = block->getBaseAddress();
 		quint64 addr = Utils::str2Int(addrStr);
@@ -301,14 +340,16 @@ QString MemoryMap::getFirstAddressStr() const {
 	QString base;
 	for (int i = 0; i < items_.size(); ++i) {
 
-		QSharedPointer<AddressBlock> block = items_.at(i).staticCast<AddressBlock>();
-		Q_ASSERT(block);
+		QSharedPointer<AddressBlock> block = items_.at(i).dynamicCast<AddressBlock>();
+		if (!block) {
+			continue;
+		}
 
 		// convert the base address to numerical format
 		QString addrStr = block->getBaseAddress();
 		quint64 addr = Utils::str2Int(addrStr);
 
-		// if this is the first block then it must be smallest so far
+		// if this is the first lastBlock then it must be smallest so far
 		if (i == 0) {	
 			firstBase = addr;
 			base = addrStr;

@@ -16,7 +16,7 @@ expandCollapseItem_(new GraphicsExpandCollapseItem(this)) {
 		this, SLOT(onExpandStateChange(bool)), Qt::UniqueConnection);
 
 	// Set the position for the hide/show button
-	expandCollapseItem_->setPos(10, 4);
+	expandCollapseItem_->setPos(rect().width() - 20, VisualizerItem::ITEM_HEIGHT / 5);
 }
 
 ExpandableItem::~ExpandableItem() {

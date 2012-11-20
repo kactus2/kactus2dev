@@ -25,14 +25,14 @@ public:
 	//! \brief The minimum and maximum bounds for visualizer items.
 	enum Bounds {
 		ITEM_HEIGHT = 20,	//! The height of a single item
-		MIN_WIDTH = 50,		//! The minimum width of an item
+		MIN_WIDTH = 60,		//! The minimum width of an item
 		MAX_WIDTH = 200		//! The maximum width of an item
 	};
 
 	//! \brief The font size to display text.
 	enum FontSize {
 		FONT_NAMESIZE = 7,		//! The size for name field
-		FONT_CORNERSIZE = 6		//! The size for corner texts
+		FONT_CORNERSIZE = 7		//! The size for corner texts
 	};
 
 	/*! \brief The constructor.

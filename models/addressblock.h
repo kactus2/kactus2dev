@@ -113,6 +113,18 @@ public:
 	 */
 	const QMap<QString, QString>& getRangeAttributes();
 
+	/*! \brief Get the last address contained in the address block.
+	 *
+	 * \return The last address of the address block.
+	*/
+	quint64 getLastAddress() const;
+
+	/*! \brief Get the last address contained in the address block in string format.
+	 *
+	 * \return QString containing the last address contained in the address block.
+	*/
+	QString getLastAddressStr() const;
+
 	/*! \brief Get the type of usage for the address block
 	 *
 	 * \return Usage of the address block

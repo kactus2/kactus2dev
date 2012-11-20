@@ -6,6 +6,7 @@
  */
 
 #include "fieldgraphitem.h"
+#include "registergraphitem.h"
 
 #include <QBrush>
 #include <QColor>
@@ -28,6 +29,8 @@ void FieldGraphItem::refresh() {
 
 	// the name depends on the size of the rectangle (if too small then name is chopped)
 	setName(field_->getName());
+	setLeftTopCorner(QString::number(field_->getMSB()));
+	setRightTopCorner(QString::number(field_->getBitOffset()));
 	reorganizeChildren();
 }
 
@@ -37,5 +40,11 @@ int FieldGraphItem::getOffset() const {
 
 int FieldGraphItem::getBitWidth() const {
 	return field_->getBitWidth();
+}
+
+unsigned int FieldGraphItem::getAddressUnitSize() const {
+	RegisterGraphItem* regItem = static_cast<RegisterGraphItem*>(parentItem());
+	Q_ASSERT(regItem);
+	return regItem->getAddressUnitSize();
 }
 

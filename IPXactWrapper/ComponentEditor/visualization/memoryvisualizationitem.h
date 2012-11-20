@@ -45,6 +45,12 @@ public:
 	*/
 	virtual int getBitWidth() const = 0;
 
+	/*! \brief Get number of bits the addressable unit contains.
+	 *
+	 * \return The size of least addressable unit.
+	*/
+	virtual unsigned int getAddressUnitSize() const = 0;
+
 signals:
 
 	//! \brief Emitted when the item changes.

@@ -10,6 +10,7 @@
 #include "parameter.h"
 #include "registerfile.h"
 #include "register.h"
+#include <common/utils.h>
 
 #include <QString>
 #include <QMap>
@@ -278,6 +279,18 @@ void AddressBlock::setRangeAttributes(
 
 QString AddressBlock::getRange() const {
 	return range_;
+}
+
+quint64 AddressBlock::getLastAddress() const {
+	quint64 base = Utils::str2Int(baseAddress_);
+	quint64 range = Utils::str2Int(range_);
+	return base + range;
+}
+
+QString AddressBlock::getLastAddressStr() const {
+	QString str = QString::number(getLastAddress(), 16);
+	str.prepend("0x");
+	return str;
 }
 
 void AddressBlock::setWidth( int width ) {

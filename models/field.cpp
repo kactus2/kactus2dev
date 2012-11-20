@@ -385,6 +385,10 @@ unsigned int Field::getBitWidth() const {
     return bitWidth_;
 }
 
+int Field::getMSB() const {
+	return bitOffset_ + bitWidth_;
+}
+
 const QMap<QString,QString>& Field::getBitWidthAttributes() const {
     return bitWidthAttributes_;
 }
