@@ -207,12 +207,12 @@ MainWindow::MainWindow(QWidget *parent)
 	resize(1024, 768);
 	setWindowState(Qt::WindowMaximized);
 
-	// set up the widgets
+    // set up the widgets
 	setupMessageConsole();
     setupContextHelp();
 	setupDrawBoard();
-	setupLibraryDock();
-	setupInstanceEditor();
+    setupLibraryDock();
+    setupInstanceEditor();
     setupAdHocVisibilityEditor();
     setupAddressEditor();
 	setupConfigurationEditor();
@@ -836,7 +836,7 @@ void MainWindow::setupDrawBoard() {
 
 void MainWindow::setupLibraryDock() {
 
-	// set up the dock widget for the library
+    // set up the dock widget for the library
 	libraryDock_ = new QDockWidget(tr("IP-XACT Library"), this);
 	libraryDock_->setObjectName(tr("Library"));
 	libraryDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
@@ -844,9 +844,9 @@ void MainWindow::setupLibraryDock() {
 
 	dialer_ = new VLNVDialer(libraryDock_);
 
-	libraryHandler_ = new LibraryHandler(dialer_, this);
+    libraryHandler_ = new LibraryHandler(dialer_, this);
 
-	// pass the library root to dialer.
+    // pass the library root to dialer.
 	const LibraryItem* root = libraryHandler_->getTreeRoot();
 	dialer_->setRootItem(root);
 

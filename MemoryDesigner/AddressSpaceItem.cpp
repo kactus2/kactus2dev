@@ -104,9 +104,9 @@ AddressSpaceItem::AddressSpaceItem(LibraryInterface* libInterface, QString const
         if (startAddress > curAddress)
         {
             AddressSectionItem* section = new SegmentItem(component_, addressSpace_,
-                tr("unsegmented"), curAddress, 
-                startAddress - curAddress, this);
-            section->setBrush(QBrush(KactusColors::ADDRESS_SEGMENT_UNSEGMENTED));
+                                                          tr("unsegmented"), curAddress, 
+                                                          startAddress - curAddress, this);
+            section->setColor(KactusColors::ADDRESS_SEGMENT_UNSEGMENTED);
             section->setPos(0.0, getHeight());
             addItem(section);
         }
@@ -114,7 +114,7 @@ AddressSpaceItem::AddressSpaceItem(LibraryInterface* libInterface, QString const
         // Add the actual segment section.
         AddressSectionItem* section = new SegmentItem(component_, addressSpace_,
             segment->getName(), startAddress, range, this);
-        section->setBrush(QBrush(KactusColors::ADDRESS_SEGMENT));
+        section->setColor(KactusColors::ADDRESS_SEGMENT);
         section->setPos(0.0, getHeight());
         addItem(section);
 
@@ -128,7 +128,7 @@ AddressSpaceItem::AddressSpaceItem(LibraryInterface* libInterface, QString const
         // Add unsegmented section which takes the rest of the address space.
         AddressSectionItem* section = new SegmentItem(component_, addressSpace_, tr("unsegmented"),
                                                       curAddress, range - curAddress, this);
-        section->setBrush(QBrush(KactusColors::ADDRESS_SEGMENT_UNSEGMENTED));
+        section->setColor(KactusColors::ADDRESS_SEGMENT_UNSEGMENTED);
         section->setPos(0.0, getHeight());
         addItem(section);
     }

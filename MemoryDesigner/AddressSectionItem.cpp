@@ -444,3 +444,18 @@ void AddressSectionItem::drawEndAddressDivider(QPainter* painter, QRectF const& 
     // Draw the address as text.
     painter->drawText(left + 2, y - 2, toHexString(address));
 }
+
+//-----------------------------------------------------------------------------
+// Function: AddressSectionItem::setColor()
+//-----------------------------------------------------------------------------
+void AddressSectionItem::setColor(QColor const& color)
+{
+    setBrush(QBrush(color));
+
+    startAddressLabel_->setHtml("<div style=\"background-color:" + color.name() + 
+                                "; padding:10px 10px;\"><center>" +
+                                toHexString(startAddress_) + "</center></div>");
+    endAddressLabel_->setHtml("<div style=\"background-color:" + color.name() + 
+                              "; padding:10px 10px;\"><center>" +
+                              toHexString(startAddress_ + range_ - 1) + "</center></div>");
+}

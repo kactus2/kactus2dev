@@ -94,50 +94,62 @@ VLNV &VLNV::operator=(const VLNV &other) {
 
 // the < comparison operator
 bool VLNV::operator<(const VLNV &other) const {
-	if (0 == vendor_.compare(other.vendor_.simplified(), Qt::CaseInsensitive)) {
-		if (0 == library_.compare(other.library_.simplified(), Qt::CaseInsensitive)) {
-			if (0 == name_.compare(other.name_.simplified(), Qt::CaseInsensitive)) {
-				return version_.compare(other.version_.simplified(), Qt::CaseInsensitive) < 0;
+    int vendorResult = vendor_.compare(other.vendor_, Qt::CaseInsensitive);
+
+	if (vendorResult == 0)
+    {
+        int libraryResult = library_.compare(other.library_, Qt::CaseInsensitive);
+		
+        if (libraryResult == 0)
+        {
+            int nameResult = name_.compare(other.name_, Qt::CaseInsensitive);
+
+			if (nameResult == 0)
+            {
+				return version_.compare(other.version_, Qt::CaseInsensitive) < 0;
 			}
-			else {
-				return name_.compare(other.name_.simplified(), Qt::CaseInsensitive) < 0;
+			else
+            {
+				return (nameResult < 0);
 			}
 		}
-		else {
-			return library_.compare(other.library_.simplified(), Qt::CaseInsensitive) < 0;
+		else
+        {
+			return (libraryResult < 0);
 		}
 	}
-	else {
-		return vendor_.compare(other.vendor_.simplified(), Qt::CaseInsensitive) < 0;
+	else
+    {
+		return (vendorResult < 0);
 	}
 }
 
 // the > comparison operator
 bool VLNV::operator>(const VLNV &other) const {
-	if (0 == vendor_.compare(other.vendor_.simplified(), Qt::CaseInsensitive)) {
-		if (0 == library_.compare(other.library_.simplified(), Qt::CaseInsensitive)) {
-			if (0 == name_.compare(other.name_.simplified(), Qt::CaseInsensitive)) {
-				return version_.compare(other.version_.simplified(), Qt::CaseInsensitive) > 0;
+	if (0 == vendor_.compare(other.vendor_, Qt::CaseInsensitive)) {
+		if (0 == library_.compare(other.library_, Qt::CaseInsensitive)) {
+			if (0 == name_.compare(other.name_, Qt::CaseInsensitive)) {
+				return version_.compare(other.version_, Qt::CaseInsensitive) > 0;
 			}
 			else {
-				return name_.compare(other.name_.simplified(), Qt::CaseInsensitive) > 0;
+				return name_.compare(other.name_, Qt::CaseInsensitive) > 0;
 			}
 		}
 		else {
-			return library_.compare(other.library_.simplified(), Qt::CaseInsensitive) > 0;
+			return library_.compare(other.library_, Qt::CaseInsensitive) > 0;
 		}
 	}
 	else {
-		return vendor_.compare(other.vendor_.simplified(), Qt::CaseInsensitive) > 0;
+		return vendor_.compare(other.vendor_, Qt::CaseInsensitive) > 0;
 	}
 }
 
 // the == operator
 bool VLNV::operator==(const VLNV &other) const {
-	if ((0 == vendor_.compare(other.vendor_.simplified(), Qt::CaseInsensitive)) &&
-		(0 == library_.compare(other.library_.simplified(), Qt::CaseInsensitive)) &&
-		(0 == name_.compare(other.name_.simplified(), Qt::CaseInsensitive)) &&
-		(0 == version_.compare(other.version_.simplified(), Qt::CaseInsensitive))) {
+	if ((0 == vendor_.compare(other.vendor_, Qt::CaseInsensitive)) &&
+		(0 == library_.compare(other.library_, Qt::CaseInsensitive)) &&
+		(0 == name_.compare(other.name_, Qt::CaseInsensitive)) &&
+		(0 == version_.compare(other.version_, Qt::CaseInsensitive))) {
 		return true;
 	}
 	else {
@@ -147,13 +159,13 @@ bool VLNV::operator==(const VLNV &other) const {
 
 // the != operator
 bool VLNV::operator!=(const VLNV &other) const {
-	if (0 != vendor_.compare(other.vendor_.simplified(), Qt::CaseInsensitive))
+	if (0 != vendor_.compare(other.vendor_, Qt::CaseInsensitive))
 		return true;
-	else if (0 != library_.compare(other.library_.simplified(), Qt::CaseInsensitive))
+	else if (0 != library_.compare(other.library_, Qt::CaseInsensitive))
 		return true;
-	else if (0 != name_.compare(other.name_.simplified(), Qt::CaseInsensitive))
+	else if (0 != name_.compare(other.name_, Qt::CaseInsensitive))
 		return true;
-	else if (0 != version_.compare(other.version_.simplified(), Qt::CaseInsensitive))
+	else if (0 != version_.compare(other.version_, Qt::CaseInsensitive))
 		return true;
 	else
 		return false;
@@ -455,9 +467,9 @@ void VLNV::setType( const QString& type ) {
 }
 
 void VLNV::setVendor( const QString& vendor ) {
-	vendor_ = vendor;
+	vendor_ = vendor.simplified();
 }
 
 void VLNV::setLibrary( const QString& library ) {
-	library_ = library;
+	library_ = library.simplified();
 }

@@ -333,6 +333,7 @@ bool Function::isValid( const QStringList& fileIDs,
 					   bool checkChildren /*= true*/ ) const {
 
 	bool valid = true;
+    throw std::runtime_error("error");
 
 	if (fileRef_.isEmpty()) {
 		errorList.append(QObject::tr("Mandatory file reference missing in function within %1").arg(
@@ -364,6 +365,7 @@ bool Function::isValid( const QStringList& fileIDs,
 
 bool Function::isValid(const QStringList& fileIDs,
 					   bool checkChildren) const {
+    throw std::runtime_error("error");
 	if (fileRef_.isEmpty()) {
 		return false;
 	}

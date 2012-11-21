@@ -51,7 +51,7 @@
 #include <QSettings>
 #include <QApplication>
 #include <QVariant>
-
+#include <QElapsedTimer>
 #include <QDebug>
 
 LibraryHandler::LibraryHandler(VLNVDialer* dialer, MainWindow* parent): 
@@ -73,12 +73,13 @@ itemsToAdd_() {
 	setWindowTitle(tr("LibraryHandler"));
 
 	data_ = QSharedPointer<LibraryData>(new LibraryData(this, parent));
-	data_->parseLibrary(false);
 
-	treeModel_ = QSharedPointer<LibraryTreeModel>(
+    data_->parseLibrary(false);
+
+    treeModel_ = QSharedPointer<LibraryTreeModel>(
 			new LibraryTreeModel(this, data_.data(), this));
 
-	hierarchyModel_ = QSharedPointer<HierarchyModel>(
+    hierarchyModel_ = QSharedPointer<HierarchyModel>(
 		new HierarchyModel(data_.data(), this, this));
 
 	// create the connections between models and library handler

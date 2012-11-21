@@ -69,6 +69,13 @@ public:
     void setUsageType(UsageType usageType);
 
     /*!
+     *  Sets the color of the section.
+     *
+     *      @param [in] color The color to set.
+     */
+    virtual void setColor(QColor const& color);
+
+    /*!
      *  Draws address guide lines.
      *
      *      @param [in] painter  The painter for drawing.
@@ -108,6 +115,14 @@ public:
 
     int type() const { return Type; }
 
+    enum
+    {
+        WIDTH = 120,
+        ADDR_COLUMN_WIDTH = 90,
+        MIN_SECTION_HEIGHT = 120,
+        SPACING = 10,
+    };
+
 protected:
     //! Called when the mouse hover enters the column header.
     void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
@@ -139,14 +154,6 @@ protected:
      *      @param [in] height  The height to set.
      */
     virtual void setHeight(int height);
-
-    enum
-    {
-        WIDTH = 120,
-        ADDR_COLUMN_WIDTH = 90,
-        MIN_SECTION_HEIGHT = 120,
-        SPACING = 10,
-    };
 
 private:
     // Disable copying.

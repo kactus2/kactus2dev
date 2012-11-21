@@ -120,14 +120,14 @@ MemoryItem::MemoryItem(LibraryInterface* libInterface, QString const& instanceNa
                 AddressSectionItem* section = new AddressBlockItem(component_, memoryMap_,
                                                                    tr("no memory"), curAddress, 
                                                                    startAddress - curAddress, this);
-                section->setBrush(QBrush(KactusColors::ADDRESS_SEGMENT_UNSEGMENTED));
+                section->setColor(KactusColors::ADDRESS_SEGMENT_UNSEGMENTED);
                 section->setPos(0.0, getHeight());
                 addItem(section);
             }
 
             AddressSectionItem* section = new AddressBlockItem(component_, memoryMap_,
                                                                block->getName(), startAddress, range, this);
-            section->setBrush(QBrush(KactusColors::MEMORY_BLOCK));
+            section->setColor(KactusColors::MEMORY_BLOCK);
             section->setPos(0.0, getHeight());
 
             if (block->getUsage() == General::MEMORY)

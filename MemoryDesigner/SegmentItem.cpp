@@ -83,7 +83,12 @@ SegmentItem::SegmentItem(QSharedPointer<Component> component,
 
             int bottom = top + SUBSECTION_HEIGHT;
 
-            if (blockStartAddress <= getStartAddress())
+            if (blockStartAddress <= getStartAddress() && blockEndAddress >= getEndAddress())
+            {
+                top = 0;
+                bottom = rect().height();
+            }
+            else if (blockStartAddress <= getStartAddress())
             {
                 top = 0;
                 bottom = SUBSECTION_HEIGHT;
@@ -94,7 +99,8 @@ SegmentItem::SegmentItem(QSharedPointer<Component> component,
                 bottom = top + SUBSECTION_HEIGHT;
             }
 
-            AddressSubsection* subsection = new AddressSubsection(this, WIDTH / 2 - ADDR_COLUMN_WIDTH,
+            AddressSubsection* subsection = new AddressSubsection(this, block->getName(),
+                                                                  WIDTH / 2 - ADDR_COLUMN_WIDTH,
                                                                   top, bottom,
                                                                   qMax(blockStartAddress, getStartAddress()),
                                                                   qMin(blockEndAddress, getEndAddress()));
@@ -103,15 +109,15 @@ SegmentItem::SegmentItem(QSharedPointer<Component> component,
     }
 
     // Expand the segment if it is too small to contain all subsections.
-    if (!subsections_.empty())
+    foreach (QSharedPointer<AddressSubsection> subsection, subsections_)
     {
-        if (subsections_.back()->getEndAddress() == getEndAddress())
+        if (subsection->getEndAddress() == getEndAddress())
         {
-            setHeight(subsections_.back()->getBottom());
+            setHeight(qMax<int>(rect().height(), subsection->getBottom()));
         }
-        else if (subsections_.back()->getBottom() + SUBSECTION_SPACING > rect().height())
+        else if (subsection->getBottom() + SUBSECTION_SPACING > rect().height())
         {
-            setHeight(subsections_.back()->getBottom() + SUBSECTION_SPACING);
+            setHeight(subsection->getBottom() + SUBSECTION_SPACING);
         }
     }
 }
@@ -141,11 +147,44 @@ void SegmentItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
                           WIDTH / 2, subsection->getBottom());
 
         // Fill with a diagonal pattern.
+        QBrush diagBrush(QColor(0, 0, 0), Qt::BDiagPattern);
+        diagBrush.setTransform(painter->transform().inverted());
+
         painter->fillRect(WIDTH / 2 - ADDR_COLUMN_WIDTH + 1, subsection->getTop(), ADDR_COLUMN_WIDTH - 1,
-                          subsection->getBottom() - subsection->getTop(),
-                          QBrush(QColor(0, 0, 0), Qt::BDiagPattern));
+                          subsection->getBottom() - subsection->getTop(), diagBrush);
 
         // Write address block name on top of the visualization.
+        int centerY = 0;
+
+        if (subsection->getStartAddress() == getStartAddress() && subsection->getEndAddress() == getEndAddress())
+        {
+            centerY = (subsection->getTop() + subsection->getBottom()) / 2;
+        }
+        else if (subsection->getStartAddress() == getStartAddress())
+        {
+            centerY = subsection->getBottom() - 15;
+        }
+        else if (subsection->getEndAddress() == getEndAddress())
+        {
+            centerY = subsection->getTop() + 15;
+        }
+        else
+        {
+            centerY = (subsection->getTop() + subsection->getBottom()) / 2;
+        }
+
+        QRect drawAreaRect(WIDTH / 2 - ADDR_COLUMN_WIDTH, centerY - 5, ADDR_COLUMN_WIDTH, 10);
+
+        QFont font = painter->font();
+        font.setBold(true);
+        painter->setFont(font);
+
+        QFontMetrics metrics(font);
+        painter->fillRect(metrics.boundingRect(drawAreaRect, Qt::AlignCenter, subsection->getName()),
+                          brush().color());
+
+        painter->setPen(QPen(Qt::black, 0));
+        painter->drawText(drawAreaRect, Qt::AlignCenter, subsection->getName());
     }
 }
 
@@ -161,7 +200,8 @@ void SegmentItem::setHeight(int height)
         {
             height = qMax(height, subsections_.back()->getBottom() + SUBSECTION_SPACING);
         }
-        else if (subsections_.size() >= 2)
+        else if (subsections_.size() >= 2 &&
+                 subsections_[subsections_.size() - 2]->getEndAddress() < getEndAddress())
         {
             height = qMax(height, subsections_[subsections_.size() - 2]->getBottom() + SUBSECTION_SPACING + SUBSECTION_HEIGHT);
         }
@@ -169,10 +209,17 @@ void SegmentItem::setHeight(int height)
 
     AddressSectionItem::setHeight(height);
 
-    // Check if we need to move the last subsection (goes to the end of the segment).
-    if (!subsections_.empty() && subsections_.back()->getEndAddress() == getEndAddress())
+    // Check if we need to move any subsections (goes to the end of the segment).
+    foreach (QSharedPointer<AddressSubsection> subsection, subsections_)
     {
-        subsections_.back()->setTop(height - SUBSECTION_HEIGHT);
-        subsections_.back()->setBottom(height);
+        if (subsection->getEndAddress() == getEndAddress())
+        {
+            subsection->setBottom(height);
+
+            if (subsection->getStartAddress() > getStartAddress())
+            {
+                subsection->setTop(height - SUBSECTION_HEIGHT);
+            }
+        }
     }
 }

@@ -27,9 +27,11 @@
 //-----------------------------------------------------------------------------
 // Function: AddressSubsection::AddressSubsection()
 //-----------------------------------------------------------------------------
-AddressSubsection::AddressSubsection(AddressSectionItem* parent, int offsetX,
-                                     int top, int bottom, quint64 startAddress, quint64 endAddress)
-    : top_(top),
+AddressSubsection::AddressSubsection(AddressSectionItem* parent, QString const& name,
+                                     int offsetX, int top, int bottom,
+                                     quint64 startAddress, quint64 endAddress)
+    : name_(name),
+      top_(top),
       bottom_(bottom),
       startAddress_(startAddress),
       endAddress_(endAddress),
@@ -188,4 +190,12 @@ void AddressSubsection::onInvalidInput()
 void AddressSubsection::setMinStartAddress(quint64 minAddress)
 {
     startAddressValidator_->setMinAddress(minAddress);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSubsection::getName()
+//-----------------------------------------------------------------------------
+QString const& AddressSubsection::getName() const
+{
+    return name_;
 }

@@ -31,12 +31,13 @@ public:
      *  Constructor.
      *  
      *      @param [in] parent          The parent section item.
+     *      @param [in] name            The name of the subsection.
      *      @param [in] top             The top y coordinate.
      *      @param [in] bottom          The bottom y coordinate.
      *      @param [in] startAddress    The start address.
      *      @param [in] endAddress      The end address.
      */
-    AddressSubsection(AddressSectionItem* parent,
+    AddressSubsection(AddressSectionItem* parent, QString const& name,
                       int offsetX, int top, int bottom,
                       quint64 startAddress, quint64 endAddress);
 
@@ -44,6 +45,13 @@ public:
      *  Destructor.
      */
     ~AddressSubsection();
+
+    /*!
+     *  Updates the background color of text labels with the given color.
+     *
+     *      @param [in] color The background color.
+     */
+    void updateLabelBackground(QColor const& color);
 
     /*!
      *  Sets the minimum start address.
@@ -86,6 +94,11 @@ public:
      *      @param [in] fixed   True if fixed.
      */
     void setStartAddressFixed(bool fixed);
+
+    /*!
+     *  Returns the name of the subsection.
+     */
+    QString const& getName() const;
 
     /*!
      *  Returns the top y coordinate.
@@ -142,6 +155,9 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    //! The name of the subsection.
+    QString name_;
 
     //! The top y coordinate for the subsection.
     int top_;
