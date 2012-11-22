@@ -31,6 +31,8 @@ void AddressBlockGraphItem::refresh() {
 	setLeftTopCorner(addrBlock_->getBaseAddress());
 	setLeftBottomCorner(addrBlock_->getLastAddressStr());
 
+	childItems_.clear();
+
 	QList<QSharedPointer<RegisterModel> >& regItems = addrBlock_->getRegisterData();
 	foreach (QSharedPointer<RegisterModel> regItem, regItems) {
 

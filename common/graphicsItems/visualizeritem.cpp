@@ -25,6 +25,7 @@ rightBottomText_(this) {
 	font.setPointSize(VisualizerItem::FONT_NAMESIZE);
 	nameLabel_.setFont(font);
 	nameLabel_.setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
+	nameLabel_.setTextInteractionFlags(Qt::NoTextInteraction);
 
 	// set the fonts for the corner labels
 	QFont cornerFont = leftTopText_.font();

@@ -53,6 +53,8 @@ void RegisterGraphItem::refresh() {
 	endStr.prepend("0x");
 	setLeftBottomCorner(endStr);
 
+	childItems_.clear();
+
 	QList<QSharedPointer<Field> >& fields = register_->getFields();
 	foreach (QSharedPointer<Field> field, fields) {
 

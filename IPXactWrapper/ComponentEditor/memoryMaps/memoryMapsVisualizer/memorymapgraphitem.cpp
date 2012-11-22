@@ -32,6 +32,8 @@ void MemoryMapGraphItem::refresh() {
 	setLeftTopCorner(memoryMap_->getFirstAddressStr());
 	setLeftBottomCorner(memoryMap_->getLastAddressStr());
 
+	childItems_.clear();
+
 	QList<QSharedPointer<MemoryMapItem> >& memItems = memoryMap_->getItems();
 	foreach (QSharedPointer<MemoryMapItem> item, memItems) {
 
