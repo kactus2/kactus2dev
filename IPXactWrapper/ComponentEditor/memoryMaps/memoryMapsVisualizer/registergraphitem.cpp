@@ -76,7 +76,7 @@ void RegisterGraphItem::refresh() {
 	reorganizeChildren();
 }
 
-int RegisterGraphItem::getOffset() const {
+quint64 RegisterGraphItem::getOffset() const {
 	Q_ASSERT(register_);
 	QString offset = register_->getAddressOffset();
 	return Utils::str2Int(offset);
@@ -130,4 +130,21 @@ unsigned int RegisterGraphItem::getAddressUnitSize() const {
 	AddressBlockGraphItem* addrBlock = static_cast<AddressBlockGraphItem*>(parentItem());
 	Q_ASSERT(addrBlock);
 	return addrBlock->getAddressUnitSize();
+}
+
+quint64 RegisterGraphItem::getLastAddress() const {
+	AddressBlockGraphItem* addrBlock = static_cast<AddressBlockGraphItem*>(parentItem());
+	Q_ASSERT(addrBlock);
+
+	// how many bits one address unit takes
+	unsigned int addrUnit = addrBlock->getAddressUnitSize();
+
+	// the offset of the start of register
+	quint64 offset = getOffset();
+
+	// how many address unit are contained in the register
+	unsigned int size = register_->getWidth() / addrUnit;
+
+	// the last address contained in the register
+	return offset + size - 1;
 }

@@ -37,7 +37,13 @@ public:
 	 *
 	 * \return int The offset of the item from the parent item's base address.
 	*/
-	virtual int getOffset() const = 0;
+	virtual quint64 getOffset() const = 0;
+
+	/*! \brief Get the last address contained in the item.
+	 *
+	 * \return The last address.
+	*/
+	virtual quint64 getLastAddress() const = 0;
 
 	/*! \brief Get the bit width of the item.
 	 * 

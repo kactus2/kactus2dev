@@ -58,7 +58,7 @@ void AddressBlockGraphItem::refresh() {
 	MemoryVisualizationItem::reorganizeChildren();
 }
 
-int AddressBlockGraphItem::getOffset() const {
+quint64 AddressBlockGraphItem::getOffset() const {
 	QString offset = addrBlock_->getBaseAddress();
 	return Utils::str2Int(offset);
 }
@@ -71,4 +71,8 @@ unsigned int AddressBlockGraphItem::getAddressUnitSize() const {
 	MemoryMapGraphItem* memMap = static_cast<MemoryMapGraphItem*>(parentItem());
 	Q_ASSERT(memMap);
 	return memMap->getAddressUnitSize();
+}
+
+quint64 AddressBlockGraphItem::getLastAddress() const {
+	return addrBlock_->getLastAddress();
 }

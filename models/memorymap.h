@@ -89,7 +89,7 @@ public:
     /*!
      *  Returns the last address of the memory map.
      */
-    unsigned int getLastAddress() const;
+	quint64 getLastAddress() const;
 
 	/*! \brief Get the last address of the memory map.
 	 *
@@ -101,7 +101,7 @@ public:
 	 *
 	 * \return The first address of the memory map.
 	*/
-	unsigned int getFirstAddress() const;
+	quint64 getFirstAddress() const;
 
 	/*! \brief Get the first address in a string.
 	 *

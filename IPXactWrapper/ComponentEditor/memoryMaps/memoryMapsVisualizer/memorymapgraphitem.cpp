@@ -59,8 +59,8 @@ void MemoryMapGraphItem::refresh() {
 	MemoryVisualizationItem::reorganizeChildren();
 }
 
-int MemoryMapGraphItem::getOffset() const {
-	return 0;
+quint64 MemoryMapGraphItem::getOffset() const {
+	return memoryMap_->getFirstAddress();
 }
 
 int MemoryMapGraphItem::getBitWidth() const {
@@ -69,4 +69,8 @@ int MemoryMapGraphItem::getBitWidth() const {
 
 unsigned int MemoryMapGraphItem::getAddressUnitSize() const {
 	return memoryMap_->getAddressUnitBits();
+}
+
+quint64 MemoryMapGraphItem::getLastAddress() const {
+	return memoryMap_->getLastAddress();
 }

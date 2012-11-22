@@ -40,7 +40,13 @@ public:
 	 *
 	 * \return int The offset of the item from the parent item's base address.
 	*/
-	virtual int getOffset() const;
+	virtual quint64 getOffset() const;
+
+	/*! \brief Get the last bit contained in the field.
+	 *
+	 * \return The last bit.
+	*/
+	virtual quint64 getLastAddress() const;
 
 	/*! \brief Get the bit width of the item.
 	 * 

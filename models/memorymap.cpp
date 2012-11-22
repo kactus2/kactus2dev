@@ -239,8 +239,7 @@ void MemoryMap::setDescription( const QString& description ) {
 //-----------------------------------------------------------------------------
 // Function: MemoryMap::getLastAddress()
 //-----------------------------------------------------------------------------
-unsigned int MemoryMap::getLastAddress() const
-{
+quint64 MemoryMap::getLastAddress() const {
     int index = -1;
     unsigned int lastBaseAddress = 0;
 
@@ -311,7 +310,7 @@ QString MemoryMap::getLastAddressStr() const {
 	return str;
 }
 
-unsigned int MemoryMap::getFirstAddress() const {
+quint64 MemoryMap::getFirstAddress() const {
 	quint64 firstBase = 0;
 	for (int i = 0; i < items_.size(); ++i) {
 

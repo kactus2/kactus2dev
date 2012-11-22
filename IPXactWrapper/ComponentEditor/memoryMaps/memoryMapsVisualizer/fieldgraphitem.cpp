@@ -31,10 +31,10 @@ void FieldGraphItem::refresh() {
 	setName(field_->getName());
 	setLeftTopCorner(QString::number(field_->getMSB()));
 	setRightTopCorner(QString::number(field_->getBitOffset()));
-	reorganizeChildren();
+	VisualizerItem::reorganizeChildren();
 }
 
-int FieldGraphItem::getOffset() const {
+quint64 FieldGraphItem::getOffset() const {
 	return field_->getBitOffset();
 }
 
@@ -46,5 +46,9 @@ unsigned int FieldGraphItem::getAddressUnitSize() const {
 	RegisterGraphItem* regItem = static_cast<RegisterGraphItem*>(parentItem());
 	Q_ASSERT(regItem);
 	return regItem->getAddressUnitSize();
+}
+
+quint64 FieldGraphItem::getLastAddress() const {
+	return field_->getMSB();
 }
 

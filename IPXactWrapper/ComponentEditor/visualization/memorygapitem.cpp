@@ -11,9 +11,13 @@
 #include <QBrush>
 
 MemoryGapItem::MemoryGapItem(QGraphicsItem* parent):
-MemoryVisualizationItem(parent) {
-	setBrush(QBrush(QColor(60, 160, 255)));
+MemoryVisualizationItem(parent),
+start_(0),
+end_(0) {
+	setBrush(QBrush(QColor("grey")));
 	setName("...");
+	setLeftTopCorner("0x0");
+	setShowExpandableItem(false);
 }
 
 MemoryGapItem::~MemoryGapItem() {
@@ -27,9 +31,11 @@ void MemoryGapItem::refresh() {
 	QString endStr = QString::number(end_, 16);
 	endStr.prepend("0x");
 	setLeftBottomCorner(endStr);
+
+	VisualizerItem::reorganizeChildren();
 }
 
-int MemoryGapItem::getOffset() const {
+quint64 MemoryGapItem::getOffset() const {
 	return start_;
 }
 
@@ -63,4 +69,8 @@ void MemoryGapItem::setEndAddress( quint64 address, bool contains /*= true*/ ) {
 		end_ = --address;
 	}
 	refresh();
+}
+
+quint64 MemoryGapItem::getLastAddress() const {
+	return end_;
 }
