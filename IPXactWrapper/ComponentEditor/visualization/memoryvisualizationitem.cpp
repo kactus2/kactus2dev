@@ -112,7 +112,7 @@ void MemoryVisualizationItem::reorganizeChildren() {
 		gap->setStartAddress(previousBlockEnd, false);
 
 		// set the last address for the gap
-		gap->setEndAddress(getLastAddress(), false);
+		gap->setEndAddress(getLastAddress());
 
 		// set the gap to the end of the last item
 		gap->setPos(0, yCoordinate);

@@ -155,7 +155,7 @@ void PortsDelegate::setEditorData( QWidget* editor,
     case PORT_COL_DEFAULT:
         {
             QLineEdit* defaultEdit = qobject_cast<QLineEdit*>(editor);
-            QString value = index.model()->data(index, Qt::DisplayRole).toString();
+            QString value = index.model()->data(index, Qt::DisplayRole).toString().simplified();
             defaultEdit->setText(value);
             break;
         }
@@ -246,7 +246,7 @@ void PortsDelegate::setModelData( QWidget* editor,
     case PORT_COL_DEFAULT:
         {
             QLineEdit* defaultEdit = qobject_cast<QLineEdit*>(editor);
-            QString value = defaultEdit->text();
+            QString value = defaultEdit->text().simplified();
             model->setData(index, value, Qt::EditRole);
             break;
         }

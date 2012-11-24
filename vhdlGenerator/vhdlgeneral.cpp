@@ -182,7 +182,8 @@ QString VhdlGeneral::convertDefaultValue( const QString& originalDefaultValue, c
 			// char for '
 			QChar charToAdd(39);
 
-			QString result(originalDefaultValue);
+			// remove the white spaces from start and end
+			QString result(originalDefaultValue.simplified());
 
 			// if theres only one character then add ' to both start and end
 			if (originalDefaultValue.size() == 1) {
@@ -213,7 +214,8 @@ QString VhdlGeneral::convertDefaultValue( const QString& originalDefaultValue, c
 		// char for "
 		QChar charToAdd(34);
 
-		QString result(originalDefaultValue);
+		// remove white space from start and end
+		QString result(originalDefaultValue.simplified());
 
 		// if the first letter is a decimal digit
 		if (result.at(0).isDigit()) {

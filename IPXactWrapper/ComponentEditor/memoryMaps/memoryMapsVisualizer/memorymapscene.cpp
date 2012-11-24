@@ -42,7 +42,7 @@ void MemoryMapScene::refresh() {
 
 		// if there is a previous then add the new after it
 		if (previous) {
-			QRectF previousRect = previous->childrenBoundingRect();
+			QRectF previousRect = previous->itemTotalRect();
 			previousRect |= previous->boundingRect();
 
 			// update the y coordinate to avoid setting items on top of each other

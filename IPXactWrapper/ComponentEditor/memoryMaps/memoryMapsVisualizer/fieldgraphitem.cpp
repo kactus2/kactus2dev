@@ -17,6 +17,7 @@ MemoryVisualizationItem(parent),
 field_(field) {
 	Q_ASSERT(field_);
 	setBrush(QBrush(QColor(40, 140, 255)));
+	setShowExpandableItem(false);
 }
 
 FieldGraphItem::~FieldGraphItem() {
