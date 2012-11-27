@@ -103,7 +103,7 @@ void RegisterGraphItem::reorganizeChildren() {
 	qreal xCoordinate = rect().left();
 	MemoryVisualizationItem* previous = NULL;
 
-	for (QMap<int, MemoryVisualizationItem*>::iterator i = --childItems_.end();
+	for (QMap<quint64, MemoryVisualizationItem*>::iterator i = --childItems_.end();
 		i != --childItems_.begin(); --i) {
 			
 			Q_ASSERT(i.value());

@@ -17,6 +17,7 @@
 
 class AddressBlockEditor;
 class MemoryMapsVisualizer;
+class AddressBlockGraphItem;
 
 /*! \brief The item for a single address block in component editor's navigation tree.
  *
@@ -102,6 +103,22 @@ public:
 	*/
 	virtual void setVisualizer(MemoryMapsVisualizer* visualizer);
 
+	/*! \brief Get the visualizer graphics item for the address block.
+	 *
+	 * \return QGraphicsItem* Pointer to the graphics item.
+	*/
+	virtual QGraphicsItem* getGraphicsItem();
+
+	/*! \brief Update the graphics item of the address block.
+	 *
+	*/
+	virtual void updateGraphics();
+
+	/*! \brief Remove the graphics item of the address block.
+	 *
+	*/
+	virtual void removeGraphicsItem();
+
 protected slots:
 
 	/*! \brief Handler for editor's contentChanged signal.
@@ -126,8 +143,11 @@ private:
 	//! \brief Pointer to the editor to edit the address block.
 	AddressBlockEditor* editor_;
 
-	//! \brief The visualizet for memory maps.
+	//! \brief The visualizer for memory maps.
 	MemoryMapsVisualizer* visualizer_;
+
+	//! \brief Pointer to the graph item which visualizes the address block.
+	AddressBlockGraphItem* graphItem_;
 };
 
 #endif // COMPONENTEDITORADDRBLOCKITEM_H

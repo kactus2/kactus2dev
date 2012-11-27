@@ -57,7 +57,7 @@ baseAddrAttributes_() {
 MemoryMapItem::MemoryMapItem():
 name_(),
 attributes_(),
-baseAddress_(), 
+baseAddress_("0x0"), 
 baseAddrAttributes_() {
 }
 

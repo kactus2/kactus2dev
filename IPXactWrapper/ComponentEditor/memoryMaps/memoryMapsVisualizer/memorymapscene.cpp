@@ -81,9 +81,6 @@ void MemoryMapScene::rePosition() {
 	MemoryMapGraphItem* previous = 0;
 	foreach (MemoryMapGraphItem* memMap, memGraphItems_) {
 
-		// tell item to update itself and its children
-		//memMap->refresh();
-
 		// if there is a previous then add the new after it
 		if (previous) {
 			QRectF previousRect = previous->itemTotalRect();

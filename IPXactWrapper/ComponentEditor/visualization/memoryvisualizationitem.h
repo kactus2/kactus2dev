@@ -57,6 +57,20 @@ public:
 	*/
 	virtual unsigned int getAddressUnitSize() const = 0;
 
+	/*! \brief Add a child visualization item for this item.
+	 *
+	 * \param childItem Pointer to the child to add.
+	 *
+	*/
+	virtual void addChild(MemoryVisualizationItem* childItem);
+
+	/*! \brief Remove a child visualization item from this item.
+	 *
+	 * \param childItem Pointer to the child to remove.
+	 *
+	*/
+	virtual void removeChild(MemoryVisualizationItem* childItem);
+
 signals:
 
 	//! \brief Emitted when the item changes.
@@ -71,7 +85,7 @@ protected:
 	virtual void reorganizeChildren();
 
 	//! \brief Contains the child memory items. The offset of the child is the key.
-	QMap<int, MemoryVisualizationItem*> childItems_;
+	QMap<quint64, MemoryVisualizationItem*> childItems_;
 
 private:
 	
@@ -80,6 +94,9 @@ private:
 
 	//! \brief No assignment
 	MemoryVisualizationItem& operator=(const MemoryVisualizationItem& other);
+
+	//! \brief Update the offsets of the child items in the map.
+	void updateChildMap();
 };
 
 #endif // MEMORYVISUALIZATIONITEM_H

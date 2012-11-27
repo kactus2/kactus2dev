@@ -50,3 +50,7 @@ void ExpandableItem::onExpandStateChange( bool expanded ) {
 void ExpandableItem::setShowExpandableItem( bool show ) {
 	expandCollapseItem_->setVisible(show);
 }
+
+bool ExpandableItem::isExpanded() const {
+	return expandCollapseItem_->isExpanded();
+}

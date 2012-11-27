@@ -30,6 +30,12 @@ public:
 	//! \brief The destructor
 	virtual ~ExpandableItem();
 
+	/*! \brief Check if the item has its children visible or not.
+	 *
+	 * \return True if children are visible.
+	*/
+	virtual bool isExpanded() const;
+
 protected slots:
 
 	/*! \brief Handler for expandCollapseItem's stateChanged()-signal.

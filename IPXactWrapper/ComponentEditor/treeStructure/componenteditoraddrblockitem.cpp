@@ -10,6 +10,8 @@
 #include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 #include <models/register.h>
 #include "componenteditorregisteritem.h"
+#include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.h>
+#include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h>
 
 #include <QApplication>
 
@@ -110,9 +112,49 @@ ItemVisualizer* ComponentEditorAddrBlockItem::visualizer() {
 
 void ComponentEditorAddrBlockItem::setVisualizer( MemoryMapsVisualizer* visualizer ) {
 	visualizer_ = visualizer;
+
+	// get the graphics item for the memory map
+	MemoryMapGraphItem* parentItem = static_cast<MemoryMapGraphItem*>(parent()->getGraphicsItem());
+	Q_ASSERT(parentItem);
+
+	// create the graph item for the address block
+	graphItem_ = new AddressBlockGraphItem(addrBlock_, parentItem);
+
+	// register the addr block graph item for the parent
+	parentItem->addChild(graphItem_);
+
+	// tell child to refresh itself
+	graphItem_->refresh();
+
 	// update the visualizers for register items
 	foreach (QSharedPointer<ComponentEditorItem> item, childItems_) {
 		QSharedPointer<ComponentEditorRegisterItem> regItem = item.staticCast<ComponentEditorRegisterItem>();
 		regItem->setVisualizer(visualizer_);
 	}
+}
+
+QGraphicsItem* ComponentEditorAddrBlockItem::getGraphicsItem() {
+	return graphItem_;
+}
+
+void ComponentEditorAddrBlockItem::updateGraphics() {
+	graphItem_->refresh();
+}
+
+void ComponentEditorAddrBlockItem::removeGraphicsItem() {
+	Q_ASSERT(graphItem_);
+
+	// get the graphics item for the memory map
+	MemoryMapGraphItem* parentItem = static_cast<MemoryMapGraphItem*>(parent()->getGraphicsItem());
+	Q_ASSERT(parentItem);
+
+	// unregister addr block graph item from the memory map graph item
+	parentItem->removeChild(graphItem_);
+
+	// take the child from the parent
+	graphItem_->setParent(NULL);
+
+	// delete the graph item
+	delete graphItem_;
+	graphItem_ = NULL;
 }

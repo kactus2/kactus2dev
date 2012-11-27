@@ -24,6 +24,9 @@ void MemoryVisualizationItem::reorganizeChildren() {
 	// first find out the width for all items
 	qreal width = VisualizerItem::itemTotalWidth();
 
+	// update the offsets of the child items so they are displayed in correct order
+	updateChildMap();
+
 	// if there are no children then this can not be expanded or collapsed
 	if (childItems_.isEmpty()) {
 		ExpandableItem::setShowExpandableItem(false);
@@ -63,7 +66,7 @@ void MemoryVisualizationItem::reorganizeChildren() {
 			// set the gap to the end of the last item
 			gap->setPos(0, yCoordinate);
 
-			gap->hide();
+			gap->setVisible(isExpanded());
 
 			gaps.append(gap);
 		}
@@ -117,7 +120,7 @@ void MemoryVisualizationItem::reorganizeChildren() {
 		// set the gap to the end of the last item
 		gap->setPos(0, yCoordinate);
 
-		gap->hide();
+		gap->setVisible(isExpanded());
 
 		gaps.append(gap);
 	}
@@ -132,4 +135,40 @@ void MemoryVisualizationItem::reorganizeChildren() {
 	
 	// reorganize the text blocks of this item
 	VisualizerItem::reorganizeChildren();
+}
+
+void MemoryVisualizationItem::addChild( MemoryVisualizationItem* childItem ) {
+	quint64 offset = childItem->getOffset();
+	childItems_.insertMulti(offset, childItem);
+
+	childItem->setVisible(isExpanded());
+}
+
+void MemoryVisualizationItem::removeChild( MemoryVisualizationItem* childItem ) {
+	quint64 offset = childItem->getOffset();
+	Q_ASSERT(childItems_.contains(offset));
+	childItems_.remove(offset);
+}
+
+void MemoryVisualizationItem::updateChildMap() {
+	QMap<quint64, MemoryVisualizationItem*> newMap;
+
+	// go through all children and ask their offsets
+	foreach (MemoryVisualizationItem* item, childItems_) {
+
+		// if the item is a gap then it is not added
+		MemoryGapItem* gap = dynamic_cast<MemoryGapItem*>(item);
+		if (gap) {
+			gap->setParent(NULL);
+			delete gap;
+			gap = NULL;
+			continue;
+		}
+
+		// update the offset for the item
+		quint64 offset = item->getOffset();
+		newMap.insertMulti(offset, item);
+	}
+	// update the original map
+	childItems_ = newMap;
 }

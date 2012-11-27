@@ -22,7 +22,7 @@
 
 AddressBlock::AddressBlock(QDomNode &memoryMapNode):
 MemoryMapItem(memoryMapNode),
-range_(), 
+range_("1"), 
 rangeAttributes_(),
 width_(-1),
 widthAttributes_(),
@@ -94,7 +94,7 @@ registerData_() {
 
 AddressBlock::AddressBlock():
 MemoryMapItem(),
-range_(), 
+range_("1"), 
 rangeAttributes_(),
 width_(-1),
 widthAttributes_(),
