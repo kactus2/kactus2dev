@@ -16,6 +16,7 @@
 #include <QFont>
 #include <QList>
 #include <QWidget>
+#include <QGraphicsItem>
 
 class LibraryInterface;
 class ItemEditor;
@@ -194,6 +195,30 @@ public:
      *  Returns true if the item has a built-in editor available.
      */
     virtual bool hasBuiltinEditor() const;
+
+	/*! \brief Get the visualizer graphics item for the element.
+	 *
+	 * The default implementation returns a null pointer, reimplement this for
+	 * elements that contain a visualization element.
+	 *
+	 * \return QGraphicsItem* Pointer to the graphics item.
+	*/
+	virtual QGraphicsItem* getGraphicsItem();
+
+	/*! \brief Update the graphics item of the element.
+	 *
+	 * The default implementation does nothing, reimplement for elements which
+	 * contain a graphics item.
+	 *
+	*/
+	virtual void updateGraphics();
+
+	/*! \brief Remove the graphics item of the element.
+	 *
+	 * The default implementation does nothing, reimplement for elements which
+	 * contain a graphics item.
+	*/
+	virtual void removeGraphicsItem();
 
 public slots:
 

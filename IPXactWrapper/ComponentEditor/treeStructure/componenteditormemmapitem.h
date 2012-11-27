@@ -16,6 +16,7 @@
 
 class MemoryMapEditor;
 class MemoryMapsVisualizer;
+class MemoryMapGraphItem;
 
 /*! \brief The item for a single memory map in component editor's navigation tree.
  *
@@ -100,6 +101,22 @@ public:
 	*/
 	virtual void setVisualizer(MemoryMapsVisualizer* visualizer);
 
+	/*! \brief Get the visualizer graphics item for the memory map.
+	 *
+	 * \return QGraphicsItem* Pointer to the graphics item.
+	*/
+	virtual QGraphicsItem* getGraphicsItem();
+
+	/*! \brief Update the graphics item of the memory map.
+	 *
+	*/
+	virtual void updateGraphics();
+
+	/*! \brief Remove the graphics item of the memory map.
+	 *
+	*/
+	virtual void removeGraphicsItem();
+
 private:
 	//! \brief No copying
 	ComponentEditorMemMapItem(const ComponentEditorMemMapItem& other);
@@ -118,6 +135,9 @@ private:
 
 	//! \brief The visualizer to display the memory maps
 	MemoryMapsVisualizer* visualizer_;
+
+	//! \brief Pointer to the graph item which visualizes this memory map.
+	MemoryMapGraphItem* graphItem_;
 };
 
 #endif // COMPONENTEDITORMEMMAPITEM_H

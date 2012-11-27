@@ -10,6 +10,7 @@
 
 #include <models/memorymapitem.h>
 #include <models/addressblock.h>
+#include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapscene.h>
 
 #include <QBrush>
 #include <QColor>
@@ -32,31 +33,35 @@ void MemoryMapGraphItem::refresh() {
 	setLeftTopCorner(memoryMap_->getFirstAddressStr());
 	setLeftBottomCorner(memoryMap_->getLastAddressStr());
 
-	childItems_.clear();
-
-	QList<QSharedPointer<MemoryMapItem> >& memItems = memoryMap_->getItems();
-	foreach (QSharedPointer<MemoryMapItem> item, memItems) {
-
-		// if the sub item is an address block then create a child graph item for it
-		QSharedPointer<AddressBlock> addrBlock = item.dynamicCast<AddressBlock>();
-		if (addrBlock) {
-			// create the item
-			AddressBlockGraphItem* adGraphItem = new AddressBlockGraphItem(addrBlock, this);
-			
-			// get the offset of the item
-			int offset = adGraphItem->getOffset();
-
-			// make sure the items are in correct order for the offset
-			childItems_.insert(offset, adGraphItem);
-
-			// tell child to check its children
-			adGraphItem->refresh();
-			adGraphItem->hide();
-		}
-	}
+// 	childItems_.clear();
+// 
+// 	QList<QSharedPointer<MemoryMapItem> >& memItems = memoryMap_->getItems();
+// 	foreach (QSharedPointer<MemoryMapItem> item, memItems) {
+// 
+// 		// if the sub item is an address block then create a child graph item for it
+// 		QSharedPointer<AddressBlock> addrBlock = item.dynamicCast<AddressBlock>();
+// 		if (addrBlock) {
+// 			// create the item
+// 			AddressBlockGraphItem* adGraphItem = new AddressBlockGraphItem(addrBlock, this);
+// 			
+// 			// get the offset of the item
+// 			int offset = adGraphItem->getOffset();
+// 
+// 			// make sure the items are in correct order for the offset
+// 			childItems_.insert(offset, adGraphItem);
+// 
+// 			// tell child to check its children
+// 			adGraphItem->refresh();
+// 			adGraphItem->hide();
+// 		}
+// 	}
 
 	// set the positions for the children
 	MemoryVisualizationItem::reorganizeChildren();
+
+	MemoryMapScene* memScene = static_cast<MemoryMapScene*>(scene());
+	Q_ASSERT(memScene);
+	memScene->rePosition();
 }
 
 quint64 MemoryMapGraphItem::getOffset() const {

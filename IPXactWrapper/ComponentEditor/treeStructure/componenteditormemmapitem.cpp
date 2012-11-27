@@ -11,9 +11,11 @@
 #include "componenteditoraddrblockitem.h"
 #include <models/memorymapitem.h>
 #include <models/addressblock.h>
+#include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h>
 
 #include <QFont>
 #include <QApplication>
+#include <QGraphicsScene>
 
 ComponentEditorMemMapItem::ComponentEditorMemMapItem(QSharedPointer<MemoryMap> memoryMap, 
 													 ComponentEditorTreeModel* model,
@@ -24,10 +26,12 @@ ComponentEditorItem(model, libHandler, component, parent),
 memoryMap_(memoryMap),
 items_(memoryMap->getItems()),
 editor_(new MemoryMapEditor(component, memoryMap)),
-visualizer_(NULL) {
+visualizer_(NULL),
+graphItem_(NULL) {
 
 	setObjectName(tr("ComponentEditorMemMapItem"));
 
+	// create the child objects in the tree
 	foreach (QSharedPointer<MemoryMapItem> memItem, items_) {
 		
 		// if the item is for address block then create child for it
@@ -104,9 +108,32 @@ ItemVisualizer* ComponentEditorMemMapItem::visualizer() {
 void ComponentEditorMemMapItem::setVisualizer( MemoryMapsVisualizer* visualizer ) {
 	visualizer_ = visualizer;
 
+	graphItem_ = new MemoryMapGraphItem(memoryMap_);
+	visualizer_->addMemoryMapItem(graphItem_);
+	graphItem_->refresh();
+
 	// update the visualizers of address block items
 	foreach (QSharedPointer<ComponentEditorItem> item, childItems_) {
 		QSharedPointer<ComponentEditorAddrBlockItem> addrItem = item.staticCast<ComponentEditorAddrBlockItem>();
 		addrItem->setVisualizer(visualizer_);
 	}
+}
+
+QGraphicsItem* ComponentEditorMemMapItem::getGraphicsItem() {
+	return graphItem_;
+}
+
+void ComponentEditorMemMapItem::updateGraphics() {
+	graphItem_->refresh();
+}
+
+void ComponentEditorMemMapItem::removeGraphicsItem() {
+	Q_ASSERT(graphItem_);
+
+	// remove the graph item from the scene
+	visualizer_->removeMemoryMapItem(graphItem_);
+
+	// delete the graph item
+	delete graphItem_;
+	graphItem_ = NULL;
 }

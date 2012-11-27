@@ -145,6 +145,9 @@ void ComponentEditorItem::onEditorChanged() {
 
 		// tell the child to update it's editor contents
 		childItem->refreshEditor();
+
+		// tell the child to update it's visualization graphics item
+		childItem->updateGraphics();
 	}
 }
 
@@ -202,6 +205,11 @@ void ComponentEditorItem::createChild( int index ) {
 void ComponentEditorItem::removeChild( int index ) {
 	Q_ASSERT(index >= 0);
 	Q_ASSERT(index < childItems_.size());
+
+	// first tell the child to remove the graphics item
+	childItems_[index]->removeGraphicsItem();
+
+	// then the child can be removed
 	childItems_.removeAt(index);
 }
 
@@ -222,4 +230,16 @@ void ComponentEditorItem::openItem(bool builtinEditor) {
 bool ComponentEditorItem::hasBuiltinEditor() const
 {
     return false;
+}
+
+QGraphicsItem* ComponentEditorItem::getGraphicsItem() {
+	return NULL;
+}
+
+void ComponentEditorItem::updateGraphics() {
+	return;
+}
+
+void ComponentEditorItem::removeGraphicsItem() {
+	return;
 }

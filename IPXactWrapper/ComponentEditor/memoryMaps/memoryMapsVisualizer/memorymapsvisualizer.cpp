@@ -26,3 +26,11 @@ scene_(new MemoryMapScene(this)) {
 
 MemoryMapsVisualizer::~MemoryMapsVisualizer() {
 }
+
+void MemoryMapsVisualizer::addMemoryMapItem( MemoryMapGraphItem* memMapItem ) {
+	scene_->addMemGraphItem(memMapItem);
+}
+
+void MemoryMapsVisualizer::removeMemoryMapItem( MemoryMapGraphItem* memMapItem ) {
+	scene_->removeMemGraphItem(memMapItem);
+}

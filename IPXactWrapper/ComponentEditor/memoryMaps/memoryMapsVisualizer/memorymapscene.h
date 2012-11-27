@@ -14,6 +14,9 @@
 #include <QList>
 #include <QSharedPointer>
 
+class MemoryGapItem;
+class MemoryMapGraphItem;
+
 /*! \brief The graphics scene that contains the memory map graphics items.
  *
  */
@@ -41,6 +44,25 @@ public:
 	*/
 	void setMemoryMaps(QList<QSharedPointer<MemoryMap> >& memoryMaps);
 
+	/*! \brief Add a new memory map graph item to the scene.
+	 *
+	 * \param memGraphItem Pointer to the item.
+	 *
+	*/
+	void addMemGraphItem(MemoryMapGraphItem* memGraphItem);
+
+	/*! \brief Remove a memory map graph item from the scene.
+	 *
+	 * \param memGraphItem Pointer to the item to remove.
+	 *
+	*/
+	void removeMemGraphItem(MemoryMapGraphItem* memGraphItem);
+
+	/*! \brief Reposition the memory map graphs items in the scene.
+	 *
+	*/
+	void rePosition();
+
 signals:
 
 	//! \brief This signal is emitted when the contents of the scene changes.
@@ -61,6 +83,9 @@ private:
 
 	//! \brief Contains the memory maps that are shown.
 	QList<QSharedPointer<MemoryMap> > memoryMaps_;
+
+	//! \brief Contains the graph items for memory maps.
+	QList<MemoryMapGraphItem*> memGraphItems_;
 };
 
 #endif // MEMORYMAPSCENE_H

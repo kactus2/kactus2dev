@@ -18,6 +18,7 @@
 
 class MemoryMapView;
 class MemoryMapScene;
+class MemoryMapGraphItem;
 
 /*! \brief The widget to visualize a set of memory maps.
  *
@@ -37,6 +38,20 @@ public:
 	
 	//! \brief The destructor
 	virtual ~MemoryMapsVisualizer();
+
+	/*! \brief Add a new memory map graphics item to the scene.
+	 *
+	 * \param memMapItem Pointer to the graphics item.
+	 *
+	*/
+	void addMemoryMapItem(MemoryMapGraphItem* memMapItem);
+
+	/*! \brief Remove a memory map graphics item from the scene.
+	 *
+	 * \param memMapItem Pointer to the graphics item.
+	 *
+	*/
+	void removeMemoryMapItem(MemoryMapGraphItem* memMapItem);
 
 private:
 	

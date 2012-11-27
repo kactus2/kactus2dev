@@ -101,8 +101,8 @@ void MemoryVisualizationItem::reorganizeChildren() {
 		previous = item;
 	}
 
-	// check if there is gap after the last address
-	if (getLastAddress() > previousBlockEnd) {
+	// check if there is gap after the last address but only if there is at least one child
+	if (getLastAddress() > previousBlockEnd && !childItems_.isEmpty()) {
 		// create the gap item
 		MemoryGapItem* gap = new MemoryGapItem(this);
 
