@@ -48,8 +48,6 @@ void MemoryVisualizationItem::reorganizeChildren() {
 		Q_ASSERT(item);
 		item->setWidth(width);
 
-		qDebug() << "Item name " << item->getName();
-
 		// pointer to the possible gap item
 		MemoryGapItem* gap = 0;
 
