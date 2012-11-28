@@ -57,14 +57,24 @@ void MemoryVisualizationItem::reorganizeChildren() {
 			// create the gap item
 			gap = new MemoryGapItem(this);
 
-			// set the first address of the gap
-			gap->setStartAddress(previousBlockEnd, false);
+			// if the gap is not at the start 
+			if (previous) {
+				// set the first address of the gap
+				gap->setStartAddress(previousBlockEnd, false);
+			}
+			else {
+				// the gap starts from the start of the parent
+				gap->setStartAddress(previousBlockEnd, true);
+			}			
 
 			// set the last address for the gap
 			gap->setEndAddress(item->getOffset(), false);
 
 			// set the gap to the end of the last item
 			gap->setPos(0, yCoordinate);
+
+			// update the y-coordinate to avoid setting a block under the gap
+			yCoordinate += VisualizerItem::ITEM_HEIGHT;
 
 			gap->setVisible(isExpanded());
 
@@ -115,6 +125,9 @@ void MemoryVisualizationItem::reorganizeChildren() {
 		// set the last address for the gap
 		gap->setEndAddress(getLastAddress());
 
+		// increase the y-coordinate to avoid setting the gap on top of the last block.
+		yCoordinate += VisualizerItem::ITEM_HEIGHT;
+
 		// set the gap to the end of the last item
 		gap->setPos(0, yCoordinate);
 
@@ -144,8 +157,10 @@ void MemoryVisualizationItem::addChild( MemoryVisualizationItem* childItem ) {
 
 void MemoryVisualizationItem::removeChild( MemoryVisualizationItem* childItem ) {
 	quint64 offset = childItem->getOffset();
+
 	Q_ASSERT(childItems_.contains(offset));
-	childItems_.remove(offset);
+	int removeCount = childItems_.remove(offset, childItem);
+	Q_ASSERT(removeCount == 1);
 }
 
 void MemoryVisualizationItem::updateChildMap() {

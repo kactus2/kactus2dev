@@ -11,7 +11,7 @@
 #include <models/register.h>
 #include "componenteditorregisteritem.h"
 #include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.h>
-#include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h>
+#include <IPXactWrapper/ComponentEditor/visualization/memoryvisualizationitem.h>
 
 #include <QApplication>
 
@@ -114,7 +114,7 @@ void ComponentEditorAddrBlockItem::setVisualizer( MemoryMapsVisualizer* visualiz
 	visualizer_ = visualizer;
 
 	// get the graphics item for the memory map
-	MemoryMapGraphItem* parentItem = static_cast<MemoryMapGraphItem*>(parent()->getGraphicsItem());
+	MemoryVisualizationItem* parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
 	Q_ASSERT(parentItem);
 
 	// create the graph item for the address block
@@ -145,7 +145,7 @@ void ComponentEditorAddrBlockItem::removeGraphicsItem() {
 	Q_ASSERT(graphItem_);
 
 	// get the graphics item for the memory map
-	MemoryMapGraphItem* parentItem = static_cast<MemoryMapGraphItem*>(parent()->getGraphicsItem());
+	MemoryVisualizationItem* parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
 	Q_ASSERT(parentItem);
 
 	// unregister addr block graph item from the memory map graph item

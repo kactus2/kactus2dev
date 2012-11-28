@@ -18,6 +18,7 @@
 
 class RegisterEditor;
 class MemoryMapsVisualizer;
+class RegisterGraphItem;
 
 /*! \brief The item for single register in component editor's navigation tree.
  *
@@ -102,6 +103,22 @@ public:
 	*/
 	virtual void setVisualizer(MemoryMapsVisualizer* visualizer);
 
+	/*! \brief Get the visualizer graphics item for the register.
+	 *
+	 * \return QGraphicsItem* Pointer to the graphics item.
+	*/
+	virtual QGraphicsItem* getGraphicsItem();
+
+	/*! \brief Update the graphics item of the register.
+	 *
+	*/
+	virtual void updateGraphics();
+
+	/*! \brief Remove the graphics item of the register.
+	 *
+	*/
+	virtual void removeGraphicsItem();
+
 protected slots:
 
 	/*! \brief Handler for editor's contentChanged signal.
@@ -128,6 +145,9 @@ private:
 
 	//! \brief Pointer to the visualizer of memory maps.
 	MemoryMapsVisualizer* visualizer_;
+
+	//! \brief Pointer to the graph item that visualizes the register.
+	RegisterGraphItem* graphItem_;
 };
 
 #endif // COMPONENTEDITORREGISTERITEM_H

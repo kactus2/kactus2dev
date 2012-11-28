@@ -10,6 +10,8 @@
 #include <QColor>
 #include <QBrush>
 
+#include <QDebug>
+
 MemoryGapItem::MemoryGapItem(QGraphicsItem* parent):
 MemoryVisualizationItem(parent),
 start_(0),
@@ -18,9 +20,12 @@ end_(0) {
 	setName("...");
 	setLeftTopCorner("0x0");
 	setShowExpandableItem(false);
+
+	//qDebug() << "Constructed gap";
 }
 
 MemoryGapItem::~MemoryGapItem() {
+	//qDebug() << "Destroyed gap";
 }
 
 void MemoryGapItem::refresh() {

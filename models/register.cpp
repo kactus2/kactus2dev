@@ -48,7 +48,7 @@ registerDefinition_(registerNode) {
 Register::Register():
 RegisterModel(),
 dim_(-1),
-addressOffset_(),
+addressOffset_("0x0"),
 alternateRegisters_(), 
 registerDefinition_() {
 }

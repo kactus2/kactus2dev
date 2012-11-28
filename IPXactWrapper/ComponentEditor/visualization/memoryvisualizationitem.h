@@ -10,7 +10,7 @@
 
 #include <common/graphicsItems/expandableitem.h>
 
-#include <QMap>
+#include <QMultiMap>
 
 /*! \brief The base class for graphics items to visualize memory objects.
  *
@@ -84,8 +84,11 @@ protected:
 	*/
 	virtual void reorganizeChildren();
 
+	//! \brief Update the offsets of the child items in the map.
+	void updateChildMap();
+
 	//! \brief Contains the child memory items. The offset of the child is the key.
-	QMap<quint64, MemoryVisualizationItem*> childItems_;
+	QMultiMap<quint64, MemoryVisualizationItem*> childItems_;
 
 private:
 	
@@ -94,9 +97,6 @@ private:
 
 	//! \brief No assignment
 	MemoryVisualizationItem& operator=(const MemoryVisualizationItem& other);
-
-	//! \brief Update the offsets of the child items in the map.
-	void updateChildMap();
 };
 
 #endif // MEMORYVISUALIZATIONITEM_H

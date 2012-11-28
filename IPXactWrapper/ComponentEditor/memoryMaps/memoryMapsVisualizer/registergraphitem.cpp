@@ -10,9 +10,12 @@
 #include <models/field.h>
 #include <common/utils.h>
 #include "addressblockgraphitem.h"
+#include <IPXactWrapper/ComponentEditor/visualization/memoryvisualizationitem.h>
 
 #include <QBrush>
 #include <QColor>
+
+#include <QDebug>
 
 RegisterGraphItem::RegisterGraphItem(QSharedPointer<Register> reg,
 									 QGraphicsItem* parent):
@@ -53,27 +56,12 @@ void RegisterGraphItem::refresh() {
 	endStr.prepend("0x");
 	setLeftBottomCorner(endStr);
 
-	childItems_.clear();
-
-	QList<QSharedPointer<Field> >& fields = register_->getFields();
-	foreach (QSharedPointer<Field> field, fields) {
-
-		// create the item
-		FieldGraphItem* fieldGraph = new FieldGraphItem(field, this);
-
-		// get the offset of the item
-		int offset = fieldGraph->getOffset();
-
-		// make sure the items are in correct order for the offset
-		childItems_.insert(offset, fieldGraph);
-
-		// tell child to check its children
-		fieldGraph->refresh();
-		fieldGraph->hide();
-	}
-
 	// set the positions for the children
 	reorganizeChildren();
+
+	MemoryVisualizationItem* parentGraphItem = static_cast<MemoryVisualizationItem*>(parentItem());
+	Q_ASSERT(parentGraphItem);
+	parentGraphItem->refresh();
 }
 
 quint64 RegisterGraphItem::getOffset() const {
@@ -91,6 +79,8 @@ void RegisterGraphItem::reorganizeChildren() {
 	// first find out the width for all items
 	qreal width = VisualizerItem::itemTotalWidth();
 
+	updateChildMap();
+
 	// if there are no children then this can not be expanded or collapsed
 	if (childItems_.isEmpty()) {
 		ExpandableItem::setShowExpandableItem(false);
@@ -107,7 +97,6 @@ void RegisterGraphItem::reorganizeChildren() {
 		i != --childItems_.begin(); --i) {
 			
 			Q_ASSERT(i.value());
-			//i.value()->setWidth(width);
 
 			if (previous) {
 
@@ -144,6 +133,11 @@ quint64 RegisterGraphItem::getLastAddress() const {
 
 	// how many address unit are contained in the register
 	unsigned int size = register_->getWidth() / addrUnit;
+
+	// if size is not defined then never return a negative number
+	if (size == 0) {
+		return 0;
+	}
 
 	// the last address contained in the register
 	return offset + size - 1;

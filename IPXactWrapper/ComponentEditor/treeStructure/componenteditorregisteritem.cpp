@@ -9,6 +9,8 @@
 #include <IPXactWrapper/ComponentEditor/memoryMaps/registereditor.h>
 #include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 #include "componenteditorfielditem.h"
+#include <IPXactWrapper/ComponentEditor/visualization/memoryvisualizationitem.h>
+#include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.h>
 
 #include <QFont>
 #include <QApplication>
@@ -22,7 +24,8 @@ ComponentEditorItem(model, libHandler, component, parent),
 reg_(reg),
 fields_(reg->getFields()),
 editor_(new RegisterEditor(reg, component)),
-visualizer_(NULL) {
+visualizer_(NULL),
+graphItem_(NULL) {
 
 	setObjectName(tr("ComponentEditorRegisterItem"));
 
@@ -108,9 +111,52 @@ ItemVisualizer* ComponentEditorRegisterItem::visualizer() {
 
 void ComponentEditorRegisterItem::setVisualizer( MemoryMapsVisualizer* visualizer ) {
 	visualizer_ = visualizer;
+
+	// get the graphics item for the memory map
+	MemoryVisualizationItem* parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
+	Q_ASSERT(parentItem);
+
+	// create the graph item for the address block
+	graphItem_ = new RegisterGraphItem(reg_, parentItem);
+
+	// register the addr block graph item for the parent
+	parentItem->addChild(graphItem_);
+
+	// tell child to refresh itself
+	graphItem_->refresh();
+
 	// update the visualizers for field items
 	foreach (QSharedPointer<ComponentEditorItem> item, childItems_) {
 		QSharedPointer<ComponentEditorFieldItem> fieldItem = item.staticCast<ComponentEditorFieldItem>();
 		fieldItem->setVisualizer(visualizer_);
 	}
+}
+
+QGraphicsItem* ComponentEditorRegisterItem::getGraphicsItem() {
+	return graphItem_;
+}
+
+void ComponentEditorRegisterItem::updateGraphics() {
+	graphItem_->refresh();
+}
+
+void ComponentEditorRegisterItem::removeGraphicsItem() {
+	Q_ASSERT(graphItem_);
+
+	// get the graphics item for the memory map
+	MemoryVisualizationItem* parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
+	Q_ASSERT(parentItem);
+
+	// unregister addr block graph item from the memory map graph item
+	parentItem->removeChild(graphItem_);
+
+	// take the child from the parent
+	graphItem_->setParent(NULL);
+
+	// delete the graph item
+	delete graphItem_;
+	graphItem_ = NULL;
+
+	// tell the parent to refresh itself
+	parentItem->refresh();
 }
