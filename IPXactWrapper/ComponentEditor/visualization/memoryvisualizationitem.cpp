@@ -48,6 +48,8 @@ void MemoryVisualizationItem::reorganizeChildren() {
 		Q_ASSERT(item);
 		item->setWidth(width);
 
+		qDebug() << "Item name " << item->getName();
+
 		// pointer to the possible gap item
 		MemoryGapItem* gap = 0;
 
@@ -108,8 +110,6 @@ void MemoryVisualizationItem::reorganizeChildren() {
 	if (getLastAddress() > previousBlockEnd && !childItems_.isEmpty()) {
 		// create the gap item
 		MemoryGapItem* gap = new MemoryGapItem(this);
-
-		qDebug() << "Item " << getName() << " end gap " << previousBlockEnd << " - " << getLastAddress();
 
 		// set the first address of the gap
 		gap->setStartAddress(previousBlockEnd, false);

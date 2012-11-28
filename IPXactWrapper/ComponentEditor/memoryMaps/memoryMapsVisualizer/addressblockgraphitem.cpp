@@ -25,7 +25,6 @@ addrBlock_(addrBlock) {
 	// Add this child to the parent
 	MemoryMapGraphItem* parentGraphItem = static_cast<MemoryMapGraphItem*>(parent);
 	Q_ASSERT(parentGraphItem);
-	parentGraphItem->addChild(this);
 }
 
 AddressBlockGraphItem::~AddressBlockGraphItem() {
