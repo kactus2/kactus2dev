@@ -8,6 +8,8 @@
 #include "componenteditorfielditem.h"
 #include <IPXactWrapper/ComponentEditor/memoryMaps/fieldeditor.h>
 #include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
+#include <IPXactWrapper/ComponentEditor/visualization/memoryvisualizationitem.h>
+#include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.h>
 
 #include <QApplication>
 
@@ -19,7 +21,8 @@ ComponentEditorFieldItem::ComponentEditorFieldItem(QSharedPointer<Field> field,
 ComponentEditorItem(model, libHandler, component, parent),
 field_(field),
 editor_(new FieldEditor(field, component)),
-visualizer_(NULL) {
+visualizer_(NULL),
+graphItem_(NULL) {
 
 	Q_ASSERT(field_);
 
@@ -90,4 +93,46 @@ ItemVisualizer* ComponentEditorFieldItem::visualizer() {
 
 void ComponentEditorFieldItem::setVisualizer( MemoryMapsVisualizer* visualizer ) {
 	visualizer_ = visualizer;
+
+	// get the graphics item for the memory map
+	MemoryVisualizationItem* parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
+	Q_ASSERT(parentItem);
+
+	// create the graph item for the address block
+	graphItem_ = new FieldGraphItem(field_, parentItem);
+
+	// register the addr block graph item for the parent
+	parentItem->addChild(graphItem_);
+
+	// tell child to refresh itself
+	graphItem_->refresh();
+}
+
+QGraphicsItem* ComponentEditorFieldItem::getGraphicsItem() {
+	return graphItem_;
+}
+
+void ComponentEditorFieldItem::updateGraphics() {
+	graphItem_->refresh();
+}
+
+void ComponentEditorFieldItem::removeGraphicsItem() {
+	Q_ASSERT(graphItem_);
+
+	// get the graphics item for the memory map
+	MemoryVisualizationItem* parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
+	Q_ASSERT(parentItem);
+
+	// unregister addr block graph item from the memory map graph item
+	parentItem->removeChild(graphItem_);
+
+	// take the child from the parent
+	graphItem_->setParent(NULL);
+
+	// delete the graph item
+	delete graphItem_;
+	graphItem_ = NULL;
+
+	// tell the parent to refresh itself
+	parentItem->refresh();
 }

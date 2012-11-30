@@ -14,9 +14,6 @@ expandCollapseItem_(new GraphicsExpandCollapseItem(this)) {
 
 	connect(expandCollapseItem_, SIGNAL(stateChanged(bool)),
 		this, SLOT(onExpandStateChange(bool)), Qt::UniqueConnection);
-
-	// Set the position for the hide/show button
-	expandCollapseItem_->setPos(rect().width() - 20, VisualizerItem::ITEM_HEIGHT / 5);
 }
 
 ExpandableItem::~ExpandableItem() {
@@ -53,4 +50,10 @@ void ExpandableItem::setShowExpandableItem( bool show ) {
 
 bool ExpandableItem::isExpanded() const {
 	return expandCollapseItem_->isExpanded();
+}
+
+void ExpandableItem::reorganizeChildren() {
+	// Set the position for the hide/show button
+	expandCollapseItem_->setPos(rect().width() - 20, VisualizerItem::ITEM_HEIGHT / 5);
+	VisualizerItem::reorganizeChildren();
 }

@@ -54,6 +54,13 @@ protected slots:
 
 protected:
 
+	/*! \brief Set new positions for child items.
+	 * 
+	 * The implementation updates the position of the expand/collapse button and
+	 * calls base class implementation.
+	*/
+	virtual void reorganizeChildren();
+
 	//! \brief The item to show/hide the child items
 	GraphicsExpandCollapseItem* expandCollapseItem_;
 

@@ -16,6 +16,7 @@
 
 class FieldEditor;
 class MemoryMapsVisualizer;
+class FieldGraphItem;
 
 /*! \brief The item for single field in component editor's navigation tree.
  *
@@ -93,6 +94,22 @@ public:
 	*/
 	virtual void setVisualizer(MemoryMapsVisualizer* visualizer);
 
+	/*! \brief Get the visualizer graphics item for the field.
+	 *
+	 * \return QGraphicsItem* Pointer to the graphics item.
+	*/
+	virtual QGraphicsItem* getGraphicsItem();
+
+	/*! \brief Update the graphics item of the field.
+	 *
+	*/
+	virtual void updateGraphics();
+
+	/*! \brief Remove the graphics item of the field.
+	 *
+	*/
+	virtual void removeGraphicsItem();
+
 protected slots:
 
 	/*! \brief Handler for editor's contentChanged signal.
@@ -116,6 +133,9 @@ private:
 
 	//! \brief Pointer to the visualizer of memory maps.
 	MemoryMapsVisualizer* visualizer_;
+
+	//! \brief Pointer to the graph item that visualizes the field.
+	FieldGraphItem* graphItem_;
 };
 
 #endif // COMPONENTEDITORFIELDITEM_H

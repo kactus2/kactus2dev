@@ -10,6 +10,8 @@
 #include <QFontMetrics>
 #include <QFont>
 
+#include <QDebug>
+
 VisualizerItem::VisualizerItem( QGraphicsItem* parent /*= 0*/ ):
 QGraphicsRectItem(parent),
 nameLabel_(this),
@@ -133,8 +135,7 @@ QRectF VisualizerItem::itemTotalRect() const {
 }
 
 qreal VisualizerItem::itemTotalWidth() const {
-	// The width of this item
-	qreal width = rect().width();
+	qreal width = VisualizerItem::MAX_WIDTH;
 
 	// if there are children
 	QList<QGraphicsItem*> children = childItems();

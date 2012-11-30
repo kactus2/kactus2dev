@@ -12,6 +12,8 @@
 #include "addressblockgraphitem.h"
 #include <IPXactWrapper/ComponentEditor/visualization/memoryvisualizationitem.h>
 
+#include <common/graphicsItems/visualizeritem.h>
+
 #include <QBrush>
 #include <QColor>
 
@@ -77,7 +79,7 @@ int RegisterGraphItem::getBitWidth() const {
 
 void RegisterGraphItem::reorganizeChildren() {
 	// first find out the width for all items
-	qreal width = VisualizerItem::itemTotalWidth();
+	qreal width = itemTotalWidth();
 
 	updateChildMap();
 
@@ -112,7 +114,7 @@ void RegisterGraphItem::reorganizeChildren() {
 	setRect(0, 0, width, VisualizerItem::ITEM_HEIGHT);
 
 	// reorganize the text blocks of this item
-	VisualizerItem::reorganizeChildren();
+	ExpandableItem::reorganizeChildren();
 }
 
 unsigned int RegisterGraphItem::getAddressUnitSize() const {
@@ -141,4 +143,23 @@ quint64 RegisterGraphItem::getLastAddress() const {
 
 	// the last address contained in the register
 	return offset + size - 1;
+}
+
+qreal RegisterGraphItem::itemTotalWidth() const {
+	
+	// combine the width of the child items
+	qreal width = 0;
+	foreach (MemoryVisualizationItem* child, childItems_) {
+		if (child->isVisible()) {
+			width += child->itemTotalWidth();
+		}
+	}
+
+	// if there were no children then return the default width
+	if (width == 0) {
+		return VisualizerItem::MAX_WIDTH;
+	}
+	
+	// return the combined width of the children
+	return width;
 }

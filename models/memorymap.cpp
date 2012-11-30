@@ -304,7 +304,13 @@ QString MemoryMap::getLastAddressStr() const {
 	Q_ASSERT(lastBlock);
 
 	quint64 range = Utils::str2Int(lastBlock->getRange());
-	quint64 lastAddress = range + lastBaseAddress;
+	quint64 lastAddress = range + lastBaseAddress - 1;
+
+	// if base and range were undefined then there is no last address
+	if (lastAddress < 0) {
+		return QString();
+	}
+
 	QString str = QString::number(lastAddress, 16);
 	str.prepend("0x");
 	return str;

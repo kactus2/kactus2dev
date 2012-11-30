@@ -77,6 +77,7 @@ void MemoryVisualizationItem::reorganizeChildren() {
 			yCoordinate += VisualizerItem::ITEM_HEIGHT;
 
 			gap->setVisible(isExpanded());
+			gap->setWidth(width);
 
 			gaps.append(gap);
 		}
@@ -132,6 +133,7 @@ void MemoryVisualizationItem::reorganizeChildren() {
 		gap->setPos(0, yCoordinate);
 
 		gap->setVisible(isExpanded());
+		gap->setWidth(width);
 
 		gaps.append(gap);
 	}
@@ -145,7 +147,7 @@ void MemoryVisualizationItem::reorganizeChildren() {
 	setRect(0, 0, width, VisualizerItem::ITEM_HEIGHT);
 	
 	// reorganize the text blocks of this item
-	VisualizerItem::reorganizeChildren();
+	ExpandableItem::reorganizeChildren();
 }
 
 void MemoryVisualizationItem::addChild( MemoryVisualizationItem* childItem ) {

@@ -26,7 +26,7 @@ public:
 	enum Bounds {
 		ITEM_HEIGHT = 20,	//! The height of a single item
 		MIN_WIDTH = 60,		//! The minimum width of an item
-		MAX_WIDTH = 200		//! The maximum width of an item
+		MAX_WIDTH = 200		//! The maximum width of a single item
 	};
 
 	//! \brief The font size to display text.
@@ -67,6 +67,15 @@ public:
 	 *
 	*/
 	virtual void setWidth(qreal width);
+
+	/*! \brief Get the width of the item.
+	 *
+	 * This width is affected by the item's children so if children grow this 
+	 * width grows accordingly.
+	 *
+	 * \return The width of the item and it's sub-items.
+	*/
+	virtual qreal itemTotalWidth() const;
 
 protected:
 
@@ -113,18 +122,9 @@ protected:
 
 	/*! \brief Set new positions for child items.
 	 * 
-	 * The base class implementation only updates the position of the name.
+	 * The base class implementation only updates the position of the name and corner texts.
 	*/
 	virtual void reorganizeChildren();
-
-	/*! \brief Get the width of the item.
-	 *
-	 * This width is affected by the item's children so if children grow this 
-	 * width grows accordingly.
-	 *
-	 * \return The width of the item and it's sub-items.
-	*/
-	virtual qreal itemTotalWidth() const;
 
 private:
 	

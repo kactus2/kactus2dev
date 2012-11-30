@@ -60,6 +60,12 @@ public:
 	*/
 	virtual unsigned int getAddressUnitSize() const;
 
+	/*! \brief Get the width of the item.
+	 *
+	 * \return The width of the field item
+	*/
+	virtual qreal itemTotalWidth() const;
+
 private:
 
 	//! \brief No copying

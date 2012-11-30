@@ -68,6 +68,15 @@ protected:
 	*/
 	virtual void reorganizeChildren();
 
+	/*! \brief Get the width of the item.
+	 *
+	 * This width is affected by the item's children so if children grow this 
+	 * width grows accordingly.
+	 *
+	 * \return The width of the item and it's sub-items.
+	*/
+	virtual qreal itemTotalWidth() const;
+
 private:
 	
 	//! \brief No copying

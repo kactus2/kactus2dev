@@ -386,7 +386,15 @@ unsigned int Field::getBitWidth() const {
 }
 
 int Field::getMSB() const {
-	return bitOffset_ + bitWidth_;
+	const int MSB = bitOffset_ + bitWidth_;
+	
+	// field is at least one bit wide
+	if (MSB == 0) {
+		return 1;
+	}
+	
+	// the number of bits starts at zero
+	return MSB -1;
 }
 
 const QMap<QString,QString>& Field::getBitWidthAttributes() const {

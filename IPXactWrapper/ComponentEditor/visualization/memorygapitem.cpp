@@ -20,12 +20,9 @@ end_(0) {
 	setName("...");
 	setLeftTopCorner("0x0");
 	setShowExpandableItem(false);
-
-	//qDebug() << "Constructed gap";
 }
 
 MemoryGapItem::~MemoryGapItem() {
-	//qDebug() << "Destroyed gap";
 }
 
 void MemoryGapItem::refresh() {

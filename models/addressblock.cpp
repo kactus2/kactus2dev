@@ -284,7 +284,16 @@ QString AddressBlock::getRange() const {
 quint64 AddressBlock::getLastAddress() const {
 	quint64 base = Utils::str2Int(baseAddress_);
 	quint64 range = Utils::str2Int(range_);
-	return base + range;
+
+	quint64 lastAddr = base + range;
+
+	// if the base and range are undefined then return 0
+	if (lastAddr == 0) {
+		return 0;
+	}
+	
+	// if they are defined then return actual last address
+	return lastAddr -1;
 }
 
 QString AddressBlock::getLastAddressStr() const {

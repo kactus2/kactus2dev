@@ -24,15 +24,24 @@ FieldGraphItem::~FieldGraphItem() {
 }
 
 void FieldGraphItem::refresh() {
-	// the size depends on how many bits the field contains
+	// the size depends on how many bits the field contains, always at least one
 	int fieldWidth = field_->getBitWidth();
+	
+	// at least one bit
+	if (fieldWidth == 0) {
+		fieldWidth = 1;
+	}
 	setRect(0, 0, VisualizerItem::MIN_WIDTH * fieldWidth, VisualizerItem::ITEM_HEIGHT);
 
 	// the name depends on the size of the rectangle (if too small then name is chopped)
 	setName(field_->getName());
 	setLeftTopCorner(QString::number(field_->getMSB()));
 	setRightTopCorner(QString::number(field_->getBitOffset()));
-	VisualizerItem::reorganizeChildren();
+	ExpandableItem::reorganizeChildren();
+
+	MemoryVisualizationItem* parentGraphItem = static_cast<MemoryVisualizationItem*>(parentItem());
+	Q_ASSERT(parentGraphItem);
+	parentGraphItem->refresh();
 }
 
 quint64 FieldGraphItem::getOffset() const {
@@ -51,5 +60,9 @@ unsigned int FieldGraphItem::getAddressUnitSize() const {
 
 quint64 FieldGraphItem::getLastAddress() const {
 	return field_->getMSB();
+}
+
+qreal FieldGraphItem::itemTotalWidth() const {
+	return rect().width();
 }
 
