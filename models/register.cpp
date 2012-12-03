@@ -289,3 +289,7 @@ QString Register::getRegisterMask() const {
 void Register::setRegisterMask( const QString& registerMask ) {
 	registerDefinition_.setRegisterMask(registerMask);
 }
+
+unsigned int Register::getMSB() const {
+	return registerDefinition_.getMSB();
+}

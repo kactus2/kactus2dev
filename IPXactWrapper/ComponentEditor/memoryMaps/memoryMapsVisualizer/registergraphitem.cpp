@@ -11,6 +11,7 @@
 #include <common/utils.h>
 #include "addressblockgraphitem.h"
 #include <IPXactWrapper/ComponentEditor/visualization/memoryvisualizationitem.h>
+#include <IPXactWrapper/ComponentEditor/visualization/fieldgapitem.h>
 
 #include <common/graphicsItems/visualizeritem.h>
 
@@ -78,42 +79,129 @@ int RegisterGraphItem::getBitWidth() const {
 }
 
 void RegisterGraphItem::reorganizeChildren() {
+
+	// remove the gaps and update offsets of fields
+	updateChildMap();
+
 	// first find out the width for all items
 	qreal width = itemTotalWidth();
-
-	updateChildMap();
 
 	// if there are no children then this can not be expanded or collapsed
 	if (childItems_.isEmpty()) {
 		ExpandableItem::setShowExpandableItem(false);
 	}
-	// if there are children then display the expand/collapse item
+	// if there are children then display the expand/collapse i.value()
 	else {
 		ExpandableItem::setShowExpandableItem(true);
 	}
 
+	// save the new gap child items to be added to map
+	QList<FieldGapItem*> gaps;
+
+	// the offset where the previous block starts
+	quint64 previousBlockStart = register_->getMSB();
+
 	qreal xCoordinate = rect().left();
 	MemoryVisualizationItem* previous = NULL;
-
 	for (QMap<quint64, MemoryVisualizationItem*>::iterator i = --childItems_.end();
-		i != --childItems_.begin(); --i) {
-			
-			Q_ASSERT(i.value());
+		i != --childItems_.begin(); --i) { 
 
+		Q_ASSERT(i.value());
+
+		// pointer to the possible gap to add between two fields
+		FieldGapItem* gap = 0;
+
+		// if there is a gap between the last block and this block
+		if (previousBlockStart > i.value()->getLastAddress() + 1) {
+
+			// create the gap i.value()
+			gap = new FieldGapItem(this);
+
+			// set the first address of the gap
+			gap->setStartAddress(i.value()->getLastAddress(), false);
+
+			// if the gap is not at the start 
 			if (previous) {
+				// set the last address for the gap
+				gap->setEndAddress(previousBlockStart, false);
+			}
+			else {
+				// the gap starts from the end of the parent
+				gap->setEndAddress(previousBlockStart, true);
+			}			
 
-				QRectF previousRect = mapRectFromItem(previous, previous->itemTotalRect());
-				xCoordinate = previousRect.right();
+			// set the gap to the end of the last i.value()
+			gap->setPos(xCoordinate, rect().bottom());
+
+			// update the x-coordinate to avoid setting a block under the gap
+			xCoordinate += gap->rect().width();
+
+			gap->setVisible(isExpanded());
+
+			gaps.append(gap);
+		}
+
+		if (previous) {
+			QRectF previousRect;
+
+			// if there was a gap
+			if (gap) {
+
+				// find the position where previous block ended
+				previousRect = mapRectFromItem(previous, previous->itemTotalRect());
+
+				// set the gap to be under the previous block
+				gap->setPos(previousRect.right(), rect().bottom());
+
+				// update the previous rect to the end of the gap
+				previousRect = mapRectFromItem(gap, gap->itemTotalRect());	
+			}
+			// if there was no gap then use the previous defined block
+			else {
+				// set the next i.value() to start after the previous
+				previousRect = mapRectFromItem(previous, previous->itemTotalRect());
 			}
 
-			i.value()->setPos(xCoordinate, rect().bottom());
-			previous = i.value();
+			xCoordinate = previousRect.right();
+		}
+
+		// update the last address of the block
+		previousBlockStart = i.value()->getOffset();
+		i.value()->setPos(xCoordinate, rect().bottom());
+		previous = i.value();
 	}
 
-	// update the width of this item to match the width of all
+	// if the LSB bit(s) does not belong to any field
+	if (previous && previous->getOffset() > 0) {
+		// create the gap 
+		FieldGapItem* gap = new FieldGapItem(this);
+
+		// the gap starts from the start of the register
+		gap->setStartAddress(0, true);
+
+		// the gap ends to the start of the defined field
+		gap->setEndAddress(previous->getOffset(), false);
+
+		// increase the x-coordinate to avoid setting the next field on top of the gap
+		xCoordinate += previous->rect().width();
+
+		// gap is positioned after the last field
+		gap->setPos(xCoordinate, rect().bottom());
+
+		gap->setVisible(isExpanded());
+
+		gaps.append(gap);
+	}
+
+	// add the gaps to the child items
+	foreach (MemoryGapItem* gap, gaps) {
+		childItems_.insert(gap->getOffset(), gap);
+	}
+
+	// update the width of this i.value() to match the width of all
 	setRect(0, 0, width, VisualizerItem::ITEM_HEIGHT);
 
-	// reorganize the text blocks of this item
+	// reorganize the text blocks of this register
 	ExpandableItem::reorganizeChildren();
 }
 
@@ -156,7 +244,7 @@ qreal RegisterGraphItem::itemTotalWidth() const {
 	}
 
 	// if there were no children then return the default width
-	if (width == 0) {
+	if (width < VisualizerItem::MAX_WIDTH) {
 		return VisualizerItem::MAX_WIDTH;
 	}
 	

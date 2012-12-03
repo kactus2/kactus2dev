@@ -108,6 +108,12 @@ public:
      */
     unsigned int getSize() const;
 
+	/*! \brief Get the most significant bit of the register.
+	 * 
+	 * \return The number of the most significant bit.
+	*/
+	unsigned int getMSB() const;
+
     /*! \brief Get the attributes for the size-element.
      *
      * \return QMap containing the attributes.

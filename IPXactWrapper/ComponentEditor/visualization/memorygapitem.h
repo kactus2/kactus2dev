@@ -28,7 +28,7 @@ public:
 	//! \brief The destructor
 	virtual ~MemoryGapItem();
 
-	//! \brief Refresh the item and sub-items.
+	//! \brief Refresh the gap item.
 	virtual void refresh();
 
 	/*! \brief Get the offset of the item. 
@@ -73,6 +73,14 @@ public:
 	*/
 	void setEndAddress(quint64 address, bool contains = true);
 
+protected:
+
+	//! \brief The start address of the gap.
+	quint64 start_;
+
+	//! \brief The end address of the gap.
+	quint64 end_;
+
 private:
 	
 	//! \brief No copying
@@ -80,12 +88,6 @@ private:
 
 	//! \brief No assignment
 	MemoryGapItem& operator=(const MemoryGapItem& other);
-
-	//! \brief The start address of the gap.
-	quint64 start_;
-
-	//! \brief The end address of the gap.
-	quint64 end_;
 };
 
 #endif // MEMORYGAPITEM_H

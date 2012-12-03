@@ -8,6 +8,8 @@
 #include "expandableitem.h"
 #include "graphicsexpandcollapseitem.h"
 
+#include <QDebug>
+
 ExpandableItem::ExpandableItem( QGraphicsItem* parent /*= 0*/ ):
 VisualizerItem(parent),
 expandCollapseItem_(new GraphicsExpandCollapseItem(this)) {

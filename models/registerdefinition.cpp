@@ -221,6 +221,14 @@ unsigned int RegisterDefinition::getSize() const {
 	return size_;
 }
 
+unsigned int RegisterDefinition::getMSB() const {
+	// if size is undefined
+	if (size_ == 0) {
+		return 0;
+	}
+	return size_ - 1;
+}
+
 const QMap<QString,QString>& RegisterDefinition::getSizeAttributes() const {
 	return sizeAttributes_;
 }

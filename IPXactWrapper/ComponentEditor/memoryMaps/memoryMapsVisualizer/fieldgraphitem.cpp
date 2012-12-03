@@ -21,17 +21,18 @@ field_(field) {
 }
 
 FieldGraphItem::~FieldGraphItem() {
+	
 }
 
 void FieldGraphItem::refresh() {
 	// the size depends on how many bits the field contains, always at least one
-	int fieldWidth = field_->getBitWidth();
-	
-	// at least one bit
-	if (fieldWidth == 0) {
-		fieldWidth = 1;
-	}
-	setRect(0, 0, VisualizerItem::MIN_WIDTH * fieldWidth, VisualizerItem::ITEM_HEIGHT);
+// 	int fieldWidth = field_->getBitWidth();
+// 	
+// 	// at least one bit
+// 	if (fieldWidth == 0) {
+// 		fieldWidth = 1;
+// 	}
+	setRect(0, 0, VisualizerItem::MIN_WIDTH, VisualizerItem::ITEM_HEIGHT);
 
 	// the name depends on the size of the rectangle (if too small then name is chopped)
 	setName(field_->getName());

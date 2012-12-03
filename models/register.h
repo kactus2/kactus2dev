@@ -154,6 +154,12 @@ public:
 	*/
 	unsigned int getWidth() const;
 
+	/*! \brief Get the most significant bit of the register.
+	 * 
+	 * \return The number of the most significant bit.
+	*/
+	unsigned int getMSB() const;
+
 	/*! \brief Get the type identifier of the register.
 	 *
 	 * \return QString containing the type identifier.

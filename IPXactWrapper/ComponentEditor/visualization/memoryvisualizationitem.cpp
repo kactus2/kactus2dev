@@ -187,3 +187,8 @@ void MemoryVisualizationItem::updateChildMap() {
 	// update the original map
 	childItems_ = newMap;
 }
+
+void MemoryVisualizationItem::setWidth( qreal width ) {
+	setRect(0, 0, width, VisualizerItem::ITEM_HEIGHT);
+	ExpandableItem::reorganizeChildren();
+}

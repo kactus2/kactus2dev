@@ -71,6 +71,13 @@ public:
 	*/
 	virtual void removeChild(MemoryVisualizationItem* childItem);
 
+	/*! \brief Set the width for the item.
+	 *
+	 * \param width The new width of the item.
+	 *
+	*/
+	virtual void setWidth(qreal width);
+
 signals:
 
 	//! \brief Emitted when the item changes.

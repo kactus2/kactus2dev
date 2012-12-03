@@ -22,7 +22,7 @@
 Field::Field(QDomNode& fieldNode): 
 id_(), 
 nameGroup_(fieldNode),
-bitOffset_(-1), 
+bitOffset_(0), 
 typeIdentifier_(),
 bitWidth_(0),
 bitWidthAttributes_(),
@@ -104,7 +104,7 @@ writeConstraint_() {
 Field::Field():
 id_(), 
 nameGroup_(),
-bitOffset_(-1), 
+bitOffset_(0), 
 typeIdentifier_(),
 bitWidth_(0),
 bitWidthAttributes_(),
@@ -123,7 +123,7 @@ writeConstraint_() {
 Field::Field( General::BooleanValue volatileValue, General::Access access ):
 id_(), 
 nameGroup_(),
-bitOffset_(-1), 
+bitOffset_(0), 
 typeIdentifier_(),
 bitWidth_(0),
 bitWidthAttributes_(),
@@ -390,7 +390,7 @@ int Field::getMSB() const {
 	
 	// field is at least one bit wide
 	if (MSB == 0) {
-		return 1;
+		return 0;
 	}
 	
 	// the number of bits starts at zero
