@@ -71,7 +71,7 @@ void MemoryVisualizationItem::reorganizeChildren() {
 			gap->setEndAddress(item->getOffset(), false);
 
 			// set the gap to the end of the last item
-			gap->setPos(0, yCoordinate);
+			gap->setPos(MemoryVisualizationItem::CHILD_INDENTATION, yCoordinate);
 
 			// update the y-coordinate to avoid setting a block under the gap
 			yCoordinate += VisualizerItem::ITEM_HEIGHT;
@@ -94,7 +94,7 @@ void MemoryVisualizationItem::reorganizeChildren() {
 				previousRect = mapRectFromItem(previous, previous->itemTotalRect());
 
 				// set the gap to be under the previous block
-				gap->setPos(0, previousRect.bottom());
+				gap->setPos(MemoryVisualizationItem::CHILD_INDENTATION, previousRect.bottom());
 
 				// update the previous rect to the end of the gap
 				previousRect = mapRectFromItem(gap, gap->itemTotalRect());	
@@ -111,7 +111,7 @@ void MemoryVisualizationItem::reorganizeChildren() {
 		
 		// update the last address of the block
 		previousBlockEnd = item->getLastAddress();
-		item->setPos(0, yCoordinate);
+		item->setPos(MemoryVisualizationItem::CHILD_INDENTATION, yCoordinate);
 		previous = item;
 	}
 
@@ -127,10 +127,10 @@ void MemoryVisualizationItem::reorganizeChildren() {
 		gap->setEndAddress(getLastAddress());
 
 		// increase the y-coordinate to avoid setting the gap on top of the last block.
-		yCoordinate += VisualizerItem::ITEM_HEIGHT;
+		yCoordinate = mapRectFromItem(previous, previous->itemTotalRect()).bottom();
 
 		// set the gap to the end of the last item
-		gap->setPos(0, yCoordinate);
+		gap->setPos(MemoryVisualizationItem::CHILD_INDENTATION, yCoordinate);
 
 		gap->setVisible(isExpanded());
 		gap->setWidth(width);

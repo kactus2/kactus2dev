@@ -20,6 +20,11 @@ class MemoryVisualizationItem : public ExpandableItem {
 
 public:
 
+	//! \brief The indentation of each child under its parent.
+	enum Indentation {
+		CHILD_INDENTATION = VisualizerItem::ITEM_HEIGHT
+	};
+
 	/*! \brief The constructor.
 	 *
 	 * \param parent Pointer to the owner of the item.
@@ -104,6 +109,7 @@ private:
 
 	//! \brief No assignment
 	MemoryVisualizationItem& operator=(const MemoryVisualizationItem& other);
+
 };
 
 #endif // MEMORYVISUALIZATIONITEM_H

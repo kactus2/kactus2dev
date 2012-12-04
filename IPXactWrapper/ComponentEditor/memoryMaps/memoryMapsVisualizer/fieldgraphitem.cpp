@@ -16,22 +16,16 @@ FieldGraphItem::FieldGraphItem( QSharedPointer<Field> field,
 MemoryVisualizationItem(parent),
 field_(field) {
 	Q_ASSERT(field_);
-	setBrush(QBrush(QColor(40, 140, 255)));
+	QBrush brush(QColor(100, 200, 255));
+	setBrush(brush);
+	ExpandableItem::setExpansionBrush(brush);
 	setShowExpandableItem(false);
 }
 
-FieldGraphItem::~FieldGraphItem() {
-	
+FieldGraphItem::~FieldGraphItem() {	
 }
 
 void FieldGraphItem::refresh() {
-	// the size depends on how many bits the field contains, always at least one
-// 	int fieldWidth = field_->getBitWidth();
-// 	
-// 	// at least one bit
-// 	if (fieldWidth == 0) {
-// 		fieldWidth = 1;
-// 	}
 	setRect(0, 0, VisualizerItem::MIN_WIDTH, VisualizerItem::ITEM_HEIGHT);
 
 	// the name depends on the size of the rectangle (if too small then name is chopped)

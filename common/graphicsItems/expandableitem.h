@@ -10,6 +10,9 @@
 
 #include "visualizeritem.h"
 
+#include <QGraphicsRectItem>
+#include <QBrush>
+
 class GraphicsExpandCollapseItem;
 
 /*! \brief The base class to visualize IP-Xact models that contain child items.
@@ -61,8 +64,12 @@ protected:
 	*/
 	virtual void reorganizeChildren();
 
-	//! \brief The item to show/hide the child items
-	GraphicsExpandCollapseItem* expandCollapseItem_;
+	/*! \brief Set the brush used to color the expansion column.
+	 *
+	 * \param brush The brush to use.
+	 *
+	*/
+	virtual void setExpansionBrush(const QBrush& brush);
 
 private:
 	
@@ -71,6 +78,12 @@ private:
 
 	//! \brief No assignment
 	ExpandableItem& operator=(const ExpandableItem& other);
+
+	//! \brief The item to show/hide the child items
+	GraphicsExpandCollapseItem* expandCollapseItem_;
+
+	//! \brief Pointer to the rect item which displays which children belong to parent.
+	QGraphicsRectItem* expansionRect_;
 };
 
 #endif // EXPANDABLEITEM_H

@@ -10,12 +10,14 @@
 
 #include <QDebug>
 
-ExpandableItem::ExpandableItem( QGraphicsItem* parent /*= 0*/ ):
+ExpandableItem::ExpandableItem( QGraphicsItem* parent /*= 0*/):
 VisualizerItem(parent),
-expandCollapseItem_(new GraphicsExpandCollapseItem(this)) {
+expandCollapseItem_(new GraphicsExpandCollapseItem(this)),
+expansionRect_(new QGraphicsRectItem(this)) {
 
 	connect(expandCollapseItem_, SIGNAL(stateChanged(bool)),
 		this, SLOT(onExpandStateChange(bool)), Qt::UniqueConnection);
+	expandCollapseItem_->setZValue(1);
 }
 
 ExpandableItem::~ExpandableItem() {
@@ -48,6 +50,7 @@ void ExpandableItem::onExpandStateChange( bool expanded ) {
 
 void ExpandableItem::setShowExpandableItem( bool show ) {
 	expandCollapseItem_->setVisible(show);
+	expansionRect_->setVisible(show);
 }
 
 bool ExpandableItem::isExpanded() const {
@@ -55,7 +58,22 @@ bool ExpandableItem::isExpanded() const {
 }
 
 void ExpandableItem::reorganizeChildren() {
+
+	// the rectangle that contains this item and children
+	QRectF totalRect = itemTotalRect();
+
+	// the rectangle is on the left side of the parent and children
+	expansionRect_->setRect(-VisualizerItem::ITEM_HEIGHT, 0, VisualizerItem::ITEM_HEIGHT, totalRect.height());
+
+	qreal rectWidth = VisualizerItem::ITEM_HEIGHT / 2;
+	qreal expColWidth = expandCollapseItem_->boundingRect().width() / 2;
+
 	// Set the position for the hide/show button
-	expandCollapseItem_->setPos(rect().width() - 20, VisualizerItem::ITEM_HEIGHT / 5);
+	expandCollapseItem_->setPos(-(rectWidth + expColWidth), rectWidth - expColWidth);
+
 	VisualizerItem::reorganizeChildren();
+}
+
+void ExpandableItem::setExpansionBrush( const QBrush& brush ) {
+	expansionRect_->setBrush(brush);
 }

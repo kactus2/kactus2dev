@@ -23,7 +23,9 @@ MemoryVisualizationItem(parent),
 memoryMap_(memoryMap) {
 
 	Q_ASSERT(memoryMap_);
-	setBrush(QBrush(QColor(100, 200, 255)));
+	QBrush brush(QColor(40, 140, 255));
+	setBrush(brush);
+	ExpandableItem::setExpansionBrush(brush);
 }
 
 MemoryMapGraphItem::~MemoryMapGraphItem() {
