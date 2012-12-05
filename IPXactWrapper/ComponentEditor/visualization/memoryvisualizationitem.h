@@ -101,6 +101,24 @@ protected:
 	//! \brief Update the offsets of the child items in the map.
 	void updateChildMap();
 
+	/*! \brief Set text to the top left corner.
+	 *
+	 * The function groups the hexadecimal digit into groups of 4 digits.
+	 *
+	 * \param text The text to display in the corner.
+	 *
+	*/
+	virtual void setLeftTopCorner(const QString& text);
+
+	/*! \brief Set text to the bottom left corner.
+	 *
+	 * The function groups the hexadecimal digit into groups of 4 digits.
+	 *
+	 * \param text The text to display in the corner.
+	 *
+	*/
+	virtual void setLeftBottomCorner(const QString& text);
+
 	//! \brief Contains the child memory items. The offset of the child is the key.
 	QMultiMap<quint64, MemoryVisualizationItem*> childItems_;
 

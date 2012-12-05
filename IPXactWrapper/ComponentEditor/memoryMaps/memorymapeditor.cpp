@@ -36,7 +36,7 @@ model_(new MemoryMapModel(memoryMap, this)) {
 	// items can not be dragged
 	view_->setItemsDraggable(false);
 
-	view_->setSortingEnabled(false);
+	view_->setSortingEnabled(true);
 
 	view_->setItemDelegate(new MemoryMapDelegate(this));
 

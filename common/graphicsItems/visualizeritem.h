@@ -84,35 +84,35 @@ protected:
 	 * \param name The name to display.
 	 *
 	*/
-	void setName(const QString& name);
+	virtual void setName(const QString& name);
 
 	/*! \brief Set text to the top left corner.
 	 *
 	 * \param text The text to display in the corner.
 	 *
 	*/
-	void setLeftTopCorner(const QString& text);
+	virtual void setLeftTopCorner(const QString& text);
 
 	/*! \brief Set text to the bottom left corner.
 	 *
 	 * \param text The text to display in the corner.
 	 *
 	*/
-	void setLeftBottomCorner(const QString& text);
+	virtual void setLeftBottomCorner(const QString& text);
 
 	/*! \brief Set text to the top right corner.
 	 *
 	 * \param text The text to display in the corner.
 	 *
 	*/
-	void setRightTopCorner(const QString& text);
+	virtual void setRightTopCorner(const QString& text);
 
 	/*! \brief Set text to the bottom right corner.
 	 *
 	 * \param text The text to display in the corner.
 	 *
 	*/
-	void setRightBottomCorner(const QString& text);
+	virtual void setRightBottomCorner(const QString& text);
 
 	/*! \brief Get the minimum rectangle of the item.
 	 *

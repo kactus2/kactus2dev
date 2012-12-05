@@ -194,3 +194,25 @@ QRectF MemoryVisualizationItem::boundingRect() const {
 	QRectF jep = itemTotalRect();
 	return jep;
 }
+
+void MemoryVisualizationItem::setLeftTopCorner( const QString& text ) {
+	QString str = text.toUpper();
+
+	// add white space after four digits
+	int size = str.size();
+	for (int i = size; i > 2; i -= 4) {
+		str.insert(i, " ");
+	}
+	VisualizerItem::setLeftTopCorner(str);
+}
+
+void MemoryVisualizationItem::setLeftBottomCorner( const QString& text ) {
+	QString str = text.toUpper();
+
+	// add white space after four digits
+	int size = str.size();
+	for (int i = size; i > 2; i -= 4) {
+		str.insert(i, " ");
+	}
+	VisualizerItem::setLeftBottomCorner(str);
+}
