@@ -10,6 +10,22 @@
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
+// Function: HCollisionLayout<T>::HCollisionLayout()
+//-----------------------------------------------------------------------------
+template <class T>
+HCollisionLayout<T>::HCollisionLayout(qreal spacing) : spacing_(spacing)
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: HCollisionLayout<T>::~HCollisionLayout()
+//-----------------------------------------------------------------------------
+template <class T>
+HCollisionLayout<T>::~HCollisionLayout()
+{
+}
+
+//-----------------------------------------------------------------------------
 // Function: updateItemMove()
 //-----------------------------------------------------------------------------
 template <class T>
@@ -28,13 +44,13 @@ void HCollisionLayout<T>::updateItemMove(QList<T*>& items, T* item, qreal minX)
     {
         T* curItem = items.at(index);
 
-        if (curItem->x() + curItem->boundingRect().right() + spacing >
+        if (curItem->x() + curItem->boundingRect().right() + spacing_ >
             item->x() + item->boundingRect().left())
         {
             break;
         }
 
-        x = curItem->x() + curItem->boundingRect().right() + spacing;
+        x = curItem->x() + curItem->boundingRect().right() + spacing_;
     }
 
     // Phase 2. Move the first colliding item above the moved item if it is possible
@@ -44,11 +60,11 @@ void HCollisionLayout<T>::updateItemMove(QList<T*>& items, T* item, qreal minX)
         T* curItem = items.at(index);
 
         if (item->x() < curItem->x() && curItem->x() + curItem->boundingRect().left() <
-            item->x() + item->boundingRect().right() + spacing &&
-            x + curItem->boundingRect().width() + spacing <= item->x() + item->boundingRect().left() &&
-            item->x() + item->boundingRect().left() - spacing - curItem->boundingRect().right() >= minX)
+            item->x() + item->boundingRect().right() + spacing_ &&
+            x + curItem->boundingRect().width() + spacing_ <= item->x() + item->boundingRect().left() &&
+            item->x() + item->boundingRect().left() - spacing_ - curItem->boundingRect().right() >= minX)
         {
-            curItem->setY(item->x() + item->boundingRect().left() - spacing -
+            curItem->setY(item->x() + item->boundingRect().left() - spacing_ -
                 curItem->boundingRect().right());
 
             ++index;
@@ -64,10 +80,10 @@ void HCollisionLayout<T>::updateItemMove(QList<T*>& items, T* item, qreal minX)
         T* item1 = items.at(index);
         T* item2 = items.at(index + 1);
 
-        if (item1->x() + item1->boundingRect().right() + spacing >
+        if (item1->x() + item1->boundingRect().right() + spacing_ >
             item2->x() + item2->boundingRect().left())
         {
-            item2->setY(item1->x() + item1->boundingRect().right() + spacing -
+            item2->setY(item1->x() + item1->boundingRect().right() + spacing_ -
                 item2->boundingRect().left());
         }
 

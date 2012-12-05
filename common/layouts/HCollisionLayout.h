@@ -61,6 +61,14 @@ class HCollisionLayout : public IHGraphicsLayout<T>
      *      @param [in] minX     The minimum x coordinate.
      */
     void updateItemPositions(QList<T*>& items, qreal y, qreal minX = 0.0);
+
+private:
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The spacing between items.
+    qreal spacing_;
 };
 
 //-----------------------------------------------------------------------------

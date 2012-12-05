@@ -7,6 +7,8 @@
 #include "function.h"
 #include "generaldeclarations.h"
 
+#include <stdexcept>
+
 #include <QMap>
 #include <QSharedPointer>
 #include <QList>
