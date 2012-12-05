@@ -1077,6 +1077,14 @@
 						</File>
 					</Filter>
 				</Filter>
+				<Filter
+					Name="cornerStitch"
+					>
+					<File
+						RelativePath=".\common\cornerStitch\CornerStitchStructure.cpp"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="designwidget"
@@ -7282,6 +7290,18 @@
 				<Filter
 					Name="testConstraintComboBox"
 					>
+				</Filter>
+				<Filter
+					Name="cornerStitch"
+					>
+					<File
+						RelativePath=".\common\cornerStitch\CornerStitchStructure.h"
+						>
+					</File>
+					<File
+						RelativePath=".\common\cornerStitch\StitchTile.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
@@ -41099,6 +41119,10 @@
 		</File>
 		<File
 			RelativePath=".\Kactus2.pri"
+			>
+		</File>
+		<File
+			RelativePath=".\Kactus2.pro"
 			>
 		</File>
 		<File
