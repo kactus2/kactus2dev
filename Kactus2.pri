@@ -11,6 +11,8 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./mainwindow/DeleteWorkspaceDialog.h \
     ./mainwindow/NewWorkspaceDialog.h \
     ./mainwindow/SplashScreen.h \
+    ./MemoryDesigner/AddressBlockItem.h \
+    ./MemoryDesigner/MemoryBaseItem.h \
     ./resource.h \
     ./common/ColumnTypes.h \
     ./common/CSourceWriter.h \
@@ -78,24 +80,32 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./common/widgets/modWriteComboBox/modwritecombobox.h \
     ./common/widgets/readActionComboBox/readactioncombobox.h \
     ./common/widgets/testConstraintComboBox/testconstraintcombobox.h \
+    ./common/validators/AddressValidator.h \
     ./common/validators/nameValidator/namevalidator.h \
     ./common/validators/vhdlNameValidator/vhdlnamevalidator.h \
     ./common/validators/LibraryPathValidator/librarypathvalidator.h \
     ./common/layouts/HCollisionLayout.h \
     ./common/layouts/HStackedLayout.h \
+    ./common/layouts/IHGraphicsLayout.h \
+    ./common/layouts/IVGraphicsLayout.h \
     ./common/layouts/VCollisionLayout.h \
     ./common/layouts/VStackedLayout.h \
+    ./common/layouts/VStaticLayout.h \
     ./common/graphicsItems/CommonGraphicsUndoCommands.h \
     ./common/graphicsItems/ComponentItem.h \
     ./common/graphicsItems/ConnectionEndpoint.h \
     ./common/graphicsItems/ConnectionUndoCommands.h \
+    ./common/graphicsItems/expandableitem.h \
     ./common/graphicsItems/GraphicsColumn.h \
     ./common/graphicsItems/GraphicsColumnLayout.h \
     ./common/graphicsItems/GraphicsColumnUndoCommands.h \
     ./common/graphicsItems/GraphicsConnection.h \
+    ./common/graphicsItems/graphicsexpandcollapseitem.h \
     ./common/graphicsItems/GraphicsItemTypes.h \
+    ./common/graphicsItems/GraphicsLineEdit.h \
     ./common/graphicsItems/GraphicsRectButton.h \
     ./common/graphicsItems/IGraphicsItemStack.h \
+    ./common/graphicsItems/visualizeritem.h \
     ./common/delegates/ComboDelegate/combodelegate.h \
     ./common/delegates/LineEditDelegate/lineeditdelegate.h \
     ./common/views/EditableTableView/editabletableview.h \
@@ -116,6 +126,8 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./common/dialogs/NewDesignDialog/NewDesignDialog.h \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h \
     ./common/dialogs/TableViewDialog/TableViewDialog.h \
+    ./common/cornerStitch/CornerStitchStructure.h \
+    ./common/cornerStitch/StitchTile.h \
     ./designwidget/AdHocEnabled.h \
     ./designwidget/AdHocInterfaceItem.h \
     ./designwidget/AdHocPortItem.h \
@@ -212,6 +224,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmenteditor.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmentproxy.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmentsmodel.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/localMemoryMap/localmemorymapeditor.h \
     ./IPXactWrapper/ComponentEditor/cpus/addressspacerefdelegate.h \
     ./IPXactWrapper/ComponentEditor/cpus/cpusdelegate.h \
     ./IPXactWrapper/ComponentEditor/cpus/cpuseditor.h \
@@ -271,7 +284,6 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapscene.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapview.h \
-    ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memoryvisualizeritem.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditor.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditoraddrblockitem.h \
@@ -309,6 +321,9 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorviewitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorviewsitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenttreeview.h \
+    ./IPXactWrapper/ComponentEditor/visualization/fieldgapitem.h \
+    ./IPXactWrapper/ComponentEditor/visualization/memorygapitem.h \
+    ./IPXactWrapper/ComponentEditor/visualization/memoryvisualizationitem.h \
     ./IPXactWrapper/BusEditor/absdefgroup.h \
     ./IPXactWrapper/BusEditor/busdefgroup.h \
     ./IPXactWrapper/BusEditor/buseditor.h \
@@ -506,7 +521,15 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./AddressEditor/AddressEditor.h \
     ./AddressEditor/AddressEntry.h \
     ./AddressEditor/AddressModel.h \
-    ./AddressEditor/AddressTableView.h
+    ./AddressEditor/AddressTableView.h \
+    ./MemoryDesigner/AddressSectionItem.h \
+    ./MemoryDesigner/AddressSpaceItem.h \
+    ./MemoryDesigner/AddressSubsection.h \
+    ./MemoryDesigner/MemoryColumn.h \
+    ./MemoryDesigner/MemoryDesignDiagram.h \
+    ./MemoryDesigner/MemoryDesignWidget.h \
+    ./MemoryDesigner/MemoryItem.h \
+    ./MemoryDesigner/SegmentItem.h
 SOURCES += ./common/CSourceWriter.cpp \
     ./common/DesignDiagram.cpp \
     ./common/DesignWidget.cpp \
@@ -530,6 +553,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/dialogs/NewDesignDialog/NewDesignDialog.cpp \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.cpp \
     ./common/dialogs/TableViewDialog/TableViewDialog.cpp \
+    ./common/validators/AddressValidator.cpp \
     ./common/validators/nameValidator/namevalidator.cpp \
     ./common/validators/vhdlNameValidator/vhdlnamevalidator.cpp \
     ./common/validators/LibraryPathValidator/librarypathvalidator.cpp \
@@ -586,16 +610,21 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/graphicsItems/ComponentItem.cpp \
     ./common/graphicsItems/ConnectionEndpoint.cpp \
     ./common/graphicsItems/ConnectionUndoCommands.cpp \
+    ./common/graphicsItems/expandableitem.cpp \
     ./common/graphicsItems/GraphicsColumn.cpp \
     ./common/graphicsItems/GraphicsColumnLayout.cpp \
     ./common/graphicsItems/GraphicsColumnUndoCommands.cpp \
     ./common/graphicsItems/GraphicsConnection.cpp \
+    ./common/graphicsItems/graphicsexpandcollapseitem.cpp \
+    ./common/graphicsItems/GraphicsLineEdit.cpp \
     ./common/graphicsItems/GraphicsRectButton.cpp \
+    ./common/graphicsItems/visualizeritem.cpp \
     ./common/delegates/ComboDelegate/combodelegate.cpp \
     ./common/delegates/LineEditDelegate/lineeditdelegate.cpp \
     ./common/views/EditableTableView/editabletableview.cpp \
     ./common/views/EditableListView/editablelistview.cpp \
     ./common/models/ParameterModel/parametersmodel.cpp \
+    ./common/cornerStitch/CornerStitchStructure.cpp \
     ./designwidget/AdHocEnabled.cpp \
     ./designwidget/AdHocInterfaceItem.cpp \
     ./designwidget/AdHocPortItem.cpp \
@@ -726,6 +755,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmenteditor.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmentproxy.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmentsmodel.cpp \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/localMemoryMap/localmemorymapeditor.cpp \
     ./IPXactWrapper/ComponentEditor/cpus/addressspacerefdelegate.cpp \
     ./IPXactWrapper/ComponentEditor/cpus/cpusdelegate.cpp \
     ./IPXactWrapper/ComponentEditor/cpus/cpuseditor.cpp \
@@ -752,7 +782,6 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapscene.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapview.cpp \
-    ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memoryvisualizeritem.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditor.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditoraddrblockitem.cpp \
@@ -790,6 +819,9 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorviewitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorviewsitem.cpp \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenttreeview.cpp \
+    ./IPXactWrapper/ComponentEditor/visualization/fieldgapitem.cpp \
+    ./IPXactWrapper/ComponentEditor/visualization/memorygapitem.cpp \
+    ./IPXactWrapper/ComponentEditor/visualization/memoryvisualizationitem.cpp \
     ./IPXactWrapper/BusEditor/absdefgroup.cpp \
     ./IPXactWrapper/BusEditor/busdefgroup.cpp \
     ./IPXactWrapper/BusEditor/buseditor.cpp \
@@ -985,5 +1017,15 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./AddressEditor/AddressEditor.cpp \
     ./AddressEditor/AddressEntry.cpp \
     ./AddressEditor/AddressModel.cpp \
-    ./AddressEditor/AddressTableView.cpp
+    ./AddressEditor/AddressTableView.cpp \
+    ./MemoryDesigner/AddressBlockItem.cpp \
+    ./MemoryDesigner/AddressSectionItem.cpp \
+    ./MemoryDesigner/AddressSpaceItem.cpp \
+    ./MemoryDesigner/AddressSubsection.cpp \
+    ./MemoryDesigner/MemoryBaseItem.cpp \
+    ./MemoryDesigner/MemoryColumn.cpp \
+    ./MemoryDesigner/MemoryDesignDiagram.cpp \
+    ./MemoryDesigner/MemoryDesignWidget.cpp \
+    ./MemoryDesigner/MemoryItem.cpp \
+    ./MemoryDesigner/SegmentItem.cpp
 RESOURCES += kactus.qrc
