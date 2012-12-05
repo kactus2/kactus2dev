@@ -22,7 +22,7 @@ MemoryVisualizationItem::~MemoryVisualizationItem() {
 
 void MemoryVisualizationItem::reorganizeChildren() {
 	// first find out the width for all items
-	qreal width = VisualizerItem::itemTotalWidth();
+	qreal width = itemTotalWidth();
 
 	// update the offsets of the child items so they are displayed in correct order
 	updateChildMap();
@@ -144,10 +144,7 @@ void MemoryVisualizationItem::reorganizeChildren() {
 	}
 
 	// update the width of this item to match the width of all
-	setRect(0, 0, width, VisualizerItem::ITEM_HEIGHT);
-	
-	// reorganize the text blocks of this item
-	ExpandableItem::reorganizeChildren();
+	setWidth(width);
 }
 
 void MemoryVisualizationItem::addChild( MemoryVisualizationItem* childItem ) {
@@ -191,4 +188,9 @@ void MemoryVisualizationItem::updateChildMap() {
 void MemoryVisualizationItem::setWidth( qreal width ) {
 	setRect(0, 0, width, VisualizerItem::ITEM_HEIGHT);
 	ExpandableItem::reorganizeChildren();
+}
+
+QRectF MemoryVisualizationItem::boundingRect() const {
+	QRectF jep = itemTotalRect();
+	return jep;
 }

@@ -60,14 +60,6 @@ public:
 	*/
 	virtual unsigned int getAddressUnitSize() const;
 
-protected:
-
-	/*! \brief Set new positions for child field items.
-	 * 
-	 * The child items are organized in the order of their offset.
-	*/
-	virtual void reorganizeChildren();
-
 	/*! \brief Get the width of the item.
 	 *
 	 * This width is affected by the item's children so if children grow this 
@@ -76,6 +68,14 @@ protected:
 	 * \return The width of the item and it's sub-items.
 	*/
 	virtual qreal itemTotalWidth() const;
+
+protected:
+
+	/*! \brief Set new positions for child field items.
+	 * 
+	 * The child items are organized in the order of their offset.
+	*/
+	virtual void reorganizeChildren();
 
 private:
 	

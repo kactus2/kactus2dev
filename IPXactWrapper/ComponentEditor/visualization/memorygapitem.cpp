@@ -9,6 +9,7 @@
 
 #include <QColor>
 #include <QBrush>
+#include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h>
 
 #include <QDebug>
 
@@ -75,4 +76,20 @@ void MemoryGapItem::setEndAddress( quint64 address, bool contains /*= true*/ ) {
 
 quint64 MemoryGapItem::getLastAddress() const {
 	return end_;
+}
+
+void MemoryGapItem::setWidth( qreal width ) {
+	QGraphicsItem* parentGraph = parentItem();
+
+	MemoryMapGraphItem* parentMap = dynamic_cast<MemoryMapGraphItem*>(parentGraph);
+	// gaps within memory maps must be wider because they are indented
+	if (parentMap) {
+		setRect(0, 0, width + VisualizerItem::ITEM_HEIGHT, VisualizerItem::ITEM_HEIGHT);
+	}
+	else {
+		setRect(0, 0, width, VisualizerItem::ITEM_HEIGHT);
+	}
+
+	// update the text fields
+	VisualizerItem::reorganizeChildren();
 }

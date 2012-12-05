@@ -73,6 +73,13 @@ public:
 	*/
 	void setEndAddress(quint64 address, bool contains = true);
 
+	/*! \brief Set the width for the item.
+	 *
+	 * \param width The new width of the item.
+	 *
+	*/
+	virtual void setWidth(qreal width);
+
 protected:
 
 	//! \brief The start address of the gap.

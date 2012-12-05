@@ -83,6 +83,8 @@ public:
 	*/
 	virtual void setWidth(qreal width);
 
+	virtual QRectF boundingRect() const;
+
 signals:
 
 	//! \brief Emitted when the item changes.

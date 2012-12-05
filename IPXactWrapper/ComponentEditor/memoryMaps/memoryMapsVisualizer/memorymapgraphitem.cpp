@@ -60,3 +60,24 @@ unsigned int MemoryMapGraphItem::getAddressUnitSize() const {
 quint64 MemoryMapGraphItem::getLastAddress() const {
 	return memoryMap_->getLastAddress();
 }
+
+qreal MemoryMapGraphItem::itemTotalWidth() const {
+	qreal width = VisualizerItem::MAX_WIDTH;
+
+	// if there are children
+	QList<QGraphicsItem*> children = childItems();
+	foreach (QGraphicsItem* child, children) {
+
+		// The larger width
+		VisualizerItem* childItem = dynamic_cast<VisualizerItem*>(child);
+		if (childItem) {
+			width = qMax(width, childItem->itemTotalWidth());
+		}
+	}
+	return width;
+}
+
+void MemoryMapGraphItem::setWidth( qreal width ) {
+	setRect(0, 0, width + 2* VisualizerItem::ITEM_HEIGHT, VisualizerItem::ITEM_HEIGHT);
+	ExpandableItem::reorganizeChildren();
+}

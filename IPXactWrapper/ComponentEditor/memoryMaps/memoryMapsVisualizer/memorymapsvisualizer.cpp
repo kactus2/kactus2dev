@@ -8,8 +8,11 @@
 #include "memorymapsvisualizer.h"
 #include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapview.h>
 #include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapscene.h>
+#include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h>
+#include <common/graphicsItems/visualizeritem.h>
 
 #include <QHBoxLayout>
+#include <QPointF>
 
 MemoryMapsVisualizer::MemoryMapsVisualizer(QSharedPointer<Component> component, QWidget *parent):
 ItemVisualizer(component, parent),
@@ -29,6 +32,8 @@ MemoryMapsVisualizer::~MemoryMapsVisualizer() {
 
 void MemoryMapsVisualizer::addMemoryMapItem( MemoryMapGraphItem* memMapItem ) {
 	scene_->addMemGraphItem(memMapItem);
+	QPointF position = memMapItem->pos();
+	view_->centerOn(position.x() - VisualizerItem::ITEM_HEIGHT, position.y());
 }
 
 void MemoryMapsVisualizer::removeMemoryMapItem( MemoryMapGraphItem* memMapItem ) {

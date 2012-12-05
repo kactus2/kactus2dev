@@ -61,3 +61,24 @@ unsigned int AddressBlockGraphItem::getAddressUnitSize() const {
 quint64 AddressBlockGraphItem::getLastAddress() const {
 	return addrBlock_->getLastAddress();
 }
+
+qreal AddressBlockGraphItem::itemTotalWidth() const {
+	qreal width = VisualizerItem::MAX_WIDTH;
+
+	// if there are children
+	QList<QGraphicsItem*> children = childItems();
+	foreach (QGraphicsItem* child, children) {
+
+		// The larger width
+		VisualizerItem* childItem = dynamic_cast<VisualizerItem*>(child);
+		if (childItem) {
+			width = qMax(width, childItem->itemTotalWidth());
+		}
+	}
+	return width;
+}
+
+void AddressBlockGraphItem::setWidth( qreal width ) {
+	setRect(0, 0, width + VisualizerItem::ITEM_HEIGHT, VisualizerItem::ITEM_HEIGHT);
+	ExpandableItem::reorganizeChildren();
+}

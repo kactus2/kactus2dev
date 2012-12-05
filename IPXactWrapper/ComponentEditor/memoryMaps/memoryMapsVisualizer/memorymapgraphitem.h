@@ -60,6 +60,22 @@ public:
 	*/
 	virtual unsigned int getAddressUnitSize() const;
 
+	/*! \brief Get the width of the item.
+	 *
+	 * This width is affected by the item's children so if children grow this 
+	 * width grows accordingly.
+	 *
+	 * \return The width of the item and it's sub-items.
+	*/
+	virtual qreal itemTotalWidth() const;
+
+	/*! \brief Set the width for the item.
+	 *
+	 * \param width The new width of the item.
+	 *
+	*/
+	virtual void setWidth(qreal width);
+
 private:
 	
 	//! \brief No copying
