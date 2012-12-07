@@ -10,6 +10,8 @@
 #include <models/addressblock.h>
 #include <models/generaldeclarations.h>
 
+#include <QDebug>
+
 MemoryMapModel::MemoryMapModel(QSharedPointer<MemoryMap> memoryMap,
 							   QObject *parent):
 QAbstractTableModel(parent),
@@ -287,8 +289,21 @@ void MemoryMapModel::onAddItem( const QModelIndex& index ) {
 		row = index.row();
 	}
 
+	// the address where the current memory map ends
+	quint64 previousEnd = memoryMap_->getLastAddress();
+	++previousEnd;
+
+	// convert the address to hexadecimal form
+	QString newBase = QString::number(previousEnd, 16);
+	newBase = newBase.toUpper();
+	newBase.prepend("0x");
+
 	beginInsertRows(QModelIndex(), row, row);
-	items_.insert(row, QSharedPointer<AddressBlock>(new AddressBlock()));
+	QSharedPointer<AddressBlock> addrBlock(new AddressBlock());
+	addrBlock->setWidth(32);
+	addrBlock->setRange("4");
+	addrBlock->setBaseAddress(newBase);
+	items_.insert(row, addrBlock);
 	endInsertRows();
 
 	// inform navigation tree that file set is added

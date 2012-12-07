@@ -319,9 +319,19 @@ void AddressBlockModel::onAddItem( const QModelIndex& index ) {
 		row = index.row();
 	}
 
+	// the address where the current address block
+	quint64 previousEnd = addressBlock_->getLastAddress();
+	++previousEnd;
+
+	// convert the address to hexadecimal form
+	QString newBase = QString::number(previousEnd, 16);
+	newBase = newBase.toUpper();
+	newBase.prepend("0x");
+
 	beginInsertRows(QModelIndex(), row, row);
-	items_.insert(row, QSharedPointer<Register>(new Register(addressBlock_->getVolatile(),
-		addressBlock_->getAccess())));
+	QSharedPointer<Register> reg(new Register(addressBlock_->getVolatile(),
+		addressBlock_->getAccess()));
+	items_.insert(row, reg);
 	endInsertRows();
 
 	// inform navigation tree that file set is added
