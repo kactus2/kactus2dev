@@ -157,4 +157,7 @@ void ComponentEditorAddrBlockItem::removeGraphicsItem() {
 	// delete the graph item
 	delete graphItem_;
 	graphItem_ = NULL;
+
+	// tell the parent to refresh itself
+	parentItem->refresh();
 }
