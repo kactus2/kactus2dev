@@ -174,7 +174,7 @@ bool RegisterDefinition::isValid( QStringList& errorList,
 	}
 
 	foreach (QSharedPointer<Field> field, fields_) {
-		if (!field->isValid(errorList, parentIdentifier)) {
+		if (!field->isValid(size_, errorList, parentIdentifier)) {
 			valid = false;
 		}
 	}
@@ -193,7 +193,7 @@ bool RegisterDefinition::isValid() const {
 	}
 
 	foreach (QSharedPointer<Field> field, fields_) {
-		if (!field->isValid()) {
+		if (!field->isValid(size_)) {
 			return false;
 		}
 	}

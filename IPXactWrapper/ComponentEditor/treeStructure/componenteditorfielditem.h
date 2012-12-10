@@ -10,6 +10,7 @@
 
 #include "componenteditoritem.h"
 #include <models/field.h>
+#include <models/register.h>
 
 #include <QFont>
 #include <QSharedPointer>
@@ -28,6 +29,7 @@ public:
 
 	/*! \brief The constructor
 	 * 
+	 * \param reg Pointer to the register which contains this field.
 	 * \param field Pointer to the field being edited.
 	 * \param model Pointer to the model that owns the items.
 	 * \param libHandler Pointer to the instance that manages the library.
@@ -35,7 +37,8 @@ public:
 	 * \param parent Pointer to the parent item.
 	 *
 	*/
-	ComponentEditorFieldItem(QSharedPointer<Field> field,
+	ComponentEditorFieldItem(QSharedPointer<Register> reg,
+		QSharedPointer<Field> field,
 		ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
@@ -124,6 +127,9 @@ private:
 
 	//! \brief No assignment
 	ComponentEditorFieldItem& operator=(const ComponentEditorFieldItem& other);
+
+	//! \brief Pointer to the register which contains this field.
+	QSharedPointer<Register> reg_;
 
 	//! \brief Pointer to the field being edited.
 	QSharedPointer<Field> field_;

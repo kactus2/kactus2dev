@@ -70,20 +70,23 @@ public:
 	void write(QXmlStreamWriter& writer);
 
 	/*! \brief Check if the field is in a valid state.
-	 *
+	 * 
+	 * \param registerSize The size of the containing register, field must not extend beyond this.
 	 * \param errorList The list to add the possible error messages to.
 	 * \param parentIdentifier String from parent to help to identify the location of the error.
 	 *
 	 * \return bool True if the state is valid and writing is possible.
 	*/
-	bool isValid(QStringList& errorList, 
+	bool isValid(unsigned int registerSize, QStringList& errorList, 
 		const QString& parentIdentifier) const;
 
 	/*! \brief Check if the field is in a valid state.
-	 *
+	 * 
+	 * \param registerSize The size of the containing register, field must not extend beyond this.
+	 * 
 	 * \return bool True if the state is valid and writing is possible.
 	*/
-	bool isValid() const;
+	bool isValid(unsigned int registerSize) const;
 
 	/*! \brief Get the bit offset.
 	 *

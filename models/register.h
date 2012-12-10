@@ -102,6 +102,12 @@ public:
 	 */
     QString getAddressOffset() const;
 
+	/*! \brief Get the offset of the register in numerical form.
+	 *
+	 * \return The offset from the start of the containing address block.
+	*/
+	quint64 getOffset() const;
+
     /*! \brief Get the alternate registers of this register.
      *
      * \return QList containing pointers to the alternate registers.

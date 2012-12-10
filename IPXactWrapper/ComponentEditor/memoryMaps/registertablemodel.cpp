@@ -143,7 +143,7 @@ QVariant RegisterTableModel::data( const QModelIndex& index, int role /*= Qt::Di
 	}
 	else if (Qt::ForegroundRole == role) {
 
-		if (fields_.at(index.row())->isValid()) {
+		if (fields_.at(index.row())->isValid(reg_->getSize())) {
 			return QColor("black");
 		}
 		else {
@@ -239,8 +239,9 @@ bool RegisterTableModel::setData( const QModelIndex& index, const QVariant& valu
 }
 
 bool RegisterTableModel::isValid() const {
+	unsigned int regSize = reg_->getSize();
 	foreach (QSharedPointer<Field> field, fields_) {
-		if (!field->isValid()) {
+		if (!field->isValid(regSize)) {
 			return false;
 		}
 	}
@@ -256,7 +257,9 @@ void RegisterTableModel::onAddItem( const QModelIndex& index ) {
 	}
 
 	beginInsertRows(QModelIndex(), row, row);
-	fields_.insert(row, QSharedPointer<Field>(new Field(reg_->getVolatile(), reg_->getAccess())));
+	QSharedPointer<Field> field(new Field(reg_->getVolatile(), reg_->getAccess()));
+	field->setBitWidth(1);
+	fields_.insert(row, field);
 	endInsertRows();
 
 	// inform navigation tree that file set is added

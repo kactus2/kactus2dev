@@ -302,6 +302,25 @@ QString AddressBlock::getLastAddressStr() const {
 	return str;
 }
 
+quint64 AddressBlock::getLastRegisterAddress() const {
+	quint64 lastOffset = 0;
+	
+	// check all register models
+	foreach (QSharedPointer<RegisterModel> regModel, registerData_) {
+		
+		// and find registers 
+		QSharedPointer<Register> reg = regModel.dynamicCast<Register>();
+		if (reg) {
+
+			// find the largest register offset
+			if (lastOffset < reg->getOffset()) {
+				lastOffset = reg->getOffset();
+			}
+		}
+	}
+	return lastOffset;
+}
+
 void AddressBlock::setWidth( int width ) {
 	width_ = width;
 }

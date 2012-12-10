@@ -313,7 +313,7 @@ void Field::write(QXmlStreamWriter& writer) {
 	writer.writeEndElement(); // spirit:field
 }
 
-bool Field::isValid( QStringList& errorList, const QString& parentIdentifier ) const {
+bool Field::isValid(unsigned int registerSize, QStringList& errorList, const QString& parentIdentifier ) const {
 	bool valid = true;
 
 	if (nameGroup_.name_.isEmpty()) {
@@ -334,6 +334,12 @@ bool Field::isValid( QStringList& errorList, const QString& parentIdentifier ) c
 		valid = false;
 	}
 
+	if ((bitOffset_ + bitWidth_) > registerSize) {
+		errorList.append(QObject::tr("The register contains %1 bits but field's MSB bit is %2").arg(
+			registerSize).arg(bitOffset_ + bitWidth_ - 1));
+		valid = false;
+	}
+
 	foreach (QSharedPointer<EnumeratedValue> enumValue, enumeratedValues_) {
 		if (!enumValue->isValid(errorList, QObject::tr("field %1").arg(nameGroup_.name_))) {
 			valid = false;
@@ -349,7 +355,7 @@ bool Field::isValid( QStringList& errorList, const QString& parentIdentifier ) c
 	return valid;
 }
 
-bool Field::isValid() const {
+bool Field::isValid(unsigned int registerSize) const {
 	if (nameGroup_.name_.isEmpty()) {
 		return false;
 	}
@@ -359,6 +365,10 @@ bool Field::isValid() const {
 	}
 
 	if (bitWidth_ <= 0) {
+		return false;
+	}
+
+	if ((bitOffset_ + bitWidth_) > registerSize) {
 		return false;
 	}
 

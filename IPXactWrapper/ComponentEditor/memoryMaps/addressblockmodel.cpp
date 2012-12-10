@@ -319,18 +319,25 @@ void AddressBlockModel::onAddItem( const QModelIndex& index ) {
 		row = index.row();
 	}
 
-	// the address where the current address block
-	quint64 previousEnd = addressBlock_->getLastAddress();
-	++previousEnd;
+	// the currently last register address
+	quint64 regAddress = addressBlock_->getLastRegisterAddress();
+	// if this is the first item then do not increase
+	if (regAddress != 0) {
+		// increase the address for a 32 bit register by default
+		regAddress += 4;
+	}
 
 	// convert the address to hexadecimal form
-	QString newBase = QString::number(previousEnd, 16);
+	QString newBase = QString::number(regAddress, 16);
 	newBase = newBase.toUpper();
 	newBase.prepend("0x");
 
 	beginInsertRows(QModelIndex(), row, row);
 	QSharedPointer<Register> reg(new Register(addressBlock_->getVolatile(),
 		addressBlock_->getAccess()));
+	reg->setSize(32);
+	reg->setDim(0);
+	reg->setAddressOffset(newBase);
 	items_.insert(row, reg);
 	endInsertRows();
 

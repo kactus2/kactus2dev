@@ -8,6 +8,7 @@
 #include "generaldeclarations.h"
 #include "alternateregister.h"
 #include "registermodel.h"
+#include <common/utils.h>
 
 #include <QDomNode>
 #include <QXmlStreamWriter>
@@ -205,6 +206,10 @@ bool Register::isValid() const {
 
 QString Register::getAddressOffset() const {
     return addressOffset_;
+}
+
+quint64 Register::getOffset() const {
+	return Utils::str2Int(addressOffset_);
 }
 
 const QList<QSharedPointer<AlternateRegister> >&

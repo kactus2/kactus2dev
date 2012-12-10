@@ -291,7 +291,10 @@ void MemoryMapModel::onAddItem( const QModelIndex& index ) {
 
 	// the address where the current memory map ends
 	quint64 previousEnd = memoryMap_->getLastAddress();
-	++previousEnd;
+	// if this is the first item to add then do not increase address
+	if (previousEnd != 0) {
+		++previousEnd;
+	}
 
 	// convert the address to hexadecimal form
 	QString newBase = QString::number(previousEnd, 16);

@@ -13,12 +13,14 @@
 
 #include <QApplication>
 
-ComponentEditorFieldItem::ComponentEditorFieldItem(QSharedPointer<Field> field,
+ComponentEditorFieldItem::ComponentEditorFieldItem(QSharedPointer<Register> reg,
+												   QSharedPointer<Field> field,
 												   ComponentEditorTreeModel* model,
 												   LibraryInterface* libHandler,
 												   QSharedPointer<Component> component,
 												   ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
+reg_(reg),
 field_(field),
 editor_(new FieldEditor(field, component)),
 visualizer_(NULL),
@@ -56,7 +58,7 @@ QString ComponentEditorFieldItem::text() const {
 }
 
 bool ComponentEditorFieldItem::isValid() const {
-	return field_->isValid();
+	return field_->isValid(reg_->getSize());
 }
 
 ItemEditor* ComponentEditorFieldItem::editor() {

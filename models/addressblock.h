@@ -125,6 +125,14 @@ public:
 	*/
 	QString getLastAddressStr() const;
 
+	/*! \brief Get the address offset of the last register contained in the address block.
+	 * 
+	 * Note: If the address block does not contain registers then 0 is returned.
+	 * 
+	 * \return The address of the last register.
+	*/
+	quint64 getLastRegisterAddress() const;
+
 	/*! \brief Get the type of usage for the address block
 	 *
 	 * \return Usage of the address block

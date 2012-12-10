@@ -32,7 +32,7 @@ graphItem_(NULL) {
 	foreach(QSharedPointer<Field> field, fields_) {
 		if (field) {
 			QSharedPointer<ComponentEditorFieldItem> fieldItem(new ComponentEditorFieldItem(
-				field, model, libHandler, component, this));
+				reg, field, model, libHandler, component, this));
 			childItems_.append(fieldItem);
 		}
 	}
@@ -84,7 +84,7 @@ QFont ComponentEditorRegisterItem::getFont() const {
 
 void ComponentEditorRegisterItem::createChild( int index ) {
 	QSharedPointer<ComponentEditorFieldItem> fieldItem(new ComponentEditorFieldItem(
-		fields_.at(index), model_, libHandler_, component_, this));
+		reg_, fields_.at(index), model_, libHandler_, component_, this));
 	fieldItem->setVisualizer(visualizer_);
 	childItems_.insert(index, fieldItem);
 }
