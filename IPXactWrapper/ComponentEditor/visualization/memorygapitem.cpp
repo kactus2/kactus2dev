@@ -27,13 +27,8 @@ MemoryGapItem::~MemoryGapItem() {
 }
 
 void MemoryGapItem::refresh() {
-	QString startStr = QString::number(start_, 16);
-	startStr.prepend("0x");
-	setLeftTopCorner(startStr);
-
-	QString endStr = QString::number(end_, 16);
-	endStr.prepend("0x");
-	setLeftBottomCorner(endStr);
+	setLeftTopCorner(start_);
+	setLeftBottomCorner(end_);
 
 	VisualizerItem::reorganizeChildren();
 }

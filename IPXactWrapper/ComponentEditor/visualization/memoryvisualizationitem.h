@@ -110,6 +110,13 @@ protected:
 	*/
 	virtual void setLeftTopCorner(const QString& text);
 
+	/*! \brief Set the address to be shown on the top left corner.
+	 *
+	 * \param address The address to be shown in hexadecimal form.
+	 *
+	*/
+	virtual void setLeftTopCorner(quint64 address);
+
 	/*! \brief Set text to the bottom left corner.
 	 *
 	 * The function groups the hexadecimal digit into groups of 4 digits.
@@ -118,6 +125,13 @@ protected:
 	 *
 	*/
 	virtual void setLeftBottomCorner(const QString& text);
+
+	/*! \brief Set the address to be shown on the bottom left corner.
+	 *
+	 * \param address The address to be shown in hexadecimal form.
+	 *
+	*/
+	virtual void setLeftBottomCorner(quint64 address);
 
 	//! \brief Contains the child memory items. The offset of the child is the key.
 	QMultiMap<quint64, MemoryVisualizationItem*> childItems_;

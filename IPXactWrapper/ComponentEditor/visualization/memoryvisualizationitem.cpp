@@ -196,7 +196,7 @@ QRectF MemoryVisualizationItem::boundingRect() const {
 }
 
 void MemoryVisualizationItem::setLeftTopCorner( const QString& text ) {
-	QString str = text.toUpper();
+	QString str(text);
 
 	// add white space after four digits
 	int size = str.size();
@@ -206,13 +206,47 @@ void MemoryVisualizationItem::setLeftTopCorner( const QString& text ) {
 	VisualizerItem::setLeftTopCorner(str);
 }
 
+void MemoryVisualizationItem::setLeftTopCorner( quint64 address ) {
+	// convert the number into hexadecimal form
+	QString str = QString::number(address, 16);
+	str = str.toUpper();
+
+	// group the string to groups of four characters
+	int size = str.size();
+	for (int i = size; i > 0; i -= 4) {
+		str.insert(i, " ");
+	}
+
+	// add the identifier indicating a hexadecimal number
+	str.prepend("0x");
+	
+	VisualizerItem::setLeftTopCorner(str);
+}
+
 void MemoryVisualizationItem::setLeftBottomCorner( const QString& text ) {
-	QString str = text.toUpper();
+	QString str(text);
 
 	// add white space after four digits
 	int size = str.size();
 	for (int i = size; i > 2; i -= 4) {
 		str.insert(i, " ");
 	}
+	VisualizerItem::setLeftBottomCorner(str);
+}
+
+void MemoryVisualizationItem::setLeftBottomCorner( quint64 address ) {
+	// convert the number into hexadecimal form
+	QString str = QString::number(address, 16);
+	str = str.toUpper();
+
+	// group the string to groups of four characters
+	int size = str.size();
+	for (int i = size; i > 0; i -= 4) {
+		str.insert(i, " ");
+	}
+
+	// add the identifier indicating a hexadecimal number
+	str.prepend("0x");
+
 	VisualizerItem::setLeftBottomCorner(str);
 }

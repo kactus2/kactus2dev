@@ -38,7 +38,7 @@ void RegisterGraphItem::refresh() {
 	setName(register_->getName());
 	
 	// get the base of the parent address block
-	int base = 0;
+	quint64 base = 0;
 	MemoryVisualizationItem* addrBlock = dynamic_cast<MemoryVisualizationItem*>(parentItem());
 	if (addrBlock) {
 		base = addrBlock->getOffset();
@@ -48,18 +48,18 @@ void RegisterGraphItem::refresh() {
 	quint64 offset = Utils::str2Int(register_->getAddressOffset());
 	// calculate the start address of the register
 	quint64 startAddress = base + offset;
-
 	// show the start address of the register
-	QString startStr = QString::number(startAddress, 16);
-	startStr.prepend("0x");
-	setLeftTopCorner(startStr);
+	setLeftTopCorner(startAddress);
 
 	// show the end address of the register
-	unsigned int addrUnits = register_->getSize() / getAddressUnitSize();
+	unsigned int addrUnit = getAddressUnitSize();
+	// prevent division by zero
+	if (addrUnit == 0) {
+		addrUnit = 1;
+	}	
+	unsigned int addrUnits = register_->getSize() / addrUnit;
 	quint64 endAddress = base + offset + addrUnits -1;
-	QString endStr = QString::number(endAddress, 16);
-	endStr.prepend("0x");
-	setLeftBottomCorner(endStr);
+	setLeftBottomCorner(endAddress);
 
 	// set the positions for the children
 	reorganizeChildren();
@@ -71,8 +71,18 @@ void RegisterGraphItem::refresh() {
 
 quint64 RegisterGraphItem::getOffset() const {
 	Q_ASSERT(register_);
-	QString offset = register_->getAddressOffset();
-	return Utils::str2Int(offset);
+	
+	// the register offset from the address block
+	QString offsetStr = register_->getAddressOffset();
+	quint64 regOffset = Utils::str2Int(offsetStr);
+
+	// the address block's offset
+	AddressBlockGraphItem* blockItem = static_cast<AddressBlockGraphItem*>(parentItem());
+	Q_ASSERT(blockItem);
+	quint64 blockOffset = blockItem->getOffset();
+
+	// the total offset is the address block's offset added with register's offset
+	return blockOffset + regOffset;
 }
 
 int RegisterGraphItem::getBitWidth() const {
@@ -219,6 +229,11 @@ quint64 RegisterGraphItem::getLastAddress() const {
 
 	// how many bits one address unit takes
 	unsigned int addrUnit = addrBlock->getAddressUnitSize();
+
+	// prevent division by zero
+	if (addrUnit == 0) {
+		addrUnit = 1;
+	}
 
 	// the offset of the start of register
 	quint64 offset = getOffset();

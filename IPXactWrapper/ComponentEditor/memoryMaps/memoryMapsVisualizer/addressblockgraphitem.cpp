@@ -32,8 +32,8 @@ AddressBlockGraphItem::~AddressBlockGraphItem() {
 
 void AddressBlockGraphItem::refresh() {
 	setName(addrBlock_->getName());
-	setLeftTopCorner(addrBlock_->getBaseAddress());
-	setLeftBottomCorner(addrBlock_->getLastAddressStr());
+	setLeftTopCorner(Utils::str2Int(addrBlock_->getBaseAddress()));
+	setLeftBottomCorner(addrBlock_->getLastAddress());
 
 	// set the positions for the children
 	MemoryVisualizationItem::reorganizeChildren();

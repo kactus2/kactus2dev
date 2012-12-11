@@ -34,8 +34,8 @@ MemoryMapGraphItem::~MemoryMapGraphItem() {
 void MemoryMapGraphItem::refresh() {
 	
 	setName(memoryMap_->getName());
-	setLeftTopCorner(memoryMap_->getFirstAddressStr());
-	setLeftBottomCorner(memoryMap_->getLastAddressStr());
+	setLeftTopCorner(memoryMap_->getFirstAddress());
+	setLeftBottomCorner(memoryMap_->getLastAddress());
 
 	// set the positions for the children
 	MemoryVisualizationItem::reorganizeChildren();
