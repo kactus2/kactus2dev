@@ -24,7 +24,10 @@ unix:help.path = /usr/share/kactus2/help
 unix:help.files = ./Help/Kactus2Help.qch ./Help/Kactus2Help.qhc
 
 unix:config.path = /etc/xdg/TUT
-unix:config.extra = cp ./releaseFiles/DefaultSettingsLinux.ini /etc/xdg/TUT/Kactus2.ini; ln -f -s /usr/bin/Kactus2 /usr/lib/libKactus2.so
+
+UNAME = $$system(uname -m)
+equals(UNAME, x86_64): unix:config.extra = cp ./releaseFiles/DefaultSettingsLinux.ini /etc/xdg/TUT/Kactus2.ini; ln -f -s /usr/bin/Kactus2 /usr/lib64/libKactus2.so
+!equals(UNAME, x86_64): unix:config.extra = cp ./releaseFiles/DefaultSettingsLinux.ini /etc/xdg/TUT/Kactus2.ini; ln -f -s /usr/bin/Kactus2 /usr/lib/libKactus2.so
 
 unix:library.path = /usr/share/kactus2/library
 unix:library.files = ./releaseFiles/Library/*
