@@ -50,7 +50,7 @@ quint64 MemoryMapGraphItem::getOffset() const {
 }
 
 int MemoryMapGraphItem::getBitWidth() const {
-	return 0;
+	return memoryMap_->getMaxWidth();
 }
 
 unsigned int MemoryMapGraphItem::getAddressUnitSize() const {

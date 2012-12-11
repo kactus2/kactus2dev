@@ -188,6 +188,12 @@ public:
 	*/
 	General::NameGroup& getNameGroup();
 
+	/*! \brief Get the largest bit width contained in the memory map.
+	 *
+	 * \return The number of bits in the widest address block.
+	*/
+	int getMaxWidth() const;
+
 private:
 
 	//! \brief Contains the name, display name and description of the memory map.

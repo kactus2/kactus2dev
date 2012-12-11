@@ -376,3 +376,20 @@ bool MemoryMap::isEmpty() const {
 General::NameGroup& MemoryMap::getNameGroup() {
 	return nameGroup_;
 }
+
+int MemoryMap::getMaxWidth() const {
+	int width = 0;
+	foreach (QSharedPointer<MemoryMapItem> memItem, items_) {
+
+		// only check the widths of address blocks
+		QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
+		if (addrBlock) {
+			
+			// find the largest width
+			if (width < addrBlock->getWidth()) {
+				width = addrBlock->getWidth();
+			}
+		}
+	}
+	return width;
+}

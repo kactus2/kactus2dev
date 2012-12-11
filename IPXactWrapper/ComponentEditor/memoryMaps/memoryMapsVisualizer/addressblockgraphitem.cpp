@@ -49,7 +49,7 @@ quint64 AddressBlockGraphItem::getOffset() const {
 }
 
 int AddressBlockGraphItem::getBitWidth() const {
-	return 0;
+	return addrBlock_->getWidth();
 }
 
 unsigned int AddressBlockGraphItem::getAddressUnitSize() const {

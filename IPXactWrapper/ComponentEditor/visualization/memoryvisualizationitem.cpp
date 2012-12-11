@@ -211,16 +211,22 @@ void MemoryVisualizationItem::setLeftTopCorner( quint64 address ) {
 	QString str = QString::number(address, 16);
 	str = str.toUpper();
 
+	int bitWidth = getBitWidth();
+
+	// one hexadecimal number accounts for four bits
+	int fieldSize = bitWidth / 4;
+	QString padded = QString("%1").arg(str, fieldSize, QChar('0'));
+
 	// group the string to groups of four characters
-	int size = str.size();
+	int size = padded.size();
 	for (int i = size; i > 0; i -= 4) {
-		str.insert(i, " ");
+		padded.insert(i, " ");
 	}
 
 	// add the identifier indicating a hexadecimal number
-	str.prepend("0x");
+	padded.prepend("0x");
 	
-	VisualizerItem::setLeftTopCorner(str);
+	VisualizerItem::setLeftTopCorner(padded);
 }
 
 void MemoryVisualizationItem::setLeftBottomCorner( const QString& text ) {
@@ -239,14 +245,20 @@ void MemoryVisualizationItem::setLeftBottomCorner( quint64 address ) {
 	QString str = QString::number(address, 16);
 	str = str.toUpper();
 
+	int bitWidth = getBitWidth();
+
+	// one hexadecimal number accounts for four bits
+	int fieldSize = bitWidth / 4;
+	QString padded = QString("%1").arg(str, fieldSize, QChar('0'));
+
 	// group the string to groups of four characters
-	int size = str.size();
+	int size = padded.size();
 	for (int i = size; i > 0; i -= 4) {
-		str.insert(i, " ");
+		padded.insert(i, " ");
 	}
 
 	// add the identifier indicating a hexadecimal number
-	str.prepend("0x");
+	padded.prepend("0x");
 
-	VisualizerItem::setLeftBottomCorner(str);
+	VisualizerItem::setLeftBottomCorner(padded);
 }
