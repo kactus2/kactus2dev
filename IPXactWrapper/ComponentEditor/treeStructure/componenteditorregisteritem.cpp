@@ -85,7 +85,10 @@ QFont ComponentEditorRegisterItem::getFont() const {
 void ComponentEditorRegisterItem::createChild( int index ) {
 	QSharedPointer<ComponentEditorFieldItem> fieldItem(new ComponentEditorFieldItem(
 		reg_, fields_.at(index), model_, libHandler_, component_, this));
-	fieldItem->setVisualizer(visualizer_);
+	
+	if (visualizer_) {
+		fieldItem->setVisualizer(visualizer_);
+	}
 	childItems_.insert(index, fieldItem);
 }
 
@@ -137,26 +140,29 @@ QGraphicsItem* ComponentEditorRegisterItem::getGraphicsItem() {
 }
 
 void ComponentEditorRegisterItem::updateGraphics() {
-	graphItem_->refresh();
+	if (graphItem_) {
+		graphItem_->refresh();
+	}
 }
 
 void ComponentEditorRegisterItem::removeGraphicsItem() {
-	Q_ASSERT(graphItem_);
+	if (graphItem_) {
 
-	// get the graphics item for the memory map
-	MemoryVisualizationItem* parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
-	Q_ASSERT(parentItem);
+		// get the graphics item for the memory map
+		MemoryVisualizationItem* parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
+		Q_ASSERT(parentItem);
 
-	// unregister addr block graph item from the memory map graph item
-	parentItem->removeChild(graphItem_);
+		// unregister addr block graph item from the memory map graph item
+		parentItem->removeChild(graphItem_);
 
-	// take the child from the parent
-	graphItem_->setParent(NULL);
+		// take the child from the parent
+		graphItem_->setParent(NULL);
 
-	// delete the graph item
-	delete graphItem_;
-	graphItem_ = NULL;
+		// delete the graph item
+		delete graphItem_;
+		graphItem_ = NULL;
 
-	// tell the parent to refresh itself
-	parentItem->refresh();
+		// tell the parent to refresh itself
+		parentItem->refresh();
+	}
 }

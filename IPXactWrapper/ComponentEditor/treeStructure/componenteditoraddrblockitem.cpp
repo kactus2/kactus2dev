@@ -24,7 +24,8 @@ ComponentEditorItem(model, libHandler, component, parent),
 addrBlock_(addrBlock),
 regItems_(addrBlock->getRegisterData()),
 editor_(new AddressBlockEditor(addrBlock, component)),
-visualizer_(NULL) {
+visualizer_(NULL),
+graphItem_(NULL) {
 
 	setObjectName(tr("ComponentEditorAddrBlockItem"));
 
@@ -90,7 +91,11 @@ void ComponentEditorAddrBlockItem::createChild( int index ) {
 	if (reg) {
 		QSharedPointer<ComponentEditorRegisterItem> regItem(
 			new ComponentEditorRegisterItem(reg, model_, libHandler_, component_, this));
-		regItem->setVisualizer(visualizer_);
+		
+		if (visualizer_) {
+			regItem->setVisualizer(visualizer_);
+		}
+
 		childItems_.insert(index, regItem);
 	}
 }
@@ -138,26 +143,29 @@ QGraphicsItem* ComponentEditorAddrBlockItem::getGraphicsItem() {
 }
 
 void ComponentEditorAddrBlockItem::updateGraphics() {
-	graphItem_->refresh();
+	if (graphItem_) {
+		graphItem_->refresh();
+	}
 }
 
 void ComponentEditorAddrBlockItem::removeGraphicsItem() {
-	Q_ASSERT(graphItem_);
 
-	// get the graphics item for the memory map
-	MemoryVisualizationItem* parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
-	Q_ASSERT(parentItem);
+	if (graphItem_) {
+		// get the graphics item for the memory map
+		MemoryVisualizationItem* parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
+		Q_ASSERT(parentItem);
 
-	// unregister addr block graph item from the memory map graph item
-	parentItem->removeChild(graphItem_);
+		// unregister addr block graph item from the memory map graph item
+		parentItem->removeChild(graphItem_);
 
-	// take the child from the parent
-	graphItem_->setParent(NULL);
+		// take the child from the parent
+		graphItem_->setParent(NULL);
 
-	// delete the graph item
-	delete graphItem_;
-	graphItem_ = NULL;
+		// delete the graph item
+		delete graphItem_;
+		graphItem_ = NULL;
 
-	// tell the parent to refresh itself
-	parentItem->refresh();
+		// tell the parent to refresh itself
+		parentItem->refresh();
+	}
 }

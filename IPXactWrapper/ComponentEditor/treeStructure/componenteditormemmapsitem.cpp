@@ -77,7 +77,10 @@ void ComponentEditorMemMapsItem::createChild( int index ) {
 	QSharedPointer<ComponentEditorMemMapItem> memoryMapItem(
 		new ComponentEditorMemMapItem(memoryMaps_.at(index), model_, libHandler_, component_, this));	
 	childItems_.insert(index, memoryMapItem);
-	memoryMapItem->setVisualizer(visualizer_);
+	
+	if (visualizer_) {
+		memoryMapItem->setVisualizer(visualizer_);
+	}
 }
 
 ItemVisualizer* ComponentEditorMemMapsItem::visualizer() {

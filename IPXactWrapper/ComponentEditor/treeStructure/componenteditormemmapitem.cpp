@@ -96,7 +96,11 @@ void ComponentEditorMemMapItem::createChild( int index ) {
 	if (addrBlock) {
 		QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(
 			new ComponentEditorAddrBlockItem(addrBlock, model_, libHandler_, component_, this));
-		addrBlockItem->setVisualizer(visualizer_);
+		
+		if (visualizer_) {
+			addrBlockItem->setVisualizer(visualizer_);
+		}
+
 		childItems_.insert(index, addrBlockItem);
 	}
 }
