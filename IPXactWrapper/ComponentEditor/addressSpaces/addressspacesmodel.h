@@ -138,6 +138,9 @@ private:
 	//! \brief No assignment
 	AddressSpacesModel& operator=(const AddressSpacesModel& other);
 
+	//! \brief Pointer to the component being edited.
+	QSharedPointer<Component> component_;
+
 	//! \brief Contains the address spaces to edit.
 	QList<QSharedPointer<AddressSpace> >& addrSpaces_;
 };

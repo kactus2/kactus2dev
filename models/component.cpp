@@ -3198,6 +3198,25 @@ QStringList Component::getSlaveInterfaces( const QString& memoryMap ) const {
 	return names;
 }
 
+QStringList Component::getMasterInterfaces( const QString& addressSpace ) const {
+	QStringList names;
+
+	// check all bus interfaces for the given address space
+	foreach (const QSharedPointer<BusInterface> busif, busInterfaces_) {
+
+		// only master and mirrored master interfaces refer to address spaces
+		if (busif->getInterfaceMode() == General::MASTER ||
+			busif->getInterfaceMode() == General::MIRROREDMASTER) {
+
+				// if interface refers to given address space
+				if (busif->getAddressSpaceRef() == addressSpace) {
+					names.append(busif->getName());
+				}
+		}
+	}
+	return names;
+}
+
 bool Component::hasInterfaces() const {
 	return !busInterfaces_.isEmpty();
 }

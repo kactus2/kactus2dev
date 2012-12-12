@@ -13,6 +13,7 @@
 AddressSpacesModel::AddressSpacesModel( QSharedPointer<Component> component, 
 									   QObject *parent ):
 QAbstractTableModel(parent),
+component_(component),
 addrSpaces_(component->getAddressSpaces()) {
 
 	Q_ASSERT(component);
@@ -39,6 +40,10 @@ Qt::ItemFlags AddressSpacesModel::flags( const QModelIndex& index ) const {
 	if (!index.isValid()) {
 		return Qt::NoItemFlags;
 	}
+	// interface references are made in bus interface editor
+	if (index.column() == AddressSpacesDelegate::INTERFACE_COLUMN) {
+		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+	}
 	return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
 }
 
@@ -61,6 +66,9 @@ QVariant AddressSpacesModel::headerData( int section, Qt::Orientation orientatio
 			case AddressSpacesDelegate::RANGE_COLUMN: {
 				return tr("Range");
 													  }
+			case AddressSpacesDelegate::INTERFACE_COLUMN: {
+				return tr("Interface\nbinding");
+													   }
 			case AddressSpacesDelegate::DESCRIPTION_COLUMN: {
 				return tr("Description");
 															}
@@ -97,6 +105,19 @@ QVariant AddressSpacesModel::data( const QModelIndex& index, int role /*= Qt::Di
 			case AddressSpacesDelegate::RANGE_COLUMN: {
 				return addrSpaces_.at(index.row())->getRange();
 													  }
+			case AddressSpacesDelegate::INTERFACE_COLUMN: {
+				QStringList interfaceNames = component_->getMasterInterfaces(
+					addrSpaces_.at(index.row())->getName());
+
+				// if no interface refers to the memory map
+				if (interfaceNames.isEmpty()) {
+					return tr("No binding");
+				}
+				// if there are then show them separated by space
+				else {
+					return interfaceNames.join(" ");
+				}
+													   }
 			case AddressSpacesDelegate::DESCRIPTION_COLUMN: {
 				return addrSpaces_.at(index.row())->getDescription();
 															}
@@ -104,6 +125,9 @@ QVariant AddressSpacesModel::data( const QModelIndex& index, int role /*= Qt::Di
 				return QVariant();
 					 }
 		}
+	}
+	if (AddressSpacesDelegate::USER_DISPLAY_ROLE == role) {
+		return component_->getMasterInterfaces(addrSpaces_.at(index.row())->getName());
 	}
 	else if (Qt::ForegroundRole == role) {
 		if (addrSpaces_.at(index.row())->isValid()) {

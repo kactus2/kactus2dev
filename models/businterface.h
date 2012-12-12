@@ -508,6 +508,15 @@ public:
 	*/
 	QString getMemoryMapRef() const;
 
+	/*! \brief Get the address space reference of a master or mirrored master interface.
+	 *
+	 * If the interface mode is other than General::MASTER or General::MIRROREDMASTER
+	 * then empty QString is returned.
+	 *
+	 * \return QString containing the name of the address space referenced by interface.
+	*/
+	QString getAddressSpaceRef() const;
+
 private:
 
 	//! \brief Contains the name, display name and description of bus interface.

@@ -22,7 +22,7 @@ MemoryVisualizationItem(parent),
 addrBlock_(addrBlock) {
 
 	Q_ASSERT(addrBlock_);
-	QBrush brush(QColor(60, 160, 255));
+	QBrush brush(QColor(80, 180, 255));
 	setBrush(brush);
 	ExpandableItem::setExpansionBrush(brush);
 }

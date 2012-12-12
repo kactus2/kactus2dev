@@ -1148,3 +1148,23 @@ QString BusInterface::getMemoryMapRef() const {
 		return slave_->getMemoryMapRef();
 	}
 }
+
+QString BusInterface::getAddressSpaceRef() const {
+
+	// only master and mirrored master refer to address spaces
+	if (interfaceMode_ == General::MASTER ||
+		interfaceMode_ == General::MIRROREDMASTER) {
+
+			// if there is no master defined
+			if (!master_) {
+				return QString();
+			}
+			else {
+				return master_->getAddressSpaceRef();
+			}
+	}
+	// interface mode is other than master or mirrored master
+	else {
+		return QString();
+	}
+}

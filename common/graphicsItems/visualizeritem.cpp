@@ -50,7 +50,7 @@ void VisualizerItem::setName( const QString& name ) {
 	QFontMetrics fontMetrics(nameLabel_.font());
 
 	// The maximum width for the text
-	int maxTextSize = (rect().width() / 2) - 15;
+	int maxTextSize = (rect().width() / 2) - 5;
 
 	// calculate how many characters can be fitted to the available space
 	int charCount = (maxTextSize / fontMetrics.width("x")) + 1;
@@ -85,7 +85,7 @@ void VisualizerItem::setLeftTopCorner( const QString& text ) {
 void VisualizerItem::setLeftBottomCorner( const QString& text ) {
 	leftBottomText_.setText(text);
 	// set the left bottom text position
-	leftBottomText_.setPos(2, rect().bottomLeft().y() - VisualizerItem::FONT_CORNERSIZE - 3);
+	leftBottomText_.setPos(2, rect().bottomLeft().y() - VisualizerItem::FONT_CORNERSIZE - 4);
 }
 
 void VisualizerItem::setRightTopCorner( const QString& text ) {
@@ -98,7 +98,7 @@ void VisualizerItem::setRightBottomCorner( const QString& text ) {
 	rightBottomText_.setText(text);
 	// set the right bottom text position
 	rightBottomText_.setPos(rect().topRight().x() - rightBottomText_.boundingRect().width(),
-		rect().bottomRight().y() - VisualizerItem::FONT_CORNERSIZE - 3);
+		rect().bottomRight().y() - VisualizerItem::FONT_CORNERSIZE - 4);
 }
 
 QRectF VisualizerItem::minimumRect() const {
@@ -111,10 +111,10 @@ void VisualizerItem::reorganizeChildren() {
 	nameLabel_.setPos(rect().center().x() - (nameLabel_.boundingRect().width() / 2), 0);
 
 	leftTopText_.setPos(2, 0);
-	leftBottomText_.setPos(2, rect().bottomLeft().y() - VisualizerItem::FONT_CORNERSIZE - 3);
+	leftBottomText_.setPos(2, rect().bottomLeft().y() - VisualizerItem::FONT_CORNERSIZE - 4);
 	rightTopText_.setPos(rect().topRight().x() - rightTopText_.boundingRect().width(), 0);
 	rightBottomText_.setPos(rect().topRight().x() - rightBottomText_.boundingRect().width(),
-		rect().bottomRight().y() - VisualizerItem::FONT_CORNERSIZE - 3);
+		rect().bottomRight().y() - VisualizerItem::FONT_CORNERSIZE - 4);
 }
 
 QRectF VisualizerItem::itemTotalRect() const {

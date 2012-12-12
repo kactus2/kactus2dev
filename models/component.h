@@ -1052,6 +1052,14 @@ public:
 	*/
 	QStringList getSlaveInterfaces(const QString& memoryMap) const;
 
+	/*! \brief Get list of the master and mirrored master interfaces that refer to given address space.
+	 *
+	 * \param addressSpace The name of the address space to search for.
+	 *
+	 * \return QStringList containing names of the master and mirrored master interfaces.
+	*/
+	QStringList getMasterInterfaces(const QString& addressSpace) const;
+
 	/*! \brief Add a new bus interface to the component.
 	*
 	* \param busInterface Pointer to the new bus interface to be added.

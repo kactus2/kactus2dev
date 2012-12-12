@@ -16,7 +16,7 @@ FieldGraphItem::FieldGraphItem( QSharedPointer<Field> field,
 MemoryVisualizationItem(parent),
 field_(field) {
 	Q_ASSERT(field_);
-	QBrush brush(QColor(100, 200, 255));
+	QBrush brush(QColor(120, 220, 255));
 	setBrush(brush);
 	ExpandableItem::setExpansionBrush(brush);
 	setShowExpandableItem(false);

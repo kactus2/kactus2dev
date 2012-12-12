@@ -7,6 +7,7 @@
 
 #include "componenteditoraddrspacesitem.h"
 #include "componenteditoraddrspaceitem.h"
+#include <IPXactWrapper/ComponentEditor/treeStructure/componenteditortreemodel.h>
 
 ComponentEditorAddrSpacesItem::ComponentEditorAddrSpacesItem(ComponentEditorTreeModel* model,
 															 LibraryInterface* libHandler,
@@ -32,6 +33,8 @@ editor_(component) {
 		this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
 	connect(&editor_, SIGNAL(helpUrlRequested(QString const&)),
 		this, SIGNAL(helpUrlRequested(QString const&)));
+	connect(&editor_, SIGNAL(selectBusInterface(const QString&)),
+		model, SLOT(onSelectBusInterface(const QString&)), Qt::UniqueConnection);
 }
 
 ComponentEditorAddrSpacesItem::~ComponentEditorAddrSpacesItem() {

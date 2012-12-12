@@ -18,12 +18,18 @@ class AddressSpacesDelegate : public QStyledItemDelegate {
 
 public:
 
+	//! \brief The role to display interface column with QStringList.
+	enum Roles {
+		USER_DISPLAY_ROLE = Qt::UserRole
+	};
+
 	//! \brief The column numbers for different columns.
 	enum Columns {
 		NAME_COLUMN = 0,
 		ADDR_UNIT_COLUMN,
 		WIDTH_COLUMN,
 		RANGE_COLUMN,
+		INTERFACE_COLUMN,
 		DESCRIPTION_COLUMN,
 		COLUMN_COUNT
 	};

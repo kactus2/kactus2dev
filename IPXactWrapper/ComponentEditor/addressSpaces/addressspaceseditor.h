@@ -42,10 +42,20 @@ public:
 	*/
 	virtual void refresh();
 
+signals:
+
+	//! \brief Emitted when a bus interface editor should be opened.
+	void selectBusInterface(const QString& interfaceName);
+
 protected:
 
 	//! \brief Handler for widget's show event
 	virtual void showEvent(QShowEvent* event);
+
+private slots:
+
+		//! \brief Handler for view's doubleClicked-signal.
+		virtual void onDoubleClick(const QModelIndex& index);
 
 private:
 	

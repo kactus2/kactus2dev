@@ -23,7 +23,7 @@ MemoryVisualizationItem(parent),
 memoryMap_(memoryMap) {
 
 	Q_ASSERT(memoryMap_);
-	QBrush brush(QColor(40, 140, 255));
+	QBrush brush(QColor(60, 160, 255));
 	setBrush(brush);
 	ExpandableItem::setExpansionBrush(brush);
 }

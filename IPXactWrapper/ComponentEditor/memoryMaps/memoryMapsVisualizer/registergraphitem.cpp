@@ -26,7 +26,7 @@ MemoryVisualizationItem(parent),
 register_(reg) {
 
 	Q_ASSERT(register_);
-	QBrush brush(QColor(80, 180, 255));
+	QBrush brush(QColor(100, 200, 255));
 	setBrush(brush);
 	ExpandableItem::setExpansionBrush(brush);
 }
