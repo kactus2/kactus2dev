@@ -15,6 +15,8 @@
 
 #include <QApplication>
 
+#include <QDebug>
+
 ComponentEditorAddrBlockItem::ComponentEditorAddrBlockItem(QSharedPointer<AddressBlock> addrBlock,
 														   ComponentEditorTreeModel* model,
 														   LibraryInterface* libHandler,

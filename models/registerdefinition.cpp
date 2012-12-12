@@ -285,9 +285,16 @@ QString RegisterDefinition::getRegisterValue() const {
 }
 
 void RegisterDefinition::setRegisterValue( const QString& registerValue ) {
+	// if the register value is to be cleared and reset does not exist
+	if (!reset_ && registerValue.isEmpty()) {
+		return;
+	}
+
+	// if register value must be set and reset does not exist
 	if (!reset_) {
 		reset_ = QSharedPointer<Reset>(new Reset());
 	}
+
 	reset_->setValue(registerValue);
 }
 
@@ -301,6 +308,12 @@ QString RegisterDefinition::getRegisterMask() const {
 }
 
 void RegisterDefinition::setRegisterMask( const QString& registerMask ) {
+	// if the register mask is to be cleared and reset does not exist
+	if (!reset_ && registerMask.isEmpty()) {
+		return;
+	}
+
+	// if register mask must be set and reset does not exist
 	if (!reset_) {
 		reset_ = QSharedPointer<Reset>(new Reset());
 	}
