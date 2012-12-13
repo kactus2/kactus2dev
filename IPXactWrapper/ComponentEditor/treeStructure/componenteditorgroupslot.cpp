@@ -48,3 +48,7 @@ void ComponentEditorGroupSlot::setWidget( QWidget* widget ) {
 		currentWidget_->show();
 	}
 }
+
+QWidget* ComponentEditorGroupSlot::getWidget() const {
+	return currentWidget_;
+}

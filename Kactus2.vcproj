@@ -1776,10 +1776,6 @@
 							>
 						</File>
 						<File
-							RelativePath=".\IPXactWrapper\ComponentEditor\memoryMaps\fieldeditor.cpp"
-							>
-						</File>
-						<File
 							RelativePath=".\IPXactWrapper\ComponentEditor\memoryMaps\memorymapdelegate.cpp"
 							>
 						</File>
@@ -13924,6 +13920,10 @@
 									Outputs="&quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;"
 								/>
 							</FileConfiguration>
+						</File>
+						<File
+							RelativePath=".\IPXactWrapper\ComponentEditor\memoryMaps\fieldeditor.cpp"
+							>
 						</File>
 						<File
 							RelativePath=".\IPXactWrapper\ComponentEditor\memoryMaps\fieldeditor.h"

@@ -10,6 +10,7 @@
 #include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapscene.h>
 #include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h>
 #include <common/graphicsItems/visualizeritem.h>
+#include <common/graphicsItems/visualizeritem.h>
 
 #include <QHBoxLayout>
 #include <QPointF>
@@ -38,4 +39,12 @@ void MemoryMapsVisualizer::addMemoryMapItem( MemoryMapGraphItem* memMapItem ) {
 
 void MemoryMapsVisualizer::removeMemoryMapItem( MemoryMapGraphItem* memMapItem ) {
 	scene_->removeMemGraphItem(memMapItem);
+}
+
+QSize MemoryMapsVisualizer::minimumSizeHint() const {
+	return QSize(VisualizerItem::MAX_WIDTH + 80, VisualizerItem::ITEM_HEIGHT * 2);
+}
+
+QSize MemoryMapsVisualizer::sizeHint() const {
+	return minimumSizeHint();
 }

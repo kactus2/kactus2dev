@@ -11,8 +11,6 @@
 #include <QVBoxLayout>
 #include <QFormLayout>
 
-#include <QDebug>
-
 WriteValueConstraintEditor::WriteValueConstraintEditor(QSharedPointer<WriteValueConstraint> writeConstraint, 
 													   const QString& title,
 													   QWidget *parent ):
@@ -66,6 +64,8 @@ maxBox_(new QSpinBox(this)) {
 			break;
 				 }
 	}
+
+	setMaximumWidth(200);
 
 	connect(noConstrButton_, SIGNAL(clicked(bool)),
 		this, SLOT(onNoConstr(bool)), Qt::UniqueConnection);
@@ -132,13 +132,11 @@ void WriteValueConstraintEditor::onMinMax( bool checked ) {
 }
 
 void WriteValueConstraintEditor::onMinChanged( int newValue ) {
-	qDebug() << "onMinChanged";
 	writeConstraint_->setMinimum(newValue);
 	emit contentChanged();
 }
 
 void WriteValueConstraintEditor::onMaxChanged( int newValue ) {
-	qDebug() << "onMaxChanged";
 	writeConstraint_->setMaximum(newValue);
 	emit contentChanged();
 }

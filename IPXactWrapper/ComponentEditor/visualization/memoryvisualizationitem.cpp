@@ -262,3 +262,9 @@ void MemoryVisualizationItem::setLeftBottomCorner( quint64 address ) {
 
 	VisualizerItem::setLeftBottomCorner(padded);
 }
+
+void MemoryVisualizationItem::mousePressEvent( QGraphicsSceneMouseEvent* event ) {
+	// perform the base class functionality and inform that this item shuold be selected
+	QGraphicsItem::mousePressEvent(event);
+	emit selectEditor();
+}

@@ -94,3 +94,7 @@ void MemoryMapsEditor::onDoubleClick( const QModelIndex& index ) {
 		emit selectBusInterface(busIfNames.first());
 	}
 }
+
+QSize MemoryMapsEditor::sizeHint() const {
+	return QSize(MemoryMapsEditor::WIDTH, MemoryMapsEditor::HEIGHT);
+}

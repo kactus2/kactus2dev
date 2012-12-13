@@ -256,7 +256,9 @@ void ComponentEditor::onItemActivated( const QModelIndex& index ) {
 
 	ItemEditor* editor = item->editor();
 	if (editor) {
-		editorVisualizerSizes.append(1);
+		// the width is the size hint but at least 1 to make editor visible
+		int width = qMax(editor->sizeHint().width(), 1);
+		editorVisualizerSizes.append(width);
 		editor->refresh();
 	}
 	// if there is no editor then hide the editor slot
@@ -267,7 +269,11 @@ void ComponentEditor::onItemActivated( const QModelIndex& index ) {
 
 	ItemVisualizer* visualizer = item->visualizer();
 	if (visualizer) {
-		editorVisualizerSizes.append(1);
+
+		// the width is the size hint but at least 1 to make visualizer visible
+		int width = qMax(visualizer->sizeHint().width(), 1);
+
+		editorVisualizerSizes.append(width);
 	}
 	// if there is no visualizer then hide the visualizer slot
 	else {

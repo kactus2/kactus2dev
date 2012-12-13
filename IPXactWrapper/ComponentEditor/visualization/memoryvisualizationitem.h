@@ -11,6 +11,7 @@
 #include <common/graphicsItems/expandableitem.h>
 
 #include <QMultiMap>
+#include <QGraphicsSceneMouseEvent>
 
 /*! \brief The base class for graphics items to visualize memory objects.
  *
@@ -90,7 +91,13 @@ signals:
 	//! \brief Emitted when the item changes.
 	void contentChanged();
 
+	//! \brief Emitted when this item's editor should be displayed.
+	void selectEditor();
+
 protected:
+
+	//! \brief Handler for mouse press events
+	virtual void mousePressEvent(QGraphicsSceneMouseEvent* event);
 
 	/*! \brief Set new positions for child items.
 	 * 

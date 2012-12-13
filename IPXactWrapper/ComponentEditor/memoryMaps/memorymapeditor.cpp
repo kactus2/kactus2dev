@@ -40,6 +40,14 @@ model_(new MemoryMapModel(memoryMap, this)) {
 
 	view_->setItemDelegate(new MemoryMapDelegate(this));
 
+	view_->setColumnWidth(MemoryMapDelegate::USAGE_COLUMN, 80);
+	view_->setColumnWidth(MemoryMapDelegate::NAME_COLUMN, 100);
+	view_->setColumnWidth(MemoryMapDelegate::BASE_COLUMN, 100);
+	view_->setColumnWidth(MemoryMapDelegate::RANGE_COLUMN, 80);
+	view_->setColumnWidth(MemoryMapDelegate::WIDTH_COLUMN, 65);
+	view_->setColumnWidth(MemoryMapDelegate::DESCRIPTION_COLUMN, 100);
+	view_->setColumnWidth(MemoryMapDelegate::ACCESS_COLUMN, 100);
+
 	connect(model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(model_, SIGNAL(itemAdded(int)),
@@ -67,4 +75,8 @@ void MemoryMapEditor::refresh() {
 void MemoryMapEditor::showEvent( QShowEvent* event ) {
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/memorymap.html");
+}
+
+QSize MemoryMapEditor::sizeHint() const {
+	return QSize(MemoryMapEditor::WIDTH, MemoryMapEditor::HEIGHT);
 }

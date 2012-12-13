@@ -32,6 +32,9 @@ parent_(parent) {
 	connect(this, SIGNAL(moveChild(ComponentEditorItem*, int, int)),
 		model, SLOT(moveItem(ComponentEditorItem*, int, int)), Qt::UniqueConnection);
 
+	connect(this, SIGNAL(selectItem(ComponentEditorItem*)),
+		model, SLOT(onSelectItem(ComponentEditorItem*)), Qt::UniqueConnection);
+
     connect(this, SIGNAL(helpUrlRequested(QString const&)),
             model, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
 	connect(this, SIGNAL(errorMessage(const QString&)),
@@ -242,4 +245,8 @@ void ComponentEditorItem::updateGraphics() {
 
 void ComponentEditorItem::removeGraphicsItem() {
 	return;
+}
+
+void ComponentEditorItem::onSelectRequest() {
+	emit selectItem(this);
 }

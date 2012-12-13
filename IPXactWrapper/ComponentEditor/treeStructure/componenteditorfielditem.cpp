@@ -108,6 +108,9 @@ void ComponentEditorFieldItem::setVisualizer( MemoryMapsVisualizer* visualizer )
 
 	// tell child to refresh itself
 	graphItem_->refresh();
+
+	connect(graphItem_, SIGNAL(selectEditor()),
+		this, SLOT(onSelectRequest()), Qt::UniqueConnection);
 }
 
 QGraphicsItem* ComponentEditorFieldItem::getGraphicsItem() {
@@ -132,6 +135,9 @@ void ComponentEditorFieldItem::removeGraphicsItem() {
 
 		// take the child from the parent
 		graphItem_->setParent(NULL);
+
+		disconnect(graphItem_, SIGNAL(selectEditor()),
+			this, SLOT(onSelectRequest()));
 
 		// delete the graph item
 		delete graphItem_;

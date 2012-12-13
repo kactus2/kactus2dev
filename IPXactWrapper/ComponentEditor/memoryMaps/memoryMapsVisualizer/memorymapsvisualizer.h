@@ -15,6 +15,7 @@
 #include <QWidget>
 #include <QList>
 #include <QSharedPointer>
+#include <QSize>
 
 class MemoryMapView;
 class MemoryMapScene;
@@ -52,6 +53,18 @@ public:
 	 *
 	*/
 	void removeMemoryMapItem(MemoryMapGraphItem* memMapItem);
+
+	/*! \brief The minimum size hint for the visualizer.
+	 *
+	 * \return QSize contains the minimum size hint.
+	*/
+	virtual QSize minimumSizeHint() const;
+
+	/*! \brief The size hint for the visualizer.
+	 *
+	 * \return QSize contains the size hint.
+	*/
+	virtual QSize sizeHint() const;
 
 private:
 	

@@ -199,6 +199,13 @@ private slots:
 	*/
 	void onSelectBusInterface(const QString& interfaceName);
 
+	/*! \brief Select the given item to be displayed.
+	 *
+	 * \param item Pointer to the item which should be displayed.
+	 *
+	*/
+	void onSelectItem(ComponentEditorItem* item);
+
 private:
 	//! \brief No copying
 	ComponentEditorTreeModel(const ComponentEditorTreeModel& other);

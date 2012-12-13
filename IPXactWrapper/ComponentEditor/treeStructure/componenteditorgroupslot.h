@@ -34,6 +34,12 @@ public:
 	*/
 	void setWidget(QWidget* widget);
 
+	/*! \brief Get the widget currently displayed inside the group slot.
+	 *
+	 * \return Pointer to the widget being displayed.
+	*/
+	QWidget* getWidget() const;
+
 private:
 	
 	//! \brief No copying

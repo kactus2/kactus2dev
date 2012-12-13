@@ -133,6 +133,9 @@ void ComponentEditorRegisterItem::setVisualizer( MemoryMapsVisualizer* visualize
 		QSharedPointer<ComponentEditorFieldItem> fieldItem = item.staticCast<ComponentEditorFieldItem>();
 		fieldItem->setVisualizer(visualizer_);
 	}
+
+	connect(graphItem_, SIGNAL(selectEditor()),
+		this, SLOT(onSelectRequest()), Qt::UniqueConnection);
 }
 
 QGraphicsItem* ComponentEditorRegisterItem::getGraphicsItem() {
@@ -157,6 +160,9 @@ void ComponentEditorRegisterItem::removeGraphicsItem() {
 
 		// take the child from the parent
 		graphItem_->setParent(NULL);
+
+		disconnect(graphItem_, SIGNAL(selectEditor()),
+			this, SLOT(onSelectRequest()));
 
 		// delete the graph item
 		delete graphItem_;

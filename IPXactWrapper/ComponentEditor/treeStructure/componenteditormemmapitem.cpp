@@ -121,6 +121,9 @@ void ComponentEditorMemMapItem::setVisualizer( MemoryMapsVisualizer* visualizer 
 		QSharedPointer<ComponentEditorAddrBlockItem> addrItem = item.staticCast<ComponentEditorAddrBlockItem>();
 		addrItem->setVisualizer(visualizer_);
 	}
+
+	connect(graphItem_, SIGNAL(selectEditor()),
+		this, SLOT(onSelectRequest()), Qt::UniqueConnection);
 }
 
 QGraphicsItem* ComponentEditorMemMapItem::getGraphicsItem() {
@@ -136,6 +139,9 @@ void ComponentEditorMemMapItem::removeGraphicsItem() {
 
 	// remove the graph item from the scene
 	visualizer_->removeMemoryMapItem(graphItem_);
+
+	disconnect(graphItem_, SIGNAL(selectEditor()),
+		this, SLOT(onSelectRequest()));
 
 	// delete the graph item
 	delete graphItem_;

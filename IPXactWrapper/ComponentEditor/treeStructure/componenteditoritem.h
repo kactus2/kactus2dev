@@ -295,7 +295,7 @@ signals:
 	 * \param item Pointer to the item to select.
 	 *
 	*/
-	void selectItem(const QSharedPointer<ComponentEditorItem> item);
+	void selectItem(ComponentEditorItem* item);
 
 protected:
 
@@ -339,6 +339,11 @@ protected slots:
 	 *
 	*/
 	virtual void onMoveChild(int source, int target);
+
+private slots:
+
+	//! \brief Slot for display requests of this item.
+	void onSelectRequest();
 
 private:
 	//! \brief No copying

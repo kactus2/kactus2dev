@@ -269,3 +269,8 @@ void ComponentEditorTreeModel::onSelectBusInterface( const QString& interfaceNam
 	QModelIndex busIfIndex = index(busIfItem.data());
 	emit selectItem(busIfIndex);
 }
+
+void ComponentEditorTreeModel::onSelectItem( ComponentEditorItem* item ) {
+	QModelIndex itemIndex = index(item);
+	emit selectItem(itemIndex);
+}

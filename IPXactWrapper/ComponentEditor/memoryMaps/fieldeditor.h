@@ -27,6 +27,12 @@ class FieldEditor : public ItemEditor {
 
 public:
 
+	//! \brief The default height and width of the editor.
+	enum Sizes {
+		HEIGHT = 300,
+		WIDTH = 700
+	};
+
 	/*! \brief The constructor
 	 * 
 	 * \param field Pointer to the field being edited.
@@ -50,6 +56,12 @@ public:
 	/*! \brief Reload the information from the model to the editor.
 	*/
 	virtual void refresh();
+
+	/*! \brief The size hint for the editor.
+	 *
+	 * \return QSize contains the size hint.
+	*/
+	virtual QSize sizeHint() const;
 
 protected:
 

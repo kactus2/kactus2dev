@@ -40,6 +40,14 @@ model_(new AddressBlockModel(addressBlock, this)) {
 
 	view_->setItemDelegate(new AddressBlockDelegate(this));
 
+	view_->setColumnWidth(AddressBlockDelegate::NAME_COLUMN, 80);
+	view_->setColumnWidth(AddressBlockDelegate::OFFSET_COLUMN, 80);
+	view_->setColumnWidth(AddressBlockDelegate::SIZE_COLUMN, 55);
+	view_->setColumnWidth(AddressBlockDelegate::DIM_COLUMN, 85);
+	view_->setColumnWidth(AddressBlockDelegate::DESC_COLUMN, 100);
+	view_->setColumnWidth(AddressBlockDelegate::VOLATILE_COLUMN, 70);
+	view_->setColumnWidth(AddressBlockDelegate::ACCESS_COLUMN, 100);
+
 	connect(model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(model_, SIGNAL(itemAdded(int)),
@@ -67,4 +75,8 @@ void AddressBlockEditor::refresh() {
 void AddressBlockEditor::showEvent( QShowEvent* event ) {
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/addressblock.html");
+}
+
+QSize AddressBlockEditor::sizeHint() const {
+	return QSize(AddressBlockEditor::WIDTH, AddressBlockEditor::HEIGHT);
 }
