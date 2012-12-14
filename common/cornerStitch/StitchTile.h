@@ -73,7 +73,7 @@ struct StitchTile
      */
     bool containsY(int y) const
     {
-        return (y >= pos.y() && (rightBottom_ == 0 || y < rightBottom_->pos.x()));
+        return (y >= pos.y() && (rightBottom_ == 0 || y < rightBottom_->pos.y()));
     }
 };
 

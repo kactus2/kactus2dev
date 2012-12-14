@@ -59,7 +59,46 @@ private:
     /*!
      *  Splits the given tile horizontally into two parts.
      */
-    void splitH(StitchTile* tile, int y, StitchTile* top, StitchTile* bottom);
+    void splitV(StitchTile* tile, int y, StitchTile*& top, StitchTile*& bottom);
+
+    /*!
+     *  Splits the given tile vertically into two parts.
+     */
+    void splitH(StitchTile* tile, int x, StitchTile*& left, StitchTile*& right);
+
+    /*!
+     *  Merges the tile horizontally if merging is possible.
+     *
+     *      @param [in] tile The tile to check for merging.
+     *
+     *      @return The tile resulted from the merge.
+     */
+    StitchTile* mergeH(StitchTile* tile);
+
+    /*!
+     *  Merges the tile vertically if merging is possible.
+     *
+     *      @param [in] tile The tile to check for merging.
+     *
+     *      @return The tile resulted from the merge.
+     */
+    StitchTile* mergeV(StitchTile* tile);
+
+    /*!
+     *  Returns true if the given tiles can be merged in horizontal direction.
+     *
+     *      @param [in] tile1   The first tile.
+     *      @param [in] tile2   The second tile.
+     */
+    static bool canMergeH(StitchTile const* tile1, StitchTile const* tile2);
+
+    /*!
+     *  Returns true if the given tiles can be merged in vertical direction.
+     *
+     *      @param [in] tile1   The first tile.
+     *      @param [in] tile2   The second tile.
+     */
+    static bool canMergeV(StitchTile const* tile1, StitchTile const* tile2);
 
     //-----------------------------------------------------------------------------
     // Data.
