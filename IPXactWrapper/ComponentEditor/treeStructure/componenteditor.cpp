@@ -20,6 +20,8 @@
 #include <QFileInfo>
 #include <QHBoxLayout>
 
+#include <QDebug>
+
 ComponentEditor::ComponentEditor(LibraryInterface* libHandler,
 								 QSharedPointer<Component> component,
 								 QWidget *parent):
@@ -256,9 +258,17 @@ void ComponentEditor::onItemActivated( const QModelIndex& index ) {
 
 	ItemEditor* editor = item->editor();
 	if (editor) {
-		// the width is the size hint but at least 1 to make editor visible
-		int width = qMax(editor->sizeHint().width(), 1);
-		editorVisualizerSizes.append(width);
+
+		// the width of the previous editor
+		QWidget* prevEditor = editorSlot_.getWidget();
+		if (prevEditor) {
+			int prevWidth = prevEditor->size().width();
+			editorVisualizerSizes.append(prevWidth);
+		}
+		// if there was no previous editor then use the size hint
+		else {
+			editorVisualizerSizes.append(editor->sizeHint().width());
+		}
 		editor->refresh();
 	}
 	// if there is no editor then hide the editor slot
@@ -270,10 +280,16 @@ void ComponentEditor::onItemActivated( const QModelIndex& index ) {
 	ItemVisualizer* visualizer = item->visualizer();
 	if (visualizer) {
 
-		// the width is the size hint but at least 1 to make visualizer visible
-		int width = qMax(visualizer->sizeHint().width(), 1);
-
-		editorVisualizerSizes.append(width);
+		// the width of the previous visualizer
+		QWidget* prevVisualizer = visualizerSlot_.getWidget();
+		if (prevVisualizer) {
+			int prevWidth = prevVisualizer->size().width();
+			editorVisualizerSizes.append(prevWidth);
+		}
+		// if there was no previous visualizer then use the size hint
+		else {
+			editorVisualizerSizes.append(visualizer->sizeHint().width());
+		}
 	}
 	// if there is no visualizer then hide the visualizer slot
 	else {
