@@ -76,6 +76,11 @@ public:
 	*/
 	virtual void setWidth(qreal width);
 
+protected:
+
+	//! \brief Pointer to the memory map that is shown
+	QSharedPointer<MemoryMap> memoryMap_;
+
 private:
 	
 	//! \brief No copying
@@ -83,9 +88,6 @@ private:
 
 	//! \brief No assignment
 	MemoryMapGraphItem& operator=(const MemoryMapGraphItem& other);
-
-	//! \brief Pointer to the memory map that is shown
-	QSharedPointer<MemoryMap> memoryMap_;
 };
 
 #endif // MEMORYMAPGRAPHITEM_H

@@ -8,6 +8,8 @@
 #include "componenteditoraddrspaceitem.h"
 #include <models/addressblock.h>
 #include "componenteditoraddrblockitem.h"
+#include <IPXactWrapper/ComponentEditor/addressSpaces/localMemoryMap/localmemorymapgraphitem.h>
+#include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 
 #include <QFont>
 #include <QApplication>
@@ -19,12 +21,19 @@ ComponentEditorAddrSpaceItem::ComponentEditorAddrSpaceItem(QSharedPointer<Addres
 														   ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 addrSpace_(addrSpace),
+localMemMap_(addrSpace->getLocalMemoryMap()),
 items_(addrSpace->getLocalMemoryMap()->getItems()),
-editor_(component, addrSpace) {
+editor_(component, addrSpace),
+graphItem_(NULL),
+localMemMapVisualizer_(new MemoryMapsVisualizer(component)) {
 
 	setObjectName(tr("ComponentEditorAddrSpaceItem"));
 
 	editor_.hide();
+
+	graphItem_ = new LocalMemoryMapGraphItem(addrSpace_, localMemMap_);
+	localMemMapVisualizer_->addMemoryMapItem(graphItem_);
+	graphItem_->refresh();
 
 	foreach (QSharedPointer<MemoryMapItem> memItem, items_) {
 
@@ -33,6 +42,8 @@ editor_(component, addrSpace) {
 		if (addrBlock) {
 			QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(
 				new ComponentEditorAddrBlockItem(addrBlock, model, libHandler, component, this));
+
+			addrBlockItem->setVisualizer(localMemMapVisualizer_);
 			childItems_.append(addrBlockItem);
 		}
 	}
@@ -48,6 +59,10 @@ editor_(component, addrSpace) {
 }
 
 ComponentEditorAddrSpaceItem::~ComponentEditorAddrSpaceItem() {
+	if (localMemMapVisualizer_) {
+		delete localMemMapVisualizer_;
+		localMemMapVisualizer_ = NULL;
+	}
 }
 
 QString ComponentEditorAddrSpaceItem::text() const {
@@ -81,6 +96,32 @@ void ComponentEditorAddrSpaceItem::createChild( int index ) {
 	if (addrBlock) {
 		QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(
 			new ComponentEditorAddrBlockItem(addrBlock, model_, libHandler_, component_, this));
+
+		if (localMemMapVisualizer_) {
+			addrBlockItem->setVisualizer(localMemMapVisualizer_);
+		}
 		childItems_.insert(index, addrBlockItem);
 	}
+}
+
+QGraphicsItem* ComponentEditorAddrSpaceItem::getGraphicsItem() {
+	return graphItem_;
+}
+
+void ComponentEditorAddrSpaceItem::updateGraphics() {
+	graphItem_->refresh();
+}
+
+void ComponentEditorAddrSpaceItem::removeGraphicsItem() {
+	Q_ASSERT(graphItem_);
+
+	// remove the graph item from the scene
+	localMemMapVisualizer_->removeMemoryMapItem(graphItem_);
+
+	disconnect(graphItem_, SIGNAL(selectEditor()),
+		this, SLOT(onSelectRequest()));
+
+	// delete the graph item
+	delete graphItem_;
+	graphItem_ = NULL;
 }

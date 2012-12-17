@@ -10,7 +10,11 @@
 
 #include "componenteditoritem.h"
 #include <models/addressspace.h>
+#include <models/memorymap.h>
 #include <IPXactWrapper/ComponentEditor/addressSpaces/addressspaceeditor.h>
+
+class LocalMemoryMapGraphItem;
+class MemoryMapsVisualizer;
 
 /*! \brief The item for a single address space in the component editor's navigation tree.
  *
@@ -80,6 +84,22 @@ public:
 	 *
 	*/
 	virtual void createChild(int index);
+	
+	/*! \brief Get the visualizer graphics item for the memory map.
+	 *
+	 * \return QGraphicsItem* Pointer to the graphics item.
+	*/
+	virtual QGraphicsItem* getGraphicsItem();
+
+	/*! \brief Update the graphics item of the memory map.
+	 *
+	*/
+	virtual void updateGraphics();
+
+	/*! \brief Remove the graphics item of the memory map.
+	 *
+	*/
+	virtual void removeGraphicsItem();
 
 private:
 	//! \brief No copying
@@ -91,11 +111,20 @@ private:
 	//! \brief Pointer to the address space being edited.
 	QSharedPointer<AddressSpace> addrSpace_;
 
+	//! \brief Pointer to the local memory map of the address space.
+	QSharedPointer<MemoryMap> localMemMap_;
+
 	//! \brief Contains the address blocks that are children of this tree item.
 	QList<QSharedPointer<MemoryMapItem> >& items_;
 
 	//! \brief The editor used to edit the address space.
 	AddressSpaceEditor editor_;
+
+	//! \brief Pointer to the graph item of the local memory map.
+	LocalMemoryMapGraphItem* graphItem_;
+
+	//! \brief Pointer to the visualizer for the local memory maps.
+	MemoryMapsVisualizer* localMemMapVisualizer_;
 };
 
 #endif // COMPONENTEDITORADDRSPACEITEM_H
