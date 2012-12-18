@@ -14,6 +14,7 @@
 
 VisualizerItem::VisualizerItem( QGraphicsItem* parent /*= 0*/ ):
 QGraphicsRectItem(parent),
+namePos_(VisualizerItem::NAME_INDENTED),
 nameLabel_(this),
 leftTopText_(this),
 leftBottomText_(this),
@@ -72,8 +73,21 @@ void VisualizerItem::setName( const QString& name ) {
 		nameLabel_.setPlainText(name);
 	}
 
-	// center the text to the middle of the item
-	nameLabel_.setPos(rect().center().x() - (nameLabel_.boundingRect().width() / 2), 0);
+	// also center the name label in the height
+	int yCoordinate = (rect().height() - nameLabel_.boundingRect().height()) / 2;
+
+	// the label position 
+	switch (namePos_) {
+		case VisualizerItem::NAME_CENTERED: {
+			nameLabel_.setPos(rect().center().x() - (nameLabel_.boundingRect().width() / 2), yCoordinate);
+			break;
+											}
+		// NAME_INDENTED
+		default: {
+			nameLabel_.setPos(VisualizerItem::NAME_INDENTATION, yCoordinate);
+			break;
+				 }
+	}
 }
 
 void VisualizerItem::setLeftTopCorner( const QString& text ) {
@@ -107,8 +121,22 @@ QRectF VisualizerItem::minimumRect() const {
 }
 
 void VisualizerItem::reorganizeChildren() {
-	// center the text to the middle of the item
-	nameLabel_.setPos(rect().center().x() - (nameLabel_.boundingRect().width() / 2), 0);
+	
+	// also center the name label in the height
+	int yCoordinate = (rect().height() - nameLabel_.boundingRect().height()) / 2;
+
+	// the label position 
+	switch (namePos_) {
+		case VisualizerItem::NAME_CENTERED: {
+			nameLabel_.setPos(rect().center().x() - (nameLabel_.boundingRect().width() / 2), yCoordinate);
+			break;
+											}
+											// NAME_INDENTED
+		default: {
+			nameLabel_.setPos(VisualizerItem::NAME_INDENTATION, yCoordinate);
+			break;
+				 }
+	}
 
 	leftTopText_.setPos(2, 0);
 	leftBottomText_.setPos(2, rect().bottomLeft().y() - VisualizerItem::FONT_CORNERSIZE - 4);
@@ -157,4 +185,8 @@ void VisualizerItem::setWidth( qreal width ) {
 
 QString VisualizerItem::getName() const {
 	return nameLabel_.toPlainText();
+}
+
+void VisualizerItem::setNamePosition( const NamePosition namePos ) {
+	namePos_ = namePos;
 }

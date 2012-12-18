@@ -11,6 +11,7 @@
 #include <models/memorymapitem.h>
 #include <models/addressblock.h>
 #include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapscene.h>
+#include <common/KactusColors.h>
 
 #include <QBrush>
 #include <QColor>
@@ -23,7 +24,7 @@ MemoryVisualizationItem(parent),
 memoryMap_(memoryMap) {
 
 	Q_ASSERT(memoryMap_);
-	QBrush brush(QColor(60, 160, 255));
+	QBrush brush(KactusColors::MEM_MAP_COLOR);
 	setBrush(brush);
 	ExpandableItem::setExpansionBrush(brush);
 }

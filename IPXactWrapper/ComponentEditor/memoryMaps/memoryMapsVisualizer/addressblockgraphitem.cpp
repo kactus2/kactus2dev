@@ -10,11 +10,10 @@
 #include <models/register.h>
 #include <common/utils.h>
 #include <IPXactWrapper/ComponentEditor/visualization/memoryvisualizationitem.h>
+#include <common/KactusColors.h>
 
 #include <QBrush>
 #include <QColor>
-
-#include <QDebug>
 
 AddressBlockGraphItem::AddressBlockGraphItem( QSharedPointer<AddressBlock> addrBlock, 
 											 QGraphicsItem *parent ):
@@ -22,7 +21,7 @@ MemoryVisualizationItem(parent),
 addrBlock_(addrBlock) {
 
 	Q_ASSERT(addrBlock_);
-	QBrush brush(QColor(80, 180, 255));
+	QBrush brush(KactusColors::ADDR_BLOCK_COLOR);
 	setBrush(brush);
 	ExpandableItem::setExpansionBrush(brush);
 }

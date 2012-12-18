@@ -10,14 +10,15 @@
 #include <QColor>
 #include <QBrush>
 #include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h>
-
-#include <QDebug>
+#include <common/KactusColors.h>
 
 MemoryGapItem::MemoryGapItem(QGraphicsItem* parent):
 MemoryVisualizationItem(parent),
 start_(0),
 end_(0) {
-	setBrush(QBrush(QColor("lightgrey")));
+	QBrush brush(KactusColors::DRAFT_COMPONENT);
+	setBrush(brush);
+	ExpandableItem::setExpansionBrush(brush);
 	setName("...");
 	setLeftTopCorner("0x0");
 	setShowExpandableItem(false);
@@ -30,7 +31,7 @@ void MemoryGapItem::refresh() {
 	setLeftTopCorner(start_);
 	setLeftBottomCorner(end_);
 
-	VisualizerItem::reorganizeChildren();
+	ExpandableItem::reorganizeChildren();
 }
 
 quint64 MemoryGapItem::getOffset() const {

@@ -14,11 +14,10 @@
 #include <IPXactWrapper/ComponentEditor/visualization/fieldgapitem.h>
 
 #include <common/graphicsItems/visualizeritem.h>
+#include <common/kactusColors.h>
 
 #include <QBrush>
 #include <QColor>
-
-#include <QDebug>
 
 RegisterGraphItem::RegisterGraphItem(QSharedPointer<Register> reg,
 									 QGraphicsItem* parent):
@@ -26,7 +25,7 @@ MemoryVisualizationItem(parent),
 register_(reg) {
 
 	Q_ASSERT(register_);
-	QBrush brush(QColor(100, 200, 255));
+	QBrush brush(KactusColors::REGISTER_COLOR);
 	setBrush(brush);
 	ExpandableItem::setExpansionBrush(brush);
 }

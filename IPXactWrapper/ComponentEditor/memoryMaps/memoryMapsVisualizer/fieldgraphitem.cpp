@@ -7,6 +7,7 @@
 
 #include "fieldgraphitem.h"
 #include "registergraphitem.h"
+#include <common/KactusColors.h>
 
 #include <QBrush>
 #include <QColor>
@@ -16,10 +17,15 @@ FieldGraphItem::FieldGraphItem( QSharedPointer<Field> field,
 MemoryVisualizationItem(parent),
 field_(field) {
 	Q_ASSERT(field_);
-	QBrush brush(QColor(120, 220, 255));
+	QBrush brush(KactusColors::FIELD_COLOR);
 	setBrush(brush);
 	ExpandableItem::setExpansionBrush(brush);
+
+	// fields show name in the middle
+	setNamePosition(VisualizerItem::NAME_CENTERED);
+
 	setShowExpandableItem(false);
+	setExpansionRectVisible(false);
 }
 
 FieldGraphItem::~FieldGraphItem() {	

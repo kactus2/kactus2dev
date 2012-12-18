@@ -9,6 +9,12 @@
 
 FieldGapItem::FieldGapItem( QGraphicsItem* parent ):
 MemoryGapItem(parent) {
+
+	// fields show name in the middle
+	setNamePosition(VisualizerItem::NAME_CENTERED);
+
+	// fields can never be expanded
+	setExpansionRectVisible(false);
 }
 
 FieldGapItem::~FieldGapItem() {

@@ -22,11 +22,17 @@ class VisualizerItem : public QObject, public QGraphicsRectItem {
 
 public:
 
+	enum NamePosition {
+		NAME_INDENTED = 0,		//! The name label is indented.
+		NAME_CENTERED			//! The name is centered in the middle of item.
+	};
+
 	//! \brief The minimum and maximum bounds for visualizer items.
 	enum Bounds {
-		ITEM_HEIGHT = 25,	//! The height of a single item
-		MIN_WIDTH = 90,		//! The minimum width of an item
-		MAX_WIDTH = 200		//! The maximum width of a single item
+		ITEM_HEIGHT = 25,		//! The height of a single item
+		MIN_WIDTH = 90,			//! The minimum width of an item
+		NAME_INDENTATION = 100, //! How much space the name leaves for left corners
+		MAX_WIDTH = 200			//! The maximum width of a single item
 	};
 
 	//! \brief The font size to display text.
@@ -76,6 +82,13 @@ public:
 	 * \return The width of the item and it's sub-items.
 	*/
 	virtual qreal itemTotalWidth() const;
+
+	/*! \brief Set the name position of the item.
+	 *
+	 * \param namePos The position to be used.
+	 *
+	*/
+	virtual void setNamePosition(const NamePosition namePos);
 
 protected:
 
@@ -133,6 +146,9 @@ private:
 
 	//! \brief No assignment
 	VisualizerItem& operator=(const VisualizerItem& other);
+
+	//! \brief Defines where the name label is positioned.
+	NamePosition namePos_;
 
 	//! \brief The label to display the name of the memory map.
 	QGraphicsTextItem nameLabel_;

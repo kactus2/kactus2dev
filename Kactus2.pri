@@ -225,6 +225,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmentproxy.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmentsmodel.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/localMemoryMap/localmemorymapeditor.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/localMemoryMap/localmemorymapgraphitem.h \
     ./IPXactWrapper/ComponentEditor/cpus/addressspacerefdelegate.h \
     ./IPXactWrapper/ComponentEditor/cpus/cpusdelegate.h \
     ./IPXactWrapper/ComponentEditor/cpus/cpuseditor.h \
@@ -756,6 +757,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmentproxy.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmentsmodel.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/localMemoryMap/localmemorymapeditor.cpp \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/localMemoryMap/localmemorymapgraphitem.cpp \
     ./IPXactWrapper/ComponentEditor/cpus/addressspacerefdelegate.cpp \
     ./IPXactWrapper/ComponentEditor/cpus/cpusdelegate.cpp \
     ./IPXactWrapper/ComponentEditor/cpus/cpuseditor.cpp \
@@ -765,7 +767,6 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/addressblockmodel.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/enumeratedvaluedelegate.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/enumeratedvaluemodel.cpp \
-    ./IPXactWrapper/ComponentEditor/memoryMaps/fieldeditor.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapdelegate.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapeditor.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapmodel.cpp \
@@ -777,6 +778,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/registertablemodel.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/writevalueconstrainteditor.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.cpp \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/fieldeditor.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapscene.cpp \

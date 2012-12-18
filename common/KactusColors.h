@@ -39,6 +39,11 @@ namespace KactusColors
     QColor const MEMORY_BLOCK = QColor(0xd6, 0xba, 0xff); //QColor(0xe6,0xba,0xff);
     QColor const ADDRESS_SEGMENT = QColor(0xc6,0xef,0xd7);
     QColor const ADDRESS_SEGMENT_UNSEGMENTED = QColor(217, 217, 217);
+
+	QColor const MEM_MAP_COLOR = QColor(117, 166, 234);
+	QColor const ADDR_BLOCK_COLOR = QColor(142, 180, 229);
+	QColor const REGISTER_COLOR = QColor(167, 194, 226);
+	QColor const FIELD_COLOR = QColor(192, 208, 226);
 }
 
 //-----------------------------------------------------------------------------

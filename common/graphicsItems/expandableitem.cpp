@@ -18,6 +18,7 @@ expansionRect_(new QGraphicsRectItem(this)) {
 	connect(expandCollapseItem_, SIGNAL(stateChanged(bool)),
 		this, SLOT(onExpandStateChange(bool)), Qt::UniqueConnection);
 	expandCollapseItem_->setZValue(1);
+	expansionRect_->show();
 }
 
 ExpandableItem::~ExpandableItem() {
@@ -50,7 +51,6 @@ void ExpandableItem::onExpandStateChange( bool expanded ) {
 
 void ExpandableItem::setShowExpandableItem( bool show ) {
 	expandCollapseItem_->setVisible(show);
-	expansionRect_->setVisible(show);
 }
 
 bool ExpandableItem::isExpanded() const {
@@ -76,4 +76,8 @@ void ExpandableItem::reorganizeChildren() {
 
 void ExpandableItem::setExpansionBrush( const QBrush& brush ) {
 	expansionRect_->setBrush(brush);
+}
+
+void ExpandableItem::setExpansionRectVisible( bool visible ) {
+	expansionRect_->setVisible(visible);
 }

@@ -71,6 +71,13 @@ protected:
 	*/
 	virtual void setExpansionBrush(const QBrush& brush);
 
+	/*! \brief Hide/show the rectangle that contains the expand/collapse icon.
+	 *
+	 * \param visible If true then the rectangle is shown.
+	 *
+	*/
+	virtual void setExpansionRectVisible(bool visible);
+
 private:
 	
 	//! \brief No copying
