@@ -7,6 +7,7 @@
 #include "addressspace.h"
 #include "memorymap.h"
 #include "parameter.h"
+#include <common/utils.h>
 
 #include <QDomNode>
 #include <QDomNamedNodeMap>
@@ -432,4 +433,24 @@ General::NameGroup& AddressSpace::getNameGroup() {
 
 const General::NameGroup& AddressSpace::getNameGroup() const {
 	return nameGroup_;
+}
+
+quint64 AddressSpace::getLastSegmentedAddress() const {
+	quint64 lastAddress = 0;
+	
+	// find the last address defined in a segment
+	foreach (QSharedPointer<Segment> segment, segments_) {
+		lastAddress = qMax(lastAddress, segment->getLastAddress());
+	}
+	return lastAddress;
+}
+
+quint64 AddressSpace::getLastAddress() const {
+	quint64 range = Utils::str2Int(range_);
+	
+	// if range is undefined
+	if (range <= 0) {
+		return 0;
+	}
+	return range - 1;
 }

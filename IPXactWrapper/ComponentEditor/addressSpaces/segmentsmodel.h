@@ -142,6 +142,9 @@ private:
 	//! \brief No assignment
 	SegmentsModel& operator=(const SegmentsModel& other);
 
+	//! \brief Pointer to the address space containing the segments.
+	QSharedPointer<AddressSpace> addrSpace_;
+
 	//! \brief Pointer to the data structure that contains the real segments.
 	QList<QSharedPointer<Segment> >& segments_;
 };

@@ -12,6 +12,7 @@
 SegmentsModel::SegmentsModel(QSharedPointer<AddressSpace> addrSpace, 
 							 QObject *parent):
 QAbstractTableModel(parent),
+addrSpace_(addrSpace),
 segments_(addrSpace->getSegments()) {
 
 	Q_ASSERT(addrSpace);
@@ -74,12 +75,21 @@ QVariant SegmentsModel::data( const QModelIndex& index, int role /*= Qt::Display
 		}
 	}
 	else if (Qt::ForegroundRole == role) {
-		if (segments_.at(index.row())->isValid()) {
-			return QColor("black");
-		}
-		else {
+
+		// check that all fields are correctly defined
+		if (!segments_.at(index.row())->isValid()) {
 			return QColor("red");
 		}
+
+		// make sure the segment does not exceed the address space's range
+		quint64 segLimit = segments_.at(index.row())->getLastAddress();
+		quint64 addrSpaceLimit = addrSpace_->getLastAddress();
+		if (addrSpaceLimit < segLimit) {
+			return QColor("red");
+		}
+		
+		// everything was fine
+		return QColor("black");
 	}
 
 	// if unsupported role
@@ -189,7 +199,20 @@ void SegmentsModel::onAddItem( const QModelIndex& index ) {
 		row = index.row();
 	}
 
+	// the last segmented address
+	quint64 previousEnd = addrSpace_->getLastSegmentedAddress();
+	// if this is the first item to add then do not increase address
+	if (previousEnd != 0) {
+		++previousEnd;
+	}
+
+	// convert the address to hexadecimal form
+	QString newBase = QString::number(previousEnd, 16);
+	newBase = newBase.toUpper();
+	newBase.prepend("0x");
+
 	QSharedPointer<Segment> segment(new Segment());
+	segment->setOffset(newBase);
 
 	beginInsertRows(QModelIndex(), row, row);
 	segments_.insert(row, segment);

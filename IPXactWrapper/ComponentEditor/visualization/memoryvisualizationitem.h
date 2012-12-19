@@ -84,6 +84,10 @@ public:
 	*/
 	virtual void setWidth(qreal width);
 
+	/*! \brief The bounding rect of the item.
+	 *
+	 * \return The rectangle that bounds the item and possible sub items.
+	*/
 	virtual QRectF boundingRect() const;
 
 signals:

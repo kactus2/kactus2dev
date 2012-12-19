@@ -191,8 +191,8 @@ void MemoryVisualizationItem::setWidth( qreal width ) {
 }
 
 QRectF MemoryVisualizationItem::boundingRect() const {
-	QRectF jep = itemTotalRect();
-	return jep;
+	QRectF bounds = itemTotalRect();
+	return bounds;
 }
 
 void MemoryVisualizationItem::setLeftTopCorner( const QString& text ) {
