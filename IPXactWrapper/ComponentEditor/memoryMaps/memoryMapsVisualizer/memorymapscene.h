@@ -35,15 +35,6 @@ public:
 	//! \brief The destructor
 	virtual ~MemoryMapScene();
 
-	/*! \brief Set the memory maps to be displayed.
-	 * 
-	 * Any previous memory maps being displayed are removed.
-	 * 
-	 * \param memoryMaps QList containing pointers to the memory maps to display.
-	 *
-	*/
-	void setMemoryMaps(QList<QSharedPointer<MemoryMap> >& memoryMaps);
-
 	/*! \brief Add a new memory map graph item to the scene.
 	 *
 	 * \param memGraphItem Pointer to the item.
@@ -67,11 +58,6 @@ signals:
 
 	//! \brief This signal is emitted when the contents of the scene changes.
 	void contentChanged();
-
-public slots:
-
-	//! \brief Refresh the scene and update memory map positions.
-	void refresh();
 
 private:
 	

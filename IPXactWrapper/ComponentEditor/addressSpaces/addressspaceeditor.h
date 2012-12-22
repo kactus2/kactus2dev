@@ -10,7 +10,6 @@
 
 #include "addressspacegeneraleditor.h"
 #include "segmenteditor.h"
-#include "addressspacevisualizer.h"
 #include "localMemoryMap/localmemorymapeditor.h"
 
 #include <models/component.h>
@@ -81,12 +80,6 @@ private:
 
 	//! \brief The editor to set the local memory map.
 	LocalMemoryMapEditor localMemMap_;
-
-	//! \brief The editor for the parameters of the address space.
-	//ParameterGroupBox parameterEditor_;
-
-	//! \brief The widget to visualize the address space.
-	AddressSpaceVisualizer visualizer_;
 };
 
 #endif // ADDRESSSPACEEDITOR_H

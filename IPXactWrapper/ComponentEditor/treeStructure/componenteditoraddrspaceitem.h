@@ -12,6 +12,7 @@
 #include <models/addressspace.h>
 #include <models/memorymap.h>
 #include <IPXactWrapper/ComponentEditor/addressSpaces/addressspaceeditor.h>
+#include <IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizer.h>
 
 class LocalMemoryMapGraphItem;
 class MemoryMapsVisualizer;
@@ -101,6 +102,13 @@ public:
 	*/
 	virtual void removeGraphicsItem();
 
+	/*! \brief Get pointer to the visualizer of this item.
+	 * 
+	 * 
+	 * \return Pointer to the visualizer to use for this item.
+	*/
+	virtual ItemVisualizer* visualizer();
+
 private:
 	//! \brief No copying
 	ComponentEditorAddrSpaceItem(const ComponentEditorAddrSpaceItem& other);
@@ -125,6 +133,9 @@ private:
 
 	//! \brief Pointer to the visualizer for the local memory maps.
 	MemoryMapsVisualizer* localMemMapVisualizer_;
+
+	//! \brief The visualizer of this tree item, visualizes the relation of segments and local memory map. 
+	AddressSpaceVisualizer* addrSpaceVisualizer_;
 };
 
 #endif // COMPONENTEDITORADDRSPACEITEM_H

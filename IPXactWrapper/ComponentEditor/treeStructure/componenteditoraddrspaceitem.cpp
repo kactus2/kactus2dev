@@ -25,7 +25,8 @@ localMemMap_(addrSpace->getLocalMemoryMap()),
 items_(addrSpace->getLocalMemoryMap()->getItems()),
 editor_(component, addrSpace),
 graphItem_(NULL),
-localMemMapVisualizer_(new MemoryMapsVisualizer(component)) {
+localMemMapVisualizer_(new MemoryMapsVisualizer(component)),
+addrSpaceVisualizer_(new AddressSpaceVisualizer(addrSpace, component)) {
 
 	setObjectName(tr("ComponentEditorAddrSpaceItem"));
 
@@ -62,6 +63,10 @@ ComponentEditorAddrSpaceItem::~ComponentEditorAddrSpaceItem() {
 	if (localMemMapVisualizer_) {
 		delete localMemMapVisualizer_;
 		localMemMapVisualizer_ = NULL;
+	}
+	if (addrSpaceVisualizer_) {
+		delete addrSpaceVisualizer_;
+		addrSpaceVisualizer_ = NULL;
 	}
 }
 
@@ -124,4 +129,8 @@ void ComponentEditorAddrSpaceItem::removeGraphicsItem() {
 	// delete the graph item
 	delete graphItem_;
 	graphItem_ = NULL;
+}
+
+ItemVisualizer* ComponentEditorAddrSpaceItem::visualizer() {
+	return addrSpaceVisualizer_;
 }

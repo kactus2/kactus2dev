@@ -24,7 +24,6 @@ scene_(new MemoryMapScene(this)) {
 	layout->addWidget(view_);
 	layout->setContentsMargins(0, 0, 0, 0);
 
-	scene_->setMemoryMaps(component_->getMemoryMaps());
 	view_->setScene(scene_);
 }
 
