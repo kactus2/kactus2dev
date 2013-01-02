@@ -14,7 +14,7 @@
 #include <IPXactWrapper/ComponentEditor/visualization/fieldgapitem.h>
 
 #include <common/graphicsItems/visualizeritem.h>
-#include <common/kactusColors.h>
+#include <common/KactusColors.h>
 
 #include <QBrush>
 #include <QColor>
