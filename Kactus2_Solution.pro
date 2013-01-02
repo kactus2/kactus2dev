@@ -11,12 +11,6 @@ TEMPLATE = subdirs
 SUBDIRS += Kactus2.pro \
     Plugins/MCAPICodeGenerator/MCAPICodeGenerator.pro
 
-unix:plugins.path = /usr/share/kactus2/plugins
-unix:plugins.files = ./executable/Plugins/*
-
-unix:executable.path = /usr/bin
-unix:executable.files = ./executable/Kactus2
-
 unix:doc.path = /usr/share/kactus2/doc
 unix:doc.files = ./releaseFiles/*.txt
 
@@ -26,7 +20,7 @@ unix:help.files = ./Help/Kactus2Help.qch ./Help/Kactus2Help.qhc
 unix:config.path = /etc/xdg/TUT
 
 UNAME = $$system(uname -m)
-equals(UNAME, x86_64): unix:config.extra = cp ./releaseFiles/DefaultSettingsLinux.ini /etc/xdg/TUT/Kactus2.ini; ln -f -s /usr/bin/Kactus2 /usr/lib64/libKactus2.so
+equals(UNAME, x86_64): unix:config.extra = cp ./releaseFiles/DefaultSettingsLinux.ini /etc/xdg/TUT/Kactus2.ini; test -d /usr/lib64 && ln -f -s /usr/bin/Kactus2 /usr/lib64/libKactus2.so; test -d /lib/x86_64-linux-gnu && ln -f -s /usr/bin/Kactus2 /lib/x86_64-linux-gnu/libKactus2.so
 !equals(UNAME, x86_64): unix:config.extra = cp ./releaseFiles/DefaultSettingsLinux.ini /etc/xdg/TUT/Kactus2.ini; ln -f -s /usr/bin/Kactus2 /usr/lib/libKactus2.so
 
 unix:library.path = /usr/share/kactus2/library
@@ -38,4 +32,4 @@ unix:icons.files = ./releaseFiles/kactus2.xpm ./releaseFiles/kactus2.png
 unix:desktop.path = /usr/share/applications
 unix:desktop.files = ./releaseFiles/kactus2.desktop
 
-INSTALLS += executable plugins help doc config library icons desktop
+INSTALLS += help doc config library icons desktop

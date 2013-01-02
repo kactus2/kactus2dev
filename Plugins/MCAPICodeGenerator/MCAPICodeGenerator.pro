@@ -20,3 +20,7 @@ OBJECTS_DIR += release
 UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
 include(MCAPICodeGenerator.pri)
+
+target.path = /usr/share/kactus2/plugins
+
+INSTALLS += target
