@@ -220,12 +220,15 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacesdelegate.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspaceseditor.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacesmodel.h \
-    ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacevisualizer.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmenteditor.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmentproxy.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmentsmodel.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/localMemoryMap/localmemorymapeditor.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/localMemoryMap/localmemorymapgraphitem.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacescene.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizationitem.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizer.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/segmentgraphitem.h \
     ./IPXactWrapper/ComponentEditor/cpus/addressspacerefdelegate.h \
     ./IPXactWrapper/ComponentEditor/cpus/cpusdelegate.h \
     ./IPXactWrapper/ComponentEditor/cpus/cpuseditor.h \
@@ -752,12 +755,15 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacesdelegate.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspaceseditor.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacesmodel.cpp \
-    ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacevisualizer.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmenteditor.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmentproxy.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmentsmodel.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/localMemoryMap/localmemorymapeditor.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/localMemoryMap/localmemorymapgraphitem.cpp \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacescene.cpp \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizationitem.cpp \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizer.cpp \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/segmentgraphitem.cpp \
     ./IPXactWrapper/ComponentEditor/cpus/addressspacerefdelegate.cpp \
     ./IPXactWrapper/ComponentEditor/cpus/cpusdelegate.cpp \
     ./IPXactWrapper/ComponentEditor/cpus/cpuseditor.cpp \
