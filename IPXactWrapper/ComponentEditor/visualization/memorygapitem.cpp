@@ -6,11 +6,11 @@
  */
 
 #include "memorygapitem.h"
+#include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h>
+#include <common/KactusColors.h>
 
 #include <QColor>
 #include <QBrush>
-#include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h>
-#include <common/KactusColors.h>
 
 MemoryGapItem::MemoryGapItem(QGraphicsItem* parent):
 MemoryVisualizationItem(parent),

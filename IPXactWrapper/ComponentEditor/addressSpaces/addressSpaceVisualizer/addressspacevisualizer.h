@@ -38,6 +38,9 @@ public:
 	//! \brief The destructor
 	virtual ~AddressSpaceVisualizer();
 
+	//! \brief Update the contents of the visualizer
+	virtual void refresh();
+
 private:
 	
 	//! \brief No copying

@@ -30,7 +30,7 @@ public:
 	*/
 	SegmentGraphItem(QSharedPointer<AddressSpace> addrSpace,
 		QSharedPointer<Segment> segment,
-		QGraphicsItem* parent);
+		QGraphicsItem* parent = 0);
 	
 	//! \brief The destructor
 	virtual ~SegmentGraphItem();

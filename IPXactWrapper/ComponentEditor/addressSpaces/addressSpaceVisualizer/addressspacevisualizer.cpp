@@ -26,3 +26,7 @@ scene_(new AddressSpaceScene(addrSpace, this)) {
 
 AddressSpaceVisualizer::~AddressSpaceVisualizer() {
 }
+
+void AddressSpaceVisualizer::refresh() {
+	scene_->refresh();
+}
