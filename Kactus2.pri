@@ -225,6 +225,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmentsmodel.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/localMemoryMap/localmemorymapeditor.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/localMemoryMap/localmemorymapgraphitem.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacegapitem.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacescene.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizationitem.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizer.h \
@@ -760,6 +761,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmentsmodel.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/localMemoryMap/localmemorymapeditor.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/localMemoryMap/localmemorymapgraphitem.cpp \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacegapitem.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacescene.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizationitem.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizer.cpp \
