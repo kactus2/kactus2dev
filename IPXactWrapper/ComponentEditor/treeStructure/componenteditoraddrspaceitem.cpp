@@ -133,5 +133,11 @@ void ComponentEditorAddrSpaceItem::removeGraphicsItem() {
 }
 
 ItemVisualizer* ComponentEditorAddrSpaceItem::visualizer() {
+	addrSpaceVisualizer_->refresh();
 	return addrSpaceVisualizer_;
+}
+
+void ComponentEditorAddrSpaceItem::onEditorChanged() {
+	ComponentEditorItem::onEditorChanged();
+	addrSpaceVisualizer_->refresh();
 }

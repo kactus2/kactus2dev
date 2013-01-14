@@ -109,6 +109,13 @@ public:
 	*/
 	virtual ItemVisualizer* visualizer();
 
+protected slots:
+
+	/*! \brief Handler for editor's contentChanged signal.
+	 *
+	*/
+	virtual void onEditorChanged();
+
 private:
 	//! \brief No copying
 	ComponentEditorAddrSpaceItem(const ComponentEditorAddrSpaceItem& other);

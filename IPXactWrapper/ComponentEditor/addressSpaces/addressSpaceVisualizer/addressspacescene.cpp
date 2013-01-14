@@ -103,7 +103,25 @@ void AddressSpaceScene::updateSegments() {
 		yCoordinate += VisualizerItem::ITEM_HEIGHT;
 	}
 
-	// TODO add a gap to the end of the address space if last segment < addr space size
+	// add a gap to the end of the address space if last segment < addr space size
+	if (addrSpace_->getLastAddress() > prevSegEnd) {
+		// create the gap item
+		AddressSpaceGapItem* gap = new AddressSpaceGapItem(addrSpace_);
+		addItem(gap);
+
+		// set the first address of the gap
+		gap->setStartAddress(prevSegEnd, false);
+
+		// set the last address for the gap
+		gap->setEndAddress(addrSpace_->getLastAddress());
+
+		// set the gap to the end of the last item
+		gap->setPos(0, yCoordinate);
+
+		gap->refresh();
+
+		newMap.insert(prevSegEnd + 1, gap);
+	}
 
 	// finally update the original map to match the updated
 	segmentItems_.clear();
