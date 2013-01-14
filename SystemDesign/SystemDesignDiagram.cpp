@@ -1426,6 +1426,18 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
                     swCompItem->getSWPort(comIf->getName(), SWConnectionEndpoint::ENDPOINT_TYPE_COM)->pos());
             }
 
+            // Hack: Save undefined interfaces as COM interfaces.
+            foreach (QGraphicsItem* childItem, item->childItems())
+            {
+                SWPortItem* portItem = dynamic_cast<SWPortItem*>(childItem);
+
+                if (portItem != 0 && portItem->getType() == SWConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED)
+                {
+                    instance.updateComInterfacePosition(portItem->name(),
+                        swCompItem->getSWPort(portItem->name(), SWConnectionEndpoint::ENDPOINT_TYPE_COM)->pos());
+                }
+            }
+
             swInstances.append(instance);
         }
         else if (item->type() == GraphicsConnection::Type)
@@ -1474,7 +1486,7 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
                     hierApiDependencies.append(hierDependency);
                 }
             }
-            else if (conn->getConnectionType() == SWConnectionEndpoint::ENDPOINT_TYPE_COM)
+            else// if (conn->getConnectionType() == SWConnectionEndpoint::ENDPOINT_TYPE_COM)
             {
                 if (endpoint1->encompassingComp() != 0 && endpoint2->encompassingComp() != 0)
                 {
@@ -2152,9 +2164,11 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
 
         if (port1 == 0)
         {
-            emit errorMessage(tr("API interface '%1' was not found in the component '%2'").arg(
+            emit errorMessage(tr("COM interface '%1' was not found in the component '%2'").arg(
                 conn.getInterface1().comRef).arg(conn.getInterface1().componentRef));
-            continue;
+
+            port1 = createMissingPort(conn.getInterface1().comRef, ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED,
+                                      comp1, design);
         }
 
         ConnectionEndpoint* port2 = comp2->getSWPort(conn.getInterface2().comRef,
@@ -2162,9 +2176,11 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
 
         if (port2 == 0)
         {
-            emit errorMessage(tr("API interface '%1' was not found in the component '%2'").arg(
+            emit errorMessage(tr("COM interface '%1' was not found in the component '%2'").arg(
                 conn.getInterface2().comRef).arg(conn.getInterface2().componentRef));
-            continue;
+            
+            port2 = createMissingPort(conn.getInterface2().comRef, ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED,
+                                      comp2, design);
         }
         
         if (conn.isOffPage())
