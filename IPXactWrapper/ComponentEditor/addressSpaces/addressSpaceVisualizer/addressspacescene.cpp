@@ -9,12 +9,18 @@
 #include "segmentgraphitem.h"
 #include "addressspacevisualizationitem.h"
 #include "addressspacegapitem.h"
+#include "localaddrblockgraphitem.h"
+#include <models/memorymap.h>
+#include <models/memorymapitem.h>
+#include <models/addressblock.h>
+#include <common/graphicsItems/visualizeritem.h>
 
 AddressSpaceScene::AddressSpaceScene(QSharedPointer<AddressSpace> addrSpace,
 									 QObject *parent):
 QGraphicsScene(parent),
 addrSpace_(addrSpace),
-segmentItems_() {
+segmentItems_(),
+addrBlockItems_() {
 }
 
 AddressSpaceScene::~AddressSpaceScene() {
@@ -24,6 +30,7 @@ void AddressSpaceScene::refresh() {
 	// remove previous items
 	clear();
 	segmentItems_.clear();
+	addrBlockItems_.clear();
 
 	QList<QSharedPointer<Segment> >& segs = addrSpace_->getSegments();
 	foreach(QSharedPointer<Segment> seg, segs) {
@@ -32,12 +39,28 @@ void AddressSpaceScene::refresh() {
 
 		segmentItems_.insert(segItem->getOffset(), segItem);
 	}
+
+	QSharedPointer<MemoryMap> localMap = addrSpace_->getLocalMemoryMap();
+	QList<QSharedPointer<MemoryMapItem> >& blocks = localMap->getItems();
+	foreach (QSharedPointer<MemoryMapItem> memItem, blocks) {
+
+		QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
+		if (addrBlock) {
+
+			LocalAddrBlockGraphItem* blockItem = new LocalAddrBlockGraphItem(addrSpace_, addrBlock);
+			addItem(blockItem);
+
+			addrBlockItems_.insert(blockItem->getOffset(), blockItem);
+		}
+	}
+
 	rePosition();
 }
 
 void AddressSpaceScene::rePosition() {
 	// match the positions of address blocks to the offsets of segments and segment gaps
 	updateSegments();
+	updateAddrBlocks();
 }
 
 void AddressSpaceScene::updateSegments() {
@@ -126,4 +149,92 @@ void AddressSpaceScene::updateSegments() {
 	// finally update the original map to match the updated
 	segmentItems_.clear();
 	segmentItems_ = newMap;
+}
+
+void AddressSpaceScene::updateAddrBlocks() {
+	QMultiMap<quint64, AddressSpaceVisualizationItem*> newMap;
+
+	// go through all items and update the segment offsets and remove gaps
+	foreach (AddressSpaceVisualizationItem* seg, addrBlockItems_) {
+
+		// if the item is gap item then remove it
+		AddressSpaceGapItem* gap = dynamic_cast<AddressSpaceGapItem*>(seg);
+		if (gap) {
+			removeItem(gap);
+			delete gap;
+			gap = NULL;
+			continue;
+		}
+
+		// update the offset for other than gap items
+		quint64 offset = seg->getOffset();
+
+		// update the graphics of the segment
+		seg->refresh();
+
+		newMap.insert(offset, seg);
+	}
+
+	// add gaps where a segment is not defined
+	quint64 prevSegEnd = 0;
+	qreal yCoordinate = 0;
+	foreach (AddressSpaceVisualizationItem* seg, newMap) {
+
+		// if there is a gap between the last block and this block
+		if (seg->getOffset() > prevSegEnd + 1) {
+
+			AddressSpaceGapItem* gap = new AddressSpaceGapItem(addrSpace_, AddressSpaceGapItem::ALIGN_LEFT);
+			addItem(gap);
+
+			// if the gap is at the start of the address space
+			if (prevSegEnd == 0) {
+				gap->setStartAddress(prevSegEnd, true);
+			}
+			// if the gap is between segments
+			else {
+				gap->setStartAddress(prevSegEnd, false);
+			}
+
+			// the gap ends at the start of the next segment
+			gap->setEndAddress(seg->getOffset(), false);
+
+			// set the position and increase the y-coordinate to avoid overlapping items
+			gap->setPos(VisualizerItem::MAX_WIDTH, yCoordinate);
+			yCoordinate += VisualizerItem::ITEM_HEIGHT;
+
+			gap->refresh();
+
+			// add the gap to the new map
+			newMap.insert(prevSegEnd, gap);
+		}
+
+		// update the last address of the block
+		prevSegEnd = seg->getLastAddress();
+		seg->setPos(VisualizerItem::MAX_WIDTH, yCoordinate);
+		yCoordinate += VisualizerItem::ITEM_HEIGHT;
+	}
+
+	// add a gap to the end of the address space if last segment < addr space size
+	if (addrSpace_->getLastAddress() > prevSegEnd) {
+		// create the gap item
+		AddressSpaceGapItem* gap = new AddressSpaceGapItem(addrSpace_, AddressSpaceGapItem::ALIGN_LEFT);
+		addItem(gap);
+
+		// set the first address of the gap
+		gap->setStartAddress(prevSegEnd, false);
+
+		// set the last address for the gap
+		gap->setEndAddress(addrSpace_->getLastAddress());
+
+		// set the gap to the end of the last item
+		gap->setPos(VisualizerItem::MAX_WIDTH, yCoordinate);
+
+		gap->refresh();
+
+		newMap.insert(prevSegEnd + 1, gap);
+	}
+
+	// finally update the original map to match the updated
+	addrBlockItems_.clear();
+	addrBlockItems_ = newMap;
 }

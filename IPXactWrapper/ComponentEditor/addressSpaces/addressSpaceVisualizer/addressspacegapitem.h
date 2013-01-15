@@ -15,6 +15,12 @@ class AddressSpaceGapItem : public AddressSpaceVisualizationItem {
 
 public:
 
+	//! \brief Define where the address limits of the gap are being drawn.
+	enum AddressPosition {
+		ALIGN_LEFT = 0,		// Align the address on the left side
+		ALIGN_RIGHT			// Align the address on the right side
+	};
+
 	/*! \brief The constructor
 	 *
 	 * \param addrSpace Pointer to the address space containing the gaps.
@@ -22,6 +28,7 @@ public:
 	 *
 	*/
 	AddressSpaceGapItem(QSharedPointer<AddressSpace> addrSpace,
+		AddressPosition addrPos = ALIGN_RIGHT,
 		QGraphicsItem* parent = 0);
 	
 	//! \brief The destructor
@@ -60,6 +67,13 @@ public:
 	*/
 	void setEndAddress(quint64 address, bool contains = true);
 
+	/*! \brief Specify if the address limits are displayed on right or left side.
+	 *
+	 * \param pos The position where limits are drawn.
+	 *
+	*/
+	void setAddressAlign(AddressPosition pos);
+
 private:
 	
 	//! \brief No copying
@@ -73,6 +87,9 @@ private:
 
 	//! \brief The end address of the gap.
 	quint64 end_;
+
+	//! \brief Defines where the address limits are aligned.
+	AddressPosition addrPosition_;
 };
 
 #endif // ADDRESSSPACEGAPITEM_H

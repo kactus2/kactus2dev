@@ -15,6 +15,7 @@
 
 #include <QSharedPointer>
 #include <QGraphicsView>
+#include <QSize>
 
 /*! \brief The visualizer to display the contents of an address space.
  *
@@ -40,6 +41,18 @@ public:
 
 	//! \brief Update the contents of the visualizer
 	virtual void refresh();
+
+	/*! \brief The minimum size hint for the visualizer.
+	 *
+	 * \return QSize contains the minimum size hint.
+	*/
+	virtual QSize minimumSizeHint() const;
+
+	/*! \brief The size hint for the visualizer.
+	 *
+	 * \return QSize contains the size hint.
+	*/
+	virtual QSize sizeHint() const;
 
 private:
 	

@@ -6,6 +6,7 @@
  */
 
 #include "addressspacevisualizer.h"
+#include <common/graphicsItems/visualizeritem.h>
 
 #include <QHBoxLayout>
 
@@ -29,4 +30,12 @@ AddressSpaceVisualizer::~AddressSpaceVisualizer() {
 
 void AddressSpaceVisualizer::refresh() {
 	scene_->refresh();
+}
+
+QSize AddressSpaceVisualizer::minimumSizeHint() const {
+	return QSize(VisualizerItem::MAX_WIDTH * 2 + 10, VisualizerItem::ITEM_HEIGHT * 6);
+}
+
+QSize AddressSpaceVisualizer::sizeHint() const {
+	return minimumSizeHint();
 }

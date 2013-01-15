@@ -534,7 +534,8 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./MemoryDesigner/MemoryDesignDiagram.h \
     ./MemoryDesigner/MemoryDesignWidget.h \
     ./MemoryDesigner/MemoryItem.h \
-    ./MemoryDesigner/SegmentItem.h
+    ./MemoryDesigner/SegmentItem.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/localaddrblockgraphitem.h
 SOURCES += ./common/CSourceWriter.cpp \
     ./common/DesignDiagram.cpp \
     ./common/DesignWidget.cpp \
@@ -1037,5 +1038,6 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./MemoryDesigner/MemoryDesignDiagram.cpp \
     ./MemoryDesigner/MemoryDesignWidget.cpp \
     ./MemoryDesigner/MemoryItem.cpp \
-    ./MemoryDesigner/SegmentItem.cpp
+    ./MemoryDesigner/SegmentItem.cpp \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/localaddrblockgraphitem.cpp
 RESOURCES += kactus.qrc

@@ -11,6 +11,9 @@
 #include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h>
 #include <models/addressspace.h>
 
+/*! \brief The graph item that visualizes a local memory map within address space.
+ *
+ */
 class LocalMemoryMapGraphItem : public MemoryMapGraphItem {
 	Q_OBJECT
 

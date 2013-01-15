@@ -48,6 +48,7 @@ model_(new RegisterTableModel(reg, this)) {
 	view_->setColumnWidth(RegisterDelegate::MOD_WRITE_COLUMN, 90);
 	view_->setColumnWidth(RegisterDelegate::READ_ACTION_COLUMN, 65);
 	view_->setColumnWidth(RegisterDelegate::TESTABLE_COLUMN, 85);
+	view_->sortByColumn(RegisterDelegate::OFFSET_COLUMN, Qt::AscendingOrder);
 
 	connect(model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);

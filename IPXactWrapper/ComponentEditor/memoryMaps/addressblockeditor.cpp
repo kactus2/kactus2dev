@@ -47,6 +47,7 @@ model_(new AddressBlockModel(addressBlock, this)) {
 	view_->setColumnWidth(AddressBlockDelegate::DESC_COLUMN, 100);
 	view_->setColumnWidth(AddressBlockDelegate::VOLATILE_COLUMN, 70);
 	view_->setColumnWidth(AddressBlockDelegate::ACCESS_COLUMN, 100);
+	view_->sortByColumn(AddressBlockDelegate::OFFSET_COLUMN, Qt::AscendingOrder);
 
 	connect(model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);

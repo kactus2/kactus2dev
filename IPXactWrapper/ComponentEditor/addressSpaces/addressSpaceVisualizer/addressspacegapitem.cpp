@@ -12,10 +12,12 @@
 #include <QBrush>
 
 AddressSpaceGapItem::AddressSpaceGapItem(QSharedPointer<AddressSpace> addrSpace,
+										 AddressSpaceGapItem::AddressPosition addrPos,
 										 QGraphicsItem* parent):
 AddressSpaceVisualizationItem(addrSpace, parent),
 start_(0),
-end_(0) {
+end_(0),
+addrPosition_(addrPos) {
 
 	QBrush brush(KactusColors::DRAFT_COMPONENT);
 	setBrush(brush);
@@ -27,8 +29,15 @@ AddressSpaceGapItem::~AddressSpaceGapItem() {
 }
 
 void AddressSpaceGapItem::refresh() {
-	setRightTopCorner(start_);
-	setRightBottomCorner(end_);
+	
+	if (addrPosition_ == AddressSpaceGapItem::ALIGN_LEFT) {
+		setLeftTopCorner(start_);
+		setLeftBottomCorner(end_);
+	}
+	else {
+		setRightTopCorner(start_);
+		setRightBottomCorner(end_);
+	}
 	VisualizerItem::reorganizeChildren();
 }
 
@@ -57,5 +66,10 @@ void AddressSpaceGapItem::setEndAddress( quint64 address, bool contains /*= true
 	else {
 		end_ = --address;
 	}
+	refresh();
+}
+
+void AddressSpaceGapItem::setAddressAlign(AddressSpaceGapItem::AddressPosition pos ) {
+	addrPosition_ = pos;
 	refresh();
 }

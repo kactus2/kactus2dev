@@ -47,6 +47,7 @@ model_(new MemoryMapModel(memoryMap, this)) {
 	view_->setColumnWidth(MemoryMapDelegate::WIDTH_COLUMN, 65);
 	view_->setColumnWidth(MemoryMapDelegate::DESCRIPTION_COLUMN, 100);
 	view_->setColumnWidth(MemoryMapDelegate::ACCESS_COLUMN, 100);
+	view_->sortByColumn(MemoryMapDelegate::BASE_COLUMN, Qt::AscendingOrder);
 
 	connect(model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);

@@ -60,11 +60,17 @@ private:
 	//! \brief Update the offsets of the segments and gaps
 	void updateSegments();
 
+	//! \brief Update the offsets of the local memory map address blocks.
+	void updateAddrBlocks();
+
 	//! \brief Pointer to the address space being visualized.
 	QSharedPointer<AddressSpace> addrSpace_;
 
 	//! \brief Contains the segments and segments gaps ordered by offsets
 	QMultiMap<quint64, AddressSpaceVisualizationItem*> segmentItems_;
+
+	//! \brief Contains the local address blocks and gaps ordered by offsets
+	QMultiMap<quint64, AddressSpaceVisualizationItem*> addrBlockItems_;
 };
 
 #endif // ADDRESSSPACESCENE_H
