@@ -10,7 +10,7 @@
 #include "memorymapmodel.h"
 #include "memorymapdelegate.h"
 #include <common/widgets/summaryLabel/summarylabel.h>
-
+#include "memorymapproxy.h"
 
 #include <QVBoxLayout>
 
@@ -19,7 +19,7 @@ MemoryMapEditor::MemoryMapEditor(QSharedPointer<Component> component,
 								 QWidget* parent /*= 0*/ ):
 ItemEditor(component, parent),
 view_(new EditableTableView(this)),
-proxy_(new QSortFilterProxyModel(this)),
+proxy_(new MemoryMapProxy(this)),
 model_(new MemoryMapModel(memoryMap, this)) {
 
 	// display a label on top the table

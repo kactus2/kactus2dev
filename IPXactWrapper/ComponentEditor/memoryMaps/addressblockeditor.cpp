@@ -10,7 +10,7 @@
 #include "addressblockmodel.h"
 #include "addressblockdelegate.h"
 #include <common/widgets/summaryLabel/summarylabel.h>
-
+#include "addressblockproxy.h"
 
 #include <QVBoxLayout>
 
@@ -19,7 +19,7 @@ AddressBlockEditor::AddressBlockEditor(QSharedPointer<AddressBlock> addressBlock
 									   QWidget* parent /*= 0*/):
 ItemEditor(component, parent),
 view_(new EditableTableView(this)),
-proxy_(new QSortFilterProxyModel(this)),
+proxy_(new AddressBlockProxy(this)),
 model_(new AddressBlockModel(addressBlock, this)) {
 
 	// display a label on top the table

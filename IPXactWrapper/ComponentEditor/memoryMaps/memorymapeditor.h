@@ -16,6 +16,7 @@
 
 class EditableTableView;
 class MemoryMapModel;
+class MemoryMapProxy;
 
 /*! \brief The editor to edit the details of a single memory map.
  *
@@ -78,7 +79,7 @@ private:
 	EditableTableView* view_;
 
 	//! \brief The proxy that does the sorting of items.
-	QSortFilterProxyModel* proxy_;
+	MemoryMapProxy* proxy_;
 
 	//! \brief The model that manages the items.
 	MemoryMapModel* model_;

@@ -11,6 +11,7 @@
 #include <IPXactWrapper/ComponentEditor/memoryMaps/memorymapmodel.h>
 #include <IPXactWrapper/ComponentEditor/memoryMaps/memorymapdelegate.h>
 #include <common/widgets/summaryLabel/summarylabel.h>
+#include <IPXactWrapper/ComponentEditor/memoryMaps/memorymapproxy.h>
 
 #include <QVBoxLayout>
 
@@ -20,7 +21,7 @@ QGroupBox(tr("Local memory map"), parent),
 localMemoryMap_(memoryMap),
 nameEditor_(new NameGroupEditor(memoryMap->getNameGroup(), this)),
 view_(new EditableTableView(this)),
-proxy_(new QSortFilterProxyModel(this)),
+proxy_(new MemoryMapProxy(this)),
 model_(new MemoryMapModel(memoryMap, this)) {
 
 	proxy_->setSourceModel(model_);

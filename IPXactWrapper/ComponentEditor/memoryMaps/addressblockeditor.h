@@ -17,6 +17,7 @@
 
 class EditableTableView;
 class AddressBlockModel;
+class AddressBlockProxy;
 
 /*! \brief The editor to edit the details of an address block within component editor.
  *
@@ -79,7 +80,7 @@ private:
 	EditableTableView* view_;
 
 	//! \brief The proxy that does the sorting of items.
-	QSortFilterProxyModel* proxy_;
+	AddressBlockProxy* proxy_;
 
 	//! \brief Pointer to the model that manages the details of address block.
 	AddressBlockModel* model_;

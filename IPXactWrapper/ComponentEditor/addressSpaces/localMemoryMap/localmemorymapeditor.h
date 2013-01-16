@@ -16,6 +16,7 @@
 class NameGroupEditor;
 class EditableTableView;
 class MemoryMapModel;
+class MemoryMapProxy;
 
 /*! \brief LocalMemoryMapEditor is used to edit a local memory map of an address space.
  *
@@ -75,7 +76,7 @@ private:
 	EditableTableView* view_;
 
 	//! \brief The proxy that does the sorting
-	QSortFilterProxyModel* proxy_;
+	MemoryMapProxy* proxy_;
 
 	//! \brief The model that manages the items.
 	MemoryMapModel* model_;
