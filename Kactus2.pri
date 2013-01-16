@@ -229,6 +229,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacescene.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizationitem.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizer.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/localaddrblockgraphitem.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/segmentgraphitem.h \
     ./IPXactWrapper/ComponentEditor/cpus/addressspacerefdelegate.h \
     ./IPXactWrapper/ComponentEditor/cpus/cpusdelegate.h \
@@ -270,12 +271,14 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/addressblockdelegate.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/addressblockeditor.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/addressblockmodel.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/addressblockproxy.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/enumeratedvaluedelegate.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/enumeratedvaluemodel.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/fieldeditor.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapdelegate.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapeditor.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapmodel.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapproxy.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapsdelegate.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapseditor.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapsmodel.h \
@@ -534,8 +537,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./MemoryDesigner/MemoryDesignDiagram.h \
     ./MemoryDesigner/MemoryDesignWidget.h \
     ./MemoryDesigner/MemoryItem.h \
-    ./MemoryDesigner/SegmentItem.h \
-    ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/localaddrblockgraphitem.h
+    ./MemoryDesigner/SegmentItem.h
 SOURCES += ./common/CSourceWriter.cpp \
     ./common/DesignDiagram.cpp \
     ./common/DesignWidget.cpp \
@@ -766,6 +768,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacescene.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizationitem.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizer.cpp \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/localaddrblockgraphitem.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/segmentgraphitem.cpp \
     ./IPXactWrapper/ComponentEditor/cpus/addressspacerefdelegate.cpp \
     ./IPXactWrapper/ComponentEditor/cpus/cpusdelegate.cpp \
@@ -774,11 +777,13 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/addressblockdelegate.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/addressblockeditor.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/addressblockmodel.cpp \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/addressblockproxy.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/enumeratedvaluedelegate.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/enumeratedvaluemodel.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapdelegate.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapeditor.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapmodel.cpp \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapproxy.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapsdelegate.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapseditor.cpp \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapsmodel.cpp \
@@ -1038,6 +1043,5 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./MemoryDesigner/MemoryDesignDiagram.cpp \
     ./MemoryDesigner/MemoryDesignWidget.cpp \
     ./MemoryDesigner/MemoryItem.cpp \
-    ./MemoryDesigner/SegmentItem.cpp \
-    ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/localaddrblockgraphitem.cpp
+    ./MemoryDesigner/SegmentItem.cpp
 RESOURCES += kactus.qrc
