@@ -287,6 +287,10 @@ void Register::setRegisterValue( const QString& registerValue ) {
 	registerDefinition_.setRegisterValue(registerValue);
 }
 
+void Register::clearReset() {
+	registerDefinition_.clearReset();
+}
+
 QString Register::getRegisterMask() const {
 	return registerDefinition_.getRegisterMask();
 }

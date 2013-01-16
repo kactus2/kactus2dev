@@ -21,7 +21,9 @@ bool AddressBlockProxy::lessThan( const QModelIndex& left, const QModelIndex& ri
 	Q_ASSERT(left.column() == right.column());
 
 	switch (left.column()) {
-		case AddressBlockDelegate::OFFSET_COLUMN: {
+		case AddressBlockDelegate::OFFSET_COLUMN: 
+		case AddressBlockDelegate::RESET_VALUE_COLUMN:
+		case AddressBlockDelegate::RESET_MASK_COLUMN: {
 
 			// convert the data on left index into number
 			QString leftStr = left.model()->data(left, Qt::DisplayRole).toString();

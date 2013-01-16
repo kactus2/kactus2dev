@@ -271,7 +271,22 @@ bool AddressBlockModel::setData( const QModelIndex& index, const QVariant& value
 			case AddressBlockDelegate::RESET_VALUE_COLUMN: {
 				QSharedPointer<Register> reg = items_[index.row()].dynamicCast<Register>();
 				if (reg) {
-					reg->setRegisterValue(value.toString());
+
+					QString resetValue = value.toString();
+					
+					// if the reset is to be cleared
+					if (resetValue.isEmpty()) {
+						
+						reg->clearReset();
+
+						// also the reset mask in cleared when reset value is cleared
+						QModelIndex maskIndex = QAbstractTableModel::index(index.row(), index.column() + 1, QModelIndex());
+						emit dataChanged(maskIndex, maskIndex);
+					}
+					// otherwise set the value
+					else {
+						reg->setRegisterValue(resetValue);
+					}
 					break;
 				}
 				else {
@@ -281,7 +296,17 @@ bool AddressBlockModel::setData( const QModelIndex& index, const QVariant& value
 			case AddressBlockDelegate::RESET_MASK_COLUMN: {
 				QSharedPointer<Register> reg = items_[index.row()].dynamicCast<Register>();
 				if (reg) {
-					reg->setRegisterMask(value.toString());
+
+					QString resetMask = value.toString();
+
+					// if mask is cleared and reset value was already clear
+					if (reg->getRegisterValue().isEmpty() && resetMask.isEmpty()) {
+						reg->clearReset();
+					}
+					// otherwise set the reset mask
+					else {
+						reg->setRegisterMask(value.toString());
+					}
 					break;
 				}
 				else {

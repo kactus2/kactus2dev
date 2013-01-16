@@ -92,10 +92,10 @@ QString Reset::getValue() const {
 	return value_;
 }
 
-void Reset::setMask( QString mask ) {
+void Reset::setMask( const QString& mask ) {
 	mask_ = mask;
 }
 
-void Reset::setValue( QString value ) {
+void Reset::setValue( const QString& value ) {
 	value_ = value;
 }

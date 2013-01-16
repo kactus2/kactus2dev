@@ -191,6 +191,9 @@ public:
 	*/
 	void setRegisterValue(const QString& registerValue);
 
+	//! \brief Clear the register reset value and mask.
+	void clearReset();
+
 	/*! \brief Get the register's reset mask.
 	 *
 	 * \return QString containing the register's reset mask.

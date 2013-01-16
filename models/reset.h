@@ -89,13 +89,13 @@ public:
 	 *
 	 * \param mask The new mask bits.
 	 */
-	void setMask(QString mask);
+	void setMask(const QString& mask);
 
 	/*! \brief Set the value of the register in reset.
 	 *
 	 * \param value The value.
 	 */
-	void setValue(QString value);
+	void setValue(const QString& value);
 
 private:
 
