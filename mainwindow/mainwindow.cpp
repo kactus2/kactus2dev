@@ -21,6 +21,7 @@
 
 #include <common/KactusAttribute.h>
 #include <settings/SettingsDialog.h>
+#include <settings/SettingsUpdater.h>
 
 #include <SystemDesign/SystemDesignWidget.h>
 #include <SystemDesign/SystemDesignDiagram.h>
@@ -196,6 +197,8 @@ MainWindow::MainWindow(QWidget *parent)
 	QCoreApplication::setApplicationName(tr("Kactus2"));
 	QCoreApplication::setApplicationVersion("2.0");
     QSettings::setDefaultFormat(QSettings::IniFormat);
+
+    SettingsUpdater::runUpgrade(this);
 
 	// set the top title for the application
 	setWindowTitle(QCoreApplication::applicationName());

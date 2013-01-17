@@ -95,7 +95,7 @@ void MCAPICodeGenerator::runGenerator(IPluginUtility* utility,
     foreach (QSharedPointer<ComInterface> comIf, component->getComInterfaces())
     {
         if (comIf->getComType().getName().toLower() != "mcapi" ||
-            comIf->getComType().getVersion() != "v1.063")
+            comIf->getComType().getVersion() != "1.063")
         {
             continue;
         }

@@ -2817,6 +2817,10 @@
 					RelativePath=".\settings\SettingsDialog.cpp"
 					>
 				</File>
+				<File
+					RelativePath=".\settings\SettingsUpdater.cpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="ComponentInstanceEditor"
@@ -22126,6 +22130,10 @@
 							Outputs="&quot;$(ConfigurationName)\moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\settings\SettingsUpdater.h"
+					>
 				</File>
 			</Filter>
 			<Filter
