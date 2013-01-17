@@ -22,6 +22,7 @@
 #include <models/SystemView.h>
 #include <models/designconfiguration.h>
 #include <models/design.h>
+#include <models/SWInstance.h>
 
 #include <LibraryManager/libraryinterface.h>
 
@@ -447,6 +448,15 @@ void SystemDetailsEditor::exportSW()
 
     // Export only SW instances.
     design->setComponentInstances(QList<ComponentInstance>());
+
+    QList<SWInstance> swInstances = design->getSWInstances();
+
+    for (int i = 0; i < swInstances.size(); ++i)
+    {
+        swInstances[i].setMapping("");
+    }
+
+    design->setSWInstances(swInstances);
 
     handler_->writeModelToFile(dialog.getPath(), design);
     handler_->writeModelToFile(dialog.getPath(), desConf);
