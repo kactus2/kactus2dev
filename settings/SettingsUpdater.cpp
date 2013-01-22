@@ -150,7 +150,11 @@ namespace SettingsUpdater
         }
 
         // Run the upgrade from the configuration file.
+#ifdef _WIN32
         QFile file(QCoreApplication::applicationDirPath() + QString("/upgrade.cfg"));
+#else
+        QFile file("/usr/share/kactus2/upgrade.cfg");
+#endif
 
         if (!file.open(QIODevice::ReadOnly))
         {
