@@ -4964,6 +4964,9 @@
     <ClInclude Include="AddressEditor\AddressEntry.h">
       <Filter>Header Files\AddressEditor</Filter>
     </ClInclude>
+    <ClInclude Include="common\layouts\IVGraphicsLayout.h">
+      <Filter>Header Files\common\layouts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />

@@ -456,6 +456,7 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./settings/GeneralSettingsPage.h \
     ./settings/NamingPolicySettingsPage.h \
     ./settings/SettingsDialog.h \
+    ./settings/SettingsUpdater.h \
     ./ComponentInstanceEditor/componentinstanceeditor.h \
     ./ComponentInstanceEditor/componentinstancemodel.h \
     ./ComponentInstanceEditor/configurableelementdelegate.h \
@@ -990,6 +991,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./settings/GeneralSettingsPage.cpp \
     ./settings/NamingPolicySettingsPage.cpp \
     ./settings/SettingsDialog.cpp \
+    ./settings/SettingsUpdater.cpp \
     ./ComponentInstanceEditor/componentinstanceeditor.cpp \
     ./ComponentInstanceEditor/componentinstancemodel.cpp \
     ./ComponentInstanceEditor/configurableelementdelegate.cpp \

@@ -4025,6 +4025,7 @@ CreateHelp
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Configuration)\moc_%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
+    <ClInclude Include="common\layouts\IVGraphicsLayout.h" />
     <ClInclude Include="mainwindow\SplashScreen.h" />
     <ClInclude Include="resource.h" />
     <CustomBuildStep Include="version.h">

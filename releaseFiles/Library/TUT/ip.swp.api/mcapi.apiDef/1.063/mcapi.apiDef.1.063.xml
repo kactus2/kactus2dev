@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created by Kactus2 - Open source IP-Xact toolset -->
 <!-- http://sourceforge.net/projects/kactus2/ -->
-<!-- Date: 04.07.2012 -->
-<!-- Time: 16:15:40 -->
+<!-- Date: 16.01.2013 -->
+<!-- Time: 12:08:48 -->
 <kactus2:apiDefinition>
 	<spirit:vendor>TUT</spirit:vendor>
 	<spirit:library>ip.swp.api</spirit:library>
 	<spirit:name>mcapi.apiDef</spirit:name>
 	<spirit:version>1.063</spirit:version>
-	<kactus2:comDefinitionRef spirit:vendor="TUT" spirit:library="global.communication" spirit:name="mcapi" spirit:version="1.0"/>
+	<kactus2:comDefinitionRef spirit:vendor="TUT" spirit:library="global.communication" spirit:name="mcapi" spirit:version="1.063"/>
 	<kactus2:dataTypes>
 		<kactus2:dataType kactus2:name="mcapi_int_t"/>
 		<kactus2:dataType kactus2:name="mcapi_uint_t"/>
