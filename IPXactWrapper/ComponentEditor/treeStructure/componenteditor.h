@@ -55,7 +55,7 @@ public:
 
 	/*! \brief Check if the editor is editing a hardware implementation or not.
 	 *
-	 * \return Component editor always returns true.
+	 * \return True if the component is a hardware component.
 	*/
 	virtual bool isHWImplementation() const;
 

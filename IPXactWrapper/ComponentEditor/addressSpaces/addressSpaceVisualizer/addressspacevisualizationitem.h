@@ -60,6 +60,20 @@ public:
 	*/
 	virtual int getBitWidth() const;
 
+	/*! \brief Set the coordinate that is the bottom y-coordinate for the item.
+	 *
+	 * \param yCoordinate The y-coordinate of the bottom.
+	 *
+	*/
+	virtual void setBottomCoordinate(qreal yCoordinate);
+
+	/*! \brief Set the height for the item.
+	 *
+	 * \param height The height to set.
+	 *
+	*/
+	virtual void setHeight(qreal height);
+
 protected:
 
 	/*! \brief Set the address to be shown on the top left corner.
@@ -89,6 +103,8 @@ protected:
 	 *
 	*/
 	virtual void setRightBottomCorner(quint64 address);
+
+	virtual void mousePressEvent(QGraphicsSceneMouseEvent* event);
 
 private:
 	

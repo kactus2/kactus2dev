@@ -135,7 +135,7 @@ VLNV ComponentEditor::getDocumentVLNV() const {
 }
 
 bool ComponentEditor::isHWImplementation() const {
-	return true;
+	return component_->getComponentImplementation() == KactusAttribute::KTS_HW;
 }
 
 void ComponentEditor::refresh() {

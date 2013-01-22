@@ -223,6 +223,9 @@ public slots:
     //! Prompts the user to select a generator plugin and runs it.
     void runGeneratorPlugin();
 
+	//! \brief Creates a list of source files.
+	void runSourceListingGen();
+
     //! Zooms in the current document.
     void zoomIn();
 
@@ -739,6 +742,9 @@ private:
 
     //! Action to run a generator plugin.
     QAction* actRunPluginGenerator_;
+
+	//! \brief Action to run source listing generator.
+	QAction* actSourceListingGen_;
 
     //! The SW Design group.
     GCF::MenuStripGroup* swDesignGroup_;

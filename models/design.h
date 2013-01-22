@@ -540,6 +540,15 @@ public:
      */
     QList<SWInstance> const& getSWInstances() const;
 
+	/*! \brief Get the mapping of software instances to hardware instances.
+	 * 
+	 * Map key: The name of the hardware instance.
+	 * Map value: Const pointer to the software instance
+	 *
+	 * \return QMap containing the mappings.
+	*/
+	const QMultiMap<QString, const SWInstance*> getHWSWMappings() const;
+
 	/*! \brief Get list of the interconnections
 	*
 	* \return QList containing the interconnections

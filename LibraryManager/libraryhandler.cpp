@@ -754,6 +754,41 @@ void LibraryHandler::getNeededVLNVs( const VLNV& vlnv, QList<VLNV>& list ) {
 	}
 }
 
+void LibraryHandler::getHierarchicalDependencyFiles( const VLNV& vlnv, QStringList& list ) {
+	
+	// first get files of the top component
+	getDependencyFiles(vlnv, list);
+	
+	// create the model of the vlnv
+	QSharedPointer<LibraryComponent> libComponent = getModel(vlnv);
+
+	// ask the dependencies of the object and call function recursively for children
+	QList<VLNV> dependencies = libComponent->getDependentVLNVs();
+	foreach (VLNV dependency, dependencies) {
+		getHierarchicalDependencyFiles(dependency, list);
+	}
+
+	// if the object is not component then are no sub objects
+// 	if (getDocumentType(vlnv) != VLNV::COMPONENT) {
+// 		return;
+// 	}
+// 
+// 	QSharedPointer<Component> comp = libComponent.staticCast<Component>();
+// 	
+// 	// if the component is hierarchical then ask for vlnv dependencies
+// 	if (comp->isHierarchical()) {
+// 		QList<VLNV> dependencies;
+// 		getNeededVLNVs(vlnv, dependencies);
+// 
+// 		foreach (VLNV dependency, dependencies) {
+// 			getHierarchicalDependencyFiles(dependency, list);
+// 		}
+// 	}
+// 	if (comp->hasSWViews()) {
+// 		QList<VLNV> swDesigns;
+// 	}
+}
+
 void LibraryHandler::getDependencyFiles( const VLNV& vlnv, QStringList& list ) {
 
 	// create the model of the vlnv
@@ -781,7 +816,7 @@ void LibraryHandler::getDependencyFiles( const VLNV& vlnv, QStringList& list ) {
 
 		QDir ipDir(ipInfo.absolutePath());
 
-		// path to the single dependecy file
+		// path to the single dependency file
 		QString fullFilePath = ipDir.absoluteFilePath(ownList.at(i));
 
 		// make sure the file exists

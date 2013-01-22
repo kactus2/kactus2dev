@@ -179,6 +179,14 @@ public:
 	 */
 	 virtual void getDependencyFiles(const VLNV& vlnv, QStringList& list);
 
+	 /*! \brief Get list of the files that are needed by the given document either directly or indirectly.
+	  *
+	  * \param vlnv The vlnv identifying the document.
+	  * \param list The files are appended to the list if they are not already on the list.
+	  *
+	 */
+	 virtual void getHierarchicalDependencyFiles(const VLNV& vlnv, QStringList& list);
+
 	 /*! \brief Get const-pointer to the library tree's root item
 	 *
 	 * \return LibraryItem const* Pointer to the root item.

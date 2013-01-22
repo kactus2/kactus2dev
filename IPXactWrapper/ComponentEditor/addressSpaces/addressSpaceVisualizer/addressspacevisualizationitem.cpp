@@ -7,6 +7,10 @@
 
 #include "addressspacevisualizationitem.h"
 
+#include <QRectF>
+
+#include <QDebug>
+
 AddressSpaceVisualizationItem::AddressSpaceVisualizationItem(QSharedPointer<AddressSpace> addrSpace,
 															 QGraphicsItem* parent /*= 0*/):
 VisualizerItem(parent),
@@ -67,4 +71,22 @@ QString AddressSpaceVisualizationItem::addr2Str( quint64 address ) {
 	padded.prepend("0x");
 
 	return padded;
+}
+
+void AddressSpaceVisualizationItem::setBottomCoordinate( qreal yCoordinate ) {
+	qreal width = rect().width();
+	qreal height = yCoordinate - x();
+	setRect(0, 0, width, height);
+	VisualizerItem::reorganizeChildren();
+}
+
+void AddressSpaceVisualizationItem::setHeight( qreal height ) {
+	qreal width = rect().width();
+	setRect(0, y(), width, height);
+	VisualizerItem::reorganizeChildren();
+}
+
+void AddressSpaceVisualizationItem::mousePressEvent( QGraphicsSceneMouseEvent* event ) {
+	qDebug() << getName() << " pos: " << x() << ", " << y();
+	QGraphicsItem::mousePressEvent(event);
 }

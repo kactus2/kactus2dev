@@ -62,6 +62,7 @@
 #include <models/ApiInterface.h>
 #include <models/SWView.h>
 #include <models/SystemView.h>
+#include <models/SWInstance.h>
 
 #include <PluginSystem/PluginListDialog.h>
 
@@ -100,11 +101,14 @@
 #include <QDebug>
 #include <QCoreApplication>
 #include <QFileInfo>
+#include <QFile>
+#include <QTextStream>
 #include <QUrl>
 #include <QDesktopServices>
 #include <QCursor>
 #include <QDateTime>
 #include <QElapsedTimer>
+#include <QDesktopServices>
 #include <QDebug>
 
 class LibraryItem;
@@ -152,6 +156,7 @@ MainWindow::MainWindow(QWidget *parent)
       actGenQuartus_(0), 
       actGenDocumentation_(0),
       actRunPluginGenerator_(0),
+	  actSourceListingGen_(0),
       diagramToolsGroup_(0), 
       actToolSelect_(0), 
       actToolConnect_(0),
@@ -250,317 +255,6 @@ void MainWindow::onLibrarySearch() {
 	if (libraryHandler_) {
 		libraryHandler_->searchForIPXactFiles();
 	}
-}
-
-void MainWindow::setupActions() {
-
-	// the action to create a new hierarchical component
-	actNew_ = new QAction(QIcon(":/icons/graphics/file-new.png"), tr("New"), this);
-	actNew_->setShortcut(QKeySequence::New);
-	actNew_->setProperty("rowSpan", 2);
-	actNew_->setProperty("colSpan", 2);
-	connect(actNew_, SIGNAL(triggered()), this, SLOT(createNew()));
-
-	actSave_ = new QAction(QIcon(":/icons/graphics/file-save.png"), tr("Save"), this);
-	actSave_->setShortcut(QKeySequence::Save);
-	actSave_->setProperty("rowSpan", 2);
-	actSave_->setProperty("colSpan", 2);
-	actSave_->setEnabled(false);
-	connect(actSave_, SIGNAL(triggered()), this, SLOT(saveCurrent()));
-
-	actSaveAs_ = new QAction(QIcon(":/icons/graphics/file-save.png"), tr("Save As"), this);
-	actSaveAs_->setShortcut(QKeySequence::SaveAs);
-	actSaveAs_->setProperty("rowSpan", 2);
-	actSaveAs_->setProperty("colSpan", 2);
-	actSaveAs_->setEnabled(false);
-	connect(actSaveAs_, SIGNAL(triggered()), this, SLOT(saveCurrentAs()));
-
-	actSaveAll_ = new QAction(QIcon(":/icons/graphics/file-save_all.png"), tr("Save All"), this);
-	actSaveAll_->setShortcut(QKeySequence("Ctrl+Shift+S"));
-	actSaveAll_->setProperty("rowSpan", 2);
-	actSaveAll_->setProperty("colSpan", 2);
-	connect(actSaveAll_, SIGNAL(triggered()), this, SLOT(saveAll()));
-
-	actPrint_ = new QAction(QIcon(":/icons/graphics/file-print.png"), tr("Print"), this);
-	actPrint_->setShortcut(QKeySequence::Print);
-	actPrint_->setProperty("rowSpan", 2);
-	actPrint_->setProperty("colSpan", 2);
-	actPrint_->setEnabled(false);
-	connect(actPrint_, SIGNAL(triggered()), this, SLOT(printCurrent()));
-
-	actUndo_ = new QAction(QIcon(":/icons/graphics/edit-undo.png"), tr("Undo"), this);
-	actUndo_->setShortcut(QKeySequence::Undo);
-	actUndo_->setProperty("rowSpan", 2);
-	actUndo_->setProperty("colSpan", 2);
-	connect(actUndo_, SIGNAL(triggered()), this, SLOT(undo()));
-
-	actRedo_ = new QAction(QIcon(":/icons/graphics/edit-redo.png"), tr("Redo"), this);
-	actRedo_->setShortcut(QKeySequence::Redo);
-	actRedo_->setProperty("rowSpan", 2);
-	actRedo_->setProperty("colSpan", 2);
-	connect(actRedo_, SIGNAL(triggered()), this, SLOT(redo()));
-
-    actLibraryLocations_ = new QAction(QIcon(":/icons/graphics/library-config.png"),
-                                       tr("Configure Library"), this);
-    connect(actLibraryLocations_, SIGNAL(triggered()),
-            this, SLOT(setLibraryLocations()), Qt::UniqueConnection);
-
-	// the action to search for IP-Xact documents in file system
-	actLibrarySearch_ = new QAction(QIcon(":/icons/graphics/library-refresh.png"),
-		tr("Refresh Library"), this);
-	connect(actLibrarySearch_, SIGNAL(triggered()),
-		this, SLOT(onLibrarySearch()), Qt::UniqueConnection);
-
-	// Check the library integrity
-	actCheckIntegrity_ = new QAction(QIcon(":/icons/graphics/checkIntegrity.png"),
-		tr("Check Integrity"), this);
-	connect(actCheckIntegrity_, SIGNAL(triggered()),
-		libraryHandler_, SLOT(onCheckLibraryIntegrity()), Qt::UniqueConnection);
-
-	// Initialize the action to generate VHDL.
-	actGenVHDL_ = new QAction(QIcon(":/icons/graphics/vhdl_gen.png"),
-		tr("Generate Top-VHDL"), this);
-	connect(actGenVHDL_, SIGNAL(triggered()), 
-		this, SLOT(generateVHDL()), Qt::UniqueConnection);
-
-	// Initialize the action to generate a ModelSim makefile.
-	actGenModelSim_ = new QAction(QIcon(":/icons/graphics/modelsim_generator.png"),
-		tr("Generate ModelSim Makefile"), this);
-	connect(actGenModelSim_, SIGNAL(triggered()), 
-		this, SLOT(generateModelSim()), Qt::UniqueConnection);
-
-	// Initialize the action to generate a Quartus project.
-	actGenQuartus_ = new QAction(QIcon(":/icons/graphics/quartus_generator.png"),
-		tr("Generate Quartus Project"), this);
-	connect(actGenQuartus_, SIGNAL(triggered()), 
-		this, SLOT(generateQuartus()), Qt::UniqueConnection);
-
-	// initialize the action to generate documentation for the component/design
-	actGenDocumentation_ = new QAction(QIcon(":icons/graphics/documentation.png"),
-		tr("Generate Documentation"), this);
-	connect(actGenDocumentation_, SIGNAL(triggered()),
-		this, SLOT(generateDoc()), Qt::UniqueConnection);
-
-    actRunPluginGenerator_ = new QAction(QIcon(":icons/graphics/generator_plugin.png"),
-                                         tr("Run Generator Plugin"), this);
-    connect(actRunPluginGenerator_, SIGNAL(triggered()), this, SLOT(runGeneratorPlugin()), Qt::UniqueConnection);
-
-	// Initialize the action to add a new column.
-	actAddColumn_ = new QAction(QIcon(":/icons/graphics/diagram-add-column.png"), tr("Add Column"), this);
-	actAddColumn_->setProperty("rowSpan", 2);
-	actAddColumn_->setProperty("colSpan", 2);
-	connect(actAddColumn_, SIGNAL(triggered()), 
-		this, SLOT(addColumn()), Qt::UniqueConnection);
-
-	// Initialize the action to set draw mode to selection mode.
-	actToolSelect_ = new QAction(QIcon(":/icons/graphics/tool-select.png"), tr("Select Tool"), this);
-	actToolSelect_->setCheckable(true);
-	actToolSelect_->setChecked(true);
-
-	// Initialize the action to set draw mode to connection mode.
-	actToolConnect_ = new QAction(QIcon(":/icons/graphics/tool-interconnection.png"),
-		tr("Interconnection Tool"), this);
-	actToolConnect_->setCheckable(true);
-
-	// Initialize the action to set draw mode to interface mode.
-	actToolInterface_ = new QAction(QIcon(":/icons/graphics/tool-interface.png"), tr("Interface Tool"), this);
-	actToolInterface_->setCheckable(true);
-
-	actToolDraft_ = new QAction(QIcon(":/icons/graphics/tool-drafting.png"), tr("Drafting Tool"), this);
-	actToolDraft_->setCheckable(true);
-
-    actToolToggleOffPage_ = new QAction(QIcon(":/icons/graphics/tool-toggle_offpage.png"),
-                                        tr("Toggle Off-Page Tool"), this);
-    actToolToggleOffPage_->setCheckable(true);
-
-	modeActionGroup_ = new QActionGroup(this);
-	modeActionGroup_->setExclusive(true);
-	modeActionGroup_->addAction(actToolSelect_);
-	modeActionGroup_->addAction(actToolConnect_);
-	modeActionGroup_->addAction(actToolInterface_);
-	modeActionGroup_->addAction(actToolDraft_);
-    modeActionGroup_->addAction(actToolToggleOffPage_);
-	connect(modeActionGroup_, SIGNAL(triggered(QAction *)), this, SLOT(drawModeChange(QAction *)));
-
-	// Initialize the action to zoom in.
-	actZoomIn_ = new QAction(QIcon(":/icons/graphics/view-zoom_in.png"), tr("Zoom In"), this);
-	actZoomIn_->setEnabled(false);
-	connect(actZoomIn_, SIGNAL(triggered()), 
-		this, SLOT(zoomIn()));
-
-	// Initialize the action to zoom out.
-	actZoomOut_ = new QAction(QIcon(":/icons/graphics/view-zoom_out.png"), tr("Zoom Out"), this);
-	actZoomOut_->setEnabled(false);
-	connect(actZoomOut_, SIGNAL(triggered()), this, SLOT(zoomOut()));
-
-	// Initialize the action to reset the zoom to original 1:1 ratio.
-	actZoomOriginal_ = new QAction(QIcon(":/icons/graphics/view-zoom_original.png"),
-		tr("Original 1:1 Zoom"), this);
-	actZoomOriginal_->setEnabled(false);
-	connect(actZoomOriginal_, SIGNAL(triggered()), this, SLOT(zoomOriginal()));
-
-	// Initialize the action to fit the document into the view.
-	actFitInView_ = new QAction(QIcon(":/icons/graphics/view-fit_best.png"),
-		tr("Fit Document to View"), this);
-	actFitInView_->setEnabled(false);
-	connect(actFitInView_, SIGNAL(triggered()), this, SLOT(fitInView()));
-
-	// the action for user to select the visible docks
-	actVisibleDocks_ = new QAction(QIcon(":icons/graphics/dockSelect.png"),
-		tr("Visible Windows"), this);
-	connect(actVisibleDocks_, SIGNAL(triggered()), this, SLOT(selectVisibleDocks()), Qt::UniqueConnection);
-
-    // Initialize the action to manage visibility control.
-    actVisibilityControl_ = new QAction(QIcon(":icons/graphics/visibility.png"), tr("Visibility Control"), this);
-    actVisibilityControl_->setEnabled(false);
-    connect(actVisibilityControl_, SIGNAL(triggered()),
-            this, SLOT(openVisibilityControlMenu()), Qt::UniqueConnection);
-
-    // Initialize the action to manage workspaces.
-    actWorkspaces_ = new QAction(QIcon(":icons/graphics/workspace.png"),
-                                 tr("Workspaces"), this);
-    connect(actWorkspaces_, SIGNAL(triggered()), this, SLOT(openWorkspaceMenu()), Qt::UniqueConnection);
-
-    actRefresh_ = new QAction(QIcon(":/icons/graphics/refresh.png"), tr("Refresh"), this);
-    actRefresh_->setProperty("rowSpan", 2);
-    actRefresh_->setProperty("colSpan", 2);
-    actRefresh_->setShortcut(QKeySequence("F5"));
-    connect(actRefresh_, SIGNAL(triggered(bool)), this, SLOT(refresh()));
-
-	actProtect_ = new QAction(QIcon(":/icons/graphics/protection-unlocked.png"), tr("Unlocked"), this);
-	actProtect_->setProperty("rowSpan", 2);
-	actProtect_->setProperty("colSpan", 2);
-	actProtect_->setCheckable(true);
-	actProtect_->setEnabled(false);
-    actProtect_->setShortcut(QKeySequence("Ctrl+Space"));
-	connect(actProtect_, SIGNAL(triggered(bool)), this, SLOT(changeProtection(bool)));
-
-	// Initialize the action to open Kactus2 settings.
-	actSettings_ = new QAction(QIcon(":/icons/graphics/system-settings.png"), tr("Settings"), this);
-	actSettings_->setProperty("rowSpan", 2);
-	actSettings_->setProperty("colSpan", 2);
-	connect(actSettings_, SIGNAL(triggered()), this, SLOT(openSettings()));
-
-	// Initialize the action to open the about box.
-	actAbout_= new QAction(QIcon(":/icons/graphics/system-about.png"), tr("About"), this);
-	actAbout_->setProperty("rowSpan", 2);
-	actAbout_->setProperty("colSpan", 2);
-	connect(actAbout_, SIGNAL(triggered()), this, SLOT(showAbout()), Qt::UniqueConnection);
-
-    // Initialize the action to open the help window.
-    actHelp_= new QAction(QIcon(":/icons/graphics/system-help.png"), tr("Help"), this);
-    actHelp_->setProperty("rowSpan", 2);
-    actHelp_->setProperty("colSpan", 2);
-    connect(actHelp_, SIGNAL(triggered()), this, SLOT(showHelp()), Qt::UniqueConnection);
-
-	// Initialize the action to exit the program.
-	actExit_ = new QAction(QIcon(":/icons/graphics/system-exit.png"), tr("Exit"), this);
-	actExit_->setProperty("rowSpan", 2);
-	actExit_->setProperty("colSpan", 2);
-	connect(actExit_, SIGNAL(triggered()), this, SLOT(close()), Qt::UniqueConnection);
-
-	// the actions that select which windows to display
-
-	// Action to show/hide the output window.
-	showOutputAction_ = new QAction(tr("Output Window"), this);
-	showOutputAction_->setCheckable(true);
-	showOutputAction_->setChecked(true);
-	connect(showOutputAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onOutputAction(bool)), Qt::UniqueConnection);
-	connect(consoleDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showOutputAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
-
-    // Action to show/hide the context help window.
-    showContextHelpAction_ = new QAction(tr("Context Help"), this);
-    showContextHelpAction_->setCheckable(true);
-    showContextHelpAction_->setChecked(true);
-    connect(showContextHelpAction_, SIGNAL(toggled(bool)),
-            this, SLOT(onContextHelpAction(bool)), Qt::UniqueConnection);
-    connect(contextHelpDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-            showContextHelpAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
-
-	// Action to show/hide the preview box.
-	showPreviewAction_ = new QAction(tr("Preview Box"), this);
-	showPreviewAction_->setCheckable(true);
-	showPreviewAction_->setChecked(true);
-	connect(showPreviewAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onPreviewAction(bool)), Qt::UniqueConnection);
-	connect(previewDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showPreviewAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
-
-	// Action to show/hide the library window.
-	showLibraryAction_ = new QAction(tr("Library Window"), this);
-	showLibraryAction_->setCheckable(true);
-	showLibraryAction_->setChecked(true);
-	connect(showLibraryAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onLibraryAction(bool)), Qt::UniqueConnection);
-	connect(libraryDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showLibraryAction_, SLOT(setChecked(bool)), Qt::UniqueConnection); 		
-	
-
-	// Action to show/hide the configuration window.
-	showConfigurationAction_ = new QAction(tr("Configuration Window"), this);
-	showConfigurationAction_->setCheckable(true);
-	showConfigurationAction_->setChecked(true);
-	connect(showConfigurationAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onConfigurationAction(bool)), Qt::UniqueConnection);
-	connect(configurationDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showConfigurationAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
-
-    // Action to show/hide the system details window.
-    showSystemDetailsAction_ = new QAction(tr("HW Mapping Details Window"), this);
-    showSystemDetailsAction_->setCheckable(true);
-    showSystemDetailsAction_->setChecked(true);
-    connect(showSystemDetailsAction_, SIGNAL(toggled(bool)),
-        this, SLOT(onSystemDetailsAction(bool)), Qt::UniqueConnection);
-    connect(configurationDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-            showSystemDetailsAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
-
-	// Action to show/hide the connection editor.
-	showConnectionAction_ = new QAction(tr("Connection Editor"), this);
-	showConnectionAction_->setCheckable(true);
-	showConnectionAction_->setChecked(true);
-	connect(showConnectionAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onConnectionAction(bool)), Qt::UniqueConnection);
-	connect(connectionDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showConnectionAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
-
-	// Action to show/hide the interface editor.
-	showInterfaceAction_ = new QAction(tr("Interface Editor"), this);
-	showInterfaceAction_->setCheckable(true);
-	showInterfaceAction_->setChecked(true);
-	connect(showInterfaceAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onInterfaceAction(bool)), Qt::UniqueConnection);
-	connect(interfaceDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showInterfaceAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
-
-	// Action to show/hide the instance editor.
-	showInstanceAction_ = new QAction(tr("Instance Editor"), this);
-	showInstanceAction_->setCheckable(true);
-	showInstanceAction_->setChecked(true);
-	connect(showInstanceAction_, SIGNAL(toggled(bool)),
-		this, SLOT(onInstanceAction(bool)), Qt::UniqueConnection);
-	connect(instanceDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-		showInstanceAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
-
-    // Action to show/hide the ad-hoc visibility editor.
-    showAdHocAction_ = new QAction(tr("Ad-hoc Visibility Editor"), this);
-    showAdHocAction_->setCheckable(true);
-    showAdHocAction_->setChecked(true);
-    connect(showAdHocAction_, SIGNAL(toggled(bool)), this, SLOT(onAdHocAction(bool)), Qt::UniqueConnection);
-    connect(adHocDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-            showAdHocAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
-
-    // Action to show/hide the address editor.
-    showAddressAction_ = new QAction(tr("Address Editor"), this);
-    showAddressAction_->setCheckable(true);
-    showAddressAction_->setChecked(true);
-    connect(showAddressAction_, SIGNAL(toggled(bool)),
-            this, SLOT(onAddressAction(bool)), Qt::UniqueConnection);
-    connect(addressDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-            showAddressAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
-	
-	setupMenus();
 }
 
 //-----------------------------------------------------------------------------
@@ -736,6 +430,322 @@ void MainWindow::saveWorkspace(QString const& workspaceName)
     settings.endGroup();
 }
 
+void MainWindow::setupActions() {
+
+	// the action to create a new hierarchical component
+	actNew_ = new QAction(QIcon(":/icons/graphics/file-new.png"), tr("New"), this);
+	actNew_->setShortcut(QKeySequence::New);
+	actNew_->setProperty("rowSpan", 2);
+	actNew_->setProperty("colSpan", 2);
+	connect(actNew_, SIGNAL(triggered()), this, SLOT(createNew()));
+
+	actSave_ = new QAction(QIcon(":/icons/graphics/file-save.png"), tr("Save"), this);
+	actSave_->setShortcut(QKeySequence::Save);
+	actSave_->setProperty("rowSpan", 2);
+	actSave_->setProperty("colSpan", 2);
+	actSave_->setEnabled(false);
+	connect(actSave_, SIGNAL(triggered()), this, SLOT(saveCurrent()));
+
+	actSaveAs_ = new QAction(QIcon(":/icons/graphics/file-save.png"), tr("Save As"), this);
+	actSaveAs_->setShortcut(QKeySequence::SaveAs);
+	actSaveAs_->setProperty("rowSpan", 2);
+	actSaveAs_->setProperty("colSpan", 2);
+	actSaveAs_->setEnabled(false);
+	connect(actSaveAs_, SIGNAL(triggered()), this, SLOT(saveCurrentAs()));
+
+	actSaveAll_ = new QAction(QIcon(":/icons/graphics/file-save_all.png"), tr("Save All"), this);
+	actSaveAll_->setShortcut(QKeySequence("Ctrl+Shift+S"));
+	actSaveAll_->setProperty("rowSpan", 2);
+	actSaveAll_->setProperty("colSpan", 2);
+	connect(actSaveAll_, SIGNAL(triggered()), this, SLOT(saveAll()));
+
+	actPrint_ = new QAction(QIcon(":/icons/graphics/file-print.png"), tr("Print"), this);
+	actPrint_->setShortcut(QKeySequence::Print);
+	actPrint_->setProperty("rowSpan", 2);
+	actPrint_->setProperty("colSpan", 2);
+	actPrint_->setEnabled(false);
+	connect(actPrint_, SIGNAL(triggered()), this, SLOT(printCurrent()));
+
+	actUndo_ = new QAction(QIcon(":/icons/graphics/edit-undo.png"), tr("Undo"), this);
+	actUndo_->setShortcut(QKeySequence::Undo);
+	actUndo_->setProperty("rowSpan", 2);
+	actUndo_->setProperty("colSpan", 2);
+	connect(actUndo_, SIGNAL(triggered()), this, SLOT(undo()));
+
+	actRedo_ = new QAction(QIcon(":/icons/graphics/edit-redo.png"), tr("Redo"), this);
+	actRedo_->setShortcut(QKeySequence::Redo);
+	actRedo_->setProperty("rowSpan", 2);
+	actRedo_->setProperty("colSpan", 2);
+	connect(actRedo_, SIGNAL(triggered()), this, SLOT(redo()));
+
+	actLibraryLocations_ = new QAction(QIcon(":/icons/graphics/library-config.png"),
+		tr("Configure Library"), this);
+	connect(actLibraryLocations_, SIGNAL(triggered()),
+		this, SLOT(setLibraryLocations()), Qt::UniqueConnection);
+
+	// the action to search for IP-Xact documents in file system
+	actLibrarySearch_ = new QAction(QIcon(":/icons/graphics/library-refresh.png"),
+		tr("Refresh Library"), this);
+	connect(actLibrarySearch_, SIGNAL(triggered()),
+		this, SLOT(onLibrarySearch()), Qt::UniqueConnection);
+
+	// Check the library integrity
+	actCheckIntegrity_ = new QAction(QIcon(":/icons/graphics/checkIntegrity.png"),
+		tr("Check Integrity"), this);
+	connect(actCheckIntegrity_, SIGNAL(triggered()),
+		libraryHandler_, SLOT(onCheckLibraryIntegrity()), Qt::UniqueConnection);
+
+	// Initialize the action to generate VHDL.
+	actGenVHDL_ = new QAction(QIcon(":/icons/graphics/vhdl_gen.png"),
+		tr("Generate Top-VHDL"), this);
+	connect(actGenVHDL_, SIGNAL(triggered()), 
+		this, SLOT(generateVHDL()), Qt::UniqueConnection);
+
+	// Initialize the action to generate a ModelSim makefile.
+	actGenModelSim_ = new QAction(QIcon(":/icons/graphics/modelsim_generator.png"),
+		tr("Generate ModelSim Makefile"), this);
+	connect(actGenModelSim_, SIGNAL(triggered()), 
+		this, SLOT(generateModelSim()), Qt::UniqueConnection);
+
+	// Initialize the action to generate a Quartus project.
+	actGenQuartus_ = new QAction(QIcon(":/icons/graphics/quartus_generator.png"),
+		tr("Generate Quartus Project"), this);
+	connect(actGenQuartus_, SIGNAL(triggered()), 
+		this, SLOT(generateQuartus()), Qt::UniqueConnection);
+
+	// initialize the action to generate documentation for the component/design
+	actGenDocumentation_ = new QAction(QIcon(":icons/graphics/documentation.png"),
+		tr("Generate Documentation"), this);
+	connect(actGenDocumentation_, SIGNAL(triggered()),
+		this, SLOT(generateDoc()), Qt::UniqueConnection);
+
+	actRunPluginGenerator_ = new QAction(QIcon(":icons/graphics/generator_plugin.png"),
+		tr("Run Generator Plugin"), this);
+	connect(actRunPluginGenerator_, SIGNAL(triggered()), this, SLOT(runGeneratorPlugin()), Qt::UniqueConnection);
+
+	actSourceListingGen_ = new QAction(QIcon(":icons/graphics/source_listing_generator.png"),
+		tr("Run source listing generator"), this);
+	connect(actSourceListingGen_, SIGNAL(triggered()),
+		this, SLOT(runSourceListingGen()), Qt::UniqueConnection);
+
+	// Initialize the action to add a new column.
+	actAddColumn_ = new QAction(QIcon(":/icons/graphics/diagram-add-column.png"), tr("Add Column"), this);
+	actAddColumn_->setProperty("rowSpan", 2);
+	actAddColumn_->setProperty("colSpan", 2);
+	connect(actAddColumn_, SIGNAL(triggered()), 
+		this, SLOT(addColumn()), Qt::UniqueConnection);
+
+	// Initialize the action to set draw mode to selection mode.
+	actToolSelect_ = new QAction(QIcon(":/icons/graphics/tool-select.png"), tr("Select Tool"), this);
+	actToolSelect_->setCheckable(true);
+	actToolSelect_->setChecked(true);
+
+	// Initialize the action to set draw mode to connection mode.
+	actToolConnect_ = new QAction(QIcon(":/icons/graphics/tool-interconnection.png"),
+		tr("Interconnection Tool"), this);
+	actToolConnect_->setCheckable(true);
+
+	// Initialize the action to set draw mode to interface mode.
+	actToolInterface_ = new QAction(QIcon(":/icons/graphics/tool-interface.png"), tr("Interface Tool"), this);
+	actToolInterface_->setCheckable(true);
+
+	actToolDraft_ = new QAction(QIcon(":/icons/graphics/tool-drafting.png"), tr("Drafting Tool"), this);
+	actToolDraft_->setCheckable(true);
+
+	actToolToggleOffPage_ = new QAction(QIcon(":/icons/graphics/tool-toggle_offpage.png"),
+		tr("Toggle Off-Page Tool"), this);
+	actToolToggleOffPage_->setCheckable(true);
+
+	modeActionGroup_ = new QActionGroup(this);
+	modeActionGroup_->setExclusive(true);
+	modeActionGroup_->addAction(actToolSelect_);
+	modeActionGroup_->addAction(actToolConnect_);
+	modeActionGroup_->addAction(actToolInterface_);
+	modeActionGroup_->addAction(actToolDraft_);
+	modeActionGroup_->addAction(actToolToggleOffPage_);
+	connect(modeActionGroup_, SIGNAL(triggered(QAction *)), this, SLOT(drawModeChange(QAction *)));
+
+	// Initialize the action to zoom in.
+	actZoomIn_ = new QAction(QIcon(":/icons/graphics/view-zoom_in.png"), tr("Zoom In"), this);
+	actZoomIn_->setEnabled(false);
+	connect(actZoomIn_, SIGNAL(triggered()), 
+		this, SLOT(zoomIn()));
+
+	// Initialize the action to zoom out.
+	actZoomOut_ = new QAction(QIcon(":/icons/graphics/view-zoom_out.png"), tr("Zoom Out"), this);
+	actZoomOut_->setEnabled(false);
+	connect(actZoomOut_, SIGNAL(triggered()), this, SLOT(zoomOut()));
+
+	// Initialize the action to reset the zoom to original 1:1 ratio.
+	actZoomOriginal_ = new QAction(QIcon(":/icons/graphics/view-zoom_original.png"),
+		tr("Original 1:1 Zoom"), this);
+	actZoomOriginal_->setEnabled(false);
+	connect(actZoomOriginal_, SIGNAL(triggered()), this, SLOT(zoomOriginal()));
+
+	// Initialize the action to fit the document into the view.
+	actFitInView_ = new QAction(QIcon(":/icons/graphics/view-fit_best.png"),
+		tr("Fit Document to View"), this);
+	actFitInView_->setEnabled(false);
+	connect(actFitInView_, SIGNAL(triggered()), this, SLOT(fitInView()));
+
+	// the action for user to select the visible docks
+	actVisibleDocks_ = new QAction(QIcon(":icons/graphics/dockSelect.png"),
+		tr("Visible Windows"), this);
+	connect(actVisibleDocks_, SIGNAL(triggered()), this, SLOT(selectVisibleDocks()), Qt::UniqueConnection);
+
+	// Initialize the action to manage visibility control.
+	actVisibilityControl_ = new QAction(QIcon(":icons/graphics/visibility.png"), tr("Visibility Control"), this);
+	actVisibilityControl_->setEnabled(false);
+	connect(actVisibilityControl_, SIGNAL(triggered()),
+		this, SLOT(openVisibilityControlMenu()), Qt::UniqueConnection);
+
+	// Initialize the action to manage workspaces.
+	actWorkspaces_ = new QAction(QIcon(":icons/graphics/workspace.png"),
+		tr("Workspaces"), this);
+	connect(actWorkspaces_, SIGNAL(triggered()), this, SLOT(openWorkspaceMenu()), Qt::UniqueConnection);
+
+	actRefresh_ = new QAction(QIcon(":/icons/graphics/refresh.png"), tr("Refresh"), this);
+	actRefresh_->setProperty("rowSpan", 2);
+	actRefresh_->setProperty("colSpan", 2);
+	actRefresh_->setShortcut(QKeySequence("F5"));
+	connect(actRefresh_, SIGNAL(triggered(bool)), this, SLOT(refresh()));
+
+	actProtect_ = new QAction(QIcon(":/icons/graphics/protection-unlocked.png"), tr("Unlocked"), this);
+	actProtect_->setProperty("rowSpan", 2);
+	actProtect_->setProperty("colSpan", 2);
+	actProtect_->setCheckable(true);
+	actProtect_->setEnabled(false);
+	actProtect_->setShortcut(QKeySequence("Ctrl+Space"));
+	connect(actProtect_, SIGNAL(triggered(bool)), this, SLOT(changeProtection(bool)));
+
+	// Initialize the action to open Kactus2 settings.
+	actSettings_ = new QAction(QIcon(":/icons/graphics/system-settings.png"), tr("Settings"), this);
+	actSettings_->setProperty("rowSpan", 2);
+	actSettings_->setProperty("colSpan", 2);
+	connect(actSettings_, SIGNAL(triggered()), this, SLOT(openSettings()));
+
+	// Initialize the action to open the about box.
+	actAbout_= new QAction(QIcon(":/icons/graphics/system-about.png"), tr("About"), this);
+	actAbout_->setProperty("rowSpan", 2);
+	actAbout_->setProperty("colSpan", 2);
+	connect(actAbout_, SIGNAL(triggered()), this, SLOT(showAbout()), Qt::UniqueConnection);
+
+	// Initialize the action to open the help window.
+	actHelp_= new QAction(QIcon(":/icons/graphics/system-help.png"), tr("Help"), this);
+	actHelp_->setProperty("rowSpan", 2);
+	actHelp_->setProperty("colSpan", 2);
+	connect(actHelp_, SIGNAL(triggered()), this, SLOT(showHelp()), Qt::UniqueConnection);
+
+	// Initialize the action to exit the program.
+	actExit_ = new QAction(QIcon(":/icons/graphics/system-exit.png"), tr("Exit"), this);
+	actExit_->setProperty("rowSpan", 2);
+	actExit_->setProperty("colSpan", 2);
+	connect(actExit_, SIGNAL(triggered()), this, SLOT(close()), Qt::UniqueConnection);
+
+	// the actions that select which windows to display
+
+	// Action to show/hide the output window.
+	showOutputAction_ = new QAction(tr("Output Window"), this);
+	showOutputAction_->setCheckable(true);
+	showOutputAction_->setChecked(true);
+	connect(showOutputAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onOutputAction(bool)), Qt::UniqueConnection);
+	connect(consoleDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showOutputAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+	// Action to show/hide the context help window.
+	showContextHelpAction_ = new QAction(tr("Context Help"), this);
+	showContextHelpAction_->setCheckable(true);
+	showContextHelpAction_->setChecked(true);
+	connect(showContextHelpAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onContextHelpAction(bool)), Qt::UniqueConnection);
+	connect(contextHelpDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showContextHelpAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+	// Action to show/hide the preview box.
+	showPreviewAction_ = new QAction(tr("Preview Box"), this);
+	showPreviewAction_->setCheckable(true);
+	showPreviewAction_->setChecked(true);
+	connect(showPreviewAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onPreviewAction(bool)), Qt::UniqueConnection);
+	connect(previewDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showPreviewAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+	// Action to show/hide the library window.
+	showLibraryAction_ = new QAction(tr("Library Window"), this);
+	showLibraryAction_->setCheckable(true);
+	showLibraryAction_->setChecked(true);
+	connect(showLibraryAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onLibraryAction(bool)), Qt::UniqueConnection);
+	connect(libraryDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showLibraryAction_, SLOT(setChecked(bool)), Qt::UniqueConnection); 		
+
+
+	// Action to show/hide the configuration window.
+	showConfigurationAction_ = new QAction(tr("Configuration Window"), this);
+	showConfigurationAction_->setCheckable(true);
+	showConfigurationAction_->setChecked(true);
+	connect(showConfigurationAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onConfigurationAction(bool)), Qt::UniqueConnection);
+	connect(configurationDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showConfigurationAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+	// Action to show/hide the system details window.
+	showSystemDetailsAction_ = new QAction(tr("HW Mapping Details Window"), this);
+	showSystemDetailsAction_->setCheckable(true);
+	showSystemDetailsAction_->setChecked(true);
+	connect(showSystemDetailsAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onSystemDetailsAction(bool)), Qt::UniqueConnection);
+	connect(configurationDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showSystemDetailsAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+	// Action to show/hide the connection editor.
+	showConnectionAction_ = new QAction(tr("Connection Editor"), this);
+	showConnectionAction_->setCheckable(true);
+	showConnectionAction_->setChecked(true);
+	connect(showConnectionAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onConnectionAction(bool)), Qt::UniqueConnection);
+	connect(connectionDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showConnectionAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+	// Action to show/hide the interface editor.
+	showInterfaceAction_ = new QAction(tr("Interface Editor"), this);
+	showInterfaceAction_->setCheckable(true);
+	showInterfaceAction_->setChecked(true);
+	connect(showInterfaceAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onInterfaceAction(bool)), Qt::UniqueConnection);
+	connect(interfaceDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showInterfaceAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+	// Action to show/hide the instance editor.
+	showInstanceAction_ = new QAction(tr("Instance Editor"), this);
+	showInstanceAction_->setCheckable(true);
+	showInstanceAction_->setChecked(true);
+	connect(showInstanceAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onInstanceAction(bool)), Qt::UniqueConnection);
+	connect(instanceDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showInstanceAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+	// Action to show/hide the ad-hoc visibility editor.
+	showAdHocAction_ = new QAction(tr("Ad-hoc Visibility Editor"), this);
+	showAdHocAction_->setCheckable(true);
+	showAdHocAction_->setChecked(true);
+	connect(showAdHocAction_, SIGNAL(toggled(bool)), this, SLOT(onAdHocAction(bool)), Qt::UniqueConnection);
+	connect(adHocDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showAdHocAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+	// Action to show/hide the address editor.
+	showAddressAction_ = new QAction(tr("Address Editor"), this);
+	showAddressAction_->setCheckable(true);
+	showAddressAction_->setChecked(true);
+	connect(showAddressAction_, SIGNAL(toggled(bool)),
+		this, SLOT(onAddressAction(bool)), Qt::UniqueConnection);
+	connect(addressDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+		showAddressAction_, SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+	setupMenus();
+}
+
 //-----------------------------------------------------------------------------
 // Function: setupMenus()
 //-----------------------------------------------------------------------------
@@ -781,6 +791,7 @@ void MainWindow::setupMenus()
 	generationGroup_->addAction(actGenModelSim_);
 	generationGroup_->addAction(actGenQuartus_);
     generationGroup_->addAction(actRunPluginGenerator_);
+	generationGroup_->addAction(actSourceListingGen_);
 	generationGroup_->setVisible(false);
 	generationGroup_->setEnabled(false);
 
@@ -1203,28 +1214,69 @@ void MainWindow::updateMenuStrip()
 	actSaveAs_->setEnabled(doc != 0);
 	actPrint_->setEnabled(doc != 0 && (doc->getFlags() & TabDocument::DOC_PRINT_SUPPORT));
 
-	// if is hardware design then set all actions enabled
-	if (isHWDesign) {
+	// generation group is always visible when there is open editor but disabled when locked
+	generationGroup_->setEnabled(unlocked);
+	if (doc) {
 		generationGroup_->setVisible(true);
-		generationGroup_->setEnabled(unlocked);
-		actGenVHDL_->setEnabled(unlocked);
-		actGenDocumentation_->setEnabled(unlocked);
-		actGenModelSim_->setEnabled(unlocked);
-		actGenQuartus_->setEnabled(unlocked);
-        actRunPluginGenerator_->setEnabled(unlocked);
-	}
-	// if is hardware component then set only documentation, modelsim and vhdl enabled
-	else if (isHWComp) {
-		generationGroup_->setVisible(true);
-		generationGroup_->setEnabled(unlocked);
-		actGenVHDL_->setEnabled(unlocked);
-		actGenDocumentation_->setEnabled(unlocked);
-		actGenModelSim_->setEnabled(unlocked);
-        actRunPluginGenerator_->setEnabled(unlocked);
-		actGenQuartus_->setDisabled(true);
 	}
 	else {
 		generationGroup_->setVisible(false);
+	}
+
+	// if is hardware design then set all actions enabled
+	if (isHWDesign) {
+		actGenVHDL_->setEnabled(unlocked);
+		actGenVHDL_->setVisible(true);
+
+		actGenDocumentation_->setEnabled(unlocked);
+		actGenDocumentation_->setVisible(true);
+		
+		actGenModelSim_->setEnabled(unlocked);
+		actGenModelSim_->setVisible(true);
+		
+		actGenQuartus_->setEnabled(unlocked);
+		actGenQuartus_->setVisible(true);
+        
+		actRunPluginGenerator_->setEnabled(unlocked);
+		actRunPluginGenerator_->setVisible(true);
+
+		actSourceListingGen_->setEnabled(false);
+		actSourceListingGen_->setVisible(false);
+	}
+	// if is hardware component then set only documentation, modelsim and vhdl enabled
+	else if (isHWComp) {
+		actGenVHDL_->setEnabled(unlocked);
+		actGenVHDL_->setVisible(true);
+		
+		actGenDocumentation_->setEnabled(unlocked);
+		actGenDocumentation_->setVisible(true);
+		
+		actGenModelSim_->setEnabled(unlocked);
+		actGenModelSim_->setVisible(true);
+       
+		actGenQuartus_->setDisabled(true);
+		actGenQuartus_->setVisible(false);
+
+		actRunPluginGenerator_->setEnabled(unlocked);
+		actRunPluginGenerator_->setVisible(true);
+
+		actSourceListingGen_->setEnabled(false);
+		actSourceListingGen_->setVisible(false);
+	}
+	else {
+		actGenVHDL_->setVisible(false);
+
+		actGenDocumentation_->setVisible(false);
+		
+		actGenModelSim_->setVisible(false);
+		
+		actGenQuartus_->setVisible(false);
+		
+		actRunPluginGenerator_->setVisible(true);
+		actRunPluginGenerator_->setEnabled(unlocked);
+
+		actSourceListingGen_->setEnabled(true);
+		actSourceListingGen_->setVisible(true);
 	}
 
 	editGroup_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_EDIT_SUPPORT));
@@ -1501,6 +1553,108 @@ void MainWindow::runGeneratorPlugin()
         genPlugin->runGenerator(this, libComp);
         doc->refresh();
     }
+}
+
+void MainWindow::runSourceListingGen() {
+	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+
+	// Inform user that unsaved changes must be saved before continuing.
+	if (doc->isModified())
+	{
+		QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+			"The document " + doc->getDocumentName() + " has unsaved changes and needs to be "
+			"saved before generators can be run. Save and continue?",
+			QMessageBox::Yes | QMessageBox::No, this);
+
+		if (msgBox.exec() == QMessageBox::No || !doc->save())
+		{
+			return;
+		}
+	}
+
+	// make sure the current design is for software
+	SystemDesignWidget* sysDesign = dynamic_cast<SystemDesignWidget*>(doc);
+	if (!sysDesign) {
+		return;
+	}
+
+	// the vlnv of the design
+	VLNV designVLNV = sysDesign->getIdentifyingVLNV();
+
+	// ask user where to save the file list
+	QString defaultPath = libraryHandler_->getPath(designVLNV);
+	QFileInfo defaultInfo(defaultPath);
+	QString outputFile = QFileDialog::getSaveFileName(this, tr("Save the file list"),
+		defaultInfo.absolutePath(), QString("*.txt"));
+
+	QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(designVLNV);
+	QSharedPointer<Design> design = libComp.staticCast<Design>();
+	if (!design) {
+		return;
+	}
+
+	QFile file(outputFile);
+	// if file can not be opened for writing
+	if (!file.open(QFile::Truncate | QFile::WriteOnly)) {
+		return;
+	}
+
+	QTextStream listStream(&file);
+
+// 	QList<SWInstance> const& SWInstances = design->getSWInstances();
+// 	foreach (SWInstance instance, SWInstances) {
+// 		listStream << "Instance " << instance.getInstanceName() << ":" << endl;
+// 
+// 		// get the source files needed by the instance
+// 		VLNV instanceVLNV = instance.getComponentRef();
+// 		QStringList sourceList;
+// 		libraryHandler_->getHierarchicalDependencyFiles(instanceVLNV, sourceList);
+// 
+// 		foreach (QString sourceFile, sourceList) {
+// 			listStream << sourceFile << endl;
+// 		}
+// 
+// 		listStream << endl;
+// 	}
+
+	// the HW/SW mappings in the design
+	QMultiMap<QString, const SWInstance*> mappings = design->getHWSWMappings();
+	
+	// the first is printed before going to loop
+	QString previousHW = mappings.begin().key();
+	listStream << tr("HW instance: ") << previousHW << endl;
+	
+	// write each software instance source codes
+	for (QMultiMap<QString, const SWInstance*>::iterator i = mappings.begin();
+		i != mappings.end(); ++i) {
+
+			// when a new hardware instance is processed write the name
+			if (previousHW != i.key()) {
+				listStream << tr("HW instance: ") << i.key() << endl;
+			}
+
+			const SWInstance* swInstance = i.value();
+
+			// print the name of the software instance
+			listStream << tr("\t SW instance: ") << swInstance->getInstanceName() << endl;
+
+			// get the source files needed by the instance
+			VLNV instanceVLNV = i.value()->getComponentRef();
+			QStringList sourceList;
+			libraryHandler_->getHierarchicalDependencyFiles(instanceVLNV, sourceList);
+			 
+			foreach (QString sourceFile, sourceList) {
+				listStream << "\t\t" << sourceFile << endl;
+			 }
+
+			listStream << endl;
+
+			previousHW = i.key();
+	}
+
+	file.close();
+
+	QDesktopServices::openUrl(QUrl::fromLocalFile(outputFile));
 }
 
 //-----------------------------------------------------------------------------
