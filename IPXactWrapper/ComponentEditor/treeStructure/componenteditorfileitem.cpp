@@ -91,7 +91,9 @@ void ComponentEditorFileItem::openItem(bool builtinEditor) {
 	const QString xmlPath = libHandler_->getPath(*component_->getVlnv());
 	const QString absolutePath = General::getAbsolutePath(xmlPath, relPath);
 
-    if (builtinEditor && QFileInfo(absolutePath).completeSuffix().toLower() == "c")
+    if (builtinEditor &&
+        (QFileInfo(absolutePath).completeSuffix().toLower() == "c" ||
+         QFileInfo(absolutePath).completeSuffix().toLower() == "h"))
     {
         emit openCSource(absolutePath, component_);
     }

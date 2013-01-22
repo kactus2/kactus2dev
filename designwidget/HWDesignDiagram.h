@@ -12,6 +12,8 @@
 #include <models/businterface.h>
 #include <models/ColumnDesc.h>
 
+#include <common/cornerStitch/CornerStitchStructure.h>
+
 #include <QMap>
 #include <QVector>
 #include <QSharedPointer>
@@ -274,6 +276,9 @@ private:
     HWComponentItem* sourceComp_;
 
     QGraphicsItem* oldSelection_;
+
+    //! The corner-stitching structure.
+    CornerStitchStructure cornerStitchStruct_;
 };
 
 #endif // HWDESIGNDIAGRAM_H

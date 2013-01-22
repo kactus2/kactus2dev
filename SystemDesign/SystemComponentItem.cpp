@@ -336,7 +336,7 @@ void SystemComponentItem::setConnectionUpdateDisabled(bool disabled)
 //-----------------------------------------------------------------------------
 SWPortItem* SystemComponentItem::getSWPort(QString const& name, SWConnectionEndpoint::EndpointType type) const
 {
-    foreach (QGraphicsItem *item, QGraphicsRectItem::children())
+    foreach (QGraphicsItem *item, QGraphicsRectItem::childItems())
     {
         if (item->type() == SWPortItem::Type)
         {

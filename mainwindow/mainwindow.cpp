@@ -1478,7 +1478,7 @@ void MainWindow::runGeneratorPlugin()
     }
 
     // Fill in the dialog with supported plugins.
-    QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(doc->getDocumentVLNV());
+    QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(doc->getIdentifyingVLNV());
     PluginListDialog dialog(this);
 
     foreach (QObject* plugin, pluginMgr_->getPlugins())

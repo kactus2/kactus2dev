@@ -147,7 +147,7 @@ HWComponentItem::~HWComponentItem()
 //-----------------------------------------------------------------------------
 BusPortItem *HWComponentItem::getBusPort(const QString &name)
 {
-    foreach (QGraphicsItem *item, QGraphicsRectItem::children()) {
+    foreach (QGraphicsItem *item, QGraphicsRectItem::childItems()) {
         if (item->type() == BusPortItem::Type) {
             BusPortItem *busPort = qgraphicsitem_cast<BusPortItem *>(item);
             if (busPort->name() == name)

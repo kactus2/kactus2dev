@@ -78,7 +78,8 @@ HWDesignDiagram::HWDesignDiagram(LibraryInterface *lh, GenericEditProvider& edit
       offPageMode_(false),
       oldSelection_(0),
       replaceMode_(false),
-      sourceComp_(0)
+      sourceComp_(0),
+      cornerStitchStruct_()
 {
     connect(this, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
     connect(&editProvider, SIGNAL(modified()), this, SIGNAL(contentChanged()));
@@ -212,6 +213,8 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
         }
 
 		onComponentInstanceAdded(item);
+        //StitchTile* tile = cornerStitchStruct_.addSolidTile(item->sceneBoundingRect().toRect());
+        //cornerStitchStruct_.removeTile(tile);
     }
 
     /* interconnections */

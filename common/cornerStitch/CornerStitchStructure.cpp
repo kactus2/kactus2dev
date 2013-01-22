@@ -11,6 +11,8 @@
 
 #include "CornerStitchStructure.h"
 
+#include <QList>
+
 //-----------------------------------------------------------------------------
 // Function: CornerStitchStructure::CornerStitchStructure()
 //-----------------------------------------------------------------------------
@@ -131,7 +133,111 @@ StitchTile* CornerStitchStructure::addSolidTile(QRect const& area)
 //-----------------------------------------------------------------------------
 void CornerStitchStructure::removeTile(StitchTile* tile)
 {
-    // TODO:
+    // Mark the tile as empty.
+    tile->type = TILE_EMPTY;
+
+    // Scan the tiles on the right side of the tile.
+    QList<StitchTile*> rightTiles;
+
+    StitchTile* curRight = tile->bottomRight_;
+
+    if (curRight != 0)
+    {
+        do 
+        {
+            rightTiles.append(curRight);
+            curRight = curRight->leftTop_;
+        }
+        while (curRight != 0 && curRight->topLeft_ == tile);
+    }
+
+    int bottomY = tile->rightBottom_->pos.y();
+
+    StitchTile* curTop = tile;
+    int curEdgeY = tile->pos.y();
+    
+    while (true)
+    {
+        StitchTile* left = curTop->topLeft_;
+        StitchTile* right = 0;
+
+        for (int i = rightTiles.size() - 1; i >= 0; --i)
+        {
+            if (rightTiles[i]->containsY(curEdgeY))
+            {
+                right = rightTiles[i];
+                break;
+            }
+        }
+
+        Q_ASSERT(right != 0);
+
+        StitchTile* left1 = 0;
+        StitchTile* left2 = 0;
+
+        // Check if the left neighbor should be split.
+        if (left != 0 && left->type == TILE_EMPTY && curEdgeY != left->pos.y() &&
+            left->containsY(curEdgeY))
+        {
+            splitV(left, curEdgeY, left1, left2);
+        }
+
+        StitchTile* right1 = 0;
+        StitchTile* right2 = 0;
+
+        // Check if the right neighbor should be split.
+        if (right != 0 && right->type == TILE_EMPTY && curEdgeY != right->pos.y() &&
+            right->containsY(curEdgeY))
+        {
+            splitV(right, curEdgeY, right1, right2);
+        }
+
+        // Merge the tile above the current one in horizontal direction if possible.
+        if (curTop->leftTop_ != 0 && curTop->leftTop_->type == TILE_EMPTY)
+        {
+            mergeH(curTop->leftTop_);
+        }
+
+        if (curTop == tile)
+        {
+            StitchTile* curAbove = curTop->leftTop_;
+
+            while (curAbove != 0)
+            {
+                if (curAbove->bottomRight_ == 0 ||
+                    (curTop->bottomRight_ != 0 && curAbove->bottomRight_->pos.x() > curTop->bottomRight_->pos.x()))
+                {
+                    mergeH(curAbove);
+                    break;
+                }
+
+                curAbove = curAbove->bottomRight_;
+            }
+
+            // Try vertical merge for the tile just above the left edge.
+            if (curTop->leftTop_ != 0 && curTop->leftTop_->type == TILE_EMPTY)
+            {
+                mergeV(curTop->leftTop_);
+            }
+        }
+
+        // Check if the bottom edge has been reached.
+        if (curEdgeY == bottomY)
+        {
+            break;
+        }
+
+        // Select the next edge.
+        Q_ASSERT(left->rightBottom_ != 0);
+        Q_ASSERT(right->rightBottom_ != 0);
+        int nextEdgeY = qMin(left->rightBottom_->pos.y(), right->rightBottom_->pos.y());
+
+        StitchTile* top1 = 0;
+        splitV(curTop, nextEdgeY, top1, curTop);
+        curEdgeY = nextEdgeY;
+    }
+
+    mergeV(curTop);
 }
 
 //-----------------------------------------------------------------------------
@@ -242,13 +348,27 @@ void CornerStitchStructure::splitH(StitchTile* tile, int x, StitchTile*& left, S
     }
 
     // Update stitches to the right of the original tile.
-    if (left->bottomRight_ != 0 )
+    if (left->bottomRight_ != 0 && left->bottomRight_->topLeft_ == tile)
     {
         left->bottomRight_->topLeft_ = right;
     }
 
+    // Update the left-top stitch for the right part.
+    curAbove = tile->leftTop_;
+
+    while (curAbove != 0 && curAbove->pos.x() <= x)
+    {
+        if (curAbove->bottomRight_ == 0 || curAbove->bottomRight_->pos.x() > x)
+        {
+            right->leftTop_ = curAbove;
+            break;
+        }
+
+        curAbove = curAbove->bottomRight_;
+    }
+
     // Update the stitches of the left and right parts.
-    right->leftTop_ = left->leftTop_;
+    //right->leftTop_ = left->leftTop_;
     right->topLeft_ = left;
     right->bottomRight_ = left->bottomRight_;
     right->rightBottom_ = left->rightBottom_;

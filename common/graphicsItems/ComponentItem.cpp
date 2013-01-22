@@ -290,7 +290,7 @@ QList<ConnectionEndpoint*> ComponentItem::getEndpoints() const
 {
     QList<ConnectionEndpoint*> endpoints;
 
-    foreach (QGraphicsItem* item, QGraphicsRectItem::children())
+    foreach (QGraphicsItem* item, QGraphicsRectItem::childItems())
     {
         ConnectionEndpoint* endpoint = dynamic_cast<ConnectionEndpoint*>(item);
 
