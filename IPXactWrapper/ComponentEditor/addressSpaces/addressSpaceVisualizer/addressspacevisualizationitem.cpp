@@ -75,14 +75,14 @@ QString AddressSpaceVisualizationItem::addr2Str( quint64 address ) {
 
 void AddressSpaceVisualizationItem::setBottomCoordinate( qreal yCoordinate ) {
 	qreal width = rect().width();
-	qreal height = yCoordinate - x();
+	qreal height = yCoordinate - y();
 	setRect(0, 0, width, height);
 	VisualizerItem::reorganizeChildren();
 }
 
 void AddressSpaceVisualizationItem::setHeight( qreal height ) {
 	qreal width = rect().width();
-	setRect(0, y(), width, height);
+	setRect(0, 0, width, height);
 	VisualizerItem::reorganizeChildren();
 }
 

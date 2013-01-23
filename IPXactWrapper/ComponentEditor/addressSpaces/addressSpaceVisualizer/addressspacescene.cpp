@@ -19,7 +19,7 @@
 
 AddressSpaceScene::AddressSpaceScene(QSharedPointer<AddressSpace> addrSpace,
 									 QObject *parent):
-QGraphicsScene(0, 0, 250, 300, parent),
+QGraphicsScene(parent),
 addrSpace_(addrSpace),
 segmentItems_(),
 addrBlockItems_() {
@@ -100,9 +100,9 @@ void AddressSpaceScene::rePosition() {
 			// update the positions and set default heights
 			seg->setPos(0, yCoord);
 			seg->setHeight(VisualizerItem::ITEM_HEIGHT);
+
 			block->setPos(VisualizerItem::MAX_WIDTH, yCoord);
 			block->setHeight(VisualizerItem::ITEM_HEIGHT);
-
 
 			// TODO remove the hide/show in final
 			seg->show();
@@ -137,6 +137,8 @@ void AddressSpaceScene::rePosition() {
 				// both blocks are processed and next loop iteration starts on new items
 				prevSeg = seg;
 				prevBlock = block;
+				segCoord += VisualizerItem::ITEM_HEIGHT;
+				blockCoord += VisualizerItem::ITEM_HEIGHT;
 				++segIterator;
 				++blockIterator;
 				continue;
