@@ -24,12 +24,12 @@
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
     <Filter Include="Generated Files\Release">
-      <UniqueIdentifier>{ade6a384-b276-4879-b781-d440df8f38db}</UniqueIdentifier>
+      <UniqueIdentifier>{31125f37-277c-4b96-85de-0827af96c4f8}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
     <Filter Include="Generated Files\Debug">
-      <UniqueIdentifier>{ae945f13-594e-41cf-ae41-35a0cae7df22}</UniqueIdentifier>
+      <UniqueIdentifier>{471fac65-b7ff-414d-b828-22d7444fee4b}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
@@ -52,7 +52,5 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="mcapi.json" />
-    <None Include="MCAPICodeGenerator.pro" />
-    <None Include="MCAPICodeGenerator.pri" />
   </ItemGroup>
 </Project>

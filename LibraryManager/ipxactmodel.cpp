@@ -7,7 +7,7 @@
 #include "ipxactitem.h"
 #include "vlnv.h"
 
-#include <QtGui>
+#include <QtWidgets>
 #include <QtXml>
 #include <QString>
 #include <QDomNodeList>
