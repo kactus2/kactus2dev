@@ -27,6 +27,8 @@ class IPluginUtility;
 class MCAPICodeGenerator : public QObject, public IPluginInformation, public IGeneratorPlugin
 {
     Q_OBJECT
+    Q_PLUGIN_METADATA(IID "kactus2.plugins.MCAPICodeGenerator" FILE "mcapi.json")
+
     Q_INTERFACES(IPluginInformation)
     Q_INTERFACES(IGeneratorPlugin)
 

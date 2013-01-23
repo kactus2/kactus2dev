@@ -50,4 +50,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="mcapi.json" />
+    <None Include="MCAPICodeGenerator.pro" />
+    <None Include="MCAPICodeGenerator.pri" />
+  </ItemGroup>
 </Project>
