@@ -26,7 +26,7 @@ public:
 
 	virtual ~CreateVLNVDialog();
 
-        VLNV* exec();
+        VLNV* execDialog();
 
 public slots:
 

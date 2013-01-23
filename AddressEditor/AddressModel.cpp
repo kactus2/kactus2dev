@@ -205,7 +205,7 @@ QVariant AddressModel::data(QModelIndex const& index, int role /*= Qt::DisplayRo
             {
                 if (!checkRangeOverlaps(index.row()))
                 {
-                    return Qt::red;
+                    return QColor(Qt::red);
                 }
 
                 return QVariant();

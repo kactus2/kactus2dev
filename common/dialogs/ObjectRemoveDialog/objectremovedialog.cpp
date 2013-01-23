@@ -33,13 +33,13 @@ model_(this) {
 	// set view to be sortable
 	view_.setSortingEnabled(true);
 	view_.horizontalHeader()->setStretchLastSection(true);
-	view_.horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+	view_.horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 	view_.setSelectionMode(QAbstractItemView::SingleSelection);
 	view_.setAlternatingRowColors(true);
 	view_.verticalHeader()->hide();
 	//view_.setEditTriggers(QAbstractItemView::AllEditTriggers);
 	view_.setWordWrap(true);
-	view_.horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+	view_.horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 	view_.setColumnWidth(0, 500);
 
 	QHBoxLayout* buttonLayout = new QHBoxLayout();

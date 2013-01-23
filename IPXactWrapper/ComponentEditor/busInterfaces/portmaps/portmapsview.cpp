@@ -13,6 +13,8 @@
 #include <QItemSelectionModel>
 #include <QApplication>
 #include <QMenu>
+#include <QMimeData>
+#include <QDrag>
 
 PortMapsView::PortMapsView(QSortFilterProxyModel* proxy, QWidget *parent): 
 QTableView(parent), 
@@ -34,7 +36,7 @@ startPos_() {
 	setSortingEnabled(true);
 
 	horizontalHeader()->setStretchLastSection(true);
-	horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+	horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 	horizontalHeader()->setMinimumSectionSize(50);
 
 	verticalHeader()->setDefaultSectionSize(fontMetrics().height() + 8);

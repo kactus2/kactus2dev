@@ -25,7 +25,7 @@ model_(this) {
 
 	// set settings for the view
 	view_.horizontalHeader()->setStretchLastSection(true);
-	view_.horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+	view_.horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 	view_.setSelectionMode(QAbstractItemView::SingleSelection);
 	view_.setSelectionBehavior(QAbstractItemView::SelectItems);
 	view_.setEditTriggers(QAbstractItemView::DoubleClicked | 

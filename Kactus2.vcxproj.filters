@@ -6,725 +6,749 @@
       <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
     <Filter Include="Source Files\common">
-      <UniqueIdentifier>{df064950-397c-463a-8c13-693d2ca47d60}</UniqueIdentifier>
+      <UniqueIdentifier>{8cf68e1f-ba5f-4f98-8a0e-01bf3ef9df97}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\dialogs">
-      <UniqueIdentifier>{b720bf68-c770-4b5c-9649-880e15308ba9}</UniqueIdentifier>
+      <UniqueIdentifier>{2868119f-39b5-42f1-9c9b-6ca9a77841a2}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\dialogs\attributeDialog">
-      <UniqueIdentifier>{6624cdd9-b514-4caa-aac0-383fe198ff2c}</UniqueIdentifier>
+      <UniqueIdentifier>{fe5d4395-3134-406b-8d15-be10e1b15242}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\dialogs\comboSelector">
-      <UniqueIdentifier>{20d0fb84-668e-4524-ae2b-3cc5bef22b0a}</UniqueIdentifier>
+      <UniqueIdentifier>{672fd294-eb48-44cc-b458-d3a407f1f0ff}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\dialogs\createVLNVDialog">
-      <UniqueIdentifier>{c157ab92-146e-40fa-936b-f7a65b135dbc}</UniqueIdentifier>
+      <UniqueIdentifier>{018cc0da-7b74-411f-8d52-4e58e2bbcda7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\dialogs\renameDialog">
-      <UniqueIdentifier>{a2fbf549-980b-4435-94ae-fea1b5e55c60}</UniqueIdentifier>
+      <UniqueIdentifier>{8f5a4504-f718-4645-b9e3-1182255d7584}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\dialogs\propertyPageDialog">
-      <UniqueIdentifier>{e1a16064-af00-4ff4-b504-5f8cc83348a0}</UniqueIdentifier>
+      <UniqueIdentifier>{6bd0ac70-2ee8-4d7e-ab66-d526996fab2b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\dialogs\newObjectDialog">
-      <UniqueIdentifier>{2e95a2ed-6933-4dc2-a600-ed35226b4781}</UniqueIdentifier>
+      <UniqueIdentifier>{ed360aa9-01f2-4b88-b1f5-f75ac0bf9a98}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\dialogs\ObjectRemoveDialog">
-      <UniqueIdentifier>{5d70843b-2ec7-4856-9d4a-1dc750b8d167}</UniqueIdentifier>
+      <UniqueIdentifier>{26c8c28c-a43e-41a6-b303-9f232361bd75}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\dialogs\createConfigurationDialog">
-      <UniqueIdentifier>{88c5b009-f2c8-4ebe-ad91-f354bb97ea57}</UniqueIdentifier>
+      <UniqueIdentifier>{52a9697c-406f-44eb-989b-2035f36ef2b2}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\dialogs\listSelectDialog">
-      <UniqueIdentifier>{157e32eb-0d3c-43ad-a18f-9ad4cb4fe8dd}</UniqueIdentifier>
+      <UniqueIdentifier>{d1dd3e2f-9259-4000-a362-b0c3f161fb6e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\dialogs\selectDirectoryDialog">
-      <UniqueIdentifier>{20b1be95-2084-4916-9bc1-085321a3f9ac}</UniqueIdentifier>
+      <UniqueIdentifier>{e37535f0-3533-4abd-8bc6-ff6bde486dda}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\dialogs\NewDesignDialog">
-      <UniqueIdentifier>{e231fa6c-4ca7-44e9-a574-2c8a08704f30}</UniqueIdentifier>
+      <UniqueIdentifier>{ad08ce22-89e0-41fe-8e2e-ed772914484f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\dialogs\LibrarySettingsDialog">
-      <UniqueIdentifier>{383647ee-6e97-41f4-bef4-44b5bc564097}</UniqueIdentifier>
+      <UniqueIdentifier>{140bc3a7-948f-4a9c-a7e4-9fca53195e10}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\dialogs\TableViewDialog">
-      <UniqueIdentifier>{ee1d0f0f-a363-477c-8821-2821dd685a66}</UniqueIdentifier>
+      <UniqueIdentifier>{68fc8707-a65d-46c3-9fd9-69ba36cd2909}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\validators">
-      <UniqueIdentifier>{8af58033-9e8c-4dd6-925d-194f9744933b}</UniqueIdentifier>
+      <UniqueIdentifier>{9143e37c-3fd5-47ed-99e0-94afdf25672d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\validators\nameValidator">
-      <UniqueIdentifier>{c0bd062d-dde9-4ce0-be02-6b755bed7f4b}</UniqueIdentifier>
+      <UniqueIdentifier>{310db43f-9ae6-40b0-9b34-7c175cebf8b6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\validators\vhdlNameValidator">
-      <UniqueIdentifier>{4f6b9daf-7524-4660-a916-51966baaa8f1}</UniqueIdentifier>
+      <UniqueIdentifier>{0a340199-2454-4dbf-be86-35bb25a8f263}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\validators\LibraryPathValidator">
-      <UniqueIdentifier>{b5573c1d-308c-4d41-9df3-1afccc6cce1a}</UniqueIdentifier>
+      <UniqueIdentifier>{0a388bcb-66ce-46d7-ab80-526c5c26cd9e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets">
-      <UniqueIdentifier>{fdd30858-e769-469e-a4ec-9a4d7edb849a}</UniqueIdentifier>
+      <UniqueIdentifier>{6b8fbb8c-677d-4150-99ff-de54b1e2021e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\assistedLineEdit">
-      <UniqueIdentifier>{f09e8010-e085-49d8-9230-2e91980554ce}</UniqueIdentifier>
+      <UniqueIdentifier>{20dbdf03-f3a0-4726-87f1-be01ff7ff6e2}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\attributeBox">
-      <UniqueIdentifier>{6382518f-bc04-4e34-af0e-c5af1e7cca50}</UniqueIdentifier>
+      <UniqueIdentifier>{39650a7b-5321-43ac-a719-5f0208950847}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\libraryRefGenerator">
-      <UniqueIdentifier>{7e81cfa8-da4b-4b81-b089-ad02eb7c14f9}</UniqueIdentifier>
+      <UniqueIdentifier>{fd6dccdb-f758-4985-ac5c-1d323bafa000}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\listManager">
-      <UniqueIdentifier>{73e206b5-32e1-426d-aa8b-daabf3995bca}</UniqueIdentifier>
+      <UniqueIdentifier>{3a6c765a-d228-4a31-b0f8-29297fcdf92d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\nameGroupBox">
-      <UniqueIdentifier>{3c25dd25-e930-4ea7-99de-ea2106d72c6f}</UniqueIdentifier>
+      <UniqueIdentifier>{9ec2119f-95b2-4f0a-bab4-cb2b068cc8fa}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\vectorEditor">
-      <UniqueIdentifier>{5792c32a-bba9-4103-9815-5d00a22c3562}</UniqueIdentifier>
+      <UniqueIdentifier>{70f83ed1-8af3-4fed-ba05-03586c1acd51}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\vlnvDisplayer">
-      <UniqueIdentifier>{f9079fb8-c260-4070-a56d-6c93d6e937dd}</UniqueIdentifier>
+      <UniqueIdentifier>{1237139b-8d15-4e20-9009-001948031e93}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\vlnvGenerator">
-      <UniqueIdentifier>{f6ef0a86-8f89-4414-a9f7-ccf270598162}</UniqueIdentifier>
+      <UniqueIdentifier>{488436e1-6ac8-4d1b-b841-2db22d6fcc25}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\assistedTextEdit">
-      <UniqueIdentifier>{6ce3ea34-14a9-4803-932f-6f9ed2a453dd}</UniqueIdentifier>
+      <UniqueIdentifier>{09bcfd67-28c4-4c07-9ce8-a720d2b773c2}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\vlnvEditor">
-      <UniqueIdentifier>{f50e6cc1-3a09-465a-9a41-53777fec0521}</UniqueIdentifier>
+      <UniqueIdentifier>{82b7b9cf-e841-46e1-97f1-3b11b96f8633}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\colorBox">
-      <UniqueIdentifier>{5b5e30db-c416-461f-8eee-1498e8f9df94}</UniqueIdentifier>
+      <UniqueIdentifier>{17db4855-b94b-4903-9131-e8f52f429605}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\kactusAttributeEditor">
-      <UniqueIdentifier>{1071bd06-43fa-405d-82e6-046ecbee50e7}</UniqueIdentifier>
+      <UniqueIdentifier>{08969ef7-2254-4998-a78a-831745cb25dc}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\componentPreviewBox">
-      <UniqueIdentifier>{8a489233-0b6d-466a-b395-451ac7356a4e}</UniqueIdentifier>
+      <UniqueIdentifier>{220c1655-4295-4a21-8341-6315db4bcccb}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\tabDocument">
-      <UniqueIdentifier>{c6b81849-cfa8-4845-83cb-84d94f8245c2}</UniqueIdentifier>
+      <UniqueIdentifier>{a1f0f5c5-705e-47bb-b5d0-b90d522884b9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\dirLineEdit">
-      <UniqueIdentifier>{0438de74-318e-4c39-a6df-067a6780a920}</UniqueIdentifier>
+      <UniqueIdentifier>{1b17dd01-1a62-451c-9103-a08aacbed581}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\booleanComboBox">
-      <UniqueIdentifier>{b4b693a5-0c61-4246-87ec-efd5e45590b5}</UniqueIdentifier>
+      <UniqueIdentifier>{107834f1-9556-4a77-b61f-8a36bf02a588}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\LibraryPathSelector">
-      <UniqueIdentifier>{85224e16-99a8-4d71-b265-42a9d332afc9}</UniqueIdentifier>
+      <UniqueIdentifier>{6e00d856-d4c8-48b5-a4e0-16747f33091d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\LibraryPathEditor">
-      <UniqueIdentifier>{886087f4-8dbd-433b-a1c8-b09782d8459c}</UniqueIdentifier>
+      <UniqueIdentifier>{fdbcecd1-7bf2-499c-8b30-dbf48772d318}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\ScanProgressWidget">
-      <UniqueIdentifier>{ed1d9569-3067-4f47-8291-3249c876be97}</UniqueIdentifier>
+      <UniqueIdentifier>{36f3566c-7ea0-4e11-b88e-bae0b6bfc210}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\ParameterEditor">
-      <UniqueIdentifier>{40a8511f-b4ba-42c2-b652-b603b9d9e9ff}</UniqueIdentifier>
+      <UniqueIdentifier>{9bb9614e-58be-42e7-8b3a-f3de1479302f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\ParameterGroupBox">
-      <UniqueIdentifier>{19ad7b0c-8a85-489a-b34a-9778723f40b0}</UniqueIdentifier>
+      <UniqueIdentifier>{a39e522f-a4fb-4042-a290-6c7e49cb1598}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\NumberLineEdit">
-      <UniqueIdentifier>{858c0e80-5ba9-427f-9d87-47e9fd6f58ad}</UniqueIdentifier>
+      <UniqueIdentifier>{099021c7-12c9-411f-8b90-2e36317c0eca}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\tabWidgetEx">
-      <UniqueIdentifier>{ab2d1cec-4726-45b0-9c19-6bf2f19a54ab}</UniqueIdentifier>
+      <UniqueIdentifier>{23566607-8468-45a4-bbcf-d8441bfa82da}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\nameGroupEditor">
-      <UniqueIdentifier>{b1e897a8-8090-400d-9e07-1b8561d5c48a}</UniqueIdentifier>
+      <UniqueIdentifier>{87fd8ba6-988c-4baf-bd65-a4d3943497e9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\summaryLabel">
-      <UniqueIdentifier>{5ee040ec-6c1b-4c1d-be0f-c224bb3a4a50}</UniqueIdentifier>
+      <UniqueIdentifier>{6e556348-8fd6-47b9-a103-68cd96239802}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\interfaceModeSelector">
-      <UniqueIdentifier>{b7c2a9e1-5829-4e84-bfde-b4433d8f4ab6}</UniqueIdentifier>
+      <UniqueIdentifier>{513e2ac7-3db3-4f2f-b8ab-3e040960b05e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\addressSpaceSelector">
-      <UniqueIdentifier>{965aa505-79b3-46a2-9455-7ebedad15d52}</UniqueIdentifier>
+      <UniqueIdentifier>{86eb7d6c-0f3d-482d-a0f6-1ce9806b1169}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\memoryMapSelector">
-      <UniqueIdentifier>{9d32c6e1-e5e3-4e98-b6dc-5778454af2ca}</UniqueIdentifier>
+      <UniqueIdentifier>{2c9ac699-53d6-4769-b515-bee41dba2371}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\interfaceSelector">
-      <UniqueIdentifier>{3c2ecc23-87bc-4ce2-b458-9559839b05fc}</UniqueIdentifier>
+      <UniqueIdentifier>{ead2efce-1659-437c-8e32-5229e576f8a2}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\LineEditEx">
-      <UniqueIdentifier>{93f86b13-973e-4876-8725-3e43a769be6c}</UniqueIdentifier>
+      <UniqueIdentifier>{464d7835-b1d8-4032-a385-d8081d9061c6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\ComboBoxEx">
-      <UniqueIdentifier>{1b29e3bd-6505-4c5e-aff2-242a7a3e8f69}</UniqueIdentifier>
+      <UniqueIdentifier>{d78bc766-5492-4c2a-9da5-d78144a64638}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\SnippetTextEdit">
-      <UniqueIdentifier>{349d09ee-a741-4171-a5bc-61e63e6bc08f}</UniqueIdentifier>
+      <UniqueIdentifier>{695c6a42-c622-481f-aad0-f072f38d933b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\usageComboBox">
-      <UniqueIdentifier>{10c82d3f-18af-4e67-a444-2fd1187121fd}</UniqueIdentifier>
+      <UniqueIdentifier>{d48870a2-5e55-423a-8bfa-4b1c482502ba}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\accessComboBox">
-      <UniqueIdentifier>{4745d2dd-9418-420c-ad06-61d85ceb59f8}</UniqueIdentifier>
+      <UniqueIdentifier>{aee14f7d-ece2-4feb-b673-bbe1a586ca97}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\modWriteComboBox">
-      <UniqueIdentifier>{8d76391e-0324-4e20-8f5c-0248542ed9c4}</UniqueIdentifier>
+      <UniqueIdentifier>{35ed3f18-525c-4c4a-afc1-0f8fb2dd0b0d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\readActionComboBox">
-      <UniqueIdentifier>{c4413c8a-c94b-4c2c-b291-4db872037b1f}</UniqueIdentifier>
+      <UniqueIdentifier>{f08e3c2d-9b63-4ee4-9590-f8a789732a4e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\testConstraintComboBox">
-      <UniqueIdentifier>{8e0a8432-7c60-49be-b144-cca3ef3b0cc7}</UniqueIdentifier>
+      <UniqueIdentifier>{ee21b3e6-e957-48f9-9f05-0542861b81d5}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\layouts">
-      <UniqueIdentifier>{ad53e405-d536-40c9-83d6-fc132f5aad5b}</UniqueIdentifier>
+      <UniqueIdentifier>{3e890238-92ce-4d42-ae8d-a7da7411ac98}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\graphicsItems">
-      <UniqueIdentifier>{cf390ed5-ff70-4405-afb7-20195bf4a59c}</UniqueIdentifier>
+      <UniqueIdentifier>{183125be-5f89-4d53-8ca5-d0c9d80dd6a9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\delegates">
-      <UniqueIdentifier>{3e028e28-3611-4e35-b9d7-06600ba4d305}</UniqueIdentifier>
+      <UniqueIdentifier>{112d6046-2c96-4939-81e2-240554a436f0}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\delegates\ComboDelegate">
-      <UniqueIdentifier>{eb3b86ef-c3e1-48fe-9981-868f5f78bd5c}</UniqueIdentifier>
+      <UniqueIdentifier>{fb76d5b3-9ad1-443b-86a7-6918abc349ae}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\delegates\LineEditDelegate">
-      <UniqueIdentifier>{97282eae-c951-4d58-b522-fa65b90157ec}</UniqueIdentifier>
+      <UniqueIdentifier>{b1049301-b825-4efa-bd91-dacf653e95ee}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\views">
-      <UniqueIdentifier>{b6d36620-1bde-47e2-ade8-0687f6caef9d}</UniqueIdentifier>
+      <UniqueIdentifier>{4d4fa815-eb83-416a-a59d-52a5600a624d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\views\EditableTableView">
-      <UniqueIdentifier>{bb05a964-f142-4f7b-ab8e-7a63ac461336}</UniqueIdentifier>
+      <UniqueIdentifier>{9b8c96b0-f43b-4036-ba69-e1cbcfd080ac}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\views\EditableListView">
-      <UniqueIdentifier>{c5a5de91-717a-4f72-a9f2-ffc703ae4f45}</UniqueIdentifier>
+      <UniqueIdentifier>{87e1598b-9b2f-487f-8998-f30e922c4c71}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\models">
-      <UniqueIdentifier>{99fa3fbc-59e8-430b-90f8-b40b29ae2b58}</UniqueIdentifier>
+      <UniqueIdentifier>{fb7b1eac-760e-4ed5-be4f-e241925674ea}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\models\ParametersModel">
-      <UniqueIdentifier>{aadcef1c-9e5a-4692-be03-81774d3f17b8}</UniqueIdentifier>
+      <UniqueIdentifier>{2c749206-bcd6-40d0-b932-15fe537d001d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\cornerStitch">
+      <UniqueIdentifier>{5a17db20-e36b-4e7b-b1c7-dd00f7cb1895}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\designwidget">
-      <UniqueIdentifier>{952e533d-9fd7-44af-a225-af121583de30}</UniqueIdentifier>
+      <UniqueIdentifier>{f799562f-609b-446e-828e-e511d1566fb5}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\designwidget\columnview">
-      <UniqueIdentifier>{f8075c1b-00cd-497e-bfba-d7d1c9661733}</UniqueIdentifier>
+      <UniqueIdentifier>{6160e71a-4cf3-4438-adfc-54c1196fdec9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\IPXactWrapper">
-      <UniqueIdentifier>{b6e24a39-02e8-4be9-947e-5997489c9484}</UniqueIdentifier>
+      <UniqueIdentifier>{c7bd1d7e-c9cc-47fb-af46-c4be9fcdc7d0}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\IPXactWrapper\ComponentEditor">
-      <UniqueIdentifier>{dddaf8fd-19fe-4f63-8a15-c47000e34fbe}</UniqueIdentifier>
+      <UniqueIdentifier>{150999da-17aa-4acb-9153-856600b74b7e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\IPXactWrapper\ComponentEditor\busInterfaces">
-      <UniqueIdentifier>{31c3990b-e69f-47e8-81d2-6789b5c1f138}</UniqueIdentifier>
+      <UniqueIdentifier>{c4a5f054-3341-4515-a445-db37bfc2fb1c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\IPXactWrapper\ComponentEditor\busInterfaces\portmaps">
-      <UniqueIdentifier>{3f523435-961a-4a0e-90aa-14be714d8a91}</UniqueIdentifier>
+      <UniqueIdentifier>{cf564469-9423-41ef-a7e4-057642813825}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\IPXactWrapper\ComponentEditor\channels">
-      <UniqueIdentifier>{00948261-041e-4d16-a3da-26bc7009629f}</UniqueIdentifier>
+      <UniqueIdentifier>{f080042c-880e-424d-8aca-3fb7c56360fa}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\IPXactWrapper\ComponentEditor\fileBuilders">
-      <UniqueIdentifier>{c6fe9d3d-7493-48ed-a113-2d731021252a}</UniqueIdentifier>
+      <UniqueIdentifier>{74edb9fd-99d3-4eb4-b70c-978ff81547dc}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\IPXactWrapper\ComponentEditor\fileSet">
-      <UniqueIdentifier>{fd05e0bb-d9ce-475c-99b8-aba5b4494ad5}</UniqueIdentifier>
+      <UniqueIdentifier>{947f0161-daa6-4f3e-bdb2-1fd35e8163e0}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\IPXactWrapper\ComponentEditor\fileSet\file">
-      <UniqueIdentifier>{f5d0e3e8-be66-4c52-b294-e4924742a4a7}</UniqueIdentifier>
+      <UniqueIdentifier>{7184204d-74df-4664-bee0-b97742b46177}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\IPXactWrapper\ComponentEditor\general">
-      <UniqueIdentifier>{13288cb8-d616-4e7e-9861-bbe3b80edb41}</UniqueIdentifier>
+      <UniqueIdentifier>{04fd2c6f-45eb-4173-84d5-dbb55025dcf8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\IPXactWrapper\ComponentEditor\modelParameters">
-      <UniqueIdentifier>{365b4996-c144-41fb-8f8d-4b6946640e05}</UniqueIdentifier>
+      <UniqueIdentifier>{190d8f63-9723-4c0a-9a51-40084cbf4241}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\IPXactWrapper\ComponentEditor\otherClockDrivers">
-      <UniqueIdentifier>{8480ae2d-72b6-4ab8-aa41-4c3b6ebef0cf}</UniqueIdentifier>
+      <UniqueIdentifier>{56ac847d-d5d9-41c2-9a80-7b799d8dc9c1}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\IPXactWrapper\ComponentEditor\parameters">
-      <UniqueIdentifier>{900e6025-e175-47d6-b163-a16982d30f1f}</UniqueIdentifier>
+      <UniqueIdentifier>{9ad25cad-5fdc-48e5-92e3-09d20d9dd862}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\IPXactWrapper\ComponentEditor\ports">
-      <UniqueIdentifier>{9ef65854-5379-42d7-bc72-6a509f8fbfe7}</UniqueIdentifier>
+      <UniqueIdentifier>{9f5fb904-f7bb-4c2f-83ed-abf5fa82ad55}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\IPXactWrapper\ComponentEditor\views">
-      <UniqueIdentifier>{e50e456a-9cbb-42ce-9961-9b20bf73ee31}</UniqueIdentifier>
+      <UniqueIdentifier>{d756b2ac-1d5a-45fb-8036-c0c5bf61cdc6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\IPXactWrapper\ComponentEditor\software">
-      <UniqueIdentifier>{939e9abe-0bd1-4d32-a195-b388421b271e}</UniqueIdentifier>
+      <UniqueIdentifier>{195851cc-d464-4ac2-b6f5-66b1737ad13c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\IPXactWrapper\ComponentEditor\addressSpaces">
-      <UniqueIdentifier>{77a5fcf1-1959-4c6c-819c-db6fb2062cf4}</UniqueIdentifier>
+      <UniqueIdentifier>{7afe7ab1-4609-4ade-b4d3-3bc6ef367a4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\IPXactWrapper\ComponentEditor\addressSpaces\localMemoryMap">
+      <UniqueIdentifier>{67ee9d50-bd50-44a2-aec4-d2518e1cf617}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer">
+      <UniqueIdentifier>{0409a50e-b0af-4d63-a482-8aaf3ed04245}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\IPXactWrapper\ComponentEditor\cpus">
-      <UniqueIdentifier>{0ec10b18-79cd-4bf0-a27b-c66767fddaed}</UniqueIdentifier>
+      <UniqueIdentifier>{f7e590a7-06f8-44aa-bb8f-072cd940cd2c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\IPXactWrapper\ComponentEditor\memoryMaps">
-      <UniqueIdentifier>{e9cbcd11-8ee6-45fc-890c-d18c64abacd5}</UniqueIdentifier>
+      <UniqueIdentifier>{c08582bf-35a6-4ef6-b80d-cbee0e36dc03}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\IPXactWrapper\ComponentEditor\memoryMaps\memoryMapsVisualizer">
-      <UniqueIdentifier>{82d8443a-7787-48f4-9901-7d0713eb6350}</UniqueIdentifier>
+      <UniqueIdentifier>{75140e15-f6b7-4212-bcf3-7b468c63fa08}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\IPXactWrapper\ComponentEditor\treeStructure">
-      <UniqueIdentifier>{5c1bf170-0efa-4960-898f-3abe405846ee}</UniqueIdentifier>
+      <UniqueIdentifier>{78cc7e76-bbee-4fd4-994f-f3aec5a34d60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\IPXactWrapper\ComponentEditor\visualization">
+      <UniqueIdentifier>{8c6eb300-8246-4d1d-a741-765ed4fa8188}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\IPXactWrapper\BusEditor">
-      <UniqueIdentifier>{b7952d9c-2f8a-460d-8829-3d73964a641e}</UniqueIdentifier>
+      <UniqueIdentifier>{d89612fe-e3cc-4613-a1b9-ca92a3703c58}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\IPXactWrapper\ComDefinitionEditor">
-      <UniqueIdentifier>{4b122ce3-1813-4407-a78b-58eadfb2ee0c}</UniqueIdentifier>
+      <UniqueIdentifier>{41a2ec91-0a96-47c3-aaef-491d53709458}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\IPXactWrapper\ApiDefinitionEditor">
-      <UniqueIdentifier>{810582c6-832d-4a02-973b-8fbd1b93d2cf}</UniqueIdentifier>
+      <UniqueIdentifier>{b64863ab-a8f4-4c34-853d-7b5da95d7bfa}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\LibraryManager">
-      <UniqueIdentifier>{01e7a0d7-9de8-4887-85e4-cdd1d76708e5}</UniqueIdentifier>
+      <UniqueIdentifier>{1077e743-f20d-4505-9bcc-f5715549dc79}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\LibraryManager\VLNVDialer">
-      <UniqueIdentifier>{f5c02b0f-3f77-4cdd-8bad-361ecd60e932}</UniqueIdentifier>
+      <UniqueIdentifier>{5c24460b-0133-4cc6-8272-19d9638b8008}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\LibraryManager\HierarchyView">
-      <UniqueIdentifier>{a3944698-d98f-45ac-ba60-2b6d0babc396}</UniqueIdentifier>
+      <UniqueIdentifier>{c8cafc85-ff9a-43da-9678-6807b5988bf3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\mainwindow">
-      <UniqueIdentifier>{22728f85-db74-4852-a9fb-fcca3271211e}</UniqueIdentifier>
+      <UniqueIdentifier>{a1e9b9e1-57a6-4103-8fdd-ddd6400f500b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\models">
-      <UniqueIdentifier>{3e987365-8a19-4bd2-80cc-8b0db7b4b8d1}</UniqueIdentifier>
+      <UniqueIdentifier>{5151b925-793d-41c2-9825-f0ff9698bf83}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\modelsimGenerator">
-      <UniqueIdentifier>{da16b79b-1602-40d6-be37-98561a421bf8}</UniqueIdentifier>
+      <UniqueIdentifier>{8c04128f-3d50-4b65-8e1d-3462be1bfedb}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\PropertyWidget">
-      <UniqueIdentifier>{8f79e11a-a554-4ef4-b2f7-e2371c8d2684}</UniqueIdentifier>
+      <UniqueIdentifier>{3bdef36f-cb36-47ff-aae8-08789d6a8f30}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\quartusGenerator">
-      <UniqueIdentifier>{d6b55190-539f-42ba-8997-9ee3e145faa6}</UniqueIdentifier>
+      <UniqueIdentifier>{669c2b18-7a0f-4c48-96ef-18ecb2014765}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\vhdlGenerator">
-      <UniqueIdentifier>{039befd8-58db-4799-9c44-db9d022aa423}</UniqueIdentifier>
+      <UniqueIdentifier>{e56d55fc-2bce-44a2-ad98-b51764f20886}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\MCAPI">
-      <UniqueIdentifier>{7bedcef2-a978-4793-8bd9-8ee52fd94538}</UniqueIdentifier>
+      <UniqueIdentifier>{a356103c-eab0-4173-9244-29c4d58fe07d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\settings">
-      <UniqueIdentifier>{71332f7c-3258-480b-80c7-71c1934c8ff2}</UniqueIdentifier>
+      <UniqueIdentifier>{77381046-6969-4ccb-b682-9184354e106f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\ComponentInstanceEditor">
-      <UniqueIdentifier>{7837347e-f287-43a2-8686-3773e5fb873e}</UniqueIdentifier>
+      <UniqueIdentifier>{06118809-0a02-423b-a1f6-01cd5d9e263d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\ConfigurationEditor">
-      <UniqueIdentifier>{d4d17676-ec47-46d0-9b69-0b53397e3706}</UniqueIdentifier>
+      <UniqueIdentifier>{1a42d51e-a407-4e5c-af73-1b426ed52f5f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\DocumentGenerator">
-      <UniqueIdentifier>{1ce5bb72-5d80-4335-9801-ccc9510c64c9}</UniqueIdentifier>
+      <UniqueIdentifier>{e5a3aca2-dc0d-4674-ad42-dcb79283148c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\InterfaceEditor">
-      <UniqueIdentifier>{dd926ec1-879d-4d46-87a1-32aa60af55e1}</UniqueIdentifier>
+      <UniqueIdentifier>{75a82081-c81a-4e61-a550-cc8d402dc1b6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\ConnectionEditor">
-      <UniqueIdentifier>{af5f1ad3-edec-45ea-9979-8d76d95f024a}</UniqueIdentifier>
+      <UniqueIdentifier>{1410acc8-54df-41e1-b964-412c40779b5c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\GCF">
-      <UniqueIdentifier>{1d80d2c4-3f8e-4a18-81c0-515585cf4c8c}</UniqueIdentifier>
+      <UniqueIdentifier>{a26eea0c-1ea4-4fa0-a8b1-3330ef3775cf}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\AdHocEditor">
-      <UniqueIdentifier>{c067f3d5-2c65-423a-9a5c-6e47b7e0f7fd}</UniqueIdentifier>
+      <UniqueIdentifier>{7ee38de9-29b9-45ea-adb5-2e590c4eb522}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\SystemDesign">
-      <UniqueIdentifier>{bcdf6a28-04dd-4d42-9b0e-de69c15cf94c}</UniqueIdentifier>
+      <UniqueIdentifier>{03ae350b-b637-4ead-9ef8-e5ea0f1299a9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\PluginSystem">
-      <UniqueIdentifier>{149a7371-6f0d-45d7-b6bb-5eabb2236c88}</UniqueIdentifier>
+      <UniqueIdentifier>{b9311471-209b-4cc7-925f-48004f031eb9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\SystemDetailsEditor">
-      <UniqueIdentifier>{1cb494dc-ae29-45ff-a4d4-c4fa292594c5}</UniqueIdentifier>
+      <UniqueIdentifier>{7d5b3822-72c4-4ddf-b34a-3e90ff07b185}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\HelpSystem">
-      <UniqueIdentifier>{af700946-89ef-446a-a227-e76b6fc67f45}</UniqueIdentifier>
+      <UniqueIdentifier>{502de8f7-e0d5-47f4-a14e-c01721e9763f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\AddressEditor">
-      <UniqueIdentifier>{05242315-9c0e-4896-b8af-f1ec68fca442}</UniqueIdentifier>
+      <UniqueIdentifier>{e48d2aa4-052e-4a0e-9239-f29a61066e3d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\MemoryDesigner">
-      <UniqueIdentifier>{e8e2e284-93ef-4839-a706-37517da62181}</UniqueIdentifier>
+      <UniqueIdentifier>{f6950d00-cbe8-49f3-a5c0-acb4e9369158}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
     <Filter Include="Header Files\common">
-      <UniqueIdentifier>{feff1d6e-8a49-4a15-8ac3-549d87f71995}</UniqueIdentifier>
+      <UniqueIdentifier>{1829c242-373c-4468-a55b-c0d354a459f9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets">
-      <UniqueIdentifier>{fbf6b095-ee42-4059-b167-f328b47c3b03}</UniqueIdentifier>
+      <UniqueIdentifier>{5e54771c-5f0e-4374-b0a9-5acc5bbcf6b3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\attributeBox">
-      <UniqueIdentifier>{c7ed14cf-9217-4c95-b0df-e2353fde23cb}</UniqueIdentifier>
+      <UniqueIdentifier>{09591c84-d92b-4b3d-b7d4-82d304edbd46}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\libraryRefGenerator">
-      <UniqueIdentifier>{00db1230-276e-48f9-b144-50251616f561}</UniqueIdentifier>
+      <UniqueIdentifier>{f1aa101d-a202-4689-9be5-2c00b4979c7e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\listManager">
-      <UniqueIdentifier>{5375adf4-0002-44c6-920b-8edbf48fdb23}</UniqueIdentifier>
+      <UniqueIdentifier>{ba100114-9a14-42cd-92f8-52dfb4ddd062}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\nameGroupBox">
-      <UniqueIdentifier>{e128be88-1c25-4ac1-9d4b-2b45fec1a149}</UniqueIdentifier>
+      <UniqueIdentifier>{7098fb32-2edd-4ed0-9792-2c2bccf06409}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\vlnvGenerator">
-      <UniqueIdentifier>{ac7167ba-360e-4afb-8e47-cc2020157b8b}</UniqueIdentifier>
+      <UniqueIdentifier>{f3fa8fae-cf17-479c-9508-3ebeeffecb28}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\assistedLineEdit">
-      <UniqueIdentifier>{9a167ebe-06c6-4e1c-b604-a1af6b70d404}</UniqueIdentifier>
+      <UniqueIdentifier>{22d157b3-08be-41d1-b73f-22a32c1fbe12}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\vlnvDisplayer">
-      <UniqueIdentifier>{ec9faeb3-f837-412d-abae-0a6a82646bfd}</UniqueIdentifier>
+      <UniqueIdentifier>{cadbaba6-6ec5-4689-87d0-2f30829957a4}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\booleanComboBox">
-      <UniqueIdentifier>{42469cac-4880-4fc2-8753-74ba9847e7ab}</UniqueIdentifier>
+      <UniqueIdentifier>{32595204-1ce5-4acb-b002-44db45b3ea3d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\vectorEditor">
-      <UniqueIdentifier>{d5694249-2b1c-44b9-87bf-852208c4f0ef}</UniqueIdentifier>
+      <UniqueIdentifier>{ec9d24f4-899e-41b5-917c-2407dd75c252}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\tabDocument">
-      <UniqueIdentifier>{0baf2a15-041a-4761-898e-a7452b11394e}</UniqueIdentifier>
+      <UniqueIdentifier>{341554d9-0087-4e41-add5-509c6869ebf6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\assistedTextEdit">
-      <UniqueIdentifier>{a609a67b-2f37-4b98-9715-2cd77ad663e4}</UniqueIdentifier>
+      <UniqueIdentifier>{fba60a0b-0b3d-4b81-96dd-3434c3259db7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\vlnvEditor">
-      <UniqueIdentifier>{a0947354-070b-4580-959a-b77ff2edb140}</UniqueIdentifier>
+      <UniqueIdentifier>{cedc208f-a444-4230-b40c-c31af8d895a6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\colorBox">
-      <UniqueIdentifier>{834e3c34-38d2-47b7-87cc-bc6af40e18ab}</UniqueIdentifier>
+      <UniqueIdentifier>{9a5d0a09-d2a5-42f3-a98b-f4e4b8a48443}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\kactusAttributeEditor">
-      <UniqueIdentifier>{42b0b627-51b1-4654-bc02-304775046b9f}</UniqueIdentifier>
+      <UniqueIdentifier>{4d38a00f-e742-402d-a967-5bed75379d5b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\componentPreviewBox">
-      <UniqueIdentifier>{3f151fc9-1ee3-42c6-8d20-242009c9b927}</UniqueIdentifier>
+      <UniqueIdentifier>{bb9e16b1-452a-4ba8-a508-445426bdc2cc}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\dirLineEdit">
-      <UniqueIdentifier>{b63dc3d8-5324-460a-b714-c46238acd552}</UniqueIdentifier>
+      <UniqueIdentifier>{ce69322f-f0bc-4fc1-8615-eaf959234e32}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\LibraryPathSelector">
-      <UniqueIdentifier>{794e18f0-516d-4f4d-b975-0cb7662382d9}</UniqueIdentifier>
+      <UniqueIdentifier>{29842279-c420-46be-be19-3f014f5ddc41}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\LibraryPathEditor">
-      <UniqueIdentifier>{84281255-1567-4202-a708-6cdfdf0dc8e3}</UniqueIdentifier>
+      <UniqueIdentifier>{669fa8e6-673b-4439-8d33-e491609c77b7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\ScanProgressWidget">
-      <UniqueIdentifier>{556d5ff1-6f48-4192-b44e-8fec01e9fbfd}</UniqueIdentifier>
+      <UniqueIdentifier>{1d4e33eb-e17a-44b3-9827-373d6b07a950}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\ParameterEditor">
-      <UniqueIdentifier>{0380d7e4-98b1-4639-b938-20cf7f533959}</UniqueIdentifier>
+      <UniqueIdentifier>{1123fb2a-1dcd-488c-8d50-3310f97a00a0}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\ParameterGroupBox">
-      <UniqueIdentifier>{4ebaab5b-e70d-401d-a2f5-790321b9920b}</UniqueIdentifier>
+      <UniqueIdentifier>{a52a756f-af60-4621-a49c-76e48308211f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\NumberLineEdit">
-      <UniqueIdentifier>{f4c1bd8c-bb70-4fcf-8d5d-c7dc5fc56734}</UniqueIdentifier>
+      <UniqueIdentifier>{e711711c-bd15-47d8-bb9c-a903fbd0edfb}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\tabWidgetEx">
-      <UniqueIdentifier>{d3404369-ba12-44b2-8e32-10070b9cbe60}</UniqueIdentifier>
+      <UniqueIdentifier>{848a7d35-1ead-4b8c-9584-862366b8a518}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\nameGroupEditor">
-      <UniqueIdentifier>{94ea159d-4d33-43b7-96fe-0704989c7337}</UniqueIdentifier>
+      <UniqueIdentifier>{81c97d4f-7743-4892-b08f-3bcd4ff911ac}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\summaryLabel">
-      <UniqueIdentifier>{95b63cfb-4c43-483b-bfbb-f67bd20bcbce}</UniqueIdentifier>
+      <UniqueIdentifier>{cfacf1ea-9ebc-41ed-a4b0-d2ebcc27c497}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\interfaceModeSelector">
-      <UniqueIdentifier>{c5d863ba-f55e-466c-88f5-178bc3c94b1d}</UniqueIdentifier>
+      <UniqueIdentifier>{9944f008-b2b8-4f52-b065-38715cc354ba}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\addressSpaceSelector">
-      <UniqueIdentifier>{23d0f6f4-f5a4-4639-991c-2e1bb311a1cb}</UniqueIdentifier>
+      <UniqueIdentifier>{97f36858-f212-4e1c-b5c6-1eaa997dbc81}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\memoryMapSelector">
-      <UniqueIdentifier>{bc810466-153f-4bdd-b5df-74d97ed16fd9}</UniqueIdentifier>
+      <UniqueIdentifier>{f862321e-d1b0-4a94-9910-d52fc3a9b629}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\interfaceSelector">
-      <UniqueIdentifier>{9cd47076-646f-4e5b-b44f-56c47aab6709}</UniqueIdentifier>
+      <UniqueIdentifier>{f134be6c-f7de-404f-b411-e84a04f773d7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\LineEditEx">
-      <UniqueIdentifier>{0e15cc3e-fd84-43ec-a895-a7366248ba8f}</UniqueIdentifier>
+      <UniqueIdentifier>{71a3b856-6075-445c-a372-fe0cfc4ed721}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\ComboBoxEx">
-      <UniqueIdentifier>{f6bf8ec8-f22f-46a7-bc35-888ce0e812fa}</UniqueIdentifier>
+      <UniqueIdentifier>{02bbfe8d-33ad-4051-80e3-d60412db144d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\SnippetTextEdit">
-      <UniqueIdentifier>{fa87c74b-fbf3-463d-b366-137b8573d530}</UniqueIdentifier>
+      <UniqueIdentifier>{45b32b38-bf47-4edc-b876-9f566c6e0f1c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\usageComboBox">
-      <UniqueIdentifier>{0c48aa1f-157a-4bb6-b6c9-86e899cf74f7}</UniqueIdentifier>
+      <UniqueIdentifier>{394e8f57-d417-4203-9e91-5bc6c07dc49e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\accessComboBox">
-      <UniqueIdentifier>{ca6591c6-2634-4f68-8d74-7107d6574f9c}</UniqueIdentifier>
+      <UniqueIdentifier>{cd274ec1-e116-4a53-9acb-a829c2b73b51}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\modWriteComboBox">
-      <UniqueIdentifier>{56478197-4b99-4957-b5c0-68fd78a31f5a}</UniqueIdentifier>
+      <UniqueIdentifier>{f9599e72-0bdf-40b4-98ce-3782831cacba}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\readActionComboBox">
-      <UniqueIdentifier>{eb25d770-e357-46d5-84a4-3135de0b5f4c}</UniqueIdentifier>
+      <UniqueIdentifier>{fefd04b4-be56-4eeb-961e-5ff2f2987a1a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\testConstraintComboBox">
-      <UniqueIdentifier>{e7831b81-5c44-4586-b93d-ccb362b5cfae}</UniqueIdentifier>
+      <UniqueIdentifier>{b060ed3c-1536-47d0-ae52-3af5552eef38}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\validators">
-      <UniqueIdentifier>{fdaa2c45-bfb2-4d51-869d-bd1eb1f01d05}</UniqueIdentifier>
+      <UniqueIdentifier>{68ce55f3-3f69-4fc5-a8cb-4816be0498e6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\validators\nameValidator">
-      <UniqueIdentifier>{2a2fe4de-b97e-4c07-99cd-5ca35bead34f}</UniqueIdentifier>
+      <UniqueIdentifier>{7540f739-fa9d-4053-958a-055a71fd82f8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\validators\vhdlNameValidator">
-      <UniqueIdentifier>{871bbd2d-4d17-4340-a9a4-f0f7cea445cf}</UniqueIdentifier>
+      <UniqueIdentifier>{80a521ab-8967-4421-b3da-d7aef5c95240}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\validators\LibraryPathValidator">
-      <UniqueIdentifier>{9f4af4f0-b796-4543-a914-69f65dff1d37}</UniqueIdentifier>
+      <UniqueIdentifier>{b8eaf0bf-a4f2-4d54-875c-fcac02ad17c1}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\layouts">
-      <UniqueIdentifier>{e62eb561-15d2-4071-8440-5ff13f3712cc}</UniqueIdentifier>
+      <UniqueIdentifier>{c6bb3219-6723-47dc-ad20-c9b820eccc1d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\graphicsItems">
-      <UniqueIdentifier>{b005d51d-b058-4ea6-97d1-9e9abdcb9eb4}</UniqueIdentifier>
+      <UniqueIdentifier>{d6fa5385-ca11-4862-ab14-c9fba572f2a7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\delegates">
-      <UniqueIdentifier>{b58778d1-1d31-43bb-86ac-c58c58a9b5d8}</UniqueIdentifier>
+      <UniqueIdentifier>{02ac3fcb-fe64-4b23-b276-23ca35a72877}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\delegates\ComboDelegate">
-      <UniqueIdentifier>{b35882ad-5543-49e2-8ec6-6ea055eeac37}</UniqueIdentifier>
+      <UniqueIdentifier>{b6fbece5-6336-4bfb-9a80-d141c5854dae}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\delegates\LineEditDelegate">
-      <UniqueIdentifier>{869a1e21-5c02-43b3-9a3d-bc644b37747e}</UniqueIdentifier>
+      <UniqueIdentifier>{89294bd2-5b43-4293-a1ab-8cfa6878cabd}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\views">
-      <UniqueIdentifier>{724d25aa-b2eb-4a83-bb0b-a4da2d19ed0c}</UniqueIdentifier>
+      <UniqueIdentifier>{8366b8d4-5852-49c1-bb9e-a40e06295f33}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\views\EditableTableView">
-      <UniqueIdentifier>{e0577703-0654-4413-a2c0-500ea49e29e5}</UniqueIdentifier>
+      <UniqueIdentifier>{df0e8d30-88cd-4c2d-9ec7-ed5064618f3c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\views\EditableListView">
-      <UniqueIdentifier>{efe8e7af-efda-4fdc-9b4d-485f363aca26}</UniqueIdentifier>
+      <UniqueIdentifier>{f6a253b6-5023-40b7-87c1-8bdbd30e21db}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\models">
-      <UniqueIdentifier>{728e5605-1d09-4c12-91c9-83725355aea9}</UniqueIdentifier>
+      <UniqueIdentifier>{22b36a52-33e3-44a2-9812-6469c5ef77e0}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\models\ParametersModel">
-      <UniqueIdentifier>{424f23e6-1fa0-4fb4-a222-8d60d6611bc8}</UniqueIdentifier>
+      <UniqueIdentifier>{11546979-c6a8-4cb2-ad7e-587c98b5a744}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\dialogs">
-      <UniqueIdentifier>{b5e51e86-35ef-4db4-955c-cea594f037dd}</UniqueIdentifier>
+      <UniqueIdentifier>{17eb9ba9-3468-45e8-9a3e-aa2826d0a145}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\dialogs\createVLNVDialog">
-      <UniqueIdentifier>{6e1d98fa-c1d5-42bf-bd51-a992c8e9edb5}</UniqueIdentifier>
+      <UniqueIdentifier>{6786a3cf-bac2-4441-bb89-db539176e716}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\dialogs\createVLNVDialog\createConfigurationDialog">
-      <UniqueIdentifier>{cc08e218-f167-468e-b41f-1322bc3d9d5f}</UniqueIdentifier>
+      <UniqueIdentifier>{91d7d6a5-69a5-4158-a6be-0f680444e7ab}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\dialogs\renameDialog">
-      <UniqueIdentifier>{d91a211d-91ff-4160-ab6b-2be57bae5068}</UniqueIdentifier>
+      <UniqueIdentifier>{caf1c20e-a11b-42eb-91b0-030eb53ebbf3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\dialogs\attributeDialog">
-      <UniqueIdentifier>{460c1f38-ad0b-49c1-9076-2707891db5a7}</UniqueIdentifier>
+      <UniqueIdentifier>{55ecb550-11e4-419d-93a8-bf47905f928b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\dialogs\comboSelector">
-      <UniqueIdentifier>{6e875d83-049f-4794-888c-1373862aff90}</UniqueIdentifier>
+      <UniqueIdentifier>{2e4f4020-8e83-4f74-ba4d-81d41199c793}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\dialogs\propertyPageDialog">
-      <UniqueIdentifier>{6574f62a-4c61-4b4e-bc22-62be6256146a}</UniqueIdentifier>
+      <UniqueIdentifier>{03c87653-7146-410c-b5ee-9c7db21861a2}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\dialogs\newObjectDialog">
-      <UniqueIdentifier>{8598fd26-eb81-4cea-b825-79a1aee7ea8a}</UniqueIdentifier>
+      <UniqueIdentifier>{b1b5d016-50aa-408c-975b-c1aa9b503893}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\dialogs\ObjectRemoveDialog">
-      <UniqueIdentifier>{aa8421a7-269a-4237-b655-e7295003cad2}</UniqueIdentifier>
+      <UniqueIdentifier>{d8426eba-1779-44d1-b991-64f4f8509fb7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\dialogs\listSelectDialog">
-      <UniqueIdentifier>{d02d3c95-a5cf-4f4a-ae45-c5cc446fa303}</UniqueIdentifier>
+      <UniqueIdentifier>{b917dc8a-7d20-4b37-8072-34783c2acb59}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\dialogs\selectDirectoryDialog">
-      <UniqueIdentifier>{aeb34fcb-5319-4bc8-89c0-8c5495d0c65e}</UniqueIdentifier>
+      <UniqueIdentifier>{e5f50833-f4cd-4574-b549-4610ab9a13d6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\dialogs\NewDesignDialog">
-      <UniqueIdentifier>{9a69286d-f633-4cbb-a5be-a12ac506e87c}</UniqueIdentifier>
+      <UniqueIdentifier>{12bff85a-cba4-493a-8e70-a935cccd5a9b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\dialogs\LibrarySettingsDialog">
-      <UniqueIdentifier>{ed599a79-d8ce-4bff-9e10-26d9345cf94a}</UniqueIdentifier>
+      <UniqueIdentifier>{4e2166b3-50ab-4b6b-acc1-d0db08840616}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\dialogs\TableViewDialog">
-      <UniqueIdentifier>{4c3482a7-ed97-4ab3-ad5a-b6c7c6bc62d0}</UniqueIdentifier>
+      <UniqueIdentifier>{492f6094-2ace-456f-a3c7-974ffa06568f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\modWriteComboBox">
-      <UniqueIdentifier>{5be378ae-0215-4e43-8ac0-6d91d4ecadd4}</UniqueIdentifier>
+      <UniqueIdentifier>{8c4fec1c-5ead-4646-ba59-295ec21416d7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\readActionComboBox">
-      <UniqueIdentifier>{b75eab94-107d-4b9b-9957-dba3644d155b}</UniqueIdentifier>
+      <UniqueIdentifier>{9033bd22-d81f-4342-ad03-e72dfb07dc96}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\testConstraintComboBox">
-      <UniqueIdentifier>{6e31d2d8-b7d0-4b65-9d6e-f7f68d47ed05}</UniqueIdentifier>
+      <UniqueIdentifier>{4060b63f-7aa4-4b43-9628-e6582a002b50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common\cornerStitch">
+      <UniqueIdentifier>{b0bc9535-8cb0-4cb0-9e9b-9cb4cae820e4}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\designwidget">
-      <UniqueIdentifier>{4deed9be-2f10-4971-a6b5-ff210ba24aee}</UniqueIdentifier>
+      <UniqueIdentifier>{71654906-850f-484a-a0e0-210b8b462c5f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\designwidget\columnview">
-      <UniqueIdentifier>{8587001e-015f-4a94-b728-bd6a90b99544}</UniqueIdentifier>
+      <UniqueIdentifier>{5ce77ee1-8fb1-46f5-b242-fe303e5e548b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\IPXactWrapper">
-      <UniqueIdentifier>{728c4591-7a00-4213-b310-1645a5893b6b}</UniqueIdentifier>
+      <UniqueIdentifier>{680a72eb-509d-42b3-b6e6-d6a20b0704fa}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\IPXactWrapper\ComponentEditor">
-      <UniqueIdentifier>{cef0d776-bc6e-4286-8818-ae3f0034d572}</UniqueIdentifier>
+      <UniqueIdentifier>{f6a28ad3-ce33-4d19-9938-464aaccc5ba6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\IPXactWrapper\ComponentEditor\general">
-      <UniqueIdentifier>{96a7fdad-b6e2-4c65-ae06-ad4054c9ca74}</UniqueIdentifier>
+      <UniqueIdentifier>{b36df1c4-7a13-4adb-a777-6feccced98fb}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\IPXactWrapper\ComponentEditor\modelParameters">
-      <UniqueIdentifier>{ac7d9510-a044-4bee-88ea-ee123dd96d2d}</UniqueIdentifier>
+      <UniqueIdentifier>{9bc1ec47-0f66-4436-a93f-4eb9357d2e39}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\IPXactWrapper\ComponentEditor\ports">
-      <UniqueIdentifier>{e4207340-9abd-416d-a7e7-0530c71e98bf}</UniqueIdentifier>
+      <UniqueIdentifier>{403281f1-bc59-46ad-9448-a9cd229acdbb}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\IPXactWrapper\ComponentEditor\parameters">
-      <UniqueIdentifier>{be477875-a4ac-4289-a1cb-4390a6a59127}</UniqueIdentifier>
+      <UniqueIdentifier>{cff80d1c-c55a-482f-a5a4-fe802fc540b4}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\IPXactWrapper\ComponentEditor\otherClockDrivers">
-      <UniqueIdentifier>{906d9922-4fe0-4e3c-8c33-b10e3c9eecf7}</UniqueIdentifier>
+      <UniqueIdentifier>{d098f40a-1d7f-409a-87d8-418b2552b831}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\IPXactWrapper\ComponentEditor\channels">
-      <UniqueIdentifier>{2d696852-b547-46a9-a4f1-1e44587df096}</UniqueIdentifier>
+      <UniqueIdentifier>{04a6b008-0604-47fe-84f2-9f43bdd1bb1a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\IPXactWrapper\ComponentEditor\busInterfaces">
-      <UniqueIdentifier>{fc236809-d0ab-43e3-b781-08d9ace481fe}</UniqueIdentifier>
+      <UniqueIdentifier>{1128b72b-f2c8-422b-b03e-454bb21d844d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\IPXactWrapper\ComponentEditor\busInterfaces\portmaps">
-      <UniqueIdentifier>{09e855ab-bc28-41e8-9453-b5101a0506bc}</UniqueIdentifier>
+      <UniqueIdentifier>{8a2d32a9-c5d6-46f8-8579-cb317c2b99fe}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\IPXactWrapper\ComponentEditor\fileBuilders">
-      <UniqueIdentifier>{707c1e00-b9ea-4cd9-8262-a4ab29e18801}</UniqueIdentifier>
+      <UniqueIdentifier>{8cd7de2e-85d5-4008-8333-291b41b5091a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\IPXactWrapper\ComponentEditor\software">
-      <UniqueIdentifier>{5b843791-d992-4f6d-b6eb-a320e15fbe6a}</UniqueIdentifier>
+      <UniqueIdentifier>{9120af31-694d-4ff6-830f-a6624028f194}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\IPXactWrapper\ComponentEditor\addressSpaces">
-      <UniqueIdentifier>{46f24de9-83f8-4e29-bf88-a016a1766a52}</UniqueIdentifier>
+      <UniqueIdentifier>{619aff96-f11d-4a85-9a0d-eb26e25f4bb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\IPXactWrapper\ComponentEditor\addressSpaces\localMemoryMap">
+      <UniqueIdentifier>{f5ef2b74-0dfb-4776-bded-a404b38a7934}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\IPXactWrapper\ComponentEditor\addressSpaces\AddressSpaceVisualizer">
+      <UniqueIdentifier>{50fd613c-c52e-4811-862a-978a6a5a1463}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\IPXactWrapper\ComponentEditor\cpus">
-      <UniqueIdentifier>{c48d7bd2-abfb-4354-aec6-c3bb3a96e34d}</UniqueIdentifier>
+      <UniqueIdentifier>{81fa2527-b9c6-4c24-bc86-520cd87fb049}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\IPXactWrapper\ComponentEditor\views">
-      <UniqueIdentifier>{ae7700f7-430f-41ef-a2d7-5b84a9aea760}</UniqueIdentifier>
+      <UniqueIdentifier>{6ebfd41d-42cb-4a7d-a377-7efd7b4616c9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\IPXactWrapper\ComponentEditor\fileSet">
-      <UniqueIdentifier>{614a21a9-e93d-487d-a314-4046e17cbeca}</UniqueIdentifier>
+      <UniqueIdentifier>{e188623c-5c9f-4fa5-900c-b34bf31141fe}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\IPXactWrapper\ComponentEditor\fileSet\file">
-      <UniqueIdentifier>{6c00c8b2-924a-4e96-8033-7fef61de7218}</UniqueIdentifier>
+      <UniqueIdentifier>{ac850aa0-6864-4101-84f2-8fa88bce4789}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\IPXactWrapper\ComponentEditor\memoryMaps">
-      <UniqueIdentifier>{42a55696-ff62-4240-813c-60b560199b5e}</UniqueIdentifier>
+      <UniqueIdentifier>{0b88ab1c-83a7-42d0-bdd1-73e7dce45f28}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\IPXactWrapper\ComponentEditor\memoryMaps\memoryMapsVisualizer">
-      <UniqueIdentifier>{2d9bddbc-e046-4756-b494-6d9fe693b537}</UniqueIdentifier>
+      <UniqueIdentifier>{b2d6af90-ec1f-4034-b1f3-629df808db27}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\IPXactWrapper\ComponentEditor\treeStructure">
-      <UniqueIdentifier>{081bd53f-1bb1-43e1-9312-29e5b8956631}</UniqueIdentifier>
+      <UniqueIdentifier>{5ab67e4b-d8ca-4b49-aaf7-e365b9fee866}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\IPXactWrapper\ComponentEditor\visualization">
+      <UniqueIdentifier>{566d0d30-030d-474e-a668-5b26360fbabd}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\IPXactWrapper\BusEditor">
-      <UniqueIdentifier>{6efdfc20-b6f5-4b40-9f46-2890ae82e45a}</UniqueIdentifier>
+      <UniqueIdentifier>{f899dff8-6641-47a2-b797-b704fc8ff53b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\IPXactWrapper\ComDefinitionEditor">
-      <UniqueIdentifier>{c087f07a-5f9d-47b2-b35f-7ff4ebecb7d1}</UniqueIdentifier>
+      <UniqueIdentifier>{d9d25d0d-4040-4fab-abb9-1bff1e390ac7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\IPXactWrapper\ApiDefinitionEditor">
-      <UniqueIdentifier>{c959c157-7bb7-4933-97a8-5dbc0811d980}</UniqueIdentifier>
+      <UniqueIdentifier>{8926aac7-dfbd-488d-ab0e-d9e50401c43c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\models">
-      <UniqueIdentifier>{00f70a00-8ac7-47fc-b718-4f6222d4b016}</UniqueIdentifier>
+      <UniqueIdentifier>{8e3d3611-eb2d-410c-9b01-c6e302d2d31b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\mainwindow">
-      <UniqueIdentifier>{dd7d1be5-b50d-4e33-8b4b-17ecb383de29}</UniqueIdentifier>
+      <UniqueIdentifier>{18e1a082-be8c-44f0-b9a7-d35134680ce1}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\modelsimGenerator">
-      <UniqueIdentifier>{97a33e0e-10e0-4df1-ab37-abbb1deb402b}</UniqueIdentifier>
+      <UniqueIdentifier>{cc1b3bae-78af-4b9f-a825-d34a2629abfa}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\quartusGenerator">
-      <UniqueIdentifier>{9fe0d976-3f8b-4bd3-9c58-1527aacd4937}</UniqueIdentifier>
+      <UniqueIdentifier>{2f82797c-125e-421c-8bd1-fa73251e902a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\vhdlGenerator">
-      <UniqueIdentifier>{a4604d7c-300d-4b22-96e9-fe919f57d160}</UniqueIdentifier>
+      <UniqueIdentifier>{ac89019f-6717-40cf-bd48-53d0fbcce97f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\PropertyWidget">
-      <UniqueIdentifier>{ccd779dc-777d-417b-a6ee-07f21971881f}</UniqueIdentifier>
+      <UniqueIdentifier>{2ec88d6f-a816-4530-98ae-1484d49c6bb7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\MCAPI">
-      <UniqueIdentifier>{d99bed9f-b938-4247-b753-74c01b765932}</UniqueIdentifier>
+      <UniqueIdentifier>{e0f9ccc3-c66d-42d1-be34-1ba03626f36d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\settings">
-      <UniqueIdentifier>{0988512f-a049-47b4-9539-32b01287b94c}</UniqueIdentifier>
+      <UniqueIdentifier>{74391732-9e0a-47ee-bcf5-d3678dec4076}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\ComponentInstanceEditor">
-      <UniqueIdentifier>{3f3b3acf-76ca-40c5-a22a-0af6590aba63}</UniqueIdentifier>
+      <UniqueIdentifier>{25ccab18-b3f6-4234-865c-979fbfc32108}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\ConfigurationEditor">
-      <UniqueIdentifier>{59abf53e-d28e-44ec-af2e-0b916675cff8}</UniqueIdentifier>
+      <UniqueIdentifier>{70b9ff6b-7456-492c-a344-abfd6ee7c423}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\DocumentGenerator">
-      <UniqueIdentifier>{647d927c-690f-4983-b409-c68f8a00cdd3}</UniqueIdentifier>
+      <UniqueIdentifier>{29c0e40d-c760-46ef-949b-eebdda8503f1}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\InterfaceEditor">
-      <UniqueIdentifier>{a060bd12-b95e-46f3-97db-3cc94d2f2f31}</UniqueIdentifier>
+      <UniqueIdentifier>{b2d4a0ed-b3a6-46ef-aca1-d3921c995e97}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\ConnectionEditor">
-      <UniqueIdentifier>{c41a8fdb-02d3-4628-91e6-3f29fa37e7c8}</UniqueIdentifier>
+      <UniqueIdentifier>{c4bca1ec-ba69-4233-92d5-fb63e24409ed}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\GCF">
-      <UniqueIdentifier>{eb7411a4-253a-405b-b662-d7ddc8f58c6c}</UniqueIdentifier>
+      <UniqueIdentifier>{c7439640-cc6b-4dda-a6a6-6c92df7f2c1b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\AdHocEditor">
-      <UniqueIdentifier>{fb10c5a6-a229-4cf4-942a-be001ef3f34f}</UniqueIdentifier>
+      <UniqueIdentifier>{87c27d4f-7d4d-4a2b-9c8f-957ad729e256}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\SystemDesign">
-      <UniqueIdentifier>{d47dab97-bf74-41dd-bef0-53d61f73ba93}</UniqueIdentifier>
+      <UniqueIdentifier>{7a23cfbb-c6f4-4243-90e3-0e775cb04d8f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\LibraryManager">
-      <UniqueIdentifier>{6ab7a3ab-ee0e-4875-981d-a17dde585155}</UniqueIdentifier>
+      <UniqueIdentifier>{ea15b258-05df-44d1-8888-c727cdb4be81}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\LibraryManager\VLNVDialer">
-      <UniqueIdentifier>{ec486101-b34a-405e-8ab7-b79991e6d474}</UniqueIdentifier>
+      <UniqueIdentifier>{0ff4efe4-ee5d-422e-aa13-7a3664c8ad7c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\LibraryManager\HierarchyView">
-      <UniqueIdentifier>{ceb33abc-0b6d-45af-ac98-8859e66d9e54}</UniqueIdentifier>
+      <UniqueIdentifier>{1ee56112-9d39-4a72-985f-48eb1718eca8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\PluginSystem">
-      <UniqueIdentifier>{2d711dd0-de38-4094-b27c-f3b95170f088}</UniqueIdentifier>
+      <UniqueIdentifier>{bd52b818-77d9-4085-a824-a3d171b510f8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\SystemDetailsEditor">
-      <UniqueIdentifier>{b9d3bc42-a080-4e11-a590-b416140ec1a6}</UniqueIdentifier>
+      <UniqueIdentifier>{7262107f-ef19-47a5-bd96-0dca5ff57633}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\HelpSystem">
-      <UniqueIdentifier>{9c4b63dd-2b69-4540-afd9-b2c3c154072e}</UniqueIdentifier>
+      <UniqueIdentifier>{1a27b6a4-e023-4bd7-9786-98e8ed45fa91}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\AddressEditor">
-      <UniqueIdentifier>{0f2e4301-3fa1-4e62-aea2-6ef07ebbbd68}</UniqueIdentifier>
+      <UniqueIdentifier>{f460ca63-d2a0-4232-919a-21e5113eb817}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\MemoryDesigner">
-      <UniqueIdentifier>{feb6548b-4e4d-4e91-ab8a-34b653042496}</UniqueIdentifier>
+      <UniqueIdentifier>{9d6c10f0-8b39-459a-8747-4b0d5f7b33ad}</UniqueIdentifier>
     </Filter>
     <Filter Include="Generated Files">
       <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;moc;h;def;odl;idl;res;</Extensions>
     </Filter>
     <Filter Include="Generated Files\Debug">
-      <UniqueIdentifier>{85c5e40e-2b39-4377-9a95-3e217f56d87e}</UniqueIdentifier>
+      <UniqueIdentifier>{1d3bc509-6909-40a0-aba9-ac4fb2b03f00}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
     <Filter Include="Generated Files\Release">
-      <UniqueIdentifier>{9f86818c-e21d-4039-844d-b7a5b14297c6}</UniqueIdentifier>
+      <UniqueIdentifier>{74945ead-0cab-4cce-bd77-53ba2e106099}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
@@ -734,7 +758,7 @@
       <ParseFiles>false</ParseFiles>
     </Filter>
     <Filter Include="Resource Files\Originals">
-      <UniqueIdentifier>{5be8fb28-0314-4456-b8e8-79e0c23d53ef}</UniqueIdentifier>
+      <UniqueIdentifier>{512c2556-68a7-429f-aa59-a34cc2089035}</UniqueIdentifier>
     </Filter>
     <Filter Include="Form Files">
       <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
@@ -742,7 +766,7 @@
       <ParseFiles>false</ParseFiles>
     </Filter>
     <Filter Include="Help Files">
-      <UniqueIdentifier>{95b62033-59cc-4795-af34-69cfc5ff2124}</UniqueIdentifier>
+      <UniqueIdentifier>{e5575476-468f-4c93-91de-4b04a991865e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -986,6 +1010,9 @@
     <ClCompile Include="common\graphicsItems\ConnectionUndoCommands.cpp">
       <Filter>Source Files\common\graphicsItems</Filter>
     </ClCompile>
+    <ClCompile Include="common\graphicsItems\expandableitem.cpp">
+      <Filter>Source Files\common\graphicsItems</Filter>
+    </ClCompile>
     <ClCompile Include="common\graphicsItems\GraphicsColumn.cpp">
       <Filter>Source Files\common\graphicsItems</Filter>
     </ClCompile>
@@ -998,10 +1025,16 @@
     <ClCompile Include="common\graphicsItems\GraphicsConnection.cpp">
       <Filter>Source Files\common\graphicsItems</Filter>
     </ClCompile>
+    <ClCompile Include="common\graphicsItems\graphicsexpandcollapseitem.cpp">
+      <Filter>Source Files\common\graphicsItems</Filter>
+    </ClCompile>
     <ClCompile Include="common\graphicsItems\GraphicsLineEdit.cpp">
       <Filter>Source Files\common\graphicsItems</Filter>
     </ClCompile>
     <ClCompile Include="common\graphicsItems\GraphicsRectButton.cpp">
+      <Filter>Source Files\common\graphicsItems</Filter>
+    </ClCompile>
+    <ClCompile Include="common\graphicsItems\visualizeritem.cpp">
       <Filter>Source Files\common\graphicsItems</Filter>
     </ClCompile>
     <ClCompile Include="common\delegates\ComboDelegate\combodelegate.cpp">
@@ -1018,6 +1051,9 @@
     </ClCompile>
     <ClCompile Include="common\models\ParameterModel\parametersmodel.cpp">
       <Filter>Source Files\common\models\ParametersModel</Filter>
+    </ClCompile>
+    <ClCompile Include="common\cornerStitch\CornerStitchStructure.cpp">
+      <Filter>Source Files\common\cornerStitch</Filter>
     </ClCompile>
     <ClCompile Include="designwidget\AdHocEnabled.cpp">
       <Filter>Source Files\designwidget</Filter>
@@ -1397,9 +1433,6 @@
     <ClCompile Include="IPXactWrapper\ComponentEditor\addressSpaces\addressspacesmodel.cpp">
       <Filter>Source Files\IPXactWrapper\ComponentEditor\addressSpaces</Filter>
     </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComponentEditor\addressSpaces\addressspacevisualizer.cpp">
-      <Filter>Source Files\IPXactWrapper\ComponentEditor\addressSpaces</Filter>
-    </ClCompile>
     <ClCompile Include="IPXactWrapper\ComponentEditor\addressSpaces\segmenteditor.cpp">
       <Filter>Source Files\IPXactWrapper\ComponentEditor\addressSpaces</Filter>
     </ClCompile>
@@ -1408,6 +1441,30 @@
     </ClCompile>
     <ClCompile Include="IPXactWrapper\ComponentEditor\addressSpaces\segmentsmodel.cpp">
       <Filter>Source Files\IPXactWrapper\ComponentEditor\addressSpaces</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\addressSpaces\localMemoryMap\localmemorymapeditor.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\addressSpaces\localMemoryMap</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\addressSpaces\localMemoryMap\localmemorymapgraphitem.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\addressSpaces\localMemoryMap</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer\addressspacegapitem.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer\addressspacescene.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer\addressspacevisualizationitem.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer\addressspacevisualizer.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer\localaddrblockgraphitem.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer\segmentgraphitem.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer</Filter>
     </ClCompile>
     <ClCompile Include="IPXactWrapper\ComponentEditor\cpus\addressspacerefdelegate.cpp">
       <Filter>Source Files\IPXactWrapper\ComponentEditor\cpus</Filter>
@@ -1430,13 +1487,13 @@
     <ClCompile Include="IPXactWrapper\ComponentEditor\memoryMaps\addressblockmodel.cpp">
       <Filter>Source Files\IPXactWrapper\ComponentEditor\memoryMaps</Filter>
     </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\memoryMaps\addressblockproxy.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
     <ClCompile Include="IPXactWrapper\ComponentEditor\memoryMaps\enumeratedvaluedelegate.cpp">
       <Filter>Source Files\IPXactWrapper\ComponentEditor\memoryMaps</Filter>
     </ClCompile>
     <ClCompile Include="IPXactWrapper\ComponentEditor\memoryMaps\enumeratedvaluemodel.cpp">
-      <Filter>Source Files\IPXactWrapper\ComponentEditor\memoryMaps</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComponentEditor\memoryMaps\fieldeditor.cpp">
       <Filter>Source Files\IPXactWrapper\ComponentEditor\memoryMaps</Filter>
     </ClCompile>
     <ClCompile Include="IPXactWrapper\ComponentEditor\memoryMaps\memorymapdelegate.cpp">
@@ -1446,6 +1503,9 @@
       <Filter>Source Files\IPXactWrapper\ComponentEditor\memoryMaps</Filter>
     </ClCompile>
     <ClCompile Include="IPXactWrapper\ComponentEditor\memoryMaps\memorymapmodel.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\memoryMaps\memorymapproxy.cpp">
       <Filter>Source Files\IPXactWrapper\ComponentEditor\memoryMaps</Filter>
     </ClCompile>
     <ClCompile Include="IPXactWrapper\ComponentEditor\memoryMaps\memorymapsdelegate.cpp">
@@ -1472,6 +1532,9 @@
     <ClCompile Include="IPXactWrapper\ComponentEditor\memoryMaps\memoryMapsVisualizer\addressblockgraphitem.cpp">
       <Filter>Source Files\IPXactWrapper\ComponentEditor\memoryMaps\memoryMapsVisualizer</Filter>
     </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\memoryMaps\fieldeditor.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\memoryMaps\memoryMapsVisualizer</Filter>
+    </ClCompile>
     <ClCompile Include="IPXactWrapper\ComponentEditor\memoryMaps\memoryMapsVisualizer\fieldgraphitem.cpp">
       <Filter>Source Files\IPXactWrapper\ComponentEditor\memoryMaps\memoryMapsVisualizer</Filter>
     </ClCompile>
@@ -1485,9 +1548,6 @@
       <Filter>Source Files\IPXactWrapper\ComponentEditor\memoryMaps\memoryMapsVisualizer</Filter>
     </ClCompile>
     <ClCompile Include="IPXactWrapper\ComponentEditor\memoryMaps\memoryMapsVisualizer\memorymapview.cpp">
-      <Filter>Source Files\IPXactWrapper\ComponentEditor\memoryMaps\memoryMapsVisualizer</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComponentEditor\memoryMaps\memoryMapsVisualizer\memoryvisualizeritem.cpp">
       <Filter>Source Files\IPXactWrapper\ComponentEditor\memoryMaps\memoryMapsVisualizer</Filter>
     </ClCompile>
     <ClCompile Include="IPXactWrapper\ComponentEditor\memoryMaps\memoryMapsVisualizer\registergraphitem.cpp">
@@ -1600,6 +1660,15 @@
     </ClCompile>
     <ClCompile Include="IPXactWrapper\ComponentEditor\treeStructure\componenttreeview.cpp">
       <Filter>Source Files\IPXactWrapper\ComponentEditor\treeStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\visualization\fieldgapitem.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\visualization</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\visualization\memorygapitem.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\visualization</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\visualization\memoryvisualizationitem.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\visualization</Filter>
     </ClCompile>
     <ClCompile Include="IPXactWrapper\BusEditor\absdefgroup.cpp">
       <Filter>Source Files\IPXactWrapper\BusEditor</Filter>
@@ -2057,6 +2126,9 @@
     <ClCompile Include="settings\SettingsDialog.cpp">
       <Filter>Source Files\settings</Filter>
     </ClCompile>
+    <ClCompile Include="settings\SettingsUpdater.cpp">
+      <Filter>Source Files\settings</Filter>
+    </ClCompile>
     <ClCompile Include="ComponentInstanceEditor\componentinstanceeditor.cpp">
       <Filter>Source Files\ComponentInstanceEditor</Filter>
     </ClCompile>
@@ -2189,6 +2261,9 @@
     <ClCompile Include="AddressEditor\AddressTableView.cpp">
       <Filter>Source Files\AddressEditor</Filter>
     </ClCompile>
+    <ClCompile Include="MemoryDesigner\AddressBlockItem.cpp">
+      <Filter>Source Files\MemoryDesigner</Filter>
+    </ClCompile>
     <ClCompile Include="MemoryDesigner\AddressSectionItem.cpp">
       <Filter>Source Files\MemoryDesigner</Filter>
     </ClCompile>
@@ -2198,6 +2273,12 @@
     <ClCompile Include="MemoryDesigner\AddressSubsection.cpp">
       <Filter>Source Files\MemoryDesigner</Filter>
     </ClCompile>
+    <ClCompile Include="MemoryDesigner\MemoryBaseItem.cpp">
+      <Filter>Source Files\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="MemoryDesigner\MemoryColumn.cpp">
+      <Filter>Source Files\MemoryDesigner</Filter>
+    </ClCompile>
     <ClCompile Include="MemoryDesigner\MemoryDesignDiagram.cpp">
       <Filter>Source Files\MemoryDesigner</Filter>
     </ClCompile>
@@ -2205,6 +2286,9 @@
       <Filter>Source Files\MemoryDesigner</Filter>
     </ClCompile>
     <ClCompile Include="MemoryDesigner\MemoryItem.cpp">
+      <Filter>Source Files\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="MemoryDesigner\SegmentItem.cpp">
       <Filter>Source Files\MemoryDesigner</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\qrc_kactus.cpp">
@@ -2237,6 +2321,9 @@
     <ClCompile Include="Debug\moc_addressblockmodel.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
+    <ClCompile Include="Debug\moc_addressblockproxy.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
     <ClCompile Include="Debug\moc_AddressDelegate.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -2252,6 +2339,9 @@
     <ClCompile Include="Debug\moc_addressspaceeditor.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
+    <ClCompile Include="Debug\moc_addressspacegapitem.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
     <ClCompile Include="Debug\moc_addressspacegeneraleditor.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -2259,6 +2349,9 @@
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="Debug\moc_addressspacerefdelegate.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_addressspacescene.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="Debug\moc_addressspacesdelegate.cpp">
@@ -2271,6 +2364,9 @@
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="Debug\moc_addressspacesmodel.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_addressspacevisualizationitem.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="Debug\moc_addressspacevisualizer.cpp">
@@ -2687,10 +2783,16 @@
     <ClCompile Include="Debug\moc_envidentifiersmodel.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
+    <ClCompile Include="Debug\moc_expandableitem.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
     <ClCompile Include="Debug\moc_ExportSWDialog.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="Debug\moc_fieldeditor.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_fieldgapitem.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="debug\moc_fieldgraphitem.cpp">
@@ -2799,6 +2901,9 @@
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="Debug\moc_GraphicsConnection.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_graphicsexpandcollapseitem.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="Debug\moc_GraphicsLineEdit.cpp">
@@ -2948,6 +3053,15 @@
     <ClCompile Include="debug\moc_listmanagermodel.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
+    <ClCompile Include="Debug\moc_localaddrblockgraphitem.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_localmemorymapeditor.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_localmemorymapgraphitem.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
     <ClCompile Include="Debug\moc_logicallistmodel.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -2957,10 +3071,19 @@
     <ClCompile Include="Debug\moc_mainwindow.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
+    <ClCompile Include="Debug\moc_MemoryBaseItem.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_MemoryColumn.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
     <ClCompile Include="Debug\moc_MemoryDesignDiagram.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="Debug\moc_MemoryDesignWidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="debug\moc_memorygapitem.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="Debug\moc_MemoryItem.cpp">
@@ -2976,6 +3099,9 @@
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="Debug\moc_memorymapmodel.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\moc_memorymapproxy.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="debug\moc_memorymapscene.cpp">
@@ -2999,7 +3125,7 @@
     <ClCompile Include="debug\moc_memorymapview.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="debug\moc_memoryvisualizeritem.cpp">
+    <ClCompile Include="Debug\moc_memoryvisualizationitem.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="Debug\moc_MenuStrip.cpp">
@@ -3173,6 +3299,9 @@
     <ClCompile Include="Debug\moc_segmenteditor.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
+    <ClCompile Include="Debug\moc_segmentgraphitem.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
     <ClCompile Include="Debug\moc_segmentproxy.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -3326,6 +3455,9 @@
     <ClCompile Include="Debug\moc_viewsmodel.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
+    <ClCompile Include="Debug\moc_visualizeritem.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
     <ClCompile Include="Debug\moc_vlnvdialer.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -3365,6 +3497,9 @@
     <ClCompile Include="Release\moc_addressblockmodel.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="Release\moc_addressblockproxy.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
     <ClCompile Include="Release\moc_AddressDelegate.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
@@ -3380,6 +3515,9 @@
     <ClCompile Include="Release\moc_addressspaceeditor.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="Release\moc_addressspacegapitem.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
     <ClCompile Include="Release\moc_addressspacegeneraleditor.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
@@ -3387,6 +3525,9 @@
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="Release\moc_addressspacerefdelegate.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_addressspacescene.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="Release\moc_addressspacesdelegate.cpp">
@@ -3399,6 +3540,9 @@
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="Release\moc_addressspacesmodel.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_addressspacevisualizationitem.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="Release\moc_addressspacevisualizer.cpp">
@@ -3815,10 +3959,16 @@
     <ClCompile Include="Release\moc_envidentifiersmodel.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="Release\moc_expandableitem.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
     <ClCompile Include="Release\moc_ExportSWDialog.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="Release\moc_fieldeditor.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_fieldgapitem.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="Release\moc_fieldgraphitem.cpp">
@@ -3927,6 +4077,9 @@
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="Release\moc_GraphicsConnection.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_graphicsexpandcollapseitem.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="Release\moc_GraphicsLineEdit.cpp">
@@ -4076,6 +4229,15 @@
     <ClCompile Include="Release\moc_listmanagermodel.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="Release\moc_localaddrblockgraphitem.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_localmemorymapeditor.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_localmemorymapgraphitem.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
     <ClCompile Include="Release\moc_logicallistmodel.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
@@ -4085,10 +4247,19 @@
     <ClCompile Include="Release\moc_mainwindow.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="Release\moc_MemoryBaseItem.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_MemoryColumn.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
     <ClCompile Include="Release\moc_MemoryDesignDiagram.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="Release\moc_MemoryDesignWidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_memorygapitem.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="Release\moc_MemoryItem.cpp">
@@ -4104,6 +4275,9 @@
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="Release\moc_memorymapmodel.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Release\moc_memorymapproxy.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="Release\moc_memorymapscene.cpp">
@@ -4127,7 +4301,7 @@
     <ClCompile Include="Release\moc_memorymapview.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="Release\moc_memoryvisualizeritem.cpp">
+    <ClCompile Include="Release\moc_memoryvisualizationitem.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="Release\moc_MenuStrip.cpp">
@@ -4301,6 +4475,9 @@
     <ClCompile Include="Release\moc_segmenteditor.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="Release\moc_segmentgraphitem.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
     <ClCompile Include="Release\moc_segmentproxy.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
@@ -4454,6 +4631,9 @@
     <ClCompile Include="Release\moc_viewsmodel.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="Release\moc_visualizeritem.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
     <ClCompile Include="release\moc_vlnvdialer.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
@@ -4468,530 +4648,27 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="common\DiagramUtil.inl">
-      <Filter>Source Files\common</Filter>
-    </None>
-    <None Include="common\layouts\HCollisionLayout.inl">
-      <Filter>Source Files\common\layouts</Filter>
-    </None>
-    <None Include="common\layouts\HStackedLayout.inl">
-      <Filter>Source Files\common\layouts</Filter>
-    </None>
-    <None Include="common\layouts\VCollisionLayout.inl">
-      <Filter>Source Files\common\layouts</Filter>
-    </None>
-    <None Include="common\layouts\VStackedLayout.inl">
-      <Filter>Source Files\common\layouts</Filter>
-    </None>
-    <None Include="graphics\abs-def.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\add.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\appicon.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\bus-def.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\checkIntegrity.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\cleanup.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\configuration.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\connect.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\diagram-add-column.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\dockSelect.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\documentation.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\edit-redo.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\edit-undo.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\exclamation.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\export.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\file-print.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\generator.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\generator_plugin.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\help.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\hier-hw-component.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\hier-sw-component.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\hierarchy.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\hw-component.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\hw-design.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\import.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\imported.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\library-config.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\library-refresh.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\lock-off.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\lock-on.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\mcapi-endpoint.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\mcapi-endpoint_handle.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\mcapi-func.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\mcapi-node.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\mcapi-port.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\mcapi-type.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\modelsim_generator.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\naming-policy.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\new-api_definition.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\new-bus.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\new-com_definition.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\protection-locked.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\protection-unlocked.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\quartus_generator.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\refresh.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\remove.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\search.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\settings-code_editor.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\settings-general.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\settings-library.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\splash.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\sw-component24x24.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\sw-component48x48.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\sw-design-add_node.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\sw-design24x24.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\sw-design48x48.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\system-about.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\system-component.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\system-design.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\system-exit.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\system-help.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\system-settings.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\tool-drafting.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\tool-interface.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\tool-toggle_offpage.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\triangle_arrow_down.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\triangle_arrow_up.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\vhdl_gen.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\view-fit_best.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\view-zoom_in.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\view-zoom_original.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\view-zoom_out.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\visibility.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\workspace.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="graphics\Originals\AbsDef.psd">
-      <Filter>Resource Files\Originals</Filter>
-    </None>
-    <None Include="graphics\Originals\Appicon.psd">
-      <Filter>Resource Files\Originals</Filter>
-    </None>
-    <None Include="graphics\Originals\Design.psd">
-      <Filter>Resource Files\Originals</Filter>
-    </None>
-    <None Include="graphics\Originals\Expand.psd">
-      <Filter>Resource Files\Originals</Filter>
-    </None>
-    <None Include="graphics\Originals\Hierarchical.psd">
-      <Filter>Resource Files\Originals</Filter>
-    </None>
-    <None Include="graphics\Originals\NewBus.psd">
-      <Filter>Resource Files\Originals</Filter>
-    </None>
-    <None Include="graphics\Originals\NewBusIcon.psd">
-      <Filter>Resource Files\Originals</Filter>
-    </None>
-    <None Include="graphics\Originals\NewBusIcon2.psd">
-      <Filter>Resource Files\Originals</Filter>
-    </None>
-    <None Include="graphics\Originals\SplashScreen.psd">
-      <Filter>Resource Files\Originals</Filter>
-    </None>
-    <None Include="graphics\Originals\SWComponent.psd">
-      <Filter>Resource Files\Originals</Filter>
-    </None>
-    <None Include="graphics\Originals\SWDesign.psd">
-      <Filter>Resource Files\Originals</Filter>
-    </None>
-    <None Include="graphics\Originals\System.psd">
-      <Filter>Resource Files\Originals</Filter>
-    </None>
-    <None Include="Help\kactus2help.qhcp">
-      <Filter>Help Files</Filter>
-    </None>
-    <None Include="Help\kactus2help.qhp">
-      <Filter>Help Files</Filter>
-    </None>
-    <None Include="appicon.ico" />
-    <None Include="Kactus2.pri" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="mainwindow\SplashScreen.h">
-      <Filter>Source Files\mainwindow</Filter>
-    </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="common\ColumnTypes.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="common\CSourceWriter.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="common\diagramgrid.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="common\DiagramUtil.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="common\DrawMode.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="common\IDFactory.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="common\KactusAttribute.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="common\KactusColors.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="common\TextEditProvider.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="common\utils.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="common\widgets\assistedLineEdit\BasicLineContentMatcher.h">
-      <Filter>Header Files\common\widgets\assistedLineEdit</Filter>
-    </ClInclude>
-    <ClInclude Include="common\widgets\assistedLineEdit\ILineContentMatcher.h">
-      <Filter>Header Files\common\widgets\assistedLineEdit</Filter>
-    </ClInclude>
-    <ClInclude Include="common\widgets\assistedLineEdit\LineContentAssistWidget.h">
-      <Filter>Header Files\common\widgets\assistedLineEdit</Filter>
-    </ClInclude>
-    <ClInclude Include="common\widgets\assistedTextEdit\HighlightStyleDesc.h">
-      <Filter>Header Files\common\widgets\assistedTextEdit</Filter>
-    </ClInclude>
-    <ClInclude Include="common\widgets\assistedTextEdit\ITextContentMatcher.h">
-      <Filter>Header Files\common\widgets\assistedTextEdit</Filter>
-    </ClInclude>
-    <ClInclude Include="common\widgets\assistedTextEdit\TextContentAssistWidget.h">
-      <Filter>Header Files\common\widgets\assistedTextEdit</Filter>
-    </ClInclude>
-    <ClInclude Include="common\widgets\vlnvEditor\VLNVContentMatcher.h">
-      <Filter>Header Files\common\widgets\vlnvEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="common\widgets\vlnvEditor\VLNVDataTree.h">
-      <Filter>Header Files\common\widgets\vlnvEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="common\widgets\SnippetTextEdit\SnippetHighlighter.h">
-      <Filter>Header Files\common\widgets\SnippetTextEdit</Filter>
-    </ClInclude>
-    <ClInclude Include="common\validators\AddressValidator.h">
-      <Filter>Header Files\common\validators</Filter>
-    </ClInclude>
-    <ClInclude Include="common\layouts\HCollisionLayout.h">
-      <Filter>Header Files\common\layouts</Filter>
-    </ClInclude>
-    <ClInclude Include="common\layouts\HStackedLayout.h">
-      <Filter>Header Files\common\layouts</Filter>
-    </ClInclude>
-    <ClInclude Include="common\layouts\VCollisionLayout.h">
-      <Filter>Header Files\common\layouts</Filter>
-    </ClInclude>
-    <ClInclude Include="common\layouts\VStackedLayout.h">
-      <Filter>Header Files\common\layouts</Filter>
-    </ClInclude>
-    <ClInclude Include="common\graphicsItems\ConnectionUndoCommands.h">
-      <Filter>Header Files\common\graphicsItems</Filter>
-    </ClInclude>
-    <ClInclude Include="common\graphicsItems\GraphicsColumnUndoCommands.h">
-      <Filter>Header Files\common\graphicsItems</Filter>
-    </ClInclude>
-    <ClInclude Include="common\graphicsItems\GraphicsItemTypes.h">
-      <Filter>Header Files\common\graphicsItems</Filter>
-    </ClInclude>
-    <ClInclude Include="common\graphicsItems\IGraphicsItemStack.h">
-      <Filter>Header Files\common\graphicsItems</Filter>
-    </ClInclude>
-    <ClInclude Include="common\dialogs\attributeDialog\attributedialog.h">
-      <Filter>Header Files\common\dialogs\attributeDialog</Filter>
-    </ClInclude>
-    <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
-      <Filter>Header Files\common\dialogs\listSelectDialog</Filter>
-    </ClInclude>
-    <ClInclude Include="common\dialogs\TableViewDialog\TableViewDialog.h">
-      <Filter>Header Files\common\dialogs\TableViewDialog</Filter>
-    </ClInclude>
-    <ClInclude Include="designwidget\AdHocEnabled.h">
-      <Filter>Header Files\designwidget</Filter>
-    </ClInclude>
-    <ClInclude Include="designwidget\HWMoveCommands.h">
-      <Filter>Header Files\designwidget</Filter>
-    </ClInclude>
-    <ClInclude Include="designwidget\PortmapDialog.h">
-      <Filter>Header Files\designwidget</Filter>
-    </ClInclude>
-    <ClInclude Include="models\ApiDefinition.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\ApiDependency.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\ApiFunction.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\ApiFunctionParameter.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\ApiInterface.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\ColumnDesc.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\ComConnection.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\ComDefinition.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\ComInterface.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\ComponentInstance.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\ComProperty.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\HierApiDependency.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\HierComConnection.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\segment.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\SWInstance.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\SWView.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\SystemView.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\writevalueconstraint.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="models\XmlUtils.h">
-      <Filter>Header Files\models</Filter>
-    </ClInclude>
-    <ClInclude Include="vhdlGenerator\vhdlgeneral.h">
-      <Filter>Header Files\vhdlGenerator</Filter>
-    </ClInclude>
-    <ClInclude Include="MCAPI\CSourceContentMatcher.h">
-      <Filter>Header Files\MCAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="MCAPI\MCAPIDesignerTypes.h">
-      <Filter>Header Files\MCAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="GCF\Common.h">
-      <Filter>Header Files\GCF</Filter>
-    </ClInclude>
-    <ClInclude Include="SystemDesign\HWMappingItem.h">
-      <Filter>Header Files\SystemDesign</Filter>
-    </ClInclude>
-    <ClInclude Include="SystemDesign\SystemMoveCommands.h">
-      <Filter>Header Files\SystemDesign</Filter>
-    </ClInclude>
-    <ClInclude Include="LibraryManager\ipxactitem.h">
-      <Filter>Header Files\LibraryManager</Filter>
-    </ClInclude>
-    <ClInclude Include="LibraryManager\libraryinterface.h">
-      <Filter>Header Files\LibraryManager</Filter>
-    </ClInclude>
-    <ClInclude Include="LibraryManager\LibraryUtils.h">
-      <Filter>Header Files\LibraryManager</Filter>
-    </ClInclude>
-    <ClInclude Include="LibraryManager\vlnv.h">
-      <Filter>Header Files\LibraryManager</Filter>
-    </ClInclude>
-    <ClInclude Include="PluginSystem\IGeneratorPlugin.h">
-      <Filter>Header Files\PluginSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="PluginSystem\IPluginInformation.h">
-      <Filter>Header Files\PluginSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="PluginSystem\IPluginUtility.h">
-      <Filter>Header Files\PluginSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="PluginSystem\PluginManager.h">
-      <Filter>Header Files\PluginSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="HelpSystem\HelpWindow.h">
-      <Filter>Header Files\HelpSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="AddressEditor\AddressEntry.h">
-      <Filter>Header Files\AddressEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="common\layouts\IVGraphicsLayout.h">
-      <Filter>Header Files\common\layouts</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuildStep Include="version.h">
-      <Filter>Header Files</Filter>
-    </CustomBuildStep>
-    <CustomBuildStep Include="graphics\file-new.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuildStep>
-    <CustomBuildStep Include="graphics\file-save.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuildStep>
-    <CustomBuildStep Include="graphics\file-save_all.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuildStep>
-    <CustomBuildStep Include="graphics\tool-interconnection.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuildStep>
-    <CustomBuildStep Include="graphics\tool-select.png">
-      <Filter>Resource Files</Filter>
-    </CustomBuildStep>
-  </ItemGroup>
-  <ItemGroup>
+    <CustomBuild Include="common\DiagramUtil.inl">
+      <Filter>Source Files\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\layouts\HCollisionLayout.inl">
+      <Filter>Source Files\common\layouts</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\layouts\HStackedLayout.inl">
+      <Filter>Source Files\common\layouts</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\layouts\VCollisionLayout.inl">
+      <Filter>Source Files\common\layouts</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\layouts\VStackedLayout.inl">
+      <Filter>Source Files\common\layouts</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\layouts\VStaticLayout.inl">
+      <Filter>Source Files\common\layouts</Filter>
+    </CustomBuild>
     <CustomBuild Include="designwidget\BusInterfaceDialog.h">
       <Filter>Source Files\designwidget</Filter>
     </CustomBuild>
@@ -5001,16 +4678,61 @@
     <CustomBuild Include="mainwindow\NewWorkspaceDialog.h">
       <Filter>Source Files\mainwindow</Filter>
     </CustomBuild>
+    <CustomBuild Include="mainwindow\SplashScreen.h">
+      <Filter>Source Files\mainwindow</Filter>
+    </CustomBuild>
+    <CustomBuild Include="MemoryDesigner\AddressBlockItem.h">
+      <Filter>Source Files\MemoryDesigner</Filter>
+    </CustomBuild>
+    <CustomBuild Include="MemoryDesigner\MemoryBaseItem.h">
+      <Filter>Source Files\MemoryDesigner</Filter>
+    </CustomBuild>
+    <CustomBuild Include="resource.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="version.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\ColumnTypes.h">
+      <Filter>Header Files\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\CSourceWriter.h">
+      <Filter>Header Files\common</Filter>
+    </CustomBuild>
     <CustomBuild Include="common\DesignDiagram.h">
       <Filter>Header Files\common</Filter>
     </CustomBuild>
     <CustomBuild Include="common\DesignWidget.h">
       <Filter>Header Files\common</Filter>
     </CustomBuild>
+    <CustomBuild Include="common\diagramgrid.h">
+      <Filter>Header Files\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\DiagramUtil.h">
+      <Filter>Header Files\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\DrawMode.h">
+      <Filter>Header Files\common</Filter>
+    </CustomBuild>
     <CustomBuild Include="common\GenericEditProvider.h">
       <Filter>Header Files\common</Filter>
     </CustomBuild>
+    <CustomBuild Include="common\IDFactory.h">
+      <Filter>Header Files\common</Filter>
+    </CustomBuild>
     <CustomBuild Include="common\IEditProvider.h">
+      <Filter>Header Files\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\KactusAttribute.h">
+      <Filter>Header Files\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\KactusColors.h">
+      <Filter>Header Files\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\TextEditProvider.h">
+      <Filter>Header Files\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\utils.h">
       <Filter>Header Files\common</Filter>
     </CustomBuild>
     <CustomBuild Include="common\widgets\attributeBox\attributebox.h">
@@ -5046,6 +4768,15 @@
     <CustomBuild Include="common\widgets\assistedLineEdit\AssistedLineEdit.h">
       <Filter>Header Files\common\widgets\assistedLineEdit</Filter>
     </CustomBuild>
+    <CustomBuild Include="common\widgets\assistedLineEdit\BasicLineContentMatcher.h">
+      <Filter>Header Files\common\widgets\assistedLineEdit</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\widgets\assistedLineEdit\ILineContentMatcher.h">
+      <Filter>Header Files\common\widgets\assistedLineEdit</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\widgets\assistedLineEdit\LineContentAssistWidget.h">
+      <Filter>Header Files\common\widgets\assistedLineEdit</Filter>
+    </CustomBuild>
     <CustomBuild Include="common\widgets\vlnvDisplayer\vlnvdisplayer.h">
       <Filter>Header Files\common\widgets\vlnvDisplayer</Filter>
     </CustomBuild>
@@ -5061,8 +4792,23 @@
     <CustomBuild Include="common\widgets\assistedTextEdit\AssistedTextEdit.h">
       <Filter>Header Files\common\widgets\assistedTextEdit</Filter>
     </CustomBuild>
+    <CustomBuild Include="common\widgets\assistedTextEdit\HighlightStyleDesc.h">
+      <Filter>Header Files\common\widgets\assistedTextEdit</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\widgets\assistedTextEdit\ITextContentMatcher.h">
+      <Filter>Header Files\common\widgets\assistedTextEdit</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\widgets\assistedTextEdit\TextContentAssistWidget.h">
+      <Filter>Header Files\common\widgets\assistedTextEdit</Filter>
+    </CustomBuild>
     <CustomBuild Include="common\widgets\assistedTextEdit\ToolTipHintWidget.h">
       <Filter>Header Files\common\widgets\assistedTextEdit</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\widgets\vlnvEditor\VLNVContentMatcher.h">
+      <Filter>Header Files\common\widgets\vlnvEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\widgets\vlnvEditor\VLNVDataTree.h">
+      <Filter>Header Files\common\widgets\vlnvEditor</Filter>
     </CustomBuild>
     <CustomBuild Include="common\widgets\vlnvEditor\vlnveditor.h">
       <Filter>Header Files\common\widgets\vlnvEditor</Filter>
@@ -5124,6 +4870,9 @@
     <CustomBuild Include="common\widgets\ComboBoxEx\ComboBoxEx.h">
       <Filter>Header Files\common\widgets\ComboBoxEx</Filter>
     </CustomBuild>
+    <CustomBuild Include="common\widgets\SnippetTextEdit\SnippetHighlighter.h">
+      <Filter>Header Files\common\widgets\SnippetTextEdit</Filter>
+    </CustomBuild>
     <CustomBuild Include="common\widgets\SnippetTextEdit\SnippetTextEdit.h">
       <Filter>Header Files\common\widgets\SnippetTextEdit</Filter>
     </CustomBuild>
@@ -5142,6 +4891,9 @@
     <CustomBuild Include="common\widgets\testConstraintComboBox\testconstraintcombobox.h">
       <Filter>Header Files\common\widgets\testConstraintComboBox</Filter>
     </CustomBuild>
+    <CustomBuild Include="common\validators\AddressValidator.h">
+      <Filter>Header Files\common\validators</Filter>
+    </CustomBuild>
     <CustomBuild Include="common\validators\nameValidator\namevalidator.h">
       <Filter>Header Files\common\validators\nameValidator</Filter>
     </CustomBuild>
@@ -5150,6 +4902,27 @@
     </CustomBuild>
     <CustomBuild Include="common\validators\LibraryPathValidator\librarypathvalidator.h">
       <Filter>Header Files\common\validators\LibraryPathValidator</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\layouts\HCollisionLayout.h">
+      <Filter>Header Files\common\layouts</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\layouts\HStackedLayout.h">
+      <Filter>Header Files\common\layouts</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\layouts\IHGraphicsLayout.h">
+      <Filter>Header Files\common\layouts</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\layouts\IVGraphicsLayout.h">
+      <Filter>Header Files\common\layouts</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\layouts\VCollisionLayout.h">
+      <Filter>Header Files\common\layouts</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\layouts\VStackedLayout.h">
+      <Filter>Header Files\common\layouts</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\layouts\VStaticLayout.h">
+      <Filter>Header Files\common\layouts</Filter>
     </CustomBuild>
     <CustomBuild Include="common\graphicsItems\CommonGraphicsUndoCommands.h">
       <Filter>Header Files\common\graphicsItems</Filter>
@@ -5160,19 +4933,40 @@
     <CustomBuild Include="common\graphicsItems\ConnectionEndpoint.h">
       <Filter>Header Files\common\graphicsItems</Filter>
     </CustomBuild>
+    <CustomBuild Include="common\graphicsItems\ConnectionUndoCommands.h">
+      <Filter>Header Files\common\graphicsItems</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\graphicsItems\expandableitem.h">
+      <Filter>Header Files\common\graphicsItems</Filter>
+    </CustomBuild>
     <CustomBuild Include="common\graphicsItems\GraphicsColumn.h">
       <Filter>Header Files\common\graphicsItems</Filter>
     </CustomBuild>
     <CustomBuild Include="common\graphicsItems\GraphicsColumnLayout.h">
       <Filter>Header Files\common\graphicsItems</Filter>
     </CustomBuild>
+    <CustomBuild Include="common\graphicsItems\GraphicsColumnUndoCommands.h">
+      <Filter>Header Files\common\graphicsItems</Filter>
+    </CustomBuild>
     <CustomBuild Include="common\graphicsItems\GraphicsConnection.h">
+      <Filter>Header Files\common\graphicsItems</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\graphicsItems\graphicsexpandcollapseitem.h">
+      <Filter>Header Files\common\graphicsItems</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\graphicsItems\GraphicsItemTypes.h">
       <Filter>Header Files\common\graphicsItems</Filter>
     </CustomBuild>
     <CustomBuild Include="common\graphicsItems\GraphicsLineEdit.h">
       <Filter>Header Files\common\graphicsItems</Filter>
     </CustomBuild>
     <CustomBuild Include="common\graphicsItems\GraphicsRectButton.h">
+      <Filter>Header Files\common\graphicsItems</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\graphicsItems\IGraphicsItemStack.h">
+      <Filter>Header Files\common\graphicsItems</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\graphicsItems\visualizeritem.h">
       <Filter>Header Files\common\graphicsItems</Filter>
     </CustomBuild>
     <CustomBuild Include="common\delegates\ComboDelegate\combodelegate.h">
@@ -5199,6 +4993,9 @@
     <CustomBuild Include="common\dialogs\renameDialog\renamedialog.h">
       <Filter>Header Files\common\dialogs\renameDialog</Filter>
     </CustomBuild>
+    <CustomBuild Include="common\dialogs\attributeDialog\attributedialog.h">
+      <Filter>Header Files\common\dialogs\attributeDialog</Filter>
+    </CustomBuild>
     <CustomBuild Include="common\dialogs\comboSelector\comboselector.h">
       <Filter>Header Files\common\dialogs\comboSelector</Filter>
     </CustomBuild>
@@ -5217,6 +5014,9 @@
     <CustomBuild Include="common\dialogs\ObjectRemoveDialog\objectremovemodel.h">
       <Filter>Header Files\common\dialogs\ObjectRemoveDialog</Filter>
     </CustomBuild>
+    <CustomBuild Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
+      <Filter>Header Files\common\dialogs\listSelectDialog</Filter>
+    </CustomBuild>
     <CustomBuild Include="common\dialogs\selectDirectoryDialog\selectdirectorydialog.h">
       <Filter>Header Files\common\dialogs\selectDirectoryDialog</Filter>
     </CustomBuild>
@@ -5225,6 +5025,18 @@
     </CustomBuild>
     <CustomBuild Include="common\dialogs\LibrarySettingsDialog\LibrarySettingsDialog.h">
       <Filter>Header Files\common\dialogs\LibrarySettingsDialog</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\dialogs\TableViewDialog\TableViewDialog.h">
+      <Filter>Header Files\common\dialogs\TableViewDialog</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\cornerStitch\CornerStitchStructure.h">
+      <Filter>Header Files\common\cornerStitch</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\cornerStitch\StitchTile.h">
+      <Filter>Header Files\common\cornerStitch</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designwidget\AdHocEnabled.h">
+      <Filter>Header Files\designwidget</Filter>
     </CustomBuild>
     <CustomBuild Include="designwidget\AdHocInterfaceItem.h">
       <Filter>Header Files\designwidget</Filter>
@@ -5262,7 +5074,13 @@
     <CustomBuild Include="designwidget\HWDesignWidget.h">
       <Filter>Header Files\designwidget</Filter>
     </CustomBuild>
+    <CustomBuild Include="designwidget\HWMoveCommands.h">
+      <Filter>Header Files\designwidget</Filter>
+    </CustomBuild>
     <CustomBuild Include="designwidget\OffPageConnectorItem.h">
+      <Filter>Header Files\designwidget</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designwidget\PortmapDialog.h">
       <Filter>Header Files\designwidget</Filter>
     </CustomBuild>
     <CustomBuild Include="designwidget\SelectItemTypeDialog.h">
@@ -5493,9 +5311,6 @@
     <CustomBuild Include="IPXactWrapper\ComponentEditor\addressSpaces\addressspacesmodel.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor\addressSpaces</Filter>
     </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ComponentEditor\addressSpaces\addressspacevisualizer.h">
-      <Filter>Header Files\IPXactWrapper\ComponentEditor\addressSpaces</Filter>
-    </CustomBuild>
     <CustomBuild Include="IPXactWrapper\ComponentEditor\addressSpaces\segmenteditor.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor\addressSpaces</Filter>
     </CustomBuild>
@@ -5504,6 +5319,30 @@
     </CustomBuild>
     <CustomBuild Include="IPXactWrapper\ComponentEditor\addressSpaces\segmentsmodel.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor\addressSpaces</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\addressSpaces\localMemoryMap\localmemorymapeditor.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\addressSpaces\localMemoryMap</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\addressSpaces\localMemoryMap\localmemorymapgraphitem.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\addressSpaces\localMemoryMap</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer\addressspacegapitem.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\addressSpaces\AddressSpaceVisualizer</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer\addressspacescene.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\addressSpaces\AddressSpaceVisualizer</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer\addressspacevisualizationitem.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\addressSpaces\AddressSpaceVisualizer</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer\addressspacevisualizer.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\addressSpaces\AddressSpaceVisualizer</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer\localaddrblockgraphitem.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\addressSpaces\AddressSpaceVisualizer</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer\segmentgraphitem.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\addressSpaces\AddressSpaceVisualizer</Filter>
     </CustomBuild>
     <CustomBuild Include="IPXactWrapper\ComponentEditor\cpus\addressspacerefdelegate.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor\cpus</Filter>
@@ -5625,6 +5464,9 @@
     <CustomBuild Include="IPXactWrapper\ComponentEditor\memoryMaps\addressblockmodel.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor\memoryMaps</Filter>
     </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\memoryMaps\addressblockproxy.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\memoryMaps</Filter>
+    </CustomBuild>
     <CustomBuild Include="IPXactWrapper\ComponentEditor\memoryMaps\enumeratedvaluedelegate.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor\memoryMaps</Filter>
     </CustomBuild>
@@ -5641,6 +5483,9 @@
       <Filter>Header Files\IPXactWrapper\ComponentEditor\memoryMaps</Filter>
     </CustomBuild>
     <CustomBuild Include="IPXactWrapper\ComponentEditor\memoryMaps\memorymapmodel.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\memoryMaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\memoryMaps\memorymapproxy.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor\memoryMaps</Filter>
     </CustomBuild>
     <CustomBuild Include="IPXactWrapper\ComponentEditor\memoryMaps\memorymapsdelegate.h">
@@ -5680,9 +5525,6 @@
       <Filter>Header Files\IPXactWrapper\ComponentEditor\memoryMaps\memoryMapsVisualizer</Filter>
     </CustomBuild>
     <CustomBuild Include="IPXactWrapper\ComponentEditor\memoryMaps\memoryMapsVisualizer\memorymapview.h">
-      <Filter>Header Files\IPXactWrapper\ComponentEditor\memoryMaps\memoryMapsVisualizer</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ComponentEditor\memoryMaps\memoryMapsVisualizer\memoryvisualizeritem.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor\memoryMaps\memoryMapsVisualizer</Filter>
     </CustomBuild>
     <CustomBuild Include="IPXactWrapper\ComponentEditor\memoryMaps\memoryMapsVisualizer\registergraphitem.h">
@@ -5796,6 +5638,15 @@
     <CustomBuild Include="IPXactWrapper\ComponentEditor\treeStructure\componenttreeview.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor\treeStructure</Filter>
     </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\visualization\fieldgapitem.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\visualization</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\visualization\memorygapitem.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\visualization</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\visualization\memoryvisualizationitem.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\visualization</Filter>
+    </CustomBuild>
     <CustomBuild Include="IPXactWrapper\BusEditor\absdefgroup.h">
       <Filter>Header Files\IPXactWrapper\BusEditor</Filter>
     </CustomBuild>
@@ -5862,6 +5713,21 @@
     <CustomBuild Include="models\alternateregister.h">
       <Filter>Header Files\models</Filter>
     </CustomBuild>
+    <CustomBuild Include="models\ApiDefinition.h">
+      <Filter>Header Files\models</Filter>
+    </CustomBuild>
+    <CustomBuild Include="models\ApiDependency.h">
+      <Filter>Header Files\models</Filter>
+    </CustomBuild>
+    <CustomBuild Include="models\ApiFunction.h">
+      <Filter>Header Files\models</Filter>
+    </CustomBuild>
+    <CustomBuild Include="models\ApiFunctionParameter.h">
+      <Filter>Header Files\models</Filter>
+    </CustomBuild>
+    <CustomBuild Include="models\ApiInterface.h">
+      <Filter>Header Files\models</Filter>
+    </CustomBuild>
     <CustomBuild Include="models\bank.h">
       <Filter>Header Files\models</Filter>
     </CustomBuild>
@@ -5883,10 +5749,28 @@
     <CustomBuild Include="models\choice.h">
       <Filter>Header Files\models</Filter>
     </CustomBuild>
+    <CustomBuild Include="models\ColumnDesc.h">
+      <Filter>Header Files\models</Filter>
+    </CustomBuild>
+    <CustomBuild Include="models\ComConnection.h">
+      <Filter>Header Files\models</Filter>
+    </CustomBuild>
+    <CustomBuild Include="models\ComDefinition.h">
+      <Filter>Header Files\models</Filter>
+    </CustomBuild>
+    <CustomBuild Include="models\ComInterface.h">
+      <Filter>Header Files\models</Filter>
+    </CustomBuild>
     <CustomBuild Include="models\component.h">
       <Filter>Header Files\models</Filter>
     </CustomBuild>
     <CustomBuild Include="models\componentgenerator.h">
+      <Filter>Header Files\models</Filter>
+    </CustomBuild>
+    <CustomBuild Include="models\ComponentInstance.h">
+      <Filter>Header Files\models</Filter>
+    </CustomBuild>
+    <CustomBuild Include="models\ComProperty.h">
       <Filter>Header Files\models</Filter>
     </CustomBuild>
     <CustomBuild Include="models\cpu.h">
@@ -5929,6 +5813,12 @@
       <Filter>Header Files\models</Filter>
     </CustomBuild>
     <CustomBuild Include="models\generatorchainselector.h">
+      <Filter>Header Files\models</Filter>
+    </CustomBuild>
+    <CustomBuild Include="models\HierApiDependency.h">
+      <Filter>Header Files\models</Filter>
+    </CustomBuild>
+    <CustomBuild Include="models\HierComConnection.h">
       <Filter>Header Files\models</Filter>
     </CustomBuild>
     <CustomBuild Include="models\librarycomponent.h">
@@ -5988,6 +5878,9 @@
     <CustomBuild Include="models\reset.h">
       <Filter>Header Files\models</Filter>
     </CustomBuild>
+    <CustomBuild Include="models\segment.h">
+      <Filter>Header Files\models</Filter>
+    </CustomBuild>
     <CustomBuild Include="models\servicetypedef.h">
       <Filter>Header Files\models</Filter>
     </CustomBuild>
@@ -5995,6 +5888,15 @@
       <Filter>Header Files\models</Filter>
     </CustomBuild>
     <CustomBuild Include="models\subspacemap.h">
+      <Filter>Header Files\models</Filter>
+    </CustomBuild>
+    <CustomBuild Include="models\SWInstance.h">
+      <Filter>Header Files\models</Filter>
+    </CustomBuild>
+    <CustomBuild Include="models\SWView.h">
+      <Filter>Header Files\models</Filter>
+    </CustomBuild>
+    <CustomBuild Include="models\SystemView.h">
       <Filter>Header Files\models</Filter>
     </CustomBuild>
     <CustomBuild Include="models\transactional.h">
@@ -6013,6 +5915,12 @@
       <Filter>Header Files\models</Filter>
     </CustomBuild>
     <CustomBuild Include="models\wireabstraction.h">
+      <Filter>Header Files\models</Filter>
+    </CustomBuild>
+    <CustomBuild Include="models\writevalueconstraint.h">
+      <Filter>Header Files\models</Filter>
+    </CustomBuild>
+    <CustomBuild Include="models\XmlUtils.h">
       <Filter>Header Files\models</Filter>
     </CustomBuild>
     <CustomBuild Include="mainwindow\mainwindow.h">
@@ -6057,6 +5965,9 @@
     <CustomBuild Include="vhdlGenerator\vhdlconnectionendpoint.h">
       <Filter>Header Files\vhdlGenerator</Filter>
     </CustomBuild>
+    <CustomBuild Include="vhdlGenerator\vhdlgeneral.h">
+      <Filter>Header Files\vhdlGenerator</Filter>
+    </CustomBuild>
     <CustomBuild Include="vhdlGenerator\vhdlgenerator2.h">
       <Filter>Header Files\vhdlGenerator</Filter>
     </CustomBuild>
@@ -6081,6 +5992,9 @@
     <CustomBuild Include="PropertyWidget\messageconsole.h">
       <Filter>Header Files\PropertyWidget</Filter>
     </CustomBuild>
+    <CustomBuild Include="MCAPI\CSourceContentMatcher.h">
+      <Filter>Header Files\MCAPI</Filter>
+    </CustomBuild>
     <CustomBuild Include="MCAPI\CSourceHighlighter.h">
       <Filter>Header Files\MCAPI</Filter>
     </CustomBuild>
@@ -6088,6 +6002,9 @@
       <Filter>Header Files\MCAPI</Filter>
     </CustomBuild>
     <CustomBuild Include="MCAPI\CSourceWidget.h">
+      <Filter>Header Files\MCAPI</Filter>
+    </CustomBuild>
+    <CustomBuild Include="MCAPI\MCAPIDesignerTypes.h">
       <Filter>Header Files\MCAPI</Filter>
     </CustomBuild>
     <CustomBuild Include="settings\CodeEditorSettingsPage.h">
@@ -6100,6 +6017,9 @@
       <Filter>Header Files\settings</Filter>
     </CustomBuild>
     <CustomBuild Include="settings\SettingsDialog.h">
+      <Filter>Header Files\settings</Filter>
+    </CustomBuild>
+    <CustomBuild Include="settings\SettingsUpdater.h">
       <Filter>Header Files\settings</Filter>
     </CustomBuild>
     <CustomBuild Include="ComponentInstanceEditor\componentinstanceeditor.h">
@@ -6141,6 +6061,9 @@
     <CustomBuild Include="ConnectionEditor\connectioneditor.h">
       <Filter>Header Files\ConnectionEditor</Filter>
     </CustomBuild>
+    <CustomBuild Include="GCF\Common.h">
+      <Filter>Header Files\GCF</Filter>
+    </CustomBuild>
     <CustomBuild Include="GCF\MenuStrip.h">
       <Filter>Header Files\GCF</Filter>
     </CustomBuild>
@@ -6152,6 +6075,9 @@
     </CustomBuild>
     <CustomBuild Include="AdHocEditor\AdHocModel.h">
       <Filter>Header Files\AdHocEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SystemDesign\HWMappingItem.h">
+      <Filter>Header Files\SystemDesign</Filter>
     </CustomBuild>
     <CustomBuild Include="SystemDesign\SWComponentItem.h">
       <Filter>Header Files\SystemDesign</Filter>
@@ -6189,6 +6115,12 @@
     <CustomBuild Include="SystemDesign\SystemDesignWidget.h">
       <Filter>Header Files\SystemDesign</Filter>
     </CustomBuild>
+    <CustomBuild Include="SystemDesign\SystemMoveCommands.h">
+      <Filter>Header Files\SystemDesign</Filter>
+    </CustomBuild>
+    <CustomBuild Include="LibraryManager\ipxactitem.h">
+      <Filter>Header Files\LibraryManager</Filter>
+    </CustomBuild>
     <CustomBuild Include="LibraryManager\ipxactmodel.h">
       <Filter>Header Files\LibraryManager</Filter>
     </CustomBuild>
@@ -6204,6 +6136,9 @@
     <CustomBuild Include="LibraryManager\libraryhandler.h">
       <Filter>Header Files\LibraryManager</Filter>
     </CustomBuild>
+    <CustomBuild Include="LibraryManager\libraryinterface.h">
+      <Filter>Header Files\LibraryManager</Filter>
+    </CustomBuild>
     <CustomBuild Include="LibraryManager\libraryitem.h">
       <Filter>Header Files\LibraryManager</Filter>
     </CustomBuild>
@@ -6217,6 +6152,12 @@
       <Filter>Header Files\LibraryManager</Filter>
     </CustomBuild>
     <CustomBuild Include="LibraryManager\librarytreewidget.h">
+      <Filter>Header Files\LibraryManager</Filter>
+    </CustomBuild>
+    <CustomBuild Include="LibraryManager\LibraryUtils.h">
+      <Filter>Header Files\LibraryManager</Filter>
+    </CustomBuild>
+    <CustomBuild Include="LibraryManager\vlnv.h">
       <Filter>Header Files\LibraryManager</Filter>
     </CustomBuild>
     <CustomBuild Include="LibraryManager\VLNVDialer\dialerwidget.h">
@@ -6255,7 +6196,19 @@
     <CustomBuild Include="LibraryManager\HierarchyView\hierarchywidget.h">
       <Filter>Header Files\LibraryManager\HierarchyView</Filter>
     </CustomBuild>
+    <CustomBuild Include="PluginSystem\IGeneratorPlugin.h">
+      <Filter>Header Files\PluginSystem</Filter>
+    </CustomBuild>
+    <CustomBuild Include="PluginSystem\IPluginInformation.h">
+      <Filter>Header Files\PluginSystem</Filter>
+    </CustomBuild>
+    <CustomBuild Include="PluginSystem\IPluginUtility.h">
+      <Filter>Header Files\PluginSystem</Filter>
+    </CustomBuild>
     <CustomBuild Include="PluginSystem\PluginListDialog.h">
+      <Filter>Header Files\PluginSystem</Filter>
+    </CustomBuild>
+    <CustomBuild Include="PluginSystem\PluginManager.h">
       <Filter>Header Files\PluginSystem</Filter>
     </CustomBuild>
     <CustomBuild Include="SystemDetailsEditor\ExportSWDialog.h">
@@ -6273,10 +6226,16 @@
     <CustomBuild Include="HelpSystem\HelpSearchWidget.h">
       <Filter>Header Files\HelpSystem</Filter>
     </CustomBuild>
+    <CustomBuild Include="HelpSystem\HelpWindow.h">
+      <Filter>Header Files\HelpSystem</Filter>
+    </CustomBuild>
     <CustomBuild Include="AddressEditor\AddressDelegate.h">
       <Filter>Header Files\AddressEditor</Filter>
     </CustomBuild>
     <CustomBuild Include="AddressEditor\AddressEditor.h">
+      <Filter>Header Files\AddressEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="AddressEditor\AddressEntry.h">
       <Filter>Header Files\AddressEditor</Filter>
     </CustomBuild>
     <CustomBuild Include="AddressEditor\AddressModel.h">
@@ -6294,6 +6253,9 @@
     <CustomBuild Include="MemoryDesigner\AddressSubsection.h">
       <Filter>Header Files\MemoryDesigner</Filter>
     </CustomBuild>
+    <CustomBuild Include="MemoryDesigner\MemoryColumn.h">
+      <Filter>Header Files\MemoryDesigner</Filter>
+    </CustomBuild>
     <CustomBuild Include="MemoryDesigner\MemoryDesignDiagram.h">
       <Filter>Header Files\MemoryDesigner</Filter>
     </CustomBuild>
@@ -6303,8 +6265,299 @@
     <CustomBuild Include="MemoryDesigner\MemoryItem.h">
       <Filter>Header Files\MemoryDesigner</Filter>
     </CustomBuild>
+    <CustomBuild Include="MemoryDesigner\SegmentItem.h">
+      <Filter>Header Files\MemoryDesigner</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\abs-def.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\add.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\appicon.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\bus-def.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\checkIntegrity.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\cleanup.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\collapse.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\configuration.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\connect.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\diagram-add-column.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\dockSelect.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\documentation.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\edit-redo.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\edit-undo.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\exclamation.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\expand.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\export.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\file-new.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\file-print.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\file-save.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\file-save_all.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\generator.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\generator_plugin.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\help.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\hier-hw-component.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\hier-sw-component.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\hierarchy.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\hw-component.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\hw-design.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\import.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\imported.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
     <CustomBuild Include="kactus.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="graphics\library-config.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\library-refresh.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\lock-off.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\lock-on.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\mcapi-endpoint.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\mcapi-endpoint_handle.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\mcapi-func.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\mcapi-node.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\mcapi-port.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\mcapi-type.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\modelsim_generator.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\naming-policy.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\new-api_definition.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\new-bus.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\new-com_definition.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\protection-locked.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\protection-unlocked.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\quartus_generator.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\refresh.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\remove.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\search.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\settings-code_editor.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\settings-general.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\settings-library.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\splash.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\sw-component24x24.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\sw-component48x48.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\sw-design-add_node.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\sw-design24x24.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\sw-design48x48.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\system-about.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\system-component.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\system-design.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\system-exit.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\system-help.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\system-settings.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\tool-drafting.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\tool-interconnection.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\tool-interface.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\tool-select.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\tool-toggle_offpage.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\triangle_arrow_down.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\triangle_arrow_up.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\vhdl_gen.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\view-fit_best.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\view-zoom_in.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\view-zoom_original.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\view-zoom_out.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\visibility.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\workspace.png">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\Originals\AbsDef.psd">
+      <Filter>Resource Files\Originals</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\Originals\Appicon.psd">
+      <Filter>Resource Files\Originals</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\Originals\Design.psd">
+      <Filter>Resource Files\Originals</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\Originals\Expand.psd">
+      <Filter>Resource Files\Originals</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\Originals\Hierarchical.psd">
+      <Filter>Resource Files\Originals</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\Originals\NewBus.psd">
+      <Filter>Resource Files\Originals</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\Originals\NewBusIcon.psd">
+      <Filter>Resource Files\Originals</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\Originals\NewBusIcon2.psd">
+      <Filter>Resource Files\Originals</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\Originals\SplashScreen.psd">
+      <Filter>Resource Files\Originals</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\Originals\SWComponent.psd">
+      <Filter>Resource Files\Originals</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\Originals\SWDesign.psd">
+      <Filter>Resource Files\Originals</Filter>
+    </CustomBuild>
+    <CustomBuild Include="graphics\Originals\System.psd">
+      <Filter>Resource Files\Originals</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Help\kactus2help.qhcp">
+      <Filter>Help Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Help\kactus2help.qhp">
+      <Filter>Help Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="appicon.ico" />
+    <CustomBuild Include="Kactus2.pri" />
+    <CustomBuild Include="Kactus2.pro" />
   </ItemGroup>
 </Project>

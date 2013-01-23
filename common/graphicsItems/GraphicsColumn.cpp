@@ -36,7 +36,7 @@
 // Function: GraphicsColumn()
 //-----------------------------------------------------------------------------
 GraphicsColumn::GraphicsColumn(ColumnDesc const& desc, GraphicsColumnLayout* layout, QGraphicsScene* scene)
-    : QGraphicsRectItem(0, scene),
+    : QGraphicsRectItem(0),
       layout_(layout),
       desc_(),
       nameLabel_(0),

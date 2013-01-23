@@ -47,7 +47,7 @@ nameEdit_(0), valueEdit_(0) {
 AttributeDialog::~AttributeDialog() {
 }
 
-AttributeDialog::Attribute* AttributeDialog::exec() {
+AttributeDialog::Attribute* AttributeDialog::execDialog() {
 
 	// execute at least once
 	do {

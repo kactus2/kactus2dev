@@ -60,7 +60,7 @@ public:
 	 *
 	 * \return Pointer to an attribute.
 	 */
-	Attribute* exec();
+	Attribute* execDialog();
 
 private:
 

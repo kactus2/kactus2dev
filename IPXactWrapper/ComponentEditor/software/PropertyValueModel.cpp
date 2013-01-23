@@ -15,6 +15,7 @@
 
 #include <QRegExp>
 #include <QFont>
+#include <QColor>
 
 QString const PropertyValueModel::IP_ADDRESS_REGEX("^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$");
 
@@ -192,13 +193,13 @@ QVariant PropertyValueModel::data(QModelIndex const& index, int role /*= Qt::Dis
                     {
                         if (prop->getName() == table_.at(index.row()).first)
                         {
-                            return Qt::black;
+                            return QColor(Qt::black);
                         }
                     }
                 }
 
                 // Use red to indicate property values that are not found in the allowed properties.
-                return Qt::red;
+                return QColor(Qt::red);
             }
             
         case 1:
@@ -225,22 +226,22 @@ QVariant PropertyValueModel::data(QModelIndex const& index, int role /*= Qt::Dis
 
                             if (ok)
                             {
-                                return Qt::black;
+                                return QColor(Qt::black);
                             }
                             else
                             {
-                                return Qt::red;
+                                return QColor(Qt::red);
                             }
                         }
                     }
                 }
 
-                return Qt::black;
+                return QColor(Qt::black);
             }
 
         default:
             {
-                return Qt::black;
+                return QColor(Qt::black);
             }
         }
     }

@@ -246,8 +246,8 @@ private:
     };
 
     //! Minimum length for a line segment.
-    static qreal const MIN_LENGTH;
-    static qreal const MIN_START_LENGTH;
+    static float const MIN_LENGTH;
+    static float const MIN_START_LENGTH;
 
     /*!
      *  Sets the default graphics item settings.

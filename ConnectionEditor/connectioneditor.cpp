@@ -82,7 +82,7 @@ adHocBoundsModel_(this)
 	portWidget_.setHorizontalHeaderItem(0, new QTableWidgetItem(tr("instance1")));
 	portWidget_.setHorizontalHeaderItem(1, new QTableWidgetItem(tr("instance2")));
 	portWidget_.horizontalHeader()->setStretchLastSection(true);
-	portWidget_.horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+	portWidget_.horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 	portWidget_.verticalHeader()->hide();
 	portWidget_.setEditTriggers(QAbstractItemView::NoEditTriggers);
 
@@ -101,9 +101,9 @@ adHocBoundsModel_(this)
 
     adHocBoundsTable_.setColumnWidth(ADHOC_BOUNDS_COL_LEFT, 70);
     adHocBoundsTable_.setColumnWidth(ADHOC_BOUNDS_COL_RIGHT, 70);
-    adHocBoundsTable_.horizontalHeader()->setResizeMode(QHeaderView::Stretch);
-    adHocBoundsTable_.horizontalHeader()->setResizeMode(ADHOC_BOUNDS_COL_LEFT, QHeaderView::Fixed);
-    adHocBoundsTable_.horizontalHeader()->setResizeMode(ADHOC_BOUNDS_COL_RIGHT, QHeaderView::Fixed);
+    adHocBoundsTable_.horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    adHocBoundsTable_.horizontalHeader()->setSectionResizeMode(ADHOC_BOUNDS_COL_LEFT, QHeaderView::Fixed);
+    adHocBoundsTable_.horizontalHeader()->setSectionResizeMode(ADHOC_BOUNDS_COL_RIGHT, QHeaderView::Fixed);
 
 
 	QVBoxLayout* layout = new QVBoxLayout(this);

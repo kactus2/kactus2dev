@@ -97,7 +97,7 @@ InterfaceEditor::InterfaceEditor(QWidget *parent, LibraryInterface* handler)
 	mappings_.setHorizontalHeaderItem(0, new QTableWidgetItem(tr("Logical name")));
 	mappings_.setHorizontalHeaderItem(1, new QTableWidgetItem(tr("Physical name")));
 	mappings_.horizontalHeader()->setStretchLastSection(true);
-	mappings_.horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+	mappings_.horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 	mappings_.verticalHeader()->hide();
 	mappings_.setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::SelectedClicked |
 		QAbstractItemView::EditKeyPressed);

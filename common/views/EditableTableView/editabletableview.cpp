@@ -35,7 +35,7 @@ exportAction_(tr("Export csv-file"), this),
 itemsDraggable_(true) {
 
 	// cells are resized to match contents 
-	horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+	horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 
 	//last column is stretched take the available space in the widget
 	horizontalHeader()->setStretchLastSection(true);

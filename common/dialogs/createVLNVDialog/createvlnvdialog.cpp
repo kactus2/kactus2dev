@@ -103,7 +103,7 @@ void CreateVLNVDialog::onGeneratorChainSelected() {
 	type_ = VLNV::GENERATORCHAIN;
 }
 
-VLNV* CreateVLNVDialog::exec() {
+VLNV* CreateVLNVDialog::execDialog() {
 
 	// call the base class implementation of the exec() function
 

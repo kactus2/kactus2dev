@@ -17,7 +17,7 @@ removeAction_(tr("Remove"), this),
 copyAction_(tr("Copy"), this) {
 
 	horizontalHeader()->setStretchLastSection(true);
-	horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+	horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 	horizontalHeader()->setMinimumSectionSize(70);
 
 	setItemDelegate(new BusPortsDelegate(this));

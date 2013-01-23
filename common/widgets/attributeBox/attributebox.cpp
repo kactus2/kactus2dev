@@ -62,7 +62,7 @@ void AttributeBox::onAdd() {
 	AttributeDialog dialog(this);
 
 	// execute the dialog
-	AttributeDialog::Attribute* attribute = dialog.exec();
+	AttributeDialog::Attribute* attribute = dialog.execDialog();
 
 	// if user did not input anything
 	if (!attribute) {

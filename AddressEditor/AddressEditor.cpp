@@ -46,7 +46,7 @@ AddressEditor::AddressEditor(QWidget* parent)
     view_->setModel(&model_);
     //view_->setSortingEnabled(true);
     view_->setItemDelegate(new AddressDelegate(this));
-    view_->horizontalHeader()->setResizeMode(QHeaderView::Interactive);
+    view_->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
     view_->horizontalHeader()->setStretchLastSection(true);
     view_->verticalHeader()->hide();
 
@@ -54,7 +54,7 @@ AddressEditor::AddressEditor(QWidget* parent)
     view_->setColumnWidth(ADDRESS_COL_MAP_NAME, 150);
     view_->resizeColumnToContents(ADDRESS_COL_LOCKED);
     view_->resizeColumnToContents(ADDRESS_COL_MAP_AUB);
-    view_->horizontalHeader()->setResizeMode(ADDRESS_COL_LOCKED, QHeaderView::Fixed);
+    view_->horizontalHeader()->setSectionResizeMode(ADDRESS_COL_LOCKED, QHeaderView::Fixed);
 
     setupLayout();
     setupConnections();

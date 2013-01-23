@@ -21,6 +21,8 @@
 #include <QMessageBox>
 #include <QUrl>
 #include <QDesktopServices>
+#include <QMimeData>
+#include <QDrag>
 
 #include <QDebug>
 

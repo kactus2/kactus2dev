@@ -25,8 +25,8 @@
 #include <QPainter>
 #include <QGraphicsSceneMouseEvent>
 
-qreal const GraphicsConnection::MIN_LENGTH = 10;
-qreal const GraphicsConnection::MIN_START_LENGTH = 20;
+float const GraphicsConnection::MIN_LENGTH = 10.0f;
+float const GraphicsConnection::MIN_START_LENGTH = 20.0f;
 
 //-----------------------------------------------------------------------------
 // Function: GraphicsConnection()
@@ -278,7 +278,7 @@ void GraphicsConnection::updatePosition()
         // Recreate the route from scratch if there are not enough points in the path or
         // the route is too complicated when the position and direction of the endpoints is considered.
         if (pathPoints_.size() < 2 ||
-            (pathPoints_.size() > 4 && qFuzzyCompare(QVector2D::dotProduct(dir1, dir2), -1.0) &&
+            (pathPoints_.size() > 4 && qFuzzyCompare(QVector2D::dotProduct(dir1, dir2), -1.0f) &&
             QVector2D::dotProduct(dir1, QVector2D(endpoint2_->scenePos() - endpoint1_->scenePos())) > 0.0))
         {
             createRoute(endpoint1_, endpoint2_);

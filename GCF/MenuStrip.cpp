@@ -40,9 +40,9 @@
 #include <QPainterPath>
 #include <QActionEvent>
 #include <QWidgetAction>
-#include <QPlastiqueStyle>
 #include <QLinearGradient>
 #include <QRadialGradient>
+#include <QStyle>
 
 #define MEAN_COLOR(c1, c2) QColor( (c1.red()+c2.red())/2, (c1.green()+c2.green())/2, (c1.blue()+c2.blue())/2 );
 

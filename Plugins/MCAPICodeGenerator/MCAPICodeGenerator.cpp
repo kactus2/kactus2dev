@@ -725,6 +725,3 @@ void MCAPICodeGenerator::writeStatusCheck(CSourceWriter &writer)
     writer.endBlock();
     writer.writeLine();
 }
-
-
-Q_EXPORT_PLUGIN2(MCAPICodeGenerator, MCAPICodeGenerator)

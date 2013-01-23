@@ -52,11 +52,11 @@ void SplashScreen::drawContents(QPainter *painter)
 
     // Draw the other information.
     painter->drawText(QRectF(270, 280, 310, 150), Qt::AlignLeft,
-                      "This software is licensed under the GPL2 General Public License.\n"
-                      "See license.txt for further details.\n\n"
-                      "Contributors: Juho J‰rvinen, Antti Kamppi, Joni-Matti M‰‰tt‰,\n"
-                      "Lauri Matilainen, Timo D. H‰m‰l‰inen\n\n"
-                      "Kactus2 Website: http://funbase.cs.tut.fi/");
+                      QString::fromLatin1("This software is licensed under the GPL2 General Public License.\n"
+                                          "See license.txt for further details.\n\n"
+                                          "Contributors: Juho J‰rvinen, Antti Kamppi, Joni-Matti M‰‰tt‰,\n"
+                                          "Lauri Matilainen, Timo D. H‰m‰l‰inen\n\n"
+                                          "Kactus2 Website: http://funbase.cs.tut.fi/"));
 }
 
 void SplashScreen::mousePressEvent( QMouseEvent* event ) {

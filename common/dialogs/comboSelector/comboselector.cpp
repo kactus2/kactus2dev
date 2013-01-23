@@ -27,7 +27,7 @@ QInputDialog(parent, f) {
 ComboSelector::~ComboSelector() {
 }
 
-QString ComboSelector::exec() {
+QString ComboSelector::execDialog() {
 
 	// if user clicked cancel
 	if (!QInputDialog::exec()) {

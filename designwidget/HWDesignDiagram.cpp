@@ -1075,7 +1075,7 @@ void HWDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         }
         else
         {
-            QGraphicsItem* item = itemAt(mouseEvent->scenePos());
+            QGraphicsItem* item = itemAt(mouseEvent->scenePos(), QTransform());
 
             if (item != 0 && item->type() == HWConnection::Type)
             {
@@ -1273,7 +1273,7 @@ void HWDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent
     }
 
     // Find the item under the cursor.
-    QGraphicsItem *item = itemAt(snapPointToGrid(mouseEvent->scenePos()));
+    QGraphicsItem *item = itemAt(snapPointToGrid(mouseEvent->scenePos()), QTransform());
 
     if (item == 0)
     {

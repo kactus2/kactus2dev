@@ -45,7 +45,7 @@ public:
 	 *
 	 * \return QString containing the input that user selected.
 	*/
-	QString exec();
+	QString execDialog();
 
 	
 	/*! \brief Static function that can be used to select a group type in FileSet

@@ -54,9 +54,9 @@ AdHocEditor::AdHocEditor(QWidget *parent): QWidget(parent),
 
     portAdHocTable_.setColumnWidth(ADHOC_COL_DIRECTION, 70);
     portAdHocTable_.setColumnWidth(ADHOC_COL_VISIBILITY, 70);
-    portAdHocTable_.horizontalHeader()->setResizeMode(QHeaderView::Stretch);
-    portAdHocTable_.horizontalHeader()->setResizeMode(ADHOC_COL_DIRECTION, QHeaderView::Fixed);
-    portAdHocTable_.horizontalHeader()->setResizeMode(ADHOC_COL_VISIBILITY, QHeaderView::Fixed);
+    portAdHocTable_.horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    portAdHocTable_.horizontalHeader()->setSectionResizeMode(ADHOC_COL_DIRECTION, QHeaderView::Fixed);
+    portAdHocTable_.horizontalHeader()->setSectionResizeMode(ADHOC_COL_VISIBILITY, QHeaderView::Fixed);
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(&nameLabel_);
