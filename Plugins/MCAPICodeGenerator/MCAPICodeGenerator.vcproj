@@ -60,7 +60,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="qtmain.lib QtCore4.lib QtXml4.lib QtXmlPatterns4.lib QtGui4.lib Kactus2.lib"
 				OutputFile="$(OutDir)\$(ProjectName).dll"
-				AdditionalLibraryDirectories="..\..\executable;&quot;$(QTDIR)\lib&quot;"
+				AdditionalLibraryDirectories="&quot;..\..\executable&quot;;&quot;$(QTDIR)\lib&quot;"
 				GenerateDebugInformation="false"
 				SubSystem="2"
 			/>
@@ -130,7 +130,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="qtmain.lib QtCore4.lib QtXml4.lib QtXmlPatterns4.lib QtGui4.lib Kactus2.lib"
 				OutputFile="$(OutDir)\$(ProjectName).dll"
-				AdditionalLibraryDirectories="..\..\x64\executable;&quot;$(QTDIR)\lib&quot;"
+				AdditionalLibraryDirectories="&quot;..\..\x64\executable&quot;;&quot;$(QTDIR)\lib&quot;"
 				GenerateDebugInformation="false"
 				SubSystem="2"
 				TargetMachine="17"
@@ -201,7 +201,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="qtmaind.lib QtCored4.lib QtXmld4.lib QtXmlPatternsd4.lib QtGuid4.lib Kactus2_d.lib"
 				OutputFile="$(OutDir)\$(ProjectName).dll"
-				AdditionalLibraryDirectories="..\..\executable;&quot;$(QTDIR)\lib&quot;"
+				AdditionalLibraryDirectories="&quot;..\..\executable&quot;;&quot;$(QTDIR)\lib&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 			/>
@@ -272,7 +272,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="qtmaind.lib QtCored4.lib QtXmld4.lib QtXmlPatternsd4.lib QtGuid4.lib Kactus2_d.lib"
 				OutputFile="$(OutDir)\$(ProjectName).dll"
-				AdditionalLibraryDirectories="..\..\x64\executable;&quot;$(QTDIR)\lib&quot;"
+				AdditionalLibraryDirectories="&quot;..\..\x64\executable&quot;;&quot;$(QTDIR)\lib&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="17"
@@ -461,6 +461,10 @@
 		<Global
 			Name="MocOptions"
 			Value=""
+		/>
+		<Global
+			Name="Qt5Version Win32"
+			Value="5.0.0 VS2010"
 		/>
 		<Global
 			Name="QtVersion Win32"
