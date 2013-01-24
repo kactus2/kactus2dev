@@ -77,6 +77,7 @@ void AddressSpaceVisualizationItem::setBottomCoordinate( qreal yCoordinate ) {
 	qreal width = rect().width();
 	qreal height = yCoordinate - y();
 	setRect(0, 0, width, height);
+	qDebug() << "Setting bottom for " << getName() << " to " << yCoordinate;
 	VisualizerItem::reorganizeChildren();
 }
 
