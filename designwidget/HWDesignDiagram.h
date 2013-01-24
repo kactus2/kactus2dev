@@ -181,6 +181,9 @@ protected:
     void dropEvent(QGraphicsSceneDragDropEvent *event);
     void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
     void dragMoveEvent(QGraphicsSceneDragDropEvent *event);
+
+    void updateDropAction(QGraphicsSceneDragDropEvent* event);
+
     void dragLeaveEvent(QGraphicsSceneDragDropEvent * event);
 
     void disableHighlight();

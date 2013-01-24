@@ -1613,67 +1613,7 @@ void HWDesignDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 {
-    if (dragCompType_ != CIT_NONE)
-    {
-        // Find the topmost component under the cursor.
-        ComponentItem* item = getTopmostComponent(event->scenePos());
-
-        // If the item is a HW component, determine whether the component can be replaced with the dragged one.
-        if (item != 0 && item->type() == HWComponentItem::Type)
-        {
-            event->setDropAction(Qt::MoveAction);
-        }
-        else
-        {
-            // Otherwise check whether the component can be placed to the underlying column.
-            GraphicsColumn* column = layout_->findColumnAt(snapPointToGrid(event->scenePos()));
-
-            if (column != 0 && column->getColumnDesc().getAllowedItems() & dragCompType_)
-            {
-                event->setDropAction(Qt::CopyAction);
-            }
-            else
-            {
-                event->setDropAction(Qt::IgnoreAction);
-            }
-        }
-
-        event->accept();
-    }
-    else if (dragBus_)
-    {
-        // Check if there is a connection endpoint close enough the cursor.
-        HWConnectionEndpoint* endpoint =
-            DiagramUtil::snapToItem<HWConnectionEndpoint>(event->scenePos(), this, GridSize);
-
-        if (highlightedEndPoint_ != 0)
-        {
-            highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
-        }
-        
-        highlightedEndPoint_ = endpoint;
-
-        // Allow the drop event if the end point is undefined or there are no connections
-        // and the encompassing component is unpackaged.
-        if (highlightedEndPoint_ != 0 && highlightedEndPoint_->isBus() &&
-            (highlightedEndPoint_->getBusInterface() == 0 ||
-             !highlightedEndPoint_->getBusInterface()->getBusType().isValid() ||
-             (!highlightedEndPoint_->isConnected() &&
-              highlightedEndPoint_->encompassingComp() != 0 &&
-              !highlightedEndPoint_->encompassingComp()->componentModel()->getVlnv()->isValid())))
-        {
-            event->setDropAction(Qt::CopyAction);
-            highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_HOVER);
-        }
-        else
-        {
-            event->setDropAction(Qt::IgnoreAction);
-        }
-    }
-    else
-    {
-        event->setDropAction(Qt::IgnoreAction);
-    }
+    updateDropAction(event);
 }
 
 //-----------------------------------------------------------------------------
@@ -1707,6 +1647,8 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
     // Check if the dragged item was a valid one.
     if (dragCompType_ != CIT_NONE)
     {
+        updateDropAction(event);
+
         // Disallow self-instantiation.
         if (vlnv == *getEditedComponent()->getVlnv())
         {
@@ -2423,4 +2365,74 @@ BusPortItem* HWDesignDiagram::createMissingPort(QString const& portName, HWCompo
     }
 
     return port;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::updateDropAction()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::updateDropAction(QGraphicsSceneDragDropEvent* event)
+{
+    if (dragCompType_ != CIT_NONE)
+    {
+        // Find the topmost component under the cursor.
+        ComponentItem* item = getTopmostComponent(event->scenePos());
+
+        // If the item is a HW component, determine whether the component can be replaced with the dragged one.
+        if (item != 0 && item->type() == HWComponentItem::Type)
+        {
+            event->setDropAction(Qt::MoveAction);
+        }
+        else
+        {
+            // Otherwise check whether the component can be placed to the underlying column.
+            GraphicsColumn* column = layout_->findColumnAt(snapPointToGrid(event->scenePos()));
+
+            if (column != 0 && column->getColumnDesc().getAllowedItems() & dragCompType_)
+            {
+                event->setDropAction(Qt::CopyAction);
+            }
+            else
+            {
+                event->setDropAction(Qt::IgnoreAction);
+            }
+        }
+
+        event->accept();
+    }
+    else if (dragBus_)
+    {
+        // Check if there is a connection endpoint close enough the cursor.
+        HWConnectionEndpoint* endpoint =
+            DiagramUtil::snapToItem<HWConnectionEndpoint>(event->scenePos(), this, GridSize);
+
+        if (highlightedEndPoint_ != 0)
+        {
+            highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
+        }
+
+        highlightedEndPoint_ = endpoint;
+
+        // Allow the drop event if the end point is undefined or there are no connections
+        // and the encompassing component is unpackaged.
+        if (highlightedEndPoint_ != 0 && highlightedEndPoint_->isBus() &&
+            (highlightedEndPoint_->getBusInterface() == 0 ||
+            !highlightedEndPoint_->getBusInterface()->getBusType().isValid() ||
+            (!highlightedEndPoint_->isConnected() &&
+            highlightedEndPoint_->encompassingComp() != 0 &&
+            !highlightedEndPoint_->encompassingComp()->componentModel()->getVlnv()->isValid())))
+        {
+            event->setDropAction(Qt::CopyAction);
+            highlightedEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_HOVER);
+        }
+        else
+        {
+            event->setDropAction(Qt::IgnoreAction);
+        }
+
+        event->accept();
+    }
+    else
+    {
+        event->setDropAction(Qt::IgnoreAction);
+    }
 }

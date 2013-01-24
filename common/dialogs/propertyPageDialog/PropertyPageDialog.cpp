@@ -205,11 +205,14 @@ void PropertyPageDialog::finalizePages()
     // Determine the best width for the list items.
     int optimalWidth = contentsList_->sizeHintForColumn(0);
 
+    QFontMetrics metrics(contentsList_->font());
+    int textHeight = metrics.height();
+
     for (int i = 0; i < contentsList_->count(); ++i)
     {
-        contentsList_->item(i)->setSizeHint(QSize(optimalWidth, contentsList_->sizeHintForRow(i)));
+        contentsList_->item(i)->setSizeHint(QSize(optimalWidth, contentsList_->sizeHintForRow(i) + textHeight));
     }
 
-    // Update the width of the list with some margin.
-    contentsList_->setFixedWidth(optimalWidth * iconColumnCount_ + 30);
+    // Update the width of the list.
+    contentsList_->setFixedWidth(optimalWidth * iconColumnCount_);
 }
