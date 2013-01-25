@@ -15,6 +15,7 @@
 #include <QVBoxLayout>
 #include <QPrinter>
 #include <QPrintDialog>
+#include <QApplication>
 
 #include <common/GenericEditProvider.h>
 #include <common/DesignDiagram.h>
@@ -125,6 +126,8 @@ QGraphicsView const* DesignWidget::getView() const
 //-----------------------------------------------------------------------------
 void DesignWidget::refresh()
 {
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
     QSharedPointer<LibraryComponent> libComp = lh_->getModel(*editedComponent_->getVlnv());
     QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
@@ -132,6 +135,8 @@ void DesignWidget::refresh()
     setModified(false);
 
     TabDocument::refresh();
+
+	QApplication::restoreOverrideCursor();
 }
 
 //-----------------------------------------------------------------------------

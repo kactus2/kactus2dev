@@ -3109,12 +3109,15 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName, boo
 		return;
 	}
 
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
 	SystemDesignWidget* designWidget = new SystemDesignWidget(false, libraryHandler_, this, this);
     registerDocument(designWidget);
 
 	if (!designWidget->setDesign(vlnv, viewName))
 	{
 		delete designWidget;
+		QApplication::restoreOverrideCursor();
 		return;
 	}
 
@@ -3150,6 +3153,8 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName, boo
 		this, SLOT(onDrawModeChanged(DrawMode)), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(modifiedChanged(bool)),
 		actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
+
+	QApplication::restoreOverrideCursor();
 }
 
 void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
@@ -3159,6 +3164,8 @@ void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
 	}
 
 	// component editor was not yet open so create it
+
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	QSharedPointer<Component> component;
 
@@ -3172,11 +3179,13 @@ void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
 			vlnv.getLibrary()).arg(
 			vlnv.getName()).arg(
 			vlnv.getVersion()));
+		QApplication::restoreOverrideCursor();
 		return;
 	}
 
 	if (!component) {
 		emit errorMessage(tr("Document type did not match Component"));
+		QApplication::restoreOverrideCursor();
 		return;
 	}
 
@@ -3205,6 +3214,8 @@ void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
 		this, SLOT(openSWDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
 	connect(editor, SIGNAL(openSystemDesign(const VLNV&, const QString&)),
 		this, SLOT(openSystemDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
+
+	QApplication::restoreOverrideCursor();
 }
 
 //-----------------------------------------------------------------------------

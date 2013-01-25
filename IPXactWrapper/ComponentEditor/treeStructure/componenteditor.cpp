@@ -19,6 +19,7 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QHBoxLayout>
+#include <QApplication>
 
 #include <QDebug>
 
@@ -140,6 +141,8 @@ bool ComponentEditor::isHWImplementation() const {
 
 void ComponentEditor::refresh() {
 
+	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
 	// remember the locked state
 	bool locked = isProtected();
 	
@@ -169,6 +172,8 @@ void ComponentEditor::refresh() {
 
 	// set the protection state to same as before refreshing
 	setProtection(locked);
+
+	QApplication::restoreOverrideCursor();
 }
 
 bool ComponentEditor::validate( QStringList& errorList ) {
