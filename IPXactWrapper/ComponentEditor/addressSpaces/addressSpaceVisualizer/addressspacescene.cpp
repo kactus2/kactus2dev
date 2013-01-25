@@ -15,8 +15,6 @@
 #include <models/addressblock.h>
 #include <common/graphicsItems/visualizeritem.h>
 
-#include <QDebug>
-
 AddressSpaceScene::AddressSpaceScene(QSharedPointer<AddressSpace> addrSpace,
 									 QObject *parent):
 QGraphicsScene(parent),
@@ -83,7 +81,6 @@ void AddressSpaceScene::rePosition() {
 
 		// if both have the same starting address
 		if (seg->getOffset() == block->getOffset()) {
-			qDebug() << seg->getName() << " = " << block->getName();
 
 			// the y-coordinate where the both items are aligned
 			qreal yCoord = qMax(segCoord, blockCoord);
@@ -97,25 +94,25 @@ void AddressSpaceScene::rePosition() {
 				prevBlock->setBottomCoordinate(yCoord);
 			}
 
-			// update the positions and set default heights
+			// update the positions
 			seg->setPos(0, yCoord);
-			seg->setHeight(VisualizerItem::ITEM_HEIGHT);
-
 			block->setPos(VisualizerItem::MAX_WIDTH, yCoord);
-			block->setHeight(VisualizerItem::ITEM_HEIGHT);
 
 			// TODO remove the hide/show in final
 			seg->show();
 			block->show();
 
-			// update the y-coordinates for next items
-			segCoord = seg->rect().bottom();
-			blockCoord = block->rect().bottom();
-
 			// check if the items are different sizes
 			
 			// if block reaches further than segment
 			if (seg->getLastAddress() < block->getLastAddress()) {
+
+				seg->setHeight(VisualizerItem::ITEM_HEIGHT);
+				block->setHeight(VisualizerItem::ITEM_HEIGHT * 1.5);
+
+				// update the y-coordinates for next items
+				segCoord += VisualizerItem::ITEM_HEIGHT;
+				blockCoord += VisualizerItem::ITEM_HEIGHT * 1.5;
 				
 				// the segment has been processed but block is needed on next loop iteration
 				prevSeg = seg;
@@ -125,6 +122,13 @@ void AddressSpaceScene::rePosition() {
 
 			// if segment reaches further than block
 			else if (seg->getLastAddress() > block->getLastAddress()) {
+
+				seg->setHeight(VisualizerItem::ITEM_HEIGHT * 1.5);
+				block->setHeight(VisualizerItem::ITEM_HEIGHT);
+
+				// update the y-coordinates for next items
+				segCoord += VisualizerItem::ITEM_HEIGHT * 1.5;
+				blockCoord += VisualizerItem::ITEM_HEIGHT;
 				
 				// the block has been processed but segment is needed on next loop iteration
 				prevBlock = block;
@@ -133,12 +137,17 @@ void AddressSpaceScene::rePosition() {
 			}
 			// if blocks are of same size
 			else {
+
+				seg->setHeight(VisualizerItem::ITEM_HEIGHT);
+				block->setHeight(VisualizerItem::ITEM_HEIGHT);
+
+				// update the y-coordinates for next items
+				segCoord += VisualizerItem::ITEM_HEIGHT;
+				blockCoord += VisualizerItem::ITEM_HEIGHT;
 				 
 				// both blocks are processed and next loop iteration starts on new items
 				prevSeg = seg;
 				prevBlock = block;
-				segCoord += VisualizerItem::ITEM_HEIGHT;
-				blockCoord += VisualizerItem::ITEM_HEIGHT;
 				++segIterator;
 				++blockIterator;
 				continue;
@@ -147,34 +156,137 @@ void AddressSpaceScene::rePosition() {
 
 		// if the segment starts before the block
 		else if (seg->getOffset() < block->getOffset()) {
-			qDebug() << seg->getName() << " < " << block->getName();
-			++blockIterator;
+
+			block->setPos(VisualizerItem::MAX_WIDTH, blockCoord);
+
+			// TODO remove the hide/show in final
+			seg->show();
+			block->show();
+
+			// if block reaches further than segment
+			if (seg->getLastAddress() < block->getLastAddress()) {
+
+				block->setHeight(VisualizerItem::ITEM_HEIGHT);
+				blockCoord += VisualizerItem::ITEM_HEIGHT;
+
+				// the segment has been processed but block is needed on next loop iteration
+				prevSeg = seg;
+				++segIterator;
+				continue;
+			}
+
+			// if segment reaches further than block
+			else if (seg->getLastAddress() > block->getLastAddress()) {
+
+				block->setHeight(VisualizerItem::ITEM_HEIGHT);
+				blockCoord += VisualizerItem::ITEM_HEIGHT;
+
+				// segment reaches past the block
+				segCoord = block->mapToScene(block->rect().bottomRight()).y() + (VisualizerItem::ITEM_HEIGHT / 2);
+				seg->setBottomCoordinate(segCoord);
+
+				// the block has been processed but segment is needed on next loop iteration
+				prevBlock = block;
+				++blockIterator;
+				continue;
+			}
+			// if blocks have the same ending address
+			else {
+
+				blockCoord += VisualizerItem::ITEM_HEIGHT;
+
+				// the common ending coordinate
+				qreal yCoord = qMax(segCoord, blockCoord);
+
+				seg->setBottomCoordinate(yCoord);
+				segCoord = yCoord;
+
+				block->setBottomCoordinate(yCoord);
+				blockCoord = yCoord;
+
+				// both blocks are processed and next loop iteration starts on new items
+				prevSeg = seg;
+				prevBlock = block;
+				++segIterator;
+				++blockIterator;
+				continue;
+			}
 		}
 
 		// if the block starts before the segment
 		else if (seg->getOffset() > block->getOffset()) {
-			qDebug() << seg->getName() << " > " << block->getName();
-			++segIterator;
+			
+			seg->setPos(0, segCoord);
+
+			// TODO remove the hide/show in final
+			seg->show();
+			block->show();
+ 
+ 			// if block reaches further than segment
+			if (seg->getLastAddress() < block->getLastAddress()) {
+
+				seg->setHeight(VisualizerItem::ITEM_HEIGHT);
+				segCoord += VisualizerItem::ITEM_HEIGHT;
+
+				// block reaches past the segment
+				blockCoord = seg->mapToScene(seg->rect().bottomRight()).y() + (VisualizerItem::ITEM_HEIGHT / 2);
+				block->setBottomCoordinate(blockCoord);
+
+				// the segment has been processed but block is needed on next loop iteration
+				prevSeg = seg;
+				++segIterator;
+				continue;
+			}
+
+			// if segment reaches further than block
+			else if (seg->getLastAddress() > block->getLastAddress()) {
+
+				seg->setHeight(VisualizerItem::ITEM_HEIGHT);
+				segCoord += VisualizerItem::ITEM_HEIGHT;
+
+				// the block has been processed but segment is needed on next loop iteration
+				prevBlock = block;
+				++blockIterator;
+				continue;
+			}
+			// if blocks have the same ending address
+			else {
+
+				segCoord += VisualizerItem::ITEM_HEIGHT;
+
+				// the common ending coordinate
+				qreal yCoord = qMax(segCoord, blockCoord);
+
+				seg->setBottomCoordinate(yCoord);
+				segCoord = yCoord;
+
+				block->setBottomCoordinate(yCoord);
+				blockCoord = yCoord;
+
+				// both blocks are processed and next loop iteration starts on new items
+				prevSeg = seg;
+				prevBlock = block;
+				++segIterator;
+				++blockIterator;
+				continue;
+			}
 		}
 		
 	}
 
 	// if there were segments left 
-	while (segIterator != segmentItems_.end()) {
-		qDebug() << "segment " << segIterator.value()->getName() << " left";
-
-		++segIterator;
-	}
-
-	// if there were address blocks left
-	while (blockIterator != addrBlockItems_.end()) {
-		qDebug() << "Block " << blockIterator.value()->getName() << " left";
-		
-		++blockIterator;
-	}
-
-	qDebug() << "---";
-	qDebug() << "---";
+// 	while (segIterator != segmentItems_.end()) {
+// 		qDebug() << "segment " << segIterator.value()->getName() << " left";
+// 
+// 		++segIterator;
+// 	}
+// 
+// 	// if there were address blocks left
+// 	while (blockIterator != addrBlockItems_.end()) {
+// 		qDebug() << "Block " << blockIterator.value()->getName() << " left";
+// 		
+// 		++blockIterator;
+// 	}
 }
 
 void AddressSpaceScene::updateSegments() {
