@@ -739,16 +739,6 @@
       <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;moc;h;def;odl;idl;res;</Extensions>
     </Filter>
-    <Filter Include="Generated Files\Debug">
-      <UniqueIdentifier>{02b3fda4-900c-4f15-8218-0ec95291b632}</UniqueIdentifier>
-      <Extensions>cpp;moc</Extensions>
-      <SourceControlFiles>False</SourceControlFiles>
-    </Filter>
-    <Filter Include="Generated Files\Release">
-      <UniqueIdentifier>{add40de7-3050-4794-93f7-563f8234ad84}</UniqueIdentifier>
-      <Extensions>cpp;moc</Extensions>
-      <SourceControlFiles>False</SourceControlFiles>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
       <Extensions>qrc;*</Extensions>
@@ -2279,18 +2269,6 @@
     <ClCompile Include="IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer\addressspacegapitem.cpp">
       <Filter>Source Files\IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_AddressDelegate.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_AddressEditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_AddressModel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_AddressTableView.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="AddressEditor\AddressDelegate.cpp">
       <Filter>Source Files\AddressEditor</Filter>
     </ClCompile>
@@ -2306,1168 +2284,1180 @@
     <ClCompile Include="AddressEditor\AddressTableView.cpp">
       <Filter>Source Files\AddressEditor</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_AdHocDelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ApiDefinitionEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_AdHocEditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_writevalueconstrainteditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_AdHocModel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_vlnveditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_combodelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_vlnvdisplayer.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_lineeditdelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_vlnvdialer.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_comboselector.cpp">
+    <ClCompile Include="GeneratedFiles\moc_visualizeritem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_createconfigurationdialog.cpp">
+    <ClCompile Include="GeneratedFiles\moc_viewsmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_createvlnvdialog.cpp">
+    <ClCompile Include="GeneratedFiles\moc_viewseditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_LibrarySettingsDialog.cpp">
+    <ClCompile Include="GeneratedFiles\moc_vieweditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_NewDesignDialog.cpp">
+    <ClCompile Include="GeneratedFiles\moc_vhdlsignal.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_newobjectdialog.cpp">
+    <ClCompile Include="GeneratedFiles\moc_vhdlport.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_objectremovedialog.cpp">
+    <ClCompile Include="GeneratedFiles\moc_vhdlobject.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_objectremovemodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_vhdlnamevalidator.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_PropertyPageDialog.cpp">
+    <ClCompile Include="GeneratedFiles\moc_vhdlgeneric.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_PropertyPageView.cpp">
+    <ClCompile Include="GeneratedFiles\moc_vhdlgenerator2.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_renamedialog.cpp">
+    <ClCompile Include="GeneratedFiles\moc_vhdlcomponentinstance.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_selectdirectorydialog.cpp">
+    <ClCompile Include="GeneratedFiles\moc_vhdlcomponentdeclaration.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_CommonGraphicsUndoCommands.cpp">
+    <ClCompile Include="GeneratedFiles\moc_vectoreditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_ComponentItem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_usagedelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_ConnectionEndpoint.cpp">
+    <ClCompile Include="GeneratedFiles\moc_usagecombobox.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_expandableitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_typegroup.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_GraphicsColumn.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ToolTipHintWidget.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_GraphicsColumnLayout.cpp">
+    <ClCompile Include="GeneratedFiles\moc_testconstraintcombobox.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_GraphicsConnection.cpp">
+    <ClCompile Include="GeneratedFiles\moc_targetnameedit.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_graphicsexpandcollapseitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_TabWidgetEx.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_GraphicsLineEdit.cpp">
+    <ClCompile Include="GeneratedFiles\moc_TabDocument.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_GraphicsRectButton.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SystemViewsModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_visualizeritem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SystemViewsEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_parametersmodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SystemViewsDelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_librarypathvalidator.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SystemViewEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_namevalidator.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SystemDetailsEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_vhdlnamevalidator.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SystemDesignWidget.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_editablelistview.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SystemDesignDiagram.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_editabletableview.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SystemDeleteCommands.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_accesscombobox.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SystemComponentItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_addressspaceselector.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SystemColumn.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_AssistedLineEdit.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SystemChangeCommands.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_AssistedTextEdit.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SystemAddCommands.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_ToolTipHintWidget.cpp">
+    <ClCompile Include="GeneratedFiles\moc_swviewsmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_attributebox.cpp">
+    <ClCompile Include="GeneratedFiles\moc_swviewseditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_attributemodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_swviewsdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_booleancombobox.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SWViewEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_ColorBox.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SWPropertiesEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_ComboBoxEx.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SWPortItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_ComponentPreviewBox.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SWOffPageConnectorItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_dirlineedit.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SwitchHWDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_interfacemodeselector.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SWInterfaceItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_interfaceselector.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SWConnectionEndpoint.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_KactusAttributeEditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SWComponentItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_librarypatheditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_summarylabel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_librarypathselector.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SnippetTextEdit.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_LineEditEx.cpp">
+    <ClCompile Include="GeneratedFiles\moc_signalsgroup.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_dirlistmanager.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SettingsDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_filelistmanager.cpp">
+    <ClCompile Include="GeneratedFiles\moc_SelectItemTypeDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_listeditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_selectdirectorydialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_listmanager.cpp">
+    <ClCompile Include="GeneratedFiles\moc_segmentsmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_listmanagermodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_segmentproxy.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_memorymapselector.cpp">
+    <ClCompile Include="GeneratedFiles\moc_segmentgraphitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_modwritecombobox.cpp">
+    <ClCompile Include="GeneratedFiles\moc_segmenteditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_namegroupbox.cpp">
+    <ClCompile Include="GeneratedFiles\moc_scanprogresswidget.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_namegroupeditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_renamegroup.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_numberlineedit.cpp">
+    <ClCompile Include="GeneratedFiles\moc_renamedialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_parametereditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_registertablemodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_parametergroupbox.cpp">
+    <ClCompile Include="GeneratedFiles\moc_registergraphitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_readactioncombobox.cpp">
+    <ClCompile Include="GeneratedFiles\moc_registereditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_scanprogresswidget.cpp">
+    <ClCompile Include="GeneratedFiles\moc_registerdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_SnippetTextEdit.cpp">
+    <ClCompile Include="GeneratedFiles\moc_readactioncombobox.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_summarylabel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_quartusgenerator.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_TabDocument.cpp">
+    <ClCompile Include="GeneratedFiles\moc_PropertyValueModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_TabWidgetEx.cpp">
+    <ClCompile Include="GeneratedFiles\moc_PropertyValueEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_testconstraintcombobox.cpp">
+    <ClCompile Include="GeneratedFiles\moc_PropertyValueDelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_usagecombobox.cpp">
+    <ClCompile Include="GeneratedFiles\moc_PropertyPageView.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_vectoreditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_PropertyPageDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_vlnvdisplayer.cpp">
+    <ClCompile Include="GeneratedFiles\moc_portsmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_vlnveditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_portseditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_DesignDiagram.cpp">
+    <ClCompile Include="GeneratedFiles\moc_portsdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_DesignWidget.cpp">
+    <ClCompile Include="GeneratedFiles\moc_portmapsview.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_GenericEditProvider.cpp">
+    <ClCompile Include="GeneratedFiles\moc_portmapsmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_IEditProvider.cpp">
+    <ClCompile Include="GeneratedFiles\moc_portmapsdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componentinstanceeditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_portlistview.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componentinstancemodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_portlistmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_configurableelementdelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_PluginListDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_configurableelementeditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_physlistview.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_activeviewdelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_physlistmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_activevieweditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_parametersmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_activeviewmodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_parameterseditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_configurationeditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_parametergroupbox.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_AdHocBoundsDelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_parametereditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_AdHocBoundsModel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_otherclockdriversmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_connectioneditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_otherclockdriverseditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_ColumnEditDialog.cpp">
+    <ClCompile Include="GeneratedFiles\moc_OffPageConnectorItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_HWColumn.cpp">
+    <ClCompile Include="GeneratedFiles\moc_objectremovemodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_AdHocInterfaceItem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_objectremovedialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_AdHocPortItem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_numberlineedit.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_BusInterfaceItem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_NewWorkspaceDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_BusPortItem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_NewSystemPage.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_HWChangeCommands.cpp">
+    <ClCompile Include="GeneratedFiles\moc_NewSWDesignPage.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_HWComponentItem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_NewSWComponentPage.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_HWConnection.cpp">
+    <ClCompile Include="GeneratedFiles\moc_newobjectdialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_HWConnectionEndpoint.cpp">
+    <ClCompile Include="GeneratedFiles\moc_NewDesignPage.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_HWDeleteCommands.cpp">
+    <ClCompile Include="GeneratedFiles\moc_NewDesignDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_HWDesignDiagram.cpp">
+    <ClCompile Include="GeneratedFiles\moc_NewComponentPage.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_HWDesignWidget.cpp">
+    <ClCompile Include="GeneratedFiles\moc_NewComDefinitionPage.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_OffPageConnectorItem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_newbuspage.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_SelectItemTypeDialog.cpp">
+    <ClCompile Include="GeneratedFiles\moc_NewApiDefinitionPage.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_documentgenerator.cpp">
+    <ClCompile Include="GeneratedFiles\moc_NamingPolicySettingsPage.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_MenuStrip.cpp">
+    <ClCompile Include="GeneratedFiles\moc_namevalidator.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_ContextHelpBrowser.cpp">
+    <ClCompile Include="GeneratedFiles\moc_namegroupeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_HelpSearchWidget.cpp">
+    <ClCompile Include="GeneratedFiles\moc_namegroupbox.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_interfaceeditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_modwritecombobox.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_ApiDefinitionEditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_modelsimgenerator.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_ApiFunctionEditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_modelparametermodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_ApiFunctionModel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_modelparametereditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_ApiFunctionParameterDelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_messageconsole.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_ApiFunctionParameterModel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_MenuStrip.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_absdefgroup.cpp">
+    <ClCompile Include="GeneratedFiles\moc_memoryvisualizationitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_busdefgroup.cpp">
+    <ClCompile Include="GeneratedFiles\moc_memorymapview.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_buseditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_memorymapsvisualizer.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_busportsdelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_memorymapsmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_busportsmodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_memorymapselector.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_busportsview.cpp">
+    <ClCompile Include="GeneratedFiles\moc_memorymapseditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_impexpgroup.cpp">
+    <ClCompile Include="GeneratedFiles\moc_memorymapsdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_renamegroup.cpp">
+    <ClCompile Include="GeneratedFiles\moc_memorymapscene.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_signalsgroup.cpp">
+    <ClCompile Include="GeneratedFiles\moc_memorymapproxy.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_ComDefinitionEditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_memorymapmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_ComPropertyDelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_memorymapgraphitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_ComPropertyEditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_memorymapeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_ComPropertyModel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_memorymapdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_addressspacegapitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_MemoryItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_addressspacescene.cpp">
+    <ClCompile Include="GeneratedFiles\moc_memorygapitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_addressspacevisualizationitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_MemoryDesignWidget.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_addressspacevisualizer.cpp">
+    <ClCompile Include="GeneratedFiles\moc_MemoryDesignDiagram.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_localaddrblockgraphitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_MemoryColumn.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_segmentgraphitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_MemoryBaseItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_localmemorymapeditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_mainwindow.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_localmemorymapgraphitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_logicallistview.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_addressspaceeditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_logicallistmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_addressspacegeneraleditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_localmemorymapgraphitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_addressspacesdelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_localmemorymapeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_addressspaceseditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_localaddrblockgraphitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_addressspacesmodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_listmanagermodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_segmenteditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_listmanager.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_segmentproxy.cpp">
+    <ClCompile Include="GeneratedFiles\moc_listeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_segmentsmodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_LineEditEx.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_logicallistmodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_lineeditdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_logicallistview.cpp">
+    <ClCompile Include="GeneratedFiles\moc_librarytreewidget.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_physlistmodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_librarytreeview.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_physlistview.cpp">
+    <ClCompile Include="GeneratedFiles\moc_librarytreemodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_portlistmodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_librarytreefilter.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_portlistview.cpp">
+    <ClCompile Include="GeneratedFiles\moc_LibrarySettingsDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_portmapsdelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_librarypathvalidator.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_portmapsmodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_librarypathselector.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_portmapsview.cpp">
+    <ClCompile Include="GeneratedFiles\moc_librarypatheditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_ApiCreateDialog.cpp">
+    <ClCompile Include="GeneratedFiles\moc_libraryitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_bridgesdelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_libraryhandler.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_bridgeseditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_LibraryErrorModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_bridgesmodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_librarydata.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_busifgeneraldetails.cpp">
+    <ClCompile Include="GeneratedFiles\moc_KactusAttributeEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_busifgeneraltab.cpp">
+    <ClCompile Include="GeneratedFiles\moc_itemvisualizer.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_busifinterfacemaster.cpp">
+    <ClCompile Include="GeneratedFiles\moc_itemeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_busifinterfacemodeeditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ipxactwidget.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_busifinterfacemonitor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ipxactmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_busifinterfacemslave.cpp">
+    <ClCompile Include="GeneratedFiles\moc_interfaceselector.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_busifinterfaceslave.cpp">
+    <ClCompile Include="GeneratedFiles\moc_interfacemodestack.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_busifinterfacesystem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_interfacemodeselector.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_busifportmaptab.cpp">
+    <ClCompile Include="GeneratedFiles\moc_interfaceeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_businterfaceeditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_implementationgroup.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_businterfacesdelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_impexpgroup.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_businterfaceseditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_IEditProvider.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_businterfacesmodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_HWDesignWidget.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_interfacemodestack.cpp">
+    <ClCompile Include="GeneratedFiles\moc_HWDesignDiagram.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_channelinterfacemanagerdelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_HWDeleteCommands.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_channelsdelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_HWConnectionEndpoint.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_channelseditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_HWConnection.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_channelsmodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_HWComponentItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_addressspacerefdelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_HWColumn.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_cpusdelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_HWChangeCommands.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_cpuseditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_hierarchywidget.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_cpusmodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_hierarchyview.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_filebuildersdelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_hierarchyrefwidget.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_filebuilderseditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_hierarchymodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_filebuildersmodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_hierarchyitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_filebuildcommand.cpp">
+    <ClCompile Include="GeneratedFiles\moc_hierarchygroup.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_filedefinemodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_hierarchyfilter.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_filedefineview.cpp">
+    <ClCompile Include="GeneratedFiles\moc_HelpSearchWidget.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_fileeditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_groupmanagerdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_fileextratab.cpp">
+    <ClCompile Include="GeneratedFiles\moc_groupmanager.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_filegeneraleditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_GraphicsRectButton.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_filegeneraltab.cpp">
+    <ClCompile Include="GeneratedFiles\moc_GraphicsLineEdit.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_filenameeditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_graphicsexpandcollapseitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_filenamelineedit.cpp">
+    <ClCompile Include="GeneratedFiles\moc_GraphicsConnection.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_filesdelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_GraphicsColumnLayout.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_fileseditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_GraphicsColumn.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_filesmodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_GenericEditProvider.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_filesview.cpp">
+    <ClCompile Include="GeneratedFiles\moc_GeneralSettingsPage.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_filetypeeditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_generaleditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_filetypeeditordelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_flatviewgeneraltab.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_targetnameedit.cpp">
+    <ClCompile Include="GeneratedFiles\moc_firmnessgroup.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_fileseteditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_filterwidget.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_filesetsdelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_filetypeeditordelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_filesetseditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_filetypeeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_filesetsmodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_filesview.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_groupmanager.cpp">
+    <ClCompile Include="GeneratedFiles\moc_filesmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_groupmanagerdelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_filesetsmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_desceditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_filesetseditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_generaleditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_filesetsdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_addressblockgraphitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_filesetrefmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_fieldgraphitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_filesetrefeditordelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_memorymapgraphitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_filesetrefeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_memorymapscene.cpp">
+    <ClCompile Include="GeneratedFiles\moc_fileseteditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_memorymapsvisualizer.cpp">
+    <ClCompile Include="GeneratedFiles\moc_fileseditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_memorymapview.cpp">
+    <ClCompile Include="GeneratedFiles\moc_filesdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_registergraphitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_filenamelineedit.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_addressblockdelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_filenameeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_addressblockeditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_filelistmanager.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_addressblockmodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_filegeneraltab.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_addressblockproxy.cpp">
+    <ClCompile Include="GeneratedFiles\moc_filegeneraleditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_enumeratedvaluedelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_fileextratab.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_enumeratedvaluemodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_fileeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_fieldeditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_filedefineview.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_memorymapdelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_filedefinemodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_memorymapeditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_filebuildersmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_memorymapmodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_filebuilderseditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_memorymapproxy.cpp">
+    <ClCompile Include="GeneratedFiles\moc_filebuildersdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_memorymapsdelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_filebuildcommand.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_memorymapseditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_fieldgraphitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_memorymapsmodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_fieldgapitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_registerdelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_fieldeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_registereditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ExportSWDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_registertablemodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_expandableitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_writevalueconstrainteditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_envidentifiersmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_modelparametereditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_envidentifiersdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_modelparametermodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_envidentifiereditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_usagedelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_enumeratedvaluemodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_clockdriversdelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_enumeratedvaluedelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_otherclockdriverseditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_editabletableview.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_otherclockdriversmodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_editablelistview.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_parameterseditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_documentgenerator.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_portsdelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_dirlistmanager.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_portseditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_dirlineedit.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_portsmodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_dialerwidget.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_ApiInterfaceEditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_DesignWidget.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_apiinterfacesdelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_DesignDiagram.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_apiinterfaceseditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_desceditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_apiinterfacesmodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_DeleteWorkspaceDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_ComInterfaceEditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_CSourceWidget.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_cominterfacesdelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_CSourceTextEdit.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_cominterfaceseditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_CSourceHighlighter.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_cominterfacesmodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_createvlnvdialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_PropertyValueDelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_createconfigurationdialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_PropertyValueEditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_cpusmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_PropertyValueModel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_cpuseditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_SWPropertiesEditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_cpusdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_SWViewEditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ContextHelpBrowser.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_swviewsdelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ConnectionEndpoint.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_swviewseditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_connectioneditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_swviewsmodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_configurationeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_SystemViewEditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_configurableelementeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_SystemViewsDelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_configurableelementdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_SystemViewsEditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ComPropertyModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_SystemViewsModel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ComPropertyEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ComPropertyDelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditoraddrblockitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenttreeview.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditoraddrspaceitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ComponentPreviewBox.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditoraddrspacesitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ComponentItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditorapiinterfaceitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componentinstancemodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditorapiinterfacesitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componentinstanceeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditorbusinterfaceitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditorviewsitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditorbusinterfacesitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditorviewitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditorchannelsitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditortreemodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditorcominterfaceitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ComponentEditorSystemViewsItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditorcominterfacesitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ComponentEditorSystemViewItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditorcpusitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditorswviewsitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditorfielditem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditorswviewitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditorfileitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditorswpropertiesitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditorfilesetitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditorrootitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditorfilesetsitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditorregisteritem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditorgeneralitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditorportsitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditorgroupslot.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditorparametersitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditoritem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditorotherclocksitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditormemmapitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditormodelparamsitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditormemmapsitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditormemmapsitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditormodelparamsitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditormemmapitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditorotherclocksitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditoritem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditorparametersitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditorgroupslot.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditorportsitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditorgeneralitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditorregisteritem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditorfilesetsitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditorrootitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditorfilesetitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditorswpropertiesitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditorfileitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditorswviewitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditorfielditem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditorswviewsitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditorcpusitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_ComponentEditorSystemViewItem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditorcominterfacesitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_ComponentEditorSystemViewsItem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditorcominterfaceitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditortreemodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditorchannelsitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditorviewitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditorbusinterfacesitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenteditorviewsitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditorbusinterfaceitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_componenttreeview.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditorapiinterfacesitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_envidentifiereditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditorapiinterfaceitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_envidentifiersdelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditoraddrspacesitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_envidentifiersmodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditoraddrspaceitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_filesetrefeditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditoraddrblockitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_filesetrefeditordelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_componenteditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_filesetrefmodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_CommonGraphicsUndoCommands.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_flatviewgeneraltab.cpp">
+    <ClCompile Include="GeneratedFiles\moc_cominterfacesmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_hierarchyrefwidget.cpp">
+    <ClCompile Include="GeneratedFiles\moc_cominterfaceseditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_vieweditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_cominterfacesdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_viewseditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ComInterfaceEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_viewsmodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ComDefinitionEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_fieldgapitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_comboselector.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_memorygapitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_combodelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_memoryvisualizationitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ComboBoxEx.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_itemeditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ColumnEditDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_itemvisualizer.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ColorBox.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_hierarchyfilter.cpp">
+    <ClCompile Include="GeneratedFiles\moc_CodeEditorSettingsPage.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_hierarchyitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_clockdriversdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_hierarchymodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_channelsmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_hierarchywidget.cpp">
+    <ClCompile Include="GeneratedFiles\moc_channelseditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_hierarchyview.cpp">
+    <ClCompile Include="GeneratedFiles\moc_channelsdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_dialerwidget.cpp">
+    <ClCompile Include="GeneratedFiles\moc_channelinterfacemanagerdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_filterwidget.cpp">
+    <ClCompile Include="GeneratedFiles\moc_busportsview.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_firmnessgroup.cpp">
+    <ClCompile Include="GeneratedFiles\moc_busportsmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_hierarchygroup.cpp">
+    <ClCompile Include="GeneratedFiles\moc_busportsdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_implementationgroup.cpp">
+    <ClCompile Include="GeneratedFiles\moc_BusPortItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_typegroup.cpp">
+    <ClCompile Include="GeneratedFiles\moc_businterfacesmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_vlnvdialer.cpp">
+    <ClCompile Include="GeneratedFiles\moc_businterfaceseditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_ipxactmodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_businterfacesdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_ipxactwidget.cpp">
+    <ClCompile Include="GeneratedFiles\moc_BusInterfaceItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_librarydata.cpp">
+    <ClCompile Include="GeneratedFiles\moc_businterfaceeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_LibraryErrorModel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_BusInterfaceDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_libraryhandler.cpp">
+    <ClCompile Include="GeneratedFiles\moc_busifportmaptab.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_libraryitem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_busifinterfacesystem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_librarytreefilter.cpp">
+    <ClCompile Include="GeneratedFiles\moc_busifinterfaceslave.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_librarytreemodel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_busifinterfacemslave.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_librarytreewidget.cpp">
+    <ClCompile Include="GeneratedFiles\moc_busifinterfacemonitor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_librarytreeview.cpp">
+    <ClCompile Include="GeneratedFiles\moc_busifinterfacemodeeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_mainwindow.cpp">
+    <ClCompile Include="GeneratedFiles\moc_busifinterfacemaster.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_NewApiDefinitionPage.cpp">
+    <ClCompile Include="GeneratedFiles\moc_busifgeneraltab.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_newbuspage.cpp">
+    <ClCompile Include="GeneratedFiles\moc_busifgeneraldetails.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_NewComDefinitionPage.cpp">
+    <ClCompile Include="GeneratedFiles\moc_buseditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_NewComponentPage.cpp">
+    <ClCompile Include="GeneratedFiles\moc_busdefgroup.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_NewDesignPage.cpp">
+    <ClCompile Include="GeneratedFiles\moc_bridgesmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_NewSWComponentPage.cpp">
+    <ClCompile Include="GeneratedFiles\moc_bridgeseditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_NewSWDesignPage.cpp">
+    <ClCompile Include="GeneratedFiles\moc_bridgesdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_NewSystemPage.cpp">
+    <ClCompile Include="GeneratedFiles\moc_booleancombobox.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_CSourceHighlighter.cpp">
+    <ClCompile Include="GeneratedFiles\moc_attributemodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_CSourceTextEdit.cpp">
+    <ClCompile Include="GeneratedFiles\moc_attributebox.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_CSourceWidget.cpp">
+    <ClCompile Include="GeneratedFiles\moc_AssistedTextEdit.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_AddressSectionItem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_AssistedLineEdit.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_AddressSpaceItem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_apiinterfacesmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_AddressSubsection.cpp">
+    <ClCompile Include="GeneratedFiles\moc_apiinterfaceseditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_MemoryColumn.cpp">
+    <ClCompile Include="GeneratedFiles\moc_apiinterfacesdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_MemoryDesignDiagram.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ApiInterfaceEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_MemoryDesignWidget.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ApiFunctionParameterModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_MemoryItem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ApiFunctionParameterDelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_modelsimgenerator.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ApiFunctionModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_PluginListDialog.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ApiFunctionEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_messageconsole.cpp">
+    <ClCompile Include="GeneratedFiles\moc_ApiCreateDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_quartusgenerator.cpp">
+    <ClCompile Include="GeneratedFiles\moc_AdHocPortItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_CodeEditorSettingsPage.cpp">
+    <ClCompile Include="GeneratedFiles\moc_AdHocModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_GeneralSettingsPage.cpp">
+    <ClCompile Include="GeneratedFiles\moc_AdHocInterfaceItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_NamingPolicySettingsPage.cpp">
+    <ClCompile Include="GeneratedFiles\moc_AdHocEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_SettingsDialog.cpp">
+    <ClCompile Include="GeneratedFiles\moc_AdHocDelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_SWComponentItem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_AdHocBoundsModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_SWConnectionEndpoint.cpp">
+    <ClCompile Include="GeneratedFiles\moc_AdHocBoundsDelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_SWInterfaceItem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_AddressTableView.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_SWOffPageConnectorItem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_AddressSubsection.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_SWPortItem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_addressspacevisualizer.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_SystemAddCommands.cpp">
+    <ClCompile Include="GeneratedFiles\moc_addressspacevisualizationitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_SystemChangeCommands.cpp">
+    <ClCompile Include="GeneratedFiles\moc_addressspacesmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_SystemColumn.cpp">
+    <ClCompile Include="GeneratedFiles\moc_addressspaceselector.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_SystemComponentItem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_addressspaceseditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_SystemDeleteCommands.cpp">
+    <ClCompile Include="GeneratedFiles\moc_addressspacesdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_SystemDesignDiagram.cpp">
+    <ClCompile Include="GeneratedFiles\moc_addressspacescene.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_SystemDesignWidget.cpp">
+    <ClCompile Include="GeneratedFiles\moc_addressspacerefdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_ExportSWDialog.cpp">
+    <ClCompile Include="GeneratedFiles\moc_AddressSpaceItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_SwitchHWDialog.cpp">
+    <ClCompile Include="GeneratedFiles\moc_addressspacegeneraleditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_SystemDetailsEditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_addressspacegapitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_vhdlcomponentdeclaration.cpp">
+    <ClCompile Include="GeneratedFiles\moc_addressspaceeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_vhdlcomponentinstance.cpp">
+    <ClCompile Include="GeneratedFiles\moc_AddressSectionItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_vhdlgenerator2.cpp">
+    <ClCompile Include="GeneratedFiles\moc_AddressModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_vhdlgeneric.cpp">
+    <ClCompile Include="GeneratedFiles\moc_AddressEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_vhdlobject.cpp">
+    <ClCompile Include="GeneratedFiles\moc_AddressDelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_vhdlport.cpp">
+    <ClCompile Include="GeneratedFiles\moc_addressblockproxy.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_vhdlsignal.cpp">
+    <ClCompile Include="GeneratedFiles\moc_addressblockmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_MemoryBaseItem.cpp">
+    <ClCompile Include="GeneratedFiles\moc_addressblockgraphitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_BusInterfaceDialog.cpp">
+    <ClCompile Include="GeneratedFiles\moc_addressblockeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_DeleteWorkspaceDialog.cpp">
+    <ClCompile Include="GeneratedFiles\moc_addressblockdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Configuration)\moc_NewWorkspaceDialog.cpp">
+    <ClCompile Include="GeneratedFiles\moc_activeviewmodel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_activevieweditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_activeviewdelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_accesscombobox.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_absdefgroup.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -4131,9 +4121,6 @@
     </CustomBuild>
     <CustomBuild Include="InterfaceEditor\interfaceeditor.h">
       <Filter>Header Files\InterfaceEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ApiDefinitionEditor\ApiDefinitionEditor.h">
-      <Filter>Header Files\IPXactWrapper\ApiDefinitionEditor</Filter>
     </CustomBuild>
     <CustomBuild Include="IPXactWrapper\ApiDefinitionEditor\ApiFunctionEditor.h">
       <Filter>Header Files\IPXactWrapper\ApiDefinitionEditor</Filter>
@@ -4965,6 +4952,9 @@
     </CustomBuild>
     <CustomBuild Include="mainwindow\NewWorkspaceDialog.h">
       <Filter>Header Files\mainwindow</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ApiDefinitionEditor\ApiDefinitionEditor.h">
+      <Filter>Header Files\IPXactWrapper\ApiDefinitionEditor</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
