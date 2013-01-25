@@ -9,8 +9,6 @@
 
 #include <QRectF>
 
-#include <QDebug>
-
 AddressSpaceVisualizationItem::AddressSpaceVisualizationItem(QSharedPointer<AddressSpace> addrSpace,
 															 QGraphicsItem* parent /*= 0*/):
 VisualizerItem(parent),
@@ -84,9 +82,4 @@ void AddressSpaceVisualizationItem::setHeight( qreal height ) {
 	qreal width = rect().width();
 	setRect(0, 0, width, height);
 	VisualizerItem::reorganizeChildren();
-}
-
-void AddressSpaceVisualizationItem::mousePressEvent( QGraphicsSceneMouseEvent* event ) {
-	qDebug() << getName() << " pos: " << x() << ", " << y();
-	QGraphicsItem::mousePressEvent(event);
 }

@@ -104,8 +104,6 @@ protected:
 	*/
 	virtual void setRightBottomCorner(quint64 address);
 
-	virtual void mousePressEvent(QGraphicsSceneMouseEvent* event);
-
 private:
 	
 	//! \brief No copying
