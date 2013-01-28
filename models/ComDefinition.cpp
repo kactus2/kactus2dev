@@ -53,6 +53,10 @@ ComDefinition::ComDefinition(QDomDocument& doc) : LibraryComponent(doc),
 
     while (!nodeList.at(i).hasChildNodes())
     {
+		// if the node is for a header comment
+		if (nodeList.at(i).isComment()) {
+			topComments_.append(nodeList.at(i).nodeValue());
+		}
         ++i;
     }
 
