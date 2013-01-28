@@ -178,7 +178,40 @@ public:
 	 * the document into file.
 	 *
 	 */
-	virtual void writeVLNV(QXmlStreamWriter& writer);
+	 virtual void writeVLNV(QXmlStreamWriter& writer);
+
+	/*! \brief Get the comments from the beginning of the XML file.
+	 *
+	 * Method: 		getTopComments
+	 * Full name:	LibraryComponent::getTopComments
+	 * Access:		virtual public 
+	 *
+	 *
+	 * \return QStringList containing the XML header comment lines.
+	*/
+	virtual QStringList getTopComments() const;
+
+	/*! \brief Set the top header comments for the XML file.
+	 *
+	 * Method: 		setTopComments
+	 * Full name:	LibraryComponent::setTopComments
+	 * Access:		virtual public 
+	 *
+	 * \param comment QString containing the comments, if string contains line breaks it chopped to separate strings.
+	 *
+	*/
+	virtual void setTopComments(const QString& comment);
+
+	/*! \brief Set the top header comments for the XML file.
+	 *
+	 * Method: 		setTopComments
+	 * Full name:	LibraryComponent::setTopComments
+	 * Access:		virtual public 
+	 *
+	 * \param comments QStringList which contains the comment lines of the XML header.
+	 *
+	*/
+	virtual void setTopComments(const QStringList& comments);
 
 protected:
 
@@ -217,6 +250,9 @@ protected:
 
 	//! \brief Contains the kactus2 attributes for the IP-Xact object.
 	QMap<QString, QString> kactus2Attributes_;
+
+	//! \brief Contains the comment lines from the beginning of the document.
+	QStringList topComments_;
 };
 
 #endif /* LIBRARYCOMPONENT_H_ */

@@ -74,6 +74,9 @@ private slots:
 	//! \brief Handler for changes in description.
 	void onDescriptionChange();
 
+	//! \brief Handler for changes in XML header.
+	void onHeaderChange();
+
 private:
     // Disable copying.
     GeneralEditor(const GeneralEditor& other);
@@ -91,6 +94,9 @@ private:
 
     //! The description editor.
     DescEditor* descEditor_;
+
+	//! \brief The editor to view/edit the header of the XML-file.
+	DescEditor* headerEditor_;
 
     //! The preview box.
     ComponentPreviewBox* previewBox_;

@@ -31,7 +31,8 @@
 LibraryComponent::LibraryComponent(QDomDocument &doc):
 vlnv_(), 
 description_(),
-kactus2Attributes_() {
+kactus2Attributes_(),
+topComments_() {
 
 	// get the VLNV
 	vlnv_ = QSharedPointer<VLNV>(new VLNV(findVLNV(doc)));
@@ -69,14 +70,16 @@ kactus2Attributes_() {
 LibraryComponent::LibraryComponent(const VLNV &vlnv):
 vlnv_(), 
 description_(),
-kactus2Attributes_() {
+kactus2Attributes_(),
+topComments_() {
     vlnv_ = QSharedPointer<VLNV>(new VLNV(vlnv));
 }
 
 LibraryComponent::LibraryComponent( const LibraryComponent &other ):
 vlnv_(),
 description_(other.description_),
-kactus2Attributes_(other.kactus2Attributes_) {
+kactus2Attributes_(other.kactus2Attributes_),
+topComments_(other.topComments_) {
 
 	if (other.vlnv_) {
 		vlnv_ = QSharedPointer<VLNV>(new VLNV(*other.vlnv_));
@@ -97,6 +100,8 @@ LibraryComponent & LibraryComponent::operator=( const LibraryComponent &other ) 
 		description_ = other.description_;
 
 		kactus2Attributes_ = other.kactus2Attributes_;
+
+		topComments_ = other.topComments_;
 	}
 	return *this;
 }
@@ -174,10 +179,15 @@ void LibraryComponent::write(QXmlStreamWriter& writer) {
 	writer.writeStartDocument();
 
 	// write the comment to top of the xml-file
-	writer.writeComment(QObject::tr(" Created by Kactus2 - Open source IP-Xact toolset "));
-	writer.writeComment(QObject::tr(" http://sourceforge.net/projects/kactus2/ "));
-	writer.writeComment(QObject::tr(" Date: %1 ").arg(QDate::currentDate().toString(QString("dd.MM.yyyy"))));
-	writer.writeComment(QObject::tr(" Time: %1 ").arg(QTime::currentTime().toString(QString("hh:mm:ss"))));
+	//writer.writeComment(QObject::tr(" Created by Kactus2 - Open source IP-Xact toolset "));
+	//writer.writeComment(QObject::tr(" http://sourceforge.net/projects/kactus2/ "));
+	//writer.writeComment(QObject::tr(" Date: %1 ").arg(QDate::currentDate().toString(QString("dd.MM.yyyy"))));
+	//writer.writeComment(QObject::tr(" Time: %1 ").arg(QTime::currentTime().toString(QString("hh:mm:ss"))));
+
+	// write the top comments for the XML file
+	foreach (QString comment, topComments_) {
+		writer.writeComment(comment);
+	}
 
 	// the comment has been generated to the top of the document and we can
 	// write the actual data
@@ -258,4 +268,17 @@ void LibraryComponent::setXMLNameSpaceAttributes( QMap<QString, QString>& attrib
 	attributes.insert("xsi:schemaLocation", "http://www.spiritconsortium.org/XMLSchema/"
 		"SPIRIT/1.5 http://www.spiritconsortium.org/XMLSchema/SPIRIT/1.5/index.xsd");
 	attributes.insert("xmlns:kactus2", "http://funbase.cs.tut.fi/");
+}
+
+void LibraryComponent::setTopComments( const QString& comment ) {
+	QStringList comments = comment.split("\n");
+	topComments_ = comments;
+}
+
+void LibraryComponent::setTopComments( const QStringList& comments ) {
+	topComments_ = comments;
+}
+
+QStringList LibraryComponent::getTopComments() const {
+	return topComments_;
 }

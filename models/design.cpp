@@ -35,10 +35,16 @@ Design::Design(QDomDocument& doc)
     QDomNodeList nodes = doc.childNodes();
 
     int i;
-    for (i = 0; i < nodes.size(); i++) {
-	if (nodes.at(i).nodeName() == "spirit:design")
-	    break;
-    }
+	for (i = 0; i < nodes.size(); i++) {
+
+		// if the node is for a header comment
+		if (nodes.at(i).isComment()) {
+			topComments_.append(nodes.at(i).nodeValue());
+		}
+		else if (nodes.at(i).nodeName() == "spirit:design") {
+			break;
+		}
+	}
     nodes = nodes.at(i).childNodes();
 
     for (int i = 0; i < nodes.size(); i++) {

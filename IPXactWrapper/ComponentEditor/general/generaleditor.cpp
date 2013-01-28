@@ -16,10 +16,13 @@
 
 #include <models/component.h>
 #include <LibraryManager/libraryinterface.h>
+#include <models/librarycomponent.h>
 
 #include <QVBoxLayout>
 #include <QGroupBox>
 #include <QLabel>
+#include <QStringList>
+
 #include <QDebug>
 
 //-----------------------------------------------------------------------------
@@ -31,6 +34,8 @@ GeneralEditor::GeneralEditor(LibraryInterface* libHandler,
 ItemEditor(component, parent),
 vlnvDisplayer_(0),
 attributeEditor_(0),
+descEditor_(NULL),
+headerEditor_(NULL),
 previewBox_(0) {
     Q_ASSERT(libHandler != 0);
     Q_ASSERT(component != 0);
@@ -48,12 +53,16 @@ previewBox_(0) {
 
     descEditor_ = new DescEditor();
 
+	headerEditor_ = new DescEditor();
+	headerEditor_->setTitle(tr("XML header"));
+
     previewBox_ = new ComponentPreviewBox(libHandler);
     previewBox_->setComponent(component);
 
     layout->addWidget(vlnvDisplayer_);
     layout->addWidget(attributeEditor_);
     layout->addWidget(descEditor_);
+	layout->addWidget(headerEditor_);
     layout->addWidget(previewBox_);
 
     // Connect the contentChanged() signals.
@@ -61,6 +70,8 @@ previewBox_(0) {
             this, SLOT(onAttributesChange()), Qt::UniqueConnection);
     connect(descEditor_, SIGNAL(contentChanged()),
             this, SLOT(onDescriptionChange()), Qt::UniqueConnection);
+	connect(headerEditor_, SIGNAL(contentChanged()),
+		this, SLOT(onHeaderChange()), Qt::UniqueConnection);
 
     refresh();
 }
@@ -103,6 +114,14 @@ void GeneralEditor::refresh() {
 	descEditor_->setDescription(component()->getDescription());
 	connect(descEditor_, SIGNAL(contentChanged()),
 		this, SLOT(onDescriptionChange()), Qt::UniqueConnection);
+
+	disconnect(headerEditor_, SIGNAL(contentChanged()),
+		this, SLOT(onDescriptionChange()));
+	QStringList comments = component()->getTopComments();
+	QString comment = comments.join("\n");
+	headerEditor_->setDescription(comment);
+	connect(headerEditor_, SIGNAL(contentChanged()),
+		this, SLOT(onDescriptionChange()), Qt::UniqueConnection);
 }
 
 void GeneralEditor::onAttributesChange() {
@@ -122,4 +141,9 @@ void GeneralEditor::onDescriptionChange() {
 void GeneralEditor::showEvent( QShowEvent* event ) {
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/general.html");
+}
+
+void GeneralEditor::onHeaderChange() {
+	component()->setTopComments(headerEditor_->getDescription());
+	emit contentChanged();
 }

@@ -43,7 +43,8 @@ DesignDiagram::DesignDiagram(LibraryInterface* lh, MainWindow* mainWnd,
       mode_(MODE_SELECT),
       instanceNames_(),
       loading_(false),
-      locked_(false)
+      locked_(false),
+	  XMLComments_()
 {
     setSceneRect(0, 0, 100000, 100000);
 
@@ -74,6 +75,9 @@ void DesignDiagram::clearScene()
 bool DesignDiagram::setDesign(QSharedPointer<Component> component, QSharedPointer<Design> design,
                               QSharedPointer<DesignConfiguration> designConf)
 {
+	// save the XML header from the design
+	XMLComments_ = design->getTopComments();
+
     // Clear the edit provider.
     editProvider_.clear();
 
@@ -381,4 +385,10 @@ ComponentItem* DesignDiagram::getTopmostComponent(QPointF const& pos)
 DesignWidget* DesignDiagram::getParent()
 {
     return parent_;
+}
+
+QSharedPointer<Design> DesignDiagram::createDesign( VLNV const& vlnv ) const {
+	QSharedPointer<Design> design(new Design(vlnv));
+	design->setTopComments(XMLComments_);
+	return design;
 }

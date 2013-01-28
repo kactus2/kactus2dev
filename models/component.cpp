@@ -72,6 +72,11 @@ systemViews_() {
 	int i = 0;
 	// search for the first element with children (=document type)
 	while (!nodeList.at(i).hasChildNodes()) {
+		
+		// if the node is for a header comment
+		if (nodeList.at(i).isComment()) {
+			topComments_.append(nodeList.at(i).nodeValue());
+		}
 		++i;
 	}
 

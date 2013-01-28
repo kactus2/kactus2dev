@@ -1332,7 +1332,7 @@ void SystemDesignDiagram::wheelEvent(QGraphicsSceneWheelEvent *event)
 //-----------------------------------------------------------------------------
 QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
 {
-    QSharedPointer<Design> design(new Design(vlnv));
+    QSharedPointer<Design> design = DesignDiagram::createDesign(vlnv);
 
     QList<ComponentInstance> instances;
     QList<SWInstance> swInstances;

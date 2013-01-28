@@ -13,6 +13,7 @@
 #define DESIGNDIAGRAM_H
 
 #include <QGraphicsScene>
+#include <QStringList>
 
 #include <designwidget/AdHocEnabled.h>
 
@@ -79,7 +80,7 @@ public:
      *
      *      @return The created design.
      */
-    virtual QSharedPointer<Design> createDesign(VLNV const& vlnv) const = 0;
+    virtual QSharedPointer<Design> createDesign(VLNV const& vlnv) const;
 
     /*!
      *  Reflects the changes in the design to the top-level component.
@@ -351,6 +352,9 @@ private:
 
     //! If true, the diagram is locked and cannot be modified.
     bool locked_;
+
+	//! \brief Contains the XML header comments of the design.
+	QStringList XMLComments_;
 };
 
 //-----------------------------------------------------------------------------

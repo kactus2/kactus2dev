@@ -620,7 +620,7 @@ HWComponentItem *HWDesignDiagram::getComponent(const QString &instanceName)
 //-----------------------------------------------------------------------------
 QSharedPointer<Design> HWDesignDiagram::createDesign(const VLNV &vlnv) const
 {
-	QSharedPointer<Design> design(new Design(vlnv));
+	QSharedPointer<Design> design = DesignDiagram::createDesign(vlnv);
 
 	QList<ComponentInstance> instances;
 	QList<Design::Interconnection> interconnections;
