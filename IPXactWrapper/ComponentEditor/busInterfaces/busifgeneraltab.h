@@ -100,6 +100,28 @@ private slots:
 	//! \brief Handler for changes in interface mode.
 	void onModeChanged(General::InterfaceMode mode);
 
+	/*! \brief Set the bus type for the bus interface.
+	 *
+	 * Method: 		onSetBusType
+	 * Full name:	BusIfGeneralTab::onSetBusType
+	 * Access:		private 
+	 *
+	 * \param busDefVLNV The vlnv identifying the bus type.
+	 *
+	*/
+	void onSetBusType(const VLNV& busDefVLNV);
+
+	/*! \brief Set the abstraction type for the bus interface.
+	 *
+	 * Method: 		onSetAbsType
+	 * Full name:	BusIfGeneralTab::onSetAbsType
+	 * Access:		private 
+	 *
+	 * \param absDefVLNV The vlnv identifying the abstraction definition.
+	 *
+	*/
+	void onSetAbsType(const VLNV& absDefVLNV);
+
 private:
 
 	//! \brief No copying

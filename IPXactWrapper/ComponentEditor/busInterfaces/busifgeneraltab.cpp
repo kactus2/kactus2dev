@@ -51,9 +51,9 @@ libHandler_(libHandler) {
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
 	connect(&busType_, SIGNAL(setAbsDef(const VLNV&)),
-		&absType_, SLOT(setVLNV(const VLNV&)), Qt::UniqueConnection);
+		this, SLOT(onSetAbsType(const VLNV&)), Qt::UniqueConnection);
 	connect(&absType_, SIGNAL(setBusDef(const VLNV&)),
-		&busType_, SLOT(setVLNV(const VLNV&)), Qt::UniqueConnection);
+		this, SLOT(onSetBusType(const VLNV&)), Qt::UniqueConnection);
 
 	busType_.setTitle(tr("Bus definition"));
 	absType_.setTitle(tr("Abstraction definition"));
@@ -167,4 +167,16 @@ void BusIfGeneralTab::onModeChanged( General::InterfaceMode mode ) {
 void BusIfGeneralTab::showEvent( QShowEvent* event ) {
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/businterfacegeneral.html");
+}
+
+void BusIfGeneralTab::onSetBusType( const VLNV& busDefVLNV ) {
+	busif_->setBusType(busDefVLNV);
+	busType_.setVLNV(busDefVLNV);
+	emit contentChanged();
+}
+
+void BusIfGeneralTab::onSetAbsType( const VLNV& absDefVLNV ) {
+	busif_->setAbstractionType(absDefVLNV);
+	absType_.setVLNV(absDefVLNV);
+	emit contentChanged();
 }
