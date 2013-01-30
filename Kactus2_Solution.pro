@@ -10,7 +10,7 @@
 TEMPLATE = subdirs
 SUBDIRS += Kactus2.pro \
     Plugins/MCAPICodeGenerator/MCAPICodeGenerator.pro
-	
+
 unix:upgrade.path = /usr/share/kactus2
 unix:upgrade.files = ../executable/upgrade.cfg
 
@@ -36,3 +36,4 @@ unix:desktop.path = /usr/share/applications
 unix:desktop.files = ./releaseFiles/kactus2.desktop
 
 INSTALLS += help doc upgrade config library icons desktop
+

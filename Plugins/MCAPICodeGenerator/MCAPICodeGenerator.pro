@@ -5,7 +5,7 @@
 TEMPLATE = lib
 TARGET = MCAPICodeGenerator
 DESTDIR = ../../executable/Plugins
-QT += core gui xml xmlpatterns
+QT += core widgets gui xml xmlpatterns
 CONFIG += release
 DEFINES += MCAPICODEGENERATOR_LIB QT_XML_LIB QT_XMLPATTERNS_LIB
 INCLUDEPATH += ./GeneratedFiles \
@@ -23,5 +23,4 @@ include(MCAPICodeGenerator.pri)
 OTHER_FILES += mcapi.json
 
 target.path = /usr/share/kactus2/plugins
-
 INSTALLS += target

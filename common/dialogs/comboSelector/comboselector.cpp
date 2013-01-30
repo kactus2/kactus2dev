@@ -62,7 +62,7 @@ QString ComboSelector::selectGroupType(QWidget* parent /* = 0*/,
 
 	selector.setTextValue(selected);
 
-	return selector.exec();
+    return selector.execDialog();
 }
 
 QString ComboSelector::selectFileType(QWidget* parent /*= 0*/, 
@@ -88,7 +88,7 @@ const QString label /*= tr("Select a file type or set your own file type")*/ ) {
 
 	selector.setTextValue(selected);
 
-	return selector.exec();
+    return selector.execDialog();
 }
 
 QString ComboSelector::selectBusInterface(
@@ -114,7 +114,7 @@ QString ComboSelector::selectBusInterface(
 
 	selector.setTextValue(selected);
 
-	return selector.exec();
+    return selector.execDialog();
 }
 
 QString ComboSelector::selectFileSet( QSharedPointer<Component> component, 
@@ -139,7 +139,7 @@ QString ComboSelector::selectFileSet( QSharedPointer<Component> component,
 
 	selector.setTextValue(selected);
 
-	return selector.exec();
+    return selector.execDialog();
 }
 
 QString ComboSelector::selectView( QSharedPointer<Component> component,
@@ -164,5 +164,5 @@ QString ComboSelector::selectView( QSharedPointer<Component> component,
 
 	selector.setTextValue(selected);
 
-	return selector.exec();
+    return selector.execDialog();
 }
