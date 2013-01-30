@@ -9,6 +9,23 @@
               * Changed or Information
 ===============================================================================
 
+31/01/2013 2.1
+----------------------------------------------------
++ Designs can be opened through component editor by double clicking a hierarchical view.
++ Linux desktop integration added.
++ Added info column to memory maps editor displaying which bus interfaces the memory map in binded to.
++ Support for local memory map within address spaces added.
++ Added visualization of memory maps to component editor.
++ Added visualization of adress space to component editor.
++ Added XML header editor to component editor for user to create custom headers to XML IP-XACT files.
+
+- Fixed the compilation flags on Kactus2.pro project file to support 64-bit linux.
+- Fixed bug when drag & dropping abstraction definition to bus interface within component editor.
+- Fixed bug when exporting SW in system design.
+
+* Migrated to Qt 5.0
+* Changed colors of API and COM connections within system designs.
+
 10/09/2012 2.0
 ----------------------------------------------------
 
