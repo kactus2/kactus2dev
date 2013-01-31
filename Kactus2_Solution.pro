@@ -12,7 +12,7 @@ SUBDIRS += Kactus2.pro \
     Plugins/MCAPICodeGenerator/MCAPICodeGenerator.pro
 
 unix:upgrade.path = /usr/share/kactus2
-unix:upgrade.files = ./executable/upgrade.cfg
+unix:upgrade.files = ./releaseFiles/upgrade.cfg
 
 unix:doc.path = /usr/share/kactus2/doc
 unix:doc.files = ./releaseFiles/*.txt
