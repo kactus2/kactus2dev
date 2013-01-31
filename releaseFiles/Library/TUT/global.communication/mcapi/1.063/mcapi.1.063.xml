@@ -7,7 +7,7 @@
 	<spirit:vendor>TUT</spirit:vendor>
 	<spirit:library>global.communication</spirit:library>
 	<spirit:name>mcapi</spirit:name>
-	<spirit:version>1.0</spirit:version>
+	<spirit:version>1.063</spirit:version>
 	<kactus2:transferTypes>
 		<kactus2:transferType kactus2:name="message"/>
 		<kactus2:transferType kactus2:name="scalar"/>
