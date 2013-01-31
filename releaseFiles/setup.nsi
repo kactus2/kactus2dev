@@ -78,6 +78,11 @@ Section "MainSection" SEC01
   File "readme.txt"
   File "..\executable\upgrade.cfg"
   File /oname=DefaultSettings.ini "DefaultSettingsWin.ini"
+  
+  SetOutPath "$INSTDIR\platforms"
+  SetOverwrite on
+  File "..\executable\platforms\qminimal.dll"
+  File "..\executable\platforms\qwindows.dll"
 
   SetOutPath "$INSTDIR\Plugins"
   SetOverwrite on
@@ -154,6 +159,8 @@ Section Uninstall
   Delete "$INSTDIR\Help\Kactus2Help.qch"
   Delete "$INSTDIR\Help\Kactus2Help.qhc"
   Delete "$INSTDIR\Plugins\MCAPICodeGenerator.dll"
+  Delete "$INSTDIR\platforms\qminimal.dll"
+  Delete "$INSTDIR\platforms\qwindows.dll"
   Delete "$INSTDIR\DefaultSettings.ini"
   Delete "$INSTDIR\upgrade.cfg"
   Delete "$INSTDIR\readme.txt"
@@ -187,6 +194,7 @@ Section Uninstall
   RMDir "$SMPROGRAMS\Kactus2"
   RMDir "$INSTDIR\Help"
   RMDir "$INSTDIR\Plugins"
+  RMDir "$INSTDIR\platforms"
   RMDir "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef\1.063"
   RMDir "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef"
   RMDir "$INSTDIR\Library\TUT\ip.swp.api"
