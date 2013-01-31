@@ -20,8 +20,9 @@
 // Function: SWPropertiesEditor::SWPropertiesEditor()
 //-----------------------------------------------------------------------------
 SWPropertiesEditor::SWPropertiesEditor(QSharedPointer<Component> component, 
+	LibraryInterface* handler,
 									   QWidget *parent): 
-ItemEditor(component, parent),
+ItemEditor(component, handler, parent),
 view_(this),
 filter_(this),
 model_(this)

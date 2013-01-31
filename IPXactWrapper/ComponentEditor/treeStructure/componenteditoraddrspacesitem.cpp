@@ -15,7 +15,7 @@ ComponentEditorAddrSpacesItem::ComponentEditorAddrSpacesItem(ComponentEditorTree
 															 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 addrSpaces_(component->getAddressSpaces()), 
-editor_(component) {
+editor_(component, libHandler) {
 
 	foreach (QSharedPointer<AddressSpace> addrSpace, addrSpaces_) {
 		QSharedPointer<ComponentEditorAddrSpaceItem> addrItem(

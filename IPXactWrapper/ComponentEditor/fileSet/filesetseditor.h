@@ -14,6 +14,8 @@
 
 #include <QSortFilterProxyModel>
 
+class LibraryInterface;
+
 /*! \brief The editor to add/remove/edit file sets of a component.
  *
  */
@@ -31,9 +33,11 @@ public:
 	/*! \brief The constructor
 	 *
 	 * \param component Pointer to the component being edited.
+	 * \param handler Pointer to the instance managing the library.
 	 *
 	*/
-	FileSetsEditor(QSharedPointer<Component> component);
+	FileSetsEditor(QSharedPointer<Component> component,
+		LibraryInterface* handler);
 	
 	//! \brief The destructor
 	~FileSetsEditor();

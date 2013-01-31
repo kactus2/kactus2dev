@@ -15,6 +15,8 @@
 #include <QVBoxLayout>
 #include <QSize>
 
+class LibraryInterface;
+
 /*! \brief ItemEditor is a base class for editors in Component Editor module.
 *
 * This class should be used as a base class when implementing an element-specific
@@ -29,9 +31,11 @@ public:
 	/*! \brief The constructor.
 	*
 	* \param component Pointer to the component instance that is being edited.
+	* \param handler Pointer to the instance that manages the library.
 	* \param parent Pointer to the owner of this widget.
 	*/
 	ItemEditor(QSharedPointer<Component> component, 
+		LibraryInterface* handler,
 		QWidget *parent = 0);
 
 	//! \brief The destructor.
@@ -104,6 +108,17 @@ protected:
 	*/
 	QSharedPointer<Component> component() const;
 
+	/*! \brief Get pointer to the instance managing the library.
+	 *
+	 * Method: 		handler
+	 * Full name:	ItemEditor::handler
+	 * Access:		protected 
+	 *
+	 *
+	 * \return Pointer to the instance managing the library.
+	*/
+	LibraryInterface* handler() const;
+
 private:
 
 	//! No copying
@@ -114,6 +129,9 @@ private:
 
 	//! \brief A pointer to the component that's element is being edited.
 	QSharedPointer<Component> component_;
+
+	//! \brief Pointer to the instance that manages the library.
+	LibraryInterface* handler_;
 	
 };
 

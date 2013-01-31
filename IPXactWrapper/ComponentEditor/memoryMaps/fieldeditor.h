@@ -18,6 +18,7 @@
 class EditableTableView;
 class EnumeratedValueModel;
 class WriteValueConstraintEditor;
+class LibraryInterface;
 
 /*! \brief The editor to edit the enumerated values of a field.
  *
@@ -37,11 +38,13 @@ public:
 	 * 
 	 * \param field Pointer to the field being edited.
 	 * \param component Pointer to the component being edited.
+	 * \param handler Pointer to the instance managing the library.
 	 * \param parent Pointer to the parent of this editor.
 	 *
 	 */
 	FieldEditor(QSharedPointer<Field> field,
 		QSharedPointer<Component> component,
+		LibraryInterface* handler, 
 		QWidget* parent = 0);
 
 	//! \brief The destructor

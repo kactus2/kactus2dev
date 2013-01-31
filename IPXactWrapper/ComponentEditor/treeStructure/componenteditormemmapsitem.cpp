@@ -17,7 +17,7 @@ ComponentEditorMemMapsItem::ComponentEditorMemMapsItem( ComponentEditorTreeModel
 													   ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
 memoryMaps_(component->getMemoryMaps()),
-editor_(new MemoryMapsEditor(component)),
+editor_(new MemoryMapsEditor(component, libHandler)),
 visualizer_(new MemoryMapsVisualizer(component)) {
 
 	setObjectName(tr("ComponentEditorMemMapsItem"));

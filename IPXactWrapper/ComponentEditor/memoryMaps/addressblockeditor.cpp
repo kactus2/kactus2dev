@@ -16,8 +16,9 @@
 
 AddressBlockEditor::AddressBlockEditor(QSharedPointer<AddressBlock> addressBlock,
 									   QSharedPointer<Component> component,
+									   LibraryInterface* handler,
 									   QWidget* parent /*= 0*/):
-ItemEditor(component, parent),
+ItemEditor(component, handler, parent),
 view_(new EditableTableView(this)),
 proxy_(new AddressBlockProxy(this)),
 model_(new AddressBlockModel(addressBlock, this)) {
@@ -32,6 +33,9 @@ model_(new AddressBlockModel(addressBlock, this)) {
 
 	proxy_->setSourceModel(model_);
 	view_->setModel(proxy_);
+
+	//! \brief Enable import/export csv file
+	view_->setAllowImportExport(true);
 
 	// items can not be dragged
 	view_->setItemsDraggable(false);

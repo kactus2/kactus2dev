@@ -14,7 +14,7 @@
 BusInterfacesEditor::BusInterfacesEditor(LibraryInterface* handler,
 										 QSharedPointer<Component> component, 
 										 QWidget* parent /*= 0*/ ):
-ItemEditor(component, parent),
+ItemEditor(component, handler, parent),
 view_(this),
 proxy_(this),
 model_(handler, component, this) {

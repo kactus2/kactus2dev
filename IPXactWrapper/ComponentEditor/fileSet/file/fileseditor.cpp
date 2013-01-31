@@ -32,6 +32,9 @@ addFilesButton_(QIcon(":/icons/graphics/add.png"), tr("Add Files"), this) {
 	layout->addWidget(&view_);
 	layout->addWidget(&addFilesButton_, 0, Qt::AlignLeft);
 
+	// files can not be imported/exported to a csv file
+	view_.setAllowImportExport(false);
+
 	view_.setModel(&model_);
 
 	view_.setColumnWidth(0, 200);

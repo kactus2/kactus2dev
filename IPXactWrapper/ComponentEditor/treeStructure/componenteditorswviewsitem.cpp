@@ -15,7 +15,7 @@ ComponentEditorSWViewsItem::ComponentEditorSWViewsItem(
 	ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 swViews_(component->getSWViews()),
-editor_(component) {
+editor_(component, libHandler) {
 
 	foreach (QSharedPointer<SWView> swView, swViews_) {
 

@@ -13,7 +13,7 @@ ComponentEditorChannelsItem::ComponentEditorChannelsItem(ComponentEditorTreeMode
 														 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 channels_(component->getChannels()),
-editor_(component) {
+editor_(component, libHandler) {
 
 	editor_.hide();
 

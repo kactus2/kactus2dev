@@ -14,8 +14,9 @@
 #include <QVBoxLayout>
 
 MemoryMapsEditor::MemoryMapsEditor( QSharedPointer<Component> component,
+	LibraryInterface* handler, 
 								   QWidget *parent ):
-ItemEditor(component, parent),
+ItemEditor(component, handler, parent),
 view_(new EditableTableView(this)),
 proxy_(new QSortFilterProxyModel(this)),
 model_(new MemoryMapsModel(component, this)) {
@@ -30,6 +31,8 @@ model_(new MemoryMapsModel(component, this)) {
 
 	proxy_->setSourceModel(model_);
 	view_->setModel(proxy_);
+
+	view_->setAllowImportExport(true);
 
 	// items can not be dragged
 	view_->setItemsDraggable(false);

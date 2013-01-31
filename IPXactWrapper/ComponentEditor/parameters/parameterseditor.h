@@ -11,13 +11,13 @@
 #include <IPXactWrapper/ComponentEditor/itemeditor.h>
 
 #include <common/models/ParameterModel/parametersmodel.h>
-
+#include <models/component.h>
 #include <common/views/EditableTableView/editabletableview.h>
 
 #include <QSortFilterProxyModel>
 #include <QSharedPointer>
 
-class Component;
+class LibraryInterface;
 
 /*! \brief Editor to add/edit/remove parameters of a component.
  *
@@ -30,10 +30,12 @@ public:
 	/*! \brief The constructor
 	 *
 	 * \param component Pointer to the component being edited.
+	 * \param handler Pointer to the instance managing the library.
 	 * \param parent Pointer to the owner of this widget.
 	 *
 	*/
 	ParametersEditor(QSharedPointer<Component> component, 
+		LibraryInterface* handler,
 		QWidget *parent = 0);
 	
 	//! \brief The destructor

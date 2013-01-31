@@ -11,8 +11,9 @@
 
 #include <QVBoxLayout>
 
-FileSetsEditor::FileSetsEditor( QSharedPointer<Component> component):
-ItemEditor(component),
+FileSetsEditor::FileSetsEditor( QSharedPointer<Component> component,
+	LibraryInterface* handler):
+ItemEditor(component, handler),
 view_(this),
 model_(component, this),
 proxy_(this) {
@@ -27,6 +28,7 @@ proxy_(this) {
 
 	proxy_.setSourceModel(&model_);
 
+	view_.setAllowImportExport(true);
 	view_.setModel(&proxy_);
 	view_.setItemDelegate(new FileSetsDelegate(this));
 	view_.setColumnWidth(0, FileSetsEditor::NAME_COLUMN_WIDTH);

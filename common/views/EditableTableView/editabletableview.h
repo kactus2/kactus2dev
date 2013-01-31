@@ -40,6 +40,17 @@ public:
 	//! \brief The destructor
 	virtual ~EditableTableView();
 
+	/*! \brief Enable/disable the import/export csv file functionality.
+	 *
+	 * Method: 		setAllowImportExport
+	 * Full name:	EditableTableView::setAllowImportExport
+	 * Access:		public 
+	 *
+	 * \param allow If true then import/export is enabled.
+	 *
+	*/
+	void setAllowImportExport(bool allow);
+
 public slots:
 
 	/*! \brief Set the items in the view to be draggable or not.
@@ -170,6 +181,9 @@ private:
 
 	//! \brief Specifies if the items in the view can be dragged from position to another.
 	bool itemsDraggable_;
+
+	//! \brief Specified if the items can be imported/exported to a csv file.
+	bool impExportable_;
 };
 
 #endif // EDITABLETABLEVIEW_H

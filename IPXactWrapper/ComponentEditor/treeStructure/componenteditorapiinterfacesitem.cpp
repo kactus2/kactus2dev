@@ -15,7 +15,7 @@ ComponentEditorAPIInterfacesItem::ComponentEditorAPIInterfacesItem(
 	ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 apiInterfaces_(component->getApiInterfaces()),
-editor_(component) {
+editor_(component, libHandler) {
 
 	foreach (QSharedPointer<ApiInterface> apiInterface, apiInterfaces_) {
 		QSharedPointer<ComponentEditorAPIInterfaceItem> apiItem(

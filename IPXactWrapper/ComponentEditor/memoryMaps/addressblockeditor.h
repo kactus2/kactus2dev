@@ -18,6 +18,7 @@
 class EditableTableView;
 class AddressBlockModel;
 class AddressBlockProxy;
+class LibraryInterface;
 
 /*! \brief The editor to edit the details of an address block within component editor.
  *
@@ -37,11 +38,13 @@ public:
 	 *
 	 * \param addressBlock Pointer to the address block being edited.
 	 * \param component Pointer to the component being edited.
+	 * \param handler Pointer to the instance managing the library.
 	 * \param parent Pointer to the parent of this editor.
 	 *
 	 */
 	AddressBlockEditor(QSharedPointer<AddressBlock> addressBlock,
 		QSharedPointer<Component> component,
+		LibraryInterface* handler, 
 		QWidget* parent = 0);
 
 	//! \brief The destructor

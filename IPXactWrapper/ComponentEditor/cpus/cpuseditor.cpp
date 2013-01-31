@@ -10,8 +10,9 @@
 #include <common/widgets/summaryLabel/summarylabel.h>
 
 CpusEditor::CpusEditor( QSharedPointer<Component> component, 
+	LibraryInterface* handler, 
 					   QWidget* parent /*= 0*/ ):
-ItemEditor(component, parent),
+ItemEditor(component, handler, parent),
 view_(this),
 proxy_(this),
 model_(component, this) {

@@ -20,8 +20,7 @@ SWViewEditor::SWViewEditor(QSharedPointer<Component> component,
 						   QSharedPointer<SWView> swView,
                            LibraryInterface* libHandler, 
 						   QWidget *parent):
-ItemEditor(component, parent), 
-libHandler_(libHandler),
+ItemEditor(component, libHandler, parent), 
 view_(swView.data()),
 nameEditor_(swView->getNameGroup(), this, tr("Name and description")),
 hierRefEditor_(VLNV::DESIGNCONFIGURATION, libHandler, this, this)

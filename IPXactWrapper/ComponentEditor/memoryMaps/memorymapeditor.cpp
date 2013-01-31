@@ -15,9 +15,10 @@
 #include <QVBoxLayout>
 
 MemoryMapEditor::MemoryMapEditor(QSharedPointer<Component> component,
+	LibraryInterface* handler, 
 								 QSharedPointer<MemoryMap> memoryMap,
 								 QWidget* parent /*= 0*/ ):
-ItemEditor(component, parent),
+ItemEditor(component, handler, parent),
 view_(new EditableTableView(this)),
 proxy_(new MemoryMapProxy(this)),
 model_(new MemoryMapModel(memoryMap, this)) {
@@ -32,6 +33,9 @@ model_(new MemoryMapModel(memoryMap, this)) {
 
 	proxy_->setSourceModel(model_);
 	view_->setModel(proxy_);
+
+	//! \brief Enable import/export csv file
+	view_->setAllowImportExport(true);
 
 	// items can not be dragged
 	view_->setItemsDraggable(false);

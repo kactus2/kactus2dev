@@ -20,8 +20,7 @@ SystemViewEditor::SystemViewEditor(QSharedPointer<Component> component,
                            QSharedPointer<SystemView> systemView,
                            LibraryInterface* libHandler, 
                            QWidget *parent):
-ItemEditor(component, parent), 
-libHandler_(libHandler),
+ItemEditor(component, libHandler, parent), 
 view_(systemView.data()),
 nameEditor_(systemView->getNameGroup(), this, tr("Name and description")),
 hierRefEditor_(VLNV::DESIGNCONFIGURATION, libHandler, this, this)

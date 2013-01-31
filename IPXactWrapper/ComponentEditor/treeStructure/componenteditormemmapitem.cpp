@@ -25,7 +25,7 @@ ComponentEditorMemMapItem::ComponentEditorMemMapItem(QSharedPointer<MemoryMap> m
 ComponentEditorItem(model, libHandler, component, parent),
 memoryMap_(memoryMap),
 items_(memoryMap->getItems()),
-editor_(new MemoryMapEditor(component, memoryMap)),
+editor_(new MemoryMapEditor(component, libHandler, memoryMap)),
 visualizer_(NULL),
 graphItem_(NULL) {
 

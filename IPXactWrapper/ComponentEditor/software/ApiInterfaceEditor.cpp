@@ -26,7 +26,7 @@ ApiInterfaceEditor::ApiInterfaceEditor(LibraryInterface* libHandler,
                                        QSharedPointer<Component> component,
                                        QSharedPointer<ApiInterface> APIInterface,
 									   QWidget *parent):
-ItemEditor(component, parent),
+ItemEditor(component, libHandler, parent),
 libInterface_(libHandler),
 apiIf_(APIInterface.data()),
 nameEditor_(APIInterface->getNameGroup(), this, tr("Name and description")),

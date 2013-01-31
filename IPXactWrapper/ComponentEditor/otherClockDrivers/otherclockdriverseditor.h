@@ -10,13 +10,13 @@
 
 #include <IPXactWrapper/ComponentEditor/itemeditor.h>
 #include <common/views/EditableTableView/editabletableview.h>
-
+#include <models/component.h>
 #include "otherclockdriversmodel.h"
 
 #include <QSortFilterProxyModel>
 #include <QSharedPointer>
 
-class Component;
+class LibraryInterface;
 
 /*! \brief Widget to edit the otherClockDrivers of a component.
  *
@@ -29,10 +29,12 @@ public:
 	/*! \brief The constructor
 	 *
 	 * \param component Pointer to the component being edited.
+	 * \param handler Pointer to the instance managing the library.
 	 * \param parent Pointer to the owner of this widget.
 	 *
 	*/
 	OtherClockDriversEditor(QSharedPointer<Component> component,
+		LibraryInterface* handler, 
 		QWidget *parent = 0);
 	
 	//! \brief The destructor

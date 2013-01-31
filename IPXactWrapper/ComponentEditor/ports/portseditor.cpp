@@ -25,15 +25,14 @@
 PortsEditor::PortsEditor(QSharedPointer<Component> component,
 						 LibraryInterface* handler,
 						 QWidget *parent):
-ItemEditor(component, parent),
+ItemEditor(component, handler, parent),
 importButton_(QIcon(":/icons/graphics/import.png"), tr("Import CSV-file"), this),
 exportButton_(QIcon(":/icons/graphics/export.png"), tr("Export CSV-file"), this),
 view_(this), 
 model_(component, this),
-proxy_(this),
-handler_(handler) {
+proxy_(this) {
 
-	const QString compPath = handler_->getDirectoryPath(*ItemEditor::component()->getVlnv());
+	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
 	QString defPath = QString("%1/portListing.csv").arg(compPath);
 	view_.setDefaultImportExportPath(defPath);
 

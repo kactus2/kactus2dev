@@ -7,10 +7,14 @@
 
 #include "itemeditor.h"
 #include <models/component.h>
+#include <LibraryManager/libraryinterface.h>
 
-ItemEditor::ItemEditor( QSharedPointer<Component> component, QWidget *parent): 
+ItemEditor::ItemEditor( QSharedPointer<Component> component,
+	LibraryInterface* handler,
+	QWidget *parent): 
 QWidget(parent), 
-component_(component) {
+component_(component),
+handler_(handler) {
 }
 
 ItemEditor::~ItemEditor() {
@@ -27,4 +31,8 @@ bool ItemEditor::confirmEditorChange()
 {
     // By default, we always allow the editor to be changed.
     return true;
+}
+
+LibraryInterface* ItemEditor::handler() const {
+	return handler_;
 }

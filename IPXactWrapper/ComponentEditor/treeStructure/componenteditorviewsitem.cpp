@@ -14,7 +14,7 @@ ComponentEditorViewsItem::ComponentEditorViewsItem(ComponentEditorTreeModel* mod
 												   ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 views_(component->getViews()),
-editor_(component) {
+editor_(component, libHandler) {
 
 	setObjectName(tr("ComponentEditorViewsItem"));
 

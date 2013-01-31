@@ -14,7 +14,7 @@ ComponentEditorSWPropertiesItem::ComponentEditorSWPropertiesItem(
 	ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 swProperties_(component->getSWProperties()),
-editor_(component, NULL) {
+editor_(component, libHandler) {
 
 	connect(&editor_, SIGNAL(contentChanged()),
 		this, SLOT(onEditorChanged()), Qt::UniqueConnection);

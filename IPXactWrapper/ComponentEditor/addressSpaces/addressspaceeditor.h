@@ -21,6 +21,8 @@
 #include <IPXactWrapper/ComponentEditor/itemeditor.h>
 #include <QSharedPointer>
 
+class LibraryInterface;
+
 /*! \brief Editor to edit and save settings of an address space within component editor.
  *
  */
@@ -32,11 +34,13 @@ public:
 	/*! \brief The constructor
 	 *
 	 * \param component Pointer to the component being edited.
+	 * \param handler Pointer to the instance managing the library.
 	 * \param addrSpace Pointer to the address space being edited.
 	 * \param parent Pointer to the owner of this editor.
 	 *
 	*/
 	AddressSpaceEditor(QSharedPointer<Component> component,
+		LibraryInterface* handler,
 		QSharedPointer<AddressSpace> addrSpace,
 		QWidget* parent = 0);
 	

@@ -16,6 +16,8 @@
 #include <QSortFilterProxyModel>
 #include <QSharedPointer>
 
+class LibraryInterface;
+
 /*! \brief Editor to add/remove/edit the cpu-elements of a component.
  *
  */
@@ -27,10 +29,12 @@ public:
 	/*! \brief The constructor
 	 *
 	 * \param component Pointer to the component being edited.
+	 * \param handler Pointer to the instance managing the library.
 	 * \param parent Pointer to the parent of this editor.
 	 *
 	*/
 	CpusEditor(QSharedPointer<Component> component,
+		LibraryInterface* handler, 
 				QWidget* parent = 0);
 	
 	//! \brief The destructor

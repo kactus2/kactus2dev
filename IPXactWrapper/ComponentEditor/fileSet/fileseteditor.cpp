@@ -18,7 +18,7 @@ FileSetEditor::FileSetEditor(LibraryInterface* handler,
 							 QSharedPointer<Component> component,
 							 QSharedPointer<FileSet> fileSet, 
 							 QWidget *parent ):
-ItemEditor(component, parent),
+ItemEditor(component, handler, parent),
 baseLocation_(handler->getPath(*component->getVlnv())),
 fileSet_(fileSet), 
 nameEditor_(fileSet->getNameGroup(), this),

@@ -24,7 +24,7 @@ ComInterfaceEditor::ComInterfaceEditor(LibraryInterface* libHandler,
 									   QSharedPointer<Component> component,
 									   QSharedPointer<ComInterface> comInterface,
 									   QWidget *parent):
-ItemEditor(component, parent),
+ItemEditor(component, libHandler, parent),
 libInterface_(libHandler),
 comIf_(comInterface.data()),
 nameEditor_(comInterface->getNameGroup(), this, tr("Name and description")),

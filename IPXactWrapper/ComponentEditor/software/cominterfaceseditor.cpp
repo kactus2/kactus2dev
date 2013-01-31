@@ -13,7 +13,7 @@
 ComInterfacesEditor::ComInterfacesEditor(LibraryInterface* libHandler,
 										 QSharedPointer<Component> component,
 										 QWidget* parent /*= 0*/):
-ItemEditor(component, parent),
+ItemEditor(component, libHandler, parent),
 view_(this),
 proxy_(this),
 model_(libHandler, component, this) {

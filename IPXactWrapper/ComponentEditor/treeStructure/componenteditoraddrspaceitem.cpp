@@ -24,7 +24,7 @@ ComponentEditorItem(model, libHandler, component, parent),
 addrSpace_(addrSpace),
 localMemMap_(addrSpace->getLocalMemoryMap()),
 items_(addrSpace->getLocalMemoryMap()->getItems()),
-editor_(component, addrSpace),
+editor_(component, libHandler, addrSpace),
 graphItem_(NULL),
 localMemMapVisualizer_(new MemoryMapsVisualizer(component)),
 addrSpaceVisualizer_(new AddressSpaceVisualizer(addrSpace, component)) {

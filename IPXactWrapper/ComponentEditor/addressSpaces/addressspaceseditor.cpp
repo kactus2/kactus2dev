@@ -11,8 +11,9 @@
 
 #include <QVBoxLayout>
 
-AddressSpacesEditor::AddressSpacesEditor(QSharedPointer<Component> component):
-ItemEditor(component),
+AddressSpacesEditor::AddressSpacesEditor(QSharedPointer<Component> component,
+										LibraryInterface* handler):
+ItemEditor(component, handler),
 view_(this),
 model_(component, this),
 proxy_(this) {

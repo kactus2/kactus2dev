@@ -12,8 +12,9 @@
 #include <QVBoxLayout>
 
 OtherClockDriversEditor::OtherClockDriversEditor(QSharedPointer<Component> component,
+	LibraryInterface* handler,
 												 QWidget *parent): 
-ItemEditor(component, parent),
+ItemEditor(component, handler, parent),
 view_(this), 
 model_(component, this) {
 

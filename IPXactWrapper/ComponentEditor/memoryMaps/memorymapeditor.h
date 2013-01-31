@@ -17,6 +17,7 @@
 class EditableTableView;
 class MemoryMapModel;
 class MemoryMapProxy;
+class LibraryInterface;
 
 /*! \brief The editor to edit the details of a single memory map.
  *
@@ -35,11 +36,13 @@ public:
 	/*! \brief The constructor
 	 *
 	 * \param component Pointer to the component being edited.
+	 * \param handler Pointer to the instance managing the library.
 	 * \param memoryMap Pointer to the memory map being edited.
 	 * \param parent Pointer to the parent of this editor.
 	 *
 	*/
 	MemoryMapEditor(QSharedPointer<Component> component,
+		LibraryInterface* handler, 
 		QSharedPointer<MemoryMap> memoryMap,
 				QWidget* parent = 0);
 	

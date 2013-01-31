@@ -16,6 +16,7 @@
 
 class EditableTableView;
 class RegisterTableModel;
+class LibraryInterface;
 
 /*! \brief The editor to edit the details of a register within component editor.
  *
@@ -40,6 +41,7 @@ public:
 	*/
 	RegisterEditor(QSharedPointer<Register> reg,
 		QSharedPointer<Component> component,
+		LibraryInterface* handler, 
 		QWidget* parent = 0);
 
 	//! \brief The destructor

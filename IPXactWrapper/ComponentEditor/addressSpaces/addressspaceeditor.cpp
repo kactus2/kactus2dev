@@ -13,9 +13,10 @@
 #include <QWidget>
 
 AddressSpaceEditor::AddressSpaceEditor( QSharedPointer<Component> component, 
+										LibraryInterface* handler,
 									   QSharedPointer<AddressSpace> addrSpace,
 									   QWidget* parent /*= 0*/ ):
-ItemEditor(component, parent),
+ItemEditor(component, handler, parent),
 addrSpace_(addrSpace),
 nameEditor_(addrSpace->getNameGroup(), this),
 general_(addrSpace, this),

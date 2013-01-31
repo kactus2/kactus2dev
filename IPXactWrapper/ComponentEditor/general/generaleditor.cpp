@@ -31,7 +31,7 @@
 GeneralEditor::GeneralEditor(LibraryInterface* libHandler,
 							 QSharedPointer<Component> component,
 							 QWidget *parent):
-ItemEditor(component, parent),
+ItemEditor(component, libHandler, parent),
 vlnvDisplayer_(0),
 attributeEditor_(0),
 descEditor_(NULL),

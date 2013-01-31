@@ -19,7 +19,7 @@ ComponentEditorSystemViewsItem::ComponentEditorSystemViewsItem(
 	ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 systemViews_(component->getSystemViews()),
-editor_(component) {
+editor_(component, libHandler) {
 
 	foreach (QSharedPointer<SystemView> systemView, systemViews_) {
 

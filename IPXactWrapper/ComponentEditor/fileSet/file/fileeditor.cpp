@@ -17,7 +17,7 @@ FileEditor::FileEditor( LibraryInterface* handler,
 					   QSharedPointer<Component> component, 
 					   QSharedPointer<File> file, 
 					   QWidget *parent ):
-ItemEditor(component, parent),
+ItemEditor(component, handler, parent),
 tabs_(this), 
 generalTab_(handler, component, file, &tabs_),
 extraTab_(handler, component, file, &tabs_),

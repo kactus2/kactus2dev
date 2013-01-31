@@ -23,7 +23,7 @@ ComponentEditorRegisterItem::ComponentEditorRegisterItem(QSharedPointer<Register
 ComponentEditorItem(model, libHandler, component, parent),
 reg_(reg),
 fields_(reg->getFields()),
-editor_(new RegisterEditor(reg, component)),
+editor_(new RegisterEditor(reg, component, libHandler)),
 visualizer_(NULL),
 graphItem_(NULL) {
 

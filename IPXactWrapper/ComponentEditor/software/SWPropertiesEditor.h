@@ -19,6 +19,8 @@
 #include <QSortFilterProxyModel>
 #include <QSharedPointer>
 
+class LibraryInterface;
+
 //-----------------------------------------------------------------------------
 //! Editor for SW properties.
 //-----------------------------------------------------------------------------
@@ -27,13 +29,21 @@ class SWPropertiesEditor : public ItemEditor
 	Q_OBJECT
 
 public:
-	/*!
-     *  Constructor.
-     *
-     *      @param [in] dataPointer  The component being edited.
-     *      @param [in] parent       The parent widget.
-     */
-	SWPropertiesEditor(QSharedPointer<Component> component, QWidget *parent);
+	
+	/*! \brief The constructor
+	 *
+	 * Method: 		SWPropertiesEditor
+	 * Full name:	SWPropertiesEditor::SWPropertiesEditor
+	 * Access:		private 
+	 *
+	 * \param component Pointer to the component being edited.
+	 * \param handler Pointer to the instance managing the library.
+	 * \param parent Pointer to the owner of the editor.
+	 *
+	*/
+	SWPropertiesEditor(QSharedPointer<Component> component,
+		LibraryInterface* handler,
+		QWidget *parent = 0);
 	
 	/*!
      *  Destructor.

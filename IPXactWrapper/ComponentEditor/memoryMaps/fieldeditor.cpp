@@ -14,8 +14,9 @@
 
 FieldEditor::FieldEditor(QSharedPointer<Field> field, 
 						 QSharedPointer<Component> component, 
+						 LibraryInterface* handler, 
 						 QWidget* parent /*= 0*/ ):
-ItemEditor(component, parent),
+ItemEditor(component, handler, parent),
 enumView_(new EditableTableView(this)),
 enumProxy_(new QSortFilterProxyModel(this)),
 enumModel_(new EnumeratedValueModel(field, this)),
@@ -32,6 +33,9 @@ writeConstr_(new WriteValueConstraintEditor(field->getWriteConstraint(), tr("Wri
 
 	enumProxy_->setSourceModel(enumModel_);
 	enumView_->setModel(enumProxy_);
+
+	enumView_->setAllowImportExport(true);
+
 	// items can not be dragged
 	enumView_->setItemsDraggable(false);
 	enumView_->setSortingEnabled(true);

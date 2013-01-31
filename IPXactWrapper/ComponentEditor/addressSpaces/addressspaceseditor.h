@@ -14,6 +14,8 @@
 
 #include <QSortFilterProxyModel>
 
+class LibraryInterface;
+
 /*! \brief The editor to add/remove/edit address spaces of component.
  *
  */
@@ -25,9 +27,11 @@ public:
 	/*! \brief The constructor
 	 *
 	 * \param component Pointer to the component being edited.
+	 * \param handler Pointer to the instance managing the library.
 	 *
 	*/
-	AddressSpacesEditor(QSharedPointer<Component> component);
+	AddressSpacesEditor(QSharedPointer<Component> component,
+		LibraryInterface* handler);
 	
 	//! \brief The destructor
 	~AddressSpacesEditor();

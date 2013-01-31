@@ -16,6 +16,8 @@
 #include <QSharedPointer>
 #include <QSortFilterProxyModel>
 
+class LibraryInterface;
+
 /*! \brief The editor to add/remove/edit the API interfaces of a component.
  *
  */
@@ -39,10 +41,12 @@ public:
 	/*! \brief The constructor
 	 *
 	 * \param component Pointer to the component being edited.
+	 * \param handler Pointer to the instance managing the library.
 	 * \param parent Pointer to the parent of this editor.
 	 *
 	*/
 	ApiInterfacesEditor(QSharedPointer<Component> component,
+		LibraryInterface* handler,
 				QWidget* parent = 0);
 	
 	//! \brief The destructor

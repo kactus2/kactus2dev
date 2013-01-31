@@ -13,7 +13,7 @@ ComponentEditorModelParamsItem::ComponentEditorModelParamsItem( ComponentEditorT
 															   ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
 modelParams_(component->getModelParameters()), 
-editor_(component) {
+editor_(component, libHandler) {
 	
 	editor_.hide();
 	connect(&editor_, SIGNAL(contentChanged()),

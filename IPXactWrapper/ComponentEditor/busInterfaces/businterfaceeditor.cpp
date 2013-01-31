@@ -16,7 +16,7 @@ BusInterfaceEditor::BusInterfaceEditor(LibraryInterface* libHandler,
 									   QSharedPointer<Component> component, 
 									   QSharedPointer<BusInterface> busif,
 									   QWidget *parent): 
-ItemEditor(component, parent),
+ItemEditor(component, libHandler, parent),
 busif_(busif),
 tabs_(this), 
 general_(libHandler, busif, component, &tabs_), 

@@ -20,6 +20,7 @@
 #include <QFileDialog>
 #include <QSortFilterProxyModel>
 #include <QAbstractTableModel>
+#include <QApplication>
 
 EditableTableView::EditableTableView(QWidget *parent):
 QTableView(parent),
@@ -31,7 +32,8 @@ pasteAction_(tr("Paste"), this),
 clearAction_(tr("Clear"), this),
 importAction_(tr("Import csv-file"), this),
 exportAction_(tr("Export csv-file"), this),
-itemsDraggable_(true) {
+itemsDraggable_(true),
+impExportable_(false) {
 
 	// cells are resized to match contents 
 	horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
@@ -175,8 +177,11 @@ void EditableTableView::contextMenuEvent( QContextMenuEvent* event ) {
 		menu.addAction(&copyAction_);
 	}
 	menu.addAction(&pasteAction_);
-	menu.addAction(&importAction_);
-	menu.addAction(&exportAction_);
+
+	if (impExportable_) {
+		menu.addAction(&importAction_);
+		menu.addAction(&exportAction_);
+	}
 
 	menu.exec(event->globalPos());
 
@@ -225,6 +230,8 @@ void EditableTableView::onRemoveAction() {
 		return;
 	}
 
+	QApplication::setOverrideCursor(Qt::WaitCursor);
+
 	qSort(indexes);
 	
 	// count how many rows the user wants to remove
@@ -254,6 +261,8 @@ void EditableTableView::onRemoveAction() {
 
 	clearSelection();
 	setCurrentIndex(QModelIndex());
+
+	QApplication::restoreOverrideCursor();
 }
 
 void EditableTableView::setupActions() {
@@ -308,6 +317,8 @@ void EditableTableView::onCopyAction() {
 		return;
 	}
 
+	QApplication::setOverrideCursor(Qt::WaitCursor);
+
 	QModelIndexList indexes = selectedIndexes();
 	qSort(indexes);
 
@@ -334,9 +345,13 @@ void EditableTableView::onCopyAction() {
 	QClipboard* clipBoard = QApplication::clipboard();
 
 	clipBoard->setText(copyText);
+
+	QApplication::restoreOverrideCursor();
 }
 
 void EditableTableView::onPasteAction() {
+
+	QApplication::setOverrideCursor(Qt::WaitCursor);
 
 	// find the highest row to start adding to
 	QModelIndexList indexes = selectedIndexes();
@@ -356,6 +371,21 @@ void EditableTableView::onPasteAction() {
 	// split the string from clip board into rows
 	QStringList rowsToAdd = pasteText.split("\n");
 
+	// the model containing the actual data
+	QAbstractTableModel* origModel = NULL;
+
+	QSortFilterProxyModel* proxyModel = qobject_cast<QSortFilterProxyModel*>(model());
+
+	// if view is connected to proxy model
+	if (proxyModel) {
+		origModel = qobject_cast<QAbstractTableModel*>(proxyModel->sourceModel());
+	}
+	// if view is connected directly to actual model
+	else {
+		origModel = qobject_cast<QAbstractTableModel*>(model());
+	}
+	Q_ASSERT(origModel);
+
 	foreach (QString row, rowsToAdd) {
 
 		if (row.isEmpty()) {
@@ -365,26 +395,21 @@ void EditableTableView::onPasteAction() {
 		// new row starts always on same column
 		int columnCounter = qMax(0, startCol);
 
-		QModelIndex newRow = model()->index(startRow, columnCounter, QModelIndex());
+		QModelIndex newRow = origModel->index(startRow, columnCounter, QModelIndex());
 		emit addItem(newRow);
 
 		// split the row into columns
 		QStringList columnsToAdd = row.split("\t");
 		foreach (QString column, columnsToAdd) {
 
-            // Commenting this fixed the problem with empty columns.
-// 			if (column.isEmpty()) {
-// 				continue;
-// 			}
-
-			QModelIndex itemToSet = model()->index(startRow, columnCounter, QModelIndex());
+			QModelIndex itemToSet = origModel->index(startRow, columnCounter, QModelIndex());
 			// if the index is not valid then the data is written to last item
 			if (!itemToSet.isValid()) {
-				int lastRow = model()->rowCount(QModelIndex()) - 1;
+				int lastRow = origModel->rowCount(QModelIndex()) - 1;
 
-				itemToSet = model()->index(lastRow, columnCounter, QModelIndex());
+				itemToSet = origModel->index(lastRow, columnCounter, QModelIndex());
 			}
-			model()->setData(itemToSet, column, Qt::EditRole);
+			origModel->setData(itemToSet, column, Qt::EditRole);
 			++columnCounter;
 		}
 		
@@ -393,6 +418,8 @@ void EditableTableView::onPasteAction() {
 			++startRow;
 		}
 	}
+
+	QApplication::restoreOverrideCursor();
 }
 
 void EditableTableView::onClearAction() {
@@ -428,6 +455,8 @@ void EditableTableView::onCSVExport( const QString& filePath ) {
 		return;
 	}
 
+	QApplication::setOverrideCursor(Qt::WaitCursor);
+
 	int columnCount = model()->columnCount(QModelIndex());
 	int rowCount = model()->rowCount(QModelIndex());
 
@@ -454,6 +483,8 @@ void EditableTableView::onCSVExport( const QString& filePath ) {
 		stream << endl;
 	}
 	file.close();
+
+	QApplication::restoreOverrideCursor();
 }
 
 void EditableTableView::onCSVImport( const QString& filePath ) {
@@ -478,7 +509,7 @@ void EditableTableView::onCSVImport( const QString& filePath ) {
 		return;
 	}
 
-	int columnCount = model()->columnCount(QModelIndex());
+	QApplication::setOverrideCursor(Qt::WaitCursor);
 
 	// create a stream to read from
 	QTextStream stream(&file);
@@ -501,11 +532,11 @@ void EditableTableView::onCSVImport( const QString& filePath ) {
 	}
 	Q_ASSERT(origModel);
 
+	int columnCount = origModel->columnCount(QModelIndex());
+
 	while (!stream.atEnd()) {
 		QString line = stream.readLine();
 		QStringList columns = line.split(";");
-
-		//qDebug() << "Line: " << line;
 
 		// add a new empty row
 		emit addItem(QModelIndex());
@@ -522,8 +553,14 @@ void EditableTableView::onCSVImport( const QString& filePath ) {
 	}
 
 	file.close();
+
+	QApplication::restoreOverrideCursor();
 }
 
 void EditableTableView::setDefaultImportExportPath( const QString& path ) {
 	defImportExportPath_ = path;
+}
+
+void EditableTableView::setAllowImportExport( bool allow ) {
+	impExportable_ = allow;
 }

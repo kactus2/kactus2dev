@@ -19,6 +19,8 @@
 #include <QSharedPointer>
 #include <QSortFilterProxyModel>
 
+class LibraryInterface;
+
 /*! \brief Widget to edit component's model parameters.
  *
  */
@@ -34,6 +36,7 @@ public:
 	 * 
 	*/
 	ModelParameterEditor(QSharedPointer<Component> component,
+		LibraryInterface* handler, 
 		QWidget *parent = 0);
 
 	//! \brief The destructor

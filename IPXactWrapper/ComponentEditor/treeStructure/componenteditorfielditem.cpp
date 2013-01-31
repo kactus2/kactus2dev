@@ -22,7 +22,7 @@ ComponentEditorFieldItem::ComponentEditorFieldItem(QSharedPointer<Register> reg,
 ComponentEditorItem(model, libHandler, component, parent),
 reg_(reg),
 field_(field),
-editor_(new FieldEditor(field, component)),
+editor_(new FieldEditor(field, component, libHandler)),
 visualizer_(NULL),
 graphItem_(NULL) {
 

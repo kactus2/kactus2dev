@@ -25,7 +25,7 @@ ComponentEditorAddrBlockItem::ComponentEditorAddrBlockItem(QSharedPointer<Addres
 ComponentEditorItem(model, libHandler, component, parent),
 addrBlock_(addrBlock),
 regItems_(addrBlock->getRegisterData()),
-editor_(new AddressBlockEditor(addrBlock, component)),
+editor_(new AddressBlockEditor(addrBlock, component, libHandler)),
 visualizer_(NULL),
 graphItem_(NULL) {
 

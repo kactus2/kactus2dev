@@ -12,8 +12,10 @@
 
 #include <QVBoxLayout>
 
-ParametersEditor::ParametersEditor(QSharedPointer<Component> component, QWidget *parent): 
-ItemEditor(component, parent),
+ParametersEditor::ParametersEditor(QSharedPointer<Component> component,
+	LibraryInterface* handler,
+	QWidget *parent): 
+ItemEditor(component, handler, parent),
 view_(this), 
 model_(component->getParameters(), this), 
 proxy_(NULL) {
@@ -31,6 +33,8 @@ proxy_(NULL) {
 		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+
+	view_.setAllowImportExport(true);
 
 	// set view to be sortable
 	view_.setSortingEnabled(true);

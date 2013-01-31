@@ -14,8 +14,9 @@
 #include <QVBoxLayout>
 
 ModelParameterEditor::ModelParameterEditor(QSharedPointer<Component> component,
+	LibraryInterface* handler, 
 										   QWidget *parent): 
-ItemEditor(component, parent), 
+ItemEditor(component, handler, parent), 
 view_(this),
 model_(component, this),
 proxy_(this) {
@@ -32,6 +33,8 @@ proxy_(this) {
 		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+
+	view_.setAllowImportExport(true);
 
 	// set view to be sortable
 	view_.setSortingEnabled(true);

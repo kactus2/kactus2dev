@@ -13,7 +13,7 @@ ComponentEditorCpusItem::ComponentEditorCpusItem(ComponentEditorTreeModel* model
 												 ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
 cpus_(component->getCpus()),
-editor_(component) {
+editor_(component, libHandler) {
 
 	editor_.hide();
 
