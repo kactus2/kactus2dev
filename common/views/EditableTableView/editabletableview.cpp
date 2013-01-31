@@ -19,8 +19,7 @@
 #include <QTextStream>
 #include <QFileDialog>
 #include <QSortFilterProxyModel>
-
-#include <QDebug>
+#include <QAbstractTableModel>
 
 EditableTableView::EditableTableView(QWidget *parent):
 QTableView(parent),
@@ -416,6 +415,10 @@ void EditableTableView::onCSVExport( const QString& filePath ) {
 			defImportExportPath_, tr("csv-files (*.csv)"));
 	}
 
+	if (target.isEmpty()) {
+		return;
+	}
+
 	QFile file(target);
 
 	// if file can not be opened 
@@ -461,6 +464,10 @@ void EditableTableView::onCSVImport( const QString& filePath ) {
 		target = QFileDialog::getOpenFileName(this, tr("Open file"),
 			defImportExportPath_, tr("csv-files (*.csv)"));
 	}
+
+	if (target.isEmpty()) {
+		return;
+	}
 	
 	QFile file(target);
 
@@ -479,20 +486,38 @@ void EditableTableView::onCSVImport( const QString& filePath ) {
 	// read the headers from the file
 	QString headers = stream.readLine();
 
+	// the model containing the actual data
+	QAbstractTableModel* origModel = NULL;
+
+	QSortFilterProxyModel* proxyModel = qobject_cast<QSortFilterProxyModel*>(model());
+	
+	// if view is connected to proxy model
+	if (proxyModel) {
+		origModel = qobject_cast<QAbstractTableModel*>(proxyModel->sourceModel());
+	}
+	// if view is connected directly to actual model
+	else {
+		origModel = qobject_cast<QAbstractTableModel*>(model());
+	}
+	Q_ASSERT(origModel);
+
 	while (!stream.atEnd()) {
 		QString line = stream.readLine();
 		QStringList columns = line.split(";");
+
+		//qDebug() << "Line: " << line;
 
 		// add a new empty row
 		emit addItem(QModelIndex());
 
 		// data is always added to the last row
-		int rowCount = model()->rowCount(QModelIndex());
+		int rowCount = origModel->rowCount(QModelIndex());
 
 		for (int col = 0; col < columnCount && col < columns.size(); ++col) {
 
-			QModelIndex index = model()->index(rowCount - 1, col, QModelIndex());
-			model()->setData(index, columns.at(col), Qt::EditRole);
+			QModelIndex index = origModel->index(rowCount - 1, col, QModelIndex());
+
+			origModel->setData(index, columns.at(col), Qt::EditRole);
 		}
 	}
 

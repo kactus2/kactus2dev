@@ -110,6 +110,18 @@ public:
 	*/
 	virtual const QString getPath(const VLNV& vlnv) const;
 
+	/*! \brief Get the directory path to the specified IP-XACT document.
+	 *
+	 * Method: 		getDirectoryPath
+	 * Full name:	LibraryInterface::getDirectoryPath
+	 * Access:		virtual public 
+	 *
+	 * \param vlnv Specifies the wanted IP-XACT document.
+	 *
+	 * \return QString containing the directory path to the document. Does not contain the xml file name.
+	*/
+	virtual QString getDirectoryPath(const VLNV& vlnv) const;
+
 	/*! \brief Write the model to file system to given file path
      *
      * This function takes the given directory path and writes the given model to

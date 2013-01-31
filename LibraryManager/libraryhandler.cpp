@@ -568,6 +568,13 @@ const QString LibraryHandler::getPath( const VLNV& vlnv ) const {
 		return data_->getPath(vlnv);
 }
 
+QString LibraryHandler::getDirectoryPath( const VLNV& vlnv ) const {
+	QString path = getPath(vlnv);
+
+	QFileInfo pathInfo(path);
+	return pathInfo.absolutePath();
+}
+
 bool LibraryHandler::writeModelToFile( const QString path, 
 									  QSharedPointer<LibraryComponent> model,
 									  bool printErrors /* = true */) {

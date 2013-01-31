@@ -215,6 +215,7 @@ bool PortsModel::setData( const QModelIndex& index,
 		switch (index.column()) {
 			case PORT_COL_NAME: {
 				table_.at(index.row())->setName(value.toString());
+
 				break;
 					}
 			case PORT_COL_DIRECTION: {
