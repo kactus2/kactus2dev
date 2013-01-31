@@ -206,7 +206,7 @@ Section Uninstall
   RMDir "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef\1.063"
   RMDir "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef"
   RMDir "$INSTDIR\Library\TUT\ip.swp.api"
-  RMDir "$INSTDIR\Library\TUT\global.communication\mcapi\1.0"
+  RMDir "$INSTDIR\Library\TUT\global.communication\mcapi\1.063"
   RMDir "$INSTDIR\Library\TUT\global.communication\mcapi"
   RMDir "$INSTDIR\Library\TUT\global.communication"
   RMDir "$INSTDIR\Library\TUT"
