@@ -99,7 +99,7 @@ void VLNVEditor::setVLNV(VLNV const* vlnv)
     versionEdit_->setText(vlnv->getVersion());
 
     // Update the matcher items.
-    updateLibraryMatcherItem();
+    updateMatcherItems();
 }
 
 void VLNVEditor::setVLNV( const VLNV& vlnv ) {

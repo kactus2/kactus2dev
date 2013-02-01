@@ -10,13 +10,15 @@
 
 #include <models/addressspace.h>
 #include <models/segment.h>
-
+#include <models/component.h>
 #include <common/views/EditableTableView/editabletableview.h>
 #include "segmentsmodel.h"
 #include "segmentproxy.h"
 
 #include <QSharedPointer>
 #include <QGroupBox>
+
+class LibraryInterface;
 
 /*! \brief The editor to edit the segments of an address space.
  *
@@ -29,10 +31,14 @@ public:
 	/*! \brief The constructor
 	 *
 	 * \param addrSpace Pointer to the address space being edited.
+	 * \param component Pointer to the component being edited.
+	 * \param handler Pointer to the instance managing the library.
 	 * \param parent Pointer to the owner of this editor.
 	 *
 	*/
 	SegmentEditor(QSharedPointer<AddressSpace> addrSpace, 
+		QSharedPointer<Component> component,
+		LibraryInterface* handler,
 		QWidget *parent);
 	
 	//! \brief The destructor
@@ -87,6 +93,12 @@ private:
 
 	//! \brief The model that contains the segments.
 	SegmentsModel model_;
+
+	//! \brief Pointer to the component being edited.
+	QSharedPointer<Component> component_;
+
+	//! \brief Pointer to the instance managing the library.
+	LibraryInterface* handler_;
 };
 
 #endif // SEGMENTEDITOR_H

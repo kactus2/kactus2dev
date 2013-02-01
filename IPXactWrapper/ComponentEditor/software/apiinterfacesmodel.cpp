@@ -8,6 +8,7 @@
 #include "apiinterfacesmodel.h"
 #include "apiinterfacesdelegate.h"
 #include <models/ApiInterface.h>
+#include <LibraryManager/vlnv.h>
 
 #include <QColor>
 
@@ -150,7 +151,9 @@ bool ApiInterfacesModel::setData( const QModelIndex& index, const QVariant& valu
 				break;
 													 }
 			case ApiInterfacesDelegate::API_DEF_COLUMN: {
-				return false;
+				VLNV apiDef = VLNV(VLNV::APIDEFINITION, value.toString(), ":");
+				apis_[index.row()]->setApiType(apiDef);
+				break;
 													   }
 			case ApiInterfacesDelegate::DEPENDENCY_COLUMN: {
 				QString text = value.toString();

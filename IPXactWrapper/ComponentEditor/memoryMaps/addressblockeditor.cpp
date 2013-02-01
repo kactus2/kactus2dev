@@ -11,6 +11,7 @@
 #include "addressblockdelegate.h"
 #include <common/widgets/summaryLabel/summarylabel.h>
 #include "addressblockproxy.h"
+#include <LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
 
@@ -35,6 +36,9 @@ model_(new AddressBlockModel(addressBlock, this)) {
 	view_->setModel(proxy_);
 
 	//! \brief Enable import/export csv file
+	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
+	QString defPath = QString("%1/registerList.csv").arg(compPath);
+	view_->setDefaultImportExportPath(defPath);
 	view_->setAllowImportExport(true);
 
 	// items can not be dragged

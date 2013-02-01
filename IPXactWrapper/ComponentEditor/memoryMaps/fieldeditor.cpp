@@ -11,6 +11,7 @@
 #include "enumeratedvaluemodel.h"
 #include "enumeratedvaluedelegate.h"
 #include "writevalueconstrainteditor.h"
+#include <LibraryManager/libraryinterface.h>
 
 FieldEditor::FieldEditor(QSharedPointer<Field> field, 
 						 QSharedPointer<Component> component, 
@@ -34,6 +35,9 @@ writeConstr_(new WriteValueConstraintEditor(field->getWriteConstraint(), tr("Wri
 	enumProxy_->setSourceModel(enumModel_);
 	enumView_->setModel(enumProxy_);
 
+	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
+	QString defPath = QString("%1/enumListing.csv").arg(compPath);
+	enumView_->setDefaultImportExportPath(defPath);
 	enumView_->setAllowImportExport(true);
 
 	// items can not be dragged

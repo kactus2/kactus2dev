@@ -8,6 +8,7 @@
 #include "filesetseditor.h"
 #include "filesetsdelegate.h"
 #include <common/widgets/summaryLabel/summarylabel.h>
+#include <LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
 
@@ -29,6 +30,10 @@ proxy_(this) {
 	proxy_.setSourceModel(&model_);
 
 	view_.setAllowImportExport(true);
+	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
+	QString defPath = QString("%1/fileSetList.csv").arg(compPath);
+	view_.setDefaultImportExportPath(defPath);
+
 	view_.setModel(&proxy_);
 	view_.setItemDelegate(new FileSetsDelegate(this));
 	view_.setColumnWidth(0, FileSetsEditor::NAME_COLUMN_WIDTH);

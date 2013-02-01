@@ -9,6 +9,7 @@
 #include <LibraryManager/libraryinterface.h>
 #include "businterfacesdelegate.h"
 #include <models/generaldeclarations.h>
+#include <LibraryManager/vlnv.h>
 
 #include <QMap>
 #include <QString>
@@ -165,13 +166,17 @@ bool BusInterfacesModel::setData( const QModelIndex& index, const QVariant& valu
 				break;
 												}
 			case BusInterfacesDelegate::BUSDEF_COLUMN: {
-				return false;
+				VLNV busType = VLNV(VLNV::BUSDEFINITION, value.toString(), ":");
+				busifs_[index.row()]->setBusType(busType);
+				break;
 														}
 			case BusInterfacesDelegate::ABSDEF_COLUMN: {
-				return false;
+				VLNV absType = VLNV(VLNV::ABSTRACTIONDEFINITION, value.toString(), ":");
+				busifs_[index.row()]->setAbstractionType(absType);
+				break;
 													 }
 			case BusInterfacesDelegate::IF_MODE_COLUMN: {
-				General::InterfaceMode mode = static_cast<General::InterfaceMode>(value.toInt());
+				General::InterfaceMode mode = General::str2Interfacemode(value.toString(), General::MASTER);
 				busifs_[index.row()]->setInterfaceMode(mode);
 				break;
 														}

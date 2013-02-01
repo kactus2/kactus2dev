@@ -35,6 +35,7 @@ proxy_(this) {
 	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
 	QString defPath = QString("%1/portListing.csv").arg(compPath);
 	view_.setDefaultImportExportPath(defPath);
+	view_.setAllowImportExport(true);
 
 	connect(&importButton_, SIGNAL(clicked(bool)),
 		&view_, SLOT(onCSVImport()), Qt::UniqueConnection);

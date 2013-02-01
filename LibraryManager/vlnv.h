@@ -62,6 +62,19 @@ public:
 	VLNV(const IPXactType &type, const QString &vendor, const QString &library,
 			const QString &name, const QString &version);
 
+	/*! \brief The constructor.
+	 *
+	 * Method: 		VLNV
+	 * Full name:	VLNV::VLNV
+	 * Access:		public 
+	 *
+	 * \param type The document type for the vlnv.
+	 * \param parseStr The string which is parsed to find the different vlnv fields.
+	 * \param separator The character used to separate the different vlnv fields in the string.
+	 *
+	*/
+	VLNV(const IPXactType type, const QString& parseStr, const QString& separator = QString(":"));
+
 	/*! \brief The default constructor
 	 *
 	 * Constructs an invalid VLNV instance.

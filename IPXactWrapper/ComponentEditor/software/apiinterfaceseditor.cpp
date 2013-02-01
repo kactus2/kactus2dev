@@ -8,6 +8,7 @@
 #include "apiinterfaceseditor.h"
 #include <common/widgets/summaryLabel/summarylabel.h>
 #include "apiinterfacesdelegate.h"
+#include <LibraryManager/libraryinterface.h>
 
 ApiInterfacesEditor::ApiInterfacesEditor(QSharedPointer<Component> component, 
 	LibraryInterface* handler, 
@@ -27,6 +28,11 @@ model_(component, this) {
 
 	proxy_.setSourceModel(&model_);
 	view_.setModel(&proxy_);
+
+	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
+	QString defPath = QString("%1/apiIfListing.csv").arg(compPath);
+	view_.setDefaultImportExportPath(defPath);
+	view_.setAllowImportExport(true);
 
 	// items can not be dragged
 	view_.setItemsDraggable(false);

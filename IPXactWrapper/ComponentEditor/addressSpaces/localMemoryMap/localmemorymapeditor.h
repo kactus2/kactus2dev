@@ -9,14 +9,17 @@
 #define LOCALMEMORYMAPEDITOR_H
 
 #include <models/memorymap.h>
+#include <models/component.h>
 
 #include <QGroupBox>
 #include <QSortFilterProxyModel>
+#include <QSharedPointer>
 
 class NameGroupEditor;
 class EditableTableView;
 class MemoryMapModel;
 class MemoryMapProxy;
+class LibraryInterface;
 
 /*! \brief LocalMemoryMapEditor is used to edit a local memory map of an address space.
  *
@@ -29,10 +32,14 @@ public:
 	/*! \brief The constructor.
 	 *
 	 * \param memoryMap Pointer to the local memory map being edited.
+	 * \param component Pointer to the component being edited.
+	 * \param handler Pointer to the instance managing the library.
 	 * \param parent Pointer to the owner of the editor.
 	 *
 	*/
 	LocalMemoryMapEditor(QSharedPointer<MemoryMap> memoryMap,
+		QSharedPointer<Component> component,
+		LibraryInterface* handler,
 		QWidget *parent);
 	
 	//! \brief The destructor.
@@ -80,6 +87,12 @@ private:
 
 	//! \brief The model that manages the items.
 	MemoryMapModel* model_;
+
+	//! \brief Pointer to the component being edited.
+	QSharedPointer<Component> component_;
+
+	//! \brief Pointer to the instance managing the library.
+	LibraryInterface* handler_;
 };
 
 #endif // LOCALMEMORYMAPEDITOR_H

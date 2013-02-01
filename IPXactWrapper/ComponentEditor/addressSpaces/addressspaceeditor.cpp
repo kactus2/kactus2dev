@@ -20,8 +20,8 @@ ItemEditor(component, handler, parent),
 addrSpace_(addrSpace),
 nameEditor_(addrSpace->getNameGroup(), this),
 general_(addrSpace, this),
-segments_(addrSpace, this),
-localMemMap_(addrSpace->getLocalMemoryMap(), this) {
+segments_(addrSpace, component, handler, this),
+localMemMap_(addrSpace->getLocalMemoryMap(), component, handler, this) {
 
 	Q_ASSERT(addrSpace_);
 

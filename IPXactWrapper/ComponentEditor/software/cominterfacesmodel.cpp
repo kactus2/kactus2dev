@@ -182,8 +182,9 @@ bool ComInterfacesModel::setData( const QModelIndex& index, const QVariant& valu
 				break;
 												}
 			case ComInterfacesDelegate::COM_DEF_COLUMN: {
-				Q_ASSERT(false);
-				return false;
+				VLNV comDef = VLNV(VLNV::COMDEFINITION, value.toString(), ":");
+				comIfs_[index.row()]->setComType(comDef);
+				break;
 														}
 			case ComInterfacesDelegate::TRANSFER_TYPE_COLUMN: {
 				comIfs_[index.row()]->setTransferType(value.toString());

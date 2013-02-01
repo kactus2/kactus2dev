@@ -7,6 +7,7 @@
 
 #include "swviewsmodel.h"
 #include "swviewsdelegate.h"
+#include <LibraryManager/vlnv.h>
 
 #include <QColor>
 
@@ -145,8 +146,9 @@ bool SWViewsModel::setData( const QModelIndex& index, const QVariant& value, int
 				break;
 													 }
 			case SWViewsDelegate::HIER_REF_COLUMN: {
-				Q_ASSERT(false);
-				return false;
+				VLNV hierRef = VLNV(VLNV::DESIGNCONFIGURATION, value.toString(), ":");
+				views_[index.row()]->setHierarchyRef(hierRef);
+				break;
 													   }
 			case SWViewsDelegate::DISPLAY_NAME_COLUMN: {
 				views_[index.row()]->setDisplayName(value.toString());

@@ -10,6 +10,7 @@
 #include "usagedelegate.h"
 #include <models/component.h>
 #include <common/widgets/summaryLabel/summarylabel.h>
+#include <LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
 
@@ -34,6 +35,9 @@ proxy_(this) {
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 
+	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
+	QString defPath = QString("%1/modelParamList.csv").arg(compPath);
+	view_.setDefaultImportExportPath(defPath);
 	view_.setAllowImportExport(true);
 
 	// set view to be sortable

@@ -12,17 +12,22 @@
 #include <IPXactWrapper/ComponentEditor/memoryMaps/memorymapdelegate.h>
 #include <common/widgets/summaryLabel/summarylabel.h>
 #include <IPXactWrapper/ComponentEditor/memoryMaps/memorymapproxy.h>
+#include <LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
 
 LocalMemoryMapEditor::LocalMemoryMapEditor(QSharedPointer<MemoryMap> memoryMap,
+	QSharedPointer<Component> component,
+	LibraryInterface* handler,
 										   QWidget *parent):
 QGroupBox(tr("Local memory map"), parent),
 localMemoryMap_(memoryMap),
 nameEditor_(new NameGroupEditor(memoryMap->getNameGroup(), this)),
 view_(new EditableTableView(this)),
 proxy_(new MemoryMapProxy(this)),
-model_(new MemoryMapModel(memoryMap, this)) {
+model_(new MemoryMapModel(memoryMap, this)),
+component_(component),
+handler_(handler) {
 
 	proxy_->setSourceModel(model_);
 	view_->setModel(proxy_);
@@ -32,6 +37,11 @@ model_(new MemoryMapModel(memoryMap, this)) {
 
 	proxy_->setSourceModel(model_);
 	view_->setModel(proxy_);
+
+	const QString compPath = handler_->getDirectoryPath(*component_->getVlnv());
+	QString defPath = QString("%1/localAddrBlockList.csv").arg(compPath);
+	view_->setDefaultImportExportPath(defPath);
+	view_->setAllowImportExport(true);
 
 	// items can not be dragged
 	view_->setItemsDraggable(false);

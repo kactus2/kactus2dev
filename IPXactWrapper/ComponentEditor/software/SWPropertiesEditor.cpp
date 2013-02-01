@@ -13,6 +13,7 @@
 #include <common/widgets/summaryLabel/summarylabel.h>
 #include <IPXactWrapper/ComDefinitionEditor/ComPropertyDelegate.h>
 #include <models/ComProperty.h>
+#include <LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
 
@@ -31,6 +32,11 @@ model_(this)
     filter_.setSourceModel(&model_);
 
     view_.setModel(&filter_);
+
+	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
+	QString defPath = QString("%1/swPropertiesListing.csv").arg(compPath);
+	view_.setDefaultImportExportPath(defPath);
+	view_.setAllowImportExport(true);
     view_.setSortingEnabled(true);
     view_.setItemsDraggable(false);
     view_.setItemDelegate(new ComPropertyDelegate(this));

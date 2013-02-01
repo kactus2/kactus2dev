@@ -10,6 +10,7 @@
 #include "registertablemodel.h"
 #include "registerdelegate.h"
 #include <common/widgets/summaryLabel/summarylabel.h>
+#include <LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
 
@@ -34,6 +35,9 @@ model_(new RegisterTableModel(reg, this)) {
 	view_->setModel(proxy_);
 
 	//! \brief Enable import/export csv file
+	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
+	QString defPath = QString("%1/fieldListing.csv").arg(compPath);
+	view_->setDefaultImportExportPath(defPath);
 	view_->setAllowImportExport(true);
 
 	// items can not be dragged

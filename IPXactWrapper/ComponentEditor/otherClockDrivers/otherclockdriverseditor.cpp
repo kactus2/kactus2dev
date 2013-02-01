@@ -8,6 +8,7 @@
 #include "otherclockdriverseditor.h"
 #include <common/widgets/summaryLabel/summarylabel.h>
 #include "clockdriversdelegate.h"
+#include <LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
 
@@ -30,6 +31,11 @@ model_(component, this) {
 		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+
+	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
+	QString defPath = QString("%1/otherClocksListing.csv").arg(compPath);
+	view_.setDefaultImportExportPath(defPath);
+	view_.setAllowImportExport(true);
 
 	// set view to be sortable
 	view_.setSortingEnabled(true);

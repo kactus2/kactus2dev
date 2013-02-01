@@ -6,17 +6,21 @@
  */
 
 #include "segmenteditor.h"
-
+#include <LibraryManager/libraryinterface.h>
 #include <common/delegates/LineEditDelegate/lineeditdelegate.h>
 
 #include <QVBoxLayout>
 
 SegmentEditor::SegmentEditor(QSharedPointer<AddressSpace> addrSpace, 
+	QSharedPointer<Component> component,
+	LibraryInterface* handler,
 							 QWidget *parent ):
 QGroupBox(tr("Segments"), parent),
 view_(this),
 proxy_(this),
-model_(addrSpace, this) {
+model_(addrSpace, this),
+component_(component),
+handler_(handler) {
 
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -40,6 +44,11 @@ model_(addrSpace, this) {
 		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+
+	const QString compPath = handler_->getDirectoryPath(*component_->getVlnv());
+	QString defPath = QString("%1/segmentList.csv").arg(compPath);
+	view_.setDefaultImportExportPath(defPath);
+	view_.setAllowImportExport(true);
 
 	// set view to be sortable
 	view_.setSortingEnabled(true);
