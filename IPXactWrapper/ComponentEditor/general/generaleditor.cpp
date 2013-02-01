@@ -104,10 +104,10 @@ void GeneralEditor::refresh() {
 	{
 		attributeEditor_->hideAttributes();
 	}
-	connect(attributeEditor_, SIGNAL(contentChanged()),
-		this, SLOT(onAttributesChange()), Qt::UniqueConnection);
 
 	attributeEditor_->setImplementation(component()->getComponentImplementation());
+	connect(attributeEditor_, SIGNAL(contentChanged()),
+		this, SLOT(onAttributesChange()), Qt::UniqueConnection);
 
 	disconnect(descEditor_, SIGNAL(contentChanged()),
 		this, SLOT(onDescriptionChange()));
@@ -116,12 +116,12 @@ void GeneralEditor::refresh() {
 		this, SLOT(onDescriptionChange()), Qt::UniqueConnection);
 
 	disconnect(headerEditor_, SIGNAL(contentChanged()),
-		this, SLOT(onDescriptionChange()));
+		this, SLOT(onHeaderChange()));
 	QStringList comments = component()->getTopComments();
 	QString comment = comments.join("\n");
 	headerEditor_->setDescription(comment);
 	connect(headerEditor_, SIGNAL(contentChanged()),
-		this, SLOT(onDescriptionChange()), Qt::UniqueConnection);
+		this, SLOT(onHeaderChange()), Qt::UniqueConnection);
 }
 
 void GeneralEditor::onAttributesChange() {
