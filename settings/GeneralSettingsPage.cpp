@@ -71,7 +71,7 @@ bool GeneralSettingsPage::validate()
 void GeneralSettingsPage::apply()
 {
     // Save the settings.
-    settings_.setValue("general/username", usernameEdit_->text());
+    settings_.setValue("General/Username", usernameEdit_->text());
 }
 
 //-----------------------------------------------------------------------------

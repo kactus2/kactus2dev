@@ -51,5 +51,4 @@ SettingsDialog::~SettingsDialog()
 void SettingsDialog::accept()
 {
     PropertyPageDialog::accept();
-    settings_.sync();
 }

@@ -201,20 +201,20 @@ void CodeEditorSettingsPage::apply()
     styles_[row].color = colorBox_->getColor();
 
     // Save the settings.
-    settings_.setValue("editor/indentWidth", indentWidthEdit_->text().toInt());
+    settings_.setValue("Editor/IndentWidth", indentWidthEdit_->text().toInt());
     
     if (indentStyleRadioButtons_[INDENT_STYLE_SPACES]->isChecked())
     {
-        settings_.setValue("editor/indentStyle", INDENT_STYLE_SPACES);
+        settings_.setValue("Editor/IndentStyle", INDENT_STYLE_SPACES);
     }
     else
     {
-        settings_.setValue("editor/indentStyle", INDENT_STYLE_TAB);
+        settings_.setValue("Editor/IndentStyle", INDENT_STYLE_TAB);
     }
 
     QFont font = fontCombo_->currentFont();
     font.setPointSize(fontSizeCombo_->currentText().toInt());
-    settings_.setValue("editor/font", QVariant::fromValue(font));
+    settings_.setValue("Editor/Font", QVariant::fromValue(font));
 
     for (int i = 0; i < CSourceHighlighter::STYLE_COUNT; ++i)
     {
