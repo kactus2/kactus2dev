@@ -201,7 +201,7 @@ void MCAPICodeGenerator::generateHeader(QString const& filename, QSharedPointer<
     foreach (QSharedPointer<ComInterface> comIf, component->getComInterfaces())
     {
         if (comIf->getComType().getName().toLower() != "mcapi" ||
-            comIf->getComType().getVersion() != "v1.063")
+            comIf->getComType().getVersion() != "1.063")
         {
             continue;
         }
@@ -242,7 +242,7 @@ void MCAPICodeGenerator::generateHeader(QString const& filename, QSharedPointer<
     foreach (QSharedPointer<ComInterface> comIf, component->getComInterfaces())
     {
         if (comIf->getComType().getName().toLower() != "mcapi" ||
-            comIf->getComType().getVersion() != "v1.063")
+            comIf->getComType().getVersion() != "1.063")
         {
             continue;
         }
@@ -317,7 +317,7 @@ void MCAPICodeGenerator::generateSource(QString const& filename, QSharedPointer<
     foreach (QSharedPointer<ComInterface> comIf, component->getComInterfaces())
     {
         if (comIf->getComType().getName().toLower() != "mcapi" ||
-            comIf->getComType().getVersion() != "v1.063")
+            comIf->getComType().getVersion() != "1.063")
         {
             continue;
         }
@@ -337,7 +337,7 @@ void MCAPICodeGenerator::generateSource(QString const& filename, QSharedPointer<
     foreach (QSharedPointer<ComInterface> comIf, component->getComInterfaces())
     {
         if (comIf->getComType().getName().toLower() != "mcapi" ||
-            comIf->getComType().getVersion() != "v1.063")
+            comIf->getComType().getVersion() != "1.063")
         {
             continue;
         }
@@ -378,7 +378,7 @@ void MCAPICodeGenerator::generateSource(QString const& filename, QSharedPointer<
     foreach (QSharedPointer<ComInterface> comIf, component->getComInterfaces())
     {
         if (comIf->getComType().getName().toLower() != "mcapi" ||
-            comIf->getComType().getVersion() != "v1.063")
+            comIf->getComType().getVersion() != "1.063")
         {
             continue;
         }
@@ -498,7 +498,7 @@ void MCAPICodeGenerator::generateCreateConnectionsFunc(CSourceWriter& writer, QS
     foreach (QSharedPointer<ComInterface> comIf, component->getComInterfaces())
     {
         if (comIf->getComType().getName().toLower() != "mcapi" ||
-            comIf->getComType().getVersion() != "v1.063")
+            comIf->getComType().getVersion() != "1.063")
         {
             continue;
         }
@@ -585,7 +585,7 @@ void MCAPICodeGenerator::generateCloseConnectionsFunc(CSourceWriter& writer, QSh
     foreach (QSharedPointer<ComInterface> comIf, component->getComInterfaces())
     {
         if (comIf->getComType().getName().toLower() != "mcapi" ||
-            comIf->getComType().getVersion() != "v1.063")
+            comIf->getComType().getVersion() != "1.063")
         {
             continue;
         }
@@ -655,7 +655,7 @@ void MCAPICodeGenerator::generateInitializeMCAPIFunc(CSourceWriter& writer, QSha
     foreach (QSharedPointer<ComInterface> comIf, component->getComInterfaces())
     {
         if (comIf->getComType().getName().toLower() != "mcapi" ||
-            comIf->getComType().getVersion() != "v1.063")
+            comIf->getComType().getVersion() != "1.063")
         {
             continue;
         }
@@ -677,7 +677,7 @@ void MCAPICodeGenerator::generateInitializeMCAPIFunc(CSourceWriter& writer, QSha
     foreach (QSharedPointer<ComInterface> comIf, component->getComInterfaces())
     {
         if (comIf->getComType().getName().toLower() != "mcapi" ||
-            comIf->getComType().getVersion() != "v1.063")
+            comIf->getComType().getVersion() != "1.063")
         {
             continue;
         }
