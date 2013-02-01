@@ -92,6 +92,10 @@ visualizerSlot_(&editorVisualizerSplitter_) {
 	// when starting the component editor open the general editor
 	onItemActivated(navigationModel_.index(0, 0, QModelIndex()));
 
+	// navigation model may request an item to be expanded
+	connect(&navigationModel_, SIGNAL(expandItem(const QModelIndex&)),
+		&navigationView_, SLOT(expand(const QModelIndex&)), Qt::UniqueConnection);
+
 	connect(&navigationView_, SIGNAL(activated(const QModelIndex&)),
 		this, SLOT(onItemActivated(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&navigationModel_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),

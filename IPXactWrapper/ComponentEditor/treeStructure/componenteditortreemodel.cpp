@@ -217,6 +217,8 @@ void ComponentEditorTreeModel::addItem( ComponentEditorItem* parentItem, int chi
 	beginInsertRows(parentIndex, childIndex, childIndex);
 	parentItem->createChild(childIndex);
 	endInsertRows();
+
+	emit expandItem(parentIndex);
 }
 
 void ComponentEditorTreeModel::removeItem( ComponentEditorItem* parentItem, int childIndex ) {

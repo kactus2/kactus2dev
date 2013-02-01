@@ -173,6 +173,9 @@ signals:
 	//! \brief Emitted when a tree item with given index should be selected.
 	void selectItem(const QModelIndex& index);
 
+	//! \brief Emitted when an item should be expanded in the navigation view.
+	void expandItem(const QModelIndex& index);
+
 	//! \brief Emitted when a design editor should be opened for given hierarchical view.
 	void openDesign(const VLNV& componentVLNV, const QString& viewName);
 
