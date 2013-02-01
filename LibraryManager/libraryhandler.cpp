@@ -136,8 +136,8 @@ void LibraryHandler::syncronizeModels() {
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 	connect(treeModel_.data(), SIGNAL(openDesign(const VLNV&)),
 		this, SLOT(onOpenDesign(const VLNV&)), Qt::UniqueConnection);
-    connect(treeModel_.data(), SIGNAL(openMemoryDesign(const VLNV&)),
-        this, SLOT(onOpenMemoryDesign(const VLNV&)), Qt::UniqueConnection);
+//     connect(treeModel_.data(), SIGNAL(openMemoryDesign(const VLNV&)),
+//         this, SLOT(onOpenMemoryDesign(const VLNV&)), Qt::UniqueConnection);
     connect(treeModel_.data(), SIGNAL(openSWDesign(const VLNV&)),
         this, SLOT(onOpenSWDesign(const VLNV&)), Qt::UniqueConnection);
     connect(treeModel_.data(), SIGNAL(openSystemDesign(const VLNV&)),

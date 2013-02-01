@@ -434,7 +434,7 @@ void HierarchyView::contextMenuEvent( QContextMenuEvent* event ) {
         }
 		else if (item->type() == HierarchyItem::HW_DESIGN) {
 			menu.addAction(openDesignAction_);
-            menu.addAction(openMemoryDesignAction_);
+            //menu.addAction(openMemoryDesignAction_);
 		}
 		else if (item->type() == HierarchyItem::SW_DESIGN) {
 			menu.addAction(openSWDesignAction_);
