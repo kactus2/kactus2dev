@@ -24,7 +24,7 @@
 // Function: LineContentAssistWidget()
 //-----------------------------------------------------------------------------
 LineContentAssistWidget::LineContentAssistWidget(QLineEdit* parent)
-    : QListWidget(parent),
+    : QListWidget(0),
       m_parent(parent),
       m_matcher(0),
       m_maxVisibleItems(DEFAULT_MAX_VISIBLE_ITEMS),

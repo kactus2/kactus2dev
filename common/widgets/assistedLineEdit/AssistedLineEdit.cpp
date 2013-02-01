@@ -49,6 +49,8 @@ AssistedLineEdit::~AssistedLineEdit()
         removeEventFilter(this);
         mainWnd_->removeEventFilter(this);
     }
+
+    delete contentAssist_;
 }
 
 //-----------------------------------------------------------------------------
