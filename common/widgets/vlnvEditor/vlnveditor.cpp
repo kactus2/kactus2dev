@@ -39,6 +39,8 @@ VLNVEditor::VLNVEditor(VLNV::IPXactType type,
 					   bool compact)
     : QGroupBox(parent),
       type_(type),
+      contentTypes_(),
+      dirty_(false),
       dataTree_(),
       vendorEdit_(0),
       vendorMatcher_(libHandler),
@@ -68,7 +70,7 @@ VLNVEditor::VLNVEditor(VLNV::IPXactType type,
 	setAcceptDrops(true);
 
     // By default, add the VLNV type to edit to the content types.
-    contentTypes_.append(type_);
+    addContentType(type);
 }
 
 //-----------------------------------------------------------------------------
@@ -92,6 +94,8 @@ void VLNVEditor::addContentType(VLNV::IPXactType type)
 //-----------------------------------------------------------------------------
 void VLNVEditor::setVLNV(VLNV const* vlnv)
 {
+    updateFiltering();
+
     // Set the fields according to the VLNV.
     vendorEdit_->setText(vlnv->getVendor());
     libraryEdit_->setText(vlnv->getLibrary());
@@ -404,9 +408,12 @@ void VLNVEditor::setImplementationFilter(bool on, KactusAttribute::Implementatio
 //-----------------------------------------------------------------------------
 void VLNVEditor::updateFiltering()
 {
-    dataTree_.clear();
-    dataTree_.parse(handler_, contentTypes_);
-    dirty_ = false;
+    if (dirty_)
+    {
+        dataTree_.clear();
+        dataTree_.parse(handler_, contentTypes_);
+        dirty_ = false;
+    }
 }
 
 void VLNVEditor::setMandatory( bool mandatory ) {
@@ -430,10 +437,6 @@ void VLNVEditor::setNameExtension(QString const& extension)
 //-----------------------------------------------------------------------------
 void VLNVEditor::showEvent(QShowEvent* event)
 {
-    if (dirty_)
-    {
-        updateFiltering();
-    }
-
+    updateFiltering();
     QGroupBox::showEvent(event);
 }
