@@ -176,7 +176,7 @@ bool BusInterfacesModel::setData( const QModelIndex& index, const QVariant& valu
 				break;
 													 }
 			case BusInterfacesDelegate::IF_MODE_COLUMN: {
-				General::InterfaceMode mode = General::str2Interfacemode(value.toString(), General::MASTER);
+				General::InterfaceMode mode = static_cast<General::InterfaceMode>(value.toInt());
 				busifs_[index.row()]->setInterfaceMode(mode);
 				break;
 														}

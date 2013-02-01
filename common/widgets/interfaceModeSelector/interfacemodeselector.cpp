@@ -43,6 +43,8 @@ void InterfaceModeSelector::initialize() {
 	// mode names can not be edited
 	setEditable(false);
 
+	setSizeAdjustPolicy(QComboBox::AdjustToContents);
+
 	// add all options to the combo box
 	for (unsigned int i = 0; i < General::INTERFACE_MODE_COUNT; ++i) {
 
