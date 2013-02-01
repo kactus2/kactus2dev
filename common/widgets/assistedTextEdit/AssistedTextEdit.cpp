@@ -31,7 +31,7 @@ AssistedTextEdit::AssistedTextEdit(QSharedPointer<ITextContentMatcher> contentMa
       indentWidth_(DEFAULT_INDENT_WIDTH),
       matcher_(contentMatcher)
 {
-    setFont(QFont("Courier", 10));
+    //setFont(QFont("Courier", 10));
     setLineWrapMode(NoWrap);
 
     contentAssist_ = new TextContentAssistWidget(this, contentMatcher);
