@@ -45,6 +45,7 @@ AssistedTextEdit::AssistedTextEdit(QSharedPointer<ITextContentMatcher> contentMa
 //-----------------------------------------------------------------------------
 AssistedTextEdit::~AssistedTextEdit()
 {
+    delete contentAssist_;
 }
 
 //-----------------------------------------------------------------------------

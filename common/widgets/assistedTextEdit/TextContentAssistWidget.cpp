@@ -25,7 +25,7 @@
 //-----------------------------------------------------------------------------
 TextContentAssistWidget::TextContentAssistWidget(QPlainTextEdit* parent,
                                                  QSharedPointer<ITextContentMatcher> matcher) :
-    QListWidget(parent), maxVisibleItems_(DEFAULT_MAX_VISIBLE_ITEMS),
+    QListWidget(0), maxVisibleItems_(DEFAULT_MAX_VISIBLE_ITEMS),
     lastAssistStartPos_(-1), contentFound_(false)
 {
     Q_ASSERT(parent != 0);
