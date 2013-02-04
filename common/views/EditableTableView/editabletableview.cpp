@@ -21,6 +21,9 @@
 #include <QSortFilterProxyModel>
 #include <QAbstractTableModel>
 #include <QApplication>
+#include <QFontMetrics>
+#include <QSize>
+#include <QHeaderView>
 
 EditableTableView::EditableTableView(QWidget *parent):
 QTableView(parent),
@@ -563,4 +566,30 @@ void EditableTableView::setDefaultImportExportPath( const QString& path ) {
 
 void EditableTableView::setAllowImportExport( bool allow ) {
 	impExportable_ = allow;
+}
+
+void EditableTableView::setModel( QAbstractItemModel* model ) {
+	
+	// the base class implementation does most of the work
+	QTableView::setModel(model);
+
+	// contains info on the used font
+	QFontMetrics fMetrics = fontMetrics();
+
+	// set the widths for the columns
+	int columnCount = model->columnCount(QModelIndex());
+	for (int i = 0; i < columnCount - 1; ++i) {
+
+		// the text displayed in the header
+		QString headerText = model->headerData(i, Qt::Horizontal, Qt::DisplayRole).toString();
+
+		// the width required by the contents of the model
+		int contentSize = sizeHintForColumn(i);
+
+		// the width required by the headers of the model
+		int headerSize = horizontalHeader()->sectionSizeHint(i);
+
+		// set the width for the column
+		setColumnWidth(i, qMax(contentSize, headerSize));
+	}
 }

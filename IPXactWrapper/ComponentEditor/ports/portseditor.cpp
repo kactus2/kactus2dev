@@ -22,6 +22,8 @@
 #include <QMessageBox>
 #include <QHeaderView>
 
+#include <QDebug>
+
 PortsEditor::PortsEditor(QSharedPointer<Component> component,
 						 LibraryInterface* handler,
 						 QWidget *parent):
@@ -74,16 +76,20 @@ proxy_(this) {
 	// sort the view
 	view_.sortByColumn(0, Qt::AscendingOrder);
 
-	view_.setColumnWidth(0, 120);
-	view_.setColumnWidth(1, 55);
-	view_.setColumnWidth(2, 50);
-	view_.setColumnWidth(3, 50);
-	view_.setColumnWidth(4, 50);
-	view_.setColumnWidth(5, 100);
-	view_.setColumnWidth(6, 120);
-	view_.setColumnWidth(7, 100);
-	view_.setColumnWidth(8, 150);
-	view_.setColumnWidth(9, 50);
+// 	view_.setColumnWidth(0, 120);
+// 	view_.setColumnWidth(1, 55);
+// 	view_.setColumnWidth(2, 50);
+// 	view_.setColumnWidth(3, 50);
+// 	view_.setColumnWidth(4, 50);
+// 	view_.setColumnWidth(5, 100);
+// 	view_.setColumnWidth(6, 120);
+// 	view_.setColumnWidth(7, 100);
+// 	view_.setColumnWidth(8, 150);
+// 	view_.setColumnWidth(9, 50);
+
+	for (int i = 0; i < 9; ++i) {
+		qDebug() << "Port column " << i << " width: " << view_.columnWidth(i);
+	}
 
 	QHBoxLayout* buttonLayout = new QHBoxLayout();
 	buttonLayout->addWidget(&importButton_, 0, Qt::AlignLeft);

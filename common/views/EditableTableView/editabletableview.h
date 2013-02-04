@@ -51,6 +51,17 @@ public:
 	*/
 	void setAllowImportExport(bool allow);
 
+	/*! \brief Set the model class for this view.
+	 *
+	 * Method: 		setModel
+	 * Full name:	EditableTableView::setModel
+	 * Access:		virtual public 
+	 *
+	 * \param model Pointer to the model class which is displayed by this view.
+	 *
+	*/
+	virtual void setModel(QAbstractItemModel* model);
+
 public slots:
 
 	/*! \brief Set the items in the view to be draggable or not.
