@@ -44,8 +44,6 @@ writeConstr_(new WriteValueConstraintEditor(field->getWriteConstraint(), tr("Wri
 	enumView_->setItemsDraggable(false);
 	enumView_->setSortingEnabled(true);
 	enumView_->setItemDelegate(new EnumeratedValueDelegate(this));
-	enumView_->setColumnWidth(EnumeratedValueDelegate::NAME_COLUMN, 150);
-	enumView_->setColumnWidth(EnumeratedValueDelegate::VALUE_COLUMN, 150);
 
 	connect(enumModel_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);

@@ -40,8 +40,6 @@ model_(component, this) {
 	view_.setItemsDraggable(false);
 
 	view_.setItemDelegate(new SWViewsDelegate(this));
-	view_.setColumnWidth(SWViewsDelegate::NAME_COLUMN, SWViewsEditor::NAME_COLUMN_WIDTH);
-	view_.setColumnWidth(SWViewsDelegate::HIER_REF_COLUMN, SWViewsEditor::HIER_REF_COLUMN_WIDTH);
 
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);

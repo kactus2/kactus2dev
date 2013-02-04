@@ -47,15 +47,6 @@ model_(new RegisterTableModel(reg, this)) {
 
 	view_->setItemDelegate(new RegisterDelegate(this));
 
-	view_->setColumnWidth(RegisterDelegate::NAME_COLUMN, 80);
-	view_->setColumnWidth(RegisterDelegate::DESC_COLUMN, 90);
-	view_->setColumnWidth(RegisterDelegate::OFFSET_COLUMN, 65);
-	view_->setColumnWidth(RegisterDelegate::WIDTH_COLUMN, 65);
-	view_->setColumnWidth(RegisterDelegate::VOLATILE_COLUMN, 75);
-	view_->setColumnWidth(RegisterDelegate::ACCESS_COLUMN, 80);
-	view_->setColumnWidth(RegisterDelegate::MOD_WRITE_COLUMN, 90);
-	view_->setColumnWidth(RegisterDelegate::READ_ACTION_COLUMN, 65);
-	view_->setColumnWidth(RegisterDelegate::TESTABLE_COLUMN, 85);
 	view_->sortByColumn(RegisterDelegate::OFFSET_COLUMN, Qt::AscendingOrder);
 
 	connect(model_, SIGNAL(contentChanged()),

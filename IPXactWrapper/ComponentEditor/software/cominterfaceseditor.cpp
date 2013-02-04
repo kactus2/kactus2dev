@@ -39,10 +39,6 @@ model_(libHandler, component, this) {
 	view_.setItemsDraggable(false);
 
 	view_.setItemDelegate(new ComInterfacesDelegate(this));
-	view_.setColumnWidth(ComInterfacesDelegate::NAME_COLUMN, NAME_COLUMN_WIDTH);
-	view_.setColumnWidth(ComInterfacesDelegate::COM_DEF_COLUMN, COM_DEF_COLUMN_WIDTH);
-	view_.setColumnWidth(ComInterfacesDelegate::TRANSFER_TYPE_COLUMN, TRANSFER_COLUMN_WIDTH);
-	view_.setColumnWidth(ComInterfacesDelegate::DIRECTION_COLUMN, DIRECTION_COLUMN_WIDTH);
 
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);

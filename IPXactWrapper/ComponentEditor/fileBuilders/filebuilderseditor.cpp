@@ -39,11 +39,6 @@ proxy_(this) {
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&view_);
 
-	// set default widths for columns
-	view_.setColumnWidth(0, 170);
-	view_.setColumnWidth(1, 100);
-	view_.setColumnWidth(2, 300);
-
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(errorMessage(const QString&)),

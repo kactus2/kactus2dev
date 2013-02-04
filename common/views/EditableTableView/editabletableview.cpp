@@ -578,7 +578,7 @@ void EditableTableView::setModel( QAbstractItemModel* model ) {
 
 	// set the widths for the columns
 	int columnCount = model->columnCount(QModelIndex());
-	for (int i = 0; i < columnCount - 1; ++i) {
+	for (int i = 0; i < columnCount; ++i) {
 
 		// the width required by the contents of the model
 		int contentSize = sizeHintForColumn(i);
@@ -593,10 +593,7 @@ void EditableTableView::setModel( QAbstractItemModel* model ) {
 		foreach (QString headerLine, headerLines) {
 			headerSize = qMax(headerSize, fMetrics.width(headerLine));
 		}
-		headerSize += 40;
-
-		// the width required by the headers of the model
-		//int headerSize = horizontalHeader()->sectionSizeHint(i);
+		headerSize += 45;
 
 		// set the width for the column
 		setColumnWidth(i, qMax(contentSize, headerSize));

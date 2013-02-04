@@ -37,10 +37,6 @@ addFilesButton_(QIcon(":/icons/graphics/add.png"), tr("Add Files"), this) {
 
 	view_.setModel(&model_);
 
-	view_.setColumnWidth(0, 200);
-	view_.setColumnWidth(1, 300);
-	view_.setColumnWidth(2, 170);
-
 	// the order of files must be maintained
 	view_.setSortingEnabled(false);
 

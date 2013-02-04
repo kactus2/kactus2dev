@@ -40,10 +40,6 @@ model_(handler, component, this) {
 	view_.setItemsDraggable(false);
 
 	view_.setItemDelegate(new BusInterfacesDelegate(this));
-	view_.setColumnWidth(BusInterfacesDelegate::NAME_COLUMN, BusInterfacesEditor::NAME_COLUMN_WIDTH);
-	view_.setColumnWidth(BusInterfacesDelegate::BUSDEF_COLUMN, BusInterfacesEditor::BUS_COLUMN_WIDTH);
-	view_.setColumnWidth(BusInterfacesDelegate::ABSDEF_COLUMN, BusInterfacesEditor::ABS_COLUMN_WIDTH);
-	view_.setColumnWidth(BusInterfacesDelegate::IF_MODE_COLUMN, BusInterfacesEditor::IF_MODE_COLUMN_WIDTH);
 
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);

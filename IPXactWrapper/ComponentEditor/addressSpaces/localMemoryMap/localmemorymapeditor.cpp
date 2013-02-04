@@ -48,13 +48,6 @@ handler_(handler) {
 	view_->setItemDelegate(new MemoryMapDelegate(this));
 	view_->setSortingEnabled(true);
 
-	view_->setColumnWidth(MemoryMapDelegate::USAGE_COLUMN, 80);
-	view_->setColumnWidth(MemoryMapDelegate::NAME_COLUMN, 100);
-	view_->setColumnWidth(MemoryMapDelegate::BASE_COLUMN, 100);
-	view_->setColumnWidth(MemoryMapDelegate::RANGE_COLUMN, 80);
-	view_->setColumnWidth(MemoryMapDelegate::WIDTH_COLUMN, 65);
-	view_->setColumnWidth(MemoryMapDelegate::DESCRIPTION_COLUMN, 100);
-	view_->setColumnWidth(MemoryMapDelegate::ACCESS_COLUMN, 100);
 	view_->sortByColumn(MemoryMapDelegate::BASE_COLUMN, Qt::AscendingOrder);
 
 	connect(nameEditor_, SIGNAL(contentChanged()),

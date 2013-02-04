@@ -38,10 +38,6 @@ model_(component, this) {
 	view_.setItemsDraggable(false);
 
 	view_.setItemDelegate(new ApiInterfacesDelegate(this));
-	view_.setColumnWidth(ApiInterfacesDelegate::NAME_COLUMN, ApiInterfacesEditor::NAME_COLUMN_WIDTH);
-	view_.setColumnWidth(ApiInterfacesDelegate::API_DEF_COLUMN, ApiInterfacesEditor::API_DEF_COLUMN_WIDTH);
-	view_.setColumnWidth(ApiInterfacesDelegate::DEPENDENCY_COLUMN, ApiInterfacesEditor::DEPENDENCY_COLUMN_WIDTH);
-	view_.setColumnWidth(ApiInterfacesDelegate::DISPLAY_NAME_COLUMN, ApiInterfacesEditor::DISPLAY_NAME_COLUMN_WIDTH);
 
 	connect(&model_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
