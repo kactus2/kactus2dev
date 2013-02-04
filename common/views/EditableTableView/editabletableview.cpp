@@ -593,7 +593,7 @@ void EditableTableView::setModel( QAbstractItemModel* model ) {
 		foreach (QString headerLine, headerLines) {
 			headerSize = qMax(headerSize, fMetrics.width(headerLine));
 		}
-		headerSize += 35;
+		headerSize += 40;
 
 		// the width required by the headers of the model
 		//int headerSize = horizontalHeader()->sectionSizeHint(i);
