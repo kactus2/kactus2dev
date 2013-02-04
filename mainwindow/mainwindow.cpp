@@ -3432,7 +3432,7 @@ void MainWindow::changeProtection(bool locked)
 			// ask user if he wants to save the changes made to document
 			QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
 				tr("The document has been modified. The changes need to be saved before the "
-				"document can be locked. Save changes and continue?"),
+				   "document can be locked. Save changes and continue?"),
 				QMessageBox::Yes | QMessageBox::No, this);
 
 			// if user does not want to save or save can't be done
@@ -3486,9 +3486,9 @@ void MainWindow::changeProtection(bool locked)
             // Ask the user if he wants to save and switch locks.
             QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
                 tr("The document is being edited in another tab and "
-                "has unsaved changes. Changes need to be saved "
-                "before this tab can be unlocked. "
-                "Save changes and switch locks?"),
+                   "has unsaved changes. Changes need to be saved "
+                   "before this tab can be unlocked. "
+                   "Save changes and switch locks?"),
                 QMessageBox::Yes | QMessageBox::No, this);
 
             // Restore the lock if the user canceled.

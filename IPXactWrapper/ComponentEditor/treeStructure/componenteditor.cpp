@@ -121,6 +121,8 @@ visualizerSlot_(&editorVisualizerSplitter_) {
 	connect(&navigationModel_, SIGNAL(openSystemDesign(const VLNV&, const QString&)),
 		this, SIGNAL(openSystemDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
 
+    addRelatedVLNV(*component_->getVlnv());
+
 	// Open in unlocked mode by default only if the version is draft.
 	setProtection(component_->getVlnv()->getVersion() != "draft");
 }
@@ -251,6 +253,9 @@ bool ComponentEditor::saveAs() {
 		emit errorMessage(tr("Component was not saved to disk."));
 		return false;
 	}
+
+    clearRelatedVLNVs();
+    addRelatedVLNV(compVLNV);
 }
 
 void ComponentEditor::onNavigationTreeSelection( const QModelIndex& index ) {

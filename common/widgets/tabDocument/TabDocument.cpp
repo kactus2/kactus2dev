@@ -445,7 +445,7 @@ void TabDocument::handleRefreshRequest()
     {
         QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
             tr("Related documents contain modifications that affect this document."
-            "Save changes and refresh?"),
+               "Save changes and refresh?"),
             QMessageBox::Yes | QMessageBox::No, this);
 
         if (msgBox.exec() == QMessageBox::Yes)
