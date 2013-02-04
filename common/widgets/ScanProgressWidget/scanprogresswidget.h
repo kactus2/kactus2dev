@@ -14,7 +14,7 @@
 #include <QLabel>
 #include <QString>
 
-/*! \brief Displays a progress bar and a message of what path is being scanned.
+/*! \brief Displays a progress bar and a message of what is being scanned.
  *
  */
 class ScanProgressWidget : public QDialog {
@@ -40,12 +40,12 @@ public:
 	*/
 	void setRange(int min, int max);
 
-	/*! \brief Set the path being currently scanned.
+	/*! \brief Set the scan message.
 	 *
-	 * \param path The path to be displayed.
+	 * \param message The message to be displayed.
 	 *
 	*/
-	void setPath(const QString& path);
+	void setMessage(const QString& message);
 
 	/*! \brief Set current value for the progress bar.
 	 *
@@ -65,8 +65,8 @@ private:
 	//! \brief The vertical bar to display the progress of scan.
 	QProgressBar progBar_;
 
-	//! \brief Contains the currently scanned path.
-	QLabel pathLabel_;
+	//! \brief Contains the currently scanned message.
+	QLabel messageLabel_;
 };
 
 #endif // SCANPROGRESSWIDGET_H

@@ -4263,7 +4263,7 @@ void MainWindow::registerDocument(TabDocument* doc, bool forceUnlocked)
     connect(doc, SIGNAL(documentSaved(TabDocument*)),
             this, SLOT(onDocumentSaved(TabDocument*)), Qt::UniqueConnection);
 
-    if (forceUnlocked || !isDocumentOpen(doc->getDocumentVLNV()))
+    if (forceUnlocked/* || !isDocumentOpen(doc->getDocumentVLNV())*/)
     {
         doc->setProtection(false);
     }

@@ -9,6 +9,7 @@
 
 #include "vlnv.h"
 #include <models/librarycomponent.h>
+#include <common/widgets/ScanProgressWidget/scanprogresswidget.h>
 
 #include <QObject>
 #include <QModelIndex>
@@ -19,6 +20,7 @@
 #include <QMap>
 #include <QSharedPointer>
 #include <QMainWindow>
+#include <QTimer>
 
 class LibraryHandler;
 
@@ -96,7 +98,7 @@ public:
 	*/
 	void parseLibrary(bool showProgress = true);
 
-	/*! \brief Get a model that matches given VLNV.
+    /*! \brief Get a model that matches given VLNV.
 	 *
 	 * This function can be called to get a model that matches an IP-Xact document.
 	 * 
@@ -133,6 +135,16 @@ signals:
 	void resetModel();
 
 public slots:
+
+    /*!
+     *  Runs one step of the library parse.
+     */
+    void performParseLibraryStep();
+
+    /*!
+     *  Runs one step of the integrity check.
+     */
+    void performIntegrityCheckStep();
 
 	//! \brief Remove the specified VLNV from the library
 	void onRemoveVLNV(const VLNV& vlnv);
@@ -184,6 +196,39 @@ private:
 
 	//! \brief Pointer to the LibraryHandler instance that owns this class.
 	LibraryHandler *handler_;
+
+    //! The progress dialog widget for scans.
+    ScanProgressWidget* progWidget_;
+
+    //! The number of timer steps.
+    int timerSteps_;
+
+    //! The index of the current timer step.
+    int timerStep_;
+
+    //! The timer for scans. 
+    QTimer* timer_;
+
+    //! The location list to scan.
+    QList<QString> locations_;
+
+    //! The iterator for integrity check scan.
+    QMap<VLNV, QString>::iterator iterObjects_;
+
+    //! Number of errors found during the integrity check.
+    int errors_;
+
+    //! Number of failed objects found during the integrity check.
+    int failedObjects_;
+
+    //! Number of syntax errors found during the integrity check.
+    int syntaxErrors_;
+
+    //! Number of VLNV errors found during the integrity check.
+    int vlnvErrors_;
+
+    //! Number of file errors found during the integrity check.
+    int fileErrors_;
 
 };
 

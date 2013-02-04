@@ -10,8 +10,6 @@
 #include "ipxactmodel.h"
 #include "librarytreemodel.h"
 
-#include <common/widgets/ScanProgressWidget/scanprogresswidget.h>
-
 #include <models/librarycomponent.h>
 #include <models/abstractiondefinition.h>
 #include <models/busdefinition.h>
@@ -49,18 +47,27 @@
 #include <QMutableMapIterator>
 #include <QApplication>
 #include <QCoreApplication>
+#include <QTimer>
 
 #include <QDebug>
 
-static const QString KACTUS_LIBRARY_DIRNAME(".kactus2");
-static const QString KACTUS_LIBRARY_FILENAME(".librarySettings.ini");
-
-LibraryData::LibraryData(LibraryHandler* parent, QMainWindow* mainWnd): 
-QObject(parent),
-mainWnd_(mainWnd),
-libraryItems_(),
-handler_(parent) {
-
+LibraryData::LibraryData(LibraryHandler* parent, QMainWindow* mainWnd)
+    : QObject(parent),
+      mainWnd_(mainWnd),
+      libraryItems_(),
+      handler_(parent),
+      progWidget_(0),
+      timerSteps_(0),
+      timerStep_(0),
+      timer_(0),
+      locations_(),
+      iterObjects_(),
+      errors_(0),
+      failedObjects_(0),
+      syntaxErrors_(0),
+      vlnvErrors_(0),
+      fileErrors_(0)
+{
 	connect(this, SIGNAL(errorMessage(const QString&)),
 		parent, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 	connect(this, SIGNAL(noticeMessage(const QString&)),
@@ -184,168 +191,163 @@ void LibraryData::resetLibrary() {
 void LibraryData::checkLibraryIntegrity( bool showProgress /*= true*/ ) {
 
 	int max = libraryItems_.size();
-	int current = 0;
-	int errors = 0;
-	int failedObjects = 0;
-	int syntaxErrors = 0;
-	int vlnvErrors = 0;
-	int fileErrors = 0;
-
-	// create the progress bar that displays the progress of the check
-	QProgressBar progBar;
-	
-	if (showProgress) {
-		progBar.setRange(0, max);
-		progBar.setValue(current);
-		progBar.setOrientation(Qt::Horizontal);
-		progBar.setFormat(tr("Processing item %v of %m (%p%)"));
-		progBar.move(handler_->mapToGlobal(handler_->geometry().topRight()));
-		progBar.setWindowTitle(tr("Checking integrity..."));
-		progBar.show();
-	}
+	errors_ = 0;
+	failedObjects_ = 0;
+	syntaxErrors_ = 0;
+	vlnvErrors_ = 0;
+	fileErrors_ = 0;
 
     emit noticeMessage(tr("------ Library Integrity Check ------"));
-	
-	QMap<VLNV, QString>::iterator i = libraryItems_.begin();
-	while (i != libraryItems_.end()) {
 
-		// in the start assume that document is valid and if errors are 
-		// found the set document as invalid
-		bool wasValid = true;
+	if (showProgress) {
+        timerStep_ = 0;
+        timerSteps_ = max;
+        iterObjects_ = libraryItems_.begin();
 
-		QSharedPointer<LibraryComponent> libComp = getModel(i.key());
+        // create the progress bar that displays the progress of the check
+        progWidget_ = new ScanProgressWidget(mainWnd_);
+        progWidget_->setWindowTitle(tr("Checking integrity..."));
+        progWidget_->setRange(0, max);
+        progWidget_->setMessage(tr("Processing item %1 of %2...").arg(QString::number(timerStep_ + 1),
+                                                                      QString::number(libraryItems_.size())));
+        timer_ = new QTimer(this);
+        connect(timer_, SIGNAL(timeout()), this, SLOT(performIntegrityCheckStep()));
+        timer_->start();
 
-		// if the object could not be parsed
-		if (!libComp) {
+		progWidget_->exec();
+	}
+    else
+    {
+        QMap<VLNV, QString>::iterator i = libraryItems_.begin();
+        while (i != libraryItems_.end()) {
 
-			// remove the pair from the map and move on
-			i = libraryItems_.erase(i);
-			continue;
-		}
+            // in the start assume that document is valid and if errors are 
+            // found the set document as invalid
+            bool wasValid = true;
 
-		// get pointer to the vlnv
-		VLNV vlnv = i.key();
+            QSharedPointer<LibraryComponent> libComp = getModel(i.key());
 
-		// inform the user of the object being processed
+            // if the object could not be parsed
+            if (!libComp) {
 
-		// make sure the file exists
-		QFileInfo topFile(i.value());
-		if (!topFile.exists()) {
-            emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
-			emit errorMessage(tr("The file %1 for the document was not found.").arg(i.value()));
-			++errors;
-			++failedObjects;
-			wasValid = false;
-		}
-
-		// check if the component is valid and if not then print errors of the component
-		QStringList errorList;
-
-		if (!libComp->isValid(errorList))
-        {
-            if (wasValid)
-            {
-                emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
+                // remove the pair from the map and move on
+                i = libraryItems_.erase(i);
+                continue;
             }
 
-			foreach (QString error, errorList) {
-				emit errorMessage(error);
-			}
-			errors += errorList.size();
-			syntaxErrors += errorList.size();
-			
-			// if this was first failed test then increase number of failed items
-			if (wasValid) {
-				++failedObjects;
-				wasValid = false;
-			}
-		}
+            // get pointer to the vlnv
+            VLNV vlnv = i.key();
 
-		// check that all VLNVs needed by this model are found in the library
-		QList<VLNV> vlnvList = libComp->getDependentVLNVs();
+            // inform the user of the object being processed
 
-		for (int j = 0; j < vlnvList.size(); ++j) {
-			// if the document referenced by this model is not found
-			if (!libraryItems_.contains(vlnvList.at(j))) {
-                if (wasValid) {
+            // make sure the file exists
+            QFileInfo topFile(i.value());
+            if (!topFile.exists()) {
+                emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
+                emit errorMessage(tr("The file %1 for the document was not found.").arg(i.value()));
+                ++errors_;
+                ++failedObjects_;
+                wasValid = false;
+            }
+
+            // check if the component is valid and if not then print errors of the component
+            QStringList errorList;
+
+            if (!libComp->isValid(errorList))
+            {
+                if (wasValid)
+                {
                     emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
                 }
 
-				emit errorMessage(
-                    tr("The following dependent VLNV was not found in the library: %1").arg(vlnvList.at(j).toString()));
-				
-				++errors;
-				++vlnvErrors;
+                foreach (QString error, errorList) {
+                    emit errorMessage(error);
+                }
+                errors_ += errorList.size();
+                syntaxErrors_ += errorList.size();
 
-				// if this was first failed test then increase number of failed items
-				if (wasValid) {
-					++failedObjects;
-					wasValid = false;
-				}
-			}
-		}
+                // if this was first failed test then increase number of failed items
+                if (wasValid) {
+                    ++failedObjects_;
+                    wasValid = false;
+                }
+            }
 
-		// check all files referenced by this model
-		QStringList filelist = libComp->getDependentFiles();
-		for (int j = 0; j < filelist.size(); ++j) {
+            // check that all VLNVs needed by this model are found in the library
+            QList<VLNV> vlnvList = libComp->getDependentVLNVs();
 
-			// make sure that each file referenced by the model exists
-			// in the file system
-			QString path = General::getAbsolutePath(i.value(), filelist.at(j));
+            for (int j = 0; j < vlnvList.size(); ++j) {
+                // if the document referenced by this model is not found
+                if (!libraryItems_.contains(vlnvList.at(j))) {
+                    if (wasValid) {
+                        emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
+                    }
 
-			// if the path did not exist
-			if (path.isEmpty()) {
+                    emit errorMessage(
+                        tr("The following dependent VLNV was not found in the library: %1").arg(vlnvList.at(j).toString()));
 
-				// print the relative path because absolute path does not exist
-				path = filelist.at(j);
+                    ++errors_;
+                    ++vlnvErrors_;
 
-				emit errorMessage(
-					tr("\tFile %1 was not found in the file system.").arg(
-					path));
-				
-				++errors;
-				++ fileErrors;
+                    // if this was first failed test then increase number of failed items
+                    if (wasValid) {
+                        ++failedObjects_;
+                        wasValid = false;
+                    }
+                }
+            }
 
-				// if this was first failed test then increase number of failed items
-				if (wasValid) {
-					++failedObjects;
-					wasValid = false;
-				}
-			}
-		}
+            // check all files referenced by this model
+            QStringList filelist = libComp->getDependentFiles();
+            for (int j = 0; j < filelist.size(); ++j) {
 
-		// update the progress bar
-		++current;
-		progBar.setValue(current);
+                // make sure that each file referenced by the model exists
+                // in the file system
+                QString path = General::getAbsolutePath(i.value(), filelist.at(j));
 
-		++i;
-	}
+                // if the path did not exist
+                if (path.isEmpty()) {
 
-	if (showProgress) {
-		// the progress bar can now be hidden
-		progBar.hide();
-	}
+                    // print the relative path because absolute path does not exist
+                    path = filelist.at(j);
 
+                    emit errorMessage(
+                        tr("\tFile %1 was not found in the file system.").arg(
+                        path));
+
+                    ++errors_;
+                    ++fileErrors_;
+
+                    // if this was first failed test then increase number of failed items
+                    if (wasValid) {
+                        ++failedObjects_;
+                        wasValid = false;
+                    }
+                }
+            }
+
+            ++i;
+        }
+
+        // inform tree model that it needs to reset model also
+        emit resetModel();
+    }
+	
 	emit noticeMessage(
         tr("========== Library integrity check complete: found %1 errors within %2 item(s) ==========").arg(
-		errors).arg(failedObjects));
+		errors_).arg(failedObjects_));
 	
 	// if errors were found then print the summary of error types
-	if (errors > 0) {
-		emit noticeMessage(tr("Structural errors within item(s): %1").arg(syntaxErrors));
-		emit noticeMessage(tr("Invalid VLNV references: %1").arg(vlnvErrors));
-		emit noticeMessage(tr("Invalid file references: %1\n").arg(fileErrors));
+	if (errors_ > 0) {
+		emit noticeMessage(tr("Structural errors within item(s): %1").arg(syntaxErrors_));
+		emit noticeMessage(tr("Invalid VLNV references: %1").arg(vlnvErrors_));
+		emit noticeMessage(tr("Invalid file references: %1\n").arg(fileErrors_));
 	}
-
-	// inform tree model that it needs to reset model also
-	emit resetModel();
 }
 
 void LibraryData::parseLibrary( bool showProgress /*= true*/ ) {
 	
-	QApplication::setOverrideCursor(Qt::WaitCursor);
-
-    Q_ASSERT(_CrtCheckMemory());
+	Q_ASSERT(_CrtCheckMemory());
 
 	// clear the previous items in the library
 	libraryItems_.clear();
@@ -356,46 +358,46 @@ void LibraryData::parseLibrary( bool showProgress /*= true*/ ) {
 	QStringList locations = settings.value("Library/Locations", QStringList()).toStringList();
 
 	// create the progress bar that displays the progress of the scan
-	ScanProgressWidget progWidget(mainWnd_);
-	int current = 1;
-
 	if (showProgress) {
-		progWidget.setRange(0, locations.size());
+        progWidget_ = new ScanProgressWidget(mainWnd_);
+        progWidget_->setRange(0, locations.size());
+        progWidget_->setMessage("Scanning location: \n" + locations.first());
+        timerStep_ = 0;
+        timerSteps_ = locations.size();
+        locations_ = locations;
+
 		//progWidget.move(handler_->mapToGlobal(handler_->geometry().topRight()));
-		progWidget.show();
+		timer_ = new QTimer(this);
+        connect(timer_, SIGNAL(timeout()), this, SLOT(performParseLibraryStep()));
+        timer_->start();
+
+        progWidget_->exec();
 	}
+    else
+    {
+        QApplication::setOverrideCursor(Qt::WaitCursor);
 
-	// search each directory
-	foreach (QString location, locations) {
-		QFileInfo locationInfo(location);
+        foreach (QString const& location, locations)
+        {
+            QFileInfo locationInfo(location);
 
-		progWidget.setPath(location);
-		progWidget.setValue(current);
+            // if the location is a directory
+            if (locationInfo.isDir())
+            {
+                parseDirectory(location);
+            }
+            // if the location is a direct file
+            else if (locationInfo.isFile())
+            {
+                parseFile(location);
+            }
+        }
 
-		// if the location is a directory
-		if (locationInfo.isDir()) {
-			parseDirectory(location);
-		}
-		// if the location is a direct file
-		else if (locationInfo.isFile()) {
-			parseFile(location);
-		}
-		
-		// update the progress bar
-		++current;
-	}
+        QApplication::restoreOverrideCursor();
+    }
 
-	if (showProgress) {
-		progWidget.hide();
-	}
-
-	// repaint so the progWidget disappears
-	handler_->repaint();
-
-	// check the integrity of the items in the library
+    // check the integrity of the items in the library
 	checkLibraryIntegrity(showProgress);
-
-	QApplication::restoreOverrideCursor();
 }
 
 void LibraryData::parseDirectory( const QString& directoryPath ) {
@@ -577,4 +579,198 @@ QSharedPointer<LibraryComponent> LibraryData::getModel( const VLNV& vlnv ) {
 	}
 
 	return libComp;
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryData::performParseLibrary()
+//-----------------------------------------------------------------------------
+void LibraryData::performParseLibraryStep()
+{
+    if (timerStep_ == timerSteps_)
+    {
+        return;
+    }
+
+    QString location = locations_.at(timerStep_);
+    QFileInfo locationInfo(location);
+
+    // if the location is a directory
+    if (locationInfo.isDir())
+    {
+        parseDirectory(location);
+    }
+    // if the location is a direct file
+    else if (locationInfo.isFile())
+    {
+        parseFile(location);
+    }
+
+    ++timerStep_;
+
+    // Check if all steps have been completed.
+    if (timerStep_ == timerSteps_)
+    {
+        timer_->stop();
+        delete timer_;
+        delete progWidget_;
+    }
+    else
+    {
+        // Update the value and message for the next round.
+        progWidget_->setMessage("Scanning location: \n" + locations_.at(timerStep_));
+        progWidget_->setValue(timerStep_ + 1);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryData::performIntegrityCheckStep()
+//-----------------------------------------------------------------------------
+void LibraryData::performIntegrityCheckStep()
+{
+    if (timerSteps_ > timerSteps_)
+    {
+        return;
+    }
+
+    // in the start assume that document is valid and if errors are 
+    // found the set document as invalid
+    bool wasValid = true;
+
+    if (timerStep_ < timerSteps_)
+    {
+        QSharedPointer<LibraryComponent> libComp = getModel(iterObjects_.key());
+
+        // if the object could not be parsed
+        if (!libComp) {
+
+            // remove the pair from the map and move on
+            libraryItems_.erase(iterObjects_);
+        }
+        else
+        {
+            // get pointer to the vlnv
+            VLNV vlnv = iterObjects_.key();
+
+            // inform the user of the object being processed
+
+            // make sure the file exists
+            QFileInfo topFile(iterObjects_.value());
+            if (!topFile.exists()) {
+                emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
+                emit errorMessage(tr("The file %1 for the document was not found.").arg(iterObjects_.value()));
+                ++errors_;
+                ++failedObjects_;
+                wasValid = false;
+            }
+
+            // check if the component is valid and if not then print errors of the component
+            QStringList errorList;
+
+            if (!libComp->isValid(errorList))
+            {
+                if (wasValid)
+                {
+                    emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
+                }
+
+                foreach (QString error, errorList) {
+                    emit errorMessage(error);
+                }
+                errors_ += errorList.size();
+                syntaxErrors_ += errorList.size();
+
+                // if this was first failed test then increase number of failed items
+                if (wasValid) {
+                    ++failedObjects_;
+                    wasValid = false;
+                }
+            }
+
+            // check that all VLNVs needed by this model are found in the library
+            QList<VLNV> vlnvList = libComp->getDependentVLNVs();
+
+            for (int j = 0; j < vlnvList.size(); ++j) {
+                // if the document referenced by this model is not found
+                if (!libraryItems_.contains(vlnvList.at(j))) {
+                    if (wasValid) {
+                        emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
+                    }
+
+                    emit errorMessage(
+                        tr("The following dependent VLNV was not found in the library: %1").arg(vlnvList.at(j).toString()));
+
+                    ++errors_;
+                    ++vlnvErrors_;
+
+                    // if this was first failed test then increase number of failed items
+                    if (wasValid) {
+                        ++failedObjects_;
+                        wasValid = false;
+                    }
+                }
+            }
+
+            // check all files referenced by this model
+            QStringList filelist = libComp->getDependentFiles();
+            for (int j = 0; j < filelist.size(); ++j) {
+
+                // make sure that each file referenced by the model exists
+                // in the file system
+                QString path = General::getAbsolutePath(iterObjects_.value(), filelist.at(j));
+
+                // if the path did not exist
+                if (path.isEmpty()) {
+
+                    // print the relative path because absolute path does not exist
+                    path = filelist.at(j);
+
+                    emit errorMessage(
+                        tr("\tFile %1 was not found in the file system.").arg(
+                        path));
+
+                    ++errors_;
+                    ++fileErrors_;
+
+                    // if this was first failed test then increase number of failed items
+                    if (wasValid) {
+                        ++failedObjects_;
+                        wasValid = false;
+                    }
+                }
+            }
+
+            ++iterObjects_;
+        }
+    }
+    else
+    {
+        // inform tree model that it needs to reset model also
+        emit resetModel();
+    }
+
+    ++timerStep_;
+
+    // Update the message and value for the next round.
+    if (timerStep_ < timerSteps_)
+    {
+        progWidget_->setMessage(tr("Processing item %1 of %2...").arg(QString::number(timerStep_ + 1),
+                                                                      QString::number(libraryItems_.size())));
+    }
+    else
+    {
+        progWidget_->setMessage(tr("Updating library view..."));
+    }
+
+    progWidget_->setValue(timerStep_);
+
+    // Check if all steps have been completed.
+    if (timerStep_ > timerSteps_)
+    {
+        timer_->stop();
+        delete timer_;
+        timer_ = 0;
+
+        delete progWidget_;
+        progWidget_ = 0;
+    }
 }
