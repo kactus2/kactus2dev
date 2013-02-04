@@ -580,14 +580,23 @@ void EditableTableView::setModel( QAbstractItemModel* model ) {
 	int columnCount = model->columnCount(QModelIndex());
 	for (int i = 0; i < columnCount - 1; ++i) {
 
-		// the text displayed in the header
-		QString headerText = model->headerData(i, Qt::Horizontal, Qt::DisplayRole).toString();
-
 		// the width required by the contents of the model
 		int contentSize = sizeHintForColumn(i);
 
+		// get the header for the section
+		QString headerText = model->headerData(i, Qt::Horizontal, Qt::DisplayRole).toString();
+		// if the header contains several lines
+		QStringList headerLines = headerText.split("\n", QString::SkipEmptyParts);
+		int headerSize = 0;
+
+		// find the line that needs most space
+		foreach (QString headerLine, headerLines) {
+			headerSize = qMax(headerSize, fMetrics.width(headerLine));
+		}
+		headerSize += 35;
+
 		// the width required by the headers of the model
-		int headerSize = horizontalHeader()->sectionSizeHint(i);
+		//int headerSize = horizontalHeader()->sectionSizeHint(i);
 
 		// set the width for the column
 		setColumnWidth(i, qMax(contentSize, headerSize));
