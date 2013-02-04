@@ -25,6 +25,7 @@ GraphicsColumnLayout::GraphicsColumnLayout(QGraphicsScene* scene)
       columns_(),
       layoutWidth_(0.0),
       offsetY_(0),
+      autoReorganized_(false),
       autoCreateColumnFunc_(0)
 {
 }
