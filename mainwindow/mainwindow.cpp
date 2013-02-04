@@ -2778,14 +2778,7 @@ void MainWindow::openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool di
 		editor = new BusEditor(this, libraryHandler_, busDef);
 	}
 
-    registerDocument(editor);
-
-	if (forceUnlocked)
-	{
-		editor->setProtection(false);
-	}
-
-	editor->setTabWidget(designTabs_);
+    registerDocument(editor, forceUnlocked);
 }
 
 //-----------------------------------------------------------------------------
@@ -2864,36 +2857,8 @@ void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forc
 	}
 
 	HWDesignWidget* designWidget = new HWDesignWidget(libraryHandler_, this);
-	registerDocument(designWidget);
-
-	connect(designWidget, SIGNAL(zoomChanged()), this, SLOT(updateZoomTools()), Qt::UniqueConnection);
-	connect(designWidget, SIGNAL(modeChanged(DrawMode)),
-		this, SLOT(onDrawModeChanged(DrawMode)), Qt::UniqueConnection);
-
-	connect(designWidget, SIGNAL(destroyed(QObject*)),
-		this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
-
-	connect(designWidget, SIGNAL(openDesign(const VLNV&, const QString&)),
-		this, SLOT(openDesign(const VLNV&, const QString&)));
-	connect(designWidget, SIGNAL(openComponent(const VLNV&)),
-		this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
-	connect(designWidget, SIGNAL(openBus(VLNV const&, VLNV const&, bool)),
-		this, SLOT(openBus(VLNV const&, VLNV const&, bool)), Qt::UniqueConnection);
-
-	connect(designWidget, SIGNAL(clearItemSelection()),
-		libraryHandler_, SLOT(onClearSelection()), Qt::UniqueConnection);
-
-	connect(designWidget, SIGNAL(componentSelected(ComponentItem*)),
-		this, SLOT(onComponentSelected(ComponentItem*)), Qt::UniqueConnection);
-	connect(designWidget, SIGNAL(interfaceSelected(ConnectionEndpoint*)),
-		this, SLOT(onInterfaceSelected(ConnectionEndpoint*)), Qt::UniqueConnection);
-	connect(designWidget, SIGNAL(connectionSelected(GraphicsConnection*)),
-		this, SLOT(onConnectionSelected(GraphicsConnection*)), Qt::UniqueConnection);
-
-	connect(designWidget, SIGNAL(clearItemSelection()),
-		this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
-
-	// open the design in the designWidget
+	
+    // open the design in the designWidget
 	designWidget->setDesign(vlnv, viewName);
 
 	// if the design could not be opened
@@ -2902,17 +2867,34 @@ void MainWindow::openDesign(const VLNV& vlnv, const QString& viewName, bool forc
 		return;
 	}
 
-	if (forceUnlocked)
-	{
-		designWidget->setProtection(false);
-	}
-	else 
-	{
-		// Open in unlocked mode by default only if the version is draft.
-		designWidget->setProtection(vlnv.getVersion() != "draft");
-	}
+    connect(designWidget, SIGNAL(zoomChanged()), this, SLOT(updateZoomTools()), Qt::UniqueConnection);
+    connect(designWidget, SIGNAL(modeChanged(DrawMode)),
+        this, SLOT(onDrawModeChanged(DrawMode)), Qt::UniqueConnection);
 
-	designWidget->setTabWidget(designTabs_);
+    connect(designWidget, SIGNAL(destroyed(QObject*)),
+        this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
+
+    connect(designWidget, SIGNAL(openDesign(const VLNV&, const QString&)),
+        this, SLOT(openDesign(const VLNV&, const QString&)));
+    connect(designWidget, SIGNAL(openComponent(const VLNV&)),
+        this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
+    connect(designWidget, SIGNAL(openBus(VLNV const&, VLNV const&, bool)),
+        this, SLOT(openBus(VLNV const&, VLNV const&, bool)), Qt::UniqueConnection);
+
+    connect(designWidget, SIGNAL(clearItemSelection()),
+        libraryHandler_, SLOT(onClearSelection()), Qt::UniqueConnection);
+
+    connect(designWidget, SIGNAL(componentSelected(ComponentItem*)),
+        this, SLOT(onComponentSelected(ComponentItem*)), Qt::UniqueConnection);
+    connect(designWidget, SIGNAL(interfaceSelected(ConnectionEndpoint*)),
+        this, SLOT(onInterfaceSelected(ConnectionEndpoint*)), Qt::UniqueConnection);
+    connect(designWidget, SIGNAL(connectionSelected(GraphicsConnection*)),
+        this, SLOT(onConnectionSelected(GraphicsConnection*)), Qt::UniqueConnection);
+
+    connect(designWidget, SIGNAL(clearItemSelection()),
+        this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
+
+    registerDocument(designWidget, forceUnlocked);
 }
 
 //-----------------------------------------------------------------------------
@@ -2991,7 +2973,15 @@ void MainWindow::openMemoryDesign(const VLNV& vlnv, const QString& viewName, boo
     }
 
     MemoryDesignWidget* designWidget = new MemoryDesignWidget(libraryHandler_, this);
-    registerDocument(designWidget);
+    
+    // open the design in the designWidget
+    designWidget->setDesign(vlnv, viewName);
+
+    // if the design could not be opened
+    if (!designWidget->getOpenDocument()) {
+        delete designWidget;
+        return;
+    }
 
     connect(designWidget, SIGNAL(zoomChanged()), this, SLOT(updateZoomTools()), Qt::UniqueConnection);
     connect(designWidget, SIGNAL(modeChanged(DrawMode)),
@@ -3006,26 +2996,7 @@ void MainWindow::openMemoryDesign(const VLNV& vlnv, const QString& viewName, boo
     connect(designWidget, SIGNAL(clearItemSelection()),
         this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
 
-    // open the design in the designWidget
-    designWidget->setDesign(vlnv, viewName);
-
-    // if the design could not be opened
-    if (!designWidget->getOpenDocument()) {
-        delete designWidget;
-        return;
-    }
-
-    if (forceUnlocked)
-    {
-        designWidget->setProtection(false);
-    }
-    else 
-    {
-        // Open in unlocked mode by default only if the version is draft.
-        designWidget->setProtection(vlnv.getVersion() != "draft");
-    }
-
-    designWidget->setTabWidget(designTabs_);
+    registerDocument(designWidget, forceUnlocked);
 }
 
 //-----------------------------------------------------------------------------
@@ -3055,14 +3026,6 @@ void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName, bool fo
 		return;
 	}
 
-	if (forceUnlocked)
-	{
-		designWidget->setProtection(false);
-	}
-
-	designWidget->setTabWidget(designTabs_);
-	registerDocument(designWidget);
-
 	connect(designWidget, SIGNAL(openComponent(const VLNV&)),
 		this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(openSWDesign(const VLNV&, const QString&)),
@@ -3088,6 +3051,8 @@ void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName, bool fo
 		this, SLOT(onDrawModeChanged(DrawMode)), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(modifiedChanged(bool)),
 		actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
+
+    registerDocument(designWidget, forceUnlocked);
 }
 
 //-----------------------------------------------------------------------------
@@ -3120,14 +3085,6 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName, boo
 		return;
 	}
 
-	if (forceUnlocked)
-	{
-		designWidget->setProtection(false);
-	}
-
-	designWidget->setTabWidget(designTabs_);
-    registerDocument(designWidget);
-
 	connect(designWidget, SIGNAL(openComponent(const VLNV&)),
 		this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(openSWDesign(const VLNV&, const QString&)),
@@ -3153,6 +3110,8 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName, boo
 		this, SLOT(onDrawModeChanged(DrawMode)), Qt::UniqueConnection);
 	connect(designWidget, SIGNAL(modifiedChanged(bool)),
 		actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
+
+    registerDocument(designWidget, forceUnlocked);
 
 	QApplication::restoreOverrideCursor();
 }
@@ -3194,15 +3153,7 @@ void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
 	QString styleSheet("*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
 	editor->setStyleSheet(styleSheet);
 
-	if (forceUnlocked)
-	{
-		editor->setProtection(false);
-	}
-
-	editor->setTabWidget(designTabs_);
-    registerDocument(editor);
-
-    connect(editor, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)),
+	connect(editor, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)),
             this , SLOT(openCSource(QString const&, QSharedPointer<Component>)), Qt::UniqueConnection);
 	connect(editor, SIGNAL(openDesign(const VLNV&, const QString&)),
 		this, SLOT(openDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
@@ -3214,6 +3165,8 @@ void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
 		this, SLOT(openSWDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
 	connect(editor, SIGNAL(openSystemDesign(const VLNV&, const QString&)),
 		this, SLOT(openSystemDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
+
+    registerDocument(editor, forceUnlocked);
 
 	QApplication::restoreOverrideCursor();
 }
@@ -3252,14 +3205,7 @@ void MainWindow::openComDefinition(VLNV const& vlnv, bool forceUnlocked /*= fals
     }
 
     ComDefinitionEditor* editor = new ComDefinitionEditor(this, libraryHandler_, comDef);
-    
-    if (forceUnlocked)
-    {
-        editor->setProtection(false);
-    }
-
-    editor->setTabWidget(designTabs_);
-    registerDocument(editor);
+    registerDocument(editor, forceUnlocked);
 }
 
 
@@ -3297,17 +3243,10 @@ void MainWindow::openApiDefinition(VLNV const& vlnv, bool forceUnlocked /*= fals
     }
 
     ApiDefinitionEditor* editor = new ApiDefinitionEditor(this, libraryHandler_, apiDef);
-    registerDocument(editor);
-
-    if (forceUnlocked)
-    {
-        editor->setProtection(false);
-    }
-
-    editor->setTabWidget(designTabs_);
+    registerDocument(editor, forceUnlocked);
 }
 
-bool MainWindow::isOpen( const VLNV& vlnv ) {
+bool MainWindow::isOpen( const VLNV& vlnv ) const {
 	if (!vlnv.isValid()) {
 		return false;
 	}
@@ -3324,6 +3263,30 @@ bool MainWindow::isOpen( const VLNV& vlnv ) {
 	// document was not open
 	return false;
 }
+
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::isDocumentOpen()
+//-----------------------------------------------------------------------------
+bool MainWindow::isDocumentOpen(VLNV const& vlnv) const
+{
+    if (!vlnv.isValid()) {
+        return false;
+    }
+
+    for (int i = 0; i < designTabs_->count(); i++) {
+        TabDocument* document = dynamic_cast<TabDocument*>(designTabs_->widget(i));
+
+        // if the document is already open is some tab
+        if (document && document->getDocumentVLNV() == vlnv) {
+            designTabs_->setCurrentIndex(i);
+            return true;
+        }
+    }
+    // document was not open
+    return false;
+}
+
 
 //-----------------------------------------------------------------------------
 // Function: openCSource()
@@ -4225,7 +4188,7 @@ void MainWindow::refresh()
 //-----------------------------------------------------------------------------
 // Function: MainWindow::isDesignOpen()
 //-----------------------------------------------------------------------------
-bool MainWindow::isDesignOpen(VLNV const& vlnv, KactusAttribute::Implementation implementation)
+bool MainWindow::isDesignOpen(VLNV const& vlnv, KactusAttribute::Implementation implementation) const
 {
     if (vlnv.isValid())
     {
@@ -4280,7 +4243,7 @@ QWidget* MainWindow::getParentWidget()
 //-----------------------------------------------------------------------------
 // Function: MainWindow::registerDocument()
 //-----------------------------------------------------------------------------
-void MainWindow::registerDocument(TabDocument* doc)
+void MainWindow::registerDocument(TabDocument* doc, bool forceUnlocked)
 {
     connect(doc, SIGNAL(errorMessage(const QString&)),
         console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
@@ -4299,6 +4262,18 @@ void MainWindow::registerDocument(TabDocument* doc)
     connect(doc, SIGNAL(modifiedChanged(bool)), actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
     connect(doc, SIGNAL(documentSaved(TabDocument*)),
             this, SLOT(onDocumentSaved(TabDocument*)), Qt::UniqueConnection);
+
+    if (forceUnlocked || !isDocumentOpen(doc->getDocumentVLNV()))
+    {
+        doc->setProtection(false);
+    }
+    else
+    {
+        // Open in unlocked mode by default only if the version is draft.
+        doc->setProtection(doc->getDocumentVLNV().getVersion() != "draft");
+    }
+
+    doc->setTabWidget(designTabs_);
 }
 
 //-----------------------------------------------------------------------------

@@ -519,18 +519,19 @@ private:
     /*!
      *  Registers a tab document (connects common signals etc.).
      *
-     *      @param [in] doc The document to register.
+     *      @param [in] doc            The document to register.
+     *      @param [in] forceUnlocked  If true the document is initially unlocked.
      */
-    void registerDocument(TabDocument* doc);
+    void registerDocument(TabDocument* doc, bool forceUnlocked);
 
     /*!
      *  Returns true if a design with the given vlnv is already open.
      *
      *      @remarks If the design is already open, it is displayed.
      */
-    bool isDesignOpen(VLNV const& vlnv, KactusAttribute::Implementation implementation);
+    bool isDesignOpen(VLNV const& vlnv, KactusAttribute::Implementation implementation) const;
 
-	/*!
+    /*!
      *  Restores the program's settings.
 	 */
 	void restoreSettings();
@@ -617,7 +618,17 @@ private:
 	 * 
 	 * \return True if the document was already open in some tab.
 	*/
-	bool isOpen(const VLNV& vlnv);
+	bool isOpen(const VLNV& vlnv) const;
+
+    /*! \brief Check if a document with the given vlnv is already open in some tab.
+	 *
+	 * \param vlnv The vlnv that identifies the document.
+	 * 
+	 * \remark If a document with given vlnv is open then the tab is selected.
+	 * 
+	 * \return True if the document was already open in some tab.
+	*/
+	bool isDocumentOpen(VLNV const& vlnv) const;
 
 	//! \brief The instance that manages the IP-Xact library
     LibraryHandler *libraryHandler_;
