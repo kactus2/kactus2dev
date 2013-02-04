@@ -11,8 +11,9 @@
 #include <IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h>
 #include <common/graphicsItems/visualizeritem.h>
 #include <common/graphicsItems/visualizeritem.h>
+#include <common/widgets/summaryLabel/summarylabel.h>
 
-#include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QPointF>
 
 MemoryMapsVisualizer::MemoryMapsVisualizer(QSharedPointer<Component> component, QWidget *parent):
@@ -20,10 +21,15 @@ ItemVisualizer(component, parent),
 view_(new MemoryMapView(this)),
 scene_(new MemoryMapScene(this)) {
 
-	QHBoxLayout* layout = new QHBoxLayout(this);
+	// display a label on top the table
+	SummaryLabel* visualizationLabel = new SummaryLabel(tr("Memory maps visualization"), this);
+
+	QVBoxLayout* layout = new QVBoxLayout(this);
+	layout->addWidget(visualizationLabel, 0, Qt::AlignCenter);
 	layout->addWidget(view_);
 	layout->setContentsMargins(0, 0, 0, 0);
 
+	view_->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 	view_->setScene(scene_);
 }
 

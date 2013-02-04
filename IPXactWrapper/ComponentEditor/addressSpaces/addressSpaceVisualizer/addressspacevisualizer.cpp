@@ -7,8 +7,10 @@
 
 #include "addressspacevisualizer.h"
 #include <common/graphicsItems/visualizeritem.h>
+#include <common/widgets/summaryLabel/summarylabel.h>
 
 #include <QHBoxLayout>
+#include <QVBoxLayout>
 
 AddressSpaceVisualizer::AddressSpaceVisualizer(QSharedPointer<AddressSpace> addrSpace,
 											   QSharedPointer<Component> component,
@@ -18,10 +20,20 @@ addrSpace_(addrSpace),
 view_(new QGraphicsView(this)),
 scene_(new AddressSpaceScene(addrSpace, this)) {
 
-	QHBoxLayout* layout = new QHBoxLayout(this);
+	// display a label on top the table
+	SummaryLabel* segmentLabel = new SummaryLabel(tr("Segments"), this);
+	SummaryLabel* localAddrBlockLabel = new SummaryLabel(tr("Address blocks"), this);
+
+	QHBoxLayout* labelLayout = new QHBoxLayout();
+	labelLayout->addWidget(segmentLabel, 0, Qt::AlignCenter);
+	labelLayout->addWidget(localAddrBlockLabel, 0, Qt::AlignCenter);
+
+	QVBoxLayout* layout = new QVBoxLayout(this);
+	layout->addLayout(labelLayout);
 	layout->addWidget(view_);
 	layout->setContentsMargins(0, 0, 0, 0);
 
+	view_->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 	view_->setScene(scene_);
 }
 
