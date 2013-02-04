@@ -456,13 +456,12 @@ void TabDocument::handleRefreshRequest()
     }
     else
     {
-        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-            tr("Related documents contain modifications that affect this document."
-            "The document will be refreshed."),
-            QMessageBox::Ok, this);
-        msgBox.exec();
+//         QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+//             tr("Related documents contain modifications that affect this document."
+//             "The document will be refreshed."),
+//             QMessageBox::Ok, this);
+//         msgBox.exec();
 
-        save();
         refresh();
     }
 }

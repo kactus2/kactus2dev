@@ -131,7 +131,7 @@ void DesignWidget::refresh()
     QSharedPointer<LibraryComponent> libComp = lh_->getModel(*editedComponent_->getVlnv());
     QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
-    setDesign(editedComponent_, viewName_);
+    setDesign(comp, viewName_);
     setModified(false);
 
     TabDocument::refresh();

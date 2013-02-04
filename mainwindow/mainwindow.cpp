@@ -3423,11 +3423,6 @@ void MainWindow::changeProtection(bool locked)
 	VLNV docVLNV = doc->getDocumentVLNV();
     Q_ASSERT(docVLNV.isValid());
 	
-	// the list containing documents for the same document
-	QList<TabDocument*> otherDocs;
-	// If the same document has been edited in another editor
-	TabDocument* docToSave = NULL;
-
 	// if user set the document to be locked and it has been modified
 	if (locked)
 	{
@@ -3452,9 +3447,15 @@ void MainWindow::changeProtection(bool locked)
     }
 
 	// if user wants to unlock the document
-    else {
+    else
+    {
+        // the list containing documents for the same document
+        QList<TabDocument*> otherDocs;
+        // If the same document has been edited in another editor
+        TabDocument* docToSave = NULL;
 
-		for (int i = 0; i < designTabs_->count(); ++i) {
+		for (int i = 0; i < designTabs_->count(); ++i)
+        {
 			TabDocument* otherDoc = static_cast<TabDocument*>(designTabs_->widget(i));
 			Q_ASSERT(otherDoc);
 
@@ -3478,99 +3479,99 @@ void MainWindow::changeProtection(bool locked)
 				}
 			}
 		}
+
+        // if there was document that was unlocked and modified
+        if (docToSave)
+        {
+            // Ask the user if he wants to save and switch locks.
+            QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+                tr("The document is being edited in another tab and "
+                "has unsaved changes. Changes need to be saved "
+                "before this tab can be unlocked. "
+                "Save changes and switch locks?"),
+                QMessageBox::Yes | QMessageBox::No, this);
+
+            // Restore the lock if the user canceled.
+            if (msgBox.exec() == QMessageBox::No) {
+                actProtect_->setChecked(true);
+                return;
+            }
+
+            // if the document could not be saved
+            if (!docToSave->save()) {
+                return;
+            }
+        }
+
+        bool previouslyUnlocked = doc->isPreviouslyUnlocked();
+
+        // user wanted to unlock this doc so go through other documents
+        foreach (TabDocument* otherDoc, otherDocs) {
+            // Lock the other document.
+            otherDoc->setProtection(true);
+
+            // if the other document has been previously unlocked
+            if (otherDoc->isPreviouslyUnlocked()) {
+                previouslyUnlocked = true;
+            }
+        }
+
+        // if the document has not been previously unlocked
+        if (!previouslyUnlocked) {
+
+            QString message = tr("Are you sure you want to unlock the document?\n");
+            QString detailMsg = "";
+
+            // if edited document was component 
+            if (docVLNV.isValid() && libraryHandler_->getDocumentType(docVLNV) == VLNV::COMPONENT) {
+
+                // if component has been instantiated in other components then print
+                // a list of those components
+                QList<VLNV> list;
+                int refCount = libraryHandler_->getOwners(list, docVLNV);
+                if (refCount > 0) {
+                    detailMsg += tr("The component has been instantiated in the following %1 component(s):\n").arg(refCount);
+
+                    foreach (VLNV owner, list) {
+                        detailMsg += "* " + owner.getVendor() + ":" + owner.getLibrary() + ":" +
+                            owner.getName() + ":" + owner.getVersion() + "\n"; 
+                    }
+
+                    message += tr("Changes to the document can affect %1 other documents.").arg(refCount);
+                }
+                else {
+                    message += tr("Changes to the document can affect other documents.");
+                }
+            }
+            else {
+                message += tr("Changes to the document can affect other documents.");
+            }
+
+            message += " If you choose yes, this will not be asked next time for this document.";
+
+            // Ask verification from the user.
+            QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+                message, QMessageBox::Yes | QMessageBox::No, this);
+            msgBox.setDetailedText(detailMsg);
+
+            // if user did not want to unlock the document
+            if (msgBox.exec() == QMessageBox::No) {
+                actProtect_->setChecked(true);
+                return;
+            }
+        }
+
+        // mark the other documents also unlocked to keep the unlock history in sync.
+        foreach (TabDocument* otherDoc, otherDocs) {
+            otherDoc->setPreviouslyUnlocked();
+        }
+
+        // Refresh and unlock the document.
+        doc->refresh();
+        doc->setProtection(locked);
 	}
 
-	// if there was document that was unlocked and modified
-	if (docToSave) {
-		// Ask the user if he wants to save and switch locks.
-		QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-			tr("The document is being edited in another tab and "
-			"has unsaved changes. Changes need to be saved "
-			"before this tab can be unlocked. "
-			"Save changes and switch locks?"),
-			QMessageBox::Yes | QMessageBox::No, this);
-
-		// Restore the lock if the user canceled.
-		if (msgBox.exec() == QMessageBox::No) {
-			actProtect_->setChecked(true);
-			return;
-		}
-
-		// if the document could not be saved
-		if (!docToSave->save()) {
-			return;
-		}
-	}
-
-	bool previouslyUnlocked = doc->isPreviouslyUnlocked();
-
-	// user wanted to unlock this doc so go through other documents
-	foreach (TabDocument* otherDoc, otherDocs) {
-		// Lock the other document.
-		otherDoc->setProtection(true);
-
-		// if the other document has been previously unlocked
-		if (otherDoc->isPreviouslyUnlocked()) {
-			previouslyUnlocked = true;
-		}
-	}
-	
-	// if the document has not been previously unlocked
-	if (!previouslyUnlocked) {
-		
-		QString message = tr("Are you sure you want to unlock the document?\n");
-		QString detailMsg = "";
-
-		// if edited document was component 
-		if (docVLNV.isValid() && libraryHandler_->getDocumentType(docVLNV) == VLNV::COMPONENT) {
-
-			// if component has been instantiated in other components then print
-			// a list of those components
-			QList<VLNV> list;
-			int refCount = libraryHandler_->getOwners(list, docVLNV);
-			if (refCount > 0) {
-				detailMsg += tr("The component has been instantiated in the following %1 component(s):\n").arg(refCount);
-
-				foreach (VLNV owner, list) {
-					detailMsg += "* " + owner.getVendor() + ":" + owner.getLibrary() + ":" +
-						owner.getName() + ":" + owner.getVersion() + "\n"; 
-				}
-
-				message += tr("Changes to the document can affect %1 other documents.").arg(refCount);
-			}
-			else {
-				message += tr("Changes to the document can affect other documents.");
-			}
-		}
-		else {
-			message += tr("Changes to the document can affect other documents.");
-		}
-
-		message += " If you choose yes, this will not be asked next time for this document.";
-
-		// Ask verification from the user.
-		QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-			message, QMessageBox::Yes | QMessageBox::No, this);
-		msgBox.setDetailedText(detailMsg);
-
-		// if user did not want to unlock the document
-		if (msgBox.exec() == QMessageBox::No) {
-			actProtect_->setChecked(true);
-			return;
-		}
-	}
-
-	// mark the other documents also unlocked to keep the unlock history in sync.
-	foreach (TabDocument* otherDoc, otherDocs) {
-		otherDoc->setPreviouslyUnlocked();
-	}
-
-	// Refresh and unlock the document.
-	doc->refresh();
-	doc->setProtection(locked);
-	
-
-	// if the tab is designWidget
+	// if the tab is a design widget
 	DesignWidget* designwidget = dynamic_cast<DesignWidget*>(doc);
 	if (designwidget) {
 		// update the editors to match the locked state

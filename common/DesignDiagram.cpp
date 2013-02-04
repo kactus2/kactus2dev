@@ -90,6 +90,7 @@ bool DesignDiagram::setDesign(QSharedPointer<Component> component, QSharedPointe
     // Clear the scene.
     clearScene();
     getParent()->clearRelatedVLNVs();
+    getParent()->addRelatedVLNV(*component->getVlnv());
 
     // Set the new component and open the design.
     component_ = component;
