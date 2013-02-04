@@ -17,16 +17,38 @@
 #include <QPushButton>
 #include <QSharedPointer>
 
+class LibraryInterface;
+
+/*! \brief Used to edit the logical ports of an abstraction definition.
+*
+*/
 class AbsDefGroup : public QGroupBox {
 	Q_OBJECT
 
 public:
 
-	AbsDefGroup(QWidget *parent);
+	/*! \brief The constructor
+	 *
+	 * Method: 		AbsDefGroup
+	 * Full name:	AbsDefGroup::AbsDefGroup
+	 * Access:		private 
+	 *
+	 * \param handler Pointer to the instance that manages the library.
+	 * \param parent Pointer to the owner of the editor.
+	 *
+	*/
+	AbsDefGroup(LibraryInterface* handler, QWidget *parent);
 	
 	//! \brief The destructor
 	virtual ~AbsDefGroup();
 
+	/*! \brief Save the changes made in the editor.
+	 *
+	 * Method: 		save
+	 * Full name:	AbsDefGroup::save
+	 * Access:		public 
+	 *
+	*/
 	void save();
 
 	/*! \brief Set the abstraction definition for the editor.
@@ -84,6 +106,12 @@ private:
 
 	//! \brief The model that contains the logical signals of Abstraction Definition.
 	BusPortsModel portModel_;
+
+	//! \brief Pointer to the instance managing the library.
+	LibraryInterface* handler_;
+
+	//! \brief Pointer to the abstraction definition being edited.
+	QSharedPointer<AbstractionDefinition> absDef_;
 };
 
 #endif // ABSDEFGROUP_H

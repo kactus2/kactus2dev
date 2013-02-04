@@ -6,6 +6,7 @@
  */
 
 #include "absdefgroup.h"
+#include <LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -15,14 +16,16 @@
 #include <QCoreApplication>
 #include <QFile>
 
-AbsDefGroup::AbsDefGroup(QWidget *parent): 
+AbsDefGroup::AbsDefGroup(LibraryInterface* handler, QWidget *parent): 
 QGroupBox(tr("Signals (Abstraction Definition)"), parent),
 newSignalButton_(tr("Add new signal"), this),
 newSignalOptionsButton_(tr("Add new signal options"), this),
 importButton_(tr("Import csv"), this),
 exportButton_(tr("Export csv"), this),
 portView_(this),
-portModel_(this) {
+portModel_(this),
+handler_(handler),
+absDef_() {
 
 	portView_.setModel(&portModel_);
 
@@ -56,27 +59,48 @@ AbsDefGroup::~AbsDefGroup() {
 }
 
 void AbsDefGroup::onImport() {
-	QSettings settings;
-	QString homePath = settings.value(QString("Library/DefaultLocation"), 
-		QCoreApplication::applicationDirPath()).toString();
 
-	QString path = QFileDialog::getOpenFileName(this, tr("Select csv-file to import"),
-		homePath);
+	QString homePath;
+
+	// if abs def is set then use its location in library
+	if (absDef_) {
+		const QString busPath = handler_->getDirectoryPath(*absDef_->getVlnv());
+		homePath = QString("%1/logicalSignals.csv").arg(busPath);
+	}
+	// if there is no abs def then use default library location
+	else {
+		QSettings settings;
+		homePath = settings.value(QString("Library/DefaultLocation"), 
+			QCoreApplication::applicationDirPath()).toString();
+	}
+
+	QString path = QFileDialog::getOpenFileName(this,  tr("csv-files (*.csv)"), homePath);
 
 	// if user clicked cancel
-	if (path.isEmpty())
+	if (path.isEmpty()) {
 		return;
+	}
 
 	portModel_.importCSV(path);
 }
 
 void AbsDefGroup::onExport() {
-	QSettings settings;
-	QString homePath = settings.value(QString("Library/DefaultLocation"), 
-		QCoreApplication::applicationDirPath()).toString();
+	QString homePath;
+
+	// if abs def is set then use its location in library
+	if (absDef_) {
+		const QString busPath = handler_->getDirectoryPath(*absDef_->getVlnv());
+		homePath = QString("%1/logicalSignals.csv").arg(busPath);
+	}
+	// if there is no abs def then use default library location
+	else {
+		QSettings settings;
+		homePath = settings.value(QString("Library/DefaultLocation"), 
+			QCoreApplication::applicationDirPath()).toString();
+	}
 
 	QString path = QFileDialog::getSaveFileName(this, tr("Save a csv-file"), 
-		homePath, tr("Text files (*.csv)"));
+		homePath, tr("csv-files (*.csv)"));
 
 	// if user clicked cancel
 	if (path.isEmpty())
@@ -109,5 +133,6 @@ void AbsDefGroup::setupLayout() {
 }
 
 void AbsDefGroup::setAbsDef(QSharedPointer<AbstractionDefinition> absDef) {
+	absDef_ = absDef;
 	portModel_.setAbsDef(absDef);
 }

@@ -30,7 +30,7 @@ absDef_(absDef),
 editableBusDef_(),
 editableAbsDef_(),
 busDefGroup_(this),
-absDefGroup_(this) {
+absDefGroup_(libHandler ,this) {
 
 	Q_ASSERT_X(busDef, "BusEditor constructor",
 		"Null Bus Definition pointer given as parameter");
