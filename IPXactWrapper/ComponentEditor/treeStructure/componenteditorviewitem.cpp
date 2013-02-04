@@ -90,7 +90,6 @@ bool ComponentEditorViewItem::canBeOpened() const {
 void ComponentEditorViewItem::openItem( bool ) {
 	// if item can't be opened
 	if (!canBeOpened()) {
-		emit errorMessage(tr("The changes to component must be saved before view can be opened."));
 		return;
 	}
 	QString viewName = view_->getName();

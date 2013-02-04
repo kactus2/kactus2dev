@@ -94,7 +94,8 @@ void BusInterfacesDelegate::setModelData( QWidget* editor, QAbstractItemModel* m
 			Q_ASSERT(selector);
 
 			General::InterfaceMode mode = selector->selected();
-			model->setData(index, mode, Qt::EditRole);
+			QString modeStr = General::interfaceMode2Str(mode);
+			model->setData(index, modeStr, Qt::EditRole);
 			break;
 													}	
 		default: {
