@@ -14,12 +14,8 @@
 
 #include <QDialog>
 #include <QSettings>
-#include <QPushButton>
-
-#include <QTableWidget>
-#include <QTableWidgetItem>
-
 #include <QListWidgetItem>
+#include <QPushButton>
 
 //-----------------------------------------------------------------------------
 //! Library locations dialog.
@@ -64,18 +60,6 @@ public slots:
     //! Called when a location is selected in the locations list.
     void onSelectLocation(QListWidgetItem* cur, QListWidgetItem* prev);
 
-	/*! \brief Called when a location is selected in the locations list.
-	 *
-	 * Method: 		onSelectLocation
-	 * Full name:	LibrarySettingsDialog::onSelectLocation
-	 * Access:		public 
-	 *
-	 * \param cur Pointer to the selected item.
-	 * \param prev Pointer to the previously selected item.
-	 *
-	*/
-	void onSelectLocation(QTableWidgetItem* cur, QTableWidgetItem* prev);
-
 signals:
 	//! \brief Emitted when the library settings has changed and a scan should be performed.
 	void scanLibrary();
@@ -88,17 +72,6 @@ private slots:
 	 *
 	*/
 	void onItemClicked(QListWidgetItem* item);
-
-	/*! \brief Handler for item clicks on the lib locations table.
-	 *
-	 * Method: 		onItemClicked
-	 * Full name:	LibrarySettingsDialog::onItemClicked
-	 * Access:		private 
-	 *
-	 * \param item Pointer to the clicked item.
-	 *
-	*/
-	void onItemClicked(QTableWidgetItem* item);
 
     /*!
      *  Called when the user presses OK.
@@ -123,10 +96,7 @@ private:
     QSettings& settings_;
 
     //! The library location list.
-    //QListWidget* libLocationsList_;
-
-	//! \brief The library locations table.
-	QTableWidget* libLocationsTable_;
+    QListWidget* libLocationsList_;
 
     //! Add location button.
     QPushButton* addLocationButton_;

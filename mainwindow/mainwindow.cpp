@@ -3112,8 +3112,7 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName, boo
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	SystemDesignWidget* designWidget = new SystemDesignWidget(false, libraryHandler_, this, this);
-    registerDocument(designWidget);
-
+    
 	if (!designWidget->setDesign(vlnv, viewName))
 	{
 		delete designWidget;
@@ -3127,6 +3126,7 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName, boo
 	}
 
 	designWidget->setTabWidget(designTabs_);
+    registerDocument(designWidget);
 
 	connect(designWidget, SIGNAL(openComponent(const VLNV&)),
 		this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
@@ -3190,8 +3190,7 @@ void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
 	}
 
 	ComponentEditor* editor = new ComponentEditor(libraryHandler_, component, this);
-    registerDocument(editor);
-
+    
 	QString styleSheet("*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
 	editor->setStyleSheet(styleSheet);
 
@@ -3201,6 +3200,7 @@ void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
 	}
 
 	editor->setTabWidget(designTabs_);
+    registerDocument(editor);
 
     connect(editor, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)),
             this , SLOT(openCSource(QString const&, QSharedPointer<Component>)), Qt::UniqueConnection);
@@ -3252,14 +3252,14 @@ void MainWindow::openComDefinition(VLNV const& vlnv, bool forceUnlocked /*= fals
     }
 
     ComDefinitionEditor* editor = new ComDefinitionEditor(this, libraryHandler_, comDef);
-    registerDocument(editor);
-
+    
     if (forceUnlocked)
     {
         editor->setProtection(false);
     }
 
     editor->setTabWidget(designTabs_);
+    registerDocument(editor);
 }
 
 
