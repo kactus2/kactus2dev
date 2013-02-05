@@ -504,27 +504,31 @@ void HierarchyView::mouseDoubleClickEvent( QMouseEvent * event ) {
 }
 
 void HierarchyView::mousePressEvent( QMouseEvent *event ) {
-	if (event->button() == Qt::LeftButton) {
-		startPos_ = event->pos();
-		QModelIndex index = indexAt(startPos_);
-		dragIndex_ = filter_->mapToSource(index);
+	
+	startPos_ = event->pos();
+	QModelIndex index = indexAt(startPos_);
 
-		if (index.isValid()) {
-
-			bool expanded = isExpanded(index);
-
-			// select the object even if the instance column was clicked
-			QModelIndex indexToSelect = model()->index(index.row(), 0, index.parent());
-			setCurrentIndex(indexToSelect);
-
-			if (expanded) {
-				collapse(index);
-			}
-			else {
-				expand(index);
-			}
-		}
+	bool expanded = false;
+	if (index.isValid()) {
+		expanded = isExpanded(index);
 	}
+	
+	if (event->button() == Qt::LeftButton) {
+		dragIndex_ = filter_->mapToSource(index);
+	}
+
+	// select the object even if the instance column was clicked
+	QModelIndex indexToSelect = model()->index(index.row(), 0, index.parent());
+	setCurrentIndex(indexToSelect);
+
+	if (expanded) {
+		collapse(index);
+	}
+	else {
+		expand(index);
+	}
+
+	//setCurrentIndex(index);
 	QTreeView::mousePressEvent(event);
 }
 

@@ -379,20 +379,29 @@ void LibraryTreeView::mouseDoubleClickEvent( QMouseEvent * event ) {
 
 void LibraryTreeView::mousePressEvent( QMouseEvent *event ) {
 	
-	if (event->button() == Qt::LeftButton) {
-		startPos_ = event->pos();
-		QModelIndex index = indexAt(startPos_);
-		dragIndex_ = filter_->mapToSource(index);
+	startPos_ = event->pos();
+	QModelIndex index = indexAt(startPos_);
 
-		// if the item is not yet expanded
-		if (!isExpanded(index))
-			expand(index);
-		
-		// if item was expanded then close it
-		else
-			collapse(index);
-
+	bool expanded = false;
+	if (index.isValid()) {
+		expanded = isExpanded(index);
 	}
+
+	if (event->button() == Qt::LeftButton) {
+		dragIndex_ = filter_->mapToSource(index);
+	}
+
+	setCurrentIndex(index);
+
+	// if the item is not yet expanded
+	if (!expanded) {
+		expand(index);
+	}
+	// if item was expanded then close it
+	else {
+		collapse(index);
+	}
+
 	QTreeView::mousePressEvent(event);
 }
 
