@@ -34,7 +34,7 @@ LineContentAssistWidget::LineContentAssistWidget(QLineEdit* target, QWidget* par
     Q_ASSERT(target != 0);
 
     // Set widget settings.
-//     setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
+//      setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
     setFrameShadow(QFrame::Raised);
     setFocusPolicy(Qt::NoFocus);
     setFont(QFont("Tahoma", 10));
@@ -256,7 +256,7 @@ void LineContentAssistWidget::moveClose(int /*cursorPos*/)
     // Lift the widget above the line edit only if necessary to keep it fully in view.
     if (pos.y() + height() > parentHeight)
     {
-        pos.setY(target_->mapTo(parentWidget(), target_->pos()).y() - height() - 10);
+        pos.setY(target_->mapTo(parentWidget(), QPoint(0, 0)).y() - height() - 10);
     }
     
     // Move the widget to the final position.

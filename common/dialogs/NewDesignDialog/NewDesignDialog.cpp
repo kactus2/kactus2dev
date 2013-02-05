@@ -88,7 +88,8 @@ NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface,
     connect(viewNameEdit_, SIGNAL(textChanged(QString const&)), this, SLOT(updateVlnvName()));
     connect(viewNameEdit_, SIGNAL(textChanged(QString const&)), this, SLOT(onContentChanged()));
 
-    vlnvEditor_->setNameExtension(designExt_ + "/" + designConfExt_);
+    vlnvEditor_->addNameExtension(designExt_);
+    vlnvEditor_->addNameExtension(designConfExt_);
     vlnvEditor_->addContentType(VLNV::DESIGNCONFIGURATION);
 
     connect(vlnvEditor_, SIGNAL(contentChanged()), this, SLOT(onContentChanged()));

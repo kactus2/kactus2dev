@@ -83,11 +83,11 @@ public:
     void setImplementationFilter(bool on, KactusAttribute::Implementation implementation = KactusAttribute::KTS_HW);
 
     /*!
-     *  Sets the name extension that will be shown in the dialog.
+     *  Adds a new name extension that will be shown in the dialog.
      *
-     *      @param [in] extension The extension to show. Empty if no extension is used.
+     *      @param [in] extension The extension to add.
      */
-    void setNameExtension(QString const& extension);
+    void addNameExtension(QString const& extension);
 
     /*!
      *  Generates a VLNV that matches the contents of the editor.

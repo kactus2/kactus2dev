@@ -39,7 +39,7 @@
 SystemDetailsEditor::SystemDetailsEditor(LibraryInterface* handler, QWidget *parent)
     : QWidget(parent),
       handler_(handler),
-      hwRefEditor_(new VLNVEditor(VLNV::COMPONENT, handler, parent, parent)),
+      hwRefEditor_(new VLNVEditor(VLNV::COMPONENT, handler, parent, parent->parentWidget())),
       viewSelector_(new QComboBox(this)),
       applyButton_(new QPushButton(tr("Apply"), this)),
       revertButton_(new QPushButton(tr("Revert"), this)),

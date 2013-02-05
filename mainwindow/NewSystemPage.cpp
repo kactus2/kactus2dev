@@ -107,7 +107,8 @@ mapDescLabel_(new QLabel(tr("Creates a SW architecture and maps it to selected t
 
     // Create the VLNV editor.
     vlnvEditor_->setImplementationFilter(true, KactusAttribute::KTS_SYS);
-    vlnvEditor_->setNameExtension(".sysdesign/.sysdesigncfg");
+    vlnvEditor_->addNameExtension(".sysdesign");
+    vlnvEditor_->addNameExtension(".sysdesigncfg");
     vlnvEditor_->setTitle(tr("VLNV of the new system design"));
 
     connect(vlnvEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));

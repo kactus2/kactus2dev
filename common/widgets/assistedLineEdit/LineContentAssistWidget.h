@@ -134,7 +134,7 @@ private:
     void moveClose(int cursorPos);
 
     //! The default maximum number of visible items.
-    static int const DEFAULT_MAX_VISIBLE_ITEMS = 10;
+    static int const DEFAULT_MAX_VISIBLE_ITEMS = 6;
 
     //-----------------------------------------------------------------------------
     // Data.

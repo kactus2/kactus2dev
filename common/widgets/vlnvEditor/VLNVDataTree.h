@@ -185,6 +185,13 @@ public:
      */
     void setImplementationFilter(bool on, KactusAttribute::Implementation implementation = KactusAttribute::KTS_HW);
 
+    /*!
+     *  Adds an extension to be filtered out from the content search results.
+     *
+     *      @param [in] extension The extension to filter out.
+     */
+    void addExtensionFilter(QString const& extension);
+
 private:
     // Disable copying.
     VLNVDataTree(VLNVDataTree const& rhs);
@@ -199,7 +206,7 @@ private:
      */
     void parseSubtree(LibraryInterface* lh, LibraryItem const* libItem, VLNVDataNode& node,
                       QList<VLNV::IPXactType> const& types);
-
+    
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -215,6 +222,9 @@ private:
     //! Implementation filter data.
     bool implementationFilterEnabled_;
     KactusAttribute::Implementation implementationFilter_;
+
+    //! The extensions to filter.
+    QStringList extensions_;
 };
 
 //-----------------------------------------------------------------------------

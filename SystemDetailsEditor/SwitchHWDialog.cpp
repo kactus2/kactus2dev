@@ -78,7 +78,8 @@ SwitchHWDialog::SwitchHWDialog(QSharedPointer<Component> component, QString cons
 
     vlnvEdit_->setTitle(tr("VLNV for the new system design and design configuration"));
     vlnvEdit_->setVisible(false);
-    vlnvEdit_->setNameExtension(".sysdesign/.sysdesigncfg");
+    vlnvEdit_->addNameExtension(".sysdesign");
+    vlnvEdit_->addNameExtension(".sysdesigncfg");
 
     directoryLabel_->setVisible(false);
     directoryEdit_->setVisible(false);

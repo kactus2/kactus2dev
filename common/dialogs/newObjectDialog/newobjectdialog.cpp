@@ -32,10 +32,6 @@ okButton_(0)
     attributeEditor_->setVisible(showAttributes);
     connect(attributeEditor_, SIGNAL(productHierarchyChanged()), this, SLOT(onProductHierarchyChanged()));
 
-    vlnvEditor_ = new VLNVEditor(type, libInterface, this, this, true);
-    connect(vlnvEditor_, SIGNAL(contentChanged()), this, SLOT(onContentChanged()));
-    connect(vlnvEditor_, SIGNAL(contentChanged()), this, SLOT(updateDirectory()));
-
     QLabel *directoryLabel = new QLabel(tr("Directory:"));
     
 	directoryEdit_ = new LibraryPathSelector(this);
@@ -51,6 +47,10 @@ okButton_(0)
     QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal);
     buttonBox->addButton(okButton_, QDialogButtonBox::ActionRole);
     buttonBox->addButton(cancelButton, QDialogButtonBox::ActionRole);
+
+    vlnvEditor_ = new VLNVEditor(type, libInterface, this, this, true);
+    connect(vlnvEditor_, SIGNAL(contentChanged()), this, SLOT(onContentChanged()));
+    connect(vlnvEditor_, SIGNAL(contentChanged()), this, SLOT(updateDirectory()));
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(attributeEditor_);

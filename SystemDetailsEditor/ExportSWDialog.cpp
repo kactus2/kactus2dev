@@ -37,7 +37,8 @@ ExportSWDialog::ExportSWDialog(LibraryInterface* lh, QWidget* parent)
 
     // Set widget settings.
     vlnvEdit_->setTitle(tr("VLNV for the new system component"));
-    //vlnvEdit_->setNameExtension(".sysdesign/.sysdesigncfg");
+    //vlnvEdit_->addNameExtension(".sysdesign");
+    //vlnvEdit_->addNameExtension(".sysdesigncfg");
 
     // Create layouts.
     QHBoxLayout* dirLayout = new QHBoxLayout();

@@ -94,16 +94,16 @@ void VLNVEditor::addContentType(VLNV::IPXactType type)
 //-----------------------------------------------------------------------------
 void VLNVEditor::setVLNV(VLNV const* vlnv)
 {
-    updateFiltering();
+    if (dirty_)
+    {
+        updateFiltering();
+    }
 
     // Set the fields according to the VLNV.
     vendorEdit_->setText(vlnv->getVendor());
     libraryEdit_->setText(vlnv->getLibrary());
     nameEdit_->setText(vlnv->getName());
     versionEdit_->setText(vlnv->getVersion());
-
-    // Update the matcher items.
-    updateMatcherItems();
 }
 
 void VLNVEditor::setVLNV( const VLNV& vlnv ) {
@@ -408,12 +408,9 @@ void VLNVEditor::setImplementationFilter(bool on, KactusAttribute::Implementatio
 //-----------------------------------------------------------------------------
 void VLNVEditor::updateFiltering()
 {
-    if (dirty_)
-    {
-        dataTree_.clear();
-        dataTree_.parse(handler_, contentTypes_);
-        dirty_ = false;
-    }
+    dataTree_.clear();
+    dataTree_.parse(handler_, contentTypes_);
+    dirty_ = false;
 }
 
 void VLNVEditor::setMandatory( bool mandatory ) {
@@ -424,19 +421,34 @@ void VLNVEditor::setMandatory( bool mandatory ) {
 }
 
 //-----------------------------------------------------------------------------
-// Function: VLNVEditor::setNameExtension()
+// Function: VLNVEditor::addNameExtension()
 //-----------------------------------------------------------------------------
-void VLNVEditor::setNameExtension(QString const& extension)
+void VLNVEditor::addNameExtension(QString const& extension)
 {
-    nameExtensionLabel_.setText(extension);
-    nameExtensionLabel_.setVisible(!extension.isEmpty());
+    if (nameExtensionLabel_.text().isEmpty())
+    {
+        nameExtensionLabel_.setText(extension);
+    }
+    else
+    {
+        nameExtensionLabel_.setText(nameExtensionLabel_.text() + "/" + extension);
+    }
+
+    dataTree_.addExtensionFilter(extension);
+    dirty_ = true;
 }
+
 
 //-----------------------------------------------------------------------------
 // Function: VLNVEditor::showEvent()
 //-----------------------------------------------------------------------------
 void VLNVEditor::showEvent(QShowEvent* event)
 {
-    updateFiltering();
+    if (dirty_)
+    {
+        updateFiltering();
+        updateMatcherItems();
+    }
+
     QGroupBox::showEvent(event);
 }

@@ -19,7 +19,10 @@
 //-----------------------------------------------------------------------------
 // Function: VLNVDataNode()
 //-----------------------------------------------------------------------------
-VLNVDataNode::VLNVDataNode(QString const& name, unsigned int level) : name_(name), level_(level), vlnv_()
+VLNVDataNode::VLNVDataNode(QString const& name, unsigned int level)
+    : name_(name),
+      level_(level),
+      vlnv_()
 {
 }
 
@@ -138,9 +141,14 @@ void VLNVDataNode::setVLNV(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 // Function: VLNVDataTree()
 //-----------------------------------------------------------------------------
-VLNVDataTree::VLNVDataTree() : firmnessFilterEnabled_(false), firmnessFilter_(KactusAttribute::KTS_TEMPLATE),
-                               hierarchyFilterEnabled_(false), hierarchyFilter_(KactusAttribute::KTS_IP),
-                               implementationFilterEnabled_(false), implementationFilter_(KactusAttribute::KTS_HW)
+VLNVDataTree::VLNVDataTree()
+    : firmnessFilterEnabled_(false),
+      firmnessFilter_(KactusAttribute::KTS_TEMPLATE),
+      hierarchyFilterEnabled_(false),
+      hierarchyFilter_(KactusAttribute::KTS_IP),
+      implementationFilterEnabled_(false),
+      implementationFilter_(KactusAttribute::KTS_HW),
+      extensions_()
 {
 }
 
@@ -250,13 +258,14 @@ void VLNVDataTree::parseSubtree(LibraryInterface* lh, LibraryItem const* libItem
 
             if (item->getLevel() == LibraryItem::NAME)
             {
-                // TODO: This should be done conditionally.
-                name = name.remove(".sysdesigncfg");
-                name = name.remove(".sysdesign");
-                name = name.remove(".swdesigncfg");
-                name = name.remove(".swdesign");
-                name = name.remove(".designcfg");
-                name = name.remove(".design");
+                // Filter out extensions.
+                foreach (QString const& ext, extensions_)
+                {
+                    if (name.endsWith(ext))
+                    {
+                        name = name.left(name.length() - ext.length());
+                    }
+                }
             }
 
             // Otherwise parse the subtree recursively.
@@ -275,4 +284,12 @@ void VLNVDataTree::parseSubtree(LibraryInterface* lh, LibraryItem const* libItem
             }
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: VLNVDataTree::addExtensionFilter()
+//-----------------------------------------------------------------------------
+void VLNVDataTree::addExtensionFilter(QString const& extension)
+{
+    extensions_.append(extension);
 }
