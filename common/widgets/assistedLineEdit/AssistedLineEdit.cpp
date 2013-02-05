@@ -28,8 +28,8 @@ AssistedLineEdit::AssistedLineEdit(QWidget* mainWnd, QWidget* parent) : QLineEdi
                                                                         matcher_(0),
                                                                         contentAssist_()
 {
-    contentAssist_ = new LineContentAssistWidget(this);
-
+    contentAssist_ = new LineContentAssistWidget(this, mainWnd);
+    
     // Install this as an event filter so that we can track events from the main window.
     if (mainWnd_ != 0)
     {
@@ -133,7 +133,7 @@ void AssistedLineEdit::focusOutEvent(QFocusEvent* e)
     // Cancel the content assist if content is shown.
     if (contentAssist_->isContentShown())
     {
-        contentAssist_->cancel();
+        //contentAssist_->cancel();
     }
 }
 

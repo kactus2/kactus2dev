@@ -23,8 +23,8 @@
 //-----------------------------------------------------------------------------
 // Function: LineContentAssistWidget()
 //-----------------------------------------------------------------------------
-LineContentAssistWidget::LineContentAssistWidget(QLineEdit* parent)
-    : QListWidget(0),
+LineContentAssistWidget::LineContentAssistWidget(QLineEdit* parent, QWidget* mainWnd)
+    : QListWidget(mainWnd),
       m_parent(parent),
       m_matcher(0),
       m_maxVisibleItems(DEFAULT_MAX_VISIBLE_ITEMS),
@@ -34,7 +34,7 @@ LineContentAssistWidget::LineContentAssistWidget(QLineEdit* parent)
     Q_ASSERT(parent != 0);
 
     // Set widget settings.
-    setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
+//     setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
     setFrameShadow(QFrame::Raised);
     setFocusPolicy(Qt::NoFocus);
     setFont(QFont("Tahoma", 10));
@@ -44,8 +44,8 @@ LineContentAssistWidget::LineContentAssistWidget(QLineEdit* parent)
     //     pal.setColor(QPalette::Highlight, Qt::darkBlue);
 //     pal.setColor(QPalette::HighlightedText, Qt::black);
 //     setPalette(pal);
-    setStyleSheet("selection-color: black; selection-background-color: "
-                  "QLinearGradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #d6e7ff, stop: 1 #84aede);");
+//     setStyleSheet("selection-color: black; selection-background-color: "
+//                   "QLinearGradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #d6e7ff, stop: 1 #84aede);");
 }
 
 //-----------------------------------------------------------------------------
@@ -242,19 +242,19 @@ void LineContentAssistWidget::updateMatches()
 void LineContentAssistWidget::moveClose(int /*cursorPos*/)
 {
     // Determine the correct upper-left corner position for the widget.
-    int screenWidth = QApplication::desktop()->width();
-    int screenHeight = QApplication::desktop()->height();
+    int parentWidth = parentWidget()->width();
+    int parentHeight = parentWidget()->height();
     
     // By default, the desired position is below line edit.
-    QPoint pos = m_parent->mapToGlobal(QPoint(0, 0)) + QPoint(0,  m_parent->height());
+    QPoint pos = m_parent->mapTo(parentWidget(), QPoint(0, 0)) + QPoint(0,  m_parent->height());
     
     // Restrict x coordinate by the screen width.
-    pos.setX(qMin(qMax(0, pos.x()), screenWidth - width()));
+    pos.setX(qMin(qMax(0, pos.x()), parentWidth - width()));
 
     // Lift the widget above the line edit only if necessary to keep it fully in view.
-    if (pos.y() + height() > screenHeight)
+    if (pos.y() + height() > parentHeight)
     {
-        pos.setY(m_parent->mapToGlobal(m_parent->pos()).y() - height() - 10);
+        pos.setY(m_parent->mapTo(parentWidget(), m_parent->pos()).y() - height() - 10);
     }
     
     // Move the widget to the final position.

@@ -29,7 +29,7 @@ public:
      *
      *      @param [in] parent   The parent line edit. Must not be null.
      */
-    LineContentAssistWidget(QLineEdit* parent);
+    LineContentAssistWidget(QLineEdit* parent, QWidget* mainWnd);
 
     /*!
      *  Destructor.

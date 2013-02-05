@@ -178,7 +178,7 @@ void AssistedTextEdit::focusOutEvent(QFocusEvent* e)
     // Cancel the content assist if content is shown.
     if (contentAssist_->isContentShown())
     {
-        contentAssist_->cancel();
+        //contentAssist_->cancel();
     }
 }
 
