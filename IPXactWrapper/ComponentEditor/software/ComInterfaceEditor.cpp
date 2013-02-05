@@ -14,11 +14,13 @@
 #include <LibraryManager/libraryinterface.h>
 #include <models/ComInterface.h>
 #include <models/ComDefinition.h>
+#include <mainwindow/mainwindow.h>
 
 #include <QScrollArea>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QGridLayout>
+#include <QApplication>
 
 ComInterfaceEditor::ComInterfaceEditor(LibraryInterface* libHandler,
 									   QSharedPointer<Component> component,
@@ -28,15 +30,27 @@ ItemEditor(component, libHandler, parent),
 libInterface_(libHandler),
 comIf_(comInterface.data()),
 nameEditor_(comInterface->getNameGroup(), this, tr("Name and description")),
-comType_(VLNV::COMDEFINITION, libHandler, this, this),
+comType_(NULL),
 detailsGroup_(tr("Details"), this),
 transferTypeCombo_(this),
 directionCombo_(this),
 propertyValueEditor_(this) {
 
+	// find the main window for VLNV editor
+	QWidget* parentW = NULL;
+	foreach (QWidget* widget, QApplication::topLevelWidgets()) {
+		MainWindow* mainWnd = dynamic_cast<MainWindow*>(widget);
+		if (mainWnd) {
+			parentW = mainWnd;
+			break;
+		}
+	}
+
+	comType_ = new VLNVEditor(VLNV::COMDEFINITION, libHandler, parentW, this);
+
 	// Set VLNV editor settings.
-	comType_.setTitle(tr("COM definition"));
-	comType_.setMandatory(false);
+	comType_->setTitle(tr("COM definition"));
+	comType_->setMandatory(false);
 
 	// Initialize the details group.
 	QLabel* transferTypeLabel = new QLabel(tr("Transfer type:"), &detailsGroup_);
@@ -75,7 +89,7 @@ propertyValueEditor_(this) {
 	// Create the layout for the actual editor.
 	QVBoxLayout* layout = new QVBoxLayout(topWidget);
 	layout->addWidget(&nameEditor_);
-	layout->addWidget(&comType_);
+	layout->addWidget(comType_);
 	layout->addWidget(&detailsGroup_);
 	layout->addWidget(&propertyValueEditor_);
 	layout->addStretch();
@@ -93,10 +107,8 @@ propertyValueEditor_(this) {
 	connect(&propertyValueEditor_, SIGNAL(contentChanged()),
 		this, SLOT(onPropertiesChange()), Qt::UniqueConnection);
 
-	connect(&comType_, SIGNAL(vlnvEdited()),
+	connect(comType_, SIGNAL(vlnvEdited()),
 		this, SLOT(onComDefinitionChanged()), Qt::UniqueConnection);
-
-	refresh();
 }
 
 //-----------------------------------------------------------------------------
@@ -111,7 +123,7 @@ ComInterfaceEditor::~ComInterfaceEditor() {
 bool ComInterfaceEditor::isValid() const
 {
     return (nameEditor_.isValid() &&
-            (comType_.isEmpty() || (comType_.isValid() && libInterface_->contains(comType_.getVLNV()))));
+            (comType_->isEmpty() || (comType_->isValid() && libInterface_->contains(comType_->getVLNV()))));
 }
 
 //-----------------------------------------------------------------------------
@@ -119,14 +131,14 @@ bool ComInterfaceEditor::isValid() const
 //-----------------------------------------------------------------------------
 void ComInterfaceEditor::onComDefinitionChanged()
 {
-	comIf_->setComType(comType_.getVLNV());
+	comIf_->setComType(comType_->getVLNV());
 
 	disconnect(&transferTypeCombo_, SIGNAL(currentIndexChanged(int)),
 		this, SLOT(onTransferTypeChange()));
-    if (comType_.getVLNV().isValid())
+    if (comType_->getVLNV().isValid())
     {
         // Retrieve the COM definition from the library.
-        QSharedPointer<LibraryComponent const> libComp = libInterface_->getModelReadOnly(comType_.getVLNV());
+        QSharedPointer<LibraryComponent const> libComp = libInterface_->getModelReadOnly(comType_->getVLNV());
         QSharedPointer<ComDefinition const> comDef = libComp.dynamicCast<ComDefinition const>();
 
         if (comDef == 0)
@@ -148,7 +160,7 @@ void ComInterfaceEditor::onComDefinitionChanged()
             transferTypeCombo_.setCurrentIndex(transferTypeCombo_.findText(type));
         }
     }
-    else if (comType_.getVLNV().isEmpty())
+    else if (comType_->getVLNV().isEmpty())
     {
         // Clear the allowed properties.
         propertyValueEditor_.setAllowedProperties(0);
@@ -167,7 +179,7 @@ void ComInterfaceEditor::refresh() {
 
 	VLNV comVLNV = comIf_->getComType();
 	
-	comType_.setVLNV(comVLNV);
+	comType_->setVLNV(comVLNV);
 	propertyValueEditor_.setData(comIf_->getPropertyValues());
 
 	disconnect(&directionCombo_, SIGNAL(currentIndexChanged(int)),

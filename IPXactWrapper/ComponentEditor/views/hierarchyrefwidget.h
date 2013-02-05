@@ -93,7 +93,7 @@ private:
 	QSharedPointer<Component> component_;
 
 	//! \brief The editor to set the hierarchy reference for hierarchical views.
-	VLNVEditor hierarchyRef_;
+	VLNVEditor* hierarchyRef_;
 
 	//! \brief The editor to set the reference to a top level implementation view.
 	QComboBox topLevelRef_;

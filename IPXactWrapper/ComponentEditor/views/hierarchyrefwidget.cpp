@@ -9,10 +9,12 @@
 
 #include <models/view.h>
 #include <models/component.h>
+#include <mainwindow/mainwindow.h>
 
 #include <QVBoxLayout>
 #include <QStringList>
 #include <QFormLayout>
+#include <QApplication>
 
 HierarchyRefWidget::HierarchyRefWidget(QSharedPointer<View> view, 
 									   QSharedPointer<Component> component,
@@ -21,26 +23,38 @@ HierarchyRefWidget::HierarchyRefWidget(QSharedPointer<View> view,
 QWidget(parent),
 view_(view),
 component_(component),
-hierarchyRef_(VLNV::DESIGNCONFIGURATION, libHandler, this, this),
+hierarchyRef_(NULL),
 topLevelRef_(this) {
 
-	hierarchyRef_.setTitle(tr("Hierarchy reference"));
-	hierarchyRef_.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+	// find the main window for VLNV editor
+	QWidget* parentW = NULL;
+	foreach (QWidget* widget, QApplication::topLevelWidgets()) {
+		MainWindow* mainWnd = dynamic_cast<MainWindow*>(widget);
+		if (mainWnd) {
+			parentW = mainWnd;
+			break;
+		}
+	}
 
-    hierarchyRef_.addContentType(VLNV::DESIGN);
-    hierarchyRef_.updateFiltering();
+	hierarchyRef_ = new VLNVEditor(VLNV::DESIGNCONFIGURATION, libHandler, parentW, this);
+
+	hierarchyRef_->setTitle(tr("Hierarchy reference"));
+	hierarchyRef_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+//     hierarchyRef_->addContentType(VLNV::DESIGN);
+//     hierarchyRef_->updateFiltering();
 
 	QFormLayout* extensionLayout = new QFormLayout();
 	extensionLayout->addRow(tr("VendorExtension: Reference to a top-level "
 		"implementation view"), &topLevelRef_);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
-	layout->addWidget(&hierarchyRef_);
+	layout->addWidget(hierarchyRef_);
 	layout->addLayout(extensionLayout);
 	layout->addStretch();
 	layout->setContentsMargins(0, 0, 0, 0);
 
-	connect(&hierarchyRef_, SIGNAL(vlnvEdited()),
+	connect(hierarchyRef_, SIGNAL(vlnvEdited()),
 		this, SLOT(onVLNVChanged()), Qt::UniqueConnection);
 	connect(&topLevelRef_, SIGNAL(currentIndexChanged(const QString&)),
 		this, SLOT(onTopRefChanged(const QString&)), Qt::UniqueConnection);
@@ -50,13 +64,13 @@ HierarchyRefWidget::~HierarchyRefWidget() {
 }
 
 bool HierarchyRefWidget::isValid() const {
-	return hierarchyRef_.isValid();
+	return hierarchyRef_->isValid();
 }
 
 void HierarchyRefWidget::refresh() {
 	
 	// ask the vlnv from the model
-	hierarchyRef_.setVLNV(view_->getHierarchyRef());
+	hierarchyRef_->setVLNV(view_->getHierarchyRef());
 
 	// before changing the index, the editor must be disconnected
 	disconnect(&topLevelRef_, SIGNAL(currentIndexChanged(const QString&)),
@@ -85,7 +99,7 @@ void HierarchyRefWidget::refresh() {
 }
 
 void HierarchyRefWidget::onVLNVChanged() {
-	view_->setHierarchyRef(hierarchyRef_.getVLNV());
+	view_->setHierarchyRef(hierarchyRef_->getVLNV());
 	emit contentChanged();
 }
 
@@ -97,7 +111,7 @@ void HierarchyRefWidget::onTopRefChanged( const QString& newRef ) {
 void HierarchyRefWidget::clear() {
 	
 	// clear the hierarchy ref
-	hierarchyRef_.setVLNV(VLNV());
+	hierarchyRef_->setVLNV(VLNV());
 
 	// before changing the index, the editor must be disconnected
 	disconnect(&topLevelRef_, SIGNAL(currentIndexChanged(const QString&)),

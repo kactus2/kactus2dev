@@ -93,7 +93,7 @@ private:
     NameGroupEditor nameEditor_;
 
     //! Editor for setting the API definition.
-    VLNVEditor apiType_;
+    VLNVEditor* apiType_;
 
     //! Details group box.
     QGroupBox detailsGroup_;

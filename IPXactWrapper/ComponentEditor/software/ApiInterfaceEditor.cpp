@@ -13,11 +13,13 @@
 
 #include <LibraryManager/libraryinterface.h>
 #include <models/ApiInterface.h>
+#include <mainwindow/mainwindow.h>
 
 #include <QScrollArea>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QGridLayout>
+#include <QApplication>
 
 //-----------------------------------------------------------------------------
 // Function: ApiInterfaceEditor::ApiInterfaceEditor()
@@ -30,16 +32,28 @@ ItemEditor(component, libHandler, parent),
 libInterface_(libHandler),
 apiIf_(APIInterface.data()),
 nameEditor_(APIInterface->getNameGroup(), this, tr("Name and description")),
-apiType_(VLNV::APIDEFINITION, libHandler, this, this),
+apiType_(NULL),
 detailsGroup_(tr("Details"), this),
 dependencyCombo_(this)
 {
     Q_ASSERT(APIInterface != 0);
     Q_ASSERT(libHandler != 0);
+
+	// find the main window for VLNV editor
+	QWidget* parentW = NULL;
+	foreach (QWidget* widget, QApplication::topLevelWidgets()) {
+		MainWindow* mainWnd = dynamic_cast<MainWindow*>(widget);
+		if (mainWnd) {
+			parentW = mainWnd;
+			break;
+		}
+	}
+
+	apiType_ = new VLNVEditor(VLNV::APIDEFINITION, libHandler, parentW, this);
     
     // Set VLNV editor settings.
-    apiType_.setTitle(tr("API definition"));
-    apiType_.setMandatory(false);
+    apiType_->setTitle(tr("API definition"));
+    apiType_->setMandatory(false);
 
     // Initialize the details group.
     QLabel* directionLabel = new QLabel(tr("Dependency:"), &detailsGroup_);
@@ -70,7 +84,7 @@ dependencyCombo_(this)
     // Create the layout for the actual editor.
     QVBoxLayout* layout = new QVBoxLayout(topWidget);
     layout->addWidget(&nameEditor_);
-    layout->addWidget(&apiType_);
+    layout->addWidget(apiType_);
     layout->addWidget(&detailsGroup_);
     layout->addStretch();
 	layout->setContentsMargins(0, 0, 0, 0);
@@ -79,7 +93,7 @@ dependencyCombo_(this)
 
 	connect(&nameEditor_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&apiType_, SIGNAL(vlnvEdited()),
+	connect(apiType_, SIGNAL(vlnvEdited()),
 		this, SLOT(onAPITypeChange()), Qt::UniqueConnection);
 	connect(&dependencyCombo_, SIGNAL(currentIndexChanged(int)),
 		this, SLOT(onDependencyChange(int)), Qt::UniqueConnection);
@@ -100,13 +114,13 @@ ApiInterfaceEditor::~ApiInterfaceEditor()
 bool ApiInterfaceEditor::isValid() const
 {
     return (nameEditor_.isValid() &&
-            (apiType_.isEmpty() || (apiType_.isValid() && libInterface_->contains(apiType_.getVLNV()))));
+            (apiType_->isEmpty() || (apiType_->isValid() && libInterface_->contains(apiType_->getVLNV()))));
 }
 
 void ApiInterfaceEditor::refresh() {
 	nameEditor_.refresh();
 
-	apiType_.setVLNV(apiIf_->getApiType());
+	apiType_->setVLNV(apiIf_->getApiType());
 
 	// the signal must be disconnected for the duration of changing the selected index
 	disconnect(&dependencyCombo_, SIGNAL(currentIndexChanged(int)),
@@ -117,7 +131,7 @@ void ApiInterfaceEditor::refresh() {
 }
 
 void ApiInterfaceEditor::onAPITypeChange() {
-	apiIf_->setApiType(apiType_.getVLNV());
+	apiIf_->setApiType(apiType_->getVLNV());
 	emit contentChanged();
 }
 

@@ -13,8 +13,6 @@
 
 #include <QColor>
 
-#include <QDebug>
-
 OtherClockDriversModel::OtherClockDriversModel(QSharedPointer<Component> component, 
 											   QObject *parent): 
 QAbstractTableModel(parent),
@@ -66,13 +64,11 @@ QVariant OtherClockDriversModel::data( const QModelIndex& index,
 			case 2:
 				return table_.at(index.row())->getClockPeriod()->value_;
 			case 3:
-				qDebug() << "Data period unit: " << table_.at(index.row())->getClockPeriod()->timeUnit_;
 				return General::timeUnit2Str(
 					table_.at(index.row())->getClockPeriod()->timeUnit_);
 			case 4:
 				return table_.at(index.row())->getClockPulseOffset()->value_;
 			case 5:
-				qDebug() << "Data pulse offset: " << table_.at(index.row())->getClockPulseOffset()->timeUnit_;
 				return General::timeUnit2Str(
 					table_.at(index.row())->getClockPulseOffset()->timeUnit_);
 			case 6:
@@ -182,7 +178,6 @@ bool OtherClockDriversModel::setData( const QModelIndex& index,
 				break;
 					}
 			case 3: {
-				qDebug() << "clock period unit: " << General::str2TimeUnit(value.toString(), General::NS);
 				table_.value(index.row())->getClockPeriod()->timeUnit_ = 
 					General::str2TimeUnit(value.toString(), General::NS);
 				break;
@@ -192,7 +187,6 @@ bool OtherClockDriversModel::setData( const QModelIndex& index,
 				break;
 					}
 			case 5: {
-				qDebug() << "Pulse offset unit: " << General::str2TimeUnit(value.toString(), General::NS);
 				table_.value(index.row())->getClockPulseOffset()->timeUnit_ =
 					General::str2TimeUnit(value.toString(), General::NS);
 				break;
@@ -206,7 +200,6 @@ bool OtherClockDriversModel::setData( const QModelIndex& index,
 				break;
 					}
 			case 8: {
-				qDebug() << "Pulse duration unit: " << General::str2TimeUnit(value.toString(), General::NS);
 				table_.value(index.row())->getClockPulseDuration()->timeUnit_ =
 					General::str2TimeUnit(value.toString(), General::NS);
 				break;

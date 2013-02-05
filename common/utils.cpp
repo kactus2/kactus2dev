@@ -12,6 +12,8 @@
 
 #include <qmath.h>
 #include <QRegExp>
+#include <QMainwindow>
+#include <QDialog>
 
 Qt::CheckState Utils::bool2CheckState(const bool state) {
 	if (state) 

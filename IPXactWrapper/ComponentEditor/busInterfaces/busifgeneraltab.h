@@ -37,6 +37,7 @@ public:
 	 * \param busif Pointer to the bus interface being edited.
 	 * \param component Pointer to the component being edited.
 	 * \param parent Pointer to the owner of this editor.
+	 * \param parentWnd Pointer to the parent window.
 	 *
 	*/
 	BusIfGeneralTab(LibraryInterface* libHandler,

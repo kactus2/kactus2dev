@@ -85,7 +85,7 @@ private:
     NameGroupEditor nameEditor_;
 
     //! VLNV editor for the hierarchy reference.
-    VLNVEditor hierRefEditor_;
+    VLNVEditor* hierRefEditor_;
 };
 
 //-----------------------------------------------------------------------------

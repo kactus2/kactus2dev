@@ -15,6 +15,7 @@
 #include <QHBoxLayout>
 #include <QFormLayout>
 #include <QScrollArea>
+#include <QApplication>
 
 BusIfGeneralTab::BusIfGeneralTab( LibraryInterface* libHandler,
 								 QSharedPointer<BusInterface> busif, 

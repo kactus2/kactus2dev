@@ -104,7 +104,7 @@ private:
     NameGroupEditor nameEditor_;
 
     //! Editor for setting the COM definition.
-    VLNVEditor comType_;
+    VLNVEditor* comType_;
 
     //! Details group box.
     QGroupBox detailsGroup_;
