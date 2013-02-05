@@ -12,7 +12,6 @@
 #define UTILS_H
 
 #include <QObject>
-#include <QWidget>
 
 namespace Utils {
 
