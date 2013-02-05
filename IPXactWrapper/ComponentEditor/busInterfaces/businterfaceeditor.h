@@ -38,7 +38,8 @@ public:
 	BusInterfaceEditor(LibraryInterface* libHandler,
 		QSharedPointer<Component> component, 
 		QSharedPointer<BusInterface> busif,
-		QWidget *parent = 0);
+		QWidget* parent,
+        QWidget* parentWnd);
 	
 	//! \brief The destructor
 	virtual ~BusInterfaceEditor();

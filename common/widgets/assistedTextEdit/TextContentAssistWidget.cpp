@@ -47,6 +47,8 @@ TextContentAssistWidget::TextContentAssistWidget(QPlainTextEdit* target, QWidget
     pal.setColor(QPalette::Inactive, QPalette::Highlight, Qt::darkBlue);
     pal.setColor(QPalette::Inactive, QPalette::HighlightedText, Qt::white);
     setPalette(pal);
+
+    hideAssist();
 }
 
 //-----------------------------------------------------------------------------

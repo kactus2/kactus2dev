@@ -46,6 +46,8 @@ LineContentAssistWidget::LineContentAssistWidget(QLineEdit* target, QWidget* par
 //     setPalette(pal);
     setStyleSheet("selection-color: black; selection-background-color: "
                   "QLinearGradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #d6e7ff, stop: 1 #84aede);");
+
+    hideAssist();
 }
 
 //-----------------------------------------------------------------------------

@@ -19,12 +19,13 @@
 BusIfGeneralTab::BusIfGeneralTab( LibraryInterface* libHandler,
 								 QSharedPointer<BusInterface> busif, 
 								 QSharedPointer<Component> component,
-								 QWidget* parent ):
+								 QWidget* parent,
+                                 QWidget* parentWnd):
 QWidget(parent),
 busif_(busif),
 nameEditor_(busif->getNameGroup(), this, tr("Name and description")),
-busType_(VLNV::BUSDEFINITION, libHandler, this, this),
-absType_(VLNV::ABSTRACTIONDEFINITION, libHandler, this, this),
+busType_(VLNV::BUSDEFINITION, libHandler, parentWnd, this),
+absType_(VLNV::ABSTRACTIONDEFINITION, libHandler, parentWnd, this),
 modeSelector_(this, busif),
 modeStack_(busif, component, libHandler, this),
 details_(busif, this),

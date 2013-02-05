@@ -11,14 +11,16 @@
 ComponentEditorBusInterfacesItem::ComponentEditorBusInterfacesItem(ComponentEditorTreeModel* model,
 																   LibraryInterface* libHandler,
 																   QSharedPointer<Component> component,
-																   ComponentEditorItem* parent):
+																   ComponentEditorItem* parent,
+                                                                   QWidget* parentWnd):
 ComponentEditorItem(model, libHandler, component, parent),
 busifs_(component->getBusInterfaces()),
-editor_(libHandler, component) {
+editor_(libHandler, component),
+parentWnd_(parentWnd) {
 
 	foreach (QSharedPointer<BusInterface> busif, busifs_) {
 		QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(
-			new ComponentEditorBusInterfaceItem(busif, model, libHandler, component, this));
+			new ComponentEditorBusInterfaceItem(busif, model, libHandler, component, this, parentWnd));
 
 		childItems_.append(busifItem);
 	}
@@ -57,7 +59,7 @@ QString ComponentEditorBusInterfacesItem::getTooltip() const {
 void ComponentEditorBusInterfacesItem::createChild( int index ) {
 	QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(
 		new ComponentEditorBusInterfaceItem(busifs_.at(index),
-		model_, libHandler_, component_, this));
+		model_, libHandler_, component_, this, parentWnd_));
 
 	childItems_.insert(index, busifItem);
 }

@@ -24,9 +24,9 @@
 // Function: AssistedTextEdit()
 //-----------------------------------------------------------------------------
 AssistedLineEdit::AssistedLineEdit(QWidget* parentWnd, QWidget* parent) : QLineEdit(parent),
-                                                                        mainWnd_(parentWnd),
-                                                                        matcher_(0),
-                                                                        contentAssist_()
+                                                                          mainWnd_(parentWnd),
+                                                                          matcher_(0),
+                                                                          contentAssist_()
 {
     contentAssist_ = new LineContentAssistWidget(this, parentWnd);
     

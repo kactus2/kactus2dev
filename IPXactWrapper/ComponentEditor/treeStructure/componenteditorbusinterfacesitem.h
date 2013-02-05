@@ -30,7 +30,8 @@ public:
 	ComponentEditorBusInterfacesItem(ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
-		ComponentEditorItem* parent);
+		ComponentEditorItem* parent,
+        QWidget* parentWnd);
 
 	//! \brief The destructor
 	virtual ~ComponentEditorBusInterfacesItem();
@@ -86,6 +87,9 @@ private:
 
 	//! \brief The editor to add/remove/edit bus interfaces
 	BusInterfacesEditor editor_;
+
+    //! The parent window.
+    QWidget* parentWnd_;
 };
 
 #endif // COMPONENTEDITORBUSINTERFACESITEM_H

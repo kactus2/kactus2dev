@@ -42,7 +42,8 @@ public:
 	BusIfGeneralTab(LibraryInterface* libHandler,
 		QSharedPointer<BusInterface> busif,
 		QSharedPointer<Component> component,
-		QWidget* parent);
+		QWidget* parent,
+        QWidget* parentWnd);
 	
 	//! \brief The destructor
 	virtual ~BusIfGeneralTab();

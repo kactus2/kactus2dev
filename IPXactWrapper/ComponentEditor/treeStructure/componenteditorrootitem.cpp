@@ -27,7 +27,8 @@
 
 ComponentEditorRootItem::ComponentEditorRootItem( LibraryInterface* libHandler,
 												 QSharedPointer<Component> component,
-												 ComponentEditorTreeModel* parent ):
+												 ComponentEditorTreeModel* parent,
+                                                 QWidget* parentWnd):
 ComponentEditorItem(libHandler, component, parent) {
 
 	childItems_.append(QSharedPointer<ComponentEditorGeneralItem>(
@@ -72,7 +73,7 @@ ComponentEditorItem(libHandler, component, parent) {
 		    new ComponentEditorPortsItem(parent, libHandler, component, this)));
     	
 	    childItems_.append(QSharedPointer<ComponentEditorBusInterfacesItem>(
-		    new ComponentEditorBusInterfacesItem(parent, libHandler, component, this)));
+		    new ComponentEditorBusInterfacesItem(parent, libHandler, component, this, parentWnd)));
 	
 	    childItems_.append(QSharedPointer<ComponentEditorChannelsItem>(
 		    new ComponentEditorChannelsItem(parent, libHandler, component, this)));

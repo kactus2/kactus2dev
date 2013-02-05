@@ -14,10 +14,11 @@ ComponentEditorBusInterfaceItem::ComponentEditorBusInterfaceItem(QSharedPointer<
 																 ComponentEditorTreeModel* model,
 																 LibraryInterface* libHandler,
 																 QSharedPointer<Component> component,
-																 ComponentEditorItem* parent):
+																 ComponentEditorItem* parent,
+                                                                 QWidget* parentWnd):
 ComponentEditorItem(model, libHandler, component, parent),
 busif_(busif),
-editor_(libHandler, component, busif) {
+editor_(libHandler, component, busif, 0, parentWnd) {
 	editor_.hide();
 
 	connect(&editor_, SIGNAL(contentChanged()),

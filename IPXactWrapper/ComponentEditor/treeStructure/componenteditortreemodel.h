@@ -32,7 +32,7 @@ public:
 	 *
 	*/
 	ComponentEditorTreeModel(LibraryInterface* libHandler,
-		QObject* parent);
+		QObject* parent, QWidget* parentWnd);
 	
 	//! \brief The destructor
 	virtual ~ComponentEditorTreeModel();
@@ -221,6 +221,9 @@ private:
 
 	//! \brief Pointer to the root item of the tree.
 	QSharedPointer<ComponentEditorRootItem> rootItem_;
+
+    //! The parent window.
+    QWidget* parentWnd_;
 };
 
 #endif // COMPONENTEDITORTREEMODEL_H

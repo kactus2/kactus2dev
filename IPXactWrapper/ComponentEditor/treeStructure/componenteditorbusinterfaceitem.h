@@ -35,7 +35,8 @@ public:
 		ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
-		ComponentEditorItem* parent);
+		ComponentEditorItem* parent,
+        QWidget* parentWnd);
 
 	//! \brief The destructor
 	virtual ~ComponentEditorBusInterfaceItem();
