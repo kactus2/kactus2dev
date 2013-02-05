@@ -24,7 +24,7 @@
 // Function: AssistedTextEdit()
 //-----------------------------------------------------------------------------
 AssistedTextEdit::AssistedTextEdit(QSharedPointer<ITextContentMatcher> contentMatcher,
-                                   QWidget* mainWnd, QWidget* parent)
+                                   QWidget* parentWnd, QWidget* parent)
     : QPlainTextEdit(parent),
       contentAssist_(0),
       indentStyle_(INDENT_STYLE_TAB),
@@ -34,10 +34,10 @@ AssistedTextEdit::AssistedTextEdit(QSharedPointer<ITextContentMatcher> contentMa
     //setFont(QFont("Courier", 10));
     setLineWrapMode(NoWrap);
 
-    contentAssist_ = new TextContentAssistWidget(this, contentMatcher);
+    contentAssist_ = new TextContentAssistWidget(this, parentWnd, contentMatcher);
 
     // Install this as an event filter so that we can track events from the main window.
-    mainWnd->installEventFilter(this);
+    parentWnd->installEventFilter(this);
 }
 
 //-----------------------------------------------------------------------------
@@ -178,7 +178,7 @@ void AssistedTextEdit::focusOutEvent(QFocusEvent* e)
     // Cancel the content assist if content is shown.
     if (contentAssist_->isContentShown())
     {
-        //contentAssist_->cancel();
+        contentAssist_->cancel();
     }
 }
 

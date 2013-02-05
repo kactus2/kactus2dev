@@ -23,15 +23,15 @@
 //-----------------------------------------------------------------------------
 // Function: LineContentAssistWidget()
 //-----------------------------------------------------------------------------
-LineContentAssistWidget::LineContentAssistWidget(QLineEdit* parent, QWidget* mainWnd)
-    : QListWidget(mainWnd),
-      m_parent(parent),
-      m_matcher(0),
-      m_maxVisibleItems(DEFAULT_MAX_VISIBLE_ITEMS),
-      m_lastAssistStartPos(-1),
-      m_contentFound(false)
+LineContentAssistWidget::LineContentAssistWidget(QLineEdit* target, QWidget* parentWnd)
+    : QListWidget(parentWnd),
+      target_(target),
+      matcher_(0),
+      maxVisibleItems_(DEFAULT_MAX_VISIBLE_ITEMS),
+      lastAssistStartPos_(-1),
+      contentFound_(false)
 {
-    Q_ASSERT(parent != 0);
+    Q_ASSERT(target != 0);
 
     // Set widget settings.
 //     setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
@@ -44,8 +44,8 @@ LineContentAssistWidget::LineContentAssistWidget(QLineEdit* parent, QWidget* mai
     //     pal.setColor(QPalette::Highlight, Qt::darkBlue);
 //     pal.setColor(QPalette::HighlightedText, Qt::black);
 //     setPalette(pal);
-//     setStyleSheet("selection-color: black; selection-background-color: "
-//                   "QLinearGradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #d6e7ff, stop: 1 #84aede);");
+    setStyleSheet("selection-color: black; selection-background-color: "
+                  "QLinearGradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #d6e7ff, stop: 1 #84aede);");
 }
 
 //-----------------------------------------------------------------------------
@@ -60,7 +60,7 @@ LineContentAssistWidget::~LineContentAssistWidget()
 //-----------------------------------------------------------------------------
 bool LineContentAssistWidget::tryHandleKey(QKeyEvent* e)
 {
-    if (m_matcher == 0)
+    if (matcher_ == 0)
     {
         return false;
     }
@@ -71,11 +71,11 @@ bool LineContentAssistWidget::tryHandleKey(QKeyEvent* e)
         return true;
     }
 
-    QString text = m_parent->text().left(m_parent->cursorPosition()) + e->text();
+    QString text = target_->text().left(target_->cursorPosition()) + e->text();
 
     // Check if we can commit.
-    if (m_contentFound && (e->key() == Qt::Key_Return || e->key() == Qt::Key_Tab ||
-                           (canCommitWith(e) && !m_matcher->lookForwardMatch(text))))
+    if (contentFound_ && (e->key() == Qt::Key_Return || e->key() == Qt::Key_Tab ||
+                           (canCommitWith(e) && !matcher_->lookForwardMatch(text))))
     {
         // Commit the selection.
         commitSelection();
@@ -141,7 +141,7 @@ bool LineContentAssistWidget::tryHandleKey(QKeyEvent* e)
 //-----------------------------------------------------------------------------
 void LineContentAssistWidget::updateAssist(QKeyEvent* e)
 {
-    if (m_matcher == 0)
+    if (matcher_ == 0)
     {
         return;
     }
@@ -150,7 +150,7 @@ void LineContentAssistWidget::updateAssist(QKeyEvent* e)
     if (e == 0 || (e->text().contains(QRegExp("^[a-z|A-z|0-9|_|Ä|ä|Ö|ö|Å|å|(|)|,|&]$")) ||
         e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Return ||
         e->key() == Qt::Key_Down || e->key() == Qt::Key_Up ||
-        (m_contentFound && e->text().contains(' '))))
+        (contentFound_ && e->text().contains(' '))))
     {
         updateMatches();
     }
@@ -175,7 +175,7 @@ void LineContentAssistWidget::cancel()
 void LineContentAssistWidget::setMaxVisibleItems(int count)
 {
     Q_ASSERT(count > 0);
-    m_maxVisibleItems = count;
+    maxVisibleItems_ = count;
 }
 
 //-----------------------------------------------------------------------------
@@ -215,17 +215,17 @@ void LineContentAssistWidget::updateMatches()
 
     QString toolTipText;
     int toolTipIndex = -1;
-    QString text = m_parent->text().left(m_parent->cursorPosition());
+    QString text = target_->text().left(target_->cursorPosition());
 
-    m_contentFound = m_matcher->fillWithContent(text, *this, m_lastAssistStartPos, toolTipText,
+    contentFound_ = matcher_->fillWithContent(text, *this, lastAssistStartPos_, toolTipText,
                                                 toolTipIndex);
 
     // Check if content was found.
-    if (m_contentFound)
+    if (contentFound_)
     {
         // Fit the widget to the contents and move it accordingly.
         fitToContents();
-        moveClose(m_lastAssistStartPos);
+        moveClose(lastAssistStartPos_);
 
         setCurrentRow(0);
         show();
@@ -246,7 +246,7 @@ void LineContentAssistWidget::moveClose(int /*cursorPos*/)
     int parentHeight = parentWidget()->height();
     
     // By default, the desired position is below line edit.
-    QPoint pos = m_parent->mapTo(parentWidget(), QPoint(0, 0)) + QPoint(0,  m_parent->height());
+    QPoint pos = target_->mapTo(parentWidget(), QPoint(0, 0)) + QPoint(0,  target_->height());
     
     // Restrict x coordinate by the screen width.
     pos.setX(qMin(qMax(0, pos.x()), parentWidth - width()));
@@ -254,7 +254,7 @@ void LineContentAssistWidget::moveClose(int /*cursorPos*/)
     // Lift the widget above the line edit only if necessary to keep it fully in view.
     if (pos.y() + height() > parentHeight)
     {
-        pos.setY(m_parent->mapTo(parentWidget(), m_parent->pos()).y() - height() - 10);
+        pos.setY(target_->mapTo(parentWidget(), target_->pos()).y() - height() - 10);
     }
     
     // Move the widget to the final position.
@@ -278,11 +278,11 @@ bool LineContentAssistWidget::canCommitWith(QKeyEvent* e) const
 //-----------------------------------------------------------------------------
 void LineContentAssistWidget::commitSelection()
 {
-    Q_ASSERT(m_lastAssistStartPos != -1);
+    Q_ASSERT(lastAssistStartPos_ != -1);
 
     // Replace the text with the current content.
-    m_parent->setSelection(m_lastAssistStartPos, m_parent->cursorPosition());
-    m_parent->insert(currentItem()->text());
+    target_->setSelection(lastAssistStartPos_, target_->cursorPosition());
+    target_->insert(currentItem()->text());
 
     hideAssist();
 }
@@ -297,7 +297,7 @@ void LineContentAssistWidget::fitToContents()
         return;
     }
 
-    int visibleRowCount = qMin(count(), m_maxVisibleItems);
+    int visibleRowCount = qMin(count(), maxVisibleItems_);
     int height = visibleRowCount * sizeHintForRow(0) + frameWidth() * 2;
     int width = sizeHintForColumn(0) + frameWidth() * 2 + verticalScrollBar()->sizeHint().width();
     
@@ -311,7 +311,7 @@ void LineContentAssistWidget::hideAssist()
 {
     hide();
     clear();
-    m_contentFound = false;
+    contentFound_ = false;
 }
 
 //-----------------------------------------------------------------------------
@@ -319,5 +319,5 @@ void LineContentAssistWidget::hideAssist()
 //-----------------------------------------------------------------------------
 void LineContentAssistWidget::setContentMatcher(ILineContentMatcher* matcher)
 {
-    m_matcher = matcher;
+    matcher_ = matcher;
 }

@@ -28,10 +28,11 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parent   The parent text editor. Must not be null.
+     *      @param [in] parent   The target text editor. Must not be null.
      *      @param [in] matcher  The content matcher to use. Must not be null.
      */
-    TextContentAssistWidget(QPlainTextEdit* parent, QSharedPointer<ITextContentMatcher> matcher);
+    TextContentAssistWidget(QPlainTextEdit* target, QWidget* parentWnd,
+                            QSharedPointer<ITextContentMatcher> matcher);
 
     /*!
      *  Destructor.
@@ -140,7 +141,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The parent text editor.
-    QPlainTextEdit* parent_;
+    QPlainTextEdit* target_;
 
     //! The content matcher.
     QSharedPointer<ITextContentMatcher> matcher_;

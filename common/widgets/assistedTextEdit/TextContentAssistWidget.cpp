@@ -23,18 +23,21 @@
 //-----------------------------------------------------------------------------
 // Function: TextContentAssistWidget()
 //-----------------------------------------------------------------------------
-TextContentAssistWidget::TextContentAssistWidget(QPlainTextEdit* parent,
-                                                 QSharedPointer<ITextContentMatcher> matcher) :
-    QListWidget(0), maxVisibleItems_(DEFAULT_MAX_VISIBLE_ITEMS),
-    lastAssistStartPos_(-1), contentFound_(false)
+TextContentAssistWidget::TextContentAssistWidget(QPlainTextEdit* target, QWidget* parentWnd,
+                                                 QSharedPointer<ITextContentMatcher> matcher)
+    : QListWidget(parentWnd),
+      target_(target),
+      matcher_(matcher),
+      maxVisibleItems_(DEFAULT_MAX_VISIBLE_ITEMS),
+      lastAssistStartPos_(-1),
+      contentFound_(false),
+      toolTipHintWidget_()
 {
-    Q_ASSERT(parent != 0);
+    Q_ASSERT(target != 0);
     Q_ASSERT(matcher != 0);
-    parent_ = parent;
-    matcher_ = matcher;
-
+    
     // Set widget settings.
-    setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
+    //setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
     setFrameShadow(QFrame::Raised);
     setFocusPolicy(Qt::NoFocus);
     setFont(QFont("Tahoma", 10));
@@ -58,7 +61,7 @@ TextContentAssistWidget::~TextContentAssistWidget()
 //-----------------------------------------------------------------------------
 bool TextContentAssistWidget::tryHandleKey(QKeyEvent* e)
 {
-    QString text = parent_->toPlainText().left(parent_->textCursor().position()) + e->text();
+    QString text = target_->toPlainText().left(target_->textCursor().position()) + e->text();
 
     // Check if we can commit.
     if (contentFound_ && (e->key() == Qt::Key_Return || e->key() == Qt::Key_Tab ||
@@ -197,7 +200,7 @@ void TextContentAssistWidget::updateMatches()
 
     QString toolTipText;
     int toolTipIndex = -1;
-    QString text = parent_->toPlainText().left(parent_->textCursor().position());
+    QString text = target_->toPlainText().left(target_->textCursor().position());
 
     contentFound_ = matcher_->fillWithContent(text, *this, lastAssistStartPos_, toolTipText,
                                               toolTipIndex);
@@ -234,28 +237,28 @@ void TextContentAssistWidget::updateMatches()
 void TextContentAssistWidget::moveCloseToCursor(int cursorPos)
 {
     // Save the old cursor.
-    QTextCursor oldCursor = parent_->textCursor();
+    QTextCursor oldCursor = target_->textCursor();
 
     // Move the cursor to the given position.
     QTextCursor cursor = oldCursor;
     cursor.setPosition(cursorPos, QTextCursor::MoveAnchor);
-    parent_->setTextCursor(cursor);
+    target_->setTextCursor(cursor);
 
     // Determine the correct upper-left corner position for the widget.
-    int screenWidth = QApplication::desktop()->width();
-    int screenHeight = QApplication::desktop()->height();
+    int parentWidth = parentWidget()->width();
+    int parentHeight = parentWidget()->height();
 
     // By default, the desired position is below the cursor position.
-    QPoint pos = parent_->mapToGlobal(parent_->cursorRect().bottomLeft()) + QPoint(-10, 10);
+    QPoint pos = target_->mapTo(parentWidget(), target_->cursorRect().bottomLeft()) + QPoint(-10, 10);
     
     // Restrict x coordinate by the screen width.
-    pos.setX(qMin(qMax(0, pos.x()), screenWidth - width()));
+    pos.setX(qMin(qMax(0, pos.x()), parentWidth - width()));
 
     // Check if the tool tip hint is visible.
     if (toolTipHintWidget_.isVisible())
     {
         // Then by default, place the widget above the cursor.
-        pos.setY(parent_->mapToGlobal(parent_->cursorRect().topLeft()).y() - height() - 10);
+        pos.setY(target_->mapTo(parentWidget(), target_->cursorRect().topLeft()).y() - height() - 10);
 
         // Lift it up if the tool tip hint is also above the cursor.
         if (pos.y() > toolTipHintWidget_.pos().y() - height())
@@ -270,16 +273,16 @@ void TextContentAssistWidget::moveCloseToCursor(int cursorPos)
         }
     }
     // Otherwise lift the widget above the cursor only if necessary to keep it fully in view.
-    else if (pos.y() + height() > screenHeight)
+    else if (pos.y() + height() > parentHeight)
     {
-        pos.setY(parent_->mapToGlobal(parent_->cursorRect().topLeft()).y() - height() - 10);
+        pos.setY(target_->mapTo(parentWidget(), target_->cursorRect().topLeft()).y() - height() - 10);
     }
     
     // Move the widget to the final position.
     move(pos);
 
     // Restore the old cursor.
-    parent_->setTextCursor(oldCursor);
+    target_->setTextCursor(oldCursor);
 }
 
 //-----------------------------------------------------------------------------
@@ -303,7 +306,7 @@ void TextContentAssistWidget::commitSelection()
     Q_ASSERT(lastAssistStartPos_ != -1);
 
     // Setup the text cursor for replacement.
-    QTextCursor cursor = parent_->textCursor();
+    QTextCursor cursor = target_->textCursor();
     cursor.setPosition(lastAssistStartPos_, QTextCursor::KeepAnchor);
     cursor.insertText(currentItem()->text());    
 
@@ -338,37 +341,37 @@ void TextContentAssistWidget::showToolTipHint(QString const& text, int cursorPos
 
     // Retrieve the y coordinate from the current cursor.
     QPoint pos;
-    pos.setY(parent_->mapToGlobal(parent_->cursorRect().bottomLeft()).y() + 5);
+    pos.setY(target_->mapTo(parentWidget(), target_->cursorRect().bottomLeft()).y() + 5);
 
     // Save the old cursor.
-    QTextCursor oldCursor = parent_->textCursor();
+    QTextCursor oldCursor = target_->textCursor();
 
     // Move the cursor to the given position.
     QTextCursor cursor = oldCursor;
     cursor.setPosition(cursorPos, QTextCursor::MoveAnchor);
-    parent_->setTextCursor(cursor);
+    target_->setTextCursor(cursor);
 
     // Determine the correct upper-left corner position for the widget.
-    int screenWidth = QApplication::desktop()->width();
-    int screenHeight = QApplication::desktop()->height();
+    int parentWidth = parentWidget()->width();
+    int parentHeight = parentWidget()->height();
 
     // By default, the desired position is below the cursor position.
-    pos.setX(parent_->mapToGlobal(parent_->cursorRect().bottomLeft()).x());
+    pos.setX(target_->mapTo(parentWidget(), target_->cursorRect().bottomLeft()).x());
 
     // Restrict x coordinate by the screen width.
-    pos.setX(qMin(qMax(0, pos.x()), screenWidth - toolTipHintWidget_.width()));
+    pos.setX(qMin(qMax(0, pos.x()), parentWidth - toolTipHintWidget_.width()));
 
     // If the widget would be partially below the screen, lift it above the cursor.
-    if (pos.y() + toolTipHintWidget_.height() > screenHeight)
+    if (pos.y() + toolTipHintWidget_.height() > parentHeight)
     {
-        pos.setY(parent_->mapToGlobal(parent_->cursorRect().topLeft()).y() - toolTipHintWidget_.height() - 5);
+        pos.setY(target_->mapTo(parentWidget(), target_->cursorRect().topLeft()).y() - toolTipHintWidget_.height() - 5);
     }
 
     // Move the widget to the final position.
-    toolTipHintWidget_.move(pos);
+    toolTipHintWidget_.move(parentWidget()->mapToGlobal(pos));
 
     // Restore the old cursor.
-    parent_->setTextCursor(oldCursor);
+    target_->setTextCursor(oldCursor);
 
     // Show the hint.
     toolTipHintWidget_.show();

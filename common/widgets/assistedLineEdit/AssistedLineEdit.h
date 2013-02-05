@@ -31,10 +31,10 @@ class AssistedLineEdit : public QLineEdit
 public:
     /*!  Constructor.
      *
-     *      @param [in] mainWnd         The program main window. Must not be null.
+     *      @param [in] mainWnd         The parent window of the line edit. Must not be null.
      *      @param [in] parent          The parent widget. Can be null.
      */
-    AssistedLineEdit(QWidget* mainWnd, QWidget* parent = 0);
+    AssistedLineEdit(QWidget* parentWnd, QWidget* parent = 0);
 
     /*!
      *  Destructor.

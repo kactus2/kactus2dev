@@ -23,12 +23,12 @@
 //-----------------------------------------------------------------------------
 // Function: AssistedTextEdit()
 //-----------------------------------------------------------------------------
-AssistedLineEdit::AssistedLineEdit(QWidget* mainWnd, QWidget* parent) : QLineEdit(parent),
-                                                                        mainWnd_(mainWnd),
+AssistedLineEdit::AssistedLineEdit(QWidget* parentWnd, QWidget* parent) : QLineEdit(parent),
+                                                                        mainWnd_(parentWnd),
                                                                         matcher_(0),
                                                                         contentAssist_()
 {
-    contentAssist_ = new LineContentAssistWidget(this, mainWnd);
+    contentAssist_ = new LineContentAssistWidget(this, parentWnd);
     
     // Install this as an event filter so that we can track events from the main window.
     if (mainWnd_ != 0)
@@ -133,7 +133,7 @@ void AssistedLineEdit::focusOutEvent(QFocusEvent* e)
     // Cancel the content assist if content is shown.
     if (contentAssist_->isContentShown())
     {
-        //contentAssist_->cancel();
+        contentAssist_->cancel();
     }
 }
 

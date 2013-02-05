@@ -27,9 +27,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parent   The parent line edit. Must not be null.
+     *      @param [in] target     The target line edit. Must not be null.
+     *      @param [in] parentWnd  The parent window of the line edit.
      */
-    LineContentAssistWidget(QLineEdit* parent, QWidget* mainWnd);
+    LineContentAssistWidget(QLineEdit* target, QWidget* parentWnd);
 
     /*!
      *  Destructor.
@@ -128,7 +129,7 @@ private:
     void fitToContents();
 
     /*!
-     *  Moves the widget close to line edit, taking screen dimensions into account.
+     *  Moves the widget close to the line edit, taking parent window dimensions into account.
      */
     void moveClose(int cursorPos);
 
@@ -139,20 +140,20 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The parent line edit.
-    QLineEdit* m_parent;
+    //! The target line edit.
+    QLineEdit* target_;
 
     //! The content matcher.
-    ILineContentMatcher* m_matcher;
+    ILineContentMatcher* matcher_;
 
     //! Maximum number of visible items at once.
-    int m_maxVisibleItems;
+    int maxVisibleItems_;
 
     //! Last content position.
-    int m_lastAssistStartPos;
+    int lastAssistStartPos_;
     
     //! Current content state.
-    bool m_contentFound;
+    bool contentFound_;
 };
 
 //-----------------------------------------------------------------------------
