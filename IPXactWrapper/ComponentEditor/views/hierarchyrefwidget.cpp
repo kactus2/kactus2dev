@@ -41,8 +41,8 @@ topLevelRef_(this) {
 	hierarchyRef_->setTitle(tr("Hierarchy reference"));
 	hierarchyRef_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-//     hierarchyRef_->addContentType(VLNV::DESIGN);
-//     hierarchyRef_->updateFiltering();
+    hierarchyRef_->addContentType(VLNV::DESIGN);
+    hierarchyRef_->updateFiltering();
 
 	QFormLayout* extensionLayout = new QFormLayout();
 	extensionLayout->addRow(tr("VendorExtension: Reference to a top-level "
