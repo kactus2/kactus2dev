@@ -46,9 +46,10 @@ void SplashScreen::drawContents(QPainter *painter)
 	int bits = 32;
 #endif
 
-	painter->drawText(300, 125, tr("Version 2.0 %1-bit (Build %2)").arg(QString::number(bits), QString::number(VERSION_BUILDNO)));
-//     painter->drawText(300, 125, tr("Version ") + QString::number(VERSION_MAJOR) + "." +
-//         QString::number(VERSION_MINOR) + tr(" (Build ") + QString::number(VERSION_BUILDNO) + ")");
+	painter->drawText(300, 125, tr("Version %1.%2 %3-bit (Build %4)").arg(QString::number(VERSION_MAJOR),
+                                                                          QString::number(VERSION_MINOR),
+                                                                          QString::number(bits),
+                                                                          QString::number(VERSION_BUILDNO)));
 
     // Draw the other information.
     painter->drawText(QRectF(270, 280, 310, 150), Qt::AlignLeft,
