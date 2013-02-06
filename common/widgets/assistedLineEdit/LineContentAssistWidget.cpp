@@ -302,7 +302,7 @@ void LineContentAssistWidget::fitToContents()
 
     int visibleRowCount = qMin(count(), maxVisibleItems_);
     int height = visibleRowCount * sizeHintForRow(0) + frameWidth() * 2;
-    int width = sizeHintForColumn(0) + frameWidth() * 2 + verticalScrollBar()->sizeHint().width();
+    int width = sizeHintForColumn(0) + frameWidth() * 2 + verticalScrollBar()->sizeHint().width() + 5;
     
     setFixedSize(width, height);
 }
