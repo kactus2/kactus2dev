@@ -387,19 +387,19 @@ void LibraryTreeView::mousePressEvent( QMouseEvent *event ) {
 		expanded = isExpanded(index);
 	}
 
-	if (event->button() == Qt::LeftButton) {
-		dragIndex_ = filter_->mapToSource(index);
-	}
-
 	setCurrentIndex(index);
 
-	// if the item is not yet expanded
-	if (!expanded) {
-		expand(index);
-	}
-	// if item was expanded then close it
-	else {
-		collapse(index);
+	if (event->button() == Qt::LeftButton) {
+		dragIndex_ = filter_->mapToSource(index);
+
+		// if the item is not yet expanded
+		if (!expanded) {
+			expand(index);
+		}
+		// if item was expanded then close it
+		else {
+			collapse(index);
+		}
 	}
 
 	QTreeView::mousePressEvent(event);
@@ -461,11 +461,18 @@ void LibraryTreeView::mouseMoveEvent( QMouseEvent *event ) {
 void LibraryTreeView::setCurrentIndex( const QModelIndex& index ) {
 
 	// expand the tree to full length all the way from the root
-	expand(index.parent().parent().parent().parent());
-	expand(index.parent().parent().parent());
-	expand(index.parent().parent());
-	expand(index.parent());
-	expand(index);
+// 	expand(index.parent().parent().parent().parent());
+// 	expand(index.parent().parent().parent());
+// 	expand(index.parent().parent());
+// 	expand(index.parent());
+
+	QModelIndex temp = index;
+
+	// expand the whole tree up to the index
+	while (temp.parent().isValid()) {
+		temp = temp.parent();
+		expand(temp);
+	}
 
 	// use the default implementation
 	QTreeView::setCurrentIndex(index);

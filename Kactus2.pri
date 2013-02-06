@@ -7,50 +7,45 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./designwidget/BusInterfaceDialog.h \
-    ./mainwindow/DeleteWorkspaceDialog.h \
-    ./mainwindow/NewWorkspaceDialog.h \
-    ./mainwindow/SplashScreen.h \
-    ./MemoryDesigner/AddressBlockItem.h \
-    ./MemoryDesigner/MemoryBaseItem.h \
-    ./resource.h \
+HEADERS += ./resource.h \
     ./common/ColumnTypes.h \
     ./common/CSourceWriter.h \
-    ./common/DesignDiagram.h \
-    ./common/DesignWidget.h \
     ./common/diagramgrid.h \
     ./common/DiagramUtil.h \
     ./common/DrawMode.h \
-    ./common/GenericEditProvider.h \
+    ./common/Global.h \
     ./common/IDFactory.h \
-    ./common/IEditProvider.h \
     ./common/KactusAttribute.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
     ./common/utils.h \
-    ./common/widgets/attributeBox/attributebox.h \
+    ./common/IEditProvider.h \
+    ./common/GenericEditProvider.h \
+    ./common/DesignWidget.h \
+    ./common/DesignDiagram.h \
     ./common/widgets/attributeBox/attributemodel.h \
+    ./common/widgets/attributeBox/attributebox.h \
     ./common/widgets/libraryRefGenerator/libraryrefgenerator.h \
-    ./common/widgets/listManager/dirlistmanager.h \
-    ./common/widgets/listManager/filelistmanager.h \
-    ./common/widgets/listManager/listeditor.h \
-    ./common/widgets/listManager/listmanager.h \
     ./common/widgets/listManager/listmanagermodel.h \
+    ./common/widgets/listManager/listmanager.h \
+    ./common/widgets/listManager/listeditor.h \
+    ./common/widgets/listManager/filelistmanager.h \
+    ./common/widgets/listManager/dirlistmanager.h \
     ./common/widgets/nameGroupBox/namegroupbox.h \
     ./common/widgets/vlnvGenerator/vlnvgenerator.h \
-    ./common/widgets/assistedLineEdit/AssistedLineEdit.h \
     ./common/widgets/assistedLineEdit/BasicLineContentMatcher.h \
     ./common/widgets/assistedLineEdit/ILineContentMatcher.h \
     ./common/widgets/assistedLineEdit/LineContentAssistWidget.h \
+    ./common/widgets/assistedLineEdit/AssistedLineEdit.h \
     ./common/widgets/vlnvDisplayer/vlnvdisplayer.h \
     ./common/widgets/booleanComboBox/booleancombobox.h \
     ./common/widgets/vectorEditor/vectoreditor.h \
     ./common/widgets/tabDocument/TabDocument.h \
-    ./common/widgets/assistedTextEdit/AssistedTextEdit.h \
     ./common/widgets/assistedTextEdit/HighlightStyleDesc.h \
     ./common/widgets/assistedTextEdit/ITextContentMatcher.h \
     ./common/widgets/assistedTextEdit/TextContentAssistWidget.h \
     ./common/widgets/assistedTextEdit/ToolTipHintWidget.h \
+    ./common/widgets/assistedTextEdit/AssistedTextEdit.h \
     ./common/widgets/vlnvEditor/VLNVContentMatcher.h \
     ./common/widgets/vlnvEditor/VLNVDataTree.h \
     ./common/widgets/vlnvEditor/vlnveditor.h \
@@ -91,265 +86,266 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./common/layouts/VCollisionLayout.h \
     ./common/layouts/VStackedLayout.h \
     ./common/layouts/VStaticLayout.h \
-    ./common/graphicsItems/CommonGraphicsUndoCommands.h \
-    ./common/graphicsItems/ComponentItem.h \
-    ./common/graphicsItems/ConnectionEndpoint.h \
     ./common/graphicsItems/ConnectionUndoCommands.h \
-    ./common/graphicsItems/expandableitem.h \
-    ./common/graphicsItems/GraphicsColumn.h \
-    ./common/graphicsItems/GraphicsColumnLayout.h \
     ./common/graphicsItems/GraphicsColumnUndoCommands.h \
-    ./common/graphicsItems/GraphicsConnection.h \
-    ./common/graphicsItems/graphicsexpandcollapseitem.h \
     ./common/graphicsItems/GraphicsItemTypes.h \
-    ./common/graphicsItems/GraphicsLineEdit.h \
-    ./common/graphicsItems/GraphicsRectButton.h \
     ./common/graphicsItems/IGraphicsItemStack.h \
     ./common/graphicsItems/visualizeritem.h \
+    ./common/graphicsItems/GraphicsRectButton.h \
+    ./common/graphicsItems/GraphicsLineEdit.h \
+    ./common/graphicsItems/graphicsexpandcollapseitem.h \
+    ./common/graphicsItems/GraphicsConnection.h \
+    ./common/graphicsItems/GraphicsColumnLayout.h \
+    ./common/graphicsItems/GraphicsColumn.h \
+    ./common/graphicsItems/expandableitem.h \
+    ./common/graphicsItems/ConnectionEndpoint.h \
+    ./common/graphicsItems/ComponentItem.h \
+    ./common/graphicsItems/CommonGraphicsUndoCommands.h \
     ./common/delegates/ComboDelegate/combodelegate.h \
     ./common/delegates/LineEditDelegate/lineeditdelegate.h \
     ./common/views/EditableTableView/editabletableview.h \
     ./common/views/EditableListView/editablelistview.h \
     ./common/models/ParameterModel/parametersmodel.h \
     ./common/dialogs/createVLNVDialog/createvlnvdialog.h \
-    ./common/dialogs/createConfigurationDialog/createconfigurationdialog.h \
     ./common/dialogs/renameDialog/renamedialog.h \
     ./common/dialogs/attributeDialog/attributedialog.h \
     ./common/dialogs/comboSelector/comboselector.h \
-    ./common/dialogs/propertyPageDialog/PropertyPageDialog.h \
     ./common/dialogs/propertyPageDialog/PropertyPageView.h \
+    ./common/dialogs/propertyPageDialog/PropertyPageDialog.h \
     ./common/dialogs/newObjectDialog/newobjectdialog.h \
-    ./common/dialogs/ObjectRemoveDialog/objectremovedialog.h \
     ./common/dialogs/ObjectRemoveDialog/objectremovemodel.h \
+    ./common/dialogs/ObjectRemoveDialog/objectremovedialog.h \
     ./common/dialogs/listSelectDialog/ListSelectDialog.h \
     ./common/dialogs/selectDirectoryDialog/selectdirectorydialog.h \
     ./common/dialogs/NewDesignDialog/NewDesignDialog.h \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h \
     ./common/dialogs/TableViewDialog/TableViewDialog.h \
+    ./common/dialogs/createConfigurationDialog/createconfigurationdialog.h \
     ./common/cornerStitch/CornerStitchStructure.h \
     ./common/cornerStitch/StitchTile.h \
     ./designwidget/AdHocEnabled.h \
-    ./designwidget/AdHocInterfaceItem.h \
-    ./designwidget/AdHocPortItem.h \
-    ./designwidget/BusInterfaceItem.h \
-    ./designwidget/BusPortItem.h \
     ./designwidget/HWAddCommands.h \
-    ./designwidget/HWChangeCommands.h \
-    ./designwidget/HWComponentItem.h \
-    ./designwidget/HWConnection.h \
-    ./designwidget/HWConnectionEndpoint.h \
-    ./designwidget/HWDeleteCommands.h \
-    ./designwidget/HWDesignDiagram.h \
-    ./designwidget/HWDesignWidget.h \
     ./designwidget/HWMoveCommands.h \
-    ./designwidget/OffPageConnectorItem.h \
     ./designwidget/PortmapDialog.h \
+    ./designwidget/BusInterfaceDialog.h \
     ./designwidget/SelectItemTypeDialog.h \
-    ./designwidget/columnview/ColumnEditDialog.h \
+    ./designwidget/OffPageConnectorItem.h \
+    ./designwidget/HWDesignWidget.h \
+    ./designwidget/HWDesignDiagram.h \
+    ./designwidget/HWDeleteCommands.h \
+    ./designwidget/HWConnectionEndpoint.h \
+    ./designwidget/HWConnection.h \
+    ./designwidget/HWComponentItem.h \
+    ./designwidget/HWChangeCommands.h \
+    ./designwidget/BusPortItem.h \
+    ./designwidget/BusInterfaceItem.h \
+    ./designwidget/AdHocPortItem.h \
+    ./designwidget/AdHocInterfaceItem.h \
     ./designwidget/columnview/HWColumn.h \
-    ./IPXactWrapper/ComponentEditor/itemeditor.h \
+    ./designwidget/columnview/ColumnEditDialog.h \
     ./IPXactWrapper/ComponentEditor/itemvisualizer.h \
-    ./IPXactWrapper/ComponentEditor/general/desceditor.h \
+    ./IPXactWrapper/ComponentEditor/itemeditor.h \
     ./IPXactWrapper/ComponentEditor/general/generaleditor.h \
-    ./IPXactWrapper/ComponentEditor/modelParameters/modelparametereditor.h \
-    ./IPXactWrapper/ComponentEditor/modelParameters/modelparametermodel.h \
+    ./IPXactWrapper/ComponentEditor/general/desceditor.h \
     ./IPXactWrapper/ComponentEditor/modelParameters/usagedelegate.h \
-    ./IPXactWrapper/ComponentEditor/ports/portsdelegate.h \
-    ./IPXactWrapper/ComponentEditor/ports/portseditor.h \
+    ./IPXactWrapper/ComponentEditor/modelParameters/modelparametermodel.h \
+    ./IPXactWrapper/ComponentEditor/modelParameters/modelparametereditor.h \
     ./IPXactWrapper/ComponentEditor/ports/portsmodel.h \
+    ./IPXactWrapper/ComponentEditor/ports/portseditor.h \
+    ./IPXactWrapper/ComponentEditor/ports/portsdelegate.h \
     ./IPXactWrapper/ComponentEditor/parameters/parameterseditor.h \
-    ./IPXactWrapper/ComponentEditor/otherClockDrivers/clockdriversdelegate.h \
-    ./IPXactWrapper/ComponentEditor/otherClockDrivers/otherclockdriverseditor.h \
     ./IPXactWrapper/ComponentEditor/otherClockDrivers/otherclockdriversmodel.h \
-    ./IPXactWrapper/ComponentEditor/channels/channelinterfacemanagerdelegate.h \
-    ./IPXactWrapper/ComponentEditor/channels/channelsdelegate.h \
-    ./IPXactWrapper/ComponentEditor/channels/channelseditor.h \
+    ./IPXactWrapper/ComponentEditor/otherClockDrivers/otherclockdriverseditor.h \
+    ./IPXactWrapper/ComponentEditor/otherClockDrivers/clockdriversdelegate.h \
     ./IPXactWrapper/ComponentEditor/channels/channelsmodel.h \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/ApiCreateDialog.h \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/bridgesdelegate.h \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/bridgeseditor.h \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/bridgesmodel.h \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/busifgeneraldetails.h \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/busifgeneraltab.h \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/busifinterfacemaster.h \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/busifinterfacemodeeditor.h \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/busifinterfacemonitor.h \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/busifinterfacemslave.h \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/busifinterfaceslave.h \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/busifinterfacesystem.h \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/busifportmaptab.h \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/businterfaceeditor.h \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/businterfacesdelegate.h \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/businterfaceseditor.h \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/businterfacesmodel.h \
+    ./IPXactWrapper/ComponentEditor/channels/channelseditor.h \
+    ./IPXactWrapper/ComponentEditor/channels/channelsdelegate.h \
+    ./IPXactWrapper/ComponentEditor/channels/channelinterfacemanagerdelegate.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/interfacemodestack.h \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/logicallistmodel.h \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/logicallistview.h \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/physlistmodel.h \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/physlistview.h \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/portlistmodel.h \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/portlistview.h \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/portmapsdelegate.h \
-    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/portmapsmodel.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/businterfacesmodel.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/businterfaceseditor.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/businterfacesdelegate.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/businterfaceeditor.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/busifportmaptab.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/busifinterfacesystem.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/busifinterfaceslave.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/busifinterfacemslave.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/busifinterfacemonitor.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/busifinterfacemodeeditor.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/busifinterfacemaster.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/busifgeneraltab.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/busifgeneraldetails.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/bridgesmodel.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/bridgeseditor.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/bridgesdelegate.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/ApiCreateDialog.h \
     ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/portmapsview.h \
-    ./IPXactWrapper/ComponentEditor/fileBuilders/filebuildersdelegate.h \
-    ./IPXactWrapper/ComponentEditor/fileBuilders/filebuilderseditor.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/portmapsmodel.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/portmapsdelegate.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/portlistview.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/portlistmodel.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/physlistview.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/physlistmodel.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/logicallistview.h \
+    ./IPXactWrapper/ComponentEditor/busInterfaces/portmaps/logicallistmodel.h \
     ./IPXactWrapper/ComponentEditor/fileBuilders/filebuildersmodel.h \
-    ./IPXactWrapper/ComponentEditor/software/ApiInterfaceEditor.h \
-    ./IPXactWrapper/ComponentEditor/software/apiinterfacesdelegate.h \
-    ./IPXactWrapper/ComponentEditor/software/apiinterfaceseditor.h \
-    ./IPXactWrapper/ComponentEditor/software/apiinterfacesmodel.h \
-    ./IPXactWrapper/ComponentEditor/software/ComInterfaceEditor.h \
-    ./IPXactWrapper/ComponentEditor/software/cominterfacesdelegate.h \
-    ./IPXactWrapper/ComponentEditor/software/cominterfaceseditor.h \
-    ./IPXactWrapper/ComponentEditor/software/cominterfacesmodel.h \
-    ./IPXactWrapper/ComponentEditor/software/PropertyValueDelegate.h \
-    ./IPXactWrapper/ComponentEditor/software/PropertyValueEditor.h \
-    ./IPXactWrapper/ComponentEditor/software/PropertyValueModel.h \
-    ./IPXactWrapper/ComponentEditor/software/SWPropertiesEditor.h \
-    ./IPXactWrapper/ComponentEditor/software/SWViewEditor.h \
-    ./IPXactWrapper/ComponentEditor/software/swviewsdelegate.h \
-    ./IPXactWrapper/ComponentEditor/software/swviewseditor.h \
-    ./IPXactWrapper/ComponentEditor/software/swviewsmodel.h \
-    ./IPXactWrapper/ComponentEditor/software/SystemViewEditor.h \
-    ./IPXactWrapper/ComponentEditor/software/SystemViewsDelegate.h \
-    ./IPXactWrapper/ComponentEditor/software/SystemViewsEditor.h \
+    ./IPXactWrapper/ComponentEditor/fileBuilders/filebuilderseditor.h \
+    ./IPXactWrapper/ComponentEditor/fileBuilders/filebuildersdelegate.h \
     ./IPXactWrapper/ComponentEditor/software/SystemViewsModel.h \
-    ./IPXactWrapper/ComponentEditor/addressSpaces/addressspaceeditor.h \
-    ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacegeneraleditor.h \
-    ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacesdelegate.h \
-    ./IPXactWrapper/ComponentEditor/addressSpaces/addressspaceseditor.h \
-    ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacesmodel.h \
-    ./IPXactWrapper/ComponentEditor/addressSpaces/segmenteditor.h \
-    ./IPXactWrapper/ComponentEditor/addressSpaces/segmentproxy.h \
+    ./IPXactWrapper/ComponentEditor/software/SystemViewsEditor.h \
+    ./IPXactWrapper/ComponentEditor/software/SystemViewsDelegate.h \
+    ./IPXactWrapper/ComponentEditor/software/SystemViewEditor.h \
+    ./IPXactWrapper/ComponentEditor/software/swviewsmodel.h \
+    ./IPXactWrapper/ComponentEditor/software/swviewseditor.h \
+    ./IPXactWrapper/ComponentEditor/software/swviewsdelegate.h \
+    ./IPXactWrapper/ComponentEditor/software/SWViewEditor.h \
+    ./IPXactWrapper/ComponentEditor/software/SWPropertiesEditor.h \
+    ./IPXactWrapper/ComponentEditor/software/PropertyValueModel.h \
+    ./IPXactWrapper/ComponentEditor/software/PropertyValueEditor.h \
+    ./IPXactWrapper/ComponentEditor/software/PropertyValueDelegate.h \
+    ./IPXactWrapper/ComponentEditor/software/cominterfacesmodel.h \
+    ./IPXactWrapper/ComponentEditor/software/cominterfaceseditor.h \
+    ./IPXactWrapper/ComponentEditor/software/cominterfacesdelegate.h \
+    ./IPXactWrapper/ComponentEditor/software/ComInterfaceEditor.h \
+    ./IPXactWrapper/ComponentEditor/software/apiinterfacesmodel.h \
+    ./IPXactWrapper/ComponentEditor/software/apiinterfaceseditor.h \
+    ./IPXactWrapper/ComponentEditor/software/apiinterfacesdelegate.h \
+    ./IPXactWrapper/ComponentEditor/software/ApiInterfaceEditor.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmentsmodel.h \
-    ./IPXactWrapper/ComponentEditor/addressSpaces/localMemoryMap/localmemorymapeditor.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/segmentproxy.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/segmenteditor.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacesmodel.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressspaceseditor.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacesdelegate.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacegeneraleditor.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressspaceeditor.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/localMemoryMap/localmemorymapgraphitem.h \
-    ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacegapitem.h \
-    ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacescene.h \
-    ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizationitem.h \
-    ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizer.h \
-    ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/localaddrblockgraphitem.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/localMemoryMap/localmemorymapeditor.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/segmentgraphitem.h \
-    ./IPXactWrapper/ComponentEditor/cpus/addressspacerefdelegate.h \
-    ./IPXactWrapper/ComponentEditor/cpus/cpusdelegate.h \
-    ./IPXactWrapper/ComponentEditor/cpus/cpuseditor.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/localaddrblockgraphitem.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizer.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizationitem.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacescene.h \
+    ./IPXactWrapper/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacegapitem.h \
     ./IPXactWrapper/ComponentEditor/cpus/cpusmodel.h \
-    ./IPXactWrapper/ComponentEditor/views/envidentifiereditor.h \
-    ./IPXactWrapper/ComponentEditor/views/envidentifiersdelegate.h \
-    ./IPXactWrapper/ComponentEditor/views/envidentifiersmodel.h \
-    ./IPXactWrapper/ComponentEditor/views/filesetrefeditor.h \
-    ./IPXactWrapper/ComponentEditor/views/filesetrefeditordelegate.h \
-    ./IPXactWrapper/ComponentEditor/views/filesetrefmodel.h \
-    ./IPXactWrapper/ComponentEditor/views/flatviewgeneraltab.h \
-    ./IPXactWrapper/ComponentEditor/views/hierarchyrefwidget.h \
-    ./IPXactWrapper/ComponentEditor/views/vieweditor.h \
-    ./IPXactWrapper/ComponentEditor/views/viewseditor.h \
+    ./IPXactWrapper/ComponentEditor/cpus/cpuseditor.h \
+    ./IPXactWrapper/ComponentEditor/cpus/cpusdelegate.h \
+    ./IPXactWrapper/ComponentEditor/cpus/addressspacerefdelegate.h \
     ./IPXactWrapper/ComponentEditor/views/viewsmodel.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/fileseteditor.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/filesetsdelegate.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/filesetseditor.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/filesetsmodel.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/groupmanager.h \
+    ./IPXactWrapper/ComponentEditor/views/viewseditor.h \
+    ./IPXactWrapper/ComponentEditor/views/vieweditor.h \
+    ./IPXactWrapper/ComponentEditor/views/hierarchyrefwidget.h \
+    ./IPXactWrapper/ComponentEditor/views/flatviewgeneraltab.h \
+    ./IPXactWrapper/ComponentEditor/views/filesetrefmodel.h \
+    ./IPXactWrapper/ComponentEditor/views/filesetrefeditordelegate.h \
+    ./IPXactWrapper/ComponentEditor/views/filesetrefeditor.h \
+    ./IPXactWrapper/ComponentEditor/views/envidentifiersmodel.h \
+    ./IPXactWrapper/ComponentEditor/views/envidentifiersdelegate.h \
+    ./IPXactWrapper/ComponentEditor/views/envidentifiereditor.h \
     ./IPXactWrapper/ComponentEditor/fileSet/groupmanagerdelegate.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/file/filebuildcommand.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/file/filedefinemodel.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/file/filedefineview.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/file/fileeditor.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/file/fileextratab.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/file/filegeneraleditor.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/file/filegeneraltab.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/file/filenameeditor.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/file/filenamelineedit.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/file/filesdelegate.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/file/fileseditor.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/file/filesmodel.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/file/filesview.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/file/filetypeeditor.h \
-    ./IPXactWrapper/ComponentEditor/fileSet/file/filetypeeditordelegate.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/groupmanager.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/filesetsmodel.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/filesetseditor.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/filesetsdelegate.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/fileseteditor.h \
     ./IPXactWrapper/ComponentEditor/fileSet/file/targetnameedit.h \
-    ./IPXactWrapper/ComponentEditor/memoryMaps/addressblockdelegate.h \
-    ./IPXactWrapper/ComponentEditor/memoryMaps/addressblockeditor.h \
-    ./IPXactWrapper/ComponentEditor/memoryMaps/addressblockmodel.h \
-    ./IPXactWrapper/ComponentEditor/memoryMaps/addressblockproxy.h \
-    ./IPXactWrapper/ComponentEditor/memoryMaps/enumeratedvaluedelegate.h \
-    ./IPXactWrapper/ComponentEditor/memoryMaps/enumeratedvaluemodel.h \
-    ./IPXactWrapper/ComponentEditor/memoryMaps/fieldeditor.h \
-    ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapdelegate.h \
-    ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapeditor.h \
-    ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapmodel.h \
-    ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapproxy.h \
-    ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapsdelegate.h \
-    ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapseditor.h \
-    ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapsmodel.h \
-    ./IPXactWrapper/ComponentEditor/memoryMaps/registerdelegate.h \
-    ./IPXactWrapper/ComponentEditor/memoryMaps/registereditor.h \
-    ./IPXactWrapper/ComponentEditor/memoryMaps/registertablemodel.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filetypeeditordelegate.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filetypeeditor.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filesview.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filesmodel.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/fileseditor.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filesdelegate.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filenamelineedit.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filenameeditor.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filegeneraltab.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filegeneraleditor.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/fileextratab.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/fileeditor.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filedefineview.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filedefinemodel.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/file/filebuildcommand.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/writevalueconstrainteditor.h \
-    ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.h \
-    ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.h \
-    ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h \
-    ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapscene.h \
-    ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h \
-    ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapview.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/registertablemodel.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/registereditor.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/registerdelegate.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapsmodel.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapseditor.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapsdelegate.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapproxy.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapmodel.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapeditor.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/memorymapdelegate.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/fieldeditor.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/enumeratedvaluemodel.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/enumeratedvaluedelegate.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/addressblockproxy.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/addressblockmodel.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/addressblockeditor.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/addressblockdelegate.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditor.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditoraddrblockitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditoraddrspaceitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditoraddrspacesitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorapiinterfaceitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorapiinterfacesitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorbusinterfaceitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorbusinterfacesitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorchannelsitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorcominterfaceitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorcominterfacesitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorcpusitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorfielditem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorfileitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorfilesetitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorfilesetsitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorgeneralitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorgroupslot.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditoritem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditormemmapitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditormemmapsitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditormodelparamsitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorotherclocksitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorparametersitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorportsitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorregisteritem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorrootitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorswpropertiesitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorswviewitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorswviewsitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/ComponentEditorSystemViewItem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/ComponentEditorSystemViewsItem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditortreemodel.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorviewitem.h \
-    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorviewsitem.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapview.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapscene.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.h \
+    ./IPXactWrapper/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.h \
     ./IPXactWrapper/ComponentEditor/treeStructure/componenttreeview.h \
-    ./IPXactWrapper/ComponentEditor/visualization/fieldgapitem.h \
-    ./IPXactWrapper/ComponentEditor/visualization/memorygapitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorviewsitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorviewitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditortreemodel.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/ComponentEditorSystemViewsItem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/ComponentEditorSystemViewItem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorswviewsitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorswviewitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorswpropertiesitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorrootitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorregisteritem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorportsitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorparametersitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorotherclocksitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditormodelparamsitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditormemmapsitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditormemmapitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditoritem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorgroupslot.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorgeneralitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorfilesetsitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorfilesetitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorfileitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorfielditem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorcpusitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorcominterfacesitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorcominterfaceitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorchannelsitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorbusinterfacesitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorbusinterfaceitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorapiinterfacesitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditorapiinterfaceitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditoraddrspacesitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditoraddrspaceitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditoraddrblockitem.h \
+    ./IPXactWrapper/ComponentEditor/treeStructure/componenteditor.h \
     ./IPXactWrapper/ComponentEditor/visualization/memoryvisualizationitem.h \
-    ./IPXactWrapper/BusEditor/absdefgroup.h \
-    ./IPXactWrapper/BusEditor/busdefgroup.h \
-    ./IPXactWrapper/BusEditor/buseditor.h \
-    ./IPXactWrapper/BusEditor/busportsdelegate.h \
-    ./IPXactWrapper/BusEditor/busportsmodel.h \
-    ./IPXactWrapper/BusEditor/busportsview.h \
-    ./IPXactWrapper/BusEditor/impexpgroup.h \
-    ./IPXactWrapper/BusEditor/renamegroup.h \
+    ./IPXactWrapper/ComponentEditor/visualization/memorygapitem.h \
+    ./IPXactWrapper/ComponentEditor/visualization/fieldgapitem.h \
     ./IPXactWrapper/BusEditor/signalsgroup.h \
-    ./IPXactWrapper/ComDefinitionEditor/ComDefinitionEditor.h \
-    ./IPXactWrapper/ComDefinitionEditor/ComPropertyDelegate.h \
-    ./IPXactWrapper/ComDefinitionEditor/ComPropertyEditor.h \
+    ./IPXactWrapper/BusEditor/renamegroup.h \
+    ./IPXactWrapper/BusEditor/impexpgroup.h \
+    ./IPXactWrapper/BusEditor/busportsview.h \
+    ./IPXactWrapper/BusEditor/busportsmodel.h \
+    ./IPXactWrapper/BusEditor/busportsdelegate.h \
+    ./IPXactWrapper/BusEditor/buseditor.h \
+    ./IPXactWrapper/BusEditor/busdefgroup.h \
+    ./IPXactWrapper/BusEditor/absdefgroup.h \
     ./IPXactWrapper/ComDefinitionEditor/ComPropertyModel.h \
+    ./IPXactWrapper/ComDefinitionEditor/ComPropertyEditor.h \
+    ./IPXactWrapper/ComDefinitionEditor/ComPropertyDelegate.h \
+    ./IPXactWrapper/ComDefinitionEditor/ComDefinitionEditor.h \
     ./IPXactWrapper/ApiDefinitionEditor/ApiDefinitionEditor.h \
-    ./IPXactWrapper/ApiDefinitionEditor/ApiFunctionEditor.h \
-    ./IPXactWrapper/ApiDefinitionEditor/ApiFunctionModel.h \
-    ./IPXactWrapper/ApiDefinitionEditor/ApiFunctionParameterDelegate.h \
     ./IPXactWrapper/ApiDefinitionEditor/ApiFunctionParameterModel.h \
+    ./IPXactWrapper/ApiDefinitionEditor/ApiFunctionParameterDelegate.h \
+    ./IPXactWrapper/ApiDefinitionEditor/ApiFunctionModel.h \
+    ./IPXactWrapper/ApiDefinitionEditor/ApiFunctionEditor.h \
     ./models/abstractiondefinition.h \
     ./models/addressblock.h \
     ./models/addressspace.h \
@@ -424,121 +420,126 @@ HEADERS += ./designwidget/BusInterfaceDialog.h \
     ./models/wireabstraction.h \
     ./models/writevalueconstraint.h \
     ./models/XmlUtils.h \
-    ./mainwindow/mainwindow.h \
-    ./mainwindow/NewApiDefinitionPage.h \
-    ./mainwindow/newbuspage.h \
-    ./mainwindow/NewComDefinitionPage.h \
-    ./mainwindow/NewComponentPage.h \
-    ./mainwindow/NewDesignPage.h \
-    ./mainwindow/NewSWComponentPage.h \
-    ./mainwindow/NewSWDesignPage.h \
+    ./mainwindow/SplashScreen.h \
+    ./mainwindow/NewWorkspaceDialog.h \
+    ./mainwindow/DeleteWorkspaceDialog.h \
     ./mainwindow/NewSystemPage.h \
+    ./mainwindow/NewSWDesignPage.h \
+    ./mainwindow/NewSWComponentPage.h \
+    ./mainwindow/NewDesignPage.h \
+    ./mainwindow/NewComponentPage.h \
+    ./mainwindow/NewComDefinitionPage.h \
+    ./mainwindow/newbuspage.h \
+    ./mainwindow/NewApiDefinitionPage.h \
+    ./mainwindow/mainwindow.h \
     ./modelsimGenerator/modelsimgenerator.h \
     ./quartusGenerator/quartusgenerator.h \
-    ./vhdlGenerator/vhdlcomponentdeclaration.h \
-    ./vhdlGenerator/vhdlcomponentinstance.h \
     ./vhdlGenerator/vhdlconnectionendpoint.h \
     ./vhdlGenerator/vhdlgeneral.h \
-    ./vhdlGenerator/vhdlgenerator2.h \
-    ./vhdlGenerator/vhdlgeneric.h \
-    ./vhdlGenerator/vhdlobject.h \
-    ./vhdlGenerator/vhdlport.h \
     ./vhdlGenerator/vhdlportmap.h \
     ./vhdlGenerator/vhdlportsorter.h \
     ./vhdlGenerator/vhdlsignal.h \
+    ./vhdlGenerator/vhdlport.h \
+    ./vhdlGenerator/vhdlobject.h \
+    ./vhdlGenerator/vhdlgeneric.h \
+    ./vhdlGenerator/vhdlgenerator2.h \
+    ./vhdlGenerator/vhdlcomponentinstance.h \
+    ./vhdlGenerator/vhdlcomponentdeclaration.h \
     ./PropertyWidget/messageconsole.h \
     ./MCAPI/CSourceContentMatcher.h \
-    ./MCAPI/CSourceHighlighter.h \
-    ./MCAPI/CSourceTextEdit.h \
-    ./MCAPI/CSourceWidget.h \
     ./MCAPI/MCAPIDesignerTypes.h \
-    ./settings/CodeEditorSettingsPage.h \
-    ./settings/GeneralSettingsPage.h \
-    ./settings/NamingPolicySettingsPage.h \
-    ./settings/SettingsDialog.h \
+    ./MCAPI/CSourceWidget.h \
+    ./MCAPI/CSourceTextEdit.h \
+    ./MCAPI/CSourceHighlighter.h \
     ./settings/SettingsUpdater.h \
-    ./ComponentInstanceEditor/componentinstanceeditor.h \
-    ./ComponentInstanceEditor/componentinstancemodel.h \
-    ./ComponentInstanceEditor/configurableelementdelegate.h \
+    ./settings/SettingsDialog.h \
+    ./settings/NamingPolicySettingsPage.h \
+    ./settings/GeneralSettingsPage.h \
+    ./settings/CodeEditorSettingsPage.h \
     ./ComponentInstanceEditor/configurableelementeditor.h \
-    ./ConfigurationEditor/activeviewdelegate.h \
-    ./ConfigurationEditor/activevieweditor.h \
-    ./ConfigurationEditor/activeviewmodel.h \
+    ./ComponentInstanceEditor/configurableelementdelegate.h \
+    ./ComponentInstanceEditor/componentinstancemodel.h \
+    ./ComponentInstanceEditor/componentinstanceeditor.h \
     ./ConfigurationEditor/configurationeditor.h \
+    ./ConfigurationEditor/activeviewmodel.h \
+    ./ConfigurationEditor/activevieweditor.h \
+    ./ConfigurationEditor/activeviewdelegate.h \
     ./DocumentGenerator/documentgenerator.h \
     ./InterfaceEditor/interfaceeditor.h \
-    ./ConnectionEditor/AdHocBoundsDelegate.h \
-    ./ConnectionEditor/AdHocBoundsModel.h \
     ./ConnectionEditor/connectioneditor.h \
+    ./ConnectionEditor/AdHocBoundsModel.h \
+    ./ConnectionEditor/AdHocBoundsDelegate.h \
     ./GCF/Common.h \
     ./GCF/MenuStrip.h \
-    ./AdHocEditor/AdHocDelegate.h \
-    ./AdHocEditor/AdHocEditor.h \
     ./AdHocEditor/AdHocModel.h \
+    ./AdHocEditor/AdHocEditor.h \
+    ./AdHocEditor/AdHocDelegate.h \
     ./SystemDesign/HWMappingItem.h \
-    ./SystemDesign/SWComponentItem.h \
-    ./SystemDesign/SWConnectionEndpoint.h \
-    ./SystemDesign/SWInterfaceItem.h \
-    ./SystemDesign/SWOffPageConnectorItem.h \
-    ./SystemDesign/SWPortItem.h \
-    ./SystemDesign/SystemAddCommands.h \
-    ./SystemDesign/SystemChangeCommands.h \
-    ./SystemDesign/SystemColumn.h \
-    ./SystemDesign/SystemComponentItem.h \
-    ./SystemDesign/SystemDeleteCommands.h \
-    ./SystemDesign/SystemDesignDiagram.h \
-    ./SystemDesign/SystemDesignWidget.h \
     ./SystemDesign/SystemMoveCommands.h \
+    ./SystemDesign/SystemDesignWidget.h \
+    ./SystemDesign/SystemDesignDiagram.h \
+    ./SystemDesign/SystemDeleteCommands.h \
+    ./SystemDesign/SystemComponentItem.h \
+    ./SystemDesign/SystemColumn.h \
+    ./SystemDesign/SystemChangeCommands.h \
+    ./SystemDesign/SystemAddCommands.h \
+    ./SystemDesign/SWPortItem.h \
+    ./SystemDesign/SWOffPageConnectorItem.h \
+    ./SystemDesign/SWInterfaceItem.h \
+    ./SystemDesign/SWConnectionEndpoint.h \
+    ./SystemDesign/SWComponentItem.h \
     ./LibraryManager/ipxactitem.h \
-    ./LibraryManager/ipxactmodel.h \
-    ./LibraryManager/ipxactwidget.h \
-    ./LibraryManager/librarydata.h \
-    ./LibraryManager/LibraryErrorModel.h \
-    ./LibraryManager/libraryhandler.h \
     ./LibraryManager/libraryinterface.h \
-    ./LibraryManager/libraryitem.h \
-    ./LibraryManager/librarytreefilter.h \
-    ./LibraryManager/librarytreemodel.h \
-    ./LibraryManager/librarytreeview.h \
-    ./LibraryManager/librarytreewidget.h \
     ./LibraryManager/LibraryUtils.h \
     ./LibraryManager/vlnv.h \
-    ./LibraryManager/VLNVDialer/dialerwidget.h \
-    ./LibraryManager/VLNVDialer/filterwidget.h \
-    ./LibraryManager/VLNVDialer/firmnessgroup.h \
-    ./LibraryManager/VLNVDialer/hierarchygroup.h \
-    ./LibraryManager/VLNVDialer/implementationgroup.h \
-    ./LibraryManager/VLNVDialer/typegroup.h \
+    ./LibraryManager/librarytreeview.h \
+    ./LibraryManager/librarytreewidget.h \
+    ./LibraryManager/librarytreemodel.h \
+    ./LibraryManager/librarytreefilter.h \
+    ./LibraryManager/libraryitem.h \
+    ./LibraryManager/libraryhandler.h \
+    ./LibraryManager/LibraryErrorModel.h \
+    ./LibraryManager/librarydata.h \
+    ./LibraryManager/ipxactwidget.h \
+    ./LibraryManager/ipxactmodel.h \
     ./LibraryManager/VLNVDialer/vlnvdialer.h \
-    ./LibraryManager/HierarchyView/hierarchyfilter.h \
-    ./LibraryManager/HierarchyView/hierarchyitem.h \
-    ./LibraryManager/HierarchyView/hierarchymodel.h \
+    ./LibraryManager/VLNVDialer/typegroup.h \
+    ./LibraryManager/VLNVDialer/implementationgroup.h \
+    ./LibraryManager/VLNVDialer/hierarchygroup.h \
+    ./LibraryManager/VLNVDialer/firmnessgroup.h \
+    ./LibraryManager/VLNVDialer/filterwidget.h \
+    ./LibraryManager/VLNVDialer/dialerwidget.h \
     ./LibraryManager/HierarchyView/hierarchyview.h \
     ./LibraryManager/HierarchyView/hierarchywidget.h \
+    ./LibraryManager/HierarchyView/hierarchymodel.h \
+    ./LibraryManager/HierarchyView/hierarchyitem.h \
+    ./LibraryManager/HierarchyView/hierarchyfilter.h \
     ./PluginSystem/IGeneratorPlugin.h \
     ./PluginSystem/IPluginInformation.h \
     ./PluginSystem/IPluginUtility.h \
-    ./PluginSystem/PluginListDialog.h \
     ./PluginSystem/PluginManager.h \
-    ./SystemDetailsEditor/ExportSWDialog.h \
-    ./SystemDetailsEditor/SwitchHWDialog.h \
+    ./PluginSystem/PluginListDialog.h \
     ./SystemDetailsEditor/SystemDetailsEditor.h \
-    ./HelpSystem/ContextHelpBrowser.h \
-    ./HelpSystem/HelpSearchWidget.h \
+    ./SystemDetailsEditor/SwitchHWDialog.h \
+    ./SystemDetailsEditor/ExportSWDialog.h \
     ./HelpSystem/HelpWindow.h \
+    ./HelpSystem/HelpSearchWidget.h \
+    ./HelpSystem/ContextHelpBrowser.h \
+    ./AddressEditor/AddressEntry.h \
     ./AddressEditor/AddressDelegate.h \
     ./AddressEditor/AddressEditor.h \
-    ./AddressEditor/AddressEntry.h \
-    ./AddressEditor/AddressModel.h \
     ./AddressEditor/AddressTableView.h \
-    ./MemoryDesigner/AddressSectionItem.h \
-    ./MemoryDesigner/AddressSpaceItem.h \
-    ./MemoryDesigner/AddressSubsection.h \
-    ./MemoryDesigner/MemoryColumn.h \
-    ./MemoryDesigner/MemoryDesignDiagram.h \
-    ./MemoryDesigner/MemoryDesignWidget.h \
+    ./AddressEditor/AddressModel.h \
+    ./MemoryDesigner/AddressBlockItem.h \
+    ./MemoryDesigner/SegmentItem.h \
+    ./MemoryDesigner/MemoryBaseItem.h \
     ./MemoryDesigner/MemoryItem.h \
-    ./MemoryDesigner/SegmentItem.h
+    ./MemoryDesigner/MemoryDesignWidget.h \
+    ./MemoryDesigner/MemoryDesignDiagram.h \
+    ./MemoryDesigner/MemoryColumn.h \
+    ./MemoryDesigner/AddressSubsection.h \
+    ./MemoryDesigner/AddressSpaceItem.h \
+    ./MemoryDesigner/AddressSectionItem.h
 SOURCES += ./common/CSourceWriter.cpp \
     ./common/DesignDiagram.cpp \
     ./common/DesignWidget.cpp \

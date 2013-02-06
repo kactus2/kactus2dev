@@ -508,24 +508,26 @@ void HierarchyView::mousePressEvent( QMouseEvent *event ) {
 	startPos_ = event->pos();
 	QModelIndex index = indexAt(startPos_);
 
+	// check if the object is already expanded or not
 	bool expanded = false;
 	if (index.isValid()) {
 		expanded = isExpanded(index);
 	}
 	
-	if (event->button() == Qt::LeftButton) {
-		dragIndex_ = filter_->mapToSource(index);
-	}
-
 	// select the object even if the instance column was clicked
 	QModelIndex indexToSelect = model()->index(index.row(), 0, index.parent());
 	setCurrentIndex(indexToSelect);
 
-	if (expanded) {
-		collapse(index);
-	}
-	else {
-		expand(index);
+	if (event->button() == Qt::LeftButton) {
+		dragIndex_ = filter_->mapToSource(index);
+
+		// left click expands/collapses items, right click shows context menu
+		if (expanded) {
+			collapse(index);
+		}
+		else {
+			expand(index);
+		}
 	}
 
 	//setCurrentIndex(index);
@@ -581,7 +583,6 @@ void HierarchyView::mouseMoveEvent( QMouseEvent *event ) {
 void HierarchyView::setCurrentIndex( const QModelIndex& index ) {
 
 	QModelIndex temp = index;
-	expand(temp);
 	
 	// expand the whole tree up to the index
 	while (temp.parent().isValid()) {
