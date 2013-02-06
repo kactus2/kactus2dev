@@ -71,6 +71,8 @@ VLNVEditor::VLNVEditor(VLNV::IPXactType type,
 
     // By default, add the VLNV type to edit to the content types.
     addContentType(type);
+
+    vendorMatcher_.setDataNode(&dataTree_);
 }
 
 //-----------------------------------------------------------------------------
@@ -133,7 +135,7 @@ bool VLNVEditor::isValid() const
 //-----------------------------------------------------------------------------
 void VLNVEditor::updateMatcherItems()
 {
-    vendorMatcher_.setDataNode(&dataTree_);
+    //vendorMatcher_.setDataNode(&dataTree_);
     updateLibraryMatcherItem();
 }
 

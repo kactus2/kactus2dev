@@ -1,7 +1,7 @@
 
 ===============================================================================
                                 README : Kactus2
-              Copyright (c) 2012 Tampere University of Technology
+           Copyright (c) 2012-2013 Tampere University of Technology
                             http://funbase.cs.tut.fi
 ===============================================================================
 
@@ -50,7 +50,7 @@ Juho Järvinen
 Kactus2 uses parts of the Generic Component Framework (GCF), copyright
 VCreate Logic (P) Ltd, Bangalore, India. (GPL2)
 
-Kactus2 is linked with Qt 4.8.2, copyright Nokia Corporation. (LGPL)
+Kactus2 is linked with Qt 5.0.0, copyright Digia Plc. (LGPL)
 
 
 Icons used in Kactus2
