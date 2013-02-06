@@ -177,6 +177,7 @@ void SystemDetailsEditor::setupLayout()
     QVBoxLayout* topLayout = new QVBoxLayout(this);
     topLayout->addWidget(hwRefEditor_);
     topLayout->addLayout(selectorLayout);
+    topLayout->addSpacing(12);
     topLayout->addLayout(buttonLayout);
     topLayout->addStretch(1);
 }
