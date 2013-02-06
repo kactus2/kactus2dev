@@ -196,6 +196,10 @@ protected:
     
     virtual void showEvent(QShowEvent* event);
 
+private slots:
+    //! Refreshes the filtering and matcher items.
+    void refresh();
+
 private:
     // Disable copying.
     VLNVEditor(VLNVEditor const& rhs);

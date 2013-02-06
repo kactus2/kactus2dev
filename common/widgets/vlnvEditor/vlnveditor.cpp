@@ -283,7 +283,7 @@ void VLNVEditor::initConnections()
         this, SLOT(updateVersionMatcherItem()), Qt::UniqueConnection);
 
     connect(static_cast<LibraryHandler*>(handler_), SIGNAL(refreshDialer()),
-            this, SLOT(updateMatcherItems()), Qt::UniqueConnection);
+            this, SLOT(refresh()), Qt::UniqueConnection);
 }
 
 bool VLNVEditor::isEmpty() const {
@@ -448,9 +448,17 @@ void VLNVEditor::showEvent(QShowEvent* event)
 {
     if (dirty_)
     {
-        updateFiltering();
-        updateMatcherItems();
+        refresh();
     }
 
     QGroupBox::showEvent(event);
+}
+
+//-----------------------------------------------------------------------------
+// Function: VLNVEditor::refresh()
+//-----------------------------------------------------------------------------
+void VLNVEditor::refresh()
+{
+    updateFiltering();
+    updateMatcherItems();
 }
