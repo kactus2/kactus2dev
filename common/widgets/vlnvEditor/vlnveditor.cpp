@@ -47,7 +47,7 @@ VLNVEditor::VLNVEditor(VLNV::IPXactType type,
       libraryEdit_(0),
       libraryMatcher_(libHandler),
       nameEdit_(0),
-      nameExtensionLabel_(tr(".design"), this),
+      nameExtensionLabel_(this),
       nameMatcher_(libHandler),
       versionEdit_(0),
       versionMatcher_(libHandler),
@@ -433,6 +433,8 @@ void VLNVEditor::addNameExtension(QString const& extension)
     {
         nameExtensionLabel_.setText(nameExtensionLabel_.text() + "/" + extension);
     }
+
+    nameExtensionLabel_.setVisible(true);
 
     dataTree_.addExtensionFilter(extension);
     dirty_ = true;

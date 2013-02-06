@@ -40,15 +40,16 @@ ExportSWDialog::ExportSWDialog(LibraryInterface* lh, QWidget* parent)
     vlnvEdit_->addNameExtension(".sysdesign");
     vlnvEdit_->addNameExtension(".sysdesigncfg");
 
-    // Create layouts.
-    QHBoxLayout* dirLayout = new QHBoxLayout();
-    dirLayout->addWidget(directoryLabel_);
-    dirLayout->addWidget(directoryEdit_, 1);
+    QGroupBox* separator = new QGroupBox(this);
+    separator->setFlat(true);
 
+    // Create layouts.
     layout_->addWidget(infoLabel_);
     layout_->addSpacing(12);
     layout_->addWidget(vlnvEdit_);
-    layout_->addLayout(dirLayout);
+    layout_->addWidget(directoryLabel_);
+    layout_->addWidget(directoryEdit_);
+    layout_->addWidget(separator);
     layout_->addWidget(buttonBox_);
 
     // Setup connections.
@@ -61,6 +62,7 @@ ExportSWDialog::ExportSWDialog(LibraryInterface* lh, QWidget* parent)
     connect(vlnvEdit_, SIGNAL(contentChanged()), this, SLOT(validate()), Qt::UniqueConnection);
 
     setFixedHeight(sizeHint().height());
+    resize(400, sizeHint().height());
     validate();
 }
 

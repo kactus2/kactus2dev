@@ -41,6 +41,9 @@ okButton_(0)
 	directoryEdit_ = new LibraryPathSelector(this);
 	connect(directoryEdit_, SIGNAL(editTextChanged(QString const&)), this, SLOT(onContentChanged()));
 
+    QGroupBox* separator = new QGroupBox(this);
+    separator->setFlat(true);
+
     okButton_ = new QPushButton(tr("&OK"));
     okButton_->setEnabled(false);
     connect(okButton_, SIGNAL(released()), this, SLOT(accept()));
@@ -57,6 +60,7 @@ okButton_(0)
     mainLayout->addWidget(vlnvEditor_);
     mainLayout->addWidget(directoryLabel);
     mainLayout->addWidget(directoryEdit_);
+    mainLayout->addWidget(separator);
     mainLayout->addWidget(buttonBox);
     mainLayout->addStretch(1);
     setLayout(mainLayout);
