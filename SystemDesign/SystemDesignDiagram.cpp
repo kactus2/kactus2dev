@@ -432,118 +432,7 @@ void SystemDesignDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 {
-    if (dragType_ == DRAG_TYPE_SW)
-    {
-        // Find the top-most component under the cursor.
-        ComponentItem* item = getTopmostComponent(event->scenePos());
-
-        // If the underlying object is a HW mapping item, accept the drag here.
-        // TODO: Alt modifier for MoveAction?
-        if (item != 0 && item->type() == HWMappingItem::Type)
-        {
-            HWMappingItem* mappingItem = static_cast<HWMappingItem*>(item);
-
-            if (mappingItem->componentModel()->isCpu())
-            {
-                event->setDropAction(Qt::CopyAction);
-            }
-            else
-            {
-                event->setDropAction(Qt::MoveAction);
-            }
-        }
-        else if (item != 0 && item->type() == SWComponentItem::Type)
-        {
-            SWComponentItem* swCompItem = static_cast<SWComponentItem*>(item);
-
-            if (!swCompItem->isImported())
-            {
-                event->setDropAction(Qt::MoveAction);
-            }
-            else
-            {
-                event->setDropAction(Qt::IgnoreAction);
-            }
-        }
-        else
-        {
-            // Otherwise check which column should receive the SW component.
-            GraphicsColumn* column = layout_->findColumnAt(snapPointToGrid(event->scenePos()));
-
-            if (column != 0)
-            {
-                event->setDropAction(Qt::CopyAction);
-            }
-            else
-            {
-                event->setDropAction(Qt::IgnoreAction);
-            }
-        }
-
-        event->accept();
-    }
-    else if (dragType_ == DRAG_TYPE_HW)
-    {
-        QVariant data = event->mimeData()->imageData();
-        
-        if (!data.canConvert<VLNV>())
-        {
-            return;
-        }
-
-        VLNV vlnv = data.value<VLNV>();
-
-        if (vlnv != *getEditedComponent()->getVlnv())
-        {
-            event->setDropAction(Qt::LinkAction);
-        }
-        else
-        {
-            event->setDropAction(Qt::IgnoreAction);
-        }
-
-        event->accept();
-    }
-    else if (dragType_ == DRAG_TYPE_DEFINITION)
-    {
-        // Check if there is an endpoint close enough the cursor.
-        SWConnectionEndpoint* endpoint =
-            DiagramUtil::snapToItem<SWConnectionEndpoint>(event->scenePos(), this, GridSize);
-
-        if (highlightedEndpoint_ != 0)
-        {
-            highlightedEndpoint_->setHighlight(SWConnectionEndpoint::HIGHLIGHT_OFF);
-            highlightedEndpoint_ = 0;
-        }
-
-        if (endpoint != 0 && !endpoint->isInvalid())
-        {
-            highlightedEndpoint_ = endpoint;
-        }
-
-        // Allow the drop event if the end point is undefined or there are no connections
-        // and the encompassing component is unpackaged.
-        if (highlightedEndpoint_ != 0 &&
-            (highlightedEndpoint_->getType() == SWConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED ||
-             (!highlightedEndpoint_->isConnected() && highlightedEndpoint_->getOwnerComponent() != 0 &&
-              !highlightedEndpoint_->getOwnerComponent()->isValid())))
-        {
-            event->setDropAction(Qt::CopyAction);
-            highlightedEndpoint_->setHighlight(SWConnectionEndpoint::HIGHLIGHT_HOVER);
-        }
-        else
-        {
-            event->setDropAction(Qt::IgnoreAction);
-        }
-    }
-    else if (dragType_ == DRAG_TYPE_DESIGN)
-    {
-        event->setDropAction(Qt::CopyAction);
-    }
-    else
-    {
-        event->setDropAction(Qt::IgnoreAction);
-    }
+    updateDropAction(event);
 }
 
 //-----------------------------------------------------------------------------
@@ -570,12 +459,13 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         return;
     }
 
-	QVariant data = event->mimeData()->imageData();
+    QVariant data = event->mimeData()->imageData();
 	if (!data.canConvert<VLNV>()) {
 		return;
 	}
 
 	VLNV droppedVLNV = data.value<VLNV>();
+    updateDropAction(event);
 
     // Check if the dragged item was a valid one.
     if (dragType_ == DRAG_TYPE_SW)
@@ -2767,5 +2657,124 @@ void SystemDesignDiagram::recallPortPositions(SWInstance const &instance, SWComp
             port->setPos(itrPortPos.value());
             item->onMovePort(port);
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignDiagram::updateDropAction()
+//-----------------------------------------------------------------------------
+void SystemDesignDiagram::updateDropAction(QGraphicsSceneDragDropEvent* event)
+{
+    if (dragType_ == DRAG_TYPE_SW)
+    {
+        // Find the top-most component under the cursor.
+        ComponentItem* item = getTopmostComponent(event->scenePos());
+
+        // If the underlying object is a HW mapping item, accept the drag here.
+        // TODO: Alt modifier for MoveAction?
+        if (item != 0 && item->type() == HWMappingItem::Type)
+        {
+            HWMappingItem* mappingItem = static_cast<HWMappingItem*>(item);
+
+            if (mappingItem->componentModel()->isCpu())
+            {
+                event->setDropAction(Qt::CopyAction);
+            }
+            else
+            {
+                event->setDropAction(Qt::MoveAction);
+            }
+        }
+        else if (item != 0 && item->type() == SWComponentItem::Type)
+        {
+            SWComponentItem* swCompItem = static_cast<SWComponentItem*>(item);
+
+            if (!swCompItem->isImported())
+            {
+                event->setDropAction(Qt::MoveAction);
+            }
+            else
+            {
+                event->setDropAction(Qt::IgnoreAction);
+            }
+        }
+        else
+        {
+            // Otherwise check which column should receive the SW component.
+            GraphicsColumn* column = layout_->findColumnAt(snapPointToGrid(event->scenePos()));
+
+            if (column != 0)
+            {
+                event->setDropAction(Qt::CopyAction);
+            }
+            else
+            {
+                event->setDropAction(Qt::IgnoreAction);
+            }
+        }
+
+        event->accept();
+    }
+    else if (dragType_ == DRAG_TYPE_HW)
+    {
+        QVariant data = event->mimeData()->imageData();
+
+        if (!data.canConvert<VLNV>())
+        {
+            return;
+        }
+
+        VLNV vlnv = data.value<VLNV>();
+
+        if (vlnv != *getEditedComponent()->getVlnv())
+        {
+            event->setDropAction(Qt::LinkAction);
+        }
+        else
+        {
+            event->setDropAction(Qt::IgnoreAction);
+        }
+
+        event->accept();
+    }
+    else if (dragType_ == DRAG_TYPE_DEFINITION)
+    {
+        // Check if there is an endpoint close enough the cursor.
+        SWConnectionEndpoint* endpoint =
+            DiagramUtil::snapToItem<SWConnectionEndpoint>(event->scenePos(), this, GridSize);
+
+        if (highlightedEndpoint_ != 0)
+        {
+            highlightedEndpoint_->setHighlight(SWConnectionEndpoint::HIGHLIGHT_OFF);
+            highlightedEndpoint_ = 0;
+        }
+
+        if (endpoint != 0 && !endpoint->isInvalid())
+        {
+            highlightedEndpoint_ = endpoint;
+        }
+
+        // Allow the drop event if the end point is undefined or there are no connections
+        // and the encompassing component is unpackaged.
+        if (highlightedEndpoint_ != 0 &&
+            (highlightedEndpoint_->getType() == SWConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED ||
+            (!highlightedEndpoint_->isConnected() && highlightedEndpoint_->getOwnerComponent() != 0 &&
+            !highlightedEndpoint_->getOwnerComponent()->isValid())))
+        {
+            event->setDropAction(Qt::CopyAction);
+            highlightedEndpoint_->setHighlight(SWConnectionEndpoint::HIGHLIGHT_HOVER);
+        }
+        else
+        {
+            event->setDropAction(Qt::IgnoreAction);
+        }
+    }
+    else if (dragType_ == DRAG_TYPE_DESIGN)
+    {
+        event->setDropAction(Qt::CopyAction);
+    }
+    else
+    {
+        event->setDropAction(Qt::IgnoreAction);
     }
 }

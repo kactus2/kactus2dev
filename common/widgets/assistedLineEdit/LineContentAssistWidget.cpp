@@ -230,6 +230,7 @@ void LineContentAssistWidget::updateMatches()
         moveClose(lastAssistStartPos_);
 
         setCurrentRow(0);
+        raise();
         show();
     }
     else

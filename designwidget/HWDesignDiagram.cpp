@@ -1643,12 +1643,11 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
     }
 
     VLNV vlnv = data.value<VLNV>();
+    updateDropAction(event);
 
     // Check if the dragged item was a valid one.
     if (dragCompType_ != CIT_NONE)
     {
-        updateDropAction(event);
-
         // Disallow self-instantiation.
         if (vlnv == *getEditedComponent()->getVlnv())
         {

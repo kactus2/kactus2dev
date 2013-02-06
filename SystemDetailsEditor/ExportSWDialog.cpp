@@ -27,7 +27,7 @@ ExportSWDialog::ExportSWDialog(LibraryInterface* lh, QWidget* parent)
     : QDialog(parent),
       lh_(lh),
       infoLabel_(new QLabel(tr("Exporting SW requires a new system component to be created."), this)),
-      vlnvEdit_(new VLNVEditor(VLNV::DESIGN, lh, this, this)),
+      vlnvEdit_(new VLNVEditor(VLNV::COMPONENT, lh, this, this)),
       directoryLabel_(new QLabel(tr("Directory:"), this)),
       directoryEdit_(new LibraryPathSelector(this)),
       buttonBox_(new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this)),
@@ -37,8 +37,8 @@ ExportSWDialog::ExportSWDialog(LibraryInterface* lh, QWidget* parent)
 
     // Set widget settings.
     vlnvEdit_->setTitle(tr("VLNV for the new system component"));
-    //vlnvEdit_->addNameExtension(".sysdesign");
-    //vlnvEdit_->addNameExtension(".sysdesigncfg");
+    vlnvEdit_->addNameExtension(".sysdesign");
+    vlnvEdit_->addNameExtension(".sysdesigncfg");
 
     // Create layouts.
     QHBoxLayout* dirLayout = new QHBoxLayout();

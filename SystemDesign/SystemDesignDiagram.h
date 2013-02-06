@@ -262,7 +262,18 @@ private:
      */
     void importDesign(QSharedPointer<Design> design, IGraphicsItemStack* stack, QPointF const& guidePos);
 
+    /*!
+     *  Recalls port positions for an SW instance.
+     *
+     *      @param [in] instance The instance metadata.
+     *      @param [in] item     The corresponding graphics item in the diagram.
+     */
     void recallPortPositions(SWInstance const &instance, SWComponentItem* item);
+
+    /*!
+     *  Updates the drop action for a drag-dropped object.
+     */
+    void updateDropAction(QGraphicsSceneDragDropEvent* event);
 
     //-----------------------------------------------------------------------------
     //! Drag type enumeration.

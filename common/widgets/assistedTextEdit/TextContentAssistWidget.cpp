@@ -225,6 +225,7 @@ void TextContentAssistWidget::updateMatches()
         moveCloseToCursor(lastAssistStartPos_);
 
         setCurrentRow(0);
+        raise();
         show();
     }
     else
