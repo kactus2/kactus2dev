@@ -355,7 +355,13 @@ void LibraryData::parseLibrary( bool showProgress /*= true*/ ) {
 	QSettings settings(this);
 
 	// Load the library locations.
-	QStringList locations = settings.value("Library/Locations", QStringList()).toStringList();
+	QStringList locations = settings.value("Library/ActiveLocations", QStringList()).toStringList();
+
+	// if there are no library locations
+	if (locations.isEmpty()) {
+		locations_.clear();
+		return;
+	}
 
 	// create the progress bar that displays the progress of the scan
 	if (showProgress) {

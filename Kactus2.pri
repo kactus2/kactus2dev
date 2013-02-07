@@ -8,6 +8,7 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ./resource.h \
+    ./version.h \
     ./common/ColumnTypes.h \
     ./common/CSourceWriter.h \
     ./common/diagramgrid.h \
@@ -118,6 +119,7 @@ HEADERS += ./resource.h \
     ./common/dialogs/listSelectDialog/ListSelectDialog.h \
     ./common/dialogs/selectDirectoryDialog/selectdirectorydialog.h \
     ./common/dialogs/NewDesignDialog/NewDesignDialog.h \
+    ./common/dialogs/LibrarySettingsDialog/librarysettingsdelegate.h \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h \
     ./common/dialogs/TableViewDialog/TableViewDialog.h \
     ./common/dialogs/createConfigurationDialog/createconfigurationdialog.h \
@@ -561,6 +563,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/dialogs/listSelectDialog/ListSelectDialog.cpp \
     ./common/dialogs/selectDirectoryDialog/selectdirectorydialog.cpp \
     ./common/dialogs/NewDesignDialog/NewDesignDialog.cpp \
+    ./common/dialogs/LibrarySettingsDialog/librarysettingsdelegate.cpp \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.cpp \
     ./common/dialogs/TableViewDialog/TableViewDialog.cpp \
     ./common/validators/AddressValidator.cpp \

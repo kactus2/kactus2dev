@@ -14,7 +14,7 @@ LibraryPathSelector::LibraryPathSelector(QWidget *parent):
 QComboBox(parent),
 settings_(this),
 validator_(new LibraryPathValidator(this)),
-libraryLocations_(settings_.value("Library/Locations", QStringList()).toStringList()),
+libraryLocations_(settings_.value("Library/ActiveLocations", QStringList()).toStringList()),
 pathEditor_(NULL) {
 
 	addItems(libraryLocations_);
@@ -39,7 +39,7 @@ pathEditor_(NULL) {
 	connect(this, SIGNAL(currentIndexChanged(int)),
 		this, SLOT(onIndexChanged()), Qt::UniqueConnection);
 
-	setToolTip(tr("Select one of the library locations you have listed in the settings."));
+	setToolTip(tr("Select one of the active library locations you have listed in the settings."));
 }
 
 LibraryPathSelector::~LibraryPathSelector() {

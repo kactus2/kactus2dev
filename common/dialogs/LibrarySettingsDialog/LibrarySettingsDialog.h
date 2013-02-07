@@ -14,17 +14,22 @@
 
 #include <QDialog>
 #include <QSettings>
-#include <QListWidgetItem>
 #include <QPushButton>
 
-//-----------------------------------------------------------------------------
-//! Library locations dialog.
-//-----------------------------------------------------------------------------
+#include <QTableWidget>
+#include <QTableWidgetItem>
+
+#include <QListWidgetItem>
+
+/*! \brief The dialog to display library locations and select active and default library paths.
+* 
+*/
 class LibrarySettingsDialog : public QDialog
 {
     Q_OBJECT
 
 public:
+
     /*!
      *  Constructor.
      *
@@ -51,14 +56,24 @@ public:
     void apply();
 
 public slots:
+
     //! Adds a new directory to the library locations.
     void addLocation();
 
     //! Removes the currently selected library location.
     void removeLocation();
 
-    //! Called when a location is selected in the locations list.
-    void onSelectLocation(QListWidgetItem* cur, QListWidgetItem* prev);
+	/*! \brief Called when a location is selected in the locations list.
+	 *
+	 * Method: 		onSelectLocation
+	 * Full name:	LibrarySettingsDialog::onSelectLocation
+	 * Access:		public 
+	 *
+	 * \param cur Pointer to the selected item.
+	 * \param prev Pointer to the previously selected item.
+	 *
+	*/
+	void onSelectLocation(QTableWidgetItem* cur, QTableWidgetItem* prev);
 
 signals:
 	//! \brief Emitted when the library settings has changed and a scan should be performed.
@@ -68,10 +83,14 @@ private slots:
 
 	/*! \brief Handler for item clicks on the lib locations list.
 	 *
+	 * Method: 		onItemClicked
+	 * Full name:	LibrarySettingsDialog::onItemClicked
+	 * Access:		private 
+	 *
 	 * \param item Pointer to the clicked item.
 	 *
 	*/
-	void onItemClicked(QListWidgetItem* item);
+	void onItemClicked(QTableWidgetItem* item);
 
     /*!
      *  Called when the user presses OK.
@@ -96,7 +115,10 @@ private:
     QSettings& settings_;
 
     //! The library location list.
-    QListWidget* libLocationsList_;
+    //QListWidget* libLocationsList_;
+
+	//! \brief Library locations table
+	QTableWidget* libLocationsTable_;
 
     //! Add location button.
     QPushButton* addLocationButton_;

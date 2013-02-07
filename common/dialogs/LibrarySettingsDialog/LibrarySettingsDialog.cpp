@@ -10,7 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "LibrarySettingsDialog.h"
-
+#include "librarysettingsdelegate.h"
 #include <models/generaldeclarations.h>
 
 #include <QHBoxLayout>
@@ -23,6 +23,9 @@
 #include <QCoreApplication>
 #include <QMessageBox>
 #include <QDialogButtonBox>
+#include <QStringList>
+#include <QHeaderView>
+#include <QFontMetrics>
 
 //-----------------------------------------------------------------------------
 // Function: LibrarySettingsDialog()
@@ -30,7 +33,8 @@
 LibrarySettingsDialog::LibrarySettingsDialog(QSettings& settings, QWidget* parent)
     : QDialog(parent),
       settings_(settings),
-      libLocationsList_(0),
+      //libLocationsList_(0),
+	  libLocationsTable_(0),
       addLocationButton_(0),
       removeLocationButton_(0),
       changed_(false)
@@ -40,10 +44,46 @@ LibrarySettingsDialog::LibrarySettingsDialog(QSettings& settings, QWidget* paren
     // Create the library location group box.
     QGroupBox* locationGroup = new QGroupBox(tr("Library locations (check the default directory)"), this);
 
-    libLocationsList_ = new QListWidget(locationGroup);
-    libLocationsList_->setFixedHeight(120);
-    connect(libLocationsList_, SIGNAL(itemClicked(QListWidgetItem*)),
-        this, SLOT(onItemClicked(QListWidgetItem*)), Qt::UniqueConnection);
+//     libLocationsList_ = new QListWidget(locationGroup);
+//     libLocationsList_->setFixedHeight(120);
+//     connect(libLocationsList_, SIGNAL(itemClicked(QListWidgetItem*)),
+//         this, SLOT(onItemClicked(QListWidgetItem*)), Qt::UniqueConnection);
+// 	connect(libLocationsList_, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
+// 		this, SLOT(onSelectLocation(QListWidgetItem*, QListWidgetItem*)));
+
+	libLocationsTable_ = new QTableWidget(0, 3, locationGroup);
+
+	// the headers for the table
+	QStringList headers;
+	headers.append(tr("Default"));
+	headers.append(tr("Active"));
+	headers.append(tr("Library path"));
+	libLocationsTable_->setHorizontalHeaderLabels(headers);
+
+	// cells are resized to match contents 
+	libLocationsTable_->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+
+	// vertical headers are not visible
+	libLocationsTable_->verticalHeader()->hide();
+
+	// set the height of a row to be smaller than default
+	libLocationsTable_->verticalHeader()->setDefaultSectionSize(fontMetrics().height() + 8);
+
+	// easies to see the different rows from one another
+	libLocationsTable_->setAlternatingRowColors(true);
+
+	libLocationsTable_->setColumnWidth(LibrarySettingsDelegate::DEF_COLUMN, 50);
+	libLocationsTable_->setColumnWidth(LibrarySettingsDelegate::ACTIVE_COL, 50);
+	//last column is stretched take the available space in the widget
+	libLocationsTable_->horizontalHeader()->setStretchLastSection(true);
+	libLocationsTable_->setMinimumWidth(500);
+
+	libLocationsTable_->setItemDelegate(new LibrarySettingsDelegate(this));
+
+	connect(libLocationsTable_, SIGNAL(itemClicked(QTableWidgetItem*)),
+		this, SLOT(onItemClicked(QTableWidgetItem*)), Qt::UniqueConnection);
+	connect(libLocationsTable_, SIGNAL(currentItemChanged(QTableWidgetItem*, QTableWidgetItem*)),
+		this, SLOT(onSelectLocation(QTableWidgetItem*, QTableWidgetItem*)), Qt::UniqueConnection);
 
     addLocationButton_ = new QPushButton(QIcon(":/icons/graphics/add.png"), QString(), this);
     removeLocationButton_ = new QPushButton(QIcon(":/icons/graphics/remove.png"), QString(), this);
@@ -54,7 +94,7 @@ LibrarySettingsDialog::LibrarySettingsDialog(QSettings& settings, QWidget* paren
     listButtonBox->addButton(removeLocationButton_, QDialogButtonBox::ActionRole);
 
     QHBoxLayout* locationLayout = new QHBoxLayout(locationGroup);
-    locationLayout->addWidget(libLocationsList_);
+    locationLayout->addWidget(libLocationsTable_);
     locationLayout->addWidget(listButtonBox);
 
     QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
@@ -69,8 +109,6 @@ LibrarySettingsDialog::LibrarySettingsDialog(QSettings& settings, QWidget* paren
     // Connect the signals.
     connect(addLocationButton_, SIGNAL(clicked()), this, SLOT(addLocation()));
     connect(removeLocationButton_, SIGNAL(clicked()), this, SLOT(removeLocation()));
-    connect(libLocationsList_, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
-            this, SLOT(onSelectLocation(QListWidgetItem*, QListWidgetItem*)));
     connect(buttonBox->button(QDialogButtonBox::Ok), SIGNAL(clicked()), this, SLOT(accept()), Qt::UniqueConnection);
     connect(buttonBox->button(QDialogButtonBox::Cancel), SIGNAL(clicked()), this, SLOT(reject()), Qt::UniqueConnection);
 
@@ -98,32 +136,43 @@ bool LibrarySettingsDialog::validate()
 //-----------------------------------------------------------------------------
 // Function: apply()
 //-----------------------------------------------------------------------------
-void LibrarySettingsDialog::apply()
-{
+void LibrarySettingsDialog::apply() {
 }
 
 //-----------------------------------------------------------------------------
 // Function: addLocation()
 //-----------------------------------------------------------------------------
-void LibrarySettingsDialog::addLocation()
-{
+void LibrarySettingsDialog::addLocation() {
     QString dir = QFileDialog::getExistingDirectory(this, tr("Select library location:"));
 
-    if (!dir.isEmpty())
-    {
-        QListWidgetItem* item = new QListWidgetItem(dir);
+    if (!dir.isEmpty()) {
 
-        // if this is the only item on the list
-        if (libLocationsList_->count() == 0) {
-            item->setCheckState(Qt::Checked);
-        }	
-        // if there are others
-        else {
-            item->setCheckState(Qt::Unchecked);
-        }
+		int rows = libLocationsTable_->rowCount();
 
-        libLocationsList_->addItem(item);
-        libLocationsList_->setCurrentItem(item);
+		libLocationsTable_->insertRow(rows);
+
+		// create the item for default column
+		QTableWidgetItem* defCheckItem = new QTableWidgetItem();
+		
+		// if this is the only row on the list
+		if (rows == 0) {
+			defCheckItem->setCheckState(Qt::Checked);
+		}
+		else {
+			defCheckItem->setCheckState(Qt::Unchecked);
+		}
+		libLocationsTable_->setItem(rows, LibrarySettingsDelegate::DEF_COLUMN, defCheckItem);
+
+		// create the item for the active column
+		QTableWidgetItem* activeItem = new QTableWidgetItem();
+		
+		// new directory is active by default
+		activeItem->setCheckState(Qt::Checked);
+
+		libLocationsTable_->setItem(rows, LibrarySettingsDelegate::ACTIVE_COL, activeItem);
+
+		QTableWidgetItem* pathItem = new QTableWidgetItem(dir);
+		libLocationsTable_->setItem(rows, LibrarySettingsDelegate::PATH_COL, pathItem);
     }
 
     changed_ = true;
@@ -132,13 +181,22 @@ void LibrarySettingsDialog::addLocation()
 //-----------------------------------------------------------------------------
 // Function: removeLocation()
 //-----------------------------------------------------------------------------
-void LibrarySettingsDialog::removeLocation()
-{
-    if (libLocationsList_->currentRow() >= 0)
-    {
-        QListWidgetItem* item = libLocationsList_->takeItem(libLocationsList_->currentRow());
-        delete item;
-    }
+void LibrarySettingsDialog::removeLocation() {
+
+	int row = libLocationsTable_->currentRow();
+
+	if (row >= 0) {
+		QTableWidgetItem* defItem = libLocationsTable_->takeItem(row, LibrarySettingsDelegate::DEF_COLUMN);
+		delete defItem;
+
+		QTableWidgetItem* activeItem = libLocationsTable_->takeItem(row, LibrarySettingsDelegate::ACTIVE_COL);
+		delete activeItem;
+
+		QTableWidgetItem* pathItem = libLocationsTable_->takeItem(row, LibrarySettingsDelegate::PATH_COL);
+		delete pathItem;
+
+		libLocationsTable_->removeRow(row);
+	}
 
     changed_ = true;
 }
@@ -153,52 +211,84 @@ void LibrarySettingsDialog::loadSettings()
     // Load the library locations.
     QStringList locations = settings_.value("Library/Locations", QStringList()).toStringList();
 
-    foreach (QString location, locations)
-    {
+	QStringList activeLocations = settings_.value("Library/ActiveLocations", QStringList()).toStringList();
+
+    for (int i = 0; i < locations.size(); ++i) {
+		QString location = locations.at(i);
         QString fullLocation = location;
 
-        if (!QFileInfo(location).isAbsolute())
-        {
+        if (!QFileInfo(location).isAbsolute()) {
             fullLocation = QFileInfo(location).absoluteFilePath();
         }
 
-        QListWidgetItem* item = new QListWidgetItem(fullLocation);
+		libLocationsTable_->insertRow(i);
 
-        if (location == defaultLocation) {
-            item->setCheckState(Qt::Checked);
-        }
-        else {
-            item->setCheckState(Qt::Unchecked);
-        }
+		// mark the default library
+		QTableWidgetItem* defItem = new QTableWidgetItem();
+		if (fullLocation == defaultLocation) {
+			defItem->setCheckState(Qt::Checked);
+		}
+		else {
+			defItem->setCheckState(Qt::Unchecked);
+		}
+		defItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+		libLocationsTable_->setItem(i, LibrarySettingsDelegate::DEF_COLUMN, defItem);
 
-        libLocationsList_->addItem(item);
+		QTableWidgetItem* activeItem = new QTableWidgetItem();
+		// if the location is set as active
+		if (activeLocations.contains(fullLocation)) {
+			activeItem->setCheckState(Qt::Checked);
+		}
+		// if location is inactive
+		else {
+			activeItem->setCheckState(Qt::Unchecked);
+		}
+		activeItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+		libLocationsTable_->setItem(i, LibrarySettingsDelegate::ACTIVE_COL, activeItem);
+
+		QTableWidgetItem* pathItem = new QTableWidgetItem(fullLocation);
+		pathItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		libLocationsTable_->setItem(i, LibrarySettingsDelegate::PATH_COL, pathItem);
     }
+
+	libLocationsTable_->setCurrentIndex(QModelIndex());
+
+	changed_ = false;
 }
 
-//-----------------------------------------------------------------------------
-// Function: onSelectLocation()
-//-----------------------------------------------------------------------------
-void LibrarySettingsDialog::onSelectLocation(QListWidgetItem* cur, QListWidgetItem*)
-{
-    removeLocationButton_->setEnabled(cur != 0);
+void LibrarySettingsDialog::onSelectLocation( QTableWidgetItem* cur, QTableWidgetItem*) {
+	removeLocationButton_->setEnabled(cur != 0);
 }
 
-void LibrarySettingsDialog::onItemClicked( QListWidgetItem* item ) {
+void LibrarySettingsDialog::onItemClicked( QTableWidgetItem* item ) {
+	
+	// if the item is the check box to select the default library
+	if (item->column() == LibrarySettingsDelegate::DEF_COLUMN) {
 
-    // if the item was checked then remove the checks of other items
-    if (item->checkState() == Qt::Checked) {
+		changed_ = true;
 
-        for (int i = 0; i < libLocationsList_->count(); ++i) {
-            QListWidgetItem* tempItem = libLocationsList_->item(i);
+		// default library should be active
+		QTableWidgetItem* activeItem = libLocationsTable_->item(item->row(), LibrarySettingsDelegate::ACTIVE_COL);
+		activeItem->setCheckState(Qt::Checked);
 
-            // if not the clicked item
-            if (tempItem != item) {
+		// if item was checked then uncheck other items because only one library can be default
+		if (item->checkState() == Qt::Checked) {
 
-                // uncheck other items
-                tempItem->setCheckState(Qt::Unchecked);
-            }
-        }
-    }
+			for (int i = 0; i < libLocationsTable_->rowCount(); ++i) {
+				QTableWidgetItem* temp = libLocationsTable_->item(i, LibrarySettingsDelegate::DEF_COLUMN);
+
+				// if the item is not the clicked item
+				if (temp != item) {
+					temp->setCheckState(Qt::Unchecked);
+				}
+			}
+		}
+	}
+
+	// if the item is the check box to select the active libraries
+	else if (item->column() == LibrarySettingsDelegate::ACTIVE_COL) {
+		changed_ = true;
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -206,27 +296,40 @@ void LibrarySettingsDialog::onItemClicked( QListWidgetItem* item ) {
 //-----------------------------------------------------------------------------
 void LibrarySettingsDialog::accept()
 {
-    // Create a string list containing all the location and save it to the settings.
+    // Create a string list containing all the locations and save it to the settings.
     QStringList locations;
+
+	// the active locations used to search for IP-XACT objects
+	QStringList activeLocations;
 
     // the checked item in the list is the default location
     QString defaultLocation;
 
-    for (int i = 0; i < libLocationsList_->count(); ++i)
-    {
-        QListWidgetItem* item = libLocationsList_->item(i);
+	for (int i = 0; i < libLocationsTable_->rowCount(); ++i) {
+		QTableWidgetItem* defItem = libLocationsTable_->item(i, LibrarySettingsDelegate::DEF_COLUMN);
+		QTableWidgetItem* activeItem = libLocationsTable_->item(i, LibrarySettingsDelegate::ACTIVE_COL);
+		QTableWidgetItem* pathItem = libLocationsTable_->item(i, LibrarySettingsDelegate::PATH_COL);
+		
+		// if the row contains the default library
+		if (defItem->checkState() == Qt::Checked) {
+			defaultLocation = pathItem->text();
+		}
 
-        if (item->checkState() == Qt::Checked) {
-            defaultLocation = item->text();
-        }
+		if (activeItem->checkState() == Qt::Checked) {
+			activeLocations.append(pathItem->text());
+		}
 
-        locations.append(item->text());
-    }
+		// add the library path to the known library locations
+		locations.append(pathItem->text());
+	}
 
     settings_.setValue("Library/Locations", locations);
 
     // save the default location is one was set
     settings_.setValue("Library/DefaultLocation", defaultLocation);
+
+	// the active locations are saved
+	settings_.setValue("Library/ActiveLocations", activeLocations);
 
     if (changed_) {
         emit scanLibrary();

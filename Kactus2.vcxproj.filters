@@ -3460,6 +3460,12 @@
     <ClCompile Include="GeneratedFiles\moc_absdefgroup.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_librarysettingsdelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common\dialogs\LibrarySettingsDialog\librarysettingsdelegate.cpp">
+      <Filter>Source Files\common\dialogs\LibrarySettingsDialog</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -4955,6 +4961,9 @@
     </CustomBuild>
     <CustomBuild Include="IPXactWrapper\ApiDefinitionEditor\ApiDefinitionEditor.h">
       <Filter>Header Files\IPXactWrapper\ApiDefinitionEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\dialogs\LibrarySettingsDialog\librarysettingsdelegate.h">
+      <Filter>Header Files\common\dialogs\LibrarySettingsDialog</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
