@@ -308,6 +308,10 @@ void LibraryData::checkLibraryIntegrity( bool showProgress /*= true*/ ) {
                 // if the path did not exist
                 if (path.isEmpty()) {
 
+					if (wasValid) {
+						emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
+					}
+
                     // print the relative path because absolute path does not exist
                     path = filelist.at(j);
 
@@ -726,6 +730,10 @@ void LibraryData::performIntegrityCheckStep()
 
                 // if the path did not exist
                 if (path.isEmpty()) {
+
+					if (wasValid) {
+						emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
+					}
 
                     // print the relative path because absolute path does not exist
                     path = filelist.at(j);
