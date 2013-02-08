@@ -364,6 +364,8 @@ void LibraryData::parseLibrary( bool showProgress /*= true*/ ) {
 	// if there are no library locations
 	if (locations.isEmpty()) {
 		locations_.clear();
+		libraryItems_.clear();
+		checkLibraryIntegrity(showProgress);
 		return;
 	}
 

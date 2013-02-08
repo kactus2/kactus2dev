@@ -267,12 +267,12 @@ void LibrarySettingsDialog::onItemClicked( QTableWidgetItem* item ) {
 
 		changed_ = true;
 
-		// default library should be active
-		QTableWidgetItem* activeItem = libLocationsTable_->item(item->row(), LibrarySettingsDelegate::ACTIVE_COL);
-		activeItem->setCheckState(Qt::Checked);
-
 		// if item was checked then uncheck other items because only one library can be default
 		if (item->checkState() == Qt::Checked) {
+
+			// default library should be active
+			QTableWidgetItem* activeItem = libLocationsTable_->item(item->row(), LibrarySettingsDelegate::ACTIVE_COL);
+			activeItem->setCheckState(Qt::Checked);
 
 			for (int i = 0; i < libLocationsTable_->rowCount(); ++i) {
 				QTableWidgetItem* temp = libLocationsTable_->item(i, LibrarySettingsDelegate::DEF_COLUMN);
