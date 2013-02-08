@@ -7,8 +7,9 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./resource.h \
-    ./version.h \
+HEADERS += ./common/widgets/Ribbon/RibbonGroup.h \
+    ./resource.h \
+    ./common/widgets/Ribbon/Ribbon.h \
     ./common/ColumnTypes.h \
     ./common/CSourceWriter.h \
     ./common/diagramgrid.h \
@@ -471,8 +472,6 @@ HEADERS += ./resource.h \
     ./ConnectionEditor/connectioneditor.h \
     ./ConnectionEditor/AdHocBoundsModel.h \
     ./ConnectionEditor/AdHocBoundsDelegate.h \
-    ./GCF/Common.h \
-    ./GCF/MenuStrip.h \
     ./AdHocEditor/AdHocModel.h \
     ./AdHocEditor/AdHocEditor.h \
     ./AdHocEditor/AdHocDelegate.h \
@@ -542,7 +541,9 @@ HEADERS += ./resource.h \
     ./MemoryDesigner/AddressSubsection.h \
     ./MemoryDesigner/AddressSpaceItem.h \
     ./MemoryDesigner/AddressSectionItem.h
-SOURCES += ./common/CSourceWriter.cpp \
+SOURCES += ./common/widgets/Ribbon/RibbonGroup.cpp \
+    ./common/widgets/Ribbon/Ribbon.cpp \
+    ./common/CSourceWriter.cpp \
     ./common/DesignDiagram.cpp \
     ./common/DesignWidget.cpp \
     ./common/GenericEditProvider.cpp \
@@ -1009,7 +1010,6 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./ConnectionEditor/AdHocBoundsDelegate.cpp \
     ./ConnectionEditor/AdHocBoundsModel.cpp \
     ./ConnectionEditor/connectioneditor.cpp \
-    ./GCF/MenuStrip.cpp \
     ./AdHocEditor/AdHocDelegate.cpp \
     ./AdHocEditor/AdHocEditor.cpp \
     ./AdHocEditor/AdHocModel.cpp \

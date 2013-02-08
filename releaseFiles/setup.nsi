@@ -118,7 +118,7 @@ Section "DependencySection" SEC02
   SetOutPath "$TEMP\Kactus2Installer"
   SetOverwrite ifnewer
   File "vcredist_x86.exe"
-  ExecWait '"$OUTDIR\vcredist_x86.exe" /qb'
+  ExecWait '"$OUTDIR\vcredist_x86.exe" /q /norestart'
   SetOutPath "$INSTDIR"
   RMDir /r "$TEMP\Kactus2Installer"
 SectionEnd
