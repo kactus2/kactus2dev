@@ -40,6 +40,7 @@
 #include <QVBoxLayout>
 #include <QMessageBox>
 #include <QFileInfo>
+#include <QCoreApplication>
 
 //-----------------------------------------------------------------------------
 // Function: SystemDesignWidget()

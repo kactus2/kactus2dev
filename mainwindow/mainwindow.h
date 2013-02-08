@@ -18,7 +18,6 @@
 #include <models/component.h>
 #include <LibraryManager/vlnv.h>
 #include <LibraryManager/VLNVDialer/vlnvdialer.h>
-#include <GCF/MenuStrip.h>
 
 #include <QMainWindow>
 #include <QActionGroup>
@@ -49,6 +48,9 @@ class ConnectionEndpoint;
 class GraphicsConnection;
 class ContextHelpBrowser;
 class HelpWindow;
+
+class Ribbon;
+class RibbonGroup;
 
 class MainWindow : public QMainWindow, public IPluginUtility {
     Q_OBJECT
@@ -701,7 +703,7 @@ private:
 	/*******************************************************************/
 	// the actions in the menus
 
-    GCF::MenuStrip* menuStrip_;
+    Ribbon* ribbon_;
 
 	//! \brief Create a new hierarchical component in the IP-Xact library
 	QAction *actNew_;
@@ -719,7 +721,7 @@ private:
     QAction* actPrint_;
 
     //! The Edit group.
-    GCF::MenuStripGroup* editGroup_;
+    RibbonGroup* editGroup_;
 
     //! Action to undo an operation.
     QAction* actUndo_;
@@ -737,7 +739,7 @@ private:
 	QAction* actCheckIntegrity_;
 
     //! The HW Design group.
-    GCF::MenuStripGroup* generationGroup_;
+    RibbonGroup* generationGroup_;
 
     //! Action to generate VHDL from a design.
     QAction* actGenVHDL_;
@@ -758,10 +760,10 @@ private:
 	QAction* actSourceListingGen_;
 
     //! The SW Design group.
-    GCF::MenuStripGroup* swDesignGroup_;
+    RibbonGroup* swDesignGroup_;
 
     //! The Diagram Tools group.
-    GCF::MenuStripGroup* diagramToolsGroup_;
+    RibbonGroup* diagramToolsGroup_;
     //! Action to add a new column to the current diagram.
     QAction* actAddColumn_;
 
@@ -800,7 +802,7 @@ private:
     QAction* actWorkspaces_;
 
     //! The protection group.
-    GCF::MenuStripGroup* protectGroup_; 
+    RibbonGroup* protectGroup_; 
 
     //! Action to refresh the current document.
     QAction* actRefresh_;

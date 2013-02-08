@@ -341,9 +341,6 @@
     <Filter Include="Source Files\ConnectionEditor">
       <UniqueIdentifier>{fa21c43e-3610-4d7d-8120-e2431a363368}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\GCF">
-      <UniqueIdentifier>{d3791071-86d6-4610-88b7-f798781cd6a8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\AdHocEditor">
       <UniqueIdentifier>{f1e5422a-1fae-4477-baf6-fced4fe21f6a}</UniqueIdentifier>
     </Filter>
@@ -702,9 +699,6 @@
     <Filter Include="Header Files\ConnectionEditor">
       <UniqueIdentifier>{33ee3f06-a4fc-41d8-be4f-37a04efea7a2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\GCF">
-      <UniqueIdentifier>{0dc4f74f-cbe9-4990-9437-e3f13a587734}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\AdHocEditor">
       <UniqueIdentifier>{892a9b94-615c-4e95-9c4c-e30a7c23f3bd}</UniqueIdentifier>
     </Filter>
@@ -757,6 +751,12 @@
     </Filter>
     <Filter Include="Header Files\common\dialogs\createConfigurationDialog">
       <UniqueIdentifier>{4595fd3d-b102-46cb-8a5a-006537a68009}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common\widgets\Ribbon">
+      <UniqueIdentifier>{d61b0b2c-d3ec-48ac-b73d-57d270d93c69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\widgets\Ribbon">
+      <UniqueIdentifier>{15fb5228-af85-4a5d-8347-5e28159e9f32}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -2140,9 +2140,6 @@
     <ClCompile Include="ConnectionEditor\connectioneditor.cpp">
       <Filter>Source Files\ConnectionEditor</Filter>
     </ClCompile>
-    <ClCompile Include="GCF\MenuStrip.cpp">
-      <Filter>Source Files\GCF</Filter>
-    </ClCompile>
     <ClCompile Include="AdHocEditor\AdHocDelegate.cpp">
       <Filter>Source Files\AdHocEditor</Filter>
     </ClCompile>
@@ -2624,9 +2621,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_messageconsole.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_MenuStrip.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_memoryvisualizationitem.cpp">
@@ -3466,6 +3460,15 @@
     <ClCompile Include="common\dialogs\LibrarySettingsDialog\librarysettingsdelegate.cpp">
       <Filter>Source Files\common\dialogs\LibrarySettingsDialog</Filter>
     </ClCompile>
+    <ClCompile Include="common\widgets\Ribbon\Ribbon.cpp">
+      <Filter>Source Files\common\widgets\Ribbon</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\Ribbon\RibbonGroup.cpp">
+      <Filter>Source Files\common\widgets\Ribbon</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_RibbonGroup.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -4115,9 +4118,6 @@
     </CustomBuild>
     <CustomBuild Include="DocumentGenerator\documentgenerator.h">
       <Filter>Header Files\DocumentGenerator</Filter>
-    </CustomBuild>
-    <CustomBuild Include="GCF\MenuStrip.h">
-      <Filter>Header Files\GCF</Filter>
     </CustomBuild>
     <CustomBuild Include="HelpSystem\ContextHelpBrowser.h">
       <Filter>Header Files\HelpSystem</Filter>
@@ -4965,6 +4965,9 @@
     <CustomBuild Include="common\dialogs\LibrarySettingsDialog\librarysettingsdelegate.h">
       <Filter>Header Files\common\dialogs\LibrarySettingsDialog</Filter>
     </CustomBuild>
+    <CustomBuild Include="common\widgets\Ribbon\RibbonGroup.h">
+      <Filter>Header Files\common\widgets\Ribbon</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AddressEditor\AddressEntry.h">
@@ -5098,9 +5101,6 @@
     </ClInclude>
     <ClInclude Include="designwidget\PortmapDialog.h">
       <Filter>Header Files\designwidget</Filter>
-    </ClInclude>
-    <ClInclude Include="GCF\Common.h">
-      <Filter>Header Files\GCF</Filter>
     </ClInclude>
     <ClInclude Include="HelpSystem\HelpWindow.h">
       <Filter>Header Files\HelpSystem</Filter>
@@ -5386,6 +5386,9 @@
     </ClInclude>
     <ClInclude Include="mainwindow\SplashScreen.h">
       <Filter>Header Files\mainwindow</Filter>
+    </ClInclude>
+    <ClInclude Include="common\widgets\Ribbon\Ribbon.h">
+      <Filter>Header Files\common\widgets\Ribbon</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

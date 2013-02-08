@@ -45,6 +45,8 @@
 #include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
 #include <common/dialogs/propertyPageDialog/PropertyPageDialog.h>
 #include <common/widgets/tabWidgetEx/TabWidgetEx.h>
+#include <common/widgets/Ribbon/Ribbon.h>
+#include <common/widgets/Ribbon/RibbonGroup.h>
 
 #include <PluginSystem/IGeneratorPlugin.h>
 
@@ -91,6 +93,7 @@
 #include <AdHocEditor/AdHocEditor.h>
 
 #include <QCoreApplication>
+#include <QApplication>
 #include <QSettings>
 #include <QToolBar>
 #include <QMenu>
@@ -757,14 +760,13 @@ void MainWindow::setupMenus()
 	menuDock->setAllowedAreas(Qt::TopDockWidgetArea);
 	menuDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
 
-	menuStrip_ = new GCF::MenuStrip(menuDock);
-	menuStrip_->setFixedHeight(100);
+    ribbon_ = new Ribbon(menuDock);
 
-	menuDock->setWidget(menuStrip_);
+    menuDock->setWidget(ribbon_);
 	addDockWidget(Qt::TopDockWidgetArea, menuDock);
 
 	// The "File" group.
-	GCF::MenuStripGroup* fileGroup = menuStrip_->addGroup(tr("File"));
+	RibbonGroup* fileGroup = ribbon_->addGroup(tr("File"));
 	fileGroup->addAction(actNew_);
 	fileGroup->addAction(actSave_);
 	fileGroup->addAction(actSaveAs_);
@@ -772,20 +774,20 @@ void MainWindow::setupMenus()
 	fileGroup->addAction(actPrint_);
 
 	// The "Edit" group.
-	editGroup_ = menuStrip_->addGroup(tr("Edit"));
+	editGroup_ = ribbon_->addGroup(tr("Edit"));
 	editGroup_->addAction(actUndo_);
 	editGroup_->addAction(actRedo_);
 	editGroup_->setVisible(false);
 	editGroup_->setEnabled(false);
 
 	//! The "Library" group.
-	GCF::MenuStripGroup* libGroup = menuStrip_->addGroup(tr("Library"));
+	RibbonGroup* libGroup = ribbon_->addGroup(tr("Library"));
     libGroup->addAction(actLibraryLocations_);
 	libGroup->addAction(actLibrarySearch_);
 	libGroup->addAction(actCheckIntegrity_);
 
 	//! The "Generation" group.
-	generationGroup_ = menuStrip_->addGroup(tr("Generation"));
+	generationGroup_ = ribbon_->addGroup(tr("Generation"));
 	generationGroup_->addAction(actGenVHDL_);
 	generationGroup_->addAction(actGenDocumentation_);
 	generationGroup_->addAction(actGenModelSim_);
@@ -796,7 +798,7 @@ void MainWindow::setupMenus()
 	generationGroup_->setEnabled(false);
 
 	//! The "Diagram Tools" group.
-	diagramToolsGroup_ = menuStrip_->addGroup(tr("           Diagram Tools           "));
+	diagramToolsGroup_ = ribbon_->addGroup(tr("Diagram Tools"));
 	diagramToolsGroup_->addAction(actAddColumn_);
 	diagramToolsGroup_->addAction(actToolSelect_);
 	diagramToolsGroup_->addAction(actToolConnect_);
@@ -806,7 +808,7 @@ void MainWindow::setupMenus()
 	diagramToolsGroup_->setVisible(false);
 
 	//! The "View" group.
-	GCF::MenuStripGroup* viewGroup = menuStrip_->addGroup(tr("View"));
+	RibbonGroup* viewGroup = ribbon_->addGroup(tr("View"));
 	viewGroup->addAction(actZoomIn_);
 	viewGroup->addAction(actZoomOut_);
 	viewGroup->addAction(actZoomOriginal_);
@@ -816,17 +818,18 @@ void MainWindow::setupMenus()
     viewGroup->addAction(actWorkspaces_);
 
 	//! The Protection group.
-	protectGroup_ = menuStrip_->addGroup(tr("Protection"));
+	protectGroup_ = ribbon_->addGroup(tr("Protection"));
 	protectGroup_->addAction(actProtect_);
     protectGroup_->addAction(actRefresh_);
 	protectGroup_->setVisible(false);
 
 	//! The "System" group.
-	GCF::MenuStripGroup* sysGroup = menuStrip_->addGroup(tr("System"));
+	RibbonGroup* sysGroup = ribbon_->addGroup(tr("System"));
 	sysGroup->addAction(actSettings_);
     sysGroup->addAction(actHelp_);
 	sysGroup->addAction(actAbout_);
 	sysGroup->addAction(actExit_);
+    sysGroup->setAutoCollapse(false);
 
 	// the menu to display the dock widgets
 	windowsMenu_.addAction(showOutputAction_);
@@ -966,7 +969,8 @@ void MainWindow::setupContextHelp()
     QSettings settings;
     QString helpPath = settings.value("Platform/HelpPath", "Help").toString();
 
-    QHelpEngine* helpEngine = new QHelpEngine(helpPath + "/Kactus2Help.qhc", this);
+    QHelpEngine* helpEngine =
+        new QHelpEngine(helpPath + "/Kactus2Help.qhc", this);
     helpEngine->setupData();
 
     // Create the help window.

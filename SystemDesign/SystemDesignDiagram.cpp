@@ -30,6 +30,8 @@
 #include <QMimeData>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QCoreApplication>
+#include <QApplication>
 
 #include <SystemDetailsEditor/SwitchHWDialog.h>
 
