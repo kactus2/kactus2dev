@@ -13980,7 +13980,7 @@ CreateHelp
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_AssemblyInfoFilename="VersionInfo.h" BuildVersion_BuildVersioningStyle="None.None.Increment.None" Qt5Version_x0020_Win32="5.0.0 VS2010" QtVersion_x0020_Win32="4.8.3" QtVersion_x0020_x64="4.8.3 x64" RccDir=".\GeneratedFiles" MocDir=".\GeneratedFiles" Qt5Version_x0020_x64="5.0.0 x64 VS2010" />
+      <UserProperties BuildVersion_AssemblyInfoFilename="VersionInfo.h" BuildVersion_BuildVersioningStyle="None.None.Increment.None" Qt5Version_x0020_Win32="5.0.1" QtVersion_x0020_Win32="4.8.3" QtVersion_x0020_x64="4.8.3 x64" RccDir=".\GeneratedFiles" MocDir=".\GeneratedFiles" Qt5Version_x0020_x64="5.0.0 x64 VS2010" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>
