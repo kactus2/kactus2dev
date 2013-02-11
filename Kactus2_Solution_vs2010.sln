@@ -34,8 +34,9 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		AMDCaProjectFile = D:\user\maattaj\FunBase\public\trunk\CodeAnalyst\Kactus2_Solution.caw
-		BuildVersion_UpdateAssemblyVersion = True
+		Qt5Version = 5.0.1
 		BuildVersion_UpdateFileVersion = True
+		BuildVersion_UpdateAssemblyVersion = True
+		AMDCaProjectFile = D:\user\maattaj\FunBase\public\trunk\CodeAnalyst\Kactus2_Solution.caw
 	EndGlobalSection
 EndGlobal
