@@ -45,7 +45,7 @@ void AddressSpaceVisualizer::refresh() {
 }
 
 QSize AddressSpaceVisualizer::minimumSizeHint() const {
-	return QSize(VisualizerItem::MAX_WIDTH * 2 + 5, VisualizerItem::ITEM_HEIGHT * 6);
+	return QSize(VisualizerItem::MAX_WIDTH * 2 + 3, VisualizerItem::ITEM_HEIGHT * 6);
 }
 
 QSize AddressSpaceVisualizer::sizeHint() const {
