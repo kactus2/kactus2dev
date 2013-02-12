@@ -9,17 +9,37 @@
 
 #include <QStringList>
 #include <QVariant>
+#include <QFileInfo>
 
 LibraryPathSelector::LibraryPathSelector(QWidget *parent):
 QComboBox(parent),
 settings_(this),
 validator_(new LibraryPathValidator(this)),
-libraryLocations_(settings_.value("Library/ActiveLocations", QStringList()).toStringList()),
+libraryLocations_(),
 pathEditor_(NULL) {
+
+	// the active library locations
+	QStringList activeLocations = settings_.value("Library/ActiveLocations", QStringList()).toStringList();
+	// make sure all locations are absolute paths
+	foreach (QString location, activeLocations) {
+
+		// if the path is not absolute
+		if (!QFileInfo(location).isAbsolute()) {
+			QString fullLocation = QFileInfo(location).absoluteFilePath();
+			libraryLocations_.append(fullLocation);
+		}
+		// if already absolute
+		else {
+			libraryLocations_.append(location);
+		}
+	}
 
 	addItems(libraryLocations_);
 
 	QString defaultPath = settings_.value("Library/DefaultLocation", QString()).toString();
+	if (!QFileInfo(defaultPath).isAbsolute()) {
+		defaultPath = QFileInfo(defaultPath).absoluteFilePath();
+	}
 
 	// if the default directory is found then select it
 	int index = findText(defaultPath);
