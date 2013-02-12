@@ -84,6 +84,10 @@ Section "MainSection" SEC01
   File "..\executable\platforms\qminimal.dll"
   File "..\executable\platforms\qwindows.dll"
 
+  SetOutPath "$INSTDIR\sqldrivers"
+  SetOverwrite on
+  File "..\executable\sqldrivers\qsqlite.dll"
+
   SetOutPath "$INSTDIR\Plugins"
   SetOverwrite on
   File "..\executable\Plugins\MCAPICodeGenerator.dll"
@@ -159,6 +163,7 @@ Section Uninstall
   Delete "$INSTDIR\Help\Kactus2Help.qch"
   Delete "$INSTDIR\Help\Kactus2Help.qhc"
   Delete "$INSTDIR\Plugins\MCAPICodeGenerator.dll"
+  Delete "$INSTDIR\sqldrivers\qsqlite.dll"
   Delete "$INSTDIR\platforms\qminimal.dll"
   Delete "$INSTDIR\platforms\qwindows.dll"
   Delete "$INSTDIR\DefaultSettings.ini"
@@ -194,6 +199,7 @@ Section Uninstall
   RMDir "$SMPROGRAMS\Kactus2"
   RMDir "$INSTDIR\Help"
   RMDir "$INSTDIR\Plugins"
+  RMDir "$INSTDIR\sqldrivers"
   RMDir "$INSTDIR\platforms"
   RMDir "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef\1.063"
   RMDir "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef"
