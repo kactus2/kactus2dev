@@ -222,9 +222,18 @@ namespace SettingsUpdater
                     QString newKey;
                     lineStream >> oldKey >> newKey;
                     
-                    QString value = settings.value(oldKey).toString();
+                    QVariant value = settings.value(oldKey);
                     settings.setValue(newKey, value);
                     settings.remove(oldKey);
+                }
+                else if (token == "copy")
+                {
+                    QString srcKey;
+                    QString destKey;
+                    lineStream >> srcKey >> destKey;
+
+                    QVariant value = settings.value(srcKey);
+                    settings.setValue(destKey, value);
                 }
             }
         }

@@ -75,18 +75,19 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\executable</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">debug\</IntDir>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</IgnoreImportLibrary>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">x64\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">x64\executable\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">x64\debug\</IntDir>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</IgnoreImportLibrary>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\executable</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">release\</IntDir>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</IgnoreImportLibrary>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">x64\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">x64\executable\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">x64\release\</IntDir>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</IgnoreImportLibrary>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)_d</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectName)_d</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <PreBuildEvent>
@@ -159,7 +160,7 @@ CreateHelp
     <ClCompile>
       <AdditionalOptions>-Zm200 -w34100 -w34189 /MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(QTDIR)\include\QtXmlPatterns;$(QTDIR)\include;.;.\debug;.\common\widgets\listManager;.\common\widgets\summaryLabel;.\IPXactWrapper\ComponentEditor\fileSet;.\IPXactWrapper\ComponentEditor\fileSet\file;.\IPXactWrapper\ComponentEditor\addressSpaces;.\IPXactWrapper\ComponentEditor\views;.\IPXactWrapper\ComponentEditor\channels;.\IPXactWrapper\ComponentEditor\cpus;.\IPXactWrapper\ComponentEditor\busInterfaces;.\common\widgets\interfaceModeSelector;.\common\widgets\addressSpaceSelector;.\common\widgets\memoryMapSelector;.\common\widgets\interfaceSelector;.\IPXactWrapper\ComponentEditor\software;$(QTDIR)\include\QtHelp;.\IPXactWrapper\ComponentEditor\memoryMaps;.\common\widgets\usageComboBox;.\common\widgets\accessComboBox;.\IPXactWrapper\ComponentEditor\treeStructure;.\common\widgets\modWriteComboBox;.\common\widgets\testConstraintComboBox;.\common\widgets\readActionComboBox;.\models;.\IPXactWrapper\ComponentEditor\addressSpaces\localMemoryMap;.\common\graphicsItems;.\IPXactWrapper\ComponentEditor\visualization;.\IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer;$(QTDIR)\..\qttools\include;$(QTDIR)\..\qttools\include\QtHelp;$(QTDIR)\..\qtxmlpatterns\include\QtXmlPatterns;$(QTDIR)\..\qtxmlpatterns\include;.\GeneratedFiles;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtXml;$(QTDIR)\include\QtXmlPatterns;$(QTDIR)\include;$(QTDIR)\include\QtHelp;.;$(QTDIR)\..\qttools\include;$(QTDIR)\..\qttools\include\QtHelp;$(QTDIR)\include\QtPrintSupport;$(QTDIR)\include\QtWidgets;$(QTDIR)\..\qtxmlpatterns\include\QtXmlPatterns;$(QTDIR)\..\qtxmlpatterns\include;.\GeneratedFiles;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;QT_DLL;QT_XMLPATTERNS_LIB;QT_HAVE_MMX;QT_HAVE_3DNOW;QT_HAVE_SSE;QT_HAVE_MMXEXT;QT_HAVE_SSE2;QT_THREAD_SUPPORT;KACTUS2_EXPORTS;QT_HELP_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
@@ -261,7 +262,7 @@ CreateHelp
       <AdditionalOptions>-Zm200 -w34100 -w34189 /MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>MaxSpeed</Optimization>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>$(QTDIR)\include\QtXmlPatterns;$(QTDIR)\include;.;.\release;.\GeneratedFiles;.\vhdlGenerator;.\common\widgets\listManager;.\common\widgets\dirLineEdit;.\IPXactWrapper\ComponentEditor\fileSet;.\IPXactWrapper\ComponentEditor\channels;.\IPXactWrapper\ComponentEditor\views;.\common\delegates;.\common\widgets\attributeBox;.\common\views\EditableTableView;.\common\views\EditableListView;.\common\widgets\LibraryPathSelector;.\common\widgets\LibraryPathEditor;.\common\validators\LibraryPathValidator;.\common\widgets\EditorDockWidget;.\common\widgets\EditorScrollArea;.\common\widgets\ScanProgressWidget;.\IPXactWrapper\ComponentEditor\addressSpaces;.\common\widgets\ParameterEditor;.\common\widgets\ParameterGroupBox;.\IPXactWrapper\ComponentEditor\cpus;.\common\widgets\NumberLineEdit;.\IPXactWrapper\ComponentEditor\memoryMaps;.\IPXactWrapper\ComponentEditor;.\IPXactWrapper\ComponentEditor\treeStructure;.\common\widgets\nameGroupEditor;.\common\dialogs\selectDirectoryDialog;.\common\widgets\summaryLabel;.\IPXactWrapper\ComponentEditor\fileSet\file;.\IPXactWrapper\ComponentEditor\busInterfaces;.\common\widgets\interfaceModeSelector;.\common\widgets\addressSpaceSelector;.\common\widgets\memoryMapSelector;.\common\widgets\interfaceSelector;.\IPXactWrapper\ComponentEditor\software;$(QTDIR)\include\QtHelp;.\common\widgets\usageComboBox;.\common\widgets\accessComboBox;.\common\widgets\modWriteComboBox;.\common\widgets\testConstraintComboBox;.\common\widgets\readActionComboBox;.\models;.\IPXactWrapper\ComponentEditor\addressSpaces\localMemoryMap;.\common\graphicsItems;.\IPXactWrapper\ComponentEditor\visualization;.\IPXactWrapper\ComponentEditor\addressSpaces\addressSpaceVisualizer;$(QTDIR)\..\qttools\include;$(QTDIR)\..\qttools\include\QtHelp;$(QTDIR)\..\qtxmlpatterns\include\QtXmlPatterns;$(QTDIR)\..\qtxmlpatterns\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtXml;$(QTDIR)\include\QtXmlPatterns;$(QTDIR)\include;$(QTDIR)\include\QtHelp;.;$(QTDIR)\..\qttools\include;$(QTDIR)\..\qttools\include\QtHelp;$(QTDIR)\include\QtPrintSupport;$(QTDIR)\include\QtWidgets;$(QTDIR)\..\qtxmlpatterns\include\QtXmlPatterns;$(QTDIR)\..\qtxmlpatterns\include;.\GeneratedFiles;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>QT_NO_DEBUG;NDEBUG;_WINDOWS;UNICODE;WIN32;QT_DLL;QT_XMLPATTERNS_LIB;QT_HAVE_MMX;QT_HAVE_3DNOW;QT_HAVE_SSE;QT_HAVE_MMXEXT;QT_HAVE_SSE2;QT_THREAD_SUPPORT;KACTUS2_EXPORTS;QT_HELP_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
@@ -13980,7 +13981,7 @@ CreateHelp
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_AssemblyInfoFilename="VersionInfo.h" BuildVersion_BuildVersioningStyle="None.None.Increment.None" Qt5Version_x0020_Win32="5.0.1" QtVersion_x0020_Win32="4.8.3" QtVersion_x0020_x64="4.8.3 x64" RccDir=".\GeneratedFiles" MocDir=".\GeneratedFiles" Qt5Version_x0020_x64="5.0.0 x64 VS2010" />
+      <UserProperties BuildVersion_AssemblyInfoFilename="VersionInfo.h" BuildVersion_BuildVersioningStyle="None.None.Increment.None" Qt5Version_x0020_Win32="5.0.1" QtVersion_x0020_Win32="4.8.3" QtVersion_x0020_x64="4.8.3 x64" RccDir=".\GeneratedFiles" MocDir=".\GeneratedFiles" Qt5Version_x0020_x64="5.0.1 x64" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>
