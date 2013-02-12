@@ -225,7 +225,7 @@ void LibrarySettingsDialog::loadSettings()
 
 		// mark the default library
 		QTableWidgetItem* defItem = new QTableWidgetItem();
-		if (fullLocation == defaultLocation) {
+		if (location == defaultLocation) {
 			defItem->setCheckState(Qt::Checked);
 		}
 		else {
@@ -236,7 +236,7 @@ void LibrarySettingsDialog::loadSettings()
 
 		QTableWidgetItem* activeItem = new QTableWidgetItem();
 		// if the location is set as active
-		if (activeLocations.contains(fullLocation)) {
+		if (activeLocations.contains(location)) {
 			activeItem->setCheckState(Qt::Checked);
 		}
 		// if location is inactive
