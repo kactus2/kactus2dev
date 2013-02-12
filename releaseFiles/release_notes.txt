@@ -10,6 +10,20 @@
 ===============================================================================
 
 
+12/02/2013 2.1 (Build 192)
+----------------------------------------------------
+
++ Menu ribbon remade completely with better scaling behaviour. This also
+  fixes the blackout bug present in the previous version.
++ Added the possibility to select which library locations are currently active.
+
+- Fixed missing prints from the library integrity check.
+- Removed any dependencies to GCF framework.
+
+* Migrated to Qt 5.0.1.
+
+
+
 06/02/2013 2.1
 ----------------------------------------------------
 
@@ -31,7 +45,7 @@
 - Fixed bugs in CSV import and export.
 - Fixed VLNV editor content assist bugs.
 
-* Migrated to Qt 5.0
+* Migrated to Qt 5.0.
 * Changed colors of API and COM connections within system designs.
 
 
