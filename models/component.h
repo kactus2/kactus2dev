@@ -1477,6 +1477,36 @@ public:
 	*/
 	const QList<QSharedPointer<ComProperty> >& getSWProperties() const;
 
+	/*! \brief Check if the address blocks within memory maps contains registers with given names.
+	 *
+	 * Method: 		uniqueRegisterNames
+	 * Full name:	AddressBlock::uniqueRegisterNames
+	 * Access:		public 
+	 *  
+	 * The register names are checked against the given list and appended to it. 
+	 * If all register names are unique then true is returned.
+	 *
+	 * \param regNames List of strings to be checked.
+	 *
+	 * \return True if all register names are unique.
+	*/
+	bool uniqueRegisterNames(QStringList& regNames) const;
+
+	/*! \brief Check if the names of memory typed address blocks are contained in the given list.
+	 *
+	 * Method: 		uniqueMemoryNames
+	 * Full name:	MemoryMap::uniqueMemoryNames
+	 * Access:		public 
+	 * 
+	 * The memory names are checked against the given list and appended to it.
+	 * If all memory names are unique then true is returned.
+	 * 
+	 * \param memNames List of strings to be checked.
+	 *
+	 * \return True if all memory names are unique.
+	*/
+	bool uniqueMemoryNames(QStringList& memNames) const;
+
 private:
 
     /*!

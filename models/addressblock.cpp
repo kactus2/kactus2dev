@@ -385,3 +385,18 @@ QList<QSharedPointer<RegisterModel> >& AddressBlock::getRegisterData() {
 const QList<QSharedPointer<RegisterModel> >& AddressBlock::getRegisterData() const {
 	return registerData_;
 }
+
+bool AddressBlock::uniqueRegisterNames( QStringList& regNames ) const {
+	foreach (QSharedPointer<RegisterModel> reg, registerData_) {
+		const QString regName = reg->getName();
+
+		// the register name was not unique
+		if (regNames.contains(regName)) {
+			return false;
+		}
+
+		regNames.append(regName);
+	}
+
+	return true;
+}

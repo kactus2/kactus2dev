@@ -89,6 +89,21 @@ public:
 	virtual bool isValid(QStringList& errorList, 
 		const QString& parentIdentifier) const;
 
+	/*! \brief Check if the address block contains registers with given names.
+	 *
+	 * Method: 		uniqueRegisterNames
+	 * Full name:	AddressBlock::uniqueRegisterNames
+	 * Access:		public 
+	 *  
+	 * The register names are checked against the given list and appended to it. 
+	 * If all register names are unique then true is returned.
+	 *
+	 * \param regNames List of strings to be checked.
+	 *
+	 * \return True if all register names are unique.
+	*/
+	bool uniqueRegisterNames(QStringList& regNames) const;
+
 	/*! \brief Check if the address block is in a valid state.
 	 *
 	 * \return bool True if the state is valid and writing is possible.

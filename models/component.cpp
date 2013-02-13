@@ -3355,3 +3355,29 @@ MemoryMap const* Component::getMemoryMap(QString const& name) const
 
     return 0;
 }
+
+bool Component::uniqueRegisterNames( QStringList& regNames ) const {
+	foreach (QSharedPointer<MemoryMap> memMap, memoryMaps_) {
+		
+		// if register names are not unique
+		if (!memMap->uniqueRegisterNames(regNames)) {
+			return false;
+		}
+	}
+
+	// all register names were unique
+	return true;
+}
+
+bool Component::uniqueMemoryNames( QStringList& memNames ) const {
+	foreach (QSharedPointer<MemoryMap> memMap, memoryMaps_) {
+
+		// if memory names are not unique
+		if (!memMap->uniqueMemoryNames(memNames)) {
+			return false;
+		}
+	}
+
+	// all memory names were unique
+	return true;
+}

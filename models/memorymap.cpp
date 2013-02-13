@@ -393,3 +393,43 @@ int MemoryMap::getMaxWidth() const {
 	}
 	return width;
 }
+
+bool MemoryMap::uniqueRegisterNames( QStringList& regNames ) const {
+	foreach (QSharedPointer<MemoryMapItem> memItem, items_) {
+		
+		// only address blocks contain registers
+		QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
+		if (addrBlock) {
+
+			// if address blocks contain registers with same names
+			if (!addrBlock->uniqueRegisterNames(regNames)) {
+				return false;
+			}
+		}
+	}
+	// all address blocks contained unique names
+	return true;
+}
+
+bool MemoryMap::uniqueMemoryNames( QStringList& memNames ) const {
+	foreach (QSharedPointer<MemoryMapItem> memItem, items_) {
+
+		// only address blocks can be memory blocks
+		QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
+		
+		// if address block's type is memory
+		if (addrBlock && addrBlock->getUsage() == General::MEMORY) {
+			const QString memName = addrBlock->getName();
+
+			// if memory name is not unique
+			if (memNames.contains(memName)) {
+				return false;
+			}
+
+			memNames.append(memName);
+		}
+	}
+
+	// all were unique
+	return true;
+}
