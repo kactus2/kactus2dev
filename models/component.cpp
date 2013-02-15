@@ -3381,3 +3381,16 @@ bool Component::uniqueMemoryNames( QStringList& memNames ) const {
 	// all memory names were unique
 	return true;
 }
+
+bool Component::hasLocalMemoryMaps() const {
+	foreach (QSharedPointer<AddressSpace> addrSpace, addressSpaces_) {
+		
+		// an address space with local memory map is found.
+		if (addrSpace->hasLocalMemoryMap()) {
+			return true;
+		}
+	}
+
+	// no address space with local memory map was found
+	return false;
+}

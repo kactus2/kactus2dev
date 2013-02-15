@@ -454,3 +454,7 @@ quint64 AddressSpace::getLastAddress() const {
 	}
 	return range - 1;
 }
+
+bool AddressSpace::hasLocalMemoryMap() const {
+	return localMemoryMap_;
+}

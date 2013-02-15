@@ -172,6 +172,17 @@ public:
 	 */
 	QSharedPointer<MemoryMap> getLocalMemoryMap();
 
+	/*! \brief Check if the address space contains local memory map.
+	 *
+	 * Method: 		hasLocalMemoryMap
+	 * Full name:	AddressSpace::hasLocalMemoryMap
+	 * Access:		public 
+	 *
+	 *
+	 * \return True if a local memory map is found.
+	*/
+	bool hasLocalMemoryMap() const;
+
 	/*! \brief Set the local memory map
 	 *
 	 * \param localMemoryMap a pointer to the new local memory map

@@ -1438,6 +1438,17 @@ public:
 	*/
 	void setAddressSpaces(const QList<QSharedPointer<AddressSpace> > &addressSpaces);
 
+	/*! \brief Check if the component contains at least one local memory map.
+	 *
+	 * Method: 		hasLocalMemoryMaps
+	 * Full name:	Component::hasLocalMemoryMaps
+	 * Access:		public 
+	 *
+	 *
+	 * \return True if at least one local memory map is found.
+	*/
+	bool hasLocalMemoryMaps() const;
+
 	/*! \brief Remove the specified address space from the component.
 	 *
 	 * \param addrSpaceName The name of the address space to remove.
