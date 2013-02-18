@@ -564,15 +564,6 @@
     <Filter Include="Header Files\common\dialogs\TableViewDialog">
       <UniqueIdentifier>{8b3322f9-844b-47af-ad0d-4f0ac50556ad}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\common\modWriteComboBox">
-      <UniqueIdentifier>{3bd20919-c3e1-4a89-8441-23a1912f19ed}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\readActionComboBox">
-      <UniqueIdentifier>{7b47fe1b-311d-4213-875f-7ac84e61ac2c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\testConstraintComboBox">
-      <UniqueIdentifier>{1457b7ff-ea9f-4850-9669-1950f45381c8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\common\cornerStitch">
       <UniqueIdentifier>{810a4798-e014-44e6-a3ca-1482eed70c6c}</UniqueIdentifier>
     </Filter>

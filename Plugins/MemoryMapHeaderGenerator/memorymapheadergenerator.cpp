@@ -44,9 +44,10 @@ bool MemoryMapHeaderGenerator::checkGeneratorSupport( QSharedPointer<LibraryComp
 	}
 
 	return comp->hasLocalMemoryMaps();
-	//return true;
 }
 
 void MemoryMapHeaderGenerator::runGenerator( IPluginUtility* utility, QSharedPointer<LibraryComponent> libComp ) {
+	utility_ = utility;
+
 	qDebug() << "Header generator is run";
 }
