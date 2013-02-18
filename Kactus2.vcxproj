@@ -3881,7 +3881,7 @@ CreateHelp
     </CustomBuild>
     <ClInclude Include="MemoryDesigner\SegmentItem.h" />
     <ClInclude Include="PluginSystem\IGeneratorPlugin.h" />
-    <ClInclude Include="PluginSystem\IPluginInformation.h" />
+    <ClInclude Include="PluginSystem\IPlugin.h" />
     <ClInclude Include="PluginSystem\IPluginUtility.h" />
     <ClInclude Include="PluginSystem\PluginManager.h" />
     <ClInclude Include="settings\SettingsUpdater.h" />

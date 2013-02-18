@@ -12,7 +12,7 @@
 #include "PluginListDialog.h"
 
 #include "PluginManager.h"
-#include "IPluginInformation.h"
+#include "IPlugin.h"
 
 #include <QVBoxLayout>
 #include <QPushButton>
@@ -73,7 +73,7 @@ QObject* PluginListDialog::getSelectedPlugin() const
 //-----------------------------------------------------------------------------
 void PluginListDialog::selectionChanged()
 {
-    IPluginInformation* pluginInfo = qobject_cast<IPluginInformation*>(getSelectedPlugin());
+    IPlugin* pluginInfo = qobject_cast<IPlugin*>(getSelectedPlugin());
     Q_ASSERT(pluginInfo != 0);
 
     detailBox_.setPlainText(pluginInfo->getDescription());
@@ -84,7 +84,7 @@ void PluginListDialog::selectionChanged()
 //-----------------------------------------------------------------------------
 void PluginListDialog::addPlugin(QObject* plugin)
 {
-    IPluginInformation* pluginInfo = qobject_cast<IPluginInformation*>(plugin);
+    IPlugin* pluginInfo = qobject_cast<IPlugin*>(plugin);
 
     if (pluginInfo != 0)
     {

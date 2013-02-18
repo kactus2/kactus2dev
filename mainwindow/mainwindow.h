@@ -225,6 +225,13 @@ public slots:
     //! Prompts the user to select a generator plugin and runs it.
     void runGeneratorPlugin();
 
+    /*!
+     *  Runs the plugin generator specified by the given action.
+     *
+     *      @param [in] action The action corresponding to the plugin.
+     */
+    void runGeneratorPlugin(QAction* action);
+
 	//! \brief Creates a list of source files.
 	void runSourceListingGen();
 
@@ -738,8 +745,11 @@ private:
 	//! \brief Check the library integrity
 	QAction* actCheckIntegrity_;
 
-    //! The HW Design group.
+    //! The generation group.
     RibbonGroup* generationGroup_;
+
+    // Action group for plugin generators.
+    QActionGroup* pluginActionGroup_;
 
     //! Action to generate VHDL from a design.
     QAction* actGenVHDL_;

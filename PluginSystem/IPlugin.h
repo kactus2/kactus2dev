@@ -1,16 +1,16 @@
 //-----------------------------------------------------------------------------
-// File: IPluginInformation.h
+// File: IPlugin.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
 // Date: 27.6.2012
 //
 // Description:
-// Plugin information interface.
+// Base plugin interface.
 //-----------------------------------------------------------------------------
 
-#ifndef IPLUGININFORMATION_H
-#define IPLUGININFORMATION_H
+#ifndef IPLUGIN_H
+#define IPLUGIN_H
 
 #include <QString>
 #include <QtPlugin>
@@ -18,13 +18,13 @@
 //-----------------------------------------------------------------------------
 //! Plugin information interface.
 //-----------------------------------------------------------------------------
-class IPluginInformation
+class IPlugin
 {
 public:
     /*!
      *  Destructor.
      */
-    virtual ~IPluginInformation() {}
+    virtual ~IPlugin() {}
 
     /*!
      *  Returns the name of the plugin.
@@ -42,8 +42,8 @@ public:
     virtual QString const& getDescription() const = 0;
 };
 
-Q_DECLARE_INTERFACE(IPluginInformation, "com.tut.Kactus2.IPluginInformation/1.0")
+Q_DECLARE_INTERFACE(IPlugin, "com.tut.Kactus2.IPlugin/1.0")
 
 //-----------------------------------------------------------------------------
 
-#endif // IPLUGININFORMATION_H
+#endif // IPLUGIN_H

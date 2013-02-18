@@ -5342,9 +5342,6 @@
     <ClInclude Include="PluginSystem\IGeneratorPlugin.h">
       <Filter>Header Files\PluginSystem</Filter>
     </ClInclude>
-    <ClInclude Include="PluginSystem\IPluginInformation.h">
-      <Filter>Header Files\PluginSystem</Filter>
-    </ClInclude>
     <ClInclude Include="PluginSystem\IPluginUtility.h">
       <Filter>Header Files\PluginSystem</Filter>
     </ClInclude>
@@ -5380,6 +5377,9 @@
     </ClInclude>
     <ClInclude Include="common\widgets\Ribbon\Ribbon.h">
       <Filter>Header Files\common\widgets\Ribbon</Filter>
+    </ClInclude>
+    <ClInclude Include="PluginSystem\IPlugin.h">
+      <Filter>Header Files\PluginSystem</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

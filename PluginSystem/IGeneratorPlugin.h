@@ -13,8 +13,11 @@
 #ifndef IGENERATORPLUGIN_H
 #define IGENERATORPLUGIN_H
 
+#include "IPlugin.h"
+
 #include <QSharedPointer>
 #include <QWidget>
+#include <QIcon>
 
 class LibraryInterface;
 class LibraryComponent;
@@ -24,7 +27,7 @@ class IPluginUtility;
 //! Interface for plugins that are used to generate content for different
 //! IP-XACT documents.
 //-----------------------------------------------------------------------------
-class IGeneratorPlugin
+class IGeneratorPlugin : public IPlugin
 {
 public:
     /*!
@@ -33,13 +36,18 @@ public:
     virtual ~IGeneratorPlugin() {}
 
     /*!
+     *  Returns the icon for the generator.
+     */
+    virtual QIcon getIcon() const = 0;
+
+    /*!
      *  Checks whether the generator supports generation for the given library component.
      *
      *      @param [in] libComp The library component for which to check support.
      *
      *      @return True, if the generator supports the given component. Otherwise false.
      */
-    virtual bool checkGeneratorSupport(QSharedPointer<LibraryComponent> libComp) const = 0;
+    virtual bool checkGeneratorSupport(QSharedPointer<LibraryComponent const> libComp) const = 0;
 
     /*!
      *  Runs the generator.

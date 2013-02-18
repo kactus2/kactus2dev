@@ -153,6 +153,7 @@ MainWindow::MainWindow(QWidget *parent)
       actLibrarySearch_(0), 
       actCheckIntegrity_(0),
       generationGroup_(0),
+      pluginActionGroup_(0),
       actAddColumn_(0), 
       actGenVHDL_(0), 
       actGenModelSim_(0),
@@ -208,18 +209,15 @@ MainWindow::MainWindow(QWidget *parent)
 
     SettingsUpdater::runUpgrade(this);
 
-	// set the top title for the application
 	setWindowTitle(QCoreApplication::applicationName());
-
-	// Set the application icon.
 	setWindowIcon(QIcon(":icons/graphics/appicon.png"));
 
 	// By default, the window is 1024x768 and set to maximized state.
 	resize(1024, 768);
 	setWindowState(Qt::WindowMaximized);
 
-    // set up the widgets
-	setupMessageConsole();
+    // Setup windows.
+    setupMessageConsole();
     setupContextHelp();
 	setupDrawBoard();
     setupLibraryDock();
@@ -230,6 +228,17 @@ MainWindow::MainWindow(QWidget *parent)
     setupSystemDetailsEditor();
 	setupInterfaceEditor();
 	setupConnectionEditor();
+
+    // Load plugins.
+    QSettings settings;
+    QString pluginsPath = settings.value("Platform/PluginsPath", QCoreApplication::applicationDirPath() + "/Plugins").toString();
+
+    if (pluginsPath.at(0) != '/')
+    {
+        pluginsPath = QCoreApplication::applicationDirPath() + "/" + pluginsPath;
+    }
+
+    pluginMgr_ = QSharedPointer<PluginManager>(new PluginManager(pluginsPath));
 
 	// some actions need the editors so set them up before the actions
 	setupActions();
@@ -287,16 +296,6 @@ void MainWindow::restoreSettings()
 
     // Update the workspace menu.
     updateWorkspaceMenu();
-
-    // Retrieve the plugins path from settings.
-    QString pluginsPath = settings.value("Platform/PluginsPath", QCoreApplication::applicationDirPath() + "/Plugins").toString();
-
-    if (pluginsPath.at(0) != '/')
-    {
-        pluginsPath = QCoreApplication::applicationDirPath() + "/" + pluginsPath;
-    }
-
-    pluginMgr_ = QSharedPointer<PluginManager>(new PluginManager(pluginsPath));
 }
 
 //-----------------------------------------------------------------------------
@@ -433,8 +432,8 @@ void MainWindow::saveWorkspace(QString const& workspaceName)
     settings.endGroup();
 }
 
-void MainWindow::setupActions() {
-
+void MainWindow::setupActions() 
+{
 	// the action to create a new hierarchical component
 	actNew_ = new QAction(QIcon(":/icons/graphics/file-new.png"), tr("New"), this);
 	actNew_->setShortcut(QKeySequence::New);
@@ -797,6 +796,24 @@ void MainWindow::setupMenus()
 	generationGroup_->setVisible(false);
 	generationGroup_->setEnabled(false);
 
+    pluginActionGroup_ = new QActionGroup(this);
+
+    foreach (QObject* plugin, pluginMgr_->getPlugins())
+    {
+        IGeneratorPlugin* genPlugin = qobject_cast<IGeneratorPlugin*>(plugin);
+
+        if (genPlugin != 0)
+        {
+            QAction* action = new QAction(genPlugin->getIcon(), genPlugin->getName(), this);
+            action->setData(qVariantFromValue((void*)genPlugin));
+            generationGroup_->addAction(action);
+            pluginActionGroup_->addAction(action);
+        }
+    }
+
+    connect(pluginActionGroup_, SIGNAL(triggered(QAction*)),
+            this, SLOT(runGeneratorPlugin(QAction*)), Qt::UniqueConnection);
+
 	//! The "Diagram Tools" group.
 	diagramToolsGroup_ = ribbon_->addGroup(tr("Diagram Tools"));
 	diagramToolsGroup_->addAction(actAddColumn_);
@@ -969,8 +986,7 @@ void MainWindow::setupContextHelp()
     QSettings settings;
     QString helpPath = settings.value("Platform/HelpPath", "Help").toString();
 
-    QHelpEngine* helpEngine =
-        new QHelpEngine(helpPath + "/Kactus2Help.qhc", this);
+    QHelpEngine* helpEngine = new QHelpEngine(helpPath + "/Kactus2Help.qhc", this);
     helpEngine->setupData();
 
     // Create the help window.
@@ -1309,6 +1325,22 @@ void MainWindow::updateMenuStrip()
 
     actVisibilityControl_->setEnabled(doc != 0 && (doc->getFlags() & TabDocument::DOC_VISIBILITY_CONTROL_SUPPORT));
 
+    // Enable/disable the plugin generator actions based on the component being edited in the document.
+    QSharedPointer<LibraryComponent const> libComp;
+
+    if (doc != 0)
+    {
+        libComp = libraryHandler_->getModelReadOnly(doc->getIdentifyingVLNV());
+    }
+
+    foreach (QAction* action, pluginActionGroup_->actions())
+    {
+        IGeneratorPlugin* plugin = reinterpret_cast<IGeneratorPlugin*>(action->data().value<void*>());
+        Q_ASSERT(plugin != 0);
+
+        action->setEnabled(libComp != 0 && plugin->checkGeneratorSupport(libComp));
+    }
+
 	updateZoomTools();
 }
 
@@ -1557,6 +1589,39 @@ void MainWindow::runGeneratorPlugin()
         genPlugin->runGenerator(this, libComp);
         doc->refresh();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::runGeneratorPlugin()
+//-----------------------------------------------------------------------------
+void MainWindow::runGeneratorPlugin(QAction* action)
+{
+    TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+
+    // Inform user that unsaved changes must be saved before continuing.
+    if (doc->isModified())
+    {
+        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+            "The document " + doc->getDocumentName() + " has unsaved changes and needs to be "
+            "saved before generators can be run. Save and continue?",
+            QMessageBox::Yes | QMessageBox::No, this);
+
+        if (msgBox.exec() == QMessageBox::No || !doc->save())
+        {
+            return;
+        }
+    }
+
+    // Retrieve the library component.
+    QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(doc->getIdentifyingVLNV());
+
+    // Retrieve the plugin pointer from the action.
+    IGeneratorPlugin* plugin = reinterpret_cast<IGeneratorPlugin*>(action->data().value<void*>());
+    Q_ASSERT(plugin != 0);
+
+    // Run the generator and refresh the document.
+    plugin->runGenerator(this, libComp);
+    doc->refresh();
 }
 
 void MainWindow::runSourceListingGen() {

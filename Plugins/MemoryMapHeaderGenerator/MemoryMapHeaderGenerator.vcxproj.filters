@@ -44,6 +44,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_memorymapheadergenerator.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\qrc_memorymapheadergenerator.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="memorymapheadergenerator_global.h">
@@ -54,8 +57,14 @@
     <CustomBuild Include="memorymapheadergenerator.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="memorymapheadergenerator.qrc">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <None Include="headerGenerator.json" />
+    <None Include="memorymapheadergenerator.png">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

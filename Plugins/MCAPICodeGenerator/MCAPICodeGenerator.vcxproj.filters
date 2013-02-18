@@ -44,13 +44,22 @@
     <ClCompile Include="GeneratedFiles\Debug\moc_McapiCodeGenerator.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\qrc_MCAPICodeGenerator.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="MCAPICodeGenerator.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="MCAPICodeGenerator.qrc">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <None Include="mcapi.json" />
+    <None Include="mcapi-generator.png">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

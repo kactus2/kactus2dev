@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>mcapi-generator.png</file>
+    </qresource>
+</RCC>

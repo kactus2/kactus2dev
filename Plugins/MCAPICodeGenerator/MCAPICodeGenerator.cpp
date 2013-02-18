@@ -72,7 +72,7 @@ QString const& MCAPICodeGenerator::getDescription() const
 //-----------------------------------------------------------------------------
 // Function: MCAPICodeGenerator::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
-bool MCAPICodeGenerator::checkGeneratorSupport(QSharedPointer<LibraryComponent> libComp) const
+bool MCAPICodeGenerator::checkGeneratorSupport(QSharedPointer<LibraryComponent const> libComp) const
 {
     QSharedPointer<Component> comp = libComp.dynamicCast<Component>();
     return (comp != 0 && comp->getComponentImplementation() == KactusAttribute::KTS_SW);
@@ -724,4 +724,12 @@ void MCAPICodeGenerator::writeStatusCheck(CSourceWriter &writer)
     writer.writeLine("return -1;");
     writer.endBlock();
     writer.writeLine();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MCAPICodeGenerator::getIcon()
+//-----------------------------------------------------------------------------
+QIcon MCAPICodeGenerator::getIcon() const
+{
+    return QIcon(":icons/mcapi-generator.png");
 }

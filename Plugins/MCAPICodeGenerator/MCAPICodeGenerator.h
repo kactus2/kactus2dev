@@ -12,7 +12,6 @@
 #ifndef MCAPICODEGENERATOR_H
 #define MCAPICODEGENERATOR_H
 
-#include <PluginSystem/IPluginInformation.h>
 #include <PluginSystem/IGeneratorPlugin.h>
 
 #include <QObject>
@@ -24,12 +23,12 @@ class IPluginUtility;
 //-----------------------------------------------------------------------------
 //! MCAPI code generator.
 //-----------------------------------------------------------------------------
-class MCAPICodeGenerator : public QObject, public IPluginInformation, public IGeneratorPlugin
+class MCAPICodeGenerator : public QObject, public IGeneratorPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "kactus2.plugins.MCAPICodeGenerator" FILE "mcapi.json")
 
-    Q_INTERFACES(IPluginInformation)
+    Q_INTERFACES(IPlugin)
     Q_INTERFACES(IGeneratorPlugin)
 
 public:
@@ -52,13 +51,18 @@ public:
     virtual QString const& getDescription() const;
 
     /*!
+     *  Returns the icon for the generator.
+     */
+    virtual QIcon getIcon() const;
+
+    /*!
      *  Checks whether the generator supports generation for the given library component.
      *
      *      @param [in] libComp The library component for which to check support.
      *
      *      @return True, if the generator supports the given component. Otherwise false.
      */
-    virtual bool checkGeneratorSupport(QSharedPointer<LibraryComponent> libComp) const;
+    virtual bool checkGeneratorSupport(QSharedPointer<LibraryComponent const> libComp) const;
 
     /*!
      *  Runs the generator.

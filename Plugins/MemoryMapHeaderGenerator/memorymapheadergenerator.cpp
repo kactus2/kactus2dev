@@ -35,7 +35,15 @@ QString const& MemoryMapHeaderGenerator::getDescription() const {
 	return description;
 }
 
-bool MemoryMapHeaderGenerator::checkGeneratorSupport( QSharedPointer<LibraryComponent> libComp ) const {
+//-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::getIcon()
+//-----------------------------------------------------------------------------
+QIcon MemoryMapHeaderGenerator::getIcon() const
+{
+    return QIcon(":icons/memorymapheadergenerator.png");
+}
+
+bool MemoryMapHeaderGenerator::checkGeneratorSupport( QSharedPointer<LibraryComponent const> libComp ) const {
 	
 	// make sure the object is a component
 	QSharedPointer<Component> comp = libComp.dynamicCast<Component>();
