@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/icons">
         <file>memorymapheadergenerator.png</file>
+        <file>generation_memHeader2.png</file>
     </qresource>
 </RCC>

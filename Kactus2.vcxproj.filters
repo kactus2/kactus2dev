@@ -749,6 +749,12 @@
     <Filter Include="Source Files\common\widgets\Ribbon">
       <UniqueIdentifier>{15fb5228-af85-4a5d-8347-5e28159e9f32}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\common\dialogs\fileSaveDialog">
+      <UniqueIdentifier>{b3ba712a-1a25-4333-9ac4-ce20fea34d57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\dialogs\fileSaveDialog">
+      <UniqueIdentifier>{4590b1ca-aeff-41ae-a849-c850da88ccf0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\CSourceWriter.cpp">
@@ -3460,6 +3466,12 @@
     <ClCompile Include="GeneratedFiles\moc_RibbonGroup.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_filesavedialog.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common\dialogs\fileSaveDialog\filesavedialog.cpp">
+      <Filter>Source Files\common\dialogs\fileSaveDialog</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -4958,6 +4970,9 @@
     </CustomBuild>
     <CustomBuild Include="common\widgets\Ribbon\RibbonGroup.h">
       <Filter>Header Files\common\widgets\Ribbon</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\dialogs\fileSaveDialog\filesavedialog.h">
+      <Filter>Header Files\common\dialogs\fileSaveDialog</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

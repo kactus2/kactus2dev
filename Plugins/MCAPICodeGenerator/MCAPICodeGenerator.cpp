@@ -74,7 +74,7 @@ QString const& MCAPICodeGenerator::getDescription() const
 //-----------------------------------------------------------------------------
 bool MCAPICodeGenerator::checkGeneratorSupport(QSharedPointer<LibraryComponent const> libComp) const
 {
-    QSharedPointer<Component> comp = libComp.dynamicCast<Component>();
+    QSharedPointer<Component const> comp = libComp.dynamicCast<Component const>();
     return (comp != 0 && comp->getComponentImplementation() == KactusAttribute::KTS_SW);
 }
 

@@ -8,6 +8,7 @@
 #include "memorymapheadergenerator.h"
 #include <LibraryManager/libraryinterface.h>
 #include <PluginSystem/IPluginUtility.h>
+#include <common/dialogs/fileSaveDialog/filesavedialog.h>
 
 #include <QtPlugin>
 
@@ -40,13 +41,13 @@ QString const& MemoryMapHeaderGenerator::getDescription() const {
 //-----------------------------------------------------------------------------
 QIcon MemoryMapHeaderGenerator::getIcon() const
 {
-    return QIcon(":icons/memorymapheadergenerator.png");
+    return QIcon(":icons/generation_memHeader2.png");
 }
 
 bool MemoryMapHeaderGenerator::checkGeneratorSupport( QSharedPointer<LibraryComponent const> libComp ) const {
 	
 	// make sure the object is a component
-	QSharedPointer<Component> comp = libComp.dynamicCast<Component>();
+	QSharedPointer<Component const> comp = libComp.dynamicCast<Component const>();
 	if (!comp) {
 		return false;
 	}
@@ -57,5 +58,14 @@ bool MemoryMapHeaderGenerator::checkGeneratorSupport( QSharedPointer<LibraryComp
 void MemoryMapHeaderGenerator::runGenerator( IPluginUtility* utility, QSharedPointer<LibraryComponent> libComp ) {
 	utility_ = utility;
 
-	qDebug() << "Header generator is run";
+	FileSaveDialog dialog(utility_->getParentWidget());
+
+	int result = dialog.exec();
+
+	if (result == QDialog::Rejected) {
+		qDebug() << "Dialog rejected";
+		return;
+	}
+
+	qDebug() << "Dialog accepted";
 }

@@ -7,9 +7,7 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./common/widgets/Ribbon/RibbonGroup.h \
-    ./resource.h \
-    ./common/widgets/Ribbon/Ribbon.h \
+HEADERS += ./resource.h \
     ./common/ColumnTypes.h \
     ./common/CSourceWriter.h \
     ./common/diagramgrid.h \
@@ -77,6 +75,8 @@ HEADERS += ./common/widgets/Ribbon/RibbonGroup.h \
     ./common/widgets/modWriteComboBox/modwritecombobox.h \
     ./common/widgets/readActionComboBox/readactioncombobox.h \
     ./common/widgets/testConstraintComboBox/testconstraintcombobox.h \
+    ./common/widgets/Ribbon/Ribbon.h \
+    ./common/widgets/Ribbon/RibbonGroup.h \
     ./common/validators/AddressValidator.h \
     ./common/validators/nameValidator/namevalidator.h \
     ./common/validators/vhdlNameValidator/vhdlnamevalidator.h \
@@ -124,6 +124,7 @@ HEADERS += ./common/widgets/Ribbon/RibbonGroup.h \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h \
     ./common/dialogs/TableViewDialog/TableViewDialog.h \
     ./common/dialogs/createConfigurationDialog/createconfigurationdialog.h \
+    ./common/dialogs/fileSaveDialog/filesavedialog.h \
     ./common/cornerStitch/CornerStitchStructure.h \
     ./common/cornerStitch/StitchTile.h \
     ./designwidget/AdHocEnabled.h \
@@ -516,7 +517,7 @@ HEADERS += ./common/widgets/Ribbon/RibbonGroup.h \
     ./LibraryManager/HierarchyView/hierarchyitem.h \
     ./LibraryManager/HierarchyView/hierarchyfilter.h \
     ./PluginSystem/IGeneratorPlugin.h \
-    ./PluginSystem/IPluginInformation.h \
+    ./PluginSystem/IPlugin.h \
     ./PluginSystem/IPluginUtility.h \
     ./PluginSystem/PluginManager.h \
     ./PluginSystem/PluginListDialog.h \
@@ -541,9 +542,7 @@ HEADERS += ./common/widgets/Ribbon/RibbonGroup.h \
     ./MemoryDesigner/AddressSubsection.h \
     ./MemoryDesigner/AddressSpaceItem.h \
     ./MemoryDesigner/AddressSectionItem.h
-SOURCES += ./common/widgets/Ribbon/RibbonGroup.cpp \
-    ./common/widgets/Ribbon/Ribbon.cpp \
-    ./common/CSourceWriter.cpp \
+SOURCES += ./common/CSourceWriter.cpp \
     ./common/DesignDiagram.cpp \
     ./common/DesignWidget.cpp \
     ./common/GenericEditProvider.cpp \
@@ -567,6 +566,7 @@ SOURCES += ./common/widgets/Ribbon/RibbonGroup.cpp \
     ./common/dialogs/LibrarySettingsDialog/librarysettingsdelegate.cpp \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.cpp \
     ./common/dialogs/TableViewDialog/TableViewDialog.cpp \
+    ./common/dialogs/fileSaveDialog/filesavedialog.cpp \
     ./common/validators/AddressValidator.cpp \
     ./common/validators/nameValidator/namevalidator.cpp \
     ./common/validators/vhdlNameValidator/vhdlnamevalidator.cpp \
@@ -620,6 +620,8 @@ SOURCES += ./common/widgets/Ribbon/RibbonGroup.cpp \
     ./common/widgets/modWriteComboBox/modwritecombobox.cpp \
     ./common/widgets/readActionComboBox/readactioncombobox.cpp \
     ./common/widgets/testConstraintComboBox/testconstraintcombobox.cpp \
+    ./common/widgets/Ribbon/Ribbon.cpp \
+    ./common/widgets/Ribbon/RibbonGroup.cpp \
     ./common/graphicsItems/CommonGraphicsUndoCommands.cpp \
     ./common/graphicsItems/ComponentItem.cpp \
     ./common/graphicsItems/ConnectionEndpoint.cpp \
