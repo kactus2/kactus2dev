@@ -5397,4 +5397,9 @@
       <Filter>Header Files\PluginSystem</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="graphics\generator_plugin_overlay.png">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

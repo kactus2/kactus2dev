@@ -22,7 +22,7 @@ MemoryMapHeaderGenerator::~MemoryMapHeaderGenerator() {
 }
 
 QString const& MemoryMapHeaderGenerator::getName() const {
-	static QString name(tr("Memory map header generator"));
+	static QString name(tr("Memory Map Header Generator"));
 	return name;
 }
 
@@ -41,7 +41,7 @@ QString const& MemoryMapHeaderGenerator::getDescription() const {
 //-----------------------------------------------------------------------------
 QIcon MemoryMapHeaderGenerator::getIcon() const
 {
-    return QIcon(":icons/generation_memHeader2.png");
+    return QIcon(":icons/memorymapheadergenerator.png");
 }
 
 bool MemoryMapHeaderGenerator::checkGeneratorSupport( QSharedPointer<LibraryComponent const> libComp ) const {

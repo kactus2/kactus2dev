@@ -113,6 +113,7 @@
 #include <QElapsedTimer>
 #include <QDesktopServices>
 #include <QDebug>
+#include <QPainter>
 
 class LibraryItem;
 
@@ -804,7 +805,17 @@ void MainWindow::setupMenus()
 
         if (genPlugin != 0)
         {
-            QAction* action = new QAction(genPlugin->getIcon(), genPlugin->getName(), this);
+            // Add a small overlay icon to the plugin icon to visualize that this is a plugin.
+            QIcon pluginBaseIcon = genPlugin->getIcon();
+
+            QPixmap icon(24, 24);
+            icon.fill(Qt::transparent);
+            
+            QPainter painter(&icon);
+            painter.drawPixmap(0, 0, pluginBaseIcon.pixmap(24, 24));
+            painter.drawPixmap(14, 14, QPixmap(":icons/graphics/generator_plugin_overlay.png"));
+                        
+            QAction* action = new QAction(icon, genPlugin->getName(), this);
             action->setData(qVariantFromValue((void*)genPlugin));
             generationGroup_->addAction(action);
             pluginActionGroup_->addAction(action);
