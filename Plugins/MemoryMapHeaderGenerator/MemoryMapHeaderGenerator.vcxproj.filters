@@ -63,8 +63,5 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="headerGenerator.json" />
-    <None Include="memorymapheadergenerator.png">
-      <Filter>Resource Files</Filter>
-    </None>
   </ItemGroup>
 </Project>
