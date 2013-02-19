@@ -11,6 +11,7 @@
 
 #include <QDialog>
 #include <QTableView>
+#include <QAbstractTableModel>
 
 /*! \brief The dialog can be used for user to select multiple files to be created.
  * 
@@ -35,6 +36,17 @@ public:
 
 	//! \brief The destructor
 	virtual ~FileSaveDialog();
+
+	/*! \brief Set the model for the table view.
+	 *
+	 * Method: 		setModel
+	 * Full name:	FileSaveDialog::setModel
+	 * Access:		public 
+	 *
+	 * \param model Pointer to the model class, which contains the data to modify.
+	 *
+	*/
+	void setModel(QAbstractTableModel* model);
 
 private:
 	

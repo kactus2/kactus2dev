@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/icons">
-        <file>memorymapheadergenerator.png</file>
+        <file>headerGenerator24.png</file>
     </qresource>
 </RCC>

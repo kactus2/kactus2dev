@@ -33,3 +33,7 @@ view_(new QTableView(this)) {
 
 FileSaveDialog::~FileSaveDialog() {
 }
+
+void FileSaveDialog::setModel( QAbstractTableModel* model ) {
+	view_->setModel(model);
+}

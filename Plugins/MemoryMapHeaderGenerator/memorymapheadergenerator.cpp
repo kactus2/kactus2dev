@@ -41,7 +41,7 @@ QString const& MemoryMapHeaderGenerator::getDescription() const {
 //-----------------------------------------------------------------------------
 QIcon MemoryMapHeaderGenerator::getIcon() const
 {
-    return QIcon(":icons/memorymapheadergenerator.png");
+    return QIcon(":icons/headerGenerator24.png");
 }
 
 bool MemoryMapHeaderGenerator::checkGeneratorSupport( QSharedPointer<LibraryComponent const> libComp ) const {
