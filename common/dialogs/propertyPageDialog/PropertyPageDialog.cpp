@@ -21,28 +21,37 @@
 // Function: PropertyPageDialog()
 //-----------------------------------------------------------------------------
 PropertyPageDialog::PropertyPageDialog(QSize const& listIconSize, int iconColumnCount,
-                                       ApplyMode mode, QWidget* parent)
+                                       ViewMode viewMode, ApplyMode applyMode, QWidget* parent)
     : QDialog(parent),
       iconColumnCount_(iconColumnCount),
       contentsList_(0),
       pages_(0),
       btnOk_(0),
-      mode_(mode)
+      viewMode_(viewMode),
+      applyMode_(applyMode)
 {
     // Create the contents list.
     contentsList_ = new QListWidget(this);
-    contentsList_->setViewMode(QListView::IconMode);
     contentsList_->setIconSize(listIconSize);
-    contentsList_->setMovement(QListView::Static);
 
-    if (iconColumnCount == 1)
+    if (viewMode == VIEW_ICONS)
     {
-        contentsList_->setWrapping(false);
-    }
+        contentsList_->setViewMode(QListView::IconMode);
+        contentsList_->setMovement(QListView::Static);
 
-    contentsList_->setSpacing(ICON_SPACING);
-    contentsList_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    contentsList_->setFlow(QListView::TopToBottom);
+        if (iconColumnCount == 1)
+        {
+            contentsList_->setWrapping(false);
+        }
+
+        contentsList_->setSpacing(ICON_SPACING);
+        contentsList_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        contentsList_->setFlow(QListView::TopToBottom);
+    }
+    else
+    {
+        contentsList_->setViewMode(QListView::ListMode);
+    }
     
     // Create the stacked pages widget and a layout with a separator (group box).
     pages_ = new QStackedWidget(this);
@@ -96,7 +105,12 @@ void PropertyPageDialog::addPage(QIcon const& icon, QString const& text, Propert
     QListWidgetItem* listItem = new QListWidgetItem(contentsList_);
     listItem->setIcon(icon);
     listItem->setText(text);
-    listItem->setTextAlignment(Qt::AlignHCenter | Qt::AlignBottom);
+    
+    if (viewMode_ == VIEW_ICONS)
+    {
+        listItem->setTextAlignment(Qt::AlignHCenter | Qt::AlignBottom);
+    }
+
     listItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
     QFont font;
@@ -145,7 +159,7 @@ void PropertyPageDialog::changePage(QListWidgetItem* current, QListWidgetItem* p
 //-----------------------------------------------------------------------------
 void PropertyPageDialog::accept()
 {
-    if (mode_ == APPLY_CURRENT)
+    if (applyMode_ == APPLY_CURRENT)
     {
         Q_ASSERT(pages_->currentWidget() != 0);
         PropertyPageView* page = static_cast<PropertyPageView*>(pages_->currentWidget());
@@ -161,7 +175,7 @@ void PropertyPageDialog::accept()
         // Apply the page.
         page->apply();
     }
-    else if (mode_ == APPLY_ALL)
+    else if (applyMode_ == APPLY_ALL)
     {
         // First validate all pages.
         for (int i = 0; i < pages_->count(); ++i)
@@ -205,14 +219,21 @@ void PropertyPageDialog::finalizePages()
     // Determine the best width for the list items.
     int optimalWidth = contentsList_->sizeHintForColumn(0);
 
-    QFontMetrics metrics(contentsList_->font());
-    int textHeight = metrics.height();
-
-    for (int i = 0; i < contentsList_->count(); ++i)
-    {
-        contentsList_->item(i)->setSizeHint(QSize(optimalWidth, contentsList_->sizeHintForRow(i) + textHeight));
-    }
-
     // Update the width of the list.
-    contentsList_->setFixedWidth(optimalWidth * iconColumnCount_);
+    if (viewMode_ == VIEW_ICONS)
+    {
+        QFontMetrics metrics(contentsList_->font());
+        int textHeight = metrics.height();
+
+        for (int i = 0; i < contentsList_->count(); ++i)
+        {
+            contentsList_->item(i)->setSizeHint(QSize(optimalWidth, contentsList_->sizeHintForRow(i) + textHeight));
+        }
+
+        contentsList_->setFixedWidth(optimalWidth * iconColumnCount_);
+    }
+    else
+    {
+        contentsList_->setFixedWidth(optimalWidth + 30);
+    }
 }

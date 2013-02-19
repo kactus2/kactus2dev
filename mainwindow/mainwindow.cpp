@@ -2119,7 +2119,8 @@ void MainWindow::updateZoomTools()
 void MainWindow::createNew()
 {
     // Create a property page dialog to work as a "New" dialog.
-	PropertyPageDialog dialog(QSize(48, 48), 1, PropertyPageDialog::APPLY_CURRENT, this);
+	PropertyPageDialog dialog(QSize(48, 48), 1, PropertyPageDialog::VIEW_ICONS,
+                              PropertyPageDialog::APPLY_CURRENT, this);
 	dialog.setFixedWidth(620);
 	//dialog.resize(620, 690);
 	dialog.setWindowTitle(tr("New"));

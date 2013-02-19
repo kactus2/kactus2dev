@@ -37,16 +37,26 @@ public:
         APPLY_ALL
     };
 
+    //-----------------------------------------------------------------------------
+    //! ViewMode enumeration.
+    //-----------------------------------------------------------------------------
+    enum ViewMode
+    {
+        VIEW_LIST = 0,
+        VIEW_ICONS
+    };
+
     /*!
      *  Constructor.
      *
      *      @param [in] listIconSize  The icon size in the contents list.
-     *      @param [in] mode          Apply mode which specifies what pages are applied when
+     *      @param [in] viewMode      Specifies the view mode how the organizer is shown.
+     *      @param [in] applyMode     Apply mode which specifies what pages are applied when
      *                                the user presses OK.
      *      @param [in] parent        The parent widget. Can be null.
      */
     PropertyPageDialog(QSize const& listIconSize, int iconColumnCount,
-                       ApplyMode mode, QWidget* parent = 0);
+                       ViewMode viewMode, ApplyMode applyMode, QWidget* parent = 0);
 
     /*!
      *  Destructor.
@@ -113,8 +123,11 @@ private:
     //! OK button.
     QPushButton* btnOk_;
 
-    //! Apply mode
-    ApplyMode mode_;
+    //! View mode.
+    ViewMode viewMode_;
+
+    //! Apply mode.
+    ApplyMode applyMode_;
 };
 
 //-----------------------------------------------------------------------------

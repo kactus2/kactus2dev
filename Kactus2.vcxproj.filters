@@ -3478,6 +3478,12 @@
     <ClCompile Include="common\dialogs\fileSaveDialog\filesavedialogview.cpp">
       <Filter>Source Files\common\dialogs\fileSaveDialog</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PluginSettingsPage.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="settings\PluginSettingsPage.cpp">
+      <Filter>Source Files\settings</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -4983,6 +4989,9 @@
     <CustomBuild Include="common\dialogs\fileSaveDialog\filesavedialogview.h">
       <Filter>Header Files\common\dialogs\fileSaveDialog</Filter>
     </CustomBuild>
+    <CustomBuild Include="settings\PluginSettingsPage.h">
+      <Filter>Header Files\settings</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AddressEditor\AddressEntry.h">
@@ -5408,6 +5417,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="graphics\generator_plugin_overlay.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="graphics\settings-plugins.png">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

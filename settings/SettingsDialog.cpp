@@ -14,11 +14,13 @@
 #include "GeneralSettingsPage.h"
 #include "CodeEditorSettingsPage.h"
 #include "NamingPolicySettingsPage.h"
+#include "PluginSettingsPage.h"
 
 //-----------------------------------------------------------------------------
 // Function: SettingsDialog()
 //-----------------------------------------------------------------------------
-SettingsDialog::SettingsDialog(QWidget* parent) : PropertyPageDialog(QSize(48, 48), 1, APPLY_ALL, parent),
+SettingsDialog::SettingsDialog(QWidget* parent) : PropertyPageDialog(QSize(24, 24), 1, VIEW_LIST,
+                                                                     APPLY_ALL, parent),
                                                   settings_()
 {
     //setFixedSize(600, 440);
@@ -33,9 +35,11 @@ SettingsDialog::SettingsDialog(QWidget* parent) : PropertyPageDialog(QSize(48, 4
 	addPage(QIcon(":icons/graphics/settings-code_editor.png"), tr("Code Editor"),
             new CodeEditorSettingsPage(settings_));
 
-    finalizePages();
+//     addPage(QIcon(":icons/graphics/settings-plugins.png"), tr("Plugins"),
+//             new PluginSettingsPage(settings_));
 
-    setFixedSize(sizeHint().width(), minimumSizeHint().height());
+    finalizePages();
+    resize(sizeHint().width(), minimumHeight());
 }
 
 //-----------------------------------------------------------------------------
