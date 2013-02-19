@@ -9,8 +9,9 @@
 
 #include <common/Global.h>
 
+#include "filesavedialogview.h"
+
 #include <QDialog>
-#include <QTableView>
 #include <QAbstractTableModel>
 
 /*! \brief The dialog can be used for user to select multiple files to be created.
@@ -57,7 +58,7 @@ private:
 	FileSaveDialog& operator=(const FileSaveDialog& other);
 
 	//! \brief The view displaying the files to be created.
-	QTableView* view_;
+	FileSaveDialogView* view_;
 };
 
 #endif // FILESAVEDIALOG_H

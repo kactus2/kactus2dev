@@ -3472,6 +3472,12 @@
     <ClCompile Include="common\dialogs\fileSaveDialog\filesavedialog.cpp">
       <Filter>Source Files\common\dialogs\fileSaveDialog</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_filesavedialogview.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common\dialogs\fileSaveDialog\filesavedialogview.cpp">
+      <Filter>Source Files\common\dialogs\fileSaveDialog</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -4972,6 +4978,9 @@
       <Filter>Header Files\common\widgets\Ribbon</Filter>
     </CustomBuild>
     <CustomBuild Include="common\dialogs\fileSaveDialog\filesavedialog.h">
+      <Filter>Header Files\common\dialogs\fileSaveDialog</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\dialogs\fileSaveDialog\filesavedialogview.h">
       <Filter>Header Files\common\dialogs\fileSaveDialog</Filter>
     </CustomBuild>
   </ItemGroup>

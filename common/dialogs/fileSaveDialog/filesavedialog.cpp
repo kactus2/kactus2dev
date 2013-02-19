@@ -13,7 +13,7 @@
 
 FileSaveDialog::FileSaveDialog(QWidget *parent):
 QDialog(parent),
-view_(new QTableView(this)) {
+view_(new FileSaveDialogView(this)) {
 
 	QLabel* infoText = new QLabel(tr("Select names for the output files"), this);
 
