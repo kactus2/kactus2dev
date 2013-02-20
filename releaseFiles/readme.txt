@@ -107,3 +107,6 @@ http://shlyapnikova.deviantart.com/ (CC Attribution 3.0 Unported)
 
 Must Have by Visual Pharm
 http://www.visualpharm.com/ (CC Attribution-No Derivative Works 3.0 Unported)
+
+Basic Set by Pixel Mixer
+http://www.pixel-mixer.com/ (Free for commercial use)
