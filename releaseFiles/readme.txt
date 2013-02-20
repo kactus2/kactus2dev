@@ -101,3 +101,9 @@ http://omercetin.deviantart.com/ (CC Attribution 3.0 Unported)
 
 Dellipack by Dellustrations
 http://logoexpedite.com/ (Free for commercial use)
+
+Hypic by Shlyapnikova
+http://shlyapnikova.deviantart.com/ (CC Attribution 3.0 Unported)
+
+Must Have by Visual Pharm
+http://www.visualpharm.com/ (CC Attribution-No Derivative Works 3.0 Unported)
