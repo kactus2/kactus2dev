@@ -19,9 +19,9 @@
 //-----------------------------------------------------------------------------
 // Function: SettingsDialog()
 //-----------------------------------------------------------------------------
-SettingsDialog::SettingsDialog(QWidget* parent) : PropertyPageDialog(QSize(24, 24), 1, VIEW_LIST,
-                                                                     APPLY_ALL, parent),
-                                                  settings_()
+SettingsDialog::SettingsDialog(PluginManager& pluginMgr, QWidget* parent)
+    : PropertyPageDialog(QSize(24, 24), 1, VIEW_LIST, APPLY_ALL, parent),
+      settings_()
 {
     //setFixedSize(600, 440);
     setWindowTitle(tr("Settings"));
@@ -35,8 +35,8 @@ SettingsDialog::SettingsDialog(QWidget* parent) : PropertyPageDialog(QSize(24, 2
 	addPage(QIcon(":icons/graphics/settings-code_editor.png"), tr("Code Editor"),
             new CodeEditorSettingsPage(settings_));
 
-//     addPage(QIcon(":icons/graphics/settings-plugins.png"), tr("Plugins"),
-//             new PluginSettingsPage(settings_));
+    addPage(QIcon(":icons/graphics/settings-plugins.png"), tr("Plugins"),
+            new PluginSettingsPage(settings_, pluginMgr));
 
     finalizePages();
     resize(sizeHint().width(), minimumHeight());

@@ -17,6 +17,8 @@
 #include <QObject>
 #include <QPluginLoader>
 
+class IPlugin;
+
 //-----------------------------------------------------------------------------
 //! Plugin manager which manages loaded plugins.
 //-----------------------------------------------------------------------------
@@ -38,7 +40,7 @@ public:
     /*!
      *  Returns the list of loaded plugins.
      */
-    QList<QObject*> const& getPlugins() const;
+    QList<IPlugin*> const& getPlugins() const;
     
 private:
     // Disable copying.
@@ -50,7 +52,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The list of loaded plugins.
-    QList<QObject*> plugins_;
+    QList<IPlugin*> plugins_;
 };
 
 //-----------------------------------------------------------------------------

@@ -11,6 +11,8 @@
 
 #include "MCAPICodeGenerator.h"
 
+#include "MCAPISettingsWidget.h"
+
 #include <QtPlugin>
 #include <QMessageBox>
 #include <QFileInfo>
@@ -732,4 +734,12 @@ void MCAPICodeGenerator::writeStatusCheck(CSourceWriter &writer)
 QIcon MCAPICodeGenerator::getIcon() const
 {
     return QIcon(":icons/mcapi-generator.png");
+}
+
+//-----------------------------------------------------------------------------
+// Function: MCAPICodeGenerator::getSettingsWidget()
+//-----------------------------------------------------------------------------
+PluginSettingsWidget* MCAPICodeGenerator::getSettingsWidget()
+{
+    return new MCAPISettingsWidget();
 }

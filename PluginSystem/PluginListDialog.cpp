@@ -63,9 +63,9 @@ PluginListDialog::~PluginListDialog()
 //-----------------------------------------------------------------------------
 // Function: PluginListDialog::getSelectedPlugin()
 //-----------------------------------------------------------------------------
-QObject* PluginListDialog::getSelectedPlugin() const
+IPlugin* PluginListDialog::getSelectedPlugin() const
 {
-    return pluginsList_.currentItem()->data(Qt::UserRole).value<QObject*>();
+    return static_cast<IPlugin*>(pluginsList_.currentItem()->data(Qt::UserRole).value<void*>());
 }
 
 //-----------------------------------------------------------------------------
@@ -73,24 +73,19 @@ QObject* PluginListDialog::getSelectedPlugin() const
 //-----------------------------------------------------------------------------
 void PluginListDialog::selectionChanged()
 {
-    IPlugin* pluginInfo = qobject_cast<IPlugin*>(getSelectedPlugin());
-    Q_ASSERT(pluginInfo != 0);
+    IPlugin* plugin = getSelectedPlugin();
+    Q_ASSERT(plugin != 0);
 
-    detailBox_.setPlainText(pluginInfo->getDescription());
+    detailBox_.setPlainText(plugin->getDescription());
 }
 
 //-----------------------------------------------------------------------------
 // Function: PluginListDialog::addPlugin()
 //-----------------------------------------------------------------------------
-void PluginListDialog::addPlugin(QObject* plugin)
+void PluginListDialog::addPlugin(IPlugin* plugin)
 {
-    IPlugin* pluginInfo = qobject_cast<IPlugin*>(plugin);
-
-    if (pluginInfo != 0)
-    {
-        QListWidgetItem* item = new QListWidgetItem(pluginInfo->getName() + " (" + pluginInfo->getVersion() + ")");
-        item->setData(Qt::UserRole, qVariantFromValue(plugin));
-        pluginsList_.addItem(item);
-        buttonBox_.button(QDialogButtonBox::Ok)->setEnabled(true);
-    }
+    QListWidgetItem* item = new QListWidgetItem(plugin->getName() + " (" + plugin->getVersion() + ")");
+    item->setData(Qt::UserRole, qVariantFromValue(static_cast<void*>(plugin)));
+    pluginsList_.addItem(item);
+    buttonBox_.button(QDialogButtonBox::Ok)->setEnabled(true);
 }

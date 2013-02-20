@@ -37,6 +37,15 @@ QString const& MemoryMapHeaderGenerator::getDescription() const {
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryMapHeaderGenerator::getSettingsWidget()
+//-----------------------------------------------------------------------------
+PluginSettingsWidget* MemoryMapHeaderGenerator::getSettingsWidget()
+{
+    return new PluginSettingsWidget();
+}
+
+
+//-----------------------------------------------------------------------------
 // Function: MemoryMapHeaderGenerator::getIcon()
 //-----------------------------------------------------------------------------
 QIcon MemoryMapHeaderGenerator::getIcon() const

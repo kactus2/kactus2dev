@@ -11,6 +11,8 @@
 
 #include "PluginManager.h"
 
+#include "IPlugin.h"
+
 #include <QDir>
 
 //-----------------------------------------------------------------------------
@@ -23,7 +25,7 @@ PluginManager::PluginManager(QString const& pluginPath)
     foreach (QString const& filename, dir.entryList(QDir::Files))
     {
         QPluginLoader loader(dir.absoluteFilePath(filename));
-        QObject* plugin = loader.instance();
+        IPlugin* plugin = qobject_cast<IPlugin*>(loader.instance());
 
         if (plugin != 0)
         {
@@ -42,7 +44,7 @@ PluginManager::~PluginManager()
 //-----------------------------------------------------------------------------
 // Function: PluginManager::getPlugins()
 //-----------------------------------------------------------------------------
-QList<QObject*> const& PluginManager::getPlugins() const
+QList<IPlugin*> const& PluginManager::getPlugins() const
 {
     return plugins_;
 }

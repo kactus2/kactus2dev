@@ -13,9 +13,12 @@
 #define PLUGINSETTINGSPAGE_H
 
 #include <common/dialogs/propertyPageDialog/PropertyPageView.h>
+#include <PluginSystem/PluginManager.h>
 
-#include <QLineEdit>
+#include <QTreeWidget>
+#include <QPlainTextEdit>
 #include <QSettings>
+#include <QStackedWidget>
 
 //-----------------------------------------------------------------------------
 //! PluginSettingsPage class.
@@ -28,9 +31,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in/out] settings The settings store.
+     *      @param [in/out] settings   The settings store.
+     *      @param [in]     pluginMgr  The plugin manager.
      */
-    PluginSettingsPage(QSettings& settings);
+    PluginSettingsPage(QSettings& settings, PluginManager& pluginMgr);
 
     /*!
      *  Destructor.
@@ -58,6 +62,12 @@ public:
      */
     bool onPageChange();
 
+private slots:
+    /*!
+     *  Updates the correct settings in view when the tree item selection has changed.
+     */
+    void onTreeItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* prev);
+
 private:
     // Disable copying.
     PluginSettingsPage(PluginSettingsPage const& rhs);
@@ -69,6 +79,15 @@ private:
 
     //! The settings store.
     QSettings& settings_;
+
+    //! The plugin manager.
+    PluginManager& pluginMgr_;
+
+    //! The plugins tree widget.
+    QTreeWidget pluginsTree_;
+
+    //! The settings stack.
+    QStackedWidget settingsStack_;
 };
 
 //-----------------------------------------------------------------------------

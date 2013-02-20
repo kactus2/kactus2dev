@@ -12,6 +12,8 @@
 #ifndef IPLUGIN_H
 #define IPLUGIN_H
 
+#include "PluginSettingsWidget.h"
+
 #include <QString>
 #include <QtPlugin>
 
@@ -40,6 +42,11 @@ public:
      *  Returns the description of the plugin.
      */
     virtual QString const& getDescription() const = 0;
+
+    /*!
+     *  Returns the settings widget.
+     */
+    virtual PluginSettingsWidget* getSettingsWidget() = 0;
 };
 
 Q_DECLARE_INTERFACE(IPlugin, "com.tut.Kactus2.IPlugin/1.0")

@@ -18,6 +18,7 @@
 #include <QDialogButtonBox>
 
 class PluginManager;
+class IPlugin;
 
 //-----------------------------------------------------------------------------
 //! Plugin list dialog.
@@ -45,12 +46,12 @@ public:
      *
      *      @param [in] plugin The plugin to add.
      */
-    void addPlugin(QObject* plugin);
+    void addPlugin(IPlugin* plugin);
 
     /*!
      *  Returns the selected plugin.
      */
-    QObject* getSelectedPlugin() const;
+    IPlugin* getSelectedPlugin() const;
 
 private slots:
     //! Called when the plugin selection has changed.

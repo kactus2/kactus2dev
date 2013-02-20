@@ -5414,6 +5414,9 @@
     <ClInclude Include="PluginSystem\IPlugin.h">
       <Filter>Header Files\PluginSystem</Filter>
     </ClInclude>
+    <ClInclude Include="PluginSystem\PluginSettingsWidget.h">
+      <Filter>Header Files\PluginSystem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="graphics\generator_plugin_overlay.png">

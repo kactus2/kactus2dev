@@ -63,6 +63,11 @@ public:
     virtual QString const& getDescription() const;
 
     /*!
+     *  Returns the settings widget.
+     */
+    virtual PluginSettingsWidget* getSettingsWidget();
+
+    /*!
      *  Returns the icon for the generator.
      */
     virtual QIcon getIcon() const;
