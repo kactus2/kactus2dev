@@ -3948,6 +3948,7 @@ CreateHelp
     <ClInclude Include="PluginSystem\IGeneratorPlugin.h" />
     <ClInclude Include="PluginSystem\IPlugin.h" />
     <ClInclude Include="PluginSystem\IPluginUtility.h" />
+    <ClInclude Include="PluginSystem\ISourceAnalyzerPlugin.h" />
     <ClInclude Include="PluginSystem\PluginManager.h" />
     <CustomBuild Include="settings\PluginSettingsPage.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
@@ -14148,6 +14149,8 @@ CreateHelp
   </ItemGroup>
   <ItemGroup>
     <None Include="graphics\generator_plugin_overlay.png" />
+    <None Include="graphics\plugin-generator.png" />
+    <None Include="graphics\plugin-source_analyzer.png" />
     <None Include="graphics\settings-file_types.png" />
     <None Include="graphics\settings-plugins.png" />
   </ItemGroup>

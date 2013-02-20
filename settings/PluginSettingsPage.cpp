@@ -13,6 +13,7 @@
 
 #include <PluginSystem/IPlugin.h>
 #include <PluginSystem/IGeneratorPlugin.h>
+#include <PluginSystem/ISourceAnalyzerPlugin.h>
 
 #include <QVBoxLayout>
 #include <QLabel>
@@ -23,9 +24,9 @@
 //-----------------------------------------------------------------------------
 PluginSettingsPage::PluginSettingsPage(QSettings& settings, PluginManager& pluginMgr)
     : settings_(settings),
-      pluginMgr_(pluginMgr),
-      pluginsTree_(this),
-      settingsStack_(this)
+    pluginMgr_(pluginMgr),
+    pluginsTree_(this),
+    settingsStack_(this)
 {
     // Initialize the widgets and create the layout.
     pluginsTree_.setHeaderHidden(true);
@@ -43,15 +44,12 @@ PluginSettingsPage::PluginSettingsPage(QSettings& settings, PluginManager& plugi
     layout->addWidget(&pluginsTree_);
     layout->addWidget(settingsGroup, 1);
 
-    // Create the root tree item for generators.
-    QTreeWidgetItem* generatorRoot = new QTreeWidgetItem();
-    generatorRoot->setText(0, tr("Generators"));
-    generatorRoot->setIcon(0, QIcon(":icons/graphics/settings-general.png"));
-    generatorRoot->setData(0, Qt::UserRole + 1, 0);
+    // Create the category items.
+    QTreeWidgetItem* generatorsItem = createCategoryItem(tr("Generators"),
+        QIcon(":icons/graphics/plugin-generator.png"));
+    QTreeWidgetItem* analyzersItem = createCategoryItem(tr("Source Analyzers"),
+        QIcon(":icons/graphics/plugin-source_analyzer.png"));
 
-    QFont rootFont = generatorRoot->font(0);
-    rootFont.setBold(true);
-    generatorRoot->setFont(0, rootFont);
 
     settingsStack_.addWidget(new PluginSettingsWidget());
 
@@ -64,13 +62,15 @@ PluginSettingsPage::PluginSettingsPage(QSettings& settings, PluginManager& plugi
         pluginItem->setToolTip(0, plugin->getDescription());
         //pluginItem->setCheckState(0, Qt::Checked);
         pluginItem->setData(0, Qt::UserRole, qVariantFromValue(static_cast<void*>(plugin)));
-        
-        IGeneratorPlugin* generator = dynamic_cast<IGeneratorPlugin*>(plugin);
 
-        if (generator != 0)
+        if (dynamic_cast<IGeneratorPlugin*>(plugin) != 0)
         {
-            pluginItem->setIcon(0, generator->getIcon());
-            generatorRoot->addChild(pluginItem);
+            pluginItem->setIcon(0, dynamic_cast<IGeneratorPlugin*>(plugin)->getIcon());
+            generatorsItem->addChild(pluginItem);
+        }
+        else if (dynamic_cast<ISourceAnalyzerPlugin*>(plugin) != 0)
+        {
+            analyzersItem->addChild(pluginItem);
         }
 
         // Retrieve the settings widget.
@@ -81,11 +81,10 @@ PluginSettingsPage::PluginSettingsPage(QSettings& settings, PluginManager& plugi
         pluginItem->setData(0, Qt::UserRole + 1, settingsStack_.count() - 1);
     }
 
-    pluginsTree_.addTopLevelItem(generatorRoot);
     pluginsTree_.expandAll();
 
     connect(&pluginsTree_, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
-            this, SLOT(onTreeItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
+        this, SLOT(onTreeItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
 }
 
 //-----------------------------------------------------------------------------
@@ -153,4 +152,23 @@ void PluginSettingsPage::onTreeItemChanged(QTreeWidgetItem* current, QTreeWidget
     }
 
     settingsStack_.setCurrentIndex(index);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PluginSettingsPage::createCategoryItem()
+//-----------------------------------------------------------------------------
+QTreeWidgetItem* PluginSettingsPage::createCategoryItem(QString const& text, QIcon const& icon)
+{
+    QTreeWidgetItem* item = new QTreeWidgetItem();
+    item->setText(0, text);
+    item->setIcon(0, icon);
+    item->setData(0, Qt::UserRole + 1, 0);
+
+    // Use bold font for category items.
+    QFont rootFont = item->font(0);
+    rootFont.setBold(true);
+    item->setFont(0, rootFont);
+
+    pluginsTree_.addTopLevelItem(item);
+    return item;
 }

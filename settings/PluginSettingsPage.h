@@ -73,6 +73,14 @@ private:
     PluginSettingsPage(PluginSettingsPage const& rhs);
     PluginSettingsPage& operator=(PluginSettingsPage const& rhs);
 
+    /*!
+     *  Creates a new category item to the tree.
+     *
+     *      @param [in] text  Category title text.
+     *      @param [in] icon  Icon for the category.
+     */
+    QTreeWidgetItem* createCategoryItem(QString const& text, QIcon const& icon);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

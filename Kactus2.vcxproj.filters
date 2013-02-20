@@ -5444,6 +5444,9 @@
     <ClInclude Include="PluginSystem\PluginSettingsWidget.h">
       <Filter>Header Files\PluginSystem</Filter>
     </ClInclude>
+    <ClInclude Include="PluginSystem\ISourceAnalyzerPlugin.h">
+      <Filter>Header Files\PluginSystem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="graphics\generator_plugin_overlay.png">
@@ -5453,6 +5456,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="graphics\settings-file_types.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="graphics\plugin-generator.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="graphics\plugin-source_analyzer.png">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

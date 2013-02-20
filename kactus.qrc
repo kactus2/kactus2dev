@@ -83,6 +83,8 @@
         <file>graphics/collapse.png</file>
         <file>graphics/source_listing_generator.png</file>
         <file>graphics/generator_plugin_overlay.png</file>
+        <file>graphics/plugin-generator.png</file>
+        <file>graphics/plugin-source_analyzer.png</file>
     </qresource>
     <qresource prefix="/">
         <file>graphics/splash.png</file>
