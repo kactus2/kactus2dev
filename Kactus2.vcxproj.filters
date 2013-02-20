@@ -3484,6 +3484,24 @@
     <ClCompile Include="settings\PluginSettingsPage.cpp">
       <Filter>Source Files\settings</Filter>
     </ClCompile>
+    <ClCompile Include="settings\FileTypeSettingsPage.cpp">
+      <Filter>Source Files\settings</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_FileTypeSettingsPage.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="settings\FileTypesModel.cpp">
+      <Filter>Source Files\settings</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_FileTypesModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="settings\FileTypesDelegate.cpp">
+      <Filter>Source Files\settings</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_FileTypesDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -4992,6 +5010,15 @@
     <CustomBuild Include="settings\PluginSettingsPage.h">
       <Filter>Header Files\settings</Filter>
     </CustomBuild>
+    <CustomBuild Include="settings\FileTypeSettingsPage.h">
+      <Filter>Header Files\settings</Filter>
+    </CustomBuild>
+    <CustomBuild Include="settings\FileTypesModel.h">
+      <Filter>Header Files\settings</Filter>
+    </CustomBuild>
+    <CustomBuild Include="settings\FileTypesDelegate.h">
+      <Filter>Header Files\settings</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AddressEditor\AddressEntry.h">
@@ -5423,6 +5450,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="graphics\settings-plugins.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="graphics\settings-file_types.png">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

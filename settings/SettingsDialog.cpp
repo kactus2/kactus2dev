@@ -15,6 +15,7 @@
 #include "CodeEditorSettingsPage.h"
 #include "NamingPolicySettingsPage.h"
 #include "PluginSettingsPage.h"
+#include "FileTypeSettingsPage.h"
 
 //-----------------------------------------------------------------------------
 // Function: SettingsDialog()
@@ -34,6 +35,9 @@ SettingsDialog::SettingsDialog(PluginManager& pluginMgr, QWidget* parent)
 
 	addPage(QIcon(":icons/graphics/settings-code_editor.png"), tr("Code Editor"),
             new CodeEditorSettingsPage(settings_));
+
+    addPage(QIcon(":icons/graphics/settings-file_types.png"), tr("File Types"),
+            new FileTypeSettingsPage(settings_));
 
     addPage(QIcon(":icons/graphics/settings-plugins.png"), tr("Plugins"),
             new PluginSettingsPage(settings_, pluginMgr));

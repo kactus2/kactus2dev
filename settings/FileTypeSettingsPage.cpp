@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: GeneralSettingsPage.cpp
+// File: FileTypeSettingsPage.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
@@ -9,75 +9,67 @@
 // General settings property page.
 //-----------------------------------------------------------------------------
 
-#include "GeneralSettingsPage.h"
+#include "FileTypeSettingsPage.h"
+
+#include "FileTypesDelegate.h"
 
 #include <QVBoxLayout>
-#include <QDir>
-#include <QPushButton>
-#include <QFileDialog>
 #include <QLabel>
-#include <QCoreApplication>
-#include <QMessageBox>
 
 //-----------------------------------------------------------------------------
-// Function: GeneralSettingsPage()
+// Function: FileTypeSettingsPage()
 //-----------------------------------------------------------------------------
-GeneralSettingsPage::GeneralSettingsPage(QSettings& settings):
-settings_(settings),
-usernameEdit_(0)
+FileTypeSettingsPage::FileTypeSettingsPage(QSettings& settings)
+    : settings_(settings),
+      model_(settings, this),
+      proxyModel_(this),
+      view_(this)
 {
-    // Create the username line edit and label.
-    QLabel* usernameLabel = new QLabel(tr("User name:"), this);
+    proxyModel_.setSourceModel(&model_);
 
-    QString username = settings_.value("General/Username", getenv("USERNAME")).toString();
-    usernameEdit_ = new QLineEdit(username, this);
+    view_.setItemDelegate(new FileTypesDelegate(this));
+    view_.setModel(&proxyModel_);
+    view_.setSortingEnabled(true);
+    view_.setColumnWidth(FILE_TYPES_COL_NAME, 150);
+    view_.sortByColumn(0, Qt::AscendingOrder);
 
-    // Setup the layout.
     QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(usernameLabel);
-    layout->addWidget(usernameEdit_);
-    layout->addStretch(1);
+    layout->addWidget(new QLabel(tr("File types:"), this));
+    layout->addWidget(&view_, 1);
+
+    connect(&view_, SIGNAL(addItem(const QModelIndex&)),
+            &model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
+    connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
+            &model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~GeneralSettingsPage()
+// Function: ~FileTypeSettingsPage()
 //-----------------------------------------------------------------------------
-GeneralSettingsPage::~GeneralSettingsPage()
+FileTypeSettingsPage::~FileTypeSettingsPage()
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: validate()
 //-----------------------------------------------------------------------------
-bool GeneralSettingsPage::validate()
+bool FileTypeSettingsPage::validate()
 {
-    Q_ASSERT(prevalidate());
-
-    // Check for a valid username.
-    if (usernameEdit_->text().isEmpty())
-    {
-        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                           tr("The user name must be set."), QMessageBox::Ok, this);
-        msgBox.exec();
-        return false;
-    }
-
     return true;
 }
 
 //-----------------------------------------------------------------------------
 // Function: apply()
 //-----------------------------------------------------------------------------
-void GeneralSettingsPage::apply()
+void FileTypeSettingsPage::apply()
 {
-    // Save the settings.
-    settings_.setValue("General/Username", usernameEdit_->text());
+    model_.apply(settings_);
 }
 
 //-----------------------------------------------------------------------------
 // Function: onPageChange()
 //-----------------------------------------------------------------------------
-bool GeneralSettingsPage::onPageChange()
+bool FileTypeSettingsPage::onPageChange()
 {
     // Do not change the page if the settings are invalid.
     if (!validate())
