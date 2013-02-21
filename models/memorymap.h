@@ -16,6 +16,7 @@
 #include <QSharedPointer>
 #include <QDomNode>
 #include <QXmlStreamWriter>
+#include <QTextStream>
 
 /*! \brief Equals to the spirit:memoryMap element in IP-Xact specification
  *
@@ -80,38 +81,65 @@ public:
 	*/
 	bool isValid() const;
 
-	//! \brief Check if the memory map contains at least one sub item or not.
-	bool containsSubItems() const;
-
 	/*! \brief Check if the address blocks within memory map contains registers with given names.
-	 *
-	 * Method: 		uniqueRegisterNames
-	 * Full name:	AddressBlock::uniqueRegisterNames
-	 * Access:		public 
-	 *  
-	 * The register names are checked against the given list and appended to it. 
-	 * If all register names are unique then true is returned.
-	 *
-	 * \param regNames List of strings to be checked.
-	 *
-	 * \return True if all register names are unique.
+	*
+	* Method: 		uniqueRegisterNames
+	* Full name:	AddressBlock::uniqueRegisterNames
+	* Access:		public 
+	*  
+	* The register names are checked against the given list and appended to it. 
+	* If all register names are unique then true is returned.
+	*
+	* \param regNames List of strings to be checked.
+	*
+	* \return True if all register names are unique.
 	*/
 	bool uniqueRegisterNames(QStringList& regNames) const;
 
-	/*! \brief Check if the names of memory typed address blocks are contained in the given list.
+	/*! \brief Write the register names and addresses to the given stream.
 	 *
-	 * Method: 		uniqueMemoryNames
-	 * Full name:	MemoryMap::uniqueMemoryNames
+	 * Method: 		writeRegisters
+	 * Full name:	MemoryMap::writeRegisters
 	 * Access:		public 
 	 * 
-	 * The memory names are checked against the given list and appended to it.
-	 * If all memory names are unique then true is returned.
-	 * 
-	 * \param memNames List of strings to be checked.
+	 * \param stream The stream where the data is written into.
+	 * \param offset The offset added to the register addresses.
+	 * \param useIDStrings If false then containing address block name is prepended to each register name.
+	 * \param idString The string which is added to the beginning of names. This can be used e.g. to contain an instance name.
 	 *
-	 * \return True if all memory names are unique.
+	*/
+	void writeRegisters(QTextStream& stream, quint64 offset, bool useIDStrings = false, const QString& idString = QString()) const;
+
+	/*! \brief Check if the names of memory typed address blocks are contained in the given list.
+	*
+	* Method: 		uniqueMemoryNames
+	* Full name:	MemoryMap::uniqueMemoryNames
+	* Access:		public 
+	* 
+	* The memory names are checked against the given list and appended to it.
+	* If all memory names are unique then true is returned.
+	* 
+	* \param memNames List of strings to be checked.
+	*
+	* \return True if all memory names are unique.
 	*/
 	bool uniqueMemoryNames(QStringList& memNames) const;
+
+	/*! \brief Write the memory names and addresses to the given stream.
+	 *
+	 * Method: 		writeMemoryAddresses
+	 * Full name:	MemoryMap::writeMemoryAddresses
+	 * Access:		public 
+	 *
+	 * \param stream The stream where the data is written into.
+	 * \param offset The offset added to the register addresses.
+	 * \param idString The string which is added to the beginning of names. This can be used e.g. to contain an instance name.
+	 *
+	*/
+	void writeMemoryAddresses(QTextStream& stream, quint64 offset, const QString& idString = QString()) const;
+
+	//! \brief Check if the memory map contains at least one sub item or not.
+	bool containsSubItems() const;
 
 	/*! \brief Get the address unit bits value
 	 *

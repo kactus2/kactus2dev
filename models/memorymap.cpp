@@ -415,6 +415,13 @@ bool MemoryMap::uniqueRegisterNames( QStringList& regNames ) const {
 	return true;
 }
 
+void MemoryMap::writeRegisters( QTextStream& stream,
+	quint64 offset, 
+	bool useIDStrings /*= false*/,
+	const QString& idString /*= QString()*/ ) const {
+
+}
+
 bool MemoryMap::uniqueMemoryNames( QStringList& memNames ) const {
 	foreach (QSharedPointer<MemoryMapItem> memItem, items_) {
 
@@ -436,4 +443,54 @@ bool MemoryMap::uniqueMemoryNames( QStringList& memNames ) const {
 
 	// all were unique
 	return true;
+}
+
+void MemoryMap::writeMemoryAddresses( QTextStream& stream,
+	quint64 offset,
+	const QString& idString /*= QString()*/ ) const {
+
+	foreach (QSharedPointer<MemoryMapItem> memItem, items_) {
+
+		// only address blocks can be memory blocks
+		QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
+		if (addrBlock && addrBlock->getUsage() == General::MEMORY) {
+
+			// calculate the total offset of the memory
+			quint64 memoryOffset = Utils::str2Int(addrBlock->getBaseAddress());
+			quint64 totalOffset = offset + memoryOffset;
+			
+			// the start address of the block
+			QString offsetStr = QString::number(totalOffset, 16);
+			offsetStr.prepend("0x");
+
+			// the last address contained in the block
+			QString endAddr = addrBlock->getLastAddressStr();
+
+			stream << "*/" << endl;
+			stream << " * Memory block name: " << addrBlock->getName() << endl;
+			stream << " * Memory width: " << addrBlock->getWidth() << endl;
+			stream << " * Memory range: " << addrBlock->getRange() << endl;
+			QString accessStr = General::access2Str(addrBlock->getAccess());
+			if (!accessStr.isEmpty()) {
+				stream << " * Memory access: " << accessStr << endl;
+			}
+			stream << "*/" << endl;
+			
+			// write the define for the memory
+			stream << "#define ";
+			if (!idString.isEmpty()) {
+				stream << idString.toUpper() << "_" << addrBlock->getName().toUpper() <<
+					"_START " << offsetStr << endl;
+				stream << "#define " << idString.toUpper() << "_" << addrBlock->getName().toUpper() << "_END " <<
+					endAddr << endl;
+			}
+			else {
+				stream << addrBlock->getName().toUpper() << "_START " << offsetStr << endl;
+				stream << "#define " << addrBlock->getName().toUpper() << "_END " << endAddr << endl;
+			}
+
+			stream << endl;
+		}
+		
+	}
 }
