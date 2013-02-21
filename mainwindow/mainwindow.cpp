@@ -785,6 +785,7 @@ void MainWindow::setupMenus()
     libGroup->addAction(actLibraryLocations_);
 	libGroup->addAction(actLibrarySearch_);
 	libGroup->addAction(actCheckIntegrity_);
+    libGroup->setAutoCollapse(false);
 
     // The "Generation" group.
     generationGroup_ = ribbon_->addGroup(tr("Generation"));

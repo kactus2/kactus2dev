@@ -118,7 +118,7 @@ void Ribbon::updateCollapse()
         {
             RibbonGroup* group = static_cast<RibbonGroup*>(layout_->itemAt(i)->widget());
 
-            if (group != 0 && group->canAutoCollapse() && !group->isCollapsed())
+            if (group != 0 && group->isVisible() && group->canAutoCollapse() && !group->isCollapsed())
             {
                 group->setCollapsed(true);
 
@@ -131,15 +131,15 @@ void Ribbon::updateCollapse()
     }
     else if (sizeHint().width() < targetWidth)
     {
-        // De-collapse as many groups as possible.
+        // Uncollapse as many groups as possible.
         for (int i = 0; i < layout_->count(); ++i)
         {
             RibbonGroup* group = static_cast<RibbonGroup*>(layout_->itemAt(i)->widget());
 
-            if (group != 0 && group->canAutoCollapse() && group->isCollapsed())
+            if (group != 0 && group->isVisible() && group->canAutoCollapse() && group->isCollapsed())
             {
                 int maxWidth = group->maximumWidth();
-
+                
                 if (sizeHint().width() - group->width() + maxWidth <= targetWidth)
                 {
                     group->setCollapsed(false);

@@ -33,12 +33,14 @@ RibbonGroup::RibbonGroup(QIcon const& icon, QString const& title, Ribbon* parent
       autoCollapse_(true),
       collapsed_(false),
       curRow_(0),
-      curColumn_(2)
+      curColumn_(2),
+      maxWidth_(2 * HMARGIN),
+      widgetMap_()
 {
     QFontMetrics metrics(font());
     setMinimumWidth(metrics.width(title_) + 2 * TITLE_MARGIN);
 
-    layout_->setContentsMargins(2, 10, 2, TITLE_HEIGHT + 5);
+    layout_->setContentsMargins(HMARGIN, 10, HMARGIN, TITLE_HEIGHT + 5);
     layout_->setSpacing(0);
 
     // Create the drop-down menu button and add it to the layout.
@@ -111,9 +113,6 @@ bool RibbonGroup::event(QEvent* e)
         {
             QAction* action = static_cast<QActionEvent*>(e)->action();
             addWidgetForAction(action);
-
-            // Add the action also to the drop-down menu.
-            dropDownMenu_->addAction(action);
             return true;
         }
 
@@ -122,8 +121,6 @@ bool RibbonGroup::event(QEvent* e)
             // Remove the widget corresponding to the action.
             QAction* action = static_cast<QActionEvent*>(e)->action();
             removeWidgetForAction(action);
-
-            dropDownMenu_->removeAction(action);
             return true;
         }
 
@@ -164,7 +161,6 @@ void RibbonGroup::setCollapsed(bool collapsed)
     }
 
     layout_->activate();
-
     collapsed_ = collapsed;
 }
 
@@ -177,7 +173,6 @@ void RibbonGroup::setAutoCollapse(bool autoCollapse)
     autoCollapse_ = autoCollapse;
     parent_->updateCollapse();
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: RibbonGroup::isCollapsed()
@@ -225,6 +220,11 @@ QWidget* RibbonGroup::createWidget(QAction* action, int rowSpan, int colSpan)
     {
         button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     }
+    else
+    {
+        button->setToolButtonStyle(Qt::ToolButtonIconOnly);
+        button->setFixedSize(button->sizeHint());
+    }
 
     return button;
 }
@@ -248,6 +248,13 @@ void RibbonGroup::addWidgetForAction(QAction* action)
 
     layout_->addWidget(widget, curRow_, curColumn_, rowSpan, colSpan, Qt::AlignCenter);
 
+    if (curRow_ == 0)
+    {
+        maxWidth_ += widget->width();
+        Q_ASSERT(maxWidth_ == sizeHint().width());
+        setMaximumWidth(maxWidth_);
+    }
+
     curRow_ += rowSpan;
 
     if (curRow_ >= 2)
@@ -256,8 +263,10 @@ void RibbonGroup::addWidgetForAction(QAction* action)
         curColumn_ += colSpan;
     }
 
-    setMaximumWidth(sizeHint().width());
     parent_->updateSize();
+
+    // Add the action also to the drop-down menu.
+    dropDownMenu_->addAction(action);
 
     widgetMap_.insert(action, widget);
 }
@@ -273,16 +282,20 @@ void RibbonGroup::removeWidgetForAction(QAction* action)
     delete widget;
 
     // Recreate the layout.
-    while (layout_->count() > 0)
+    while (layout_->count() > 1)
     {
-        layout_->takeAt(0);
+        layout_->takeAt(1);
     }
-    
+
     curRow_ = 0;
-    curColumn_ = 0;
+    curColumn_ = 2;
+    maxWidth_ = 2 * HMARGIN;
+    dropDownMenu_->clear();
 
     foreach (QAction* action, actions())
     {
         addWidgetForAction(action);
+        dropDownMenu_->addAction(action);
     }
 }
+

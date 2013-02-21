@@ -119,7 +119,8 @@ private:
     {
         TITLE_MARGIN = 20,
         TITLE_HEIGHT = 25,
-        MIN_LARGE_BUTTON_WIDTH = 56
+        MIN_LARGE_BUTTON_WIDTH = 56,
+        HMARGIN = 2
     };
 
     //-----------------------------------------------------------------------------
@@ -153,6 +154,9 @@ private:
     //! The current row and column.
     int curRow_;
     int curColumn_;
+
+    //! The width of the group in uncollapsed state.
+    int maxWidth_;
 
     //! Widget map.
     QMap<QAction*, QWidget*> widgetMap_;
