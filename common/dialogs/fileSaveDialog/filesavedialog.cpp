@@ -37,3 +37,11 @@ FileSaveDialog::~FileSaveDialog() {
 void FileSaveDialog::setModel( QAbstractTableModel* model ) {
 	view_->setModel(model);
 }
+
+QSize FileSaveDialog::sizeHint() const {
+	return minimumSizeHint();
+}
+
+QSize FileSaveDialog::minimumSizeHint() const {
+	return QSize(FileSaveDialog::WIDTH, FileSaveDialog::HEIGHT);
+}

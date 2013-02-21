@@ -47,21 +47,16 @@ public:
 	//! \brief The destructor
 	virtual ~MemoryMapHeaderGenerator();
 
-	/*!
-     *  Returns the name of the plugin.
-     */
+	//! \brief Returns the name of the plugin.
     virtual QString const& getName() const;
 
-    /*!
-     *  Returns the version of the plugin.
-     */
+	//! \brief Returns the version of the plugin.
     virtual QString const& getVersion() const;
 
-    /*!
-     *  Returns the description of the plugin.
-     */
+	//! \brief Returns the description of the plugin.
     virtual QString const& getDescription() const;
 
+	//! \brief Returns the icon for the generator.
     /*!
      *  Returns the settings widget.
      */
@@ -72,22 +67,28 @@ public:
      */
     virtual QIcon getIcon() const;
 
-    /*!
-     *  Checks whether the generator supports generation for the given library component.
+    /*! \brief Checks whether the generator supports generation for the given library component.
      *
-     *      @param [in] libComp The library component for which to check support.
+     * Method: 		checkGeneratorSupport
+     * Full name:	MemoryMapHeaderGenerator::checkGeneratorSupport
+     * Access:		virtual public 
      *
-     *      @return True, if the generator supports the given component. Otherwise false.
-     */
+     * \param libComp The library component for which to check support.
+     *
+     * \return True, if the generator supports the given component. Otherwise false.
+    */
     virtual bool checkGeneratorSupport(QSharedPointer<LibraryComponent const> libComp) const;
 
-    /*!
-     *  Runs the generator.
+    /*! \brief Runs the generator.
      *
+     * Method: 		runGenerator
+     * Full name:	MemoryMapHeaderGenerator::runGenerator
+     * Access:		virtual public 
      *
-     *      @param [in]     utility       The plugin utility interface.
-     *      @param [in,out] libComp       The component for which the generator is run.
-     */
+     * \param utility The plugin utility interface.
+     * \param libComp The component for which the generator is run.
+     *
+    */
     virtual void runGenerator(IPluginUtility* utility,
                               QSharedPointer<LibraryComponent> libComp);
 

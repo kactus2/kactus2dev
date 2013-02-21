@@ -188,6 +188,10 @@ bool MemoryMap::isValid() const {
 	return true;
 }
 
+bool MemoryMap::containsSubItems() const {
+	return !items_.isEmpty();
+}
+
 void MemoryMap::setName(const QString &name) {
 	nameGroup_.name_ = name;
 }

@@ -13,6 +13,7 @@
 
 #include <QDialog>
 #include <QAbstractTableModel>
+#include <QSize>
 
 /*! \brief The dialog can be used for user to select multiple files to be created.
  * 
@@ -23,6 +24,12 @@ class KACTUS2_API FileSaveDialog : public QDialog {
 	Q_OBJECT
 
 public:
+
+	//! \brief Contains the height and width of the dialog.
+	enum Sizes {
+		WIDTH = 400,
+		HEIGHT = 300
+	};
 
 	/*! \brief The constructor
 	 *
@@ -48,6 +55,28 @@ public:
 	 *
 	*/
 	void setModel(QAbstractTableModel* model);
+
+	/*! \brief Get the size hint for the dialog.
+	 *
+	 * Method: 		sizeHint
+	 * Full name:	FileSaveDialog::sizeHint
+	 * Access:		virtual public 
+	 *
+	 * 
+	 * \return QSize contains the preferred size of the dialog.
+	*/
+	virtual QSize sizeHint() const;
+
+	/*! \brief Get the minimum size hint for the dialog.
+	 *
+	 * Method: 		minimumSizeHint
+	 * Full name:	FileSaveDialog::minimumSizeHint
+	 * Access:		virtual public 
+	 *
+	 *
+	 * \return QSize contains the minimum size of the dialog.
+	*/
+	virtual QSize minimumSizeHint() const;
 
 private:
 	

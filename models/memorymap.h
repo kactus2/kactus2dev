@@ -80,6 +80,9 @@ public:
 	*/
 	bool isValid() const;
 
+	//! \brief Check if the memory map contains at least one sub item or not.
+	bool containsSubItems() const;
+
 	/*! \brief Check if the address blocks within memory map contains registers with given names.
 	 *
 	 * Method: 		uniqueRegisterNames

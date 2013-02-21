@@ -13,6 +13,8 @@
 #include <QContextMenuEvent>
 #include <QAction>
 
+class LibraryInterface;
+
 /*! \brief The view used to display the files to be created in the FileSaveDialog.
  *
  */
@@ -34,6 +36,17 @@ public:
 	
 	//! \brief The destructor
 	virtual ~FileSaveDialogView();
+
+	/*! \brief Set the model class for this view.
+	 *
+	 * Method: 		setModel
+	 * Full name:	EditableTableView::setModel
+	 * Access:		virtual public 
+	 *
+	 * \param model Pointer to the model class which is displayed by this view.
+	 *
+	*/
+	virtual void setModel(QAbstractItemModel* model);
 
 protected:
 
