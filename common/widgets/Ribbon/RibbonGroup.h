@@ -79,6 +79,7 @@ protected:
 
     virtual bool event(QEvent* e);
 
+    
 private:
     // Disable copying.
     RibbonGroup(RibbonGroup const& rhs);
@@ -95,6 +96,25 @@ private:
      */
     QWidget* createWidget(QAction* action, int rowSpan, int colSpan);
 
+    /*!
+     *  Adds a widget for the given action to the ribbon group.
+     *
+     *      @param [in] action The action for which to add a widget.
+     */
+    void addWidgetForAction(QAction* action);
+
+    /*!
+     *  Removes the widget that corresponds to the given action.
+     *
+     *      @param [in] action The action whose widget to remove.
+     */
+    void removeWidgetForAction(QAction* action);
+    
+    /*!
+     *  Recreates the whole action layout.
+     */
+    void recreateLayout();
+    
     enum
     {
         TITLE_MARGIN = 20,
@@ -133,6 +153,9 @@ private:
     //! The current row and column.
     int curRow_;
     int curColumn_;
+
+    //! Widget map.
+    QMap<QAction*, QWidget*> widgetMap_;
 };
 
 //-----------------------------------------------------------------------------

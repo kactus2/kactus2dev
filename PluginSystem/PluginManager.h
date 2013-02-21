@@ -38,9 +38,14 @@ public:
     ~PluginManager();
 
     /*!
-     *  Returns the list of loaded plugins.
+     *  returns the list of active plugins.
      */
-    QList<IPlugin*> const& getPlugins() const;
+    QList<IPlugin*> getActivePlugins() const;
+
+    /*!
+     *  Returns the list of all loaded plugins.
+     */
+    QList<IPlugin*> const& getAllPlugins() const;
     
 private:
     // Disable copying.

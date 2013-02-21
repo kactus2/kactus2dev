@@ -578,6 +578,16 @@ private:
 	*/
 	void setupMenus();
 
+    /*!
+     *  Adds generator plugin actions to the generation group.
+     */
+    void createGeneratorPluginActions();
+
+    /*!
+     *  Updates the generation group.
+     */
+    void updateGeneratorPluginActions();
+
 	/*! \brief Set up the drawing view where hierarchical components are edited.
 	 *
 	*/

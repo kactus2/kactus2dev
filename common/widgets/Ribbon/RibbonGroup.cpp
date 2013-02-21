@@ -109,27 +109,8 @@ bool RibbonGroup::event(QEvent* e)
     {
     case QEvent::ActionAdded:
         {
-            QActionEvent* actionEvent = static_cast<QActionEvent*>(e);
-            QAction* action = actionEvent->action();
-
-            int rowSpan = qMax(1, action->property("rowSpan").toInt());
-            int colSpan = qMin(qMax(1, action->property("colSpan").toInt()), 2);
-
-            // Create the widget for the action.    
-            QWidget* widget = createWidget(action, rowSpan, colSpan);
-            widget->setVisible(!collapsed_);
-            layout_->addWidget(widget, curRow_, curColumn_, rowSpan, colSpan, Qt::AlignCenter);
-
-            curRow_ += rowSpan;
-
-            if (curRow_ >= 2)
-            {
-                curRow_ = 0;
-                curColumn_ += colSpan;
-            }
-
-            setMaximumWidth(sizeHint().width());
-            parent_->updateSize();
+            QAction* action = static_cast<QActionEvent*>(e)->action();
+            addWidgetForAction(action);
 
             // Add the action also to the drop-down menu.
             dropDownMenu_->addAction(action);
@@ -138,6 +119,11 @@ bool RibbonGroup::event(QEvent* e)
 
     case QEvent::ActionRemoved:
         {
+            // Remove the widget corresponding to the action.
+            QAction* action = static_cast<QActionEvent*>(e)->action();
+            removeWidgetForAction(action);
+
+            dropDownMenu_->removeAction(action);
             return true;
         }
 
@@ -158,40 +144,6 @@ bool RibbonGroup::event(QEvent* e)
 void RibbonGroup::setGroupIcon(QIcon const& icon)
 {
     dropDownAction_->setIcon(icon);
-}
-
-//-----------------------------------------------------------------------------
-// Function: RibbonGroup::createWidget()
-//-----------------------------------------------------------------------------
-QWidget* RibbonGroup::createWidget(QAction* action, int rowSpan, int colSpan)
-{
-    QToolButton* button = new QToolButton(this);
-    button->setDefaultAction(action);
-    button->setIconSize(QSize(24, 24));
-    button->setAutoRaise(true);
-
-    if (rowSpan == 2 && colSpan == 2)
-    {
-        button->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-
-        QFontMetrics metrics(button->font());
-        int requiredWidth = metrics.width(button->text()) + 10;
-
-        if (action->menu() != 0)
-        {
-            requiredWidth += 20;
-        }
-
-        button->setFixedWidth(qMax<int>(requiredWidth, MIN_LARGE_BUTTON_WIDTH));
-        button->setFixedHeight(button->sizeHint().height() + 10);
-
-    }
-    else if (rowSpan == 1 && colSpan >= 2)
-    {
-        button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    }
-    
-    return button;
 }
 
 //-----------------------------------------------------------------------------
@@ -241,4 +193,96 @@ bool RibbonGroup::isCollapsed() const
 bool RibbonGroup::canAutoCollapse() const
 {
     return autoCollapse_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RibbonGroup::createWidget()
+//-----------------------------------------------------------------------------
+QWidget* RibbonGroup::createWidget(QAction* action, int rowSpan, int colSpan)
+{
+    QToolButton* button = new QToolButton(this);
+    button->setDefaultAction(action);
+    button->setIconSize(QSize(24, 24));
+    button->setAutoRaise(true);
+
+    if (rowSpan == 2 && colSpan == 2)
+    {
+        button->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
+        QFontMetrics metrics(button->font());
+        int requiredWidth = metrics.width(button->text()) + 10;
+
+        if (action->menu() != 0)
+        {
+            requiredWidth += 20;
+        }
+
+        button->setFixedWidth(qMax<int>(requiredWidth, MIN_LARGE_BUTTON_WIDTH));
+        button->setFixedHeight(button->sizeHint().height() + 10);
+
+    }
+    else if (rowSpan == 1 && colSpan >= 2)
+    {
+        button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    }
+
+    return button;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RibbonGroup::addWidgetForAction()
+//-----------------------------------------------------------------------------
+void RibbonGroup::addWidgetForAction(QAction* action)
+{
+    int rowSpan = qMax(1, action->property("rowSpan").toInt());
+    int colSpan = qMin(qMax(1, action->property("colSpan").toInt()), 2);
+
+    // Create the widget for the action if not found already in the widget map.
+    QWidget* widget = widgetMap_.value(action);
+
+    if (widget == 0)
+    {
+        widget = createWidget(action, rowSpan, colSpan);
+        widget->setVisible(!collapsed_);
+    }
+
+    layout_->addWidget(widget, curRow_, curColumn_, rowSpan, colSpan, Qt::AlignCenter);
+
+    curRow_ += rowSpan;
+
+    if (curRow_ >= 2)
+    {
+        curRow_ = 0;
+        curColumn_ += colSpan;
+    }
+
+    setMaximumWidth(sizeHint().width());
+    parent_->updateSize();
+
+    widgetMap_.insert(action, widget);
+}
+
+//-----------------------------------------------------------------------------
+// Function: RibbonGroup::removeWidgetForAction()
+//-----------------------------------------------------------------------------
+void RibbonGroup::removeWidgetForAction(QAction* action)
+{
+    // Find the corresponding widget from the widget map, remove it from there and delete it.
+    QWidget* widget = widgetMap_.take(action);
+    Q_ASSERT(widget != 0);
+    delete widget;
+
+    // Recreate the layout.
+    while (layout_->count() > 0)
+    {
+        layout_->takeAt(0);
+    }
+    
+    curRow_ = 0;
+    curColumn_ = 0;
+
+    foreach (QAction* action, actions())
+    {
+        addWidgetForAction(action);
+    }
 }

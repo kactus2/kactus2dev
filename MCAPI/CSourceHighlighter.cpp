@@ -167,7 +167,7 @@ void CSourceHighlighter::addBuiltinRules()
 
     QStringList preprocPatterns;
     preprocPatterns << "^#include\\b" << "^#ifndef\\b" << "^#ifdef\\b"
-                    << "^#if\\b" << "^#endif\\b" << "^#pragma\\b";
+                    << "^#if\\b" << "^#endif\\b" << "^#pragma\\b" << "^#define\\b";
 
     foreach(const QString &pattern, preprocPatterns)
     {

@@ -780,51 +780,25 @@ void MainWindow::setupMenus()
 	editGroup_->setVisible(false);
 	editGroup_->setEnabled(false);
 
-	//! The "Library" group.
+	// The "Library" group.
 	RibbonGroup* libGroup = ribbon_->addGroup(tr("Library"));
     libGroup->addAction(actLibraryLocations_);
 	libGroup->addAction(actLibrarySearch_);
 	libGroup->addAction(actCheckIntegrity_);
 
-	//! The "Generation" group.
-	generationGroup_ = ribbon_->addGroup(tr("Generation"));
-	generationGroup_->addAction(actGenVHDL_);
-	generationGroup_->addAction(actGenDocumentation_);
-	generationGroup_->addAction(actGenModelSim_);
-	generationGroup_->addAction(actGenQuartus_);
+    // The "Generation" group.
+    generationGroup_ = ribbon_->addGroup(tr("Generation"));
+    generationGroup_->addAction(actGenVHDL_);
+    generationGroup_->addAction(actGenDocumentation_);
+    generationGroup_->addAction(actGenModelSim_);
+    generationGroup_->addAction(actGenQuartus_);
     generationGroup_->addAction(actRunPluginGenerator_);
-	generationGroup_->addAction(actSourceListingGen_);
-	generationGroup_->setVisible(false);
-	generationGroup_->setEnabled(false);
+    generationGroup_->addAction(actSourceListingGen_);
+    generationGroup_->setVisible(false);
+    generationGroup_->setEnabled(false);
 
-    pluginActionGroup_ = new QActionGroup(this);
-
-    foreach (IPlugin* plugin, pluginMgr_->getPlugins())
-    {
-        IGeneratorPlugin* genPlugin = dynamic_cast<IGeneratorPlugin*>(plugin);
-
-        if (genPlugin != 0)
-        {
-            // Add a small overlay icon to the plugin icon to visualize that this is a plugin.
-            QIcon pluginBaseIcon = genPlugin->getIcon();
-
-            QPixmap icon(24, 24);
-            icon.fill(Qt::transparent);
-            
-            QPainter painter(&icon);
-            painter.drawPixmap(0, 0, pluginBaseIcon.pixmap(24, 24));
-            painter.drawPixmap(14, 14, QPixmap(":icons/graphics/generator_plugin_overlay.png"));
-                        
-            QAction* action = new QAction(icon, genPlugin->getName(), this);
-            action->setData(qVariantFromValue((void*)genPlugin));
-            generationGroup_->addAction(action);
-            pluginActionGroup_->addAction(action);
-        }
-    }
-
-    connect(pluginActionGroup_, SIGNAL(triggered(QAction*)),
-            this, SLOT(runGeneratorPlugin(QAction*)), Qt::UniqueConnection);
-
+    createGeneratorPluginActions();
+    
 	//! The "Diagram Tools" group.
 	diagramToolsGroup_ = ribbon_->addGroup(tr("Diagram Tools"));
 	diagramToolsGroup_->addAction(actAddColumn_);
@@ -1580,7 +1554,7 @@ void MainWindow::runGeneratorPlugin()
     QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(doc->getIdentifyingVLNV());
     PluginListDialog dialog(this);
 
-    foreach (IPlugin* plugin, pluginMgr_->getPlugins())
+    foreach (IPlugin* plugin, pluginMgr_->getActivePlugins())
     {
         IGeneratorPlugin* genPlugin = dynamic_cast<IGeneratorPlugin*>(plugin);
 
@@ -2483,6 +2457,9 @@ void MainWindow::openSettings()
 
 			doc->applySettings(settings);
 		}
+
+        // Update the generator plugin actions.
+        updateGeneratorPluginActions();
 	}
 }
 
@@ -4385,6 +4362,64 @@ void MainWindow::setLibraryLocations()
     dialog.exec();
 }
 
+//-----------------------------------------------------------------------------
+// Function: MainWindow::createGeneratorPluginActions()
+//-----------------------------------------------------------------------------
+void MainWindow::createGeneratorPluginActions()
+{
+    pluginActionGroup_ = new QActionGroup(this);
+
+    foreach (IPlugin* plugin, pluginMgr_->getActivePlugins())
+    {
+        IGeneratorPlugin* genPlugin = dynamic_cast<IGeneratorPlugin*>(plugin);
+
+        if (genPlugin != 0)
+        {
+            // Add a small overlay icon to the plugin icon to visualize that this is a plugin.
+            QIcon pluginBaseIcon = genPlugin->getIcon();
+
+            QPixmap icon(24, 24);
+            icon.fill(Qt::transparent);
+
+            QPainter painter(&icon);
+            painter.drawPixmap(0, 0, pluginBaseIcon.pixmap(24, 24));
+            painter.drawPixmap(14, 14, QPixmap(":icons/graphics/generator_plugin_overlay.png"));
+
+            QAction* action = new QAction(icon, genPlugin->getName(), this);
+            action->setData(qVariantFromValue((void*)genPlugin));
+            generationGroup_->addAction(action);
+            pluginActionGroup_->addAction(action);
+        }
+    }
+
+    connect(pluginActionGroup_, SIGNAL(triggered(QAction*)),
+            this, SLOT(runGeneratorPlugin(QAction*)), Qt::UniqueConnection);
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::updateGeneratorPluginActions()
+//-----------------------------------------------------------------------------
+void MainWindow::updateGeneratorPluginActions()
+{
+    // Remove all plugin actions.
+    QList<QAction*> actions = generationGroup_->actions();
+
+    foreach (QAction* action, actions)
+    {
+        // Check if the action contains the plugin pointer.
+        if (action->data().value<void*>() != 0)
+        {
+            generationGroup_->removeAction(action);
+            delete action;
+        }
+    }
+
+    delete pluginActionGroup_;
+    
+    // Recreate the plugin actions.
+    createGeneratorPluginActions();
+}
 MainWindow::WindowVisibility::WindowVisibility():
 showOutput_(true),
 showContextHelp_(true),

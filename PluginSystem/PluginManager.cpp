@@ -13,6 +13,8 @@
 
 #include "IPlugin.h"
 
+#include <models/generaldeclarations.h>
+
 #include <QDir>
 
 //-----------------------------------------------------------------------------
@@ -44,7 +46,26 @@ PluginManager::~PluginManager()
 //-----------------------------------------------------------------------------
 // Function: PluginManager::getPlugins()
 //-----------------------------------------------------------------------------
-QList<IPlugin*> const& PluginManager::getPlugins() const
+QList<IPlugin*> const& PluginManager::getAllPlugins() const
 {
     return plugins_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PluginManager::getActivePlugins()
+//-----------------------------------------------------------------------------
+QList<IPlugin*> PluginManager::getActivePlugins() const
+{
+    QSettings settings;
+    QList<IPlugin*> activePlugins;
+
+    foreach (IPlugin* plugin, plugins_)
+    {
+        if (settings.value("PluginSettings/" + General::removeWhiteSpace(plugin->getName()) + "/Active", true).toBool())
+        {
+            activePlugins.append(plugin);
+        }
+    }
+
+    return activePlugins;
 }
