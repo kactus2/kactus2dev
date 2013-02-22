@@ -156,6 +156,10 @@ void ComponentTreeView::selectItem( const QModelIndex& index ) {
 
 void ComponentTreeView::contextMenuEvent( QContextMenuEvent* event ) {
 	QModelIndex index = indexAt(event->pos());
+
+	if (!index.isValid()) {
+		return;
+	}
 	
 	// save the position where click occurred
 	pressedPoint_ = event->pos();
@@ -179,7 +183,13 @@ void ComponentTreeView::contextMenuEvent( QContextMenuEvent* event ) {
 }
 
 void ComponentTreeView::mouseDoubleClickEvent( QMouseEvent* event ) {
+	event->accept();
+
 	QModelIndex index = indexAt(event->pos());
+
+	if (!index.isValid()) {
+		return;
+	}
 
 	// save the position where click occurred
 	pressedPoint_ = event->pos();
@@ -187,8 +197,6 @@ void ComponentTreeView::mouseDoubleClickEvent( QMouseEvent* event ) {
 	ComponentEditorItem* item = static_cast<ComponentEditorItem*>(index.internalPointer());
 	
 	onFileOpen();
-
-	event->accept();
 }
 
 
