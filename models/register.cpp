@@ -302,3 +302,31 @@ void Register::setRegisterMask( const QString& registerMask ) {
 unsigned int Register::getMSB() const {
 	return registerDefinition_.getMSB();
 }
+
+void Register::writeHeaderInfo( QTextStream& stream, quint64 offset, const QString& idString /*= QString()*/ ) const {
+
+	// calculate the total address of the register
+	quint64 regOffset = Utils::str2Int(addressOffset_);
+	regOffset += offset;
+
+	QString offsetStr = QString::number(regOffset, 16);
+	offsetStr.prepend("0x");
+
+	stream << "/*" << endl;
+	stream << " * Register name: " << nameGroup_.name_ << endl;
+	
+	if (!nameGroup_.description_.isEmpty()) {
+		stream << " * Description:" << endl;
+		stream << " * " << nameGroup_.description_ << endl;
+	}
+
+	stream << "*/" << endl;
+	stream << "#define ";
+
+	if (idString.isEmpty()) {
+		stream << nameGroup_.name_.toUpper() << " " << offsetStr << endl; 
+	}
+	else {
+		stream << idString.toUpper() << "_" << nameGroup_.name_.toUpper() << " " << offsetStr << endl;
+	}
+}

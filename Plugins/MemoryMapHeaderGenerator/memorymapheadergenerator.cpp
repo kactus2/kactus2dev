@@ -133,6 +133,17 @@ void MemoryMapHeaderGenerator::runGenerator( IPluginUtility* utility, QSharedPoi
 		// write the memory addresses
 		headerOpt->localMemMap_->writeMemoryAddresses(stream, 0);
 
+		// if the register names are unique then there is no need to add address block name
+		QStringList regNames;
+		if (headerOpt->localMemMap_->uniqueRegisterNames(regNames)) {
+			headerOpt->localMemMap_->writeRegisters(stream, 0, false);
+		}
+		// if there are registers with same names then address block names must be
+		// included in the defines
+		else {
+			headerOpt->localMemMap_->writeRegisters(stream, 0, true);
+		}
+
 		// close the file after writing
 		file.close();
 	}

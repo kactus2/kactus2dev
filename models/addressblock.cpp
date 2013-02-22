@@ -400,3 +400,48 @@ bool AddressBlock::uniqueRegisterNames( QStringList& regNames ) const {
 
 	return true;
 }
+
+void AddressBlock::writeRegisters( QTextStream& stream, 
+	quint64 offset, 
+	bool useAddrBlockID /*= false*/, 
+	const QString& idString /*= QString()*/ ) const {
+
+	// calculate the total offset of the address block
+	quint64 baseOffset = Utils::str2Int(baseAddress_);
+	baseOffset += offset;
+
+	// if id string is used
+	QString id;
+	if (!idString.isEmpty()) {
+		id = idString;
+
+		// if address block name is added then use separator
+		if (useAddrBlockID) {
+			id.append("_");
+		}
+	}
+	if (useAddrBlockID) {
+		id.append(name_.toUpper());
+	}
+
+	stream << "/*" << endl;
+	stream << " * Address block: " << name_ << endl;
+
+	if (!description_.isEmpty()) {
+		stream << " * Description:" << endl;
+		stream << " * " << description_ << endl;
+	}
+
+	stream << "*/" << endl;
+
+	foreach (QSharedPointer<RegisterModel> regModel, registerData_) {
+
+		// skip register files at this point
+		QSharedPointer<Register> reg = regModel.dynamicCast<Register>();
+		if (reg) {
+			reg->writeHeaderInfo(stream, baseOffset, id);
+		}
+	}
+
+	stream << endl;
+}

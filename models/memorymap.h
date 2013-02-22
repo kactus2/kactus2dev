@@ -104,11 +104,11 @@ public:
 	 * 
 	 * \param stream The stream where the data is written into.
 	 * \param offset The offset added to the register addresses.
-	 * \param useIDStrings If false then containing address block name is prepended to each register name.
+	 * \param useAddrBlockID If false then containing address block name is prepended to each register name.
 	 * \param idString The string which is added to the beginning of names. This can be used e.g. to contain an instance name.
 	 *
 	*/
-	void writeRegisters(QTextStream& stream, quint64 offset, bool useIDStrings = false, const QString& idString = QString()) const;
+	void writeRegisters(QTextStream& stream, quint64 offset, bool useAddrBlockID = false, const QString& idString = QString()) const;
 
 	/*! \brief Check if the names of memory typed address blocks are contained in the given list.
 	*

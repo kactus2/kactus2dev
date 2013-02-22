@@ -417,9 +417,19 @@ bool MemoryMap::uniqueRegisterNames( QStringList& regNames ) const {
 
 void MemoryMap::writeRegisters( QTextStream& stream,
 	quint64 offset, 
-	bool useIDStrings /*= false*/,
+	bool useAddrBlockID /*= false*/,
 	const QString& idString /*= QString()*/ ) const {
+		
+	foreach (QSharedPointer<MemoryMapItem> memItem, items_) {
 
+		// only address blocks contain registers
+		QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
+		if (addrBlock && addrBlock->getUsage() == General::REGISTER) {
+
+			// tell address block to write its registers
+			addrBlock->writeRegisters(stream, offset, useAddrBlockID, idString);
+		}
+	}
 }
 
 bool MemoryMap::uniqueMemoryNames( QStringList& memNames ) const {
@@ -466,7 +476,7 @@ void MemoryMap::writeMemoryAddresses( QTextStream& stream,
 			// the last address contained in the block
 			QString endAddr = addrBlock->getLastAddressStr();
 
-			stream << "*/" << endl;
+			stream << "/*" << endl;
 			stream << " * Memory block name: " << addrBlock->getName() << endl;
 			stream << " * Memory width: " << addrBlock->getWidth() << endl;
 			stream << " * Memory range: " << addrBlock->getRange() << endl;

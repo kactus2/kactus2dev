@@ -19,6 +19,7 @@
 #include <QMap>
 #include <QSharedPointer>
 #include <QXmlStreamWriter>
+#include <QTextStream>
 
 class RegisterModel;
 class MemoryBlockData;
@@ -89,7 +90,13 @@ public:
 	virtual bool isValid(QStringList& errorList, 
 		const QString& parentIdentifier) const;
 
-	/*! \brief Check if the address block contains registers with given names.
+	/*! \brief Check if the address block is in a valid state.
+	 *
+	 * \return bool True if the state is valid and writing is possible.
+	*/
+	 virtual bool isValid() const;
+
+	 /*! \brief Check if the address block contains registers with given names.
 	 *
 	 * Method: 		uniqueRegisterNames
 	 * Full name:	AddressBlock::uniqueRegisterNames
@@ -101,16 +108,24 @@ public:
 	 * \param regNames List of strings to be checked.
 	 *
 	 * \return True if all register names are unique.
-	*/
-	bool uniqueRegisterNames(QStringList& regNames) const;
+	 */
+	 bool uniqueRegisterNames(QStringList& regNames) const;
 
-	/*! \brief Check if the address block is in a valid state.
+	 /*! \brief Write the register names and addresses to the given stream.
 	 *
-	 * \return bool True if the state is valid and writing is possible.
+	 * Method: 		writeRegisters
+	 * Full name:	MemoryMap::writeRegisters
+	 * Access:		public 
+	 * 
+	 * \param stream The stream where the data is written into.
+	 * \param offset The offset added to the register addresses.
+	 * \param useAddrBlockID If false then containing address block name is prepended to each register name.
+	 * \param idString The string which is added to the beginning of names. This can be used e.g. to contain an instance name.
+	 *
 	*/
-	 virtual bool isValid() const;
+	void writeRegisters(QTextStream& stream, quint64 offset, bool useAddrBlockID = false, const QString& idString = QString()) const;
 
-	/*! \brief Get the access information
+	 /*! \brief Get the access information
 	 *
 	 * \return Accessibility of the data in the address block
 	 */
