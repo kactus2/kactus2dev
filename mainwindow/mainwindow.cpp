@@ -3354,7 +3354,7 @@ void MainWindow::openCSource(ComponentItem* compItem)
 {
 	Q_ASSERT(compItem != 0);
 
-	FileSet* fileSet = compItem->componentModel()->getFileSet("cSources");
+	QSharedPointer<FileSet> fileSet = compItem->componentModel()->getFileSet("cSources");
 
 	if (fileSet == 0 || fileSet->getFiles().count() == 0)
 	{

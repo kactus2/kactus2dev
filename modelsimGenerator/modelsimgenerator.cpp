@@ -147,16 +147,16 @@ bool ModelsimGenerator::addMakefile2IPXact(QSharedPointer<Component> component,
 	QString relativePath = General::getRelativePath(basePath, makefilePath);
 
 	QString fileSetName("ModelsimScripts");
-	FileSet* modelsimFileSet = component->getFileSet(fileSetName);
+	QSharedPointer<FileSet> modelsimFileSet = component->getFileSet(fileSetName);
 
 	// if the top vhdl file set was not found. Create one
 	if (!modelsimFileSet) {
-		modelsimFileSet = new FileSet(fileSetName, QString("simulation"));
+		modelsimFileSet = QSharedPointer<FileSet>(new FileSet(fileSetName, QString("simulation")));
 		component->addFileSet(modelsimFileSet);
 	}
 
 	// create a new file
-	File* scriptFile = new File(relativePath, modelsimFileSet);
+	QSharedPointer<File> scriptFile(new File(relativePath, modelsimFileSet.data()));
 	scriptFile->addUserFileType(QString("ModelsimScript"));
 	scriptFile->setIncludeFile(false);
 	scriptFile->setDescription(tr(
@@ -395,7 +395,7 @@ void ModelsimGenerator::parseFileSets( QSharedPointer<Component> component,
 		}
 
 		// get the files in the file set
-		FileSet* fileSet = component->getFileSet(fileSetName);
+		QSharedPointer<FileSet> fileSet = component->getFileSet(fileSetName);
 		QList<QSharedPointer<File> > fileList = fileSet->getFiles();
 
 		// handle each file

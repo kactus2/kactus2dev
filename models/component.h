@@ -915,13 +915,28 @@ public:
 	*
 	* \return pointer to the file set. Null pointer if file set was not found.
 	*/
-	FileSet* getFileSet(const QString& name) const;
+	QSharedPointer<FileSet> getFileSet(const QString& name) const;
+
+	/*! \brief Get the specified file set.
+	 * 
+	 * If file set with given name does not exist then one is created and pointer
+	 * to it returned.
+	 * 
+	 * Method: 		getFileSet
+	 * Full name:	Component::getFileSet
+	 * Access:		public 
+	 *
+	 * \param name The name of the file set.
+	 *
+	 * \return Pointer to the file set.
+	*/
+	QSharedPointer<FileSet> getFileSet(const QString& name);
 
 	/*! \brief Add a new file set to the component
 	*
 	* \param fileSet A pointer to the file set to be added.
 	*/
-	void addFileSet(FileSet* fileSet);
+	void addFileSet(QSharedPointer<FileSet> fileSet);
 
 	/*! \brief Remove the specified filetSet from the component.
 	*
@@ -934,7 +949,7 @@ public:
 	*
 	* \return Pointer to the created file set.
 	*/
-	FileSet* createFileSet();
+	QSharedPointer<FileSet> createFileSet();
 
 	/*! \brief Check if the component has the named file set or not.
 	*

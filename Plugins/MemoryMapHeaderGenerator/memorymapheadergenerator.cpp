@@ -11,6 +11,9 @@
 #include <common/dialogs/fileSaveDialog/filesavedialog.h>
 #include "localheadersavemodel.h"
 #include <models/memorymap.h>
+#include <models/generaldeclarations.h>
+#include <models/fileset.h>
+#include <models/file.h>
 
 #include <QtPlugin>
 #include <QFileInfo>
@@ -21,8 +24,11 @@
 #include <QDate>
 #include <QSettings>
 #include <QDir>
+#include <QString>
 
 #include <QDebug>
+
+const QString MemoryMapHeaderGenerator::DEFAULT_TARGET_FILESET = QString("cSources");
 
 MemoryMapHeaderGenerator::MemoryMapHeaderGenerator():
 utility_(NULL) {
@@ -151,7 +157,32 @@ void MemoryMapHeaderGenerator::runGenerator( IPluginUtility* utility, QSharedPoi
 			headerOpt->localMemMap_->writeRegisters(stream, 0, true);
 		}
 
+		// add the file to the component's file sets
+		addHeaderFile(comp, headerOpt->fileInfo_);
+
 		// close the file after writing
 		file.close();
 	}
+}
+
+void MemoryMapHeaderGenerator::addHeaderFile( QSharedPointer<Component> component, const QFileInfo& fileInfo ) const {
+	QString xmlDir = utility_->getLibraryInterface()->getDirectoryPath(*component->getVlnv());
+	
+	// if the directory does not exist
+	QDir ipXactDir(xmlDir);
+	Q_ASSERT(ipXactDir.exists());
+	Q_ASSERT(fileInfo.exists());
+
+	// calculate the relative path 
+	QString relPath =  ipXactDir.relativeFilePath(fileInfo.absoluteFilePath());
+
+	// file set where the file is added to
+	QSharedPointer<FileSet> fileSet = component->getFileSet(LocalHeaderSaveModel::DEFAULT_HEADER_DIR);
+	Q_ASSERT(fileSet);
+
+	// the file
+	QSharedPointer<File> file = fileSet->addFile(relPath);
+	Q_ASSERT(file);
+
+	fileSet->addFile(file);
 }

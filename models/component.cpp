@@ -1839,22 +1839,39 @@ bool Component::hasPort( const QString& name ) const {
 	return model_->getPort(name);
 }
 
-FileSet* Component::getFileSet(const QString& name) const {
+QSharedPointer<FileSet> Component::getFileSet( const QString& name ) const {
 	// search all file sets
 	for (int i = 0; i < fileSets_.size(); ++i) {
 
 		// if the file set was found
 		if (fileSets_.at(i)->getName() == name) {
-			return fileSets_.at(i).data();
+			return fileSets_.at(i);
 		}
 	}
 
 	// file set was not found
-	return 0;
+	return QSharedPointer<FileSet>();
 }
 
-void Component::addFileSet(FileSet* fileSet) {
-	fileSets_.append(QSharedPointer<FileSet>(fileSet));
+QSharedPointer<FileSet> Component::getFileSet( const QString& name ) {
+
+	// search the file sets.
+	foreach (QSharedPointer<FileSet> fileSet, fileSets_) {
+		
+		// if the file set is found
+		if (fileSet->getName() == name) {
+			return fileSet;
+		}
+	}
+
+	// no file set with given name existed so create one
+	QSharedPointer<FileSet> fileSet(new FileSet(name));
+	fileSets_.append(fileSet);
+	return fileSet;
+}
+
+void Component::addFileSet( QSharedPointer<FileSet> fileSet ) {
+	fileSets_.append(fileSet);
 }
 
 QStringList Component::getFiles(const QString fileSetName) {
@@ -1894,11 +1911,12 @@ void Component::removeFileSet( const QString& fileSetName ) {
 	}
 }
 
-FileSet* Component::createFileSet() {
+QSharedPointer<FileSet> Component::createFileSet() {
 	// create an empty file set
-	fileSets_.append(QSharedPointer<FileSet>(new FileSet()));
+	QSharedPointer<FileSet> fileSet(new FileSet());
+	fileSets_.append(fileSet);
 	// and return pointer to it
-	return fileSets_.last().data();
+	return fileSet;
 }
 
 bool Component::addPort( QSharedPointer<Port> port ) {

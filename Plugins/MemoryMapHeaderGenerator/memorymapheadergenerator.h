@@ -18,6 +18,7 @@
 #include <QObject>
 #include <QString>
 #include <QSharedPointer>
+#include <QFileInfo>
 
 class IPluginUtility;
 
@@ -34,6 +35,8 @@ class MEMORYMAPHEADERGENERATOR_EXPORT MemoryMapHeaderGenerator : public QObject,
 
 public:
 
+	//! \brief The name of the file set where generated files are added to.
+	static const QString DEFAULT_TARGET_FILESET;
 
 	/*! \brief The constructor
 	 *
@@ -99,6 +102,18 @@ private:
 
 	//! \brief No assignment
 	MemoryMapHeaderGenerator& operator=(const MemoryMapHeaderGenerator& other);
+
+	/*! \brief Add a generated file to the file sets of a component.
+	 *
+	 * Method: 		addHeaderFile
+	 * Full name:	MemoryMapHeaderGenerator::addHeaderFile
+	 * Access:		private 
+	 *
+	 * \param component Pointer to the component where the file is added to.
+	 * \param fileInfo Contains the info on the generated file.
+	 *
+	*/
+	void addHeaderFile(QSharedPointer<Component> component, const QFileInfo& fileInfo) const;
 
 	//! The plugin utility.
 	IPluginUtility* utility_;

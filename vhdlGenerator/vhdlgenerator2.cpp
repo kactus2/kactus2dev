@@ -294,11 +294,11 @@ bool VhdlGenerator2::addRTLView( const QString& vhdlFileName ) {
 	else {
 		fileSetName = QString("vhdlSource");
 	}
-	FileSet* topFileSet = component_->getFileSet(fileSetName);
+	QSharedPointer<FileSet> topFileSet = component_->getFileSet(fileSetName);
 
 	// if the top vhdl file set was not found. Create one
 	if (!topFileSet) {
-		topFileSet = new FileSet(fileSetName, QString("sourceFiles"));
+		topFileSet = QSharedPointer<FileSet>(new FileSet(fileSetName, QString("sourceFiles")));
 		topFileSet->useDefaultVhdlBuilders();
 		component_->addFileSet(topFileSet);
 	}
@@ -306,7 +306,7 @@ bool VhdlGenerator2::addRTLView( const QString& vhdlFileName ) {
 	topFileSet->clearFiles();
 
 	// create a new file
-	File* topVhdlFile = new File(relativePath, topFileSet);
+	QSharedPointer<File> topVhdlFile(new File(relativePath, topFileSet.data()));
 	topVhdlFile->addFileType(QString("vhdlSource"));
 	topVhdlFile->setIncludeFile(true);
 	topVhdlFile->setLogicalName("work");

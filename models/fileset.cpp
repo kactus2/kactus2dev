@@ -57,15 +57,27 @@ files_(), defaultFileBuilders_(), dependencies_(), functions_() {
 	return;
 }
 
-FileSet::FileSet(const QString name, const QString group): nameGroup_(),
-		groups_(),
-		files_(), defaultFileBuilders_(), dependencies_(), functions_() {
-	groups_.append(group);
+FileSet::FileSet(const QString& name, const QString& group):
+nameGroup_(),
+	groups_(),
+	files_(), defaultFileBuilders_(),
+	dependencies_(), 
+	functions_() {
+
+	if (!group.isEmpty()) {
+		groups_.append(group);
+	}
+		
 	nameGroup_.name_ = name;
 }
 
-FileSet::FileSet(): nameGroup_(), groups_(), files_(), defaultFileBuilders_(), 
-dependencies_(), functions_()  {
+FileSet::FileSet():
+nameGroup_(), 
+	groups_(), 
+	files_(), 
+	defaultFileBuilders_(), 
+	dependencies_(), 
+	functions_()  {
 }
 
 FileSet::FileSet( const FileSet &other ):
@@ -422,7 +434,7 @@ QList<General::LibraryFilePair> FileSet::getVerilogLibraries() const {
 	return files;
 }
 
-void FileSet::addFile(File* file) {
+void FileSet::addFile(QSharedPointer<File> file) {
 
 	// search the files if there already exists a file with same name
 	for (int i = 0; i < files_.size(); ++i) {
@@ -434,7 +446,7 @@ void FileSet::addFile(File* file) {
 			files_.removeAt(i);
 
 			// add the new file to the list
-			files_.append(QSharedPointer<File>(file));
+			files_.append(file);
 			
 			// tell the file that it now belongs to this file set.
 			file->setParent(this);
@@ -444,33 +456,35 @@ void FileSet::addFile(File* file) {
 
 	// if there was no file with same name it is safe to append to file to the
 	// file set
-	files_.append(QSharedPointer<File>(file));
-}
-
-void FileSet::addFile( const QString& filePath ) {
-
-	// if file already exists
-	if (contains(filePath)) {
-		return;
-	}
-
-	// create the file and add it to list
-	QSharedPointer<File> file(new File(filePath, this));
 	files_.append(file);
 }
 
-File* FileSet::getFile(const QString logicalName) const {
+QSharedPointer<File> FileSet::addFile( const QString& filePath ) {
+
+	// if file already exists
+	QSharedPointer<File> file = getFile(filePath);
+	if (file) {
+		return file;
+	}
+
+	// create the file and add it to list
+	file = QSharedPointer<File>(new File(filePath, this));
+	files_.append(file);
+	return file;
+}
+
+QSharedPointer<File> FileSet::getFile(const QString logicalName) const {
 	// search all files
 	for (int i = 0; i < files_.size(); ++i) {
 
 		// if the logical name matches
 		if (files_.at(i)->getLogicalName() == logicalName) {
-			return files_.at(i).data();
+			return files_.at(i);
 		}
 	}
 
 	// no logical names matched
-	return 0;
+	return QSharedPointer<File>();
 }
 
 QStringList FileSet::getFileNames() const {
@@ -529,21 +543,25 @@ void FileSet::removeFile( const File* file ) {
 	}
 }
 
-File* FileSet::createFile() {
-	files_.append(QSharedPointer<File>(new File(this)));
-	return files_.last().data();
+QSharedPointer<File> FileSet::createFile() {
+
+	QSharedPointer<File> file(new File(this));
+	files_.append(file);
+	return file;
 }
 
-File* FileSet::createFile( const QString& path ) {
-	files_.append(QSharedPointer<File>(new File(path, this)));
-	return files_.last().data();
+QSharedPointer<File> FileSet::createFile( const QString& path ) {
+	QSharedPointer<File> file(new File(path, this));
+	files_.append(file);
+	return file;
 }
 
 
-QString FileSet::getDefaultCommand(const File* file ) const {
+QString FileSet::getDefaultCommand( const File* file ) const {
 
-	if (!file)
+	if (!file) {
 		return QString();
+	}
 
 	// first search all file types
 	QStringList fileTypes = file->getFileTypes();
@@ -562,10 +580,11 @@ QString FileSet::getDefaultCommand(const File* file ) const {
 	return QString();
 }
 
-QString FileSet::getDefaultFlags(const File* file ) const {
+QString FileSet::getDefaultFlags( const File* file ) const {
 
-	if (!file)
+	if (!file) {
 		return QString();
+	}
 
 	// first search all file types
 	QStringList fileTypes = file->getFileTypes();

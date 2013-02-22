@@ -145,11 +145,11 @@ void MCAPICodeGenerator::runGenerator(IPluginUtility* utility,
     generateSource(dir + "/ktsmcapicode.c", component);
 
     // Add the files to the component metadata.
-    FileSet* fileSet = component->getFileSet("cSources");
+    QSharedPointer<FileSet> fileSet = component->getFileSet("cSources");
 
     if (fileSet == 0)
     {
-        fileSet = new FileSet("cSources", "sourceFiles");
+        fileSet = QSharedPointer<FileSet>(new FileSet("cSources", "sourceFiles"));
         component->addFileSet(fileSet);
     }
 

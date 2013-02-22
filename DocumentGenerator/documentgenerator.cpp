@@ -42,8 +42,7 @@
 #include <QRectF>
 #include <QPointF>
 #include <QBrush>
-
-#include <QDebug>
+#include <QSharedPointer>
 
 static const QString SPACE = QString("&nbsp;");
 static const QString INDENT = QString("&nbsp;&nbsp;&nbsp;");
@@ -243,16 +242,16 @@ QString DocumentGenerator::writeDocumentation() {
 		QString relativePath = General::getRelativePath(xmlPath, targetPath_);
 
 		QString fileSetName("Documentation");
-		FileSet* documentationFileSet = component_->getFileSet(fileSetName);
+		QSharedPointer<FileSet> documentationFileSet = component_->getFileSet(fileSetName);
 
 		// if the documentation file set was not found. Create one
 		if (!documentationFileSet) {
-			documentationFileSet = new FileSet(fileSetName, QString("documentation"));
+			documentationFileSet = QSharedPointer<FileSet>(new FileSet(fileSetName, QString("documentation")));
 			component_->addFileSet(documentationFileSet);
 		}
 
 		// create a new file
-		File* docFile = new File(relativePath, documentationFileSet);
+		QSharedPointer<File> docFile(new File(relativePath, documentationFileSet.data()));
 		docFile->addUserFileType(QString("htmlFile"));
 		docFile->setIncludeFile(false);
 		docFile->setDescription(tr("Html file that contains the documentation "
@@ -265,7 +264,7 @@ QString DocumentGenerator::writeDocumentation() {
 		foreach (QString pictureName, pictureList) {
 			QString relativePicPath = General::getRelativePath(xmlPath, pictureName);
 
-			File* picFile = new File(relativePicPath, documentationFileSet);
+			QSharedPointer<File> picFile(new File(relativePicPath, documentationFileSet.data()));
 			picFile->addUserFileType(tr("picture"));
 			picFile->setIncludeFile(false);
 			picFile->setDescription(tr("Preview picture needed by the html document."));

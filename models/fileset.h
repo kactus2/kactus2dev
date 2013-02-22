@@ -48,7 +48,7 @@ public:
 	 * \param name Name of the file set
 	 * \param group A group where this file set belongs to.
 	 */
-	FileSet(const QString name, const QString group);
+	FileSet(const QString& name, const QString& group = QString());
 
 	/*! \brief The default constructor
 	 *
@@ -267,16 +267,16 @@ public:
 	 *
 	 * \param file Pointer to the new file to be added.
 	 */
-	void addFile(File* file);
+	void addFile(QSharedPointer<File> file);
 
 	/*! \brief Add a new file to the file set.
 	 *
-	 * If the file is already contained in the file set then nothing is done.
+	 * If the file is already contained in the file set then pointer to it is returned.
 	 *
 	 * \param filePath Path to the file to add (this should be relative path).
 	 *
 	*/
-	void addFile(const QString& filePath);
+	QSharedPointer<File> addFile(const QString& filePath);
 
 	/*! \brief Get pointer to the file with given logical name.
 	 *
@@ -285,7 +285,7 @@ public:
 	 *
 	 * \return Pointer to the File instance, null pointer if none is found.
 	 */
-	File* getFile(const QString logicalName) const;
+	QSharedPointer<File> getFile(const QString logicalName) const;
 
 	/*! \brief Get the name elements of the files stored within this file set.
 	 *
@@ -316,7 +316,7 @@ public:
 	 *
 	 * \return Pointer to the file that was created.
 	*/
-	File* createFile();
+	QSharedPointer<File> createFile();
 
 	/*! \brief Create a new file to the file set.
 	 *
@@ -324,7 +324,7 @@ public:
 	 *
 	 * \return File* Pointer to the file that was created.
 	*/
-	File* createFile(const QString& path);
+	QSharedPointer<File> createFile(const QString& path);
 
 	/*! \brief Get the default build command's command part for given file.
 	 *
@@ -336,7 +336,7 @@ public:
 
 	/*! \brief Get the default build command's flags for given file.
 	 *
-	 * \param file Pointer ot the file that's default flags are wanted.
+	 * \param file Pointer to the file that's default flags are wanted.
 	 *
 	 * \return QString containing the default flags.
 	*/

@@ -412,7 +412,7 @@ void QuartusGenerator::parseFileSets(QSharedPointer<Component> component,
 		}
 
 		// get the files in the file set
-		FileSet* fileSet = component->getFileSet(fileSetName);
+		QSharedPointer<FileSet> fileSet = component->getFileSet(fileSetName);
 		QList<QSharedPointer<File> > fileList = fileSet->getFiles();
 
 		// handle each file
