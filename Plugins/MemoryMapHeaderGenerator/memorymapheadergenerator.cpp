@@ -20,6 +20,7 @@
 #include <QCoreApplication>
 #include <QDate>
 #include <QSettings>
+#include <QDir>
 
 #include <QDebug>
 
@@ -98,9 +99,15 @@ void MemoryMapHeaderGenerator::runGenerator( IPluginUtility* utility, QSharedPoi
 	foreach (LocalHeaderSaveModel::SaveFileOptions* headerOpt, options) {
 
 		QFile file(headerOpt->fileInfo_.absoluteFilePath());
+		
+		// make sure the directory structure exists for the file
+		QDir dir(headerOpt->fileInfo_.dir());
+		QString dirName(dir.dirName());
+		dir.cdUp();
+		dir.mkpath(dirName);
 
 		// open the file and erase all old contents if any exists
-		
+
 		// if file could not be opened
 		if (!file.open(QFile::Truncate | QFile::WriteOnly)) {
 
