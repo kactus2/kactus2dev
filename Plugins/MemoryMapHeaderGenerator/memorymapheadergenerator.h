@@ -14,6 +14,7 @@
 #include <PluginSystem/IGeneratorPlugin.h>
 #include <models/component.h>
 #include <models/librarycomponent.h>
+#include <models/design.h>
 
 #include <QObject>
 #include <QString>
@@ -106,6 +107,29 @@ private:
 
 	//! \brief No assignment
 	MemoryMapHeaderGenerator& operator=(const MemoryMapHeaderGenerator& other);
+
+	/*! \brief Generate headers for local memory maps of a component.
+	 *
+	 * Method: 		generateLocalMemMapHeaders
+	 * Full name:	MemoryMapHeaderGenerator::generateLocalMemMapHeaders
+	 * Access:		private 
+	 *
+	 * \param comp Pointer to the component which contains the local memory maps.
+	 *
+	*/
+	void generateLocalMemMapHeaders( QSharedPointer<Component> comp );
+
+	/*! \brief Generate global headers for the CPU instances of the design.
+	 *
+	 * Method: 		generateGlobalHeaders
+	 * Full name:	MemoryMapHeaderGenerator::generateGlobalHeaders
+	 * Access:		private 
+	 *
+	 * \param comp Pointer to the top hierarchical component to which the headers are added to.
+	 * \param design Pointer to the design which instantiates the CPU instances.
+	 *
+	*/
+	void generateGlobalHeaders(QSharedPointer<Component> comp, QSharedPointer<Design> design);
 
 	/*! \brief Add a generated file to the file sets of a component.
 	 *

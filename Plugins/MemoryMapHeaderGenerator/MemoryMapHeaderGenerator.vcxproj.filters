@@ -56,6 +56,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_localheadersavemodel.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="globalheadersavemodel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_globalheadersavemodel.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_globalheadersavemodel.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="memorymapheadergenerator_global.h">
@@ -70,6 +79,9 @@
       <Filter>Resource Files</Filter>
     </CustomBuild>
     <CustomBuild Include="localheadersavemodel.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="globalheadersavemodel.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

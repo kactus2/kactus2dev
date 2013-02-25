@@ -134,7 +134,7 @@ QVariant LocalHeaderSaveModel::data( const QModelIndex& index, int role /*= Qt::
 		case LocalHeaderSaveModel::FILE_PATH: {
 
 			// display the relative path from xml directory to the header to be generated
-			QDir xmlDir = handler_->getDirectoryPath(*component_->getVlnv());
+			QDir xmlDir(handler_->getDirectoryPath(*component_->getVlnv()));
 			QString headerPath = table_.at(index.row())->fileInfo_.absoluteFilePath();
 			QString relPath = xmlDir.relativeFilePath(headerPath);
 
