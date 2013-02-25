@@ -77,10 +77,12 @@ public:
      * Access:		virtual public 
      *
      * \param libComp The library component for which to check support.
+     * \param libDes The design object if the generator is run on a hierarchical component.
      *
      * \return True, if the generator supports the given component. Otherwise false.
     */
-    virtual bool checkGeneratorSupport(QSharedPointer<LibraryComponent const> libComp) const;
+    virtual bool checkGeneratorSupport(QSharedPointer<LibraryComponent const> libComp,
+		QSharedPointer<LibraryComponent const> libDes = QSharedPointer<LibraryComponent const>()) const;
 
     /*! \brief Runs the generator.
      *
@@ -90,10 +92,12 @@ public:
      *
      * \param utility The plugin utility interface.
      * \param libComp The component for which the generator is run.
+     * \param libDes The design object if the generator is run on a hierarchical component.
      *
     */
     virtual void runGenerator(IPluginUtility* utility,
-                              QSharedPointer<LibraryComponent> libComp);
+                              QSharedPointer<LibraryComponent> libComp,
+							  QSharedPointer<LibraryComponent> libDes = QSharedPointer<LibraryComponent const>());
 
 private:
 

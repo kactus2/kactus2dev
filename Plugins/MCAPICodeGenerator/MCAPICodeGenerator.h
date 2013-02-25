@@ -64,10 +64,12 @@ public:
      *  Checks whether the generator supports generation for the given library component.
      *
      *      @param [in] libComp The library component for which to check support.
+     *      @param [in] libDes The optional design object.
      *
      *      @return True, if the generator supports the given component. Otherwise false.
      */
-    virtual bool checkGeneratorSupport(QSharedPointer<LibraryComponent const> libComp) const;
+    virtual bool checkGeneratorSupport(QSharedPointer<LibraryComponent const> libComp,
+		QSharedPointer<LibraryComponent const> libDes = QSharedPointer<LibraryComponent const>()) const;
 
     /*!
      *  Runs the generator.
@@ -75,9 +77,11 @@ public:
      *
      *      @param [in]     utility       The plugin utility interface.
      *      @param [in,out] libComp       The component for which the generator is run.
+     *      @param [in,out] libDes		  The optional design object for the generator.
      */
     virtual void runGenerator(IPluginUtility* utility,
-                              QSharedPointer<LibraryComponent> libComp);
+                              QSharedPointer<LibraryComponent> libComp,
+							  QSharedPointer<LibraryComponent> libDes = QSharedPointer<LibraryComponent const>());
 private:
     /*!
      *  Generates the MCAPI code header file.

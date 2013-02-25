@@ -14,6 +14,8 @@
 #include <models/generaldeclarations.h>
 #include <models/fileset.h>
 #include <models/file.h>
+#include <models/design.h>
+#include <common/KactusAttribute.h>
 
 #include <QtPlugin>
 #include <QFileInfo>
@@ -69,7 +71,8 @@ QIcon MemoryMapHeaderGenerator::getIcon() const
     return QIcon(":icons/headerGenerator24.png");
 }
 
-bool MemoryMapHeaderGenerator::checkGeneratorSupport( QSharedPointer<LibraryComponent const> libComp ) const {
+bool MemoryMapHeaderGenerator::checkGeneratorSupport( QSharedPointer<LibraryComponent const> libComp,
+	QSharedPointer<LibraryComponent const> libDes) const {
 	
 	// make sure the object is a component
 	QSharedPointer<Component const> comp = libComp.dynamicCast<Component const>();
@@ -77,10 +80,26 @@ bool MemoryMapHeaderGenerator::checkGeneratorSupport( QSharedPointer<LibraryComp
 		return false;
 	}
 
-	return comp->hasLocalMemoryMaps();
+	// if there is no design then header is generated for local memory maps
+	if (!libDes) {
+		return comp->hasLocalMemoryMaps();
+	}
+
+	// make sure the second parameter is for a design object
+	QSharedPointer<Design const> design = libDes.dynamicCast<Design const>();
+	// the design must be a HW design
+	if (design) {
+		return comp->getComponentImplementation() == KactusAttribute::KTS_HW;
+	}
+	else {
+		return false;
+	}
 }
 
-void MemoryMapHeaderGenerator::runGenerator( IPluginUtility* utility, QSharedPointer<LibraryComponent> libComp ) {
+void MemoryMapHeaderGenerator::runGenerator( IPluginUtility* utility,
+	QSharedPointer<LibraryComponent> libComp,
+	 QSharedPointer<LibraryComponent> libDes) {
+
 	utility_ = utility;
 
 	QSharedPointer<Component> comp = libComp.dynamicCast<Component>();

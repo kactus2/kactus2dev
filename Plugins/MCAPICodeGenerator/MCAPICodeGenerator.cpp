@@ -74,8 +74,14 @@ QString const& MCAPICodeGenerator::getDescription() const
 //-----------------------------------------------------------------------------
 // Function: MCAPICodeGenerator::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
-bool MCAPICodeGenerator::checkGeneratorSupport(QSharedPointer<LibraryComponent const> libComp) const
+bool MCAPICodeGenerator::checkGeneratorSupport(QSharedPointer<LibraryComponent const> libComp,
+	QSharedPointer<LibraryComponent const> libDes) const
 {
+	// MCAPI code generator is only run for SW component editor
+	if (libDes) {
+		return false;
+	}
+
     QSharedPointer<Component const> comp = libComp.dynamicCast<Component const>();
     return (comp != 0 && comp->getComponentImplementation() == KactusAttribute::KTS_SW);
 }
@@ -84,8 +90,12 @@ bool MCAPICodeGenerator::checkGeneratorSupport(QSharedPointer<LibraryComponent c
 // Function: MCAPICodeGenerator::runGenerator()
 //-----------------------------------------------------------------------------
 void MCAPICodeGenerator::runGenerator(IPluginUtility* utility,
-                                      QSharedPointer<LibraryComponent> libComp)
+                                      QSharedPointer<LibraryComponent> libComp,
+									  QSharedPointer<LibraryComponent> libDes)
 {
+	// MCAPI code generator is only run for SW component editor
+	Q_ASSERT(!libDes);
+
     utility_ = utility;
 
     QString dir = QFileInfo(utility->getLibraryInterface()->getPath(*libComp->getVlnv())).absolutePath();

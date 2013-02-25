@@ -1312,11 +1312,20 @@ void MainWindow::updateMenuStrip()
     actVisibilityControl_->setEnabled(doc != 0 && (doc->getFlags() & TabDocument::DOC_VISIBILITY_CONTROL_SUPPORT));
 
     // Enable/disable the plugin generator actions based on the component being edited in the document.
+	VLNV compVLNV;
+	VLNV desVLNV;
     QSharedPointer<LibraryComponent const> libComp;
-
+	QSharedPointer<LibraryComponent const> libDes;
     if (doc != 0)
     {
-        libComp = libraryHandler_->getModelReadOnly(doc->getIdentifyingVLNV());
+		compVLNV = doc->getDocumentVLNV();
+		desVLNV = doc->getIdentifyingVLNV();
+        libComp = libraryHandler_->getModelReadOnly(compVLNV);
+
+		// if the document supports designs
+		if (compVLNV != desVLNV) {
+			libDes = libraryHandler_->getModelReadOnly(desVLNV);
+		}
     }
 
     foreach (QAction* action, pluginActionGroup_->actions())
@@ -1324,7 +1333,7 @@ void MainWindow::updateMenuStrip()
         IGeneratorPlugin* plugin = reinterpret_cast<IGeneratorPlugin*>(action->data().value<void*>());
         Q_ASSERT(plugin != 0);
 
-        action->setEnabled(libComp != 0 && plugin->checkGeneratorSupport(libComp));
+        action->setEnabled(libComp != 0 && plugin->checkGeneratorSupport(libComp, libDes));
     }
 
 	updateZoomTools();
@@ -1552,14 +1561,22 @@ void MainWindow::runGeneratorPlugin()
     }
 
     // Fill in the dialog with supported plugins.
-    QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(doc->getIdentifyingVLNV());
+	VLNV compVLNV = doc->getDocumentVLNV();
+	VLNV desVLNV = doc->getIdentifyingVLNV();
+	QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(compVLNV);
+	QSharedPointer<LibraryComponent> libDes;
+
+	// if the design is supported by the document type
+	if (compVLNV != desVLNV) {
+		libDes = libraryHandler_->getModel(desVLNV);
+	}
     PluginListDialog dialog(this);
 
     foreach (IPlugin* plugin, pluginMgr_->getActivePlugins())
     {
         IGeneratorPlugin* genPlugin = dynamic_cast<IGeneratorPlugin*>(plugin);
 
-        if (genPlugin != 0 && genPlugin->checkGeneratorSupport(libComp))
+        if (genPlugin != 0 && genPlugin->checkGeneratorSupport(libComp, libDes))
         {
             dialog.addPlugin(plugin);
         }
@@ -1572,7 +1589,7 @@ void MainWindow::runGeneratorPlugin()
         IGeneratorPlugin* genPlugin = dynamic_cast<IGeneratorPlugin*>(plugin);
         Q_ASSERT(genPlugin != 0);
 
-        genPlugin->runGenerator(this, libComp);
+        genPlugin->runGenerator(this, libComp, libDes);
         doc->refresh();
     }
 }
@@ -1599,14 +1616,22 @@ void MainWindow::runGeneratorPlugin(QAction* action)
     }
 
     // Retrieve the library component.
-    QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(doc->getIdentifyingVLNV());
+	VLNV compVLNV = doc->getDocumentVLNV();
+	VLNV desVLNV = doc->getIdentifyingVLNV();
+    QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(compVLNV);
+	QSharedPointer<LibraryComponent> libDes;
+
+	// if the document supports design
+	if (compVLNV != desVLNV) {
+		libDes = libraryHandler_->getModel(desVLNV);
+	}
 
     // Retrieve the plugin pointer from the action.
     IGeneratorPlugin* plugin = reinterpret_cast<IGeneratorPlugin*>(action->data().value<void*>());
     Q_ASSERT(plugin != 0);
 
     // Run the generator and refresh the document.
-    plugin->runGenerator(this, libComp);
+    plugin->runGenerator(this, libComp, libDes);
     doc->refresh();
 }
 
