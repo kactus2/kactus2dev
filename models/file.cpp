@@ -19,8 +19,6 @@
 #include <QXmlStreamWriter>
 #include <QFileInfo>
 
-#include <QDebug>
-
 File::Define::Define( const QString name, const QString value ):
 nameGroup_(name), value_(value) {
 }

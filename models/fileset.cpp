@@ -362,8 +362,8 @@ const QStringList& FileSet::getDependencies() {
 	return dependencies_;
 }
 
-const QList<QString> FileSet::getFilePaths() {
-	QList<QString> filePaths;
+const QStringList FileSet::getFilePaths() {
+	QStringList filePaths;
 
 	for (int i = 0; i < files_.size(); ++i) {
 		filePaths.append(files_.at(i)->getName());
@@ -461,14 +461,15 @@ void FileSet::addFile(QSharedPointer<File> file) {
 
 QSharedPointer<File> FileSet::addFile( const QString& filePath ) {
 
-	// if file already exists
-	QSharedPointer<File> file = getFile(filePath);
-	if (file) {
-		return file;
+	// check if file already exists
+	foreach (QSharedPointer<File> file, files_) {
+		if (file->getName() == filePath) {
+			return file;
+		}
 	}
 
-	// create the file and add it to list
-	file = QSharedPointer<File>(new File(filePath, this));
+	// file did not yet exist so create the file and add it to list
+	QSharedPointer<File> file(new File(filePath, this));
 	files_.append(file);
 	return file;
 }

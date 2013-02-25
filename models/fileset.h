@@ -234,7 +234,15 @@ public:
 	*/
 	void setDescription(const QString& description);
 
-	const QList<QString> getFilePaths();
+	/*! \brief Get the file paths of the files stored in the file set.
+	 *
+	 * Method: 		getFilePaths
+	 * Full name:	FileSet::getFilePaths
+	 * Access:		public 
+	 *
+	 * \return QStringList containing the file paths.
+	*/
+	const QStringList getFilePaths();
 
 	/*! \brief Get the vhdl files and libraries used in this fileSet.
 	 *
