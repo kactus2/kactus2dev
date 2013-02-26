@@ -29,14 +29,14 @@ SegmentGraphItem::~SegmentGraphItem() {
 
 void SegmentGraphItem::refresh() {
 	setName(segment_->getName());
-	setRightTopCorner(Utils::str2Int(segment_->getAddressOffset()));
+	setRightTopCorner(Utils::str2Uint(segment_->getAddressOffset()));
 	setRightBottomCorner(segment_->getLastAddress());
 	VisualizerItem::reorganizeChildren();
 }
 
 quint64 SegmentGraphItem::getOffset() const {
 	QString offset = segment_->getAddressOffset();
-	return Utils::str2Int(offset);
+	return Utils::str2Uint(offset);
 }
 
 quint64 SegmentGraphItem::getLastAddress() const {

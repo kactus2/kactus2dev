@@ -209,7 +209,7 @@ QString Register::getAddressOffset() const {
 }
 
 quint64 Register::getOffset() const {
-	return Utils::str2Int(addressOffset_);
+	return Utils::str2Uint(addressOffset_);
 }
 
 const QList<QSharedPointer<AlternateRegister> >&
@@ -306,7 +306,7 @@ unsigned int Register::getMSB() const {
 void Register::writeHeaderInfo( QTextStream& stream, quint64 offset, const QString& idString /*= QString()*/ ) const {
 
 	// calculate the total address of the register
-	quint64 regOffset = Utils::str2Int(addressOffset_);
+	quint64 regOffset = Utils::str2Uint(addressOffset_);
 	regOffset += offset;
 
 	QString offsetStr = QString::number(regOffset, 16);

@@ -3240,6 +3240,19 @@ QStringList Component::getMasterInterfaces( const QString& addressSpace ) const 
 	return names;
 }
 
+QStringList Component::getMasterInterfaces() const {
+
+	QStringList names;
+	foreach (QSharedPointer<const BusInterface> busif, busInterfaces_) {
+		if (busif->getInterfaceMode() == General::MASTER ||
+			busif->getInterfaceMode() == General::MIRROREDMASTER) {
+
+			names.append(busif->getName());
+		}
+	}
+	return names;
+}
+
 bool Component::hasInterfaces() const {
 	return !busInterfaces_.isEmpty();
 }

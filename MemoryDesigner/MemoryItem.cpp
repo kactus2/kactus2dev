@@ -39,7 +39,7 @@ namespace
      */
     bool addressBlockSortOp(QSharedPointer<AddressBlock const> lhs, QSharedPointer<AddressBlock const> rhs)
     {
-        return Utils::str2Int(lhs->getBaseAddress()) < Utils::str2Int(rhs->getBaseAddress());
+        return Utils::str2Uint(lhs->getBaseAddress()) < Utils::str2Uint(rhs->getBaseAddress());
     }
 }
 
@@ -107,12 +107,12 @@ MemoryItem::MemoryItem(LibraryInterface* libInterface, QString const& instanceNa
     if (!blocks.empty())
     {
         qSort(blocks.begin(), blocks.end(), &addressBlockSortOp);
-        quint64 curAddress = Utils::str2Int(blocks.first()->getBaseAddress());
+        quint64 curAddress = Utils::str2Uint(blocks.first()->getBaseAddress());
 
         foreach (QSharedPointer<AddressBlock> block, blocks)
         {
-            quint64 startAddress = Utils::str2Int(block->getBaseAddress());
-            quint64 range = Utils::str2Int(block->getRange());
+            quint64 startAddress = Utils::str2Uint(block->getBaseAddress());
+            quint64 range = Utils::str2Uint(block->getRange());
 
             // Check if there is a hole in the memory before the next address block.
             if (startAddress > curAddress)

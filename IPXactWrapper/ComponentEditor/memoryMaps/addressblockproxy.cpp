@@ -27,11 +27,11 @@ bool AddressBlockProxy::lessThan( const QModelIndex& left, const QModelIndex& ri
 
 			// convert the data on left index into number
 			QString leftStr = left.model()->data(left, Qt::DisplayRole).toString();
-			quint64 leftNumber = Utils::str2Int(leftStr);
+			quint64 leftNumber = Utils::str2Uint(leftStr);
 
 			// convert data on right index into number
 			QString rightStr = right.model()->data(right, Qt::DisplayRole).toString();
-			quint64 rightNumber = Utils::str2Int(rightStr);
+			quint64 rightNumber = Utils::str2Uint(rightStr);
 
 			// compare the numbers instead of strings to provide correct comparison results
 			return leftNumber < rightNumber;

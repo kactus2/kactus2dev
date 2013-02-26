@@ -27,7 +27,7 @@ public:
 
 	//! \brief Contains the height and width of the dialog.
 	enum Sizes {
-		WIDTH = 400,
+		WIDTH = 600,
 		HEIGHT = 300
 	};
 

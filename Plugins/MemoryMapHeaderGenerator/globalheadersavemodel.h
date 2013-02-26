@@ -71,6 +71,18 @@ public:
 	//! \brief The destructor
 	virtual ~GlobalHeaderSaveModel();
 
+	/*! \brief Set the design for which the global headers are generated.
+	 *
+	 * Method: 		setDesign
+	 * Full name:	GlobalHeaderSaveModel::setDesign
+	 * Access:		public 
+	 *
+	 * \param topComp Pointer to the component which contains the design.
+	 * \param design Pointer to the design which instantiates the components.
+	 *
+	*/
+	void setDesign(QSharedPointer<Component> topComp, QSharedPointer<Design> design);
+
 	/*! \brief Get the number of rows an item contains.
 	 *
 	 * \param parent Identifies the parent that's row count is requested.

@@ -1202,6 +1202,26 @@ QList<HierComConnection> const& Design::getHierComConnections() const
     return hierComConnections_;
 }
 
+bool Design::hasInterconnection( const QString& instanceName, const QString& interfaceName ) const {
+
+	foreach (Design::Interconnection conn, interconnections_) {
+		
+		// check if either interface of the interconnection matches
+		if (conn.interface1.componentRef == instanceName &&
+			conn.interface1.busRef == interfaceName) {
+				return true;
+		}
+		else if (conn.interface2.componentRef == instanceName &&
+			conn.interface2.busRef == interfaceName) {
+				return true;
+		}
+		
+	}
+
+	// no interconnection was found
+	return false;
+}
+
 Design::Interface::Interface(QDomNode &interfaceNode):
 componentRef(""), 
 busRef("")

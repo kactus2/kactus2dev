@@ -446,7 +446,7 @@ quint64 AddressSpace::getLastSegmentedAddress() const {
 }
 
 quint64 AddressSpace::getLastAddress() const {
-	quint64 range = Utils::str2Int(range_);
+	quint64 range = Utils::str2Uint(range_);
 	
 	// if range is undefined
 	if (range <= 0) {

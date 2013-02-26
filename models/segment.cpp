@@ -190,8 +190,8 @@ void Segment::setRange( const QString& range ) {
 }
 
 quint64 Segment::getLastAddress() const {
-	quint64 base = Utils::str2Int(addressOffset_);
-	quint64 range = Utils::str2Int(range_);
+	quint64 base = Utils::str2Uint(addressOffset_);
+	quint64 range = Utils::str2Uint(range_);
 
 	quint64 lastAddr = base + range;
 

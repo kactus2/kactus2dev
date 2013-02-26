@@ -25,7 +25,7 @@
 //-----------------------------------------------------------------------------
 //! IP-XACT component instance class.
 //-----------------------------------------------------------------------------
-struct KACTUS2_API ComponentInstance
+class KACTUS2_API ComponentInstance
 {
 public:
     /*!

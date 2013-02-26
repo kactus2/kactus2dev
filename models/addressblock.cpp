@@ -282,8 +282,8 @@ QString AddressBlock::getRange() const {
 }
 
 quint64 AddressBlock::getLastAddress() const {
-	quint64 base = Utils::str2Int(baseAddress_);
-	quint64 range = Utils::str2Int(range_);
+	quint64 base = Utils::str2Uint(baseAddress_);
+	quint64 range = Utils::str2Uint(range_);
 
 	quint64 lastAddr = base + range;
 
@@ -407,7 +407,7 @@ void AddressBlock::writeRegisters( QTextStream& stream,
 	const QString& idString /*= QString()*/ ) const {
 
 	// calculate the total offset of the address block
-	quint64 baseOffset = Utils::str2Int(baseAddress_);
+	quint64 baseOffset = Utils::str2Uint(baseAddress_);
 	baseOffset += offset;
 
 	// if id string is used

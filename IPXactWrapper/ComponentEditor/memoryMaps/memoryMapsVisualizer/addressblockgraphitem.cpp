@@ -31,7 +31,7 @@ AddressBlockGraphItem::~AddressBlockGraphItem() {
 
 void AddressBlockGraphItem::refresh() {
 	setName(addrBlock_->getName());
-	setLeftTopCorner(Utils::str2Int(addrBlock_->getBaseAddress()));
+	setLeftTopCorner(Utils::str2Uint(addrBlock_->getBaseAddress()));
 	setLeftBottomCorner(addrBlock_->getLastAddress());
 
 	// set the positions for the children
@@ -44,7 +44,7 @@ void AddressBlockGraphItem::refresh() {
 
 quint64 AddressBlockGraphItem::getOffset() const {
 	QString offset = addrBlock_->getBaseAddress();
-	return Utils::str2Int(offset);
+	return Utils::str2Uint(offset);
 }
 
 int AddressBlockGraphItem::getBitWidth() const {

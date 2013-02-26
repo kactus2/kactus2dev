@@ -29,14 +29,14 @@ LocalAddrBlockGraphItem::~LocalAddrBlockGraphItem() {
 
 void LocalAddrBlockGraphItem::refresh() {
 	setName(addrBlock_->getName());
-	setLeftTopCorner(Utils::str2Int(addrBlock_->getBaseAddress()));
+	setLeftTopCorner(Utils::str2Uint(addrBlock_->getBaseAddress()));
 	setLeftBottomCorner(addrBlock_->getLastAddress());
 	VisualizerItem::reorganizeChildren();
 }
 
 quint64 LocalAddrBlockGraphItem::getOffset() const {
 	QString offset = addrBlock_->getBaseAddress();
-	return Utils::str2Int(offset);
+	return Utils::str2Uint(offset);
 }
 
 quint64 LocalAddrBlockGraphItem::getLastAddress() const {

@@ -322,7 +322,7 @@ bool AddressModel::setData(const QModelIndex& index, const QVariant& value, int 
                 disconnect(component_, SIGNAL(confElementsChanged(const QMap<QString, QString>&)),
                            this, SLOT(refresh()));
 
-                entry->setStartAddress(Utils::str2Int(value.toString()));
+                entry->setStartAddress(Utils::str2Uint(value.toString()));
 
                 connect(component_, SIGNAL(confElementsChanged(const QMap<QString, QString>&)),
                     this, SLOT(refresh()), Qt::UniqueConnection);

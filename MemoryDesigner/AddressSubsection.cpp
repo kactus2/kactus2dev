@@ -161,7 +161,7 @@ quint64 AddressSubsection::getRange() const
 //-----------------------------------------------------------------------------
 void AddressSubsection::onStartAddressEdited()
 {
-    startAddress_ = Utils::str2Int(startAddressLabel_->toPlainText());
+    startAddress_ = Utils::str2Uint(startAddressLabel_->toPlainText());
     emit startAddressEdited(this);
 }
 

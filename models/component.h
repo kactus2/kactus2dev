@@ -1075,6 +1075,17 @@ public:
 	*/
 	QStringList getMasterInterfaces(const QString& addressSpace) const;
 
+	/*! \brief Get list of the master and mirrored master interface names.
+	 *
+	 * Method: 		getMasterInterfaces
+	 * Full name:	Component::getMasterInterfaces
+	 * Access:		public 
+	 *
+	 *
+	 * \return QStringList containing the interface names.
+	*/
+	QStringList getMasterInterfaces() const;
+
 	/*! \brief Add a new bus interface to the component.
 	*
 	* \param busInterface Pointer to the new bus interface to be added.

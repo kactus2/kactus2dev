@@ -11,6 +11,8 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <common/Global.h>
+
 #include <QObject>
 
 namespace Utils {
@@ -174,6 +176,21 @@ namespace Utils {
 		bool operator>(const Mapping& other) const;
 	};
 
+	/*! \brief Convert a string to unsigned int format.
+	 * 
+	 * The multiples in the string are converted as following:
+	 * k/K = 2^10
+	 * M   = 2^20
+	 * G   = 2^30
+	 * T   = 2^40
+	 * P   = 2^50
+	 * 
+	 * \param str The string to convert.
+	 *
+	 * \return The result of the conversion.
+	*/
+	KACTUS2_API quint64 str2Uint(const QString& str);
+
 	/*! \brief Convert a string to int format.
 	 * 
 	 * The multiples in the string are converted as following:
@@ -187,7 +204,7 @@ namespace Utils {
 	 *
 	 * \return The result of the conversion.
 	*/
-	quint64 str2Int(const QString& str);
+	KACTUS2_API qint64 str2Int(const QString& str);
 
     /*!
      *  Replaces a magic word in a string with the given value.

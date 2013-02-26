@@ -31,8 +31,8 @@ bool SegmentProxy::lessThan( const QModelIndex& left, const QModelIndex& right )
 			QString rightStr = right.model()->data(right).toString();
 
 			// convert the data from string to integer
-			quint64 leftValue = Utils::str2Int(leftStr);
-			quint64 rightValue = Utils::str2Int(rightStr);
+			quint64 leftValue = Utils::str2Uint(leftStr);
+			quint64 rightValue = Utils::str2Uint(rightStr);
 
 			return leftValue < rightValue;
 				}

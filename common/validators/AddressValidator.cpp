@@ -110,6 +110,6 @@ void AddressValidator::setMaxAddress(unsigned int address)
 //-----------------------------------------------------------------------------
 bool AddressValidator::validateAddressBounds(QString const& input) const
 {
-    unsigned int address = Utils::str2Int(input);
+    unsigned int address = Utils::str2Uint(input);
     return (address >= minAddress_ && address <= maxAddress_);
 }

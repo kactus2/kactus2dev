@@ -40,7 +40,7 @@ namespace
      */
     bool segmentSortOp(QSharedPointer<Segment const> lhs, QSharedPointer<Segment const> rhs)
     {
-        return Utils::str2Int(lhs->getAddressOffset()) < Utils::str2Int(rhs->getAddressOffset());
+        return Utils::str2Uint(lhs->getAddressOffset()) < Utils::str2Uint(rhs->getAddressOffset());
     }
 }
 
@@ -97,8 +97,8 @@ AddressSpaceItem::AddressSpaceItem(LibraryInterface* libInterface, QString const
 
     foreach (QSharedPointer<Segment> segment, segments)
     {
-        quint64 startAddress = Utils::str2Int(segment->getAddressOffset());
-        quint64 range = Utils::str2Int(segment->getRange());
+        quint64 startAddress = Utils::str2Uint(segment->getAddressOffset());
+        quint64 range = Utils::str2Uint(segment->getRange());
 
         // Check if there is unsegmented area before the segment.
         if (startAddress > curAddress)
@@ -121,7 +121,7 @@ AddressSpaceItem::AddressSpaceItem(LibraryInterface* libInterface, QString const
         curAddress = startAddress + range;
     }
 
-    quint64 range = Utils::str2Int(addressSpace_->getRange());
+    quint64 range = Utils::str2Uint(addressSpace_->getRange());
 
     if (curAddress < range)
     {

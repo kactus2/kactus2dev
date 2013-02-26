@@ -28,7 +28,7 @@ namespace
      */
     bool addressBlockSortOp(QSharedPointer<AddressBlock const> lhs, QSharedPointer<AddressBlock const> rhs)
     {
-        return Utils::str2Int(lhs->getBaseAddress()) < Utils::str2Int(rhs->getBaseAddress());
+        return Utils::str2Uint(lhs->getBaseAddress()) < Utils::str2Uint(rhs->getBaseAddress());
     }
 }
 
@@ -65,8 +65,8 @@ SegmentItem::SegmentItem(QSharedPointer<Component> component,
 
         foreach (QSharedPointer<AddressBlock> block, blocks)
         {
-            quint64 blockStartAddress = Utils::str2Int(block->getBaseAddress());
-            quint64 blockEndAddress = blockStartAddress + Utils::str2Int(block->getRange()) - 1;
+            quint64 blockStartAddress = Utils::str2Uint(block->getBaseAddress());
+            quint64 blockEndAddress = blockStartAddress + Utils::str2Uint(block->getRange()) - 1;
 
             if (blockStartAddress > getEndAddress() || blockEndAddress < getStartAddress())
             {

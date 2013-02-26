@@ -555,6 +555,19 @@ public:
 	*/
 	const QList<Interconnection> &getInterconnections();
 
+	/*! \brief Check if the specified interface is connected to some other interface within the design.
+	 *
+	 * Method: 		hasInterconnection
+	 * Full name:	Design::hasInterconnection
+	 * Access:		public 
+	 *
+	 * \param instanceName The name identifying the the instance.
+	 * \param interfaceName The name identifying the interface within the containing instance.
+	 *
+	 * \return True if at least one interconnection is found.
+	*/
+	bool hasInterconnection(const QString& instanceName, const QString& interfaceName) const;
+
 	/*! \brief Get list of the hierarchical connections
 	*
 	* \return QList containing the hierarchical connections

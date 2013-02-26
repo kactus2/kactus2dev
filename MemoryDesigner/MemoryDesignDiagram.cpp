@@ -608,7 +608,7 @@ bool MemoryDesignDiagram::findRoute(QString const& instanceName, QSharedPointer<
                         if (otherBusIf->getInterfaceMode() == General::SLAVE &&
                             interface->componentRef == memoryItem->getInstanceName())
                         {
-                            addressOffset = Utils::str2Int(busIf->getMaster()->getBaseAddress());
+                            addressOffset = Utils::str2Uint(busIf->getMaster()->getBaseAddress());
                             return true;
                         }
                         // With mirrored master, the route continues through a channel.
@@ -633,7 +633,7 @@ bool MemoryDesignDiagram::findRoute(QString const& instanceName, QSharedPointer<
                                                 if (findRoute(interface->componentRef, nextBusIf, memoryItem,
                                                               addressOffsetTemp))
                                                 {
-                                                    addressOffset = addressOffsetTemp + Utils::str2Int(busIf->getMaster()->getBaseAddress());
+                                                    addressOffset = addressOffsetTemp + Utils::str2Uint(busIf->getMaster()->getBaseAddress());
                                                     return true;
                                                 }
                                             }
@@ -652,7 +652,7 @@ bool MemoryDesignDiagram::findRoute(QString const& instanceName, QSharedPointer<
                         // Check if we ended up in the correct component.
                         if (interface->componentRef == memoryItem->getInstanceName())
                         {
-                            addressOffset = Utils::str2Int(busIf->getMirroredSlave()->getRemapAddress());
+                            addressOffset = Utils::str2Uint(busIf->getMirroredSlave()->getRemapAddress());
                             return true;
                         }
 
@@ -668,7 +668,7 @@ bool MemoryDesignDiagram::findRoute(QString const& instanceName, QSharedPointer<
                                 if (findRoute(interface->componentRef, nextBusIf, memoryItem,
                                     addressOffsetTemp))
                                 {
-                                    addressOffset = addressOffsetTemp + Utils::str2Int(busIf->getMaster()->getBaseAddress());
+                                    addressOffset = addressOffsetTemp + Utils::str2Uint(busIf->getMaster()->getBaseAddress());
                                     return true;
                                 }
                             }

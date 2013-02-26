@@ -37,7 +37,7 @@ bool Utils::checkBoxState2Bool(const int state ) {
 	}
 }
 
-quint64 Utils::str2Int( const QString& str ) {
+quint64 Utils::str2Uint( const QString& str ) {
 
 	if (str.isEmpty()) {
 		return 0;
@@ -95,6 +95,32 @@ quint64 Utils::str2Int( const QString& str ) {
 	// otherwise return the correct int-format
 	else {
 		return number * multiplier;
+	}
+}
+
+qint64 Utils::str2Int( const QString& str ) {
+	if (str.isEmpty()) {
+		return 0;
+	}
+
+	bool negative = false;
+	QString absValueStr = str;
+
+	// if the number is negative
+	if (str.startsWith("-", Qt::CaseInsensitive)) {
+		negative = true;
+		// remove the negative sign from the start
+		absValueStr = str.mid(1);
+	}
+
+	// get the absolute value of the number
+	quint64 absValue = Utils::str2Uint(absValueStr);
+
+	if (negative) {
+		return -absValue;
+	}
+	else {
+		return absValue;
 	}
 }
 

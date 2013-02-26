@@ -44,7 +44,7 @@ void RegisterGraphItem::refresh() {
 	}
 
 	// get the offset of the register
-	quint64 offset = Utils::str2Int(register_->getAddressOffset());
+	quint64 offset = Utils::str2Uint(register_->getAddressOffset());
 	// calculate the start address of the register
 	quint64 startAddress = base + offset;
 	// show the start address of the register
@@ -73,7 +73,7 @@ quint64 RegisterGraphItem::getOffset() const {
 	
 	// the register offset from the address block
 	QString offsetStr = register_->getAddressOffset();
-	quint64 regOffset = Utils::str2Int(offsetStr);
+	quint64 regOffset = Utils::str2Uint(offsetStr);
 
 	// the address block's offset
 	AddressBlockGraphItem* blockItem = static_cast<AddressBlockGraphItem*>(parentItem());
