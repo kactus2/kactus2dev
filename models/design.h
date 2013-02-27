@@ -40,7 +40,7 @@ public:
 	* Specifies the bus interface of a design component instance that
 	* is part of an interconnection.
 	*/
-	struct Interface {
+	struct KACTUS2_API Interface {
 		/*! \brief MANDATORY spirit:componentRef
 		* 
 		* References the instance name of a component.
@@ -69,6 +69,42 @@ public:
 
 		//! \brief Assignment operator
 		Interface& operator=(const Interface& other);
+
+		/*! \brief The operator ==
+		 *
+		 * Method: 		operator==
+		 * Full name:	Design::Interface::operator==
+		 * Access:		public 
+		 *
+		 * \param other Reference to the Interface to compare to.
+		 *
+		 * \return True if the interfaces refer to same instance and bus interface.
+		*/
+		bool operator==(const Interface& other);
+
+		/*! \brief The operator !=
+		 *
+		 * Method: 		operator!=
+		 * Full name:	Design::Interface::operator!=
+		 * Access:		public 
+		 *
+		 * \param other Reference to the Interface to compare to.
+		 *
+		 * \return True if the interfaces refer to different instance or at least different bus interface.
+		*/
+		bool operator!=(const Interface& other);
+
+		/*! \brief The operator <
+		 *
+		 * Method: 		operator<
+		 * Full name:	Design::Interface::operator<
+		 * Access:		public 
+		 *
+		 * \param other Reference to the Interface to compare to.
+		 *
+		 * \return The operator uses the < operator of QString to compare.
+		*/
+		bool operator<(const Interface& other);
 
 		/*! \brief Check if the interface is in a valid state.
 		* 
@@ -568,6 +604,32 @@ public:
 	*/
 	bool hasInterconnection(const QString& instanceName, const QString& interfaceName) const;
 
+	/*! \brief Get list of the interfaces that are connected to the specified interface via interconnection.
+	 *
+	 * Method: 		getConnectedInterfaces
+	 * Full name:	Design::getConnectedInterfaces
+	 * Access:		public 
+	 *
+	 * \param instanceName The name identifying the instance.
+	 * \param interfaceName The name of the interface within the instance.
+	 *
+	 * \return QList containing the interfaces connected to the specified interface.
+	*/
+	QList<Design::Interface> getConnectedInterfaces(const QString& instanceName,
+		const QString& interfaceName) const;
+
+	/*! \brief Get list of the interfaces that are connected to the specified interface via interconnection.
+	 *
+	 * Method: 		getConnectedInterfaces
+	 * Full name:	Design::getConnectedInterfaces
+	 * Access:		public 
+	 *
+	 * \param sourceInterface Identifies the source instance and bus interface.
+	 *
+	 * \return QList containing the interfaces connected to the specified interface.
+	*/
+	QList<Design::Interface> getConnectedInterfaces(const Design::Interface& sourceInterface) const;
+
 	/*! \brief Get list of the hierarchical connections
 	*
 	* \return QList containing the hierarchical connections
@@ -704,6 +766,30 @@ public:
 	 * within this design.
 	*/
 	QList<VLNV> getComponents() const;
+
+	/*! \brief Get the VLNV of the HW component instantiated with given name.
+	 *
+	 * Method: 		getComponentVLNV
+	 * Full name:	Design::getComponentVLNV
+	 * Access:		public 
+	 *
+	 * \param instanceName The name identifying the component instance.
+	 *
+	 * \return VLNV of the instantiated component. If the instance does not exist then invalid VLNV is returned.
+	*/
+	VLNV getHWComponentVLNV(const QString& instanceName) const;
+
+	/*! \brief Check if the design contains a HW instance with given name.
+	 *
+	 * Method: 		containsInstance
+	 * Full name:	Design::containsInstance
+	 * Access:		public 
+	 *
+	 * \param instanceName The instance name searched.
+	 *
+	 * \return True if the instance is found.
+	*/
+	bool containsHWInstance(const QString& instanceName) const;
 
 private:
 

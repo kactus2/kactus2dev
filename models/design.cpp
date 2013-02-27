@@ -1222,6 +1222,50 @@ bool Design::hasInterconnection( const QString& instanceName, const QString& int
 	return false;
 }
 
+QList<Design::Interface> Design::getConnectedInterfaces( const QString& instanceName, const QString& interfaceName ) const {
+	Design::Interface interface(instanceName, interfaceName);
+	return getConnectedInterfaces(interface);
+}
+
+QList<Design::Interface> Design::getConnectedInterfaces( const Interface& sourceInterface ) const {
+	QList<Design::Interface> interfaces;
+
+	foreach (Design::Interconnection conn, interconnections_) {
+		if (conn.interface1 == sourceInterface) {
+			interfaces.append(conn.interface2);
+		}
+		else if (conn.interface2 == sourceInterface) {
+			interfaces.append(conn.interface1);
+		}
+	}
+
+	return interfaces;
+}
+
+VLNV Design::getHWComponentVLNV( const QString& instanceName ) const {
+	foreach (ComponentInstance instance, componentInstances_) {
+		// if instance is found
+		if (0 == instanceName.compare(instance.getInstanceName(), Qt::CaseInsensitive)) {
+			return instance.getComponentRef();
+		}
+	}
+
+	// no instance was found
+	return VLNV();
+}
+
+bool Design::containsHWInstance( const QString& instanceName ) const {
+	foreach (ComponentInstance instance, componentInstances_) {
+		// if instance is found
+		if (0 == instanceName.compare(instance.getInstanceName(), Qt::CaseInsensitive)) {
+			return true;
+		}
+	}
+
+	// no instance with given name was found
+	return false;
+}
+
 Design::Interface::Interface(QDomNode &interfaceNode):
 componentRef(""), 
 busRef("")
@@ -1248,6 +1292,36 @@ Design::Interface& Design::Interface::operator=( const Interface& other ) {
 		busRef = other.busRef;
 	}
 	return *this;
+}
+
+bool Design::Interface::operator==( const Design::Interface& other ) {
+	if (0 == componentRef.compare(other.componentRef, Qt::CaseInsensitive) &&
+		0 == busRef.compare(other.busRef, Qt::CaseInsensitive)) {
+			return true;
+	} 
+	return false;
+}
+
+bool Design::Interface::operator!=( const Design::Interface& other ) {
+	if (0 != componentRef.compare(other.componentRef, Qt::CaseInsensitive)) {
+		return true;
+	}
+	else if (0 != busRef.compare(other.busRef, Qt::CaseInsensitive)) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+bool Design::Interface::operator<( const Design::Interface& other ) {
+	int compResult = componentRef.compare(other.componentRef, Qt::CaseInsensitive);
+	if (compResult == 0) {
+		return busRef.compare(other.busRef, Qt::CaseInsensitive) < 0;
+	}
+	else {
+		return compResult < 0;
+	}
 }
 
 bool Design::Interface::isValid( const QStringList& instanceNames,

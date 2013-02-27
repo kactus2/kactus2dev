@@ -10,7 +10,6 @@
 #include <PluginSystem/IPluginUtility.h>
 #include <common/dialogs/fileSaveDialog/filesavedialog.h>
 #include "localheadersavemodel.h"
-#include "globalheadersavemodel.h"
 #include <models/memorymap.h>
 #include <models/generaldeclarations.h>
 #include <models/fileset.h>
@@ -24,7 +23,6 @@
 #include <QtPlugin>
 #include <QFileInfo>
 #include <QFile>
-#include <QTextStream>
 #include <QMessageBox>
 #include <QCoreApplication>
 #include <QDate>
@@ -37,7 +35,9 @@
 const QString MemoryMapHeaderGenerator::DEFAULT_TARGET_FILESET = QString("cSources");
 
 MemoryMapHeaderGenerator::MemoryMapHeaderGenerator():
-utility_(NULL) {
+utility_(NULL),
+design_(),
+operatedInterfaces_() {
 }
 
 MemoryMapHeaderGenerator::~MemoryMapHeaderGenerator() {
@@ -242,6 +242,9 @@ void MemoryMapHeaderGenerator::generateLocalMemMapHeaders( QSharedPointer<Compon
 
 void MemoryMapHeaderGenerator::generateGlobalHeaders( QSharedPointer<Component> comp, QSharedPointer<Design> design ) {
 	
+	design_ = design;
+	operatedInterfaces_.clear();
+
 	// the model which manages the dialog contents
 	GlobalHeaderSaveModel model(utility_->getLibraryInterface(), this);
 	model.setDesign(comp, design);
@@ -304,15 +307,17 @@ void MemoryMapHeaderGenerator::generateGlobalHeaders( QSharedPointer<Component> 
 		stream << "*/" << endl;
 		stream << endl;
 
-		// parse the cpu instance
-		QSharedPointer<const LibraryComponent> libComp = utility_->getLibraryInterface()->getModelReadOnly(headerOpt->comp_);
-		QSharedPointer<const Component> cpuComp = libComp.dynamicCast<const Component>();
-		Q_ASSERT(cpuComp);
-		QString masterBaseStr = cpuComp->getBusInterface(headerOpt->interface_)->getMaster()->getBaseAddress();
-		qint64 masterBase = Utils::str2Int(masterBaseStr);
+		// start the base offset at 0
+		qint64 baseAddress = 0;
 
+		// add the starting point to the list of operated interfaces
+		QList<Design::Interface> operatedInterfaces;
+		Design::Interface cpuMasterInterface(headerOpt->instance_, headerOpt->interface_);
+		operatedInterfaces.append(cpuMasterInterface);
 
-
+		// start the address parsing from the cpu's interface
+		parseInterface(baseAddress, stream, cpuMasterInterface);
+		
 		// close the file after writing
 		file.close();
 
@@ -326,5 +331,81 @@ void MemoryMapHeaderGenerator::generateGlobalHeaders( QSharedPointer<Component> 
 	if (changed) {
 		// save the changes to the file sets
 		utility_->getLibraryInterface()->writeModelToFile(comp);
+	}
+
+	// clear the members for next generation run
+	design_.clear();
+	operatedInterfaces_.clear();
+}
+
+void MemoryMapHeaderGenerator::parseInterface( qint64& offset,
+	QTextStream& stream,
+	const Design::Interface& interface ) {
+
+	Q_ASSERT(design_);
+	Q_ASSERT(design_->containsHWInstance(interface.componentRef));
+
+	// parse the component containing the interface
+	VLNV compVLNV = design_->getHWComponentVLNV(interface.componentRef);
+	QSharedPointer<const LibraryComponent> libComp = utility_->getLibraryInterface()->getModelReadOnly(compVLNV);
+	QSharedPointer<const Component> comp = libComp.dynamicCast<const Component>();
+	Q_ASSERT(comp);
+
+	switch (comp->getInterfaceMode(interface.busRef)) {
+	case General::MASTER: {
+		// update the offset
+		offset += Utils::str2Int(comp->getBusInterface(interface.busRef)->getMaster()->getBaseAddress());
+
+		// ask the design for interfaces that are connected to this interface
+		QList<Design::Interface> connected = design_->getConnectedInterfaces(interface);
+		
+		// all connected interfaces are processed
+		foreach (Design::Interface targetInterface, connected) {
+
+			// if the connected interface has already been processed before
+			if (operatedInterfaces_.contains(targetInterface)) {
+				continue;
+			}
+
+			// add the interface to the list to avoid processing it again
+			operatedInterfaces_.append(targetInterface);
+
+			parseInterface(offset, stream, targetInterface);
+		}
+		break;
+								 }
+	case General::SLAVE: {
+
+		break;
+								}
+	case General::MIRROREDSLAVE: {
+
+		break;
+										  }
+	case General::MIRROREDMASTER: {
+		// mirrored master interfaces are connected via channels
+		// find the interfaces connected to the specified mirrored master interface
+		QList<QSharedPointer<const BusInterface> > connectedInterfaces = comp->getChannelConnectedInterfaces(interface.busRef);
+
+		// all interfaces that are connected via channel are processed
+		foreach (QSharedPointer<const BusInterface> busif, connectedInterfaces) {
+			Design::Interface connectedInterface(interface.componentRef, busif->getName());
+
+			// if the interface connected via channel has already been processed before
+			if (operatedInterfaces_.contains(connectedInterface)) {
+				continue;
+			}
+
+			// add the interface to the list to avoid processing it again
+			operatedInterfaces_.append(connectedInterface);
+
+			parseInterface(offset, stream, connectedInterface);
+		}
+		break;
+											}
+	default: {
+		qDebug() << "Instance " << interface.componentRef << " Interface " << interface.busRef << " was not supported type";
+		return;
+				}
 	}
 }

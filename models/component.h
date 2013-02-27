@@ -1026,6 +1026,18 @@ public:
 	*/
 	const QList<QSharedPointer<BusInterface> >& getBusInterfaces() const;
 
+	/*! \brief Get list of bus interfaces that are connected to the given interface through channel.
+	 *
+	 * Method: 		getChannelConnectedInterfaces
+	 * Full name:	Component::getChannelConnectedInterfaces
+	 * Access:		public 
+	 *
+	 * \param sourceInterfaceName The name of the interface that's channels are checked.
+	 *
+	 * \return QList containing pointers to the bus interfaces connected via channel.
+	*/
+	QList<QSharedPointer<const BusInterface> > getChannelConnectedInterfaces(const QString& sourceInterfaceName) const;
+
 	/*! \brief Set the bus interfaces for the component.
 	 *
 	 * \param busif QList containing the pointers to the bus interfaces.

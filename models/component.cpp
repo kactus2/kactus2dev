@@ -3180,6 +3180,31 @@ const QList<QSharedPointer<BusInterface> >& Component::getBusInterfaces() const 
 	return busInterfaces_;
 }
 
+QList<QSharedPointer<const BusInterface> > Component::getChannelConnectedInterfaces( const QString& sourceInterfaceName ) const {
+	QList<QSharedPointer<const BusInterface> > interfaces;
+
+	foreach (QSharedPointer<Channel> channel, channels_) {
+		QStringList channelInterfaces = channel->getInterfaces();
+
+		// if the channel contains the interface searched for
+		if (channelInterfaces.contains(sourceInterfaceName)) {
+			
+			// remove the name of the source interface
+			channelInterfaces.removeAll(sourceInterfaceName);
+
+			// add all referenced bus interfaces to the list
+			foreach (QString ifName, channelInterfaces) {
+				QSharedPointer<const BusInterface> busif = getBusInterface(ifName);
+				if (busif) {
+					interfaces.append(busif);
+				}
+			}
+		}
+	}
+
+	return interfaces;
+}
+
 QSharedPointer<BusInterface> Component::getBusInterface( const QString& name ) {
 
 	foreach (QSharedPointer<BusInterface> busif, busInterfaces_) {

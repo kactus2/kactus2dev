@@ -170,6 +170,10 @@ const QStringList& Channel::getInterfaces() const {
 	return busInterfaces_;
 }
 
+bool Channel::containsInterface( const QString& interfaceName ) const {
+	return busInterfaces_.contains(interfaceName);
+}
+
 void Channel::setInterfaces( const QStringList& interfaceNames ) {
 	busInterfaces_ = interfaceNames;
 }

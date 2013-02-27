@@ -103,6 +103,18 @@ public:
 	*/
 	const QStringList& getInterfaces() const;
 
+	/*! \brief Check if the channel contains the specified interface.
+	 *
+	 * Method: 		containsInterface
+	 * Full name:	Channel::containsInterface
+	 * Access:		public 
+	 *
+	 * \param interfaceName Identifies the bus interface searched for.
+	 *
+	 * \return True if the channel contains the bus interface.
+	*/
+	bool containsInterface(const QString& interfaceName) const;
+
 	/*! \brief Set the interfaces that belong to this channel.
 	 *
 	 * \param interfaceNames QStringList containing the references to interfaces.

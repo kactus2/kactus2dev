@@ -15,11 +15,14 @@
 #include <models/component.h>
 #include <models/librarycomponent.h>
 #include <models/design.h>
+#include "globalheadersavemodel.h"
 
 #include <QObject>
 #include <QString>
 #include <QSharedPointer>
 #include <QFileInfo>
+#include <QTextStream>
+#include <QList>
 
 class IPluginUtility;
 
@@ -143,8 +146,29 @@ private:
 	*/
 	void addHeaderFile(QSharedPointer<Component> component, const QFileInfo& fileInfo) const;
 
+	/*! \brief Parse the interface and depending on the type move forward in the connections.
+	 *
+	 * Method: 		parseInterface
+	 * Full name:	MemoryMapHeaderGenerator::parseInterface
+	 * Access:		private 
+	 *
+	 * \param offset The offset used as base for the addresses.
+	 * \param stream The text stream where the address defines are written into. 
+	 * \param interface Identifies the current interface to parse.
+	 *
+	*/
+	void parseInterface(qint64& offset,
+		QTextStream& stream,
+		const Design::Interface& interface);
+
 	//! The plugin utility.
 	IPluginUtility* utility_;
+
+	//! \brief Pointer to the design being operated when creating global headers.
+	QSharedPointer<Design> design_;
+
+	//! \brief The list where all operated interfaces are added to when generating global headers.
+	QList<Design::Interface> operatedInterfaces_;
 };
 
 #endif // MEMORYMAPHEADERGENERATOR_H
