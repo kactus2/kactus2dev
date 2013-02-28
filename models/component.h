@@ -281,6 +281,67 @@ public:
 	 */
 	const QList<QSharedPointer<Parameter> >& getParameters() const;
 
+	/*! \brief Get names of the parameters stored in the component.
+	 *
+	 * Method: 		getParameterNames
+	 * Full name:	Component::getParameterNames
+	 * Access:		public 
+	 *
+	 *
+	 * \return QStringList containing the parameter names.
+	*/
+	QStringList getParameterNames() const;
+
+	/*! \brief Set parameters for this component
+	*
+	* \param parameters QList containing the parameters to be set
+	*/
+	void setParameters(const QList<QSharedPointer<Parameter> > &parameters);
+
+	/*! \brief Get the model parameters of the component.
+	*
+	* \return QList containing the model parameters.
+	*/
+	QList<QSharedPointer<ModelParameter> >& getModelParameters();
+
+	/*! \brief Get the model parameters of the component.
+	*
+	* \return QList containing the model parameters.
+	*/
+	const QList<QSharedPointer<ModelParameter> >& getModelParameters() const;
+
+	/*! \brief Get the names of the model parameters of the component.
+	*
+	* \return QStringList containing the model parameter names.
+	*/
+	QStringList getModelParameterNames() const;
+
+	/*! \brief Get the names of the parameters and model parameters contained in the component.
+	*
+	* Method: 		getAllParameterNames
+	* Full name:	Component::getAllParameterNames
+	* Access:		public 
+	*
+	*
+	* \return QStringList containing parameter and model parameter names.
+	*/
+	QStringList getAllParameterNames() const;
+
+	/*! \brief Get the default value set for specified parameter or model parameter.
+	 *
+	 * Method: 		getAllParametersDefaultValue
+	 * Full name:	Component::getAllParametersDefaultValue
+	 * Access:		public 
+	 * 
+	 * First model parameters is searched and then parameters. The first 
+	 * parameter/model parameter matching the paramName is selected.
+	 * 
+	 * \param paramName Identifies the parameter or model parameter.
+	 *
+	 * \return QString contains the specified default value.
+	*/
+	QString getAllParametersDefaultValue(const QString& paramName) const;
+
 	/*! \brief Get this component's remap states
 	 *
 	 * \return QList containing component's remap states
@@ -337,12 +398,6 @@ public:
 	void setOtherClockDrivers(const
 	QList<QSharedPointer<OtherClockDriver> > &otherClockDrivers);
 
-	/*! \brief Set parameters for this component
-	 *
-	 * \param parameters QList containing the parameters to be set
-	 */
-	void setParameters(const QList<QSharedPointer<Parameter> > &parameters);
-
 	/*! \brief Set remap states for this component
 	 *
 	 * \param remapStates QList containing the remapStates to be set
@@ -395,24 +450,6 @@ public:
 	 * \return Pointer to the created channel element.
 	*/
 	Channel* createChannel();
-
-	/*! \brief Get the model parameters of the component.
-	 *
-	 * \return QList containing the model parameters.
-	*/
-	QList<QSharedPointer<ModelParameter> >& getModelParameters();
-
-	/*! \brief Get the model parameters of the component.
-	 *
-	 * \return QList containing the model parameters.
-	*/
-	const QList<QSharedPointer<ModelParameter> >& getModelParameters() const;
-
-	/*! \brief Get the names of the model parameters of the component.
-	 *
-	 * \return QStringList containing the model parameter names.
-	*/
-	QStringList getModelParameterNames() const;
 
 	/*! \brief Remove a channel from the component
 	 *

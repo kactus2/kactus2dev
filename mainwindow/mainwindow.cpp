@@ -1314,7 +1314,7 @@ void MainWindow::updateMenuStrip()
     // Enable/disable the plugin generator actions based on the component being edited in the document.
 	VLNV compVLNV;
 	VLNV desVLNV;
-    QSharedPointer<LibraryComponent const> libComp;
+   QSharedPointer<LibraryComponent const> libComp;
 	QSharedPointer<LibraryComponent const> libDes;
     if (doc != 0)
     {

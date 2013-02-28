@@ -791,6 +791,32 @@ public:
 	*/
 	bool containsHWInstance(const QString& instanceName) const;
 
+	/*! \brief Check if there is a configurable element value set for the given HW instance.
+	 *
+	 * Method: 		hasConfElementValue
+	 * Full name:	Design::hasConfElementValue
+	 * Access:		public 
+	 *
+	 * \param instanceName Identifies the HW instance to search for.
+	 * \param confElementName Identifies the configurable element value to check.
+	 *
+	 * \return True if the value has been set, otherwise false.
+	*/
+	bool hasConfElementValue(const QString& instanceName, const QString& confElementName) const;
+
+	/*! \brief Get the configurable element value set for the given HW instance.
+	 *
+	 * Method: 		getConfElementValue
+	 * Full name:	Design::getConfElementValue
+	 * Access:		public 
+	 *
+	 * \param instanceName Identifies the HW instance.
+	 * \param confElementName Identifies the configurable element value to get.
+	 *
+	 * \return QString containing the set configurable element value, empty string if value is not set.
+	*/
+	QString getConfElementValue(const QString& instanceName, const QString& confElementName) const;
+
 private:
 
     /*!

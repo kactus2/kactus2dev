@@ -590,3 +590,11 @@ void ComponentInstance::parsePropertyValues(QDomNode& node)
         }
     }
 }
+
+bool ComponentInstance::hasConfElementValue( const QString& confElementName ) const {
+	return configurableElementValues_.contains(confElementName);
+}
+
+QString ComponentInstance::getConfElementValue( const QString& confElementName ) const {
+	return configurableElementValues_.value(confElementName, QString());
+}

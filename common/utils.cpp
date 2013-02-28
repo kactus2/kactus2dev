@@ -124,6 +124,48 @@ qint64 Utils::str2Int( const QString& str ) {
 	}
 }
 
+bool Utils::isNumber( const QString& str ) {
+	if (str.isEmpty()) {
+		return false;
+	}
+
+	QString absValueStr = str;
+	bool success = true;
+
+	// if the number is negative then remove minus sign
+	if (str.startsWith("-", Qt::CaseInsensitive)) {
+		absValueStr = str.mid(1);
+	}
+
+	// if the number is hexadecimal form
+	if (absValueStr.startsWith("0x", Qt::CaseInsensitive)) {
+		
+		// if the hexadecimal number could be converted
+		quint64 number = absValueStr.toULongLong(&success, 16);
+		return success;
+	}
+
+	// check if the string contains a letter for multiples
+
+	// the multiple is the last letter if one exists
+	const QChar multiple = absValueStr.at(absValueStr.size()-1);
+
+	// get the correct multiplier and remove the letter from the string
+	if (multiple == 'k' || 
+		multiple == 'K' ||
+		multiple == 'M' ||
+		multiple == 'G' ||
+		multiple == 'T' ||
+		multiple == 'P') {
+		absValueStr.chop(1);
+	}
+
+	// try to convert the number 
+	quint64 number = absValueStr.toULongLong(&success);
+
+	return success;
+}
+
 //-----------------------------------------------------------------------------
 // Function: Utils::replaceMagicWord()
 //-----------------------------------------------------------------------------

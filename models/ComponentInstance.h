@@ -198,6 +198,30 @@ public:
      */
     QMap<QString, QString> const& getConfigurableElementValues() const;
 
+	 /*! \brief Check if the instance has the specified configurable element value defined.
+	  *
+	  * Method: 		hasConfElementValue
+	  * Full name:	ComponentInstance::hasConfElementValue
+	  * Access:		public 
+	  *
+	  * \param confElementName Identifies the configurable element.
+	  *
+	  * \return True if the configurable element value is found.
+	 */
+	 bool hasConfElementValue(const QString& confElementName) const;
+
+	 /*! \brief Get the configurable element value if one exists.
+	  *
+	  * Method: 		getConfElementValue
+	  * Full name:	ComponentInstance::getConfElementValue
+	  * Access:		public 
+	  *
+	  * \param confElementName Identifies the configurable element value.
+	  *
+	  * \return QString containing the configurable element value, empty if not found.
+	 */
+	 QString getConfElementValue(const QString& confElementName) const;
+
     /*!
      *  Returns the global position of the instance in the design.
      */

@@ -1266,6 +1266,32 @@ bool Design::containsHWInstance( const QString& instanceName ) const {
 	return false;
 }
 
+bool Design::hasConfElementValue( const QString& instanceName, const QString& confElementName ) const {
+	foreach (ComponentInstance instance, componentInstances_) {
+		
+		// when the instance is found
+		if (0 == instanceName.compare(instance.getInstanceName(), Qt::CaseInsensitive)) {
+			return instance.hasConfElementValue(confElementName);
+		}
+	}
+
+	// specified instance was not found
+	return false;
+}
+
+QString Design::getConfElementValue( const QString& instanceName, const QString& confElementName ) const {
+	foreach (ComponentInstance instance, componentInstances_) {
+
+		// when the instance is found
+		if (0 == instanceName.compare(instance.getInstanceName(), Qt::CaseInsensitive)) {
+			return instance.getConfElementValue(confElementName);
+		}
+	}
+
+	// specified instance was not found
+	return QString();
+}
+
 Design::Interface::Interface(QDomNode &interfaceNode):
 componentRef(""), 
 busRef("")

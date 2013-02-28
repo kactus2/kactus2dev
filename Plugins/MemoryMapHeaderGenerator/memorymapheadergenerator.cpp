@@ -389,6 +389,7 @@ void MemoryMapHeaderGenerator::parseInterface( qint64 offset,
 			// write the identifier comment for the instance
 			stream << "/*" << endl;
 			stream << " * Instance: " << interface.componentRef << " Interface: " << interface.busRef << endl;
+			stream << " * Instance base address: 0x" << QString::number(offset, 16) << endl;
 			stream << " * Source component: " << comp->getVlnv()->toString() << endl;
 			stream << " * The defines for the memory map \"" << memMap->getName() << "\"" << endl;
 			stream << "*/" << endl << endl;
@@ -417,7 +418,29 @@ void MemoryMapHeaderGenerator::parseInterface( qint64 offset,
 	case General::MIRROREDSLAVE: {
 		// increase the offset by the remap address of the mirrored slave interface
 		QString remapStr = comp->getBusInterface(interface.busRef)->getMirroredSlave()->getRemapAddress();
-		offset += Utils::str2Int(remapStr);
+
+		// if the remap address is directly a number
+		if (Utils::isNumber(remapStr)) {
+			offset += Utils::str2Int(remapStr);
+		}
+		// if the remap address refers to a configurable element value
+		else {
+
+			// if the configurable element value is specified
+			if (design_->hasConfElementValue(interface.componentRef, remapStr)) {
+
+				// increase the offset by the value set in the configurable elements
+				QString confValue = design_->getConfElementValue(interface.componentRef, remapStr);
+				offset += Utils::str2Int(confValue);
+			}
+			// if the value is not set then use the default value from the component
+			else {
+
+				// increase the offset by the default value
+				QString defValue = comp->getAllParametersDefaultValue(remapStr);
+				offset += Utils::str2Int(defValue);
+			}
+		}
 
 		// ask the design for interfaces that are connected to this interface
 		QList<Design::Interface> connected = design_->getConnectedInterfaces(interface);

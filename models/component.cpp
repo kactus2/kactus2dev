@@ -3450,3 +3450,39 @@ bool Component::hasLocalMemoryMaps() const {
 	// no address space with local memory map was found
 	return false;
 }
+
+QStringList Component::getParameterNames() const {
+	QStringList names;
+	foreach (QSharedPointer<Parameter> param, parameters_) {
+		names.append(param->getName());
+	}
+	return names;
+}
+
+QStringList Component::getAllParameterNames() const {
+	QStringList names;
+	names.append(getModelParameterNames());
+	names.append(getParameterNames());
+	return names;
+}
+
+QString Component::getAllParametersDefaultValue( const QString& paramName ) const {
+	if (model_) {
+
+		// if the model parameter with given name is found
+		QSharedPointer<ModelParameter> modelParam = model_->getModelParameter(paramName);
+		if (modelParam) {
+			return modelParam->getValue();
+		}
+	}
+
+	// model parameter was not found, search among parameters
+	foreach (QSharedPointer<Parameter> param, parameters_) {
+		if (param->getName() == paramName) {
+			return param->getValue();
+		}
+	}
+
+	// no parameter or model parameter was found
+	return QString();
+}

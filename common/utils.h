@@ -206,6 +206,18 @@ namespace Utils {
 	*/
 	KACTUS2_API qint64 str2Int(const QString& str);
 
+	/*! \brief Check if the string contains a number that can be parsed.
+	 *
+	 * Method: 		isNumber
+	 * Full name:	Utils::isNumber
+	 * Access:		public 
+	 *
+	 * \param str The string to be checked.
+	 *
+	 * \return True if the string can be parsed into number.
+	*/
+	KACTUS2_API bool isNumber(const QString& str);
+
     /*!
      *  Replaces a magic word in a string with the given value.
      */
