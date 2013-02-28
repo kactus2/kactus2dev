@@ -1292,6 +1292,17 @@ QString Design::getConfElementValue( const QString& instanceName, const QString&
 	return QString();
 }
 
+QString Design::getHWInstanceDescription( const QString& instanceName ) const {
+	foreach (ComponentInstance instance, componentInstances_) {
+		if (0 == instanceName.compare(instance.getInstanceName(), Qt::CaseInsensitive)) {
+			return instance.getDescription();
+		}
+	}
+
+	// no instance found
+	return QString();
+}
+
 Design::Interface::Interface(QDomNode &interfaceNode):
 componentRef(""), 
 busRef("")

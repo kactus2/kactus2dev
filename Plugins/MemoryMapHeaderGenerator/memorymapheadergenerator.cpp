@@ -391,7 +391,15 @@ void MemoryMapHeaderGenerator::parseInterface( qint64 offset,
 			stream << " * Instance: " << interface.componentRef << " Interface: " << interface.busRef << endl;
 			stream << " * Instance base address: 0x" << QString::number(offset, 16) << endl;
 			stream << " * Source component: " << comp->getVlnv()->toString() << endl;
-			stream << " * The defines for the memory map \"" << memMap->getName() << "\"" << endl;
+
+			// if there is a description for the component instance
+			QString instanceDesc = design_->getHWInstanceDescription(interface.componentRef);
+			if (!instanceDesc.isEmpty()) {
+				stream << " * Description:" << endl;
+				stream << " * " << instanceDesc << endl;
+			}
+			
+			stream << " * The defines for the memory map \"" << memMap->getName() << "\":" << endl;
 			stream << "*/" << endl << endl;
 
 			memMap->writeMemoryAddresses(stream, offset, interface.componentRef);

@@ -571,6 +571,18 @@ public:
 	*/
 	QList<ComponentInstance> const& getComponentInstances() const;
 
+	/*! \brief Get the description of the specified HW instance.
+	 *
+	 * Method: 		getInstanceDescription
+	 * Full name:	Design::getInstanceDescription
+	 * Access:		public 
+	 *
+	 * \param instanceName Identifies the instance to search for.
+	 *
+	 * \return QString containing the description, empty if instance not found.
+	*/
+	QString getHWInstanceDescription(const QString& instanceName) const;
+
     /*!
      *  Returns a list of SW instances in the design.
      */
