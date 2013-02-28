@@ -140,13 +140,15 @@ public:
 	 */
     const QList<QSharedPointer<RemapAddress> >& getRemapAddresses();
 
-	/*! \brief Get the remap address of this mirrored slave interface.
+	/*! \brief Get the remap address of this mirrored slave interface for the given state.
 	 * 
-	 * If there are several remap addresses then the first is returned.
-	 *
+	 * \param state Identifies the state for which the remap address is specified.
+	 * 
+	 * If the state is left empty then the first remap address is returned.
+	 * 
 	 * \return QString containing the remap address.
 	*/
-	QString getRemapAddress() const;
+	 QString getRemapAddress(const QString& state = QString()) const;
 
     /*! \brief Set the remapAddresses for the interface.
      *

@@ -1418,17 +1418,17 @@ void Component::setAttributes(const QMap<QString, QString>& attributes) {
 	attributes_ = attributes;
 }
 
-Model *Component::getModel() {
+QSharedPointer<Model> Component::getModel() {
 	
 	// if model is defined for this component
-	if (model_)
-		return model_.data();
+	if (model_) {
+		return model_;
+	}
 	
-	// if model is not defined then create an empty model and return pointer to
-	// it
+	// if model is not defined then create an empty model and return pointer to it
 	else {
 		model_ = QSharedPointer<Model>(new Model());
-		return model_.data();
+		return model_;
 	}
 }
 
@@ -3399,17 +3399,17 @@ QStringList Component::getModelParameterNames() const {
 //-----------------------------------------------------------------------------
 // Function: Component::getMemoryMap()
 //-----------------------------------------------------------------------------
-MemoryMap const* Component::getMemoryMap(QString const& name) const
+QSharedPointer<MemoryMap> Component::getMemoryMap(QString const& name) const
 {
     for (int i = 0; i < memoryMaps_.size(); ++i)
     {
         if (memoryMaps_.at(i)->getName() == name)
         {
-            return memoryMaps_.at(i).data();
+            return memoryMaps_.at(i);
         }
     }
 
-    return 0;
+    return QSharedPointer<MemoryMap>();
 }
 
 bool Component::uniqueRegisterNames( QStringList& regNames ) const {

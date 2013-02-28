@@ -17,6 +17,8 @@
 #include <models/design.h>
 #include <models/businterface.h>
 #include <models/masterinterface.h>
+#include <models/mirroredslaveinterface.h>
+#include <models/slaveinterface.h>
 #include <common/KactusAttribute.h>
 #include <common/utils.h>
 
@@ -307,16 +309,12 @@ void MemoryMapHeaderGenerator::generateGlobalHeaders( QSharedPointer<Component> 
 		stream << "*/" << endl;
 		stream << endl;
 
-		// start the base offset at 0
-		qint64 baseAddress = 0;
-
 		// add the starting point to the list of operated interfaces
-		QList<Design::Interface> operatedInterfaces;
 		Design::Interface cpuMasterInterface(headerOpt->instance_, headerOpt->interface_);
-		operatedInterfaces.append(cpuMasterInterface);
+		operatedInterfaces_.append(cpuMasterInterface);
 
 		// start the address parsing from the cpu's interface
-		parseInterface(baseAddress, stream, cpuMasterInterface);
+		parseInterface(0, stream, cpuMasterInterface);
 		
 		// close the file after writing
 		file.close();
@@ -326,6 +324,10 @@ void MemoryMapHeaderGenerator::generateGlobalHeaders( QSharedPointer<Component> 
 
 		// a header file was added
 		changed = true;
+
+		// the list must be cleared when moving to completely new master interface
+		// so each header generation starts from scratch.
+		operatedInterfaces_.clear();
 	}
 
 	if (changed) {
@@ -338,7 +340,7 @@ void MemoryMapHeaderGenerator::generateGlobalHeaders( QSharedPointer<Component> 
 	operatedInterfaces_.clear();
 }
 
-void MemoryMapHeaderGenerator::parseInterface( qint64& offset,
+void MemoryMapHeaderGenerator::parseInterface( qint64 offset,
 	QTextStream& stream,
 	const Design::Interface& interface ) {
 
@@ -376,9 +378,63 @@ void MemoryMapHeaderGenerator::parseInterface( qint64& offset,
 								 }
 	case General::SLAVE: {
 
+		// the slave contains the slave-specific data
+		QSharedPointer<SlaveInterface> slave = comp->getBusInterface(interface.busRef)->getSlave();
+		Q_ASSERT(slave);
+
+		QSharedPointer<MemoryMap> memMap = comp->getMemoryMap(slave->getMemoryMapRef());
+
+		// if the memory map exists and contains at least something
+		if (memMap && memMap->containsSubItems()) {
+			// write the identifier comment for the instance
+			stream << "/*" << endl;
+			stream << " * Instance: " << interface.componentRef << " Interface: " << interface.busRef << endl;
+			stream << " * Source component: " << comp->getVlnv()->toString() << endl;
+			stream << " * The defines for the memory map \"" << memMap->getName() << "\"" << endl;
+			stream << "*/" << endl << endl;
+
+			memMap->writeMemoryAddresses(stream, offset, interface.componentRef);
+
+			// if the registers within the instance are unique then do not concatenate with address block name
+			QStringList regNames;
+			if (memMap->uniqueRegisterNames(regNames)) {
+				memMap->writeRegisters(stream, offset, false, interface.componentRef);
+			}
+			else {
+				memMap->writeRegisters(stream, offset, true, interface.componentRef);
+			}
+		}
+
+		// if the slave contains a bridge to a master interface
+		if (slave->hasBridge()) {
+
+			// TODO implement the bridge functionality
+			stream << endl << "// Interface contains a bridge which is not currently supported" << endl;
+		}
+
 		break;
 								}
 	case General::MIRROREDSLAVE: {
+		// increase the offset by the remap address of the mirrored slave interface
+		QString remapStr = comp->getBusInterface(interface.busRef)->getMirroredSlave()->getRemapAddress();
+		offset += Utils::str2Int(remapStr);
+
+		// ask the design for interfaces that are connected to this interface
+		QList<Design::Interface> connected = design_->getConnectedInterfaces(interface);
+
+		// all connected interfaces are processed
+		foreach (Design::Interface targetInterface, connected) {
+
+			// if the connected interface has already been processed before
+			if (operatedInterfaces_.contains(targetInterface)) {
+				continue;
+			}
+
+			// add the interface to the list to avoid processing it again
+			operatedInterfaces_.append(targetInterface);
+
+			parseInterface(offset, stream, targetInterface);
+		}
 
 		break;
 										  }

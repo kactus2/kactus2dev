@@ -529,7 +529,7 @@ void HWDesignWidget::createDesignForComponent(QSharedPointer<Component> componen
 	QString viewName = tr("structural");
 
 	// and a hierarchical view for it
-	Model *model = component->getModel();
+	QSharedPointer<Model> model = component->getModel();
 	Q_ASSERT(model);
 	View *hierView = new View(viewName);
 	hierView->setHierarchyRef(desConfVLNV);

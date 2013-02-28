@@ -54,9 +54,9 @@ AddressEntry::AddressEntry(ComponentItem* component, BusPortItem* port)
         {
             ComponentItem* connectedComp = connectedPort_->encompassingComp();
             QString mapName = connectedPort_->getBusInterface()->getSlave()->getMemoryMapRef();
-            MemoryMap const* map = connectedComp->componentModel()->getMemoryMap(mapName);
+            QSharedPointer<MemoryMap> map = connectedComp->componentModel()->getMemoryMap(mapName);
 
-            if (map != 0)
+            if (map)
             {
                 range_ = map->getLastAddress() + 1;
                 aub_ = map->getAddressUnitBits();

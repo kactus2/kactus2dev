@@ -241,9 +241,9 @@ public:
      *
      *      @param [in] name The name of the memory map to retrieve.
      *
-     *      @return The corresponding memory map, or 0 if not found.
+     *      @return The corresponding memory map, or null pointer if not found.
      */
-    MemoryMap const* getMemoryMap(QString const& name) const;
+    QSharedPointer<MemoryMap> getMemoryMap(QString const& name) const;
 
 	/*! \brief Set this components memory maps
 	*
@@ -255,7 +255,7 @@ public:
 	 *
 	 * \return a Pointer to this component's model information.
 	 */
-	Model *getModel();
+	QSharedPointer<Model> getModel();
 
 	/*! \brief Get this component's other clock drivers
 	 *

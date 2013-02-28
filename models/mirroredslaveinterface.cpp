@@ -229,12 +229,21 @@ void MirroredSlaveInterface::setRemapAddress( const QString& remapAddress ) {
 	remapAddresses_.append(remap);
 }
 
-QString MirroredSlaveInterface::getRemapAddress() const {
+QString MirroredSlaveInterface::getRemapAddress( const QString& state /*= QString()*/ ) const {
+	QString remapAddress;
+	foreach (QSharedPointer<MirroredSlaveInterface::RemapAddress> remap, remapAddresses_) {
 
-	if (remapAddresses_.isEmpty()) {
-		return QString();
+		// if state is left empty the first remap address is returned
+		if (state.isEmpty()) {
+			remapAddress = remap->remapAddress_;
+			break;
+		}
+		// if the remap address for the specified state was found
+		else if (remap->state_ == state) {
+			remapAddress = remap->remapAddress_;
+			break;
+		}
 	}
-	else {
-		return remapAddresses_.first()->remapAddress_;
-	}
+
+	return remapAddress;
 }

@@ -157,7 +157,7 @@ private:
 	 * \param interface Identifies the current interface to parse.
 	 *
 	*/
-	void parseInterface(qint64& offset,
+	void parseInterface(qint64 offset,
 		QTextStream& stream,
 		const Design::Interface& interface);
 

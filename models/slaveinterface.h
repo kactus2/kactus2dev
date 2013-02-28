@@ -153,6 +153,17 @@ public:
 	 */
 	QList<QSharedPointer<Bridge> >& getBridges();
 
+	/*! \brief Check if the slave is connected to a master interface through bridge.
+	 *
+	 * Method: 		hasBridge
+	 * Full name:	SlaveInterface::hasBridge
+	 * Access:		public 
+	 *
+	 *
+	 * \return True if at least one bridge is found.
+	*/
+	bool hasBridge() const;
+
 	/*! \brief Get list of the fileSetRefGroups for this component
 	 *
 	 * \return A reference to a QList containing pointers to the
@@ -192,12 +203,6 @@ public:
 	 * the memory map.
 	 */
 	void setMemoryMapRef(const QString& memoryMapRef);
-
-	/*! \brief Does this slave interface have a bridge element defined.
-	 *
-	 * \return True if bridge is found, false otherwise.
-	 */
-	bool hasBridge() const;
 
 private:
 

@@ -252,10 +252,5 @@ QString SlaveInterface::getMemoryMapRef() const {
 }
 
 bool SlaveInterface::hasBridge() const {
-
-	// if a bridge exists
-	if (bridges_.size() != 0) {
-		return true;
-	}
-	return false;
+	return !bridges_.isEmpty();
 }
