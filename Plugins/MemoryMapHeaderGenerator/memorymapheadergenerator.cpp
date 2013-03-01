@@ -417,8 +417,28 @@ void MemoryMapHeaderGenerator::parseInterface( qint64 offset,
 		// if the slave contains a bridge to a master interface
 		if (slave->hasBridge()) {
 
-			// TODO implement the bridge functionality
-			stream << endl << "// Interface contains a bridge which is not currently supported" << endl;
+			// process each connected master-interface
+			QStringList masterNames = slave->getMasterReferences();
+			foreach (QString masterRef, masterNames) {
+				
+				// if the interface reference is not valid
+				if (!comp->hasInterface(masterRef)) {
+					continue;
+				}
+
+				// the interface for the connected master-bus interface
+				Design::Interface masterIF(interface.componentRef, masterRef);
+
+				// if the connected interface has already been processed before
+				if (operatedInterfaces_.contains(masterIF)) {
+					continue;
+				}
+
+				// add the interface to the list to avoid processing it again
+				operatedInterfaces_.append(masterIF);
+
+				parseInterface(offset, stream, masterIF);
+			}
 		}
 
 		break;

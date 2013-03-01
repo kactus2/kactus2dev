@@ -254,3 +254,11 @@ QString SlaveInterface::getMemoryMapRef() const {
 bool SlaveInterface::hasBridge() const {
 	return !bridges_.isEmpty();
 }
+
+QStringList SlaveInterface::getMasterReferences() const {
+	QStringList names;
+	foreach (QSharedPointer<SlaveInterface::Bridge> bridge, bridges_) {
+		names.append(bridge->masterRef_);
+	}
+	return names;
+}

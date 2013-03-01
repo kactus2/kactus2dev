@@ -153,6 +153,17 @@ public:
 	 */
 	QList<QSharedPointer<Bridge> >& getBridges();
 
+	/*! \brief Get list of the master interfaces referred to through the contained bridge-elements.
+	 *
+	 * Method: 		getMasterReferences
+	 * Full name:	SlaveInterface::getMasterReferences
+	 * Access:		public 
+	 *
+	 *
+	 * \return QStringList containing the names of the referred master interfaces.
+	*/
+	QStringList getMasterReferences() const;
+
 	/*! \brief Check if the slave is connected to a master interface through bridge.
 	 *
 	 * Method: 		hasBridge
