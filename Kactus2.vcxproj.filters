@@ -755,6 +755,12 @@
     <Filter Include="Source Files\common\dialogs\fileSaveDialog">
       <UniqueIdentifier>{4590b1ca-aeff-41ae-a849-c850da88ccf0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\common\widgets\parameterComboBox">
+      <UniqueIdentifier>{c7cedda4-5c7b-4240-95b6-88f38d3da294}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\widgets\parameterComboBox">
+      <UniqueIdentifier>{ec9b633a-0c5a-4f14-9ec6-325d9e084b61}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\CSourceWriter.cpp">
@@ -3502,6 +3508,12 @@
     <ClCompile Include="GeneratedFiles\moc_FileTypesDelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_parametercombobox.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\parameterComboBox\parametercombobox.cpp">
+      <Filter>Source Files\common\widgets\parameterComboBox</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5018,6 +5030,9 @@
     </CustomBuild>
     <CustomBuild Include="settings\FileTypesDelegate.h">
       <Filter>Header Files\settings</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\widgets\parameterComboBox\parametercombobox.h">
+      <Filter>Header Files\common\widgets\parameterComboBox</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

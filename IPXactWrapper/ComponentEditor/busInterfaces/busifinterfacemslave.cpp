@@ -8,6 +8,7 @@
 #include "busifinterfacemslave.h"
 
 #include <models/generaldeclarations.h>
+#include <common/widgets/parameterComboBox/parametercombobox.h>
 
 #include <QLabel>
 #include <QGridLayout>
@@ -17,23 +18,23 @@ BusIfInterfaceMSlave::BusIfInterfaceMSlave(QSharedPointer<BusInterface> busif,
 										   QWidget *parent):
 BusIfInterfaceModeEditor(busif, component, tr("Mirrored slave"), parent),
 mirroredSlave_(QSharedPointer<MirroredSlaveInterface>(new MirroredSlaveInterface())),
-remapEdit_(this),
-rangeEdit_(this) {
+remapEdit_(new ParameterComboBox(component, this, true)),
+rangeEdit_(new QLineEdit(this)) {
 
 	QLabel* remapLabel = new QLabel(tr("Remap address"), this);
 	QLabel* rangeLabel = new QLabel(tr("Range"), this);
 
 	QGridLayout* topLayout = new QGridLayout(this);
 	topLayout->addWidget(remapLabel, 0, 0, Qt::AlignLeft);
-	topLayout->addWidget(&remapEdit_, 0, 1, Qt::AlignLeft);
+	topLayout->addWidget(remapEdit_, 0, 1, Qt::AlignLeft);
 	topLayout->addWidget(rangeLabel, 1, 0, Qt::AlignLeft);
-	topLayout->addWidget(&rangeEdit_, 1, 1, Qt::AlignLeft);
+	topLayout->addWidget(rangeEdit_, 1, 1, Qt::AlignLeft);
 	topLayout->setColumnStretch(2, 1);
 	topLayout->setRowStretch(2, 1);
 
-	connect(&remapEdit_, SIGNAL(textEdited(const QString&)),
+	connect(remapEdit_, SIGNAL(textChanged(const QString&)),
 		this, SLOT(onRemapChange(const QString&)), Qt::UniqueConnection);
-	connect(&rangeEdit_, SIGNAL(textEdited(const QString&)),
+	connect(rangeEdit_, SIGNAL(textEdited(const QString&)),
 		this, SLOT(onRangeChange(const QString&)), Qt::UniqueConnection);
 }
 
@@ -54,8 +55,10 @@ void BusIfInterfaceMSlave::refresh() {
 		mirroredSlave_ = QSharedPointer<MirroredSlaveInterface>(new MirroredSlaveInterface());
 	}
 
-	remapEdit_.setText(mirroredSlave_->getRemapAddress());
-	rangeEdit_.setText(mirroredSlave_->getRange());
+	remapEdit_->refresh();
+	remapEdit_->setRemapText(mirroredSlave_->getRemapAddress());
+
+	rangeEdit_->setText(mirroredSlave_->getRange());
 }
 
 General::InterfaceMode BusIfInterfaceMSlave::getInterfaceMode() const {

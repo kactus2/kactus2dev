@@ -16,6 +16,8 @@
 #include <QSharedPointer>
 #include <QLineEdit>
 
+class ParameterComboBox;
+
 /*! \brief Editor to edit mirrored slave details of a bus interface.
  *
  */
@@ -78,10 +80,10 @@ private:
 	QSharedPointer<MirroredSlaveInterface> mirroredSlave_;
 
 	//! \brief Editor to set the remap address.
-	QLineEdit remapEdit_;
+	ParameterComboBox* remapEdit_;
 
 	//! \brief Editor to set the range.
-	QLineEdit rangeEdit_;
+	QLineEdit* rangeEdit_;
 };
 
 #endif // BUSIFINTERFACEMSLAVE_H
