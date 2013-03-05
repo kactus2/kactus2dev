@@ -474,7 +474,12 @@ void MemoryMap::writeMemoryAddresses( QTextStream& stream,
 			offsetStr.prepend("0x");
 
 			// the last address contained in the block
-			QString endAddr = addrBlock->getLastAddressStr();
+			quint64 endAddr = Utils::str2Uint(addrBlock->getLastAddressStr());
+			
+			// the last address is the total offset incremented with the last address without the base
+			endAddr += offset;
+			QString endAddrStr = QString::number(endAddr, 16);
+			endAddrStr.prepend("0x");
 
 			stream << "/*" << endl;
 			stream << " * Memory block name: " << addrBlock->getName() << endl;
@@ -492,11 +497,11 @@ void MemoryMap::writeMemoryAddresses( QTextStream& stream,
 				stream << idString.toUpper() << "_" << addrBlock->getName().toUpper() <<
 					"_START " << offsetStr << endl;
 				stream << "#define " << idString.toUpper() << "_" << addrBlock->getName().toUpper() << "_END " <<
-					endAddr << endl;
+					endAddrStr << endl;
 			}
 			else {
 				stream << addrBlock->getName().toUpper() << "_START " << offsetStr << endl;
-				stream << "#define " << addrBlock->getName().toUpper() << "_END " << endAddr << endl;
+				stream << "#define " << addrBlock->getName().toUpper() << "_END " << endAddrStr << endl;
 			}
 
 			stream << endl;
