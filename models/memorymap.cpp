@@ -461,9 +461,10 @@ void MemoryMap::writeMemoryAddresses( QTextStream& stream,
 
 	foreach (QSharedPointer<MemoryMapItem> memItem, items_) {
 
-		// only address blocks can be memory blocks
+		// only address blocks can be memory blocks, also write reserved blocks
 		QSharedPointer<AddressBlock> addrBlock = memItem.dynamicCast<AddressBlock>();
-		if (addrBlock && addrBlock->getUsage() == General::MEMORY) {
+		if (addrBlock && (addrBlock->getUsage() == General::MEMORY ||
+			addrBlock->getUsage() == General::RESERVED)) {
 
 			// calculate the total offset of the memory
 			quint64 memoryOffset = Utils::str2Uint(addrBlock->getBaseAddress());
@@ -482,12 +483,21 @@ void MemoryMap::writeMemoryAddresses( QTextStream& stream,
 			endAddrStr.prepend("0x");
 
 			stream << "/*" << endl;
-			stream << " * Memory block name: " << addrBlock->getName() << endl;
-			stream << " * Memory width: " << addrBlock->getWidth() << endl;
-			stream << " * Memory range: " << addrBlock->getRange() << endl;
+
+			// if the block is memory
+			if (addrBlock->getUsage() == General::MEMORY) {
+				stream << " * Memory block name: " << addrBlock->getName() << endl;
+			}
+			// if the block is reserved type
+			else {
+				stream << " * Reserved block name: " << addrBlock->getName() << endl;
+			}
+
+			stream << " * Width: " << addrBlock->getWidth() << endl;
+			stream << " * Range: " << addrBlock->getRange() << endl;
 			QString accessStr = General::access2Str(addrBlock->getAccess());
 			if (!accessStr.isEmpty()) {
-				stream << " * Memory access: " << accessStr << endl;
+				stream << " * Access: " << accessStr << endl;
 			}
 			stream << "*/" << endl;
 			
