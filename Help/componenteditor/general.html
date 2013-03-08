@@ -8,16 +8,26 @@
 	<body>
 		<h2>General editor</h2>
 		<p>
-			General editor contains the general information of a component, such as description.
+			General editor contains the general
+			information of a <i>component</i>, such as
+			<i>description</i>.
 		</p>
 		<p>
-			On the top of the editor the VLNV-identifier and the file path to the xml-file are shown. 
-			These fields can’t be modified and if user wants to change the VLNV then the component must 
-			be saved as new component with new VLNV. Kactus attributes contain the hierarchy, firmness and 
-			implementation of which the implementation can’t be modified.  
-		</p>
-		<p>
-			Attributes are a Kactus2-specific extension to the IP-Xact standard and their purpose is explained below:
+
+			
+			<i>VLNV</i>-identifier and the file path to
+			the xml-file are shown on top. These fields cannot be
+			modified after creation. If user wants to
+			change the VLNV, then the component must be
+			saved as new component with new VLNV. <br/>
+</p>
+    <p>
+                        <b>Kactus attributes</b> help to classify and
+                        categorize one's IPs. They are
+                        Kactus2-specific extension to the IP-XACT
+                        standard and describe the level (single IP
+                        vs. system), implementation style, and whether
+                        modification is allowed. 
 			<table border="1">
 				<tr>
 					<th>Attribute name</th>
@@ -27,45 +37,50 @@
 				<tr>
 					<td rowspan="6">Product hierarchy</td>
 					<td>Global</td>
-					<td>Component does not fit into any other category.</td>
+					<td>Does not fit into any other category.</td>
 				</tr>
 				<tr>
 					<td>Product</td>
-					<td>Component represents a final product.</td>
+					<td>Whole product, which may contain multiple boards and computers.</td>
 				</tr>
 				<tr>
 					<td>Board</td>
-					<td>Component represents develoment- or final hardware platform i.e. a circuit board.</td>
+					<td>Represents circuit board, e.g. develoment- or final hardware platform.</td>
 				</tr>
 				<tr>
 					<td>Chip</td>
-					<td>Component represents a chip i.e. some specific FPGA-chip.</td>
+					<td>Represents a physical chip i.e. some specific FPGA-chip.</td>
 				</tr>
 				<tr>
 					<td>SoC</td>
-					<td>Component represents a system on chip.</td>
+					<td>A system on chip, set of intercconected IPs.</td>
 				</tr>
 				<tr>
 					<td>IP</td>
-					<td>Component represents a single IP-block.</td>
+					<td>A single IP-block.</td>
 				</tr>
 				<tr>
-					<td rowspan="3">Implementation</td>
-					<td>HW</td>
-					<td>Component is hardware implementation.</td>
+					<td rowspan="3">Implementation
+					<br/>(cannot be modified after
+					creation)</td> <td>HW</td>
+					<td>Hardware implementation,
+					such as VHDL or Verilog</td>
 				</tr>
 				<tr>
 					<td>SW</td>
-					<td>Component is a software implementation.</td>
+					<td>Software implementation, such as C</td>
 				</tr>
 				<tr>
 					<td>SYS</td>
-					<td>Component contains information about the software component mapping to the underlaying hardware platform.</td>
+					<td>Component contains information about the HW component mapping to the underlaying HW platform.</td>
 				</tr>
 				<tr>
 					<td rowspan="4"> Firmness</td>
 					<td>Template</td>
-					<td>Component is a model that can be used as a base when creating new components to the library but must not be used as such.</td>
+					<td>Component is used as a
+					base when creating new
+					components but must not be
+					used as such.</td>
 				</tr>
 				<tr>
 					<td>Mutable</td>
@@ -73,21 +88,32 @@
 				</tr>
 				<tr>
 					<td>Parametrizable</td>
-					<td>Component contains parameters that can be used to configure it but it can't be modified further.</td>
+					<td>Component contains
+					parameters that can be used to
+					configure it but it cannot be
+					modified otherwise.</td>
 				</tr>
 				<tr>
-					<td>Fixed</td>
-					<td>Component can’t be configured in any way and it is frozen to it's final state.</td>
+					<td>Fixed</td> <td>Component
+					cannot be configured in any
+					way and it is frozen to it's
+					final state.</td>
 				</tr>
 			</table>
 		</p>
 		<p>
-			Description text box can be used to store a textual description of the component.
+			<b>Description</b> text box can be used to store a textual description of the component.
 		</p>
+
+    <p>
+      <b>XML header</b> shows and allows editing the comment lines in
+      the beginning of XML file, i.e. those inside tags &lt!-- and
+      --&gt.
+      </p>
 		<p>
-			The component preview box on the bottom displays how the component will look like when 
-			instantiated in a design. The preview displays the bus interfaces of the component and 
-			also the ports that are marked to be seen as ad-Hoc-ports. 
+			<b>Component preview</b> box on the bottom displays how the component will look like when 
+			instantiated in a design. The preview displays the <i>bus interfaces</i> of the component and 
+			also the <i>ports</i> that are marked as <i>ad-hoc</i>.
 		</p>
 	</body>
 </html>
