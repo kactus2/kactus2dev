@@ -69,6 +69,11 @@ private slots:
 	//! \brief Handler for changes in dependency editor.
 	void onDependencyChange(int index);
 
+protected:
+
+	//! \brief Handler for widget's show event
+	virtual void showEvent(QShowEvent* event);
+
 private:
     // Disable copying.
     ApiInterfaceEditor(ApiInterfaceEditor const& rhs);

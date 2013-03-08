@@ -139,3 +139,8 @@ void ApiInterfaceEditor::onDependencyChange( int index ) {
 	apiIf_->setDependencyDirection(static_cast<DependencyDirection>(dependencyCombo_.currentIndex()));
 	emit contentChanged();
 }
+
+void ApiInterfaceEditor::showEvent( QShowEvent* event ) {
+	QWidget::showEvent(event);
+	emit helpUrlRequested("componenteditor/apiinterface.html");
+}

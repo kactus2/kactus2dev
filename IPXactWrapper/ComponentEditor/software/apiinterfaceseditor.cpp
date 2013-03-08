@@ -62,3 +62,8 @@ bool ApiInterfacesEditor::isValid() const {
 void ApiInterfacesEditor::refresh() {
 	view_.update();
 }
+
+void ApiInterfacesEditor::showEvent( QShowEvent* event ) {
+	QWidget::showEvent(event);
+	emit helpUrlRequested("componenteditor/apiinterfaces.html");
+}
