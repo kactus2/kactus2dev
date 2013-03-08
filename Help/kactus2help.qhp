@@ -12,13 +12,29 @@
         <toc>
             <section title="Kactus2 Manual" ref="index.html">
                 <section title="Component Editor" ref="componenteditor/componenteditor.html">
+					<section title="General" ref="componenteditor/general.html" />
+					<section title="File sets" ref="componenteditor/filesets.html">
+						<section title="File set" ref="componenteditor/fileset.html">
+							<section title="File" ref="componenteditor/filegeneral.html" />
+						</section>
+					</section>
+					<section title="Model parameters" ref="componenteditor/modelparams.html" />
+					<section title="Parameters" ref="componenteditor/params.html" />
+					<section title="Memory maps" ref="componenteditor/memorymaps.html">
+						<section title="Address blocks" ref="componenteditor/memorymap.html">
+							<section title="Registers" ref="componenteditor/addressblock.html">
+								<section title="Fields" ref="componenteditor/register.html">
+									<section title="Enumerated values" ref="componenteditor/field.html" />
+								</section>
+							</section>
+						</section>
+					</section>
                     <section title="Portmaps" ref="componenteditor/portmaps.html" />
                     <section title="Ports" ref="componenteditor/ports.html" />
                 </section>
                 <section title="HW Design" ref="hwdesign/hwdesign.html">
                     <section title="HW Component Instance" ref="hwdesign/hwinstance.html" />
                 </section>
-            </section>
         </toc>
         <keywords>
             <keyword name="HW Design" id="Kactus2::hwdesign" ref="hwdesign/hwdesign.html" />
