@@ -35,6 +35,7 @@
                 <section title="HW Design" ref="hwdesign/hwdesign.html">
                     <section title="HW Component Instance" ref="hwdesign/hwinstance.html" />
                 </section>
+			</section>
         </toc>
         <keywords>
             <keyword name="HW Design" id="Kactus2::hwdesign" ref="hwdesign/hwdesign.html" />
