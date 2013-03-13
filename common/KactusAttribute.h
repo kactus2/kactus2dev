@@ -58,8 +58,8 @@ namespace KactusAttribute
     //-----------------------------------------------------------------------------
     enum Firmness
     {
-        KTS_TEMPLATE = 0,
-        KTS_MUTABLE,
+        KTS_MUTABLE=0,
+        KTS_TEMPLATE,
         KTS_PARAMETERIZABLE,
         KTS_FIXED,
         KTS_REUSE_LEVEL_COUNT

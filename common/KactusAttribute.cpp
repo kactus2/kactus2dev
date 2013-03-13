@@ -27,8 +27,8 @@ namespace KactusAttribute
 
         QString const FIRMNESS_NAMES[KTS_REUSE_LEVEL_COUNT] =
         {
-            "Template",
             "Mutable",
+            "Template",
             "Parameterizable",
             "Fixed"
         };
