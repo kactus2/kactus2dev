@@ -12,7 +12,7 @@
 
 #include <QDir>
 
-const QString LocalHeaderSaveModel::DEFAULT_HEADER_DIR = tr("cSources");
+const QString LocalHeaderSaveModel::DEFAULT_HEADER_DIR = tr("headers");
 
 LocalHeaderSaveModel::LocalHeaderSaveModel(LibraryInterface* handler, 
 	QObject *parent ):

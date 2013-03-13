@@ -216,6 +216,17 @@ public:
 	 */
 	void setGroups(const QStringList &groups);
 
+	/*! \brief Clear the previous groups and add a new group identifier.
+	 *
+	 * Method: 		setGroups
+	 * Full name:	FileSet::setGroups
+	 * Access:		public 
+	 *
+	 * \param groupName The group identifier which is set after clearing.
+	 *
+	*/
+	void setGroups(const QString& groupName);
+
 	/*! \brief Set the name for this file set
 	 *
 	 * \param name QString containing the name.

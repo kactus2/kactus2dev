@@ -358,6 +358,11 @@ void FileSet::setGroups(const QStringList &groups) {
 	groups_ = groups;
 }
 
+void FileSet::setGroups( const QString& groupName ) {
+	groups_.clear();
+	groups_.append(groupName);
+}
+
 const QStringList& FileSet::getDependencies() {
 	return dependencies_;
 }

@@ -142,9 +142,10 @@ private:
 	 *
 	 * \param component Pointer to the component where the file is added to.
 	 * \param fileInfo Contains the info on the generated file.
+	 * \param filesetName The name of the file set to add the header file to.
 	 *
 	*/
-	void addHeaderFile(QSharedPointer<Component> component, const QFileInfo& fileInfo) const;
+	void addHeaderFile(QSharedPointer<Component> component, const QFileInfo& fileInfo, const QString& filesetName) const;
 
 	/*! \brief Parse the interface and depending on the type move forward in the connections.
 	 *

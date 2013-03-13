@@ -13,7 +13,7 @@
 #include <QDir>
 #include <QStringList>
 
-const QString GlobalHeaderSaveModel::DEFAULT_HEADER_DIR = tr("cSources");
+const QString GlobalHeaderSaveModel::DEFAULT_HEADER_DIR = tr("headers");
 
 GlobalHeaderSaveModel::GlobalHeaderSaveModel( LibraryInterface* handler,
 	QObject *parent ):

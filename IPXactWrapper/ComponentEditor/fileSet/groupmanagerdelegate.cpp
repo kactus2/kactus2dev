@@ -28,6 +28,7 @@ QWidget* GroupManagerDelegate::createEditor( QWidget* parent,
 	QStringList comboItems;
 	comboItems.append(tr("diagnostics"));
 	comboItems.append(tr("documentation"));
+	comboItems.append(tr("generatedFiles"));
 	comboItems.append(tr("projectFiles"));
 	comboItems.append(tr("simulation"));
 	comboItems.append(tr("sourceFiles"));
