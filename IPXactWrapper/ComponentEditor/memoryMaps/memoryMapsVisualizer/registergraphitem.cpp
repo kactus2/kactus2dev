@@ -57,6 +57,12 @@ void RegisterGraphItem::refresh() {
 		addrUnit = 1;
 	}	
 	unsigned int addrUnits = register_->getSize() / addrUnit;
+	// Round upwards. Needed for unorthodox regsize, e.g. 30b/8=3 becomes 4 (Bytes)
+	if (addrUnits * addrUnit < register_->getSize()) {
+		addrUnits++;
+	}
+
+
 	quint64 endAddress = base + offset + addrUnits -1;
 	setLeftBottomCorner(endAddress);
 

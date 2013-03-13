@@ -213,8 +213,11 @@ void MemoryVisualizationItem::setLeftTopCorner( quint64 address ) {
 
 	int bitWidth = getBitWidth();
 
-	// one hexadecimal number accounts for four bits
+	// one hexadecimal digit accounts for four bits
 	int fieldSize = bitWidth / 4;
+	if (fieldSize*4 < bitWidth) {
+		fieldSize++; //Round upwards, e.g. 7bits needs 4 hex digits
+	}
 	QString padded = QString("%1").arg(str, fieldSize, QChar('0'));
 
 	// group the string to groups of four characters
@@ -249,6 +252,9 @@ void MemoryVisualizationItem::setLeftBottomCorner( quint64 address ) {
 
 	// one hexadecimal number accounts for four bits
 	int fieldSize = bitWidth / 4;
+		if (fieldSize*4 < bitWidth) {
+		fieldSize++; //Round upwards, e.g. 7bits needs 4 hex digits
+	}
 	QString padded = QString("%1").arg(str, fieldSize, QChar('0'));
 
 	// group the string to groups of four characters
