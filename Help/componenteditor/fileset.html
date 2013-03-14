@@ -13,20 +13,44 @@
 			to be referenced by other sections of a component.
 		</p>
 		<p>
-			On the top the name, display name and description of the file set are shown. 
-			Name is used to identify the file set within a component and the description contains 
-			a textual description of the file set.
+			<b>Name</b>, <b>display name</b>, and
+			<b>description</b> of the file set are shown
+			on top. Name is mandatory as it identifies the
+			file set within a component. Display name is
+			typically a few words providing a more
+			detailed and/or user-friendly name for
+			display. Description contains a textual
+			description of the file set.
 		</p>
 		<p>
-			The files group box lists the files contained in the file set. File name contains the 
-			name of the file and file path displays the relative file path from the component’s xml-file 
-			to the file. File types column displays the file types defined for the file and the description 
-			contains the textual description of a single file. The file types and description columns are 
-			editable but the file name and file path are not. The “Add Files” button opens a dialog that 
-			can be used to select files on the disk to add to the file set.
+			<b>Files</b> group box lists the files
+			contained in the file set. Each file has of
+			course the <b>name</b>.  <b> File path</b> is
+			defined relative to the component's
+			xml-file. <b>File type</b> links files to
+			their build command (see below). One file can
+			have many types.  <b>Description</b> is a
+			freely formatted text describing a single
+			file.
+
+                        The file types and description columns are
+                        editable but the file name and file path are
+                        not. <br/> <b>Add Files</b> button opens a
+                        dialog to select files on the disk to add to
+                        the file set.  The order of files is
+                        maintained and can be changed by dragging
+                        rows. If the compilation order of files is
+                        important then the files should be listed in
+                        order needed by compilation.  <br/> If a file
+                        is in <font color="red">invalid state</font>,
+                        i.e. missing a mandatory file type, then the
+                        file is displayed in <font color="red">red
+                        color</font>.
 		</p>
 		<p>
-			The files box also contains a context menu that has the following options:
+			The files box also contains a context menu
+			(right mouse button) that has the following
+			options:
 			<ul>
 				<li>Add new file to the file set (Add row)</li>
 				<li>Remove file from file set (Remove row)</li>
@@ -38,21 +62,23 @@
 			</ul>
 		</p>
 		<p>
-			If a file is in invalid state, i.e. missing a mandatory file type, then the file is 
-			displayed in red color. The order of files is maintained and can be changed by dragging rows. 
-			If the compilation order of files is important then the files should be listed in order needed 
-			by compilation.
+			<b>Default build command</b> can define
+			<b>command</b> and <b>flags</b> to build
+			files, e.g. running gcc for C files or vcom
+			for VHDL. <b>File type</b> must macth the file
+			table above. The defined command can either
+			<b>replace default flags</b> or be appended to
+			it. This table has a similar context menu as
+			the files editor.
 		</p>
 		<p>
-			The default build command can be used to define commands how to build files of the specified 
-			file types. The file type column displays a file type and the command and flags columns display 
-			the build command and the flags set for the associated file type. The replace default flags 
-			column defines if the flags are appended to the current flags or shall replace the existing 
-			flags of a build command. The build commands editor contains a similar context menu as the files editor.
-		</p>
-		<p>
-			Group identifiers can contain several identifiers and the possible words are not limited. 
-			However the editor suggests the following options for the group identifiers:
+                        <b>Group identifier</b> can be used to
+                        describe the function or purpose of the file
+                        with a single unbounded word. <i>Group</i>
+                        identifiers can contain several identifiers
+                        and the possible words are not limited.
+                        However the editor suggests the following
+                        options:
 			<ul>
 				<li>Diagnostics</li>
 				<li>Documentation</li>
@@ -60,11 +86,12 @@
 				<li>Simulation</li>
 				<li>sourceFiles</li>
 			</ul>
-			These identifiers can be used to describe the purpose of the file set.
 		</p>
 		<p>
-			Dependent directories can be used to describe a list of paths to directories containing 
-			files on which the file set depends.
+			<b>Dependent directories</b> can specify a
+			freetext list of paths to directories on which
+			this file set depends, e.g. directories of
+			include files.
 		</p>
 	</body>
 </html>

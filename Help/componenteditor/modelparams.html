@@ -1,40 +1,48 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-	<head>
-	<meta http-equiv="Content-Type"content="text/html; charset=utf-8">
-		<link href="../style.css" rel="Stylesheet" type="text/css">
-		<title>Model parameters editor</title>
-	</head>
-	<body>
-		<h2>Model parameters editor</h2>
-		<p>
-			Model parameters editor can be used to add, remove and modify the model parameters of a component.
-			Model parameters are often used in HDL languages to pass information to the model to configure it.
-		</p>
-		<p>
-			Model parameters editor contains a context menu that has the following options:
-			<ul>
-				<li>Add new model parameter (Add row)</li>
-				<li>Remove model parameter (Remove row)</li>
-				<li>Clear the selected cells</li>
-				<li>Copy the contents of the selected cells to clipboard</li>
-				<li>Paste the contents of the clipboard to the selected cells</li>
-				<li>Import a csv-file to the editor</li>
-				<li>Export the contents of the editor to a csv-file</li>
-			</ul>
-			All columns of the editor are editable.
-		</p>
-		<p>
-			The name column contains the name of the model parameter. Data type specifies the data type 
-			of the model parameter as it pertains to the language of the model. For example in VHDL this 
-			could be std_logic or integer and in case of C-language int or char*. The usage type specifies 
-			how this model parameter is used. Typed parameters appear in object-oriented languages, i.e. in C++.
-			Non-typed parameters are found in all languages, i.e. in VHDL all types are non-typed.
-		</p>
-		<p>
-			Value contains the actual value of the model parameter. The value can be overridden by assigning 
-			configurable element value for this model parameter within a design that instantiates this component.
-			Description contains the textual description of the associated model parameter.
-		</p>
-	</body>
+  <head>
+    <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>Model parameters editor</title>
+  </head>
+  <body>
+    <h2>Model parameters editor</h2>
+    <p>
+      Model parameters editor can be used to add, remove and modify
+      the model parameters of a component.  Model parameters are often
+      used in HDL languages to pass information to the model to
+      configure it, e.g. VHDL generics.
+    </p>
+    <p>
+      Model parameters editor contains a context menu (rigth mouse
+      button) that has the following options:
+    <ul>
+      <li>Add new model parameter (Add row)</li>
+      <li>Remove model parameter (Remove row)</li>
+      <li>Clear the selected cells</li>
+      <li>Copy the contents of the selected cells to clipboard</li>
+      <li>Paste the contents of the clipboard to the selected cells</li>
+      <li>Import a csv-file to the editor</li>
+      <li>Export the contents of the editor to a csv-file</li>
+    </ul>
+    All columns of the editor are editable.  Double-clicking an empty
+    space adds a new row.
+  </p>
+    <p>
+      <b>Name</b> column is mandatory. Legal <b>data type</b> depends
+      on the language of the model. E.g.  in VHDL this could be
+      integer or std_logic, whereas in C-language int or
+      char*. <b>Usage type</b> is mandatory and specifies how this
+      model parameter is used. Default is 'non-typed' since such
+      parameters are found in all languages, i.e. all VHDL types are
+      non-typed. 'Typed' parameters appear in object-oriented
+      languages, i.e. in C++.
+      
+    </p>
+    <p>
+      <b>Value</b> contains the mandatory default value of the model
+      parameter. This value can be overridden upon in a design that
+      instantiates this component.  <b>Description</b> is freetext.
+    </p>
+  </body>
 </html>

@@ -1,37 +1,51 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-	<head>
-	<meta http-equiv="Content-Type"content="text/html; charset=utf-8">
-		<link href="../style.css" rel="Stylesheet" type="text/css">
-		<title>Address block editor</title>
-	</head>
-	<body>
-		<h2>Address block editor</h2>
-		<p>
-			Address block editor is used to edit the details of an address block by defining registers to it. 
-			Each row in the editor specifies a single register within the containing address block.
-		</p>
-		<p>
-			Each register has a name and a textual description. Offset specifies the location of the 
-			register from the start of the containing address block expressed as number of addressing units.
-			Size defines the number of bits the register contains. Dimension assigns an unbounded dimension to
-			the register. Volatile value of true indicates that register value may change without a write 
-			operation to it, i.e. by an interrupt event.
-		</p>
-		<p>
-			Access column specifies the accessibility of the register, the possible values are:
-			<ul>
-				<li>Read-write</li>
-				<li>Read-only</li>
-				<li>Write-only</li>
-				<li>Read-writeOnce</li>
-				<li>writeOnce</li>
-			</ul>
-		</p>
-		<p>
-			The reset value column contains the register’s value on reset. Reset mask defines the bits of
-			the register that have a known reset value. Bit value of 1 means that the corresponding bit has a 
-			known reset value. 0 means that the value is unknown.
-		</p>
-	</body>
+  <head>
+    <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>Address block editor</title>
+  </head>
+  <body>
+    <h2>Address block editor</h2>
+    <p>
+      Address block editor is used to edit the details of an address
+      block by defining registers to it. Each row in the editor
+      specifies a single register within the containing address block.
+    </p>
+    <p>
+      Each register has a <b>name</b> and a textual
+      <b>description</b>. <br/><b>Offset</b> specifies the location of
+      the register from the start of the containing address block
+      expressed as number of addressing units. The actual address of
+      the register is the sum of address block's base addr and
+      register offset. E.g. if base addr=0x100 and reg has offset=0x4,
+      then register's address=0x104.<br/><b>Size</b> defines the
+      number of data bits the register contains. It must be less or
+      equal to <i>Width</i> of the address
+      space. <br/><b>Dimension</b> assigns an unbounded dimension to
+      the register. Its semantics are the same as the C language
+      standard for the layout of memory in multidimensional
+      arrays. <br/><b>Volatile</b>=true indicates that register value
+      may change without a write operation to it, i.e. by an interrupt
+      event.
+    </p>
+    <p>
+      <b>Access</b> column specifies the accessibility of the register, the
+      possible values are:
+    <ul>
+      <li>Read-write</li>
+      <li>Read-only</li>
+      <li>Write-only</li>
+      <li>Read-writeOnce</li>
+      <li>writeOnce</li>
+    </ul>
+  </p>
+    <p>
+      <b>Reset value</b> defines register's value on reset and
+      <b>Reset mask</b> defines the bits of the register that have a
+      known reset value. Bit value of 1 means that the corresponding
+      bit has a known reset value, whereas 0 means that the value is
+      unknown.
+    </p>
+  </body>
 </html>
