@@ -26,22 +26,22 @@ range_(this) {
 	range_.setPlaceholderText(tr("Range of address space i.e 4G"));
 
 	// set the back ground colors for mandatory fields
-        addrUnit_.setProperty("mandatoryField", true);
+	addrUnit_.setProperty("mandatoryField", true);
 	width_.setProperty("mandatoryField", true);
 	range_.setProperty("mandatoryField", true);
 
-	QLabel* unitLabel = new QLabel(tr("Addressable unit size"), this);
-	QLabel* widthLabel = new QLabel(tr("Width of address block"), this);
-	QLabel* rangeLabel = new QLabel(tr("Range of address block"), this);
+	QLabel* unitLabel = new QLabel(tr("Addressable unit bits (AUB)"), this);
+	QLabel* rangeLabel = new QLabel(tr("Range of address block [AUB]"), this);
+	QLabel* widthLabel = new QLabel(tr("Width [bits]"), this);
 
 	QGridLayout* layout = new QGridLayout(this);
 	layout->addWidget(unitLabel, 0, 0, 1, 1);
 	layout->addWidget(&addrUnit_, 0, 1, 1, 1);
-	layout->addWidget(widthLabel, 1, 0, 1, 1);
-	layout->addWidget(&width_, 1, 1, 1, 1);
-	layout->addWidget(rangeLabel, 2, 0, 1, 1);
-	layout->addWidget(&range_, 2, 1, 1, 1);
-
+	layout->addWidget(rangeLabel, 1, 0, 1, 1);
+	layout->addWidget(&range_, 1, 1, 1, 1);
+    layout->addWidget(widthLabel, 2, 0, 1, 1);
+	layout->addWidget(&width_, 2, 1, 1, 1);
+	
 	refresh();
 
 	connect(&addrUnit_, SIGNAL(valueChanged(int)),

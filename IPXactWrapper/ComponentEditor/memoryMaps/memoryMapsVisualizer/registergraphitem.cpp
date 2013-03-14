@@ -245,7 +245,9 @@ quint64 RegisterGraphItem::getLastAddress() const {
 
 	// how many address unit are contained in the register
 	unsigned int size = register_->getWidth() / addrUnit;
-
+	if (size*addrUnit < register_->getWidth()) {
+		size++; //Round truncated number upwards
+	}
 	// if size is not defined then never return a negative number
 	if (size == 0) {
 		return 0;

@@ -62,10 +62,10 @@ QVariant RegisterTableModel::headerData( int section, Qt::Orientation orientatio
 				return tr("Description");
 													  }
 			case RegisterDelegate::OFFSET_COLUMN: {
-				return tr("Offset");
+				return tr("Offset \n[bits]");
 												 }
 			case RegisterDelegate::WIDTH_COLUMN: {
-				return tr("Width");
+				return tr("Width \n[bits]");
 												   }
 			case RegisterDelegate::VOLATILE_COLUMN: {
 				return tr("Volatile");

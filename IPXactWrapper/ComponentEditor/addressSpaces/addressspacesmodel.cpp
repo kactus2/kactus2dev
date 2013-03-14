@@ -58,16 +58,16 @@ QVariant AddressSpacesModel::headerData( int section, Qt::Orientation orientatio
 				return tr("Name");
 					}
 			case AddressSpacesDelegate::ADDR_UNIT_COLUMN: {
-				return tr("Addressable\nunit size");
-					}
-			case AddressSpacesDelegate::WIDTH_COLUMN: {
-				return tr("Width");
+				return tr("Addressable\nunit bits (AUB)");
 					}
 			case AddressSpacesDelegate::RANGE_COLUMN: {
-				return tr("Range");
+				return tr("Range\n[AUB]");
 													  }
+			case AddressSpacesDelegate::WIDTH_COLUMN: {
+				return tr("Width\n [bits]");
+					}
 			case AddressSpacesDelegate::INTERFACE_COLUMN: {
-				return tr("Interface\nbinding");
+				return tr("Master interface\nbinding");
 													   }
 			case AddressSpacesDelegate::DESCRIPTION_COLUMN: {
 				return tr("Description");

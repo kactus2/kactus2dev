@@ -56,10 +56,10 @@ QVariant AddressBlockModel::headerData( int section, Qt::Orientation orientation
 				return tr("Register\nname");
 												  }
 			case AddressBlockDelegate::OFFSET_COLUMN: {
-				return tr("Offset");
+				return tr("Offset \n[AUB]");
 													}
 			case AddressBlockDelegate::SIZE_COLUMN: {
-				return tr("Size");
+				return tr("Size\n [bits]");
 												 }
 			case AddressBlockDelegate::DIM_COLUMN: {
 				return tr("Dimension");
