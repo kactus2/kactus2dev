@@ -108,12 +108,32 @@ void VhdlGeneral::writeDescription( const QString& description,
 	// at least one line has to be because description was not empty
 	Q_ASSERT(!lines.isEmpty());
 
-	if (addStartComment) {
+/*	if (addStartComment) {
 		stream << "-- ";
 	}
 	stream << lines.first() << endl;
-	for (int i = 1; i < lines.size(); ++i) {
-		stream << lineSeparator << "-- " << lines.at(i) << endl;
+	*/
+	// Split long lines. 
+	// Simple routine, does not account indentation
+	// and the line's last word can exceed 80 chars
+	for (int i = 0; i < lines.size(); ++i) {
+		QStringList words = lines.at(i).split(" ");	
+		//stream << "## " << lines.at(i) << endl;
+		int line_len = 0;
+		for (int w = 0; w < words.size(); ++w) {			
+			if (line_len == 0) {
+				stream << lineSeparator << "--";
+			}
+			stream << " " << words.at(w);
+			line_len += words.at(w).size() +1; //+1 = white space	
+
+			if (line_len > 70) {
+				stream << endl;
+				line_len = 0;
+			}
+		}			
+		stream << endl;
+		//stream << lineSeparator << "-- " << lines.at(i) << endl;
 	}
 }
 

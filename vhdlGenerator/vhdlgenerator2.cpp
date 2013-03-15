@@ -1115,16 +1115,20 @@ void VhdlGenerator2::mapPorts2Signals() {
 void VhdlGenerator2::writeVhdlHeader( QTextStream& vhdlStream, const QString& fileName ) {
 	
 	vhdlStream << "-- ***************************************************" << endl;
-	vhdlStream << "-- File: " << fileName << endl;
+	vhdlStream << "-- File         : " << fileName << endl;
 	vhdlStream << "-- Creation date: " << QDate::currentDate().toString(QString("dd.MM.yyyy")) << endl;
 	vhdlStream << "-- Creation time: " << QTime::currentTime().toString(QString("hh:mm:ss")) << endl;
-	vhdlStream << "-- Description: ";
-	VhdlGeneral::writeDescription(component_->getDescription(), vhdlStream, QString("") ,false);
+	vhdlStream << "-- Description  : " << endl;
+	VhdlGeneral::writeDescription(component_->getDescription(), vhdlStream, QString("")); // ,false);
+	vhdlStream << "-- " << endl;
 
 	QSettings settings;
 	QString userName = settings.value("General/Username", getenv("USERNAME")).toString();
-	vhdlStream << "-- Created by: " << userName << endl; 
-	vhdlStream << "-- This file was generated with Kactus2 vhdl generator." << endl;
+	vhdlStream << "-- Created by   : " << userName << endl; 
+	vhdlStream << "-- This file was generated with Kactus2 vhdl generator" << endl;
+	VLNV* vlnv = component_->getVlnv();
+	vhdlStream << "-- based on IP-XACT component " << vlnv->toString() << endl;
+	vhdlStream << "-- whose XML file is " << handler_->getPath(*vlnv) << endl;
 	vhdlStream << "-- ***************************************************" << endl;
 }
 
@@ -1187,7 +1191,7 @@ void VhdlGenerator2::writePorts( QTextStream& vhdlStream ) {
 						const QString description = component_->getInterfaceDescription(
 							interfaceName);
 						if (!description.isEmpty()) {
-							vhdlStream << "\t\t";
+							//vhdlStream << "\t\t";
 							VhdlGeneral::writeDescription(description, vhdlStream, QString("\t\t"));
 						}
 					}
@@ -1315,7 +1319,7 @@ void VhdlGenerator2::writeUserModifiedDeclarations( QTextStream& stream ) {
 	stream << "\t" << BLACK_BOX_DECL_START << endl;
 	stream << userModifiedDeclarations_;
 	stream << "\t" << BLACK_BOX_DECL_END << endl;
-	stream << "\t-- Stop writing your code after this tag." << endl << endl;
+	stream << "\t-- Do not write your code after this tag." << endl << endl;
 }
 
 void VhdlGenerator2::writeUserModifiedAssignments( QTextStream& stream ) {
@@ -1323,7 +1327,7 @@ void VhdlGenerator2::writeUserModifiedAssignments( QTextStream& stream ) {
 	stream << "\t" << BLACK_BOX_ASSIGN_START << endl;
 	stream << userModifiedAssignments_;
 	stream << "\t" << BLACK_BOX_ASSIGN_END << endl;
-	stream << "\t-- Stop writing your code after this tag." << endl << endl;
+	stream << "\t-- Do not write your code after this tag." << endl << endl;
 }
 
 VhdlGenerator2::PortConnection::PortConnection( 
