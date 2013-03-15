@@ -254,15 +254,22 @@ bool HierarchyFilter::checkImplementation(QSharedPointer<Component> component) c
 	Q_ASSERT(component);
 
 	switch (component->getComponentImplementation()) {
-		case KactusAttribute::KTS_HW:
+		case KactusAttribute::KTS_HW: {
+
+			// if the HW component contains system views then it should be considered also as system
+			if (component->hasSystemViews()) {
+				return implementation_.hw_ || implementation_.system_;
+			}
+
+			// if the component is pure HW 
 			return implementation_.hw_;
-
-		case KactusAttribute::KTS_SW:
+												}
+		case KactusAttribute::KTS_SW: {
 			return implementation_.sw_;
-
-		case KactusAttribute::KTS_SYS:
+												}
+		case KactusAttribute::KTS_SYS: {
 			return implementation_.system_;
-
+												 }
 		default:
 			return false;
 	} 
