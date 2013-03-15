@@ -19,6 +19,7 @@
 #include <models/masterinterface.h>
 #include <models/mirroredslaveinterface.h>
 #include <models/slaveinterface.h>
+#include <models/designconfiguration.h>
 #include <common/KactusAttribute.h>
 #include <common/utils.h>
 
@@ -80,7 +81,8 @@ QIcon MemoryMapHeaderGenerator::getIcon() const
 }
 
 bool MemoryMapHeaderGenerator::checkGeneratorSupport( QSharedPointer<LibraryComponent const> libComp,
-	QSharedPointer<LibraryComponent const> libDes) const {
+	QSharedPointer<LibraryComponent const> libDesConf /*= QSharedPointer<LibraryComponent const>()*/,
+	QSharedPointer<LibraryComponent const> libDes /*= QSharedPointer<LibraryComponent const>()*/ ) const {
 	
 	// make sure the object is a component
 	QSharedPointer<Component const> comp = libComp.dynamicCast<Component const>();
@@ -89,14 +91,14 @@ bool MemoryMapHeaderGenerator::checkGeneratorSupport( QSharedPointer<LibraryComp
 	}
 
 	// if there is no design then header is generated for local memory maps
-	if (!libDes) {
+	if (!libDesConf) {
 		return comp->hasLocalMemoryMaps();
 	}
 
-	// make sure the second parameter is for a design object
-	QSharedPointer<Design const> design = libDes.dynamicCast<Design const>();
-	// the design must be a HW design
-	if (design) {
+	// make sure the second parameter is for a design configuration object
+	QSharedPointer<DesignConfiguration const> designConf = libDesConf.dynamicCast<DesignConfiguration const>();
+	// the design configuration must be for HW or system
+	if (designConf) {
 		return comp->getComponentImplementation() == KactusAttribute::KTS_HW;
 	}
 	else {
@@ -106,24 +108,53 @@ bool MemoryMapHeaderGenerator::checkGeneratorSupport( QSharedPointer<LibraryComp
 
 void MemoryMapHeaderGenerator::runGenerator( IPluginUtility* utility,
 	QSharedPointer<LibraryComponent> libComp,
-	 QSharedPointer<LibraryComponent> libDes) {
+	QSharedPointer<LibraryComponent> libDesConf /*= QSharedPointer<LibraryComponent>()*/,
+	QSharedPointer<LibraryComponent> libDes /*= QSharedPointer<LibraryComponent>()*/ ) {
 
 	utility_ = utility;
 
 	QSharedPointer<Component> comp = libComp.dynamicCast<Component>();
 	Q_ASSERT(comp);
 
+	QSharedPointer<Design> design = libDes.dynamicCast<Design>();
+
 	// if there is no design object then create headers for local memory maps
-	if (!libDes) {
+	if (!design) {
 		generateLocalMemMapHeaders(comp);
 	}
-
-	// if there is a design then headers are generated for the CPU instances
-	else {
-		QSharedPointer<Design> design = libDes.dynamicCast<Design>();
+	// if there is a design configuration
+	else if (libDesConf) {
 		Q_ASSERT(design);
 
-		generateGlobalHeaders(comp, design);
+		// the component knows the implementation of the view
+		KactusAttribute::Implementation implementation = comp->getViewType(*libDesConf->getVlnv());
+
+		// if the generator is run on a hierarchical HW component
+		if (implementation == KactusAttribute::KTS_HW) {
+			generateGlobalHeaders(comp, design);
+		}
+
+		// the generator is run on a system component
+		else {
+			qDebug() << "System generator with design conf";
+		}
+	}
+
+	// if there is a design but no design configuration
+	else {
+		Q_ASSERT(design);
+
+		KactusAttribute::Implementation implementation = comp->getViewType(*design->getVlnv());
+
+		// if the generator is run on a hierarchical HW component
+		if (implementation == KactusAttribute::KTS_HW) {
+			generateGlobalHeaders(comp, design);
+		}
+
+		// the generator is run on a system component
+		else {
+			qDebug() << "System generator without design conf";
+		}
 	}
 }
 

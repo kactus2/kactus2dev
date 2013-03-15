@@ -74,11 +74,12 @@ QString const& MCAPICodeGenerator::getDescription() const
 //-----------------------------------------------------------------------------
 // Function: MCAPICodeGenerator::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
-bool MCAPICodeGenerator::checkGeneratorSupport(QSharedPointer<LibraryComponent const> libComp,
-	QSharedPointer<LibraryComponent const> libDes) const
-{
+bool MCAPICodeGenerator::checkGeneratorSupport( QSharedPointer<LibraryComponent const> libComp,
+	QSharedPointer<LibraryComponent const> libDesConf /*= QSharedPointer<LibraryComponent const>()*/,
+	QSharedPointer<LibraryComponent const> libDes /*= QSharedPointer<LibraryComponent const>()*/ ) const {
+
 	// MCAPI code generator is only run for SW component editor
-	if (libDes) {
+	if (libDesConf) {
 		return false;
 	}
 
@@ -89,11 +90,13 @@ bool MCAPICodeGenerator::checkGeneratorSupport(QSharedPointer<LibraryComponent c
 //-----------------------------------------------------------------------------
 // Function: MCAPICodeGenerator::runGenerator()
 //-----------------------------------------------------------------------------
-void MCAPICodeGenerator::runGenerator(IPluginUtility* utility,
-                                      QSharedPointer<LibraryComponent> libComp,
-									  QSharedPointer<LibraryComponent> libDes)
-{
+void MCAPICodeGenerator::runGenerator( IPluginUtility* utility, 
+	QSharedPointer<LibraryComponent> libComp,
+	QSharedPointer<LibraryComponent> libDesConf /*= QSharedPointer<LibraryComponent const>()*/, 
+	QSharedPointer<LibraryComponent> libDes /*= QSharedPointer<LibraryComponent>()*/ ) {
+
 	// MCAPI code generator is only run for SW component editor
+	Q_ASSERT(!libDesConf);
 	Q_ASSERT(!libDes);
 
     utility_ = utility;

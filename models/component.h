@@ -494,12 +494,14 @@ public:
 	*/
 	KactusAttribute::ProductHierarchy getComponentHierarchy() const;
 
-	/*! \brief Get the component implementation type.
+	/*! \brief Get the implementation of the component.
 	 *
-	 * If the implementation is not defined then Implementation::HW is returned
-	 * as default.
+	 * Method: 		getComponentImplementation
+	 * Full name:	Component::getComponentImplementation
+	 * Access:		public 
 	 *
-	 * \return KactusAttribute::Implementation specifies the implementation.
+	 *
+	 * \return KactusAttribute::Implementation specifying the component implementation.
 	*/
 	KactusAttribute::Implementation getComponentImplementation() const;
 
