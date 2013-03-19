@@ -10,8 +10,7 @@
     <p>
       Model parameters editor can be used to add, remove and modify
       the model parameters of a component.  Model parameters are often
-      used in HDL languages to pass information to the model to
-      configure it, e.g. VHDL generics.
+      used in HDL configure component instances, e.g. VHDL generics.
     </p>
     <p>
       Model parameters editor contains a context menu (rigth mouse
@@ -31,8 +30,8 @@
     <p>
       <b>Name</b> column is mandatory. Legal <b>data type</b> depends
       on the language of the model. E.g.  in VHDL this could be
-      integer or std_logic, whereas in C-language int or
-      char*. <b>Usage type</b> is mandatory and specifies how this
+      'integer' or 'std_logic', whereas in C-language int or
+      'char*'. <b>Usage type</b> is mandatory and specifies how this
       model parameter is used. Default is 'non-typed' since such
       parameters are found in all languages, i.e. all VHDL types are
       non-typed. 'Typed' parameters appear in object-oriented

@@ -8,63 +8,71 @@
   <body>
     <h2>Ports editor</h2>
     <p>
-      Ports editor provides a table containing all the ports of a
-      component. This editor is used to add, remove and edit the
+      Ports editor provides a table containing all the <i>ports</i> of
+      a component. This editor is used to add, remove and edit the
       ports.
     </p>
     <p>
-      Port name identifies each port and must match the name of the
-      port in the implementation language. For example in case of VHDL
-      the ports listed in the entity declaration are to be listed
-      here.
+      Each port has 5 mandatory parameters.  <b>Port name</b> is a
+      uniques identifier and must match the name of the port in the
+      implementation language. For example, the ports listed in the
+      VHDL entity declaration are listed here.
     </p>
     <p>
-      The direction columns specifies the direction of the port and
-      has four options:
+      <b>Direction</b> has four options:
     <ul>
       <li><strong>in</strong> for input ports.</li>
       <li><strong>out</strong> for output ports.</li>
-      <li><strong>inout</strong> for bidirectional and tri-state ports.</li>
-      <li><strong>phantom</strong> for ports that exist on the IP-Xact component but not on the implementation.</li>
+      <li><strong>inout</strong> for bidirectional and tri-state
+      ports.</li>
+      <li><strong>phantom</strong> for ports that exist on the IP-XACT
+      component but not on the implementation.</li>
     </ul>
   </p>
     <p>
-      The left and right bound define the width of the port in case of
-      vectored ports. The width of the port is left bound – right
-      bound + 1. In case of scalar ports the left bound = right bound.
+      <b>Left</b> and <b>right bounds</b> define the indices of a
+      vectored port. The <b>width</b> of the port is <i>left bound -
+      right bound + 1</i>, e.g. 3 downto 0 requires 4 bits. In case of
+      scalar ports the <i>left bound = right bound</i>.
     </p>
     <p>
-      The port type specifies the type of the port. In case of VHDL
-      the typical values for scalar and vectored ports are std_logic
-      and std_logic_vector. The type definition is a language specific
-      reference to where the type is defined. In previous example the
-      type defition is IEEE.std_logic_1164.all. In case of SystemC the
-      type definition is the include file name, i.e. systemc.h.
+      The port <b>type</b> is optional. Typical values In VHDL are
+      'std_logic' for scalar ports (i.e. 1 bit) and and
+      'std_logic_vector' for vectored ones (multibit). The <b>type
+      definition</b> is a language specific reference to where the
+      type is defined, e.g. package or header file. Type definition
+      will be included at the beginnig of the generated top-level
+      code. In VHDL, 'std_logic' types are defined in
+      'IEEE.std_logic_1164.all' ('all' means that the whole package is
+      included). In SystemC, the type definition is the include file
+      name, e.g. 'systemc.h'.
     </p>
     <p>
-      The default value is used to assign a default value for an
-      unconnected port. For example this is used when generating a
-      structural vhdl for the top-level hierarchical component to
-      assign values to input ports that are not connected to any other
-      port in the design. The description contains a textual
-      description of the port.
+      <b>Default value</b> is useful since it assigns a value for an
+      unconnected (input) port. This is used, for example, when
+      generating a structural top-level VHDL for the hierarchical
+      component where some input ports are not connected any other
+      port in the design. Textual <b>description</b> is also optional.
     </p>
     <p>
-      The ad-Hoc column is a Kactus2-specific extension which is used
+      <b>Ad-hoc</b> column is a Kactus2-specific extension which is used
       in the graphical user interface of a hierarchical design.<br/>
-      <img src="../images/adHocPorts.PNG" alt="Component instance with
-      ad-Hoc ports"><br/> The component instances are drawn as
-      rectangles and their external interfaces are drawn to the edges
-      of the rectangle. In this case the instance has 5 bus
-      interfaces: clk, led, rst_n, from_hibi and pkt_codec. Normally
-      this is all that user sees of the interfaces of a component but
-      if user selects ports to be shown as ad-Hoc then those ports are
-      shown also.  Figure above displays two ad-Hoc ports: rx_av_in
-      and led_out, the directions of the ports can also be seen by the
-      port icon.
+      <img src="../images/appicon.png">
+      <br/><br/> <img src="../images/adHocPorts.PNG" alt="Component
+      instance with ad-Hoc ports"><br/> The component instances are
+      drawn as rectangles and their external interfaces are drawn to
+      the edges of the rectangle. There are different symbols for
+      different directions. The example instance in figure has 5
+      <i>bus interfaces</i>: clk, led, rst_n, from_hibi and
+      pkt_codec. Each interface includes 1 or multiple ports, and the
+      interface definition has its own VLNV. Moreover, user can select
+      that some ports are shown as <i>Ad-hoc</i>, e.g. if they are not
+      necessarily associated in any bus interface.  Example figure
+      displays 2 ad-hoc ports: rx_av_in and led_out.
     </p>
     <p>
-      Ports editor provides a context menu that contains following options:
+      Ports editor provides a context menu (right mouse button) that
+      contains following options:
     <ul>
       <li>Add new port (Add row)</li>
       <li>Remove port (Remove row)</li>

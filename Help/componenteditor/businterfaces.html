@@ -1,42 +1,91 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-	<head>
-	<meta http-equiv="Content-Type"content="text/html; charset=utf-8">
-		<link href="../style.css" rel="Stylesheet" type="text/css">
-		<title>Bus interfaces editor</title>
-	</head>
-	<body>
-		<h2>Bus interfaces editor</h2>
-		<p>
-			The bus interfaces editor displays a summary of the bus interfaces of a component. Bus interface is used to 
-			group ports together to form an interface that i.e. fulfills requirements for a bus protocol. 
-			This editor is used to add and remove bus interfaces in a component.
-		</p>
-		<p>
-			The name and description columns contain the name and textual description of the bus interface. 
-			The interface column is used to select the interface mode of a bus interface.
-			<dl> There are seven different interface modes:
-				<dt><strong>Master</strong></dt>
-				<dd>- indicates that the interface is the one that initiates transactions.</dd>
-				<dt><strong>Slave</strong></dt>
-				<dd>- is the one that responds to transactions.</dd>
-				<dt><strong>System</strong></dt>
-				<dd>- can be used for some interfaces that do not fit into the master or slave category.</dd>
-				<dt><strong>Mirrored slave</strong></dt>
-				<dd>- is the mirrored version of slave interface and may provide address offsets to the connected slave interfaces.</dd>	
-				<dt><strong>Mirrored master</strong></dt>
-				<dd>- is the mirrored version of master interface.</dd>
-				<dt><strong>Mirrored system</strong></dt>
-				<dd>- is the mirrored version of system interface.</dd>				
-				<dt><strong>Monitor</strong></dt>
-				<dd>- is an interface that can be used for verification process. This interface type gathers data from other interfaces.</dd>				
-			</dl>
-			The idea of mirrored interfaces is that they have the same ports as the normal interfaces but the directions of the ports are inverted.
-		</p>
-		<p>
-			The bus definition and abstraction definition columns are not editable and they display the VLNV-identifiers of the 
-			IP-Xact documents that define qualities of the hardware bus that the interface fulfills. These fields can be set in the
-			bus interface-specific editor.
-		</p>		
-	</body>
+  <head>
+    <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>Bus interfaces editor</title>
+  </head>
+  <body>
+    <h2>Bus interfaces editor</h2>
+    <p>
+      The bus interfaces editor displays a summary of the bus
+      interfaces of a component. <i>Bus interface</i> groups
+      <i>ports</i> together to form an interface that fulfills
+      requirements for a bus protocol. Connecting two matching
+      interfaces means connecting multiple ports (up to tens or even
+      hundreds of bits) together very easily. This editor is used to
+      add and remove bus interfaces in a component
+    </p>
+    <p>
+      Bus interface hass a mandatory <b>name</b> and optional textual
+      <b>description</b>.
+    <p>
+      <b>Bus definition</b> and <b>abstraction definition</b> columns
+      are not editable here. They display the <i>VLNV</i>-identifiers of the
+      IP-XACT documents that define qualities of the interface. These
+      fields must be set in the bus interface-specific editor.
+    </p>
+    <p> <b>Interface mode</b> has 7 different choices (3 modes and 2
+      flavors of each, plus 1 extra):
+      
+      <dt>1. <strong>Master</strong></dt> <dd>- initiates
+	transactions, like write or read. May have an <i>address
+	  space</i> to captures the programmer's view of the system
+      </dd>
+      
+      <dt>2. <strong>Slave</strong></dt>
+      <dd>- responds to transactions, e.g. accepts the written value
+	or provides the read value. May have a <i>memory map</i>,
+	i.e. information about the accessible registers.</dd>
+      
+      <dt>3. <strong>System</strong></dt>
+      <dd>- can be used for some interfaces that do not fit into the
+	master or slave category.<br/><br/></dd>
+      
+      <dt>5. <strong>Mirrored master</strong></dt>
+      <dd>- is the mirrored version of master interface (*).</dd>
+      <dt>4. <strong>Mirrored slave</strong></dt>
+      <dd>- is the mirrored version of slave interface and may provide
+	address offsets to the connected slave interfaces (*).</dd>
+      <dt>6. <strong>Mirrored system</strong></dt>
+      <dd>- is the mirrored version of system interface(*).<br/><br/></dd>				
+      
+      <dt>7. <strong>Monitor</strong></dt>
+      
+      <dd>- is an interface that can be used for verification
+	process. This interface type gathers data from other interfaces,
+	i.e. non-intrusive observation and hence all logical port are
+	<i>inputs</i></dd>
+    </dl>
+      
+      <br/>(*) The idea of <i>mirrored</i> interfaces is that they
+      have the same (or similar) ports as the normal interfaces but
+      the directions of the ports are reversed. <br/>For example, if
+      <i>master</i> interface has data <i>input</i>, then <i>mirrored
+      master</i> has data as <i>output</i>.  It is not allowed to
+      connect to mirrored interfaces together. <br/>The main usage of
+      mirrored interfaces is at bus intercconects, such as AMBA
+      AHB/APB or HIBI, since they allow constrcuting a memory map of
+      the whole system, whereas regular IP components mainly utilize
+      direct interfaces.
+    
+      <br/> IP-XACT allows 3 kinds of connections
+    <ol>
+      
+      <li><i>direct</i>: master to slave. Point-to-point
+      connection. Complex cases require using bus interconnect
+      component containing <i>bridge(s)</i>, such as multillayer AHB
+      bus. </li>
+      
+      <li><i>direct-mirrored</i>: master to mirrored master, slave to
+      mirrored slave, system-mirrored system. Point-to-point
+      connection. Complex cases require using bus interconnect
+      component containing <i>channel(s)</i> </li>
+      
+      <li><i>monitor</i>: any type except monitor to monitor. Many monitors can be connected to single interface</li>
+    </ol>
+    
+    
+  </p>
+  </body>
 </html>

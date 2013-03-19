@@ -1,33 +1,44 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-	<head>
-	<meta http-equiv="Content-Type"content="text/html; charset=utf-8">
-		<link href="../style.css" rel="Stylesheet" type="text/css">
-		<title>Views editor</title>
-	</head>
-	<body>
-		<h2>Views editor</h2>
-		<p>
-			Views editor provides a summary of the views of the component. The editor can be used to add and remove views.
-		</p>
-		<p>
-			The name and description columns are editable and contain the name and textual description of the corresponding view. 
-			The view type is not editable and is used to inform the user if the view is hierarchical or not. Hierarchical views 
-			contain a reference to a design or configuration which instantiate sub-components. Non-hierarchical views reference the 
-			file sets within the containing component. 
-		</p>
-		<p>
-			The editor a contains a context menu that contains following options:
-			<ul>
+  <head>
+    <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>Views editor</title>
+  </head>
+  <body>
+    <h2>Views editor</h2>
+    <p>
+      Views editor provides a summary of the views of the
+      component. The editor can be used to add and remove views.
+      <i>View</i> specifies a representation level of a component,
+      e.g. there might be different views for simulation and
+      synthesis. Component must have at least 1 view. It can also have
+      many views and one of them activated when component is
+      instantiated in a <i>design</i>.
+    </p>
+    <p>
+      <b>Name</b> and <b>description</b> columns are editable here but
+      <b> view type</b> is not. It defines whether the view is
+      <i>hierarchical</i> or not, and it is set on the view's setting
+      page. Hierarchical view contains a reference to a <i>design</i>
+      or <i>design configuration</i> which instantiates sub-components
+      and connects them together. <i>Non-hierarchical</i> views refers
+      to 1 or multiple file sets within the containing component.
+    </p>
+    <p>
+      The editor a contains a context menu that contains following
+      options:
+    <ul>
 				<li>Add new view (Add row)</li>
-				<li>Remove view (Remove row)</li>
-				<li>Clear the selected cells</li>
-				<li>Copy the contents of the selected cells to clipboard</li>
-				<li>Paste the contents of the clipboard to the selected cells</li>
-				<li>Import a csv-file to the editor</li>
-				<li>Export the contents of the editor to a csv-file</li>
-			</ul>
-			Views that are currently in an invalid state are displayed in red.
-		</p>
-	</body>
+      <li>Remove view (Remove row)</li>
+      <li>Clear the selected cells</li>
+      <li>Copy the contents of the selected cells to clipboard</li>
+      <li>Paste the contents of the clipboard to the selected cells</li>
+      <li>Import a csv-file to the editor</li>
+      <li>Export the contents of the editor to a csv-file</li>
+    </ul>
+    Views that are currently in an <font color="red"> invalid
+    state</font> are displayed in <font color="red">red</font>.
+  </p>
+  </body>
 </html>

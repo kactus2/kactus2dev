@@ -1,31 +1,54 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-	<head>
-	<meta http-equiv="Content-Type"content="text/html; charset=utf-8">
-		<link href="../style.css" rel="Stylesheet" type="text/css">
-		<title>Flat view editor</title>
-	</head>
-	<body>
-		<h2>Flat view editor</h2>
-		<p>
-			Flat view editor is used to edit the non-hierarchical views of a component. 
-			User may change the type of the view thus changing the editor type between this editor and the hierarchical view editor.
-		</p>
-		<p>
-			The name and description fields are used to edit the name and textual description of the view.
-			Environment identifiers specify information about the tool environment of the view. The view type is used to 
-			select between flat view editor and hierarchical view editor. These fields mentioned are common with flat
-			editor and hierarchical editor. The rest of the fields are specific for non-hierarchical views.
-		</p>
-		<p>
-			Language specifies the HDL for the view, i.e. this may be vhdl or verilog. Model name is a language-specific 
-			and therefore depends on the implementation language of the field. For VHDL this may be a configuration name or 
-			the entity(architecture) name.
-		</p>
-		<p>
-			File set references contain a list of file set names within the containing component that this view uses.
-			Default file build commands contains a list of build commands and flags for the files contained in the file sets 
-			referenced through the file sets.
-		</p>
-	</body>
+  <head>
+    <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>Flat view editor</title>
+  </head>
+  <body>
+    <h2>Non-hierarchical (flat) view editor</h2>
+    <p>
+      Flat view editor is used to edit the non-hierarchical views of a
+      component. The top part of the editor is identical with
+      hiearchical view. User may change the <b>view type</b> and then
+      the bottom part changes accordingly.
+    </p>
+    <p>
+      View has <b>name</b> and textual <b>description</b>. <b>Display
+      name</b> can be more detailed or user-friendly than name, but
+      usually only few words.
+    </p>
+    <p>
+      <b>Environment identifiers</b> in mandatory textual information
+      about how this view deployed in tool
+      environment. <b>Language</b> indicates this view may be
+      compatible with a particular tool, but only if that language is
+      supported in that tool, e.g., different versions of some
+      simulators may support two or more languages. <b>Tool</b>
+      indicates that this view contains tool-information, e.g., HDL
+      models that use simulator-specific extensions. The tool can have
+      a generic value such as "*Simulation" and
+      "*Synthesis"<b>VendorSpecific</b> can further qualify tool and
+      language compatibility, e.g. if some appropriate simulator mode
+      must be enabled.  activated.
+    <p>
+      <b>View type</b> can be changed and a non-hierarchical view has
+      5 additional optional settings.  <b>Language</b> specifies the
+      HDL for the view, e.g. VHDL, Verilog, or SystemC. <b>Strict</b>
+      denotes if language shall be strictly enforced. The default is
+      false (unchecked). <b>Model name</b> is a language-specific
+      identifier. For example, with VHDL this may be a
+      <i>entity(architecture)</i> name or <i>configuration</i>
+      name. For SystemC, this is the <i>sc_module</i> class name.
+    </p>
+    <p>
+      <b>File set references</b> lists the used file sets of the
+      containing component, e.g. hdl_sources.  <b>Default file build
+      commands</b> lists the <b>commands</b> and <b>flags</b> to
+      compile the files of the listed file sets. <b>Parameters</b> are
+      optional details that describe the view for <i>generator</i>
+      usage. They are given as name-value pairs, augmented with
+      textual description.
+    </p>
+  </body>
 </html>

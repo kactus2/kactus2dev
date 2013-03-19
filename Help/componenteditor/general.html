@@ -1,120 +1,110 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-	<head>
-	<meta http-equiv="Content-Type"content="text/html; charset=utf-8">
-		<link href="../style.css" rel="Stylesheet" type="text/css">
-		<title>General editor</title>
-	</head>
-	<body>
-		<h2>General editor</h2>
-		<p>
-			General editor contains the general
-			information of a <i>component</i>, such as
-			<i>description</i>.
-		</p>
-		<p>
-
-			
-			<i>VLNV</i>-identifier and the file path to
-			the xml-file are shown on top. These fields
-			cannot be modified after creation. Changes
-			require that the component must be saved as new
-			component with new VLNV. <br/>
-</p>
+  <head>
+    <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>General editor</title>
+  </head>
+  <body>
+    <h2>General editor</h2>
     <p>
-                        <b>Kactus attributes</b> help to classify and
-                        categorize one's IPs. They are
-                        Kactus2-specific extension to the IP-XACT
-                        standard and describe the level (single IP
-                        vs. system), implementation style, and whether
-                        modification is allowed. 
-			<table border="1">
-				<tr>
-					<th>Attribute name</th>
-					<th>Attribute value</th>
-					<th>Value description</th>
-				</tr>
-				<tr>
-					<td rowspan="6">Product hierarchy</td>
-					<td>Global</td>
-					<td>Does not fit into any other category.</td>
-				</tr>
-				<tr>
-					<td>Product</td>
-					<td>Whole product, which may contain multiple boards and computers.</td>
-				</tr>
-				<tr>
-					<td>Board</td>
-					<td>Represents circuit board, e.g. develoment- or final hardware platform.</td>
-				</tr>
-				<tr>
-					<td>Chip</td>
-					<td>Represents a physical chip i.e. some specific FPGA-chip.</td>
-				</tr>
-				<tr>
-					<td>SoC</td>
-					<td>A system on chip, set of intercconected IPs.</td>
-				</tr>
-				<tr>
-					<td>IP</td>
-					<td>A single IP-block.</td>
-				</tr>
-				<tr>
-					<td rowspan="3">Implementation
-					<br/>(cannot be modified after
-					creation)</td> <td>HW</td>
-					<td>Hardware implementation,
-					such as VHDL or Verilog</td>
-				</tr>
-				<tr>
-					<td>SW</td>
-					<td>Software implementation, such as C</td>
-				</tr>
-				<tr>
-					<td>SYS</td> <td>Contains
-					information about the SW
-					component mapping to the
-					underlying HW platform.</td>
-				</tr>
-				<tr>
-					<td rowspan="4"> Firmness</td>
-					<td>Template</td> <td>Used as
-					a base for creating new
-					components, but must not be
-					used as such.</td>
-				</tr>
-				<tr>
-					<td>Mutable</td>
-					<td>Component is fully modifiable.</td>
-				</tr>
-				<tr>
-					<td>Parametrizable</td>
-					<td>Component contains
-					parameters that can be used to
-					configure it but it cannot be
-					modified otherwise.</td>
-				</tr>
-				<tr>
-					<td>Fixed</td> <td>Component
-					cannot be configured in any
-					way and it is frozen to it's
-					final state.</td>
-				</tr>
-			</table>
-		</p>
-		<p>
-			<b>Description</b> text box can be used to store a textual description of the component.
-		</p>
-
+      General editor contains the general information of a
+      <i>component</i>, such as <i>description</i>.
+    </p>
+    <p>      
+      <i>VLNV</i>-identifier and the file path to the xml-file are
+      shown on top. These fields cannot be modified after
+      creation. Changes require that the component must be saved as
+      new component with new VLNV. <br/>
+    </p>
+    <p>
+      <b>Kactus attributes</b> help to classify and categorize one's
+      IPs. They are Kactus2-specific extension to the IP-XACT standard
+      and describe the level (single IP vs. system), implementation
+      style, and whether modification is allowed.  <br/><img
+      src="../images/appicon.png" width="25pix"><br/><br/>
+    <table border="1">
+	<tr>
+	  <th>Attribute name</th>
+	  <th>Attribute value</th>
+	  <th>Value description</th>
+	</tr>
+	<tr>
+	  <td rowspan="6">Product hierarchy</td>
+	  <td>Global</td>
+	  <td>Does not fit into any other category.</td>
+	</tr>
+	<tr>
+	  <td>Product</td>
+	  <td>Whole product, which may contain multiple boards and
+	  computers.</td>
+	</tr>
+	<tr>
+	  <td>Board</td>
+	  <td>Represents circuit board, e.g. develoment- or final
+	  hardware platform.</td>
+	</tr>
+	<tr>
+	  <td>Chip</td>
+	  <td>Represents a physical chip i.e. some specific
+	  FPGA-chip.</td>
+	</tr>
+	<tr>
+	  <td>SoC</td>
+	  <td>A system on chip, set of intercconected IPs.</td>
+	</tr>
+	<tr>
+	  <td>IP</td>
+	  <td>A single IP-block.</td>
+	</tr>
+	<tr>
+	  <td rowspan="3">Implementation <br/>(cannot be modified
+	  after creation)</td> <td>HW</td> <td>Hardware
+	  implementation, such as VHDL or Verilog</td>
+	</tr>
+	<tr>
+	  <td>SW</td>
+	  <td>Software implementation, such as C</td>
+	</tr>
+	<tr>
+	  <td>SYS</td> <td>Contains information about the SW component
+	  mapping to the underlying HW platform.</td>
+	</tr>
+	<tr>
+	  <td rowspan="4"> Firmness</td> <td>Template</td> <td>Used as
+	  a base for creating new components, but must not be used as
+	  such.</td>
+	</tr>
+	<tr>
+	  <td>Mutable</td>
+	  <td>Component is fully modifiable.</td>
+	</tr>
+	<tr>
+	  <td>Parametrizable</td> <td>Component contains parameters
+	  that can be used to configure it but it cannot be modified
+	  otherwise.</td>
+	</tr>
+	<tr>
+	  <td>Fixed</td> <td>Component cannot be configured in any way
+	  and it is frozen to it's final state.</td>
+	</tr>
+    </table>
+  </p>
+    <p>
+      <b>Description</b> text box can be used to store a textual
+      description of the component.
+    </p>
+    
     <p>
       <b>XML header</b> shows and allows editing the comment lines in
       the beginning of XML file, i.e. those inside tags &lt!-- and
       --&gt.
-      </p>
-		<p>
-			<b>Component preview</b> box on the bottom displays how the component will look like when 
-			instantiated in a design. The preview displays the <i>bus interfaces</i> of the component and 
-			also the <i>ports</i> that are marked as <i>ad-hoc</i>.
-		</p>
-	</body>
+    </p>
+    <p>
+      <b>Component preview</b> box on the bottom displays how the
+      component will look like when instantiated in a design. The
+      preview displays the <i>bus interfaces</i> of the component and
+      also the <i>ports</i> that are marked as <i>ad-hoc</i>.
+    </p>
+  </body>
 </html>

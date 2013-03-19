@@ -1,32 +1,59 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-	<head>
-	<meta http-equiv="Content-Type"content="text/html; charset=utf-8">
-		<link href="../style.css" rel="Stylesheet" type="text/css">
-		<title>Hierarchical view editor</title>
-	</head>
-	<body>
-		<h2>Hierarchical view editor</h2>
-		<p>
-			Hierarchical view editor is used to edit the details of a hierarchical view of the component.
-			User may change the type of the view thus changing the editor type between this editor and the flat view editor.
-		</p>
-		<p>
-			The name and description fields are used to edit the name and textual description of the view. 
-			Environment identifiers specify information about the tool environment of the view. The view type is used to 
-			select between flat view editor and hierarchical view editor. These fields mentioned are common with flat editor 
-			and hierarchical editor. The rest of the fields are specific for hierarchical views.
-		</p>
-		<p>
-			The hierarchy reference contains a VLNV-reference to a design configuration or design document.
-			These documents list the sub-components instantiated in the hierarchical design and their configurations.
-		</p>
-		<p>
-			The reference to a top-level implementation view is a Kactus2-specific extension and is used to reference 
-			to a non-hierarchical view that contains the rtl-implementation of the component. Usually this means that component
-			contains a non-hierarchical view which contains the top-level structural vhdl where the sub-components are instantiated 
-			in code level. This extension refers to the view so the source codes of this component are also included i.e. when 
-			generating a compilation script for simulation or synthesis.
-		</p>
-	</body>
+  <head>
+    <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>Hierarchical view editor</title>
+  </head>
+  <body>
+    <h2>Hierarchical view editor</h2>
+    <p>
+      Hierarchical view editor is used to edit the details of a
+      hierarchical view of the component. The top part of the editor
+      is identical with hiearchical view. User may change the <b>view
+      type</b> and then the bottom part changes accordingly.
+    </p>
+    <p>
+      View has <b>name</b> and textual <b>description</b>. <b>Display
+      name</b> can be more detailed or user-friendly than name, but
+      usually only few words.
+    </p>
+    <p>
+    <p>
+      <b>Environment identifiers</b> in mandatory textual information
+      about how this view deployed in tool
+      environment. <b>Language</b> indicates this view may be
+      compatible with a particular tool, but only if that language is
+      supported in that tool, e.g., different versions of some
+      simulators may support two or more languages. <b>Tool</b>
+      indicates that this view contains tool-information, e.g., HDL
+      models that use simulator-specific extensions. The tool can have
+      a generic value such as "*Simulation" and
+      "*Synthesis"<b>VendorSpecific</b> can further qualify tool and
+      language compatibility, e.g. if some appropriate simulator mode
+      must be enabled.  activated.
+      </p>
+    <p>
+     <b>View type</b> can be changed and a non-hierarchical view has 2
+     additional settings. <b>Hierarchy reference</b> is a mandatory
+     <i>VLNV</i>-reference to a <i>design configuration</i> or
+     <i>design document</i>.  These documents list the sub-components
+     instantiated in the hierarchical design and their configurations.
+     User can simply drag-and-drop appropriate design from IP library
+     over the fields, or type them.  Kactus has also a graphical
+     design editor where the user instantiate and configure components
+     very easily.
+    </p>
+    <p>
+      <img src="../images/appicon.png" width="25pix"> <b>Reference to
+      a top-level implementation view</b> is a Kactus2-specific
+      extension. It is a reference to a <i>non-hierarchical view</i>
+      of the same component that contains the generated RTL codes. A
+      <i>design</i> in Kactus is graphical block diagram with
+      sub-components and Kactus can automatically generate top-level
+      structural VHDL from it. This extension ensures that generated
+      codes are automatically included when generating a compilation
+      script for simulation or synthesis.
+    </p>
+  </body>
 </html>

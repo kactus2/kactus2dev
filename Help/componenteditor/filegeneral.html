@@ -1,50 +1,43 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-	<head>
-	<meta http-equiv="Content-Type"content="text/html; charset=utf-8">
-		<link href="../style.css" rel="Stylesheet" type="text/css">
-		<title>File editor</title>
-	</head>
-	<body>
-		<h2>File editor</h2>
-		<p>
-			File editor can be used to edit the details of
-			a single file within a file set.
-		</p>
-		<p>
-			<b>Name</b> field contains the relative file
-			path from the containing component's xml-file
-			to this file. <b>File types</b> list specifies
-			the type of the file. File type can be used
-			i.e. when specifying build commands for a
-			group of files.
-		</p>
-		<p>
-			<b>General options</b> define 5 things.
-			<b>Logical name</b> specifies e.g. a VHDL
-			library where the VHDL-file will be compiled
-			to. If it is <b>"only used as default"</b>, it
-			can be overridden by another process. If check
-			box is unticked, then this logical name cannot
-			be overrriden.
-
-                        <br/>The check boxes <b>is include file </b>
-                        and <b>contains external declarations</b> can
-                        be used to specify the file is an include file
-                        and that the file contains external
-                        declarations and is needed by other files in
-                        this file set. <b>Description</b> is a freely
-                        formatted text desribing this file
-		</p>
-		<p>
-			<b>Build command</b> can be used to define a
-			specific build <b>command</b> and <b>flags</b>
-			for this file. Flags can either <b>replace
-			default flags</b> (e.g. those specified for
-			this file type) in the build script or be
-			appended to them. <b>Target name</b> specifies
-			a path to the file that is derived from this
-			file when build process is run.
-		</p>
+  <head>
+    <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>File editor</title>
+  </head>
+  <body>
+    <h2>File editor</h2>
+    <p>
+      File editor can be used to edit the details of a single file
+      within a file set.
+    </p>
+    <p>
+      <b>Name</b> field contains the relative file path from the
+      containing component's xml-file to this file. <b>File types</b>
+      list specifies the type of the file. File type can be used
+      i.e. when specifying build commands for a group of files.
+    </p>
+    <p>
+      <b>General options</b> define 5 optional things.  <b>Logical
+      name</b> specifies e.g. a VHDL library where the VHDL-file will
+      be compiled to. If it is <b>"only used as default"</b>, it can
+      be overridden by another process. If check box is unticked, then
+      this logical name cannot be overrriden.
+      
+      <br/>The check boxes <b>is include file </b> and <b>contains
+      external declarations</b> can be used to specify the file is an
+      include file and that the file contains external declarations
+      and is needed by other files in this file
+      set. <b>Description</b> is a freely formatted text desribing
+      this file
+    </p>
+    <p>
+      <b>Build command</b> can be used to define a specific build
+      <b>command</b> and <b>flags</b> for this file. Flags can either
+      <b>replace default flags</b> (e.g. those specified for this file
+      type) in the build script or be appended to them. <b>Target
+      name</b> specifies a path to the file that is derived from this
+      file when build process is run.
+    </p>
 	</body>
 </html>

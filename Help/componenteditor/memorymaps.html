@@ -1,48 +1,43 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-	<head>
-	<meta http-equiv="Content-Type"content="text/html; charset=utf-8">
-		<link href="../style.css" rel="Stylesheet" type="text/css">
-		<title>Memory maps editor</title>
-	</head>
-	<body>
-		<h2>Memory maps editor</h2>
-		<p>
-			Memory maps editor contains the summary of the
-			<i>memory maps</i> contained in the component
-			and can be used to add, remove and edit
-			them. Memory map specifies the addressable
-			area seen through a slave bus interface,
-			e.g. the data and control register of the
-			component by master component.
-		</p>
-		<p>
-			Each memory map has a <b>name</b> and a
-			textual <b>description</b>. Name is the only
-			mandatory parameter.<br/><b>Address unit
-			bits</b> (AUB) defines the number of data bits
-			each address increment of the memory map
-			contains, e.g. 8b or 32b. The default setting
-			for a memory map is byte addressable (8
-			bits). E.g. if AUB=8, then 32-bit registers
-			are at addresses 0x0, 0x4, 0x8... If AUB=32,
-			they are in addresses 0x0, 0x1, 0x2... AUB is
-			the unit of base address and range in address
-			map. <br/><b>Interface binding</b> ties the
-			memory map to slave interface used for access.
-		</p>
-		<p>
-			Memory maps editor contains a context menu
-			providing following options:
-			<ul>
-				<li>Add new memory map (Add row)</li>
-				<li>Remove memory map (Remove row)</li>
-				<li>Clear the selected cells</li>
-				<li>Copy the contents of the selected cells to clipboard</li>
-				<li>Paste the contents of the clipboard to the selected cells</li>
-				<li>Import a csv-file to the editor</li>
-				<li>Export the contents of the editor to a csv-file</li>
-			</ul>
-		</p>
-	</body>
+  <head>
+    <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>Memory maps editor</title>
+  </head>
+  <body>
+    <h2>Memory maps editor</h2>
+    <p>
+      Memory maps editor contains the summary of the <i>memory
+      maps</i> contained in the component and can be used to add,
+      remove and edit them. Memory map specifies the addressable area
+      seen through a slave bus interface, e.g. the data and control
+      register of the component by master component.
+    </p>
+    <p>
+      Each memory map has a <b>name</b> and a textual
+      <b>description</b>. Name is the only mandatory
+      parameter.<br/><b>Address unit bits</b> (AUB) defines the number
+      of data bits each address increment of the memory map contains,
+      e.g. 8b or 32b. The default setting for a memory map is byte
+      addressable (8 bits). E.g. if AUB=8, then 32-bit registers are
+      at addresses 0x0, 0x4, 0x8... If AUB=32, they are in addresses
+      0x0, 0x1, 0x2... AUB is the unit of base address and range in
+      address map. <br/><b>Interface binding</b> ties the memory map
+      to slave interface used for access.
+    </p>
+    <p>
+      Memory maps editor contains a context menu providing following
+      options:
+    <ul>
+      <li>Add new memory map (Add row)</li>
+      <li>Remove memory map (Remove row)</li>
+      <li>Clear the selected cells</li>
+      <li>Copy the contents of the selected cells to clipboard</li>
+      <li>Paste the contents of the clipboard to the selected cells</li>
+      <li>Import a csv-file to the editor</li>
+      <li>Export the contents of the editor to a csv-file</li>
+    </ul>
+  </p>
+  </body>
 </html>
