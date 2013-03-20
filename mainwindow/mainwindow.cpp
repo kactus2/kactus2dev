@@ -2657,6 +2657,7 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName,
 
     SystemView* systemView = new SystemView(sysViewName);
     systemView->setHierarchyRef(desConfVLNV);
+    systemView->setHWViewRef(viewName);
 
 	parentComp->addSystemView(systemView);
 
