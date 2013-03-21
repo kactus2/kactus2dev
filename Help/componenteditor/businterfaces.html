@@ -19,73 +19,77 @@
     <p>
       Bus interface hass a mandatory <b>name</b> and optional textual
       <b>description</b>.
-    <p>
+      <br>
       <b>Bus definition</b> and <b>abstraction definition</b> columns
       are not editable here. They display the <i>VLNV</i>-identifiers of the
       IP-XACT documents that define qualities of the interface. These
       fields must be set in the bus interface-specific editor.
     </p>
-    <p> <b>Interface mode</b> has 7 different choices (3 modes and 2
+    <p> 
+      <b>Interface mode</b> has 7 different choices (3 modes and 2
       flavors of each, plus 1 extra):
-      
+    </p>
+    <dl>     
       <dt>1. <strong>Master</strong></dt> <dd>- initiates
 	transactions, like write or read. May have an <i>address
-	  space</i> to captures the programmer's view of the system
+	  space</i> which captures the programmer's view of the system
       </dd>
       
-      <dt>2. <strong>Slave</strong></dt>
-      <dd>- responds to transactions, e.g. accepts the written value
-	or provides the read value. May have a <i>memory map</i>,
-	i.e. information about the accessible registers.</dd>
+      <dt>2. <strong>Slave</strong></dt> <dd>- responds to
+	transactions, e.g. accepts the written value or provides the
+	read value. May have a <i>memory map</i>, i.e. information about
+	the accessible registers inside this component</dd>
       
       <dt>3. <strong>System</strong></dt>
       <dd>- can be used for some interfaces that do not fit into the
-	master or slave category.<br/><br/></dd>
+	master or slave category.<br><br></dd>
       
-      <dt>5. <strong>Mirrored master</strong></dt>
-      <dd>- is the mirrored version of master interface (*).</dd>
-      <dt>4. <strong>Mirrored slave</strong></dt>
-      <dd>- is the mirrored version of slave interface and may provide
-	address offsets to the connected slave interfaces (*).</dd>
-      <dt>6. <strong>Mirrored system</strong></dt>
-      <dd>- is the mirrored version of system interface(*).<br/><br/></dd>				
+      <dt>4-6. <strong>Mirrored master, mirrored slave, mirrored system</strong></dt>
+      
+      <dd>- are the <i>mirrored</i> versions, i.e.  they have the same
+	(or similar) ports as the normal interfaces but the directions
+	of the ports are reversed. <br>For example, if <i>master</i>
+	interface has data <i>input</i>, then <i>mirrored master</i> has
+	data as <i>output</i>.  It is not allowed to connect to mirrored
+	interfaces together. <br>The main usage of mirrored interfaces
+	is at bus intercconects, such as AMBA AHB/APB or HIBI, since
+	they allow constructing a memory map of the whole system,
+	whereas regular IP components mainly utilize direct interfaces.
+	<br><br></dd>
       
       <dt>7. <strong>Monitor</strong></dt>
       
       <dd>- is an interface that can be used for verification
-	process. This interface type gathers data from other interfaces,
+	process. It gathers data from other interfaces,
 	i.e. non-intrusive observation and hence all logical port are
 	<i>inputs</i></dd>
     </dl>
-      
-      <br/>(*) The idea of <i>mirrored</i> interfaces is that they
-      have the same (or similar) ports as the normal interfaces but
-      the directions of the ports are reversed. <br/>For example, if
-      <i>master</i> interface has data <i>input</i>, then <i>mirrored
-      master</i> has data as <i>output</i>.  It is not allowed to
-      connect to mirrored interfaces together. <br/>The main usage of
-      mirrored interfaces is at bus intercconects, such as AMBA
-      AHB/APB or HIBI, since they allow constrcuting a memory map of
-      the whole system, whereas regular IP components mainly utilize
-      direct interfaces.
-    
-      <br/> IP-XACT allows 3 kinds of connections
+
+    <p> 
+      IP-XACT allows 3 kinds of connections
+    </p>
     <ol>
       
       <li><i>direct</i>: master to slave. Point-to-point
-      connection. Complex cases require using bus interconnect
-      component containing <i>bridge(s)</i>, such as multillayer AHB
-      bus. </li>
+	connection. Complex cases require using bus interconnect
+	component containing <i>bridge(s)</i>, such as multillayer AHB
+	bus. </li>
       
-      <li><i>direct-mirrored</i>: master to mirrored master, slave to
-      mirrored slave, system-mirrored system. Point-to-point
-      connection. Complex cases require using bus interconnect
-      component containing <i>channel(s)</i> </li>
+      <li><i>direct-mirrored</i>: master to mirrored master, mirrored
+	slave to slave, system to mirrored system. Point-to-point
+	connection. Complex cases require using bus interconnect
+	component containing <i>channel(s)</i> </li>
       
-      <li><i>monitor</i>: any type except monitor to monitor. Many monitors can be connected to single interface</li>
+      <li><i>monitor</i>: any type except monitor to monitor. Many
+	monitors can be connected to single interface</li>
     </ol>
+    <hr>
+    <p>    
+      E.g. IP_0 writes data through its master interfce to
+      interconnect's mirrored master interface. On the receiving side,
+      interconnect's mirrored slave interface writes the data to
+      IP_1's slave interface.  
+    </p>
     
-    
-  </p>
   </body>
 </html>

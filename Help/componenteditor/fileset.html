@@ -1,97 +1,83 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-	<head>
-	<meta http-equiv="Content-Type"content="text/html; charset=utf-8">
-		<link href="../style.css" rel="Stylesheet" type="text/css">
-		<title>File set editor</title>
-	</head>
-	<body>
-		<h2>File set editor</h2>
-		<p>
-			File set editor can be used to edit the details of a single file set and to add and 
-			remove files contained in the file set. File sets can be used to group files together 
-			to be referenced by other sections of a component.
-		</p>
-		<p>
-			<b>Name</b>, <b>display name</b>, and
-			<b>description</b> of the file set are shown
-			on top. Name is mandatory as it identifies the
-			file set within a component. Display name is
-			typically a few words providing a more
-			detailed and/or user-friendly name for
-			display. Description contains a textual
-			description of the file set.
-		</p>
-		<p>
-			<b>Files</b> group box lists the files
-			contained in the file set. Each file has of
-			course the <b>name</b>.  <b> File path</b> is
-			defined relative to the component's
-			xml-file. <b>File type</b> links files to
-			their build command (see below). One file can
-			have many types.  <b>Description</b> is a
-			freely formatted text describing a single
-			file.
-
-                        The file types and description columns are
-                        editable but the file name and file path are
-                        not. <br/> <b>Add Files</b> button opens a
-                        dialog to select files on the disk to add to
-                        the file set.  The order of files is
-                        maintained and can be changed by dragging
-                        rows. If the compilation order of files is
-                        important then the files should be listed in
-                        order needed by compilation.  <br/> If a file
-                        is in <font color="red">invalid state</font>,
-                        i.e. missing a mandatory file type, then the
-                        file is displayed in <font color="red">red
-                        color</font>.
-		</p>
-		<p>
-			The files box also contains a context menu
-			(right mouse button) that has the following
-			options:
-			<ul>
-				<li>Add new file to the file set (Add row)</li>
-				<li>Remove file from file set (Remove row)</li>
-				<li>Clear the selected cells</li>
-				<li>Copy the contents of the selected cells to clipboard</li>
-				<li>Paste the contents of the clipboard to the selected cells</li>
-				<li>Import a csv-file to the editor</li>
-				<li>Export the contents of the editor to a csv-file</li>
-			</ul>
-		</p>
-		<p>
-			<b>Default build command</b> can define
-			<b>command</b> and <b>flags</b> to build
-			files, e.g. running gcc for C files or vcom
-			for VHDL. <b>File type</b> must macth the file
-			table above. The defined command can either
-			<b>replace default flags</b> or be appended to
-			it. This table has a similar context menu as
-			the files editor.
-		</p>
-		<p>
-                        <b>Group identifier</b> can be used to
-                        describe the function or purpose of the file
-                        with a single unbounded word. <i>Group</i>
-                        identifiers can contain several identifiers
-                        and the possible words are not limited.
-                        However the editor suggests the following
-                        options:
-			<ul>
-				<li>Diagnostics</li>
-				<li>Documentation</li>
-				<li>ProjectFiles</li>
-				<li>Simulation</li>
-				<li>sourceFiles</li>
-			</ul>
-		</p>
-		<p>
-			<b>Dependent directories</b> can specify a
-			freetext list of paths to directories on which
-			this file set depends, e.g. directories of
-			include files.
-		</p>
-	</body>
+  <head>
+    <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>File set editor</title>
+  </head>
+  <body>
+    <h2>File set editor</h2>
+    <p>
+      File set editor can be used to edit the details of a single file
+      set and to add and remove files contained in the file set. File
+      sets can be used to group files together to be referenced by
+      other sections of a component.
+    </p>
+    <p>
+      <b>Name</b>, <b>display name</b>, and <b>description</b> of the
+      file set are shown on top. Name is mandatory as it identifies
+      the file set within a component. Display name is typically a few
+      words providing a more detailed and/or user-friendly name for
+      display. Description contains a textual description of the file
+      set.
+    </p>
+    <p>
+      <b>Files</b> group box lists the files contained in the file
+      set. Each file has of course the <b>name</b>.  <b> File path</b>
+      is defined relative to the component's xml-file. <b>File
+      type</b> links files to their build command (see below). One
+      file can have many types.  <b>Description</b> is a freely
+      formatted text describing a single file.
+      
+      The file types and description columns are editable but the file
+      name and file path are not. <br> <b>Add Files</b> button opens
+      a dialog to select files on the disk to add to the file set.
+      The order of files is maintained and can be changed by dragging
+      rows. If the compilation order of files is important then the
+      files should be listed in order needed by compilation.  <br> If
+      a file is in <font color="red">invalid state</font>,
+      i.e. missing a mandatory file type, then the file is displayed
+      in <font color="red">red color</font>.
+    </p>
+    <p>
+      The files box also contains a context menu (right mouse button)
+      that has the following options:
+    </p>
+    <ul>
+      <li>Add new file to the file set (Add row)</li>
+      <li>Remove file from file set (Remove row)</li>
+      <li>Clear the selected cells</li>
+      <li>Copy the contents of the selected cells to clipboard</li>
+      <li>Paste the contents of the clipboard to the selected cells</li>
+      <li>Import a csv-file to the editor</li>
+      <li>Export the contents of the editor to a csv-file</li>
+    </ul>
+    <p>
+      <b>Default build command</b> can define <b>command</b> and
+      <b>flags</b> to build files, e.g. running gcc for C files or
+      vcom for VHDL. <b>File type</b> must macth the file table
+      above. The defined command can either <b>replace default
+      flags</b> or be appended to it. This table has a similar context
+      menu as the files editor.
+    </p>
+    <p>
+      <b>Group identifier</b> can be used to describe the function or
+      purpose of the file with a single unbounded word. <i>Group</i>
+      identifiers can contain several identifiers and the possible
+      words are not limited.  However the editor suggests the
+      following options:
+    </p>
+    <ul>
+      <li>Diagnostics</li>
+      <li>Documentation</li>
+      <li>ProjectFiles</li>
+      <li>Simulation</li>
+      <li>sourceFiles</li>
+    </ul>
+    <p>
+      <b>Dependent directories</b> can specify a freetext list of
+      paths to directories on which this file set depends,
+      e.g. directories of include files.
+    </p>
+  </body>
 </html>

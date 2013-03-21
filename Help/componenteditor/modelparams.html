@@ -15,6 +15,7 @@
     <p>
       Model parameters editor contains a context menu (rigth mouse
       button) that has the following options:
+  </p>
     <ul>
       <li>Add new model parameter (Add row)</li>
       <li>Remove model parameter (Remove row)</li>
@@ -24,10 +25,9 @@
       <li>Import a csv-file to the editor</li>
       <li>Export the contents of the editor to a csv-file</li>
     </ul>
-    All columns of the editor are editable.  Double-clicking an empty
-    space adds a new row.
-  </p>
     <p>
+      All columns of the editor are editable.  Double-clicking an empty
+      space adds a new row.
       <b>Name</b> column is mandatory. Legal <b>data type</b> depends
       on the language of the model. E.g.  in VHDL this could be
       'integer' or 'std_logic', whereas in C-language int or
@@ -43,5 +43,13 @@
       parameter. This value can be overridden upon in a design that
       instantiates this component.  <b>Description</b> is freetext.
     </p>
+    <hr>
+    <p>
+      EXAMPLE. Figure shows the relation between VHDL and model
+      parameter editor. Note that IP-XACT requires default value even
+      if VHDL does not.
+      <img src="../images/generics.png" alt="VHDL and screen cap">
+    </p>
+
   </body>
 </html>

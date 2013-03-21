@@ -14,24 +14,25 @@
     </p>
     <p>
       Each register has a <b>name</b> and a textual
-      <b>description</b>. <br/><b>Offset</b> specifies the location of
+      <b>description</b>. <br><b>Offset</b> specifies the location of
       the register from the start of the containing address block
       expressed as number of addressing units. The actual address of
       the register is the sum of address block's base addr and
       register offset. E.g. if base addr=0x100 and reg has offset=0x4,
-      then register's address=0x104.<br/><b>Size</b> defines the
+      then register's address=0x104.<br><b>Size</b> defines the
       number of data bits the register contains. It must be less or
       equal to <i>Width</i> of the address
-      space. <br/><b>Dimension</b> assigns an unbounded dimension to
+      space. <br><b>Dimension</b> assigns an unbounded dimension to
       the register. Its semantics are the same as the C language
       standard for the layout of memory in multidimensional
-      arrays. <br/><b>Volatile</b>=true indicates that register value
+      arrays. <br><b>Volatile</b>=true indicates that register value
       may change without a write operation to it, i.e. by an interrupt
       event.
     </p>
     <p>
       <b>Access</b> column specifies the accessibility of the register, the
       possible values are:
+    </p>
     <ul>
       <li>Read-write</li>
       <li>Read-only</li>
@@ -39,7 +40,6 @@
       <li>Read-writeOnce</li>
       <li>writeOnce</li>
     </ul>
-	</p>
     <p>
       <b>Reset value</b> defines register's value on reset and
       <b>Reset mask</b> defines the bits of the register that have a

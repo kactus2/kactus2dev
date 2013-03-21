@@ -12,6 +12,7 @@
       map</i> Memory map is defined for a <i>slave interface</i>. It
       defines what the masters can access in this component. Memory
       map is hiearchical.
+    </p>
     <ul>
       <li> slave port has memory map MM1
 	<ul>
@@ -35,34 +36,38 @@
 	</ul>
       </li>
     </ul>
-    </p>
     <p>
     <i>Address block</i> specifies a single contiguous block of
     memory, either a set of registers or a block of memory. (Moreover,
     IP-XACT allows defining <i>bank</i> or <i>subspaceMap</i>, but
     they are not yet supportted by Kactus v2.1, March
-    2013)</i>. <i>Registers</i> are inside address block and each
-    register can have <i>bit fields</i>. <br/> Address block has 5
+    2013). <i>Registers</i> are inside address block and each
+    register can have <i>bit fields</i>. <br> Address block has 5
     mandatory parameters: usage, name, base address, range, and width.
   </p>
     <p>
       <b>Usage</b> column is used to specify the usage of
       the address block. The possible values are:
-    <ul>
-      <li><i>Memory</i> specifies the address block as memory. Cannot include registers.</li>
-      <li><i>Register</i> specifies the entire block to contain registers.</li>
-      <li><i>Reserved</i> specifies the entire block as reserved for usage that is unknown to IP-XACT. Cannot include registers.</li>
-    </ul>
   </p>
+    <ul>
+      <li><i>Memory</i> specifies the address block as memory. Cannot
+      include registers.</li>
+
+      <li><i>Register</i> specifies the entire block to contain
+      registers.</li>
+
+      <li><i>Reserved</i> specifies the entire block as reserved for
+      usage that is unknown to IP-XACT. Cannot include registers.</li>
+    </ul>
     <p>
       Address block has a <b>name</b> and textual
-      <b>description</b>. <br/><b>Base address</b> specifies the
+      <b>description</b>. <br><b>Base address</b> specifies the
       starting address for the address block. It is expressed as
       <i>addressing units</i> as defined in the containing memory map,
-      e.g. 8b or 32b. <br/><b>Range</b> is also expressed as
+      e.g. 8b or 32b. <br><b>Range</b> is also expressed as
       addressing units and specifies size of the block. Be careful
       that range is set greater or equal to the sum of all register
-      sizes.<br/><b>Width</b> is the data width in bits of a row in
+      sizes.<br><b>Width</b> is the data width in bits of a row in
       the address block. It sets the maximum allowed size of a single
       transfer and also defines the maximum size of a single
       register. Register can be smaller but not wider.
@@ -70,6 +75,7 @@
     <p>
       <b>Access</b> column is used to specify the accessibility of the
       block. The possible values are:
+    </p>
     <ul>
       <li><i>Read-write</i></li>
       <li><i>Read-only</i></li>
@@ -77,14 +83,13 @@
       <li><i>Read-writeOnce</i></li>
       <li><i>writeOnce</i></li>
     </ul>
-  </p>
     <p>
       <b>Volatile</b>=true indicates that the stored value may
       change without master's write operation. For example, the timer
       value gets updated automatically and master must always issue a
       read to get the latest value.
     </p>
-    <hr/>
+    <hr>
     <p>
       EXAMPLE. A simple IP could have 1 memory map, 1 address block
       inside it, and three 32-bit registers: ctrl, data_in, and
@@ -95,7 +100,7 @@
       registers do not have field definitions.
 
 
-      <br/><br/>Number of Addresss unit bits(AUB) os the memory map is
+      <br><br>Number of Addresss unit bits(AUB) os the memory map is
       set to 8 bits.  There are 3 registers with identical size (32b),
       Hence, ranger = 12 = 3 * 32/AU = 3 * 32/8 = 3 * 4. Let's assume
       base addr=0x100.  Since address block has 12 Bytes in total, it
@@ -104,8 +109,8 @@
       accessed at once. Smaller accesses (e.g. 1 byte at a time) are
       also allowed. <b>Memory maps visualization</b> is shown on the
       right. User can expand and minimize parts of it by clicking the
-      plus (+) and minus (-) signs.<br/>
-      <img src="../images/mem_map_visualization.png">
+      plus (+) and minus (-) signs.<br>
+      <img src="../images/mem_map_visualization.png" alt="screen_cap_of_mem_map_visualization">
 
     </p>
 
