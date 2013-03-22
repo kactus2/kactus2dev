@@ -94,8 +94,7 @@ QString VhdlGeneral::vhdlType2String( const QString& type,
 
 void VhdlGeneral::writeDescription( const QString& description, 
 								   QTextStream& stream, 
-								   const QString& lineSeparator /*= QString("")*/,
-								   bool addStartComment /*= true*/ ) {
+								   const QString& indentation /*= QString("")*/) {
 
 	if (description.isEmpty()) {
 		stream << endl;
@@ -108,21 +107,14 @@ void VhdlGeneral::writeDescription( const QString& description,
 	// at least one line has to be because description was not empty
 	Q_ASSERT(!lines.isEmpty());
 
-/*	if (addStartComment) {
-		stream << "-- ";
-	}
-	stream << lines.first() << endl;
-	*/
-	// Split long lines. 
-	// Simple routine, does not account indentation
-	// and the line's last word can exceed 80 chars
+	// Split long lines.  Simple routine, does not account 
+	// indentation and the line's last word can go over 80 chars
 	for (int i = 0; i < lines.size(); ++i) {
 		QStringList words = lines.at(i).split(" ");	
-		//stream << "## " << lines.at(i) << endl;
-		int line_len = 0;
+		int line_len = 0; // num of chars
 		for (int w = 0; w < words.size(); ++w) {			
 			if (line_len == 0) {
-				stream << lineSeparator << "--";
+				stream << indentation << "--";
 			}
 			stream << " " << words.at(w);
 			line_len += words.at(w).size() +1; //+1 = white space	
@@ -133,9 +125,9 @@ void VhdlGeneral::writeDescription( const QString& description,
 			}
 		}			
 		stream << endl;
-		//stream << lineSeparator << "-- " << lines.at(i) << endl;
 	}
 }
+
 
 bool VhdlGeneral::isScalarType( const QString& typeName ) {
 	if (typeName.compare(QString("bit"), Qt::CaseInsensitive) == 0 ||

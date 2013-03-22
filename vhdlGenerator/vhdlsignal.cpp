@@ -51,17 +51,10 @@ void VhdlSignal::write( QTextStream& stream ) const {
 	Q_ASSERT(!type_.isEmpty());
 
 	if (!description_.isEmpty()) {
-		//stream << "\t";
-		VhdlGeneral::writeDescription(description_, stream, QString("\t"));
+		VhdlGeneral::writeDescription(description_, stream, QString("  "));
 	}
-	stream << "\tsignal "; 
-
-	stream.setFieldWidth(16); //align colons (:) at least roughly
-	stream. setPadChar(' '); 
-	stream.setFieldAlignment(QTextStream::AlignLeft);
-	stream << name_; 
-	stream.reset(); //remove formatting
-	
+	stream << "  signal "; 
+	stream << name_.leftJustified(16, ' '); //align colons (:) at least roughly
 	stream << " : ";
 	QString typeDefinition = VhdlGeneral::vhdlType2String(type_, left_, right_);
 	stream << typeDefinition << ";" << endl;

@@ -110,9 +110,9 @@ QVariant SegmentsModel::headerData( int section,
 			case 0:
 				return tr("Name");
 			case 1:
-				return tr("Offset");
+				return tr("Offset\n[AUB]");
 			case 2:
-				return tr("Range");
+				return tr("Range\n[AUB]");
 			case 3:
 				return tr("Description");
 			default:

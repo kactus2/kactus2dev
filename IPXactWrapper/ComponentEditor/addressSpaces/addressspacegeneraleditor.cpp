@@ -31,7 +31,7 @@ range_(this) {
 	range_.setProperty("mandatoryField", true);
 
 	QLabel* unitLabel = new QLabel(tr("Addressable unit bits (AUB)"), this);
-	QLabel* rangeLabel = new QLabel(tr("Range of address block [AUB]"), this);
+	QLabel* rangeLabel = new QLabel(tr("Range (=size) [AUB]"), this);
 	QLabel* widthLabel = new QLabel(tr("Width [bits]"), this);
 
 	QGridLayout* layout = new QGridLayout(this);

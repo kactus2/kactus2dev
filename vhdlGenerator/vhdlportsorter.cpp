@@ -47,10 +47,10 @@ bool VhdlPortSorter::operator!=( const VhdlPortSorter& other ) const {
 
 bool VhdlPortSorter::operator<( const VhdlPortSorter& other ) const {
 
-	// first check the interface name
+	// first compare the interface names
 	if (interface_.compare(other.interface_, Qt::CaseInsensitive) == 0) {
 		
-		// compare the direction and then the name
+		// same interface, then compare the direction, and then the name
 		if (direction_ == other.direction_) {
 			return name_.compare(other.name_, Qt::CaseInsensitive) < 0;
 		}
@@ -66,10 +66,10 @@ bool VhdlPortSorter::operator<( const VhdlPortSorter& other ) const {
 
 bool VhdlPortSorter::operator>( const VhdlPortSorter& other ) const {
 
-	// first check the interface name
+	// first compare the interface names
 	if (interface_.compare(other.interface_, Qt::CaseInsensitive) == 0) {
 
-		// compare the direction and then the name
+		// same interface, then compare the direction, and then the name
 		if (direction_ == other.direction_) {
 			return name_.compare(other.name_, Qt::CaseInsensitive) > 0;
 		}

@@ -75,11 +75,8 @@ void VhdlPort::write( QTextStream& stream ) const {
 	if (commentOut_) {
 		stream << "-- ";
 	}
-	stream.setFieldWidth(16); //align colons (:) at least roughly
-	stream. setPadChar(' '); 
-	stream.setFieldAlignment(QTextStream::AlignLeft);
-	stream << name_;
-	stream.reset();
+
+	stream << name_.leftJustified(16, ' '); //align colons (:) at least roughly
 	stream << " : " << General::direction2Str(direction_) << " ";
 
 	stream << VhdlGeneral::vhdlType2String(type_, left_, right_);

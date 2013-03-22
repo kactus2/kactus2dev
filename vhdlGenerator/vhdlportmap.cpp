@@ -125,7 +125,7 @@ VhdlPortMap::~VhdlPortMap() {
 }
 
 void VhdlPortMap::write( QTextStream& stream ) const {
-	stream << toString();
+	stream << toString().leftJustified(16, ' ');
 }
 
 QString VhdlPortMap::toString() const {

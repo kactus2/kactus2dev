@@ -168,20 +168,24 @@ bool Utils::isNumber( const QString& str ) {
 
 //-----------------------------------------------------------------------------
 // Function: Utils::replaceMagicWord()
+// Replaces all 'magicWords' in 'text' with (first letters) of 'value'
 //-----------------------------------------------------------------------------
 void Utils::replaceMagicWord(QString& text, QString const& magicWord, QString const& value)
 {
-    // Replace the simple case first.
+	// User can set how e.g. instance names are formed, e.g. first 3 letters of 
+	// name and then a running number. magicWord is e.g. 'ComponentName'
+
+	// Simple case first: replace all occurrences of '$magicWord$' with 'value'
     text.replace(QRegExp(QString("\\$") + magicWord + QString("\\$")), value);
 
-    // Check for cases with crop length.
+
+    // Check if only the first d letters of are taken, format '_d'
     QRegExp exp(QString("\\$") + magicWord + QString("_(\\d+)\\$"));
 
     int index = exp.indexIn(text);
-
     while (index != -1)
     {
-        // Extract the captured number and use it to crop the value.
+        // Match found, take the #cap leftmost lettes from 'value'
         QString cap = exp.cap(1);
         text.replace(QRegExp(QString("\\$") + magicWord + "_" + cap + "\\$"), value.left(cap.toUInt()));
         index = exp.indexIn(text);

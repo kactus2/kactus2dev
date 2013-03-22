@@ -115,12 +115,12 @@ VhdlComponentInstance::~VhdlComponentInstance() {
 void VhdlComponentInstance::write( QTextStream& stream ) const {
 	// if instance has description
 	if (!description_.isEmpty()) {
-		stream << "\t";
-		VhdlGeneral::writeDescription(description_, stream, QString("\t"));
+		stream << "  ";
+		VhdlGeneral::writeDescription(description_, stream, QString("  "));
 	}
 
 	// write the instance name and type
-	stream << "\t" << instanceName_ << " : " << typeName_;
+	stream << "  " << instanceName_ << " : " << typeName_;
 
 	// if architecture has been defined
 	if (!architecture_.isEmpty()) {
@@ -129,36 +129,40 @@ void VhdlComponentInstance::write( QTextStream& stream ) const {
 	stream << endl;
 
 	// print the generic map
-
 	if (!genericMap_.isEmpty()) {
-		stream << "\t\tgeneric map (" << endl;
+		stream << "  " << "  " << "generic map (" << endl;
 		for (QMap<QString, QString>::const_iterator i = genericMap_.begin(); i != genericMap_.end(); ++i) {
-			stream << "\t\t\t" << i.key() << " => " << i.value();
+
+			stream << "  " << "  " << "  ";
+			stream << i.key().leftJustified(16, ' '); //align colons (:) at least roughly
+			stream << " => " << i.value();
 
 			// if this is not the last generic to print
 			if (i + 1 != genericMap_.end()) {
 				stream << "," << endl;
 			}
 		}
-		stream << endl << "\t\t)" << endl;
+		stream << endl << "  " << "  " << ")" << endl;
 	}
 
 	// print the port map
-
 	if (!portMap_.isEmpty()) {
-		stream << "\t\tport map (" << endl;
-                for (QMap<VhdlPortMap, VhdlPortMap>::const_iterator i = portMap_.begin(); i != portMap_.end(); ++i) {
-			stream << "\t\t\t";
+		stream << "  " << "  " << "port map (" << endl;
+
+        for (QMap<VhdlPortMap, VhdlPortMap>::const_iterator i = portMap_.begin(); i != portMap_.end(); ++i) {
+
+			stream << "  " << "  " << "  " ;
 			i.key().write(stream);
 			stream << " => ";
-			i.value().write(stream);
+			stream << i.value().toString();
+			//i.value().write(stream);
 
-			// if this is not the last port map to print
+			// if this is not the last port map to print, add comma (,)
 			if (i + 1 != portMap_.end()) {
 				stream << "," << endl;
 			}
 		}
-		stream << endl << "\t\t);" << endl;
+		stream << endl << "  " << "  " << ");" << endl;
 	}
 }
 

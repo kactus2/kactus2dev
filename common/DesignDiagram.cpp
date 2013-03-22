@@ -259,12 +259,12 @@ QString DesignDiagram::createInstanceName(QSharedPointer<Component> component)
 
 //-----------------------------------------------------------------------------
 // Function: DesignDiagram::createInstanceName()
+// Forms a unique identifier for a component instance
 //-----------------------------------------------------------------------------
 QString DesignDiagram::createInstanceName(QString const& baseName)
 {
-    QSettings settings;
+    QSettings settings; // this reads the application settings automatically
     QString format = settings.value("Policies/InstanceNames", "").toString();
-
     if (format == "")
     {
         format = "$ComponentName$_$InstanceNumber$";

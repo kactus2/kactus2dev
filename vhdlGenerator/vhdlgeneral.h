@@ -93,17 +93,13 @@ namespace VhdlGeneral {
 	/*! \brief Write a description of some element to the stream.
 	 * 
 	 * \param description The description to write.
-	 * \param stream The text stream to write into.
-	 * \param lineSeparator The separator that is added to the beginning of
-	 * each new line. For example setting separator to \t will add one indentation
-	 * at beginning of each line.
-	 * \param addStartComment If true then "-- " is added before the description is written.
+	 * \param stream      The text stream to write into.
+	 * \param indentation Added to the beginning of each new line, e.g."  " or  "\t"
 	 *
 	*/
 	void writeDescription(const QString& description,
 		QTextStream& stream, 
-		const QString& lineSeparator = QString(""),
-		bool addStartComment = true);
+		const QString& indentation = QString(""));
 
 	/*! \brief Check the vhdl types if they can be connected to each other.
 	 *
@@ -112,6 +108,8 @@ namespace VhdlGeneral {
 	 *
 	 * \return bool True if the types are compatible.
 	*/
+
+
 	bool checkVhdlTypeMatch(const QString& type1, const QString& type2);
 
 	/*! \brief Take a default value and add "" or '' around it if needed depending on the type

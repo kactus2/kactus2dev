@@ -67,17 +67,16 @@ VhdlComponentDeclaration::~VhdlComponentDeclaration() {
 void VhdlComponentDeclaration::write( QTextStream& stream ) const {
 	// if component contains a description
 	if (!description().isEmpty()) {
-		//stream << "\t";
-		VhdlGeneral::writeDescription(description(), stream, QString("\t"));
+		VhdlGeneral::writeDescription(description(), stream, QString("  "));
 	}
-	stream << "\t-- IP-XACT VLNV: " << component_->getVlnv()->toString() << endl;
-	stream << "\tcomponent " << typeName_ << endl;
+	stream << "  " << "-- IP-XACT VLNV: " << component_->getVlnv()->toString() << endl;
+	stream << "  " << "component " << typeName_ << endl;
 
 	// write the generic declarations
 	if (!generics_.isEmpty()) {
-		stream << "\t\tgeneric (" << endl;
+		stream << "  "<< "  "  << "generic (" << endl;
         for (QMap<QString, QSharedPointer<VhdlGeneric> >::const_iterator i = generics_.begin(); i != generics_.end(); ++i) {
-			stream << "\t\t\t";
+			stream << "  " << "  " << "  " ;
 			i.value()->write(stream);
 
 			// if this is not the last generic to write
@@ -93,20 +92,20 @@ void VhdlComponentDeclaration::write( QTextStream& stream ) const {
 				stream << endl;
 			}
 		}
-		stream << "\t\t);" << endl;
+		stream << "  " << "  " << ");" << endl;
 	}
 
 	// write the port declarations
 	if (!ports_.isEmpty() && VhdlPort::hasRealPorts(ports_)) {
-		stream << "\t\tport (" << endl;
+		stream << "  " << "  " << "port (" << endl;
 		QString previousInterface;
 		for (QMap<VhdlPortSorter, QSharedPointer<VhdlPort> >::const_iterator i = ports_.begin(); i != ports_.end(); ++i) {
 			
-			// if the port is first in the interface then introduce it
+			// if the port is first in the interface, then introduce the interface
 			if (i.key().interface() != previousInterface) {
 				const QString interfaceName = i.key().interface();
 
-				stream << endl << "\t\t\t-- ";
+				stream << endl << "  " << "  " << "  " << "-- ";
 
 				if (interfaceName == QString("none")) {
 					stream << "These ports are not in any interface" << endl;
@@ -119,14 +118,13 @@ void VhdlComponentDeclaration::write( QTextStream& stream ) const {
 					const QString description = component_->getInterfaceDescription(
 						interfaceName);
 					if (!description.isEmpty()) {
-						//stream << "\t\t\t";
-						VhdlGeneral::writeDescription(description, stream, QString("\t\t\t"));
+						VhdlGeneral::writeDescription(description, stream, QString("      "));
 					}
 				}
 				previousInterface = interfaceName;
 			}
 			
-			stream << "\t\t\t";
+			stream << "  " << "  " << "  "; //3 indents
 			i.value()->write(stream); // print the actual port definition
 
 
@@ -143,10 +141,10 @@ void VhdlComponentDeclaration::write( QTextStream& stream ) const {
 				stream << endl;
 			}
 		}
-		stream << "\t\t);" << endl;
+		stream << "    );" << endl;
 	}
 
-	stream << "\tend component;" << endl;
+	stream << "  end component;" << endl;
 }
 
 QString VhdlComponentDeclaration::typeName() const {

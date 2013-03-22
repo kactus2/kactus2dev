@@ -3,6 +3,15 @@
  *      Author: Antti Kamppi
  * 		filename: vhdlgenerator2.cpp
  *		Project: Kactus 2
+ *
+ *      Creates a structural VHDL file with following structure
+ *      1. File header 
+ *      2. Libraries
+ *      3. Entity declaration
+ *      4. Architecture
+ *         - Signals (+ user's own code)
+ *         - Component declarations
+ *         - Component instantiations (+ user's own code)
  */
 
 #include "vhdlgenerator2.h"
@@ -160,7 +169,7 @@ void VhdlGenerator2::generateVhdl( const QString& outputFileName) {
 	// if previous file exists then remove it.
 	if (file.exists()) {
 
-		// read the user-modifiable code from the file
+		// read the existing user-modifiable code from the file
 		readUserModifiablePart(file);
 
 		file.remove();
@@ -185,6 +194,7 @@ void VhdlGenerator2::generateVhdl( const QString& outputFileName) {
 
 	emit noticeMessage(tr("Writing the vhdl file..."));
 
+	
 	// write header comments of the file
 	writeVhdlHeader(vhdlStream, fileInfo.fileName());
 
@@ -216,6 +226,9 @@ void VhdlGenerator2::generateVhdl( const QString& outputFileName) {
 	}
 	vhdlStream << endl;
 
+
+
+
 	// write the top-level entity
 	vhdlStream << "entity " << topLevelEntity_ << " is" << endl;
 	vhdlStream << endl;
@@ -229,14 +242,15 @@ void VhdlGenerator2::generateVhdl( const QString& outputFileName) {
 	// end top-level entity definition
 	vhdlStream << "end " << topLevelEntity_ << ";" << endl << endl;
 
+
 	// if view has description
 	QString viewDescription = component_->getViewDescription(viewName_);
 	VhdlGeneral::writeDescription(viewDescription, vhdlStream);
 
 	QString archName;
-	// if view name is not specified then "rtl" is used
+	// if view name is not specified then "structural" is used
 	if (viewName_.isEmpty()) {
-		archName = "rtl";
+		archName = "structural";
 	}
 	else {
 		archName = viewName_;
@@ -700,9 +714,9 @@ void VhdlGenerator2::connectInterfaces( const QString& connectionName,
 				continue;
 			}
 
-			// create the name for the signal to be created
-			const QString signalName = connectionName + portMap1->logicalPort_;
-
+			// create the name for the new signal
+			const QString signalName = connectionName + "_" + portMap1->logicalPort_;
+			
 			VhdlGenerator2::PortConnection port1(instance1, port1Name, 
 				alignment.port1Left_, alignment.port1Right_);
 			VhdlGenerator2::PortConnection port2(instance2, port2Name,
@@ -1119,7 +1133,7 @@ void VhdlGenerator2::writeVhdlHeader( QTextStream& vhdlStream, const QString& fi
 	vhdlStream << "-- Creation date: " << QDate::currentDate().toString(QString("dd.MM.yyyy")) << endl;
 	vhdlStream << "-- Creation time: " << QTime::currentTime().toString(QString("hh:mm:ss")) << endl;
 	vhdlStream << "-- Description  : " << endl;
-	VhdlGeneral::writeDescription(component_->getDescription(), vhdlStream, QString("")); // ,false);
+	VhdlGeneral::writeDescription(component_->getDescription(), vhdlStream, QString(""));
 	vhdlStream << "-- " << endl;
 
 	QSettings settings;
@@ -1137,12 +1151,12 @@ void VhdlGenerator2::writeGenerics( QTextStream& vhdlStream ) {
 	if (!topGenerics_.isEmpty()) {
 
 		// the start tag
-		vhdlStream << "\tgeneric (" << endl;
+		vhdlStream << "  " << "generic (" << endl;
 
 		for (QMap<QString, QSharedPointer<VhdlGeneric> >::iterator i = topGenerics_.begin();
 			i != topGenerics_.end(); ++i) {
 
-			vhdlStream << "\t\t";
+			vhdlStream << "  " << "  ";
 			i.value()->write(vhdlStream);
 
 			// if this is not the last generic to write
@@ -1158,7 +1172,7 @@ void VhdlGenerator2::writeGenerics( QTextStream& vhdlStream ) {
 				vhdlStream << endl;
 			}
 		}
-		vhdlStream << "\t);" << endl;
+		vhdlStream << "  " << ");" << endl;
 		vhdlStream << endl;
 	}
 }
@@ -1167,7 +1181,7 @@ void VhdlGenerator2::writePorts( QTextStream& vhdlStream ) {
 	// if ports exist
 	if (!topPorts_.isEmpty() && VhdlPort::hasRealPorts(topPorts_)) {
 
-		vhdlStream << "\tport (" << endl;
+		vhdlStream << "  " << "port (" << endl;
 
 		QString previousInterface;
 		// print each port
@@ -1178,7 +1192,7 @@ void VhdlGenerator2::writePorts( QTextStream& vhdlStream ) {
 				if (i.key().interface() != previousInterface) {
 					const QString interfaceName = i.key().interface();
 
-					vhdlStream << endl << "\t\t-- ";
+					vhdlStream << endl << "  " << "  " << "-- ";
 
 					if (interfaceName == QString("none")) {
 						vhdlStream << "These ports are not in any interface" << endl;
@@ -1190,16 +1204,15 @@ void VhdlGenerator2::writePorts( QTextStream& vhdlStream ) {
 						vhdlStream << "Interface: " << interfaceName << endl;
 						const QString description = component_->getInterfaceDescription(
 							interfaceName);
-						if (!description.isEmpty()) {
-							//vhdlStream << "\t\t";
-							VhdlGeneral::writeDescription(description, vhdlStream, QString("\t\t"));
+						if (!description.isEmpty()) {							
+							VhdlGeneral::writeDescription(description, vhdlStream, QString("    "));
 						}
 					}
 					previousInterface = interfaceName;
 				}
 
 				// write the port name and direction
-				vhdlStream << "\t\t";
+				vhdlStream << "  " << "  ";
 				i.value()->write(vhdlStream);
 
 				// if this is not the last port to write
@@ -1215,7 +1228,7 @@ void VhdlGenerator2::writePorts( QTextStream& vhdlStream ) {
 					vhdlStream << endl;
 				}
 		}
-		vhdlStream << "\t);" << endl;
+		vhdlStream << "  " << ");" << endl;
 		// write extra empty line to make code readable
 		vhdlStream << endl;
 	}
@@ -1315,19 +1328,19 @@ void VhdlGenerator2::readUserModifiablePart( QFile& previousFile ) {
 }
 
 void VhdlGenerator2::writeUserModifiedDeclarations( QTextStream& stream ) {
-	stream << "\t-- You can write vhdl code after this tag and it is saved through the generator." << endl;
-	stream << "\t" << BLACK_BOX_DECL_START << endl;
+	stream << "  " <<"-- You can write vhdl code after this tag and it is saved through the generator." << endl;
+	stream << "  " << BLACK_BOX_DECL_START << endl;
 	stream << userModifiedDeclarations_;
-	stream << "\t" << BLACK_BOX_DECL_END << endl;
-	stream << "\t-- Do not write your code after this tag." << endl << endl;
+	stream << "  " << BLACK_BOX_DECL_END << endl;
+	stream << "  " << "-- Do not write your code after this tag." << endl << endl;
 }
 
 void VhdlGenerator2::writeUserModifiedAssignments( QTextStream& stream ) {
-	stream << "\t-- You can write vhdl code after this tag and it is saved through the generator." << endl;
-	stream << "\t" << BLACK_BOX_ASSIGN_START << endl;
+	stream << "  " << "-- You can write vhdl code after this tag and it is saved through the generator." << endl;
+	stream << "  " << BLACK_BOX_ASSIGN_START << endl;
 	stream << userModifiedAssignments_;
-	stream << "\t" << BLACK_BOX_ASSIGN_END << endl;
-	stream << "\t-- Do not write your code after this tag." << endl << endl;
+	stream << "  " << BLACK_BOX_ASSIGN_END << endl;
+	stream << "  " << "-- Do not write your code after this tag." << endl << endl;
 }
 
 VhdlGenerator2::PortConnection::PortConnection( 

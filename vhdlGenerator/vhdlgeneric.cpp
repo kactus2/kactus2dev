@@ -55,12 +55,7 @@ void VhdlGeneric::write( QTextStream& stream ) const {
 	Q_ASSERT(!name_.isEmpty());
 	Q_ASSERT(!type_.isEmpty());
 
-	stream.setFieldWidth(16); //align colons (:) at least roughly
-	stream. setPadChar(' '); 
-	stream.setFieldAlignment(QTextStream::AlignLeft);
-	stream << name_;
-	stream.reset();
-
+	stream << name_.leftJustified(16, ' '); //align colons (:) at least roughly
 	stream<< " : " << type_;
 
 	// check if type is string then quotations must be used for default value
