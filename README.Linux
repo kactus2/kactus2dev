@@ -1,6 +1,12 @@
 Steps to build and install Kactus2 on Linux.
 
-qmake Kactus2_Solution.pro
+
+If you are using libraries from http://qt-project.org/downloads
+qmake Kactus2_Solution.pro 
+
+If you have installed qtbase5-dev packege etc.: 
+qtchooser -run-tool=qmake -qt=qt5 Kactus2_Solution.pro)
+
 make
 make install
 
