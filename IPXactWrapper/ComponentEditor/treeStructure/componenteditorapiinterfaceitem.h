@@ -10,7 +10,7 @@
 
 #include "componenteditoritem.h"
 #include <models/ApiInterface.h>
-#include <IPXactWrapper/ComponentEditor/software/ApiInterfaceEditor.h>
+#include <IPXactWrapper/ComponentEditor/software/apiInterface/ApiInterfaceEditor.h>
 
 /*! \brief The item for single API-interface in component editor's navigation tree.
  *

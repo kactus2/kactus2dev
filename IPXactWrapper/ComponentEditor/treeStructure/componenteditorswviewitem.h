@@ -9,7 +9,7 @@
 #define COMPONENTEDITORSWVIEWITEM_H
 
 #include "componenteditoritem.h"
-#include <IPXactWrapper/ComponentEditor/software/SWViewEditor.h>
+#include <IPXactWrapper/ComponentEditor/software/swView/SWViewEditor.h>
 #include <models/SWView.h>
 
 /*! \brief The item for a single software view in the component editor's navigation tree.

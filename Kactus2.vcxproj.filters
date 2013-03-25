@@ -761,6 +761,30 @@
     <Filter Include="Source Files\common\widgets\parameterComboBox">
       <UniqueIdentifier>{ec9b633a-0c5a-4f14-9ec6-325d9e084b61}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\IPXactWrapper\ComponentEditor\software\apiInterface">
+      <UniqueIdentifier>{0ba740f9-1bbe-4c7e-99fc-9132a1237add}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\IPXactWrapper\ComponentEditor\software\comInterface">
+      <UniqueIdentifier>{66c807c2-a1e3-495d-a098-0e1c76cee48f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\IPXactWrapper\ComponentEditor\software\swView">
+      <UniqueIdentifier>{c12659a0-47da-4537-89ec-23966c1149b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\IPXactWrapper\ComponentEditor\software\systemView">
+      <UniqueIdentifier>{f5038f92-84e7-4b3d-be25-0457cda1d875}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\IPXactWrapper\ComponentEditor\software\apiInterface">
+      <UniqueIdentifier>{15e9dbdf-cf7e-4d49-bebb-f6d2b5a7f40e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\IPXactWrapper\ComponentEditor\software\comInterface">
+      <UniqueIdentifier>{54646408-17d2-49d4-af9d-2c74b5fa2cd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\IPXactWrapper\ComponentEditor\software\swView">
+      <UniqueIdentifier>{65e6db94-9458-4762-80f4-1f32e3b7bc79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\IPXactWrapper\ComponentEditor\software\systemView">
+      <UniqueIdentifier>{4b04b8f3-ce92-415d-9e1b-6aa39a486c05}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\CSourceWriter.cpp">
@@ -1351,30 +1375,6 @@
     <ClCompile Include="IPXactWrapper\ComponentEditor\views\viewsmodel.cpp">
       <Filter>Source Files\IPXactWrapper\ComponentEditor\views</Filter>
     </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComponentEditor\software\ApiInterfaceEditor.cpp">
-      <Filter>Source Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComponentEditor\software\apiinterfacesdelegate.cpp">
-      <Filter>Source Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComponentEditor\software\apiinterfaceseditor.cpp">
-      <Filter>Source Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComponentEditor\software\apiinterfacesmodel.cpp">
-      <Filter>Source Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComponentEditor\software\ComInterfaceEditor.cpp">
-      <Filter>Source Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComponentEditor\software\cominterfacesdelegate.cpp">
-      <Filter>Source Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComponentEditor\software\cominterfaceseditor.cpp">
-      <Filter>Source Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComponentEditor\software\cominterfacesmodel.cpp">
-      <Filter>Source Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </ClCompile>
     <ClCompile Include="IPXactWrapper\ComponentEditor\software\PropertyValueDelegate.cpp">
       <Filter>Source Files\IPXactWrapper\ComponentEditor\software</Filter>
     </ClCompile>
@@ -1385,30 +1385,6 @@
       <Filter>Source Files\IPXactWrapper\ComponentEditor\software</Filter>
     </ClCompile>
     <ClCompile Include="IPXactWrapper\ComponentEditor\software\SWPropertiesEditor.cpp">
-      <Filter>Source Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComponentEditor\software\SWViewEditor.cpp">
-      <Filter>Source Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComponentEditor\software\swviewsdelegate.cpp">
-      <Filter>Source Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComponentEditor\software\swviewseditor.cpp">
-      <Filter>Source Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComponentEditor\software\swviewsmodel.cpp">
-      <Filter>Source Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComponentEditor\software\SystemViewEditor.cpp">
-      <Filter>Source Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComponentEditor\software\SystemViewsDelegate.cpp">
-      <Filter>Source Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComponentEditor\software\SystemViewsEditor.cpp">
-      <Filter>Source Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </ClCompile>
-    <ClCompile Include="IPXactWrapper\ComponentEditor\software\SystemViewsModel.cpp">
       <Filter>Source Files\IPXactWrapper\ComponentEditor\software</Filter>
     </ClCompile>
     <ClCompile Include="IPXactWrapper\ComponentEditor\addressSpaces\addressspaceeditor.cpp">
@@ -2362,18 +2338,6 @@
     <ClCompile Include="GeneratedFiles\moc_TabDocument.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_SystemViewsModel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_SystemViewsEditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_SystemViewsDelegate.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_SystemViewEditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_SystemDetailsEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -2396,18 +2360,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_SystemAddCommands.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_swviewsmodel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_swviewseditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_swviewsdelegate.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_SWViewEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_SWPropertiesEditor.cpp">
@@ -3190,18 +3142,6 @@
     <ClCompile Include="GeneratedFiles\moc_CommonGraphicsUndoCommands.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_cominterfacesmodel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_cominterfaceseditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_cominterfacesdelegate.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ComInterfaceEditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ComDefinitionEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -3323,18 +3263,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_AssistedLineEdit.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_apiinterfacesmodel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_apiinterfaceseditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_apiinterfacesdelegate.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ApiInterfaceEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ApiFunctionParameterModel.cpp">
@@ -3513,6 +3441,102 @@
     </ClCompile>
     <ClCompile Include="common\widgets\parameterComboBox\parametercombobox.cpp">
       <Filter>Source Files\common\widgets\parameterComboBox</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ApiInterfaceEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_apiinterfacesdelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_apiinterfaceseditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_apiinterfacesmodel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\software\apiInterface\ApiInterfaceEditor.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\software\apiInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\software\apiInterface\apiinterfacesdelegate.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\software\apiInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\software\apiInterface\apiinterfaceseditor.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\software\apiInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\software\apiInterface\apiinterfacesmodel.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\software\apiInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\software\comInterface\ComInterfaceEditor.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\software\comInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComInterfaceEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\software\comInterface\cominterfacesdelegate.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\software\comInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_cominterfacesdelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\software\comInterface\cominterfaceseditor.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\software\comInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_cominterfaceseditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\software\comInterface\cominterfacesmodel.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\software\comInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_cominterfacesmodel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SystemViewEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SystemViewsDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SystemViewsEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SystemViewsModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\software\systemView\SystemViewEditor.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\software\systemView</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\software\systemView\SystemViewsDelegate.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\software\systemView</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\software\systemView\SystemViewsEditor.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\software\systemView</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\software\systemView\SystemViewsModel.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\software\systemView</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\software\swView\SWViewEditor.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\software\swView</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SWViewEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\software\swView\swviewsdelegate.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\software\swView</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_swviewsdelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\software\swView\swviewseditor.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\software\swView</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_swviewseditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\software\swView\swviewsmodel.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\software\swView</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_swviewsmodel.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4563,30 +4587,6 @@
     <CustomBuild Include="IPXactWrapper\ComponentEditor\ports\portsmodel.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor\ports</Filter>
     </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\ApiInterfaceEditor.h">
-      <Filter>Header Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\apiinterfacesdelegate.h">
-      <Filter>Header Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\apiinterfaceseditor.h">
-      <Filter>Header Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\apiinterfacesmodel.h">
-      <Filter>Header Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\ComInterfaceEditor.h">
-      <Filter>Header Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\cominterfacesdelegate.h">
-      <Filter>Header Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\cominterfaceseditor.h">
-      <Filter>Header Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\cominterfacesmodel.h">
-      <Filter>Header Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </CustomBuild>
     <CustomBuild Include="IPXactWrapper\ComponentEditor\software\PropertyValueDelegate.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor\software</Filter>
     </CustomBuild>
@@ -4597,30 +4597,6 @@
       <Filter>Header Files\IPXactWrapper\ComponentEditor\software</Filter>
     </CustomBuild>
     <CustomBuild Include="IPXactWrapper\ComponentEditor\software\SWPropertiesEditor.h">
-      <Filter>Header Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\SWViewEditor.h">
-      <Filter>Header Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\swviewsdelegate.h">
-      <Filter>Header Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\swviewseditor.h">
-      <Filter>Header Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\swviewsmodel.h">
-      <Filter>Header Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\SystemViewEditor.h">
-      <Filter>Header Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\SystemViewsDelegate.h">
-      <Filter>Header Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\SystemViewsEditor.h">
-      <Filter>Header Files\IPXactWrapper\ComponentEditor\software</Filter>
-    </CustomBuild>
-    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\SystemViewsModel.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor\software</Filter>
     </CustomBuild>
     <CustomBuild Include="IPXactWrapper\ComponentEditor\treeStructure\componenteditor.h">
@@ -5033,6 +5009,54 @@
     </CustomBuild>
     <CustomBuild Include="common\widgets\parameterComboBox\parametercombobox.h">
       <Filter>Header Files\common\widgets\parameterComboBox</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\apiInterface\ApiInterfaceEditor.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\software\apiInterface</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\apiInterface\apiinterfacesdelegate.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\software\apiInterface</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\apiInterface\apiinterfaceseditor.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\software\apiInterface</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\apiInterface\apiinterfacesmodel.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\software\apiInterface</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\comInterface\ComInterfaceEditor.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\software\comInterface</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\comInterface\cominterfacesdelegate.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\software\comInterface</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\comInterface\cominterfaceseditor.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\software\comInterface</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\comInterface\cominterfacesmodel.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\software\comInterface</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\systemView\SystemViewEditor.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\software\systemView</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\systemView\SystemViewsDelegate.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\software\systemView</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\systemView\SystemViewsEditor.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\software\systemView</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\systemView\SystemViewsModel.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\software\systemView</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\swView\SWViewEditor.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\software\swView</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\swView\swviewsdelegate.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\software\swView</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\swView\swviewseditor.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\software\swView</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\swView\swviewsmodel.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\software\swView</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

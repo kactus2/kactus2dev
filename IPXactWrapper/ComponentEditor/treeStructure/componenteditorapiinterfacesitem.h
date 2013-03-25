@@ -10,7 +10,7 @@
 
 #include "componenteditoritem.h"
 #include <models/ApiInterface.h>
-#include <IPXactWrapper/ComponentEditor/software/apiinterfaceseditor.h>
+#include <IPXactWrapper/ComponentEditor/software/apiInterface/apiinterfaceseditor.h>
 
 #include <QList>
 

@@ -8,7 +8,7 @@
 #ifndef COMPONENTEDITORCOMINTERFACESITEM_H
 #define COMPONENTEDITORCOMINTERFACESITEM_H
 
-#include <IPXactWrapper/ComponentEditor/software/cominterfaceseditor.h>
+#include <IPXactWrapper/ComponentEditor/software/comInterface/cominterfaceseditor.h>
 #include "componenteditoritem.h"
 
 /*! \brief The COM interfaces-item in the component editor's navigation tree.

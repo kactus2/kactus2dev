@@ -10,7 +10,7 @@
 
 #include "componenteditoritem.h"
 #include <models/ComInterface.h>
-#include <IPXactWrapper/ComponentEditor/software/ComInterfaceEditor.h>
+#include <IPXactWrapper/ComponentEditor/software/comInterface/ComInterfaceEditor.h>
 
 /*! \brief The item for a single COM interface in component editor's navigation tree.
  *

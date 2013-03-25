@@ -12,7 +12,7 @@
 #ifndef APIINTERFACEEDITOR_H
 #define APIINTERFACEEDITOR_H
 
-#include "../itemeditor.h"
+#include <IPXactWrapper/ComponentEditor/itemeditor.h>
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>

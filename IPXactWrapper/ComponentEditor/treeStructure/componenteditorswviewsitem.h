@@ -9,7 +9,7 @@
 #define COMPONENTEDITORSWVIEWSITEM_H
 
 #include "componenteditoritem.h"
-#include <IPXactWrapper/ComponentEditor/software/swviewseditor.h>
+#include <IPXactWrapper/ComponentEditor/software/swView/swviewseditor.h>
 
 /*! \brief The Software Views-item in the component editor's navigation tree.
  *
