@@ -1,31 +1,34 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-	<head>
-	<meta http-equiv="Content-Type"content="text/html; charset=utf-8">
-		<link href="../style.css" rel="Stylesheet" type="text/css">
-		<title>CPUs editor</title>
-	</head>
-	<body>
-		<h2>CPUs editor</h2>
-		<p>
-			The cpus editor displays the programmable cores the component contains.
-		</p>
-		<p>
-			The name and description contain the name and textual description of the programmable core. 
-			Address space references contain the names of the address spaces that specify the logical address space of the cpu. 
-			The master interfaces of a component may reference the same address spaces to create a link between programmable core and interface.
-		</p>
-		<p>
-			Cpus editor provides a context menu with the following options:
-			<ul>
-				<li>Add new cpu (Add row)</li>
-				<li>Remove cpu (Remove row)</li>
-				<li>Clear the selected cells</li>
-				<li>Copy the contents of the selected cells to clipboard</li>
-				<li>Paste the contents of the clipboard to the selected cells</li>
-				<li>Import a csv-file to the editor</li>
-				<li>Export the contents of the editor to a csv-file</li>
-			</ul>
-		</p>
-	</body>
+  <head>
+    <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>CPUs editor</title>
+  </head>
+  <body>
+    <h2>CPUs editor</h2>
+    <p>
+      The cpus editor displays the programmable cores the component
+      contains.
+    </p>
+    <p>
+      Each CPU has a mandatory <b>name</b> and optional textual
+      <b>description</b>. <b>Address space</b> references specify the
+      logical address space of the cpu. When a <i>master interface</i>
+      of a component referencec the same address spaces, there's a
+      link link between the programmable core and the interface.
+    </p>
+    <p>
+      Cpus editor provides a context menu with the following options:
+    <ul>
+      <li>Add new cpu (Add row)</li>
+      <li>Remove cpu (Remove row)</li>
+      <li>Clear the selected cells</li>
+      <li>Copy the contents of the selected cells to clipboard</li>
+      <li>Paste the contents of the clipboard to the selected cells</li>
+      <li>Import a csv-file to the editor</li>
+      <li>Export the contents of the editor to a csv-file</li>
+    </ul>
+  </p>
+  </body>
 </html>

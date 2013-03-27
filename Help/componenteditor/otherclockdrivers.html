@@ -1,37 +1,46 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-	<head>
-	<meta http-equiv="Content-Type"content="text/html; charset=utf-8">
-		<link href="../style.css" rel="Stylesheet" type="text/css">
-		<title>Other clock drivers editor</title>
-	</head>
-	<body>
-		<h2>Other clock drivers editor</h2>
-		<p>
-			Other clock drivers-editor shows the clocks within the component that are not directly associated with a top-level port.
-			This kind of clocks could be i.e. virtual clocks or generated clocks. 
-		</p>
-		<p>
-			The clock name specifies the name of the clock and the clock source the physical path and name of the clock generation cell. 
-			The rest of the columns are used to describe the waveform of the clock signal. 
-			The time units are either <strong>ps</strong> (picosecond) or <strong>ns</strong> (nanosecond). 
-		</p>
-		<p>
-			The clock period defines the length of one cycle of clock pulse. Pulse offset describes the time delay from start 
-			of the pulse to the first transition. Pulse value defines the logic value which the transition is made to. 
-			Pulse duration specifies how long the value defined in pulse value is held.
-		</p>
-		<p>
-			Other clock drivers editor provides a context menu with the following options: 
-			<ul>
-				<li>Add new clock (Add row)</li>
-				<li>Remove clock (Remove row)</li>
-				<li>Clear the selected cells</li>
-				<li>Copy the contents of the selected cells to clipboard</li>
-				<li>Paste the contents of the clipboard to the selected cells</li>
-				<li>Import a csv-file to the editor</li>
-				<li>Export the contents of the editor to a csv-file</li>
-			</ul>
-		</p>
-	</body>
+  <head>
+    <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>Other clock drivers editor</title>
+  </head>
+  <body>
+    <h2>Other clock drivers editor</h2>
+    <p>
+      Other clock drivers-editor shows the clocks within the component
+      that are not directly associated with a top-level port.  This
+      kind of clocks could be i.e. virtual clocks or generated clocks.
+    </p>
+    <p>
+      The clock river has 5 mandatory parameters such as <b>name</b>.
+      <b>Clock source</b> is optional and defines the physical path
+      and name of the clock generation cell. E.g. a component
+      instantiated in VHDL and its output, like 'i_clkGen/clk1'. The
+      waveform of the clock signal has 4 parameters. Time units are
+      either <strong>ps</strong> (picosecond) or <strong>ns</strong>
+      (nanosecond).
+    </p>
+    <p>
+      <b>Clock period</b> defines the length of one cycle of clock
+      pulse, e.g. 5 (ns). <b>Pulse offset</b> describes the time delay
+      from start of the cycle to the first transition. <b>Pulse
+      value</b> defines the logic value which the transition is made
+      to, either 0 or 1. <b>Pulse duration</b> specifies how long the
+      value defined in pulse value is held, e.g. 2.5 (ns).
+    </p>
+    <p>
+      Other clock drivers editor provides a context menu with the
+      following options:
+    <ul>
+      <li>Add new clock (Add row)</li>
+      <li>Remove clock (Remove row)</li>
+      <li>Clear the selected cells</li>
+      <li>Copy the contents of the selected cells to clipboard</li>
+      <li>Paste the contents of the clipboard to the selected cells</li>
+      <li>Import a csv-file to the editor</li>
+      <li>Export the contents of the editor to a csv-file</li>
+    </ul>
+  </p>
+  </body>
 </html>

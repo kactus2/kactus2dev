@@ -5,7 +5,21 @@
 <body>
     <h2>SW Design</h2>
     <p>
-        TODO:
+      This is Kactus extension <img src="../images/appicon.png"
+      width="50pix"><br> User can describe the structure of SW
+      similarly ot HW design. All SW instantiated in one <i>SW
+      design</i> will be executes on a single CPU. The mapping of SW
+      design onto CPU HW is done in a <i>system design</i>.
+    </p>
+    <p>
+      Select <i>SW components</i> from the library and connect
+      them. <br>Instead of <i>interfaces</i> and <i>ports</i>, SW
+      components have <i>API interfaces</i>. There are two modes, a SW
+      component can <i>request</i> an API (i.e. make calls to API
+      functions) or <i>provide</i> it (i.e. implement the API
+      functions). Connections are allowed only when interfaces match
+      or if either interface is 'UNSET' (no API VLNV associated with
+      it).
     </p>
 </body>
 </html>
