@@ -199,6 +199,17 @@ public:
 	*/
 	const QList<QSharedPointer<Cpu> >& getCpus() const;
 
+	/*! \brief Get the names of the CPU elements within component.
+	 *
+	 * Method: 		getCpuNames
+	 * Full name:	Component::getCpuNames
+	 * Access:		public 
+	 *
+	 *
+	 * \return QStringList containing the CPU names.
+	*/
+	QStringList getCpuNames() const;
+
 	/*! \brief Is this component a cpu
 	*
 	* \return boolean value

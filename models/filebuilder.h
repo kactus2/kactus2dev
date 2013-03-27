@@ -30,9 +30,6 @@ public:
 	 * \param fileBuilderNode A reference to a QDomNode to parse the
 	 * information from.
 	 *
-	 * Exception guarantee: basic
-	 * \exception Parse_error Occurs when a mandatory element is missing in
-	 * this class or one of it's member classes.
 	 */
 	FileBuilder(QDomNode &fileBuilderNode);
 

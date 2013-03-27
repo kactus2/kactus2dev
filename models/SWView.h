@@ -15,12 +15,16 @@
 #include <LibraryManager/vlnv.h>
 
 #include <models/generaldeclarations.h>
-
+#include <models/filebuilder.h>
 #include <common/Global.h>
+#include <models/swbuildcommand.h>
+#include <models/bspbuildcommand.h>
 
 #include <QString>
 #include <QDomNode>
 #include <QXmlStreamWriter>
+#include <QStringList>
+#include <QList>
 
 //-----------------------------------------------------------------------------
 //! SW view class for making VLNV references to SW designs.
@@ -40,7 +44,7 @@ public:
      *
 	 *      @param [in] name The name of the view.
 	 */
-	SWView(const QString name);
+	SWView(const QString& name);
 
 	/*!
      *  Default constructor.
@@ -64,27 +68,37 @@ public:
 	 *  Uses the specified writer to write the class contents into file as valid
 	 *  IP-Xact.
 	 *
+	 *			@param [in] withinHWComp Specifies if the SW view is within HW or SW component.
 	 *      @param [in] writer A reference to a QXmlStreamWriter instance that is used to
 	 *                         write the document into file.
 	 */
-	void write(QXmlStreamWriter& writer);
+	void write(QXmlStreamWriter& writer, bool withinHWComp);
 
 	/*!
      *  Checks if the view is in a valid state.
 	 * 
-	 *      @param [in] errorList        The list to add the possible error messages to.
-	 *      @param [in] parentIdentifier String from parent to help to identify the location of the error.
+	 *		@param [in] fileSetNames	  Contains the names of the component's file sets.
+	 *		@param [in] cpuNames			  Contains the names of the component's CPU elements.
+	 *		@param [in] errorList        The list to add the possible error messages to.
+	 *    @param [in] parentIdentifier String from parent to help to identify the location of the error.
 	 *
 	 *      @return True if contents are valid.
 	 */
-	bool isValid(QStringList& errorList, QString const& parentIdentifier) const;
+	bool isValid(const QStringList& fileSetNames,
+		const QStringList& cpuNames,
+		QStringList& errorList, 
+		QString const& parentIdentifier) const;
 
 	/*!
      *  Checks if the view is in a valid state.
 	 * 
+	 * \param fileSetNames Contains the names of the component's file sets.
+	 * \param cpuNames Contains the names of the component's CPU elements.
+	 * 
 	 *      @return True if contents are valid.
 	*/
-	bool isValid() const;
+	bool isValid(const QStringList& fileSetNames,
+		const QStringList& cpuNames) const;
 
 	/*! \brief Get pointer to the hierarchical design for this view
 	 *
@@ -152,6 +166,51 @@ public:
 	*/
 	const General::NameGroup& getNameGroup() const;
 
+	/*! \brief Get the file set references of the SW view.
+	 *
+	 * Method: 		getFileSetRefs
+	 * Full name:	SWView::getFileSetRefs
+	 * Access:		public 
+	 *
+	 *
+	 * \return QStringList containing the file set names.
+	*/
+	const QStringList& getFileSetRefs() const;
+
+	/*! \brief Get the file set references of the SW view.
+	 *
+	 * Method: 		getFileSetRefs
+	 * Full name:	SWView::getFileSetRefs
+	 * Access:		public 
+	 *
+	 *
+	 * \return QStringList containing the file set names.
+	*/
+	QStringList getFileSetRefs();
+
+	/*! \brief Set the file set references for the SW view.
+	 *
+	 * Method: 		setFileSetRefs
+	 * Full name:	SWView::setFileSetRefs
+	 * Access:		public 
+	 *
+	 * \param fileSetRefs Contains the file set names to set.
+	 *
+	*/
+	void setFileSetRefs(const QStringList& fileSetRefs);
+
+	//! \brief Get the SW build commands of the SW view.
+	QList<QSharedPointer<SWBuildCommand> >& getSWBuildCommands();
+
+	//! \brief Get the SW build commands of the SW view.
+	const QList<QSharedPointer<SWBuildCommand> >& getSWBuildCommands() const;
+
+	//! \brief Get the build command for the board support package.
+	QSharedPointer<BSPBuildCommand> getBSPBuildCommand();
+
+	//! \brief Get the build command for the board support package.
+	const QSharedPointer<BSPBuildCommand> getBSPBuildCommand() const;
+
 private:
 	//! \brief Contains the name, display name and description of view.
 	General::NameGroup nameGroup_;
@@ -162,6 +221,15 @@ private:
 	 * reference a hierarchical design.
 	 */
 	VLNV hierarchyRef_;
+
+	//! \brief The file set references used by this SW view.
+	QStringList filesetRefs_;
+
+	//! \brief Contains the SW build commands for SW view.
+	QList<QSharedPointer<SWBuildCommand> > swBuildCommands_;
+
+	//! \brief Contains the command options to build the BSP package for HW component.
+	QSharedPointer<BSPBuildCommand> bspCommand_;
 };
 
 //-----------------------------------------------------------------------------

@@ -14,9 +14,10 @@
 SWViewsModel::SWViewsModel(QSharedPointer<Component> component,
 						   QObject *parent):
 QAbstractTableModel(parent),
-views_(component->getSWViews()) {
+views_(component->getSWViews()),
+component_(component) {
 
-	Q_ASSERT(component);
+	Q_ASSERT(component_);
 }
 
 SWViewsModel::~SWViewsModel() {
@@ -108,7 +109,10 @@ QVariant SWViewsModel::data( const QModelIndex& index, int role /*= Qt::DisplayR
 	}
 	else if (Qt::ForegroundRole == role) {
 
-		if (views_.at(index.row())->isValid()) {
+		QStringList fileSetNames = component_->getFileSetNames();
+		QStringList cpuNames = component_->getCpuNames();
+
+		if (views_.at(index.row())->isValid(fileSetNames, cpuNames)) {
 			return QColor("black");
 		}
 		else {
@@ -173,9 +177,12 @@ bool SWViewsModel::setData( const QModelIndex& index, const QVariant& value, int
 }
 
 bool SWViewsModel::isValid() const {
+	QStringList fileSetNames = component_->getFileSetNames();
+	QStringList cpuNames = component_->getCpuNames();
+
 	// check that each software view is valid
 	foreach (QSharedPointer<SWView> swView, views_) {
-		if (!swView->isValid()) {
+		if (!swView->isValid(fileSetNames, cpuNames)) {
 			return false;
 		}
 	}

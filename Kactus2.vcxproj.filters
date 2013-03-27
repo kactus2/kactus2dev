@@ -3538,6 +3538,12 @@
     <ClCompile Include="GeneratedFiles\moc_swviewsmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="models\swbuildcommand.cpp">
+      <Filter>Source Files\models</Filter>
+    </ClCompile>
+    <ClCompile Include="models\bspbuildcommand.cpp">
+      <Filter>Source Files\models</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5485,6 +5491,12 @@
     </ClInclude>
     <ClInclude Include="PluginSystem\ISourceAnalyzerPlugin.h">
       <Filter>Header Files\PluginSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="models\swbuildcommand.h">
+      <Filter>Header Files\models</Filter>
+    </ClInclude>
+    <ClInclude Include="models\bspbuildcommand.h">
+      <Filter>Header Files\models</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -14,8 +14,6 @@
 #include <QDomNamedNodeMap>
 #include <QXmlStreamWriter>
 
-#include <QDebug>
-
 View::View(QDomNode &viewNode): 
 nameGroup_(viewNode),
 envIdentifiers_(),

@@ -1093,6 +1093,7 @@ CreateHelp
     <ClCompile Include="models\ApiFunctionParameter.cpp" />
     <ClCompile Include="models\ApiInterface.cpp" />
     <ClCompile Include="models\bank.cpp" />
+    <ClCompile Include="models\bspbuildcommand.cpp" />
     <ClCompile Include="models\buildcommand.cpp" />
     <ClCompile Include="models\buildmodel.cpp" />
     <ClCompile Include="models\busdefinition.cpp" />
@@ -1146,6 +1147,7 @@ CreateHelp
     <ClCompile Include="models\servicetypedef.cpp" />
     <ClCompile Include="models\slaveinterface.cpp" />
     <ClCompile Include="models\subspacemap.cpp" />
+    <ClCompile Include="models\swbuildcommand.cpp" />
     <ClCompile Include="models\SWInstance.cpp" />
     <ClCompile Include="models\SWView.cpp" />
     <ClCompile Include="models\SystemView.cpp" />
@@ -4389,6 +4391,8 @@ CreateHelp
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL </Command>
     </CustomBuild>
     <ClInclude Include="MemoryDesigner\SegmentItem.h" />
+    <ClInclude Include="models\bspbuildcommand.h" />
+    <ClInclude Include="models\swbuildcommand.h" />
     <ClInclude Include="PluginSystem\IGeneratorPlugin.h" />
     <ClInclude Include="PluginSystem\IPlugin.h" />
     <ClInclude Include="PluginSystem\IPluginUtility.h" />

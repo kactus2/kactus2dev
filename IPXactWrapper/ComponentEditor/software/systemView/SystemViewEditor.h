@@ -13,6 +13,7 @@
 #define SYSTEMVIEWEDITOR_H
 
 #include <IPXactWrapper/ComponentEditor/itemeditor.h>
+#include <IPXactWrapper/ComponentEditor/views/filesetrefeditor.h>
 
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
@@ -66,6 +67,9 @@ private slots:
 	//! \brief Handler for changes in hierarchy reference.
 	void onHierRefChange();
 
+	//! \brief Handler for changes in file set references.
+	void onFileSetRefChange();
+
 private:
     // Disable copying.
     SystemViewEditor(SystemViewEditor const& rhs);
@@ -86,6 +90,9 @@ private:
 
     //! VLNV editor for the hierarchy reference.
     VLNVEditor* hierRefEditor_;
+
+	 //! \brief Editor to set the file set references of the system view.
+	 FileSetRefEditor* fileSetRefEditor_;
 };
 
 //-----------------------------------------------------------------------------

@@ -21,6 +21,7 @@
 #include <QString>
 #include <QDomNode>
 #include <QXmlStreamWriter>
+#include <QStringList>
 
 //-----------------------------------------------------------------------------
 //! System view class for making VLNV references to system designs.
@@ -72,19 +73,22 @@ public:
 	/*!
      *  Checks if the view is in a valid state.
 	 * 
+	 *		  @param [in] fileSetNames		 File set names of the containing component.
 	 *      @param [in] errorList        The list to add the possible error messages to.
 	 *      @param [in] parentIdentifier String from parent to help to identify the location of the error.
 	 *
 	 *      @return True if contents are valid.
 	 */
-	bool isValid(QStringList& errorList, QString const& parentIdentifier) const;
+	bool isValid(const QStringList& fileSetNames, QStringList& errorList, QString const& parentIdentifier) const;
 
 	/*!
      *  Checks if the view is in a valid state.
 	 * 
+	 *		  @param [in] fileSetNames File set names of the containing component.
+	 * 
 	 *      @return True if contents are valid.
 	*/
-	bool isValid() const;
+	bool isValid(const QStringList& fileSetNames) const;
 
     /*! \brief Set the hierarchyRef for this view
 	 *
@@ -164,6 +168,28 @@ public:
 	*/
 	const General::NameGroup& getNameGroup() const;
 
+	/*! \brief Get the file set references of the system view.
+	 *
+	 * Method: 		getFileSetRefs
+	 * Full name:	SystemView::getFileSetRefs
+	 * Access:		public 
+	 *
+	 *
+	 * \return QStringList containing the file set names.
+	*/
+	QStringList getFileSetRefs() const;
+
+	/*! \brief Set the file set references for the system view.
+	 *
+	 * Method: 		setFileSetRefs
+	 * Full name:	SystemView::setFileSetRefs
+	 * Access:		public 
+	 *
+	 * \param fileSetRefs Contains the file set names.
+	 *
+	*/
+	void setFileSetRefs(const QStringList& fileSetRefs);
+
 private:
 	//! \brief Contains the name, display name and description of view.
 	General::NameGroup nameGroup_;
@@ -177,6 +203,9 @@ private:
 
     //! The name of the HW view to which the system references.
     QString hwViewRef_;
+
+	//! \brief Contains the references to file sets of the containing component.
+	 QStringList fileSetRefs_;
 };
 
 //-----------------------------------------------------------------------------

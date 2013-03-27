@@ -16,7 +16,8 @@
 //-----------------------------------------------------------------------------
 SystemView::SystemView(QDomNode& viewNode)
     : nameGroup_(viewNode), 
-      hierarchyRef_()
+      hierarchyRef_(),
+		fileSetRefs_()
 {
     for (int i = 0; i < viewNode.childNodes().count(); ++i)
     {
@@ -29,6 +30,9 @@ SystemView::SystemView(QDomNode& viewNode)
         {
             hwViewRef_ = tempNode.childNodes().at(0).nodeValue();
         }
+		  else if (tempNode.nodeName() == "kactus2:fileSetRef") {
+			  fileSetRefs_.append(tempNode.childNodes().at(0).nodeValue());
+		  }
     }
 }
 
@@ -38,7 +42,8 @@ SystemView::SystemView(QDomNode& viewNode)
 SystemView::SystemView(const QString name)
     : nameGroup_(name),
       hierarchyRef_(),
-      hwViewRef_()
+      hwViewRef_(),
+		fileSetRefs_()
 {
 }
 
@@ -48,7 +53,8 @@ SystemView::SystemView(const QString name)
 SystemView::SystemView()
     : nameGroup_(),
       hierarchyRef_(),
-      hwViewRef_()
+      hwViewRef_(),
+		fileSetRefs_()
 {
 }
 
@@ -58,7 +64,8 @@ SystemView::SystemView()
 SystemView::SystemView(const SystemView &other)
     : nameGroup_(other.nameGroup_),
       hierarchyRef_(other.hierarchyRef_),
-      hwViewRef_(other.hwViewRef_)
+      hwViewRef_(other.hwViewRef_),
+		fileSetRefs_(other.fileSetRefs_)
 {
 }
 
@@ -72,6 +79,7 @@ SystemView& SystemView::operator=(const SystemView &other)
         nameGroup_ = other.nameGroup_;
         hierarchyRef_ = other.hierarchyRef_;
         hwViewRef_ = other.hwViewRef_;
+		  fileSetRefs_ = other.fileSetRefs_;
     }
 
     return *this;
@@ -108,13 +116,17 @@ void SystemView::write(QXmlStreamWriter& writer)
     // Write HW view reference.
     writer.writeTextElement("kactus2:hwViewRef", hwViewRef_);
 
+	 foreach (QString fileSetName, fileSetRefs_) {
+		 writer.writeTextElement("kactus2:fileSetRef", fileSetName);
+	 }
+
     writer.writeEndElement(); // kactus2:systemView
 }
 
 //-----------------------------------------------------------------------------
 // Function: SystemView::isValid()
 //-----------------------------------------------------------------------------
-bool SystemView::isValid(QStringList& errorList, const QString& parentIdentifier) const
+bool SystemView::isValid(const QStringList& fileSetNames, QStringList& errorList, const QString& parentIdentifier) const
 {
     bool valid = true;
     const QString thisIdentifier(QObject::tr("system view %1").arg(nameGroup_.name_));
@@ -126,18 +138,35 @@ bool SystemView::isValid(QStringList& errorList, const QString& parentIdentifier
         valid = false;
     }
 
+	 // make sure the referenced file sets are found
+	 foreach (QString fileSetRef, fileSetRefs_) {
+		 if (!fileSetNames.contains(fileSetRef)) {
+			 errorList.append(QObject::tr("System View %1 contained reference to file"
+				 " set %2 which is not found within %3").arg(
+				 nameGroup_.name_).arg(fileSetRef).arg(parentIdentifier));
+			 valid = false;
+		 }
+	 }
+
     return valid;
 }
 
 //-----------------------------------------------------------------------------
 // Function: SystemView::isValid()
 //-----------------------------------------------------------------------------
-bool SystemView::isValid() const
+bool SystemView::isValid(const QStringList& fileSetNames) const
 {
     if (nameGroup_.name_.isEmpty())
     {
         return false;
     }
+
+	 // make sure the referenced file sets are found
+	 foreach (QString fileSetRef, fileSetRefs_) {
+		 if (!fileSetNames.contains(fileSetRef)) {
+			 return false;
+		 }
+	 }
 
     return true;
 }
@@ -228,4 +257,12 @@ General::NameGroup& SystemView::getNameGroup() {
 
 const General::NameGroup& SystemView::getNameGroup() const {
     return nameGroup_;
+}
+
+QStringList SystemView::getFileSetRefs() const {
+	return fileSetRefs_;
+}
+
+void SystemView::setFileSetRefs( const QStringList& fileSetRefs ) {
+	fileSetRefs_ = fileSetRefs;
 }

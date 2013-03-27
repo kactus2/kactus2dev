@@ -39,8 +39,12 @@ QString ComponentEditorSWViewItem::text() const {
 }
 
 bool ComponentEditorSWViewItem::isValid() const {
+
+	QStringList fileSetNames = component_->getFileSetNames();
+	QStringList cpuNames = component_->getCpuNames();
+
 	// if sw view is not valid
-	if (!swView_->isValid()) {
+	if (!swView_->isValid(fileSetNames, cpuNames)) {
 		return false;
 	}
 

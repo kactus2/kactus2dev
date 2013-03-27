@@ -144,6 +144,9 @@ private:
 
 	//! \brief Contains the software views to edit.
 	QList<QSharedPointer<SystemView> >& views_;
+
+	//! \brief Pointer to the component being edited.
+	QSharedPointer<Component> component_;
 };
 
 #endif // SYSTEMVIEWSMODEL_H

@@ -18,9 +18,10 @@
 SystemViewsModel::SystemViewsModel(QSharedPointer<Component> component,
 						   QObject *parent):
 QAbstractTableModel(parent),
-views_(component->getSystemViews()) {
+views_(component->getSystemViews()),
+component_(component) {
 
-	Q_ASSERT(component);
+	Q_ASSERT(component_);
 }
 
 SystemViewsModel::~SystemViewsModel() {
@@ -112,7 +113,9 @@ QVariant SystemViewsModel::data( const QModelIndex& index, int role /*= Qt::Disp
 	}
 	else if (Qt::ForegroundRole == role) {
 
-		if (views_.at(index.row())->isValid()) {
+		QStringList fileSetNames = component_->getFileSetNames();
+
+		if (views_.at(index.row())->isValid(fileSetNames)) {
 			return QColor("black");
 		}
 		else {
@@ -177,9 +180,12 @@ bool SystemViewsModel::setData( const QModelIndex& index, const QVariant& value,
 }
 
 bool SystemViewsModel::isValid() const {
+
+	QStringList fileSetNames = component_->getFileSetNames();
+
 	// check that each software view is valid
 	foreach (QSharedPointer<SystemView> swView, views_) {
-		if (!swView->isValid()) {
+		if (!swView->isValid(fileSetNames)) {
 			return false;
 		}
 	}

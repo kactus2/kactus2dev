@@ -885,7 +885,7 @@ void Component::write(QFile& file) {
 
             foreach (QSharedPointer<SWView> view, swViews_)
             {
-                view->write(writer);
+                view->write(writer, getComponentImplementation() == KactusAttribute::KTS_HW);
             }
 
             writer.writeEndElement(); // kactus2:swViews
@@ -1468,6 +1468,17 @@ QList<QSharedPointer<Cpu> >& Component::getCpus() {
 
 const QList<QSharedPointer<Cpu> >& Component::getCpus() const {
 	return cpus_;
+}
+
+QStringList Component::getCpuNames() const {
+	QStringList cpuNames;
+	foreach (QSharedPointer<Cpu> cpu, cpus_) {
+		if (cpu) {
+			cpuNames.append(cpu->getName());
+		}
+	}
+
+	return cpuNames;
 }
 
 void Component::setOtherClockDrivers(const

@@ -43,8 +43,11 @@ QString ComponentEditorSystemViewItem::text() const {
 }
 
 bool ComponentEditorSystemViewItem::isValid() const {
+
+	QStringList fileSetNames = component_->getFileSetNames();
+
 	// if system view is not valid
-	if (!systemView_->isValid()) {
+	if (!systemView_->isValid(fileSetNames)) {
 		return false;
 	}
 
