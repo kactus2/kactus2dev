@@ -536,6 +536,18 @@ public:
 	*/
 	bool hasParameters() const;
 
+	/*! \brief Check all HW, SW and System views of the component for the given view name.
+	 *
+	 * Method: 		checkAllViews
+	 * Full name:	Component::checkAllViews
+	 * Access:		public 
+	 *
+	 * \param viewName The view name which is searched.
+	 *
+	 * \return True if the named view is found in at least one view category.
+	*/
+	bool checkAllViews(const QString& viewName) const;
+
 	/*! \brief Checks if the component contains views.
 	*
 	* \return bool True if views exist.
@@ -629,9 +641,20 @@ public:
 
 	/*! \brief Get the hierarchical views of a component
 	*
-	* \return QStringList containing the names of the hierarchical views.
+	* \return QStringList containing the names of the hierarchical HW views.
 	*/
 	QStringList getHierViews() const;
+
+	/*! \brief Get the non-hierarchical views of a component.
+	 *
+	 * Method: 		getFlatViews
+	 * Full name:	Component::getFlatViews
+	 * Access:		public 
+	 *
+	 *
+	 * \return QStringList containing the names of the non-hierarchical HW views.
+	*/
+	QStringList getFlatViews() const;
 
 	/*! \brief Get the entity name of the component.
 	 *

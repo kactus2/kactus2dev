@@ -114,8 +114,9 @@ QVariant SystemViewsModel::data( const QModelIndex& index, int role /*= Qt::Disp
 	else if (Qt::ForegroundRole == role) {
 
 		QStringList fileSetNames = component_->getFileSetNames();
+		QStringList viewNames = component_->getViewNames();
 
-		if (views_.at(index.row())->isValid(fileSetNames)) {
+		if (views_.at(index.row())->isValid(fileSetNames, viewNames)) {
 			return QColor("black");
 		}
 		else {
@@ -182,10 +183,11 @@ bool SystemViewsModel::setData( const QModelIndex& index, const QVariant& value,
 bool SystemViewsModel::isValid() const {
 
 	QStringList fileSetNames = component_->getFileSetNames();
+	QStringList viewNames = component_->getViewNames();
 
 	// check that each software view is valid
 	foreach (QSharedPointer<SystemView> swView, views_) {
-		if (!swView->isValid(fileSetNames)) {
+		if (!swView->isValid(fileSetNames, viewNames)) {
 			return false;
 		}
 	}

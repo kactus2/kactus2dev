@@ -222,6 +222,17 @@ public:
 	*/
 	QStringList getHierViews() const;
 
+	/*! \brief Get the non-hierarchical views of the model.
+	 *
+	 * Method: 		getFlatViews
+	 * Full name:	Model::getFlatViews
+	 * Access:		public 
+	 *
+	 *
+	 * \return QStringList containing the names of the non-hierarchical views.
+	*/
+	QStringList getFlatViews() const;
+
 	/*! \brief Get the names of the file sets used by given view.
 	 *
 	 * \param viewName The name of the view.

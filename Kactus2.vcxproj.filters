@@ -785,6 +785,12 @@
     <Filter Include="Source Files\IPXactWrapper\ComponentEditor\software\systemView">
       <UniqueIdentifier>{4b04b8f3-ce92-415d-9e1b-6aa39a486c05}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\common\widgets\viewSelector">
+      <UniqueIdentifier>{64bfed55-d553-4a9b-a952-2e3d75498098}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\widgets\viewSelector">
+      <UniqueIdentifier>{c5987bbc-cec0-4224-b130-741ebd52633c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\CSourceWriter.cpp">
@@ -3544,6 +3550,12 @@
     <ClCompile Include="models\bspbuildcommand.cpp">
       <Filter>Source Files\models</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_viewselector.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\viewSelector\viewselector.cpp">
+      <Filter>Source Files\common\widgets\viewSelector</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5063,6 +5075,9 @@
     </CustomBuild>
     <CustomBuild Include="IPXactWrapper\ComponentEditor\software\swView\swviewsmodel.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor\software\swView</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\widgets\viewSelector\viewselector.h">
+      <Filter>Header Files\common\widgets\viewSelector</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

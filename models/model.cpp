@@ -466,6 +466,16 @@ QStringList Model::getHierViews() const {
 	return viewList;
 }
 
+QStringList Model::getFlatViews() const {
+	QStringList viewList;
+	foreach (QSharedPointer<View> view, views_) {
+		if (!view->isHierarchical()) {
+			viewList.append(view->getName());
+		}
+	}
+	return viewList;
+}
+
 QStringList Model::getFileSetRefs( const QString& viewName ) const {
 
 	QStringList fileSets;

@@ -19,6 +19,7 @@
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 
 class SystemView;
+class ViewSelector;
 
 //-----------------------------------------------------------------------------
 //! System view editor.
@@ -70,6 +71,9 @@ private slots:
 	//! \brief Handler for changes in file set references.
 	void onFileSetRefChange();
 
+	//! \brief Handler for changes in HW view.
+	void onHWViewChange(const QString& viewName);
+
 private:
     // Disable copying.
     SystemViewEditor(SystemViewEditor const& rhs);
@@ -90,6 +94,9 @@ private:
 
     //! VLNV editor for the hierarchy reference.
     VLNVEditor* hierRefEditor_;
+
+	//! \brief Editor to select the HW view.
+	 ViewSelector* HWViewRefEditor_;
 
 	 //! \brief Editor to set the file set references of the system view.
 	 FileSetRefEditor* fileSetRefEditor_;

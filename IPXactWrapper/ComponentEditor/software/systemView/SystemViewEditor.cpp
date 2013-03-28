@@ -13,7 +13,13 @@
 #include <mainwindow/mainwindow.h>
 #include <models/SystemView.h>
 
+#include <common/widgets/viewSelector/viewselector.h>
+
 #include <QApplication>
+#include <QGroupBox>
+#include <QLabel>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: SystemViewEditor::SystemViewEditor()
@@ -26,6 +32,7 @@ ItemEditor(component, libHandler, parent),
 view_(systemView.data()),
 nameEditor_(systemView->getNameGroup(), this, tr("Name and description")),
 hierRefEditor_(NULL),
+HWViewRefEditor_(NULL),
 fileSetRefEditor_(NULL)
 {
 	// find the main window for VLNV editor
@@ -44,18 +51,31 @@ fileSetRefEditor_(NULL)
 	fileSetRefEditor_ = new FileSetRefEditor(component, tr("File set references"), this);
 	fileSetRefEditor_->initialize();
 
+	HWViewRefEditor_ = new ViewSelector(ViewSelector::BOTH_HW_VIEWS, component, this);
+
     connect(&nameEditor_, SIGNAL(contentChanged()),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(hierRefEditor_, SIGNAL(vlnvEdited()),
         this, SLOT(onHierRefChange()), Qt::UniqueConnection);
 	 connect(fileSetRefEditor_, SIGNAL(contentChanged()),
 		 this, SLOT(onFileSetRefChange()), Qt::UniqueConnection);
+	 connect(HWViewRefEditor_, SIGNAL(viewSelected(const QString&)),
+		 this, SLOT(onHWViewChange(const QString&)), Qt::UniqueConnection);
 
     refresh();
+
+	 QGroupBox* HWViewGroup = new QGroupBox(tr("HW View"), this);
+	 QLabel* HWViewLabel = new QLabel(tr("Used HW view"), HWViewGroup);
+
+	 QHBoxLayout* groupLayout = new QHBoxLayout(HWViewGroup);
+	 groupLayout->addWidget(HWViewLabel);
+	 groupLayout->addWidget(HWViewRefEditor_);
+	 groupLayout->addStretch();
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(&nameEditor_);
     layout->addWidget(hierRefEditor_);
+	 layout->addWidget(HWViewGroup);
 	 layout->addWidget(fileSetRefEditor_);
     layout->addStretch();
     layout->setContentsMargins(0, 0, 0, 0);
@@ -87,12 +107,24 @@ bool SystemViewEditor::isValid() const
 		 }
 	 }
 
+	 // if there is a HW view selected
+	 QString selectedHWView = HWViewRefEditor_->currentText();
+	 if (!selectedHWView.isEmpty()) {
+
+		 // if the component does not contain the referenced view.
+		 if (!component()->hasView(selectedHWView)) {
+			 return false;
+		 }
+	 }
+
     return true;
 }
 
 void SystemViewEditor::refresh() {
     nameEditor_.refresh();
     hierRefEditor_->setVLNV(view_->getHierarchyRef());
+	 HWViewRefEditor_->refresh();
+	 HWViewRefEditor_->selectView(view_->getHWViewRef());
 	 fileSetRefEditor_->setItems(view_->getFileSetRefs());
 }
 
@@ -108,5 +140,10 @@ void SystemViewEditor::showEvent( QShowEvent* event ) {
 
 void SystemViewEditor::onFileSetRefChange() {
 	view_->setFileSetRefs(fileSetRefEditor_->items());
+	emit contentChanged();
+}
+
+void SystemViewEditor::onHWViewChange( const QString& viewName ) {
+	view_->setHWViewRef(HWViewRefEditor_->currentText());
 	emit contentChanged();
 }

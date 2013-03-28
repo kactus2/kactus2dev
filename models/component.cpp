@@ -2458,6 +2458,16 @@ QStringList Component::getHierViews() const {
 		return QStringList();
 }
 
+QStringList Component::getFlatViews() const {
+
+	if (model_) {
+		return model_->getFlatViews();
+	}
+	else {
+		return QStringList();
+	}
+}
+
 QString Component::getEntityName( const QString& viewName ) const {
 	QString entityName;
 	if (model_) {
@@ -2487,6 +2497,28 @@ QString Component::getArchitectureName( const QString& viewName ) const {
 void Component::removeView( const QString& viewName ) {
 	if (model_)
 		model_->removeView(viewName);
+}
+
+bool Component::checkAllViews( const QString& viewName ) const {
+	
+	// check HW views
+	if (hasView(viewName)) {
+		return true;
+	}
+
+	// check SW views
+	else if (hasSWView(viewName)) {
+		return true;
+	}
+
+	// check system views
+	else if (hasSystemView(viewName)) {
+		return true;
+	}
+	// if the view is not found in any category
+	else {
+		return false;
+	}
 }
 
 bool Component::hasViews() const {

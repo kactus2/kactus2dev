@@ -126,7 +126,8 @@ void SystemView::write(QXmlStreamWriter& writer)
 //-----------------------------------------------------------------------------
 // Function: SystemView::isValid()
 //-----------------------------------------------------------------------------
-bool SystemView::isValid(const QStringList& fileSetNames, QStringList& errorList, const QString& parentIdentifier) const
+bool SystemView::isValid(const QStringList& fileSetNames, const QStringList& HWViewNames,
+	QStringList& errorList, const QString& parentIdentifier) const
 {
     bool valid = true;
     const QString thisIdentifier(QObject::tr("system view %1").arg(nameGroup_.name_));
@@ -148,13 +149,21 @@ bool SystemView::isValid(const QStringList& fileSetNames, QStringList& errorList
 		 }
 	 }
 
+	 // if HW view is specified but not found
+	 if (!hwViewRef_.isEmpty() &&  !HWViewNames.contains(hwViewRef_)) {
+		 errorList.append(QObject::tr("System view %1 contained reference to HW view %2"
+			 " which is not found withing %3.").arg(nameGroup_.name_).arg(
+			 hwViewRef_).arg(parentIdentifier));
+		 valid = false;
+	 }
+
     return valid;
 }
 
 //-----------------------------------------------------------------------------
 // Function: SystemView::isValid()
 //-----------------------------------------------------------------------------
-bool SystemView::isValid(const QStringList& fileSetNames) const
+bool SystemView::isValid(const QStringList& fileSetNames, const QStringList& HWViewNames) const
 {
     if (nameGroup_.name_.isEmpty())
     {
@@ -166,6 +175,11 @@ bool SystemView::isValid(const QStringList& fileSetNames) const
 		 if (!fileSetNames.contains(fileSetRef)) {
 			 return false;
 		 }
+	 }
+
+	 // if HW view is specified but not found
+	 if (!hwViewRef_.isEmpty() && !HWViewNames.contains(hwViewRef_)) {
+		 return false;
 	 }
 
     return true;
