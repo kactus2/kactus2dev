@@ -20,7 +20,8 @@ ComInterface::ComInterface()
       comType_(), 
       transferType_(), 
       dir_(General::INOUT),
-      propertyValues_()
+      propertyValues_(),
+		comImplementation_()
 {
 }
 
@@ -32,7 +33,8 @@ ComInterface::ComInterface(ComInterface const& rhs)
       comType_(rhs.comType_),
       transferType_(rhs.transferType_),
       dir_(rhs.dir_),
-      propertyValues_(rhs.propertyValues_)
+      propertyValues_(rhs.propertyValues_),
+		comImplementation_(rhs.comImplementation_)
 {
 }
 
@@ -44,7 +46,8 @@ ComInterface::ComInterface(QDomNode& node)
       comType_(),
       transferType_(), 
       dir_(General::INOUT),
-      propertyValues_()
+      propertyValues_(),
+		comImplementation_()
 {
     for (int i = 0; i < node.childNodes().count(); ++i)
     {
@@ -71,6 +74,9 @@ ComInterface::ComInterface(QDomNode& node)
         {
             parsePropertyValues(childNode);
         }
+		  else if (childNode.nodeName() == "kactus2:comImplementationRef") {
+			  comImplementation_ = General::createVLNV(childNode, VLNV::COMPONENT);
+		  }
     }
 }
 
@@ -117,6 +123,9 @@ void ComInterface::write(QXmlStreamWriter& writer) const
 
     writer.writeEndElement(); // kactus2:propertyValues
 
+	 writer.writeEmptyElement("kactus2:comImplementationRef");
+	 General::writeVLNVAttributes(writer, &comImplementation_);
+
     writer.writeEndElement(); // kactus2:comInterface
 }
 
@@ -154,6 +163,11 @@ bool ComInterface::isValid(QStringList& errorList, QString const& parentId) cons
         }
     }
 
+	 if (!comImplementation_.isEmpty() && !comImplementation_.isValid()) {
+		 errorList.append(QObject::tr("Invalid COM implementation reference in %1").arg(thisId));
+		 valid = false;
+	 }
+
     return valid;
 }
 
@@ -184,6 +198,10 @@ bool ComInterface::isValid() const
             return false;
         }
     }
+
+	 if (!comImplementation_.isEmpty() && !comImplementation_.isValid()) {
+		 return false;
+	 }
 
     return true;
 }
@@ -342,4 +360,12 @@ General::NameGroup& ComInterface::getNameGroup() {
 
 const General::NameGroup& ComInterface::getNameGroup() const {
 	return nameGroup_;
+}
+
+const VLNV& ComInterface::getComImplementation() const {
+	return comImplementation_;
+}
+
+void ComInterface::setComImplementation( const VLNV& implementationVLNV ) {
+	comImplementation_ = implementationVLNV;
 }

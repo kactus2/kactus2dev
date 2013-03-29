@@ -170,6 +170,28 @@ public:
 	*/
 	const General::NameGroup& getNameGroup() const;
 
+	/*! \brief Get reference to the COM interface implementation driver.
+	 *
+	 * Method: 		getComImplementation
+	 * Full name:	ComInterface::getComImplementation
+	 * Access:		public 
+	 *
+	 *
+	 * \return VLNV identifying the implementation driver.
+	*/
+	const VLNV& getComImplementation() const;
+
+	/*! \brief Set the COM interface implementation driver.
+	 *
+	 * Method: 		setComImplementation
+	 * Full name:	ComInterface::setComImplementation
+	 * Access:		public 
+	 *
+	 * \param implementationVLNV Reference to the driver which implements the COM interface.
+	 *
+	*/
+	void setComImplementation(const VLNV& implementationVLNV);
+
 private:
     /*!
      *  Parses the property values from the given XML node.
@@ -196,6 +218,9 @@ private:
 
     //! The set property values.
     QMap<QString, QString> propertyValues_;
+
+	//! \brief Reference to the implementation driver.
+	 VLNV comImplementation_;
 };
 
 //-----------------------------------------------------------------------------

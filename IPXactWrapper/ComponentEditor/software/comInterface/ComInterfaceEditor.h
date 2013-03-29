@@ -85,6 +85,9 @@ private slots:
 	//! \brief Handler for changes in properties editor.
 	void onPropertiesChange();
 
+	//! \brief Handler for changes in COM implementation reference.
+	void onComImplementationChange();
+
 private:
     // Disable copying.
     ComInterfaceEditor(ComInterfaceEditor const& rhs);
@@ -117,6 +120,9 @@ private:
 
     //! The property value editor.
     PropertyValueEditor propertyValueEditor_;
+
+	//! \brief Editor to set the COM implementation reference.
+	 VLNVEditor* comImplementation_;
 };
 
 //-----------------------------------------------------------------------------

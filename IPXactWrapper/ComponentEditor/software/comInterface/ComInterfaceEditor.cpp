@@ -34,7 +34,8 @@ comType_(NULL),
 detailsGroup_(tr("Details"), this),
 transferTypeCombo_(this),
 directionCombo_(this),
-propertyValueEditor_(this) {
+propertyValueEditor_(this),
+comImplementation_(NULL) {
 
 	// find the main window for VLNV editor
 	QWidget* parentW = NULL;
@@ -51,6 +52,12 @@ propertyValueEditor_(this) {
 	// Set VLNV editor settings.
 	comType_->setTitle(tr("COM definition"));
 	comType_->setMandatory(false);
+
+	comImplementation_ = new VLNVEditor(VLNV::COMPONENT, libHandler, parentW, this);
+	comImplementation_->setTitle(tr("COM interface implementation reference"));
+	comImplementation_->setMandatory(false);
+	comImplementation_->addContentType(VLNV::DESIGN);
+	comImplementation_->addContentType(VLNV::DESIGNCONFIGURATION);
 
 	// Initialize the details group.
 	QLabel* transferTypeLabel = new QLabel(tr("Transfer type:"), &detailsGroup_);
@@ -92,6 +99,7 @@ propertyValueEditor_(this) {
 	layout->addWidget(comType_);
 	layout->addWidget(&detailsGroup_);
 	layout->addWidget(&propertyValueEditor_);
+	layout->addWidget(comImplementation_);
 	layout->addStretch();
 	layout->setContentsMargins(0, 0, 0, 0);
 
@@ -109,6 +117,9 @@ propertyValueEditor_(this) {
 
 	connect(comType_, SIGNAL(vlnvEdited()),
 		this, SLOT(onComDefinitionChanged()), Qt::UniqueConnection);
+	
+	connect(comImplementation_, SIGNAL(vlnvEdited()),
+		this, SLOT(onComImplementationChange()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -123,7 +134,8 @@ ComInterfaceEditor::~ComInterfaceEditor() {
 bool ComInterfaceEditor::isValid() const
 {
     return (nameEditor_.isValid() &&
-            (comType_->isEmpty() || (comType_->isValid() && libInterface_->contains(comType_->getVLNV()))));
+            (comType_->isEmpty() || (comType_->isValid() && libInterface_->contains(comType_->getVLNV())) &&
+				comImplementation_->isEmpty() || comImplementation_->isValid()));
 }
 
 //-----------------------------------------------------------------------------
@@ -174,6 +186,11 @@ void ComInterfaceEditor::onComDefinitionChanged()
 	emit contentChanged();
 }
 
+void ComInterfaceEditor::onComImplementationChange() {
+	comIf_->setComImplementation(comImplementation_->getVLNV());
+	emit contentChanged();
+}
+
 void ComInterfaceEditor::refresh() {
 	nameEditor_.refresh();
 
@@ -181,6 +198,8 @@ void ComInterfaceEditor::refresh() {
 	
 	comType_->setVLNV(comVLNV);
 	propertyValueEditor_.setData(comIf_->getPropertyValues());
+
+	comImplementation_->setVLNV(comIf_->getComImplementation());
 
 	disconnect(&directionCombo_, SIGNAL(currentIndexChanged(int)),
 				this, SLOT(onDirectionChange(int)));
