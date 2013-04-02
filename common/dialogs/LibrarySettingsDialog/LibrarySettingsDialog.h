@@ -112,25 +112,22 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The settings store.
-    QSettings& settings_;
+	 QSettings& settings_;
 
-    //! The library location list.
-    //QListWidget* libLocationsList_;
+	 //! \brief Library locations table
+	 QTableWidget* libLocationsTable_;
 
-	//! \brief Library locations table
-	QTableWidget* libLocationsTable_;
+	 //! Add location button.
+	 QPushButton* addLocationButton_;
 
-    //! Add location button.
-    QPushButton* addLocationButton_;
+	 //! Remove location button.
+	 QPushButton* removeLocationButton_;
 
-    //! Remove location button.
-    QPushButton* removeLocationButton_;
+	 //! OK button.
+	 QPushButton* okButton_;
 
-    //! OK button.
-    QPushButton* okButton_;
-
-	//! \brief Holds the info on if the user has changed the library or not.
-	bool changed_;
+	 //! \brief Holds the info on if the user has changed the library or not.
+	 bool changed_;
 };
 
 //-----------------------------------------------------------------------------

@@ -33,7 +33,6 @@
 LibrarySettingsDialog::LibrarySettingsDialog(QSettings& settings, QWidget* parent)
     : QDialog(parent),
       settings_(settings),
-      //libLocationsList_(0),
 	  libLocationsTable_(0),
       addLocationButton_(0),
       removeLocationButton_(0),
@@ -43,13 +42,6 @@ LibrarySettingsDialog::LibrarySettingsDialog(QSettings& settings, QWidget* paren
 
     // Create the library location group box.
     QGroupBox* locationGroup = new QGroupBox(tr("Library locations (check the default directory)"), this);
-
-//     libLocationsList_ = new QListWidget(locationGroup);
-//     libLocationsList_->setFixedHeight(120);
-//     connect(libLocationsList_, SIGNAL(itemClicked(QListWidgetItem*)),
-//         this, SLOT(onItemClicked(QListWidgetItem*)), Qt::UniqueConnection);
-// 	connect(libLocationsList_, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
-// 		this, SLOT(onSelectLocation(QListWidgetItem*, QListWidgetItem*)));
 
 	libLocationsTable_ = new QTableWidget(0, 3, locationGroup);
 

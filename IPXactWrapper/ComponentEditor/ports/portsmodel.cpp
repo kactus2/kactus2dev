@@ -58,41 +58,41 @@ QVariant PortsModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole
 	if (role == Qt::DisplayRole) {
 
 		switch (index.column()) {
-			case PORT_COL_NAME: {
-				return table_.at(index.row())->getName();
-					}
-			case PORT_COL_DIRECTION: {
-				return General::direction2Str(table_.at(index.row())->getDirection());
-					}
-			case PORT_COL_WIDTH: {
-				return table_.at(index.row())->getPortSize();
-					}
-			case PORT_COL_LEFT: {
-				return table_.at(index.row())->getLeftBound();
-					}
-			case PORT_COL_RIGHT: {
-				return table_.at(index.row())->getRightBound();
-					}
-			case PORT_COL_TYPENAME: {
-				return table_.at(index.row())->getTypeName();
-					}
-			case PORT_COL_TYPEDEF: {
-				QString typeName = table_.at(index.row())->getTypeName();
-				return table_.at(index.row())->getTypeDefinition(typeName);
-					}
-			case PORT_COL_DEFAULT: {
-				return table_.at(index.row())->getDefaultValue();
-					}
-			case PORT_COL_DESC: {
-				return table_.at(index.row())->getDescription();
-					}
-			case PORT_COL_ADHOC_VISIBILITY: {
-				return table_.at(index.row())->isAdHocVisible();
-															  }
+		case PORT_COL_NAME: {
+			return table_.at(index.row())->getName();
+								  }
+		case PORT_COL_DIRECTION: {
+			return General::direction2Str(table_.at(index.row())->getDirection());
+										 }
+		case PORT_COL_WIDTH: {
+			return table_.at(index.row())->getPortSize();
+									}
+		case PORT_COL_LEFT: {
+			return table_.at(index.row())->getLeftBound();
+								  }
+		case PORT_COL_RIGHT: {
+			return table_.at(index.row())->getRightBound();
+									}
+		case PORT_COL_TYPENAME: {
+			return table_.at(index.row())->getTypeName();
+										}
+		case PORT_COL_TYPEDEF: {
+			QString typeName = table_.at(index.row())->getTypeName();
+			return table_.at(index.row())->getTypeDefinition(typeName);
+									  }
+		case PORT_COL_DEFAULT: {
+			return table_.at(index.row())->getDefaultValue();
+									  }
+		case PORT_COL_DESC: {
+			return table_.at(index.row())->getDescription();
+								  }
+		case PORT_COL_ADHOC_VISIBILITY: {
+			return table_.at(index.row())->isAdHocVisible();
+												  }
 
-			default: {
-				return QVariant();
-					 }
+		default: {
+			return QVariant();
+					}
 		}
 	}
 	else if (Qt::ForegroundRole == role) {
@@ -105,35 +105,30 @@ QVariant PortsModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole
 	}
 	else if (Qt::BackgroundRole == role) {
 		switch (index.column()) {
-			case PORT_COL_NAME:
-			case PORT_COL_DIRECTION:
-			case PORT_COL_WIDTH:
-			case PORT_COL_LEFT:
-			case PORT_COL_RIGHT: {
-				return QColor("LemonChiffon");
-					}
-			default:
-				return QColor("white");
+		case PORT_COL_NAME:
+		case PORT_COL_DIRECTION:
+		case PORT_COL_WIDTH:
+		case PORT_COL_LEFT:
+		case PORT_COL_RIGHT: {
+			return QColor("LemonChiffon");
+									}
+		default:
+			return QColor("white");
 		}
 	}
-    else if (Qt::CheckStateRole == role)
-    {
-        if (index.column() == PORT_COL_ADHOC_VISIBILITY)
-        {
-            if (table_.at(index.row())->isAdHocVisible())
-            {
-                return Qt::Checked;
-            }
-            else
-            {
-                return Qt::Unchecked;
-            }
-        }
-        else
-        {
-            return QVariant();
-        }
-    }
+	else if (Qt::CheckStateRole == role) {
+		if (index.column() == PORT_COL_ADHOC_VISIBILITY) {
+			if (table_.at(index.row())->isAdHocVisible()) {
+				return Qt::Checked;
+			}
+			else {
+				return Qt::Unchecked;
+			}
+		}
+		else {
+			return QVariant();
+		}
+	}
 	// if unsupported role
 	else {
 		return QVariant();
@@ -336,22 +331,21 @@ bool PortsModel::setData( const QModelIndex& index,
 
 			default: {
 				return false;
-					 }
+						}
 		}
 
 		emit dataChanged(index, index);
 		return true;
 	}
-    else if (role == Qt::CheckStateRole)
-    {
-        table_.at(index.row())->setAdHocVisible(value == Qt::Checked);
-        emit dataChanged(index, index);
-        return true;
-    }
-	// unsupported role
-	else {
-		return false;
-	}
+	 else if (role == Qt::CheckStateRole) {
+		 table_.at(index.row())->setAdHocVisible(value == Qt::Checked);
+		 emit dataChanged(index, index);
+		 return true;
+	 }
+	 // unsupported role
+	 else {
+		 return false;
+	 }
 }
 
 Qt::ItemFlags PortsModel::flags( const QModelIndex& index ) const {

@@ -3556,6 +3556,24 @@
     <ClCompile Include="common\widgets\viewSelector\viewselector.cpp">
       <Filter>Source Files\common\widgets\viewSelector</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_swbuildcommandeditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\software\swView\swbuildcommandeditor.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\software\swView</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_swbuildcommandmodel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\software\swView\swbuildcommandmodel.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\software\swView</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_swbuilddelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\software\swView\swbuilddelegate.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\software\swView</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5078,6 +5096,15 @@
     </CustomBuild>
     <CustomBuild Include="common\widgets\viewSelector\viewselector.h">
       <Filter>Header Files\common\widgets\viewSelector</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\swView\swbuildcommandeditor.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\software\swView</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\swView\swbuildcommandmodel.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\software\swView</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\swView\swbuilddelegate.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\software\swView</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

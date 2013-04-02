@@ -79,6 +79,94 @@ public:
 	*/
 	bool isValid() const;
 
+	/*! \brief Get the file type of the SW build command.
+	 *
+	 * Method: 		getFileType
+	 * Full name:	SWBuildCommand::getFileType
+	 * Access:		public 
+	 *
+	 *
+	 * \return The file type for the command.
+	*/
+	QString getFileType() const;
+
+	/*! \brief Set the file type for the command.
+	 *
+	 * Method: 		setFileType
+	 * Full name:	SWBuildCommand::setFileType
+	 * Access:		public 
+	 *
+	 * \param fileType The file type to set.
+	 *
+	*/
+	void setFileType(const QString& fileType);
+
+	/*! \brief Get the command of the SW build command.
+	 *
+	 * Method: 		getCommand
+	 * Full name:	SWBuildCommand::getCommand
+	 * Access:		public 
+	 *
+	 *
+	 * \return The command.
+	*/
+	QString getCommand() const;
+
+	/*! \brief Set the command for the SW build command.
+	 *
+	 * Method: 		setCommand
+	 * Full name:	SWBuildCommand::setCommand
+	 * Access:		public 
+	 *
+	 * \param command The command to set.
+	 *
+	*/
+	void setCommand(const QString& command);
+
+	/*! \brief Get the flags of the SW build command.
+	 *
+	 * Method: 		getFlags
+	 * Full name:	SWBuildCommand::getFlags
+	 * Access:		public 
+	 *
+	 *
+	 * \return The flags for the SW build command.
+	*/
+	QString getFlags() const;
+
+	/*! \brief Set the flags of the SW build command.
+	 *
+	 * Method: 		setFlags
+	 * Full name:	SWBuildCommand::setFlags
+	 * Access:		public 
+	 *
+	 * \param flags The flags to set.
+	 *
+	*/
+	void setFlags(const QString& flags);
+
+	/*! \brief Check if the flags for the SW build command are replaced or appended.
+	 *
+	 * Method: 		getReplaceDefaultFlags
+	 * Full name:	SWBuildCommand::getReplaceDefaultFlags
+	 * Access:		public 
+	 *
+	 *
+	 * \return If true then the flags are replaced, otherwise appended.
+	*/
+	bool getReplaceDefaultFlags() const;
+
+	/*! \brief Set the replace default flags value for the SW build command.
+	 *
+	 * Method: 		setReplaceDefaultFlags
+	 * Full name:	SWBuildCommand::setReplaceDefaultFlags
+	 * Access:		public 
+	 *
+	 * \param replaceDefault The value to set.
+	 *
+	*/
+	void setReplaceDefaultFlags(bool replaceDefault);
+
 private:
 
 	//! \brief File type for the command (mandatory field)

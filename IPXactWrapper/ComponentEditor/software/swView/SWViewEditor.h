@@ -19,6 +19,7 @@
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 
 class SWView;
+class SWBuildCommandEditor;
 
 //-----------------------------------------------------------------------------
 //! SW view editor.
@@ -93,6 +94,9 @@ private:
 
 	//! \brief Editor to set the file set references of the SW view.
 	 FileSetRefEditor* fileSetRefEditor_;
+
+	//! \brief Editor to set the SW build commands for the SW view.
+	 SWBuildCommandEditor* swBuildCommands_;
 };
 
 //-----------------------------------------------------------------------------

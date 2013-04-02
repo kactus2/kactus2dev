@@ -11,6 +11,7 @@
 
 #include "SWViewEditor.h"
 #include <mainwindow/mainwindow.h>
+#include "swbuildcommandeditor.h"
 
 #include <models/SWView.h>
 #include <QApplication>
@@ -26,7 +27,8 @@ ItemEditor(component, libHandler, parent),
 view_(swView.data()),
 nameEditor_(swView->getNameGroup(), this, tr("Name and description")),
 hierRefEditor_(NULL),
-fileSetRefEditor_(NULL) {
+fileSetRefEditor_(NULL),
+swBuildCommands_(NULL) {
 
 	// find the main window for VLNV editor
 	QWidget* parentW = NULL;
@@ -44,12 +46,16 @@ fileSetRefEditor_(NULL) {
 	fileSetRefEditor_ = new FileSetRefEditor(component, tr("File set references"), this);
 	fileSetRefEditor_->initialize();
 
+	swBuildCommands_ = new SWBuildCommandEditor(component, swView->getSWBuildCommands(), this);
+
     connect(&nameEditor_, SIGNAL(contentChanged()),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(hierRefEditor_, SIGNAL(vlnvEdited()),
         this, SLOT(onHierRefChange()), Qt::UniqueConnection);
 	 connect(fileSetRefEditor_, SIGNAL(contentChanged()),
 		 this, SLOT(onFileSetRefChange()), Qt::UniqueConnection);
+	 connect(swBuildCommands_, SIGNAL(contentChanged()),
+		 this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     refresh();
 
@@ -57,6 +63,7 @@ fileSetRefEditor_(NULL) {
     layout->addWidget(&nameEditor_);
     layout->addWidget(hierRefEditor_);
 	 layout->addWidget(fileSetRefEditor_);
+	 layout->addWidget(swBuildCommands_);
     layout->addStretch();
 	layout->setContentsMargins(0, 0, 0, 0);
 }
@@ -73,7 +80,7 @@ SWViewEditor::~SWViewEditor() {
 bool SWViewEditor::isValid() const
 {
     // if name group is not valid
-    if (!nameEditor_.isValid() || !hierRefEditor_->isValid()) {
+    if (!nameEditor_.isValid() || !hierRefEditor_->isValid() || !swBuildCommands_->isValid()) {
         return false;
 	 }
 
@@ -94,6 +101,7 @@ void SWViewEditor::refresh() {
 	nameEditor_.refresh();
 	hierRefEditor_->setVLNV(view_->getHierarchyRef());
 	fileSetRefEditor_->setItems(view_->getFileSetRefs());
+	swBuildCommands_->refresh();
 }
 
 void SWViewEditor::onHierRefChange() {

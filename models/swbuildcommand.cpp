@@ -97,3 +97,35 @@ bool SWBuildCommand::isValid( QStringList& errorList, const QString& parentIdent
 bool SWBuildCommand::isValid() const {
 	return !fileType_.isEmpty();
 }
+
+QString SWBuildCommand::getFileType() const {
+	return fileType_;
+}
+
+void SWBuildCommand::setFileType( const QString& fileType ) {
+	fileType_ = fileType;
+}
+
+QString SWBuildCommand::getCommand() const {
+	return command_;
+}
+
+void SWBuildCommand::setCommand( const QString& command ) {
+	command_ = command;
+}
+
+QString SWBuildCommand::getFlags() const {
+	return flags_;
+}
+
+void SWBuildCommand::setFlags( const QString& flags ) {
+	flags_ = flags;
+}
+
+bool SWBuildCommand::getReplaceDefaultFlags() const {
+	return replaceDefault_;
+}
+
+void SWBuildCommand::setReplaceDefaultFlags( bool replaceDefault ) {
+	replaceDefault_ = replaceDefault;
+}

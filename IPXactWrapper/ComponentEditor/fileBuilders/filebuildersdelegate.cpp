@@ -77,8 +77,6 @@ QWidget* FileBuildersDelegate::createEditor( QWidget* parent,
 
 		typeEditor->addItems(comboItems);
 
-		connect(typeEditor, SIGNAL(currentIndexChanged(int)),
-			this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
 		return typeEditor;
 	}
 	// if editor for command or flags
