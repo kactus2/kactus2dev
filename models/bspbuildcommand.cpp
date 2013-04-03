@@ -65,6 +65,11 @@ BSPBuildCommand::~BSPBuildCommand() {
 }
 
 void BSPBuildCommand::write( QXmlStreamWriter& writer ) {
+	// if the whole element is completely empty then nothing needs to be written.
+	if (isEmpty()) {
+		return;
+	}
+
 	writer.writeStartElement("kactus2:BSPBuildCommand");
 
 	writer.writeTextElement("kactus2:fileType", fileType_);
@@ -96,6 +101,11 @@ bool BSPBuildCommand::isValid( const QStringList& cpuNames ) const {
 
 	// cpu name refers to valid CPU
 	return true;
+}
+
+bool BSPBuildCommand::isEmpty() const {
+	return (fileType_.isEmpty() && command_.isEmpty() && 
+		arguments_.isEmpty() && cpuName_.isEmpty());
 }
 
 QString BSPBuildCommand::getFileType() const {

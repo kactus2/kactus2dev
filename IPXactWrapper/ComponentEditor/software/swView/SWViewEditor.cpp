@@ -12,6 +12,8 @@
 #include "SWViewEditor.h"
 #include <mainwindow/mainwindow.h>
 #include "swbuildcommandeditor.h"
+#include "bspbuildeditor.h"
+#include <common/KactusAttribute.h>
 
 #include <models/SWView.h>
 #include <QApplication>
@@ -28,7 +30,8 @@ view_(swView.data()),
 nameEditor_(swView->getNameGroup(), this, tr("Name and description")),
 hierRefEditor_(NULL),
 fileSetRefEditor_(NULL),
-swBuildCommands_(NULL) {
+swBuildCommands_(NULL),
+bspEditor_(NULL) {
 
 	// find the main window for VLNV editor
 	QWidget* parentW = NULL;
@@ -48,6 +51,16 @@ swBuildCommands_(NULL) {
 
 	swBuildCommands_ = new SWBuildCommandEditor(component, swView->getSWBuildCommands(), this);
 
+	bspEditor_ = new BSPBuildEditor(swView->getBSPBuildCommand(), component, this);
+
+	// BSP is displayed only for HW components
+	if (component->getComponentImplementation() != KactusAttribute::KTS_HW) {
+		bspEditor_->hide();
+	}
+	else {
+		bspEditor_->show();
+	}
+
     connect(&nameEditor_, SIGNAL(contentChanged()),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(hierRefEditor_, SIGNAL(vlnvEdited()),
@@ -55,6 +68,8 @@ swBuildCommands_(NULL) {
 	 connect(fileSetRefEditor_, SIGNAL(contentChanged()),
 		 this, SLOT(onFileSetRefChange()), Qt::UniqueConnection);
 	 connect(swBuildCommands_, SIGNAL(contentChanged()),
+		 this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	 connect(bspEditor_, SIGNAL(contentChanged()),
 		 this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     refresh();
@@ -64,6 +79,7 @@ swBuildCommands_(NULL) {
     layout->addWidget(hierRefEditor_);
 	 layout->addWidget(fileSetRefEditor_);
 	 layout->addWidget(swBuildCommands_);
+	 layout->addWidget(bspEditor_);
     layout->addStretch();
 	layout->setContentsMargins(0, 0, 0, 0);
 }
@@ -94,6 +110,14 @@ bool SWViewEditor::isValid() const
 		 }
 	 }
 
+	 if (!swBuildCommands_->isValid()) {
+		 return false;
+	 }
+
+	 if (!bspEditor_->isValid()) {
+		 return false;
+	 }
+
     return true;
 }
 
@@ -102,6 +126,7 @@ void SWViewEditor::refresh() {
 	hierRefEditor_->setVLNV(view_->getHierarchyRef());
 	fileSetRefEditor_->setItems(view_->getFileSetRefs());
 	swBuildCommands_->refresh();
+	bspEditor_->refresh();
 }
 
 void SWViewEditor::onHierRefChange() {

@@ -78,6 +78,17 @@ public:
 	*/
 	bool isValid(const QStringList& cpuNames) const;
 
+	/*! \brief Check if there is anything specified for the BSP build command.
+	 *
+	 * Method: 		isEmpty
+	 * Full name:	BSPBuildCommand::isEmpty
+	 * Access:		public 
+	 *
+	 *
+	 * \return True if at least some element has a value.
+	*/
+	bool isEmpty() const;
+
 	//! \brief Get the file type of the BSP build command.
 	QString getFileType() const;
 

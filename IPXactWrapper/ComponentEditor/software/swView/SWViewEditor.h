@@ -20,6 +20,7 @@
 
 class SWView;
 class SWBuildCommandEditor;
+class BSPBuildEditor;
 
 //-----------------------------------------------------------------------------
 //! SW view editor.
@@ -97,6 +98,9 @@ private:
 
 	//! \brief Editor to set the SW build commands for the SW view.
 	 SWBuildCommandEditor* swBuildCommands_;
+
+	//! \brief Editor to set the BSP build commands for the SW view.
+	 BSPBuildEditor* bspEditor_;
 };
 
 //-----------------------------------------------------------------------------

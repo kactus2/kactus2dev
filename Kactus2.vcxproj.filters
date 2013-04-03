@@ -791,6 +791,18 @@
     <Filter Include="Source Files\common\widgets\viewSelector">
       <UniqueIdentifier>{c5987bbc-cec0-4224-b130-741ebd52633c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\common\widgets\cpuSelector">
+      <UniqueIdentifier>{07c5b06b-c130-4e58-b238-544e342592d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\widgets\cpuSelector">
+      <UniqueIdentifier>{36db071e-b47e-4623-a140-e146bbf5febe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common\widgets\fileTypeSelector">
+      <UniqueIdentifier>{aa88d710-14c3-4611-ac07-75de94c2ea04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\widgets\fileTypeSelector">
+      <UniqueIdentifier>{578b0af8-5300-460b-9009-b78db3e75e39}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\CSourceWriter.cpp">
@@ -3574,6 +3586,24 @@
     <ClCompile Include="IPXactWrapper\ComponentEditor\software\swView\swbuilddelegate.cpp">
       <Filter>Source Files\IPXactWrapper\ComponentEditor\software\swView</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_bspbuildeditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\software\swView\bspbuildeditor.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\software\swView</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_cpuselector.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_filetypeselector.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\cpuSelector\cpuselector.cpp">
+      <Filter>Source Files\common\widgets\cpuSelector</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\fileTypeSelector\filetypeselector.cpp">
+      <Filter>Source Files\common\widgets\fileTypeSelector</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5105,6 +5135,15 @@
     </CustomBuild>
     <CustomBuild Include="IPXactWrapper\ComponentEditor\software\swView\swbuilddelegate.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor\software\swView</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\software\swView\bspbuildeditor.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\software\swView</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\widgets\cpuSelector\cpuselector.h">
+      <Filter>Header Files\common\widgets\cpuSelector</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\widgets\fileTypeSelector\filetypeselector.h">
+      <Filter>Header Files\common\widgets\fileTypeSelector</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
