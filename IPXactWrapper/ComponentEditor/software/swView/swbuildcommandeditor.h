@@ -77,6 +77,9 @@ private:
 
 	//! \brief The model that manages the items.
 	SWBuildCommandModel* model_;
+
+	//! \brief Pointer to the component being edited.
+	QSharedPointer<Component> component_;
 };
 
 #endif // SWBUILDCOMMANDEDITOR_H
