@@ -2322,7 +2322,11 @@ void MainWindow::createComponent(KactusAttribute::ProductHierarchy prodHier,
 	component->createEmptyFlatView();
 
 	// Create the file.
-	libraryHandler_->writeModelToFile(directory, component);
+	if (!libraryHandler_->writeModelToFile(directory, component))
+    {
+        emit errorMessage("Error saving file to disk.");
+        return;
+    }
 
 	// Open the component editor.
 	openComponent(vlnv, true);
@@ -2361,13 +2365,35 @@ void MainWindow::createDesign(KactusAttribute::ProductHierarchy prodHier,
 
 	// Create the files.
 	libraryHandler_->beginSave();
-	libraryHandler_->writeModelToFile(directory, designConf);
-	libraryHandler_->writeModelToFile(directory, design);
-	libraryHandler_->writeModelToFile(directory, component);
+
+    bool success = true;
+
+	if (!libraryHandler_->writeModelToFile(directory, designConf))
+    {
+        success = false;
+    }
+
+	if (!libraryHandler_->writeModelToFile(directory, design))
+    {
+        success = false;
+    }
+
+	if (!libraryHandler_->writeModelToFile(directory, component))
+    {
+        success = false;
+    }
+
 	libraryHandler_->endSave();
 
-	// Open the design.
-	openDesign(vlnv, viewNames.first(), true);
+    if (success)
+    {
+	    // Open the design.
+	    openDesign(vlnv, viewNames.first(), true);
+    }
+    else
+    {
+        emit errorMessage("Error saving files to disk.");
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -2446,13 +2472,35 @@ void MainWindow::createDesignForExistingComponent(VLNV const& vlnv)
     newDesign->setColumns(columns);
 
     libraryHandler_->beginSave();
-    libraryHandler_->writeModelToFile(dialog.getPath(), newDesign);
-    libraryHandler_->writeModelToFile(dialog.getPath(), designConf);
-    libraryHandler_->writeModelToFile(component);
+
+    bool success = true;
+
+    if (!libraryHandler_->writeModelToFile(dialog.getPath(), newDesign))
+    {
+        success = false;
+    }
+
+    if (!libraryHandler_->writeModelToFile(dialog.getPath(), designConf))
+    {
+        success = false;
+    }
+
+    if (!libraryHandler_->writeModelToFile(component))
+    {
+        success = false;
+    }
+
     libraryHandler_->endSave();
 
-    // Open the design.
-    openDesign(vlnv, view->getName(), true);
+    if (success)
+    {
+        // Open the design.
+        openDesign(vlnv, view->getName(), true);
+    }
+    else
+    {
+        emit errorMessage("Error saving files to disk.");
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -2493,13 +2541,36 @@ void MainWindow::createSWDesign(VLNV const& vlnv, QString const& directory)
 
     // Create the files.
     libraryHandler_->beginSave();
-    libraryHandler_->writeModelToFile(directory, designConf);
-    libraryHandler_->writeModelToFile(directory, design);
-    libraryHandler_->writeModelToFile(directory, component);
+
+    bool success = true;
+
+    if (!libraryHandler_->writeModelToFile(directory, designConf))
+    {
+        success = false;
+    }
+
+    if (!libraryHandler_->writeModelToFile(directory, design))
+    {
+        success = false;
+    }
+
+    if (!libraryHandler_->writeModelToFile(directory, component))
+    {
+        success = false;
+    }
+
     libraryHandler_->endSave();
 
-    // Open the design.
-    openSWDesign(vlnv, component->getSWViewNames().first(), true);
+    if (success)
+    {
+        // Open the design.
+        openSWDesign(vlnv, component->getSWViewNames().first(), true);
+    }
+    else
+    {
+        emit errorMessage("Error saving files to disk.");
+
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -2575,13 +2646,35 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
     newDesign->setColumns(columns);
 
     libraryHandler_->beginSave();
-    libraryHandler_->writeModelToFile(dialog.getPath(), newDesign);
-    libraryHandler_->writeModelToFile(dialog.getPath(), designConf);
-    libraryHandler_->writeModelToFile(component);
+
+    bool success = true;
+
+    if (!libraryHandler_->writeModelToFile(dialog.getPath(), newDesign))
+    {
+        success = false;
+    }
+
+    if (!libraryHandler_->writeModelToFile(dialog.getPath(), designConf))
+    {
+        success = false;
+    }
+
+    if (!libraryHandler_->writeModelToFile(component))
+    {
+        success = false;
+    }
+
     libraryHandler_->endSave();
 
-    // Open the design.
-    openSWDesign(vlnv, view->getName(), true);
+    if (success)
+    {
+        // Open the design.
+        openSWDesign(vlnv, view->getName(), true);
+    }
+    else
+    {
+        emit errorMessage("Error saving files to disk.");
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -2676,20 +2769,43 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName,
 	designConf->setDesignRef(designVLNV);
 
 	// Create the files.
-	libraryHandler_->writeModelToFile(directory, designConf);
-	libraryHandler_->writeModelToFile(directory, sysDesign);
+    bool success = true;
+
+	if (!libraryHandler_->writeModelToFile(directory, designConf))
+    {
+        success = false;
+    }
+
+    if (!libraryHandler_->writeModelToFile(directory, sysDesign))
+    {
+        success = false;
+    }
 
     if (compVLNV.isValid())
     {
-	    libraryHandler_->writeModelToFile(parentComp);
+        if (!libraryHandler_->writeModelToFile(parentComp))
+        {
+            success = false;
+        }
     }
     else
     {
-        libraryHandler_->writeModelToFile(directory, parentComp);
+        if (!libraryHandler_->writeModelToFile(directory, parentComp))
+        {
+            success = false;
+        }
     }
 
 	libraryHandler_->endSave();
-	openSystemDesign(*parentComp->getVlnv(), sysViewName, true);
+
+    if (success)
+    {
+	    openSystemDesign(*parentComp->getVlnv(), sysViewName, true);
+    }
+    else
+    {
+        emit errorMessage("Error saving files to disk.");
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -2758,14 +2874,34 @@ void MainWindow::createSystemDesign(VLNV const& vlnv)
 
     generateSystemDesignV2(libraryHandler_, component->getHierRef(), *newDesign);
 
-    libraryHandler_->writeModelToFile(dialog.getPath(), newDesign);
-    libraryHandler_->writeModelToFile(dialog.getPath(), designConf);
-    libraryHandler_->writeModelToFile(component);
+    bool success = true;
+
+    if (!libraryHandler_->writeModelToFile(dialog.getPath(), newDesign))
+    {
+        success = false;
+    }
+
+    if (!libraryHandler_->writeModelToFile(dialog.getPath(), designConf))
+    {
+        success = false;
+    }
+
+    if (!libraryHandler_->writeModelToFile(component))
+    {
+        success = false;
+    }
 
     libraryHandler_->endSave();
 
-    // Open the design.
-    openSystemDesign(vlnv, view->getName(), true);
+    if (success)
+    {
+        // Open the design.
+        openSystemDesign(vlnv, view->getName(), true);
+    }
+    else
+    {
+        emit errorMessage("Error saving files to disk.");
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -2811,7 +2947,12 @@ void MainWindow::createBus( VLNV const& vlnv, QString const& directory ) {
 	busDef->setVlnv(busVLNV);
 
 	// Create the file for the bus definition.
-	libraryHandler_->writeModelToFile(directory, busDef);
+    bool success = true;
+
+    if (!libraryHandler_->writeModelToFile(directory, busDef))
+    {
+        success = false;
+    }
 
 	// create an abstraction definition
 	QSharedPointer<AbstractionDefinition> absDef = QSharedPointer<AbstractionDefinition>(new AbstractionDefinition());
@@ -2821,10 +2962,20 @@ void MainWindow::createBus( VLNV const& vlnv, QString const& directory ) {
 	absDef->setBusType(busVLNV);
 
 	// create the file for the abstraction definition
-	libraryHandler_->writeModelToFile(absDirectory, absDef);
+    if (!libraryHandler_->writeModelToFile(absDirectory, absDef))
+    {
+        success = false;
+    }
 
-	// Open the bus editor.
-	openBus(busVLNV, absVLNV, false, true);
+    if (success)
+    {
+	    // Open the bus editor.
+	    openBus(busVLNV, absVLNV, false, true);
+    }
+    else
+    {
+        emit errorMessage("Error saving files to disk.");
+    }
 }
 
 void MainWindow::createAbsDef( const VLNV& busDefVLNV, const QString& directory, bool disableBusDef ) {
@@ -2864,7 +3015,11 @@ void MainWindow::createAbsDef( const VLNV& busDefVLNV, const QString& directory,
 	absDef->setBusType(busDefVLNV);
 
 	// create the file for the abstraction definition
-	libraryHandler_->writeModelToFile(absDirectory, absDef);
+    if (!libraryHandler_->writeModelToFile(absDirectory, absDef))
+    {
+        emit errorMessage("Error saving files to disk.");
+        return;
+    }
 
 	// Open the bus editor.
 	openBus(busDefVLNV, absVLNV, disableBusDef, true);
@@ -2880,7 +3035,12 @@ void MainWindow::createComDefinition(VLNV const& vlnv, QString const& directory)
 
     // Create an empty COM definition and save it.
     QSharedPointer<ComDefinition> comDef(new ComDefinition(vlnv));
-    libraryHandler_->writeModelToFile(directory, comDef);
+
+    if (!libraryHandler_->writeModelToFile(directory, comDef))
+    {
+        emit errorMessage("Error saving files to disk.");
+        return;
+    }
 
     // Open the COM definition.
     openComDefinition(vlnv, true);
@@ -2899,7 +3059,12 @@ void MainWindow::createApiDefinition(VLNV const& vlnv, QString const& directory)
 
     // Create an empty API definition and save it.
     QSharedPointer<ApiDefinition> apiDef(new ApiDefinition(apiDefVLNV));
-    libraryHandler_->writeModelToFile(directory, apiDef);
+
+    if (!libraryHandler_->writeModelToFile(directory, apiDef))
+    {
+        emit errorMessage("Error saving files to disk.");
+        return;
+    }
 
     // Open the API definition.
     openApiDefinition(apiDefVLNV, true);
@@ -3823,7 +3988,11 @@ void MainWindow::createSWComponent(VLNV const& vlnv, QString const& directory)
 	component->setComponentImplementation(KactusAttribute::KTS_SW);
 
 	// Create the file.
-	libraryHandler_->writeModelToFile(directory, component);
+    if (!libraryHandler_->writeModelToFile(directory, component))
+    {
+        emit errorMessage("Error saving files to disk.");
+        return;
+    }
 
 	openComponent(vlnv, true);
 }
