@@ -7,6 +7,7 @@
 
 
 #include "filebuildersmodel.h"
+#include "filebuildersdelegate.h"
 
 #include <QColor>
 
@@ -60,6 +61,19 @@ QVariant FileBuildersModel::data( const QModelIndex& index,
 				return fileBuilders_.at(index.row())->getReplaceDefaultFlags();
 			default:
 				return QVariant();
+		}
+	}
+	else if (Qt::CheckStateRole == role) {
+		if (index.column() == FileBuildersDelegate::REPLACE_DEFAULT_COLUMN) {
+			if (fileBuilders_.at(index.row())->getReplaceDefaultFlags()) {
+				return Qt::Checked;
+			}
+			else {
+				return Qt::Unchecked;
+			}
+		}
+		else {
+			return QVariant();
 		}
 	}
 	else if (Qt::BackgroundRole == role) {
@@ -151,6 +165,12 @@ bool FileBuildersModel::setData( const QModelIndex& index,
 		emit dataChanged(index, index);
 		return true;
 	}
+	else if (role == Qt::CheckStateRole) {
+		fileBuilders_.at(index.row())->setReplaceDefaultFlags(value == Qt::Checked);
+		emit dataChanged(index, index);
+		emit contentChanged();
+		return true;
+	}
 	// if unsupported role
 	else {
 		return false;
@@ -163,7 +183,18 @@ Qt::ItemFlags FileBuildersModel::flags( const QModelIndex& index ) const {
 		return Qt::NoItemFlags;
 	}
 	
-	return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
+	Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+
+	// the replace default column is boolean and uses check box
+	if (index.column() == FileBuildersDelegate::REPLACE_DEFAULT_COLUMN) {
+		flags |= Qt::ItemIsUserCheckable;
+	}
+	// others can be freely edited by user
+	else {
+		flags |= Qt::ItemIsEditable;
+	}
+
+	return flags;
 }
 
 bool FileBuildersModel::isValid() const {

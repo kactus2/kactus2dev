@@ -18,6 +18,15 @@ class FileBuildersDelegate : public QStyledItemDelegate {
 
 public:
 
+	//! \brief Specifies the columns and their numbers.
+	enum Columns {
+		FILETYPE_COLUMN = 0,
+		COMMAND_COLUMN,
+		FLAGS_COLUMN,
+		REPLACE_DEFAULT_COLUMN,
+		COLUMN_COUNT
+	};
+
 	/*! \brief The constructor
 	 *
 	 * \param parent Pointer to the owner of the delegate.
@@ -57,6 +66,12 @@ public:
 	*/
 	virtual void setModelData(QWidget* editor, QAbstractItemModel* model, 
 		const QModelIndex& index) const;
+
+	virtual void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+
+protected:
+
+	virtual bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index);
 
 private slots:
 

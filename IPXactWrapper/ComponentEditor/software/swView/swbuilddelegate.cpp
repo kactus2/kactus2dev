@@ -6,6 +6,7 @@
 */
 
 #include "swbuilddelegate.h"
+#include <common/widgets/fileTypeSelector/filetypeselector.h>
 
 #include <QComboBox>
 #include <QLineEdit>
@@ -24,56 +25,11 @@ SWBuildDelegate::~SWBuildDelegate() {
 QWidget* SWBuildDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const {
 	switch (index.column()) {
 	case SWBuildDelegate::FILETYPE_COLUMN: {
-		QComboBox* typeEditor = new QComboBox(parent);
-
-		// user can set user file types so this must be editable
-		typeEditor->setEditable(true);
+		
+		FileTypeSelector* typeEditor = new FileTypeSelector(parent);
+		typeEditor->refresh();
 		typeEditor->setMaxVisibleItems(25);
 		typeEditor->setMinimumContentsLength(30);
-
-		// add the file type choices to the combo box
-		// add items to the box
-		QStringList comboItems;
-		comboItems.append("asmSource");
-		comboItems.append("cSource");
-		comboItems.append("cppSource");
-		comboItems.append("eSource");
-		comboItems.append("OVASource");
-		comboItems.append("perlSource");
-		comboItems.append("pslSource");
-		comboItems.append("SVASource");
-		comboItems.append("tclSource");
-		comboItems.append("veraSource");
-		comboItems.append("systemCSource");
-		comboItems.append("systemCSource-2.0");
-		comboItems.append("systemCSource-2.0.1");
-		comboItems.append("systemCSource-2.1");
-		comboItems.append("systemCSource-2.2");
-		comboItems.append("systemVerilogSource");
-		comboItems.append("systemVerilogSource-3.0");
-		comboItems.append("systemVerilogSource-3.1");
-		comboItems.append("systemVerilogSource-3.1a");
-		comboItems.append("verilogSource");
-		comboItems.append("verilogSource-95");
-		comboItems.append("verilogSource-2001");
-		comboItems.append("vhdlSource");
-		comboItems.append("vhdlSource-87");
-		comboItems.append("vhdlSource-93");
-
-		comboItems.append("swObject");
-		comboItems.append("swObjectLibrary");
-
-		comboItems.append("vhdlBinaryLibrary");
-		comboItems.append("verilogBinaryLibrary");
-
-		comboItems.append("executableHdl");
-		comboItems.append("unelaboratedHdl");
-
-		comboItems.append("SDC");
-
-		comboItems.append("unknown");
-
-		typeEditor->addItems(comboItems);
 
 		return typeEditor;
 														}
@@ -95,10 +51,9 @@ void SWBuildDelegate::setEditorData( QWidget* editor, const QModelIndex& index )
 	switch (index.column()) {
 	case SWBuildDelegate::FILETYPE_COLUMN: {
 		QString text = index.model()->data(index, Qt::DisplayRole).toString();
-		QComboBox* combo = qobject_cast<QComboBox*>(editor);
+		FileTypeSelector* combo = qobject_cast<FileTypeSelector*>(editor);
 
-		int comboIndex = combo->findText(text);
-		combo->setCurrentIndex(comboIndex);
+		combo->selectFileType(text);
 		break;
 														}
 	case SWBuildDelegate::COMMAND_COLUMN:
@@ -119,7 +74,7 @@ void SWBuildDelegate::setEditorData( QWidget* editor, const QModelIndex& index )
 void SWBuildDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const {
 	switch (index.column()) {
 	case SWBuildDelegate::FILETYPE_COLUMN: {
-		QComboBox* combo = qobject_cast<QComboBox*>(editor);
+		FileTypeSelector* combo = qobject_cast<FileTypeSelector*>(editor);
 		QString text = combo->currentText();
 		model->setData(index, text, Qt::EditRole);
 		break;

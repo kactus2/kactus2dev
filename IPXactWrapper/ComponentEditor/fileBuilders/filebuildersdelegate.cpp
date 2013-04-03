@@ -8,10 +8,15 @@
 #include "filebuildersdelegate.h"
 
 #include <common/widgets/booleanComboBox/booleancombobox.h>
+#include <common/widgets/fileTypeSelector/filetypeselector.h>
 
 #include <QComboBox>
 #include <QLineEdit>
 #include <QStringList>
+#include <QPainter>
+#include <QApplication>
+#include <QMouseEvent>
+#include <QEvent>
 
 FileBuildersDelegate::FileBuildersDelegate(QObject *parent): 
 QStyledItemDelegate(parent) {
@@ -25,69 +30,23 @@ QWidget* FileBuildersDelegate::createEditor( QWidget* parent,
 											const QModelIndex& index ) const {
 
 	// if editor for file type or replace default flags
-	if (index.column() == 0) {
-		QComboBox* typeEditor = new QComboBox(parent);
-		
-		// user can set user file types so this must be editable
-		typeEditor->setEditable(true);
+	if (index.column() == FILETYPE_COLUMN) {
+		FileTypeSelector* typeEditor = new FileTypeSelector(parent);
+		typeEditor->refresh();
 		typeEditor->setMaxVisibleItems(25);
 		typeEditor->setMinimumContentsLength(30);
-
-		// add the file type choices to the combo box
-		// add items to the box
-		QStringList comboItems;
-		comboItems.append("asmSource");
-		comboItems.append("cSource");
-		comboItems.append("cppSource");
-		comboItems.append("eSource");
-		comboItems.append("OVASource");
-		comboItems.append("perlSource");
-		comboItems.append("pslSource");
-		comboItems.append("SVASource");
-		comboItems.append("tclSource");
-		comboItems.append("veraSource");
-		comboItems.append("systemCSource");
-		comboItems.append("systemCSource-2.0");
-		comboItems.append("systemCSource-2.0.1");
-		comboItems.append("systemCSource-2.1");
-		comboItems.append("systemCSource-2.2");
-		comboItems.append("systemVerilogSource");
-		comboItems.append("systemVerilogSource-3.0");
-		comboItems.append("systemVerilogSource-3.1");
-		comboItems.append("systemVerilogSource-3.1a");
-		comboItems.append("verilogSource");
-		comboItems.append("verilogSource-95");
-		comboItems.append("verilogSource-2001");
-		comboItems.append("vhdlSource");
-		comboItems.append("vhdlSource-87");
-		comboItems.append("vhdlSource-93");
-
-		comboItems.append("swObject");
-		comboItems.append("swObjectLibrary");
-
-		comboItems.append("vhdlBinaryLibrary");
-		comboItems.append("verilogBinaryLibrary");
-
-		comboItems.append("executableHdl");
-		comboItems.append("unelaboratedHdl");
-
-		comboItems.append("SDC");
-
-		comboItems.append("unknown");
-
-		typeEditor->addItems(comboItems);
 
 		return typeEditor;
 	}
 	// if editor for command or flags
-	else if (index.column() == 1 || index.column() == 2) {
+	else if (index.column() == COMMAND_COLUMN || index.column() == FLAGS_COLUMN) {
 		QLineEdit* lineEditor = new QLineEdit(parent);
 		connect(lineEditor, SIGNAL(editingFinished()),
 			this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
 		return lineEditor;
 	}
 	// if editor for replace default flags
-	else if (index.column() == 3) {
+	else if (index.column() == REPLACE_DEFAULT_COLUMN) {
 		BooleanComboBox* boolBox = new BooleanComboBox(parent);
 		connect(boolBox, SIGNAL(currentIndexChanged(int)),
 			this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
@@ -103,23 +62,22 @@ void FileBuildersDelegate::setEditorData( QWidget* editor,
 										 const QModelIndex& index ) const {
 
 	// if editor for file type
-	if (index.column() == 0) {
+	if (index.column() == FILETYPE_COLUMN) {
 
 		QString text = index.model()->data(index, Qt::DisplayRole).toString();
-		QComboBox* combo = qobject_cast<QComboBox*>(editor);
+		FileTypeSelector* combo = qobject_cast<FileTypeSelector*>(editor);
 
-		int comboIndex = combo->findText(text);
-		combo->setCurrentIndex(comboIndex);
+		combo->selectFileType(text);
 	}
 	// if editor for command or flags
-	else if (index.column() == 1 || index.column() == 2) {
+	else if (index.column() == COMMAND_COLUMN || index.column() == FLAGS_COLUMN) {
 
 		QLineEdit* defaultEdit = qobject_cast<QLineEdit*>(editor);
 		QString value = index.model()->data(index, Qt::DisplayRole).toString();
 		defaultEdit->setText(value);
 	}
 	// if editor for replace default flags
-	else if (index.column() == 3) {
+	else if (index.column() == REPLACE_DEFAULT_COLUMN) {
 
 		BooleanComboBox* boolBox = qobject_cast<BooleanComboBox*>(editor);
 		bool value = index.model()->data(index, Qt::DisplayRole).toBool();
@@ -136,21 +94,21 @@ void FileBuildersDelegate::setModelData( QWidget* editor,
 										const QModelIndex& index ) const {
 
 	// if editor for file type
-	if (index.column() == 0) {
+	if (index.column() == FILETYPE_COLUMN) {
 
-		QComboBox* combo = qobject_cast<QComboBox*>(editor);
+		FileTypeSelector* combo = qobject_cast<FileTypeSelector*>(editor);
 		QString text = combo->currentText();
 		model->setData(index, text, Qt::EditRole);
 	}
 	// if editor for command or flags
-	else if (index.column() == 1 || index.column() == 2) {
+	else if (index.column() == COMMAND_COLUMN || index.column() == FLAGS_COLUMN) {
 
 		QLineEdit* defaultEdit = qobject_cast<QLineEdit*>(editor);
 		QString value = defaultEdit->text();
 		model->setData(index, value, Qt::EditRole);
 	}
 	// if editor for replace default flags
-	else if (index.column() == 3) {
+	else if (index.column() == REPLACE_DEFAULT_COLUMN) {
 
 		BooleanComboBox* boolBox = qobject_cast<BooleanComboBox*>(editor);
 		bool value = boolBox->getCurrentValue();
@@ -180,4 +138,75 @@ void FileBuildersDelegate::commitAndCloseEditor() {
 		emit commitData(editor);
 		emit closeEditor(editor);
 	}
+}
+
+void FileBuildersDelegate::paint( QPainter *painter, 
+	const QStyleOptionViewItem &option,
+	const QModelIndex &index ) const {
+
+	QStyleOptionViewItemV4 viewItemOption(option);
+
+	if (index.column() == FileBuildersDelegate::REPLACE_DEFAULT_COLUMN) {
+		painter->fillRect(option.rect, Qt::white);
+
+		const int textMargin = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameHMargin) + 1;
+
+		QRect newRect = QStyle::alignedRect(option.direction, Qt::AlignCenter,
+			QSize(option.decorationSize.width() + 5, option.decorationSize.height()),
+			QRect(option.rect.x() + textMargin, option.rect.y(),
+			option.rect.width() - (2 * textMargin), option.rect.height()));
+		viewItemOption.rect = newRect;
+	}
+
+	QStyledItemDelegate::paint(painter, viewItemOption, index);
+}
+
+bool FileBuildersDelegate::editorEvent( QEvent *event,
+	QAbstractItemModel *model, 
+	const QStyleOptionViewItem &option, const QModelIndex &index ) {
+
+	Q_ASSERT(event);
+	Q_ASSERT(model);
+
+	// Make sure that the item is checkable.
+	Qt::ItemFlags flags = model->flags(index);
+
+	if (!(flags & Qt::ItemIsUserCheckable) || !(flags & Qt::ItemIsEnabled))
+	{
+		return false;
+	}
+
+	// Make sure that we have a check state.
+	QVariant value = index.data(Qt::CheckStateRole);
+
+	if (!value.isValid())
+	{
+		return false;
+	}
+
+	Qt::CheckState newState;
+
+	// Handle the mouse button events.
+	if (event->type() == QEvent::MouseButtonPress)
+	{
+		const int textMargin = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameHMargin) + 1;
+
+		QRect checkRect = QStyle::alignedRect(option.direction, Qt::AlignCenter,
+			option.decorationSize,
+			QRect(option.rect.x() + (2 * textMargin), option.rect.y(),
+			option.rect.width() - (2 * textMargin),
+			option.rect.height()));
+
+		if (!checkRect.contains(static_cast<QMouseEvent*>(event)->pos()))
+		{
+			return false;
+		}
+
+		newState = (static_cast<Qt::CheckState>(value.toInt()) == Qt::Checked ? Qt::Unchecked : Qt::Checked);
+	}
+	else {
+		return false;
+	}
+
+	return model->setData(index, newState, Qt::CheckStateRole);
 }

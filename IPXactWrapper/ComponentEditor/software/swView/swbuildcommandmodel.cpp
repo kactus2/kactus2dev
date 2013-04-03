@@ -187,6 +187,7 @@ bool SWBuildCommandModel::setData( const QModelIndex& index, const QVariant& val
 	else if (role == Qt::CheckStateRole) {
 		swBuildComs_.at(index.row())->setReplaceDefaultFlags(value == Qt::Checked);
 		emit dataChanged(index, index);
+		emit contentChanged();
 		return true;
 	}
 	else {
