@@ -8,7 +8,26 @@
   <body>
     <h2>Software properties editor</h2>
     <p>
-      This is Kactus extension <br><img src="../images/appicon.png"><br><br>
+      This is Kactus extension <br><img
+      src="../images/appicon.png"><br><br> These allow defining
+      parameters for software. The usage is similar to <i>model
+      parameters</i>, first define the available parameters and then
+      give them actual values upon component instantiation. However,
+      these are separated, since other tools do not have such concept
+      and that might lead confusion which are HW parameters and and
+      which are SW parameters.  </p>
+    <p> 
+      Each SW property has mandatory <b>name</b> and <b>type</b>
+      (string, integer, IP address). Moreover, sometimes the value
+      definition is <b>required</b> on each instance. Optional
+      <b>default value</b> is used, if instance does not specify the
+      value. Textual <b>desciption</b> is also optional.
+    </p>
+    <p>
+      For example, MCAPI nodes necessiate that user sets the 'node_id'
+      which is done through SW property. Similarly, some SW may need
+      the IP address of itself or other device and it can be also set
+      here.
     </p>
   </body>
 </html>

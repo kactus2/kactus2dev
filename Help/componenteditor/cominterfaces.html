@@ -8,7 +8,38 @@
   <body>
     <h2>COM interfaces editor</h2>
     <p>
-      This is Kactus extension <br><img src="../images/appicon.png"><br><br>
+      This is Kactus extension <br><img
+      src="../images/appicon.png"><br><br> <i>COM interface</i> means
+      that component supports an optional "high-level" communication
+      mechanism, such as MCAPI. Purpose is to increase portability by
+      abstacting the details of communication. COM interfaces are
+      connected together in <b>system view</b> of the Kactus. Usually,
+      these interfaces a part of a SW component, but some HW
+      components can support them also. COM interfaces makes only
+      loose coupling between SW components, and consequently the
+      receiver can be mapped on different CPU than sender. COM
+      interfaces are meant for communication between application
+      modules, whereas API interfaces are mainly between application
+      and platform (OS, drivers) and inside the platform.
+    </p>
+    <p>
+      Each interface has a mandatory <b>name</b> and <b>direction</b>
+      (in, out, inout). Optional <b>COM definition</b> is an XML
+      document that captures the interface properties, similarly to
+      bus interfaces in regular HW components. Note that this
+      information is just shown here and can be edited on interface
+      editor.  Optional <b>transfer type</b> denotes what kind of data
+      is transmitted through the interface. The allowed values depend
+      on the selected COM definition.
+    </p>
+    <p>
+      For example, a SW component could have an input COM interface
+      'data_in' and output called 'result_out'. Then depending of how
+      the channels are conencted in system design, the imput data can
+      come from, say, UART or CPU. Similarly, the result can be
+      directed to, say, memory or VGA. Here both interfaces correspond
+      to MCAPI endpoints and transmit 'MCAPI messages'.<br> <img
+      src="../images/com_interfaces.png" alt="screen_cap"><br>
     </p>
   </body>
 </html>

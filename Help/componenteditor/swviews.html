@@ -9,8 +9,32 @@
     <h2>Software views editor</h2>
     <p>
       This is Kactus extension <br><img src="../images/appicon.png">
-      <br><br>
-    
+      <br><br> <i>SW views</i> are usually associated with a CPU
+      component. They define which application-independent SW, such as
+      operating system or device drivers, are available.  User selects
+      which SW view is <i>active</i>, e.g.  uCos, uCLinux or not OS at
+      all, for each CPU In <i>system design</i>. The structure of a
+      view is captured with <i>SW design</i> which also a
+      Kactus-extension and saved in its own XML file.
+    </p>
+    <p>
+      Each SW view has mandatory <b>name</b> and <b>hierarchy
+      reference</b>. Note that the latter cannot be edited here, but
+      in view's own editor. Note also that a SW view is always
+      hierarchical, unlike regualr <i>view</i>.<b>Display name</b> is
+      optional and typically a few words providing a more detailed
+      and/or user-friendly name for display. Optional
+      <b>description</b> contains a textual description of the
+      interface.</p>
+    <hr>
+    <p>EXAMPLE. GizmoCPU has a software stack that has three
+    components: DMA driver and two components for implementing
+    MCAPI. The SW view points to s SW design which instantiates and
+    connects these three together. Note that the same SW structure
+    could be captured also in <i>system design</i>, but doing it like
+    this simplifies reuse. SW views becomes especially handy when
+    GizmoCPU supports multiple SW stacks. <img
+    src="../images/sw_views.png" alt="example">
     </p>
   </body>
 </html>

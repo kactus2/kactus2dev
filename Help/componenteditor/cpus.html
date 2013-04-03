@@ -8,7 +8,7 @@
   <body>
     <h2>CPUs editor</h2>
     <p>
-      The cpus editor displays the programmable cores the component
+      The cpus editor lists the programmable cores the component
       contains.
     </p>
     <p>
@@ -19,7 +19,9 @@
       link link between the programmable core and the interface.
     </p>
     <p>
-      Cpus editor provides a context menu with the following options:
+      Cpus editor provides a context menu (right mouse button) with
+      the following options:
+    </p>
     <ul>
       <li>Add new cpu (Add row)</li>
       <li>Remove cpu (Remove row)</li>
@@ -29,6 +31,12 @@
       <li>Import a csv-file to the editor</li>
       <li>Export the contents of the editor to a csv-file</li>
     </ul>
-  </p>
+    <hr>
+    <p>
+      EXAMPLE. Example SoC has two CPUs. Both refer to an address
+      space which are both bound to a master interface. Consequently,
+      cpuA has access to the upper master interface and cpuB to the
+      lower one.  <br><img src="../images/cpus.png" alt="example">
+    </p>
   </body>
 </html>

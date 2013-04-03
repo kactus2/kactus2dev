@@ -8,7 +8,27 @@
   <body>
     <h2>API interface editor</h2>
     <p>
-      Help for API interface.
+    <p>
+      This is Kactus extension <br><img
+      src="../images/appicon.png"><br> Each API interface has a
+      mandatory <b>name</b>. <b>Display name</b> is optional and
+      typically a few words providing a more detailed and/or
+      user-friendly name for display. Optional <b>description</b>
+      contains a textual description of the interface.
+    </p>
+    <p>
+      Optional <b>API definition</b> is an XML document that captures
+      the interface properties. It lists all the function calls, their
+      parameters, and return values. You can type the VLNV or
+      drag-drop an API definition from the library.
+    </p>
+    <p>
+      <b>Details</b> section includes <b>dependency</b> which is
+      either 'provider' or 'requester'. A <i>provider</i> means that
+      this SW components implements the API and other SW components
+      call its functions. <i>Requester</i> means that this SW
+      components calls functions defined in the API and some other SW
+      component must implement (provide) them.
     </p>
   </body>
 </html>

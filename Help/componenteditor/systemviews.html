@@ -8,7 +8,41 @@
   <body>
     <h2>System views editor</h2>
     <p>
-      This is Kactus extension <br><img src="../images/appicon.png"><br><br>
+      This is Kactus extension <br><img
+      src="../images/appicon.png"><br><br> <i>System view</i> is a
+      usually associated with a component including multiple CPUs. It
+      is hierarchical reference to <i>system design</i> which is also
+      a Kactus-extension and defines the mapping of SW onto HW
+      resources.  One component, such as multiprocessor SoC (MPSoC),
+      can have multiple system views, i.e. multiple stored mappings,
+      and hence it is easy to switch between them. System design
+      defines how SW is mapped onto CPUs and it shows all HW
+      components that include a <i>CPU definition</i>. Mapping is
+      necessary if there are multiple CPUs or HW accelerators that
+      support the optional COM interfaces.
+    </p>
+    <p>
+      Each system view has mandatory <b>name</b> and <b>hierarchy
+      reference</b>. Note that the latter cannot be edited here, but
+      in view's own editor. Note also that a system view is always
+      hierarchical, unlike regular <i>view</i>.<b>Display name</b> is
+      optional and typically a few words providing a more detailed
+      and/or user-friendly name for display. Optional
+      <b>description</b> contains a textual description of the
+      interface.
+      </p>
+    <hr>
+    <p>EXAMPLE. A product includes two porgrammable CPUS: Nios on FPGA
+    and a regular PC. One system design performs the application
+    mapping so that discrete cosine transfrom (dct) is executed on PC
+    whereas the main function H.263 video encoder is on
+    Nios. Communication between these is done using MCAPI endpoints
+    and channels. Therefore Nios also includes the MCAPI SW component.
+    We notice that interface symbols are different in COM interfaces
+    (main - dct) and API interfaces (main - mcapi). Note also that
+    system design shows CPUs together although they appear on
+    different levels of product's hiearchy. <br><img
+    src="../images/system_views.png" alt="example">
     </p>
   </body>
 </html>

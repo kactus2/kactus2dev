@@ -8,7 +8,26 @@
   <body>
     <h2>API interfaces editor</h2>
     <p>
-      Help for API interfaces.
+      This is Kactus extension <br><img
+      src="../images/appicon.png"><br><br> <i>API interface</i>
+      (application programming interface) means the protocol that SW
+      components use to communicate, in practice it is set of function
+      calls. Purpose is to increase portability by abstacting the
+      details of underlying HW. These are a lower level concept than
+      COM interfaces and cannot appear in HW components. API
+      interfaces make rather tight coupling between SW components, and
+      often both the sender and receiver are mapped on the same CPU.
+      COM interfaces are meant for communication between application
+      modules, whereas API interfaces are mainly between application
+      and platform (OS, drivers) and inside the platform.  </p>
+    <p>
+      For example, a SW component could have API interfaces 'lower'
+      and 'upper'. It <i>requests</i> the 'lower' one, DMA driver,
+      i.e. calls its functions. At the same, this component 'provides'
+      the 'upper' interface, MCAPI, i.e. other SW components can call
+      its functions.<br> <img src="../images/api_interfaces.png"
+      alt="screen_cap"><br>
     </p>
+
   </body>
 </html>

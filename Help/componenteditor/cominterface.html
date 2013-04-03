@@ -1,14 +1,38 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-	<head>
-	<meta http-equiv="Content-Type"content="text/html; charset=utf-8">
-		<link href="../style.css" rel="Stylesheet" type="text/css">
-		<title>COM interface editor</title>
-	</head>
-	<body>
-		<h2>COM interface editor</h2>
-		<p>
-			Help for COM interface.
-		</p>
-	</body>
+  <head>
+    <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>COM interface editor</title>
+  </head>
+  <body>
+    <h2>COM interface editor</h2>
+    <p>
+      This is Kactus extension <br><img
+      src="../images/appicon.png"><br> Each interface has a mandatory
+      <b>name</b>. <b>Display name</b> is optional and typically a few
+      words providing a more detailed and/or user-friendly name for
+      display. Optional <b>description</b> contains a textual
+      description of the interface.
+    </p>
+    <p>
+      Optional <b>COM definition</b> is a XML document that captures
+      the interface properties, similarly to bus interfaces in regular
+      HW components. You can type the VLNV or drag-drop a COM
+      definition from the library.
+    </p>
+    <p>
+      <b>Details</b> are settings that are specific to selected COM
+      definition. Optional <b>transfer type</b> denotes what kind of
+      data is transmitted through the interface. The allowed values
+      depend on the selected COM definition, e.g. in MCAPI they are
+      'message', 'packet', and 'scalar'. At least MCAPI has also a
+      <b>Direction</b> (in, out, inout).
+    </p>
+    <p>
+      <b>Property values</b> define values for the parameters as
+      name-value pairs. For example in MCAPI, each endpoint must have
+      a 'port_id'.
+    </p>
+  </body>
 </html>

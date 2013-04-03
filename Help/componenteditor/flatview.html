@@ -36,10 +36,12 @@
       5 additional optional settings.  <b>Language</b> specifies the
       HDL for the view, e.g. VHDL, Verilog, or SystemC. <b>Strict</b>
       denotes if language shall be strictly enforced. The default is
-      false (unchecked). <b>Model name</b> is a language-specific
-      identifier. For example, with VHDL this may be a
-      <i>entity(architecture)</i> name or <i>configuration</i>
-      name. For SystemC, this is the <i>sc_module</i> class name.
+      false (unchecked). <b>Model name</b> is am optional
+      language-specific identifier. For example, this may be of form
+      <i>entity(architecture)</i> if <b>name</b>-field of the VLNV is
+      not exactly the same as the entity name in VHDL code, or this
+      may be VHDL <i>configuration</i> name. For SystemC, this is the
+      <i>sc_module</i> class name.
     </p>
     <p>
       <b>File set references</b> lists the used file sets of the
