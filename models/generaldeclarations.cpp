@@ -1280,7 +1280,7 @@ QString General::getAbsolutePath(const QString originalPath,
 	return file.canonicalFilePath();
 }
 
-bool General::isSpecifiedFileType( const QString& fileType ) {
+bool General::isIpXactFileType( const QString& fileType ) {
 
 	// check all the pre-specified file types
 	for (unsigned int i = 0; i < General::FILE_TYPE_COUNT; ++i) {

@@ -79,7 +79,7 @@ namespace General {
 	 *
 	 * \return True if the file type is one of the specified ones.
 	*/
-	bool isSpecifiedFileType(const QString& fileType);
+	bool isIpXactFileType(const QString& fileType);
 
 /*!
  * Provides the capability to require or forbid a port to appear in a

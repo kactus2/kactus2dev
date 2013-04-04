@@ -15,6 +15,7 @@
 
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QSizePolicy>
 
 //-----------------------------------------------------------------------------
 // Function: FileTypeSettingsPage()
@@ -34,7 +35,7 @@ FileTypeSettingsPage::FileTypeSettingsPage(QSettings& settings)
     view_.sortByColumn(0, Qt::AscendingOrder);
 
     QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(new QLabel(tr("File types:"), this));
+    layout->addWidget(new QLabel(tr("File types:"), this), 0);
     layout->addWidget(&view_, 1);
 
     connect(&view_, SIGNAL(addItem(const QModelIndex&)),

@@ -795,7 +795,7 @@ void File::setAllFileTypes( const QStringList& fileTypes ) {
 	foreach (QString fileType, fileTypes) {
 
 		// if the file type is one of the specified ones
-		if (General::isSpecifiedFileType(fileType)) {
+		if (General::isIpXactFileType(fileType)) {
 			fileTypes_.append(fileType);
 		}
 		// if the file type is user defined

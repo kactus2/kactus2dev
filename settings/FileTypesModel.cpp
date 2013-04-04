@@ -104,6 +104,14 @@ QVariant FileTypesModel::data(QModelIndex const& index, int role /*= Qt::Display
             }
         }
     }
+	 else if (Qt::UserRole == role) {
+		 QStringList specifiedFileTypes;
+		 foreach (FileTypeEntry const& entry, entries_) {
+			 specifiedFileTypes.append(entry.name);
+		 }
+
+		 return specifiedFileTypes;
+	 }
     
     return QVariant();
 }

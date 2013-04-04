@@ -3604,6 +3604,12 @@
     <ClCompile Include="common\widgets\fileTypeSelector\filetypeselector.cpp">
       <Filter>Source Files\common\widgets\fileTypeSelector</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_filetypesview.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="settings\filetypesview.cpp">
+      <Filter>Source Files\settings</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5144,6 +5150,9 @@
     </CustomBuild>
     <CustomBuild Include="common\widgets\fileTypeSelector\filetypeselector.h">
       <Filter>Header Files\common\widgets\fileTypeSelector</Filter>
+    </CustomBuild>
+    <CustomBuild Include="settings\filetypesview.h">
+      <Filter>Header Files\settings</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

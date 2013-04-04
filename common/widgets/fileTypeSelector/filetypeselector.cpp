@@ -7,6 +7,8 @@
 
 #include "filetypeselector.h"
 
+#include <QSettings>
+
 FileTypeSelector::FileTypeSelector(QWidget *parent):
 QComboBox(parent) {
 
@@ -26,48 +28,18 @@ void FileTypeSelector::refresh() {
 	// remove the previous items
 	clear();
 
-	// add the file type choices to the combo box
-	QStringList comboItems;
-	comboItems.append("asmSource");
-	comboItems.append("cSource");
-	comboItems.append("cppSource");
-	comboItems.append("eSource");
-	comboItems.append("OVASource");
-	comboItems.append("perlSource");
-	comboItems.append("pslSource");
-	comboItems.append("SVASource");
-	comboItems.append("tclSource");
-	comboItems.append("veraSource");
-	comboItems.append("systemCSource");
-	comboItems.append("systemCSource-2.0");
-	comboItems.append("systemCSource-2.0.1");
-	comboItems.append("systemCSource-2.1");
-	comboItems.append("systemCSource-2.2");
-	comboItems.append("systemVerilogSource");
-	comboItems.append("systemVerilogSource-3.0");
-	comboItems.append("systemVerilogSource-3.1");
-	comboItems.append("systemVerilogSource-3.1a");
-	comboItems.append("verilogSource");
-	comboItems.append("verilogSource-95");
-	comboItems.append("verilogSource-2001");
-	comboItems.append("vhdlSource");
-	comboItems.append("vhdlSource-87");
-	comboItems.append("vhdlSource-93");
+	// read the possible file types from the settings
+	QSettings settings;
 
-	comboItems.append("swObject");
-	comboItems.append("swObjectLibrary");
+	settings.beginGroup("FileTypes");
+	QStringList typeNames = settings.childKeys();
+	settings.endGroup();
 
-	comboItems.append("vhdlBinaryLibrary");
-	comboItems.append("verilogBinaryLibrary");
+	// sort the names aphabetically
+	typeNames.sort(Qt::CaseInsensitive);
 
-	comboItems.append("executableHdl");
-	comboItems.append("unelaboratedHdl");
-
-	comboItems.append("SDC");
-
-	comboItems.append("unknown");
-
-	addItems(comboItems);
+	// add the specified types to the combo box list
+	addItems(typeNames);
 
 	connect(this, SIGNAL(currentTextChanged(const QString&)),
 		this, SLOT(onFileChange(const QString&)), Qt::UniqueConnection);

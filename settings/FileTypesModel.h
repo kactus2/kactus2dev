@@ -77,6 +77,8 @@ public:
 
     /*!
      *  Returns that data for specified index in given data role.
+     *  
+     *  Qt::UserRole returns QStringList containing the file types that are already defined.
      *
      *      @param [in] index  Identifies the object that's data is wanted.
      *      @param [in] role   Identifies the type of data being requested.

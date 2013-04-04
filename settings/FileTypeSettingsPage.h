@@ -15,7 +15,7 @@
 #include "FileTypesModel.h"
 
 #include <common/dialogs/propertyPageDialog/PropertyPageView.h>
-#include <common/views/EditableTableView/editabletableview.h>
+#include "filetypesview.h"
 
 #include <QLineEdit>
 #include <QSettings>
@@ -81,7 +81,7 @@ private:
     QSortFilterProxyModel proxyModel_;
 
     //! The table view for file types.
-    EditableTableView view_;
+    FileTypesView view_;
 };
 
 //-----------------------------------------------------------------------------

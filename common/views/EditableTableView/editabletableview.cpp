@@ -56,7 +56,7 @@ impExportable_(false) {
 	// words are wrapped in the cells to minimize space usage
 	setWordWrap(true);
 
-	// user can only select one item at a time
+	// user can select several items at a time
 	setSelectionMode(QAbstractItemView::ContiguousSelection);
 
 	setEditTriggers(QAbstractItemView::DoubleClicked |

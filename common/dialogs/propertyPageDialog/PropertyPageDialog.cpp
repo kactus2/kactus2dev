@@ -61,7 +61,6 @@ PropertyPageDialog::PropertyPageDialog(QSize const& listIconSize, int iconColumn
 
     QVBoxLayout* pageLayout = new QVBoxLayout();
     pageLayout->addWidget(pages_);
-    pageLayout->addStretch(1);
     pageLayout->addWidget(separator);
 
     // Create the layout for the contents list and pages.

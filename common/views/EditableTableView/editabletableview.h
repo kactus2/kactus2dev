@@ -136,7 +136,34 @@ protected:
 	//! \brief Handler for context menu events
 	virtual void contextMenuEvent(QContextMenuEvent* event);
 
-private slots:
+	//! \brief The point where mouse was clicked
+	QPoint pressedPoint_;
+
+	//! \brief Action to add new item
+	QAction addAction_;
+
+	//! \brief Action to remove item
+	QAction removeAction_;
+
+	//! \brief Action to copy item
+	QAction copyAction_;
+
+	//! \brief Action to paste item
+	QAction pasteAction_;
+
+	//! \brief Action to clear selected cells
+	QAction clearAction_;
+
+	//! \brief Action to import a csv-file
+	QAction importAction_;
+
+	//! \brief Action to export a csv-file
+	QAction exportAction_;
+
+	//! \brief Specified if the items can be imported/exported to a csv file.
+	bool impExportable_;
+
+protected slots:
 
 	//! \brief Handler for add action
 	virtual void onAddAction();
@@ -166,35 +193,8 @@ private:
 	//! \brief The default path to use for import/export csv
 	QString defImportExportPath_;
 
-	//! \brief The point where mouse was clicked
-	QPoint pressedPoint_;
-
-	//! \brief Action to add new item
-	QAction addAction_;
-
-	//! \brief Action to remove item
-	QAction removeAction_;
-
-	//! \brief Action to copy item
-	QAction copyAction_;
-
-	//! \brief Action to paste item
-	QAction pasteAction_;
-
-	//! \brief Action to clear selected cells
-	QAction clearAction_;
-
-	//! \brief Action to import a csv-file
-	QAction importAction_;
-
-	//! \brief Action to export a csv-file
-	QAction exportAction_;
-
 	//! \brief Specifies if the items in the view can be dragged from position to another.
 	bool itemsDraggable_;
-
-	//! \brief Specified if the items can be imported/exported to a csv file.
-	bool impExportable_;
 };
 
 #endif // EDITABLETABLEVIEW_H
