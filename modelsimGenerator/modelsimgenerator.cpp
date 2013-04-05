@@ -159,7 +159,6 @@ bool ModelsimGenerator::addMakefile2IPXact(QSharedPointer<Component> component,
 
 	// create a new file
 	QSharedPointer<File> scriptFile = modelsimFileSet->addFile(relativePath, settings);
-	scriptFile->addUserFileType(QString("ModelsimScript"));
 	scriptFile->setIncludeFile(false);
 	scriptFile->setDescription(tr(
 		"Script file for Modelsim that compiles all files for view %1.").arg(viewName_));
