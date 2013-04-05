@@ -119,7 +119,7 @@ QVariant HierarchyModel::headerData(int section,
 			case HierarchyModel::OBJECT_COLUMN:
 				return tr("Library items");
 			case HierarchyModel::INSTANCE_COLUMN:
-				return tr("Instance count");
+				return tr("Instances");
 			default:
 				return QVariant();
 		}

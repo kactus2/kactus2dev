@@ -331,19 +331,6 @@ public slots:
 	*/
 	virtual void onClearSelection();
 
-	/*! \brief Apply the possible changes made to the object to the library.
-	 * 
-	 * This function updates the library to match the changes made to the
-	 * object. I.e if the vlnv of the object has changed this function can be
-	 * used to keep the library up to date with the changes.
-	 * 
-	 * \param object Pointer to the object that has changed.
-	 * \param path Path to the object's IP-Xact document in the file system.
-	 *
-	*/
-// 	virtual void onUpdateObject(const QSharedPointer<LibraryComponent> object,
-// 		const QString& path);
-
 	/*! \brief Open the specified component design
 	 *
 	 * \param vlnv Identifies the component that's design is wanted

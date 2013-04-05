@@ -848,7 +848,12 @@ void LibraryHandler::onSelectionChanged( const VLNV& vlnv ) {
 		return;
 
 	treeWidget_->selectItem(vlnv);
-	//hierarchyWidget_->selectItems(vlnv);
+
+	// TODO This was problem in previous Qt version but has been possibly fixed.
+	// if errors occur with hierarchy view then try commenting this line:
+	hierarchyWidget_->selectItems(vlnv);
+
+
 	return;
 }
 
@@ -857,19 +862,6 @@ void LibraryHandler::onClearSelection() {
 	// tell tree widget to select an invalid vlnv
 	treeWidget_->selectItem(VLNV());
 }
-
-// void LibraryHandler::onUpdateObject( const QSharedPointer<LibraryComponent> object,
-// 									const QString& path) {
-// 	
-// 	// get the current vlnv of the object
-// 	VLNV vlnv = *object->getVlnv();
-// 
-// 	data_->updateVLNV(path, vlnv);
-// 	
-// 	// after updating the vlnv nothing is selected in the library view so
-// 	// select again the same object that was updated
-// 	onSelectionChanged(vlnv);
-// }
 
 VLNV::IPXactType LibraryHandler::getDocumentType(const VLNV& vlnv) {
 
