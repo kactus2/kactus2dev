@@ -19,8 +19,6 @@
 #include <QDir>
 #include <QXmlStreamWriter>
 
-#include <QDebug>
-
 // struct constructor
 General::Enumeration::Enumeration(QString &value, QString attText,
 		QString attHelp): value_(value), attribute_text_(attText),
@@ -1291,6 +1289,40 @@ bool General::isIpXactFileType( const QString& fileType ) {
 		}
 	}
 	return false;
+}
+
+QStringList General::getFileTypes( QSettings& settings, const QString& fileSuffix ) {
+	
+	settings.beginGroup("FileTypes");
+	QStringList typeNames = settings.childKeys();
+	settings.endGroup();
+
+	QStringList types;
+
+	// check each file type
+	foreach (QString const& typeName, typeNames)	{
+		
+		// get the extensions associated with the file type
+		QString extensionsStr = settings.value("FileTypes/" + typeName).toString();
+
+		// there may be several extensions for the file type
+		QStringList extensions = extensionsStr.split(";", QString::SkipEmptyParts);
+
+		// check each extension of the file type
+		foreach (QString extension, extensions) {
+
+			// if the file type has the searched extension defined
+			if (!extension.isEmpty() && extension.compare(fileSuffix, Qt::CaseInsensitive) == 0) {
+				types.append(typeName);
+			}
+		}
+	}
+
+	return types;
+}
+
+QStringList General::getFileTypes( QSettings& settings, const QFileInfo& file ) {
+	return General::getFileTypes(settings, file.suffix());
 }
 
 General::ModifiedWrite General::str2ModifiedWrite( const QString& str ) {

@@ -16,6 +16,7 @@
 #include <QSharedPointer>
 #include <QObject>
 #include <QXmlStreamWriter>
+#include <QFileInfo>
 
 FileSet::FileSet(QDomNode & fileSetNode): nameGroup_(fileSetNode), groups_(),
 files_(), defaultFileBuilders_(), dependencies_(), functions_() {
@@ -464,18 +465,28 @@ void FileSet::addFile(QSharedPointer<File> file) {
 	files_.append(file);
 }
 
-QSharedPointer<File> FileSet::addFile( const QString& filePath ) {
+QSharedPointer<File> FileSet::addFile(const QString& filePath, QSettings& settings) {
+
+	QSharedPointer<File> file;
 
 	// check if file already exists
-	foreach (QSharedPointer<File> file, files_) {
-		if (file->getName() == filePath) {
-			return file;
+	foreach (QSharedPointer<File> fileSearch, files_) {
+		if (fileSearch->getName() == filePath) {
+			file = fileSearch;
 		}
 	}
 
 	// file did not yet exist so create the file and add it to list
-	QSharedPointer<File> file(new File(filePath, this));
-	files_.append(file);
+	if (!file) {
+		file = QSharedPointer<File>(new File(filePath, this));
+		files_.append(file);
+	}
+
+	// set the file types for the file
+	QFileInfo fileInfo(filePath);
+	QStringList types = General::getFileTypes(settings, fileInfo);
+	file->setAllFileTypes(types);
+
 	return file;
 }
 
@@ -555,13 +566,6 @@ QSharedPointer<File> FileSet::createFile() {
 	files_.append(file);
 	return file;
 }
-
-QSharedPointer<File> FileSet::createFile( const QString& path ) {
-	QSharedPointer<File> file(new File(path, this));
-	files_.append(file);
-	return file;
-}
-
 
 QString FileSet::getDefaultCommand( const File* file ) const {
 

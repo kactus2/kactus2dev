@@ -1,8 +1,9 @@
 /* 
- *
- *  Created on: 9.8.2010
- *      Author: Antti Kamppi
- */
+ *	Created on:	9.8.2010
+ *	Author:		Antti Kamppi
+ *	File name:	file.h
+ *	Project:		Kactus 2
+*/
 
 #ifndef FILE_H_
 #define FILE_H_
@@ -19,6 +20,7 @@
 #include <QMap>
 #include <QXmlStreamWriter>
 #include <QStringList>
+#include <QSettings>
 
 class FileSet;
 
@@ -51,10 +53,6 @@ public:
 		 *
 		 * \param defineNode Reference to a QDomNode to parse the information
 		 * from.
-		 * 
-		 * Exception guarantee: basic
-		 * \exception Parse_error Occurs when a mandatory element is missing in
-		 * this struct
 		 *
 		*/
 		Define(QDomNode& defineNode);
@@ -92,9 +90,6 @@ public:
 	 * from.
 	 * \param parent Pointer to the FileSet that contains this file.
 	 *
-	 * Exception guarantee: basic
-	 * \exception Parse_error Occurs when a mandatory element is missing in
-	 * this class or one of it's member classes.
 	 */
 	File(QDomNode &fileNode, FileSet* parent);
 

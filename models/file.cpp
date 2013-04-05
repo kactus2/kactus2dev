@@ -1,8 +1,9 @@
 /* 
- *
- *  Created on: 9.8.2010
- *      Author: Antti Kamppi
- */
+ *	Created on:	9.8.2010
+ *	Author:		Antti Kamppi
+ *	File name:	file.cpp
+ *	Project:		Kactus 2
+*/
 
 #include "file.h"
 #include "generaldeclarations.h"
@@ -206,29 +207,6 @@ buildcommand_(),
 defines_(), 
 parent_(parent)  {
 
-	QFileInfo fileInfo(filePath);
-
-	// set the default file type if it can be derived from the file suffix
-
-	if (fileInfo.suffix() == QString("vhd") ||
-		(fileInfo.suffix() == QString("vhdl"))) {
-		fileTypes_.append("vhdlSource");
-	}
-	else if (fileInfo.suffix() == QString("v")) {
-		fileTypes_.append("verilogSource");
-	}
-	else if (fileInfo.suffix() == QString("sv")) {
-		fileTypes_.append("systemVerilogSource");
-	}
-	else if (fileInfo.suffix() == QString("c")) {
-		fileTypes_.append("cSource");
-	}
-	else if (fileInfo.suffix() == QString("h") ||
-		fileInfo.suffix() == QString("hpp") ||
-		fileInfo.suffix() == QString("cpp") ||
-		fileInfo.suffix() == QString("cc")) {
-		fileTypes_.append("cppSource");
-	}
 }
 
 File::File( FileSet* parent ):

@@ -250,25 +250,23 @@ QString DocumentGenerator::writeDocumentation() {
 			component_->addFileSet(documentationFileSet);
 		}
 
-		// create a new file
-		QSharedPointer<File> docFile(new File(relativePath, documentationFileSet.data()));
-		docFile->addUserFileType(QString("htmlFile"));
+		QSettings settings;
+
+		// create a new file and add it to file set
+		QSharedPointer<File> docFile = documentationFileSet->addFile(relativePath, settings);
+		Q_ASSERT(docFile);
 		docFile->setIncludeFile(false);
 		docFile->setDescription(tr("Html file that contains the documentation "
 			"for this component and subcomponents"));
-
-		// add the new file to the file set
-		documentationFileSet->addFile(docFile);
 
 		// add all created pictures to the file set
 		foreach (QString pictureName, pictureList) {
 			QString relativePicPath = General::getRelativePath(xmlPath, pictureName);
 
-			QSharedPointer<File> picFile(new File(relativePicPath, documentationFileSet.data()));
-			picFile->addUserFileType(tr("picture"));
+			QSharedPointer<File> picFile = documentationFileSet->addFile(relativePicPath, settings);
+			Q_ASSERT(picFile);
 			picFile->setIncludeFile(false);
 			picFile->setDescription(tr("Preview picture needed by the html document."));
-			documentationFileSet->addFile(picFile);
 		}
 
 		handler_->writeModelToFile(component_);

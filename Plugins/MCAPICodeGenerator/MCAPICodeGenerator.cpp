@@ -160,6 +160,8 @@ void MCAPICodeGenerator::runGenerator( IPluginUtility* utility,
     // Add the files to the component metadata.
     QSharedPointer<FileSet> fileSet = component->getFileSet("cSources");
 
+	 QSettings settings;
+
     if (fileSet == 0)
     {
         fileSet = QSharedPointer<FileSet>(new FileSet("cSources", "sourceFiles"));
@@ -168,17 +170,17 @@ void MCAPICodeGenerator::runGenerator( IPluginUtility* utility,
 
     if (!fileSet->contains("ktsmcapicode.h"))
     {
-        fileSet->addFile("ktsmcapicode.h");
+        fileSet->addFile("ktsmcapicode.h", settings);
     }
 
     if (!fileSet->contains("ktsmcapicode.c"))
     {
-        fileSet->addFile("ktsmcapicode.c");
+        fileSet->addFile("ktsmcapicode.c", settings);
     }
 
     if (!fileSet->contains("main.c"))
     {
-        fileSet->addFile("main.c");
+        fileSet->addFile("main.c", settings);
     }
 
     utility_->getLibraryInterface()->writeModelToFile(component);

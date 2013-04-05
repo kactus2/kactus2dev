@@ -319,16 +319,14 @@ bool VhdlGenerator2::addRTLView( const QString& vhdlFileName ) {
 
 	topFileSet->clearFiles();
 
+	QSettings settings;
+
 	// create a new file
-	QSharedPointer<File> topVhdlFile(new File(relativePath, topFileSet.data()));
-	topVhdlFile->addFileType(QString("vhdlSource"));
+	QSharedPointer<File> topVhdlFile = topFileSet->addFile(relativePath, settings);
 	topVhdlFile->setIncludeFile(true);
 	topVhdlFile->setLogicalName("work");
 	topVhdlFile->setCommand(QString("vcom"));
 	topVhdlFile->setBuildFlags(QString("-quiet -check_synthesis -work work"), true);
-
-	// add the new file to the file set
-	topFileSet->addFile(topVhdlFile);
 
 	QString viewName;
 	if (!viewName_.isEmpty()) {

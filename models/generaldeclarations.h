@@ -10,6 +10,7 @@
 #include <LibraryManager/vlnv.h>
 #include "parameter.h"
 #include "vector.h"
+#include <common/Global.h>
 
 #include <QDomNode>
 #include <QList>
@@ -17,6 +18,9 @@
 #include <QSharedPointer>
 #include <QMap>
 #include <QXmlStreamWriter>
+#include <QSettings>
+#include <QStringList>
+#include <QFileInfo>
 
 /*!
  * The VLNV tags that name the elements containing information
@@ -79,7 +83,25 @@ namespace General {
 	 *
 	 * \return True if the file type is one of the specified ones.
 	*/
-	bool isIpXactFileType(const QString& fileType);
+	KACTUS2_API bool isIpXactFileType(const QString& fileType);
+
+	/*! \brief Get the file types which are associated with the given file suffix.
+	 *
+	 * \param settings The settings instance used to manage the Kactus2 settings.
+	 * \param fileSuffix The file suffix to identify the file type.
+	 *
+	 * \return QStringList containing the file types.
+	*/
+	KACTUS2_API QStringList getFileTypes(QSettings& settings, const QString& fileSuffix);
+
+	/*! \brief Get the file types which are associated with the given file suffix.
+	 *
+	 * \param settings The settings instance used to manage the Kactus2 settings.
+	 * \param file Represents the file which's file types are searched.
+	 *
+	 * \return QStringList containing the file types.
+	*/
+	KACTUS2_API QStringList getFileTypes(QSettings& settings, const QFileInfo& file);
 
 /*!
  * Provides the capability to require or forbid a port to appear in a

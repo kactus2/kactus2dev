@@ -19,6 +19,7 @@
 #include <QMap>
 #include <QStringList>
 #include <QXmlStreamWriter>
+#include <QSettings>
 
 class Function;
 class FileBuilder;
@@ -291,11 +292,13 @@ public:
 	/*! \brief Add a new file to the file set.
 	 *
 	 * If the file is already contained in the file set then pointer to it is returned.
+	 * If the file is added then file types are automatically set for the file.
 	 *
 	 * \param filePath Path to the file to add (this should be relative path).
+	 * \param settings Contains the file type settings for Kactus2.
 	 *
 	*/
-	QSharedPointer<File> addFile(const QString& filePath);
+	QSharedPointer<File> addFile(const QString& filePath, QSettings& settings);
 
 	/*! \brief Get pointer to the file with given logical name.
 	 *
@@ -336,14 +339,6 @@ public:
 	 * \return Pointer to the file that was created.
 	*/
 	QSharedPointer<File> createFile();
-
-	/*! \brief Create a new file to the file set.
-	 *
-	 * \param path File path for the file.
-	 *
-	 * \return File* Pointer to the file that was created.
-	*/
-	QSharedPointer<File> createFile(const QString& path);
 
 	/*! \brief Get the default build command's command part for given file.
 	 *
