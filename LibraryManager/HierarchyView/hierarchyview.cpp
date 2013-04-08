@@ -515,8 +515,8 @@ void HierarchyView::mousePressEvent( QMouseEvent *event ) {
 	}
 	
 	// select the object even if the instance column was clicked
-	QModelIndex indexToSelect = model()->index(index.row(), 0, index.parent());
-	setCurrentIndex(indexToSelect);
+// 	QModelIndex indexToSelect = model()->index(index.row(), 0, index.parent());
+// 	setCurrentIndex(indexToSelect);
 
 	if (event->button() == Qt::LeftButton) {
 		dragIndex_ = filter_->mapToSource(index);
@@ -537,7 +537,7 @@ void HierarchyView::mousePressEvent( QMouseEvent *event ) {
 void HierarchyView::mouseReleaseEvent( QMouseEvent * event ) {
 	QModelIndex index = indexAt(event->pos());
 	
-	if (index.isValid()) {
+	if (index.isValid() && index.column() == 0) {
 		QModelIndex sourceIndex = filter_->mapToSource(index);
 		HierarchyItem* item = static_cast<HierarchyItem*>(sourceIndex.internalPointer());
 		emit componentSelected(item->getVLNV());

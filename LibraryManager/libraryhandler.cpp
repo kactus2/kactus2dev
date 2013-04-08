@@ -849,11 +849,7 @@ void LibraryHandler::onSelectionChanged( const VLNV& vlnv ) {
 
 	treeWidget_->selectItem(vlnv);
 
-	// TODO This was problem in previous Qt version but has been possibly fixed.
-	// if errors occur with hierarchy view then try commenting this line:
-	hierarchyWidget_->selectItems(vlnv);
-
-
+	//hierarchyWidget_->selectItems(vlnv);
 	return;
 }
 
