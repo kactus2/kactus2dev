@@ -165,7 +165,16 @@ bool FileTypesModel::setData(const QModelIndex& index, const QVariant& value, in
         {
         case FILE_TYPES_COL_NAME:
             {
-                entries_[index.row()].name = value.toString();
+					QString name = value.toString();
+
+					// if the file type has already been defined
+					foreach (const FileTypesModel::FileTypeEntry& entry, entries_) {
+						if (entry.name.compare(name, Qt::CaseInsensitive) == 0) {
+							return false;
+						}
+					}
+
+                entries_[index.row()].name = name;
                 break;
             }
 
