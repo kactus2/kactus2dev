@@ -47,12 +47,13 @@
       specifying a memory map that is local to the component.  This
       consists of <b>Address blocks</b> similarly to the memory map of
       a slave interface. Hence, address blocks can contain either
-      memory or regsiters, and registers can contain bit fields. Local
+      memory or registers, and registers can contain bit fields. Local
       memory map is useful for storing the programmer's view to
       interrupts registers, timers, and other local things. The
-      overall address space is a concatenation of local memory map
-      (e.g. timers) and the memory maps of other units (e.g. registers
-      of accelerator A, registers of accelerator B etc.)
+      overall address space of a component is a concatenation of local
+      memory map (e.g. timers) and the memory maps of other units
+      (e.g. registers of accelerator A, registers of accelerator B
+      etc.)
     </p>
     <p>
       The parameters editor can be used to define parameters for the

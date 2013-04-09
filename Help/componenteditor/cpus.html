@@ -9,14 +9,19 @@
     <h2>CPUs editor</h2>
     <p>
       The cpus editor lists the programmable cores the component
-      contains.
+      contains. This way the tools can recognize them and distinguish
+      from hardwired components. One component can have many cores.
     </p>
     <p>
       Each CPU has a mandatory <b>name</b> and optional textual
       <b>description</b>. <b>Address space</b> references specify the
       logical address space of the cpu. When a <i>master interface</i>
       of a component referencec the same address spaces, there's a
-      link link between the programmable core and the interface.
+      link link between the programmable core and the interface. This
+      information helps for example in generating a board support
+      package (BSP) and picking appropriate programmable components
+      into system design. CPU definition should not be repeated on a
+      higher level component (one that instantiates a CPU).
     </p>
     <p>
       Cpus editor provides a context menu (right mouse button) with
@@ -34,9 +39,10 @@
     <hr>
     <p>
       EXAMPLE. Example SoC has two CPUs. Both refer to an address
-      space which are both bound to a master interface. Consequently,
-      cpuA has access to the upper master interface and cpuB to the
-      lower one.  <br><img src="../images/cpus.png" alt="example">
+      space. The first address space is bound to a master interface
+      whereas the second is local. Consequently, cpuA has access to
+      the upper master interface and cpuB does not.  <br><img
+      src="../images/cpus.png" alt="example">
     </p>
   </body>
 </html>
