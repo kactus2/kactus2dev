@@ -199,6 +199,17 @@ public:
 	*/
 	void setFileSetRefs(const QStringList& fileSetRefs);
 
+	/*! \brief Add a file set reference to the SW view.
+	 *
+	 * Method: 		addFileSetRef
+	 * Full name:	SWView::addFileSetRef
+	 * Access:		public 
+	 *
+	 * \param fileSetName The name of the file set to refer to.
+	 *
+	*/
+	void addFileSetRef(const QString& fileSetName);
+
 	//! \brief Get the SW build commands of the SW view.
 	QList<QSharedPointer<SWBuildCommand> >& getSWBuildCommands();
 
@@ -216,7 +227,7 @@ private:
 	General::NameGroup nameGroup_;
 
 	/*!
-	 * MANDATORY spirit:hierarchyRef
+	 * OPTIONAL spirit:hierarchyRef
 	 * References a hierarchical design, mandatory only if the view is used to
 	 * reference a hierarchical design.
 	 */

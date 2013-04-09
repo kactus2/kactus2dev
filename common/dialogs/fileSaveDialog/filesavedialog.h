@@ -14,6 +14,7 @@
 #include <QDialog>
 #include <QAbstractTableModel>
 #include <QSize>
+#include <QStyledItemDelegate>
 
 /*! \brief The dialog can be used for user to select multiple files to be created.
  * 
@@ -77,6 +78,9 @@ public:
 	 * \return QSize contains the minimum size of the dialog.
 	*/
 	virtual QSize minimumSizeHint() const;
+
+	//! \brief Set the delegate class for the view.
+	void setItemDelegate(QStyledItemDelegate* delegate);
 
 private:
 	

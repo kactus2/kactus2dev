@@ -52,6 +52,7 @@ fileSetRefEditor_(NULL)
 	fileSetRefEditor_->initialize();
 
 	HWViewRefEditor_ = new ViewSelector(ViewSelector::BOTH_HW_VIEWS, component, this);
+	HWViewRefEditor_->setFixedWidth(200);
 
     connect(&nameEditor_, SIGNAL(contentChanged()),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);

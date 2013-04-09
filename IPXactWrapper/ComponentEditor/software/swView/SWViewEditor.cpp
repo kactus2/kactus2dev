@@ -45,6 +45,7 @@ bspEditor_(NULL) {
 
 	hierRefEditor_ = new VLNVEditor(VLNV::DESIGNCONFIGURATION, libHandler, parentW, this);
 	hierRefEditor_->setTitle(tr("Hierarchy reference"));
+	hierRefEditor_->setMandatory(false);
 
 	fileSetRefEditor_ = new FileSetRefEditor(component, tr("File set references"), this);
 	fileSetRefEditor_->initialize();
@@ -96,7 +97,7 @@ SWViewEditor::~SWViewEditor() {
 bool SWViewEditor::isValid() const
 {
     // if name group is not valid
-    if (!nameEditor_.isValid() || !hierRefEditor_->isValid() || !swBuildCommands_->isValid()) {
+    if (!nameEditor_.isValid() || !swBuildCommands_->isValid()) {
         return false;
 	 }
 

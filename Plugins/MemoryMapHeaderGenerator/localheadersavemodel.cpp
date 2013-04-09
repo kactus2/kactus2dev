@@ -11,6 +11,7 @@
 #include <models/memorymap.h>
 
 #include <QDir>
+#include <QStringList>
 
 const QString LocalHeaderSaveModel::DEFAULT_HEADER_DIR = tr("headers");
 
@@ -32,6 +33,18 @@ void LocalHeaderSaveModel::setComponent( QSharedPointer<Component> component ) {
 
 	qDeleteAll(table_);
 	table_.clear();
+
+	QString defSWView;
+	QStringList swViewNames = component->getSWViewNames();
+	
+	// if there are no sw views then use default name to create one
+	if (swViewNames.isEmpty()) {
+		defSWView = "swView";
+	}
+	// if there is at least one sw view then use it.
+	else {
+		defSWView = swViewNames.first();
+	}
 
 	foreach (QSharedPointer<AddressSpace> addrSpace, component_->getAddressSpaces()) {
 
@@ -55,6 +68,8 @@ void LocalHeaderSaveModel::setComponent( QSharedPointer<Component> component ) {
 
 			// create the file info instance
 			options->fileInfo_ = QFileInfo(fullPath);
+
+			options->swView_ = defSWView;
 
 			// append the options to the table
 			table_.append(options);
@@ -85,7 +100,13 @@ Qt::ItemFlags LocalHeaderSaveModel::flags( const QModelIndex& index ) const {
 		return Qt::NoItemFlags;
 	}
 
-	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+	Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+
+	if (index.column() == LocalHeaderSaveModel::SW_VIEW_NAME) {
+		flags |= Qt::ItemIsEditable;
+	}
+
+	return flags;
 }
 
 QVariant LocalHeaderSaveModel::headerData( int section, Qt::Orientation orientation, int role /*= Qt::DisplayRole*/ ) const {
@@ -95,6 +116,9 @@ QVariant LocalHeaderSaveModel::headerData( int section, Qt::Orientation orientat
 	if (Qt::DisplayRole == role) {
 
 		switch (section) {
+		case LocalHeaderSaveModel::SW_VIEW_NAME: {
+			return tr("SW View");
+															  }
 		case LocalHeaderSaveModel::MEM_MAP_NAME: {
 			return tr("Local memory\nmap name");
 												 }
@@ -125,6 +149,9 @@ QVariant LocalHeaderSaveModel::data( const QModelIndex& index, int role /*= Qt::
 	if (Qt::DisplayRole == role) {
 
 		switch (index.column()) {
+		case LocalHeaderSaveModel::SW_VIEW_NAME: {
+			return table_.at(index.row())->swView_;
+															  }
 		case LocalHeaderSaveModel::MEM_MAP_NAME: {
 			return table_.at(index.row())->localMemMap_->getName();
 												 }
@@ -177,6 +204,10 @@ bool LocalHeaderSaveModel::setData( const QModelIndex& index, const QVariant& va
 	if (Qt::EditRole == role) {
 
 		switch (index.column()) {
+		case LocalHeaderSaveModel::SW_VIEW_NAME: {
+			table_[index.row()]->swView_ = value.toString();
+			break;
+															  }
 		case LocalHeaderSaveModel::MEM_MAP_NAME: {
 			// memory map name can not be modified
 			return false;

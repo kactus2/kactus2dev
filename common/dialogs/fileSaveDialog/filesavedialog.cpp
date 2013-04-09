@@ -45,3 +45,7 @@ QSize FileSaveDialog::sizeHint() const {
 QSize FileSaveDialog::minimumSizeHint() const {
 	return QSize(FileSaveDialog::WIDTH, FileSaveDialog::HEIGHT);
 }
+
+void FileSaveDialog::setItemDelegate( QStyledItemDelegate* delegate ) {
+	view_->setItemDelegate(delegate);
+}

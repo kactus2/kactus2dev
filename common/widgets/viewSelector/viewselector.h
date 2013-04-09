@@ -9,6 +9,7 @@
 #define VIEWSELECTOR_H
 
 #include <models/component.h>
+#include <common/Global.h>
 
 #include <QComboBox>
 #include <QSharedPointer>
@@ -16,15 +17,10 @@
 /*! \brief This combo box can be used to select a view within a component.
  *
  */
-class ViewSelector : public QComboBox {
+class KACTUS2_API ViewSelector : public QComboBox {
 	Q_OBJECT
 
 public:
-
-	//! \brief The fixed width for the combo box.
-	enum Size {
-		WIDTH = 200
-	};
 
 	//! \brief Specifies what kind of views can be selected in the combo box.
 	enum ViewType {
@@ -45,9 +41,10 @@ public:
 	 * \param mode Specifies which kind of views can be selected.
 	 * \param component Pointer to the component which's views are being selected.
 	 * \param parent Pointer to the owner of the combo box.
+	 * \param allowEmpty If true then empty option is added to allow unselecting a view.
 	 *
 	*/
-	ViewSelector(ViewType mode, QSharedPointer<Component> component, QWidget *parent);
+	ViewSelector(ViewType mode, QSharedPointer<Component> component, QWidget *parent, bool allowEmpty = true);
 	
 	//! \brief The destructor.
 	virtual ~ViewSelector();
@@ -81,8 +78,11 @@ private:
 	//! \brief Specifies what kind of views can be selected in the combo box.
 	ViewType mode_;
 
-	//! \brief Pointer to the component which's views are selected.
+	//! \brief Pointer to the component, which's views are selected.
 	QSharedPointer<Component> component_;
+
+	//! \brief Specified whether empty option is available in the combo box.
+	bool allowEmpty_;
 };
 
 #endif // VIEWSELECTOR_H

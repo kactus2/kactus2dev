@@ -7,14 +7,13 @@
 
 #include "viewselector.h"
 
-ViewSelector::ViewSelector( ViewType mode, QSharedPointer<Component> component, QWidget *parent ):
+ViewSelector::ViewSelector( ViewType mode, QSharedPointer<Component> component, QWidget *parent, bool allowEmpty):
 QComboBox(parent),
 mode_(mode),
-component_(component) {
+component_(component),
+allowEmpty_(allowEmpty) {
 
 	Q_ASSERT(component_);
-
-	setFixedWidth(ViewSelector::WIDTH);
 
 	setEditable(false);
 
@@ -34,7 +33,7 @@ void ViewSelector::refresh() {
 
 	QStringList viewNames;
 
-	// the mode specifes the available view types
+	// the mode specifies the available view types
 	switch (mode_) {
 	case ViewSelector::FLAT_HW_VIEWS: {
 		viewNames = component_->getFlatViews();
@@ -62,7 +61,10 @@ void ViewSelector::refresh() {
 				}
 	}	
 	
-	addItem("");
+	if (allowEmpty_) {
+		addItem("");
+	}
+
 	addItems(viewNames);
 
 	connect(this, SIGNAL(currentIndexChanged(int)),

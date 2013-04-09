@@ -2692,6 +2692,25 @@ SWView* Component::findSWView(const QString name) const {
     return 0;
 }
 
+QSharedPointer<SWView> Component::getSWView( const QString& viewName ) {
+	QSharedPointer<SWView> swView;
+
+	// first
+	foreach (QSharedPointer<SWView> view, swViews_) {
+		if (view->getName() == viewName) {
+			swView = view;
+		}
+	}
+
+	// if SW view was not found, create one
+	if (!swView) {
+		swView = QSharedPointer<SWView>(new SWView(viewName));
+		swViews_.append(swView);
+	}
+
+	return swView;
+}
+
 void Component::addSWView(SWView* newView) {
     // remove previous views with the same name.
     removeSWView(newView->getName());

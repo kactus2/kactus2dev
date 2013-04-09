@@ -33,6 +33,9 @@ public:
 
 		//! \brief Contains the path for the header file to be saved.
 		QFileInfo fileInfo_;
+
+		//! \brief The name of the sw view to create the header for.
+		QString swView_;
 	};
 
 	//! \brief The default directory name to save the headers to.
@@ -40,7 +43,8 @@ public:
 
 	//! \brief The column numbers for the table.
 	enum Columns {
-		MEM_MAP_NAME = 0,
+		SW_VIEW_NAME = 0,
+		MEM_MAP_NAME,
 		FILE_NAME,
 		FILE_PATH,
 		COLUMN_COUNT

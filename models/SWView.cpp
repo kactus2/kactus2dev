@@ -143,8 +143,10 @@ void SWView::write( QXmlStreamWriter& writer, bool withinHWComp ) {
 		writer.writeTextElement("spirit:description", nameGroup_.description_);
 
 	// write spirit:hierarchyRef if one exists
-	writer.writeEmptyElement("spirit:hierarchyRef");
-	General::writeVLNVAttributes(writer, &hierarchyRef_);
+	if (hierarchyRef_.isValid()) {
+		writer.writeEmptyElement("spirit:hierarchyRef");
+		General::writeVLNVAttributes(writer, &hierarchyRef_);
+	}
 
 	// write the file set references
 	foreach (QString fileSetName, filesetRefs_) {
@@ -181,10 +183,6 @@ bool SWView::isValid(const QStringList& fileSetNames,
             parentIdentifier));
         valid = false;
     }
-	else if (!hierarchyRef_.isValid()) {
-		errorList.append(QObject::tr("No valid VLNV specified for %1").arg(thisIdentifier));
-		valid = false;
-	}
 
 	// make sure the referenced file sets are found
 	foreach (QString fileSetRef, filesetRefs_) {
@@ -217,9 +215,6 @@ bool SWView::isValid(const QStringList& fileSetNames, const QStringList& cpuName
     if (nameGroup_.name_.isEmpty()) {
         return false;
     }
-	else if (!hierarchyRef_.isValid()) {
-		return false;
-	}
 
 	// make sure the referenced file sets are found
 	foreach (QString fileSetRef, filesetRefs_) {
@@ -343,4 +338,8 @@ QSharedPointer<BSPBuildCommand> SWView::getBSPBuildCommand() {
 
 const QSharedPointer<BSPBuildCommand> SWView::getBSPBuildCommand() const {
 	return bspCommand_;
+}
+
+void SWView::addFileSetRef( const QString& fileSetName ) {
+	filesetRefs_.append(fileSetName);
 }

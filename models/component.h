@@ -803,6 +803,20 @@ public:
 	*/
 	SWView* findSWView(const QString name) const;
 
+	/*! \brief Get the SW view by the specified name.
+	 * 
+	 * If the SW view does not exist then the SW view is created.
+	 * 
+	 * Method: 		getSWView
+	 * Full name:	Component::getSWView
+	 * Access:		public 
+	 *
+	 * \param viewName The name of the view to search/create.
+	 *
+	 * \return Pointer to the found/created SW view.
+	*/
+	QSharedPointer<SWView> getSWView(const QString& viewName);
+
 	/*! \brief Add a new SW view to the component's model.
 	*
 	* \param newView A pointer to the component's new SW view.

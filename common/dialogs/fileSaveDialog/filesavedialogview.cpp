@@ -49,7 +49,12 @@ void FileSaveDialogView::mouseDoubleClickEvent( QMouseEvent* event ) {
 	pressedPoint_ = event->pos();
 	QTableView::mouseDoubleClickEvent(event);
 
-	onChange();
+	// if the item is valid but not editable then double click works
+	QModelIndex selectedIndex = indexAt(pressedPoint_);
+	if (selectedIndex.isValid() && (selectedIndex.model()->flags(selectedIndex) & Qt::ItemIsEditable) == 0) {
+		onChange();
+	}
+
 }
 
 void FileSaveDialogView::contextMenuEvent( QContextMenuEvent* event ) {

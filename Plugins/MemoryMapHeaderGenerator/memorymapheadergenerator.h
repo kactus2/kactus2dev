@@ -147,9 +147,13 @@ private:
 	 * \param component Pointer to the component where the file is added to.
 	 * \param fileInfo Contains the info on the generated file.
 	 * \param filesetName The name of the file set to add the header file to.
+	 * \param swViewNames Contains the names of the sw views to add the file set reference to.
 	 *
 	*/
-	void addHeaderFile(QSharedPointer<Component> component, const QFileInfo& fileInfo, const QString& filesetName) const;
+	void addHeaderFile(QSharedPointer<Component> component,
+		const QFileInfo& fileInfo, 
+		const QString& filesetName,
+		const QStringList& swViewNames = QStringList()) const;
 
 	/*! \brief Parse the interface and depending on the type move forward in the connections.
 	 *
