@@ -728,6 +728,7 @@ QString File::getFlags() const {
 		// if flags should appended with default ones
 		else 
 			flags += buildcommand_->getFlags();
+			flags += " ";
 	}
 
 	// append the flags from file set and return all flags
