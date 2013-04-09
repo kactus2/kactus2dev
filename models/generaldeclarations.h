@@ -7,6 +7,8 @@
 #ifndef GENERALDECLARATIONS_H_
 #define GENERALDECLARATIONS_H_
 
+#include <common/Global.h>
+
 #include <LibraryManager/vlnv.h>
 #include "parameter.h"
 #include "vector.h"
@@ -1239,7 +1241,7 @@ void writeVLNVAttributes(QXmlStreamWriter& writer, const VLNV* vlnv);
  *
  * \return QString containing the relative path.
  */
-QString getRelativePath(const QString from, const QString to);
+KACTUS2_API QString getRelativePath(const QString from, const QString to);
 
 /*! \brief Get a relative file path from one location to another.
  *
@@ -1254,7 +1256,7 @@ QString getRelativePath(const QString from, const QString to);
  *
  * \return QString containing the relative path.
  */
-QString getRelativeSavePath(const QString& from, const QString& to);
+KACTUS2_API QString getRelativeSavePath(const QString& from, const QString& to);
 
 /*! \brief Get an absolute path of a file.
  *
@@ -1270,7 +1272,7 @@ QString getRelativeSavePath(const QString& from, const QString& to);
  *
  * \return The absolute path of the target directory/file
  */
-QString getAbsolutePath(const QString originalPath, const QString relativePath);
+KACTUS2_API QString getAbsolutePath(const QString originalPath, const QString relativePath);
 
 }
 

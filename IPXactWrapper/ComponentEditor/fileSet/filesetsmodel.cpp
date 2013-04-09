@@ -235,3 +235,12 @@ bool FileSetsModel::isValid() const {
 	// all file sets valid
 	return true;
 }
+
+//-----------------------------------------------------------------------------
+// Function: FileSetsModel::refresh()
+//-----------------------------------------------------------------------------
+void FileSetsModel::refresh()
+{
+    beginResetModel();
+    endResetModel();
+}

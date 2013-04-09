@@ -95,6 +95,7 @@ imageTypes_(),
 description_(),
 buildcommand_(),
 defines_(), 
+pendingHash_(),
 parent_(parent) {
 
 	// get the attributes for the file element
@@ -184,6 +185,27 @@ parent_(parent) {
 		else if (tempNode.nodeName() == QString("spirit:description")) {
 			description_ = tempNode.childNodes().at(0).nodeValue();
 		}
+        else if(tempNode.nodeName() == QString("spirit:vendorExtensions"))
+        {
+            for (int j = 0; j < tempNode.childNodes().count(); ++j) {
+
+                QDomNode extensionNode = tempNode.childNodes().at(j);
+
+                // if node is for kactus2 extensions
+                if (extensionNode.nodeName() == "kactus2:extensions")
+                {
+                    for (int k = 0; k < extensionNode.childNodes().count(); ++k)
+                    {
+                        QDomNode childNode = extensionNode.childNodes().at(k);
+
+                        if (childNode.nodeName() == "kactus2:hash")
+                        {
+                            lastHash_ = childNode.childNodes().at(0).nodeValue();
+                        }
+                    }
+                }
+            }
+        }
 	}
 	return;
 }
@@ -226,6 +248,8 @@ imageTypes_(),
 description_(),
 buildcommand_(), 
 defines_(), 
+lastHash_(),
+pendingHash_(),
 parent_(parent)  {
 }
 
@@ -246,6 +270,8 @@ imageTypes_(other.imageTypes_),
 description_(other.description_),
 buildcommand_(),
 defines_(other.defines_),
+lastHash_(other.lastHash_),
+pendingHash_(),
 parent_(parent) {
 
 	if (other.buildcommand_) {
@@ -272,6 +298,8 @@ File & File::operator=( const File &other) {
 		imageTypes_ = other.imageTypes_;
 		description_ = other.description_;
 		defines_ = other.defines_;
+        lastHash_ = other.lastHash_;
+        pendingHash_ = QString();
 		parent_ = other.parent_;
 
 		if (other.buildcommand_) {
@@ -386,6 +414,20 @@ void File::write(QXmlStreamWriter& writer) {
 	if (!description_.isEmpty()) {
 		writer.writeTextElement("spirit:description", description_);
 	}
+
+    if (!pendingHash_.isEmpty())
+    {
+        lastHash_ = pendingHash_;
+    }
+
+    if (!lastHash_.isEmpty())
+    {
+        writer.writeStartElement("spirit:vendorExtensions");
+        writer.writeStartElement("kactus2:extensions");
+        writer.writeTextElement("kactus2:hash", lastHash_);
+        writer.writeEndElement(); // kactus2:extensions
+        writer.writeEndElement(); // spirit:vendorExtensions
+    }
 
 	writer.writeEndElement(); // spirit:file
 }
@@ -781,4 +823,28 @@ void File::setAllFileTypes( const QStringList& fileTypes ) {
 			userFileTypes_.append(fileType);
 		}
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: File::getLastHash()
+//-----------------------------------------------------------------------------
+QString const& File::getLastHash() const
+{
+    return lastHash_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: File::setLastHash()
+//-----------------------------------------------------------------------------
+void File::setPendingHash(QString const& hash)
+{
+    pendingHash_ = hash;
+}
+
+//-----------------------------------------------------------------------------
+// Function: File::getParent()
+//-----------------------------------------------------------------------------
+FileSet* File::getParent() const
+{
+    return parent_;
 }

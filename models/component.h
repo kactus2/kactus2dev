@@ -47,6 +47,7 @@ class Channel;
 class Choice;
 class File;
 class ComProperty;
+class FileDependency;
 
 /*! \brief Equals to spirit:component element in IP-Xact specification
  *
@@ -964,11 +965,36 @@ public:
 	*/
 	const QList<QSharedPointer<FileSet> >& getFileSets() const;
 
+    /*!
+     *  Returns all file pointers in all file sets that reference the given file name.
+     *
+     *      @param [in]  filename The filename to search for.
+     *      @param [out] files    All found files that reference the given file name.
+     */
+    void getFiles(QString const& filename, QList<File*>& files);
+
 	/*! \brief Get the file sets of this component.
 	 *
 	 * \return QList containing pointers to the file sets.
 	*/
 	QList<QSharedPointer<FileSet> >& getFileSets();
+
+    /*! \brief Get this component's file dependencies
+	*
+	* \return QList containing component's file dependencies
+	*/
+	const QList<QSharedPointer<FileDependency> >& getFileDependencies() const;
+
+    /*!
+     *  Returns the list of source directories.
+     */
+    QStringList const& getSourceDirectories() const;
+
+	/*! \brief Get the file dependencies of this component.
+	 *
+	 * \return QList containing pointers to the file dependencies.
+	*/
+	QList<QSharedPointer<FileDependency> >& getFileDependencies();
 
 	/*! \brief Get names of the file sets stored in the component.
 	*
@@ -981,6 +1007,28 @@ public:
 	* \param fileSets QList containing the file sets to be set
 	*/
 	void setFileSets(const QList<QSharedPointer<FileSet> > &fileSets);
+
+    /*! \brief Set this component's file dependencies
+	*
+	* \param fileDependencies QList containing the file dependencies to be set
+	*/
+	void setFileDependencies(const QList<QSharedPointer<FileDependency> >& fileDependencies);
+
+    /*!
+     *  Set this component's pending file dependencies.
+	*
+	*       @param [in] fileDependencies QList containing the file dependencies to be set
+    *
+    *       @remarks The pending file dependencies are committed when the component is saved.
+	*/
+	void setPendingFileDependencies(const QList<QSharedPointer<FileDependency> >& fileDependencies);
+
+    /*!
+     *  Sets the source directories where to automatically scan files to file sets.
+     *
+     *      @param [in] sourceDirs The source directories to set.
+     */
+    void setSourceDirectories(QStringList const& sourceDirs);
 
 	/*! \brief Get the specified file set if one exists
 	*
@@ -1665,7 +1713,21 @@ private:
      *      @param [in] node The source XML node.
      */
     void parseSystemViews(QDomNode& node);
-    
+
+    /*!
+     *  Parses file dependencies from the given XML node.
+     *
+     *      @param [in] node The source XML node.
+     */
+    void parseFileDependencies(QDomNode& node);
+
+    /*!
+     *  Parses source directories from the given XML node.
+     *
+     *      @param [in] node The source XML node.
+     */
+    void parseSourceDirectories(QDomNode& node);
+
 	/*! \brief Specifies all the interfaces for this component.
 	 * OPTIONAL spirit:busInterfaces
 	 *
@@ -1729,6 +1791,15 @@ private:
 	 * other sections of this component description.
 	 */
 	QList<QSharedPointer<FileSet> > fileSets_;
+
+    //! The list of file dependencies.
+    //! OPTIONAL kactus2:fileDependencies
+    QList< QSharedPointer<FileDependency> > fileDependencies_;
+    QList< QSharedPointer<FileDependency> > pendingFileDependencies_;
+
+    //! The list of source directories.
+    //! OPTIONAL kactus2:sourceDirectories
+    QStringList sourceDirs_;
 
 	/*! \brief Contains the cpus.
 	 * OPTIONAL spirit:cpus

@@ -7,24 +7,30 @@
 
 #include "filesetseditor.h"
 #include "filesetsdelegate.h"
+
 #include <common/widgets/summaryLabel/summarylabel.h>
 #include <LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
 
-FileSetsEditor::FileSetsEditor( QSharedPointer<Component> component,
-	LibraryInterface* handler):
-ItemEditor(component, handler),
-view_(this),
+FileSetsEditor::FileSetsEditor(QSharedPointer<Component> component,
+                               LibraryInterface* libInterface, PluginManager& pluginMgr):
+ItemEditor(component, libInterface),
+splitter_(Qt::Vertical, this),
+view_(&splitter_),
 model_(component, this),
-proxy_(this) {
+proxy_(this),
+dependencyEditor_(component, libInterface, pluginMgr, &splitter_) {
+
+    splitter_.addWidget(&view_);
+    splitter_.addWidget(&dependencyEditor_);
 
 	// display a label on top the table
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("File sets summary"), this);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
-	layout->addWidget(&view_);
+	layout->addWidget(&splitter_, 1);
 	layout->setContentsMargins(0, 0, 0, 0);
 
 	proxy_.setSourceModel(&model_);
@@ -51,6 +57,7 @@ proxy_(this) {
 		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+    connect(&dependencyEditor_, SIGNAL(fileSetsUpdated()), this, SLOT(updateFileSetView()));
 }
 
 FileSetsEditor::~FileSetsEditor() {
@@ -72,4 +79,13 @@ void FileSetsEditor::refresh() {
 void FileSetsEditor::showEvent( QShowEvent* event ) {
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/filesets.html");
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileSetsEditor::updateFileSetView()
+//-----------------------------------------------------------------------------
+void FileSetsEditor::updateFileSetView()
+{
+    model_.refresh();
+    //view_.update();
 }

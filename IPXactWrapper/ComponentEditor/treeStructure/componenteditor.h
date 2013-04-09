@@ -18,6 +18,7 @@
 #include <QSplitter>
 
 class LibraryInterface;
+class PluginManager;
 
 /*! \brief The editor to edit/packet IP-Xact components.
  *
@@ -35,6 +36,7 @@ public:
 	 *
 	*/
 	ComponentEditor(LibraryInterface* libHandler, 
+        PluginManager& pluginMgr,
 		QSharedPointer<Component> component, 
 		QWidget *parent);
 

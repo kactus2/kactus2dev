@@ -8,12 +8,16 @@
 #ifndef FILESETSEDITOR_H
 #define FILESETSEDITOR_H
 
+#include "filesetsmodel.h"
+#include "dependencyAnalysis/FileDependencyEditor.h"
+
 #include <IPXactWrapper/ComponentEditor/itemeditor.h>
 #include <common/views/EditableTableView/editabletableview.h>
-#include "filesetsmodel.h"
 
 #include <QSortFilterProxyModel>
+#include <QSplitter>
 
+class PluginManager;
 class LibraryInterface;
 
 /*! \brief The editor to add/remove/edit file sets of a component.
@@ -32,12 +36,13 @@ public:
 
 	/*! \brief The constructor
 	 *
-	 * \param component Pointer to the component being edited.
-	 * \param handler Pointer to the instance managing the library.
-	 *
-	*/
+	 * \param component        Pointer to the component being edited.
+     * \param libraryInterface The library interface.
+     * \param pluginMgr        The plugin manager.    
+	 */
 	FileSetsEditor(QSharedPointer<Component> component,
-		LibraryInterface* handler);
+                   LibraryInterface* libInterface,
+                   PluginManager& pluginMgr);
 	
 	//! \brief The destructor
 	~FileSetsEditor();
@@ -57,6 +62,9 @@ public:
 	*/
 	virtual void refresh();
 
+private slots:
+    void updateFileSetView();
+
 protected:
 
 	//! \brief Handler for widget's show event
@@ -70,6 +78,9 @@ private:
 	//! \brief No assignment
 	FileSetsEditor& operator=(const FileSetsEditor& other);
 
+    //! Splitter for the fileset table and dependency graph.
+    QSplitter splitter_;
+    
 	//! \brief The view to display the file sets.
 	EditableTableView view_;
 
@@ -78,6 +89,9 @@ private:
 
 	//! \brief The proxy to do the sorting
 	QSortFilterProxyModel proxy_;
+
+    //! The file dependency editor.
+    FileDependencyEditor dependencyEditor_;
 };
 
 #endif // FILESETSEDITOR_H

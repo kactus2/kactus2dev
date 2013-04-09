@@ -24,7 +24,8 @@ FileTypeSettingsPage::FileTypeSettingsPage(QSettings& settings)
     : settings_(settings),
       model_(settings, this),
       proxyModel_(this),
-      view_(this)
+      view_(this),
+      ignoredExtensionsEdit_(this)
 {
     proxyModel_.setSourceModel(&model_);
 
@@ -34,9 +35,13 @@ FileTypeSettingsPage::FileTypeSettingsPage(QSettings& settings)
     view_.setColumnWidth(FILE_TYPES_COL_NAME, 150);
     view_.sortByColumn(0, Qt::AscendingOrder);
 
+    ignoredExtensionsEdit_.setText(settings.value("FileTypes/IgnoredExtensions").toString());
+
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(new QLabel(tr("File types:"), this), 0);
     layout->addWidget(&view_, 1);
+    layout->addWidget(new QLabel(tr("Ignored extensions:"), this));
+    layout->addWidget(&ignoredExtensionsEdit_);
 
     connect(&view_, SIGNAL(addItem(const QModelIndex&)),
             &model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
@@ -65,6 +70,7 @@ bool FileTypeSettingsPage::validate()
 void FileTypeSettingsPage::apply()
 {
     model_.apply(settings_);
+    settings_.setValue("FileTypes/IgnoredExtensions", ignoredExtensionsEdit_.text());
 }
 
 //-----------------------------------------------------------------------------

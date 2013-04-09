@@ -15,6 +15,8 @@
 #include <QWidget>
 #include <QString>
 
+class LibraryInterface;
+
 //-----------------------------------------------------------------------------
 //! Interface which offers core utilities for plugins.
 //-----------------------------------------------------------------------------

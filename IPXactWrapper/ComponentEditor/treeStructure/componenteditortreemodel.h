@@ -16,6 +16,7 @@
 #include <QSharedPointer>
 
 class LibraryInterface;
+class PluginManager;
 
 /*! \brief The tree model that manages the component editor's navigation tree.
  *
@@ -32,7 +33,7 @@ public:
 	 *
 	*/
 	ComponentEditorTreeModel(LibraryInterface* libHandler,
-		QObject* parent, QWidget* parentWnd);
+		PluginManager& pluginMgr, QObject* parent, QWidget* parentWnd);
 	
 	//! \brief The destructor
 	virtual ~ComponentEditorTreeModel();
@@ -218,6 +219,9 @@ private:
 
 	//! \brief Pointer to the instance that manages the library.
 	LibraryInterface* libHandler_;
+
+    //! The plugin manager.
+    PluginManager& pluginMgr_;
 
 	//! \brief Pointer to the root item of the tree.
 	QSharedPointer<ComponentEditorRootItem> rootItem_;

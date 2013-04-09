@@ -10,11 +10,12 @@
 
 ComponentEditorFileSetsItem::ComponentEditorFileSetsItem( ComponentEditorTreeModel* model,
 														 LibraryInterface* libHandler,
+                                                         PluginManager& pluginMgr,
 														 QSharedPointer<Component> component,
 														 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 fileSets_(component->getFileSets()),
-editor_(component, libHandler) {
+editor_(component, libHandler, pluginMgr) {
 
 	foreach (QSharedPointer<FileSet> fileSet, fileSets_) {
 		QSharedPointer<ComponentEditorFileSetItem> fileSetItem(

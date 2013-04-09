@@ -10,12 +10,26 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MemoryMapHeaderGenerator", 
 		{09486B51-70A7-3073-B15B-6D4BAF3EC8C6} = {09486B51-70A7-3073-B15B-6D4BAF3EC8C6}
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3AA1F9C5-ECA4-4763-83D2-D1AE4D05FF9D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppSourceAnalyzer", "Plugins\CppSourceAnalyzer\CppSourceAnalyzer.vcxproj", "{D47FBAF4-1642-4F73-837C-F289DCB9E8FE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{09486B51-70A7-3073-B15B-6D4BAF3EC8C6} = {09486B51-70A7-3073-B15B-6D4BAF3EC8C6}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VHDLSourceAnalyzer", "Plugins\VHDLSourceAnalyzer\VHDLSourceAnalyzer.vcxproj", "{FD8026D5-50C6-4D30-B082-899FA4226C48}"
+	ProjectSection(ProjectDependencies) = postProject
+		{09486B51-70A7-3073-B15B-6D4BAF3EC8C6} = {09486B51-70A7-3073-B15B-6D4BAF3EC8C6}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
 		Debug|x64 = Debug|x64
 		Release|Win32 = Release|Win32
 		Release|x64 = Release|x64
+		Template|Win32 = Template|Win32
+		Template|x64 = Template|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{09486B51-70A7-3073-B15B-6D4BAF3EC8C6}.Debug|Win32.ActiveCfg = Debug|Win32
@@ -26,6 +40,10 @@ Global
 		{09486B51-70A7-3073-B15B-6D4BAF3EC8C6}.Release|Win32.Build.0 = Release|Win32
 		{09486B51-70A7-3073-B15B-6D4BAF3EC8C6}.Release|x64.ActiveCfg = Release|x64
 		{09486B51-70A7-3073-B15B-6D4BAF3EC8C6}.Release|x64.Build.0 = Release|x64
+		{09486B51-70A7-3073-B15B-6D4BAF3EC8C6}.Template|Win32.ActiveCfg = Template|Win32
+		{09486B51-70A7-3073-B15B-6D4BAF3EC8C6}.Template|Win32.Build.0 = Template|Win32
+		{09486B51-70A7-3073-B15B-6D4BAF3EC8C6}.Template|x64.ActiveCfg = Template|x64
+		{09486B51-70A7-3073-B15B-6D4BAF3EC8C6}.Template|x64.Build.0 = Template|x64
 		{AA63BE2D-A701-4C68-9760-C71655FFE66D}.Debug|Win32.ActiveCfg = Debug|Win32
 		{AA63BE2D-A701-4C68-9760-C71655FFE66D}.Debug|Win32.Build.0 = Debug|Win32
 		{AA63BE2D-A701-4C68-9760-C71655FFE66D}.Debug|x64.ActiveCfg = Debug|x64
@@ -34,20 +52,51 @@ Global
 		{AA63BE2D-A701-4C68-9760-C71655FFE66D}.Release|Win32.Build.0 = Release|Win32
 		{AA63BE2D-A701-4C68-9760-C71655FFE66D}.Release|x64.ActiveCfg = Release|x64
 		{AA63BE2D-A701-4C68-9760-C71655FFE66D}.Release|x64.Build.0 = Release|x64
+		{AA63BE2D-A701-4C68-9760-C71655FFE66D}.Template|Win32.ActiveCfg = Template|Win32
+		{AA63BE2D-A701-4C68-9760-C71655FFE66D}.Template|Win32.Build.0 = Template|Win32
+		{AA63BE2D-A701-4C68-9760-C71655FFE66D}.Template|x64.ActiveCfg = Template|x64
+		{AA63BE2D-A701-4C68-9760-C71655FFE66D}.Template|x64.Build.0 = Template|x64
 		{C846486D-4A9D-4212-89A8-D25BEFED7FC5}.Debug|Win32.ActiveCfg = Debug|Win32
 		{C846486D-4A9D-4212-89A8-D25BEFED7FC5}.Debug|Win32.Build.0 = Debug|Win32
 		{C846486D-4A9D-4212-89A8-D25BEFED7FC5}.Debug|x64.ActiveCfg = Debug|Win32
 		{C846486D-4A9D-4212-89A8-D25BEFED7FC5}.Release|Win32.ActiveCfg = Release|Win32
 		{C846486D-4A9D-4212-89A8-D25BEFED7FC5}.Release|Win32.Build.0 = Release|Win32
 		{C846486D-4A9D-4212-89A8-D25BEFED7FC5}.Release|x64.ActiveCfg = Release|Win32
+		{C846486D-4A9D-4212-89A8-D25BEFED7FC5}.Template|Win32.ActiveCfg = Release|Win32
+		{C846486D-4A9D-4212-89A8-D25BEFED7FC5}.Template|Win32.Build.0 = Release|Win32
+		{C846486D-4A9D-4212-89A8-D25BEFED7FC5}.Template|x64.ActiveCfg = Release|Win32
+		{D47FBAF4-1642-4F73-837C-F289DCB9E8FE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D47FBAF4-1642-4F73-837C-F289DCB9E8FE}.Debug|Win32.Build.0 = Debug|Win32
+		{D47FBAF4-1642-4F73-837C-F289DCB9E8FE}.Debug|x64.ActiveCfg = Debug|x64
+		{D47FBAF4-1642-4F73-837C-F289DCB9E8FE}.Debug|x64.Build.0 = Debug|x64
+		{D47FBAF4-1642-4F73-837C-F289DCB9E8FE}.Release|Win32.ActiveCfg = Release|Win32
+		{D47FBAF4-1642-4F73-837C-F289DCB9E8FE}.Release|Win32.Build.0 = Release|Win32
+		{D47FBAF4-1642-4F73-837C-F289DCB9E8FE}.Release|x64.ActiveCfg = Release|x64
+		{D47FBAF4-1642-4F73-837C-F289DCB9E8FE}.Release|x64.Build.0 = Release|x64
+		{D47FBAF4-1642-4F73-837C-F289DCB9E8FE}.Template|Win32.ActiveCfg = Template|Win32
+		{D47FBAF4-1642-4F73-837C-F289DCB9E8FE}.Template|Win32.Build.0 = Template|Win32
+		{D47FBAF4-1642-4F73-837C-F289DCB9E8FE}.Template|x64.ActiveCfg = Template|x64
+		{D47FBAF4-1642-4F73-837C-F289DCB9E8FE}.Template|x64.Build.0 = Template|x64
+		{FD8026D5-50C6-4D30-B082-899FA4226C48}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FD8026D5-50C6-4D30-B082-899FA4226C48}.Debug|Win32.Build.0 = Debug|Win32
+		{FD8026D5-50C6-4D30-B082-899FA4226C48}.Debug|x64.ActiveCfg = Debug|x64
+		{FD8026D5-50C6-4D30-B082-899FA4226C48}.Debug|x64.Build.0 = Debug|x64
+		{FD8026D5-50C6-4D30-B082-899FA4226C48}.Release|Win32.ActiveCfg = Release|Win32
+		{FD8026D5-50C6-4D30-B082-899FA4226C48}.Release|Win32.Build.0 = Release|Win32
+		{FD8026D5-50C6-4D30-B082-899FA4226C48}.Release|x64.ActiveCfg = Release|x64
+		{FD8026D5-50C6-4D30-B082-899FA4226C48}.Release|x64.Build.0 = Release|x64
+		{FD8026D5-50C6-4D30-B082-899FA4226C48}.Template|Win32.ActiveCfg = Template|Win32
+		{FD8026D5-50C6-4D30-B082-899FA4226C48}.Template|Win32.Build.0 = Template|Win32
+		{FD8026D5-50C6-4D30-B082-899FA4226C48}.Template|x64.ActiveCfg = Template|x64
+		{FD8026D5-50C6-4D30-B082-899FA4226C48}.Template|x64.Build.0 = Template|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		AMDCaProjectFile = D:\user\maattaj\FunBase\public\trunk\CodeAnalyst\Kactus2_Solution.caw
-		BuildVersion_UpdateAssemblyVersion = True
-		BuildVersion_UpdateFileVersion = True
 		Qt5Version = 5.0.1
+		BuildVersion_UpdateFileVersion = True
+		BuildVersion_UpdateAssemblyVersion = True
+		AMDCaProjectFile = D:\user\maattaj\FunBase\public\trunk\CodeAnalyst\Kactus2_Solution.caw
 	EndGlobalSection
 EndGlobal

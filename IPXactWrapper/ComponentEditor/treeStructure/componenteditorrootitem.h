@@ -18,6 +18,7 @@
 class ItemEditor;
 class ComponentEditorTreeModel;
 class LibraryInterface;
+class PluginManager;
 
 /*! \brief The root item in the component editor's navigation tree.
  *
@@ -35,6 +36,7 @@ public:
 	 *
 	*/
 	ComponentEditorRootItem(LibraryInterface* libHandler,
+        PluginManager& pluginMgr,
 		QSharedPointer<Component> component,
 		ComponentEditorTreeModel* parent,
         QWidget* parentWnd);

@@ -25,7 +25,8 @@
 #include "componenteditorswpropertiesitem.h"
 #include "ComponentEditorSystemViewsItem.h"
 
-ComponentEditorRootItem::ComponentEditorRootItem( LibraryInterface* libHandler,
+ComponentEditorRootItem::ComponentEditorRootItem(LibraryInterface* libHandler,
+                                                 PluginManager& pluginMgr,
 												 QSharedPointer<Component> component,
 												 ComponentEditorTreeModel* parent,
                                                  QWidget* parentWnd):
@@ -35,7 +36,7 @@ ComponentEditorItem(libHandler, component, parent) {
 		new ComponentEditorGeneralItem(parent, libHandler, component, this)));
 
 	childItems_.append(QSharedPointer<ComponentEditorFileSetsItem>(
-		new ComponentEditorFileSetsItem(parent, libHandler, component, this)));
+		new ComponentEditorFileSetsItem(parent, libHandler, pluginMgr, component, this)));
 
 	if (component->getComponentImplementation() == KactusAttribute::KTS_HW)
 	{

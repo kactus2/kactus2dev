@@ -803,6 +803,12 @@
     <Filter Include="Source Files\common\widgets\fileTypeSelector">
       <UniqueIdentifier>{578b0af8-5300-460b-9009-b78db3e75e39}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis">
+      <UniqueIdentifier>{494842c1-c5c6-4ef7-b456-d173c72d786d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis">
+      <UniqueIdentifier>{febffc03-0aad-480e-b92d-e776f61887f2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\CSourceWriter.cpp">
@@ -3610,6 +3616,60 @@
     <ClCompile Include="settings\filetypesview.cpp">
       <Filter>Source Files\settings</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_FileDependencyDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_FileDependencyEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_FileDependencyGraphWidget.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_FileDependencyGraphView.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_FileDependencyInfoWidget.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_FileDependencyItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_FileDependencyModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_FileDependencySourceDialog.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis\FileDependencyDelegate.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis\FileDependencyEditor.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis\FileDependencyGraphView.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis\FileDependencyGraphWidget.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis\FileDependencyInfoWidget.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis\FileDependencyItem.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis\FileDependencyModel.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis\FileDependencySortFilter.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis</Filter>
+    </ClCompile>
+    <ClCompile Include="IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis\FileDependencySourceDialog.cpp">
+      <Filter>Source Files\IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis</Filter>
+    </ClCompile>
+    <ClCompile Include="models\FileDependency.cpp">
+      <Filter>Source Files\models</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5154,6 +5214,30 @@
     <CustomBuild Include="settings\filetypesview.h">
       <Filter>Header Files\settings</Filter>
     </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis\FileDependencyDelegate.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis\FileDependencyEditor.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis\FileDependencyGraphWidget.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis\FileDependencyGraphView.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis\FileDependencyInfoWidget.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis\FileDependencyItem.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis\FileDependencyModel.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis</Filter>
+    </CustomBuild>
+    <CustomBuild Include="IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis\FileDependencySourceDialog.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AddressEditor\AddressEntry.h">
@@ -5588,6 +5672,12 @@
     <ClInclude Include="models\bspbuildcommand.h">
       <Filter>Header Files\models</Filter>
     </ClInclude>
+    <ClInclude Include="IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis\FileDependencySortFilter.h">
+      <Filter>Header Files\IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis</Filter>
+    </ClInclude>
+    <ClInclude Include="models\FileDependency.h">
+      <Filter>Header Files\models</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="graphics\generator_plugin_overlay.png">
@@ -5603,6 +5693,48 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="graphics\plugin-source_analyzer.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="graphics\control-play.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="graphics\control-stop.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="graphics\dependency_auto.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="graphics\dependency_manual.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="graphics\dependency_oneway.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="graphics\dependency_twoway.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="graphics\diff.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="graphics\external.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="graphics\import_folders.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="graphics\refresh_16x16.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="graphics\traffic-light_gray.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="graphics\traffic-light_green.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="graphics\traffic-light_red.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="graphics\traffic-light_yellow.png">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

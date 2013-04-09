@@ -3521,7 +3521,7 @@ void MainWindow::openComponent( const VLNV& vlnv, bool forceUnlocked ) {
 		return;
 	}
 
-	ComponentEditor* editor = new ComponentEditor(libraryHandler_, component, this);
+	ComponentEditor* editor = new ComponentEditor(libraryHandler_, *pluginMgr_, component, this);
     
 	QString styleSheet("*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
 	editor->setStyleSheet(styleSheet);

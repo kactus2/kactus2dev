@@ -18,6 +18,7 @@
 #include <models/component.h>
 
 #include <QString>
+#include <QStringList>
 #include <QSharedPointer>
 #include <QList>
 #include <QtPlugin>
@@ -52,36 +53,51 @@ public:
     virtual ~ISourceAnalyzerPlugin() {}
 
     /*!
-     *  Checks whether the plugin supports analysis for the given file type.
-     *
-     *      @param [in] fileType The file type to check.
-     *
-     *      @return True, if the plugin supports the file type; false if it doesn't.
+     *  Returns the list of file types this plugin can run analysis for.
      */
-    virtual bool checkFileTypeSupport(QString const& fileType) = 0;
+    virtual QStringList const& getSupportedFileTypes() const = 0;
 
     /*!
      *  Calculates a language-dependent hash for the given file.
      *
-     *      @param [in] utility   The plugin utility interface.
      *      @param [in] filename  The name of the file.
      *
      *      @return The hash value for the file.
      *
      *      @remarks Comments and whitespace are ignored and do not affect the hash value.
      */
-    virtual QString calculateHash(IPluginUtility* utility, QString const& filename) = 0;
+    virtual QString calculateHash(QString const& filename) = 0;
+
+    /*!
+     *  Begins the analysis for the given component.
+     *
+     *      @param [in] component      The component.
+     *      @param [in] componentPath  The path to the directory where the component is located.
+     *
+     *      @remarks Any preparations needed for the file dependency analysis should be made here.
+     */
+    virtual void beginAnalysis(Component const* component, QString const& componentPath) = 0;
+
+    /*!
+     *  Ends the analysis for the given component.
+     *
+     *      @param [in] component      The component.
+     *      @param [in] componentPath  The path to the directory where the component is located.
+     *
+     *      @remarks Any cleanups needed should be made here.
+     */
+    virtual void endAnalysis(Component const* component, QString const& componentPath) = 0;
 
     /*!
      *  Retrieves all file dependencies the given file has.
      *
-     *      @param [in]  utility       The plugin utility interface.
-     *      @param [in]  component     The component to which the dependency scan is being run.
-     *      @param [in]  filename      The name of the file to which the analysis is run.
-     *      @param [out] dependencies  The list of found dependencies.
+     *      @param [in]  component      The component to which the dependency scan is being run.
+     *      @param [in]  componentPath  The path to the directory where the component is located.
+     *      @param [in]  filename       The name of the file to which the analysis is run.
+     *      @param [out] dependencies   The list of found dependencies.
      */
-    virtual void getFileDependencies(IPluginUtility* utility,
-                                     QSharedPointer<Component const> component,
+    virtual void getFileDependencies(Component const* component,
+                                     QString const& componentPath,
                                      QString const& filename,
                                      QList<FileDependencyDesc>& dependencies) = 0;
 };

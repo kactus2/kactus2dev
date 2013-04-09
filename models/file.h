@@ -309,7 +309,12 @@ public:
 	 */
 	const QMap<QString, QString>& getNameAttributes();
 
-	/*! \brief Set the attributes for the file
+    /*!
+     *  Returns the last calculated hash.
+     */
+    QString const& getLastHash() const;
+
+    /*! \brief Set the attributes for the file
 	 *
 	 * Calling this function will delete old attributes.
 	 *
@@ -401,6 +406,13 @@ public:
 	 */
 	void setNameAttributes(const QMap<QString, QString> &nameAttributes);
 
+    /*!
+     *  Sets the newest calculated hash pending for commit.
+     *
+     *      @param [in] hash The calculated hash value.
+     */
+    void setPendingHash(QString const& hash);
+
 	/*! \brief Set the userFileTypes for this file
 	 *
 	 * Calling this function will delete the old userFileTypes.
@@ -448,6 +460,11 @@ public:
 	 *
 	*/
 	void setParent(FileSet* fileSet);
+
+    /*!
+     *  Returns the parent file set.
+     */
+    FileSet* getParent() const;
 
 	/*! \brief Get the build command's command-part
 	 *
@@ -593,9 +610,14 @@ private:
 	 */
 	QList<Define> defines_;
 
+    //! The last calculated hash (from the file contents).
+    QString lastHash_;
+
+    //! The current hash that is pending for writing to disk.
+    QString pendingHash_;
+
 	//! \brief Pointer to the FileSet that contains this file.
 	FileSet* parent_;
-
 };
 
 #endif /* FILE_H_ */

@@ -44,6 +44,8 @@ public:
 	//! \brief The destructor
 	~FileSetsModel();
 
+    void refresh();
+
 	/*! \brief Get the number of rows an item contains.
 	 *
 	 * \param parent Identifies the parent that's row count is requested.

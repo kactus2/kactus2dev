@@ -72,6 +72,14 @@ QString const& MCAPICodeGenerator::getDescription() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: MCAPICodeGenerator::getSettingsWidget()
+//-----------------------------------------------------------------------------
+PluginSettingsWidget* MCAPICodeGenerator::getSettingsWidget()
+{
+    return new PluginSettingsWidget();
+}
+
+//-----------------------------------------------------------------------------
 // Function: MCAPICodeGenerator::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
 bool MCAPICodeGenerator::checkGeneratorSupport( QSharedPointer<LibraryComponent const> libComp,
@@ -749,12 +757,4 @@ void MCAPICodeGenerator::writeStatusCheck(CSourceWriter &writer)
 QIcon MCAPICodeGenerator::getIcon() const
 {
     return QIcon(":icons/mcapi-generator.png");
-}
-
-//-----------------------------------------------------------------------------
-// Function: MCAPICodeGenerator::getSettingsWidget()
-//-----------------------------------------------------------------------------
-PluginSettingsWidget* MCAPICodeGenerator::getSettingsWidget()
-{
-    return new MCAPISettingsWidget();
 }

@@ -14,6 +14,8 @@
 
 #include <QSharedPointer>
 
+class PluginManager;
+
 /*! \brief The file sets-item in the component editor navigation tree.
  *
  */
@@ -32,6 +34,7 @@ public:
 	*/
 	ComponentEditorFileSetsItem(ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
+        PluginManager& pluginMgr,
 		QSharedPointer<Component> component,
 		ComponentEditorItem* parent);
 
