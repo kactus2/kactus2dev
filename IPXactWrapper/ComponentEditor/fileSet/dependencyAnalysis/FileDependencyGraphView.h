@@ -142,6 +142,13 @@ protected:
     virtual void keyReleaseEvent(QKeyEvent* event);
 
     /*!
+     *  Handles resize of the graph view.
+     *
+     *      @param [in] event The resize event.
+     */
+    virtual void resizeEvent(QResizeEvent *event);
+
+    /*!
      *  Handles auto-expand when rows are inserted.
      *
      *      @param [in] parent The parent model index.

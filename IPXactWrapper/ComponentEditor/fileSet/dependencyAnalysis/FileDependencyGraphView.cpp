@@ -676,7 +676,7 @@ bool FileDependencyGraphView::hasSpace(GraphColumn const& column, GraphDependenc
 //-----------------------------------------------------------------------------
 void FileDependencyGraphView::drawDependencyGraph(QPainter& painter, QRect const& rect)
 {
-    onSectionResized();
+    //onSectionResized();
 
     int columnOffset = columnViewportPosition(FILE_DEPENDENCY_COLUMN_DEPENDENCIES);
     int width = columnWidth(FILE_DEPENDENCY_COLUMN_DEPENDENCIES);
@@ -1146,4 +1146,13 @@ void FileDependencyGraphView::createContextMenu(const QPoint& position)
     
     // Open the context menu.
     contextMenu.exec(position);
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileDependencyGraphView::resizeEvent()
+//-----------------------------------------------------------------------------
+void FileDependencyGraphView::resizeEvent(QResizeEvent *event)
+{
+    QTreeView::resizeEvent(event);
+    onSectionResized();
 }
