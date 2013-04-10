@@ -128,6 +128,13 @@ public slots:
 	*/
 	virtual void onMoveItem(const QModelIndex& originalPos, const QModelIndex& newPos);
 
+    /*!
+     *  Updates the model when a file has been added from outside the model.
+     *
+     *      @param [in] file The file that has been added.
+     */
+    void onFileAdded(File* file);
+
 signals:
 
 	//! \brief Emitted when the model changes.

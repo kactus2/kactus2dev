@@ -90,3 +90,11 @@ void FilesEditor::onAddFiles() {
 		model_.onAddItem(QModelIndex(), file);
 	}
 }
+
+//-----------------------------------------------------------------------------
+// Function: FilesEditor::onFileAdded()
+//-----------------------------------------------------------------------------
+void FilesEditor::onFileAdded(File* file)
+{
+    model_.onFileAdded(file);
+}

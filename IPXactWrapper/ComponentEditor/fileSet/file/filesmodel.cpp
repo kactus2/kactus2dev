@@ -313,3 +313,23 @@ void FilesModel::onMoveItem( const QModelIndex& originalPos, const QModelIndex& 
 
 	emit contentChanged();
 }
+
+//-----------------------------------------------------------------------------
+// Function: FilesModel::onFileAdded()
+//-----------------------------------------------------------------------------
+void FilesModel::onFileAdded(File* file)
+{
+    beginResetModel();
+    endResetModel();
+
+    // Find out the corresponding index and signal fileSetAdded().
+    for (int i = 0; i < files_.size(); ++i)
+    {
+        if (files_[i].data() == file)
+        {
+            emit fileAdded(i);
+            emit contentChanged();
+            break;
+        }
+    }
+}

@@ -51,6 +51,6 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <None Include="VHDLSourceAnalyzer.json" />
+    <None Include="vhdlPlugin.json" />
   </ItemGroup>
 </Project>
