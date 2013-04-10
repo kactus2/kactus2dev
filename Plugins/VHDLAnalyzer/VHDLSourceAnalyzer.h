@@ -29,7 +29,7 @@ class IPluginUtility;
 class VHDLSourceAnalyzer : public QObject, public ISourceAnalyzerPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "kactus2.plugins.VHDLSourceAnalyzer" FILE "VHDLSourceAnalyzer.json")
+    Q_PLUGIN_METADATA(IID "kactus2.plugins.VHDLSourceAnalyzer" FILE "vhdlPlugin.json")
 
     Q_INTERFACES(IPlugin)
     Q_INTERFACES(ISourceAnalyzerPlugin)
