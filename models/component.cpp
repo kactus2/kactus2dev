@@ -1982,6 +1982,20 @@ QStringList Component::getFiles() const {
 	return files;
 }
 
+QStringList Component::getFilesFromFileSets( const QStringList& fileSetNames, const QStringList& fileTypes ) const {
+	QStringList files;
+
+	foreach (QSharedPointer<FileSet> fileSet, fileSets_) {
+		
+		// if the file set is one of the specified ones
+		if (fileSetNames.contains(fileSet->getName())) {
+			files += fileSet->getFiles(fileTypes);
+		}
+	}
+
+	return files;
+}
+
 //-----------------------------------------------------------------------------
 // Function: Component::getFiles()
 //-----------------------------------------------------------------------------
@@ -2678,18 +2692,18 @@ void Component::setHierSWRef(const VLNV& vlnv, const QString& viewName /*= QStri
     }
 }
 
-SWView* Component::findSWView(const QString name) const {
+QSharedPointer<SWView> Component::findSWView( const QString name ) const {
     // search all views
     for (int i = 0; i < swViews_.size(); ++i) {
 
         // if the view has the specified name
         if (swViews_.at(i)->getName() == name) {
-            return swViews_.at(i).data();
+            return swViews_.at(i);
         }
     }
 
     // view was not found
-    return 0;
+    return QSharedPointer<SWView>();
 }
 
 QSharedPointer<SWView> Component::getSWView( const QString& viewName ) {
@@ -2767,11 +2781,12 @@ bool Component::hasSWView( const QString& viewName ) const {
 }
 
 QString Component::getSWViewDescription( const QString& viewName ) const {
-    SWView* view = findSWView(viewName);
-    if (!view)
-        return QString();
+	QSharedPointer<SWView> view = findSWView(viewName);
+	if (!view) {
+		return QString();
+	}
 
-    return view->getDescription();
+	return view->getDescription();
 }
 
 VLNV Component::getHierSystemRef(const QString viewName) const {
@@ -2832,6 +2847,21 @@ SystemView* Component::findSystemView(const QString name) const {
 
     // view was not found
     return 0;
+}
+
+QSharedPointer<SystemView> Component::findSystemView( const VLNV& hierRef ) const {
+	QSharedPointer<SystemView> sysView;
+
+	// search all system views
+	foreach (QSharedPointer<SystemView> view, systemViews_) {
+		
+		// if the view is found
+		if (view->getHierarchyRef() == hierRef) {
+			sysView = view;
+		}
+	}
+
+	return sysView;
 }
 
 void Component::addSystemView(SystemView* newView) {

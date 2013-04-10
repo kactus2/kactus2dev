@@ -304,6 +304,19 @@ const QList<QSharedPointer<File> >& FileSet::getFiles() const {
 	return files_;
 }
 
+QStringList FileSet::getFiles( const QStringList& fileTypes ) const {
+	QStringList files;
+
+	foreach (QSharedPointer<File> file, files_) {
+		// if the file matches one of the file types
+		if (file->matchesFileType(fileTypes)) {
+			files.append(file->getName());
+		}
+	}
+
+	return files;
+}
+
 void FileSet::setFiles(QList<QSharedPointer<File> > &files) {
 	// delete old files
 	files_.clear();

@@ -849,3 +849,20 @@ FileSet* File::getParent() const
 {
     return parent_;
 }
+
+bool File::matchesFileType( const QStringList& fileTypes ) const {
+	// check all specified file types
+	foreach (QString fileType, fileTypes) {
+		
+		// if the file type is found either in normal file types or user defined file types
+		if (fileTypes_.contains(fileType)) {
+			return true;
+		}
+		else if (userFileTypes_.contains(fileType)) {
+			return true;
+		}
+	}
+
+	// no matches were found
+	return false;
+}

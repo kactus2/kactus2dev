@@ -801,7 +801,7 @@ public:
 	* \return Pointer to the specified SW view. Null pointer if the SW view was not
 	* found.
 	*/
-	SWView* findSWView(const QString name) const;
+	QSharedPointer<SWView> findSWView(const QString name) const;
 
 	/*! \brief Get the SW view by the specified name.
 	 * 
@@ -929,6 +929,18 @@ public:
 	* found.
 	*/
 	SystemView* findSystemView(const QString name) const;
+
+	/*! \brief Find a system view which refers to the given VLNV.
+	 *
+	 * Method: 		findSystemView
+	 * Full name:	Component::findSystemView
+	 * Access:		public 
+	 *
+	 * \param hierRef The VLNV to the design/configuration that is searched among the views.
+	 *
+	 * \return Pointer to the system view. Null pointer if no system view is found.
+	*/
+	QSharedPointer<SystemView> findSystemView(const VLNV& hierRef) const;
 
 	/*! \brief Add a new system view to the component's model.
 	*
@@ -1116,6 +1128,19 @@ public:
 	* \return QStringList containing the file paths.
 	*/
 	QStringList getFiles() const;
+
+	/*! \brief Get file paths of all specified file sets that match the specified file types.
+	*
+	* Method: 		getFilesFromFileSets
+	* Full name:	Component::getFilesFromAllFileSets
+	* Access:		public 
+	*
+	* \param fileSetNames Contains the file sets to search from.
+	* \param fileTypes Contains the file types that are searched among the file sets.
+	*
+	* \return QStringList containing the relative file paths to the files.
+	*/
+	QStringList getFilesFromFileSets(const QStringList& fileSetNames, const QStringList& fileTypes) const;
 
 	/*! \brief Get all the RTL files listed in component's file sets.
 	*

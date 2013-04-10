@@ -125,7 +125,7 @@ bool SystemDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
 
     if (onlySW_)
     {
-        SWView* view = comp->findSWView(viewName);
+        QSharedPointer<SWView> view = comp->findSWView(viewName);
 
         if (!view)
         {

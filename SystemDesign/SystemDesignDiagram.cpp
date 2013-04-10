@@ -1489,7 +1489,7 @@ void SystemDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
             if (getDesignConfiguration() && getDesignConfiguration()->hasActiveView(comp->name())) {
                 viewName = getDesignConfiguration()->getActiveView(comp->name());
 
-                SWView* view = comp->componentModel()->findSWView(viewName);
+                QSharedPointer<SWView> view = comp->componentModel()->findSWView(viewName);
 
                 // if view was found
                 if (view)

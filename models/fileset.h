@@ -132,6 +132,18 @@ public:
 	*/
 	const QList<QSharedPointer<File> >& getFiles() const;
 
+	/*! \brief Get the files that match the specified file types.
+	 *
+	 * Method: 		getFiles
+	 * Full name:	FileSet::getFiles
+	 * Access:		public 
+	 *
+	 * \param fileTypes Contains the file types that are searched.
+	 *
+	 * \return QStringList containing the relative file paths to the matched files.
+	*/
+	QStringList getFiles(const QStringList& fileTypes) const;
+
 	/*! \brief Get list of the functions for this file set
 	 *
 	 * \return QList containing pointers to the functions for this file set.

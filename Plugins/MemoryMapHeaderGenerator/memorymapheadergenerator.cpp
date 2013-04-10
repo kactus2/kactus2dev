@@ -19,11 +19,12 @@
 #include <models/masterinterface.h>
 #include <models/mirroredslaveinterface.h>
 #include <models/slaveinterface.h>
-#include <models/designconfiguration.h>
 #include <common/KactusAttribute.h>
 #include <common/utils.h>
 #include "localheadersavedelegate.h"
 #include <models/SWView.h>
+#include <models/SystemView.h>
+#include <models/ComponentInstance.h>
 
 #include <QtPlugin>
 #include <QFileInfo>
@@ -37,6 +38,7 @@
 #include <QDesktopServices>
 #include <QUrl>
 #include <QStringList>
+#include <QMessageBox>
 
 #include <QDebug>
 
@@ -45,7 +47,8 @@ const QString MemoryMapHeaderGenerator::DEFAULT_TARGET_FILESET = QString("cSourc
 MemoryMapHeaderGenerator::MemoryMapHeaderGenerator():
 utility_(NULL),
 design_(),
-operatedInterfaces_() {
+operatedInterfaces_(),
+sysGenSettings_() {
 }
 
 MemoryMapHeaderGenerator::~MemoryMapHeaderGenerator() {
@@ -132,6 +135,9 @@ void MemoryMapHeaderGenerator::runGenerator( IPluginUtility* utility,
 		// the component knows the implementation of the view
 		KactusAttribute::Implementation implementation = comp->getViewType(*libDesConf->getVlnv());
 
+		QSharedPointer<DesignConfiguration> desConf = libDesConf.dynamicCast<DesignConfiguration>();
+		Q_ASSERT(desConf);
+
 		// if the generator is run on a hierarchical HW component
 		if (implementation == KactusAttribute::KTS_HW) {
 			generateGlobalHeaders(comp, design);
@@ -139,7 +145,7 @@ void MemoryMapHeaderGenerator::runGenerator( IPluginUtility* utility,
 
 		// the generator is run on a system component
 		else {
-			qDebug() << "System generator with design conf";
+			generateSystemHeaders(comp, desConf, design);
 		}
 	}
 
@@ -154,9 +160,11 @@ void MemoryMapHeaderGenerator::runGenerator( IPluginUtility* utility,
 			generateGlobalHeaders(comp, design);
 		}
 
-		// the generator is run on a system component
+		// the generator is run on a system component without the configuration
 		else {
-			qDebug() << "System generator without design conf";
+			QMessageBox::warning(utility->getParentWidget(), QCoreApplication::applicationName(),
+				tr("A system design opened without configuration.\nSystem design must always have a configuration."));
+			return;
 		}
 	}
 }
@@ -601,5 +609,140 @@ void MemoryMapHeaderGenerator::parseInterface( qint64 offset,
 		qDebug() << "Instance " << interface.componentRef << " Interface " << interface.busRef << " was not supported type";
 		return;
 				}
+	}
+}
+
+void MemoryMapHeaderGenerator::generateSystemHeaders(QSharedPointer<Component> comp,
+	QSharedPointer<DesignConfiguration> desConf,
+	QSharedPointer<Design> design ) {
+
+	Q_ASSERT(comp);
+	Q_ASSERT(desConf);
+	Q_ASSERT(design);
+	Q_ASSERT(utility_);
+
+	// clear previous settings if any exist
+	sysGenSettings_.clear();
+
+	QSharedPointer<SystemView> sysView = comp->findSystemView(*desConf->getVlnv());
+	Q_ASSERT(sysView);
+
+	// file types of the files to add to systemHeaders includes
+	QStringList usedFileTypes;
+	usedFileTypes.append("cSource");
+	usedFileTypes.append("cppSource");
+
+	// find all CPU instances
+	foreach (const ComponentInstance& instance, design->getComponentInstances()) {
+		
+		// parse the component for the instance
+		VLNV instanceVLNV = instance.getComponentRef();
+		QSharedPointer<const LibraryComponent> libComp = utility_->getLibraryInterface()->getModelReadOnly(instanceVLNV);
+		QSharedPointer<const Component> instComponent = libComp.dynamicCast<const Component>();
+		Q_ASSERT(instComponent);
+
+		// if the instance is not CPU then move on to another instance
+		if (!instComponent->isCpu()) {
+			continue;
+		}
+
+		// create header settings object for the CPU instance
+		SysHeaderOptions opt(instance.getInstanceName(), instanceVLNV);
+
+		// find the files of the instances active SW view
+		QString activeView = desConf->getActiveView(instance.getInstanceName());
+		if (!activeView.isEmpty() && instComponent->hasSWView(activeView)) {
+
+			QSharedPointer<SWView> swView = instComponent->findSWView(activeView);
+			QStringList fileSets = swView->getFileSetRefs();
+
+			// the files that are included in the active view
+			QStringList files = instComponent->getFilesFromFileSets(fileSets, usedFileTypes);
+
+			// the source path for the relative file paths of the component
+			QString sourcePath = utility_->getLibraryInterface()->getPath(instanceVLNV);
+
+			// convert all relative paths from component to absolute path
+			foreach (QString relPath, files) {
+				QString absolutePath = General::getAbsolutePath(sourcePath, relPath);
+
+				QFileInfo info(absolutePath);
+				opt.includeFiles_.append(info);
+			}
+		}
+
+		// add the settings for the CPU instance
+		sysGenSettings_.append(opt);
+	}
+
+	foreach (const MemoryMapHeaderGenerator::SysHeaderOptions& opt, sysGenSettings_) {
+		qDebug() << "---";
+		qDebug() << opt.compVLNV_.toString() << " instance: " << opt.instanceName_;
+		qDebug() << "Files:";
+		foreach (const QFileInfo& info, opt.includeFiles_) {
+			qDebug() << info.absoluteFilePath();
+		}
+		qDebug() << "---";
+	}
+
+	// clear the settings after generation
+	sysGenSettings_.clear();
+}
+
+MemoryMapHeaderGenerator::SysHeaderOptions::SysHeaderOptions(const QString& instanceName /*= QString()*/, 
+	const VLNV& compVLNV /*= VLNV()*/):
+instanceName_(instanceName),
+compVLNV_(compVLNV),
+containingComp_(),
+containingView_(),
+sysHeaderInfo_(),
+includeFiles_() {
+}
+
+MemoryMapHeaderGenerator::SysHeaderOptions::SysHeaderOptions( const SysHeaderOptions& other ):
+instanceName_(other.instanceName_),
+compVLNV_(other.compVLNV_),
+containingComp_(other.containingComp_),
+containingView_(other.containingView_),
+sysHeaderInfo_(other.sysHeaderInfo_),
+includeFiles_(other.includeFiles_) {
+}
+
+MemoryMapHeaderGenerator::SysHeaderOptions& MemoryMapHeaderGenerator::SysHeaderOptions::operator=( const SysHeaderOptions& other ) {
+
+	if (this != &other) {
+		instanceName_ = other.instanceName_;
+		compVLNV_ = other.compVLNV_;
+		containingComp_ = other.containingComp_;
+		containingView_ = other.containingView_;
+		sysHeaderInfo_ = other.sysHeaderInfo_;
+		includeFiles_ = other.includeFiles_;
+	}
+	return *this;
+}
+
+bool MemoryMapHeaderGenerator::SysHeaderOptions::operator==( const SysHeaderOptions& other ) {
+	if (compVLNV_ == other.compVLNV_ &&
+		instanceName_.compare(other.instanceName_, Qt::CaseInsensitive) == 0) {
+			return true;
+	}
+	else {
+		return false;
+	}
+}
+
+bool MemoryMapHeaderGenerator::SysHeaderOptions::operator!=( const SysHeaderOptions& other ) {
+	if (compVLNV_ != other.compVLNV_) {
+		return true;
+	}
+	return instanceName_.compare(other.instanceName_, Qt::CaseInsensitive) != 0;
+}
+
+bool MemoryMapHeaderGenerator::SysHeaderOptions::operator<( const SysHeaderOptions& other ) {
+	if (compVLNV_ == other.compVLNV_) {
+		return instanceName_.compare(other.instanceName_, Qt::CaseInsensitive) < 0;
+	}
+	else {
+		return compVLNV_ < other.compVLNV_;
 	}
 }

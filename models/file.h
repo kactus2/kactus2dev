@@ -186,6 +186,18 @@ public:
 	*/
 	const QStringList& getUserFileTypes();
 
+	/*! \brief Check if the file matches at least one of the specified file types.
+	 *
+	 * Method: 		matchesFileType
+	 * Full name:	File::matchesFileType
+	 * Access:		public 
+	 *
+	 * \param fileTypes The file types to check.
+	 *
+	 * \return True if at least on of the file types matches the file types of this file.
+	*/
+	bool matchesFileType(const QStringList& fileTypes) const;
+
 	/*! \brief Set the file types for this file
 	*
 	* Calling this function will delete old file types
