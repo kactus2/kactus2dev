@@ -117,3 +117,19 @@ void FileSetEditor::showEvent( QShowEvent* event ) {
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/fileset.html");
 }
+
+//-----------------------------------------------------------------------------
+// Function: FileSetEditor::onFileAdded()
+//-----------------------------------------------------------------------------
+void FileSetEditor::onFileAdded(File* file)
+{
+    files_.onFileAdded(file);
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileSetEditor::getFileSet()
+//-----------------------------------------------------------------------------
+FileSet* FileSetEditor::getFileSet()
+{
+    return fileSet_.data();
+}

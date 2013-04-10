@@ -58,6 +58,18 @@ public:
 	//! \brief Reload the information from the model to the editor.
 	virtual void refresh();
 
+    /*!
+     *  Updates the model when a file has been added from outside the model.
+     *
+     *      @param [in] file The file that has been added.
+     */
+    void onFileAdded(File* file);
+
+    /*!
+     *  Returns the file set edited by this editor.
+     */
+    FileSet* getFileSet();
+
 protected:
 
 	//! \brief Handler for widget's show event

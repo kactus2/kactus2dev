@@ -27,6 +27,8 @@ class Component;
 class PluginManager;
 class ISourceAnalyzerPlugin;
 class LibraryInterface;
+class FileSet;
+class File;
 
 //-----------------------------------------------------------------------------
 //! File dependency editor which encapsulates the whole dependency UI.
@@ -54,6 +56,12 @@ public:
     ~FileDependencyEditor();
 
 signals:
+    //! Emitted when a file set has been added.
+    void fileSetAdded(FileSet* fileSet);
+
+    //! Emitted when a file has been added.
+    void fileAdded(File* file);
+
     //! Emitted when the file sets have been updated.
     void fileSetsUpdated();
 

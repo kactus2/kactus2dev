@@ -491,7 +491,17 @@ void FileDependencyModel::performAnalysisStep()
         }
 
         // Set the dependencies as pending.
-        component_->setPendingFileDependencies(dependencies_);
+        QList< QSharedPointer<FileDependency> > pendingDependencies;
+
+        foreach (QSharedPointer<FileDependency> dep, dependencies_)
+        {
+            if (dep->getStatus() != FileDependency::STATUS_REMOVED)
+            {
+                pendingDependencies.append(dep);
+            }
+        }
+
+        component_->setPendingFileDependencies(pendingDependencies);
     }
     else
     {
@@ -607,10 +617,11 @@ void FileDependencyModel::analyze(FileDependencyItem* fileItem)
             QList<FileDependencyDesc> dependencyDescs;
             plugin->getFileDependencies(component_.data(), basePath_, absPath, dependencyDescs);
 
+            QString file1 = fileItem->getPath();
+
             // Go through all current dependencies.
             foreach (FileDependencyDesc const& desc, dependencyDescs)
             {
-                QString file1 = fileItem->getPath();
                 QString file2 = General::getRelativePath(basePath_,
                     QFileInfo(QFileInfo(absPath).path() + "/" + desc.filename).canonicalFilePath());
 
@@ -691,9 +702,26 @@ void FileDependencyModel::analyze(FileDependencyItem* fileItem)
             // Mark all existing old dependencies as removed.
             foreach (FileDependency* dependency, oldDependencies)
             {
-                dependency->setStatus(FileDependency::STATUS_REMOVED);
-                dependenciesChanged = true;
-                emit dependencyChanged(dependency);
+                // If the dependency is a bidirectional one, change it to unidirectional one.
+                if (dependency->isBidirectional())
+                {
+                    dependency->setBidirectional(false);
+
+                    // Change the direction if needed.
+                    if (dependency->getFile1() == file1)
+                    {
+                        dependency->reverse();
+                    }
+
+                    dependenciesChanged = true;
+                    emit dependencyChanged(dependency);
+                }
+                else if (dependency->getFile1() == file1)
+                {
+                    dependency->setStatus(FileDependency::STATUS_REMOVED);
+                    dependenciesChanged = true;
+                    emit dependencyChanged(dependency);
+                }
             }
         }
     }
@@ -915,7 +943,7 @@ void FileDependencyModel::findDependencies(QString const& file, QList<FileDepend
 
     foreach (QSharedPointer<FileDependency> dep, dependencies_)
     {
-        if (dep->getFile1() == file || (dep->isBidirectional() && dep->getFile2() == file))
+        if (dep->getFile1() == file || (/*dep->isBidirectional() &&*/ dep->getFile2() == file))
         {
             dependencies.append(dep.data());
         }

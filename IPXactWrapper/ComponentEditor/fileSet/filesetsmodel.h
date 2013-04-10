@@ -123,6 +123,13 @@ public slots:
 	*/
 	virtual void onRemoveItem(const QModelIndex& index);
 
+    /*!
+     *  Updates the model when a file set has been added from outside the model.
+     *
+     *      @param [in] fileSet The file set that was added.
+     */
+    void onFileSetAdded(FileSet* fileSet);
+
 signals:
 
 	//! \brief Emitted when the contents of the model change.

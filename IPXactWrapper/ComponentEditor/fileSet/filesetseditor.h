@@ -62,6 +62,10 @@ public:
 	*/
 	virtual void refresh();
 
+signals:
+    //! Emitted when a file has been added to any file set.
+    void fileAdded(File* file);
+
 private slots:
     void updateFileSetView();
 

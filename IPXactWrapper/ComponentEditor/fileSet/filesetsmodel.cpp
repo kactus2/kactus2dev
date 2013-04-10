@@ -244,3 +244,23 @@ void FileSetsModel::refresh()
     beginResetModel();
     endResetModel();
 }
+
+//-----------------------------------------------------------------------------
+// Function: FileSetsModel::onFileSetAdded()
+//-----------------------------------------------------------------------------
+void FileSetsModel::onFileSetAdded(FileSet* fileSet)
+{
+    beginResetModel();
+    endResetModel();
+
+    // Find out the corresponding index and signal fileSetAdded().
+    for (int i = 0; i < fileSets_.size(); ++i)
+    {
+        if (fileSets_[i].data() == fileSet)
+        {
+            emit fileSetAdded(i);
+            emit contentChanged();
+            break;
+        }
+    }
+}

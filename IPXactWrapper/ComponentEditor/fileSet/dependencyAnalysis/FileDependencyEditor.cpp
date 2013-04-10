@@ -227,7 +227,9 @@ void FileDependencyEditor::scanFiles(QString const& path)
 {
     FileDependencyItem* folderItem = model_.addFolder(path);
 
-    QFileInfoList list = QDir(General::getAbsolutePath(xmlPath_ + "/", path)).entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
+    QFileInfoList list =
+        QDir(General::getAbsolutePath(xmlPath_ + "/", path)).entryInfoList(QDir::Files | QDir::Dirs |
+                                                                           QDir::NoDotAndDotDot);
 
     foreach (QFileInfo const& info, list)
     {
@@ -251,18 +253,24 @@ void FileDependencyEditor::scanFiles(QString const& path)
 
             if (fileRefs.empty())
             {
-                // Check if the file set does not exist in the component.
-                QSharedPointer<FileSet> fileSet = component_->getFileSet(fileType + "s");
+                QSharedPointer<FileSet> fileSet;
 
-                if (fileSet == 0)
+                // Check if the file set does not exist in the component.
+                if (component_->hasFileSet(fileType + "s"))
+                {
+                    fileSet = component_->getFileSet(fileType + "s");
+                }
+                else
                 {
                     fileSet.reset(new FileSet(fileType + "s", ""));
                     component_->addFileSet(fileSet);
+                    emit fileSetAdded(fileSet.data());
                 }
 
                 QSharedPointer<File> file(new File(relativePath, fileSet.data()));
                 file->addFileType(fileType);
                 fileSet->addFile(file);
+                //emit fileAdded(file.data());
 
                 fileRefs.append(file.data());
             }
