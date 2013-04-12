@@ -17,14 +17,14 @@
 #include <models/design.h>
 #include <models/designconfiguration.h>
 #include "globalheadersavemodel.h"
-#include <LibraryManager/vlnv.h>
+#include "systemheadersavemodel.h"
 
 #include <QObject>
-#include <QString>
 #include <QSharedPointer>
+#include <QString>
 #include <QFileInfo>
-#include <QTextStream>
 #include <QList>
+#include <QTextStream>
 
 class IPluginUtility;
 
@@ -196,57 +196,8 @@ private:
 	//! \brief The list where all operated interfaces are added to when generating global headers.
 	QList<Design::Interface> operatedInterfaces_;
 
-	//! \brief Contains the settings needed to generate the system headers
-	struct SysHeaderOptions {
-
-		//! \brief Name of the CPU instance.
-		QString instanceName_;
-
-		//! \brief Identifies the component.
-		VLNV compVLNV_;
-
-		//! \brief Identifies the hierarchical component which contains the instance.
-		VLNV containingComp_;
-
-		//! \brief Name of the active view for the hierarchical component which contains the instance.
-		QString containingView_;
-
-		//! \brief Refers to the system header to generate.
-		QFileInfo sysHeaderInfo_;
-
-		//! \brief References to the files to include in the system header.
-		QList<QFileInfo> includeFiles_;
-
-		/*! \brief The constructor.
-		 *
-		 * Method: 		SysHeaderOptions
-		 * Full name:	MemoryMapHeaderGenerator::SysHeaderOptions::SysHeaderOptions
-		 * Access:		public 
-		 *
-		 * \param instanceName The name of the CPU instance.
-		 * \param compVLNV VLNV identifying the component.
-		 *
-		*/
-		SysHeaderOptions(const QString& instanceName = QString(), const VLNV& compVLNV = VLNV());
-
-		//! \brief Copy constructor.
-		SysHeaderOptions(const SysHeaderOptions& other);
-
-		//! \brief Assignment operator.
-		SysHeaderOptions& operator=(const SysHeaderOptions& other);
-
-		//! \brief The equality operator.
-		bool operator==(const SysHeaderOptions& other);
-
-		//! \brief The inequality operator.
-		bool operator!=(const SysHeaderOptions& other);
-
-		//! \brief Smaller than operator.
-		bool operator<(const SysHeaderOptions& other);
-	};
-
 	//! \brief Contains the settings for the system header generation.
-	QList<SysHeaderOptions> sysGenSettings_;
+	QList<SystemHeaderSaveModel::SysHeaderOptions> sysGenSettings_;
 };
 
 #endif // MEMORYMAPHEADERGENERATOR_H

@@ -180,9 +180,6 @@ bool GlobalHeaderSaveModel::setData( const QModelIndex& index, const QVariant& v
 			return false;
 				 }
 		}
-
-		emit dataChanged(index, index);
-		return true;
 	}
 	else if (Qt::UserRole == role) {
 		table_[index.row()]->fileInfo_.setFile(value.toString());

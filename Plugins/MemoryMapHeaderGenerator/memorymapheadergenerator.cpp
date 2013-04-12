@@ -25,6 +25,7 @@
 #include <models/SWView.h>
 #include <models/SystemView.h>
 #include <models/ComponentInstance.h>
+#include "systemheadersavemodel.h"
 
 #include <QtPlugin>
 #include <QFileInfo>
@@ -647,7 +648,7 @@ void MemoryMapHeaderGenerator::generateSystemHeaders(QSharedPointer<Component> c
 		}
 
 		// create header settings object for the CPU instance
-		SysHeaderOptions opt(instance.getInstanceName(), instanceVLNV);
+		SystemHeaderSaveModel::SysHeaderOptions opt(instance.getInstanceName(), instanceVLNV);
 
 		// find the files of the instances active SW view
 		QString activeView = desConf->getActiveView(instance.getInstanceName());
@@ -675,9 +676,27 @@ void MemoryMapHeaderGenerator::generateSystemHeaders(QSharedPointer<Component> c
 		sysGenSettings_.append(opt);
 	}
 
-	foreach (const MemoryMapHeaderGenerator::SysHeaderOptions& opt, sysGenSettings_) {
+	// the model which manages the dialog contents
+	SystemHeaderSaveModel model(utility_->getLibraryInterface(), this);
+	model.setObjects(comp, sysGenSettings_);
+
+	// create the dialog to display the headers to be generated
+	FileSaveDialog dialog(utility_->getParentWidget());
+	dialog.setModel(&model);
+
+	int result = dialog.exec();
+
+	// if user clicked cancel
+	if (result == QDialog::Rejected) {
+		return;
+	}
+
+	sysGenSettings_ = model.getObjects();
+
+	foreach (const SystemHeaderSaveModel::SysHeaderOptions& opt, sysGenSettings_) {
 		qDebug() << "---";
 		qDebug() << opt.compVLNV_.toString() << " instance: " << opt.instanceName_;
+		qDebug() << "Header location: " << opt.sysHeaderInfo_.absoluteFilePath();
 		qDebug() << "Files:";
 		foreach (const QFileInfo& info, opt.includeFiles_) {
 			qDebug() << info.absoluteFilePath();
@@ -689,60 +708,3 @@ void MemoryMapHeaderGenerator::generateSystemHeaders(QSharedPointer<Component> c
 	sysGenSettings_.clear();
 }
 
-MemoryMapHeaderGenerator::SysHeaderOptions::SysHeaderOptions(const QString& instanceName /*= QString()*/, 
-	const VLNV& compVLNV /*= VLNV()*/):
-instanceName_(instanceName),
-compVLNV_(compVLNV),
-containingComp_(),
-containingView_(),
-sysHeaderInfo_(),
-includeFiles_() {
-}
-
-MemoryMapHeaderGenerator::SysHeaderOptions::SysHeaderOptions( const SysHeaderOptions& other ):
-instanceName_(other.instanceName_),
-compVLNV_(other.compVLNV_),
-containingComp_(other.containingComp_),
-containingView_(other.containingView_),
-sysHeaderInfo_(other.sysHeaderInfo_),
-includeFiles_(other.includeFiles_) {
-}
-
-MemoryMapHeaderGenerator::SysHeaderOptions& MemoryMapHeaderGenerator::SysHeaderOptions::operator=( const SysHeaderOptions& other ) {
-
-	if (this != &other) {
-		instanceName_ = other.instanceName_;
-		compVLNV_ = other.compVLNV_;
-		containingComp_ = other.containingComp_;
-		containingView_ = other.containingView_;
-		sysHeaderInfo_ = other.sysHeaderInfo_;
-		includeFiles_ = other.includeFiles_;
-	}
-	return *this;
-}
-
-bool MemoryMapHeaderGenerator::SysHeaderOptions::operator==( const SysHeaderOptions& other ) {
-	if (compVLNV_ == other.compVLNV_ &&
-		instanceName_.compare(other.instanceName_, Qt::CaseInsensitive) == 0) {
-			return true;
-	}
-	else {
-		return false;
-	}
-}
-
-bool MemoryMapHeaderGenerator::SysHeaderOptions::operator!=( const SysHeaderOptions& other ) {
-	if (compVLNV_ != other.compVLNV_) {
-		return true;
-	}
-	return instanceName_.compare(other.instanceName_, Qt::CaseInsensitive) != 0;
-}
-
-bool MemoryMapHeaderGenerator::SysHeaderOptions::operator<( const SysHeaderOptions& other ) {
-	if (compVLNV_ == other.compVLNV_) {
-		return instanceName_.compare(other.instanceName_, Qt::CaseInsensitive) < 0;
-	}
-	else {
-		return compVLNV_ < other.compVLNV_;
-	}
-}
