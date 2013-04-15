@@ -50,12 +50,6 @@
     <ClCompile Include="localheadersavemodel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_localheadersavemodel.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_localheadersavemodel.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="globalheadersavemodel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -77,6 +71,12 @@
     <ClCompile Include="systemheadersavemodel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_localheadersavemodel.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_localheadersavemodel.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_systemheadersavemodel.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -96,13 +96,13 @@
     <CustomBuild Include="memorymapheadergenerator.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="localheadersavemodel.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="globalheadersavemodel.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="localheadersavedelegate.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="localheadersavemodel.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="systemheadersavemodel.h">
