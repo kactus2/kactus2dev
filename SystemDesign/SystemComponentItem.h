@@ -43,6 +43,7 @@ public:
      *      @param [in] instanceName              The name of the component instance.
      *      @param [in] displayName               The component instance's display name.
      *      @param [in] description               The component instance's description.
+     *      @param [in] uuid							  The uuid identifying the instance.
      *      @param [in] configurableElementValue  The component instance's configurable element values.
      *      @param [in] parent                    The parent graphics item.
      */
@@ -52,6 +53,7 @@ public:
                     QString const& instanceName = QString("instance"),
                     QString const& displayName = QString(),
                     QString const& description = QString(),
+						  QString const& uuid = QString(),
                     QMap<QString, QString> const& configurableElementValues = QMap<QString, QString>(),
                     QGraphicsItem *parent = 0);
 

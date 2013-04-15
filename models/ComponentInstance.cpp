@@ -16,12 +16,15 @@
 
 #include <common/validators/vhdlNameValidator/vhdlnamevalidator.h>
 
+#include <QUuid>
+
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::ComponentInstance()
 //-----------------------------------------------------------------------------
 ComponentInstance::ComponentInstance(QString instanceName, QString displayName,
                                      QString description, VLNV const& componentRef,
-                                     QPointF const& position)
+                                     QPointF const& position,
+												 const QString& uuid)
     : instanceName_(instanceName),
       displayName_(displayName),
       desc_(description),
@@ -35,9 +38,12 @@ ComponentInstance::ComponentInstance(QString instanceName, QString displayName,
       apiInterfacePositions_(),
       comInterfacePositions_(),
       portAdHocVisibilities_(),
-      swPropertyValues_()
+      swPropertyValues_(),
+		uuid_(uuid)
 {
-
+	if (uuid_.isEmpty()) {
+		uuid_ = QUuid::createUuid().toString();
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -57,8 +63,13 @@ ComponentInstance::ComponentInstance(ComponentInstance const& other)
       apiInterfacePositions_(other.apiInterfacePositions_),
       comInterfacePositions_(other.comInterfacePositions_),
       portAdHocVisibilities_(other.portAdHocVisibilities_),
-      swPropertyValues_(other.swPropertyValues_)
+      swPropertyValues_(other.swPropertyValues_),
+		uuid_(other.uuid_)
 {
+	// make sure instances always have uuid
+	if (uuid_.isEmpty()) {
+		uuid_ = QUuid::createUuid().toString();
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -78,7 +89,8 @@ ComponentInstance::ComponentInstance(QDomNode& node)
       apiInterfacePositions_(),
       comInterfacePositions_(),
       portAdHocVisibilities_(),
-      swPropertyValues_()
+      swPropertyValues_(),
+		uuid_()
 {
     QDomNodeList nodes = node.childNodes();
 
@@ -154,9 +166,16 @@ ComponentInstance::ComponentInstance(QDomNode& node)
                 {
                     parsePropertyValues(childNode);
                 }
+					 else if (childNode.nodeName() == "kactus2:uuid") {
+						 uuid_ = childNode.childNodes().at(0).nodeValue();
+					 }
             }
         }
     }
+
+	 if (uuid_.isEmpty()) {
+		 uuid_ = QUuid::createUuid().toString();
+	 }
 }
 
 //-----------------------------------------------------------------------------
@@ -224,6 +243,9 @@ void ComponentInstance::write(QXmlStreamWriter& writer) const
     }
 
     writer.writeEndElement(); // kactus2:propertyValues
+
+	 // write the id value
+	 writer.writeTextElement("kactus2:uuid", uuid_);
 
     writer.writeEndElement(); // spirit:vendorExtensions
     writer.writeEndElement(); // spirit:componentInstance
@@ -567,6 +589,7 @@ ComponentInstance& ComponentInstance::operator=(ComponentInstance const& other)
         comInterfacePositions_ = other.comInterfacePositions_;
         portAdHocVisibilities_ = other.portAdHocVisibilities_;
         swPropertyValues_ = other.swPropertyValues_;
+		  uuid_ = other.uuid_;
     }
 
     return *this;
@@ -597,4 +620,8 @@ bool ComponentInstance::hasConfElementValue( const QString& confElementName ) co
 
 QString ComponentInstance::getConfElementValue( const QString& confElementName ) const {
 	return configurableElementValues_.value(confElementName, QString());
+}
+
+QString ComponentInstance::getUuid() const {
+	return uuid_;
 }

@@ -149,6 +149,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
                                                           instance.getInstanceName(),
                                                           instance.getDisplayName(),
                                                           instance.getDescription(),
+																			 instance.getUuid(),
                                                           instance.getConfigurableElementValues(),
                                                           instance.getPortAdHocVisibilities());
 
@@ -639,7 +640,7 @@ QSharedPointer<Design> HWDesignDiagram::createDesign(const VLNV &vlnv) const
 
             ComponentInstance instance(comp->name(), comp->displayName(),
 				                       comp->description(), *comp->componentModel()->getVlnv(),
-                                       comp->scenePos());
+                                       comp->scenePos(), comp->getUuid());
 
 			// save the configurable element values to the design
 			instance.setConfigurableElementValues(comp->getConfigurableElements());

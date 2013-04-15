@@ -34,6 +34,7 @@ public:
                      const QString &instanceName = QString("instance"),
                      const QString &displayName = QString(),
                      const QString &description = QString(),
+							const QString& uuid = QString(),
                      const QMap<QString, QString> &configurableElementValues = QMap<QString, QString>(),
                      QMap<QString, bool> const& portAdHocVisibilities = QMap<QString, bool>(),
                      QGraphicsItem *parent = 0);

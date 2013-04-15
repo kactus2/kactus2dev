@@ -39,6 +39,7 @@ public:
      *      @param [in] instanceName              The name of the component instance.
      *      @param [in] displayName               The component instance's display name.
      *      @param [in] description               The component instance's description.
+     *      @param [in] uuid							  The uuid of the instance.
      *      @param [in] configurableElementValue  The component instance's configurable element values.
      *      @param [in] parent                    The parent graphics item.
      */
@@ -48,6 +49,7 @@ public:
                   QString const& instanceName = QString("instance"),
                   QString const& displayName = QString(),
                   QString const& description = QString(),
+						QString const& uuid = QString(),
                   QMap<QString, QString> const& configurableElementValues = QMap<QString, QString>(),
                   QGraphicsItem *parent = 0);
 
@@ -151,6 +153,17 @@ public:
      */
     virtual bool isConnectionUpdateDisabled() const = 0;
 
+	 /*! \brief Get the uuid of the instance.
+	  *
+	  * Method: 		getUuid
+	  * Full name:	ComponentItem::getUuid
+	  * Access:		public 
+	  *
+	  *
+	  * \return QString containing uuid.
+	 */
+	 QString getUuid() const;
+
 signals:
     //! Sends an error message to the user.
     void errorMessage(const QString& errorMessage) const;
@@ -209,6 +222,9 @@ private:
 
 	//! \brief Map containing the configurableElementValues for the instance.
 	QMap<QString, QString> configurableValues_;
+
+	//! \brief The uuid identifying the instance.
+	QString uuid_;
 };
 
 //-----------------------------------------------------------------------------

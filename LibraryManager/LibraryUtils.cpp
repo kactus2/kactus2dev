@@ -192,7 +192,7 @@ void addNewInstancesV2(QList<ComponentInstance> elements,
     {
         // Duplicate the component instance and set its import reference.
         ComponentInstance instance(element.getInstanceName(), element.getDisplayName(),
-                                   element.getDescription(), element.getComponentRef(), QPointF(0, 0));
+                                   element.getDescription(), element.getComponentRef(), QPointF(0, 0), element.getUuid());
         instance.setImported(true);
         instance.setImportRef(element.getInstanceName());
 
@@ -334,7 +334,7 @@ void updateSystemDesignV2(LibraryInterface* lh,
     {
         // Duplicate the component instance and set its kts_hw_ref.
         ComponentInstance instance(element.getInstanceName(), element.getDisplayName(),
-                                   element.getDescription(), element.getComponentRef(), QPointF(0, 0));
+                                   element.getDescription(), element.getComponentRef(), QPointF(0, 0), element.getUuid());
         instance.setImported(true);
         instance.setImportRef(element.getInstanceName());
 

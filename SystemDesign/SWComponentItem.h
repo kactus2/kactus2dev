@@ -39,6 +39,7 @@ public:
                QString const& instanceName,
                QString const& displayName = QString(),
                QString const& description = QString(),
+					QString const& uuid = QString(),
                QMap<QString, QString> const& configurableElementValues = QMap<QString, QString>());
 
     /*!

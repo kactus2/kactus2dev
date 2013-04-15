@@ -63,6 +63,8 @@
 
 #include <mainwindow/mainwindow.h>
 
+#include <QUuid>
+
 //-----------------------------------------------------------------------------
 // Function: SystemDesignDiagram()
 //-----------------------------------------------------------------------------
@@ -181,6 +183,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
         HWMappingItem* item = new HWMappingItem(getLibraryInterface(), component, instance.getInstanceName(),
                                                 instance.getDisplayName(), instance.getDescription(),
+																instance.getUuid(),
                                                 instance.getConfigurableElementValues());
         item->setImported(instance.isImported());
         item->setImportRef(instance.getImportRef());
@@ -507,6 +510,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
                 // Create the SW component item.
                 SWComponentItem* item = new SWComponentItem(getLibraryInterface(), comp,
                                                             instanceName, QString(), QString(),
+																				QUuid::createUuid().toString(),
                                                             QMap<QString, QString>());
                 
                 item->setPos(stack->mapStackFromScene(snapPointToGrid(event->scenePos())));
@@ -560,6 +564,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
             // Create the SW component item.
             SWComponentItem* newCompItem = new SWComponentItem(getLibraryInterface(), comp,
                                                                instanceName, QString(), QString(),
+																					QUuid::createUuid().toString(),
                                                                QMap<QString, QString>());
 
             // Perform the replacement.
@@ -1243,7 +1248,7 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
             ComponentInstance instance(mappingItem->name(), mappingItem->displayName(),
                                        mappingItem->description(),
                                        *mappingItem->componentModel()->getVlnv(),
-                                       mappingItem->scenePos());
+                                       mappingItem->scenePos(), mappingItem->getUuid());
             instance.setConfigurableElementValues(mappingItem->getConfigurableElements());
             instance.setImported(mappingItem->isImported());
             instance.setImportRef(mappingItem->getImportRef());

@@ -33,6 +33,7 @@ ComponentItem::ComponentItem(QRectF const& size,
                              QString const& instanceName,
                              QString const& displayName,
                              QString const& description,
+									  QString const& uuid,
                              QMap<QString, QString> const& configurableElementValues,
                              QGraphicsItem *parent)
     : QGraphicsRectItem(parent),
@@ -42,7 +43,8 @@ ComponentItem::ComponentItem(QRectF const& size,
       nameLabel_(0),
       displayName_(displayName),
       description_(description),
-      configurableValues_(configurableElementValues)
+      configurableValues_(configurableElementValues),
+		uuid_(uuid)
 {
     setFlag(ItemSendsGeometryChanges);
     setFlag(ItemIsSelectable);
@@ -309,4 +311,8 @@ QList<ConnectionEndpoint*> ComponentItem::getEndpoints() const
 IGraphicsItemStack* ComponentItem::getParentStack()
 {
     return dynamic_cast<IGraphicsItemStack*>(parentItem());
+}
+
+QString ComponentItem::getUuid() const {
+	return uuid_;
 }

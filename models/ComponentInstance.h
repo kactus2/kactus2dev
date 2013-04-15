@@ -33,7 +33,7 @@ public:
      */
     ComponentInstance(QString instanceName, QString displayName,
                       QString description, VLNV const& componentRef,
-                      QPointF const& position);
+                      QPointF const& position, const QString& uuid);
 
     /*!
      *  Copy constructor.
@@ -272,6 +272,17 @@ public:
      */
     ComponentInstance& operator=(ComponentInstance const& other);
 
+	 /*! \brief Get the Uuid of the instance.
+	  *
+	  * Method: 		getUuid
+	  * Full name:	ComponentInstance::getUuid
+	  * Access:		public 
+	  *
+	  *
+	  * \return QString containing the uuid.
+	 */
+	 QString getUuid() const;
+
 private:
     /*!
     *  Parses the property values from the given XML node.
@@ -330,6 +341,9 @@ private:
 
     //! SW property values for this instance (kactus2:propertyValues).
     QMap<QString, QString> swPropertyValues_;
+
+	//! \brief The unique id used to identify the instance.
+	 QString uuid_;
 };
 
 //-----------------------------------------------------------------------------
