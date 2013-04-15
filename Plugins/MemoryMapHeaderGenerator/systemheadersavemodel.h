@@ -115,6 +115,9 @@ public:
 		//! \brief Identifies the component.
 		VLNV compVLNV_;
 
+		//! \brief Uuid identifying the instance.
+		QString instanceId_;
+
 		//! \brief Identifies the hierarchical component which contains the instance.
 		VLNV containingComp_;
 

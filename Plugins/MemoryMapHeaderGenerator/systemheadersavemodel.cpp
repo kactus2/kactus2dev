@@ -214,6 +214,7 @@ SystemHeaderSaveModel::SysHeaderOptions::SysHeaderOptions( const QString& instan
 	const VLNV& compVLNV /*= VLNV()*/ ):
 instanceName_(instanceName),
 	compVLNV_(compVLNV),
+	instanceId_(),
 	containingComp_(),
 	containingView_(),
 	sysHeaderInfo_(),
@@ -223,6 +224,7 @@ instanceName_(instanceName),
 SystemHeaderSaveModel::SysHeaderOptions::SysHeaderOptions( const SysHeaderOptions& other ):
 instanceName_(other.instanceName_),
 	compVLNV_(other.compVLNV_),
+	instanceId_(other.instanceId_),
 	containingComp_(other.containingComp_),
 	containingView_(other.containingView_),
 	sysHeaderInfo_(other.sysHeaderInfo_),
@@ -233,6 +235,7 @@ SystemHeaderSaveModel::SysHeaderOptions& SystemHeaderSaveModel::SysHeaderOptions
 	if (this != &other) {
 		instanceName_ = other.instanceName_;
 		compVLNV_ = other.compVLNV_;
+		instanceId_ = other.instanceId_;
 		containingComp_ = other.containingComp_;
 		containingView_ = other.containingView_;
 		sysHeaderInfo_ = other.sysHeaderInfo_;

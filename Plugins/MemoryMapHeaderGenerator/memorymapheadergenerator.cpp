@@ -650,6 +650,8 @@ void MemoryMapHeaderGenerator::generateSystemHeaders(QSharedPointer<Component> c
 		// create header settings object for the CPU instance
 		SystemHeaderSaveModel::SysHeaderOptions opt(instance.getInstanceName(), instanceVLNV);
 
+		opt.instanceId_ = instance.getUuid();
+
 		// find the files of the instances active SW view
 		QString activeView = desConf->getActiveView(instance.getInstanceName());
 		if (!activeView.isEmpty() && instComponent->hasSWView(activeView)) {
@@ -696,6 +698,7 @@ void MemoryMapHeaderGenerator::generateSystemHeaders(QSharedPointer<Component> c
 	foreach (const SystemHeaderSaveModel::SysHeaderOptions& opt, sysGenSettings_) {
 		qDebug() << "---";
 		qDebug() << opt.compVLNV_.toString() << " instance: " << opt.instanceName_;
+		qDebug() << "Uuid: " << opt.instanceId_;
 		qDebug() << "Header location: " << opt.sysHeaderInfo_.absoluteFilePath();
 		qDebug() << "Files:";
 		foreach (const QFileInfo& info, opt.includeFiles_) {

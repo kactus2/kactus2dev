@@ -57,7 +57,13 @@ QVariant BusPortsModel::data( const QModelIndex& index,
 			return portQualifier2Str(table_.at(index.row()).qualifier_);
 				}
 		case 2: {
-			return table_.at(index.row()).width_;
+			int width = table_.at(index.row()).width_;
+			
+			// if width is unspecified
+			if (width <= 0) {
+				return QString();
+			}
+			return width;
 				}
 		case 3: {
 			return table_.at(index.row()).defaultValue_;
