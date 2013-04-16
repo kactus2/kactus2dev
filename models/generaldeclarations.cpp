@@ -1221,7 +1221,19 @@ QString General::getRelativePath(const QString from, const QString to) {
 	}
 
 	// calculate the relative path and return it.
-	return ipXactDir.relativeFilePath(toInfo.absoluteFilePath());
+	QString relPath = ipXactDir.relativeFilePath(toInfo.absoluteFilePath());
+
+    // Strip the ending slash if found.
+    if (relPath.size() > 0 && relPath.at(relPath.size() - 1) == "/")
+    {
+        relPath = relPath.left(relPath.size() - 1);
+    }
+    else if (relPath.isEmpty())
+    {
+        relPath = ".";
+    }
+
+    return relPath;
 }
 
 QString General::getRelativeSavePath( const QString& from, const QString& to ) {

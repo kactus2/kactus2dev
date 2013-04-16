@@ -162,7 +162,7 @@ QString FileDependencyItem::getDisplayPath() const
 
     case ITEM_TYPE_EXTERNAL_LOCATION:
         {
-            return tr("External: ") + path_.mid(1, path_.length() - 2);
+            return tr("External: ") + path_.mid(1, path_.length() - 2) + "/";
         }
 
     case ITEM_TYPE_UNKNOWN_LOCATION:
@@ -172,7 +172,7 @@ QString FileDependencyItem::getDisplayPath() const
 
     default:
         {
-            return path_;
+            return path_ + "/";
         }
     }
 }

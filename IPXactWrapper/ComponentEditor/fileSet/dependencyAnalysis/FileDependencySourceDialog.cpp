@@ -92,9 +92,10 @@ void FileDependencySourceDialog::addSource()
     }
     newDirectory = QFileInfo(newDirectory).filePath();
     newDirectory = General::getRelativePath(basePath_, newDirectory);
+
     if (newDirectory.size() < 1)
     {
-        newDirectory = "./";
+        newDirectory = ".";
     }
     if (!checkIfSelectedDirectoryHasBeenPreviouslyAdded(newDirectory))
     {
