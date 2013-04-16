@@ -218,7 +218,8 @@ instanceName_(instanceName),
 	containingComp_(),
 	containingView_(),
 	sysHeaderInfo_(),
-	includeFiles_() {
+	includeFiles_(),
+	found_(false) {
 }
 
 SystemHeaderSaveModel::SysHeaderOptions::SysHeaderOptions( const SysHeaderOptions& other ):
@@ -228,7 +229,8 @@ instanceName_(other.instanceName_),
 	containingComp_(other.containingComp_),
 	containingView_(other.containingView_),
 	sysHeaderInfo_(other.sysHeaderInfo_),
-	includeFiles_(other.includeFiles_) {
+	includeFiles_(other.includeFiles_),
+	found_(other.found_) {
 }
 
 SystemHeaderSaveModel::SysHeaderOptions& SystemHeaderSaveModel::SysHeaderOptions::operator=( const SysHeaderOptions& other ) {
@@ -240,6 +242,7 @@ SystemHeaderSaveModel::SysHeaderOptions& SystemHeaderSaveModel::SysHeaderOptions
 		containingView_ = other.containingView_;
 		sysHeaderInfo_ = other.sysHeaderInfo_;
 		includeFiles_ = other.includeFiles_;
+		found_ = other.found_;
 	}
 	return *this;
 }

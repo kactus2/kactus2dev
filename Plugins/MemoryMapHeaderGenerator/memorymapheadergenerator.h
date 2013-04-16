@@ -187,6 +187,18 @@ private:
 		QTextStream& stream,
 		const Design::Interface& interface);
 
+	/*! \brief Search the CPU instances and their containing components to find the generated global headers.
+	 *
+	 * Method: 		searchInstanceFiles
+	 * Full name:	MemoryMapHeaderGenerator::searchInstanceFiles
+	 * Access:		private 
+	 *
+	 * \param component Pointer to the hierarchical component to search.
+	 * \param hwViewName The name of the hierarchical view on the component.
+	 *
+	*/
+	void searchInstanceFiles(QSharedPointer<const Component> component, const QString& hwViewName);
+
 	//! The plugin utility.
 	IPluginUtility* utility_;
 
@@ -198,6 +210,25 @@ private:
 
 	//! \brief Contains the settings for the system header generation.
 	QList<SystemHeaderSaveModel::SysHeaderOptions> sysGenSettings_;
+
+	//! \brief Used to save info on instances and their active views to be parsed.
+	struct HierParsingInfo {
+		
+		//! \brief Identifies the component.
+		QSharedPointer<const Component> comp_;
+
+		//! \brief The view which is set for the component.
+		QString activeView_;
+
+		//! \brief The constructor.
+		HierParsingInfo(QSharedPointer<const Component> comp, const QString& viewName);
+
+		//! \brief Copy constructor. No deep copy needed for the pointer.
+		HierParsingInfo(const HierParsingInfo& other);
+
+		//! \brief Assignment operator. No deep copy needed for the pointer.
+		HierParsingInfo& operator=(const HierParsingInfo& other);
+	};
 };
 
 #endif // MEMORYMAPHEADERGENERATOR_H

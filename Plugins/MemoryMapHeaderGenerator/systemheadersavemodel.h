@@ -130,6 +130,9 @@ public:
 		//! \brief References to the files to include in the system header.
 		QList<QFileInfo> includeFiles_;
 
+		//! \brief Indicates whether the instance has been found or not.
+		bool found_;
+
 		/*! \brief The constructor.
 		 *
 		 * Method: 		SysHeaderOptions

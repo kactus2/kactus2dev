@@ -695,6 +695,8 @@ void MemoryMapHeaderGenerator::generateSystemHeaders(QSharedPointer<Component> c
 
 	sysGenSettings_ = model.getObjects();
 
+	searchInstanceFiles(comp, sysView->getHWViewRef());
+
 	foreach (const SystemHeaderSaveModel::SysHeaderOptions& opt, sysGenSettings_) {
 		qDebug() << "---";
 		qDebug() << opt.compVLNV_.toString() << " instance: " << opt.instanceName_;
@@ -711,3 +713,146 @@ void MemoryMapHeaderGenerator::generateSystemHeaders(QSharedPointer<Component> c
 	sysGenSettings_.clear();
 }
 
+void MemoryMapHeaderGenerator::searchInstanceFiles( QSharedPointer<const Component> component, const QString& hwViewName ) {
+	
+	// if the view is not found
+	if (!component->hasView(hwViewName)) {
+		return;
+	}
+
+	VLNV hierRef = component->getHierRef(hwViewName);
+
+	// if the view is not hierarchical
+	if (!hierRef.isValid()) {
+		return;
+	}
+
+	QSharedPointer<const LibraryComponent> libDesConf = utility_->getLibraryInterface()->getModelReadOnly(hierRef);
+	QSharedPointer<const DesignConfiguration> desConf = libDesConf.dynamicCast<const DesignConfiguration>();
+
+	QSharedPointer<const Design> design;
+
+	// if the hier ref was not for design configuration then try design
+	if (!desConf) {
+		design = libDesConf.dynamicCast<const Design>();
+	}
+	// if hier ref was for design conf then parse the design
+	else {
+		VLNV designVLNV = desConf->getDesignRef();
+		QSharedPointer<const LibraryComponent> libDes = utility_->getLibraryInterface()->getModelReadOnly(designVLNV);
+		design = libDes.dynamicCast<const Design>();
+	}
+
+	// if design was not found then nothing can be done
+	if (!design) {
+		qDebug() << "Header gen: Design was not found, returning";
+		return;
+	}
+
+	// list to add instances which should be searched hierarchically
+	QList<MemoryMapHeaderGenerator::HierParsingInfo> instancesToParse;
+
+	// check all instances of the design
+	foreach (const ComponentInstance& instance, design->getComponentInstances()) {
+
+		// no match for instance was yet found
+		bool matched = false;
+
+		// check if the instance matches one of the searched CPUs
+		for (int i = 0; i < sysGenSettings_.size(); ++i) {
+			SystemHeaderSaveModel::SysHeaderOptions& opt = sysGenSettings_[i];
+
+			// if the CPU was already found before
+			if (opt.found_) {
+				continue;
+			}
+			
+			// if the instance matches the searched CPU
+			else if (instance.getUuid() == opt.instanceId_) {
+				qDebug() << "Instance " << opt.instanceName_ << " found.";
+				
+				// CPU instance was found and do not need to be searched in other designs
+				opt.found_ = true;
+
+				// the instance matched and does not need to be searched lower in the hierarchy
+				matched = true;
+
+				// TODO parse the files from the containing hier component
+
+				// move on to next design instance to search for
+				break;
+			}
+		}
+
+		// if the instance did not match any of the CPU instances
+		if (!matched) {
+
+			// parse the component for the instance
+			VLNV instanceVLNV = instance.getComponentRef();
+			QSharedPointer<const LibraryComponent> libComp = utility_->getLibraryInterface()->getModelReadOnly(instanceVLNV);
+			QSharedPointer<const Component> instComp = libComp.dynamicCast<const Component>();
+			Q_ASSERT(instComp);
+
+			// find the active view for the component instance
+			QString activeView = desConf->getActiveView(instance.getInstanceName());
+
+			// if there was no active view set
+			if (activeView.isEmpty()) {
+				QStringList hierViewNames = instComp->getHierViews();
+
+				qDebug() << "Instance " << instance.getInstanceName() << " did not have active view, searching for one...";
+
+				// if component only contains one hierarchical view then use it
+				if (hierViewNames.size() == 1) {
+					activeView = hierViewNames.first();
+				}
+				// otherwise it is unknown which view to use and move to next instance
+				else {
+					qDebug() << "Instance " << instance.getInstanceName() << " had multiple hier views but none selected";
+					continue;
+				}
+			}
+
+			// if active view was not found then should have moved on
+			Q_ASSERT(!activeView.isEmpty());
+
+			// add to the list of instances to parse hierarchically
+			MemoryMapHeaderGenerator::HierParsingInfo info(instComp, activeView);
+			instancesToParse.append(info);
+		}
+	}
+
+	// check if more searching is needed
+	bool allFound = true;
+	foreach (const SystemHeaderSaveModel::SysHeaderOptions& opt, sysGenSettings_) {
+		if (!opt.found_) {
+			allFound = false;
+		}
+	}
+
+	// if there is at least one more CPU instance to find
+	if (!allFound) {
+		foreach (MemoryMapHeaderGenerator::HierParsingInfo info, instancesToParse) {
+			searchInstanceFiles(info.comp_, info.activeView_);
+		}
+	}
+}
+
+
+MemoryMapHeaderGenerator::HierParsingInfo::HierParsingInfo(QSharedPointer<const Component> comp, const QString& viewName ):
+comp_(comp),
+activeView_(viewName) {
+}
+
+MemoryMapHeaderGenerator::HierParsingInfo::HierParsingInfo( const HierParsingInfo& other ):
+comp_(other.comp_),
+activeView_(other.activeView_) {
+}
+
+MemoryMapHeaderGenerator::HierParsingInfo& MemoryMapHeaderGenerator::HierParsingInfo::operator=( const HierParsingInfo& other ) {
+	if (&other != this) {
+		comp_ = other.comp_;
+		activeView_ = other.activeView_;
+	}
+	return *this;
+}
