@@ -25,6 +25,8 @@ table_() {
 }
 
 LocalHeaderSaveModel::~LocalHeaderSaveModel() {
+	qDeleteAll(table_);
+	table_.clear();
 }
 
 void LocalHeaderSaveModel::setComponent( QSharedPointer<Component> component ) {

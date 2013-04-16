@@ -26,6 +26,8 @@ design_() {
 }
 
 GlobalHeaderSaveModel::~GlobalHeaderSaveModel() {
+	qDeleteAll(table_);
+	table_.clear();
 }
 
 int GlobalHeaderSaveModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
@@ -240,6 +242,7 @@ void GlobalHeaderSaveModel::setDesign( QSharedPointer<Component> topComp, QShare
 			options->instance_ = instance.getInstanceName();
 			options->interface_ = interfaceName;
 			options->comp_ = compVLNV;
+			options->instanceId_ = instance.getUuid();
 
 			// the path to the directory containing the xml metadata
 			QString compPath(handler_->getDirectoryPath(*topComp->getVlnv()));

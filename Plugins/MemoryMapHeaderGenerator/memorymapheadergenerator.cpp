@@ -173,7 +173,8 @@ void MemoryMapHeaderGenerator::runGenerator( IPluginUtility* utility,
 void MemoryMapHeaderGenerator::addHeaderFile( QSharedPointer<Component> component,
 	const QFileInfo& fileInfo,
 	const QString& filesetName,
-	const QStringList& swViewNames ) const {
+	const QStringList& swViewNames,
+	const QString& instanceId) const {
 	
 	QString xmlDir = utility_->getLibraryInterface()->getDirectoryPath(*component->getVlnv());
 	
@@ -192,6 +193,13 @@ void MemoryMapHeaderGenerator::addHeaderFile( QSharedPointer<Component> componen
 	fileSet->setGroups("generatedFiles");
 	fileSet->setDescription(tr("Contains header files generated for the component.\n"
 		"Do not rename this file set, name is used to find the generated headers."));
+
+	// if instance id was specified
+	if (!instanceId.isEmpty()) {
+
+		// use the same id as the instance the file set is created for.
+		fileSet->setFileSetId(instanceId);
+	}
 
 	QSettings settings;
 	QSharedPointer<File> file = fileSet->addFile(relPath, settings);
@@ -416,7 +424,7 @@ void MemoryMapHeaderGenerator::generateGlobalHeaders( QSharedPointer<Component> 
 		file.close();
 
 		// add the file to the component's file sets
-		addHeaderFile(comp, headerOpt->fileInfo_, headerOpt->instance_);
+		addHeaderFile(comp, headerOpt->fileInfo_, headerOpt->instance_, QStringList(), headerOpt->instanceId_);
 
 		// a header file was added
 		changed = true;

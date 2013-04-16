@@ -36,6 +36,9 @@ public:
 		//! \brief The name of the instance containing the interface.
 		QString instance_;
 
+		//! \brief The id used to identify the instance through hierarchy levels.
+		QString instanceId_;
+
 		//! \brief The name of the master interface to create the header for.
 		QString interface_;
 

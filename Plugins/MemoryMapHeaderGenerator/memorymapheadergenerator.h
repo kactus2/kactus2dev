@@ -165,12 +165,14 @@ private:
 	 * \param fileInfo Contains the info on the generated file.
 	 * \param filesetName The name of the file set to add the header file to.
 	 * \param swViewNames Contains the names of the sw views to add the file set reference to.
+	 * \param instanceId The id of the instance which is used when generating global headers.
 	 *
 	*/
 	void addHeaderFile(QSharedPointer<Component> component,
 		const QFileInfo& fileInfo, 
 		const QString& filesetName,
-		const QStringList& swViewNames = QStringList()) const;
+		const QStringList& swViewNames = QStringList(),
+		const QString& instanceId = QString()) const;
 
 	/*! \brief Parse the interface and depending on the type move forward in the connections.
 	 *

@@ -415,6 +415,28 @@ public:
 	*/
 	void clearFiles();
 
+	/*! \brief Get id of the file set.
+	 *
+	 * Method: 		getFileSetId
+	 * Full name:	FileSet::getFileSetId
+	 * Access:		public 
+	 *
+	 *
+	 * \return QString containing the file set id.
+	*/
+	QString getFileSetId() const;
+
+	/*! \brief Set the file set id.
+	 *
+	 * Method: 		setFileSetId
+	 * Full name:	FileSet::setFileSetId
+	 * Access:		public 
+	 *
+	 * \param id The id to set.
+	 *
+	*/
+	void setFileSetId(const QString& id);
+
 private:
 
 	/*! \brief Contains the name and description information for file set.
@@ -455,6 +477,9 @@ private:
 	 * generator.
 	 */
 	QList<QSharedPointer<Function> > functions_;
+
+	//! \brief ID used to identify the file set on generators.
+	QString fileSetId_;
 };
 
 #endif /* FILESET_H_ */

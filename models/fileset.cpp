@@ -18,8 +18,14 @@
 #include <QXmlStreamWriter>
 #include <QFileInfo>
 
-FileSet::FileSet(QDomNode & fileSetNode): nameGroup_(fileSetNode), groups_(),
-files_(), defaultFileBuilders_(), dependencies_(), functions_() {
+FileSet::FileSet(QDomNode & fileSetNode):
+nameGroup_(fileSetNode),
+	groups_(),
+files_(), 
+defaultFileBuilders_(),
+dependencies_(),
+functions_(),
+fileSetId_() {
 
 	for (int i = 0; i < fileSetNode.childNodes().count(); ++i) {
 		QDomNode tempNode = fileSetNode.childNodes().at(i);
@@ -48,14 +54,16 @@ files_(), defaultFileBuilders_(), dependencies_(), functions_() {
 			functions_.append(
 					QSharedPointer<Function>(new Function(tempNode)));
 		}
-	}
+		else if (tempNode.nodeName() == QString("spirit:vendorExtensions")) {
+			for (int j = 0; j < tempNode.childNodes().count(); ++j) {
+				QDomNode extensionNode = tempNode.childNodes().at(j);
 
-	// if mandatory field name is missing
-// 	if (nameGroup_.name_.isNull()) {
-// 		throw Parse_error(QObject::tr("Mandatory element name missing in "
-// 				"spirit:fileSet"));
-// 	}
-	return;
+				if (extensionNode.nodeName() == QString("kactus2:fileSetId")) {
+					fileSetId_ = extensionNode.childNodes().at(0).nodeValue();
+				}
+			}
+		}
+	}
 }
 
 FileSet::FileSet(const QString& name, const QString& group):
@@ -63,7 +71,8 @@ nameGroup_(),
 	groups_(),
 	files_(), defaultFileBuilders_(),
 	dependencies_(), 
-	functions_() {
+	functions_(),
+fileSetId_() {
 
 	if (!group.isEmpty()) {
 		groups_.append(group);
@@ -78,7 +87,8 @@ nameGroup_(),
 	files_(), 
 	defaultFileBuilders_(), 
 	dependencies_(), 
-	functions_()  {
+	functions_(),
+fileSetId_() {
 }
 
 FileSet::FileSet( const FileSet &other ):
@@ -87,7 +97,8 @@ groups_(other.groups_),
 files_(),
 defaultFileBuilders_(),
 dependencies_(other.dependencies_),
-functions_() {
+functions_(),
+fileSetId_(other.fileSetId_) {
 
 	foreach (QSharedPointer<File> file, other.files_) {
 		if (file) {
@@ -119,6 +130,7 @@ FileSet & FileSet::operator=( const FileSet &other ) {
 		nameGroup_ = other.nameGroup_;
 		groups_ = other.groups_;
 		dependencies_ = other.dependencies_;
+		fileSetId_ = other.fileSetId_;
 
 		files_.clear();
 		foreach (QSharedPointer<File> file, other.files_) {
@@ -193,6 +205,13 @@ void FileSet::write(QXmlStreamWriter& writer) {
 	// tell each function to write itself
 	for (int i = 0; i < functions_.size(); ++i) {
 		functions_.at(i)->write(writer);
+	}
+
+	// if file set id has been set
+	if (!fileSetId_.isEmpty()) {
+		writer.writeStartElement("spirit:vendorExtensions");
+		writer.writeTextElement("kactus2:fileSetId", fileSetId_);
+		writer.writeEndElement(); // spirit:vendorExtensions
 	}
 
 	writer.writeEndElement(); // spirit:fileSet
@@ -722,4 +741,12 @@ General::NameGroup& FileSet::getNameGroup() {
 
 const General::NameGroup& FileSet::getNameGroup() const {
 	return nameGroup_;
+}
+
+QString FileSet::getFileSetId() const {
+	return fileSetId_;
+}
+
+void FileSet::setFileSetId( const QString& id ) {
+	fileSetId_ = id;
 }
