@@ -293,10 +293,14 @@ void ActiveViewModel::removeInstance( ComponentItem* diaComp ) {
 			beginRemoveRows(QModelIndex(), row, row);
 			table_.removeAt(row);
 			endRemoveRows();
+
+			// remove the configuration from the design conf
+			desConf_->removeViewConfiguration(diaComp->name());
 		}
 
-		if (instances_.contains(diaComp)) 
+		if (instances_.contains(diaComp)) {
 			instances_.removeAll(diaComp);
+		}
 		
 		// remove the connections between the diagram component and this model.
 		diaComp->disconnect(this);
@@ -314,6 +318,17 @@ void ActiveViewModel::addInstance( ComponentItem* diaComp ) {
 
 	// add the item to the model to be displayed
 	InstanceViewPair newItem(diaComp->name());
+
+	// if the component only has one view it can be selected as default
+	QStringList viewNames = diaComp->componentModel()->getViewNames();
+	if (viewNames.size() == 1) {
+		
+		// set the only view as default
+		QString viewName = viewNames.first();
+		newItem.viewName_ = viewName;
+		desConf_->addViewConfiguration(diaComp->name(), viewName);
+	}
+
 	beginInsertRows(QModelIndex(), table_.size(), table_.size());
 	table_.append(newItem);
 	endInsertRows();
@@ -337,8 +352,9 @@ void ActiveViewModel::setActiveView( const QString& instanceName, const QString&
 			endResetModel();
 	
 			// update the design configuration
-			if (desConf_)
+			if (desConf_) {
 				desConf_->addViewConfiguration(instanceName, viewName);
+			}
 
 			return;
 		}
