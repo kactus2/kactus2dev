@@ -809,6 +809,12 @@
     <Filter Include="Source Files\IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis">
       <UniqueIdentifier>{febffc03-0aad-480e-b92d-e776f61887f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\common\widgets\EnumCollectionEditor">
+      <UniqueIdentifier>{8e6e4587-2335-4cac-9734-29f279623065}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\widgets\EnumCollectionEditor">
+      <UniqueIdentifier>{91f601a7-3b40-46ca-948c-9db2dfa372e6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\CSourceWriter.cpp">
@@ -3670,6 +3676,9 @@
     <ClCompile Include="models\FileDependency.cpp">
       <Filter>Source Files\models</Filter>
     </ClCompile>
+    <ClCompile Include="common\widgets\EnumCollectionEditor\EnumCollectionEditor.cpp">
+      <Filter>Source Files\common\widgets\EnumCollectionEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5677,6 +5686,9 @@
     </ClInclude>
     <ClInclude Include="models\FileDependency.h">
       <Filter>Header Files\models</Filter>
+    </ClInclude>
+    <ClInclude Include="common\widgets\EnumCollectionEditor\EnumCollectionEditor.h">
+      <Filter>Header Files\common\widgets\EnumCollectionEditor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -359,6 +359,7 @@ CreateHelp
     <ClCompile Include="common\widgets\attributeBox\attributebox.cpp" />
     <ClCompile Include="common\widgets\attributeBox\attributemodel.cpp" />
     <ClCompile Include="common\widgets\cpuSelector\cpuselector.cpp" />
+    <ClCompile Include="common\widgets\EnumCollectionEditor\EnumCollectionEditor.cpp" />
     <ClCompile Include="common\widgets\fileTypeSelector\filetypeselector.cpp" />
     <ClCompile Include="common\widgets\libraryRefGenerator\libraryrefgenerator.cpp" />
     <ClCompile Include="common\widgets\listManager\dirlistmanager.cpp" />
@@ -3892,6 +3893,7 @@ CreateHelp
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL  "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector"</Command>
     </CustomBuild>
+    <ClInclude Include="common\widgets\EnumCollectionEditor\EnumCollectionEditor.h" />
     <ClInclude Include="common\widgets\Ribbon\Ribbon.h" />
     <CustomBuild Include="common\widgets\Ribbon\RibbonGroup.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
@@ -14659,7 +14661,7 @@ CreateHelp
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_AssemblyInfoFilename="VersionInfo.h" BuildVersion_BuildVersioningStyle="None.None.Increment.None" Qt5Version_x0020_Win32="5.0.2" QtVersion_x0020_Win32="4.8.3" QtVersion_x0020_x64="4.8.3 x64" RccDir=".\GeneratedFiles" MocDir=".\GeneratedFiles" Qt5Version_x0020_x64="5.0.2 x64" />
+      <UserProperties BuildVersion_AssemblyInfoFilename="VersionInfo.h" BuildVersion_BuildVersioningStyle="None.None.Increment.None" Qt5Version_x0020_Win32="5.0.2" QtVersion_x0020_Win32="4.8.3" QtVersion_x0020_x64="4.8.3 x64" RccDir=".\GeneratedFiles" MocDir=".\GeneratedFiles" Qt5Version_x0020_x64="Daily x64" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

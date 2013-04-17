@@ -28,7 +28,6 @@ FileDependencyGraphWidget::FileDependencyGraphWidget(QWidget* parent)
     scrollBar_.setContentsMargins(0, 0, 0, 0);
 
     barLayout_ = new QHBoxLayout();
-    //barLayout_->addStretch(1);
     barLayout_->addWidget(&infoLabel_);
     barLayout_->addWidget(&scrollBar_);
 
@@ -81,9 +80,6 @@ void FileDependencyGraphWidget::onGraphColumnScrollMaximumChanged(int maximum)
 void FileDependencyGraphWidget::onDependencyColumnPositionChanged(int pos)
 {
     infoLabel_.setFixedWidth(pos);
-//     QLayoutItem* item = barLayout_->takeAt(0);
-//     delete item;
-//     barLayout_->insertSpacing(0, pos);
 }
 
 //-----------------------------------------------------------------------------

@@ -123,11 +123,26 @@ public:
     void setLastHash(QString const& hash);
 
     /*!
+     *  Assigns the file into the given file sets.
+     *
+     *      @param [in] fileSets          The file sets where the file is assigned.
+     *      @param [in] preserveMultiple  If true, the multiple file sets of child items are preserved.
+     */
+    void setFileSets(QList<FileSet*> const& fileSets, bool preserveMultiple);
+
+    /*!
      *  Returns the child at the given index.
      *
      *      @param [in] index The index of the child to retrieve.
      */
     FileDependencyItem* getChild(int index);
+
+    /*!
+     *  Returns the child at the given index.
+     *
+     *      @param [in] index The index of the child to retrieve.
+     */
+    FileDependencyItem const* getChild(int index) const;
 
     /*!
      *  Returns the number of child items.
@@ -158,6 +173,11 @@ public:
      *  Returns the file sets where the file is currently contained.
      */
     QList<FileSet*> getFileSets() const;
+
+    /*!
+     *  Returns true if children have multiple (differing) filesets.
+     */
+    bool hasMultipleFileSets() const;
 
     /*!
      *  Returns the all file types the file represents.

@@ -190,6 +190,7 @@ QVariant FileDependencyModel::data(const QModelIndex& index, int role /*= Qt::Di
         case FILE_DEPENDENCY_COLUMN_FILESETS:
             {
                 QList<FileSet*> fileSets = item->getFileSets();
+                bool multiple = item->hasMultipleFileSets();
 
                 if (item->isExternal())
                 {
@@ -197,7 +198,14 @@ QVariant FileDependencyModel::data(const QModelIndex& index, int role /*= Qt::Di
                 }
                 else if (fileSets.empty())
                 {
-                    return tr("[none]");
+                    if (multiple)
+                    {
+                        return tr("[multiple]");
+                    }
+                    else
+                    {
+                        return tr("[none]");
+                    }
                 }
                 else
                 {
@@ -206,6 +214,11 @@ QVariant FileDependencyModel::data(const QModelIndex& index, int role /*= Qt::Di
                     for (int i = 1; i < fileSets.count(); ++i)
                     {
                         str += "; " + fileSets[i]->getName();
+                    }
+
+                    if (multiple)
+                    {
+                        str += "; [multiple]";
                     }
 
                     return str;
@@ -270,6 +283,22 @@ QVariant FileDependencyModel::data(const QModelIndex& index, int role /*= Qt::Di
 //             return QColor(Qt::white);
 //         }
     }
+    else if (role == Qt::UserRole)
+    {
+        QStringList fileSetNames;
+
+        if (item->hasMultipleFileSets())
+        {
+            fileSetNames.append("[multiple]");
+        }
+
+        foreach (FileSet* fileSet, item->getFileSets())
+        {
+            fileSetNames.append(fileSet->getName());
+        }
+
+        return fileSetNames;
+    }
 
     return QVariant();
 }
@@ -304,6 +333,9 @@ Qt::ItemFlags FileDependencyModel::flags(const QModelIndex& index) const
     case FILE_DEPENDENCY_COLUMN_CREATE:
     case FILE_DEPENDENCY_COLUMN_DEPENDENCIES:
         return Qt::ItemIsSelectable;
+
+    case FILE_DEPENDENCY_COLUMN_FILESETS:
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 
     default:
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
@@ -1041,5 +1073,51 @@ void FileDependencyModel::onExternalRelocated(FileDependencyItem* item, QString 
     }
 
     emit dependenciesReset();
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileDependencyModel::setData()
+//-----------------------------------------------------------------------------
+bool FileDependencyModel::setData(const QModelIndex &index, const QVariant &value, int role /* = Qt::EditRole */)
+{
+    if (!index.isValid())
+    {
+        return false;
+    }
+
+    FileDependencyItem* item = static_cast<FileDependencyItem*>(index.internalPointer());
+
+    if (role == Qt::EditRole)
+    {
+        switch (index.column())
+        {
+        case FILE_DEPENDENCY_COLUMN_FILESETS:
+            {
+                QStringList fileSetNames = value.toStringList();
+
+                // Retrieve correct file sets from the component.
+                QList<FileSet*> fileSets;
+
+                foreach (QString const& name, fileSetNames)
+                {
+                    if (name != "[multiple]")
+                    {
+                        QSharedPointer<FileSet> fileSet = component_->getFileSet(name);
+                        fileSets.append(fileSet.data());
+                    }
+                }
+
+                // Determine whether multiple (colliding) filesets should be preserved.
+                bool multiple = fileSetNames.contains("[multiple]");
+
+                item->setFileSets(fileSets, multiple);
+
+                emit dataChanged(index, index);
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 

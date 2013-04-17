@@ -13,6 +13,7 @@
 
 #include "FileDependencySourceDialog.h"
 #include "FileDependencyItem.h"
+#include "FileDependencyDelegate.h"
 
 #include <LibraryManager/libraryinterface.h>
 
@@ -61,6 +62,7 @@ FileDependencyEditor::FileDependencyEditor(QSharedPointer<Component> component,
 
     graphWidget_.setContentsMargins(0, 0, 0, 0);
     graphWidget_.getView().setModel(&model_);
+    graphWidget_.getView().setItemDelegate(new FileDependencyDelegate(component, this));
 
     graphWidget_.getView().resizeColumnToContents(FILE_DEPENDENCY_COLUMN_TREE);
     graphWidget_.getView().resizeColumnToContents(FILE_DEPENDENCY_COLUMN_STATUS);

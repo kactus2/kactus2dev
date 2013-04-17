@@ -12,7 +12,6 @@
 #include "FileDependencyGraphView.h"
 
 #include "FileDependencyModel.h"
-#include "FileDependencyDelegate.h"
 #include "FileDependencyItem.h"
 #include "FileDependencySortFilter.h"
 
@@ -46,7 +45,7 @@ FileDependencyGraphView::FileDependencyGraphView(QWidget* parent)
 {
     setUniformRowHeights(true);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setItemDelegate(new FileDependencyDelegate(this));
+    //setItemDelegate(new FileDependencyDelegate(this));
     setMouseTracking(true);
 
     connect(header(), SIGNAL(sectionResized(int, int, int)),
