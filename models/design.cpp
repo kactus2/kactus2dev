@@ -505,8 +505,12 @@ bool Design::isValid( QStringList& errorList ) const {
 	}
 
 	QStringList instanceNames;
-	foreach (ComponentInstance const& instance, componentInstances_) {
-		
+    QStringList hwUUIDs;
+
+	foreach (ComponentInstance const& instance, componentInstances_)
+    {		
+        hwUUIDs.append(instance.getUuid());
+
 		// if there are several instances with same name
 		if (instanceNames.contains(instance.getInstanceName())) {
 			errorList.append(QObject::tr("Design contains several instances with"
@@ -537,7 +541,7 @@ bool Design::isValid( QStringList& errorList ) const {
             swInstanceNames.append(instance.getInstanceName());
         }
 
-        if (!instance.isValid(errorList, instanceNames, thisIdentifier))
+        if (!instance.isValid(errorList, hwUUIDs, thisIdentifier))
         {
             valid = false;
         }
@@ -665,7 +669,11 @@ bool Design::isValid() const {
 	}
 
 	QStringList instanceNames;
-	foreach (ComponentInstance const& instance, componentInstances_) {
+    QStringList hwUUIDs;
+
+	foreach (ComponentInstance const& instance, componentInstances_)
+    {
+        hwUUIDs.append(instance.getUuid());
 
 		// if there are several instances with same name
 		if (instanceNames.contains(instance.getInstanceName())) {
@@ -691,7 +699,7 @@ bool Design::isValid() const {
 			swInstanceNames.append(swInstance.getInstanceName());
 		}
 
-		if (!swInstance.isValid(instanceNames)) {
+		if (!swInstance.isValid(hwUUIDs)) {
 			return false;
 		}
 	}

@@ -326,7 +326,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
         else
         {
             // Otherwise the mapping has been specified. Find the corresponding HW component instance.
-            HWMappingItem* mappingItem = getHWComponent(instance.getMapping());
+            HWMappingItem* mappingItem = getHWComponentByUUID(instance.getMapping());
 
             if (mappingItem != 0)
             {
@@ -1294,7 +1294,7 @@ QSharedPointer<Design> SystemDesignDiagram::createDesign(VLNV const& vlnv) const
             if (swCompItem->parentItem()->type() == HWMappingItem::Type)
             {
                 HWMappingItem const* parent = static_cast<HWMappingItem*>(swCompItem->parentItem());
-                instance.setMapping(parent->name());
+                instance.setMapping(parent->getUuid());
                 instance.setPosition(swCompItem->pos());
             }
             else
@@ -1692,6 +1692,28 @@ HWMappingItem* SystemDesignDiagram::getHWComponent(QString const& instanceName)
     }
 
     emit errorMessage(tr("Component %1 was not found in the design").arg(instanceName));
+    return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: getHWComponent()
+//-----------------------------------------------------------------------------
+HWMappingItem* SystemDesignDiagram::getHWComponentByUUID(QString const& uuid)
+{
+    foreach (QGraphicsItem *item, items())
+    {
+        if (item->type() == HWMappingItem::Type)
+        {
+            HWMappingItem* comp = qgraphicsitem_cast<HWMappingItem*>(item);
+
+            if (comp->getUuid() == uuid)
+            {
+                return comp;
+            }
+        }
+    }
+
+    emit errorMessage(tr("Component with UUID %1 was not found in the design").arg(uuid));
     return 0;
 }
 

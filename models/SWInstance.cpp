@@ -219,7 +219,7 @@ void SWInstance::write(QXmlStreamWriter& writer) const
 //-----------------------------------------------------------------------------
 // Function: SWInstance::isValid()
 //-----------------------------------------------------------------------------
-bool SWInstance::isValid(QStringList& errorList, QStringList const& instanceNames,
+bool SWInstance::isValid(QStringList& errorList, QStringList const& hwUUIDs,
                          QString const& parentId) const
 {
     bool valid = true;
@@ -239,7 +239,7 @@ bool SWInstance::isValid(QStringList& errorList, QStringList const& instanceName
     }
 
     // Check whether the mapping is valid or not.
-    if (!hwRef_.isEmpty() && !instanceNames.contains(hwRef_))
+    if (!hwRef_.isEmpty() && !hwUUIDs.contains(hwRef_))
     {
         errorList.append(QObject::tr("Component instance '%1' referenced "
                                      "by %2 not found in %3").arg(hwRef_, thisId, parentId));
@@ -271,7 +271,7 @@ bool SWInstance::isValid(QStringList& errorList, QStringList const& instanceName
     return valid;
 }
 
-bool SWInstance::isValid( const QStringList& instanceNames ) const {
+bool SWInstance::isValid( const QStringList& hwUUIDs ) const {
 
 	if (instanceName_.isEmpty()) {
 		return false;
@@ -282,7 +282,7 @@ bool SWInstance::isValid( const QStringList& instanceNames ) const {
 	}
 
 	// Check whether the mapping is valid or not.
-	if (!hwRef_.isEmpty() && !instanceNames.contains(hwRef_)) {
+	if (!hwRef_.isEmpty() && !hwUUIDs.contains(hwRef_)) {
 		return false;
 	}
 

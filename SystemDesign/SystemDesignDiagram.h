@@ -188,6 +188,11 @@ private:
     HWMappingItem* getHWComponent(QString const& instanceName);
 
     /*!
+     *  Returns the HW component instance with the given UUID.
+     */
+    HWMappingItem* getHWComponentByUUID(QString const& uuid);
+
+    /*!
      *  Returns the component with the given name (either HW or SW).
      *
      *      @param [in] instanceName The name of the instance to search for.

@@ -108,6 +108,27 @@ int getInstanceIndex(QList<ComponentInstance> const& instances, QString const& i
 }
 
 //-----------------------------------------------------------------------------
+// Function: getInstanceIndexByUUID()
+//-----------------------------------------------------------------------------
+int getInstanceIndexByUUID(QList<ComponentInstance> const& instances, QString const& uuid)
+{
+    int index = -1;
+
+    // Search for a match in the list.
+    for (int i = 0; i < instances.size(); ++i)
+    {
+        if (instances[i].getUuid() == uuid)
+        {
+            index = i;
+            break;
+        }
+    }
+
+    return index;
+}
+
+
+//-----------------------------------------------------------------------------
 // Function: getInstanceIndex()
 //-----------------------------------------------------------------------------
 int getInstanceIndex(QList<SWInstance> const& instances, QString const& importRef,
@@ -158,9 +179,18 @@ void parseProgrammableElementsV2(LibraryInterface* lh, VLNV designVLNV,
             // or COM interfaces.
             if ((!childComp->isHierarchical() && childComp->isCpu()) || !childComp->getComInterfaces().isEmpty())
             {
-                // Make sure the name is unique by prefixing it with the design's name.
                 ComponentInstance copy = instance;
-                copy.setInstanceName(designVLNV.getName().remove(".design") + "_" + instance.getInstanceName());
+
+                // Determine a unique name for the instance.
+                QString instanceName = instance.getInstanceName();
+                int runningNumber = 1;
+
+                while (getInstanceIndex(elements, instanceName) != -1)
+                {
+                    instanceName = instance.getInstanceName() + "_" + QString::number(runningNumber);
+                }
+
+                copy.setInstanceName(instanceName);
                 elements.append(copy);
             }
             else
@@ -182,7 +212,7 @@ void parseProgrammableElementsV2(LibraryInterface* lh, VLNV designVLNV,
 //-----------------------------------------------------------------------------
 // Function: addNewInstances()
 //-----------------------------------------------------------------------------
-void addNewInstancesV2(QList<ComponentInstance> elements,
+void addNewInstancesV2(QList<ComponentInstance> const& elements,
                        Design& sysDesign, LibraryInterface* lh,
                        QList<ComponentInstance>& hwInstances,
                        QList<SWInstance>& swInstances,
@@ -192,11 +222,11 @@ void addNewInstancesV2(QList<ComponentInstance> elements,
     {
         // Duplicate the component instance and set its import reference.
         ComponentInstance instance(element.getInstanceName(), element.getDisplayName(),
-                                   element.getDescription(), element.getComponentRef(), QPointF(0, 0), element.getUuid());
+                                   element.getDescription(), element.getComponentRef(),
+                                   QPointF(0, 0), element.getUuid());
         instance.setImported(true);
-        instance.setImportRef(element.getInstanceName());
 
-        // Add the newly created SW component to the list of SW instances.
+        // Add the newly created HW component to the list of HW instances.
         hwInstances.append(instance);
 
         // Import SW components from SW design if found.
@@ -218,7 +248,7 @@ void addNewInstancesV2(QList<ComponentInstance> elements,
             {
                 instance.setPosition(QPointF());
                 instance.setImported(true);
-                instance.setMapping(element.getInstanceName());
+                instance.setMapping(element.getUuid());
                 swInstances.append(instance);
             }
 
@@ -305,8 +335,8 @@ void updateSystemDesignV2(LibraryInterface* lh,
         // Imported ones should be checked.
         if (hwInstance.isImported())
         {
-            // Search for the corresponding element in the new list.
-            int index = getInstanceIndex(elements, hwInstance.getImportRef());
+            // Search for the corresponding element in the new list based on the UUID.
+            int index = getInstanceIndexByUUID(elements, hwInstance.getUuid());
 
             // If the element was removed, it is not added to the updated design.
             if (index == -1)
@@ -316,7 +346,6 @@ void updateSystemDesignV2(LibraryInterface* lh,
 
             ComponentInstance instanceCopy = hwInstance;
             instanceCopy.setComponentRef(elements[index].getComponentRef());
-            instanceCopy.setImportRef(elements[index].getInstanceName());
             hwInstances.append(instanceCopy);
 
             // Remove the element from the element list since it has been processed.
@@ -336,7 +365,6 @@ void updateSystemDesignV2(LibraryInterface* lh,
         ComponentInstance instance(element.getInstanceName(), element.getDisplayName(),
                                    element.getDescription(), element.getComponentRef(), QPointF(0, 0), element.getUuid());
         instance.setImported(true);
-        instance.setImportRef(element.getInstanceName());
 
         hwInstances.append(instance);
     }
@@ -381,7 +409,7 @@ void updateSystemDesignV2(LibraryInterface* lh,
             foreach (SWInstance swInstance, swDesign->getSWInstances())
             {
                 // Check if the instance already exists in the old system design.
-                int index = getInstanceIndex(oldSWInstances, swInstance.getInstanceName(), hwInstance.getInstanceName());
+                int index = getInstanceIndex(oldSWInstances, swInstance.getInstanceName(), hwInstance.getUuid());
 
                 if (index != -1 && oldSWInstances[index].isImported())
                 {
@@ -398,7 +426,7 @@ void updateSystemDesignV2(LibraryInterface* lh,
                     swInstance.setImported(true);
                     swInstance.setPosition(QPointF());
                     swInstance.setImportRef(swInstance.getInstanceName());
-                    swInstance.setMapping(hwInstance.getInstanceName());
+                    swInstance.setMapping(hwInstance.getUuid());
                     swInstance.setDisplayName(swInstance.getInstanceName());
                     swInstance.setInstanceName(hwInstance.getInstanceName() + "_" + swInstance.getInstanceName());
                     swInstances.append(swInstance);

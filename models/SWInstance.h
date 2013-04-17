@@ -65,19 +65,19 @@ public:
      *  Returns true if the SW instance is in a valid state.
      *
      *      @param [out] errorList      Error list which is appended with errors if found while validating.
-     *      @param [in]  instanceNames  The list of HW instance names in the containing design.
+     *      @param [in]  instanceNames  The list of HW UUIDs in the containing design.
      *      @param [in]  parentId       The identifier of the containing design.
      */
-    bool isValid(QStringList& errorList, QStringList const& instanceNames,
+    bool isValid(QStringList& errorList, QStringList const& hwUUIDs,
                  QString const& parentId) const;
 
 	/*! \brief Check if the software instance is in valid state.
 	 *
-	 * \param instanceNames The list of HW instance names in the containing design.
+	 * \param instanceNames The list of HW UUIDs in the containing design.
 	 *
 	 * \return bool True if the SW instance is in valid state.
 	*/
-	bool isValid(const QStringList& instanceNames) const;
+	bool isValid(const QStringList& hwUUIDs) const;
 
     /*!
      *  Sets the name of the SW instance.
