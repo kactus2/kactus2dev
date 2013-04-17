@@ -118,12 +118,6 @@ public:
 		//! \brief Uuid identifying the instance.
 		QString instanceId_;
 
-		//! \brief Identifies the hierarchical component which contains the instance.
-		VLNV containingComp_;
-
-		//! \brief Name of the active view for the hierarchical component which contains the instance.
-		QString containingView_;
-
 		//! \brief Refers to the system header to generate.
 		QFileInfo sysHeaderInfo_;
 

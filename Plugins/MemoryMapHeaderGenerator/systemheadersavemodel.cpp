@@ -215,8 +215,6 @@ SystemHeaderSaveModel::SysHeaderOptions::SysHeaderOptions( const QString& instan
 instanceName_(instanceName),
 	compVLNV_(compVLNV),
 	instanceId_(),
-	containingComp_(),
-	containingView_(),
 	sysHeaderInfo_(),
 	includeFiles_(),
 	found_(false) {
@@ -226,8 +224,6 @@ SystemHeaderSaveModel::SysHeaderOptions::SysHeaderOptions( const SysHeaderOption
 instanceName_(other.instanceName_),
 	compVLNV_(other.compVLNV_),
 	instanceId_(other.instanceId_),
-	containingComp_(other.containingComp_),
-	containingView_(other.containingView_),
 	sysHeaderInfo_(other.sysHeaderInfo_),
 	includeFiles_(other.includeFiles_),
 	found_(other.found_) {
@@ -238,8 +234,6 @@ SystemHeaderSaveModel::SysHeaderOptions& SystemHeaderSaveModel::SysHeaderOptions
 		instanceName_ = other.instanceName_;
 		compVLNV_ = other.compVLNV_;
 		instanceId_ = other.instanceId_;
-		containingComp_ = other.containingComp_;
-		containingView_ = other.containingView_;
 		sysHeaderInfo_ = other.sysHeaderInfo_;
 		includeFiles_ = other.includeFiles_;
 		found_ = other.found_;
