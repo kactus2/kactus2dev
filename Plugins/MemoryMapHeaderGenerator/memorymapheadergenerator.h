@@ -41,9 +41,6 @@ class MEMORYMAPHEADERGENERATOR_EXPORT MemoryMapHeaderGenerator : public QObject,
 
 public:
 
-	//! \brief The name of the file set where generated files are added to.
-	static const QString DEFAULT_TARGET_FILESET;
-
 	/*! \brief The constructor
 	 *
 	 * Method: 		MemoryMapHeaderGenerator

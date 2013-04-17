@@ -41,10 +41,6 @@
 #include <QStringList>
 #include <QMessageBox>
 
-#include <QDebug>
-
-const QString MemoryMapHeaderGenerator::DEFAULT_TARGET_FILESET = QString("cSources");
-
 MemoryMapHeaderGenerator::MemoryMapHeaderGenerator():
 utility_(NULL),
 design_(),
@@ -615,7 +611,6 @@ void MemoryMapHeaderGenerator::parseInterface( qint64 offset,
 		break;
 											}
 	default: {
-		qDebug() << "Instance " << interface.componentRef << " Interface " << interface.busRef << " was not supported type";
 		return;
 				}
 	}
@@ -889,15 +884,12 @@ void MemoryMapHeaderGenerator::searchInstanceFiles( QSharedPointer<const Compone
 			if (activeView.isEmpty()) {
 				QStringList hierViewNames = instComp->getHierViews();
 
-				qDebug() << "Instance " << instance.getInstanceName() << " did not have active view, searching for one...";
-
 				// if component only contains one hierarchical view then use it
 				if (hierViewNames.size() == 1) {
 					activeView = hierViewNames.first();
 				}
 				// otherwise it is unknown which view to use and move to next instance
 				else {
-					qDebug() << "Instance " << instance.getInstanceName() << " had multiple hier views but none selected";
 					continue;
 				}
 			}
