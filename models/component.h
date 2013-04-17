@@ -1005,6 +1005,18 @@ public:
 	*/
 	QList<QSharedPointer<FileSet> >& getFileSets();
 
+	/*! \brief Find the file set by the file set id.
+	 *
+	 * Method: 		findFileSetById
+	 * Full name:	Component::findFileSetById
+	 * Access:		public 
+	 *
+	 * \param id Identifies the file set.
+	 *
+	 * \return Pointer to the file set found, null pointer if none found.
+	*/
+	QSharedPointer<const FileSet> findFileSetById(const QString& id) const;
+
     /*! \brief Get this component's file dependencies
 	*
 	* \return QList containing component's file dependencies

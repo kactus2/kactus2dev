@@ -2113,6 +2113,17 @@ bool Component::hasFileSet( const QString& fileSetName ) const {
 	return false;
 }
 
+QSharedPointer<const FileSet> Component::findFileSetById( const QString& id ) const {
+	foreach (QSharedPointer<const FileSet> fileSet, fileSets_) {
+		if (fileSet->getFileSetId() == id) {
+			return fileSet;
+		}
+	}
+
+	// no file set found
+	return QSharedPointer<const FileSet>();
+}
+
 QList<QSharedPointer<File> > Component::getRTLFiles() const {
 
 	QList<QSharedPointer<File> > list;

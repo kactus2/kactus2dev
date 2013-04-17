@@ -19,6 +19,8 @@
 #include <QDir>
 #include <QXmlStreamWriter>
 
+#include <QDebug>
+
 // struct constructor
 General::Enumeration::Enumeration(QString &value, QString attText,
 		QString attHelp): value_(value), attribute_text_(attText),
