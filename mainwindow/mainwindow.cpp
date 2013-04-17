@@ -161,7 +161,6 @@ MainWindow::MainWindow(QWidget *parent)
       actGenQuartus_(0), 
       actGenDocumentation_(0),
       actRunPluginGenerator_(0),
-	  actSourceListingGen_(0),
       diagramToolsGroup_(0), 
       actToolSelect_(0), 
       actToolConnect_(0),
@@ -526,11 +525,6 @@ void MainWindow::setupActions()
 		tr("Run Generator Plugin"), this);
 	connect(actRunPluginGenerator_, SIGNAL(triggered()), this, SLOT(runGeneratorPlugin()), Qt::UniqueConnection);
 
-	actSourceListingGen_ = new QAction(QIcon(":icons/graphics/source_listing_generator.png"),
-		tr("Run source listing generator"), this);
-	connect(actSourceListingGen_, SIGNAL(triggered()),
-		this, SLOT(runSourceListingGen()), Qt::UniqueConnection);
-
 	// Initialize the action to add a new column.
 	actAddColumn_ = new QAction(QIcon(":/icons/graphics/diagram-add-column.png"), tr("Add Column"), this);
 	actAddColumn_->setProperty("rowSpan", 2);
@@ -794,7 +788,6 @@ void MainWindow::setupMenus()
     generationGroup_->addAction(actGenModelSim_);
     generationGroup_->addAction(actGenQuartus_);
     generationGroup_->addAction(actRunPluginGenerator_);
-    generationGroup_->addAction(actSourceListingGen_);
     generationGroup_->setVisible(false);
     generationGroup_->setEnabled(false);
 
@@ -1245,9 +1238,6 @@ void MainWindow::updateMenuStrip()
         
 		actRunPluginGenerator_->setEnabled(unlocked);
 		actRunPluginGenerator_->setVisible(true);
-
-		actSourceListingGen_->setEnabled(false);
-		actSourceListingGen_->setVisible(false);
 	}
 	// if is hardware component then set only documentation, modelsim and vhdl enabled
 	else if (isHWComp) {
@@ -1265,9 +1255,6 @@ void MainWindow::updateMenuStrip()
 
 		actRunPluginGenerator_->setEnabled(unlocked);
 		actRunPluginGenerator_->setVisible(true);
-
-		actSourceListingGen_->setEnabled(false);
-		actSourceListingGen_->setVisible(false);
 	}
 	else {
 		actGenVHDL_->setVisible(false);
@@ -1280,9 +1267,6 @@ void MainWindow::updateMenuStrip()
 		
 		actRunPluginGenerator_->setVisible(true);
 		actRunPluginGenerator_->setEnabled(unlocked);
-
-		actSourceListingGen_->setEnabled(true);
-		actSourceListingGen_->setVisible(true);
 	}
 
 	editGroup_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_EDIT_SUPPORT));
@@ -1756,108 +1740,6 @@ void MainWindow::runGeneratorPlugin(QAction* action)
     // Run the generator and refresh the document.
     plugin->runGenerator(this, libComp, libDesConf, libDes);
     doc->refresh();
-}
-
-void MainWindow::runSourceListingGen() {
-	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
-
-	// Inform user that unsaved changes must be saved before continuing.
-	if (doc->isModified())
-	{
-		QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-			"The document " + doc->getDocumentName() + " has unsaved changes and needs to be "
-			"saved before generators can be run. Save and continue?",
-			QMessageBox::Yes | QMessageBox::No, this);
-
-		if (msgBox.exec() == QMessageBox::No || !doc->save())
-		{
-			return;
-		}
-	}
-
-	// make sure the current design is for software
-	SystemDesignWidget* sysDesign = dynamic_cast<SystemDesignWidget*>(doc);
-	if (!sysDesign) {
-		return;
-	}
-
-	// the vlnv of the design
-	VLNV designVLNV = sysDesign->getIdentifyingVLNV();
-
-	// ask user where to save the file list
-	QString defaultPath = libraryHandler_->getPath(designVLNV);
-	QFileInfo defaultInfo(defaultPath);
-	QString outputFile = QFileDialog::getSaveFileName(this, tr("Save the file list"),
-		defaultInfo.absolutePath(), QString("*.txt"));
-
-	QSharedPointer<LibraryComponent> libComp = libraryHandler_->getModel(designVLNV);
-	QSharedPointer<Design> design = libComp.staticCast<Design>();
-	if (!design) {
-		return;
-	}
-
-	QFile file(outputFile);
-	// if file can not be opened for writing
-	if (!file.open(QFile::Truncate | QFile::WriteOnly)) {
-		return;
-	}
-
-	QTextStream listStream(&file);
-
-// 	QList<SWInstance> const& SWInstances = design->getSWInstances();
-// 	foreach (SWInstance instance, SWInstances) {
-// 		listStream << "Instance " << instance.getInstanceName() << ":" << endl;
-// 
-// 		// get the source files needed by the instance
-// 		VLNV instanceVLNV = instance.getComponentRef();
-// 		QStringList sourceList;
-// 		libraryHandler_->getHierarchicalDependencyFiles(instanceVLNV, sourceList);
-// 
-// 		foreach (QString sourceFile, sourceList) {
-// 			listStream << sourceFile << endl;
-// 		}
-// 
-// 		listStream << endl;
-// 	}
-
-	// the HW/SW mappings in the design
-	QMultiMap<QString, const SWInstance*> mappings = design->getHWSWMappings();
-	
-	// the first is printed before going to loop
-	QString previousHW = mappings.begin().key();
-	listStream << tr("HW instance: ") << previousHW << endl;
-	
-	// write each software instance source codes
-	for (QMultiMap<QString, const SWInstance*>::iterator i = mappings.begin();
-		i != mappings.end(); ++i) {
-
-			// when a new hardware instance is processed write the name
-			if (previousHW != i.key()) {
-				listStream << tr("HW instance: ") << i.key() << endl;
-			}
-
-			const SWInstance* swInstance = i.value();
-
-			// print the name of the software instance
-			listStream << tr("\t SW instance: ") << swInstance->getInstanceName() << endl;
-
-			// get the source files needed by the instance
-			VLNV instanceVLNV = i.value()->getComponentRef();
-			QStringList sourceList;
-			libraryHandler_->getHierarchicalDependencyFiles(instanceVLNV, sourceList);
-			 
-			foreach (QString sourceFile, sourceList) {
-				listStream << "\t\t" << sourceFile << endl;
-			 }
-
-			listStream << endl;
-
-			previousHW = i.key();
-	}
-
-	file.close();
-
-	QDesktopServices::openUrl(QUrl::fromLocalFile(outputFile));
 }
 
 //-----------------------------------------------------------------------------

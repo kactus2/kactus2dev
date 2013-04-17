@@ -1144,24 +1144,6 @@ QList<SWInstance> const& Design::getSWInstances() const
     return swInstances_;
 }
 
-const QMultiMap<QString, const SWInstance*> Design::getHWSWMappings() const {
-	QMultiMap<QString, const SWInstance*> mappings;
-	
-	// go through all software instances
-	for (int i = 0; i < swInstances_.size(); ++i) {
-
-		// if the software instance is not mapped then it is saved as such
-		QString hwInstanceName = swInstances_.at(i).getMapping();
-		if (hwInstanceName.isEmpty()) {
-			hwInstanceName = QObject::tr("unmapped");
-		}
-
-		mappings.insert(hwInstanceName, &swInstances_.at(i));
-	}
-
-	return mappings;
-}
-
 //-----------------------------------------------------------------------------
 // Function: Design::setSWInstances()
 //-----------------------------------------------------------------------------

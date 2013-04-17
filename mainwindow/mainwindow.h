@@ -232,9 +232,6 @@ public slots:
      */
     void runGeneratorPlugin(QAction* action);
 
-	//! \brief Creates a list of source files.
-	void runSourceListingGen();
-
     //! Zooms in the current document.
     void zoomIn();
 
@@ -775,9 +772,6 @@ private:
 
     //! Action to run a generator plugin.
     QAction* actRunPluginGenerator_;
-
-	//! \brief Action to run source listing generator.
-	QAction* actSourceListingGen_;
 
     //! The SW Design group.
     RibbonGroup* swDesignGroup_;
