@@ -86,6 +86,10 @@ void FileDependencyGraphView::setModel(QAbstractItemModel* model)
                 this, SLOT(onDependencyRemoved(FileDependency*)), Qt::UniqueConnection);
         connect(depModel, SIGNAL(dependenciesReset()),
                 this, SLOT(onDependenciesReset()), Qt::UniqueConnection);
+
+        connect(this, SIGNAL(dependencyChanged(FileDependency*)),
+                depModel, SIGNAL(dependencyChanged(FileDependency*)), Qt::UniqueConnection);
+
         model_ = depModel;
     }
     else
@@ -395,44 +399,47 @@ void FileDependencyGraphView::mousePressEvent(QMouseEvent* event)
                 else if (manualDependencyEndItem_ && manualDependencyStartItem_ &&
 						 manualDependencyEndItem_->getType() == FileDependencyItem::ITEM_TYPE_FILE)
                 {
-                    // Adding newly created manual dependency to model if it does not exist yet
-                    // or cannot be combined with the existing dependency.
+                    // Check if the dependency in the correct direction is not found.
                     FileDependency* found = model_->findDependency(manualDependencyStartItem_->getPath(),
                                                                    manualDependencyEndItem_->getPath());
-                    if (found == 0 ||
-                        (!found->isManual() && !found->isBidirectional() &&
-                         found->getFile1() == manualDependencyStartItem_->getPath() &&
-                         found->getFile2() == manualDependencyEndItem_->getPath()))
+
+                    if (found == 0)
                     {
-                        FileDependency* createdDependency = new FileDependency();
-                        createdDependency->setFile1(manualDependencyStartItem_->getPath());
-                        createdDependency->setFile2(manualDependencyEndItem_->getPath());
-                        createdDependency->setManual(true);
-                        createdDependency->setStatus(FileDependency::STATUS_ADDED);
+                        // Check for a reversed dependency and whether the new dependency cannot
+                        // be combined with it.
+                        FileDependency* revFound = model_->findDependency(manualDependencyEndItem_->getPath(),
+                                                                          manualDependencyStartItem_->getPath());
 
-                        model_->addDependency(QSharedPointer<FileDependency>(createdDependency));
+                        if (revFound == 0 || !revFound->isManual())
+                        {
+                            FileDependency* createdDependency = new FileDependency();
+                            createdDependency->setFile1(manualDependencyStartItem_->getPath());
+                            createdDependency->setFile2(manualDependencyEndItem_->getPath());
+                            createdDependency->setManual(true);
+                            createdDependency->setStatus(FileDependency::STATUS_ADDED);
 
-                        // Selecting created manual dependency.
-                        FileDependency* oldDependency = selectedDependency_;
-                        selectedDependency_ = createdDependency;
-                        emit selectionChanged(selectedDependency_);
-                        repaintDependency(oldDependency);
-                        repaintDependency(selectedDependency_);
+                            model_->addDependency(QSharedPointer<FileDependency>(createdDependency));
 
-                        emit warningMessage("");
-                    }
-                    // Check if we can convert the dependency to a bidirectional one.
-                    else if (found->isManual() && found->getFile1() == manualDependencyEndItem_->getPath() &&
-                             found->getFile2() == manualDependencyStartItem_->getPath())
-                    {
-                        found->setBidirectional(true);
+                            // Selecting created manual dependency.
+                            FileDependency* oldDependency = selectedDependency_;
+                            selectedDependency_ = createdDependency;
+                            emit selectionChanged(selectedDependency_);
+                            repaintDependency(oldDependency);
+                            repaintDependency(selectedDependency_);
 
-                        selectedDependency_ = found;
-                        emit selectionChanged(selectedDependency_);
+                            emit warningMessage("");
+                        }
+                        else
+                        {
+                            revFound->setBidirectional(true);
 
-                        repaintDependency(found);
+                            selectedDependency_ = revFound;
+                            emit selectionChanged(selectedDependency_);
 
-                        emit warningMessage(tr("An existing manual dependency was changed to bidirectional."));
+                            repaintDependency(revFound);
+
+                            emit warningMessage(tr("An existing manual dependency was changed to bidirectional."));
+                        }
                     }
                     else
                     {
@@ -894,7 +901,7 @@ void FileDependencyGraphView::onLocationReset()
 void FileDependencyGraphView::onMenuReverse()
 {
     selectedDependency_->reverse();
-    emit selectionChanged(selectedDependency_);
+    emit dependencyChanged(selectedDependency_);
 }
 
 //-----------------------------------------------------------------------------
@@ -903,7 +910,7 @@ void FileDependencyGraphView::onMenuReverse()
 void FileDependencyGraphView::onMenuBidirectional()
 {
     selectedDependency_->setBidirectional(!selectedDependency_->isBidirectional());
-    emit selectionChanged(selectedDependency_);
+    emit dependencyChanged(selectedDependency_);
 }
 
 //-----------------------------------------------------------------------------
@@ -912,7 +919,8 @@ void FileDependencyGraphView::onMenuBidirectional()
 void FileDependencyGraphView::onMenuLock()
 {
     selectedDependency_->setLocked(!selectedDependency_->isLocked());
-    emit selectionChanged(selectedDependency_);
+    onDependencyChanged(selectedDependency_);
+    emit dependencyChanged(selectedDependency_);
 }
 
 //-----------------------------------------------------------------------------

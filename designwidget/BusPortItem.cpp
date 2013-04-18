@@ -691,8 +691,8 @@ bool BusPortItem::askCompatibleMode(QSharedPointer<BusInterface> otherBusIf,
 
             if (!busDef->getDirectConnection())
             {
-                // This must be a mirrored-master.
-                mode = General::MIRROREDMASTER;
+                // This must be a mirrored-slave.
+                mode = General::MIRROREDSLAVE;
             }
             else
             {

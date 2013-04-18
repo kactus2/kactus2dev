@@ -93,3 +93,37 @@ void ComponentEditorFileSetItem::createChild( int index ) {
 		files_.at(index), model_, libHandler_, component_, this));
 	childItems_.insert(index, fileItem);
 }
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileSetItem::onFileAdded()
+//-----------------------------------------------------------------------------
+void ComponentEditorFileSetItem::onFileAdded(File* file)
+{
+    editor_.onFileAdded(file);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileSetItem::getFileSet()
+//-----------------------------------------------------------------------------
+FileSet const* ComponentEditorFileSetItem::getFileSet() const
+{
+    return fileSet_.data();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileSetItem::updateFileItems()
+//-----------------------------------------------------------------------------
+void ComponentEditorFileSetItem::updateFileItems()
+{
+    childItems_.clear();
+
+    foreach (QSharedPointer<File> file, files_) {
+        QSharedPointer<ComponentEditorFileItem> fileItem(new ComponentEditorFileItem(
+            file, model_, libHandler_, component_, this));
+
+        connect(fileItem.data(), SIGNAL(openCSource(QString const&, QSharedPointer<Component>)),
+                model_, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)), Qt::UniqueConnection);
+
+        childItems_.append(fileItem);
+    }
+}

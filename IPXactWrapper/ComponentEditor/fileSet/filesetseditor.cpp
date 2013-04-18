@@ -53,10 +53,14 @@ dependencyEditor_(component, libInterface, pluginMgr, &splitter_) {
 	connect(&model_, SIGNAL(fileSetRemoved(int)),
 		this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 
+    connect(&dependencyEditor_, SIGNAL(contentChanged()),
+        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&dependencyEditor_, SIGNAL(fileSetAdded(FileSet*)),
             &model_, SLOT(onFileSetAdded(FileSet*)), Qt::UniqueConnection);
     connect(&dependencyEditor_, SIGNAL(fileAdded(File*)),
             this, SIGNAL(fileAdded(File*)), Qt::UniqueConnection);
+    connect(&dependencyEditor_, SIGNAL(filesUpdated()),
+            this, SIGNAL(filesUpdated()), Qt::UniqueConnection);
 
 	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
 		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);

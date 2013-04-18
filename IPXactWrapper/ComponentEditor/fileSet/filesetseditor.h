@@ -66,6 +66,9 @@ signals:
     //! Emitted when a file has been added to any file set.
     void fileAdded(File* file);
 
+    //! Emitted when the files have been updated.
+    void filesUpdated();
+
 private slots:
     void updateFileSetView();
 

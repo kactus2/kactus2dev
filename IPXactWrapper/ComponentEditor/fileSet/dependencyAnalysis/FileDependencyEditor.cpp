@@ -118,6 +118,7 @@ FileDependencyEditor::FileDependencyEditor(QSharedPointer<Component> component,
     // Resolve plugins and save the component's xml path.
     xmlPath_ = QFileInfo(libInterface_->getPath(*component_->getVlnv())).path();
 
+    connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&model_, SIGNAL(analysisProgressChanged(int)),
             this, SLOT(updateProgressBar(int)), Qt::UniqueConnection);
     connect(&graphWidget_.getView(), SIGNAL(selectionChanged(FileDependency*)),
@@ -159,7 +160,7 @@ void FileDependencyEditor::scan()
 {
     if (scanning_)
     {
-        // TODO: Stop scan.
+        model_.stopAnalysis();
         return;
     }
 
@@ -293,6 +294,7 @@ void FileDependencyEditor::updateProgressBar(int value)
     {
         runAnalysisAction_->setIcon(QIcon(":/icons/graphics/control-play.png"));
         scanning_ = false;
+        //emit filesUpdated();
     }
 }
 

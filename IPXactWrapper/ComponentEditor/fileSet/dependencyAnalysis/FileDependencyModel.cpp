@@ -39,6 +39,9 @@ FileDependencyModel::FileDependencyModel(PluginManager& pluginMgr, QSharedPointe
       progressValue_(0),
       dependencies_()
 {
+    connect(this, SIGNAL(dependencyAdded(FileDependency*)), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(this, SIGNAL(dependencyChanged(FileDependency*)), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(this, SIGNAL(dependencyRemoved(FileDependency*)), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -164,6 +167,52 @@ QModelIndex FileDependencyModel::parent(const QModelIndex &child) const
     }
 
     return createIndex(index, 0, parent);
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileDependencyModel::setData()
+//-----------------------------------------------------------------------------
+bool FileDependencyModel::setData(const QModelIndex &index, const QVariant &value, int role /* = Qt::EditRole */)
+{
+    if (!index.isValid())
+    {
+        return false;
+    }
+
+    FileDependencyItem* item = static_cast<FileDependencyItem*>(index.internalPointer());
+
+    if (role == Qt::EditRole)
+    {
+        switch (index.column())
+        {
+        case FILE_DEPENDENCY_COLUMN_FILESETS:
+            {
+                QStringList fileSetNames = value.toStringList();
+
+                // Retrieve correct file sets from the component.
+                QList<FileSet*> fileSets;
+
+                foreach (QString const& name, fileSetNames)
+                {
+                    if (name != "[multiple]")
+                    {
+                        QSharedPointer<FileSet> fileSet = component_->getFileSet(name);
+                        fileSets.append(fileSet.data());
+                    }
+                }
+
+                // Determine whether multiple (colliding) filesets should be preserved.
+                bool multiple = fileSetNames.contains("[multiple]");
+
+                item->setFileSets(fileSets, multiple);
+
+                emit dataChanged(index, index);
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -360,6 +409,24 @@ void FileDependencyModel::startAnalysis()
 }
 
 //-----------------------------------------------------------------------------
+// Function: FileDependencyModel::stopAnalysis()
+//-----------------------------------------------------------------------------
+void FileDependencyModel::stopAnalysis()
+{
+    timer_->stop();
+    delete timer_;
+
+    // Reset the progress.
+    emit analysisProgressChanged(0);
+
+    // End analysis for each plugin.
+    foreach (ISourceAnalyzerPlugin* plugin, usedPlugins_)
+    {
+        plugin->endAnalysis(component_.data(), basePath_);
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: FileDependencyModel::addFolder()
 //-----------------------------------------------------------------------------
 FileDependencyItem* FileDependencyModel::addFolder(QString const& path)
@@ -510,17 +577,7 @@ void FileDependencyModel::performAnalysisStep()
     // Stop the timer when there are no more folders.
     if (progressValue_ == getTotalStepCount())
     {
-        timer_->stop();
-        delete timer_;
-
-        // Reset the progress.
-        emit analysisProgressChanged(0);
-
-        // End analysis for each plugin.
-        foreach (ISourceAnalyzerPlugin* plugin, usedPlugins_)
-        {
-            plugin->endAnalysis(component_.data(), basePath_);
-        }
+        stopAnalysis();
 
         // Set the dependencies as pending.
         QList< QSharedPointer<FileDependency> > pendingDependencies;
@@ -790,6 +847,8 @@ void FileDependencyModel::analyze(FileDependencyItem* fileItem)
         {
             fileItem->setStatus(FILE_DEPENDENCY_STATUS_CHANGED);
         }
+
+        emit contentChanged();
     }
     else
     {
@@ -914,7 +973,7 @@ FileDependency* FileDependencyModel::findDependency(QString const& file1, QStrin
     foreach (QSharedPointer<FileDependency> dependency, dependencies_)
     {
         if ((dependency->getFile1() == file1 && dependency->getFile2() == file2) ||
-            (dependency->getFile1() == file2 && dependency->getFile2() == file1))
+            (dependency->isBidirectional() && dependency->getFile1() == file2 && dependency->getFile2() == file1))
         {
             return dependency.data();
         }
@@ -928,8 +987,6 @@ FileDependency* FileDependencyModel::findDependency(QString const& file1, QStrin
 //-----------------------------------------------------------------------------
 void FileDependencyModel::addDependency(QSharedPointer<FileDependency> dependency)
 {
-    //Q_ASSERT(findDependency(dependency->getFile1(), dependency->getFile2()) == 0);
-    
     // Update the file item pointers if not yet up to date.
     if (dependency->getFileItem1() == 0 || dependency->getFileItem2() == 0)
     {
@@ -1073,51 +1130,5 @@ void FileDependencyModel::onExternalRelocated(FileDependencyItem* item, QString 
     }
 
     emit dependenciesReset();
-}
-
-//-----------------------------------------------------------------------------
-// Function: FileDependencyModel::setData()
-//-----------------------------------------------------------------------------
-bool FileDependencyModel::setData(const QModelIndex &index, const QVariant &value, int role /* = Qt::EditRole */)
-{
-    if (!index.isValid())
-    {
-        return false;
-    }
-
-    FileDependencyItem* item = static_cast<FileDependencyItem*>(index.internalPointer());
-
-    if (role == Qt::EditRole)
-    {
-        switch (index.column())
-        {
-        case FILE_DEPENDENCY_COLUMN_FILESETS:
-            {
-                QStringList fileSetNames = value.toStringList();
-
-                // Retrieve correct file sets from the component.
-                QList<FileSet*> fileSets;
-
-                foreach (QString const& name, fileSetNames)
-                {
-                    if (name != "[multiple]")
-                    {
-                        QSharedPointer<FileSet> fileSet = component_->getFileSet(name);
-                        fileSets.append(fileSet.data());
-                    }
-                }
-
-                // Determine whether multiple (colliding) filesets should be preserved.
-                bool multiple = fileSetNames.contains("[multiple]");
-
-                item->setFileSets(fileSets, multiple);
-
-                emit dataChanged(index, index);
-                return true;
-            }
-        }
-    }
-
-    return false;
 }
 

@@ -102,6 +102,11 @@ signals:
      */
     void warningMessage(const QString& msg) const;
 
+    /*!
+     *  Emitted when a file dependency has changed.
+     */
+    void dependencyChanged(FileDependency* dependency);
+
 public slots:
     /*!
      *  Sets the graph column scroll index.

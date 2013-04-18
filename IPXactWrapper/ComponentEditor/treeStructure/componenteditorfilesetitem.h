@@ -82,13 +82,29 @@ public:
 	*/
 	virtual void createChild(int index);
 
+    /*!
+     *  Handles the addition of a file outside the editor.
+     */
+    void onFileAdded(File* file);
+
+    /*!
+     *  Updates the file items.
+     */
+    void updateFileItems();
+
+    /*!
+     *  Returns the file set corresponding to this item.
+     */
+    FileSet const* getFileSet() const;
+
+
 private:
 	//! \brief No copying
 	ComponentEditorFileSetItem(const ComponentEditorFileSetItem& other);
 
 	//! \brief No assignment
 	ComponentEditorFileSetItem& operator=(const ComponentEditorFileSetItem& other);
-
+    
 	//! \brief Pointer to the file set being edited.
 	QSharedPointer<FileSet> fileSet_;
 

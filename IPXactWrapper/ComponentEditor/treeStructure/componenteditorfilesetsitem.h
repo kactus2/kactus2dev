@@ -72,6 +72,17 @@ public:
 	*/
 	virtual void createChild(int index);
 
+private slots:
+    /*!
+     *  Handles the addition of a file outside the file set editor.
+     */
+    void onFileAdded(File* file);
+
+    /*!
+     *  Updates the items for files.
+     */
+    void updateFileItems();
+
 private:
 	//! \brief No copying
 	ComponentEditorFileSetsItem(const ComponentEditorFileSetsItem& other);

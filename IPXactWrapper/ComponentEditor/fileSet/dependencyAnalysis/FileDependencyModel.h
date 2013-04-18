@@ -118,6 +118,9 @@ public:
 
     /*!
      *  Searches for a dependency between the given files.
+     *
+     *      @param [in] file1 The first file.
+     *      @param [in] file2 The second file.
      */
     FileDependency* findDependency(QString const& file1, QString const& file2) const;
 
@@ -142,6 +145,11 @@ public:
      *  Starts the dependency analysis.
      */
     void startAnalysis();
+
+    /*!
+     *  Stops the dependency analysis.
+     */
+    void stopAnalysis();
 
     /*!
      *  Adds a new folder item to the model.
@@ -263,6 +271,11 @@ signals:
      *  Emitted when the dependencies have been reset.
      */
     void dependenciesReset();
+
+    /*!
+     *  Emitted when the contents have changed.
+     */
+    void contentChanged();
 
 private slots:
     /*!

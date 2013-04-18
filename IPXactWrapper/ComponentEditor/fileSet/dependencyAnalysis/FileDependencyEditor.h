@@ -65,6 +65,12 @@ signals:
     //! Emitted when the file sets have been updated.
     void fileSetsUpdated();
 
+    //! Emitted when the files have been updated.
+    void filesUpdated();
+
+    //! Emitted when the contents have changed.
+    void contentChanged();
+
 private slots:
     /*!
      *  Opens up the source selection dialog.

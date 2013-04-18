@@ -24,6 +24,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MemoryMapHeaderGenerator", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AlteraBSPGenerator", "Plugins\AlteraBSPGenerator\AlteraBSPGenerator.vcxproj", "{16C73FC5-A179-4B2C-983C-59B9D1431703}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{90EC3FAA-DA36-47D5-97B5-9D463272C406}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -86,10 +88,17 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{16C73FC5-A179-4B2C-983C-59B9D1431703} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
+		{D47FBAF4-1642-4F73-837C-F289DCB9E8FE} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
+		{AA63BE2D-A701-4C68-9760-C71655FFE66D} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
+		{C846486D-4A9D-4212-89A8-D25BEFED7FC5} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
+		{FD8026D5-50C6-4D30-B082-899FA4226C48} = {90EC3FAA-DA36-47D5-97B5-9D463272C406}
+	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		AMDCaProjectFile = D:\user\maattaj\FunBase\public\trunk\CodeAnalyst\Kactus2_Solution.caw
-		BuildVersion_UpdateAssemblyVersion = True
-		BuildVersion_UpdateFileVersion = True
 		Qt5Version = Daily x64
+		BuildVersion_UpdateFileVersion = True
+		BuildVersion_UpdateAssemblyVersion = True
+		AMDCaProjectFile = D:\user\maattaj\FunBase\public\trunk\CodeAnalyst\Kactus2_Solution.caw
 	EndGlobalSection
 EndGlobal

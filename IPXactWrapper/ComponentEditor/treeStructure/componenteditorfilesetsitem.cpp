@@ -23,6 +23,10 @@ editor_(component, libHandler, pluginMgr) {
 		childItems_.append(fileSetItem);
 	}
 
+    connect(&editor_, SIGNAL(fileAdded(File*)),
+            this, SLOT(onFileAdded(File*)), Qt::UniqueConnection);
+    connect(&editor_, SIGNAL(filesUpdated()),
+            this, SLOT(updateFileItems()), Qt::UniqueConnection);
 	connect(&editor_, SIGNAL(contentChanged()), 
 		this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 	connect(&editor_, SIGNAL(childAdded(int)),
@@ -57,4 +61,33 @@ void ComponentEditorFileSetsItem::createChild( int index ) {
 		new ComponentEditorFileSetItem(fileSets_.at(index), model_, libHandler_, component_, this));
 	
 	childItems_.insert(index, fileSetItem);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileSetsItem::onFileAdded()
+//-----------------------------------------------------------------------------
+void ComponentEditorFileSetsItem::onFileAdded(File* file)
+{
+    foreach (QSharedPointer<ComponentEditorItem> item, childItems_)
+    {
+        QSharedPointer<ComponentEditorFileSetItem> fileSetItem = item.staticCast<ComponentEditorFileSetItem>();
+
+        if (fileSetItem->getFileSet() == file->getParent())
+        {
+            fileSetItem->onFileAdded(file);
+            break;
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileSetsItem::onFilesUpdated()
+//-----------------------------------------------------------------------------
+void ComponentEditorFileSetsItem::updateFileItems()
+{
+    foreach (QSharedPointer<ComponentEditorItem> item, childItems_)
+    {
+        QSharedPointer<ComponentEditorFileSetItem> fileSetItem = item.staticCast<ComponentEditorFileSetItem>();
+        fileSetItem->updateFileItems();
+    }
 }
