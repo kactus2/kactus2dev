@@ -815,6 +815,12 @@
     <Filter Include="Source Files\common\widgets\EnumCollectionEditor">
       <UniqueIdentifier>{91f601a7-3b40-46ca-948c-9db2dfa372e6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\common\dialogs\commandLineGeneratorDialog">
+      <UniqueIdentifier>{cf7bdfb8-046a-4e74-97b6-b997d007b0d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\dialogs\commandLineGeneratorDialog">
+      <UniqueIdentifier>{ca94da07-4954-4c3b-b08c-f5474019e1b2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\CSourceWriter.cpp">
@@ -3679,6 +3685,12 @@
     <ClCompile Include="common\widgets\EnumCollectionEditor\EnumCollectionEditor.cpp">
       <Filter>Source Files\common\widgets\EnumCollectionEditor</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_commandlinegeneratordialog.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common\dialogs\commandLineGeneratorDialog\commandlinegeneratordialog.cpp">
+      <Filter>Source Files\common\dialogs\commandLineGeneratorDialog</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5246,6 +5258,9 @@
     </CustomBuild>
     <CustomBuild Include="IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis\FileDependencySourceDialog.h">
       <Filter>Header Files\IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\dialogs\commandLineGeneratorDialog\commandlinegeneratordialog.h">
+      <Filter>Header Files\common\dialogs\commandLineGeneratorDialog</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

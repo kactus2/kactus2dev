@@ -8,6 +8,9 @@
 #include "alterabspgenerator.h"
 #include <LibraryManager/libraryinterface.h>
 #include <PluginSystem/IPluginUtility.h>
+#include <models/component.h>
+#include <common/KactusAttribute.h>
+#include "alterabspgeneratordialog.h"
 
 #include <QtPlugin>
 
@@ -56,7 +59,27 @@ bool AlteraBSPGenerator::checkGeneratorSupport( QSharedPointer<LibraryComponent 
 	QSharedPointer<LibraryComponent const> libDesConf /*= QSharedPointer<LibraryComponent const>()*/,
 	QSharedPointer<LibraryComponent const> libDes /*= QSharedPointer<LibraryComponent const>()*/ ) const {
 	
-	return true;
+	// BSP package can only be run on component editor 
+	if (libDesConf || libDes) {
+		return false;
+	}
+
+	QSharedPointer<const Component> comp = libComp.dynamicCast<const Component>();
+	
+	switch (comp->getComponentImplementation()) {
+	
+		// HW component must be CPU and contain at least one SW view which specifies the BSP command
+	case KactusAttribute::KTS_HW: {
+		return comp->hasSWViews() && comp->isCpu();
+											}
+	// only HW components can contain BSP
+	default: {
+		return false;
+				}
+	}
+
+	// generator can be run if component contains at least one sw view
+	return comp->hasSWViews();
 }
 
 void AlteraBSPGenerator::runGenerator( IPluginUtility* utility,
@@ -67,6 +90,20 @@ void AlteraBSPGenerator::runGenerator( IPluginUtility* utility,
 	utility_ = utility;
 	Q_ASSERT(utility_);
 
+	Q_ASSERT(libComp);
+	Q_ASSERT(!libDesConf);
+	Q_ASSERT(!libDes);
+
+	QSharedPointer<Component> comp = libComp.dynamicCast<Component>();
+	Q_ASSERT(comp);
 	
-	qDebug() << "Altera BSP generator";
+	AlteraBSPGeneratorDialog dialog(comp, utility_->getParentWidget());
+
+	int result = dialog.exec();
+	if (result == QDialog::Rejected) {
+		qDebug() << "BSP generator canceled";
+		return;
+	}
+
+	qDebug() << "BSP generator accepted";
 }
