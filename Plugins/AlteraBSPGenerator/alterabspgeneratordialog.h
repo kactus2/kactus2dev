@@ -39,6 +39,11 @@ public:
 	//! \brief The destructor.
 	virtual ~AlteraBSPGeneratorDialog();
 
+protected slots:
+
+		//! \brief Handler for clicks on run button.
+		virtual void onRunClicked();
+
 private:
 	
 	//! \brief No copying

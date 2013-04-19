@@ -9,14 +9,20 @@
 
 #include <QVBoxLayout>
 
+#include <QDebug>
+
 AlteraBSPGeneratorDialog::AlteraBSPGeneratorDialog(QSharedPointer<Component> component, QWidget *parent):
 CommandLineGeneratorDialog(parent),
 component_(component) {
 
 	QVBoxLayout* topLayout = new QVBoxLayout(this);
-	topLayout->addWidget(output_);
+	topLayout->addWidget(outputBox_);
 	topLayout->addLayout(buttonLayout_);
 }
 
 AlteraBSPGeneratorDialog::~AlteraBSPGeneratorDialog() {
+}
+
+void AlteraBSPGeneratorDialog::onRunClicked() {
+	qDebug() << "Run BSP";
 }

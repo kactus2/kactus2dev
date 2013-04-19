@@ -13,13 +13,17 @@
 CommandLineGeneratorDialog::CommandLineGeneratorDialog(QWidget *parent):
 QDialog(parent),
 output_(NULL),
+outputBox_(NULL),
 process_(NULL),
 buttonLayout_(NULL),
 runButton_(NULL),
 cancelButton_(NULL),
 okButton_(NULL) {
 
-	output_ = new MessageConsole(this);
+	outputBox_ = new QGroupBox(tr("Output"), this);
+	QHBoxLayout* boxLayout = new QHBoxLayout(outputBox_);
+	output_ = new MessageConsole(outputBox_);
+	boxLayout->addWidget(output_);
 
 	// set up the buttons
 	runButton_ = new QPushButton(tr("Run"), this);
@@ -31,7 +35,7 @@ okButton_(NULL) {
 	buttonLayout_->addWidget(okButton_, 0, Qt::AlignRight);
 	buttonLayout_->addWidget(cancelButton_, 0, Qt::AlignRight);
 	connect(runButton_, SIGNAL(clicked(bool)),
-		this, SIGNAL(run()), Qt::UniqueConnection);
+		this, SLOT(onRunClicked()), Qt::UniqueConnection);
 	connect(okButton_, SIGNAL(clicked(bool)),
 		this, SLOT(accept()), Qt::UniqueConnection);
 	connect(cancelButton_, SIGNAL(clicked(bool)),

@@ -8,6 +8,8 @@
 #ifndef MESSAGECONSOLE_H
 #define MESSAGECONSOLE_H
 
+#include <common/Global.h>
+
 #include <QTextEdit>
 #include <QAction>
 #include <QContextMenuEvent>
@@ -15,7 +17,7 @@
 /*! \brief This widget is used to print event information to the user.
  *
  */
-class MessageConsole : public QTextEdit {
+class KACTUS2_API MessageConsole : public QTextEdit {
 	Q_OBJECT
 
 public:

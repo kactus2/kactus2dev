@@ -16,6 +16,7 @@
 #include <QProcess>
 #include <QPushButton>
 #include <QHBoxLayout>
+#include <QGroupBox>
 
 /*! \brief Dialog which can be used as base class for generators which run other programs in separate process.
  * 
@@ -41,10 +42,10 @@ public:
 	//! \brief The destructor.
 	virtual ~CommandLineGeneratorDialog();
 
-signals:
+protected slots:
 
-	//! \brief Emitted when the run button is pressed.
-	void run();
+	//! \brief Handler for clicks on run button, this must be implemented in sub-classes.
+	virtual void onRunClicked() = 0;
 
 protected:
 
@@ -53,6 +54,9 @@ protected:
 
 	//! \brief The message box displaying the output from the process.
 	MessageConsole* output_;
+
+	//! \brief The group box which contains the output message console.
+	QGroupBox* outputBox_;
 
 	//! \brief The process which is run. This must be set in the sub-class.
 	QProcess* process_;
