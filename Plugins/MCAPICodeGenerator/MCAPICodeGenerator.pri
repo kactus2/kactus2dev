@@ -7,5 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./MCAPICodeGenerator.h
-SOURCES += ./MCAPICodeGenerator.cpp
+HEADERS += ./MCAPISettingsWidget.h \
+    ./MCAPICodeGenerator.h
+SOURCES += ./MCAPICodeGenerator.cpp \
+    ./MCAPISettingsWidget.cpp
+RESOURCES += MCAPICodeGenerator.qrc
