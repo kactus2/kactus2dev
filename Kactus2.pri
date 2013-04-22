@@ -8,6 +8,7 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ./resource.h \
+    ./version.h \
     ./common/ColumnTypes.h \
     ./common/CSourceWriter.h \
     ./common/diagramgrid.h \
@@ -77,6 +78,11 @@ HEADERS += ./resource.h \
     ./common/widgets/testConstraintComboBox/testconstraintcombobox.h \
     ./common/widgets/Ribbon/Ribbon.h \
     ./common/widgets/Ribbon/RibbonGroup.h \
+    ./common/widgets/parameterComboBox/parametercombobox.h \
+    ./common/widgets/viewSelector/viewselector.h \
+    ./common/widgets/cpuSelector/cpuselector.h \
+    ./common/widgets/fileTypeSelector/filetypeselector.h \
+    ./common/widgets/EnumCollectionEditor/EnumCollectionEditor.h \
     ./common/validators/AddressValidator.h \
     ./common/validators/nameValidator/namevalidator.h \
     ./common/validators/vhdlNameValidator/vhdlnamevalidator.h \
@@ -125,6 +131,7 @@ HEADERS += ./resource.h \
     ./common/dialogs/TableViewDialog/TableViewDialog.h \
     ./common/dialogs/createConfigurationDialog/createconfigurationdialog.h \
     ./common/dialogs/fileSaveDialog/filesavedialog.h \
+    ./common/dialogs/fileSaveDialog/filesavedialogview.h \
     ./common/cornerStitch/CornerStitchStructure.h \
     ./common/cornerStitch/StitchTile.h \
     ./designwidget/AdHocEnabled.h \
@@ -195,26 +202,30 @@ HEADERS += ./resource.h \
     ./IPXactWrapper/ComponentEditor/fileBuilders/filebuildersmodel.h \
     ./IPXactWrapper/ComponentEditor/fileBuilders/filebuilderseditor.h \
     ./IPXactWrapper/ComponentEditor/fileBuilders/filebuildersdelegate.h \
-    ./IPXactWrapper/ComponentEditor/software/SystemViewsModel.h \
-    ./IPXactWrapper/ComponentEditor/software/SystemViewsEditor.h \
-    ./IPXactWrapper/ComponentEditor/software/SystemViewsDelegate.h \
-    ./IPXactWrapper/ComponentEditor/software/SystemViewEditor.h \
-    ./IPXactWrapper/ComponentEditor/software/swviewsmodel.h \
-    ./IPXactWrapper/ComponentEditor/software/swviewseditor.h \
-    ./IPXactWrapper/ComponentEditor/software/swviewsdelegate.h \
-    ./IPXactWrapper/ComponentEditor/software/SWViewEditor.h \
     ./IPXactWrapper/ComponentEditor/software/SWPropertiesEditor.h \
     ./IPXactWrapper/ComponentEditor/software/PropertyValueModel.h \
     ./IPXactWrapper/ComponentEditor/software/PropertyValueEditor.h \
     ./IPXactWrapper/ComponentEditor/software/PropertyValueDelegate.h \
-    ./IPXactWrapper/ComponentEditor/software/cominterfacesmodel.h \
-    ./IPXactWrapper/ComponentEditor/software/cominterfaceseditor.h \
-    ./IPXactWrapper/ComponentEditor/software/cominterfacesdelegate.h \
-    ./IPXactWrapper/ComponentEditor/software/ComInterfaceEditor.h \
-    ./IPXactWrapper/ComponentEditor/software/apiinterfacesmodel.h \
-    ./IPXactWrapper/ComponentEditor/software/apiinterfaceseditor.h \
-    ./IPXactWrapper/ComponentEditor/software/apiinterfacesdelegate.h \
-    ./IPXactWrapper/ComponentEditor/software/ApiInterfaceEditor.h \
+    ./IPXactWrapper/ComponentEditor/software/apiInterface/ApiInterfaceEditor.h \
+    ./IPXactWrapper/ComponentEditor/software/apiInterface/apiinterfacesdelegate.h \
+    ./IPXactWrapper/ComponentEditor/software/apiInterface/apiinterfaceseditor.h \
+    ./IPXactWrapper/ComponentEditor/software/apiInterface/apiinterfacesmodel.h \
+    ./IPXactWrapper/ComponentEditor/software/comInterface/ComInterfaceEditor.h \
+    ./IPXactWrapper/ComponentEditor/software/comInterface/cominterfacesdelegate.h \
+    ./IPXactWrapper/ComponentEditor/software/comInterface/cominterfaceseditor.h \
+    ./IPXactWrapper/ComponentEditor/software/comInterface/cominterfacesmodel.h \
+    ./IPXactWrapper/ComponentEditor/software/swView/SWViewEditor.h \
+    ./IPXactWrapper/ComponentEditor/software/swView/swviewsdelegate.h \
+    ./IPXactWrapper/ComponentEditor/software/swView/swviewseditor.h \
+    ./IPXactWrapper/ComponentEditor/software/swView/swviewsmodel.h \
+    ./IPXactWrapper/ComponentEditor/software/swView/swbuildcommandeditor.h \
+    ./IPXactWrapper/ComponentEditor/software/swView/swbuildcommandmodel.h \
+    ./IPXactWrapper/ComponentEditor/software/swView/swbuilddelegate.h \
+    ./IPXactWrapper/ComponentEditor/software/swView/bspbuildeditor.h \
+    ./IPXactWrapper/ComponentEditor/software/systemView/SystemViewEditor.h \
+    ./IPXactWrapper/ComponentEditor/software/systemView/SystemViewsDelegate.h \
+    ./IPXactWrapper/ComponentEditor/software/systemView/SystemViewsEditor.h \
+    ./IPXactWrapper/ComponentEditor/software/systemView/SystemViewsModel.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmentsmodel.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmentproxy.h \
     ./IPXactWrapper/ComponentEditor/addressSpaces/segmenteditor.h \
@@ -268,6 +279,15 @@ HEADERS += ./resource.h \
     ./IPXactWrapper/ComponentEditor/fileSet/file/filedefineview.h \
     ./IPXactWrapper/ComponentEditor/fileSet/file/filedefinemodel.h \
     ./IPXactWrapper/ComponentEditor/fileSet/file/filebuildcommand.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySortFilter.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyDelegate.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyEditor.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyGraphWidget.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyGraphView.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyInfoWidget.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyItem.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyModel.h \
+    ./IPXactWrapper/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceDialog.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/writevalueconstrainteditor.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/registertablemodel.h \
     ./IPXactWrapper/ComponentEditor/memoryMaps/registereditor.h \
@@ -350,6 +370,9 @@ HEADERS += ./resource.h \
     ./IPXactWrapper/ApiDefinitionEditor/ApiFunctionParameterDelegate.h \
     ./IPXactWrapper/ApiDefinitionEditor/ApiFunctionModel.h \
     ./IPXactWrapper/ApiDefinitionEditor/ApiFunctionEditor.h \
+    ./models/bspbuildcommand.h \
+    ./models/FileDependency.h \
+    ./models/swbuildcommand.h \
     ./models/abstractiondefinition.h \
     ./models/addressblock.h \
     ./models/addressspace.h \
@@ -456,6 +479,11 @@ HEADERS += ./resource.h \
     ./MCAPI/CSourceTextEdit.h \
     ./MCAPI/CSourceHighlighter.h \
     ./settings/SettingsUpdater.h \
+    ./settings/PluginSettingsPage.h \
+    ./settings/FileTypeSettingsPage.h \
+    ./settings/FileTypesModel.h \
+    ./settings/FileTypesDelegate.h \
+    ./settings/filetypesview.h \
     ./settings/SettingsDialog.h \
     ./settings/NamingPolicySettingsPage.h \
     ./settings/GeneralSettingsPage.h \
@@ -519,7 +547,9 @@ HEADERS += ./resource.h \
     ./PluginSystem/IGeneratorPlugin.h \
     ./PluginSystem/IPlugin.h \
     ./PluginSystem/IPluginUtility.h \
+    ./PluginSystem/ISourceAnalyzerPlugin.h \
     ./PluginSystem/PluginManager.h \
+    ./PluginSystem/PluginSettingsWidget.h \
     ./PluginSystem/PluginListDialog.h \
     ./SystemDetailsEditor/SystemDetailsEditor.h \
     ./SystemDetailsEditor/SwitchHWDialog.h \
@@ -567,6 +597,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.cpp \
     ./common/dialogs/TableViewDialog/TableViewDialog.cpp \
     ./common/dialogs/fileSaveDialog/filesavedialog.cpp \
+    ./common/dialogs/fileSaveDialog/filesavedialogview.cpp \
     ./common/validators/AddressValidator.cpp \
     ./common/validators/nameValidator/namevalidator.cpp \
     ./common/validators/vhdlNameValidator/vhdlnamevalidator.cpp \
@@ -622,6 +653,11 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/widgets/testConstraintComboBox/testconstraintcombobox.cpp \
     ./common/widgets/Ribbon/Ribbon.cpp \
     ./common/widgets/Ribbon/RibbonGroup.cpp \
+    ./common/widgets/parameterComboBox/parametercombobox.cpp \
+    ./common/widgets/viewSelector/viewselector.cpp \
+    ./common/widgets/cpuSelector/cpuselector.cpp \
+    ./common/widgets/fileTypeSelector/filetypeselector.cpp \
+    ./common/widgets/EnumCollectionEditor/EnumCollectionEditor.cpp \
     ./common/graphicsItems/CommonGraphicsUndoCommands.cpp \
     ./common/graphicsItems/ComponentItem.cpp \
     ./common/graphicsItems/ConnectionEndpoint.cpp \
@@ -719,6 +755,15 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/fileSet/file/filetypeeditor.cpp \
     ./IPXactWrapper/ComponentEditor/fileSet/file/filetypeeditordelegate.cpp \
     ./IPXactWrapper/ComponentEditor/fileSet/file/targetnameedit.cpp \
+    ./IPXactWrapper/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyDelegate.cpp \
+    ./IPXactWrapper/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyEditor.cpp \
+    ./IPXactWrapper/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyGraphView.cpp \
+    ./IPXactWrapper/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyGraphWidget.cpp \
+    ./IPXactWrapper/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyInfoWidget.cpp \
+    ./IPXactWrapper/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyItem.cpp \
+    ./IPXactWrapper/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyModel.cpp \
+    ./IPXactWrapper/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySortFilter.cpp \
+    ./IPXactWrapper/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceDialog.cpp \
     ./IPXactWrapper/ComponentEditor/general/desceditor.cpp \
     ./IPXactWrapper/ComponentEditor/general/generaleditor.cpp \
     ./IPXactWrapper/ComponentEditor/modelParameters/modelparametereditor.cpp \
@@ -742,26 +787,30 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./IPXactWrapper/ComponentEditor/views/vieweditor.cpp \
     ./IPXactWrapper/ComponentEditor/views/viewseditor.cpp \
     ./IPXactWrapper/ComponentEditor/views/viewsmodel.cpp \
-    ./IPXactWrapper/ComponentEditor/software/ApiInterfaceEditor.cpp \
-    ./IPXactWrapper/ComponentEditor/software/apiinterfacesdelegate.cpp \
-    ./IPXactWrapper/ComponentEditor/software/apiinterfaceseditor.cpp \
-    ./IPXactWrapper/ComponentEditor/software/apiinterfacesmodel.cpp \
-    ./IPXactWrapper/ComponentEditor/software/ComInterfaceEditor.cpp \
-    ./IPXactWrapper/ComponentEditor/software/cominterfacesdelegate.cpp \
-    ./IPXactWrapper/ComponentEditor/software/cominterfaceseditor.cpp \
-    ./IPXactWrapper/ComponentEditor/software/cominterfacesmodel.cpp \
     ./IPXactWrapper/ComponentEditor/software/PropertyValueDelegate.cpp \
     ./IPXactWrapper/ComponentEditor/software/PropertyValueEditor.cpp \
     ./IPXactWrapper/ComponentEditor/software/PropertyValueModel.cpp \
     ./IPXactWrapper/ComponentEditor/software/SWPropertiesEditor.cpp \
-    ./IPXactWrapper/ComponentEditor/software/SWViewEditor.cpp \
-    ./IPXactWrapper/ComponentEditor/software/swviewsdelegate.cpp \
-    ./IPXactWrapper/ComponentEditor/software/swviewseditor.cpp \
-    ./IPXactWrapper/ComponentEditor/software/swviewsmodel.cpp \
-    ./IPXactWrapper/ComponentEditor/software/SystemViewEditor.cpp \
-    ./IPXactWrapper/ComponentEditor/software/SystemViewsDelegate.cpp \
-    ./IPXactWrapper/ComponentEditor/software/SystemViewsEditor.cpp \
-    ./IPXactWrapper/ComponentEditor/software/SystemViewsModel.cpp \
+    ./IPXactWrapper/ComponentEditor/software/apiInterface/ApiInterfaceEditor.cpp \
+    ./IPXactWrapper/ComponentEditor/software/apiInterface/apiinterfacesdelegate.cpp \
+    ./IPXactWrapper/ComponentEditor/software/apiInterface/apiinterfaceseditor.cpp \
+    ./IPXactWrapper/ComponentEditor/software/apiInterface/apiinterfacesmodel.cpp \
+    ./IPXactWrapper/ComponentEditor/software/comInterface/ComInterfaceEditor.cpp \
+    ./IPXactWrapper/ComponentEditor/software/comInterface/cominterfacesdelegate.cpp \
+    ./IPXactWrapper/ComponentEditor/software/comInterface/cominterfaceseditor.cpp \
+    ./IPXactWrapper/ComponentEditor/software/comInterface/cominterfacesmodel.cpp \
+    ./IPXactWrapper/ComponentEditor/software/swView/bspbuildeditor.cpp \
+    ./IPXactWrapper/ComponentEditor/software/swView/swbuildcommandeditor.cpp \
+    ./IPXactWrapper/ComponentEditor/software/swView/swbuildcommandmodel.cpp \
+    ./IPXactWrapper/ComponentEditor/software/swView/swbuilddelegate.cpp \
+    ./IPXactWrapper/ComponentEditor/software/swView/SWViewEditor.cpp \
+    ./IPXactWrapper/ComponentEditor/software/swView/swviewsdelegate.cpp \
+    ./IPXactWrapper/ComponentEditor/software/swView/swviewseditor.cpp \
+    ./IPXactWrapper/ComponentEditor/software/swView/swviewsmodel.cpp \
+    ./IPXactWrapper/ComponentEditor/software/systemView/SystemViewEditor.cpp \
+    ./IPXactWrapper/ComponentEditor/software/systemView/SystemViewsDelegate.cpp \
+    ./IPXactWrapper/ComponentEditor/software/systemView/SystemViewsEditor.cpp \
+    ./IPXactWrapper/ComponentEditor/software/systemView/SystemViewsModel.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspaceeditor.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacegeneraleditor.cpp \
     ./IPXactWrapper/ComponentEditor/addressSpaces/addressspacesdelegate.cpp \
@@ -912,6 +961,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./models/ApiFunctionParameter.cpp \
     ./models/ApiInterface.cpp \
     ./models/bank.cpp \
+    ./models/bspbuildcommand.cpp \
     ./models/buildcommand.cpp \
     ./models/buildmodel.cpp \
     ./models/busdefinition.cpp \
@@ -934,6 +984,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./models/field.cpp \
     ./models/file.cpp \
     ./models/filebuilder.cpp \
+    ./models/FileDependency.cpp \
     ./models/fileset.cpp \
     ./models/function.cpp \
     ./models/generaldeclarations.cpp \
@@ -965,6 +1016,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./models/servicetypedef.cpp \
     ./models/slaveinterface.cpp \
     ./models/subspacemap.cpp \
+    ./models/swbuildcommand.cpp \
     ./models/SWInstance.cpp \
     ./models/SWView.cpp \
     ./models/SystemView.cpp \
@@ -994,6 +1046,11 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./MCAPI/CSourceHighlighter.cpp \
     ./MCAPI/CSourceTextEdit.cpp \
     ./MCAPI/CSourceWidget.cpp \
+    ./settings/FileTypesDelegate.cpp \
+    ./settings/FileTypeSettingsPage.cpp \
+    ./settings/FileTypesModel.cpp \
+    ./settings/filetypesview.cpp \
+    ./settings/PluginSettingsPage.cpp \
     ./settings/CodeEditorSettingsPage.cpp \
     ./settings/GeneralSettingsPage.cpp \
     ./settings/NamingPolicySettingsPage.cpp \
