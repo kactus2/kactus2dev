@@ -9,7 +9,11 @@
 
 TEMPLATE = subdirs
 SUBDIRS += Kactus2.pro \
-    Plugins/MCAPICodeGenerator/MCAPICodeGenerator.pro
+    Plugins/MCAPICodeGenerator/MCAPICodeGenerator.pro \
+	Plugins/CppSourceAnalyzer/CppSourceAnalyzer.pro \
+	Plugins/VHDLAnalyzer/VHDLSourceAnalyzer.pro \
+	Plugins/MemoryMapHeaderGenerator/MemoryMapHeaderGenerator.pro \
+	Plugins/AlteraBSPGenerator/AlterBSPGenerator.pro
 
 unix:upgrade.path = /usr/share/kactus2
 unix:upgrade.files = ./releaseFiles/upgrade.cfg
