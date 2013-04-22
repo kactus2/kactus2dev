@@ -22,6 +22,7 @@ OBJECTS_DIR += release
 UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
 include(VHDLSourceAnalyzer.pri)
+OTHER_FILES += vhdlPlugin.json
 
 target.path = /usr/share/kactus2/plugins
 INSTALLS += target

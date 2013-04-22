@@ -5,13 +5,15 @@
 TEMPLATE = lib
 TARGET = MCAPICodeGenerator
 DESTDIR = ../../executable/Plugins
-QT += core widgets gui xml xmlpatterns
+QT += core xml widgets gui help
 CONFIG += release
-DEFINES += MCAPICODEGENERATOR_LIB QT_XML_LIB QT_XMLPATTERNS_LIB
+DEFINES += MCAPICODEGENERATOR_LIB QT_XML_LIB QT_XMLPATTERNS_LIB QT_DLL QT_HELP_LIB QT_WIDGETS_LIB
 INCLUDEPATH += ./GeneratedFiles \
-    ./GeneratedFiles/Release \
+    ./GeneratedFiles/$(Configuration) \
     . \
-    ./../..
+    ./../.. \
+    $(QTDIR)/../qttools/include \
+    $(QTDIR)/../qttools/include/QtHelp
 LIBS += -L"./../../executable" \
     -lKactus2
 DEPENDPATH += .
