@@ -480,7 +480,8 @@ void FileDependencyGraphView::mouseMoveEvent(QMouseEvent* event)
     if( manualDependencyStartItem_ && drawingDependency_ )
     {
         QModelIndex currentPoint = sortFilter_->mapToSource(indexAt(event->pos()));
-        if( currentPoint.isValid() )
+
+        if (currentPoint.isValid())
         {
             FileDependencyItem* currentDependencyItem = static_cast<FileDependencyItem*>(currentPoint.internalPointer());
             manualDependencyEndItem_ = currentDependencyItem;
@@ -490,6 +491,19 @@ void FileDependencyGraphView::mouseMoveEvent(QMouseEvent* event)
     else
     {
         QTreeView::mouseMoveEvent(event);
+
+        // Show dependency description as the tool tip when hovering over a dependency.
+        FileDependency* hovered = findDependencyAt(event->pos());
+
+        if (hovered != 0)
+        {
+            setToolTip(hovered->getDescription());
+        }
+        else
+        {
+            setToolTip("");
+        }
+
         //hoveredDependency_ = findDependencyAt(event->pos()); Disable for now since does not offer better usability.
         viewport()->repaint();
     }

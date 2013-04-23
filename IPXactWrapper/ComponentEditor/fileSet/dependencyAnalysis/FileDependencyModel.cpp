@@ -780,6 +780,8 @@ void FileDependencyModel::analyze(FileDependencyItem* fileItem)
                         // Combine the descriptions.
                         found->setDescription(found->getDescription() + "\n" + desc.description);
                         emit dependencyChanged(found);
+
+                        dependenciesChanged = true;
                     }
                     else
                     {
@@ -794,6 +796,28 @@ void FileDependencyModel::analyze(FileDependencyItem* fileItem)
                 // If the dependency is a bidirectional one, change it to unidirectional one.
                 if (dependency->isBidirectional())
                 {
+                    // Add the removed dependency to be able to make the diff view correctly. 
+                    QSharedPointer<FileDependency> removedDependency(new FileDependency());
+
+                    if (dependency->getFile1() == file1)
+                    {
+                        removedDependency->setFile1(file1);
+                        removedDependency->setFile2(dependency->getFile2());
+                        removedDependency->setItemPointers(dependency->getFileItem1(), dependency->getFileItem2());
+                    }
+                    else
+                    {
+                        removedDependency->setFile1(dependency->getFile2());
+                        removedDependency->setFile2(file1);
+                        removedDependency->setItemPointers(dependency->getFileItem2(), dependency->getFileItem1());
+                    }
+                    
+                    removedDependency->setDescription("");
+                    removedDependency->setStatus(FileDependency::STATUS_REMOVED);
+
+                    addDependency(removedDependency);
+                    
+                    // Change the existing dependency into a unidirectional one.
                     dependency->setBidirectional(false);
 
                     // Change the direction if needed.
