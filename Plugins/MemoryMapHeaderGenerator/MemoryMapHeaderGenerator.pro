@@ -6,7 +6,7 @@ TEMPLATE = lib
 TARGET = MemoryMapHeaderGenerator
 DESTDIR = ../../executable/Plugins
 QT += core xml xmlpatterns widgets gui printsupport help
-CONFIG += release
+CONFIG += plugin release
 DEFINES += MEMORYMAPHEADERGENERATOR_LIB QT_DLL QT_HELP_LIB QT_PRINTSUPPORT_LIB QT_WIDGETS_LIB QT_XML_LIB QT_XMLPATTERNS_LIB
 INCLUDEPATH += ./GeneratedFiles \
     ./GeneratedFiles/$(Configuration) \
