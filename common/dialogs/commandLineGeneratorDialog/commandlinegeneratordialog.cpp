@@ -16,13 +16,23 @@ output_(NULL),
 outputBox_(NULL),
 process_(NULL),
 buttonLayout_(NULL),
+statusLayout_(NULL),
+statusLabel_(NULL),
 runButton_(NULL),
 cancelButton_(NULL),
 okButton_(NULL) {
 
+	QLabel* statusName = new QLabel(tr("Status: "), this);
+	statusLabel_ = new QLabel(tr("Waiting"), this);
+	statusLayout_ = new QHBoxLayout();
+	statusLayout_->addWidget(statusName);
+	statusLayout_->addWidget(statusLabel_);
+	statusLayout_->addStretch();
+
 	outputBox_ = new QGroupBox(tr("Output"), this);
 	QHBoxLayout* boxLayout = new QHBoxLayout(outputBox_);
-	output_ = new MessageConsole(outputBox_);
+	output_ = new CommandLineConsole(outputBox_);
+	output_->setMinimumSize(250, 100);
 	boxLayout->addWidget(output_);
 
 	// set up the buttons
@@ -51,17 +61,43 @@ void CommandLineGeneratorDialog::connectProcessToOutput() {
 	Q_ASSERT(process_);
 
 	connect(process_, SIGNAL(readyReadStandardOutput()),
-		this, SLOT(onStandardOutputRead), Qt::UniqueConnection);
+		this, SLOT(onStandardOutputRead()), Qt::UniqueConnection);
 	connect(process_, SIGNAL(readyReadStandardError()),
 		this, SLOT(onStandardErrorRead()), Qt::UniqueConnection);
+	connect(process_, SIGNAL(started()),
+		this, SLOT(onProcessStarted()), Qt::UniqueConnection);
+	connect(process_, SIGNAL(finished(int, QProcess::ExitStatus)),
+		this, SLOT(onProcessFinished(int, QProcess::ExitStatus)), Qt::UniqueConnection);
 }
 
 void CommandLineGeneratorDialog::onStandardOutputRead() {
 	QString output(process_->readAllStandardOutput());
-	output_->onNoticeMessage(output);
+	output_->printStandard(output);
 }
 
 void CommandLineGeneratorDialog::onStandardErrorRead() {
 	QString output(process_->readAllStandardError());
-	output_->onErrorMessage(output);
+	output_->printError(output);
+}
+
+void CommandLineGeneratorDialog::onProcessStarted() {
+	statusLabel_->setText(tr("Running..."));
+}
+
+void CommandLineGeneratorDialog::onProcessFinished( int exitCode, QProcess::ExitStatus exitStatus ) {
+	QString text;
+
+	switch (exitStatus) {
+	case QProcess::NormalExit: {
+		text.append(tr("Finished normally "));
+		break;
+										}
+	default: {
+		text.append(tr("Crashed "));
+		break;
+				}
+	}
+
+	text.append(tr("with exit code %1.").arg(exitCode));
+	statusLabel_->setText(text);
 }

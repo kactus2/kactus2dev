@@ -10,13 +10,14 @@
 
 #include <common/Global.h>
 
-#include <PropertyWidget/messageconsole.h>
+#include "commandlineconsole.h"
 
 #include <QDialog>
 #include <QProcess>
 #include <QPushButton>
 #include <QHBoxLayout>
 #include <QGroupBox>
+#include <QLabel>
 
 /*! \brief Dialog which can be used as base class for generators which run other programs in separate process.
  * 
@@ -53,7 +54,7 @@ protected:
 	void connectProcessToOutput();
 
 	//! \brief The message box displaying the output from the process.
-	MessageConsole* output_;
+	CommandLineConsole* output_;
 
 	//! \brief The group box which contains the output message console.
 	QGroupBox* outputBox_;
@@ -64,6 +65,12 @@ protected:
 	//! \brief Layout for the buttons on the lower right corner.
 	QHBoxLayout* buttonLayout_;
 
+	//! \brief The layout for the status name and label.
+	QHBoxLayout* statusLayout_;
+
+	//! \brief The label displaying the status of the process.
+	QLabel* statusLabel_;
+
 private slots:
 
 	//! \brief When process has data to read from standard output (stdout) this prints it to output console.
@@ -71,6 +78,12 @@ private slots:
 
 	//! \brief When process has data to read from standard error (stderr) this prints it to output console.
 	void onStandardErrorRead();
+
+	//! \brief Handler for process' started()-signal.
+	void onProcessStarted();
+
+	//! \brief Handler for process' finished()-signal.
+	void onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus);
 
 private:
 	

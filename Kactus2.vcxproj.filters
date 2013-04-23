@@ -3691,6 +3691,12 @@
     <ClCompile Include="common\dialogs\commandLineGeneratorDialog\commandlinegeneratordialog.cpp">
       <Filter>Source Files\common\dialogs\commandLineGeneratorDialog</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_commandlineconsole.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common\dialogs\commandLineGeneratorDialog\commandlineconsole.cpp">
+      <Filter>Source Files\common\dialogs\commandLineGeneratorDialog</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5260,6 +5266,9 @@
       <Filter>Header Files\IPXactWrapper\ComponentEditor\fileSet\dependencyAnalysis</Filter>
     </CustomBuild>
     <CustomBuild Include="common\dialogs\commandLineGeneratorDialog\commandlinegeneratordialog.h">
+      <Filter>Header Files\common\dialogs\commandLineGeneratorDialog</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\dialogs\commandLineGeneratorDialog\commandlineconsole.h">
       <Filter>Header Files\common\dialogs\commandLineGeneratorDialog</Filter>
     </CustomBuild>
   </ItemGroup>

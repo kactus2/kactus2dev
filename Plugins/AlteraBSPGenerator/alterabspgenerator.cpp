@@ -97,7 +97,7 @@ void AlteraBSPGenerator::runGenerator( IPluginUtility* utility,
 	QSharedPointer<Component> comp = libComp.dynamicCast<Component>();
 	Q_ASSERT(comp);
 	
-	AlteraBSPGeneratorDialog dialog(comp, utility_->getParentWidget());
+	AlteraBSPGeneratorDialog dialog(utility_->getLibraryInterface(), comp, utility_->getParentWidget());
 
 	int result = dialog.exec();
 	if (result == QDialog::Rejected) {
