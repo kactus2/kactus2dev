@@ -1226,7 +1226,7 @@ QString General::getRelativePath(const QString from, const QString to) {
 	QString relPath = ipXactDir.relativeFilePath(toInfo.absoluteFilePath());
 
     // Strip the ending slash if found.
-    if (relPath.size() > 0 && relPath.at(relPath.size() - 1) == "/")
+    if (relPath.size() > 0 && relPath.at(relPath.size() - 1) == '/')
     {
         relPath = relPath.left(relPath.size() - 1);
     }

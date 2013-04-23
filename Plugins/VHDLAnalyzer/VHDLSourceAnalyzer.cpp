@@ -265,12 +265,12 @@ void VHDLSourceAnalyzer::endAnalysis(Component const* component, QString const& 
 void VHDLSourceAnalyzer::scanEntities(Component const* component, QString const& componentPath)
 {
     // Get all the filesets from the component.
-    QList<QSharedPointer<FileSet>> fileSets = component->getFileSets();
+    QList< QSharedPointer<FileSet> > fileSets = component->getFileSets();
     
     // Scan all the filesets.
     for( int j=0; j<fileSets.size(); j++)
     {
-        QList<QSharedPointer<File>> files = fileSets.at(j)->getFiles();
+        QList< QSharedPointer<File> > files = fileSets.at(j)->getFiles();
         // Go through all the files in the fileset.
         for (int i=0; i<files.size(); i++)
         {
