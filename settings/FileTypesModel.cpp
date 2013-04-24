@@ -293,6 +293,9 @@ void FileTypesModel::onRemoveItem(const QModelIndex& index)
 //-----------------------------------------------------------------------------
 void FileTypesModel::apply(QSettings& settings)
 {
+	// first clear all previous defined file types to remove duplicates
+	settings.remove("FileTypes");
+
     foreach (FileTypeEntry const& entry, entries_)
     {
         settings.setValue("FileTypes/" + entry.name, entry.extensions);
