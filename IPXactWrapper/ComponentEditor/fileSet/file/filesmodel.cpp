@@ -242,8 +242,12 @@ void FilesModel::onAddItem( const QModelIndex& index, const QString& filePath ) 
 		}
 	}
 
+	QSettings settings;
+	QSharedPointer<File> file(new File(relPath, fileSet_.data()));
+	file->setFileTypes(settings);
+
 	beginInsertRows(QModelIndex(), row, row);
-	files_.insert(row, QSharedPointer<File>(new File(relPath, fileSet_.data())));
+	files_.insert(row, file);
 	endInsertRows();
 
 	// inform navigation tree that file set is added

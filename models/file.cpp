@@ -642,6 +642,12 @@ void File::setFileTypes( const QStringList& fileTypes ) {
 	fileTypes_ = fileTypes;
 }
 
+void File::setFileTypes( QSettings& settings ) {
+	QFileInfo info(name_);
+	QStringList types = General::getFileTypes(settings, info);
+	setAllFileTypes(types);
+}
+
 const QMap<QString, QString>& File::getAttributes() {
 	return attributes_;
 }

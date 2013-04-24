@@ -8,14 +8,12 @@
 #ifndef FILETYPEEDITORDELEGATE_H
 #define FILETYPEEDITORDELEGATE_H
 
-#include <common/delegates/ComboDelegate/combodelegate.h>
-
 #include <QStyledItemDelegate>
 
 /*! \brief Provides editor to select a type for a file.
  *
  */
-class FileTypeEditorDelegate : public ComboDelegate {
+class FileTypeEditorDelegate : public QStyledItemDelegate {
 	Q_OBJECT
 
 public:
@@ -40,6 +38,24 @@ public:
 	*/
 	virtual QWidget* createEditor(QWidget* parent, 
 		const QStyleOptionViewItem& option, 
+		const QModelIndex& index) const;
+
+	/*! \brief Set the data for the editor.
+	 *
+	 * \param editor Pointer to the editor where the data is to be set.
+	 * \param index Model index identifying the item that's data is to be set.
+	 *
+	*/
+	virtual void setEditorData(QWidget* editor, const QModelIndex& index) const;
+
+	/*! \brief Save the data from the editor to the model.
+	 *
+	 * \param editor Pointer to the editor that contains the data to store.
+	 * \param model Model that contains the data structure where data is to be saved to.
+	 * \param index Model index identifying the item that's data is to be saved.
+	 *
+	*/
+	virtual void setModelData(QWidget* editor, QAbstractItemModel* model, 
 		const QModelIndex& index) const;
 
 private:

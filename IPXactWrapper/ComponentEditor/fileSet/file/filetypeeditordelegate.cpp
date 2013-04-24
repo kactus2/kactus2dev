@@ -6,12 +6,12 @@
  */
 
 #include "filetypeeditordelegate.h"
+#include <common/widgets/fileTypeSelector/filetypeselector.h>
 
-#include <QComboBox>
 #include <QStringList>
 
 FileTypeEditorDelegate::FileTypeEditorDelegate(QObject *parent):
-ComboDelegate(parent) {
+QStyledItemDelegate(parent) {
 }
 
 FileTypeEditorDelegate::~FileTypeEditorDelegate() {
@@ -21,52 +21,23 @@ QWidget* FileTypeEditorDelegate::createEditor( QWidget* parent,
 											  const QStyleOptionViewItem& option,
 											  const QModelIndex& index ) const {
 
-	QComboBox* combo = qobject_cast<QComboBox*>(
-		ComboDelegate::createEditor(parent, option, index));
+	FileTypeSelector* fileCombo = new FileTypeSelector(parent);
+	return fileCombo;
+}
 
-	// add items to the box
-	QStringList comboItems;
-	comboItems.append("asmSource");
-	comboItems.append("cSource");
-	comboItems.append("cppSource");
-	comboItems.append("eSource");
-	comboItems.append("OVASource");
-	comboItems.append("perlSource");
-	comboItems.append("pslSource");
-	comboItems.append("SVASource");
-	comboItems.append("tclSource");
-	comboItems.append("veraSource");
-	comboItems.append("systemCSource");
-	comboItems.append("systemCSource-2.0");
-	comboItems.append("systemCSource-2.0.1");
-	comboItems.append("systemCSource-2.1");
-	comboItems.append("systemCSource-2.2");
-	comboItems.append("systemVerilogSource");
-	comboItems.append("systemVerilogSource-3.0");
-	comboItems.append("systemVerilogSource-3.1");
-	comboItems.append("systemVerilogSource-3.1a");
-	comboItems.append("verilogSource");
-	comboItems.append("verilogSource-95");
-	comboItems.append("verilogSource-2001");
-	comboItems.append("vhdlSource");
-	comboItems.append("vhdlSource-87");
-	comboItems.append("vhdlSource-93");
+void FileTypeEditorDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const {
+	QString text = index.model()->data(index, Qt::DisplayRole).toString();
 
-	comboItems.append("swObject");
-	comboItems.append("swObjectLibrary");
+	FileTypeSelector* fileCombo = qobject_cast<FileTypeSelector*>(editor);
+	Q_ASSERT(fileCombo);
 
-	comboItems.append("vhdlBinaryLibrary");
-	comboItems.append("verilogBinaryLibrary");
+	fileCombo->refresh();
+	fileCombo->selectFileType(text);
+}
 
-	comboItems.append("executableHdl");
-	comboItems.append("unelaboratedHdl");
-
-	comboItems.append("SDC");
-
-	comboItems.append("unknown");
-
-	combo->addItems(comboItems);
-	combo->setEditable(true);
-
-	return combo;
+void FileTypeEditorDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const {
+	FileTypeSelector* combo = qobject_cast<FileTypeSelector*>(editor);
+	Q_ASSERT(combo);
+	QString text = combo->currentText();
+	model->setData(index, text, Qt::EditRole);
 }

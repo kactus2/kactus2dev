@@ -206,6 +206,17 @@ public:
 	*/
 	void setFileTypes(const QStringList& fileTypes);
 
+	/*! \brief Set the file types for the file to match the defined settings.
+	 *
+	 * Method: 		setFileTypes
+	 * Full name:	File::setFileTypes
+	 * Access:		public 
+	 *
+	 * \param settings Contains the file type settings.
+	 *
+	*/
+	void setFileTypes(QSettings& settings);
+
 	/*! \brief Add a new file type definition.
 	*
 	* FileType is only added if it is not already defined in fileTypes.
