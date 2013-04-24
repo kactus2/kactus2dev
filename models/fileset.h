@@ -330,6 +330,18 @@ public:
 	 */
 	QStringList getFileNames() const;
 
+	/*! \brief Find the files that match the specified file type.
+	 *
+	 * Method: 		findFilesByFileType
+	 * Full name:	FileSet::findFilesByFileType
+	 * Access:		public 
+	 *
+	 * \param fileType The file type to search within files.
+	 *
+	 * \return QStringList The file paths to files that match the file type.
+	*/
+	QStringList findFilesByFileType(const QString& fileType) const;
+
 	/*! \brief Remove the specified file from the file set.
 	 *
 	 * \param fileName The name of the file to be removed

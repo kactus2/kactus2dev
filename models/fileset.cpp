@@ -750,3 +750,17 @@ QString FileSet::getFileSetId() const {
 void FileSet::setFileSetId( const QString& id ) {
 	fileSetId_ = id;
 }
+
+QStringList FileSet::findFilesByFileType( const QString& fileType ) const {
+	QStringList files;
+
+	foreach (QSharedPointer<const File> file, files_) {
+		
+		// if file matches the file type to search then add its path to the list.
+		if (file->matchesFileType(fileType)) {
+			files.append(file->getName());
+		}
+	}
+
+	return files;
+}

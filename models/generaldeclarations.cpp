@@ -1287,9 +1287,7 @@ QString General::getAbsolutePath(const QString originalPath,
 	QDir originalDir(original.absolutePath());
 
 	// make sure the path exists
-	QFileInfo file(originalDir.absoluteFilePath(relativePath));
-
-	return file.canonicalFilePath();
+	return originalDir.absoluteFilePath(relativePath);
 }
 
 bool General::isIpXactFileType( const QString& fileType ) {

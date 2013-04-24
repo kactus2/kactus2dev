@@ -90,6 +90,15 @@ private:
 	//! \brief Displays the command to be run.
 	QLabel* commandLabel_;
 
+	//! \brief Displays the output directory
+	QLabel* outPutDirLabel_;
+
+	//! \brief Displays the source file path
+	QLabel* sourceLabel_;
+
+	//! \brief Displays the arguments for the command.
+	QLabel* argLabel_;
+
 	//! \brief The path to the directory to generate the BSP to.
 	QString targetDir_;
 

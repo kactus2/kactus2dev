@@ -872,3 +872,21 @@ bool File::matchesFileType( const QStringList& fileTypes ) const {
 	// no matches were found
 	return false;
 }
+
+bool File::matchesFileType( const QString& fileType ) const {
+	
+	// File types specified by IP-XACT standard
+	if (fileTypes_.contains(fileType)) {
+		return true;
+	}
+
+	// user defined file types
+	else if (userFileTypes_.contains(fileType)) {
+		return true;
+	}
+
+	// no match in either type list
+	else {
+		return false;
+	}
+}

@@ -32,7 +32,6 @@ okButton_(NULL) {
 	outputBox_ = new QGroupBox(tr("Output"), this);
 	QHBoxLayout* boxLayout = new QHBoxLayout(outputBox_);
 	output_ = new CommandLineConsole(outputBox_);
-	output_->setMinimumSize(250, 100);
 	boxLayout->addWidget(output_);
 
 	// set up the buttons

@@ -2013,6 +2013,60 @@ void Component::getFiles(QString const& filename, QList<File*>& files)
     }
 }
 
+QStringList Component::getFileSetNames() const {
+
+	QStringList list;
+
+	foreach (QSharedPointer<FileSet> fileSet, fileSets_) {
+		list.append(fileSet->getName());
+	}
+	return list;
+}
+
+bool Component::hasFileSet( const QString& fileSetName ) const {
+
+	foreach (QSharedPointer<FileSet> fileSet, fileSets_) {
+
+		// if the file set is found.
+		if (fileSet->getName() == fileSetName)
+			return true;
+	}
+
+	// all file sets were searched but none found
+	return false;
+}
+
+QSharedPointer<const FileSet> Component::findFileSetById( const QString& id ) const {
+	foreach (QSharedPointer<const FileSet> fileSet, fileSets_) {
+		if (fileSet->getFileSetId() == id) {
+			return fileSet;
+		}
+	}
+
+	// no file set found
+	return QSharedPointer<const FileSet>();
+}
+
+QStringList Component::findFilesByFileType( const QString& fileType ) const {
+	QStringList files;
+
+	// search all file sets and append the results
+	foreach (QSharedPointer<const FileSet> fileSet, fileSets_) {
+		files.append(fileSet->findFilesByFileType(fileType));
+	}
+
+	return files;
+}
+
+QList<QSharedPointer<File> > Component::getRTLFiles() const {
+
+	QList<QSharedPointer<File> > list;
+	foreach (QSharedPointer<FileSet> fileSet, fileSets_) {
+		list += fileSet->getRTLFiles();
+	}
+	return list;
+}
+
 void Component::removeFileSet( const QString& fileSetName ) {
 	for (int i = 0; i <fileSets_.size(); ++i) {
 		
@@ -2088,49 +2142,6 @@ QStringList Component::getPortNames() const {
 	// if there is no model there is no ports either.
 	else
 		return QStringList();
-}
-
-QStringList Component::getFileSetNames() const {
-
-	QStringList list;
-
-	foreach (QSharedPointer<FileSet> fileSet, fileSets_) {
-		list.append(fileSet->getName());
-	}
-	return list;
-}
-
-bool Component::hasFileSet( const QString& fileSetName ) const {
-
-	foreach (QSharedPointer<FileSet> fileSet, fileSets_) {
-		
-		// if the file set is found.
-		if (fileSet->getName() == fileSetName)
-			return true;
-	}
-
-	// all file sets were searched but none found
-	return false;
-}
-
-QSharedPointer<const FileSet> Component::findFileSetById( const QString& id ) const {
-	foreach (QSharedPointer<const FileSet> fileSet, fileSets_) {
-		if (fileSet->getFileSetId() == id) {
-			return fileSet;
-		}
-	}
-
-	// no file set found
-	return QSharedPointer<const FileSet>();
-}
-
-QList<QSharedPointer<File> > Component::getRTLFiles() const {
-
-	QList<QSharedPointer<File> > list;
-	foreach (QSharedPointer<FileSet> fileSet, fileSets_) {
-		list += fileSet->getRTLFiles();
-	}
-	return list;
 }
 
 QList<QSharedPointer<ModelParameter> >& Component::getModelParameters() {

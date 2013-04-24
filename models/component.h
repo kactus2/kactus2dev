@@ -991,31 +991,11 @@ public:
 	*/
 	const QList<QSharedPointer<FileSet> >& getFileSets() const;
 
-    /*!
-     *  Returns all file pointers in all file sets that reference the given file name.
-     *
-     *      @param [in]  filename The filename to search for.
-     *      @param [out] files    All found files that reference the given file name.
-     */
-    void getFiles(QString const& filename, QList<File*>& files);
-
 	/*! \brief Get the file sets of this component.
 	 *
 	 * \return QList containing pointers to the file sets.
 	*/
 	QList<QSharedPointer<FileSet> >& getFileSets();
-
-	/*! \brief Find the file set by the file set id.
-	 *
-	 * Method: 		findFileSetById
-	 * Full name:	Component::findFileSetById
-	 * Access:		public 
-	 *
-	 * \param id Identifies the file set.
-	 *
-	 * \return Pointer to the file set found, null pointer if none found.
-	*/
-	QSharedPointer<const FileSet> findFileSetById(const QString& id) const;
 
     /*! \brief Get this component's file dependencies
 	*
@@ -1124,6 +1104,14 @@ public:
 	*/
 	bool hasFileSets() const;
 
+	/*!
+	*  Returns all file pointers in all file sets that reference the given file name.
+	*
+	*      @param [in]  filename The filename to search for.
+	*      @param [out] files    All found files that reference the given file name.
+	*/
+	void getFiles(QString const& filename, QList<File*>& files);
+
 	/*! \brief Get the files that are referenced by the specified file set.
 	*
 	* Note: The files paths returned by this function are relative to the
@@ -1140,6 +1128,30 @@ public:
 	* \return QStringList containing the file paths.
 	*/
 	QStringList getFiles() const;
+
+	/*! \brief Find the files that match the specified file type.
+	 *
+	 * Method: 		findFilesByFileType
+	 * Full name:	Component::findFilesByFileType
+	 * Access:		public 
+	 *
+	 * \param fileType The file type to search within the files.
+	 *
+	 * \return QStringList containing the file paths of files matching the file type.
+	*/
+	QStringList findFilesByFileType(const QString& fileType) const;
+
+	/*! \brief Find the file set by the file set id.
+	*
+	* Method: 		findFileSetById
+	* Full name:	Component::findFileSetById
+	* Access:		public 
+	*
+	* \param id Identifies the file set.
+	*
+	* \return Pointer to the file set found, null pointer if none found.
+	*/
+	QSharedPointer<const FileSet> findFileSetById(const QString& id) const;
 
 	/*! \brief Get file paths of all specified file sets that match the specified file types.
 	*
