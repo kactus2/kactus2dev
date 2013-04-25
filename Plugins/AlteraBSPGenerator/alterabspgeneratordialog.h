@@ -20,6 +20,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QString>
+#include <QStringList>
 
 class LibraryInterface;
 
@@ -30,6 +31,19 @@ class AlteraBSPGeneratorDialog : public CommandLineGeneratorDialog {
 	Q_OBJECT
 
 public:
+
+	//! \brief Used to remember where and to which sw view the generator is run.
+	struct GenerationOptions {
+
+		//! \brief The path to the directory used as base for the generator.
+		QString dirPath_;
+
+		//! \brief The name of the SW view the generator is run for.
+		QString swViewName_;
+
+		//! \brief The constructor.
+		GenerationOptions(const QString& path, const QString& view);
+	};
 
 	//! \brief The name of the script to run when running the generator.
 	static const QString PROCESS_START_COMMAND;
@@ -50,6 +64,17 @@ public:
 	
 	//! \brief The destructor.
 	virtual ~AlteraBSPGeneratorDialog();
+
+	/*! \brief Get list of the directories where the generator was run.
+	 *
+	 * Method: 		getCreatedDirs
+	 * Full name:	AlteraBSPGeneratorDialog::getCreatedDirs
+	 * Access:		public 
+	 *
+	 *
+	 * \return QStringList containing the absolute paths to the directories.
+	*/
+	const QList<GenerationOptions>& getCreatedDirs() const;
 
 protected slots:
 
@@ -74,6 +99,12 @@ private:
 
 	//! \brief Update the command to generate the BSP.
 	void updateCommand();
+
+	//! \brief Run the generator for windows.
+	void runWindowsCommands();
+
+	//! \brief Run the generator for Linux-based systems.
+	void runOtherCommands();
 
 	//! \brief The instance which manages the library.
 	LibraryInterface* handler_;
@@ -104,6 +135,9 @@ private:
 
 	//! \brief The currently selected SW view.
 	QSharedPointer<SWView> currentView_;
+
+	//! \brief Contains the paths to directories where the generator is run.
+	QList<GenerationOptions> generatedPaths_;
 };
 
 #endif // ALTERABSPGENERATORDIALOG_H

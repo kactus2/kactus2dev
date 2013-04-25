@@ -100,10 +100,17 @@ void AlteraBSPGenerator::runGenerator( IPluginUtility* utility,
 	AlteraBSPGeneratorDialog dialog(utility_->getLibraryInterface(), comp, utility_->getParentWidget());
 
 	int result = dialog.exec();
+
+	// if user did not want to add the generated files to the component metadata.
 	if (result == QDialog::Rejected) {
-		qDebug() << "BSP generator canceled";
 		return;
 	}
 
-	qDebug() << "BSP generator accepted";
+	// package the generated files to component metadata
+	const QList<AlteraBSPGeneratorDialog::GenerationOptions>& genOptions = dialog.getCreatedDirs();
+	foreach (const AlteraBSPGeneratorDialog::GenerationOptions& opt, genOptions) {
+
+		qDebug() << "Adding " << opt.dirPath_ << " to view " << opt.swViewName_;
+	}
+
 }

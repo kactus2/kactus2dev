@@ -40,7 +40,8 @@ outPutDirLabel_(NULL),
 sourceLabel_(NULL),
 argLabel_(NULL),
 targetDir_(),
-currentView_() {
+currentView_(),
+generatedPaths_() {
 
 	Q_ASSERT(handler_);
 	Q_ASSERT(component_);
@@ -92,66 +93,6 @@ currentView_() {
 AlteraBSPGeneratorDialog::~AlteraBSPGeneratorDialog() {
 }
 
-void AlteraBSPGeneratorDialog::onRunClicked() {
-	// clear previous prints
-	output_->clear();
-
-	// make sure the output path exists
-	QDir targetDirPath(targetDir_);
-	QString dirName = targetDirPath.dirName();
-	targetDirPath.cdUp();
-	targetDirPath.mkpath(dirName);
-
-	// on windows the command prompt is run and commands written to it
-	#ifdef Q_OS_WIN32
-	
-	process_->start("cmd");
-
-	// if process can not be started successfully
-	if (!process_->waitForStarted()) {
-		output_->printError(tr("Process could not be started successfully."));
-		statusLabel_->setText(tr("Could not start."));
-		process_->close();
-		return;
-	}
-
-	// TODO the path is set elsewhere
-	process_->write("\"c:\\ALTERA\\12.1\\nios2eds\\Nios II Command Shell.bat\"\n");
-	process_->waitForReadyRead();
-
-	// other run the shell script
-	#else
-	
-	qDebug() << "Linux not supported yet";
-	return;
-	#endif
-
-	QString command = QString("%1 %2 %3 %4\n").arg(commandLabel_->text()).arg(
-		outPutDirLabel_->text()).arg(
-		sourceLabel_->text()).arg(
-		argLabel_->text());
-	qDebug() << "Command: " << command.toLatin1();
-
-	process_->write(command.toLatin1());
-	process_->waitForReadyRead();
-
-	process_->write("exit\n");
-	process_->waitForReadyRead();
-
-	process_->write("exit\n");
-	process_->waitForBytesWritten();
-	if (!process_->waitForFinished()) {
-		output_->printError(tr("Process could not be finished successfully."));
-		statusLabel_->setText(tr("Could not finish."));
-		process_->close();
-		return;
-	}
-
-	process_->close();
-	qDebug() << "closed";
-	
-}
-
 void AlteraBSPGeneratorDialog::onViewChange( const QString& viewName ) {
 	currentView_ = component_->findSWView(viewName);
 	Q_ASSERT(currentView_);
@@ -181,7 +122,7 @@ void AlteraBSPGeneratorDialog::updateCommand() {
 
 	if (com) {
 
-		// only the defined elements are 
+		// only the defined elements are set
 
 		if (!com->getCommand().isEmpty()) {
 			command = com->getCommand();
@@ -193,7 +134,7 @@ void AlteraBSPGeneratorDialog::updateCommand() {
 		
 		// if theres exactly one file that matches
 		if (sourceFiles.size() == 1) {
-			QString xmlPath = handler_->getDirectoryPath(*component_->getVlnv());
+			QString xmlPath = handler_->getPath(*component_->getVlnv());
 			sourceFile = General::getAbsolutePath(xmlPath, sourceFiles.first());
 		}
 		// if there are several source files.
@@ -216,4 +157,99 @@ void AlteraBSPGeneratorDialog::updateCommand() {
 	outPutDirLabel_->setText(targetDir_);
 	sourceLabel_->setText(sourceFile);
 	argLabel_->setText(QString("%1 --cpu-name %2").arg(args).arg(cpuName));
+}
+
+void AlteraBSPGeneratorDialog::onRunClicked() {
+	// clear previous prints
+	output_->clear();
+
+	// make sure the output path exists
+	QDir targetDirPath(targetDir_);
+	QString dirName = targetDirPath.dirName();
+	targetDirPath.cdUp();
+	targetDirPath.mkpath(dirName);
+
+	// on windows the command prompt is run and commands written to it
+#ifdef Q_OS_WIN32
+
+	runWindowsCommands();
+
+	// other run the shell script
+#else
+
+	qDebug() << "Linux not supported yet";
+	return;
+#endif
+
+	// add the target dir to the list to remember where the generator is run.
+	Q_ASSERT(currentView_);
+
+	generatedPaths_.append(AlteraBSPGeneratorDialog::GenerationOptions(targetDir_, currentView_->getName()));
+}
+
+void AlteraBSPGeneratorDialog::runWindowsCommands() {
+	process_->start("cmd");
+
+	// if process can not be started successfully
+	if (!process_->waitForStarted()) {
+		output_->printError(tr("Process could not be started successfully."));
+		statusLabel_->setText(tr("Could not start."));
+		process_->close();
+		return;
+	}
+
+	// inform user that batch file is run
+	process_->write("echo Running the batch file to start the Nios II command shell.\n");
+
+	// TODO the path is set elsewhere
+	process_->write("\"c:\\ALTERA\\12.1\\nios2eds\\Nios II Command Shell.bat\"\n");
+
+	// convert the output dir path
+	QString outputComPath = QString("export kactus2Target=\"$(cygpath -u '%1')\"\n").arg(outPutDirLabel_->text());
+	process_->write(outputComPath.toLatin1());
+
+	QString sourceFilePath = QString("export kactus2Source=\"$(cygpath -u '%1')\"\n").arg(sourceLabel_->text());
+	process_->write(sourceFilePath.toLatin1());
+
+	// print the saved paths
+	process_->write("echo The converted output directory path:\n");
+	process_->write("echo $kactus2Target\n");
+	process_->write("echo \n");
+	process_->write("echo The converted source file path:\n");
+	process_->write("echo $kactus2Source\n");
+
+	process_->write("echo \n");
+	process_->write("echo Path variables set, running the generation command...\n");
+	process_->write("echo \n");
+
+	QString bspCommand = QString("%1 $kactus2Target $kactus2Source %3\n").arg(
+		commandLabel_->text()).arg(argLabel_->text());
+
+	process_->write(bspCommand.toLatin1());
+
+	process_->write("exit\n");
+
+	process_->write("exit\n");
+	process_->waitForBytesWritten();
+	if (!process_->waitForFinished()) {
+		output_->printError(tr("Process could not be finished successfully."));
+		statusLabel_->setText(tr("Could not finish."));
+		process_->close();
+		return;
+	}
+
+	process_->close();
+}
+
+void AlteraBSPGeneratorDialog::runOtherCommands() {
+
+}
+
+const QList<AlteraBSPGeneratorDialog::GenerationOptions>& AlteraBSPGeneratorDialog::getCreatedDirs() const {
+	return generatedPaths_;
+}
+
+AlteraBSPGeneratorDialog::GenerationOptions::GenerationOptions( const QString& path, const QString& view ):
+dirPath_(path), 
+swViewName_(view) {
 }
