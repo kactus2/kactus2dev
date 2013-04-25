@@ -15,6 +15,8 @@
 #include <QHBoxLayout>
 #include <QFormLayout>
 #include <QFileDialog>
+#include <QGuiApplication>
+#include <QCursor>
 
 #include <QDebug>
 
@@ -163,6 +165,8 @@ void AlteraBSPGeneratorDialog::onRunClicked() {
 	// clear previous prints
 	output_->clear();
 
+	QGuiApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
 	// make sure the output path exists
 	QDir targetDirPath(targetDir_);
 	QString dirName = targetDirPath.dirName();
@@ -184,7 +188,9 @@ void AlteraBSPGeneratorDialog::onRunClicked() {
 	// add the target dir to the list to remember where the generator is run.
 	Q_ASSERT(currentView_);
 
-	generatedPaths_.append(AlteraBSPGeneratorDialog::GenerationOptions(targetDir_, currentView_->getName()));
+	generatedPaths_.append(AlteraBSPGeneratorDialog::GenerationOptions(targetDir_ + "/", currentView_->getName()));
+
+	QGuiApplication::restoreOverrideCursor();
 }
 
 void AlteraBSPGeneratorDialog::runWindowsCommands() {

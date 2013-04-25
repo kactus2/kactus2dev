@@ -341,5 +341,9 @@ const QSharedPointer<BSPBuildCommand> SWView::getBSPBuildCommand() const {
 }
 
 void SWView::addFileSetRef( const QString& fileSetName ) {
+	// if the reference already exists
+	if (filesetRefs_.contains(fileSetName)) {
+		return;
+	}
 	filesetRefs_.append(fileSetName);
 }

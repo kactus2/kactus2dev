@@ -352,11 +352,6 @@ void FileSet::setFunctions(QList<QSharedPointer<Function> > &functions) {
 	functions_ = functions;
 }
 
-void FileSet::setDependencies(const QStringList &dependencies) {
-	dependencies_.clear();
-	dependencies_ = dependencies;
-}
-
 void FileSet::setDefaultFileBuilders(
 		QList<QSharedPointer<FileBuilder> > &defaultFileBuilders) {
 	// delete the old file builders
@@ -763,4 +758,13 @@ QStringList FileSet::findFilesByFileType( const QString& fileType ) const {
 	}
 
 	return files;
+}
+
+void FileSet::setDependencies(const QStringList &dependencies) {
+	dependencies_.clear();
+	dependencies_ = dependencies;
+}
+
+void FileSet::addDependency( const QString& path ) {
+	dependencies_.append(path);
 }

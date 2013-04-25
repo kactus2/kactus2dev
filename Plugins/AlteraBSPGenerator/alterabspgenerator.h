@@ -12,11 +12,14 @@
 
 #include <PluginSystem/IGeneratorPlugin.h>
 #include <models/librarycomponent.h>
+#include <models/fileset.h>
 
 #include <QObject>
 #include <QSharedPointer>
 #include <QString>
 #include <QIcon>
+#include <QFileInfo>
+#include <QSettings>
 
 class IPluginUtility;
 
@@ -105,6 +108,23 @@ private:
 
 	//! \brief No assignment
 	AlteraBSPGenerator& operator=(const AlteraBSPGenerator& other);
+
+	/*! \brief Parse the entries in the file system and add them to specified file set.
+	 *
+	 * Method: 		addEntry
+	 * Full name:	AlteraBSPGenerator::addEntry
+	 * Access:		private 
+	 *
+	 * \param entry The entry to add.
+	 * \param xmlPath Path to the top component xml file.
+	 * \param fileSet Pointer to the file set to add the entries to.
+	 * \param settings Contains the file type settings.
+	 *
+	*/
+	void addEntry(const QFileInfo &entry, 
+		const QString& xmlPath,
+		QSharedPointer<FileSet> fileSet,
+		QSettings& settings);
 
 	//! The plugin utility.
 	IPluginUtility* utility_;

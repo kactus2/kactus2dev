@@ -204,6 +204,17 @@ public:
 	 */
 	void setDependencies(const QStringList &dependencies);
 
+	/*! \brief Add a new dependent directory to the file set.
+	 *
+	 * Method: 		addDependency
+	 * Full name:	FileSet::addDependency
+	 * Access:		public 
+	 *
+	 * \param path Relative path to the dependent directory to add.
+	 *
+	*/
+	void addDependency(const QString& path);
+
 	/*! \brief Set the files for this file set
 	 *
 	 * Calling this function will delete old files.
