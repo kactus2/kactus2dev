@@ -61,6 +61,21 @@ bool ComponentEditorFileSetItem::isValid() const {
 		return false;
 	}
 
+	// check that the dependent directories exist
+	QString xmlPath = libHandler_->getPath(*component_->getVlnv());
+	QStringList dependentDirs = fileSet_->getDependencies();
+
+	// check each directory
+	foreach (QString relDirPath, dependentDirs) {
+		QString absPath = General::getAbsolutePath(xmlPath, relDirPath);
+		QFileInfo dirInfo(absPath);
+
+		// if the directory does not exist
+		if (!dirInfo.exists()) {
+			return false;
+		}
+	}
+
 	// check that all files are valid
 	foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_) {
 		if (!childItem->isValid()) {

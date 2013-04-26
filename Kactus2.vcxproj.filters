@@ -3697,6 +3697,12 @@
     <ClCompile Include="common\dialogs\commandLineGeneratorDialog\commandlineconsole.cpp">
       <Filter>Source Files\common\dialogs\commandLineGeneratorDialog</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_dirlistmanagermodel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\listManager\dirlistmanagermodel.cpp">
+      <Filter>Source Files\common\widgets\listManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5270,6 +5276,9 @@
     </CustomBuild>
     <CustomBuild Include="common\dialogs\commandLineGeneratorDialog\commandlineconsole.h">
       <Filter>Header Files\common\dialogs\commandLineGeneratorDialog</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\widgets\listManager\dirlistmanagermodel.h">
+      <Filter>Header Files\common\widgets\listManager</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

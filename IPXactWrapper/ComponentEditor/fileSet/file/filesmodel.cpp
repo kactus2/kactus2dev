@@ -128,7 +128,16 @@ QVariant FilesModel::data( const QModelIndex& index, int role /*= Qt::DisplayRol
 		return files_.at(index.row())->getAllFileTypes();
 	}
 	else if (Qt::ForegroundRole == role) {
-		if (files_.at(index.row())->isValid(true)) {
+		QSharedPointer<File> file = files_[index.row()];
+
+		// check that file is syntax valid and that file exists.
+		QString xmlPath = handler_->getPath(*component_->getVlnv());
+		QString absFilePath = General::getAbsolutePath(xmlPath, file->getName());
+		Q_ASSERT(!absFilePath.isEmpty());
+
+		QFileInfo fileInfo(absFilePath);
+
+		if (file->isValid(true) && fileInfo.exists()) {
 			return QColor("black");
 		}
 		else {
