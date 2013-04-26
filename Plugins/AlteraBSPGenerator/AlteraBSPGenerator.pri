@@ -8,6 +8,8 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ./alterabspgenerator_global.h \
-    ./alterabspgenerator.h
-SOURCES += ./alterabspgenerator.cpp
+    ./alterabspgenerator.h \
+    ./alterabspgeneratordialog.h
+SOURCES += ./alterabspgeneratordialog.cpp \
+    ./alterabspgenerator.cpp
 RESOURCES += AlteraBSPGenerator.qrc

@@ -8,7 +8,6 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ./resource.h \
-    ./version.h \
     ./common/ColumnTypes.h \
     ./common/CSourceWriter.h \
     ./common/diagramgrid.h \
@@ -27,6 +26,7 @@ HEADERS += ./resource.h \
     ./common/widgets/attributeBox/attributemodel.h \
     ./common/widgets/attributeBox/attributebox.h \
     ./common/widgets/libraryRefGenerator/libraryrefgenerator.h \
+    ./common/widgets/listManager/dirlistmanagermodel.h \
     ./common/widgets/listManager/listmanagermodel.h \
     ./common/widgets/listManager/listmanager.h \
     ./common/widgets/listManager/listeditor.h \
@@ -132,6 +132,8 @@ HEADERS += ./resource.h \
     ./common/dialogs/createConfigurationDialog/createconfigurationdialog.h \
     ./common/dialogs/fileSaveDialog/filesavedialog.h \
     ./common/dialogs/fileSaveDialog/filesavedialogview.h \
+    ./common/dialogs/commandLineGeneratorDialog/commandlinegeneratordialog.h \
+    ./common/dialogs/commandLineGeneratorDialog/commandlineconsole.h \
     ./common/cornerStitch/CornerStitchStructure.h \
     ./common/cornerStitch/StitchTile.h \
     ./designwidget/AdHocEnabled.h \
@@ -598,6 +600,8 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/dialogs/TableViewDialog/TableViewDialog.cpp \
     ./common/dialogs/fileSaveDialog/filesavedialog.cpp \
     ./common/dialogs/fileSaveDialog/filesavedialogview.cpp \
+    ./common/dialogs/commandLineGeneratorDialog/commandlineconsole.cpp \
+    ./common/dialogs/commandLineGeneratorDialog/commandlinegeneratordialog.cpp \
     ./common/validators/AddressValidator.cpp \
     ./common/validators/nameValidator/namevalidator.cpp \
     ./common/validators/vhdlNameValidator/vhdlnamevalidator.cpp \
@@ -609,6 +613,7 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./common/widgets/attributeBox/attributemodel.cpp \
     ./common/widgets/libraryRefGenerator/libraryrefgenerator.cpp \
     ./common/widgets/listManager/dirlistmanager.cpp \
+    ./common/widgets/listManager/dirlistmanagermodel.cpp \
     ./common/widgets/listManager/filelistmanager.cpp \
     ./common/widgets/listManager/listeditor.cpp \
     ./common/widgets/listManager/listmanager.cpp \
