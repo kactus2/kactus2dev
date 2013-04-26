@@ -297,6 +297,35 @@ void LibraryData::checkLibraryIntegrity( bool showProgress /*= true*/ ) {
                 }
             }
 
+				// check all dependent directories
+				QStringList dirs = libComp->getDependentDirs();
+				foreach (QString dir, dirs) {
+					QString path = General::getAbsolutePath(i.value(), dir);
+					QFileInfo dirInfo(path);
+
+					// if the directory does not exist
+					if (!dirInfo.exists()) {
+
+						// if this is the first found error
+						if (wasValid) {
+							emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
+						}
+
+						emit errorMessage(
+							tr("\tDirectory %1 was not found in the file system.").arg(
+							path));
+
+						++errors_;
+						++fileErrors_;
+
+						// if this was first failed test then increase number of failed items
+						if (wasValid) {
+							++failedObjects_;
+							wasValid = false;
+						}
+					}
+				}
+
             // check all files referenced by this model
             QStringList filelist = libComp->getDependentFiles();
             for (int j = 0; j < filelist.size(); ++j) {
@@ -305,15 +334,15 @@ void LibraryData::checkLibraryIntegrity( bool showProgress /*= true*/ ) {
                 // in the file system
                 QString path = General::getAbsolutePath(i.value(), filelist.at(j));
 
-                // if the path did not exist
-                if (path.isEmpty()) {
+					 QFileInfo pathInfo(path);
 
+                // if the path did not exist
+                if (!pathInfo.exists()) {
+
+					// if this is the first found error
 					if (wasValid) {
 						emit noticeMessage(tr("The following errors were found while processing item %1:").arg(vlnv.toString(":")));
 					}
-
-                    // print the relative path because absolute path does not exist
-                    path = filelist.at(j);
 
                     emit errorMessage(
                         tr("\tFile %1 was not found in the file system.").arg(

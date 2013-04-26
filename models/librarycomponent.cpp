@@ -282,3 +282,7 @@ void LibraryComponent::setTopComments( const QStringList& comments ) {
 QStringList LibraryComponent::getTopComments() const {
 	return topComments_;
 }
+
+const QStringList LibraryComponent::getDependentDirs() const {
+	return QStringList();
+}

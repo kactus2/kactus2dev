@@ -145,6 +145,17 @@ public:
 	 */
 	virtual const QStringList getDependentFiles() const = 0;
 
+	/*! \brief Get the dependent directories of the object. Default returns empty list.
+	 *
+	 * Method: 		getDependentDirs
+	 * Full name:	LibraryComponent::getDependentDirs
+	 * Access:		virtual public 
+	 *
+	 *
+	 * \return empty list, reimplement in sub-classes.
+	*/
+	virtual const QStringList getDependentDirs() const;
+
 	/*! \brief A pure virtual function to be implemented by subclasses.
 	 *
 	 * \return QList containing VLNVs that are needed by this document.

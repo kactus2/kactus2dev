@@ -1740,6 +1740,17 @@ public:
 	*/
 	bool uniqueMemoryNames(QStringList& memNames) const;
 
+	/*! \brief Get the directories which this component needs.
+	 *
+	 * Method: 		getDependentDirs
+	 * Full name:	Component::getDependentDirs
+	 * Access:		virtual public 
+	 *
+	 *
+	 * \return QStringList containing the relative directory paths.
+	*/
+	virtual const QStringList getDependentDirs() const;
+
 private:
 
     /*!

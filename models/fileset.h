@@ -113,13 +113,6 @@ public:
 	*/
 	const QList<QSharedPointer<FileBuilder> >& getDefaultFileBuilders() const;
 
-	/*! \brief Get the dependencies for this file set
-	 *
-	 * \return QList containing paths for the directories containing files
-	 * on which this file set depends.
-	 */
-	const QStringList& getDependencies();
-
 	/*! \brief Get the files associated with this file set
 	 *
 	 * \return QList containing pointers to the files associated with this file set.
@@ -195,6 +188,13 @@ public:
 	 */
 	void setDefaultFileBuilders(
 			QList<QSharedPointer<FileBuilder> > &defaultFileBuilders);
+
+	/*! \brief Get the dependencies for this file set
+	*
+	* \return QList containing paths for the directories containing files
+	* on which this file set depends.
+	*/
+	const QStringList& getDependencies();
 
 	/*! \brief Set the dependencies for this file set
 	 *

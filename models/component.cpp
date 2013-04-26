@@ -3769,3 +3769,12 @@ QString Component::getAllParametersDefaultValue( const QString& paramName ) cons
 	// no parameter or model parameter was found
 	return QString();
 }
+
+const QStringList Component::getDependentDirs() const {
+	QStringList dirs;
+
+	foreach (QSharedPointer<FileSet> fileSet, fileSets_) {
+		dirs.append(fileSet->getDependencies());
+	}
+	return dirs;
+}
