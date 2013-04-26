@@ -324,3 +324,7 @@ void VHDLSourceAnalyzer::scanEntities(Component const* component, QString const&
         }
     }
 }
+
+QList<IPlugin::ExternalProgramRequirements> VHDLSourceAnalyzer::getProgramRequirements() {
+	return QList<IPlugin::ExternalProgramRequirements>();
+}

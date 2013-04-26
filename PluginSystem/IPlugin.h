@@ -15,6 +15,7 @@
 #include "PluginSettingsWidget.h"
 
 #include <QString>
+#include <QList>
 #include <QtPlugin>
 
 //-----------------------------------------------------------------------------
@@ -23,6 +24,20 @@
 class IPlugin
 {
 public:
+
+	//! \brief Contains options for required external program paths for plugin.
+	struct ExternalProgramRequirements {
+		
+		//! \brief Identifies the program to run.
+		QString name_;
+
+		//! \brief Explains the required program for user.
+		QString description_;
+
+		//! \brief Contains the filters for the QFileDialog to select correct type of files.
+		QString filters_;
+	};
+
     /*!
      *  Destructor.
      */
@@ -47,6 +62,9 @@ public:
      *  Returns the settings widget.
      */
     virtual PluginSettingsWidget* getSettingsWidget() = 0;
+
+	//! \brief Returns the external program requirements of the plugin.
+	 virtual QList<ExternalProgramRequirements> getProgramRequirements() = 0;
 };
 
 Q_DECLARE_INTERFACE(IPlugin, "com.tut.Kactus2.IPlugin/1.0")

@@ -86,6 +86,10 @@ public:
 		 QSharedPointer<LibraryComponent> libComp, 
 		 QSharedPointer<LibraryComponent> libDesConf = QSharedPointer<LibraryComponent const>(),
 		 QSharedPointer<LibraryComponent> libDes = QSharedPointer<LibraryComponent>());
+
+	 //! \brief Returns the external program requirements of the plugin.
+	 virtual QList<IPlugin::ExternalProgramRequirements> getProgramRequirements();
+
 private:
     /*!
      *  Generates the MCAPI code header file.

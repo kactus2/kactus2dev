@@ -298,3 +298,7 @@ void CppSourceAnalyzer::beginAnalysis(Component const* /*component*/, QString co
 void CppSourceAnalyzer::endAnalysis(Component const* component, QString const& /*componentPath*/)
 {
 }
+
+QList<IPlugin::ExternalProgramRequirements> CppSourceAnalyzer::getProgramRequirements() {
+	return QList<IPlugin::ExternalProgramRequirements>();
+}

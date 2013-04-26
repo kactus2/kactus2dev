@@ -105,7 +105,9 @@ public:
                                      QString const& filename,
                                      QList<FileDependencyDesc>& dependencies);
 
-    
+	 //! \brief Returns the external program requirements of the plugin.
+	 virtual QList<IPlugin::ExternalProgramRequirements> getProgramRequirements();
+
 private:
     // Disable copying.
     CppSourceAnalyzer(CppSourceAnalyzer const& rhs);

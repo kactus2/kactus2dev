@@ -919,6 +919,10 @@ void MemoryMapHeaderGenerator::searchInstanceFiles( QSharedPointer<const Compone
 	}
 }
 
+QList<IPlugin::ExternalProgramRequirements> MemoryMapHeaderGenerator::getProgramRequirements() {
+	return QList<IPlugin::ExternalProgramRequirements>();
+}
+
 
 MemoryMapHeaderGenerator::HierParsingInfo::HierParsingInfo(QSharedPointer<const Component> comp, const QString& viewName ):
 comp_(comp),
