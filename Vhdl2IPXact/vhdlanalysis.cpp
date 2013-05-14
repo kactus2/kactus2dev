@@ -531,7 +531,7 @@ void VHDLanalysis::analyzeData(QTableWidget& generics_t,QTableWidget& ports_t, Q
             //determine width of integer
             if(type == "integer")
             {
-                width = (int)ceil(log(max)/log(2));
+                width = (int)ceil(log((double)max)/log((double)2));
             }
             //width in other types
             else if(type == "std_logic_vector")
