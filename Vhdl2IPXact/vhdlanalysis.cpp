@@ -680,7 +680,11 @@ int VHDLanalysis::EntityConverter(QTableWidget& gene_t,QTableWidget& port_t, QSt
         }
 
         //generic section of entity
-        if(section == 2 && line.contains(':'))
+        if(line.startsWith("--"))
+        {
+
+        }
+        else if(section == 2 && line.contains(':'))
         {
             comment = line.section("--",1);
             line = line.section("--",0,0);
