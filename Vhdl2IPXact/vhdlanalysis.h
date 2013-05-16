@@ -35,7 +35,8 @@ private:
     //          or  "portName,...,portName : direction type"
     void analyzeData(QTableWidget& generics_t,QTableWidget& ports_t, QString data, bool generic,bool addremove,QString comment);
 
-    int section = 0;
+    // controls execution of diffrent parts of code
+    int section;
 };
 
 #endif // VHDLANALYSIS_H
