@@ -2203,6 +2203,8 @@ void MainWindow::createComponent(KactusAttribute::ProductHierarchy prodHier,
 	component->setComponentImplementation(KactusAttribute::KTS_HW);
 	component->createEmptyFlatView();
 
+    // TODO: Open wizard.
+
 	// Create the file.
 	if (!libraryHandler_->writeModelToFile(directory, component))
     {

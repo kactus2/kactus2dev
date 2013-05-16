@@ -1044,9 +1044,12 @@ bool FileDependencyGraphView::filterDependency(FileDependency const* dependency)
     bool extFilter = ((filters_ & FILTER_INTERNAL) && !dependency->getFileItem2()->isExternal()) ||
                      ((filters_ & FILTER_EXTERNAL) && dependency->getFileItem2()->isExternal());
 
+    bool changesFilter = !(filters_ & FILTER_DIFFERENCE) ||
+                         dependency->getStatus() != FileDependency::STATUS_UNCHANGED;
+
     //bool existFilter = (filters_ & FILTER_DIFFERENCE) || dependency->getStatus() != FileDependency::STATUS_REMOVED;
 
-    return (typeFilter && wayFilter && extFilter /*&& existFilter*/);
+    return (typeFilter && wayFilter && extFilter && changesFilter);
 }
 
 //-----------------------------------------------------------------------------

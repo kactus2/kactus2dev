@@ -17,6 +17,8 @@
 
 #include <LibraryManager/libraryinterface.h>
 
+#include <common/widgets/ScanProgressWidget/scanprogresswidget.h>
+
 #include <models/component.h>
 #include <models/fileset.h>
 #include <models/file.h>
@@ -50,7 +52,9 @@ FileDependencyEditor::FileDependencyEditor(QSharedPointer<Component> component,
       fileTypeLookup_(),
       model_(pluginMgr, component, QFileInfo(libInterface_->getPath(*component_->getVlnv())).path() + "/"),
       xmlPath_(),
-      scanning_(false)
+      scanning_(false),
+      timer_(0),
+      progWidget_(0)
 {
     // Initialize the widgets.
     progressBar_.setStyleSheet("QProgressBar:horizontal { margin: 0px; border: none; background: #cccccc; } "
@@ -171,14 +175,17 @@ void FileDependencyEditor::scan()
     resolveExtensionFileTypes();
 
     // Phase 1. Scan all files and folders in the source paths recursively.
-    model_.beginReset();
     
-    foreach (QString const& sourcePath, component_->getSourceDirectories())
-    {
-        scanFiles(sourcePath);
-    }
+    progWidget_ = new ScanProgressWidget(this);
+    progWidget_->setRange(0, 1);
+    progWidget_->setValue(1);
+    progWidget_->setMessage(tr("Scanning source directories..."));
+    
+    timer_ = new QTimer(this);
+    connect(timer_, SIGNAL(timeout()), this, SLOT(scanDirectories()));
+    timer_->start();
 
-    model_.endReset();
+    progWidget_->exec();
 
     // Phase 2. Run the dependency analysis.
     progressBar_.setMaximum(model_.getTotalStepCount());
@@ -337,5 +344,24 @@ void FileDependencyEditor::addFilterButton(QIcon icon, QString iconText,
     tmp->setCheckable(true);
     tmp->setChecked(filters & filter);
     filterActions_.addAction(tmp);
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileDependencyEditor::scanDirectories()
+//-----------------------------------------------------------------------------
+void FileDependencyEditor::scanDirectories()
+{
+    model_.beginReset();
+
+    foreach (QString const& sourcePath, component_->getSourceDirectories())
+    {
+        scanFiles(sourcePath);
+    }
+
+    model_.endReset();
+
+    timer_->stop();
+    delete timer_;
+    delete progWidget_;
 }
 

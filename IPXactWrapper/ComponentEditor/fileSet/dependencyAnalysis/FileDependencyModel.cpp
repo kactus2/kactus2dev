@@ -327,10 +327,6 @@ QVariant FileDependencyModel::data(const QModelIndex& index, int role /*= Qt::Di
         {
             return QColor(240, 240, 240);
         }
-//         else
-//         {
-//             return QColor(Qt::white);
-//         }
     }
     else if (role == Qt::UserRole)
     {
@@ -424,6 +420,8 @@ void FileDependencyModel::stopAnalysis()
     {
         plugin->endAnalysis(component_.data(), basePath_);
     }
+
+    // TODO: Reset dependencies?
 }
 
 //-----------------------------------------------------------------------------

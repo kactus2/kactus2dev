@@ -22,6 +22,7 @@
 #include <QProgressBar>
 #include <QStringList>
 #include <QActionGroup>
+#include <QTimer>
 
 class Component;
 class PluginManager;
@@ -29,6 +30,7 @@ class ISourceAnalyzerPlugin;
 class LibraryInterface;
 class FileSet;
 class File;
+class ScanProgressWidget;
 
 //-----------------------------------------------------------------------------
 //! File dependency editor which encapsulates the whole dependency UI.
@@ -82,6 +84,11 @@ private slots:
      *  file sets and runs the dependency analysis.
      */
     void scan();
+
+    /*!
+     *  Scans the source directories.
+     */
+    void scanDirectories();
 
     /*!
      *  Updates the progress bar with the given value.
@@ -164,6 +171,9 @@ private:
     QActionGroup filterActions_;
 
     QAction* runAnalysisAction_;
+
+    QTimer* timer_;
+    ScanProgressWidget* progWidget_;
 };
 
 //-----------------------------------------------------------------------------
