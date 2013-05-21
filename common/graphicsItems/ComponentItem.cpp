@@ -50,6 +50,7 @@ ComponentItem::ComponentItem(QRectF const& size,
     setFlag(ItemIsSelectable);
     setRect(size);
     setObjectName(instanceName);
+    setPen(QPen(Qt::black, 0));
 
     Q_ASSERT_X(component, "ComponentItem constructor",
         "Null component-pointer given as parameter");

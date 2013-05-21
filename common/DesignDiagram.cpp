@@ -296,7 +296,8 @@ QString DesignDiagram::createInstanceName(QString const& baseName)
 void DesignDiagram::drawBackground(QPainter* painter, QRectF const& rect)
 {
     painter->setWorldMatrixEnabled(true);
-    painter->setBrush(Qt::lightGray);
+    //painter->setBrush(Qt::lightGray);
+    painter->setPen(QPen(Qt::black, 0));
 
     qreal left = int(rect.left()) - (int(rect.left()) % GridSize );
     qreal top = int(rect.top()) - (int(rect.top()) % GridSize );
