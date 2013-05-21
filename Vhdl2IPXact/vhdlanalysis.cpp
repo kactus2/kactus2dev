@@ -1,5 +1,4 @@
 
-//#include <QTextStream>
 #include <QTableWidget>
 #include <QString>
 #include <QTableWidgetItem>
@@ -27,14 +26,11 @@ int VHDLanalysis::Qstring2int(QTableWidget& generics,QString number)
     result = number.toInt(&ok);
     if(!ok)
     {
-        //itemData = new QTableWidgetItem;
-        //itemData->setText(number);
+        //if number is generic or unknown
         for(int i=0; i< generics.rowCount()-1;i++)
         {
             QTableWidgetItem *itemData = generics.item(i,0);
             if(itemData->text() == number)
-            //if(generics_t.item(i,0)->text()==number)
-            //if(generics_t.item(i,0)==itemData)
             {
                 generic_v = generics.item(i,3)->text();
                 result = generic_v.toInt(&ok);
@@ -45,11 +41,10 @@ int VHDLanalysis::Qstring2int(QTableWidget& generics,QString number)
     return result;
 }
 
-
+    // Analyzes left and right bounds of port(s) recognices basic -,+,*,/
+    // operations and identifies known generics.
 int VHDLanalysis::analyzeGenericValues(QTableWidget& generics_t,QString value)
 {
-    // change generics into values
-    //QTableWidgetItem* itemData;
     QString left;
     QString right;
     QString left2;
@@ -126,8 +121,8 @@ int VHDLanalysis::analyzeGenericValues(QTableWidget& generics_t,QString value)
         {
             status = 0;
         }
-        //analyze right
 
+        //analyze right
         if(status > 0)
         {
 
@@ -151,62 +146,7 @@ int VHDLanalysis::analyzeGenericValues(QTableWidget& generics_t,QString value)
         {
             result = left_i/right_i;
         }
-    }
-
-
-        // "left2-right2*right"
-        if(left.contains('-'))
-        {
-            left2 = left.section('-',0,0);
-            right2 = left.section('-',1);
-            status = 1;
-        }
-        // "left*left2-right2"
-        else if(right.contains('-'))
-        {
-            left2 = right.section('-',0,0);
-            right2 = right.section('-',1);
-            status = 2;
-        }
-        // "left2+right2*right"
-        else if(left.contains('+'))
-        {
-            left2 = left.section('+',0,0);
-            right2 = left.section('+',1);
-            status = 3;
-        }
-        // "left*left2+right2"
-        else if(right.contains('+'))
-        {
-            left2 = right.section('+',0,0);
-            right2 = right.section('+',1);
-            status = 4;
-        }
-        // "left*right"
-        else
-        {
-            status = 0;
-        }
-
-        if(status > 0)
-        {
-
-//            number1 = Qstring2int(generics_t,right);
-//            number2 = Qstring2int(generics_t,right2);
-            if(status == 1)
-            {
-                // "left2-right2*right"
-                number1 = Qstring2int(generics_t,right);
-                number2 = Qstring2int(generics_t,right2);
-                right_i = number1 * number2;
-                number1 = Qstring2int(generics_t,left2);
-                result = number1 - right_i;
-            }
-            else if(status == 2)
-            {
-                right_i = number1 + number2;
-            }
-        }
+    } //end of /
 
     // "left-right"
     else if(value.contains('-'))
@@ -257,65 +197,66 @@ int VHDLanalysis::analyzeGenericValues(QTableWidget& generics_t,QString value)
 
         }
         result = left_i - right_i;
-    }
+    } //end of "-"
+
     // "left+right"
     else if(value.contains('+'))
     {
-            left = value.section('-',0,0);
-            right = value.section('-',1);
+        left = value.section('-',0,0);
+        right = value.section('-',1);
+        // "left2 * right2 + right"
+        if(left.contains('*'))
+        {
+            left2 = left.section('*',0,0);
+            right2 = left.section('*',1);
+            status = 1;
+        }
+        // "left + left2 * right2"
+        else if(right.contains('*'))
+        {
+            left2 = right.section('*',0,0);
+            right2 = right.section('*',1);
+            status = 2;
+        }
+        else
+        {
+            status = 0;
+        }
+
+        if(status > 0)
+        {
+            number1 = Qstring2int(generics_t,left2);
+            number2 = Qstring2int(generics_t,right2);
             // "left2 * right2 + right"
-            if(left.contains('*'))
+            if(status == 1)
             {
-                left2 = left.section('*',0,0);
-                right2 = left.section('*',1);
-                status = 1;
-            }
-            // "left + left2 * right2"
-            else if(right.contains('*'))
-            {
-                left2 = right.section('*',0,0);
-                right2 = right.section('*',1);
-                status = 2;
-            }
-            else
-            {
-                status = 0;
-            }
-
-            if(status > 0)
-            {
-                number1 = Qstring2int(generics_t,left2);
-                number2 = Qstring2int(generics_t,right2);
-                // "left2 * right2 + right"
-                if(status == 1)
-                {
-                    left_i = number1 * number2;
-                    right_i = Qstring2int(generics_t,right);
-
-                }
-                // "left + left2 * right2"
-                else if(status == 2)
-                {
-                    right_i = number1 * number2;
-                    left_i = Qstring2int(generics_t,left);
-                }
-            }
-            else
-            {
-                left_i = Qstring2int(generics_t,left);
+                left_i = number1 * number2;
                 right_i = Qstring2int(generics_t,right);
 
             }
-            result = left_i + right_i;
+            // "left + left2 * right2"
+            else if(status == 2)
+            {
+                right_i = number1 * number2;
+                left_i = Qstring2int(generics_t,left);
+            }
+        }
+        else
+        {
+            left_i = Qstring2int(generics_t,left);
+            right_i = Qstring2int(generics_t,right);
+
+        }
+        result = left_i + right_i;
     }
     // "left*right"
     else if(value.contains('*'))
     {
-    left = value.section('*',0,0);
-    right = value.section('*',1);
-    right_i = Qstring2int(generics_t,right);
-    left_i = Qstring2int(generics_t,left);
-    result = left_i * right_i;
+        left = value.section('*',0,0);
+        right = value.section('*',1);
+        right_i = Qstring2int(generics_t,right);
+        left_i = Qstring2int(generics_t,left);
+        result = left_i * right_i;
     }
     // "value"
     else
@@ -326,66 +267,61 @@ int VHDLanalysis::analyzeGenericValues(QTableWidget& generics_t,QString value)
     return result;
 }
 
+    // splits generics and ports into parts, handles each part properly and stores parts into table
 void VHDLanalysis::analyzeData(QTableWidget& generics_t,QTableWidget& ports_t, QString data, bool generic, bool addremove,QString comment)
 {
-    //oletuksena oikea formaatti
     QTableWidgetItem* itemData;
     QString type;
+    QString temp;
     int rows;
     bool found = false;
 
-    QString temp;
 
     // Data is generic
-    // 
+    //
     if(generic)
     {
-        //rows = generics_t.rowCount() - 1;
-
-         temp = data.section(':',0,0);
-         temp = temp.trimmed();
-         //searches generic table and removes generic if found
-         if(addremove)
-         {
+        temp = data.section(':',0,0);
+        temp = temp.trimmed();
+        //searches generic table and removes generic if found
+        if(addremove)
+        {
 
             itemData = new QTableWidgetItem;
             itemData->setText(temp);
-                for(int i=0; i< generics_t.rowCount()-1;i++)
+            for(int i=0; i< generics_t.rowCount()-1;i++)
+            {
+                if(generics_t.item(i,0)->text()==temp)
                 {
-                 //   generics_t.setItem(i,4,new QTableWidgetItem);
-                  //  generics_t.item(i,4)->setText("xxx");
-
-                    if(generics_t.item(i,0)->text()==temp)//itemData->text())
-                    {
                     rows = i;
                     generics_t.removeRow(rows);
                     found = true;
                     break;
-                    }
                 }
-         }
-         if(found)
-         {
+            }
+        }
+        if(found)
+        {
 
-         }
-         //else adds generic to table
-         else
-         {
+        }
+        //else adds generic to table
+        else
+        {
             rows = generics_t.rowCount() - 1;
             //sets generic name to table
             generics_t.setItem(rows,0,new QTableWidgetItem);
             generics_t.item(rows,0)->setText(temp.trimmed());
-            //generics_t.item(rows,0)->setText(temp);
 
             //sets generic type to table
             temp = data.section(':',1,1);
-
             generics_t.setItem(rows,1,new QTableWidgetItem);
             generics_t.item(rows,1)->setText(temp.trimmed());
 
+            //sets comment
             generics_t.setItem(rows,4,new QTableWidgetItem);
             generics_t.item(rows,4)->setText(comment);
 
+            //sets value, if present
             if(data.contains(":="))
             {
                 temp = data.section(":=",1);
@@ -401,8 +337,8 @@ void VHDLanalysis::analyzeData(QTableWidget& generics_t,QTableWidget& ports_t, Q
             rows++;
         }
     }
-    // Port
-    //
+
+    //Data is Port
     else
     {
         int max = 0;
@@ -417,17 +353,16 @@ void VHDLanalysis::analyzeData(QTableWidget& generics_t,QTableWidget& ports_t, Q
 
         port = data.section(':',0,0);
         data = data.section(':',1);
+        port = port.simplified();
 
         //line contains more than one port of same kind
         if(port.contains(','))
         {
-            //int numberOfPorts = 1;
-            //numberOfPorts += data.count(',');
             ports = port.split(',');
             morethan1 = true;
             //ports now contains all name of the ports in one red line
 
-        }       
+        }
 
         //removes multiple ports from table if found
         if(addremove && morethan1)
@@ -439,12 +374,12 @@ void VHDLanalysis::analyzeData(QTableWidget& generics_t,QTableWidget& ports_t, Q
                 itemData->setText(ports.at(x));
                 for(int y=0; y< ports_t.rowCount()-1;y++)
                 {
-                    if(ports_t.item(y,0)->text()==ports.at(x))
-                   {
-                   ports_t.removeRow(y);
-                   found = true;
-                   break;
-                   }
+                    if(ports_t.item(y,0)->text()==ports.at(x).simplified())
+                    {
+                        ports_t.removeRow(y);
+                        found = true;
+                        break;
+                    }
                 }
             }
         }
@@ -453,15 +388,15 @@ void VHDLanalysis::analyzeData(QTableWidget& generics_t,QTableWidget& ports_t, Q
         {
             itemData = new QTableWidgetItem;
             itemData->setText(port);
-                for(int i=0; i< ports_t.rowCount()-1;i++)
+            for(int i=0; i< ports_t.rowCount()-1;i++)
+            {
+                if(ports_t.item(i,0)->text()==port)
                 {
-                    if(ports_t.item(i,0)->text()==port)
-                    {
                     ports_t.removeRow(i);
                     found = true;
                     break;
-                    }
                 }
+            }
         }
         //doesnt add new if remove was performed
         if(found)
@@ -471,151 +406,146 @@ void VHDLanalysis::analyzeData(QTableWidget& generics_t,QTableWidget& ports_t, Q
         //adds new port(s) to port table
         else
         {
+            //takes direction and removes it from data
+            direction = data.section(' ',1,1);
+            data = data.section(' ',2);
+            data = data.toLower();
 
-        //data = data.section(':',1);
-        //takes direction removes it from data
-        direction = data.section(' ',1,1);
-        data = data.section(' ',2);
-       // data = data.section(';'0,0);
-        //data now contains type and range(if vector or integer)
-        if(data.contains("vector"))
-        {
-            type = "std_logic_vector";
-            data = data.section('(',1);
-            data = data.section(')',0,0);
-
-            if(data.contains("downto"))
+            //data now contains type and range(if vector or integer)
+            //vector
+            if(data.contains("vector"))
             {
-                max_qs = data.section("downto",0,0);
-                min_qs = data.section("downto",1);
+                type = "std_logic_vector";
+                data = data.section('(',1);
+                data = data.section(')',0,0);
+
+                if(data.contains("downto"))
+                {
+                    max_qs = data.section("downto",0,0);
+                    min_qs = data.section("downto",1);
+                }
+                else
+                {
+                    max_qs = data.section("to",0,0);
+                    min_qs = data.section("to",1);
+                }
             }
+            //integer
+            else if(data.contains("integer"))
+            {
+                type = "integer";
+
+                if(data.contains("range",Qt::CaseInsensitive))
+                {
+                    data = data.section("range",1);
+                    min_qs = data.section("to",0,0);
+                    max_qs = data.section("to",1);
+                }
+                //full range if not specified
+                else
+                {
+                    width = 32;
+                    max = 2147483647;
+                    min = 0; // or -2147483648;
+                }
+
+            }
+            //data type is std_logic or other 1 wide type
             else
             {
-                max_qs = data.section("to",0,0);
-                min_qs = data.section("to",1);
+                type = data;
             }
-        }
-        else if(data.contains("integer"))
-        {
-            type = "integer";
-            //data = data.section('range',1);
-            //data = data.section(')',0,0);
 
-            if(data.contains("range"))
+            if(width == 1)
             {
-               data = data.section("range",1);
-               min_qs = data.section("to",0,0);
-               max_qs = data.section("to",1);
-
-
+                max = analyzeGenericValues(generics_t,max_qs);
+                min = analyzeGenericValues(generics_t,min_qs);
+                //determine width of integer
+                if(type == "integer")
+                {
+                    width = (int)ceil(log((double)max)/log((double)2));
+                }
+                //width in other types
+                else if(type == "std_logic_vector")
+                {
+                    width += max - min;
+                }
             }
-            //full range if not specified
+
+            // Adding port(s) to table
+            rows = ports_t.rowCount() - 1;
+
+            // if more than one port of same kind
+            if(morethan1)
+            {
+                int nroOfPorts = ports.size();
+                for(int i = 0; i < nroOfPorts; i++)
+                {
+                    //Port name
+                    ports_t.setItem(rows,0,new QTableWidgetItem);
+                    ports_t.item(rows,0)->setText(ports.at(i).simplified());
+
+                    //Direction
+                    ports_t.setItem(rows,1,new QTableWidgetItem);
+                    ports_t.item(rows,1)->setText(direction);
+
+                    //Width
+                    ports_t.setItem(rows,2,new QTableWidgetItem);
+                    ports_t.item(rows,2)->setText(QString::number(width));
+
+                    //Left bound
+                    ports_t.setItem(rows,3,new QTableWidgetItem);
+                    ports_t.item(rows,3)->setText(QString::number(max));
+
+                    //Right bound
+                    ports_t.setItem(rows,4,new QTableWidgetItem);
+                    ports_t.item(rows,4)->setText(QString::number(min));
+
+                    //Type
+                    ports_t.setItem(rows,5,new QTableWidgetItem);
+                    ports_t.item(rows,5)->setText(type);
+
+                    //Comment
+                    ports_t.setItem(rows,8,new QTableWidgetItem);
+                    ports_t.item(rows,8)->setText(comment);
+
+                    ports_t.insertRow(rows+1);
+                    rows++;
+                }
+            }
+            // One port
             else
             {
-                width = 32;
-                max = 2147483647;
-                min = 0; // vai -2147483648;
-            }
-
-        }
-        //data type is std_logic or other 1 wide type
-        else
-        {
-            type = data;
-        }
-
-        if(width == 1)
-        {
-            max = analyzeGenericValues(generics_t,max_qs);
-            min = analyzeGenericValues(generics_t,min_qs);
-            //determine width of integer
-            if(type == "integer")
-            {
-                width = (int)ceil(log((double)max)/log((double)2));
-            }
-            //width in other types
-            else if(type == "std_logic_vector")
-            {
-                width += max - min;
-            }
-        }
-
-        // Adding port(s) to table
-        rows = ports_t.rowCount() - 1;
-
-        // if more than one port of same kind
-        if(morethan1)
-        {
-            int nroOfPorts = ports.size();
-            for(int i = 0; i < nroOfPorts; i++)
-            {
-
-
-                //temp = ports.at(i);
+                //Port name
                 ports_t.setItem(rows,0,new QTableWidgetItem);
-                ports_t.item(rows,0)->setText(ports.at(i));
+                ports_t.item(rows,0)->setText(port.simplified());
 
-                //temp = direction;
+                //Direction
                 ports_t.setItem(rows,1,new QTableWidgetItem);
                 ports_t.item(rows,1)->setText(direction);
 
-                //temp = width;
+                //Width
                 ports_t.setItem(rows,2,new QTableWidgetItem);
                 ports_t.item(rows,2)->setText(QString::number(width));
 
-                //temp = max;
+                //Left bound
                 ports_t.setItem(rows,3,new QTableWidgetItem);
                 ports_t.item(rows,3)->setText(QString::number(max));
 
-               // temp = min;
+                //Right bound
                 ports_t.setItem(rows,4,new QTableWidgetItem);
                 ports_t.item(rows,4)->setText(QString::number(min));
 
-                //temp = type;
+                //Type
                 ports_t.setItem(rows,5,new QTableWidgetItem);
                 ports_t.item(rows,5)->setText(type);
 
+                //Comment
                 ports_t.setItem(rows,8,new QTableWidgetItem);
                 ports_t.item(rows,8)->setText(comment);
 
                 ports_t.insertRow(rows+1);
                 rows++;
-            }
-        }
-        // One port
-        else
-        {
-
-
-            temp = port;
-            ports_t.setItem(rows,0,new QTableWidgetItem);
-            ports_t.item(rows,0)->setText(port);
-
-            temp = direction;
-            ports_t.setItem(rows,1,new QTableWidgetItem);
-            ports_t.item(rows,1)->setText(direction);
-
-            temp = width;
-            ports_t.setItem(rows,2,new QTableWidgetItem);
-            ports_t.item(rows,2)->setText(QString::number(width));
-
-            temp = max;
-            ports_t.setItem(rows,3,new QTableWidgetItem);
-            ports_t.item(rows,3)->setText(QString::number(max));
-
-            temp = min;
-            ports_t.setItem(rows,4,new QTableWidgetItem);
-            ports_t.item(rows,4)->setText(QString::number(min));
-
-            temp = type;
-            ports_t.setItem(rows,5,new QTableWidgetItem);
-            ports_t.item(rows,5)->setText(type);
-
-            ports_t.setItem(rows,8,new QTableWidgetItem);
-            ports_t.item(rows,8)->setText(comment);
-
-            ports_t.insertRow(rows+1);
-            rows++;
             }
         }
     }
@@ -625,10 +555,7 @@ void VHDLanalysis::analyzeData(QTableWidget& generics_t,QTableWidget& ports_t, Q
 
 int VHDLanalysis::EntityConverter(QTableWidget& gene_t,QTableWidget& port_t, QString line, bool clicked)//QTextStream& vhdlFile)
 {
-
-    //QString line;
     QString comment;
-    //line = givenLine;
     line = line.simplified();
     int return_value;
 
@@ -688,12 +615,19 @@ int VHDLanalysis::EntityConverter(QTableWidget& gene_t,QTableWidget& port_t, QSt
         {
             comment = line.section("--",1);
             line = line.section("--",0,0);
+
+            if(line.startsWith("generic",Qt::CaseInsensitive))
+            {
+                line = line.section("generic(",1,-1,QString::SectionCaseInsensitiveSeps);
+            }
+            else if(line.startsWith("generic (",Qt::CaseInsensitive))
+            {
+                line = line.section("generic (",1,-1,QString::SectionCaseInsensitiveSeps);
+            }
+
             if(line.endsWith(");"))
             {
-                if(line.startsWith("generic"))
-                {
-                    line = line.section("generic(",1);
-                }
+
                 line = line.section(");",0,0);
                 analyzeData(gene_t,port_t,line,1,clicked,comment);
                 section = 1;
@@ -714,13 +648,19 @@ int VHDLanalysis::EntityConverter(QTableWidget& gene_t,QTableWidget& port_t, QSt
             comment = line.section("--",1);
             line = line.section("--",0,0);
 
+            if(line.startsWith("port(",Qt::CaseInsensitive))
+            {
+                line = line.section("port(",1,-1,QString::SectionCaseInsensitiveSeps);
+            }
+            else if(line.startsWith("port (",Qt::CaseInsensitive))
+            {
+                line = line.section("port (",1,-1,QString::SectionCaseInsensitiveSeps);
+            }
+
             //if entity contains only one line of ports
             if(line.endsWith(");"))
             {
-                if(line.startsWith("port"))
-                {
-                    line = line.section("port(",1);
-                }
+
                 line = line.section(");",0,0);
                 analyzeData(gene_t,port_t,line,0,clicked,comment);
                 //section = 1;
