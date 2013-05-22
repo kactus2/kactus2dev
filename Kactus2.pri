@@ -573,7 +573,10 @@ HEADERS += ./resource.h \
     ./MemoryDesigner/MemoryColumn.h \
     ./MemoryDesigner/AddressSubsection.h \
     ./MemoryDesigner/AddressSpaceItem.h \
-    ./MemoryDesigner/AddressSectionItem.h
+    ./MemoryDesigner/AddressSectionItem.h \
+    ./Vhdl2IPXact/vhdlanalysis.h \
+    ./Vhdl2IPXact/textedit.h \
+    ./Vhdl2IPXact/vhdltoipxact.h
 SOURCES += ./common/CSourceWriter.cpp \
     ./common/DesignDiagram.cpp \
     ./common/DesignWidget.cpp \
@@ -1113,5 +1116,8 @@ SOURCES += ./common/CSourceWriter.cpp \
     ./MemoryDesigner/MemoryDesignDiagram.cpp \
     ./MemoryDesigner/MemoryDesignWidget.cpp \
     ./MemoryDesigner/MemoryItem.cpp \
-    ./MemoryDesigner/SegmentItem.cpp
+    ./MemoryDesigner/SegmentItem.cpp \
+    ./Vhdl2IPXact/textedit.cpp \
+    ./Vhdl2IPXact/vhdlanalysis.cpp \
+    ./Vhdl2IPXact/vhdltoipxact.cpp
 RESOURCES += kactus.qrc

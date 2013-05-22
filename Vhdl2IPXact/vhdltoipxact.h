@@ -3,12 +3,20 @@
 
 #include "textedit.h"
 #include "vhdlanalysis.h"
-#include "models/component.h"
+
+#include <models/component.h>
+
 #include <QWidget>
-#include <QtWidgets>
+#include <QLabel>
+#include <QGridLayout>
+#include <QVBoxLayout>
+#include <QSpacerItem>
+#include <QPushButton>
+#include <QTableWidget>
+#include <QHBoxLayout>
+#include <QDialog>
 
-
-class VHDLtoIPXACT : public QWidget
+class VHDLtoIPXACT : public QDialog
 {
     Q_OBJECT
     

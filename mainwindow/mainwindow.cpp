@@ -92,6 +92,8 @@
 #include <ConnectionEditor/connectioneditor.h>
 #include <AdHocEditor/AdHocEditor.h>
 
+#include <Vhdl2IPXact/vhdltoipxact.h>
+
 #include <QCoreApplication>
 #include <QApplication>
 #include <QSettings>
@@ -2204,6 +2206,8 @@ void MainWindow::createComponent(KactusAttribute::ProductHierarchy prodHier,
 	component->createEmptyFlatView();
 
     // TODO: Open wizard.
+    VHDLtoIPXACT editor(component, directory, this);
+    editor.exec();
 
 	// Create the file.
 	if (!libraryHandler_->writeModelToFile(directory, component))

@@ -10,12 +10,17 @@
 #include "models/file.h"
 #include <QSharedPointer>
 #include <QTableWidget>
-
+#include <QHeaderView>
+#include <QApplication>
+#include <QMessageBox>
+#include <QFileDialog>
+#include <QTextStream>
+#include <QXmlStreamWriter>
+#include <QMenu>
 
 VHDLtoIPXACT::VHDLtoIPXACT(QSharedPointer<Component> comp, const QString xmlFilePath,
              QWidget *parent)
-    : QWidget(parent)
-
+    : QDialog(parent)
 {
 
     xmlFile = xmlFilePath;
@@ -378,6 +383,10 @@ void VHDLtoIPXACT::on_pushButtonDependency_clicked()
 
 void VHDLtoIPXACT::on_pushButtonSaveFile_released()
 {
+    accept();
+    return;
+
+    //todo: change filename to xmlFile
 //    VLNV testi;
 //    testi.setName("name");
 
@@ -513,11 +522,6 @@ void VHDLtoIPXACT::on_pushButtonSaveFile_released()
 
         xmlData.close();
         */
-    }
-
-
-
-
 }
 
 void VHDLtoIPXACT::removeRow()
