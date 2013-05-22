@@ -1,23 +1,25 @@
 
-#include "vhdltoipxact.h"
 
-//#include <models/component.h>
-//#include <models/port.h>
-//#include <models/model.h>
-//#include <models/modelparameter.h>
-//#include <models/fileset.h>
-//#include <models/file.h>
+#include "vhdltoipxact.h"
+#include "models/generaldeclarations.h"
+#include "models/component.h"
+#include "models/port.h"
+#include "models/model.h"
+#include "models/modelparameter.h"
+#include "models/fileset.h"
+#include "models/file.h"
+#include <QSharedPointer>
 #include <QTableWidget>
 
 
-VHDLtoIPXACT::VHDLtoIPXACT(/*QSharedPointer<Component> comp, const QString xmlFilePath
-             */QWidget *parent)
+VHDLtoIPXACT::VHDLtoIPXACT(QSharedPointer<Component> comp, const QString xmlFilePath,
+             QWidget *parent)
     : QWidget(parent)
 
 {
 
-    //xmlFile = xmlFilePath;
-
+    xmlFile = xmlFilePath;
+	comp_ = comp;
     VHDLOpen = false;
     saveState = true;
     VHDdata = new VHDLanalysis;
@@ -72,7 +74,8 @@ VHDLtoIPXACT::VHDLtoIPXACT(/*QSharedPointer<Component> comp, const QString xmlFi
     tableWidgetPorts->setRowCount(1);
     tableWidgetPorts->setObjectName(QStringLiteral("tableWidgetPorts"));
     tableWidgetPorts->setContextMenuPolicy(Qt::CustomContextMenu);
-    tableWidgetPorts->setEditTriggers(QAbstractItemView::AnyKeyPressed|QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked);
+    tableWidgetPorts->setEditTriggers(QAbstractItemView::AnyKeyPressed|QAbstractItemView::DoubleClicked
+                                      |QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked);
     tableWidgetPorts->setDragDropMode(QAbstractItemView::DropOnly);
     tableWidgetPorts->setDefaultDropAction(Qt::CopyAction);
     tableWidgetPorts->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
@@ -250,6 +253,7 @@ void VHDLtoIPXACT::updateTable( const QString &worduc )
     VHDLdisplay->setReadOnly( false);
 
     cursors.select(QTextCursor::LineUnderCursor);
+    if (entityEndRow < cursors.blockNumber() ) return;
     VHDdata->EntityConverter( *tableWidgetModelParams, *tableWidgetPorts, worduc, true);
 
     if (params < tableWidgetModelParams->rowCount() ) {
@@ -284,13 +288,15 @@ void VHDLtoIPXACT::updateTable( const QString &worduc )
 void VHDLtoIPXACT::on_pushButtonOpenFile_released()
 {
     if ( VHDLOpen == false ) {
+        VHDdata = new VHDLanalysis;
         QString filename = QFileDialog::getOpenFileName(this,tr("Open file"), "", tr("VHDL files (*.vhd *.vhdl)"));
         QFile data(filename);
         if(data.open(QIODevice::ReadOnly | QIODevice::Text)){
+            vhdlFile = filename;
             QTextStream in(&data);
             VHDLdisplay->clear();
             QString line;
-
+            label->setText("Source VHDL - " + filename);
             int params = tableWidgetModelParams->rowCount();
             int ports = tableWidgetPorts->rowCount();
             int linereturn = 0;
@@ -336,11 +342,12 @@ void VHDLtoIPXACT::on_pushButtonOpenFile_released()
         QMessageBox::StandardButton msg;
         msg = QMessageBox::question(this, "Warning", "Closing the file discards all information on the tables. Do you want to proceed?"
                                     , QMessageBox::Yes | QMessageBox::Cancel);
-        if (msg = QMessageBox::Yes) {
+        if (msg == QMessageBox::Yes) {
             VHDLdisplay->clear();
             //Tyhjennä taulut ja tietorakenne
             VHDLOpen = false;
             pushButtonOpenFile->setText("Open VHDL File");
+            label->setText("Source VHDL");
             saveState = true;
             tableWidgetModelParams->clearContents();
             while (  tableWidgetModelParams->rowCount() > 1 ){
@@ -350,11 +357,13 @@ void VHDLtoIPXACT::on_pushButtonOpenFile_released()
             while (  tableWidgetPorts->rowCount() > 1 ){
                 tableWidgetPorts->removeRow(0);
             }
+            delete VHDdata;
+            VHDLOpen = false;
         }
         else {
             //Do nothing
         }
-        VHDLOpen = false;
+
     }
 }
 
@@ -369,90 +378,145 @@ void VHDLtoIPXACT::on_pushButtonDependency_clicked()
 
 void VHDLtoIPXACT::on_pushButtonSaveFile_released()
 {
-    //todo: change filename to xmlFile
+//    VLNV testi;
+//    testi.setName("name");
 
+    QMessageBox msgBox;
+    /*
+    if ( !comp_->getVlnv()->isValid() ) {
+        msgBox.setInformativeText("VLNV data not valid!");
+        msgBox.exec();
+        return;
+    } */
+     /*comp_->getVlnv()->getName()+ "." + comp_->getVlnv()->getVersion() + ".xml"*/
+    QString nametag =  "testi.xml";
+    /*
     //start file writing
-    QString filename = QFileDialog::getSaveFileName(this,tr("Open file"), "", tr("XML files (*.xml)"));
-    QFile xmlData(filename);
+    //QString filename = QFileDialog::getSaveFileName(this,tr("Open file"), "", tr("XML files (*.xml)"));
+    QFile xmlData(xmlFile + "\\" + nametag);
     if (xmlData.open(QIODevice::WriteOnly)) {
-        QXmlStreamWriter xmlFile(&xmlData);
 
-        //test code for kactus komponent use
-        /*
+		//test code for kactus komponent use
+        
         //create model
-        Model model;
+        Model* model = new Model;
+
 
         //create port list
-        QList<QSharedPointer<Port> > ports
-
+		
+        QList<QSharedPointer<Port>> ports;
+		
+		//create modelParam list
+		
+        QList<QSharedPointer<ModelParameter>> modelParameters;
+		
+		
         //loop ports into model
         General::Direction direction;
         bool ok = true;
+		
         for ( int i = 0 ; i < tableWidgetPorts->rowCount() ; ++i){
             if ( !tableWidgetPorts->itemAt(i,0)->text().isEmpty() ) {
 
-                if ( !tableWidgetPorts->itemAt(i,1)->text().compare("in",Qt::CaseInsensitive ) {
-                    direction = IN;
+                if ( !tableWidgetPorts->itemAt(i,1)->text().compare("in",Qt::CaseInsensitive )) {
+					direction = General::INOUT ;
                 }
-                else if ( !tableWidgetPorts->itemAt(i,1)->text().compare("out",Qt::CaseInsensitive ) {
-                    direction = OUT;
+                else if ( !tableWidgetPorts->itemAt(i,1)->text().compare("out",Qt::CaseInsensitive )) {
+					direction = General::INOUT ;
                 }
-                else if ( !tableWidgetPorts->itemAt(i,1)->text().compare("inout",Qt::CaseInsensitive ) {
-                    direction = INOUT;
+                else if ( !tableWidgetPorts->itemAt(i,1)->text().compare("inout",Qt::CaseInsensitive )) {
+                    direction = General::INOUT ;
                 }
                 else {
-                    direction = DIRECTION_INVALID;
+                    direction = General::DIRECTION_INVALID;
                 }
 
-                Port port = Port(tableWidgetPorts->itemAt(i,0)->text(),
-                direction,
-                tableWidgetPorts->itemAt(i,3)->text().toInt(&ok), //left
-                tableWidgetPorts->itemAt(i,4)->text().toInt(&ok), //right
-                tableWidgetPorts->itemAt(i,5)->text(),
-                tableWidgetPorts->itemAt(i,6)->text(),
-                tableWidgetPorts->itemAt(i,7)->text(),
-                tableWidgetPorts->itemAt(i,8)->text());
-                ports.append(port);
+                QSharedPointer<Port> port = QSharedPointer<Port>(new Port);
+                port->setName(tableWidgetPorts->itemAt(i,0)->text());
+                port->setDirection(direction);
+                port->setLeftBound(tableWidgetPorts->itemAt(i,3)->text().toInt(&ok));
+                port->setRightBound(tableWidgetPorts->itemAt(i,4)->text().toInt(&ok));
+                port->setTypeName(tableWidgetPorts->itemAt(i,5)->text());
+                port->setTypeDefinition(tableWidgetPorts->itemAt(i,5)->text(), tableWidgetPorts->itemAt(i,6)->text() );
+                port->setDefaultValue(tableWidgetPorts->itemAt(i,7)->text());
+                port->setDescription(tableWidgetPorts->itemAt(i,8)->text());
+
+                ports.append( port );
+
+				
             }
         }
 
-        //create modelParam list
-        const QList<QSharedPointer<ModelParameter>>& modelParameters
-
+        msgBox.setInformativeText("params");
+        msgBox.exec();
+		
         //loop parameters into model
         for ( int i = 0 ; i < tableWidgetModelParams->rowCount() ; ++i){
             if ( !tableWidgetModelParams->itemAt(i,0)->text().isEmpty() ) {
-                ModelParameter param;
-                param.setDataType(tableWidgetModelParams->itemAt(i,1)->text());
-                param.setName(tableWidgetModelParams->itemAt(i,0)->text());
-                param.setDescription(tableWidgetModelParams->itemAt(i,4)->text());
-                param.setValue(tableWidgetModelParams->itemAt(i,3)->text());
-                param.setUsageType(tableWidgetModelParams->itemAt(i,2)->text());
-                modelParameters.append(param);
+
+                QSharedPointer<ModelParameter> param = QSharedPointer<ModelParameter>(new ModelParameter);
+
+                param->setDataType(tableWidgetModelParams->itemAt(i,1)->text());
+                param->setName(tableWidgetModelParams->itemAt(i,0)->text());
+                param->setDescription(tableWidgetModelParams->itemAt(i,4)->text());
+                param->setValue(tableWidgetModelParams->itemAt(i,3)->text());
+                param->setUsageType(tableWidgetModelParams->itemAt(i,2)->text());
+                modelParameters.append( param );
+
             }
         }
+		
 
-        model.setModelParameters( modelParameters ); //on model
-        model.setPorts( ports ); //on model
-        comp.addFileSet(QSharedPointer<FileSet> fileSet); //on component
+        model->setModelParameters( modelParameters ); //on model
+        model->setPorts( ports ); //on model
+
 
         //add model into component
-        comp.setModel( model );
 
-        if ( !comp.isValid()) {
-            QMessageBox msgBox;
+        msgBox.setInformativeText("model");
+        msgBox.exec();
+
+        //comp_->setModel( model );
+
+        //add fileset
+
+        msgBox.setInformativeText("fileset");
+        msgBox.exec();
+        */
+        /*
+        QSharedPointer<FileSet> fileSet(new FileSet(xmlFile));
+        const QString filePath = General::getRelativePath( xmlFile, vhdlFile);
+
+        QSharedPointer<File> file(new File());
+        file->addFileType("vhdlsource");
+        file->setName(filePath);
+
+        msgBox.setInformativeText("fileset2");
+        msgBox.exec();
+
+        fileSet->addFile(file);
+        comp_->addFileSet(  fileSet );
+        */
+        /*
+        QStringList errorList;
+        if ( !comp_->isValid(errorList)) {
             msgBox.setInformativeText("Failure to verify data fields!");
             msgBox.exec();
             return;
-        }
+        } 
+        msgBox.setInformativeText("write");
+        msgBox.exec();
+        comp_->write(xmlData);
 
-        component.write(xmlData);
 
-        */
         saveState = true;
 
         xmlData.close();
+        */
     }
+
+
+
 
 }
 

@@ -3,17 +3,18 @@
 
 #include "textedit.h"
 #include "vhdlanalysis.h"
-//#include <models/component.h>
+#include "models/component.h"
 #include <QWidget>
 #include <QtWidgets>
+
 
 class VHDLtoIPXACT : public QWidget
 {
     Q_OBJECT
     
 public:
-    VHDLtoIPXACT(/*QSharedPointer<Component> comp, const QString xmlFilePath
-             */QWidget *parent = 0);
+    VHDLtoIPXACT(QSharedPointer<Component> comp, const QString xmlFilePath,
+             QWidget *parent = 0);
     ~VHDLtoIPXACT();
 
 private slots:
@@ -70,7 +71,8 @@ private:
     VHDLanalysis *VHDdata;
     int entityEndRow;
     QString xmlFile;
-    //Component comp;
+    QString vhdlFile;
+    QSharedPointer<Component> comp_;
 
     QWidget *centralWidget;
     QGridLayout *gridLayout;
