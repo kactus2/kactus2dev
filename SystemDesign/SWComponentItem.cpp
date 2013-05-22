@@ -232,7 +232,7 @@ void SWComponentItem::updateComponent()
     }
 
     // Create a hierarchy icon if the component is a hierarchical one.
-    if (componentModel()->hasSWViews())
+    if (componentModel()->isHierarchicalSW())
     {
         if (hierIcon_ == 0)
         {

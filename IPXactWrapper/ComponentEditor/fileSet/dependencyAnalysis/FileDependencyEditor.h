@@ -73,6 +73,9 @@ signals:
     //! Emitted when the contents have changed.
     void contentChanged();
 
+protected:
+    void showEvent(QShowEvent* event);
+
 private slots:
     /*!
      *  Opens up the source selection dialog.

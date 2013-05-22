@@ -369,7 +369,7 @@ private:
     QMap<QString, ISourceAnalyzerPlugin*> analyzerPluginMap_;
 
     //! Dependency list.
-    QList< QSharedPointer<FileDependency> > dependencies_;
+    QList< QSharedPointer<FileDependency> >& dependencies_;
 };
 
 //-----------------------------------------------------------------------------

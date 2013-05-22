@@ -3786,8 +3786,8 @@ void MainWindow::changeProtection(bool locked)
             otherDoc->setPreviouslyUnlocked();
         }
 
-        // Refresh and unlock the document.
-        doc->refresh();
+        //doc->refresh(); Refresh is no longer needed.
+        // Unlock the document.
         doc->setProtection(locked);
 	}
 

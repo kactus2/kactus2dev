@@ -152,19 +152,7 @@ QVariant ActiveViewModel::data(const QModelIndex& index, int role /*= Qt::Displa
             }
             else
             {
-                QStringList viewNames;
-
-                // Add non-hierarchical standard views and SW views.
-                foreach (QSharedPointer<View const> view, searched->componentModel()->getViews())
-                {
-                    if (!view->isHierarchical())
-                    {
-                        viewNames.append(view->getName());
-                    }
-                }
-                
-                viewNames += searched->componentModel()->getSWViewNames();
-                return viewNames;
+                return searched->componentModel()->getSWViewNames();
             }
 		}
 		else

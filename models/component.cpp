@@ -512,12 +512,18 @@ attributes_(other.attributes_) {
 		}
 	}
 
-    foreach (QSharedPointer<FileDependency> dependency, other.fileDependencies_) {
-        if (dependency) {
-            QSharedPointer<FileDependency> copy = QSharedPointer<FileDependency>(
-                new FileDependency(*dependency.data()));
-            fileDependencies_.append(copy);
-        }
+    foreach (QSharedPointer<FileDependency> dependency, other.fileDependencies_)
+    {
+        QSharedPointer<FileDependency> copy =
+            QSharedPointer<FileDependency>(new FileDependency(*dependency.data()));
+        fileDependencies_.append(copy);
+    }
+    
+    foreach (QSharedPointer<FileDependency> dependency, other.pendingFileDependencies_)
+    {
+        QSharedPointer<FileDependency> copy =
+            QSharedPointer<FileDependency>(new FileDependency(*dependency.data()));
+        pendingFileDependencies_.append(copy);
     }
 
 	foreach (QSharedPointer<Cpu> cpu, other.cpus_) {
@@ -669,6 +675,15 @@ Component & Component::operator=( const Component &other ) {
                     new FileDependency(*dependency.data()));
                 fileDependencies_.append(copy);
             }
+        }
+
+        pendingFileDependencies_.clear();
+
+        foreach (QSharedPointer<FileDependency> dependency, other.pendingFileDependencies_)
+        {
+            QSharedPointer<FileDependency> copy =
+                QSharedPointer<FileDependency>(new FileDependency(*dependency.data()));
+            fileDependencies_.append(copy);
         }
 
         sourceDirs_ = other.sourceDirs_;
@@ -975,8 +990,15 @@ void Component::write(QFile& file) {
         // Commit pending dependencies if found.
         if (!pendingFileDependencies_.empty())
         {
-            fileDependencies_ = pendingFileDependencies_;
-            pendingFileDependencies_.clear();
+            fileDependencies_.clear();
+
+            foreach (QSharedPointer<FileDependency> dep, pendingFileDependencies_)
+            {
+                if (dep->getStatus() != FileDependency::STATUS_REMOVED)
+                {
+                    fileDependencies_.append(dep);
+                }
+            }
         }
 
         if (!fileDependencies_.empty())
@@ -3649,14 +3671,6 @@ QList<QSharedPointer<FileDependency> >& Component::getFileDependencies()
 }
 
 //-----------------------------------------------------------------------------
-// Function: Component::setFileDependencies()
-//-----------------------------------------------------------------------------
-void Component::setFileDependencies(const QList<QSharedPointer<FileDependency> >& fileDependencies)
-{
-    fileDependencies_ = fileDependencies;
-}
-
-//-----------------------------------------------------------------------------
 // Function: Component::setSourceDirectories()
 //-----------------------------------------------------------------------------
 void Component::setSourceDirectories(QStringList const& sourceDirs)
@@ -3688,13 +3702,6 @@ void Component::parseSourceDirectories(QDomNode& node)
     }
 }
 
-//-----------------------------------------------------------------------------
-// Function: Component::setPendingFileDependencies()
-//-----------------------------------------------------------------------------
-void Component::setPendingFileDependencies(const QList<QSharedPointer<FileDependency> >& fileDependencies)
-{
-    pendingFileDependencies_ = fileDependencies;
-}
 bool Component::uniqueRegisterNames( QStringList& regNames ) const {
 	foreach (QSharedPointer<MemoryMap> memMap, memoryMaps_) {
 		
@@ -3777,4 +3784,28 @@ const QStringList Component::getDependentDirs() const {
 		dirs.append(fileSet->getDependencies());
 	}
 	return dirs;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Component::getPendingFileDependencies()
+//-----------------------------------------------------------------------------
+QList< QSharedPointer<FileDependency> >& Component::getPendingFileDependencies()
+{
+    return pendingFileDependencies_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Component::isHierarchicalSW()
+//-----------------------------------------------------------------------------
+bool Component::isHierarchicalSW() const
+{
+    foreach (QSharedPointer<SWView> view, swViews_)
+    {
+        if (view->getHierarchyRef().isValid())
+        {
+            return true;
+        }
+    }
+
+    return false;
 }

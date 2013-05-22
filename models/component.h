@@ -164,6 +164,11 @@ public:
 	 */
 	bool isHierarchical() const;
 
+    /*!
+     *  Returns true if the component has hierarchical SW.
+     */
+    bool isHierarchicalSW() const;
+
 	/*! \brief Get this component's channels
 	 *
 	 * \return QList containing component's channels
@@ -1004,6 +1009,11 @@ public:
 	const QList<QSharedPointer<FileDependency> >& getFileDependencies() const;
 
     /*!
+     *  Returns the pending dependency list for writing.
+     */
+    QList< QSharedPointer<FileDependency> >& getPendingFileDependencies();
+
+    /*!
      *  Returns the list of source directories.
      */
     QStringList const& getSourceDirectories() const;
@@ -1025,21 +1035,6 @@ public:
 	* \param fileSets QList containing the file sets to be set
 	*/
 	void setFileSets(const QList<QSharedPointer<FileSet> > &fileSets);
-
-    /*! \brief Set this component's file dependencies
-	*
-	* \param fileDependencies QList containing the file dependencies to be set
-	*/
-	void setFileDependencies(const QList<QSharedPointer<FileDependency> >& fileDependencies);
-
-    /*!
-     *  Set this component's pending file dependencies.
-	*
-	*       @param [in] fileDependencies QList containing the file dependencies to be set
-    *
-    *       @remarks The pending file dependencies are committed when the component is saved.
-	*/
-	void setPendingFileDependencies(const QList<QSharedPointer<FileDependency> >& fileDependencies);
 
     /*!
      *  Sets the source directories where to automatically scan files to file sets.

@@ -130,8 +130,6 @@ FileDependencyEditor::FileDependencyEditor(QSharedPointer<Component> component,
 
     connect(&infoWidget_, SIGNAL(dependencyChanged(FileDependency*)),
             &model_, SIGNAL(dependencyChanged(FileDependency*)), Qt::UniqueConnection);
-
-    //scan();
 }
 
 //-----------------------------------------------------------------------------
@@ -363,5 +361,14 @@ void FileDependencyEditor::scanDirectories()
     timer_->stop();
     delete timer_;
     delete progWidget_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileDependencyEditor::showEvent()
+//-----------------------------------------------------------------------------
+void FileDependencyEditor::showEvent(QShowEvent* event)
+{
+    scan();
+    QWidget::showEvent(event);
 }
 

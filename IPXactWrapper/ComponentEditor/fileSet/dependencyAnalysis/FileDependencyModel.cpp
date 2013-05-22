@@ -37,7 +37,7 @@ FileDependencyModel::FileDependencyModel(PluginManager& pluginMgr, QSharedPointe
       curFolderIndex_(0),
       curFileIndex_(0),
       progressValue_(0),
-      dependencies_()
+      dependencies_(component->getPendingFileDependencies())
 {
     connect(this, SIGNAL(dependencyAdded(FileDependency*)), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(this, SIGNAL(dependencyChanged(FileDependency*)), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -576,19 +576,6 @@ void FileDependencyModel::performAnalysisStep()
     if (progressValue_ == getTotalStepCount())
     {
         stopAnalysis();
-
-        // Set the dependencies as pending.
-        QList< QSharedPointer<FileDependency> > pendingDependencies;
-
-        foreach (QSharedPointer<FileDependency> dep, dependencies_)
-        {
-            if (dep->getStatus() != FileDependency::STATUS_REMOVED)
-            {
-                pendingDependencies.append(dep);
-            }
-        }
-
-        component_->setPendingFileDependencies(pendingDependencies);
     }
     else
     {
