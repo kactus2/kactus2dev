@@ -347,6 +347,7 @@ void VHDLanalysis::analyzeData(QTableWidget& generics_t,QTableWidget& ports_t, Q
         QString min_qs;
         QString direction;
         QString port;
+        QString initvalue = "";
         QStringList ports;
         int width = 1;
         bool morethan1 = false;
@@ -407,15 +408,29 @@ void VHDLanalysis::analyzeData(QTableWidget& generics_t,QTableWidget& ports_t, Q
         else
         {
             //takes direction and removes it from data
-            direction = data.section(' ',1,1);
-            data = data.section(' ',2);
+            data = data.trimmed();
+            direction = data.section(' ',0,0);
+            direction = direction.trimmed();
+
+            data = data.section(' ',1);
             data = data.toLower();
 
+            //takes initial value from data
+            if(data.contains(":="))
+            {
+                initvalue = data.section(":=",1);
+                data = data.section(":=",0,0);
+                initvalue = initvalue.trimmed();
+            }
+
             //data now contains type and range(if vector or integer)
-            //vector
+            //vector      
             if(data.contains("vector"))
             {
-                type = "std_logic_vector";
+                //type = "std_logic_vector";
+                type = data.section('(',0,0);
+                type = type.trimmed();
+
                 data = data.section('(',1);
                 data = data.section(')',0,0);
 
@@ -453,7 +468,7 @@ void VHDLanalysis::analyzeData(QTableWidget& generics_t,QTableWidget& ports_t, Q
             //data type is std_logic or other 1 wide type
             else
             {
-                type = data;
+                type = data.trimmed();
             }
 
             if(width == 1)
@@ -505,6 +520,10 @@ void VHDLanalysis::analyzeData(QTableWidget& generics_t,QTableWidget& ports_t, Q
                     ports_t.setItem(rows,5,new QTableWidgetItem);
                     ports_t.item(rows,5)->setText(type);
 
+                    //Initial value
+                    ports_t.setItem(rows,7,new QTableWidgetItem);
+                    ports_t.item(rows,7)->setText(initvalue);
+
                     //Comment
                     ports_t.setItem(rows,8,new QTableWidgetItem);
                     ports_t.item(rows,8)->setText(comment);
@@ -539,6 +558,10 @@ void VHDLanalysis::analyzeData(QTableWidget& generics_t,QTableWidget& ports_t, Q
                 //Type
                 ports_t.setItem(rows,5,new QTableWidgetItem);
                 ports_t.item(rows,5)->setText(type);
+
+                //Initial value
+                ports_t.setItem(rows,7,new QTableWidgetItem);
+                ports_t.item(rows,7)->setText(initvalue);
 
                 //Comment
                 ports_t.setItem(rows,8,new QTableWidgetItem);
@@ -614,9 +637,10 @@ int VHDLanalysis::EntityConverter(QTableWidget& gene_t,QTableWidget& port_t, QSt
         else if(section == 2 && line.contains(':'))
         {
             comment = line.section("--",1);
+            comment = comment.trimmed();
             line = line.section("--",0,0);
 
-            if(line.startsWith("generic",Qt::CaseInsensitive))
+            if(line.startsWith("generic(",Qt::CaseInsensitive))
             {
                 line = line.section("generic(",1,-1,QString::SectionCaseInsensitiveSeps);
             }
@@ -646,6 +670,7 @@ int VHDLanalysis::EntityConverter(QTableWidget& gene_t,QTableWidget& port_t, QSt
         else if(section == 3 && line.contains(':'))
         {
             comment = line.section("--",1);
+            comment = comment.trimmed();
             line = line.section("--",0,0);
 
             if(line.startsWith("port(",Qt::CaseInsensitive))
