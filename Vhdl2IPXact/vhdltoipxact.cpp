@@ -259,7 +259,7 @@ void VHDLtoIPXACT::updateTable( const QString &worduc )
 
     cursors.select(QTextCursor::LineUnderCursor);
     if (entityEndRow < cursors.blockNumber() ) return;
-    VHDdata->EntityConverter( *tableWidgetModelParams, *tableWidgetPorts, worduc, true);
+    VHDdata->entityConverter( *tableWidgetModelParams, *tableWidgetPorts, worduc, true);
 
     if (params < tableWidgetModelParams->rowCount() ) {
         cursors.beginEditBlock();
@@ -309,7 +309,7 @@ void VHDLtoIPXACT::on_pushButtonOpenFile_released()
             while (!in.atEnd()){
                 line = in.readLine();
                 if ( linereturn != 4) {
-                    linereturn = VHDdata->EntityConverter( *tableWidgetModelParams, *tableWidgetPorts, line, false);
+                    linereturn = VHDdata->entityConverter( *tableWidgetModelParams, *tableWidgetPorts, line, false);
                     if ( linereturn == 4 ) entityEndRow = VHDLdisplay->textCursor().blockNumber();
                 }
                 if (tableWidgetPorts->rowCount() != ports  ) {

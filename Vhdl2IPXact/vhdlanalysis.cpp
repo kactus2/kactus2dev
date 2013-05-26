@@ -3,7 +3,7 @@
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Antti Sillanpää
-// Date: 24.05.2013
+// Date: 26.05.2013
 //
 // Description:
 // Analyses entity of vhdl-file and returns model parameters and ports of
@@ -20,8 +20,151 @@ VHDLanalysis::VHDLanalysis()
 {
     section_ = 0;
 }
+
 VHDLanalysis::~VHDLanalysis()
 {
+}
+
+//-----------------------------------------------------------------------------
+// Function: VHDLanalysis::entityConverter()
+//-----------------------------------------------------------------------------
+int VHDLanalysis::entityConverter(QTableWidget& gene_t,QTableWidget& port_t, QString line, bool clicked)
+{
+    QString comment; // Stores comment part of the line
+    int return_value;
+
+    line = line.simplified();
+
+    //if user clicks to modify this if desides right section parameter
+    if (line.contains(':') && clicked)
+    {
+        //no need to analyze comment line with ":"
+        if (line.startsWith("--"))
+        {
+            section_ = 4;
+        }
+        else if(line.contains("in ",Qt::CaseInsensitive) ||
+                line.contains("out ",Qt::CaseInsensitive) ||
+                line.contains("inout ",Qt::CaseInsensitive) ||
+                line.contains("buffer ",Qt::CaseInsensitive) ||
+                line.contains("linkage ",Qt::CaseInsensitive))
+        {
+            //port(s)
+            section_ = 3;
+
+        }
+        else
+        {
+            //generic
+            section_ = 2;
+        }
+    }
+
+    //Analyzes entity section of code
+    //-----------------------------------------------------------------------------
+    if (section_ != 4)
+    {
+        //entity starts
+        if (line.startsWith("entity",Qt::CaseInsensitive))
+        {
+            section_ = 1;
+        }
+        //generic list starts
+        else if (line.startsWith("generic",Qt::CaseInsensitive) && section_ == 1)
+        {
+            section_ = 2;
+        }
+        //port list starts
+        else if (line.startsWith("port",Qt::CaseInsensitive))
+        {
+            section_ = 3;
+        }
+        //entity ends
+        else if (line.startsWith("end",Qt::CaseInsensitive))
+        {
+            section_ = 4;
+        }
+
+        //-----------------------------------------------------------------------------
+        // Generic section of entity
+        //-----------------------------------------------------------------------------
+        if (line.startsWith("--"))
+        {
+
+        }
+        else if (section_ == 2 && line.contains(':'))
+        {
+            comment = line.section("--",1);
+            comment = comment.trimmed();
+            line = line.section("--",0,0);
+
+            if (line.startsWith("generic(",Qt::CaseInsensitive))
+            {
+                line = line.section("generic(",1,-1,QString::SectionCaseInsensitiveSeps);
+            }
+            else if (line.startsWith("generic (",Qt::CaseInsensitive))
+            {
+                line = line.section("generic (",1,-1,QString::SectionCaseInsensitiveSeps);
+            }
+
+            if (line.endsWith(");"))
+            {
+
+                line = line.section(");",0,0);
+                analyzeData(gene_t,port_t,line,1,clicked,comment);
+                section_ = 1;
+            }
+            else
+            {
+                line = line.section(';',0,0);
+                analyzeData(gene_t,port_t,line,1,clicked,comment);
+            }
+            //line should be "genericName : type := value"
+            //          or  "genericName : type"
+        }
+
+        //-----------------------------------------------------------------------------
+        // Port section of entity
+        //-----------------------------------------------------------------------------
+        else if (section_ == 3 && line.contains(':'))
+        {
+            comment = line.section("--",1);
+            comment = comment.trimmed();
+            line = line.section("--",0,0);
+
+            if (line.startsWith("port(",Qt::CaseInsensitive))
+            {
+                line = line.section("port(",1,-1,QString::SectionCaseInsensitiveSeps);
+            }
+            else if (line.startsWith("port (",Qt::CaseInsensitive))
+            {
+                line = line.section("port (",1,-1,QString::SectionCaseInsensitiveSeps);
+            }
+
+            //if entity contains only one line of ports
+            if (line.endsWith(");"))
+            {
+
+                line = line.section(");",0,0);
+                analyzeData(gene_t,port_t,line,0,clicked,comment);
+            }
+            else
+            {
+                line = line.section(';',0,0);
+                analyzeData(gene_t,port_t,line,0,clicked,comment);
+            }
+            //line should be "portName : direction type"
+            //          or  "portName,...,portName : direction type"
+        }
+      }
+
+    //returns info what was done, 2 = generic 3 = port, 4 = end->
+    return_value = section_;
+    if (clicked)
+    {
+       section_ = 4;
+    }
+    return return_value;
 }
 
 //-----------------------------------------------------------------------------
@@ -29,11 +172,13 @@ VHDLanalysis::~VHDLanalysis()
 //-----------------------------------------------------------------------------
 int VHDLanalysis::Qstring2int(QTableWidget const& generics,QString number)
 {
-    bool ok;
-    int result;
-    QString generic_v;
+    bool ok = true; // Boolean flag for succesfull operation
+    int result = 0; // converted QString value
+    QString generic_v; // value of searched generic
+
     number = number.trimmed();
     result = number.toInt(&ok);
+
     if (!ok)
     {
         //if number is generic or unknown
@@ -56,21 +201,21 @@ int VHDLanalysis::Qstring2int(QTableWidget const& generics,QString number)
 //-----------------------------------------------------------------------------
 int VHDLanalysis::analyzeValues(QTableWidget const& generics_t,QString value)
 {
-    QString left;
-    QString right;
-    QString left2;
-    QString right2;
-    int result;
-    int number1;
-    int number2;
-    int left_i;
-    int right_i;
-    int status = 0;  // 0 = NOP, 1 = -, and 2 = +
+    QString left; // left part of value
+    QString right; // right part of value
+    QString left2; // left part of left or right
+    QString right2; // right part of left or right
+    int result; // result of value after calculations
+    int number1; // variable for performing calculations
+    int number2; // variable for performing calculations
+    int left_i; // QSting left after calculations
+    int right_i; // QSting right after calculations
+    int status = 0;  // variable to control calculations
 
-
+    // "left/right"
+    //-----------------------------------------------------------------------------
     if (value.contains('/'))
     {
-        // "left/right"
         left = value.section('/',0,0);
         right = value.section('/',1);
         // "left2-right2/right"
@@ -160,6 +305,7 @@ int VHDLanalysis::analyzeValues(QTableWidget const& generics_t,QString value)
     } //end of /
 
     // "left-right"
+    //-----------------------------------------------------------------------------
     else if (value.contains('-'))
     {
         left = value.section('-',0,0);
@@ -211,6 +357,7 @@ int VHDLanalysis::analyzeValues(QTableWidget const& generics_t,QString value)
     } //end of "-"
 
     // "left+right"
+    //-----------------------------------------------------------------------------
     else if (value.contains('+'))
     {
         left = value.section('-',0,0);
@@ -259,8 +406,11 @@ int VHDLanalysis::analyzeValues(QTableWidget const& generics_t,QString value)
 
         }
         result = left_i + right_i;
-    }
+    } //end of "+"
+
+
     // "left*right"
+    //-----------------------------------------------------------------------------
     else if (value.contains('*'))
     {
         left = value.section('*',0,0);
@@ -268,8 +418,10 @@ int VHDLanalysis::analyzeValues(QTableWidget const& generics_t,QString value)
         right_i = Qstring2int(generics_t,right);
         left_i = Qstring2int(generics_t,left);
         result = left_i * right_i;
-    }
+    } //end of "*"
+
     // "value"
+    //-----------------------------------------------------------------------------
     else
     {
         result = Qstring2int(generics_t,value);
@@ -283,23 +435,24 @@ int VHDLanalysis::analyzeValues(QTableWidget const& generics_t,QString value)
 void VHDLanalysis::analyzeData(QTableWidget& generics_t, QTableWidget& ports_t, QString data,
                                bool generic, bool addremove, QString comment)
 {
-    QTableWidgetItem* itemData;
-    QString type;
-    QString temp;
-    int rows;
-    bool found = false;
+    QTableWidgetItem* itemData; // variable to interact with Qtablewidgert
+    QString type; //type of port
+    QString temp; // used for slicing generics for table
+    int rows; // number of rows in table
+    bool found = false; // true, if searched name of generic/port was found in table
 
-
-    // Data is generic
-    //
+    //-----------------------------------------------------------------------------
+    // Data is Generic
+    //-----------------------------------------------------------------------------
     if (generic)
     {
         temp = data.section(':',0,0);
         temp = temp.trimmed();
+
         //searches generic table and removes generic if found
+        //-----------------------------------------------------------------------------
         if (addremove)
         {
-
             itemData = new QTableWidgetItem;
             itemData->setText(temp);
             for (int i=0; i< generics_t.rowCount()-1; i++)
@@ -318,9 +471,11 @@ void VHDLanalysis::analyzeData(QTableWidget& generics_t, QTableWidget& ports_t, 
 
         }
         //else adds generic to table
+        //-----------------------------------------------------------------------------
         else
         {
             rows = generics_t.rowCount() - 1;
+
             //sets generic name to table
             generics_t.setItem(rows,0,new QTableWidgetItem);
             generics_t.item(rows,0)->setText(temp.trimmed());
@@ -351,25 +506,28 @@ void VHDLanalysis::analyzeData(QTableWidget& generics_t, QTableWidget& ports_t, 
         }
     }
 
-    //Data is Port
+    //-----------------------------------------------------------------------------
+    // Data is Port
+    //-----------------------------------------------------------------------------
     else
     {
-        int max = 0;
-        int min = 0;
-        QString max_qs;
-        QString min_qs;
-        QString direction;
-        QString port;
-        QString initvalue = "";
-        QStringList ports;
-        int width = 1;
-        bool morethan1 = false;
+        int max = 0; // left bound
+        int min = 0; // right bound
+        QString max_qs; // left bound as qs
+        QString min_qs; // right bound as qs
+        QString direction; // direction of port
+        QString port; // name of port
+        QString initvalue = ""; // port default value
+        QStringList ports; // names of multiple ports in same line
+        int width = 1; // width of port
+        bool morethan1 = false; // true, if there are more than one port in same line
 
         port = data.section(':',0,0);
         data = data.section(':',1);
         port = port.simplified();
 
         //line contains more than one port of same kind
+        //-----------------------------------------------------------------------------
         if (port.contains(','))
         {
             ports = port.split(',');
@@ -379,6 +537,7 @@ void VHDLanalysis::analyzeData(QTableWidget& generics_t, QTableWidget& ports_t, 
         }
 
         //removes multiple ports from table if found
+        //-----------------------------------------------------------------------------
         if (addremove && morethan1)
         {
             int nroOfPorts = ports.size();
@@ -398,6 +557,7 @@ void VHDLanalysis::analyzeData(QTableWidget& generics_t, QTableWidget& ports_t, 
             }
         }
         //removes one port from table if found
+        //-----------------------------------------------------------------------------
         else if (addremove)
         {
             itemData = new QTableWidgetItem;
@@ -418,6 +578,7 @@ void VHDLanalysis::analyzeData(QTableWidget& generics_t, QTableWidget& ports_t, 
 
         }
         //adds new port(s) to port table
+        //-----------------------------------------------------------------------------
         else
         {
             //takes direction and removes it from data
@@ -435,9 +596,10 @@ void VHDLanalysis::analyzeData(QTableWidget& generics_t, QTableWidget& ports_t, 
                 data = data.section(":=",0,0);
                 initvalue = initvalue.trimmed();
             }
-
             //data now contains type and range(if vector or integer)
-            //vector      
+
+            //vector
+            //-----------------------------------------------------------------------------
             if (data.contains("vector"))
             {
                 //type = "std_logic_vector";
@@ -458,7 +620,9 @@ void VHDLanalysis::analyzeData(QTableWidget& generics_t, QTableWidget& ports_t, 
                     min_qs = data.section("to",1);
                 }
             }
+
             //integer
+            //-----------------------------------------------------------------------------
             else if (data.contains("integer"))
             {
                 type = "integer";
@@ -476,9 +640,10 @@ void VHDLanalysis::analyzeData(QTableWidget& generics_t, QTableWidget& ports_t, 
                     max = 2147483647;
                     min = 0; // or -2147483648;
                 }
-
             }
+
             //data type is std_logic or other 1 wide type
+            //-----------------------------------------------------------------------------
             else
             {
                 type = data.trimmed();
@@ -500,7 +665,9 @@ void VHDLanalysis::analyzeData(QTableWidget& generics_t, QTableWidget& ports_t, 
                 }
             }
 
-            // Adding port(s) to table
+            //-----------------------------------------------------------------------------
+            // Adding port(s) to table.
+            //-----------------------------------------------------------------------------
             rows = ports_t.rowCount() - 1;
 
             // if more than one port of same kind
@@ -586,143 +753,4 @@ void VHDLanalysis::analyzeData(QTableWidget& generics_t, QTableWidget& ports_t, 
         }
     }
     return;
-}
-
-//-----------------------------------------------------------------------------
-// Function: VHDLanalysis::entityConverter()
-//-----------------------------------------------------------------------------
-int VHDLanalysis::entityConverter(QTableWidget& gene_t,QTableWidget& port_t, QString line, bool clicked)
-{
-    QString comment;
-    line = line.simplified();
-    int return_value;
-
-    //if user clicks to modify this if desides right section parameter
-    if (line.contains(':') && clicked)
-    {
-        //no need to analyze comment line with ":"
-        if (line.startsWith("--"))
-        {
-            section_ = 4;
-        }
-        else if(line.contains("in ",Qt::CaseInsensitive) ||
-                line.contains("out ",Qt::CaseInsensitive) ||
-                line.contains("inout ",Qt::CaseInsensitive) ||
-                line.contains("buffer ",Qt::CaseInsensitive) ||
-                line.contains("linkage ",Qt::CaseInsensitive))
-        {
-            //port(s)
-            section_ = 3;
-
-        }
-        else
-        {
-            //generic
-            section_ = 2;
-        }
-        //editMode = true;
-    }
-
-    //Analyzes entity section of code
-    if (section_ != 4)
-    {
-        //entity starts
-        if (line.startsWith("entity",Qt::CaseInsensitive))
-        {
-            section_ = 1;
-        }
-        //generic list starts
-        else if (line.startsWith("generic",Qt::CaseInsensitive) && section_ == 1)
-        {
-            section_ = 2;
-        }
-        //port list starts
-        else if (line.startsWith("port",Qt::CaseInsensitive))
-        {
-            section_ = 3;
-        }
-        //entity ends
-        else if (line.startsWith("end",Qt::CaseInsensitive))
-        {
-            section_ = 4;
-        }
-
-        //generic section of entity
-        if (line.startsWith("--"))
-        {
-
-        }
-        else if (section_ == 2 && line.contains(':'))
-        {
-            comment = line.section("--",1);
-            comment = comment.trimmed();
-            line = line.section("--",0,0);
-
-            if (line.startsWith("generic(",Qt::CaseInsensitive))
-            {
-                line = line.section("generic(",1,-1,QString::SectionCaseInsensitiveSeps);
-            }
-            else if (line.startsWith("generic (",Qt::CaseInsensitive))
-            {
-                line = line.section("generic (",1,-1,QString::SectionCaseInsensitiveSeps);
-            }
-
-            if (line.endsWith(");"))
-            {
-
-                line = line.section(");",0,0);
-                analyzeData(gene_t,port_t,line,1,clicked,comment);
-                section_ = 1;
-            }
-            else
-            {
-                line = line.section(';',0,0);
-                analyzeData(gene_t,port_t,line,1,clicked,comment);
-            }
-            //line should be "genericName : type := value"
-            //          or  "genericName : type"
-
-        }
-
-        //port section of entity
-        else if (section_ == 3 && line.contains(':'))
-        {
-            comment = line.section("--",1);
-            comment = comment.trimmed();
-            line = line.section("--",0,0);
-
-            if (line.startsWith("port(",Qt::CaseInsensitive))
-            {
-                line = line.section("port(",1,-1,QString::SectionCaseInsensitiveSeps);
-            }
-            else if (line.startsWith("port (",Qt::CaseInsensitive))
-            {
-                line = line.section("port (",1,-1,QString::SectionCaseInsensitiveSeps);
-            }
-
-            //if entity contains only one line of ports
-            if (line.endsWith(");"))
-            {
-
-                line = line.section(");",0,0);
-                analyzeData(gene_t,port_t,line,0,clicked,comment);
-            }
-            else
-            {
-                line = line.section(';',0,0);
-                analyzeData(gene_t,port_t,line,0,clicked,comment);
-            }
-            //line should be "portName : direction type"
-            //          or  "portName,...,portName : direction type"
-
-        }
-      }
-
-    //returns info what was done, 2 = generic 3 = port, 4 = end->
-    return_value = section_;
-    if (clicked)
-    {
-       section_ = 4;
-    }
-    return return_value;
 }
