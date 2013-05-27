@@ -1,11 +1,19 @@
+//-----------------------------------------------------------------------------
+// File: VHDLtoIPXACT.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Timo Korpela
+// Date: 26.05.2013
+//
+// Description:
+// header file introducing VHDLtoIPXACT class
+//-----------------------------------------------------------------------------
+
 #ifndef VHDLTOIPXACT_H
 #define VHDLTOIPXACT_H
-
 #include "textedit.h"
 #include "vhdlanalysis.h"
-
 #include <models/component.h>
-
 #include <QWidget>
 #include <QLabel>
 #include <QGridLayout>
@@ -16,6 +24,10 @@
 #include <QHBoxLayout>
 #include <QDialog>
 
+//-----------------------------------------------------------------------------
+//! Class to display vhdl files port and parameter analysis.
+//-----------------------------------------------------------------------------
+
 class VHDLtoIPXACT : public QDialog
 {
     Q_OBJECT
@@ -25,71 +37,120 @@ public:
              QWidget *parent = 0);
     ~VHDLtoIPXACT();
 
+    /*!
+     *  Display window with vhdl file display and tables for ports and parameters
+     *  from vhdl file.
+     * \brief closeEvent
+     * \param event
+     */
+
 private slots:
 
-    //customised closeevent for closing the tool
-    //works as generic close event, but gives Qmessagebox
-    //if some of the collected data has not been saved yet.
-    //allowing user to cancel closing the tool
+    /*!
+     *  Custom close event for display window. Gives warning if closing before saving
+     *  IP-XACT data into QSharedPointer<Component> comp_
+     *
+     * \param event type of close event.
+     */
     void closeEvent(QCloseEvent* event);
 
-    //for updating table on click
+    /*!
+     *  Updates table content for parameters or ports
+     *
+     * \param worduc content of line clicked
+     */
     void updateTable( const QString &worduc );
 
-    //void TextEditDoubleClicked(int row,int column);
-
-
-    //clicking open file push button opens file open dialog
+    /*!
+     *  Open file- push button handler
+     *  Opens fileOpen dialog for vhdl file selection. Displays selected file on
+     *  VHDLdisplay, and calls VHDLanalyse class to analyse file.
+     *
+     */
     void on_pushButtonOpenFile_released();
 
-    //on dependency analysy tool button opens file dependency
-    //analysis tool
+    /*!
+     * Analyses file dependencies for vhdl file
+     */
     void on_pushButtonDependency_clicked();
 
-    //on save file button clicked opens VLNV dialog to ask
-    //VLNV data, and when cliked ok saves collected vhdl data
-    //into xml file using FileWriter module
+    /*!
+     *  Save IP-XACT push button function
+     *  Saves port and parameter data from tables into comp_
+     */
     void on_pushButtonSaveFile_released();
 
-    //Test function, not to be included in final product
-    //void on_tableWidgetPorts_doubleClicked(const QModelIndex &index);
 
-   // void on_tableWidgetPorts_cellDoubleClicked(int row, int column);
-
-
-    //void on_tableWidgetModelParams_itemDoubleClicked(QTableWidgetItem *item);
-
+    /*!
+     * Removes row from tableWidgetPorts from position of cursor
+     */
     void removeRow();
 
+    /*!
+     * Adds row to tableWidgetPorts in position of cursor
+     */
     void addRow();
 
+    /*!
+     * Removes row from tableWidgetModelParams from position of cursor
+     */
     void removeRowG();
 
+    /*!
+     * Adds row to tableWidgetModelParams in position of cursor
+     */
     void addRowG();
 
+    /*!
+     *  Custom context menu function for tableWidgetPorts
+     *  Opens menu with add row and Delete row options
+     */
     void on_tableWidgetPorts_customContextMenuRequested();
 
+    /*!
+     *  Custom context menu function for tableWidgetModelParams
+     *  Opens menu with add row and Delete row options
+     */
     void on_tableWidgetModelParams_customContextMenuRequested();
 
 
 private:
 
-    bool VHDLOpen; //to see if file is open
-    bool saveState;  //if xml has been saved true=saved, false=not saved
+    //! State of the VHDL file (open/close)
+    bool VHDLOpen;
+
+    //! State of the metadata saving to comp_
+    bool saveState;
+
+    //! VHDLanalysis class. needed to keep up with scan status
     VHDLanalysis *VHDdata;
+
+    //! changed from vhdl analysis return value. marks the end of vhdl entity line number
     int entityEndRow;
+
+    //! xml file name and path
     QString xmlFile;
+
+    //! vhdl file name and path
     QString vhdlFile;
+
+    //! component class, metadata container
     QSharedPointer<Component> comp_;
+
+    //! UI display elements
 
     QWidget *centralWidget;
     QGridLayout *gridLayout;
+    //! shows vhdl file content
     textEdit *VHDLdisplay;
     QVBoxLayout *verticalLayout;
+    //! shows and stores port data
     QTableWidget *tableWidgetPorts;
     QLabel *label_3;
+    //! shows and stores parameter data
     QTableWidget *tableWidgetModelParams;
     QLabel *label_4;
+    //! show and store fileset
     QTableWidget *tableWidgetFileSets;
     QHBoxLayout *horizontalLayout;
     QPushButton *pushButtonOpenFile;
