@@ -291,10 +291,18 @@ int getMatchingApiDependency(QList<ApiDependency> const& apiDependencies,
 
     // Retrieve the full names for the connected components in the system design.
     int instanceIndex1 = getInstanceIndex(swInstances, dependency.getInterface1().componentRef, mapping);
-    Q_ASSERT(instanceIndex1 != -1);
 
+    if (instanceIndex1 == -1)
+    {
+        return -1;
+    }
+    
     int instanceIndex2 = getInstanceIndex(swInstances, dependency.getInterface2().componentRef, mapping);
-    Q_ASSERT(instanceIndex2 != -1);
+    
+    if (instanceIndex2 == -1)
+    {
+        return -1;
+    }
 
     // Search for a match in the list.
     for (int i = 0; i < apiDependencies.size(); ++i)

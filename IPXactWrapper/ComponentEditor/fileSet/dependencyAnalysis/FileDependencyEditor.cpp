@@ -84,19 +84,19 @@ FileDependencyEditor::FileDependencyEditor(QSharedPointer<Component> component,
     toolbar_.setStyleSheet(QString("QToolBar { border: none; }"));
 
     // Create the filter buttons in the toolbar. The button actions are also added to the separate actiongroup
-    addFilterButton(QIcon(":/icons/graphics/traffic-light_green.png"), "Show Green",
+    addFilterButton(QIcon(":/icons/graphics/traffic-light_green.png"), "Show Unchanged Files",
                     FileDependencyGraphView::FILTER_GREEN);
-    addFilterButton(QIcon(":/icons/graphics/traffic-light_yellow.png"), "Show Yellow",
+    addFilterButton(QIcon(":/icons/graphics/traffic-light_yellow.png"), "Show Changed Files (Only Contents Changed)",
                     FileDependencyGraphView::FILTER_YELLOW);
-    addFilterButton(QIcon(":/icons/graphics/traffic-light_red.png"), "Show Red",
+    addFilterButton(QIcon(":/icons/graphics/traffic-light_red.png"), "Show Changed Files (Dependencies Changed)",
                     FileDependencyGraphView::FILTER_RED);
-    addFilterButton(QIcon(":/icons/graphics/dependency_twoway.png"), "Show Bidirectional",
+    addFilterButton(QIcon(":/icons/graphics/dependency_twoway.png"), "Show Bidirectional Dependencies",
                     FileDependencyGraphView::FILTER_TWO_WAY);
-    addFilterButton(QIcon(":/icons/graphics/dependency_oneway.png"), "Show Unidirectional",
+    addFilterButton(QIcon(":/icons/graphics/dependency_oneway.png"), "Show Unidirectional Dependencies",
                     FileDependencyGraphView::FILTER_ONE_WAY);
-    addFilterButton(QIcon(":/icons/graphics/dependency_manual.png"), "Show Manual",
+    addFilterButton(QIcon(":/icons/graphics/dependency_manual.png"), "Show Manual Dependencies",
                     FileDependencyGraphView::FILTER_MANUAL);
-    addFilterButton(QIcon(":/icons/graphics/dependency_auto.png"), "Show Analyzed",
+    addFilterButton(QIcon(":/icons/graphics/dependency_auto.png"), "Show Analyzed Dependencies",
                     FileDependencyGraphView::FILTER_AUTOMATIC);
     addFilterButton(QIcon(":/icons/graphics/external.png"), "Show External",
                     FileDependencyGraphView::FILTER_EXTERNAL);
