@@ -205,11 +205,11 @@ int VHDLanalysis::analyzeValues(QTableWidget const& generics_t,QString value)
     QString right; // right part of value
     QString left2; // left part of left or right
     QString right2; // right part of left or right
-    int result; // result of value after calculations
-    int number1; // variable for performing calculations
-    int number2; // variable for performing calculations
-    int left_i; // QSting left after calculations
-    int right_i; // QSting right after calculations
+    int result = 0; // result of value after calculations
+    int number1 = 0; // variable for performing calculations
+    int number2 = 0; // variable for performing calculations
+    int left_i = 0; // QSting left after calculations
+    int right_i = 0; // QSting right after calculations
     int status = 0;  // variable to control calculations
 
     // "left/right"
@@ -485,9 +485,9 @@ void VHDLanalysis::analyzeData(QTableWidget& generics_t, QTableWidget& ports_t, 
             generics_t.setItem(rows,1,new QTableWidgetItem);
             generics_t.item(rows,1)->setText(temp.trimmed());
 
-            //sets comment
-            generics_t.setItem(rows,4,new QTableWidgetItem);
-            generics_t.item(rows,4)->setText(comment);
+            //usage type (empty)
+            generics_t.setItem(rows,2,new QTableWidgetItem);
+            generics_t.item(rows,2)->setText("");
 
             //sets value, if present
             if (data.contains(":="))
@@ -501,6 +501,11 @@ void VHDLanalysis::analyzeData(QTableWidget& generics_t, QTableWidget& ports_t, 
                 generics_t.setItem(rows,3,new QTableWidgetItem);
                 generics_t.item(rows,3)->setText("0");
             }
+
+            //sets comment
+            generics_t.setItem(rows,4,new QTableWidgetItem);
+            generics_t.item(rows,4)->setText(comment);
+
             generics_t.insertRow(rows+1);
             rows++;
         }
@@ -517,7 +522,7 @@ void VHDLanalysis::analyzeData(QTableWidget& generics_t, QTableWidget& ports_t, 
         QString min_qs; // right bound as qs
         QString direction; // direction of port
         QString port; // name of port
-        QString initvalue = ""; // port default value
+        QString initvalue; // port default value
         QStringList ports; // names of multiple ports in same line
         int width = 1; // width of port
         bool morethan1 = false; // true, if there are more than one port in same line
@@ -700,6 +705,10 @@ void VHDLanalysis::analyzeData(QTableWidget& generics_t, QTableWidget& ports_t, 
                     ports_t.setItem(rows,5,new QTableWidgetItem);
                     ports_t.item(rows,5)->setText(type);
 
+                    //Type definiton (empty)
+                    ports_t.setItem(rows,6,new QTableWidgetItem);
+                    ports_t.item(rows,6)->setText("");
+
                     //Initial value
                     ports_t.setItem(rows,7,new QTableWidgetItem);
                     ports_t.item(rows,7)->setText(initvalue);
@@ -738,6 +747,10 @@ void VHDLanalysis::analyzeData(QTableWidget& generics_t, QTableWidget& ports_t, 
                 //Type
                 ports_t.setItem(rows,5,new QTableWidgetItem);
                 ports_t.item(rows,5)->setText(type);
+
+                //Type definiton (empty)
+                ports_t.setItem(rows,6,new QTableWidgetItem);
+                ports_t.item(rows,6)->setText("");
 
                 //Initial value
                 ports_t.setItem(rows,7,new QTableWidgetItem);
