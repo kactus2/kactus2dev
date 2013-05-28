@@ -439,10 +439,11 @@ void VHDLtoIPXACT::on_pushButtonSaveFile_released()
         //loop ports into model
         General::Direction direction;
         bool ok = true;
-        Port port;
+
         for ( int i = 0 ; i < tableWidgetPorts->rowCount() ; ++i){
             if ( QTableWidgetItem *item = tableWidgetPorts->item(i,0)) {
             if ( !tableWidgetPorts->item(i,0)->text().isEmpty() ) {
+                Port port;
 
                 if ( !tableWidgetPorts->item(i,1)->text().compare("in",Qt::CaseInsensitive )) {
                     direction = General::IN ;
@@ -499,12 +500,12 @@ void VHDLtoIPXACT::on_pushButtonSaveFile_released()
         }
         model->setPorts( ports ); //on model
 
-        ModelParameter param;
+
         //loop parameters into model
         for ( int i = 0 ; i < tableWidgetModelParams->rowCount() ; ++i){
             if ( QTableWidgetItem *item = tableWidgetModelParams->item(i,0) ) {
                  if ( !tableWidgetModelParams->item(i,0)->text().isEmpty() ) {
-
+                    ModelParameter param;
 
                     if ( QTableWidgetItem *item = tableWidgetModelParams->item(i,1) ) {
                         param.setDataType(tableWidgetModelParams->item(i,1)->text());
