@@ -428,37 +428,27 @@ void VHDLtoIPXACT::on_pushButtonDependency_clicked()
 void VHDLtoIPXACT::on_pushButtonSaveFile_released()
 {
 
-    QMessageBox msgBox;
-
-    QString nametag =  "testi.xml";
-
         Model* model = new Model;
 
         //create port list
-
         QList<QSharedPointer<Port>> ports;
 		
-		//create modelParam list
-		
+		//create modelParam list		
         QList<QSharedPointer<ModelParameter>> modelParameters;
-		
-		
+
         //loop ports into model
         General::Direction direction;
         bool ok = true;
-        msgBox.setInformativeText("port");
-        msgBox.exec();
-
         Port port;
         for ( int i = 0 ; i < tableWidgetPorts->rowCount() ; ++i){
             if ( QTableWidgetItem *item = tableWidgetPorts->item(i,0)) {
             if ( !tableWidgetPorts->item(i,0)->text().isEmpty() ) {
 
                 if ( !tableWidgetPorts->item(i,1)->text().compare("in",Qt::CaseInsensitive )) {
-					direction = General::INOUT ;
+                    direction = General::IN ;
                 }
                 else if ( !tableWidgetPorts->item(i,1)->text().compare("out",Qt::CaseInsensitive )) {
-					direction = General::INOUT ;
+                    direction = General::OUT ;
                 }
                 else if ( !tableWidgetPorts->item(i,1)->text().compare("inout",Qt::CaseInsensitive )) {
                     direction = General::INOUT ;
@@ -469,9 +459,22 @@ void VHDLtoIPXACT::on_pushButtonSaveFile_released()
 
                 port.setName(tableWidgetPorts->item(i,0)->text());
                 port.setDirection(direction);
-                port.setLeftBound(tableWidgetPorts->item(i,3)->text().toInt(&ok));
-                port.setRightBound(tableWidgetPorts->item(i,4)->text().toInt(&ok));
-                port.setTypeName(tableWidgetPorts->item(i,5)->text());
+
+                if ( QTableWidgetItem *item = tableWidgetPorts->item(i,3)) {
+                    if (!tableWidgetPorts->item(i,3)->text().isEmpty()){
+                        port.setLeftBound(tableWidgetPorts->item(i,3)->text().toInt(&ok));
+                    }
+                }
+                if ( QTableWidgetItem *item = tableWidgetPorts->item(i,4)) {
+                    if (!tableWidgetPorts->item(i,4)->text().isEmpty()){
+                        port.setRightBound(tableWidgetPorts->item(i,4)->text().toInt(&ok));
+                    }
+                }
+                if ( QTableWidgetItem *item = tableWidgetPorts->item(i,5)) {
+                    if (!tableWidgetPorts->item(i,5)->text().isEmpty()){
+                        port.setTypeName(tableWidgetPorts->item(i,5)->text());
+                    }
+
 
                 if ( QTableWidgetItem *item = tableWidgetPorts->item(i,6)) {
                     if (!tableWidgetPorts->item(i,6)->text().isEmpty()){
@@ -488,11 +491,11 @@ void VHDLtoIPXACT::on_pushButtonSaveFile_released()
                         port.setDescription(tableWidgetPorts->item(i,8)->text());
                     }
                 }
-                msgBox.setInformativeText("port append");
-                msgBox.exec();
+
                 ports.append( QSharedPointer<Port>(new Port(port)) );
             }
             }
+        }
         }
         model->setPorts( ports ); //on model
 
@@ -548,9 +551,6 @@ void VHDLtoIPXACT::on_pushButtonSaveFile_released()
         model->setViews(views);
 
         //add fileset
-        msgBox.setInformativeText("fileset");
-        msgBox.exec();
-
         QSharedPointer<FileSet> fileSet(new FileSet("vhdlsource", "sourceFiles"));
         const QString filePath = General::getRelativePath( xmlFile, vhdlFile);
 
@@ -564,6 +564,7 @@ void VHDLtoIPXACT::on_pushButtonSaveFile_released()
 
         QStringList errorList;
         if ( !comp_->isValid(errorList)) {
+            QMessageBox msgBox;
             msgBox.setInformativeText("Failure to verify data fields!");
             msgBox.exec();
             return;
