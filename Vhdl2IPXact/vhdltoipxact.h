@@ -72,7 +72,7 @@ private slots:
     /*!
      * Analyses file dependencies for vhdl file
      */
-    void on_pushButtonDependency_clicked();
+    //void on_pushButtonDependency_clicked();
 
     /*!
      *  Save IP-XACT push button function
@@ -139,26 +139,27 @@ private:
 
     //! UI display elements
 
-    QWidget *centralWidget;
+    //QWidget *centralWidget;
     QGridLayout *gridLayout;
     //! shows vhdl file content
     textEdit *VHDLdisplay;
     QVBoxLayout *verticalLayout;
     //! shows and stores port data
     QTableWidget *tableWidgetPorts;
-    QLabel *label_3;
+
     //! shows and stores parameter data
     QTableWidget *tableWidgetModelParams;
-    QLabel *label_4;
+    //QLabel *label_4;
     //! show and store fileset
-    QTableWidget *tableWidgetFileSets;
+    //QTableWidget *tableWidgetFileSets;
     QHBoxLayout *horizontalLayout;
     QPushButton *pushButtonOpenFile;
     QSpacerItem *horizontalSpacer;
-    QPushButton *pushButtonDependency;
+    //QPushButton *pushButtonDependency;
     QPushButton *pushButtonSaveFile;
     QLabel *label;
     QLabel *label_2;
+    QLabel *label_3;
 
 };
 

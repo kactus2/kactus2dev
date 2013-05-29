@@ -34,7 +34,20 @@
 //-----------------------------------------------------------------------------
 VHDLtoIPXACT::VHDLtoIPXACT(QSharedPointer<Component> comp, const QString xmlFilePath,
              QWidget *parent)
-    : QDialog(parent)
+    : QDialog(parent),
+    gridLayout(),
+    VHDLdisplay(),
+    verticalLayout(),
+    tableWidgetPorts(),
+    tableWidgetModelParams(),
+    horizontalLayout(),
+    pushButtonOpenFile(),
+    horizontalSpacer(),
+    pushButtonSaveFile(),
+    label(),
+    label_2(),
+    label_3(),
+    VHDdata()
 {
     //set data members
     xmlFile = xmlFilePath;
@@ -146,9 +159,12 @@ VHDLtoIPXACT::VHDLtoIPXACT(QSharedPointer<Component> comp, const QString xmlFile
 
     verticalLayout->addWidget(tableWidgetModelParams);
 
+    /*
+    //file sets label
     label_4 = new QLabel(this);
     label_4->setObjectName(QStringLiteral("label_4"));
     label_4->setTextInteractionFlags(Qt::NoTextInteraction);
+    label_4->setText(QApplication::translate("dataConverter", "IP-XACT File Sets", 0));
 
     verticalLayout->addWidget(label_4);
 
@@ -158,14 +174,20 @@ VHDLtoIPXACT::VHDLtoIPXACT(QSharedPointer<Component> comp, const QString xmlFile
     tableWidgetFileSets->setObjectName(QStringLiteral("tableWidgetFileSets"));
     tableWidgetFileSets->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
     verticalLayout->addWidget(tableWidgetFileSets);
+    */
 
     //set push buttons for opening, saving file and filesets
     gridLayout->addLayout(verticalLayout, 1, 1, 1, 1);
+
     horizontalLayout = new QHBoxLayout();
     horizontalLayout->setSpacing(6);
     horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+
+
+    //Open VHDL File -push button
     pushButtonOpenFile = new QPushButton(this);
     pushButtonOpenFile->setObjectName(QStringLiteral("pushButtonOpenFile"));
+    pushButtonOpenFile->setText(QApplication::translate("dataConverter", "Open VHDL File", 0));
     QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
     sizePolicy.setHorizontalStretch(0);
     sizePolicy.setVerticalStretch(0);
@@ -178,33 +200,41 @@ VHDLtoIPXACT::VHDLtoIPXACT(QSharedPointer<Component> comp, const QString xmlFile
 
     horizontalLayout->addItem(horizontalSpacer);
 
-    pushButtonDependency = new QPushButton(this);
-    pushButtonDependency->setObjectName(QStringLiteral("pushButtonDependency"));
+    //
+    //pushButtonDependency = new QPushButton(this);
+    //pushButtonDependency->setObjectName(QStringLiteral("pushButtonDependency"));
+    //pushButtonDependency->setText(QApplication::translate("dataConverter", "Add Dependent Files", 0));
+    //
 
-    horizontalLayout->addWidget(pushButtonDependency);
+    //horizontalLayout->addWidget(pushButtonDependency);
 
+    //Create ip-xact -push button
     pushButtonSaveFile = new QPushButton(this);
     pushButtonSaveFile->setObjectName(QStringLiteral("pushButtonSaveFile"));
+    pushButtonSaveFile->setText(QApplication::translate("dataConverter", "Create IP-XACT", 0));
 
     horizontalLayout->addWidget(pushButtonSaveFile);
 
     gridLayout->addLayout(horizontalLayout, 2, 0, 1, 2);
 
-    //set labels
+    //vhdlDisplay label
     label = new QLabel(this);
     label->setObjectName(QStringLiteral("label"));
     label->setTextFormat(Qt::AutoText);
     label->setTextInteractionFlags(Qt::NoTextInteraction);
+    label->setText(QApplication::translate("dataConverter", "Source VHDL", 0));
 
     gridLayout->addWidget(label, 0, 0, 1, 1);
 
+    //Port table label
     label_2 = new QLabel(this);
     label_2->setObjectName(QStringLiteral("label_2"));
     label_2->setTextInteractionFlags(Qt::NoTextInteraction);
+    label_2->setText(QApplication::translate("dataConverter", "IP-XACT Ports", 0));
 
     gridLayout->addWidget(label_2, 0, 1, 1, 1);
 
-    //set colunm names for tables
+    //set colunm names for port and generic tables
     this->setWindowTitle(QApplication::translate("dataConverter", "VHDL to IP-XACT Converter", 0));
     QTableWidgetItem *___qtablewidgetitem = tableWidgetPorts->horizontalHeaderItem(0);
     ___qtablewidgetitem->setText(QApplication::translate("dataConverter", "Name", 0));
@@ -236,13 +266,6 @@ VHDLtoIPXACT::VHDLtoIPXACT(QSharedPointer<Component> comp, const QString xmlFile
     QTableWidgetItem *___qtablewidgetitem13 = tableWidgetModelParams->horizontalHeaderItem(4);
     ___qtablewidgetitem13->setText(QApplication::translate("dataConverter", "Description", 0));
 
-    //set names for push buttons and labels as needed
-    label_4->setText(QApplication::translate("dataConverter", "IP-XACT File Sets", 0));
-    pushButtonOpenFile->setText(QApplication::translate("dataConverter", "Open VHDL File", 0));
-    pushButtonDependency->setText(QApplication::translate("dataConverter", "Add Dependent Files", 0));
-    pushButtonSaveFile->setText(QApplication::translate("dataConverter", "Create IP-XACT", 0));
-    label->setText(QApplication::translate("dataConverter", "Source VHDL", 0));
-    label_2->setText(QApplication::translate("dataConverter", "IP-XACT Ports", 0));
 
     //connect signals and slots
     connect( VHDLdisplay, SIGNAL( selectedWord( const QString & )), this,
@@ -257,6 +280,21 @@ VHDLtoIPXACT::~VHDLtoIPXACT()
 {
     VHDLdisplay->clear();
     tableWidgetPorts->clear();
+    /*
+    delete VHDdata;
+    delete label_2;
+    delete label;
+    delete label_3;
+    delete pushButtonOpenFile;
+    delete pushButtonSaveFile;
+    delete VHDLdisplay;
+    delete tableWidgetPorts;
+    delete tableWidgetModelParams;
+    delete horizontalSpacer;
+    delete horizontalLayout;
+    delete verticalLayout;
+    delete gridLayout; */
+    //delete centralWidget;
 }
 
 //-----------------------------------------------------------------------------
@@ -345,6 +383,13 @@ void VHDLtoIPXACT::on_pushButtonOpenFile_released()
             int ports = tableWidgetPorts->rowCount();
             int linereturn = 0;
 
+            if (tableWidgetModelParams->rowCount() == 0) {
+                tableWidgetModelParams->insertRow(0);
+            }
+            if (tableWidgetPorts->rowCount() == 0) {
+                tableWidgetPorts->insertRow(0);
+            }
+
             while (!in.atEnd()){
                 line = in.readLine();
                 if ( linereturn != 4) {
@@ -369,14 +414,18 @@ void VHDLtoIPXACT::on_pushButtonOpenFile_released()
                 }
 
             }
+            VHDLOpen = true;
+            pushButtonOpenFile->setText("Close VHDL File");
+        }
+        else if (filename.isEmpty()) {
         }
         else {
             QMessageBox msgBox;
             msgBox.setInformativeText("Failed to open file");
             msgBox.exec();
         }
-        VHDLOpen = true;
-        pushButtonOpenFile->setText("Close VHDL File");
+
+
         data.close();
         saveState = false;
 
@@ -414,12 +463,12 @@ void VHDLtoIPXACT::on_pushButtonOpenFile_released()
 //-----------------------------------------------------------------------------
 // Function: VHDLtoIPXACT::on_pushButtonDependency_clicked()
 //-----------------------------------------------------------------------------
-void VHDLtoIPXACT::on_pushButtonDependency_clicked()
-{
-    QMessageBox msgBox;
-    msgBox.setInformativeText("Not yet implemented!");
-    msgBox.exec();
-}
+//void VHDLtoIPXACT::on_pushButtonDependency_clicked()
+//{
+//    QMessageBox msgBox;
+//    msgBox.setInformativeText("Not yet implemented!");
+//    msgBox.exec();
+//}
 
 
 //-----------------------------------------------------------------------------
@@ -428,20 +477,21 @@ void VHDLtoIPXACT::on_pushButtonDependency_clicked()
 void VHDLtoIPXACT::on_pushButtonSaveFile_released()
 {
 
-        Model* model = new Model;
 
-        //create port list
-        QList<QSharedPointer<Port>> ports;
-		
-		//create modelParam list		
-        QList<QSharedPointer<ModelParameter>> modelParameters;
+    Model* model = new Model;
 
-        //loop ports into model
-        General::Direction direction;
-        bool ok = true;
+    //create port list
+    QList<QSharedPointer<Port>> ports;
 
-        for ( int i = 0 ; i < tableWidgetPorts->rowCount() ; ++i){
-            if ( QTableWidgetItem *item = tableWidgetPorts->item(i,0)) {
+    //create modelParam list
+    QList<QSharedPointer<ModelParameter>> modelParameters;
+
+    //loop ports into model
+    General::Direction direction;
+    bool ok = true;
+
+    for ( int i = 0 ; i < tableWidgetPorts->rowCount() ; ++i){
+        if ( QTableWidgetItem *item = tableWidgetPorts->item(i,0)) {
             if ( !tableWidgetPorts->item(i,0)->text().isEmpty() ) {
                 Port port;
 
@@ -477,81 +527,83 @@ void VHDLtoIPXACT::on_pushButtonSaveFile_released()
                     }
 
 
-                if ( QTableWidgetItem *item = tableWidgetPorts->item(i,6)) {
-                    if (!tableWidgetPorts->item(i,6)->text().isEmpty()){
-                        port.setTypeDefinition(tableWidgetPorts->item(i,5)->text(), tableWidgetPorts->itemAt(i,6)->text() );
+                    if ( QTableWidgetItem *item = tableWidgetPorts->item(i,6)) {
+                        if (!tableWidgetPorts->item(i,6)->text().isEmpty()){
+                            port.setTypeDefinition(tableWidgetPorts->item(i,5)->text(), tableWidgetPorts->itemAt(i,6)->text() );
+                        }
                     }
-                }
-                if ( QTableWidgetItem *item = tableWidgetPorts->item(i,7)) {
-                    if (!tableWidgetPorts->item(i,7)->text().isEmpty()){
-                        port.setDefaultValue(tableWidgetPorts->item(i,7)->text());
+                    if ( QTableWidgetItem *item = tableWidgetPorts->item(i,7)) {
+                        if (!tableWidgetPorts->item(i,7)->text().isEmpty()){
+                            port.setDefaultValue(tableWidgetPorts->item(i,7)->text());
+                        }
                     }
-                }
-                if ( QTableWidgetItem *item = tableWidgetPorts->item(i,8)) {
-                    if (!tableWidgetPorts->item(i,8)->text().isEmpty()){
-                        port.setDescription(tableWidgetPorts->item(i,8)->text());
+                    if ( QTableWidgetItem *item = tableWidgetPorts->item(i,8)) {
+                        if (!tableWidgetPorts->item(i,8)->text().isEmpty()){
+                            port.setDescription(tableWidgetPorts->item(i,8)->text());
+                        }
                     }
-                }
 
-                ports.append( QSharedPointer<Port>(new Port(port)) );
-            }
+                    ports.append( QSharedPointer<Port>(new Port(port)) );
+                }
             }
         }
-        }
-        model->setPorts( ports ); //on model
+    }
+    model->setPorts( ports ); //on model
 
 
-        //loop parameters into model
-        for ( int i = 0 ; i < tableWidgetModelParams->rowCount() ; ++i){
-            if ( QTableWidgetItem *item = tableWidgetModelParams->item(i,0) ) {
-                 if ( !tableWidgetModelParams->item(i,0)->text().isEmpty() ) {
-                    ModelParameter param;
+    //loop parameters into model
+    for ( int i = 0 ; i < tableWidgetModelParams->rowCount() ; ++i){
+        if ( QTableWidgetItem *item = tableWidgetModelParams->item(i,0) ) {
+            if ( !tableWidgetModelParams->item(i,0)->text().isEmpty() ) {
+                ModelParameter param;
 
-                    if ( QTableWidgetItem *item = tableWidgetModelParams->item(i,1) ) {
-                        param.setDataType(tableWidgetModelParams->item(i,1)->text());
-                    }
-                    if ( QTableWidgetItem *item = tableWidgetModelParams->item(i,0) ) {
-                        param.setName(tableWidgetModelParams->item(i,0)->text());
-                    }
-                    if ( QTableWidgetItem *item = tableWidgetModelParams->item(i,4) ) {
-                        param.setDescription(tableWidgetModelParams->item(i,4)->text());
-                    }
-                    if ( QTableWidgetItem *item = tableWidgetModelParams->item(i,3) ) {
-                        param.setValue(tableWidgetModelParams->item(i,3)->text());
-                    }
-                    if ( QTableWidgetItem *item = tableWidgetModelParams->item(i,2) ) {
-                        if( !tableWidgetModelParams->item(i,2)->text().isEmpty()) {
-                            param.setUsageType(tableWidgetModelParams->item(i,2)->text());
-                        }
-                        else {
-                            param.setUsageType("nontyped");
-                        }
+                if ( QTableWidgetItem *item = tableWidgetModelParams->item(i,1) ) {
+                    param.setDataType(tableWidgetModelParams->item(i,1)->text());
+                }
+                if ( QTableWidgetItem *item = tableWidgetModelParams->item(i,0) ) {
+                    param.setName(tableWidgetModelParams->item(i,0)->text());
+                }
+                if ( QTableWidgetItem *item = tableWidgetModelParams->item(i,4) ) {
+                    param.setDescription(tableWidgetModelParams->item(i,4)->text());
+                }
+                if ( QTableWidgetItem *item = tableWidgetModelParams->item(i,3) ) {
+                    param.setValue(tableWidgetModelParams->item(i,3)->text());
+                }
+                if ( QTableWidgetItem *item = tableWidgetModelParams->item(i,2) ) {
+                    if( !tableWidgetModelParams->item(i,2)->text().isEmpty()) {
+                        param.setUsageType(tableWidgetModelParams->item(i,2)->text());
                     }
                     else {
                         param.setUsageType("nontyped");
                     }
-
-                    modelParameters.append( QSharedPointer<ModelParameter>(new ModelParameter(param)) );
-
                 }
+                else {
+                    param.setUsageType("nontyped");
+                }
+
+                modelParameters.append( QSharedPointer<ModelParameter>(new ModelParameter(param)) );
+
             }
         }
-		
-        model->setModelParameters( modelParameters ); //on model
+    }
 
-        //add model into component
-        comp_->setModel( model );
+    model->setModelParameters( modelParameters ); //on model
 
-        //set view
-        QList<QSharedPointer<View>> views;
-        View view;
-        view.setLanguage("vhdl");
-        view.setName("structural_vhdl");
-        view.setEnvIdentifiers(QStringList("VHDL::"));
-        views.append(QSharedPointer<View>(new View(view)));
-        model->setViews(views);
+    //add model into component
+    comp_->setModel( model );
 
-        //add fileset
+    //set view
+    QList<QSharedPointer<View>> views;
+    View view;
+    view.setLanguage("vhdl");
+    view.setName("structural_vhdl");
+    view.setEnvIdentifiers(QStringList("VHDL::"));
+    views.append(QSharedPointer<View>(new View(view)));
+    model->setViews(views);
+
+    //add fileset if not done yet
+    if (!comp_->hasFileSet("vhdlsource")) {
+
         QSharedPointer<FileSet> fileSet(new FileSet("vhdlsource", "sourceFiles"));
         const QString filePath = General::getRelativePath( xmlFile, vhdlFile);
 
@@ -562,15 +614,21 @@ void VHDLtoIPXACT::on_pushButtonSaveFile_released()
 
         fileSet->addFile(file);
         comp_->addFileSet(  fileSet );
+    }
+    QStringList errorList;
 
-        QStringList errorList;
-        if ( !comp_->isValid(errorList)) {
-            QMessageBox msgBox;
-            msgBox.setInformativeText("Failure to verify data fields!");
-            msgBox.exec();
-            return;
-        } 
-        saveState = true;
+    if ( !comp_->isValid(errorList)) {
+        QString temp = "";
+        for (int i = 0; i < errorList.size(); ++i) {
+            temp = temp + errorList.at(i) + "\n";
+        }
+        QMessageBox msgBox;
+        msgBox.setInformativeText("Failure to verify data fields: \n" + temp);
+        msgBox.exec();
+        saveState = false;
+        return;
+    }
+    saveState = true;
 
     accept();
     return;
