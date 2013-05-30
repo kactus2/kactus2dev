@@ -54,8 +54,18 @@ public:
         COMPONENT_COLUMN_WIDTH = 259,
         IO_COLUMN_WIDTH = 119
     };
-
-    /*!
+		
+	// Data required for copy-paste actions.
+	struct CopyData
+	{
+		QSharedPointer<Component> component;
+		QSharedPointer<BusInterface> busInterface;
+		CopyData() : component(0), busInterface(0) {}
+		CopyData(QSharedPointer<Component> comp,QSharedPointer<BusInterface> busIf) : 
+		component(comp), busInterface(busIf) {}
+	};
+    
+/*!
      *  Constructor.
      */
     HWDesignDiagram(LibraryInterface *lh, GenericEditProvider& editProvider, HWDesignWidget *parent = 0);
@@ -166,6 +176,16 @@ public slots:
      */
     void onSelectionChanged();
 
+	/*!
+     *  Called when copy is selected from the context menu.
+     */
+	virtual void onCopyAction();
+
+	/*!
+     *  Called when paste is selected from the context menu.
+     */
+	virtual void onPasteAction();
+
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
 
@@ -187,6 +207,19 @@ protected:
     void dragLeaveEvent(QGraphicsSceneDragDropEvent * event);
 
     void disableHighlight();
+
+	/*!
+     *  Creates the context menu for function contextMenuEvent().
+     *
+     *      @param [in] pos Mouse position when the menu is requested.
+	 *
+	 *      @return The menu with allowed actions or 0 if no menu is allowed or nothing to show.
+     */
+	virtual QMenu* createContextMenu(QPointF const& pos);	
+
+	QAction copyAction_;
+
+	QAction pasteAction_;
 
 private:
     // Disable copying.
@@ -243,6 +276,11 @@ private:
      */
     BusPortItem* createMissingPort(QString const& portName, HWComponentItem* component, QSharedPointer<Design> design);
 
+    /*!
+     *  Initializes the context menu actions.
+     */
+	void setupActions();
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -282,6 +320,9 @@ private:
 
     //! The corner-stitching structure.
     CornerStitchStructure cornerStitchStruct_;
+
+	//! If true, context menu is enabled.
+	bool showContextMenu_;
 };
 
 #endif // HWDESIGNDIAGRAM_H

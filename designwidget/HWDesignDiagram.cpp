@@ -60,10 +60,13 @@
 #include <QPrinter>
 #include <QListIterator>
 #include <QApplication>
+#include <QMenu>
+#include <QClipboard>
 
 #include <QDebug>
 #include "columnview/ColumnEditDialog.h"
 
+Q_DECLARE_METATYPE( HWDesignDiagram::CopyData )
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram()
 //-----------------------------------------------------------------------------
@@ -79,10 +82,14 @@ HWDesignDiagram::HWDesignDiagram(LibraryInterface *lh, GenericEditProvider& edit
       oldSelection_(0),
       replaceMode_(false),
       sourceComp_(0),
-      cornerStitchStruct_()
+      cornerStitchStruct_(),
+      copyAction_(tr("Copy"), this),
+      pasteAction_(tr("Paste"), this),
+      showContextMenu_(true)
 {
     connect(this, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
     connect(&editProvider, SIGNAL(modified()), this, SIGNAL(contentChanged()));
+	setupActions();
 }
 
 //-----------------------------------------------------------------------------
@@ -848,10 +855,13 @@ void HWDesignDiagram::selectionToFront()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
+
+    showContextMenu_ = (getMode() == MODE_SELECT && mouseEvent->button() == Qt::RightButton);
+
     // if other than left button was pressed return the mode back to select
 	if (mouseEvent->button() != Qt::LeftButton)
     {
-        setMode(MODE_SELECT);
+        setMode(MODE_SELECT);		
         return;
 	}
 
@@ -1844,6 +1854,137 @@ void HWDesignDiagram::disableHighlight()
 }
 
 //-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::createContextMenu()
+//-----------------------------------------------------------------------------
+QMenu* HWDesignDiagram::createContextMenu(QPointF const& pos){
+
+    QMenu* menu = 0;
+
+    if ( !isProtected() && getMode() == MODE_SELECT && showContextMenu_ )
+    {
+        QGraphicsItem* item = itemAt(pos,QTransform());	
+        if ( item != 0 )
+        {
+            // Only busPorts can be copied.
+            if ( item->type() == BusPortItem::Type )
+            {
+                menu = new QMenu(parent());	
+                menu->addAction(&copyAction_);
+                clearSelection();
+                item->setSelected(true);		
+            } 
+
+            else if ( item->type() == HWComponentItem::Type )	
+            {
+                clearSelection();
+                item->setSelected(true);
+                menu = new QMenu(parent());				   			  
+                menu->addAction(&pasteAction_);		
+
+                // Enable paste action, if a draft component (no valid vlnv) and data on the clipboard is valid.
+                QMimeData const* mimedata = QApplication::clipboard()->mimeData();
+                if ( !(qgraphicsitem_cast<HWComponentItem *>(item)->componentModel()->getVlnv()->isValid()) &&
+                    mimedata != 0 && mimedata->hasImage() && mimedata->imageData().canConvert<CopyData>() )
+                {		    				    
+                    pasteAction_.setEnabled(true);						
+                }
+                else
+                {
+                    pasteAction_.setEnabled(false);
+                }
+            }
+        }
+    }
+    return menu;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::onCopyAction()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::onCopyAction(){
+
+    QGraphicsItem* item = 0;
+
+    if ( !isProtected() )
+    {
+        if (!selectedItems().isEmpty())
+        {
+            item = selectedItems().front();
+        }
+
+        if ( item != 0 && item->type() == BusPortItem::Type )
+        {
+            BusPortItem* port = qgraphicsitem_cast<BusPortItem*>(item);
+            CopyData copy(port->getOwnerComponent(),port->getBusInterface());
+            QMimeData* mimeData = new QMimeData();
+            mimeData->setImageData(QVariant::fromValue(copy));
+            QApplication::clipboard()->setMimeData(mimeData);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::onPasteAction()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::onPasteAction(){
+
+    QGraphicsItem* item = 0;
+
+    if ( !isProtected() ) 
+    {
+        if ( !selectedItems().isEmpty() )
+        {
+            item = selectedItems().front();
+        }
+
+        if ( item != 0 && item->type() == HWComponentItem::Type )
+        {
+            HWComponentItem* targetComp = static_cast<HWComponentItem*>(item);
+
+            // Paste only to draft components.
+            if ( !targetComp->componentModel()->getVlnv()->isValid() )
+            {
+
+                QMimeData const* mimedata = QApplication::clipboard()->mimeData();
+
+                if ( mimedata->hasImage() && mimedata->imageData().canConvert<CopyData>())
+                {				
+                    CopyData copy = mimedata->imageData().value<CopyData>();
+
+                    // Bus interface must have a unique name within the component.
+                    QString uniqueBusName = copy.busInterface->getName();	
+                    unsigned int count =  0;	
+                    while( targetComp->getBusPort( uniqueBusName ) != 0 )
+                    {
+                        count++;
+                        uniqueBusName = copy.busInterface->getName() + "_" + QString::number(count);			
+                    }
+
+                    // Create a copy of the busInterface and rename it.
+                    QSharedPointer<BusInterface> copyBusIf(new BusInterface(*copy.busInterface));
+                    copyBusIf->setName(uniqueBusName);
+
+                    // Create a busPort with the copied bus interface.
+                    BusPortItem* port = new BusPortItem(copyBusIf,getLibraryInterface(),false,targetComp);			
+                    QPointF pos = snapPointToGrid(targetComp->mapFromScene(parent()->mapFromGlobal(QCursor::pos())));
+                    port->setPos(pos);
+
+                    // Lock the interface type for non-draft interfaces.
+                    if ( !(copyBusIf->getInterfaceMode() == General::INTERFACE_MODE_COUNT) )
+                    {
+                        port->setTypeLocked(true);
+                    }
+
+                    QSharedPointer<QUndoCommand> cmd(new PortPasteCommand(targetComp, copy.component, pos, port) );
+                    cmd->redo();
+                    getEditProvider().addCommand(cmd, false);
+                }
+            }	
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: addColumn()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::addColumn(ColumnDesc const& desc)
@@ -2001,7 +2142,7 @@ void HWDesignDiagram::addInterface(GraphicsColumn* column, QPointF const& pos)
             ++cur;
         }
     }
-
+	
     getEditProvider().addCommand(cmd, false);
 }
 
@@ -2365,6 +2506,20 @@ BusPortItem* HWDesignDiagram::createMissingPort(QString const& portName, HWCompo
     }
 
     return port;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::setupActions()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::setupActions()
+{
+    parent()->addAction(&copyAction_);
+    copyAction_.setShortcut(QKeySequence::Copy);
+    connect(&copyAction_, SIGNAL(triggered()),this, SLOT(onCopyAction()), Qt::UniqueConnection);
+
+    parent()->addAction(&pasteAction_);
+    pasteAction_.setShortcut(QKeySequence::Paste);
+    connect(&pasteAction_, SIGNAL(triggered()),this, SLOT(onPasteAction()), Qt::UniqueConnection);	
 }
 
 //-----------------------------------------------------------------------------

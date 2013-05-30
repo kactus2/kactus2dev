@@ -188,3 +188,129 @@ void ConnectionAddCommand::redo()
     conn_->setSelected(true);
     del_ = false;
 }
+
+//-----------------------------------------------------------------------------
+// Function: PortPasteCommand()
+//-----------------------------------------------------------------------------
+PortPasteCommand::PortPasteCommand(HWComponentItem* destComponent, QSharedPointer<Component> srcComponent, 
+	                               QPointF const& pos, BusPortItem* port, 
+								   QUndoCommand* parent) : QUndoCommand(parent),
+                                                           component_(destComponent), pos_(pos),
+                                                           port_(port), scene_(destComponent->scene())
+{
+	// Create child commands for adding physical ports to target component. 
+	// Physical ports must have a unique name within the component.
+	foreach (QString const& portName, port_->getBusInterface()->getPhysicalPortNames())
+	{	
+		QString uniquePortName = portName;
+		unsigned int count = 0;
+		while ( component_->componentModel()->getPort(uniquePortName) != 0 )
+		{
+			count++;
+			uniquePortName = portName + "_" + QString::number(count);
+		}
+
+		// Create copies of the physical ports in the source component and rename them.
+		QSharedPointer<Port> physPortCopy = QSharedPointer<Port>(new Port(*srcComponent->getPort(portName)));
+		physPortCopy->setName(uniquePortName);	
+
+		// If port name changed, it is also changed in bus interface.
+		if( uniquePortName != portName )
+		{
+			foreach (QSharedPointer<General::PortMap> portMap, port_->getBusInterface()->getPortMaps())
+			{
+				if( portMap->physicalPort_ == portName )
+				{
+					portMap->physicalPort_ = uniquePortName;
+				}
+			}
+		}
+
+		QUndoCommand* childCmd = new PastePhysicalPortCommand(component_, physPortCopy, this);
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: ~PortPasteCommand()
+//-----------------------------------------------------------------------------
+PortPasteCommand::~PortPasteCommand()
+{
+	if (del_)
+    {
+        delete port_;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: undo()
+//-----------------------------------------------------------------------------
+void PortPasteCommand::undo()
+{
+    // Execute child commands.
+    QUndoCommand::undo();
+
+    Q_ASSERT(port_ != 0);
+
+    // Remove the port from the component and from the scene
+    component_->removePort(port_);
+    scene_->removeItem(port_);
+
+    del_ = true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: redo()
+//-----------------------------------------------------------------------------
+void PortPasteCommand::redo()
+{
+	QUndoCommand::redo();
+
+	Q_ASSERT(port_ != 0);
+	
+    // Copy a port to the component.
+    component_->addPort(port_);
+	port_->updateInterface();
+  
+    del_ = false;
+}
+
+
+	//-----------------------------------------------------------------------------
+// Function: PastePhysicalPortCommand()
+//-----------------------------------------------------------------------------
+PastePhysicalPortCommand::PastePhysicalPortCommand(HWComponentItem* component, QSharedPointer<Port> port,
+                               QUndoCommand* parent) : QUndoCommand(parent),
+							   component_(component->componentModel()), port_(port)                                                           
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: ~PastePhysicalPortCommand()
+//-----------------------------------------------------------------------------
+PastePhysicalPortCommand::~PastePhysicalPortCommand()
+{
+}
+
+//-----------------------------------------------------------------------------
+// Function: undo()
+//-----------------------------------------------------------------------------
+void PastePhysicalPortCommand::undo()
+{
+    Q_ASSERT(component_ != 0);
+    component_->removePort(port_->getName());
+	
+    // Execute child commands.
+    QUndoCommand::undo();
+}
+
+//-----------------------------------------------------------------------------
+// Function: redo()
+//-----------------------------------------------------------------------------
+void PastePhysicalPortCommand::redo()
+{
+	Q_ASSERT(component_ != 0);
+    component_->addPort(port_);
+
+	// Execute child commands.
+    QUndoCommand::redo();
+}

@@ -14,6 +14,9 @@
 
 #include <QGraphicsScene>
 #include <QStringList>
+#include <QAction>
+#include <QMenu>
+#include <QGraphicsSceneContextMenuEvent>
 
 #include <designwidget/AdHocEnabled.h>
 
@@ -278,6 +281,9 @@ signals:
     //! Signaled when all items are deselected.
     void clearItemSelection();
 
+	//! Signaled when copy is selected from the context menu.
+	void copyItem();
+
 protected:
     /*!
      *  Creates a unique instance name for the given component.
@@ -306,6 +312,22 @@ protected:
      *      @param [in] newSelection The selected item.
      */
     virtual void onSelected(QGraphicsItem* newSelection) = 0;
+
+	/*!
+     *  Creates the context menu for function contextMenuEvent().
+     *
+     *      @param [in] pos Mouse position when the menu is requested.
+	 *
+	 *      @return The menu with allowed actions or 0 if no menu is allowed.
+     */
+	virtual QMenu* createContextMenu(QPointF const& pos);
+
+	/*!
+     *  Event handler for receiving context menu events (e.g. right mouse click).
+     *
+     *      @param [in] event The triggering event.
+     */
+	virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent* event);
 
 private:
     // Disable copying.

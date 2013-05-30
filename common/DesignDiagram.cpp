@@ -27,6 +27,7 @@
 
 #include <QWidget>
 #include <QPainter>
+#include <QMenu>
 
 //-----------------------------------------------------------------------------
 // Function: DesignDiagram::DesignDiagram()
@@ -51,7 +52,7 @@ DesignDiagram::DesignDiagram(LibraryInterface* lh, MainWindow* mainWnd,
     connect(this, SIGNAL(componentInstantiated(ComponentItem*)),
         this, SLOT(onComponentInstanceAdded(ComponentItem*)), Qt::UniqueConnection);
     connect(this, SIGNAL(componentInstanceRemoved(ComponentItem*)),
-        this, SLOT(onComponentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+        this, SLOT(onComponentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);		
 }
 
 //-----------------------------------------------------------------------------
@@ -309,6 +310,27 @@ void DesignDiagram::drawBackground(QPainter* painter, QRectF const& rect)
 }
 
 //-----------------------------------------------------------------------------
+// Function: DesignDiagram::createContextMenu()
+//-----------------------------------------------------------------------------
+QMenu* DesignDiagram::createContextMenu(QPointF const& pos){
+	return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::contextMenuEvent()
+//-----------------------------------------------------------------------------
+void DesignDiagram::contextMenuEvent(QGraphicsSceneContextMenuEvent* event){
+	
+	QMenu* menu = createContextMenu(event->scenePos());
+	if ( menu != 0 )
+	{
+	menu->exec(event->screenPos());
+	delete menu;
+	}
+	event->accept();
+}
+
+//-----------------------------------------------------------------------------
 // Function: DesignDiagram::onShow()
 //-----------------------------------------------------------------------------
 void DesignDiagram::onShow()
@@ -389,6 +411,9 @@ DesignWidget* DesignDiagram::getParent()
     return parent_;
 }
 
+//-----------------------------------------------------------------------------
+// Function: DesignDiagram::createDesign()
+//-----------------------------------------------------------------------------
 QSharedPointer<Design> DesignDiagram::createDesign( VLNV const& vlnv ) const {
 	QSharedPointer<Design> design(new Design(vlnv));
 	design->setTopComments(XMLComments_);
