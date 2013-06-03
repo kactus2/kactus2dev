@@ -53,7 +53,7 @@ public:
     /*!
      *  Applies the changes that were done in the page.
      */
-    void apply();
+    virtual void apply();
 
     /*!
      *  Called when the page is to be changed and this page would be hidden.

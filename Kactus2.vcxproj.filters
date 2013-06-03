@@ -3724,6 +3724,12 @@
     <ClCompile Include="Vhdl2IPXact\vhdltoipxact.cpp">
       <Filter>Source Files\vhdl2IPXact</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_k2envvariablesettingspage.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="settings\k2envvariablesettingspage.cpp">
+      <Filter>Source Files\settings</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5306,6 +5312,9 @@
     </CustomBuild>
     <CustomBuild Include="Vhdl2IPXact\vhdltoipxact.h">
       <Filter>Header Files\vhdl2IPXact</Filter>
+    </CustomBuild>
+    <CustomBuild Include="settings\k2envvariablesettingspage.h">
+      <Filter>Header Files\settings</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

@@ -65,6 +65,14 @@ public:
 
 signals:
     void contentChanged();
+
+private:
+
+	//! \brief No copying
+	PropertyPageView(const PropertyPageView& other);
+
+	//! \brief No assignment
+	PropertyPageView& operator=(const PropertyPageView& other);
 };
 
 //-----------------------------------------------------------------------------
