@@ -35,6 +35,11 @@ int VHDLanalysis::entityConverter(QTableWidget& gene_t,QTableWidget& port_t, QSt
 
     line = line.simplified();
 
+    comment = line.section("--",1);
+    comment = comment.trimmed();
+    line = line.section("--",0,0);
+    line = line.simplified();
+
     //if user clicks to modify this if desides right section parameter
     if (line.contains(':') && clicked)
     {
@@ -75,7 +80,8 @@ int VHDLanalysis::entityConverter(QTableWidget& gene_t,QTableWidget& port_t, QSt
             section_ = 2;
         }
         //port list starts
-        else if (line.startsWith("port",Qt::CaseInsensitive))
+        else if (line.startsWith("port(",Qt::CaseInsensitive)||
+                 line.startsWith("port (",Qt::CaseInsensitive))
         {
             section_ = 3;
         }
@@ -94,10 +100,6 @@ int VHDLanalysis::entityConverter(QTableWidget& gene_t,QTableWidget& port_t, QSt
         }
         else if (section_ == 2 && line.contains(':'))
         {
-            comment = line.section("--",1);
-            comment = comment.trimmed();
-            line = line.section("--",0,0);
-
             if (line.startsWith("generic(",Qt::CaseInsensitive))
             {
                 line = line.section("generic(",1,-1,QString::SectionCaseInsensitiveSeps);
@@ -127,10 +129,6 @@ int VHDLanalysis::entityConverter(QTableWidget& gene_t,QTableWidget& port_t, QSt
         //-----------------------------------------------------------------------------
         else if (section_ == 3 && line.contains(':'))
         {
-            comment = line.section("--",1);
-            comment = comment.trimmed();
-            line = line.section("--",0,0);
-
             if (line.startsWith("port(",Qt::CaseInsensitive))
             {
                 line = line.section("port(",1,-1,QString::SectionCaseInsensitiveSeps);
@@ -445,29 +443,29 @@ void VHDLanalysis::analyzeData(QTableWidget& generics_t, QTableWidget& ports_t, 
     bool found = false; // true, if searched name of generic/port was found in table
 
     // if table is empty adds one row
-//    if(generics_t.rowCount() == 0)
-//    {
-//        generics_t.insertRow(0);
-//        generics_t.setItem(0,0,new QTableWidgetItem);
-//        generics_t.setItem(0,1,new QTableWidgetItem);
-//        generics_t.setItem(0,2,new QTableWidgetItem);
-//        generics_t.setItem(0,3,new QTableWidgetItem);
-//        generics_t.setItem(0,4,new QTableWidgetItem);
+    if(generics_t.rowCount() == 0)
+    {
+        generics_t.insertRow(0);
+        generics_t.setItem(0,0,new QTableWidgetItem);
+        generics_t.setItem(0,1,new QTableWidgetItem);
+        generics_t.setItem(0,2,new QTableWidgetItem);
+        generics_t.setItem(0,3,new QTableWidgetItem);
+        generics_t.setItem(0,4,new QTableWidgetItem);
 
-//    }
-//    if(ports_t.rowCount() == 0)
-//    {
-//        ports_t.insertRow(0);
-//        ports_t.setItem(0,0,new QTableWidgetItem);
-//        ports_t.setItem(0,1,new QTableWidgetItem);
-//        ports_t.setItem(0,2,new QTableWidgetItem);
-//        ports_t.setItem(0,3,new QTableWidgetItem);
-//        ports_t.setItem(0,4,new QTableWidgetItem);
-//        ports_t.setItem(0,5,new QTableWidgetItem);
-//        ports_t.setItem(0,6,new QTableWidgetItem);
-//        ports_t.setItem(0,7,new QTableWidgetItem);
-//        ports_t.setItem(0,8,new QTableWidgetItem);
-//    }
+    }
+    if(ports_t.rowCount() == 0)
+    {
+        ports_t.insertRow(0);
+        ports_t.setItem(0,0,new QTableWidgetItem);
+        ports_t.setItem(0,1,new QTableWidgetItem);
+        ports_t.setItem(0,2,new QTableWidgetItem);
+        ports_t.setItem(0,3,new QTableWidgetItem);
+        ports_t.setItem(0,4,new QTableWidgetItem);
+        ports_t.setItem(0,5,new QTableWidgetItem);
+        ports_t.setItem(0,6,new QTableWidgetItem);
+        ports_t.setItem(0,7,new QTableWidgetItem);
+        ports_t.setItem(0,8,new QTableWidgetItem);
+    }
 
     //-----------------------------------------------------------------------------
     // Data is Generic
